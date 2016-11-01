@@ -27,111 +27,103 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @typedef {!{x: number, y: number, picture: string}}
  */
 WebInspector.PictureFragment;
 
 /**
- * @constructor
- * @param {!WebInspector.Target} target
- * @param {string} snapshotId
+ * @unrestricted
  */
-WebInspector.PaintProfilerSnapshot = function(target, snapshotId)
-{
+WebInspector.PaintProfilerSnapshot = class {
+  /**
+   * @param {!WebInspector.Target} target
+   * @param {string} snapshotId
+   */
+  constructor(target, snapshotId) {
     this._target = target;
     this._id = snapshotId;
     this._refCount = 1;
-};
+  }
 
-/**
- * @param {!WebInspector.Target} target
- * @param {!Array.<!WebInspector.PictureFragment>} fragments
- * @return {!Promise<?WebInspector.PaintProfilerSnapshot>}
- */
-WebInspector.PaintProfilerSnapshot.loadFromFragments = function(target, fragments)
-{
-    return target.layerTreeAgent().loadSnapshot(fragments, (error, snapshotId) => error ? null : new WebInspector.PaintProfilerSnapshot(target, snapshotId));
-};
+  /**
+   * @param {!WebInspector.Target} target
+   * @param {!Array.<!WebInspector.PictureFragment>} fragments
+   * @return {!Promise<?WebInspector.PaintProfilerSnapshot>}
+   */
+  static loadFromFragments(target, fragments) {
+    return target.layerTreeAgent().loadSnapshot(
+        fragments, (error, snapshotId) => error ? null : new WebInspector.PaintProfilerSnapshot(target, snapshotId));
+  }
 
-/**
- * @param {!WebInspector.Target} target
- * @param {string} encodedPicture
- * @return {!Promise<?WebInspector.PaintProfilerSnapshot>}
- */
-WebInspector.PaintProfilerSnapshot.load = function(target, encodedPicture)
-{
-    var fragment = {
-        x: 0,
-        y: 0,
-        picture: encodedPicture
-    };
+  /**
+   * @param {!WebInspector.Target} target
+   * @param {string} encodedPicture
+   * @return {!Promise<?WebInspector.PaintProfilerSnapshot>}
+   */
+  static load(target, encodedPicture) {
+    var fragment = {x: 0, y: 0, picture: encodedPicture};
     return WebInspector.PaintProfilerSnapshot.loadFromFragments(target, [fragment]);
-};
+  }
 
-WebInspector.PaintProfilerSnapshot.prototype = {
-    release: function()
-    {
-        console.assert(this._refCount > 0, "release is already called on the object");
-        if (!--this._refCount)
-            this._target.layerTreeAgent().releaseSnapshot(this._id);
-    },
+  release() {
+    console.assert(this._refCount > 0, 'release is already called on the object');
+    if (!--this._refCount)
+      this._target.layerTreeAgent().releaseSnapshot(this._id);
+  }
 
-    addReference: function()
-    {
-        ++this._refCount;
-        console.assert(this._refCount > 0, "Referencing a dead object");
-    },
+  addReference() {
+    ++this._refCount;
+    console.assert(this._refCount > 0, 'Referencing a dead object');
+  }
+
+  /**
+   * @return {!WebInspector.Target}
+   */
+  target() {
+    return this._target;
+  }
+
+  /**
+   * @param {?number} firstStep
+   * @param {?number} lastStep
+   * @param {?number} scale
+   * @return {!Promise<?string>}
+   */
+  replay(firstStep, lastStep, scale) {
+    return this._target.layerTreeAgent().replaySnapshot(
+        this._id, firstStep || undefined, lastStep || undefined, scale || 1.0, (error, str) => error ? null : str);
+  }
+
+  /**
+   * @param {?DOMAgent.Rect} clipRect
+   * @param {function(!Array.<!LayerTreeAgent.PaintProfile>=)} callback
+   */
+  profile(clipRect, callback) {
+    var wrappedCallback = InspectorBackend.wrapClientCallback(callback, 'LayerTreeAgent.profileSnapshot(): ');
+    this._target.layerTreeAgent().profileSnapshot(this._id, 5, 1, clipRect || undefined, wrappedCallback);
+  }
+
+  /**
+   * @return {!Promise<?Array<!WebInspector.PaintProfilerLogItem>>}
+   */
+  commandLog() {
+    return this._target.layerTreeAgent().snapshotCommandLog(this._id, processLog);
 
     /**
-     * @return {!WebInspector.Target}
+     * @param {?string} error
+     * @param {?Array<!Object>} log
      */
-    target: function()
-    {
-        return this._target;
-    },
-
-    /**
-     * @param {?number} firstStep
-     * @param {?number} lastStep
-     * @param {?number} scale
-     * @return {!Promise<?string>}
-     */
-    replay: function(firstStep, lastStep, scale)
-    {
-        return this._target.layerTreeAgent().replaySnapshot(this._id, firstStep || undefined, lastStep || undefined, scale || 1.0, (error, str) => error ? null : str);
-    },
-
-    /**
-     * @param {?DOMAgent.Rect} clipRect
-     * @param {function(!Array.<!LayerTreeAgent.PaintProfile>=)} callback
-     */
-    profile: function(clipRect, callback)
-    {
-        var wrappedCallback = InspectorBackend.wrapClientCallback(callback, "LayerTreeAgent.profileSnapshot(): ");
-        this._target.layerTreeAgent().profileSnapshot(this._id, 5, 1, clipRect || undefined, wrappedCallback);
-    },
-
-    /**
-     * @return {!Promise<?Array<!WebInspector.PaintProfilerLogItem>>}
-     */
-    commandLog: function()
-    {
-        return this._target.layerTreeAgent().snapshotCommandLog(this._id, processLog);
-
-        /**
-         * @param {?string} error
-         * @param {?Array<!Object>} log
-         */
-        function processLog(error, log)
-        {
-            if (error)
-                return null;
-            return log.map((entry, index) => new WebInspector.PaintProfilerLogItem(/** @type {!WebInspector.RawPaintProfilerLogItem} */ (entry), index));
-        }
+    function processLog(error, log) {
+      if (error)
+        return null;
+      return log.map(
+          (entry, index) => new WebInspector.PaintProfilerLogItem(
+              /** @type {!WebInspector.RawPaintProfilerLogItem} */ (entry), index));
     }
+  }
 };
+
 
 /**
  * @typedef {!{method: string, params: ?Object<string, *>}}
@@ -139,13 +131,16 @@ WebInspector.PaintProfilerSnapshot.prototype = {
 WebInspector.RawPaintProfilerLogItem;
 
 /**
- * @constructor
- * @param {!WebInspector.RawPaintProfilerLogItem} rawEntry
- * @param {number} commandIndex
+ * @unrestricted
  */
-WebInspector.PaintProfilerLogItem = function(rawEntry, commandIndex)
-{
+WebInspector.PaintProfilerLogItem = class {
+  /**
+   * @param {!WebInspector.RawPaintProfilerLogItem} rawEntry
+   * @param {number} commandIndex
+   */
+  constructor(rawEntry, commandIndex) {
     this.method = rawEntry.method;
     this.params = rawEntry.params;
     this.commandIndex = commandIndex;
+  }
 };

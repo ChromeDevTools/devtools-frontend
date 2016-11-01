@@ -27,319 +27,300 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @param {number} startLine
- * @param {number} startColumn
- * @param {number} endLine
- * @param {number} endColumn
+ * @unrestricted
  */
-WebInspector.TextRange = function(startLine, startColumn, endLine, endColumn)
-{
+WebInspector.TextRange = class {
+  /**
+   * @param {number} startLine
+   * @param {number} startColumn
+   * @param {number} endLine
+   * @param {number} endColumn
+   */
+  constructor(startLine, startColumn, endLine, endColumn) {
     this.startLine = startLine;
     this.startColumn = startColumn;
     this.endLine = endLine;
     this.endColumn = endColumn;
-};
+  }
 
-/**
- * @param {number} line
- * @param {number} column
- * @return {!WebInspector.TextRange}
- */
-WebInspector.TextRange.createFromLocation = function(line, column)
-{
+  /**
+   * @param {number} line
+   * @param {number} column
+   * @return {!WebInspector.TextRange}
+   */
+  static createFromLocation(line, column) {
     return new WebInspector.TextRange(line, column, line, column);
-};
+  }
 
-/**
- * @param {!Object} serializedTextRange
- * @return {!WebInspector.TextRange}
- */
-WebInspector.TextRange.fromObject = function(serializedTextRange)
-{
-    return new WebInspector.TextRange(serializedTextRange.startLine, serializedTextRange.startColumn, serializedTextRange.endLine, serializedTextRange.endColumn);
-};
+  /**
+   * @param {!Object} serializedTextRange
+   * @return {!WebInspector.TextRange}
+   */
+  static fromObject(serializedTextRange) {
+    return new WebInspector.TextRange(
+        serializedTextRange.startLine, serializedTextRange.startColumn, serializedTextRange.endLine,
+        serializedTextRange.endColumn);
+  }
 
-/**
- * @param {!WebInspector.TextRange} range1
- * @param {!WebInspector.TextRange} range2
- * @return {number}
- */
-WebInspector.TextRange.comparator = function(range1, range2)
-{
+  /**
+   * @param {!WebInspector.TextRange} range1
+   * @param {!WebInspector.TextRange} range2
+   * @return {number}
+   */
+  static comparator(range1, range2) {
     return range1.compareTo(range2);
-};
+  }
 
-WebInspector.TextRange.prototype = {
-    /**
-     * @return {boolean}
-     */
-    isEmpty: function()
-    {
-        return this.startLine === this.endLine && this.startColumn === this.endColumn;
-    },
-
-    /**
-     * @param {!WebInspector.TextRange} range
-     * @return {boolean}
-     */
-    immediatelyPrecedes: function(range)
-    {
-        if (!range)
-            return false;
-        return this.endLine === range.startLine && this.endColumn === range.startColumn;
-    },
-
-    /**
-     * @param {!WebInspector.TextRange} range
-     * @return {boolean}
-     */
-    immediatelyFollows: function(range)
-    {
-        if (!range)
-            return false;
-        return range.immediatelyPrecedes(this);
-    },
-
-    /**
-     * @param {!WebInspector.TextRange} range
-     * @return {boolean}
-     */
-    follows: function(range)
-    {
-        return (range.endLine === this.startLine && range.endColumn <= this.startColumn)
-            || range.endLine < this.startLine;
-    },
-
-    /**
-     * @return {number}
-     */
-    get linesCount()
-    {
-        return this.endLine - this.startLine;
-    },
-
-    /**
-     * @return {!WebInspector.TextRange}
-     */
-    collapseToEnd: function()
-    {
-        return new WebInspector.TextRange(this.endLine, this.endColumn, this.endLine, this.endColumn);
-    },
-
-    /**
-     * @return {!WebInspector.TextRange}
-     */
-    collapseToStart: function()
-    {
-        return new WebInspector.TextRange(this.startLine, this.startColumn, this.startLine, this.startColumn);
-    },
-
-    /**
-     * @return {!WebInspector.TextRange}
-     */
-    normalize: function()
-    {
-        if (this.startLine > this.endLine || (this.startLine === this.endLine && this.startColumn > this.endColumn))
-            return new WebInspector.TextRange(this.endLine, this.endColumn, this.startLine, this.startColumn);
-        else
-            return this.clone();
-    },
-
-    /**
-     * @return {!WebInspector.TextRange}
-     */
-    clone: function()
-    {
-        return new WebInspector.TextRange(this.startLine, this.startColumn, this.endLine, this.endColumn);
-    },
-
-    /**
-     * @return {!{startLine: number, startColumn: number, endLine: number, endColumn: number}}
-     */
-    serializeToObject: function()
-    {
-        var serializedTextRange = {};
-        serializedTextRange.startLine = this.startLine;
-        serializedTextRange.startColumn = this.startColumn;
-        serializedTextRange.endLine = this.endLine;
-        serializedTextRange.endColumn = this.endColumn;
-        return serializedTextRange;
-    },
-
-    /**
-     * @param {!WebInspector.TextRange} other
-     * @return {number}
-     */
-    compareTo: function(other)
-    {
-        if (this.startLine > other.startLine)
-            return 1;
-        if (this.startLine < other.startLine)
-            return -1;
-        if (this.startColumn > other.startColumn)
-            return 1;
-        if (this.startColumn < other.startColumn)
-            return -1;
-        return 0;
-    },
-
-    /**
-     * @param {number} lineNumber
-     * @param {number} columnNumber
-     * @return {number}
-     */
-    compareToPosition: function(lineNumber, columnNumber)
-    {
-        if (lineNumber < this.startLine || (lineNumber === this.startLine && columnNumber < this.startColumn))
-            return -1;
-        if (lineNumber > this.endLine || (lineNumber === this.endLine && columnNumber > this.endColumn))
-            return 1;
-        return 0;
-    },
-
-    /**
-     * @param {!WebInspector.TextRange} other
-     * @return {boolean}
-     */
-    equal: function(other)
-    {
-        return this.startLine === other.startLine && this.endLine === other.endLine &&
-            this.startColumn === other.startColumn && this.endColumn === other.endColumn;
-    },
-
-    /**
-     * @param {number} line
-     * @param {number} column
-     * @return {!WebInspector.TextRange}
-     */
-    relativeTo: function(line, column)
-    {
-        var relative = this.clone();
-
-        if (this.startLine === line)
-            relative.startColumn -= column;
-        if (this.endLine === line)
-            relative.endColumn -= column;
-
-        relative.startLine -= line;
-        relative.endLine -= line;
-        return relative;
-    },
-
-    /**
-     * @param {!WebInspector.TextRange} originalRange
-     * @param {!WebInspector.TextRange} editedRange
-     * @return {!WebInspector.TextRange}
-     */
-    rebaseAfterTextEdit: function(originalRange, editedRange)
-    {
-        console.assert(originalRange.startLine === editedRange.startLine);
-        console.assert(originalRange.startColumn === editedRange.startColumn);
-        var rebase = this.clone();
-        if (!this.follows(originalRange))
-            return rebase;
-        var lineDelta = editedRange.endLine - originalRange.endLine;
-        var columnDelta = editedRange.endColumn - originalRange.endColumn;
-        rebase.startLine += lineDelta;
-        rebase.endLine += lineDelta;
-        if (rebase.startLine === editedRange.endLine)
-            rebase.startColumn += columnDelta;
-        if (rebase.endLine === editedRange.endLine)
-            rebase.endColumn += columnDelta;
-        return rebase;
-    },
-
-    /**
-     * @override
-     * @return {string}
-     */
-    toString: function()
-    {
-        return JSON.stringify(this);
-    },
-
-    /**
-     * @param {number} lineNumber
-     * @param {number} columnNumber
-     * @return {boolean}
-     */
-    containsLocation: function(lineNumber, columnNumber)
-    {
-        if (this.startLine === this.endLine)
-            return this.startLine === lineNumber && this.startColumn <= columnNumber && columnNumber <= this.endColumn;
-        if (this.startLine === lineNumber)
-            return this.startColumn <= columnNumber;
-        if (this.endLine === lineNumber)
-            return columnNumber <= this.endColumn;
-        return this.startLine < lineNumber && lineNumber < this.endLine;
-    }
-};
-
-/**
- * @param {!WebInspector.TextRange} oldRange
- * @param {string} newText
- * @return {!WebInspector.TextRange}
- */
-WebInspector.TextRange.fromEdit = function(oldRange, newText)
-{
+  /**
+   * @param {!WebInspector.TextRange} oldRange
+   * @param {string} newText
+   * @return {!WebInspector.TextRange}
+   */
+  static fromEdit(oldRange, newText) {
     var endLine = oldRange.startLine;
     var endColumn = oldRange.startColumn + newText.length;
     var lineEndings = newText.computeLineEndings();
     if (lineEndings.length > 1) {
-        endLine = oldRange.startLine + lineEndings.length - 1;
-        var len = lineEndings.length;
-        endColumn = lineEndings[len - 1] - lineEndings[len - 2] - 1;
+      endLine = oldRange.startLine + lineEndings.length - 1;
+      var len = lineEndings.length;
+      endColumn = lineEndings[len - 1] - lineEndings[len - 2] - 1;
     }
-    return new WebInspector.TextRange(
-        oldRange.startLine,
-        oldRange.startColumn,
-        endLine,
-        endColumn);
+    return new WebInspector.TextRange(oldRange.startLine, oldRange.startColumn, endLine, endColumn);
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isEmpty() {
+    return this.startLine === this.endLine && this.startColumn === this.endColumn;
+  }
+
+  /**
+   * @param {!WebInspector.TextRange} range
+   * @return {boolean}
+   */
+  immediatelyPrecedes(range) {
+    if (!range)
+      return false;
+    return this.endLine === range.startLine && this.endColumn === range.startColumn;
+  }
+
+  /**
+   * @param {!WebInspector.TextRange} range
+   * @return {boolean}
+   */
+  immediatelyFollows(range) {
+    if (!range)
+      return false;
+    return range.immediatelyPrecedes(this);
+  }
+
+  /**
+   * @param {!WebInspector.TextRange} range
+   * @return {boolean}
+   */
+  follows(range) {
+    return (range.endLine === this.startLine && range.endColumn <= this.startColumn) || range.endLine < this.startLine;
+  }
+
+  /**
+   * @return {number}
+   */
+  get linesCount() {
+    return this.endLine - this.startLine;
+  }
+
+  /**
+   * @return {!WebInspector.TextRange}
+   */
+  collapseToEnd() {
+    return new WebInspector.TextRange(this.endLine, this.endColumn, this.endLine, this.endColumn);
+  }
+
+  /**
+   * @return {!WebInspector.TextRange}
+   */
+  collapseToStart() {
+    return new WebInspector.TextRange(this.startLine, this.startColumn, this.startLine, this.startColumn);
+  }
+
+  /**
+   * @return {!WebInspector.TextRange}
+   */
+  normalize() {
+    if (this.startLine > this.endLine || (this.startLine === this.endLine && this.startColumn > this.endColumn))
+      return new WebInspector.TextRange(this.endLine, this.endColumn, this.startLine, this.startColumn);
+    else
+      return this.clone();
+  }
+
+  /**
+   * @return {!WebInspector.TextRange}
+   */
+  clone() {
+    return new WebInspector.TextRange(this.startLine, this.startColumn, this.endLine, this.endColumn);
+  }
+
+  /**
+   * @return {!{startLine: number, startColumn: number, endLine: number, endColumn: number}}
+   */
+  serializeToObject() {
+    var serializedTextRange = {};
+    serializedTextRange.startLine = this.startLine;
+    serializedTextRange.startColumn = this.startColumn;
+    serializedTextRange.endLine = this.endLine;
+    serializedTextRange.endColumn = this.endColumn;
+    return serializedTextRange;
+  }
+
+  /**
+   * @param {!WebInspector.TextRange} other
+   * @return {number}
+   */
+  compareTo(other) {
+    if (this.startLine > other.startLine)
+      return 1;
+    if (this.startLine < other.startLine)
+      return -1;
+    if (this.startColumn > other.startColumn)
+      return 1;
+    if (this.startColumn < other.startColumn)
+      return -1;
+    return 0;
+  }
+
+  /**
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @return {number}
+   */
+  compareToPosition(lineNumber, columnNumber) {
+    if (lineNumber < this.startLine || (lineNumber === this.startLine && columnNumber < this.startColumn))
+      return -1;
+    if (lineNumber > this.endLine || (lineNumber === this.endLine && columnNumber > this.endColumn))
+      return 1;
+    return 0;
+  }
+
+  /**
+   * @param {!WebInspector.TextRange} other
+   * @return {boolean}
+   */
+  equal(other) {
+    return this.startLine === other.startLine && this.endLine === other.endLine &&
+        this.startColumn === other.startColumn && this.endColumn === other.endColumn;
+  }
+
+  /**
+   * @param {number} line
+   * @param {number} column
+   * @return {!WebInspector.TextRange}
+   */
+  relativeTo(line, column) {
+    var relative = this.clone();
+
+    if (this.startLine === line)
+      relative.startColumn -= column;
+    if (this.endLine === line)
+      relative.endColumn -= column;
+
+    relative.startLine -= line;
+    relative.endLine -= line;
+    return relative;
+  }
+
+  /**
+   * @param {!WebInspector.TextRange} originalRange
+   * @param {!WebInspector.TextRange} editedRange
+   * @return {!WebInspector.TextRange}
+   */
+  rebaseAfterTextEdit(originalRange, editedRange) {
+    console.assert(originalRange.startLine === editedRange.startLine);
+    console.assert(originalRange.startColumn === editedRange.startColumn);
+    var rebase = this.clone();
+    if (!this.follows(originalRange))
+      return rebase;
+    var lineDelta = editedRange.endLine - originalRange.endLine;
+    var columnDelta = editedRange.endColumn - originalRange.endColumn;
+    rebase.startLine += lineDelta;
+    rebase.endLine += lineDelta;
+    if (rebase.startLine === editedRange.endLine)
+      rebase.startColumn += columnDelta;
+    if (rebase.endLine === editedRange.endLine)
+      rebase.endColumn += columnDelta;
+    return rebase;
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  toString() {
+    return JSON.stringify(this);
+  }
+
+  /**
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @return {boolean}
+   */
+  containsLocation(lineNumber, columnNumber) {
+    if (this.startLine === this.endLine)
+      return this.startLine === lineNumber && this.startColumn <= columnNumber && columnNumber <= this.endColumn;
+    if (this.startLine === lineNumber)
+      return this.startColumn <= columnNumber;
+    if (this.endLine === lineNumber)
+      return columnNumber <= this.endColumn;
+    return this.startLine < lineNumber && lineNumber < this.endLine;
+  }
 };
 
+
 /**
- * @constructor
- * @param {number} offset
- * @param {number} length
+ * @unrestricted
  */
-WebInspector.SourceRange = function(offset, length)
-{
+WebInspector.SourceRange = class {
+  /**
+   * @param {number} offset
+   * @param {number} length
+   */
+  constructor(offset, length) {
     this.offset = offset;
     this.length = length;
+  }
 };
 
 /**
- * @constructor
- * @param {string} sourceURL
- * @param {!WebInspector.TextRange} oldRange
- * @param {string} newText
+ * @unrestricted
  */
-WebInspector.SourceEdit = function(sourceURL, oldRange, newText)
-{
+WebInspector.SourceEdit = class {
+  /**
+   * @param {string} sourceURL
+   * @param {!WebInspector.TextRange} oldRange
+   * @param {string} newText
+   */
+  constructor(sourceURL, oldRange, newText) {
     this.sourceURL = sourceURL;
     this.oldRange = oldRange;
     this.newText = newText;
-};
+  }
 
-WebInspector.SourceEdit.prototype = {
-    /**
-     * @return {!WebInspector.TextRange}
-     */
-    newRange: function()
-    {
-        return WebInspector.TextRange.fromEdit(this.oldRange, this.newText);
-    },
-};
-
-/**
- * @param {!WebInspector.SourceEdit} edit1
- * @param {!WebInspector.SourceEdit} edit2
- * @return {number}
- */
-WebInspector.SourceEdit.comparator = function(edit1, edit2)
-{
+  /**
+   * @param {!WebInspector.SourceEdit} edit1
+   * @param {!WebInspector.SourceEdit} edit2
+   * @return {number}
+   */
+  static comparator(edit1, edit2) {
     return WebInspector.TextRange.comparator(edit1.oldRange, edit2.oldRange);
+  }
+
+  /**
+   * @return {!WebInspector.TextRange}
+   */
+  newRange() {
+    return WebInspector.TextRange.fromEdit(this.oldRange, this.newText);
+  }
 };
+
+

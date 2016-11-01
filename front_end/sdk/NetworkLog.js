@@ -27,167 +27,159 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.SDKModel}
- * @param {!WebInspector.Target} target
- * @param {!WebInspector.ResourceTreeModel} resourceTreeModel
- * @param {!WebInspector.NetworkManager} networkManager
+ * @unrestricted
  */
-WebInspector.NetworkLog = function(target, resourceTreeModel, networkManager)
-{
-    WebInspector.SDKModel.call(this, WebInspector.NetworkLog, target);
+WebInspector.NetworkLog = class extends WebInspector.SDKModel {
+  /**
+   * @param {!WebInspector.Target} target
+   * @param {!WebInspector.ResourceTreeModel} resourceTreeModel
+   * @param {!WebInspector.NetworkManager} networkManager
+   */
+  constructor(target, resourceTreeModel, networkManager) {
+    super(WebInspector.NetworkLog, target);
 
     this._requests = [];
     this._requestForId = {};
     networkManager.addEventListener(WebInspector.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
-    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
+    resourceTreeModel.addEventListener(
+        WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
     resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.Load, this._onLoad, this);
-    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.DOMContentLoaded, this._onDOMContentLoaded, this);
-};
+    resourceTreeModel.addEventListener(
+        WebInspector.ResourceTreeModel.Events.DOMContentLoaded, this._onDOMContentLoaded, this);
+  }
 
-/**
- * @param {!WebInspector.Target} target
- * @return {?WebInspector.NetworkLog}
- */
-WebInspector.NetworkLog.fromTarget = function(target)
-{
+  /**
+   * @param {!WebInspector.Target} target
+   * @return {?WebInspector.NetworkLog}
+   */
+  static fromTarget(target) {
     return /** @type {?WebInspector.NetworkLog} */ (target.model(WebInspector.NetworkLog));
-};
+  }
 
-/**
- * @param {string} url
- * @return {?WebInspector.NetworkRequest}
- */
-WebInspector.NetworkLog.requestForURL = function(url)
-{
+  /**
+   * @param {string} url
+   * @return {?WebInspector.NetworkRequest}
+   */
+  static requestForURL(url) {
     for (var target of WebInspector.targetManager.targets()) {
-        var networkLog = WebInspector.NetworkLog.fromTarget(target);
-        var result = networkLog && networkLog.requestForURL(url);
-        if (result)
-            return result;
+      var networkLog = WebInspector.NetworkLog.fromTarget(target);
+      var result = networkLog && networkLog.requestForURL(url);
+      if (result)
+        return result;
     }
     return null;
-};
+  }
 
-/**
- * @return {!Array.<!WebInspector.NetworkRequest>}
- */
-WebInspector.NetworkLog.requests = function()
-{
+  /**
+   * @return {!Array.<!WebInspector.NetworkRequest>}
+   */
+  static requests() {
     var result = [];
     for (var target of WebInspector.targetManager.targets()) {
-        var networkLog = WebInspector.NetworkLog.fromTarget(target);
-        if (networkLog)
-            result = result.concat(networkLog.requests());
+      var networkLog = WebInspector.NetworkLog.fromTarget(target);
+      if (networkLog)
+        result = result.concat(networkLog.requests());
     }
     return result;
-};
+  }
 
-WebInspector.NetworkLog.prototype = {
-    /**
-     * @return {!Array.<!WebInspector.NetworkRequest>}
-     */
-    requests: function()
-    {
-        return this._requests;
-    },
+  /**
+   * @return {!Array.<!WebInspector.NetworkRequest>}
+   */
+  requests() {
+    return this._requests;
+  }
 
-    /**
-     * @param {string} url
-     * @return {?WebInspector.NetworkRequest}
-     */
-    requestForURL: function(url)
-    {
-        for (var i = 0; i < this._requests.length; ++i) {
-            if (this._requests[i].url === url)
-                return this._requests[i];
-        }
-        return null;
-    },
+  /**
+   * @param {string} url
+   * @return {?WebInspector.NetworkRequest}
+   */
+  requestForURL(url) {
+    for (var i = 0; i < this._requests.length; ++i) {
+      if (this._requests[i].url === url)
+        return this._requests[i];
+    }
+    return null;
+  }
 
-    /**
-     * @param {!WebInspector.NetworkRequest} request
-     * @return {!WebInspector.PageLoad}
-     */
-    pageLoadForRequest: function(request)
-    {
-        return request.__page;
-    },
+  /**
+   * @param {!WebInspector.NetworkRequest} request
+   * @return {!WebInspector.PageLoad}
+   */
+  pageLoadForRequest(request) {
+    return request.__page;
+  }
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onMainFrameNavigated: function(event)
-    {
-        var mainFrame = /** type {WebInspector.ResourceTreeFrame} */ event.data;
-        // Preserve requests from the new session.
-        this._currentPageLoad = null;
-        var oldRequests = this._requests.splice(0, this._requests.length);
-        this._requestForId = {};
-        for (var i = 0; i < oldRequests.length; ++i) {
-            var request = oldRequests[i];
-            if (request.loaderId === mainFrame.loaderId) {
-                if (!this._currentPageLoad)
-                    this._currentPageLoad = new WebInspector.PageLoad(request);
-                this._requests.push(request);
-                this._requestForId[request.requestId] = request;
-                request.__page = this._currentPageLoad;
-            }
-        }
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onRequestStarted: function(event)
-    {
-        var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _onMainFrameNavigated(event) {
+    var mainFrame = /** type {WebInspector.ResourceTreeFrame} */ event.data;
+    // Preserve requests from the new session.
+    this._currentPageLoad = null;
+    var oldRequests = this._requests.splice(0, this._requests.length);
+    this._requestForId = {};
+    for (var i = 0; i < oldRequests.length; ++i) {
+      var request = oldRequests[i];
+      if (request.loaderId === mainFrame.loaderId) {
+        if (!this._currentPageLoad)
+          this._currentPageLoad = new WebInspector.PageLoad(request);
         this._requests.push(request);
         this._requestForId[request.requestId] = request;
         request.__page = this._currentPageLoad;
-    },
+      }
+    }
+  }
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onDOMContentLoaded: function(event)
-    {
-        if (this._currentPageLoad)
-            this._currentPageLoad.contentLoadTime = event.data;
-    },
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _onRequestStarted(event) {
+    var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
+    this._requests.push(request);
+    this._requestForId[request.requestId] = request;
+    request.__page = this._currentPageLoad;
+  }
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onLoad: function(event)
-    {
-        if (this._currentPageLoad)
-            this._currentPageLoad.loadTime = event.data;
-    },
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _onDOMContentLoaded(event) {
+    if (this._currentPageLoad)
+      this._currentPageLoad.contentLoadTime = event.data;
+  }
 
-    /**
-     * @param {!NetworkAgent.RequestId} requestId
-     * @return {?WebInspector.NetworkRequest}
-     */
-    requestForId: function(requestId)
-    {
-        return this._requestForId[requestId];
-    },
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _onLoad(event) {
+    if (this._currentPageLoad)
+      this._currentPageLoad.loadTime = event.data;
+  }
 
-    __proto__: WebInspector.SDKModel.prototype
+  /**
+   * @param {!NetworkAgent.RequestId} requestId
+   * @return {?WebInspector.NetworkRequest}
+   */
+  requestForId(requestId) {
+    return this._requestForId[requestId];
+  }
 };
 
+
 /**
- * @constructor
- * @param {!WebInspector.NetworkRequest} mainRequest
+ * @unrestricted
  */
-WebInspector.PageLoad = function(mainRequest)
-{
+WebInspector.PageLoad = class {
+  /**
+   * @param {!WebInspector.NetworkRequest} mainRequest
+   */
+  constructor(mainRequest) {
     this.id = ++WebInspector.PageLoad._lastIdentifier;
     this.url = mainRequest.url;
     this.startTime = mainRequest.startTime;
+  }
 };
 
 WebInspector.PageLoad._lastIdentifier = 0;

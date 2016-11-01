@@ -28,15 +28,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @param {string} string
  * @param {...*} vararg
  * @return {string}
  */
-WebInspector.UIString = function(string, vararg)
-{
-    return String.vsprintf(WebInspector.localize(string), Array.prototype.slice.call(arguments, 1));
+WebInspector.UIString = function(string, vararg) {
+  return String.vsprintf(WebInspector.localize(string), Array.prototype.slice.call(arguments, 1));
 };
 
 /**
@@ -44,67 +42,70 @@ WebInspector.UIString = function(string, vararg)
  * @param {...*} vararg
  * @return {string}
  */
-WebInspector.UIString.capitalize = function(string, vararg)
-{
-    if (WebInspector._useLowerCaseMenuTitles === undefined)
-        throw "WebInspector.setLocalizationPlatform() has not been called";
+WebInspector.UIString.capitalize = function(string, vararg) {
+  if (WebInspector._useLowerCaseMenuTitles === undefined)
+    throw 'WebInspector.setLocalizationPlatform() has not been called';
 
-    var localized = WebInspector.localize(string);
-    var capitalized;
-    if (WebInspector._useLowerCaseMenuTitles)
-        capitalized = localized.replace(/\^(.)/g, "$1");
-    else
-        capitalized = localized.replace(/\^(.)/g, function(str, char) { return char.toUpperCase(); });
-    return String.vsprintf(capitalized, Array.prototype.slice.call(arguments, 1));
+  var localized = WebInspector.localize(string);
+  var capitalized;
+  if (WebInspector._useLowerCaseMenuTitles)
+    capitalized = localized.replace(/\^(.)/g, '$1');
+  else
+    capitalized = localized.replace(/\^(.)/g, function(str, char) {
+      return char.toUpperCase();
+    });
+  return String.vsprintf(capitalized, Array.prototype.slice.call(arguments, 1));
 };
 
 /**
  * @param {string} platform
  */
-WebInspector.setLocalizationPlatform = function(platform)
-{
-    WebInspector._useLowerCaseMenuTitles = platform === "windows";
+WebInspector.setLocalizationPlatform = function(platform) {
+  WebInspector._useLowerCaseMenuTitles = platform === 'windows';
 };
 
 /**
  * @param {string} string
  * @return {string}
  */
-WebInspector.localize = function(string)
-{
-    return string;
+WebInspector.localize = function(string) {
+  return string;
 };
 
 /**
- * @constructor
- * @param {string} format
+ * @unrestricted
  */
-WebInspector.UIStringFormat = function(format)
-{
+WebInspector.UIStringFormat = class {
+  /**
+   * @param {string} format
+   */
+  constructor(format) {
     /** @type {string} */
     this._localizedFormat = WebInspector.localize(format);
     /** @type {!Array.<!Object>} */
     this._tokenizedFormat = String.tokenizeFormatString(this._localizedFormat, String.standardFormatters);
-};
+  }
 
-/**
- * @param {string} a
- * @param {string} b
- * @return {string}
- */
-WebInspector.UIStringFormat._append = function(a, b)
-{
+  /**
+   * @param {string} a
+   * @param {string} b
+   * @return {string}
+   */
+  static _append(a, b) {
     return a + b;
+  }
+
+  /**
+   * @param {...*} vararg
+   * @return {string}
+   */
+  format(vararg) {
+    return String
+        .format(
+            this._localizedFormat, arguments, String.standardFormatters, '', WebInspector.UIStringFormat._append,
+            this._tokenizedFormat)
+        .formattedResult;
+  }
 };
 
-WebInspector.UIStringFormat.prototype = {
-    /**
-     * @param {...*} vararg
-     * @return {string}
-     */
-    format: function(vararg)
-    {
-        return String.format(this._localizedFormat, arguments,
-            String.standardFormatters, "", WebInspector.UIStringFormat._append, this._tokenizedFormat).formattedResult;
-    }
-};
+

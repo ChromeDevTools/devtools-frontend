@@ -25,119 +25,106 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.Panel}
+ * @unrestricted
  */
-WebInspector.ConsolePanel = function()
-{
-    WebInspector.Panel.call(this, "console");
+WebInspector.ConsolePanel = class extends WebInspector.Panel {
+  constructor() {
+    super('console');
     this._view = WebInspector.ConsoleView.instance();
-};
+  }
 
-WebInspector.ConsolePanel.prototype = {
-    /**
-     * @override
-     */
-    wasShown: function()
-    {
-        WebInspector.Panel.prototype.wasShown.call(this);
-        var wrapper = WebInspector.ConsolePanel.WrapperView._instance;
-        if (wrapper && wrapper.isShowing())
-            WebInspector.inspectorView.setDrawerMinimized(true);
-        this._view.show(this.element);
-    },
+  /**
+   * @return {!WebInspector.ConsolePanel}
+   */
+  static instance() {
+    return /** @type {!WebInspector.ConsolePanel} */ (self.runtime.sharedInstance(WebInspector.ConsolePanel));
+  }
 
-    /**
-     * @override
-     */
-    willHide: function()
-    {
-        WebInspector.Panel.prototype.willHide.call(this);
-        if (WebInspector.ConsolePanel.WrapperView._instance)
-            WebInspector.ConsolePanel.WrapperView._instance._showViewInWrapper();
-        WebInspector.inspectorView.setDrawerMinimized(false);
-    },
+  /**
+   * @override
+   */
+  wasShown() {
+    super.wasShown();
+    var wrapper = WebInspector.ConsolePanel.WrapperView._instance;
+    if (wrapper && wrapper.isShowing())
+      WebInspector.inspectorView.setDrawerMinimized(true);
+    this._view.show(this.element);
+  }
 
-    /**
-     * @override
-     * @return {?WebInspector.SearchableView}
-     */
-    searchableView: function()
-    {
-        return WebInspector.ConsoleView.instance().searchableView();
-    },
+  /**
+   * @override
+   */
+  willHide() {
+    super.willHide();
+    if (WebInspector.ConsolePanel.WrapperView._instance)
+      WebInspector.ConsolePanel.WrapperView._instance._showViewInWrapper();
+    WebInspector.inspectorView.setDrawerMinimized(false);
+  }
 
-    __proto__: WebInspector.Panel.prototype
+  /**
+   * @override
+   * @return {?WebInspector.SearchableView}
+   */
+  searchableView() {
+    return WebInspector.ConsoleView.instance().searchableView();
+  }
 };
 
 /**
- * @constructor
- * @extends {WebInspector.VBox}
+ * @unrestricted
  */
-WebInspector.ConsolePanel.WrapperView = function()
-{
-    WebInspector.VBox.call(this);
-    this.element.classList.add("console-view-wrapper");
+WebInspector.ConsolePanel.WrapperView = class extends WebInspector.VBox {
+  constructor() {
+    super();
+    this.element.classList.add('console-view-wrapper');
 
     WebInspector.ConsolePanel.WrapperView._instance = this;
 
     this._view = WebInspector.ConsoleView.instance();
-};
+  }
 
-WebInspector.ConsolePanel.WrapperView.prototype = {
-    wasShown: function()
-    {
-        if (!WebInspector.ConsolePanel.instance().isShowing())
-            this._showViewInWrapper();
-        else
-            WebInspector.inspectorView.setDrawerMinimized(true);
-    },
+  /**
+   * @override
+   */
+  wasShown() {
+    if (!WebInspector.ConsolePanel.instance().isShowing())
+      this._showViewInWrapper();
+    else
+      WebInspector.inspectorView.setDrawerMinimized(true);
+  }
 
-    willHide: function()
-    {
-        WebInspector.inspectorView.setDrawerMinimized(false);
-    },
+  /**
+   * @override
+   */
+  willHide() {
+    WebInspector.inspectorView.setDrawerMinimized(false);
+  }
 
-    _showViewInWrapper: function()
-    {
-        this._view.show(this.element);
-    },
-
-    __proto__: WebInspector.VBox.prototype
+  _showViewInWrapper() {
+    this._view.show(this.element);
+  }
 };
 
 /**
- * @constructor
  * @implements {WebInspector.Revealer}
+ * @unrestricted
  */
-WebInspector.ConsolePanel.ConsoleRevealer = function()
-{
-};
-
-WebInspector.ConsolePanel.ConsoleRevealer.prototype = {
-    /**
-     * @override
-     * @param {!Object} object
-     * @return {!Promise}
-     */
-    reveal: function(object)
-    {
-        var consoleView = WebInspector.ConsoleView.instance();
-        if (consoleView.isShowing()) {
-            consoleView.focus();
-            return Promise.resolve();
-        }
-        WebInspector.viewManager.showView("console-view");
-        return Promise.resolve();
+WebInspector.ConsolePanel.ConsoleRevealer = class {
+  /**
+   * @override
+   * @param {!Object} object
+   * @return {!Promise}
+   */
+  reveal(object) {
+    var consoleView = WebInspector.ConsoleView.instance();
+    if (consoleView.isShowing()) {
+      consoleView.focus();
+      return Promise.resolve();
     }
+    WebInspector.viewManager.showView('console-view');
+    return Promise.resolve();
+  }
 };
 
-/**
- * @return {!WebInspector.ConsolePanel}
- */
-WebInspector.ConsolePanel.instance = function()
-{
-    return /** @type {!WebInspector.ConsolePanel} */ (self.runtime.sharedInstance(WebInspector.ConsolePanel));
-};
+

@@ -25,77 +25,76 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @param {string} url
+ * @unrestricted
  */
-WebInspector.ParsedURL = function(url)
-{
+WebInspector.ParsedURL = class {
+  /**
+   * @param {string} url
+   */
+  constructor(url) {
     this.isValid = false;
     this.url = url;
-    this.scheme = "";
-    this.host = "";
-    this.port = "";
-    this.path = "";
-    this.queryParams = "";
-    this.fragment = "";
-    this.folderPathComponents = "";
-    this.lastPathComponent = "";
+    this.scheme = '';
+    this.host = '';
+    this.port = '';
+    this.path = '';
+    this.queryParams = '';
+    this.fragment = '';
+    this.folderPathComponents = '';
+    this.lastPathComponent = '';
 
     var match = url.match(WebInspector.ParsedURL._urlRegex());
     if (match) {
-        this.isValid = true;
-        this.scheme = match[1].toLowerCase();
-        this.host = match[2];
-        this.port = match[3];
-        this.path = match[4] || "/";
-        this.queryParams = match[5] || "";
-        this.fragment = match[6];
+      this.isValid = true;
+      this.scheme = match[1].toLowerCase();
+      this.host = match[2];
+      this.port = match[3];
+      this.path = match[4] || '/';
+      this.queryParams = match[5] || '';
+      this.fragment = match[6];
     } else {
-        if (this.url.startsWith("data:")) {
-            this.scheme = "data";
-            return;
-        }
-        if (this.url === "about:blank") {
-            this.scheme = "about";
-            return;
-        }
-        this.path = this.url;
+      if (this.url.startsWith('data:')) {
+        this.scheme = 'data';
+        return;
+      }
+      if (this.url === 'about:blank') {
+        this.scheme = 'about';
+        return;
+      }
+      this.path = this.url;
     }
 
-    var lastSlashIndex = this.path.lastIndexOf("/");
+    var lastSlashIndex = this.path.lastIndexOf('/');
     if (lastSlashIndex !== -1) {
-        this.folderPathComponents = this.path.substring(0, lastSlashIndex);
-        this.lastPathComponent = this.path.substring(lastSlashIndex + 1);
+      this.folderPathComponents = this.path.substring(0, lastSlashIndex);
+      this.lastPathComponent = this.path.substring(lastSlashIndex + 1);
     } else {
-        this.lastPathComponent = this.path;
+      this.lastPathComponent = this.path;
     }
-};
+  }
 
-/**
- * @param {string} fileSystemPath
- * @return {string}
- */
-WebInspector.ParsedURL.platformPathToURL = function(fileSystemPath)
-{
-    fileSystemPath = fileSystemPath.replace(/\\/g, "/");
-    if (!fileSystemPath.startsWith("file://")) {
-        if (fileSystemPath.startsWith("/"))
-            fileSystemPath = "file://" + fileSystemPath;
-        else
-            fileSystemPath = "file:///" + fileSystemPath;
+  /**
+   * @param {string} fileSystemPath
+   * @return {string}
+   */
+  static platformPathToURL(fileSystemPath) {
+    fileSystemPath = fileSystemPath.replace(/\\/g, '/');
+    if (!fileSystemPath.startsWith('file://')) {
+      if (fileSystemPath.startsWith('/'))
+        fileSystemPath = 'file://' + fileSystemPath;
+      else
+        fileSystemPath = 'file:///' + fileSystemPath;
     }
     return fileSystemPath;
-};
+  }
 
-/**
- * @return {!RegExp}
- */
-WebInspector.ParsedURL._urlRegex = function()
-{
+  /**
+   * @return {!RegExp}
+   */
+  static _urlRegex() {
     if (WebInspector.ParsedURL._urlRegexInstance)
-        return WebInspector.ParsedURL._urlRegexInstance;
+      return WebInspector.ParsedURL._urlRegexInstance;
     // RegExp groups:
     // 1 - scheme (using the RFC3986 grammar)
     // 2 - hostname
@@ -110,232 +109,222 @@ WebInspector.ParsedURL._urlRegex = function()
     var queryRegex = /(?:\?([^#]*))?/;
     var fragmentRegex = /(?:#(.*))?/;
 
-    WebInspector.ParsedURL._urlRegexInstance = new RegExp("^" + schemeRegex.source + hostRegex.source + portRegex.source + pathRegex.source + queryRegex.source + fragmentRegex.source + "$");
+    WebInspector.ParsedURL._urlRegexInstance = new RegExp(
+        '^' + schemeRegex.source + hostRegex.source + portRegex.source + pathRegex.source + queryRegex.source +
+        fragmentRegex.source + '$');
     return WebInspector.ParsedURL._urlRegexInstance;
-};
+  }
 
-/**
- * @param {string} url
- * @return {string}
- */
-WebInspector.ParsedURL.extractPath = function(url)
-{
+  /**
+   * @param {string} url
+   * @return {string}
+   */
+  static extractPath(url) {
     var parsedURL = url.asParsedURL();
-    return parsedURL ? parsedURL.path : "";
-};
+    return parsedURL ? parsedURL.path : '';
+  }
 
-/**
- * @param {string} url
- * @return {string}
- */
-WebInspector.ParsedURL.extractOrigin = function(url)
-{
+  /**
+   * @param {string} url
+   * @return {string}
+   */
+  static extractOrigin(url) {
     var parsedURL = url.asParsedURL();
-    return parsedURL ? parsedURL.securityOrigin() : "";
-};
+    return parsedURL ? parsedURL.securityOrigin() : '';
+  }
 
-/**
- * @param {string} url
- * @return {string}
- */
-WebInspector.ParsedURL.extractExtension = function(url)
-{
-    var lastIndexOfDot = url.lastIndexOf(".");
-    var extension = lastIndexOfDot !== -1 ? url.substr(lastIndexOfDot + 1) : "";
-    var indexOfQuestionMark = extension.indexOf("?");
+  /**
+   * @param {string} url
+   * @return {string}
+   */
+  static extractExtension(url) {
+    var lastIndexOfDot = url.lastIndexOf('.');
+    var extension = lastIndexOfDot !== -1 ? url.substr(lastIndexOfDot + 1) : '';
+    var indexOfQuestionMark = extension.indexOf('?');
     if (indexOfQuestionMark !== -1)
-        extension = extension.substr(0, indexOfQuestionMark);
+      extension = extension.substr(0, indexOfQuestionMark);
     return extension;
-};
+  }
 
-/**
- * @param {string} url
- * @return {string}
- */
-WebInspector.ParsedURL.extractName = function(url)
-{
-    var index = url.lastIndexOf("/");
+  /**
+   * @param {string} url
+   * @return {string}
+   */
+  static extractName(url) {
+    var index = url.lastIndexOf('/');
     return index !== -1 ? url.substr(index + 1) : url;
-};
+  }
 
-/**
- * @param {string} baseURL
- * @param {string} href
- * @return {?string}
- */
-WebInspector.ParsedURL.completeURL = function(baseURL, href)
-{
+  /**
+   * @param {string} baseURL
+   * @param {string} href
+   * @return {?string}
+   */
+  static completeURL(baseURL, href) {
     // Return special URLs as-is.
     var trimmedHref = href.trim();
-    if (trimmedHref.startsWith("data:") || trimmedHref.startsWith("blob:") || trimmedHref.startsWith("javascript:"))
-        return href;
+    if (trimmedHref.startsWith('data:') || trimmedHref.startsWith('blob:') || trimmedHref.startsWith('javascript:'))
+      return href;
 
     // Return absolute URLs as-is.
     var parsedHref = trimmedHref.asParsedURL();
     if (parsedHref && parsedHref.scheme)
-        return trimmedHref;
+      return trimmedHref;
 
     var parsedURL = baseURL.asParsedURL();
     if (!parsedURL)
-        return null;
+      return null;
 
     if (parsedURL.isDataURL())
-        return href;
+      return href;
 
-    if (href.length > 1 && href.charAt(0) === "/" && href.charAt(1) === "/") {
-        // href starts with "//" which is a full URL with the protocol dropped (use the baseURL protocol).
-        return parsedURL.scheme + ":" + href;
+    if (href.length > 1 && href.charAt(0) === '/' && href.charAt(1) === '/') {
+      // href starts with "//" which is a full URL with the protocol dropped (use the baseURL protocol).
+      return parsedURL.scheme + ':' + href;
     }
 
     var securityOrigin = parsedURL.securityOrigin();
     var pathText = parsedURL.path;
-    var queryText = parsedURL.queryParams ? "?" + parsedURL.queryParams : "";
+    var queryText = parsedURL.queryParams ? '?' + parsedURL.queryParams : '';
 
     // Empty href resolves to a URL without fragment.
     if (!href.length)
-        return securityOrigin + pathText + queryText;
+      return securityOrigin + pathText + queryText;
 
-    if (href.charAt(0) === "#")
-        return securityOrigin + pathText + queryText + href;
+    if (href.charAt(0) === '#')
+      return securityOrigin + pathText + queryText + href;
 
-    if (href.charAt(0) === "?")
-        return securityOrigin + pathText + href;
+    if (href.charAt(0) === '?')
+      return securityOrigin + pathText + href;
 
     var hrefPath = href.match(/^[^#?]*/)[0];
     var hrefSuffix = href.substring(hrefPath.length);
-    if (hrefPath.charAt(0) !== "/")
-        hrefPath = parsedURL.folderPathComponents + "/" + hrefPath;
+    if (hrefPath.charAt(0) !== '/')
+      hrefPath = parsedURL.folderPathComponents + '/' + hrefPath;
     return securityOrigin + Runtime.normalizePath(hrefPath) + hrefSuffix;
-};
+  }
 
-WebInspector.ParsedURL.prototype = {
-    get displayName()
-    {
-        if (this._displayName)
-            return this._displayName;
-
-        if (this.isDataURL())
-            return this.dataURLDisplayName();
-        if (this.isAboutBlank())
-            return this.url;
-
-        this._displayName = this.lastPathComponent;
-        if (!this._displayName)
-            this._displayName = (this.host || "") + "/";
-        if (this._displayName === "/")
-            this._displayName = this.url;
-        return this._displayName;
-    },
-
-    /**
-     * @return {string}
-     */
-    dataURLDisplayName: function()
-    {
-        if (this._dataURLDisplayName)
-            return this._dataURLDisplayName;
-        if (!this.isDataURL())
-            return "";
-        this._dataURLDisplayName = this.url.trimEnd(20);
-        return this._dataURLDisplayName;
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isAboutBlank: function()
-    {
-        return this.url === "about:blank";
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isDataURL: function()
-    {
-        return this.scheme === "data";
-    },
-
-    /**
-     * @return {string}
-     */
-    lastPathComponentWithFragment: function()
-    {
-        return this.lastPathComponent + (this.fragment ? "#" + this.fragment : "");
-    },
-
-    /**
-     * @return {string}
-     */
-    domain: function()
-    {
-        if (this.isDataURL())
-            return "data:";
-        return this.host + (this.port ? ":" + this.port : "");
-    },
-
-    /**
-     * @return {string}
-     */
-    securityOrigin: function()
-    {
-        if (this.isDataURL())
-            return "data:";
-        return this.scheme + "://" + this.domain();
-    },
-
-    /**
-     * @return {string}
-     */
-    urlWithoutScheme: function()
-    {
-        if (this.scheme && this.url.startsWith(this.scheme + "://"))
-            return this.url.substring(this.scheme.length + 3);
-        return this.url;
-    },
-};
-
-/**
- * @param {string} string
- * @return {!{url: string, lineNumber: (number|undefined), columnNumber: (number|undefined)}}
- */
-WebInspector.ParsedURL.splitLineAndColumn = function(string)
-{
+  /**
+   * @param {string} string
+   * @return {!{url: string, lineNumber: (number|undefined), columnNumber: (number|undefined)}}
+   */
+  static splitLineAndColumn(string) {
     var lineColumnRegEx = /(?::(\d+))?(?::(\d+))?$/;
     var lineColumnMatch = lineColumnRegEx.exec(string);
     var lineNumber;
     var columnNumber;
     console.assert(lineColumnMatch);
 
-    if (typeof(lineColumnMatch[1]) === "string") {
-        lineNumber = parseInt(lineColumnMatch[1], 10);
-        // Immediately convert line and column to 0-based numbers.
-        lineNumber = isNaN(lineNumber) ? undefined : lineNumber - 1;
+    if (typeof(lineColumnMatch[1]) === 'string') {
+      lineNumber = parseInt(lineColumnMatch[1], 10);
+      // Immediately convert line and column to 0-based numbers.
+      lineNumber = isNaN(lineNumber) ? undefined : lineNumber - 1;
     }
-    if (typeof(lineColumnMatch[2]) === "string") {
-        columnNumber = parseInt(lineColumnMatch[2], 10);
-        columnNumber = isNaN(columnNumber) ? undefined : columnNumber - 1;
+    if (typeof(lineColumnMatch[2]) === 'string') {
+      columnNumber = parseInt(lineColumnMatch[2], 10);
+      columnNumber = isNaN(columnNumber) ? undefined : columnNumber - 1;
     }
 
-    return {url: string.substring(0, string.length - lineColumnMatch[0].length), lineNumber: lineNumber, columnNumber: columnNumber};
-};
+    return {
+      url: string.substring(0, string.length - lineColumnMatch[0].length),
+      lineNumber: lineNumber,
+      columnNumber: columnNumber
+    };
+  }
 
-/**
- * @param {string} url
- * @return {boolean}
- */
-WebInspector.ParsedURL.isRelativeURL = function(url)
-{
+  /**
+   * @param {string} url
+   * @return {boolean}
+   */
+  static isRelativeURL(url) {
     return !(/^[A-Za-z][A-Za-z0-9+.-]*:/.test(url));
+  }
+
+  get displayName() {
+    if (this._displayName)
+      return this._displayName;
+
+    if (this.isDataURL())
+      return this.dataURLDisplayName();
+    if (this.isAboutBlank())
+      return this.url;
+
+    this._displayName = this.lastPathComponent;
+    if (!this._displayName)
+      this._displayName = (this.host || '') + '/';
+    if (this._displayName === '/')
+      this._displayName = this.url;
+    return this._displayName;
+  }
+
+  /**
+   * @return {string}
+   */
+  dataURLDisplayName() {
+    if (this._dataURLDisplayName)
+      return this._dataURLDisplayName;
+    if (!this.isDataURL())
+      return '';
+    this._dataURLDisplayName = this.url.trimEnd(20);
+    return this._dataURLDisplayName;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isAboutBlank() {
+    return this.url === 'about:blank';
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isDataURL() {
+    return this.scheme === 'data';
+  }
+
+  /**
+   * @return {string}
+   */
+  lastPathComponentWithFragment() {
+    return this.lastPathComponent + (this.fragment ? '#' + this.fragment : '');
+  }
+
+  /**
+   * @return {string}
+   */
+  domain() {
+    if (this.isDataURL())
+      return 'data:';
+    return this.host + (this.port ? ':' + this.port : '');
+  }
+
+  /**
+   * @return {string}
+   */
+  securityOrigin() {
+    if (this.isDataURL())
+      return 'data:';
+    return this.scheme + '://' + this.domain();
+  }
+
+  /**
+   * @return {string}
+   */
+  urlWithoutScheme() {
+    if (this.scheme && this.url.startsWith(this.scheme + '://'))
+      return this.url.substring(this.scheme.length + 3);
+    return this.url;
+  }
 };
+
 
 /**
  * @return {?WebInspector.ParsedURL}
  */
-String.prototype.asParsedURL = function()
-{
-    var parsedURL = new WebInspector.ParsedURL(this.toString());
-    if (parsedURL.isValid)
-        return parsedURL;
-    return null;
+String.prototype.asParsedURL = function() {
+  var parsedURL = new WebInspector.ParsedURL(this.toString());
+  if (parsedURL.isValid)
+    return parsedURL;
+  return null;
 };

@@ -28,145 +28,137 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @param {!WebInspector.AuditsPanel} auditsPanel
+ * @unrestricted
  */
-WebInspector.AuditController = function(auditsPanel)
-{
+WebInspector.AuditController = class {
+  /**
+   * @param {!WebInspector.AuditsPanel} auditsPanel
+   */
+  constructor(auditsPanel) {
     this._auditsPanel = auditsPanel;
-    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.Load, this._didMainResourceLoad, this);
-    WebInspector.targetManager.addModelListener(WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestFinished, this._didLoadResource, this);
-};
+    WebInspector.targetManager.addEventListener(
+        WebInspector.TargetManager.Events.Load, this._didMainResourceLoad, this);
+    WebInspector.targetManager.addModelListener(
+        WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestFinished, this._didLoadResource, this);
+  }
 
-WebInspector.AuditController.prototype = {
-    /**
-     * @param {!WebInspector.Target} target
-     * @param {!Array.<!WebInspector.AuditCategory>} categories
-     * @param {function(string, !Array.<!WebInspector.AuditCategoryResult>)} resultCallback
-     */
-    _executeAudit: function(target, categories, resultCallback)
-    {
-        this._progress.setTitle(WebInspector.UIString("Running audit"));
-
-        /**
-         * @param {!WebInspector.AuditCategoryResult} categoryResult
-         * @param {!WebInspector.AuditRuleResult} ruleResult
-         */
-        function ruleResultReadyCallback(categoryResult, ruleResult)
-        {
-            if (ruleResult && ruleResult.children)
-                categoryResult.addRuleResult(ruleResult);
-        }
-
-        var results = [];
-        var mainResourceURL = target.inspectedURL();
-        var categoriesDone = 0;
-
-        function categoryDoneCallback()
-        {
-            if (++categoriesDone !== categories.length)
-                return;
-            resultCallback(mainResourceURL, results);
-        }
-
-        var networkLog = WebInspector.NetworkLog.fromTarget(target);
-        var requests = networkLog ? networkLog.requests().slice() : [];
-        var compositeProgress = new WebInspector.CompositeProgress(this._progress);
-        var subprogresses = [];
-        for (var i = 0; i < categories.length; ++i)
-            subprogresses.push(new WebInspector.ProgressProxy(compositeProgress.createSubProgress(), categoryDoneCallback));
-        for (var i = 0; i < categories.length; ++i) {
-            if (this._progress.isCanceled()) {
-                subprogresses[i].done();
-                continue;
-            }
-            var category = categories[i];
-            var result = new WebInspector.AuditCategoryResult(category);
-            results.push(result);
-            category.run(target, requests, ruleResultReadyCallback.bind(null, result), subprogresses[i]);
-        }
-    },
+  /**
+   * @param {!WebInspector.Target} target
+   * @param {!Array.<!WebInspector.AuditCategory>} categories
+   * @param {function(string, !Array.<!WebInspector.AuditCategoryResult>)} resultCallback
+   */
+  _executeAudit(target, categories, resultCallback) {
+    this._progress.setTitle(WebInspector.UIString('Running audit'));
 
     /**
-     * @param {string} mainResourceURL
-     * @param {!Array.<!WebInspector.AuditCategoryResult>} results
+     * @param {!WebInspector.AuditCategoryResult} categoryResult
+     * @param {!WebInspector.AuditRuleResult} ruleResult
      */
-    _auditFinishedCallback: function(mainResourceURL, results)
-    {
-        if (!this._progress.isCanceled())
-            this._auditsPanel.auditFinishedCallback(mainResourceURL, results);
-        this._progress.done();
-    },
-
-    /**
-     * @param {!Array.<string>} categoryIds
-     * @param {!WebInspector.Progress} progress
-     * @param {boolean} runImmediately
-     * @param {function()} startedCallback
-     */
-    initiateAudit: function(categoryIds, progress, runImmediately, startedCallback)
-    {
-        var target = WebInspector.targetManager.mainTarget();
-        if (!categoryIds || !categoryIds.length || !target)
-            return;
-
-        this._progress = progress;
-
-        var categories = [];
-        for (var i = 0; i < categoryIds.length; ++i)
-            categories.push(this._auditsPanel.categoriesById[categoryIds[i]]);
-
-        if (runImmediately)
-            this._startAuditWhenResourcesReady(target, categories, startedCallback);
-        else
-            this._reloadResources(this._startAuditWhenResourcesReady.bind(this, target, categories, startedCallback));
-
-        WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.AuditsStarted);
-    },
-
-    /**
-     * @param {!WebInspector.Target} target
-     * @param {!Array<!WebInspector.AuditCategory>} categories
-     * @param {function()} startedCallback
-     */
-    _startAuditWhenResourcesReady: function(target, categories, startedCallback)
-    {
-        if (this._progress.isCanceled()) {
-            this._progress.done();
-            return;
-        }
-        startedCallback();
-        this._executeAudit(target, categories, this._auditFinishedCallback.bind(this));
-    },
-
-    /**
-     * @param {function()=} callback
-     */
-    _reloadResources: function(callback)
-    {
-        this._pageReloadCallback = callback;
-        WebInspector.targetManager.reloadPage();
-    },
-
-    _didLoadResource: function()
-    {
-        if (this._pageReloadCallback && this._progress && this._progress.isCanceled())
-            this._pageReloadCallback();
-    },
-
-    _didMainResourceLoad: function()
-    {
-        if (this._pageReloadCallback) {
-            var callback = this._pageReloadCallback;
-            delete this._pageReloadCallback;
-            callback();
-        }
-    },
-
-    clearResults: function()
-    {
-        this._auditsPanel.clearResults();
+    function ruleResultReadyCallback(categoryResult, ruleResult) {
+      if (ruleResult && ruleResult.children)
+        categoryResult.addRuleResult(ruleResult);
     }
+
+    var results = [];
+    var mainResourceURL = target.inspectedURL();
+    var categoriesDone = 0;
+
+    function categoryDoneCallback() {
+      if (++categoriesDone !== categories.length)
+        return;
+      resultCallback(mainResourceURL, results);
+    }
+
+    var networkLog = WebInspector.NetworkLog.fromTarget(target);
+    var requests = networkLog ? networkLog.requests().slice() : [];
+    var compositeProgress = new WebInspector.CompositeProgress(this._progress);
+    var subprogresses = [];
+    for (var i = 0; i < categories.length; ++i)
+      subprogresses.push(new WebInspector.ProgressProxy(compositeProgress.createSubProgress(), categoryDoneCallback));
+    for (var i = 0; i < categories.length; ++i) {
+      if (this._progress.isCanceled()) {
+        subprogresses[i].done();
+        continue;
+      }
+      var category = categories[i];
+      var result = new WebInspector.AuditCategoryResult(category);
+      results.push(result);
+      category.run(target, requests, ruleResultReadyCallback.bind(null, result), subprogresses[i]);
+    }
+  }
+
+  /**
+   * @param {string} mainResourceURL
+   * @param {!Array.<!WebInspector.AuditCategoryResult>} results
+   */
+  _auditFinishedCallback(mainResourceURL, results) {
+    if (!this._progress.isCanceled())
+      this._auditsPanel.auditFinishedCallback(mainResourceURL, results);
+    this._progress.done();
+  }
+
+  /**
+   * @param {!Array.<string>} categoryIds
+   * @param {!WebInspector.Progress} progress
+   * @param {boolean} runImmediately
+   * @param {function()} startedCallback
+   */
+  initiateAudit(categoryIds, progress, runImmediately, startedCallback) {
+    var target = WebInspector.targetManager.mainTarget();
+    if (!categoryIds || !categoryIds.length || !target)
+      return;
+
+    this._progress = progress;
+
+    var categories = [];
+    for (var i = 0; i < categoryIds.length; ++i)
+      categories.push(this._auditsPanel.categoriesById[categoryIds[i]]);
+
+    if (runImmediately)
+      this._startAuditWhenResourcesReady(target, categories, startedCallback);
+    else
+      this._reloadResources(this._startAuditWhenResourcesReady.bind(this, target, categories, startedCallback));
+
+    WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.AuditsStarted);
+  }
+
+  /**
+   * @param {!WebInspector.Target} target
+   * @param {!Array<!WebInspector.AuditCategory>} categories
+   * @param {function()} startedCallback
+   */
+  _startAuditWhenResourcesReady(target, categories, startedCallback) {
+    if (this._progress.isCanceled()) {
+      this._progress.done();
+      return;
+    }
+    startedCallback();
+    this._executeAudit(target, categories, this._auditFinishedCallback.bind(this));
+  }
+
+  /**
+   * @param {function()=} callback
+   */
+  _reloadResources(callback) {
+    this._pageReloadCallback = callback;
+    WebInspector.targetManager.reloadPage();
+  }
+
+  _didLoadResource() {
+    if (this._pageReloadCallback && this._progress && this._progress.isCanceled())
+      this._pageReloadCallback();
+  }
+
+  _didMainResourceLoad() {
+    if (this._pageReloadCallback) {
+      var callback = this._pageReloadCallback;
+      delete this._pageReloadCallback;
+      callback();
+    }
+  }
+
+  clearResults() {
+    this._auditsPanel.clearResults();
+  }
 };

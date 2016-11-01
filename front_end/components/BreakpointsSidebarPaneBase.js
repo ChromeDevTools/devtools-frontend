@@ -27,69 +27,61 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.VBox}
+ * @unrestricted
  */
-WebInspector.BreakpointsSidebarPaneBase = function()
-{
-    WebInspector.VBox.call(this);
-    this.registerRequiredCSS("components/breakpointsList.css");
+WebInspector.BreakpointsSidebarPaneBase = class extends WebInspector.VBox {
+  constructor() {
+    super();
+    this.registerRequiredCSS('components/breakpointsList.css');
 
-    this.listElement = createElement("ol");
-    this.listElement.className = "breakpoint-list";
+    this.listElement = createElement('ol');
+    this.listElement.className = 'breakpoint-list';
 
-    this.emptyElement = createElement("div");
-    this.emptyElement.className = "gray-info-message";
-    this.emptyElement.textContent = WebInspector.UIString("No Breakpoints");
+    this.emptyElement = createElement('div');
+    this.emptyElement.className = 'gray-info-message';
+    this.emptyElement.textContent = WebInspector.UIString('No Breakpoints');
 
     this.element.appendChild(this.emptyElement);
-};
+  }
 
-WebInspector.BreakpointsSidebarPaneBase.prototype = {
-    /**
-     * @param {!Element} element
-     * @param {?Node=} beforeNode
-     * @protected
-     */
-    addListElement: function(element, beforeNode)
-    {
-        if (beforeNode) {
-            this.listElement.insertBefore(element, beforeNode);
-        } else {
-            if (!this.listElement.firstChild) {
-                this.element.removeChild(this.emptyElement);
-                this.element.appendChild(this.listElement);
-            }
-            this.listElement.appendChild(element);
-        }
-    },
+  /**
+   * @param {!Element} element
+   * @param {?Node=} beforeNode
+   * @protected
+   */
+  addListElement(element, beforeNode) {
+    if (beforeNode) {
+      this.listElement.insertBefore(element, beforeNode);
+    } else {
+      if (!this.listElement.firstChild) {
+        this.element.removeChild(this.emptyElement);
+        this.element.appendChild(this.listElement);
+      }
+      this.listElement.appendChild(element);
+    }
+  }
 
-    /**
-     * @param {!Element} element
-     * @protected
-     */
-    removeListElement: function(element)
-    {
-        this.listElement.removeChild(element);
-        if (!this.listElement.firstChild) {
-            this.element.removeChild(this.listElement);
-            this.element.appendChild(this.emptyElement);
-        }
-    },
+  /**
+   * @param {!Element} element
+   * @protected
+   */
+  removeListElement(element) {
+    this.listElement.removeChild(element);
+    if (!this.listElement.firstChild) {
+      this.element.removeChild(this.listElement);
+      this.element.appendChild(this.emptyElement);
+    }
+  }
 
-    /**
-     * @protected
-     */
-    reset: function()
-    {
-        this.listElement.removeChildren();
-        if (this.listElement.parentElement) {
-            this.element.removeChild(this.listElement);
-            this.element.appendChild(this.emptyElement);
-        }
-    },
-
-    __proto__: WebInspector.VBox.prototype
+  /**
+   * @protected
+   */
+  reset() {
+    this.listElement.removeChildren();
+    if (this.listElement.parentElement) {
+      this.element.removeChild(this.listElement);
+      this.element.appendChild(this.emptyElement);
+    }
+  }
 };

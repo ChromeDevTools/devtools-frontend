@@ -27,83 +27,79 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.SimpleView}
- * @param {!WebInspector.AuditCategoryResult} categoryResult
+ * @unrestricted
  */
-WebInspector.AuditCategoryResultPane = function(categoryResult)
-{
-    WebInspector.SimpleView.call(this, categoryResult.title);
+WebInspector.AuditCategoryResultPane = class extends WebInspector.SimpleView {
+  /**
+   * @param {!WebInspector.AuditCategoryResult} categoryResult
+   */
+  constructor(categoryResult) {
+    super(categoryResult.title);
     this._treeOutline = new TreeOutlineInShadow();
-    this._treeOutline.registerRequiredCSS("audits/auditResultTree.css");
-    this._treeOutline.element.classList.add("audit-result-tree");
+    this._treeOutline.registerRequiredCSS('audits/auditResultTree.css');
+    this._treeOutline.element.classList.add('audit-result-tree');
     this.element.appendChild(this._treeOutline.element);
     this._treeOutline.expandTreeElementsWhenArrowing = true;
 
-    function ruleSorter(a, b)
-    {
-        var result = WebInspector.AuditRule.SeverityOrder[a.severity || 0] - WebInspector.AuditRule.SeverityOrder[b.severity || 0];
-        if (!result)
-            result = (a.value || "").localeCompare(b.value || "");
-        return result;
+    function ruleSorter(a, b) {
+      var result =
+          WebInspector.AuditRule.SeverityOrder[a.severity || 0] - WebInspector.AuditRule.SeverityOrder[b.severity || 0];
+      if (!result)
+        result = (a.value || '').localeCompare(b.value || '');
+      return result;
     }
 
     categoryResult.ruleResults.sort(ruleSorter);
 
     for (var i = 0; i < categoryResult.ruleResults.length; ++i) {
-        var ruleResult = categoryResult.ruleResults[i];
-        var treeElement = this._appendResult(this._treeOutline.rootElement(), ruleResult, ruleResult.severity);
-        treeElement.listItemElement.classList.add("audit-result");
+      var ruleResult = categoryResult.ruleResults[i];
+      var treeElement = this._appendResult(this._treeOutline.rootElement(), ruleResult, ruleResult.severity);
+      treeElement.listItemElement.classList.add('audit-result');
     }
     this.revealView();
-};
+  }
 
-WebInspector.AuditCategoryResultPane.prototype = {
-    /**
-     * @param {!TreeElement} parentTreeNode
-     * @param {!WebInspector.AuditRuleResult} result
-     * @param {?WebInspector.AuditRule.Severity=} severity
-     */
-    _appendResult: function(parentTreeNode, result, severity)
-    {
-        var title = "";
+  /**
+   * @param {!TreeElement} parentTreeNode
+   * @param {!WebInspector.AuditRuleResult} result
+   * @param {?WebInspector.AuditRule.Severity=} severity
+   */
+  _appendResult(parentTreeNode, result, severity) {
+    var title = '';
 
-        if (typeof result.value === "string") {
-            title = result.value;
-            if (result.violationCount)
-                title = String.sprintf("%s (%d)", title, result.violationCount);
-        }
+    if (typeof result.value === 'string') {
+      title = result.value;
+      if (result.violationCount)
+        title = String.sprintf('%s (%d)', title, result.violationCount);
+    }
 
-        var titleFragment = createDocumentFragment();
-        if (severity) {
-            var severityElement = createElement("div");
-            severityElement.classList.add("severity", severity);
-            titleFragment.appendChild(severityElement);
-        }
-        titleFragment.createTextChild(title);
+    var titleFragment = createDocumentFragment();
+    if (severity) {
+      var severityElement = createElement('div');
+      severityElement.classList.add('severity', severity);
+      titleFragment.appendChild(severityElement);
+    }
+    titleFragment.createTextChild(title);
 
-        var treeElement = new TreeElement(titleFragment, !!result.children);
-        treeElement.selectable = false;
-        parentTreeNode.appendChild(treeElement);
+    var treeElement = new TreeElement(titleFragment, !!result.children);
+    treeElement.selectable = false;
+    parentTreeNode.appendChild(treeElement);
 
-        if (result.className)
-            treeElement.listItemElement.classList.add(result.className);
-        if (typeof result.value !== "string")
-            treeElement.listItemElement.appendChild(WebInspector.auditFormatters.apply(result.value));
+    if (result.className)
+      treeElement.listItemElement.classList.add(result.className);
+    if (typeof result.value !== 'string')
+      treeElement.listItemElement.appendChild(WebInspector.auditFormatters.apply(result.value));
 
-        if (result.children) {
-            for (var i = 0; i < result.children.length; ++i)
-                this._appendResult(treeElement, result.children[i]);
-        }
-        if (result.expanded) {
-            treeElement.listItemElement.classList.remove("parent");
-            treeElement.listItemElement.classList.add("parent-expanded");
-            treeElement.expand();
-        }
-        return treeElement;
-    },
-
-    __proto__: WebInspector.SimpleView.prototype
+    if (result.children) {
+      for (var i = 0; i < result.children.length; ++i)
+        this._appendResult(treeElement, result.children[i]);
+    }
+    if (result.expanded) {
+      treeElement.listItemElement.classList.remove('parent');
+      treeElement.listItemElement.classList.add('parent-expanded');
+      treeElement.expand();
+    }
+    return treeElement;
+  }
 };

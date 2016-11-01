@@ -186,7 +186,8 @@ Array.prototype.mergeOrdered = function(array, comparator) {};
 /**
  * @constructor
  */
-function DOMFileSystem() {}
+function DOMFileSystem() {
+}
 
 /**
  * @type {DirectoryEntry}
@@ -208,23 +209,23 @@ DevToolsHost.ContextMenuDescriptor;
 /**
  * @return {number}
  */
-DevToolsHost.zoomFactor = function() { };
+DevToolsHost.zoomFactor = function() {};
 
 /**
  * @param {string} origin
  * @param {string} script
  */
-DevToolsHost.setInjectedScriptForOrigin = function(origin, script) { };
+DevToolsHost.setInjectedScriptForOrigin = function(origin, script) {};
 
 /**
  * @param {string} text
  */
-DevToolsHost.copyText = function(text) { };
+DevToolsHost.copyText = function(text) {};
 
 /**
  * @return {string}
  */
-DevToolsHost.platform = function() { };
+DevToolsHost.platform = function() {};
 
 /**
  * @param {number} x
@@ -232,63 +233,70 @@ DevToolsHost.platform = function() { };
  * @param {!Array.<!DevToolsHost.ContextMenuDescriptor>} items
  * @param {!Document} document
  */
-DevToolsHost.showContextMenuAtPoint = function(x, y, items, document) { };
+DevToolsHost.showContextMenuAtPoint = function(x, y, items, document) {};
 
 /**
  * @param {string} message
  */
-DevToolsHost.sendMessageToEmbedder = function(message) { };
+DevToolsHost.sendMessageToEmbedder = function(message) {};
 
 /**
  * @return {string}
  */
-DevToolsHost.getSelectionBackgroundColor = function() { };
+DevToolsHost.getSelectionBackgroundColor = function() {};
 
 /**
  * @return {string}
  */
-DevToolsHost.getSelectionForegroundColor = function() { };
+DevToolsHost.getSelectionForegroundColor = function() {};
 
 /**
  * @return {boolean}
  */
-DevToolsHost.isUnderTest = function() { };
+DevToolsHost.isUnderTest = function() {};
 
 /**
  * @return {boolean}
  */
-DevToolsHost.isHostedMode = function() { };
+DevToolsHost.isHostedMode = function() {};
 
 /**
  * @param {string} fileSystemId
  * @param {string} registeredName
  * @return {?DOMFileSystem}
  */
-DevToolsHost.isolatedFileSystem = function(fileSystemId, registeredName) { };
+DevToolsHost.isolatedFileSystem = function(fileSystemId, registeredName) {};
 
 /**
  * @param {!FileSystem} fileSystem
  */
-DevToolsHost.upgradeDraggedFileSystemPermissions = function(fileSystem) { };
+DevToolsHost.upgradeDraggedFileSystemPermissions = function(fileSystem) {};
 
 var WebInspector = function() {};
 
 /** Extensions API */
 
 /** @constructor */
-function AuditCategory() {}
+function AuditCategory() {
+}
 /** @constructor */
-function AuditResult() {}
+function AuditResult() {
+}
 /** @constructor */
-function EventSink() {}
+function EventSink() {
+}
 /** @constructor */
-function ExtensionSidebarPane() {}
+function ExtensionSidebarPane() {
+}
 /** @constructor */
-function Panel() {}
+function Panel() {
+}
 /** @constructor */
-function PanelWithSidebar() {}
+function PanelWithSidebar() {
+}
 /** @constructor */
-function Resource() {}
+function Resource() {
+}
 
 var extensionServer;
 
@@ -296,18 +304,18 @@ var extensionServer;
  * @constructor
  */
 function ExtensionDescriptor() {
-    this.startPage = "";
-    this.name = "";
-    this.exposeExperimentalAPIs = false;
+  this.startPage = '';
+  this.name = '';
+  this.exposeExperimentalAPIs = false;
 }
 
 /**
  * @constructor
  */
 function ExtensionReloadOptions() {
-    this.ignoreCache = false;
-    this.injectedScript = "";
-    this.userAgent = "";
+  this.ignoreCache = false;
+  this.injectedScript = '';
+  this.userAgent = '';
 }
 
 var Adb = {};
@@ -329,210 +337,210 @@ Adb.PortForwardingStatus;
 /**
  * @constructor
  */
-function diff_match_patch()
-{
+function diff_match_patch() {
 }
 
 diff_match_patch.prototype = {
-    /**
-     * @param {string} text1
-     * @param {string} text2
-     * @return {!Array.<!{0: number, 1: string}>}
-     */
-    diff_main: function(text1, text2) { }
+  /**
+   * @param {string} text1
+   * @param {string} text2
+   * @return {!Array.<!{0: number, 1: string}>}
+   */
+  diff_main: function(text1, text2) {}
 };
 
 /** @constructor */
-function Path2D() {}
+function Path2D() {
+}
 Path2D.prototype = {
-    /**
-     * @param {number} x
-     * @param {number} y
-     * @param {number} w
-     * @param {number} h
-     */
-    rect: function(x, y, w, h) { },
-    /**
-     * @param {number} x
-     * @param {number} y
-     */
-    moveTo: function(x, y) { },
-    /**
-     * @param {number} x
-     * @param {number} y
-     */
-    lineTo: function(x, y) { }
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @param {number} w
+   * @param {number} h
+   */
+  rect: function(x, y, w, h) {},
+  /**
+   * @param {number} x
+   * @param {number} y
+   */
+  moveTo: function(x, y) {},
+  /**
+   * @param {number} x
+   * @param {number} y
+   */
+  lineTo: function(x, y) {}
 };
 
 /** @constructor */
-var Doc = function() { };
+var Doc = function() {};
 Doc.prototype = {
-    /** @type {number} */
-    scrollLeft: 0,
-    /** @type {number} */
-    scrollTop: 0
+  /** @type {number} */
+  scrollLeft: 0,
+  /** @type {number} */
+  scrollTop: 0
 };
 
 /** @constructor */
-var CodeMirror = function(element, config) { };
-CodeMirror.on = function(obj, type, handler) { };
+var CodeMirror = function(element, config) {};
+CodeMirror.on = function(obj, type, handler) {};
 CodeMirror.prototype = {
-    /** @type {!Doc} */
-    doc: null,
-    addKeyMap: function(map) { },
-    addLineClass: function(handle, where, cls) { },
-    /**
-     * @param {?Object=} options
-     * @return {!CodeMirror.LineWidget}
-     */
-    addLineWidget: function(handle, node, options) { },
-    /**
-     * @param {string|!Object} spec
-     * @param {!Object=} options
-     */
-    addOverlay: function(spec, options) { },
-    addWidget: function(pos, node, scroll, vert, horiz) { },
-    charCoords: function(pos, mode) { },
-    clearGutter: function(gutterID) { },
-    clearHistory: function() { },
-    clipPos: function(pos) { },
-    /** @param {string=} mode */
-    coordsChar: function(coords, mode) { },
-    /** @param {string=} mode */
-    cursorCoords: function(start, mode) { },
-    defaultCharWidth: function() { },
-    defaultTextHeight: function() { },
-    deleteH: function(dir, unit) { },
-    /**
-     * @param {*=} to
-     * @param {*=} op
-     */
-    eachLine: function(from, to, op) { },
-    execCommand: function(cmd) { },
-    extendSelection: function(from, to) { },
-    findMarks: function(from, to) { },
-    findMarksAt: function(pos) { },
-    /**
-     * @param {!CodeMirror.Pos} from
-     * @param {boolean=} strict
-     * @param {Object=} config
-     */
-    findMatchingBracket: function(from, strict, config) { },
-    findPosH: function(from, amount, unit, visually) { },
-    findPosV: function(from, amount, unit, goalColumn) { },
-    firstLine: function() { },
-    focus: function() { },
-    getAllMarks: function() { },
-    /** @param {string=} start */
-    getCursor: function(start) { },
-    getDoc: function() { },
-    getGutterElement: function() { },
-    getHistory: function() { },
-    getInputField: function(){ },
-    getLine: function(line) { },
-    /**
-     * @return {!{wrapClass: string, height: number}}
-     */
-    getLineHandle: function(line) { },
-    getLineNumber: function(line) { },
-    /**
-     * @return {!{token: function(CodeMirror.StringStream, Object):string}}
-     */
-    getMode: function() { },
-    getOption: function(option) { },
-    /** @param {*=} lineSep */
-    getRange: function(from, to, lineSep) { },
-    /**
-     * @return {!{left: number, top: number, width: number, height: number, clientWidth: number, clientHeight: number}}
-     */
-    getScrollInfo: function() { },
-    getScrollerElement: function() { },
-    getSelection: function() { },
-    getSelections: function() { },
-    getStateAfter: function(line) { },
-    getTokenAt: function(pos) { },
-    /** @param {*=} lineSep */
-    getValue: function(lineSep) { },
-    getViewport: function() { },
-    getWrapperElement: function() { },
-    hasFocus: function() { },
-    historySize: function() { },
-    indentLine: function(n, dir, aggressive) { },
-    indentSelection: function(how) { },
-    indexFromPos: function(coords) { },
-    isClean: function() { },
-    iterLinkedDocs: function(f) { },
-    lastLine: function() { },
-    lineCount: function() { },
-    lineInfo: function(line) { },
-    /**
-     * @param {number} height
-     * @param {string=} mode
-     */
-    lineAtHeight: function(height, mode) { },
-    linkedDoc: function(options) { },
-    listSelections: function() { },
-    markClean: function() { },
-    markText: function(from, to, options) { },
-    moveH: function(dir, unit) { },
-    moveV: function(dir, unit) { },
-    off: function(type, f) { },
-    on: function(type, f) { },
-    operation: function(f) { },
-    posFromIndex: function(off) { },
-    redo: function() { },
-    refresh: function() { },
-    removeKeyMap: function(map) { },
-    removeLine: function(line) { },
-    removeLineClass: function(handle, where, cls) { },
-    removeLineWidget: function(widget) { },
-    removeOverlay: function(spec) { },
-    /** @param {*=} origin */
-    replaceRange: function(code, from, to, origin) { },
-    /**
-     * @param {string} replacement
-     * @param {string=} select
-     */
-    replaceSelection: function(replacement, select) { },
-    /**
-     * @param {!Array.<string>} textPerSelection
-     */
-    replaceSelections: function(textPerSelection) { },
-    /** @param {*=} margin */
-    scrollIntoView: function(pos, margin) { },
-    scrollTo: function(x, y) { },
-    setBookmark: function(pos, options) { },
-    setCursor: function(line, ch, extend) { },
-    setExtending: function(val) { },
-    setGutterMarker: function(line, gutterID, value) { },
-    setHistory: function(histData) { },
-    setLine: function(line, text) { },
-    setOption: function(option, value) { },
-    setSelection: function(anchor, head) { },
-    /**
-     * @param {number=} primaryIndex
-     * @param {?Object=} config
-     */
-    setSelections: function(selections, primaryIndex, config) { },
-    setSize: function(width, height) { },
-    setValue: function(code) { },
-    somethingSelected: function() { },
-    swapDoc: function(doc) { },
-    undo: function() { },
-    unlinkDoc: function(other) { }
+  /** @type {!Doc} */
+  doc: null,
+  addKeyMap: function(map) {},
+  addLineClass: function(handle, where, cls) {},
+  /**
+   * @param {?Object=} options
+   * @return {!CodeMirror.LineWidget}
+   */
+  addLineWidget: function(handle, node, options) {},
+  /**
+   * @param {string|!Object} spec
+   * @param {!Object=} options
+   */
+  addOverlay: function(spec, options) {},
+  addWidget: function(pos, node, scroll, vert, horiz) {},
+  charCoords: function(pos, mode) {},
+  clearGutter: function(gutterID) {},
+  clearHistory: function() {},
+  clipPos: function(pos) {},
+  /** @param {string=} mode */
+  coordsChar: function(coords, mode) {},
+  /** @param {string=} mode */
+  cursorCoords: function(start, mode) {},
+  defaultCharWidth: function() {},
+  defaultTextHeight: function() {},
+  deleteH: function(dir, unit) {},
+  /**
+   * @param {*=} to
+   * @param {*=} op
+   */
+  eachLine: function(from, to, op) {},
+  execCommand: function(cmd) {},
+  extendSelection: function(from, to) {},
+  findMarks: function(from, to) {},
+  findMarksAt: function(pos) {},
+  /**
+   * @param {!CodeMirror.Pos} from
+   * @param {boolean=} strict
+   * @param {Object=} config
+   */
+  findMatchingBracket: function(from, strict, config) {},
+  findPosH: function(from, amount, unit, visually) {},
+  findPosV: function(from, amount, unit, goalColumn) {},
+  firstLine: function() {},
+  focus: function() {},
+  getAllMarks: function() {},
+  /** @param {string=} start */
+  getCursor: function(start) {},
+  getDoc: function() {},
+  getGutterElement: function() {},
+  getHistory: function() {},
+  getInputField: function() {},
+  getLine: function(line) {},
+  /**
+   * @return {!{wrapClass: string, height: number}}
+   */
+  getLineHandle: function(line) {},
+  getLineNumber: function(line) {},
+  /**
+   * @return {!{token: function(CodeMirror.StringStream, Object):string}}
+   */
+  getMode: function() {},
+  getOption: function(option) {},
+  /** @param {*=} lineSep */
+  getRange: function(from, to, lineSep) {},
+  /**
+   * @return {!{left: number, top: number, width: number, height: number, clientWidth: number, clientHeight: number}}
+   */
+  getScrollInfo: function() {},
+  getScrollerElement: function() {},
+  getSelection: function() {},
+  getSelections: function() {},
+  getStateAfter: function(line) {},
+  getTokenAt: function(pos) {},
+  /** @param {*=} lineSep */
+  getValue: function(lineSep) {},
+  getViewport: function() {},
+  getWrapperElement: function() {},
+  hasFocus: function() {},
+  historySize: function() {},
+  indentLine: function(n, dir, aggressive) {},
+  indentSelection: function(how) {},
+  indexFromPos: function(coords) {},
+  isClean: function() {},
+  iterLinkedDocs: function(f) {},
+  lastLine: function() {},
+  lineCount: function() {},
+  lineInfo: function(line) {},
+  /**
+   * @param {number} height
+   * @param {string=} mode
+   */
+  lineAtHeight: function(height, mode) {},
+  linkedDoc: function(options) {},
+  listSelections: function() {},
+  markClean: function() {},
+  markText: function(from, to, options) {},
+  moveH: function(dir, unit) {},
+  moveV: function(dir, unit) {},
+  off: function(type, f) {},
+  on: function(type, f) {},
+  operation: function(f) {},
+  posFromIndex: function(off) {},
+  redo: function() {},
+  refresh: function() {},
+  removeKeyMap: function(map) {},
+  removeLine: function(line) {},
+  removeLineClass: function(handle, where, cls) {},
+  removeLineWidget: function(widget) {},
+  removeOverlay: function(spec) {},
+  /** @param {*=} origin */
+  replaceRange: function(code, from, to, origin) {},
+  /**
+   * @param {string} replacement
+   * @param {string=} select
+   */
+  replaceSelection: function(replacement, select) {},
+  /**
+   * @param {!Array.<string>} textPerSelection
+   */
+  replaceSelections: function(textPerSelection) {},
+  /** @param {*=} margin */
+  scrollIntoView: function(pos, margin) {},
+  scrollTo: function(x, y) {},
+  setBookmark: function(pos, options) {},
+  setCursor: function(line, ch, extend) {},
+  setExtending: function(val) {},
+  setGutterMarker: function(line, gutterID, value) {},
+  setHistory: function(histData) {},
+  setLine: function(line, text) {},
+  setOption: function(option, value) {},
+  setSelection: function(anchor, head) {},
+  /**
+   * @param {number=} primaryIndex
+   * @param {?Object=} config
+   */
+  setSelections: function(selections, primaryIndex, config) {},
+  setSize: function(width, height) {},
+  setValue: function(code) {},
+  somethingSelected: function() {},
+  swapDoc: function(doc) {},
+  undo: function() {},
+  unlinkDoc: function(other) {}
 };
 /** @type {!{cursorDiv: Element}} */
 CodeMirror.prototype.display;
 /** @type {!Object} */
 CodeMirror.Pass;
-CodeMirror.showHint = function(codeMirror, hintintFunction) { };
+CodeMirror.showHint = function(codeMirror, hintintFunction) {};
 CodeMirror.commands = {};
 CodeMirror.modes = {};
 CodeMirror.mimeModes = {};
-CodeMirror.getMode = function(options, spec) { };
-CodeMirror.overlayMode = function(mode1, mode2, squashSpans) { };
-CodeMirror.defineMode = function(modeName, modeConstructor) { };
-CodeMirror.startState = function(mode) { };
+CodeMirror.getMode = function(options, spec) {};
+CodeMirror.overlayMode = function(mode1, mode2, squashSpans) {};
+CodeMirror.defineMode = function(modeName, modeConstructor) {};
+CodeMirror.startState = function(mode) {};
 
 /** @typedef {{canceled: boolean, from: !CodeMirror.Pos, to: !CodeMirror.Pos, text: string, origin: string, cancel: function()}} */
 CodeMirror.BeforeChangeObject;
@@ -541,7 +549,7 @@ CodeMirror.BeforeChangeObject;
 CodeMirror.ChangeObject;
 
 /** @constructor */
-CodeMirror.Pos = function(line, ch) { };
+CodeMirror.Pos = function(line, ch) {};
 /** @type {number} */
 CodeMirror.Pos.prototype.line;
 /** @type {number} */
@@ -552,7 +560,7 @@ CodeMirror.Pos.prototype.ch;
  * @param {!CodeMirror.Pos} pos2
  * @return {number}
  */
-CodeMirror.cmpPos = function(pos1, pos2) { };
+CodeMirror.cmpPos = function(pos1, pos2) {};
 
 /**
  * @param {string} mode
@@ -561,47 +569,45 @@ CodeMirror.cmpPos = function(pos1, pos2) { };
 CodeMirror.defineSimpleMode = function(mode, definition) {};
 
 /** @constructor */
-CodeMirror.StringStream = function(line)
-{
-    this.pos = 0;
-    this.start = 0;
+CodeMirror.StringStream = function(line) {
+  this.pos = 0;
+  this.start = 0;
 };
 CodeMirror.StringStream.prototype = {
-    backUp: function(n) { },
-    column: function() { },
-    current: function() { },
-    eat: function(match) { },
-    eatSpace: function() { },
-    eatWhile: function(match) { },
-    eol: function() { },
-    indentation: function() { },
-    /**
-     * @param {!RegExp|string} pattern
-     * @param {boolean=} consume
-     * @param {boolean=} caseInsensitive
-     */
-    match: function(pattern, consume, caseInsensitive) { },
-    next: function() { },
-    peek: function() { },
-    skipTo: function(ch) { },
-    skipToEnd: function() { },
-    sol: function() { }
+  backUp: function(n) {},
+  column: function() {},
+  current: function() {},
+  eat: function(match) {},
+  eatSpace: function() {},
+  eatWhile: function(match) {},
+  eol: function() {},
+  indentation: function() {},
+  /**
+   * @param {!RegExp|string} pattern
+   * @param {boolean=} consume
+   * @param {boolean=} caseInsensitive
+   */
+  match: function(pattern, consume, caseInsensitive) {},
+  next: function() {},
+  peek: function() {},
+  skipTo: function(ch) {},
+  skipToEnd: function() {},
+  sol: function() {}
 };
 
 /** @constructor */
-CodeMirror.TextMarker = function(doc, type) { };
+CodeMirror.TextMarker = function(doc, type) {};
 CodeMirror.TextMarker.prototype = {
-    clear: function() { },
-    find: function() { },
-    changed: function() { }
+  clear: function() {},
+  find: function() {},
+  changed: function() {}
 };
 
 /** @constructor */
-CodeMirror.LineWidget = function() { };
+CodeMirror.LineWidget = function() {};
 CodeMirror.LineWidget.prototype = {
-    clear: function() { }
+  clear: function() {}
 };
-
 
 /** @type {Object.<string, !Object.<string, string>>} */
 CodeMirror.keyMap;
@@ -616,14 +622,14 @@ window.dispatchStandaloneTestRunnerMessages;
  * @param {*} obj
  * @return {boolean}
  */
-ArrayBuffer.isView = function(obj) { };
+ArrayBuffer.isView = function(obj) {};
 
 /**
  * @param {Array.<Object>} keyframes
  * @param {number|Object} timing
  * @return {Object}
  */
-Element.prototype.animate = function(keyframes, timing) { };
+Element.prototype.animate = function(keyframes, timing) {};
 
 /**
  * @override
@@ -632,33 +638,33 @@ Element.prototype.animate = function(keyframes, timing) { };
  * @param {(boolean|!{capture: (boolean|undefined), once: (boolean|undefined), passive: (boolean|undefined)})=} options
  * @this {EventTarget}
  */
-Element.prototype.addEventListener = function(type, listener, options) { };
+Element.prototype.addEventListener = function(type, listener, options) {};
 
 var acorn = {
-    /**
-     * @param {string} text
-     * @param {Object.<string, boolean>} options
-     * @return {!ESTree.Node}
-     */
-    parse: function(text, options) {},
+  /**
+   * @param {string} text
+   * @param {Object.<string, boolean>} options
+   * @return {!ESTree.Node}
+   */
+  parse: function(text, options) {},
 
-    /**
-     * @param {string} text
-     * @param {Object.<string, boolean>} options
-     * @return {!Acorn.Tokenizer}
-     */
-    tokenizer: function(text, options) {},
+  /**
+   * @param {string} text
+   * @param {Object.<string, boolean>} options
+   * @return {!Acorn.Tokenizer}
+   */
+  tokenizer: function(text, options) {},
 
-    tokTypes: {
-        _true: new Acorn.TokenType(),
-        _false: new Acorn.TokenType(),
-        _null: new Acorn.TokenType(),
-        num: new Acorn.TokenType(),
-        regexp: new Acorn.TokenType(),
-        string: new Acorn.TokenType(),
-        name: new Acorn.TokenType(),
-        eof: new Acorn.TokenType()
-    }
+  tokTypes: {
+    _true: new Acorn.TokenType(),
+    _false: new Acorn.TokenType(),
+    _null: new Acorn.TokenType(),
+    num: new Acorn.TokenType(),
+    regexp: new Acorn.TokenType(),
+    string: new Acorn.TokenType(),
+    name: new Acorn.TokenType(),
+    eof: new Acorn.TokenType()
+  }
 };
 
 var Acorn = {};
@@ -666,18 +672,18 @@ var Acorn = {};
  * @constructor
  */
 Acorn.Tokenizer = function() {
-    /** @type {function():!Acorn.Token} */
-    this.getToken;
+  /** @type {function():!Acorn.Token} */
+  this.getToken;
 };
 
 /**
  * @constructor
  */
 Acorn.TokenType = function() {
-    /** @type {string} */
-    this.label;
-    /** @type {(string|undefined)} */
-    this.keyword;
+  /** @type {string} */
+  this.label;
+  /** @type {(string|undefined)} */
+  this.keyword;
 };
 
 /**
@@ -700,84 +706,80 @@ var ESTree = {};
 /**
  * @constructor
  */
-ESTree.Node = function()
-{
-    /** @type {number} */
-    this.start;
-    /** @type {number} */
-    this.end;
-    /** @type {string} */
-    this.type;
-    /** @type {(!ESTree.Node|undefined)} */
-    this.body;
-    /** @type {(!Array.<!ESTree.Node>|undefined)} */
-    this.declarations;
-    /** @type {(!Array.<!ESTree.Node>|undefined)} */
-    this.properties;
-    /** @type {(!ESTree.Node|undefined)} */
-    this.init;
-    /** @type {(!Array.<!ESTree.Node>|undefined)} */
-    this.params;
-    /** @type {(string|undefined)} */
-    this.name;
-    /** @type {(?ESTree.Node|undefined)} */
-    this.id;
-    /** @type {(number|undefined)} */
-    this.length;
-    /** @type {(?ESTree.Node|undefined)} */
-    this.argument;
-    /** @type {(string|undefined)} */
-    this.operator;
+ESTree.Node = function() {
+  /** @type {number} */
+  this.start;
+  /** @type {number} */
+  this.end;
+  /** @type {string} */
+  this.type;
+  /** @type {(!ESTree.Node|undefined)} */
+  this.body;
+  /** @type {(!Array.<!ESTree.Node>|undefined)} */
+  this.declarations;
+  /** @type {(!Array.<!ESTree.Node>|undefined)} */
+  this.properties;
+  /** @type {(!ESTree.Node|undefined)} */
+  this.init;
+  /** @type {(!Array.<!ESTree.Node>|undefined)} */
+  this.params;
+  /** @type {(string|undefined)} */
+  this.name;
+  /** @type {(?ESTree.Node|undefined)} */
+  this.id;
+  /** @type {(number|undefined)} */
+  this.length;
+  /** @type {(?ESTree.Node|undefined)} */
+  this.argument;
+  /** @type {(string|undefined)} */
+  this.operator;
 };
 
 /**
  * @extends {ESTree.Node}
  * @constructor
  */
-ESTree.TemplateLiteralNode = function()
-{
-    /** @type {!Array.<!ESTree.Node>} */
-    this.quasis;
-    /** @type {!Array.<!ESTree.Node>} */
-    this.expressions;
+ESTree.TemplateLiteralNode = function() {
+  /** @type {!Array.<!ESTree.Node>} */
+  this.quasis;
+  /** @type {!Array.<!ESTree.Node>} */
+  this.expressions;
 };
 
 var Gonzales = {};
 var gonzales = {
-    /**
-     * @param {string} text
-     * @param {!Object=} options
-     * @return {!Gonzales.Node}
-     */
-    parse: function(text, options) { },
+  /**
+   * @param {string} text
+   * @param {!Object=} options
+   * @return {!Gonzales.Node}
+   */
+  parse: function(text, options) {},
 };
 
 /**
  * @constructor
  */
-Gonzales.Location = function()
-{
-    /** @type {number} */
-    this.line;
-    /** @type {number} */
-    this.column;
+Gonzales.Location = function() {
+  /** @type {number} */
+  this.line;
+  /** @type {number} */
+  this.column;
 };
 
 /**
  * @constructor
  */
-Gonzales.Node = function()
-{
-    /** @type {string} */
-    this.type;
-    /** @type {string} */
-    this.syntax;
-    /** @type {!Gonzales.Location} */
-    this.start;
-    /** @type {!Gonzales.Location} */
-    this.end;
-    /** @type {(string|!Array<!Gonzales.Node>)} */
-    this.content;
+Gonzales.Node = function() {
+  /** @type {string} */
+  this.type;
+  /** @type {string} */
+  this.syntax;
+  /** @type {!Gonzales.Location} */
+  this.start;
+  /** @type {!Gonzales.Location} */
+  this.end;
+  /** @type {(string|!Array<!Gonzales.Node>)} */
+  this.content;
 };
 
 /**
@@ -793,13 +795,13 @@ DOMException.ABORT_ERR;
  * @constructor
  * @param {!Object} params
  */
-var Terminal = function(params) { };
+var Terminal = function(params) {};
 
 Terminal.prototype = {
-    fit: function() { },
-    linkify: function() { },
-    /** @param {!Element} element */
-    open: function(element) { },
-    /** @param {string} eventName * @param {!Function} handler */
-    on: function(eventName, handler) { }
+  fit: function() {},
+  linkify: function() {},
+  /** @param {!Element} element */
+  open: function(element) {},
+  /** @param {string} eventName * @param {!Function} handler */
+  on: function(eventName, handler) {}
 };

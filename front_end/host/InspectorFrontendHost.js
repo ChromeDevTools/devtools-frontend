@@ -27,439 +27,451 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
  * @implements {InspectorFrontendHostAPI}
- * @suppressGlobalPropertiesCheck
+ * @unrestricted
  */
-WebInspector.InspectorFrontendHostStub = function()
-{
+WebInspector.InspectorFrontendHostStub = class {
+  /**
+   * @suppressGlobalPropertiesCheck
+   */
+  constructor() {
     /**
      * @param {!Event} event
      */
-    function stopEventPropagation(event)
-    {
-        // Let browser handle Ctrl+/Ctrl- shortcuts in hosted mode.
-        var zoomModifier = WebInspector.isMac() ? event.metaKey : event.ctrlKey;
-        if (zoomModifier && (event.keyCode === 187 || event.keyCode === 189))
-            event.stopPropagation();
+    function stopEventPropagation(event) {
+      // Let browser handle Ctrl+/Ctrl- shortcuts in hosted mode.
+      var zoomModifier = WebInspector.isMac() ? event.metaKey : event.ctrlKey;
+      if (zoomModifier && (event.keyCode === 187 || event.keyCode === 189))
+        event.stopPropagation();
     }
-    document.addEventListener("keydown", stopEventPropagation, true);
+    document.addEventListener('keydown', stopEventPropagation, true);
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  getSelectionBackgroundColor() {
+    return '#6e86ff';
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  getSelectionForegroundColor() {
+    return '#ffffff';
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  platform() {
+    var match = navigator.userAgent.match(/Windows NT/);
+    if (match)
+      return 'windows';
+    match = navigator.userAgent.match(/Mac OS X/);
+    if (match)
+      return 'mac';
+    return 'linux';
+  }
+
+  /**
+   * @override
+   */
+  loadCompleted() {
+  }
+
+  /**
+   * @override
+   */
+  bringToFront() {
+    this._windowVisible = true;
+  }
+
+  /**
+   * @override
+   */
+  closeWindow() {
+    this._windowVisible = false;
+  }
+
+  /**
+   * @override
+   * @param {boolean} isDocked
+   * @param {function()} callback
+   */
+  setIsDocked(isDocked, callback) {
+    setTimeout(callback, 0);
+  }
+
+  /**
+   * Requests inspected page to be placed atop of the inspector frontend with specified bounds.
+   * @override
+   * @param {{x: number, y: number, width: number, height: number}} bounds
+   */
+  setInspectedPageBounds(bounds) {
+  }
+
+  /**
+   * @override
+   */
+  inspectElementCompleted() {
+  }
+
+  /**
+   * @override
+   * @param {string} origin
+   * @param {string} script
+   */
+  setInjectedScriptForOrigin(origin, script) {
+  }
+
+  /**
+   * @override
+   * @param {string} url
+   * @suppressGlobalPropertiesCheck
+   */
+  inspectedURLChanged(url) {
+    document.title = WebInspector.UIString('Developer Tools - %s', url);
+  }
+
+  /**
+   * @override
+   * @param {string} text
+   */
+  copyText(text) {
+    WebInspector.console.error('Clipboard is not enabled in hosted mode. Please inspect using chrome://inspect');
+  }
+
+  /**
+   * @override
+   * @param {string} url
+   */
+  openInNewTab(url) {
+    window.open(url, '_blank');
+  }
+
+  /**
+   * @override
+   * @param {string} url
+   * @param {string} content
+   * @param {boolean} forceSaveAs
+   */
+  save(url, content, forceSaveAs) {
+    WebInspector.console.error('Saving files is not enabled in hosted mode. Please inspect using chrome://inspect');
+    this.events.dispatchEventToListeners(InspectorFrontendHostAPI.Events.CanceledSaveURL, url);
+  }
+
+  /**
+   * @override
+   * @param {string} url
+   * @param {string} content
+   */
+  append(url, content) {
+    WebInspector.console.error('Saving files is not enabled in hosted mode. Please inspect using chrome://inspect');
+  }
+
+  /**
+   * @override
+   * @param {string} message
+   */
+  sendMessageToBackend(message) {
+  }
+
+  /**
+   * @override
+   * @param {string} actionName
+   * @param {number} actionCode
+   * @param {number} bucketSize
+   */
+  recordEnumeratedHistogram(actionName, actionCode, bucketSize) {
+  }
+
+  /**
+   * @override
+   */
+  requestFileSystems() {
+    this.events.dispatchEventToListeners(InspectorFrontendHostAPI.Events.FileSystemsLoaded, []);
+  }
+
+  /**
+   * @override
+   * @param {string=} fileSystemPath
+   */
+  addFileSystem(fileSystemPath) {
+  }
+
+  /**
+   * @override
+   * @param {string} fileSystemPath
+   */
+  removeFileSystem(fileSystemPath) {
+  }
+
+  /**
+   * @override
+   * @param {string} fileSystemId
+   * @param {string} registeredName
+   * @return {?DOMFileSystem}
+   */
+  isolatedFileSystem(fileSystemId, registeredName) {
+    return null;
+  }
+
+  /**
+   * @override
+   * @param {string} url
+   * @param {string} headers
+   * @param {number} streamId
+   * @param {function(!InspectorFrontendHostAPI.LoadNetworkResourceResult)} callback
+   */
+  loadNetworkResource(url, headers, streamId, callback) {
+    Runtime.loadResourcePromise(url)
+        .then(function(text) {
+          WebInspector.ResourceLoader.streamWrite(streamId, text);
+          callback({statusCode: 200});
+        })
+        .catch(function() {
+          callback({statusCode: 404});
+        });
+  }
+
+  /**
+   * @override
+   * @param {function(!Object<string, string>)} callback
+   */
+  getPreferences(callback) {
+    var prefs = {};
+    for (var name in window.localStorage)
+      prefs[name] = window.localStorage[name];
+    callback(prefs);
+  }
+
+  /**
+   * @override
+   * @param {string} name
+   * @param {string} value
+   */
+  setPreference(name, value) {
+    window.localStorage[name] = value;
+  }
+
+  /**
+   * @override
+   * @param {string} name
+   */
+  removePreference(name) {
+    delete window.localStorage[name];
+  }
+
+  /**
+   * @override
+   */
+  clearPreferences() {
+    window.localStorage.clear();
+  }
+
+  /**
+   * @override
+   * @param {!FileSystem} fileSystem
+   */
+  upgradeDraggedFileSystemPermissions(fileSystem) {
+  }
+
+  /**
+   * @override
+   * @param {number} requestId
+   * @param {string} fileSystemPath
+   */
+  indexPath(requestId, fileSystemPath) {
+  }
+
+  /**
+   * @override
+   * @param {number} requestId
+   */
+  stopIndexing(requestId) {
+  }
+
+  /**
+   * @override
+   * @param {number} requestId
+   * @param {string} fileSystemPath
+   * @param {string} query
+   */
+  searchInPath(requestId, fileSystemPath, query) {
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  zoomFactor() {
+    return 1;
+  }
+
+  /**
+   * @override
+   */
+  zoomIn() {
+  }
+
+  /**
+   * @override
+   */
+  zoomOut() {
+  }
+
+  /**
+   * @override
+   */
+  resetZoom() {
+  }
+
+  /**
+   * @override
+   * @param {string} shortcuts
+   */
+  setWhitelistedShortcuts(shortcuts) {
+  }
+
+  /**
+   * @param {!Array<string>} certChain
+   * @override
+   */
+  showCertificateViewer(certChain) {
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  isUnderTest() {
+    return false;
+  }
+
+  /**
+   * @override
+   * @param {function()} callback
+   */
+  reattach(callback) {
+  }
+
+  /**
+   * @override
+   */
+  readyForTest() {
+  }
+
+  /**
+   * @override
+   * @param {boolean} discoverUsbDevices
+   * @param {boolean} portForwardingEnabled
+   * @param {!Adb.PortForwardingConfig} portForwardingConfig
+   */
+  setDevicesDiscoveryConfig(discoverUsbDevices, portForwardingEnabled, portForwardingConfig) {
+  }
+
+  /**
+   * @override
+   * @param {boolean} enabled
+   */
+  setDevicesUpdatesEnabled(enabled) {
+  }
+
+  /**
+   * @override
+   * @param {string} pageId
+   * @param {string} action
+   */
+  performActionOnRemotePage(pageId, action) {
+  }
+
+  /**
+   * @override
+   * @param {string} browserId
+   * @param {string} url
+   */
+  openRemotePage(browserId, url) {
+  }
+
+  /**
+   * @override
+   * @param {number} x
+   * @param {number} y
+   * @param {!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>} items
+   * @param {!Document} document
+   */
+  showContextMenuAtPoint(x, y, items, document) {
+    throw 'Soft context menu should be used';
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  isHostedMode() {
+    return true;
+  }
 };
 
-WebInspector.InspectorFrontendHostStub.prototype = {
-    /**
-     * @override
-     * @return {string}
-     */
-    getSelectionBackgroundColor: function()
-    {
-        return "#6e86ff";
-    },
+/**
+ * @unrestricted
+ */
+var InspectorFrontendAPIImpl = class {
+  constructor() {
+    this._debugFrontend =
+        !!Runtime.queryParam('debugFrontend') || (window['InspectorTest'] && window['InspectorTest']['debugTest']);
 
-    /**
-     * @override
-     * @return {string}
-     */
-    getSelectionForegroundColor: function()
-    {
-        return "#ffffff";
-    },
+    var descriptors = InspectorFrontendHostAPI.EventDescriptors;
+    for (var i = 0; i < descriptors.length; ++i)
+      this[descriptors[i][1]] = this._dispatch.bind(this, descriptors[i][0], descriptors[i][2], descriptors[i][3]);
+  }
 
-    /**
-     * @override
-     * @return {string}
-     */
-    platform: function()
-    {
-        var match = navigator.userAgent.match(/Windows NT/);
-        if (match)
-            return "windows";
-        match = navigator.userAgent.match(/Mac OS X/);
-        if (match)
-            return "mac";
-        return "linux";
-    },
+  /**
+   * @param {symbol} name
+   * @param {!Array.<string>} signature
+   * @param {boolean} runOnceLoaded
+   */
+  _dispatch(name, signature, runOnceLoaded) {
+    var params = Array.prototype.slice.call(arguments, 3);
 
-    /**
-     * @override
-     */
-    loadCompleted: function()
-    {
-    },
+    if (this._debugFrontend)
+      setImmediate(innerDispatch);
+    else
+      innerDispatch();
 
-    /**
-     * @override
-     */
-    bringToFront: function()
-    {
-        this._windowVisible = true;
-    },
-
-    /**
-     * @override
-     */
-    closeWindow: function()
-    {
-        this._windowVisible = false;
-    },
-
-    /**
-     * @override
-     * @param {boolean} isDocked
-     * @param {function()} callback
-     */
-    setIsDocked: function(isDocked, callback)
-    {
-        setTimeout(callback, 0);
-    },
-
-    /**
-     * Requests inspected page to be placed atop of the inspector frontend with specified bounds.
-     * @override
-     * @param {{x: number, y: number, width: number, height: number}} bounds
-     */
-    setInspectedPageBounds: function(bounds)
-    {
-    },
-
-    /**
-     * @override
-     */
-    inspectElementCompleted: function()
-    {
-    },
-
-    /**
-     * @override
-     * @param {string} origin
-     * @param {string} script
-     */
-    setInjectedScriptForOrigin: function(origin, script)
-    {
-    },
-
-    /**
-     * @override
-     * @param {string} url
-     * @suppressGlobalPropertiesCheck
-     */
-    inspectedURLChanged: function(url)
-    {
-        document.title = WebInspector.UIString("Developer Tools - %s", url);
-    },
-
-    /**
-     * @override
-     * @param {string} text
-     */
-    copyText: function(text)
-    {
-        WebInspector.console.error("Clipboard is not enabled in hosted mode. Please inspect using chrome://inspect");
-    },
-
-    /**
-     * @override
-     * @param {string} url
-     */
-    openInNewTab: function(url)
-    {
-        window.open(url, "_blank");
-    },
-
-    /**
-     * @override
-     * @param {string} url
-     * @param {string} content
-     * @param {boolean} forceSaveAs
-     */
-    save: function(url, content, forceSaveAs)
-    {
-        WebInspector.console.error("Saving files is not enabled in hosted mode. Please inspect using chrome://inspect");
-        this.events.dispatchEventToListeners(InspectorFrontendHostAPI.Events.CanceledSaveURL, url);
-    },
-
-    /**
-     * @override
-     * @param {string} url
-     * @param {string} content
-     */
-    append: function(url, content)
-    {
-        WebInspector.console.error("Saving files is not enabled in hosted mode. Please inspect using chrome://inspect");
-    },
-
-    /**
-     * @override
-     * @param {string} message
-     */
-    sendMessageToBackend: function(message)
-    {
-    },
-
-    /**
-     * @override
-     * @param {string} actionName
-     * @param {number} actionCode
-     * @param {number} bucketSize
-     */
-    recordEnumeratedHistogram: function(actionName, actionCode, bucketSize)
-    {
-    },
-
-    /**
-     * @override
-     */
-    requestFileSystems: function()
-    {
-        this.events.dispatchEventToListeners(InspectorFrontendHostAPI.Events.FileSystemsLoaded, []);
-    },
-
-    /**
-     * @override
-     * @param {string=} fileSystemPath
-     */
-    addFileSystem: function(fileSystemPath)
-    {
-    },
-
-    /**
-     * @override
-     * @param {string} fileSystemPath
-     */
-    removeFileSystem: function(fileSystemPath)
-    {
-    },
-
-    /**
-     * @override
-     * @param {string} fileSystemId
-     * @param {string} registeredName
-     * @return {?DOMFileSystem}
-     */
-    isolatedFileSystem: function(fileSystemId, registeredName)
-    {
-        return null;
-    },
-
-    /**
-     * @override
-     * @param {string} url
-     * @param {string} headers
-     * @param {number} streamId
-     * @param {function(!InspectorFrontendHostAPI.LoadNetworkResourceResult)} callback
-     */
-    loadNetworkResource: function(url, headers, streamId, callback)
-    {
-        Runtime.loadResourcePromise(url).then(function(text) {
-            WebInspector.ResourceLoader.streamWrite(streamId, text);
-            callback({statusCode : 200});
-        }).catch(function() {
-            callback({statusCode : 404});
-        });
-    },
-
-    /**
-     * @override
-     * @param {function(!Object<string, string>)} callback
-     */
-    getPreferences: function(callback)
-    {
-        var prefs = {};
-        for (var name in window.localStorage)
-            prefs[name] = window.localStorage[name];
-        callback(prefs);
-    },
-
-    /**
-     * @override
-     * @param {string} name
-     * @param {string} value
-     */
-    setPreference: function(name, value)
-    {
-        window.localStorage[name] = value;
-    },
-
-    /**
-     * @override
-     * @param {string} name
-     */
-    removePreference: function(name)
-    {
-        delete window.localStorage[name];
-    },
-
-    /**
-     * @override
-     */
-    clearPreferences: function()
-    {
-        window.localStorage.clear();
-    },
-
-    /**
-     * @override
-     * @param {!FileSystem} fileSystem
-     */
-    upgradeDraggedFileSystemPermissions: function(fileSystem)
-    {
-    },
-
-    /**
-     * @override
-     * @param {number} requestId
-     * @param {string} fileSystemPath
-     */
-    indexPath: function(requestId, fileSystemPath)
-    {
-    },
-
-    /**
-     * @override
-     * @param {number} requestId
-     */
-    stopIndexing: function(requestId)
-    {
-    },
-
-    /**
-     * @override
-     * @param {number} requestId
-     * @param {string} fileSystemPath
-     * @param {string} query
-     */
-    searchInPath: function(requestId, fileSystemPath, query)
-    {
-    },
-
-    /**
-     * @override
-     * @return {number}
-     */
-    zoomFactor: function()
-    {
-        return 1;
-    },
-
-    /**
-     * @override
-     */
-    zoomIn: function()
-    {
-    },
-
-    /**
-     * @override
-     */
-    zoomOut: function()
-    {
-    },
-
-    /**
-     * @override
-     */
-    resetZoom: function()
-    {
-    },
-
-    /**
-     * @override
-     * @param {string} shortcuts
-     */
-    setWhitelistedShortcuts: function(shortcuts)
-    {
-    },
-
-    /**
-     * @param {!Array<string>} certChain
-     * @override
-     */
-    showCertificateViewer: function(certChain)
-    {
-    },
-
-    /**
-     * @override
-     * @return {boolean}
-     */
-    isUnderTest: function()
-    {
-        return false;
-    },
-
-    /**
-     * @override
-     * @param {function()} callback
-     */
-    reattach: function(callback)
-    {
-    },
-
-    /**
-     * @override
-     */
-    readyForTest: function()
-    {
-    },
-
-    /**
-     * @override
-     * @param {boolean} discoverUsbDevices
-     * @param {boolean} portForwardingEnabled
-     * @param {!Adb.PortForwardingConfig} portForwardingConfig
-     */
-    setDevicesDiscoveryConfig: function(discoverUsbDevices, portForwardingEnabled, portForwardingConfig)
-    {
-    },
-
-    /**
-     * @override
-     * @param {boolean} enabled
-     */
-    setDevicesUpdatesEnabled: function(enabled)
-    {
-    },
-
-    /**
-     * @override
-     * @param {string} pageId
-     * @param {string} action
-     */
-    performActionOnRemotePage: function(pageId, action)
-    {
-    },
-
-    /**
-     * @override
-     * @param {string} browserId
-     * @param {string} url
-     */
-    openRemotePage: function(browserId, url)
-    {
-    },
-
-    /**
-     * @override
-     * @param {number} x
-     * @param {number} y
-     * @param {!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>} items
-     * @param {!Document} document
-     */
-    showContextMenuAtPoint: function(x, y, items, document)
-    {
-        throw "Soft context menu should be used";
-    },
-
-    /**
-     * @override
-     * @return {boolean}
-     */
-    isHostedMode: function()
-    {
-        return true;
+    function innerDispatch() {
+      // Single argument methods get dispatched with the param.
+      if (signature.length < 2) {
+        try {
+          InspectorFrontendHost.events.dispatchEventToListeners(name, params[0]);
+        } catch (e) {
+          console.error(e + ' ' + e.stack);
+        }
+        return;
+      }
+      var data = {};
+      for (var i = 0; i < signature.length; ++i)
+        data[signature[i]] = params[i];
+      try {
+        InspectorFrontendHost.events.dispatchEventToListeners(name, data);
+      } catch (e) {
+        console.error(e + ' ' + e.stack);
+      }
     }
+  }
+
+  /**
+   * @param {number} id
+   * @param {string} chunk
+   */
+  streamWrite(id, chunk) {
+    WebInspector.ResourceLoader.streamWrite(id, chunk);
+  }
 };
 
 /**
@@ -467,104 +479,43 @@ WebInspector.InspectorFrontendHostStub.prototype = {
  */
 var InspectorFrontendHost = window.InspectorFrontendHost || null;
 window.InspectorFrontendHost = InspectorFrontendHost;
-(function(){
+(function() {
 
-    function initializeInspectorFrontendHost()
-    {
-        if (!InspectorFrontendHost) {
-            // Instantiate stub for web-hosted mode if necessary.
-            window.InspectorFrontendHost = InspectorFrontendHost = new WebInspector.InspectorFrontendHostStub();
-        } else {
-            // Otherwise add stubs for missing methods that are declared in the interface.
-            var proto = WebInspector.InspectorFrontendHostStub.prototype;
-            for (var name in proto) {
-                var value = proto[name];
-                if (typeof value !== "function" || InspectorFrontendHost[name])
-                    continue;
+  function initializeInspectorFrontendHost() {
+    if (!InspectorFrontendHost) {
+      // Instantiate stub for web-hosted mode if necessary.
+      window.InspectorFrontendHost = InspectorFrontendHost = new WebInspector.InspectorFrontendHostStub();
+    } else {
+      // Otherwise add stubs for missing methods that are declared in the interface.
+      var proto = WebInspector.InspectorFrontendHostStub.prototype;
+      for (var name in proto) {
+        var value = proto[name];
+        if (typeof value !== 'function' || InspectorFrontendHost[name])
+          continue;
 
-                InspectorFrontendHost[name] = stub.bind(null, name);
-            }
-        }
-
-        /**
-         * @param {string} name
-         * @return {?}
-         */
-        function stub(name)
-        {
-            console.error("Incompatible embedder: method InspectorFrontendHost." + name + " is missing. Using stub instead.");
-            var args = Array.prototype.slice.call(arguments, 1);
-            return proto[name].apply(InspectorFrontendHost, args);
-        }
-
-        // Attach the events object.
-        InspectorFrontendHost.events = new WebInspector.Object();
+        InspectorFrontendHost[name] = stub.bind(null, name);
+      }
     }
 
     /**
-     * @constructor
+     * @param {string} name
+     * @return {?}
      */
-    function InspectorFrontendAPIImpl()
-    {
-        this._debugFrontend = !!Runtime.queryParam("debugFrontend") || (window["InspectorTest"] && window["InspectorTest"]["debugTest"]);
-
-        var descriptors = InspectorFrontendHostAPI.EventDescriptors;
-        for (var i = 0; i < descriptors.length; ++i)
-            this[descriptors[i][1]] = this._dispatch.bind(this, descriptors[i][0], descriptors[i][2], descriptors[i][3]);
+    function stub(name) {
+      console.error('Incompatible embedder: method InspectorFrontendHost.' + name + ' is missing. Using stub instead.');
+      var args = Array.prototype.slice.call(arguments, 1);
+      return proto[name].apply(InspectorFrontendHost, args);
     }
 
-    InspectorFrontendAPIImpl.prototype = {
-        /**
-         * @param {symbol} name
-         * @param {!Array.<string>} signature
-         * @param {boolean} runOnceLoaded
-         */
-        _dispatch: function(name, signature, runOnceLoaded)
-        {
-            var params = Array.prototype.slice.call(arguments, 3);
+    // Attach the events object.
+    InspectorFrontendHost.events = new WebInspector.Object();
+  }
 
-            if (this._debugFrontend)
-                setImmediate(innerDispatch);
-            else
-                innerDispatch();
-
-            function innerDispatch()
-            {
-                // Single argument methods get dispatched with the param.
-                if (signature.length < 2) {
-                    try {
-                        InspectorFrontendHost.events.dispatchEventToListeners(name, params[0]);
-                    } catch (e) {
-                        console.error(e + " " + e.stack);
-                    }
-                    return;
-                }
-                var data = {};
-                for (var i = 0; i < signature.length; ++i)
-                    data[signature[i]] = params[i];
-                try {
-                    InspectorFrontendHost.events.dispatchEventToListeners(name, data);
-                } catch (e) {
-                    console.error(e + " " + e.stack);
-                }
-            }
-        },
-
-        /**
-         * @param {number} id
-         * @param {string} chunk
-         */
-        streamWrite: function(id, chunk)
-        {
-            WebInspector.ResourceLoader.streamWrite(id, chunk);
-        }
-    };
-
-    // FIXME: This file is included into both apps, since the devtools_app needs the InspectorFrontendHostAPI only,
-    // so the host instance should not initialized there.
-    initializeInspectorFrontendHost();
-    window.InspectorFrontendAPI = new InspectorFrontendAPIImpl();
-    WebInspector.setLocalizationPlatform(InspectorFrontendHost.platform());
+  // FIXME: This file is included into both apps, since the devtools_app needs the InspectorFrontendHostAPI only,
+  // so the host instance should not initialized there.
+  initializeInspectorFrontendHost();
+  window.InspectorFrontendAPI = new InspectorFrontendAPIImpl();
+  WebInspector.setLocalizationPlatform(InspectorFrontendHost.platform());
 })();
 
 /**

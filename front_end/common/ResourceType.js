@@ -26,149 +26,153 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @param {string} name
- * @param {string} title
- * @param {!WebInspector.ResourceCategory} category
- * @param {boolean} isTextType
+ * @unrestricted
  */
-WebInspector.ResourceType = function(name, title, category, isTextType)
-{
+WebInspector.ResourceType = class {
+  /**
+   * @param {string} name
+   * @param {string} title
+   * @param {!WebInspector.ResourceCategory} category
+   * @param {boolean} isTextType
+   */
+  constructor(name, title, category, isTextType) {
     this._name = name;
     this._title = title;
     this._category = category;
     this._isTextType = isTextType;
-};
+  }
 
-WebInspector.ResourceType.prototype = {
-    /**
-     * @return {string}
-     */
-    name: function()
-    {
-        return this._name;
-    },
-
-    /**
-     * @return {string}
-     */
-    title: function()
-    {
-        return this._title;
-    },
-
-    /**
-     * @return {!WebInspector.ResourceCategory}
-     */
-    category: function()
-    {
-        return this._category;
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isTextType: function()
-    {
-        return this._isTextType;
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isScript: function()
-    {
-        return this._name === "script" || this._name === "sm-script" || this._name === "snippet";
-    },
-
-    /**
-     * @return {boolean}
-     */
-    hasScripts: function()
-    {
-        return this.isScript() || this.isDocument();
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isStyleSheet: function()
-    {
-        return this._name === "stylesheet" || this._name === "sm-stylesheet";
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isDocument: function()
-    {
-        return this._name === "document";
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isDocumentOrScriptOrStyleSheet: function()
-    {
-        return this.isDocument() || this.isScript() || this.isStyleSheet();
-    },
-
-    /**
-     * @return {boolean}
-     */
-    isFromSourceMap: function()
-    {
-        return this._name.startsWith("sm-");
-    },
-
-    /**
-     * @override
-     * @return {string}
-     */
-    toString: function()
-    {
-        return this._name;
-    },
-
-    /**
-     * @return {string}
-     */
-    canonicalMimeType: function()
-    {
-        if (this.isDocument())
-            return "text/html";
-        if (this.isScript())
-            return "text/javascript";
-        if (this.isStyleSheet())
-            return "text/css";
-        return "";
+  /**
+   * @param {string} url
+   * @return {string|undefined}
+   */
+  static mimeFromURL(url) {
+    var name = WebInspector.ParsedURL.extractName(url);
+    if (WebInspector.ResourceType._mimeTypeByName.has(name)) {
+      return WebInspector.ResourceType._mimeTypeByName.get(name);
     }
+    var ext = WebInspector.ParsedURL.extractExtension(url).toLowerCase();
+    return WebInspector.ResourceType._mimeTypeByExtension.get(ext);
+  }
+
+  /**
+   * @return {string}
+   */
+  name() {
+    return this._name;
+  }
+
+  /**
+   * @return {string}
+   */
+  title() {
+    return this._title;
+  }
+
+  /**
+   * @return {!WebInspector.ResourceCategory}
+   */
+  category() {
+    return this._category;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isTextType() {
+    return this._isTextType;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isScript() {
+    return this._name === 'script' || this._name === 'sm-script' || this._name === 'snippet';
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasScripts() {
+    return this.isScript() || this.isDocument();
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isStyleSheet() {
+    return this._name === 'stylesheet' || this._name === 'sm-stylesheet';
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isDocument() {
+    return this._name === 'document';
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isDocumentOrScriptOrStyleSheet() {
+    return this.isDocument() || this.isScript() || this.isStyleSheet();
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isFromSourceMap() {
+    return this._name.startsWith('sm-');
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  toString() {
+    return this._name;
+  }
+
+  /**
+   * @return {string}
+   */
+  canonicalMimeType() {
+    if (this.isDocument())
+      return 'text/html';
+    if (this.isScript())
+      return 'text/javascript';
+    if (this.isStyleSheet())
+      return 'text/css';
+    return '';
+  }
 };
 
 /**
- * @constructor
- * @param {string} title
- * @param {string} shortTitle
+ * @unrestricted
  */
-WebInspector.ResourceCategory = function(title, shortTitle)
-{
+WebInspector.ResourceCategory = class {
+  /**
+   * @param {string} title
+   * @param {string} shortTitle
+   */
+  constructor(title, shortTitle) {
     this.title = title;
     this.shortTitle = shortTitle;
+  }
 };
 
 WebInspector.resourceCategories = {
-    XHR: new WebInspector.ResourceCategory("XHR and Fetch", "XHR"),
-    Script: new WebInspector.ResourceCategory("Scripts", "JS"),
-    Stylesheet: new WebInspector.ResourceCategory("Stylesheets", "CSS"),
-    Image: new WebInspector.ResourceCategory("Images", "Img"),
-    Media: new WebInspector.ResourceCategory("Media", "Media"),
-    Font: new WebInspector.ResourceCategory("Fonts", "Font"),
-    Document: new WebInspector.ResourceCategory("Documents", "Doc"),
-    WebSocket: new WebInspector.ResourceCategory("WebSockets", "WS"),
-    Manifest: new WebInspector.ResourceCategory("Manifest", "Manifest"),
-    Other: new WebInspector.ResourceCategory("Other", "Other")
+  XHR: new WebInspector.ResourceCategory('XHR and Fetch', 'XHR'),
+  Script: new WebInspector.ResourceCategory('Scripts', 'JS'),
+  Stylesheet: new WebInspector.ResourceCategory('Stylesheets', 'CSS'),
+  Image: new WebInspector.ResourceCategory('Images', 'Img'),
+  Media: new WebInspector.ResourceCategory('Media', 'Media'),
+  Font: new WebInspector.ResourceCategory('Fonts', 'Font'),
+  Document: new WebInspector.ResourceCategory('Documents', 'Doc'),
+  WebSocket: new WebInspector.ResourceCategory('WebSockets', 'WS'),
+  Manifest: new WebInspector.ResourceCategory('Manifest', 'Manifest'),
+  Other: new WebInspector.ResourceCategory('Other', 'Other')
 };
 
 /**
@@ -176,134 +180,96 @@ WebInspector.resourceCategories = {
  * @enum {!WebInspector.ResourceType}
  */
 WebInspector.resourceTypes = {
-    XHR: new WebInspector.ResourceType("xhr", "XHR", WebInspector.resourceCategories.XHR, true),
-    Fetch: new WebInspector.ResourceType("fetch", "Fetch", WebInspector.resourceCategories.XHR, true),
-    EventSource: new WebInspector.ResourceType("eventsource", "EventSource", WebInspector.resourceCategories.XHR, true),
-    Script: new WebInspector.ResourceType("script", "Script", WebInspector.resourceCategories.Script, true),
-    Snippet: new WebInspector.ResourceType("snippet", "Snippet", WebInspector.resourceCategories.Script, true),
-    Stylesheet: new WebInspector.ResourceType("stylesheet", "Stylesheet", WebInspector.resourceCategories.Stylesheet, true),
-    Image: new WebInspector.ResourceType("image", "Image", WebInspector.resourceCategories.Image, false),
-    Media: new WebInspector.ResourceType("media", "Media", WebInspector.resourceCategories.Media, false),
-    Font: new WebInspector.ResourceType("font", "Font", WebInspector.resourceCategories.Font, false),
-    Document: new WebInspector.ResourceType("document", "Document", WebInspector.resourceCategories.Document, true),
-    TextTrack: new WebInspector.ResourceType("texttrack", "TextTrack", WebInspector.resourceCategories.Other, true),
-    WebSocket: new WebInspector.ResourceType("websocket", "WebSocket", WebInspector.resourceCategories.WebSocket, false),
-    Other: new WebInspector.ResourceType("other", "Other", WebInspector.resourceCategories.Other, false),
-    SourceMapScript: new WebInspector.ResourceType("sm-script", "Script", WebInspector.resourceCategories.Script, false),
-    SourceMapStyleSheet: new WebInspector.ResourceType("sm-stylesheet", "Stylesheet", WebInspector.resourceCategories.Stylesheet, false),
-    Manifest: new WebInspector.ResourceType("manifest", "Manifest", WebInspector.resourceCategories.Manifest, true),
+  XHR: new WebInspector.ResourceType('xhr', 'XHR', WebInspector.resourceCategories.XHR, true),
+  Fetch: new WebInspector.ResourceType('fetch', 'Fetch', WebInspector.resourceCategories.XHR, true),
+  EventSource: new WebInspector.ResourceType('eventsource', 'EventSource', WebInspector.resourceCategories.XHR, true),
+  Script: new WebInspector.ResourceType('script', 'Script', WebInspector.resourceCategories.Script, true),
+  Snippet: new WebInspector.ResourceType('snippet', 'Snippet', WebInspector.resourceCategories.Script, true),
+  Stylesheet:
+      new WebInspector.ResourceType('stylesheet', 'Stylesheet', WebInspector.resourceCategories.Stylesheet, true),
+  Image: new WebInspector.ResourceType('image', 'Image', WebInspector.resourceCategories.Image, false),
+  Media: new WebInspector.ResourceType('media', 'Media', WebInspector.resourceCategories.Media, false),
+  Font: new WebInspector.ResourceType('font', 'Font', WebInspector.resourceCategories.Font, false),
+  Document: new WebInspector.ResourceType('document', 'Document', WebInspector.resourceCategories.Document, true),
+  TextTrack: new WebInspector.ResourceType('texttrack', 'TextTrack', WebInspector.resourceCategories.Other, true),
+  WebSocket: new WebInspector.ResourceType('websocket', 'WebSocket', WebInspector.resourceCategories.WebSocket, false),
+  Other: new WebInspector.ResourceType('other', 'Other', WebInspector.resourceCategories.Other, false),
+  SourceMapScript: new WebInspector.ResourceType('sm-script', 'Script', WebInspector.resourceCategories.Script, false),
+  SourceMapStyleSheet:
+      new WebInspector.ResourceType('sm-stylesheet', 'Stylesheet', WebInspector.resourceCategories.Stylesheet, false),
+  Manifest: new WebInspector.ResourceType('manifest', 'Manifest', WebInspector.resourceCategories.Manifest, true),
 };
 
-/**
- * @param {string} url
- * @return {string|undefined}
- */
-WebInspector.ResourceType.mimeFromURL = function(url)
-{
-    var name = WebInspector.ParsedURL.extractName(url);
-    if (WebInspector.ResourceType._mimeTypeByName.has(name)) {
-        return WebInspector.ResourceType._mimeTypeByName.get(name);
-    }
-    var ext = WebInspector.ParsedURL.extractExtension(url).toLowerCase();
-    return WebInspector.ResourceType._mimeTypeByExtension.get(ext);
-};
 
 WebInspector.ResourceType._mimeTypeByName = new Map([
-    // CoffeeScript
-    ["Cakefile", "text/x-coffeescript"]
+  // CoffeeScript
+  ['Cakefile', 'text/x-coffeescript']
 ]);
 
 WebInspector.ResourceType._mimeTypeByExtension = new Map([
-    // Web extensions
-    ["js", "text/javascript"],
-    ["css", "text/css"],
-    ["html", "text/html"],
-    ["htm", "text/html"],
-    ["xml", "application/xml"],
-    ["xsl", "application/xml"],
+  // Web extensions
+  ['js', 'text/javascript'], ['css', 'text/css'], ['html', 'text/html'], ['htm', 'text/html'],
+  ['xml', 'application/xml'], ['xsl', 'application/xml'],
 
-    // HTML Embedded Scripts, ASP], JSP
-    ["asp", "application/x-aspx"],
-    ["aspx", "application/x-aspx"],
-    ["jsp", "application/x-jsp"],
+  // HTML Embedded Scripts, ASP], JSP
+  ['asp', 'application/x-aspx'], ['aspx', 'application/x-aspx'], ['jsp', 'application/x-jsp'],
 
-    // C/C++
-    ["c", "text/x-c++src"],
-    ["cc", "text/x-c++src"],
-    ["cpp", "text/x-c++src"],
-    ["h", "text/x-c++src"],
-    ["m", "text/x-c++src"],
-    ["mm", "text/x-c++src"],
+  // C/C++
+  ['c', 'text/x-c++src'], ['cc', 'text/x-c++src'], ['cpp', 'text/x-c++src'], ['h', 'text/x-c++src'],
+  ['m', 'text/x-c++src'], ['mm', 'text/x-c++src'],
 
-    // CoffeeScript
-    ["coffee", "text/x-coffeescript"],
+  // CoffeeScript
+  ['coffee', 'text/x-coffeescript'],
 
-    // Dart
-    ["dart", "text/javascript"],
+  // Dart
+  ['dart', 'text/javascript'],
 
-    // TypeScript
-    ["ts", "text/typescript"],
-    ["tsx", "text/typescript"],
+  // TypeScript
+  ['ts', 'text/typescript'], ['tsx', 'text/typescript'],
 
-    // JSON
-    ["json", "application/json"],
-    ["gyp", "application/json"],
-    ["gypi", "application/json"],
+  // JSON
+  ['json', 'application/json'], ['gyp', 'application/json'], ['gypi', 'application/json'],
 
-    // C#
-    ["cs", "text/x-csharp"],
+  // C#
+  ['cs', 'text/x-csharp'],
 
-    // Java
-    ["java", "text/x-java"],
+  // Java
+  ['java', 'text/x-java'],
 
-    // Less
-    ["less", "text/x-less"],
+  // Less
+  ['less', 'text/x-less'],
 
-    // PHP
-    ["php", "text/x-php"],
-    ["phtml", "application/x-httpd-php"],
+  // PHP
+  ['php', 'text/x-php'], ['phtml', 'application/x-httpd-php'],
 
-    // Python
-    ["py", "text/x-python"],
+  // Python
+  ['py', 'text/x-python'],
 
-    // Shell
-    ["sh", "text/x-sh"],
+  // Shell
+  ['sh', 'text/x-sh'],
 
-    // SCSS
-    ["scss", "text/x-scss"],
+  // SCSS
+  ['scss', 'text/x-scss'],
 
-    // Video Text Tracks.
-    ["vtt", "text/vtt"],
+  // Video Text Tracks.
+  ['vtt', 'text/vtt'],
 
-    // LiveScript
-    ["ls", "text/x-livescript"],
+  // LiveScript
+  ['ls', 'text/x-livescript'],
 
-    // ClojureScript
-    ["cljs", "text/x-clojure"],
-    ["cljc", "text/x-clojure"],
-    ["cljx", "text/x-clojure"],
+  // ClojureScript
+  ['cljs', 'text/x-clojure'], ['cljc', 'text/x-clojure'], ['cljx', 'text/x-clojure'],
 
-    // Stylus
-    ["styl", "text/x-styl"],
+  // Stylus
+  ['styl', 'text/x-styl'],
 
-    // JSX
-    ["jsx", "text/jsx"],
+  // JSX
+  ['jsx', 'text/jsx'],
 
-    // Image
-    ["jpeg", "image/jpeg"],
-    ["jpg", "image/jpeg"],
-    ["svg", "image/svg"],
-    ["gif", "image/gif"],
-    ["webp", "image/webp"],
-    ["png", "image/png"],
-    ["ico", "image/ico"],
-    ["tiff", "image/tiff"],
-    ["tif", "image/tif"],
-    ["bmp", "image/bmp"],
+  // Image
+  ['jpeg', 'image/jpeg'], ['jpg', 'image/jpeg'], ['svg', 'image/svg'], ['gif', 'image/gif'], ['webp', 'image/webp'],
+  ['png', 'image/png'], ['ico', 'image/ico'], ['tiff', 'image/tiff'], ['tif', 'image/tif'], ['bmp', 'image/bmp'],
 
-    // Font
-    ["ttf", "font/opentype"],
-    ["otf", "font/opentype"],
-    ["ttc", "font/opentype"],
-    ["woff", "application/font-woff"]
+  // Font
+  ['ttf', 'font/opentype'], ['otf', 'font/opentype'], ['ttc', 'font/opentype'], ['woff', 'application/font-woff']
 ]);

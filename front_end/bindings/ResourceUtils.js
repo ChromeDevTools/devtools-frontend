@@ -27,66 +27,62 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @param {string} url
  * @return {?WebInspector.Resource}
  */
-WebInspector.resourceForURL = function(url)
-{
-    var targets = WebInspector.targetManager.targets(WebInspector.Target.Capability.DOM);
-    for (var i = 0; i < targets.length; ++i) {
-        var resource = WebInspector.ResourceTreeModel.fromTarget(targets[i]).resourceForURL(url);
-        if (resource)
-            return resource;
-    }
-    return null;
+WebInspector.resourceForURL = function(url) {
+  var targets = WebInspector.targetManager.targets(WebInspector.Target.Capability.DOM);
+  for (var i = 0; i < targets.length; ++i) {
+    var resource = WebInspector.ResourceTreeModel.fromTarget(targets[i]).resourceForURL(url);
+    if (resource)
+      return resource;
+  }
+  return null;
 };
 
 /**
  * @param {function(!WebInspector.Resource)} callback
  */
-WebInspector.forAllResources = function(callback)
-{
-    var targets = WebInspector.targetManager.targets(WebInspector.Target.Capability.DOM);
-    for (var i = 0; i < targets.length; ++i)
-        WebInspector.ResourceTreeModel.fromTarget(targets[i]).forAllResources(callback);
+WebInspector.forAllResources = function(callback) {
+  var targets = WebInspector.targetManager.targets(WebInspector.Target.Capability.DOM);
+  for (var i = 0; i < targets.length; ++i)
+    WebInspector.ResourceTreeModel.fromTarget(targets[i]).forAllResources(callback);
 };
 
 /**
  * @param {string} url
  * @return {string}
  */
-WebInspector.displayNameForURL = function(url)
-{
-    if (!url)
-        return "";
+WebInspector.displayNameForURL = function(url) {
+  if (!url)
+    return '';
 
-    var resource = WebInspector.resourceForURL(url);
-    if (resource)
-        return resource.displayName;
+  var resource = WebInspector.resourceForURL(url);
+  if (resource)
+    return resource.displayName;
 
-    var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(url);
-    if (uiSourceCode)
-        return uiSourceCode.displayName();
+  var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(url);
+  if (uiSourceCode)
+    return uiSourceCode.displayName();
 
-    var mainTarget = WebInspector.targetManager.mainTarget();
-    var inspectedURL = mainTarget && mainTarget.inspectedURL();
-    if (!inspectedURL)
-        return url.trimURL("");
+  var mainTarget = WebInspector.targetManager.mainTarget();
+  var inspectedURL = mainTarget && mainTarget.inspectedURL();
+  if (!inspectedURL)
+    return url.trimURL('');
 
-    var parsedURL = inspectedURL.asParsedURL();
-    var lastPathComponent = parsedURL ? parsedURL.lastPathComponent : parsedURL;
-    var index = inspectedURL.indexOf(lastPathComponent);
-    if (index !== -1 && index + lastPathComponent.length === inspectedURL.length) {
-        var baseURL = inspectedURL.substring(0, index);
-        if (url.startsWith(baseURL))
-            return url.substring(index);
-    }
+  var parsedURL = inspectedURL.asParsedURL();
+  var lastPathComponent = parsedURL ? parsedURL.lastPathComponent : parsedURL;
+  var index = inspectedURL.indexOf(lastPathComponent);
+  if (index !== -1 && index + lastPathComponent.length === inspectedURL.length) {
+    var baseURL = inspectedURL.substring(0, index);
+    if (url.startsWith(baseURL))
+      return url.substring(index);
+  }
 
-    if (!parsedURL)
-        return url;
+  if (!parsedURL)
+    return url;
 
-    var displayName = url.trimURL(parsedURL.host);
-    return displayName === "/" ? parsedURL.host + "/" : displayName;
+  var displayName = url.trimURL(parsedURL.host);
+  return displayName === '/' ? parsedURL.host + '/' : displayName;
 };

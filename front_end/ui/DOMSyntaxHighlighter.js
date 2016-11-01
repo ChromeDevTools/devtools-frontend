@@ -27,85 +27,81 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @param {string} mimeType
- * @param {boolean} stripExtraWhitespace
+ * @unrestricted
  */
-WebInspector.DOMSyntaxHighlighter = function(mimeType, stripExtraWhitespace)
-{
+WebInspector.DOMSyntaxHighlighter = class {
+  /**
+   * @param {string} mimeType
+   * @param {boolean} stripExtraWhitespace
+   */
+  constructor(mimeType, stripExtraWhitespace) {
     this._mimeType = mimeType;
     this._stripExtraWhitespace = stripExtraWhitespace;
-};
+  }
 
-WebInspector.DOMSyntaxHighlighter.prototype = {
+  /**
+   * @param {string} content
+   * @param {string} className
+   * @return {!Element}
+   */
+  createSpan(content, className) {
+    var span = createElement('span');
+    span.className = 'cm-' + className;
+    if (this._stripExtraWhitespace && className !== 'whitespace')
+      content = content.replace(/^[\n\r]*/, '').replace(/\s*$/, '');
+    span.createTextChild(content);
+    return span;
+  }
+
+  /**
+   * @param {!Element} node
+   * @return {!Promise.<undefined>}
+   */
+  syntaxHighlightNode(node) {
+    var lines = node.textContent.split('\n');
+    var plainTextStart;
+    var line;
+
+    return self.runtime.extension(WebInspector.TokenizerFactory).instance().then(processTokens.bind(this));
+
     /**
-     * @param {string} content
-     * @param {string} className
-     * @return {!Element}
+     * @param {!WebInspector.TokenizerFactory} tokenizerFactory
+     * @this {WebInspector.DOMSyntaxHighlighter}
      */
-    createSpan: function(content, className)
-    {
-        var span = createElement("span");
-        span.className = "cm-" + className;
-        if (this._stripExtraWhitespace && className !== "whitespace")
-            content = content.replace(/^[\n\r]*/, "").replace(/\s*$/, "");
-        span.createTextChild(content);
-        return span;
-    },
-
-    /**
-     * @param {!Element} node
-     * @return {!Promise.<undefined>}
-     */
-    syntaxHighlightNode: function(node)
-    {
-        var lines = node.textContent.split("\n");
-        var plainTextStart;
-        var line;
-
-        return self.runtime.extension(WebInspector.TokenizerFactory).instance().then(processTokens.bind(this));
-
-        /**
-         * @param {!WebInspector.TokenizerFactory} tokenizerFactory
-         * @this {WebInspector.DOMSyntaxHighlighter}
-         */
-        function processTokens(tokenizerFactory)
-        {
-            node.removeChildren();
-            var tokenize = tokenizerFactory.createTokenizer(this._mimeType);
-            for (var i = 0; i < lines.length; ++i) {
-                line = lines[i];
-                plainTextStart = 0;
-                tokenize(line, processToken.bind(this));
-                if (plainTextStart < line.length) {
-                    var plainText = line.substring(plainTextStart, line.length);
-                    node.createTextChild(plainText);
-                }
-                if (i < lines.length - 1)
-                    node.createTextChild("\n");
-            }
+    function processTokens(tokenizerFactory) {
+      node.removeChildren();
+      var tokenize = tokenizerFactory.createTokenizer(this._mimeType);
+      for (var i = 0; i < lines.length; ++i) {
+        line = lines[i];
+        plainTextStart = 0;
+        tokenize(line, processToken.bind(this));
+        if (plainTextStart < line.length) {
+          var plainText = line.substring(plainTextStart, line.length);
+          node.createTextChild(plainText);
         }
-
-        /**
-         * @param {string} token
-         * @param {?string} tokenType
-         * @param {number} column
-         * @param {number} newColumn
-         * @this {WebInspector.DOMSyntaxHighlighter}
-         */
-        function processToken(token, tokenType, column, newColumn)
-        {
-            if (!tokenType)
-                return;
-
-            if (column > plainTextStart) {
-                var plainText = line.substring(plainTextStart, column);
-                node.createTextChild(plainText);
-            }
-            node.appendChild(this.createSpan(token, tokenType));
-            plainTextStart = newColumn;
-        }
+        if (i < lines.length - 1)
+          node.createTextChild('\n');
+      }
     }
+
+    /**
+     * @param {string} token
+     * @param {?string} tokenType
+     * @param {number} column
+     * @param {number} newColumn
+     * @this {WebInspector.DOMSyntaxHighlighter}
+     */
+    function processToken(token, tokenType, column, newColumn) {
+      if (!tokenType)
+        return;
+
+      if (column > plainTextStart) {
+        var plainText = line.substring(plainTextStart, column);
+        node.createTextChild(plainText);
+      }
+      node.appendChild(this.createSpan(token, tokenType));
+      plainTextStart = newColumn;
+    }
+  }
 };

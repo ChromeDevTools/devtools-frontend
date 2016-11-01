@@ -27,18 +27,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.VBox}
+ * @unrestricted
  */
-WebInspector.RevisionHistoryView = function()
-{
-    WebInspector.VBox.call(this);
+WebInspector.RevisionHistoryView = class extends WebInspector.VBox {
+  constructor() {
+    super();
     this._uiSourceCodeItems = new Map();
 
     this._treeOutline = new TreeOutlineInShadow();
-    this._treeOutline.registerRequiredCSS("sources/revisionHistory.css");
+    this._treeOutline.registerRequiredCSS('sources/revisionHistory.css');
     this._treeOutline.makeDense();
     this.element.appendChild(this._treeOutline.element);
 
@@ -46,259 +44,258 @@ WebInspector.RevisionHistoryView = function()
      * @param {!WebInspector.UISourceCode} uiSourceCode
      * @this {WebInspector.RevisionHistoryView}
      */
-    function populateRevisions(uiSourceCode)
-    {
-        if (uiSourceCode.history.length)
-            this._createUISourceCodeItem(uiSourceCode);
+    function populateRevisions(uiSourceCode) {
+      if (uiSourceCode.history.length)
+        this._createUISourceCodeItem(uiSourceCode);
     }
 
     WebInspector.workspace.uiSourceCodes().forEach(populateRevisions.bind(this));
-    WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.WorkingCopyCommittedByUser, this._revisionAdded, this);
-    WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
+    WebInspector.workspace.addEventListener(
+        WebInspector.Workspace.Events.WorkingCopyCommittedByUser, this._revisionAdded, this);
+    WebInspector.workspace.addEventListener(
+        WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
     WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
-};
+  }
 
-/**
- * @param {!WebInspector.UISourceCode} uiSourceCode
- */
-WebInspector.RevisionHistoryView.showHistory = function(uiSourceCode)
-{
-    WebInspector.viewManager.showView("sources.history");
-    var historyView = /** @type {!WebInspector.RevisionHistoryView} */ (self.runtime.sharedInstance(WebInspector.RevisionHistoryView));
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   */
+  static showHistory(uiSourceCode) {
+    WebInspector.viewManager.showView('sources.history');
+    var historyView = /** @type {!WebInspector.RevisionHistoryView} */ (
+        self.runtime.sharedInstance(WebInspector.RevisionHistoryView));
     historyView._revealUISourceCode(uiSourceCode);
+  }
+
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   */
+  _createUISourceCodeItem(uiSourceCode) {
+    var uiSourceCodeItem = new TreeElement(uiSourceCode.displayName(), true);
+    uiSourceCodeItem.selectable = false;
+
+    // Insert in sorted order
+    var rootElement = this._treeOutline.rootElement();
+    for (var i = 0; i < rootElement.childCount(); ++i) {
+      if (rootElement.childAt(i).title.localeCompare(uiSourceCode.displayName()) > 0) {
+        rootElement.insertChild(uiSourceCodeItem, i);
+        break;
+      }
+    }
+    if (i === rootElement.childCount())
+      rootElement.appendChild(uiSourceCodeItem);
+
+    this._uiSourceCodeItems.set(uiSourceCode, uiSourceCodeItem);
+
+    var revisionCount = uiSourceCode.history.length;
+    for (var i = revisionCount - 1; i >= 0; --i) {
+      var revision = uiSourceCode.history[i];
+      var historyItem =
+          new WebInspector.RevisionHistoryTreeElement(revision, uiSourceCode.history[i - 1], i !== revisionCount - 1);
+      uiSourceCodeItem.appendChild(historyItem);
+    }
+
+    var linkItem = new TreeElement();
+    linkItem.selectable = false;
+    uiSourceCodeItem.appendChild(linkItem);
+
+    var revertToOriginal =
+        linkItem.listItemElement.createChild('span', 'revision-history-link revision-history-link-row');
+    revertToOriginal.textContent = WebInspector.UIString('apply original content');
+    revertToOriginal.addEventListener('click', this._revertToOriginal.bind(this, uiSourceCode));
+
+    var clearHistoryElement = uiSourceCodeItem.listItemElement.createChild('span', 'revision-history-link');
+    clearHistoryElement.textContent = WebInspector.UIString('revert');
+    clearHistoryElement.addEventListener('click', this._clearHistory.bind(this, uiSourceCode));
+    return uiSourceCodeItem;
+  }
+
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   */
+  _revertToOriginal(uiSourceCode) {
+    uiSourceCode.revertToOriginal();
+  }
+
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   */
+  _clearHistory(uiSourceCode) {
+    uiSourceCode.revertAndClearHistory(this._removeUISourceCode.bind(this));
+  }
+
+  _revisionAdded(event) {
+    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data.uiSourceCode);
+    var uiSourceCodeItem = this._uiSourceCodeItems.get(uiSourceCode);
+    if (!uiSourceCodeItem) {
+      uiSourceCodeItem = this._createUISourceCodeItem(uiSourceCode);
+      return;
+    }
+
+    var historyLength = uiSourceCode.history.length;
+    var historyItem = new WebInspector.RevisionHistoryTreeElement(
+        uiSourceCode.history[historyLength - 1], uiSourceCode.history[historyLength - 2], false);
+    if (uiSourceCodeItem.firstChild())
+      uiSourceCodeItem.firstChild().allowRevert();
+    uiSourceCodeItem.insertChild(historyItem, 0);
+  }
+
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   */
+  _revealUISourceCode(uiSourceCode) {
+    var uiSourceCodeItem = this._uiSourceCodeItems.get(uiSourceCode);
+    if (uiSourceCodeItem) {
+      uiSourceCodeItem.reveal();
+      uiSourceCodeItem.expand();
+    }
+  }
+
+  _uiSourceCodeRemoved(event) {
+    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
+    this._removeUISourceCode(uiSourceCode);
+  }
+
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   */
+  _removeUISourceCode(uiSourceCode) {
+    var uiSourceCodeItem = this._uiSourceCodeItems.get(uiSourceCode);
+    if (!uiSourceCodeItem)
+      return;
+    this._treeOutline.removeChild(uiSourceCodeItem);
+    this._uiSourceCodeItems.remove(uiSourceCode);
+  }
+
+  _projectRemoved(event) {
+    var project = event.data;
+    project.uiSourceCodes().forEach(this._removeUISourceCode.bind(this));
+  }
 };
 
-WebInspector.RevisionHistoryView.prototype = {
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     */
-    _createUISourceCodeItem: function(uiSourceCode)
-    {
-        var uiSourceCodeItem = new TreeElement(uiSourceCode.displayName(), true);
-        uiSourceCodeItem.selectable = false;
-
-        // Insert in sorted order
-        var rootElement = this._treeOutline.rootElement();
-        for (var i = 0; i < rootElement.childCount(); ++i) {
-            if (rootElement.childAt(i).title.localeCompare(uiSourceCode.displayName()) > 0) {
-                rootElement.insertChild(uiSourceCodeItem, i);
-                break;
-            }
-        }
-        if (i === rootElement.childCount())
-            rootElement.appendChild(uiSourceCodeItem);
-
-        this._uiSourceCodeItems.set(uiSourceCode, uiSourceCodeItem);
-
-        var revisionCount = uiSourceCode.history.length;
-        for (var i = revisionCount - 1; i >= 0; --i) {
-            var revision = uiSourceCode.history[i];
-            var historyItem = new WebInspector.RevisionHistoryTreeElement(revision, uiSourceCode.history[i - 1], i !== revisionCount - 1);
-            uiSourceCodeItem.appendChild(historyItem);
-        }
-
-        var linkItem = new TreeElement();
-        linkItem.selectable = false;
-        uiSourceCodeItem.appendChild(linkItem);
-
-        var revertToOriginal = linkItem.listItemElement.createChild("span", "revision-history-link revision-history-link-row");
-        revertToOriginal.textContent = WebInspector.UIString("apply original content");
-        revertToOriginal.addEventListener("click", this._revertToOriginal.bind(this, uiSourceCode));
-
-        var clearHistoryElement = uiSourceCodeItem.listItemElement.createChild("span", "revision-history-link");
-        clearHistoryElement.textContent = WebInspector.UIString("revert");
-        clearHistoryElement.addEventListener("click", this._clearHistory.bind(this, uiSourceCode));
-        return uiSourceCodeItem;
-    },
-
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     */
-    _revertToOriginal: function(uiSourceCode)
-    {
-        uiSourceCode.revertToOriginal();
-    },
-
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     */
-    _clearHistory: function(uiSourceCode)
-    {
-        uiSourceCode.revertAndClearHistory(this._removeUISourceCode.bind(this));
-    },
-
-    _revisionAdded: function(event)
-    {
-        var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data.uiSourceCode);
-        var uiSourceCodeItem = this._uiSourceCodeItems.get(uiSourceCode);
-        if (!uiSourceCodeItem) {
-            uiSourceCodeItem = this._createUISourceCodeItem(uiSourceCode);
-            return;
-        }
-
-        var historyLength = uiSourceCode.history.length;
-        var historyItem = new WebInspector.RevisionHistoryTreeElement(uiSourceCode.history[historyLength - 1], uiSourceCode.history[historyLength - 2], false);
-        if (uiSourceCodeItem.firstChild())
-            uiSourceCodeItem.firstChild().allowRevert();
-        uiSourceCodeItem.insertChild(historyItem, 0);
-    },
-
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     */
-    _revealUISourceCode: function(uiSourceCode)
-    {
-        var uiSourceCodeItem = this._uiSourceCodeItems.get(uiSourceCode);
-        if (uiSourceCodeItem) {
-            uiSourceCodeItem.reveal();
-            uiSourceCodeItem.expand();
-        }
-    },
-
-    _uiSourceCodeRemoved: function(event)
-    {
-        var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
-        this._removeUISourceCode(uiSourceCode);
-    },
-
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     */
-    _removeUISourceCode: function(uiSourceCode)
-    {
-        var uiSourceCodeItem = this._uiSourceCodeItems.get(uiSourceCode);
-        if (!uiSourceCodeItem)
-            return;
-        this._treeOutline.removeChild(uiSourceCodeItem);
-        this._uiSourceCodeItems.remove(uiSourceCode);
-    },
-
-    _projectRemoved: function(event)
-    {
-        var project = event.data;
-        project.uiSourceCodes().forEach(this._removeUISourceCode.bind(this));
-    },
-
-    __proto__: WebInspector.VBox.prototype
-};
 
 /**
- * @constructor
- * @extends {TreeElement}
- * @param {!WebInspector.Revision} revision
- * @param {!WebInspector.Revision} baseRevision
- * @param {boolean} allowRevert
+ * @unrestricted
  */
-WebInspector.RevisionHistoryTreeElement = function(revision, baseRevision, allowRevert)
-{
-    TreeElement.call(this, revision.timestamp.toLocaleTimeString(), true);
+WebInspector.RevisionHistoryTreeElement = class extends TreeElement {
+  /**
+   * @param {!WebInspector.Revision} revision
+   * @param {!WebInspector.Revision} baseRevision
+   * @param {boolean} allowRevert
+   */
+  constructor(revision, baseRevision, allowRevert) {
+    super(revision.timestamp.toLocaleTimeString(), true);
     this.selectable = false;
 
     this._revision = revision;
     this._baseRevision = baseRevision;
 
-    this._revertElement = createElement("span");
-    this._revertElement.className = "revision-history-link";
-    this._revertElement.textContent = WebInspector.UIString("apply revision content");
-    this._revertElement.addEventListener("click", event => {this._revision.revertToThis();}, false);
+    this._revertElement = createElement('span');
+    this._revertElement.className = 'revision-history-link';
+    this._revertElement.textContent = WebInspector.UIString('apply revision content');
+    this._revertElement.addEventListener('click', event => {
+      this._revision.revertToThis();
+    }, false);
     if (!allowRevert)
-        this._revertElement.classList.add("hidden");
-};
+      this._revertElement.classList.add('hidden');
+  }
 
-WebInspector.RevisionHistoryTreeElement.prototype = {
-    onattach: function()
-    {
-        this.listItemElement.classList.add("revision-history-revision");
-    },
+  /**
+   * @override
+   */
+  onattach() {
+    this.listItemElement.classList.add('revision-history-revision');
+  }
 
-    onpopulate: function()
-    {
-        this.listItemElement.appendChild(this._revertElement);
+  /**
+   * @override
+   */
+  onpopulate() {
+    this.listItemElement.appendChild(this._revertElement);
 
-        this.childrenListElement.classList.add("source-code");
-        Promise.all([
-            this._baseRevision ? this._baseRevision.requestContent() : this._revision.uiSourceCode.requestOriginalContent(),
-            this._revision.requestContent()
-        ]).spread(diff.bind(this));
-
-        /**
-         * @param {?string} baseContent
-         * @param {?string} newContent
-         * @this {WebInspector.RevisionHistoryTreeElement}
-         */
-        function diff(baseContent, newContent)
-        {
-            var baseLines = baseContent.split("\n");
-            var newLines = newContent.split("\n");
-            var opcodes = WebInspector.Diff.lineDiff(baseLines, newLines);
-            var lastWasSeparator = false;
-
-            var baseLineNumber = 0;
-            var newLineNumber = 0;
-            for (var idx = 0; idx < opcodes.length; idx++) {
-                var code = opcodes[idx][0];
-                var rowCount = opcodes[idx][1].length;
-                if (code === WebInspector.Diff.Operation.Equal) {
-                    baseLineNumber += rowCount;
-                    newLineNumber += rowCount;
-                    if (!lastWasSeparator)
-                        this._createLine(null, null, "    \u2026", "separator");
-                    lastWasSeparator = true;
-                } else if (code === WebInspector.Diff.Operation.Delete) {
-                    lastWasSeparator = false;
-                    for (var i = 0; i < rowCount; ++i)
-                        this._createLine(baseLineNumber + i, null, baseLines[baseLineNumber + i], "removed");
-                    baseLineNumber += rowCount;
-                } else if (code === WebInspector.Diff.Operation.Insert) {
-                    lastWasSeparator = false;
-                    for (var i = 0; i < rowCount; ++i)
-                        this._createLine(null, newLineNumber + i, newLines[newLineNumber + i], "added");
-                    newLineNumber += rowCount;
-                }
-            }
-        }
-    },
-
-    oncollapse: function()
-    {
-        this._revertElement.remove();
-    },
+    this.childrenListElement.classList.add('source-code');
+    Promise
+        .all([
+          this._baseRevision ? this._baseRevision.requestContent() :
+                               this._revision.uiSourceCode.requestOriginalContent(),
+          this._revision.requestContent()
+        ])
+        .spread(diff.bind(this));
 
     /**
-     * @param {?number} baseLineNumber
-     * @param {?number} newLineNumber
-     * @param {string} lineContent
-     * @param {string} changeType
+     * @param {?string} baseContent
+     * @param {?string} newContent
+     * @this {WebInspector.RevisionHistoryTreeElement}
      */
-    _createLine: function(baseLineNumber, newLineNumber, lineContent, changeType)
-    {
-        var child = new TreeElement();
-        child.selectable = false;
-        this.appendChild(child);
+    function diff(baseContent, newContent) {
+      var baseLines = baseContent.split('\n');
+      var newLines = newContent.split('\n');
+      var opcodes = WebInspector.Diff.lineDiff(baseLines, newLines);
+      var lastWasSeparator = false;
 
-        function appendLineNumber(lineNumber)
-        {
-            var numberString = lineNumber !== null ? numberToStringWithSpacesPadding(lineNumber + 1, 4) : spacesPadding(4);
-            var lineNumberSpan = createElement("span");
-            lineNumberSpan.classList.add("webkit-line-number");
-            lineNumberSpan.textContent = numberString;
-            child.listItemElement.appendChild(lineNumberSpan);
+      var baseLineNumber = 0;
+      var newLineNumber = 0;
+      for (var idx = 0; idx < opcodes.length; idx++) {
+        var code = opcodes[idx][0];
+        var rowCount = opcodes[idx][1].length;
+        if (code === WebInspector.Diff.Operation.Equal) {
+          baseLineNumber += rowCount;
+          newLineNumber += rowCount;
+          if (!lastWasSeparator)
+            this._createLine(null, null, '    \u2026', 'separator');
+          lastWasSeparator = true;
+        } else if (code === WebInspector.Diff.Operation.Delete) {
+          lastWasSeparator = false;
+          for (var i = 0; i < rowCount; ++i)
+            this._createLine(baseLineNumber + i, null, baseLines[baseLineNumber + i], 'removed');
+          baseLineNumber += rowCount;
+        } else if (code === WebInspector.Diff.Operation.Insert) {
+          lastWasSeparator = false;
+          for (var i = 0; i < rowCount; ++i)
+            this._createLine(null, newLineNumber + i, newLines[newLineNumber + i], 'added');
+          newLineNumber += rowCount;
         }
+      }
+    }
+  }
 
-        appendLineNumber(baseLineNumber);
-        appendLineNumber(newLineNumber);
+  /**
+   * @override
+   */
+  oncollapse() {
+    this._revertElement.remove();
+  }
 
-        var contentSpan = createElement("span");
-        contentSpan.textContent = lineContent;
-        child.listItemElement.appendChild(contentSpan);
-        child.listItemElement.classList.add("revision-history-line");
-        contentSpan.classList.add("revision-history-line-" + changeType);
-    },
+  /**
+   * @param {?number} baseLineNumber
+   * @param {?number} newLineNumber
+   * @param {string} lineContent
+   * @param {string} changeType
+   */
+  _createLine(baseLineNumber, newLineNumber, lineContent, changeType) {
+    var child = new TreeElement();
+    child.selectable = false;
+    this.appendChild(child);
 
-    allowRevert: function()
-    {
-        this._revertElement.classList.remove("hidden");
-    },
+    function appendLineNumber(lineNumber) {
+      var numberString = lineNumber !== null ? numberToStringWithSpacesPadding(lineNumber + 1, 4) : spacesPadding(4);
+      var lineNumberSpan = createElement('span');
+      lineNumberSpan.classList.add('webkit-line-number');
+      lineNumberSpan.textContent = numberString;
+      child.listItemElement.appendChild(lineNumberSpan);
+    }
 
-    __proto__: TreeElement.prototype
+    appendLineNumber(baseLineNumber);
+    appendLineNumber(newLineNumber);
+
+    var contentSpan = createElement('span');
+    contentSpan.textContent = lineContent;
+    child.listItemElement.appendChild(contentSpan);
+    child.listItemElement.classList.add('revision-history-line');
+    contentSpan.classList.add('revision-history-line-' + changeType);
+  }
+
+  allowRevert() {
+    this._revertElement.classList.remove('hidden');
+  }
 };

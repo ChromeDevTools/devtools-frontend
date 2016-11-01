@@ -27,584 +27,545 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
-  * @constructor
-  * @extends {WebInspector.SDKModel}
-  */
-WebInspector.LayerTreeModel = function(target)
-{
-    WebInspector.SDKModel.call(this, WebInspector.LayerTreeModel, target);
+ * @unrestricted
+ */
+WebInspector.LayerTreeModel = class extends WebInspector.SDKModel {
+  constructor(target) {
+    super(WebInspector.LayerTreeModel, target);
     target.registerLayerTreeDispatcher(new WebInspector.LayerTreeDispatcher(this));
-    WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
+    WebInspector.targetManager.addEventListener(
+        WebInspector.TargetManager.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
     /** @type {?WebInspector.LayerTreeBase} */
     this._layerTree = null;
+  }
+
+  /**
+   * @param {!WebInspector.Target} target
+   * @return {?WebInspector.LayerTreeModel}
+   */
+  static fromTarget(target) {
+    if (!target.hasDOMCapability())
+      return null;
+
+    var model = /** @type {?WebInspector.LayerTreeModel} */ (target.model(WebInspector.LayerTreeModel));
+    if (!model)
+      model = new WebInspector.LayerTreeModel(target);
+    return model;
+  }
+
+  disable() {
+    if (!this._enabled)
+      return;
+    this._enabled = false;
+    this.target().layerTreeAgent().disable();
+  }
+
+  enable() {
+    if (this._enabled)
+      return;
+    this._enabled = true;
+    this._forceEnable();
+  }
+
+  _forceEnable() {
+    this._lastPaintRectByLayerId = {};
+    if (!this._layerTree)
+      this._layerTree = new WebInspector.AgentLayerTree(this.target());
+    this.target().layerTreeAgent().enable();
+  }
+
+  /**
+   * @return {?WebInspector.LayerTreeBase}
+   */
+  layerTree() {
+    return this._layerTree;
+  }
+
+  /**
+   * @param {?Array.<!LayerTreeAgent.Layer>} layers
+   */
+  _layerTreeChanged(layers) {
+    if (!this._enabled)
+      return;
+    var layerTree = /** @type {!WebInspector.AgentLayerTree} */ (this._layerTree);
+    layerTree.setLayers(layers, onLayersSet.bind(this));
+
+    /**
+     * @this {WebInspector.LayerTreeModel}
+     */
+    function onLayersSet() {
+      for (var layerId in this._lastPaintRectByLayerId) {
+        var lastPaintRect = this._lastPaintRectByLayerId[layerId];
+        var layer = layerTree.layerById(layerId);
+        if (layer)
+          layer._lastPaintRect = lastPaintRect;
+      }
+      this._lastPaintRectByLayerId = {};
+
+      this.dispatchEventToListeners(WebInspector.LayerTreeModel.Events.LayerTreeChanged);
+    }
+  }
+
+  /**
+   * @param {!LayerTreeAgent.LayerId} layerId
+   * @param {!DOMAgent.Rect} clipRect
+   */
+  _layerPainted(layerId, clipRect) {
+    if (!this._enabled)
+      return;
+    var layerTree = /** @type {!WebInspector.AgentLayerTree} */ (this._layerTree);
+    var layer = layerTree.layerById(layerId);
+    if (!layer) {
+      this._lastPaintRectByLayerId[layerId] = clipRect;
+      return;
+    }
+    layer._didPaint(clipRect);
+    this.dispatchEventToListeners(WebInspector.LayerTreeModel.Events.LayerPainted, layer);
+  }
+
+  _onMainFrameNavigated() {
+    this._layerTree = null;
+    if (this._enabled)
+      this._forceEnable();
+  }
 };
 
 /** @enum {symbol} */
 WebInspector.LayerTreeModel.Events = {
-    LayerTreeChanged: Symbol("LayerTreeChanged"),
-    LayerPainted: Symbol("LayerPainted"),
-};
-
-WebInspector.LayerTreeModel.prototype = {
-    disable: function()
-    {
-        if (!this._enabled)
-            return;
-        this._enabled = false;
-        this.target().layerTreeAgent().disable();
-    },
-
-    enable: function()
-    {
-        if (this._enabled)
-            return;
-        this._enabled = true;
-        this._forceEnable();
-    },
-
-    _forceEnable: function()
-    {
-        this._lastPaintRectByLayerId = {};
-        if (!this._layerTree)
-            this._layerTree = new WebInspector.AgentLayerTree(this.target());
-        this.target().layerTreeAgent().enable();
-    },
-
-    /**
-     * @return {?WebInspector.LayerTreeBase}
-     */
-    layerTree: function()
-    {
-        return this._layerTree;
-    },
-
-    /**
-     * @param {?Array.<!LayerTreeAgent.Layer>} layers
-     */
-    _layerTreeChanged: function(layers)
-    {
-        if (!this._enabled)
-            return;
-        var layerTree = /** @type {!WebInspector.AgentLayerTree} */ (this._layerTree);
-        layerTree.setLayers(layers, onLayersSet.bind(this));
-
-        /**
-         * @this {WebInspector.LayerTreeModel}
-         */
-        function onLayersSet()
-        {
-            for (var layerId in this._lastPaintRectByLayerId) {
-                var lastPaintRect = this._lastPaintRectByLayerId[layerId];
-                var layer = layerTree.layerById(layerId);
-                if (layer)
-                    layer._lastPaintRect = lastPaintRect;
-            }
-            this._lastPaintRectByLayerId = {};
-
-            this.dispatchEventToListeners(WebInspector.LayerTreeModel.Events.LayerTreeChanged);
-        }
-    },
-
-    /**
-     * @param {!LayerTreeAgent.LayerId} layerId
-     * @param {!DOMAgent.Rect} clipRect
-     */
-    _layerPainted: function(layerId, clipRect)
-    {
-        if (!this._enabled)
-            return;
-        var layerTree = /** @type {!WebInspector.AgentLayerTree} */ (this._layerTree);
-        var layer = layerTree.layerById(layerId);
-        if (!layer) {
-            this._lastPaintRectByLayerId[layerId] = clipRect;
-            return;
-        }
-        layer._didPaint(clipRect);
-        this.dispatchEventToListeners(WebInspector.LayerTreeModel.Events.LayerPainted, layer);
-    },
-
-    _onMainFrameNavigated: function()
-    {
-        this._layerTree = null;
-        if (this._enabled)
-            this._forceEnable();
-    },
-
-    __proto__: WebInspector.SDKModel.prototype
+  LayerTreeChanged: Symbol('LayerTreeChanged'),
+  LayerPainted: Symbol('LayerPainted'),
 };
 
 /**
-  * @constructor
-  * @param {?WebInspector.Target} target
-  * @extends {WebInspector.LayerTreeBase}
-  */
-WebInspector.AgentLayerTree = function(target)
-{
-    WebInspector.LayerTreeBase.call(this, target);
-};
-
-WebInspector.AgentLayerTree.prototype = {
-    /**
-     * @param {?Array.<!LayerTreeAgent.Layer>} payload
-     * @param {function()} callback
-     */
-    setLayers: function(payload, callback)
-    {
-        if (!payload) {
-            onBackendNodeIdsResolved.call(this);
-            return;
-        }
-
-        var idsToResolve = new Set();
-        for (var i = 0; i < payload.length; ++i) {
-            var backendNodeId = payload[i].backendNodeId;
-            if (!backendNodeId || this._backendNodeIdToNode.has(backendNodeId))
-                continue;
-            idsToResolve.add(backendNodeId);
-        }
-        this._resolveBackendNodeIds(idsToResolve, onBackendNodeIdsResolved.bind(this));
-
-        /**
-         * @this {WebInspector.AgentLayerTree}
-         */
-        function onBackendNodeIdsResolved()
-        {
-            this._innerSetLayers(payload);
-            callback();
-        }
-    },
-
-    /**
-     * @param {?Array.<!LayerTreeAgent.Layer>} layers
-     */
-    _innerSetLayers: function(layers)
-    {
-        this.setRoot(null);
-        this.setContentRoot(null);
-        // Payload will be null when not in the composited mode.
-        if (!layers)
-            return;
-        var root;
-        var oldLayersById = this._layersById;
-        this._layersById = {};
-        for (var i = 0; i < layers.length; ++i) {
-            var layerId = layers[i].layerId;
-            var layer = oldLayersById[layerId];
-            if (layer)
-                layer._reset(layers[i]);
-            else
-                layer = new WebInspector.AgentLayer(this._target, layers[i]);
-            this._layersById[layerId] = layer;
-            var backendNodeId = layers[i].backendNodeId;
-            if (backendNodeId)
-                layer._setNode(this._backendNodeIdToNode.get(backendNodeId));
-            if (!this.contentRoot() && layer.drawsContent())
-                this.setContentRoot(layer);
-            var parentId = layer.parentId();
-            if (parentId) {
-                var parent = this._layersById[parentId];
-                if (!parent)
-                    console.assert(parent, "missing parent " + parentId + " for layer " + layerId);
-                parent.addChild(layer);
-            } else {
-                if (root)
-                    console.assert(false, "Multiple root layers");
-                root = layer;
-            }
-        }
-        if (root) {
-            this.setRoot(root);
-            root._calculateQuad(new WebKitCSSMatrix());
-        }
-    },
-
-    __proto__: WebInspector.LayerTreeBase.prototype
-};
-
-/**
- * @constructor
- * @implements {WebInspector.Layer}
- * @param {?WebInspector.Target} target
- * @param {!LayerTreeAgent.Layer} layerPayload
+ * @unrestricted
  */
-WebInspector.AgentLayer = function(target, layerPayload)
-{
+WebInspector.AgentLayerTree = class extends WebInspector.LayerTreeBase {
+  /**
+   * @param {?WebInspector.Target} target
+   */
+  constructor(target) {
+    super(target);
+  }
+
+  /**
+   * @param {?Array.<!LayerTreeAgent.Layer>} payload
+   * @param {function()} callback
+   */
+  setLayers(payload, callback) {
+    if (!payload) {
+      onBackendNodeIdsResolved.call(this);
+      return;
+    }
+
+    var idsToResolve = new Set();
+    for (var i = 0; i < payload.length; ++i) {
+      var backendNodeId = payload[i].backendNodeId;
+      if (!backendNodeId || this._backendNodeIdToNode.has(backendNodeId))
+        continue;
+      idsToResolve.add(backendNodeId);
+    }
+    this._resolveBackendNodeIds(idsToResolve, onBackendNodeIdsResolved.bind(this));
+
+    /**
+     * @this {WebInspector.AgentLayerTree}
+     */
+    function onBackendNodeIdsResolved() {
+      this._innerSetLayers(payload);
+      callback();
+    }
+  }
+
+  /**
+   * @param {?Array.<!LayerTreeAgent.Layer>} layers
+   */
+  _innerSetLayers(layers) {
+    this.setRoot(null);
+    this.setContentRoot(null);
+    // Payload will be null when not in the composited mode.
+    if (!layers)
+      return;
+    var root;
+    var oldLayersById = this._layersById;
+    this._layersById = {};
+    for (var i = 0; i < layers.length; ++i) {
+      var layerId = layers[i].layerId;
+      var layer = oldLayersById[layerId];
+      if (layer)
+        layer._reset(layers[i]);
+      else
+        layer = new WebInspector.AgentLayer(this._target, layers[i]);
+      this._layersById[layerId] = layer;
+      var backendNodeId = layers[i].backendNodeId;
+      if (backendNodeId)
+        layer._setNode(this._backendNodeIdToNode.get(backendNodeId));
+      if (!this.contentRoot() && layer.drawsContent())
+        this.setContentRoot(layer);
+      var parentId = layer.parentId();
+      if (parentId) {
+        var parent = this._layersById[parentId];
+        if (!parent)
+          console.assert(parent, 'missing parent ' + parentId + ' for layer ' + layerId);
+        parent.addChild(layer);
+      } else {
+        if (root)
+          console.assert(false, 'Multiple root layers');
+        root = layer;
+      }
+    }
+    if (root) {
+      this.setRoot(root);
+      root._calculateQuad(new WebKitCSSMatrix());
+    }
+  }
+};
+
+/**
+ * @implements {WebInspector.Layer}
+ * @unrestricted
+ */
+WebInspector.AgentLayer = class {
+  /**
+   * @param {?WebInspector.Target} target
+   * @param {!LayerTreeAgent.Layer} layerPayload
+   */
+  constructor(target, layerPayload) {
     this._target = target;
     this._reset(layerPayload);
-};
+  }
 
-WebInspector.AgentLayer.prototype = {
-    /**
-     * @override
-     * @return {string}
-     */
-    id: function()
-    {
-        return this._layerPayload.layerId;
-    },
+  /**
+   * @override
+   * @return {string}
+   */
+  id() {
+    return this._layerPayload.layerId;
+  }
 
-    /**
-     * @override
-     * @return {?string}
-     */
-    parentId: function()
-    {
-        return this._layerPayload.parentLayerId;
-    },
+  /**
+   * @override
+   * @return {?string}
+   */
+  parentId() {
+    return this._layerPayload.parentLayerId;
+  }
 
-    /**
-     * @override
-     * @return {?WebInspector.Layer}
-     */
-    parent: function()
-    {
-        return this._parent;
-    },
+  /**
+   * @override
+   * @return {?WebInspector.Layer}
+   */
+  parent() {
+    return this._parent;
+  }
 
-    /**
-     * @override
-     * @return {boolean}
-     */
-    isRoot: function()
-    {
-        return !this.parentId();
-    },
+  /**
+   * @override
+   * @return {boolean}
+   */
+  isRoot() {
+    return !this.parentId();
+  }
 
-    /**
-     * @override
-     * @return {!Array.<!WebInspector.Layer>}
-     */
-    children: function()
-    {
-        return this._children;
-    },
+  /**
+   * @override
+   * @return {!Array.<!WebInspector.Layer>}
+   */
+  children() {
+    return this._children;
+  }
 
-    /**
-     * @override
-     * @param {!WebInspector.Layer} child
-     */
-    addChild: function(child)
-    {
-        if (child._parent)
-            console.assert(false, "Child already has a parent");
-        this._children.push(child);
-        child._parent = this;
-    },
+  /**
+   * @override
+   * @param {!WebInspector.Layer} child
+   */
+  addChild(child) {
+    if (child._parent)
+      console.assert(false, 'Child already has a parent');
+    this._children.push(child);
+    child._parent = this;
+  }
 
-    /**
-     * @param {?WebInspector.DOMNode} node
-     */
-    _setNode: function(node)
-    {
-        this._node = node;
-    },
+  /**
+   * @param {?WebInspector.DOMNode} node
+   */
+  _setNode(node) {
+    this._node = node;
+  }
 
-    /**
-     * @override
-     * @return {?WebInspector.DOMNode}
-     */
-    node: function()
-    {
-        return this._node;
-    },
+  /**
+   * @override
+   * @return {?WebInspector.DOMNode}
+   */
+  node() {
+    return this._node;
+  }
 
-    /**
-     * @override
-     * @return {?WebInspector.DOMNode}
-     */
-    nodeForSelfOrAncestor: function()
-    {
-        for (var layer = this; layer; layer = layer._parent) {
-            if (layer._node)
-                return layer._node;
-        }
-        return null;
-    },
-
-    /**
-     * @override
-     * @return {number}
-     */
-    offsetX: function()
-    {
-        return this._layerPayload.offsetX;
-    },
-
-    /**
-     * @override
-     * @return {number}
-     */
-    offsetY: function()
-    {
-        return this._layerPayload.offsetY;
-    },
-
-    /**
-     * @override
-     * @return {number}
-     */
-    width: function()
-    {
-        return this._layerPayload.width;
-    },
-
-    /**
-     * @override
-     * @return {number}
-     */
-    height: function()
-    {
-        return this._layerPayload.height;
-    },
-
-    /**
-     * @override
-     * @return {?Array.<number>}
-     */
-    transform: function()
-    {
-        return this._layerPayload.transform;
-    },
-
-    /**
-     * @override
-     * @return {!Array.<number>}
-     */
-    quad: function()
-    {
-        return this._quad;
-    },
-
-    /**
-     * @override
-     * @return {!Array.<number>}
-     */
-    anchorPoint: function()
-    {
-        return [
-            this._layerPayload.anchorX || 0,
-            this._layerPayload.anchorY || 0,
-            this._layerPayload.anchorZ || 0,
-        ];
-    },
-
-    /**
-     * @override
-     * @return {boolean}
-     */
-    invisible: function()
-    {
-        return this._layerPayload.invisible;
-    },
-
-    /**
-     * @override
-     * @return {number}
-     */
-    paintCount: function()
-    {
-        return this._paintCount || this._layerPayload.paintCount;
-    },
-
-    /**
-     * @override
-     * @return {?DOMAgent.Rect}
-     */
-    lastPaintRect: function()
-    {
-        return this._lastPaintRect;
-    },
-
-    /**
-     * @override
-     * @return {!Array.<!LayerTreeAgent.ScrollRect>}
-     */
-    scrollRects: function()
-    {
-        return this._scrollRects;
-    },
-
-    /**
-     * @override
-     * @param {function(!Array.<string>)} callback
-     */
-    requestCompositingReasons: function(callback)
-    {
-        if (!this._target) {
-            callback([]);
-            return;
-        }
-
-        var wrappedCallback = InspectorBackend.wrapClientCallback(callback, "LayerTreeAgent.reasonsForCompositingLayer(): ", undefined, []);
-        this._target.layerTreeAgent().compositingReasons(this.id(), wrappedCallback);
-    },
-
-    /**
-     * @override
-     * @return {boolean}
-     */
-    drawsContent: function()
-    {
-        return this._layerPayload.drawsContent;
-    },
-
-    /**
-     * @override
-     * @return {number}
-     */
-    gpuMemoryUsage: function()
-    {
-        /**
-         * @const
-         */
-        var bytesPerPixel = 4;
-        return this.drawsContent() ? this.width() * this.height() * bytesPerPixel : 0;
-    },
-
-    /**
-     * @override
-     * @return {!Array<!Promise<?WebInspector.SnapshotWithRect>>}
-     */
-    snapshots: function()
-    {
-        var rect = {x: 0, y: 0, width: this.width(), height: this.height()};
-        var promise = this._target.layerTreeAgent().makeSnapshot(this.id(),
-            (error, snapshotId) => error || !this._target ? null : {rect: rect, snapshot: new WebInspector.PaintProfilerSnapshot(this._target, snapshotId)});
-        return [promise];
-    },
-
-    /**
-     * @param {!DOMAgent.Rect} rect
-     */
-    _didPaint: function(rect)
-    {
-        this._lastPaintRect = rect;
-        this._paintCount = this.paintCount() + 1;
-        this._image = null;
-    },
-
-    /**
-     * @param {!LayerTreeAgent.Layer} layerPayload
-     */
-    _reset: function(layerPayload)
-    {
-        /** @type {?WebInspector.DOMNode} */
-        this._node = null;
-        this._children = [];
-        this._parent = null;
-        this._paintCount = 0;
-        this._layerPayload = layerPayload;
-        this._image = null;
-        this._scrollRects = this._layerPayload.scrollRects || [];
-    },
-
-    /**
-     * @param {!Array.<number>} a
-     * @return {!CSSMatrix}
-     */
-    _matrixFromArray: function(a)
-    {
-        function toFixed9(x) { return x.toFixed(9); }
-        return new WebKitCSSMatrix("matrix3d(" + a.map(toFixed9).join(",") + ")");
-    },
-
-    /**
-     * @param {!CSSMatrix} parentTransform
-     * @return {!CSSMatrix}
-     */
-    _calculateTransformToViewport: function(parentTransform)
-    {
-        var offsetMatrix = new WebKitCSSMatrix().translate(this._layerPayload.offsetX, this._layerPayload.offsetY);
-        var matrix = offsetMatrix;
-
-        if (this._layerPayload.transform) {
-            var transformMatrix = this._matrixFromArray(this._layerPayload.transform);
-            var anchorVector = new WebInspector.Geometry.Vector(this._layerPayload.width * this.anchorPoint()[0], this._layerPayload.height * this.anchorPoint()[1], this.anchorPoint()[2]);
-            var anchorPoint = WebInspector.Geometry.multiplyVectorByMatrixAndNormalize(anchorVector, matrix);
-            var anchorMatrix = new WebKitCSSMatrix().translate(-anchorPoint.x, -anchorPoint.y, -anchorPoint.z);
-            matrix = anchorMatrix.inverse().multiply(transformMatrix.multiply(anchorMatrix.multiply(matrix)));
-        }
-
-        matrix = parentTransform.multiply(matrix);
-        return matrix;
-    },
-
-    /**
-     * @param {number} width
-     * @param {number} height
-     * @return {!Array.<number>}
-     */
-    _createVertexArrayForRect: function(width, height)
-    {
-        return [0, 0, 0, width, 0, 0, width, height, 0, 0, height, 0];
-    },
-
-    /**
-     * @param {!CSSMatrix} parentTransform
-     */
-    _calculateQuad: function(parentTransform)
-    {
-        var matrix = this._calculateTransformToViewport(parentTransform);
-        this._quad = [];
-        var vertices = this._createVertexArrayForRect(this._layerPayload.width, this._layerPayload.height);
-        for (var i = 0; i < 4; ++i) {
-            var point = WebInspector.Geometry.multiplyVectorByMatrixAndNormalize(new WebInspector.Geometry.Vector(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]), matrix);
-            this._quad.push(point.x, point.y);
-        }
-
-        function calculateQuadForLayer(layer)
-        {
-            layer._calculateQuad(matrix);
-        }
-
-        this._children.forEach(calculateQuadForLayer);
+  /**
+   * @override
+   * @return {?WebInspector.DOMNode}
+   */
+  nodeForSelfOrAncestor() {
+    for (var layer = this; layer; layer = layer._parent) {
+      if (layer._node)
+        return layer._node;
     }
+    return null;
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  offsetX() {
+    return this._layerPayload.offsetX;
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  offsetY() {
+    return this._layerPayload.offsetY;
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  width() {
+    return this._layerPayload.width;
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  height() {
+    return this._layerPayload.height;
+  }
+
+  /**
+   * @override
+   * @return {?Array.<number>}
+   */
+  transform() {
+    return this._layerPayload.transform;
+  }
+
+  /**
+   * @override
+   * @return {!Array.<number>}
+   */
+  quad() {
+    return this._quad;
+  }
+
+  /**
+   * @override
+   * @return {!Array.<number>}
+   */
+  anchorPoint() {
+    return [
+      this._layerPayload.anchorX || 0,
+      this._layerPayload.anchorY || 0,
+      this._layerPayload.anchorZ || 0,
+    ];
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  invisible() {
+    return this._layerPayload.invisible;
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  paintCount() {
+    return this._paintCount || this._layerPayload.paintCount;
+  }
+
+  /**
+   * @override
+   * @return {?DOMAgent.Rect}
+   */
+  lastPaintRect() {
+    return this._lastPaintRect;
+  }
+
+  /**
+   * @override
+   * @return {!Array.<!LayerTreeAgent.ScrollRect>}
+   */
+  scrollRects() {
+    return this._scrollRects;
+  }
+
+  /**
+   * @override
+   * @param {function(!Array.<string>)} callback
+   */
+  requestCompositingReasons(callback) {
+    if (!this._target) {
+      callback([]);
+      return;
+    }
+
+    var wrappedCallback =
+        InspectorBackend.wrapClientCallback(callback, 'LayerTreeAgent.reasonsForCompositingLayer(): ', undefined, []);
+    this._target.layerTreeAgent().compositingReasons(this.id(), wrappedCallback);
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  drawsContent() {
+    return this._layerPayload.drawsContent;
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  gpuMemoryUsage() {
+    /**
+     * @const
+     */
+    var bytesPerPixel = 4;
+    return this.drawsContent() ? this.width() * this.height() * bytesPerPixel : 0;
+  }
+
+  /**
+   * @override
+   * @return {!Array<!Promise<?WebInspector.SnapshotWithRect>>}
+   */
+  snapshots() {
+    var rect = {x: 0, y: 0, width: this.width(), height: this.height()};
+    var promise = this._target.layerTreeAgent().makeSnapshot(
+        this.id(), (error, snapshotId) => error || !this._target ?
+            null :
+            {rect: rect, snapshot: new WebInspector.PaintProfilerSnapshot(this._target, snapshotId)});
+    return [promise];
+  }
+
+  /**
+   * @param {!DOMAgent.Rect} rect
+   */
+  _didPaint(rect) {
+    this._lastPaintRect = rect;
+    this._paintCount = this.paintCount() + 1;
+    this._image = null;
+  }
+
+  /**
+   * @param {!LayerTreeAgent.Layer} layerPayload
+   */
+  _reset(layerPayload) {
+    /** @type {?WebInspector.DOMNode} */
+    this._node = null;
+    this._children = [];
+    this._parent = null;
+    this._paintCount = 0;
+    this._layerPayload = layerPayload;
+    this._image = null;
+    this._scrollRects = this._layerPayload.scrollRects || [];
+  }
+
+  /**
+   * @param {!Array.<number>} a
+   * @return {!CSSMatrix}
+   */
+  _matrixFromArray(a) {
+    function toFixed9(x) {
+      return x.toFixed(9);
+    }
+    return new WebKitCSSMatrix('matrix3d(' + a.map(toFixed9).join(',') + ')');
+  }
+
+  /**
+   * @param {!CSSMatrix} parentTransform
+   * @return {!CSSMatrix}
+   */
+  _calculateTransformToViewport(parentTransform) {
+    var offsetMatrix = new WebKitCSSMatrix().translate(this._layerPayload.offsetX, this._layerPayload.offsetY);
+    var matrix = offsetMatrix;
+
+    if (this._layerPayload.transform) {
+      var transformMatrix = this._matrixFromArray(this._layerPayload.transform);
+      var anchorVector = new WebInspector.Geometry.Vector(
+          this._layerPayload.width * this.anchorPoint()[0], this._layerPayload.height * this.anchorPoint()[1],
+          this.anchorPoint()[2]);
+      var anchorPoint = WebInspector.Geometry.multiplyVectorByMatrixAndNormalize(anchorVector, matrix);
+      var anchorMatrix = new WebKitCSSMatrix().translate(-anchorPoint.x, -anchorPoint.y, -anchorPoint.z);
+      matrix = anchorMatrix.inverse().multiply(transformMatrix.multiply(anchorMatrix.multiply(matrix)));
+    }
+
+    matrix = parentTransform.multiply(matrix);
+    return matrix;
+  }
+
+  /**
+   * @param {number} width
+   * @param {number} height
+   * @return {!Array.<number>}
+   */
+  _createVertexArrayForRect(width, height) {
+    return [0, 0, 0, width, 0, 0, width, height, 0, 0, height, 0];
+  }
+
+  /**
+   * @param {!CSSMatrix} parentTransform
+   */
+  _calculateQuad(parentTransform) {
+    var matrix = this._calculateTransformToViewport(parentTransform);
+    this._quad = [];
+    var vertices = this._createVertexArrayForRect(this._layerPayload.width, this._layerPayload.height);
+    for (var i = 0; i < 4; ++i) {
+      var point = WebInspector.Geometry.multiplyVectorByMatrixAndNormalize(
+          new WebInspector.Geometry.Vector(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]), matrix);
+      this._quad.push(point.x, point.y);
+    }
+
+    function calculateQuadForLayer(layer) {
+      layer._calculateQuad(matrix);
+    }
+
+    this._children.forEach(calculateQuadForLayer);
+  }
 };
 
 /**
- * @constructor
  * @implements {LayerTreeAgent.Dispatcher}
- * @param {!WebInspector.LayerTreeModel} layerTreeModel
+ * @unrestricted
  */
-WebInspector.LayerTreeDispatcher = function(layerTreeModel)
-{
+WebInspector.LayerTreeDispatcher = class {
+  /**
+   * @param {!WebInspector.LayerTreeModel} layerTreeModel
+   */
+  constructor(layerTreeModel) {
     this._layerTreeModel = layerTreeModel;
+  }
+
+  /**
+   * @override
+   * @param {!Array.<!LayerTreeAgent.Layer>=} layers
+   */
+  layerTreeDidChange(layers) {
+    this._layerTreeModel._layerTreeChanged(layers || null);
+  }
+
+  /**
+   * @override
+   * @param {!LayerTreeAgent.LayerId} layerId
+   * @param {!DOMAgent.Rect} clipRect
+   */
+  layerPainted(layerId, clipRect) {
+    this._layerTreeModel._layerPainted(layerId, clipRect);
+  }
 };
 
-WebInspector.LayerTreeDispatcher.prototype = {
-    /**
-     * @override
-     * @param {!Array.<!LayerTreeAgent.Layer>=} layers
-     */
-    layerTreeDidChange: function(layers)
-    {
-        this._layerTreeModel._layerTreeChanged(layers || null);
-    },
 
-    /**
-     * @override
-     * @param {!LayerTreeAgent.LayerId} layerId
-     * @param {!DOMAgent.Rect} clipRect
-     */
-    layerPainted: function(layerId, clipRect)
-    {
-        this._layerTreeModel._layerPainted(layerId, clipRect);
-    }
-};
-
-/**
- * @param {!WebInspector.Target} target
- * @return {?WebInspector.LayerTreeModel}
- */
-WebInspector.LayerTreeModel.fromTarget = function(target)
-{
-    if (!target.hasDOMCapability())
-        return null;
-
-    var model = /** @type {?WebInspector.LayerTreeModel} */ (target.model(WebInspector.LayerTreeModel));
-    if (!model)
-        model = new WebInspector.LayerTreeModel(target);
-    return model;
-};

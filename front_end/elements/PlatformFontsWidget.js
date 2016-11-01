@@ -27,80 +27,76 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.ThrottledWidget}
- * @param {!WebInspector.ComputedStyleModel} sharedModel
+ * @unrestricted
  */
-WebInspector.PlatformFontsWidget = function(sharedModel)
-{
-    WebInspector.ThrottledWidget.call(this, true);
-    this.registerRequiredCSS("elements/platformFontsWidget.css");
+WebInspector.PlatformFontsWidget = class extends WebInspector.ThrottledWidget {
+  /**
+   * @param {!WebInspector.ComputedStyleModel} sharedModel
+   */
+  constructor(sharedModel) {
+    super(true);
+    this.registerRequiredCSS('elements/platformFontsWidget.css');
 
     this._sharedModel = sharedModel;
     this._sharedModel.addEventListener(WebInspector.ComputedStyleModel.Events.ComputedStyleChanged, this.update, this);
 
-    this._sectionTitle = createElementWithClass("div", "title");
-    this.contentElement.classList.add("platform-fonts");
+    this._sectionTitle = createElementWithClass('div', 'title');
+    this.contentElement.classList.add('platform-fonts');
     this.contentElement.appendChild(this._sectionTitle);
-    this._sectionTitle.textContent = WebInspector.UIString("Rendered Fonts");
-    this._fontStatsSection = this.contentElement.createChild("div", "stats-section");
-};
+    this._sectionTitle.textContent = WebInspector.UIString('Rendered Fonts');
+    this._fontStatsSection = this.contentElement.createChild('div', 'stats-section');
+  }
 
-WebInspector.PlatformFontsWidget.prototype = {
-    /**
-     * @override
-     * @protected
-     * @return {!Promise.<?>}
-     */
-    doUpdate: function()
-    {
-        var cssModel = this._sharedModel.cssModel();
-        var node = this._sharedModel.node();
-        if (!node || !cssModel)
-            return Promise.resolve();
+  /**
+   * @override
+   * @protected
+   * @return {!Promise.<?>}
+   */
+  doUpdate() {
+    var cssModel = this._sharedModel.cssModel();
+    var node = this._sharedModel.node();
+    if (!node || !cssModel)
+      return Promise.resolve();
 
-        return cssModel.platformFontsPromise(node.id)
-            .then(this._refreshUI.bind(this, node));
-    },
+    return cssModel.platformFontsPromise(node.id).then(this._refreshUI.bind(this, node));
+  }
 
-    /**
-     * @param {!WebInspector.DOMNode} node
-     * @param {?Array.<!CSSAgent.PlatformFontUsage>} platformFonts
-     */
-    _refreshUI: function(node, platformFonts)
-    {
-        if (this._sharedModel.node() !== node)
-            return;
+  /**
+   * @param {!WebInspector.DOMNode} node
+   * @param {?Array.<!CSSAgent.PlatformFontUsage>} platformFonts
+   */
+  _refreshUI(node, platformFonts) {
+    if (this._sharedModel.node() !== node)
+      return;
 
-        this._fontStatsSection.removeChildren();
+    this._fontStatsSection.removeChildren();
 
-        var isEmptySection = !platformFonts || !platformFonts.length;
-        this._sectionTitle.classList.toggle("hidden", isEmptySection);
-        if (isEmptySection)
-            return;
+    var isEmptySection = !platformFonts || !platformFonts.length;
+    this._sectionTitle.classList.toggle('hidden', isEmptySection);
+    if (isEmptySection)
+      return;
 
-        platformFonts.sort(function(a, b) {
-            return b.glyphCount - a.glyphCount;
-        });
-        for (var i = 0; i < platformFonts.length; ++i) {
-            var fontStatElement = this._fontStatsSection.createChild("div", "font-stats-item");
+    platformFonts.sort(function(a, b) {
+      return b.glyphCount - a.glyphCount;
+    });
+    for (var i = 0; i < platformFonts.length; ++i) {
+      var fontStatElement = this._fontStatsSection.createChild('div', 'font-stats-item');
 
-            var fontNameElement = fontStatElement.createChild("span", "font-name");
-            fontNameElement.textContent = platformFonts[i].familyName;
+      var fontNameElement = fontStatElement.createChild('span', 'font-name');
+      fontNameElement.textContent = platformFonts[i].familyName;
 
-            var fontDelimeterElement = fontStatElement.createChild("span", "font-delimeter");
-            fontDelimeterElement.textContent = "\u2014";
+      var fontDelimeterElement = fontStatElement.createChild('span', 'font-delimeter');
+      fontDelimeterElement.textContent = '\u2014';
 
-            var fontOrigin = fontStatElement.createChild("span");
-            fontOrigin.textContent = platformFonts[i].isCustomFont ? WebInspector.UIString("Network resource") : WebInspector.UIString("Local file");
+      var fontOrigin = fontStatElement.createChild('span');
+      fontOrigin.textContent = platformFonts[i].isCustomFont ? WebInspector.UIString('Network resource') :
+                                                               WebInspector.UIString('Local file');
 
-            var fontUsageElement = fontStatElement.createChild("span", "font-usage");
-            var usage = platformFonts[i].glyphCount;
-            fontUsageElement.textContent = usage === 1 ? WebInspector.UIString("(%d glyph)", usage) : WebInspector.UIString("(%d glyphs)", usage);
-        }
-    },
-
-    __proto__: WebInspector.ThrottledWidget.prototype
+      var fontUsageElement = fontStatElement.createChild('span', 'font-usage');
+      var usage = platformFonts[i].glyphCount;
+      fontUsageElement.textContent =
+          usage === 1 ? WebInspector.UIString('(%d glyph)', usage) : WebInspector.UIString('(%d glyphs)', usage);
+    }
+  }
 };

@@ -27,33 +27,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.VBox}
+ * @unrestricted
  */
-WebInspector.EmptyWidget = function(text)
-{
-    WebInspector.VBox.call(this);
-    this.registerRequiredCSS("ui/emptyWidget.css");
-    this.element.classList.add("empty-view");
-    this.textElement = this.element.createChild("span");
+WebInspector.EmptyWidget = class extends WebInspector.VBox {
+  constructor(text) {
+    super();
+    this.registerRequiredCSS('ui/emptyWidget.css');
+    this.element.classList.add('empty-view');
+    this.textElement = this.element.createChild('span');
     this._text = text;
+  }
+
+  /**
+   * @override
+   */
+  wasShown() {
+    this.textElement.textContent = this._text;
+  }
+
+  set text(text) {
+    this._text = text;
+    if (this.isShowing())
+      this.textElement.textContent = this._text;
+  }
 };
-
-WebInspector.EmptyWidget.prototype = {
-    wasShown: function()
-    {
-        this.textElement.textContent = this._text;
-    },
-
-    set text(text)
-    {
-        this._text = text;
-        if (this.isShowing())
-            this.textElement.textContent = this._text;
-    },
-
-    __proto__: WebInspector.VBox.prototype
-};
-

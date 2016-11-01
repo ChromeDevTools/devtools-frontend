@@ -25,97 +25,93 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.FilteredListWidget.Delegate}
- * @param {!WebInspector.UISourceCode} uiSourceCode
- * @param {function(number, number)} selectItemCallback
+ * @unrestricted
  */
-WebInspector.StyleSheetOutlineDialog = function(uiSourceCode, selectItemCallback)
-{
-    WebInspector.FilteredListWidget.Delegate.call(this, []);
+WebInspector.StyleSheetOutlineDialog = class extends WebInspector.FilteredListWidget.Delegate {
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {function(number, number)} selectItemCallback
+   */
+  constructor(uiSourceCode, selectItemCallback) {
+    super([]);
     this._selectItemCallback = selectItemCallback;
     this._cssParser = new WebInspector.CSSParser();
     this._cssParser.addEventListener(WebInspector.CSSParser.Events.RulesParsed, this.refresh.bind(this));
     this._cssParser.parse(uiSourceCode.workingCopy());
-};
+  }
 
-/**
- * @param {!WebInspector.UISourceCode} uiSourceCode
- * @param {function(number, number)} selectItemCallback
- */
-WebInspector.StyleSheetOutlineDialog.show = function(uiSourceCode, selectItemCallback)
-{
-    WebInspector.StyleSheetOutlineDialog._instanceForTests = new WebInspector.StyleSheetOutlineDialog(uiSourceCode, selectItemCallback);
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {function(number, number)} selectItemCallback
+   */
+  static show(uiSourceCode, selectItemCallback) {
+    WebInspector.StyleSheetOutlineDialog._instanceForTests =
+        new WebInspector.StyleSheetOutlineDialog(uiSourceCode, selectItemCallback);
     new WebInspector.FilteredListWidget(WebInspector.StyleSheetOutlineDialog._instanceForTests).showAsDialog();
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  itemCount() {
+    return this._cssParser.rules().length;
+  }
+
+  /**
+   * @override
+   * @param {number} itemIndex
+   * @return {string}
+   */
+  itemKeyAt(itemIndex) {
+    var rule = this._cssParser.rules()[itemIndex];
+    return rule.selectorText || rule.atRule;
+  }
+
+  /**
+   * @override
+   * @param {number} itemIndex
+   * @param {string} query
+   * @return {number}
+   */
+  itemScoreAt(itemIndex, query) {
+    var rule = this._cssParser.rules()[itemIndex];
+    return -rule.lineNumber;
+  }
+
+  /**
+   * @override
+   * @param {number} itemIndex
+   * @param {string} query
+   * @param {!Element} titleElement
+   * @param {!Element} subtitleElement
+   */
+  renderItem(itemIndex, query, titleElement, subtitleElement) {
+    var rule = this._cssParser.rules()[itemIndex];
+    titleElement.textContent = rule.selectorText || rule.atRule;
+    this.highlightRanges(titleElement, query);
+    subtitleElement.textContent = ':' + (rule.lineNumber + 1);
+  }
+
+  /**
+   * @override
+   * @param {number} itemIndex
+   * @param {string} promptValue
+   */
+  selectItem(itemIndex, promptValue) {
+    var rule = this._cssParser.rules()[itemIndex];
+    var lineNumber = rule.lineNumber;
+    if (!isNaN(lineNumber) && lineNumber >= 0)
+      this._selectItemCallback(lineNumber, rule.columnNumber);
+  }
+
+  /**
+   * @override
+   */
+  dispose() {
+    this._cssParser.dispose();
+  }
 };
 
-WebInspector.StyleSheetOutlineDialog.prototype = {
-    /**
-     * @override
-     * @return {number}
-     */
-    itemCount: function()
-    {
-        return this._cssParser.rules().length;
-    },
 
-    /**
-     * @override
-     * @param {number} itemIndex
-     * @return {string}
-     */
-    itemKeyAt: function(itemIndex)
-    {
-        var rule = this._cssParser.rules()[itemIndex];
-        return rule.selectorText || rule.atRule;
-    },
-
-    /**
-     * @override
-     * @param {number} itemIndex
-     * @param {string} query
-     * @return {number}
-     */
-    itemScoreAt: function(itemIndex, query)
-    {
-        var rule = this._cssParser.rules()[itemIndex];
-        return -rule.lineNumber;
-    },
-
-    /**
-     * @override
-     * @param {number} itemIndex
-     * @param {string} query
-     * @param {!Element} titleElement
-     * @param {!Element} subtitleElement
-     */
-    renderItem: function(itemIndex, query, titleElement, subtitleElement)
-    {
-        var rule = this._cssParser.rules()[itemIndex];
-        titleElement.textContent = rule.selectorText || rule.atRule;
-        this.highlightRanges(titleElement, query);
-        subtitleElement.textContent = ":" + (rule.lineNumber + 1);
-    },
-
-    /**
-     * @override
-     * @param {number} itemIndex
-     * @param {string} promptValue
-     */
-    selectItem: function(itemIndex, promptValue)
-    {
-        var rule = this._cssParser.rules()[itemIndex];
-        var lineNumber = rule.lineNumber;
-        if (!isNaN(lineNumber) && lineNumber >= 0)
-            this._selectItemCallback(lineNumber, rule.columnNumber);
-    },
-
-    dispose: function()
-    {
-        this._cssParser.dispose();
-    },
-
-    __proto__: WebInspector.FilteredListWidget.Delegate.prototype
-};

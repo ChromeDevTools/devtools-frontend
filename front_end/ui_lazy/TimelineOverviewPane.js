@@ -27,24 +27,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.VBox}
- * @param {string} prefix
+ * @unrestricted
  */
-WebInspector.TimelineOverviewPane = function(prefix)
-{
-    WebInspector.VBox.call(this);
-    this.element.id = prefix + "-overview-pane";
+WebInspector.TimelineOverviewPane = class extends WebInspector.VBox {
+  /**
+   * @param {string} prefix
+   */
+  constructor(prefix) {
+    super();
+    this.element.id = prefix + '-overview-pane';
 
     this._overviewCalculator = new WebInspector.TimelineOverviewCalculator();
     this._overviewGrid = new WebInspector.OverviewGrid(prefix);
     this.element.appendChild(this._overviewGrid.element);
-    this._cursorArea = this._overviewGrid.element.createChild("div", "overview-grid-cursor-area");
-    this._cursorElement = this._overviewGrid.element.createChild("div", "overview-grid-cursor-position");
-    this._cursorArea.addEventListener("mousemove", this._onMouseMove.bind(this), true);
-    this._cursorArea.addEventListener("mouseleave", this._hideCursor.bind(this), true);
+    this._cursorArea = this._overviewGrid.element.createChild('div', 'overview-grid-cursor-area');
+    this._cursorElement = this._overviewGrid.element.createChild('div', 'overview-grid-cursor-position');
+    this._cursorArea.addEventListener('mousemove', this._onMouseMove.bind(this), true);
+    this._cursorArea.addEventListener('mouseleave', this._hideCursor.bind(this), true);
 
     this._overviewGrid.setResizeEnabled(false);
     this._overviewGrid.addEventListener(WebInspector.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
@@ -53,7 +53,8 @@ WebInspector.TimelineOverviewPane = function(prefix)
     this._markers = new Map();
 
     this._popoverHelper = new WebInspector.PopoverHelper(this._cursorArea);
-    this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
+    this._popoverHelper.initializeCallbacks(
+        this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
     this._popoverHelper.setTimeout(0);
 
     this._updateThrottler = new WebInspector.Throttler(100);
@@ -61,583 +62,522 @@ WebInspector.TimelineOverviewPane = function(prefix)
     this._cursorEnabled = false;
     this._cursorPosition = 0;
     this._lastWidth = 0;
+  }
+
+  /**
+   * @param {!Element} element
+   * @param {!Event} event
+   * @return {!Element|!AnchorBox|undefined}
+   */
+  _getPopoverAnchor(element, event) {
+    return this._cursorArea;
+  }
+
+  /**
+   * @param {!Element} anchor
+   * @param {!WebInspector.Popover} popover
+   */
+  _showPopover(anchor, popover) {
+    this._buildPopoverContents().then(maybeShowPopover.bind(this));
+    /**
+     * @this {WebInspector.TimelineOverviewPane}
+     * @param {!DocumentFragment} fragment
+     */
+    function maybeShowPopover(fragment) {
+      if (!fragment.firstChild)
+        return;
+      var content = new WebInspector.TimelineOverviewPane.PopoverContents();
+      this._popoverContents = content.contentElement.createChild('div');
+      this._popoverContents.appendChild(fragment);
+      this._popover = popover;
+      popover.showView(content, this._cursorElement);
+    }
+  }
+
+  _onHidePopover() {
+    this._popover = null;
+    this._popoverContents = null;
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onMouseMove(event) {
+    if (!this._cursorEnabled)
+      return;
+    this._cursorPosition = event.offsetX + event.target.offsetLeft;
+    this._cursorElement.style.left = this._cursorPosition + 'px';
+    this._cursorElement.style.visibility = 'visible';
+    if (!this._popover)
+      return;
+    this._buildPopoverContents().then(updatePopover.bind(this));
+    this._popover.positionElement(this._cursorElement);
+
+    /**
+     * @param {!DocumentFragment} fragment
+     * @this {WebInspector.TimelineOverviewPane}
+     */
+    function updatePopover(fragment) {
+      if (!this._popoverContents)
+        return;
+      this._popoverContents.removeChildren();
+      this._popoverContents.appendChild(fragment);
+    }
+  }
+
+  /**
+   * @return {!Promise<!DocumentFragment>}
+   */
+  _buildPopoverContents() {
+    var document = this.element.ownerDocument;
+    var x = this._cursorPosition;
+    var promises = this._overviewControls.map(control => control.popoverElementPromise(x));
+    return Promise.all(promises).then(buildFragment);
+
+    /**
+     * @param {!Array<?Element>} elements
+     * @return {!DocumentFragment}
+     */
+    function buildFragment(elements) {
+      var fragment = document.createDocumentFragment();
+      elements.remove(null);
+      fragment.appendChildren.apply(fragment, elements);
+      return fragment;
+    }
+  }
+
+  _hideCursor() {
+    this._cursorElement.style.visibility = 'hidden';
+  }
+
+  /**
+   * @override
+   */
+  wasShown() {
+    this._update();
+  }
+
+  /**
+   * @override
+   */
+  willHide() {
+    this._popoverHelper.hidePopover();
+  }
+
+  /**
+   * @override
+   */
+  onResize() {
+    var width = this.element.offsetWidth;
+    if (width === this._lastWidth)
+      return;
+    this._lastWidth = width;
+    this.scheduleUpdate();
+  }
+
+  /**
+   * @param {!Array.<!WebInspector.TimelineOverview>} overviewControls
+   */
+  setOverviewControls(overviewControls) {
+    for (var i = 0; i < this._overviewControls.length; ++i)
+      this._overviewControls[i].dispose();
+
+    for (var i = 0; i < overviewControls.length; ++i) {
+      overviewControls[i].setCalculator(this._overviewCalculator);
+      overviewControls[i].show(this._overviewGrid.element);
+    }
+    this._overviewControls = overviewControls;
+    this._update();
+  }
+
+  /**
+   * @param {number} minimumBoundary
+   * @param {number} maximumBoundary
+   */
+  setBounds(minimumBoundary, maximumBoundary) {
+    this._overviewCalculator.setBounds(minimumBoundary, maximumBoundary);
+    this._overviewGrid.setResizeEnabled(true);
+    this._cursorEnabled = true;
+  }
+
+  scheduleUpdate() {
+    this._updateThrottler.schedule(process.bind(this));
+    /**
+     * @this {WebInspector.TimelineOverviewPane}
+     * @return {!Promise.<undefined>}
+     */
+    function process() {
+      this._update();
+      return Promise.resolve();
+    }
+  }
+
+  _update() {
+    if (!this.isShowing())
+      return;
+    this._overviewCalculator.setDisplayWindow(this._overviewGrid.clientWidth());
+    for (var i = 0; i < this._overviewControls.length; ++i)
+      this._overviewControls[i].update();
+    this._overviewGrid.updateDividers(this._overviewCalculator);
+    this._updateMarkers();
+    this._updateWindow();
+  }
+
+  /**
+   * @param {!Map<number, !Element>} markers
+   */
+  setMarkers(markers) {
+    this._markers = markers;
+    this._updateMarkers();
+  }
+
+  _updateMarkers() {
+    var filteredMarkers = new Map();
+    for (var time of this._markers.keys()) {
+      var marker = this._markers.get(time);
+      var position = Math.round(this._overviewCalculator.computePosition(time));
+      // Limit the number of markers to one per pixel.
+      if (filteredMarkers.has(position))
+        continue;
+      filteredMarkers.set(position, marker);
+      marker.style.left = position + 'px';
+    }
+    this._overviewGrid.removeEventDividers();
+    this._overviewGrid.addEventDividers(filteredMarkers.valuesArray());
+  }
+
+  reset() {
+    this._windowStartTime = 0;
+    this._windowEndTime = Infinity;
+    this._overviewCalculator.reset();
+    this._overviewGrid.reset();
+    this._overviewGrid.setResizeEnabled(false);
+    this._overviewGrid.updateDividers(this._overviewCalculator);
+    this._cursorEnabled = false;
+    this._hideCursor();
+    this._markers = new Map();
+    for (var i = 0; i < this._overviewControls.length; ++i)
+      this._overviewControls[i].reset();
+    this._popoverHelper.hidePopover();
+    this._update();
+  }
+
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _onClick(event) {
+    var domEvent = /** @type {!Event} */ (event.data);
+    for (var overviewControl of this._overviewControls) {
+      if (overviewControl.onClick(domEvent)) {
+        event.preventDefault();
+        return;
+      }
+    }
+  }
+
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _onWindowChanged(event) {
+    if (this._muteOnWindowChanged)
+      return;
+    // Always use first control as a time converter.
+    if (!this._overviewControls.length)
+      return;
+    var windowTimes =
+        this._overviewControls[0].windowTimes(this._overviewGrid.windowLeft(), this._overviewGrid.windowRight());
+    this._windowStartTime = windowTimes.startTime;
+    this._windowEndTime = windowTimes.endTime;
+    this.dispatchEventToListeners(WebInspector.TimelineOverviewPane.Events.WindowChanged, windowTimes);
+  }
+
+  /**
+   * @param {number} startTime
+   * @param {number} endTime
+   */
+  requestWindowTimes(startTime, endTime) {
+    if (startTime === this._windowStartTime && endTime === this._windowEndTime)
+      return;
+    this._windowStartTime = startTime;
+    this._windowEndTime = endTime;
+    this._updateWindow();
+    this.dispatchEventToListeners(
+        WebInspector.TimelineOverviewPane.Events.WindowChanged, {startTime: startTime, endTime: endTime});
+  }
+
+  _updateWindow() {
+    if (!this._overviewControls.length)
+      return;
+    var windowBoundaries = this._overviewControls[0].windowBoundaries(this._windowStartTime, this._windowEndTime);
+    this._muteOnWindowChanged = true;
+    this._overviewGrid.setWindow(windowBoundaries.left, windowBoundaries.right);
+    this._muteOnWindowChanged = false;
+  }
 };
 
 /** @enum {symbol} */
 WebInspector.TimelineOverviewPane.Events = {
-    WindowChanged: Symbol("WindowChanged")
-};
-
-WebInspector.TimelineOverviewPane.prototype = {
-    /**
-     * @param {!Element} element
-     * @param {!Event} event
-     * @return {!Element|!AnchorBox|undefined}
-     */
-    _getPopoverAnchor: function(element, event)
-    {
-        return this._cursorArea;
-    },
-
-    /**
-     * @param {!Element} anchor
-     * @param {!WebInspector.Popover} popover
-     */
-    _showPopover: function(anchor, popover)
-    {
-        this._buildPopoverContents().then(maybeShowPopover.bind(this));
-        /**
-         * @this {WebInspector.TimelineOverviewPane}
-         * @param {!DocumentFragment} fragment
-         */
-        function maybeShowPopover(fragment)
-        {
-            if (!fragment.firstChild)
-                return;
-            var content = new WebInspector.TimelineOverviewPane.PopoverContents();
-            this._popoverContents = content.contentElement.createChild("div");
-            this._popoverContents.appendChild(fragment);
-            this._popover = popover;
-            popover.showView(content, this._cursorElement);
-        }
-    },
-
-    _onHidePopover: function()
-    {
-        this._popover = null;
-        this._popoverContents = null;
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    _onMouseMove: function(event)
-    {
-        if (!this._cursorEnabled)
-            return;
-        this._cursorPosition = event.offsetX + event.target.offsetLeft;
-        this._cursorElement.style.left = this._cursorPosition + "px";
-        this._cursorElement.style.visibility = "visible";
-        if (!this._popover)
-            return;
-        this._buildPopoverContents().then(updatePopover.bind(this));
-        this._popover.positionElement(this._cursorElement);
-
-        /**
-         * @param {!DocumentFragment} fragment
-         * @this {WebInspector.TimelineOverviewPane}
-         */
-        function updatePopover(fragment)
-        {
-            if (!this._popoverContents)
-                return;
-            this._popoverContents.removeChildren();
-            this._popoverContents.appendChild(fragment);
-        }
-    },
-
-    /**
-     * @return {!Promise<!DocumentFragment>}
-     */
-    _buildPopoverContents: function()
-    {
-        var document = this.element.ownerDocument;
-        var x = this._cursorPosition;
-        var promises = this._overviewControls.map(control => control.popoverElementPromise(x));
-        return Promise.all(promises).then(buildFragment);
-
-        /**
-         * @param {!Array<?Element>} elements
-         * @return {!DocumentFragment}
-         */
-        function buildFragment(elements)
-        {
-            var fragment = document.createDocumentFragment();
-            elements.remove(null);
-            fragment.appendChildren.apply(fragment, elements);
-            return fragment;
-        }
-    },
-
-    _hideCursor: function()
-    {
-        this._cursorElement.style.visibility = "hidden";
-    },
-
-    /**
-     * @override
-     */
-    wasShown: function()
-    {
-        this._update();
-    },
-
-    /**
-     * @override
-     */
-    willHide: function()
-    {
-        this._popoverHelper.hidePopover();
-    },
-
-    /**
-     * @override
-     */
-    onResize: function()
-    {
-        var width = this.element.offsetWidth;
-        if (width === this._lastWidth)
-            return;
-        this._lastWidth = width;
-        this.scheduleUpdate();
-    },
-
-    /**
-     * @param {!Array.<!WebInspector.TimelineOverview>} overviewControls
-     */
-    setOverviewControls: function(overviewControls)
-    {
-        for (var i = 0; i < this._overviewControls.length; ++i)
-            this._overviewControls[i].dispose();
-
-        for (var i = 0; i < overviewControls.length; ++i) {
-            overviewControls[i].setCalculator(this._overviewCalculator);
-            overviewControls[i].show(this._overviewGrid.element);
-        }
-        this._overviewControls = overviewControls;
-        this._update();
-    },
-
-    /**
-     * @param {number} minimumBoundary
-     * @param {number} maximumBoundary
-     */
-    setBounds: function(minimumBoundary, maximumBoundary)
-    {
-        this._overviewCalculator.setBounds(minimumBoundary, maximumBoundary);
-        this._overviewGrid.setResizeEnabled(true);
-        this._cursorEnabled = true;
-    },
-
-    scheduleUpdate: function()
-    {
-        this._updateThrottler.schedule(process.bind(this));
-        /**
-         * @this {WebInspector.TimelineOverviewPane}
-         * @return {!Promise.<undefined>}
-         */
-        function process()
-        {
-            this._update();
-            return Promise.resolve();
-        }
-    },
-
-    _update: function()
-    {
-        if (!this.isShowing())
-            return;
-        this._overviewCalculator.setDisplayWindow(this._overviewGrid.clientWidth());
-        for (var i = 0; i < this._overviewControls.length; ++i)
-            this._overviewControls[i].update();
-        this._overviewGrid.updateDividers(this._overviewCalculator);
-        this._updateMarkers();
-        this._updateWindow();
-    },
-
-    /**
-     * @param {!Map<number, !Element>} markers
-     */
-    setMarkers: function(markers)
-    {
-        this._markers = markers;
-        this._updateMarkers();
-    },
-
-    _updateMarkers: function()
-    {
-        var filteredMarkers = new Map();
-        for (var time of this._markers.keys()) {
-            var marker = this._markers.get(time);
-            var position = Math.round(this._overviewCalculator.computePosition(time));
-            // Limit the number of markers to one per pixel.
-            if (filteredMarkers.has(position))
-                continue;
-            filteredMarkers.set(position, marker);
-            marker.style.left = position + "px";
-        }
-        this._overviewGrid.removeEventDividers();
-        this._overviewGrid.addEventDividers(filteredMarkers.valuesArray());
-    },
-
-    reset: function()
-    {
-        this._windowStartTime = 0;
-        this._windowEndTime = Infinity;
-        this._overviewCalculator.reset();
-        this._overviewGrid.reset();
-        this._overviewGrid.setResizeEnabled(false);
-        this._overviewGrid.updateDividers(this._overviewCalculator);
-        this._cursorEnabled = false;
-        this._hideCursor();
-        this._markers = new Map();
-        for (var i = 0; i < this._overviewControls.length; ++i)
-            this._overviewControls[i].reset();
-        this._popoverHelper.hidePopover();
-        this._update();
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onClick: function(event)
-    {
-        var domEvent = /** @type {!Event} */ (event.data);
-        for (var overviewControl of this._overviewControls) {
-            if (overviewControl.onClick(domEvent)) {
-                event.preventDefault();
-                return;
-            }
-        }
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onWindowChanged: function(event)
-    {
-        if (this._muteOnWindowChanged)
-            return;
-        // Always use first control as a time converter.
-        if (!this._overviewControls.length)
-            return;
-        var windowTimes = this._overviewControls[0].windowTimes(this._overviewGrid.windowLeft(), this._overviewGrid.windowRight());
-        this._windowStartTime = windowTimes.startTime;
-        this._windowEndTime = windowTimes.endTime;
-        this.dispatchEventToListeners(WebInspector.TimelineOverviewPane.Events.WindowChanged, windowTimes);
-    },
-
-    /**
-     * @param {number} startTime
-     * @param {number} endTime
-     */
-    requestWindowTimes: function(startTime, endTime)
-    {
-        if (startTime === this._windowStartTime && endTime === this._windowEndTime)
-            return;
-        this._windowStartTime = startTime;
-        this._windowEndTime = endTime;
-        this._updateWindow();
-        this.dispatchEventToListeners(WebInspector.TimelineOverviewPane.Events.WindowChanged, { startTime: startTime, endTime: endTime });
-    },
-
-    _updateWindow: function()
-    {
-        if (!this._overviewControls.length)
-            return;
-        var windowBoundaries = this._overviewControls[0].windowBoundaries(this._windowStartTime, this._windowEndTime);
-        this._muteOnWindowChanged = true;
-        this._overviewGrid.setWindow(windowBoundaries.left, windowBoundaries.right);
-        this._muteOnWindowChanged = false;
-    },
-
-    __proto__: WebInspector.VBox.prototype
+  WindowChanged: Symbol('WindowChanged')
 };
 
 /**
- * @constructor
- * @extends {WebInspector.VBox}
+ * @unrestricted
  */
-WebInspector.TimelineOverviewPane.PopoverContents = function()
-{
-    WebInspector.VBox.call(this, true);
-    this.contentElement.classList.add("timeline-overview-popover");
-};
-
-WebInspector.TimelineOverviewPane.PopoverContents.prototype = {
-    __proto__: WebInspector.VBox.prototype
+WebInspector.TimelineOverviewPane.PopoverContents = class extends WebInspector.VBox {
+  constructor() {
+    super(true);
+    this.contentElement.classList.add('timeline-overview-popover');
+  }
 };
 
 /**
- * @constructor
  * @implements {WebInspector.TimelineGrid.Calculator}
+ * @unrestricted
  */
-WebInspector.TimelineOverviewCalculator = function()
-{
+WebInspector.TimelineOverviewCalculator = class {
+  constructor() {
     this.reset();
-};
+  }
 
-WebInspector.TimelineOverviewCalculator.prototype = {
-    /**
-     * @override
-     * @return {number}
-     */
-    paddingLeft: function()
-    {
-        return this._paddingLeft;
-    },
+  /**
+   * @override
+   * @return {number}
+   */
+  paddingLeft() {
+    return this._paddingLeft;
+  }
 
-    /**
-     * @override
-     * @param {number} time
-     * @return {number}
-     */
-    computePosition: function(time)
-    {
-        return (time - this._minimumBoundary) / this.boundarySpan() * this._workingArea + this._paddingLeft;
-    },
+  /**
+   * @override
+   * @param {number} time
+   * @return {number}
+   */
+  computePosition(time) {
+    return (time - this._minimumBoundary) / this.boundarySpan() * this._workingArea + this._paddingLeft;
+  }
 
-    /**
-     * @param {number} position
-     * @return {number}
-     */
-    positionToTime: function(position)
-    {
-        return (position - this._paddingLeft) / this._workingArea * this.boundarySpan() + this._minimumBoundary;
-    },
+  /**
+   * @param {number} position
+   * @return {number}
+   */
+  positionToTime(position) {
+    return (position - this._paddingLeft) / this._workingArea * this.boundarySpan() + this._minimumBoundary;
+  }
 
-    /**
-     * @param {number} minimumBoundary
-     * @param {number} maximumBoundary
-     */
-    setBounds: function(minimumBoundary, maximumBoundary)
-    {
-        this._minimumBoundary = minimumBoundary;
-        this._maximumBoundary = maximumBoundary;
-    },
+  /**
+   * @param {number} minimumBoundary
+   * @param {number} maximumBoundary
+   */
+  setBounds(minimumBoundary, maximumBoundary) {
+    this._minimumBoundary = minimumBoundary;
+    this._maximumBoundary = maximumBoundary;
+  }
 
-    /**
-     * @param {number} clientWidth
-     * @param {number=} paddingLeft
-     */
-    setDisplayWindow: function(clientWidth, paddingLeft)
-    {
-        this._paddingLeft = paddingLeft || 0;
-        this._workingArea = clientWidth - this._paddingLeft;
-    },
+  /**
+   * @param {number} clientWidth
+   * @param {number=} paddingLeft
+   */
+  setDisplayWindow(clientWidth, paddingLeft) {
+    this._paddingLeft = paddingLeft || 0;
+    this._workingArea = clientWidth - this._paddingLeft;
+  }
 
-    reset: function()
-    {
-        this.setBounds(0, 1000);
-    },
+  reset() {
+    this.setBounds(0, 1000);
+  }
 
-    /**
-     * @override
-     * @param {number} value
-     * @param {number=} precision
-     * @return {string}
-     */
-    formatValue: function(value, precision)
-    {
-        return Number.preciseMillisToString(value - this.zeroTime(), precision);
-    },
+  /**
+   * @override
+   * @param {number} value
+   * @param {number=} precision
+   * @return {string}
+   */
+  formatValue(value, precision) {
+    return Number.preciseMillisToString(value - this.zeroTime(), precision);
+  }
 
-    /**
-     * @override
-     * @return {number}
-     */
-    maximumBoundary: function()
-    {
-        return this._maximumBoundary;
-    },
+  /**
+   * @override
+   * @return {number}
+   */
+  maximumBoundary() {
+    return this._maximumBoundary;
+  }
 
-    /**
-     * @override
-     * @return {number}
-     */
-    minimumBoundary: function()
-    {
-        return this._minimumBoundary;
-    },
+  /**
+   * @override
+   * @return {number}
+   */
+  minimumBoundary() {
+    return this._minimumBoundary;
+  }
 
-    /**
-     * @override
-     * @return {number}
-     */
-    zeroTime: function()
-    {
-        return this._minimumBoundary;
-    },
+  /**
+   * @override
+   * @return {number}
+   */
+  zeroTime() {
+    return this._minimumBoundary;
+  }
 
-    /**
-     * @override
-     * @return {number}
-     */
-    boundarySpan: function()
-    {
-        return this._maximumBoundary - this._minimumBoundary;
-    }
+  /**
+   * @override
+   * @return {number}
+   */
+  boundarySpan() {
+    return this._maximumBoundary - this._minimumBoundary;
+  }
 };
 
 /**
  * @interface
  */
-WebInspector.TimelineOverview = function()
-{
-};
+WebInspector.TimelineOverview = function() {};
 
 WebInspector.TimelineOverview.prototype = {
-    /**
-     * @param {!Element} parentElement
-     * @param {?Element=} insertBefore
-     */
-    show: function(parentElement, insertBefore) { },
+  /**
+   * @param {!Element} parentElement
+   * @param {?Element=} insertBefore
+   */
+  show: function(parentElement, insertBefore) {},
 
-    update: function() { },
+  update: function() {},
 
-    dispose: function() { },
+  dispose: function() {},
 
-    reset: function() { },
+  reset: function() {},
 
-    /**
-     * @param {number} x
-     * @return {!Promise<?Element>}
-     */
-    popoverElementPromise: function(x) { },
+  /**
+   * @param {number} x
+   * @return {!Promise<?Element>}
+   */
+  popoverElementPromise: function(x) {},
 
-    /**
-     * @param {!Event} event
-     * @return {boolean}
-     */
-    onClick: function(event) { },
+  /**
+   * @param {!Event} event
+   * @return {boolean}
+   */
+  onClick: function(event) {},
 
-    /**
-     * @param {number} windowLeft
-     * @param {number} windowRight
-     * @return {!{startTime: number, endTime: number}}
-     */
-    windowTimes: function(windowLeft, windowRight) { },
+  /**
+   * @param {number} windowLeft
+   * @param {number} windowRight
+   * @return {!{startTime: number, endTime: number}}
+   */
+  windowTimes: function(windowLeft, windowRight) {},
 
-    /**
-     * @param {number} startTime
-     * @param {number} endTime
-     * @return {!{left: number, right: number}}
-     */
-    windowBoundaries: function(startTime, endTime) { },
+  /**
+   * @param {number} startTime
+   * @param {number} endTime
+   * @return {!{left: number, right: number}}
+   */
+  windowBoundaries: function(startTime, endTime) {},
 
-    timelineStarted: function() { },
+  timelineStarted: function() {},
 
-    timelineStopped: function() { },
+  timelineStopped: function() {},
 };
 
 /**
- * @constructor
- * @extends {WebInspector.VBox}
  * @implements {WebInspector.TimelineOverview}
+ * @unrestricted
  */
-WebInspector.TimelineOverviewBase = function()
-{
-    WebInspector.VBox.call(this);
+WebInspector.TimelineOverviewBase = class extends WebInspector.VBox {
+  constructor() {
+    super();
     /** @type {?WebInspector.TimelineOverviewCalculator} */
     this._calculator = null;
-    this._canvas = this.element.createChild("canvas", "fill");
-    this._context = this._canvas.getContext("2d");
-};
+    this._canvas = this.element.createChild('canvas', 'fill');
+    this._context = this._canvas.getContext('2d');
+  }
 
-WebInspector.TimelineOverviewBase.prototype = {
-    /**
-     * @override
-     */
-    update: function()
-    {
-        this.resetCanvas();
-    },
+  /**
+   * @override
+   */
+  update() {
+    this.resetCanvas();
+  }
 
-    /**
-     * @override
-     */
-    dispose: function()
-    {
-        this.detach();
-    },
+  /**
+   * @override
+   */
+  dispose() {
+    this.detach();
+  }
 
-    /**
-     * @override
-     */
-    reset: function()
-    {
-    },
+  /**
+   * @override
+   */
+  reset() {
+  }
 
-    /**
-     * @override
-     * @param {number} x
-     * @return {!Promise<?Element>}
-     */
-    popoverElementPromise: function(x)
-    {
-        return Promise.resolve(/** @type {?Element} */ (null));
-    },
+  /**
+   * @override
+   * @param {number} x
+   * @return {!Promise<?Element>}
+   */
+  popoverElementPromise(x) {
+    return Promise.resolve(/** @type {?Element} */ (null));
+  }
 
-    /**
-     * @override
-     */
-    timelineStarted: function()
-    {
-    },
+  /**
+   * @override
+   */
+  timelineStarted() {
+  }
 
-    /**
-     * @override
-     */
-    timelineStopped: function()
-    {
-    },
+  /**
+   * @override
+   */
+  timelineStopped() {
+  }
 
-    /**
-     * @param {!WebInspector.TimelineOverviewCalculator} calculator
-     */
-    setCalculator: function(calculator)
-    {
-        this._calculator = calculator;
-    },
+  /**
+   * @param {!WebInspector.TimelineOverviewCalculator} calculator
+   */
+  setCalculator(calculator) {
+    this._calculator = calculator;
+  }
 
-    /**
-     * @override
-     * @param {!Event} event
-     * @return {boolean}
-     */
-    onClick: function(event)
-    {
-        return false;
-    },
+  /**
+   * @override
+   * @param {!Event} event
+   * @return {boolean}
+   */
+  onClick(event) {
+    return false;
+  }
 
-    /**
-     * @override
-     * @param {number} windowLeft
-     * @param {number} windowRight
-     * @return {!{startTime: number, endTime: number}}
-     */
-    windowTimes: function(windowLeft, windowRight)
-    {
-        var absoluteMin = this._calculator.minimumBoundary();
-        var timeSpan = this._calculator.maximumBoundary() - absoluteMin;
-        return {
-            startTime: absoluteMin + timeSpan * windowLeft,
-            endTime: absoluteMin + timeSpan * windowRight
-        };
-    },
+  /**
+   * @override
+   * @param {number} windowLeft
+   * @param {number} windowRight
+   * @return {!{startTime: number, endTime: number}}
+   */
+  windowTimes(windowLeft, windowRight) {
+    var absoluteMin = this._calculator.minimumBoundary();
+    var timeSpan = this._calculator.maximumBoundary() - absoluteMin;
+    return {startTime: absoluteMin + timeSpan * windowLeft, endTime: absoluteMin + timeSpan * windowRight};
+  }
 
-    /**
-     * @override
-     * @param {number} startTime
-     * @param {number} endTime
-     * @return {!{left: number, right: number}}
-     */
-    windowBoundaries: function(startTime, endTime)
-    {
-        var absoluteMin = this._calculator.minimumBoundary();
-        var timeSpan = this._calculator.maximumBoundary() - absoluteMin;
-        var haveRecords = absoluteMin > 0;
-        return {
-            left: haveRecords && startTime ? Math.min((startTime - absoluteMin) / timeSpan, 1) : 0,
-            right: haveRecords && endTime < Infinity ? (endTime - absoluteMin) / timeSpan : 1
-        };
-    },
+  /**
+   * @override
+   * @param {number} startTime
+   * @param {number} endTime
+   * @return {!{left: number, right: number}}
+   */
+  windowBoundaries(startTime, endTime) {
+    var absoluteMin = this._calculator.minimumBoundary();
+    var timeSpan = this._calculator.maximumBoundary() - absoluteMin;
+    var haveRecords = absoluteMin > 0;
+    return {
+      left: haveRecords && startTime ? Math.min((startTime - absoluteMin) / timeSpan, 1) : 0,
+      right: haveRecords && endTime < Infinity ? (endTime - absoluteMin) / timeSpan : 1
+    };
+  }
 
-    resetCanvas: function()
-    {
-        this._canvas.width = this.element.clientWidth * window.devicePixelRatio;
-        this._canvas.height = this.element.clientHeight * window.devicePixelRatio;
-    },
-
-    __proto__: WebInspector.VBox.prototype
+  resetCanvas() {
+    this._canvas.width = this.element.clientWidth * window.devicePixelRatio;
+    this._canvas.height = this.element.clientHeight * window.devicePixelRatio;
+  }
 };

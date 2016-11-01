@@ -28,6 +28,6 @@
   },
   "homepage": "https://devtools.chrome.com",
   "devDependencies": {
-    "eslint": "3.5.0"
+    "eslint": "3.9.1"
   }
 }

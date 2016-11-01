@@ -3,224 +3,213 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.FilteredListWidget.Delegate}
- * @param {!Map.<!WebInspector.UISourceCode, number>=} defaultScores
- * @param {!Array<string>=} history
+ * @unrestricted
  */
-WebInspector.FilteredUISourceCodeListDelegate = function(defaultScores, history)
-{
-    WebInspector.FilteredListWidget.Delegate.call(this, history || []);
+WebInspector.FilteredUISourceCodeListDelegate = class extends WebInspector.FilteredListWidget.Delegate {
+  /**
+   * @param {!Map.<!WebInspector.UISourceCode, number>=} defaultScores
+   * @param {!Array<string>=} history
+   */
+  constructor(defaultScores, history) {
+    super(history || []);
 
     this._defaultScores = defaultScores;
-    this._scorer = new WebInspector.FilePathScoreFunction("");
-    WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
+    this._scorer = new WebInspector.FilePathScoreFunction('');
+    WebInspector.workspace.addEventListener(
+        WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
     WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
-};
+  }
 
-WebInspector.FilteredUISourceCodeListDelegate.prototype = {
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _projectRemoved: function(event)
-    {
-        var project = /** @type {!WebInspector.Project} */ (event.data);
-        this.populate(project);
-        this.refresh();
-    },
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _projectRemoved(event) {
+    var project = /** @type {!WebInspector.Project} */ (event.data);
+    this.populate(project);
+    this.refresh();
+  }
 
-    /**
-     * @protected
-     * @param {!WebInspector.Project=} skipProject
-     */
-    populate: function(skipProject)
-    {
-        /** @type {!Array.<!WebInspector.UISourceCode>} */
-        this._uiSourceCodes = [];
-        var projects = WebInspector.workspace.projects().filter(this.filterProject.bind(this));
-        for (var i = 0; i < projects.length; ++i) {
-            if (skipProject && projects[i] === skipProject)
-                continue;
-            var uiSourceCodes = projects[i].uiSourceCodes().filter(this._filterUISourceCode.bind(this));
-            this._uiSourceCodes = this._uiSourceCodes.concat(uiSourceCodes);
-        }
-    },
+  /**
+   * @protected
+   * @param {!WebInspector.Project=} skipProject
+   */
+  populate(skipProject) {
+    /** @type {!Array.<!WebInspector.UISourceCode>} */
+    this._uiSourceCodes = [];
+    var projects = WebInspector.workspace.projects().filter(this.filterProject.bind(this));
+    for (var i = 0; i < projects.length; ++i) {
+      if (skipProject && projects[i] === skipProject)
+        continue;
+      var uiSourceCodes = projects[i].uiSourceCodes().filter(this._filterUISourceCode.bind(this));
+      this._uiSourceCodes = this._uiSourceCodes.concat(uiSourceCodes);
+    }
+  }
 
-    /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @return {boolean}
-     */
-    _filterUISourceCode: function(uiSourceCode)
-    {
-        var binding = WebInspector.persistence.binding(uiSourceCode);
-        return !binding || binding.network === uiSourceCode;
-    },
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @return {boolean}
+   */
+  _filterUISourceCode(uiSourceCode) {
+    var binding = WebInspector.persistence.binding(uiSourceCode);
+    return !binding || binding.network === uiSourceCode;
+  }
 
-    /**
-     * @param {?WebInspector.UISourceCode} uiSourceCode
-     * @param {number=} lineNumber
-     * @param {number=} columnNumber
-     */
-    uiSourceCodeSelected: function(uiSourceCode, lineNumber, columnNumber)
-    {
-        // Overridden by subclasses
-    },
+  /**
+   * @param {?WebInspector.UISourceCode} uiSourceCode
+   * @param {number=} lineNumber
+   * @param {number=} columnNumber
+   */
+  uiSourceCodeSelected(uiSourceCode, lineNumber, columnNumber) {
+    // Overridden by subclasses
+  }
 
-    /**
-     * @param {!WebInspector.Project} project
-     * @return {boolean}
-     */
-    filterProject: function(project)
-    {
-        return true;
-        // Overridden by subclasses
-    },
+  /**
+   * @param {!WebInspector.Project} project
+   * @return {boolean}
+   */
+  filterProject(project) {
+    return true;
+    // Overridden by subclasses
+  }
 
-    /**
-     * @override
-     * @return {number}
-     */
-    itemCount: function()
-    {
-        return this._uiSourceCodes.length;
-    },
+  /**
+   * @override
+   * @return {number}
+   */
+  itemCount() {
+    return this._uiSourceCodes.length;
+  }
 
-    /**
-     * @override
-     * @param {number} itemIndex
-     * @return {string}
-     */
-    itemKeyAt: function(itemIndex)
-    {
-        return this._uiSourceCodes[itemIndex].url();
-    },
+  /**
+   * @override
+   * @param {number} itemIndex
+   * @return {string}
+   */
+  itemKeyAt(itemIndex) {
+    return this._uiSourceCodes[itemIndex].url();
+  }
 
-    /**
-     * @override
-     * @param {number} itemIndex
-     * @param {string} query
-     * @return {number}
-     */
-    itemScoreAt: function(itemIndex, query)
-    {
-        var uiSourceCode = this._uiSourceCodes[itemIndex];
-        var score = this._defaultScores ? (this._defaultScores.get(uiSourceCode) || 0) : 0;
-        if (!query || query.length < 2)
-            return score;
+  /**
+   * @override
+   * @param {number} itemIndex
+   * @param {string} query
+   * @return {number}
+   */
+  itemScoreAt(itemIndex, query) {
+    var uiSourceCode = this._uiSourceCodes[itemIndex];
+    var score = this._defaultScores ? (this._defaultScores.get(uiSourceCode) || 0) : 0;
+    if (!query || query.length < 2)
+      return score;
 
-        if (this._query !== query) {
-            this._query = query;
-            this._scorer = new WebInspector.FilePathScoreFunction(query);
-        }
+    if (this._query !== query) {
+      this._query = query;
+      this._scorer = new WebInspector.FilePathScoreFunction(query);
+    }
 
-        var url = uiSourceCode.url();
-        return score + 10 * this._scorer.score(url, null);
-    },
+    var url = uiSourceCode.url();
+    return score + 10 * this._scorer.score(url, null);
+  }
 
-    /**
-     * @override
-     * @param {number} itemIndex
-     * @param {string} query
-     * @param {!Element} titleElement
-     * @param {!Element} subtitleElement
-     */
-    renderItem: function(itemIndex, query, titleElement, subtitleElement)
-    {
-        query = this.rewriteQuery(query);
-        var uiSourceCode = this._uiSourceCodes[itemIndex];
-        var fullDisplayName = uiSourceCode.fullDisplayName();
-        var indexes = [];
-        var score = new WebInspector.FilePathScoreFunction(query).score(fullDisplayName, indexes);
-        var fileNameIndex = fullDisplayName.lastIndexOf("/");
+  /**
+   * @override
+   * @param {number} itemIndex
+   * @param {string} query
+   * @param {!Element} titleElement
+   * @param {!Element} subtitleElement
+   */
+  renderItem(itemIndex, query, titleElement, subtitleElement) {
+    query = this.rewriteQuery(query);
+    var uiSourceCode = this._uiSourceCodes[itemIndex];
+    var fullDisplayName = uiSourceCode.fullDisplayName();
+    var indexes = [];
+    var score = new WebInspector.FilePathScoreFunction(query).score(fullDisplayName, indexes);
+    var fileNameIndex = fullDisplayName.lastIndexOf('/');
 
-        titleElement.textContent = uiSourceCode.displayName() + (this._queryLineNumberAndColumnNumber || "");
-        this._renderSubtitleElement(subtitleElement, fullDisplayName);
-        subtitleElement.title = fullDisplayName;
-        var ranges = [];
-        for (var i = 0; i < indexes.length; ++i)
-            ranges.push({offset: indexes[i], length: 1});
+    titleElement.textContent = uiSourceCode.displayName() + (this._queryLineNumberAndColumnNumber || '');
+    this._renderSubtitleElement(subtitleElement, fullDisplayName);
+    subtitleElement.title = fullDisplayName;
+    var ranges = [];
+    for (var i = 0; i < indexes.length; ++i)
+      ranges.push({offset: indexes[i], length: 1});
 
-        if (indexes[0] > fileNameIndex) {
-            for (var i = 0; i < ranges.length; ++i)
-                ranges[i].offset -= fileNameIndex + 1;
-            WebInspector.highlightRangesWithStyleClass(titleElement, ranges, "highlight");
-        } else {
-            WebInspector.highlightRangesWithStyleClass(subtitleElement, ranges, "highlight");
-        }
-    },
+    if (indexes[0] > fileNameIndex) {
+      for (var i = 0; i < ranges.length; ++i)
+        ranges[i].offset -= fileNameIndex + 1;
+      WebInspector.highlightRangesWithStyleClass(titleElement, ranges, 'highlight');
+    } else {
+      WebInspector.highlightRangesWithStyleClass(subtitleElement, ranges, 'highlight');
+    }
+  }
 
-    /**
-     * @param {!Element} element
-     * @param {string} text
-     */
-    _renderSubtitleElement: function(element, text)
-    {
-        element.removeChildren();
-        var splitPosition = text.lastIndexOf("/");
-        if (text.length > 55)
-            splitPosition = text.length - 55;
-        var first = element.createChild("div", "first-part");
-        first.textContent = text.substring(0, splitPosition);
-        var second = element.createChild("div", "second-part");
-        second.textContent = text.substring(splitPosition);
-        element.title = text;
-    },
+  /**
+   * @param {!Element} element
+   * @param {string} text
+   */
+  _renderSubtitleElement(element, text) {
+    element.removeChildren();
+    var splitPosition = text.lastIndexOf('/');
+    if (text.length > 55)
+      splitPosition = text.length - 55;
+    var first = element.createChild('div', 'first-part');
+    first.textContent = text.substring(0, splitPosition);
+    var second = element.createChild('div', 'second-part');
+    second.textContent = text.substring(splitPosition);
+    element.title = text;
+  }
 
-    /**
-     * @override
-     * @param {?number} itemIndex
-     * @param {string} promptValue
-     */
-    selectItem: function(itemIndex, promptValue)
-    {
-        var parsedExpression = promptValue.trim().match(/^([^:]*)(:\d+)?(:\d+)?$/);
-        if (!parsedExpression)
-            return;
+  /**
+   * @override
+   * @param {?number} itemIndex
+   * @param {string} promptValue
+   */
+  selectItem(itemIndex, promptValue) {
+    var parsedExpression = promptValue.trim().match(/^([^:]*)(:\d+)?(:\d+)?$/);
+    if (!parsedExpression)
+      return;
 
-        var lineNumber;
-        var columnNumber;
-        if (parsedExpression[2])
-            lineNumber = parseInt(parsedExpression[2].substr(1), 10) - 1;
-        if (parsedExpression[3])
-            columnNumber = parseInt(parsedExpression[3].substr(1), 10) - 1;
-        var uiSourceCode = itemIndex !== null ? this._uiSourceCodes[itemIndex] : null;
-        this.uiSourceCodeSelected(uiSourceCode, lineNumber, columnNumber);
-    },
+    var lineNumber;
+    var columnNumber;
+    if (parsedExpression[2])
+      lineNumber = parseInt(parsedExpression[2].substr(1), 10) - 1;
+    if (parsedExpression[3])
+      columnNumber = parseInt(parsedExpression[3].substr(1), 10) - 1;
+    var uiSourceCode = itemIndex !== null ? this._uiSourceCodes[itemIndex] : null;
+    this.uiSourceCodeSelected(uiSourceCode, lineNumber, columnNumber);
+  }
 
-    /**
-     * @override
-     * @param {string} query
-     * @return {string}
-     */
-    rewriteQuery: function(query)
-    {
-        if (!query)
-            return query;
-        query = query.trim();
-        var lineNumberMatch = query.match(/^([^:]+)((?::[^:]*){0,2})$/);
-        this._queryLineNumberAndColumnNumber = lineNumberMatch ? lineNumberMatch[2] : "";
-        return lineNumberMatch ? lineNumberMatch[1] : query;
-    },
+  /**
+   * @override
+   * @param {string} query
+   * @return {string}
+   */
+  rewriteQuery(query) {
+    if (!query)
+      return query;
+    query = query.trim();
+    var lineNumberMatch = query.match(/^([^:]+)((?::[^:]*){0,2})$/);
+    this._queryLineNumberAndColumnNumber = lineNumberMatch ? lineNumberMatch[2] : '';
+    return lineNumberMatch ? lineNumberMatch[1] : query;
+  }
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _uiSourceCodeAdded: function(event)
-    {
-        var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
-        if (!this._filterUISourceCode(uiSourceCode) || !this.filterProject(uiSourceCode.project()))
-            return;
-        this._uiSourceCodes.push(uiSourceCode);
-        this.refresh();
-    },
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _uiSourceCodeAdded(event) {
+    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
+    if (!this._filterUISourceCode(uiSourceCode) || !this.filterProject(uiSourceCode.project()))
+      return;
+    this._uiSourceCodes.push(uiSourceCode);
+    this.refresh();
+  }
 
-    dispose: function()
-    {
-        WebInspector.workspace.removeEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
-        WebInspector.workspace.removeEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
-    },
-
-    __proto__: WebInspector.FilteredListWidget.Delegate.prototype
+  /**
+   * @override
+   */
+  dispose() {
+    WebInspector.workspace.removeEventListener(
+        WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
+    WebInspector.workspace.removeEventListener(
+        WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
+  }
 };

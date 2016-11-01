@@ -27,76 +27,68 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
+ * @unrestricted
  */
-WebInspector.TextDictionary = function()
-{
+WebInspector.TextDictionary = class {
+  constructor() {
     /** @type {!Map<string, number>} */
     this._words = new Map();
     this._index = new WebInspector.Trie();
-};
+  }
 
-WebInspector.TextDictionary.prototype = {
-    /**
-     * @param {string} word
-     */
-    addWord: function(word)
-    {
-        var count = this._words.get(word) || 0;
-        ++count;
-        this._words.set(word, count);
-        this._index.add(word);
-    },
+  /**
+   * @param {string} word
+   */
+  addWord(word) {
+    var count = this._words.get(word) || 0;
+    ++count;
+    this._words.set(word, count);
+    this._index.add(word);
+  }
 
-    /**
-     * @param {string} word
-     */
-    removeWord: function(word)
-    {
-        var count = this._words.get(word) || 0;
-        if (!count)
-            return;
-        if (count === 1) {
-            this._words.delete(word);
-            this._index.remove(word);
-            return;
-        }
-        --count;
-        this._words.set(word, count);
-    },
-
-    /**
-     * @param {string} prefix
-     * @return {!Array.<string>}
-     */
-    wordsWithPrefix: function(prefix)
-    {
-        return this._index.words(prefix);
-    },
-
-    /**
-     * @param {string} word
-     * @return {boolean}
-     */
-    hasWord: function(word)
-    {
-        return this._words.has(word);
-    },
-
-    /**
-     * @param {string} word
-     * @return {number}
-     */
-    wordCount: function(word)
-    {
-        return this._words.get(word) || 0;
-    },
-
-    reset: function()
-    {
-        this._words.clear();
-        this._index.clear();
+  /**
+   * @param {string} word
+   */
+  removeWord(word) {
+    var count = this._words.get(word) || 0;
+    if (!count)
+      return;
+    if (count === 1) {
+      this._words.delete(word);
+      this._index.remove(word);
+      return;
     }
+    --count;
+    this._words.set(word, count);
+  }
+
+  /**
+   * @param {string} prefix
+   * @return {!Array.<string>}
+   */
+  wordsWithPrefix(prefix) {
+    return this._index.words(prefix);
+  }
+
+  /**
+   * @param {string} word
+   * @return {boolean}
+   */
+  hasWord(word) {
+    return this._words.has(word);
+  }
+
+  /**
+   * @param {string} word
+   * @return {number}
+   */
+  wordCount(word) {
+    return this._words.get(word) || 0;
+  }
+
+  reset() {
+    this._words.clear();
+    this._index.clear();
+  }
 };

@@ -27,218 +27,220 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.Widget}
+ * @unrestricted
  */
-WebInspector.Dialog = function()
-{
-    WebInspector.Widget.call(this, true);
+WebInspector.Dialog = class extends WebInspector.Widget {
+  constructor() {
+    super(true);
     this.markAsRoot();
-    this.registerRequiredCSS("ui/dialog.css");
+    this.registerRequiredCSS('ui/dialog.css');
 
-    this.contentElement.createChild("content");
+    this.contentElement.createChild('content');
     this.contentElement.tabIndex = 0;
-    this.contentElement.addEventListener("focus", this._onFocus.bind(this), false);
+    this.contentElement.addEventListener('focus', this._onFocus.bind(this), false);
     this._keyDownBound = this._onKeyDown.bind(this);
 
     this._wrapsContent = false;
     this._dimmed = false;
     /** @type {!Map<!HTMLElement, number>} */
     this._tabIndexMap = new Map();
-};
+  }
 
-/**
- * @return {boolean}
- */
-WebInspector.Dialog.hasInstance = function()
-{
+  /**
+   * @return {boolean}
+   */
+  static hasInstance() {
     return !!WebInspector.Dialog._instance;
+  }
+
+  /**
+   * @param {!WebInspector.Widget} view
+   */
+  static setModalHostView(view) {
+    WebInspector.Dialog._modalHostView = view;
+  }
+
+  /**
+   * FIXME: make utility method in Dialog, so clients use it instead of this getter.
+   * Method should be like Dialog.showModalElement(position params, reposition callback).
+   * @return {?WebInspector.Widget}
+   */
+  static modalHostView() {
+    return WebInspector.Dialog._modalHostView;
+  }
+
+  static modalHostRepositioned() {
+    if (WebInspector.Dialog._instance)
+      WebInspector.Dialog._instance._position();
+  }
+
+  /**
+   * @override
+   */
+  show() {
+    if (WebInspector.Dialog._instance)
+      WebInspector.Dialog._instance.detach();
+    WebInspector.Dialog._instance = this;
+
+    var document = /** @type {!Document} */ (WebInspector.Dialog._modalHostView.element.ownerDocument);
+    this._disableTabIndexOnElements(document);
+
+    this._glassPane = new WebInspector.GlassPane(document, this._dimmed);
+    this._glassPane.element.addEventListener('click', this._onGlassPaneClick.bind(this), false);
+    this.element.ownerDocument.body.addEventListener('keydown', this._keyDownBound, false);
+
+    super.show(this._glassPane.element);
+
+    this._position();
+    this._focusRestorer = new WebInspector.WidgetFocusRestorer(this);
+  }
+
+  /**
+   * @override
+   */
+  detach() {
+    this._focusRestorer.restore();
+
+    this.element.ownerDocument.body.removeEventListener('keydown', this._keyDownBound, false);
+    super.detach();
+
+    this._glassPane.dispose();
+    delete this._glassPane;
+
+    this._restoreTabIndexOnElements();
+
+    delete WebInspector.Dialog._instance;
+  }
+
+  addCloseButton() {
+    var closeButton = this.contentElement.createChild('div', 'dialog-close-button', 'dt-close-button');
+    closeButton.gray = true;
+    closeButton.addEventListener('click', this.detach.bind(this), false);
+  }
+
+  /**
+   * @param {number=} positionX
+   * @param {number=} positionY
+   */
+  setPosition(positionX, positionY) {
+    this._defaultPositionX = positionX;
+    this._defaultPositionY = positionY;
+  }
+
+  /**
+   * @param {!Size} size
+   */
+  setMaxSize(size) {
+    this._maxSize = size;
+  }
+
+  /**
+   * @param {boolean} wraps
+   */
+  setWrapsContent(wraps) {
+    this.element.classList.toggle('wraps-content', wraps);
+    this._wrapsContent = wraps;
+  }
+
+  /**
+   * @param {boolean} dimmed
+   */
+  setDimmed(dimmed) {
+    this._dimmed = dimmed;
+  }
+
+  contentResized() {
+    if (this._wrapsContent)
+      this._position();
+  }
+
+  /**
+   * @param {!Document} document
+   */
+  _disableTabIndexOnElements(document) {
+    this._tabIndexMap.clear();
+    for (var node = document; node; node = node.traverseNextNode(document)) {
+      if (node instanceof HTMLElement) {
+        var element = /** @type {!HTMLElement} */ (node);
+        var tabIndex = element.tabIndex;
+        if (tabIndex >= 0) {
+          this._tabIndexMap.set(element, tabIndex);
+          element.tabIndex = -1;
+        }
+      }
+    }
+  }
+
+  _restoreTabIndexOnElements() {
+    for (var element of this._tabIndexMap.keys())
+      element.tabIndex = /** @type {number} */ (this._tabIndexMap.get(element));
+    this._tabIndexMap.clear();
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onFocus(event) {
+    this.focus();
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onGlassPaneClick(event) {
+    if (!this.element.isSelfOrAncestor(/** @type {?Node} */ (event.target)))
+      this.detach();
+  }
+
+  _position() {
+    var container = WebInspector.Dialog._modalHostView.element;
+
+    var width = container.offsetWidth - 10;
+    var height = container.offsetHeight - 10;
+
+    if (this._wrapsContent) {
+      width = Math.min(width, this.contentElement.offsetWidth);
+      height = Math.min(height, this.contentElement.offsetHeight);
+    }
+
+    if (this._maxSize) {
+      width = Math.min(width, this._maxSize.width);
+      height = Math.min(height, this._maxSize.height);
+    }
+
+    var positionX;
+    if (typeof this._defaultPositionX === 'number') {
+      positionX = this._defaultPositionX;
+    } else {
+      positionX = (container.offsetWidth - width) / 2;
+      positionX = Number.constrain(positionX, 0, container.offsetWidth - width);
+    }
+
+    var positionY;
+    if (typeof this._defaultPositionY === 'number') {
+      positionY = this._defaultPositionY;
+    } else {
+      positionY = (container.offsetHeight - height) / 2;
+      positionY = Number.constrain(positionY, 0, container.offsetHeight - height);
+    }
+
+    this.element.style.width = width + 'px';
+    this.element.style.height = height + 'px';
+    this.element.positionAt(positionX, positionY, container);
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onKeyDown(event) {
+    if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code) {
+      event.consume(true);
+      this.detach();
+    }
+  }
 };
 
-WebInspector.Dialog.prototype = {
-    /**
-     * @override
-     */
-    show: function()
-    {
-        if (WebInspector.Dialog._instance)
-            WebInspector.Dialog._instance.detach();
-        WebInspector.Dialog._instance = this;
-
-        var document = /** @type {!Document} */ (WebInspector.Dialog._modalHostView.element.ownerDocument);
-        this._disableTabIndexOnElements(document);
-
-        this._glassPane = new WebInspector.GlassPane(document, this._dimmed);
-        this._glassPane.element.addEventListener("click", this._onGlassPaneClick.bind(this), false);
-        this.element.ownerDocument.body.addEventListener("keydown", this._keyDownBound, false);
-
-        WebInspector.Widget.prototype.show.call(this, this._glassPane.element);
-
-        this._position();
-        this._focusRestorer = new WebInspector.WidgetFocusRestorer(this);
-    },
-
-    /**
-     * @override
-     */
-    detach: function()
-    {
-        this._focusRestorer.restore();
-
-        this.element.ownerDocument.body.removeEventListener("keydown", this._keyDownBound, false);
-        WebInspector.Widget.prototype.detach.call(this);
-
-        this._glassPane.dispose();
-        delete this._glassPane;
-
-        this._restoreTabIndexOnElements();
-
-        delete WebInspector.Dialog._instance;
-    },
-
-    addCloseButton: function()
-    {
-        var closeButton = this.contentElement.createChild("div", "dialog-close-button", "dt-close-button");
-        closeButton.gray = true;
-        closeButton.addEventListener("click", this.detach.bind(this), false);
-    },
-
-    /**
-     * @param {number=} positionX
-     * @param {number=} positionY
-     */
-    setPosition: function(positionX, positionY)
-    {
-        this._defaultPositionX = positionX;
-        this._defaultPositionY = positionY;
-    },
-
-    /**
-     * @param {!Size} size
-     */
-    setMaxSize: function(size)
-    {
-        this._maxSize = size;
-    },
-
-    /**
-     * @param {boolean} wraps
-     */
-    setWrapsContent: function(wraps)
-    {
-        this.element.classList.toggle("wraps-content", wraps);
-        this._wrapsContent = wraps;
-    },
-
-    /**
-     * @param {boolean} dimmed
-     */
-    setDimmed: function(dimmed)
-    {
-        this._dimmed = dimmed;
-    },
-
-    contentResized: function()
-    {
-        if (this._wrapsContent)
-            this._position();
-    },
-
-    /**
-     * @param {!Document} document
-     */
-    _disableTabIndexOnElements: function(document)
-    {
-        this._tabIndexMap.clear();
-        for (var node = document; node; node = node.traverseNextNode(document)) {
-            if (node instanceof HTMLElement) {
-                var element = /** @type {!HTMLElement} */  (node);
-                var tabIndex = element.tabIndex;
-                if (tabIndex >= 0) {
-                    this._tabIndexMap.set(element, tabIndex);
-                    element.tabIndex = -1;
-                }
-            }
-        }
-    },
-
-    _restoreTabIndexOnElements: function()
-    {
-        for (var element of this._tabIndexMap.keys())
-            element.tabIndex = /** @type {number} */(this._tabIndexMap.get(element));
-        this._tabIndexMap.clear();
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    _onFocus: function(event)
-    {
-        this.focus();
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    _onGlassPaneClick: function(event)
-    {
-        if (!this.element.isSelfOrAncestor(/** @type {?Node} */ (event.target)))
-            this.detach();
-    },
-
-    _position: function()
-    {
-        var container = WebInspector.Dialog._modalHostView.element;
-
-        var width = container.offsetWidth - 10;
-        var height = container.offsetHeight - 10;
-
-        if (this._wrapsContent) {
-            width = Math.min(width, this.contentElement.offsetWidth);
-            height = Math.min(height, this.contentElement.offsetHeight);
-        }
-
-        if (this._maxSize) {
-            width = Math.min(width, this._maxSize.width);
-            height = Math.min(height, this._maxSize.height);
-        }
-
-        var positionX;
-        if (typeof this._defaultPositionX === "number") {
-            positionX = this._defaultPositionX;
-        } else {
-            positionX = (container.offsetWidth - width) / 2;
-            positionX = Number.constrain(positionX, 0, container.offsetWidth - width);
-        }
-
-        var positionY;
-        if (typeof this._defaultPositionY === "number") {
-            positionY = this._defaultPositionY;
-        } else {
-            positionY = (container.offsetHeight - height) / 2;
-            positionY = Number.constrain(positionY, 0, container.offsetHeight - height);
-        }
-
-        this.element.style.width = width + "px";
-        this.element.style.height = height + "px";
-        this.element.positionAt(positionX, positionY, container);
-    },
-
-    /**
-     * @param {!Event} event
-     */
-    _onKeyDown: function(event)
-    {
-        if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code) {
-            event.consume(true);
-            this.detach();
-        }
-    },
-
-    __proto__: WebInspector.Widget.prototype
-};
 
 /** @type {?Element} */
 WebInspector.Dialog._previousFocusedElement = null;
@@ -246,27 +248,4 @@ WebInspector.Dialog._previousFocusedElement = null;
 /** @type {?WebInspector.Widget} */
 WebInspector.Dialog._modalHostView = null;
 
-/**
- * @param {!WebInspector.Widget} view
- */
-WebInspector.Dialog.setModalHostView = function(view)
-{
-    WebInspector.Dialog._modalHostView = view;
-};
-
-/**
- * FIXME: make utility method in Dialog, so clients use it instead of this getter.
- * Method should be like Dialog.showModalElement(position params, reposition callback).
- * @return {?WebInspector.Widget}
- */
-WebInspector.Dialog.modalHostView = function()
-{
-    return WebInspector.Dialog._modalHostView;
-};
-
-WebInspector.Dialog.modalHostRepositioned = function()
-{
-    if (WebInspector.Dialog._instance)
-        WebInspector.Dialog._instance._position();
-};
 

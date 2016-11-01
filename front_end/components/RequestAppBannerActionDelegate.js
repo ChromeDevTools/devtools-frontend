@@ -1,29 +1,23 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 /**
- * @constructor
  * @implements {WebInspector.ActionDelegate}
+ * @unrestricted
  */
-WebInspector.RequestAppBannerActionDelegate = function()
-{
-};
-
-WebInspector.RequestAppBannerActionDelegate.prototype = {
-    /**
-     * @override
-     * @param {!WebInspector.Context} context
-     * @param {string} actionId
-     * @return {boolean}
-     */
-    handleAction: function(context, actionId)
-    {
-        var target = WebInspector.targetManager.mainTarget();
-        if (target && target.hasBrowserCapability()) {
-            target.pageAgent().requestAppBanner();
-            WebInspector.console.show();
-        }
-        return true;
+WebInspector.RequestAppBannerActionDelegate = class {
+  /**
+   * @override
+   * @param {!WebInspector.Context} context
+   * @param {string} actionId
+   * @return {boolean}
+   */
+  handleAction(context, actionId) {
+    var target = WebInspector.targetManager.mainTarget();
+    if (target && target.hasBrowserCapability()) {
+      target.pageAgent().requestAppBanner();
+      WebInspector.console.show();
     }
+    return true;
+  }
 };

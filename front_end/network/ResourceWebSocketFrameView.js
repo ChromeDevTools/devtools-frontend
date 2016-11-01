@@ -15,43 +15,49 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 /**
- * @constructor
- * @extends {WebInspector.VBox}
- * @param {!WebInspector.NetworkRequest} request
+ * @unrestricted
  */
-WebInspector.ResourceWebSocketFrameView = function(request)
-{
-    WebInspector.VBox.call(this);
-    this.registerRequiredCSS("network/webSocketFrameView.css");
-    this.element.classList.add("websocket-frame-view");
+WebInspector.ResourceWebSocketFrameView = class extends WebInspector.VBox {
+  /**
+   * @param {!WebInspector.NetworkRequest} request
+   */
+  constructor(request) {
+    super();
+    this.registerRequiredCSS('network/webSocketFrameView.css');
+    this.element.classList.add('websocket-frame-view');
     this._request = request;
 
-    this._splitWidget = new WebInspector.SplitWidget(false, true, "resourceWebSocketFrameSplitViewState");
+    this._splitWidget = new WebInspector.SplitWidget(false, true, 'resourceWebSocketFrameSplitViewState');
     this._splitWidget.show(this.element);
 
     var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
-        {id: "data", title: WebInspector.UIString("Data"), sortable: false, weight: 88},
-        {id: "length", title: WebInspector.UIString("Length"), sortable: false, align: WebInspector.DataGrid.Align.Right, weight: 5},
-        {id: "time", title: WebInspector.UIString("Time"), sortable: true, weight: 7}
+      {id: 'data', title: WebInspector.UIString('Data'), sortable: false, weight: 88}, {
+        id: 'length',
+        title: WebInspector.UIString('Length'),
+        sortable: false,
+        align: WebInspector.DataGrid.Align.Right,
+        weight: 5
+      },
+      {id: 'time', title: WebInspector.UIString('Time'), sortable: true, weight: 7}
     ]);
 
     this._dataGrid = new WebInspector.SortableDataGrid(columns);
     this._dataGrid.setRowContextMenuCallback(onRowContextMenu);
     this._dataGrid.setStickToBottom(true);
-    this._dataGrid.setCellClass("websocket-frame-view-td");
-    this._timeComparator = /** @type {!WebInspector.SortableDataGrid.NodeComparator} */ (WebInspector.ResourceWebSocketFrameNodeTimeComparator);
+    this._dataGrid.setCellClass('websocket-frame-view-td');
+    this._timeComparator = /** @type {!WebInspector.SortableDataGrid.NodeComparator} */ (
+        WebInspector.ResourceWebSocketFrameNodeTimeComparator);
     this._dataGrid.sortNodes(this._timeComparator, false);
-    this._dataGrid.markColumnAsSortedBy("time", WebInspector.DataGrid.Order.Ascending);
+    this._dataGrid.markColumnAsSortedBy('time', WebInspector.DataGrid.Order.Ascending);
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortItems, this);
 
-    this._dataGrid.setName("ResourceWebSocketFrameView");
+    this._dataGrid.setName('ResourceWebSocketFrameView');
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SelectedNode, this._onFrameSelected, this);
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.DeselectedNode, this._onFrameDeselected, this);
     this._splitWidget.setMainWidget(this._dataGrid.asWidget());
 
-    var view = new WebInspector.EmptyWidget("Select frame to browse its content.");
+    var view = new WebInspector.EmptyWidget('Select frame to browse its content.');
     this._splitWidget.setSidebarWidget(view);
 
     /** @type {?WebInspector.ResourceWebSocketFrameNode} */
@@ -61,187 +67,181 @@ WebInspector.ResourceWebSocketFrameView = function(request)
      * @param {!WebInspector.ContextMenu} contextMenu
      * @param {!WebInspector.DataGridNode} node
      */
-    function onRowContextMenu(contextMenu, node)
-    {
-        contextMenu.appendItem(WebInspector.UIString.capitalize("Copy ^message"), InspectorFrontendHost.copyText.bind(InspectorFrontendHost, node.data.data))
+    function onRowContextMenu(contextMenu, node) {
+      contextMenu.appendItem(
+          WebInspector.UIString.capitalize('Copy ^message'),
+          InspectorFrontendHost.copyText.bind(InspectorFrontendHost, node.data.data));
     }
+  }
+
+  /**
+   * @param {number} opCode
+   * @param {boolean} mask
+   * @return {string}
+   */
+  static opCodeDescription(opCode, mask) {
+    var rawDescription = WebInspector.ResourceWebSocketFrameView.opCodeDescriptions[opCode] || '';
+    var localizedDescription = WebInspector.UIString(rawDescription);
+    return WebInspector.UIString('%s (Opcode %d%s)', localizedDescription, opCode, (mask ? ', mask' : ''));
+  }
+
+  /**
+   * @override
+   */
+  wasShown() {
+    this.refresh();
+    this._request.addEventListener(WebInspector.NetworkRequest.Events.WebsocketFrameAdded, this._frameAdded, this);
+  }
+
+  /**
+   * @override
+   */
+  willHide() {
+    this._request.removeEventListener(WebInspector.NetworkRequest.Events.WebsocketFrameAdded, this._frameAdded, this);
+  }
+
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _frameAdded(event) {
+    var frame = /** @type {!WebInspector.NetworkRequest.WebSocketFrame} */ (event.data);
+    this._dataGrid.insertChild(new WebInspector.ResourceWebSocketFrameNode(this._request.url, frame));
+  }
+
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _onFrameSelected(event) {
+    var selectedNode = /** @type {!WebInspector.ResourceWebSocketFrameNode} */ (event.target.selectedNode);
+    this._currentSelectedNode = selectedNode;
+    var contentProvider = selectedNode.contentProvider();
+    contentProvider.requestContent().then(contentHandler.bind(this));
+
+    /**
+     * @param {(string|null)} content
+     * @this {WebInspector.ResourceWebSocketFrameView}
+     */
+    function contentHandler(content) {
+      if (this._currentSelectedNode !== selectedNode)
+        return;
+      WebInspector.JSONView.parseJSON(content).then(handleJSONData.bind(this));
+    }
+
+    /**
+     * @param {?WebInspector.ParsedJSON} parsedJSON
+     * @this {WebInspector.ResourceWebSocketFrameView}
+     */
+    function handleJSONData(parsedJSON) {
+      if (this._currentSelectedNode !== selectedNode)
+        return;
+      if (parsedJSON)
+        this._splitWidget.setSidebarWidget(WebInspector.JSONView.createSearchableView(parsedJSON));
+      else
+        this._splitWidget.setSidebarWidget(new WebInspector.ResourceSourceFrame(contentProvider));
+    }
+  }
+
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _onFrameDeselected(event) {
+    this._currentSelectedNode = null;
+  }
+
+  refresh() {
+    this._dataGrid.rootNode().removeChildren();
+    var frames = this._request.frames();
+    for (var i = 0; i < frames.length; ++i)
+      this._dataGrid.insertChild(new WebInspector.ResourceWebSocketFrameNode(this._request.url, frames[i]));
+  }
+
+  _sortItems() {
+    this._dataGrid.sortNodes(this._timeComparator, !this._dataGrid.isSortOrderAscending());
+  }
 };
 
 /** @enum {number} */
 WebInspector.ResourceWebSocketFrameView.OpCodes = {
-    ContinuationFrame: 0,
-    TextFrame: 1,
-    BinaryFrame: 2,
-    ConnectionCloseFrame: 8,
-    PingFrame: 9,
-    PongFrame: 10
+  ContinuationFrame: 0,
+  TextFrame: 1,
+  BinaryFrame: 2,
+  ConnectionCloseFrame: 8,
+  PingFrame: 9,
+  PongFrame: 10
 };
 
 /** @type {!Array.<string> } */
-WebInspector.ResourceWebSocketFrameView.opCodeDescriptions = (function()
-{
-    var opCodes = WebInspector.ResourceWebSocketFrameView.OpCodes;
-    var map = [];
-    map[opCodes.ContinuationFrame] = "Continuation Frame";
-    map[opCodes.TextFrame] = "Text Frame";
-    map[opCodes.BinaryFrame] = "Binary Frame";
-    map[opCodes.ContinuationFrame] = "Connection Close Frame";
-    map[opCodes.PingFrame] = "Ping Frame";
-    map[opCodes.PongFrame] = "Pong Frame";
-    return map;
+WebInspector.ResourceWebSocketFrameView.opCodeDescriptions = (function() {
+  var opCodes = WebInspector.ResourceWebSocketFrameView.OpCodes;
+  var map = [];
+  map[opCodes.ContinuationFrame] = 'Continuation Frame';
+  map[opCodes.TextFrame] = 'Text Frame';
+  map[opCodes.BinaryFrame] = 'Binary Frame';
+  map[opCodes.ContinuationFrame] = 'Connection Close Frame';
+  map[opCodes.PingFrame] = 'Ping Frame';
+  map[opCodes.PongFrame] = 'Pong Frame';
+  return map;
 })();
 
-/**
- * @param {number} opCode
- * @param {boolean} mask
- * @return {string}
- */
-WebInspector.ResourceWebSocketFrameView.opCodeDescription = function(opCode, mask)
-{
-    var rawDescription = WebInspector.ResourceWebSocketFrameView.opCodeDescriptions[opCode] || "";
-    var localizedDescription = WebInspector.UIString(rawDescription);
-    return WebInspector.UIString("%s (Opcode %d%s)", localizedDescription, opCode, (mask ? ", mask" : ""));
-};
-
-WebInspector.ResourceWebSocketFrameView.prototype = {
-    wasShown: function()
-    {
-        this.refresh();
-        this._request.addEventListener(WebInspector.NetworkRequest.Events.WebsocketFrameAdded, this._frameAdded, this);
-    },
-
-    willHide: function()
-    {
-        this._request.removeEventListener(WebInspector.NetworkRequest.Events.WebsocketFrameAdded, this._frameAdded, this);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _frameAdded: function(event)
-    {
-        var frame = /** @type {!WebInspector.NetworkRequest.WebSocketFrame} */ (event.data);
-        this._dataGrid.insertChild(new WebInspector.ResourceWebSocketFrameNode(this._request.url, frame));
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onFrameSelected: function(event)
-    {
-        var selectedNode = /** @type {!WebInspector.ResourceWebSocketFrameNode} */ (event.target.selectedNode);
-        this._currentSelectedNode = selectedNode;
-        var contentProvider = selectedNode.contentProvider();
-        contentProvider.requestContent().then(contentHandler.bind(this));
-
-        /**
-         * @param {(string|null)} content
-         * @this {WebInspector.ResourceWebSocketFrameView}
-         */
-        function contentHandler(content) {
-            if (this._currentSelectedNode !== selectedNode)
-                return;
-            WebInspector.JSONView.parseJSON(content).then(handleJSONData.bind(this));
-        }
-
-        /**
-         * @param {?WebInspector.ParsedJSON} parsedJSON
-         * @this {WebInspector.ResourceWebSocketFrameView}
-         */
-        function handleJSONData(parsedJSON)
-        {
-            if (this._currentSelectedNode !== selectedNode)
-                return;
-            if (parsedJSON)
-                this._splitWidget.setSidebarWidget(WebInspector.JSONView.createSearchableView(parsedJSON));
-            else
-                this._splitWidget.setSidebarWidget(new WebInspector.ResourceSourceFrame(contentProvider));
-        }
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onFrameDeselected: function(event)
-    {
-        this._currentSelectedNode = null;
-    },
-
-    refresh: function()
-    {
-        this._dataGrid.rootNode().removeChildren();
-        var frames = this._request.frames();
-        for (var i = 0; i < frames.length; ++i)
-            this._dataGrid.insertChild(new WebInspector.ResourceWebSocketFrameNode(this._request.url, frames[i]));
-    },
-
-    _sortItems: function()
-    {
-        this._dataGrid.sortNodes(this._timeComparator, !this._dataGrid.isSortOrderAscending());
-    },
-
-    __proto__: WebInspector.VBox.prototype
-};
 
 /**
- * @constructor
- * @extends {WebInspector.SortableDataGridNode}
- * @param {string} url
- * @param {!WebInspector.NetworkRequest.WebSocketFrame} frame
+ * @unrestricted
  */
-WebInspector.ResourceWebSocketFrameNode = function(url, frame)
-{
+WebInspector.ResourceWebSocketFrameNode = class extends WebInspector.SortableDataGridNode {
+  /**
+   * @param {string} url
+   * @param {!WebInspector.NetworkRequest.WebSocketFrame} frame
+   */
+  constructor(url, frame) {
     var dataText = frame.text;
     var length = frame.text.length;
     var time = new Date(frame.time * 1000);
-    var timeText = ("0" + time.getHours()).substr(-2) + ":" + ("0" + time.getMinutes()).substr(-2) + ":" + ("0" + time.getSeconds()).substr(-2) + "." + ("00" + time.getMilliseconds()).substr(-3);
-    var timeNode = createElement("div");
+    var timeText = ('0' + time.getHours()).substr(-2) + ':' + ('0' + time.getMinutes()).substr(-2) + ':' +
+        ('0' + time.getSeconds()).substr(-2) + '.' + ('00' + time.getMilliseconds()).substr(-3);
+    var timeNode = createElement('div');
     timeNode.createTextChild(timeText);
     timeNode.title = time.toLocaleString();
 
     var isTextFrame = frame.opCode === WebInspector.ResourceWebSocketFrameView.OpCodes.TextFrame;
     if (!isTextFrame)
-        dataText = WebInspector.ResourceWebSocketFrameView.opCodeDescription(frame.opCode, frame.mask);
+      dataText = WebInspector.ResourceWebSocketFrameView.opCodeDescription(frame.opCode, frame.mask);
 
-    WebInspector.SortableDataGridNode.call(this, {data: dataText, length: length, time: timeNode});
+    super({data: dataText, length: length, time: timeNode});
 
     this._url = url;
     this._frame = frame;
     this._isTextFrame = isTextFrame;
     this._dataText = dataText;
-};
+  }
 
-WebInspector.ResourceWebSocketFrameNode.prototype = {
-    /**
-     * @override
-     */
-    createCells: function()
-    {
-        var element = this._element;
-        element.classList.toggle("websocket-frame-view-row-error", this._frame.type === WebInspector.NetworkRequest.WebSocketFrameType.Error);
-        element.classList.toggle("websocket-frame-view-row-outcoming", this._frame.type === WebInspector.NetworkRequest.WebSocketFrameType.Send);
-        element.classList.toggle("websocket-frame-view-row-opcode", !this._isTextFrame);
-        WebInspector.SortableDataGridNode.prototype.createCells.call(this);
-    },
+  /**
+   * @override
+   */
+  createCells() {
+    var element = this._element;
+    element.classList.toggle(
+        'websocket-frame-view-row-error', this._frame.type === WebInspector.NetworkRequest.WebSocketFrameType.Error);
+    element.classList.toggle(
+        'websocket-frame-view-row-outcoming', this._frame.type === WebInspector.NetworkRequest.WebSocketFrameType.Send);
+    element.classList.toggle('websocket-frame-view-row-opcode', !this._isTextFrame);
+    super.createCells();
+  }
 
-    /**
-     * @override
-     * @return {number}
-     */
-    nodeSelfHeight: function()
-    {
-        return 17;
-    },
+  /**
+   * @override
+   * @return {number}
+   */
+  nodeSelfHeight() {
+    return 17;
+  }
 
-    /**
-     * @return {!WebInspector.ContentProvider}
-     */
-    contentProvider: function()
-    {
-        return WebInspector.StaticContentProvider.fromString(this._url, WebInspector.resourceTypes.WebSocket, this._dataText);
-    },
-
-    __proto__: WebInspector.SortableDataGridNode.prototype
+  /**
+   * @return {!WebInspector.ContentProvider}
+   */
+  contentProvider() {
+    return WebInspector.StaticContentProvider.fromString(
+        this._url, WebInspector.resourceTypes.WebSocket, this._dataText);
+  }
 };
 
 /**
@@ -249,7 +249,6 @@ WebInspector.ResourceWebSocketFrameNode.prototype = {
  * @param {!WebInspector.ResourceWebSocketFrameNode} b
  * @return {number}
  */
-WebInspector.ResourceWebSocketFrameNodeTimeComparator = function(a, b)
-{
-    return a._frame.time - b._frame.time;
+WebInspector.ResourceWebSocketFrameNodeTimeComparator = function(a, b) {
+  return a._frame.time - b._frame.time;
 };

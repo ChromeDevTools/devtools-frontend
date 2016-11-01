@@ -27,49 +27,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.VBox}
- * @param {!WebInspector.NetworkRequest} request
+ * @unrestricted
  */
-WebInspector.RequestView = function(request)
-{
-    WebInspector.VBox.call(this);
+WebInspector.RequestView = class extends WebInspector.VBox {
+  /**
+   * @param {!WebInspector.NetworkRequest} request
+   */
+  constructor(request) {
+    super();
 
-    this.element.classList.add("request-view");
+    this.element.classList.add('request-view');
     this.request = request;
-};
+  }
 
-WebInspector.RequestView.prototype = {
-    __proto__: WebInspector.VBox.prototype
-};
-
-/**
- * @param {!WebInspector.NetworkRequest} request
- * @return {boolean}
- */
-WebInspector.RequestView.hasTextContent = function(request)
-{
+  /**
+   * @param {!WebInspector.NetworkRequest} request
+   * @return {boolean}
+   */
+  static hasTextContent(request) {
     if (request.resourceType().isTextType())
-        return true;
+      return true;
     if (request.resourceType() === WebInspector.resourceTypes.Other || request.hasErrorStatusCode())
-        return !!request.content && !request.contentEncoded;
+      return !!request.content && !request.contentEncoded;
     return false;
-};
+  }
 
-/**
- * @param {!WebInspector.NetworkRequest} request
- * @return {!WebInspector.Widget}
- */
-WebInspector.RequestView.nonSourceViewForRequest = function(request)
-{
+  /**
+   * @param {!WebInspector.NetworkRequest} request
+   * @return {!WebInspector.Widget}
+   */
+  static nonSourceViewForRequest(request) {
     switch (request.resourceType()) {
-    case WebInspector.resourceTypes.Image:
+      case WebInspector.resourceTypes.Image:
         return new WebInspector.ImageView(request.mimeType, request);
-    case WebInspector.resourceTypes.Font:
+      case WebInspector.resourceTypes.Font:
         return new WebInspector.FontView(request.mimeType, request);
-    default:
+      default:
         return new WebInspector.RequestView(request);
     }
+  }
 };
+
+

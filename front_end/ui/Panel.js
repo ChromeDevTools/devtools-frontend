@@ -25,20 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 // For testing.
 WebInspector.panels = [];
 
 /**
- * @extends {WebInspector.VBox}
- * @constructor
+ * @unrestricted
  */
-WebInspector.Panel = function(name)
-{
-    WebInspector.VBox.call(this);
+WebInspector.Panel = class extends WebInspector.VBox {
+  constructor(name) {
+    super();
 
-    this.element.classList.add("panel");
-    this.element.setAttribute("aria-label", name);
+    this.element.classList.add('panel');
+    this.element.setAttribute('aria-label', name);
     this.element.classList.add(name);
     this._panelName = name;
 
@@ -46,92 +44,84 @@ WebInspector.Panel = function(name)
     WebInspector.panels[name] = this;
 
     this._shortcuts = /** !Object.<number, function(Event=):boolean> */ ({});
+  }
+
+  get name() {
+    return this._panelName;
+  }
+
+  /**
+   * @return {?WebInspector.SearchableView}
+   */
+  searchableView() {
+    return null;
+  }
+
+  /**
+   * @override
+   * @return {!Array.<!Element>}
+   */
+  elementsToRestoreScrollPositionsFor() {
+    return [];
+  }
+
+  /**
+   * @param {!KeyboardEvent} event
+   */
+  handleShortcut(event) {
+    var shortcutKey = WebInspector.KeyboardShortcut.makeKeyFromEvent(event);
+    var handler = this._shortcuts[shortcutKey];
+    if (handler && handler(event))
+      event.handled = true;
+  }
+
+  /**
+   * @param {!Array.<!WebInspector.KeyboardShortcut.Descriptor>} keys
+   * @param {function(!Event=):boolean} handler
+   */
+  registerShortcuts(keys, handler) {
+    for (var i = 0; i < keys.length; ++i)
+      this._shortcuts[keys[i].key] = handler;
+  }
+
+  /**
+   * @param {!WebInspector.Infobar} infobar
+   */
+  showInfobar(infobar) {
+    infobar.setCloseCallback(this._onInfobarClosed.bind(this, infobar));
+    if (this.element.firstChild)
+      this.element.insertBefore(infobar.element, this.element.firstChild);
+    else
+      this.element.appendChild(infobar.element);
+    infobar.setParentView(this);
+    this.doResize();
+  }
+
+  /**
+   * @param {!WebInspector.Infobar} infobar
+   */
+  _onInfobarClosed(infobar) {
+    infobar.element.remove();
+    this.doResize();
+  }
 };
 
 // Should by in sync with style declarations.
 WebInspector.Panel.counterRightMargin = 25;
 
-WebInspector.Panel.prototype = {
-    get name()
-    {
-        return this._panelName;
-    },
-
-    /**
-     * @return {?WebInspector.SearchableView}
-     */
-    searchableView: function()
-    {
-        return null;
-    },
-
-    /**
-     * @override
-     * @return {!Array.<!Element>}
-     */
-    elementsToRestoreScrollPositionsFor: function()
-    {
-        return [];
-    },
-
-    /**
-     * @param {!KeyboardEvent} event
-     */
-    handleShortcut: function(event)
-    {
-        var shortcutKey = WebInspector.KeyboardShortcut.makeKeyFromEvent(event);
-        var handler = this._shortcuts[shortcutKey];
-        if (handler && handler(event))
-            event.handled = true;
-    },
-
-    /**
-     * @param {!Array.<!WebInspector.KeyboardShortcut.Descriptor>} keys
-     * @param {function(!Event=):boolean} handler
-     */
-    registerShortcuts: function(keys, handler)
-    {
-        for (var i = 0; i < keys.length; ++i)
-            this._shortcuts[keys[i].key] = handler;
-    },
-
-    /**
-     * @param {!WebInspector.Infobar} infobar
-     */
-    showInfobar: function(infobar)
-    {
-        infobar.setCloseCallback(this._onInfobarClosed.bind(this, infobar));
-        if (this.element.firstChild)
-            this.element.insertBefore(infobar.element, this.element.firstChild);
-        else
-            this.element.appendChild(infobar.element);
-        infobar.setParentView(this);
-        this.doResize();
-    },
-
-    /**
-     * @param {!WebInspector.Infobar} infobar
-     */
-    _onInfobarClosed: function(infobar)
-    {
-        infobar.element.remove();
-        this.doResize();
-    },
-
-    __proto__: WebInspector.VBox.prototype
-};
-
 /**
- * @extends {WebInspector.Panel}
- * @param {string} name
- * @param {number=} defaultWidth
- * @constructor
+ * @unrestricted
  */
-WebInspector.PanelWithSidebar = function(name, defaultWidth)
-{
-    WebInspector.Panel.call(this, name);
+WebInspector.PanelWithSidebar = class extends WebInspector.Panel {
+  /**
+   * @param {string} name
+   * @param {number=} defaultWidth
+   */
+  constructor(name, defaultWidth) {
+    super(name);
 
-    this._panelSplitWidget = new WebInspector.SplitWidget(true, false, this._panelName + "PanelSplitViewState", defaultWidth || 200);
+    this._panelSplitWidget =
+        new WebInspector.SplitWidget(true, false, this._panelName + 'PanelSplitViewState', defaultWidth || 200);
     this._panelSplitWidget.show(this.element);
 
     this._mainWidget = new WebInspector.VBox();
@@ -141,33 +131,27 @@ WebInspector.PanelWithSidebar = function(name, defaultWidth)
     this._sidebarWidget.setMinimumSize(100, 25);
     this._panelSplitWidget.setSidebarWidget(this._sidebarWidget);
 
-    this._sidebarWidget.element.classList.add("panel-sidebar");
-};
+    this._sidebarWidget.element.classList.add('panel-sidebar');
+  }
 
-WebInspector.PanelWithSidebar.prototype = {
-    /**
-     * @return {!Element}
-     */
-    panelSidebarElement: function()
-    {
-        return this._sidebarWidget.element;
-    },
+  /**
+   * @return {!Element}
+   */
+  panelSidebarElement() {
+    return this._sidebarWidget.element;
+  }
 
-    /**
-     * @return {!Element}
-     */
-    mainElement: function()
-    {
-        return this._mainWidget.element;
-    },
+  /**
+   * @return {!Element}
+   */
+  mainElement() {
+    return this._mainWidget.element;
+  }
 
-    /**
-     * @return {!WebInspector.SplitWidget}
-     */
-    splitWidget: function()
-    {
-        return this._panelSplitWidget;
-    },
-
-    __proto__: WebInspector.Panel.prototype
+  /**
+   * @return {!WebInspector.SplitWidget}
+   */
+  splitWidget() {
+    return this._panelSplitWidget;
+  }
 };

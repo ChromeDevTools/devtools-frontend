@@ -27,51 +27,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+/**
+ * @unrestricted
+ */
+WebInspector.AuditCategories.PagePerformance = class extends WebInspector.AuditCategoryImpl {
+  constructor() {
+    super(WebInspector.AuditCategories.PagePerformance.AuditCategoryName);
+  }
+
+  initialize() {
+    this.addRule(new WebInspector.AuditRules.UnusedCssRule(), WebInspector.AuditRule.Severity.Warning);
+    this.addRule(new WebInspector.AuditRules.CssInHeadRule(), WebInspector.AuditRule.Severity.Severe);
+    this.addRule(new WebInspector.AuditRules.StylesScriptsOrderRule(), WebInspector.AuditRule.Severity.Severe);
+  }
+};
+
+WebInspector.AuditCategories.PagePerformance.AuditCategoryName = WebInspector.UIString('Web Page Performance');
 
 /**
- * @constructor
- * @extends {WebInspector.AuditCategoryImpl}
+ * @unrestricted
  */
-WebInspector.AuditCategories.PagePerformance = function() {
-    WebInspector.AuditCategoryImpl.call(this, WebInspector.AuditCategories.PagePerformance.AuditCategoryName);
+WebInspector.AuditCategories.NetworkUtilization = class extends WebInspector.AuditCategoryImpl {
+  constructor() {
+    super(WebInspector.AuditCategories.NetworkUtilization.AuditCategoryName);
+  }
+
+  initialize() {
+    this.addRule(new WebInspector.AuditRules.GzipRule(), WebInspector.AuditRule.Severity.Severe);
+    this.addRule(new WebInspector.AuditRules.ImageDimensionsRule(), WebInspector.AuditRule.Severity.Warning);
+    this.addRule(new WebInspector.AuditRules.CookieSizeRule(400), WebInspector.AuditRule.Severity.Warning);
+    this.addRule(new WebInspector.AuditRules.StaticCookielessRule(5), WebInspector.AuditRule.Severity.Warning);
+    this.addRule(new WebInspector.AuditRules.CombineJsResourcesRule(2), WebInspector.AuditRule.Severity.Severe);
+    this.addRule(new WebInspector.AuditRules.CombineCssResourcesRule(2), WebInspector.AuditRule.Severity.Severe);
+    this.addRule(new WebInspector.AuditRules.MinimizeDnsLookupsRule(4), WebInspector.AuditRule.Severity.Warning);
+    this.addRule(
+        new WebInspector.AuditRules.ParallelizeDownloadRule(4, 10, 0.5), WebInspector.AuditRule.Severity.Warning);
+    this.addRule(new WebInspector.AuditRules.BrowserCacheControlRule(), WebInspector.AuditRule.Severity.Severe);
+  }
 };
 
-WebInspector.AuditCategories.PagePerformance.AuditCategoryName = WebInspector.UIString("Web Page Performance");
-
-WebInspector.AuditCategories.PagePerformance.prototype = {
-    initialize: function()
-    {
-        this.addRule(new WebInspector.AuditRules.UnusedCssRule(), WebInspector.AuditRule.Severity.Warning);
-        this.addRule(new WebInspector.AuditRules.CssInHeadRule(), WebInspector.AuditRule.Severity.Severe);
-        this.addRule(new WebInspector.AuditRules.StylesScriptsOrderRule(), WebInspector.AuditRule.Severity.Severe);
-    },
-
-    __proto__: WebInspector.AuditCategoryImpl.prototype
-};
-
-/**
- * @constructor
- * @extends {WebInspector.AuditCategoryImpl}
- */
-WebInspector.AuditCategories.NetworkUtilization = function() {
-    WebInspector.AuditCategoryImpl.call(this, WebInspector.AuditCategories.NetworkUtilization.AuditCategoryName);
-};
-
-WebInspector.AuditCategories.NetworkUtilization.AuditCategoryName = WebInspector.UIString("Network Utilization");
-
-WebInspector.AuditCategories.NetworkUtilization.prototype = {
-    initialize: function()
-    {
-        this.addRule(new WebInspector.AuditRules.GzipRule(), WebInspector.AuditRule.Severity.Severe);
-        this.addRule(new WebInspector.AuditRules.ImageDimensionsRule(), WebInspector.AuditRule.Severity.Warning);
-        this.addRule(new WebInspector.AuditRules.CookieSizeRule(400), WebInspector.AuditRule.Severity.Warning);
-        this.addRule(new WebInspector.AuditRules.StaticCookielessRule(5), WebInspector.AuditRule.Severity.Warning);
-        this.addRule(new WebInspector.AuditRules.CombineJsResourcesRule(2), WebInspector.AuditRule.Severity.Severe);
-        this.addRule(new WebInspector.AuditRules.CombineCssResourcesRule(2), WebInspector.AuditRule.Severity.Severe);
-        this.addRule(new WebInspector.AuditRules.MinimizeDnsLookupsRule(4), WebInspector.AuditRule.Severity.Warning);
-        this.addRule(new WebInspector.AuditRules.ParallelizeDownloadRule(4, 10, 0.5), WebInspector.AuditRule.Severity.Warning);
-        this.addRule(new WebInspector.AuditRules.BrowserCacheControlRule(), WebInspector.AuditRule.Severity.Severe);
-    },
-
-    __proto__: WebInspector.AuditCategoryImpl.prototype
-};
+WebInspector.AuditCategories.NetworkUtilization.AuditCategoryName = WebInspector.UIString('Network Utilization');

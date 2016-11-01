@@ -27,13 +27,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @param {!WebInspector.Workspace} workspace
+ * @unrestricted
  */
-WebInspector.PresentationConsoleMessageHelper = function(workspace)
-{
+WebInspector.PresentationConsoleMessageHelper = class {
+  /**
+   * @param {!WebInspector.Workspace} workspace
+   */
+  constructor(workspace) {
     this._workspace = workspace;
 
     /** @type {!Object.<string, !Array.<!WebInspector.ConsoleMessage>>} */
@@ -42,157 +43,160 @@ WebInspector.PresentationConsoleMessageHelper = function(workspace)
     /** @type {!Array.<!WebInspector.PresentationConsoleMessage>} */
     this._presentationConsoleMessages = [];
 
-    WebInspector.multitargetConsoleModel.addEventListener(WebInspector.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
-    WebInspector.multitargetConsoleModel.addEventListener(WebInspector.ConsoleModel.Events.MessageAdded, this._onConsoleMessageAdded, this);
+    WebInspector.multitargetConsoleModel.addEventListener(
+        WebInspector.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
+    WebInspector.multitargetConsoleModel.addEventListener(
+        WebInspector.ConsoleModel.Events.MessageAdded, this._onConsoleMessageAdded, this);
     WebInspector.multitargetConsoleModel.messages().forEach(this._consoleMessageAdded, this);
-    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
-    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this);
-    WebInspector.targetManager.addModelListener(WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
+    WebInspector.targetManager.addModelListener(
+        WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource,
+        this);
+    WebInspector.targetManager.addModelListener(
+        WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.FailedToParseScriptSource,
+        this._parsedScriptSource, this);
+    WebInspector.targetManager.addModelListener(
+        WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
 
     this._locationPool = new WebInspector.LiveLocationPool();
-};
+  }
 
-WebInspector.PresentationConsoleMessageHelper.prototype = {
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _onConsoleMessageAdded: function(event)
-    {
-        var message = /** @type {!WebInspector.ConsoleMessage} */ (event.data);
-        this._consoleMessageAdded(message);
-    },
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _onConsoleMessageAdded(event) {
+    var message = /** @type {!WebInspector.ConsoleMessage} */ (event.data);
+    this._consoleMessageAdded(message);
+  }
 
-    /**
-     * @param {!WebInspector.ConsoleMessage} message
-     */
-    _consoleMessageAdded: function(message)
-    {
-        if (!message.isErrorOrWarning())
-            return;
+  /**
+   * @param {!WebInspector.ConsoleMessage} message
+   */
+  _consoleMessageAdded(message) {
+    if (!message.isErrorOrWarning())
+      return;
 
-        var rawLocation = this._rawLocation(message);
-        if (rawLocation)
-            this._addConsoleMessageToScript(message, rawLocation);
-        else
-            this._addPendingConsoleMessage(message);
-    },
+    var rawLocation = this._rawLocation(message);
+    if (rawLocation)
+      this._addConsoleMessageToScript(message, rawLocation);
+    else
+      this._addPendingConsoleMessage(message);
+  }
 
-    /**
-     * @param {!WebInspector.ConsoleMessage} message
-     * @return {?WebInspector.DebuggerModel.Location}
-     */
-    _rawLocation: function(message)
-    {
-        var debuggerModel = WebInspector.DebuggerModel.fromTarget(message.target());
-        if (!debuggerModel)
-            return null;
-        if (message.scriptId)
-            return debuggerModel.createRawLocationByScriptId(message.scriptId, message.line, message.column);
-        var callFrame = message.stackTrace && message.stackTrace.callFrames ? message.stackTrace.callFrames[0] : null;
-        if (callFrame)
-            return debuggerModel.createRawLocationByScriptId(callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
-        if (message.url)
-            return debuggerModel.createRawLocationByURL(message.url, message.line, message.column);
-        return null;
-    },
+  /**
+   * @param {!WebInspector.ConsoleMessage} message
+   * @return {?WebInspector.DebuggerModel.Location}
+   */
+  _rawLocation(message) {
+    var debuggerModel = WebInspector.DebuggerModel.fromTarget(message.target());
+    if (!debuggerModel)
+      return null;
+    if (message.scriptId)
+      return debuggerModel.createRawLocationByScriptId(message.scriptId, message.line, message.column);
+    var callFrame = message.stackTrace && message.stackTrace.callFrames ? message.stackTrace.callFrames[0] : null;
+    if (callFrame)
+      return debuggerModel.createRawLocationByScriptId(
+          callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
+    if (message.url)
+      return debuggerModel.createRawLocationByURL(message.url, message.line, message.column);
+    return null;
+  }
 
-    /**
-     * @param {!WebInspector.ConsoleMessage} message
-     * @param {!WebInspector.DebuggerModel.Location} rawLocation
-     */
-    _addConsoleMessageToScript: function(message, rawLocation)
-    {
-        this._presentationConsoleMessages.push(new WebInspector.PresentationConsoleMessage(message, rawLocation, this._locationPool));
-    },
+  /**
+   * @param {!WebInspector.ConsoleMessage} message
+   * @param {!WebInspector.DebuggerModel.Location} rawLocation
+   */
+  _addConsoleMessageToScript(message, rawLocation) {
+    this._presentationConsoleMessages.push(
+        new WebInspector.PresentationConsoleMessage(message, rawLocation, this._locationPool));
+  }
 
-    /**
-     * @param {!WebInspector.ConsoleMessage} message
-     */
-    _addPendingConsoleMessage: function(message)
-    {
-        if (!message.url)
-            return;
-        if (!this._pendingConsoleMessages[message.url])
-            this._pendingConsoleMessages[message.url] = [];
-        this._pendingConsoleMessages[message.url].push(message);
-    },
+  /**
+   * @param {!WebInspector.ConsoleMessage} message
+   */
+  _addPendingConsoleMessage(message) {
+    if (!message.url)
+      return;
+    if (!this._pendingConsoleMessages[message.url])
+      this._pendingConsoleMessages[message.url] = [];
+    this._pendingConsoleMessages[message.url].push(message);
+  }
 
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _parsedScriptSource: function(event)
-    {
-        var script = /** @type {!WebInspector.Script} */ (event.data);
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _parsedScriptSource(event) {
+    var script = /** @type {!WebInspector.Script} */ (event.data);
 
-        var messages = this._pendingConsoleMessages[script.sourceURL];
-        if (!messages)
-            return;
+    var messages = this._pendingConsoleMessages[script.sourceURL];
+    if (!messages)
+      return;
 
-        var pendingMessages = [];
-        for (var i = 0; i < messages.length; i++) {
-            var message = messages[i];
-            var rawLocation = this._rawLocation(message);
-            if (!rawLocation)
-                continue;
-            if (script.target() === message.target() && script.scriptId === rawLocation.scriptId)
-                this._addConsoleMessageToScript(message, rawLocation);
-            else
-                pendingMessages.push(message);
-        }
-
-        if (pendingMessages.length)
-            this._pendingConsoleMessages[script.sourceURL] = pendingMessages;
-        else
-            delete this._pendingConsoleMessages[script.sourceURL];
-    },
-
-    _consoleCleared: function()
-    {
-        this._pendingConsoleMessages = {};
-        for (var i = 0; i < this._presentationConsoleMessages.length; ++i)
-            this._presentationConsoleMessages[i].dispose();
-        this._presentationConsoleMessages = [];
-        this._locationPool.disposeAll();
-    },
-
-    _debuggerReset: function()
-    {
-        this._consoleCleared();
+    var pendingMessages = [];
+    for (var i = 0; i < messages.length; i++) {
+      var message = messages[i];
+      var rawLocation = this._rawLocation(message);
+      if (!rawLocation)
+        continue;
+      if (script.target() === message.target() && script.scriptId === rawLocation.scriptId)
+        this._addConsoleMessageToScript(message, rawLocation);
+      else
+        pendingMessages.push(message);
     }
+
+    if (pendingMessages.length)
+      this._pendingConsoleMessages[script.sourceURL] = pendingMessages;
+    else
+      delete this._pendingConsoleMessages[script.sourceURL];
+  }
+
+  _consoleCleared() {
+    this._pendingConsoleMessages = {};
+    for (var i = 0; i < this._presentationConsoleMessages.length; ++i)
+      this._presentationConsoleMessages[i].dispose();
+    this._presentationConsoleMessages = [];
+    this._locationPool.disposeAll();
+  }
+
+  _debuggerReset() {
+    this._consoleCleared();
+  }
 };
 
 /**
- * @constructor
- * @param {!WebInspector.ConsoleMessage} message
- * @param {!WebInspector.DebuggerModel.Location} rawLocation
- * @param {!WebInspector.LiveLocationPool} locationPool
+ * @unrestricted
  */
-WebInspector.PresentationConsoleMessage = function(message, rawLocation, locationPool)
-{
+WebInspector.PresentationConsoleMessage = class {
+  /**
+   * @param {!WebInspector.ConsoleMessage} message
+   * @param {!WebInspector.DebuggerModel.Location} rawLocation
+   * @param {!WebInspector.LiveLocationPool} locationPool
+   */
+  constructor(message, rawLocation, locationPool) {
     this._text = message.messageText;
-    this._level = message.level === WebInspector.ConsoleMessage.MessageLevel.Error ? WebInspector.UISourceCode.Message.Level.Error : WebInspector.UISourceCode.Message.Level.Warning;
-    WebInspector.debuggerWorkspaceBinding.createLiveLocation(rawLocation, this._updateLocation.bind(this), locationPool);
-};
+    this._level = message.level === WebInspector.ConsoleMessage.MessageLevel.Error ?
+        WebInspector.UISourceCode.Message.Level.Error :
+        WebInspector.UISourceCode.Message.Level.Warning;
+    WebInspector.debuggerWorkspaceBinding.createLiveLocation(
+        rawLocation, this._updateLocation.bind(this), locationPool);
+  }
 
-WebInspector.PresentationConsoleMessage.prototype = {
-    /**
-     * @param {!WebInspector.LiveLocation} liveLocation
-     */
-    _updateLocation: function(liveLocation)
-    {
-        if (this._uiMessage)
-            this._uiMessage.remove();
-        var uiLocation = liveLocation.uiLocation();
-        if (!uiLocation)
-            return;
-        this._uiMessage = uiLocation.uiSourceCode.addLineMessage(this._level, this._text, uiLocation.lineNumber, uiLocation.columnNumber);
-    },
+  /**
+   * @param {!WebInspector.LiveLocation} liveLocation
+   */
+  _updateLocation(liveLocation) {
+    if (this._uiMessage)
+      this._uiMessage.remove();
+    var uiLocation = liveLocation.uiLocation();
+    if (!uiLocation)
+      return;
+    this._uiMessage =
+        uiLocation.uiSourceCode.addLineMessage(this._level, this._text, uiLocation.lineNumber, uiLocation.columnNumber);
+  }
 
-    dispose: function()
-    {
-        if (this._uiMessage)
-            this._uiMessage.remove();
-    }
+  dispose() {
+    if (this._uiMessage)
+      this._uiMessage.remove();
+  }
 };
 
 /** @type {!WebInspector.PresentationConsoleMessageHelper} */

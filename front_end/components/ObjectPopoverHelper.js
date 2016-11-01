@@ -27,177 +27,173 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.PopoverHelper}
- * @param {!Element} panelElement
- * @param {function(!Element, !Event):(!Element|!AnchorBox|undefined)} getAnchor
- * @param {function(!Element, function(!WebInspector.RemoteObject, boolean, !Element=):undefined, string):undefined} queryObject
- * @param {function()=} onHide
- * @param {boolean=} disableOnClick
+ * @unrestricted
  */
-WebInspector.ObjectPopoverHelper = function(panelElement, getAnchor, queryObject, onHide, disableOnClick)
-{
-    WebInspector.PopoverHelper.call(this, panelElement, disableOnClick);
+WebInspector.ObjectPopoverHelper = class extends WebInspector.PopoverHelper {
+  /**
+   * @param {!Element} panelElement
+   * @param {function(!Element, !Event):(!Element|!AnchorBox|undefined)} getAnchor
+   * @param {function(!Element, function(!WebInspector.RemoteObject, boolean, !Element=):undefined, string):undefined} queryObject
+   * @param {function()=} onHide
+   * @param {boolean=} disableOnClick
+   */
+  constructor(panelElement, getAnchor, queryObject, onHide, disableOnClick) {
+    super(panelElement, disableOnClick);
     this.initializeCallbacks(getAnchor, this._showObjectPopover.bind(this), this._onHideObjectPopover.bind(this));
     this._queryObject = queryObject;
     this._onHideCallback = onHide;
-    this._popoverObjectGroup = "popover";
-    panelElement.addEventListener("scroll", this.hidePopover.bind(this), true);
+    this._popoverObjectGroup = 'popover';
+    panelElement.addEventListener('scroll', this.hidePopover.bind(this), true);
+  }
+
+  /**
+   * @param {!Element} element
+   * @param {!WebInspector.Popover} popover
+   */
+  _showObjectPopover(element, popover) {
+    /**
+     * @param {!WebInspector.RemoteObject} funcObject
+     * @param {!Element} popoverContentElement
+     * @param {!Element} popoverValueElement
+     * @param {!Element} anchorElement
+     * @param {?Array.<!WebInspector.RemoteObjectProperty>} properties
+     * @param {?Array.<!WebInspector.RemoteObjectProperty>} internalProperties
+     * @this {WebInspector.ObjectPopoverHelper}
+     */
+    function didGetFunctionProperties(
+        funcObject, popoverContentElement, popoverValueElement, anchorElement, properties, internalProperties) {
+      if (internalProperties) {
+        for (var i = 0; i < internalProperties.length; i++) {
+          if (internalProperties[i].name === '[[TargetFunction]]') {
+            funcObject = internalProperties[i].value;
+            break;
+          }
+        }
+      }
+      WebInspector.ObjectPropertiesSection.formatObjectAsFunction(funcObject, popoverValueElement, true);
+      funcObject.debuggerModel()
+          .functionDetailsPromise(funcObject)
+          .then(didGetFunctionDetails.bind(this, popoverContentElement, anchorElement));
+    }
+
+    /**
+     * @param {!Element} popoverContentElement
+     * @param {!Element} anchorElement
+     * @param {?WebInspector.DebuggerModel.FunctionDetails} response
+     * @this {WebInspector.ObjectPopoverHelper}
+     */
+    function didGetFunctionDetails(popoverContentElement, anchorElement, response) {
+      if (!response || popover.disposed)
+        return;
+
+      var container = createElementWithClass('div', 'object-popover-container');
+      var title = container.createChild('div', 'function-popover-title source-code');
+      var functionName = title.createChild('span', 'function-name');
+      functionName.textContent = WebInspector.beautifyFunctionName(response.functionName);
+
+      var rawLocation = response.location;
+      var linkContainer = title.createChild('div', 'function-title-link-container');
+      if (rawLocation && Runtime.experiments.isEnabled('continueToFirstInvocation')) {
+        var sectionToolbar = new WebInspector.Toolbar('function-location-step-into', linkContainer);
+        var stepInto = new WebInspector.ToolbarButton(
+            WebInspector.UIString('Continue to first invocation'), 'step-in-toolbar-item');
+        stepInto.addEventListener('click', () => rawLocation.continueToLocation());
+        sectionToolbar.appendToolbarItem(stepInto);
+      }
+      var sourceURL = rawLocation && rawLocation.script() ? rawLocation.script().sourceURL : null;
+      if (rawLocation && sourceURL)
+        linkContainer.appendChild(this._lazyLinkifier().linkifyRawLocation(rawLocation, sourceURL));
+      container.appendChild(popoverContentElement);
+      popover.showForAnchor(container, anchorElement);
+    }
+
+    /**
+     * @param {!WebInspector.RemoteObject} result
+     * @param {boolean} wasThrown
+     * @param {!Element=} anchorOverride
+     * @this {WebInspector.ObjectPopoverHelper}
+     */
+    function didQueryObject(result, wasThrown, anchorOverride) {
+      if (popover.disposed)
+        return;
+      if (wasThrown) {
+        this.hidePopover();
+        return;
+      }
+      this._objectTarget = result.target();
+      var anchorElement = anchorOverride || element;
+      var description = result.description.trimEnd(WebInspector.ObjectPopoverHelper.MaxPopoverTextLength);
+      var popoverContentElement = null;
+      if (result.type !== 'object') {
+        popoverContentElement = createElement('span');
+        WebInspector.appendStyle(popoverContentElement, 'components/objectValue.css');
+        var valueElement = popoverContentElement.createChild('span', 'monospace object-value-' + result.type);
+        valueElement.style.whiteSpace = 'pre';
+
+        if (result.type === 'string')
+          valueElement.createTextChildren('"', description, '"');
+        else if (result.type !== 'function')
+          valueElement.textContent = description;
+
+        if (result.type === 'function') {
+          result.getOwnProperties(
+              didGetFunctionProperties.bind(this, result, popoverContentElement, valueElement, anchorElement));
+          return;
+        }
+        popover.showForAnchor(popoverContentElement, anchorElement);
+      } else {
+        if (result.subtype === 'node') {
+          WebInspector.DOMModel.highlightObjectAsDOMNode(result);
+          this._resultHighlightedAsDOM = true;
+        }
+
+        if (result.customPreview()) {
+          var customPreviewComponent = new WebInspector.CustomPreviewComponent(result);
+          customPreviewComponent.expandIfPossible();
+          popoverContentElement = customPreviewComponent.element;
+        } else {
+          popoverContentElement = createElement('div');
+          this._titleElement = popoverContentElement.createChild('div', 'monospace');
+          this._titleElement.createChild('span', 'source-frame-popover-title').textContent = description;
+          var section = new WebInspector.ObjectPropertiesSection(result, '', this._lazyLinkifier());
+          section.element.classList.add('source-frame-popover-tree');
+          section.titleLessMode();
+          popoverContentElement.appendChild(section.element);
+        }
+        var popoverWidth = 300;
+        var popoverHeight = 250;
+        popover.showForAnchor(popoverContentElement, anchorElement, popoverWidth, popoverHeight);
+      }
+    }
+    this._queryObject(element, didQueryObject.bind(this), this._popoverObjectGroup);
+  }
+
+  _onHideObjectPopover() {
+    if (this._resultHighlightedAsDOM) {
+      WebInspector.DOMModel.hideDOMNodeHighlight();
+      delete this._resultHighlightedAsDOM;
+    }
+    if (this._linkifier) {
+      this._linkifier.dispose();
+      delete this._linkifier;
+    }
+    if (this._onHideCallback)
+      this._onHideCallback();
+    if (this._objectTarget) {
+      this._objectTarget.runtimeAgent().releaseObjectGroup(this._popoverObjectGroup);
+      delete this._objectTarget;
+    }
+  }
+
+  /**
+   * @return {!WebInspector.Linkifier}
+   */
+  _lazyLinkifier() {
+    if (!this._linkifier)
+      this._linkifier = new WebInspector.Linkifier();
+    return this._linkifier;
+  }
 };
 
 WebInspector.ObjectPopoverHelper.MaxPopoverTextLength = 10000;
-
-WebInspector.ObjectPopoverHelper.prototype = {
-    /**
-     * @param {!Element} element
-     * @param {!WebInspector.Popover} popover
-     */
-    _showObjectPopover: function(element, popover)
-    {
-        /**
-         * @param {!WebInspector.RemoteObject} funcObject
-         * @param {!Element} popoverContentElement
-         * @param {!Element} popoverValueElement
-         * @param {!Element} anchorElement
-         * @param {?Array.<!WebInspector.RemoteObjectProperty>} properties
-         * @param {?Array.<!WebInspector.RemoteObjectProperty>} internalProperties
-         * @this {WebInspector.ObjectPopoverHelper}
-         */
-        function didGetFunctionProperties(funcObject, popoverContentElement, popoverValueElement, anchorElement, properties, internalProperties)
-        {
-            if (internalProperties) {
-                for (var i = 0; i < internalProperties.length; i++) {
-                    if (internalProperties[i].name === "[[TargetFunction]]") {
-                        funcObject = internalProperties[i].value;
-                        break;
-                    }
-                }
-            }
-            WebInspector.ObjectPropertiesSection.formatObjectAsFunction(funcObject, popoverValueElement, true);
-            funcObject.debuggerModel().functionDetailsPromise(funcObject).then(didGetFunctionDetails.bind(this, popoverContentElement, anchorElement));
-        }
-
-        /**
-         * @param {!Element} popoverContentElement
-         * @param {!Element} anchorElement
-         * @param {?WebInspector.DebuggerModel.FunctionDetails} response
-         * @this {WebInspector.ObjectPopoverHelper}
-         */
-        function didGetFunctionDetails(popoverContentElement, anchorElement, response)
-        {
-            if (!response || popover.disposed)
-                return;
-
-            var container = createElementWithClass("div", "object-popover-container");
-            var title = container.createChild("div", "function-popover-title source-code");
-            var functionName = title.createChild("span", "function-name");
-            functionName.textContent = WebInspector.beautifyFunctionName(response.functionName);
-
-            var rawLocation = response.location;
-            var linkContainer = title.createChild("div", "function-title-link-container");
-            if (rawLocation && Runtime.experiments.isEnabled("continueToFirstInvocation")) {
-                var sectionToolbar = new WebInspector.Toolbar("function-location-step-into", linkContainer);
-                var stepInto = new WebInspector.ToolbarButton(WebInspector.UIString("Continue to first invocation"), "step-in-toolbar-item");
-                stepInto.addEventListener("click", () => rawLocation.continueToLocation());
-                sectionToolbar.appendToolbarItem(stepInto);
-            }
-            var sourceURL = rawLocation && rawLocation.script() ? rawLocation.script().sourceURL : null;
-            if (rawLocation && sourceURL)
-                linkContainer.appendChild(this._lazyLinkifier().linkifyRawLocation(rawLocation, sourceURL));
-            container.appendChild(popoverContentElement);
-            popover.showForAnchor(container, anchorElement);
-        }
-
-        /**
-         * @param {!WebInspector.RemoteObject} result
-         * @param {boolean} wasThrown
-         * @param {!Element=} anchorOverride
-         * @this {WebInspector.ObjectPopoverHelper}
-         */
-        function didQueryObject(result, wasThrown, anchorOverride)
-        {
-            if (popover.disposed)
-                return;
-            if (wasThrown) {
-                this.hidePopover();
-                return;
-            }
-            this._objectTarget = result.target();
-            var anchorElement = anchorOverride || element;
-            var description = result.description.trimEnd(WebInspector.ObjectPopoverHelper.MaxPopoverTextLength);
-            var popoverContentElement = null;
-            if (result.type !== "object") {
-                popoverContentElement =  createElement("span");
-                WebInspector.appendStyle(popoverContentElement, "components/objectValue.css");
-                var valueElement = popoverContentElement.createChild("span", "monospace object-value-" + result.type);
-                valueElement.style.whiteSpace = "pre";
-
-                if (result.type === "string")
-                    valueElement.createTextChildren("\"", description, "\"");
-                else if (result.type !== "function")
-                    valueElement.textContent = description;
-
-                if (result.type === "function") {
-                    result.getOwnProperties(didGetFunctionProperties.bind(this, result, popoverContentElement, valueElement, anchorElement));
-                    return;
-                }
-                popover.showForAnchor(popoverContentElement, anchorElement);
-            } else {
-                if (result.subtype === "node") {
-                    WebInspector.DOMModel.highlightObjectAsDOMNode(result);
-                    this._resultHighlightedAsDOM = true;
-                }
-
-                if (result.customPreview()) {
-                    var customPreviewComponent = new WebInspector.CustomPreviewComponent(result);
-                    customPreviewComponent.expandIfPossible();
-                    popoverContentElement = customPreviewComponent.element;
-                } else {
-                    popoverContentElement = createElement("div");
-                    this._titleElement = popoverContentElement.createChild("div", "monospace");
-                    this._titleElement.createChild("span", "source-frame-popover-title").textContent = description;
-                    var section = new WebInspector.ObjectPropertiesSection(result, "", this._lazyLinkifier());
-                    section.element.classList.add("source-frame-popover-tree");
-                    section.titleLessMode();
-                    popoverContentElement.appendChild(section.element);
-                }
-                var popoverWidth = 300;
-                var popoverHeight = 250;
-                popover.showForAnchor(popoverContentElement, anchorElement, popoverWidth, popoverHeight);
-            }
-        }
-        this._queryObject(element, didQueryObject.bind(this), this._popoverObjectGroup);
-    },
-
-    _onHideObjectPopover: function()
-    {
-        if (this._resultHighlightedAsDOM) {
-            WebInspector.DOMModel.hideDOMNodeHighlight();
-            delete this._resultHighlightedAsDOM;
-        }
-        if (this._linkifier) {
-            this._linkifier.dispose();
-            delete this._linkifier;
-        }
-        if (this._onHideCallback)
-            this._onHideCallback();
-        if (this._objectTarget) {
-            this._objectTarget.runtimeAgent().releaseObjectGroup(this._popoverObjectGroup);
-            delete this._objectTarget;
-        }
-    },
-
-    /**
-     * @return {!WebInspector.Linkifier}
-     */
-    _lazyLinkifier: function()
-    {
-        if (!this._linkifier)
-            this._linkifier = new WebInspector.Linkifier();
-        return this._linkifier;
-    },
-
-    __proto__: WebInspector.PopoverHelper.prototype
-};

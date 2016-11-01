@@ -27,97 +27,93 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @param {!WebInspector.CSSModel} cssModel
- * @param {!WebInspector.NetworkMapping} networkMapping
- * @param {!WebInspector.NetworkProject} networkProject
+ * @unrestricted
  */
-WebInspector.SASSSourceMapping = function(cssModel, networkMapping, networkProject)
-{
+WebInspector.SASSSourceMapping = class {
+  /**
+   * @param {!WebInspector.CSSModel} cssModel
+   * @param {!WebInspector.NetworkMapping} networkMapping
+   * @param {!WebInspector.NetworkProject} networkProject
+   */
+  constructor(cssModel, networkMapping, networkProject) {
     this._cssModel = cssModel;
     this._networkProject = networkProject;
     this._networkMapping = networkMapping;
     this._eventListeners = [
-        this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapAttached, this._sourceMapAttached, this),
-        this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapDetached, this._sourceMapDetached, this),
-        this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapChanged, this._sourceMapChanged, this)
+      this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapAttached, this._sourceMapAttached, this),
+      this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapDetached, this._sourceMapDetached, this),
+      this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapChanged, this._sourceMapChanged, this)
     ];
-};
+  }
 
-WebInspector.SASSSourceMapping.prototype = {
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _sourceMapAttached: function(event)
-    {
-        var header = /** @type {!WebInspector.CSSStyleSheetHeader} */ (event.data);
-        var sourceMap = this._cssModel.sourceMapForHeader(header);
-        for (var sassURL of sourceMap.sourceURLs()) {
-            var contentProvider = sourceMap.sourceContentProvider(sassURL, WebInspector.resourceTypes.SourceMapStyleSheet);
-            var embeddedContent = sourceMap.embeddedContentByURL(sassURL);
-            var embeddedContentLength = typeof embeddedContent === "string" ? embeddedContent.length : null;
-            this._networkProject.addFile(contentProvider, WebInspector.ResourceTreeFrame.fromStyleSheet(header), false, embeddedContentLength);
-        }
-        WebInspector.cssWorkspaceBinding.updateLocations(header);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _sourceMapDetached: function(event)
-    {
-        var header = /** @type {!WebInspector.CSSStyleSheetHeader} */(event.data);
-        WebInspector.cssWorkspaceBinding.updateLocations(header);
-    },
-
-    /**
-     * @param {!WebInspector.Event} event
-     */
-    _sourceMapChanged: function(event)
-    {
-        var sourceMap = /** @type {!WebInspector.SourceMap} */(event.data.sourceMap);
-        var newSources = /** @type {!Map<string, string>} */(event.data.newSources);
-        var headers = this._cssModel.headersForSourceMap(sourceMap);
-        var handledUISourceCodes = new Set();
-        for (var header of headers) {
-            WebInspector.cssWorkspaceBinding.updateLocations(header);
-            for (var sourceURL of newSources.keys()) {
-                var uiSourceCode = this._networkMapping.uiSourceCodeForStyleURL(sourceURL, header);
-                if (!uiSourceCode) {
-                    console.error("Failed to update source for " + sourceURL);
-                    continue;
-                }
-                if (handledUISourceCodes.has(uiSourceCode))
-                    continue;
-                handledUISourceCodes.add(uiSourceCode);
-                var sassText = /** @type {string} */(newSources.get(sourceURL));
-                uiSourceCode.setWorkingCopy(sassText);
-            }
-        }
-    },
-
-    /**
-     * @param {!WebInspector.CSSLocation} rawLocation
-     * @return {?WebInspector.UILocation}
-     */
-    rawLocationToUILocation: function(rawLocation)
-    {
-        var sourceMap = this._cssModel.sourceMapForHeader(rawLocation.header());
-        if (!sourceMap)
-            return null;
-        var entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
-        if (!entry || !entry.sourceURL)
-            return null;
-        var uiSourceCode = this._networkMapping.uiSourceCodeForStyleURL(entry.sourceURL, rawLocation.header());
-        if (!uiSourceCode)
-            return null;
-        return uiSourceCode.uiLocation(entry.sourceLineNumber || 0, entry.sourceColumnNumber);
-    },
-
-    dispose: function()
-    {
-        WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _sourceMapAttached(event) {
+    var header = /** @type {!WebInspector.CSSStyleSheetHeader} */ (event.data);
+    var sourceMap = this._cssModel.sourceMapForHeader(header);
+    for (var sassURL of sourceMap.sourceURLs()) {
+      var contentProvider = sourceMap.sourceContentProvider(sassURL, WebInspector.resourceTypes.SourceMapStyleSheet);
+      var embeddedContent = sourceMap.embeddedContentByURL(sassURL);
+      var embeddedContentLength = typeof embeddedContent === 'string' ? embeddedContent.length : null;
+      this._networkProject.addFile(
+          contentProvider, WebInspector.ResourceTreeFrame.fromStyleSheet(header), false, embeddedContentLength);
     }
+    WebInspector.cssWorkspaceBinding.updateLocations(header);
+  }
+
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _sourceMapDetached(event) {
+    var header = /** @type {!WebInspector.CSSStyleSheetHeader} */ (event.data);
+    WebInspector.cssWorkspaceBinding.updateLocations(header);
+  }
+
+  /**
+   * @param {!WebInspector.Event} event
+   */
+  _sourceMapChanged(event) {
+    var sourceMap = /** @type {!WebInspector.SourceMap} */ (event.data.sourceMap);
+    var newSources = /** @type {!Map<string, string>} */ (event.data.newSources);
+    var headers = this._cssModel.headersForSourceMap(sourceMap);
+    var handledUISourceCodes = new Set();
+    for (var header of headers) {
+      WebInspector.cssWorkspaceBinding.updateLocations(header);
+      for (var sourceURL of newSources.keys()) {
+        var uiSourceCode = this._networkMapping.uiSourceCodeForStyleURL(sourceURL, header);
+        if (!uiSourceCode) {
+          console.error('Failed to update source for ' + sourceURL);
+          continue;
+        }
+        if (handledUISourceCodes.has(uiSourceCode))
+          continue;
+        handledUISourceCodes.add(uiSourceCode);
+        var sassText = /** @type {string} */ (newSources.get(sourceURL));
+        uiSourceCode.setWorkingCopy(sassText);
+      }
+    }
+  }
+
+  /**
+   * @param {!WebInspector.CSSLocation} rawLocation
+   * @return {?WebInspector.UILocation}
+   */
+  rawLocationToUILocation(rawLocation) {
+    var sourceMap = this._cssModel.sourceMapForHeader(rawLocation.header());
+    if (!sourceMap)
+      return null;
+    var entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
+    if (!entry || !entry.sourceURL)
+      return null;
+    var uiSourceCode = this._networkMapping.uiSourceCodeForStyleURL(entry.sourceURL, rawLocation.header());
+    if (!uiSourceCode)
+      return null;
+    return uiSourceCode.uiLocation(entry.sourceLineNumber || 0, entry.sourceColumnNumber);
+  }
+
+  dispose() {
+    WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+  }
 };

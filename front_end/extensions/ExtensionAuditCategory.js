@@ -27,47 +27,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @param {string} extensionOrigin
- * @param {string} id
- * @param {string} displayName
- * @param {number=} ruleCount
+ * @unrestricted
  */
-WebInspector.ExtensionAuditCategory = function(extensionOrigin, id, displayName, ruleCount)
-{
+WebInspector.ExtensionAuditCategory = class {
+  /**
+   * @param {string} extensionOrigin
+   * @param {string} id
+   * @param {string} displayName
+   * @param {number=} ruleCount
+   */
+  constructor(extensionOrigin, id, displayName, ruleCount) {
     this.extensionOrigin = extensionOrigin;
     this.id = id;
     this.displayName = displayName;
-    this.ruleCount  = ruleCount;
+    this.ruleCount = ruleCount;
+  }
 };
 
 /**
  * @interface
  */
-WebInspector.ExtensionAuditCategoryResults = function()
-{
-};
+WebInspector.ExtensionAuditCategoryResults = function() {};
 
 WebInspector.ExtensionAuditCategoryResults.prototype = {
-    /**
-     * @return {string}
-     */
-    id: function() { },
+  /**
+   * @return {string}
+   */
+  id: function() {},
 
-    /**
-     * @param {string} displayName
-     * @param {string} description
-     * @param {string} severity
-     * @param {!Object} details
-     */
-    addResult: function(displayName, description, severity, details) { },
+  /**
+   * @param {string} displayName
+   * @param {string} description
+   * @param {string} severity
+   * @param {!Object} details
+   */
+  addResult: function(displayName, description, severity, details) {},
 
-    /**
-     * @param {number} progress
-     */
-    updateProgress: function(progress) { },
+  /**
+   * @param {number} progress
+   */
+  updateProgress: function(progress) {},
 
-    done: function() { }
+  done: function() {}
 };

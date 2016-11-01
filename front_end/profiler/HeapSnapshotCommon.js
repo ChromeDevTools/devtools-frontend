@@ -27,46 +27,49 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 WebInspector.HeapSnapshotProgressEvent = {
-    Update: "ProgressUpdate",
-    BrokenSnapshot: "BrokenSnapshot"
+  Update: 'ProgressUpdate',
+  BrokenSnapshot: 'BrokenSnapshot'
 };
 
-WebInspector.HeapSnapshotCommon = {
-};
+WebInspector.HeapSnapshotCommon = {};
 
 WebInspector.HeapSnapshotCommon.baseSystemDistance = 100000000;
 
 /**
- * @param {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} nodesWithSingleCaller
- * @param {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} branchingCallers
- * @constructor
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.AllocationNodeCallers = function(nodesWithSingleCaller, branchingCallers)
-{
+WebInspector.HeapSnapshotCommon.AllocationNodeCallers = class {
+  /**
+   * @param {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} nodesWithSingleCaller
+   * @param {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} branchingCallers
+   */
+  constructor(nodesWithSingleCaller, branchingCallers) {
     /** @type {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} */
     this.nodesWithSingleCaller = nodesWithSingleCaller;
     /** @type {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} */
     this.branchingCallers = branchingCallers;
+  }
 };
 
 /**
- * @param {number} nodeId
- * @param {string} functionName
- * @param {string} scriptName
- * @param {number} scriptId
- * @param {number} line
- * @param {number} column
- * @param {number} count
- * @param {number} size
- * @param {number} liveCount
- * @param {number} liveSize
- * @param {boolean} hasChildren
- * @constructor
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.SerializedAllocationNode = function(nodeId, functionName, scriptName, scriptId, line, column, count, size, liveCount, liveSize, hasChildren)
-{
+WebInspector.HeapSnapshotCommon.SerializedAllocationNode = class {
+  /**
+   * @param {number} nodeId
+   * @param {string} functionName
+   * @param {string} scriptName
+   * @param {number} scriptId
+   * @param {number} line
+   * @param {number} column
+   * @param {number} count
+   * @param {number} size
+   * @param {number} liveCount
+   * @param {number} liveSize
+   * @param {boolean} hasChildren
+   */
+  constructor(nodeId, functionName, scriptName, scriptId, line, column, count, size, liveCount, liveSize, hasChildren) {
     /** @type {number} */
     this.id = nodeId;
     /** @type {string} */
@@ -89,18 +92,21 @@ WebInspector.HeapSnapshotCommon.SerializedAllocationNode = function(nodeId, func
     this.liveSize = liveSize;
     /** @type {boolean} */
     this.hasChildren = hasChildren;
+  }
 };
 
 /**
- * @param {string} functionName
- * @param {string} scriptName
- * @param {number} scriptId
- * @param {number} line
- * @param {number} column
- * @constructor
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.AllocationStackFrame = function(functionName, scriptName, scriptId, line, column)
-{
+WebInspector.HeapSnapshotCommon.AllocationStackFrame = class {
+  /**
+   * @param {string} functionName
+   * @param {string} scriptName
+   * @param {number} scriptId
+   * @param {number} line
+   * @param {number} column
+   */
+  constructor(functionName, scriptName, scriptId, line, column) {
     /** @type {string} */
     this.functionName = functionName;
     /** @type {string} */
@@ -111,20 +117,23 @@ WebInspector.HeapSnapshotCommon.AllocationStackFrame = function(functionName, sc
     this.line = line;
     /** @type {number} */
     this.column = column;
+  }
 };
 
 /**
- * @constructor
- * @param {number} id
- * @param {string} name
- * @param {number} distance
- * @param {number} nodeIndex
- * @param {number} retainedSize
- * @param {number} selfSize
- * @param {string} type
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.Node = function(id, name, distance, nodeIndex, retainedSize, selfSize, type)
-{
+WebInspector.HeapSnapshotCommon.Node = class {
+  /**
+   * @param {number} id
+   * @param {string} name
+   * @param {number} distance
+   * @param {number} nodeIndex
+   * @param {number} retainedSize
+   * @param {number} selfSize
+   * @param {string} type
+   */
+  constructor(id, name, distance, nodeIndex, retainedSize, selfSize, type) {
     this.id = id;
     this.name = name;
     this.distance = distance;
@@ -135,28 +144,32 @@ WebInspector.HeapSnapshotCommon.Node = function(id, name, distance, nodeIndex, r
 
     this.canBeQueried = false;
     this.detachedDOMTreeNode = false;
+  }
 };
 
 /**
- * @constructor
- * @param {string} name
- * @param {!WebInspector.HeapSnapshotCommon.Node} node
- * @param {string} type
- * @param {number} edgeIndex
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.Edge = function(name, node, type, edgeIndex)
-{
+WebInspector.HeapSnapshotCommon.Edge = class {
+  /**
+   * @param {string} name
+   * @param {!WebInspector.HeapSnapshotCommon.Node} node
+   * @param {string} type
+   * @param {number} edgeIndex
+   */
+  constructor(name, node, type, edgeIndex) {
     this.name = name;
     this.node = node;
     this.type = type;
     this.edgeIndex = edgeIndex;
+  }
 };
 
 /**
- * @constructor
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.Aggregate = function()
-{
+WebInspector.HeapSnapshotCommon.Aggregate = class {
+  constructor() {
     /** @type {number} */
     this.count;
     /** @type {number} */
@@ -171,25 +184,28 @@ WebInspector.HeapSnapshotCommon.Aggregate = function()
     this.name;
     /** @type {!Array.<number>} */
     this.idxs;
+  }
 };
 
 /**
- * @constructor
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.AggregateForDiff = function() {
+WebInspector.HeapSnapshotCommon.AggregateForDiff = class {
+  constructor() {
     /** @type {!Array.<number>} */
     this.indexes = [];
     /** @type {!Array.<string>} */
     this.ids = [];
     /** @type {!Array.<number>} */
     this.selfSizes = [];
+  }
 };
 
 /**
- * @constructor
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.Diff = function()
-{
+WebInspector.HeapSnapshotCommon.Diff = class {
+  constructor() {
     /** @type {number} */
     this.addedCount = 0;
     /** @type {number} */
@@ -202,13 +218,14 @@ WebInspector.HeapSnapshotCommon.Diff = function()
     this.deletedIndexes = [];
     /** @type {!Array.<number>} */
     this.addedIndexes = [];
+  }
 };
 
 /**
- * @constructor
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.DiffForClass = function()
-{
+WebInspector.HeapSnapshotCommon.DiffForClass = class {
+  constructor() {
     /** @type {number} */
     this.addedCount;
     /** @type {number} */
@@ -226,13 +243,14 @@ WebInspector.HeapSnapshotCommon.DiffForClass = function()
     this.countDelta;
     /** @type {number} */
     this.sizeDelta;
+  }
 };
 
 /**
- * @constructor
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.ComparatorConfig = function()
-{
+WebInspector.HeapSnapshotCommon.ComparatorConfig = class {
+  constructor() {
     /** @type {string} */
     this.fieldName1;
     /** @type {boolean} */
@@ -241,13 +259,14 @@ WebInspector.HeapSnapshotCommon.ComparatorConfig = function()
     this.fieldName2;
     /** @type {boolean} */
     this.ascending2;
+  }
 };
 
 /**
- * @constructor
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.WorkerCommand = function()
-{
+WebInspector.HeapSnapshotCommon.WorkerCommand = class {
+  constructor() {
     /** @type {number} */
     this.callId;
     /** @type {string} */
@@ -262,17 +281,20 @@ WebInspector.HeapSnapshotCommon.WorkerCommand = function()
     this.methodArguments;
     /** @type {string} */
     this.source;
+  }
 };
 
 /**
- * @constructor
- * @param {number} startPosition
- * @param {number} endPosition
- * @param {number} totalLength
- * @param {!Array.<*>} items
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.ItemsRange = function(startPosition, endPosition, totalLength, items)
-{
+WebInspector.HeapSnapshotCommon.ItemsRange = class {
+  /**
+   * @param {number} startPosition
+   * @param {number} endPosition
+   * @param {number} totalLength
+   * @param {!Array.<*>} items
+   */
+  constructor(startPosition, endPosition, totalLength, items) {
     /** @type {number} */
     this.startPosition = startPosition;
     /** @type {number} */
@@ -281,17 +303,20 @@ WebInspector.HeapSnapshotCommon.ItemsRange = function(startPosition, endPosition
     this.totalLength = totalLength;
     /** @type {!Array.<*>} */
     this.items = items;
+  }
 };
 
 /**
- * @param {number} nodeCount
- * @param {number} rootNodeIndex
- * @param {number} totalSize
- * @param {number} maxJSObjectId
- * @constructor
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.StaticData = function(nodeCount, rootNodeIndex, totalSize, maxJSObjectId)
-{
+WebInspector.HeapSnapshotCommon.StaticData = class {
+  /**
+   * @param {number} nodeCount
+   * @param {number} rootNodeIndex
+   * @param {number} totalSize
+   * @param {number} maxJSObjectId
+   */
+  constructor(nodeCount, rootNodeIndex, totalSize, maxJSObjectId) {
     /** @type {number} */
     this.nodeCount = nodeCount;
     /** @type {number} */
@@ -300,13 +325,14 @@ WebInspector.HeapSnapshotCommon.StaticData = function(nodeCount, rootNodeIndex, 
     this.totalSize = totalSize;
     /** @type {number} */
     this.maxJSObjectId = maxJSObjectId;
+  }
 };
 
 /**
- * @constructor
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.Statistics = function()
-{
+WebInspector.HeapSnapshotCommon.Statistics = class {
+  constructor() {
     /** @type {number} */
     this.total;
     /** @type {number} */
@@ -321,62 +347,68 @@ WebInspector.HeapSnapshotCommon.Statistics = function()
     this.strings;
     /** @type {number} */
     this.system;
+  }
 };
 
-
 /**
- * @param {number=} minNodeId
- * @param {number=} maxNodeId
- * @constructor
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.NodeFilter = function(minNodeId, maxNodeId)
-{
+WebInspector.HeapSnapshotCommon.NodeFilter = class {
+  /**
+   * @param {number=} minNodeId
+   * @param {number=} maxNodeId
+   */
+  constructor(minNodeId, maxNodeId) {
     /** @type {number|undefined} */
     this.minNodeId = minNodeId;
     /** @type {number|undefined} */
     this.maxNodeId = maxNodeId;
     /** @type {number|undefined} */
     this.allocationNodeId;
-};
+  }
 
-WebInspector.HeapSnapshotCommon.NodeFilter.prototype =
-{
-    /**
-     * @param {!WebInspector.HeapSnapshotCommon.NodeFilter} o
-     * @return {boolean}
-     */
-    equals: function(o)
-    {
-        return this.minNodeId === o.minNodeId && this.maxNodeId === o.maxNodeId && this.allocationNodeId === o.allocationNodeId;
-    }
+  /**
+   * @param {!WebInspector.HeapSnapshotCommon.NodeFilter} o
+   * @return {boolean}
+   */
+  equals(o) {
+    return this.minNodeId === o.minNodeId && this.maxNodeId === o.maxNodeId &&
+        this.allocationNodeId === o.allocationNodeId;
+  }
 };
 
 /**
- * @param {string} query
- * @param {boolean} caseSensitive
- * @param {boolean} isRegex
- * @param {boolean} shouldJump
- * @param {boolean} jumpBackward
- * @constructor
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.SearchConfig = function(query, caseSensitive, isRegex, shouldJump, jumpBackward)
-{
+WebInspector.HeapSnapshotCommon.SearchConfig = class {
+  /**
+   * @param {string} query
+   * @param {boolean} caseSensitive
+   * @param {boolean} isRegex
+   * @param {boolean} shouldJump
+   * @param {boolean} jumpBackward
+   */
+  constructor(query, caseSensitive, isRegex, shouldJump, jumpBackward) {
     this.query = query;
     this.caseSensitive = caseSensitive;
     this.isRegex = isRegex;
     this.shouldJump = shouldJump;
     this.jumpBackward = jumpBackward;
+  }
 };
 
 /**
- * @constructor
- * @param {!Array.<number>} timestamps
- * @param {!Array.<number>} lastAssignedIds
- * @param {!Array.<number>} sizes
+ * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.Samples = function(timestamps, lastAssignedIds, sizes)
-{
+WebInspector.HeapSnapshotCommon.Samples = class {
+  /**
+   * @param {!Array.<number>} timestamps
+   * @param {!Array.<number>} lastAssignedIds
+   * @param {!Array.<number>} sizes
+   */
+  constructor(timestamps, lastAssignedIds, sizes) {
     this.timestamps = timestamps;
     this.lastAssignedIds = lastAssignedIds;
     this.sizes = sizes;
+  }
 };

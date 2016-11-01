@@ -27,45 +27,48 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @interface
  */
-WebInspector.ContentProvider = function() { };
+WebInspector.ContentProvider = function() {};
 
 WebInspector.ContentProvider.prototype = {
-    /**
-     * @return {string}
-     */
-    contentURL: function() { },
+  /**
+   * @return {string}
+   */
+  contentURL: function() {},
 
-    /**
-     * @return {!WebInspector.ResourceType}
-     */
-    contentType: function() { },
+  /**
+   * @return {!WebInspector.ResourceType}
+   */
+  contentType: function() {},
 
-    /**
-     * @return {!Promise<?string>}
-     */
-    requestContent: function() { },
+  /**
+   * @return {!Promise<?string>}
+   */
+  requestContent: function() {},
 
-    /**
-     * @param {string} query
-     * @param {boolean} caseSensitive
-     * @param {boolean} isRegex
-     * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
-     */
-    searchInContent: function(query, caseSensitive, isRegex, callback) { }
+  /**
+   * @param {string} query
+   * @param {boolean} caseSensitive
+   * @param {boolean} isRegex
+   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   */
+  searchInContent: function(query, caseSensitive, isRegex, callback) {}
 };
 
 /**
- * @constructor
- * @param {number} lineNumber
- * @param {string} lineContent
+ * @unrestricted
  */
-WebInspector.ContentProvider.SearchMatch = function(lineNumber, lineContent) {
+WebInspector.ContentProvider.SearchMatch = class {
+  /**
+   * @param {number} lineNumber
+   * @param {string} lineContent
+   */
+  constructor(lineNumber, lineContent) {
     this.lineNumber = lineNumber;
     this.lineContent = lineContent;
+  }
 };
 
 /**
@@ -75,19 +78,18 @@ WebInspector.ContentProvider.SearchMatch = function(lineNumber, lineContent) {
  * @param {boolean} isRegex
  * @return {!Array.<!WebInspector.ContentProvider.SearchMatch>}
  */
-WebInspector.ContentProvider.performSearchInContent = function(content, query, caseSensitive, isRegex)
-{
-    var regex = createSearchRegex(query, caseSensitive, isRegex);
+WebInspector.ContentProvider.performSearchInContent = function(content, query, caseSensitive, isRegex) {
+  var regex = createSearchRegex(query, caseSensitive, isRegex);
 
-    var text = new WebInspector.Text(content);
-    var result = [];
-    for (var i = 0; i < text.lineCount(); ++i) {
-        var lineContent = text.lineAt(i);
-        regex.lastIndex = 0;
-        if (regex.exec(lineContent))
-            result.push(new WebInspector.ContentProvider.SearchMatch(i, lineContent));
-    }
-    return result;
+  var text = new WebInspector.Text(content);
+  var result = [];
+  for (var i = 0; i < text.lineCount(); ++i) {
+    var lineContent = text.lineAt(i);
+    regex.lastIndex = 0;
+    if (regex.exec(lineContent))
+      result.push(new WebInspector.ContentProvider.SearchMatch(i, lineContent));
+  }
+  return result;
 };
 
 /**
@@ -97,11 +99,11 @@ WebInspector.ContentProvider.performSearchInContent = function(content, query, c
  * @param {?string=} charset
  * @return {?string}
  */
-WebInspector.ContentProvider.contentAsDataURL = function(content, mimeType, contentEncoded, charset)
-{
-    const maxDataUrlSize = 1024 * 1024;
-    if (content === null || content.length > maxDataUrlSize)
-        return null;
+WebInspector.ContentProvider.contentAsDataURL = function(content, mimeType, contentEncoded, charset) {
+  const maxDataUrlSize = 1024 * 1024;
+  if (content === null || content.length > maxDataUrlSize)
+    return null;
 
-    return "data:" + mimeType + (charset ? ";charset=" + charset : "") + (contentEncoded ? ";base64" : "") + "," + content;
+  return 'data:' + mimeType + (charset ? ';charset=' + charset : '') + (contentEncoded ? ';base64' : '') + ',' +
+      content;
 };

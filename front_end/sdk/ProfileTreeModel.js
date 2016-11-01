@@ -1,13 +1,14 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 /**
- * @constructor
- * @param {!RuntimeAgent.CallFrame} callFrame
+ * @unrestricted
  */
-WebInspector.ProfileNode = function(callFrame)
-{
+WebInspector.ProfileNode = class {
+  /**
+   * @param {!RuntimeAgent.CallFrame} callFrame
+   */
+  constructor(callFrame) {
     /** @type {!RuntimeAgent.CallFrame} */
     this.callFrame = callFrame;
     /** @type {string} */
@@ -22,111 +23,98 @@ WebInspector.ProfileNode = function(callFrame)
     this.parent = null;
     /** @type {!Array<!WebInspector.ProfileNode>} */
     this.children = [];
-};
+  }
 
-WebInspector.ProfileNode.prototype = {
-    /**
-     * @return {string}
-     */
-    get functionName()
-    {
-        return this.callFrame.functionName;
-    },
+  /**
+   * @return {string}
+   */
+  get functionName() {
+    return this.callFrame.functionName;
+  }
 
-    /**
-     * @return {string}
-     */
-    get scriptId()
-    {
-        return this.callFrame.scriptId;
-    },
+  /**
+   * @return {string}
+   */
+  get scriptId() {
+    return this.callFrame.scriptId;
+  }
 
-    /**
-     * @return {string}
-     */
-    get url()
-    {
-        return this.callFrame.url;
-    },
+  /**
+   * @return {string}
+   */
+  get url() {
+    return this.callFrame.url;
+  }
 
-    /**
-     * @return {number}
-     */
-    get lineNumber()
-    {
-        return this.callFrame.lineNumber;
-    },
+  /**
+   * @return {number}
+   */
+  get lineNumber() {
+    return this.callFrame.lineNumber;
+  }
 
-    /**
-     * @return {number}
-     */
-    get columnNumber()
-    {
-        return this.callFrame.columnNumber;
-    }
+  /**
+   * @return {number}
+   */
+  get columnNumber() {
+    return this.callFrame.columnNumber;
+  }
 };
 
 /**
- * @constructor
+ * @unrestricted
  */
-WebInspector.ProfileTreeModel = function()
-{
-};
+WebInspector.ProfileTreeModel = class {
+  /**
+   * @param {!WebInspector.ProfileNode} root
+   * @protected
+   */
+  initialize(root) {
+    this.root = root;
+    this._assignDepthsAndParents();
+    this.total = this._calculateTotals(this.root);
+  }
 
-WebInspector.ProfileTreeModel.prototype = {
-    /**
-     * @param {!WebInspector.ProfileNode} root
-     * @protected
-     */
-    initialize: function(root)
-    {
-        this.root = root;
-        this._assignDepthsAndParents();
-        this.total = this._calculateTotals(this.root);
-    },
-
-    _assignDepthsAndParents: function()
-    {
-        var root = this.root;
-        root.depth = -1;
-        root.parent = null;
-        this.maxDepth = 0;
-        var nodesToTraverse = [root];
-        while (nodesToTraverse.length) {
-            var parent = nodesToTraverse.pop();
-            var depth = parent.depth + 1;
-            if (depth > this.maxDepth)
-                this.maxDepth = depth;
-            var children = parent.children;
-            var length = children.length;
-            for (var i = 0; i < length; ++i) {
-                var child = children[i];
-                child.depth = depth;
-                child.parent = parent;
-                if (child.children.length)
-                    nodesToTraverse.push(child);
-            }
-        }
-    },
-
-    /**
-     * @param {!WebInspector.ProfileNode} root
-     * @return {number}
-     */
-    _calculateTotals: function(root)
-    {
-        var nodesToTraverse = [root];
-        var dfsList = [];
-        while (nodesToTraverse.length) {
-            var node = nodesToTraverse.pop();
-            node.total = node.self;
-            dfsList.push(node);
-            nodesToTraverse.push(...node.children);
-        }
-        while (dfsList.length > 1) {
-            var node = dfsList.pop();
-            node.parent.total += node.total;
-        }
-        return root.total;
+  _assignDepthsAndParents() {
+    var root = this.root;
+    root.depth = -1;
+    root.parent = null;
+    this.maxDepth = 0;
+    var nodesToTraverse = [root];
+    while (nodesToTraverse.length) {
+      var parent = nodesToTraverse.pop();
+      var depth = parent.depth + 1;
+      if (depth > this.maxDepth)
+        this.maxDepth = depth;
+      var children = parent.children;
+      var length = children.length;
+      for (var i = 0; i < length; ++i) {
+        var child = children[i];
+        child.depth = depth;
+        child.parent = parent;
+        if (child.children.length)
+          nodesToTraverse.push(child);
+      }
     }
+  }
+
+  /**
+   * @param {!WebInspector.ProfileNode} root
+   * @return {number}
+   */
+  _calculateTotals(root) {
+    var nodesToTraverse = [root];
+    var dfsList = [];
+    while (nodesToTraverse.length) {
+      var node = nodesToTraverse.pop();
+      node.total = node.self;
+      dfsList.push(node);
+      nodesToTraverse.push(...node.children);
+    }
+    while (dfsList.length > 1) {
+      var node = dfsList.pop();
+      node.parent.total += node.total;
+    }
+    return root.total;
+  }
 };

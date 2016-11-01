@@ -27,120 +27,108 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
+ * @unrestricted
  */
-WebInspector.AuditFormatters = function()
-{
+WebInspector.AuditFormatters = class {
+  /**
+   * @param {string|boolean|number|!Object} value
+   * @return {!Node}
+   */
+  apply(value) {
+    var formatter;
+    var type = typeof value;
+    var args;
+
+    switch (type) {
+      case 'string':
+      case 'boolean':
+      case 'number':
+        formatter = WebInspector.AuditFormatters.Registry.text;
+        args = [value.toString()];
+        break;
+
+      case 'object':
+        if (value instanceof Node)
+          return value;
+        if (Array.isArray(value)) {
+          formatter = WebInspector.AuditFormatters.Registry.concat;
+          args = value;
+        } else if (value.type && value.arguments) {
+          formatter = WebInspector.AuditFormatters.Registry[value.type];
+          args = value.arguments;
+        }
+    }
+    if (!formatter)
+      throw 'Invalid value or formatter: ' + type + JSON.stringify(value);
+
+    return formatter.apply(null, args);
+  }
+
+  /**
+   * @param {!Object} formatters
+   * @param {?Object} thisArgument
+   * @param {string|boolean|number|!Object} value
+   * @return {*}
+   */
+  partiallyApply(formatters, thisArgument, value) {
+    if (Array.isArray(value))
+      return value.map(this.partiallyApply.bind(this, formatters, thisArgument));
+    if (typeof value === 'object' && typeof formatters[value.type] === 'function' && value.arguments)
+      return formatters[value.type].apply(thisArgument, value.arguments);
+    return value;
+  }
 };
 
 WebInspector.AuditFormatters.Registry = {
 
-    /**
-     * @param {string} text
-     * @return {!Text}
-     */
-    text: function(text)
-    {
-        return createTextNode(text);
-    },
+  /**
+   * @param {string} text
+   * @return {!Text}
+   */
+  text: function(text) {
+    return createTextNode(text);
+  },
 
-    /**
-     * @param {string} snippetText
-     * @return {!Element}
-     */
-    snippet: function(snippetText)
-    {
-        var div = createElement("div");
-        div.textContent = snippetText;
-        div.className = "source-code";
-        return div;
-    },
+  /**
+   * @param {string} snippetText
+   * @return {!Element}
+   */
+  snippet: function(snippetText) {
+    var div = createElement('div');
+    div.textContent = snippetText;
+    div.className = 'source-code';
+    return div;
+  },
 
-    /**
-     * @return {!Element}
-     */
-    concat: function()
-    {
-        var parent = createElement("span");
-        for (var arg = 0; arg < arguments.length; ++arg)
-            parent.appendChild(WebInspector.auditFormatters.apply(arguments[arg]));
-        return parent;
-    },
+  /**
+   * @return {!Element}
+   */
+  concat: function() {
+    var parent = createElement('span');
+    for (var arg = 0; arg < arguments.length; ++arg)
+      parent.appendChild(WebInspector.auditFormatters.apply(arguments[arg]));
+    return parent;
+  },
 
-    /**
-     * @param {string} url
-     * @param {string=} displayText
-     * @return {!Element}
-     */
-    url: function(url, displayText)
-    {
-        return WebInspector.linkifyURLAsNode(url, displayText, undefined, true);
-    },
+  /**
+   * @param {string} url
+   * @param {string=} displayText
+   * @return {!Element}
+   */
+  url: function(url, displayText) {
+    return WebInspector.linkifyURLAsNode(url, displayText, undefined, true);
+  },
 
-    /**
-     * @param {string} url
-     * @param {number=} line
-     * @return {!Element}
-     */
-    resourceLink: function(url, line)
-    {
-        // FIXME: use WebInspector.Linkifier
-        return WebInspector.linkifyResourceAsNode(url, line, undefined, "resource-url webkit-html-resource-link");
-    }
-};
-
-WebInspector.AuditFormatters.prototype = {
-    /**
-     * @param {string|boolean|number|!Object} value
-     * @return {!Node}
-     */
-    apply: function(value)
-    {
-        var formatter;
-        var type = typeof value;
-        var args;
-
-        switch (type) {
-        case "string":
-        case "boolean":
-        case "number":
-            formatter = WebInspector.AuditFormatters.Registry.text;
-            args = [value.toString()];
-            break;
-
-        case "object":
-            if (value instanceof Node)
-                return value;
-            if (Array.isArray(value)) {
-                formatter = WebInspector.AuditFormatters.Registry.concat;
-                args = value;
-            } else if (value.type && value.arguments) {
-                formatter = WebInspector.AuditFormatters.Registry[value.type];
-                args = value.arguments;
-            }
-        }
-        if (!formatter)
-            throw "Invalid value or formatter: " + type + JSON.stringify(value);
-
-        return formatter.apply(null, args);
-    },
-
-    /**
-     * @param {!Object} formatters
-     * @param {?Object} thisArgument
-     * @param {string|boolean|number|!Object} value
-     * @return {*}
-     */
-    partiallyApply: function(formatters, thisArgument, value)
-    {
-        if (Array.isArray(value))
-            return value.map(this.partiallyApply.bind(this, formatters, thisArgument));
-        if (typeof value === "object" && typeof formatters[value.type] === "function" && value.arguments)
-            return formatters[value.type].apply(thisArgument, value.arguments);
-        return value;
-    }
+  /**
+   * @param {string} url
+   * @param {number=} line
+   * @return {!Element}
+   */
+  resourceLink: function(url, line) {
+    // FIXME: use WebInspector.Linkifier
+    return WebInspector.linkifyResourceAsNode(url, line, undefined, 'resource-url webkit-html-resource-link');
+  }
 };
 
 WebInspector.auditFormatters = new WebInspector.AuditFormatters();

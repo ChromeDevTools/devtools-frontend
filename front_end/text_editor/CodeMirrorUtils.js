@@ -27,70 +27,61 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.InplaceEditor}
+ * @unrestricted
  */
-WebInspector.CodeMirrorUtils = function()
-{
-    WebInspector.InplaceEditor.call(this);
-};
+WebInspector.CodeMirrorUtils = class extends WebInspector.InplaceEditor {
+  constructor() {
+    super();
+  }
 
-/**
- * @param {!WebInspector.TextRange} range
- * @return {!{start: !CodeMirror.Pos, end: !CodeMirror.Pos}}
- */
-WebInspector.CodeMirrorUtils.toPos = function(range)
-{
+  /**
+   * @param {!WebInspector.TextRange} range
+   * @return {!{start: !CodeMirror.Pos, end: !CodeMirror.Pos}}
+   */
+  static toPos(range) {
     return {
-        start: new CodeMirror.Pos(range.startLine, range.startColumn),
-        end: new CodeMirror.Pos(range.endLine, range.endColumn)
+      start: new CodeMirror.Pos(range.startLine, range.startColumn),
+      end: new CodeMirror.Pos(range.endLine, range.endColumn)
     };
-};
+  }
 
-/**
- * @param {!CodeMirror.Pos} start
- * @param {!CodeMirror.Pos} end
- * @return {!WebInspector.TextRange}
- */
-WebInspector.CodeMirrorUtils.toRange = function(start, end)
-{
+  /**
+   * @param {!CodeMirror.Pos} start
+   * @param {!CodeMirror.Pos} end
+   * @return {!WebInspector.TextRange}
+   */
+  static toRange(start, end) {
     return new WebInspector.TextRange(start.line, start.ch, end.line, end.ch);
-};
+  }
 
-/**
- * @param {!CodeMirror.ChangeObject} changeObject
- * @return {{oldRange: !WebInspector.TextRange, newRange: !WebInspector.TextRange}}
- */
-WebInspector.CodeMirrorUtils.changeObjectToEditOperation = function(changeObject)
-{
+  /**
+   * @param {!CodeMirror.ChangeObject} changeObject
+   * @return {{oldRange: !WebInspector.TextRange, newRange: !WebInspector.TextRange}}
+   */
+  static changeObjectToEditOperation(changeObject) {
     var oldRange = WebInspector.CodeMirrorUtils.toRange(changeObject.from, changeObject.to);
     var newRange = oldRange.clone();
     var linesAdded = changeObject.text.length;
     if (linesAdded === 0) {
-        newRange.endLine = newRange.startLine;
-        newRange.endColumn = newRange.startColumn;
+      newRange.endLine = newRange.startLine;
+      newRange.endColumn = newRange.startColumn;
     } else if (linesAdded === 1) {
-        newRange.endLine = newRange.startLine;
-        newRange.endColumn = newRange.startColumn + changeObject.text[0].length;
+      newRange.endLine = newRange.startLine;
+      newRange.endColumn = newRange.startColumn + changeObject.text[0].length;
     } else {
-        newRange.endLine = newRange.startLine + linesAdded - 1;
-        newRange.endColumn = changeObject.text[linesAdded - 1].length;
+      newRange.endLine = newRange.startLine + linesAdded - 1;
+      newRange.endColumn = changeObject.text[linesAdded - 1].length;
     }
-    return {
-        oldRange: oldRange,
-        newRange: newRange
-    };
-};
+    return {oldRange: oldRange, newRange: newRange};
+  }
 
-/**
- * @param {!CodeMirror} codeMirror
- * @param {number} linesCount
- * @return {!Array.<string>}
- */
-WebInspector.CodeMirrorUtils.pullLines = function(codeMirror, linesCount)
-{
+  /**
+   * @param {!CodeMirror} codeMirror
+   * @param {number} linesCount
+   * @return {!Array.<string>}
+   */
+  static pullLines(codeMirror, linesCount) {
     var lines = [];
     codeMirror.eachLine(0, linesCount, onLineHandle);
     return lines;
@@ -98,144 +89,144 @@ WebInspector.CodeMirrorUtils.pullLines = function(codeMirror, linesCount)
     /**
      * @param {!{text: string}} lineHandle
      */
-    function onLineHandle(lineHandle)
-    {
-        lines.push(lineHandle.text);
+    function onLineHandle(lineHandle) {
+      lines.push(lineHandle.text);
     }
-};
+  }
 
-WebInspector.CodeMirrorUtils.prototype = {
-    /**
-     * @override
-     * @return {string}
-     */
-    editorContent: function(editingContext) {
-        return editingContext.codeMirror.getValue();
-    },
-
-    /**
-     * @param {!Event} e
-     */
-    _consumeCopy: function(e)
-    {
-        e.consume();
-    },
-
-    setUpEditor: function(editingContext)
-    {
-        var element = editingContext.element;
-        var config = editingContext.config;
-        editingContext.cssLoadView = new WebInspector.CodeMirrorCSSLoadView();
-        editingContext.cssLoadView.show(element);
-        element.focus();
-        element.addEventListener("copy", this._consumeCopy, false);
-        var codeMirror = new window.CodeMirror(element, {
-            mode: config.mode,
-            lineWrapping: config.lineWrapping,
-            lineWiseCopyCut: false,
-            smartIndent: config.smartIndent,
-            autofocus: true,
-            theme: config.theme,
-            value: config.initialValue
-        });
-        codeMirror.getWrapperElement().classList.add("source-code");
-        codeMirror.on("cursorActivity", function(cm) {
-            cm.display.cursorDiv.scrollIntoViewIfNeeded(false);
-        });
-        editingContext.codeMirror = codeMirror;
-    },
-
-    closeEditor: function(editingContext)
-    {
-        editingContext.element.removeEventListener("copy", this._consumeCopy, false);
-        editingContext.cssLoadView.detach();
-    },
-
-    cancelEditing: function(editingContext)
-    {
-        editingContext.codeMirror.setValue(editingContext.oldText);
-    },
-
-    augmentEditingHandle: function(editingContext, handle)
-    {
-        function setWidth(editingContext, width)
-        {
-            var padding = 30;
-            var codeMirror = editingContext.codeMirror;
-            codeMirror.getWrapperElement().style.width = (width - codeMirror.getWrapperElement().offsetLeft - padding) + "px";
-            codeMirror.refresh();
-        }
-
-        handle.codeMirror = editingContext.codeMirror;
-        handle.setWidth = setWidth.bind(null, editingContext);
-    },
-
-    __proto__: WebInspector.InplaceEditor.prototype
-};
-
-/**
- * @constructor
- * @implements {WebInspector.TokenizerFactory}
- */
-WebInspector.CodeMirrorUtils.TokenizerFactory = function() { };
-
-WebInspector.CodeMirrorUtils.TokenizerFactory.prototype = {
-    /**
-     * @override
-     * @param {string} mimeType
-     * @return {function(string, function(string, ?string, number, number))}
-     */
-    createTokenizer: function(mimeType)
-    {
-        var mode = CodeMirror.getMode({indentUnit: 2}, mimeType);
-        var state = CodeMirror.startState(mode);
-        function tokenize(line, callback)
-        {
-            var stream = new CodeMirror.StringStream(line);
-            while (!stream.eol()) {
-                var style = mode.token(stream, state);
-                var value = stream.current();
-                callback(value, style, stream.start, stream.start + value.length);
-                stream.start = stream.pos;
-            }
-        }
-        return tokenize;
-    }
-};
-
-/**
- * This bogus view is needed to load/unload CodeMirror-related CSS on demand.
- *
- * @constructor
- * @extends {WebInspector.VBox}
- */
-WebInspector.CodeMirrorCSSLoadView = function()
-{
-    WebInspector.VBox.call(this);
-    this.element.classList.add("hidden");
-    this.registerRequiredCSS("cm/codemirror.css");
-    this.registerRequiredCSS("text_editor/cmdevtools.css");
-    WebInspector.CodeMirrorUtils.appendThemeStyle(this.element);
-};
-
-WebInspector.CodeMirrorCSSLoadView.prototype = {
-    __proto__: WebInspector.VBox.prototype
-};
-
-
-/**
- * @param {!Element} element
- */
-WebInspector.CodeMirrorUtils.appendThemeStyle = function(element)
-{
+  /**
+   * @param {!Element} element
+   */
+  static appendThemeStyle(element) {
     if (WebInspector.themeSupport.hasTheme())
-        return;
+      return;
     var backgroundColor = InspectorFrontendHost.getSelectionBackgroundColor();
-    var backgroundColorRule = backgroundColor ? ".CodeMirror .CodeMirror-selected { background-color: " + backgroundColor + ";}" : "";
+    var backgroundColorRule =
+        backgroundColor ? '.CodeMirror .CodeMirror-selected { background-color: ' + backgroundColor + ';}' : '';
     var foregroundColor = InspectorFrontendHost.getSelectionForegroundColor();
-    var foregroundColorRule = foregroundColor ? ".CodeMirror .CodeMirror-selectedtext:not(.CodeMirror-persist-highlight) { color: " + foregroundColor + "!important;}" : "";
-    var style = createElement("style");
+    var foregroundColorRule = foregroundColor ?
+        '.CodeMirror .CodeMirror-selectedtext:not(.CodeMirror-persist-highlight) { color: ' + foregroundColor +
+            '!important;}' :
+        '';
+    var style = createElement('style');
     if (foregroundColorRule || backgroundColorRule)
-        style.textContent = backgroundColorRule + foregroundColorRule;
+      style.textContent = backgroundColorRule + foregroundColorRule;
     element.appendChild(style);
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  editorContent(editingContext) {
+    return editingContext.codeMirror.getValue();
+  }
+
+  /**
+   * @param {!Event} e
+   */
+  _consumeCopy(e) {
+    e.consume();
+  }
+
+  /**
+   * @override
+   */
+  setUpEditor(editingContext) {
+    var element = editingContext.element;
+    var config = editingContext.config;
+    editingContext.cssLoadView = new WebInspector.CodeMirrorCSSLoadView();
+    editingContext.cssLoadView.show(element);
+    element.focus();
+    element.addEventListener('copy', this._consumeCopy, false);
+    var codeMirror = new window.CodeMirror(element, {
+      mode: config.mode,
+      lineWrapping: config.lineWrapping,
+      lineWiseCopyCut: false,
+      smartIndent: config.smartIndent,
+      autofocus: true,
+      theme: config.theme,
+      value: config.initialValue
+    });
+    codeMirror.getWrapperElement().classList.add('source-code');
+    codeMirror.on('cursorActivity', function(cm) {
+      cm.display.cursorDiv.scrollIntoViewIfNeeded(false);
+    });
+    editingContext.codeMirror = codeMirror;
+  }
+
+  /**
+   * @override
+   */
+  closeEditor(editingContext) {
+    editingContext.element.removeEventListener('copy', this._consumeCopy, false);
+    editingContext.cssLoadView.detach();
+  }
+
+  /**
+   * @override
+   */
+  cancelEditing(editingContext) {
+    editingContext.codeMirror.setValue(editingContext.oldText);
+  }
+
+  /**
+   * @override
+   */
+  augmentEditingHandle(editingContext, handle) {
+    function setWidth(editingContext, width) {
+      var padding = 30;
+      var codeMirror = editingContext.codeMirror;
+      codeMirror.getWrapperElement().style.width = (width - codeMirror.getWrapperElement().offsetLeft - padding) + 'px';
+      codeMirror.refresh();
+    }
+
+    handle.codeMirror = editingContext.codeMirror;
+    handle.setWidth = setWidth.bind(null, editingContext);
+  }
 };
+
+
+/**
+ * @implements {WebInspector.TokenizerFactory}
+ * @unrestricted
+ */
+WebInspector.CodeMirrorUtils.TokenizerFactory = class {
+  /**
+   * @override
+   * @param {string} mimeType
+   * @return {function(string, function(string, ?string, number, number))}
+   */
+  createTokenizer(mimeType) {
+    var mode = CodeMirror.getMode({indentUnit: 2}, mimeType);
+    var state = CodeMirror.startState(mode);
+    function tokenize(line, callback) {
+      var stream = new CodeMirror.StringStream(line);
+      while (!stream.eol()) {
+        var style = mode.token(stream, state);
+        var value = stream.current();
+        callback(value, style, stream.start, stream.start + value.length);
+        stream.start = stream.pos;
+      }
+    }
+    return tokenize;
+  }
+};
+
+/**
+ * @unrestricted
+ */
+WebInspector.CodeMirrorCSSLoadView = class extends WebInspector.VBox {
+  /**
+   * This bogus view is needed to load/unload CodeMirror-related CSS on demand.
+   */
+  constructor() {
+    super();
+    this.element.classList.add('hidden');
+    this.registerRequiredCSS('cm/codemirror.css');
+    this.registerRequiredCSS('text_editor/cmdevtools.css');
+    WebInspector.CodeMirrorUtils.appendThemeStyle(this.element);
+  }
+};
+
+

@@ -23,130 +23,129 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.VBox}
  * @implements {WebInspector.ContextFlavorListener}
+ * @unrestricted
  */
-WebInspector.ScopeChainSidebarPane = function()
-{
-    WebInspector.VBox.call(this);
+WebInspector.ScopeChainSidebarPane = class extends WebInspector.VBox {
+  constructor() {
+    super();
     this._expandController = new WebInspector.ObjectPropertiesSectionExpandController();
     this._linkifier = new WebInspector.Linkifier();
     this._update();
+  }
+
+  /**
+   * @override
+   * @param {?Object} object
+   */
+  flavorChanged(object) {
+    this._update();
+  }
+
+  _update() {
+    var callFrame = WebInspector.context.flavor(WebInspector.DebuggerModel.CallFrame);
+    var details = WebInspector.context.flavor(WebInspector.DebuggerPausedDetails);
+    this._linkifier.reset();
+    WebInspector.SourceMapNamesResolver.resolveThisObject(callFrame).then(
+        this._innerUpdate.bind(this, details, callFrame));
+  }
+
+  /**
+   * @param {?WebInspector.DebuggerPausedDetails} details
+   * @param {?WebInspector.DebuggerModel.CallFrame} callFrame
+   * @param {?WebInspector.RemoteObject} thisObject
+   */
+  _innerUpdate(details, callFrame, thisObject) {
+    this.element.removeChildren();
+
+    if (!details || !callFrame) {
+      var infoElement = createElement('div');
+      infoElement.className = 'gray-info-message';
+      infoElement.textContent = WebInspector.UIString('Not Paused');
+      this.element.appendChild(infoElement);
+      return;
+    }
+
+    var foundLocalScope = false;
+    var scopeChain = callFrame.scopeChain();
+    for (var i = 0; i < scopeChain.length; ++i) {
+      var scope = scopeChain[i];
+      var title = null;
+      var emptyPlaceholder = null;
+      var extraProperties = [];
+
+      switch (scope.type()) {
+        case DebuggerAgent.ScopeType.Local:
+          foundLocalScope = true;
+          title = WebInspector.UIString('Local');
+          emptyPlaceholder = WebInspector.UIString('No Variables');
+          if (thisObject)
+            extraProperties.push(new WebInspector.RemoteObjectProperty('this', thisObject));
+          if (i === 0) {
+            var exception = details.exception();
+            if (exception)
+              extraProperties.push(new WebInspector.RemoteObjectProperty(
+                  WebInspector.UIString.capitalize('Exception'), exception, undefined, undefined, undefined, undefined,
+                  undefined, true));
+            var returnValue = callFrame.returnValue();
+            if (returnValue)
+              extraProperties.push(new WebInspector.RemoteObjectProperty(
+                  WebInspector.UIString.capitalize('Return ^value'), returnValue, undefined, undefined, undefined,
+                  undefined, undefined, true));
+          }
+          break;
+        case DebuggerAgent.ScopeType.Closure:
+          var scopeName = scope.name();
+          if (scopeName)
+            title = WebInspector.UIString('Closure (%s)', WebInspector.beautifyFunctionName(scopeName));
+          else
+            title = WebInspector.UIString('Closure');
+          emptyPlaceholder = WebInspector.UIString('No Variables');
+          break;
+        case DebuggerAgent.ScopeType.Catch:
+          title = WebInspector.UIString('Catch');
+          break;
+        case DebuggerAgent.ScopeType.Block:
+          title = WebInspector.UIString('Block');
+          break;
+        case DebuggerAgent.ScopeType.Script:
+          title = WebInspector.UIString('Script');
+          break;
+        case DebuggerAgent.ScopeType.With:
+          title = WebInspector.UIString('With Block');
+          break;
+        case DebuggerAgent.ScopeType.Global:
+          title = WebInspector.UIString('Global');
+          break;
+      }
+
+      var subtitle = scope.description();
+      if (!title || title === subtitle)
+        subtitle = undefined;
+
+      var titleElement = createElementWithClass('div', 'scope-chain-sidebar-pane-section-header');
+      titleElement.createChild('div', 'scope-chain-sidebar-pane-section-subtitle').textContent = subtitle;
+      titleElement.createChild('div', 'scope-chain-sidebar-pane-section-title').textContent = title;
+
+      var section = new WebInspector.ObjectPropertiesSection(
+          WebInspector.SourceMapNamesResolver.resolveScopeInObject(scope), titleElement, this._linkifier,
+          emptyPlaceholder, true, extraProperties);
+      this._expandController.watchSection(title + (subtitle ? ':' + subtitle : ''), section);
+
+      if (scope.type() === DebuggerAgent.ScopeType.Global)
+        section.objectTreeElement().collapse();
+      else if (!foundLocalScope || scope.type() === DebuggerAgent.ScopeType.Local)
+        section.objectTreeElement().expand();
+
+      section.element.classList.add('scope-chain-sidebar-pane-section');
+      this.element.appendChild(section.element);
+    }
+    this._sidebarPaneUpdatedForTest();
+  }
+
+  _sidebarPaneUpdatedForTest() {
+  }
 };
 
-WebInspector.ScopeChainSidebarPane._pathSymbol = Symbol("path");
-
-WebInspector.ScopeChainSidebarPane.prototype = {
-    /**
-     * @override
-     * @param {?Object} object
-     */
-    flavorChanged: function(object)
-    {
-        this._update();
-    },
-
-    _update: function()
-    {
-        var callFrame = WebInspector.context.flavor(WebInspector.DebuggerModel.CallFrame);
-        var details = WebInspector.context.flavor(WebInspector.DebuggerPausedDetails);
-        this._linkifier.reset();
-        WebInspector.SourceMapNamesResolver.resolveThisObject(callFrame)
-            .then(this._innerUpdate.bind(this, details, callFrame));
-    },
-
-    /**
-     * @param {?WebInspector.DebuggerPausedDetails} details
-     * @param {?WebInspector.DebuggerModel.CallFrame} callFrame
-     * @param {?WebInspector.RemoteObject} thisObject
-     */
-    _innerUpdate: function(details, callFrame, thisObject)
-    {
-        this.element.removeChildren();
-
-        if (!details || !callFrame) {
-            var infoElement = createElement("div");
-            infoElement.className = "gray-info-message";
-            infoElement.textContent = WebInspector.UIString("Not Paused");
-            this.element.appendChild(infoElement);
-            return;
-        }
-
-        var foundLocalScope = false;
-        var scopeChain = callFrame.scopeChain();
-        for (var i = 0; i < scopeChain.length; ++i) {
-            var scope = scopeChain[i];
-            var title = null;
-            var emptyPlaceholder = null;
-            var extraProperties = [];
-
-            switch (scope.type()) {
-            case DebuggerAgent.ScopeType.Local:
-                foundLocalScope = true;
-                title = WebInspector.UIString("Local");
-                emptyPlaceholder = WebInspector.UIString("No Variables");
-                if (thisObject)
-                    extraProperties.push(new WebInspector.RemoteObjectProperty("this", thisObject));
-                if (i === 0) {
-                    var exception = details.exception();
-                    if (exception)
-                        extraProperties.push(new WebInspector.RemoteObjectProperty(WebInspector.UIString.capitalize("Exception"), exception, undefined, undefined, undefined, undefined, undefined, true));
-                    var returnValue = callFrame.returnValue();
-                    if (returnValue)
-                        extraProperties.push(new WebInspector.RemoteObjectProperty(WebInspector.UIString.capitalize("Return ^value"), returnValue, undefined, undefined, undefined, undefined, undefined, true));
-                }
-                break;
-            case DebuggerAgent.ScopeType.Closure:
-                var scopeName = scope.name();
-                if (scopeName)
-                    title = WebInspector.UIString("Closure (%s)", WebInspector.beautifyFunctionName(scopeName));
-                else
-                    title = WebInspector.UIString("Closure");
-                emptyPlaceholder = WebInspector.UIString("No Variables");
-                break;
-            case DebuggerAgent.ScopeType.Catch:
-                title = WebInspector.UIString("Catch");
-                break;
-            case DebuggerAgent.ScopeType.Block:
-                title = WebInspector.UIString("Block");
-                break;
-            case DebuggerAgent.ScopeType.Script:
-                title = WebInspector.UIString("Script");
-                break;
-            case DebuggerAgent.ScopeType.With:
-                title = WebInspector.UIString("With Block");
-                break;
-            case DebuggerAgent.ScopeType.Global:
-                title = WebInspector.UIString("Global");
-                break;
-            }
-
-            var subtitle = scope.description();
-            if (!title || title === subtitle)
-                subtitle = undefined;
-
-            var titleElement = createElementWithClass("div", "scope-chain-sidebar-pane-section-header");
-            titleElement.createChild("div", "scope-chain-sidebar-pane-section-subtitle").textContent = subtitle;
-            titleElement.createChild("div", "scope-chain-sidebar-pane-section-title").textContent = title;
-
-            var section = new WebInspector.ObjectPropertiesSection(WebInspector.SourceMapNamesResolver.resolveScopeInObject(scope), titleElement, this._linkifier, emptyPlaceholder, true, extraProperties);
-            this._expandController.watchSection(title + (subtitle ? ":" + subtitle : ""), section);
-
-            if (scope.type() === DebuggerAgent.ScopeType.Global)
-                section.objectTreeElement().collapse();
-            else if (!foundLocalScope || scope.type() === DebuggerAgent.ScopeType.Local)
-                section.objectTreeElement().expand();
-
-            section.element.classList.add("scope-chain-sidebar-pane-section");
-            this.element.appendChild(section.element);
-        }
-        this._sidebarPaneUpdatedForTest();
-    },
-
-    _sidebarPaneUpdatedForTest: function() { },
-
-    __proto__: WebInspector.VBox.prototype
-};
+WebInspector.ScopeChainSidebarPane._pathSymbol = Symbol('path');

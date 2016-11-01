@@ -27,93 +27,89 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @param {number} size
- * @param {function(number):string=} formatter
- * @param {boolean=} showTotal
+ * @unrestricted
  */
-WebInspector.PieChart = function(size, formatter, showTotal)
-{
-    this.element = createElement("div");
-    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, "ui_lazy/pieChart.css");
-    var root = this._shadowRoot.createChild("div", "root");
-    var svg = this._createSVGChild(root, "svg");
-    this._group = this._createSVGChild(svg, "g");
-    var background = this._createSVGChild(this._group, "circle");
-    background.setAttribute("r", 1.01);
-    background.setAttribute("fill", "hsl(0, 0%, 90%)");
-    this._foregroundElement = root.createChild("div", "pie-chart-foreground");
+WebInspector.PieChart = class {
+  /**
+   * @param {number} size
+   * @param {function(number):string=} formatter
+   * @param {boolean=} showTotal
+   */
+  constructor(size, formatter, showTotal) {
+    this.element = createElement('div');
+    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, 'ui_lazy/pieChart.css');
+    var root = this._shadowRoot.createChild('div', 'root');
+    var svg = this._createSVGChild(root, 'svg');
+    this._group = this._createSVGChild(svg, 'g');
+    var background = this._createSVGChild(this._group, 'circle');
+    background.setAttribute('r', 1.01);
+    background.setAttribute('fill', 'hsl(0, 0%, 90%)');
+    this._foregroundElement = root.createChild('div', 'pie-chart-foreground');
     if (showTotal)
-        this._totalElement = this._foregroundElement.createChild("div", "pie-chart-total");
+      this._totalElement = this._foregroundElement.createChild('div', 'pie-chart-total');
     this._formatter = formatter;
     this._slices = [];
     this._lastAngle = -Math.PI / 2;
     this._setSize(size);
-};
+  }
 
-WebInspector.PieChart.prototype = {
-    /**
-     * @param {number} totalValue
-     */
-    setTotal: function(totalValue)
-    {
-        for (var i = 0; i < this._slices.length; ++i)
-            this._slices[i].remove();
-        this._slices = [];
-        this._totalValue = totalValue;
-        var totalString;
-        if (totalValue)
-            totalString = this._formatter ? this._formatter(totalValue) : totalValue;
-        else
-            totalString = "";
-        if (this._totalElement)
-            this._totalElement.textContent = totalString;
-    },
+  /**
+   * @param {number} totalValue
+   */
+  setTotal(totalValue) {
+    for (var i = 0; i < this._slices.length; ++i)
+      this._slices[i].remove();
+    this._slices = [];
+    this._totalValue = totalValue;
+    var totalString;
+    if (totalValue)
+      totalString = this._formatter ? this._formatter(totalValue) : totalValue;
+    else
+      totalString = '';
+    if (this._totalElement)
+      this._totalElement.textContent = totalString;
+  }
 
-    /**
-     * @param {number} value
-     */
-    _setSize: function(value)
-    {
-        this._group.setAttribute("transform", "scale(" + (value / 2) + ") translate(1, 1) scale(0.99, 0.99)");
-        var size = value + "px";
-        this.element.style.width = size;
-        this.element.style.height = size;
-    },
+  /**
+   * @param {number} value
+   */
+  _setSize(value) {
+    this._group.setAttribute('transform', 'scale(' + (value / 2) + ') translate(1, 1) scale(0.99, 0.99)');
+    var size = value + 'px';
+    this.element.style.width = size;
+    this.element.style.height = size;
+  }
 
-    /**
-     * @param {number} value
-     * @param {string} color
-     */
-    addSlice: function(value, color)
-    {
-        var sliceAngle = value / this._totalValue * 2 * Math.PI;
-        if (!isFinite(sliceAngle))
-            return;
-        sliceAngle = Math.min(sliceAngle, 2 * Math.PI * 0.9999);
-        var path = this._createSVGChild(this._group, "path");
-        var x1 = Math.cos(this._lastAngle);
-        var y1 = Math.sin(this._lastAngle);
-        this._lastAngle += sliceAngle;
-        var x2 = Math.cos(this._lastAngle);
-        var y2 = Math.sin(this._lastAngle);
-        var largeArc = sliceAngle > Math.PI ? 1 : 0;
-        path.setAttribute("d", "M0,0 L" + x1 + "," + y1 + " A1,1,0," + largeArc + ",1," + x2 + "," + y2 + " Z");
-        path.setAttribute("fill", color);
-        this._slices.push(path);
-    },
+  /**
+   * @param {number} value
+   * @param {string} color
+   */
+  addSlice(value, color) {
+    var sliceAngle = value / this._totalValue * 2 * Math.PI;
+    if (!isFinite(sliceAngle))
+      return;
+    sliceAngle = Math.min(sliceAngle, 2 * Math.PI * 0.9999);
+    var path = this._createSVGChild(this._group, 'path');
+    var x1 = Math.cos(this._lastAngle);
+    var y1 = Math.sin(this._lastAngle);
+    this._lastAngle += sliceAngle;
+    var x2 = Math.cos(this._lastAngle);
+    var y2 = Math.sin(this._lastAngle);
+    var largeArc = sliceAngle > Math.PI ? 1 : 0;
+    path.setAttribute('d', 'M0,0 L' + x1 + ',' + y1 + ' A1,1,0,' + largeArc + ',1,' + x2 + ',' + y2 + ' Z');
+    path.setAttribute('fill', color);
+    this._slices.push(path);
+  }
 
-    /**
-     * @param {!Element} parent
-     * @param {string} childType
-     * @return {!Element}
-     */
-    _createSVGChild: function(parent, childType)
-    {
-        var child = parent.ownerDocument.createElementNS("http://www.w3.org/2000/svg", childType);
-        parent.appendChild(child);
-        return child;
-    }
+  /**
+   * @param {!Element} parent
+   * @param {string} childType
+   * @return {!Element}
+   */
+  _createSVGChild(parent, childType) {
+    var child = parent.ownerDocument.createElementNS('http://www.w3.org/2000/svg', childType);
+    parent.appendChild(child);
+    return child;
+  }
 };

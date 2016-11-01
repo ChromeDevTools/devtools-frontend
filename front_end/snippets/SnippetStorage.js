@@ -27,188 +27,176 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.Object}
+ * @unrestricted
  */
-WebInspector.SnippetStorage = function(settingPrefix, namePrefix)
-{
+WebInspector.SnippetStorage = class extends WebInspector.Object {
+  constructor(settingPrefix, namePrefix) {
+    super();
     /** @type {!Map<string,!WebInspector.Snippet>} */
     this._snippets = new Map();
 
-    this._lastSnippetIdentifierSetting = WebInspector.settings.createSetting(settingPrefix + "Snippets_lastIdentifier", 0);
-    this._snippetsSetting = WebInspector.settings.createSetting(settingPrefix + "Snippets", []);
+    this._lastSnippetIdentifierSetting =
+        WebInspector.settings.createSetting(settingPrefix + 'Snippets_lastIdentifier', 0);
+    this._snippetsSetting = WebInspector.settings.createSetting(settingPrefix + 'Snippets', []);
     this._namePrefix = namePrefix;
 
     this._loadSettings();
-};
+  }
 
-WebInspector.SnippetStorage.prototype = {
-    get namePrefix()
-    {
-        return this._namePrefix;
-    },
+  get namePrefix() {
+    return this._namePrefix;
+  }
 
-    _saveSettings: function()
-    {
-        var savedSnippets = [];
-        for (var snippet of this._snippets.values())
-            savedSnippets.push(snippet.serializeToObject());
-        this._snippetsSetting.set(savedSnippets);
-    },
+  _saveSettings() {
+    var savedSnippets = [];
+    for (var snippet of this._snippets.values())
+      savedSnippets.push(snippet.serializeToObject());
+    this._snippetsSetting.set(savedSnippets);
+  }
 
-    /**
-     * @return {!Array<!WebInspector.Snippet>}
-     */
-    snippets: function()
-    {
-        return this._snippets.valuesArray();
-    },
+  /**
+   * @return {!Array<!WebInspector.Snippet>}
+   */
+  snippets() {
+    return this._snippets.valuesArray();
+  }
 
-    /**
-     * @param {string} id
-     * @return {?WebInspector.Snippet}
-     */
-    snippetForId: function(id)
-    {
-        return this._snippets.get(id);
-    },
+  /**
+   * @param {string} id
+   * @return {?WebInspector.Snippet}
+   */
+  snippetForId(id) {
+    return this._snippets.get(id);
+  }
 
-    /**
-     * @param {string} name
-     * @return {?WebInspector.Snippet}
-     */
-    snippetForName: function(name)
-    {
-        for (var snippet of this._snippets.values()) {
-            if (snippet.name === name)
-                return snippet;
-        }
-        return null;
-    },
-
-    _loadSettings: function()
-    {
-        var savedSnippets = this._snippetsSetting.get();
-        for (var i = 0; i < savedSnippets.length; ++i)
-            this._snippetAdded(WebInspector.Snippet.fromObject(this, savedSnippets[i]));
-    },
-
-    /**
-     * @param {!WebInspector.Snippet} snippet
-     */
-    deleteSnippet: function(snippet)
-    {
-        this._snippets.delete(snippet.id);
-        this._saveSettings();
-    },
-
-    /**
-     * @return {!WebInspector.Snippet}
-     */
-    createSnippet: function()
-    {
-        var nextId = this._lastSnippetIdentifierSetting.get() + 1;
-        var snippetId = String(nextId);
-        this._lastSnippetIdentifierSetting.set(nextId);
-        var snippet = new WebInspector.Snippet(this, snippetId);
-        this._snippetAdded(snippet);
-        this._saveSettings();
+  /**
+   * @param {string} name
+   * @return {?WebInspector.Snippet}
+   */
+  snippetForName(name) {
+    for (var snippet of this._snippets.values()) {
+      if (snippet.name === name)
         return snippet;
-    },
+    }
+    return null;
+  }
 
-    /**
-     * @param {!WebInspector.Snippet} snippet
-     */
-    _snippetAdded: function(snippet)
-    {
-        this._snippets.set(snippet.id, snippet);
-    },
+  _loadSettings() {
+    var savedSnippets = this._snippetsSetting.get();
+    for (var i = 0; i < savedSnippets.length; ++i)
+      this._snippetAdded(WebInspector.Snippet.fromObject(this, savedSnippets[i]));
+  }
 
-    __proto__: WebInspector.Object.prototype
+  /**
+   * @param {!WebInspector.Snippet} snippet
+   */
+  deleteSnippet(snippet) {
+    this._snippets.delete(snippet.id);
+    this._saveSettings();
+  }
+
+  /**
+   * @return {!WebInspector.Snippet}
+   */
+  createSnippet() {
+    var nextId = this._lastSnippetIdentifierSetting.get() + 1;
+    var snippetId = String(nextId);
+    this._lastSnippetIdentifierSetting.set(nextId);
+    var snippet = new WebInspector.Snippet(this, snippetId);
+    this._snippetAdded(snippet);
+    this._saveSettings();
+    return snippet;
+  }
+
+  /**
+   * @param {!WebInspector.Snippet} snippet
+   */
+  _snippetAdded(snippet) {
+    this._snippets.set(snippet.id, snippet);
+  }
 };
 
 /**
- * @constructor
- * @extends {WebInspector.Object}
- * @param {!WebInspector.SnippetStorage} storage
- * @param {string} id
- * @param {string=} name
- * @param {string=} content
+ * @unrestricted
  */
-WebInspector.Snippet = function(storage, id, name, content)
-{
+WebInspector.Snippet = class extends WebInspector.Object {
+  /**
+   * @param {!WebInspector.SnippetStorage} storage
+   * @param {string} id
+   * @param {string=} name
+   * @param {string=} content
+   */
+  constructor(storage, id, name, content) {
+    super();
     this._storage = storage;
     this._id = id;
     this._name = name || storage.namePrefix + id;
-    this._content = content || "";
-};
+    this._content = content || '';
+  }
 
-/**
- * @param {!WebInspector.SnippetStorage} storage
- * @param {!Object} serializedSnippet
- * @return {!WebInspector.Snippet}
- */
-WebInspector.Snippet.fromObject = function(storage, serializedSnippet)
-{
+  /**
+   * @param {!WebInspector.SnippetStorage} storage
+   * @param {!Object} serializedSnippet
+   * @return {!WebInspector.Snippet}
+   */
+  static fromObject(storage, serializedSnippet) {
     return new WebInspector.Snippet(storage, serializedSnippet.id, serializedSnippet.name, serializedSnippet.content);
+  }
+
+  /**
+   * @return {string}
+   */
+  get id() {
+    return this._id;
+  }
+
+  /**
+   * @return {string}
+   */
+  get name() {
+    return this._name;
+  }
+
+  /**
+   * @param {string} name
+   */
+  set name(name) {
+    if (this._name === name)
+      return;
+
+    this._name = name;
+    this._storage._saveSettings();
+  }
+
+  /**
+   * @return {string}
+   */
+  get content() {
+    return this._content;
+  }
+
+  /**
+   * @param {string} content
+   */
+  set content(content) {
+    if (this._content === content)
+      return;
+
+    this._content = content;
+    this._storage._saveSettings();
+  }
+
+  /**
+   * @return {!Object}
+   */
+  serializeToObject() {
+    var serializedSnippet = {};
+    serializedSnippet.id = this.id;
+    serializedSnippet.name = this.name;
+    serializedSnippet.content = this.content;
+    return serializedSnippet;
+  }
 };
 
-WebInspector.Snippet.prototype = {
-    /**
-     * @return {string}
-     */
-    get id()
-    {
-        return this._id;
-    },
 
-    /**
-     * @return {string}
-     */
-    get name()
-    {
-        return this._name;
-    },
-
-    set name(name)
-    {
-        if (this._name === name)
-            return;
-
-        this._name = name;
-        this._storage._saveSettings();
-    },
-
-    /**
-     * @return {string}
-     */
-    get content()
-    {
-        return this._content;
-    },
-
-    set content(content)
-    {
-        if (this._content === content)
-            return;
-
-        this._content = content;
-        this._storage._saveSettings();
-    },
-
-    /**
-     * @return {!Object}
-     */
-    serializeToObject: function()
-    {
-        var serializedSnippet = {};
-        serializedSnippet.id = this.id;
-        serializedSnippet.name = this.name;
-        serializedSnippet.content = this.content;
-        return serializedSnippet;
-    },
-
-    __proto__: WebInspector.Object.prototype
-};

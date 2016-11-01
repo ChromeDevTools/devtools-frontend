@@ -27,12 +27,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
+ * @unrestricted
  */
-WebInspector.UserMetrics = function()
-{
+WebInspector.UserMetrics = class {
+  /**
+   * @param {string} panelName
+   */
+  panelShown(panelName) {
+    var code = WebInspector.UserMetrics._PanelCodes[panelName] || 0;
+    var size = Object.keys(WebInspector.UserMetrics._PanelCodes).length + 1;
+    InspectorFrontendHost.recordEnumeratedHistogram('DevTools.PanelShown', code, size);
+  }
+
+  /**
+   * @param {string} drawerId
+   */
+  drawerShown(drawerId) {
+    this.panelShown('drawer-' + drawerId);
+  }
+
+  /**
+   * @param {!WebInspector.UserMetrics.Action} action
+   */
+  actionTaken(action) {
+    var size = Object.keys(WebInspector.UserMetrics.Action).length + 1;
+    InspectorFrontendHost.recordEnumeratedHistogram('DevTools.ActionTaken', action, size);
+  }
 };
 
 // Codes below are used to collect UMA histograms in the Chromium port.
@@ -41,71 +62,42 @@ WebInspector.UserMetrics = function()
 
 /** @enum {number} */
 WebInspector.UserMetrics.Action = {
-    WindowDocked: 1,
-    WindowUndocked: 2,
-    ScriptsBreakpointSet: 3,
-    TimelineStarted: 4,
-    ProfilesCPUProfileTaken: 5,
-    ProfilesHeapProfileTaken: 6,
-    AuditsStarted: 7,
-    ConsoleEvaluated: 8,
-    FileSavedInWorkspace: 9,
-    DeviceModeEnabled: 10,
-    AnimationsPlaybackRateChanged: 11,
-    RevisionApplied: 12,
-    FileSystemDirectoryContentReceived: 13,
-    StyleRuleEdited: 14,
-    CommandEvaluatedInConsolePanel: 15,
-    DOMPropertiesExpanded: 16,
-    ResizedViewInResponsiveMode: 17
+  WindowDocked: 1,
+  WindowUndocked: 2,
+  ScriptsBreakpointSet: 3,
+  TimelineStarted: 4,
+  ProfilesCPUProfileTaken: 5,
+  ProfilesHeapProfileTaken: 6,
+  AuditsStarted: 7,
+  ConsoleEvaluated: 8,
+  FileSavedInWorkspace: 9,
+  DeviceModeEnabled: 10,
+  AnimationsPlaybackRateChanged: 11,
+  RevisionApplied: 12,
+  FileSystemDirectoryContentReceived: 13,
+  StyleRuleEdited: 14,
+  CommandEvaluatedInConsolePanel: 15,
+  DOMPropertiesExpanded: 16,
+  ResizedViewInResponsiveMode: 17
 };
 
 WebInspector.UserMetrics._PanelCodes = {
-    elements: 1,
-    resources: 2,
-    network: 3,
-    sources: 4,
-    timeline: 5,
-    profiles: 6,
-    audits: 7,
-    console: 8,
-    layers: 9,
-    "drawer-console": 10,
-    "drawer-animations": 11,
-    "drawer-network.config": 12,
-    "drawer-rendering": 13,
-    "drawer-sensors": 14,
-    "drawer-sources.search": 15,
-    security: 16
-};
-
-WebInspector.UserMetrics.prototype = {
-    /**
-     * @param {string} panelName
-     */
-    panelShown: function(panelName)
-    {
-        var code = WebInspector.UserMetrics._PanelCodes[panelName] || 0;
-        var size = Object.keys(WebInspector.UserMetrics._PanelCodes).length + 1;
-        InspectorFrontendHost.recordEnumeratedHistogram("DevTools.PanelShown", code, size);
-    },
-
-    /**
-     * @param {string} drawerId
-     */
-    drawerShown: function(drawerId)
-    {
-        this.panelShown("drawer-" + drawerId);
-    },
-
-    /**
-     * @param {!WebInspector.UserMetrics.Action} action
-     */
-    actionTaken: function(action)
-    {
-        var size = Object.keys(WebInspector.UserMetrics.Action).length + 1;
-        InspectorFrontendHost.recordEnumeratedHistogram("DevTools.ActionTaken", action, size);
-    }
+  elements: 1,
+  resources: 2,
+  network: 3,
+  sources: 4,
+  timeline: 5,
+  profiles: 6,
+  audits: 7,
+  console: 8,
+  layers: 9,
+  'drawer-console': 10,
+  'drawer-animations': 11,
+  'drawer-network.config': 12,
+  'drawer-rendering': 13,
+  'drawer-sensors': 14,
+  'drawer-sources.search': 15,
+  security: 16
 };
 
 /** @type {!WebInspector.UserMetrics} */

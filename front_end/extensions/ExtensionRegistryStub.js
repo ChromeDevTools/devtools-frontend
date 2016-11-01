@@ -27,16 +27,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 if (!window.InspectorExtensionRegistry) {
-    /**
-     * @constructor
-     */
-    WebInspector.InspectorExtensionRegistryStub = function() { };
+  /**
+   * @unrestricted
+   */
+  WebInspector.InspectorExtensionRegistryStub = class {
+    getExtensionsAsync() {
+    }
+  };
 
-    WebInspector.InspectorExtensionRegistryStub.prototype = {
-        getExtensionsAsync: function() { }
-    };
-
-    var InspectorExtensionRegistry = new WebInspector.InspectorExtensionRegistryStub();
+  var InspectorExtensionRegistry = new WebInspector.InspectorExtensionRegistryStub();
 }

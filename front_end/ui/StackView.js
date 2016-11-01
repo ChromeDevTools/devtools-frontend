@@ -25,50 +25,49 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.VBox}
- * @param {boolean} isVertical
+ * @unrestricted
  */
-WebInspector.StackView = function(isVertical)
-{
-    WebInspector.VBox.call(this);
+WebInspector.StackView = class extends WebInspector.VBox {
+  /**
+   * @param {boolean} isVertical
+   */
+  constructor(isVertical) {
+    super();
     this._isVertical = isVertical;
     this._currentSplitWidget = null;
-};
+  }
 
-WebInspector.StackView.prototype = {
-    /**
-     * @param {!WebInspector.Widget} view
-     * @param {string=} sidebarSizeSettingName
-     * @param {number=} defaultSidebarWidth
-     * @param {number=} defaultSidebarHeight
-     * @return {?WebInspector.SplitWidget}
-     */
-    appendView: function(view, sidebarSizeSettingName, defaultSidebarWidth, defaultSidebarHeight)
-    {
-        var splitWidget = new WebInspector.SplitWidget(this._isVertical, true, sidebarSizeSettingName, defaultSidebarWidth, defaultSidebarHeight);
-        splitWidget.setMainWidget(view);
-        splitWidget.hideSidebar();
+  /**
+   * @param {!WebInspector.Widget} view
+   * @param {string=} sidebarSizeSettingName
+   * @param {number=} defaultSidebarWidth
+   * @param {number=} defaultSidebarHeight
+   * @return {?WebInspector.SplitWidget}
+   */
+  appendView(view, sidebarSizeSettingName, defaultSidebarWidth, defaultSidebarHeight) {
+    var splitWidget = new WebInspector.SplitWidget(
+        this._isVertical, true, sidebarSizeSettingName, defaultSidebarWidth, defaultSidebarHeight);
+    splitWidget.setMainWidget(view);
+    splitWidget.hideSidebar();
 
-        if (!this._currentSplitWidget) {
-            splitWidget.show(this.element);
-        } else {
-            this._currentSplitWidget.setSidebarWidget(splitWidget);
-            this._currentSplitWidget.showBoth();
-        }
+    if (!this._currentSplitWidget) {
+      splitWidget.show(this.element);
+    } else {
+      this._currentSplitWidget.setSidebarWidget(splitWidget);
+      this._currentSplitWidget.showBoth();
+    }
 
-        var lastSplitWidget = this._currentSplitWidget;
-        this._currentSplitWidget = splitWidget;
-        return lastSplitWidget;
-    },
+    var lastSplitWidget = this._currentSplitWidget;
+    this._currentSplitWidget = splitWidget;
+    return lastSplitWidget;
+  }
 
-    detachChildWidgets: function()
-    {
-        WebInspector.Widget.prototype.detachChildWidgets.call(this);
-        this._currentSplitWidget = null;
-    },
-
-    __proto__: WebInspector.VBox.prototype
+  /**
+   * @override
+   */
+  detachChildWidgets() {
+    super.detachChildWidgets();
+    this._currentSplitWidget = null;
+  }
 };

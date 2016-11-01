@@ -25,25 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @extends {WebInspector.SDKObject}
  * @implements {WebInspector.ContentProvider}
- * @param {!WebInspector.Target} target
- * @param {?WebInspector.NetworkRequest} request
- * @param {string} url
- * @param {string} documentURL
- * @param {!PageAgent.FrameId} frameId
- * @param {!NetworkAgent.LoaderId} loaderId
- * @param {!WebInspector.ResourceType} type
- * @param {string} mimeType
- * @param {?Date} lastModified
- * @param {?number} contentSize
+ * @unrestricted
  */
-WebInspector.Resource = function(target, request, url, documentURL, frameId, loaderId, type, mimeType, lastModified, contentSize)
-{
-    WebInspector.SDKObject.call(this, target);
+WebInspector.Resource = class extends WebInspector.SDKObject {
+  /**
+   * @param {!WebInspector.Target} target
+   * @param {?WebInspector.NetworkRequest} request
+   * @param {string} url
+   * @param {string} documentURL
+   * @param {!PageAgent.FrameId} frameId
+   * @param {!NetworkAgent.LoaderId} loaderId
+   * @param {!WebInspector.ResourceType} type
+   * @param {string} mimeType
+   * @param {?Date} lastModified
+   * @param {?number} contentSize
+   */
+  constructor(target, request, url, documentURL, frameId, loaderId, type, mimeType, lastModified, contentSize) {
+    super(target);
     this._request = request;
     this.url = url;
     this._documentURL = documentURL;
@@ -59,298 +59,268 @@ WebInspector.Resource = function(target, request, url, documentURL, frameId, loa
     /** @type {boolean} */ this._contentEncoded;
     this._pendingContentCallbacks = [];
     if (this._request && !this._request.finished)
-        this._request.addEventListener(WebInspector.NetworkRequest.Events.FinishedLoading, this._requestFinished, this);
+      this._request.addEventListener(WebInspector.NetworkRequest.Events.FinishedLoading, this._requestFinished, this);
+  }
+
+  /**
+   * @return {?Date}
+   */
+  lastModified() {
+    if (this._lastModified || !this._request)
+      return this._lastModified;
+    var lastModifiedHeader = this._request.responseLastModified();
+    var date = lastModifiedHeader ? new Date(lastModifiedHeader) : null;
+    this._lastModified = date && date.isValid() ? date : null;
+    return this._lastModified;
+  }
+
+  /**
+   * @return {?number}
+   */
+  contentSize() {
+    if (typeof this._contentSize === 'number' || !this._request)
+      return this._contentSize;
+    return this._request.resourceSize;
+  }
+
+  /**
+   * @return {?WebInspector.NetworkRequest}
+   */
+  get request() {
+    return this._request;
+  }
+
+  /**
+   * @return {string}
+   */
+  get url() {
+    return this._url;
+  }
+
+  /**
+   * @param {string} x
+   */
+  set url(x) {
+    this._url = x;
+    this._parsedURL = new WebInspector.ParsedURL(x);
+  }
+
+  get parsedURL() {
+    return this._parsedURL;
+  }
+
+  /**
+   * @return {string}
+   */
+  get documentURL() {
+    return this._documentURL;
+  }
+
+  /**
+   * @return {!PageAgent.FrameId}
+   */
+  get frameId() {
+    return this._frameId;
+  }
+
+  /**
+   * @return {!NetworkAgent.LoaderId}
+   */
+  get loaderId() {
+    return this._loaderId;
+  }
+
+  /**
+   * @return {string}
+   */
+  get displayName() {
+    return this._parsedURL.displayName;
+  }
+
+  /**
+   * @return {!WebInspector.ResourceType}
+   */
+  resourceType() {
+    return this._request ? this._request.resourceType() : this._type;
+  }
+
+  /**
+   * @return {string}
+   */
+  get mimeType() {
+    return this._request ? this._request.mimeType : this._mimeType;
+  }
+
+  /**
+   * @return {?string}
+   */
+  get content() {
+    return this._content;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  get contentEncoded() {
+    return this._contentEncoded;
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  contentURL() {
+    return this._url;
+  }
+
+  /**
+   * @override
+   * @return {!WebInspector.ResourceType}
+   */
+  contentType() {
+    if (this.resourceType() === WebInspector.resourceTypes.Document && this.mimeType.indexOf('javascript') !== -1)
+      return WebInspector.resourceTypes.Script;
+    return this.resourceType();
+  }
+
+  /**
+   * @override
+   * @return {!Promise<?string>}
+   */
+  requestContent() {
+    if (typeof this._content !== 'undefined')
+      return Promise.resolve(this._content);
+
+    var callback;
+    var promise = new Promise(fulfill => callback = fulfill);
+    this._pendingContentCallbacks.push(callback);
+    if (!this._request || this._request.finished)
+      this._innerRequestContent();
+    return promise;
+  }
+
+  /**
+   * @return {string}
+   */
+  canonicalMimeType() {
+    return this.contentType().canonicalMimeType() || this.mimeType;
+  }
+
+  /**
+   * @override
+   * @param {string} query
+   * @param {boolean} caseSensitive
+   * @param {boolean} isRegex
+   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   */
+  searchInContent(query, caseSensitive, isRegex, callback) {
+    /**
+     * @param {?Protocol.Error} error
+     * @param {!Array.<!DebuggerAgent.SearchMatch>} searchMatches
+     */
+    function callbackWrapper(error, searchMatches) {
+      callback(searchMatches || []);
+    }
+
+    if (this.frameId)
+      this.target().pageAgent().searchInResource(
+          this.frameId, this.url, query, caseSensitive, isRegex, callbackWrapper);
+    else
+      callback([]);
+  }
+
+  /**
+   * @param {!Element} image
+   */
+  populateImageSource(image) {
+    /**
+     * @param {?string} content
+     * @this {WebInspector.Resource}
+     */
+    function onResourceContent(content) {
+      var imageSrc = WebInspector.ContentProvider.contentAsDataURL(content, this._mimeType, true);
+      if (imageSrc === null)
+        imageSrc = this._url;
+      image.src = imageSrc;
+    }
+
+    this.requestContent().then(onResourceContent.bind(this));
+  }
+
+  _requestFinished() {
+    this._request.removeEventListener(WebInspector.NetworkRequest.Events.FinishedLoading, this._requestFinished, this);
+    if (this._pendingContentCallbacks.length)
+      this._innerRequestContent();
+  }
+
+  _innerRequestContent() {
+    if (this._contentRequested)
+      return;
+    this._contentRequested = true;
+
+    /**
+     * @param {?Protocol.Error} error
+     * @param {?string} content
+     * @param {boolean} contentEncoded
+     * @this {WebInspector.Resource}
+     */
+    function contentLoaded(error, content, contentEncoded) {
+      if (error || content === null) {
+        replyWithContent.call(this, null, false);
+        return;
+      }
+      replyWithContent.call(this, content, contentEncoded);
+    }
+
+    /**
+     * @param {?string} content
+     * @param {boolean} contentEncoded
+     * @this {WebInspector.Resource}
+     */
+    function replyWithContent(content, contentEncoded) {
+      this._content = content;
+      this._contentEncoded = contentEncoded;
+      var callbacks = this._pendingContentCallbacks.slice();
+      for (var i = 0; i < callbacks.length; ++i)
+        callbacks[i](this._content);
+      this._pendingContentCallbacks.length = 0;
+      delete this._contentRequested;
+    }
+
+    /**
+     * @param {?Protocol.Error} error
+     * @param {string} content
+     * @param {boolean} contentEncoded
+     * @this {WebInspector.Resource}
+     */
+    function resourceContentLoaded(error, content, contentEncoded) {
+      contentLoaded.call(this, error, content, contentEncoded);
+    }
+
+    if (this.request) {
+      this.request.requestContent().then(requestContentLoaded.bind(this));
+      return;
+    }
+
+    /**
+     * @param {?string} content
+     * @this {WebInspector.Resource}
+     */
+    function requestContentLoaded(content) {
+      contentLoaded.call(this, null, content, this.request.contentEncoded);
+    }
+
+    this.target().pageAgent().getResourceContent(this.frameId, this.url, resourceContentLoaded.bind(this));
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasTextContent() {
+    if (this._type.isTextType())
+      return true;
+    if (this._type === WebInspector.resourceTypes.Other)
+      return !!this._content && !this._contentEncoded;
+    return false;
+  }
 };
-
-WebInspector.Resource.prototype = {
-    /**
-     * @return {?Date}
-     */
-    lastModified: function()
-    {
-        if (this._lastModified || !this._request)
-            return this._lastModified;
-        var lastModifiedHeader = this._request.responseLastModified();
-        var date = lastModifiedHeader ? new Date(lastModifiedHeader) : null;
-        this._lastModified = date && date.isValid() ? date : null;
-        return this._lastModified;
-    },
-
-    /**
-     * @return {?number}
-     */
-    contentSize: function()
-    {
-        if (typeof this._contentSize === "number" || !this._request)
-            return this._contentSize;
-        return this._request.resourceSize;
-    },
-
-    /**
-     * @return {?WebInspector.NetworkRequest}
-     */
-    get request()
-    {
-        return this._request;
-    },
-
-    /**
-     * @return {string}
-     */
-    get url()
-    {
-        return this._url;
-    },
-
-    set url(x)
-    {
-        this._url = x;
-        this._parsedURL = new WebInspector.ParsedURL(x);
-    },
-
-    get parsedURL()
-    {
-        return this._parsedURL;
-    },
-
-    /**
-     * @return {string}
-     */
-    get documentURL()
-    {
-        return this._documentURL;
-    },
-
-    /**
-     * @return {!PageAgent.FrameId}
-     */
-    get frameId()
-    {
-        return this._frameId;
-    },
-
-    /**
-     * @return {!NetworkAgent.LoaderId}
-     */
-    get loaderId()
-    {
-        return this._loaderId;
-    },
-
-    /**
-     * @return {string}
-     */
-    get displayName()
-    {
-        return this._parsedURL.displayName;
-    },
-
-    /**
-     * @return {!WebInspector.ResourceType}
-     */
-    resourceType: function()
-    {
-        return this._request ? this._request.resourceType() : this._type;
-    },
-
-    /**
-     * @return {string}
-     */
-    get mimeType()
-    {
-        return this._request ? this._request.mimeType : this._mimeType;
-    },
-
-    /**
-     * @return {?string}
-     */
-    get content()
-    {
-        return this._content;
-    },
-
-    /**
-     * @return {boolean}
-     */
-    get contentEncoded()
-    {
-        return this._contentEncoded;
-    },
-
-    /**
-     * @override
-     * @return {string}
-     */
-    contentURL: function()
-    {
-        return this._url;
-    },
-
-    /**
-     * @override
-     * @return {!WebInspector.ResourceType}
-     */
-    contentType: function()
-    {
-        if (this.resourceType() === WebInspector.resourceTypes.Document && this.mimeType.indexOf("javascript") !== -1)
-            return WebInspector.resourceTypes.Script;
-        return this.resourceType();
-    },
-
-    /**
-     * @override
-     * @return {!Promise<?string>}
-     */
-    requestContent: function()
-    {
-        if (typeof this._content !== "undefined")
-            return Promise.resolve(this._content);
-
-        var callback;
-        var promise = new Promise(fulfill => callback = fulfill);
-        this._pendingContentCallbacks.push(callback);
-        if (!this._request || this._request.finished)
-            this._innerRequestContent();
-        return promise;
-    },
-
-    /**
-     * @return {string}
-     */
-    canonicalMimeType: function()
-    {
-        return this.contentType().canonicalMimeType() || this.mimeType;
-    },
-
-    /**
-     * @override
-     * @param {string} query
-     * @param {boolean} caseSensitive
-     * @param {boolean} isRegex
-     * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
-     */
-    searchInContent: function(query, caseSensitive, isRegex, callback)
-    {
-        /**
-         * @param {?Protocol.Error} error
-         * @param {!Array.<!DebuggerAgent.SearchMatch>} searchMatches
-         */
-        function callbackWrapper(error, searchMatches)
-        {
-            callback(searchMatches || []);
-        }
-
-        if (this.frameId)
-            this.target().pageAgent().searchInResource(this.frameId, this.url, query, caseSensitive, isRegex, callbackWrapper);
-        else
-            callback([]);
-    },
-
-    /**
-     * @param {!Element} image
-     */
-    populateImageSource: function(image)
-    {
-        /**
-         * @param {?string} content
-         * @this {WebInspector.Resource}
-         */
-        function onResourceContent(content)
-        {
-            var imageSrc = WebInspector.ContentProvider.contentAsDataURL(content, this._mimeType, true);
-            if (imageSrc === null)
-                imageSrc = this._url;
-            image.src = imageSrc;
-        }
-
-        this.requestContent().then(onResourceContent.bind(this));
-    },
-
-    _requestFinished: function()
-    {
-        this._request.removeEventListener(WebInspector.NetworkRequest.Events.FinishedLoading, this._requestFinished, this);
-        if (this._pendingContentCallbacks.length)
-            this._innerRequestContent();
-    },
-
-
-    _innerRequestContent: function()
-    {
-        if (this._contentRequested)
-            return;
-        this._contentRequested = true;
-
-        /**
-         * @param {?Protocol.Error} error
-         * @param {?string} content
-         * @param {boolean} contentEncoded
-         * @this {WebInspector.Resource}
-         */
-        function contentLoaded(error, content, contentEncoded)
-        {
-            if (error || content === null) {
-                replyWithContent.call(this, null, false);
-                return;
-            }
-            replyWithContent.call(this, content, contentEncoded);
-        }
-
-        /**
-         * @param {?string} content
-         * @param {boolean} contentEncoded
-         * @this {WebInspector.Resource}
-         */
-        function replyWithContent(content, contentEncoded)
-        {
-            this._content = content;
-            this._contentEncoded = contentEncoded;
-            var callbacks = this._pendingContentCallbacks.slice();
-            for (var i = 0; i < callbacks.length; ++i)
-                callbacks[i](this._content);
-            this._pendingContentCallbacks.length = 0;
-            delete this._contentRequested;
-        }
-
-        /**
-         * @param {?Protocol.Error} error
-         * @param {string} content
-         * @param {boolean} contentEncoded
-         * @this {WebInspector.Resource}
-         */
-        function resourceContentLoaded(error, content, contentEncoded)
-        {
-            contentLoaded.call(this, error, content, contentEncoded);
-        }
-
-        if (this.request) {
-            this.request.requestContent().then(requestContentLoaded.bind(this));
-            return;
-        }
-
-        /**
-         * @param {?string} content
-         * @this {WebInspector.Resource}
-         */
-        function requestContentLoaded(content)
-        {
-            contentLoaded.call(this, null, content, this.request.contentEncoded);
-        }
-
-        this.target().pageAgent().getResourceContent(this.frameId, this.url, resourceContentLoaded.bind(this));
-    },
-
-    /**
-     * @return {boolean}
-     */
-    hasTextContent: function()
-    {
-        if (this._type.isTextType())
-            return true;
-        if (this._type === WebInspector.resourceTypes.Other)
-            return !!this._content && !this._contentEncoded;
-        return false;
-    },
-
-    __proto__: WebInspector.SDKObject.prototype
-};
-

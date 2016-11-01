@@ -1,26 +1,24 @@
 /**
- * @constructor
- * @param {string} extensionOrigin
- * @param {string} id
- * @param {string} categoryName
- * @param {string} categoryTooltip
+ * @unrestricted
  */
-WebInspector.ExtensionTraceProvider = function(extensionOrigin, id, categoryName, categoryTooltip)
-{
+WebInspector.ExtensionTraceProvider = class {
+  /**
+   * @param {string} extensionOrigin
+   * @param {string} id
+   * @param {string} categoryName
+   * @param {string} categoryTooltip
+   */
+  constructor(extensionOrigin, id, categoryName, categoryTooltip) {
     this._extensionOrigin = extensionOrigin;
     this._id = id;
     this._categoryName = categoryName;
     this._categoryTooltip = categoryTooltip;
-};
+  }
+  start() {
+    WebInspector.extensionServer.startTraceRecording(this._id);
+  }
 
-WebInspector.ExtensionTraceProvider.prototype = {
-    start: function()
-    {
-        WebInspector.extensionServer.startTraceRecording(this._id);
-    },
-
-    stop: function()
-    {
-        WebInspector.extensionServer.stopTraceRecording(this._id);
-    }
+  stop() {
+    WebInspector.extensionServer.stopTraceRecording(this._id);
+  }
 };

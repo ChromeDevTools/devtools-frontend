@@ -27,75 +27,69 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
- * @param {string} appName
+ * @unrestricted
  */
-WebInspector.Worker = function(appName)
-{
-    var url = appName + ".js";
-    var remoteBase = Runtime.queryParam("remoteBase");
+WebInspector.Worker = class {
+  /**
+   * @param {string} appName
+   */
+  constructor(appName) {
+    var url = appName + '.js';
+    var remoteBase = Runtime.queryParam('remoteBase');
     if (remoteBase)
-        url += "?remoteBase=" + remoteBase;
+      url += '?remoteBase=' + remoteBase;
 
     /** @type {!Promise<!Worker>} */
     this._workerPromise = new Promise(fulfill => {
-        this._worker = new Worker(url);
-        this._worker.onmessage = onMessage.bind(this);
+      this._worker = new Worker(url);
+      this._worker.onmessage = onMessage.bind(this);
 
-        /**
-         * @param {!Event} event
-         * @this {WebInspector.Worker}
-         */
-        function onMessage(event)
-        {
-            console.assert(event.data === "workerReady");
-            this._worker.onmessage = null;
-            fulfill(this._worker);
-            // No need to hold a reference to worker anymore as it's stored in
-            // the resolved promise.
-            this._worker = null;
-        }
+      /**
+       * @param {!Event} event
+       * @this {WebInspector.Worker}
+       */
+      function onMessage(event) {
+        console.assert(event.data === 'workerReady');
+        this._worker.onmessage = null;
+        fulfill(this._worker);
+        // No need to hold a reference to worker anymore as it's stored in
+        // the resolved promise.
+        this._worker = null;
+      }
     });
-};
+  }
 
-WebInspector.Worker.prototype = {
-    /**
-     * @param {*} message
-     */
-    postMessage: function(message)
-    {
-        this._workerPromise.then(worker => {
-            if (!this._disposed)
-                worker.postMessage(message);
-        });
-    },
+  /**
+   * @param {*} message
+   */
+  postMessage(message) {
+    this._workerPromise.then(worker => {
+      if (!this._disposed)
+        worker.postMessage(message);
+    });
+  }
 
-    dispose: function()
-    {
-        this._disposed = true;
-        this._workerPromise.then(worker => worker.terminate());
-    },
+  dispose() {
+    this._disposed = true;
+    this._workerPromise.then(worker => worker.terminate());
+  }
 
-    terminate: function()
-    {
-        this.dispose();
-    },
+  terminate() {
+    this.dispose();
+  }
 
-    /**
-     * @param {?function(!MessageEvent<*>)} listener
-     */
-    set onmessage(listener)
-    {
-        this._workerPromise.then(worker => worker.onmessage = listener);
-    },
+  /**
+   * @param {?function(!MessageEvent<*>)} listener
+   */
+  set onmessage(listener) {
+    this._workerPromise.then(worker => worker.onmessage = listener);
+  }
 
-    /**
-     * @param {?function(!Event)} listener
-     */
-    set onerror(listener)
-    {
-        this._workerPromise.then(worker => worker.onerror = listener);
-    }
+  /**
+   * @param {?function(!Event)} listener
+   */
+  set onerror(listener) {
+    this._workerPromise.then(worker => worker.onerror = listener);
+  }
 };

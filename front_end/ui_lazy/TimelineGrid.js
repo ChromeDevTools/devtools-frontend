@@ -27,32 +27,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
- * @constructor
+ * @unrestricted
  */
-WebInspector.TimelineGrid = function()
-{
-    this.element = createElement("div");
-    WebInspector.appendStyle(this.element, "ui_lazy/timelineGrid.css");
+WebInspector.TimelineGrid = class {
+  constructor() {
+    this.element = createElement('div');
+    WebInspector.appendStyle(this.element, 'ui_lazy/timelineGrid.css');
 
-    this._dividersElement = this.element.createChild("div", "resources-dividers");
+    this._dividersElement = this.element.createChild('div', 'resources-dividers');
 
-    this._gridHeaderElement = createElement("div");
-    this._gridHeaderElement.classList.add("timeline-grid-header");
-    this._eventDividersElement = this._gridHeaderElement.createChild("div", "resources-event-dividers");
-    this._dividersLabelBarElement = this._gridHeaderElement.createChild("div", "resources-dividers-label-bar");
+    this._gridHeaderElement = createElement('div');
+    this._gridHeaderElement.classList.add('timeline-grid-header');
+    this._eventDividersElement = this._gridHeaderElement.createChild('div', 'resources-event-dividers');
+    this._dividersLabelBarElement = this._gridHeaderElement.createChild('div', 'resources-dividers-label-bar');
     this.element.appendChild(this._gridHeaderElement);
-};
+  }
 
-/**
- * @param {!WebInspector.TimelineGrid.Calculator} calculator
- * @param {number=} freeZoneAtLeft
- * @return {!{offsets: !Array.<number>, precision: number}}
- */
-WebInspector.TimelineGrid.calculateDividerOffsets = function(calculator, freeZoneAtLeft)
-{
-    /** @const */ var minGridSlicePx = 64; // minimal distance between grid lines.
+  /**
+   * @param {!WebInspector.TimelineGrid.Calculator} calculator
+   * @param {number=} freeZoneAtLeft
+   * @return {!{offsets: !Array.<number>, precision: number}}
+   */
+  static calculateDividerOffsets(calculator, freeZoneAtLeft) {
+    /** @const */ var minGridSlicePx = 64;  // minimal distance between grid lines.
 
     var clientWidth = calculator.computePosition(calculator.maximumBoundary());
     var dividersCount = clientWidth / minGridSlicePx;
@@ -67,12 +65,13 @@ WebInspector.TimelineGrid.calculateDividerOffsets = function(calculator, freeZon
     var logGridSliceTime = Math.ceil(Math.log(gridSliceTime) / Math.LN10);
     gridSliceTime = Math.pow(10, logGridSliceTime);
     if (gridSliceTime * pixelsPerTime >= 5 * minGridSlicePx)
-        gridSliceTime = gridSliceTime / 5;
+      gridSliceTime = gridSliceTime / 5;
     if (gridSliceTime * pixelsPerTime >= 2 * minGridSlicePx)
-        gridSliceTime = gridSliceTime / 2;
+      gridSliceTime = gridSliceTime / 2;
 
     var leftBoundaryTime = calculator.minimumBoundary() - calculator.paddingLeft() / pixelsPerTime;
-    var firstDividerTime = Math.ceil((leftBoundaryTime - calculator.zeroTime()) / gridSliceTime) * gridSliceTime + calculator.zeroTime();
+    var firstDividerTime =
+        Math.ceil((leftBoundaryTime - calculator.zeroTime()) / gridSliceTime) * gridSliceTime + calculator.zeroTime();
     var lastDividerTime = calculator.maximumBoundary();
     // Add some extra space past the right boundary as the rightmost divider label text
     // may be partially shown rather than just pop up when a new rightmost divider gets into the view.
@@ -80,27 +79,26 @@ WebInspector.TimelineGrid.calculateDividerOffsets = function(calculator, freeZon
     dividersCount = Math.ceil((lastDividerTime - firstDividerTime) / gridSliceTime);
 
     if (!gridSliceTime)
-        dividersCount = 0;
+      dividersCount = 0;
 
     var offsets = [];
     for (var i = 0; i < dividersCount; ++i) {
-        var time = firstDividerTime + gridSliceTime * i;
-        if (calculator.computePosition(time) < freeZoneAtLeft)
-            continue;
-        offsets.push(time);
+      var time = firstDividerTime + gridSliceTime * i;
+      if (calculator.computePosition(time) < freeZoneAtLeft)
+        continue;
+      offsets.push(time);
     }
 
     return {offsets: offsets, precision: Math.max(0, -Math.floor(Math.log(gridSliceTime * 1.01) / Math.LN10))};
-};
+  }
 
-/**
- * @param {!CanvasRenderingContext2D} context
- * @param {!WebInspector.TimelineGrid.Calculator} calculator
- * @param {number} paddingTop
- * @param {number=} freeZoneAtLeft
- */
-WebInspector.TimelineGrid.drawCanvasGrid = function(context, calculator, paddingTop, freeZoneAtLeft)
-{
+  /**
+   * @param {!CanvasRenderingContext2D} context
+   * @param {!WebInspector.TimelineGrid.Calculator} calculator
+   * @param {number} paddingTop
+   * @param {number=} freeZoneAtLeft
+   */
+  static drawCanvasGrid(context, calculator, paddingTop, freeZoneAtLeft) {
     context.save();
     var ratio = window.devicePixelRatio;
     context.scale(ratio, ratio);
@@ -110,195 +108,183 @@ WebInspector.TimelineGrid.drawCanvasGrid = function(context, calculator, padding
     var dividerOffsets = dividersData.offsets;
     var precision = dividersData.precision;
 
-    context.fillStyle = "rgba(255, 255, 255, 0.5)";
+    context.fillStyle = 'rgba(255, 255, 255, 0.5)';
     context.fillRect(0, 0, width, 15);
 
-    context.fillStyle = "#333";
-    context.strokeStyle = "rgba(0, 0, 0, 0.1)";
-    context.textBaseline = "hanging";
-    context.font = "11px " + WebInspector.fontFamily();
+    context.fillStyle = '#333';
+    context.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+    context.textBaseline = 'hanging';
+    context.font = '11px ' + WebInspector.fontFamily();
     context.lineWidth = 1;
 
     context.translate(0.5, 0.5);
     const paddingRight = 4;
     freeZoneAtLeft = freeZoneAtLeft || 0;
     for (var i = 0; i < dividerOffsets.length; ++i) {
-        var time = dividerOffsets[i];
-        var position = calculator.computePosition(time);
-        var text = calculator.formatValue(time, precision);
-        var textWidth = context.measureText(text).width;
-        var textPosition = position - textWidth - paddingRight;
-        if (freeZoneAtLeft < textPosition)
-            context.fillText(text, textPosition, paddingTop);
-        context.moveTo(position, 0);
-        context.lineTo(position, height);
+      var time = dividerOffsets[i];
+      var position = calculator.computePosition(time);
+      var text = calculator.formatValue(time, precision);
+      var textWidth = context.measureText(text).width;
+      var textPosition = position - textWidth - paddingRight;
+      if (freeZoneAtLeft < textPosition)
+        context.fillText(text, textPosition, paddingTop);
+      context.moveTo(position, 0);
+      context.lineTo(position, height);
     }
     context.stroke();
     context.restore();
-};
+  }
 
-WebInspector.TimelineGrid.prototype = {
-    get dividersElement()
-    {
-        return this._dividersElement;
-    },
+  get dividersElement() {
+    return this._dividersElement;
+  }
 
-    get dividersLabelBarElement()
-    {
-        return this._dividersLabelBarElement;
-    },
+  get dividersLabelBarElement() {
+    return this._dividersLabelBarElement;
+  }
 
-    removeDividers: function()
-    {
-        this._dividersElement.removeChildren();
-        this._dividersLabelBarElement.removeChildren();
-    },
+  removeDividers() {
+    this._dividersElement.removeChildren();
+    this._dividersLabelBarElement.removeChildren();
+  }
 
-    /**
-     * @param {!WebInspector.TimelineGrid.Calculator} calculator
-     * @param {number=} freeZoneAtLeft
-     * @return {boolean}
-     */
-    updateDividers: function(calculator, freeZoneAtLeft)
-    {
-        var dividersData = WebInspector.TimelineGrid.calculateDividerOffsets(calculator, freeZoneAtLeft);
-        var dividerOffsets = dividersData.offsets;
-        var precision = dividersData.precision;
+  /**
+   * @param {!WebInspector.TimelineGrid.Calculator} calculator
+   * @param {number=} freeZoneAtLeft
+   * @return {boolean}
+   */
+  updateDividers(calculator, freeZoneAtLeft) {
+    var dividersData = WebInspector.TimelineGrid.calculateDividerOffsets(calculator, freeZoneAtLeft);
+    var dividerOffsets = dividersData.offsets;
+    var precision = dividersData.precision;
 
-        var dividersElementClientWidth = this._dividersElement.clientWidth;
+    var dividersElementClientWidth = this._dividersElement.clientWidth;
 
-        // Reuse divider elements and labels.
-        var divider = /** @type {?Element} */ (this._dividersElement.firstChild);
-        var dividerLabelBar = /** @type {?Element} */ (this._dividersLabelBarElement.firstChild);
+    // Reuse divider elements and labels.
+    var divider = /** @type {?Element} */ (this._dividersElement.firstChild);
+    var dividerLabelBar = /** @type {?Element} */ (this._dividersLabelBarElement.firstChild);
 
-        for (var i = 0; i < dividerOffsets.length; ++i) {
-            if (!divider) {
-                divider = createElement("div");
-                divider.className = "resources-divider";
-                this._dividersElement.appendChild(divider);
+    for (var i = 0; i < dividerOffsets.length; ++i) {
+      if (!divider) {
+        divider = createElement('div');
+        divider.className = 'resources-divider';
+        this._dividersElement.appendChild(divider);
 
-                dividerLabelBar = createElement("div");
-                dividerLabelBar.className = "resources-divider";
-                var label = createElement("div");
-                label.className = "resources-divider-label";
-                dividerLabelBar._labelElement = label;
-                dividerLabelBar.appendChild(label);
-                this._dividersLabelBarElement.appendChild(dividerLabelBar);
-            }
+        dividerLabelBar = createElement('div');
+        dividerLabelBar.className = 'resources-divider';
+        var label = createElement('div');
+        label.className = 'resources-divider-label';
+        dividerLabelBar._labelElement = label;
+        dividerLabelBar.appendChild(label);
+        this._dividersLabelBarElement.appendChild(dividerLabelBar);
+      }
 
-            var time = dividerOffsets[i];
-            var position = calculator.computePosition(time);
-            dividerLabelBar._labelElement.textContent = calculator.formatValue(time, precision);
+      var time = dividerOffsets[i];
+      var position = calculator.computePosition(time);
+      dividerLabelBar._labelElement.textContent = calculator.formatValue(time, precision);
 
-            var percentLeft = 100 * position / dividersElementClientWidth;
-            divider.style.left = percentLeft + "%";
-            dividerLabelBar.style.left = percentLeft + "%";
+      var percentLeft = 100 * position / dividersElementClientWidth;
+      divider.style.left = percentLeft + '%';
+      dividerLabelBar.style.left = percentLeft + '%';
 
-            divider = /** @type {?Element} */ (divider.nextSibling);
-            dividerLabelBar = /** @type {?Element} */ (dividerLabelBar.nextSibling);
-        }
-
-        // Remove extras.
-        while (divider) {
-            var nextDivider = divider.nextSibling;
-            this._dividersElement.removeChild(divider);
-            divider = nextDivider;
-        }
-        while (dividerLabelBar) {
-            var nextDivider = dividerLabelBar.nextSibling;
-            this._dividersLabelBarElement.removeChild(dividerLabelBar);
-            dividerLabelBar = nextDivider;
-        }
-        return true;
-    },
-
-    /**
-     * @param {!Element} divider
-     */
-    addEventDivider: function(divider)
-    {
-        this._eventDividersElement.appendChild(divider);
-    },
-
-    /**
-     * @param {!Array.<!Element>} dividers
-     */
-    addEventDividers: function(dividers)
-    {
-        this._gridHeaderElement.removeChild(this._eventDividersElement);
-        for (var divider of dividers)
-            this._eventDividersElement.appendChild(divider);
-        this._gridHeaderElement.appendChild(this._eventDividersElement);
-    },
-
-    removeEventDividers: function()
-    {
-        this._eventDividersElement.removeChildren();
-    },
-
-    hideEventDividers: function()
-    {
-        this._eventDividersElement.classList.add("hidden");
-    },
-
-    showEventDividers: function()
-    {
-        this._eventDividersElement.classList.remove("hidden");
-    },
-
-    hideDividers: function()
-    {
-        this._dividersElement.classList.add("hidden");
-    },
-
-    showDividers: function()
-    {
-        this._dividersElement.classList.remove("hidden");
-    },
-
-    /**
-     * @param {number} scrollTop
-     */
-    setScrollTop: function(scrollTop)
-    {
-        this._dividersLabelBarElement.style.top = scrollTop + "px";
-        this._eventDividersElement.style.top = scrollTop + "px";
+      divider = /** @type {?Element} */ (divider.nextSibling);
+      dividerLabelBar = /** @type {?Element} */ (dividerLabelBar.nextSibling);
     }
+
+    // Remove extras.
+    while (divider) {
+      var nextDivider = divider.nextSibling;
+      this._dividersElement.removeChild(divider);
+      divider = nextDivider;
+    }
+    while (dividerLabelBar) {
+      var nextDivider = dividerLabelBar.nextSibling;
+      this._dividersLabelBarElement.removeChild(dividerLabelBar);
+      dividerLabelBar = nextDivider;
+    }
+    return true;
+  }
+
+  /**
+   * @param {!Element} divider
+   */
+  addEventDivider(divider) {
+    this._eventDividersElement.appendChild(divider);
+  }
+
+  /**
+   * @param {!Array.<!Element>} dividers
+   */
+  addEventDividers(dividers) {
+    this._gridHeaderElement.removeChild(this._eventDividersElement);
+    for (var divider of dividers)
+      this._eventDividersElement.appendChild(divider);
+    this._gridHeaderElement.appendChild(this._eventDividersElement);
+  }
+
+  removeEventDividers() {
+    this._eventDividersElement.removeChildren();
+  }
+
+  hideEventDividers() {
+    this._eventDividersElement.classList.add('hidden');
+  }
+
+  showEventDividers() {
+    this._eventDividersElement.classList.remove('hidden');
+  }
+
+  hideDividers() {
+    this._dividersElement.classList.add('hidden');
+  }
+
+  showDividers() {
+    this._dividersElement.classList.remove('hidden');
+  }
+
+  /**
+   * @param {number} scrollTop
+   */
+  setScrollTop(scrollTop) {
+    this._dividersLabelBarElement.style.top = scrollTop + 'px';
+    this._eventDividersElement.style.top = scrollTop + 'px';
+  }
 };
+
 
 /**
  * @interface
  */
-WebInspector.TimelineGrid.Calculator = function() { };
+WebInspector.TimelineGrid.Calculator = function() {};
 
 WebInspector.TimelineGrid.Calculator.prototype = {
-    /**
-     * @return {number}
-     */
-    paddingLeft: function() { },
+  /**
+   * @return {number}
+   */
+  paddingLeft: function() {},
 
-    /**
-     * @param {number} time
-     * @return {number}
-     */
-    computePosition: function(time) { },
+  /**
+   * @param {number} time
+   * @return {number}
+   */
+  computePosition: function(time) {},
 
-    /**
-     * @param {number} time
-     * @param {number=} precision
-     * @return {string}
-     */
-    formatValue: function(time, precision) { },
+  /**
+   * @param {number} time
+   * @param {number=} precision
+   * @return {string}
+   */
+  formatValue: function(time, precision) {},
 
-    /** @return {number} */
-    minimumBoundary: function() { },
+  /** @return {number} */
+  minimumBoundary: function() {},
 
-    /** @return {number} */
-    zeroTime: function() { },
+  /** @return {number} */
+  zeroTime: function() {},
 
-    /** @return {number} */
-    maximumBoundary: function() { },
+  /** @return {number} */
+  maximumBoundary: function() {},
 
-    /** @return {number} */
-    boundarySpan: function() { }
+  /** @return {number} */
+  boundarySpan: function() {}
 };

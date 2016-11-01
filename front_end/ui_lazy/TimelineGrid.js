@@ -52,7 +52,6 @@ WebInspector.TimelineGrid = function()
  */
 WebInspector.TimelineGrid.calculateDividerOffsets = function(calculator, freeZoneAtLeft)
 {
-    // TODO(allada) Remove this code out when timeline canvas experiment is over.
     /** @const */ var minGridSlicePx = 64; // minimal distance between grid lines.
 
     var clientWidth = calculator.computePosition(calculator.maximumBoundary());
@@ -95,17 +94,18 @@ WebInspector.TimelineGrid.calculateDividerOffsets = function(calculator, freeZon
 };
 
 /**
- * @param {!HTMLCanvasElement} canvas
+ * @param {!CanvasRenderingContext2D} context
  * @param {!WebInspector.TimelineGrid.Calculator} calculator
+ * @param {number} paddingTop
+ * @param {number=} freeZoneAtLeft
  */
-WebInspector.TimelineGrid.drawCanvasGrid = function(canvas, calculator)
+WebInspector.TimelineGrid.drawCanvasGrid = function(context, calculator, paddingTop, freeZoneAtLeft)
 {
-    var context = canvas.getContext("2d");
     context.save();
     var ratio = window.devicePixelRatio;
     context.scale(ratio, ratio);
-    var width = canvas.width / window.devicePixelRatio;
-    var height = canvas.height / window.devicePixelRatio;
+    var width = context.canvas.width / window.devicePixelRatio;
+    var height = context.canvas.height / window.devicePixelRatio;
     var dividersData = WebInspector.TimelineGrid.calculateDividerOffsets(calculator);
     var dividerOffsets = dividersData.offsets;
     var precision = dividersData.precision;
@@ -121,14 +121,15 @@ WebInspector.TimelineGrid.drawCanvasGrid = function(canvas, calculator)
 
     context.translate(0.5, 0.5);
     const paddingRight = 4;
-    const paddingTop = 3;
+    freeZoneAtLeft = freeZoneAtLeft || 0;
     for (var i = 0; i < dividerOffsets.length; ++i) {
         var time = dividerOffsets[i];
         var position = calculator.computePosition(time);
         var text = calculator.formatValue(time, precision);
         var textWidth = context.measureText(text).width;
         var textPosition = position - textWidth - paddingRight;
-        context.fillText(text, textPosition, paddingTop);
+        if (freeZoneAtLeft < textPosition)
+            context.fillText(text, textPosition, paddingTop);
         context.moveTo(position, 0);
         context.lineTo(position, height);
     }

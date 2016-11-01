@@ -1042,7 +1042,7 @@ WebInspector.FlameChart.prototype = {
 
         context.restore();
 
-        WebInspector.TimelineGrid.drawCanvasGrid(this._canvas, this._calculator);
+        WebInspector.TimelineGrid.drawCanvasGrid(context, this._calculator, 3);
         this._drawMarkers();
         this._drawGroupHeaders(width, height);
 

@@ -238,6 +238,7 @@ WebInspector.NetworkTimelineColumn.prototype = {
     {
         this._offsetWidth = this.contentElement.offsetWidth - this._rightPadding;
         this._offsetHeight = this.contentElement.offsetHeight;
+        this._calculator.setDisplayWindow(this._offsetWidth);
         this._canvasPosition = this._canvas.getBoundingClientRect();
     },
 
@@ -293,7 +294,6 @@ WebInspector.NetworkTimelineColumn.prototype = {
         var context = this._canvas.getContext("2d");
         context.save();
         context.scale(window.devicePixelRatio, window.devicePixelRatio);
-        context.save();
         context.translate(0, this._headerHeight);
         context.rect(0, 0, this._offsetWidth, this._offsetHeight);
         context.clip();
@@ -310,9 +310,9 @@ WebInspector.NetworkTimelineColumn.prototype = {
         }
         this._drawEventDividers(context);
         context.restore();
-        // This is outside of the save/restore above because it must draw in header.
-        this._drawDividers(context);
-        context.restore();
+
+        const freeZoneAtLeft = 75;
+        WebInspector.TimelineGrid.drawCanvasGrid(context, this._calculator, this._fontSize, freeZoneAtLeft);
     },
 
     /**
@@ -331,53 +331,6 @@ WebInspector.NetworkTimelineColumn.prototype = {
                 context.lineTo(x, this._offsetHeight);
             }
             context.stroke();
-        }
-        context.restore();
-    },
-
-    /**
-     * @param {!CanvasRenderingContext2D} context
-     */
-    _drawDividers: function(context)
-    {
-        context.save();
-        /** @const */
-        var minGridSlicePx = 64; // minimal distance between grid lines.
-
-        var drawableWidth = this._offsetWidth - this._leftPadding;
-        var timelineDuration = this._timelineDuration();
-        var dividersCount = drawableWidth / minGridSlicePx;
-        var gridSliceTime = timelineDuration / dividersCount;
-        var pixelsPerTime = drawableWidth / timelineDuration;
-
-        // Align gridSliceTime to a nearest round value.
-        // We allow spans that fit into the formula: span = (1|2|5)x10^n,
-        // e.g.: ...  .1  .2  .5  1  2  5  10  20  50  ...
-        // After a span has been chosen make grid lines at multiples of the span.
-
-        var logGridSliceTime = Math.ceil(Math.log(gridSliceTime) / Math.LN10);
-        gridSliceTime = Math.pow(10, logGridSliceTime);
-        if (gridSliceTime * pixelsPerTime >= 5 * minGridSlicePx)
-            gridSliceTime = gridSliceTime / 5;
-        if (gridSliceTime * pixelsPerTime >= 2 * minGridSlicePx)
-            gridSliceTime = gridSliceTime / 2;
-
-        context.lineWidth = 1;
-        context.strokeStyle = "rgba(0, 0, 0, .1)";
-        context.font = this._fontSize + "px sans-serif";
-        context.fillStyle = "#444";
-        gridSliceTime = gridSliceTime;
-        for (var position = gridSliceTime * pixelsPerTime; position < drawableWidth; position += gridSliceTime * pixelsPerTime) {
-            // Added .5 because canvas drawing points are between pixels.
-            var drawPosition = Math.floor(position) + this._leftPadding + .5;
-            context.beginPath();
-            context.moveTo(drawPosition, 0);
-            context.lineTo(drawPosition, this._offsetHeight);
-            context.stroke();
-            if (position <= gridSliceTime * pixelsPerTime)
-                continue;
-            var textData = Number.secondsToString(position / pixelsPerTime);
-            context.fillText(textData, drawPosition - context.measureText(textData).width - 2, Math.floor(this._headerHeight - this._fontSize / 2));
         }
         context.restore();
     },

@@ -65,8 +65,8 @@ def js_lint(files_list=None):
         files_list = [devtools_frontend_path]
     files_list = [file_name for file_name in files_list if not file_name.endswith(".eslintrc.js")]
 
-    eslintconfig_path = path.join(devtools_path, "front_end/.eslintrc.js")
-    eslintignore_path = path.join(devtools_path, "front_end/.eslintignore")
+    eslintconfig_path = path.join(devtools_path, ".eslintrc.js")
+    eslintignore_path = path.join(devtools_path, ".eslintignore")
     (node_path, _) = install_node_deps.resolve_node_paths()
     exec_command = [
         node_path,

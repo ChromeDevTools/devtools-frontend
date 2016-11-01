@@ -22,7 +22,6 @@ module.exports = {
 
 
         // syntax preferences
-        // "indent": [2, 2, { "SwitchCase": 1, "CallExpression": {"arguments": 2}, "MemberExpression": 2 }],
         "quotes": [2, "single", {
             "avoidEscape": true,
             "allowTemplateLiterals": true
@@ -53,7 +52,6 @@ module.exports = {
         "no-shadow-restricted-names": 2,
 
         // es2015 features
-        // "no-useless-constructor": 2,
         "require-yield": 2,
         "template-curly-spacing": [2, "never"],
 
@@ -88,6 +86,8 @@ module.exports = {
         /**
          * Disabled, aspirational rules
          */
+
+        "indent": [0, 2, { "SwitchCase": 1, "CallExpression": {"arguments": 2}, "MemberExpression": 2 }],
 
         // brace-style is disabled, as eslint cannot enforce 1tbs as default, but allman for functions
         "brace-style": [0, "allman", { "allowSingleLine": true }],

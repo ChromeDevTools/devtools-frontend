@@ -189,7 +189,7 @@ WebInspector.OverviewGrid.Window = class extends WebInspector.Object {
     if (!this._enabled)
       return false;
     this._resizerParentOffsetLeft = event.pageX - event.offsetX - event.target.offsetLeft;
-    event.preventDefault();
+    event.stopPropagation();
     return true;
   }
 

@@ -452,8 +452,8 @@ WebInspector.NetworkLogViewColumns.prototype = {
         this._dataGrid.markColumnAsSortedBy(WebInspector.NetworkLogViewColumns._initialSortColumn, WebInspector.DataGrid.Order.Ascending);
 
         if (Runtime.experiments.isEnabled("canvasNetworkTimeline")) {
-            this._splitWidget = new WebInspector.SplitWidget(true, false, "networkPanelSplitViewTimeline");
-            this._splitWidget.setSidebarWidget(this._dataGrid.asWidget());
+            this._splitWidget = new WebInspector.SplitWidget(true, true, "networkPanelSplitViewTimeline", 200);
+            this._splitWidget.setMainWidget(this._dataGrid.asWidget());
         }
     },
 
@@ -482,7 +482,7 @@ WebInspector.NetworkLogViewColumns.prototype = {
         this._createTimelineHeader();
         this._timelineColumn.contentElement.classList.add("network-timeline-view");
 
-        this._splitWidget.setMainWidget(this._timelineColumn);
+        this._splitWidget.setSidebarWidget(this._timelineColumn);
 
         this.switchViewMode(false);
 

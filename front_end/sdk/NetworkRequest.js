@@ -129,6 +129,9 @@ WebInspector.NetworkRequest.WebSocketFrame;
 /** @typedef {!{time: number, eventName: string, eventId: string, data: string}} */
 WebInspector.NetworkRequest.EventSourceMessage;
 
+/** @typedef {!{initiators: !Set<!WebInspector.NetworkRequest>, initiated: !Set<!WebInspector.NetworkRequest>}} */
+WebInspector.NetworkRequest.InitiatorGraph;
+
 WebInspector.NetworkRequest.prototype = {
     /**
      * @param {!WebInspector.NetworkRequest} other
@@ -1173,19 +1176,34 @@ WebInspector.NetworkRequest.prototype = {
     },
 
     /**
+     * @return {!WebInspector.NetworkRequest.InitiatorGraph}
+     */
+    initiatorGraph: function()
+    {
+        var initiated = new Set();
+        var requests = this._networkLog.requests();
+        for (var request of requests) {
+            var localInitiators = request._initiatorChain();
+            if (localInitiators.has(this))
+                initiated.add(request);
+        }
+        return {initiators: this._initiatorChain(), initiated: initiated};
+    },
+
+    /**
      * @return {!Set<!WebInspector.NetworkRequest>}
      */
-    initiatorChain: function()
+    _initiatorChain: function()
     {
-        if (this._initiatorChain)
-            return this._initiatorChain;
-        this._initiatorChain = new Set();
+        if (this._initiatorChainCache)
+            return this._initiatorChainCache;
+        this._initiatorChainCache = new Set();
         var request = this;
         while (request) {
-            this._initiatorChain.add(request);
+            this._initiatorChainCache.add(request);
             request = request.initiatorRequest();
         }
-        return this._initiatorChain;
+        return this._initiatorChainCache;
     },
 
     /**

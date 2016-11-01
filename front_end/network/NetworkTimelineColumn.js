@@ -39,6 +39,8 @@ WebInspector.NetworkTimelineColumn = function(rowHeight, calculator)
 
     /** @type {?WebInspector.NetworkRequest} */
     this._hoveredRequest = null;
+    /** @type {?WebInspector.NetworkRequest.InitiatorGraph} */
+    this._initiatorGraph = null;
 
     /** @type {?WebInspector.NetworkRequest} */
     this._navigationRequest = null;
@@ -50,6 +52,8 @@ WebInspector.NetworkTimelineColumn = function(rowHeight, calculator)
     this._rowNavigationRequestColor = WebInspector.themeSupport.patchColor("#def", colorUsage.Background);
     this._rowStripeColor = WebInspector.themeSupport.patchColor("#f5f5f5", colorUsage.Background);
     this._rowHoverColor = WebInspector.themeSupport.patchColor("#ebf2fc", /** @type {!WebInspector.ThemeSupport.ColorUsage} */ (colorUsage.Background | colorUsage.Selection));
+    this._parentInitiatorColor = WebInspector.themeSupport.patchColor("hsla(120, 68%, 54%, 0.2)", colorUsage.Background);
+    this._initiatedColor = WebInspector.themeSupport.patchColor("hsla(0, 68%, 54%, 0.2)", colorUsage.Background);
 
     /** @type {!Map<!WebInspector.ResourceType, string>} */
     this._borderColorsForResourceTypeCache = new Map();
@@ -133,10 +137,12 @@ WebInspector.NetworkTimelineColumn.prototype = {
 
     /**
      * @param {?WebInspector.NetworkRequest} request
+     * @param {boolean} highlightInitiatorChain
      */
-    setHoveredRequest: function(request)
+    setHoveredRequest: function(request, highlightInitiatorChain)
     {
         this._hoveredRequest = request;
+        this._initiatorGraph = (highlightInitiatorChain && request) ? request.initiatorGraph() : null;
         this.update();
     },
 
@@ -555,20 +561,39 @@ WebInspector.NetworkTimelineColumn.prototype = {
      */
     _decorateRow: function(context, request, rowNumber, y)
     {
-        if (rowNumber % 2 === 1 && this._hoveredRequest !== request && this._navigationRequest !== request)
+        if (rowNumber % 2 === 1 && this._hoveredRequest !== request && this._navigationRequest !== request && !this._initiatorGraph)
+            return;
+
+        var color = getRowColor.call(this);
+        if (color === "transparent")
             return;
         context.save();
         context.beginPath();
-        var color = this._rowStripeColor;
-        if (this._hoveredRequest === request)
-            color = this._rowHoverColor;
-        else if (this._navigationRequest === request)
-            color = this._rowNavigationRequestColor;
-
         context.fillStyle = color;
         context.rect(0, y, this._offsetWidth, this._rowHeight);
         context.fill();
         context.restore();
+
+        /**
+         * @return {string}
+         * @this {WebInspector.NetworkTimelineColumn}
+         */
+        function getRowColor()
+        {
+            if (this._hoveredRequest === request)
+                return this._rowHoverColor;
+            if (this._initiatorGraph) {
+                if (this._initiatorGraph.initiators.has(request))
+                    return this._parentInitiatorColor;
+                if (this._initiatorGraph.initiated.has(request))
+                    return this._initiatedColor;
+            }
+            if (this._navigationRequest === request)
+                return this._rowNavigationRequestColor;
+            if (rowNumber % 2 === 1)
+                return "transparent";
+            return this._rowStripeColor;
+        }
     },
 
     __proto__: WebInspector.VBox.prototype

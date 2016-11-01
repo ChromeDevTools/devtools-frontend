@@ -20,9 +20,10 @@ module.exports = {
          * Enforced rules
          */
 
+
         // syntax preferences
-        "indent": [2, 4],
-        "quotes": [2, "double", {
+        // "indent": [2, 2, { "SwitchCase": 1, "CallExpression": {"arguments": 2}, "MemberExpression": 2 }],
+        "quotes": [2, "single", {
             "avoidEscape": true,
             "allowTemplateLiterals": true
         }],
@@ -52,7 +53,7 @@ module.exports = {
         "no-shadow-restricted-names": 2,
 
         // es2015 features
-        "no-useless-constructor": 2,
+        // "no-useless-constructor": 2,
         "require-yield": 2,
         "template-curly-spacing": [2, "never"],
 

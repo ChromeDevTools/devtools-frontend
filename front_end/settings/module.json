@@ -80,7 +80,6 @@
             "id": "blackbox",
             "title": "Blackboxing",
             "order": "3",
-            "experiment": "*",
             "className": "WebInspector.FrameworkBlackboxSettingsTab"
         },
         {

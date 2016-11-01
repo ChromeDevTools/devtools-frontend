@@ -384,5 +384,3 @@ WebInspector.CompilerScriptMapping = class {
 };
 
 WebInspector.CompilerScriptMapping._originSymbol = Symbol('origin');
-
-

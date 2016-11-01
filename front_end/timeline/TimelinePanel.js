@@ -2003,5 +2003,3 @@ WebInspector.TimelinePanel.CustomCPUThrottlingRateDialog = class extends WebInsp
     }
   }
 };
-
-

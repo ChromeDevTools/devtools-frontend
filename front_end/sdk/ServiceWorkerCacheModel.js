@@ -324,5 +324,3 @@ WebInspector.ServiceWorkerCacheModel.Cache = class {
     return this.securityOrigin + this.cacheName;
   }
 };
-
-

@@ -357,5 +357,3 @@ WebInspector.RequestTimingView.ConnectionSetupRangeNames = new Set([
 
 /** @typedef {{name: !WebInspector.RequestTimeRangeNames, start: number, end: number}} */
 WebInspector.RequestTimeRange;
-
-

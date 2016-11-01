@@ -1422,5 +1422,3 @@ WebInspector.RemoteFunction = class {
     return this._object;
   }
 };
-
-

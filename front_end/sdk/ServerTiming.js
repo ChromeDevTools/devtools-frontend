@@ -56,5 +56,3 @@ WebInspector.ServerTiming = class {
     return serverTimings;
   }
 };
-
-

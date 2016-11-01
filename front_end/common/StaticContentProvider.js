@@ -70,5 +70,3 @@ WebInspector.StaticContentProvider = class {
     this._lazyContent().then(performSearch);
   }
 };
-
-

@@ -288,5 +288,3 @@ WebInspector.CSSShadowSwatch = class extends HTMLSpanElement {
     this._contentElement = this.createChild('span');
   }
 };
-
-

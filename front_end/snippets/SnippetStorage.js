@@ -198,5 +198,3 @@ WebInspector.Snippet = class extends WebInspector.Object {
     return serializedSnippet;
   }
 };
-
-

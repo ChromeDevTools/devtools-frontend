@@ -234,5 +234,3 @@ WebInspector.CSSMedia.Source = {
   MEDIA_RULE: 'mediaRule',
   IMPORT_RULE: 'importRule'
 };
-
-

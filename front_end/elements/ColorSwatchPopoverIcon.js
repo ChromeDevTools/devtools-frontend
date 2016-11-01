@@ -305,5 +305,3 @@ WebInspector.ShadowSwatchPopoverHelper = class {
 
 WebInspector.ShadowSwatchPopoverHelper._treeElementSymbol =
     Symbol('WebInspector.ShadowSwatchPopoverHelper._treeElementSymbol');
-
-

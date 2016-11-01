@@ -2163,5 +2163,3 @@ WebInspector.DefaultDOMNodeHighlighter = class {
         WebInspector.Color.PageHighlight.ContentOutline.toProtocolRGBA());
   }
 };
-
-

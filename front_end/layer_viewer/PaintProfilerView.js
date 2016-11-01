@@ -562,5 +562,3 @@ WebInspector.PaintProfilerCategory = class {
     this.color = color;
   }
 };
-
-

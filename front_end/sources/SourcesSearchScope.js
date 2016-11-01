@@ -299,5 +299,3 @@ WebInspector.SourcesSearchScope = class {
     return new WebInspector.FileBasedSearchResultsPane(searchConfig);
   }
 };
-
-

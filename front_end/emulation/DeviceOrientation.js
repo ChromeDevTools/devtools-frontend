@@ -73,5 +73,3 @@ WebInspector.DeviceOrientation = class {
       target.deviceOrientationAgent().clearDeviceOrientationOverride();
   }
 };
-
-

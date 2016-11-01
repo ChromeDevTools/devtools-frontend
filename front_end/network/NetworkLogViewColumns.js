@@ -1076,5 +1076,3 @@ WebInspector.NetworkLogViewColumns.TimelineSortIds = {
   Duration: 'duration',
   Latency: 'latency'
 };
-
-

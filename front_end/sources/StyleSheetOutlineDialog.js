@@ -113,5 +113,3 @@ WebInspector.StyleSheetOutlineDialog = class extends WebInspector.FilteredListWi
     this._cssParser.dispose();
   }
 };
-
-

@@ -126,5 +126,3 @@ WebInspector.BezierUI = class {
 };
 
 WebInspector.BezierUI.Height = 26;
-
-

@@ -366,5 +366,3 @@ WebInspector.TimelineAggregator.GroupBy = {
 
 WebInspector.TimelineAggregator._extensionInternalPrefix = 'extensions::';
 WebInspector.TimelineAggregator._groupNodeFlag = Symbol('groupNode');
-
-

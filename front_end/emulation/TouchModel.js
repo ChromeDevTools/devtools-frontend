@@ -137,5 +137,3 @@ WebInspector.MultitargetTouchModel._symbol = Symbol('MultitargetTouchModel.symbo
 
 /** @type {?WebInspector.MultitargetTouchModel} */
 WebInspector.MultitargetTouchModel._instance = null;
-
-

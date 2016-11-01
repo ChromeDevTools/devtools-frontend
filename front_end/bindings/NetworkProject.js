@@ -394,5 +394,3 @@ WebInspector.NetworkProject._scriptSymbol = Symbol('script');
 WebInspector.NetworkProject._styleSheetSymbol = Symbol('styleSheet');
 WebInspector.NetworkProject._targetSymbol = Symbol('target');
 WebInspector.NetworkProject._frameSymbol = Symbol('frame');
-
-

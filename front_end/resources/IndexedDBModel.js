@@ -539,5 +539,3 @@ WebInspector.IndexedDBModel.Index = class {
         WebInspector.IndexedDBModel.keyPathStringFromIDBKeyPath(/** @type {string}*/ (this.keyPath)));
   }
 };
-
-

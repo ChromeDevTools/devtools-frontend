@@ -339,5 +339,3 @@ WebInspector.Script.Events = {
 };
 
 WebInspector.Script.sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
-
-

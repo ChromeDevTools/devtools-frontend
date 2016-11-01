@@ -567,5 +567,3 @@ WebInspector.LayerTreeDispatcher = class {
     this._layerTreeModel._layerPainted(layerId, clipRect);
   }
 };
-
-

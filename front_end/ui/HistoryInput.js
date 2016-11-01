@@ -65,5 +65,3 @@ WebInspector.HistoryInput = class extends HTMLInputElement {
     this._history.push('');
   }
 };
-
-

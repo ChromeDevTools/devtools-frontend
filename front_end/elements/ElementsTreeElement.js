@@ -1576,5 +1576,3 @@ WebInspector.ElementsTreeElement.ForbiddenClosingTagElements = new Set([
 
 // These tags we do not allow editing their tag name.
 WebInspector.ElementsTreeElement.EditTagBlacklist = new Set(['html', 'head', 'body']);
-
-

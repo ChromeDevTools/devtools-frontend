@@ -126,5 +126,3 @@ WebInspector.ConsolePanel.ConsoleRevealer = class {
     return Promise.resolve();
   }
 };
-
-

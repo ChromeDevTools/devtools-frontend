@@ -69,5 +69,3 @@ WebInspector.ResourceSourceFrame = class extends WebInspector.SourceFrame {
     return Promise.resolve();
   }
 };
-
-

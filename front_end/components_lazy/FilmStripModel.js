@@ -145,5 +145,3 @@ WebInspector.FilmStripModel.Frame = class {
     return /** @type {!Promise<?string>} */ (this._snapshot.objectPromise());
   }
 };
-
-

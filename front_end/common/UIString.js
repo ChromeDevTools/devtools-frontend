@@ -107,5 +107,3 @@ WebInspector.UIStringFormat = class {
         .formattedResult;
   }
 };
-
-

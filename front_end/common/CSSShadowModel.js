@@ -321,5 +321,3 @@ WebInspector.CSSLength.Regex = (function() {
   var zero = '[+-]?(?:0*[.])?0+(?:[eE][+-]?[0-9]+)?';
   return new RegExp(number + unit + '|' + zero, 'gi');
 })();
-
-

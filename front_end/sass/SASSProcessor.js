@@ -539,5 +539,3 @@ WebInspector.SASSProcessor.InsertPropertiesOperation = class extends WebInspecto
         newMap, sassRule, afterSASSProperty, this._nameTexts, this._valueTexts, this._disabledStates);
   }
 };
-
-

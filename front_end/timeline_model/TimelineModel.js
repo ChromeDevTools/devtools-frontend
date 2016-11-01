@@ -1816,5 +1816,3 @@ WebInspector.TimelineAsyncEventTracker = class {
       event.initiator = initiatorMap.get(id) || null;
   }
 };
-
-

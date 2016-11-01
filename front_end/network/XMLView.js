@@ -373,5 +373,3 @@ WebInspector.XMLView.Node = class extends TreeElement {
     this.appendChild(new WebInspector.XMLView.Node(this._node, true, this._xmlView));
   }
 };
-
-

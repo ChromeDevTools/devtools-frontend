@@ -130,7 +130,7 @@ WebInspector.Layer.prototype = {
   snapshots: function() {}
 };
 
-                               WebInspector.Layer.ScrollRectType = {
+WebInspector.Layer.ScrollRectType = {
   NonFastScrollable: 'NonFastScrollable',
   TouchEventHandler: 'TouchEventHandler',
   WheelEventHandler: 'WheelEventHandler',

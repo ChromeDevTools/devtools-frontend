@@ -1102,7 +1102,7 @@
             WebInspector.RuntimeModel.prototype, '_executionContextCreated', checkForExecutionContexts.bind(this));
     }
   };
-  
+
 
   window.uiTests = new TestSuite(window.domAutomationController);
 })(window);

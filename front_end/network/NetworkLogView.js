@@ -1720,5 +1720,3 @@ WebInspector.NetworkLogView._searchKeys =
 
 /** @typedef {function(!WebInspector.NetworkRequest): boolean} */
 WebInspector.NetworkLogView.Filter;
-
-

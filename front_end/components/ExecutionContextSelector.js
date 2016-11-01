@@ -258,5 +258,3 @@ WebInspector.ExecutionContextSelector = class {
     this._ignoreContextChanged = false;
   }
 };
-
-

@@ -38,5 +38,3 @@ WebInspector.DataSaverInfobar = class extends WebInspector.Infobar {
 };
 
 WebInspector.DataSaverInfobar._infobars = [];
-
-

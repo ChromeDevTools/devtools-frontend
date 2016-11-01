@@ -739,5 +739,3 @@ WebInspector.AnimationTimeline.StepTimingFunction = class {
     return null;
   }
 };
-
-

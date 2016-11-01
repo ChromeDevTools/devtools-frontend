@@ -472,5 +472,3 @@ WebInspector.MediaQueryInspector.MediaQueryUIModel = class {
     return this._active;
   }
 };
-
-

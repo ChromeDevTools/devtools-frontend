@@ -351,5 +351,3 @@ WebInspector.HARLog = class {
     return WebInspector.HAREntry._toMilliseconds(time - startTime);
   }
 };
-
-

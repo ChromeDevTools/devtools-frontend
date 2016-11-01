@@ -82,5 +82,3 @@ WebInspector.SecurityOriginManager.Events = {
   SecurityOriginRemoved: Symbol('SecurityOriginRemoved'),
   MainSecurityOriginChanged: Symbol('MainSecurityOriginChanged')
 };
-
-

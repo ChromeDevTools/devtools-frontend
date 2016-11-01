@@ -59,5 +59,3 @@ WebInspector.AddSourceMapURLDialog = class extends WebInspector.HBox {
     }
   }
 };
-
-

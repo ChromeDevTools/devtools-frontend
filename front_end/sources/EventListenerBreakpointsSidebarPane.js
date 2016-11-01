@@ -370,5 +370,3 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
 WebInspector.EventListenerBreakpointsSidebarPane.categoryListener = 'listener:';
 WebInspector.EventListenerBreakpointsSidebarPane.categoryInstrumentation = 'instrumentation:';
 WebInspector.EventListenerBreakpointsSidebarPane.eventTargetAny = '*';
-
-

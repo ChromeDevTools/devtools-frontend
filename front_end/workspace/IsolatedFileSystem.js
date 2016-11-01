@@ -624,5 +624,3 @@ WebInspector.IsolatedFileSystem = class {
 
 WebInspector.IsolatedFileSystem.ImageExtensions =
     new Set(['jpeg', 'jpg', 'svg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp']);
-
-

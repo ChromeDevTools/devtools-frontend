@@ -806,5 +806,3 @@ WebInspector.Color.PageHighlight = {
   Shape: WebInspector.Color.fromRGBA([96, 82, 177, 0.8]),
   ShapeMargin: WebInspector.Color.fromRGBA([96, 82, 127, .6])
 };
-
-

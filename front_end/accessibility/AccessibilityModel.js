@@ -181,5 +181,3 @@ WebInspector.AccessibilityModel = class extends WebInspector.SDKModel {
 };
 
 WebInspector.AccessibilityModel._symbol = Symbol('AccessibilityModel');
-
-

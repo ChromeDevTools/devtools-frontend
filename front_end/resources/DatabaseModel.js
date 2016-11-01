@@ -214,5 +214,3 @@ WebInspector.DatabaseDispatcher = class {
 };
 
 WebInspector.DatabaseModel._symbol = Symbol('DatabaseModel');
-
-

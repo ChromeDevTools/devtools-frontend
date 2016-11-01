@@ -285,5 +285,3 @@ WebInspector.CSSProperty = class {
     return this.setText(text, true, true);
   }
 };
-
-

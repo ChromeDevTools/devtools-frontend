@@ -659,5 +659,3 @@ WebInspector.AXNodeIgnoredReasonTreeElement = class extends WebInspector.AXNodeP
       this.appendRelatedNodeListValueElement(value);
   }
 };
-
-

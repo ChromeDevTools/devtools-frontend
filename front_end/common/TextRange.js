@@ -322,5 +322,3 @@ WebInspector.SourceEdit = class {
     return WebInspector.TextRange.fromEdit(this.oldRange, this.newText);
   }
 };
-
-

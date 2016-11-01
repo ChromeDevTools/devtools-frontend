@@ -1287,5 +1287,3 @@ WebInspector.DebuggerPausedDetails = class extends WebInspector.SDKObject {
     return asyncStackTrace;
   }
 };
-
-

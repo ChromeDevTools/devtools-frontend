@@ -154,5 +154,3 @@ WebInspector.RenderingOptionsView = class extends WebInspector.VBox {
   targetRemoved(target) {
   }
 };
-
-

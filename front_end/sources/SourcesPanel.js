@@ -1348,5 +1348,3 @@ WebInspector.SourcesPanel.WrapperView = class extends WebInspector.VBox {
     this._view.show(this.element);
   }
 };
-
-

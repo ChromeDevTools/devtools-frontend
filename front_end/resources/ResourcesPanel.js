@@ -2068,5 +2068,3 @@ WebInspector.StorageCategoryView = class extends WebInspector.VBox {
     this._emptyWidget.text = text;
   }
 };
-
-

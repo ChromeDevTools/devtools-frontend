@@ -258,5 +258,3 @@ WebInspector.ApplicationCacheDispatcher = class {
     this._applicationCacheModel._networkStateUpdated(isNowOnline);
   }
 };
-
-

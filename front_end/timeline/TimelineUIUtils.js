@@ -2229,5 +2229,3 @@ WebInspector.TimelineDetailsContentHelper = class {
       this.appendElementRow(WebInspector.UIString('Warning'), warning, true);
   }
 };
-
-

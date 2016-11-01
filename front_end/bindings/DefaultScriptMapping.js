@@ -148,5 +148,3 @@ WebInspector.DefaultScriptMapping = class {
 };
 
 WebInspector.DefaultScriptMapping._scriptSymbol = Symbol('symbol');
-
-

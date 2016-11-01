@@ -512,5 +512,3 @@ WebInspector.EmulatedDevicesList.Events = {
 
 /** @type {?WebInspector.EmulatedDevicesList} */
 WebInspector.EmulatedDevicesList._instance;
-
-

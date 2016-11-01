@@ -68,5 +68,3 @@ WebInspector.RequestView = class extends WebInspector.VBox {
     }
   }
 };
-
-

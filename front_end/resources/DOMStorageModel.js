@@ -342,5 +342,3 @@ WebInspector.DOMStorageDispatcher = class {
 };
 
 WebInspector.DOMStorageModel._symbol = Symbol('DomStorage');
-
-

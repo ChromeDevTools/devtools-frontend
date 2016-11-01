@@ -412,5 +412,3 @@ WebInspector.AnimationUI.Colors = {
   'Brown': WebInspector.Color.parse('#795548'),
   'Cyan': WebInspector.Color.parse('#00BCD4')
 };
-
-

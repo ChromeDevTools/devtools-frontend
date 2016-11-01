@@ -317,5 +317,3 @@ WebInspector.TimelineIRModel._mergeThresholdsMs = {
 };
 
 WebInspector.TimelineIRModel._eventIRPhase = Symbol('eventIRPhase');
-
-

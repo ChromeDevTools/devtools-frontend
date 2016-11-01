@@ -132,5 +132,3 @@ WebInspector.AcornTokenizer = class {
     return this._tokenColumnStart;
   }
 };
-
-

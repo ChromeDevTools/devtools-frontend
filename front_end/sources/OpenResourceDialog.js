@@ -129,5 +129,3 @@ WebInspector.SelectUISourceCodeForProjectTypesDialog = class extends WebInspecto
     return true;
   }
 };
-
-

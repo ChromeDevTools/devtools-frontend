@@ -247,5 +247,3 @@ WebInspector.Dialog._previousFocusedElement = null;
 
 /** @type {?WebInspector.Widget} */
 WebInspector.Dialog._modalHostView = null;
-
-

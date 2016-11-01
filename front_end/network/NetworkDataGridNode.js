@@ -791,5 +791,3 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
 };
 
 WebInspector.NetworkDataGridNode._hoveredRowSymbol = Symbol('hoveredRow');
-
-

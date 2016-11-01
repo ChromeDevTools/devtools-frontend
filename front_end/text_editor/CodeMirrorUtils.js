@@ -228,5 +228,3 @@ WebInspector.CodeMirrorCSSLoadView = class extends WebInspector.VBox {
     WebInspector.CodeMirrorUtils.appendThemeStyle(this.element);
   }
 };
-
-

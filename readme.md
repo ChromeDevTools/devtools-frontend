@@ -15,7 +15,7 @@ The frontend is available through a git subtree mirror on [chromium.googlesource
 1. Clone the repo
 2. Go to repo root and run:  `npm start`
     - This launches Chrome Canary and starts the dev server with 1 command
-3. Go to http://localhost:8090
+3. Go to http://localhost:9222#custom=true&experiments=true
 
 > **Power user tips:**
 >

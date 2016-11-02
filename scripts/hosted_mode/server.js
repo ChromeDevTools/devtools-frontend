@@ -22,7 +22,7 @@ function requestHandler(request, response)
 {
     var filePath = parseURL(request.url).pathname;
     if (filePath === "/") {
-        var landingURL = `http://localhost:${remoteDebuggingPort}#http://localhost:${serverPort}/front_end/inspector.html?experiments=true`;
+        var landingURL = `http://localhost:${remoteDebuggingPort}#custom=true&experiments=true`;
         sendResponse(200, `<html>Please go to <a href="${landingURL}">${landingURL}</a></html>`);
         return;
     }

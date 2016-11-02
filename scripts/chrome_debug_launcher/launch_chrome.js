@@ -12,8 +12,9 @@ var serverPort = parseInt(process.env.PORT, 10) || 8090;
 
 var chromeArgs = [
     `--remote-debugging-port=${remoteDebuggingPort}`,
+    `--custom-devtools-frontend=http://localhost:${serverPort}/front_end/`,
     `--no-first-run`,
-    `http://localhost:${remoteDebuggingPort}#http://localhost:${serverPort}/front_end/inspector.html?experiments=true`,
+    `http://localhost:${remoteDebuggingPort}#custom=true&experiments=true`,
     `https://devtools.chrome.com`
 ].concat(process.argv.slice(2));
 

@@ -101,7 +101,7 @@ WebInspector.Database = class {
      * @param {?Protocol.Error} error
      * @param {!Array.<string>=} columnNames
      * @param {!Array.<*>=} values
-     * @param {!DatabaseAgent.Error=} errorObj
+     * @param {!Protocol.Database.Error=} errorObj
      */
     function callback(error, columnNames, values, errorObj) {
       if (error) {
@@ -193,7 +193,7 @@ WebInspector.DatabaseModel.Events = {
 };
 
 /**
- * @implements {DatabaseAgent.Dispatcher}
+ * @implements {Protocol.DatabaseDispatcher}
  * @unrestricted
  */
 WebInspector.DatabaseDispatcher = class {
@@ -206,7 +206,7 @@ WebInspector.DatabaseDispatcher = class {
 
   /**
    * @override
-   * @param {!DatabaseAgent.Database} payload
+   * @param {!Protocol.Database.Database} payload
    */
   addDatabase(payload) {
     this._model._addDatabase(

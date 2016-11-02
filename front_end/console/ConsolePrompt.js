@@ -163,8 +163,8 @@ WebInspector.ConsolePrompt = class extends WebInspector.Widget {
         str, '', false, currentExecutionContext.id, compileCallback.bind(this));
 
     /**
-     * @param {!RuntimeAgent.ScriptId=} scriptId
-     * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.ScriptId=} scriptId
+     * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {WebInspector.ConsolePrompt}
      */
     function compileCallback(scriptId, exceptionDetails) {

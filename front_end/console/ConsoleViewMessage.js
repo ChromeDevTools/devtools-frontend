@@ -357,7 +357,7 @@ WebInspector.ConsoleViewMessage = class {
   }
 
   /**
-   * @param {!RuntimeAgent.StackTrace} stackTrace
+   * @param {!Protocol.Runtime.StackTrace} stackTrace
    * @return {?Element}
    */
   _linkifyStackTraceTopFrame(stackTrace) {
@@ -572,7 +572,7 @@ WebInspector.ConsoleViewMessage = class {
 
   /**
    * @param {?WebInspector.RemoteObject} object
-   * @param {!Array.<!RuntimeAgent.PropertyPreview>} propertyPath
+   * @param {!Array.<!Protocol.Runtime.PropertyPreview>} propertyPath
    * @return {!Element}
    */
   _renderPropertyPreviewOrAccessor(object, propertyPath) {

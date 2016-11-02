@@ -51,13 +51,13 @@ WebInspector.AXNodeSubPane = class extends WebInspector.AccessibilitySubPane {
       this._ignoredInfo.classList.remove('hidden');
       ignoredReasons.element.classList.remove('hidden');
       /**
-       * @param {!AccessibilityAgent.AXProperty} property
+       * @param {!Protocol.Accessibility.AXProperty} property
        */
       function addIgnoredReason(property) {
         ignoredReasons.appendChild(new WebInspector.AXNodeIgnoredReasonTreeElement(
             property, /** @type {!WebInspector.AccessibilityNode} */ (axNode)));
       }
-      var ignoredReasonsArray = /** @type {!Array<!AccessibilityAgent.AXProperty>} */ (axNode.ignoredReasons());
+      var ignoredReasonsArray = /** @type {!Array<!Protocol.Accessibility.AXProperty>} */ (axNode.ignoredReasons());
       for (var reason of ignoredReasonsArray)
         addIgnoredReason(reason);
       if (!ignoredReasons.firstChild())
@@ -73,7 +73,7 @@ WebInspector.AXNodeSubPane = class extends WebInspector.AccessibilitySubPane {
     treeOutline.element.classList.remove('hidden');
 
     /**
-     * @param {!AccessibilityAgent.AXProperty} property
+     * @param {!Protocol.Accessibility.AXProperty} property
      */
     function addProperty(property) {
       treeOutline.appendChild(new WebInspector.AXNodePropertyTreePropertyElement(
@@ -83,18 +83,18 @@ WebInspector.AXNodeSubPane = class extends WebInspector.AccessibilitySubPane {
     for (var property of axNode.coreProperties())
       addProperty(property);
 
-    var roleProperty = /** @type {!AccessibilityAgent.AXProperty} */ ({name: 'role', value: axNode.role()});
+    var roleProperty = /** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'role', value: axNode.role()});
     addProperty(roleProperty);
 
     var propertyMap = {};
-    var propertiesArray = /** @type {!Array.<!AccessibilityAgent.AXProperty>} */ (axNode.properties());
+    var propertiesArray = /** @type {!Array.<!Protocol.Accessibility.AXProperty>} */ (axNode.properties());
     for (var property of propertiesArray)
       propertyMap[property.name] = property;
 
     for (var propertySet
-             of [AccessibilityAgent.AXWidgetAttributes, AccessibilityAgent.AXWidgetStates,
-                 AccessibilityAgent.AXGlobalStates, AccessibilityAgent.AXLiveRegionAttributes,
-                 AccessibilityAgent.AXRelationshipAttributes]) {
+             of [Protocol.Accessibility.AXWidgetAttributes, Protocol.Accessibility.AXWidgetStates,
+                 Protocol.Accessibility.AXGlobalStates, Protocol.Accessibility.AXLiveRegionAttributes,
+                 Protocol.Accessibility.AXRelationshipAttributes]) {
       for (var propertyKey in propertySet) {
         var property = propertySet[propertyKey];
         if (property in propertyMap)
@@ -127,13 +127,13 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {?AccessibilityAgent.AXValueType} type
+   * @param {?Protocol.Accessibility.AXValueType} type
    * @param {string} value
    * @return {!Element}
    */
   static createSimpleValueElement(type, value) {
     var valueElement;
-    var AXValueType = AccessibilityAgent.AXValueType;
+    var AXValueType = Protocol.Accessibility.AXValueType;
     if (!type || type === AXValueType.ValueUndefined || type === AXValueType.ComputedString)
       valueElement = createElement('span');
     else
@@ -188,11 +188,11 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!AccessibilityAgent.AXValue} value
+   * @param {!Protocol.Accessibility.AXValue} value
    * @return {?Element}
    */
   appendValueElement(value) {
-    var AXValueType = AccessibilityAgent.AXValueType;
+    var AXValueType = Protocol.Accessibility.AXValueType;
     if (value.type === AXValueType.Idref || value.type === AXValueType.Node || value.type === AXValueType.IdrefList ||
         value.type === AXValueType.NodeList) {
       this.appendRelatedNodeListValueElement(value);
@@ -213,7 +213,7 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!AccessibilityAgent.AXRelatedNode} relatedNode
+   * @param {!Protocol.Accessibility.AXRelatedNode} relatedNode
    * @param {number} index
    */
   appendRelatedNode(relatedNode, index) {
@@ -223,7 +223,7 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!AccessibilityAgent.AXRelatedNode} relatedNode
+   * @param {!Protocol.Accessibility.AXRelatedNode} relatedNode
    */
   appendRelatedNodeInline(relatedNode) {
     var deferredNode = new WebInspector.DeferredDOMNode(this._axNode.target(), relatedNode.backendNodeId);
@@ -232,7 +232,7 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!AccessibilityAgent.AXValue} value
+   * @param {!Protocol.Accessibility.AXValue} value
    */
   appendRelatedNodeListValueElement(value) {
     if (value.relatedNodes.length === 1 && !value.value) {
@@ -266,10 +266,10 @@ WebInspector.AXNodePropertyTreeElement.TypeStyles = {
   valueUndefined: 'ax-value-undefined'
 };
 
-/** @type {!Set.<!AccessibilityAgent.AXValueType>} */
+/** @type {!Set.<!Protocol.Accessibility.AXValueType>} */
 WebInspector.AXNodePropertyTreeElement.StringProperties = new Set([
-  AccessibilityAgent.AXValueType.String, AccessibilityAgent.AXValueType.ComputedString,
-  AccessibilityAgent.AXValueType.IdrefList, AccessibilityAgent.AXValueType.Idref
+  Protocol.Accessibility.AXValueType.String, Protocol.Accessibility.AXValueType.ComputedString,
+  Protocol.Accessibility.AXValueType.IdrefList, Protocol.Accessibility.AXValueType.Idref
 ]);
 
 /**
@@ -277,7 +277,7 @@ WebInspector.AXNodePropertyTreeElement.StringProperties = new Set([
  */
 WebInspector.AXNodePropertyTreePropertyElement = class extends WebInspector.AXNodePropertyTreeElement {
   /**
-   * @param {!AccessibilityAgent.AXProperty} property
+   * @param {!Protocol.Accessibility.AXProperty} property
    * @param {!WebInspector.AccessibilityNode} axNode
    */
   constructor(property, axNode) {
@@ -315,7 +315,7 @@ WebInspector.AXNodePropertyTreePropertyElement = class extends WebInspector.AXNo
  */
 WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropertyTreeElement {
   /**
-   * @param {!AccessibilityAgent.AXValueSource} source
+   * @param {!Protocol.Accessibility.AXValueSource} source
    * @param {!WebInspector.AccessibilityNode} axNode
    */
   constructor(source, axNode) {
@@ -332,7 +332,7 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
   }
 
   /**
-   * @param {!AccessibilityAgent.AXRelatedNode} relatedNode
+   * @param {!Protocol.Accessibility.AXRelatedNode} relatedNode
    * @param {number} index
    * @param {string} idref
    */
@@ -344,7 +344,7 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
   }
 
   /**
-   * @param {!AccessibilityAgent.AXValue} value
+   * @param {!Protocol.Accessibility.AXValue} value
    */
   appendIDRefValueElement(value) {
     var relatedNodes = value.relatedNodes;
@@ -375,15 +375,15 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
   }
 
   /**
-   * @param {!AccessibilityAgent.AXValue} value
+   * @param {!Protocol.Accessibility.AXValue} value
    * @override
    */
   appendRelatedNodeListValueElement(value) {
     var relatedNodes = value.relatedNodes;
     var numNodes = relatedNodes.length;
 
-    if (value.type === AccessibilityAgent.AXValueType.IdrefList ||
-        value.type === AccessibilityAgent.AXValueType.Idref) {
+    if (value.type === Protocol.Accessibility.AXValueType.IdrefList ||
+        value.type === Protocol.Accessibility.AXValueType.Idref) {
       this.appendIDRefValueElement(value);
     } else {
       super.appendRelatedNodeListValueElement(value);
@@ -396,11 +396,11 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
   }
 
   /**
-   * @param {!AccessibilityAgent.AXValueSource} source
+   * @param {!Protocol.Accessibility.AXValueSource} source
    */
   appendSourceNameElement(source) {
     var nameElement = createElement('span');
-    var AXValueSourceType = AccessibilityAgent.AXValueSourceType;
+    var AXValueSourceType = Protocol.Accessibility.AXValueSourceType;
     var type = source.type;
     var name;
     switch (type) {
@@ -459,7 +459,7 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
       this.appendValueElement(this._source.value);
     } else {
       var valueElement = WebInspector.AXNodePropertyTreeElement.createSimpleValueElement(
-          AccessibilityAgent.AXValueType.ValueUndefined, WebInspector.UIString('Not specified'));
+          Protocol.Accessibility.AXValueType.ValueUndefined, WebInspector.UIString('Not specified'));
       this.listItemElement.appendChild(valueElement);
       this.listItemElement.classList.add('ax-value-source-unused');
     }
@@ -469,7 +469,7 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
   }
 
   /**
-   * @param {!AccessibilityAgent.AXValue} value
+   * @param {!Protocol.Accessibility.AXValue} value
    * @return {!Element}
    * @override
    */
@@ -489,7 +489,7 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
 WebInspector.AXRelatedNodeSourceTreeElement = class extends TreeElement {
   /**
    * @param {{deferredNode: (!WebInspector.DeferredDOMNode|undefined), idref: (string|undefined)}} node
-   * @param {!AccessibilityAgent.AXRelatedNode=} value
+   * @param {!Protocol.Accessibility.AXRelatedNode=} value
    */
   constructor(node, value) {
     super('');
@@ -509,7 +509,7 @@ WebInspector.AXRelatedNodeSourceTreeElement = class extends TreeElement {
 
     if (this._value.text)
       this.listItemElement.appendChild(WebInspector.AXNodePropertyTreeElement.createSimpleValueElement(
-          AccessibilityAgent.AXValueType.ComputedString, this._value.text));
+          Protocol.Accessibility.AXValueType.ComputedString, this._value.text));
   }
 };
 
@@ -519,7 +519,7 @@ WebInspector.AXRelatedNodeSourceTreeElement = class extends TreeElement {
 WebInspector.AXRelatedNodeElement = class {
   /**
    * @param {{deferredNode: (!WebInspector.DeferredDOMNode|undefined), idref: (string|undefined)}} node
-   * @param {!AccessibilityAgent.AXRelatedNode=} value
+   * @param {!Protocol.Accessibility.AXRelatedNode=} value
    */
   constructor(node, value) {
     this._deferredNode = node.deferredNode;
@@ -563,7 +563,7 @@ WebInspector.AXRelatedNodeElement = class {
  */
 WebInspector.AXNodeIgnoredReasonTreeElement = class extends WebInspector.AXNodePropertyTreeElement {
   /**
-   * @param {!AccessibilityAgent.AXProperty} property
+   * @param {!Protocol.Accessibility.AXProperty} property
    * @param {!WebInspector.AccessibilityNode} axNode
    */
   constructor(property, axNode) {
@@ -655,7 +655,7 @@ WebInspector.AXNodeIgnoredReasonTreeElement = class extends WebInspector.AXNodeP
     this.listItemElement.appendChild(this._reasonElement);
 
     var value = this._property.value;
-    if (value.type === AccessibilityAgent.AXValueType.Idref)
+    if (value.type === Protocol.Accessibility.AXValueType.Idref)
       this.appendRelatedNodeListValueElement(value);
   }
 };

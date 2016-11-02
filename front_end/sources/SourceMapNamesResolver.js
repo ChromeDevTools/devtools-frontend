@@ -30,7 +30,7 @@ WebInspector.SourceMapNamesResolver._scopeIdentifiers = function(scope) {
   var startLocation = scope.startLocation();
   var endLocation = scope.endLocation();
 
-  if (scope.type() === DebuggerAgent.ScopeType.Global || !startLocation || !endLocation ||
+  if (scope.type() === Protocol.Debugger.ScopeType.Global || !startLocation || !endLocation ||
       !startLocation.script().sourceMapURL || (startLocation.script() !== endLocation.script()))
     return Promise.resolve(/** @type {!Array<!WebInspector.SourceMapNamesResolver.Identifier>}*/ ([]));
 
@@ -325,7 +325,7 @@ WebInspector.SourceMapNamesResolver.resolveThisObject = function(callFrame) {
 
   /**
    * @param {function(!WebInspector.RemoteObject)} callback
-   * @param {?RuntimeAgent.RemoteObject} evaluateResult
+   * @param {?Protocol.Runtime.RemoteObject} evaluateResult
    */
   function onEvaluated(callback, evaluateResult) {
     var remoteObject =
@@ -345,7 +345,7 @@ WebInspector.SourceMapNamesResolver.resolveScopeInObject = function(scope) {
   var startLocation = scope.startLocation();
   var endLocation = scope.endLocation();
 
-  if (scope.type() === DebuggerAgent.ScopeType.Global || !startLocation || !endLocation ||
+  if (scope.type() === Protocol.Debugger.ScopeType.Global || !startLocation || !endLocation ||
       !startLocation.script().sourceMapURL || startLocation.script() !== endLocation.script())
     return scope.object();
 
@@ -367,7 +367,7 @@ WebInspector.SourceMapNamesResolver.RemoteObject = class extends WebInspector.Re
 
   /**
    * @override
-   * @return {?RuntimeAgent.CustomPreview}
+   * @return {?Protocol.Runtime.CustomPreview}
    */
   customPreview() {
     return this._object.customPreview();
@@ -462,7 +462,7 @@ WebInspector.SourceMapNamesResolver.RemoteObject = class extends WebInspector.Re
 
   /**
    * @override
-   * @param {string|!RuntimeAgent.CallArgument} argumentName
+   * @param {string|!Protocol.Runtime.CallArgument} argumentName
    * @param {string} value
    * @param {function(string=)} callback
    */
@@ -501,7 +501,7 @@ WebInspector.SourceMapNamesResolver.RemoteObject = class extends WebInspector.Re
 
   /**
    * @override
-   * @param {!RuntimeAgent.CallArgument} name
+   * @param {!Protocol.Runtime.CallArgument} name
    * @param {function(string=)} callback
    */
   deleteProperty(name, callback) {
@@ -511,7 +511,7 @@ WebInspector.SourceMapNamesResolver.RemoteObject = class extends WebInspector.Re
   /**
    * @override
    * @param {function(this:Object, ...)} functionDeclaration
-   * @param {!Array<!RuntimeAgent.CallArgument>=} args
+   * @param {!Array<!Protocol.Runtime.CallArgument>=} args
    * @param {function(?WebInspector.RemoteObject, boolean=)=} callback
    */
   callFunction(functionDeclaration, args, callback) {
@@ -521,7 +521,7 @@ WebInspector.SourceMapNamesResolver.RemoteObject = class extends WebInspector.Re
   /**
    * @override
    * @param {function(this:Object, ...)} functionDeclaration
-   * @param {!Array<!RuntimeAgent.CallArgument>|undefined} args
+   * @param {!Array<!Protocol.Runtime.CallArgument>|undefined} args
    * @param {function(*)} callback
    */
   callFunctionJSON(functionDeclaration, args, callback) {

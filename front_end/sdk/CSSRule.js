@@ -6,7 +6,7 @@
  */
 WebInspector.CSSValue = class {
   /**
-   * @param {!CSSAgent.Value} payload
+   * @param {!Protocol.CSS.Value} payload
    */
   constructor(payload) {
     this.text = payload.text;
@@ -30,7 +30,7 @@ WebInspector.CSSValue = class {
 WebInspector.CSSRule = class {
   /**
    * @param {!WebInspector.CSSModel} cssModel
-   * @param {{style: !CSSAgent.CSSStyle, styleSheetId: (string|undefined), origin: !CSSAgent.StyleSheetOrigin}} payload
+   * @param {{style: !Protocol.CSS.CSSStyle, styleSheetId: (string|undefined), origin: !Protocol.CSS.StyleSheetOrigin}} payload
    */
   constructor(cssModel, payload) {
     this._cssModel = cssModel;
@@ -68,28 +68,28 @@ WebInspector.CSSRule = class {
    * @return {boolean}
    */
   isUserAgent() {
-    return this.origin === CSSAgent.StyleSheetOrigin.UserAgent;
+    return this.origin === Protocol.CSS.StyleSheetOrigin.UserAgent;
   }
 
   /**
    * @return {boolean}
    */
   isInjected() {
-    return this.origin === CSSAgent.StyleSheetOrigin.Injected;
+    return this.origin === Protocol.CSS.StyleSheetOrigin.Injected;
   }
 
   /**
    * @return {boolean}
    */
   isViaInspector() {
-    return this.origin === CSSAgent.StyleSheetOrigin.Inspector;
+    return this.origin === Protocol.CSS.StyleSheetOrigin.Inspector;
   }
 
   /**
    * @return {boolean}
    */
   isRegular() {
-    return this.origin === CSSAgent.StyleSheetOrigin.Regular;
+    return this.origin === Protocol.CSS.StyleSheetOrigin.Regular;
   }
 };
 
@@ -99,7 +99,7 @@ WebInspector.CSSRule = class {
 WebInspector.CSSStyleRule = class extends WebInspector.CSSRule {
   /**
    * @param {!WebInspector.CSSModel} cssModel
-   * @param {!CSSAgent.CSSRule} payload
+   * @param {!Protocol.CSS.CSSRule} payload
    */
   constructor(cssModel, payload) {
     super(cssModel, payload);
@@ -121,11 +121,11 @@ WebInspector.CSSStyleRule = class extends WebInspector.CSSRule {
       style:
           {styleSheetId: '0', range: new WebInspector.TextRange(0, 0, 0, 0), shorthandEntries: [], cssProperties: []}
     };
-    return new WebInspector.CSSStyleRule(cssModel, /** @type {!CSSAgent.CSSRule} */ (dummyPayload));
+    return new WebInspector.CSSStyleRule(cssModel, /** @type {!Protocol.CSS.CSSRule} */ (dummyPayload));
   }
 
   /**
-   * @param {!CSSAgent.SelectorList} selectorList
+   * @param {!Protocol.CSS.SelectorList} selectorList
    */
   _reinitializeSelectors(selectorList) {
     /** @type {!Array.<!WebInspector.CSSValue>} */
@@ -200,7 +200,7 @@ WebInspector.CSSStyleRule = class extends WebInspector.CSSRule {
     if (this.styleSheetId !== edit.styleSheetId)
       return;
     if (this.selectorRange().equal(edit.oldRange)) {
-      this._reinitializeSelectors(/** @type {!CSSAgent.SelectorList} */ (edit.payload));
+      this._reinitializeSelectors(/** @type {!Protocol.CSS.SelectorList} */ (edit.payload));
     } else {
       for (var i = 0; i < this.selectors.length; ++i)
         this.selectors[i].rebase(edit);
@@ -219,7 +219,7 @@ WebInspector.CSSStyleRule = class extends WebInspector.CSSRule {
 WebInspector.CSSKeyframesRule = class {
   /**
    * @param {!WebInspector.CSSModel} cssModel
-   * @param {!CSSAgent.CSSKeyframesRule} payload
+   * @param {!Protocol.CSS.CSSKeyframesRule} payload
    */
   constructor(cssModel, payload) {
     this._cssModel = cssModel;
@@ -248,7 +248,7 @@ WebInspector.CSSKeyframesRule = class {
 WebInspector.CSSKeyframeRule = class extends WebInspector.CSSRule {
   /**
    * @param {!WebInspector.CSSModel} cssModel
-   * @param {!CSSAgent.CSSKeyframeRule} payload
+   * @param {!Protocol.CSS.CSSKeyframeRule} payload
    */
   constructor(cssModel, payload) {
     super(cssModel, payload);
@@ -263,7 +263,7 @@ WebInspector.CSSKeyframeRule = class extends WebInspector.CSSRule {
   }
 
   /**
-   * @param {!CSSAgent.Value} payload
+   * @param {!Protocol.CSS.Value} payload
    */
   _reinitializeKey(payload) {
     this._keyText = new WebInspector.CSSValue(payload);
@@ -277,7 +277,7 @@ WebInspector.CSSKeyframeRule = class extends WebInspector.CSSRule {
     if (this.styleSheetId !== edit.styleSheetId || !this._keyText.range)
       return;
     if (edit.oldRange.equal(this._keyText.range))
-      this._reinitializeKey(/** @type {!CSSAgent.Value} */ (edit.payload));
+      this._reinitializeKey(/** @type {!Protocol.CSS.Value} */ (edit.payload));
     else
       this._keyText.rebase(edit);
 

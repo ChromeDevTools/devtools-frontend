@@ -131,7 +131,7 @@ WebInspector.TracingManager.TransferMode = {
 };
 
 /**
- * @implements {TracingAgent.Dispatcher}
+ * @implements {Protocol.TracingDispatcher}
  * @unrestricted
  */
 WebInspector.TracingDispatcher = class {

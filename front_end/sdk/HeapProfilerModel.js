@@ -25,7 +25,7 @@ WebInspector.HeapProfilerModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @return {!Promise.<?ProfilerAgent.Profile>}
+   * @return {!Promise.<?Protocol.Profiler.Profile>}
    */
   stopSampling() {
     this._isRecording = false;
@@ -82,7 +82,7 @@ WebInspector.HeapProfilerModel.Events = {
 };
 
 /**
- * @implements {HeapProfilerAgent.Dispatcher}
+ * @implements {Protocol.HeapProfilerDispatcher}
  * @unrestricted
  */
 WebInspector.HeapProfilerDispatcher = class {

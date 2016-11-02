@@ -70,28 +70,28 @@ WebInspector.NetworkManager = class extends WebInspector.SDKModel {
 
   /**
    * @param {!WebInspector.NetworkManager.Conditions} conditions
-   * @return {!NetworkAgent.ConnectionType}
+   * @return {!Protocol.Network.ConnectionType}
    * TODO(allada): this belongs to NetworkConditionsSelector, which should hardcode/guess it.
    */
   static _connectionType(conditions) {
     if (!conditions.download && !conditions.upload)
-      return NetworkAgent.ConnectionType.None;
+      return Protocol.Network.ConnectionType.None;
     var types = WebInspector.NetworkManager._connectionTypes;
     if (!types) {
       WebInspector.NetworkManager._connectionTypes = [];
       types = WebInspector.NetworkManager._connectionTypes;
-      types.push(['2g', NetworkAgent.ConnectionType.Cellular2g]);
-      types.push(['3g', NetworkAgent.ConnectionType.Cellular3g]);
-      types.push(['4g', NetworkAgent.ConnectionType.Cellular4g]);
-      types.push(['bluetooth', NetworkAgent.ConnectionType.Bluetooth]);
-      types.push(['wifi', NetworkAgent.ConnectionType.Wifi]);
-      types.push(['wimax', NetworkAgent.ConnectionType.Wimax]);
+      types.push(['2g', Protocol.Network.ConnectionType.Cellular2g]);
+      types.push(['3g', Protocol.Network.ConnectionType.Cellular3g]);
+      types.push(['4g', Protocol.Network.ConnectionType.Cellular4g]);
+      types.push(['bluetooth', Protocol.Network.ConnectionType.Bluetooth]);
+      types.push(['wifi', Protocol.Network.ConnectionType.Wifi]);
+      types.push(['wimax', Protocol.Network.ConnectionType.Wimax]);
     }
     for (var type of types) {
       if (conditions.title.toLowerCase().indexOf(type[0]) !== -1)
         return type[1];
     }
-    return NetworkAgent.ConnectionType.Other;
+    return Protocol.Network.ConnectionType.Other;
   }
 
   /**
@@ -162,7 +162,7 @@ WebInspector.NetworkManager.OfflineConditions = {
 
 
 /**
- * @implements {NetworkAgent.Dispatcher}
+ * @implements {Protocol.NetworkDispatcher}
  * @unrestricted
  */
 WebInspector.NetworkDispatcher = class {
@@ -173,7 +173,7 @@ WebInspector.NetworkDispatcher = class {
   }
 
   /**
-   * @param {!NetworkAgent.Headers} headersMap
+   * @param {!Protocol.Network.Headers} headersMap
    * @return {!Array.<!WebInspector.NetworkRequest.NameValue>}
    */
   _headersMapToHeadersArray(headersMap) {
@@ -188,19 +188,19 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @param {!WebInspector.NetworkRequest} networkRequest
-   * @param {!NetworkAgent.Request} request
+   * @param {!Protocol.Network.Request} request
    */
   _updateNetworkRequestWithRequest(networkRequest, request) {
     networkRequest.requestMethod = request.method;
     networkRequest.setRequestHeaders(this._headersMapToHeadersArray(request.headers));
     networkRequest.requestFormData = request.postData;
     networkRequest.setInitialPriority(request.initialPriority);
-    networkRequest.mixedContentType = request.mixedContentType || NetworkAgent.RequestMixedContentType.None;
+    networkRequest.mixedContentType = request.mixedContentType || Protocol.Network.RequestMixedContentType.None;
   }
 
   /**
    * @param {!WebInspector.NetworkRequest} networkRequest
-   * @param {!NetworkAgent.Response=} response
+   * @param {!Protocol.Network.Response=} response
    */
   _updateNetworkRequestWithResponse(networkRequest, response) {
     if (response.url && networkRequest.url !== response.url)
@@ -280,9 +280,9 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
-   * @param {!NetworkAgent.ResourcePriority} newPriority
-   * @param {!NetworkAgent.Timestamp} timestamp
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.ResourcePriority} newPriority
+   * @param {!Protocol.Network.Timestamp} timestamp
    */
   resourceChangedPriority(requestId, newPriority, timestamp) {
     var networkRequest = this._inflightRequestsById[requestId];
@@ -292,16 +292,16 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
-   * @param {!PageAgent.FrameId} frameId
-   * @param {!NetworkAgent.LoaderId} loaderId
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Page.FrameId} frameId
+   * @param {!Protocol.Network.LoaderId} loaderId
    * @param {string} documentURL
-   * @param {!NetworkAgent.Request} request
-   * @param {!NetworkAgent.Timestamp} time
-   * @param {!NetworkAgent.Timestamp} wallTime
-   * @param {!NetworkAgent.Initiator} initiator
-   * @param {!NetworkAgent.Response=} redirectResponse
-   * @param {!PageAgent.ResourceType=} resourceType
+   * @param {!Protocol.Network.Request} request
+   * @param {!Protocol.Network.Timestamp} time
+   * @param {!Protocol.Network.Timestamp} wallTime
+   * @param {!Protocol.Network.Initiator} initiator
+   * @param {!Protocol.Network.Response=} redirectResponse
+   * @param {!Protocol.Page.ResourceType=} resourceType
    */
   requestWillBeSent(
       requestId,
@@ -319,7 +319,7 @@ WebInspector.NetworkDispatcher = class {
       // FIXME: move this check to the backend.
       if (!redirectResponse)
         return;
-      this.responseReceived(requestId, frameId, loaderId, time, PageAgent.ResourceType.Other, redirectResponse);
+      this.responseReceived(requestId, frameId, loaderId, time, Protocol.Page.ResourceType.Other, redirectResponse);
       networkRequest = this._appendRedirect(requestId, time, request.url);
     } else
       networkRequest = this._createNetworkRequest(requestId, frameId, loaderId, request.url, documentURL, initiator);
@@ -333,7 +333,7 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
+   * @param {!Protocol.Network.RequestId} requestId
    */
   requestServedFromCache(requestId) {
     var networkRequest = this._inflightRequestsById[requestId];
@@ -345,12 +345,12 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
-   * @param {!PageAgent.FrameId} frameId
-   * @param {!NetworkAgent.LoaderId} loaderId
-   * @param {!NetworkAgent.Timestamp} time
-   * @param {!PageAgent.ResourceType} resourceType
-   * @param {!NetworkAgent.Response} response
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Page.FrameId} frameId
+   * @param {!Protocol.Network.LoaderId} loaderId
+   * @param {!Protocol.Network.Timestamp} time
+   * @param {!Protocol.Page.ResourceType} resourceType
+   * @param {!Protocol.Network.Response} response
    */
   responseReceived(requestId, frameId, loaderId, time, resourceType, response) {
     var networkRequest = this._inflightRequestsById[requestId];
@@ -379,8 +379,8 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
-   * @param {!NetworkAgent.Timestamp} time
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.Timestamp} time
    * @param {number} dataLength
    * @param {number} encodedDataLength
    */
@@ -399,8 +399,8 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
-   * @param {!NetworkAgent.Timestamp} finishTime
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.Timestamp} finishTime
    * @param {number} encodedDataLength
    */
   loadingFinished(requestId, finishTime, encodedDataLength) {
@@ -412,12 +412,12 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
-   * @param {!NetworkAgent.Timestamp} time
-   * @param {!PageAgent.ResourceType} resourceType
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.Timestamp} time
+   * @param {!Protocol.Page.ResourceType} resourceType
    * @param {string} localizedDescription
    * @param {boolean=} canceled
-   * @param {!NetworkAgent.BlockedReason=} blockedReason
+   * @param {!Protocol.Network.BlockedReason=} blockedReason
    */
   loadingFailed(requestId, time, resourceType, localizedDescription, canceled, blockedReason) {
     var networkRequest = this._inflightRequestsById[requestId];
@@ -429,7 +429,7 @@ WebInspector.NetworkDispatcher = class {
     networkRequest.canceled = canceled;
     if (blockedReason) {
       networkRequest.setBlockedReason(blockedReason);
-      if (blockedReason === NetworkAgent.BlockedReason.Inspector) {
+      if (blockedReason === Protocol.Network.BlockedReason.Inspector) {
         var consoleModel = this._manager._target.consoleModel;
         consoleModel.addMessage(new WebInspector.ConsoleMessage(
             consoleModel.target(), WebInspector.ConsoleMessage.MessageSource.Network,
@@ -444,9 +444,9 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
+   * @param {!Protocol.Network.RequestId} requestId
    * @param {string} requestURL
-   * @param {!NetworkAgent.Initiator=} initiator
+   * @param {!Protocol.Network.Initiator=} initiator
    */
   webSocketCreated(requestId, requestURL, initiator) {
     var networkRequest =
@@ -457,10 +457,10 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
-   * @param {!NetworkAgent.Timestamp} time
-   * @param {!NetworkAgent.Timestamp} wallTime
-   * @param {!NetworkAgent.WebSocketRequest} request
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.Timestamp} time
+   * @param {!Protocol.Network.Timestamp} wallTime
+   * @param {!Protocol.Network.WebSocketRequest} request
    */
   webSocketWillSendHandshakeRequest(requestId, time, wallTime, request) {
     var networkRequest = this._inflightRequestsById[requestId];
@@ -476,9 +476,9 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
-   * @param {!NetworkAgent.Timestamp} time
-   * @param {!NetworkAgent.WebSocketResponse} response
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.Timestamp} time
+   * @param {!Protocol.Network.WebSocketResponse} response
    */
   webSocketHandshakeResponseReceived(requestId, time, response) {
     var networkRequest = this._inflightRequestsById[requestId];
@@ -501,9 +501,9 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
-   * @param {!NetworkAgent.Timestamp} time
-   * @param {!NetworkAgent.WebSocketFrame} response
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.Timestamp} time
+   * @param {!Protocol.Network.WebSocketFrame} response
    */
   webSocketFrameReceived(requestId, time, response) {
     var networkRequest = this._inflightRequestsById[requestId];
@@ -518,9 +518,9 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
-   * @param {!NetworkAgent.Timestamp} time
-   * @param {!NetworkAgent.WebSocketFrame} response
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.Timestamp} time
+   * @param {!Protocol.Network.WebSocketFrame} response
    */
   webSocketFrameSent(requestId, time, response) {
     var networkRequest = this._inflightRequestsById[requestId];
@@ -535,8 +535,8 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
-   * @param {!NetworkAgent.Timestamp} time
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.Timestamp} time
    * @param {string} errorMessage
    */
   webSocketFrameError(requestId, time, errorMessage) {
@@ -552,8 +552,8 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
-   * @param {!NetworkAgent.Timestamp} time
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.Timestamp} time
    */
   webSocketClosed(requestId, time) {
     var networkRequest = this._inflightRequestsById[requestId];
@@ -564,8 +564,8 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!NetworkAgent.RequestId} requestId
-   * @param {!NetworkAgent.Timestamp} time
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.Timestamp} time
    * @param {string} eventName
    * @param {string} eventId
    * @param {string} data
@@ -578,8 +578,8 @@ WebInspector.NetworkDispatcher = class {
   }
 
   /**
-   * @param {!NetworkAgent.RequestId} requestId
-   * @param {!NetworkAgent.Timestamp} time
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.Timestamp} time
    * @param {string} redirectURL
    * @return {!WebInspector.NetworkRequest}
    */
@@ -616,7 +616,7 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @param {!WebInspector.NetworkRequest} networkRequest
-   * @param {!NetworkAgent.Timestamp} finishTime
+   * @param {!Protocol.Network.Timestamp} finishTime
    * @param {number} encodedDataLength
    */
   _finishNetworkRequest(networkRequest, finishTime, encodedDataLength) {
@@ -638,12 +638,12 @@ WebInspector.NetworkDispatcher = class {
   }
 
   /**
-   * @param {!NetworkAgent.RequestId} requestId
+   * @param {!Protocol.Network.RequestId} requestId
    * @param {string} frameId
-   * @param {!NetworkAgent.LoaderId} loaderId
+   * @param {!Protocol.Network.LoaderId} loaderId
    * @param {string} url
    * @param {string} documentURL
-   * @param {?NetworkAgent.Initiator} initiator
+   * @param {?Protocol.Network.Initiator} initiator
    */
   _createNetworkRequest(requestId, frameId, loaderId, url, documentURL, initiator) {
     return new WebInspector.NetworkRequest(
@@ -760,7 +760,7 @@ WebInspector.MultitargetNetworkManager = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!NetworkAgent.Headers} headers
+   * @param {!Protocol.Network.Headers} headers
    */
   setExtraHTTPHeaders(headers) {
     this._extraHeaders = headers;

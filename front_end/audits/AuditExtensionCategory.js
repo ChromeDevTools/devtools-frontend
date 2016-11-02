@@ -164,7 +164,7 @@ WebInspector.AuditExtensionCategoryResults = class {
   evaluate(expression, evaluateOptions, callback) {
     /**
      * @param {?string} error
-     * @param {!RuntimeAgent.RemoteObject} result
+     * @param {!Protocol.Runtime.RemoteObject} result
      * @param {boolean=} wasThrown
      * @this {WebInspector.AuditExtensionCategoryResults}
      */

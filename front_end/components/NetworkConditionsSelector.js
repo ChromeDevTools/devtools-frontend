@@ -492,18 +492,18 @@ WebInspector.NetworkConditionsActionDelegate = class {
 };
 
 /**
- * @param {?NetworkAgent.ResourcePriority} priority
+ * @param {?Protocol.Network.ResourcePriority} priority
  * @return {string}
  */
 WebInspector.uiLabelForPriority = function(priority) {
   var labelMap = WebInspector.uiLabelForPriority._priorityToUILabel;
   if (!labelMap) {
     labelMap = new Map([
-      [NetworkAgent.ResourcePriority.VeryLow, WebInspector.UIString('Lowest')],
-      [NetworkAgent.ResourcePriority.Low, WebInspector.UIString('Low')],
-      [NetworkAgent.ResourcePriority.Medium, WebInspector.UIString('Medium')],
-      [NetworkAgent.ResourcePriority.High, WebInspector.UIString('High')],
-      [NetworkAgent.ResourcePriority.VeryHigh, WebInspector.UIString('Highest')]
+      [Protocol.Network.ResourcePriority.VeryLow, WebInspector.UIString('Lowest')],
+      [Protocol.Network.ResourcePriority.Low, WebInspector.UIString('Low')],
+      [Protocol.Network.ResourcePriority.Medium, WebInspector.UIString('Medium')],
+      [Protocol.Network.ResourcePriority.High, WebInspector.UIString('High')],
+      [Protocol.Network.ResourcePriority.VeryHigh, WebInspector.UIString('Highest')]
     ]);
     WebInspector.uiLabelForPriority._priorityToUILabel = labelMap;
   }

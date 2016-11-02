@@ -149,8 +149,8 @@ WebInspector.ResourceTreeModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!PageAgent.FrameId} frameId
-   * @param {?PageAgent.FrameId} parentFrameId
+   * @param {!Protocol.Page.FrameId} frameId
+   * @param {?Protocol.Page.FrameId} parentFrameId
    * @return {?WebInspector.ResourceTreeFrame}
    */
   _frameAttached(frameId, parentFrameId) {
@@ -172,7 +172,7 @@ WebInspector.ResourceTreeModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!PageAgent.Frame} framePayload
+   * @param {!Protocol.Page.Frame} framePayload
    */
   _frameNavigated(framePayload) {
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
@@ -213,7 +213,7 @@ WebInspector.ResourceTreeModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!PageAgent.FrameId} frameId
+   * @param {!Protocol.Page.FrameId} frameId
    */
   _frameDetached(frameId) {
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
@@ -270,7 +270,7 @@ WebInspector.ResourceTreeModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!PageAgent.FrameId} frameId
+   * @param {!Protocol.Page.FrameId} frameId
    * @return {!WebInspector.ResourceTreeFrame}
    */
   frameForId(frameId) {
@@ -305,7 +305,7 @@ WebInspector.ResourceTreeModel = class extends WebInspector.SDKModel {
 
   /**
    * @param {?WebInspector.ResourceTreeFrame} parentFrame
-   * @param {!PageAgent.FrameResourceTree} frameTreePayload
+   * @param {!Protocol.Page.FrameResourceTree} frameTreePayload
    */
   _addFramesRecursively(parentFrame, frameTreePayload) {
     var framePayload = frameTreePayload.frame;
@@ -329,7 +329,7 @@ WebInspector.ResourceTreeModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!PageAgent.Frame} frame
+   * @param {!Protocol.Page.Frame} frame
    * @param {string} url
    * @param {!WebInspector.ResourceType} type
    * @param {string} mimeType
@@ -372,14 +372,14 @@ WebInspector.ResourceTreeModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {function(string, ?string,!Array<!PageAgent.AppManifestError>)} callback
+   * @param {function(string, ?string,!Array<!Protocol.Page.AppManifestError>)} callback
    */
   fetchAppManifest(callback) {
     this._agent.getAppManifest(myCallback);
     /**
      * @param {?Protocol.Error} protocolError
      * @param {string} url
-     * @param {!Array<!PageAgent.AppManifestError>} errors
+     * @param {!Array<!Protocol.Page.AppManifestError>} errors
      * @param {string=} data
      */
     function myCallback(protocolError, url, errors, data) {
@@ -463,8 +463,8 @@ WebInspector.ResourceTreeFrame = class {
   /**
    * @param {!WebInspector.ResourceTreeModel} model
    * @param {?WebInspector.ResourceTreeFrame} parentFrame
-   * @param {!PageAgent.FrameId} frameId
-   * @param {!PageAgent.Frame=} payload
+   * @param {!Protocol.Page.FrameId} frameId
+   * @param {!Protocol.Page.Frame=} payload
    */
   constructor(model, parentFrame, frameId, payload) {
     this._model = model;
@@ -597,7 +597,7 @@ WebInspector.ResourceTreeFrame = class {
   }
 
   /**
-   * @param {!PageAgent.Frame} framePayload
+   * @param {!Protocol.Page.Frame} framePayload
    */
   _navigate(framePayload) {
     this._loaderId = framePayload.loaderId;
@@ -727,7 +727,7 @@ WebInspector.ResourceTreeFrame = class {
 
 
 /**
- * @implements {PageAgent.Dispatcher}
+ * @implements {Protocol.PageDispatcher}
  * @unrestricted
  */
 WebInspector.PageDispatcher = class {
@@ -753,8 +753,8 @@ WebInspector.PageDispatcher = class {
 
   /**
    * @override
-   * @param {!PageAgent.FrameId} frameId
-   * @param {!PageAgent.FrameId} parentFrameId
+   * @param {!Protocol.Page.FrameId} frameId
+   * @param {!Protocol.Page.FrameId} parentFrameId
    */
   frameAttached(frameId, parentFrameId) {
     this._resourceTreeModel._frameAttached(frameId, parentFrameId);
@@ -762,7 +762,7 @@ WebInspector.PageDispatcher = class {
 
   /**
    * @override
-   * @param {!PageAgent.Frame} frame
+   * @param {!Protocol.Page.Frame} frame
    */
   frameNavigated(frame) {
     this._resourceTreeModel._frameNavigated(frame);
@@ -770,7 +770,7 @@ WebInspector.PageDispatcher = class {
 
   /**
    * @override
-   * @param {!PageAgent.FrameId} frameId
+   * @param {!Protocol.Page.FrameId} frameId
    */
   frameDetached(frameId) {
     this._resourceTreeModel._frameDetached(frameId);
@@ -778,21 +778,21 @@ WebInspector.PageDispatcher = class {
 
   /**
    * @override
-   * @param {!PageAgent.FrameId} frameId
+   * @param {!Protocol.Page.FrameId} frameId
    */
   frameStartedLoading(frameId) {
   }
 
   /**
    * @override
-   * @param {!PageAgent.FrameId} frameId
+   * @param {!Protocol.Page.FrameId} frameId
    */
   frameStoppedLoading(frameId) {
   }
 
   /**
    * @override
-   * @param {!PageAgent.FrameId} frameId
+   * @param {!Protocol.Page.FrameId} frameId
    * @param {number} delay
    */
   frameScheduledNavigation(frameId, delay) {
@@ -800,7 +800,7 @@ WebInspector.PageDispatcher = class {
 
   /**
    * @override
-   * @param {!PageAgent.FrameId} frameId
+   * @param {!Protocol.Page.FrameId} frameId
    */
   frameClearedScheduledNavigation(frameId) {
   }
@@ -830,7 +830,7 @@ WebInspector.PageDispatcher = class {
   /**
    * @override
    * @param {string} data
-   * @param {!PageAgent.ScreencastFrameMetadata=} metadata
+   * @param {!Protocol.Page.ScreencastFrameMetadata=} metadata
    * @param {number=} sessionId
    */
   screencastFrame(data, metadata, sessionId) {
@@ -850,7 +850,7 @@ WebInspector.PageDispatcher = class {
 
   /**
    * @override
-   * @param {!DOMAgent.RGBA} color
+   * @param {!Protocol.DOM.RGBA} color
    */
   colorPicked(color) {
     this._resourceTreeModel.dispatchEventToListeners(WebInspector.ResourceTreeModel.Events.ColorPicked, color);

@@ -67,20 +67,20 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!TargetAgent.TargetID} targetId
+   * @param {!Protocol.Target.TargetID} targetId
    */
   activateTarget(targetId) {
     this._agent.activateTarget(targetId);
   }
 
   /**
-   * @param {!TargetAgent.TargetID} targetId
+   * @param {!Protocol.Target.TargetID} targetId
    * @param {function(?WebInspector.TargetInfo)=} callback
    */
   getTargetInfo(targetId, callback) {
     /**
      * @param {?Protocol.Error} error
-     * @param {?TargetAgent.TargetInfo} targetInfo
+     * @param {?Protocol.Target.TargetInfo} targetInfo
      */
     function innerCallback(error, targetInfo) {
       if (error) {
@@ -236,7 +236,7 @@ WebInspector.SubTargetsManager.Events = {
 WebInspector.SubTargetsManager._InfoSymbol = Symbol('SubTargetInfo');
 
 /**
- * @implements {TargetAgent.Dispatcher}
+ * @implements {Protocol.TargetDispatcher}
  * @unrestricted
  */
 WebInspector.SubTargetsDispatcher = class {
@@ -249,7 +249,7 @@ WebInspector.SubTargetsDispatcher = class {
 
   /**
    * @override
-   * @param {!TargetAgent.TargetInfo} targetInfo
+   * @param {!Protocol.Target.TargetInfo} targetInfo
    */
   targetCreated(targetInfo) {
     this._manager._targetCreated(new WebInspector.TargetInfo(targetInfo));
@@ -265,7 +265,7 @@ WebInspector.SubTargetsDispatcher = class {
 
   /**
    * @override
-   * @param {!TargetAgent.TargetInfo} targetInfo
+   * @param {!Protocol.Target.TargetInfo} targetInfo
    * @param {boolean} waitingForDebugger
    */
   attachedToTarget(targetInfo, waitingForDebugger) {
@@ -329,7 +329,7 @@ WebInspector.SubTargetConnection = class {
  */
 WebInspector.TargetInfo = class {
   /**
-   * @param {!TargetAgent.TargetInfo} payload
+   * @param {!Protocol.Target.TargetInfo} payload
    */
   constructor(payload) {
     this.id = payload.targetId;

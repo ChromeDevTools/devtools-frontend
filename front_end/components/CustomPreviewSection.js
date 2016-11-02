@@ -92,7 +92,7 @@ WebInspector.CustomPreviewSection = class {
     objectTag.shift();
     var attributes = objectTag.shift();
     var remoteObject =
-        this._object.target().runtimeModel.createRemoteObject(/** @type {!RuntimeAgent.RemoteObject} */ (attributes));
+        this._object.target().runtimeModel.createRemoteObject(/** @type {!Protocol.Runtime.RemoteObject} */ (attributes));
     if (remoteObject.customPreview())
       return (new WebInspector.CustomPreviewSection(remoteObject)).element();
 

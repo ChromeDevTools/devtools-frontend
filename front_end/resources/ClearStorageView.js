@@ -20,10 +20,10 @@ WebInspector.ClearStorageView = class extends WebInspector.VBox {
 
     this._settings = new Map();
     for (var type
-             of [StorageAgent.StorageType.Appcache, StorageAgent.StorageType.Cache_storage,
-                 StorageAgent.StorageType.Cookies, StorageAgent.StorageType.Indexeddb,
-                 StorageAgent.StorageType.Local_storage, StorageAgent.StorageType.Service_workers,
-                 StorageAgent.StorageType.Websql]) {
+             of [Protocol.Storage.StorageType.Appcache, Protocol.Storage.StorageType.Cache_storage,
+                 Protocol.Storage.StorageType.Cookies, Protocol.Storage.StorageType.Indexeddb,
+                 Protocol.Storage.StorageType.Local_storage, Protocol.Storage.StorageType.Service_workers,
+                 Protocol.Storage.StorageType.Websql]) {
       this._settings.set(type, WebInspector.settings.createSetting('clear-storage-' + type, true));
     }
 
@@ -109,11 +109,11 @@ WebInspector.ClearStorageView = class extends WebInspector.VBox {
     this._target.storageAgent().clearDataForOrigin(this._securityOrigin, storageTypes.join(','));
 
     var set = new Set(storageTypes);
-    var hasAll = set.has(StorageAgent.StorageType.All);
-    if (set.has(StorageAgent.StorageType.Cookies) || hasAll)
+    var hasAll = set.has(Protocol.Storage.StorageType.All);
+    if (set.has(Protocol.Storage.StorageType.Cookies) || hasAll)
       this._resourcesPanel.clearCookies(this._securityOrigin);
 
-    if (set.has(StorageAgent.StorageType.Indexeddb) || hasAll) {
+    if (set.has(Protocol.Storage.StorageType.Indexeddb) || hasAll) {
       for (var target of WebInspector.targetManager.targets()) {
         var indexedDBModel = WebInspector.IndexedDBModel.fromTarget(target);
         if (indexedDBModel)
@@ -121,13 +121,13 @@ WebInspector.ClearStorageView = class extends WebInspector.VBox {
       }
     }
 
-    if (set.has(StorageAgent.StorageType.Local_storage) || hasAll) {
+    if (set.has(Protocol.Storage.StorageType.Local_storage) || hasAll) {
       var storageModel = WebInspector.DOMStorageModel.fromTarget(this._target);
       if (storageModel)
         storageModel.clearForOrigin(this._securityOrigin);
     }
 
-    if (set.has(StorageAgent.StorageType.Websql) || hasAll) {
+    if (set.has(Protocol.Storage.StorageType.Websql) || hasAll) {
       var databaseModel = WebInspector.DatabaseModel.fromTarget(this._target);
       if (databaseModel) {
         databaseModel.disable();
@@ -135,14 +135,14 @@ WebInspector.ClearStorageView = class extends WebInspector.VBox {
       }
     }
 
-    if (set.has(StorageAgent.StorageType.Cache_storage) || hasAll) {
+    if (set.has(Protocol.Storage.StorageType.Cache_storage) || hasAll) {
       var target = WebInspector.targetManager.mainTarget();
       var model = target && WebInspector.ServiceWorkerCacheModel.fromTarget(target);
       if (model)
         model.clearForOrigin(this._securityOrigin);
     }
 
-    if (set.has(StorageAgent.StorageType.Appcache) || hasAll) {
+    if (set.has(Protocol.Storage.StorageType.Appcache) || hasAll) {
       var appcacheModel = WebInspector.ApplicationCacheModel.fromTarget(this._target);
       if (appcacheModel)
         appcacheModel.reset();

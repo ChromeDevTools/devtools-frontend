@@ -473,7 +473,7 @@ WebInspector.TimelineModel = class {
     var cpuProfileEvent = events.peekLast();
     if (cpuProfileEvent && cpuProfileEvent.name === WebInspector.TimelineModel.RecordType.CpuProfile) {
       var eventData = cpuProfileEvent.args['data'];
-      cpuProfile = /** @type {?ProfilerAgent.Profile} */ (eventData && eventData['cpuProfile']);
+      cpuProfile = /** @type {?Protocol.Profiler.Profile} */ (eventData && eventData['cpuProfile']);
     }
 
     if (!cpuProfile) {
@@ -485,7 +485,7 @@ WebInspector.TimelineModel = class {
         WebInspector.console.error('Invalid CPU profile format.');
         return null;
       }
-      cpuProfile = /** @type {!ProfilerAgent.Profile} */ (
+      cpuProfile = /** @type {!Protocol.Profiler.Profile} */ (
           {startTime: cpuProfileEvent.args['data']['startTime'], endTime: 0, nodes: [], samples: [], timeDeltas: []});
       for (var profileEvent of profileGroup.children) {
         var eventData = profileEvent.args['data'];
@@ -1498,7 +1498,7 @@ WebInspector.InvalidationTrackingEvent = class {
   }
 };
 
-/** @typedef {{reason: string, stackTrace: ?Array<!RuntimeAgent.CallFrame>}} */
+/** @typedef {{reason: string, stackTrace: ?Array<!Protocol.Runtime.CallFrame>}} */
 WebInspector.InvalidationCause;
 
 /**

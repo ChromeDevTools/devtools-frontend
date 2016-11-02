@@ -135,7 +135,7 @@ WebInspector.CallStackSidebarPane = class extends WebInspector.SimpleView {
   }
 
   /**
-   * @param {!Array<!RuntimeAgent.CallFrame>} callFrames
+   * @param {!Array<!Protocol.Runtime.CallFrame>} callFrames
    * @param {!WebInspector.UIList.Item} asyncCallFrameItem
    * @return {!Array<!WebInspector.CallStackSidebarPane.CallFrame>}
    */

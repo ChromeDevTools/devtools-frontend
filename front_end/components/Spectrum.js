@@ -873,7 +873,7 @@ WebInspector.Spectrum = class extends WebInspector.VBox {
    * @param {!WebInspector.Event} event
    */
   _colorPicked(event) {
-    var rgbColor = /** @type {!DOMAgent.RGBA} */ (event.data);
+    var rgbColor = /** @type {!Protocol.DOM.RGBA} */ (event.data);
     var rgba = [rgbColor.r, rgbColor.g, rgbColor.b, (rgbColor.a / 2.55 | 0) / 100];
     var color = WebInspector.Color.fromRGBA(rgba);
     this._innerSetColor(color.hsva(), '', undefined, WebInspector.Spectrum._ChangeSource.Other);

@@ -530,7 +530,7 @@ WebInspector.Main.InspectorDomainObserver = class {
 };
 
 /**
- * @implements {InspectorAgent.Dispatcher}
+ * @implements {Protocol.InspectorDispatcher}
  * @unrestricted
  */
 WebInspector.Main.InspectorDomainDispatcher = class {

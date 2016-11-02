@@ -7,7 +7,7 @@
 WebInspector.RemoteObjectPreviewFormatter = class {
   /**
    * @param {!Element} parentElement
-   * @param {!RuntimeAgent.ObjectPreview} preview
+   * @param {!Protocol.Runtime.ObjectPreview} preview
    */
   appendObjectPreview(parentElement, preview) {
     var description = preview.description;
@@ -38,7 +38,7 @@ WebInspector.RemoteObjectPreviewFormatter = class {
 
   /**
    * @param {!Element} parentElement
-   * @param {!RuntimeAgent.ObjectPreview} preview
+   * @param {!Protocol.Runtime.ObjectPreview} preview
    */
   _appendPropertiesPreview(parentElement, preview) {
     var isArray = preview.subtype === 'array' || preview.subtype === 'typedarray';
@@ -48,8 +48,8 @@ WebInspector.RemoteObjectPreviewFormatter = class {
       properties = properties.slice().stableSort(compareIndexesFirst);
 
     /**
-     * @param {!RuntimeAgent.PropertyPreview} a
-     * @param {!RuntimeAgent.PropertyPreview} b
+     * @param {!Protocol.Runtime.PropertyPreview} a
+     * @param {!Protocol.Runtime.PropertyPreview} b
      */
     function compareIndexesFirst(a, b) {
       var index1 = toArrayIndex(a.name);
@@ -94,7 +94,7 @@ WebInspector.RemoteObjectPreviewFormatter = class {
 
   /**
    * @param {!Element} parentElement
-   * @param {!RuntimeAgent.ObjectPreview} preview
+   * @param {!Protocol.Runtime.ObjectPreview} preview
    */
   _appendEntriesPreview(parentElement, preview) {
     parentElement.createTextChild('{');
@@ -115,7 +115,7 @@ WebInspector.RemoteObjectPreviewFormatter = class {
   }
 
   /**
-   * @param {!Array.<!RuntimeAgent.PropertyPreview>} propertyPath
+   * @param {!Array.<!Protocol.Runtime.PropertyPreview>} propertyPath
    * @return {!Element}
    */
   _renderPropertyPreviewOrAccessor(propertyPath) {

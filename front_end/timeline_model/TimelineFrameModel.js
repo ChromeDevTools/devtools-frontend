@@ -92,7 +92,7 @@ WebInspector.TimelineFrameModel = class {
 
   /**
    * @param {!WebInspector.TracingModel.Event} rasterTask
-   * @return Promise<?{rect: !DOMAgent.Rect, snapshot: !WebInspector.PaintProfilerSnapshot}>}
+   * @return Promise<?{rect: !Protocol.DOM.Rect, snapshot: !WebInspector.PaintProfilerSnapshot}>}
    */
   rasterTilePromise(rasterTask) {
     if (!this._target)

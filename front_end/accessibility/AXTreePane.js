@@ -89,7 +89,7 @@ WebInspector.AXNodeTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {?AccessibilityAgent.AXValue} role
+   * @param {?Protocol.Accessibility.AXValue} role
    */
   _appendRoleElement(role) {
     if (!role)

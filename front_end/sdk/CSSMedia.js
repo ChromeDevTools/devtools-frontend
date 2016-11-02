@@ -6,7 +6,7 @@
  */
 WebInspector.CSSMediaQuery = class {
   /**
-   * @param {!CSSAgent.MediaQuery} payload
+   * @param {!Protocol.CSS.MediaQuery} payload
    */
   constructor(payload) {
     this._active = payload.active;
@@ -16,7 +16,7 @@ WebInspector.CSSMediaQuery = class {
   }
 
   /**
-   * @param {!CSSAgent.MediaQuery} payload
+   * @param {!Protocol.CSS.MediaQuery} payload
    * @return {!WebInspector.CSSMediaQuery}
    */
   static parsePayload(payload) {
@@ -44,7 +44,7 @@ WebInspector.CSSMediaQuery = class {
  */
 WebInspector.CSSMediaQueryExpression = class {
   /**
-   * @param {!CSSAgent.MediaQueryExpression} payload
+   * @param {!Protocol.CSS.MediaQueryExpression} payload
    */
   constructor(payload) {
     this._value = payload.value;
@@ -55,7 +55,7 @@ WebInspector.CSSMediaQueryExpression = class {
   }
 
   /**
-   * @param {!CSSAgent.MediaQueryExpression} payload
+   * @param {!Protocol.CSS.MediaQueryExpression} payload
    * @return {!WebInspector.CSSMediaQueryExpression}
    */
   static parsePayload(payload) {
@@ -105,7 +105,7 @@ WebInspector.CSSMediaQueryExpression = class {
 WebInspector.CSSMedia = class {
   /**
    * @param {!WebInspector.CSSModel} cssModel
-   * @param {!CSSAgent.CSSMedia} payload
+   * @param {!Protocol.CSS.CSSMedia} payload
    */
   constructor(cssModel, payload) {
     this._cssModel = cssModel;
@@ -114,7 +114,7 @@ WebInspector.CSSMedia = class {
 
   /**
    * @param {!WebInspector.CSSModel} cssModel
-   * @param {!CSSAgent.CSSMedia} payload
+   * @param {!Protocol.CSS.CSSMedia} payload
    * @return {!WebInspector.CSSMedia}
    */
   static parsePayload(cssModel, payload) {
@@ -123,7 +123,7 @@ WebInspector.CSSMedia = class {
 
   /**
    * @param {!WebInspector.CSSModel} cssModel
-   * @param {!Array.<!CSSAgent.CSSMedia>} payload
+   * @param {!Array.<!Protocol.CSS.CSSMedia>} payload
    * @return {!Array.<!WebInspector.CSSMedia>}
    */
   static parseMediaArrayPayload(cssModel, payload) {
@@ -134,7 +134,7 @@ WebInspector.CSSMedia = class {
   }
 
   /**
-   * @param {!CSSAgent.CSSMedia} payload
+   * @param {!Protocol.CSS.CSSMedia} payload
    */
   _reinitialize(payload) {
     this.text = payload.text;
@@ -157,7 +157,7 @@ WebInspector.CSSMedia = class {
     if (this.styleSheetId !== edit.styleSheetId || !this.range)
       return;
     if (edit.oldRange.equal(this.range))
-      this._reinitialize(/** @type {!CSSAgent.CSSMedia} */ (edit.payload));
+      this._reinitialize(/** @type {!Protocol.CSS.CSSMedia} */ (edit.payload));
     else
       this.range = this.range.rebaseAfterTextEdit(edit.oldRange, edit.newRange);
   }

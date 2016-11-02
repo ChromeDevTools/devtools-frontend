@@ -84,7 +84,7 @@ WebInspector.LayerTreeModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {?Array.<!LayerTreeAgent.Layer>} layers
+   * @param {?Array.<!Protocol.LayerTree.Layer>} layers
    */
   _layerTreeChanged(layers) {
     if (!this._enabled)
@@ -109,8 +109,8 @@ WebInspector.LayerTreeModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!LayerTreeAgent.LayerId} layerId
-   * @param {!DOMAgent.Rect} clipRect
+   * @param {!Protocol.LayerTree.LayerId} layerId
+   * @param {!Protocol.DOM.Rect} clipRect
    */
   _layerPainted(layerId, clipRect) {
     if (!this._enabled)
@@ -150,7 +150,7 @@ WebInspector.AgentLayerTree = class extends WebInspector.LayerTreeBase {
   }
 
   /**
-   * @param {?Array.<!LayerTreeAgent.Layer>} payload
+   * @param {?Array.<!Protocol.LayerTree.Layer>} payload
    * @param {function()} callback
    */
   setLayers(payload, callback) {
@@ -178,7 +178,7 @@ WebInspector.AgentLayerTree = class extends WebInspector.LayerTreeBase {
   }
 
   /**
-   * @param {?Array.<!LayerTreeAgent.Layer>} layers
+   * @param {?Array.<!Protocol.LayerTree.Layer>} layers
    */
   _innerSetLayers(layers) {
     this.setRoot(null);
@@ -228,7 +228,7 @@ WebInspector.AgentLayerTree = class extends WebInspector.LayerTreeBase {
 WebInspector.AgentLayer = class {
   /**
    * @param {?WebInspector.Target} target
-   * @param {!LayerTreeAgent.Layer} layerPayload
+   * @param {!Protocol.LayerTree.Layer} layerPayload
    */
   constructor(target, layerPayload) {
     this._target = target;
@@ -391,7 +391,7 @@ WebInspector.AgentLayer = class {
 
   /**
    * @override
-   * @return {?DOMAgent.Rect}
+   * @return {?Protocol.DOM.Rect}
    */
   lastPaintRect() {
     return this._lastPaintRect;
@@ -399,7 +399,7 @@ WebInspector.AgentLayer = class {
 
   /**
    * @override
-   * @return {!Array.<!LayerTreeAgent.ScrollRect>}
+   * @return {!Array.<!Protocol.LayerTree.ScrollRect>}
    */
   scrollRects() {
     return this._scrollRects;
@@ -416,7 +416,7 @@ WebInspector.AgentLayer = class {
     }
 
     var wrappedCallback =
-        InspectorBackend.wrapClientCallback(callback, 'LayerTreeAgent.reasonsForCompositingLayer(): ', undefined, []);
+        InspectorBackend.wrapClientCallback(callback, 'Protocol.LayerTree.reasonsForCompositingLayer(): ', undefined, []);
     this._target.layerTreeAgent().compositingReasons(this.id(), wrappedCallback);
   }
 
@@ -454,7 +454,7 @@ WebInspector.AgentLayer = class {
   }
 
   /**
-   * @param {!DOMAgent.Rect} rect
+   * @param {!Protocol.DOM.Rect} rect
    */
   _didPaint(rect) {
     this._lastPaintRect = rect;
@@ -463,7 +463,7 @@ WebInspector.AgentLayer = class {
   }
 
   /**
-   * @param {!LayerTreeAgent.Layer} layerPayload
+   * @param {!Protocol.LayerTree.Layer} layerPayload
    */
   _reset(layerPayload) {
     /** @type {?WebInspector.DOMNode} */
@@ -540,7 +540,7 @@ WebInspector.AgentLayer = class {
 };
 
 /**
- * @implements {LayerTreeAgent.Dispatcher}
+ * @implements {Protocol.LayerTreeDispatcher}
  * @unrestricted
  */
 WebInspector.LayerTreeDispatcher = class {
@@ -553,7 +553,7 @@ WebInspector.LayerTreeDispatcher = class {
 
   /**
    * @override
-   * @param {!Array.<!LayerTreeAgent.Layer>=} layers
+   * @param {!Array.<!Protocol.LayerTree.Layer>=} layers
    */
   layerTreeDidChange(layers) {
     this._layerTreeModel._layerTreeChanged(layers || null);
@@ -561,8 +561,8 @@ WebInspector.LayerTreeDispatcher = class {
 
   /**
    * @override
-   * @param {!LayerTreeAgent.LayerId} layerId
-   * @param {!DOMAgent.Rect} clipRect
+   * @param {!Protocol.LayerTree.LayerId} layerId
+   * @param {!Protocol.DOM.Rect} clipRect
    */
   layerPainted(layerId, clipRect) {
     this._layerTreeModel._layerPainted(layerId, clipRect);

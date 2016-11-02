@@ -118,7 +118,7 @@ WebInspector.SamplingHeapProfileType = class extends WebInspector.ProfileType {
     var recordedProfile;
 
     /**
-     * @param {?HeapProfilerAgent.SamplingHeapProfile} profile
+     * @param {?Protocol.HeapProfiler.SamplingHeapProfile} profile
      * @this {WebInspector.SamplingHeapProfileType}
      */
     function didStopProfiling(profile) {
@@ -186,7 +186,7 @@ WebInspector.SamplingHeapProfileHeader = class extends WebInspector.WritableProf
   }
 
   /**
-   * @return {!HeapProfilerAgent.SamplingHeapProfile}
+   * @return {!Protocol.HeapProfiler.SamplingHeapProfile}
    */
   protocolProfile() {
     return this._protocolProfile;
@@ -198,10 +198,10 @@ WebInspector.SamplingHeapProfileHeader = class extends WebInspector.WritableProf
  */
 WebInspector.SamplingHeapProfileNode = class extends WebInspector.ProfileNode {
   /**
-   * @param {!HeapProfilerAgent.SamplingHeapProfileNode} node
+   * @param {!Protocol.HeapProfiler.SamplingHeapProfileNode} node
    */
   constructor(node) {
-    var callFrame = node.callFrame || /** @type {!RuntimeAgent.CallFrame} */ ({
+    var callFrame = node.callFrame || /** @type {!Protocol.Runtime.CallFrame} */ ({
                       // Backward compatibility for old CpuProfileNode format.
                       functionName: node['functionName'],
                       scriptId: node['scriptId'],
@@ -219,14 +219,14 @@ WebInspector.SamplingHeapProfileNode = class extends WebInspector.ProfileNode {
  */
 WebInspector.SamplingHeapProfileModel = class extends WebInspector.ProfileTreeModel {
   /**
-   * @param {!HeapProfilerAgent.SamplingHeapProfile} profile
+   * @param {!Protocol.HeapProfiler.SamplingHeapProfile} profile
    */
   constructor(profile) {
     super();
     this.initialize(translateProfileTree(profile.head));
 
     /**
-     * @param {!HeapProfilerAgent.SamplingHeapProfileNode} root
+     * @param {!Protocol.HeapProfiler.SamplingHeapProfileNode} root
      * @return {!WebInspector.SamplingHeapProfileNode}
      */
     function translateProfileTree(root) {

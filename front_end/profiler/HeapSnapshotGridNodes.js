@@ -610,7 +610,7 @@ WebInspector.HeapSnapshotGenericObjectNode = class extends WebInspector.HeapSnap
   queryObjectContent(target, callback, objectGroupName) {
     /**
      * @param {?Protocol.Error} error
-     * @param {!RuntimeAgent.RemoteObject} object
+     * @param {!Protocol.Runtime.RemoteObject} object
      */
     function formatResult(error, object) {
       if (!error && object.type)

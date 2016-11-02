@@ -76,7 +76,7 @@ WebInspector.ScopeChainSidebarPane = class extends WebInspector.VBox {
       var extraProperties = [];
 
       switch (scope.type()) {
-        case DebuggerAgent.ScopeType.Local:
+        case Protocol.Debugger.ScopeType.Local:
           foundLocalScope = true;
           title = WebInspector.UIString('Local');
           emptyPlaceholder = WebInspector.UIString('No Variables');
@@ -95,7 +95,7 @@ WebInspector.ScopeChainSidebarPane = class extends WebInspector.VBox {
                   undefined, undefined, true));
           }
           break;
-        case DebuggerAgent.ScopeType.Closure:
+        case Protocol.Debugger.ScopeType.Closure:
           var scopeName = scope.name();
           if (scopeName)
             title = WebInspector.UIString('Closure (%s)', WebInspector.beautifyFunctionName(scopeName));
@@ -103,19 +103,19 @@ WebInspector.ScopeChainSidebarPane = class extends WebInspector.VBox {
             title = WebInspector.UIString('Closure');
           emptyPlaceholder = WebInspector.UIString('No Variables');
           break;
-        case DebuggerAgent.ScopeType.Catch:
+        case Protocol.Debugger.ScopeType.Catch:
           title = WebInspector.UIString('Catch');
           break;
-        case DebuggerAgent.ScopeType.Block:
+        case Protocol.Debugger.ScopeType.Block:
           title = WebInspector.UIString('Block');
           break;
-        case DebuggerAgent.ScopeType.Script:
+        case Protocol.Debugger.ScopeType.Script:
           title = WebInspector.UIString('Script');
           break;
-        case DebuggerAgent.ScopeType.With:
+        case Protocol.Debugger.ScopeType.With:
           title = WebInspector.UIString('With Block');
           break;
-        case DebuggerAgent.ScopeType.Global:
+        case Protocol.Debugger.ScopeType.Global:
           title = WebInspector.UIString('Global');
           break;
       }
@@ -133,9 +133,9 @@ WebInspector.ScopeChainSidebarPane = class extends WebInspector.VBox {
           emptyPlaceholder, true, extraProperties);
       this._expandController.watchSection(title + (subtitle ? ':' + subtitle : ''), section);
 
-      if (scope.type() === DebuggerAgent.ScopeType.Global)
+      if (scope.type() === Protocol.Debugger.ScopeType.Global)
         section.objectTreeElement().collapse();
-      else if (!foundLocalScope || scope.type() === DebuggerAgent.ScopeType.Local)
+      else if (!foundLocalScope || scope.type() === Protocol.Debugger.ScopeType.Local)
         section.objectTreeElement().expand();
 
       section.element.classList.add('scope-chain-sidebar-pane-section');

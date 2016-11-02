@@ -2009,7 +2009,7 @@ WebInspector.ApplicationCacheManifestTreeElement = class extends WebInspector.Ba
 WebInspector.ApplicationCacheFrameTreeElement = class extends WebInspector.BaseStorageTreeElement {
   /**
    * @param {!WebInspector.ResourcesPanel} storagePanel
-   * @param {!PageAgent.FrameId} frameId
+   * @param {!Protocol.Page.FrameId} frameId
    * @param {string} manifestURL
    */
   constructor(storagePanel, frameId, manifestURL) {

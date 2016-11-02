@@ -65,7 +65,7 @@ WebInspector.PlatformFontsWidget = class extends WebInspector.ThrottledWidget {
 
   /**
    * @param {!WebInspector.DOMNode} node
-   * @param {?Array.<!CSSAgent.PlatformFontUsage>} platformFonts
+   * @param {?Array.<!Protocol.CSS.PlatformFontUsage>} platformFonts
    */
   _refreshUI(node, platformFonts) {
     if (this._sharedModel.node() !== node)

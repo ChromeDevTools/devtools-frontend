@@ -193,16 +193,16 @@ WebInspector.TimelineProfileTree.eventURL = function(event) {
 
 /**
  * @param {!WebInspector.TracingModel.Event} event
- * @return {?RuntimeAgent.CallFrame}
+ * @return {?Protocol.Runtime.CallFrame}
  */
 WebInspector.TimelineProfileTree.eventStackFrame = function(event) {
   if (event.name === WebInspector.TimelineModel.RecordType.JSFrame)
-    return /** @type {?RuntimeAgent.CallFrame} */ (event.args['data'] || null);
+    return /** @type {?Protocol.Runtime.CallFrame} */ (event.args['data'] || null);
   var topFrame = event.stackTrace && event.stackTrace[0];
   if (topFrame)
-    return /** @type {!RuntimeAgent.CallFrame} */ (topFrame);
+    return /** @type {!Protocol.Runtime.CallFrame} */ (topFrame);
   var initiator = event.initiator;
-  return /** @type {?RuntimeAgent.CallFrame} */ (initiator && initiator.stackTrace && initiator.stackTrace[0] || null);
+  return /** @type {?Protocol.Runtime.CallFrame} */ (initiator && initiator.stackTrace && initiator.stackTrace[0] || null);
 };
 
 /**

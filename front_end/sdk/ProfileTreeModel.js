@@ -6,10 +6,10 @@
  */
 WebInspector.ProfileNode = class {
   /**
-   * @param {!RuntimeAgent.CallFrame} callFrame
+   * @param {!Protocol.Runtime.CallFrame} callFrame
    */
   constructor(callFrame) {
-    /** @type {!RuntimeAgent.CallFrame} */
+    /** @type {!Protocol.Runtime.CallFrame} */
     this.callFrame = callFrame;
     /** @type {string} */
     this.callUID = `${this.callFrame.functionName}@${this.callFrame.scriptId}:${this.callFrame.lineNumber}`;

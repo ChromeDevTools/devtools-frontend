@@ -26,7 +26,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {ProfilerAgent.Dispatcher}
+ * @implements {Protocol.ProfilerDispatcher}
  * @unrestricted
  */
 WebInspector.CPUProfilerModel = class extends WebInspector.SDKModel {
@@ -52,7 +52,7 @@ WebInspector.CPUProfilerModel = class extends WebInspector.SDKModel {
   /**
    * @override
    * @param {string} id
-   * @param {!DebuggerAgent.Location} scriptLocation
+   * @param {!Protocol.Debugger.Location} scriptLocation
    * @param {string=} title
    */
   consoleProfileStarted(id, scriptLocation, title) {
@@ -62,8 +62,8 @@ WebInspector.CPUProfilerModel = class extends WebInspector.SDKModel {
   /**
    * @override
    * @param {string} id
-   * @param {!DebuggerAgent.Location} scriptLocation
-   * @param {!ProfilerAgent.Profile} cpuProfile
+   * @param {!Protocol.Debugger.Location} scriptLocation
+   * @param {!Protocol.Profiler.Profile} cpuProfile
    * @param {string=} title
    */
   consoleProfileFinished(id, scriptLocation, cpuProfile, title) {
@@ -74,9 +74,9 @@ WebInspector.CPUProfilerModel = class extends WebInspector.SDKModel {
   /**
    * @param {symbol} eventName
    * @param {string} id
-   * @param {!DebuggerAgent.Location} scriptLocation
+   * @param {!Protocol.Debugger.Location} scriptLocation
    * @param {string=} title
-   * @param {!ProfilerAgent.Profile=} cpuProfile
+   * @param {!Protocol.Profiler.Profile=} cpuProfile
    */
   _dispatchProfileEvent(eventName, id, scriptLocation, title, cpuProfile) {
     // Make sure ProfilesPanel is initialized and CPUProfileType is created.
@@ -105,13 +105,13 @@ WebInspector.CPUProfilerModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @return {!Promise.<?ProfilerAgent.Profile>}
+   * @return {!Promise.<?Protocol.Profiler.Profile>}
    */
   stopRecording() {
     /**
      * @param {?Protocol.Error} error
-     * @param {?ProfilerAgent.Profile} profile
-     * @return {?ProfilerAgent.Profile}
+     * @param {?Protocol.Profiler.Profile} profile
+     * @return {?Protocol.Profiler.Profile}
      */
     function extractProfile(error, profile) {
       return !error && profile ? profile : null;
@@ -135,5 +135,5 @@ WebInspector.CPUProfilerModel.Events = {
   ConsoleProfileFinished: Symbol('ConsoleProfileFinished')
 };
 
-/** @typedef {!{id: string, scriptLocation: !WebInspector.DebuggerModel.Location, title: (string|undefined), cpuProfile: (!ProfilerAgent.Profile|undefined)}} */
+/** @typedef {!{id: string, scriptLocation: !WebInspector.DebuggerModel.Location, title: (string|undefined), cpuProfile: (!Protocol.Profiler.Profile|undefined)}} */
 WebInspector.CPUProfilerModel.EventData;

@@ -18,7 +18,7 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
         new WebInspector.SecurityPanelSidebarTree(this._sidebarMainViewElement, this.showOrigin.bind(this));
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
 
-    /** @type {!Map<!NetworkAgent.LoaderId, !WebInspector.NetworkRequest>} */
+    /** @type {!Map<!Protocol.Network.LoaderId, !WebInspector.NetworkRequest>} */
     this._lastResponseReceivedForLoaderId = new Map();
 
     /** @type {!Map<!WebInspector.SecurityPanel.Origin, !WebInspector.SecurityPanel.OriginState>} */
@@ -78,23 +78,23 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!SecurityAgent.SecurityState} securityState
+   * @param {!Protocol.Security.SecurityState} securityState
    */
   setRanInsecureContentStyle(securityState) {
     this._ranInsecureContentStyle = securityState;
   }
 
   /**
-   * @param {!SecurityAgent.SecurityState} securityState
+   * @param {!Protocol.Security.SecurityState} securityState
    */
   setDisplayedInsecureContentStyle(securityState) {
     this._displayedInsecureContentStyle = securityState;
   }
 
   /**
-   * @param {!SecurityAgent.SecurityState} newSecurityState
-   * @param {!Array<!SecurityAgent.SecurityStateExplanation>} explanations
-   * @param {?SecurityAgent.InsecureContentStatus} insecureContentStatus
+   * @param {!Protocol.Security.SecurityState} newSecurityState
+   * @param {!Array<!Protocol.Security.SecurityStateExplanation>} explanations
+   * @param {?Protocol.Security.InsecureContentStatus} insecureContentStatus
    * @param {boolean} schemeIsCryptographic
    */
   _updateSecurityState(newSecurityState, explanations, insecureContentStatus, schemeIsCryptographic) {
@@ -107,9 +107,9 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
    */
   _onSecurityStateChanged(event) {
     var data = /** @type {!WebInspector.PageSecurityState} */ (event.data);
-    var securityState = /** @type {!SecurityAgent.SecurityState} */ (data.securityState);
-    var explanations = /** @type {!Array<!SecurityAgent.SecurityStateExplanation>} */ (data.explanations);
-    var insecureContentStatus = /** @type {?SecurityAgent.InsecureContentStatus} */ (data.insecureContentStatus);
+    var securityState = /** @type {!Protocol.Security.SecurityState} */ (data.securityState);
+    var explanations = /** @type {!Array<!Protocol.Security.SecurityStateExplanation>} */ (data.explanations);
+    var insecureContentStatus = /** @type {?Protocol.Security.InsecureContentStatus} */ (data.insecureContentStatus);
     var schemeIsCryptographic = /** @type {boolean} */ (data.schemeIsCryptographic);
     this._updateSecurityState(securityState, explanations, insecureContentStatus, schemeIsCryptographic);
   }
@@ -181,12 +181,12 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
       return;
     }
 
-    var securityState = /** @type {!SecurityAgent.SecurityState} */ (request.securityState());
+    var securityState = /** @type {!Protocol.Security.SecurityState} */ (request.securityState());
 
-    if (request.mixedContentType === NetworkAgent.RequestMixedContentType.Blockable && this._ranInsecureContentStyle)
+    if (request.mixedContentType === Protocol.Network.RequestMixedContentType.Blockable && this._ranInsecureContentStyle)
       securityState = this._ranInsecureContentStyle;
     else if (
-        request.mixedContentType === NetworkAgent.RequestMixedContentType.OptionallyBlockable &&
+        request.mixedContentType === Protocol.Network.RequestMixedContentType.OptionallyBlockable &&
         this._displayedInsecureContentStyle)
       securityState = this._displayedInsecureContentStyle;
 
@@ -230,16 +230,16 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
    * @param {!WebInspector.NetworkRequest} request
    */
   _updateFilterRequestCounts(request) {
-    if (request.mixedContentType === NetworkAgent.RequestMixedContentType.None)
+    if (request.mixedContentType === Protocol.Network.RequestMixedContentType.None)
       return;
 
     /** @type {!WebInspector.NetworkLogView.MixedContentFilterValues} */
     var filterKey = WebInspector.NetworkLogView.MixedContentFilterValues.All;
     if (request.wasBlocked())
       filterKey = WebInspector.NetworkLogView.MixedContentFilterValues.Blocked;
-    else if (request.mixedContentType === NetworkAgent.RequestMixedContentType.Blockable)
+    else if (request.mixedContentType === Protocol.Network.RequestMixedContentType.Blockable)
       filterKey = WebInspector.NetworkLogView.MixedContentFilterValues.BlockOverridden;
-    else if (request.mixedContentType === NetworkAgent.RequestMixedContentType.OptionallyBlockable)
+    else if (request.mixedContentType === Protocol.Network.RequestMixedContentType.OptionallyBlockable)
       filterKey = WebInspector.NetworkLogView.MixedContentFilterValues.Displayed;
 
     if (!this._filterRequestCounts.has(filterKey))
@@ -264,9 +264,9 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!SecurityAgent.SecurityState} stateA
-   * @param {!SecurityAgent.SecurityState} stateB
-   * @return {!SecurityAgent.SecurityState}
+   * @param {!Protocol.Security.SecurityState} stateA
+   * @param {!Protocol.Security.SecurityState} stateB
+   * @return {!Protocol.Security.SecurityState}
    */
   _securityStateMin(stateA, stateB) {
     return WebInspector.SecurityModel.SecurityStateComparator(stateA, stateB) < 0 ? stateA : stateB;
@@ -331,7 +331,7 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
    * @param {!WebInspector.Event} event
    */
   _onMainFrameNavigated(event) {
-    var frame = /** type {!PageAgent.Frame}*/ (event.data);
+    var frame = /** type {!Protocol.Page.Frame}*/ (event.data);
     var request = this._lastResponseReceivedForLoaderId.get(frame.loaderId);
 
     this.selectAndSwitchToMainView();
@@ -368,8 +368,8 @@ WebInspector.SecurityPanel.Origin;
 
 /**
  * @typedef {Object}
- * @property {!SecurityAgent.SecurityState} securityState - Current security state of the origin.
- * @property {?NetworkAgent.SecurityDetails} securityDetails - Security details of the origin, if available.
+ * @property {!Protocol.Security.SecurityState} securityState - Current security state of the origin.
+ * @property {?Protocol.Network.SecurityDetails} securityDetails - Security details of the origin, if available.
  * @property {?Promise<>} certificateDetailsPromise - Certificate details of the origin.
  * @property {?WebInspector.SecurityOriginView} originView - Current SecurityOriginView corresponding to origin.
  */
@@ -432,7 +432,7 @@ WebInspector.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
 
   /**
    * @param {!WebInspector.SecurityPanel.Origin} origin
-   * @param {!SecurityAgent.SecurityState} securityState
+   * @param {!Protocol.Security.SecurityState} securityState
    */
   addOrigin(origin, securityState) {
     var originElement = new WebInspector.SecurityPanelSidebarTreeElement(
@@ -451,7 +451,7 @@ WebInspector.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
 
   /**
    * @param {!WebInspector.SecurityPanel.Origin} origin
-   * @param {!SecurityAgent.SecurityState} securityState
+   * @param {!Protocol.Security.SecurityState} securityState
    */
   updateOrigin(origin, securityState) {
     var originElement =
@@ -463,10 +463,10 @@ WebInspector.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
       newParent = this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.MainOrigin);
     } else {
       switch (securityState) {
-        case SecurityAgent.SecurityState.Secure:
+        case Protocol.Security.SecurityState.Secure:
           newParent = this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.Secure);
           break;
-        case SecurityAgent.SecurityState.Unknown:
+        case Protocol.Security.SecurityState.Unknown:
           newParent = this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.Unknown);
           break;
         default:
@@ -531,7 +531,7 @@ WebInspector.SecurityPanelSidebarTreeElement = class extends TreeElement {
     this._iconElement = this.listItemElement.createChild('div', 'icon');
     this._iconElement.classList.add(this._cssPrefix);
     this.listItemElement.createChild('span', 'title').textContent = text;
-    this.setSecurityState(SecurityAgent.SecurityState.Unknown);
+    this.setSecurityState(Protocol.Security.SecurityState.Unknown);
   }
 
   /**
@@ -544,7 +544,7 @@ WebInspector.SecurityPanelSidebarTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!SecurityAgent.SecurityState} newSecurityState
+   * @param {!Protocol.Security.SecurityState} newSecurityState
    */
   setSecurityState(newSecurityState) {
     if (this._securityState)
@@ -555,7 +555,7 @@ WebInspector.SecurityPanelSidebarTreeElement = class extends TreeElement {
   }
 
   /**
-   * @return {!SecurityAgent.SecurityState}
+   * @return {!Protocol.Security.SecurityState}
    */
   securityState() {
     return this._securityState;
@@ -615,7 +615,7 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
 
   /**
    * @param {!Element} parent
-   * @param {!SecurityAgent.SecurityStateExplanation} explanation
+   * @param {!Protocol.Security.SecurityStateExplanation} explanation
    * @return {!Element}
    */
   _addExplanation(parent, explanation) {
@@ -637,9 +637,9 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!SecurityAgent.SecurityState} newSecurityState
-   * @param {!Array<!SecurityAgent.SecurityStateExplanation>} explanations
-   * @param {?SecurityAgent.InsecureContentStatus} insecureContentStatus
+   * @param {!Protocol.Security.SecurityState} newSecurityState
+   * @param {!Array<!Protocol.Security.SecurityStateExplanation>} explanations
+   * @param {?Protocol.Security.InsecureContentStatus} insecureContentStatus
    * @param {boolean} schemeIsCryptographic
    */
   updateSecurityState(newSecurityState, explanations, insecureContentStatus, schemeIsCryptographic) {
@@ -671,7 +671,7 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
     this._securityExplanationsMain.removeChildren();
     this._securityExplanationsExtra.removeChildren();
     for (var explanation of this._explanations) {
-      if (explanation.securityState === SecurityAgent.SecurityState.Info) {
+      if (explanation.securityState === Protocol.Security.SecurityState.Info) {
         this._addExplanation(this._securityExplanationsExtra, explanation);
       } else {
         this._addExplanation(this._securityExplanationsMain, explanation);
@@ -686,8 +686,8 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
         (!this._insecureContentStatus.displayedMixedContent && !this._insecureContentStatus.ranMixedContent &&
          !this._insecureContentStatus.displayedContentWithCertErrors &&
          !this._insecureContentStatus.ranContentWithCertErrors)) {
-      this._addExplanation(this._securityExplanationsMain, /** @type {!SecurityAgent.SecurityStateExplanation} */ ({
-                             'securityState': SecurityAgent.SecurityState.Secure,
+      this._addExplanation(this._securityExplanationsMain, /** @type {!Protocol.Security.SecurityStateExplanation} */ ({
+                             'securityState': Protocol.Security.SecurityState.Secure,
                              'summary': WebInspector.UIString('Secure Resources'),
                              'description': WebInspector.UIString('All resources on this page are served securely.')
                            }));
@@ -717,7 +717,7 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
 
     if (this._panel.filterRequestCount(WebInspector.NetworkLogView.MixedContentFilterValues.Blocked) > 0)
       this._addMixedContentExplanation(
-          this._securityExplanationsExtra, SecurityAgent.SecurityState.Info,
+          this._securityExplanationsExtra, Protocol.Security.SecurityState.Info,
           WebInspector.UIString('Blocked mixed content'),
           WebInspector.UIString('Your page requested non-secure resources that were blocked.'),
           WebInspector.NetworkLogView.MixedContentFilterValues.Blocked, showBlockedMixedContentInNetworkPanel);
@@ -758,14 +758,14 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
 
   /**
    * @param {!Element} parent
-   * @param {!SecurityAgent.SecurityState} securityState
+   * @param {!Protocol.Security.SecurityState} securityState
    * @param {string} summary
    * @param {string} description
    * @param {!WebInspector.NetworkLogView.MixedContentFilterValues} filterKey
    * @param {!Function} networkFilterFn
    */
   _addMixedContentExplanation(parent, securityState, summary, description, filterKey, networkFilterFn) {
-    var mixedContentExplanation = /** @type {!SecurityAgent.SecurityStateExplanation} */ (
+    var mixedContentExplanation = /** @type {!Protocol.Security.SecurityStateExplanation} */ (
         {'securityState': securityState, 'summary': summary, 'description': description});
 
     var explanation = this._addExplanation(parent, mixedContentExplanation);
@@ -801,7 +801,7 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
 
     if (this._insecureContentStatus.ranContentWithCertErrors) {
       this._addExplanation(
-          this._securityExplanationsMain, /** @type {!SecurityAgent.SecurityStateExplanation} */ ({
+          this._securityExplanationsMain, /** @type {!Protocol.Security.SecurityStateExplanation} */ ({
             'securityState': this._insecureContentStatus.ranInsecureContentStyle,
             'summary': WebInspector.UIString('Active content with certificate errors'),
             'description': WebInspector.UIString(
@@ -810,7 +810,7 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
     }
 
     if (this._insecureContentStatus.displayedContentWithCertErrors) {
-      this._addExplanation(this._securityExplanationsMain, /** @type {!SecurityAgent.SecurityStateExplanation} */ ({
+      this._addExplanation(this._securityExplanationsMain, /** @type {!Protocol.Security.SecurityStateExplanation} */ ({
                              'securityState': this._insecureContentStatus.displayedInsecureContentStyle,
                              'summary': WebInspector.UIString('Content with certificate errors'),
                              'description': WebInspector.UIString(
@@ -947,7 +947,7 @@ WebInspector.SecurityOriginView = class extends WebInspector.VBox {
       // TODO(lgarron): Fix the issue and then remove this section. See comment in SecurityPanel._processRequest().
       noteSection.createChild('div').textContent =
           WebInspector.UIString('The security details above are from the first inspected response.');
-    } else if (originState.securityState !== SecurityAgent.SecurityState.Unknown) {
+    } else if (originState.securityState !== Protocol.Security.SecurityState.Unknown) {
       var notSecureSection = this.element.createChild('div', 'origin-view-section');
       notSecureSection.createChild('div', 'origin-view-section-title').textContent =
           WebInspector.UIString('Not Secure');
@@ -1001,7 +1001,7 @@ WebInspector.SecurityOriginView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!SecurityAgent.SecurityState} newSecurityState
+   * @param {!Protocol.Security.SecurityState} newSecurityState
    */
   setSecurityState(newSecurityState) {
     for (var className of Array.prototype.slice.call(this._originLockIcon.classList)) {

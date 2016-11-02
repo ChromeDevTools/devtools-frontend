@@ -153,7 +153,7 @@ WebInspector.HeapSnapshotSortableDataGrid = class extends WebInspector.DataGrid 
   }
 
   /**
-   * @param {!HeapProfilerAgent.HeapSnapshotObjectId} heapSnapshotObjectId
+   * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} heapSnapshotObjectId
    * @return {!Promise<?WebInspector.HeapSnapshotGridNode>}
    */
   revealObjectByHeapSnapshotId(heapSnapshotObjectId) {
@@ -734,7 +734,7 @@ WebInspector.HeapSnapshotConstructorsDataGrid = class extends WebInspector.HeapS
 
   /**
    * @override
-   * @param {!HeapProfilerAgent.HeapSnapshotObjectId} id
+   * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} id
    * @return {!Promise<?WebInspector.HeapSnapshotGridNode>}
    */
   revealObjectByHeapSnapshotId(id) {

@@ -27,7 +27,7 @@ WebInspector.TracingLayerPayload;
 WebInspector.TracingLayerTile;
 
 /** @typedef {!{
-        rect: !DOMAgent.Rect,
+        rect: !Protocol.DOM.Rect,
         snapshot: !WebInspector.PaintProfilerSnapshot
     }}
 */
@@ -350,7 +350,7 @@ WebInspector.TracingLayer = class {
 
   /**
    * @override
-   * @return {?DOMAgent.Rect}
+   * @return {?Protocol.DOM.Rect}
    */
   lastPaintRect() {
     return null;
@@ -358,7 +358,7 @@ WebInspector.TracingLayer = class {
 
   /**
    * @override
-   * @return {!Array.<!LayerTreeAgent.ScrollRect>}
+   * @return {!Array.<!Protocol.LayerTree.ScrollRect>}
    */
   scrollRects() {
     return this._scrollRects;

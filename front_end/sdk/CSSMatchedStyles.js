@@ -8,12 +8,12 @@ WebInspector.CSSMatchedStyles = class {
   /**
    * @param {!WebInspector.CSSModel} cssModel
    * @param {!WebInspector.DOMNode} node
-   * @param {?CSSAgent.CSSStyle} inlinePayload
-   * @param {?CSSAgent.CSSStyle} attributesPayload
-   * @param {!Array.<!CSSAgent.RuleMatch>} matchedPayload
-   * @param {!Array.<!CSSAgent.PseudoElementMatches>} pseudoPayload
-   * @param {!Array.<!CSSAgent.InheritedStyleEntry>} inheritedPayload
-   * @param {!Array.<!CSSAgent.CSSKeyframesRule>} animationsPayload
+   * @param {?Protocol.CSS.CSSStyle} inlinePayload
+   * @param {?Protocol.CSS.CSSStyle} attributesPayload
+   * @param {!Array.<!Protocol.CSS.RuleMatch>} matchedPayload
+   * @param {!Array.<!Protocol.CSS.PseudoElementMatches>} pseudoPayload
+   * @param {!Array.<!Protocol.CSS.InheritedStyleEntry>} inheritedPayload
+   * @param {!Array.<!Protocol.CSS.CSSKeyframesRule>} animationsPayload
    */
   constructor(
       cssModel,
@@ -30,7 +30,7 @@ WebInspector.CSSMatchedStyles = class {
     this._nodeForStyle = new Map();
     this._inheritedStyles = new Set();
     this._keyframes = [];
-    /** @type {!Map<!DOMAgent.NodeId, !Map<string, boolean>>} */
+    /** @type {!Map<!Protocol.DOM.NodeId, !Map<string, boolean>>} */
     this._matchingSelectors = new Map();
 
     /**
@@ -216,7 +216,7 @@ WebInspector.CSSMatchedStyles = class {
      * @param {!WebInspector.DOMNode} node
      * @param {string} selectorText
      * @param {function()} callback
-     * @param {!Array.<!DOMAgent.NodeId>=} matchingNodeIds
+     * @param {!Array.<!Protocol.DOM.NodeId>=} matchingNodeIds
      * @this {WebInspector.CSSMatchedStyles}
      */
     function onQueryComplete(node, selectorText, callback, matchingNodeIds) {
@@ -278,7 +278,7 @@ WebInspector.CSSMatchedStyles = class {
   }
 
   /**
-   * @return {!Map.<!DOMAgent.PseudoType, !Array<!WebInspector.CSSStyleDeclaration>>}
+   * @return {!Map.<!Protocol.DOM.PseudoType, !Array<!WebInspector.CSSStyleDeclaration>>}
    */
   pseudoStyles() {
     return this._pseudoStyles;

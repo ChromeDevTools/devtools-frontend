@@ -102,7 +102,7 @@ WebInspector.ServiceWorkersView = class extends WebInspector.VBox {
    */
   _registrationErrorAdded(event) {
     var registration = /** @type {!WebInspector.ServiceWorkerRegistration} */ (event.data['registration']);
-    var error = /** @type {!ServiceWorkerAgent.ServiceWorkerErrorMessage} */ (event.data['error']);
+    var error = /** @type {!Protocol.ServiceWorker.ServiceWorkerErrorMessage} */ (event.data['error']);
     var section = this._sections.get(registration);
     if (!section)
       return;
@@ -311,7 +311,7 @@ WebInspector.ServiceWorkersView.Section = class {
   }
 
   /**
-   * @param {!ServiceWorkerAgent.ServiceWorkerErrorMessage} error
+   * @param {!Protocol.ServiceWorker.ServiceWorkerErrorMessage} error
    */
   _addError(error) {
     var target = this._targetForVersionId(error.versionId);

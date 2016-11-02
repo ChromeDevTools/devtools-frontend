@@ -107,7 +107,7 @@ WebInspector.TimelinePaintProfilerView = class extends WebInspector.SplitWidget 
 
     /**
      * @param {!WebInspector.PaintProfilerSnapshot} snapshot
-     * @param {?DOMAgent.Rect} clipRect
+     * @param {?Protocol.DOM.Rect} clipRect
      * @param {!Array.<!WebInspector.PaintProfilerLogItem>=} log
      * @this {WebInspector.TimelinePaintProfilerView}
      */
@@ -203,7 +203,7 @@ WebInspector.TimelinePaintImageView = class extends WebInspector.Widget {
   }
 
   /**
-   * @param {?DOMAgent.Rect} maskRectangle
+   * @param {?Protocol.DOM.Rect} maskRectangle
    */
   setMask(maskRectangle) {
     this._maskRectangle = maskRectangle;

@@ -64,7 +64,7 @@ WebInspector.RemoteObject = class {
   }
 
   /**
-   * @param {!WebInspector.RemoteObject|!RuntimeAgent.RemoteObject|!RuntimeAgent.ObjectPreview} object
+   * @param {!WebInspector.RemoteObject|!Protocol.Runtime.RemoteObject|!Protocol.Runtime.ObjectPreview} object
    * @return {number}
    */
   static arrayLength(object) {
@@ -77,8 +77,8 @@ WebInspector.RemoteObject = class {
   }
 
   /**
-   * @param {!RuntimeAgent.RemoteObject|!WebInspector.RemoteObject|number|string|boolean|undefined|null} object
-   * @return {!RuntimeAgent.CallArgument}
+   * @param {!Protocol.Runtime.RemoteObject|!WebInspector.RemoteObject|number|string|boolean|undefined|null} object
+   * @return {!Protocol.Runtime.CallArgument}
    */
   static toCallArgument(object) {
     var type = typeof object;
@@ -87,13 +87,13 @@ WebInspector.RemoteObject = class {
     if (type === 'number') {
       var description = String(object);
       if (object === 0 && 1 / object < 0)
-        return {unserializableValue: RuntimeAgent.UnserializableValue.Negative0};
+        return {unserializableValue: Protocol.Runtime.UnserializableValue.Negative0};
       if (description === 'NaN')
-        return {unserializableValue: RuntimeAgent.UnserializableValue.NaN};
+        return {unserializableValue: Protocol.Runtime.UnserializableValue.NaN};
       if (description === 'Infinity')
-        return {unserializableValue: RuntimeAgent.UnserializableValue.Infinity};
+        return {unserializableValue: Protocol.Runtime.UnserializableValue.Infinity};
       if (description === '-Infinity')
-        return {unserializableValue: RuntimeAgent.UnserializableValue.NegativeInfinity};
+        return {unserializableValue: Protocol.Runtime.UnserializableValue.NegativeInfinity};
       return {value: object};
     }
     if (type === 'string' || type === 'boolean')
@@ -180,7 +180,7 @@ WebInspector.RemoteObject = class {
   }
 
   /**
-   * @return {?RuntimeAgent.CustomPreview}
+   * @return {?Protocol.Runtime.CustomPreview}
    */
   customPreview() {
     return null;
@@ -285,7 +285,7 @@ WebInspector.RemoteObject = class {
   }
 
   /**
-   * @param {!RuntimeAgent.CallArgument} name
+   * @param {!Protocol.Runtime.CallArgument} name
    * @param {function(string=)} callback
    */
   deleteProperty(name, callback) {
@@ -293,7 +293,7 @@ WebInspector.RemoteObject = class {
   }
 
   /**
-   * @param {string|!RuntimeAgent.CallArgument} name
+   * @param {string|!Protocol.Runtime.CallArgument} name
    * @param {string} value
    * @param {function(string=)} callback
    */
@@ -303,7 +303,7 @@ WebInspector.RemoteObject = class {
 
   /**
    * @param {function(this:Object, ...)} functionDeclaration
-   * @param {!Array<!RuntimeAgent.CallArgument>=} args
+   * @param {!Array<!Protocol.Runtime.CallArgument>=} args
    * @param {function(?WebInspector.RemoteObject, boolean=)=} callback
    */
   callFunction(functionDeclaration, args, callback) {
@@ -312,7 +312,7 @@ WebInspector.RemoteObject = class {
 
   /**
    * @param {function(this:Object, ...)} functionDeclaration
-   * @param {!Array<!RuntimeAgent.CallArgument>=} args
+   * @param {!Array<!Protocol.Runtime.CallArgument>=} args
    * @return {!Promise<!WebInspector.CallFunctionResult>}
    */
   callFunctionPromise(functionDeclaration, args) {
@@ -339,7 +339,7 @@ WebInspector.RemoteObject = class {
   /**
    * @template T
    * @param {function(this:Object, ...):T} functionDeclaration
-   * @param {!Array<!RuntimeAgent.CallArgument>|undefined} args
+   * @param {!Array<!Protocol.Runtime.CallArgument>|undefined} args
    * @param {function(T)} callback
    */
   callFunctionJSON(functionDeclaration, args, callback) {
@@ -348,7 +348,7 @@ WebInspector.RemoteObject = class {
 
   /**
    * @param {function(this:Object, ...):T} functionDeclaration
-   * @param {!Array<!RuntimeAgent.CallArgument>|undefined} args
+   * @param {!Array<!Protocol.Runtime.CallArgument>|undefined} args
    * @return {!Promise<T>}
    * @template T
    */
@@ -396,10 +396,10 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
    * @param {string} type
    * @param {string|undefined} subtype
    * @param {*} value
-   * @param {!RuntimeAgent.UnserializableValue=} unserializableValue
+   * @param {!Protocol.Runtime.UnserializableValue=} unserializableValue
    * @param {string=} description
-   * @param {!RuntimeAgent.ObjectPreview=} preview
-   * @param {!RuntimeAgent.CustomPreview=} customPreview
+   * @param {!Protocol.Runtime.ObjectPreview=} preview
+   * @param {!Protocol.Runtime.CustomPreview=} customPreview
    */
   constructor(target, objectId, type, subtype, value, unserializableValue, description, preview, customPreview) {
     super();
@@ -423,10 +423,10 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
       this._hasChildren = false;
       if (typeof unserializableValue !== 'undefined') {
         this._unserializableValue = unserializableValue;
-        if (unserializableValue === RuntimeAgent.UnserializableValue.Infinity ||
-            unserializableValue === RuntimeAgent.UnserializableValue.NegativeInfinity ||
-            unserializableValue === RuntimeAgent.UnserializableValue.Negative0 ||
-            unserializableValue === RuntimeAgent.UnserializableValue.NaN) {
+        if (unserializableValue === Protocol.Runtime.UnserializableValue.Infinity ||
+            unserializableValue === Protocol.Runtime.UnserializableValue.NegativeInfinity ||
+            unserializableValue === Protocol.Runtime.UnserializableValue.Negative0 ||
+            unserializableValue === Protocol.Runtime.UnserializableValue.NaN) {
           this.value = Number(unserializableValue);
         } else {
           this.value = unserializableValue;
@@ -440,13 +440,13 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
 
   /**
    * @override
-   * @return {?RuntimeAgent.CustomPreview}
+   * @return {?Protocol.Runtime.CustomPreview}
    */
   customPreview() {
     return this._customPreview;
   }
 
-  /** @return {!RuntimeAgent.RemoteObjectId} */
+  /** @return {!Protocol.Runtime.RemoteObjectId} */
   get objectId() {
     return this._objectId;
   }
@@ -484,7 +484,7 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
   }
 
   /**
-   * @return {!RuntimeAgent.ObjectPreview|undefined}
+   * @return {!Protocol.Runtime.ObjectPreview|undefined}
    */
   get preview() {
     return this._preview;
@@ -535,7 +535,7 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
       /**
        * @this {WebInspector.RemoteObjectImpl}
        * @param {?Protocol.Error} error
-       * @param {!Array<!DOMDebuggerAgent.EventListener>} payloads
+       * @param {!Array<!Protocol.DOMDebugger.EventListener>} payloads
        */
       function mycallback(error, payloads) {
         if (error) {
@@ -547,7 +547,7 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
 
       /**
        * @this {WebInspector.RemoteObjectImpl}
-       * @param {!DOMDebuggerAgent.EventListener} payload
+       * @param {!Protocol.DOMDebugger.EventListener} payload
        */
       function createEventListener(payload) {
         return new WebInspector.EventListener(
@@ -597,9 +597,9 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
 
     /**
      * @param {?Protocol.Error} error
-     * @param {!Array.<!RuntimeAgent.PropertyDescriptor>} properties
-     * @param {!Array.<!RuntimeAgent.InternalPropertyDescriptor>=} internalProperties
-     * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Array.<!Protocol.Runtime.PropertyDescriptor>} properties
+     * @param {!Array.<!Protocol.Runtime.InternalPropertyDescriptor>=} internalProperties
+     * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {WebInspector.RemoteObjectImpl}
      */
     function remoteObjectBinder(error, properties, internalProperties, exceptionDetails) {
@@ -651,7 +651,7 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
 
   /**
    * @override
-   * @param {string|!RuntimeAgent.CallArgument} name
+   * @param {string|!Protocol.Runtime.CallArgument} name
    * @param {string} value
    * @param {function(string=)} callback
    */
@@ -665,8 +665,8 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
 
     /**
      * @param {?Protocol.Error} error
-     * @param {!RuntimeAgent.RemoteObject} result
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.RemoteObject} result
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {WebInspector.RemoteObject}
      */
     function evaluatedCallback(error, result, exceptionDetails) {
@@ -686,8 +686,8 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
   }
 
   /**
-   * @param {!RuntimeAgent.RemoteObject} result
-   * @param {!RuntimeAgent.CallArgument} name
+   * @param {!Protocol.Runtime.RemoteObject} result
+   * @param {!Protocol.Runtime.CallArgument} name
    * @param {function(string=)} callback
    */
   doSetObjectPropertyValue(result, name, callback) {
@@ -704,8 +704,8 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
 
     /**
      * @param {?Protocol.Error} error
-     * @param {!RuntimeAgent.RemoteObject} result
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.RemoteObject} result
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      */
     function propertySetCallback(error, result, exceptionDetails) {
       if (error || !!exceptionDetails) {
@@ -718,7 +718,7 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
 
   /**
    * @override
-   * @param {!RuntimeAgent.CallArgument} name
+   * @param {!Protocol.Runtime.CallArgument} name
    * @param {function(string=)} callback
    */
   deleteProperty(name, callback) {
@@ -734,8 +734,8 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
 
     /**
      * @param {?Protocol.Error} error
-     * @param {!RuntimeAgent.RemoteObject} result
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.RemoteObject} result
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      */
     function deletePropertyCallback(error, result, exceptionDetails) {
       if (error || !!exceptionDetails) {
@@ -752,14 +752,14 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
   /**
    * @override
    * @param {function(this:Object, ...)} functionDeclaration
-   * @param {!Array.<!RuntimeAgent.CallArgument>=} args
+   * @param {!Array.<!Protocol.Runtime.CallArgument>=} args
    * @param {function(?WebInspector.RemoteObject, boolean=)=} callback
    */
   callFunction(functionDeclaration, args, callback) {
     /**
      * @param {?Protocol.Error} error
-     * @param {!RuntimeAgent.RemoteObject} result
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.RemoteObject} result
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {WebInspector.RemoteObjectImpl}
      */
     function mycallback(error, result, exceptionDetails) {
@@ -779,14 +779,14 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
   /**
    * @override
    * @param {function(this:Object)} functionDeclaration
-   * @param {!Array.<!RuntimeAgent.CallArgument>|undefined} args
+   * @param {!Array.<!Protocol.Runtime.CallArgument>|undefined} args
    * @param {function(*)} callback
    */
   callFunctionJSON(functionDeclaration, args, callback) {
     /**
      * @param {?Protocol.Error} error
-     * @param {!RuntimeAgent.RemoteObject} result
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.RemoteObject} result
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      */
     function mycallback(error, result, exceptionDetails) {
       callback((error || !!exceptionDetails) ? null : result.value);
@@ -847,9 +847,9 @@ WebInspector.ScopeRemoteObject = class extends WebInspector.RemoteObjectImpl {
    * @param {string} type
    * @param {string|undefined} subtype
    * @param {*} value
-   * @param {!RuntimeAgent.UnserializableValue=} unserializableValue
+   * @param {!Protocol.Runtime.UnserializableValue=} unserializableValue
    * @param {string=} description
-   * @param {!RuntimeAgent.ObjectPreview=} preview
+   * @param {!Protocol.Runtime.ObjectPreview=} preview
    */
   constructor(target, objectId, scopeRef, type, subtype, value, unserializableValue, description, preview) {
     super(target, objectId, type, subtype, value, unserializableValue, description, preview);
@@ -902,8 +902,8 @@ WebInspector.ScopeRemoteObject = class extends WebInspector.RemoteObjectImpl {
 
   /**
    * @override
-   * @param {!RuntimeAgent.RemoteObject} result
-   * @param {!RuntimeAgent.CallArgument} argumentName
+   * @param {!Protocol.Runtime.RemoteObject} result
+   * @param {!Protocol.Runtime.CallArgument} argumentName
    * @param {function(string=)} callback
    */
   doSetObjectPropertyValue(result, argumentName, callback) {
@@ -1183,7 +1183,7 @@ WebInspector.LocalJSONObject = class extends WebInspector.RemoteObject {
   /**
    * @override
    * @param {function(this:Object, ...)} functionDeclaration
-   * @param {!Array.<!RuntimeAgent.CallArgument>=} args
+   * @param {!Array.<!Protocol.Runtime.CallArgument>=} args
    * @param {function(?WebInspector.RemoteObject, boolean=)=} callback
    */
   callFunction(functionDeclaration, args, callback) {
@@ -1209,7 +1209,7 @@ WebInspector.LocalJSONObject = class extends WebInspector.RemoteObject {
   /**
    * @override
    * @param {function(this:Object)} functionDeclaration
-   * @param {!Array.<!RuntimeAgent.CallArgument>|undefined} args
+   * @param {!Array.<!Protocol.Runtime.CallArgument>|undefined} args
    * @param {function(*)} callback
    */
   callFunctionJSON(functionDeclaration, args, callback) {

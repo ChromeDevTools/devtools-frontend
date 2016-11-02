@@ -322,7 +322,7 @@ WebInspector.ResourceScriptFile = class extends WebInspector.Object {
 
     /**
      * @param {?string} error
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {WebInspector.ResourceScriptFile}
      */
     function scriptSourceWasSet(error, exceptionDetails) {

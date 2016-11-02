@@ -235,7 +235,7 @@ WebInspector.StylesSourceMapping = class {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    */
   _updateStyleSheetTextSoon(styleSheetId) {
     if (this._updateStyleSheetTextTimer)
@@ -246,7 +246,7 @@ WebInspector.StylesSourceMapping = class {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    */
   _updateStyleSheetText(styleSheetId) {
     if (this._updateStyleSheetTextTimer) {

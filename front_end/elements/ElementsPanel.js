@@ -407,7 +407,7 @@ WebInspector.ElementsPanel = class extends WebInspector.Panel {
     }
 
     /**
-     * @param {?DOMAgent.NodeId} restoredNodeId
+     * @param {?Protocol.DOM.NodeId} restoredNodeId
      * @this {WebInspector.ElementsPanel}
      */
     function onNodeRestored(restoredNodeId) {

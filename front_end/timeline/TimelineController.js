@@ -133,7 +133,7 @@ WebInspector.TimelineController = class {
   /**
    * @param {number} targetId
    * @param {?Protocol.Error} error
-   * @param {?ProfilerAgent.Profile} cpuProfile
+   * @param {?Protocol.Profiler.Profile} cpuProfile
    */
   _addCpuProfile(targetId, error, cpuProfile) {
     if (!cpuProfile) {
@@ -213,7 +213,7 @@ WebInspector.TimelineController = class {
   /**
    * @param {number} pid
    * @param {number} tid
-   * @param {?ProfilerAgent.Profile} cpuProfile
+   * @param {?Protocol.Profiler.Profile} cpuProfile
    */
   _injectCpuProfileEvent(pid, tid, cpuProfile) {
     if (!cpuProfile)

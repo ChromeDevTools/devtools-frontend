@@ -693,7 +693,7 @@ WebInspector.NetworkLogViewColumns = class {
     var content;
     if (anchor.classList.contains('network-script-initiated')) {
       var request = /** @type {!WebInspector.NetworkRequest} */ (anchor.request);
-      var initiator = /** @type {!NetworkAgent.Initiator} */ (request.initiator());
+      var initiator = /** @type {!Protocol.Network.Initiator} */ (request.initiator());
       content = WebInspector.DOMPresentationUtils.buildStackTracePreviewContents(
           request.target(), this._popupLinkifier, initiator.stack);
       popover.setCanShrink(true);

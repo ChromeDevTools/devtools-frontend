@@ -40,7 +40,7 @@ type_traits = {
     "integer": "number",
     "number": "number",
     "boolean": "boolean",
-    "array": "!Array.<*>",
+    "array": "!Array<*>",
     "object": "!Object",
 }
 
@@ -88,7 +88,7 @@ def param_type(domain_name, param):
     if "type" in param:
         if param["type"] == "array":
             items = param["items"]
-            return "!Array.<%s>" % param_type(domain_name, items)
+            return "!Array<%s>" % param_type(domain_name, items)
         else:
             return type_traits[param["type"]]
     if "$ref" in param:
@@ -118,12 +118,13 @@ def generate_protocol_externs(output_path, file1, file2):
         if "types" in domain:
             for type in domain["types"]:
                 type_id = full_qualified_type_id(domain_name, type["id"])
-                ref_types[type_id] = "%sAgent.%s" % (domain_name, type["id"])
+                ref_types[type_id] = "Protocol.%s.%s" % (domain_name, type["id"])
 
     for domain in domains:
         domain_name = domain["domain"]
         promisified = domain_name in promisified_domains
 
+        output_file.write("Protocol.%s = {};\n" % domain_name)
         output_file.write("\n\n/**\n * @constructor\n*/\n")
         output_file.write("Protocol.%sAgent = function(){};\n" % domain_name)
 
@@ -173,8 +174,6 @@ def generate_protocol_externs(output_path, file1, file2):
                 output_file.write("/** @param {function(%s):void=} opt_callback */\n" % ", ".join(returns))
                 output_file.write("Protocol.%sAgent.prototype.invoke_%s = function(obj, opt_callback) {}\n" % (domain_name, command["name"]))
 
-        output_file.write("\n\n\nvar %sAgent = function(){};\n" % domain_name)
-
         if "types" in domain:
             for type in domain["types"]:
                 if type["type"] == "object":
@@ -185,24 +184,24 @@ def generate_protocol_externs(output_path, file1, file2):
                             if ("optional" in property):
                                 suffix = "|undefined"
                             if "enum" in property:
-                                enum_name = "%sAgent.%s%s" % (domain_name, type["id"], to_title_case(property["name"]))
+                                enum_name = "Protocol.%s.%s%s" % (domain_name, type["id"], to_title_case(property["name"]))
                                 output_file.write(generate_enum(enum_name, property))
                                 typedef_args.append("%s:(%s%s)" % (property["name"], enum_name, suffix))
                             else:
                                 typedef_args.append("%s:(%s%s)" % (property["name"], param_type(domain_name, property), suffix))
                     if (typedef_args):
-                        output_file.write("\n/** @typedef {!{%s}} */\n%sAgent.%s;\n" % (", ".join(typedef_args), domain_name, type["id"]))
+                        output_file.write("\n/** @typedef {!{%s}} */\nProtocol.%s.%s;\n" % (", ".join(typedef_args), domain_name, type["id"]))
                     else:
-                        output_file.write("\n/** @typedef {!Object} */\n%sAgent.%s;\n" % (domain_name, type["id"]))
+                        output_file.write("\n/** @typedef {!Object} */\nProtocol.%s.%s;\n" % (domain_name, type["id"]))
                 elif type["type"] == "string" and "enum" in type:
-                    output_file.write(generate_enum("%sAgent.%s" % (domain_name, type["id"]), type))
+                    output_file.write(generate_enum("Protocol.%s.%s" % (domain_name, type["id"]), type))
                 elif type["type"] == "array":
-                    output_file.write("\n/** @typedef {!Array.<!%s>} */\n%sAgent.%s;\n" % (param_type(domain_name, type["items"]), domain_name, type["id"]))
+                    output_file.write("\n/** @typedef {!Array<!%s>} */\nProtocol.%s.%s;\n" % (param_type(domain_name, type["items"]), domain_name, type["id"]))
                 else:
-                    output_file.write("\n/** @typedef {%s} */\n%sAgent.%s;\n" % (type_traits[type["type"]], domain_name, type["id"]))
+                    output_file.write("\n/** @typedef {%s} */\nProtocol.%s.%s;\n" % (type_traits[type["type"]], domain_name, type["id"]))
 
         output_file.write("/** @interface */\n")
-        output_file.write("%sAgent.Dispatcher = function() {};\n" % domain_name)
+        output_file.write("Protocol.%sDispatcher = function() {};\n" % domain_name)
         if "events" in domain:
             for event in domain["events"]:
                 params = []
@@ -216,7 +215,7 @@ def generate_protocol_externs(output_path, file1, file2):
                             params.append(param["name"])
                             output_file.write(" * @param {%s} %s\n" % (param_type(domain_name, param), param["name"]))
                     output_file.write(" */\n")
-                output_file.write("%sAgent.Dispatcher.prototype.%s = function(%s) {};\n" % (domain_name, event["name"], ", ".join(params)))
+                output_file.write("Protocol.%sDispatcher.prototype.%s = function(%s) {};\n" % (domain_name, event["name"], ", ".join(params)))
 
     for domain in domains:
         domain_name = domain["domain"]
@@ -225,10 +224,10 @@ def generate_protocol_externs(output_path, file1, file2):
             uppercase_length += 1
 
         output_file.write("/** @return {!Protocol.%sAgent}*/\n" % domain_name)
-        output_file.write("Protocol.Target.prototype.%s = function(){};\n" % (domain_name[:uppercase_length].lower() + domain_name[uppercase_length:] + "Agent"))
+        output_file.write("Protocol.TargetBase.prototype.%s = function(){};\n" % (domain_name[:uppercase_length].lower() + domain_name[uppercase_length:] + "Agent"))
 
-        output_file.write("/**\n * @param {!%sAgent.Dispatcher} dispatcher\n */\n" % domain_name)
-        output_file.write("Protocol.Target.prototype.register%sDispatcher = function(dispatcher) {}\n" % domain_name)
+        output_file.write("/**\n * @param {!Protocol.%sDispatcher} dispatcher\n */\n" % domain_name)
+        output_file.write("Protocol.TargetBase.prototype.register%sDispatcher = function(dispatcher) {}\n" % domain_name)
 
 
     output_file.close()

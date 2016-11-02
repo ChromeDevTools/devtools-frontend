@@ -175,7 +175,7 @@ WebInspector.ServiceWorkerManager = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @param {!Array.<!ServiceWorkerAgent.ServiceWorkerRegistration>} registrations
+   * @param {!Array.<!Protocol.ServiceWorker.ServiceWorkerRegistration>} registrations
    */
   _workerRegistrationUpdated(registrations) {
     for (var payload of registrations) {
@@ -198,7 +198,7 @@ WebInspector.ServiceWorkerManager = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @param {!Array.<!ServiceWorkerAgent.ServiceWorkerVersion>} versions
+   * @param {!Array.<!Protocol.ServiceWorker.ServiceWorkerVersion>} versions
    */
   _workerVersionUpdated(versions) {
     /** @type {!Set.<!WebInspector.ServiceWorkerRegistration>} */
@@ -221,7 +221,7 @@ WebInspector.ServiceWorkerManager = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @param {!ServiceWorkerAgent.ServiceWorkerErrorMessage} payload
+   * @param {!Protocol.ServiceWorker.ServiceWorkerErrorMessage} payload
    */
   _workerErrorReported(payload) {
     var registration = this._registrations.get(payload.registrationId);
@@ -252,7 +252,7 @@ WebInspector.ServiceWorkerManager.Events = {
 };
 
 /**
- * @implements {ServiceWorkerAgent.Dispatcher}
+ * @implements {Protocol.ServiceWorkerDispatcher}
  * @unrestricted
  */
 WebInspector.ServiceWorkerDispatcher = class {
@@ -265,7 +265,7 @@ WebInspector.ServiceWorkerDispatcher = class {
 
   /**
    * @override
-   * @param {!Array.<!ServiceWorkerAgent.ServiceWorkerRegistration>} registrations
+   * @param {!Array.<!Protocol.ServiceWorker.ServiceWorkerRegistration>} registrations
    */
   workerRegistrationUpdated(registrations) {
     this._manager._workerRegistrationUpdated(registrations);
@@ -273,7 +273,7 @@ WebInspector.ServiceWorkerDispatcher = class {
 
   /**
    * @override
-   * @param {!Array.<!ServiceWorkerAgent.ServiceWorkerVersion>} versions
+   * @param {!Array.<!Protocol.ServiceWorker.ServiceWorkerVersion>} versions
    */
   workerVersionUpdated(versions) {
     this._manager._workerVersionUpdated(versions);
@@ -281,7 +281,7 @@ WebInspector.ServiceWorkerDispatcher = class {
 
   /**
    * @override
-   * @param {!ServiceWorkerAgent.ServiceWorkerErrorMessage} errorMessage
+   * @param {!Protocol.ServiceWorker.ServiceWorkerErrorMessage} errorMessage
    */
   workerErrorReported(errorMessage) {
     this._manager._workerErrorReported(errorMessage);
@@ -294,7 +294,7 @@ WebInspector.ServiceWorkerDispatcher = class {
 WebInspector.ServiceWorkerVersion = class {
   /**
    * @param {!WebInspector.ServiceWorkerRegistration} registration
-   * @param {!ServiceWorkerAgent.ServiceWorkerVersion} payload
+   * @param {!Protocol.ServiceWorker.ServiceWorkerVersion} payload
    */
   constructor(registration, payload) {
     this.registration = registration;
@@ -302,7 +302,7 @@ WebInspector.ServiceWorkerVersion = class {
   }
 
   /**
-   * @param {!ServiceWorkerAgent.ServiceWorkerVersion} payload
+   * @param {!Protocol.ServiceWorker.ServiceWorkerVersion} payload
    */
   _update(payload) {
     this.id = payload.versionId;
@@ -330,78 +330,78 @@ WebInspector.ServiceWorkerVersion = class {
    * @return {boolean}
    */
   isStoppedAndRedundant() {
-    return this.runningStatus === ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Stopped &&
-        this.status === ServiceWorkerAgent.ServiceWorkerVersionStatus.Redundant;
+    return this.runningStatus === Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped &&
+        this.status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant;
   }
 
   /**
    * @return {boolean}
    */
   isStopped() {
-    return this.runningStatus === ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Stopped;
+    return this.runningStatus === Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped;
   }
 
   /**
    * @return {boolean}
    */
   isStarting() {
-    return this.runningStatus === ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Starting;
+    return this.runningStatus === Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Starting;
   }
 
   /**
    * @return {boolean}
    */
   isRunning() {
-    return this.runningStatus === ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Running;
+    return this.runningStatus === Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running;
   }
 
   /**
    * @return {boolean}
    */
   isStopping() {
-    return this.runningStatus === ServiceWorkerAgent.ServiceWorkerVersionRunningStatus.Stopping;
+    return this.runningStatus === Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopping;
   }
 
   /**
    * @return {boolean}
    */
   isNew() {
-    return this.status === ServiceWorkerAgent.ServiceWorkerVersionStatus.New;
+    return this.status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.New;
   }
 
   /**
    * @return {boolean}
    */
   isInstalling() {
-    return this.status === ServiceWorkerAgent.ServiceWorkerVersionStatus.Installing;
+    return this.status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing;
   }
 
   /**
    * @return {boolean}
    */
   isInstalled() {
-    return this.status === ServiceWorkerAgent.ServiceWorkerVersionStatus.Installed;
+    return this.status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installed;
   }
 
   /**
    * @return {boolean}
    */
   isActivating() {
-    return this.status === ServiceWorkerAgent.ServiceWorkerVersionStatus.Activating;
+    return this.status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activating;
   }
 
   /**
    * @return {boolean}
    */
   isActivated() {
-    return this.status === ServiceWorkerAgent.ServiceWorkerVersionStatus.Activated;
+    return this.status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated;
   }
 
   /**
    * @return {boolean}
    */
   isRedundant() {
-    return this.status === ServiceWorkerAgent.ServiceWorkerVersionStatus.Redundant;
+    return this.status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant;
   }
 
   /**
@@ -433,19 +433,19 @@ WebInspector.ServiceWorkerVersion.Modes = {
  */
 WebInspector.ServiceWorkerRegistration = class {
   /**
-   * @param {!ServiceWorkerAgent.ServiceWorkerRegistration} payload
+   * @param {!Protocol.ServiceWorker.ServiceWorkerRegistration} payload
    */
   constructor(payload) {
     this._update(payload);
     /** @type {!Map.<string, !WebInspector.ServiceWorkerVersion>} */
     this.versions = new Map();
     this._deleting = false;
-    /** @type {!Array<!ServiceWorkerAgent.ServiceWorkerErrorMessage>} */
+    /** @type {!Array<!Protocol.ServiceWorker.ServiceWorkerErrorMessage>} */
     this.errors = [];
   }
 
   /**
-   * @param {!ServiceWorkerAgent.ServiceWorkerRegistration} payload
+   * @param {!Protocol.ServiceWorker.ServiceWorkerRegistration} payload
    */
   _update(payload) {
     this._fingerprint = Symbol('fingerprint');
@@ -476,7 +476,7 @@ WebInspector.ServiceWorkerRegistration = class {
   }
 
   /**
-   * @param {!ServiceWorkerAgent.ServiceWorkerVersion} payload
+   * @param {!Protocol.ServiceWorker.ServiceWorkerVersion} payload
    * @return {!WebInspector.ServiceWorkerVersion}
    */
   _updateVersion(payload) {

@@ -54,7 +54,7 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
    *   date: (number|undefined),
    *   number: (number|undefined),
    *   string: (string|undefined),
-   *   type: !IndexedDBAgent.KeyType<string>
+   *   type: !Protocol.IndexedDB.KeyType<string>
    * }|undefined)}
    */
   static keyFromIDBKey(idbKey) {
@@ -86,13 +86,13 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
       default:
         return undefined;
     }
-    key.type = /** @type {!IndexedDBAgent.KeyType<string>} */ (type);
+    key.type = /** @type {!Protocol.IndexedDB.KeyType<string>} */ (type);
     return key;
   }
 
   /**
    * @param {?IDBKeyRange=} idbKeyRange
-   * @return {?IndexedDBAgent.KeyRange}
+   * @return {?Protocol.IndexedDB.KeyRange}
    * eturn {?{lower: ?Object, upper: ?Object, lowerOpen: *, upperOpen: *}}
    */
   static keyRangeFromIDBKeyRange(idbKeyRange) {
@@ -108,7 +108,7 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!IndexedDBAgent.KeyPath} keyPath
+   * @param {!Protocol.IndexedDB.KeyPath} keyPath
    * @return {?string|!Array.<string>|undefined}
    */
   static idbKeyPathFromKeyPath(keyPath) {
@@ -314,7 +314,7 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
   _loadDatabase(databaseId) {
     /**
      * @param {?Protocol.Error} error
-     * @param {!IndexedDBAgent.DatabaseWithObjectStores} databaseWithObjectStores
+     * @param {!Protocol.IndexedDB.DatabaseWithObjectStores} databaseWithObjectStores
      * @this {WebInspector.IndexedDBModel}
      */
     function callback(error, databaseWithObjectStores) {
@@ -387,7 +387,7 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
   _requestData(databaseId, databaseName, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback) {
     /**
      * @param {?Protocol.Error} error
-     * @param {!Array.<!IndexedDBAgent.DataEntry>} dataEntries
+     * @param {!Array.<!Protocol.IndexedDB.DataEntry>} dataEntries
      * @param {boolean} hasMore
      * @this {WebInspector.IndexedDBModel}
      */

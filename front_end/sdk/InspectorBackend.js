@@ -28,6 +28,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+var Protocol = {};
+
+/** @typedef {string} */
+Protocol.Error;
+
 /**
  * @unrestricted
  */
@@ -64,22 +69,22 @@ var InspectorBackendClass = class {
     var methodName = domain.substr(0, upperCaseLength).toLowerCase() + domain.slice(upperCaseLength) + 'Agent';
 
     /**
-     * @this {Protocol.Target}
+     * @this {Protocol.TargetBase}
      */
     function agentGetter() {
       return this._agents[domain];
     }
 
-    Protocol.Target.prototype[methodName] = agentGetter;
+    Protocol.TargetBase.prototype[methodName] = agentGetter;
 
     /**
-     * @this {Protocol.Target}
+     * @this {Protocol.TargetBase}
      */
     function registerDispatcher(dispatcher) {
       this.registerDispatcher(domain, dispatcher);
     }
 
-    Protocol.Target.prototype['register' + domain + 'Dispatcher'] = registerDispatcher;
+    Protocol.TargetBase.prototype['register' + domain + 'Dispatcher'] = registerDispatcher;
   }
 
   /**
@@ -122,12 +127,12 @@ var InspectorBackendClass = class {
    * @param {!Object} values
    */
   registerEnum(type, values) {
-    var domainAndMethod = type.split('.');
-    var agentName = domainAndMethod[0] + 'Agent';
-    if (!window[agentName])
-      window[agentName] = {};
+    var domainAndName = type.split('.');
+    var domain = domainAndName[0];
+    if (!Protocol[domain])
+      Protocol[domain] = {};
 
-    window[agentName][domainAndMethod[1]] = values;
+    Protocol[domain][domainAndName[1]] = values;
     this._initialized = true;
   }
 
@@ -206,15 +211,10 @@ InspectorBackendClass.Connection.Params;
  */
 InspectorBackendClass.Connection.Factory;
 
-var Protocol = {};
-
-/** @typedef {string} */
-Protocol.Error;
-
 /**
  * @unrestricted
  */
-Protocol.Target = class {
+Protocol.TargetBase = class {
   /**
    *  @param {!InspectorBackendClass.Connection.Factory} connectionFactory
    */
@@ -484,7 +484,7 @@ InspectorBackendClass._AgentPrototype = class {
   }
 
   /**
-   * @param {!Protocol.Target} target
+   * @param {!Protocol.TargetBase} target
    */
   setTarget(target) {
     this._target = target;

@@ -47,13 +47,13 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
     this._agent.enable().then(this._wasEnabled.bind(this));
     /** @type {!Map.<string, !WebInspector.CSSStyleSheetHeader>} */
     this._styleSheetIdToHeader = new Map();
-    /** @type {!Map.<string, !Object.<!PageAgent.FrameId, !Array.<!CSSAgent.StyleSheetId>>>} */
+    /** @type {!Map.<string, !Object.<!Protocol.Page.FrameId, !Array.<!Protocol.CSS.StyleSheetId>>>} */
     this._styleSheetIdsForURL = new Map();
 
     /** @type {!Map.<!WebInspector.CSSStyleSheetHeader, !Promise<string>>} */
     this._originalStyleSheetText = new Map();
 
-    /** @type {!Multimap<string, !CSSAgent.StyleSheetId>} */
+    /** @type {!Multimap<string, !Protocol.CSS.StyleSheetId>} */
     this._sourceMapLoadingStyleSheetsIds = new Multimap();
 
     /** @type {!Map<string, !WebInspector.SourceMap>} */
@@ -240,7 +240,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @param {!WebInspector.TextRange} range
    * @param {string} text
    * @param {boolean} majorChange
@@ -344,7 +344,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!Array<!CSSAgent.StyleSheetId>} styleSheetIds
+   * @param {!Array<!Protocol.CSS.StyleSheetId>} styleSheetIds
    * @param {!Array<!WebInspector.TextRange>} ranges
    * @param {!Array<string>} texts
    * @param {boolean} majorChange
@@ -353,7 +353,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   _innerSetStyleTexts(styleSheetIds, ranges, texts, majorChange) {
     /**
      * @param {?Protocol.Error} error
-     * @param {?Array<!CSSAgent.CSSStyle>} stylePayloads
+     * @param {?Array<!Protocol.CSS.CSSStyle>} stylePayloads
      * @return {boolean}
      * @this {WebInspector.CSSModel}
      */
@@ -385,7 +385,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @param {!WebInspector.TextRange} range
    * @param {string} text
    * @return {!Promise<boolean>}
@@ -393,7 +393,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   setSelectorText(styleSheetId, range, text) {
     /**
      * @param {?Protocol.Error} error
-     * @param {?CSSAgent.SelectorList} selectorPayload
+     * @param {?Protocol.CSS.SelectorList} selectorPayload
      * @return {boolean}
      * @this {WebInspector.CSSModel}
      */
@@ -413,7 +413,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @param {!WebInspector.TextRange} range
    * @param {string} text
    * @return {!Promise<boolean>}
@@ -421,7 +421,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   setKeyframeKey(styleSheetId, range, text) {
     /**
      * @param {?Protocol.Error} error
-     * @param {!CSSAgent.Value} payload
+     * @param {!Protocol.CSS.Value} payload
      * @return {boolean}
      * @this {WebInspector.CSSModel}
      */
@@ -446,7 +446,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   mediaQueriesPromise() {
     /**
      * @param {?Protocol.Error} error
-     * @param {?Array.<!CSSAgent.CSSMedia>} payload
+     * @param {?Array.<!Protocol.CSS.CSSMedia>} payload
      * @return {!Array.<!WebInspector.CSSMedia>}
      * @this {!WebInspector.CSSModel}
      */
@@ -477,18 +477,18 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!DOMAgent.NodeId} nodeId
+   * @param {!Protocol.DOM.NodeId} nodeId
    * @return {!Promise.<?WebInspector.CSSMatchedStyles>}
    */
   matchedStylesPromise(nodeId) {
     /**
      * @param {?Protocol.Error} error
-     * @param {?CSSAgent.CSSStyle=} inlinePayload
-     * @param {?CSSAgent.CSSStyle=} attributesPayload
-     * @param {!Array.<!CSSAgent.RuleMatch>=} matchedPayload
-     * @param {!Array.<!CSSAgent.PseudoElementMatches>=} pseudoPayload
-     * @param {!Array.<!CSSAgent.InheritedStyleEntry>=} inheritedPayload
-     * @param {!Array.<!CSSAgent.CSSKeyframesRule>=} animationsPayload
+     * @param {?Protocol.CSS.CSSStyle=} inlinePayload
+     * @param {?Protocol.CSS.CSSStyle=} attributesPayload
+     * @param {!Array.<!Protocol.CSS.RuleMatch>=} matchedPayload
+     * @param {!Array.<!Protocol.CSS.PseudoElementMatches>=} pseudoPayload
+     * @param {!Array.<!Protocol.CSS.InheritedStyleEntry>=} inheritedPayload
+     * @param {!Array.<!Protocol.CSS.CSSKeyframesRule>=} animationsPayload
      * @return {?WebInspector.CSSMatchedStyles}
      * @this {WebInspector.CSSModel}
      */
@@ -510,7 +510,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @return {!Promise<!Array<string>>}
    */
   classNamesPromise(styleSheetId) {
@@ -526,7 +526,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!DOMAgent.NodeId} nodeId
+   * @param {!Protocol.DOM.NodeId} nodeId
    * @return {!Promise.<?Map.<string, string>>}
    */
   computedStylePromise(nodeId) {
@@ -551,13 +551,13 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
 
   /**
    * @param {number} nodeId
-   * @return {!Promise.<?Array.<!CSSAgent.PlatformFontUsage>>}
+   * @return {!Promise.<?Array.<!Protocol.CSS.PlatformFontUsage>>}
    */
   platformFontsPromise(nodeId) {
     /**
      * @param {?Protocol.Error} error
-     * @param {?Array.<!CSSAgent.PlatformFontUsage>} fonts
-     * @return {?Array.<!CSSAgent.PlatformFontUsage>}
+     * @param {?Array.<!Protocol.CSS.PlatformFontUsage>} fonts
+     * @return {?Array.<!Protocol.CSS.PlatformFontUsage>}
      */
     function platformFontsCallback(error, fonts) {
       return !error && fonts ? fonts : null;
@@ -589,14 +589,14 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!DOMAgent.NodeId} nodeId
+   * @param {!Protocol.DOM.NodeId} nodeId
    * @return {!Promise.<?WebInspector.CSSModel.InlineStyleResult>}
    */
   inlineStylesPromise(nodeId) {
     /**
      * @param {?Protocol.Error} error
-     * @param {?CSSAgent.CSSStyle=} inlinePayload
-     * @param {?CSSAgent.CSSStyle=} attributesStylePayload
+     * @param {?Protocol.CSS.CSSStyle=} inlinePayload
+     * @param {?Protocol.CSS.CSSStyle=} attributesStylePayload
      * @return {?WebInspector.CSSModel.InlineStyleResult}
      * @this {WebInspector.CSSModel}
      */
@@ -655,7 +655,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @param {!WebInspector.TextRange} range
    * @param {string} newMediaText
    * @return {!Promise<boolean>}
@@ -663,7 +663,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   setMediaText(styleSheetId, range, newMediaText) {
     /**
      * @param {?Protocol.Error} error
-     * @param {!CSSAgent.CSSMedia} mediaPayload
+     * @param {!Protocol.CSS.CSSMedia} mediaPayload
      * @return {boolean}
      * @this {WebInspector.CSSModel}
      */
@@ -683,7 +683,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @param {string} ruleText
    * @param {!WebInspector.TextRange} ruleLocation
    * @return {!Promise<?WebInspector.CSSStyleRule>}
@@ -695,7 +695,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
 
     /**
      * @param {?Protocol.Error} error
-     * @param {?CSSAgent.CSSRule} rulePayload
+     * @param {?Protocol.CSS.CSSRule} rulePayload
      * @return {?WebInspector.CSSStyleRule}
      * @this {WebInspector.CSSModel}
      */
@@ -726,7 +726,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
 
     /**
      * @param {?Protocol.Error} error
-     * @param {?CSSAgent.StyleSheetId} styleSheetId
+     * @param {?Protocol.CSS.StyleSheetId} styleSheetId
      * @return {?WebInspector.CSSStyleSheetHeader}
      * @this {WebInspector.CSSModel}
      */
@@ -746,7 +746,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} id
+   * @param {!Protocol.CSS.StyleSheetId} id
    * @return {?WebInspector.CSSStyleSheetHeader}
    */
   styleSheetHeaderForId(id) {
@@ -761,7 +761,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @param {!WebInspector.CSSModel.Edit=} edit
    */
   _fireStyleSheetChanged(styleSheetId, edit) {
@@ -770,7 +770,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @return {!Promise<string>}
    */
   _ensureOriginalStyleSheetText(styleSheetId) {
@@ -801,7 +801,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!CSSAgent.CSSStyleSheetHeader} header
+   * @param {!Protocol.CSS.CSSStyleSheetHeader} header
    */
   _styleSheetAdded(header) {
     console.assert(!this._styleSheetIdToHeader.get(header.styleSheetId));
@@ -822,7 +822,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} id
+   * @param {!Protocol.CSS.StyleSheetId} id
    */
   _styleSheetRemoved(id) {
     var header = this._styleSheetIdToHeader.get(id);
@@ -831,7 +831,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
       return;
     this._styleSheetIdToHeader.remove(id);
     var url = header.resourceURL();
-    var frameIdToStyleSheetIds = /** @type {!Object.<!PageAgent.FrameId, !Array.<!CSSAgent.StyleSheetId>>} */ (
+    var frameIdToStyleSheetIds = /** @type {!Object.<!Protocol.Page.FrameId, !Array.<!Protocol.CSS.StyleSheetId>>} */ (
         this._styleSheetIdsForURL.get(url));
     console.assert(frameIdToStyleSheetIds, 'No frameId to styleSheetId map is available for given style sheet URL.');
     frameIdToStyleSheetIds[header.frameId].remove(id);
@@ -847,7 +847,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
 
   /**
    * @param {string} url
-   * @return {!Array.<!CSSAgent.StyleSheetId>}
+   * @return {!Array.<!Protocol.CSS.StyleSheetId>}
    */
   styleSheetIdsForURL(url) {
     var frameIdToStyleSheetIds = this._styleSheetIdsForURL.get(url);
@@ -861,7 +861,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @param {string} newText
    * @param {boolean} majorChange
    * @return {!Promise.<?Protocol.Error>}
@@ -895,7 +895,7 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @return {!Promise<string>}
    */
   getStyleSheetText(styleSheetId) {
@@ -956,8 +956,8 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!CSSAgent.StyleSheetId} id
-   * @param {!CSSAgent.SourceRange} range
+   * @param {!Protocol.CSS.StyleSheetId} id
+   * @param {!Protocol.CSS.SourceRange} range
    */
   _layoutEditorChange(id, range) {
     this.dispatchEventToListeners(WebInspector.CSSModel.Events.LayoutEditorChange, {id: id, range: range});
@@ -1016,7 +1016,7 @@ WebInspector.CSSModel.PseudoStateMarker = 'pseudo-state-marker';
  */
 WebInspector.CSSModel.Edit = class {
   /**
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @param {!WebInspector.TextRange} oldRange
    * @param {string} newText
    * @param {?Object} payload
@@ -1064,7 +1064,7 @@ WebInspector.CSSLocation = class extends WebInspector.SDKObject {
 };
 
 /**
- * @implements {CSSAgent.Dispatcher}
+ * @implements {Protocol.CSSDispatcher}
  * @unrestricted
  */
 WebInspector.CSSDispatcher = class {
@@ -1091,7 +1091,7 @@ WebInspector.CSSDispatcher = class {
 
   /**
    * @override
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    */
   styleSheetChanged(styleSheetId) {
     this._cssModel._fireStyleSheetChanged(styleSheetId);
@@ -1099,7 +1099,7 @@ WebInspector.CSSDispatcher = class {
 
   /**
    * @override
-   * @param {!CSSAgent.CSSStyleSheetHeader} header
+   * @param {!Protocol.CSS.CSSStyleSheetHeader} header
    */
   styleSheetAdded(header) {
     this._cssModel._styleSheetAdded(header);
@@ -1107,7 +1107,7 @@ WebInspector.CSSDispatcher = class {
 
   /**
    * @override
-   * @param {!CSSAgent.StyleSheetId} id
+   * @param {!Protocol.CSS.StyleSheetId} id
    */
   styleSheetRemoved(id) {
     this._cssModel._styleSheetRemoved(id);
@@ -1115,8 +1115,8 @@ WebInspector.CSSDispatcher = class {
 
   /**
    * @override
-   * @param {!CSSAgent.StyleSheetId} id
-   * @param {!CSSAgent.SourceRange} range
+   * @param {!Protocol.CSS.StyleSheetId} id
+   * @param {!Protocol.CSS.SourceRange} range
    */
   layoutEditorChange(id, range) {
     this._cssModel._layoutEditorChange(id, range);
@@ -1132,12 +1132,12 @@ WebInspector.CSSModel.ComputedStyleLoader = class {
    */
   constructor(cssModel) {
     this._cssModel = cssModel;
-    /** @type {!Map<!DOMAgent.NodeId, !Promise<?Map<string, string>>>} */
+    /** @type {!Map<!Protocol.DOM.NodeId, !Promise<?Map<string, string>>>} */
     this._nodeIdToPromise = new Map();
   }
 
   /**
-   * @param {!DOMAgent.NodeId} nodeId
+   * @param {!Protocol.DOM.NodeId} nodeId
    * @return {!Promise<?Map<string, string>>}
    */
   computedStylePromise(nodeId) {
@@ -1149,7 +1149,7 @@ WebInspector.CSSModel.ComputedStyleLoader = class {
 
     /**
      * @param {?Protocol.Error} error
-     * @param {!Array.<!CSSAgent.CSSComputedStyleProperty>} computedPayload
+     * @param {!Array.<!Protocol.CSS.CSSComputedStyleProperty>} computedPayload
      * @return {?Map.<string, string>}
      */
     function parsePayload(error, computedPayload) {

@@ -1658,7 +1658,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
     command = command.concat(data);
     command.push('--compressed');
 
-    if (request.securityState() === SecurityAgent.SecurityState.Insecure)
+    if (request.securityState() === Protocol.Security.SecurityState.Insecure)
       command.push('--insecure');
     return command.join(' ');
   }

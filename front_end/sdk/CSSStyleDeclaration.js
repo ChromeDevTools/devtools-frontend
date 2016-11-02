@@ -8,7 +8,7 @@ WebInspector.CSSStyleDeclaration = class {
   /**
    * @param {!WebInspector.CSSModel} cssModel
    * @param {?WebInspector.CSSRule} parentRule
-   * @param {!CSSAgent.CSSStyle} payload
+   * @param {!Protocol.CSS.CSSStyle} payload
    * @param {!WebInspector.CSSStyleDeclaration.Type} type
    */
   constructor(cssModel, parentRule, payload, type) {
@@ -25,7 +25,7 @@ WebInspector.CSSStyleDeclaration = class {
     if (this.styleSheetId !== edit.styleSheetId || !this.range)
       return;
     if (edit.oldRange.equal(this.range)) {
-      this._reinitialize(/** @type {!CSSAgent.CSSStyle} */ (edit.payload));
+      this._reinitialize(/** @type {!Protocol.CSS.CSSStyle} */ (edit.payload));
     } else {
       this.range = this.range.rebaseAfterTextEdit(edit.oldRange, edit.newRange);
       for (var i = 0; i < this._allProperties.length; ++i)
@@ -34,7 +34,7 @@ WebInspector.CSSStyleDeclaration = class {
   }
 
   /**
-   * @param {!CSSAgent.CSSStyle} payload
+   * @param {!Protocol.CSS.CSSStyle} payload
    */
   _reinitialize(payload) {
     this.styleSheetId = payload.styleSheetId;

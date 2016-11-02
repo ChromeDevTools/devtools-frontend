@@ -35,7 +35,7 @@ WebInspector.Script = class extends WebInspector.SDKObject {
    * @param {number} startColumn
    * @param {number} endLine
    * @param {number} endColumn
-   * @param {!RuntimeAgent.ExecutionContextId} executionContextId
+   * @param {!Protocol.Runtime.ExecutionContextId} executionContextId
    * @param {string} hash
    * @param {boolean} isContentScript
    * @param {boolean} isLiveEdit
@@ -194,12 +194,12 @@ WebInspector.Script = class extends WebInspector.SDKObject {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!DebuggerAgent.SearchMatch>)} callback
+   * @param {function(!Array.<!Protocol.Debugger.SearchMatch>)} callback
    */
   searchInContent(query, caseSensitive, isRegex, callback) {
     /**
      * @param {?Protocol.Error} error
-     * @param {!Array.<!DebuggerAgent.SearchMatch>} searchMatches
+     * @param {!Array.<!Protocol.Debugger.SearchMatch>} searchMatches
      */
     function innerCallback(error, searchMatches) {
       if (error) {
@@ -236,16 +236,16 @@ WebInspector.Script = class extends WebInspector.SDKObject {
 
   /**
    * @param {string} newSource
-   * @param {function(?Protocol.Error, !RuntimeAgent.ExceptionDetails=, !Array.<!DebuggerAgent.CallFrame>=, !RuntimeAgent.StackTrace=, boolean=)} callback
+   * @param {function(?Protocol.Error, !Protocol.Runtime.ExceptionDetails=, !Array.<!Protocol.Debugger.CallFrame>=, !Protocol.Runtime.StackTrace=, boolean=)} callback
    */
   editSource(newSource, callback) {
     /**
      * @this {WebInspector.Script}
      * @param {?Protocol.Error} error
-     * @param {!Array.<!DebuggerAgent.CallFrame>=} callFrames
+     * @param {!Array.<!Protocol.Debugger.CallFrame>=} callFrames
      * @param {boolean=} stackChanged
-     * @param {!RuntimeAgent.StackTrace=} asyncStackTrace
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.StackTrace=} asyncStackTrace
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      */
     function didEditScriptSource(error, callFrames, stackChanged, asyncStackTrace, exceptionDetails) {
       if (!error && !exceptionDetails)
@@ -307,7 +307,7 @@ WebInspector.Script = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @param {!Array<!DebuggerAgent.ScriptPosition>} positions
+   * @param {!Array<!Protocol.Debugger.ScriptPosition>} positions
    * @return {!Promise<boolean>}
    */
   setBlackboxedRanges(positions) {

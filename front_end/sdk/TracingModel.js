@@ -506,7 +506,7 @@ WebInspector.TracingModel.Event = class {
     this.warning = null;
     /** @type {?WebInspector.TracingModel.Event} */
     this.initiator = null;
-    /** @type {?Array<!RuntimeAgent.CallFrame>} */
+    /** @type {?Array<!Protocol.Runtime.CallFrame>} */
     this.stackTrace = null;
     /** @type {?Element} */
     this.previewElement = null;

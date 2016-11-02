@@ -8,7 +8,7 @@
 WebInspector.CSSStyleSheetHeader = class {
   /**
    * @param {!WebInspector.CSSModel} cssModel
-   * @param {!CSSAgent.CSSStyleSheetHeader} payload
+   * @param {!Protocol.CSS.CSSStyleSheetHeader} payload
    */
   constructor(cssModel, payload) {
     this._cssModel = cssModel;

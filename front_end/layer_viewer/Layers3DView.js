@@ -1082,7 +1082,7 @@ WebInspector.Layers3DView.Rectangle = class {
 
   /**
    * @param {!WebInspector.Layer} layer
-   * @param {!DOMAgent.Rect} rect
+   * @param {!Protocol.DOM.Rect} rect
    * @param {number} z
    */
   calculateVerticesFromRect(layer, rect, z) {

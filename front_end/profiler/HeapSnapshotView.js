@@ -186,7 +186,7 @@ WebInspector.HeapSnapshotView = class extends WebInspector.SimpleView {
 
   /**
    * @override
-   * @param {!HeapProfilerAgent.HeapSnapshotObjectId} snapshotObjectId
+   * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} snapshotObjectId
    * @param {string} perspectiveName
    */
   showObject(snapshotObjectId, perspectiveName) {
@@ -580,7 +580,7 @@ WebInspector.HeapSnapshotView = class extends WebInspector.SimpleView {
 
   /**
    * @param {string} perspectiveName
-   * @param {!HeapProfilerAgent.HeapSnapshotObjectId} snapshotObjectId
+   * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} snapshotObjectId
    */
   selectLiveObject(perspectiveName, snapshotObjectId) {
     this._changePerspectiveAndWait(perspectiveName, didChangePerspective.bind(this));

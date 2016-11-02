@@ -221,8 +221,8 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
     }
 
     /**
-     * @param {!RuntimeAgent.ScriptId=} scriptId
-     * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.ScriptId=} scriptId
+     * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {WebInspector.ScriptSnippetModel}
      */
     function compileCallback(scriptId, exceptionDetails) {
@@ -235,7 +235,7 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
       mapping._addScript(script, uiSourceCode);
       if (!scriptId) {
         this._printRunOrCompileScriptResultFailure(
-            target, /** @type {!RuntimeAgent.ExceptionDetails} */ (exceptionDetails), evaluationUrl);
+            target, /** @type {!Protocol.Runtime.ExceptionDetails} */ (exceptionDetails), evaluationUrl);
         return;
       }
 
@@ -247,7 +247,7 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!RuntimeAgent.ScriptId} scriptId
+   * @param {!Protocol.Runtime.ScriptId} scriptId
    * @param {!WebInspector.ExecutionContext} executionContext
    * @param {?string=} sourceURL
    */
@@ -260,8 +260,8 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
 
     /**
      * @param {!WebInspector.Target} target
-     * @param {?RuntimeAgent.RemoteObject} result
-     * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {?Protocol.Runtime.RemoteObject} result
+     * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {WebInspector.ScriptSnippetModel}
      */
     function runCallback(target, result, exceptionDetails) {
@@ -274,8 +274,8 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
 
   /**
    * @param {!WebInspector.Target} target
-   * @param {?RuntimeAgent.RemoteObject} result
-   * @param {!RuntimeAgent.ScriptId} scriptId
+   * @param {?Protocol.Runtime.RemoteObject} result
+   * @param {!Protocol.Runtime.ScriptId} scriptId
    * @param {?string=} sourceURL
    */
   _printRunScriptResult(target, result, scriptId, sourceURL) {
@@ -287,7 +287,7 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
 
   /**
    * @param {!WebInspector.Target} target
-   * @param {!RuntimeAgent.ExceptionDetails} exceptionDetails
+   * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    * @param {?string=} sourceURL
    */
   _printRunOrCompileScriptResultFailure(target, exceptionDetails, sourceURL) {

@@ -234,7 +234,7 @@ WebInspector.Linkifier = class {
 
   /**
    * @param {?WebInspector.Target} target
-   * @param {!RuntimeAgent.CallFrame} callFrame
+   * @param {!Protocol.Runtime.CallFrame} callFrame
    * @param {string=} classes
    * @return {?Element}
    */
@@ -245,7 +245,7 @@ WebInspector.Linkifier = class {
 
   /**
    * @param {!WebInspector.Target} target
-   * @param {!RuntimeAgent.StackTrace} stackTrace
+   * @param {!Protocol.Runtime.StackTrace} stackTrace
    * @param {string=} classes
    * @return {!Element}
    */

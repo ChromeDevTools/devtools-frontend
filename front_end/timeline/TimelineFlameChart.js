@@ -1087,7 +1087,7 @@ WebInspector.TimelineFlameChartNetworkDataProvider = class extends WebInspector.
     if (typeof request.priority === 'string') {
       var div = contents.createChild('span');
       div.textContent =
-          WebInspector.uiLabelForPriority(/** @type {!NetworkAgent.ResourcePriority} */ (request.priority));
+          WebInspector.uiLabelForPriority(/** @type {!Protocol.Network.ResourcePriority} */ (request.priority));
       div.style.color = this._colorForPriority(request.priority) || 'black';
     }
     contents.createChild('span').textContent = request.url.trimMiddle(maxURLChars);
@@ -1099,16 +1099,16 @@ WebInspector.TimelineFlameChartNetworkDataProvider = class extends WebInspector.
    * @return {?string}
    */
   _colorForPriority(priority) {
-    switch (/** @type {!NetworkAgent.ResourcePriority} */ (priority)) {
-      case NetworkAgent.ResourcePriority.VeryLow:
+    switch (/** @type {!Protocol.Network.ResourcePriority} */ (priority)) {
+      case Protocol.Network.ResourcePriority.VeryLow:
         return '#080';
-      case NetworkAgent.ResourcePriority.Low:
+      case Protocol.Network.ResourcePriority.Low:
         return '#6c0';
-      case NetworkAgent.ResourcePriority.Medium:
+      case Protocol.Network.ResourcePriority.Medium:
         return '#fa0';
-      case NetworkAgent.ResourcePriority.High:
+      case Protocol.Network.ResourcePriority.High:
         return '#f60';
-      case NetworkAgent.ResourcePriority.VeryHigh:
+      case Protocol.Network.ResourcePriority.VeryHigh:
         return '#f00';
     }
     return null;

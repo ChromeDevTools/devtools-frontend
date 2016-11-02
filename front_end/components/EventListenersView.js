@@ -86,7 +86,7 @@ WebInspector.EventListenersView = class {
 
       /**
        * @param {!WebInspector.EventListener} listener
-       * @return {!RuntimeAgent.CallArgument}
+       * @return {!Protocol.Runtime.CallArgument}
        */
       function handlerArgument(listener) {
         return WebInspector.RemoteObject.toCallArgument(listener.handler());

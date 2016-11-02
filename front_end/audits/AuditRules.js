@@ -443,7 +443,7 @@ WebInspector.AuditRules.UnusedCssRule = class extends WebInspector.AuditRule {
       /**
        * @param {?function()} boundSelectorsCallback
        * @param {string} selector
-       * @param {?DOMAgent.NodeId} nodeId
+       * @param {?Protocol.DOM.NodeId} nodeId
        */
       function queryCallback(boundSelectorsCallback, selector, nodeId) {
         if (nodeId)
@@ -882,7 +882,7 @@ WebInspector.AuditRules.ImageDimensionsRule = class extends WebInspector.AuditRu
     }
 
     /**
-     * @param {!Array.<!DOMAgent.NodeId>=} nodeIds
+     * @param {!Array.<!Protocol.DOM.NodeId>=} nodeIds
      */
     function getStyles(nodeIds) {
       if (progress.isCanceled()) {
@@ -989,8 +989,8 @@ WebInspector.AuditRules.CssInHeadRule = class extends WebInspector.AuditRule {
 
     /**
      * @param {!WebInspector.DOMNode} root
-     * @param {!Array.<!DOMAgent.NodeId>=} inlineStyleNodeIds
-     * @param {!Array.<!DOMAgent.NodeId>=} nodeIds
+     * @param {!Array.<!Protocol.DOM.NodeId>=} inlineStyleNodeIds
+     * @param {!Array.<!Protocol.DOM.NodeId>=} nodeIds
      */
     function externalStylesheetsReceived(root, inlineStyleNodeIds, nodeIds) {
       if (progress.isCanceled()) {
@@ -1019,7 +1019,7 @@ WebInspector.AuditRules.CssInHeadRule = class extends WebInspector.AuditRule {
 
     /**
      * @param {!WebInspector.DOMNode} root
-     * @param {!Array.<!DOMAgent.NodeId>=} nodeIds
+     * @param {!Array.<!Protocol.DOM.NodeId>=} nodeIds
      */
     function inlineStylesReceived(root, nodeIds) {
       if (progress.isCanceled()) {
@@ -1103,8 +1103,8 @@ WebInspector.AuditRules.StylesScriptsOrderRule = class extends WebInspector.Audi
     }
 
     /**
-     * @param {!Array.<!DOMAgent.NodeId>} lateStyleIds
-     * @param {!Array.<!DOMAgent.NodeId>=} nodeIds
+     * @param {!Array.<!Protocol.DOM.NodeId>} lateStyleIds
+     * @param {!Array.<!Protocol.DOM.NodeId>=} nodeIds
      */
     function cssBeforeInlineReceived(lateStyleIds, nodeIds) {
       if (progress.isCanceled()) {
@@ -1133,7 +1133,7 @@ WebInspector.AuditRules.StylesScriptsOrderRule = class extends WebInspector.Audi
 
     /**
      * @param {!WebInspector.DOMDocument} root
-     * @param {!Array.<!DOMAgent.NodeId>=} nodeIds
+     * @param {!Array.<!Protocol.DOM.NodeId>=} nodeIds
      */
     function lateStylesReceived(root, nodeIds) {
       if (progress.isCanceled()) {

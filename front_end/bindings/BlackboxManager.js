@@ -21,7 +21,7 @@ WebInspector.BlackboxManager = class {
     WebInspector.moduleSetting('skipStackFramesPattern').addChangeListener(this._patternChanged.bind(this));
     WebInspector.moduleSetting('skipContentScripts').addChangeListener(this._patternChanged.bind(this));
 
-    /** @type {!Map<!WebInspector.DebuggerModel, !Map<string, !Array<!DebuggerAgent.ScriptPosition>>>} */
+    /** @type {!Map<!WebInspector.DebuggerModel, !Map<string, !Array<!Protocol.Debugger.ScriptPosition>>>} */
     this._debuggerModelData = new Map();
     /** @type {!Map<string, boolean>} */
     this._isBlackboxedURLCache = new Map();
@@ -92,7 +92,7 @@ WebInspector.BlackboxManager = class {
 
     /**
      * @param {!WebInspector.DebuggerModel.Location} a
-     * @param {!DebuggerAgent.ScriptPosition} b
+     * @param {!Protocol.Debugger.ScriptPosition} b
      * @return {number}
      */
     function comparator(a, b) {
@@ -333,7 +333,7 @@ WebInspector.BlackboxManager = class {
 
   /**
    * @param {!WebInspector.Script} script
-   * @return {?Array<!DebuggerAgent.ScriptPosition>}
+   * @return {?Array<!Protocol.Debugger.ScriptPosition>}
    */
   _scriptPositions(script) {
     if (this._debuggerModelData.has(script.debuggerModel))
@@ -343,7 +343,7 @@ WebInspector.BlackboxManager = class {
 
   /**
    * @param {!WebInspector.Script} script
-   * @param {!Array<!DebuggerAgent.ScriptPosition>} positions
+   * @param {!Array<!Protocol.Debugger.ScriptPosition>} positions
    */
   _setScriptPositions(script, positions) {
     var debuggerModel = script.debuggerModel;
@@ -354,7 +354,7 @@ WebInspector.BlackboxManager = class {
 
   /**
    * @param {!WebInspector.Script} script
-   * @param {!Array<!DebuggerAgent.ScriptPosition>} positions
+   * @param {!Array<!Protocol.Debugger.ScriptPosition>} positions
    * @return {!Promise<undefined>}
    */
   _setScriptState(script, positions) {

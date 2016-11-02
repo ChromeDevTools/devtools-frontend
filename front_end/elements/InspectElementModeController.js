@@ -38,7 +38,7 @@ WebInspector.InspectElementModeController = class {
       this._layoutEditorButton.addEventListener('click', this._toggleLayoutEditor, this);
     }
 
-    this._mode = DOMAgent.InspectMode.None;
+    this._mode = Protocol.DOM.InspectMode.None;
     WebInspector.targetManager.addEventListener(
         WebInspector.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.DOM);
@@ -51,7 +51,7 @@ WebInspector.InspectElementModeController = class {
   targetAdded(target) {
     // When DevTools are opening in the inspect element mode, the first target comes in
     // much later than the InspectorFrontendAPI.enterInspectElementMode event.
-    if (this._mode === DOMAgent.InspectMode.None)
+    if (this._mode === Protocol.DOM.InspectMode.None)
       return;
     var domModel = WebInspector.DOMModel.fromTarget(target);
     domModel.setInspectMode(this._mode);
@@ -68,24 +68,24 @@ WebInspector.InspectElementModeController = class {
    * @return {boolean}
    */
   isInInspectElementMode() {
-    return this._mode === DOMAgent.InspectMode.SearchForNode ||
-        this._mode === DOMAgent.InspectMode.SearchForUAShadowDOM;
+    return this._mode === Protocol.DOM.InspectMode.SearchForNode ||
+        this._mode === Protocol.DOM.InspectMode.SearchForUAShadowDOM;
   }
 
   /**
    * @return {boolean}
    */
   isInLayoutEditorMode() {
-    return this._mode === DOMAgent.InspectMode.ShowLayoutEditor;
+    return this._mode === Protocol.DOM.InspectMode.ShowLayoutEditor;
   }
 
   stopInspection() {
-    if (this._mode && this._mode !== DOMAgent.InspectMode.None)
+    if (this._mode && this._mode !== Protocol.DOM.InspectMode.None)
       this._toggleInspectMode();
   }
 
   _toggleLayoutEditor() {
-    var mode = this.isInLayoutEditorMode() ? DOMAgent.InspectMode.None : DOMAgent.InspectMode.ShowLayoutEditor;
+    var mode = this.isInLayoutEditorMode() ? Protocol.DOM.InspectMode.None : Protocol.DOM.InspectMode.ShowLayoutEditor;
     this._setMode(mode);
   }
 
@@ -95,16 +95,16 @@ WebInspector.InspectElementModeController = class {
 
     var mode;
     if (this.isInInspectElementMode())
-      mode = DOMAgent.InspectMode.None;
+      mode = Protocol.DOM.InspectMode.None;
     else
-      mode = WebInspector.moduleSetting('showUAShadowDOM').get() ? DOMAgent.InspectMode.SearchForUAShadowDOM :
-                                                                   DOMAgent.InspectMode.SearchForNode;
+      mode = WebInspector.moduleSetting('showUAShadowDOM').get() ? Protocol.DOM.InspectMode.SearchForUAShadowDOM :
+                                                                   Protocol.DOM.InspectMode.SearchForNode;
 
     this._setMode(mode);
   }
 
   /**
-   * @param {!DOMAgent.InspectMode} mode
+   * @param {!Protocol.DOM.InspectMode} mode
    */
   _setMode(mode) {
     this._mode = mode;
@@ -124,7 +124,7 @@ WebInspector.InspectElementModeController = class {
     if (!WebInspector.targetManager.allTargetsSuspended())
       return;
 
-    this._mode = DOMAgent.InspectMode.None;
+    this._mode = Protocol.DOM.InspectMode.None;
     this._toggleSearchAction.setToggled(false);
     if (this._layoutEditorButton)
       this._layoutEditorButton.setToggled(false);

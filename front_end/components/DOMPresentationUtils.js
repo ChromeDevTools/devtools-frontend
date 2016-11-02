@@ -216,7 +216,7 @@ WebInspector.DOMPresentationUtils.buildImagePreviewContents = function(
 /**
  * @param {!WebInspector.Target} target
  * @param {!WebInspector.Linkifier} linkifier
- * @param {!RuntimeAgent.StackTrace=} stackTrace
+ * @param {!Protocol.Runtime.StackTrace=} stackTrace
  * @return {!Element}
  */
 WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(target, linkifier, stackTrace) {
@@ -226,7 +226,7 @@ WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(targ
   var contentElement = shadowRoot.createChild('table', 'stack-preview-container');
 
   /**
-   * @param {!RuntimeAgent.StackTrace} stackTrace
+   * @param {!Protocol.Runtime.StackTrace} stackTrace
    */
   function appendStackTrace(stackTrace) {
     for (var stackFrame of stackTrace.callFrames) {

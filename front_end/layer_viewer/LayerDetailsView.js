@@ -92,7 +92,7 @@ WebInspector.LayerDetailsView = class extends WebInspector.Widget {
   }
 
   /**
-   * @param {!LayerTreeAgent.ScrollRect} scrollRect
+   * @param {!Protocol.LayerTree.ScrollRect} scrollRect
    * @param {number} index
    */
   _createScrollRectElement(scrollRect, index) {

@@ -35,8 +35,8 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
    * @param {?WebInspector.NetworkRequest} request
    * @param {string} url
    * @param {string} documentURL
-   * @param {!PageAgent.FrameId} frameId
-   * @param {!NetworkAgent.LoaderId} loaderId
+   * @param {!Protocol.Page.FrameId} frameId
+   * @param {!Protocol.Network.LoaderId} loaderId
    * @param {!WebInspector.ResourceType} type
    * @param {string} mimeType
    * @param {?Date} lastModified
@@ -117,14 +117,14 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!PageAgent.FrameId}
+   * @return {!Protocol.Page.FrameId}
    */
   get frameId() {
     return this._frameId;
   }
 
   /**
-   * @return {!NetworkAgent.LoaderId}
+   * @return {!Protocol.Network.LoaderId}
    */
   get loaderId() {
     return this._loaderId;
@@ -216,7 +216,7 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
   searchInContent(query, caseSensitive, isRegex, callback) {
     /**
      * @param {?Protocol.Error} error
-     * @param {!Array.<!DebuggerAgent.SearchMatch>} searchMatches
+     * @param {!Array.<!Protocol.Debugger.SearchMatch>} searchMatches
      */
     function callbackWrapper(error, searchMatches) {
       callback(searchMatches || []);

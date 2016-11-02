@@ -522,8 +522,8 @@ WebInspector.JavaScriptSourceFrame = class extends WebInspector.UISourceCodeFram
     }
 
     /**
-     * @param {?RuntimeAgent.RemoteObject} result
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {?Protocol.Runtime.RemoteObject} result
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {WebInspector.JavaScriptSourceFrame}
      */
     function showObjectPopover(result, exceptionDetails) {

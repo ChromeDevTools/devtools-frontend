@@ -160,7 +160,7 @@ WebInspector.NetworkLog = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!NetworkAgent.RequestId} requestId
+   * @param {!Protocol.Network.RequestId} requestId
    * @return {?WebInspector.NetworkRequest}
    */
   requestForId(requestId) {

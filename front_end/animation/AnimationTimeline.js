@@ -23,7 +23,7 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
     /** @const */ this._defaultDuration = 100;
     this._duration = this._defaultDuration;
     /** @const */ this._timelineControlsWidth = 150;
-    /** @type {!Map.<!DOMAgent.BackendNodeId, !WebInspector.AnimationTimeline.NodeUI>} */
+    /** @type {!Map.<!Protocol.DOM.BackendNodeId, !WebInspector.AnimationTimeline.NodeUI>} */
     this._nodesMap = new Map();
     this._uiAnimations = [];
     this._groupBuffer = [];

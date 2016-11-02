@@ -283,7 +283,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
 
     /**
      * @param {?Protocol.Error} error
-     * @param {!DOMAgent.NodeId} nodeId
+     * @param {!Protocol.DOM.NodeId} nodeId
      * @this {WebInspector.ElementsTreeOutline}
      */
     function expandCallback(error, nodeId) {
@@ -879,7 +879,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   /**
    * @param {boolean} wasExpanded
    * @param {?Protocol.Error} error
-   * @param {!DOMAgent.NodeId=} nodeId
+   * @param {!Protocol.DOM.NodeId=} nodeId
    * @return {?WebInspector.ElementsTreeElement} nodeId
    */
   selectNodeAfterEdit(wasExpanded, error, nodeId) {

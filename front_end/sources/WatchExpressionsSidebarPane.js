@@ -327,7 +327,7 @@ WebInspector.WatchExpression = class extends WebInspector.Object {
 
   /**
    * @param {?WebInspector.RemoteObject} result
-   * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+   * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
    */
   _createWatchExpression(result, exceptionDetails) {
     this._result = result;

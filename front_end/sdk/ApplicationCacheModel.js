@@ -105,7 +105,7 @@ WebInspector.ApplicationCacheModel = class extends WebInspector.SDKModel {
 
   /**
    * @param {?Protocol.Error} error
-   * @param {!Array.<!ApplicationCacheAgent.FrameWithManifest>} framesWithManifests
+   * @param {!Array.<!Protocol.ApplicationCache.FrameWithManifest>} framesWithManifests
    */
   _framesWithManifestsLoaded(error, framesWithManifests) {
     if (error) {
@@ -194,12 +194,12 @@ WebInspector.ApplicationCacheModel = class extends WebInspector.SDKModel {
 
   /**
    * @param {string} frameId
-   * @param {function(?ApplicationCacheAgent.ApplicationCache)} callback
+   * @param {function(?Protocol.ApplicationCache.ApplicationCache)} callback
    */
   requestApplicationCache(frameId, callback) {
     /**
      * @param {?Protocol.Error} error
-     * @param {!ApplicationCacheAgent.ApplicationCache} applicationCache
+     * @param {!Protocol.ApplicationCache.ApplicationCache} applicationCache
      */
     function callbackWrapper(error, applicationCache) {
       if (error) {
@@ -233,7 +233,7 @@ WebInspector.ApplicationCacheModel.Events = {
 };
 
 /**
- * @implements {ApplicationCacheAgent.Dispatcher}
+ * @implements {Protocol.ApplicationCacheDispatcher}
  * @unrestricted
  */
 WebInspector.ApplicationCacheDispatcher = class {

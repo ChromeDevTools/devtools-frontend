@@ -142,7 +142,7 @@ WebInspector.ApplicationCacheItemsView = class extends WebInspector.SimpleView {
   }
 
   /**
-   * @param {?ApplicationCacheAgent.ApplicationCache} applicationCache
+   * @param {?Protocol.ApplicationCache.ApplicationCache} applicationCache
    */
   _updateCallback(applicationCache) {
     if (!applicationCache || !applicationCache.manifestURL) {

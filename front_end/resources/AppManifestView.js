@@ -80,7 +80,7 @@ WebInspector.AppManifestView = class extends WebInspector.VBox {
   /**
    * @param {string} url
    * @param {?string} data
-   * @param {!Array<!PageAgent.AppManifestError>} errors
+   * @param {!Array<!Protocol.Page.AppManifestError>} errors
    */
   _renderManifest(url, data, errors) {
     this._reportView.setURL(url);

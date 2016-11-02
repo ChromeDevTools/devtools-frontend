@@ -28,8 +28,8 @@ WebInspector.SecurityModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!SecurityAgent.SecurityState} a
-   * @param {!SecurityAgent.SecurityState} b
+   * @param {!Protocol.Security.SecurityState} a
+   * @param {!Protocol.Security.SecurityState} b
    * @return {number}
    */
   static SecurityStateComparator(a, b) {
@@ -39,11 +39,11 @@ WebInspector.SecurityModel = class extends WebInspector.SDKModel {
     } else {
       securityStateMap = new Map();
       var ordering = [
-        SecurityAgent.SecurityState.Info, SecurityAgent.SecurityState.Insecure, SecurityAgent.SecurityState.Neutral,
-        SecurityAgent.SecurityState.Warning, SecurityAgent.SecurityState.Secure,
+        Protocol.Security.SecurityState.Info, Protocol.Security.SecurityState.Insecure, Protocol.Security.SecurityState.Neutral,
+        Protocol.Security.SecurityState.Warning, Protocol.Security.SecurityState.Secure,
         // Unknown is max so that failed/cancelled requests don't overwrite the origin security state for successful requests,
         // and so that failed/cancelled requests appear at the bottom of the origins list.
-        SecurityAgent.SecurityState.Unknown
+        Protocol.Security.SecurityState.Unknown
       ];
       for (var i = 0; i < ordering.length; i++)
         securityStateMap.set(ordering[i], i + 1);
@@ -71,9 +71,9 @@ WebInspector.SecurityModel.Events = {
  */
 WebInspector.PageSecurityState = class {
   /**
-   * @param {!SecurityAgent.SecurityState} securityState
-   * @param {!Array<!SecurityAgent.SecurityStateExplanation>} explanations
-   * @param {?SecurityAgent.InsecureContentStatus} insecureContentStatus
+   * @param {!Protocol.Security.SecurityState} securityState
+   * @param {!Array<!Protocol.Security.SecurityStateExplanation>} explanations
+   * @param {?Protocol.Security.InsecureContentStatus} insecureContentStatus
    * @param {boolean} schemeIsCryptographic
    */
   constructor(securityState, explanations, insecureContentStatus, schemeIsCryptographic) {
@@ -85,7 +85,7 @@ WebInspector.PageSecurityState = class {
 };
 
 /**
- * @implements {SecurityAgent.Dispatcher}
+ * @implements {Protocol.SecurityDispatcher}
  * @unrestricted
  */
 WebInspector.SecurityDispatcher = class {
@@ -95,9 +95,9 @@ WebInspector.SecurityDispatcher = class {
 
   /**
    * @override
-   * @param {!SecurityAgent.SecurityState} securityState
-   * @param {!Array<!SecurityAgent.SecurityStateExplanation>=} explanations
-   * @param {!SecurityAgent.InsecureContentStatus=} insecureContentStatus
+   * @param {!Protocol.Security.SecurityState} securityState
+   * @param {!Array<!Protocol.Security.SecurityStateExplanation>=} explanations
+   * @param {!Protocol.Security.InsecureContentStatus=} insecureContentStatus
    * @param {boolean=} schemeIsCryptographic
    */
   securityStateChanged(securityState, explanations, insecureContentStatus, schemeIsCryptographic) {

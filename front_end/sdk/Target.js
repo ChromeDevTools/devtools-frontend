@@ -7,7 +7,7 @@
 /**
  * @unrestricted
  */
-WebInspector.Target = class extends Protocol.Target {
+WebInspector.Target = class extends Protocol.TargetBase {
   /**
    * @param {!WebInspector.TargetManager} targetManager
    * @param {string} name

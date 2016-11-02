@@ -156,7 +156,7 @@ WebInspector.StylesSidebarPane = class extends WebInspector.ElementsSidebarPane 
   _onLayoutEditorChange(event) {
     var cssModel = /** @type {!WebInspector.CSSModel} */ (event.target);
     var styleSheetId = event.data['id'];
-    var sourceRange = /** @type {!CSSAgent.SourceRange} */ (event.data['range']);
+    var sourceRange = /** @type {!Protocol.CSS.SourceRange} */ (event.data['range']);
     var range = WebInspector.TextRange.fromObject(sourceRange);
     this._decorator = new WebInspector.PropertyChangeHighlighter(this, cssModel, styleSheetId, range);
     this.update();
@@ -329,8 +329,8 @@ WebInspector.StylesSidebarPane = class extends WebInspector.ElementsSidebarPane 
     this._sectionBlocks = this._rebuildSectionsForMatchedStyleRules(matchedStyles);
     var pseudoTypes = [];
     var keys = new Set(matchedStyles.pseudoStyles().keys());
-    if (keys.delete(DOMAgent.PseudoType.Before))
-      pseudoTypes.push(DOMAgent.PseudoType.Before);
+    if (keys.delete(Protocol.DOM.PseudoType.Before))
+      pseudoTypes.push(Protocol.DOM.PseudoType.Before);
     pseudoTypes = pseudoTypes.concat(keys.valuesArray().sort());
     for (var pseudoType of pseudoTypes) {
       var block = WebInspector.SectionBlock.createPseudoTypeBlock(pseudoType);
@@ -516,7 +516,7 @@ WebInspector.SectionBlock = class {
   }
 
   /**
-   * @param {!DOMAgent.PseudoType} pseudoType
+   * @param {!Protocol.DOM.PseudoType} pseudoType
    * @return {!WebInspector.SectionBlock}
    */
   static createPseudoTypeBlock(pseudoType) {

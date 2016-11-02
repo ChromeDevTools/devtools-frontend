@@ -798,7 +798,7 @@ WebInspector.ConsoleView = class extends WebInspector.VBox {
   /**
    * @param {?WebInspector.RemoteObject} result
    * @param {!WebInspector.ConsoleMessage} originatingConsoleMessage
-   * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+   * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
    */
   _printResult(result, originatingConsoleMessage, exceptionDetails) {
     if (!result)
@@ -823,7 +823,7 @@ WebInspector.ConsoleView = class extends WebInspector.VBox {
    */
   _commandEvaluated(event) {
     var data =
-        /** @type {{result: ?WebInspector.RemoteObject, text: string, commandMessage: !WebInspector.ConsoleMessage, exceptionDetails: (!RuntimeAgent.ExceptionDetails|undefined)}} */
+        /** @type {{result: ?WebInspector.RemoteObject, text: string, commandMessage: !WebInspector.ConsoleMessage, exceptionDetails: (!Protocol.Runtime.ExceptionDetails|undefined)}} */
         (event.data);
     this._prompt.history().pushHistoryItem(data.text);
     this._consoleHistorySetting.set(

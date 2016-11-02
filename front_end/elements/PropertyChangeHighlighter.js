@@ -8,7 +8,7 @@ WebInspector.PropertyChangeHighlighter = class {
   /**
    * @param {!WebInspector.StylesSidebarPane} ssp
    * @param {!WebInspector.CSSModel} cssModel
-   * @param {!CSSAgent.StyleSheetId} styleSheetId
+   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @param {!WebInspector.TextRange} range
    */
   constructor(ssp, cssModel, styleSheetId, range) {

@@ -33,13 +33,13 @@
  */
 WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   /**
-   * @param {!NetworkAgent.RequestId} requestId
+   * @param {!Protocol.Network.RequestId} requestId
    * @param {!WebInspector.Target} target
    * @param {string} url
    * @param {string} documentURL
-   * @param {!PageAgent.FrameId} frameId
-   * @param {!NetworkAgent.LoaderId} loaderId
-   * @param {?NetworkAgent.Initiator} initiator
+   * @param {!Protocol.Page.FrameId} frameId
+   * @param {!Protocol.Network.LoaderId} loaderId
+   * @param {?Protocol.Network.Initiator} initiator
    */
   constructor(target, requestId, url, documentURL, frameId, loaderId, initiator) {
     super(target);
@@ -51,12 +51,12 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
     this._documentURL = documentURL;
     this._frameId = frameId;
     this._loaderId = loaderId;
-    /** @type {?NetworkAgent.Initiator} */
+    /** @type {?Protocol.Network.Initiator} */
     this._initiator = initiator;
     this._issueTime = -1;
     this._startTime = -1;
     this._endTime = -1;
-    /** @type {!NetworkAgent.BlockedReason|undefined} */
+    /** @type {!Protocol.Network.BlockedReason|undefined} */
     this._blockedReason = undefined;
 
     this.statusCode = 0;
@@ -64,12 +64,12 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
     this.requestMethod = '';
     this.requestTime = 0;
     this.protocol = '';
-    /** @type {!NetworkAgent.RequestMixedContentType} */
-    this.mixedContentType = NetworkAgent.RequestMixedContentType.None;
+    /** @type {!Protocol.Network.RequestMixedContentType} */
+    this.mixedContentType = Protocol.Network.RequestMixedContentType.None;
 
-    /** @type {?NetworkAgent.ResourcePriority} */
+    /** @type {?Protocol.Network.ResourcePriority} */
     this._initialPriority = null;
-    /** @type {?NetworkAgent.ResourcePriority} */
+    /** @type {?Protocol.Network.ResourcePriority} */
     this._currentPriority = null;
 
     /** @type {!WebInspector.ResourceType} */
@@ -85,9 +85,9 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
 
     this._remoteAddress = '';
 
-    /** @type {!SecurityAgent.SecurityState} */
-    this._securityState = SecurityAgent.SecurityState.Unknown;
-    /** @type {?NetworkAgent.SecurityDetails} */
+    /** @type {!Protocol.Security.SecurityState} */
+    this._securityState = Protocol.Security.SecurityState.Unknown;
+    /** @type {?Protocol.Network.SecurityDetails} */
     this._securityDetails = null;
 
     /** @type {string} */
@@ -107,14 +107,14 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!NetworkAgent.RequestId}
+   * @return {!Protocol.Network.RequestId}
    */
   get requestId() {
     return this._requestId;
   }
 
   /**
-   * @param {!NetworkAgent.RequestId} requestId
+   * @param {!Protocol.Network.RequestId} requestId
    */
   set requestId(requestId) {
     this._requestId = requestId;
@@ -154,14 +154,14 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!PageAgent.FrameId}
+   * @return {!Protocol.Page.FrameId}
    */
   get frameId() {
     return this._frameId;
   }
 
   /**
-   * @return {!NetworkAgent.LoaderId}
+   * @return {!Protocol.Network.LoaderId}
    */
   get loaderId() {
     return this._loaderId;
@@ -184,28 +184,28 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!SecurityAgent.SecurityState}
+   * @return {!Protocol.Security.SecurityState}
    */
   securityState() {
     return this._securityState;
   }
 
   /**
-   * @param {!SecurityAgent.SecurityState} securityState
+   * @param {!Protocol.Security.SecurityState} securityState
    */
   setSecurityState(securityState) {
     this._securityState = securityState;
   }
 
   /**
-   * @return {?NetworkAgent.SecurityDetails}
+   * @return {?Protocol.Network.SecurityDetails}
    */
   securityDetails() {
     return this._securityDetails;
   }
 
   /**
-   * @param {!NetworkAgent.SecurityDetails} securityDetails
+   * @param {!Protocol.Network.SecurityDetails} securityDetails
    */
   setSecurityDetails(securityDetails) {
     this._securityDetails = securityDetails;
@@ -385,14 +385,14 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!NetworkAgent.BlockedReason|undefined}
+   * @return {!Protocol.Network.BlockedReason|undefined}
    */
   blockedReason() {
     return this._blockedReason;
   }
 
   /**
-   * @param {!NetworkAgent.BlockedReason} reason
+   * @param {!Protocol.Network.BlockedReason} reason
    */
   setBlockedReason(reason) {
     this._blockedReason = reason;
@@ -443,14 +443,14 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!NetworkAgent.ResourceTiming|undefined}
+   * @return {!Protocol.Network.ResourceTiming|undefined}
    */
   get timing() {
     return this._timing;
   }
 
   /**
-   * @param {!NetworkAgent.ResourceTiming|undefined} x
+   * @param {!Protocol.Network.ResourceTiming|undefined} x
    */
   set timing(x) {
     if (x && !this._fromMemoryCache) {
@@ -941,28 +941,28 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @param {!NetworkAgent.ResourcePriority} priority
+   * @param {!Protocol.Network.ResourcePriority} priority
    */
   setInitialPriority(priority) {
     this._initialPriority = priority;
   }
 
   /**
-   * @return {?NetworkAgent.ResourcePriority}
+   * @return {?Protocol.Network.ResourcePriority}
    */
   initialPriority() {
     return this._initialPriority;
   }
 
   /**
-   * @param {!NetworkAgent.ResourcePriority} priority
+   * @param {!Protocol.Network.ResourcePriority} priority
    */
   setPriority(priority) {
     this._currentPriority = priority;
   }
 
   /**
-   * @return {?NetworkAgent.ResourcePriority}
+   * @return {?Protocol.Network.ResourcePriority}
    */
   priority() {
     return this._currentPriority || this._initialPriority || null;
@@ -1024,7 +1024,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {?NetworkAgent.Initiator}
+   * @return {?Protocol.Network.Initiator}
    */
   initiator() {
     return this._initiator;
@@ -1048,11 +1048,11 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
       type = WebInspector.NetworkRequest.InitiatorType.Redirect;
       url = this.redirectSource.url;
     } else if (initiator) {
-      if (initiator.type === NetworkAgent.InitiatorType.Parser) {
+      if (initiator.type === Protocol.Network.InitiatorType.Parser) {
         type = WebInspector.NetworkRequest.InitiatorType.Parser;
         url = initiator.url ? initiator.url : url;
         lineNumber = initiator.lineNumber ? initiator.lineNumber : lineNumber;
-      } else if (initiator.type === NetworkAgent.InitiatorType.Script) {
+      } else if (initiator.type === Protocol.Network.InitiatorType.Script) {
         for (var stack = initiator.stack; stack; stack = stack.parent) {
           var topFrame = stack.callFrames.length ? stack.callFrames[0] : null;
           if (!topFrame)
@@ -1132,7 +1132,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @param {!NetworkAgent.WebSocketFrame} response
+   * @param {!Protocol.Network.WebSocketFrame} response
    * @param {number} time
    * @param {boolean} sent
    */

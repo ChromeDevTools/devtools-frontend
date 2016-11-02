@@ -62,7 +62,7 @@ WebInspector.AnimationModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!AnimationAgent.Animation} payload
+   * @param {!Protocol.Animation.Animation} payload
    */
   animationStarted(payload) {
     var animation = WebInspector.AnimationModel.Animation.parsePayload(this.target(), payload);
@@ -207,7 +207,7 @@ WebInspector.AnimationModel._symbol = Symbol('AnimationModel');
 WebInspector.AnimationModel.Animation = class extends WebInspector.SDKObject {
   /**
    * @param {!WebInspector.Target} target
-   * @param {!AnimationAgent.Animation} payload
+   * @param {!Protocol.Animation.Animation} payload
    */
   constructor(target, payload) {
     super(target);
@@ -217,7 +217,7 @@ WebInspector.AnimationModel.Animation = class extends WebInspector.SDKObject {
 
   /**
    * @param {!WebInspector.Target} target
-   * @param {!AnimationAgent.Animation} payload
+   * @param {!Protocol.Animation.Animation} payload
    * @return {!WebInspector.AnimationModel.Animation}
    */
   static parsePayload(target, payload) {
@@ -225,7 +225,7 @@ WebInspector.AnimationModel.Animation = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!AnimationAgent.Animation}
+   * @return {!Protocol.Animation.Animation}
    */
   payload() {
     return this._payload;
@@ -371,7 +371,7 @@ WebInspector.AnimationModel.Animation = class extends WebInspector.SDKObject {
   remoteObjectPromise() {
     /**
      * @param {?Protocol.Error} error
-     * @param {!RuntimeAgent.RemoteObject} payload
+     * @param {!Protocol.Runtime.RemoteObject} payload
      * @return {?WebInspector.RemoteObject}
      * @this {!WebInspector.AnimationModel.Animation}
      */
@@ -404,7 +404,7 @@ WebInspector.AnimationModel.Animation.Type = {
 WebInspector.AnimationModel.AnimationEffect = class extends WebInspector.SDKObject {
   /**
    * @param {!WebInspector.Target} target
-   * @param {!AnimationAgent.AnimationEffect} payload
+   * @param {!Protocol.Animation.AnimationEffect} payload
    */
   constructor(target, payload) {
     super(target);
@@ -511,7 +511,7 @@ WebInspector.AnimationModel.AnimationEffect = class extends WebInspector.SDKObje
 WebInspector.AnimationModel.KeyframesRule = class extends WebInspector.SDKObject {
   /**
    * @param {!WebInspector.Target} target
-   * @param {!AnimationAgent.KeyframesRule} payload
+   * @param {!Protocol.Animation.KeyframesRule} payload
    */
   constructor(target, payload) {
     super(target);
@@ -522,7 +522,7 @@ WebInspector.AnimationModel.KeyframesRule = class extends WebInspector.SDKObject
   }
 
   /**
-   * @param {!Array.<!AnimationAgent.KeyframeStyle>} payload
+   * @param {!Array.<!Protocol.Animation.KeyframeStyle>} payload
    */
   _setKeyframesPayload(payload) {
     this._keyframes = payload.map(function(keyframeStyle) {
@@ -551,7 +551,7 @@ WebInspector.AnimationModel.KeyframesRule = class extends WebInspector.SDKObject
 WebInspector.AnimationModel.KeyframeStyle = class extends WebInspector.SDKObject {
   /**
    * @param {!WebInspector.Target} target
-   * @param {!AnimationAgent.KeyframeStyle} payload
+   * @param {!Protocol.Animation.KeyframeStyle} payload
    */
   constructor(target, payload) {
     super(target);
@@ -753,7 +753,7 @@ WebInspector.AnimationModel.AnimationGroup = class extends WebInspector.SDKObjec
 };
 
 /**
- * @implements {AnimationAgent.Dispatcher}
+ * @implements {Protocol.AnimationDispatcher}
  * @unrestricted
  */
 WebInspector.AnimationDispatcher = class {
@@ -779,7 +779,7 @@ WebInspector.AnimationDispatcher = class {
 
   /**
    * @override
-   * @param {!AnimationAgent.Animation} payload
+   * @param {!Protocol.Animation.Animation} payload
    */
   animationStarted(payload) {
     this._animationModel.animationStarted(payload);

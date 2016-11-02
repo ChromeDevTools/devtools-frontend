@@ -52,8 +52,8 @@ WebInspector.JavaScriptCompiler = class {
 
     /**
      * @param {!WebInspector.Target} target
-     * @param {!RuntimeAgent.ScriptId=} scriptId
-     * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.ScriptId=} scriptId
+     * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {WebInspector.JavaScriptCompiler}
      */
     function compileCallback(target, scriptId, exceptionDetails) {

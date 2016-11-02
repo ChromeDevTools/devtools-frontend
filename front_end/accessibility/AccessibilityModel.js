@@ -7,7 +7,7 @@
 WebInspector.AccessibilityNode = class extends WebInspector.SDKObject {
   /**
    * @param {!WebInspector.AccessibilityModel} accessibilityModel
-   * @param {!AccessibilityAgent.AXNode} payload
+   * @param {!Protocol.Accessibility.AXNode} payload
    */
   constructor(accessibilityModel, payload) {
     super(accessibilityModel.target());
@@ -39,58 +39,58 @@ WebInspector.AccessibilityNode = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {?Array<!AccessibilityAgent.AXProperty>}
+   * @return {?Array<!Protocol.Accessibility.AXProperty>}
    */
   ignoredReasons() {
     return this._ignoredReasons || null;
   }
 
   /**
-   * @return {?AccessibilityAgent.AXValue}
+   * @return {?Protocol.Accessibility.AXValue}
    */
   role() {
     return this._role || null;
   }
 
   /**
-   * @return {!Array<!AccessibilityAgent.AXProperty>}
+   * @return {!Array<!Protocol.Accessibility.AXProperty>}
    */
   coreProperties() {
     var properties = [];
 
     if (this._name)
-      properties.push(/** @type {!AccessibilityAgent.AXProperty} */ ({name: 'name', value: this._name}));
+      properties.push(/** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'name', value: this._name}));
     if (this._description)
-      properties.push(/** @type {!AccessibilityAgent.AXProperty} */ ({name: 'description', value: this._description}));
+      properties.push(/** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'description', value: this._description}));
     if (this._value)
-      properties.push(/** @type {!AccessibilityAgent.AXProperty} */ ({name: 'value', value: this._value}));
+      properties.push(/** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'value', value: this._value}));
 
     return properties;
   }
 
   /**
-   * @return {?AccessibilityAgent.AXValue}
+   * @return {?Protocol.Accessibility.AXValue}
    */
   name() {
     return this._name || null;
   }
 
   /**
-   * @return {?AccessibilityAgent.AXValue}
+   * @return {?Protocol.Accessibility.AXValue}
    */
   description() {
     return this._description || null;
   }
 
   /**
-   * @return {?AccessibilityAgent.AXValue}
+   * @return {?Protocol.Accessibility.AXValue}
    */
   value() {
     return this._value || null;
   }
 
   /**
-   * @return {?Array<!AccessibilityAgent.AXProperty>}
+   * @return {?Array<!Protocol.Accessibility.AXProperty>}
    */
   properties() {
     return this._properties || null;
@@ -158,12 +158,12 @@ WebInspector.AccessibilityModel = class extends WebInspector.SDKModel {
     /**
      * @this {WebInspector.AccessibilityModel}
      * @param {?string} error
-     * @param {!Array<!AccessibilityAgent.AXNode>=} payloads
+     * @param {!Array<!Protocol.Accessibility.AXNode>=} payloads
      * @return {?Array<!WebInspector.AccessibilityNode>}
      */
     function parsePayload(error, payloads) {
       if (error) {
-        console.error('AccessibilityAgent.getAXNodeChain(): ' + error);
+        console.error('Protocol.Accessibility.getAXNodeChain(): ' + error);
         return null;
       }
 

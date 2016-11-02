@@ -156,7 +156,7 @@ WebInspector.CPUProfileType = class extends WebInspector.ProfileType {
    */
   _consoleProfileFinished(event) {
     var data = /** @type {!WebInspector.CPUProfilerModel.EventData} */ (event.data);
-    var cpuProfile = /** @type {!ProfilerAgent.Profile} */ (data.cpuProfile);
+    var cpuProfile = /** @type {!Protocol.Profiler.Profile} */ (data.cpuProfile);
     var resolvedTitle = data.title;
     if (typeof resolvedTitle === 'undefined') {
       resolvedTitle = this._anonymousConsoleProfileIdToTitle[data.id];
@@ -212,7 +212,7 @@ WebInspector.CPUProfileType = class extends WebInspector.ProfileType {
     var recordedProfile;
 
     /**
-     * @param {?ProfilerAgent.Profile} profile
+     * @param {?Protocol.Profiler.Profile} profile
      * @this {WebInspector.CPUProfileType}
      */
     function didStopProfiling(profile) {
@@ -280,7 +280,7 @@ WebInspector.CPUProfileHeader = class extends WebInspector.WritableProfileHeader
   }
 
   /**
-   * @return {!ProfilerAgent.Profile}
+   * @return {!Protocol.Profiler.Profile}
    */
   protocolProfile() {
     return this._protocolProfile;

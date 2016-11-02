@@ -232,7 +232,7 @@ WebInspector.ExtensionServer = class extends WebInspector.Object {
     }
     for (var name in message.headers)
       extensionHeaders[name] = message.headers[name];
-    var allHeaders = /** @type {!NetworkAgent.Headers} */ ({});
+    var allHeaders = /** @type {!Protocol.Network.Headers} */ ({});
     for (var extension in this._extraHeaders) {
       var headers = this._extraHeaders[extension];
       for (name in headers) {
@@ -959,8 +959,8 @@ WebInspector.ExtensionServer = class extends WebInspector.Object {
 
     /**
      * @param {?Protocol.Error} error
-     * @param {!RuntimeAgent.RemoteObject} result
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.RemoteObject} result
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      */
     function onEvalute(error, result, exceptionDetails) {
       if (error) {

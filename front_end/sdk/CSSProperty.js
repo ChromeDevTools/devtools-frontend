@@ -15,7 +15,7 @@ WebInspector.CSSProperty = class {
    * @param {boolean} parsedOk
    * @param {boolean} implicit
    * @param {?string=} text
-   * @param {!CSSAgent.SourceRange=} range
+   * @param {!Protocol.CSS.SourceRange=} range
    */
   constructor(ownerStyle, index, name, value, important, disabled, parsedOk, implicit, text, range) {
     this.ownerStyle = ownerStyle;
@@ -36,7 +36,7 @@ WebInspector.CSSProperty = class {
   /**
    * @param {!WebInspector.CSSStyleDeclaration} ownerStyle
    * @param {number} index
-   * @param {!CSSAgent.CSSProperty} payload
+   * @param {!Protocol.CSS.CSSProperty} payload
    * @return {!WebInspector.CSSProperty}
    */
   static parsePayload(ownerStyle, index, payload) {

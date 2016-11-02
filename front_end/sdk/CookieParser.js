@@ -372,7 +372,7 @@ WebInspector.Cookies.getCookiesAsync = function(callback) {
   /**
    * @param {!WebInspector.Target} target
    * @param {?Protocol.Error} error
-   * @param {!Array.<!NetworkAgent.Cookie>} cookies
+   * @param {!Array.<!Protocol.Network.Cookie>} cookies
    */
   function mycallback(target, error, cookies) {
     if (error) {
@@ -391,7 +391,7 @@ WebInspector.Cookies.getCookiesAsync = function(callback) {
 
 /**
  * @param {!WebInspector.Target} target
- * @param {!NetworkAgent.Cookie} protocolCookie
+ * @param {!Protocol.Network.Cookie} protocolCookie
  * @return {!WebInspector.Cookie}
  */
 WebInspector.Cookies._parseProtocolCookie = function(target, protocolCookie) {

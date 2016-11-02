@@ -46,13 +46,13 @@ WebInspector.DOMStorage = class extends WebInspector.Object {
   /**
    * @param {string} securityOrigin
    * @param {boolean} isLocalStorage
-   * @return {!DOMStorageAgent.StorageId}
+   * @return {!Protocol.DOMStorage.StorageId}
    */
   static storageId(securityOrigin, isLocalStorage) {
     return {securityOrigin: securityOrigin, isLocalStorage: isLocalStorage};
   }
 
-  /** @return {!DOMStorageAgent.StorageId} */
+  /** @return {!Protocol.DOMStorage.StorageId} */
   get id() {
     return WebInspector.DOMStorage.storageId(this._securityOrigin, this._isLocalStorage);
   }
@@ -68,7 +68,7 @@ WebInspector.DOMStorage = class extends WebInspector.Object {
   }
 
   /**
-   * @param {function(?Protocol.Error, !Array.<!DOMStorageAgent.Item>):void=} callback
+   * @param {function(?Protocol.Error, !Array.<!Protocol.DOMStorage.Item>):void=} callback
    */
   getItems(callback) {
     this._model._agent.getDOMStorageItems(this.id, callback);
@@ -213,7 +213,7 @@ WebInspector.DOMStorageModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!DOMStorageAgent.StorageId} storageId
+   * @param {!Protocol.DOMStorage.StorageId} storageId
    */
   _domStorageItemsCleared(storageId) {
     var domStorage = this.storageForId(storageId);
@@ -225,7 +225,7 @@ WebInspector.DOMStorageModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!DOMStorageAgent.StorageId} storageId
+   * @param {!Protocol.DOMStorage.StorageId} storageId
    * @param {string} key
    */
   _domStorageItemRemoved(storageId, key) {
@@ -238,7 +238,7 @@ WebInspector.DOMStorageModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!DOMStorageAgent.StorageId} storageId
+   * @param {!Protocol.DOMStorage.StorageId} storageId
    * @param {string} key
    * @param {string} value
    */
@@ -252,7 +252,7 @@ WebInspector.DOMStorageModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!DOMStorageAgent.StorageId} storageId
+   * @param {!Protocol.DOMStorage.StorageId} storageId
    * @param {string} key
    * @param {string} oldValue
    * @param {string} value
@@ -267,7 +267,7 @@ WebInspector.DOMStorageModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!DOMStorageAgent.StorageId} storageId
+   * @param {!Protocol.DOMStorage.StorageId} storageId
    * @return {!WebInspector.DOMStorage}
    */
   storageForId(storageId) {
@@ -292,7 +292,7 @@ WebInspector.DOMStorageModel.Events = {
 };
 
 /**
- * @implements {DOMStorageAgent.Dispatcher}
+ * @implements {Protocol.DOMStorageDispatcher}
  * @unrestricted
  */
 WebInspector.DOMStorageDispatcher = class {
@@ -305,7 +305,7 @@ WebInspector.DOMStorageDispatcher = class {
 
   /**
    * @override
-   * @param {!DOMStorageAgent.StorageId} storageId
+   * @param {!Protocol.DOMStorage.StorageId} storageId
    */
   domStorageItemsCleared(storageId) {
     this._model._domStorageItemsCleared(storageId);
@@ -313,7 +313,7 @@ WebInspector.DOMStorageDispatcher = class {
 
   /**
    * @override
-   * @param {!DOMStorageAgent.StorageId} storageId
+   * @param {!Protocol.DOMStorage.StorageId} storageId
    * @param {string} key
    */
   domStorageItemRemoved(storageId, key) {
@@ -322,7 +322,7 @@ WebInspector.DOMStorageDispatcher = class {
 
   /**
    * @override
-   * @param {!DOMStorageAgent.StorageId} storageId
+   * @param {!Protocol.DOMStorage.StorageId} storageId
    * @param {string} key
    * @param {string} value
    */
@@ -332,7 +332,7 @@ WebInspector.DOMStorageDispatcher = class {
 
   /**
    * @override
-   * @param {!DOMStorageAgent.StorageId} storageId
+   * @param {!Protocol.DOMStorage.StorageId} storageId
    * @param {string} key
    * @param {string} oldValue
    * @param {string} value

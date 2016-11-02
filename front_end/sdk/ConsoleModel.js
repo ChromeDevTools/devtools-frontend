@@ -70,7 +70,7 @@ WebInspector.ConsoleModel = class extends WebInspector.SDKModel {
 
     /**
      * @param {?WebInspector.RemoteObject} result
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      */
     function printResult(result, exceptionDetails) {
       if (!result)
@@ -252,11 +252,11 @@ WebInspector.ConsoleMessage = class {
    * @param {?string=} url
    * @param {number=} line
    * @param {number=} column
-   * @param {!NetworkAgent.RequestId=} requestId
-   * @param {!Array.<!RuntimeAgent.RemoteObject>=} parameters
-   * @param {!RuntimeAgent.StackTrace=} stackTrace
+   * @param {!Protocol.Network.RequestId=} requestId
+   * @param {!Array.<!Protocol.Runtime.RemoteObject>=} parameters
+   * @param {!Protocol.Runtime.StackTrace=} stackTrace
    * @param {number=} timestamp
-   * @param {!RuntimeAgent.ExecutionContextId=} executionContextId
+   * @param {!Protocol.Runtime.ExecutionContextId=} executionContextId
    * @param {?string=} scriptId
    * @param {?string=} workerId
    */
@@ -288,7 +288,7 @@ WebInspector.ConsoleMessage = class {
     /** @type {number} */
     this.column = column || 0;
     this.parameters = parameters;
-    /** @type {!RuntimeAgent.StackTrace|undefined} */
+    /** @type {!Protocol.Runtime.StackTrace|undefined} */
     this.stackTrace = stackTrace;
     this.timestamp = timestamp || Date.now();
     this.executionContextId = executionContextId || 0;
@@ -320,7 +320,7 @@ WebInspector.ConsoleMessage = class {
   }
 
   /**
-   * @param {!RuntimeAgent.ExceptionDetails} exceptionDetails
+   * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    * @return {string}
    */
   static simpleTextFromException(exceptionDetails) {
@@ -336,7 +336,7 @@ WebInspector.ConsoleMessage = class {
 
   /**
    * @param {!WebInspector.Target} target
-   * @param {!RuntimeAgent.ExceptionDetails} exceptionDetails
+   * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    * @param {string=} messageType
    * @param {number=} timestamp
    * @param {string=} forceUrl
@@ -369,7 +369,7 @@ WebInspector.ConsoleMessage = class {
   }
 
   /**
-   * @param {!RuntimeAgent.ExecutionContextId} executionContextId
+   * @param {!Protocol.Runtime.ExecutionContextId} executionContextId
    */
   setExecutionContextId(executionContextId) {
     this.executionContextId = executionContextId;
@@ -457,8 +457,8 @@ WebInspector.ConsoleMessage = class {
   }
 
   /**
-   * @param {!RuntimeAgent.StackTrace|undefined} stackTrace1
-   * @param {!RuntimeAgent.StackTrace|undefined} stackTrace2
+   * @param {!Protocol.Runtime.StackTrace|undefined} stackTrace1
+   * @param {!Protocol.Runtime.StackTrace|undefined} stackTrace2
    * @return {boolean}
    */
   _isEqualStackTraces(stackTrace1, stackTrace2) {
@@ -537,7 +537,7 @@ WebInspector.ConsoleMessage.MessageLevel = {
 
 
 /**
- * @implements {LogAgent.Dispatcher}
+ * @implements {Protocol.LogDispatcher}
  * @unrestricted
  */
 WebInspector.LogDispatcher = class {
@@ -550,7 +550,7 @@ WebInspector.LogDispatcher = class {
 
   /**
    * @override
-   * @param {!LogAgent.LogEntry} payload
+   * @param {!Protocol.Log.LogEntry} payload
    */
   entryAdded(payload) {
     var consoleMessage = new WebInspector.ConsoleMessage(

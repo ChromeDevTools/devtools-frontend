@@ -155,7 +155,7 @@ WebInspector.PaintProfilerView = class extends WebInspector.HBox {
   /**
    * @param {?WebInspector.PaintProfilerSnapshot} snapshot
    * @param {!Array.<!WebInspector.PaintProfilerLogItem>} log
-   * @param {?DOMAgent.Rect} clipRect
+   * @param {?Protocol.DOM.Rect} clipRect
    */
   setSnapshotAndLog(snapshot, log, clipRect) {
     this._reset();
@@ -176,7 +176,7 @@ WebInspector.PaintProfilerView = class extends WebInspector.HBox {
     this._updateImage();
     snapshot.profile(clipRect, onProfileDone.bind(this));
     /**
-     * @param {!Array.<!LayerTreeAgent.PaintProfile>=} profiles
+     * @param {!Array.<!Protocol.LayerTree.PaintProfile>=} profiles
      * @this {WebInspector.PaintProfilerView}
      */
     function onProfileDone(profiles) {

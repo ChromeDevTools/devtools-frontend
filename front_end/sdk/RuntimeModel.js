@@ -85,7 +85,7 @@ WebInspector.RuntimeModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!RuntimeAgent.ExecutionContextId} id
+   * @param {!Protocol.Runtime.ExecutionContextId} id
    * @return {?WebInspector.ExecutionContext}
    */
   executionContext(id) {
@@ -93,7 +93,7 @@ WebInspector.RuntimeModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!RuntimeAgent.ExecutionContextDescription} context
+   * @param {!Protocol.Runtime.ExecutionContextDescription} context
    */
   _executionContextCreated(context) {
     // The private script context should be hidden behind an experiment.
@@ -134,7 +134,7 @@ WebInspector.RuntimeModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!RuntimeAgent.RemoteObject} payload
+   * @param {!Protocol.Runtime.RemoteObject} payload
    * @return {!WebInspector.RemoteObject}
    */
   createRemoteObject(payload) {
@@ -145,7 +145,7 @@ WebInspector.RuntimeModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!RuntimeAgent.RemoteObject} payload
+   * @param {!Protocol.Runtime.RemoteObject} payload
    * @param {!WebInspector.ScopeRef} scopeRef
    * @return {!WebInspector.RemoteObject}
    */
@@ -165,13 +165,13 @@ WebInspector.RuntimeModel = class extends WebInspector.SDKModel {
     if (typeof value === 'number') {
       var description = String(value);
       if (value === 0 && 1 / value < 0)
-        unserializableValue = RuntimeAgent.UnserializableValue.Negative0;
+        unserializableValue = Protocol.Runtime.UnserializableValue.Negative0;
       if (description === 'NaN')
-        unserializableValue = RuntimeAgent.UnserializableValue.NaN;
+        unserializableValue = Protocol.Runtime.UnserializableValue.NaN;
       if (description === 'Infinity')
-        unserializableValue = RuntimeAgent.UnserializableValue.Infinity;
+        unserializableValue = Protocol.Runtime.UnserializableValue.Infinity;
       if (description === '-Infinity')
-        unserializableValue = RuntimeAgent.UnserializableValue.NegativeInfinity;
+        unserializableValue = Protocol.Runtime.UnserializableValue.NegativeInfinity;
       if (typeof unserializableValue !== 'undefined')
         value = undefined;
     }
@@ -204,15 +204,15 @@ WebInspector.RuntimeModel = class extends WebInspector.SDKModel {
    * @param {string} sourceURL
    * @param {boolean} persistScript
    * @param {number} executionContextId
-   * @param {function(!RuntimeAgent.ScriptId=, ?RuntimeAgent.ExceptionDetails=)=} callback
+   * @param {function(!Protocol.Runtime.ScriptId=, ?Protocol.Runtime.ExceptionDetails=)=} callback
    */
   compileScript(expression, sourceURL, persistScript, executionContextId, callback) {
     this._agent.compileScript(expression, sourceURL, persistScript, executionContextId, innerCallback);
 
     /**
      * @param {?Protocol.Error} error
-     * @param {!RuntimeAgent.ScriptId=} scriptId
-     * @param {?RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.ScriptId=} scriptId
+     * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
      */
     function innerCallback(error, scriptId, exceptionDetails) {
       if (error) {
@@ -225,7 +225,7 @@ WebInspector.RuntimeModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!RuntimeAgent.ScriptId} scriptId
+   * @param {!Protocol.Runtime.ScriptId} scriptId
    * @param {number} executionContextId
    * @param {string=} objectGroup
    * @param {boolean=} silent
@@ -233,7 +233,7 @@ WebInspector.RuntimeModel = class extends WebInspector.SDKModel {
    * @param {boolean=} returnByValue
    * @param {boolean=} generatePreview
    * @param {boolean=} awaitPromise
-   * @param {function(?RuntimeAgent.RemoteObject, ?RuntimeAgent.ExceptionDetails=)=} callback
+   * @param {function(?Protocol.Runtime.RemoteObject, ?Protocol.Runtime.ExceptionDetails=)=} callback
    */
   runScript(
       scriptId,
@@ -251,8 +251,8 @@ WebInspector.RuntimeModel = class extends WebInspector.SDKModel {
 
     /**
      * @param {?Protocol.Error} error
-     * @param {!RuntimeAgent.RemoteObject} result
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.RemoteObject} result
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      */
     function innerCallback(error, result, exceptionDetails) {
       if (error) {
@@ -265,7 +265,7 @@ WebInspector.RuntimeModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!RuntimeAgent.RemoteObject} payload
+   * @param {!Protocol.Runtime.RemoteObject} payload
    * @param {!Object=} hints
    */
   _inspectRequested(payload, hints) {
@@ -339,7 +339,7 @@ WebInspector.RuntimeModel.Events = {
 WebInspector.RuntimeModel._privateScript = 'private script';
 
 /**
- * @implements {RuntimeAgent.Dispatcher}
+ * @implements {Protocol.RuntimeDispatcher}
  * @unrestricted
  */
 WebInspector.RuntimeDispatcher = class {
@@ -352,7 +352,7 @@ WebInspector.RuntimeDispatcher = class {
 
   /**
    * @override
-   * @param {!RuntimeAgent.ExecutionContextDescription} context
+   * @param {!Protocol.Runtime.ExecutionContextDescription} context
    */
   executionContextCreated(context) {
     this._runtimeModel._executionContextCreated(context);
@@ -360,7 +360,7 @@ WebInspector.RuntimeDispatcher = class {
 
   /**
    * @override
-   * @param {!RuntimeAgent.ExecutionContextId} executionContextId
+   * @param {!Protocol.Runtime.ExecutionContextId} executionContextId
    */
   executionContextDestroyed(executionContextId) {
     this._runtimeModel._executionContextDestroyed(executionContextId);
@@ -376,7 +376,7 @@ WebInspector.RuntimeDispatcher = class {
   /**
    * @override
    * @param {number} timestamp
-   * @param {!RuntimeAgent.ExceptionDetails} exceptionDetails
+   * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    */
   exceptionThrown(timestamp, exceptionDetails) {
     var consoleMessage = WebInspector.ConsoleMessage.fromException(
@@ -402,10 +402,10 @@ WebInspector.RuntimeDispatcher = class {
   /**
    * @override
    * @param {string} type
-   * @param {!Array.<!RuntimeAgent.RemoteObject>} args
+   * @param {!Array.<!Protocol.Runtime.RemoteObject>} args
    * @param {number} executionContextId
    * @param {number} timestamp
-   * @param {!RuntimeAgent.StackTrace=} stackTrace
+   * @param {!Protocol.Runtime.StackTrace=} stackTrace
    */
   consoleAPICalled(type, args, executionContextId, timestamp, stackTrace) {
     var level = WebInspector.ConsoleMessage.MessageLevel.Log;
@@ -434,7 +434,7 @@ WebInspector.RuntimeDispatcher = class {
 
   /**
    * @override
-   * @param {!RuntimeAgent.RemoteObject} payload
+   * @param {!Protocol.Runtime.RemoteObject} payload
    * @param {!Object=} hints
    */
   inspectRequested(payload, hints) {
@@ -508,7 +508,7 @@ WebInspector.ExecutionContext = class extends WebInspector.SDKObject {
    * @param {boolean} returnByValue
    * @param {boolean} generatePreview
    * @param {boolean} userGesture
-   * @param {function(?WebInspector.RemoteObject, !RuntimeAgent.ExceptionDetails=)} callback
+   * @param {function(?WebInspector.RemoteObject, !Protocol.Runtime.ExceptionDetails=)} callback
    */
   evaluate(
       expression,
@@ -531,7 +531,7 @@ WebInspector.ExecutionContext = class extends WebInspector.SDKObject {
   /**
    * @param {string} objectGroup
    * @param {boolean} generatePreview
-   * @param {function(?WebInspector.RemoteObject, !RuntimeAgent.ExceptionDetails=)} callback
+   * @param {function(?WebInspector.RemoteObject, !Protocol.Runtime.ExceptionDetails=)} callback
    */
   globalObject(objectGroup, generatePreview, callback) {
     this._evaluateGlobal('this', objectGroup, false, true, false, generatePreview, false, callback);
@@ -545,7 +545,7 @@ WebInspector.ExecutionContext = class extends WebInspector.SDKObject {
    * @param {boolean} returnByValue
    * @param {boolean} generatePreview
    * @param {boolean} userGesture
-   * @param {function(?WebInspector.RemoteObject, !RuntimeAgent.ExceptionDetails=)} callback
+   * @param {function(?WebInspector.RemoteObject, !Protocol.Runtime.ExceptionDetails=)} callback
    */
   _evaluateGlobal(
       expression,
@@ -564,8 +564,8 @@ WebInspector.ExecutionContext = class extends WebInspector.SDKObject {
     /**
      * @this {WebInspector.ExecutionContext}
      * @param {?Protocol.Error} error
-     * @param {!RuntimeAgent.RemoteObject} result
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.RemoteObject} result
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      */
     function evalCallback(error, result, exceptionDetails) {
       if (error) {
@@ -612,7 +612,7 @@ WebInspector.ExecutionContext = class extends WebInspector.SDKObject {
     return promise;
     /**
      * @param {?WebInspector.RemoteObject} result
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {WebInspector.ExecutionContext}
      */
     function evaluated(result, exceptionDetails) {
@@ -701,7 +701,7 @@ WebInspector.ExecutionContext = class extends WebInspector.SDKObject {
 
     /**
      * @param {?WebInspector.RemoteObject} result
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {WebInspector.ExecutionContext}
      */
     function receivedPropertyNamesFromEval(result, exceptionDetails) {

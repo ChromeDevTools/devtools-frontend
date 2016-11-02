@@ -825,7 +825,7 @@ WebInspector.BreakpointManager.TargetBreakpoint = class extends WebInspector.SDK
 
   /**
    * @param {function()} callback
-   * @param {?DebuggerAgent.BreakpointId} breakpointId
+   * @param {?Protocol.Debugger.BreakpointId} breakpointId
    * @param {!Array.<!WebInspector.DebuggerModel.Location>} locations
    */
   _didSetBreakpointInDebugger(callback, breakpointId, locations) {

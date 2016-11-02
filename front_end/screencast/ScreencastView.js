@@ -148,7 +148,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
    * @param {!WebInspector.Event} event
    */
   _screencastFrame(event) {
-    var metadata = /** type {PageAgent.ScreencastFrameMetadata} */ (event.data.metadata);
+    var metadata = /** type {Protocol.Page.ScreencastFrameMetadata} */ (event.data.metadata);
     var base64Data = /** type {string} */ (event.data.data);
     this._imageElement.src = 'data:image/jpg;base64,' + base64Data;
     this._pageScaleFactor = metadata.pageScaleFactor;
@@ -417,9 +417,9 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
   /**
    * @override
    * @param {?WebInspector.DOMNode} node
-   * @param {?DOMAgent.HighlightConfig} config
-   * @param {!DOMAgent.BackendNodeId=} backendNodeId
-   * @param {!RuntimeAgent.RemoteObjectId=} objectId
+   * @param {?Protocol.DOM.HighlightConfig} config
+   * @param {!Protocol.DOM.BackendNodeId=} backendNodeId
+   * @param {!Protocol.Runtime.RemoteObjectId=} objectId
    */
   highlightDOMNode(node, config, backendNodeId, objectId) {
     this._highlightNode = node;
@@ -437,7 +437,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
     node.boxModel(callback.bind(this));
 
     /**
-     * @param {?DOMAgent.BoxModel} model
+     * @param {?Protocol.DOM.BoxModel} model
      * @this {WebInspector.ScreencastView}
      */
     function callback(model) {
@@ -452,12 +452,12 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!DOMAgent.BoxModel} model
-   * @return {!DOMAgent.BoxModel}
+   * @param {!Protocol.DOM.BoxModel} model
+   * @return {!Protocol.DOM.BoxModel}
    */
   _scaleModel(model) {
     /**
-     * @param {!DOMAgent.Quad} quad
+     * @param {!Protocol.DOM.Quad} quad
      * @this {WebInspector.ScreencastView}
      */
     function scaleQuad(quad) {
@@ -526,7 +526,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!DOMAgent.RGBA} color
+   * @param {!Protocol.DOM.RGBA} color
    * @return {string}
    */
   _cssColor(color) {
@@ -537,7 +537,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!DOMAgent.Quad} quad
+   * @param {!Protocol.DOM.Quad} quad
    * @return {!CanvasRenderingContext2D}
    */
   _quadToPath(quad) {
@@ -551,8 +551,8 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!DOMAgent.Quad} quad
-   * @param {!DOMAgent.RGBA} fillColor
+   * @param {!Protocol.DOM.Quad} quad
+   * @param {!Protocol.DOM.RGBA} fillColor
    */
   _drawOutlinedQuad(quad, fillColor) {
     this._context.save();
@@ -564,9 +564,9 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!DOMAgent.Quad} quad
-   * @param {!DOMAgent.Quad} clipQuad
-   * @param {!DOMAgent.RGBA} fillColor
+   * @param {!Protocol.DOM.Quad} quad
+   * @param {!Protocol.DOM.Quad} clipQuad
+   * @param {!Protocol.DOM.RGBA} fillColor
    */
   _drawOutlinedQuadWithClip(quad, clipQuad, fillColor) {
     this._context.fillStyle = this._cssColor(fillColor);
@@ -670,19 +670,19 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
 
   /**
    * @override
-   * @param {!DOMAgent.InspectMode} mode
-   * @param {!DOMAgent.HighlightConfig} config
+   * @param {!Protocol.DOM.InspectMode} mode
+   * @param {!Protocol.DOM.HighlightConfig} config
    * @param {function(?Protocol.Error)=} callback
    */
   setInspectMode(mode, config, callback) {
-    this._inspectModeConfig = mode !== DOMAgent.InspectMode.None ? config : null;
+    this._inspectModeConfig = mode !== Protocol.DOM.InspectMode.None ? config : null;
     if (callback)
       callback(null);
   }
 
   /**
    * @override
-   * @param {!PageAgent.FrameId} frameId
+   * @param {!Protocol.Page.FrameId} frameId
    */
   highlightFrame(frameId) {
   }

@@ -173,11 +173,11 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
     if (!priorityMap) {
       WebInspector.NetworkDataGridNode._symbolicToNumericPriority = new Map();
       priorityMap = WebInspector.NetworkDataGridNode._symbolicToNumericPriority;
-      priorityMap.set(NetworkAgent.ResourcePriority.VeryLow, 1);
-      priorityMap.set(NetworkAgent.ResourcePriority.Low, 2);
-      priorityMap.set(NetworkAgent.ResourcePriority.Medium, 3);
-      priorityMap.set(NetworkAgent.ResourcePriority.High, 4);
-      priorityMap.set(NetworkAgent.ResourcePriority.VeryHigh, 5);
+      priorityMap.set(Protocol.Network.ResourcePriority.VeryLow, 1);
+      priorityMap.set(Protocol.Network.ResourcePriority.Low, 2);
+      priorityMap.set(Protocol.Network.ResourcePriority.Medium, 3);
+      priorityMap.set(Protocol.Network.ResourcePriority.High, 4);
+      priorityMap.set(Protocol.Network.ResourcePriority.VeryHigh, 5);
     }
     var aScore = priorityMap.get(a._request.initialPriority()) || 0;
     var bScore = priorityMap.get(b._request.initialPriority()) || 0;
@@ -536,19 +536,19 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
     } else if (this._request.wasBlocked()) {
       var reason = WebInspector.UIString('other');
       switch (this._request.blockedReason()) {
-        case NetworkAgent.BlockedReason.Csp:
+        case Protocol.Network.BlockedReason.Csp:
           reason = WebInspector.UIString('csp');
           break;
-        case NetworkAgent.BlockedReason.MixedContent:
+        case Protocol.Network.BlockedReason.MixedContent:
           reason = WebInspector.UIString('mixed-content');
           break;
-        case NetworkAgent.BlockedReason.Origin:
+        case Protocol.Network.BlockedReason.Origin:
           reason = WebInspector.UIString('origin');
           break;
-        case NetworkAgent.BlockedReason.Inspector:
+        case Protocol.Network.BlockedReason.Inspector:
           reason = WebInspector.UIString('devtools');
           break;
-        case NetworkAgent.BlockedReason.Other:
+        case Protocol.Network.BlockedReason.Other:
           reason = WebInspector.UIString('other');
           break;
       }

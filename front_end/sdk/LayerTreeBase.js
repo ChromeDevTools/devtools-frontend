@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /** @typedef {!{
-        rect: !DOMAgent.Rect,
+        rect: !Protocol.DOM.Rect,
         snapshot: !WebInspector.PaintProfilerSnapshot
     }}
 */
@@ -100,12 +100,12 @@ WebInspector.Layer.prototype = {
   paintCount: function() {},
 
   /**
-   * @return {?DOMAgent.Rect}
+   * @return {?Protocol.DOM.Rect}
    */
   lastPaintRect: function() {},
 
   /**
-   * @return {!Array.<!LayerTreeAgent.ScrollRect>}
+   * @return {!Array.<!Protocol.LayerTree.ScrollRect>}
    */
   scrollRects: function() {},
 

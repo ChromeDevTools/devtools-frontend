@@ -953,7 +953,7 @@ WebInspector.SourcesPanel = class extends WebInspector.Panel {
     currentExecutionContext.globalObject('', false, didGetGlobalObject);
     /**
      * @param {?WebInspector.RemoteObject} global
-     * @param {!RuntimeAgent.ExceptionDetails=} exceptionDetails
+     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      */
     function didGetGlobalObject(global, exceptionDetails) {
       /**

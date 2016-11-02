@@ -17,7 +17,7 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
     this._renderAsTwoRows = delegate.renderAsTwoRows();
 
     this.contentElement.classList.add('filtered-list-widget');
-    this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
+    this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), true);
     if (delegate.renderMonospace())
       this.contentElement.classList.add('monospace');
     this.registerRequiredCSS('ui_lazy/filteredListWidget.css');
@@ -26,9 +26,8 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
     this._promptElement.setAttribute('spellcheck', 'false');
     this._promptElement.setAttribute('contenteditable', 'plaintext-only');
     this._prompt = new WebInspector.TextPrompt();
-    this._prompt.initialize(this._autocomplete.bind(this));
+    this._prompt.initialize(() => undefined);
     this._prompt.renderAsBlock();
-    this._prompt.addEventListener(WebInspector.TextPrompt.Events.ItemAccepted, this._onAutocompleted, this);
     var promptProxy = this._prompt.attach(this._promptElement);
     promptProxy.addEventListener('input', this._onInput.bind(this), false);
     promptProxy.classList.add('filtered-list-widget-prompt-element');
@@ -47,7 +46,6 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
     this._itemsLoaded();
     this._updateShowMatchingItems();
     this._viewportControl.refresh();
-    this._prompt.autoCompleteSoon(true);
 
     /** @typedef {!Array.<!Element>} */
     this._elements = [];
@@ -147,19 +145,14 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
     this._scheduleFilter();
   }
 
-  /**
-   * @param {!Element} proxyElement
-   * @param {!Range} wordRange
-   * @param {boolean} force
-   * @param {function(!Array.<string>, number=)} completionsReadyCallback
-   */
-  _autocomplete(proxyElement, wordRange, force, completionsReadyCallback) {
-    var completions = wordRange.startOffset === 0 ? [this._delegate.autocomplete(wordRange.toString())] : [];
-    completionsReadyCallback.call(null, completions);
-    this._autocompletedForTests();
+  _tabKeyPressed() {
+    var userEnteredText = this._prompt.text();
+    var completion = this._delegate.autocomplete(userEnteredText);
+    this._prompt.setText(completion);
+    this._prompt.setDOMSelection(userEnteredText.length, completion.length);
   }
 
-  _autocompletedForTests() {
+  _itemsFilteredForTest() {
     // Sniffed in tests.
   }
 
@@ -248,6 +241,7 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
       if (!query)
         this._selectedIndexInFiltered = 0;
       this._updateSelection(this._selectedIndexInFiltered, false);
+      this._itemsFilteredForTest();
     }
   }
 
@@ -256,11 +250,6 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
    */
   _shouldShowMatchingItems() {
     return this._delegate.shouldShowMatchingItems(this._value());
-  }
-
-  _onAutocompleted() {
-    this._prompt.autoCompleteSoon(true);
-    this._onInput();
   }
 
   _onInput() {
@@ -308,6 +297,9 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
         break;
       case WebInspector.KeyboardShortcut.Keys.Enter.code:
         this._onEnter(event);
+        break;
+      case WebInspector.KeyboardShortcut.Keys.Tab.code:
+        this._tabKeyPressed();
         break;
       default:
     }

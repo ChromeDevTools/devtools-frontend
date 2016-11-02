@@ -526,7 +526,7 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
     var text = this.text();
     this._element.textContent = text.substring(0, this._prefixRange.startColumn) + this._currentSuggestion +
         text.substring(this._prefixRange.endColumn);
-    this._setDOMSelection(
+    this.setDOMSelection(
         this._prefixRange.startColumn + this._currentSuggestion.length,
         this._prefixRange.startColumn + this._currentSuggestion.length);
 
@@ -540,7 +540,7 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
    * @param {number} startColumn
    * @param {number} endColumn
    */
-  _setDOMSelection(startColumn, endColumn) {
+  setDOMSelection(startColumn, endColumn) {
     this._element.normalize();
     var node = this._element.childNodes[0];
     if (!node || node === this._ghostTextElement)

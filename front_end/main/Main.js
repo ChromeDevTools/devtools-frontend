@@ -55,7 +55,18 @@ WebInspector.Main = class {
     if (InspectorFrontendHost.isUnderTest())
       self.runtime.useTestBase();
     Runtime.setPlatform(WebInspector.platform());
-    InspectorFrontendHost.getPreferences(this._gotPreferences.bind(this));
+    this._preferencesProvider().getPreferences(this._gotPreferences.bind(this));
+  }
+
+  /**
+   * @return {!InspectorFrontendHostAPI}
+   */
+  _preferencesProvider() {
+    if (this._preferencesProviderInstance)
+      return this._preferencesProviderInstance;
+    var isCustomFrontend = window.location.toString().startsWith('chrome-devtools://devtools/custom/');
+    this._preferencesProviderInstance = isCustomFrontend ? new WebInspector.InspectorFrontendHostStub() : InspectorFrontendHost;
+    return this._preferencesProviderInstance;
   }
 
   /**
@@ -73,9 +84,10 @@ WebInspector.Main = class {
    */
   _createSettings(prefs) {
     this._initializeExperiments(prefs);
+    var preferencesProvider = this._preferencesProvider();
     WebInspector.settings = new WebInspector.Settings(new WebInspector.SettingsStorage(
-        prefs, InspectorFrontendHost.setPreference, InspectorFrontendHost.removePreference,
-        InspectorFrontendHost.clearPreferences));
+      prefs, preferencesProvider.setPreference.bind(preferencesProvider), preferencesProvider.removePreference.bind(preferencesProvider),
+      preferencesProvider.clearPreferences.bind(preferencesProvider)));
 
     if (!InspectorFrontendHost.isUnderTest())
       new WebInspector.VersionController().updateVersion();

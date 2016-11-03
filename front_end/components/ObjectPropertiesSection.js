@@ -1248,7 +1248,7 @@ WebInspector.ArrayGroupingTreeElement._getOwnPropertyNamesThreshold = 500000;
 WebInspector.ObjectPropertyPrompt = class extends WebInspector.TextPrompt {
   constructor() {
     super();
-    this.initialize(WebInspector.ExecutionContextSelector.completionsForTextPromptInCurrentContext);
+    this.initialize(WebInspector.JavaScriptAutocomplete.completionsForTextPromptInCurrentContext);
     this.setSuggestBoxEnabled(true);
   }
 };

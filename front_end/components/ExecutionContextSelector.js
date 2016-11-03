@@ -29,59 +29,6 @@ WebInspector.ExecutionContextSelector = class {
   }
 
   /**
-   * @param {!Element} proxyElement
-   * @param {!Range} wordRange
-   * @param {boolean} force
-   * @param {function(!Array.<string>, number=)} completionsReadyCallback
-   */
-  static completionsForTextPromptInCurrentContext(proxyElement, wordRange, force, completionsReadyCallback) {
-    var expressionRange = wordRange.cloneRange();
-    expressionRange.collapse(true);
-    expressionRange.setStartBefore(proxyElement);
-    WebInspector.ExecutionContextSelector
-        .completionsForTextInCurrentContext(expressionRange.toString(), wordRange.toString(), force)
-        .then(completionsReadyCallback);
-  }
-
-  /**
-   * @param {string} text
-   * @param {string} completionsPrefix
-   * @param {boolean=} force
-   * @return {!Promise<!Array<string>>}
-   */
-  static completionsForTextInCurrentContext(text, completionsPrefix, force) {
-    var executionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
-    if (!executionContext)
-      return Promise.resolve([]);
-    var index;
-    var stopChars = new Set(' =:({;,!+-*/&|^<>`'.split(''));
-    for (index = text.length - 1; index >= 0; index--) {
-      // Pass less stop characters to rangeOfWord so the range will be a more complete expression.
-      if (stopChars.has(text.charAt(index)))
-        break;
-    }
-    var clippedExpression = text.substring(index + 1);
-    var bracketCount = 0;
-
-    index = clippedExpression.length - 1;
-    while (index >= 0) {
-      var character = clippedExpression.charAt(index);
-      if (character === ']')
-        bracketCount++;
-      // Allow an open bracket at the end for property completion.
-      if (character === '[' && index < clippedExpression.length - 1) {
-        bracketCount--;
-        if (bracketCount < 0)
-          break;
-      }
-      index--;
-    }
-    clippedExpression = clippedExpression.substring(index + 1);
-
-    return executionContext.completionsForExpression(clippedExpression, completionsPrefix, force);
-  }
-
-  /**
    * @override
    * @param {!WebInspector.Target} target
    */

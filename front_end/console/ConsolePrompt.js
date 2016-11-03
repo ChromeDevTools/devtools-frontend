@@ -256,7 +256,7 @@ WebInspector.ConsolePrompt = class extends WebInspector.Widget {
     var prefix = this._editor.text(prefixRange);
     var before = this._editor.text(new WebInspector.TextRange(0, 0, prefixRange.startLine, prefixRange.startColumn));
     var historyWords = this._historyCompletions(prefix);
-    return WebInspector.ExecutionContextSelector.completionsForTextInCurrentContext(before, prefix, true /* force */)
+    return WebInspector.JavaScriptAutocomplete.completionsForTextInCurrentContext(before, prefix, true /* force */)
         .then(innerWordsWithPrefix);
 
     /**

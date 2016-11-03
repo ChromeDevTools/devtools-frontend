@@ -83,7 +83,29 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
   var jsFramesStack = [];
   var lockedJsStackDepth = [];
   var ordinal = 0;
-  var filterNativeFunctions = !WebInspector.moduleSetting('showNativeFunctionsInJSProfile').get();
+  const showAllEvents = Runtime.experiments.isEnabled('timelineShowAllEvents');
+  const showRuntimeCallStats = Runtime.experiments.isEnabled('timelineV8RuntimeCallStats');
+  const showNativeFunctions = WebInspector.moduleSetting('showNativeFunctionsInJSProfile').get();
+
+  const visibleV8RuntimeStatsItems = new Set([
+    'Compile',
+    'CompileCode',
+    'CompileCodeLazy',
+    'CompileDeserialize',
+    'CompileEval',
+    'CompileFullCode',
+    'CompileIgnition',
+    'CompilerDispatcher',
+    'CompileSerialize',
+    'DeoptimizeCode',
+    'OptimizeCode',
+    'ParseProgram',
+    'ParseFunction',
+    'RecompileConcurrent',
+    'RecompileSynchronous',
+    'ParseLazy',
+    'FunctionCallback'
+  ]);
 
   /**
    * @param {!WebInspector.TracingModel.Event} e
@@ -138,11 +160,16 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
    * @param {!Array<!Protocol.Runtime.CallFrame>} stack
    */
   function filterStackFrames(stack) {
+    if (showAllEvents)
+      return;
     for (var i = 0, j = 0; i < stack.length; ++i) {
-      var url = stack[i].url;
-      if (url && url.startsWith('native '))
+      const frame = stack[i];
+      const url = frame.url;
+      if (!showNativeFunctions && url && url.startsWith('native '))
         continue;
-      stack[j++] = stack[i];
+      if (url === 'native V8Runtime' && (!visibleV8RuntimeStatsItems.has(frame.functionName) || !showRuntimeCallStats))
+        continue;
+      stack[j++] = frame;
     }
     stack.length = j;
   }
@@ -160,8 +187,7 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
       callFrames = /** @type {!Array<!Protocol.Runtime.CallFrame>} */ (
           jsFramesStack.map(frameEvent => frameEvent.args['data']).reverse());
     }
-    if (filterNativeFunctions)
-      filterStackFrames(callFrames);
+    filterStackFrames(callFrames);
     var endTime = eventEndTime(e);
     var numFrames = callFrames.length;
     var minFrames = Math.min(numFrames, jsFramesStack.length);
@@ -187,19 +213,7 @@ WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents = function(events)
     }
   }
 
-  /**
-   * @param {!Array<!WebInspector.TracingModel.Event>} events
-   * @return {?WebInspector.TracingModel.Event}
-   */
-  function findFirstTopLevelEvent(events) {
-    for (var i = 0; i < events.length; ++i) {
-      if (WebInspector.TracingModel.isTopLevelEvent(events[i]))
-        return events[i];
-    }
-    return null;
-  }
-
-  var firstTopLevelEvent = findFirstTopLevelEvent(events);
+  const firstTopLevelEvent = events.find(WebInspector.TracingModel.isTopLevelEvent);
   if (firstTopLevelEvent)
     WebInspector.TimelineModel.forEachEvent(
         events, onStartEvent, onEndEvent, onInstantEvent, firstTopLevelEvent.startTime);

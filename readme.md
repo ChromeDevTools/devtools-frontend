@@ -37,14 +37,15 @@ The frontend is available through a git subtree mirror on [chromium.googlesource
 * [awesome-chrome-devtools](https://github.com/paulirish/awesome-chrome-devtools): recommended tools and resources
 * Contributing to DevTools: [bit.ly/devtools-contribution-guide](http://bit.ly/devtools-contribution-guide)
 
-### Testing
+### Useful Commands
 
 Basic:
+* `npm run format` - formats your code using clang-format
 * `npm test` - builds devtools and runs all inspector layout tests
 
 > Note: If you're using a full chromium checkout and compiled content shell in out/Release, then `npm test` uses that. Otherwise, with only a front-end checkout (i.e. cloning from GitHub), then `npm test` will fetch a previously compiled content shell from the cloud (and cache it for future test runs).
 
-Advanced:
+Advanced testing:
 * `npm test -- --fetch-content-shell` - even if you're using a full chromium checkout and have a compiled content shell, this will fetch a pre-compiled content shell. This is useful if you haven't compiled your content shell recently.
 * `npm test -- -f --child-processes=16` - pass in additional flags to the test harness
 * `npm test -- inspector/sources inspector/console` - run specific tests

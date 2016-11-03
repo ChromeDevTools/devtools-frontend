@@ -6,4 +6,4 @@ front_end/cm_modes/*
 front_end/diff/diff_match_patch.js
 front_end/formatter_worker/acorn/acorn.js
 front_end/gonzales/*
-front_end/terminal/xterm.js
+front_end/terminal/xterm.js/**

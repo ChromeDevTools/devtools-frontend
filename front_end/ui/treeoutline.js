@@ -207,45 +207,18 @@ var TreeOutline = class extends WebInspector.Object {
       return;
 
     var handled = false;
-    var nextSelectedElement;
     if (event.key === 'ArrowUp' && !event.altKey) {
       handled = this.selectPrevious();
     } else if (event.key === 'ArrowDown' && !event.altKey) {
       handled = this.selectNext();
     } else if (event.key === 'ArrowLeft') {
-      if (this.selectedTreeElement.expanded) {
-        if (event.altKey)
-          this.selectedTreeElement.collapseRecursively();
-        else
-          this.selectedTreeElement.collapse();
-        handled = true;
-      } else if (this.selectedTreeElement.parent && !this.selectedTreeElement.parent.root) {
-        handled = true;
-        if (this.selectedTreeElement.parent.selectable) {
-          nextSelectedElement = this.selectedTreeElement.parent;
-          while (nextSelectedElement && !nextSelectedElement.selectable)
-            nextSelectedElement = nextSelectedElement.parent;
-          handled = nextSelectedElement ? true : false;
-        } else if (this.selectedTreeElement.parent)
-          this.selectedTreeElement.parent.collapse();
-      }
+      handled = this.selectedTreeElement.collapseOrAscend(event.altKey);
     } else if (event.key === 'ArrowRight') {
       if (!this.selectedTreeElement.revealed()) {
         this.selectedTreeElement.reveal();
         handled = true;
-      } else if (this.selectedTreeElement._expandable) {
-        handled = true;
-        if (this.selectedTreeElement.expanded) {
-          nextSelectedElement = this.selectedTreeElement.firstChild();
-          while (nextSelectedElement && !nextSelectedElement.selectable)
-            nextSelectedElement = nextSelectedElement.nextSibling;
-          handled = nextSelectedElement ? true : false;
-        } else {
-          if (event.altKey)
-            this.selectedTreeElement.expandRecursively();
-          else
-            this.selectedTreeElement.expand();
-        }
+      } else {
+        handled = this.selectedTreeElement.descendOrExpand(event.altKey);
       }
     } else if (event.keyCode === 8 /* Backspace */ || event.keyCode === 46 /* Delete */)
       handled = this.selectedTreeElement.ondelete();
@@ -253,11 +226,6 @@ var TreeOutline = class extends WebInspector.Object {
       handled = this.selectedTreeElement.onenter();
     else if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Space.code)
       handled = this.selectedTreeElement.onspace();
-
-    if (nextSelectedElement) {
-      nextSelectedElement.reveal();
-      nextSelectedElement.select(false, true);
-    }
 
     if (handled)
       event.consume(true);
@@ -855,6 +823,69 @@ var TreeElement = class {
       item = item.traverseNextTreeElement(false, this, (depth >= maxDepth), info);
       depth += info.depthChange;
     }
+  }
+
+  /**
+   * @param {boolean} altKey
+   * @return {boolean}
+   */
+  collapseOrAscend(altKey) {
+    if (this.expanded) {
+      if (altKey)
+        this.collapseRecursively();
+      else
+        this.collapse();
+      return true;
+    }
+
+    if (!this.parent || this.parent.root)
+      return false;
+
+    if (!this.parent.selectable) {
+      this.parent.collapse();
+      return true;
+    }
+
+    var nextSelectedElement = this.parent;
+    while (nextSelectedElement && !nextSelectedElement.selectable)
+      nextSelectedElement = nextSelectedElement.parent;
+
+    if (nextSelectedElement) {
+      nextSelectedElement.reveal();
+      nextSelectedElement.select(false, true);
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * @param {boolean} altKey
+   * @return {boolean}
+   */
+  descendOrExpand(altKey) {
+    if (!this._expandable)
+      return false;
+
+    if (!this.expanded) {
+      if (altKey)
+        this.expandRecursively();
+      else
+        this.expand();
+      return true;
+    }
+
+    var nextSelectedElement = this.firstChild();
+    while (nextSelectedElement && !nextSelectedElement.selectable)
+      nextSelectedElement = nextSelectedElement.nextSibling;
+
+    if (nextSelectedElement) {
+      nextSelectedElement.reveal();
+      nextSelectedElement.select(false, true);
+      return true;
+    }
+
+    return false;
   }
 
   /**

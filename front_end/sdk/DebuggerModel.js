@@ -56,6 +56,8 @@ WebInspector.DebuggerModel = class extends WebInspector.SDKModel {
     WebInspector.moduleSetting('pauseOnCaughtException').addChangeListener(this._pauseOnExceptionStateChanged, this);
     WebInspector.moduleSetting('enableAsyncStackTraces').addChangeListener(this.asyncStackTracesStateChanged, this);
 
+    /** @type {!Map<string, string>} */
+    this._fileURLToNodeJSPath = new Map();
     this.enableDebugger();
   }
 
@@ -201,6 +203,9 @@ WebInspector.DebuggerModel = class extends WebInspector.SDKModel {
    * @param {function(?Protocol.Debugger.BreakpointId, !Array.<!WebInspector.DebuggerModel.Location>)=} callback
    */
   setBreakpointByURL(url, lineNumber, columnNumber, condition, callback) {
+    // Convert file url to node-js path.
+    if (this.target().isNodeJS() && this._fileURLToNodeJSPath.has(url))
+      url = this._fileURLToNodeJSPath.get(url);
     // Adjust column if needed.
     var minColumnNumber = 0;
     var scripts = this._scriptsBySourceURL.get(url) || [];
@@ -457,8 +462,11 @@ WebInspector.DebuggerModel = class extends WebInspector.SDKModel {
     if (executionContextAuxData && ('isDefault' in executionContextAuxData))
       isContentScript = !executionContextAuxData['isDefault'];
     // Support file URL for node.js.
-    if (this.target().isNodeJS() && sourceURL && sourceURL.startsWith('/'))
-      sourceURL = WebInspector.ParsedURL.platformPathToURL(sourceURL);
+    if (this.target().isNodeJS() && sourceURL && sourceURL.startsWith('/')) {
+      var nodeJSPath = sourceURL;
+      sourceURL = WebInspector.ParsedURL.platformPathToURL(nodeJSPath);
+      this._fileURLToNodeJSPath.set(sourceURL, nodeJSPath);
+    }
     var script = new WebInspector.Script(
         this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
         isContentScript, isLiveEdit, sourceMapURL, hasSourceURL);

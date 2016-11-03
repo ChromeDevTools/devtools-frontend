@@ -374,14 +374,14 @@ spawned_compiler_command = java_exec + [
     closure_compiler_jar
 ] + common_closure_args
 
-print 'Compiling devtools.js...'
+print 'Compiling devtools_compatibility.js...'
 
 command = spawned_compiler_command + [
     '--externs', to_platform_path(global_externs_file),
     '--externs', to_platform_path(path.join(devtools_frontend_path, 'host', 'InspectorFrontendHostAPI.js')),
     '--jscomp_off=externsValidation',
-    '--module', jsmodule_name_prefix + 'devtools_js' + ':1',
-    '--js', to_platform_path(path.join(devtools_frontend_path, 'devtools.js'))
+    '--module', jsmodule_name_prefix + 'devtools__compatibility_js' + ':1',
+    '--js', to_platform_path(path.join(devtools_frontend_path, 'devtools_compatibility.js'))
 ]
 devtools_js_compile_proc = popen(command)
 
@@ -456,7 +456,7 @@ if error_count:
     errors_found = True
 
 (devtools_js_compile_out, _) = devtools_js_compile_proc.communicate()
-print 'devtools.js compilation output:%s' % os.linesep, devtools_js_compile_out
+print 'devtools_compatibility.js compilation output:%s' % os.linesep, devtools_js_compile_out
 errors_found |= has_errors(devtools_js_compile_out)
 
 os.remove(compiler_args_file.name)

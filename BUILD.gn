@@ -7,7 +7,7 @@ import("//third_party/WebKit/public/public_features.gni")
 import("//third_party/WebKit/Source/core/core.gni")
 
 devtools_embedder_scripts = [
-  "front_end/devtools.js",
+  "front_end/devtools_compatibility.js",
   "front_end/Tests.js",
 ]
 devtools_core_base_files = [

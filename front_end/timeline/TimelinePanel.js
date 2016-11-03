@@ -28,6 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @implements {WebInspector.TimelineLifecycleDelegate}
  * @implements {WebInspector.TimelineModeViewDelegate}
@@ -1599,15 +1600,14 @@ WebInspector.TimelineIsLongFilter = class extends WebInspector.TimelineModel.Fil
   }
 };
 
-/**
- * @unrestricted
- */
 WebInspector.TimelineTextFilter = class extends WebInspector.TimelineModel.Filter {
   /**
    * @param {!RegExp=} regExp
    */
   constructor(regExp) {
     super();
+    /** @type {?RegExp} */
+    this._regExp;
     this._setRegExp(regExp || null);
   }
 

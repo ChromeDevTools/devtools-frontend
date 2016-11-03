@@ -1238,13 +1238,10 @@ WebInspector.TimelineUIUtils = class {
 
   /**
    * @param {!Set<number>} nodeIds
-   * @param {!WebInspector.InvalidationTrackingEvent} invalidations
+   * @param {!Array<!WebInspector.InvalidationTrackingEvent>} invalidations
    */
   static _collectInvalidationNodeIds(nodeIds, invalidations) {
-    for (var i = 0; i < invalidations.length; ++i) {
-      if (invalidations[i].nodeId)
-        nodeIds.add(invalidations[i].nodeId);
-    }
+    nodeIds.addAll(invalidations.map(invalidation => invalidation.nodeId).filter(id => id));
   }
 
   /**

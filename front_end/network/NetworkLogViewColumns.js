@@ -138,7 +138,9 @@ WebInspector.NetworkLogViewColumns = class {
 
     if (Runtime.experiments.isEnabled('canvasNetworkTimeline')) {
       this._splitWidget = new WebInspector.SplitWidget(true, true, 'networkPanelSplitViewTimeline', 200);
-      this._splitWidget.setMainWidget(this._dataGrid.asWidget());
+      var widget = this._dataGrid.asWidget();
+      widget.setMinimumSize(150, 0);
+      this._splitWidget.setMainWidget(widget);
     }
   }
 
@@ -173,6 +175,7 @@ WebInspector.NetworkLogViewColumns = class {
     this._createTimelineHeader();
     this._timelineColumn.contentElement.classList.add('network-timeline-view');
 
+    this._timelineColumn.setMinimumSize(100, 0);
     this._splitWidget.setSidebarWidget(this._timelineColumn);
 
     this.switchViewMode(false);

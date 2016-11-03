@@ -270,19 +270,19 @@ WebInspector.SuggestBox = class {
   }
 
   /**
-   * @param {string} prefix
+   * @param {string} query
    * @param {string} text
    * @param {string=} className
    * @return {!Element}
    */
-  _createItemElement(prefix, text, className) {
+  _createItemElement(query, text, className) {
     var element = createElementWithClass('div', 'suggest-box-content-item source-code ' + (className || ''));
     element.tabIndex = -1;
-    if (prefix && prefix.length && !text.indexOf(prefix)) {
-      element.createChild('span', 'prefix').textContent = prefix;
-      element.createChild('span', 'suffix').textContent = text.substring(prefix.length).trimEnd(50);
+    if (query && query.length && !text.indexOf(query)) {
+      element.createChild('span', 'query').textContent = query;
+      element.createChild('span').textContent = text.substring(query.length).trimEnd(50);
     } else {
-      element.createChild('span', 'suffix').textContent = text.trimEnd(50);
+      element.createChild('span').textContent = text.trimEnd(50);
     }
     element.__fullValue = text;
     element.createChild('span', 'spacer');
@@ -374,7 +374,7 @@ WebInspector.SuggestBox = class {
     if (completions.length > 1)
       return true;
 
-    // Do not show a single suggestion if it is the same as user-entered prefix, even if allowed to show single-item suggest boxes.
+    // Do not show a single suggestion if it is the same as user-entered query, even if allowed to show single-item suggest boxes.
     return canShowForSingleItem && completions[0].title !== userEnteredText;
   }
 

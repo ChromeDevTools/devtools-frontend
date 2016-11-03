@@ -40,7 +40,7 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
     this._proxyElementDisplay = 'inline-block';
     this._autocompletionTimeout = WebInspector.TextPrompt.DefaultAutocompletionTimeout;
     this._title = '';
-    this._prefixRange = null;
+    this._queryRange = null;
     this._previousText = '';
     this._currentSuggestion = '';
     this._completionRequestId = 0;
@@ -299,8 +299,8 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
   onInput(event) {
     var text = this.text();
     var hasCommonPrefix = text.startsWith(this._previousText) || this._previousText.startsWith(text);
-    if (this._prefixRange && hasCommonPrefix)
-      this._prefixRange.endColumn += text.length - this._previousText.length;
+    if (this._queryRange && hasCommonPrefix)
+      this._queryRange.endColumn += text.length - this._previousText.length;
     this._refreshGhostText();
     this._previousText = text;
 
@@ -324,14 +324,14 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
     if (this._isSuggestBoxVisible())
       this._suggestBox.hide();
     this._clearAutocompleteTimeout();
-    this._prefixRange = null;
+    this._queryRange = null;
     this._refreshGhostText();
   }
 
   _refreshGhostText() {
-    if (this._prefixRange && this._isCaretAtEndOfPrompt()) {
+    if (this._queryRange && this._isCaretAtEndOfPrompt()) {
       this._ghostTextElement.textContent =
-          this._currentSuggestion.substring(this._prefixRange.endColumn - this._prefixRange.startColumn);
+          this._currentSuggestion.substring(this._queryRange.endColumn - this._queryRange.startColumn);
       this._element.appendChild(this._ghostTextElement);
     } else {
       this._ghostTextElement.remove();
@@ -386,11 +386,11 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
       return;
     }
 
-    var wordPrefixRange = selectionRange.startContainer.rangeOfWord(
+    var wordQueryRange = selectionRange.startContainer.rangeOfWord(
         selectionRange.startOffset, this._completionStopCharacters, this._element, 'backward');
     this._loadCompletions(
-        /** @type {!Element} */ (this._proxyElement), wordPrefixRange, force || false,
-        this._completionsReady.bind(this, ++this._completionRequestId, selection, wordPrefixRange, !!reverse, !!force));
+        /** @type {!Element} */ (this._proxyElement), wordQueryRange, force || false,
+        this._completionsReady.bind(this, ++this._completionRequestId, selection, wordQueryRange, !!reverse, !!force));
   }
 
   disableDefaultSuggestionForEmptyInput() {
@@ -422,17 +422,17 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
   }
 
   /**
-   * @param {string} prefix
+   * @param {string} query
    * @return {!WebInspector.SuggestBox.Suggestions}
    */
-  additionalCompletions(prefix) {
+  additionalCompletions(query) {
     return [];
   }
 
   /**
    * @param {number} completionRequestId
    * @param {!Selection} selection
-   * @param {!Range} originalWordPrefixRange
+   * @param {!Range} originalWordQueryRange
    * @param {boolean} reverse
    * @param {boolean} force
    * @param {!Array.<string>} completions
@@ -441,7 +441,7 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
   _completionsReady(
       completionRequestId,
       selection,
-      originalWordPrefixRange,
+      originalWordQueryRange,
       reverse,
       force,
       completions,
@@ -449,18 +449,18 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
     if (this._completionRequestId !== completionRequestId)
       return;
 
-    var prefix = originalWordPrefixRange.toString();
+    var query = originalWordQueryRange.toString();
 
     // Filter out dupes.
     var store = new Set();
     completions = completions.filter(item => !store.has(item) && !!store.add(item));
     var annotatedCompletions = completions.map(item => ({title: item}));
 
-    if (prefix || force) {
-      if (prefix)
-        annotatedCompletions = annotatedCompletions.concat(this.additionalCompletions(prefix));
+    if (query || force) {
+      if (query)
+        annotatedCompletions = annotatedCompletions.concat(this.additionalCompletions(query));
       else
-        annotatedCompletions = this.additionalCompletions(prefix).concat(annotatedCompletions);
+        annotatedCompletions = this.additionalCompletions(query).concat(annotatedCompletions);
     }
 
     if (!annotatedCompletions.length) {
@@ -471,10 +471,10 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
     var selectionRange = selection.getRangeAt(0);
 
     var fullWordRange = this._createRange();
-    fullWordRange.setStart(originalWordPrefixRange.startContainer, originalWordPrefixRange.startOffset);
+    fullWordRange.setStart(originalWordQueryRange.startContainer, originalWordQueryRange.startOffset);
     fullWordRange.setEnd(selectionRange.endContainer, selectionRange.endOffset);
 
-    if (prefix + selectionRange.toString() !== fullWordRange.toString())
+    if (query + selectionRange.toString() !== fullWordRange.toString())
       return;
 
     selectedIndex = (this._disableDefaultSuggestionForEmptyInput && !this.text()) ? -1 : (selectedIndex || 0);
@@ -487,7 +487,7 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
     var beforeRange = this._createRange();
     beforeRange.setStart(this._element, 0);
     beforeRange.setEnd(fullWordRange.startContainer, fullWordRange.startOffset);
-    this._prefixRange = new WebInspector.TextRange(
+    this._queryRange = new WebInspector.TextRange(
         0, beforeRange.toString().length, 0, beforeRange.toString().length + fullWordRange.toString().length);
 
     if (selectedIndex === -1)
@@ -501,7 +501,7 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
    * @param {boolean=} isIntermediateSuggestion
    */
   applySuggestion(suggestion, isIntermediateSuggestion) {
-    if (!this._prefixRange)
+    if (!this._queryRange)
       return;
     this._currentSuggestion = suggestion;
     this._refreshGhostText();
@@ -520,15 +520,15 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
    * @return {boolean}
    */
   _acceptSuggestionInternal() {
-    if (!this._prefixRange)
+    if (!this._queryRange)
       return false;
 
     var text = this.text();
-    this._element.textContent = text.substring(0, this._prefixRange.startColumn) + this._currentSuggestion +
-        text.substring(this._prefixRange.endColumn);
+    this._element.textContent = text.substring(0, this._queryRange.startColumn) + this._currentSuggestion +
+        text.substring(this._queryRange.endColumn);
     this.setDOMSelection(
-        this._prefixRange.startColumn + this._currentSuggestion.length,
-        this._prefixRange.startColumn + this._currentSuggestion.length);
+        this._queryRange.startColumn + this._currentSuggestion.length,
+        this._queryRange.startColumn + this._currentSuggestion.length);
 
     this.clearAutocomplete();
     this.dispatchEventToListeners(WebInspector.TextPrompt.Events.ItemAccepted);

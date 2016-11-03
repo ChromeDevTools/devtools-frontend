@@ -754,8 +754,11 @@ WebInspector.ConsoleView = class extends WebInspector.VBox {
     }
     section.addAlternateKeys(keys, WebInspector.UIString('Clear console'));
 
-    section.addKey(shortcut.makeDescriptor(shortcut.Keys.Tab), WebInspector.UIString('Autocomplete common prefix'));
-    section.addKey(shortcut.makeDescriptor(shortcut.Keys.Right), WebInspector.UIString('Accept suggestion'));
+    keys = [
+      shortcut.makeDescriptor(shortcut.Keys.Tab),
+      shortcut.makeDescriptor(shortcut.Keys.Right)
+    ];
+    section.addRelatedKeys(keys, WebInspector.UIString('Accept suggestion'));
 
     var shortcutU = shortcut.makeDescriptor('u', WebInspector.KeyboardShortcut.Modifiers.Ctrl);
     this._shortcuts[shortcutU.key] = this._clearPromptBackwards.bind(this);

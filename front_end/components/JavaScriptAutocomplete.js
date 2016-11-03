@@ -20,11 +20,11 @@ WebInspector.JavaScriptAutocomplete.completionsForTextPromptInCurrentContext = f
 
 /**
  * @param {string} text
- * @param {string} completionsPrefix
+ * @param {string} query
  * @param {boolean=} force
  * @return {!Promise<!Array<string>>}
  */
-WebInspector.JavaScriptAutocomplete.completionsForTextInCurrentContext = function(text, completionsPrefix, force) {
+WebInspector.JavaScriptAutocomplete.completionsForTextInCurrentContext = function(text, query, force) {
   var index;
   var stopChars = new Set(' =:({;,!+-*/&|^<>`'.split(''));
   for (index = text.length - 1; index >= 0; index--) {
@@ -50,7 +50,7 @@ WebInspector.JavaScriptAutocomplete.completionsForTextInCurrentContext = functio
   }
   clippedExpression = clippedExpression.substring(index + 1);
 
-  return WebInspector.JavaScriptAutocomplete.completionsForExpression(clippedExpression, completionsPrefix, force);
+  return WebInspector.JavaScriptAutocomplete.completionsForExpression(clippedExpression, query, force);
 };
 
 

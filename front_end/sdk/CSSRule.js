@@ -100,12 +100,14 @@ WebInspector.CSSStyleRule = class extends WebInspector.CSSRule {
   /**
    * @param {!WebInspector.CSSModel} cssModel
    * @param {!Protocol.CSS.CSSRule} payload
+   * @param {boolean=} wasUsed
    */
-  constructor(cssModel, payload) {
+  constructor(cssModel, payload, wasUsed) {
     super(cssModel, payload);
 
     this._reinitializeSelectors(payload.selectorList);
     this.media = payload.media ? WebInspector.CSSMedia.parseMediaArrayPayload(cssModel, payload.media) : [];
+    this.wasUsed = wasUsed || false;
   }
 
   /**

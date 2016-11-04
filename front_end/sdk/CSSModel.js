@@ -440,6 +440,29 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
         .catchException(false);
   }
 
+  startRuleUsageTracking() {
+    this._agent.startRuleUsageTracking();
+  }
+
+  /**
+   * @return {!Promise<?Array<!WebInspector.CSSModel.RuleUsage>>}
+   */
+  ruleListPromise() {
+    /**
+     * @param {?string} error
+     * @param {!Array<!Protocol.CSS.RuleUsage>=} ruleUsage
+     * @return {?Array<!WebInspector.CSSModel.RuleUsage>}
+     */
+    function usedRulesCallback(error, ruleUsage) {
+      if (error || !ruleUsage)
+        return null;
+
+      return ruleUsage.map(rule => ({range: rule.range, styleSheetId: rule.styleSheetId, wasUsed: rule.used}));
+    }
+
+    return this._agent.stopRuleUsageTracking(usedRulesCallback);
+  }
+
   /**
    * @return {!Promise.<!Array.<!WebInspector.CSSMedia>>}
    */
@@ -990,6 +1013,9 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
     delete this._cachedMatchedCascadePromise;
   }
 };
+
+/** @typedef {!{range: !Protocol.CSS.SourceRange, styleSheetId: !Protocol.CSS.StyleSheetId, wasUsed: boolean}} */
+WebInspector.CSSModel.RuleUsage;
 
 /** @enum {symbol} */
 WebInspector.CSSModel.Events = {

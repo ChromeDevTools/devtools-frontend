@@ -495,26 +495,6 @@ WebInspector.NetworkLogViewColumns = class {
    * @param {!WebInspector.ContextMenu} contextMenu
    */
   _innerHeaderContextMenu(contextMenu) {
-    if (Runtime.experiments.isEnabled('canvasNetworkTimeline')) {
-      var timelineSortIds = WebInspector.NetworkLogViewColumns.TimelineSortIds;
-      var timelineSubMenu = contextMenu.appendSubMenuItem(WebInspector.UIString('Timeline'));
-      timelineSubMenu.appendCheckboxItem(
-          WebInspector.UIString('Start Time'), setTimelineMode.bind(this, timelineSortIds.StartTime),
-          this._activeTimelineSortId === timelineSortIds.StartTime);
-      timelineSubMenu.appendCheckboxItem(
-          WebInspector.UIString('Response Time'), setTimelineMode.bind(this, timelineSortIds.ResponseTime),
-          this._activeTimelineSortId === timelineSortIds.ResponseTime);
-      timelineSubMenu.appendCheckboxItem(
-          WebInspector.UIString('End Time'), setTimelineMode.bind(this, timelineSortIds.EndTime),
-          this._activeTimelineSortId === timelineSortIds.EndTime);
-      timelineSubMenu.appendCheckboxItem(
-          WebInspector.UIString('Total Duration'), setTimelineMode.bind(this, timelineSortIds.Duration),
-          this._activeTimelineSortId === timelineSortIds.Duration);
-      timelineSubMenu.appendCheckboxItem(
-          WebInspector.UIString('Latency'), setTimelineMode.bind(this, timelineSortIds.Latency),
-          this._activeTimelineSortId === timelineSortIds.Latency);
-      contextMenu.appendSeparator();
-    }
     var columnConfigs = this._columns.filter(columnConfig => columnConfig.hideable);
     var nonResponseHeaders = columnConfigs.filter(columnConfig => !columnConfig.isResponseHeader);
     for (var columnConfig of nonResponseHeaders)
@@ -532,6 +512,27 @@ WebInspector.NetworkLogViewColumns = class {
     responseSubMenu.appendSeparator();
     responseSubMenu.appendItem(
         WebInspector.UIString('Manage Header Columns\u2026'), this._manageCustomHeaderDialog.bind(this));
+
+    if (Runtime.experiments.isEnabled('canvasNetworkTimeline')) {
+      contextMenu.appendSeparator();
+      var timelineSortIds = WebInspector.NetworkLogViewColumns.TimelineSortIds;
+      var timelineSubMenu = contextMenu.appendSubMenuItem(WebInspector.UIString('Timeline'));
+      timelineSubMenu.appendCheckboxItem(
+          WebInspector.UIString('Start Time'), setTimelineMode.bind(this, timelineSortIds.StartTime),
+          this._activeTimelineSortId === timelineSortIds.StartTime);
+      timelineSubMenu.appendCheckboxItem(
+          WebInspector.UIString('Response Time'), setTimelineMode.bind(this, timelineSortIds.ResponseTime),
+          this._activeTimelineSortId === timelineSortIds.ResponseTime);
+      timelineSubMenu.appendCheckboxItem(
+          WebInspector.UIString('End Time'), setTimelineMode.bind(this, timelineSortIds.EndTime),
+          this._activeTimelineSortId === timelineSortIds.EndTime);
+      timelineSubMenu.appendCheckboxItem(
+          WebInspector.UIString('Total Duration'), setTimelineMode.bind(this, timelineSortIds.Duration),
+          this._activeTimelineSortId === timelineSortIds.Duration);
+      timelineSubMenu.appendCheckboxItem(
+          WebInspector.UIString('Latency'), setTimelineMode.bind(this, timelineSortIds.Latency),
+          this._activeTimelineSortId === timelineSortIds.Latency);
+    }
 
     contextMenu.show();
 

@@ -122,6 +122,8 @@ WebInspector.SourcesPanel = class extends WebInspector.Panel {
         WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerResumed, this._debuggerResumed, this);
     WebInspector.targetManager.addModelListener(
         WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
+    WebInspector.targetManager.addModelListener(
+        WebInspector.SubTargetsManager, WebInspector.SubTargetsManager.Events.PendingTargetAdded, this._pendingTargetAdded, this);
     new WebInspector.WorkspaceMappingTip(this, this._workspace);
     WebInspector.extensionServer.addEventListener(
         WebInspector.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
@@ -165,14 +167,7 @@ WebInspector.SourcesPanel = class extends WebInspector.Panel {
    * @param {!WebInspector.Target} target
    */
   targetAdded(target) {
-    var hasThreads = WebInspector.targetManager.targets(WebInspector.Target.Capability.JS).length > 1;
-    if (hasThreads && !this._threadsSidebarPane) {
-      this._threadsSidebarPane = /** @type {!WebInspector.View} */ (WebInspector.viewManager.view('sources.threads'));
-      if (this._sidebarPaneStack) {
-        this._sidebarPaneStack.showView(
-            this._threadsSidebarPane, this._splitWidget.isVertical() ? this._watchSidebarPane : this._callstackPane);
-      }
-    }
+    this._showThreadsIfNeeded();
   }
 
   /**
@@ -181,6 +176,19 @@ WebInspector.SourcesPanel = class extends WebInspector.Panel {
    */
   targetRemoved(target) {
   }
+
+  _pendingTargetAdded() {
+    this._showThreadsIfNeeded();
+  }
+
+  _showThreadsIfNeeded() {
+    if (WebInspector.ThreadsSidebarPane.shouldBeShown() && !this._threadsSidebarPane) {
+      this._threadsSidebarPane = /** @type {!WebInspector.View} */ (WebInspector.viewManager.view('sources.threads'));
+      if (this._sidebarPaneStack)
+        this._sidebarPaneStack.showView(this._threadsSidebarPane, this._splitWidget.isVertical() ? this._watchSidebarPane : this._callstackPane);
+    }
+  }
+
 
   /**
    * @param {?WebInspector.Target} target

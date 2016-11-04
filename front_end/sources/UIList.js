@@ -84,7 +84,8 @@ WebInspector.UIList.Item = class {
 
     this.titleElement = this.element.createChild('div', 'title');
     this.subtitleElement = this.element.createChild('div', 'subtitle');
-
+    /** @type {?Element} */
+    this._actionElement = null;
     this._hidden = false;
     this._isLabel = !!isLabel;
     this.setTitle(title);
@@ -199,7 +200,7 @@ WebInspector.UIList.Item = class {
    * @param {boolean} x
    */
   setDimmed(x) {
-    this.element.classList.toggle('dimmed', x);
+    this.element.classList.toggle('dimmed-item', x);
   }
 
   discard() {
@@ -210,5 +211,24 @@ WebInspector.UIList.Item = class {
    */
   setHoverable(hoverable) {
     this.element.classList.toggle('ignore-hover', !hoverable);
+  }
+
+  /**
+   * @param {?string} title
+   * @param {?function(!Event):!Promise} handler
+   */
+  setAction(title, handler) {
+    if (this._actionElement)
+      this._actionElement.remove();
+    if (!title || !handler)
+      return;
+    this._actionElement = this.element.createChild('div', 'action');
+    var link = this._actionElement.createChild('a', 'action-link');
+    link.textContent = title;
+    link.addEventListener('click', (event) => {
+      link.disabled = true;
+      handler(event).then(() => link.disabled = false);
+      event.stopPropagation();
+    });
   }
 };

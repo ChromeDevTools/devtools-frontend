@@ -18,7 +18,8 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
     this._attachedTargets = new Map();
     /** @type {!Map<string, !WebInspector.SubTargetConnection>} */
     this._connections = new Map();
-
+    /** @type {!Map<string, !WebInspector.PendingTarget>} */
+    this._pendingTargets = new Map();
     this._agent.setAutoAttach(true /* autoAttach */, true /* waitForDebuggerOnStart */);
     if (Runtime.experiments.isEnabled('autoAttachToCrossProcessSubframes'))
       this._agent.setAttachToFrames(true);
@@ -30,6 +31,15 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
     }
     WebInspector.targetManager.addEventListener(
         WebInspector.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
+  }
+
+  /**
+   * @param {!WebInspector.Target} target
+   * @return {?WebInspector.SubTargetsManager}
+   */
+  static fromTarget(target)
+  {
+    return /** @type {?WebInspector.SubTargetsManager} */ (target.model(WebInspector.SubTargetsManager));
   }
 
   /**
@@ -58,12 +68,10 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
    * @override
    */
   dispose() {
-    for (var connection of this._connections.values()) {
-      this._agent.detachFromTarget(connection._targetId);
-      connection._onDisconnect.call(null, 'disposed');
-    }
-    this._connections.clear();
-    this._attachedTargets.clear();
+    for (var attachedTargetId of this._attachedTargets.keys())
+      this._detachedFromTarget(attachedTargetId);
+    for (var pendingConnectionId of this._pendingTargets.keys())
+      this._targetDestroyed(pendingConnectionId);
   }
 
   /**
@@ -156,7 +164,13 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
       target.debuggerAgent().pause();
     target.runtimeAgent().runIfWaitingForDebugger();
 
-    this.dispatchEventToListeners(WebInspector.SubTargetsManager.Events.SubTargetAdded, target);
+    var pendingTarget = this._pendingTargets.get(targetInfo.id);
+    if (!pendingTarget) {
+      this._targetCreated(targetInfo);
+      pendingTarget = this._pendingTargets.get(targetInfo.id);
+    }
+    pendingTarget.notifyAttached(target);
+    this.dispatchEventToListeners(WebInspector.SubTargetsManager.Events.PendingTargetAttached, pendingTarget);
   }
 
   /**
@@ -176,11 +190,10 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
   _detachedFromTarget(targetId) {
     var target = this._attachedTargets.get(targetId);
     this._attachedTargets.delete(targetId);
-    this.dispatchEventToListeners(WebInspector.SubTargetsManager.Events.SubTargetRemoved, target);
     var connection = this._connections.get(targetId);
-    if (connection)
-      connection._onDisconnect.call(null, 'target terminated');
+    connection._onDisconnect.call(null, 'target terminated');
     this._connections.delete(targetId);
+    this.dispatchEventToListeners(WebInspector.SubTargetsManager.Events.PendingTargetDetached, this._pendingTargets.get(targetId));
   }
 
   /**
@@ -197,16 +210,30 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
    * @param {!WebInspector.TargetInfo} targetInfo
    */
   _targetCreated(targetInfo) {
-    if (targetInfo.type !== 'node')
+    var pendingTarget = this._pendingTargets.get(targetInfo.id);
+    if (pendingTarget)
       return;
-    this._agent.attachToTarget(targetInfo.id);
+    pendingTarget = new WebInspector.PendingTarget(targetInfo.id, targetInfo.title, targetInfo.type === 'node', this);
+    this._pendingTargets.set(targetInfo.id, pendingTarget);
+    this.dispatchEventToListeners(WebInspector.SubTargetsManager.Events.PendingTargetAdded, pendingTarget);
   }
 
   /**
    * @param {string} targetId
    */
   _targetDestroyed(targetId) {
-    // All the work is done in _detachedFromTarget.
+    var pendingTarget = this._pendingTargets.get(targetId);
+    if (!pendingTarget)
+      return;
+    this._pendingTargets.delete(targetId);
+    this.dispatchEventToListeners(WebInspector.SubTargetsManager.Events.PendingTargetRemoved, pendingTarget);
+  }
+
+  /**
+   * @return {!Array<!WebInspector.PendingTarget>}
+   */
+  pendingTargets() {
+    return this._pendingTargets.valuesArray();
   }
 
   /**
@@ -229,8 +256,10 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
 
 /** @enum {symbol} */
 WebInspector.SubTargetsManager.Events = {
-  SubTargetAdded: Symbol('SubTargetAdded'),
-  SubTargetRemoved: Symbol('SubTargetRemoved'),
+  PendingTargetAdded: Symbol('PendingTargetAdded'),
+  PendingTargetRemoved: Symbol('PendingTargetRemoved'),
+  PendingTargetAttached: Symbol('PendingTargetAttached'),
+  PendingTargetDetached: Symbol('PendingTargetDetached'),
 };
 
 WebInspector.SubTargetsManager._InfoSymbol = Symbol('SubTargetInfo');
@@ -342,5 +371,95 @@ WebInspector.TargetInfo = class {
       this.title = payload.title;
     else
       this.title = WebInspector.UIString('Worker: %s', this.url);
+  }
+};
+
+/**
+ * @unrestricted
+ */
+WebInspector.PendingTarget = class {
+  /**
+   * @param {string} id
+   * @param {string} title
+   * @param {boolean} canConnect
+   * @param {?WebInspector.SubTargetsManager} manager
+   */
+  constructor(id, title, canConnect, manager) {
+    this._id = id;
+    this._title = title;
+    this._isRemote = canConnect;
+    this._manager = manager;
+    /** @type {?Promise} */
+    this._connectPromise = null;
+    /** @type {?Function} */
+    this._attachedCallback = null;
+  }
+
+  /**
+   * @return {string}
+   */
+  id() {
+    return this._id;
+  }
+
+  /**
+   * @return {?WebInspector.Target}
+   */
+  target() {
+    if (!this._manager)
+      return null;
+    return this._manager.targetForId(this.id());
+  }
+
+  /**
+   * @return {string}
+   */
+  name() {
+    return this._title;
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  attach() {
+    if (!this._manager)
+      return Promise.reject();
+    if (this._connectPromise)
+      return this._connectPromise;
+    if (this.target())
+      return Promise.resolve(this.target());
+    this._connectPromise = new Promise(resolve => {
+      this._attachedCallback = resolve;
+      this._manager._agent.attachToTarget(this.id());
+    });
+    return this._connectPromise;
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  detach() {
+    if (this._manager)
+      this._manager._agent.detachFromTarget(this.id());
+    return Promise.resolve();
+  }
+
+  /**
+   * @param {!WebInspector.Target} target
+   */
+  notifyAttached(target)
+  {
+    if (this._attachedCallback)
+      this._attachedCallback(target);
+    this._connectPromise = null;
+    this._attachedCallback = null;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  canConnect()
+  {
+    return this._isRemote;
   }
 };

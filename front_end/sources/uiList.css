@@ -35,7 +35,7 @@
 .list-item > .subtitle {
     color: #888;
     margin-left: auto;
-    padding-left: 10px;
+    padding: 0 10px 0 10px;
 }
 
 .list-item > .subtitle a {
@@ -60,7 +60,7 @@
     padding: 0 5px;
 }
 
-.list-item.dimmed {
+.list-item.dimmed-item div {
     opacity: 0.6;
     font-style: italic;
 }
@@ -75,6 +75,21 @@
     left: 4px;
     width: 10px;
     height: 10px;
+}
+
+.list-item.dimmed-item .action {
+    opacity: 1;
+    font-style: initial;
+}
+
+.list-item .action-link {
+    color: rgb(48, 57, 66);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.list-item:hover .action-link {
+    color: rgb(17, 85, 204);
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.1) {

@@ -1206,7 +1206,7 @@ WebInspector.ConsoleCommand = class extends WebInspector.ConsoleViewMessage {
       this._contentElement = createElementWithClass('div', 'console-user-command');
       this._contentElement.message = this;
 
-      this._formattedCommand = createElementWithClass('span', 'console-message-text source-code');
+      this._formattedCommand = createElementWithClass('span', 'source-code');
       this._formattedCommand.textContent = this.text.replaceControlCharacters();
       this._contentElement.appendChild(this._formattedCommand);
 

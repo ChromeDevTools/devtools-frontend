@@ -120,7 +120,7 @@ WebInspector.ConsoleViewMessage = class {
   _buildTableMessage(consoleMessage) {
     var formattedMessage = createElement('span');
     WebInspector.appendStyle(formattedMessage, 'components/objectValue.css');
-    formattedMessage.className = 'console-message-text source-code';
+    formattedMessage.className = 'source-code';
     var anchorElement = this._buildMessageAnchor(consoleMessage);
     if (anchorElement)
       formattedMessage.appendChild(anchorElement);
@@ -174,7 +174,7 @@ WebInspector.ConsoleViewMessage = class {
     if (flatValues.length) {
       this._dataGrid = WebInspector.SortableDataGrid.create(columnNames, flatValues);
 
-      var formattedResult = createElement('span');
+      var formattedResult = createElementWithClass('span', 'console-message-text');
       var tableElement = formattedResult.createChild('div', 'console-message-formatted-table');
       var dataGridContainer = tableElement.createChild('span');
       tableElement.appendChild(this._formatParameter(table, true, false));
@@ -227,7 +227,7 @@ WebInspector.ConsoleViewMessage = class {
         messageElement = createElement('span');
         if (consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.Error ||
             consoleMessage.level === WebInspector.ConsoleMessage.MessageLevel.RevokedError) {
-          messageElement.createTextChildren(consoleMessage.request.requestMethod, ' ');
+          messageElement.createTextChild(consoleMessage.request.requestMethod + ' ');
           messageElement.appendChild(WebInspector.Linkifier.linkifyUsingRevealer(
               consoleMessage.request, consoleMessage.request.url, consoleMessage.request.url));
           if (consoleMessage.request.failed)
@@ -247,10 +247,11 @@ WebInspector.ConsoleViewMessage = class {
       var args = consoleMessage.parameters || [consoleMessage.messageText];
       messageElement = this._format(args);
     }
+    messageElement.classList.add('console-message-text');
 
     var formattedMessage = createElement('span');
     WebInspector.appendStyle(formattedMessage, 'components/objectValue.css');
-    formattedMessage.className = 'console-message-text source-code';
+    formattedMessage.className = 'source-code';
 
     var anchorElement = this._buildMessageAnchor(consoleMessage);
     if (anchorElement)
@@ -304,7 +305,6 @@ WebInspector.ConsoleViewMessage = class {
    */
   _buildMessageWithStackTrace(consoleMessage, target, linkifier) {
     var toggleElement = createElementWithClass('div', 'console-message-stack-trace-toggle');
-    var triangleElement = toggleElement.createChild('div', 'console-message-stack-trace-triangle');
     var contentElement = toggleElement.createChild('div', 'console-message-stack-trace-wrapper');
 
     var messageElement = this._buildMessage(consoleMessage);
@@ -335,7 +335,6 @@ WebInspector.ConsoleViewMessage = class {
     }
 
     clickableElement.addEventListener('click', toggleStackTrace, false);
-    triangleElement.addEventListener('click', toggleStackTrace, false);
     if (consoleMessage.type === WebInspector.ConsoleMessage.MessageType.Trace)
       expandStackTrace(true);
 

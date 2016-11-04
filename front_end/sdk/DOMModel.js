@@ -65,6 +65,7 @@ WebInspector.DOMNode = class extends WebInspector.SDKObject {
     this._isInShadowTree = isInShadowTree;
 
     this.id = payload.nodeId;
+    this._backendNodeId = payload.backendNodeId;
     this._domModel._idToDOMNode[this.id] = this;
     this._nodeType = payload.nodeType;
     this._nodeName = payload.nodeName;
@@ -151,6 +152,13 @@ WebInspector.DOMNode = class extends WebInspector.SDKObject {
    */
   domModel() {
     return this._domModel;
+  }
+
+  /**
+   * @return {number}
+   */
+  backendNodeId() {
+    return this._backendNodeId;
   }
 
   /**

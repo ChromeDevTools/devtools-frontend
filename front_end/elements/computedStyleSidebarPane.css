@@ -63,15 +63,11 @@
 }
 
 .trace-link {
+    user-select: none;
     float: right;
     padding-left: 1em;
     position: relative;
     z-index: 1;
-}
-
-.trace-link a::before {
-    content: attr(data-uncopyable);
-    text-decoration: underline;
 }
 
 .property-trace {

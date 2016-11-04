@@ -63,7 +63,7 @@ WebInspector.ComputedStyleWidget = class extends WebInspector.ThrottledWidget {
     this._propertiesOutline.element.classList.add('monospace', 'computed-properties');
     this.element.appendChild(this._propertiesOutline.element);
 
-    this._linkifier = new WebInspector.Linkifier(new WebInspector.Linkifier.DefaultCSSFormatter());
+    this._linkifier = new WebInspector.Linkifier(WebInspector.ComputedStyleWidget._maxLinkLength);
 
     /**
      * @param {?RegExp} regex
@@ -339,5 +339,7 @@ WebInspector.ComputedStyleWidget = class extends WebInspector.ThrottledWidget {
     }
   }
 };
+
+WebInspector.ComputedStyleWidget._maxLinkLength = 30;
 
 WebInspector.ComputedStyleWidget._propertySymbol = Symbol('property');

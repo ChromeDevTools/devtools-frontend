@@ -27,19 +27,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/**
- * @interface
- */
-WebInspector.LinkifierFormatter = function() {};
-
-WebInspector.LinkifierFormatter.prototype = {
-  /**
-   * @param {!Element} anchor
-   * @param {!WebInspector.UILocation} uiLocation
-   * @param {boolean} isBlackboxed
-   */
-  formatLiveAnchor: function(anchor, uiLocation, isBlackboxed) {}
-};
 
 /**
  * @implements {WebInspector.TargetManager.Observer}
@@ -47,11 +34,10 @@ WebInspector.LinkifierFormatter.prototype = {
  */
 WebInspector.Linkifier = class {
   /**
-   * @param {!WebInspector.LinkifierFormatter=} formatter
+   * @param {number=} maxLengthForDisplayedURLs
    */
-  constructor(formatter) {
-    this._formatter =
-        formatter || new WebInspector.Linkifier.DefaultFormatter(WebInspector.Linkifier.MaxLengthForDisplayedURLs);
+  constructor(maxLengthForDisplayedURLs) {
+    this._maxLength = maxLengthForDisplayedURLs || WebInspector.Linkifier.MaxLengthForDisplayedURLs;
     /** @type {!Map<!WebInspector.Target, !Array<!Element>>} */
     this._anchorsByTarget = new Map();
     /** @type {!Map<!WebInspector.Target, !WebInspector.LiveLocationPool>} */
@@ -350,35 +336,15 @@ WebInspector.Linkifier = class {
     if (!uiLocation)
       return;
     anchor[WebInspector.Linkifier._uiLocationSymbol] = uiLocation;
-    this._formatter.formatLiveAnchor(anchor, uiLocation, liveLocation.isBlackboxed());
-  }
-};
-
-
-WebInspector.Linkifier._uiLocationSymbol = Symbol('uiLocation');
-WebInspector.Linkifier._fallbackAnchorSymbol = Symbol('fallbackAnchor');
-WebInspector.Linkifier._liveLocationSymbol = Symbol('liveLocation');
-
-
-/**
- * @implements {WebInspector.LinkifierFormatter}
- * @unrestricted
- */
-WebInspector.Linkifier.DefaultFormatter = class {
-  /**
-   * @param {number=} maxLength
-   */
-  constructor(maxLength) {
-    this._maxLength = maxLength;
+    this._formatLiveAnchor(anchor, uiLocation, liveLocation.isBlackboxed());
   }
 
   /**
-   * @override
    * @param {!Element} anchor
    * @param {!WebInspector.UILocation} uiLocation
    * @param {boolean} isBlackboxed
    */
-  formatLiveAnchor(anchor, uiLocation, isBlackboxed) {
+  _formatLiveAnchor(anchor, uiLocation, isBlackboxed) {
     var text = uiLocation.linkText();
     text = text.replace(/([a-f0-9]{7})[a-f0-9]{13}[a-f0-9]*/g, '$1\u2026');
     if (this._maxLength)
@@ -394,29 +360,9 @@ WebInspector.Linkifier.DefaultFormatter = class {
   }
 };
 
-/**
- * @unrestricted
- */
-WebInspector.Linkifier.DefaultCSSFormatter = class extends WebInspector.Linkifier.DefaultFormatter {
-  constructor() {
-    super(WebInspector.Linkifier.DefaultCSSFormatter.MaxLengthForDisplayedURLs);
-  }
-
-  /**
-   * @override
-   * @param {!Element} anchor
-   * @param {!WebInspector.UILocation} uiLocation
-   * @param {boolean} isBlackboxed
-   */
-  formatLiveAnchor(anchor, uiLocation, isBlackboxed) {
-    super.formatLiveAnchor(anchor, uiLocation, isBlackboxed);
-    anchor.classList.add('webkit-html-resource-link');
-    anchor.setAttribute('data-uncopyable', anchor.textContent);
-    anchor.textContent = '';
-  }
-};
-
-WebInspector.Linkifier.DefaultCSSFormatter.MaxLengthForDisplayedURLs = 30;
+WebInspector.Linkifier._uiLocationSymbol = Symbol('uiLocation');
+WebInspector.Linkifier._fallbackAnchorSymbol = Symbol('fallbackAnchor');
+WebInspector.Linkifier._liveLocationSymbol = Symbol('liveLocation');
 
 /**
  * The maximum number of characters to display in a URL.

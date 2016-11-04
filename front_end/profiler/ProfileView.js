@@ -47,7 +47,7 @@ WebInspector.ProfileView = class extends WebInspector.SimpleView {
     this.resetButton.setEnabled(false);
     this.resetButton.addEventListener('click', this._resetClicked, this);
 
-    this._linkifier = new WebInspector.Linkifier(new WebInspector.Linkifier.DefaultFormatter(30));
+    this._linkifier = new WebInspector.Linkifier(WebInspector.ProfileView._maxLinkLength);
   }
 
   /**
@@ -368,6 +368,8 @@ WebInspector.ProfileView = class extends WebInspector.SimpleView {
     this.refresh();
   }
 };
+
+WebInspector.ProfileView._maxLinkLength = 30;
 
 /** @enum {string} */
 WebInspector.ProfileView.ViewTypes = {

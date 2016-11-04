@@ -238,13 +238,8 @@
     color: #222;
 }
 
-.styles-section a[data-uncopyable] {
-    display: inline-block;
-}
-
-.styles-section a[data-uncopyable]::before {
-    content: attr(data-uncopyable);
-    text-decoration: underline;
+.styles-section .webkit-html-resource-link {
+    user-select: none;
 }
 
 .styles-section .style-properties {

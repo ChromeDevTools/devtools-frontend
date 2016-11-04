@@ -85,11 +85,18 @@ WebInspector.NetworkTimelineColumn = class extends WebInspector.VBox {
   _getPopoverAnchor(element, event) {
     if (!this._hoveredRequest)
       return;
-
-    var range = WebInspector.RequestTimingView.calculateRequestTimeRanges(this._hoveredRequest, 0)
-                    .find(data => data.name === 'total');
-    var start = this._timeToPosition(range.start);
-    var end = this._timeToPosition(range.end);
+    var useTimingBars =
+        !WebInspector.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
+    if (useTimingBars) {
+      var range = WebInspector.RequestTimingView.calculateRequestTimeRanges(this._hoveredRequest, 0)
+                      .find(data => data.name === 'total');
+      var start = this._timeToPosition(range.start);
+      var end = this._timeToPosition(range.end);
+    } else {
+      var range = this._getSimplifiedBarRange(this._hoveredRequest, 0);
+      var start = range.start;
+      var end = range.end;
+    }
 
     if (event.clientX < this._canvasPosition.left + start || event.clientX > this._canvasPosition.left + end)
       return;
@@ -386,21 +393,31 @@ WebInspector.NetworkTimelineColumn = class extends WebInspector.VBox {
   }
 
   /**
+   * @param {!WebInspector.NetworkRequest} request
+   * @param {number} borderOffset
+   * @return {!{start: number, mid: number, end: number}}
+   */
+  _getSimplifiedBarRange(request, borderOffset) {
+    var drawWidth = this._offsetWidth - this._leftPadding;
+    var percentages = this._calculator.computeBarGraphPercentages(request);
+    return {
+      start: this._leftPadding + Math.floor((percentages.start / 100) * drawWidth) + borderOffset,
+      mid: this._leftPadding + Math.floor((percentages.middle / 100) * drawWidth) + borderOffset,
+      end: this._leftPadding + Math.floor((percentages.end / 100) * drawWidth) + borderOffset
+    };
+  }
+
+  /**
    * @param {!CanvasRenderingContext2D} context
    * @param {!WebInspector.NetworkRequest} request
    * @param {number} y
    */
   _drawSimplifiedBars(context, request, y) {
-    /** @const */
-    var borderWidth = 1;
+    const borderWidth = 1;
+    var borderOffset = borderWidth % 2 === 0 ? 0 : 0.5;
 
     context.save();
-    var percentages = this._calculator.computeBarGraphPercentages(request);
-    var drawWidth = this._offsetWidth - this._leftPadding;
-    var borderOffset = borderWidth % 2 === 0 ? 0 : .5;
-    var start = this._leftPadding + Math.floor((percentages.start / 100) * drawWidth) + borderOffset;
-    var mid = this._leftPadding + Math.floor((percentages.middle / 100) * drawWidth) + borderOffset;
-    var end = this._leftPadding + Math.floor((percentages.end / 100) * drawWidth) + borderOffset;
+    var ranges = this._getSimplifiedBarRange(request, borderOffset);
     var height = this._getBarHeight();
     y += Math.floor(this._rowHeight / 2 - height / 2 + borderWidth) - borderWidth / 2;
 
@@ -410,21 +427,21 @@ WebInspector.NetworkTimelineColumn = class extends WebInspector.VBox {
     context.lineWidth = borderWidth;
 
     context.beginPath();
-    context.globalAlpha = .5;
-    context.rect(start, 0, mid - start, height - borderWidth);
+    context.globalAlpha = 0.5;
+    context.rect(ranges.start, 0, ranges.mid - ranges.start, height - borderWidth);
     context.fill();
     context.stroke();
 
-    var barWidth = Math.max(2, end - mid);
+    var barWidth = Math.max(2, ranges.end - ranges.mid);
     context.beginPath();
     context.globalAlpha = 1;
-    context.rect(mid, 0, barWidth, height - borderWidth);
+    context.rect(ranges.mid, 0, barWidth, height - borderWidth);
     context.fill();
     context.stroke();
 
     if (request === this._hoveredRequest) {
       var labels = this._calculator.computeBarGraphLabels(request);
-      this._drawSimplifiedBarDetails(context, labels.left, labels.right, start, mid, mid + barWidth + borderOffset);
+      this._drawSimplifiedBarDetails(context, labels.left, labels.right, ranges.start, ranges.mid, ranges.mid + barWidth + borderOffset);
     }
 
     context.restore();

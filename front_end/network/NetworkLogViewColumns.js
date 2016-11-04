@@ -231,6 +231,7 @@ WebInspector.NetworkLogViewColumns = class {
       return;
     }
     var currentNode = this._dataGrid.rootNode();
+    /** @type {!WebInspector.NetworkTimelineColumn.RequestData} */
     var requestData = {requests: [], navigationRequest: null};
     while (currentNode = currentNode.traverseNextNode(true)) {
       if (currentNode.isNavigationRequest())

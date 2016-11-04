@@ -261,11 +261,11 @@ WebInspector.TextEditorAutocompleteController = class {
    * @param {string} hint
    */
   _setHint(hint) {
-    if (!this._isCursorAtEndOfLine()) {
+    var query = this._textEditor.text(this._queryRange);
+    if (!this._isCursorAtEndOfLine() || !hint.startsWith(query)) {
       this._clearHint();
       return;
     }
-    var query = this._textEditor.text(this._queryRange);
     var suffix = hint.substring(query.length).split('\n')[0];
     this._hintElement.textContent = suffix;
     var cursor = this._codeMirror.getCursor('to');
@@ -286,6 +286,8 @@ WebInspector.TextEditorAutocompleteController = class {
   }
 
   _clearHint() {
+    if (!this._hintElement.textContent)
+      return;
     this._lastHintText = '';
     this._hintElement.textContent = '';
     if (this._hintMarker)
@@ -367,9 +369,6 @@ WebInspector.TextEditorAutocompleteController = class {
    * @override
    */
   acceptSuggestion() {
-    if (this._queryRange.endColumn - this._queryRange.startColumn === this._currentSuggestion.length)
-      return;
-
     var selections = this._codeMirror.listSelections().slice();
     var queryLength = this._queryRange.endColumn - this._queryRange.startColumn;
     for (var i = selections.length - 1; i >= 0; --i) {

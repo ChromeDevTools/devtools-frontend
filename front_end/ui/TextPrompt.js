@@ -329,7 +329,7 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
   }
 
   _refreshGhostText() {
-    if (this._queryRange && this._isCaretAtEndOfPrompt()) {
+    if (this._queryRange && this._isCaretAtEndOfPrompt() && this._currentSuggestion.startsWith(this.text().substring(this._queryRange.startColumn))) {
       this._ghostTextElement.textContent =
           this._currentSuggestion.substring(this._queryRange.endColumn - this._queryRange.startColumn);
       this._element.appendChild(this._ghostTextElement);

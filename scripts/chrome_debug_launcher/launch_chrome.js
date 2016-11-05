@@ -78,6 +78,9 @@ function launchChrome(filePath, chromeArgs, cleanup)
         });
     } catch (error) {
         onLaunchChromeError();
+        if (cleanup)
+            cleanup();
+        return;
     }
     child.on("error", onLaunchChromeError);
     child.on("exit", onExit);

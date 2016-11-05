@@ -109,15 +109,16 @@ WebInspector.TextEditorAutocompleteController = class {
   /**
    * @param {!WebInspector.TextRange} queryRange
    * @param {!WebInspector.TextRange} substituteRange
+   * @param {boolean=} force
    * @return {!Promise.<!WebInspector.SuggestBox.Suggestions>}
    */
-  _wordsWithQuery(queryRange, substituteRange) {
+  _wordsWithQuery(queryRange, substituteRange, force) {
     var external =
-        this._config.suggestionsCallback ? this._config.suggestionsCallback(queryRange, substituteRange) : null;
+        this._config.suggestionsCallback ? this._config.suggestionsCallback(queryRange, substituteRange, force) : null;
     if (external)
       return external;
 
-    if (!this._dictionary || queryRange.startColumn === queryRange.endColumn)
+    if (!this._dictionary || (!force && queryRange.isEmpty()))
       return Promise.resolve([]);
 
     var completions = this._dictionary.wordsWithPrefix(this._textEditor.text(queryRange));
@@ -209,7 +210,10 @@ WebInspector.TextEditorAutocompleteController = class {
     return true;
   }
 
-  autocomplete() {
+  /**
+   * @param {boolean=} force
+   */
+  autocomplete(force) {
     this._initializeIfNeeded();
     if (this._codeMirror.somethingSelected()) {
       this.clearAutocomplete();
@@ -230,7 +234,7 @@ WebInspector.TextEditorAutocompleteController = class {
     if (this._suggestBox)
       hadSuggestBox = true;
 
-    this._wordsWithQuery(queryRange, substituteRange).then(wordsAcquired.bind(this));
+    this._wordsWithQuery(queryRange, substituteRange, force).then(wordsAcquired.bind(this));
 
     /**
      * @param {!WebInspector.SuggestBox.Suggestions} wordsWithQuery

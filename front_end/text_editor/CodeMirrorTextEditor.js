@@ -176,7 +176,7 @@ WebInspector.CodeMirrorTextEditor = class extends WebInspector.VBox {
   static autocompleteCommand(codeMirror) {
     var autocompleteController = codeMirror._codeMirrorTextEditor._autocompleteController;
     if (autocompleteController)
-      autocompleteController.autocomplete();
+      autocompleteController.autocomplete(true);
   }
 
   /**

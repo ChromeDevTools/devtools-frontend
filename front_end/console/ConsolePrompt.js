@@ -201,10 +201,11 @@ WebInspector.ConsolePrompt = class extends WebInspector.Widget {
 
   /**
    * @param {string} prefix
+   * @param {boolean=} force
    * @return {!WebInspector.SuggestBox.Suggestions}
    */
-  _historyCompletions(prefix) {
-    if (!this._addCompletionsFromHistory || !this._isCaretAtEndOfPrompt())
+  _historyCompletions(prefix, force) {
+    if (!this._addCompletionsFromHistory || !this._isCaretAtEndOfPrompt() || (!prefix && !force))
       return [];
     var result = [];
     var text = this.text();
@@ -250,13 +251,14 @@ WebInspector.ConsolePrompt = class extends WebInspector.Widget {
   /**
    * @param {!WebInspector.TextRange} queryRange
    * @param {!WebInspector.TextRange} substituteRange
+   * @param {boolean=} force
    * @return {!Promise<!WebInspector.SuggestBox.Suggestions>}
    */
-  _wordsWithQuery(queryRange, substituteRange) {
+  _wordsWithQuery(queryRange, substituteRange, force) {
     var query = this._editor.text(queryRange);
     var before = this._editor.text(new WebInspector.TextRange(0, 0, queryRange.startLine, queryRange.startColumn));
-    var historyWords = this._historyCompletions(query);
-    return WebInspector.JavaScriptAutocomplete.completionsForTextInCurrentContext(before, query, true /* force */)
+    var historyWords = this._historyCompletions(query, force);
+    return WebInspector.JavaScriptAutocomplete.completionsForTextInCurrentContext(before, query, force)
         .then(innerWordsWithQuery);
     /**
      * @param {!Array<string>} words

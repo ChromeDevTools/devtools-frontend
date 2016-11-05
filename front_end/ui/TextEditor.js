@@ -87,7 +87,7 @@ WebInspector.TextEditor.Options;
 /**
  * @typedef {{
  *     substituteRangeCallback: ((function(number, number):?WebInspector.TextRange)|undefined),
- *     suggestionsCallback: ((function(!WebInspector.TextRange, !WebInspector.TextRange):?Promise.<!WebInspector.SuggestBox.Suggestions>)|undefined),
+ *     suggestionsCallback: ((function(!WebInspector.TextRange, !WebInspector.TextRange, boolean=):?Promise.<!WebInspector.SuggestBox.Suggestions>)|undefined),
  *     isWordChar: ((function(string):boolean)|undefined),
  *     captureEnter: (boolean|undefined)
  * }}

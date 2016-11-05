@@ -54,7 +54,7 @@
 
 .webkit-html-comment {
     /* Keep this in sync with view-source.css (.webkit-html-comment) */
-    color: rgb(35, 110, 37) !important;
+    color: rgb(35, 110, 37);
 }
 
 .webkit-html-tag {

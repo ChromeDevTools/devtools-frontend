@@ -191,6 +191,7 @@ WebInspector.ConsoleViewMessage = class {
    */
   _buildMessage(consoleMessage) {
     var messageElement;
+    var messageText = consoleMessage.messageText;
     if (consoleMessage.source === WebInspector.ConsoleMessage.MessageSource.ConsoleAPI) {
       switch (consoleMessage.type) {
         case WebInspector.ConsoleMessage.MessageType.Trace:
@@ -213,13 +214,13 @@ WebInspector.ConsoleViewMessage = class {
           break;
         case WebInspector.ConsoleMessage.MessageType.Profile:
         case WebInspector.ConsoleMessage.MessageType.ProfileEnd:
-          messageElement = this._format([consoleMessage.messageText]);
+          messageElement = this._format([messageText]);
           break;
         default:
           if (consoleMessage.parameters && consoleMessage.parameters.length === 1 &&
               consoleMessage.parameters[0].type === 'string')
             messageElement = this._tryFormatAsError(/** @type {string} */ (consoleMessage.parameters[0].value));
-          var args = consoleMessage.parameters || [consoleMessage.messageText];
+          var args = consoleMessage.parameters || [messageText];
           messageElement = messageElement || this._format(args);
       }
     } else if (consoleMessage.source === WebInspector.ConsoleMessage.MessageSource.Network) {
@@ -237,14 +238,16 @@ WebInspector.ConsoleViewMessage = class {
                 ' ', String(consoleMessage.request.statusCode), ' (', consoleMessage.request.statusText, ')');
         } else {
           var fragment = WebInspector.linkifyStringAsFragmentWithCustomLinkifier(
-              consoleMessage.messageText, linkifyRequest.bind(consoleMessage));
+              messageText, linkifyRequest.bind(consoleMessage));
           messageElement.appendChild(fragment);
         }
       } else {
-        messageElement = this._format([consoleMessage.messageText]);
+        messageElement = this._format([messageText]);
       }
     } else {
-      var args = consoleMessage.parameters || [consoleMessage.messageText];
+      if (consoleMessage.source === WebInspector.ConsoleMessage.MessageSource.Violation)
+        messageText = WebInspector.UIString('[Violation] %s', messageText);
+      var args = consoleMessage.parameters || [messageText];
       messageElement = this._format(args);
     }
     messageElement.classList.add('console-message-text');

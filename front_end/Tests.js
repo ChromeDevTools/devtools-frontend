@@ -517,13 +517,21 @@
   };
 
   TestSuite.prototype.testConsoleOnNavigateBack = function() {
-    if (WebInspector.multitargetConsoleModel.messages().length === 1)
-      firstConsoleMessageReceived.call(this);
+
+    function filteredMessages() {
+       return WebInspector.multitargetConsoleModel.messages().filter(
+           a => a.source !== WebInspector.ConsoleMessage.MessageSource.Violation);
+    }
+
+    if (filteredMessages().length === 1)
+      firstConsoleMessageReceived.call(this, null);
     else
       WebInspector.multitargetConsoleModel.addEventListener(
           WebInspector.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
 
-    function firstConsoleMessageReceived() {
+    function firstConsoleMessageReceived(event) {
+      if (event && event.data.source === WebInspector.ConsoleMessage.MessageSource.Violation)
+        return;
       WebInspector.multitargetConsoleModel.removeEventListener(
           WebInspector.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
       this.evaluateInConsole_('clickLink();', didClickLink.bind(this));
@@ -531,7 +539,7 @@
 
     function didClickLink() {
       // Check that there are no new messages(command is not a message).
-      this.assertEquals(3, WebInspector.multitargetConsoleModel.messages().length);
+      this.assertEquals(3, filteredMessages().length);
       this.evaluateInConsole_('history.back();', didNavigateBack.bind(this));
     }
 
@@ -541,7 +549,7 @@
     }
 
     function didCompleteNavigation() {
-      this.assertEquals(7, WebInspector.multitargetConsoleModel.messages().length);
+      this.assertEquals(7, filteredMessages().length);
       this.releaseControl();
     }
 

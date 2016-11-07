@@ -1012,8 +1012,6 @@ WebInspector.BackendSettingsSync = class {
     this._autoAttachSetting.addChangeListener(this._update, this);
     this._disableJavascriptSetting = WebInspector.settings.moduleSetting('javaScriptDisabled');
     this._disableJavascriptSetting.addChangeListener(this._update, this);
-    this._blockedEventsWarningSetting = WebInspector.settings.moduleSetting('blockedEventsWarningEnabled');
-    this._blockedEventsWarningSetting.addChangeListener(this._update, this);
     WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
   }
 
@@ -1021,9 +1019,6 @@ WebInspector.BackendSettingsSync = class {
    * @param {!WebInspector.Target} target
    */
   _updateTarget(target) {
-    var blockedEventsWarningThresholdSeconds = 0.1;
-    target.pageAgent().setBlockedEventsWarningThreshold(
-        this._blockedEventsWarningSetting.get() ? blockedEventsWarningThresholdSeconds : 0);
     target.pageAgent().setAutoAttachToCreatedPages(this._autoAttachSetting.get());
     target.emulationAgent().setScriptExecutionDisabled(this._disableJavascriptSetting.get());
   }

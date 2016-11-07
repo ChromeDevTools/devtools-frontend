@@ -50,6 +50,8 @@ WebInspector.ConsoleModel = class extends WebInspector.SDKModel {
     if (this._logAgent) {
       target.registerLogDispatcher(new WebInspector.LogDispatcher(this));
       this._logAgent.enable();
+      if (!InspectorFrontendHost.isUnderTest())
+        this._logAgent.setReportViolationsEnabled(true);
     }
   }
 
@@ -494,6 +496,7 @@ WebInspector.ConsoleMessage.MessageSource = {
   Rendering: 'rendering',
   CSS: 'css',
   Security: 'security',
+  Violation: 'violation',
   Other: 'other',
   Deprecation: 'deprecation',
   Worker: 'worker'

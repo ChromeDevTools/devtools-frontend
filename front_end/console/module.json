@@ -72,6 +72,18 @@
         {
             "type": "setting",
             "category": "Console",
+            "title": "Hide violations",
+            "settingName": "hideViolationMessages",
+            "settingType": "boolean",
+            "defaultValue": true,
+            "options": [
+                { "value": true, "title": "Hide violations" },
+                { "value": false, "title": "Show violations" }
+            ]
+        },
+        {
+            "type": "setting",
+            "category": "Console",
             "title": "Log XMLHttpRequests",
             "settingName": "monitoringXHREnabled",
             "settingType": "boolean",

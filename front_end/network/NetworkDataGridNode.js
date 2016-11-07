@@ -40,7 +40,6 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
     super({});
     this._parentView = parentView;
     this._request = request;
-    this._staleGraph = true;
     this._isNavigationRequest = false;
     this.selectable = true;
   }
@@ -290,17 +289,12 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
    * @override
    */
   createCells() {
-    this._showTiming = !WebInspector.moduleSetting('networkColorCodeResourceTypes').get() &&
-        !this._parentView.calculator().startAtZero;
     this._nameCell = null;
-    this._timelineCell = null;
     this._initiatorCell = null;
 
     this._element.classList.toggle('network-error-row', this._isFailed());
     this._element.classList.toggle('network-navigation-row', this._isNavigationRequest);
     super.createCells();
-
-    this._updateGraph();
   }
 
   /**
@@ -322,9 +316,6 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
     switch (columnIdentifier) {
       case 'name':
         this._renderNameCell(cell);
-        break;
-      case 'timeline':
-        this._createTimelineBar(cell);
         break;
       case 'method':
         this._setTextAndTitle(cell, this._request.requestMethod);
@@ -368,6 +359,9 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
       case 'time':
         this._renderTimeCell(cell);
         break;
+      case 'timeline':
+        this._setTextAndTitle(cell, '');
+        break;
       default:
         this._setTextAndTitle(cell, this._request.responseHeaderValue(columnIdentifier) || '');
         break;
@@ -389,8 +383,6 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
    * @protected
    */
   willAttach() {
-    if (this._staleGraph)
-      this._updateGraph();
     if (this._initiatorCell && this._request.initiatorInfo().type === WebInspector.NetworkRequest.InitiatorType.Script)
       this._initiatorCell.insertBefore(this._linkifiedInitiatorAnchor, this._initiatorCell.firstChild);
   }
@@ -433,50 +425,6 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
 
   _openInNewTab() {
     InspectorFrontendHost.openInNewTab(this._request.url);
-  }
-
-  /**
-   * @param {!Element} cell
-   */
-  _createTimelineBar(cell) {
-    if (Runtime.experiments.isEnabled('canvasNetworkTimeline'))
-      return;
-    cell = cell.createChild('div');
-    this._timelineCell = cell;
-
-    cell.className = 'network-graph-side';
-
-    this._barAreaElement = cell.createChild('div', 'network-graph-bar-area');
-    this._barAreaElement.request = this._request;
-
-    if (this._showTiming)
-      return;
-
-    var type = this._request.resourceType().name();
-    var cached = this._request.cached();
-
-    this._barLeftElement = this._barAreaElement.createChild('div', 'network-graph-bar');
-    this._barLeftElement.classList.add(type, 'waiting');
-    this._barLeftElement.classList.toggle('cached', cached);
-
-    this._barRightElement = this._barAreaElement.createChild('div', 'network-graph-bar');
-    this._barRightElement.classList.add(type);
-    this._barRightElement.classList.toggle('cached', cached);
-
-    this._labelLeftElement = this._barAreaElement.createChild('div', 'network-graph-label');
-    this._labelLeftElement.classList.add('waiting');
-
-    this._labelRightElement = this._barAreaElement.createChild('div', 'network-graph-label');
-
-    cell.addEventListener('mouseover', this._onMouseOver.bind(this), false);
-  }
-
-  /**
-   * @param {!Event} event
-   */
-  _onMouseOver(event) {
-    this._refreshLabelPositions();
-    this._parentView[WebInspector.NetworkDataGridNode._hoveredRowSymbol] = this;
   }
 
   /**
@@ -651,144 +599,4 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
     subtitleElement.textContent = subtitleText;
     cellElement.appendChild(subtitleElement);
   }
-
-  refreshGraph() {
-    if (!this._timelineCell)
-      return;
-    this._staleGraph = true;
-    if (this.attached())
-      this.dataGrid.scheduleUpdate();
-  }
-
-  _updateTimingGraph() {
-    var calculator = this._parentView.calculator();
-    var timeRanges =
-        WebInspector.RequestTimingView.calculateRequestTimeRanges(this._request, calculator.minimumBoundary());
-    var right = timeRanges[0].end;
-
-    var container = this._barAreaElement;
-    var nextBar = container.firstChild;
-    for (var i = 0; i < timeRanges.length; ++i) {
-      var range = timeRanges[i];
-      var start = calculator.computePercentageFromEventTime(range.start);
-      var end = (range.end !== Number.MAX_VALUE) ? calculator.computePercentageFromEventTime(range.end) : 100;
-      if (!nextBar)
-        nextBar = container.createChild('div');
-      nextBar.className = 'network-graph-bar request-timing';
-      nextBar.classList.add(range.name);
-      nextBar.style.setProperty('left', start + '%');
-      nextBar.style.setProperty('right', (100 - end) + '%');
-      nextBar = nextBar.nextSibling;
-    }
-    while (nextBar) {
-      var nextSibling = nextBar.nextSibling;
-      nextBar.remove();
-      nextBar = nextSibling;
-    }
-  }
-
-  _updateGraph() {
-    this._staleGraph = false;
-    if (!this._timelineCell)
-      return;
-    if (this._showTiming) {
-      this._updateTimingGraph();
-      return;
-    }
-
-    var calculator = this._parentView.calculator();
-    var percentages = calculator.computeBarGraphPercentages(this._request);
-    this._percentages = percentages;
-
-    this._barAreaElement.classList.remove('hidden');
-
-    this._barLeftElement.style.setProperty('left', percentages.start + '%');
-    this._barLeftElement.style.setProperty('right', (100 - percentages.middle) + '%');
-
-    this._barRightElement.style.setProperty('left', percentages.middle + '%');
-    this._barRightElement.style.setProperty('right', (100 - percentages.end) + '%');
-
-    var labels = calculator.computeBarGraphLabels(this._request);
-    this._labelLeftElement.textContent = labels.left;
-    this._labelRightElement.textContent = labels.right;
-
-    var tooltip = (labels.tooltip || '');
-    this._barLeftElement.title = tooltip;
-    this._labelLeftElement.title = tooltip;
-    this._labelRightElement.title = tooltip;
-    this._barRightElement.title = tooltip;
-
-    if (this._parentView[WebInspector.NetworkDataGridNode._hoveredRowSymbol] === this)
-      this._refreshLabelPositions();
-  }
-
-  _refreshLabelPositions() {
-    if (!this._percentages)
-      return;
-    this._labelLeftElement.style.removeProperty('left');
-    this._labelLeftElement.style.removeProperty('right');
-    this._labelLeftElement.classList.remove('before');
-    this._labelLeftElement.classList.remove('hidden');
-
-    this._labelRightElement.style.removeProperty('left');
-    this._labelRightElement.style.removeProperty('right');
-    this._labelRightElement.classList.remove('after');
-    this._labelRightElement.classList.remove('hidden');
-
-    const labelPadding = 10;
-    const barRightElementOffsetWidth = this._barRightElement.offsetWidth;
-    const barLeftElementOffsetWidth = this._barLeftElement.offsetWidth;
-
-    if (this._barLeftElement) {
-      var leftBarWidth = barLeftElementOffsetWidth - labelPadding;
-      var rightBarWidth = (barRightElementOffsetWidth - barLeftElementOffsetWidth) - labelPadding;
-    } else {
-      var leftBarWidth = (barLeftElementOffsetWidth - barRightElementOffsetWidth) - labelPadding;
-      var rightBarWidth = barRightElementOffsetWidth - labelPadding;
-    }
-
-    const labelLeftElementOffsetWidth = this._labelLeftElement.offsetWidth;
-    const labelRightElementOffsetWidth = this._labelRightElement.offsetWidth;
-
-    const labelBefore = (labelLeftElementOffsetWidth > leftBarWidth);
-    const labelAfter = (labelRightElementOffsetWidth > rightBarWidth);
-    const graphElementOffsetWidth = this._timelineCell.offsetWidth;
-
-    if (labelBefore && (graphElementOffsetWidth * (this._percentages.start / 100)) < (labelLeftElementOffsetWidth + 10))
-      var leftHidden = true;
-
-    if (labelAfter &&
-        (graphElementOffsetWidth * ((100 - this._percentages.end) / 100)) < (labelRightElementOffsetWidth + 10))
-      var rightHidden = true;
-
-    if (barLeftElementOffsetWidth === barRightElementOffsetWidth) {
-      // The left/right label data are the same, so a before/after label can be replaced by an on-bar label.
-      if (labelBefore && !labelAfter)
-        leftHidden = true;
-      else if (labelAfter && !labelBefore)
-        rightHidden = true;
-    }
-
-    if (labelBefore) {
-      if (leftHidden)
-        this._labelLeftElement.classList.add('hidden');
-      this._labelLeftElement.style.setProperty('right', (100 - this._percentages.start) + '%');
-      this._labelLeftElement.classList.add('before');
-    } else {
-      this._labelLeftElement.style.setProperty('left', this._percentages.start + '%');
-      this._labelLeftElement.style.setProperty('right', (100 - this._percentages.middle) + '%');
-    }
-
-    if (labelAfter) {
-      if (rightHidden)
-        this._labelRightElement.classList.add('hidden');
-      this._labelRightElement.style.setProperty('left', this._percentages.end + '%');
-      this._labelRightElement.classList.add('after');
-    } else {
-      this._labelRightElement.style.setProperty('left', this._percentages.middle + '%');
-      this._labelRightElement.style.setProperty('right', (100 - this._percentages.end) + '%');
-    }
-  }
 };
-
-WebInspector.NetworkDataGridNode._hoveredRowSymbol = Symbol('hoveredRow');

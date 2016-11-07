@@ -123,10 +123,6 @@
     text-decoration: underline;
 }
 
-.network-log-grid.data-grid.small .network-graph-side {
-    height: 19px;
-}
-
 .network-log-grid.data-grid th.sortable:active {
     background-image: none !important;
 }
@@ -271,293 +267,12 @@
     max-height: 11px;
 }
 
-/* Graph styles */
-
-.network-graph-side {
-    position: relative;
-    height: 39px;
-    padding: 0;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.network-graph-bar-area {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-}
-
-.network-graph-bar-area,
-.network-timeline-grid .resources-dividers,
-.network-timeline-grid .resources-event-dividers,
-.network-timeline-grid .resources-dividers-label-bar {
-    right: 12px;
-    left: 12px;
-}
-
-.network-timeline-grid .resources-event-dividers {
-    margin-left: 1px;
-}
-
-.network-graph-label {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    height: 13px;
-    line-height: 13px;
-    margin: auto;
-    font-size: 90%;
-    color: rgba(0, 0, 0, 0.75);
-    text-shadow: rgba(255, 255, 255, 0.25) 1px 0 0, rgba(255, 255, 255, 0.25) -1px 0 0, rgba(255, 255, 255, 0.333) 0 1px 0, rgba(255, 255, 255, 0.25) 0 -1px 0;
-    z-index: 150;
-    overflow: hidden;
-    text-align: center;
-    visibility: hidden;
-}
-
-.network-graph-side:hover .network-graph-label {
-    visibility: visible;
-}
-
-.network-graph-label:empty {
-    display: none;
-}
-
-.network-graph-label.waiting {
-    margin-right: 5px;
-}
-
-.network-graph-label.before {
-    color: rgba(0, 0, 0, 0.7);
-    text-shadow: none;
-    text-align: right;
-    margin-right: -1px;
-}
-
-.network-graph-label.before::after {
-    padding-left: 2px;
-    height: 6px;
-    content: url(Images/graphLabelCalloutLeft.png);
-}
-
-.network-graph-label.after {
-    color: rgba(0, 0, 0, 0.7);
-    text-shadow: none;
-    text-align: left;
-    margin-left: -1px;
-}
-
-.network-graph-label.after::before {
-    padding-right: 2px;
-    height: 6px;
-    content: url(Images/graphLabelCalloutRight.png);
-}
-
-.small .network-graph-bar {
-    top: 3px;
-    bottom: 3px;
-}
-
-.network-graph-bar {
-    position: absolute;
-    top: 13px;
-    bottom: 13px;
-    min-width: 3px;
-}
-
-.network-graph-bar:not(.request-timing) {
-    border-width: 1px;
-    border-style: solid;
-    border-color: hsl(0, 0%, 75%);
-    background: linear-gradient(0deg, hsl(0, 0%, 85%), hsl(0, 0%, 95%));
-}
-
-.network-graph-bar.waiting:not(.request-timing) {
-    opacity: 0.5;
-}
-
-/* Resource categories */
-/* TODO(allada) Remove these when we remove canvas timeline experiment */
-.network-graph-bar.request-timing.queueing,
-.network-graph-bar.request-timing.total,
-.network-graph-bar.request-timing.proxy,
-.network-graph-bar.request-timing.dns,
-.network-graph-bar.request-timing.ssl,
-.network-graph-bar.request-timing.connecting,
-.network-graph-bar.request-timing.blocking,
-.network-graph-bar.request-timing.push {
-    margin: 3px 0;
-}
-
-.network-graph-bar.request-timing.queueing,
-.network-graph-bar.request-timing.total, -theme-preserve {
-    border: solid 1px #AAAAAA;
-}
-
-.network-graph-bar.request-timing.receiving, -theme-preserve,
-.network-graph-bar.request-timing.receiving-push, -theme-preserve {
-    background-color: #03A9F4;
-}
-
-.network-graph-bar.request-timing.waiting, -theme-preserve {
-    background-color: #00C853;
-}
-
-.network-graph-bar.request-timing.connecting, -theme-preserve {
-    background-color: #FF9800;
-}
-
-.network-graph-bar.request-timing.ssl, -theme-preserve {
-    background-color: #9C27B0;
-}
-
-.network-graph-bar.request-timing.dns, -theme-preserve {
-    background-color: #009688;
-}
-
-.network-graph-bar.request-timing.proxy, -theme-preserve {
-    background-color: #A1887F;
-}
-
-.network-graph-bar.request-timing.blocking, -theme-preserve {
-    background-color: #AAAAAA;
-}
-
-.network-graph-bar.request-timing.push, -theme-preserve {
-    background-color: #8CDBff;
-}
-
-.network-graph-bar.cached {
-    background: hsl(0, 0%, 90%);
-}
-
-.network-graph-bar.document {
-    border-color: hsl(215, 49%, 60%);
-    background: linear-gradient(0deg, hsl(215, 72%, 65%), hsl(215, 100%, 80%));
-}
-
-.network-graph-bar.cached.document {
-    background: hsl(215, 99%, 80%);
-}
-
-.network-graph-bar.stylesheet {
-    border-color: hsl(99, 34%, 60%);
-    background: linear-gradient(0deg, hsl(100, 50%, 65%), hsl(90, 50%, 80%));
-}
-
-.network-graph-bar.cached.stylesheet {
-    background: hsl(99, 100%, 80%);
-}
-
-.network-graph-bar.image {
-    border-color: hsl(272, 31%, 60%);
-    background: linear-gradient(0deg, hsl(272, 46%, 65%), hsl(272, 64%, 80%));
-}
-
-.network-graph-bar.cached.image {
-    background: hsl(272, 65%, 80%);
-}
-
-.network-graph-bar.media {
-    border-color: hsl(272, 31%, 60%);
-    background: linear-gradient(0deg, hsl(272, 46%, 65%), hsl(272, 64%, 80%));
-}
-
-.network-graph-bar.cached.media {
-    background: hsl(272, 65%, 80%);
-}
-
-.network-graph-bar.font {
-    border-color: hsl(8, 49%, 60%);
-    background: linear-gradient(0deg, hsl(8, 72%, 65%), hsl(8, 100%, 80%));
-}
-
-.network-graph-bar.cached.font {
-    background: hsl(8, 100%, 80%);
-}
-
-.network-graph-bar.texttrack {
-    border-color: hsl(8, 49%, 60%);
-    background: linear-gradient(0deg, hsl(8, 72%, 65%), hsl(8, 100%, 80%));
-}
-
-.network-graph-bar.cached.texttrack {
-    background: hsl(8, 100%, 80%);
-}
-
-.network-graph-bar.script {
-    border-color: hsl(31, 49%, 60%);
-    background: linear-gradient(0deg, hsl(31, 72%, 65%), hsl(31, 100%, 80%));
-}
-
-.network-graph-bar.cached.script {
-    background: hsl(31, 100%, 80%);
-}
-
-.network-graph-bar.xhr {
-    border-color: hsl(53, 49%, 60%);
-    background: linear-gradient(0deg, hsl(53, 72%, 65%), hsl(53, 100%, 80%));
-}
-
-.network-graph-bar.cached.xhr {
-    background: hsl(53, 100%, 80%);
-}
-
-.network-graph-bar.websocket {
-    border-color: hsl(0, 0%, 60%);
-    background: linear-gradient(0deg, hsl(0, 0%, 65%), hsl(0, 0%, 80%));
-}
-
-.network-graph-bar.cached.websocket {
-    background: hsl(0, 0%, 80%);
-}
-
 .network-dim-cell {
     color: grey;
 }
 
-/* Dividers */
-
-.network-timeline-grid {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 14px; /* Keep in sync with td.corner width */
-    pointer-events: none;
-}
-
-.network-event-divider {
-    position: absolute;
-    width: 1px;
-    margin-left: -1px;
-    top: 31px;
-    bottom: 0;
-    z-index: 300;
-}
-
-.network-event-divider.invisible {
-    visibility: hidden;
-}
-
-.network-timeline-grid.small .network-event-divider {
-    top: 23px;
-}
-
-.network-red-divider {
-    background-color: rgba(255, 0, 0, 0.5);
-}
-
-.-theme-with-dark-background .network-red-divider {
-    background-color: hsla(0, 100%, 80%, 0.7);
-}
-
 .network-summary-bar .summary-red {
     color: red;
-}
-
-.-theme-with-dark-background .network-blue-divider {
-    background-color: hsla(240, 100%, 80%, 0.7);
 }
 
 .network-frame-divider {
@@ -567,8 +282,8 @@
     visibility: hidden;
 }
 
-.network-frame-divider-selected {
-    visibility: visible;
+#network-container:not(.brief-mode) .data-container {
+    overflow: hidden;
 }
 
 .network-summary-bar .summary-blue {
@@ -590,38 +305,8 @@
     pointer-events: none;
 }
 
-.network-timeline-grid.small .resources-dividers-label-bar {
-    height: 23px;
-}
-
-.network-timeline-grid .resources-divider-label {
-    top: 0;
-    margin-top: -5px;
-}
-
-.network-timeline-grid .resources-dividers-label-bar .resources-divider {
-    top: 23px;
-}
-
-.network-timeline-grid.small .resources-dividers-label-bar .resources-divider {
-    top: 15px;
-}
-
-.network-timeline-grid .resources-divider:first-child .resources-divider-label {
-    display: none;
-}
-
-.network-timeline-grid .resources-dividers-label-bar .resources-divider:first-child {
-    background-color: transparent;
-}
-
 #network-container {
     overflow: hidden;
-}
-
-/* Brief mode peculiarities. */
-#network-container.brief-mode .network-timeline-grid {
-    display: none;
 }
 
 .network-log-grid.data-grid .data-container tr:not(.data-grid-filler-row):not(.selected).hover {

@@ -396,7 +396,6 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
       this._timeFilter = WebInspector.NetworkLogView._requestTimeFilter.bind(null, start, end);
       this._timeCalculator.setWindow(new WebInspector.NetworkTimeBoundary(start, end));
     }
-    this._columns.updateDividersIfNeeded();
     this._filterRequests();
   }
 
@@ -766,13 +765,6 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
     this._columns.wasShown();
   }
 
-  /**
-   * @override
-   */
-  willHide() {
-    this._columns.willHide();
-  }
-
   _refresh() {
     this._needsRefresh = false;
 
@@ -830,14 +822,6 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
     this._highlightNthMatchedRequestForSearch(
         this._updateMatchCountAndFindMatchIndex(this._currentMatchedRequestNode), false);
-
-    if (!this.calculator().boundary().equals(oldBoundary)) {
-      // The boundaries changed, so all item graphs are stale.
-      this._columns.updateDividersIfNeeded();
-      var nodes = this._nodesByRequestId.valuesArray();
-      for (var i = 0; i < nodes.length; ++i)
-        nodes[i].refreshGraph();
-    }
 
     this._staleRequestIds = {};
     this._updateSummaryBar();

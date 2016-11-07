@@ -693,7 +693,6 @@ WebInspector.DataGrid = class extends WebInspector.Object {
     }
 
     this._positionResizers();
-    this.dispatchEventToListeners(WebInspector.DataGrid.Events.ColumnsResized);
   }
 
   /**
@@ -1045,7 +1044,6 @@ WebInspector.DataGrid = class extends WebInspector.Object {
   _endResizerDragging() {
     this._currentResizer = null;
     this._saveColumnWeights();
-    this.dispatchEventToListeners(WebInspector.DataGrid.Events.ColumnsResized);
   }
 
   /**
@@ -1105,7 +1103,6 @@ WebInspector.DataGrid = class extends WebInspector.Object {
 
     this._positionResizers();
     event.preventDefault();
-    this.dispatchEventToListeners(WebInspector.DataGrid.Events.ColumnsResized);
   }
 
   /**
@@ -1171,7 +1168,6 @@ WebInspector.DataGrid.Events = {
   SelectedNode: Symbol('SelectedNode'),
   DeselectedNode: Symbol('DeselectedNode'),
   SortingChanged: Symbol('SortingChanged'),
-  ColumnsResized: Symbol('ColumnsResized'),
   PaddingChanged: Symbol('PaddingChanged')
 };
 

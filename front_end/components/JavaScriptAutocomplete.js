@@ -72,6 +72,8 @@ WebInspector.JavaScriptAutocomplete.completionsForExpression = function(expressi
 
   if (dotNotation || bracketNotation)
     expressionString = expressionString.substr(0, lastIndex);
+  else
+    expressionString = '';
 
   // User is entering float value, do not suggest anything.
   if ((expressionString && !isNaN(expressionString)) || (!expressionString && query && !isNaN(query)))

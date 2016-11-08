@@ -35,6 +35,8 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "timeline.toggle-recording",
             "iconClass": "record-toolbar-item",
+            "toggledIconClass": "active-recording-toolbar-item",
+            "toggleWithRedColor": true,
             "contextTypes": ["WebInspector.TimelinePanel"],
             "className": "WebInspector.TimelinePanel.ActionDelegate",
             "options": [

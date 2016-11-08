@@ -18,6 +18,7 @@
             "category": "Debugger",
             "actionId": "debugger.toggle-pause",
             "iconClass": "pause-toolbar-item",
+            "toggledIconClass": "resume-toolbar-item",
             "className": "WebInspector.SourcesPanel.RevealingActionDelegate",
             "contextTypes": ["WebInspector.SourcesPanel", "WebInspector.ShortcutRegistry.ForwardedShortcut"],
             "options": [
@@ -128,7 +129,8 @@
             "type": "@WebInspector.ActionDelegate",
             "category": "Debugger",
             "actionId": "debugger.toggle-breakpoints-active",
-            "iconClass": "breakpoint-toolbar-item",
+            "iconClass": "deactivate-breakpoint-toolbar-item",
+            "toggledIconClass": "breakpoint-toolbar-item",
             "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "options": [

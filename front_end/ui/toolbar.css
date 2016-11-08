@@ -181,6 +181,15 @@
     background-color: #f3f3f3 !important;
 }
 
+.toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph {
+    background-color: rgb(216, 0, 0) !important;
+}
+
+:host-context(.-theme-with-dark-background) .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph {
+    background-color: hsl(0, 100%, 65%) !important;
+}
+
+
 /* Checkbox */
 
 .toolbar-item.checkbox {
@@ -318,7 +327,7 @@ input.toolbar-item.hover {
     -webkit-mask-position: -288px 0;
 }
 
-.toolbar-state-on .record-toolbar-item.toolbar-glyph {
+.active-recording-toolbar-item.toolbar-glyph {
     -webkit-mask-position: -288px -24px;
 }
 
@@ -359,15 +368,15 @@ input.toolbar-item.hover {
     -webkit-mask-position: -32px -72px;
 }
 
-.toolbar-state-on .pause-toolbar-item.toolbar-glyph {
+.resume-toolbar-item.toolbar-glyph {
     -webkit-mask-position: 0 -72px;
 }
 
-.toolbar-state-on .breakpoint-toolbar-item.toolbar-glyph {
+.breakpoint-toolbar-item.toolbar-glyph {
     -webkit-mask-position: -32px 0;
 }
 
-.breakpoint-toolbar-item.toolbar-glyph {
+.deactivate-breakpoint-toolbar-item.toolbar-glyph {
     -webkit-mask-position: 0 -24px;
 }
 
@@ -419,18 +428,16 @@ input.toolbar-item.hover {
     -webkit-mask-position: -224px -120px;
 }
 
-.toolbar-state-pause-outline .animation-control-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -320px 0px;
-}
-
-.toolbar-state-replay-outline .animation-control-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -320px -24px;
-    background-color: rgb(66, 129, 235) !important;
-}
-
-.toolbar-state-play-outline .animation-control-toolbar-item.toolbar-glyph {
+.animation-play-item.toolbar-glyph {
     -webkit-mask-position: -320px -48px;
-    background-color: rgb(66, 129, 235) !important;
+}
+
+.animation-replay-item.toolbar-glyph {
+    -webkit-mask-position: -320px -24px;
+}
+
+.animation-pause-item.toolbar-glyph {
+    -webkit-mask-position: -320px 0px;
 }
 
 .box-shadow-toolbar-item.toolbar-glyph {
@@ -489,52 +496,42 @@ input.toolbar-item.hover {
     -webkit-mask-position: 0 -120px;
 }
 
-.toolbar-state-left-show .sidebar-toolbar-item.toolbar-glyph {
+.show-left-sidebar-item.toolbar-glyph {
     -webkit-mask-position: -160px -72px;
 }
 
-.toolbar-state-left-hide .sidebar-toolbar-item.toolbar-glyph {
+.hide-left-sidebar-item.toolbar-glyph {
     -webkit-mask-position: -192px -72px;
 }
 
-.toolbar-state-right-show .sidebar-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -288px -72px;
+.show-right-sidebar-item.toolbar-glyph {
+    -webkit-mask-position: -160px -72px;
+    transform: rotate(180deg);
 }
 
-.toolbar-state-right-hide .sidebar-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -256px -72px;
+.hide-right-sidebar-item.toolbar-glyph {
+    -webkit-mask-position: -192px -72px;
+    transform: rotate(180deg);
 }
 
-.toolbar-state-top-show .sidebar-toolbar-item.toolbar-glyph {
+.show-top-sidebar-item.toolbar-glyph {
     -webkit-mask-position: -160px -72px;
     transform: translate(4px, 0) rotate(90deg);
 }
 
-.toolbar-state-top-hide .sidebar-toolbar-item.toolbar-glyph {
+.hide-top-sidebar-item.toolbar-glyph {
     -webkit-mask-position: -192px -72px;
-    transform: translate(4px, -1px) rotate(90deg);
+    transform: translate(4px, 1px) rotate(90deg);
 }
 
-.toolbar-state-bottom-show .sidebar-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -288px -72px;
-    transform: translate(4px, 0) rotate(90deg);
+.show-bottom-sidebar-item.toolbar-glyph {
+    -webkit-mask-position: -160px -72px;
+    transform: translate(4px, 0) rotate(-90deg);
 }
 
-.toolbar-state-bottom-hide .sidebar-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -256px -72px;
-    transform: translate(4px, -1px) rotate(90deg);
-}
-
-.toolbar-state-on .record-toolbar-item.toolbar-glyph,
-.toolbar-state-active .filter-toolbar-item.toolbar-glyph,
-.toolbar-state-active .block-toolbar-item.toolbar-glyph {
-    background-color: rgb(216, 0, 0) !important;
-}
-
-:host-context(.-theme-with-dark-background) .toolbar-state-active .filter-toolbar-item.toolbar-glyph,
-:host-context(.-theme-with-dark-background) .toolbar-state-active .block-toolbar-item.toolbar-glyph,
-:host-context(.-theme-with-dark-background) .toolbar-state-on .record-toolbar-item.toolbar-glyph {
-    background-color: hsl(0, 100%, 65%) !important;
+.hide-bottom-sidebar-item.toolbar-glyph {
+    -webkit-mask-position: -192px -72px;
+    transform: translate(4px, 1px) rotate(-90deg);
 }
 
 span.toolbar-select-container.toolbar-item.warning {

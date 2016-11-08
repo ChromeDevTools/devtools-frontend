@@ -117,7 +117,7 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
     topToolbar.appendToolbarItem(clearButton);
     topToolbar.appendSeparator();
 
-    this._pauseButton = new WebInspector.ToolbarToggle(WebInspector.UIString('Pause all'), 'pause-toolbar-item');
+    this._pauseButton = new WebInspector.ToolbarToggle(WebInspector.UIString('Pause all'), 'pause-toolbar-item', 'resume-toolbar-item');
     this._pauseButton.addEventListener('click', this._togglePauseAll.bind(this));
     topToolbar.appendToolbarItem(this._pauseButton);
 
@@ -147,8 +147,9 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
 
     var toolbar = new WebInspector.Toolbar('animation-controls-toolbar', controls);
     this._controlButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Replay timeline'), 'animation-control-toolbar-item');
-    this._controlButton.setState(WebInspector.AnimationTimeline._ControlState.Replay);
+        new WebInspector.ToolbarToggle(WebInspector.UIString('Replay timeline'), 'animation-control-toolbar-item');
+    this._controlState = WebInspector.AnimationTimeline._ControlState.Replay;
+    this._controlButton.setToggled(true);
     this._controlButton.addEventListener('click', this._controlButtonToggle.bind(this));
     toolbar.appendToolbarItem(this._controlButton);
 
@@ -239,9 +240,9 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
   }
 
   _controlButtonToggle() {
-    if (this._controlButton.state() === WebInspector.AnimationTimeline._ControlState.Play)
+    if (this._controlState === WebInspector.AnimationTimeline._ControlState.Play)
       this._togglePause(false);
-    else if (this._controlButton.state() === WebInspector.AnimationTimeline._ControlState.Replay)
+    else if (this._controlState === WebInspector.AnimationTimeline._ControlState.Replay)
       this._replay();
     else
       this._togglePause(true);
@@ -250,14 +251,20 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
   _updateControlButton() {
     this._controlButton.setEnabled(!!this._selectedGroup);
     if (this._selectedGroup && this._selectedGroup.paused()) {
-      this._controlButton.setState(WebInspector.AnimationTimeline._ControlState.Play);
+      this._controlState = WebInspector.AnimationTimeline._ControlState.Play;
+      this._controlButton.setToggled(true);
       this._controlButton.setTitle(WebInspector.UIString('Play timeline'));
+      this._controlButton.setGlyph('animation-play-item');
     } else if (!this._scrubberPlayer || this._scrubberPlayer.currentTime >= this.duration()) {
-      this._controlButton.setState(WebInspector.AnimationTimeline._ControlState.Replay);
+      this._controlState = WebInspector.AnimationTimeline._ControlState.Replay;
+      this._controlButton.setToggled(true);
       this._controlButton.setTitle(WebInspector.UIString('Replay timeline'));
+      this._controlButton.setGlyph('animation-replay-item');
     } else {
-      this._controlButton.setState(WebInspector.AnimationTimeline._ControlState.Pause);
+      this._controlState = WebInspector.AnimationTimeline._ControlState.Pause;
+      this._controlButton.setToggled(false);
       this._controlButton.setTitle(WebInspector.UIString('Pause timeline'));
+      this._controlButton.setGlyph('animation-pause-item');
     }
   }
 

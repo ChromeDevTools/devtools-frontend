@@ -42,6 +42,8 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "network.toggle-recording",
             "iconClass": "record-toolbar-item",
+            "toggledIconClass": "active-recording-toolbar-item",
+            "toggleWithRedColor": true,
             "contextTypes": ["WebInspector.NetworkPanel"],
             "className": "WebInspector.NetworkPanel.RecordActionDelegate",
             "options": [

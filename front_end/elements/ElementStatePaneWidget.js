@@ -107,7 +107,8 @@ WebInspector.ElementStatePaneWidget = class extends WebInspector.Widget {
 WebInspector.ElementStatePaneWidget.ButtonProvider = class {
   constructor() {
     this._button = new WebInspector.ToolbarToggle(
-        WebInspector.UIString('Toggle Element State'), '', WebInspector.UIString(':hov'));
+        WebInspector.UIString('Toggle Element State'), '');
+    this._button.setText(WebInspector.UIString(':hov'));
     this._button.addEventListener('click', this._clicked, this);
     this._button.element.classList.add('monospace');
     this._view = new WebInspector.ElementStatePaneWidget();

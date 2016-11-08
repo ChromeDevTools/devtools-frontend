@@ -113,6 +113,20 @@ WebInspector.Action = class extends WebInspector.Object {
   }
 
   /**
+   * @return {string}
+   */
+  toggledIcon() {
+    return this._extension.descriptor()['toggledIconClass'] || '';
+  }
+
+  /**
+   * @return {boolean}
+   */
+  toggleWithRedColor() {
+    return !!this._extension.descriptor()['toggleWithRedColor'];
+  }
+
+  /**
    * @param {boolean} enabled
    */
   setEnabled(enabled) {

@@ -55,7 +55,8 @@ WebInspector.Toolbar = class {
    * @return {!WebInspector.ToolbarItem}
    */
   static createActionButton(action, toggledOptions, untoggledOptions) {
-    var button = new WebInspector.ToolbarToggle(action.title(), action.icon());
+    var button = new WebInspector.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
+    button.setToggleWithRedColor(action.toggleWithRedColor());
     button.addEventListener('click', action.execute, action);
     action.addEventListener(WebInspector.Action.Events.Enabled, enabledChanged);
     action.addEventListener(WebInspector.Action.Events.Toggled, toggled);
@@ -104,7 +105,7 @@ WebInspector.Toolbar = class {
 
     function showOptions() {
       var buttons = longClickButtons.slice();
-      var mainButtonClone = new WebInspector.ToolbarToggle(action.title(), action.icon());
+      var mainButtonClone = new WebInspector.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
       mainButtonClone.addEventListener('click', clicked);
 
       /**
@@ -460,7 +461,6 @@ WebInspector.ToolbarButton = class extends WebInspector.ToolbarItem {
     if (glyph)
       this.setGlyph(glyph);
     this.setText(text || '');
-    this._state = '';
     this._title = '';
   }
 
@@ -495,24 +495,6 @@ WebInspector.ToolbarButton = class extends WebInspector.ToolbarItem {
    */
   setBackgroundImage(iconURL) {
     this.element.style.backgroundImage = 'url(' + iconURL + ')';
-  }
-
-  /**
-   * @return {string}
-   */
-  state() {
-    return this._state;
-  }
-
-  /**
-   * @param {string} state
-   */
-  setState(state) {
-    if (this._state === state)
-      return;
-    this.element.classList.remove('toolbar-state-' + this._state);
-    this.element.classList.add('toolbar-state-' + state);
-    this._state = state;
   }
 
   /**
@@ -597,12 +579,14 @@ WebInspector.ToolbarToggle = class extends WebInspector.ToolbarButton {
   /**
    * @param {string} title
    * @param {string=} glyph
-   * @param {string=} text
+   * @param {string=} toggledGlyph
    */
-  constructor(title, glyph, text) {
-    super(title, glyph, text);
+  constructor(title, glyph, toggledGlyph) {
+    super(title, glyph, '');
     this._toggled = false;
-    this.setState('off');
+    this._untoggledGlyph = glyph;
+    this._toggledGlyph = toggledGlyph;
+    this.element.classList.add('toolbar-state-off');
   }
 
   /**
@@ -619,7 +603,17 @@ WebInspector.ToolbarToggle = class extends WebInspector.ToolbarButton {
     if (this._toggled === toggled)
       return;
     this._toggled = toggled;
-    this.setState(toggled ? 'on' : 'off');
+    this.element.classList.toggle('toolbar-state-on', toggled);
+    this.element.classList.toggle('toolbar-state-off', !toggled);
+    if (this._toggledGlyph && this._untoggledGlyph)
+      this.setGlyph(toggled ? this._toggledGlyph : this._untoggledGlyph);
+  }
+
+  /**
+   * @param {boolean} toggleWithRedColor
+   */
+  setToggleWithRedColor(toggleWithRedColor) {
+    this.element.classList.toggle('toolbar-toggle-with-red-color', toggleWithRedColor);
   }
 };
 

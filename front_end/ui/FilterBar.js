@@ -43,7 +43,7 @@ WebInspector.FilterBar = class extends WebInspector.HBox {
     this._enabled = true;
     this.element.classList.add('filter-bar');
 
-    this._filterButton = new WebInspector.ToolbarButton(WebInspector.UIString('Filter'), 'filter-toolbar-item');
+    this._filterButton = new WebInspector.ToolbarToggle(WebInspector.UIString('Filter'), 'filter-toolbar-item');
     this._filterButton.addEventListener('click', this._handleFilterButtonClick, this);
 
     this._filters = [];
@@ -94,20 +94,6 @@ WebInspector.FilterBar = class extends WebInspector.HBox {
     this._updateFilterButton();
   }
 
-  /**
-   * @return {string}
-   */
-  _filterBarState() {
-    if (this._filtersShown)
-      return WebInspector.FilterBar.FilterBarState.Shown;
-    var isActive = false;
-    for (var i = 0; i < this._filters.length; ++i) {
-      if (this._filters[i].isActive())
-        return WebInspector.FilterBar.FilterBarState.Active;
-    }
-    return WebInspector.FilterBar.FilterBarState.Inactive;
-  }
-
   _updateFilterBar() {
     var visible = this._alwaysShowFilters || (this._filtersShown && this._enabled);
     this.element.classList.toggle('hidden', !visible);
@@ -123,7 +109,16 @@ WebInspector.FilterBar = class extends WebInspector.HBox {
   }
 
   _updateFilterButton() {
-    this._filterButton.setState(this._filterBarState());
+    if (this._filtersShown) {
+      this._filterButton.setToggled(true);
+      this._filterButton.setToggleWithRedColor(false);
+      return;
+    }
+    this._filterButton.setToggleWithRedColor(true);
+    var isActive = false;
+    for (var filter of this._filters)
+      isActive = isActive || filter.isActive();
+    this._filterButton.setToggled(isActive);
   }
 
   /**

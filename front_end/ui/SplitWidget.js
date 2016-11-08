@@ -833,7 +833,7 @@ WebInspector.SplitWidget = class extends WebInspector.Widget {
    */
   createShowHideSidebarButton(title) {
     this._showHideSidebarButtonTitle = WebInspector.UIString(title);
-    this._showHideSidebarButton = new WebInspector.ToolbarButton('', 'sidebar-toolbar-item');
+    this._showHideSidebarButton = new WebInspector.ToolbarButton('', '');
     this._showHideSidebarButton.addEventListener('click', buttonClicked.bind(this));
     this._updateShowHideSidebarButton();
 
@@ -857,7 +857,7 @@ WebInspector.SplitWidget = class extends WebInspector.Widget {
     var sidebarHidden = this._showMode === WebInspector.SplitWidget.ShowMode.OnlyMain;
     var side =
         this.isVertical() ? (this.isSidebarSecond() ? 'right' : 'left') : (this.isSidebarSecond() ? 'bottom' : 'top');
-    this._showHideSidebarButton.setState(side + '-' + (sidebarHidden ? 'show' : 'hide'));
+    this._showHideSidebarButton.setGlyph((sidebarHidden ? 'show-' : 'hide-') + side +  '-sidebar-item');
     this._showHideSidebarButton.setTitle(
         sidebarHidden ? WebInspector.UIString('Show %s', this._showHideSidebarButtonTitle) :
                         WebInspector.UIString('Hide %s', this._showHideSidebarButtonTitle));

@@ -220,6 +220,7 @@ WebInspector.SourcesTextEditor = class extends WebInspector.CodeMirrorTextEditor
     var index = this._gutters.indexOf(type);
     if (index === -1)
       return;
+    this.codeMirror().clearGutter(type);
     this._gutters.splice(index, 1);
     this.codeMirror().setOption('gutters', this._gutters.slice());
     this.refresh();

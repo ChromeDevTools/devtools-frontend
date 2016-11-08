@@ -145,6 +145,13 @@ WebInspector.NetworkNavigatorView = class extends WebInspector.NavigatorView {
 WebInspector.FilesNavigatorView = class extends WebInspector.NavigatorView {
   constructor() {
     super();
+    var toolbar = new WebInspector.Toolbar('navigator-toolbar');
+    var title = WebInspector.UIString('Add folder to workspace');
+    var addButton = new WebInspector.ToolbarButton(title, 'add-toolbar-item', title);
+    addButton.addEventListener('click', () =>
+      WebInspector.isolatedFileSystemManager.addFileSystem());
+    toolbar.appendToolbarItem(addButton);
+    this.element.insertBefore(toolbar.element, this.element.firstChild);
   }
 
   /**
@@ -191,8 +198,8 @@ WebInspector.ContentScriptsNavigatorView = class extends WebInspector.NavigatorV
 WebInspector.SnippetsNavigatorView = class extends WebInspector.NavigatorView {
   constructor() {
     super();
-    var toolbar = new WebInspector.Toolbar('snippets-navigator-toolbar');
-    var newButton = new WebInspector.ToolbarButton(WebInspector.UIString('New'), 'add-toolbar-item');
+    var toolbar = new WebInspector.Toolbar('navigator-toolbar');
+    var newButton = new WebInspector.ToolbarButton('', 'add-toolbar-item', WebInspector.UIString('New Snippet'));
     newButton.addEventListener('click', this._handleCreateSnippet.bind(this));
     toolbar.appendToolbarItem(newButton);
     this.element.insertBefore(toolbar.element, this.element.firstChild);

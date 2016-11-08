@@ -145,7 +145,8 @@ WebInspector.JavaScriptBreakpointsSidebarPane = class extends WebInspector.VBox 
         WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location()) :
         null;
     var breakpoint = uiLocation ?
-        this._breakpointManager.findBreakpointOnLine(uiLocation.uiSourceCode, uiLocation.lineNumber) :
+        this._breakpointManager.findBreakpoint(
+            uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber) :
         null;
     var breakpointItem = this._items.get(breakpoint);
     if (!breakpointItem) {

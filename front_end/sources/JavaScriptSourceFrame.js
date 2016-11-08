@@ -245,8 +245,8 @@ WebInspector.JavaScriptSourceFrame = class extends WebInspector.UISourceCodeFram
     function populate(resolve, reject) {
       var uiLocation = new WebInspector.UILocation(this.uiSourceCode(), lineNumber, 0);
       this._scriptsPanel.appendUILocationItems(contextMenu, uiLocation);
-      var breakpoint = this._breakpointManager.findBreakpointOnLine(this.uiSourceCode(), lineNumber);
-      if (!breakpoint) {
+      var breakpoints = this._breakpointManager.findBreakpoints(this.uiSourceCode(), lineNumber);
+      if (!breakpoints.length) {
         // This row doesn't have a breakpoint: We want to show Add Breakpoint and Add and Edit Breakpoint.
         contextMenu.appendItem(
             WebInspector.UIString('Add breakpoint'), this._createNewBreakpoint.bind(this, lineNumber, 0, '', true));
@@ -256,6 +256,8 @@ WebInspector.JavaScriptSourceFrame = class extends WebInspector.UISourceCodeFram
             WebInspector.UIString('Never pause here'),
             this._createNewBreakpoint.bind(this, lineNumber, 0, 'false', true));
       } else {
+        var breakpoint = breakpoints[0];
+
         // This row has a breakpoint, we want to show edit and remove breakpoint, and either disable or enable.
         contextMenu.appendItem(WebInspector.UIString('Remove breakpoint'), breakpoint.remove.bind(breakpoint));
         contextMenu.appendItem(
@@ -856,8 +858,8 @@ WebInspector.JavaScriptSourceFrame = class extends WebInspector.UISourceCodeFram
     if (this._shouldIgnoreExternalBreakpointEvents())
       return;
 
-    var remainingBreakpoint = this._breakpointManager.findBreakpointOnLine(this.uiSourceCode(), uiLocation.lineNumber);
-    if (!remainingBreakpoint && this.loaded)
+    var remainingBreakpoints = this._breakpointManager.findBreakpoints(this.uiSourceCode(), uiLocation.lineNumber);
+    if (!remainingBreakpoints.length && this.loaded)
       this._removeBreakpointDecoration(uiLocation.lineNumber);
   }
 
@@ -1003,12 +1005,12 @@ WebInspector.JavaScriptSourceFrame = class extends WebInspector.UISourceCodeFram
    * @param {boolean} onlyDisable
    */
   _toggleBreakpoint(lineNumber, onlyDisable) {
-    var breakpoint = this._breakpointManager.findBreakpointOnLine(this.uiSourceCode(), lineNumber);
-    if (breakpoint) {
+    var breakpoints = this._breakpointManager.findBreakpoints(this.uiSourceCode(), lineNumber);
+    if (breakpoints.length) {
       if (onlyDisable)
-        breakpoint.setEnabled(!breakpoint.enabled());
+        breakpoints[0].setEnabled(!breakpoints[0].enabled());
       else
-        breakpoint.remove();
+        breakpoints[0].remove();
     } else
       this._createNewBreakpoint(lineNumber, 0, '', true);
   }

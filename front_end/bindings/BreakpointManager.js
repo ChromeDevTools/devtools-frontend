@@ -46,7 +46,9 @@ WebInspector.BreakpointManager = class extends WebInspector.Object {
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
     this._breakpointsActive = true;
+    /** @type {!Map<!WebInspector.UISourceCode, !Map<number, !Map<number, !Array<!WebInspector.BreakpointManager.Breakpoint>>>>} */
     this._breakpointsForUISourceCode = new Map();
+    /** @type {!Map<!WebInspector.UISourceCode, !Array<!WebInspector.BreakpointManager.Breakpoint>>} */
     this._breakpointsForPrimaryUISourceCode = new Map();
     /** @type {!Multimap.<string, !WebInspector.BreakpointManager.Breakpoint>} */
     this._provisionalBreakpoints = new Multimap();
@@ -151,9 +153,10 @@ WebInspector.BreakpointManager = class extends WebInspector.Object {
   _uiSourceCodeAdded(event) {
     var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
     this._restoreBreakpoints(uiSourceCode);
-    if (uiSourceCode.contentType().hasScripts())
+    if (uiSourceCode.contentType().hasScripts()) {
       uiSourceCode.addEventListener(
           WebInspector.UISourceCode.Events.SourceMappingChanged, this._uiSourceCodeMappingChanged, this);
+    }
   }
 
   /**
@@ -242,25 +245,25 @@ WebInspector.BreakpointManager = class extends WebInspector.Object {
   /**
    * @param {!WebInspector.UISourceCode} uiSourceCode
    * @param {number} lineNumber
-   * @param {number} columnNumber
-   * @return {?WebInspector.BreakpointManager.Breakpoint}
+   * @return {!Array<!WebInspector.BreakpointManager.Breakpoint>}
    */
-  findBreakpoint(uiSourceCode, lineNumber, columnNumber) {
+  findBreakpoints(uiSourceCode, lineNumber) {
     var breakpoints = this._breakpointsForUISourceCode.get(uiSourceCode);
-    var lineBreakpoints = breakpoints ? breakpoints.get(String(lineNumber)) : null;
-    var columnBreakpoints = lineBreakpoints ? lineBreakpoints.get(String(columnNumber)) : null;
-    return columnBreakpoints ? columnBreakpoints[0] : null;
+    var lineBreakpoints = breakpoints ? breakpoints.get(lineNumber) : null;
+    return lineBreakpoints ? lineBreakpoints.valuesArray()[0] : [];
   }
 
   /**
    * @param {!WebInspector.UISourceCode} uiSourceCode
    * @param {number} lineNumber
+   * @param {number} columnNumber
    * @return {?WebInspector.BreakpointManager.Breakpoint}
    */
-  findBreakpointOnLine(uiSourceCode, lineNumber) {
+  findBreakpoint(uiSourceCode, lineNumber, columnNumber) {
     var breakpoints = this._breakpointsForUISourceCode.get(uiSourceCode);
-    var lineBreakpoints = breakpoints ? breakpoints.get(String(lineNumber)) : null;
-    return lineBreakpoints ? lineBreakpoints.valuesArray()[0][0] : null;
+    var lineBreakpoints = breakpoints ? breakpoints.get(lineNumber) : null;
+    var columnBreakpoints = lineBreakpoints ? lineBreakpoints.get(columnNumber) : null;
+    return columnBreakpoints ? columnBreakpoints[0] : null;
   }
 
   /**
@@ -371,15 +374,15 @@ WebInspector.BreakpointManager = class extends WebInspector.Object {
       breakpoints = new Map();
       this._breakpointsForUISourceCode.set(uiLocation.uiSourceCode, breakpoints);
     }
-    var lineBreakpoints = breakpoints.get(String(uiLocation.lineNumber));
+    var lineBreakpoints = breakpoints.get(uiLocation.lineNumber);
     if (!lineBreakpoints) {
       lineBreakpoints = new Map();
-      breakpoints.set(String(uiLocation.lineNumber), lineBreakpoints);
+      breakpoints.set(uiLocation.lineNumber, lineBreakpoints);
     }
-    var columnBreakpoints = lineBreakpoints.get(String(uiLocation.columnNumber));
+    var columnBreakpoints = lineBreakpoints.get(uiLocation.columnNumber);
     if (!columnBreakpoints) {
       columnBreakpoints = [];
-      lineBreakpoints.set(String(uiLocation.columnNumber), columnBreakpoints);
+      lineBreakpoints.set(uiLocation.columnNumber, columnBreakpoints);
     }
     columnBreakpoints.push(breakpoint);
     this.dispatchEventToListeners(
@@ -395,17 +398,17 @@ WebInspector.BreakpointManager = class extends WebInspector.Object {
     if (!breakpoints)
       return;
 
-    var lineBreakpoints = breakpoints.get(String(uiLocation.lineNumber));
+    var lineBreakpoints = breakpoints.get(uiLocation.lineNumber);
     if (!lineBreakpoints)
       return;
-    var columnBreakpoints = lineBreakpoints.get(String(uiLocation.columnNumber));
+    var columnBreakpoints = lineBreakpoints.get(uiLocation.columnNumber);
     if (!columnBreakpoints)
       return;
     columnBreakpoints.remove(breakpoint);
     if (!columnBreakpoints.length)
-      lineBreakpoints.remove(String(uiLocation.columnNumber));
+      lineBreakpoints.remove(uiLocation.columnNumber);
     if (!lineBreakpoints.size)
-      breakpoints.remove(String(uiLocation.lineNumber));
+      breakpoints.remove(uiLocation.lineNumber);
     if (!breakpoints.size)
       this._breakpointsForUISourceCode.remove(uiLocation.uiSourceCode);
     this.dispatchEventToListeners(

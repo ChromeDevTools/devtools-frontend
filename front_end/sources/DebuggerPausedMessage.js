@@ -55,7 +55,8 @@ WebInspector.DebuggerPausedMessage = class {
     } else if (details.callFrames.length) {
       var uiLocation = debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location());
       var breakpoint =
-          uiLocation ? breakpointManager.findBreakpointOnLine(uiLocation.uiSourceCode, uiLocation.lineNumber) : null;
+          uiLocation ? breakpointManager.findBreakpoint(
+              uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber) : null;
       var defaultText =
           breakpoint ? WebInspector.UIString('Paused on breakpoint') : WebInspector.UIString('Debugger paused');
       messageWrapper = buildWrapper(defaultText);

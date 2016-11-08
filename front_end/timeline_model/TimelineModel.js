@@ -118,6 +118,19 @@ WebInspector.TimelineModel = class {
   }
 
   /**
+   * @param {!WebInspector.TracingModel.Event} event
+   * @return {string}
+   */
+  static eventFrameId(event) {
+    var data = event.args['data'] || event.args['beginData'];
+    var frame = data && data['frame'];
+    if (!frame)
+        return '';
+    var processId = event.thread.process().id();
+    return `${processId}.${frame}`;
+  }
+
+  /**
    * @deprecated Test use only!
    * @param {?function(!WebInspector.TimelineModel.Record)|?function(!WebInspector.TimelineModel.Record,number)} preOrderCallback
    * @param {function(!WebInspector.TimelineModel.Record)|function(!WebInspector.TimelineModel.Record,number)=} postOrderCallback
@@ -264,6 +277,18 @@ WebInspector.TimelineModel = class {
     for (var event of metadataEvents) {
       if (event.name === WebInspector.TimelineModel.DevToolsMetadataEvent.TracingStartedInPage) {
         pageDevToolsMetadataEvents.push(event);
+        var frames = (event.args['data'] && event.args['data']['frames']) || [];
+        for (var frame of frames) {
+          var processId = event.thread.process().id();
+          var frameId = `${processId}.${frame.frame}`;
+          var frameData = {
+            url: frame['url'] || '',
+            name: frame['name'] || '',
+            processId: processId,
+            frameId: frame['frame']
+          };
+          this._pageFrames.set(frameId, frameData);
+        }
       } else if (event.name === WebInspector.TimelineModel.DevToolsMetadataEvent.TracingSessionIdForWorker) {
         workersDevToolsMetadataEvents.push(event);
       } else if (event.name === WebInspector.TimelineModel.DevToolsMetadataEvent.TracingStartedInBrowser) {
@@ -779,6 +804,15 @@ WebInspector.TimelineModel = class {
         break;
 
       case recordTypes.CommitLoad:
+        var frameId = WebInspector.TimelineModel.eventFrameId(event);
+        var pageFrame = this._pageFrames.get(frameId);
+        if (pageFrame) {
+          pageFrame.url = eventData.url || '';
+          pageFrame.name = eventData.name || '';
+        } else {
+          var processId = event.thread.process().id();
+          this._pageFrames.set(frameId, {url: eventData.url || '', processId: processId, frameId: eventData.frame, name: eventData.name || ''});
+        }
         var page = eventData['page'];
         if (page && page !== this._currentPage)
           return false;
@@ -917,6 +951,9 @@ WebInspector.TimelineModel = class {
     this._cpuProfiles = [];
     /** @type {!WeakMap<!WebInspector.TracingModel.Thread, string>} */
     this._workerIdByThread = new WeakMap();
+    /** @type {!Map<string, !WebInspector.TimelineModel.PageFrame>} */
+    this._pageFrames = new Map();
+
     this._minimumRecordTime = 0;
     this._maximumRecordTime = 0;
   }
@@ -996,6 +1033,14 @@ WebInspector.TimelineModel = class {
    */
   eventDividerRecords() {
     return this._eventDividerRecords;
+  }
+
+  /**
+   * @param {string} frameId
+   * @return {?WebInspector.TimelineModel.PageFrame}
+   */
+  pageFrameById(frameId) {
+    return frameId ? this._pageFrames.get(frameId) || null : null;
   }
 
   /**
@@ -1330,6 +1375,9 @@ WebInspector.TimelineModel.Record = class {
 /** @typedef {!{page: !Array<!WebInspector.TracingModel.Event>, workers: !Array<!WebInspector.TracingModel.Event>}} */
 WebInspector.TimelineModel.MetadataEvents;
 
+
+/** @typedef {!{url: string, processId: number, frameId: string, name: string}} */
+WebInspector.TimelineModel.PageFrame;
 
 /**
  * @unrestricted

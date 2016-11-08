@@ -20,6 +20,9 @@ WebInspector.TimelineProfileTree.Node = class {
     this.children;
     /** @type {?WebInspector.TimelineProfileTree.Node} */
     this.parent;
+
+    /** @type {string} */
+    this._groupId = '';
     this._isGroupNode = false;
   }
 
@@ -36,26 +39,32 @@ WebInspector.TimelineProfileTree.Node = class {
  * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  * @param {number} startTime
  * @param {number} endTime
- * @param {function(!WebInspector.TracingModel.Event):(string|symbol)=} eventIdCallback
+ * @param {function(!WebInspector.TracingModel.Event, string):string=} eventGroupIdCallback
  * @return {!WebInspector.TimelineProfileTree.Node}
  */
-WebInspector.TimelineProfileTree.buildTopDown = function(events, filters, startTime, endTime, eventIdCallback) {
+WebInspector.TimelineProfileTree.buildTopDown = function(events, filters, startTime, endTime, eventGroupIdCallback) {
   // Temporarily deposit a big enough value that exceeds the max recording time.
   var /** @const */ initialTime = 1e7;
   var root = new WebInspector.TimelineProfileTree.Node();
   root.totalTime = initialTime;
   root.selfTime = initialTime;
   root.children = /** @type {!Map<string, !WebInspector.TimelineProfileTree.Node>} */ (new Map());
+  var pageFrameIdStack = [];
   var parent = root;
 
   /**
    * @param {!WebInspector.TracingModel.Event} e
    */
   function onStartEvent(e) {
+    var pageFrameId = WebInspector.TimelineModel.eventFrameId(e) || pageFrameIdStack.peekLast();
+    pageFrameIdStack.push(pageFrameId);
     if (!WebInspector.TimelineModel.isVisible(filters, e))
       return;
     var time = e.endTime ? Math.min(endTime, e.endTime) - Math.max(startTime, e.startTime) : 0;
-    var id = eventIdCallback ? eventIdCallback(e) : Symbol('uniqueEventId');
+    var groupId = eventGroupIdCallback ? eventGroupIdCallback(e, pageFrameId) : Symbol('uniqueGroupId');
+    var id = eventGroupIdCallback ? WebInspector.TimelineProfileTree._eventId(e) : Symbol('uniqueEventId');
+    if (typeof groupId === 'string' && typeof id === 'string')
+      id += '/' + groupId;
     if (!parent.children)
       parent.children = /** @type {!Map<string,!WebInspector.TimelineProfileTree.Node>} */ (new Map());
     var node = parent.children.get(id);
@@ -69,6 +78,7 @@ WebInspector.TimelineProfileTree.buildTopDown = function(events, filters, startT
       node.parent = parent;
       node.id = id;
       node.event = e;
+      node._groupId = groupId;
       parent.children.set(id, node);
     }
     parent.selfTime -= time;
@@ -84,12 +94,13 @@ WebInspector.TimelineProfileTree.buildTopDown = function(events, filters, startT
    * @param {!WebInspector.TracingModel.Event} e
    */
   function onEndEvent(e) {
+    pageFrameIdStack.pop();
     if (!WebInspector.TimelineModel.isVisible(filters, e))
       return;
     parent = parent.parent;
   }
 
-  var instantEventCallback = eventIdCallback ? undefined : onStartEvent;  // Ignore instant events when aggregating.
+  var instantEventCallback = eventGroupIdCallback ? undefined : onStartEvent;  // Ignore instant events when aggregating.
   WebInspector.TimelineModel.forEachEvent(events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime);
   root.totalTime -= root.selfTime;
   root.selfTime = 0;
@@ -98,11 +109,11 @@ WebInspector.TimelineProfileTree.buildTopDown = function(events, filters, startT
 
 /**
  * @param {!WebInspector.TimelineProfileTree.Node} topDownTree
- * @param {?function(!WebInspector.TimelineProfileTree.Node):!WebInspector.TimelineProfileTree.Node=} groupingCallback
  * @return {!WebInspector.TimelineProfileTree.Node}
  */
-WebInspector.TimelineProfileTree.buildBottomUp = function(topDownTree, groupingCallback) {
+WebInspector.TimelineProfileTree.buildBottomUp = function(topDownTree) {
   var buRoot = new WebInspector.TimelineProfileTree.Node();
+  var aggregator = new WebInspector.TimelineAggregator();
   buRoot.selfTime = 0;
   buRoot.totalTime = 0;
   /** @type {!Map<string, !WebInspector.TimelineProfileTree.Node>} */
@@ -116,8 +127,8 @@ WebInspector.TimelineProfileTree.buildBottomUp = function(topDownTree, groupingC
    * @param {!WebInspector.TimelineProfileTree.Node} tdNode
    */
   function processNode(tdNode) {
-    var buParent = groupingCallback && groupingCallback(tdNode) || buRoot;
-    if (buParent !== buRoot) {
+    var buParent = typeof tdNode._groupId === 'string' ? aggregator.groupNodeForId(tdNode._groupId, tdNode.event) : buRoot;
+    if (buParent !== buRoot && !buParent.parent) {
       buRoot.children.set(buParent.id, buParent);
       buParent.parent = buRoot;
     }
@@ -206,60 +217,34 @@ WebInspector.TimelineProfileTree.eventStackFrame = function(event) {
 };
 
 /**
+ * @param {!WebInspector.TracingModel.Event} event
+ * @return {string}
+ */
+WebInspector.TimelineProfileTree._eventId = function(event) {
+  if (event.name === WebInspector.TimelineModel.RecordType.JSFrame) {
+    var data = event.args['data'];
+    return 'f:' + data['functionName'] + '@' + (data['scriptId'] || data['url'] || '');
+  }
+  return event.name;
+};
+
+
+/**
  * @unrestricted
  */
 WebInspector.TimelineAggregator = class {
-  /**
-   * @param {function(!WebInspector.TracingModel.Event):string} titleMapper
-   * @param {function(!WebInspector.TracingModel.Event):string} categoryMapper
-   */
-  constructor(titleMapper, categoryMapper) {
-    this._titleMapper = titleMapper;
-    this._categoryMapper = categoryMapper;
+  constructor() {
     /** @type {!Map<string, !WebInspector.TimelineProfileTree.Node>} */
     this._groupNodes = new Map();
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} event
-   * @return {string}
-   */
-  static eventId(event) {
-    if (event.name === WebInspector.TimelineModel.RecordType.JSFrame) {
-      var data = event.args['data'];
-      return 'f:' + data['functionName'] + '@' + (data['scriptId'] || data['url'] || '');
-    }
-    return event.name + ':@' + WebInspector.TimelineProfileTree.eventURL(event);
-  }
-
-  /**
-   * @param {string} url
-   * @return {boolean}
-   */
-  static isExtensionInternalURL(url) {
-    return url.startsWith(WebInspector.TimelineAggregator._extensionInternalPrefix);
-  }
-
-  /**
-   * @param {!WebInspector.TimelineAggregator.GroupBy} groupBy
-   * @return {?function(!WebInspector.TimelineProfileTree.Node):!WebInspector.TimelineProfileTree.Node}
-   */
-  groupFunction(groupBy) {
-    var idMapper = this._nodeToGroupIdFunction(groupBy);
-    return idMapper && this._nodeToGroupNode.bind(this, idMapper);
-  }
-
-  /**
    * @param {!WebInspector.TimelineProfileTree.Node} root
-   * @param {!WebInspector.TimelineAggregator.GroupBy} groupBy
    * @return {!WebInspector.TimelineProfileTree.Node}
    */
-  performGrouping(root, groupBy) {
-    var nodeMapper = this.groupFunction(groupBy);
-    if (!nodeMapper)
-      return root;
+  performGrouping(root) {
     for (var node of root.children.values()) {
-      var groupNode = nodeMapper(node);
+      var groupNode = this.groupNodeForId(node._groupId, node.event);
       groupNode.parent = root;
       groupNode.selfTime += node.selfTime;
       groupNode.totalTime += node.totalTime;
@@ -271,56 +256,13 @@ WebInspector.TimelineAggregator = class {
   }
 
   /**
-   * @param {!WebInspector.TimelineAggregator.GroupBy} groupBy
-   * @return {?function(!WebInspector.TimelineProfileTree.Node):string}
+   * @param {string} groupId
+   * @param {!WebInspector.TracingModel.Event} event
+   * @return {!WebInspector.TimelineProfileTree.Node}
    */
-  _nodeToGroupIdFunction(groupBy) {
-    /**
-     * @param {!WebInspector.TimelineProfileTree.Node} node
-     * @return {string}
-     */
-    function groupByURL(node) {
-      return WebInspector.TimelineProfileTree.eventURL(node.event) || '';
-    }
-
-    /**
-     * @param {boolean} groupSubdomains
-     * @param {!WebInspector.TimelineProfileTree.Node} node
-     * @return {string}
-     */
-    function groupByDomain(groupSubdomains, node) {
-      var url = WebInspector.TimelineProfileTree.eventURL(node.event) || '';
-      if (WebInspector.TimelineAggregator.isExtensionInternalURL(url))
-        return WebInspector.TimelineAggregator._extensionInternalPrefix;
-      var parsedURL = url.asParsedURL();
-      if (!parsedURL)
-        return '';
-      if (parsedURL.scheme === 'chrome-extension')
-        return parsedURL.scheme + '://' + parsedURL.host;
-      if (!groupSubdomains)
-        return parsedURL.host;
-      if (/^[.0-9]+$/.test(parsedURL.host))
-        return parsedURL.host;
-      var domainMatch = /([^.]*\.)?[^.]*$/.exec(parsedURL.host);
-      return domainMatch && domainMatch[0] || '';
-    }
-
-    switch (groupBy) {
-      case WebInspector.TimelineAggregator.GroupBy.None:
-        return null;
-      case WebInspector.TimelineAggregator.GroupBy.EventName:
-        return node => node.event ? this._titleMapper(node.event) : '';
-      case WebInspector.TimelineAggregator.GroupBy.Category:
-        return node => node.event ? this._categoryMapper(node.event) : '';
-      case WebInspector.TimelineAggregator.GroupBy.Subdomain:
-        return groupByDomain.bind(null, false);
-      case WebInspector.TimelineAggregator.GroupBy.Domain:
-        return groupByDomain.bind(null, true);
-      case WebInspector.TimelineAggregator.GroupBy.URL:
-        return groupByURL;
-      default:
-        return null;
-    }
+  groupNodeForId(groupId, event) {
+    var node = this._groupNodes.get(groupId);
+    return node || this._buildGroupNode(groupId, event);
   }
 
   /**
@@ -339,30 +281,6 @@ WebInspector.TimelineAggregator = class {
     this._groupNodes.set(id, groupNode);
     return groupNode;
   }
-
-  /**
-   * @param {function(!WebInspector.TimelineProfileTree.Node):string} nodeToGroupId
-   * @param {!WebInspector.TimelineProfileTree.Node} node
-   * @return {!WebInspector.TimelineProfileTree.Node}
-   */
-  _nodeToGroupNode(nodeToGroupId, node) {
-    var id = nodeToGroupId(node);
-    return this._groupNodes.get(id) || this._buildGroupNode(id, node.event);
-  }
 };
 
-/**
- * @enum {string}
- */
-WebInspector.TimelineAggregator.GroupBy = {
-  None: 'None',
-  EventName: 'EventName',
-  Category: 'Category',
-  Domain: 'Domain',
-  Subdomain: 'Subdomain',
-  URL: 'URL'
-};
-
-
-WebInspector.TimelineAggregator._extensionInternalPrefix = 'extensions::';
 WebInspector.TimelineAggregator._groupNodeFlag = Symbol('groupNode');

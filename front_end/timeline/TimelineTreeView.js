@@ -156,7 +156,7 @@ WebInspector.TimelineTreeView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {function(!WebInspector.TracingModel.Event):(string|symbol)=} eventIdCallback
+   * @param {function(!WebInspector.TracingModel.Event, string):(string|symbol)=} eventIdCallback
    * @return {!WebInspector.TimelineProfileTree.Node}
    */
   _buildTopDownTree(eventIdCallback) {
@@ -441,7 +441,7 @@ WebInspector.AggregatedTimelineTreeView = class extends WebInspector.TimelineTre
   constructor(model, filters) {
     super();
     this._groupBySetting =
-        WebInspector.settings.createSetting('timelineTreeGroupBy', WebInspector.TimelineAggregator.GroupBy.Category);
+        WebInspector.settings.createSetting('timelineTreeGroupBy', WebInspector.AggregatedTimelineTreeView.GroupBy.Category);
     this._init(model, filters);
     var nonessentialEvents = [
       WebInspector.TimelineModel.RecordType.EventDispatch, WebInspector.TimelineModel.RecordType.FunctionCall,
@@ -482,20 +482,20 @@ WebInspector.AggregatedTimelineTreeView = class extends WebInspector.TimelineTre
     var color = node.id ? WebInspector.TimelineUIUtils.eventColor(node.event) : categories['other'].color;
 
     switch (this._groupBySetting.get()) {
-      case WebInspector.TimelineAggregator.GroupBy.Category:
+      case WebInspector.AggregatedTimelineTreeView.GroupBy.Category:
         var category = categories[node.id] || categories['other'];
         return {name: category.title, color: category.color};
 
-      case WebInspector.TimelineAggregator.GroupBy.Domain:
-      case WebInspector.TimelineAggregator.GroupBy.Subdomain:
+      case WebInspector.AggregatedTimelineTreeView.GroupBy.Domain:
+      case WebInspector.AggregatedTimelineTreeView.GroupBy.Subdomain:
         var name = node.id;
-        if (WebInspector.TimelineAggregator.isExtensionInternalURL(name))
+        if (WebInspector.AggregatedTimelineTreeView._isExtensionInternalURL(name))
           name = WebInspector.UIString('[Chrome extensions overhead]');
         else if (name.startsWith('chrome-extension'))
           name = this._executionContextNamesByOrigin.get(name) || name;
         return {name: name || WebInspector.UIString('unattributed'), color: color};
 
-      case WebInspector.TimelineAggregator.GroupBy.EventName:
+      case WebInspector.AggregatedTimelineTreeView.GroupBy.EventName:
         var name = node.event.name === WebInspector.TimelineModel.RecordType.JSFrame ?
             WebInspector.UIString('JavaScript') :
             WebInspector.TimelineUIUtils.eventTitle(node.event);
@@ -506,7 +506,19 @@ WebInspector.AggregatedTimelineTreeView = class extends WebInspector.TimelineTre
               color
         };
 
-      case WebInspector.TimelineAggregator.GroupBy.URL:
+      case WebInspector.AggregatedTimelineTreeView.GroupBy.URL:
+        break;
+      case WebInspector.AggregatedTimelineTreeView.GroupBy.Frame:
+        var frame = this._model.pageFrameById(node.id);
+        var frameName;
+        if (frame && frame.url)
+          frameName = frame.url.startsWith('about:') && frame.name ? `"${frame.name}"` : frame.url;
+        else
+          frameName = WebInspector.UIString('Page');
+        return {
+          name: frameName,
+          color: color
+        };
         break;
 
       default:
@@ -533,16 +545,17 @@ WebInspector.AggregatedTimelineTreeView = class extends WebInspector.TimelineTre
       if (id === this._groupBySetting.get())
         this._groupByCombobox.select(option);
     }
-    addGroupingOption.call(this, WebInspector.UIString('No Grouping'), WebInspector.TimelineAggregator.GroupBy.None);
+    addGroupingOption.call(this, WebInspector.UIString('No Grouping'), WebInspector.AggregatedTimelineTreeView.GroupBy.None);
     addGroupingOption.call(
-        this, WebInspector.UIString('Group by Activity'), WebInspector.TimelineAggregator.GroupBy.EventName);
+        this, WebInspector.UIString('Group by Activity'), WebInspector.AggregatedTimelineTreeView.GroupBy.EventName);
     addGroupingOption.call(
-        this, WebInspector.UIString('Group by Category'), WebInspector.TimelineAggregator.GroupBy.Category);
+        this, WebInspector.UIString('Group by Category'), WebInspector.AggregatedTimelineTreeView.GroupBy.Category);
     addGroupingOption.call(
-        this, WebInspector.UIString('Group by Domain'), WebInspector.TimelineAggregator.GroupBy.Domain);
+        this, WebInspector.UIString('Group by Domain'), WebInspector.AggregatedTimelineTreeView.GroupBy.Domain);
     addGroupingOption.call(
-        this, WebInspector.UIString('Group by Subdomain'), WebInspector.TimelineAggregator.GroupBy.Subdomain);
-    addGroupingOption.call(this, WebInspector.UIString('Group by URL'), WebInspector.TimelineAggregator.GroupBy.URL);
+        this, WebInspector.UIString('Group by Subdomain'), WebInspector.AggregatedTimelineTreeView.GroupBy.Subdomain);
+    addGroupingOption.call(this, WebInspector.UIString('Group by URL'), WebInspector.AggregatedTimelineTreeView.GroupBy.URL);
+    addGroupingOption.call(this, WebInspector.UIString('Group by Frame'), WebInspector.AggregatedTimelineTreeView.GroupBy.Frame);
     panelToolbar.appendToolbarItem(this._groupByCombobox);
   }
 
@@ -597,13 +610,83 @@ WebInspector.AggregatedTimelineTreeView = class extends WebInspector.TimelineTre
   }
 
   /**
-   * @return {!WebInspector.TimelineAggregator}
+   * @param {!WebInspector.AggregatedTimelineTreeView.GroupBy} groupBy
+   * @return {function(!WebInspector.TracingModel.Event, string):string}
    */
-  _createAggregator() {
-    return new WebInspector.TimelineAggregator(
-        event => WebInspector.TimelineUIUtils.eventStyle(event).title,
-        event => WebInspector.TimelineUIUtils.eventStyle(event).category.name);
+  _groupingFunction(groupBy) {
+    /**
+     * @param {!WebInspector.TracingModel.Event} event
+     * @return {string}
+     */
+    function groupByURL(event) {
+      return WebInspector.TimelineProfileTree.eventURL(event) || '';
+    }
+
+    /**
+     * @param {boolean} groupSubdomains
+     * @param {!WebInspector.TracingModel.Event} event
+     * @return {string}
+     */
+    function groupByDomain(groupSubdomains, event) {
+      var url = WebInspector.TimelineProfileTree.eventURL(event) || '';
+      if (WebInspector.AggregatedTimelineTreeView._isExtensionInternalURL(url))
+        return WebInspector.AggregatedTimelineTreeView._extensionInternalPrefix;
+      var parsedURL = url.asParsedURL();
+      if (!parsedURL)
+        return '';
+      if (parsedURL.scheme === 'chrome-extension')
+        return parsedURL.scheme + '://' + parsedURL.host;
+      if (!groupSubdomains)
+        return parsedURL.host;
+      if (/^[.0-9]+$/.test(parsedURL.host))
+        return parsedURL.host;
+      var domainMatch = /([^.]*\.)?[^.]*$/.exec(parsedURL.host);
+      return domainMatch && domainMatch[0] || '';
+    }
+
+    switch (groupBy) {
+      case WebInspector.AggregatedTimelineTreeView.GroupBy.None:
+        return () => Symbol('uniqueGroupId');
+      case WebInspector.AggregatedTimelineTreeView.GroupBy.EventName:
+        return event => WebInspector.TimelineUIUtils.eventStyle(event).title;
+      case WebInspector.AggregatedTimelineTreeView.GroupBy.Category:
+        return event => WebInspector.TimelineUIUtils.eventStyle(event).category.name;
+      case WebInspector.AggregatedTimelineTreeView.GroupBy.Subdomain:
+        return groupByDomain.bind(null, false);
+      case WebInspector.AggregatedTimelineTreeView.GroupBy.Domain:
+        return groupByDomain.bind(null, true);
+      case WebInspector.AggregatedTimelineTreeView.GroupBy.URL:
+        return groupByURL;
+      case WebInspector.AggregatedTimelineTreeView.GroupBy.Frame:
+        return (event, pageFrameId) => pageFrameId;
+      default:
+        console.assert(false, `Unexpected aggregation setting: ${groupBy}`);
+        return () => Symbol('uniqueGroupId');
+    }
   }
+
+  /**
+   * @param {string} url
+   * @return {boolean}
+   */
+  static _isExtensionInternalURL(url) {
+    return url.startsWith(WebInspector.AggregatedTimelineTreeView._extensionInternalPrefix);
+  }
+};
+
+WebInspector.AggregatedTimelineTreeView._extensionInternalPrefix = 'extensions::';
+
+/**
+ * @enum {string}
+ */
+WebInspector.AggregatedTimelineTreeView.GroupBy = {
+  None: 'None',
+  EventName: 'EventName',
+  Category: 'Category',
+  Domain: 'Domain',
+  Subdomain: 'Subdomain',
+  URL: 'URL',
+  Frame: 'Frame'
 };
 
 /**
@@ -624,8 +707,11 @@ WebInspector.CallTreeTimelineTreeView = class extends WebInspector.AggregatedTim
    * @return {!WebInspector.TimelineProfileTree.Node}
    */
   _buildTree() {
-    var topDown = this._buildTopDownTree(WebInspector.TimelineAggregator.eventId);
-    return this._createAggregator().performGrouping(topDown, this._groupBySetting.get());
+    var grouping = this._groupBySetting.get();
+    var topDown = this._buildTopDownTree(this._groupingFunction(grouping));
+    if (grouping === WebInspector.AggregatedTimelineTreeView.GroupBy.None)
+      return topDown;
+    return new WebInspector.TimelineAggregator().performGrouping(topDown);
   }
 };
 
@@ -647,9 +733,8 @@ WebInspector.BottomUpTimelineTreeView = class extends WebInspector.AggregatedTim
    * @return {!WebInspector.TimelineProfileTree.Node}
    */
   _buildTree() {
-    var topDown = this._buildTopDownTree(WebInspector.TimelineAggregator.eventId);
-    return WebInspector.TimelineProfileTree.buildBottomUp(
-        topDown, this._createAggregator().groupFunction(this._groupBySetting.get()));
+    var topDown = this._buildTopDownTree(this._groupingFunction(this._groupBySetting.get()));
+    return WebInspector.TimelineProfileTree.buildBottomUp(topDown);
   }
 };
 

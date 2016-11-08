@@ -198,6 +198,12 @@ WebInspector.Automapping = class {
    * @return {!Promise<?WebInspector.PersistenceBinding>}
    */
   _createBinding(networkSourceCode) {
+    if (networkSourceCode.url().startsWith('file://')) {
+      var fileSourceCode = this._fileSystemUISourceCodes.get(networkSourceCode.url());
+      var binding = fileSourceCode ? new WebInspector.PersistenceBinding(networkSourceCode, fileSourceCode, false) : null;
+      return Promise.resolve(binding);
+    }
+
     var networkPath = WebInspector.ParsedURL.extractPath(networkSourceCode.url());
     if (networkPath === null)
       return Promise.resolve(/** @type {?WebInspector.PersistenceBinding} */ (null));

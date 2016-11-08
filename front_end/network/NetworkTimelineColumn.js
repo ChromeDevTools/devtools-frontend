@@ -98,6 +98,12 @@ WebInspector.NetworkTimelineColumn = class extends WebInspector.VBox {
       var end = range.end;
     }
 
+    if (end - start < 50) {
+      var halfWidth = (end - start) / 2;
+      start = start + halfWidth - 25;
+      end = end - halfWidth + 25;
+    }
+
     if (event.clientX < this._canvasPosition.left + start || event.clientX > this._canvasPosition.left + end)
       return;
 

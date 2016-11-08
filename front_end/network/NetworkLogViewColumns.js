@@ -29,8 +29,8 @@ WebInspector.NetworkLogViewColumns = class {
     /** @type {!Array.<!WebInspector.NetworkLogViewColumns.Descriptor>} */
     this._columns = [];
 
-    this._timelineRequestsAreStale = false;
-    this._timelineScrollerWidthIsStale = true;
+    this._waterfallRequestsAreStale = false;
+    this._waterfallScrollerWidthIsStale = true;
 
     /** @type {!WebInspector.Linkifier} */
     this._popupLinkifier = new WebInspector.Linkifier();
@@ -41,7 +41,7 @@ WebInspector.NetworkLogViewColumns = class {
     this._calculatorsMap.set(WebInspector.NetworkLogViewColumns._calculatorTypes.Duration, durationCalculator);
 
     this._setupDataGrid();
-    this._setupTimeline();
+    this._setupWaterfall();
   }
 
   /**
@@ -105,49 +105,49 @@ WebInspector.NetworkLogViewColumns = class {
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortHandler, this);
     this._dataGrid.setHeaderContextMenuCallback(this._innerHeaderContextMenu.bind(this));
 
-    this._activeTimelineSortId = WebInspector.NetworkLogViewColumns.TimelineSortIds.StartTime;
+    this._activeWaterfallSortId = WebInspector.NetworkLogViewColumns.WaterfallSortIds.StartTime;
     this._dataGrid.markColumnAsSortedBy(
         WebInspector.NetworkLogViewColumns._initialSortColumn, WebInspector.DataGrid.Order.Ascending);
 
-    this._splitWidget = new WebInspector.SplitWidget(true, true, 'networkPanelSplitViewTimeline', 200);
+    this._splitWidget = new WebInspector.SplitWidget(true, true, 'networkPanelSplitViewWaterfall', 200);
     var widget = this._dataGrid.asWidget();
     widget.setMinimumSize(150, 0);
     this._splitWidget.setMainWidget(widget);
   }
 
-  _setupTimeline() {
-    this._timelineColumn =
-        new WebInspector.NetworkTimelineColumn(this._networkLogView.rowHeight(), this._networkLogView.calculator());
+  _setupWaterfall() {
+    this._waterfallColumn =
+        new WebInspector.NetworkWaterfallColumn(this._networkLogView.rowHeight(), this._networkLogView.calculator());
 
-    this._timelineColumn.element.addEventListener('contextmenu', handleContextMenu.bind(this));
-    this._timelineColumn.element.addEventListener('mousewheel', this._onMouseWheel.bind(this, false), {passive: true});
+    this._waterfallColumn.element.addEventListener('contextmenu', handleContextMenu.bind(this));
+    this._waterfallColumn.element.addEventListener('mousewheel', this._onMouseWheel.bind(this, false), {passive: true});
     this._dataGridScroller.addEventListener('mousewheel', this._onMouseWheel.bind(this, true), true);
 
-    this._timelineColumn.element.addEventListener(
+    this._waterfallColumn.element.addEventListener(
         'mousemove',
         event => this._networkLogView.setHoveredRequest(
-            this._timelineColumn.getRequestFromPoint(event.offsetX, event.offsetY + event.target.offsetTop),
+            this._waterfallColumn.getRequestFromPoint(event.offsetX, event.offsetY + event.target.offsetTop),
             event.shiftKey),
         true);
-    this._timelineColumn.element.addEventListener(
+    this._waterfallColumn.element.addEventListener(
         'mouseleave', this._networkLogView.setHoveredRequest.bind(this._networkLogView, null, false), true);
 
-    this._timelineScroller = this._timelineColumn.contentElement.createChild('div', 'network-timeline-v-scroll');
-    this._timelineScroller.addEventListener('scroll', this._syncScrollers.bind(this), {passive: true});
-    this._timelineScrollerContent = this._timelineScroller.createChild('div', 'network-timeline-v-scroll-content');
+    this._waterfallScroller = this._waterfallColumn.contentElement.createChild('div', 'network-waterfall-v-scroll');
+    this._waterfallScroller.addEventListener('scroll', this._syncScrollers.bind(this), {passive: true});
+    this._waterfallScrollerContent = this._waterfallScroller.createChild('div', 'network-waterfall-v-scroll-content');
 
     this._dataGrid.addEventListener(WebInspector.DataGrid.Events.PaddingChanged, () => {
-      this._timelineScrollerWidthIsStale = true;
+      this._waterfallScrollerWidthIsStale = true;
       this._syncScrollers();
     });
     this._dataGrid.addEventListener(
-        WebInspector.ViewportDataGrid.Events.ViewportCalculated, this._redrawTimelineColumn.bind(this));
+        WebInspector.ViewportDataGrid.Events.ViewportCalculated, this._redrawWaterfallColumn.bind(this));
 
-    this._createTimelineHeader();
-    this._timelineColumn.contentElement.classList.add('network-timeline-view');
+    this._createWaterfallHeader();
+    this._waterfallColumn.contentElement.classList.add('network-waterfall-view');
 
-    this._timelineColumn.setMinimumSize(100, 0);
-    this._splitWidget.setSidebarWidget(this._timelineColumn);
+    this._waterfallColumn.setMinimumSize(100, 0);
+    this._splitWidget.setSidebarWidget(this._waterfallColumn);
 
     this.switchViewMode(false);
 
@@ -156,7 +156,7 @@ WebInspector.NetworkLogViewColumns = class {
      * @this {WebInspector.NetworkLogViewColumns}
      */
     function handleContextMenu(event) {
-      var request = this._timelineColumn.getRequestFromPoint(event.offsetX, event.offsetY);
+      var request = this._waterfallColumn.getRequestFromPoint(event.offsetX, event.offsetY);
       if (!request)
         return;
       var contextMenu = new WebInspector.ContextMenu(event);
@@ -175,41 +175,41 @@ WebInspector.NetworkLogViewColumns = class {
     this._activeScroller.scrollTop -= event.wheelDeltaY;
     this._syncScrollers();
     this._networkLogView.setHoveredRequest(
-        this._timelineColumn.getRequestFromPoint(event.offsetX, event.offsetY), event.shiftKey);
+        this._waterfallColumn.getRequestFromPoint(event.offsetX, event.offsetY), event.shiftKey);
   }
 
   _syncScrollers() {
-    if (!this._timelineColumn.isShowing())
+    if (!this._waterfallColumn.isShowing())
       return;
-    this._timelineScrollerContent.style.height = this._dataGridScroller.scrollHeight + 'px';
+    this._waterfallScrollerContent.style.height = this._dataGridScroller.scrollHeight + 'px';
     this._updateScrollerWidthIfNeeded();
-    this._dataGridScroller.scrollTop = this._timelineScroller.scrollTop;
+    this._dataGridScroller.scrollTop = this._waterfallScroller.scrollTop;
   }
 
   _updateScrollerWidthIfNeeded() {
-    if (this._timelineScrollerWidthIsStale) {
-      this._timelineScrollerWidthIsStale = false;
-      this._timelineColumn.setRightPadding(
-          this._timelineScroller.offsetWidth - this._timelineScrollerContent.offsetWidth);
+    if (this._waterfallScrollerWidthIsStale) {
+      this._waterfallScrollerWidthIsStale = false;
+      this._waterfallColumn.setRightPadding(
+          this._waterfallScroller.offsetWidth - this._waterfallScrollerContent.offsetWidth);
     }
   }
 
-  _redrawTimelineColumn() {
-    if (!this._timelineRequestsAreStale) {
+  _redrawWaterfallColumn() {
+    if (!this._waterfallRequestsAreStale) {
       this._updateScrollerWidthIfNeeded();
-      this._timelineColumn.update(
+      this._waterfallColumn.update(
           this._activeScroller.scrollTop, this._eventDividersShown ? this._eventDividers : undefined);
       return;
     }
     var currentNode = this._dataGrid.rootNode();
-    /** @type {!WebInspector.NetworkTimelineColumn.RequestData} */
+    /** @type {!WebInspector.NetworkWaterfallColumn.RequestData} */
     var requestData = {requests: [], navigationRequest: null};
     while (currentNode = currentNode.traverseNextNode(true)) {
       if (currentNode.isNavigationRequest())
         requestData.navigationRequest = currentNode.request();
       requestData.requests.push(currentNode.request());
     }
-    this._timelineColumn.update(this._activeScroller.scrollTop, this._eventDividers, requestData);
+    this._waterfallColumn.update(this._activeScroller.scrollTop, this._eventDividers, requestData);
   }
 
   /**
@@ -217,27 +217,27 @@ WebInspector.NetworkLogViewColumns = class {
    * @param {boolean} highlightInitiatorChain
    */
   setHoveredRequest(request, highlightInitiatorChain) {
-    this._timelineColumn.setHoveredRequest(request, highlightInitiatorChain);
+    this._waterfallColumn.setHoveredRequest(request, highlightInitiatorChain);
   }
 
-  _createTimelineHeader() {
-    this._timelineHeaderElement = this._timelineColumn.contentElement.createChild('div', 'network-timeline-header');
-    this._timelineHeaderElement.addEventListener('click', timelineHeaderClicked.bind(this));
-    this._timelineHeaderElement.addEventListener(
+  _createWaterfallHeader() {
+    this._waterfallHeaderElement = this._waterfallColumn.contentElement.createChild('div', 'network-waterfall-header');
+    this._waterfallHeaderElement.addEventListener('click', waterfallHeaderClicked.bind(this));
+    this._waterfallHeaderElement.addEventListener(
         'contextmenu', event => this._innerHeaderContextMenu(new WebInspector.ContextMenu(event)));
-    var innerElement = this._timelineHeaderElement.createChild('div');
+    var innerElement = this._waterfallHeaderElement.createChild('div');
     innerElement.textContent = WebInspector.UIString('Waterfall');
-    this._timelineColumnSortIcon = this._timelineHeaderElement.createChild('div', 'sort-order-icon-container')
+    this._waterfallColumnSortIcon = this._waterfallHeaderElement.createChild('div', 'sort-order-icon-container')
         .createChild('div', 'sort-order-icon');
 
     /**
      * @this {WebInspector.NetworkLogViewColumns}
      */
-    function timelineHeaderClicked() {
+    function waterfallHeaderClicked() {
       var sortOrders = WebInspector.DataGrid.Order;
       var sortOrder =
           this._dataGrid.sortOrder() === sortOrders.Ascending ? sortOrders.Descending : sortOrders.Ascending;
-      this._dataGrid.markColumnAsSortedBy('timeline', sortOrder);
+      this._dataGrid.markColumnAsSortedBy('waterfall', sortOrder);
       this._sortHandler();
     }
   }
@@ -246,11 +246,11 @@ WebInspector.NetworkLogViewColumns = class {
    * @param {!WebInspector.NetworkTimeCalculator} x
    */
   setCalculator(x) {
-    this._timelineColumn.setCalculator(x);
+    this._waterfallColumn.setCalculator(x);
   }
 
   dataChanged() {
-    this._timelineRequestsAreStale = true;
+    this._waterfallRequestsAreStale = true;
   }
 
   _updateRowsSize() {
@@ -258,11 +258,11 @@ WebInspector.NetworkLogViewColumns = class {
     this._dataGrid.element.classList.toggle('small', !largeRows);
     this._dataGrid.scheduleUpdate();
 
-    this._timelineScrollerWidthIsStale = true;
-    this._timelineColumn.setRowHeight(this._networkLogView.rowHeight());
-    this._timelineScroller.classList.toggle('small', !largeRows);
-    this._timelineHeaderElement.classList.toggle('small', !largeRows);
-    this._timelineColumn.setHeaderHeight(this._timelineScroller.offsetTop);
+    this._waterfallScrollerWidthIsStale = true;
+    this._waterfallColumn.setRowHeight(this._networkLogView.rowHeight());
+    this._waterfallScroller.classList.toggle('small', !largeRows);
+    this._waterfallHeaderElement.classList.toggle('small', !largeRows);
+    this._waterfallColumn.setHeaderHeight(this._waterfallScroller.offsetTop);
   }
 
   /**
@@ -286,17 +286,17 @@ WebInspector.NetworkLogViewColumns = class {
   _sortHandler() {
     var columnId = this._dataGrid.sortColumnId();
     this._networkLogView.removeAllNodeHighlights();
-    if (columnId === 'timeline') {
-      this._timelineColumnSortIcon.classList.remove('sort-ascending', 'sort-descending');
+    if (columnId === 'waterfall') {
+      this._waterfallColumnSortIcon.classList.remove('sort-ascending', 'sort-descending');
 
       if (this._dataGrid.sortOrder() === WebInspector.DataGrid.Order.Ascending)
-        this._timelineColumnSortIcon.classList.add('sort-ascending');
+        this._waterfallColumnSortIcon.classList.add('sort-ascending');
       else
-        this._timelineColumnSortIcon.classList.add('sort-descending');
+        this._waterfallColumnSortIcon.classList.add('sort-descending');
 
-      this._timelineRequestsAreStale = true;
+      this._waterfallRequestsAreStale = true;
       var sortFunction =
-          WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, this._activeTimelineSortId);
+          WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, this._activeWaterfallSortId);
       this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
       return;
     }
@@ -334,9 +334,9 @@ WebInspector.NetworkLogViewColumns = class {
       if (this._dataGrid.selectedNode)
         this._dataGrid.selectedNode.selected = false;
       this._splitWidget.showBoth();
-      this._activeScroller = this._timelineScroller;
-      this._timelineScroller.scrollTop = this._dataGridScroller.scrollTop;
-      this._dataGrid.setScrollContainer(this._timelineScroller);
+      this._activeScroller = this._waterfallScroller;
+      this._waterfallScroller.scrollTop = this._dataGridScroller.scrollTop;
+      this._dataGrid.setScrollContainer(this._waterfallScroller);
     } else {
       this._networkLogView.removeAllNodeHighlights();
       this._splitWidget.hideSidebar();
@@ -419,39 +419,39 @@ WebInspector.NetworkLogViewColumns = class {
 
     contextMenu.appendSeparator();
 
-    var timelineSortIds = WebInspector.NetworkLogViewColumns.TimelineSortIds;
-    var timelineSubMenu = contextMenu.appendSubMenuItem(WebInspector.UIString('Waterfall'));
-    timelineSubMenu.appendCheckboxItem(
-        WebInspector.UIString('Start Time'), setTimelineMode.bind(this, timelineSortIds.StartTime),
-        this._activeTimelineSortId === timelineSortIds.StartTime);
-    timelineSubMenu.appendCheckboxItem(
-        WebInspector.UIString('Response Time'), setTimelineMode.bind(this, timelineSortIds.ResponseTime),
-        this._activeTimelineSortId === timelineSortIds.ResponseTime);
-    timelineSubMenu.appendCheckboxItem(
-        WebInspector.UIString('End Time'), setTimelineMode.bind(this, timelineSortIds.EndTime),
-        this._activeTimelineSortId === timelineSortIds.EndTime);
-    timelineSubMenu.appendCheckboxItem(
-        WebInspector.UIString('Total Duration'), setTimelineMode.bind(this, timelineSortIds.Duration),
-        this._activeTimelineSortId === timelineSortIds.Duration);
-    timelineSubMenu.appendCheckboxItem(
-        WebInspector.UIString('Latency'), setTimelineMode.bind(this, timelineSortIds.Latency),
-        this._activeTimelineSortId === timelineSortIds.Latency);
+    var waterfallSortIds = WebInspector.NetworkLogViewColumns.WaterfallSortIds;
+    var waterfallSubMenu = contextMenu.appendSubMenuItem(WebInspector.UIString('Waterfall'));
+    waterfallSubMenu.appendCheckboxItem(
+        WebInspector.UIString('Start Time'), setWaterfallMode.bind(this, waterfallSortIds.StartTime),
+        this._activeWaterfallSortId === waterfallSortIds.StartTime);
+    waterfallSubMenu.appendCheckboxItem(
+        WebInspector.UIString('Response Time'), setWaterfallMode.bind(this, waterfallSortIds.ResponseTime),
+        this._activeWaterfallSortId === waterfallSortIds.ResponseTime);
+    waterfallSubMenu.appendCheckboxItem(
+        WebInspector.UIString('End Time'), setWaterfallMode.bind(this, waterfallSortIds.EndTime),
+        this._activeWaterfallSortId === waterfallSortIds.EndTime);
+    waterfallSubMenu.appendCheckboxItem(
+        WebInspector.UIString('Total Duration'), setWaterfallMode.bind(this, waterfallSortIds.Duration),
+        this._activeWaterfallSortId === waterfallSortIds.Duration);
+    waterfallSubMenu.appendCheckboxItem(
+        WebInspector.UIString('Latency'), setWaterfallMode.bind(this, waterfallSortIds.Latency),
+        this._activeWaterfallSortId === waterfallSortIds.Latency);
 
     contextMenu.show();
 
     /**
-     * @param {!WebInspector.NetworkLogViewColumns.TimelineSortIds} sortId
+     * @param {!WebInspector.NetworkLogViewColumns.WaterfallSortIds} sortId
      * @this {WebInspector.NetworkLogViewColumns}
      */
-    function setTimelineMode(sortId) {
+    function setWaterfallMode(sortId) {
       var calculator = this._calculatorsMap.get(WebInspector.NetworkLogViewColumns._calculatorTypes.Time);
-      var timelineSortIds = WebInspector.NetworkLogViewColumns.TimelineSortIds;
-      if (sortId === timelineSortIds.Duration || sortId === timelineSortIds.Latency)
+      var waterfallSortIds = WebInspector.NetworkLogViewColumns.WaterfallSortIds;
+      if (sortId === waterfallSortIds.Duration || sortId === waterfallSortIds.Latency)
         calculator = this._calculatorsMap.get(WebInspector.NetworkLogViewColumns._calculatorTypes.Duration);
       this._networkLogView.setCalculator(calculator);
 
-      this._activeTimelineSortId = sortId;
-      this._dataGrid.markColumnAsSortedBy('timeline', WebInspector.DataGrid.Order.Ascending);
+      this._activeWaterfallSortId = sortId;
+      this._dataGrid.markColumnAsSortedBy('waterfall', WebInspector.DataGrid.Order.Ascending);
       this._sortHandler();
     }
   }
@@ -599,12 +599,12 @@ WebInspector.NetworkLogViewColumns = class {
 
   hideEventDividers() {
     this._eventDividersShown = true;
-    this._redrawTimelineColumn();
+    this._redrawWaterfallColumn();
   }
 
   showEventDividers() {
     this._eventDividersShown = false;
-    this._redrawTimelineColumn();
+    this._redrawWaterfallColumn();
   }
 
   /**
@@ -612,16 +612,16 @@ WebInspector.NetworkLogViewColumns = class {
    */
   selectFilmStripFrame(time) {
     this._eventDividers.set(WebInspector.NetworkLogViewColumns._filmStripDividerColor, [time]);
-    this._redrawTimelineColumn();
+    this._redrawWaterfallColumn();
   }
 
   clearFilmStripFrame() {
     this._eventDividers.delete(WebInspector.NetworkLogViewColumns._filmStripDividerColor);
-    this._redrawTimelineColumn();
+    this._redrawWaterfallColumn();
   }
 };
 
-WebInspector.NetworkLogViewColumns._initialSortColumn = 'timeline';
+WebInspector.NetworkLogViewColumns._initialSortColumn = 'waterfall';
 
 /**
  * @typedef {{
@@ -819,7 +819,7 @@ WebInspector.NetworkLogViewColumns._defaultColumns = [
     sortingFunction: WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'vary')
   },
   // This header is a placeholder to let datagrid know that it can be sorted by this column, but never shown.
-  {id: 'timeline', title: '', visible: false, hideable: false}
+  {id: 'waterfall', title: '', visible: false, hideable: false}
 ];
 
 WebInspector.NetworkLogViewColumns._filmStripDividerColor = '#fccc49';
@@ -827,7 +827,7 @@ WebInspector.NetworkLogViewColumns._filmStripDividerColor = '#fccc49';
 /**
  * @enum {string}
  */
-WebInspector.NetworkLogViewColumns.TimelineSortIds = {
+WebInspector.NetworkLogViewColumns.WaterfallSortIds = {
   StartTime: 'startTime',
   ResponseTime: 'responseReceivedTime',
   EndTime: 'endTime',

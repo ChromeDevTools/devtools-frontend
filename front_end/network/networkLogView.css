@@ -76,13 +76,13 @@
     height: 21px;
 }
 
-.network-timeline-header, .network-log-grid.data-grid th {
+.network-waterfall-header, .network-log-grid.data-grid th {
     border-bottom: 1px solid rgb(205, 205, 205);
     border-left: 1px solid rgb(205, 205, 205);
     background: white;
 }
 
-.network-timeline-header, .network-log-grid.data-grid .header-container {
+.network-waterfall-header, .network-log-grid.data-grid .header-container {
     height: 31px;
 }
 
@@ -90,7 +90,7 @@
     top: 31px;
 }
 
-.network-timeline-header.small, .network-log-grid.data-grid.small .header-container {
+.network-waterfall-header.small, .network-log-grid.data-grid.small .header-container {
     height: 27px;
 }
 
@@ -110,11 +110,11 @@
     cursor: pointer;
 }
 
-.network-log-grid.data-grid .timeline-column {
+.network-log-grid.data-grid .waterfall-column {
     padding: 1px 0;
 }
 
-.network-log-grid.data-grid .timeline-column .sort-order-icon-container {
+.network-log-grid.data-grid .waterfall-column .sort-order-icon-container {
     right: 15px;
     pointer-events: none;
 }
@@ -339,7 +339,7 @@
     line-height: 28px;
 }
 
-.network-timeline-header {
+.network-waterfall-header {
     position: absolute;
     border-left: 0px;
     width: 100%;
@@ -348,11 +348,11 @@
     background-color: transparent;
 }
 
-.network-timeline-header:hover {
+.network-waterfall-header:hover {
     background-color:hsla(0, 0%, 80%, .5);
 }
 
-.network-timeline-header div {
+.network-waterfall-header div {
     display: table-cell;
     line-height: 14px;
     margin: auto 0px;
@@ -363,7 +363,7 @@
     font-size: 11px;
 }
 
-.network-timeline-header .sort-order-icon-container {
+.network-waterfall-header .sort-order-icon-container {
     position: absolute;
     top: 1px;
     right: 0;
@@ -372,7 +372,7 @@
     align-items: center;
 }
 
-.network-timeline-header .sort-order-icon {
+.network-waterfall-header .sort-order-icon {
     margin-right: 4px;
     background-image: url(Images/toolbarButtonGlyphs.png);
     background-size: 352px 168px;
@@ -382,12 +382,12 @@
     display: none;
 }
 
-.network-timeline-header .sort-ascending.sort-order-icon {
+.network-waterfall-header .sort-ascending.sort-order-icon {
     display: block;
     background-position: -4px -111px;
 }
 
-.network-timeline-header .sort-descending.sort-order-icon {
+.network-waterfall-header .sort-descending.sort-order-icon {
     display: block;
     background-position: -20px -99px;
 }

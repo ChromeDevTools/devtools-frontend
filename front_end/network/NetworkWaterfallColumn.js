@@ -4,15 +4,15 @@
 /**
  * @unrestricted
  */
-WebInspector.NetworkTimelineColumn = class extends WebInspector.VBox {
+WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
   /**
    * @param {number} rowHeight
    * @param {!WebInspector.NetworkTimeCalculator} calculator
    */
   constructor(rowHeight, calculator) {
-    // TODO(allada) Make this a shadowDOM when the NetworkTimelineColumn gets moved into NetworkLogViewColumns.
+    // TODO(allada) Make this a shadowDOM when the NetworkWaterfallColumn gets moved into NetworkLogViewColumns.
     super(false);
-    this.registerRequiredCSS('network/networkTimelineColumn.css');
+    this.registerRequiredCSS('network/networkWaterfallColumn.css');
 
     this._canvas = this.contentElement.createChild('canvas');
     this._canvas.tabIndex = 1;
@@ -191,7 +191,7 @@ WebInspector.NetworkTimelineColumn = class extends WebInspector.VBox {
   /**
    * @param {number=} scrollTop
    * @param {!Map<string, !Array<number>>=} eventDividers
-   * @param {!WebInspector.NetworkTimelineColumn.RequestData=} requestData
+   * @param {!WebInspector.NetworkWaterfallColumn.RequestData=} requestData
    */
   update(scrollTop, eventDividers, requestData) {
     if (scrollTop !== undefined)
@@ -330,7 +330,7 @@ WebInspector.NetworkTimelineColumn = class extends WebInspector.VBox {
   /**
    * @return {number}
    */
-  _timelineDuration() {
+  _waterfallDuration() {
     return this._calculator.maximumBoundary() - this._calculator.minimumBoundary();
   }
 
@@ -362,7 +362,7 @@ WebInspector.NetworkTimelineColumn = class extends WebInspector.VBox {
     var resourceType = request.resourceType();
     if (this._borderColorsForResourceTypeCache.has(resourceType))
       return this._borderColorsForResourceTypeCache.get(resourceType);
-    var colorsForResourceType = WebInspector.NetworkTimelineColumn._colorsForResourceType;
+    var colorsForResourceType = WebInspector.NetworkWaterfallColumn._colorsForResourceType;
     var color = colorsForResourceType[resourceType] || colorsForResourceType.Other;
     var parsedColor = WebInspector.Color.parse(color);
     var hsla = parsedColor.hsla();
@@ -379,7 +379,7 @@ WebInspector.NetworkTimelineColumn = class extends WebInspector.VBox {
    * @return {string|!CanvasGradient}
    */
   _colorForResourceType(context, request) {
-    var colorsForResourceType = WebInspector.NetworkTimelineColumn._colorsForResourceType;
+    var colorsForResourceType = WebInspector.NetworkWaterfallColumn._colorsForResourceType;
     var resourceType = request.resourceType();
     var color = colorsForResourceType[resourceType] || colorsForResourceType.Other;
     if (request.cached())
@@ -590,7 +590,7 @@ WebInspector.NetworkTimelineColumn = class extends WebInspector.VBox {
 
     /**
      * @return {string}
-     * @this {WebInspector.NetworkTimelineColumn}
+     * @this {WebInspector.NetworkWaterfallColumn}
      */
     function getRowColor() {
       if (this._hoveredRequest === request)
@@ -613,9 +613,9 @@ WebInspector.NetworkTimelineColumn = class extends WebInspector.VBox {
 /**
  * @typedef {{requests: !Array<!WebInspector.NetworkRequest>, navigationRequest: ?WebInspector.NetworkRequest}}
  */
-WebInspector.NetworkTimelineColumn.RequestData;
+WebInspector.NetworkWaterfallColumn.RequestData;
 
-WebInspector.NetworkTimelineColumn._colorsForResourceType = {
+WebInspector.NetworkWaterfallColumn._colorsForResourceType = {
   document: 'hsl(215, 100%, 80%)',
   font: 'hsl(8, 100%, 80%)',
   media: 'hsl(272, 64%, 80%)',

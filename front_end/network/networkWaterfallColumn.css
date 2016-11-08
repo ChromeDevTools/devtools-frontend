@@ -2,7 +2,7 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-.network-timeline-v-scroll {
+.network-waterfall-v-scroll {
     position: absolute;
     top: 0;
     right: 0;
@@ -12,11 +12,11 @@
     z-index: 200;
 }
 
-.network-timeline-v-scroll.small {
+.network-waterfall-v-scroll.small {
     margin-top: 27px;
 }
 
-.network-timeline-v-scroll-content {
+.network-waterfall-v-scroll-content {
     width: 15px;
     pointer-events: none;
 }

@@ -331,7 +331,8 @@ WebInspector.ConsoleViewMessage = class {
      * @param {?Event} event
      */
     function toggleStackTrace(event) {
-      if (event.target.hasSelection())
+      var linkClicked = event.target && event.target.enclosingNodeOrSelfWithNodeName('a');
+      if (event.target.hasSelection() || linkClicked)
         return;
       expandStackTrace(stackTraceElement.classList.contains('hidden'));
       event.consume();

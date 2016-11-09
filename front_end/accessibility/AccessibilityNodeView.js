@@ -164,7 +164,7 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
    */
   static createExclamationMark(tooltip) {
     var exclamationElement = createElement('label', 'dt-icon-label');
-    exclamationElement.type = 'warning-icon';
+    exclamationElement.type = 'smallicon-warning';
     exclamationElement.title = tooltip;
     return exclamationElement;
   }

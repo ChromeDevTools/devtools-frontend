@@ -204,7 +204,8 @@ WebInspector.BezierSwatch = class extends HTMLSpanElement {
    */
   createdCallback() {
     var root = WebInspector.createShadowRootWithCoreStyles(this, 'ui/bezierSwatch.css');
-    this._iconElement = root.createChild('span', 'bezier-swatch-icon');
+    this._iconElement = WebInspector.Icon.create('smallicon-bezier-mask', 'bezier-swatch-icon');
+    root.appendChild(this._iconElement);
     this._textElement = this.createChild('span');
     root.createChild('content');
   }
@@ -283,7 +284,8 @@ WebInspector.CSSShadowSwatch = class extends HTMLSpanElement {
    */
   createdCallback() {
     var root = WebInspector.createShadowRootWithCoreStyles(this, 'ui/cssShadowSwatch.css');
-    this._iconElement = root.createChild('span', 'shadow-swatch-icon');
+    this._iconElement = WebInspector.Icon.create('smallicon-shadow-mask', 'shadow-swatch-icon');
+    root.appendChild(this._iconElement);
     root.createChild('content');
     this._contentElement = this.createChild('span');
   }

@@ -61,7 +61,7 @@ WebInspector.StylesSidebarPane = class extends WebInspector.ElementsSidebarPane 
     var exclamationElement = createElement('label', 'dt-icon-label');
     exclamationElement.className = 'exclamation-mark';
     if (!WebInspector.StylesSidebarPane.ignoreErrorsForProperty(property))
-      exclamationElement.type = 'warning-icon';
+      exclamationElement.type = 'smallicon-warning';
     exclamationElement.title = WebInspector.cssMetadata().isCSSPropertyName(property.name) ?
         WebInspector.UIString('Invalid property value') :
         WebInspector.UIString('Unknown property name');

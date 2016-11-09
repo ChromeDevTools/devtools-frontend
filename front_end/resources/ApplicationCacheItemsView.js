@@ -106,12 +106,12 @@ WebInspector.ApplicationCacheItemsView = class extends WebInspector.SimpleView {
 
     var statusInformation = {};
     // We should never have UNCACHED status, since we remove frames with UNCACHED application cache status from the tree.
-    statusInformation[applicationCache.UNCACHED] = {type: 'red-ball', text: 'UNCACHED'};
-    statusInformation[applicationCache.IDLE] = {type: 'green-ball', text: 'IDLE'};
-    statusInformation[applicationCache.CHECKING] = {type: 'orange-ball', text: 'CHECKING'};
-    statusInformation[applicationCache.DOWNLOADING] = {type: 'orange-ball', text: 'DOWNLOADING'};
-    statusInformation[applicationCache.UPDATEREADY] = {type: 'green-ball', text: 'UPDATEREADY'};
-    statusInformation[applicationCache.OBSOLETE] = {type: 'red-ball', text: 'OBSOLETE'};
+    statusInformation[applicationCache.UNCACHED] = {type: 'smallicon-red-ball', text: 'UNCACHED'};
+    statusInformation[applicationCache.IDLE] = {type: 'smallicon-green-ball', text: 'IDLE'};
+    statusInformation[applicationCache.CHECKING] = {type: 'smallicon-orange-ball', text: 'CHECKING'};
+    statusInformation[applicationCache.DOWNLOADING] = {type: 'smallicon-orange-ball', text: 'DOWNLOADING'};
+    statusInformation[applicationCache.UPDATEREADY] = {type: 'smallicon-green-ball', text: 'UPDATEREADY'};
+    statusInformation[applicationCache.OBSOLETE] = {type: 'smallicon-red-ball', text: 'OBSOLETE'};
 
     var info = statusInformation[status] || statusInformation[applicationCache.UNCACHED];
 
@@ -129,10 +129,10 @@ WebInspector.ApplicationCacheItemsView = class extends WebInspector.SimpleView {
    */
   updateNetworkState(isNowOnline) {
     if (isNowOnline) {
-      this._connectivityIcon.type = 'green-ball';
+      this._connectivityIcon.type = 'smallicon-green-ball';
       this._connectivityIcon.textContent = WebInspector.UIString('Online');
     } else {
-      this._connectivityIcon.type = 'red-ball';
+      this._connectivityIcon.type = 'smallicon-red-ball';
       this._connectivityIcon.textContent = WebInspector.UIString('Offline');
     }
   }

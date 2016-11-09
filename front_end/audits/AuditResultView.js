@@ -77,8 +77,14 @@ WebInspector.AuditCategoryResultPane = class extends WebInspector.SimpleView {
 
     var titleFragment = createDocumentFragment();
     if (severity) {
-      var severityElement = createElement('div');
-      severityElement.classList.add('severity', severity);
+      var severityElement = WebInspector.Icon.create();
+      if (severity === WebInspector.AuditRule.Severity.Info)
+        severityElement.setIconType('smallicon-green-ball');
+      else if (severity === WebInspector.AuditRule.Severity.Warning)
+        severityElement.setIconType('smallicon-orange-ball');
+      else if (severity === WebInspector.AuditRule.Severity.Severe)
+        severityElement.setIconType('smallicon-red-ball');
+      severityElement.classList.add('severity');
       titleFragment.appendChild(severityElement);
     }
     titleFragment.createTextChild(title);

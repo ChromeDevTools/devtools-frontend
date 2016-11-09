@@ -65,16 +65,10 @@
     font-style: italic;
 }
 
-.list-item.selected::before {
-    background-image: url(Images/smallIcons.png);
-    background-size: 190px 30px;
-    background-position: -180px 0;
-    content: "";
+.list-item > .selected-icon {
     position: absolute;
     top: 5px;
     left: 4px;
-    width: 10px;
-    height: 10px;
 }
 
 .list-item.dimmed-item .action {
@@ -92,8 +86,3 @@
     color: rgb(17, 85, 204);
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.list-item.selected::before {
-    background-image: url(Images/smallIcons_2x.png);
-}
-} /* media */

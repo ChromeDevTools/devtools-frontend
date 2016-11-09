@@ -649,9 +649,9 @@ WebInspector.Main.WarningErrorCounter = class {
     this._toolbarItem = new WebInspector.ToolbarItem(this._counter);
     var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this._counter, 'main/errorWarningCounter.css');
 
-    this._errors = this._createItem(shadowRoot, 'error-icon');
-    this._revokedErrors = this._createItem(shadowRoot, 'revokedError-icon');
-    this._warnings = this._createItem(shadowRoot, 'warning-icon');
+    this._errors = this._createItem(shadowRoot, 'smallicon-error');
+    this._revokedErrors = this._createItem(shadowRoot, 'smallicon-revoked-error');
+    this._warnings = this._createItem(shadowRoot, 'smallicon-warning');
     this._titles = [];
 
     WebInspector.multitargetConsoleModel.addEventListener(
@@ -826,10 +826,10 @@ WebInspector.NetworkPanelIndicator = class {
     function updateVisibility() {
       if (manager.isThrottling()) {
         WebInspector.inspectorView.setPanelIcon(
-            'network', 'warning-icon', WebInspector.UIString('Network throttling is enabled'));
+            'network', 'smallicon-warning', WebInspector.UIString('Network throttling is enabled'));
       } else if (blockedURLsSetting.get().length) {
         WebInspector.inspectorView.setPanelIcon(
-            'network', 'warning-icon', WebInspector.UIString('Requests may be blocked'));
+            'network', 'smallicon-warning', WebInspector.UIString('Requests may be blocked'));
       } else {
         WebInspector.inspectorView.setPanelIcon('network', '', '');
       }
@@ -849,7 +849,7 @@ WebInspector.SourcesPanelIndicator = class {
       var javaScriptDisabled = WebInspector.moduleSetting('javaScriptDisabled').get();
       if (javaScriptDisabled) {
         WebInspector.inspectorView.setPanelIcon(
-            'sources', 'warning-icon', WebInspector.UIString('JavaScript is disabled'));
+            'sources', 'smallicon-warning', WebInspector.UIString('JavaScript is disabled'));
       } else {
         WebInspector.inspectorView.setPanelIcon('sources', '', '');
       }

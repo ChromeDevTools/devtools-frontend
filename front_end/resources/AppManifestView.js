@@ -88,7 +88,7 @@ WebInspector.AppManifestView = class extends WebInspector.VBox {
     this._errorsSection.element.classList.toggle('hidden', !errors.length);
     for (var error of errors)
       this._errorsSection.appendRow().appendChild(
-          createLabel(error.message, error.critical ? 'error-icon' : 'warning-icon'));
+          createLabel(error.message, error.critical ? 'smallicon-error' : 'smallicon-warning'));
 
     if (!data)
       data = '{}';

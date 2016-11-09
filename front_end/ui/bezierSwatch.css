@@ -12,24 +12,12 @@
     position: relative;
     margin-left: 1px;
     margin-right: 2px;
-    width: 10px;
-    height: 10px;
     top: 1px;
-    display: inline-block;
     -webkit-user-select: none;
     line-height: 10px;
-    -webkit-mask-image: url(Images/smallIcons.png);
-    -webkit-mask-size: 190px 30px;
-    -webkit-mask-position: -80px -20px;
     background-color: #9C27B0;
     cursor: default;
 }
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.bezier-swatch-icon {
-    -webkit-mask-image: url(Images/smallIcons_2x.png);
-}
-} /* media */
 
 .bezier-swatch-icon:hover {
     background-color: #800080;

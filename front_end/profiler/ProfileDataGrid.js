@@ -163,8 +163,9 @@ WebInspector.ProfileDataGridNode = class extends WebInspector.DataGridNode {
         cell.classList.toggle('highlight', this._searchMatchedFunctionColumn);
         if (this._deoptReason) {
           cell.classList.add('not-optimized');
-          cell.createChild('span', 'profile-warn-marker').title =
-              WebInspector.UIString('Not optimized: %s', this._deoptReason);
+          var warningIcon = WebInspector.Icon.create('smallicon-warning', 'profile-warn-marker');
+          warningIcon.title = WebInspector.UIString('Not optimized: %s', this._deoptReason);
+          cell.appendChild(warningIcon);
         }
         cell.createTextChild(this.functionName);
         if (this.profileNode.scriptId === '0')

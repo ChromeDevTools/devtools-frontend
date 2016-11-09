@@ -1454,8 +1454,10 @@ WebInspector.appendStyle =
      * @this {Element}
      */
     createdCallback: function() {
-      var root = WebInspector.createShadowRootWithCoreStyles(this, 'ui/smallIcon.css');
-      this._iconElement = root.createChild('div');
+      var root = WebInspector.createShadowRootWithCoreStyles(this);
+      this._iconElement = WebInspector.Icon.create();
+      this._iconElement.style.setProperty('margin-right', '4px');
+      root.appendChild(this._iconElement);
       root.createChild('content');
     },
 
@@ -1464,7 +1466,7 @@ WebInspector.appendStyle =
      * @this {Element}
      */
     set type(type) {
-      this._iconElement.className = type;
+      this._iconElement.setIconType(type);
     },
 
     __proto__: HTMLLabelElement.prototype

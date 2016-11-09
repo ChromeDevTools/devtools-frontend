@@ -88,6 +88,8 @@ WebInspector.UIList.Item = class {
     this._actionElement = null;
     this._hidden = false;
     this._isLabel = !!isLabel;
+    /** @type {?HTMLElement} */
+    this._icon = null;
     this.setTitle(title);
     this.setSubtitle(subtitle);
     this.setSelected(false);
@@ -158,14 +160,16 @@ WebInspector.UIList.Item = class {
     if (this._selected)
       return;
     this._selected = true;
-    this.element.classList.add('selected');
+    this._icon = WebInspector.Icon.create('smallicon-thick-right-arrow', 'selected-icon');
+    this.element.appendChild(this._icon);
   }
 
   deselect() {
     if (!this._selected)
       return;
     this._selected = false;
-    this.element.classList.remove('selected');
+    this._icon.remove();
+    this._icon = null;
   }
 
   toggleSelected() {

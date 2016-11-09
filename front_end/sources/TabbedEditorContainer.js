@@ -554,7 +554,7 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
       this._tabbedPane.changeTabTitle(tabId, title);
       if (WebInspector.persistence.hasUnsavedCommittedChanges(uiSourceCode))
         this._tabbedPane.setTabIcon(
-            tabId, 'warning-icon', WebInspector.UIString('Changes to this file were not saved to file system.'));
+            tabId, 'smallicon-warning', WebInspector.UIString('Changes to this file were not saved to file system.'));
       else
         this._tabbedPane.setTabIcon(tabId, '');
     }

@@ -365,11 +365,11 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
       statusCodeImage.title = this._request.statusCode + ' ' + this._request.statusText;
 
       if (this._request.statusCode < 300 || this._request.statusCode === 304)
-        statusCodeImage.type = 'green-ball';
+        statusCodeImage.type = 'smallicon-green-ball';
       else if (this._request.statusCode < 400)
-        statusCodeImage.type = 'orange-ball';
+        statusCodeImage.type = 'smallicon-orange-ball';
       else
-        statusCodeImage.type = 'red-ball';
+        statusCodeImage.type = 'smallicon-red-ball';
 
       requestMethodElement.title =
           this._formatHeader(WebInspector.UIString('Request Method'), this._request.requestMethod);
@@ -420,7 +420,7 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
     if (provisionalHeaders) {
       var cautionText = WebInspector.UIString('Provisional headers are shown');
       var cautionFragment = createDocumentFragment();
-      cautionFragment.createChild('label', '', 'dt-icon-label').type = 'warning-icon';
+      cautionFragment.createChild('label', '', 'dt-icon-label').type = 'smallicon-warning';
       cautionFragment.createChild('div', 'caution').textContent = cautionText;
       var cautionTreeElement = new TreeElement(cautionFragment);
       cautionTreeElement.selectable = false;

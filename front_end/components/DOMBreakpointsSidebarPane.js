@@ -52,9 +52,10 @@ WebInspector.DOMBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
   static createBreakpointHitMessage(details) {
     var messageWrapper = createElement('span');
     var mainElement = messageWrapper.createChild('div', 'status-main');
+    mainElement.appendChild(WebInspector.Icon.create('smallicon-info', 'status-icon'));
     var auxData = /** @type {!Object} */ (details.auxData);
-    mainElement.textContent =
-        String.sprintf('Paused on %s', WebInspector.DOMBreakpointsSidebarPane.BreakpointTypeNouns[auxData['type']]);
+    mainElement.appendChild(createTextNode(
+        String.sprintf('Paused on %s', WebInspector.DOMBreakpointsSidebarPane.BreakpointTypeNouns[auxData['type']])));
 
     var domModel = WebInspector.DOMModel.fromTarget(details.target());
     if (domModel) {

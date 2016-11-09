@@ -431,8 +431,8 @@ WebInspector.UISourceCodeFrame = class extends WebInspector.SourceFrame {
 };
 
 WebInspector.UISourceCodeFrame._iconClassPerLevel = {};
-WebInspector.UISourceCodeFrame._iconClassPerLevel[WebInspector.UISourceCode.Message.Level.Error] = 'error-icon';
-WebInspector.UISourceCodeFrame._iconClassPerLevel[WebInspector.UISourceCode.Message.Level.Warning] = 'warning-icon';
+WebInspector.UISourceCodeFrame._iconClassPerLevel[WebInspector.UISourceCode.Message.Level.Error] = 'smallicon-error';
+WebInspector.UISourceCodeFrame._iconClassPerLevel[WebInspector.UISourceCode.Message.Level.Warning] = 'smallicon-warning';
 
 WebInspector.UISourceCodeFrame._bubbleTypePerLevel = {};
 WebInspector.UISourceCodeFrame._bubbleTypePerLevel[WebInspector.UISourceCode.Message.Level.Error] = 'error';

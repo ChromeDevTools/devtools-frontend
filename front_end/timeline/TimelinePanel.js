@@ -1914,7 +1914,7 @@ WebInspector.CPUThrottlingManager = class extends WebInspector.Object {
     this._targets.forEach(target => target.emulationAgent().setCPUThrottlingRate(value));
     if (value !== 1)
       WebInspector.inspectorView.setPanelIcon(
-          'timeline', 'warning-icon', WebInspector.UIString('CPU throttling is enabled'));
+          'timeline', 'smallicon-warning', WebInspector.UIString('CPU throttling is enabled'));
     else
       WebInspector.inspectorView.setPanelIcon('timeline', '', '');
   }

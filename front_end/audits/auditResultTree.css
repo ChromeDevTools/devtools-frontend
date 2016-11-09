@@ -5,13 +5,6 @@
  */
 
 .severity {
-    background-image: url(Images/smallIcons.png);
-    background-size: 190px 30px;
-    display: inline-block;
-    width: 11px;
-    height: 11px;
-    position: relative;
-    top: 1px;
     margin-right: 4px;
 }
 
@@ -19,23 +12,6 @@ li {
     -webkit-user-select: text;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.severity {
-    background-image: url(Images/smallIcons_2x.png);
-}
-} /* media */
-
-.severity.severe {
-    background-position: -120px 0;
-}
-
-.severity.warning {
-    background-position: -160px 0;
-}
-
-.severity.info {
-    background-position: -140px 0;
-}
 .audit-result {
     font-weight: bold;
 }

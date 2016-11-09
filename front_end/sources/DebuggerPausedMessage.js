@@ -81,7 +81,8 @@ WebInspector.DebuggerPausedMessage = class {
     function buildWrapper(mainText, subText, title) {
       var messageWrapper = createElement('span');
       var mainElement = messageWrapper.createChild('div', 'status-main');
-      mainElement.textContent = mainText;
+      mainElement.appendChild(WebInspector.Icon.create('smallicon-info', 'status-icon'));
+      mainElement.appendChild(createTextNode(mainText));
       if (subText) {
         var subElement = messageWrapper.createChild('div', 'status-sub monospace');
         subElement.textContent = subText;

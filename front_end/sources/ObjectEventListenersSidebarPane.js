@@ -10,7 +10,7 @@ WebInspector.ObjectEventListenersSidebarPane = class extends WebInspector.VBox {
     super();
     this.element.classList.add('event-listeners-sidebar-pane');
 
-    this._refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'refresh-toolbar-item');
+    this._refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'largeicon-refresh');
     this._refreshButton.addEventListener('click', this._refreshClick.bind(this));
     this._refreshButton.setEnabled(false);
 

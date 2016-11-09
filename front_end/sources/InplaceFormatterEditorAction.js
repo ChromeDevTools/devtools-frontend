@@ -43,7 +43,7 @@ WebInspector.InplaceFormatterEditorAction = class {
     this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
     this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorClosed, this._editorClosed.bind(this));
 
-    this._button = new WebInspector.ToolbarButton(WebInspector.UIString('Format'), 'format-toolbar-item');
+    this._button = new WebInspector.ToolbarButton(WebInspector.UIString('Format'), 'largeicon-pretty-print');
     this._button.addEventListener('click', this._formatSourceInPlace, this);
     this._updateButton(sourcesView.currentUISourceCode());
 

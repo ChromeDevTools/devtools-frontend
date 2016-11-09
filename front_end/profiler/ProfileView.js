@@ -33,17 +33,17 @@ WebInspector.ProfileView = class extends WebInspector.SimpleView {
     this.viewSelectComboBox = new WebInspector.ToolbarComboBox(this._changeView.bind(this));
 
     this.focusButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Focus selected function'), 'visibility-toolbar-item');
+        new WebInspector.ToolbarButton(WebInspector.UIString('Focus selected function'), 'largeicon-visibility');
     this.focusButton.setEnabled(false);
     this.focusButton.addEventListener('click', this._focusClicked, this);
 
     this.excludeButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Exclude selected function'), 'delete-toolbar-item');
+        new WebInspector.ToolbarButton(WebInspector.UIString('Exclude selected function'), 'largeicon-delete');
     this.excludeButton.setEnabled(false);
     this.excludeButton.addEventListener('click', this._excludeClicked, this);
 
     this.resetButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Restore all functions'), 'refresh-toolbar-item');
+        new WebInspector.ToolbarButton(WebInspector.UIString('Restore all functions'), 'largeicon-refresh');
     this.resetButton.setEnabled(false);
     this.resetButton.addEventListener('click', this._resetClicked, this);
 

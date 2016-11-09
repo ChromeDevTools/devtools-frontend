@@ -89,7 +89,8 @@ WebInspector.Toolbar = class {
       if (buttons && buttons.length) {
         if (!longClickController) {
           longClickController = new WebInspector.LongClickController(button.element, showOptions);
-          longClickGlyph = button.element.createChild('div', 'long-click-glyph toolbar-button-theme');
+          longClickGlyph = WebInspector.Icon.create('largeicon-longclick-triangle', 'long-click-glyph');
+          button.element.appendChild(longClickGlyph);
           longClickButtons = buttons;
         }
       } else {
@@ -454,7 +455,8 @@ WebInspector.ToolbarButton = class extends WebInspector.ToolbarItem {
     this.element.addEventListener('mousedown', this._mouseDown.bind(this), false);
     this.element.addEventListener('mouseup', this._mouseUp.bind(this), false);
 
-    this._glyphElement = this.element.createChild('div', 'toolbar-glyph hidden');
+    this._glyphElement = WebInspector.Icon.create('', 'toolbar-glyph hidden');
+    this.element.appendChild(this._glyphElement);
     this._textElement = this.element.createChild('div', 'toolbar-text hidden');
 
     this.setTitle(title);
@@ -481,10 +483,7 @@ WebInspector.ToolbarButton = class extends WebInspector.ToolbarItem {
   setGlyph(glyph) {
     if (this._glyph === glyph)
       return;
-    if (this._glyph)
-      this._glyphElement.classList.remove(this._glyph);
-    if (glyph)
-      this._glyphElement.classList.add(glyph);
+    this._glyphElement.setIconType(glyph);
     this._glyphElement.classList.toggle('hidden', !glyph);
     this.element.classList.toggle('toolbar-has-glyph', !!glyph);
     this._glyph = glyph;
@@ -502,7 +501,8 @@ WebInspector.ToolbarButton = class extends WebInspector.ToolbarItem {
    */
   turnIntoSelect(width) {
     this.element.classList.add('toolbar-has-dropdown');
-    this.element.createChild('div', 'toolbar-dropdown-arrow');
+    var dropdownArrowIcon = WebInspector.Icon.create('smallicon-dropdown-arrow', 'toolbar-dropdown-arrow');
+    this.element.appendChild(dropdownArrowIcon);
     if (width)
       this.element.style.width = width + 'px';
   }
@@ -627,7 +627,7 @@ WebInspector.ToolbarMenuButton = class extends WebInspector.ToolbarButton {
    * @param {boolean=} useSoftMenu
    */
   constructor(contextMenuHandler, useSoftMenu) {
-    super('', 'menu-toolbar-item');
+    super('', 'largeicon-menu');
     this._contextMenuHandler = contextMenuHandler;
     this._useSoftMenu = !!useSoftMenu;
   }
@@ -759,7 +759,8 @@ WebInspector.ToolbarComboBox = class extends WebInspector.ToolbarItem {
     super(createElementWithClass('span', 'toolbar-select-container'));
 
     this._selectElement = this.element.createChild('select', 'toolbar-item');
-    this.element.createChild('div', 'toolbar-dropdown-arrow');
+    var dropdownArrowIcon = WebInspector.Icon.create('smallicon-dropdown-arrow', 'toolbar-dropdown-arrow');
+    this.element.appendChild(dropdownArrowIcon);
     if (changeHandler)
       this._selectElement.addEventListener('change', changeHandler, false);
     if (className)

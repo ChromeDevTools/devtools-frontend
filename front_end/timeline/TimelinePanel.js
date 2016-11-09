@@ -324,7 +324,7 @@ WebInspector.TimelinePanel = class extends WebInspector.Panel {
     if (Runtime.experiments.isEnabled('timelineRecordingPerspectives') &&
         perspectiveSetting.get() === WebInspector.TimelinePanel.Perspectives.Load) {
       this._reloadButton =
-          new WebInspector.ToolbarButton(WebInspector.UIString('Record & Reload'), 'refresh-toolbar-item');
+          new WebInspector.ToolbarButton(WebInspector.UIString('Record & Reload'), 'largeicon-refresh');
       this._reloadButton.addEventListener('click', () => WebInspector.targetManager.reloadPage());
       this._panelToolbar.appendToolbarItem(this._reloadButton);
     } else {
@@ -332,7 +332,7 @@ WebInspector.TimelinePanel = class extends WebInspector.Panel {
     }
 
     this._updateTimelineControls();
-    var clearButton = new WebInspector.ToolbarButton(WebInspector.UIString('Clear recording'), 'clear-toolbar-item');
+    var clearButton = new WebInspector.ToolbarButton(WebInspector.UIString('Clear recording'), 'largeicon-clear');
     clearButton.addEventListener('click', this._clear, this);
     this._panelToolbar.appendToolbarItem(clearButton);
 
@@ -370,7 +370,7 @@ WebInspector.TimelinePanel = class extends WebInspector.Panel {
 
     this._panelToolbar.appendSeparator();
     var garbageCollectButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Collect garbage'), 'garbage-collect-toolbar-item');
+        new WebInspector.ToolbarButton(WebInspector.UIString('Collect garbage'), 'largeicon-trash-bin');
     garbageCollectButton.addEventListener('click', this._garbageCollectButtonClicked, this);
     this._panelToolbar.appendToolbarItem(garbageCollectButton);
 

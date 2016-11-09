@@ -39,7 +39,7 @@ WebInspector.DockController = class extends WebInspector.Object {
     super();
     this._canDock = canDock;
 
-    this._closeButton = new WebInspector.ToolbarButton(WebInspector.UIString('Close'), 'delete-toolbar-item');
+    this._closeButton = new WebInspector.ToolbarButton(WebInspector.UIString('Close'), 'largeicon-delete');
     this._closeButton.addEventListener('click', InspectorFrontendHost.closeWindow.bind(InspectorFrontendHost));
 
     if (!canDock) {

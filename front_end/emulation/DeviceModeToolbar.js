@@ -169,7 +169,7 @@ WebInspector.DeviceModeToolbar = class {
   _fillModeToolbar(toolbar) {
     toolbar.appendToolbarItem(
         this._wrapToolbarItem(createElementWithClass('div', 'device-mode-empty-toolbar-element')));
-    this._modeButton = new WebInspector.ToolbarButton('', 'rotate-screen-toolbar-item');
+    this._modeButton = new WebInspector.ToolbarButton('', 'largeicon-rotate-screen');
     this._modeButton.addEventListener('click', this._modeMenuClicked, this);
     toolbar.appendToolbarItem(this._modeButton);
   }

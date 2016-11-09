@@ -47,7 +47,7 @@ WebInspector.EventListenersWidget = class extends WebInspector.ThrottledWidget {
     this._showFrameworkListenersSetting.addChangeListener(this._showFrameworkListenersChanged.bind(this));
     this._eventListenersView = new WebInspector.EventListenersView(this.element, this.update.bind(this));
 
-    var refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'refresh-toolbar-item');
+    var refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'largeicon-refresh');
     refreshButton.addEventListener('click', this.update.bind(this));
     this._toolbarItems.push(refreshButton);
     this._toolbarItems.push(new WebInspector.ToolbarCheckbox(

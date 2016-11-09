@@ -17,8 +17,8 @@
             "type": "@WebInspector.ActionDelegate",
             "category": "Debugger",
             "actionId": "debugger.toggle-pause",
-            "iconClass": "pause-toolbar-item",
-            "toggledIconClass": "resume-toolbar-item",
+            "iconClass": "largeicon-pause",
+            "toggledIconClass": "largeicon-resume",
             "className": "WebInspector.SourcesPanel.RevealingActionDelegate",
             "contextTypes": ["WebInspector.SourcesPanel", "WebInspector.ShortcutRegistry.ForwardedShortcut"],
             "options": [
@@ -41,7 +41,7 @@
             "actionId": "debugger.step-over",
             "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
             "title": "Step over next function call",
-            "iconClass": "step-over-toolbar-item",
+            "iconClass": "largeicon-step-over",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "bindings": [
                 {
@@ -59,7 +59,7 @@
             "actionId": "debugger.step-into",
             "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
             "title": "Step into next function call",
-            "iconClass": "step-in-toolbar-item",
+            "iconClass": "largeicon-step-in",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "bindings": [
                 {
@@ -77,7 +77,7 @@
             "actionId": "debugger.step-out",
             "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
             "title": "Step out of current function",
-            "iconClass": "step-out-toolbar-item",
+            "iconClass": "largeicon-step-out",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "bindings": [
                 {
@@ -95,7 +95,7 @@
             "actionId": "debugger.run-snippet",
             "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
             "title": "Run snippet",
-            "iconClass": "play-toolbar-item",
+            "iconClass": "largeicon-play",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "bindings": [
                 {
@@ -129,8 +129,8 @@
             "type": "@WebInspector.ActionDelegate",
             "category": "Debugger",
             "actionId": "debugger.toggle-breakpoints-active",
-            "iconClass": "deactivate-breakpoint-toolbar-item",
-            "toggledIconClass": "breakpoint-toolbar-item",
+            "iconClass": "largeicon-deactivate-breakpoints",
+            "toggledIconClass": "largeicon-activate-breakpoints",
             "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
             "contextTypes": ["WebInspector.SourcesPanel"],
             "options": [

@@ -969,7 +969,7 @@ WebInspector.JavaScriptSourceFrame = class extends WebInspector.UISourceCodeFram
 
     this._prettyPrintInfobar.setCloseCallback(() => delete this._prettyPrintInfobar);
     var toolbar = new WebInspector.Toolbar('');
-    var button = new WebInspector.ToolbarButton('', 'format-toolbar-item');
+    var button = new WebInspector.ToolbarButton('', 'largeicon-pretty-print');
     toolbar.appendToolbarItem(button);
     toolbar.element.style.display = 'inline-block';
     toolbar.element.style.verticalAlign = 'middle';

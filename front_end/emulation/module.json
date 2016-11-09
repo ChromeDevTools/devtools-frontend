@@ -13,7 +13,7 @@
             "className": "WebInspector.DeviceModeWrapper.ActionDelegate",
             "condition": "can_dock",
             "title": "Toggle device toolbar",
-            "iconClass": "phone-toolbar-item",
+            "iconClass": "largeicon-phone",
             "bindings": [
                 {
                     "platform": "windows,linux",

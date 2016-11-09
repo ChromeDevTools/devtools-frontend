@@ -712,7 +712,7 @@ WebInspector.SourcesPanel = class extends WebInspector.Panel {
     this._runSnippetButton.setVisible(false);
 
     var longResumeButton = new WebInspector.ToolbarButton(
-        WebInspector.UIString('Resume with all pauses blocked for 500 ms'), 'play-toolbar-item');
+        WebInspector.UIString('Resume with all pauses blocked for 500 ms'), 'largeicon-play');
     longResumeButton.addEventListener('click', this._longResume.bind(this), this);
     debugToolbar.appendToolbarItem(
         WebInspector.Toolbar.createActionButton(this._togglePauseAction, [longResumeButton], []));
@@ -723,7 +723,7 @@ WebInspector.SourcesPanel = class extends WebInspector.Panel {
     debugToolbar.appendSeparator();
     debugToolbar.appendToolbarItem(WebInspector.Toolbar.createActionButton(this._toggleBreakpointsActiveAction));
 
-    this._pauseOnExceptionButton = new WebInspector.ToolbarToggle('', 'pause-on-exceptions-toolbar-item');
+    this._pauseOnExceptionButton = new WebInspector.ToolbarToggle('', 'largeicon-pause-on-exceptions');
     this._pauseOnExceptionButton.addEventListener('click', this._togglePauseOnExceptions, this);
     debugToolbar.appendToolbarItem(this._pauseOnExceptionButton);
 

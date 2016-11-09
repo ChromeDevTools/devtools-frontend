@@ -42,9 +42,9 @@ WebInspector.WatchExpressionsSidebarPane = class extends WebInspector.ThrottledW
     this._watchExpressions = [];
     this._watchExpressionsSetting = WebInspector.settings.createLocalSetting('watchExpressions', []);
 
-    this._addButton = new WebInspector.ToolbarButton(WebInspector.UIString('Add expression'), 'add-toolbar-item');
+    this._addButton = new WebInspector.ToolbarButton(WebInspector.UIString('Add expression'), 'largeicon-add');
     this._addButton.addEventListener('click', this._addButtonClicked.bind(this));
-    this._refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'refresh-toolbar-item');
+    this._refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'largeicon-refresh');
     this._refreshButton.addEventListener('click', this._refreshButtonClicked.bind(this));
 
     this._bodyElement = this.element.createChild('div', 'vbox watch-expressions');

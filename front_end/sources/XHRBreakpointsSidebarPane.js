@@ -15,7 +15,7 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
     /** @type {!Map.<string, !Element>} */
     this._breakpointElements = new Map();
 
-    this._addButton = new WebInspector.ToolbarButton(WebInspector.UIString('Add breakpoint'), 'add-toolbar-item');
+    this._addButton = new WebInspector.ToolbarButton(WebInspector.UIString('Add breakpoint'), 'largeicon-add');
     this._addButton.addEventListener('click', this._addButtonClicked.bind(this));
 
     this.emptyElement.addEventListener('contextmenu', this._emptyElementContextMenu.bind(this), true);

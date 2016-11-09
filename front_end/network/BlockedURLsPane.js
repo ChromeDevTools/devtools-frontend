@@ -17,10 +17,10 @@ WebInspector.BlockedURLsPane = class extends WebInspector.VBox {
 
     this._toolbar = new WebInspector.Toolbar('', this.contentElement);
     this._toolbar.element.addEventListener('click', (e) => e.consume());
-    var addButton = new WebInspector.ToolbarButton(WebInspector.UIString('Add pattern'), 'add-toolbar-item');
+    var addButton = new WebInspector.ToolbarButton(WebInspector.UIString('Add pattern'), 'largeicon-add');
     addButton.addEventListener('click', this._addButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(addButton);
-    var clearButton = new WebInspector.ToolbarButton(WebInspector.UIString('Remove all'), 'clear-toolbar-item');
+    var clearButton = new WebInspector.ToolbarButton(WebInspector.UIString('Remove all'), 'largeicon-clear');
     clearButton.addEventListener('click', this._removeAll.bind(this));
     this._toolbar.appendToolbarItem(clearButton);
 

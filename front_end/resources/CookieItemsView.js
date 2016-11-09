@@ -36,15 +36,15 @@ WebInspector.CookieItemsView = class extends WebInspector.SimpleView {
 
     this.element.classList.add('storage-view');
 
-    this._deleteButton = new WebInspector.ToolbarButton(WebInspector.UIString('Delete'), 'delete-toolbar-item');
+    this._deleteButton = new WebInspector.ToolbarButton(WebInspector.UIString('Delete'), 'largeicon-delete');
     this._deleteButton.setVisible(false);
     this._deleteButton.addEventListener('click', this._deleteButtonClicked, this);
 
-    this._clearButton = new WebInspector.ToolbarButton(WebInspector.UIString('Clear'), 'clear-toolbar-item');
+    this._clearButton = new WebInspector.ToolbarButton(WebInspector.UIString('Clear'), 'largeicon-clear');
     this._clearButton.setVisible(false);
     this._clearButton.addEventListener('click', this._clearButtonClicked, this);
 
-    this._refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'refresh-toolbar-item');
+    this._refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'largeicon-refresh');
     this._refreshButton.addEventListener('click', this._refreshButtonClicked, this);
 
     this._treeElement = treeElement;

@@ -144,12 +144,12 @@ WebInspector.NetworkPanel = class extends WebInspector.Panel {
   _createToolbarButtons() {
     this._panelToolbar.appendToolbarItem(WebInspector.Toolbar.createActionButton(this._toggleRecordAction));
 
-    this._clearButton = new WebInspector.ToolbarButton(WebInspector.UIString('Clear'), 'clear-toolbar-item');
+    this._clearButton = new WebInspector.ToolbarButton(WebInspector.UIString('Clear'), 'largeicon-clear');
     this._clearButton.addEventListener('click', this._onClearButtonClicked, this);
     this._panelToolbar.appendToolbarItem(this._clearButton);
     this._panelToolbar.appendSeparator();
     var recordFilmStripButton = new WebInspector.ToolbarSettingToggle(
-        this._networkRecordFilmStripSetting, 'camera-toolbar-item', WebInspector.UIString('Capture screenshots'));
+        this._networkRecordFilmStripSetting, 'largeicon-camera', WebInspector.UIString('Capture screenshots'));
     this._panelToolbar.appendToolbarItem(recordFilmStripButton);
 
     this._panelToolbar.appendToolbarItem(this._filterBar.filterButton());
@@ -158,12 +158,12 @@ WebInspector.NetworkPanel = class extends WebInspector.Panel {
     this._panelToolbar.appendText(WebInspector.UIString('View:'));
 
     var largerRequestsButton = new WebInspector.ToolbarSettingToggle(
-        this._networkLogLargeRowsSetting, 'large-list-toolbar-item', WebInspector.UIString('Use large request rows'),
+        this._networkLogLargeRowsSetting, 'largeicon-large-list', WebInspector.UIString('Use large request rows'),
         WebInspector.UIString('Use small request rows'));
     this._panelToolbar.appendToolbarItem(largerRequestsButton);
 
     var showOverviewButton = new WebInspector.ToolbarSettingToggle(
-        this._networkLogShowOverviewSetting, 'waterfall-toolbar-item', WebInspector.UIString('Show overview'),
+        this._networkLogShowOverviewSetting, 'largeicon-waterfall', WebInspector.UIString('Show overview'),
         WebInspector.UIString('Hide overview'));
     this._panelToolbar.appendToolbarItem(showOverviewButton);
     this._panelToolbar.appendSeparator();

@@ -34,7 +34,7 @@ WebInspector.ApplicationCacheItemsView = class extends WebInspector.SimpleView {
 
     this.element.classList.add('storage-view', 'table');
 
-    this._deleteButton = new WebInspector.ToolbarButton(WebInspector.UIString('Delete'), 'delete-toolbar-item');
+    this._deleteButton = new WebInspector.ToolbarButton(WebInspector.UIString('Delete'), 'largeicon-delete');
     this._deleteButton.setVisible(false);
     this._deleteButton.addEventListener('click', this._deleteButtonClicked, this);
 

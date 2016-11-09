@@ -37,7 +37,7 @@ WebInspector.DatabaseTableView = class extends WebInspector.SimpleView {
 
     this._visibleColumnsSetting = WebInspector.settings.createSetting('databaseTableViewVisibleColumns', {});
 
-    this.refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'refresh-toolbar-item');
+    this.refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'largeicon-refresh');
     this.refreshButton.addEventListener('click', this._refreshButtonClicked, this);
     this._visibleColumnsInput = new WebInspector.ToolbarInput(WebInspector.UIString('Visible columns'), 1);
     this._visibleColumnsInput.addEventListener(

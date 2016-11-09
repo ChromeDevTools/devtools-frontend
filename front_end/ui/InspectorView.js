@@ -51,7 +51,7 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
     this._drawerTabbedPane = this._drawerTabbedLocation.tabbedPane();
     this._drawerTabbedPane.setMinimumSize(0, 27);
     var closeDrawerButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Close drawer'), 'delete-toolbar-item');
+        new WebInspector.ToolbarButton(WebInspector.UIString('Close drawer'), 'largeicon-delete');
     closeDrawerButton.addEventListener('click', this._closeDrawer.bind(this));
     this._drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
     this._drawerSplitWidget.installResizer(this._drawerTabbedPane.headerElement());

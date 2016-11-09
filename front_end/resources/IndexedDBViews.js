@@ -99,11 +99,11 @@ WebInspector.IDBDataView = class extends WebInspector.SimpleView {
 
     this._createEditorToolbar();
 
-    this._refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'refresh-toolbar-item');
+    this._refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'largeicon-refresh');
     this._refreshButton.addEventListener('click', this._refreshButtonClicked, this);
 
     this._clearButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Clear object store'), 'clear-toolbar-item');
+        new WebInspector.ToolbarButton(WebInspector.UIString('Clear object store'), 'largeicon-clear');
     this._clearButton.addEventListener('click', this._clearButtonClicked, this);
 
     this._pageSize = 50;
@@ -184,12 +184,12 @@ WebInspector.IDBDataView = class extends WebInspector.SimpleView {
     var editorToolbar = new WebInspector.Toolbar('data-view-toolbar', this.element);
 
     this._pageBackButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Show previous page'), 'play-backwards-toolbar-item');
+        new WebInspector.ToolbarButton(WebInspector.UIString('Show previous page'), 'largeicon-play-back');
     this._pageBackButton.addEventListener('click', this._pageBackButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageBackButton);
 
     this._pageForwardButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Show next page'), 'play-toolbar-item');
+        new WebInspector.ToolbarButton(WebInspector.UIString('Show next page'), 'largeicon-play');
     this._pageForwardButton.setEnabled(false);
     this._pageForwardButton.addEventListener('click', this._pageForwardButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageForwardButton);

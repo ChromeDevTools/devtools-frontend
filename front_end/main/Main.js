@@ -733,7 +733,7 @@ WebInspector.Main.WarningErrorCounter = class {
 WebInspector.Main.MainMenuItem = class {
   constructor() {
     this._item =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Customize and control DevTools'), 'menu-toolbar-item');
+        new WebInspector.ToolbarButton(WebInspector.UIString('Customize and control DevTools'), 'largeicon-menu');
     this._item.addEventListener('mousedown', this._mouseDown, this);
   }
 
@@ -764,9 +764,9 @@ WebInspector.Main.MainMenuItem = class {
       var dockItemToolbar = new WebInspector.Toolbar('', dockItemElement);
       dockItemToolbar.makeBlueOnHover();
       var undock = new WebInspector.ToolbarToggle(
-          WebInspector.UIString('Undock into separate window'), 'dock-toolbar-item-undock');
-      var bottom = new WebInspector.ToolbarToggle(WebInspector.UIString('Dock to bottom'), 'dock-toolbar-item-bottom');
-      var right = new WebInspector.ToolbarToggle(WebInspector.UIString('Dock to right'), 'dock-toolbar-item-right');
+          WebInspector.UIString('Undock into separate window'), 'largeicon-undock');
+      var bottom = new WebInspector.ToolbarToggle(WebInspector.UIString('Dock to bottom'), 'largeicon-dock-to-bottom');
+      var right = new WebInspector.ToolbarToggle(WebInspector.UIString('Dock to right'), 'largeicon-dock-to-right');
       undock.addEventListener('mouseup', setDockSide.bind(null, WebInspector.DockController.State.Undocked));
       bottom.addEventListener('mouseup', setDockSide.bind(null, WebInspector.DockController.State.DockedToBottom));
       right.addEventListener('mouseup', setDockSide.bind(null, WebInspector.DockController.State.DockedToRight));

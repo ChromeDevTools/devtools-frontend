@@ -35,11 +35,11 @@ WebInspector.DOMStorageItemsView = class extends WebInspector.SimpleView {
 
     this.element.classList.add('storage-view', 'table');
 
-    this.deleteButton = new WebInspector.ToolbarButton(WebInspector.UIString('Delete'), 'delete-toolbar-item');
+    this.deleteButton = new WebInspector.ToolbarButton(WebInspector.UIString('Delete'), 'largeicon-delete');
     this.deleteButton.setVisible(false);
     this.deleteButton.addEventListener('click', this._deleteButtonClicked, this);
 
-    this.refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'refresh-toolbar-item');
+    this.refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'largeicon-refresh');
     this.refreshButton.addEventListener('click', this._refreshButtonClicked, this);
 
     this.domStorage.addEventListener(

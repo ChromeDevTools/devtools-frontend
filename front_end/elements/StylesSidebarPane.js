@@ -734,29 +734,29 @@ WebInspector.StylePropertiesSection = class {
     var items = [];
 
     var textShadowButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Add text-shadow'), 'text-shadow-toolbar-item');
+        new WebInspector.ToolbarButton(WebInspector.UIString('Add text-shadow'), 'largeicon-text-shadow');
     textShadowButton.addEventListener('click', this._onInsertShadowPropertyClick.bind(this, 'text-shadow'));
     items.push(textShadowButton);
 
     var boxShadowButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Add box-shadow'), 'box-shadow-toolbar-item');
+        new WebInspector.ToolbarButton(WebInspector.UIString('Add box-shadow'), 'largeicon-box-shadow');
     boxShadowButton.addEventListener('click', this._onInsertShadowPropertyClick.bind(this, 'box-shadow'));
     items.push(boxShadowButton);
 
     var colorButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Add color'), 'foreground-color-toolbar-item');
+        new WebInspector.ToolbarButton(WebInspector.UIString('Add color'), 'largeicon-foreground-color');
     colorButton.addEventListener('click', this._onInsertColorPropertyClick.bind(this));
     items.push(colorButton);
 
     var backgroundButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Add background-color'), 'background-color-toolbar-item');
+        new WebInspector.ToolbarButton(WebInspector.UIString('Add background-color'), 'largeicon-background-color');
     backgroundButton.addEventListener('click', this._onInsertBackgroundColorPropertyClick.bind(this));
     items.push(backgroundButton);
 
     var newRuleButton = null;
     if (this._style.parentRule) {
       newRuleButton =
-          new WebInspector.ToolbarButton(WebInspector.UIString('Insert Style Rule Below'), 'add-toolbar-item');
+          new WebInspector.ToolbarButton(WebInspector.UIString('Insert Style Rule Below'), 'largeicon-add');
       newRuleButton.addEventListener('click', this._onNewRuleClick.bind(this));
       items.push(newRuleButton);
     }
@@ -765,7 +765,7 @@ WebInspector.StylePropertiesSection = class {
     for (var i = 0; i < items.length; ++i)
       sectionToolbar.appendToolbarItem(items[i]);
 
-    var menuButton = new WebInspector.ToolbarButton(WebInspector.UIString('More tools\u2026'), 'menu-toolbar-item');
+    var menuButton = new WebInspector.ToolbarButton(WebInspector.UIString('More tools\u2026'), 'largeicon-menu');
     sectionToolbar.appendToolbarItem(menuButton);
     setItemsVisibility.call(this, items, false);
     sectionToolbar.element.addEventListener('mouseenter', setItemsVisibility.bind(this, items, true));
@@ -3040,9 +3040,11 @@ WebInspector.StylesSidebarPropertyRenderer = class {
  */
 WebInspector.StylesSidebarPane.ButtonProvider = class {
   constructor() {
-    this._button = new WebInspector.ToolbarButton(WebInspector.UIString('New Style Rule'), 'add-toolbar-item');
+    this._button = new WebInspector.ToolbarButton(WebInspector.UIString('New Style Rule'), 'largeicon-add');
     this._button.addEventListener('click', this._clicked, this);
-    this._button.element.createChild('div', 'long-click-glyph toolbar-button-theme');
+    var longclickTriangle = WebInspector.Icon.create('largeicon-longclick-triangle', 'long-click-glyph');
+    this._button.element.appendChild(longclickTriangle);
+
     new WebInspector.LongClickController(this._button.element, this._longClicked.bind(this));
     WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, onNodeChanged.bind(this));
     onNodeChanged.call(this);

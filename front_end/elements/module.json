@@ -150,7 +150,7 @@
             "actionId": "elements.toggle-element-search",
             "className": "WebInspector.InspectElementModeController.ToggleSearchActionDelegate",
             "title": "Select an element in the page to inspect it",
-            "iconClass": "node-search-toolbar-item",
+            "iconClass": "largeicon-node-search",
             "bindings": [
                 {
                     "platform": "windows,linux",

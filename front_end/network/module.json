@@ -35,14 +35,14 @@
             "type": "@WebInspector.ActionDelegate",
             "actionId": "network.blocked-urls.show",
             "className": "WebInspector.BlockedURLsPane.ActionDelegate",
-            "iconClass": "block-toolbar-item",
+            "iconClass": "largeicon-block",
             "title": "Block network requests"
         },
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "network.toggle-recording",
-            "iconClass": "record-toolbar-item",
-            "toggledIconClass": "active-recording-toolbar-item",
+            "iconClass": "largeicon-start-recording",
+            "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
             "contextTypes": ["WebInspector.NetworkPanel"],
             "className": "WebInspector.NetworkPanel.RecordActionDelegate",

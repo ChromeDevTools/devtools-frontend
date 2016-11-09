@@ -43,7 +43,7 @@ WebInspector.FilterBar = class extends WebInspector.HBox {
     this._enabled = true;
     this.element.classList.add('filter-bar');
 
-    this._filterButton = new WebInspector.ToolbarToggle(WebInspector.UIString('Filter'), 'filter-toolbar-item');
+    this._filterButton = new WebInspector.ToolbarToggle(WebInspector.UIString('Filter'), 'largeicon-filter');
     this._filterButton.addEventListener('click', this._handleFilterButtonClick, this);
 
     this._filters = [];

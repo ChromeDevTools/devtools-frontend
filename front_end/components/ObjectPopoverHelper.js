@@ -98,7 +98,7 @@ WebInspector.ObjectPopoverHelper = class extends WebInspector.PopoverHelper {
       if (rawLocation && Runtime.experiments.isEnabled('continueToFirstInvocation')) {
         var sectionToolbar = new WebInspector.Toolbar('function-location-step-into', linkContainer);
         var stepInto = new WebInspector.ToolbarButton(
-            WebInspector.UIString('Continue to first invocation'), 'step-in-toolbar-item');
+            WebInspector.UIString('Continue to first invocation'), 'largeicon-step-in');
         stepInto.addEventListener('click', () => rawLocation.continueToLocation());
         sectionToolbar.appendToolbarItem(stepInto);
       }

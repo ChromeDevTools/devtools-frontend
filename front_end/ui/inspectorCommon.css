@@ -336,3 +336,8 @@ span[is=ui-icon] {
     -webkit-mask-image: -webkit-image-set(url(Images/smallIcons.png) 1x, url(Images/smallIcons_2x.png) 2x);
     -webkit-mask-size: 190px 30px;
 }
+
+.spritesheet-largeicons-mask {
+    -webkit-mask-image: -webkit-image-set(url(Images/toolbarButtonGlyphs.png) 1x, url(Images/toolbarButtonGlyphs_2x.png) 2x);
+    -webkit-mask-size: 352px 168px;
+}

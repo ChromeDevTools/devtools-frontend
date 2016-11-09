@@ -37,7 +37,7 @@
             "category": "Console",
             "actionId": "console.clear",
             "title": "Clear console",
-            "iconClass": "clear-toolbar-item",
+            "iconClass": "largeicon-clear",
             "className": "WebInspector.ConsoleView.ActionDelegate",
             "bindings": [
                 {

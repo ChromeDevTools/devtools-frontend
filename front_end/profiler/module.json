@@ -40,8 +40,8 @@
         {
             "type": "@WebInspector.ActionDelegate",
             "actionId": "profiler.toggle-recording",
-            "iconClass": "record-toolbar-item",
-            "toggledIconClass": "active-recording-toolbar-item",
+            "iconClass": "largeicon-start-recording",
+            "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
             "contextTypes": ["WebInspector.ProfilesPanel"],
             "className": "WebInspector.ProfilesPanel.RecordActionDelegate",

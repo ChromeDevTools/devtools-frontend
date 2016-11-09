@@ -32,12 +32,12 @@ WebInspector.TransformController = class extends WebInspector.Object {
     /** @type {!Object<string, !WebInspector.ToolbarToggle>} */
     this._modeButtons = {};
     if (!disableRotate) {
-      var panModeButton = new WebInspector.ToolbarToggle(WebInspector.UIString('Pan mode (X)'), 'pan-toolbar-item');
+      var panModeButton = new WebInspector.ToolbarToggle(WebInspector.UIString('Pan mode (X)'), 'largeicon-pan');
       panModeButton.addEventListener('click', this._setMode.bind(this, WebInspector.TransformController.Modes.Pan));
       this._modeButtons[WebInspector.TransformController.Modes.Pan] = panModeButton;
       this._controlPanelToolbar.appendToolbarItem(panModeButton);
       var rotateModeButton =
-          new WebInspector.ToolbarToggle(WebInspector.UIString('Rotate mode (V)'), 'rotate-toolbar-item');
+          new WebInspector.ToolbarToggle(WebInspector.UIString('Rotate mode (V)'), 'largeicon-rotate');
       rotateModeButton.addEventListener(
           'click', this._setMode.bind(this, WebInspector.TransformController.Modes.Rotate));
       this._modeButtons[WebInspector.TransformController.Modes.Rotate] = rotateModeButton;
@@ -46,7 +46,7 @@ WebInspector.TransformController = class extends WebInspector.Object {
     this._setMode(WebInspector.TransformController.Modes.Pan);
 
     var resetButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Reset transform (0)'), 'center-toolbar-item');
+        new WebInspector.ToolbarButton(WebInspector.UIString('Reset transform (0)'), 'largeicon-center');
     resetButton.addEventListener('click', this.resetAndNotify.bind(this, undefined));
     this._controlPanelToolbar.appendToolbarItem(resetButton);
 

@@ -57,7 +57,7 @@ WebInspector.Spectrum = class extends WebInspector.VBox {
 
     var toolbar = new WebInspector.Toolbar('spectrum-eye-dropper', this.contentElement);
     this._colorPickerButton =
-        new WebInspector.ToolbarToggle(WebInspector.UIString('Toggle color picker'), 'eyedropper-toolbar-item');
+        new WebInspector.ToolbarToggle(WebInspector.UIString('Toggle color picker'), 'largeicon-eyedropper');
     this._colorPickerButton.setToggled(true);
     this._colorPickerButton.addEventListener('click', this._toggleColorPicker.bind(this, undefined));
     toolbar.appendToolbarItem(this._colorPickerButton);
@@ -123,14 +123,14 @@ WebInspector.Spectrum = class extends WebInspector.VBox {
     paletteSwitcher.addEventListener('click', this._togglePalettePanel.bind(this, true));
 
     this._deleteIconToolbar = new WebInspector.Toolbar('delete-color-toolbar');
-    this._deleteButton = new WebInspector.ToolbarButton('', 'garbage-collect-toolbar-item');
+    this._deleteButton = new WebInspector.ToolbarButton('', 'largeicon-trash-bin');
     this._deleteIconToolbar.appendToolbarItem(this._deleteButton);
 
     var overlay = this.contentElement.createChild('div', 'spectrum-overlay fill');
     overlay.addEventListener('click', this._togglePalettePanel.bind(this, false));
 
     this._addColorToolbar = new WebInspector.Toolbar('add-color-toolbar');
-    var addColorButton = new WebInspector.ToolbarButton(WebInspector.UIString('Add to palette'), 'add-toolbar-item');
+    var addColorButton = new WebInspector.ToolbarButton(WebInspector.UIString('Add to palette'), 'largeicon-add');
     addColorButton.addEventListener('click', this._addColorToCustomPalette.bind(this));
     this._addColorToolbar.appendToolbarItem(addColorButton);
 
@@ -193,7 +193,7 @@ WebInspector.Spectrum = class extends WebInspector.VBox {
     var title = this._palettePanel.createChild('div', 'palette-title');
     title.textContent = WebInspector.UIString('Color Palettes');
     var toolbar = new WebInspector.Toolbar('', this._palettePanel);
-    var closeButton = new WebInspector.ToolbarButton('Return to color picker', 'delete-toolbar-item');
+    var closeButton = new WebInspector.ToolbarButton('Return to color picker', 'largeicon-delete');
     closeButton.addEventListener('click', this._togglePalettePanel.bind(this, false));
     toolbar.appendToolbarItem(closeButton);
     for (var palette of this._palettes.values())

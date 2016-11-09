@@ -48,23 +48,11 @@
 }
 
 .toolbar-dropdown-arrow {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
-    -webkit-mask-position: -18px -96px;
     background-color: #6D6D6D;
-    width: 12px;
-    height: 12px;
-    display: inline-block;
     pointer-events: none;
     margin: auto 0;
     flex: none;
 }
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-    .toolbar-dropdown-arrow {
-        -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-    }
-} /* media */
 
 /* Toolbar item */
 
@@ -102,7 +90,7 @@
     margin-left: 0;
 }
 
-.toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.menu-toolbar-item) {
+.toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.largeicon-menu) {
     font-weight: bold;
 }
 
@@ -113,7 +101,7 @@
     cursor: pointer;
 }
 
-:not(.toolbar-render-as-links) .toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.menu-toolbar-item).hover {
+:not(.toolbar-render-as-links) .toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.largeicon-menu).hover {
     background-color: #f3f3f3;
 }
 
@@ -252,20 +240,9 @@ input.toolbar-item.hover {
 .long-click-glyph {
     position: absolute;
     background-color: #5a5a5a;
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-position: -290px -46px;
-    -webkit-mask-size: 352px 168px;
-    width: 28px;
-    height: 24px;
     top: 0;
     left:  0;
 }
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.long-click-glyph {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
 
 .toolbar-button.emulate-active {
     background-color: rgb(163, 163, 163);
@@ -279,259 +256,6 @@ input.toolbar-item.hover {
     margin-top: -1px;
     width: 28px;
     left: -2px;
-}
-
-/* Predefined items */
-
-.dock-toolbar-item-undock.toolbar-glyph {
-    -webkit-mask-position: 0 -48px;
-}
-
-.dock-toolbar-item-bottom.toolbar-glyph {
-    -webkit-mask-position: -32px -24px;
-}
-
-.dock-toolbar-item-right.toolbar-glyph {
-    -webkit-mask-position: -256px -48px;
-}
-
-.menu-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -192px -24px;
-}
-
-.node-search-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -320px -120px;
-}
-
-.delete-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -128px 0;
-}
-
-.clear-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -64px 0;
-}
-
-.refresh-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: 0 0;
-}
-
-.visibility-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -96px 0;
-}
-
-.large-list-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -224px 0;
-}
-
-.record-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -288px 0;
-}
-
-.active-recording-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -288px -24px;
-}
-
-.camera-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -96px -24px;
-}
-
-.step-in-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -64px -72px;
-}
-
-.step-out-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -96px -72px;
-}
-
-.step-over-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -128px -72px;
-}
-
-.play-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -64px -48px;
-}
-
-.play-backwards-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -64px -48px;
-    transform: scaleX(-1);
-}
-
-.stop-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -96px -48px;
-}
-
-.pause-on-exceptions-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -256px 0;
-}
-
-.pause-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -32px -72px;
-}
-
-.resume-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: 0 -72px;
-}
-
-.breakpoint-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -32px 0;
-}
-
-.deactivate-breakpoint-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: 0 -24px;
-}
-
-.notification-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -32px -120px;
-}
-
-.format-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -256px -24px;
-}
-
-.garbage-collect-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -128px -24px;
-}
-
-.filter-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -32px -48px;
-}
-
-.waterfall-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -128px -48px;
-}
-
-.pan-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -98px -120px;
-}
-
-.center-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -128px -120px;
-}
-
-.rotate-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -160px -120px;
-}
-
-.pin-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -256px -120px;
-}
-
-.animation-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -192px -120px;
-}
-
-.eyedropper-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -288px -120px;
-}
-
-.add-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -224px -120px;
-}
-
-.animation-play-item.toolbar-glyph {
-    -webkit-mask-position: -320px -48px;
-}
-
-.animation-replay-item.toolbar-glyph {
-    -webkit-mask-position: -320px -24px;
-}
-
-.animation-pause-item.toolbar-glyph {
-    -webkit-mask-position: -320px 0px;
-}
-
-.box-shadow-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -160px -48px;
-}
-
-.text-shadow-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -192px -48px;
-}
-
-.background-color-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -96px -144px;
-}
-
-.foreground-color-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -128px -144px;
-}
-
-.layout-editor-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: 0 -144px;
-}
-
-.block-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -32px -144px;
-}
-
-.phone-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -320px -96px;
-}
-
-.rotate-screen-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -192px -144px;
-}
-
-.enter-fullscreen-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -256px -96px;
-}
-
-.responsive-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -288px -96px;
-}
-
-.frame-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -256px -144px;
-}
-
-.domain-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -160px -144px;
-}
-
-.folder-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: -224px -144px;
-}
-
-.goto-source-toolbar-item.toolbar-glyph {
-    -webkit-mask-position: 0 -120px;
-}
-
-.show-left-sidebar-item.toolbar-glyph {
-    -webkit-mask-position: -160px -72px;
-}
-
-.hide-left-sidebar-item.toolbar-glyph {
-    -webkit-mask-position: -192px -72px;
-}
-
-.show-right-sidebar-item.toolbar-glyph {
-    -webkit-mask-position: -160px -72px;
-    transform: rotate(180deg);
-}
-
-.hide-right-sidebar-item.toolbar-glyph {
-    -webkit-mask-position: -192px -72px;
-    transform: rotate(180deg);
-}
-
-.show-top-sidebar-item.toolbar-glyph {
-    -webkit-mask-position: -160px -72px;
-    transform: translate(4px, 0) rotate(90deg);
-}
-
-.hide-top-sidebar-item.toolbar-glyph {
-    -webkit-mask-position: -192px -72px;
-    transform: translate(4px, 1px) rotate(90deg);
-}
-
-.show-bottom-sidebar-item.toolbar-glyph {
-    -webkit-mask-position: -160px -72px;
-    transform: translate(4px, 0) rotate(-90deg);
-}
-
-.hide-bottom-sidebar-item.toolbar-glyph {
-    -webkit-mask-position: -192px -72px;
-    transform: translate(4px, 1px) rotate(-90deg);
 }
 
 span.toolbar-select-container.toolbar-item.warning {

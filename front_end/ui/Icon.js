@@ -47,6 +47,7 @@ WebInspector.Icon = class extends HTMLSpanElement {
       this.style.removeProperty(this._propertyName());
       this.style.removeProperty('width');
       this.style.removeProperty('height');
+      this.style.removeProperty('transform');
       this.classList.remove(this._spritesheetClass());
       this.classList.remove(this._iconType);
       this._iconType = '';
@@ -59,6 +60,8 @@ WebInspector.Icon = class extends HTMLSpanElement {
       this.style.setProperty(this._propertyName(), this._propertyValue());
       this.style.setProperty('width', this._descriptor.width + 'px');
       this.style.setProperty('height', this._descriptor.height + 'px');
+      if (this._descriptor.transform)
+        this.style.setProperty('transform', this._descriptor.transform);
       this.classList.add(this._spritesheetClass());
       this.classList.add(this._iconType);
     } else if (iconType) {
@@ -105,6 +108,61 @@ WebInspector.Icon.Descriptors = {
   'smallicon-user-command': {x: 0, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-text-prompt': {x: -20, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-command-result': {x: -40, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-shadow-mask': {x: -60, y: -20, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
-  'smallicon-bezier-mask': {x: -80, y: -20, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
+  'smallicon-shadow': {x: -60, y: -20, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
+  'smallicon-bezier': {x: -80, y: -20, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
+  'smallicon-dropdown-arrow': {x: -18, y: -96, width: 12, height: 12, spritesheet: 'largeicons', isMask: true},
+
+  'largeicon-longclick-triangle': {x: -290, y: -46, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-menu': {x: -192, y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-delete': {x: -128, y: -0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-node-search': {x: -320, y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-add': {x: -224, y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-clear': {x: -64,  y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-rotate-screen': {x: -192,  y: -144, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-phone': {x: -320,  y: -96, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-block': {x: -32,  y: -144, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-layout-editor': {x: 0,  y: -144, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-foreground-color': {x: -128,  y: -144, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-background-color': {x: -96,  y: -144, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-text-shadow': {x: -192,  y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-box-shadow': {x: -160,  y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-pause-animation': {x: -320,  y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-replay-animation': {x: -320,  y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-play-animation': {x: -320,  y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-eyedropper': {x: -288,  y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-rotate': {x: -160,  y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-center': {x: -128,  y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-pan': {x: -98,  y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-waterfall': {x: -128,  y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-filter': {x: -32,  y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-trash-bin': {x: -128,  y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-pretty-print': {x: -256,  y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-deactivate-breakpoints': {x: 0,  y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-activate-breakpoints': {x: -32,  y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-resume': {x: 0,  y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-pause': {x: -32,  y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-pause-on-exceptions': {x: -256,  y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-play-back': {x: -64,  y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true, transform: 'scaleX(-1)'},
+  'largeicon-play': {x: -64,  y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-step-over': {x: -128,  y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-step-out': {x: -96,  y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-step-in': {x: -64,  y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-camera': {x: -96,  y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-stop-recording': {x: -288,  y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-start-recording': {x: -288,  y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-large-list': {x: -224,  y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-visibility': {x: -96,  y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-refresh': {x: 0,  y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-dock-to-right': {x: -256,  y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-dock-to-bottom': {x: -32,  y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-undock': {x: 0,  y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+
+  'largeicon-show-left-sidebar': {x: -160,  y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-hide-left-sidebar': {x: -192,  y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-show-right-sidebar': {x: -160,  y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true, transform: 'rotate(180deg)'},
+  'largeicon-hide-right-sidebar': {x: -192,  y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true, transform: 'rotate(180deg)'},
+  'largeicon-show-top-sidebar': {x: -160,  y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true, transform: 'translate(4px, 0) rotate(90deg)'},
+  'largeicon-hide-top-sidebar': {x: -192,  y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true, transform: 'translate(4px, 1px) rotate(90deg)'},
+  'largeicon-show-bottom-sidebar': {x: -160,  y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true, transform: 'translate(4px, 0) rotate(-90deg)'},
+  'largeicon-hide-bottom-sidebar': {x: -192,  y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true, transform: 'translate(4px, 1px) rotate(-90deg)'},
 };

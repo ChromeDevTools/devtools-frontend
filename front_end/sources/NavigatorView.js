@@ -1273,15 +1273,9 @@ WebInspector.NavigatorUISourceCodeTreeNode = class extends WebInspector.Navigato
     if (binding && Runtime.experiments.isEnabled('persistence2')) {
       var titleElement = createElement('span');
       titleElement.textContent = titleText;
-      var status = titleElement.createChild('span');
-      status.classList.add('mapped-file-bubble');
-      status.textContent = '\u25C9';
-      if (this._uiSourceCode === binding.network)
-        status.title = WebInspector.UIString('Persisted to file system: %s', binding.fileSystem.url().trimMiddle(150));
-      else if (binding.network.contentType().isFromSourceMap())
-        status.title = WebInspector.UIString('Linked to source map: %s', binding.network.url().trimMiddle(150));
-      else
-        status.title = WebInspector.UIString('Linked to %s', binding.network.url().trimMiddle(150));
+      var icon = WebInspector.Icon.create('smallicon-checkmark', 'mapped-file-checkmark');
+      icon.title = WebInspector.PersistenceUtils.tooltipForUISourceCode(this._uiSourceCode);
+      titleElement.appendChild(icon);
       this._treeElement.title = titleElement;
     } else {
       this._treeElement.title = titleText;

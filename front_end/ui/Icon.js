@@ -111,6 +111,8 @@ WebInspector.Icon.Descriptors = {
   'smallicon-shadow': {x: -60, y: -20, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
   'smallicon-bezier': {x: -80, y: -20, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
   'smallicon-dropdown-arrow': {x: -18, y: -96, width: 12, height: 12, spritesheet: 'largeicons', isMask: true},
+  'smallicon-checkmark': {x: -100, y: -20, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
+  'smallicon-green-checkmark': {x: -120, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
 
   'largeicon-longclick-triangle': {x: -290, y: -46, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
   'largeicon-menu': {x: -192, y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},

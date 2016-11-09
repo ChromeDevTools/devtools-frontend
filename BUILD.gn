@@ -178,6 +178,7 @@ devtools_persistence_js_files = [
   "front_end/persistence/DefaultMapping.js",
   "front_end/persistence/Automapping.js",
   "front_end/persistence/Persistence.js",
+  "front_end/persistence/PersistenceUtils.js",
 ]
 devtools_platform_js_files = [
   "front_end/platform/DOMExtension.js",

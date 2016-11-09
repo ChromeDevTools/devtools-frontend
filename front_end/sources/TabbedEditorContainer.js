@@ -552,11 +552,15 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
     if (tabId) {
       var title = this._titleForFile(uiSourceCode);
       this._tabbedPane.changeTabTitle(tabId, title);
-      if (WebInspector.persistence.hasUnsavedCommittedChanges(uiSourceCode))
+      if (WebInspector.persistence.hasUnsavedCommittedChanges(uiSourceCode)) {
         this._tabbedPane.setTabIcon(
             tabId, 'smallicon-warning', WebInspector.UIString('Changes to this file were not saved to file system.'));
-      else
+      } else if (Runtime.experiments.isEnabled('persistence2') && WebInspector.persistence.binding(uiSourceCode)) {
+        var binding = WebInspector.persistence.binding(uiSourceCode);
+        this._tabbedPane.setTabIcon(tabId, 'smallicon-green-checkmark', WebInspector.PersistenceUtils.tooltipForUISourceCode(binding.fileSystem));
+      } else {
         this._tabbedPane.setTabIcon(tabId, '');
+      }
     }
   }
 

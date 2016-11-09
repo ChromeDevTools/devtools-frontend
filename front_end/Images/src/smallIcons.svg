@@ -297,16 +297,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.5"
-     inkscape:cx="87.644148"
-     inkscape:cy="14.858115"
+     inkscape:zoom="22"
+     inkscape:cx="123.3077"
+     inkscape:cy="3.5051656"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1178"
-     inkscape:window-height="865"
-     inkscape:window-x="2254"
-     inkscape:window-y="165"
+     inkscape:window-width="1384"
+     inkscape:window-height="1040"
+     inkscape:window-x="360"
+     inkscape:window-y="317"
      inkscape:window-maximized="0">
     <inkscape:grid
        type="xygrid"
@@ -540,5 +540,14 @@
         </g>
       </g>
     </g>
+    <polygon
+       transform="translate(98.275,1041.1522)"
+       id="check"
+       points="2.7855556,5.967143 1.725,7.0278573 4.9066667,10.21 11.27,3.8457144 10.209445,2.7850001 4.9066667,8.0885717 " />
+    <polygon
+       transform="translate(118.275,1041.1522)"
+       id="check-3"
+       points="4.9066667,8.0885717 2.7855556,5.967143 1.725,7.0278573 4.9066667,10.21 11.27,3.8457144 10.209445,2.7850001 "
+       style="stroke:none;stroke-opacity:1;fill:#009802;fill-opacity:1" />
   </g>
 </svg>

@@ -295,12 +295,13 @@ WebInspector.NetworkTimeCalculator = class extends WebInspector.Object {
   _extendBoundariesToIncludeTimestamp(timestamp) {
     var previousMinimumBoundary = this._minimumBoundary;
     var previousMaximumBoundary = this._maximumBoundary;
+    const minOffset = WebInspector.NetworkTimeCalculator._minimumSpread;
     if (typeof this._minimumBoundary === 'undefined' || typeof this._maximumBoundary === 'undefined') {
       this._minimumBoundary = timestamp;
-      this._maximumBoundary = timestamp + 1;
+      this._maximumBoundary = timestamp + minOffset;
     } else {
       this._minimumBoundary = Math.min(timestamp, this._minimumBoundary);
-      this._maximumBoundary = Math.max(timestamp, this._minimumBoundary + 1, this._maximumBoundary);
+      this._maximumBoundary = Math.max(timestamp, this._minimumBoundary + minOffset, this._maximumBoundary);
     }
     return previousMinimumBoundary !== this._minimumBoundary || previousMaximumBoundary !== this._maximumBoundary;
   }
@@ -321,6 +322,8 @@ WebInspector.NetworkTimeCalculator = class extends WebInspector.Object {
     return 0;
   }
 };
+
+WebInspector.NetworkTimeCalculator._minimumSpread = 0.1;
 
 /** @enum {symbol} */
 WebInspector.NetworkTimeCalculator.Events = {

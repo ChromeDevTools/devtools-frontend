@@ -384,7 +384,7 @@ WebInspector.TimelineOverviewCalculator = class {
   }
 
   reset() {
-    this.setBounds(0, 1000);
+    this.setBounds(0, 100);
   }
 
   /**

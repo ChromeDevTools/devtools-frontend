@@ -57,6 +57,8 @@ WebInspector.BreakpointManager = class extends WebInspector.Object {
     this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
     this._workspace.addEventListener(
         WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
+
+    targetManager.observeTargets(this, WebInspector.Target.Capability.JS);
   }
 
   /**

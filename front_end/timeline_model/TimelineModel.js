@@ -1391,6 +1391,14 @@ WebInspector.TimelineModel.NetworkRequest = class {
     this.endTime = Infinity;
     /** @type {!Array<!WebInspector.TracingModel.Event>} */
     this.children = [];
+    /** @type {?Object} */
+    this.timing;
+    /** @type {string} */
+    this.mimeType;
+    /** @type {string} */
+    this.url;
+    /** @type {string} */
+    this.requestMethod;
     this.addEvent(event);
   }
 
@@ -1408,6 +1416,8 @@ WebInspector.TimelineModel.NetworkRequest = class {
       this.priority = eventData['priority'];
     if (event.name === recordType.ResourceFinish)
       this.endTime = event.startTime;
+    if (eventData['finishTime'])
+      this.finishTime = eventData['finishTime'] * 1000;
     if (!this.responseTime &&
         (event.name === recordType.ResourceReceiveResponse || event.name === recordType.ResourceReceivedData))
       this.responseTime = event.startTime;
@@ -1415,6 +1425,8 @@ WebInspector.TimelineModel.NetworkRequest = class {
       this.url = eventData['url'];
     if (!this.requestMethod)
       this.requestMethod = eventData['requestMethod'];
+    if (!this.timing)
+      this.timing = eventData['timing'];
   }
 };
 

@@ -550,7 +550,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
     var titleIndices = [];
     var markerIndices = [];
     var textPadding = this._dataProvider.textPadding();
-    var minTextWidth = 2 * textPadding + this._measureWidth(context, '\u2026');
+    var minTextWidth = 2 * textPadding + WebInspector.measureTextWidth(context, '\u2026');
     var barHeight = this._barHeight;
     var minVisibleBarLevel = Math.max(this._visibleLevelOffsets.upperBound(top) - 1, 0);
 
@@ -646,7 +646,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
       var text = this._dataProvider.entryTitle(entryIndex);
       if (text && text.length) {
         context.font = this._dataProvider.entryFont(entryIndex) || defaultFont;
-        text = this._prepareText(context, text, barWidth - 2 * textPadding);
+        text = WebInspector.trimTextMiddle(context, text, barWidth - 2 * textPadding);
       }
       var unclippedBarX = this._timeToPosition(entryStartTime);
       if (this._dataProvider.decorateEntry(
@@ -822,7 +822,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
    * @return {number}
    */
   _labelWidthForGroup(context, group) {
-    return this._measureWidth(context, group.name) + this._expansionArrowIndent * (group.style.nestingLevel + 1) +
+    return WebInspector.measureTextWidth(context, group.name) + this._expansionArrowIndent * (group.style.nestingLevel + 1) +
         2 * this._headerLabelXPadding;
   }
 
@@ -1135,65 +1135,6 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
    */
   _levelToHeight(level) {
     return this._visibleLevelOffsets[level];
-  }
-
-  /**
-   * @param {!CanvasRenderingContext2D} context
-   * @param {string} text
-   * @param {number} maxWidth
-   * @return {string}
-   */
-  _prepareText(context, text, maxWidth) {
-    var /** @const */ maxLength = 200;
-    if (maxWidth <= 10)
-      return '';
-    if (text.length > maxLength)
-      text = text.trimMiddle(maxLength);
-    var textWidth = this._measureWidth(context, text);
-    if (textWidth <= maxWidth)
-      return text;
-
-    var l = 0;
-    var r = text.length;
-    var lv = 0;
-    var rv = textWidth;
-    while (l < r && lv !== rv && lv !== maxWidth) {
-      var m = Math.ceil(l + (r - l) * (maxWidth - lv) / (rv - lv));
-      var mv = this._measureWidth(context, text.trimMiddle(m));
-      if (mv <= maxWidth) {
-        l = m;
-        lv = mv;
-      } else {
-        r = m - 1;
-        rv = mv;
-      }
-    }
-    text = text.trimMiddle(l);
-    return text !== '\u2026' ? text : '';
-  }
-
-  /**
-   * @param {!CanvasRenderingContext2D} context
-   * @param {string} text
-   * @return {number}
-   */
-  _measureWidth(context, text) {
-    var /** @const */ maxCacheableLength = 200;
-    if (text.length > maxCacheableLength)
-      return context.measureText(text).width;
-
-    var font = context.font;
-    var textWidths = this._textWidth.get(font);
-    if (!textWidths) {
-      textWidths = new Map();
-      this._textWidth.set(font, textWidths);
-    }
-    var width = textWidths.get(text);
-    if (!width) {
-      width = context.measureText(text).width;
-      textWidths.set(text, width);
-    }
-    return width;
   }
 
   _updateBoundaries() {

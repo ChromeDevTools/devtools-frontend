@@ -1024,39 +1024,84 @@ WebInspector.TimelineFlameChartNetworkDataProvider = class extends WebInspector.
    * @param {number} barWidth
    * @param {number} barHeight
    * @param {number} unclippedBarX
-   * @param {number} timeToPixels
+   * @param {number} timeToPixelRatio
    * @return {boolean}
    */
-  decorateEntry(index, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixels) {
-    var minTransferWidthPx = 2;
-    var request = /** @type {!WebInspector.TimelineModel.NetworkRequest} */ (this._requests[index]);
-    var startTime = request.startTime;
-    var endTime = request.endTime;
-    var lastX = unclippedBarX;
-    context.fillStyle = 'hsla(0, 0%, 100%, 0.6)';
-    for (var i = 0; i < request.children.length; ++i) {
-      var event = request.children[i];
-      var t0 = event.startTime;
-      var t1 = event.endTime || event.startTime;
-      var x0 = Math.floor(unclippedBarX + (t0 - startTime) * timeToPixels - 1);
-      var x1 = Math.floor(unclippedBarX + (t1 - startTime) * timeToPixels + 1);
-      if (x0 > lastX)
-        context.fillRect(lastX, barY, x0 - lastX, barHeight);
-      lastX = x1;
+  decorateEntry(index, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixelRatio) {
+    const request = /** @type {!WebInspector.TimelineModel.NetworkRequest} */ (this._requests[index]);
+    if (!request.timing)
+      return false;
+
+    /**
+     * @param {number} time
+     * @return {number}
+     */
+    function timeToPixel(time) {
+      return Math.floor(unclippedBarX + (time - startTime) * timeToPixelRatio);
     }
-    var endX = unclippedBarX + (endTime - startTime) * timeToPixels;
-    if (endX > lastX)
-      context.fillRect(lastX, barY, Math.min(endX - lastX, 1e5), barHeight);
+
+    const minBarWidthPx = 2;
+    const startTime = request.startTime;
+    const endTime = request.endTime;
+    const requestTime = request.timing.requestTime * 1000;
+    const sendStart = Math.max(timeToPixel(requestTime + request.timing.sendStart), unclippedBarX);
+    const headersEnd = Math.max(timeToPixel(requestTime + request.timing.receiveHeadersEnd), sendStart);
+    const finish = Math.max(timeToPixel(request.finishTime || endTime), headersEnd + minBarWidthPx);
+    const end = Math.max(timeToPixel(endTime), finish);
+
+    context.fillStyle = 'hsla(0, 100%, 100%, 0.8)';
+    context.fillRect(sendStart + 0.5, barY + 0.5, headersEnd - sendStart - 0.5, barHeight - 2);
+    context.fillStyle = 'white';
+    context.fillRect(barX, barY - 0.5, sendStart - barX, barHeight);
+    context.fillRect(finish, barY - 0.5, barX + barWidth - finish, barHeight);
+
+    /**
+     * @param {number} begin
+     * @param {number} end
+     * @param {number} y
+     */
+    function drawTick(begin, end, y) {
+      const tickHeightPx = 6;
+      context.moveTo(begin, y - tickHeightPx / 2);
+      context.lineTo(begin, y + tickHeightPx / 2);
+      context.moveTo(begin, y);
+      context.lineTo(end, y);
+    }
+
+    const lineWidth = window.devicePixelRatio;
+    const subpixelOffset = lineWidth & 1 ? 0.5 : 0;
+    context.lineWidth = lineWidth;
+    context.strokeStyle = '#ccc';
+    const lineY = Math.floor(barY + barHeight / 2) + subpixelOffset;
+    const leftTick = Math.floor(unclippedBarX) + subpixelOffset;
+    drawTick(leftTick, sendStart, lineY);
+    const rightTick = end - subpixelOffset;
+    drawTick(rightTick, finish, lineY);
+    context.stroke();
+
     if (typeof request.priority === 'string') {
-      var color = this._colorForPriority(request.priority);
+      const color = this._colorForPriority(request.priority);
       if (color) {
-        context.fillStyle = 'hsl(0, 0%, 100%)';
-        context.fillRect(barX, barY, 4, 4);
         context.fillStyle = color;
-        context.fillRect(barX, barY, 3, 3);
+        context.fillRect(sendStart + 0.5, barY + 0.5, 3.5, 3.5);
       }
     }
-    return false;
+
+    const textStart = Math.max(sendStart, 0);
+    const textWidth = finish - textStart;
+    const minTextWidthPx = 20;
+    const textPadding = 6;
+    if (textWidth >= minTextWidthPx) {
+      const text = this.entryTitle(index);
+      if (text && text.length) {
+        context.fillStyle = '#333';
+        const trimmedText = WebInspector.trimTextMiddle(context, text, textWidth - 2 * textPadding);
+        const textBaseHeight = barHeight - this.textBaseline();
+        context.fillText(trimmedText, textStart + textPadding, barY + textBaseHeight);
+      }
+    }
+
+    return true;
   }
 
   /**

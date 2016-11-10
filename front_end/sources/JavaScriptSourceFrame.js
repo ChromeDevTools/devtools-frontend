@@ -100,6 +100,16 @@ WebInspector.JavaScriptSourceFrame = class extends WebInspector.UISourceCodeFram
         result.push(
             new WebInspector.ToolbarText(WebInspector.UIString('(source mapped from %s)', parsedURL.displayName)));
     }
+
+    if (this.uiSourceCode().project().type() === WebInspector.projectTypes.Snippets) {
+      result.push(new WebInspector.ToolbarSeparator(true));
+      var runSnippet = WebInspector.Toolbar.createActionButtonForId('debugger.run-snippet');
+      runSnippet.setText(WebInspector.isMac() ?
+        WebInspector.UIString('\u2318+Enter') :
+        WebInspector.UIString('Ctrl+Enter'));
+      result.push(runSnippet);
+    }
+
     return result;
   }
 

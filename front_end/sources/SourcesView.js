@@ -51,7 +51,7 @@ WebInspector.SourcesView = class extends WebInspector.VBox {
         this._toolbarEditorActions.appendToolbarItem(actions[i].button(this));
     }
     this._scriptViewToolbar = new WebInspector.Toolbar('', this._toolbarContainerElement);
-    this._toolbarContainerElement.createChild('div', 'sources-toolbar-spacer');
+    this._scriptViewToolbar.element.style.flex = 'auto';
     this._bottomToolbar = new WebInspector.Toolbar('', this._toolbarContainerElement);
 
     WebInspector.startBatchUpdate();

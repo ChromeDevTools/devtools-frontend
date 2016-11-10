@@ -81,6 +81,8 @@ WebInspector.TimelinePanel = class extends WebInspector.Panel {
         WebInspector.settings.createSetting('timelineCaptureLayersAndPictures', false);
     this._captureFilmStripSetting = WebInspector.settings.createSetting('timelineCaptureFilmStrip', false);
 
+    this._markUnusedCSS = WebInspector.settings.createSetting('timelineMarkUnusedCSS', false);
+
     this._panelToolbar = new WebInspector.Toolbar('', this.element);
     this._createToolbarItems();
 
@@ -364,6 +366,12 @@ WebInspector.TimelinePanel = class extends WebInspector.Panel {
       this._panelToolbar.appendToolbarItem(screenshotCheckbox);
     }
 
+    if (Runtime.experiments.isEnabled('timelineRuleUsageRecording')) {
+      this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(
+          WebInspector.UIString('CSS coverage'), this._markUnusedCSS,
+          WebInspector.UIString('Mark unused CSS in souces.')));
+    }
+
     this._captureNetworkSetting.addChangeListener(this._onNetworkChanged, this);
     this._captureMemorySetting.addChangeListener(this._onModeChanged, this);
     this._captureFilmStripSetting.addChangeListener(this._onModeChanged, this);
@@ -574,6 +582,9 @@ WebInspector.TimelinePanel = class extends WebInspector.Panel {
     this._setState(WebInspector.TimelinePanel.State.StartPending);
     this._showRecordingStarted();
 
+    if (Runtime.experiments.isEnabled('timelineRuleUsageRecording') && this._markUnusedCSS.get())
+      WebInspector.CSSModel.fromTarget(mainTarget).startRuleUsageTracking();
+
     this._autoRecordGeneration = userInitiated ? null : Symbol('Generation');
     this._controller = new WebInspector.TimelineController(mainTarget, this, this._tracingModel);
     this._controller.startRecording(
@@ -629,6 +640,9 @@ WebInspector.TimelinePanel = class extends WebInspector.Panel {
   }
 
   _clear() {
+    if (Runtime.experiments.isEnabled('timelineRuleUsageRecording') && this._markUnusedCSS.get())
+      WebInspector.CoverageProfile.instance().reset();
+
     WebInspector.LineLevelProfile.instance().reset();
     this._tracingModel.reset();
     this._model.reset();

@@ -14,6 +14,12 @@
     margin-left: 3px;
 }
 
+.CodeMirror-gutter-coverage {
+    width: 5px;
+    background-color: white;
+    margin-left: 3px;
+}
+
 .CodeMirror .source-frame-eval-expression {
     outline: 0;
     border: 1px solid rgb(163, 41, 34);
@@ -266,6 +272,16 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror .text-editor-line-marker-performance {
     text-align: right;
     padding-right: 3px;
+}
+
+.CodeMirror .text-editor-line-marker-coverage {
+    text-align: right;
+    padding-right: 2px;
+    background-color: darkred;
+}
+
+.CodeMirror .text-editor-line-marker-coverage::after {
+    content: " ";
 }
 
 .CodeMirror .text-editor-line-decoration {

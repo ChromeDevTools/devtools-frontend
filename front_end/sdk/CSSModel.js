@@ -445,17 +445,17 @@ WebInspector.CSSModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @return {!Promise<?Array<!WebInspector.CSSModel.RuleUsage>>}
+   * @return {!Promise<!Array<!WebInspector.CSSModel.RuleUsage>>}
    */
   ruleListPromise() {
     /**
      * @param {?string} error
      * @param {!Array<!Protocol.CSS.RuleUsage>=} ruleUsage
-     * @return {?Array<!WebInspector.CSSModel.RuleUsage>}
+     * @return {!Array<!WebInspector.CSSModel.RuleUsage>}
      */
     function usedRulesCallback(error, ruleUsage) {
       if (error || !ruleUsage)
-        return null;
+        return [];
 
       return ruleUsage.map(rule => ({range: rule.range, styleSheetId: rule.styleSheetId, wasUsed: rule.used}));
     }

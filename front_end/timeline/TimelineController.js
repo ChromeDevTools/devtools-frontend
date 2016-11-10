@@ -1,6 +1,10 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+/** @typedef {!{range: !Protocol.CSS.SourceRange, styleSheetId: !Protocol.CSS.StyleSheetId, wasUsed: boolean}} */
+WebInspector.CSSModel.RuleUsage;
+
 /**
  * @implements {WebInspector.TargetManager.Observer}
  * @implements {WebInspector.TracingManagerClient}
@@ -18,6 +22,9 @@ WebInspector.TimelineController = class {
     this._tracingModel = tracingModel;
     this._targets = [];
     WebInspector.targetManager.observeTargets(this);
+
+    if (Runtime.experiments.isEnabled('timelineRuleUsageRecording'))
+      this._markUnusedCSS = WebInspector.settings.createSetting('timelineMarkUnusedCSS', false);
   }
 
   /**
@@ -74,7 +81,12 @@ WebInspector.TimelineController = class {
     tracingStoppedPromises.push(new Promise(resolve => this._tracingCompleteCallback = resolve));
     tracingStoppedPromises.push(this._stopProfilingOnAllTargets());
     this._target.tracingManager.stop();
-    tracingStoppedPromises.push(WebInspector.targetManager.resumeAllTargets());
+
+    if (!Runtime.experiments.isEnabled('timelineRuleUsageRecording') || !this._markUnusedCSS.get())
+      tracingStoppedPromises.push(WebInspector.targetManager.resumeAllTargets());
+    else
+      this._addUnusedRulesToCoverage();
+
     Promise.all(tracingStoppedPromises).then(() => this._allSourcesFinished());
 
     this._delegate.loadingStarted();
@@ -101,6 +113,31 @@ WebInspector.TimelineController = class {
     this._targets.remove(target, true);
     // FIXME: We'd like to stop profiling on the target and retrieve a profile
     // but it's too late. Backend connection is closed.
+  }
+
+  _addUnusedRulesToCoverage() {
+    var mainTarget = WebInspector.targetManager.mainTarget();
+    if (!mainTarget)
+      return;
+    var cssModel = WebInspector.CSSModel.fromTarget(mainTarget);
+
+    /**
+     * @param {!Array<!WebInspector.CSSModel.RuleUsage>} ruleUsageList
+     */
+    function ruleListReceived(ruleUsageList) {
+
+      for (var rule of ruleUsageList) {
+        if (rule.wasUsed)
+          continue;
+
+        var styleSheetHeader = cssModel.styleSheetHeaderForId(rule.styleSheetId);
+        var url = styleSheetHeader.sourceURL;
+
+        WebInspector.CoverageProfile.instance().appendUnusedRule(url, rule.range);
+      }
+    }
+
+    cssModel.ruleListPromise().then(ruleListReceived);
   }
 
   /**
@@ -160,7 +197,10 @@ WebInspector.TimelineController = class {
    * @param {function(?string)=} callback
    */
   _startRecordingWithCategories(categories, enableJSSampling, callback) {
-    WebInspector.targetManager.suspendAllTargets();
+
+    if (!Runtime.experiments.isEnabled('timelineRuleUsageRecording') || !this._markUnusedCSS.get())
+      WebInspector.targetManager.suspendAllTargets();
+
     var profilingStartedPromise = enableJSSampling && !Runtime.experiments.isEnabled('timelineTracingJSProfile') ?
         this._startProfilingOnAllTargets() :
         Promise.resolve();

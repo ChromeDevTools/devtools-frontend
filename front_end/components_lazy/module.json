@@ -11,13 +11,19 @@
             "type": "@WebInspector.UISourceCodeFrame.LineDecorator",
             "className": "WebInspector.LineLevelProfile.LineDecorator",
             "decoratorType": "performance"
+        },
+        {
+           "type": "@WebInspector.UISourceCodeFrame.LineDecorator",
+           "className": "WebInspector.CoverageProfile.LineDecorator",
+           "decoratorType": "coverage"
         }
     ],
     "scripts": [
         "CookiesTable.js",
         "FilmStripModel.js",
         "FilmStripView.js",
-        "LineLevelProfile.js"
+        "LineLevelProfile.js",
+        "CoverageProfile.js"
     ],
     "resources": [
         "filmStripDialog.css",

@@ -33,13 +33,12 @@
  */
 WebInspector.Settings = class {
   /**
-   * @param {!WebInspector.SettingsStorage} storage
+   * @param {!WebInspector.SettingsStorage} globalStorage
+   * @param {!WebInspector.SettingsStorage} localStorage
    */
-  constructor(storage) {
-    this._settingsStorage = storage;
-    var clearLocalStorage = window.localStorage ? window.localStorage.clear.bind(window.localStorage) : undefined;
-    this._localStorage =
-        new WebInspector.SettingsStorage(window.localStorage || {}, undefined, undefined, clearLocalStorage);
+  constructor(globalStorage, localStorage) {
+    this._settingsStorage = globalStorage;
+    this._localStorage = localStorage;
 
     this._eventSupport = new WebInspector.Object();
     /** @type {!Map<string, !WebInspector.Setting>} */
@@ -141,12 +140,14 @@ WebInspector.SettingsStorage = class {
    * @param {function(string, string)=} setCallback
    * @param {function(string)=} removeCallback
    * @param {function(string)=} removeAllCallback
+   * @param {string=} storagePrefix
    */
-  constructor(object, setCallback, removeCallback, removeAllCallback) {
+  constructor(object, setCallback, removeCallback, removeAllCallback, storagePrefix) {
     this._object = object;
     this._setCallback = setCallback || function() {};
     this._removeCallback = removeCallback || function() {};
     this._removeAllCallback = removeAllCallback || function() {};
+    this._storagePrefix = storagePrefix || '';
   }
 
   /**
@@ -154,6 +155,7 @@ WebInspector.SettingsStorage = class {
    * @param {string} value
    */
   set(name, value) {
+    name = this._storagePrefix + name;
     this._object[name] = value;
     this._setCallback(name, value);
   }
@@ -163,6 +165,7 @@ WebInspector.SettingsStorage = class {
    * @return {boolean}
    */
   has(name) {
+    name = this._storagePrefix + name;
     return name in this._object;
   }
 
@@ -171,6 +174,7 @@ WebInspector.SettingsStorage = class {
    * @return {string}
    */
   get(name) {
+    name = this._storagePrefix + name;
     return this._object[name];
   }
 
@@ -178,6 +182,7 @@ WebInspector.SettingsStorage = class {
    * @param {string} name
    */
   remove(name) {
+    name = this._storagePrefix + name;
     delete this._object[name];
     this._removeCallback(name);
   }

@@ -73,9 +73,14 @@ WebInspector.Main = class {
    */
   _createSettings(prefs) {
     this._initializeExperiments(prefs);
-    WebInspector.settings = new WebInspector.Settings(new WebInspector.SettingsStorage(
+    var storagePrefix = WebInspector.isCustomDevtoolsFrontend() ? '__custom__' : '';
+    var clearLocalStorage = window.localStorage ? window.localStorage.clear.bind(window.localStorage) : undefined;
+    var localStorage =
+        new WebInspector.SettingsStorage(window.localStorage || {}, undefined, undefined, clearLocalStorage, storagePrefix);
+    var globalStorage = new WebInspector.SettingsStorage(
         prefs, InspectorFrontendHost.setPreference, InspectorFrontendHost.removePreference,
-        InspectorFrontendHost.clearPreferences));
+        InspectorFrontendHost.clearPreferences, storagePrefix);
+    WebInspector.settings = new WebInspector.Settings(globalStorage, localStorage);
 
     if (!InspectorFrontendHost.isUnderTest())
       new WebInspector.VersionController().updateVersion();

@@ -55,6 +55,15 @@ WebInspector.isWin = function() {
 };
 
 /**
+ * @return {boolean}
+ */
+WebInspector.isCustomDevtoolsFrontend = function() {
+  if (typeof WebInspector._isCustomDevtoolsFronend === 'undefined')
+    WebInspector._isCustomDevtoolsFronend = window.location.toString().startsWith('chrome-devtools://devtools/custom/');
+  return WebInspector._isCustomDevtoolsFronend;
+};
+
+/**
  * @return {string}
  */
 WebInspector.fontFamily = function() {

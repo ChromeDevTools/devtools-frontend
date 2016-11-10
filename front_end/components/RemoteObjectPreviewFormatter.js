@@ -46,6 +46,20 @@ WebInspector.RemoteObjectPreviewFormatter = class {
     var properties = preview.properties;
     if (isArray)
       properties = properties.slice().stableSort(compareIndexesFirst);
+    else
+      properties = properties.slice().stableSort(compareFunctionsLast);
+
+    /**
+     * @param {!RuntimeAgent.PropertyPreview} a
+     * @param {!RuntimeAgent.PropertyPreview} b
+     */
+    function compareFunctionsLast(a, b) {
+      if (a.type !== 'function' && b.type === 'function')
+        return -1;
+      if (a.type === 'function' && b.type !== 'function')
+        return 1;
+      return 0;
+    }
 
     /**
      * @param {!Protocol.Runtime.PropertyPreview} a

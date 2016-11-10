@@ -78,12 +78,10 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
    */
   _onBindingCreated(event) {
     var binding = /** @type {!WebInspector.PersistenceBinding} */ (event.data);
+    this._updateFileTitle(binding.network);
+
     var networkTabId = this._tabIds.get(binding.network);
     var fileSystemTabId = this._tabIds.get(binding.fileSystem);
-
-    if (networkTabId)
-      this._tabbedPane.changeTabTitle(
-          networkTabId, this._titleForFile(binding.fileSystem), this._tooltipForFile(binding.fileSystem));
     if (!fileSystemTabId)
       return;
 
@@ -111,9 +109,12 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
    */
   _onBindingRemoved(event) {
     var binding = /** @type {!WebInspector.PersistenceBinding} */ (event.data);
+    this._updateFileTitle(binding.network);
+
     var networkTabId = this._tabIds.get(binding.network);
     if (!networkTabId)
       return;
+
     var tabIndex = this._tabbedPane.tabIndex(networkTabId);
     var wasSelected = this._currentFile === binding.network;
     var fileSystemTabId = this._appendFileTab(binding.fileSystem, false, tabIndex);

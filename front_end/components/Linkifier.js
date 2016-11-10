@@ -35,14 +35,45 @@
 WebInspector.Linkifier = class {
   /**
    * @param {number=} maxLengthForDisplayedURLs
+   * @param {boolean=} useLinkDecorator
    */
-  constructor(maxLengthForDisplayedURLs) {
+  constructor(maxLengthForDisplayedURLs, useLinkDecorator) {
     this._maxLength = maxLengthForDisplayedURLs || WebInspector.Linkifier.MaxLengthForDisplayedURLs;
     /** @type {!Map<!WebInspector.Target, !Array<!Element>>} */
     this._anchorsByTarget = new Map();
     /** @type {!Map<!WebInspector.Target, !WebInspector.LiveLocationPool>} */
     this._locationPoolByTarget = new Map();
+    this._useLinkDecorator = true;
+    WebInspector.Linkifier._instances.add(this);
     WebInspector.targetManager.observeTargets(this);
+  }
+
+  /**
+   * @param {!WebInspector.LinkDecorator} decorator
+   */
+  static setLinkDecorator(decorator) {
+    console.assert(!WebInspector.Linkifier._decorator, 'Cannot re-register link decorator.');
+    WebInspector.Linkifier._decorator = decorator;
+    decorator.addEventListener(WebInspector.LinkDecorator.Events.LinkIconChanged, onLinkIconChanged);
+    for (var linkifier of WebInspector.Linkifier._instances)
+      linkifier._updateAllAnchorDecorations();
+
+    /**
+     * @param {!WebInspector.Event} event
+     */
+    function onLinkIconChanged(event) {
+      var uiSourceCode = /** @type {!WebInspector.UISourceCode} */(event.data);
+      var links = uiSourceCode[WebInspector.Linkifier._sourceCodeAnchors] || [];
+      for (var link of links)
+        WebInspector.Linkifier._updateLinkDecorations(link);
+    }
+  }
+
+  _updateAllAnchorDecorations() {
+    for (var anchors of this._anchorsByTarget.values()) {
+      for (var anchor of anchors)
+        WebInspector.Linkifier._updateLinkDecorations(anchor);
+    }
   }
 
   /**
@@ -81,6 +112,7 @@ WebInspector.Linkifier = class {
       a.href = fallbackHref;
       a.lineNumber = fallbackLineNumber;
     }
+
     /**
      * @param {!Event} event
      * @this {Object}
@@ -103,6 +135,37 @@ WebInspector.Linkifier = class {
    */
   static uiLocationByAnchor(anchor) {
     return anchor[WebInspector.Linkifier._uiLocationSymbol];
+  }
+
+  /**
+   * @param {!Element} anchor
+   * @param {!WebInspector.UILocation} uiLocation
+   */
+  static _bindUILocation(anchor, uiLocation) {
+    anchor[WebInspector.Linkifier._uiLocationSymbol] = uiLocation;
+    if (!uiLocation)
+      return;
+    var uiSourceCode = uiLocation.uiSourceCode;
+    var sourceCodeAnchors = uiSourceCode[WebInspector.Linkifier._sourceCodeAnchors];
+    if (!sourceCodeAnchors) {
+      sourceCodeAnchors = new Set();
+      uiSourceCode[WebInspector.Linkifier._sourceCodeAnchors] = sourceCodeAnchors;
+    }
+    sourceCodeAnchors.add(anchor);
+  }
+
+  /**
+   * @param {!Element} anchor
+   */
+  static _unbindUILocation(anchor) {
+    if (!anchor[WebInspector.Linkifier._uiLocationSymbol])
+      return;
+
+    var uiSourceCode = anchor[WebInspector.Linkifier._uiLocationSymbol].uiSourceCode;
+    anchor[WebInspector.Linkifier._uiLocationSymbol] = null;
+    var sourceCodeAnchors = uiSourceCode[WebInspector.Linkifier._sourceCodeAnchors];
+    if (sourceCodeAnchors)
+      sourceCodeAnchors.delete(anchor);
   }
 
   /**
@@ -145,6 +208,7 @@ WebInspector.Linkifier = class {
     var anchors = this._anchorsByTarget.remove(target);
     for (var anchor of anchors) {
       delete anchor[WebInspector.Linkifier._liveLocationSymbol];
+      WebInspector.Linkifier._unbindUILocation(anchor);
       var fallbackAnchor = anchor[WebInspector.Linkifier._fallbackAnchorSymbol];
       if (fallbackAnchor) {
         anchor.href = fallbackAnchor.href;
@@ -281,7 +345,7 @@ WebInspector.Linkifier = class {
    * @param {!Element} anchor
    */
   disposeAnchor(target, anchor) {
-    delete anchor[WebInspector.Linkifier._uiLocationSymbol];
+    WebInspector.Linkifier._unbindUILocation(anchor);
     delete anchor[WebInspector.Linkifier._fallbackAnchorSymbol];
     var liveLocation = anchor[WebInspector.Linkifier._liveLocationSymbol];
     if (liveLocation)
@@ -295,6 +359,8 @@ WebInspector.Linkifier = class {
    */
   _createAnchor(classes) {
     var anchor = createElement('a');
+    if (this._useLinkDecorator)
+      anchor[WebInspector.Linkifier._enableDecoratorSymbol] = true;
     anchor.className = (classes || '') + ' webkit-html-resource-link';
 
     /**
@@ -325,6 +391,7 @@ WebInspector.Linkifier = class {
     for (var target of this._anchorsByTarget.keysArray())
       this.targetRemoved(target);
     WebInspector.targetManager.unobserveTargets(this);
+    WebInspector.Linkifier._instances.delete(this);
   }
 
   /**
@@ -332,19 +399,12 @@ WebInspector.Linkifier = class {
    * @param {!WebInspector.LiveLocation} liveLocation
    */
   _updateAnchor(anchor, liveLocation) {
+    WebInspector.Linkifier._unbindUILocation(anchor);
     var uiLocation = liveLocation.uiLocation();
     if (!uiLocation)
       return;
-    anchor[WebInspector.Linkifier._uiLocationSymbol] = uiLocation;
-    this._formatLiveAnchor(anchor, uiLocation, liveLocation.isBlackboxed());
-  }
 
-  /**
-   * @param {!Element} anchor
-   * @param {!WebInspector.UILocation} uiLocation
-   * @param {boolean} isBlackboxed
-   */
-  _formatLiveAnchor(anchor, uiLocation, isBlackboxed) {
+    WebInspector.Linkifier._bindUILocation(anchor, uiLocation);
     var text = uiLocation.linkText();
     text = text.replace(/([a-f0-9]{7})[a-f0-9]{13}[a-f0-9]*/g, '$1\u2026');
     if (this._maxLength)
@@ -355,11 +415,39 @@ WebInspector.Linkifier = class {
     if (typeof uiLocation.lineNumber === 'number')
       titleText += ':' + (uiLocation.lineNumber + 1);
     anchor.title = titleText;
+    anchor.classList.toggle('webkit-html-blackbox-link', liveLocation.isBlackboxed());
+    WebInspector.Linkifier._updateLinkDecorations(anchor);
+  }
 
-    anchor.classList.toggle('webkit-html-blackbox-link', isBlackboxed);
+  /**
+   * @param {!Element} anchor
+   */
+  static _updateLinkDecorations(anchor) {
+    if (!anchor[WebInspector.Linkifier._enableDecoratorSymbol])
+      return;
+    var uiLocation = anchor[WebInspector.Linkifier._uiLocationSymbol];
+    if (!WebInspector.Linkifier._decorator || !uiLocation)
+      return;
+    var icon = anchor[WebInspector.Linkifier._iconSymbol];
+    if (icon)
+      icon.remove();
+    icon = WebInspector.Linkifier._decorator.linkIcon(uiLocation.uiSourceCode);
+    if (icon) {
+      icon.style.setProperty('margin-right', '2px');
+      anchor.insertBefore(icon, anchor.firstChild);
+    }
+    anchor[WebInspector.Linkifier._iconSymbol] = icon;
   }
 };
 
+/** @type {!Set<!WebInspector.Linkifier>} */
+WebInspector.Linkifier._instances = new Set();
+/** @type {?WebInspector.LinkDecorator} */
+WebInspector.Linkifier._decorator = null;
+
+WebInspector.Linkifier._iconSymbol = Symbol('Linkifier.iconSymbol');
+WebInspector.Linkifier._enableDecoratorSymbol = Symbol('Linkifier.enableIconsSymbol');
+WebInspector.Linkifier._sourceCodeAnchors = Symbol('Linkifier.anchors');
 WebInspector.Linkifier._uiLocationSymbol = Symbol('uiLocation');
 WebInspector.Linkifier._fallbackAnchorSymbol = Symbol('fallbackAnchor');
 WebInspector.Linkifier._liveLocationSymbol = Symbol('liveLocation');
@@ -392,6 +480,23 @@ WebInspector.Linkifier.LinkHandler.prototype = {
   handleLink: function(url, lineNumber) {}
 };
 
+/**
+ * @extends {WebInspector.EventTarget}
+ * @interface
+ */
+WebInspector.LinkDecorator = function() {};
+
+WebInspector.LinkDecorator.prototype = {
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @return {?WebInspector.Icon}
+   */
+  linkIcon: function(uiSourceCode) {}
+};
+
+WebInspector.LinkDecorator.Events = {
+  LinkIconChanged: Symbol('LinkIconChanged')
+};
 
 /**
  * @param {string} string

@@ -17,12 +17,15 @@ WebInspector.Persistence = class extends WebInspector.Object {
     /** @type {!Map<string, number>} */
     this._filePathPrefixesToBindingCount = new Map();
 
-    if (Runtime.experiments.isEnabled('persistence2'))
+    if (Runtime.experiments.isEnabled('persistence2')) {
+      var linkDecorator = new WebInspector.PersistenceUtils.LinkDecorator(this);
+      WebInspector.Linkifier.setLinkDecorator(linkDecorator);
       this._mapping =
           new WebInspector.Automapping(workspace, this._onBindingCreated.bind(this), this._onBindingRemoved.bind(this));
-    else
+    } else {
       this._mapping = new WebInspector.DefaultMapping(
           workspace, fileSystemMapping, this._onBindingCreated.bind(this), this._onBindingRemoved.bind(this));
+    }
   }
 
   /**

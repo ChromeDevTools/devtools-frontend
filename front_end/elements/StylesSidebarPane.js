@@ -40,7 +40,7 @@ WebInspector.StylesSidebarPane = class extends WebInspector.ElementsSidebarPane 
 
     this._sectionsContainer = this.element.createChild('div');
     this._swatchPopoverHelper = new WebInspector.SwatchPopoverHelper();
-    this._linkifier = new WebInspector.Linkifier(WebInspector.StylesSidebarPane._maxLinkLength);
+    this._linkifier = new WebInspector.Linkifier(WebInspector.StylesSidebarPane._maxLinkLength, /* useLinkDecorator */ true);
 
     this.element.classList.add('styles-pane');
 

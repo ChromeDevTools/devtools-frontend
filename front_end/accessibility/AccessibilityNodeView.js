@@ -217,7 +217,7 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
    * @param {number} index
    */
   appendRelatedNode(relatedNode, index) {
-    var deferredNode = new WebInspector.DeferredDOMNode(this._axNode.target(), relatedNode.backendNodeId);
+    var deferredNode = new WebInspector.DeferredDOMNode(this._axNode.target(), relatedNode.backendDOMNodeId);
     var nodeTreeElement = new WebInspector.AXRelatedNodeSourceTreeElement({deferredNode: deferredNode}, relatedNode);
     this.appendChild(nodeTreeElement);
   }
@@ -226,7 +226,7 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
    * @param {!Protocol.Accessibility.AXRelatedNode} relatedNode
    */
   appendRelatedNodeInline(relatedNode) {
-    var deferredNode = new WebInspector.DeferredDOMNode(this._axNode.target(), relatedNode.backendNodeId);
+    var deferredNode = new WebInspector.DeferredDOMNode(this._axNode.target(), relatedNode.backendDOMNodeId);
     var linkedNode = new WebInspector.AXRelatedNodeElement({deferredNode: deferredNode}, relatedNode);
     this.listItemElement.appendChild(linkedNode.render());
   }
@@ -337,7 +337,7 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
    * @param {string} idref
    */
   appendRelatedNodeWithIdref(relatedNode, index, idref) {
-    var deferredNode = new WebInspector.DeferredDOMNode(this._axNode.target(), relatedNode.backendNodeId);
+    var deferredNode = new WebInspector.DeferredDOMNode(this._axNode.target(), relatedNode.backendDOMNodeId);
     var nodeTreeElement =
         new WebInspector.AXRelatedNodeSourceTreeElement({deferredNode: deferredNode, idref: idref}, relatedNode);
     this.appendChild(nodeTreeElement);

@@ -63,6 +63,7 @@ span.ax-internal-role {
 
 .ax-tree-ignored-node {
     font-style: italic;
+    opacity: 0.7;
 }
 
 .tree-outline li {
@@ -77,6 +78,40 @@ span.ax-internal-role {
 .tree-outline li.invalid {
     position: relative;
     left: -2px;
+}
+
+.tree-outline li.inspected::after {
+    -webkit-mask-image: url(Images/smallIcons.png);
+    -webkit-mask-size: 190px 30px;
+    -webkit-mask-position: -180px 0;
+    background-color: rgb(74, 139, 238);
+    content: "";
+    position: relative;
+    left: 4px;
+    top: 1px;
+    width: 10px;
+    height: 10px;
+    transform: rotate(180deg);
+}
+
+.tree-outline:focus li.inspected.selected::after {
+    background-color: white;
+}
+
+.tree-outline li.selected .selection {
+    background-color: inherit;
+}
+
+.tree-outline li.no-dom-node {
+    opacity: 0.5;
+}
+
+.tree-outline li.children-unloaded::before {
+    opacity: 0.2;
+}
+
+.tree-outline li.partially-expanded::before {
+    -webkit-mask-position: -19px -108px;
 }
 
 .invalid {
@@ -111,4 +146,44 @@ span.ax-value-undefined {
 
 .sidebar-pane-stack .sidebar-pane {
     padding-left: 4px;
+}
+
+button.expand-siblings {
+    border-radius: 1px;
+    background-color: #f3f3f3;
+    border: 1px solid #ddd;
+    margin-left: 5px;
+    margin-bottom: 1px;
+    font-size: 11px;
+}
+
+li.siblings-expanded button.expand-siblings {
+    display: none;
+}
+
+.tree-outline li:hover .inspect-dom-node {
+    display: initial;
+}
+
+.tree-outline li.no-dom-node:hover .inspect-dom-node,
+.tree-outline li.inspected:hover .inspect-dom-node {
+    display: none;
+}
+
+button.inspect-dom-node {
+    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
+    -webkit-mask-position: -10px -127px;
+    background-color: #5a5a5a;
+    width: 11px;
+    height: 11px;
+    padding: 0;
+    margin-left: 5px;
+    border: 0;
+    display: none;
+    position: relative;
+    top: 2px;
+}
+
+.tree-outline:focus li.selected button.inspect-dom-node {
+    background-color: white;
 }

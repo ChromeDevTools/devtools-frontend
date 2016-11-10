@@ -29,22 +29,23 @@ WebInspector.AccessibilitySidebarView = class extends WebInspector.ThrottledWidg
   }
 
   /**
-   * @param {?Array<!WebInspector.AccessibilityNode>} nodes
+   * @param {?WebInspector.AccessibilityNode} axNode
    */
-  accessibilityNodeCallback(nodes) {
-    if (!nodes)
+  accessibilityNodeCallback(axNode) {
+    if (!axNode)
       return;
 
-    var currentAXNode = nodes[0];
-    if (currentAXNode.ignored)
+    this._axNode = axNode;
+
+    if (axNode.ignored())
       this._sidebarPaneStack.removeView(this._ariaSubPane);
     else
       this._sidebarPaneStack.showView(this._ariaSubPane, this._axNodeSubPane);
 
     if (this._axNodeSubPane)
-      this._axNodeSubPane.setAXNode(currentAXNode);
+      this._axNodeSubPane.setAXNode(axNode);
     if (this._treeSubPane)
-      this._treeSubPane.setAXNodeAndAncestors(nodes);
+      this._treeSubPane.setAXNode(axNode);
   }
 
   /**
@@ -57,9 +58,14 @@ WebInspector.AccessibilitySidebarView = class extends WebInspector.ThrottledWidg
     this._treeSubPane.setNode(node);
     this._axNodeSubPane.setNode(node);
     this._ariaSubPane.setNode(node);
-    return WebInspector.AccessibilityModel.fromTarget(node.target()).getAXNodeChain(node).then((nodes) => {
-      this.accessibilityNodeCallback(nodes);
-    });
+    if (!node)
+      return Promise.resolve();
+    var accessibilityModel = WebInspector.AccessibilityModel.fromTarget(node.target());
+    accessibilityModel.clear();
+    return accessibilityModel.requestPartialAXTree(node)
+        .then(() => {
+          this.accessibilityNodeCallback(accessibilityModel.axNodeForDOMNode(node));
+        });
   }
 
   /**

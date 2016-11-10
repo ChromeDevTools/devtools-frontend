@@ -252,12 +252,20 @@ WebInspector.ConsolePrompt = class extends WebInspector.Widget {
    * @param {!WebInspector.TextRange} queryRange
    * @param {!WebInspector.TextRange} substituteRange
    * @param {boolean=} force
+   * @param {string=} currentTokenType
    * @return {!Promise<!WebInspector.SuggestBox.Suggestions>}
    */
-  _wordsWithQuery(queryRange, substituteRange, force) {
+  _wordsWithQuery(queryRange, substituteRange, force, currentTokenType) {
     var query = this._editor.text(queryRange);
     var before = this._editor.text(new WebInspector.TextRange(0, 0, queryRange.startLine, queryRange.startColumn));
     var historyWords = this._historyCompletions(query, force);
+
+    var excludedTokens = new Set(['js-comment', 'js-string-2']);
+    if (!before.endsWith('['))
+      excludedTokens.add('js-string');
+    if (excludedTokens.has(currentTokenType))
+      return Promise.resolve(historyWords);
+
     return WebInspector.JavaScriptAutocomplete.completionsForTextInCurrentContext(before, query, force)
         .then(innerWordsWithQuery);
     /**

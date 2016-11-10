@@ -58,14 +58,6 @@ WebInspector.TimelineJSProfileProcessor = class {
 
     /**
      * @param {!WebInspector.TracingModel.Event} e
-     * @return {number}
-     */
-    function eventEndTime(e) {
-      return e.endTime || e.startTime;
-    }
-
-    /**
-     * @param {!WebInspector.TracingModel.Event} e
      * @return {boolean}
      */
     function isJSInvocationEvent(e) {
@@ -141,13 +133,12 @@ WebInspector.TimelineJSProfileProcessor = class {
       if (lockedJsStackDepth.length) {
         var lockedDepth = lockedJsStackDepth.peekLast();
         if (depth < lockedDepth) {
-          console.error(
-              'Child stack is shallower (' + depth + ') than the parent stack (' + lockedDepth + ') at ' + time);
+          console.error(`Child stack is shallower (${depth}) than the parent stack (${lockedDepth}) at ${time}`);
           depth = lockedDepth;
         }
       }
       if (jsFramesStack.length < depth) {
-        console.error('Trying to truncate higher than the current stack size at ' + time);
+        console.error(`Trying to truncate higher than the current stack size at ${time}`);
         depth = jsFramesStack.length;
       }
       for (var k = 0; k < jsFramesStack.length; ++k)
@@ -177,31 +168,26 @@ WebInspector.TimelineJSProfileProcessor = class {
      * @param {!WebInspector.TracingModel.Event} e
      */
     function extractStackTrace(e) {
-      var recordTypes = WebInspector.TimelineModel.RecordType;
-      var callFrames;
-      if (e.name === recordTypes.JSSample) {
-        var eventData = e.args['data'] || e.args['beginData'];
-        callFrames = /** @type {!Array<!Protocol.Runtime.CallFrame>} */ (eventData && eventData['stackTrace']);
-      } else {
-        callFrames = /** @type {!Array<!Protocol.Runtime.CallFrame>} */ (
-            jsFramesStack.map(frameEvent => frameEvent.args['data']).reverse());
-      }
+      const recordTypes = WebInspector.TimelineModel.RecordType;
+      /** @type {!Array<!Protocol.Runtime.CallFrame>} */
+      const callFrames = e.name === recordTypes.JSSample
+        ? e.args['data']['stackTrace'].slice().reverse()
+        : jsFramesStack.map(frameEvent => frameEvent.args['data']);
       filterStackFrames(callFrames);
-      var endTime = eventEndTime(e);
-      var numFrames = callFrames.length;
-      var minFrames = Math.min(numFrames, jsFramesStack.length);
+      const endTime = e.endTime || e.startTime;
+      const minFrames = Math.min(callFrames.length, jsFramesStack.length);
       var i;
       for (i = lockedJsStackDepth.peekLast() || 0; i < minFrames; ++i) {
-        var newFrame = callFrames[numFrames - 1 - i];
-        var oldFrame = jsFramesStack[i].args['data'];
+        const newFrame = callFrames[i];
+        const oldFrame = jsFramesStack[i].args['data'];
         if (!equalFrames(newFrame, oldFrame))
           break;
         jsFramesStack[i].setEndTime(Math.max(jsFramesStack[i].endTime, endTime));
       }
       truncateJSStack(i, e.startTime);
-      for (; i < numFrames; ++i) {
-        var frame = callFrames[numFrames - 1 - i];
-        var jsFrameEvent = new WebInspector.TracingModel.Event(
+      for (; i < callFrames.length; ++i) {
+        const frame = callFrames[i];
+        const jsFrameEvent = new WebInspector.TracingModel.Event(
             WebInspector.TracingModel.DevToolsTimelineEventCategory, recordTypes.JSFrame,
             WebInspector.TracingModel.Phase.Complete, e.startTime, e.thread);
         jsFrameEvent.ordinal = e.ordinal;

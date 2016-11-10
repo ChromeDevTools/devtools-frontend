@@ -58,8 +58,13 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
     var mappingsHeader = this.contentElement.createChild('div', 'file-system-header');
     mappingsHeader.createChild('div', 'file-system-header-text').textContent = WebInspector.UIString('Mappings');
     if (Runtime.experiments.isEnabled('persistence2')) {
-      mappingsPlaceholder.textContent =
-          WebInspector.UIString('Mappings are inferred automatically via the \'Persistence 2.0\' experiment.');
+      var div = mappingsPlaceholder.createChild('div');
+      div.createTextChild(
+          WebInspector.UIString('Mappings are inferred automatically via the \'Persistence 2.0\' experiment. Please '));
+      div.appendChild(WebInspector.linkifyURLAsNode(
+          'https://bugs.chromium.org/p/chromium/issues/entry?template=Defect%20report%20from%20user&components=Platform%3EDevTools%3EAuthoring&comment=DevTools%20failed%20to%20link%20network%20resource%20to%20filesystem.%0A%0APlatform%3A%20%3CLinux%2FWin%2FMac%3E%0AChrome%20version%3A%20%3Cyour%20chrome%20version%3E%0A%0AWhat%20are%20the%20details%20of%20your%20project%3F%0A-%20Source%20code%20(if%20any)%3A%20http%3A%2F%2Fgithub.com%2Fexample%2Fexample%0A-%20Build%20System%3A%20gulp%2Fgrunt%2Fwebpack%2Frollup%2F...%0A-%20HTTP%20server%3A%20node%20HTTP%2Fnginx%2Fapache...%0A%0AAssets%20failed%20to%20link%20(or%20incorrectly%20linked)%3A%0A1.%0A2.%0A3.%0A%0AIf%20possible%2C%20please%20attach%20a%20screenshot%20of%20network%20sources%20navigator%20which%20should%0Ashow%20which%20resources%20failed%20to%20map',
+          WebInspector.UIString('report'), undefined, true));
+      div.createTextChild(WebInspector.UIString(' any bugs.'));
     } else {
       mappingsPlaceholder.textContent = WebInspector.UIString('No mappings');
       mappingsHeader.appendChild(

@@ -275,7 +275,7 @@
             "type": "setting",
             "category": "Appearance",
             "title": "Enable Ctrl + 1-9 shortcut to switch panels",
-            "title-mac": "Enable Cmd + 1-9 shortcut to switch panels",
+            "title-mac": "Enable \u2318 + 1-9 shortcut to switch panels",
             "settingName": "shortcutPanelSwitch",
             "settingType": "boolean",
             "defaultValue": false

@@ -26,7 +26,7 @@ WebInspector.SourcesView = class extends WebInspector.VBox {
     /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.Widget>} */
     this._sourceViewByUISourceCode = new Map();
 
-    var tabbedEditorPlaceholderText = WebInspector.isMac() ? WebInspector.UIString('Hit Cmd+P to open a file') :
+    var tabbedEditorPlaceholderText = WebInspector.isMac() ? WebInspector.UIString('Hit \u2318+P to open a file') :
                                                              WebInspector.UIString('Hit Ctrl+P to open a file');
     this._editorContainer = new WebInspector.TabbedEditorContainer(
         this, WebInspector.settings.createLocalSetting('previouslyViewedFiles', []), tabbedEditorPlaceholderText);

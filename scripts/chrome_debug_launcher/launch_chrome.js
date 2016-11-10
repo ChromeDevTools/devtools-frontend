@@ -7,15 +7,31 @@ var fs = require("fs");
 var path = require("path");
 var shell = childProcess.execSync;
 
-var remoteDebuggingPort = parseInt(process.env.REMOTE_DEBUGGING_PORT, 10) || 9222;
-var serverPort = parseInt(process.env.PORT, 10) || 8090;
+var utils = require("../utils");
+
+var REMOTE_DEBUGGING_PORT = parseInt(process.env.REMOTE_DEBUGGING_PORT, 10) || 9222;
+var SERVER_PORT = parseInt(process.env.PORT, 10) || 8090;
+var CHROMIUM_DEFAULT_PATH = path.resolve(__dirname, "..", "..", "..", "..", "..", "..", "out", "Release", "chrome");
+var CHROME_PROFILE_PATH = path.resolve(__dirname, "..", "..", ".dev_profile");
+
+var Flags = {
+    RESET_PROFILE: "--reset-profile",
+};
+
+if (utils.includes(process.argv, Flags.RESET_PROFILE)) {
+    console.log(`Removing your dev profile for Chrome Canary / Chromium at:`);
+    console.log(CHROME_PROFILE_PATH, "\n");
+    utils.removeRecursive(CHROME_PROFILE_PATH);
+}
 
 var chromeArgs = [
-    `--remote-debugging-port=${remoteDebuggingPort}`,
-    `--custom-devtools-frontend=http://localhost:${serverPort}/front_end/`,
+    `--remote-debugging-port=${REMOTE_DEBUGGING_PORT}`,
+    `--custom-devtools-frontend=http://localhost:${SERVER_PORT}/front_end/`,
     `--no-first-run`,
-    `http://localhost:${remoteDebuggingPort}#custom=true&experiments=true`,
-    `https://devtools.chrome.com`
+    '--enable-devtools-experiments',
+    `http://localhost:${REMOTE_DEBUGGING_PORT}#custom=true&experiments=true`,
+    `https://devtools.chrome.com`,
+    `--user-data-dir=${CHROME_PROFILE_PATH}`
 ].concat(process.argv.slice(2));
 
 if (process.platform === "win32") {
@@ -55,19 +71,24 @@ function launchChromeMac()
     var lsregister = "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister";
     var chromeCanaryPath = shellOutput(`${lsregister} -dump | grep -i 'applications/google chrome canary.app$' | awk '{$1=""; print $0}' | head -n 1`);
     var chromeCanaryExecPath = `${chromeCanaryPath}/Contents/MacOS/Google Chrome Canary`;
-    var tmpProfileDir = shellOutput("mktemp -d -t devtools");
-    chromeArgs.push(`--user-data-dir=${tmpProfileDir}`);
-    launchChrome(chromeCanaryExecPath, chromeArgs, () => shell(`rm -r ${tmpProfileDir}`));
+    launchChrome(chromeCanaryExecPath, chromeArgs);
 }
 
 function launchChromeLinux()
 {
-    var tmpProfileDir = shellOutput("mktemp -d -t devtools.XXXXXXXXXX");
-    chromeArgs.push(`--user-data-dir=${tmpProfileDir}`);
-    launchChrome(process.env.CHROMIUM_PATH, chromeArgs, () => shell(`rm -r ${tmpProfileDir}`));
+    var chromiumPath;
+    if (utils.isFile(process.env.CHROMIUM_PATH))
+        chromiumPath = process.env.CHROMIUM_PATH;
+    else if (utils.isFile(CHROMIUM_DEFAULT_PATH)) {
+        chromiumPath = CHROMIUM_DEFAULT_PATH;
+    } else {
+        onLaunchChromeError();
+        return;
+    }
+    launchChrome(chromiumPath, chromeArgs);
 }
 
-function launchChrome(filePath, chromeArgs, cleanup)
+function launchChrome(filePath, chromeArgs)
 {
     console.log(`Launching Chrome from ${filePath}`);
     console.log("Chrome args:", chromeArgs.join(" "), "\n");
@@ -78,16 +99,12 @@ function launchChrome(filePath, chromeArgs, cleanup)
         });
     } catch (error) {
         onLaunchChromeError();
-        if (cleanup)
-            cleanup();
         return;
     }
     child.on("error", onLaunchChromeError);
     child.on("exit", onExit);
     function onExit(code)
     {
-        if (cleanup)
-            cleanup();
         console.log("Exited Chrome with code", code);
     }
 }
@@ -95,10 +112,11 @@ function launchChrome(filePath, chromeArgs, cleanup)
 function onLaunchChromeError()
 {
     if (process.platform !== "linux") {
-        console.log("Cannot find Chrome Canary on your computer");
+        console.log("ERROR: Cannot find Chrome Canary on your computer");
         console.log("Install Chome Canary at:");
         console.log("https://www.google.com/chrome/browser/canary.html\n");
     } else {
+        console.log("ERROR: Could not launch Chromium");
         console.log("The environment variable CHROMIUM_PATH must be set to executable of a build of Chromium");
         console.log("If you do not have a recent build of chromium, you can get one from:");
         console.log("https://download-chromium.appspot.com/\n");

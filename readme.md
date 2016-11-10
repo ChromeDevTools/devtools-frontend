@@ -30,6 +30,15 @@ The frontend is available through a git subtree mirror on [chromium.googlesource
 > npm run chrome -- https://news.ycombinator.com
 > ```
 > (e.g. this launches Hacker News on startup)
+>
+> If you want to reset your development profile for Chrome, pass in "--reset-profile":
+> ```
+> npm start -- --reset-profile
+> ```
+> *OR*
+> ```
+> npm run chrome -- --reset-profile
+> ```
 
 ### Hacking
 * DevTools documentation: [devtools.chrome.com](https://devtools.chrome.com)

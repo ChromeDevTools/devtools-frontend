@@ -5,5 +5,5 @@
 var childProcess = require("child_process");
 var path = require("path");
 
-childProcess.fork(path.join(__dirname, "chrome_debug_launcher/launch_chrome.js"));
+childProcess.fork(path.join(__dirname, "chrome_debug_launcher/launch_chrome.js"), process.argv.slice(2));
 childProcess.fork(path.join(__dirname, "hosted_mode/server.js"));

@@ -402,7 +402,7 @@ WebInspector.linkifyStringAsFragmentWithCustomLinkifier = function(string, linki
   var container = createDocumentFragment();
   var linkStringRegEx =
       /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/|data:|www\.)[\w$\-_+*'=\|\/\\(){}[\]^%@&#~,:;.!?]{2,}[\w$\-_+*=\|\/\\({^%@&#~]/;
-  var pathLineRegex = /(?:\/[\/\w\.-]+)+\:[\d]+/;
+  var pathLineRegex = /(?:\/[\w\.-]*)+\:[\d]+/;
 
   while (string && string.length < WebInspector.Linkifier.MaxLengthToIgnoreLinkifier) {
     var linkString = linkStringRegEx.exec(string) || pathLineRegex.exec(string);

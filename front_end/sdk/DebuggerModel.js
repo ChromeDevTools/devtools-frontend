@@ -280,6 +280,31 @@ WebInspector.DebuggerModel = class extends WebInspector.SDKModel {
   }
 
   /**
+   * @param {!WebInspector.DebuggerModel.Location} startLocation
+   * @param {!WebInspector.DebuggerModel.Location} endLocation
+   * @return {!Promise<!Array<!WebInspector.DebuggerModel.Location>>}
+   */
+  getPossibleBreakpoints(startLocation, endLocation) {
+    var fulfill;
+    var promise = new Promise(resolve => fulfill = resolve);
+    this._agent.getPossibleBreakpoints(startLocation.payload(), endLocation.payload(), checkErrorAndReturn.bind(this));
+    return promise;
+
+    /**
+     * @this {!WebInspector.DebuggerModel}
+     * @param {?Protocol.Error} error
+     * @param {?Array<!Protocol.Debugger.Location>} locations
+     */
+    function checkErrorAndReturn(error, locations) {
+      if (error || !locations) {
+        fulfill([]);
+        return;
+      }
+      fulfill(locations.map(location => WebInspector.DebuggerModel.Location.fromPayload(this, location)));
+    }
+  }
+
+  /**
    * @param {!Protocol.Debugger.BreakpointId} breakpointId
    * @param {!Protocol.Debugger.Location} location
    */

@@ -270,6 +270,50 @@ WebInspector.BreakpointManager = class extends WebInspector.Object {
 
   /**
    * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!WebInspector.TextRange} textRange
+   * @return {!Promise<!Array<!WebInspector.UILocation>>}
+   */
+  possibleBreakpoints(uiSourceCode, textRange) {
+    var targets = this._targetManager.targets(WebInspector.Target.Capability.JS);
+    if (!targets.length)
+      return Promise.resolve([]);
+    for (var target of targets) {
+      var startLocation = this._debuggerWorkspaceBinding.uiLocationToRawLocation(target, uiSourceCode, textRange.startLine, textRange.startColumn);
+      if (!startLocation)
+        continue;
+      var endLocation = this._debuggerWorkspaceBinding.uiLocationToRawLocation(target, uiSourceCode, textRange.endLine, textRange.endColumn);
+      if (!endLocation)
+        continue;
+      var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
+      return debuggerModel.getPossibleBreakpoints(startLocation, endLocation).then(toUILocations.bind(this));
+    }
+    return Promise.resolve([]);
+
+    /**
+     * @this {!WebInspector.BreakpointManager}
+     * @param {!Array<!WebInspector.DebuggerModel.Location>} locations
+     * @return {!Array<!WebInspector.UILocation>}
+     */
+    function toUILocations(locations) {
+      var sortedLocations = locations.map(location => this._debuggerWorkspaceBinding.rawLocationToUILocation(location));
+      sortedLocations = sortedLocations.filter(location => location && location.uiSourceCode === uiSourceCode);
+      sortedLocations.sort(WebInspector.UILocation.comparator);
+      if (!sortedLocations.length)
+        return [];
+      var result = [ sortedLocations[0] ];
+      var lastLocation = sortedLocations[0];
+      for (var i = 1; i < sortedLocations.length; ++i) {
+        if (sortedLocations[i].id() === lastLocation.id())
+          continue;
+        result.push(sortedLocations[i]);
+        lastLocation = sortedLocations[i];
+      }
+      return result;
+    }
+  }
+
+  /**
+   * @param {!WebInspector.UISourceCode} uiSourceCode
    * @return {!Array.<!WebInspector.BreakpointManager.Breakpoint>}
    */
   breakpointsForUISourceCode(uiSourceCode) {

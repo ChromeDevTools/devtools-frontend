@@ -259,12 +259,12 @@ WebInspector.JavaScriptSourceFrame = class extends WebInspector.UISourceCodeFram
       if (!breakpoints.length) {
         // This row doesn't have a breakpoint: We want to show Add Breakpoint and Add and Edit Breakpoint.
         contextMenu.appendItem(
-            WebInspector.UIString('Add breakpoint'), this._createNewBreakpoint.bind(this, lineNumber, 0, '', true));
+            WebInspector.UIString('Add breakpoint'), this._createNewBreakpoint.bind(this, lineNumber, '', true));
         contextMenu.appendItem(
             WebInspector.UIString('Add conditional breakpoint…'), this._editBreakpointCondition.bind(this, lineNumber));
         contextMenu.appendItem(
             WebInspector.UIString('Never pause here'),
-            this._createNewBreakpoint.bind(this, lineNumber, 0, 'false', true));
+            this._createNewBreakpoint.bind(this, lineNumber, 'false', true));
       } else {
         var breakpoint = breakpoints[0];
 
@@ -615,7 +615,7 @@ WebInspector.JavaScriptSourceFrame = class extends WebInspector.UISourceCodeFram
       if (breakpoint)
         breakpoint.setCondition(newText);
       else
-        this._createNewBreakpoint(lineNumber, 0, newText, true);
+        this._createNewBreakpoint(lineNumber, newText, true);
     }
 
     var config = new WebInspector.InplaceEditor.Config(finishEditing.bind(this, true), finishEditing.bind(this, false));
@@ -1022,18 +1022,59 @@ WebInspector.JavaScriptSourceFrame = class extends WebInspector.UISourceCodeFram
       else
         breakpoints[0].remove();
     } else
-      this._createNewBreakpoint(lineNumber, 0, '', true);
+      this._createNewBreakpoint(lineNumber, '', true);
   }
 
   /**
    * @param {number} lineNumber
-   * @param {number} columnNumber
    * @param {string} condition
    * @param {boolean} enabled
    */
-  _createNewBreakpoint(lineNumber, columnNumber, condition, enabled) {
-    this._setBreakpoint(lineNumber, columnNumber, condition, enabled);
-    WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.ScriptsBreakpointSet);
+  _createNewBreakpoint(lineNumber, condition, enabled) {
+    findPossibleBreakpoints.call(this, lineNumber)
+      .then(checkNextLineIfNeeded.bind(this, lineNumber, 4))
+      .then(setBreakpoint.bind(this));
+
+    /**
+     * @this {!WebInspector.JavaScriptSourceFrame}
+     * @param {number} lineNumber
+     * @return {!Promise<?Array<!WebInspector.UILocation>>}
+     */
+    function findPossibleBreakpoints(lineNumber) {
+      const maxLengthToCheck = 1024;
+      if (lineNumber >= this._textEditor.linesCount)
+        return Promise.resolve(/** @type {?Array<!WebInspector.UILocation>} */([]));
+      if (this._textEditor.line(lineNumber).length >= maxLengthToCheck)
+        return Promise.resolve(/** @type {?Array<!WebInspector.UILocation>} */([]));
+      return this._breakpointManager.possibleBreakpoints(this.uiSourceCode(), new WebInspector.TextRange(lineNumber, 0, lineNumber + 1, 0))
+          .then(locations => locations.length ? locations : null);
+    }
+
+    /**
+     * @this {!WebInspector.JavaScriptSourceFrame}
+     * @param {number} currentLineNumber
+     * @param {number} linesToCheck
+     * @param {?Array<!WebInspector.UILocation>} locations
+     * @return {!Promise<?Array<!WebInspector.UILocation>>}
+     */
+    function checkNextLineIfNeeded(currentLineNumber, linesToCheck, locations) {
+      if (locations || linesToCheck <= 0)
+        return Promise.resolve(locations);
+      return findPossibleBreakpoints.call(this, currentLineNumber + 1)
+          .then(checkNextLineIfNeeded.bind(this, currentLineNumber + 1, linesToCheck - 1));
+    }
+
+    /**
+     * @this {!WebInspector.JavaScriptSourceFrame}
+     * @param {?Array<!WebInspector.UILocation>} locations
+     */
+    function setBreakpoint(locations) {
+      if (!locations || !locations.length)
+        this._setBreakpoint(lineNumber, 0, condition, enabled);
+      else
+        this._setBreakpoint(locations[0].lineNumber, locations[0].columnNumber, condition, enabled);
+      WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.ScriptsBreakpointSet);
+    }
   }
 
   toggleBreakpointOnCurrentLine() {
@@ -1057,6 +1098,16 @@ WebInspector.JavaScriptSourceFrame = class extends WebInspector.UISourceCodeFram
       return;
 
     this._breakpointManager.setBreakpoint(this.uiSourceCode(), lineNumber, columnNumber, condition, enabled);
+    this._breakpointWasSetForTest(lineNumber, columnNumber, condition, enabled);
+  }
+
+  /**
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @param {string} condition
+   * @param {boolean} enabled
+   */
+  _breakpointWasSetForTest(lineNumber, columnNumber, condition, enabled) {
   }
 
   /**

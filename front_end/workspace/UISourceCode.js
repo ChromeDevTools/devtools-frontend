@@ -706,6 +706,27 @@ WebInspector.UILocation = class {
   toUIString() {
     return this.uiSourceCode.url() + ':' + (this.lineNumber + 1);
   }
+
+  /**
+   * @param {!WebInspector.UILocation} location1
+   * @param {!WebInspector.UILocation} location2
+   * @return {number}
+   */
+  static comparator(location1, location2) {
+    return location1.compareTo(location2);
+  }
+
+  /**
+   * @param {!WebInspector.UILocation} other
+   * @return {number}
+   */
+  compareTo(other) {
+    if (this.uiSourceCode.url() !== other.uiSourceCode.url())
+      return this.uiSourceCode.url() > other.uiSourceCode.url() ? 1 : -1;
+    if (this.lineNumber !== other.lineNumber)
+      return this.lineNumber - other.lineNumber;
+    return this.columnNumber - other.columnNumber;
+  }
 };
 
 /**

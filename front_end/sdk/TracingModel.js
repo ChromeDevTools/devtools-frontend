@@ -502,19 +502,6 @@ WebInspector.TracingModel.Event = class {
     /** @type {!Object} */
     this.args = {};
 
-    /** @type {?string} */
-    this.warning = null;
-    /** @type {?WebInspector.TracingModel.Event} */
-    this.initiator = null;
-    /** @type {?Array<!Protocol.Runtime.CallFrame>} */
-    this.stackTrace = null;
-    /** @type {?Element} */
-    this.previewElement = null;
-    /** @type {?string} */
-    this.url = null;
-    /** @type {number} */
-    this.backendNodeId = 0;
-
     /** @type {number} */
     this.selfTime = 0;
   }

@@ -111,7 +111,7 @@ WebInspector.CPUProfileDataModel = class extends WebInspector.ProfileTreeModel {
     function isNativeNode(node) {
       if (node.callFrame)
         return !!node.callFrame.url && node.callFrame.url.startsWith('native ');
-      return !!node.url && node.url.startsWith('native ');
+      return !!node['url'] && node['url'].startsWith('native ');
     }
     /**
      * @param {!Array<!Protocol.Profiler.ProfileNode>} nodes

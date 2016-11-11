@@ -209,11 +209,7 @@ WebInspector.TimelineProfileTree.eventURL = function(event) {
 WebInspector.TimelineProfileTree.eventStackFrame = function(event) {
   if (event.name === WebInspector.TimelineModel.RecordType.JSFrame)
     return /** @type {?Protocol.Runtime.CallFrame} */ (event.args['data'] || null);
-  var topFrame = event.stackTrace && event.stackTrace[0];
-  if (topFrame)
-    return /** @type {!Protocol.Runtime.CallFrame} */ (topFrame);
-  var initiator = event.initiator;
-  return /** @type {?Protocol.Runtime.CallFrame} */ (initiator && initiator.stackTrace && initiator.stackTrace[0] || null);
+  return WebInspector.TimelineData.forEvent(event).topFrame();
 };
 
 /**

@@ -339,7 +339,7 @@ WebInspector.TimelineFrameModel = class {
 
     if (event.name === eventNames.BeginMainThreadFrame && event.args['data'] && event.args['data']['frameId'])
       this._framePendingCommit.mainFrameId = event.args['data']['frameId'];
-    if (event.name === eventNames.Paint && event.args['data']['layerId'] && event.picture && this._target)
+    if (event.name === eventNames.Paint && event.args['data']['layerId'] && WebInspector.TimelineData.forEvent(event).picture && this._target)
       this._framePendingCommit.paints.push(new WebInspector.LayerPaintEvent(event, this._target));
     if (event.name === eventNames.CompositeLayers && event.args['layerTreeId'] === this._layerTreeId)
       this.handleCompositeLayers();
@@ -508,7 +508,8 @@ WebInspector.LayerPaintEvent = class {
    * @return {!Promise<?{rect: !Array<number>, serializedPicture: string}>}
    */
   picturePromise() {
-    return this._event.picture.objectPromise().then(result => {
+    var picture = WebInspector.TimelineData.forEvent(this._event).picture;
+    return picture.objectPromise().then(result => {
       if (!result)
         return null;
       var rect = result['params'] && result['params']['layer_rect'];

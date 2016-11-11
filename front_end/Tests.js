@@ -976,7 +976,7 @@
         continue;
       if (e.steps.length < 2)
         continue;
-      if (e.name.startsWith(prefix + 'Mouse') && typeof e.steps[0].timeWaitingForMainThread !== 'number')
+      if (e.name.startsWith(prefix + 'Mouse') && typeof WebInspector.TimelineData.forEvent(e.steps[0]).timeWaitingForMainThread !== 'number')
         throw `Missing timeWaitingForMainThread on ${e.name}`;
       expectedEvents.delete(e.name.substr(prefix.length));
     }

@@ -379,7 +379,7 @@ WebInspector.TimelineEventOverviewResponsiveness = class extends WebInspector.Ti
 
     var events = this._model.mainThreadEvents();
     for (var i = 0; i < events.length; ++i) {
-      if (!events[i].warning)
+      if (!WebInspector.TimelineData.forEvent(events[i]).warning)
         continue;
       paintWarningDecoration(events[i].startTime, events[i].duration);
     }

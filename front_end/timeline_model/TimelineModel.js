@@ -646,27 +646,24 @@ WebInspector.TimelineModel = class {
       this._currentScriptEvent = null;
 
     var eventData = event.args['data'] || event.args['beginData'] || {};
+    var timelineData = WebInspector.TimelineData.forEvent(event);
     if (eventData['stackTrace'])
-      event.stackTrace = eventData['stackTrace'];
-    if (event.stackTrace && event.name !== recordTypes.JSSample) {
+      timelineData.stackTrace = eventData['stackTrace'];
+    if (timelineData.stackTrace && event.name !== recordTypes.JSSample) {
       // TraceEvents come with 1-based line & column numbers. The frontend code
       // requires 0-based ones. Adjust the values.
-      for (var i = 0; i < event.stackTrace.length; ++i) {
-        --event.stackTrace[i].lineNumber;
-        --event.stackTrace[i].columnNumber;
+      for (var i = 0; i < timelineData.stackTrace.length; ++i) {
+        --timelineData.stackTrace[i].lineNumber;
+        --timelineData.stackTrace[i].columnNumber;
       }
     }
 
-    if (eventStack.length && eventStack.peekLast().name === recordTypes.EventDispatch)
-      eventStack.peekLast().hasChildren = true;
     this._asyncEventTracker.processEvent(event);
-    if (event.initiator && event.initiator.url)
-      event.url = event.initiator.url;
     switch (event.name) {
       case recordTypes.ResourceSendRequest:
       case recordTypes.WebSocketCreate:
-        event.url = eventData['url'];
-        event.initiator = eventStack.peekLast() || null;
+        timelineData.setInitiator(eventStack.peekLast() || null);
+        timelineData.url = eventData['url'];
         break;
 
       case recordTypes.ScheduleStyleRecalculation:
@@ -677,10 +674,10 @@ WebInspector.TimelineModel = class {
       case recordTypes.RecalculateStyles:
         this._invalidationTracker.didRecalcStyle(event);
         if (event.args['beginData'])
-          event.initiator = this._lastScheduleStyleRecalculation[event.args['beginData']['frame']];
+          timelineData.setInitiator(this._lastScheduleStyleRecalculation[event.args['beginData']['frame']]);
         this._lastRecalculateStylesEvent = event;
         if (this._currentScriptEvent)
-          event.warning = WebInspector.TimelineModel.WarningType.ForcedStyle;
+          timelineData.warning = WebInspector.TimelineModel.WarningType.ForcedStyle;
         break;
 
       case recordTypes.ScheduleStyleInvalidationTracking:
@@ -700,22 +697,20 @@ WebInspector.TimelineModel = class {
         var frameId = eventData['frame'];
         if (!this._layoutInvalidate[frameId] && this._lastRecalculateStylesEvent &&
             this._lastRecalculateStylesEvent.endTime > event.startTime)
-          layoutInitator = this._lastRecalculateStylesEvent.initiator;
+          layoutInitator = WebInspector.TimelineData.forEvent(this._lastRecalculateStylesEvent).initiator();
         this._layoutInvalidate[frameId] = layoutInitator;
         break;
 
       case recordTypes.Layout:
         this._invalidationTracker.didLayout(event);
         var frameId = event.args['beginData']['frame'];
-        event.initiator = this._layoutInvalidate[frameId];
+        timelineData.setInitiator(this._layoutInvalidate[frameId]);
         // In case we have no closing Layout event, endData is not available.
-        if (event.args['endData']) {
-          event.backendNodeId = event.args['endData']['rootNode'];
-          event.highlightQuad = event.args['endData']['root'];
-        }
+        if (event.args['endData'])
+          timelineData.backendNodeId = event.args['endData']['rootNode'];
         this._layoutInvalidate[frameId] = null;
         if (this._currentScriptEvent)
-          event.warning = WebInspector.TimelineModel.WarningType.ForcedLayout;
+          timelineData.warning = WebInspector.TimelineModel.WarningType.ForcedLayout;
         break;
 
       case recordTypes.FunctionCall:
@@ -745,8 +740,7 @@ WebInspector.TimelineModel = class {
 
       case recordTypes.Paint:
         this._invalidationTracker.didPaint(event);
-        event.highlightQuad = eventData['clip'];
-        event.backendNodeId = eventData['nodeId'];
+        timelineData.backendNodeId = eventData['nodeId'];
         // Only keep layer paint events, skip paints for subframes that get painted to the same layer as parent.
         if (!eventData['layerId'])
           break;
@@ -761,16 +755,16 @@ WebInspector.TimelineModel = class {
           break;
         var paintEvent = this._lastPaintForLayer[layerUpdateEvent.args['layerId']];
         if (paintEvent)
-          paintEvent.picture = event;
+          WebInspector.TimelineData.forEvent(paintEvent).picture = /** @type {!WebInspector.TracingModel.ObjectSnapshot} */ (event);
         break;
 
       case recordTypes.ScrollLayer:
-        event.backendNodeId = eventData['nodeId'];
+        timelineData.backendNodeId = eventData['nodeId'];
         break;
 
       case recordTypes.PaintImage:
-        event.backendNodeId = eventData['nodeId'];
-        event.url = eventData['url'];
+        timelineData.backendNodeId = eventData['nodeId'];
+        timelineData.url = eventData['url'];
         break;
 
       case recordTypes.DecodeImage:
@@ -783,8 +777,9 @@ WebInspector.TimelineModel = class {
         }
         if (!paintImageEvent)
           break;
-        event.backendNodeId = paintImageEvent.backendNodeId;
-        event.url = paintImageEvent.url;
+        var paintImageData = WebInspector.TimelineData.forEvent(paintImageEvent);
+        timelineData.backendNodeId = paintImageData.backendNodeId;
+        timelineData.url = paintImageData.url;
         break;
 
       case recordTypes.DrawLazyPixelRef:
@@ -792,8 +787,9 @@ WebInspector.TimelineModel = class {
         if (!paintImageEvent)
           break;
         this._paintImageEventByPixelRefId[event.args['LazyPixelRef']] = paintImageEvent;
-        event.backendNodeId = paintImageEvent.backendNodeId;
-        event.url = paintImageEvent.url;
+        var paintImageData = WebInspector.TimelineData.forEvent(paintImageEvent);
+        event.backendNodeId = paintImageData.backendNodeId;
+        event.url = paintImageData.url;
         break;
 
       case recordTypes.MarkDOMContent:
@@ -829,7 +825,7 @@ WebInspector.TimelineModel = class {
 
       case recordTypes.FireIdleCallback:
         if (event.duration > eventData['allottedMilliseconds']) {
-          event.warning = WebInspector.TimelineModel.WarningType.IdleDeadlineExceeded;
+          timelineData.warning = WebInspector.TimelineModel.WarningType.IdleDeadlineExceeded;
         }
         break;
     }
@@ -894,7 +890,7 @@ WebInspector.TimelineModel = class {
         var rendererMain = data['INPUT_EVENT_LATENCY_RENDERER_MAIN_COMPONENT'];
         if (rendererMain) {
           var time = rendererMain['time'] / 1000;
-          asyncEvent.steps[0].timeWaitingForMainThread = time - asyncEvent.steps[0].startTime;
+          WebInspector.TimelineData.forEvent(asyncEvent.steps[0]).timeWaitingForMainThread = time - asyncEvent.steps[0].startTime;
         }
       }
       return groups.input;
@@ -1336,26 +1332,6 @@ WebInspector.TimelineModel.Record = class {
   }
 
   /**
-   * @param {string} key
-   * @return {?Object}
-   */
-  getUserObject(key) {
-    if (key === 'TimelineUIUtils::preview-element')
-      return this._event.previewElement;
-    throw new Error('Unexpected key: ' + key);
-  }
-
-  /**
-   * @param {string} key
-   * @param {?Object|undefined} value
-   */
-  setUserObject(key, value) {
-    if (key !== 'TimelineUIUtils::preview-element')
-      throw new Error('Unexpected key: ' + key);
-    this._event.previewElement = /** @type {?Element} */ (value);
-  }
-
-  /**
    * @return {!WebInspector.TracingModel.Event}
    */
   traceEvent() {
@@ -1560,6 +1536,14 @@ WebInspector.InvalidationTracker = class {
   }
 
   /**
+   * @param {!WebInspector.TracingModel.Event} event
+   * @return {?Array<!WebInspector.InvalidationTrackingEvent>}
+   */
+  static invalidationEventsFor(event) {
+    return event[WebInspector.InvalidationTracker._invalidationTrackingEventsSymbol] || null;
+  }
+
+  /**
    * @param {!WebInspector.InvalidationTrackingEvent} invalidation
    */
   addInvalidation(invalidation) {
@@ -1761,10 +1745,10 @@ WebInspector.InvalidationTracker = class {
   _addInvalidationToEvent(event, eventFrameId, invalidation) {
     if (eventFrameId !== invalidation.frame)
       return;
-    if (!event.invalidationTrackingEvents)
-      event.invalidationTrackingEvents = [invalidation];
+    if (!event[WebInspector.InvalidationTracker._invalidationTrackingEventsSymbol])
+      event[WebInspector.InvalidationTracker._invalidationTrackingEventsSymbol] = [invalidation];
     else
-      event.invalidationTrackingEvents.push(invalidation);
+      event[WebInspector.InvalidationTracker._invalidationTrackingEventsSymbol].push(invalidation);
   }
 
   /**
@@ -1803,6 +1787,8 @@ WebInspector.InvalidationTracker = class {
     this._didPaint = false;
   }
 };
+
+WebInspector.InvalidationTracker._invalidationTrackingEventsSymbol = Symbol('invalidationTrackingEvents');
 
 /**
  * @unrestricted
@@ -1863,6 +1849,77 @@ WebInspector.TimelineAsyncEventTracker = class {
     if (isInitiator)
       initiatorMap.set(id, event);
     else
-      event.initiator = initiatorMap.get(id) || null;
+      WebInspector.TimelineData.forEvent(event).setInitiator(initiatorMap.get(id) || null);
   }
 };
+
+
+WebInspector.TimelineData = class {
+  constructor() {
+    /** @type {?string} */
+    this.warning = null;
+    /** @type {?Element} */
+    this.previewElement = null;
+    /** @type {?string} */
+    this.url = null;
+    /** @type {number} */
+    this.backendNodeId = 0;
+    /** @type {?Array<!Protocol.Runtime.CallFrame>} */
+    this.stackTrace = null;
+    /** @type {?WebInspector.TracingModel.ObjectSnapshot} */
+    this.picture = null;
+    /** @type {?WebInspector.TracingModel.Event} */
+    this._initiator = null;
+    /** @type {number|undefined} */
+    this.timeWaitingForMainThread;
+  }
+
+  /**
+   * @param {!WebInspector.TracingModel.Event} initiator
+   */
+  setInitiator(initiator) {
+    this._initiator = initiator;
+    if (!initiator || this.url)
+      return;
+    var initiatorURL = WebInspector.TimelineData.forEvent(initiator).url;
+    if (initiatorURL)
+      this.url = initiatorURL;
+  }
+
+  /**
+   * @return {?WebInspector.TracingModel.Event}
+   */
+  initiator() {
+    return this._initiator;
+  }
+
+  /**
+   * @return {?Protocol.Runtime.CallFrame}
+   */
+  topFrame() {
+    var stackTrace = this.stackTraceForSelfOrInitiator();
+    return stackTrace && stackTrace[0] || null;
+  }
+
+  /**
+   * @return {?Array<!Protocol.Runtime.CallFrame>}
+   */
+  stackTraceForSelfOrInitiator() {
+    return this.stackTrace || (this._initiator && WebInspector.TimelineData.forEvent(this._initiator).stackTrace);
+  }
+
+  /**
+   * @param {!WebInspector.TracingModel.Event} event
+   * @return {!WebInspector.TimelineData}
+   */
+  static forEvent(event) {
+    var data = event[WebInspector.TimelineData._symbol];
+    if (!data) {
+      data = new WebInspector.TimelineData();
+      event[WebInspector.TimelineData._symbol] = data;
+    }
+    return data;
+  }
+};
+
+WebInspector.TimelineData._symbol = Symbol('timelineData');

@@ -231,8 +231,9 @@ WebInspector.TimelineUIUtils = class {
   static testContentMatching(traceEvent, regExp) {
     var title = WebInspector.TimelineUIUtils.eventStyle(traceEvent).title;
     var tokens = [title];
-    if (traceEvent.url)
-      tokens.push(traceEvent.url);
+    var url = WebInspector.TimelineData.forEvent(traceEvent).url;
+    if (url)
+      tokens.push(url);
     for (var argName in traceEvent.args) {
       var argValue = traceEvent.args[argName];
       for (var key in argValue)
@@ -306,17 +307,6 @@ WebInspector.TimelineUIUtils = class {
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} event
-   * @return {?string}
-   */
-  static eventURL(event) {
-    if (event.url)
-      return event.url;
-    var data = event.args['data'] || event.args['beginData'];
-    return data && data.url || null;
-  }
-
-  /**
    * !Map<!WebInspector.TimelineIRModel.Phases, !{color: string, label: string}>
    */
   static _interactionPhaseStyles() {
@@ -373,15 +363,6 @@ WebInspector.TimelineUIUtils = class {
    */
   static isUserFrame(frame) {
     return frame.scriptId !== '0' && !(frame.url && frame.url.startsWith('native '));
-  }
-
-  /**
-   * @param {!WebInspector.TracingModel.Event} event
-   * @return {?Protocol.Runtime.CallFrame}
-   */
-  static topStackFrame(event) {
-    var stackTrace = event.stackTrace || event.initiator && event.initiator.stackTrace;
-    return stackTrace && stackTrace.length ? stackTrace[0] : null;
   }
 
   /**
@@ -504,8 +485,9 @@ WebInspector.TimelineUIUtils = class {
       case recordType.DecodeImage:
       case recordType.ResizeImage:
       case recordType.DecodeLazyPixelRef:
-        if (event.url)
-          detailsText = WebInspector.displayNameForURL(event.url);
+        var url = WebInspector.TimelineData.forEvent(event).url;
+        if (url)
+          detailsText = WebInspector.displayNameForURL(url);
         break;
 
       case recordType.EmbedderCallback:
@@ -559,7 +541,7 @@ WebInspector.TimelineUIUtils = class {
      * @return {?string}
      */
     function linkifyTopCallFrameAsText() {
-      var frame = WebInspector.TimelineUIUtils.topStackFrame(event);
+      var frame = WebInspector.TimelineData.forEvent(event).topFrame();
       if (!frame)
         return null;
       var text = linkifyLocationAsText(frame.scriptId, frame.lineNumber, frame.columnNumber);
@@ -611,8 +593,9 @@ WebInspector.TimelineUIUtils = class {
       case recordType.ResourceReceivedData:
       case recordType.ResourceReceiveResponse:
       case recordType.ResourceFinish:
-        if (event.url)
-          details = WebInspector.linkifyResourceAsNode(event.url);
+        var url = WebInspector.TimelineData.forEvent(event).url;
+        if (url)
+          details = WebInspector.linkifyResourceAsNode(url);
         break;
       case recordType.FunctionCall:
       case recordType.JSFrame:
@@ -663,7 +646,7 @@ WebInspector.TimelineUIUtils = class {
      * @return {?Element}
      */
     function linkifyTopCallFrame() {
-      var frame = WebInspector.TimelineUIUtils.topStackFrame(event);
+      var frame = WebInspector.TimelineData.forEvent(event).topFrame();
       return frame ? linkifier.maybeLinkifyConsoleCallFrame(target, frame, 'timeline-details') : null;
     }
   }
@@ -683,18 +666,22 @@ WebInspector.TimelineUIUtils = class {
     }
     var relatedNodes = null;
     var barrier = new CallbackBarrier();
-    if (!event.previewElement) {
-      if (event.url)
+    if (!event[WebInspector.TimelineUIUtils._previewElementSymbol]) {
+      var url = WebInspector.TimelineData.forEvent(event).url;
+      if (url) {
         WebInspector.DOMPresentationUtils.buildImagePreviewContents(
-            target, event.url, false, barrier.createCallback(saveImage));
-      else if (event.picture)
+            target, url, false, barrier.createCallback(saveImage));
+      } else if (WebInspector.TimelineData.forEvent(event).picture) {
         WebInspector.TimelineUIUtils.buildPicturePreviewContent(event, target, barrier.createCallback(saveImage));
+      }
     }
     var nodeIdsToResolve = new Set();
-    if (event.backendNodeId)
-      nodeIdsToResolve.add(event.backendNodeId);
-    if (event.invalidationTrackingEvents)
-      WebInspector.TimelineUIUtils._collectInvalidationNodeIds(nodeIdsToResolve, event.invalidationTrackingEvents);
+    var timelineData = WebInspector.TimelineData.forEvent(event);
+    if (timelineData.backendNodeId)
+      nodeIdsToResolve.add(timelineData.backendNodeId);
+    var invalidationTrackingEvents = WebInspector.InvalidationTracker.invalidationEventsFor(event);
+    if (invalidationTrackingEvents)
+      WebInspector.TimelineUIUtils._collectInvalidationNodeIds(nodeIdsToResolve, invalidationTrackingEvents);
     if (nodeIdsToResolve.size) {
       var domModel = WebInspector.DOMModel.fromTarget(target);
       if (domModel)
@@ -706,7 +693,7 @@ WebInspector.TimelineUIUtils = class {
      * @param {!Element=} element
      */
     function saveImage(element) {
-      event.previewElement = element || null;
+      event[WebInspector.TimelineUIUtils._previewElementSymbol] = element || null;
     }
 
     /**
@@ -731,9 +718,7 @@ WebInspector.TimelineUIUtils = class {
    * @return {!DocumentFragment}
    */
   static _buildTraceEventDetailsSynchronously(event, model, linkifier, detailed, relatedNodesMap) {
-    var stats = {};
     var recordTypes = WebInspector.TimelineModel.RecordType;
-
     // This message may vary per event.name;
     var relatedNodeLabel;
 
@@ -742,9 +727,10 @@ WebInspector.TimelineUIUtils = class {
         WebInspector.TimelineUIUtils.eventTitle(event), WebInspector.TimelineUIUtils.eventStyle(event).category);
 
     var eventData = event.args['data'];
-    var initiator = event.initiator;
+    var timelineData = WebInspector.TimelineData.forEvent(event);
+    var initiator = timelineData.initiator();
 
-    if (event.warning)
+    if (timelineData.warning)
       contentHelper.appendWarningRow(event);
     if (event.name === recordTypes.JSFrame && eventData['deoptReason'])
       contentHelper.appendWarningRow(event, WebInspector.TimelineModel.WarningType.V8Deopt);
@@ -785,8 +771,7 @@ WebInspector.TimelineUIUtils = class {
       case recordTypes.ResourceReceiveResponse:
       case recordTypes.ResourceReceivedData:
       case recordTypes.ResourceFinish:
-        var url = (event.name === recordTypes.ResourceSendRequest) ? eventData['url'] :
-                                                                     initiator && initiator.args['data']['url'];
+        var url = timelineData.url;
         if (url)
           contentHelper.appendElementRow(WebInspector.UIString('Resource'), WebInspector.linkifyResourceAsNode(url));
         if (eventData['requestMethod'])
@@ -832,9 +817,9 @@ WebInspector.TimelineUIUtils = class {
       case recordTypes.ResizeImage:
       case recordTypes.DrawLazyPixelRef:
         relatedNodeLabel = WebInspector.UIString('Owner Element');
-        if (event.url)
+        if (timelineData.url)
           contentHelper.appendElementRow(
-              WebInspector.UIString('Image URL'), WebInspector.linkifyResourceAsNode(event.url));
+              WebInspector.UIString('Image URL'), WebInspector.linkifyResourceAsNode(timelineData.url));
         break;
       case recordTypes.ParseAuthorStyleSheet:
         var url = eventData['styleSheetUrl'];
@@ -906,25 +891,26 @@ WebInspector.TimelineUIUtils = class {
         break;
     }
 
-    if (event.timeWaitingForMainThread)
+    if (timelineData.timeWaitingForMainThread)
       contentHelper.appendTextRow(
           WebInspector.UIString('Time Waiting for Main Thread'),
-          Number.millisToString(event.timeWaitingForMainThread, true));
+          Number.millisToString(timelineData.timeWaitingForMainThread, true));
 
-    var relatedNode = relatedNodesMap && relatedNodesMap.get(event.backendNodeId);
+    var relatedNode = relatedNodesMap && relatedNodesMap.get(timelineData.backendNodeId);
     if (relatedNode)
       contentHelper.appendElementRow(
           relatedNodeLabel || WebInspector.UIString('Related Node'),
           WebInspector.DOMPresentationUtils.linkifyNodeReference(relatedNode));
 
-    if (event.previewElement) {
+    if (event[WebInspector.TimelineUIUtils._previewElementSymbol]) {
       contentHelper.addSection(WebInspector.UIString('Preview'));
-      contentHelper.appendElementRow('', event.previewElement);
+      contentHelper.appendElementRow('', event[WebInspector.TimelineUIUtils._previewElementSymbol]);
     }
 
-    if (event.stackTrace || (event.initiator && event.initiator.stackTrace) || event.invalidationTrackingEvents)
+    if (timelineData.stackTraceForSelfOrInitiator() || WebInspector.InvalidationTracker.invalidationEventsFor(event))
       WebInspector.TimelineUIUtils._generateCauses(event, model.targetByEvent(event), relatedNodesMap, contentHelper);
 
+    var stats = {};
     var showPieChart = detailed && WebInspector.TimelineUIUtils._aggregatedStatsForTraceEvent(stats, model, event);
     if (showPieChart) {
       contentHelper.addSection(WebInspector.UIString('Aggregated Time'));
@@ -1043,17 +1029,20 @@ WebInspector.TimelineUIUtils = class {
 
     var title = WebInspector.UIString('Initiator');
     var sendRequest = request.children[0];
-    var topFrame = WebInspector.TimelineUIUtils.topStackFrame(sendRequest);
+    var topFrame = WebInspector.TimelineData.forEvent(sendRequest).topFrame();
     if (topFrame) {
       var link = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame);
       if (link)
         contentHelper.appendElementRow(title, link);
-    } else if (sendRequest.initiator) {
-      var initiatorURL = WebInspector.TimelineUIUtils.eventURL(sendRequest.initiator);
-      if (initiatorURL) {
-        var link = linkifier.maybeLinkifyScriptLocation(target, null, initiatorURL, 0);
-        if (link)
-          contentHelper.appendElementRow(title, link);
+    } else {
+      var initiator = WebInspector.TimelineData.forEvent(sendRequest).initiator();
+       if (initiator) {
+        var initiatorURL = WebInspector.TimelineData.forEvent(initiator).url;
+        if (initiatorURL) {
+          var link = linkifier.maybeLinkifyScriptLocation(target, null, initiatorURL, 0);
+          if (link)
+            contentHelper.appendElementRow(title, link);
+        }
       }
     }
 
@@ -1107,7 +1096,6 @@ WebInspector.TimelineUIUtils = class {
 
     var callSiteStackLabel;
     var stackLabel;
-    var initiator = event.initiator;
 
     switch (event.name) {
       case recordTypes.TimerFire:
@@ -1129,22 +1117,27 @@ WebInspector.TimelineUIUtils = class {
         break;
     }
 
+    var timelineData = WebInspector.TimelineData.forEvent(event);
     // Direct cause.
-    if (event.stackTrace && event.stackTrace.length) {
+    if (timelineData.stackTrace && timelineData.stackTrace.length) {
       contentHelper.addSection(WebInspector.UIString('Call Stacks'));
       contentHelper.appendStackTrace(
           stackLabel || WebInspector.UIString('Stack Trace'),
-          WebInspector.TimelineUIUtils._stackTraceFromCallFrames(event.stackTrace));
+          WebInspector.TimelineUIUtils._stackTraceFromCallFrames(timelineData.stackTrace));
     }
 
+    var initiator = WebInspector.TimelineData.forEvent(event).initiator();
     // Indirect causes.
-    if (event.invalidationTrackingEvents && target) {  // Full invalidation tracking (experimental).
+    if (WebInspector.InvalidationTracker.invalidationEventsFor(event) && target) {  // Full invalidation tracking (experimental).
       contentHelper.addSection(WebInspector.UIString('Invalidations'));
       WebInspector.TimelineUIUtils._generateInvalidations(event, target, relatedNodesMap, contentHelper);
-    } else if (initiator && initiator.stackTrace) {  // Partial invalidation tracking.
-      contentHelper.appendStackTrace(
-          callSiteStackLabel || WebInspector.UIString('First Invalidated'),
-          WebInspector.TimelineUIUtils._stackTraceFromCallFrames(initiator.stackTrace));
+    } else if (initiator) {  // Partial invalidation tracking.
+      var initiatorStackTrace = WebInspector.TimelineData.forEvent(initiator).stackTrace;
+      if (initiatorStackTrace) {
+        contentHelper.appendStackTrace(
+            callSiteStackLabel || WebInspector.UIString('First Invalidated'),
+            WebInspector.TimelineUIUtils._stackTraceFromCallFrames(initiatorStackTrace));
+      }
     }
   }
 
@@ -1155,11 +1148,9 @@ WebInspector.TimelineUIUtils = class {
    * @param {!WebInspector.TimelineDetailsContentHelper} contentHelper
    */
   static _generateInvalidations(event, target, relatedNodesMap, contentHelper) {
-    if (!event.invalidationTrackingEvents)
-      return;
-
+    var invalidationTrackingEvents = WebInspector.InvalidationTracker.invalidationEventsFor(event);
     var invalidations = {};
-    event.invalidationTrackingEvents.forEach(function(invalidation) {
+    invalidationTrackingEvents.forEach(function(invalidation) {
       if (!invalidations[invalidation.type])
         invalidations[invalidation.type] = [invalidation];
       else
@@ -1715,7 +1706,8 @@ WebInspector.TimelineUIUtils = class {
    * @return {?Element}
    */
   static eventWarning(event, warningType) {
-    var warning = warningType || event.warning;
+    var timelineData = WebInspector.TimelineData.forEvent(event);
+    var warning = warningType || timelineData.warning;
     if (!warning)
       return null;
     var warnings = WebInspector.TimelineModel.WarningType;
@@ -1935,6 +1927,7 @@ WebInspector.TimelineUIUtils.InvalidationsGroupElement = class extends TreeEleme
   }
 };
 
+WebInspector.TimelineUIUtils._previewElementSymbol = Symbol('previewElement');
 
 /**
  * @unrestricted

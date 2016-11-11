@@ -63,7 +63,7 @@ WebInspector.TimelinePaintProfilerView = class extends WebInspector.SplitWidget 
 
     this._updateWhenVisible();
     if (this._event.name === WebInspector.TimelineModel.RecordType.Paint)
-      return !!event.picture;
+      return !!WebInspector.TimelineData.forEvent(event).picture;
     if (this._event.name === WebInspector.TimelineModel.RecordType.RasterTask)
       return this._frameModel.hasRasterTile(this._event);
     return false;
@@ -84,7 +84,8 @@ WebInspector.TimelinePaintProfilerView = class extends WebInspector.SplitWidget 
     if (this._pendingSnapshot)
       snapshotPromise = Promise.resolve({rect: null, snapshot: this._pendingSnapshot});
     else if (this._event.name === WebInspector.TimelineModel.RecordType.Paint) {
-      snapshotPromise = this._event.picture.objectPromise()
+      var picture = WebInspector.TimelineData.forEvent(this._event).picture;
+      snapshotPromise = picture.objectPromise()
                             .then(data => WebInspector.PaintProfilerSnapshot.load(this._target, data['skp64']))
                             .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
     } else if (this._event.name === WebInspector.TimelineModel.RecordType.RasterTask) {

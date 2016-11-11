@@ -714,12 +714,15 @@ WebInspector.TimelineFlameChartDataProvider = class extends WebInspector.Timelin
 
     if (type === WebInspector.TimelineFlameChartEntryType.Event) {
       var event = /** @type {!WebInspector.TracingModel.Event} */ (this._entryData[entryIndex]);
-      if (event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo) && event.timeWaitingForMainThread) {
-        context.fillStyle = 'hsla(0, 70%, 60%, 1)';
-        var width = Math.floor(unclippedBarX - barX + event.timeWaitingForMainThread * timeToPixels);
-        context.fillRect(barX, barY + barHeight - 3, width, 2);
+      if (event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo)) {
+        var timeWaitingForMainThread = WebInspector.TimelineData.forEvent(event).timeWaitingForMainThread;
+        if (timeWaitingForMainThread) {
+          context.fillStyle = 'hsla(0, 70%, 60%, 1)';
+          var width = Math.floor(unclippedBarX - barX + timeWaitingForMainThread * timeToPixels);
+          context.fillRect(barX, barY + barHeight - 3, width, 2);
+        }
       }
-      if (event.warning)
+      if (WebInspector.TimelineData.forEvent(event).warning)
         paintWarningDecoration(barX, barWidth - 1.5);
     }
 
@@ -754,7 +757,7 @@ WebInspector.TimelineFlameChartDataProvider = class extends WebInspector.Timelin
     var type = this._entryType(entryIndex);
     return type === WebInspector.TimelineFlameChartEntryType.Frame ||
         type === WebInspector.TimelineFlameChartEntryType.Event &&
-        !!(/** @type {!WebInspector.TracingModel.Event} */ (this._entryData[entryIndex]).warning);
+        !!WebInspector.TimelineData.forEvent(/** @type {!WebInspector.TracingModel.Event} */ (this._entryData[entryIndex])).warning;
   }
 
   /**

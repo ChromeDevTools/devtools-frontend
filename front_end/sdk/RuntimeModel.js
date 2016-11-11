@@ -607,6 +607,7 @@ WebInspector.EventListener = class extends WebInspector.SDKObject {
    * @param {string} type
    * @param {boolean} useCapture
    * @param {boolean} passive
+   * @param {boolean} once
    * @param {?WebInspector.RemoteObject} handler
    * @param {?WebInspector.RemoteObject} originalHandler
    * @param {!WebInspector.DebuggerModel.Location} location
@@ -619,6 +620,7 @@ WebInspector.EventListener = class extends WebInspector.SDKObject {
       type,
       useCapture,
       passive,
+      once,
       handler,
       originalHandler,
       location,
@@ -629,6 +631,7 @@ WebInspector.EventListener = class extends WebInspector.SDKObject {
     this._type = type;
     this._useCapture = useCapture;
     this._passive = passive;
+    this._once = once;
     this._handler = handler;
     this._originalHandler = originalHandler || handler;
     this._location = location;
@@ -657,6 +660,13 @@ WebInspector.EventListener = class extends WebInspector.SDKObject {
    */
   passive() {
     return this._passive;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  once() {
+    return this._once;
   }
 
   /**

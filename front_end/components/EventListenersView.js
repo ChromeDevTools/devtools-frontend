@@ -270,6 +270,7 @@ WebInspector.ObjectEventListenerBar = class extends TreeElement {
     var runtimeModel = eventListener.target().runtimeModel;
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('useCapture', eventListener.useCapture()));
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('passive', eventListener.passive()));
+    properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('once', eventListener.once()));
     if (typeof eventListener.handler() !== 'undefined')
       properties.push(new WebInspector.RemoteObjectProperty('handler', eventListener.handler()));
     WebInspector.ObjectPropertyTreeElement.populateWithProperties(this, properties, [], true, null);

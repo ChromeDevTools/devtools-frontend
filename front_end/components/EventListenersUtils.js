@@ -4,7 +4,7 @@
 /** @typedef {{eventListeners:!Array<!WebInspector.EventListener>, internalHandlers:?WebInspector.RemoteArray}} */
 WebInspector.FrameworkEventListenersObject;
 
-/** @typedef {{type: string, useCapture: boolean, passive: boolean, handler: function()}} */
+/** @typedef {{type: string, useCapture: boolean, passive: boolean, once: boolean, handler: function()}} */
 WebInspector.EventListenerObjectInInspectedPage;
 
 /**
@@ -73,6 +73,8 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
       var useCapture;
       /** @type {boolean} */
       var passive;
+      /** @type {boolean} */
+      var once;
       /** @type {?WebInspector.RemoteObject} */
       var handler = null;
       /** @type {?WebInspector.RemoteObject} */
@@ -89,19 +91,20 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
       /**
        * @suppressReceiverCheck
        * @this {WebInspector.EventListenerObjectInInspectedPage}
-       * @return {!{type:string, useCapture:boolean, passive:boolean}}
+       * @return {!{type:string, useCapture:boolean, passive:boolean, once:boolean}}
        */
       function truncatePageEventListener() {
-        return {type: this.type, useCapture: this.useCapture, passive: this.passive};
+          return {type: this.type, useCapture: this.useCapture, passive: this.passive, once: this.once};
       }
 
       /**
-       * @param {!{type:string, useCapture: boolean, passive: boolean}} truncatedListener
+       * @param {!{type:string, useCapture: boolean, passive: boolean, once: boolean}} truncatedListener
        */
       function storeTruncatedListener(truncatedListener) {
         type = truncatedListener.type;
         useCapture = truncatedListener.useCapture;
         passive = truncatedListener.passive;
+        once = truncatedListener.once;
       }
 
       promises.push(listenerObject.callFunctionPromise(handlerFunction)
@@ -178,7 +181,7 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
         if (!location)
           throw new Error('Empty event listener\'s location');
         return new WebInspector.EventListener(
-            handler._target, object, type, useCapture, passive, handler, originalHandler, location,
+            handler._target, object, type, useCapture, passive, once, handler, originalHandler, location,
             removeFunctionObject, 'frameworkUser');
       }
     }
@@ -267,6 +270,7 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
               "handler": function(),
               "useCapture": true,
               "passive": false,
+              "once": false,
               "type": "change",
               "remove": function(type, handler, useCapture, passive)
             },
@@ -356,6 +360,9 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
         var passive = eventListener.passive;
         if (typeof passive !== 'boolean')
           errorString += 'event listener\'s passive isn\'t boolean or undefined, ';
+        var once = eventListener.once;
+        if (typeof once !== 'boolean')
+          errorString += 'event listener\'s once isn\'t boolean or undefined, ';
         var handler = eventListener.handler;
         if (!handler || (typeof handler !== 'function'))
           errorString += 'event listener\'s handler isn\'t a function or empty, ';
@@ -363,7 +370,7 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
         if (remove && (typeof remove !== 'function'))
           errorString += 'event listener\'s remove isn\'t a function, ';
         if (!errorString) {
-          return {type: type, useCapture: useCapture, passive: passive, handler: handler, remove: remove};
+          return {type: type, useCapture: useCapture, passive: passive, once: once, handler: handler, remove: remove};
         } else {
           errorLines.push(errorString.substr(0, errorString.length - 2));
           return null;
@@ -428,6 +435,7 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
                 handler: frameworkListener.handler || frameworkListener,
                 useCapture: true,
                 passive: false,
+                once: false,
                 type: type
               };
               listener.remove = jQueryRemove.bind(node, frameworkListener.selector);
@@ -446,7 +454,7 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
           var events = entryEvents[type];
           for (var key in events) {
             if (typeof events[key] === 'function') {
-              var listener = {handler: events[key], useCapture: true, passive: false, type: type};
+              var listener = {handler: events[key], useCapture: true, passive: false, once: false, type: type};
               // We don't support removing for old version < 1.4 of jQuery because it doesn't provide API for getting "selector".
               eventListeners.push(listener);
             }

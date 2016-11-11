@@ -551,7 +551,7 @@ WebInspector.RemoteObjectImpl = class extends WebInspector.RemoteObject {
        */
       function createEventListener(payload) {
         return new WebInspector.EventListener(
-            this._target, this, payload.type, payload.useCapture, payload.passive,
+            this._target, this, payload.type, payload.useCapture, payload.passive, payload.once,
             payload.handler ? this.target().runtimeModel.createRemoteObject(payload.handler) : null,
             payload.originalHandler ? this.target().runtimeModel.createRemoteObject(payload.originalHandler) : null,
             /** @type {!WebInspector.DebuggerModel.Location} */ (this._debuggerModel.createRawLocationByScriptId(

@@ -94,8 +94,7 @@ WebInspector.TimelineJSProfileProcessor = class {
       'ParseFunction',
       'RecompileConcurrent',
       'RecompileSynchronous',
-      'ParseLazy',
-      'FunctionCallback'
+      'ParseLazy'
     ]);
 
     /**
@@ -152,13 +151,18 @@ WebInspector.TimelineJSProfileProcessor = class {
     function filterStackFrames(stack) {
       if (showAllEvents)
         return;
+      var isPreviousFrameNative = false;
       for (var i = 0, j = 0; i < stack.length; ++i) {
         const frame = stack[i];
         const url = frame.url;
-        if (!showNativeFunctions && url && url.startsWith('native '))
+        const isNativeFrame = url && url.startsWith('native ');
+        if (!showNativeFunctions && isNativeFrame)
           continue;
         if (url === 'native V8Runtime' && (!visibleV8RuntimeStatsItems.has(frame.functionName) || !showRuntimeCallStats))
           continue;
+        if (isPreviousFrameNative && isNativeFrame)
+          continue;
+        isPreviousFrameNative = isNativeFrame;
         stack[j++] = frame;
       }
       stack.length = j;

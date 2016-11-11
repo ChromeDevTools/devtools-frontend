@@ -1071,14 +1071,12 @@ WebInspector.TimelineFlameChartNetworkDataProvider = class extends WebInspector.
       context.lineTo(end, y);
     }
 
-    const lineWidth = window.devicePixelRatio;
-    const subpixelOffset = lineWidth & 1 ? 0.5 : 0;
-    context.lineWidth = lineWidth;
+    context.lineWidth = 1;
     context.strokeStyle = '#ccc';
-    const lineY = Math.floor(barY + barHeight / 2) + subpixelOffset;
-    const leftTick = Math.floor(unclippedBarX) + subpixelOffset;
+    const lineY = Math.floor(barY + barHeight / 2) + 0.5;
+    const leftTick = Math.floor(unclippedBarX) + 0.5;
+    const rightTick = end - 0.5;
     drawTick(leftTick, sendStart, lineY);
-    const rightTick = end - subpixelOffset;
     drawTick(rightTick, finish, lineY);
     context.stroke();
 

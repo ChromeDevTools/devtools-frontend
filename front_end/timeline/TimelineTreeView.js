@@ -156,7 +156,7 @@ WebInspector.TimelineTreeView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {function(!WebInspector.TracingModel.Event, string):(string|symbol)=} eventIdCallback
+   * @param {function(!WebInspector.TracingModel.Event):(string|symbol)=} eventIdCallback
    * @return {!WebInspector.TimelineProfileTree.Node}
    */
   _buildTopDownTree(eventIdCallback) {
@@ -611,7 +611,7 @@ WebInspector.AggregatedTimelineTreeView = class extends WebInspector.TimelineTre
 
   /**
    * @param {!WebInspector.AggregatedTimelineTreeView.GroupBy} groupBy
-   * @return {function(!WebInspector.TracingModel.Event, string):string}
+   * @return {function(!WebInspector.TracingModel.Event):string}
    */
   _groupingFunction(groupBy) {
     /**
@@ -658,7 +658,7 @@ WebInspector.AggregatedTimelineTreeView = class extends WebInspector.TimelineTre
       case WebInspector.AggregatedTimelineTreeView.GroupBy.URL:
         return groupByURL;
       case WebInspector.AggregatedTimelineTreeView.GroupBy.Frame:
-        return (event, pageFrameId) => pageFrameId || '';
+        return event => WebInspector.TimelineData.forEvent(event).frameId;
       default:
         console.assert(false, `Unexpected aggregation setting: ${groupBy}`);
         return () => Symbol('uniqueGroupId');

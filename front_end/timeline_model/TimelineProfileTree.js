@@ -39,7 +39,7 @@ WebInspector.TimelineProfileTree.Node = class {
  * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
  * @param {number} startTime
  * @param {number} endTime
- * @param {function(!WebInspector.TracingModel.Event, string):string=} eventGroupIdCallback
+ * @param {function(!WebInspector.TracingModel.Event):string=} eventGroupIdCallback
  * @return {!WebInspector.TimelineProfileTree.Node}
  */
 WebInspector.TimelineProfileTree.buildTopDown = function(events, filters, startTime, endTime, eventGroupIdCallback) {
@@ -49,19 +49,16 @@ WebInspector.TimelineProfileTree.buildTopDown = function(events, filters, startT
   root.totalTime = initialTime;
   root.selfTime = initialTime;
   root.children = /** @type {!Map<string, !WebInspector.TimelineProfileTree.Node>} */ (new Map());
-  var pageFrameIdStack = [];
   var parent = root;
 
   /**
    * @param {!WebInspector.TracingModel.Event} e
    */
   function onStartEvent(e) {
-    var pageFrameId = WebInspector.TimelineModel.eventFrameId(e) || pageFrameIdStack.peekLast();
-    pageFrameIdStack.push(pageFrameId);
     if (!WebInspector.TimelineModel.isVisible(filters, e))
       return;
     var time = e.endTime ? Math.min(endTime, e.endTime) - Math.max(startTime, e.startTime) : 0;
-    var groupId = eventGroupIdCallback ? eventGroupIdCallback(e, pageFrameId) : Symbol('uniqueGroupId');
+    var groupId = eventGroupIdCallback ? eventGroupIdCallback(e) : Symbol('uniqueGroupId');
     var id = eventGroupIdCallback ? WebInspector.TimelineProfileTree._eventId(e) : Symbol('uniqueEventId');
     if (typeof groupId === 'string' && typeof id === 'string')
       id += '/' + groupId;
@@ -94,7 +91,6 @@ WebInspector.TimelineProfileTree.buildTopDown = function(events, filters, startT
    * @param {!WebInspector.TracingModel.Event} e
    */
   function onEndEvent(e) {
-    pageFrameIdStack.pop();
     if (!WebInspector.TimelineModel.isVisible(filters, e))
       return;
     parent = parent.parent;

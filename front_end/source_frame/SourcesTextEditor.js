@@ -796,7 +796,7 @@ WebInspector.SourcesTextEditor.TokenHighlighter = class {
         null;
     if (selectionStart)
       this._codeMirror.addLineClass(selectionStart.line, 'wrap', 'cm-line-with-selection');
-    if (this._highlightRegex === oldRegex) {
+    if (oldRegex && this._highlightRegex.toString() === oldRegex.toString()) {
       // Do not re-add overlay mode if regex did not change for better performance.
       if (this._highlightDescriptor)
         this._highlightDescriptor.selectionStart = selectionStart;

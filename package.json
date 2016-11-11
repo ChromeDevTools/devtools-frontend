@@ -9,7 +9,8 @@
     "test:build": "node scripts/npm_test.js --build-only",
     "test:run": "node scripts/npm_test.js --test-only",
     "lint": "eslint front_end",
-    "format": "node scripts/format.js"
+    "format": "node scripts/format.js",
+    "closure": "python scripts/compile_frontend.py"
   },
   "repository": {
     "type": "git",

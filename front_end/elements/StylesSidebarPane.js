@@ -2457,7 +2457,7 @@ WebInspector.StylePropertyTreeElement = class extends TreeElement {
   }
 
   _applyFreeFlowStyleTextEdit() {
-    var valueText = this.valueElement.textContent;
+    var valueText = this._prompt.textWithCurrentSuggestion();
     if (valueText.indexOf(';') === -1)
       this.applyStyleText(this.nameElement.textContent + ': ' + valueText, false);
   }

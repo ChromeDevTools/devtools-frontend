@@ -151,14 +151,18 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
    * @return {string}
    */
   textWithCurrentSuggestion() {
-    return this._element.textContent;
+    var text = this.text();
+    if (!this._queryRange)
+      return text;
+    return text.substring(0, this._queryRange.startColumn) + this._currentSuggestion +
+        text.substring(this._queryRange.endColumn);
   }
 
   /**
    * @return {string}
    */
   text() {
-    var text = this.textWithCurrentSuggestion();
+    var text = this._element.textContent;
     if (this._ghostTextElement.parentNode) {
       var addition = this._ghostTextElement.textContent;
       text = text.substring(0, text.length - addition.length);
@@ -523,9 +527,7 @@ WebInspector.TextPrompt = class extends WebInspector.Object {
     if (!this._queryRange)
       return false;
 
-    var text = this.text();
-    this._element.textContent = text.substring(0, this._queryRange.startColumn) + this._currentSuggestion +
-        text.substring(this._queryRange.endColumn);
+    this._element.textContent = this.textWithCurrentSuggestion();
     this.setDOMSelection(
         this._queryRange.startColumn + this._currentSuggestion.length,
         this._queryRange.startColumn + this._currentSuggestion.length);

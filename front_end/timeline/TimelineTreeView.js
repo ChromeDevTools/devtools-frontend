@@ -658,7 +658,7 @@ WebInspector.AggregatedTimelineTreeView = class extends WebInspector.TimelineTre
       case WebInspector.AggregatedTimelineTreeView.GroupBy.URL:
         return groupByURL;
       case WebInspector.AggregatedTimelineTreeView.GroupBy.Frame:
-        return (event, pageFrameId) => pageFrameId;
+        return (event, pageFrameId) => pageFrameId || '';
       default:
         console.assert(false, `Unexpected aggregation setting: ${groupBy}`);
         return () => Symbol('uniqueGroupId');

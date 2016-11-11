@@ -43,7 +43,7 @@ WebInspector.Linkifier = class {
     this._anchorsByTarget = new Map();
     /** @type {!Map<!WebInspector.Target, !WebInspector.LiveLocationPool>} */
     this._locationPoolByTarget = new Map();
-    this._useLinkDecorator = true;
+    this._useLinkDecorator = !!useLinkDecorator;
     WebInspector.Linkifier._instances.add(this);
     WebInspector.targetManager.observeTargets(this);
   }

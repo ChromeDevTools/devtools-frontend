@@ -863,17 +863,19 @@ WebInspector.CodeMirrorTextEditor = class extends WebInspector.VBox {
     var parentElement = this.element.parentElement;
     if (!parentElement || !this.isShowing())
       return;
-    var scrollLeft = this._codeMirror.doc.scrollLeft;
-    var scrollTop = this._codeMirror.doc.scrollTop;
-    var width = parentElement.offsetWidth;
-    var height = parentElement.offsetHeight - this.element.offsetTop;
-    if (this._options.autoHeight) {
-      this._codeMirror.setSize(width, 'auto');
-    } else {
-      this._codeMirror.setSize(width, height);
-      this._updatePaddingBottom(width, height);
-    }
-    this._codeMirror.scrollTo(scrollLeft, scrollTop);
+    this._codeMirror.operation(() => {
+      var scrollLeft = this._codeMirror.doc.scrollLeft;
+      var scrollTop = this._codeMirror.doc.scrollTop;
+      var width = parentElement.offsetWidth;
+      var height = parentElement.offsetHeight - this.element.offsetTop;
+      if (this._options.autoHeight) {
+        this._codeMirror.setSize(width, 'auto');
+      } else {
+        this._codeMirror.setSize(width, height);
+        this._updatePaddingBottom(width, height);
+      }
+      this._codeMirror.scrollTo(scrollLeft, scrollTop);
+    });
   }
 
   /**

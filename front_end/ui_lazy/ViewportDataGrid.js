@@ -238,6 +238,7 @@ WebInspector.ViewportDataGrid = class extends WebInspector.DataGrid {
       node.willAttach();
       element.classList.toggle('odd', (offset + i) % 2 === 0);
       tBody.insertBefore(element, previousElement.nextSibling);
+      node.revealed = true;
       previousElement = element;
     }
 

@@ -104,7 +104,7 @@ WebInspector.Main = class {
     Runtime.experiments.register('inspectTooltip', 'Dark inspect element tooltip');
     Runtime.experiments.register('liveSASS', 'Live SASS');
     Runtime.experiments.register('nodeDebugging', 'Node debugging', true);
-    Runtime.experiments.register('persistence2', 'Persistence 2.0', true);
+    Runtime.experiments.register('persistence2', 'Persistence 2.0');
     Runtime.experiments.register('privateScriptInspection', 'Private script inspection');
     Runtime.experiments.register('requestBlocking', 'Request blocking', true);
     Runtime.experiments.register('resolveVariableNames', 'Resolve variable names');

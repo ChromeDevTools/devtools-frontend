@@ -1054,7 +1054,7 @@ WebInspector.TimelineFlameChartNetworkDataProvider = class extends WebInspector.
 
     context.fillStyle = 'hsla(0, 100%, 100%, 0.8)';
     context.fillRect(sendStart + 0.5, barY + 0.5, headersEnd - sendStart - 0.5, barHeight - 2);
-    context.fillStyle = 'white';
+    context.fillStyle = WebInspector.themeSupport.patchColor('white', WebInspector.ThemeSupport.ColorUsage.Background);
     context.fillRect(barX, barY - 0.5, sendStart - barX, barHeight);
     context.fillRect(finish, barY - 0.5, barX + barWidth - finish, barHeight);
 

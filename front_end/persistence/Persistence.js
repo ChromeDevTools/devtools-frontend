@@ -4,11 +4,11 @@
 /**
  * @unrestricted
  */
-WebInspector.Persistence = class extends WebInspector.Object {
+Persistence.Persistence = class extends Common.Object {
   /**
-   * @param {!WebInspector.Workspace} workspace
-   * @param {!WebInspector.BreakpointManager} breakpointManager
-   * @param {!WebInspector.FileSystemMapping} fileSystemMapping
+   * @param {!Workspace.Workspace} workspace
+   * @param {!Bindings.BreakpointManager} breakpointManager
+   * @param {!Workspace.FileSystemMapping} fileSystemMapping
    */
   constructor(workspace, breakpointManager, fileSystemMapping) {
     super();
@@ -18,112 +18,112 @@ WebInspector.Persistence = class extends WebInspector.Object {
     this._filePathPrefixesToBindingCount = new Map();
 
     if (Runtime.experiments.isEnabled('persistence2')) {
-      var linkDecorator = new WebInspector.PersistenceUtils.LinkDecorator(this);
-      WebInspector.Linkifier.setLinkDecorator(linkDecorator);
+      var linkDecorator = new Persistence.PersistenceUtils.LinkDecorator(this);
+      Components.Linkifier.setLinkDecorator(linkDecorator);
       this._mapping =
-          new WebInspector.Automapping(workspace, this._onBindingCreated.bind(this), this._onBindingRemoved.bind(this));
+          new Persistence.Automapping(workspace, this._onBindingCreated.bind(this), this._onBindingRemoved.bind(this));
     } else {
-      this._mapping = new WebInspector.DefaultMapping(
+      this._mapping = new Persistence.DefaultMapping(
           workspace, fileSystemMapping, this._onBindingCreated.bind(this), this._onBindingRemoved.bind(this));
     }
   }
 
   /**
-   * @param {!WebInspector.PersistenceBinding} binding
+   * @param {!Persistence.PersistenceBinding} binding
    */
   _onBindingCreated(binding) {
     if (binding.network.isDirty()) {
-      WebInspector.console.log(WebInspector.UIString(
+      Common.console.log(Common.UIString(
           '%s can not be persisted to file system due to unsaved changes.', binding.network.name()));
       return;
     }
     if (binding.fileSystem.isDirty())
       binding.network.setWorkingCopy(binding.fileSystem.workingCopy());
 
-    binding.network[WebInspector.Persistence._binding] = binding;
-    binding.fileSystem[WebInspector.Persistence._binding] = binding;
+    binding.network[Persistence.Persistence._binding] = binding;
+    binding.fileSystem[Persistence.Persistence._binding] = binding;
 
     binding.fileSystem.forceLoadOnCheckContent();
 
     binding.network.addEventListener(
-        WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
+        Workspace.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
     binding.fileSystem.addEventListener(
-        WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
+        Workspace.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
 
     this._addFilePathBindingPrefixes(binding.fileSystem.url());
 
     this._moveBreakpoints(binding.fileSystem, binding.network);
-    this.dispatchEventToListeners(WebInspector.Persistence.Events.BindingCreated, binding);
+    this.dispatchEventToListeners(Persistence.Persistence.Events.BindingCreated, binding);
   }
 
   /**
-   * @param {!WebInspector.PersistenceBinding} binding
+   * @param {!Persistence.PersistenceBinding} binding
    */
   _onBindingRemoved(binding) {
     if (binding.network.isDirty())
       binding.fileSystem.setWorkingCopy(binding.network.workingCopy());
 
-    binding.network[WebInspector.Persistence._binding] = null;
-    binding.fileSystem[WebInspector.Persistence._binding] = null;
+    binding.network[Persistence.Persistence._binding] = null;
+    binding.fileSystem[Persistence.Persistence._binding] = null;
 
     binding.network.removeEventListener(
-        WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
+        Workspace.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
     binding.fileSystem.removeEventListener(
-        WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
+        Workspace.UISourceCode.Events.WorkingCopyCommitted, this._onWorkingCopyCommitted, this);
 
     this._removeFilePathBindingPrefixes(binding.fileSystem.url());
 
     this._copyBreakpoints(binding.network, binding.fileSystem);
-    this.dispatchEventToListeners(WebInspector.Persistence.Events.BindingRemoved, binding);
+    this.dispatchEventToListeners(Persistence.Persistence.Events.BindingRemoved, binding);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onWorkingCopyCommitted(event) {
-    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.target);
-    var binding = uiSourceCode[WebInspector.Persistence._binding];
-    if (!binding || binding[WebInspector.Persistence._muteCommit])
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.target);
+    var binding = uiSourceCode[Persistence.Persistence._binding];
+    if (!binding || binding[Persistence.Persistence._muteCommit])
       return;
     var newContent = /** @type {string} */ (event.data.content);
     var other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
-    var target = WebInspector.NetworkProject.targetForUISourceCode(binding.network);
+    var target = Bindings.NetworkProject.targetForUISourceCode(binding.network);
     if (target.isNodeJS()) {
       other.requestContent().then(
           currentContent => this._syncNodeJSContent(binding, other, currentContent, newContent));
       return;
     }
-    binding[WebInspector.Persistence._muteCommit] = true;
+    binding[Persistence.Persistence._muteCommit] = true;
     other.addRevision(newContent);
-    binding[WebInspector.Persistence._muteCommit] = false;
+    binding[Persistence.Persistence._muteCommit] = false;
     this._contentSyncedForTest();
   }
 
   /**
-   * @param {!WebInspector.PersistenceBinding} binding
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Persistence.PersistenceBinding} binding
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} currentContent
    * @param {string} newContent
    */
   _syncNodeJSContent(binding, uiSourceCode, currentContent, newContent) {
     if (uiSourceCode === binding.fileSystem) {
-      if (newContent.startsWith(WebInspector.Persistence._NodePrefix) &&
-          newContent.endsWith(WebInspector.Persistence._NodeSuffix))
+      if (newContent.startsWith(Persistence.Persistence._NodePrefix) &&
+          newContent.endsWith(Persistence.Persistence._NodeSuffix))
         newContent = newContent.substring(
-            WebInspector.Persistence._NodePrefix.length,
-            newContent.length - WebInspector.Persistence._NodeSuffix.length);
-      if (currentContent.startsWith(WebInspector.Persistence._NodeShebang))
-        newContent = WebInspector.Persistence._NodeShebang + newContent;
+            Persistence.Persistence._NodePrefix.length,
+            newContent.length - Persistence.Persistence._NodeSuffix.length);
+      if (currentContent.startsWith(Persistence.Persistence._NodeShebang))
+        newContent = Persistence.Persistence._NodeShebang + newContent;
     } else {
-      if (newContent.startsWith(WebInspector.Persistence._NodeShebang))
-        newContent = newContent.substring(WebInspector.Persistence._NodeShebang.length);
-      if (currentContent.startsWith(WebInspector.Persistence._NodePrefix) &&
-          currentContent.endsWith(WebInspector.Persistence._NodeSuffix))
-        newContent = WebInspector.Persistence._NodePrefix + newContent + WebInspector.Persistence._NodeSuffix;
+      if (newContent.startsWith(Persistence.Persistence._NodeShebang))
+        newContent = newContent.substring(Persistence.Persistence._NodeShebang.length);
+      if (currentContent.startsWith(Persistence.Persistence._NodePrefix) &&
+          currentContent.endsWith(Persistence.Persistence._NodeSuffix))
+        newContent = Persistence.Persistence._NodePrefix + newContent + Persistence.Persistence._NodeSuffix;
     }
-    binding[WebInspector.Persistence._muteCommit] = true;
+    binding[Persistence.Persistence._muteCommit] = true;
     uiSourceCode.addRevision(newContent);
-    binding[WebInspector.Persistence._muteCommit] = false;
+    binding[Persistence.Persistence._muteCommit] = false;
     this._contentSyncedForTest();
   }
 
@@ -131,8 +131,8 @@ WebInspector.Persistence = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} from
-   * @param {!WebInspector.UISourceCode} to
+   * @param {!Workspace.UISourceCode} from
+   * @param {!Workspace.UISourceCode} to
    */
   _moveBreakpoints(from, to) {
     var breakpoints = this._breakpointManager.breakpointsForUISourceCode(from);
@@ -144,8 +144,8 @@ WebInspector.Persistence = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} from
-   * @param {!WebInspector.UISourceCode} to
+   * @param {!Workspace.UISourceCode} from
+   * @param {!Workspace.UISourceCode} to
    */
   _copyBreakpoints(from, to) {
     var breakpoints = this._breakpointManager.breakpointsForUISourceCode(from);
@@ -155,32 +155,32 @@ WebInspector.Persistence = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {boolean}
    */
   hasUnsavedCommittedChanges(uiSourceCode) {
     if (this._workspace.hasResourceContentTrackingExtensions())
       return false;
-    if (uiSourceCode.url() && WebInspector.fileManager.isURLSaved(uiSourceCode.url()))
+    if (uiSourceCode.url() && Workspace.fileManager.isURLSaved(uiSourceCode.url()))
       return false;
     if (uiSourceCode.project().canSetFileContent())
       return false;
-    if (uiSourceCode[WebInspector.Persistence._binding])
+    if (uiSourceCode[Persistence.Persistence._binding])
       return false;
     return !!uiSourceCode.history.length;
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @return {?WebInspector.PersistenceBinding}
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {?Persistence.PersistenceBinding}
    */
   binding(uiSourceCode) {
-    return uiSourceCode[WebInspector.Persistence._binding] || null;
+    return uiSourceCode[Persistence.Persistence._binding] || null;
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @return {?WebInspector.UISourceCode}
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {?Workspace.UISourceCode}
    */
   fileSystem(uiSourceCode) {
     var binding = this.binding(uiSourceCode);
@@ -229,14 +229,14 @@ WebInspector.Persistence = class extends WebInspector.Object {
   }
 };
 
-WebInspector.Persistence._binding = Symbol('Persistence.Binding');
-WebInspector.Persistence._muteCommit = Symbol('Persistence.MuteCommit');
+Persistence.Persistence._binding = Symbol('Persistence.Binding');
+Persistence.Persistence._muteCommit = Symbol('Persistence.MuteCommit');
 
-WebInspector.Persistence._NodePrefix = '(function (exports, require, module, __filename, __dirname) { ';
-WebInspector.Persistence._NodeSuffix = '\n});';
-WebInspector.Persistence._NodeShebang = '#!/usr/bin/env node\n';
+Persistence.Persistence._NodePrefix = '(function (exports, require, module, __filename, __dirname) { ';
+Persistence.Persistence._NodeSuffix = '\n});';
+Persistence.Persistence._NodeShebang = '#!/usr/bin/env node\n';
 
-WebInspector.Persistence.Events = {
+Persistence.Persistence.Events = {
   BindingCreated: Symbol('BindingCreated'),
   BindingRemoved: Symbol('BindingRemoved')
 };
@@ -244,10 +244,10 @@ WebInspector.Persistence.Events = {
 /**
  * @unrestricted
  */
-WebInspector.PersistenceBinding = class {
+Persistence.PersistenceBinding = class {
   /**
-   * @param {!WebInspector.UISourceCode} network
-   * @param {!WebInspector.UISourceCode} fileSystem
+   * @param {!Workspace.UISourceCode} network
+   * @param {!Workspace.UISourceCode} fileSystem
    * @param {boolean} exactMatch
    */
   constructor(network, fileSystem, exactMatch) {
@@ -257,5 +257,5 @@ WebInspector.PersistenceBinding = class {
   }
 };
 
-/** @type {!WebInspector.Persistence} */
-WebInspector.persistence;
+/** @type {!Persistence.Persistence} */
+Persistence.persistence;

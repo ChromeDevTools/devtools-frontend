@@ -3,7 +3,6 @@
         "platform"
     ],
     "scripts": [
-        "WebInspector.js",
         "Worker.js",
         "TextDictionary.js",
         "Object.js",

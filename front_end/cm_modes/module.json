@@ -1,8 +1,8 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.CodeMirrorMimeMode",
-            "className": "WebInspector.DefaultCodeMirrorMimeMode",
+            "type": "@TextEditor.CodeMirrorMimeMode",
+            "className": "CmModes.DefaultCodeMirrorMimeMode",
             "fileName": "clike.js",
             "mimeTypes": [
                 "text/x-csrc",
@@ -18,16 +18,16 @@
             ]
         },
         {
-            "type": "@WebInspector.CodeMirrorMimeMode",
-            "className": "WebInspector.DefaultCodeMirrorMimeMode",
+            "type": "@TextEditor.CodeMirrorMimeMode",
+            "className": "CmModes.DefaultCodeMirrorMimeMode",
             "fileName": "coffeescript.js",
             "mimeTypes": [
                 "text/x-coffeescript"
             ]
         },
         {
-            "type": "@WebInspector.CodeMirrorMimeMode",
-            "className": "WebInspector.DefaultCodeMirrorMimeMode",
+            "type": "@TextEditor.CodeMirrorMimeMode",
+            "className": "CmModes.DefaultCodeMirrorMimeMode",
             "fileName": "php.js",
             "dependencies": [
                 "clike.js"
@@ -39,8 +39,8 @@
             ]
         },
         {
-            "type": "@WebInspector.CodeMirrorMimeMode",
-            "className": "WebInspector.DefaultCodeMirrorMimeMode",
+            "type": "@TextEditor.CodeMirrorMimeMode",
+            "className": "CmModes.DefaultCodeMirrorMimeMode",
             "fileName": "python.js",
             "mimeTypes": [
                 "text/x-python",
@@ -48,40 +48,40 @@
             ]
         },
         {
-            "type": "@WebInspector.CodeMirrorMimeMode",
-            "className": "WebInspector.DefaultCodeMirrorMimeMode",
+            "type": "@TextEditor.CodeMirrorMimeMode",
+            "className": "CmModes.DefaultCodeMirrorMimeMode",
             "fileName": "shell.js",
             "mimeTypes": [
                 "text/x-sh"
             ]
         },
         {
-            "type": "@WebInspector.CodeMirrorMimeMode",
-            "className": "WebInspector.DefaultCodeMirrorMimeMode",
+            "type": "@TextEditor.CodeMirrorMimeMode",
+            "className": "CmModes.DefaultCodeMirrorMimeMode",
             "fileName": "livescript.js",
             "mimeTypes": [
                 "text/x-livescript"
             ]
         },
         {
-            "type": "@WebInspector.CodeMirrorMimeMode",
-            "className": "WebInspector.DefaultCodeMirrorMimeMode",
+            "type": "@TextEditor.CodeMirrorMimeMode",
+            "className": "CmModes.DefaultCodeMirrorMimeMode",
             "fileName": "clojure.js",
             "mimeTypes": [
                 "text/x-clojure"
             ]
         },
         {
-            "type": "@WebInspector.CodeMirrorMimeMode",
-            "className": "WebInspector.DefaultCodeMirrorMimeMode",
+            "type": "@TextEditor.CodeMirrorMimeMode",
+            "className": "CmModes.DefaultCodeMirrorMimeMode",
             "fileName": "jsx.js",
             "mimeTypes": [
                 "text/jsx"
             ]
         },
         {
-            "type": "@WebInspector.CodeMirrorMimeMode",
-            "className": "WebInspector.DefaultCodeMirrorMimeMode",
+            "type": "@TextEditor.CodeMirrorMimeMode",
+            "className": "CmModes.DefaultCodeMirrorMimeMode",
             "fileName": "stylus.js",
             "mimeTypes": [
                 "text/x-styl"

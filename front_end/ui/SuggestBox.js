@@ -30,9 +30,9 @@
 /**
  * @interface
  */
-WebInspector.SuggestBoxDelegate = function() {};
+UI.SuggestBoxDelegate = function() {};
 
-WebInspector.SuggestBoxDelegate.prototype = {
+UI.SuggestBoxDelegate.prototype = {
   /**
    * @param {string} suggestion
    * @param {boolean=} isIntermediateSuggestion
@@ -46,12 +46,12 @@ WebInspector.SuggestBoxDelegate.prototype = {
 };
 
 /**
- * @implements {WebInspector.StaticViewportControl.Provider}
+ * @implements {UI.StaticViewportControl.Provider}
  * @unrestricted
  */
-WebInspector.SuggestBox = class {
+UI.SuggestBox = class {
   /**
-   * @param {!WebInspector.SuggestBoxDelegate} suggestBoxDelegate
+   * @param {!UI.SuggestBoxDelegate} suggestBoxDelegate
    * @param {number=} maxItemsHeight
    * @param {boolean=} captureEnter
    */
@@ -63,7 +63,7 @@ WebInspector.SuggestBox = class {
     this._maxItemsHeight = maxItemsHeight;
     this._maybeHideBound = this._maybeHide.bind(this);
     this._container = createElementWithClass('div', 'suggest-box-container');
-    this._viewport = new WebInspector.StaticViewportControl(this);
+    this._viewport = new UI.StaticViewportControl(this);
     this._element = this._viewport.element;
     this._element.classList.add('suggest-box');
     this._container.appendChild(this._element);
@@ -81,7 +81,7 @@ WebInspector.SuggestBox = class {
     this._viewportWidth = '100vw';
     this._hasVerticalScroll = false;
     this._userEnteredText = '';
-    /** @type {!WebInspector.SuggestBox.Suggestions} */
+    /** @type {!UI.SuggestBox.Suggestions} */
     this._items = [];
   }
 
@@ -110,7 +110,7 @@ WebInspector.SuggestBox = class {
     this._lastAnchorBox = anchorBox;
 
     // Position relative to main DevTools element.
-    var container = WebInspector.Dialog.modalHostView().element;
+    var container = UI.Dialog.modalHostView().element;
     anchorBox = anchorBox.relativeToElement(container);
     var totalHeight = container.offsetHeight;
     var aboveHeight = anchorBox.y;
@@ -144,7 +144,7 @@ WebInspector.SuggestBox = class {
         maxIndex = i;
     }
     var element = /** @type {!Element} */ (this.itemElement(maxIndex));
-    this._element.style.width = WebInspector.measurePreferredSize(element, this._element).width + 'px';
+    this._element.style.width = UI.measurePreferredSize(element, this._element).width + 'px';
   }
 
   /**
@@ -172,7 +172,7 @@ WebInspector.SuggestBox = class {
       return;
     this._bodyElement = document.body;
     this._bodyElement.addEventListener('mousedown', this._maybeHideBound, true);
-    this._overlay = new WebInspector.SuggestBox.Overlay();
+    this._overlay = new UI.SuggestBox.Overlay();
     this._overlay.setContentElement(this._container);
     var measuringElement = this._createItemElement('1', '12');
     this._viewport.element.appendChild(measuringElement);
@@ -292,7 +292,7 @@ WebInspector.SuggestBox = class {
   }
 
   /**
-   * @param {!WebInspector.SuggestBox.Suggestions} items
+   * @param {!UI.SuggestBox.Suggestions} items
    * @param {string} userEnteredText
    * @param {function(number): !Promise<{detail:string, description:string}>=} asyncDetails
    */
@@ -354,7 +354,7 @@ WebInspector.SuggestBox = class {
 
     /**
      * @param {?{detail: string, description: string}} details
-     * @this {WebInspector.SuggestBox}
+     * @this {UI.SuggestBox}
      */
     function showDetails(details) {
       if (elem === this._selectedElement)
@@ -363,7 +363,7 @@ WebInspector.SuggestBox = class {
   }
 
   /**
-   * @param {!WebInspector.SuggestBox.Suggestions} completions
+   * @param {!UI.SuggestBox.Suggestions} completions
    * @param {boolean} canShowForSingleItem
    * @param {string} userEnteredText
    * @return {boolean}
@@ -393,7 +393,7 @@ WebInspector.SuggestBox = class {
 
   /**
    * @param {!AnchorBox} anchorBox
-   * @param {!WebInspector.SuggestBox.Suggestions} completions
+   * @param {!UI.SuggestBox.Suggestions} completions
    * @param {number} selectedIndex
    * @param {boolean} canShowForSingleItem
    * @param {string} userEnteredText
@@ -514,19 +514,19 @@ WebInspector.SuggestBox = class {
 /**
  * @typedef {!Array.<{title: string, className: (string|undefined)}>}
  */
-WebInspector.SuggestBox.Suggestions;
+UI.SuggestBox.Suggestions;
 
 /**
  * @unrestricted
  */
-WebInspector.SuggestBox.Overlay = class {
+UI.SuggestBox.Overlay = class {
   /**
    * // FIXME: make SuggestBox work for multiple documents.
    * @suppressGlobalPropertiesCheck
    */
   constructor() {
     this.element = createElementWithClass('div', 'suggest-box-overlay');
-    var root = WebInspector.createShadowRootWithCoreStyles(this.element, 'ui/suggestBox.css');
+    var root = UI.createShadowRootWithCoreStyles(this.element, 'ui/suggestBox.css');
     this._leftSpacerElement = root.createChild('div', 'suggest-box-left-spacer');
     this._horizontalElement = root.createChild('div', 'suggest-box-horizontal');
     this._topSpacerElement = this._horizontalElement.createChild('div', 'suggest-box-top-spacer');
@@ -566,7 +566,7 @@ WebInspector.SuggestBox.Overlay = class {
   }
 
   _resize() {
-    var container = WebInspector.Dialog.modalHostView().element;
+    var container = UI.Dialog.modalHostView().element;
     var containerBox = container.boxInWindow(container.ownerDocument.defaultView);
 
     this.element.style.left = containerBox.x + 'px';

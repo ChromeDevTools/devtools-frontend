@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.AnimationTimeline = class extends WebInspector.VBox {
+Animation.AnimationTimeline = class extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('animation/animationTimeline.css');
@@ -18,31 +18,31 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
     this._createHeader();
     this._animationsContainer = this.contentElement.createChild('div', 'animation-timeline-rows');
     var timelineHint = this.contentElement.createChild('div', 'animation-timeline-rows-hint');
-    timelineHint.textContent = WebInspector.UIString('Select an effect above to inspect and modify.');
+    timelineHint.textContent = Common.UIString('Select an effect above to inspect and modify.');
 
     /** @const */ this._defaultDuration = 100;
     this._duration = this._defaultDuration;
     /** @const */ this._timelineControlsWidth = 150;
-    /** @type {!Map.<!Protocol.DOM.BackendNodeId, !WebInspector.AnimationTimeline.NodeUI>} */
+    /** @type {!Map.<!Protocol.DOM.BackendNodeId, !Animation.AnimationTimeline.NodeUI>} */
     this._nodesMap = new Map();
     this._uiAnimations = [];
     this._groupBuffer = [];
-    /** @type {!Map.<!WebInspector.AnimationModel.AnimationGroup, !WebInspector.AnimationGroupPreviewUI>} */
+    /** @type {!Map.<!Animation.AnimationModel.AnimationGroup, !Animation.AnimationGroupPreviewUI>} */
     this._previewMap = new Map();
     this._symbol = Symbol('animationTimeline');
-    /** @type {!Map.<string, !WebInspector.AnimationModel.Animation>} */
+    /** @type {!Map.<string, !Animation.AnimationModel.Animation>} */
     this._animationsMap = new Map();
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.DOM);
-    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._nodeChanged, this);
+    SDK.targetManager.addModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.DOM);
+    UI.context.addFlavorChangeListener(SDK.DOMNode, this._nodeChanged, this);
   }
 
   /**
    * @override
    */
   wasShown() {
-    for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.DOM))
+    for (var target of SDK.targetManager.targets(SDK.Target.Capability.DOM))
       this._addEventListeners(target);
   }
 
@@ -50,14 +50,14 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
    * @override
    */
   willHide() {
-    for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.DOM))
+    for (var target of SDK.targetManager.targets(SDK.Target.Capability.DOM))
       this._removeEventListeners(target);
     this._popoverHelper.hidePopover();
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     if (this.isShowing())
@@ -66,31 +66,31 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
     this._removeEventListeners(target);
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   _addEventListeners(target) {
-    var animationModel = WebInspector.AnimationModel.fromTarget(target);
+    var animationModel = Animation.AnimationModel.fromTarget(target);
     animationModel.ensureEnabled();
     animationModel.addEventListener(
-        WebInspector.AnimationModel.Events.AnimationGroupStarted, this._animationGroupStarted, this);
-    animationModel.addEventListener(WebInspector.AnimationModel.Events.ModelReset, this._reset, this);
+        Animation.AnimationModel.Events.AnimationGroupStarted, this._animationGroupStarted, this);
+    animationModel.addEventListener(Animation.AnimationModel.Events.ModelReset, this._reset, this);
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   _removeEventListeners(target) {
-    var animationModel = WebInspector.AnimationModel.fromTarget(target);
+    var animationModel = Animation.AnimationModel.fromTarget(target);
     animationModel.removeEventListener(
-        WebInspector.AnimationModel.Events.AnimationGroupStarted, this._animationGroupStarted, this);
-    animationModel.removeEventListener(WebInspector.AnimationModel.Events.ModelReset, this._reset, this);
+        Animation.AnimationModel.Events.AnimationGroupStarted, this._animationGroupStarted, this);
+    animationModel.removeEventListener(Animation.AnimationModel.Events.ModelReset, this._reset, this);
   }
 
   _nodeChanged() {
@@ -111,54 +111,54 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
 
   _createHeader() {
     var toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
-    var topToolbar = new WebInspector.Toolbar('animation-timeline-toolbar', toolbarContainer);
-    var clearButton = new WebInspector.ToolbarButton(WebInspector.UIString('Clear all'), 'largeicon-clear');
+    var topToolbar = new UI.Toolbar('animation-timeline-toolbar', toolbarContainer);
+    var clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
     clearButton.addEventListener('click', this._reset.bind(this));
     topToolbar.appendToolbarItem(clearButton);
     topToolbar.appendSeparator();
 
-    this._pauseButton = new WebInspector.ToolbarToggle(WebInspector.UIString('Pause all'), 'largeicon-pause', 'largeicon-resume');
+    this._pauseButton = new UI.ToolbarToggle(Common.UIString('Pause all'), 'largeicon-pause', 'largeicon-resume');
     this._pauseButton.addEventListener('click', this._togglePauseAll.bind(this));
     topToolbar.appendToolbarItem(this._pauseButton);
 
     var playbackRateControl = toolbarContainer.createChild('div', 'animation-playback-rate-control');
     this._playbackRateButtons = [];
-    for (var playbackRate of WebInspector.AnimationTimeline.GlobalPlaybackRates) {
+    for (var playbackRate of Animation.AnimationTimeline.GlobalPlaybackRates) {
       var button = playbackRateControl.createChild('div', 'animation-playback-rate-button');
       button.textContent =
-          playbackRate ? WebInspector.UIString(playbackRate * 100 + '%') : WebInspector.UIString('Pause');
+          playbackRate ? Common.UIString(playbackRate * 100 + '%') : Common.UIString('Pause');
       button.playbackRate = playbackRate;
       button.addEventListener('click', this._setPlaybackRate.bind(this, playbackRate));
-      button.title = WebInspector.UIString('Set speed to ') + button.textContent;
+      button.title = Common.UIString('Set speed to ') + button.textContent;
       this._playbackRateButtons.push(button);
     }
     this._updatePlaybackControls();
 
     this._previewContainer = this.contentElement.createChild('div', 'animation-timeline-buffer');
-    this._popoverHelper = new WebInspector.PopoverHelper(this._previewContainer, true);
+    this._popoverHelper = new UI.PopoverHelper(this._previewContainer, true);
     this._popoverHelper.initializeCallbacks(
         this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
     this._popoverHelper.setTimeout(0);
     var emptyBufferHint = this.contentElement.createChild('div', 'animation-timeline-buffer-hint');
-    emptyBufferHint.textContent = WebInspector.UIString('Listening for animations...');
+    emptyBufferHint.textContent = Common.UIString('Listening for animations...');
     var container = this.contentElement.createChild('div', 'animation-timeline-header');
     var controls = container.createChild('div', 'animation-controls');
     this._currentTime = controls.createChild('div', 'animation-timeline-current-time monospace');
 
-    var toolbar = new WebInspector.Toolbar('animation-controls-toolbar', controls);
+    var toolbar = new UI.Toolbar('animation-controls-toolbar', controls);
     this._controlButton =
-        new WebInspector.ToolbarToggle(WebInspector.UIString('Replay timeline'), 'largeicon-replay-animation');
-    this._controlState = WebInspector.AnimationTimeline._ControlState.Replay;
+        new UI.ToolbarToggle(Common.UIString('Replay timeline'), 'largeicon-replay-animation');
+    this._controlState = Animation.AnimationTimeline._ControlState.Replay;
     this._controlButton.setToggled(true);
     this._controlButton.addEventListener('click', this._controlButtonToggle.bind(this));
     toolbar.appendToolbarItem(this._controlButton);
 
     var gridHeader = container.createChild('div', 'animation-grid-header');
-    WebInspector.installDragHandle(
+    UI.installDragHandle(
         gridHeader, this._repositionScrubber.bind(this), this._scrubberDragMove.bind(this),
         this._scrubberDragEnd.bind(this), 'text');
     container.appendChild(this._createScrubber());
-    WebInspector.installDragHandle(
+    UI.installDragHandle(
         this._timelineScrubberLine, this._scrubberDragStart.bind(this), this._scrubberDragMove.bind(this),
         this._scrubberDragEnd.bind(this), 'col-resize');
     this._currentTime.textContent = '';
@@ -178,7 +178,7 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
 
   /**
    * @param {!Element} anchor
-   * @param {!WebInspector.Popover} popover
+   * @param {!UI.Popover} popover
    */
   _showPopover(anchor, popover) {
     var animGroup;
@@ -200,7 +200,7 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
      * @param  {!Array.<!Image>} screenshots
      */
     function onFirstScreenshotLoaded(screenshots) {
-      var content = new WebInspector.AnimationScreenshotPopover(screenshots);
+      var content = new Animation.AnimationScreenshotPopover(screenshots);
       popover.setNoPadding(true);
       popover.showView(content, anchor);
     }
@@ -214,7 +214,7 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
     this._pauseButton.setToggled(this._allPaused);
     this._setPlaybackRate(this._playbackRate);
     this._pauseButton.setTitle(
-        this._allPaused ? WebInspector.UIString('Resume all') : WebInspector.UIString('Pause all'));
+        this._allPaused ? Common.UIString('Resume all') : Common.UIString('Pause all'));
   }
 
   /**
@@ -222,10 +222,10 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
    */
   _setPlaybackRate(playbackRate) {
     this._playbackRate = playbackRate;
-    var target = WebInspector.targetManager.mainTarget();
+    var target = SDK.targetManager.mainTarget();
     if (target)
-      WebInspector.AnimationModel.fromTarget(target).setPlaybackRate(this._allPaused ? 0 : this._playbackRate);
-    WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.AnimationsPlaybackRateChanged);
+      Animation.AnimationModel.fromTarget(target).setPlaybackRate(this._allPaused ? 0 : this._playbackRate);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationsPlaybackRateChanged);
     if (this._scrubberPlayer)
       this._scrubberPlayer.playbackRate = this._effectivePlaybackRate();
 
@@ -240,9 +240,9 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
   }
 
   _controlButtonToggle() {
-    if (this._controlState === WebInspector.AnimationTimeline._ControlState.Play)
+    if (this._controlState === Animation.AnimationTimeline._ControlState.Play)
       this._togglePause(false);
-    else if (this._controlState === WebInspector.AnimationTimeline._ControlState.Replay)
+    else if (this._controlState === Animation.AnimationTimeline._ControlState.Replay)
       this._replay();
     else
       this._togglePause(true);
@@ -251,19 +251,19 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
   _updateControlButton() {
     this._controlButton.setEnabled(!!this._selectedGroup);
     if (this._selectedGroup && this._selectedGroup.paused()) {
-      this._controlState = WebInspector.AnimationTimeline._ControlState.Play;
+      this._controlState = Animation.AnimationTimeline._ControlState.Play;
       this._controlButton.setToggled(true);
-      this._controlButton.setTitle(WebInspector.UIString('Play timeline'));
+      this._controlButton.setTitle(Common.UIString('Play timeline'));
       this._controlButton.setGlyph('largeicon-play-animation');
     } else if (!this._scrubberPlayer || this._scrubberPlayer.currentTime >= this.duration()) {
-      this._controlState = WebInspector.AnimationTimeline._ControlState.Replay;
+      this._controlState = Animation.AnimationTimeline._ControlState.Replay;
       this._controlButton.setToggled(true);
-      this._controlButton.setTitle(WebInspector.UIString('Replay timeline'));
+      this._controlButton.setTitle(Common.UIString('Replay timeline'));
       this._controlButton.setGlyph('largeicon-replay-animation');
     } else {
-      this._controlState = WebInspector.AnimationTimeline._ControlState.Pause;
+      this._controlState = Animation.AnimationTimeline._ControlState.Pause;
       this._controlButton.setToggled(false);
-      this._controlButton.setTitle(WebInspector.UIString('Pause timeline'));
+      this._controlButton.setTitle(Common.UIString('Pause timeline'));
       this._controlButton.setGlyph('largeicon-pause-animation');
     }
   }
@@ -342,19 +342,19 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _animationGroupStarted(event) {
-    this._addAnimationGroup(/** @type {!WebInspector.AnimationModel.AnimationGroup} */ (event.data));
+    this._addAnimationGroup(/** @type {!Animation.AnimationModel.AnimationGroup} */ (event.data));
   }
 
   /**
-   * @param {!WebInspector.AnimationModel.AnimationGroup} group
+   * @param {!Animation.AnimationModel.AnimationGroup} group
    */
   _addAnimationGroup(group) {
     /**
-     * @param {!WebInspector.AnimationModel.AnimationGroup} left
-     * @param {!WebInspector.AnimationModel.AnimationGroup} right
+     * @param {!Animation.AnimationModel.AnimationGroup} left
+     * @param {!Animation.AnimationModel.AnimationGroup} right
      */
     function startTimeComparator(left, right) {
       return left.startTime() > right.startTime();
@@ -381,7 +381,7 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
       g.release();
     }
     // Generate preview
-    var preview = new WebInspector.AnimationGroupPreviewUI(group);
+    var preview = new Animation.AnimationGroupPreviewUI(group);
     this._groupBuffer.push(group);
     this._previewMap.set(group, preview);
     this._previewContainer.appendChild(preview.element);
@@ -390,7 +390,7 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.AnimationModel.AnimationGroup} group
+   * @param {!Animation.AnimationModel.AnimationGroup} group
    * @param {!Event} event
    */
   _removeAnimationGroup(group, event) {
@@ -407,13 +407,13 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.AnimationModel.AnimationGroup} group
+   * @param {!Animation.AnimationModel.AnimationGroup} group
    */
   _selectAnimationGroup(group) {
     /**
-     * @param {!WebInspector.AnimationGroupPreviewUI} ui
-     * @param {!WebInspector.AnimationModel.AnimationGroup} group
-     * @this {!WebInspector.AnimationTimeline}
+     * @param {!Animation.AnimationGroupPreviewUI} ui
+     * @param {!Animation.AnimationModel.AnimationGroup} group
+     * @this {!Animation.AnimationTimeline}
      */
     function applySelectionClass(ui, group) {
       ui.element.classList.toggle('selected', this._selectedGroup === group);
@@ -437,12 +437,12 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.AnimationModel.Animation} animation
+   * @param {!Animation.AnimationModel.Animation} animation
    */
   _addAnimation(animation) {
     /**
-     * @param {?WebInspector.DOMNode} node
-     * @this {WebInspector.AnimationTimeline}
+     * @param {?SDK.DOMNode} node
+     * @this {Animation.AnimationTimeline}
      */
     function nodeResolved(node) {
       nodeUI.nodeResolved(node);
@@ -453,19 +453,19 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
 
     var nodeUI = this._nodesMap.get(animation.source().backendNodeId());
     if (!nodeUI) {
-      nodeUI = new WebInspector.AnimationTimeline.NodeUI(animation.source());
+      nodeUI = new Animation.AnimationTimeline.NodeUI(animation.source());
       this._animationsContainer.appendChild(nodeUI.element);
       this._nodesMap.set(animation.source().backendNodeId(), nodeUI);
     }
     var nodeRow = nodeUI.createNewRow();
-    var uiAnimation = new WebInspector.AnimationUI(animation, this, nodeRow);
+    var uiAnimation = new Animation.AnimationUI(animation, this, nodeRow);
     animation.source().deferredNode().resolve(nodeResolved.bind(this));
     this._uiAnimations.push(uiAnimation);
     this._animationsMap.set(animation.id(), animation);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _nodeRemoved(event) {
     var node = event.data.node;
@@ -492,7 +492,7 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
       if (lastDraw === undefined || gridWidth - lastDraw > 50) {
         lastDraw = gridWidth;
         var label = this._grid.createSVGChild('text', 'animation-timeline-grid-label');
-        label.textContent = WebInspector.UIString(Number.millisToString(time));
+        label.textContent = Common.UIString(Number.millisToString(time));
         label.setAttribute('x', gridWidth + 10);
         label.setAttribute('y', 16);
       }
@@ -542,7 +542,7 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.AnimationModel.Animation} animation
+   * @param {!Animation.AnimationModel.Animation} animation
    * @return {boolean}
    */
   _resizeWindow(animation) {
@@ -595,7 +595,7 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
   _updateScrubber(timestamp) {
     if (!this._scrubberPlayer)
       return;
-    this._currentTime.textContent = WebInspector.UIString(Number.millisToString(this._scrubberPlayer.currentTime));
+    this._currentTime.textContent = Common.UIString(Number.millisToString(this._scrubberPlayer.currentTime));
     if (this._scrubberPlayer.playState === 'pending' || this._scrubberPlayer.playState === 'running') {
       this.element.window().requestAnimationFrame(this._updateScrubber.bind(this));
     } else if (this._scrubberPlayer.playState === 'finished') {
@@ -649,7 +649,7 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
     var delta = event.x - this._originalMousePosition;
     var currentTime = Math.max(0, Math.min(this._originalScrubberTime + delta / this.pixelMsRatio(), this.duration()));
     this._scrubberPlayer.currentTime = currentTime;
-    this._currentTime.textContent = WebInspector.UIString(Number.millisToString(Math.round(currentTime)));
+    this._currentTime.textContent = Common.UIString(Number.millisToString(Math.round(currentTime)));
     this._selectedGroup.seekTo(currentTime);
   }
 
@@ -664,10 +664,10 @@ WebInspector.AnimationTimeline = class extends WebInspector.VBox {
   }
 };
 
-WebInspector.AnimationTimeline.GlobalPlaybackRates = [1, 0.25, 0.1];
+Animation.AnimationTimeline.GlobalPlaybackRates = [1, 0.25, 0.1];
 
 /** @enum {string} */
-WebInspector.AnimationTimeline._ControlState = {
+Animation.AnimationTimeline._ControlState = {
   Play: 'play-outline',
   Replay: 'replay-outline',
   Pause: 'pause-outline'
@@ -676,9 +676,9 @@ WebInspector.AnimationTimeline._ControlState = {
 /**
  * @unrestricted
  */
-WebInspector.AnimationTimeline.NodeUI = class {
+Animation.AnimationTimeline.NodeUI = class {
   /**
-   * @param {!WebInspector.AnimationModel.AnimationEffect} animationEffect
+   * @param {!Animation.AnimationModel.AnimationEffect} animationEffect
    */
   constructor(animationEffect) {
     this.element = createElementWithClass('div', 'animation-node-row');
@@ -687,16 +687,16 @@ WebInspector.AnimationTimeline.NodeUI = class {
   }
 
   /**
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    */
   nodeResolved(node) {
     if (!node) {
-      this._description.createTextChild(WebInspector.UIString('<node>'));
+      this._description.createTextChild(Common.UIString('<node>'));
       return;
     }
     this._node = node;
     this._nodeChanged();
-    this._description.appendChild(WebInspector.DOMPresentationUtils.linkifyNodeReference(node));
+    this._description.appendChild(Components.DOMPresentationUtils.linkifyNodeReference(node));
     if (!node.ownerDocument)
       this.nodeRemoved();
   }
@@ -715,14 +715,14 @@ WebInspector.AnimationTimeline.NodeUI = class {
 
   _nodeChanged() {
     this.element.classList.toggle(
-        'animation-node-selected', this._node && this._node === WebInspector.context.flavor(WebInspector.DOMNode));
+        'animation-node-selected', this._node && this._node === UI.context.flavor(SDK.DOMNode));
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.AnimationTimeline.StepTimingFunction = class {
+Animation.AnimationTimeline.StepTimingFunction = class {
   /**
    * @param {number} steps
    * @param {string} stepAtPosition
@@ -734,15 +734,15 @@ WebInspector.AnimationTimeline.StepTimingFunction = class {
 
   /**
    * @param {string} text
-   * @return {?WebInspector.AnimationTimeline.StepTimingFunction}
+   * @return {?Animation.AnimationTimeline.StepTimingFunction}
    */
   static parse(text) {
     var match = text.match(/^steps\((\d+), (start|middle)\)$/);
     if (match)
-      return new WebInspector.AnimationTimeline.StepTimingFunction(parseInt(match[1], 10), match[2]);
+      return new Animation.AnimationTimeline.StepTimingFunction(parseInt(match[1], 10), match[2]);
     match = text.match(/^steps\((\d+)\)$/);
     if (match)
-      return new WebInspector.AnimationTimeline.StepTimingFunction(parseInt(match[1], 10), 'end');
+      return new Animation.AnimationTimeline.StepTimingFunction(parseInt(match[1], 10), 'end');
     return null;
   }
 };

@@ -29,33 +29,33 @@
  */
 
 /**
- * @implements {WebInspector.FlameChartDataProvider}
+ * @implements {UI.FlameChartDataProvider}
  * @unrestricted
  */
-WebInspector.ProfileFlameChartDataProvider = class {
+Profiler.ProfileFlameChartDataProvider = class {
   /**
-   * @param {?WebInspector.Target} target
+   * @param {?SDK.Target} target
    */
   constructor(target) {
-    WebInspector.FlameChartDataProvider.call(this);
+    UI.FlameChartDataProvider.call(this);
     this._target = target;
-    this._colorGenerator = WebInspector.ProfileFlameChartDataProvider.colorGenerator();
+    this._colorGenerator = Profiler.ProfileFlameChartDataProvider.colorGenerator();
   }
 
   /**
-   * @return {!WebInspector.FlameChart.ColorGenerator}
+   * @return {!UI.FlameChart.ColorGenerator}
    */
   static colorGenerator() {
-    if (!WebInspector.ProfileFlameChartDataProvider._colorGenerator) {
-      var colorGenerator = new WebInspector.FlameChart.ColorGenerator(
+    if (!Profiler.ProfileFlameChartDataProvider._colorGenerator) {
+      var colorGenerator = new UI.FlameChart.ColorGenerator(
           {min: 30, max: 330}, {min: 50, max: 80, count: 5}, {min: 80, max: 90, count: 3});
 
       colorGenerator.setColorForID('(idle)', 'hsl(0, 0%, 94%)');
       colorGenerator.setColorForID('(program)', 'hsl(0, 0%, 80%)');
       colorGenerator.setColorForID('(garbage collector)', 'hsl(0, 0%, 80%)');
-      WebInspector.ProfileFlameChartDataProvider._colorGenerator = colorGenerator;
+      Profiler.ProfileFlameChartDataProvider._colorGenerator = colorGenerator;
     }
-    return WebInspector.ProfileFlameChartDataProvider._colorGenerator;
+    return Profiler.ProfileFlameChartDataProvider._colorGenerator;
   }
 
   /**
@@ -118,14 +118,14 @@ WebInspector.ProfileFlameChartDataProvider = class {
 
   /**
    * @override
-   * @return {?WebInspector.FlameChart.TimelineData}
+   * @return {?UI.FlameChart.TimelineData}
    */
   timelineData() {
     return this._timelineData || this._calculateTimelineData();
   }
 
   /**
-   * @return {!WebInspector.FlameChart.TimelineData}
+   * @return {!UI.FlameChart.TimelineData}
    */
   _calculateTimelineData() {
     throw 'Not implemented.';
@@ -156,7 +156,7 @@ WebInspector.ProfileFlameChartDataProvider = class {
    */
   entryTitle(entryIndex) {
     var node = this._entryNodes[entryIndex];
-    return WebInspector.beautifyFunctionName(node.functionName);
+    return UI.beautifyFunctionName(node.functionName);
   }
 
   /**
@@ -166,7 +166,7 @@ WebInspector.ProfileFlameChartDataProvider = class {
    */
   entryFont(entryIndex) {
     if (!this._font) {
-      this._font = (this.barHeight() - 4) + 'px ' + WebInspector.fontFamily();
+      this._font = (this.barHeight() - 4) + 'px ' + Host.fontFamily();
       this._boldFont = 'bold ' + this._font;
     }
     var node = this._entryNodes[entryIndex];
@@ -229,26 +229,26 @@ WebInspector.ProfileFlameChartDataProvider = class {
 
 
 /**
- * @implements {WebInspector.Searchable}
+ * @implements {UI.Searchable}
  * @unrestricted
  */
-WebInspector.CPUProfileFlameChart = class extends WebInspector.VBox {
+Profiler.CPUProfileFlameChart = class extends UI.VBox {
   /**
-   * @param {!WebInspector.SearchableView} searchableView
-   * @param {!WebInspector.FlameChartDataProvider} dataProvider
+   * @param {!UI.SearchableView} searchableView
+   * @param {!UI.FlameChartDataProvider} dataProvider
    */
   constructor(searchableView, dataProvider) {
     super();
     this.element.id = 'cpu-flame-chart';
 
     this._searchableView = searchableView;
-    this._overviewPane = new WebInspector.CPUProfileFlameChart.OverviewPane(dataProvider);
+    this._overviewPane = new Profiler.CPUProfileFlameChart.OverviewPane(dataProvider);
     this._overviewPane.show(this.element);
 
-    this._mainPane = new WebInspector.FlameChart(dataProvider, this._overviewPane);
+    this._mainPane = new UI.FlameChart(dataProvider, this._overviewPane);
     this._mainPane.show(this.element);
-    this._mainPane.addEventListener(WebInspector.FlameChart.Events.EntrySelected, this._onEntrySelected, this);
-    this._overviewPane.addEventListener(WebInspector.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
+    this._mainPane.addEventListener(UI.FlameChart.Events.EntrySelected, this._onEntrySelected, this);
+    this._overviewPane.addEventListener(UI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
     this._dataProvider = dataProvider;
     this._searchResults = [];
   }
@@ -261,7 +261,7 @@ WebInspector.CPUProfileFlameChart = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onWindowChanged(event) {
     var windowLeft = event.data.windowTimeLeft;
@@ -278,10 +278,10 @@ WebInspector.CPUProfileFlameChart = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onEntrySelected(event) {
-    this.dispatchEventToListeners(WebInspector.FlameChart.Events.EntrySelected, event.data);
+    this.dispatchEventToListeners(UI.FlameChart.Events.EntrySelected, event.data);
   }
 
   update() {
@@ -291,7 +291,7 @@ WebInspector.CPUProfileFlameChart = class extends WebInspector.VBox {
 
   /**
    * @override
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {boolean} shouldJump
    * @param {boolean=} jumpBackwards
    */
@@ -363,10 +363,10 @@ WebInspector.CPUProfileFlameChart = class extends WebInspector.VBox {
 };
 
 /**
- * @implements {WebInspector.TimelineGrid.Calculator}
+ * @implements {UI.TimelineGrid.Calculator}
  * @unrestricted
  */
-WebInspector.CPUProfileFlameChart.OverviewCalculator = class {
+Profiler.CPUProfileFlameChart.OverviewCalculator = class {
   constructor(dataProvider) {
     this._dataProvider = dataProvider;
   }
@@ -380,7 +380,7 @@ WebInspector.CPUProfileFlameChart.OverviewCalculator = class {
   }
 
   /**
-   * @param {!WebInspector.CPUProfileFlameChart.OverviewPane} overviewPane
+   * @param {!Profiler.CPUProfileFlameChart.OverviewPane} overviewPane
    */
   _updateBoundaries(overviewPane) {
     this._minimumBoundaries = overviewPane._dataProvider.minimumBoundary();
@@ -442,24 +442,24 @@ WebInspector.CPUProfileFlameChart.OverviewCalculator = class {
 };
 
 /**
- * @implements {WebInspector.FlameChartDelegate}
+ * @implements {UI.FlameChartDelegate}
  * @unrestricted
  */
-WebInspector.CPUProfileFlameChart.OverviewPane = class extends WebInspector.VBox {
+Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
   /**
-   * @param {!WebInspector.FlameChartDataProvider} dataProvider
+   * @param {!UI.FlameChartDataProvider} dataProvider
    */
   constructor(dataProvider) {
     super();
     this.element.classList.add('cpu-profile-flame-chart-overview-pane');
     this._overviewContainer = this.element.createChild('div', 'cpu-profile-flame-chart-overview-container');
-    this._overviewGrid = new WebInspector.OverviewGrid('cpu-profile-flame-chart');
+    this._overviewGrid = new UI.OverviewGrid('cpu-profile-flame-chart');
     this._overviewGrid.element.classList.add('fill');
     this._overviewCanvas = this._overviewContainer.createChild('canvas', 'cpu-profile-flame-chart-overview-canvas');
     this._overviewContainer.appendChild(this._overviewGrid.element);
-    this._overviewCalculator = new WebInspector.CPUProfileFlameChart.OverviewCalculator(dataProvider);
+    this._overviewCalculator = new Profiler.CPUProfileFlameChart.OverviewCalculator(dataProvider);
     this._dataProvider = dataProvider;
-    this._overviewGrid.addEventListener(WebInspector.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
+    this._overviewGrid.addEventListener(UI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
   }
 
   /**
@@ -490,7 +490,7 @@ WebInspector.CPUProfileFlameChart.OverviewPane = class extends WebInspector.VBox
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onWindowChanged(event) {
     var startTime = this._dataProvider.minimumBoundary();
@@ -499,11 +499,11 @@ WebInspector.CPUProfileFlameChart.OverviewPane = class extends WebInspector.VBox
       windowTimeLeft: startTime + this._overviewGrid.windowLeft() * totalTime,
       windowTimeRight: startTime + this._overviewGrid.windowRight() * totalTime
     };
-    this.dispatchEventToListeners(WebInspector.OverviewGrid.Events.WindowChanged, data);
+    this.dispatchEventToListeners(UI.OverviewGrid.Events.WindowChanged, data);
   }
 
   /**
-   * @return {?WebInspector.FlameChart.TimelineData}
+   * @return {?UI.FlameChart.TimelineData}
    */
   _timelineData() {
     return this._dataProvider.timelineData();
@@ -529,7 +529,7 @@ WebInspector.CPUProfileFlameChart.OverviewPane = class extends WebInspector.VBox
       return;
     this._resetCanvas(
         this._overviewContainer.clientWidth,
-        this._overviewContainer.clientHeight - WebInspector.FlameChart.DividersBarHeight);
+        this._overviewContainer.clientHeight - UI.FlameChart.DividersBarHeight);
     this._overviewCalculator._updateBoundaries(this);
     this._overviewGrid.updateDividers(this._overviewCalculator);
     this._drawOverviewCanvas();

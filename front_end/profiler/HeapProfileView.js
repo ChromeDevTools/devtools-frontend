@@ -2,23 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.Searchable}
+ * @implements {UI.Searchable}
  * @unrestricted
  */
-WebInspector.HeapProfileView = class extends WebInspector.ProfileView {
+Profiler.HeapProfileView = class extends Profiler.ProfileView {
   /**
-   * @param {!WebInspector.SamplingHeapProfileHeader} profileHeader
+   * @param {!Profiler.SamplingHeapProfileHeader} profileHeader
    */
   constructor(profileHeader) {
     super();
     this._profileHeader = profileHeader;
-    this.profile = new WebInspector.SamplingHeapProfileModel(profileHeader._profile || profileHeader.protocolProfile());
+    this.profile = new Profiler.SamplingHeapProfileModel(profileHeader._profile || profileHeader.protocolProfile());
     this.adjustedTotal = this.profile.total;
     var views = [
-      WebInspector.ProfileView.ViewTypes.Flame, WebInspector.ProfileView.ViewTypes.Heavy,
-      WebInspector.ProfileView.ViewTypes.Tree
+      Profiler.ProfileView.ViewTypes.Flame, Profiler.ProfileView.ViewTypes.Heavy,
+      Profiler.ProfileView.ViewTypes.Tree
     ];
-    this.initialize(new WebInspector.HeapProfileView.NodeFormatter(this), views);
+    this.initialize(new Profiler.HeapProfileView.NodeFormatter(this), views);
   }
 
   /**
@@ -29,30 +29,30 @@ WebInspector.HeapProfileView = class extends WebInspector.ProfileView {
   columnHeader(columnId) {
     switch (columnId) {
       case 'self':
-        return WebInspector.UIString('Self Size (bytes)');
+        return Common.UIString('Self Size (bytes)');
       case 'total':
-        return WebInspector.UIString('Total Size (bytes)');
+        return Common.UIString('Total Size (bytes)');
     }
     return '';
   }
 
   /**
    * @override
-   * @return {!WebInspector.FlameChartDataProvider}
+   * @return {!UI.FlameChartDataProvider}
    */
   createFlameChartDataProvider() {
-    return new WebInspector.HeapFlameChartDataProvider(this.profile, this._profileHeader.target());
+    return new Profiler.HeapFlameChartDataProvider(this.profile, this._profileHeader.target());
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.SamplingHeapProfileType = class extends WebInspector.ProfileType {
+Profiler.SamplingHeapProfileType = class extends Profiler.ProfileType {
   constructor() {
-    super(WebInspector.SamplingHeapProfileType.TypeId, WebInspector.UIString('Record Allocation Profile'));
+    super(Profiler.SamplingHeapProfileType.TypeId, Common.UIString('Record Allocation Profile'));
     this._recording = false;
-    WebInspector.SamplingHeapProfileType.instance = this;
+    Profiler.SamplingHeapProfileType.instance = this;
   }
 
   /**
@@ -72,8 +72,8 @@ WebInspector.SamplingHeapProfileType = class extends WebInspector.ProfileType {
   }
 
   get buttonTooltip() {
-    return this._recording ? WebInspector.UIString('Stop heap profiling') :
-                             WebInspector.UIString('Start heap profiling');
+    return this._recording ? Common.UIString('Stop heap profiling') :
+                             Common.UIString('Start heap profiling');
   }
 
   /**
@@ -90,22 +90,22 @@ WebInspector.SamplingHeapProfileType = class extends WebInspector.ProfileType {
   }
 
   get treeItemTitle() {
-    return WebInspector.UIString('ALLOCATION PROFILES');
+    return Common.UIString('ALLOCATION PROFILES');
   }
 
   get description() {
-    return WebInspector.UIString('Allocation profiles show memory allocations from your JavaScript functions.');
+    return Common.UIString('Allocation profiles show memory allocations from your JavaScript functions.');
   }
 
   startRecordingProfile() {
-    var target = WebInspector.context.flavor(WebInspector.Target);
+    var target = UI.context.flavor(SDK.Target);
     if (this._profileBeingRecorded || !target)
       return;
-    var profile = new WebInspector.SamplingHeapProfileHeader(target, this);
+    var profile = new Profiler.SamplingHeapProfileHeader(target, this);
     this.setProfileBeingRecorded(profile);
-    WebInspector.targetManager.suspendAllTargets();
+    SDK.targetManager.suspendAllTargets();
     this.addProfile(profile);
-    profile.updateStatus(WebInspector.UIString('Recording\u2026'));
+    profile.updateStatus(Common.UIString('Recording\u2026'));
     this._recording = true;
     target.heapProfilerModel.startSampling();
   }
@@ -119,7 +119,7 @@ WebInspector.SamplingHeapProfileType = class extends WebInspector.ProfileType {
 
     /**
      * @param {?Protocol.HeapProfiler.SamplingHeapProfile} profile
-     * @this {WebInspector.SamplingHeapProfileType}
+     * @this {Profiler.SamplingHeapProfileType}
      */
     function didStopProfiling(profile) {
       if (!this._profileBeingRecorded)
@@ -132,26 +132,26 @@ WebInspector.SamplingHeapProfileType = class extends WebInspector.ProfileType {
     }
 
     /**
-     * @this {WebInspector.SamplingHeapProfileType}
+     * @this {Profiler.SamplingHeapProfileType}
      */
     function fireEvent() {
-      this.dispatchEventToListeners(WebInspector.ProfileType.Events.ProfileComplete, recordedProfile);
+      this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, recordedProfile);
     }
 
     this._profileBeingRecorded.target()
         .heapProfilerModel.stopSampling()
         .then(didStopProfiling.bind(this))
-        .then(WebInspector.targetManager.resumeAllTargets.bind(WebInspector.targetManager))
+        .then(SDK.targetManager.resumeAllTargets.bind(SDK.targetManager))
         .then(fireEvent.bind(this));
   }
 
   /**
    * @override
    * @param {string} title
-   * @return {!WebInspector.ProfileHeader}
+   * @return {!Profiler.ProfileHeader}
    */
   createProfileLoadedFromFile(title) {
-    return new WebInspector.SamplingHeapProfileHeader(null, this, title);
+    return new Profiler.SamplingHeapProfileHeader(null, this, title);
   }
 
   /**
@@ -162,27 +162,27 @@ WebInspector.SamplingHeapProfileType = class extends WebInspector.ProfileType {
   }
 };
 
-WebInspector.SamplingHeapProfileType.TypeId = 'SamplingHeap';
+Profiler.SamplingHeapProfileType.TypeId = 'SamplingHeap';
 
 /**
  * @unrestricted
  */
-WebInspector.SamplingHeapProfileHeader = class extends WebInspector.WritableProfileHeader {
+Profiler.SamplingHeapProfileHeader = class extends Profiler.WritableProfileHeader {
   /**
-   * @param {?WebInspector.Target} target
-   * @param {!WebInspector.SamplingHeapProfileType} type
+   * @param {?SDK.Target} target
+   * @param {!Profiler.SamplingHeapProfileType} type
    * @param {string=} title
    */
   constructor(target, type, title) {
-    super(target, type, title || WebInspector.UIString('Profile %d', type.nextProfileUid()));
+    super(target, type, title || Common.UIString('Profile %d', type.nextProfileUid()));
   }
 
   /**
    * @override
-   * @return {!WebInspector.ProfileView}
+   * @return {!Profiler.ProfileView}
    */
   createView() {
-    return new WebInspector.HeapProfileView(this);
+    return new Profiler.HeapProfileView(this);
   }
 
   /**
@@ -196,7 +196,7 @@ WebInspector.SamplingHeapProfileHeader = class extends WebInspector.WritableProf
 /**
  * @unrestricted
  */
-WebInspector.SamplingHeapProfileNode = class extends WebInspector.ProfileNode {
+Profiler.SamplingHeapProfileNode = class extends SDK.ProfileNode {
   /**
    * @param {!Protocol.HeapProfiler.SamplingHeapProfileNode} node
    */
@@ -217,7 +217,7 @@ WebInspector.SamplingHeapProfileNode = class extends WebInspector.ProfileNode {
 /**
  * @unrestricted
  */
-WebInspector.SamplingHeapProfileModel = class extends WebInspector.ProfileTreeModel {
+Profiler.SamplingHeapProfileModel = class extends SDK.ProfileTreeModel {
   /**
    * @param {!Protocol.HeapProfiler.SamplingHeapProfile} profile
    */
@@ -227,16 +227,16 @@ WebInspector.SamplingHeapProfileModel = class extends WebInspector.ProfileTreeMo
 
     /**
      * @param {!Protocol.HeapProfiler.SamplingHeapProfileNode} root
-     * @return {!WebInspector.SamplingHeapProfileNode}
+     * @return {!Profiler.SamplingHeapProfileNode}
      */
     function translateProfileTree(root) {
-      var resultRoot = new WebInspector.SamplingHeapProfileNode(root);
+      var resultRoot = new Profiler.SamplingHeapProfileNode(root);
       var targetNodeStack = [resultRoot];
       var sourceNodeStack = [root];
       while (sourceNodeStack.length) {
         var sourceNode = sourceNodeStack.pop();
         var parentNode = targetNodeStack.pop();
-        parentNode.children = sourceNode.children.map(child => new WebInspector.SamplingHeapProfileNode(child));
+        parentNode.children = sourceNode.children.map(child => new Profiler.SamplingHeapProfileNode(child));
         sourceNodeStack.push.apply(sourceNodeStack, sourceNode.children);
         targetNodeStack.push.apply(targetNodeStack, parentNode.children);
       }
@@ -246,12 +246,12 @@ WebInspector.SamplingHeapProfileModel = class extends WebInspector.ProfileTreeMo
 };
 
 /**
- * @implements {WebInspector.ProfileDataGridNode.Formatter}
+ * @implements {Profiler.ProfileDataGridNode.Formatter}
  * @unrestricted
  */
-WebInspector.HeapProfileView.NodeFormatter = class {
+Profiler.HeapProfileView.NodeFormatter = class {
   /**
-   * @param {!WebInspector.ProfileView} profileView
+   * @param {!Profiler.ProfileView} profileView
    */
   constructor(profileView) {
     this._profileView = profileView;
@@ -269,16 +269,16 @@ WebInspector.HeapProfileView.NodeFormatter = class {
   /**
    * @override
    * @param {number} value
-   * @param {!WebInspector.ProfileDataGridNode} node
+   * @param {!Profiler.ProfileDataGridNode} node
    * @return {string}
    */
   formatPercent(value, node) {
-    return WebInspector.UIString('%.2f\u2009%%', value);
+    return Common.UIString('%.2f\u2009%%', value);
   }
 
   /**
    * @override
-   * @param  {!WebInspector.ProfileDataGridNode} node
+   * @param  {!Profiler.ProfileDataGridNode} node
    * @return {?Element}
    */
   linkifyNode(node) {
@@ -290,10 +290,10 @@ WebInspector.HeapProfileView.NodeFormatter = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapFlameChartDataProvider = class extends WebInspector.ProfileFlameChartDataProvider {
+Profiler.HeapFlameChartDataProvider = class extends Profiler.ProfileFlameChartDataProvider {
   /**
-   * @param {!WebInspector.ProfileTreeModel} profile
-   * @param {?WebInspector.Target} target
+   * @param {!SDK.ProfileTreeModel} profile
+   * @param {?SDK.Target} target
    */
   constructor(profile, target) {
     super(target);
@@ -323,23 +323,23 @@ WebInspector.HeapFlameChartDataProvider = class extends WebInspector.ProfileFlam
    * @return {string}
    */
   formatValue(value, precision) {
-    return WebInspector.UIString('%s\u2009KB', Number.withThousandsSeparator(value / 1e3));
+    return Common.UIString('%s\u2009KB', Number.withThousandsSeparator(value / 1e3));
   }
 
   /**
    * @override
-   * @return {!WebInspector.FlameChart.TimelineData}
+   * @return {!UI.FlameChart.TimelineData}
    */
   _calculateTimelineData() {
     /**
-     * @param  {!WebInspector.ProfileNode} node
+     * @param  {!SDK.ProfileNode} node
      * @return {number}
      */
     function nodesCount(node) {
       return node.children.reduce((count, node) => count + nodesCount(node), 1);
     }
     var count = nodesCount(this._profile.root);
-    /** @type {!Array<!WebInspector.ProfileNode>} */
+    /** @type {!Array<!SDK.ProfileNode>} */
     var entryNodes = new Array(count);
     var entryLevels = new Uint16Array(count);
     var entryTotalTimes = new Float32Array(count);
@@ -350,7 +350,7 @@ WebInspector.HeapFlameChartDataProvider = class extends WebInspector.ProfileFlam
     var index = 0;
 
     /**
-     * @param {!WebInspector.ProfileNode} node
+     * @param {!SDK.ProfileNode} node
      */
     function addNode(node) {
       var start = position;
@@ -369,7 +369,7 @@ WebInspector.HeapFlameChartDataProvider = class extends WebInspector.ProfileFlam
 
     this._maxStackDepth = maxDepth + 1;
     this._entryNodes = entryNodes;
-    this._timelineData = new WebInspector.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
+    this._timelineData = new UI.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
 
     return this._timelineData;
   }
@@ -391,14 +391,14 @@ WebInspector.HeapFlameChartDataProvider = class extends WebInspector.ProfileFlam
     function pushEntryInfoRow(title, value) {
       entryInfo.push({title: title, value: value});
     }
-    pushEntryInfoRow(WebInspector.UIString('Name'), WebInspector.beautifyFunctionName(node.functionName));
-    pushEntryInfoRow(WebInspector.UIString('Self size'), Number.bytesToString(node.self));
-    pushEntryInfoRow(WebInspector.UIString('Total size'), Number.bytesToString(node.total));
-    var linkifier = new WebInspector.Linkifier();
+    pushEntryInfoRow(Common.UIString('Name'), UI.beautifyFunctionName(node.functionName));
+    pushEntryInfoRow(Common.UIString('Self size'), Number.bytesToString(node.self));
+    pushEntryInfoRow(Common.UIString('Total size'), Number.bytesToString(node.total));
+    var linkifier = new Components.Linkifier();
     var link = linkifier.maybeLinkifyConsoleCallFrame(this._target, node.callFrame);
     if (link)
-      pushEntryInfoRow(WebInspector.UIString('URL'), link.textContent);
+      pushEntryInfoRow(Common.UIString('URL'), link.textContent);
     linkifier.dispose();
-    return WebInspector.ProfileView.buildPopoverTable(entryInfo);
+    return Profiler.ProfileView.buildPopoverTable(entryInfo);
   }
 };

@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.ProjectSearchConfig}
+ * @implements {Workspace.ProjectSearchConfig}
  * @unrestricted
  */
-WebInspector.SearchConfig = class {
+Workspace.SearchConfig = class {
   /**
    * @param {string} query
    * @param {boolean} ignoreCase
@@ -20,10 +20,10 @@ WebInspector.SearchConfig = class {
 
   /**
    * @param {{query: string, ignoreCase: boolean, isRegex: boolean}} object
-   * @return {!WebInspector.SearchConfig}
+   * @return {!Workspace.SearchConfig}
    */
   static fromPlainObject(object) {
-    return new WebInspector.SearchConfig(object.query, object.ignoreCase, object.isRegex);
+    return new Workspace.SearchConfig(object.query, object.ignoreCase, object.isRegex);
   }
 
   /**
@@ -73,7 +73,7 @@ WebInspector.SearchConfig = class {
     var queryParts = this._query.match(regexp) || [];
 
     /**
-     * @type {!Array.<!WebInspector.SearchConfig.QueryTerm>}
+     * @type {!Array.<!Workspace.SearchConfig.QueryTerm>}
      */
     this._fileQueries = [];
 
@@ -89,7 +89,7 @@ WebInspector.SearchConfig = class {
       var fileQuery = this._parseFileQuery(queryPart);
       if (fileQuery) {
         this._fileQueries.push(fileQuery);
-        /** @type {!Array.<!WebInspector.SearchConfig.RegexQuery>} */
+        /** @type {!Array.<!Workspace.SearchConfig.RegexQuery>} */
         this._fileRegexQueries = this._fileRegexQueries || [];
         this._fileRegexQueries.push(
             {regex: new RegExp(fileQuery.text, this.ignoreCase ? 'i' : ''), isNegative: fileQuery.isNegative});
@@ -142,7 +142,7 @@ WebInspector.SearchConfig = class {
 
   /**
    * @param {string} query
-   * @return {?WebInspector.SearchConfig.QueryTerm}
+   * @return {?Workspace.SearchConfig.QueryTerm}
    */
   _parseFileQuery(query) {
     var match = query.match(/^(-)?f(ile)?:/);
@@ -166,18 +166,18 @@ WebInspector.SearchConfig = class {
         result += query.charAt(i);
       }
     }
-    return new WebInspector.SearchConfig.QueryTerm(result, isNegative);
+    return new Workspace.SearchConfig.QueryTerm(result, isNegative);
   }
 };
 
 /** @typedef {!{regex: !RegExp, isNegative: boolean}} */
-WebInspector.SearchConfig.RegexQuery;
+Workspace.SearchConfig.RegexQuery;
 
 
 /**
  * @unrestricted
  */
-WebInspector.SearchConfig.QueryTerm = class {
+Workspace.SearchConfig.QueryTerm = class {
   /**
    * @param {string} text
    * @param {boolean} isNegative

@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.AnimationScreenshotPopover = class extends WebInspector.VBox {
+Animation.AnimationScreenshotPopover = class extends UI.VBox {
   /**
    * @param {!Array.<!Image>} images
    */

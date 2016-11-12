@@ -4,32 +4,32 @@
 /**
  * @unrestricted
  */
-WebInspector.InplaceEditor = class {
+UI.InplaceEditor = class {
   /**
    * @param {!Element} element
-   * @param {!WebInspector.InplaceEditor.Config=} config
-   * @return {?WebInspector.InplaceEditor.Controller}
+   * @param {!UI.InplaceEditor.Config=} config
+   * @return {?UI.InplaceEditor.Controller}
    */
   static startEditing(element, config) {
-    if (!WebInspector.InplaceEditor._defaultInstance)
-      WebInspector.InplaceEditor._defaultInstance = new WebInspector.InplaceEditor();
-    return WebInspector.InplaceEditor._defaultInstance.startEditing(element, config);
+    if (!UI.InplaceEditor._defaultInstance)
+      UI.InplaceEditor._defaultInstance = new UI.InplaceEditor();
+    return UI.InplaceEditor._defaultInstance.startEditing(element, config);
   }
 
   /**
    * @param {!Element} element
-   * @param {!WebInspector.InplaceEditor.Config=} config
-   * @return {!Promise.<!WebInspector.InplaceEditor.Controller>}
+   * @param {!UI.InplaceEditor.Config=} config
+   * @return {!Promise.<!UI.InplaceEditor.Controller>}
    */
   static startMultilineEditing(element, config) {
-    return self.runtime.extension(WebInspector.InplaceEditor).instance().then(startEditing);
+    return self.runtime.extension(UI.InplaceEditor).instance().then(startEditing);
 
     /**
      * @param {!Object} inplaceEditor
-     * @return {!WebInspector.InplaceEditor.Controller|!Promise.<!WebInspector.InplaceEditor.Controller>}
+     * @return {!UI.InplaceEditor.Controller|!Promise.<!UI.InplaceEditor.Controller>}
      */
     function startEditing(inplaceEditor) {
-      var controller = /** @type {!WebInspector.InplaceEditor} */ (inplaceEditor).startEditing(element, config);
+      var controller = /** @type {!UI.InplaceEditor} */ (inplaceEditor).startEditing(element, config);
       if (!controller)
         return Promise.reject(new Error('Editing is already in progress'));
       return controller;
@@ -54,7 +54,7 @@ WebInspector.InplaceEditor = class {
     var oldTabIndex = element.getAttribute('tabIndex');
     if (typeof oldTabIndex !== 'number' || oldTabIndex < 0)
       element.tabIndex = 0;
-    this._focusRestorer = new WebInspector.ElementFocusRestorer(element);
+    this._focusRestorer = new UI.ElementFocusRestorer(element);
     editingContext.oldTabIndex = oldTabIndex;
   }
 
@@ -83,14 +83,14 @@ WebInspector.InplaceEditor = class {
 
   /**
    * @param {!Element} element
-   * @param {!WebInspector.InplaceEditor.Config=} config
-   * @return {?WebInspector.InplaceEditor.Controller}
+   * @param {!UI.InplaceEditor.Config=} config
+   * @return {?UI.InplaceEditor.Controller}
    */
   startEditing(element, config) {
-    if (!WebInspector.markBeingEdited(element, true))
+    if (!UI.markBeingEdited(element, true))
       return null;
 
-    config = config || new WebInspector.InplaceEditor.Config(function() {}, function() {});
+    config = config || new UI.InplaceEditor.Config(function() {}, function() {});
     var editingContext = {element: element, config: config};
     var committedCallback = config.commitHandler;
     var cancelledCallback = config.cancelHandler;
@@ -122,7 +122,7 @@ WebInspector.InplaceEditor = class {
     }
 
     function cleanUpAfterEditing() {
-      WebInspector.markBeingEdited(element, false);
+      UI.markBeingEdited(element, false);
 
       element.removeEventListener('blur', blurEventListener, isMultiline);
       element.removeEventListener('keydown', keyDownEventListener, true);
@@ -153,11 +153,11 @@ WebInspector.InplaceEditor = class {
      * @return {string}
      */
     function defaultFinishHandler(event) {
-      var isMetaOrCtrl = WebInspector.isMac() ? event.metaKey && !event.shiftKey && !event.ctrlKey && !event.altKey :
+      var isMetaOrCtrl = Host.isMac() ? event.metaKey && !event.shiftKey && !event.ctrlKey && !event.altKey :
                                                 event.ctrlKey && !event.shiftKey && !event.metaKey && !event.altKey;
       if (isEnterKey(event) && (event.isMetaOrCtrlForTest || !isMultiline || isMetaOrCtrl))
         return 'commit';
-      else if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code || event.key === 'Escape')
+      else if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code || event.key === 'Escape')
         return 'cancel';
       else if (!isMultiline && event.key === 'Tab')
         return 'move-' + (event.shiftKey ? 'backward' : 'forward');
@@ -210,14 +210,14 @@ WebInspector.InplaceEditor = class {
 /**
  * @typedef {{cancel: function(), commit: function(), setWidth: function(number)}}
  */
-WebInspector.InplaceEditor.Controller;
+UI.InplaceEditor.Controller;
 
 
 /**
  * @template T
  * @unrestricted
  */
-WebInspector.InplaceEditor.Config = class {
+UI.InplaceEditor.Config = class {
   /**
    * @param {function(!Element,string,string,T,string)} commitHandler
    * @param {function(!Element,T)} cancelHandler

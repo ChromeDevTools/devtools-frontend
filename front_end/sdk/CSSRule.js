@@ -4,18 +4,18 @@
 /**
  * @unrestricted
  */
-WebInspector.CSSValue = class {
+SDK.CSSValue = class {
   /**
    * @param {!Protocol.CSS.Value} payload
    */
   constructor(payload) {
     this.text = payload.text;
     if (payload.range)
-      this.range = WebInspector.TextRange.fromObject(payload.range);
+      this.range = Common.TextRange.fromObject(payload.range);
   }
 
   /**
-   * @param {!WebInspector.CSSModel.Edit} edit
+   * @param {!SDK.CSSModel.Edit} edit
    */
   rebase(edit) {
     if (!this.range)
@@ -27,9 +27,9 @@ WebInspector.CSSValue = class {
 /**
  * @unrestricted
  */
-WebInspector.CSSRule = class {
+SDK.CSSRule = class {
   /**
-   * @param {!WebInspector.CSSModel} cssModel
+   * @param {!SDK.CSSModel} cssModel
    * @param {{style: !Protocol.CSS.CSSStyle, styleSheetId: (string|undefined), origin: !Protocol.CSS.StyleSheetOrigin}} payload
    */
   constructor(cssModel, payload) {
@@ -41,12 +41,12 @@ WebInspector.CSSRule = class {
       this.sourceURL = styleSheetHeader.sourceURL;
     }
     this.origin = payload.origin;
-    this.style = new WebInspector.CSSStyleDeclaration(
-        this._cssModel, this, payload.style, WebInspector.CSSStyleDeclaration.Type.Regular);
+    this.style = new SDK.CSSStyleDeclaration(
+        this._cssModel, this, payload.style, SDK.CSSStyleDeclaration.Type.Regular);
   }
 
   /**
-   * @param {!WebInspector.CSSModel.Edit} edit
+   * @param {!SDK.CSSModel.Edit} edit
    */
   rebase(edit) {
     if (this.styleSheetId !== edit.styleSheetId)
@@ -96,9 +96,9 @@ WebInspector.CSSRule = class {
 /**
  * @unrestricted
  */
-WebInspector.CSSStyleRule = class extends WebInspector.CSSRule {
+SDK.CSSStyleRule = class extends SDK.CSSRule {
   /**
-   * @param {!WebInspector.CSSModel} cssModel
+   * @param {!SDK.CSSModel} cssModel
    * @param {!Protocol.CSS.CSSRule} payload
    * @param {boolean=} wasUsed
    */
@@ -106,14 +106,14 @@ WebInspector.CSSStyleRule = class extends WebInspector.CSSRule {
     super(cssModel, payload);
 
     this._reinitializeSelectors(payload.selectorList);
-    this.media = payload.media ? WebInspector.CSSMedia.parseMediaArrayPayload(cssModel, payload.media) : [];
+    this.media = payload.media ? SDK.CSSMedia.parseMediaArrayPayload(cssModel, payload.media) : [];
     this.wasUsed = wasUsed || false;
   }
 
   /**
-   * @param {!WebInspector.CSSModel} cssModel
+   * @param {!SDK.CSSModel} cssModel
    * @param {string} selectorText
-   * @return {!WebInspector.CSSStyleRule}
+   * @return {!SDK.CSSStyleRule}
    */
   static createDummyRule(cssModel, selectorText) {
     var dummyPayload = {
@@ -121,19 +121,19 @@ WebInspector.CSSStyleRule = class extends WebInspector.CSSRule {
         selectors: [{text: selectorText}],
       },
       style:
-          {styleSheetId: '0', range: new WebInspector.TextRange(0, 0, 0, 0), shorthandEntries: [], cssProperties: []}
+          {styleSheetId: '0', range: new Common.TextRange(0, 0, 0, 0), shorthandEntries: [], cssProperties: []}
     };
-    return new WebInspector.CSSStyleRule(cssModel, /** @type {!Protocol.CSS.CSSRule} */ (dummyPayload));
+    return new SDK.CSSStyleRule(cssModel, /** @type {!Protocol.CSS.CSSRule} */ (dummyPayload));
   }
 
   /**
    * @param {!Protocol.CSS.SelectorList} selectorList
    */
   _reinitializeSelectors(selectorList) {
-    /** @type {!Array.<!WebInspector.CSSValue>} */
+    /** @type {!Array.<!SDK.CSSValue>} */
     this.selectors = [];
     for (var i = 0; i < selectorList.selectors.length; ++i)
-      this.selectors.push(new WebInspector.CSSValue(selectorList.selectors[i]));
+      this.selectors.push(new SDK.CSSValue(selectorList.selectors[i]));
   }
 
   /**
@@ -158,14 +158,14 @@ WebInspector.CSSStyleRule = class extends WebInspector.CSSRule {
   }
 
   /**
-   * @return {?WebInspector.TextRange}
+   * @return {?Common.TextRange}
    */
   selectorRange() {
     var firstRange = this.selectors[0].range;
     if (!firstRange)
       return null;
     var lastRange = this.selectors.peekLast().range;
-    return new WebInspector.TextRange(
+    return new Common.TextRange(
         firstRange.startLine, firstRange.startColumn, lastRange.endLine, lastRange.endColumn);
   }
 
@@ -196,7 +196,7 @@ WebInspector.CSSStyleRule = class extends WebInspector.CSSRule {
 
   /**
    * @override
-   * @param {!WebInspector.CSSModel.Edit} edit
+   * @param {!SDK.CSSModel.Edit} edit
    */
   rebase(edit) {
     if (this.styleSheetId !== edit.styleSheetId)
@@ -218,26 +218,26 @@ WebInspector.CSSStyleRule = class extends WebInspector.CSSRule {
 /**
  * @unrestricted
  */
-WebInspector.CSSKeyframesRule = class {
+SDK.CSSKeyframesRule = class {
   /**
-   * @param {!WebInspector.CSSModel} cssModel
+   * @param {!SDK.CSSModel} cssModel
    * @param {!Protocol.CSS.CSSKeyframesRule} payload
    */
   constructor(cssModel, payload) {
     this._cssModel = cssModel;
-    this._animationName = new WebInspector.CSSValue(payload.animationName);
-    this._keyframes = payload.keyframes.map(keyframeRule => new WebInspector.CSSKeyframeRule(cssModel, keyframeRule));
+    this._animationName = new SDK.CSSValue(payload.animationName);
+    this._keyframes = payload.keyframes.map(keyframeRule => new SDK.CSSKeyframeRule(cssModel, keyframeRule));
   }
 
   /**
-   * @return {!WebInspector.CSSValue}
+   * @return {!SDK.CSSValue}
    */
   name() {
     return this._animationName;
   }
 
   /**
-   * @return {!Array.<!WebInspector.CSSKeyframeRule>}
+   * @return {!Array.<!SDK.CSSKeyframeRule>}
    */
   keyframes() {
     return this._keyframes;
@@ -247,9 +247,9 @@ WebInspector.CSSKeyframesRule = class {
 /**
  * @unrestricted
  */
-WebInspector.CSSKeyframeRule = class extends WebInspector.CSSRule {
+SDK.CSSKeyframeRule = class extends SDK.CSSRule {
   /**
-   * @param {!WebInspector.CSSModel} cssModel
+   * @param {!SDK.CSSModel} cssModel
    * @param {!Protocol.CSS.CSSKeyframeRule} payload
    */
   constructor(cssModel, payload) {
@@ -258,7 +258,7 @@ WebInspector.CSSKeyframeRule = class extends WebInspector.CSSRule {
   }
 
   /**
-   * @return {!WebInspector.CSSValue}
+   * @return {!SDK.CSSValue}
    */
   key() {
     return this._keyText;
@@ -268,12 +268,12 @@ WebInspector.CSSKeyframeRule = class extends WebInspector.CSSRule {
    * @param {!Protocol.CSS.Value} payload
    */
   _reinitializeKey(payload) {
-    this._keyText = new WebInspector.CSSValue(payload);
+    this._keyText = new SDK.CSSValue(payload);
   }
 
   /**
    * @override
-   * @param {!WebInspector.CSSModel.Edit} edit
+   * @param {!SDK.CSSModel.Edit} edit
    */
   rebase(edit) {
     if (this.styleSheetId !== edit.styleSheetId || !this._keyText.range)

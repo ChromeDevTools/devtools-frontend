@@ -31,11 +31,11 @@
 /**
  * @unrestricted
  */
-WebInspector.TextDictionary = class {
+Common.TextDictionary = class {
   constructor() {
     /** @type {!Map<string, number>} */
     this._words = new Map();
-    this._index = new WebInspector.Trie();
+    this._index = new Common.Trie();
   }
 
   /**

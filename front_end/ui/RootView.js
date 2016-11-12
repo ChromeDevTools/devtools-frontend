@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.RootView = class extends WebInspector.VBox {
+UI.RootView = class extends UI.VBox {
   constructor() {
     super();
     this.markAsRoot();
@@ -29,7 +29,7 @@ WebInspector.RootView = class extends WebInspector.VBox {
   doResize() {
     if (this._window) {
       var size = this.constraints().minimum;
-      var zoom = WebInspector.zoomManager.zoomFactor();
+      var zoom = UI.zoomManager.zoomFactor();
       var right = Math.min(0, this._window.innerWidth - size.width / zoom);
       this.element.style.marginRight = right + 'px';
       var bottom = Math.min(0, this._window.innerHeight - size.height / zoom);

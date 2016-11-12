@@ -4,21 +4,21 @@
 /**
  * @unrestricted
  */
-WebInspector.Audits2Panel = class extends WebInspector.Panel {
+Audits2.Audits2Panel = class extends UI.Panel {
   constructor() {
     super('audits2');
     this.contentElement.classList.add('vbox');
-    this.contentElement.appendChild(createTextButton(WebInspector.UIString('Start'), this._start.bind(this)));
-    this.contentElement.appendChild(createTextButton(WebInspector.UIString('Stop'), this._stop.bind(this)));
+    this.contentElement.appendChild(createTextButton(Common.UIString('Start'), this._start.bind(this)));
+    this.contentElement.appendChild(createTextButton(Common.UIString('Stop'), this._stop.bind(this)));
     this._resultElement = this.contentElement.createChild('div', 'overflow-auto');
   }
 
   _start() {
-    WebInspector.targetManager.interceptMainConnection(this._dispatchProtocolMessage.bind(this)).then(rawConnection => {
+    SDK.targetManager.interceptMainConnection(this._dispatchProtocolMessage.bind(this)).then(rawConnection => {
       this._rawConnection = rawConnection;
       this._send('start').then(result => {
-        var section = new WebInspector.ObjectPropertiesSection(
-            WebInspector.RemoteObject.fromLocalObject(result), WebInspector.UIString('Audit Results'));
+        var section = new Components.ObjectPropertiesSection(
+            SDK.RemoteObject.fromLocalObject(result), Common.UIString('Audit Results'));
         this._resultElement.appendChild(section.element);
         this._stop();
       });
@@ -49,7 +49,7 @@ WebInspector.Audits2Panel = class extends WebInspector.Panel {
   _send(method, params) {
     if (!this._backendPromise) {
       this._backendPromise =
-          WebInspector.serviceManager.createAppService('audits2_worker', 'Audits2Service', false).then(backend => {
+          Services.serviceManager.createAppService('audits2_worker', 'Audits2Service', false).then(backend => {
             this._backend = backend;
             this._backend.on('sendProtocolMessage', result => this._rawConnection.sendMessage(result.message));
           });

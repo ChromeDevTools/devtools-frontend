@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.NetworkOverview = class extends WebInspector.TimelineOverviewBase {
+Network.NetworkOverview = class extends UI.TimelineOverviewBase {
   constructor() {
     super();
     this.element.classList.add('network-overview');
@@ -24,17 +24,17 @@ WebInspector.NetworkOverview = class extends WebInspector.TimelineOverviewBase {
     /** @type {number} */
     this._canvasHeight = 0;
 
-    WebInspector.targetManager.addModelListener(
-        WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.Load, this._loadEventFired, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.DOMContentLoaded,
+    SDK.targetManager.addModelListener(
+        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
+    SDK.targetManager.addModelListener(
+        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.DOMContentLoaded,
         this._domContentLoadedEventFired, this);
 
     this.reset();
   }
 
   /**
-   * @param {?WebInspector.FilmStripModel} filmStripModel
+   * @param {?Components.FilmStripModel} filmStripModel
    */
   setFilmStripModel(filmStripModel) {
     this._filmStripModel = filmStripModel;
@@ -55,7 +55,7 @@ WebInspector.NetworkOverview = class extends WebInspector.TimelineOverviewBase {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _loadEventFired(event) {
     var data = /** @type {number} */ (event.data);
@@ -65,7 +65,7 @@ WebInspector.NetworkOverview = class extends WebInspector.TimelineOverviewBase {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _domContentLoadedEventFired(event) {
     var data = /** @type {number} */ (event.data);
@@ -89,7 +89,7 @@ WebInspector.NetworkOverview = class extends WebInspector.TimelineOverviewBase {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   updateRequest(request) {
     if (!this._requestsSet.has(request)) {
@@ -114,7 +114,7 @@ WebInspector.NetworkOverview = class extends WebInspector.TimelineOverviewBase {
     var height = this.element.offsetHeight;
     this._calculator.setDisplayWindow(width);
     this.resetCanvas();
-    var numBands = (((height - 1) / WebInspector.NetworkOverview._bandHeight) - 1) | 0;
+    var numBands = (((height - 1) / Network.NetworkOverview._bandHeight) - 1) | 0;
     this._numBands = (numBands > 0) ? numBands : 1;
     this.scheduleUpdate();
   }
@@ -125,20 +125,20 @@ WebInspector.NetworkOverview = class extends WebInspector.TimelineOverviewBase {
   reset() {
     this._windowStart = 0;
     this._windowEnd = 0;
-    /** @type {?WebInspector.FilmStripModel} */
+    /** @type {?Components.FilmStripModel} */
     this._filmStripModel = null;
 
     /** @type {number} */
     this._span = 1;
-    /** @type {?WebInspector.NetworkTimeBoundary} */
+    /** @type {?Network.NetworkTimeBoundary} */
     this._lastBoundary = null;
     /** @type {number} */
     this._nextBand = 0;
     /** @type {!Map.<string, number>} */
     this._bandMap = new Map();
-    /** @type {!Array.<!WebInspector.NetworkRequest>} */
+    /** @type {!Array.<!SDK.NetworkRequest>} */
     this._requestsList = [];
-    /** @type {!Set.<!WebInspector.NetworkRequest>} */
+    /** @type {!Set.<!SDK.NetworkRequest>} */
     this._requestsSet = new Set();
     /** @type {!Array.<number>} */
     this._loadEvents = [];
@@ -166,14 +166,14 @@ WebInspector.NetworkOverview = class extends WebInspector.TimelineOverviewBase {
     this._updateScheduled = false;
 
     var newBoundary =
-        new WebInspector.NetworkTimeBoundary(this._calculator.minimumBoundary(), this._calculator.maximumBoundary());
+        new Network.NetworkTimeBoundary(this._calculator.minimumBoundary(), this._calculator.maximumBoundary());
     if (!this._lastBoundary || !newBoundary.equals(this._lastBoundary)) {
       var span = this._calculator.boundarySpan();
       while (this._span < span)
         this._span *= 1.25;
       this._calculator.setBounds(this._calculator.minimumBoundary(), this._calculator.minimumBoundary() + this._span);
       this._lastBoundary =
-          new WebInspector.NetworkTimeBoundary(this._calculator.minimumBoundary(), this._calculator.maximumBoundary());
+          new Network.NetworkTimeBoundary(this._calculator.minimumBoundary(), this._calculator.maximumBoundary());
       if (this._windowStart || this._windowEnd) {
         this._restoringWindow = true;
         var startTime = this._calculator.minimumBoundary();
@@ -201,7 +201,7 @@ WebInspector.NetworkOverview = class extends WebInspector.TimelineOverviewBase {
       context.beginPath();
       context.strokeStyle = strokeStyle;
       for (var i = 0; i < n;) {
-        var y = lines[i++] * WebInspector.NetworkOverview._bandHeight + paddingTop;
+        var y = lines[i++] * Network.NetworkOverview._bandHeight + paddingTop;
         var startTime = lines[i++];
         var endTime = lines[i++];
         if (endTime === Number.MAX_VALUE)
@@ -234,10 +234,10 @@ WebInspector.NetworkOverview = class extends WebInspector.TimelineOverviewBase {
       var band = this._bandId(request.connectionId);
       var y = (band === -1) ? 0 : (band % this._numBands + 1);
       var timeRanges =
-          WebInspector.RequestTimingView.calculateRequestTimeRanges(request, this._calculator.minimumBoundary());
+          Network.RequestTimingView.calculateRequestTimeRanges(request, this._calculator.minimumBoundary());
       for (var j = 0; j < timeRanges.length; ++j) {
         var type = timeRanges[j].name;
-        if (band !== -1 || type === WebInspector.RequestTimeRangeNames.Total)
+        if (band !== -1 || type === Network.RequestTimeRangeNames.Total)
           addLine(type, y, timeRanges[j].start * 1000, timeRanges[j].end * 1000);
       }
     }
@@ -246,18 +246,18 @@ WebInspector.NetworkOverview = class extends WebInspector.TimelineOverviewBase {
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     context.lineWidth = 2;
-    drawLines(WebInspector.RequestTimeRangeNames.Total, '#CCCCCC');
-    drawLines(WebInspector.RequestTimeRangeNames.Blocking, '#AAAAAA');
-    drawLines(WebInspector.RequestTimeRangeNames.Connecting, '#FF9800');
-    drawLines(WebInspector.RequestTimeRangeNames.ServiceWorker, '#FF9800');
-    drawLines(WebInspector.RequestTimeRangeNames.ServiceWorkerPreparation, '#FF9800');
-    drawLines(WebInspector.RequestTimeRangeNames.Push, '#8CDBff');
-    drawLines(WebInspector.RequestTimeRangeNames.Proxy, '#A1887F');
-    drawLines(WebInspector.RequestTimeRangeNames.DNS, '#009688');
-    drawLines(WebInspector.RequestTimeRangeNames.SSL, '#9C27B0');
-    drawLines(WebInspector.RequestTimeRangeNames.Sending, '#B0BEC5');
-    drawLines(WebInspector.RequestTimeRangeNames.Waiting, '#00C853');
-    drawLines(WebInspector.RequestTimeRangeNames.Receiving, '#03A9F4');
+    drawLines(Network.RequestTimeRangeNames.Total, '#CCCCCC');
+    drawLines(Network.RequestTimeRangeNames.Blocking, '#AAAAAA');
+    drawLines(Network.RequestTimeRangeNames.Connecting, '#FF9800');
+    drawLines(Network.RequestTimeRangeNames.ServiceWorker, '#FF9800');
+    drawLines(Network.RequestTimeRangeNames.ServiceWorkerPreparation, '#FF9800');
+    drawLines(Network.RequestTimeRangeNames.Push, '#8CDBff');
+    drawLines(Network.RequestTimeRangeNames.Proxy, '#A1887F');
+    drawLines(Network.RequestTimeRangeNames.DNS, '#009688');
+    drawLines(Network.RequestTimeRangeNames.SSL, '#9C27B0');
+    drawLines(Network.RequestTimeRangeNames.Sending, '#B0BEC5');
+    drawLines(Network.RequestTimeRangeNames.Waiting, '#00C853');
+    drawLines(Network.RequestTimeRangeNames.Receiving, '#03A9F4');
 
     var height = this.element.offsetHeight;
     context.lineWidth = 1;
@@ -293,7 +293,7 @@ WebInspector.NetworkOverview = class extends WebInspector.TimelineOverviewBase {
 };
 
 /** @type {number} */
-WebInspector.NetworkOverview._bandHeight = 3;
+Network.NetworkOverview._bandHeight = 3;
 
 /** @typedef {{start: number, end: number}} */
-WebInspector.NetworkOverview.Window;
+Network.NetworkOverview.Window;

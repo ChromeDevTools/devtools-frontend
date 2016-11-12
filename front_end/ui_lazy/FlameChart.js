@@ -30,9 +30,9 @@
 /**
  * @interface
  */
-WebInspector.FlameChartDelegate = function() {};
+UI.FlameChartDelegate = function() {};
 
-WebInspector.FlameChartDelegate.prototype = {
+UI.FlameChartDelegate.prototype = {
   /**
    * @param {number} startTime
    * @param {number} endTime
@@ -49,11 +49,11 @@ WebInspector.FlameChartDelegate.prototype = {
 /**
  * @unrestricted
  */
-WebInspector.FlameChart = class extends WebInspector.ChartViewport {
+UI.FlameChart = class extends UI.ChartViewport {
   /**
-   * @param {!WebInspector.FlameChartDataProvider} dataProvider
-   * @param {!WebInspector.FlameChartDelegate} flameChartDelegate
-   * @param {!WebInspector.Setting=} groupExpansionSetting
+   * @param {!UI.FlameChartDataProvider} dataProvider
+   * @param {!UI.FlameChartDelegate} flameChartDelegate
+   * @param {!Common.Setting=} groupExpansionSetting
    */
   constructor(dataProvider, flameChartDelegate, groupExpansionSetting) {
     super();
@@ -64,7 +64,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
     this._groupExpansionState = groupExpansionSetting && groupExpansionSetting.get() || {};
 
     this._dataProvider = dataProvider;
-    this._calculator = new WebInspector.FlameChart.Calculator(dataProvider);
+    this._calculator = new UI.FlameChart.Calculator(dataProvider);
 
     this._canvas = /** @type {!HTMLCanvasElement} */ (this.viewportElement.createChild('canvas'));
     this._canvas.tabIndex = 1;
@@ -143,7 +143,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
   }
 
   /**
-   * @return {?WebInspector.FlameChart.TimelineData}
+   * @return {?UI.FlameChart.TimelineData}
    */
   _timelineData() {
     if (!this._dataProvider)
@@ -210,7 +210,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
   }
 
   _updateHighlight() {
-    var inDividersBar = this._lastMouseOffsetY < WebInspector.FlameChart.DividersBarHeight;
+    var inDividersBar = this._lastMouseOffsetY < UI.FlameChart.DividersBarHeight;
     this._highlightedMarkerIndex = inDividersBar ? this._markerIndexAtPosition(this._lastMouseOffsetX) : -1;
     this._updateMarkerHighlight();
 
@@ -288,7 +288,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
       return;
     }
     this.hideRangeSelection();
-    this.dispatchEventToListeners(WebInspector.FlameChart.Events.EntrySelected, this._highlightedEntryIndex);
+    this.dispatchEventToListeners(UI.FlameChart.Events.EntrySelected, this._highlightedEntryIndex);
   }
 
   /**
@@ -330,7 +330,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
    * @param {!Event} e
    */
   _handleSelectionNavigation(e) {
-    if (!WebInspector.KeyboardShortcut.hasNoModifiers(e))
+    if (!UI.KeyboardShortcut.hasNoModifiers(e))
       return;
     if (this._selectedEntryIndex === -1)
       return;
@@ -360,7 +360,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
       return start1 < end2 && start2 < end1;
     }
 
-    var keys = WebInspector.KeyboardShortcut.Keys;
+    var keys = UI.KeyboardShortcut.Keys;
     if (e.keyCode === keys.Left.code || e.keyCode === keys.Right.code) {
       var level = timelineData.entryLevels[this._selectedEntryIndex];
       var levelIndexes = this._timelineLevels[level];
@@ -368,7 +368,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
       indexOnLevel += e.keyCode === keys.Left.code ? -1 : 1;
       e.consume(true);
       if (indexOnLevel >= 0 && indexOnLevel < levelIndexes.length)
-        this.dispatchEventToListeners(WebInspector.FlameChart.Events.EntrySelected, levelIndexes[indexOnLevel]);
+        this.dispatchEventToListeners(UI.FlameChart.Events.EntrySelected, levelIndexes[indexOnLevel]);
       return;
     }
     if (e.keyCode === keys.Up.code || e.keyCode === keys.Down.code) {
@@ -387,7 +387,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
             !entriesIntersect(this._selectedEntryIndex, levelIndexes[indexOnLevel]))
           return;
       }
-      this.dispatchEventToListeners(WebInspector.FlameChart.Events.EntrySelected, levelIndexes[indexOnLevel]);
+      this.dispatchEventToListeners(UI.FlameChart.Events.EntrySelected, levelIndexes[indexOnLevel]);
     }
   }
 
@@ -435,7 +435,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
     var indexOnLevel = Math.max(entryIndexes.upperBound(cursorTime, comparator) - 1, 0);
 
     /**
-     * @this {WebInspector.FlameChart}
+     * @this {UI.FlameChart}
      * @param {number} entryIndex
      * @return {boolean}
      */
@@ -538,7 +538,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
     var top = this.scrollOffset();
     context.scale(ratio, ratio);
     context.translate(0, -top);
-    var defaultFont = '11px ' + WebInspector.fontFamily();
+    var defaultFont = '11px ' + Host.fontFamily();
     context.font = defaultFont;
 
     var timeWindowRight = this._timeWindowRight;
@@ -550,7 +550,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
     var titleIndices = [];
     var markerIndices = [];
     var textPadding = this._dataProvider.textPadding();
-    var minTextWidth = 2 * textPadding + WebInspector.measureTextWidth(context, '\u2026');
+    var minTextWidth = 2 * textPadding + UI.measureTextWidth(context, '\u2026');
     var barHeight = this._barHeight;
     var minVisibleBarLevel = Math.max(this._visibleLevelOffsets.upperBound(top) - 1, 0);
 
@@ -646,7 +646,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
       var text = this._dataProvider.entryTitle(entryIndex);
       if (text && text.length) {
         context.font = this._dataProvider.entryFont(entryIndex) || defaultFont;
-        text = WebInspector.trimTextMiddle(context, text, barWidth - 2 * textPadding);
+        text = UI.trimTextMiddle(context, text, barWidth - 2 * textPadding);
       }
       var unclippedBarX = this._timeToPosition(entryStartTime);
       if (this._dataProvider.decorateEntry(
@@ -662,7 +662,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
 
     context.restore();
 
-    WebInspector.TimelineGrid.drawCanvasGrid(context, this._calculator, 3);
+    UI.TimelineGrid.drawCanvasGrid(context, this._calculator, 3);
     this._drawMarkers();
     this._drawGroupHeaders(width, height);
 
@@ -687,13 +687,13 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
 
     var groupOffsets = this._groupOffsets;
     var lastGroupOffset = Array.prototype.peekLast.call(groupOffsets);
-    var colorUsage = WebInspector.ThemeSupport.ColorUsage;
+    var colorUsage = UI.ThemeSupport.ColorUsage;
 
     context.save();
     context.scale(ratio, ratio);
     context.translate(0, -top);
 
-    context.fillStyle = WebInspector.themeSupport.patchColor('#eee', colorUsage.Background);
+    context.fillStyle = UI.themeSupport.patchColor('#eee', colorUsage.Background);
     forEachGroup.call(this, (offset, index, group) => {
       var paddingHeight = group.style.padding;
       if (paddingHeight < 5)
@@ -703,7 +703,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
     if (groups.length && lastGroupOffset < top + height)
       context.fillRect(0, lastGroupOffset + 2, width, top + height - lastGroupOffset);
 
-    context.strokeStyle = WebInspector.themeSupport.patchColor('#bbb', colorUsage.Background);
+    context.strokeStyle = UI.themeSupport.patchColor('#bbb', colorUsage.Background);
     context.beginPath();
     forEachGroup.call(this, (offset, index, group, isFirst) => {
       if (isFirst || group.style.padding < 4)
@@ -735,7 +735,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
       context.font = group.style.font;
       if (this._isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
         var width = this._labelWidthForGroup(context, group);
-        context.fillStyle = WebInspector.Color.parse(group.style.backgroundColor).setAlpha(0.7).asString(null);
+        context.fillStyle = Common.Color.parse(group.style.backgroundColor).setAlpha(0.7).asString(null);
         context.fillRect(
             this._headerLeftPadding - this._headerLabelXPadding, offset + this._headerLabelYPadding, width,
             barHeight - 2 * this._headerLabelYPadding);
@@ -747,7 +747,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
     });
     context.restore();
 
-    context.fillStyle = WebInspector.themeSupport.patchColor('#6e6e6e', colorUsage.Foreground);
+    context.fillStyle = UI.themeSupport.patchColor('#6e6e6e', colorUsage.Foreground);
     context.beginPath();
     forEachGroup.call(this, (offset, index, group) => {
       if (this._isGroupCollapsible(index))
@@ -757,7 +757,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
     });
     context.fill();
 
-    context.strokeStyle = WebInspector.themeSupport.patchColor('#ddd', colorUsage.Background);
+    context.strokeStyle = UI.themeSupport.patchColor('#ddd', colorUsage.Background);
     context.beginPath();
     context.stroke();
 
@@ -775,7 +775,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
      * @param {number} x
      * @param {number} y
      * @param {boolean} expanded
-     * @this {WebInspector.FlameChart}
+     * @this {UI.FlameChart}
      */
     function drawExpansionArrow(x, y, expanded) {
       var arrowHeight = this._arrowSide * Math.sqrt(3) / 2;
@@ -790,8 +790,8 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
     }
 
     /**
-     * @param {function(number, number, !WebInspector.FlameChart.Group, boolean)} callback
-     * @this {WebInspector.FlameChart}
+     * @param {function(number, number, !UI.FlameChart.Group, boolean)} callback
+     * @this {UI.FlameChart}
      */
     function forEachGroup(callback) {
       /** @type !Array<{nestingLevel: number, visible: boolean}> */
@@ -818,11 +818,11 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!WebInspector.FlameChart.Group} group
+   * @param {!UI.FlameChart.Group} group
    * @return {number}
    */
   _labelWidthForGroup(context, group) {
-    return WebInspector.measureTextWidth(context, group.name) + this._expansionArrowIndent * (group.style.nestingLevel + 1) +
+    return UI.measureTextWidth(context, group.name) + this._expansionArrowIndent * (group.style.nestingLevel + 1) +
         2 * this._headerLabelXPadding;
   }
 
@@ -832,7 +832,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
    * @param {number} endLevel
    */
   _drawCollapsedOverviewForGroup(y, startLevel, endLevel) {
-    var range = new WebInspector.SegmentedRange(mergeCallback);
+    var range = new Common.SegmentedRange(mergeCallback);
     var timeWindowRight = this._timeWindowRight;
     var timeWindowLeft = this._timeWindowLeft - this._paddingLeft / this._timeToPixel;
     var context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
@@ -857,7 +857,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
           break;
         lastDrawOffset = startPosition;
         var color = this._dataProvider.entryColor(entryIndex);
-        range.append(new WebInspector.Segment(startPosition, this._timeToPositionClipped(entryEndTime), color));
+        range.append(new Common.Segment(startPosition, this._timeToPositionClipped(entryEndTime), color));
       }
     }
 
@@ -877,9 +877,9 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
     context.fill();
 
     /**
-     * @param {!WebInspector.Segment} a
-     * @param {!WebInspector.Segment} b
-     * @return {?WebInspector.Segment}
+     * @param {!Common.Segment} a
+     * @param {!Common.Segment} b
+     * @return {?Common.Segment}
      */
     function mergeCallback(a, b) {
       return a.data === b.data && a.end + 0.4 > b.end ? a : null;
@@ -944,7 +944,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
     context.save();
     var ratio = window.devicePixelRatio;
     context.scale(ratio, ratio);
-    var height = WebInspector.FlameChart.DividersBarHeight - 1;
+    var height = UI.FlameChart.DividersBarHeight - 1;
     for (var i = left; i < markers.length; i++) {
       var timestamp = markers[i].startTime();
       if (timestamp > rightBoundary)
@@ -971,7 +971,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
   }
 
   /**
-   * @param {?WebInspector.FlameChart.TimelineData} timelineData
+   * @param {?UI.FlameChart.TimelineData} timelineData
    */
   _processTimelineData(timelineData) {
     if (!timelineData) {
@@ -1018,7 +1018,7 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
     this._groupOffsets = new Uint32Array(groups.length + 1);
 
     var groupIndex = -1;
-    var currentOffset = WebInspector.FlameChart.DividersBarHeight;
+    var currentOffset = UI.FlameChart.DividersBarHeight;
     var visible = true;
     /** @type !Array<{nestingLevel: number, visible: boolean}> */
     var groupStack = [{nestingLevel: -1, visible: true}];
@@ -1207,19 +1207,19 @@ WebInspector.FlameChart = class extends WebInspector.ChartViewport {
   }
 };
 
-WebInspector.FlameChart.DividersBarHeight = 18;
+UI.FlameChart.DividersBarHeight = 18;
 
-WebInspector.FlameChart.MinimalTimeWindowMs = 0.5;
+UI.FlameChart.MinimalTimeWindowMs = 0.5;
 
 /**
  * @interface
  */
-WebInspector.FlameChartDataProvider = function() {};
+UI.FlameChartDataProvider = function() {};
 
 /**
- * @typedef {!{name: string, startLevel: number, expanded: (boolean|undefined), style: !WebInspector.FlameChart.GroupStyle}}
+ * @typedef {!{name: string, startLevel: number, expanded: (boolean|undefined), style: !UI.FlameChart.GroupStyle}}
  */
-WebInspector.FlameChart.Group;
+UI.FlameChart.Group;
 
 /**
  * @typedef {!{
@@ -1234,24 +1234,24 @@ WebInspector.FlameChart.Group;
  *     useFirstLineForOverview: (boolean|undefined)
  * }}
  */
-WebInspector.FlameChart.GroupStyle;
+UI.FlameChart.GroupStyle;
 
 /**
  * @unrestricted
  */
-WebInspector.FlameChart.TimelineData = class {
+UI.FlameChart.TimelineData = class {
   /**
    * @param {!Array<number>|!Uint16Array} entryLevels
    * @param {!Array<number>|!Float32Array} entryTotalTimes
    * @param {!Array<number>|!Float64Array} entryStartTimes
-   * @param {?Array<!WebInspector.FlameChart.Group>} groups
+   * @param {?Array<!UI.FlameChart.Group>} groups
    */
   constructor(entryLevels, entryTotalTimes, entryStartTimes, groups) {
     this.entryLevels = entryLevels;
     this.entryTotalTimes = entryTotalTimes;
     this.entryStartTimes = entryStartTimes;
     this.groups = groups;
-    /** @type {!Array.<!WebInspector.FlameChartMarker>} */
+    /** @type {!Array.<!UI.FlameChartMarker>} */
     this.markers = [];
     this.flowStartTimes = [];
     this.flowStartLevels = [];
@@ -1260,7 +1260,7 @@ WebInspector.FlameChart.TimelineData = class {
   }
 };
 
-WebInspector.FlameChartDataProvider.prototype = {
+UI.FlameChartDataProvider.prototype = {
   /**
    * @return {number}
    */
@@ -1289,7 +1289,7 @@ WebInspector.FlameChartDataProvider.prototype = {
   maxStackDepth: function() {},
 
   /**
-   * @return {?WebInspector.FlameChart.TimelineData}
+   * @return {?UI.FlameChart.TimelineData}
    */
   timelineData: function() {},
 
@@ -1368,9 +1368,9 @@ WebInspector.FlameChartDataProvider.prototype = {
 /**
  * @interface
  */
-WebInspector.FlameChartMarker = function() {};
+UI.FlameChartMarker = function() {};
 
-WebInspector.FlameChartMarker.prototype = {
+UI.FlameChartMarker.prototype = {
   /**
    * @return {number}
    */
@@ -1396,14 +1396,14 @@ WebInspector.FlameChartMarker.prototype = {
 };
 
 /** @enum {symbol} */
-WebInspector.FlameChart.Events = {
+UI.FlameChart.Events = {
   EntrySelected: Symbol('EntrySelected')
 };
 
 /**
  * @unrestricted
  */
-WebInspector.FlameChart.ColorGenerator = class {
+UI.FlameChart.ColorGenerator = class {
   /**
    * @param {!{min: number, max: number}|number=} hueSpace
    * @param {!{min: number, max: number, count: (number|undefined)}|number=} satSpace
@@ -1468,12 +1468,12 @@ WebInspector.FlameChart.ColorGenerator = class {
 };
 
 /**
- * @implements {WebInspector.TimelineGrid.Calculator}
+ * @implements {UI.TimelineGrid.Calculator}
  * @unrestricted
  */
-WebInspector.FlameChart.Calculator = class {
+UI.FlameChart.Calculator = class {
   /**
-   * @param {!WebInspector.FlameChartDataProvider} dataProvider
+   * @param {!UI.FlameChartDataProvider} dataProvider
    */
   constructor(dataProvider) {
     this._dataProvider = dataProvider;
@@ -1489,7 +1489,7 @@ WebInspector.FlameChart.Calculator = class {
   }
 
   /**
-   * @param {!WebInspector.FlameChart} mainPane
+   * @param {!UI.FlameChart} mainPane
    */
   _updateBoundaries(mainPane) {
     this._totalTime = mainPane._dataProvider.totalTime();

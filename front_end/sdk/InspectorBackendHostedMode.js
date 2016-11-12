@@ -3,16 +3,16 @@
 // found in the LICENSE file.
 // This should be executed immediately after InspectorBackend and InspectorBackendCommands
 
-WebInspector.InspectorBackendHostedMode = {};
+SDK.InspectorBackendHostedMode = {};
 
-WebInspector.InspectorBackendHostedMode.loadFromJSONIfNeeded = function() {
+SDK.InspectorBackendHostedMode.loadFromJSONIfNeeded = function() {
   if (InspectorBackend.isInitialized())
     return;
 
   for (var url of Object.keys(Runtime.cachedResources)) {
     if (url.indexOf('protocol.json') !== -1) {
       var protocol = Runtime.cachedResources[url];
-      var code = WebInspector.InspectorBackendHostedMode.generateCommands(JSON.parse(protocol));
+      var code = SDK.InspectorBackendHostedMode.generateCommands(JSON.parse(protocol));
       eval(code);
     }
   }
@@ -22,7 +22,7 @@ WebInspector.InspectorBackendHostedMode.loadFromJSONIfNeeded = function() {
  * @param {*} schema
  * @return {string}
  */
-WebInspector.InspectorBackendHostedMode.generateCommands = function(schema) {
+SDK.InspectorBackendHostedMode.generateCommands = function(schema) {
   var jsTypes = {integer: 'number', array: 'object'};
   var rawTypes = {};
   var result = [];
@@ -125,4 +125,4 @@ WebInspector.InspectorBackendHostedMode.generateCommands = function(schema) {
   return result.join('\n');
 };
 
-WebInspector.InspectorBackendHostedMode.loadFromJSONIfNeeded();
+SDK.InspectorBackendHostedMode.loadFromJSONIfNeeded();

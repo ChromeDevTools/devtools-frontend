@@ -1,7 +1,7 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-WebInspector.CSSParserStates = {
+FormatterWorker.CSSParserStates = {
   Initial: 'Initial',
   Selector: 'Selector',
   Style: 'Style',
@@ -13,21 +13,21 @@ WebInspector.CSSParserStates = {
 /**
  * @param {string} text
  */
-WebInspector.parseCSS = function(text) {
-  WebInspector._innerParseCSS(text, postMessage);
+FormatterWorker.parseCSS = function(text) {
+  FormatterWorker._innerParseCSS(text, postMessage);
 };
 
 /**
  * @param {string} text
  * @param {function(*)} chunkCallback
  */
-WebInspector._innerParseCSS = function(text, chunkCallback) {
+FormatterWorker._innerParseCSS = function(text, chunkCallback) {
   var chunkSize = 100000;  // characters per data chunk
   var lines = text.split('\n');
   var rules = [];
   var processedChunkCharacters = 0;
 
-  var state = WebInspector.CSSParserStates.Initial;
+  var state = FormatterWorker.CSSParserStates.Initial;
   var rule;
   var property;
   var UndefTokenType = new Set();
@@ -46,7 +46,7 @@ WebInspector._innerParseCSS = function(text, chunkCallback) {
   function processToken(tokenValue, tokenTypes, column, newColumn) {
     var tokenType = tokenTypes ? new Set(tokenTypes.split(' ')) : UndefTokenType;
     switch (state) {
-      case WebInspector.CSSParserStates.Initial:
+      case FormatterWorker.CSSParserStates.Initial:
         if (tokenType.has('qualifier') || tokenType.has('builtin') || tokenType.has('tag')) {
           rule = {
             selectorText: tokenValue,
@@ -54,35 +54,35 @@ WebInspector._innerParseCSS = function(text, chunkCallback) {
             columnNumber: column,
             properties: [],
           };
-          state = WebInspector.CSSParserStates.Selector;
+          state = FormatterWorker.CSSParserStates.Selector;
         } else if (tokenType.has('def')) {
           rule = {
             atRule: tokenValue,
             lineNumber: lineNumber,
             columnNumber: column,
           };
-          state = WebInspector.CSSParserStates.AtRule;
+          state = FormatterWorker.CSSParserStates.AtRule;
         }
         break;
-      case WebInspector.CSSParserStates.Selector:
+      case FormatterWorker.CSSParserStates.Selector:
         if (tokenValue === '{' && tokenType === UndefTokenType) {
           rule.selectorText = rule.selectorText.trim();
           rule.styleRange = createRange(lineNumber, newColumn);
-          state = WebInspector.CSSParserStates.Style;
+          state = FormatterWorker.CSSParserStates.Style;
         } else {
           rule.selectorText += tokenValue;
         }
         break;
-      case WebInspector.CSSParserStates.AtRule:
+      case FormatterWorker.CSSParserStates.AtRule:
         if ((tokenValue === ';' || tokenValue === '{') && tokenType === UndefTokenType) {
           rule.atRule = rule.atRule.trim();
           rules.push(rule);
-          state = WebInspector.CSSParserStates.Initial;
+          state = FormatterWorker.CSSParserStates.Initial;
         } else {
           rule.atRule += tokenValue;
         }
         break;
-      case WebInspector.CSSParserStates.Style:
+      case FormatterWorker.CSSParserStates.Style:
         if (tokenType.has('meta') || tokenType.has('property')) {
           property = {
             name: tokenValue,
@@ -90,12 +90,12 @@ WebInspector._innerParseCSS = function(text, chunkCallback) {
             range: createRange(lineNumber, column),
             nameRange: createRange(lineNumber, column)
           };
-          state = WebInspector.CSSParserStates.PropertyName;
+          state = FormatterWorker.CSSParserStates.PropertyName;
         } else if (tokenValue === '}' && tokenType === UndefTokenType) {
           rule.styleRange.endLine = lineNumber;
           rule.styleRange.endColumn = column;
           rules.push(rule);
-          state = WebInspector.CSSParserStates.Initial;
+          state = FormatterWorker.CSSParserStates.Initial;
         } else if (tokenType.has('comment')) {
           // The |processToken| is called per-line, so no token spans more than one line.
           // Support only a one-line comments.
@@ -104,7 +104,7 @@ WebInspector._innerParseCSS = function(text, chunkCallback) {
           var uncommentedText = tokenValue.substring(2, tokenValue.length - 2);
           var fakeRule = 'a{\n' + uncommentedText + '}';
           disabledRules = [];
-          WebInspector._innerParseCSS(fakeRule, disabledRulesCallback);
+          FormatterWorker._innerParseCSS(fakeRule, disabledRulesCallback);
           if (disabledRules.length === 1 && disabledRules[0].properties.length === 1) {
             var disabledProperty = disabledRules[0].properties[0];
             disabledProperty.disabled = true;
@@ -124,18 +124,18 @@ WebInspector._innerParseCSS = function(text, chunkCallback) {
           }
         }
         break;
-      case WebInspector.CSSParserStates.PropertyName:
+      case FormatterWorker.CSSParserStates.PropertyName:
         if (tokenValue === ':' && tokenType === UndefTokenType) {
           property.name = property.name;
           property.nameRange.endLine = lineNumber;
           property.nameRange.endColumn = column;
           property.valueRange = createRange(lineNumber, newColumn);
-          state = WebInspector.CSSParserStates.PropertyValue;
+          state = FormatterWorker.CSSParserStates.PropertyValue;
         } else if (tokenType.has('property')) {
           property.name += tokenValue;
         }
         break;
-      case WebInspector.CSSParserStates.PropertyValue:
+      case FormatterWorker.CSSParserStates.PropertyValue:
         if ((tokenValue === ';' || tokenValue === '}') && tokenType === UndefTokenType) {
           property.value = property.value;
           property.valueRange.endLine = lineNumber;
@@ -147,9 +147,9 @@ WebInspector._innerParseCSS = function(text, chunkCallback) {
             rule.styleRange.endLine = lineNumber;
             rule.styleRange.endColumn = column;
             rules.push(rule);
-            state = WebInspector.CSSParserStates.Initial;
+            state = FormatterWorker.CSSParserStates.Initial;
           } else {
-            state = WebInspector.CSSParserStates.Style;
+            state = FormatterWorker.CSSParserStates.Style;
           }
         } else if (!tokenType.has('comment')) {
           property.value += tokenValue;
@@ -165,7 +165,7 @@ WebInspector._innerParseCSS = function(text, chunkCallback) {
       processedChunkCharacters = 0;
     }
   }
-  var tokenizer = WebInspector.createTokenizer('text/css');
+  var tokenizer = FormatterWorker.createTokenizer('text/css');
   var lineNumber;
   for (lineNumber = 0; lineNumber < lines.length; ++lineNumber) {
     var line = lines[lineNumber];

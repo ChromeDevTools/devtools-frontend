@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-WebInspector.JavaScriptCompiler = class {
+Sources.JavaScriptCompiler = class {
   /**
-   * @param {!WebInspector.JavaScriptSourceFrame} sourceFrame
+   * @param {!Sources.JavaScriptSourceFrame} sourceFrame
    */
   constructor(sourceFrame) {
     this._sourceFrame = sourceFrame;
@@ -20,21 +20,21 @@ WebInspector.JavaScriptCompiler = class {
     }
     if (this._timeout)
       clearTimeout(this._timeout);
-    this._timeout = setTimeout(this._compile.bind(this), WebInspector.JavaScriptCompiler.CompileDelay);
+    this._timeout = setTimeout(this._compile.bind(this), Sources.JavaScriptCompiler.CompileDelay);
   }
 
   /**
-   * @return {?WebInspector.Target}
+   * @return {?SDK.Target}
    */
   _findTarget() {
-    var targets = WebInspector.targetManager.targets();
+    var targets = SDK.targetManager.targets();
     var sourceCode = this._sourceFrame.uiSourceCode();
     for (var i = 0; i < targets.length; ++i) {
-      var scriptFile = WebInspector.debuggerWorkspaceBinding.scriptFile(sourceCode, targets[i]);
+      var scriptFile = Bindings.debuggerWorkspaceBinding.scriptFile(sourceCode, targets[i]);
       if (scriptFile)
         return targets[i];
     }
-    return WebInspector.targetManager.mainTarget();
+    return SDK.targetManager.mainTarget();
   }
 
   _compile() {
@@ -42,7 +42,7 @@ WebInspector.JavaScriptCompiler = class {
     if (!target)
       return;
     var runtimeModel = target.runtimeModel;
-    var currentExecutionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
+    var currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
     if (!currentExecutionContext)
       return;
 
@@ -51,10 +51,10 @@ WebInspector.JavaScriptCompiler = class {
     runtimeModel.compileScript(code, '', false, currentExecutionContext.id, compileCallback.bind(this, target));
 
     /**
-     * @param {!WebInspector.Target} target
+     * @param {!SDK.Target} target
      * @param {!Protocol.Runtime.ScriptId=} scriptId
      * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     * @this {WebInspector.JavaScriptCompiler}
+     * @this {Sources.JavaScriptCompiler}
      */
     function compileCallback(target, scriptId, exceptionDetails) {
       this._compiling = false;
@@ -65,9 +65,9 @@ WebInspector.JavaScriptCompiler = class {
       }
       if (!exceptionDetails)
         return;
-      var text = WebInspector.ConsoleMessage.simpleTextFromException(exceptionDetails);
+      var text = SDK.ConsoleMessage.simpleTextFromException(exceptionDetails);
       this._sourceFrame.uiSourceCode().addLineMessage(
-          WebInspector.UISourceCode.Message.Level.Error, text, exceptionDetails.lineNumber,
+          Workspace.UISourceCode.Message.Level.Error, text, exceptionDetails.lineNumber,
           exceptionDetails.columnNumber);
       this._compilationFinishedForTest();
     }
@@ -77,4 +77,4 @@ WebInspector.JavaScriptCompiler = class {
   }
 };
 
-WebInspector.JavaScriptCompiler.CompileDelay = 1000;
+Sources.JavaScriptCompiler.CompileDelay = 1000;

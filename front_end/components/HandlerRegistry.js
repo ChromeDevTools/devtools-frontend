@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.HandlerRegistry = class extends WebInspector.Object {
+Components.HandlerRegistry = class extends Common.Object {
   constructor(setting) {
     super();
     this._handlers = {};
@@ -73,12 +73,12 @@ WebInspector.HandlerRegistry = class extends WebInspector.Object {
 
   registerHandler(name, handler) {
     this._handlers[name] = handler;
-    this.dispatchEventToListeners(WebInspector.HandlerRegistry.Events.HandlersUpdated);
+    this.dispatchEventToListeners(Components.HandlerRegistry.Events.HandlersUpdated);
   }
 
   unregisterHandler(name) {
     delete this._handlers[name];
-    this.dispatchEventToListeners(WebInspector.HandlerRegistry.Events.HandlersUpdated);
+    this.dispatchEventToListeners(Components.HandlerRegistry.Events.HandlersUpdated);
   }
 
   /**
@@ -89,32 +89,32 @@ WebInspector.HandlerRegistry = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu} contextMenu
    * @param {!Object} target
    */
   _appendContentProviderItems(contextMenu, target) {
-    if (!(target instanceof WebInspector.UISourceCode || target instanceof WebInspector.Resource ||
-          target instanceof WebInspector.NetworkRequest))
+    if (!(target instanceof Workspace.UISourceCode || target instanceof SDK.Resource ||
+          target instanceof SDK.NetworkRequest))
       return;
-    var contentProvider = /** @type {!WebInspector.ContentProvider} */ (target);
+    var contentProvider = /** @type {!Common.ContentProvider} */ (target);
     if (!contentProvider.contentURL())
       return;
 
     contextMenu.appendItem(
-        WebInspector.openLinkExternallyLabel(), this._openInNewTab.bind(this, contentProvider.contentURL()));
+        UI.openLinkExternallyLabel(), this._openInNewTab.bind(this, contentProvider.contentURL()));
     // Skip 0th handler, as it's 'Use default panel' one.
     for (var i = 1; i < this.handlerNames.length; ++i) {
       var handler = this.handlerNames[i];
       contextMenu.appendItem(
-          WebInspector.UIString.capitalize('Open ^using %s', handler),
+          Common.UIString.capitalize('Open ^using %s', handler),
           this.dispatchToHandler.bind(this, handler, {url: contentProvider.contentURL()}));
     }
 
-    if (!contentProvider.contentURL() || contentProvider instanceof WebInspector.NetworkRequest)
+    if (!contentProvider.contentURL() || contentProvider instanceof SDK.NetworkRequest)
       return;
 
     contextMenu.appendItem(
-        WebInspector.copyLinkAddressLabel(),
+        UI.copyLinkAddressLabel(),
         InspectorFrontendHost.copyText.bind(InspectorFrontendHost, contentProvider.contentURL()));
 
     if (!contentProvider.contentType().isDocumentOrScriptOrStyleSheet())
@@ -126,16 +126,16 @@ WebInspector.HandlerRegistry = class extends WebInspector.Object {
      */
     function doSave(forceSaveAs, content) {
       var url = contentProvider.contentURL();
-      WebInspector.fileManager.save(url, /** @type {string} */ (content), forceSaveAs);
-      WebInspector.fileManager.close(url);
+      Workspace.fileManager.save(url, /** @type {string} */ (content), forceSaveAs);
+      Workspace.fileManager.close(url);
     }
 
     /**
      * @param {boolean} forceSaveAs
      */
     function save(forceSaveAs) {
-      if (contentProvider instanceof WebInspector.UISourceCode) {
-        var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (contentProvider);
+      if (contentProvider instanceof Workspace.UISourceCode) {
+        var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (contentProvider);
         if (forceSaveAs)
           uiSourceCode.saveAs();
         else
@@ -146,18 +146,18 @@ WebInspector.HandlerRegistry = class extends WebInspector.Object {
     }
 
     contextMenu.appendSeparator();
-    contextMenu.appendItem(WebInspector.UIString('Save'), save.bind(null, false));
+    contextMenu.appendItem(Common.UIString('Save'), save.bind(null, false));
 
-    if (contentProvider instanceof WebInspector.UISourceCode) {
-      var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (contentProvider);
-      if (uiSourceCode.project().type() !== WebInspector.projectTypes.FileSystem &&
-          uiSourceCode.project().type() !== WebInspector.projectTypes.Snippets)
-        contextMenu.appendItem(WebInspector.UIString.capitalize('Save ^as...'), save.bind(null, true));
+    if (contentProvider instanceof Workspace.UISourceCode) {
+      var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (contentProvider);
+      if (uiSourceCode.project().type() !== Workspace.projectTypes.FileSystem &&
+          uiSourceCode.project().type() !== Workspace.projectTypes.Snippets)
+        contextMenu.appendItem(Common.UIString.capitalize('Save ^as...'), save.bind(null, true));
     }
   }
 
   /**
-   * @param {!WebInspector.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu} contextMenu
    * @param {!Object} target
    */
   _appendHrefItems(contextMenu, target) {
@@ -170,13 +170,13 @@ WebInspector.HandlerRegistry = class extends WebInspector.Object {
     if (!anchorElement)
       return;
 
-    var uiLocation = WebInspector.Linkifier.uiLocationByAnchor(anchorElement);
+    var uiLocation = Components.Linkifier.uiLocationByAnchor(anchorElement);
     var resourceURL = uiLocation ? uiLocation.uiSourceCode.contentURL() : anchorElement.href;
     var uiSourceCode = uiLocation ?
         uiLocation.uiSourceCode :
-        (resourceURL ? WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(resourceURL) : null);
+        (resourceURL ? Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(resourceURL) : null);
     function open() {
-      WebInspector.Revealer.reveal(uiSourceCode);
+      Common.Revealer.reveal(uiSourceCode);
     }
     if (uiSourceCode)
       contextMenu.appendItem('Open', open);
@@ -184,45 +184,45 @@ WebInspector.HandlerRegistry = class extends WebInspector.Object {
     if (!resourceURL)
       return;
     // Add resource-related actions.
-    contextMenu.appendItem(WebInspector.openLinkExternallyLabel(), this._openInNewTab.bind(this, resourceURL));
+    contextMenu.appendItem(UI.openLinkExternallyLabel(), this._openInNewTab.bind(this, resourceURL));
 
     /**
      * @param {string} resourceURL
      */
     function openInResourcesPanel(resourceURL) {
-      var resource = WebInspector.resourceForURL(resourceURL);
+      var resource = Bindings.resourceForURL(resourceURL);
       if (resource)
-        WebInspector.Revealer.reveal(resource);
+        Common.Revealer.reveal(resource);
       else
         InspectorFrontendHost.openInNewTab(resourceURL);
     }
     if (!targetNode.enclosingNodeOrSelfWithClassList(['resources', 'panel']) &&
-        WebInspector.resourceForURL(resourceURL))
+        Bindings.resourceForURL(resourceURL))
       contextMenu.appendItem(
-          WebInspector.UIString.capitalize('Open ^link in Application ^panel'),
+          Common.UIString.capitalize('Open ^link in Application ^panel'),
           openInResourcesPanel.bind(null, resourceURL));
 
     contextMenu.appendItem(
-        WebInspector.copyLinkAddressLabel(), InspectorFrontendHost.copyText.bind(InspectorFrontendHost, resourceURL));
+        UI.copyLinkAddressLabel(), InspectorFrontendHost.copyText.bind(InspectorFrontendHost, resourceURL));
   }
 };
 
 /** @enum {symbol} */
-WebInspector.HandlerRegistry.Events = {
+Components.HandlerRegistry.Events = {
   HandlersUpdated: Symbol('HandlersUpdated')
 };
 
 /**
  * @unrestricted
  */
-WebInspector.HandlerSelector = class {
+Components.HandlerSelector = class {
   constructor(handlerRegistry) {
     this._handlerRegistry = handlerRegistry;
     this.element = createElementWithClass('select', 'chrome-select');
     this.element.addEventListener('change', this._onChange.bind(this), false);
     this._update();
     this._handlerRegistry.addEventListener(
-        WebInspector.HandlerRegistry.Events.HandlersUpdated, this._update.bind(this));
+        Components.HandlerRegistry.Events.HandlersUpdated, this._update.bind(this));
   }
 
   _update() {
@@ -246,27 +246,27 @@ WebInspector.HandlerSelector = class {
 };
 
 /**
- * @implements {WebInspector.ContextMenu.Provider}
+ * @implements {UI.ContextMenu.Provider}
  * @unrestricted
  */
-WebInspector.HandlerRegistry.ContextMenuProvider = class {
+Components.HandlerRegistry.ContextMenuProvider = class {
   /**
    * @override
    * @param {!Event} event
-   * @param {!WebInspector.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu} contextMenu
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
-    WebInspector.openAnchorLocationRegistry._appendContentProviderItems(contextMenu, target);
-    WebInspector.openAnchorLocationRegistry._appendHrefItems(contextMenu, target);
+    Components.openAnchorLocationRegistry._appendContentProviderItems(contextMenu, target);
+    Components.openAnchorLocationRegistry._appendHrefItems(contextMenu, target);
   }
 };
 
 /**
- * @implements {WebInspector.Linkifier.LinkHandler}
+ * @implements {Components.Linkifier.LinkHandler}
  * @unrestricted
  */
-WebInspector.HandlerRegistry.LinkHandler = class {
+Components.HandlerRegistry.LinkHandler = class {
   /**
    * @override
    * @param {string} url
@@ -274,30 +274,30 @@ WebInspector.HandlerRegistry.LinkHandler = class {
    * @return {boolean}
    */
   handleLink(url, lineNumber) {
-    return WebInspector.openAnchorLocationRegistry.dispatch({url: url, lineNumber: lineNumber});
+    return Components.openAnchorLocationRegistry.dispatch({url: url, lineNumber: lineNumber});
   }
 };
 
 /**
- * @implements {WebInspector.SettingUI}
+ * @implements {UI.SettingUI}
  * @unrestricted
  */
-WebInspector.HandlerRegistry.OpenAnchorLocationSettingUI = class {
+Components.HandlerRegistry.OpenAnchorLocationSettingUI = class {
   /**
    * @override
    * @return {?Element}
    */
   settingElement() {
-    if (!WebInspector.openAnchorLocationRegistry.handlerNames.length)
+    if (!Components.openAnchorLocationRegistry.handlerNames.length)
       return null;
 
-    var handlerSelector = new WebInspector.HandlerSelector(WebInspector.openAnchorLocationRegistry);
-    return WebInspector.SettingsUI.createCustomSetting(
-        WebInspector.UIString('Link handling:'), handlerSelector.element);
+    var handlerSelector = new Components.HandlerSelector(Components.openAnchorLocationRegistry);
+    return UI.SettingsUI.createCustomSetting(
+        Common.UIString('Link handling:'), handlerSelector.element);
   }
 };
 
 /**
- * @type {!WebInspector.HandlerRegistry}
+ * @type {!Components.HandlerRegistry}
  */
-WebInspector.openAnchorLocationRegistry;
+Components.openAnchorLocationRegistry;

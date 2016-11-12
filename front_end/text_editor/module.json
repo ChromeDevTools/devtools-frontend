@@ -1,16 +1,16 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.InplaceEditor",
-            "className": "WebInspector.CodeMirrorUtils"
+            "type": "@UI.InplaceEditor",
+            "className": "TextEditor.CodeMirrorUtils"
         },
         {
-            "type": "@WebInspector.TokenizerFactory",
-            "className": "WebInspector.CodeMirrorUtils.TokenizerFactory"
+            "type": "@Common.TokenizerFactory",
+            "className": "TextEditor.CodeMirrorUtils.TokenizerFactory"
         },
         {
-            "type": "@WebInspector.TextEditorFactory",
-            "className": "WebInspector.CodeMirrorTextEditorFactory"
+            "type": "@UI.TextEditorFactory",
+            "className": "TextEditor.CodeMirrorTextEditorFactory"
         }
     ],
     "dependencies": [

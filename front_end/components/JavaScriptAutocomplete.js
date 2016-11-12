@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-WebInspector.JavaScriptAutocomplete = {};
+Components.JavaScriptAutocomplete = {};
 
 /**
  * @param {!Element} proxyElement
@@ -10,11 +10,11 @@ WebInspector.JavaScriptAutocomplete = {};
  * @param {boolean} force
  * @param {function(!Array.<string>, number=)} completionsReadyCallback
  */
-WebInspector.JavaScriptAutocomplete.completionsForTextPromptInCurrentContext = function(proxyElement, wordRange, force, completionsReadyCallback) {
+Components.JavaScriptAutocomplete.completionsForTextPromptInCurrentContext = function(proxyElement, wordRange, force, completionsReadyCallback) {
   var expressionRange = wordRange.cloneRange();
   expressionRange.collapse(true);
   expressionRange.setStartBefore(proxyElement);
-  WebInspector.JavaScriptAutocomplete.completionsForTextInCurrentContext(expressionRange.toString(), wordRange.toString(), force)
+  Components.JavaScriptAutocomplete.completionsForTextInCurrentContext(expressionRange.toString(), wordRange.toString(), force)
     .then(completionsReadyCallback);
 };
 
@@ -24,7 +24,7 @@ WebInspector.JavaScriptAutocomplete.completionsForTextPromptInCurrentContext = f
  * @param {boolean=} force
  * @return {!Promise<!Array<string>>}
  */
-WebInspector.JavaScriptAutocomplete.completionsForTextInCurrentContext = function(text, query, force) {
+Components.JavaScriptAutocomplete.completionsForTextInCurrentContext = function(text, query, force) {
   var index;
   var stopChars = new Set(' =:({;,!+-*/&|^<>`'.split(''));
   for (index = text.length - 1; index >= 0; index--) {
@@ -50,7 +50,7 @@ WebInspector.JavaScriptAutocomplete.completionsForTextInCurrentContext = functio
   }
   clippedExpression = clippedExpression.substring(index + 1);
 
-  return WebInspector.JavaScriptAutocomplete.completionsForExpression(clippedExpression, query, force);
+  return Components.JavaScriptAutocomplete.completionsForExpression(clippedExpression, query, force);
 };
 
 
@@ -60,8 +60,8 @@ WebInspector.JavaScriptAutocomplete.completionsForTextInCurrentContext = functio
    * @param {boolean=} force
    * @return {!Promise<!Array<string>>}
    */
-WebInspector.JavaScriptAutocomplete.completionsForExpression = function(expressionString, query, force) {
-  var executionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
+Components.JavaScriptAutocomplete.completionsForExpression = function(expressionString, query, force) {
+  var executionContext = UI.context.flavor(SDK.ExecutionContext);
   if (!executionContext)
     return Promise.resolve([]);
 
@@ -91,7 +91,7 @@ WebInspector.JavaScriptAutocomplete.completionsForExpression = function(expressi
 
   return promise;
   /**
-   * @param {?WebInspector.RemoteObject} result
+   * @param {?SDK.RemoteObject} result
    * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
    */
   function evaluated(result, exceptionDetails) {
@@ -101,20 +101,20 @@ WebInspector.JavaScriptAutocomplete.completionsForExpression = function(expressi
     }
 
     /**
-     * @param {?WebInspector.RemoteObject} object
-     * @return {!Promise<?WebInspector.RemoteObject>}
+     * @param {?SDK.RemoteObject} object
+     * @return {!Promise<?SDK.RemoteObject>}
      */
     function extractTarget(object) {
       if (!object)
-        return Promise.resolve(/** @type {?WebInspector.RemoteObject} */(null));
+        return Promise.resolve(/** @type {?SDK.RemoteObject} */(null));
       if (object.type !== 'object' || object.subtype !== 'proxy')
-        return Promise.resolve(/** @type {?WebInspector.RemoteObject} */(object));
+        return Promise.resolve(/** @type {?SDK.RemoteObject} */(object));
       return object.getOwnPropertiesPromise().then(extractTargetFromProperties).then(extractTarget);
     }
 
     /**
-     * @param {!{properties: ?Array<!WebInspector.RemoteObjectProperty>, internalProperties: ?Array<!WebInspector.RemoteObjectProperty>}} properties
-     * @return {?WebInspector.RemoteObject}
+     * @param {!{properties: ?Array<!SDK.RemoteObjectProperty>, internalProperties: ?Array<!SDK.RemoteObjectProperty>}} properties
+     * @return {?SDK.RemoteObject}
      */
     function extractTargetFromProperties(properties) {
       var internalProperties = properties.internalProperties || [];
@@ -159,14 +159,14 @@ WebInspector.JavaScriptAutocomplete.completionsForExpression = function(expressi
     }
 
     /**
-     * @param {?WebInspector.RemoteObject} object
+     * @param {?SDK.RemoteObject} object
      */
     function completionsForObject(object) {
       if (!object)
         receivedPropertyNames(null);
       else if (object.type === 'object' || object.type === 'function')
         object.callFunctionJSON(
-          getCompletions, [WebInspector.RemoteObject.toCallArgument(object.subtype)],
+          getCompletions, [SDK.RemoteObject.toCallArgument(object.subtype)],
           receivedPropertyNames);
       else if (object.type === 'string' || object.type === 'number' || object.type === 'boolean')
         executionContext.evaluate(
@@ -178,7 +178,7 @@ WebInspector.JavaScriptAutocomplete.completionsForExpression = function(expressi
   }
 
   /**
-   * @param {?WebInspector.RemoteObject} result
+   * @param {?SDK.RemoteObject} result
    * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
    */
   function receivedPropertyNamesFromEval(result, exceptionDetails) {
@@ -225,7 +225,7 @@ WebInspector.JavaScriptAutocomplete.completionsForExpression = function(expressi
       for (var i = 0; i < commandLineAPI.length; ++i)
         propertyNames[commandLineAPI[i]] = true;
     }
-    fufill(WebInspector.JavaScriptAutocomplete._completionsForQuery(
+    fufill(Components.JavaScriptAutocomplete._completionsForQuery(
       dotNotation, bracketNotation, expressionString, query, Object.keys(propertyNames)));
   }
 };
@@ -238,7 +238,7 @@ WebInspector.JavaScriptAutocomplete.completionsForExpression = function(expressi
    * @param {!Array.<string>} properties
    * @return {!Array<string>}
    */
-WebInspector.JavaScriptAutocomplete._completionsForQuery = function(dotNotation, bracketNotation, expressionString, query, properties) {
+Components.JavaScriptAutocomplete._completionsForQuery = function(dotNotation, bracketNotation, expressionString, query, properties) {
   if (bracketNotation) {
     if (query.length && query[0] === '\'')
       var quoteUsed = '\'';

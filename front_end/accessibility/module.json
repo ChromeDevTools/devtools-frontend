@@ -7,7 +7,7 @@
             "title": "Accessibility",
             "order": 10,
             "persistence": "permanent",
-            "className": "WebInspector.AccessibilitySidebarView"
+            "className": "Accessibility.AccessibilitySidebarView"
         }
     ],
     "dependencies": ["elements"],

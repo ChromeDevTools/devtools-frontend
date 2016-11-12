@@ -7,9 +7,9 @@
 /**
  * @unrestricted
  */
-WebInspector.FilmStripModel = class {
+Components.FilmStripModel = class {
   /**
-   * @param {!WebInspector.TracingModel} tracingModel
+   * @param {!SDK.TracingModel} tracingModel
    * @param {number=} zeroTime
    */
   constructor(tracingModel, zeroTime) {
@@ -17,16 +17,16 @@ WebInspector.FilmStripModel = class {
   }
 
   /**
-   * @param {!WebInspector.TracingModel} tracingModel
+   * @param {!SDK.TracingModel} tracingModel
    * @param {number=} zeroTime
    */
   reset(tracingModel, zeroTime) {
     this._zeroTime = zeroTime || tracingModel.minimumRecordTime();
     this._spanTime = tracingModel.maximumRecordTime() - this._zeroTime;
 
-    /** @type {!Array<!WebInspector.FilmStripModel.Frame>} */
+    /** @type {!Array<!Components.FilmStripModel.Frame>} */
     this._frames = [];
-    var browserMain = WebInspector.TracingModel.browserMainThread(tracingModel);
+    var browserMain = SDK.TracingModel.browserMainThread(tracingModel);
     if (!browserMain)
       return;
 
@@ -35,21 +35,21 @@ WebInspector.FilmStripModel = class {
       var event = events[i];
       if (event.startTime < this._zeroTime)
         continue;
-      if (!event.hasCategory(WebInspector.FilmStripModel._category))
+      if (!event.hasCategory(Components.FilmStripModel._category))
         continue;
-      if (event.name === WebInspector.FilmStripModel.TraceEvents.CaptureFrame) {
+      if (event.name === Components.FilmStripModel.TraceEvents.CaptureFrame) {
         var data = event.args['data'];
         if (data)
-          this._frames.push(WebInspector.FilmStripModel.Frame._fromEvent(this, event, this._frames.length));
-      } else if (event.name === WebInspector.FilmStripModel.TraceEvents.Screenshot) {
-        this._frames.push(WebInspector.FilmStripModel.Frame._fromSnapshot(
-            this, /** @type {!WebInspector.TracingModel.ObjectSnapshot} */ (event), this._frames.length));
+          this._frames.push(Components.FilmStripModel.Frame._fromEvent(this, event, this._frames.length));
+      } else if (event.name === Components.FilmStripModel.TraceEvents.Screenshot) {
+        this._frames.push(Components.FilmStripModel.Frame._fromSnapshot(
+            this, /** @type {!SDK.TracingModel.ObjectSnapshot} */ (event), this._frames.length));
       }
     }
   }
 
   /**
-   * @return {!Array<!WebInspector.FilmStripModel.Frame>}
+   * @return {!Array<!Components.FilmStripModel.Frame>}
    */
   frames() {
     return this._frames;
@@ -71,7 +71,7 @@ WebInspector.FilmStripModel = class {
 
   /**
    * @param {number} timestamp
-   * @return {?WebInspector.FilmStripModel.Frame}
+   * @return {?Components.FilmStripModel.Frame}
    */
   frameByTimestamp(timestamp) {
     var index = this._frames.upperBound(timestamp, (timestamp, frame) => timestamp - frame.timestamp) - 1;
@@ -79,9 +79,9 @@ WebInspector.FilmStripModel = class {
   }
 };
 
-WebInspector.FilmStripModel._category = 'disabled-by-default-devtools.screenshot';
+Components.FilmStripModel._category = 'disabled-by-default-devtools.screenshot';
 
-WebInspector.FilmStripModel.TraceEvents = {
+Components.FilmStripModel.TraceEvents = {
   CaptureFrame: 'CaptureFrame',
   Screenshot: 'Screenshot'
 };
@@ -89,9 +89,9 @@ WebInspector.FilmStripModel.TraceEvents = {
 /**
  * @unrestricted
  */
-WebInspector.FilmStripModel.Frame = class {
+Components.FilmStripModel.Frame = class {
   /**
-   * @param {!WebInspector.FilmStripModel} model
+   * @param {!Components.FilmStripModel} model
    * @param {number} timestamp
    * @param {number} index
    */
@@ -101,36 +101,36 @@ WebInspector.FilmStripModel.Frame = class {
     this.index = index;
     /** @type {?string} */
     this._imageData = null;
-    /** @type {?WebInspector.TracingModel.ObjectSnapshot} */
+    /** @type {?SDK.TracingModel.ObjectSnapshot} */
     this._snapshot = null;
   }
 
   /**
-   * @param {!WebInspector.FilmStripModel} model
-   * @param {!WebInspector.TracingModel.Event} event
+   * @param {!Components.FilmStripModel} model
+   * @param {!SDK.TracingModel.Event} event
    * @param {number} index
-   * @return {!WebInspector.FilmStripModel.Frame}
+   * @return {!Components.FilmStripModel.Frame}
    */
   static _fromEvent(model, event, index) {
-    var frame = new WebInspector.FilmStripModel.Frame(model, event.startTime, index);
+    var frame = new Components.FilmStripModel.Frame(model, event.startTime, index);
     frame._imageData = event.args['data'];
     return frame;
   }
 
   /**
-   * @param {!WebInspector.FilmStripModel} model
-   * @param {!WebInspector.TracingModel.ObjectSnapshot} snapshot
+   * @param {!Components.FilmStripModel} model
+   * @param {!SDK.TracingModel.ObjectSnapshot} snapshot
    * @param {number} index
-   * @return {!WebInspector.FilmStripModel.Frame}
+   * @return {!Components.FilmStripModel.Frame}
    */
   static _fromSnapshot(model, snapshot, index) {
-    var frame = new WebInspector.FilmStripModel.Frame(model, snapshot.startTime, index);
+    var frame = new Components.FilmStripModel.Frame(model, snapshot.startTime, index);
     frame._snapshot = snapshot;
     return frame;
   }
 
   /**
-   * @return {!WebInspector.FilmStripModel}
+   * @return {!Components.FilmStripModel}
    */
   model() {
     return this._model;

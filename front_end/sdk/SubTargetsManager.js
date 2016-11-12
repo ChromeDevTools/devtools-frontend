@@ -4,21 +4,21 @@
 /**
  * @unrestricted
  */
-WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
+SDK.SubTargetsManager = class extends SDK.SDKModel {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(WebInspector.SubTargetsManager, target);
-    target.registerTargetDispatcher(new WebInspector.SubTargetsDispatcher(this));
+    super(SDK.SubTargetsManager, target);
+    target.registerTargetDispatcher(new SDK.SubTargetsDispatcher(this));
     this._lastAnonymousTargetId = 0;
     this._agent = target.targetAgent();
 
-    /** @type {!Map<string, !WebInspector.Target>} */
+    /** @type {!Map<string, !SDK.Target>} */
     this._attachedTargets = new Map();
-    /** @type {!Map<string, !WebInspector.SubTargetConnection>} */
+    /** @type {!Map<string, !SDK.SubTargetConnection>} */
     this._connections = new Map();
-    /** @type {!Map<string, !WebInspector.PendingTarget>} */
+    /** @type {!Map<string, !SDK.PendingTarget>} */
     this._pendingTargets = new Map();
     this._agent.setAutoAttach(true /* autoAttach */, true /* waitForDebuggerOnStart */);
     if (Runtime.experiments.isEnabled('autoAttachToCrossProcessSubframes'))
@@ -29,17 +29,17 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
       this._agent.setRemoteLocations(defaultLocations);
       this._agent.setDiscoverTargets(true);
     }
-    WebInspector.targetManager.addEventListener(
-        WebInspector.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
+    SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @return {?WebInspector.SubTargetsManager}
+   * @param {!SDK.Target} target
+   * @return {?SDK.SubTargetsManager}
    */
   static fromTarget(target)
   {
-    return /** @type {?WebInspector.SubTargetsManager} */ (target.model(WebInspector.SubTargetsManager));
+    return /** @type {?SDK.SubTargetsManager} */ (target.model(SDK.SubTargetsManager));
   }
 
   /**
@@ -83,7 +83,7 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
 
   /**
    * @param {!Protocol.Target.TargetID} targetId
-   * @param {function(?WebInspector.TargetInfo)=} callback
+   * @param {function(?SDK.TargetInfo)=} callback
    */
   getTargetInfo(targetId, callback) {
     /**
@@ -97,7 +97,7 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
         return;
       }
       if (targetInfo)
-        callback(new WebInspector.TargetInfo(targetInfo));
+        callback(new SDK.TargetInfo(targetInfo));
       else
         callback(null);
     }
@@ -106,18 +106,18 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
 
   /**
    * @param {string} targetId
-   * @return {?WebInspector.Target}
+   * @return {?SDK.Target}
    */
   targetForId(targetId) {
     return this._attachedTargets.get(targetId) || null;
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @return {?WebInspector.TargetInfo}
+   * @param {!SDK.Target} target
+   * @return {?SDK.TargetInfo}
    */
   targetInfo(target) {
-    return target[WebInspector.SubTargetsManager._InfoSymbol] || null;
+    return target[SDK.SubTargetsManager._InfoSymbol] || null;
   }
 
   /**
@@ -126,21 +126,21 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
    */
   _capabilitiesForType(type) {
     if (type === 'worker')
-      return WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log;
+      return SDK.Target.Capability.JS | SDK.Target.Capability.Log;
     if (type === 'service_worker')
-      return WebInspector.Target.Capability.Log | WebInspector.Target.Capability.Network |
-          WebInspector.Target.Capability.Target;
+      return SDK.Target.Capability.Log | SDK.Target.Capability.Network |
+          SDK.Target.Capability.Target;
     if (type === 'iframe')
-      return WebInspector.Target.Capability.Browser | WebInspector.Target.Capability.DOM |
-          WebInspector.Target.Capability.JS | WebInspector.Target.Capability.Log |
-          WebInspector.Target.Capability.Network | WebInspector.Target.Capability.Target;
+      return SDK.Target.Capability.Browser | SDK.Target.Capability.DOM |
+          SDK.Target.Capability.JS | SDK.Target.Capability.Log |
+          SDK.Target.Capability.Network | SDK.Target.Capability.Target;
     if (type === 'node')
-      return WebInspector.Target.Capability.JS;
+      return SDK.Target.Capability.JS;
     return 0;
   }
 
   /**
-   * @param {!WebInspector.TargetInfo} targetInfo
+   * @param {!SDK.TargetInfo} targetInfo
    * @param {boolean} waitingForDebugger
    */
   _attachedToTarget(targetInfo, waitingForDebugger) {
@@ -151,10 +151,10 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
       var parsedURL = targetInfo.url.asParsedURL();
       targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + (++this._lastAnonymousTargetId);
     }
-    var target = WebInspector.targetManager.createTarget(
+    var target = SDK.targetManager.createTarget(
         targetName, this._capabilitiesForType(targetInfo.type), this._createConnection.bind(this, targetInfo.id),
         this.target());
-    target[WebInspector.SubTargetsManager._InfoSymbol] = targetInfo;
+    target[SDK.SubTargetsManager._InfoSymbol] = targetInfo;
     this._attachedTargets.set(targetInfo.id, target);
 
     // Only pause new worker if debugging SW - we are going through the pause on start checkbox.
@@ -170,7 +170,7 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
       pendingTarget = this._pendingTargets.get(targetInfo.id);
     }
     pendingTarget.notifyAttached(target);
-    this.dispatchEventToListeners(WebInspector.SubTargetsManager.Events.PendingTargetAttached, pendingTarget);
+    this.dispatchEventToListeners(SDK.SubTargetsManager.Events.PendingTargetAttached, pendingTarget);
   }
 
   /**
@@ -179,7 +179,7 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
    * @return {!InspectorBackendClass.Connection}
    */
   _createConnection(targetId, params) {
-    var connection = new WebInspector.SubTargetConnection(this._agent, targetId, params);
+    var connection = new SDK.SubTargetConnection(this._agent, targetId, params);
     this._connections.set(targetId, connection);
     return connection;
   }
@@ -193,7 +193,7 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
     var connection = this._connections.get(targetId);
     connection._onDisconnect.call(null, 'target terminated');
     this._connections.delete(targetId);
-    this.dispatchEventToListeners(WebInspector.SubTargetsManager.Events.PendingTargetDetached, this._pendingTargets.get(targetId));
+    this.dispatchEventToListeners(SDK.SubTargetsManager.Events.PendingTargetDetached, this._pendingTargets.get(targetId));
   }
 
   /**
@@ -207,15 +207,15 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.TargetInfo} targetInfo
+   * @param {!SDK.TargetInfo} targetInfo
    */
   _targetCreated(targetInfo) {
     var pendingTarget = this._pendingTargets.get(targetInfo.id);
     if (pendingTarget)
       return;
-    pendingTarget = new WebInspector.PendingTarget(targetInfo.id, targetInfo.title, targetInfo.type === 'node', this);
+    pendingTarget = new SDK.PendingTarget(targetInfo.id, targetInfo.title, targetInfo.type === 'node', this);
     this._pendingTargets.set(targetInfo.id, pendingTarget);
-    this.dispatchEventToListeners(WebInspector.SubTargetsManager.Events.PendingTargetAdded, pendingTarget);
+    this.dispatchEventToListeners(SDK.SubTargetsManager.Events.PendingTargetAdded, pendingTarget);
   }
 
   /**
@@ -226,18 +226,18 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
     if (!pendingTarget)
       return;
     this._pendingTargets.delete(targetId);
-    this.dispatchEventToListeners(WebInspector.SubTargetsManager.Events.PendingTargetRemoved, pendingTarget);
+    this.dispatchEventToListeners(SDK.SubTargetsManager.Events.PendingTargetRemoved, pendingTarget);
   }
 
   /**
-   * @return {!Array<!WebInspector.PendingTarget>}
+   * @return {!Array<!SDK.PendingTarget>}
    */
   pendingTargets() {
     return this._pendingTargets.valuesArray();
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _mainFrameNavigated(event) {
     if (event.data.target() !== this.target())
@@ -255,22 +255,22 @@ WebInspector.SubTargetsManager = class extends WebInspector.SDKModel {
 };
 
 /** @enum {symbol} */
-WebInspector.SubTargetsManager.Events = {
+SDK.SubTargetsManager.Events = {
   PendingTargetAdded: Symbol('PendingTargetAdded'),
   PendingTargetRemoved: Symbol('PendingTargetRemoved'),
   PendingTargetAttached: Symbol('PendingTargetAttached'),
   PendingTargetDetached: Symbol('PendingTargetDetached'),
 };
 
-WebInspector.SubTargetsManager._InfoSymbol = Symbol('SubTargetInfo');
+SDK.SubTargetsManager._InfoSymbol = Symbol('SubTargetInfo');
 
 /**
  * @implements {Protocol.TargetDispatcher}
  * @unrestricted
  */
-WebInspector.SubTargetsDispatcher = class {
+SDK.SubTargetsDispatcher = class {
   /**
-   * @param {!WebInspector.SubTargetsManager} manager
+   * @param {!SDK.SubTargetsManager} manager
    */
   constructor(manager) {
     this._manager = manager;
@@ -281,7 +281,7 @@ WebInspector.SubTargetsDispatcher = class {
    * @param {!Protocol.Target.TargetInfo} targetInfo
    */
   targetCreated(targetInfo) {
-    this._manager._targetCreated(new WebInspector.TargetInfo(targetInfo));
+    this._manager._targetCreated(new SDK.TargetInfo(targetInfo));
   }
 
   /**
@@ -298,7 +298,7 @@ WebInspector.SubTargetsDispatcher = class {
    * @param {boolean} waitingForDebugger
    */
   attachedToTarget(targetInfo, waitingForDebugger) {
-    this._manager._attachedToTarget(new WebInspector.TargetInfo(targetInfo), waitingForDebugger);
+    this._manager._attachedToTarget(new SDK.TargetInfo(targetInfo), waitingForDebugger);
   }
 
   /**
@@ -323,7 +323,7 @@ WebInspector.SubTargetsDispatcher = class {
  * @implements {InspectorBackendClass.Connection}
  * @unrestricted
  */
-WebInspector.SubTargetConnection = class {
+SDK.SubTargetConnection = class {
   /**
    * @param {!Protocol.TargetAgent} agent
    * @param {string} targetId
@@ -356,7 +356,7 @@ WebInspector.SubTargetConnection = class {
 /**
  * @unrestricted
  */
-WebInspector.TargetInfo = class {
+SDK.TargetInfo = class {
   /**
    * @param {!Protocol.Target.TargetInfo} payload
    */
@@ -366,23 +366,23 @@ WebInspector.TargetInfo = class {
     this.type = payload.type;
     this.canActivate = this.type === 'page' || this.type === 'iframe';
     if (this.type === 'node')
-      this.title = WebInspector.UIString('Node: %s', this.url);
+      this.title = Common.UIString('Node: %s', this.url);
     else if (this.type === 'page' || this.type === 'iframe')
       this.title = payload.title;
     else
-      this.title = WebInspector.UIString('Worker: %s', this.url);
+      this.title = Common.UIString('Worker: %s', this.url);
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.PendingTarget = class {
+SDK.PendingTarget = class {
   /**
    * @param {string} id
    * @param {string} title
    * @param {boolean} canConnect
-   * @param {?WebInspector.SubTargetsManager} manager
+   * @param {?SDK.SubTargetsManager} manager
    */
   constructor(id, title, canConnect, manager) {
     this._id = id;
@@ -403,7 +403,7 @@ WebInspector.PendingTarget = class {
   }
 
   /**
-   * @return {?WebInspector.Target}
+   * @return {?SDK.Target}
    */
   target() {
     if (!this._manager)
@@ -445,7 +445,7 @@ WebInspector.PendingTarget = class {
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   notifyAttached(target)
   {

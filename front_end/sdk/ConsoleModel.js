@@ -31,24 +31,24 @@
 /**
  * @unrestricted
  */
-WebInspector.ConsoleModel = class extends WebInspector.SDKModel {
+SDK.ConsoleModel = class extends SDK.SDKModel {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {?Protocol.LogAgent} logAgent
    */
   constructor(target, logAgent) {
-    super(WebInspector.ConsoleModel, target);
+    super(SDK.ConsoleModel, target);
 
-    /** @type {!Array.<!WebInspector.ConsoleMessage>} */
+    /** @type {!Array.<!SDK.ConsoleMessage>} */
     this._messages = [];
-    /** @type {!Map<number, !WebInspector.ConsoleMessage>} */
+    /** @type {!Map<number, !SDK.ConsoleMessage>} */
     this._messageByExceptionId = new Map();
     this._warnings = 0;
     this._errors = 0;
     this._revokedErrors = 0;
     this._logAgent = logAgent;
     if (this._logAgent) {
-      target.registerLogDispatcher(new WebInspector.LogDispatcher(this));
+      target.registerLogDispatcher(new SDK.LogDispatcher(this));
       this._logAgent.enable();
       if (!InspectorFrontendHost.isUnderTest()) {
         this._logAgent.startViolationsReport([
@@ -60,7 +60,7 @@ WebInspector.ConsoleModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.ExecutionContext} executionContext
+   * @param {!SDK.ExecutionContext} executionContext
    * @param {string} text
    * @param {boolean=} useCommandLineAPI
    */
@@ -68,24 +68,24 @@ WebInspector.ConsoleModel = class extends WebInspector.SDKModel {
     var target = executionContext.target();
     var requestedText = text;
 
-    var commandMessage = new WebInspector.ConsoleMessage(
-        target, WebInspector.ConsoleMessage.MessageSource.JS, null, text,
-        WebInspector.ConsoleMessage.MessageType.Command);
+    var commandMessage = new SDK.ConsoleMessage(
+        target, SDK.ConsoleMessage.MessageSource.JS, null, text,
+        SDK.ConsoleMessage.MessageType.Command);
     commandMessage.setExecutionContextId(executionContext.id);
     target.consoleModel.addMessage(commandMessage);
 
     /**
-     * @param {?WebInspector.RemoteObject} result
+     * @param {?SDK.RemoteObject} result
      * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      */
     function printResult(result, exceptionDetails) {
       if (!result)
         return;
 
-      WebInspector.console.showPromise().then(reportUponEvaluation);
+      Common.console.showPromise().then(reportUponEvaluation);
       function reportUponEvaluation() {
         target.consoleModel.dispatchEventToListeners(
-            WebInspector.ConsoleModel.Events.CommandEvaluated,
+            SDK.ConsoleModel.Events.CommandEvaluated,
             {result: result, text: requestedText, commandMessage: commandMessage, exceptionDetails: exceptionDetails});
       }
     }
@@ -117,32 +117,32 @@ WebInspector.ConsoleModel = class extends WebInspector.SDKModel {
       text = '(' + text + ')';
 
     executionContext.evaluate(text, 'console', !!useCommandLineAPI, false, false, true, true, printResult);
-    WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.ConsoleEvaluated);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
   }
 
   /**
-   * @param {!WebInspector.ConsoleMessage} msg
+   * @param {!SDK.ConsoleMessage} msg
    */
   addMessage(msg) {
     if (this._isBlacklisted(msg))
       return;
 
-    if (msg.source === WebInspector.ConsoleMessage.MessageSource.Worker && msg.target().subTargetsManager &&
+    if (msg.source === SDK.ConsoleMessage.MessageSource.Worker && msg.target().subTargetsManager &&
         msg.target().subTargetsManager.targetForId(msg.workerId))
       return;
 
-    if (msg.source === WebInspector.ConsoleMessage.MessageSource.ConsoleAPI &&
-        msg.type === WebInspector.ConsoleMessage.MessageType.Clear)
+    if (msg.source === SDK.ConsoleMessage.MessageSource.ConsoleAPI &&
+        msg.type === SDK.ConsoleMessage.MessageType.Clear)
       this.clear();
 
-    if (msg.level === WebInspector.ConsoleMessage.MessageLevel.RevokedError && msg._revokedExceptionId) {
+    if (msg.level === SDK.ConsoleMessage.MessageLevel.RevokedError && msg._revokedExceptionId) {
       var exceptionMessage = this._messageByExceptionId.get(msg._revokedExceptionId);
       if (!exceptionMessage)
         return;
       this._errors--;
       this._revokedErrors++;
-      exceptionMessage.level = WebInspector.ConsoleMessage.MessageLevel.RevokedError;
-      this.dispatchEventToListeners(WebInspector.ConsoleModel.Events.MessageUpdated, exceptionMessage);
+      exceptionMessage.level = SDK.ConsoleMessage.MessageLevel.RevokedError;
+      this.dispatchEventToListeners(SDK.ConsoleModel.Events.MessageUpdated, exceptionMessage);
       return;
     }
 
@@ -150,33 +150,33 @@ WebInspector.ConsoleModel = class extends WebInspector.SDKModel {
     if (msg._exceptionId)
       this._messageByExceptionId.set(msg._exceptionId, msg);
     this._incrementErrorWarningCount(msg);
-    this.dispatchEventToListeners(WebInspector.ConsoleModel.Events.MessageAdded, msg);
+    this.dispatchEventToListeners(SDK.ConsoleModel.Events.MessageAdded, msg);
   }
 
   /**
-   * @param {!WebInspector.ConsoleMessage} msg
+   * @param {!SDK.ConsoleMessage} msg
    */
   _incrementErrorWarningCount(msg) {
     switch (msg.level) {
-      case WebInspector.ConsoleMessage.MessageLevel.Warning:
+      case SDK.ConsoleMessage.MessageLevel.Warning:
         this._warnings++;
         break;
-      case WebInspector.ConsoleMessage.MessageLevel.Error:
+      case SDK.ConsoleMessage.MessageLevel.Error:
         this._errors++;
         break;
-      case WebInspector.ConsoleMessage.MessageLevel.RevokedError:
+      case SDK.ConsoleMessage.MessageLevel.RevokedError:
         this._revokedErrors++;
         break;
     }
   }
 
   /**
-   * @param {!WebInspector.ConsoleMessage} msg
+   * @param {!SDK.ConsoleMessage} msg
    * @return {boolean}
    */
   _isBlacklisted(msg) {
-    if (msg.source !== WebInspector.ConsoleMessage.MessageSource.Network ||
-        msg.level !== WebInspector.ConsoleMessage.MessageLevel.Error || !msg.url ||
+    if (msg.source !== SDK.ConsoleMessage.MessageSource.Network ||
+        msg.level !== SDK.ConsoleMessage.MessageLevel.Error || !msg.url ||
         !msg.url.startsWith('chrome-extension'))
       return false;
 
@@ -194,7 +194,7 @@ WebInspector.ConsoleModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @return {!Array.<!WebInspector.ConsoleMessage>}
+   * @return {!Array.<!SDK.ConsoleMessage>}
    */
   messages() {
     return this._messages;
@@ -211,7 +211,7 @@ WebInspector.ConsoleModel = class extends WebInspector.SDKModel {
     this._errors = 0;
     this._revokedErrors = 0;
     this._warnings = 0;
-    this.dispatchEventToListeners(WebInspector.ConsoleModel.Events.ConsoleCleared);
+    this.dispatchEventToListeners(SDK.ConsoleModel.Events.ConsoleCleared);
   }
 
   /**
@@ -237,7 +237,7 @@ WebInspector.ConsoleModel = class extends WebInspector.SDKModel {
 };
 
 /** @enum {symbol} */
-WebInspector.ConsoleModel.Events = {
+SDK.ConsoleModel.Events = {
   ConsoleCleared: Symbol('ConsoleCleared'),
   MessageAdded: Symbol('MessageAdded'),
   MessageUpdated: Symbol('MessageUpdated'),
@@ -248,9 +248,9 @@ WebInspector.ConsoleModel.Events = {
 /**
  * @unrestricted
  */
-WebInspector.ConsoleMessage = class {
+SDK.ConsoleMessage = class {
   /**
-   * @param {?WebInspector.Target} target
+   * @param {?SDK.Target} target
    * @param {string} source
    * @param {?string} level
    * @param {string} messageText
@@ -286,7 +286,7 @@ WebInspector.ConsoleMessage = class {
     this.source = source;
     this.level = level;
     this.messageText = messageText;
-    this.type = type || WebInspector.ConsoleMessage.MessageType.Log;
+    this.type = type || SDK.ConsoleMessage.MessageType.Log;
     /** @type {string|undefined} */
     this.url = url || undefined;
     /** @type {number} */
@@ -301,7 +301,7 @@ WebInspector.ConsoleMessage = class {
     this.scriptId = scriptId || null;
     this.workerId = workerId || null;
 
-    var networkLog = target && WebInspector.NetworkLog.fromTarget(target);
+    var networkLog = target && SDK.NetworkLog.fromTarget(target);
     this.request = (requestId && networkLog) ? networkLog.requestForId(requestId) : null;
 
     if (this.request) {
@@ -317,8 +317,8 @@ WebInspector.ConsoleMessage = class {
   }
 
   /**
-   * @param {!WebInspector.ConsoleMessage} a
-   * @param {!WebInspector.ConsoleMessage} b
+   * @param {!SDK.ConsoleMessage} a
+   * @param {!SDK.ConsoleMessage} b
    * @return {number}
    */
   static timestampComparator(a, b) {
@@ -341,33 +341,33 @@ WebInspector.ConsoleMessage = class {
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    * @param {string=} messageType
    * @param {number=} timestamp
    * @param {string=} forceUrl
-   * @return {!WebInspector.ConsoleMessage}
+   * @return {!SDK.ConsoleMessage}
    */
   static fromException(target, exceptionDetails, messageType, timestamp, forceUrl) {
-    return new WebInspector.ConsoleMessage(
-        target, WebInspector.ConsoleMessage.MessageSource.JS, WebInspector.ConsoleMessage.MessageLevel.Error,
-        WebInspector.ConsoleMessage.simpleTextFromException(exceptionDetails), messageType,
+    return new SDK.ConsoleMessage(
+        target, SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Error,
+        SDK.ConsoleMessage.simpleTextFromException(exceptionDetails), messageType,
         forceUrl || exceptionDetails.url, exceptionDetails.lineNumber, exceptionDetails.columnNumber, undefined,
         exceptionDetails.exception ?
-            [WebInspector.RemoteObject.fromLocalObject(exceptionDetails.text), exceptionDetails.exception] :
+            [SDK.RemoteObject.fromLocalObject(exceptionDetails.text), exceptionDetails.exception] :
             undefined,
         exceptionDetails.stackTrace, timestamp, exceptionDetails.executionContextId, exceptionDetails.scriptId);
   }
 
   /**
-   * @return {?WebInspector.Target}
+   * @return {?SDK.Target}
    */
   target() {
     return this._target;
   }
 
   /**
-   * @param {!WebInspector.ConsoleMessage} originatingMessage
+   * @param {!SDK.ConsoleMessage} originatingMessage
    */
   setOriginatingMessage(originatingMessage) {
     this._originatingConsoleMessage = originatingMessage;
@@ -396,7 +396,7 @@ WebInspector.ConsoleMessage = class {
   }
 
   /**
-   * @return {?WebInspector.ConsoleMessage}
+   * @return {?SDK.ConsoleMessage}
    */
   originatingMessage() {
     return this._originatingConsoleMessage;
@@ -406,17 +406,17 @@ WebInspector.ConsoleMessage = class {
    * @return {boolean}
    */
   isGroupMessage() {
-    return this.type === WebInspector.ConsoleMessage.MessageType.StartGroup ||
-        this.type === WebInspector.ConsoleMessage.MessageType.StartGroupCollapsed ||
-        this.type === WebInspector.ConsoleMessage.MessageType.EndGroup;
+    return this.type === SDK.ConsoleMessage.MessageType.StartGroup ||
+        this.type === SDK.ConsoleMessage.MessageType.StartGroupCollapsed ||
+        this.type === SDK.ConsoleMessage.MessageType.EndGroup;
   }
 
   /**
    * @return {boolean}
    */
   isGroupStartMessage() {
-    return this.type === WebInspector.ConsoleMessage.MessageType.StartGroup ||
-        this.type === WebInspector.ConsoleMessage.MessageType.StartGroupCollapsed;
+    return this.type === SDK.ConsoleMessage.MessageType.StartGroup ||
+        this.type === SDK.ConsoleMessage.MessageType.StartGroupCollapsed;
   }
 
   /**
@@ -424,12 +424,12 @@ WebInspector.ConsoleMessage = class {
    */
   isErrorOrWarning() {
     return (
-        this.level === WebInspector.ConsoleMessage.MessageLevel.Warning ||
-        this.level === WebInspector.ConsoleMessage.MessageLevel.Error);
+        this.level === SDK.ConsoleMessage.MessageLevel.Warning ||
+        this.level === SDK.ConsoleMessage.MessageLevel.Error);
   }
 
   /**
-   * @param {?WebInspector.ConsoleMessage} msg
+   * @param {?SDK.ConsoleMessage} msg
    * @return {boolean}
    */
   isEqual(msg) {
@@ -490,7 +490,7 @@ WebInspector.ConsoleMessage = class {
 /**
  * @enum {string}
  */
-WebInspector.ConsoleMessage.MessageSource = {
+SDK.ConsoleMessage.MessageSource = {
   XML: 'xml',
   JS: 'javascript',
   Network: 'network',
@@ -509,7 +509,7 @@ WebInspector.ConsoleMessage.MessageSource = {
 /**
  * @enum {string}
  */
-WebInspector.ConsoleMessage.MessageType = {
+SDK.ConsoleMessage.MessageType = {
   Log: 'log',
   Debug: 'debug',
   Info: 'info',
@@ -533,7 +533,7 @@ WebInspector.ConsoleMessage.MessageType = {
 /**
  * @enum {string}
  */
-WebInspector.ConsoleMessage.MessageLevel = {
+SDK.ConsoleMessage.MessageLevel = {
   Log: 'log',
   Info: 'info',
   Warning: 'warning',
@@ -547,9 +547,9 @@ WebInspector.ConsoleMessage.MessageLevel = {
  * @implements {Protocol.LogDispatcher}
  * @unrestricted
  */
-WebInspector.LogDispatcher = class {
+SDK.LogDispatcher = class {
   /**
-   * @param {!WebInspector.ConsoleModel} console
+   * @param {!SDK.ConsoleModel} console
    */
   constructor(console) {
     this._console = console;
@@ -560,7 +560,7 @@ WebInspector.LogDispatcher = class {
    * @param {!Protocol.Log.LogEntry} payload
    */
   entryAdded(payload) {
-    var consoleMessage = new WebInspector.ConsoleMessage(
+    var consoleMessage = new SDK.ConsoleMessage(
         this._console.target(), payload.source, payload.level, payload.text, undefined, payload.url, payload.lineNumber,
         undefined, payload.networkRequestId, undefined, payload.stackTrace, payload.timestamp, undefined, undefined,
         payload.workerId);
@@ -569,49 +569,49 @@ WebInspector.LogDispatcher = class {
 };
 
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.MultitargetConsoleModel = class extends WebInspector.Object {
+SDK.MultitargetConsoleModel = class extends Common.Object {
   constructor() {
     super();
-    WebInspector.targetManager.observeTargets(this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.ConsoleModel, WebInspector.ConsoleModel.Events.MessageAdded, this._consoleMessageAdded, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.ConsoleModel, WebInspector.ConsoleModel.Events.MessageUpdated, this._consoleMessageUpdated, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.ConsoleModel, WebInspector.ConsoleModel.Events.CommandEvaluated, this._commandEvaluated, this);
+    SDK.targetManager.observeTargets(this);
+    SDK.targetManager.addModelListener(
+        SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, this._consoleMessageAdded, this);
+    SDK.targetManager.addModelListener(
+        SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageUpdated, this._consoleMessageUpdated, this);
+    SDK.targetManager.addModelListener(
+        SDK.ConsoleModel, SDK.ConsoleModel.Events.CommandEvaluated, this._commandEvaluated, this);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     if (!this._mainTarget) {
       this._mainTarget = target;
-      target.consoleModel.addEventListener(WebInspector.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
+      target.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
     }
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
     if (this._mainTarget === target) {
       delete this._mainTarget;
       target.consoleModel.removeEventListener(
-          WebInspector.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
+          SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
     }
   }
 
   /**
-   * @return {!Array.<!WebInspector.ConsoleMessage>}
+   * @return {!Array.<!SDK.ConsoleMessage>}
    */
   messages() {
-    var targets = WebInspector.targetManager.targets();
+    var targets = SDK.targetManager.targets();
     var result = [];
     for (var i = 0; i < targets.length; ++i)
       result = result.concat(targets[i].consoleModel.messages());
@@ -619,32 +619,32 @@ WebInspector.MultitargetConsoleModel = class extends WebInspector.Object {
   }
 
   _consoleCleared() {
-    this.dispatchEventToListeners(WebInspector.ConsoleModel.Events.ConsoleCleared);
+    this.dispatchEventToListeners(SDK.ConsoleModel.Events.ConsoleCleared);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _consoleMessageAdded(event) {
-    this.dispatchEventToListeners(WebInspector.ConsoleModel.Events.MessageAdded, event.data);
+    this.dispatchEventToListeners(SDK.ConsoleModel.Events.MessageAdded, event.data);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _consoleMessageUpdated(event) {
-    this.dispatchEventToListeners(WebInspector.ConsoleModel.Events.MessageUpdated, event.data);
+    this.dispatchEventToListeners(SDK.ConsoleModel.Events.MessageUpdated, event.data);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _commandEvaluated(event) {
-    this.dispatchEventToListeners(WebInspector.ConsoleModel.Events.CommandEvaluated, event.data);
+    this.dispatchEventToListeners(SDK.ConsoleModel.Events.CommandEvaluated, event.data);
   }
 };
 
 /**
- * @type {!WebInspector.MultitargetConsoleModel}
+ * @type {!SDK.MultitargetConsoleModel}
  */
-WebInspector.multitargetConsoleModel;
+SDK.multitargetConsoleModel;

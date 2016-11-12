@@ -4,35 +4,35 @@
  * found in the LICENSE file.
  */
 /**
- * @implements {WebInspector.ListWidget.Delegate}
+ * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-WebInspector.FrameworkBlackboxSettingsTab = class extends WebInspector.VBox {
+Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css');
 
-    this.contentElement.createChild('div', 'header').textContent = WebInspector.UIString('Framework Blackbox Patterns');
+    this.contentElement.createChild('div', 'header').textContent = Common.UIString('Framework Blackbox Patterns');
     this.contentElement.createChild('div', 'blackbox-content-scripts')
-        .appendChild(WebInspector.SettingsUI.createSettingCheckbox(
-            WebInspector.UIString('Blackbox content scripts'), WebInspector.moduleSetting('skipContentScripts'), true));
+        .appendChild(UI.SettingsUI.createSettingCheckbox(
+            Common.UIString('Blackbox content scripts'), Common.moduleSetting('skipContentScripts'), true));
 
-    this._blackboxLabel = WebInspector.UIString('Blackbox');
-    this._disabledLabel = WebInspector.UIString('Disabled');
+    this._blackboxLabel = Common.UIString('Blackbox');
+    this._disabledLabel = Common.UIString('Disabled');
 
-    this._list = new WebInspector.ListWidget(this);
+    this._list = new UI.ListWidget(this);
     this._list.element.classList.add('blackbox-list');
     this._list.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css');
 
     var placeholder = createElementWithClass('div', 'blackbox-list-empty');
-    placeholder.textContent = WebInspector.UIString('No blackboxed patterns');
+    placeholder.textContent = Common.UIString('No blackboxed patterns');
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.contentElement);
     var addPatternButton =
-        createTextButton(WebInspector.UIString('Add pattern...'), this._addButtonClicked.bind(this), 'add-button');
+        createTextButton(Common.UIString('Add pattern...'), this._addButtonClicked.bind(this), 'add-button');
     this.contentElement.appendChild(addPatternButton);
 
-    this._setting = WebInspector.moduleSetting('skipStackFramesPattern');
+    this._setting = Common.moduleSetting('skipStackFramesPattern');
     this._setting.addChangeListener(this._settingUpdated, this);
 
     this.setDefaultFocusedElement(addPatternButton);
@@ -91,7 +91,7 @@ WebInspector.FrameworkBlackboxSettingsTab = class extends WebInspector.VBox {
   /**
    * @override
    * @param {*} item
-   * @param {!WebInspector.ListWidget.Editor} editor
+   * @param {!UI.ListWidget.Editor} editor
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {
@@ -107,7 +107,7 @@ WebInspector.FrameworkBlackboxSettingsTab = class extends WebInspector.VBox {
   /**
    * @override
    * @param {*} item
-   * @return {!WebInspector.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor}
    */
   beginEdit(item) {
     var editor = this._createEditor();
@@ -117,20 +117,20 @@ WebInspector.FrameworkBlackboxSettingsTab = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {!WebInspector.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor}
    */
   _createEditor() {
     if (this._editor)
       return this._editor;
 
-    var editor = new WebInspector.ListWidget.Editor();
+    var editor = new UI.ListWidget.Editor();
     this._editor = editor;
     var content = editor.contentElement();
 
     var titles = content.createChild('div', 'blackbox-edit-row');
-    titles.createChild('div', 'blackbox-pattern').textContent = WebInspector.UIString('Pattern');
+    titles.createChild('div', 'blackbox-pattern').textContent = Common.UIString('Pattern');
     titles.createChild('div', 'blackbox-separator blackbox-separator-invisible');
-    titles.createChild('div', 'blackbox-behavior').textContent = WebInspector.UIString('Behavior');
+    titles.createChild('div', 'blackbox-behavior').textContent = Common.UIString('Behavior');
 
     var fields = content.createChild('div', 'blackbox-edit-row');
     fields.createChild('div', 'blackbox-pattern')
@@ -145,7 +145,7 @@ WebInspector.FrameworkBlackboxSettingsTab = class extends WebInspector.VBox {
      * @param {*} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @this {WebInspector.FrameworkBlackboxSettingsTab}
+     * @this {Settings.FrameworkBlackboxSettingsTab}
      * @return {boolean}
      */
     function patternValidator(item, index, input) {

@@ -4,9 +4,9 @@
 /**
  * @interface
  */
-WebInspector.Renderer = function() {};
+Common.Renderer = function() {};
 
-WebInspector.Renderer.prototype = {
+Common.Renderer.prototype = {
   /**
    * @param {!Object} object
    * @return {!Promise.<!Element>}
@@ -18,14 +18,14 @@ WebInspector.Renderer.prototype = {
  * @param {!Object} object
  * @return {!Promise.<!Element>}
  */
-WebInspector.Renderer.renderPromise = function(object) {
+Common.Renderer.renderPromise = function(object) {
   if (!object)
     return Promise.reject(new Error('Can\'t render ' + object));
 
-  return self.runtime.extension(WebInspector.Renderer, object).instance().then(render);
+  return self.runtime.extension(Common.Renderer, object).instance().then(render);
 
   /**
-   * @param {!WebInspector.Renderer} renderer
+   * @param {!Common.Renderer} renderer
    */
   function render(renderer) {
     return renderer.render(object);
@@ -35,14 +35,14 @@ WebInspector.Renderer.renderPromise = function(object) {
 /**
  * @interface
  */
-WebInspector.Revealer = function() {};
+Common.Revealer = function() {};
 
 /**
  * @param {?Object} revealable
  * @param {boolean=} omitFocus
  */
-WebInspector.Revealer.reveal = function(revealable, omitFocus) {
-  WebInspector.Revealer.revealPromise(revealable, omitFocus);
+Common.Revealer.reveal = function(revealable, omitFocus) {
+  Common.Revealer.revealPromise(revealable, omitFocus);
 };
 
 /**
@@ -50,13 +50,13 @@ WebInspector.Revealer.reveal = function(revealable, omitFocus) {
  * @param {boolean=} omitFocus
  * @return {!Promise.<undefined>}
  */
-WebInspector.Revealer.revealPromise = function(revealable, omitFocus) {
+Common.Revealer.revealPromise = function(revealable, omitFocus) {
   if (!revealable)
     return Promise.reject(new Error('Can\'t reveal ' + revealable));
-  return self.runtime.allInstances(WebInspector.Revealer, revealable).then(reveal);
+  return self.runtime.allInstances(Common.Revealer, revealable).then(reveal);
 
   /**
-   * @param {!Array.<!WebInspector.Revealer>} revealers
+   * @param {!Array.<!Common.Revealer>} revealers
    * @return {!Promise.<undefined>}
    */
   function reveal(revealers) {
@@ -67,7 +67,7 @@ WebInspector.Revealer.revealPromise = function(revealable, omitFocus) {
   }
 };
 
-WebInspector.Revealer.prototype = {
+Common.Revealer.prototype = {
   /**
    * @param {!Object} object
    * @param {boolean=} omitFocus
@@ -79,9 +79,9 @@ WebInspector.Revealer.prototype = {
 /**
  * @interface
  */
-WebInspector.App = function() {};
+Common.App = function() {};
 
-WebInspector.App.prototype = {
+Common.App.prototype = {
   /**
    * @param {!Document} document
    */
@@ -91,11 +91,11 @@ WebInspector.App.prototype = {
 /**
  * @interface
  */
-WebInspector.AppProvider = function() {};
+Common.AppProvider = function() {};
 
-WebInspector.AppProvider.prototype = {
+Common.AppProvider.prototype = {
   /**
-   * @return {!WebInspector.App}
+   * @return {!Common.App}
    */
   createApp: function() {}
 };
@@ -103,9 +103,9 @@ WebInspector.AppProvider.prototype = {
 /**
  * @interface
  */
-WebInspector.QueryParamHandler = function() {};
+Common.QueryParamHandler = function() {};
 
-WebInspector.QueryParamHandler.prototype = {
+Common.QueryParamHandler.prototype = {
   /**
    * @param {string} value
    */

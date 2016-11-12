@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.PieChart = class {
+UI.PieChart = class {
   /**
    * @param {number} size
    * @param {function(number):string=} formatter
@@ -39,7 +39,7 @@ WebInspector.PieChart = class {
    */
   constructor(size, formatter, showTotal) {
     this.element = createElement('div');
-    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, 'ui_lazy/pieChart.css');
+    this._shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'ui_lazy/pieChart.css');
     var root = this._shadowRoot.createChild('div', 'root');
     var svg = this._createSVGChild(root, 'svg');
     this._group = this._createSVGChild(svg, 'g');

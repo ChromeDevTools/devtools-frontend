@@ -28,12 +28,12 @@
 /**
  * @interface
  */
-WebInspector.TabbedEditorContainerDelegate = function() {};
+Sources.TabbedEditorContainerDelegate = function() {};
 
-WebInspector.TabbedEditorContainerDelegate.prototype = {
+Sources.TabbedEditorContainerDelegate.prototype = {
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @return {!WebInspector.Widget}
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {!UI.Widget}
    */
   viewForFile: function(uiSourceCode) {},
 };
@@ -41,43 +41,43 @@ WebInspector.TabbedEditorContainerDelegate.prototype = {
 /**
  * @unrestricted
  */
-WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
+Sources.TabbedEditorContainer = class extends Common.Object {
   /**
-   * @param {!WebInspector.TabbedEditorContainerDelegate} delegate
-   * @param {!WebInspector.Setting} setting
+   * @param {!Sources.TabbedEditorContainerDelegate} delegate
+   * @param {!Common.Setting} setting
    * @param {string} placeholderText
    */
   constructor(delegate, setting, placeholderText) {
     super();
     this._delegate = delegate;
 
-    this._tabbedPane = new WebInspector.TabbedPane();
+    this._tabbedPane = new UI.TabbedPane();
     this._tabbedPane.setPlaceholderText(placeholderText);
-    this._tabbedPane.setTabDelegate(new WebInspector.EditorContainerTabDelegate(this));
+    this._tabbedPane.setTabDelegate(new Sources.EditorContainerTabDelegate(this));
 
     this._tabbedPane.setCloseableTabs(true);
     this._tabbedPane.setAllowTabReorder(true, true);
 
-    this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabClosed, this._tabClosed, this);
-    this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabSelected, this._tabSelected, this);
+    this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, this._tabClosed, this);
+    this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
 
-    WebInspector.persistence.addEventListener(
-        WebInspector.Persistence.Events.BindingCreated, this._onBindingCreated, this);
-    WebInspector.persistence.addEventListener(
-        WebInspector.Persistence.Events.BindingRemoved, this._onBindingRemoved, this);
+    Persistence.persistence.addEventListener(
+        Persistence.Persistence.Events.BindingCreated, this._onBindingCreated, this);
+    Persistence.persistence.addEventListener(
+        Persistence.Persistence.Events.BindingRemoved, this._onBindingRemoved, this);
 
     this._tabIds = new Map();
     this._files = {};
 
     this._previouslyViewedFilesSetting = setting;
-    this._history = WebInspector.TabbedEditorContainer.History.fromObject(this._previouslyViewedFilesSetting.get());
+    this._history = Sources.TabbedEditorContainer.History.fromObject(this._previouslyViewedFilesSetting.get());
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onBindingCreated(event) {
-    var binding = /** @type {!WebInspector.PersistenceBinding} */ (event.data);
+    var binding = /** @type {!Persistence.PersistenceBinding} */ (event.data);
     this._updateFileTitle(binding.network);
 
     var networkTabId = this._tabIds.get(binding.network);
@@ -100,15 +100,15 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
     if (wasSelectedInFileSystem)
       this._tabbedPane.selectTab(networkTabId, false);
 
-    var networkTabView = /** @type {!WebInspector.Widget} */ (this._tabbedPane.tabView(networkTabId));
+    var networkTabView = /** @type {!UI.Widget} */ (this._tabbedPane.tabView(networkTabId));
     this._restoreEditorProperties(networkTabView, currentSelectionRange, currentScrollLineNumber);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onBindingRemoved(event) {
-    var binding = /** @type {!WebInspector.PersistenceBinding} */ (event.data);
+    var binding = /** @type {!Persistence.PersistenceBinding} */ (event.data);
     this._updateFileTitle(binding.network);
 
     var networkTabId = this._tabIds.get(binding.network);
@@ -123,42 +123,42 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
     if (wasSelected)
       this._tabbedPane.selectTab(fileSystemTabId, false);
 
-    var fileSystemTabView = /** @type {!WebInspector.Widget} */ (this._tabbedPane.tabView(fileSystemTabId));
+    var fileSystemTabView = /** @type {!UI.Widget} */ (this._tabbedPane.tabView(fileSystemTabId));
     var savedSelectionRange = this._history.selectionRange(binding.network.url());
     var savedScrollLineNumber = this._history.scrollLineNumber(binding.network.url());
     this._restoreEditorProperties(fileSystemTabView, savedSelectionRange, savedScrollLineNumber);
   }
 
   /**
-   * @return {!WebInspector.Widget}
+   * @return {!UI.Widget}
    */
   get view() {
     return this._tabbedPane;
   }
 
   /**
-   * @return {?WebInspector.Widget}
+   * @return {?UI.Widget}
    */
   get visibleView() {
     return this._tabbedPane.visibleView;
   }
 
   /**
-   * @return {!Array.<!WebInspector.Widget>}
+   * @return {!Array.<!UI.Widget>}
    */
   fileViews() {
-    return /** @type {!Array.<!WebInspector.Widget>} */ (this._tabbedPane.tabViews());
+    return /** @type {!Array.<!UI.Widget>} */ (this._tabbedPane.tabViews());
   }
 
   /**
-   * @return {!WebInspector.Toolbar}
+   * @return {!UI.Toolbar}
    */
   leftToolbar() {
     return this._tabbedPane.leftToolbar();
   }
 
   /**
-   * @return {!WebInspector.Toolbar}
+   * @return {!UI.Toolbar}
    */
   rightToolbar() {
     return this._tabbedPane.rightToolbar();
@@ -172,14 +172,14 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   showFile(uiSourceCode) {
     this._innerShowFile(uiSourceCode, true);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   closeFile(uiSourceCode) {
     var tabId = this._tabIds.get(uiSourceCode);
@@ -193,7 +193,7 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
   }
 
   /**
-   * @return {!Array.<!WebInspector.UISourceCode>}
+   * @return {!Array.<!Workspace.UISourceCode>}
    */
   historyUISourceCodes() {
     // FIXME: there should be a way to fetch UISourceCode for its uri.
@@ -217,22 +217,22 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
     if (!this._currentView || !this._currentView.textEditor)
       return;
     this._currentView.textEditor.addEventListener(
-        WebInspector.SourcesTextEditor.Events.ScrollChanged, this._scrollChanged, this);
+        SourceFrame.SourcesTextEditor.Events.ScrollChanged, this._scrollChanged, this);
     this._currentView.textEditor.addEventListener(
-        WebInspector.SourcesTextEditor.Events.SelectionChanged, this._selectionChanged, this);
+        SourceFrame.SourcesTextEditor.Events.SelectionChanged, this._selectionChanged, this);
   }
 
   _removeViewListeners() {
     if (!this._currentView || !this._currentView.textEditor)
       return;
     this._currentView.textEditor.removeEventListener(
-        WebInspector.SourcesTextEditor.Events.ScrollChanged, this._scrollChanged, this);
+        SourceFrame.SourcesTextEditor.Events.ScrollChanged, this._scrollChanged, this);
     this._currentView.textEditor.removeEventListener(
-        WebInspector.SourcesTextEditor.Events.SelectionChanged, this._selectionChanged, this);
+        SourceFrame.SourcesTextEditor.Events.SelectionChanged, this._selectionChanged, this);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _scrollChanged(event) {
     if (this._scrollTimer)
@@ -242,7 +242,7 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
     this._history.updateScrollLineNumber(this._currentFile.url(), lineNumber);
 
     /**
-     * @this {WebInspector.TabbedEditorContainer}
+     * @this {Sources.TabbedEditorContainer}
      */
     function saveHistory() {
       this._history.save(this._previouslyViewedFilesSetting);
@@ -250,20 +250,20 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _selectionChanged(event) {
-    var range = /** @type {!WebInspector.TextRange} */ (event.data);
+    var range = /** @type {!Common.TextRange} */ (event.data);
     this._history.updateSelectionRange(this._currentFile.url(), range);
     this._history.save(this._previouslyViewedFilesSetting);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {boolean=} userGesture
    */
   _innerShowFile(uiSourceCode, userGesture) {
-    var binding = WebInspector.persistence.binding(uiSourceCode);
+    var binding = Persistence.persistence.binding(uiSourceCode);
     uiSourceCode = binding ? binding.network : uiSourceCode;
     if (this._currentFile === uiSourceCode)
       return;
@@ -287,19 +287,19 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
       previousView: previousView,
       userGesture: userGesture
     };
-    this.dispatchEventToListeners(WebInspector.TabbedEditorContainer.Events.EditorSelected, eventData);
+    this.dispatchEventToListeners(Sources.TabbedEditorContainer.Events.EditorSelected, eventData);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {string}
    */
   _titleForFile(uiSourceCode) {
-    var binding = WebInspector.persistence.binding(uiSourceCode);
+    var binding = Persistence.persistence.binding(uiSourceCode);
     var titleUISourceCode = binding ? binding.fileSystem : uiSourceCode;
     var maxDisplayNameLength = 30;
     var title = titleUISourceCode.displayName(true).trimMiddle(maxDisplayNameLength);
-    if (uiSourceCode.isDirty() || WebInspector.persistence.hasUnsavedCommittedChanges(uiSourceCode))
+    if (uiSourceCode.isDirty() || Persistence.persistence.hasUnsavedCommittedChanges(uiSourceCode))
       title += '*';
     return title;
   }
@@ -313,7 +313,7 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
     var shouldPrompt = uiSourceCode.isDirty() && uiSourceCode.project().canSetFileContent();
     // FIXME: this should be replaced with common Save/Discard/Cancel dialog.
     if (!shouldPrompt ||
-        confirm(WebInspector.UIString('Are you sure you want to close unsaved file: %s?', uiSourceCode.name()))) {
+        confirm(Common.UIString('Are you sure you want to close unsaved file: %s?', uiSourceCode.name()))) {
       uiSourceCode.resetWorkingCopy();
       var previousView = this._currentView;
       if (nextTabId)
@@ -351,7 +351,7 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
 
   /**
    * @param {string} tabId
-   * @param {!WebInspector.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu} contextMenu
    */
   _onContextMenu(tabId, contextMenu) {
     var uiSourceCode = this._files[tabId];
@@ -360,7 +360,7 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   addUISourceCode(uiSourceCode) {
     var uri = uiSourceCode.url();
@@ -381,21 +381,21 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
       return;
     var currentProjectType = this._currentFile.project().type();
     var addedProjectType = uiSourceCode.project().type();
-    var snippetsProjectType = WebInspector.projectTypes.Snippets;
+    var snippetsProjectType = Workspace.projectTypes.Snippets;
     if (this._history.index(this._currentFile.url()) && currentProjectType === snippetsProjectType &&
         addedProjectType !== snippetsProjectType)
       this._innerShowFile(uiSourceCode, false);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   removeUISourceCode(uiSourceCode) {
     this.removeUISourceCodes([uiSourceCode]);
   }
 
   /**
-   * @param {!Array.<!WebInspector.UISourceCode>} uiSourceCodes
+   * @param {!Array.<!Workspace.UISourceCode>} uiSourceCodes
    */
   removeUISourceCodes(uiSourceCodes) {
     var tabIds = [];
@@ -409,7 +409,7 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _editorClosedByUserAction(uiSourceCode) {
     this._history.remove(uiSourceCode.url());
@@ -422,11 +422,11 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
 
   _updateHistory() {
     var tabIds =
-        this._tabbedPane.lastOpenedTabIds(WebInspector.TabbedEditorContainer.maximalPreviouslyViewedFilesCount);
+        this._tabbedPane.lastOpenedTabIds(Sources.TabbedEditorContainer.maximalPreviouslyViewedFilesCount);
 
     /**
      * @param {string} tabId
-     * @this {WebInspector.TabbedEditorContainer}
+     * @this {Sources.TabbedEditorContainer}
      */
     function tabIdToURI(tabId) {
       return this._files[tabId].url();
@@ -437,16 +437,16 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {string}
    */
   _tooltipForFile(uiSourceCode) {
-    uiSourceCode = WebInspector.persistence.fileSystem(uiSourceCode) || uiSourceCode;
+    uiSourceCode = Persistence.persistence.fileSystem(uiSourceCode) || uiSourceCode;
     return uiSourceCode.url();
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {boolean=} userGesture
    * @param {number=} index
    * @return {string}
@@ -472,13 +472,13 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Widget} editorView
-   * @param {!WebInspector.TextRange=} selection
+   * @param {!UI.Widget} editorView
+   * @param {!Common.TextRange=} selection
    * @param {number=} firstLineNumber
    */
   _restoreEditorProperties(editorView, selection, firstLineNumber) {
     var sourceFrame =
-        editorView instanceof WebInspector.SourceFrame ? /** @type {!WebInspector.SourceFrame} */ (editorView) : null;
+        editorView instanceof SourceFrame.SourceFrame ? /** @type {!SourceFrame.SourceFrame} */ (editorView) : null;
     if (!sourceFrame)
       return;
     if (selection)
@@ -488,7 +488,7 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _tabClosed(event) {
     var tabId = /** @type {string} */ (event.data.tabId);
@@ -505,14 +505,14 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
 
     this._removeUISourceCodeListeners(uiSourceCode);
 
-    this.dispatchEventToListeners(WebInspector.TabbedEditorContainer.Events.EditorClosed, uiSourceCode);
+    this.dispatchEventToListeners(Sources.TabbedEditorContainer.Events.EditorClosed, uiSourceCode);
 
     if (userGesture)
       this._editorClosedByUserAction(uiSourceCode);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _tabSelected(event) {
     var tabId = /** @type {string} */ (event.data.tabId);
@@ -523,42 +523,42 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _addUISourceCodeListeners(uiSourceCode) {
-    uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.TitleChanged, this._uiSourceCodeTitleChanged, this);
+    uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this._uiSourceCodeTitleChanged, this);
     uiSourceCode.addEventListener(
-        WebInspector.UISourceCode.Events.WorkingCopyChanged, this._uiSourceCodeWorkingCopyChanged, this);
+        Workspace.UISourceCode.Events.WorkingCopyChanged, this._uiSourceCodeWorkingCopyChanged, this);
     uiSourceCode.addEventListener(
-        WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._uiSourceCodeWorkingCopyCommitted, this);
+        Workspace.UISourceCode.Events.WorkingCopyCommitted, this._uiSourceCodeWorkingCopyCommitted, this);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _removeUISourceCodeListeners(uiSourceCode) {
     uiSourceCode.removeEventListener(
-        WebInspector.UISourceCode.Events.TitleChanged, this._uiSourceCodeTitleChanged, this);
+        Workspace.UISourceCode.Events.TitleChanged, this._uiSourceCodeTitleChanged, this);
     uiSourceCode.removeEventListener(
-        WebInspector.UISourceCode.Events.WorkingCopyChanged, this._uiSourceCodeWorkingCopyChanged, this);
+        Workspace.UISourceCode.Events.WorkingCopyChanged, this._uiSourceCodeWorkingCopyChanged, this);
     uiSourceCode.removeEventListener(
-        WebInspector.UISourceCode.Events.WorkingCopyCommitted, this._uiSourceCodeWorkingCopyCommitted, this);
+        Workspace.UISourceCode.Events.WorkingCopyCommitted, this._uiSourceCodeWorkingCopyCommitted, this);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _updateFileTitle(uiSourceCode) {
     var tabId = this._tabIds.get(uiSourceCode);
     if (tabId) {
       var title = this._titleForFile(uiSourceCode);
       this._tabbedPane.changeTabTitle(tabId, title);
-      if (WebInspector.persistence.hasUnsavedCommittedChanges(uiSourceCode)) {
+      if (Persistence.persistence.hasUnsavedCommittedChanges(uiSourceCode)) {
         this._tabbedPane.setTabIcon(
-            tabId, 'smallicon-warning', WebInspector.UIString('Changes to this file were not saved to file system.'));
-      } else if (Runtime.experiments.isEnabled('persistence2') && WebInspector.persistence.binding(uiSourceCode)) {
-        var binding = WebInspector.persistence.binding(uiSourceCode);
-        this._tabbedPane.setTabIcon(tabId, 'smallicon-green-checkmark', WebInspector.PersistenceUtils.tooltipForUISourceCode(binding.fileSystem));
+            tabId, 'smallicon-warning', Common.UIString('Changes to this file were not saved to file system.'));
+      } else if (Runtime.experiments.isEnabled('persistence2') && Persistence.persistence.binding(uiSourceCode)) {
+        var binding = Persistence.persistence.binding(uiSourceCode);
+        this._tabbedPane.setTabIcon(tabId, 'smallicon-green-checkmark', Persistence.PersistenceUtils.tooltipForUISourceCode(binding.fileSystem));
       } else {
         this._tabbedPane.setTabIcon(tabId, '');
       }
@@ -566,18 +566,18 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
   }
 
   _uiSourceCodeTitleChanged(event) {
-    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.target);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.target);
     this._updateFileTitle(uiSourceCode);
     this._updateHistory();
   }
 
   _uiSourceCodeWorkingCopyChanged(event) {
-    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.target);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.target);
     this._updateFileTitle(uiSourceCode);
   }
 
   _uiSourceCodeWorkingCopyCommitted(event) {
-    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.target);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.target);
     this._updateFileTitle(uiSourceCode);
   }
 
@@ -585,11 +585,11 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
    * @return {string}
    */
   _generateTabId() {
-    return 'tab_' + (WebInspector.TabbedEditorContainer._tabId++);
+    return 'tab_' + (Sources.TabbedEditorContainer._tabId++);
   }
 
   /**
-   * @return {?WebInspector.UISourceCode} uiSourceCode
+   * @return {?Workspace.UISourceCode} uiSourceCode
    */
   currentFile() {
     return this._currentFile || null;
@@ -597,41 +597,41 @@ WebInspector.TabbedEditorContainer = class extends WebInspector.Object {
 };
 
 /** @enum {symbol} */
-WebInspector.TabbedEditorContainer.Events = {
+Sources.TabbedEditorContainer.Events = {
   EditorSelected: Symbol('EditorSelected'),
   EditorClosed: Symbol('EditorClosed')
 };
 
-WebInspector.TabbedEditorContainer._tabId = 0;
+Sources.TabbedEditorContainer._tabId = 0;
 
-WebInspector.TabbedEditorContainer.maximalPreviouslyViewedFilesCount = 30;
+Sources.TabbedEditorContainer.maximalPreviouslyViewedFilesCount = 30;
 
 /**
  * @unrestricted
  */
-WebInspector.TabbedEditorContainer.HistoryItem = class {
+Sources.TabbedEditorContainer.HistoryItem = class {
   /**
    * @param {string} url
-   * @param {!WebInspector.TextRange=} selectionRange
+   * @param {!Common.TextRange=} selectionRange
    * @param {number=} scrollLineNumber
    */
   constructor(url, selectionRange, scrollLineNumber) {
     /** @const */ this.url = url;
     /** @const */ this._isSerializable =
-        url.length < WebInspector.TabbedEditorContainer.HistoryItem.serializableUrlLengthLimit;
+        url.length < Sources.TabbedEditorContainer.HistoryItem.serializableUrlLengthLimit;
     this.selectionRange = selectionRange;
     this.scrollLineNumber = scrollLineNumber;
   }
 
   /**
    * @param {!Object} serializedHistoryItem
-   * @return {!WebInspector.TabbedEditorContainer.HistoryItem}
+   * @return {!Sources.TabbedEditorContainer.HistoryItem}
    */
   static fromObject(serializedHistoryItem) {
     var selectionRange = serializedHistoryItem.selectionRange ?
-        WebInspector.TextRange.fromObject(serializedHistoryItem.selectionRange) :
+        Common.TextRange.fromObject(serializedHistoryItem.selectionRange) :
         undefined;
-    return new WebInspector.TabbedEditorContainer.HistoryItem(
+    return new Sources.TabbedEditorContainer.HistoryItem(
         serializedHistoryItem.url, selectionRange, serializedHistoryItem.scrollLineNumber);
   }
 
@@ -649,15 +649,15 @@ WebInspector.TabbedEditorContainer.HistoryItem = class {
   }
 };
 
-WebInspector.TabbedEditorContainer.HistoryItem.serializableUrlLengthLimit = 4096;
+Sources.TabbedEditorContainer.HistoryItem.serializableUrlLengthLimit = 4096;
 
 
 /**
  * @unrestricted
  */
-WebInspector.TabbedEditorContainer.History = class {
+Sources.TabbedEditorContainer.History = class {
   /**
-   * @param {!Array.<!WebInspector.TabbedEditorContainer.HistoryItem>} items
+   * @param {!Array.<!Sources.TabbedEditorContainer.HistoryItem>} items
    */
   constructor(items) {
     this._items = items;
@@ -666,13 +666,13 @@ WebInspector.TabbedEditorContainer.History = class {
 
   /**
    * @param {!Array.<!Object>} serializedHistory
-   * @return {!WebInspector.TabbedEditorContainer.History}
+   * @return {!Sources.TabbedEditorContainer.History}
    */
   static fromObject(serializedHistory) {
     var items = [];
     for (var i = 0; i < serializedHistory.length; ++i)
-      items.push(WebInspector.TabbedEditorContainer.HistoryItem.fromObject(serializedHistory[i]));
-    return new WebInspector.TabbedEditorContainer.History(items);
+      items.push(Sources.TabbedEditorContainer.HistoryItem.fromObject(serializedHistory[i]));
+    return new Sources.TabbedEditorContainer.History(items);
   }
 
   /**
@@ -694,7 +694,7 @@ WebInspector.TabbedEditorContainer.History = class {
 
   /**
    * @param {string} url
-   * @return {!WebInspector.TextRange|undefined}
+   * @return {!Common.TextRange|undefined}
    */
   selectionRange(url) {
     var index = this.index(url);
@@ -703,7 +703,7 @@ WebInspector.TabbedEditorContainer.History = class {
 
   /**
    * @param {string} url
-   * @param {!WebInspector.TextRange=} selectionRange
+   * @param {!Common.TextRange=} selectionRange
    */
   updateSelectionRange(url, selectionRange) {
     if (!selectionRange)
@@ -745,7 +745,7 @@ WebInspector.TabbedEditorContainer.History = class {
         item = this._items[index];
         this._items.splice(index, 1);
       } else
-        item = new WebInspector.TabbedEditorContainer.HistoryItem(urls[i]);
+        item = new Sources.TabbedEditorContainer.HistoryItem(urls[i]);
       this._items.unshift(item);
       this._rebuildItemIndex();
     }
@@ -763,7 +763,7 @@ WebInspector.TabbedEditorContainer.History = class {
   }
 
   /**
-   * @param {!WebInspector.Setting} setting
+   * @param {!Common.Setting} setting
    */
   save(setting) {
     setting.set(this._serializeToObject());
@@ -778,7 +778,7 @@ WebInspector.TabbedEditorContainer.History = class {
       var serializedItem = this._items[i].serializeToObject();
       if (serializedItem)
         serializedHistory.push(serializedItem);
-      if (serializedHistory.length === WebInspector.TabbedEditorContainer.maximalPreviouslyViewedFilesCount)
+      if (serializedHistory.length === Sources.TabbedEditorContainer.maximalPreviouslyViewedFilesCount)
         break;
     }
     return serializedHistory;
@@ -797,12 +797,12 @@ WebInspector.TabbedEditorContainer.History = class {
 
 
 /**
- * @implements {WebInspector.TabbedPaneTabDelegate}
+ * @implements {UI.TabbedPaneTabDelegate}
  * @unrestricted
  */
-WebInspector.EditorContainerTabDelegate = class {
+Sources.EditorContainerTabDelegate = class {
   /**
-   * @param {!WebInspector.TabbedEditorContainer} editorContainer
+   * @param {!Sources.TabbedEditorContainer} editorContainer
    */
   constructor(editorContainer) {
     this._editorContainer = editorContainer;
@@ -810,7 +810,7 @@ WebInspector.EditorContainerTabDelegate = class {
 
   /**
    * @override
-   * @param {!WebInspector.TabbedPane} tabbedPane
+   * @param {!UI.TabbedPane} tabbedPane
    * @param {!Array.<string>} ids
    */
   closeTabs(tabbedPane, ids) {
@@ -820,7 +820,7 @@ WebInspector.EditorContainerTabDelegate = class {
   /**
    * @override
    * @param {string} tabId
-   * @param {!WebInspector.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu} contextMenu
    */
   onContextMenu(tabId, contextMenu) {
     this._editorContainer._onContextMenu(tabId, contextMenu);

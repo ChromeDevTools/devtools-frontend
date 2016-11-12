@@ -5,45 +5,45 @@
 /**
  * @unrestricted
  */
-WebInspector.AnimationModel = class extends WebInspector.SDKModel {
+Animation.AnimationModel = class extends SDK.SDKModel {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(WebInspector.AnimationModel, target);
+    super(Animation.AnimationModel, target);
     this._agent = target.animationAgent();
-    target.registerAnimationDispatcher(new WebInspector.AnimationDispatcher(this));
-    /** @type {!Map.<string, !WebInspector.AnimationModel.Animation>} */
+    target.registerAnimationDispatcher(new Animation.AnimationDispatcher(this));
+    /** @type {!Map.<string, !Animation.AnimationModel.Animation>} */
     this._animationsById = new Map();
-    /** @type {!Map.<string, !WebInspector.AnimationModel.AnimationGroup>} */
+    /** @type {!Map.<string, !Animation.AnimationModel.AnimationGroup>} */
     this._animationGroups = new Map();
     /** @type {!Array.<string>} */
     this._pendingAnimations = [];
     this._playbackRate = 1;
     var resourceTreeModel =
-        /** @type {!WebInspector.ResourceTreeModel} */ (WebInspector.ResourceTreeModel.fromTarget(target));
-    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._reset, this);
-    this._screenshotCapture = new WebInspector.AnimationModel.ScreenshotCapture(target, this, resourceTreeModel);
+        /** @type {!SDK.ResourceTreeModel} */ (SDK.ResourceTreeModel.fromTarget(target));
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.MainFrameNavigated, this._reset, this);
+    this._screenshotCapture = new Animation.AnimationModel.ScreenshotCapture(target, this, resourceTreeModel);
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @return {?WebInspector.AnimationModel}
+   * @param {!SDK.Target} target
+   * @return {?Animation.AnimationModel}
    */
   static fromTarget(target) {
     if (!target.hasDOMCapability())
       return null;
-    if (!target[WebInspector.AnimationModel._symbol])
-      target[WebInspector.AnimationModel._symbol] = new WebInspector.AnimationModel(target);
+    if (!target[Animation.AnimationModel._symbol])
+      target[Animation.AnimationModel._symbol] = new Animation.AnimationModel(target);
 
-    return target[WebInspector.AnimationModel._symbol];
+    return target[Animation.AnimationModel._symbol];
   }
 
   _reset() {
     this._animationsById.clear();
     this._animationGroups.clear();
     this._pendingAnimations = [];
-    this.dispatchEventToListeners(WebInspector.AnimationModel.Events.ModelReset);
+    this.dispatchEventToListeners(Animation.AnimationModel.Events.ModelReset);
   }
 
   /**
@@ -65,7 +65,7 @@ WebInspector.AnimationModel = class extends WebInspector.SDKModel {
    * @param {!Protocol.Animation.Animation} payload
    */
   animationStarted(payload) {
-    var animation = WebInspector.AnimationModel.Animation.parsePayload(this.target(), payload);
+    var animation = Animation.AnimationModel.Animation.parsePayload(this.target(), payload);
 
     // Ignore Web Animations custom effects & groups.
     if (animation.type() === 'WebAnimation' && animation.source().keyframesRule().keyframes().length === 0) {
@@ -90,7 +90,7 @@ WebInspector.AnimationModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.AnimationModel.AnimationGroup} incomingGroup
+   * @param {!Animation.AnimationModel.AnimationGroup} incomingGroup
    * @return {boolean}
    */
   _matchExistingGroups(incomingGroup) {
@@ -108,12 +108,12 @@ WebInspector.AnimationModel = class extends WebInspector.SDKModel {
       this._screenshotCapture.captureScreenshots(incomingGroup.finiteDuration(), incomingGroup._screenshots);
     }
     this.dispatchEventToListeners(
-        WebInspector.AnimationModel.Events.AnimationGroupStarted, matchedGroup || incomingGroup);
+        Animation.AnimationModel.Events.AnimationGroupStarted, matchedGroup || incomingGroup);
     return !!matchedGroup;
   }
 
   /**
-   * @return {!WebInspector.AnimationModel.AnimationGroup}
+   * @return {!Animation.AnimationModel.AnimationGroup}
    */
   _createGroupFromPendingAnimations() {
     console.assert(this._pendingAnimations.length);
@@ -127,7 +127,7 @@ WebInspector.AnimationModel = class extends WebInspector.SDKModel {
         remainingAnimations.push(id);
     }
     this._pendingAnimations = remainingAnimations;
-    return new WebInspector.AnimationModel.AnimationGroup(this, groupedAnimations[0].id(), groupedAnimations);
+    return new Animation.AnimationModel.AnimationGroup(this, groupedAnimations[0].id(), groupedAnimations);
   }
 
   /**
@@ -138,7 +138,7 @@ WebInspector.AnimationModel = class extends WebInspector.SDKModel {
      * @param {?Protocol.Error} error
      * @param {number} playbackRate
      * @return {number}
-     * @this {!WebInspector.AnimationModel}
+     * @this {!Animation.AnimationModel}
      */
     function callback(error, playbackRate) {
       if (error)
@@ -193,35 +193,35 @@ WebInspector.AnimationModel = class extends WebInspector.SDKModel {
 };
 
 /** @enum {symbol} */
-WebInspector.AnimationModel.Events = {
+Animation.AnimationModel.Events = {
   AnimationGroupStarted: Symbol('AnimationGroupStarted'),
   ModelReset: Symbol('ModelReset')
 };
 
-WebInspector.AnimationModel._symbol = Symbol('AnimationModel');
+Animation.AnimationModel._symbol = Symbol('AnimationModel');
 
 
 /**
  * @unrestricted
  */
-WebInspector.AnimationModel.Animation = class extends WebInspector.SDKObject {
+Animation.AnimationModel.Animation = class extends SDK.SDKObject {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {!Protocol.Animation.Animation} payload
    */
   constructor(target, payload) {
     super(target);
     this._payload = payload;
-    this._source = new WebInspector.AnimationModel.AnimationEffect(this.target(), this._payload.source);
+    this._source = new Animation.AnimationModel.AnimationEffect(this.target(), this._payload.source);
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {!Protocol.Animation.Animation} payload
-   * @return {!WebInspector.AnimationModel.Animation}
+   * @return {!Animation.AnimationModel.Animation}
    */
   static parsePayload(target, payload) {
-    return new WebInspector.AnimationModel.Animation(target, payload);
+    return new Animation.AnimationModel.Animation(target, payload);
   }
 
   /**
@@ -306,21 +306,21 @@ WebInspector.AnimationModel.Animation = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!WebInspector.AnimationModel.AnimationEffect}
+   * @return {!Animation.AnimationModel.AnimationEffect}
    */
   source() {
     return this._source;
   }
 
   /**
-   * @return {!WebInspector.AnimationModel.Animation.Type}
+   * @return {!Animation.AnimationModel.Animation.Type}
    */
   type() {
-    return /** @type {!WebInspector.AnimationModel.Animation.Type} */ (this._payload.type);
+    return /** @type {!Animation.AnimationModel.Animation.Type} */ (this._payload.type);
   }
 
   /**
-   * @param {!WebInspector.AnimationModel.Animation} animation
+   * @param {!Animation.AnimationModel.Animation} animation
    * @return {boolean}
    */
   overlaps(animation) {
@@ -347,18 +347,18 @@ WebInspector.AnimationModel.Animation = class extends WebInspector.SDKObject {
   /**
    * @param {number} duration
    * @param {number} delay
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.DOMNode} node
    */
   _updateNodeStyle(duration, delay, node) {
     var animationPrefix;
-    if (this.type() === WebInspector.AnimationModel.Animation.Type.CSSTransition)
+    if (this.type() === Animation.AnimationModel.Animation.Type.CSSTransition)
       animationPrefix = 'transition-';
-    else if (this.type() === WebInspector.AnimationModel.Animation.Type.CSSAnimation)
+    else if (this.type() === Animation.AnimationModel.Animation.Type.CSSAnimation)
       animationPrefix = 'animation-';
     else
       return;
 
-    var cssModel = WebInspector.CSSModel.fromTarget(node.target());
+    var cssModel = SDK.CSSModel.fromTarget(node.target());
     if (!cssModel)
       return;
     cssModel.setEffectivePropertyValueForNode(node.id, animationPrefix + 'duration', duration + 'ms');
@@ -366,14 +366,14 @@ WebInspector.AnimationModel.Animation = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!Promise.<?WebInspector.RemoteObject>}
+   * @return {!Promise.<?SDK.RemoteObject>}
    */
   remoteObjectPromise() {
     /**
      * @param {?Protocol.Error} error
      * @param {!Protocol.Runtime.RemoteObject} payload
-     * @return {?WebInspector.RemoteObject}
-     * @this {!WebInspector.AnimationModel.Animation}
+     * @return {?SDK.RemoteObject}
+     * @this {!Animation.AnimationModel.Animation}
      */
     function callback(error, payload) {
       return !error ? this.target().runtimeModel.createRemoteObject(payload) : null;
@@ -392,7 +392,7 @@ WebInspector.AnimationModel.Animation = class extends WebInspector.SDKObject {
 
 
 /** @enum {string} */
-WebInspector.AnimationModel.Animation.Type = {
+Animation.AnimationModel.Animation.Type = {
   CSSTransition: 'CSSTransition',
   CSSAnimation: 'CSSAnimation',
   WebAnimation: 'WebAnimation'
@@ -401,16 +401,16 @@ WebInspector.AnimationModel.Animation.Type = {
 /**
  * @unrestricted
  */
-WebInspector.AnimationModel.AnimationEffect = class extends WebInspector.SDKObject {
+Animation.AnimationModel.AnimationEffect = class extends SDK.SDKObject {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {!Protocol.Animation.AnimationEffect} payload
    */
   constructor(target, payload) {
     super(target);
     this._payload = payload;
     if (payload.keyframesRule)
-      this._keyframesRule = new WebInspector.AnimationModel.KeyframesRule(target, payload.keyframesRule);
+      this._keyframesRule = new Animation.AnimationModel.KeyframesRule(target, payload.keyframesRule);
     this._delay = this._payload.delay;
     this._duration = this._payload.duration;
   }
@@ -468,19 +468,19 @@ WebInspector.AnimationModel.AnimationEffect = class extends WebInspector.SDKObje
   }
 
   /**
-   * @return {!Promise.<!WebInspector.DOMNode>}
+   * @return {!Promise.<!SDK.DOMNode>}
    */
   node() {
     if (!this._deferredNode)
-      this._deferredNode = new WebInspector.DeferredDOMNode(this.target(), this.backendNodeId());
+      this._deferredNode = new SDK.DeferredDOMNode(this.target(), this.backendNodeId());
     return this._deferredNode.resolvePromise();
   }
 
   /**
-   * @return {!WebInspector.DeferredDOMNode}
+   * @return {!SDK.DeferredDOMNode}
    */
   deferredNode() {
-    return new WebInspector.DeferredDOMNode(this.target(), this.backendNodeId());
+    return new SDK.DeferredDOMNode(this.target(), this.backendNodeId());
   }
 
   /**
@@ -491,7 +491,7 @@ WebInspector.AnimationModel.AnimationEffect = class extends WebInspector.SDKObje
   }
 
   /**
-   * @return {?WebInspector.AnimationModel.KeyframesRule}
+   * @return {?Animation.AnimationModel.KeyframesRule}
    */
   keyframesRule() {
     return this._keyframesRule;
@@ -508,16 +508,16 @@ WebInspector.AnimationModel.AnimationEffect = class extends WebInspector.SDKObje
 /**
  * @unrestricted
  */
-WebInspector.AnimationModel.KeyframesRule = class extends WebInspector.SDKObject {
+Animation.AnimationModel.KeyframesRule = class extends SDK.SDKObject {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {!Protocol.Animation.KeyframesRule} payload
    */
   constructor(target, payload) {
     super(target);
     this._payload = payload;
     this._keyframes = this._payload.keyframes.map(function(keyframeStyle) {
-      return new WebInspector.AnimationModel.KeyframeStyle(target, keyframeStyle);
+      return new Animation.AnimationModel.KeyframeStyle(target, keyframeStyle);
     });
   }
 
@@ -526,7 +526,7 @@ WebInspector.AnimationModel.KeyframesRule = class extends WebInspector.SDKObject
    */
   _setKeyframesPayload(payload) {
     this._keyframes = payload.map(function(keyframeStyle) {
-      return new WebInspector.AnimationModel.KeyframeStyle(this._target, keyframeStyle);
+      return new Animation.AnimationModel.KeyframeStyle(this._target, keyframeStyle);
     });
   }
 
@@ -538,7 +538,7 @@ WebInspector.AnimationModel.KeyframesRule = class extends WebInspector.SDKObject
   }
 
   /**
-   * @return {!Array.<!WebInspector.AnimationModel.KeyframeStyle>}
+   * @return {!Array.<!Animation.AnimationModel.KeyframeStyle>}
    */
   keyframes() {
     return this._keyframes;
@@ -548,9 +548,9 @@ WebInspector.AnimationModel.KeyframesRule = class extends WebInspector.SDKObject
 /**
  * @unrestricted
  */
-WebInspector.AnimationModel.KeyframeStyle = class extends WebInspector.SDKObject {
+Animation.AnimationModel.KeyframeStyle = class extends SDK.SDKObject {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {!Protocol.Animation.KeyframeStyle} payload
    */
   constructor(target, payload) {
@@ -591,11 +591,11 @@ WebInspector.AnimationModel.KeyframeStyle = class extends WebInspector.SDKObject
 /**
  * @unrestricted
  */
-WebInspector.AnimationModel.AnimationGroup = class extends WebInspector.SDKObject {
+Animation.AnimationModel.AnimationGroup = class extends SDK.SDKObject {
   /**
-   * @param {!WebInspector.AnimationModel} model
+   * @param {!Animation.AnimationModel} model
    * @param {string} id
-   * @param {!Array.<!WebInspector.AnimationModel.Animation>} animations
+   * @param {!Array.<!Animation.AnimationModel.Animation>} animations
    */
   constructor(model, id, animations) {
     super(model.target());
@@ -615,7 +615,7 @@ WebInspector.AnimationModel.AnimationGroup = class extends WebInspector.SDKObjec
   }
 
   /**
-   * @return {!Array.<!WebInspector.AnimationModel.Animation>}
+   * @return {!Array.<!Animation.AnimationModel.Animation>}
    */
   animations() {
     return this._animations;
@@ -631,7 +631,7 @@ WebInspector.AnimationModel.AnimationGroup = class extends WebInspector.SDKObjec
    */
   _animationIds() {
     /**
-     * @param {!WebInspector.AnimationModel.Animation} animation
+     * @param {!Animation.AnimationModel.Animation} animation
      * @return {string}
      */
     function extractId(animation) {
@@ -704,16 +704,16 @@ WebInspector.AnimationModel.AnimationGroup = class extends WebInspector.SDKObjec
   }
 
   /**
-   * @param {!WebInspector.AnimationModel.AnimationGroup} group
+   * @param {!Animation.AnimationModel.AnimationGroup} group
    * @return {boolean}
    */
   _matches(group) {
     /**
-     * @param {!WebInspector.AnimationModel.Animation} anim
+     * @param {!Animation.AnimationModel.Animation} anim
      * @return {string}
      */
     function extractId(anim) {
-      if (anim.type() === WebInspector.AnimationModel.Animation.Type.WebAnimation)
+      if (anim.type() === Animation.AnimationModel.Animation.Type.WebAnimation)
         return anim.type() + anim.id();
       else
         return anim._cssId();
@@ -731,7 +731,7 @@ WebInspector.AnimationModel.AnimationGroup = class extends WebInspector.SDKObjec
   }
 
   /**
-   * @param {!WebInspector.AnimationModel.AnimationGroup} group
+   * @param {!Animation.AnimationModel.AnimationGroup} group
    */
   _update(group) {
     this._model._releaseAnimations(this._animationIds());
@@ -756,7 +756,7 @@ WebInspector.AnimationModel.AnimationGroup = class extends WebInspector.SDKObjec
  * @implements {Protocol.AnimationDispatcher}
  * @unrestricted
  */
-WebInspector.AnimationDispatcher = class {
+Animation.AnimationDispatcher = class {
   constructor(animationModel) {
     this._animationModel = animationModel;
   }
@@ -789,20 +789,20 @@ WebInspector.AnimationDispatcher = class {
 /**
  * @unrestricted
  */
-WebInspector.AnimationModel.ScreenshotCapture = class {
+Animation.AnimationModel.ScreenshotCapture = class {
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!WebInspector.AnimationModel} model
-   * @param {!WebInspector.ResourceTreeModel} resourceTreeModel
+   * @param {!SDK.Target} target
+   * @param {!Animation.AnimationModel} model
+   * @param {!SDK.ResourceTreeModel} resourceTreeModel
    */
   constructor(target, model, resourceTreeModel) {
     this._target = target;
-    /** @type {!Array<!WebInspector.AnimationModel.ScreenshotCapture.Request>} */
+    /** @type {!Array<!Animation.AnimationModel.ScreenshotCapture.Request>} */
     this._requests = [];
     resourceTreeModel.addEventListener(
-        WebInspector.ResourceTreeModel.Events.ScreencastFrame, this._screencastFrame, this);
+        SDK.ResourceTreeModel.Events.ScreencastFrame, this._screencastFrame, this);
     this._model = model;
-    this._model.addEventListener(WebInspector.AnimationModel.Events.ModelReset, this._stopScreencast, this);
+    this._model.addEventListener(Animation.AnimationModel.Events.ModelReset, this._stopScreencast, this);
   }
 
   /**
@@ -827,11 +827,11 @@ WebInspector.AnimationModel.ScreenshotCapture = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _screencastFrame(event) {
     /**
-     * @param {!WebInspector.AnimationModel.ScreenshotCapture.Request} request
+     * @param {!Animation.AnimationModel.ScreenshotCapture.Request} request
      * @return {boolean}
      */
     function isAnimating(request) {
@@ -861,4 +861,4 @@ WebInspector.AnimationModel.ScreenshotCapture = class {
 };
 
 /** @typedef {{ endTime: number, screenshots: !Array.<string>}} */
-WebInspector.AnimationModel.ScreenshotCapture.Request;
+Animation.AnimationModel.ScreenshotCapture.Request;

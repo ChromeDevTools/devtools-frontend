@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.ContextMenuItem = class {
+UI.ContextMenuItem = class {
   /**
-   * @param {?WebInspector.ContextMenu} topLevelMenu
+   * @param {?UI.ContextMenu} topLevelMenu
    * @param {string} type
    * @param {string=} label
    * @param {boolean=} disabled
@@ -108,15 +108,15 @@ WebInspector.ContextMenuItem = class {
 /**
  * @unrestricted
  */
-WebInspector.ContextSubMenuItem = class extends WebInspector.ContextMenuItem {
+UI.ContextSubMenuItem = class extends UI.ContextMenuItem {
   /**
-   * @param {?WebInspector.ContextMenu} topLevelMenu
+   * @param {?UI.ContextMenu} topLevelMenu
    * @param {string=} label
    * @param {boolean=} disabled
    */
   constructor(topLevelMenu, label, disabled) {
     super(topLevelMenu, 'subMenu', label, disabled);
-    /** @type {!Array.<!WebInspector.ContextMenuItem>} */
+    /** @type {!Array.<!UI.ContextMenuItem>} */
     this._items = [];
   }
 
@@ -124,10 +124,10 @@ WebInspector.ContextSubMenuItem = class extends WebInspector.ContextMenuItem {
    * @param {string} label
    * @param {function(?)} handler
    * @param {boolean=} disabled
-   * @return {!WebInspector.ContextMenuItem}
+   * @return {!UI.ContextMenuItem}
    */
   appendItem(label, handler, disabled) {
-    var item = new WebInspector.ContextMenuItem(this._contextMenu, 'item', label, disabled);
+    var item = new UI.ContextMenuItem(this._contextMenu, 'item', label, disabled);
     this._pushItem(item);
     this._contextMenu._setHandler(item.id(), handler);
     return item;
@@ -135,10 +135,10 @@ WebInspector.ContextSubMenuItem = class extends WebInspector.ContextMenuItem {
 
   /**
    * @param {!Element} element
-   * @return {!WebInspector.ContextMenuItem}
+   * @return {!UI.ContextMenuItem}
    */
   appendCustomItem(element) {
-    var item = new WebInspector.ContextMenuItem(this._contextMenu, 'item', '<custom>');
+    var item = new UI.ContextMenuItem(this._contextMenu, 'item', '<custom>');
     item._customElement = element;
     this._pushItem(item);
     return item;
@@ -147,14 +147,14 @@ WebInspector.ContextSubMenuItem = class extends WebInspector.ContextMenuItem {
   /**
    * @param {string} actionId
    * @param {string=} label
-   * @return {!WebInspector.ContextMenuItem}
+   * @return {!UI.ContextMenuItem}
    */
   appendAction(actionId, label) {
-    var action = WebInspector.actionRegistry.action(actionId);
+    var action = UI.actionRegistry.action(actionId);
     if (!label)
       label = action.title();
     var result = this.appendItem(label, action.execute.bind(action));
-    var shortcut = WebInspector.shortcutRegistry.shortcutTitleForAction(actionId);
+    var shortcut = UI.shortcutRegistry.shortcutTitleForAction(actionId);
     if (shortcut)
       result.setShortcut(shortcut);
     return result;
@@ -164,10 +164,10 @@ WebInspector.ContextSubMenuItem = class extends WebInspector.ContextMenuItem {
    * @param {string} label
    * @param {boolean=} disabled
    * @param {string=} subMenuId
-   * @return {!WebInspector.ContextSubMenuItem}
+   * @return {!UI.ContextSubMenuItem}
    */
   appendSubMenuItem(label, disabled, subMenuId) {
-    var item = new WebInspector.ContextSubMenuItem(this._contextMenu, label, disabled);
+    var item = new UI.ContextSubMenuItem(this._contextMenu, label, disabled);
     if (subMenuId)
       this._contextMenu._namedSubMenus.set(subMenuId, item);
     this._pushItem(item);
@@ -179,10 +179,10 @@ WebInspector.ContextSubMenuItem = class extends WebInspector.ContextMenuItem {
    * @param {function()} handler
    * @param {boolean=} checked
    * @param {boolean=} disabled
-   * @return {!WebInspector.ContextMenuItem}
+   * @return {!UI.ContextMenuItem}
    */
   appendCheckboxItem(label, handler, checked, disabled) {
-    var item = new WebInspector.ContextMenuItem(this._contextMenu, 'checkbox', label, disabled, checked);
+    var item = new UI.ContextMenuItem(this._contextMenu, 'checkbox', label, disabled, checked);
     this._pushItem(item);
     this._contextMenu._setHandler(item.id(), handler);
     return item;
@@ -194,11 +194,11 @@ WebInspector.ContextSubMenuItem = class extends WebInspector.ContextMenuItem {
   }
 
   /**
-   * @param {!WebInspector.ContextMenuItem} item
+   * @param {!UI.ContextMenuItem} item
    */
   _pushItem(item) {
     if (this._pendingSeparator) {
-      this._items.push(new WebInspector.ContextMenuItem(this._contextMenu, 'separator'));
+      this._items.push(new UI.ContextMenuItem(this._contextMenu, 'separator'));
       delete this._pendingSeparator;
     }
     this._items.push(item);
@@ -227,7 +227,7 @@ WebInspector.ContextSubMenuItem = class extends WebInspector.ContextMenuItem {
    */
   appendItemsAtLocation(location) {
     /**
-     * @param {!WebInspector.ContextSubMenuItem} menu
+     * @param {!UI.ContextSubMenuItem} menu
      * @param {!Runtime.Extension} extension
      */
     function appendExtension(menu, extension) {
@@ -276,7 +276,7 @@ WebInspector.ContextSubMenuItem = class extends WebInspector.ContextMenuItem {
 /**
  * @unrestricted
  */
-WebInspector.ContextMenu = class extends WebInspector.ContextSubMenuItem {
+UI.ContextMenu = class extends UI.ContextSubMenuItem {
   /**
    * @param {!Event} event
    * @param {boolean=} useSoftMenu
@@ -286,7 +286,7 @@ WebInspector.ContextMenu = class extends WebInspector.ContextSubMenuItem {
   constructor(event, useSoftMenu, x, y) {
     super(null, '');
     this._contextMenu = this;
-    /** @type {!Array.<!Promise.<!Array.<!WebInspector.ContextMenu.Provider>>>} */
+    /** @type {!Array.<!Promise.<!Array.<!UI.ContextMenu.Provider>>>} */
     this._pendingPromises = [];
     /** @type {!Array<!Object>} */
     this._pendingTargets = [];
@@ -296,17 +296,17 @@ WebInspector.ContextMenu = class extends WebInspector.ContextSubMenuItem {
     this._y = y === undefined ? event.y : y;
     this._handlers = {};
     this._id = 0;
-    /** @type {!Map<string, !WebInspector.ContextSubMenuItem>} */
+    /** @type {!Map<string, !UI.ContextSubMenuItem>} */
     this._namedSubMenus = new Map();
   }
 
   static initialize() {
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.SetUseSoftMenu, setUseSoftMenu);
     /**
-     * @param {!WebInspector.Event} event
+     * @param {!Common.Event} event
      */
     function setUseSoftMenu(event) {
-      WebInspector.ContextMenu._useSoftMenu = /** @type {boolean} */ (event.data);
+      UI.ContextMenu._useSoftMenu = /** @type {boolean} */ (event.data);
     }
   }
 
@@ -320,7 +320,7 @@ WebInspector.ContextMenu = class extends WebInspector.ContextSubMenuItem {
      * @param {!Event} event
      */
     function handler(event) {
-      var contextMenu = new WebInspector.ContextMenu(event);
+      var contextMenu = new UI.ContextMenu(event);
       contextMenu.appendApplicableItems(/** @type {!Object} */ (event.deepElementFromPoint()));
       contextMenu.show();
     }
@@ -342,23 +342,23 @@ WebInspector.ContextMenu = class extends WebInspector.ContextSubMenuItem {
 
   show() {
     Promise.all(this._pendingPromises).then(populate.bind(this)).then(this._innerShow.bind(this));
-    WebInspector.ContextMenu._pendingMenu = this;
+    UI.ContextMenu._pendingMenu = this;
 
     /**
-     * @param {!Array.<!Array.<!WebInspector.ContextMenu.Provider>>} appendCallResults
-     * @this {WebInspector.ContextMenu}
+     * @param {!Array.<!Array.<!UI.ContextMenu.Provider>>} appendCallResults
+     * @this {UI.ContextMenu}
      */
     function populate(appendCallResults) {
-      if (WebInspector.ContextMenu._pendingMenu !== this)
+      if (UI.ContextMenu._pendingMenu !== this)
         return;
-      delete WebInspector.ContextMenu._pendingMenu;
+      delete UI.ContextMenu._pendingMenu;
 
       for (var i = 0; i < appendCallResults.length; ++i) {
         var providers = appendCallResults[i];
         var target = this._pendingTargets[i];
 
         for (var j = 0; j < providers.length; ++j) {
-          var provider = /** @type {!WebInspector.ContextMenu.Provider} */ (providers[j]);
+          var provider = /** @type {!UI.ContextMenu.Provider} */ (providers[j]);
           this.appendSeparator();
           provider.appendApplicableItems(this._event, this, target);
           this.appendSeparator();
@@ -385,15 +385,15 @@ WebInspector.ContextMenu = class extends WebInspector.ContextSubMenuItem {
 
     var menuObject = this._buildDescriptors();
 
-    WebInspector._contextMenu = this;
-    if (this._useSoftMenu || WebInspector.ContextMenu._useSoftMenu || InspectorFrontendHost.isHostedMode()) {
-      this._softMenu = new WebInspector.SoftContextMenu(menuObject, this._itemSelected.bind(this));
+    UI._contextMenu = this;
+    if (this._useSoftMenu || UI.ContextMenu._useSoftMenu || InspectorFrontendHost.isHostedMode()) {
+      this._softMenu = new UI.SoftContextMenu(menuObject, this._itemSelected.bind(this));
       this._softMenu.show(this._event.target.ownerDocument, this._x, this._y);
     } else {
       InspectorFrontendHost.showContextMenuAtPoint(this._x, this._y, menuObject, this._event.target.ownerDocument);
 
       /**
-       * @this {WebInspector.ContextMenu}
+       * @this {UI.ContextMenu}
        */
       function listenToEvents() {
         InspectorFrontendHost.events.addEventListener(
@@ -428,7 +428,7 @@ WebInspector.ContextMenu = class extends WebInspector.ContextSubMenuItem {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onItemSelected(event) {
     this._itemSelected(/** @type {string} */ (event.data));
@@ -454,13 +454,13 @@ WebInspector.ContextMenu = class extends WebInspector.ContextSubMenuItem {
    * @param {!Object} target
    */
   appendApplicableItems(target) {
-    this._pendingPromises.push(self.runtime.allInstances(WebInspector.ContextMenu.Provider, target));
+    this._pendingPromises.push(self.runtime.allInstances(UI.ContextMenu.Provider, target));
     this._pendingTargets.push(target);
   }
 
   /**
    * @param {string} name
-   * @return {?WebInspector.ContextSubMenuItem}
+   * @return {?UI.ContextSubMenuItem}
    */
   namedSubMenu(name) {
     return this._namedSubMenus.get(name) || null;
@@ -471,12 +471,12 @@ WebInspector.ContextMenu = class extends WebInspector.ContextSubMenuItem {
 /**
  * @interface
  */
-WebInspector.ContextMenu.Provider = function() {};
+UI.ContextMenu.Provider = function() {};
 
-WebInspector.ContextMenu.Provider.prototype = {
+UI.ContextMenu.Provider.prototype = {
   /**
    * @param {!Event} event
-   * @param {!WebInspector.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu} contextMenu
    * @param {!Object} target
    */
   appendApplicableItems: function(event, contextMenu, target) {}

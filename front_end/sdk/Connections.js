@@ -5,7 +5,7 @@
  * @implements {InspectorBackendClass.Connection}
  * @unrestricted
  */
-WebInspector.MainConnection = class {
+SDK.MainConnection = class {
   /**
    * @param {!InspectorBackendClass.Connection.Params} params
    */
@@ -33,14 +33,14 @@ WebInspector.MainConnection = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _dispatchMessage(event) {
     this._onMessage.call(null, /** @type {string} */ (event.data));
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _dispatchMessageChunk(event) {
     var messageChunk = /** @type {string} */ (event.data['messageChunk']);
@@ -58,7 +58,7 @@ WebInspector.MainConnection = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _evaluateForTestInFrontend(event) {
     if (!InspectorFrontendHost.isUnderTest())
@@ -88,7 +88,7 @@ WebInspector.MainConnection = class {
    */
   disconnect() {
     var onDisconnect = this._onDisconnect;
-    WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     this._onDisconnect = null;
     this._onMessage = null;
     this._disconnected = true;
@@ -107,7 +107,7 @@ WebInspector.MainConnection = class {
  * @implements {InspectorBackendClass.Connection}
  * @unrestricted
  */
-WebInspector.WebSocketConnection = class {
+SDK.WebSocketConnection = class {
   /**
    * @param {string} url
    * @param {function()} onWebSocketDisconnect
@@ -190,7 +190,7 @@ WebInspector.WebSocketConnection = class {
  * @implements {InspectorBackendClass.Connection}
  * @unrestricted
  */
-WebInspector.StubConnection = class {
+SDK.StubConnection = class {
   /**
    * @param {!InspectorBackendClass.Connection.Params} params
    */

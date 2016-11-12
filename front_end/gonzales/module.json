@@ -8,8 +8,8 @@
     ],
     "extensions": [
         {
-            "type": "@WebInspector.FormatterWorkerContentParser",
-            "className": "WebInspector.SCSSParser",
+            "type": "@FormatterWorker.FormatterWorkerContentParser",
+            "className": "Gonzales.SCSSParser",
             "mimeType": "text/x-scss"
         }
     ],

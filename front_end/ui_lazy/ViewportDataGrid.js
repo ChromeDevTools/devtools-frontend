@@ -4,11 +4,11 @@
 /**
  * @unrestricted
  */
-WebInspector.ViewportDataGrid = class extends WebInspector.DataGrid {
+UI.ViewportDataGrid = class extends UI.DataGrid {
   /**
-   * @param {!Array.<!WebInspector.DataGrid.ColumnDescriptor>} columnsArray
-   * @param {function(!WebInspector.DataGridNode, string, string, string)=} editCallback
-   * @param {function(!WebInspector.DataGridNode)=} deleteCallback
+   * @param {!Array.<!UI.DataGrid.ColumnDescriptor>} columnsArray
+   * @param {function(!UI.DataGridNode, string, string, string)=} editCallback
+   * @param {function(!UI.DataGridNode)=} deleteCallback
    * @param {function()=} refreshCallback
    */
   constructor(columnsArray, editCallback, deleteCallback, refreshCallback) {
@@ -19,9 +19,9 @@ WebInspector.ViewportDataGrid = class extends WebInspector.DataGrid {
 
     // This is not in setScrollContainer because mouse wheel needs to detect events on the content not the scrollbar itself.
     this._scrollContainer.addEventListener('mousewheel', this._onWheel.bind(this), true);
-    /** @type {!Array.<!WebInspector.ViewportDataGridNode>} */
+    /** @type {!Array.<!UI.ViewportDataGridNode>} */
     this._visibleNodes = [];
-    /** @type {?Array.<!WebInspector.ViewportDataGridNode>} */
+    /** @type {?Array.<!UI.ViewportDataGridNode>} */
     this._flatNodes = null;
     /** @type {boolean} */
     this._inline = false;
@@ -41,7 +41,7 @@ WebInspector.ViewportDataGrid = class extends WebInspector.DataGrid {
     /** @type {number} */
     this._lastScrollTop = 0;
 
-    this.setRootNode(new WebInspector.ViewportDataGridNode());
+    this.setRootNode(new UI.ViewportDataGridNode());
   }
 
   /**
@@ -120,7 +120,7 @@ WebInspector.ViewportDataGrid = class extends WebInspector.DataGrid {
   }
 
   /**
-   * @return {!Array.<!WebInspector.ViewportDataGridNode>}
+   * @return {!Array.<!UI.ViewportDataGridNode>}
    */
   _flatNodesList() {
     if (this._flatNodes)
@@ -150,7 +150,7 @@ WebInspector.ViewportDataGrid = class extends WebInspector.DataGrid {
   /**
    * @param {number} clientHeight
    * @param {number} scrollTop
-   * @return {{topPadding: number, bottomPadding: number, contentHeight: number, visibleNodes: !Array.<!WebInspector.ViewportDataGridNode>, offset: number}}
+   * @return {{topPadding: number, bottomPadding: number, contentHeight: number, visibleNodes: !Array.<!UI.ViewportDataGridNode>, offset: number}}
    */
   _calculateVisibleNodes(clientHeight, scrollTop) {
     var nodes = this._flatNodesList();
@@ -253,11 +253,11 @@ WebInspector.ViewportDataGrid = class extends WebInspector.DataGrid {
       this.updateWidths();
     }
     this._visibleNodes = visibleNodes;
-    this.dispatchEventToListeners(WebInspector.ViewportDataGrid.Events.ViewportCalculated);
+    this.dispatchEventToListeners(UI.ViewportDataGrid.Events.ViewportCalculated);
   }
 
   /**
-   * @param {!WebInspector.ViewportDataGridNode} node
+   * @param {!UI.ViewportDataGridNode} node
    */
   _revealViewportNode(node) {
     var nodes = this._flatNodesList();
@@ -280,14 +280,14 @@ WebInspector.ViewportDataGrid = class extends WebInspector.DataGrid {
   }
 };
 
-WebInspector.ViewportDataGrid.Events = {
+UI.ViewportDataGrid.Events = {
   ViewportCalculated: Symbol('ViewportCalculated')
 };
 
 /**
  * @unrestricted
  */
-WebInspector.ViewportDataGridNode = class extends WebInspector.DataGridNode {
+UI.ViewportDataGridNode = class extends UI.DataGridNode {
   /**
    * @param {?Object.<string, *>=} data
    * @param {boolean=} hasChildren
@@ -326,7 +326,7 @@ WebInspector.ViewportDataGridNode = class extends WebInspector.DataGridNode {
 
   /**
    * @override
-   * @param {!WebInspector.DataGridNode} child
+   * @param {!UI.DataGridNode} child
    * @param {number} index
    */
   insertChild(child, index) {
@@ -352,7 +352,7 @@ WebInspector.ViewportDataGridNode = class extends WebInspector.DataGridNode {
 
   /**
    * @override
-   * @param {!WebInspector.DataGridNode} child
+   * @param {!UI.DataGridNode} child
    */
   removeChild(child) {
     if (this.dataGrid)

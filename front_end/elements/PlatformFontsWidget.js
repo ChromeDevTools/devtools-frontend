@@ -31,21 +31,21 @@
 /**
  * @unrestricted
  */
-WebInspector.PlatformFontsWidget = class extends WebInspector.ThrottledWidget {
+Elements.PlatformFontsWidget = class extends UI.ThrottledWidget {
   /**
-   * @param {!WebInspector.ComputedStyleModel} sharedModel
+   * @param {!Elements.ComputedStyleModel} sharedModel
    */
   constructor(sharedModel) {
     super(true);
     this.registerRequiredCSS('elements/platformFontsWidget.css');
 
     this._sharedModel = sharedModel;
-    this._sharedModel.addEventListener(WebInspector.ComputedStyleModel.Events.ComputedStyleChanged, this.update, this);
+    this._sharedModel.addEventListener(Elements.ComputedStyleModel.Events.ComputedStyleChanged, this.update, this);
 
     this._sectionTitle = createElementWithClass('div', 'title');
     this.contentElement.classList.add('platform-fonts');
     this.contentElement.appendChild(this._sectionTitle);
-    this._sectionTitle.textContent = WebInspector.UIString('Rendered Fonts');
+    this._sectionTitle.textContent = Common.UIString('Rendered Fonts');
     this._fontStatsSection = this.contentElement.createChild('div', 'stats-section');
   }
 
@@ -64,7 +64,7 @@ WebInspector.PlatformFontsWidget = class extends WebInspector.ThrottledWidget {
   }
 
   /**
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.DOMNode} node
    * @param {?Array.<!Protocol.CSS.PlatformFontUsage>} platformFonts
    */
   _refreshUI(node, platformFonts) {
@@ -91,13 +91,13 @@ WebInspector.PlatformFontsWidget = class extends WebInspector.ThrottledWidget {
       fontDelimeterElement.textContent = '\u2014';
 
       var fontOrigin = fontStatElement.createChild('span');
-      fontOrigin.textContent = platformFonts[i].isCustomFont ? WebInspector.UIString('Network resource') :
-                                                               WebInspector.UIString('Local file');
+      fontOrigin.textContent = platformFonts[i].isCustomFont ? Common.UIString('Network resource') :
+                                                               Common.UIString('Local file');
 
       var fontUsageElement = fontStatElement.createChild('span', 'font-usage');
       var usage = platformFonts[i].glyphCount;
       fontUsageElement.textContent =
-          usage === 1 ? WebInspector.UIString('(%d glyph)', usage) : WebInspector.UIString('(%d glyphs)', usage);
+          usage === 1 ? Common.UIString('(%d glyph)', usage) : Common.UIString('(%d glyphs)', usage);
     }
   }
 };

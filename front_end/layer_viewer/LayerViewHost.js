@@ -6,21 +6,21 @@
 /**
  * @interface
  */
-WebInspector.LayerView = function() {};
+LayerViewer.LayerView = function() {};
 
-WebInspector.LayerView.prototype = {
+LayerViewer.LayerView.prototype = {
   /**
-   * @param {?WebInspector.LayerView.Selection} selection
+   * @param {?LayerViewer.LayerView.Selection} selection
    */
   hoverObject: function(selection) {},
 
   /**
-   * @param {?WebInspector.LayerView.Selection} selection
+   * @param {?LayerViewer.LayerView.Selection} selection
    */
   selectObject: function(selection) {},
 
   /**
-   * @param {?WebInspector.LayerTreeBase} layerTree
+   * @param {?SDK.LayerTreeBase} layerTree
    */
   setLayerTree: function(layerTree) {}
 };
@@ -28,10 +28,10 @@ WebInspector.LayerView.prototype = {
 /**
  * @unrestricted
  */
-WebInspector.LayerView.Selection = class {
+LayerViewer.LayerView.Selection = class {
   /**
-   * @param {!WebInspector.LayerView.Selection.Type} type
-   * @param {!WebInspector.Layer} layer
+   * @param {!LayerViewer.LayerView.Selection.Type} type
+   * @param {!SDK.Layer} layer
    */
   constructor(type, layer) {
     this._type = type;
@@ -39,8 +39,8 @@ WebInspector.LayerView.Selection = class {
   }
 
   /**
-   * @param {?WebInspector.LayerView.Selection} a
-   * @param {?WebInspector.LayerView.Selection} b
+   * @param {?LayerViewer.LayerView.Selection} a
+   * @param {?LayerViewer.LayerView.Selection} b
    * @return {boolean}
    */
   static isEqual(a, b) {
@@ -48,21 +48,21 @@ WebInspector.LayerView.Selection = class {
   }
 
   /**
-   * @return {!WebInspector.LayerView.Selection.Type}
+   * @return {!LayerViewer.LayerView.Selection.Type}
    */
   type() {
     return this._type;
   }
 
   /**
-   * @return {!WebInspector.Layer}
+   * @return {!SDK.Layer}
    */
   layer() {
     return this._layer;
   }
 
   /**
-   * @param {!WebInspector.LayerView.Selection} other
+   * @param {!LayerViewer.LayerView.Selection} other
    * @return {boolean}
    */
   _isEqual(other) {
@@ -73,7 +73,7 @@ WebInspector.LayerView.Selection = class {
 /**
  * @enum {symbol}
  */
-WebInspector.LayerView.Selection.Type = {
+LayerViewer.LayerView.Selection.Type = {
   Layer: Symbol('Layer'),
   ScrollRect: Symbol('ScrollRect'),
   Snapshot: Symbol('Snapshot')
@@ -83,45 +83,45 @@ WebInspector.LayerView.Selection.Type = {
 /**
  * @unrestricted
  */
-WebInspector.LayerView.LayerSelection = class extends WebInspector.LayerView.Selection {
+LayerViewer.LayerView.LayerSelection = class extends LayerViewer.LayerView.Selection {
   /**
-   * @param {!WebInspector.Layer} layer
+   * @param {!SDK.Layer} layer
    */
   constructor(layer) {
     console.assert(layer, 'LayerSelection with empty layer');
-    super(WebInspector.LayerView.Selection.Type.Layer, layer);
+    super(LayerViewer.LayerView.Selection.Type.Layer, layer);
   }
 
   /**
    * @override
-   * @param {!WebInspector.LayerView.Selection} other
+   * @param {!LayerViewer.LayerView.Selection} other
    * @return {boolean}
    */
   _isEqual(other) {
-    return other._type === WebInspector.LayerView.Selection.Type.Layer && other.layer().id() === this.layer().id();
+    return other._type === LayerViewer.LayerView.Selection.Type.Layer && other.layer().id() === this.layer().id();
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.LayerView.ScrollRectSelection = class extends WebInspector.LayerView.Selection {
+LayerViewer.LayerView.ScrollRectSelection = class extends LayerViewer.LayerView.Selection {
   /**
-   * @param {!WebInspector.Layer} layer
+   * @param {!SDK.Layer} layer
    * @param {number} scrollRectIndex
    */
   constructor(layer, scrollRectIndex) {
-    super(WebInspector.LayerView.Selection.Type.ScrollRect, layer);
+    super(LayerViewer.LayerView.Selection.Type.ScrollRect, layer);
     this.scrollRectIndex = scrollRectIndex;
   }
 
   /**
    * @override
-   * @param {!WebInspector.LayerView.Selection} other
+   * @param {!LayerViewer.LayerView.Selection} other
    * @return {boolean}
    */
   _isEqual(other) {
-    return other._type === WebInspector.LayerView.Selection.Type.ScrollRect &&
+    return other._type === LayerViewer.LayerView.Selection.Type.ScrollRect &&
         this.layer().id() === other.layer().id() && this.scrollRectIndex === other.scrollRectIndex;
   }
 };
@@ -129,28 +129,28 @@ WebInspector.LayerView.ScrollRectSelection = class extends WebInspector.LayerVie
 /**
  * @unrestricted
  */
-WebInspector.LayerView.SnapshotSelection = class extends WebInspector.LayerView.Selection {
+LayerViewer.LayerView.SnapshotSelection = class extends LayerViewer.LayerView.Selection {
   /**
-   * @param {!WebInspector.Layer} layer
-   * @param {!WebInspector.SnapshotWithRect} snapshot
+   * @param {!SDK.Layer} layer
+   * @param {!SDK.SnapshotWithRect} snapshot
    */
   constructor(layer, snapshot) {
-    super(WebInspector.LayerView.Selection.Type.Snapshot, layer);
+    super(LayerViewer.LayerView.Selection.Type.Snapshot, layer);
     this._snapshot = snapshot;
   }
 
   /**
    * @override
-   * @param {!WebInspector.LayerView.Selection} other
+   * @param {!LayerViewer.LayerView.Selection} other
    * @return {boolean}
    */
   _isEqual(other) {
-    return other._type === WebInspector.LayerView.Selection.Type.Snapshot && this.layer().id() === other.layer().id() &&
+    return other._type === LayerViewer.LayerView.Selection.Type.Snapshot && this.layer().id() === other.layer().id() &&
         this._snapshot === other._snapshot;
   }
 
   /**
-   * @return {!WebInspector.SnapshotWithRect}
+   * @return {!SDK.SnapshotWithRect}
    */
   snapshot() {
     return this._snapshot;
@@ -160,24 +160,24 @@ WebInspector.LayerView.SnapshotSelection = class extends WebInspector.LayerView.
 /**
  * @unrestricted
  */
-WebInspector.LayerViewHost = class {
+LayerViewer.LayerViewHost = class {
   constructor() {
-    /** @type {!Array.<!WebInspector.LayerView>} */
+    /** @type {!Array.<!LayerViewer.LayerView>} */
     this._views = [];
     this._selectedObject = null;
     this._hoveredObject = null;
-    this._showInternalLayersSetting = WebInspector.settings.createSetting('layersShowInternalLayers', false);
+    this._showInternalLayersSetting = Common.settings.createSetting('layersShowInternalLayers', false);
   }
 
   /**
-   * @param {!WebInspector.LayerView} layerView
+   * @param {!LayerViewer.LayerView} layerView
    */
   registerView(layerView) {
     this._views.push(layerView);
   }
 
   /**
-   * @param {?WebInspector.LayerTreeBase} layerTree
+   * @param {?SDK.LayerTreeBase} layerTree
    */
   setLayerTree(layerTree) {
     this._target = layerTree.target();
@@ -192,10 +192,10 @@ WebInspector.LayerViewHost = class {
   }
 
   /**
-   * @param {?WebInspector.LayerView.Selection} selection
+   * @param {?LayerViewer.LayerView.Selection} selection
    */
   hoverObject(selection) {
-    if (WebInspector.LayerView.Selection.isEqual(this._hoveredObject, selection))
+    if (LayerViewer.LayerView.Selection.isEqual(this._hoveredObject, selection))
       return;
     this._hoveredObject = selection;
     var layer = selection && selection.layer();
@@ -205,10 +205,10 @@ WebInspector.LayerViewHost = class {
   }
 
   /**
-   * @param {?WebInspector.LayerView.Selection} selection
+   * @param {?LayerViewer.LayerView.Selection} selection
    */
   selectObject(selection) {
-    if (WebInspector.LayerView.Selection.isEqual(this._selectedObject, selection))
+    if (LayerViewer.LayerView.Selection.isEqual(this._selectedObject, selection))
       return;
     this._selectedObject = selection;
     for (var view of this._views)
@@ -216,19 +216,19 @@ WebInspector.LayerViewHost = class {
   }
 
   /**
-   * @return {?WebInspector.LayerView.Selection}
+   * @return {?LayerViewer.LayerView.Selection}
    */
   selection() {
     return this._selectedObject;
   }
 
   /**
-   * @param {!WebInspector.ContextMenu} contextMenu
-   * @param {?WebInspector.LayerView.Selection} selection
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {?LayerViewer.LayerView.Selection} selection
    */
   showContextMenu(contextMenu, selection) {
     contextMenu.appendCheckboxItem(
-        WebInspector.UIString('Show internal layers'), this._toggleShowInternalLayers.bind(this),
+        Common.UIString('Show internal layers'), this._toggleShowInternalLayers.bind(this),
         this._showInternalLayersSetting.get());
     var node = selection && selection.layer() && selection.layer().nodeForSelfOrAncestor();
     if (node)
@@ -237,7 +237,7 @@ WebInspector.LayerViewHost = class {
   }
 
   /**
-   * @return {!WebInspector.Setting}
+   * @return {!Common.Setting}
    */
   showInternalLayersSetting() {
     return this._showInternalLayersSetting;
@@ -248,13 +248,13 @@ WebInspector.LayerViewHost = class {
   }
 
   /**
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    */
   _toggleNodeHighlight(node) {
     if (node) {
       node.highlightForTwoSeconds();
       return;
     }
-    WebInspector.DOMModel.hideDOMNodeHighlight();
+    SDK.DOMModel.hideDOMNodeHighlight();
   }
 };

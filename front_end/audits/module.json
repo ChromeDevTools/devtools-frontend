@@ -6,7 +6,7 @@
             "id": "audits",
             "title": "Audits",
             "order": 90,
-            "className": "WebInspector.AuditsPanel"
+            "className": "Audits.AuditsPanel"
         }
     ],
     "dependencies": [

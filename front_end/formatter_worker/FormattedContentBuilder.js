@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.FormattedContentBuilder = class {
+FormatterWorker.FormattedContentBuilder = class {
   /**
    * @param {string} indentString
    */

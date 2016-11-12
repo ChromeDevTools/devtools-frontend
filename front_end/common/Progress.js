@@ -30,9 +30,9 @@
 /**
  * @interface
  */
-WebInspector.Progress = function() {};
+Common.Progress = function() {};
 
-WebInspector.Progress.prototype = {
+Common.Progress.prototype = {
   /**
    * @param {number} totalWork
    */
@@ -67,9 +67,9 @@ WebInspector.Progress.prototype = {
 /**
  * @unrestricted
  */
-WebInspector.CompositeProgress = class {
+Common.CompositeProgress = class {
   /**
-   * @param {!WebInspector.Progress} parent
+   * @param {!Common.Progress} parent
    */
   constructor(parent) {
     this._parent = parent;
@@ -87,10 +87,10 @@ WebInspector.CompositeProgress = class {
 
   /**
    * @param {number=} weight
-   * @return {!WebInspector.SubProgress}
+   * @return {!Common.SubProgress}
    */
   createSubProgress(weight) {
-    var child = new WebInspector.SubProgress(this, weight);
+    var child = new Common.SubProgress(this, weight);
     this._children.push(child);
     return child;
   }
@@ -110,12 +110,12 @@ WebInspector.CompositeProgress = class {
 };
 
 /**
- * @implements {WebInspector.Progress}
+ * @implements {Common.Progress}
  * @unrestricted
  */
-WebInspector.SubProgress = class {
+Common.SubProgress = class {
   /**
-   * @param {!WebInspector.CompositeProgress} composite
+   * @param {!Common.CompositeProgress} composite
    * @param {number=} weight
    */
   constructor(composite, weight) {
@@ -179,12 +179,12 @@ WebInspector.SubProgress = class {
 };
 
 /**
- * @implements {WebInspector.Progress}
+ * @implements {Common.Progress}
  * @unrestricted
  */
-WebInspector.ProgressProxy = class {
+Common.ProgressProxy = class {
   /**
-   * @param {?WebInspector.Progress} delegate
+   * @param {?Common.Progress} delegate
    * @param {function()=} doneCallback
    */
   constructor(delegate, doneCallback) {

@@ -2,25 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.MultitargetTouchModel = class {
+Emulation.MultitargetTouchModel = class {
   constructor() {
     this._touchEnabled = false;
     this._touchMobile = false;
     this._customTouchEnabled = false;
 
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
   }
 
   /**
-   * @return {!WebInspector.MultitargetTouchModel}
+   * @return {!Emulation.MultitargetTouchModel}
    */
   static instance() {
-    if (!WebInspector.MultitargetTouchModel._instance)
-      WebInspector.MultitargetTouchModel._instance = new WebInspector.MultitargetTouchModel();
-    return /** @type {!WebInspector.MultitargetTouchModel} */ (WebInspector.MultitargetTouchModel._instance);
+    if (!Emulation.MultitargetTouchModel._instance)
+      Emulation.MultitargetTouchModel._instance = new Emulation.MultitargetTouchModel();
+    return /** @type {!Emulation.MultitargetTouchModel} */ (Emulation.MultitargetTouchModel._instance);
   }
 
   /**
@@ -42,19 +42,19 @@ WebInspector.MultitargetTouchModel = class {
   }
 
   _updateAllTargets() {
-    for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser))
+    for (var target of SDK.targetManager.targets(SDK.Target.Capability.Browser))
       this._applyToTarget(target);
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   _applyToTarget(target) {
     var current = {enabled: this._touchEnabled, configuration: this._touchMobile ? 'mobile' : 'desktop'};
     if (this._customTouchEnabled)
       current = {enabled: true, configuration: 'mobile'};
 
-    var domModel = WebInspector.DOMModel.fromTarget(target);
+    var domModel = SDK.DOMModel.fromTarget(target);
     var inspectModeEnabled = domModel ? domModel.inspectModeEnabled() : false;
     if (inspectModeEnabled)
       current = {enabled: false, configuration: 'mobile'};
@@ -74,7 +74,7 @@ WebInspector.MultitargetTouchModel = class {
       }
     };
 
-    var symbol = WebInspector.MultitargetTouchModel._symbol;
+    var symbol = Emulation.MultitargetTouchModel._symbol;
     var previous = target[symbol] || {enabled: false, configuration: 'mobile', scriptId: ''};
 
     if (previous.enabled === current.enabled && (!current.enabled || previous.configuration === current.configuration))
@@ -103,37 +103,37 @@ WebInspector.MultitargetTouchModel = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _inspectModeToggled(event) {
-    var domModel = /** @type {!WebInspector.DOMModel} */ (event.target);
+    var domModel = /** @type {!SDK.DOMModel} */ (event.target);
     this._applyToTarget(domModel.target());
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    var domModel = WebInspector.DOMModel.fromTarget(target);
+    var domModel = SDK.DOMModel.fromTarget(target);
     if (domModel)
-      domModel.addEventListener(WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeToggled, this);
+      domModel.addEventListener(SDK.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeToggled, this);
     this._applyToTarget(target);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-    var domModel = WebInspector.DOMModel.fromTarget(target);
+    var domModel = SDK.DOMModel.fromTarget(target);
     if (domModel)
       domModel.removeEventListener(
-          WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeToggled, this);
+          SDK.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeToggled, this);
   }
 };
 
-WebInspector.MultitargetTouchModel._symbol = Symbol('MultitargetTouchModel.symbol');
+Emulation.MultitargetTouchModel._symbol = Symbol('MultitargetTouchModel.symbol');
 
-/** @type {?WebInspector.MultitargetTouchModel} */
-WebInspector.MultitargetTouchModel._instance = null;
+/** @type {?Emulation.MultitargetTouchModel} */
+Emulation.MultitargetTouchModel._instance = null;

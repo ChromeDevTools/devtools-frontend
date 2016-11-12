@@ -4,11 +4,11 @@
 /**
  * @unrestricted
  */
-WebInspector.SASSProcessor = class {
+Sass.SASSProcessor = class {
   /**
-   * @param {!WebInspector.ASTService} astService
-   * @param {!WebInspector.ASTSourceMap} map
-   * @param {!Array<!WebInspector.SASSProcessor.EditOperation>} editOperations
+   * @param {!Sass.ASTService} astService
+   * @param {!Sass.ASTSourceMap} map
+   * @param {!Array<!Sass.SASSProcessor.EditOperation>} editOperations
    */
   constructor(astService, map, editOperations) {
     this._astService = astService;
@@ -17,9 +17,9 @@ WebInspector.SASSProcessor = class {
   }
 
   /**
-   * @param {!WebInspector.ASTSourceMap} map
-   * @param {!WebInspector.SASSSupport.Property} cssProperty
-   * @return {?WebInspector.SASSSupport.Property}
+   * @param {!Sass.ASTSourceMap} map
+   * @param {!Sass.SASSSupport.Property} cssProperty
+   * @return {?Sass.SASSSupport.Property}
    */
   static _toSASSProperty(map, cssProperty) {
     var sassName = map.toSourceNode(cssProperty.name);
@@ -27,39 +27,39 @@ WebInspector.SASSProcessor = class {
   }
 
   /**
-   * @param {!WebInspector.ASTSourceMap} map
-   * @param {!WebInspector.SASSSupport.Property} sassProperty
-   * @return {!Array<!WebInspector.SASSSupport.Property>}
+   * @param {!Sass.ASTSourceMap} map
+   * @param {!Sass.SASSSupport.Property} sassProperty
+   * @return {!Array<!Sass.SASSSupport.Property>}
    */
   static _toCSSProperties(map, sassProperty) {
     return map.toCompiledNodes(sassProperty.name).map(name => name.parent);
   }
 
   /**
-   * @param {!WebInspector.ASTService} astService
-   * @param {!WebInspector.ASTSourceMap} map
-   * @param {!Array<!WebInspector.TextRange>} ranges
+   * @param {!Sass.ASTService} astService
+   * @param {!Sass.ASTSourceMap} map
+   * @param {!Array<!Common.TextRange>} ranges
    * @param {!Array<string>} newTexts
-   * @return {!Promise<?WebInspector.SourceMap.EditResult>}
+   * @return {!Promise<?SDK.SourceMap.EditResult>}
    */
   static processCSSEdits(astService, map, ranges, newTexts) {
     console.assert(ranges.length === newTexts.length);
     var cssURL = map.compiledURL();
     var cssText = map.compiledModel().document.text;
     for (var i = 0; i < ranges.length; ++i)
-      cssText = new WebInspector.Text(cssText.replaceRange(ranges[i], newTexts[i]));
+      cssText = new Common.Text(cssText.replaceRange(ranges[i], newTexts[i]));
     return astService.parseCSS(cssURL, cssText.value()).then(onCSSParsed);
 
     /**
-     * @param {!WebInspector.SASSSupport.AST} newCSSAST
-     * @return {!Promise<?WebInspector.SourceMap.EditResult>}
+     * @param {!Sass.SASSSupport.AST} newCSSAST
+     * @return {!Promise<?SDK.SourceMap.EditResult>}
      */
     function onCSSParsed(newCSSAST) {
       if (newCSSAST.rules.length !== map.compiledModel().rules.length)
-        return Promise.resolve(/** @type {?WebInspector.SourceMap.EditResult} */ (null));
+        return Promise.resolve(/** @type {?SDK.SourceMap.EditResult} */ (null));
       // TODO(lushnikov): only diff changed styles.
-      var cssDiff = WebInspector.SASSSupport.diffModels(map.compiledModel(), newCSSAST);
-      var edits = WebInspector.SASSProcessor._editsFromCSSDiff(cssDiff, map);
+      var cssDiff = Sass.SASSSupport.diffModels(map.compiledModel(), newCSSAST);
+      var edits = Sass.SASSProcessor._editsFromCSSDiff(cssDiff, map);
 
       // Determine AST trees which will change and clone them.
       var changedURLs = new Set(edits.map(edit => edit.sassURL));
@@ -70,35 +70,35 @@ WebInspector.SASSProcessor = class {
 
       // Rebase map and edits onto a cloned AST trees.
       var nodeMapping = new Map();
-      var rebasedMap = /** @type {!WebInspector.ASTSourceMap} */ (map.rebase(clonedModels, nodeMapping));
+      var rebasedMap = /** @type {!Sass.ASTSourceMap} */ (map.rebase(clonedModels, nodeMapping));
       console.assert(rebasedMap);
       var rebasedEdits = edits.map(edit => edit.rebase(rebasedMap, nodeMapping));
 
-      return new WebInspector.SASSProcessor(astService, rebasedMap, rebasedEdits)._mutate();
+      return new Sass.SASSProcessor(astService, rebasedMap, rebasedEdits)._mutate();
     }
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.ASTDiff} cssDiff
-   * @param {!WebInspector.ASTSourceMap} map
-   * @return {!Array<!WebInspector.SASSProcessor.EditOperation>}
+   * @param {!Sass.SASSSupport.ASTDiff} cssDiff
+   * @param {!Sass.ASTSourceMap} map
+   * @return {!Array<!Sass.SASSProcessor.EditOperation>}
    */
   static _editsFromCSSDiff(cssDiff, map) {
-    var T = WebInspector.SASSSupport.PropertyChangeType;
+    var T = Sass.SASSSupport.PropertyChangeType;
     var operations = [];
     for (var i = 0; i < cssDiff.changes.length; ++i) {
       var change = cssDiff.changes[i];
       var operation = null;
       if (change.type === T.ValueChanged || change.type === T.NameChanged)
-        operation = WebInspector.SASSProcessor.SetTextOperation.fromCSSChange(change, map);
+        operation = Sass.SASSProcessor.SetTextOperation.fromCSSChange(change, map);
       else if (change.type === T.PropertyToggled)
-        operation = WebInspector.SASSProcessor.TogglePropertyOperation.fromCSSChange(change, map);
+        operation = Sass.SASSProcessor.TogglePropertyOperation.fromCSSChange(change, map);
       else if (change.type === T.PropertyRemoved)
-        operation = WebInspector.SASSProcessor.RemovePropertyOperation.fromCSSChange(change, map);
+        operation = Sass.SASSProcessor.RemovePropertyOperation.fromCSSChange(change, map);
       else if (change.type === T.PropertyAdded)
-        operation = WebInspector.SASSProcessor.InsertPropertiesOperation.fromCSSChange(change, map);
+        operation = Sass.SASSProcessor.InsertPropertiesOperation.fromCSSChange(change, map);
       if (!operation) {
-        WebInspector.console.error('Operation ignored: ' + change.type);
+        Common.console.error('Operation ignored: ' + change.type);
         continue;
       }
 
@@ -112,10 +112,10 @@ WebInspector.SASSProcessor = class {
   }
 
   /**
-   * @return {!Promise<?WebInspector.SourceMap.EditResult>}
+   * @return {!Promise<?SDK.SourceMap.EditResult>}
    */
   _mutate() {
-    /** @type {!Set<!WebInspector.SASSSupport.Rule>} */
+    /** @type {!Set<!Sass.SASSSupport.Rule>} */
     var changedCSSRules = new Set();
     for (var editOperation of this._editOperations) {
       var rules = editOperation.perform();
@@ -139,9 +139,9 @@ WebInspector.SASSProcessor = class {
   }
 
   /**
-   * @param {!Set<!WebInspector.SASSSupport.Rule>} changedCSSRules
-   * @param {!Array<!WebInspector.SASSSupport.AST>} changedModels
-   * @return {?WebInspector.SourceMap.EditResult}
+   * @param {!Set<!Sass.SASSSupport.Rule>} changedCSSRules
+   * @param {!Array<!Sass.SASSSupport.AST>} changedModels
+   * @return {?SDK.SourceMap.EditResult}
    */
   _onFinished(changedCSSRules, changedModels) {
     var nodeMapping = new Map();
@@ -154,7 +154,7 @@ WebInspector.SASSProcessor = class {
       var oldRange = rule.styleRange;
       var newRule = nodeMapping.get(rule);
       var newText = newRule.document.text.extract(newRule.styleRange);
-      cssEdits.push(new WebInspector.SourceEdit(newRule.document.url, oldRange, newText));
+      cssEdits.push(new Common.SourceEdit(newRule.document.url, oldRange, newText));
     }
 
     /** @type {!Map<string, string>} */
@@ -164,7 +164,7 @@ WebInspector.SASSProcessor = class {
         continue;
       newSASSSources.set(model.document.url, model.document.text.value());
     }
-    return new WebInspector.SourceMap.EditResult(map, cssEdits, newSASSSources);
+    return new SDK.SourceMap.EditResult(map, cssEdits, newSASSSources);
   }
 };
 
@@ -172,9 +172,9 @@ WebInspector.SASSProcessor = class {
 /**
  * @unrestricted
  */
-WebInspector.SASSProcessor.EditOperation = class {
+Sass.SASSProcessor.EditOperation = class {
   /**
-   * @param {!WebInspector.ASTSourceMap} map
+   * @param {!Sass.ASTSourceMap} map
    * @param {string} sassURL
    */
   constructor(map, sassURL) {
@@ -183,7 +183,7 @@ WebInspector.SASSProcessor.EditOperation = class {
   }
 
   /**
-   * @param {!WebInspector.SASSProcessor.EditOperation} other
+   * @param {!Sass.SASSProcessor.EditOperation} other
    * @return {boolean}
    */
   merge(other) {
@@ -191,16 +191,16 @@ WebInspector.SASSProcessor.EditOperation = class {
   }
 
   /**
-   * @return {!Array<!WebInspector.SASSSupport.Rule>}
+   * @return {!Array<!Sass.SASSSupport.Rule>}
    */
   perform() {
     return [];
   }
 
   /**
-   * @param {!WebInspector.ASTSourceMap} newMap
-   * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>} nodeMapping
-   * @return {!WebInspector.SASSProcessor.EditOperation}
+   * @param {!Sass.ASTSourceMap} newMap
+   * @param {!Map<!Sass.SASSSupport.Node, !Sass.SASSSupport.Node>} nodeMapping
+   * @return {!Sass.SASSProcessor.EditOperation}
    */
   rebase(newMap, nodeMapping) {
     return this;
@@ -210,10 +210,10 @@ WebInspector.SASSProcessor.EditOperation = class {
 /**
  * @unrestricted
  */
-WebInspector.SASSProcessor.SetTextOperation = class extends WebInspector.SASSProcessor.EditOperation {
+Sass.SASSProcessor.SetTextOperation = class extends Sass.SASSProcessor.EditOperation {
   /**
-   * @param {!WebInspector.ASTSourceMap} map
-   * @param {!WebInspector.SASSSupport.TextNode} sassNode
+   * @param {!Sass.ASTSourceMap} map
+   * @param {!Sass.SASSSupport.TextNode} sassNode
    * @param {string} newText
    */
   constructor(map, sassNode, newText) {
@@ -223,17 +223,17 @@ WebInspector.SASSProcessor.SetTextOperation = class extends WebInspector.SASSPro
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.PropertyChange} change
-   * @param {!WebInspector.ASTSourceMap} map
-   * @return {?WebInspector.SASSProcessor.SetTextOperation}
+   * @param {!Sass.SASSSupport.PropertyChange} change
+   * @param {!Sass.ASTSourceMap} map
+   * @return {?Sass.SASSProcessor.SetTextOperation}
    */
   static fromCSSChange(change, map) {
-    var oldProperty = /** @type {!WebInspector.SASSSupport.Property} */ (change.oldProperty());
-    var newProperty = /** @type {!WebInspector.SASSSupport.Property} */ (change.newProperty());
+    var oldProperty = /** @type {!Sass.SASSSupport.Property} */ (change.oldProperty());
+    var newProperty = /** @type {!Sass.SASSSupport.Property} */ (change.newProperty());
     console.assert(oldProperty && newProperty, 'SetTextOperation must have both oldProperty and newProperty');
     var newValue = null;
     var sassNode = null;
-    if (change.type === WebInspector.SASSSupport.PropertyChangeType.NameChanged) {
+    if (change.type === Sass.SASSSupport.PropertyChangeType.NameChanged) {
       newValue = newProperty.name.text;
       sassNode = map.toSourceNode(oldProperty.name);
     } else {
@@ -242,23 +242,23 @@ WebInspector.SASSProcessor.SetTextOperation = class extends WebInspector.SASSPro
     }
     if (!sassNode)
       return null;
-    return new WebInspector.SASSProcessor.SetTextOperation(map, sassNode, newValue);
+    return new Sass.SASSProcessor.SetTextOperation(map, sassNode, newValue);
   }
 
   /**
    * @override
-   * @param {!WebInspector.SASSProcessor.EditOperation} other
+   * @param {!Sass.SASSProcessor.EditOperation} other
    * @return {boolean}
    */
   merge(other) {
-    if (!(other instanceof WebInspector.SASSProcessor.SetTextOperation))
+    if (!(other instanceof Sass.SASSProcessor.SetTextOperation))
       return false;
     return this._sassNode === other._sassNode;
   }
 
   /**
    * @override
-   * @return {!Array<!WebInspector.SASSSupport.Rule>}
+   * @return {!Array<!Sass.SASSSupport.Rule>}
    */
   perform() {
     this._sassNode.setText(this._newText);
@@ -272,14 +272,14 @@ WebInspector.SASSProcessor.SetTextOperation = class extends WebInspector.SASSPro
 
   /**
    * @override
-   * @param {!WebInspector.ASTSourceMap} newMap
-   * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>} nodeMapping
-   * @return {!WebInspector.SASSProcessor.SetTextOperation}
+   * @param {!Sass.ASTSourceMap} newMap
+   * @param {!Map<!Sass.SASSSupport.Node, !Sass.SASSSupport.Node>} nodeMapping
+   * @return {!Sass.SASSProcessor.SetTextOperation}
    */
   rebase(newMap, nodeMapping) {
     var sassNode =
-        /** @type {?WebInspector.SASSSupport.TextNode} */ (nodeMapping.get(this._sassNode)) || this._sassNode;
-    return new WebInspector.SASSProcessor.SetTextOperation(newMap, sassNode, this._newText);
+        /** @type {?Sass.SASSSupport.TextNode} */ (nodeMapping.get(this._sassNode)) || this._sassNode;
+    return new Sass.SASSProcessor.SetTextOperation(newMap, sassNode, this._newText);
   }
 };
 
@@ -287,10 +287,10 @@ WebInspector.SASSProcessor.SetTextOperation = class extends WebInspector.SASSPro
 /**
  * @unrestricted
  */
-WebInspector.SASSProcessor.TogglePropertyOperation = class extends WebInspector.SASSProcessor.EditOperation {
+Sass.SASSProcessor.TogglePropertyOperation = class extends Sass.SASSProcessor.EditOperation {
   /**
-   * @param {!WebInspector.ASTSourceMap} map
-   * @param {!WebInspector.SASSSupport.Property} sassProperty
+   * @param {!Sass.ASTSourceMap} map
+   * @param {!Sass.SASSSupport.Property} sassProperty
    * @param {boolean} newDisabled
    */
   constructor(map, sassProperty, newDisabled) {
@@ -300,38 +300,38 @@ WebInspector.SASSProcessor.TogglePropertyOperation = class extends WebInspector.
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.PropertyChange} change
-   * @param {!WebInspector.ASTSourceMap} map
-   * @return {?WebInspector.SASSProcessor.TogglePropertyOperation}
+   * @param {!Sass.SASSSupport.PropertyChange} change
+   * @param {!Sass.ASTSourceMap} map
+   * @return {?Sass.SASSProcessor.TogglePropertyOperation}
    */
   static fromCSSChange(change, map) {
-    var oldCSSProperty = /** @type {!WebInspector.SASSSupport.Property} */ (change.oldProperty());
+    var oldCSSProperty = /** @type {!Sass.SASSSupport.Property} */ (change.oldProperty());
     console.assert(oldCSSProperty, 'TogglePropertyOperation must have old CSS property');
-    var sassProperty = WebInspector.SASSProcessor._toSASSProperty(map, oldCSSProperty);
+    var sassProperty = Sass.SASSProcessor._toSASSProperty(map, oldCSSProperty);
     if (!sassProperty)
       return null;
     var newDisabled = change.newProperty().disabled;
-    return new WebInspector.SASSProcessor.TogglePropertyOperation(map, sassProperty, newDisabled);
+    return new Sass.SASSProcessor.TogglePropertyOperation(map, sassProperty, newDisabled);
   }
 
   /**
    * @override
-   * @param {!WebInspector.SASSProcessor.EditOperation} other
+   * @param {!Sass.SASSProcessor.EditOperation} other
    * @return {boolean}
    */
   merge(other) {
-    if (!(other instanceof WebInspector.SASSProcessor.TogglePropertyOperation))
+    if (!(other instanceof Sass.SASSProcessor.TogglePropertyOperation))
       return false;
     return this._sassProperty === other._sassProperty;
   }
 
   /**
    * @override
-   * @return {!Array<!WebInspector.SASSSupport.Rule>}
+   * @return {!Array<!Sass.SASSSupport.Rule>}
    */
   perform() {
     this._sassProperty.setDisabled(this._newDisabled);
-    var cssProperties = WebInspector.SASSProcessor._toCSSProperties(this.map, this._sassProperty);
+    var cssProperties = Sass.SASSProcessor._toCSSProperties(this.map, this._sassProperty);
     for (var property of cssProperties)
       property.setDisabled(this._newDisabled);
 
@@ -341,14 +341,14 @@ WebInspector.SASSProcessor.TogglePropertyOperation = class extends WebInspector.
 
   /**
    * @override
-   * @param {!WebInspector.ASTSourceMap} newMap
-   * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>} nodeMapping
-   * @return {!WebInspector.SASSProcessor.TogglePropertyOperation}
+   * @param {!Sass.ASTSourceMap} newMap
+   * @param {!Map<!Sass.SASSSupport.Node, !Sass.SASSSupport.Node>} nodeMapping
+   * @return {!Sass.SASSProcessor.TogglePropertyOperation}
    */
   rebase(newMap, nodeMapping) {
     var sassProperty =
-        /** @type {?WebInspector.SASSSupport.Property} */ (nodeMapping.get(this._sassProperty)) || this._sassProperty;
-    return new WebInspector.SASSProcessor.TogglePropertyOperation(newMap, sassProperty, this._newDisabled);
+        /** @type {?Sass.SASSSupport.Property} */ (nodeMapping.get(this._sassProperty)) || this._sassProperty;
+    return new Sass.SASSProcessor.TogglePropertyOperation(newMap, sassProperty, this._newDisabled);
   }
 };
 
@@ -356,10 +356,10 @@ WebInspector.SASSProcessor.TogglePropertyOperation = class extends WebInspector.
 /**
  * @unrestricted
  */
-WebInspector.SASSProcessor.RemovePropertyOperation = class extends WebInspector.SASSProcessor.EditOperation {
+Sass.SASSProcessor.RemovePropertyOperation = class extends Sass.SASSProcessor.EditOperation {
   /**
-   * @param {!WebInspector.ASTSourceMap} map
-   * @param {!WebInspector.SASSSupport.Property} sassProperty
+   * @param {!Sass.ASTSourceMap} map
+   * @param {!Sass.SASSSupport.Property} sassProperty
    */
   constructor(map, sassProperty) {
     super(map, sassProperty.document.url);
@@ -367,36 +367,36 @@ WebInspector.SASSProcessor.RemovePropertyOperation = class extends WebInspector.
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.PropertyChange} change
-   * @param {!WebInspector.ASTSourceMap} map
-   * @return {?WebInspector.SASSProcessor.RemovePropertyOperation}
+   * @param {!Sass.SASSSupport.PropertyChange} change
+   * @param {!Sass.ASTSourceMap} map
+   * @return {?Sass.SASSProcessor.RemovePropertyOperation}
    */
   static fromCSSChange(change, map) {
-    var removedProperty = /** @type {!WebInspector.SASSSupport.Property} */ (change.oldProperty());
+    var removedProperty = /** @type {!Sass.SASSSupport.Property} */ (change.oldProperty());
     console.assert(removedProperty, 'RemovePropertyOperation must have removed CSS property');
-    var sassProperty = WebInspector.SASSProcessor._toSASSProperty(map, removedProperty);
+    var sassProperty = Sass.SASSProcessor._toSASSProperty(map, removedProperty);
     if (!sassProperty)
       return null;
-    return new WebInspector.SASSProcessor.RemovePropertyOperation(map, sassProperty);
+    return new Sass.SASSProcessor.RemovePropertyOperation(map, sassProperty);
   }
 
   /**
    * @override
-   * @param {!WebInspector.SASSProcessor.EditOperation} other
+   * @param {!Sass.SASSProcessor.EditOperation} other
    * @return {boolean}
    */
   merge(other) {
-    if (!(other instanceof WebInspector.SASSProcessor.RemovePropertyOperation))
+    if (!(other instanceof Sass.SASSProcessor.RemovePropertyOperation))
       return false;
     return this._sassProperty === other._sassProperty;
   }
 
   /**
    * @override
-   * @return {!Array<!WebInspector.SASSSupport.Rule>}
+   * @return {!Array<!Sass.SASSSupport.Rule>}
    */
   perform() {
-    var cssProperties = WebInspector.SASSProcessor._toCSSProperties(this.map, this._sassProperty);
+    var cssProperties = Sass.SASSProcessor._toCSSProperties(this.map, this._sassProperty);
     var cssRules = cssProperties.map(property => property.parent);
     this._sassProperty.remove();
     for (var cssProperty of cssProperties) {
@@ -410,14 +410,14 @@ WebInspector.SASSProcessor.RemovePropertyOperation = class extends WebInspector.
 
   /**
    * @override
-   * @param {!WebInspector.ASTSourceMap} newMap
-   * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>} nodeMapping
-   * @return {!WebInspector.SASSProcessor.RemovePropertyOperation}
+   * @param {!Sass.ASTSourceMap} newMap
+   * @param {!Map<!Sass.SASSSupport.Node, !Sass.SASSSupport.Node>} nodeMapping
+   * @return {!Sass.SASSProcessor.RemovePropertyOperation}
    */
   rebase(newMap, nodeMapping) {
     var sassProperty =
-        /** @type {?WebInspector.SASSSupport.Property} */ (nodeMapping.get(this._sassProperty)) || this._sassProperty;
-    return new WebInspector.SASSProcessor.RemovePropertyOperation(newMap, sassProperty);
+        /** @type {?Sass.SASSSupport.Property} */ (nodeMapping.get(this._sassProperty)) || this._sassProperty;
+    return new Sass.SASSProcessor.RemovePropertyOperation(newMap, sassProperty);
   }
 };
 
@@ -425,11 +425,11 @@ WebInspector.SASSProcessor.RemovePropertyOperation = class extends WebInspector.
 /**
  * @unrestricted
  */
-WebInspector.SASSProcessor.InsertPropertiesOperation = class extends WebInspector.SASSProcessor.EditOperation {
+Sass.SASSProcessor.InsertPropertiesOperation = class extends Sass.SASSProcessor.EditOperation {
   /**
-   * @param {!WebInspector.ASTSourceMap} map
-   * @param {!WebInspector.SASSSupport.Rule} sassRule
-   * @param {?WebInspector.SASSSupport.Property} afterSASSProperty
+   * @param {!Sass.ASTSourceMap} map
+   * @param {!Sass.SASSSupport.Rule} sassRule
+   * @param {?Sass.SASSSupport.Property} afterSASSProperty
    * @param {!Array<string>} propertyNames
    * @param {!Array<string>} propertyValues
    * @param {!Array<boolean>} disabledStates
@@ -445,9 +445,9 @@ WebInspector.SASSProcessor.InsertPropertiesOperation = class extends WebInspecto
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.PropertyChange} change
-   * @param {!WebInspector.ASTSourceMap} map
-   * @return {?WebInspector.SASSProcessor.InsertPropertiesOperation}
+   * @param {!Sass.SASSSupport.PropertyChange} change
+   * @param {!Sass.ASTSourceMap} map
+   * @return {?Sass.SASSProcessor.InsertPropertiesOperation}
    */
   static fromCSSChange(change, map) {
     var sassRule = null;
@@ -464,22 +464,22 @@ WebInspector.SASSProcessor.InsertPropertiesOperation = class extends WebInspecto
     }
     if (!sassRule)
       return null;
-    var insertedProperty = /** @type {!WebInspector.SASSSupport.Property} */ (change.newProperty());
+    var insertedProperty = /** @type {!Sass.SASSSupport.Property} */ (change.newProperty());
     console.assert(insertedProperty, 'InsertPropertiesOperation must have inserted CSS property');
     var names = [insertedProperty.name.text];
     var values = [insertedProperty.value.text];
     var disabledStates = [insertedProperty.disabled];
-    return new WebInspector.SASSProcessor.InsertPropertiesOperation(
+    return new Sass.SASSProcessor.InsertPropertiesOperation(
         map, sassRule, afterSASSProperty, names, values, disabledStates);
   }
 
   /**
    * @override
-   * @param {!WebInspector.SASSProcessor.EditOperation} other
+   * @param {!Sass.SASSProcessor.EditOperation} other
    * @return {boolean}
    */
   merge(other) {
-    if (!(other instanceof WebInspector.SASSProcessor.InsertPropertiesOperation))
+    if (!(other instanceof Sass.SASSProcessor.InsertPropertiesOperation))
       return false;
     if (this._sassRule !== other._sassRule || this._afterSASSProperty !== other._afterSASSProperty)
       return false;
@@ -497,7 +497,7 @@ WebInspector.SASSProcessor.InsertPropertiesOperation = class extends WebInspecto
 
   /**
    * @override
-   * @return {!Array<!WebInspector.SASSSupport.Rule>}
+   * @return {!Array<!Sass.SASSSupport.Rule>}
    */
   perform() {
     var newSASSProperties = this._sassRule.insertProperties(
@@ -505,7 +505,7 @@ WebInspector.SASSProcessor.InsertPropertiesOperation = class extends WebInspecto
     var cssRules = [];
     var afterCSSProperties = [];
     if (this._afterSASSProperty) {
-      afterCSSProperties = WebInspector.SASSProcessor._toCSSProperties(this.map, this._afterSASSProperty);
+      afterCSSProperties = Sass.SASSProcessor._toCSSProperties(this.map, this._afterSASSProperty);
       cssRules = afterCSSProperties.map(property => property.parent);
     } else {
       cssRules = this.map.toCompiledNodes(this._sassRule.blockStart).map(blockStart => blockStart.parent);
@@ -525,17 +525,17 @@ WebInspector.SASSProcessor.InsertPropertiesOperation = class extends WebInspecto
 
   /**
    * @override
-   * @param {!WebInspector.ASTSourceMap} newMap
-   * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>} nodeMapping
-   * @return {!WebInspector.SASSProcessor.InsertPropertiesOperation}
+   * @param {!Sass.ASTSourceMap} newMap
+   * @param {!Map<!Sass.SASSSupport.Node, !Sass.SASSSupport.Node>} nodeMapping
+   * @return {!Sass.SASSProcessor.InsertPropertiesOperation}
    */
   rebase(newMap, nodeMapping) {
-    var sassRule = /** @type {?WebInspector.SASSSupport.Rule} */ (nodeMapping.get(this._sassRule)) || this._sassRule;
+    var sassRule = /** @type {?Sass.SASSSupport.Rule} */ (nodeMapping.get(this._sassRule)) || this._sassRule;
     var afterSASSProperty = this._afterSASSProperty ?
-        /** @type {?WebInspector.SASSSupport.Property} */ (nodeMapping.get(this._afterSASSProperty)) ||
+        /** @type {?Sass.SASSSupport.Property} */ (nodeMapping.get(this._afterSASSProperty)) ||
             this._afterSASSProperty :
         null;
-    return new WebInspector.SASSProcessor.InsertPropertiesOperation(
+    return new Sass.SASSProcessor.InsertPropertiesOperation(
         newMap, sassRule, afterSASSProperty, this._nameTexts, this._valueTexts, this._disabledStates);
   }
 };

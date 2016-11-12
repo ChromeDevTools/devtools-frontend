@@ -4,15 +4,15 @@
 /**
  * @unrestricted
  */
-WebInspector.Infobar = class {
+UI.Infobar = class {
   /**
-   * @param {!WebInspector.Infobar.Type} type
+   * @param {!UI.Infobar.Type} type
    * @param {string} text
-   * @param {!WebInspector.Setting=} disableSetting
+   * @param {!Common.Setting=} disableSetting
    */
   constructor(type, text, disableSetting) {
     this.element = createElementWithClass('div', 'flex-none');
-    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, 'ui/infobar.css');
+    this._shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'ui/infobar.css');
     this._contentElement = this._shadowRoot.createChild('div', 'infobar infobar-' + type);
 
     this._mainRow = this._contentElement.createChild('div', 'infobar-main-row');
@@ -23,13 +23,13 @@ WebInspector.Infobar = class {
 
     this._toggleElement = this._mainRow.createChild('div', 'infobar-toggle hidden');
     this._toggleElement.addEventListener('click', this._onToggleDetails.bind(this), false);
-    this._toggleElement.textContent = WebInspector.UIString('more');
+    this._toggleElement.textContent = Common.UIString('more');
 
-    /** @type {?WebInspector.Setting} */
+    /** @type {?Common.Setting} */
     this._disableSetting = disableSetting || null;
     if (disableSetting) {
       var disableButton = this._mainRow.createChild('div', 'infobar-toggle');
-      disableButton.textContent = WebInspector.UIString('never show');
+      disableButton.textContent = Common.UIString('never show');
       disableButton.addEventListener('click', this._onDisable.bind(this), false);
     }
 
@@ -41,15 +41,15 @@ WebInspector.Infobar = class {
   }
 
   /**
-   * @param {!WebInspector.Infobar.Type} type
+   * @param {!UI.Infobar.Type} type
    * @param {string} text
-   * @param {!WebInspector.Setting=} disableSetting
-   * @return {?WebInspector.Infobar}
+   * @param {!Common.Setting=} disableSetting
+   * @return {?UI.Infobar}
    */
   static create(type, text, disableSetting) {
     if (disableSetting && disableSetting.get())
       return null;
-    return new WebInspector.Infobar(type, text, disableSetting);
+    return new UI.Infobar(type, text, disableSetting);
   }
 
   dispose() {
@@ -75,7 +75,7 @@ WebInspector.Infobar = class {
   }
 
   /**
-   * @param {!WebInspector.Widget} parentView
+   * @param {!UI.Widget} parentView
    */
   setParentView(parentView) {
     this._parentView = parentView;
@@ -112,7 +112,7 @@ WebInspector.Infobar = class {
 
 
 /** @enum {string} */
-WebInspector.Infobar.Type = {
+UI.Infobar.Type = {
   Warning: 'warning',
   Info: 'info'
 };

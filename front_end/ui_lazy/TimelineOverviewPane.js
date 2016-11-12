@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.TimelineOverviewPane = class extends WebInspector.VBox {
+UI.TimelineOverviewPane = class extends UI.VBox {
   /**
    * @param {string} prefix
    */
@@ -39,8 +39,8 @@ WebInspector.TimelineOverviewPane = class extends WebInspector.VBox {
     super();
     this.element.id = prefix + '-overview-pane';
 
-    this._overviewCalculator = new WebInspector.TimelineOverviewCalculator();
-    this._overviewGrid = new WebInspector.OverviewGrid(prefix);
+    this._overviewCalculator = new UI.TimelineOverviewCalculator();
+    this._overviewGrid = new UI.OverviewGrid(prefix);
     this.element.appendChild(this._overviewGrid.element);
     this._cursorArea = this._overviewGrid.element.createChild('div', 'overview-grid-cursor-area');
     this._cursorElement = this._overviewGrid.element.createChild('div', 'overview-grid-cursor-position');
@@ -48,17 +48,17 @@ WebInspector.TimelineOverviewPane = class extends WebInspector.VBox {
     this._cursorArea.addEventListener('mouseleave', this._hideCursor.bind(this), true);
 
     this._overviewGrid.setResizeEnabled(false);
-    this._overviewGrid.addEventListener(WebInspector.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
-    this._overviewGrid.addEventListener(WebInspector.OverviewGrid.Events.Click, this._onClick, this);
+    this._overviewGrid.addEventListener(UI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
+    this._overviewGrid.addEventListener(UI.OverviewGrid.Events.Click, this._onClick, this);
     this._overviewControls = [];
     this._markers = new Map();
 
-    this._popoverHelper = new WebInspector.PopoverHelper(this._cursorArea);
+    this._popoverHelper = new UI.PopoverHelper(this._cursorArea);
     this._popoverHelper.initializeCallbacks(
         this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
     this._popoverHelper.setTimeout(0);
 
-    this._updateThrottler = new WebInspector.Throttler(100);
+    this._updateThrottler = new Common.Throttler(100);
 
     this._cursorEnabled = false;
     this._cursorPosition = 0;
@@ -76,18 +76,18 @@ WebInspector.TimelineOverviewPane = class extends WebInspector.VBox {
 
   /**
    * @param {!Element} anchor
-   * @param {!WebInspector.Popover} popover
+   * @param {!UI.Popover} popover
    */
   _showPopover(anchor, popover) {
     this._buildPopoverContents().then(maybeShowPopover.bind(this));
     /**
-     * @this {WebInspector.TimelineOverviewPane}
+     * @this {UI.TimelineOverviewPane}
      * @param {!DocumentFragment} fragment
      */
     function maybeShowPopover(fragment) {
       if (!fragment.firstChild)
         return;
-      var content = new WebInspector.TimelineOverviewPane.PopoverContents();
+      var content = new UI.TimelineOverviewPane.PopoverContents();
       this._popoverContents = content.contentElement.createChild('div');
       this._popoverContents.appendChild(fragment);
       this._popover = popover;
@@ -116,7 +116,7 @@ WebInspector.TimelineOverviewPane = class extends WebInspector.VBox {
 
     /**
      * @param {!DocumentFragment} fragment
-     * @this {WebInspector.TimelineOverviewPane}
+     * @this {UI.TimelineOverviewPane}
      */
     function updatePopover(fragment) {
       if (!this._popoverContents)
@@ -177,7 +177,7 @@ WebInspector.TimelineOverviewPane = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!Array.<!WebInspector.TimelineOverview>} overviewControls
+   * @param {!Array.<!UI.TimelineOverview>} overviewControls
    */
   setOverviewControls(overviewControls) {
     for (var i = 0; i < this._overviewControls.length; ++i)
@@ -204,7 +204,7 @@ WebInspector.TimelineOverviewPane = class extends WebInspector.VBox {
   scheduleUpdate() {
     this._updateThrottler.schedule(process.bind(this));
     /**
-     * @this {WebInspector.TimelineOverviewPane}
+     * @this {UI.TimelineOverviewPane}
      * @return {!Promise.<undefined>}
      */
     function process() {
@@ -264,7 +264,7 @@ WebInspector.TimelineOverviewPane = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onClick(event) {
     var domEvent = /** @type {!Event} */ (event.data);
@@ -277,7 +277,7 @@ WebInspector.TimelineOverviewPane = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onWindowChanged(event) {
     if (this._muteOnWindowChanged)
@@ -289,7 +289,7 @@ WebInspector.TimelineOverviewPane = class extends WebInspector.VBox {
         this._overviewControls[0].windowTimes(this._overviewGrid.windowLeft(), this._overviewGrid.windowRight());
     this._windowStartTime = windowTimes.startTime;
     this._windowEndTime = windowTimes.endTime;
-    this.dispatchEventToListeners(WebInspector.TimelineOverviewPane.Events.WindowChanged, windowTimes);
+    this.dispatchEventToListeners(UI.TimelineOverviewPane.Events.WindowChanged, windowTimes);
   }
 
   /**
@@ -303,7 +303,7 @@ WebInspector.TimelineOverviewPane = class extends WebInspector.VBox {
     this._windowEndTime = endTime;
     this._updateWindow();
     this.dispatchEventToListeners(
-        WebInspector.TimelineOverviewPane.Events.WindowChanged, {startTime: startTime, endTime: endTime});
+        UI.TimelineOverviewPane.Events.WindowChanged, {startTime: startTime, endTime: endTime});
   }
 
   _updateWindow() {
@@ -317,14 +317,14 @@ WebInspector.TimelineOverviewPane = class extends WebInspector.VBox {
 };
 
 /** @enum {symbol} */
-WebInspector.TimelineOverviewPane.Events = {
+UI.TimelineOverviewPane.Events = {
   WindowChanged: Symbol('WindowChanged')
 };
 
 /**
  * @unrestricted
  */
-WebInspector.TimelineOverviewPane.PopoverContents = class extends WebInspector.VBox {
+UI.TimelineOverviewPane.PopoverContents = class extends UI.VBox {
   constructor() {
     super(true);
     this.contentElement.classList.add('timeline-overview-popover');
@@ -332,10 +332,10 @@ WebInspector.TimelineOverviewPane.PopoverContents = class extends WebInspector.V
 };
 
 /**
- * @implements {WebInspector.TimelineGrid.Calculator}
+ * @implements {UI.TimelineGrid.Calculator}
  * @unrestricted
  */
-WebInspector.TimelineOverviewCalculator = class {
+UI.TimelineOverviewCalculator = class {
   constructor() {
     this.reset();
   }
@@ -433,9 +433,9 @@ WebInspector.TimelineOverviewCalculator = class {
 /**
  * @interface
  */
-WebInspector.TimelineOverview = function() {};
+UI.TimelineOverview = function() {};
 
-WebInspector.TimelineOverview.prototype = {
+UI.TimelineOverview.prototype = {
   /**
    * @param {!Element} parentElement
    * @param {?Element=} insertBefore
@@ -480,13 +480,13 @@ WebInspector.TimelineOverview.prototype = {
 };
 
 /**
- * @implements {WebInspector.TimelineOverview}
+ * @implements {UI.TimelineOverview}
  * @unrestricted
  */
-WebInspector.TimelineOverviewBase = class extends WebInspector.VBox {
+UI.TimelineOverviewBase = class extends UI.VBox {
   constructor() {
     super();
-    /** @type {?WebInspector.TimelineOverviewCalculator} */
+    /** @type {?UI.TimelineOverviewCalculator} */
     this._calculator = null;
     this._canvas = this.element.createChild('canvas', 'fill');
     this._context = this._canvas.getContext('2d');
@@ -534,7 +534,7 @@ WebInspector.TimelineOverviewBase = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.TimelineOverviewCalculator} calculator
+   * @param {!UI.TimelineOverviewCalculator} calculator
    */
   setCalculator(calculator) {
     this._calculator = calculator;

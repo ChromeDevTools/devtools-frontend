@@ -4,13 +4,13 @@
 /**
  * @unrestricted
  */
-WebInspector.ThrottledWidget = class extends WebInspector.VBox {
+UI.ThrottledWidget = class extends UI.VBox {
   /**
    * @param {boolean=} isWebComponent
    */
   constructor(isWebComponent) {
     super(isWebComponent);
-    this._updateThrottler = new WebInspector.Throttler(100);
+    this._updateThrottler = new Common.Throttler(100);
     this._updateWhenVisible = false;
   }
 
@@ -29,7 +29,7 @@ WebInspector.ThrottledWidget = class extends WebInspector.VBox {
     this._updateThrottler.schedule(innerUpdate.bind(this));
 
     /**
-     * @this {WebInspector.ThrottledWidget}
+     * @this {UI.ThrottledWidget}
      * @return {!Promise<?>}
      */
     function innerUpdate() {

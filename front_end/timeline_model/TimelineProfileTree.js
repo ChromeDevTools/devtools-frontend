@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-WebInspector.TimelineProfileTree = {};
+TimelineModel.TimelineProfileTree = {};
 
 /**
  * @unrestricted
  */
-WebInspector.TimelineProfileTree.Node = class {
+TimelineModel.TimelineProfileTree.Node = class {
   constructor() {
     /** @type {number} */
     this.totalTime;
@@ -15,11 +15,11 @@ WebInspector.TimelineProfileTree.Node = class {
     this.selfTime;
     /** @type {string} */
     this.id;
-    /** @type {!WebInspector.TracingModel.Event} */
+    /** @type {!SDK.TracingModel.Event} */
     this.event;
-    /** @type {?Map<string|symbol,!WebInspector.TimelineProfileTree.Node>} */
+    /** @type {?Map<string|symbol,!TimelineModel.TimelineProfileTree.Node>} */
     this.children;
-    /** @type {?WebInspector.TimelineProfileTree.Node} */
+    /** @type {?TimelineModel.TimelineProfileTree.Node} */
     this.parent;
 
     /** @type {string} */
@@ -36,41 +36,41 @@ WebInspector.TimelineProfileTree.Node = class {
 };
 
 /**
- * @param {!Array<!WebInspector.TracingModel.Event>} events
- * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
+ * @param {!Array<!SDK.TracingModel.Event>} events
+ * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
  * @param {number} startTime
  * @param {number} endTime
- * @param {function(!WebInspector.TracingModel.Event):string=} eventGroupIdCallback
- * @return {!WebInspector.TimelineProfileTree.Node}
+ * @param {function(!SDK.TracingModel.Event):string=} eventGroupIdCallback
+ * @return {!TimelineModel.TimelineProfileTree.Node}
  */
-WebInspector.TimelineProfileTree.buildTopDown = function(events, filters, startTime, endTime, eventGroupIdCallback) {
+TimelineModel.TimelineProfileTree.buildTopDown = function(events, filters, startTime, endTime, eventGroupIdCallback) {
   // Temporarily deposit a big enough value that exceeds the max recording time.
   var /** @const */ initialTime = 1e7;
-  var root = new WebInspector.TimelineProfileTree.Node();
+  var root = new TimelineModel.TimelineProfileTree.Node();
   root.totalTime = initialTime;
   root.selfTime = initialTime;
-  root.children = /** @type {!Map<string, !WebInspector.TimelineProfileTree.Node>} */ (new Map());
+  root.children = /** @type {!Map<string, !TimelineModel.TimelineProfileTree.Node>} */ (new Map());
   var parent = root;
 
   /**
-   * @param {!WebInspector.TracingModel.Event} e
+   * @param {!SDK.TracingModel.Event} e
    */
   function onStartEvent(e) {
-    if (!WebInspector.TimelineModel.isVisible(filters, e))
+    if (!TimelineModel.TimelineModel.isVisible(filters, e))
       return;
     var time = e.endTime ? Math.min(endTime, e.endTime) - Math.max(startTime, e.startTime) : 0;
     var groupId = eventGroupIdCallback ? eventGroupIdCallback(e) : Symbol('uniqueGroupId');
-    var id = eventGroupIdCallback ? WebInspector.TimelineProfileTree._eventId(e) : Symbol('uniqueEventId');
+    var id = eventGroupIdCallback ? TimelineModel.TimelineProfileTree._eventId(e) : Symbol('uniqueEventId');
     if (typeof groupId === 'string' && typeof id === 'string')
       id += '/' + groupId;
     if (!parent.children)
-      parent.children = /** @type {!Map<string,!WebInspector.TimelineProfileTree.Node>} */ (new Map());
+      parent.children = /** @type {!Map<string,!TimelineModel.TimelineProfileTree.Node>} */ (new Map());
     var node = parent.children.get(id);
     if (node) {
       node.selfTime += time;
       node.totalTime += time;
     } else {
-      node = new WebInspector.TimelineProfileTree.Node();
+      node = new TimelineModel.TimelineProfileTree.Node();
       node.totalTime = time;
       node.selfTime = time;
       node.parent = parent;
@@ -89,31 +89,31 @@ WebInspector.TimelineProfileTree.buildTopDown = function(events, filters, startT
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} e
+   * @param {!SDK.TracingModel.Event} e
    */
   function onEndEvent(e) {
-    if (!WebInspector.TimelineModel.isVisible(filters, e))
+    if (!TimelineModel.TimelineModel.isVisible(filters, e))
       return;
     parent = parent.parent;
   }
 
   var instantEventCallback = eventGroupIdCallback ? undefined : onStartEvent;  // Ignore instant events when aggregating.
-  WebInspector.TimelineModel.forEachEvent(events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime);
+  TimelineModel.TimelineModel.forEachEvent(events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime);
   root.totalTime -= root.selfTime;
   root.selfTime = 0;
   return root;
 };
 
 /**
- * @param {!WebInspector.TimelineProfileTree.Node} topDownTree
- * @return {!WebInspector.TimelineProfileTree.Node}
+ * @param {!TimelineModel.TimelineProfileTree.Node} topDownTree
+ * @return {!TimelineModel.TimelineProfileTree.Node}
  */
-WebInspector.TimelineProfileTree.buildBottomUp = function(topDownTree) {
-  var buRoot = new WebInspector.TimelineProfileTree.Node();
-  var aggregator = new WebInspector.TimelineAggregator();
+TimelineModel.TimelineProfileTree.buildBottomUp = function(topDownTree) {
+  var buRoot = new TimelineModel.TimelineProfileTree.Node();
+  var aggregator = new TimelineModel.TimelineAggregator();
   buRoot.selfTime = 0;
   buRoot.totalTime = 0;
-  /** @type {!Map<string, !WebInspector.TimelineProfileTree.Node>} */
+  /** @type {!Map<string, !TimelineModel.TimelineProfileTree.Node>} */
   buRoot.children = new Map();
   var nodesOnStack = /** @type {!Set<string>} */ (new Set());
   if (topDownTree.children)
@@ -121,7 +121,7 @@ WebInspector.TimelineProfileTree.buildBottomUp = function(topDownTree) {
   buRoot.totalTime = topDownTree.totalTime;
 
   /**
-   * @param {!WebInspector.TimelineProfileTree.Node} tdNode
+   * @param {!TimelineModel.TimelineProfileTree.Node} tdNode
    */
   function processNode(tdNode) {
     var buParent = typeof tdNode._groupId === 'string' ? aggregator.groupNodeForId(tdNode._groupId, tdNode.event) : buRoot;
@@ -140,8 +140,8 @@ WebInspector.TimelineProfileTree.buildBottomUp = function(topDownTree) {
   }
 
   /**
-   * @param {!WebInspector.TimelineProfileTree.Node} tdNode
-   * @param {!WebInspector.TimelineProfileTree.Node} buParent
+   * @param {!TimelineModel.TimelineProfileTree.Node} tdNode
+   * @param {!TimelineModel.TimelineProfileTree.Node} buParent
    */
   function appendNode(tdNode, buParent) {
     var selfTime = tdNode.selfTime;
@@ -150,11 +150,11 @@ WebInspector.TimelineProfileTree.buildBottomUp = function(topDownTree) {
     buParent.totalTime += selfTime;
     while (tdNode.parent) {
       if (!buParent.children)
-        buParent.children = /** @type {!Map<string,!WebInspector.TimelineProfileTree.Node>} */ (new Map());
+        buParent.children = /** @type {!Map<string,!TimelineModel.TimelineProfileTree.Node>} */ (new Map());
       var id = tdNode.id;
       var buNode = buParent.children.get(id);
       if (!buNode) {
-        buNode = new WebInspector.TimelineProfileTree.Node();
+        buNode = new TimelineModel.TimelineProfileTree.Node();
         buNode.selfTime = selfTime;
         buNode.totalTime = totalTime;
         buNode.event = tdNode.event;
@@ -182,14 +182,14 @@ WebInspector.TimelineProfileTree.buildBottomUp = function(topDownTree) {
 };
 
 /**
- * @param {!WebInspector.TracingModel.Event} event
+ * @param {!SDK.TracingModel.Event} event
  * @return {?string}
  */
-WebInspector.TimelineProfileTree.eventURL = function(event) {
+TimelineModel.TimelineProfileTree.eventURL = function(event) {
   var data = event.args['data'] || event.args['beginData'];
   if (data && data['url'])
     return data['url'];
-  var frame = WebInspector.TimelineProfileTree.eventStackFrame(event);
+  var frame = TimelineModel.TimelineProfileTree.eventStackFrame(event);
   while (frame) {
     var url = frame['url'];
     if (url)
@@ -200,27 +200,27 @@ WebInspector.TimelineProfileTree.eventURL = function(event) {
 };
 
 /**
- * @param {!WebInspector.TracingModel.Event} event
+ * @param {!SDK.TracingModel.Event} event
  * @return {?Protocol.Runtime.CallFrame}
  */
-WebInspector.TimelineProfileTree.eventStackFrame = function(event) {
-  if (event.name === WebInspector.TimelineModel.RecordType.JSFrame)
+TimelineModel.TimelineProfileTree.eventStackFrame = function(event) {
+  if (event.name === TimelineModel.TimelineModel.RecordType.JSFrame)
     return /** @type {?Protocol.Runtime.CallFrame} */ (event.args['data'] || null);
-  return WebInspector.TimelineData.forEvent(event).topFrame();
+  return TimelineModel.TimelineData.forEvent(event).topFrame();
 };
 
 /**
- * @param {!WebInspector.TracingModel.Event} event
+ * @param {!SDK.TracingModel.Event} event
  * @return {string}
  */
-WebInspector.TimelineProfileTree._eventId = function(event) {
-  if (event.name !== WebInspector.TimelineModel.RecordType.JSFrame)
+TimelineModel.TimelineProfileTree._eventId = function(event) {
+  if (event.name !== TimelineModel.TimelineModel.RecordType.JSFrame)
     return event.name;
   const frame = event.args['data'];
   const location = frame['scriptId'] || frame['url'] || '';
   const functionName = frame['functionName'];
-  const name = WebInspector.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame)
-      ? WebInspector.TimelineJSProfileProcessor.nativeGroup(functionName) || functionName
+  const name = TimelineModel.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame)
+      ? TimelineModel.TimelineJSProfileProcessor.nativeGroup(functionName) || functionName
       : functionName;
   return `f:${name}@${location}`;
 };
@@ -228,15 +228,15 @@ WebInspector.TimelineProfileTree._eventId = function(event) {
 /**
  * @unrestricted
  */
-WebInspector.TimelineAggregator = class {
+TimelineModel.TimelineAggregator = class {
   constructor() {
-    /** @type {!Map<string, !WebInspector.TimelineProfileTree.Node>} */
+    /** @type {!Map<string, !TimelineModel.TimelineProfileTree.Node>} */
     this._groupNodes = new Map();
   }
 
   /**
-   * @param {!WebInspector.TimelineProfileTree.Node} root
-   * @return {!WebInspector.TimelineProfileTree.Node}
+   * @param {!TimelineModel.TimelineProfileTree.Node} root
+   * @return {!TimelineModel.TimelineProfileTree.Node}
    */
   performGrouping(root) {
     for (var node of root.children.values()) {
@@ -253,8 +253,8 @@ WebInspector.TimelineAggregator = class {
 
   /**
    * @param {string} groupId
-   * @param {!WebInspector.TracingModel.Event} event
-   * @return {!WebInspector.TimelineProfileTree.Node}
+   * @param {!SDK.TracingModel.Event} event
+   * @return {!TimelineModel.TimelineProfileTree.Node}
    */
   groupNodeForId(groupId, event) {
     var node = this._groupNodes.get(groupId);
@@ -263,11 +263,11 @@ WebInspector.TimelineAggregator = class {
 
   /**
    * @param {string} id
-   * @param {!WebInspector.TracingModel.Event} event
-   * @return {!WebInspector.TimelineProfileTree.Node}
+   * @param {!SDK.TracingModel.Event} event
+   * @return {!TimelineModel.TimelineProfileTree.Node}
    */
   _buildGroupNode(id, event) {
-    var groupNode = new WebInspector.TimelineProfileTree.Node();
+    var groupNode = new TimelineModel.TimelineProfileTree.Node();
     groupNode.id = id;
     groupNode.selfTime = 0;
     groupNode.totalTime = 0;
@@ -279,4 +279,4 @@ WebInspector.TimelineAggregator = class {
   }
 };
 
-WebInspector.TimelineAggregator._groupNodeFlag = Symbol('groupNode');
+TimelineModel.TimelineAggregator._groupNodeFlag = Symbol('groupNode');

@@ -26,10 +26,10 @@
 /**
  * @unrestricted
  */
-WebInspector.TopDownProfileDataGridNode = class extends WebInspector.ProfileDataGridNode {
+Profiler.TopDownProfileDataGridNode = class extends Profiler.ProfileDataGridNode {
   /**
-   * @param {!WebInspector.ProfileNode} profileNode
-   * @param {!WebInspector.TopDownProfileDataGridTree} owningTree
+   * @param {!SDK.ProfileNode} profileNode
+   * @param {!Profiler.TopDownProfileDataGridTree} owningTree
    */
   constructor(profileNode, owningTree) {
     var hasChildren = !!(profileNode.children && profileNode.children.length);
@@ -40,21 +40,21 @@ WebInspector.TopDownProfileDataGridNode = class extends WebInspector.ProfileData
   }
 
   /**
-   * @param {!WebInspector.TopDownProfileDataGridNode|!WebInspector.TopDownProfileDataGridTree} container
+   * @param {!Profiler.TopDownProfileDataGridNode|!Profiler.TopDownProfileDataGridTree} container
    */
   static _sharedPopulate(container) {
     var children = container._remainingChildren;
     var childrenLength = children.length;
 
     for (var i = 0; i < childrenLength; ++i)
-      container.appendChild(new WebInspector.TopDownProfileDataGridNode(
-          children[i], /** @type {!WebInspector.TopDownProfileDataGridTree} */ (container.tree)));
+      container.appendChild(new Profiler.TopDownProfileDataGridNode(
+          children[i], /** @type {!Profiler.TopDownProfileDataGridTree} */ (container.tree)));
 
     container._remainingChildren = null;
   }
 
   /**
-   * @param {!WebInspector.TopDownProfileDataGridNode|!WebInspector.TopDownProfileDataGridTree} container
+   * @param {!Profiler.TopDownProfileDataGridNode|!Profiler.TopDownProfileDataGridTree} container
    * @param {string} aCallUID
    */
   static _excludeRecursively(container, aCallUID) {
@@ -67,19 +67,19 @@ WebInspector.TopDownProfileDataGridNode = class extends WebInspector.ProfileData
     var index = container.children.length;
 
     while (index--)
-      WebInspector.TopDownProfileDataGridNode._excludeRecursively(children[index], aCallUID);
+      Profiler.TopDownProfileDataGridNode._excludeRecursively(children[index], aCallUID);
 
     var child = container.childrenByCallUID.get(aCallUID);
 
     if (child)
-      WebInspector.ProfileDataGridNode.merge(container, child, true);
+      Profiler.ProfileDataGridNode.merge(container, child, true);
   }
 
   /**
    * @override
    */
   populateChildren() {
-    WebInspector.TopDownProfileDataGridNode._sharedPopulate(this);
+    Profiler.TopDownProfileDataGridNode._sharedPopulate(this);
   }
 };
 
@@ -87,21 +87,21 @@ WebInspector.TopDownProfileDataGridNode = class extends WebInspector.ProfileData
 /**
  * @unrestricted
  */
-WebInspector.TopDownProfileDataGridTree = class extends WebInspector.ProfileDataGridTree {
+Profiler.TopDownProfileDataGridTree = class extends Profiler.ProfileDataGridTree {
   /**
-   * @param {!WebInspector.ProfileDataGridNode.Formatter} formatter
-   * @param {!WebInspector.SearchableView} searchableView
-   * @param {!WebInspector.ProfileNode} rootProfileNode
+   * @param {!Profiler.ProfileDataGridNode.Formatter} formatter
+   * @param {!UI.SearchableView} searchableView
+   * @param {!SDK.ProfileNode} rootProfileNode
    * @param {number} total
    */
   constructor(formatter, searchableView, rootProfileNode, total) {
     super(formatter, searchableView, total);
     this._remainingChildren = rootProfileNode.children;
-    WebInspector.ProfileDataGridNode.populate(this);
+    Profiler.ProfileDataGridNode.populate(this);
   }
 
   /**
-   * @param {!WebInspector.ProfileDataGridNode} profileDataGridNode
+   * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
    */
   focus(profileDataGridNode) {
     if (!profileDataGridNode)
@@ -115,7 +115,7 @@ WebInspector.TopDownProfileDataGridTree = class extends WebInspector.ProfileData
   }
 
   /**
-   * @param {!WebInspector.ProfileDataGridNode} profileDataGridNode
+   * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
    */
   exclude(profileDataGridNode) {
     if (!profileDataGridNode)
@@ -123,7 +123,7 @@ WebInspector.TopDownProfileDataGridTree = class extends WebInspector.ProfileData
 
     this.save();
 
-    WebInspector.TopDownProfileDataGridNode._excludeRecursively(this, profileDataGridNode.callUID);
+    Profiler.TopDownProfileDataGridNode._excludeRecursively(this, profileDataGridNode.callUID);
 
     if (this.lastComparator)
       this.sort(this.lastComparator, true);
@@ -145,6 +145,6 @@ WebInspector.TopDownProfileDataGridTree = class extends WebInspector.ProfileData
    * @override
    */
   populateChildren() {
-    WebInspector.TopDownProfileDataGridNode._sharedPopulate(this);
+    Profiler.TopDownProfileDataGridNode._sharedPopulate(this);
   }
 };

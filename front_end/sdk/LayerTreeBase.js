@@ -3,17 +3,17 @@
 // found in the LICENSE file.
 /** @typedef {!{
         rect: !Protocol.DOM.Rect,
-        snapshot: !WebInspector.PaintProfilerSnapshot
+        snapshot: !SDK.PaintProfilerSnapshot
     }}
 */
-WebInspector.SnapshotWithRect;
+SDK.SnapshotWithRect;
 
 /**
  * @interface
  */
-WebInspector.Layer = function() {};
+SDK.Layer = function() {};
 
-WebInspector.Layer.prototype = {
+SDK.Layer.prototype = {
   /**
    * @return {string}
    */
@@ -25,7 +25,7 @@ WebInspector.Layer.prototype = {
   parentId: function() {},
 
   /**
-   * @return {?WebInspector.Layer}
+   * @return {?SDK.Layer}
    */
   parent: function() {},
 
@@ -35,22 +35,22 @@ WebInspector.Layer.prototype = {
   isRoot: function() {},
 
   /**
-   * @return {!Array.<!WebInspector.Layer>}
+   * @return {!Array.<!SDK.Layer>}
    */
   children: function() {},
 
   /**
-   * @param {!WebInspector.Layer} child
+   * @param {!SDK.Layer} child
    */
   addChild: function(child) {},
 
   /**
-   * @return {?WebInspector.DOMNode}
+   * @return {?SDK.DOMNode}
    */
   node: function() {},
 
   /**
-   * @return {?WebInspector.DOMNode}
+   * @return {?SDK.DOMNode}
    */
   nodeForSelfOrAncestor: function() {},
 
@@ -125,12 +125,12 @@ WebInspector.Layer.prototype = {
   drawsContent: function() {},
 
   /**
-   * @return {!Array<!Promise<?WebInspector.SnapshotWithRect>>}
+   * @return {!Array<!Promise<?SDK.SnapshotWithRect>>}
    */
   snapshots: function() {}
 };
 
-WebInspector.Layer.ScrollRectType = {
+SDK.Layer.ScrollRectType = {
   NonFastScrollable: 'NonFastScrollable',
   TouchEventHandler: 'TouchEventHandler',
   WheelEventHandler: 'WheelEventHandler',
@@ -140,36 +140,36 @@ WebInspector.Layer.ScrollRectType = {
 /**
  * @unrestricted
  */
-WebInspector.LayerTreeBase = class {
+SDK.LayerTreeBase = class {
   /**
-   * @param {?WebInspector.Target} target
+   * @param {?SDK.Target} target
    */
   constructor(target) {
     this._target = target;
-    this._domModel = target ? WebInspector.DOMModel.fromTarget(target) : null;
+    this._domModel = target ? SDK.DOMModel.fromTarget(target) : null;
     this._layersById = {};
     this._root = null;
     this._contentRoot = null;
-    /** @type Map<number, ?WebInspector.DOMNode> */
+    /** @type Map<number, ?SDK.DOMNode> */
     this._backendNodeIdToNode = new Map();
   }
 
   /**
-   * @return {?WebInspector.Target}
+   * @return {?SDK.Target}
    */
   target() {
     return this._target;
   }
 
   /**
-   * @return {?WebInspector.Layer}
+   * @return {?SDK.Layer}
    */
   root() {
     return this._root;
   }
 
   /**
-   * @param {?WebInspector.Layer} root
+   * @param {?SDK.Layer} root
    * @protected
    */
   setRoot(root) {
@@ -177,14 +177,14 @@ WebInspector.LayerTreeBase = class {
   }
 
   /**
-   * @return {?WebInspector.Layer}
+   * @return {?SDK.Layer}
    */
   contentRoot() {
     return this._contentRoot;
   }
 
   /**
-   * @param {?WebInspector.Layer} contentRoot
+   * @param {?SDK.Layer} contentRoot
    * @protected
    */
   setContentRoot(contentRoot) {
@@ -192,8 +192,8 @@ WebInspector.LayerTreeBase = class {
   }
 
   /**
-   * @param {function(!WebInspector.Layer)} callback
-   * @param {?WebInspector.Layer=} root
+   * @param {function(!SDK.Layer)} callback
+   * @param {?SDK.Layer=} root
    * @return {boolean}
    */
   forEachLayer(callback, root) {
@@ -207,7 +207,7 @@ WebInspector.LayerTreeBase = class {
 
   /**
    * @param {string} id
-   * @return {?WebInspector.Layer}
+   * @return {?SDK.Layer}
    */
   layerById(id) {
     return this._layersById[id] || null;
@@ -226,8 +226,8 @@ WebInspector.LayerTreeBase = class {
       this._domModel.pushNodesByBackendIdsToFrontend(requestedNodeIds, populateBackendNodeMap.bind(this));
 
     /**
-     * @this {WebInspector.LayerTreeBase}
-     * @param {?Map<number, ?WebInspector.DOMNode>} nodesMap
+     * @this {SDK.LayerTreeBase}
+     * @param {?Map<number, ?SDK.DOMNode>} nodesMap
      */
     function populateBackendNodeMap(nodesMap) {
       if (nodesMap) {
@@ -254,7 +254,7 @@ WebInspector.LayerTreeBase = class {
 
   /**
    * @param {number} id
-   * @return {?WebInspector.DOMNode}
+   * @return {?SDK.DOMNode}
    */
   _nodeForId(id) {
     return this._domModel ? this._domModel.nodeForId(id) : null;

@@ -29,9 +29,9 @@
 /**
  * @unrestricted
  */
-WebInspector.Database = class {
+Resources.Database = class {
   /**
-   * @param {!WebInspector.DatabaseModel} model
+   * @param {!Resources.DatabaseModel} model
    * @param {string} id
    * @param {string} domain
    * @param {string} name
@@ -113,9 +113,9 @@ WebInspector.Database = class {
         if (errorObj.message)
           message = errorObj.message;
         else if (errorObj.code === 2)
-          message = WebInspector.UIString('Database no longer has expected version.');
+          message = Common.UIString('Database no longer has expected version.');
         else
-          message = WebInspector.UIString('An unexpected error %s occurred.', errorObj.code);
+          message = Common.UIString('An unexpected error %s occurred.', errorObj.code);
         onError(message);
         return;
       }
@@ -128,27 +128,27 @@ WebInspector.Database = class {
 /**
  * @unrestricted
  */
-WebInspector.DatabaseModel = class extends WebInspector.SDKModel {
+Resources.DatabaseModel = class extends SDK.SDKModel {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(WebInspector.DatabaseModel, target);
+    super(Resources.DatabaseModel, target);
 
     this._databases = [];
     this._agent = target.databaseAgent();
-    this.target().registerDatabaseDispatcher(new WebInspector.DatabaseDispatcher(this));
+    this.target().registerDatabaseDispatcher(new Resources.DatabaseDispatcher(this));
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @return {!WebInspector.DatabaseModel}
+   * @param {!SDK.Target} target
+   * @return {!Resources.DatabaseModel}
    */
   static fromTarget(target) {
-    if (!target[WebInspector.DatabaseModel._symbol])
-      target[WebInspector.DatabaseModel._symbol] = new WebInspector.DatabaseModel(target);
+    if (!target[Resources.DatabaseModel._symbol])
+      target[Resources.DatabaseModel._symbol] = new Resources.DatabaseModel(target);
 
-    return target[WebInspector.DatabaseModel._symbol];
+    return target[Resources.DatabaseModel._symbol];
   }
 
   enable() {
@@ -164,11 +164,11 @@ WebInspector.DatabaseModel = class extends WebInspector.SDKModel {
     this._enabled = false;
     this._databases = [];
     this._agent.disable();
-    this.dispatchEventToListeners(WebInspector.DatabaseModel.Events.DatabasesRemoved);
+    this.dispatchEventToListeners(Resources.DatabaseModel.Events.DatabasesRemoved);
   }
 
   /**
-   * @return {!Array.<!WebInspector.Database>}
+   * @return {!Array.<!Resources.Database>}
    */
   databases() {
     var result = [];
@@ -178,16 +178,16 @@ WebInspector.DatabaseModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.Database} database
+   * @param {!Resources.Database} database
    */
   _addDatabase(database) {
     this._databases.push(database);
-    this.dispatchEventToListeners(WebInspector.DatabaseModel.Events.DatabaseAdded, database);
+    this.dispatchEventToListeners(Resources.DatabaseModel.Events.DatabaseAdded, database);
   }
 };
 
 /** @enum {symbol} */
-WebInspector.DatabaseModel.Events = {
+Resources.DatabaseModel.Events = {
   DatabaseAdded: Symbol('DatabaseAdded'),
   DatabasesRemoved: Symbol('DatabasesRemoved')
 };
@@ -196,9 +196,9 @@ WebInspector.DatabaseModel.Events = {
  * @implements {Protocol.DatabaseDispatcher}
  * @unrestricted
  */
-WebInspector.DatabaseDispatcher = class {
+Resources.DatabaseDispatcher = class {
   /**
-   * @param {!WebInspector.DatabaseModel} model
+   * @param {!Resources.DatabaseModel} model
    */
   constructor(model) {
     this._model = model;
@@ -210,8 +210,8 @@ WebInspector.DatabaseDispatcher = class {
    */
   addDatabase(payload) {
     this._model._addDatabase(
-        new WebInspector.Database(this._model, payload.id, payload.domain, payload.name, payload.version));
+        new Resources.Database(this._model, payload.id, payload.domain, payload.name, payload.version));
   }
 };
 
-WebInspector.DatabaseModel._symbol = Symbol('DatabaseModel');
+Resources.DatabaseModel._symbol = Symbol('DatabaseModel');

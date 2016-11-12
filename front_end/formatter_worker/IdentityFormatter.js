@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-WebInspector.IdentityFormatter = class {
+FormatterWorker.IdentityFormatter = class {
   /**
-   * @param {!WebInspector.FormattedContentBuilder} builder
+   * @param {!FormatterWorker.FormattedContentBuilder} builder
    */
   constructor(builder) {
     this._builder = builder;

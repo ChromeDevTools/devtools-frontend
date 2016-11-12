@@ -31,28 +31,28 @@
 /**
  * @unrestricted
  */
-WebInspector.EditingLocationHistoryManager = class {
+Sources.EditingLocationHistoryManager = class {
   /**
-   * @param {!WebInspector.SourcesView} sourcesView
-   * @param {function():?WebInspector.SourceFrame} currentSourceFrameCallback
+   * @param {!Sources.SourcesView} sourcesView
+   * @param {function():?SourceFrame.SourceFrame} currentSourceFrameCallback
    */
   constructor(sourcesView, currentSourceFrameCallback) {
     this._sourcesView = sourcesView;
     this._historyManager =
-        new WebInspector.SimpleHistoryManager(WebInspector.EditingLocationHistoryManager.HistoryDepth);
+        new Sources.SimpleHistoryManager(Sources.EditingLocationHistoryManager.HistoryDepth);
     this._currentSourceFrameCallback = currentSourceFrameCallback;
   }
 
   /**
-   * @param {!WebInspector.UISourceCodeFrame} sourceFrame
+   * @param {!Sources.UISourceCodeFrame} sourceFrame
    */
   trackSourceFrameCursorJumps(sourceFrame) {
     sourceFrame.textEditor.addEventListener(
-        WebInspector.SourcesTextEditor.Events.JumpHappened, this._onJumpHappened.bind(this));
+        SourceFrame.SourcesTextEditor.Events.JumpHappened, this._onJumpHappened.bind(this));
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onJumpHappened(event) {
     if (event.data.from)
@@ -84,7 +84,7 @@ WebInspector.EditingLocationHistoryManager = class {
   }
 
   /**
-   * @param {!WebInspector.TextRange} selection
+   * @param {!Common.TextRange} selection
    */
   _updateActiveState(selection) {
     var active = this._historyManager.active();
@@ -93,23 +93,23 @@ WebInspector.EditingLocationHistoryManager = class {
     var sourceFrame = this._currentSourceFrameCallback();
     if (!sourceFrame)
       return;
-    var entry = new WebInspector.EditingLocationHistoryEntry(this._sourcesView, this, sourceFrame, selection);
+    var entry = new Sources.EditingLocationHistoryEntry(this._sourcesView, this, sourceFrame, selection);
     active.merge(entry);
   }
 
   /**
-   * @param {!WebInspector.TextRange} selection
+   * @param {!Common.TextRange} selection
    */
   _pushActiveState(selection) {
     var sourceFrame = this._currentSourceFrameCallback();
     if (!sourceFrame)
       return;
-    var entry = new WebInspector.EditingLocationHistoryEntry(this._sourcesView, this, sourceFrame, selection);
+    var entry = new Sources.EditingLocationHistoryEntry(this._sourcesView, this, sourceFrame, selection);
     this._historyManager.push(entry);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   removeHistoryForSourceCode(uiSourceCode) {
     function filterOut(entry) {
@@ -120,18 +120,18 @@ WebInspector.EditingLocationHistoryManager = class {
   }
 };
 
-WebInspector.EditingLocationHistoryManager.HistoryDepth = 20;
+Sources.EditingLocationHistoryManager.HistoryDepth = 20;
 
 /**
- * @implements {WebInspector.HistoryEntry}
+ * @implements {Sources.HistoryEntry}
  * @unrestricted
  */
-WebInspector.EditingLocationHistoryEntry = class {
+Sources.EditingLocationHistoryEntry = class {
   /**
-   * @param {!WebInspector.SourcesView} sourcesView
-   * @param {!WebInspector.EditingLocationHistoryManager} editingLocationManager
-   * @param {!WebInspector.SourceFrame} sourceFrame
-   * @param {!WebInspector.TextRange} selection
+   * @param {!Sources.SourcesView} sourcesView
+   * @param {!Sources.EditingLocationHistoryManager} editingLocationManager
+   * @param {!SourceFrame.SourceFrame} sourceFrame
+   * @param {!Common.TextRange} selection
    */
   constructor(sourcesView, editingLocationManager, sourceFrame, selection) {
     this._sourcesView = sourcesView;
@@ -145,7 +145,7 @@ WebInspector.EditingLocationHistoryEntry = class {
   }
 
   /**
-   * @param {!WebInspector.HistoryEntry} entry
+   * @param {!Sources.HistoryEntry} entry
    */
   merge(entry) {
     if (this._projectId !== entry._projectId || this._url !== entry._url)
@@ -154,7 +154,7 @@ WebInspector.EditingLocationHistoryEntry = class {
   }
 
   /**
-   * @param {!WebInspector.TextRange} selection
+   * @param {!Common.TextRange} selection
    * @return {!{lineNumber: number, columnNumber: number}}
    */
   _positionFromSelection(selection) {
@@ -167,7 +167,7 @@ WebInspector.EditingLocationHistoryEntry = class {
    */
   valid() {
     var position = this._positionHandle.resolve();
-    var uiSourceCode = WebInspector.workspace.uiSourceCode(this._projectId, this._url);
+    var uiSourceCode = Workspace.workspace.uiSourceCode(this._projectId, this._url);
     return !!(position && uiSourceCode);
   }
 
@@ -176,7 +176,7 @@ WebInspector.EditingLocationHistoryEntry = class {
    */
   reveal() {
     var position = this._positionHandle.resolve();
-    var uiSourceCode = WebInspector.workspace.uiSourceCode(this._projectId, this._url);
+    var uiSourceCode = Workspace.workspace.uiSourceCode(this._projectId, this._url);
     if (!position || !uiSourceCode)
       return;
 

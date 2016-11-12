@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.JavaScriptFormatter = class {
+FormatterWorker.JavaScriptFormatter = class {
   /**
-   * @param {!WebInspector.FormattedContentBuilder} builder
+   * @param {!FormatterWorker.FormattedContentBuilder} builder
    */
   constructor(builder) {
     this._builder = builder;
@@ -50,9 +50,9 @@ WebInspector.JavaScriptFormatter = class {
     this._toOffset = toOffset;
     this._content = text.substring(this._fromOffset, this._toOffset);
     this._lastLineNumber = 0;
-    this._tokenizer = new WebInspector.AcornTokenizer(this._content);
+    this._tokenizer = new FormatterWorker.AcornTokenizer(this._content);
     var ast = acorn.parse(this._content, {ranges: false, ecmaVersion: 6});
-    var walker = new WebInspector.ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
+    var walker = new FormatterWorker.ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
     walker.walk(ast);
   }
 
@@ -127,7 +127,7 @@ WebInspector.JavaScriptFormatter = class {
    * @return {string}
    */
   _formatToken(node, token) {
-    var AT = WebInspector.AcornTokenizer;
+    var AT = FormatterWorker.AcornTokenizer;
     if (AT.lineComment(token))
       return 'tn';
     if (AT.blockComment(token))

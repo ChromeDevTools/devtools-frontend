@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
+Sources.AdvancedSearchView = class extends UI.VBox {
   constructor() {
     super(true);
     this.setMinimumSize(0, 40);
@@ -21,9 +21,9 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
     this._searchResultsElement = this.contentElement.createChild('div');
     this._searchResultsElement.className = 'search-results';
 
-    this._search = WebInspector.HistoryInput.create();
+    this._search = UI.HistoryInput.create();
     this._searchPanelElement.appendChild(this._search);
-    this._search.placeholder = WebInspector.UIString('Search all sources (use "file:" to filter by path)\u200e');
+    this._search.placeholder = Common.UIString('Search all sources (use "file:" to filter by path)\u200e');
     this._search.setAttribute('type', 'text');
     this._search.classList.add('search-config-search');
     this._search.setAttribute('results', '0');
@@ -34,13 +34,13 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
     this._searchInputClearElement.hidden = true;
     this._searchInputClearElement.addEventListener('click', this._onSearchInputClear.bind(this), false);
 
-    this._ignoreCaseLabel = createCheckboxLabel(WebInspector.UIString('Ignore case'));
+    this._ignoreCaseLabel = createCheckboxLabel(Common.UIString('Ignore case'));
     this._ignoreCaseLabel.classList.add('search-config-label');
     this._searchPanelElement.appendChild(this._ignoreCaseLabel);
     this._ignoreCaseCheckbox = this._ignoreCaseLabel.checkboxElement;
     this._ignoreCaseCheckbox.classList.add('search-config-checkbox');
 
-    this._regexLabel = createCheckboxLabel(WebInspector.UIString('Regular expression'));
+    this._regexLabel = createCheckboxLabel(Common.UIString('Regular expression'));
     this._regexLabel.classList.add('search-config-label');
     this._searchPanelElement.appendChild(this._regexLabel);
     this._regexCheckbox = this._regexLabel.checkboxElement;
@@ -51,11 +51,11 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
     this._searchProgressPlaceholderElement = this._searchToolbarElement.createChild('div', 'flex-centered');
     this._searchResultsMessageElement = this._searchToolbarElement.createChild('div', 'search-message');
 
-    this._advancedSearchConfig = WebInspector.settings.createLocalSetting(
-        'advancedSearchConfig', new WebInspector.SearchConfig('', true, false).toPlainObject());
+    this._advancedSearchConfig = Common.settings.createLocalSetting(
+        'advancedSearchConfig', new Workspace.SearchConfig('', true, false).toPlainObject());
     this._load();
-    /** @type {!WebInspector.SearchScope} */
-    this._searchScope = new WebInspector.SourcesSearchScope();
+    /** @type {!Sources.SearchScope} */
+    this._searchScope = new Sources.SourcesSearchScope();
   }
 
   /**
@@ -63,18 +63,18 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
    * @param {string=} filePath
    */
   static openSearch(query, filePath) {
-    WebInspector.viewManager.showView('sources.search');
+    UI.viewManager.showView('sources.search');
     var searchView =
-        /** @type {!WebInspector.AdvancedSearchView} */ (self.runtime.sharedInstance(WebInspector.AdvancedSearchView));
+        /** @type {!Sources.AdvancedSearchView} */ (self.runtime.sharedInstance(Sources.AdvancedSearchView));
     var fileMask = filePath ? ' file:' + filePath : '';
     searchView._toggle(query + fileMask);
   }
 
   /**
-   * @return {!WebInspector.SearchConfig}
+   * @return {!Workspace.SearchConfig}
    */
   _buildSearchConfig() {
-    return new WebInspector.SearchConfig(
+    return new Workspace.SearchConfig(
         this._search.value, this._ignoreCaseCheckbox.checked, this._regexCheckbox.checked);
   }
 
@@ -122,11 +122,11 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
     this._isIndexing = true;
     if (this._progressIndicator)
       this._progressIndicator.done();
-    this._progressIndicator = new WebInspector.ProgressIndicator();
-    this._searchMessageElement.textContent = WebInspector.UIString('Indexing\u2026');
+    this._progressIndicator = new UI.ProgressIndicator();
+    this._searchMessageElement.textContent = Common.UIString('Indexing\u2026');
     this._progressIndicator.show(this._searchProgressPlaceholderElement);
     this._searchScope.performIndexing(
-        new WebInspector.ProgressProxy(this._progressIndicator, this._onIndexingFinished.bind(this)));
+        new Common.ProgressProxy(this._progressIndicator, this._onIndexingFinished.bind(this)));
   }
 
   _onSearchInputClear() {
@@ -137,7 +137,7 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
 
   /**
    * @param {number} searchId
-   * @param {!WebInspector.FileBasedSearchResult} searchResult
+   * @param {!Sources.FileBasedSearchResult} searchResult
    */
   _onSearchResult(searchId, searchResult) {
     if (searchId !== this._searchId || !this._progressIndicator)
@@ -170,7 +170,7 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.SearchConfig} searchConfig
+   * @param {!Workspace.SearchConfig} searchConfig
    */
   _startSearch(searchConfig) {
     this._resetSearch();
@@ -181,13 +181,13 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.SearchConfig} searchConfig
+   * @param {!Workspace.SearchConfig} searchConfig
    */
   _innerStartSearch(searchConfig) {
     this._searchConfig = searchConfig;
     if (this._progressIndicator)
       this._progressIndicator.done();
-    this._progressIndicator = new WebInspector.ProgressIndicator();
+    this._progressIndicator = new UI.ProgressIndicator();
     this._searchStarted(this._progressIndicator);
     this._searchScope.performSearch(
         searchConfig, this._progressIndicator, this._onSearchResult.bind(this, this._searchId),
@@ -212,18 +212,18 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.ProgressIndicator} progressIndicator
+   * @param {!UI.ProgressIndicator} progressIndicator
    */
   _searchStarted(progressIndicator) {
     this._resetResults();
     this._resetCounters();
 
-    this._searchMessageElement.textContent = WebInspector.UIString('Searching\u2026');
+    this._searchMessageElement.textContent = Common.UIString('Searching\u2026');
     progressIndicator.show(this._searchProgressPlaceholderElement);
     this._updateSearchResultsMessage();
 
     if (!this._searchingView)
-      this._searchingView = new WebInspector.EmptyWidget(WebInspector.UIString('Searching\u2026'));
+      this._searchingView = new UI.EmptyWidget(Common.UIString('Searching\u2026'));
     this._searchingView.show(this._searchResultsElement);
   }
 
@@ -231,12 +231,12 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
    * @param {boolean} finished
    */
   _indexingFinished(finished) {
-    this._searchMessageElement.textContent = finished ? '' : WebInspector.UIString('Indexing interrupted.');
+    this._searchMessageElement.textContent = finished ? '' : Common.UIString('Indexing interrupted.');
   }
 
   _updateSearchResultsMessage() {
     if (this._searchMatchesCount && this._searchResultsCount)
-      this._searchResultsMessageElement.textContent = WebInspector.UIString(
+      this._searchResultsMessageElement.textContent = Common.UIString(
           'Found %d matches in %d files.', this._searchMatchesCount, this._nonEmptySearchResultsCount);
     else
       this._searchResultsMessageElement.textContent = '';
@@ -260,13 +260,13 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
     this._resetResults();
 
     if (!this._notFoundView)
-      this._notFoundView = new WebInspector.EmptyWidget(WebInspector.UIString('No matches found.'));
+      this._notFoundView = new UI.EmptyWidget(Common.UIString('No matches found.'));
     this._notFoundView.show(this._searchResultsElement);
-    this._searchResultsMessageElement.textContent = WebInspector.UIString('No matches found.');
+    this._searchResultsMessageElement.textContent = Common.UIString('No matches found.');
   }
 
   /**
-   * @param {!WebInspector.FileBasedSearchResult} searchResult
+   * @param {!Sources.FileBasedSearchResult} searchResult
    */
   _addSearchResult(searchResult) {
     this._searchMatchesCount += searchResult.searchMatches.length;
@@ -281,7 +281,7 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
    */
   _searchFinished(finished) {
     this._searchMessageElement.textContent =
-        finished ? WebInspector.UIString('Search finished.') : WebInspector.UIString('Search interrupted.');
+        finished ? Common.UIString('Search finished.') : Common.UIString('Search interrupted.');
   }
 
   /**
@@ -304,7 +304,7 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
    */
   _onKeyDown(event) {
     switch (event.keyCode) {
-      case WebInspector.KeyboardShortcut.Keys.Enter.code:
+      case UI.KeyboardShortcut.Keys.Enter.code:
         this._onAction();
         break;
     }
@@ -322,7 +322,7 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
   }
 
   _load() {
-    var searchConfig = WebInspector.SearchConfig.fromPlainObject(this._advancedSearchConfig.get());
+    var searchConfig = Workspace.SearchConfig.fromPlainObject(this._advancedSearchConfig.get());
     this._search.value = searchConfig.query();
     this._ignoreCaseCheckbox.checked = searchConfig.ignoreCase();
     this._regexCheckbox.checked = searchConfig.isRegex();
@@ -344,9 +344,9 @@ WebInspector.AdvancedSearchView = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.SearchResultsPane = class {
+Sources.SearchResultsPane = class {
   /**
-   * @param {!WebInspector.ProjectSearchConfig} searchConfig
+   * @param {!Workspace.ProjectSearchConfig} searchConfig
    */
   constructor(searchConfig) {
     this._searchConfig = searchConfig;
@@ -354,27 +354,27 @@ WebInspector.SearchResultsPane = class {
   }
 
   /**
-   * @return {!WebInspector.ProjectSearchConfig}
+   * @return {!Workspace.ProjectSearchConfig}
    */
   get searchConfig() {
     return this._searchConfig;
   }
 
   /**
-   * @param {!WebInspector.FileBasedSearchResult} searchResult
+   * @param {!Sources.FileBasedSearchResult} searchResult
    */
   addSearchResult(searchResult) {
   }
 };
 
 /**
- * @implements {WebInspector.ActionDelegate}
+ * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-WebInspector.AdvancedSearchView.ActionDelegate = class {
+Sources.AdvancedSearchView.ActionDelegate = class {
   /**
    * @override
-   * @param {!WebInspector.Context} context
+   * @param {!UI.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
@@ -384,20 +384,20 @@ WebInspector.AdvancedSearchView.ActionDelegate = class {
   }
 
   _showSearch() {
-    var selection = WebInspector.inspectorView.element.getDeepSelection();
+    var selection = UI.inspectorView.element.getDeepSelection();
     var queryCandidate = '';
     if (selection.rangeCount)
       queryCandidate = selection.toString().replace(/\r?\n.*/, '');
-    WebInspector.AdvancedSearchView.openSearch(queryCandidate);
+    Sources.AdvancedSearchView.openSearch(queryCandidate);
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.FileBasedSearchResult = class {
+Sources.FileBasedSearchResult = class {
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {!Array.<!Object>} searchMatches
    */
   constructor(uiSourceCode, searchMatches) {
@@ -409,27 +409,27 @@ WebInspector.FileBasedSearchResult = class {
 /**
  * @interface
  */
-WebInspector.SearchScope = function() {};
+Sources.SearchScope = function() {};
 
-WebInspector.SearchScope.prototype = {
+Sources.SearchScope.prototype = {
   /**
-   * @param {!WebInspector.SearchConfig} searchConfig
-   * @param {!WebInspector.Progress} progress
-   * @param {function(!WebInspector.FileBasedSearchResult)} searchResultCallback
+   * @param {!Workspace.SearchConfig} searchConfig
+   * @param {!Common.Progress} progress
+   * @param {function(!Sources.FileBasedSearchResult)} searchResultCallback
    * @param {function(boolean)} searchFinishedCallback
    */
   performSearch: function(searchConfig, progress, searchResultCallback, searchFinishedCallback) {},
 
   /**
-   * @param {!WebInspector.Progress} progress
+   * @param {!Common.Progress} progress
    */
   performIndexing: function(progress) {},
 
   stopSearch: function() {},
 
   /**
-   * @param {!WebInspector.ProjectSearchConfig} searchConfig
-   * @return {!WebInspector.SearchResultsPane}
+   * @param {!Workspace.ProjectSearchConfig} searchConfig
+   * @return {!Sources.SearchResultsPane}
    */
   createSearchResultsPane: function(searchConfig) {}
 };

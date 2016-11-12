@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.AuditLauncherView = class extends WebInspector.VBox {
+Audits.AuditLauncherView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.AuditController} auditController
+   * @param {!Audits.AuditController} auditController
    */
   constructor(auditController) {
     super();
@@ -58,18 +58,18 @@ WebInspector.AuditLauncherView = class extends WebInspector.VBox {
 
     this._headerElement = createElement('h1');
     this._headerElement.className = 'no-audits';
-    this._headerElement.textContent = WebInspector.UIString('No audits to run');
+    this._headerElement.textContent = Common.UIString('No audits to run');
     this._contentElement.appendChild(this._headerElement);
 
-    WebInspector.targetManager.addModelListener(
-        WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
+    SDK.targetManager.addModelListener(
+        SDK.NetworkManager, SDK.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
+    SDK.targetManager.addModelListener(
+        SDK.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
 
     var defaultSelectedAuditCategory = {};
-    defaultSelectedAuditCategory[WebInspector.AuditLauncherView.AllCategoriesKey] = true;
+    defaultSelectedAuditCategory[Audits.AuditLauncherView.AllCategoriesKey] = true;
     this._selectedCategoriesSetting =
-        WebInspector.settings.createSetting('selectedAuditCategories', defaultSelectedAuditCategory);
+        Common.settings.createSetting('selectedAuditCategories', defaultSelectedAuditCategory);
   }
 
   _resetResourceCount() {
@@ -78,25 +78,25 @@ WebInspector.AuditLauncherView = class extends WebInspector.VBox {
   }
 
   _onRequestStarted(event) {
-    var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
+    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     // Ignore long-living WebSockets for the sake of progress indicator, as we won't be waiting them anyway.
-    if (request.resourceType() === WebInspector.resourceTypes.WebSocket)
+    if (request.resourceType() === Common.resourceTypes.WebSocket)
       return;
     ++this._totalResources;
     this._updateResourceProgress();
   }
 
   _onRequestFinished(event) {
-    var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
+    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     // See resorceStarted for details.
-    if (request.resourceType() === WebInspector.resourceTypes.WebSocket)
+    if (request.resourceType() === Common.resourceTypes.WebSocket)
       return;
     ++this._loadedResources;
     this._updateResourceProgress();
   }
 
   /**
-   * @param {!WebInspector.AuditCategory} category
+   * @param {!Audits.AuditCategory} category
    */
   addCategory(category) {
     if (!this._sortedCategories.length)
@@ -111,8 +111,8 @@ WebInspector.AuditLauncherView = class extends WebInspector.VBox {
     }
 
     /**
-     * @param {!WebInspector.AuditCategory} a
-     * @param {!WebInspector.AuditCategory} b
+     * @param {!Audits.AuditCategory} a
+     * @param {!Audits.AuditCategory} b
      * @return {number}
      */
     function compareCategories(a, b) {
@@ -138,18 +138,18 @@ WebInspector.AuditLauncherView = class extends WebInspector.VBox {
     }
 
     this._resetResourceCount();
-    this._progressIndicator = new WebInspector.ProgressIndicator();
+    this._progressIndicator = new UI.ProgressIndicator();
     this._buttonContainerElement.appendChild(this._progressIndicator.element);
     this._displayResourceLoadingProgress = true;
 
     /**
-     * @this {WebInspector.AuditLauncherView}
+     * @this {Audits.AuditLauncherView}
      */
     function onAuditStarted() {
       this._displayResourceLoadingProgress = false;
     }
     this._auditController.initiateAudit(
-        catIds, new WebInspector.ProgressProxy(this._progressIndicator, this._auditsDone.bind(this)),
+        catIds, new Common.ProgressProxy(this._progressIndicator, this._auditsDone.bind(this)),
         this._auditPresentStateElement.checked, onAuditStarted.bind(this));
   }
 
@@ -221,23 +221,23 @@ WebInspector.AuditLauncherView = class extends WebInspector.VBox {
 
   _createLauncherUI() {
     this._headerElement = createElement('h1');
-    this._headerElement.textContent = WebInspector.UIString('Select audits to run');
+    this._headerElement.textContent = Common.UIString('Select audits to run');
 
     this._contentElement.removeChildren();
     this._contentElement.appendChild(this._headerElement);
 
     /**
      * @param {!Event} event
-     * @this {WebInspector.AuditLauncherView}
+     * @this {Audits.AuditLauncherView}
      */
     function handleSelectAllClick(event) {
       this._selectAllClicked(event.target.checked, true);
     }
-    var categoryElement = this._createCategoryElement(WebInspector.UIString('Select All'), '');
+    var categoryElement = this._createCategoryElement(Common.UIString('Select All'), '');
     categoryElement.id = 'audit-launcher-selectall';
     this._selectAllCheckboxElement = categoryElement.checkboxElement;
     this._selectAllCheckboxElement.checked =
-        this._selectedCategoriesSetting.get()[WebInspector.AuditLauncherView.AllCategoriesKey];
+        this._selectedCategoriesSetting.get()[Audits.AuditLauncherView.AllCategoriesKey];
     this._selectAllCheckboxElement.addEventListener('click', handleSelectAllClick.bind(this), false);
     this._contentElement.appendChild(categoryElement);
 
@@ -248,18 +248,18 @@ WebInspector.AuditLauncherView = class extends WebInspector.VBox {
 
     this._buttonContainerElement = this._contentElement.createChild('div', 'button-container');
 
-    var radio = createRadioLabel('audit-mode', WebInspector.UIString('Audit Present State'), true);
+    var radio = createRadioLabel('audit-mode', Common.UIString('Audit Present State'), true);
     this._buttonContainerElement.appendChild(radio);
     this._auditPresentStateElement = radio.radioElement;
 
-    radio = createRadioLabel('audit-mode', WebInspector.UIString('Reload Page and Audit on Load'));
+    radio = createRadioLabel('audit-mode', Common.UIString('Reload Page and Audit on Load'));
     this._buttonContainerElement.appendChild(radio);
     this._auditReloadedStateElement = radio.radioElement;
 
-    this._launchButton = createTextButton(WebInspector.UIString('Run'), this._launchButtonClicked.bind(this));
+    this._launchButton = createTextButton(Common.UIString('Run'), this._launchButtonClicked.bind(this));
     this._buttonContainerElement.appendChild(this._launchButton);
 
-    this._clearButton = createTextButton(WebInspector.UIString('Clear'), this._clearButtonClicked.bind(this));
+    this._clearButton = createTextButton(Common.UIString('Clear'), this._clearButtonClicked.bind(this));
     this._buttonContainerElement.appendChild(this._clearButton);
 
     this._selectAllClicked(this._selectAllCheckboxElement.checked);
@@ -268,7 +268,7 @@ WebInspector.AuditLauncherView = class extends WebInspector.VBox {
   _updateResourceProgress() {
     if (this._displayResourceLoadingProgress)
       this._progressIndicator.setTitle(
-          WebInspector.UIString('Loading (%d of %d)', this._loadedResources, this._totalResources));
+          Common.UIString('Loading (%d of %d)', this._loadedResources, this._totalResources));
   }
 
   /**
@@ -282,15 +282,15 @@ WebInspector.AuditLauncherView = class extends WebInspector.VBox {
     var childNodes = this._categoriesElement.childNodes;
     for (var i = 0, length = childNodes.length; i < length; ++i)
       selectedCategories[childNodes[i].__displayName] = childNodes[i].checkboxElement.checked;
-    selectedCategories[WebInspector.AuditLauncherView.AllCategoriesKey] = this._selectAllCheckboxElement.checked;
+    selectedCategories[Audits.AuditLauncherView.AllCategoriesKey] = this._selectAllCheckboxElement.checked;
     this._selectedCategoriesSetting.set(selectedCategories);
     this._updateButton();
   }
 
   _updateButton() {
-    this._launchButton.textContent = this._auditRunning ? WebInspector.UIString('Stop') : WebInspector.UIString('Run');
+    this._launchButton.textContent = this._auditRunning ? Common.UIString('Stop') : Common.UIString('Run');
     this._launchButton.disabled = !this._currentCategoriesCount;
   }
 };
 
-WebInspector.AuditLauncherView.AllCategoriesKey = '__AllCategories';
+Audits.AuditLauncherView.AllCategoriesKey = '__AllCategories';

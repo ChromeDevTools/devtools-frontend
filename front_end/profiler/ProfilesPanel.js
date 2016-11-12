@@ -26,7 +26,7 @@
 /**
  * @unrestricted
  */
-WebInspector.ProfileType = class extends WebInspector.Object {
+Profiler.ProfileType = class extends Common.Object {
   /**
    * @param {string} id
    * @param {string} name
@@ -36,9 +36,9 @@ WebInspector.ProfileType = class extends WebInspector.Object {
     super();
     this._id = id;
     this._name = name;
-    /** @type {!Array.<!WebInspector.ProfileHeader>} */
+    /** @type {!Array.<!Profiler.ProfileHeader>} */
     this._profiles = [];
-    /** @type {?WebInspector.ProfileHeader} */
+    /** @type {?Profiler.ProfileHeader} */
     this._profileBeingRecorded = null;
     this._nextProfileUid = 1;
 
@@ -75,7 +75,7 @@ WebInspector.ProfileType = class extends WebInspector.Object {
   }
 
   /**
-   * @return {!Array.<!WebInspector.ToolbarItem>}
+   * @return {!Array.<!UI.ToolbarItem>}
    */
   toolbarItems() {
     return [];
@@ -123,13 +123,13 @@ WebInspector.ProfileType = class extends WebInspector.Object {
   }
 
   /**
-   * @return {!Array.<!WebInspector.ProfileHeader>}
+   * @return {!Array.<!Profiler.ProfileHeader>}
    */
   getProfiles() {
     /**
-     * @param {!WebInspector.ProfileHeader} profile
+     * @param {!Profiler.ProfileHeader} profile
      * @return {boolean}
-     * @this {WebInspector.ProfileType}
+     * @this {Profiler.ProfileType}
      */
     function isFinished(profile) {
       return this._profileBeingRecorded !== profile;
@@ -146,7 +146,7 @@ WebInspector.ProfileType = class extends WebInspector.Object {
 
   /**
    * @param {number} uid
-   * @return {?WebInspector.ProfileHeader}
+   * @return {?Profiler.ProfileHeader}
    */
   getProfile(uid) {
     for (var i = 0; i < this._profiles.length; ++i) {
@@ -173,22 +173,22 @@ WebInspector.ProfileType = class extends WebInspector.Object {
 
   /**
    * @param {string} title
-   * @return {!WebInspector.ProfileHeader}
+   * @return {!Profiler.ProfileHeader}
    */
   createProfileLoadedFromFile(title) {
     throw new Error('Needs implemented.');
   }
 
   /**
-   * @param {!WebInspector.ProfileHeader} profile
+   * @param {!Profiler.ProfileHeader} profile
    */
   addProfile(profile) {
     this._profiles.push(profile);
-    this.dispatchEventToListeners(WebInspector.ProfileType.Events.AddProfileHeader, profile);
+    this.dispatchEventToListeners(Profiler.ProfileType.Events.AddProfileHeader, profile);
   }
 
   /**
-   * @param {!WebInspector.ProfileHeader} profile
+   * @param {!Profiler.ProfileHeader} profile
    */
   removeProfile(profile) {
     var index = this._profiles.indexOf(profile);
@@ -204,14 +204,14 @@ WebInspector.ProfileType = class extends WebInspector.Object {
   }
 
   /**
-   * @return {?WebInspector.ProfileHeader}
+   * @return {?Profiler.ProfileHeader}
    */
   profileBeingRecorded() {
     return this._profileBeingRecorded;
   }
 
   /**
-   * @param {?WebInspector.ProfileHeader} profile
+   * @param {?Profiler.ProfileHeader} profile
    */
   setProfileBeingRecorded(profile) {
     this._profileBeingRecorded = profile;
@@ -230,10 +230,10 @@ WebInspector.ProfileType = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.ProfileHeader} profile
+   * @param {!Profiler.ProfileHeader} profile
    */
   _disposeProfile(profile) {
-    this.dispatchEventToListeners(WebInspector.ProfileType.Events.RemoveProfileHeader, profile);
+    this.dispatchEventToListeners(Profiler.ProfileType.Events.RemoveProfileHeader, profile);
     profile.dispose();
     if (this._profileBeingRecorded === profile) {
       this.profileBeingRecordedRemoved();
@@ -243,7 +243,7 @@ WebInspector.ProfileType = class extends WebInspector.Object {
 };
 
 /** @enum {symbol} */
-WebInspector.ProfileType.Events = {
+Profiler.ProfileType.Events = {
   AddProfileHeader: Symbol('add-profile-header'),
   ProfileComplete: Symbol('profile-complete'),
   RemoveProfileHeader: Symbol('remove-profile-header'),
@@ -253,12 +253,12 @@ WebInspector.ProfileType.Events = {
 /**
  * @interface
  */
-WebInspector.ProfileType.DataDisplayDelegate = function() {};
+Profiler.ProfileType.DataDisplayDelegate = function() {};
 
-WebInspector.ProfileType.DataDisplayDelegate.prototype = {
+Profiler.ProfileType.DataDisplayDelegate.prototype = {
   /**
-   * @param {?WebInspector.ProfileHeader} profile
-   * @return {?WebInspector.Widget}
+   * @param {?Profiler.ProfileHeader} profile
+   * @return {?UI.Widget}
    */
   showProfile: function(profile) {},
 
@@ -272,10 +272,10 @@ WebInspector.ProfileType.DataDisplayDelegate.prototype = {
 /**
  * @unrestricted
  */
-WebInspector.ProfileHeader = class extends WebInspector.Object {
+Profiler.ProfileHeader = class extends Common.Object {
   /**
-   * @param {?WebInspector.Target} target
-   * @param {!WebInspector.ProfileType} profileType
+   * @param {?SDK.Target} target
+   * @param {!Profiler.ProfileType} profileType
    * @param {string} title
    */
   constructor(target, profileType, title) {
@@ -288,14 +288,14 @@ WebInspector.ProfileHeader = class extends WebInspector.Object {
   }
 
   /**
-   * @return {?WebInspector.Target}
+   * @return {?SDK.Target}
    */
   target() {
     return this._target;
   }
 
   /**
-   * @return {!WebInspector.ProfileType}
+   * @return {!Profiler.ProfileType}
    */
   profileType() {
     return this._profileType;
@@ -307,21 +307,21 @@ WebInspector.ProfileHeader = class extends WebInspector.Object {
    */
   updateStatus(subtitle, wait) {
     this.dispatchEventToListeners(
-        WebInspector.ProfileHeader.Events.UpdateStatus, new WebInspector.ProfileHeader.StatusUpdate(subtitle, wait));
+        Profiler.ProfileHeader.Events.UpdateStatus, new Profiler.ProfileHeader.StatusUpdate(subtitle, wait));
   }
 
   /**
    * Must be implemented by subclasses.
-   * @param {!WebInspector.ProfileType.DataDisplayDelegate} dataDisplayDelegate
-   * @return {!WebInspector.ProfileSidebarTreeElement}
+   * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
+   * @return {!Profiler.ProfileSidebarTreeElement}
    */
   createSidebarTreeElement(dataDisplayDelegate) {
     throw new Error('Needs implemented.');
   }
 
   /**
-   * @param {!WebInspector.ProfileType.DataDisplayDelegate} dataDisplayDelegate
-   * @return {!WebInspector.Widget}
+   * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
+   * @return {!UI.Widget}
    */
   createView(dataDisplayDelegate) {
     throw new Error('Not implemented.');
@@ -368,7 +368,7 @@ WebInspector.ProfileHeader = class extends WebInspector.Object {
 /**
  * @unrestricted
  */
-WebInspector.ProfileHeader.StatusUpdate = class {
+Profiler.ProfileHeader.StatusUpdate = class {
   /**
    * @param {?string} subtitle
    * @param {boolean|undefined} wait
@@ -382,16 +382,16 @@ WebInspector.ProfileHeader.StatusUpdate = class {
 };
 
 /** @enum {symbol} */
-WebInspector.ProfileHeader.Events = {
+Profiler.ProfileHeader.Events = {
   UpdateStatus: Symbol('UpdateStatus'),
   ProfileReceived: Symbol('ProfileReceived')
 };
 
 /**
- * @implements {WebInspector.ProfileType.DataDisplayDelegate}
+ * @implements {Profiler.ProfileType.DataDisplayDelegate}
  * @unrestricted
  */
-WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
+Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
   constructor() {
     super('profiles');
     this.registerRequiredCSS('ui/panelEnablerView.css');
@@ -399,10 +399,10 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
     this.registerRequiredCSS('profiler/profilesPanel.css');
     this.registerRequiredCSS('components/objectValue.css');
 
-    var mainContainer = new WebInspector.VBox();
+    var mainContainer = new UI.VBox();
     this.splitWidget().setMainWidget(mainContainer);
 
-    this.profilesItemTreeElement = new WebInspector.ProfilesSidebarTreeElement(this);
+    this.profilesItemTreeElement = new Profiler.ProfilesSidebarTreeElement(this);
 
     this._sidebarTree = new TreeOutlineInShadow();
     this._sidebarTree.registerRequiredCSS('profiler/profilesSidebarTree.css');
@@ -421,29 +421,29 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
     this.panelSidebarElement().classList.add('profiles-sidebar-tree-box');
     var toolbarContainerLeft = createElementWithClass('div', 'profiles-toolbar');
     this.panelSidebarElement().insertBefore(toolbarContainerLeft, this.panelSidebarElement().firstChild);
-    var toolbar = new WebInspector.Toolbar('', toolbarContainerLeft);
+    var toolbar = new UI.Toolbar('', toolbarContainerLeft);
 
     this._toggleRecordAction =
-        /** @type {!WebInspector.Action }*/ (WebInspector.actionRegistry.action('profiler.toggle-recording'));
-    this._toggleRecordButton = WebInspector.Toolbar.createActionButton(this._toggleRecordAction);
+        /** @type {!UI.Action }*/ (UI.actionRegistry.action('profiler.toggle-recording'));
+    this._toggleRecordButton = UI.Toolbar.createActionButton(this._toggleRecordAction);
     toolbar.appendToolbarItem(this._toggleRecordButton);
 
     this.clearResultsButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Clear all profiles'), 'largeicon-clear');
+        new UI.ToolbarButton(Common.UIString('Clear all profiles'), 'largeicon-clear');
     this.clearResultsButton.addEventListener('click', this._reset, this);
     toolbar.appendToolbarItem(this.clearResultsButton);
 
-    this._profileTypeToolbar = new WebInspector.Toolbar('', this._toolbarElement);
-    this._profileViewToolbar = new WebInspector.Toolbar('', this._toolbarElement);
+    this._profileTypeToolbar = new UI.Toolbar('', this._toolbarElement);
+    this._profileViewToolbar = new UI.Toolbar('', this._toolbarElement);
 
     this._profileGroups = {};
-    this._launcherView = new WebInspector.MultiProfileLauncherView(this);
+    this._launcherView = new Profiler.MultiProfileLauncherView(this);
     this._launcherView.addEventListener(
-        WebInspector.MultiProfileLauncherView.Events.ProfileTypeSelected, this._onProfileTypeSelected, this);
+        Profiler.MultiProfileLauncherView.Events.ProfileTypeSelected, this._onProfileTypeSelected, this);
 
     this._profileToView = [];
     this._typeIdToSidebarSection = {};
-    var types = WebInspector.ProfileTypeRegistry.instance.profileTypes();
+    var types = Profiler.ProfileTypeRegistry.instance.profileTypes();
     for (var i = 0; i < types.length; i++)
       this._registerProfileType(types[i]);
     this._launcherView.restoreSelectedProfileType();
@@ -455,15 +455,15 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
 
     this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
 
-    WebInspector.targetManager.addEventListener(
-        WebInspector.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
+    SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
   }
 
   /**
-   * @return {!WebInspector.ProfilesPanel}
+   * @return {!Profiler.ProfilesPanel}
    */
   static _instance() {
-    return /** @type {!WebInspector.ProfilesPanel} */ (self.runtime.sharedInstance(WebInspector.ProfilesPanel));
+    return /** @type {!Profiler.ProfilesPanel} */ (self.runtime.sharedInstance(Profiler.ProfilesPanel));
   }
 
   /**
@@ -481,7 +481,7 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
 
   /**
    * @override
-   * @return {?WebInspector.SearchableView}
+   * @return {?UI.SearchableView}
    */
   searchableView() {
     return this.visibleView && this.visibleView.searchableView ? this.visibleView.searchableView() : null;
@@ -490,13 +490,13 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
   _createFileSelectorElement() {
     if (this._fileSelectorElement)
       this.element.removeChild(this._fileSelectorElement);
-    this._fileSelectorElement = WebInspector.createFileSelectorElement(this._loadFromFile.bind(this));
-    WebInspector.ProfilesPanel._fileSelectorElement = this._fileSelectorElement;
+    this._fileSelectorElement = Bindings.createFileSelectorElement(this._loadFromFile.bind(this));
+    Profiler.ProfilesPanel._fileSelectorElement = this._fileSelectorElement;
     this.element.appendChild(this._fileSelectorElement);
   }
 
   _findProfileTypeByExtension(fileName) {
-    var types = WebInspector.ProfileTypeRegistry.instance.profileTypes();
+    var types = Profiler.ProfileTypeRegistry.instance.profileTypes();
     for (var i = 0; i < types.length; i++) {
       var type = types[i];
       var extension = type.fileExtension();
@@ -517,20 +517,20 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
     var profileType = this._findProfileTypeByExtension(file.name);
     if (!profileType) {
       var extensions = [];
-      var types = WebInspector.ProfileTypeRegistry.instance.profileTypes();
+      var types = Profiler.ProfileTypeRegistry.instance.profileTypes();
       for (var i = 0; i < types.length; i++) {
         var extension = types[i].fileExtension();
         if (!extension || extensions.indexOf(extension) !== -1)
           continue;
         extensions.push(extension);
       }
-      WebInspector.console.error(WebInspector.UIString(
+      Common.console.error(Common.UIString(
           'Can\'t load file. Only files with extensions \'%s\' can be loaded.', extensions.join('\', \'')));
       return;
     }
 
     if (!!profileType.profileBeingRecorded()) {
-      WebInspector.console.error(WebInspector.UIString('Can\'t load profile while another profile is recording.'));
+      Common.console.error(Common.UIString('Can\'t load profile while another profile is recording.'));
       return;
     }
 
@@ -564,13 +564,13 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
    * @param {boolean} toggled
    */
   _updateToggleRecordAction(toggled) {
-    var enable = toggled || !WebInspector.targetManager.allTargetsSuspended();
+    var enable = toggled || !SDK.targetManager.allTargetsSuspended();
     this._toggleRecordAction.setEnabled(enable);
     this._toggleRecordAction.setToggled(toggled);
     if (enable)
       this._toggleRecordButton.setTitle(this._selectedProfileType ? this._selectedProfileType.buttonTooltip : '');
     else
-      this._toggleRecordButton.setTitle(WebInspector.anotherProfilerActiveLabel());
+      this._toggleRecordButton.setTitle(UI.anotherProfilerActiveLabel());
     if (this._selectedProfileType)
       this._launcherView.updateProfileType(this._selectedProfileType, enable);
   }
@@ -581,10 +581,10 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onProfileTypeSelected(event) {
-    this._selectedProfileType = /** @type {!WebInspector.ProfileType} */ (event.data);
+    this._selectedProfileType = /** @type {!Profiler.ProfileType} */ (event.data);
     this._updateProfileTypeSpecificUI();
   }
 
@@ -597,7 +597,7 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   _reset() {
-    var types = WebInspector.ProfileTypeRegistry.instance.profileTypes();
+    var types = Profiler.ProfileTypeRegistry.instance.profileTypes();
     for (var i = 0; i < types.length; i++)
       types[i]._reset();
 
@@ -629,44 +629,44 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!WebInspector.ProfileType} profileType
+   * @param {!Profiler.ProfileType} profileType
    */
   _registerProfileType(profileType) {
     this._launcherView.addProfileType(profileType);
-    var profileTypeSection = new WebInspector.ProfileTypeSidebarSection(this, profileType);
+    var profileTypeSection = new Profiler.ProfileTypeSidebarSection(this, profileType);
     this._typeIdToSidebarSection[profileType.id] = profileTypeSection;
     this._sidebarTree.appendChild(profileTypeSection);
     profileTypeSection.childrenListElement.addEventListener(
         'contextmenu', this._handleContextMenuEvent.bind(this), false);
 
     /**
-     * @param {!WebInspector.Event} event
-     * @this {WebInspector.ProfilesPanel}
+     * @param {!Common.Event} event
+     * @this {Profiler.ProfilesPanel}
      */
     function onAddProfileHeader(event) {
-      this._addProfileHeader(/** @type {!WebInspector.ProfileHeader} */ (event.data));
+      this._addProfileHeader(/** @type {!Profiler.ProfileHeader} */ (event.data));
     }
 
     /**
-     * @param {!WebInspector.Event} event
-     * @this {WebInspector.ProfilesPanel}
+     * @param {!Common.Event} event
+     * @this {Profiler.ProfilesPanel}
      */
     function onRemoveProfileHeader(event) {
-      this._removeProfileHeader(/** @type {!WebInspector.ProfileHeader} */ (event.data));
+      this._removeProfileHeader(/** @type {!Profiler.ProfileHeader} */ (event.data));
     }
 
     /**
-     * @param {!WebInspector.Event} event
-     * @this {WebInspector.ProfilesPanel}
+     * @param {!Common.Event} event
+     * @this {Profiler.ProfilesPanel}
      */
     function profileComplete(event) {
-      this.showProfile(/** @type {!WebInspector.ProfileHeader} */ (event.data));
+      this.showProfile(/** @type {!Profiler.ProfileHeader} */ (event.data));
     }
 
-    profileType.addEventListener(WebInspector.ProfileType.Events.ViewUpdated, this._updateProfileTypeSpecificUI, this);
-    profileType.addEventListener(WebInspector.ProfileType.Events.AddProfileHeader, onAddProfileHeader, this);
-    profileType.addEventListener(WebInspector.ProfileType.Events.RemoveProfileHeader, onRemoveProfileHeader, this);
-    profileType.addEventListener(WebInspector.ProfileType.Events.ProfileComplete, profileComplete, this);
+    profileType.addEventListener(Profiler.ProfileType.Events.ViewUpdated, this._updateProfileTypeSpecificUI, this);
+    profileType.addEventListener(Profiler.ProfileType.Events.AddProfileHeader, onAddProfileHeader, this);
+    profileType.addEventListener(Profiler.ProfileType.Events.RemoveProfileHeader, onRemoveProfileHeader, this);
+    profileType.addEventListener(Profiler.ProfileType.Events.ProfileComplete, profileComplete, this);
 
     var profiles = profileType.getProfiles();
     for (var i = 0; i < profiles.length; i++)
@@ -677,13 +677,13 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
    * @param {!Event} event
    */
   _handleContextMenuEvent(event) {
-    var contextMenu = new WebInspector.ContextMenu(event);
-    if (this.visibleView instanceof WebInspector.HeapSnapshotView) {
+    var contextMenu = new UI.ContextMenu(event);
+    if (this.visibleView instanceof Profiler.HeapSnapshotView) {
       this.visibleView.populateContextMenu(contextMenu, event);
     }
     if (this.panelSidebarElement().isSelfOrAncestor(event.srcElement))
       contextMenu.appendItem(
-          WebInspector.UIString('Load\u2026'), this._fileSelectorElement.click.bind(this._fileSelectorElement));
+          Common.UIString('Load\u2026'), this._fileSelectorElement.click.bind(this._fileSelectorElement));
     contextMenu.show();
   }
 
@@ -692,7 +692,7 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!WebInspector.ProfileHeader} profile
+   * @param {!Profiler.ProfileHeader} profile
    */
   _addProfileHeader(profile) {
     var profileType = profile.profileType();
@@ -703,7 +703,7 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!WebInspector.ProfileHeader} profile
+   * @param {!Profiler.ProfileHeader} profile
    */
   _removeProfileHeader(profile) {
     if (profile.profileType()._profileBeingRecorded === profile)
@@ -727,8 +727,8 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
 
   /**
    * @override
-   * @param {?WebInspector.ProfileHeader} profile
-   * @return {?WebInspector.Widget}
+   * @param {?Profiler.ProfileHeader} profile
+   * @return {?UI.Widget}
    */
   showProfile(profile) {
     if (!profile ||
@@ -765,7 +765,7 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
    * @param {string} perspectiveName
    */
   showObject(snapshotObjectId, perspectiveName) {
-    var heapProfiles = WebInspector.ProfileTypeRegistry.instance.heapSnapshotProfileType.getProfiles();
+    var heapProfiles = Profiler.ProfileTypeRegistry.instance.heapSnapshotProfileType.getProfiles();
     for (var i = 0; i < heapProfiles.length; i++) {
       var profile = heapProfiles[i];
       // FIXME: allow to choose snapshot if there are several options.
@@ -779,8 +779,8 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!WebInspector.ProfileHeader} profile
-   * @return {!WebInspector.Widget}
+   * @param {!Profiler.ProfileHeader} profile
+   * @return {!UI.Widget}
    */
   _viewForProfile(profile) {
     var index = this._indexOfViewForProfile(profile);
@@ -793,7 +793,7 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!WebInspector.ProfileHeader} profile
+   * @param {!Profiler.ProfileHeader} profile
    * @return {number}
    */
   _indexOfViewForProfile(profile) {
@@ -812,34 +812,34 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
 
   /**
    * @param {!Event} event
-   * @param {!WebInspector.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu} contextMenu
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
-    if (!(target instanceof WebInspector.RemoteObject))
+    if (!(target instanceof SDK.RemoteObject))
       return;
 
     if (!this.isShowing())
       return;
 
-    var object = /** @type {!WebInspector.RemoteObject} */ (target);
+    var object = /** @type {!SDK.RemoteObject} */ (target);
     var objectId = object.objectId;
     if (!objectId)
       return;
 
-    var heapProfiles = WebInspector.ProfileTypeRegistry.instance.heapSnapshotProfileType.getProfiles();
+    var heapProfiles = Profiler.ProfileTypeRegistry.instance.heapSnapshotProfileType.getProfiles();
     if (!heapProfiles.length)
       return;
 
     /**
-     * @this {WebInspector.ProfilesPanel}
+     * @this {Profiler.ProfilesPanel}
      */
     function revealInView(viewName) {
       object.target().heapProfilerAgent().getHeapObjectId(objectId, didReceiveHeapObjectId.bind(this, viewName));
     }
 
     /**
-     * @this {WebInspector.ProfilesPanel}
+     * @this {Profiler.ProfilesPanel}
      */
     function didReceiveHeapObjectId(viewName, error, result) {
       if (!this.isShowing())
@@ -849,14 +849,14 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
     }
 
     contextMenu.appendItem(
-        WebInspector.UIString.capitalize('Reveal in Summary ^view'), revealInView.bind(this, 'Summary'));
+        Common.UIString.capitalize('Reveal in Summary ^view'), revealInView.bind(this, 'Summary'));
   }
 
   /**
    * @override
    */
   wasShown() {
-    WebInspector.context.setFlavor(WebInspector.ProfilesPanel, this);
+    UI.context.setFlavor(Profiler.ProfilesPanel, this);
   }
 
   /**
@@ -870,32 +870,32 @@ WebInspector.ProfilesPanel = class extends WebInspector.PanelWithSidebar {
    * @override
    */
   willHide() {
-    WebInspector.context.setFlavor(WebInspector.ProfilesPanel, null);
+    UI.context.setFlavor(Profiler.ProfilesPanel, null);
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.ProfileTypeSidebarSection = class extends TreeElement {
+Profiler.ProfileTypeSidebarSection = class extends TreeElement {
   /**
-   * @param {!WebInspector.ProfileType.DataDisplayDelegate} dataDisplayDelegate
-   * @param {!WebInspector.ProfileType} profileType
+   * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
+   * @param {!Profiler.ProfileType} profileType
    */
   constructor(dataDisplayDelegate, profileType) {
     super(profileType.treeItemTitle.escapeHTML(), true);
     this.selectable = false;
     this._dataDisplayDelegate = dataDisplayDelegate;
-    /** @type {!Array<!WebInspector.ProfileSidebarTreeElement>} */
+    /** @type {!Array<!Profiler.ProfileSidebarTreeElement>} */
     this._profileTreeElements = [];
-    /** @type {!Object<string, !WebInspector.ProfileTypeSidebarSection.ProfileGroup>} */
+    /** @type {!Object<string, !Profiler.ProfileTypeSidebarSection.ProfileGroup>} */
     this._profileGroups = {};
     this.expand();
     this.hidden = true;
   }
 
   /**
-   * @param {!WebInspector.ProfileHeader} profile
+   * @param {!Profiler.ProfileHeader} profile
    */
   addProfileHeader(profile) {
     this.hidden = false;
@@ -908,7 +908,7 @@ WebInspector.ProfileTypeSidebarSection = class extends TreeElement {
       var profileTitle = profile.title;
       var group = this._profileGroups[profileTitle];
       if (!group) {
-        group = new WebInspector.ProfileTypeSidebarSection.ProfileGroup();
+        group = new Profiler.ProfileTypeSidebarSection.ProfileGroup();
         this._profileGroups[profileTitle] = group;
       }
       group.profileSidebarTreeElements.push(profileTreeElement);
@@ -917,7 +917,7 @@ WebInspector.ProfileTypeSidebarSection = class extends TreeElement {
       if (groupSize === 2) {
         // Make a group TreeElement now that there are 2 profiles.
         group.sidebarTreeElement =
-            new WebInspector.ProfileGroupSidebarTreeElement(this._dataDisplayDelegate, profile.title);
+            new Profiler.ProfileGroupSidebarTreeElement(this._dataDisplayDelegate, profile.title);
 
         var firstProfileTreeElement = group.profileSidebarTreeElements[0];
         // Insert at the same index for the first profile of the group.
@@ -932,7 +932,7 @@ WebInspector.ProfileTypeSidebarSection = class extends TreeElement {
           firstProfileTreeElement.revealAndSelect();
 
         firstProfileTreeElement.setSmall(true);
-        firstProfileTreeElement.setMainTitle(WebInspector.UIString('Run %d', 1));
+        firstProfileTreeElement.setMainTitle(Common.UIString('Run %d', 1));
 
         this.treeOutline.element.classList.add('some-expandable');
       }
@@ -940,7 +940,7 @@ WebInspector.ProfileTypeSidebarSection = class extends TreeElement {
       if (groupSize >= 2) {
         sidebarParent = group.sidebarTreeElement;
         profileTreeElement.setSmall(true);
-        profileTreeElement.setMainTitle(WebInspector.UIString('Run %d', groupSize));
+        profileTreeElement.setMainTitle(Common.UIString('Run %d', groupSize));
       }
     }
 
@@ -948,7 +948,7 @@ WebInspector.ProfileTypeSidebarSection = class extends TreeElement {
   }
 
   /**
-   * @param {!WebInspector.ProfileHeader} profile
+   * @param {!Profiler.ProfileHeader} profile
    * @return {boolean}
    */
   removeProfileHeader(profile) {
@@ -966,7 +966,7 @@ WebInspector.ProfileTypeSidebarSection = class extends TreeElement {
       if (groupElements.length === 1) {
         // Move the last profile out of its group and remove the group.
         var pos = sidebarParent.children().indexOf(
-            /** @type {!WebInspector.ProfileGroupSidebarTreeElement} */ (group.sidebarTreeElement));
+            /** @type {!Profiler.ProfileGroupSidebarTreeElement} */ (group.sidebarTreeElement));
         group.sidebarTreeElement.removeChild(groupElements[0]);
         this.insertChild(groupElements[0], pos);
         groupElements[0].setSmall(false);
@@ -986,8 +986,8 @@ WebInspector.ProfileTypeSidebarSection = class extends TreeElement {
   }
 
   /**
-   * @param {!WebInspector.ProfileHeader} profile
-   * @return {?WebInspector.ProfileSidebarTreeElement}
+   * @param {!Profiler.ProfileHeader} profile
+   * @return {?Profiler.ProfileSidebarTreeElement}
    */
   sidebarElementForProfile(profile) {
     var index = this._sidebarElementIndex(profile);
@@ -995,7 +995,7 @@ WebInspector.ProfileTypeSidebarSection = class extends TreeElement {
   }
 
   /**
-   * @param {!WebInspector.ProfileHeader} profile
+   * @param {!Profiler.ProfileHeader} profile
    * @return {number}
    */
   _sidebarElementIndex(profile) {
@@ -1018,38 +1018,38 @@ WebInspector.ProfileTypeSidebarSection = class extends TreeElement {
 /**
  * @unrestricted
  */
-WebInspector.ProfileTypeSidebarSection.ProfileGroup = class {
+Profiler.ProfileTypeSidebarSection.ProfileGroup = class {
   constructor() {
-    /** @type {!Array<!WebInspector.ProfileSidebarTreeElement>} */
+    /** @type {!Array<!Profiler.ProfileSidebarTreeElement>} */
     this.profileSidebarTreeElements = [];
-    /** @type {?WebInspector.ProfileGroupSidebarTreeElement} */
+    /** @type {?Profiler.ProfileGroupSidebarTreeElement} */
     this.sidebarTreeElement = null;
   }
 };
 
 /**
- * @implements {WebInspector.ContextMenu.Provider}
+ * @implements {UI.ContextMenu.Provider}
  * @unrestricted
  */
-WebInspector.ProfilesPanel.ContextMenuProvider = class {
+Profiler.ProfilesPanel.ContextMenuProvider = class {
   /**
    * @override
    * @param {!Event} event
-   * @param {!WebInspector.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu} contextMenu
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
-    WebInspector.ProfilesPanel._instance().appendApplicableItems(event, contextMenu, target);
+    Profiler.ProfilesPanel._instance().appendApplicableItems(event, contextMenu, target);
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.ProfileSidebarTreeElement = class extends TreeElement {
+Profiler.ProfileSidebarTreeElement = class extends TreeElement {
   /**
-   * @param {!WebInspector.ProfileType.DataDisplayDelegate} dataDisplayDelegate
-   * @param {!WebInspector.ProfileHeader} profile
+   * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
+   * @param {!Profiler.ProfileHeader} profile
    * @param {string} className
    */
   constructor(dataDisplayDelegate, profile, className) {
@@ -1065,16 +1065,16 @@ WebInspector.ProfileSidebarTreeElement = class extends TreeElement {
     this._small = false;
     this._dataDisplayDelegate = dataDisplayDelegate;
     this.profile = profile;
-    profile.addEventListener(WebInspector.ProfileHeader.Events.UpdateStatus, this._updateStatus, this);
+    profile.addEventListener(Profiler.ProfileHeader.Events.UpdateStatus, this._updateStatus, this);
     if (profile.canSaveToFile())
       this._createSaveLink();
     else
-      profile.addEventListener(WebInspector.ProfileHeader.Events.ProfileReceived, this._onProfileReceived, this);
+      profile.addEventListener(Profiler.ProfileHeader.Events.ProfileReceived, this._onProfileReceived, this);
   }
 
   _createSaveLink() {
     this._saveLinkElement = this._titleContainer.createChild('span', 'save-link');
-    this._saveLinkElement.textContent = WebInspector.UIString('Save');
+    this._saveLinkElement.textContent = Common.UIString('Save');
     this._saveLinkElement.addEventListener('click', this._saveProfile.bind(this), false);
   }
 
@@ -1083,7 +1083,7 @@ WebInspector.ProfileSidebarTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _updateStatus(event) {
     var statusUpdate = event.data;
@@ -1096,8 +1096,8 @@ WebInspector.ProfileSidebarTreeElement = class extends TreeElement {
   }
 
   dispose() {
-    this.profile.removeEventListener(WebInspector.ProfileHeader.Events.UpdateStatus, this._updateStatus, this);
-    this.profile.removeEventListener(WebInspector.ProfileHeader.Events.ProfileReceived, this._onProfileReceived, this);
+    this.profile.removeEventListener(Profiler.ProfileHeader.Events.UpdateStatus, this._updateStatus, this);
+    this.profile.removeEventListener(Profiler.ProfileHeader.Events.ProfileReceived, this._onProfileReceived, this);
   }
 
   /**
@@ -1135,14 +1135,14 @@ WebInspector.ProfileSidebarTreeElement = class extends TreeElement {
    */
   _handleContextMenuEvent(event) {
     var profile = this.profile;
-    var contextMenu = new WebInspector.ContextMenu(event);
+    var contextMenu = new UI.ContextMenu(event);
     // FIXME: use context menu provider
     contextMenu.appendItem(
-        WebInspector.UIString('Load\u2026'),
-        WebInspector.ProfilesPanel._fileSelectorElement.click.bind(WebInspector.ProfilesPanel._fileSelectorElement));
+        Common.UIString('Load\u2026'),
+        Profiler.ProfilesPanel._fileSelectorElement.click.bind(Profiler.ProfilesPanel._fileSelectorElement));
     if (profile.canSaveToFile())
-      contextMenu.appendItem(WebInspector.UIString('Save\u2026'), profile.saveToFile.bind(profile));
-    contextMenu.appendItem(WebInspector.UIString('Delete'), this.ondelete.bind(this));
+      contextMenu.appendItem(Common.UIString('Save\u2026'), profile.saveToFile.bind(profile));
+    contextMenu.appendItem(Common.UIString('Delete'), this.ondelete.bind(this));
     contextMenu.show();
   }
 
@@ -1170,9 +1170,9 @@ WebInspector.ProfileSidebarTreeElement = class extends TreeElement {
 /**
  * @unrestricted
  */
-WebInspector.ProfileGroupSidebarTreeElement = class extends TreeElement {
+Profiler.ProfileGroupSidebarTreeElement = class extends TreeElement {
   /**
-   * @param {!WebInspector.ProfileType.DataDisplayDelegate} dataDisplayDelegate
+   * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
    * @param {string} title
    */
   constructor(dataDisplayDelegate, title) {
@@ -1211,9 +1211,9 @@ WebInspector.ProfileGroupSidebarTreeElement = class extends TreeElement {
 /**
  * @unrestricted
  */
-WebInspector.ProfilesSidebarTreeElement = class extends TreeElement {
+Profiler.ProfilesSidebarTreeElement = class extends TreeElement {
   /**
-   * @param {!WebInspector.ProfilesPanel} panel
+   * @param {!Profiler.ProfilesPanel} panel
    */
   constructor(panel) {
     super('', false);
@@ -1239,25 +1239,25 @@ WebInspector.ProfilesSidebarTreeElement = class extends TreeElement {
     this.listItemElement.createChild('div', 'titles no-subtitle')
         .createChild('span', 'title-container')
         .createChild('span', 'title')
-        .textContent = WebInspector.UIString('Profiles');
+        .textContent = Common.UIString('Profiles');
   }
 };
 
 
 /**
- * @implements {WebInspector.ActionDelegate}
+ * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-WebInspector.ProfilesPanel.RecordActionDelegate = class {
+Profiler.ProfilesPanel.RecordActionDelegate = class {
   /**
    * @override
-   * @param {!WebInspector.Context} context
+   * @param {!UI.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    var panel = WebInspector.context.flavor(WebInspector.ProfilesPanel);
-    console.assert(panel && panel instanceof WebInspector.ProfilesPanel);
+    var panel = UI.context.flavor(Profiler.ProfilesPanel);
+    console.assert(panel && panel instanceof Profiler.ProfilesPanel);
     panel.toggleRecord();
     return true;
   }

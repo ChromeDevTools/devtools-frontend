@@ -28,13 +28,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+self['Common'] = self['Common'] || {};
+
 /**
  * @param {string} string
  * @param {...*} vararg
  * @return {string}
  */
-WebInspector.UIString = function(string, vararg) {
-  return String.vsprintf(WebInspector.localize(string), Array.prototype.slice.call(arguments, 1));
+Common.UIString = function(string, vararg) {
+  return String.vsprintf(Common.localize(string), Array.prototype.slice.call(arguments, 1));
 };
 
 /**
@@ -42,13 +45,13 @@ WebInspector.UIString = function(string, vararg) {
  * @param {...*} vararg
  * @return {string}
  */
-WebInspector.UIString.capitalize = function(string, vararg) {
-  if (WebInspector._useLowerCaseMenuTitles === undefined)
-    throw 'WebInspector.setLocalizationPlatform() has not been called';
+Common.UIString.capitalize = function(string, vararg) {
+  if (Common._useLowerCaseMenuTitles === undefined)
+    throw 'Common.setLocalizationPlatform() has not been called';
 
-  var localized = WebInspector.localize(string);
+  var localized = Common.localize(string);
   var capitalized;
-  if (WebInspector._useLowerCaseMenuTitles)
+  if (Common._useLowerCaseMenuTitles)
     capitalized = localized.replace(/\^(.)/g, '$1');
   else
     capitalized = localized.replace(/\^(.)/g, function(str, char) {
@@ -60,28 +63,28 @@ WebInspector.UIString.capitalize = function(string, vararg) {
 /**
  * @param {string} platform
  */
-WebInspector.setLocalizationPlatform = function(platform) {
-  WebInspector._useLowerCaseMenuTitles = platform === 'windows';
+Common.setLocalizationPlatform = function(platform) {
+  Common._useLowerCaseMenuTitles = platform === 'windows';
 };
 
 /**
  * @param {string} string
  * @return {string}
  */
-WebInspector.localize = function(string) {
+Common.localize = function(string) {
   return string;
 };
 
 /**
  * @unrestricted
  */
-WebInspector.UIStringFormat = class {
+Common.UIStringFormat = class {
   /**
    * @param {string} format
    */
   constructor(format) {
     /** @type {string} */
-    this._localizedFormat = WebInspector.localize(format);
+    this._localizedFormat = Common.localize(format);
     /** @type {!Array.<!Object>} */
     this._tokenizedFormat = String.tokenizeFormatString(this._localizedFormat, String.standardFormatters);
   }
@@ -102,7 +105,7 @@ WebInspector.UIStringFormat = class {
   format(vararg) {
     return String
         .format(
-            this._localizedFormat, arguments, String.standardFormatters, '', WebInspector.UIStringFormat._append,
+            this._localizedFormat, arguments, String.standardFormatters, '', Common.UIStringFormat._append,
             this._tokenizedFormat)
         .formattedResult;
   }

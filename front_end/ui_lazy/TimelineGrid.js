@@ -31,10 +31,10 @@
 /**
  * @unrestricted
  */
-WebInspector.TimelineGrid = class {
+UI.TimelineGrid = class {
   constructor() {
     this.element = createElement('div');
-    WebInspector.appendStyle(this.element, 'ui_lazy/timelineGrid.css');
+    UI.appendStyle(this.element, 'ui_lazy/timelineGrid.css');
 
     this._dividersElement = this.element.createChild('div', 'resources-dividers');
 
@@ -46,7 +46,7 @@ WebInspector.TimelineGrid = class {
   }
 
   /**
-   * @param {!WebInspector.TimelineGrid.Calculator} calculator
+   * @param {!UI.TimelineGrid.Calculator} calculator
    * @param {number=} freeZoneAtLeft
    * @return {!{offsets: !Array.<number>, precision: number}}
    */
@@ -95,7 +95,7 @@ WebInspector.TimelineGrid = class {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!WebInspector.TimelineGrid.Calculator} calculator
+   * @param {!UI.TimelineGrid.Calculator} calculator
    * @param {number} paddingTop
    * @param {number=} freeZoneAtLeft
    */
@@ -105,7 +105,7 @@ WebInspector.TimelineGrid = class {
     context.scale(ratio, ratio);
     var width = context.canvas.width / window.devicePixelRatio;
     var height = context.canvas.height / window.devicePixelRatio;
-    var dividersData = WebInspector.TimelineGrid.calculateDividerOffsets(calculator);
+    var dividersData = UI.TimelineGrid.calculateDividerOffsets(calculator);
     var dividerOffsets = dividersData.offsets;
     var precision = dividersData.precision;
 
@@ -115,7 +115,7 @@ WebInspector.TimelineGrid = class {
     context.fillStyle = '#333';
     context.strokeStyle = 'rgba(0, 0, 0, 0.1)';
     context.textBaseline = 'hanging';
-    context.font = '11px ' + WebInspector.fontFamily();
+    context.font = '11px ' + Host.fontFamily();
     context.lineWidth = 1;
 
     context.translate(0.5, 0.5);
@@ -150,12 +150,12 @@ WebInspector.TimelineGrid = class {
   }
 
   /**
-   * @param {!WebInspector.TimelineGrid.Calculator} calculator
+   * @param {!UI.TimelineGrid.Calculator} calculator
    * @param {number=} freeZoneAtLeft
    * @return {boolean}
    */
   updateDividers(calculator, freeZoneAtLeft) {
-    var dividersData = WebInspector.TimelineGrid.calculateDividerOffsets(calculator, freeZoneAtLeft);
+    var dividersData = UI.TimelineGrid.calculateDividerOffsets(calculator, freeZoneAtLeft);
     var dividerOffsets = dividersData.offsets;
     var precision = dividersData.precision;
 
@@ -256,9 +256,9 @@ WebInspector.TimelineGrid = class {
 /**
  * @interface
  */
-WebInspector.TimelineGrid.Calculator = function() {};
+UI.TimelineGrid.Calculator = function() {};
 
-WebInspector.TimelineGrid.Calculator.prototype = {
+UI.TimelineGrid.Calculator.prototype = {
   /**
    * @return {number}
    */

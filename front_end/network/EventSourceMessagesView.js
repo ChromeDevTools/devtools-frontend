@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-WebInspector.EventSourceMessagesView = class extends WebInspector.VBox {
+Network.EventSourceMessagesView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   constructor(request) {
     super();
@@ -14,18 +14,18 @@ WebInspector.EventSourceMessagesView = class extends WebInspector.VBox {
     this.element.classList.add('event-source-messages-view');
     this._request = request;
 
-    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'id', title: WebInspector.UIString('Id'), sortable: true, weight: 8},
-      {id: 'type', title: WebInspector.UIString('Type'), sortable: true, weight: 8},
-      {id: 'data', title: WebInspector.UIString('Data'), sortable: false, weight: 88},
-      {id: 'time', title: WebInspector.UIString('Time'), sortable: true, weight: 8}
+    var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
+      {id: 'id', title: Common.UIString('Id'), sortable: true, weight: 8},
+      {id: 'type', title: Common.UIString('Type'), sortable: true, weight: 8},
+      {id: 'data', title: Common.UIString('Data'), sortable: false, weight: 88},
+      {id: 'time', title: Common.UIString('Time'), sortable: true, weight: 8}
     ]);
 
-    this._dataGrid = new WebInspector.SortableDataGrid(columns);
+    this._dataGrid = new UI.SortableDataGrid(columns);
     this._dataGrid.setStickToBottom(true);
-    this._dataGrid.markColumnAsSortedBy('time', WebInspector.DataGrid.Order.Ascending);
+    this._dataGrid.markColumnAsSortedBy('time', UI.DataGrid.Order.Ascending);
     this._sortItems();
-    this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortItems, this);
+    this._dataGrid.addEventListener(UI.DataGrid.Events.SortingChanged, this._sortItems, this);
 
     this._dataGrid.setName('EventSourceMessagesView');
     this._dataGrid.asWidget().show(this.element);
@@ -38,10 +38,10 @@ WebInspector.EventSourceMessagesView = class extends WebInspector.VBox {
     this._dataGrid.rootNode().removeChildren();
     var messages = this._request.eventSourceMessages();
     for (var i = 0; i < messages.length; ++i)
-      this._dataGrid.insertChild(new WebInspector.EventSourceMessageNode(messages[i]));
+      this._dataGrid.insertChild(new Network.EventSourceMessageNode(messages[i]));
 
     this._request.addEventListener(
-        WebInspector.NetworkRequest.Events.EventSourceMessageAdded, this._messageAdded, this);
+        SDK.NetworkRequest.Events.EventSourceMessageAdded, this._messageAdded, this);
   }
 
   /**
@@ -49,22 +49,22 @@ WebInspector.EventSourceMessagesView = class extends WebInspector.VBox {
    */
   willHide() {
     this._request.removeEventListener(
-        WebInspector.NetworkRequest.Events.EventSourceMessageAdded, this._messageAdded, this);
+        SDK.NetworkRequest.Events.EventSourceMessageAdded, this._messageAdded, this);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _messageAdded(event) {
-    var message = /** @type {!WebInspector.NetworkRequest.EventSourceMessage} */ (event.data);
-    this._dataGrid.insertChild(new WebInspector.EventSourceMessageNode(message));
+    var message = /** @type {!SDK.NetworkRequest.EventSourceMessage} */ (event.data);
+    this._dataGrid.insertChild(new Network.EventSourceMessageNode(message));
   }
 
   _sortItems() {
     var sortColumnId = this._dataGrid.sortColumnId();
     if (!sortColumnId)
       return;
-    var comparator = WebInspector.EventSourceMessageNode.Comparators[sortColumnId];
+    var comparator = Network.EventSourceMessageNode.Comparators[sortColumnId];
     if (!comparator)
       return;
     this._dataGrid.sortNodes(comparator, !this._dataGrid.isSortOrderAscending());
@@ -74,9 +74,9 @@ WebInspector.EventSourceMessagesView = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.EventSourceMessageNode = class extends WebInspector.SortableDataGridNode {
+Network.EventSourceMessageNode = class extends UI.SortableDataGridNode {
   /**
-   * @param {!WebInspector.NetworkRequest.EventSourceMessage} message
+   * @param {!SDK.NetworkRequest.EventSourceMessage} message
    */
   constructor(message) {
     var time = new Date(message.time * 1000);
@@ -92,19 +92,19 @@ WebInspector.EventSourceMessageNode = class extends WebInspector.SortableDataGri
 
 /**
  * @param {string} field
- * @param {!WebInspector.EventSourceMessageNode} a
- * @param {!WebInspector.EventSourceMessageNode} b
+ * @param {!Network.EventSourceMessageNode} a
+ * @param {!Network.EventSourceMessageNode} b
  * @return {number}
  */
-WebInspector.EventSourceMessageNodeComparator = function(field, a, b) {
+Network.EventSourceMessageNodeComparator = function(field, a, b) {
   var aValue = a._message[field];
   var bValue = b._message[field];
   return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
 };
 
-/** @type {!Object.<string, !WebInspector.SortableDataGrid.NodeComparator>} */
-WebInspector.EventSourceMessageNode.Comparators = {
-  'id': WebInspector.EventSourceMessageNodeComparator.bind(null, 'eventId'),
-  'type': WebInspector.EventSourceMessageNodeComparator.bind(null, 'eventName'),
-  'time': WebInspector.EventSourceMessageNodeComparator.bind(null, 'time')
+/** @type {!Object.<string, !UI.SortableDataGrid.NodeComparator>} */
+Network.EventSourceMessageNode.Comparators = {
+  'id': Network.EventSourceMessageNodeComparator.bind(null, 'eventId'),
+  'type': Network.EventSourceMessageNodeComparator.bind(null, 'eventName'),
+  'time': Network.EventSourceMessageNodeComparator.bind(null, 'time')
 };

@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.TimelineFrameModel = class {
+TimelineModel.TimelineFrameModel = class {
   /**
-   * @param {function(!WebInspector.TracingModel.Event):string} categoryMapper
+   * @param {function(!SDK.TracingModel.Event):string} categoryMapper
    */
   constructor(categoryMapper) {
     this._categoryMapper = categoryMapper;
@@ -41,7 +41,7 @@ WebInspector.TimelineFrameModel = class {
   }
 
   /**
-   * @return {!Array.<!WebInspector.TimelineFrame>}
+   * @return {!Array.<!TimelineModel.TimelineFrame>}
    */
   frames() {
     return this._frames;
@@ -50,12 +50,12 @@ WebInspector.TimelineFrameModel = class {
   /**
    * @param {number} startTime
    * @param {number} endTime
-   * @return {!Array.<!WebInspector.TimelineFrame>}
+   * @return {!Array.<!TimelineModel.TimelineFrame>}
    */
   filteredFrames(startTime, endTime) {
     /**
      * @param {number} value
-     * @param {!WebInspector.TimelineFrame} object
+     * @param {!TimelineModel.TimelineFrame} object
      * @return {number}
      */
     function compareStartTime(value, object) {
@@ -63,7 +63,7 @@ WebInspector.TimelineFrameModel = class {
     }
     /**
      * @param {number} value
-     * @param {!WebInspector.TimelineFrame} object
+     * @param {!TimelineModel.TimelineFrame} object
      * @return {number}
      */
     function compareEndTime(value, object) {
@@ -76,7 +76,7 @@ WebInspector.TimelineFrameModel = class {
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} rasterTask
+   * @param {!SDK.TracingModel.Event} rasterTask
    * @return {boolean}
    */
   hasRasterTile(rasterTask) {
@@ -91,8 +91,8 @@ WebInspector.TimelineFrameModel = class {
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} rasterTask
-   * @return Promise<?{rect: !Protocol.DOM.Rect, snapshot: !WebInspector.PaintProfilerSnapshot}>}
+   * @param {!SDK.TracingModel.Event} rasterTask
+   * @return Promise<?{rect: !Protocol.DOM.Rect, snapshot: !SDK.PaintProfilerSnapshot}>}
    */
   rasterTilePromise(rasterTask) {
     if (!this._target)
@@ -186,7 +186,7 @@ WebInspector.TimelineFrameModel = class {
   }
 
   /**
-   * @param {!WebInspector.TracingFrameLayerTree} layerTree
+   * @param {!TimelineModel.TracingFrameLayerTree} layerTree
    */
   handleLayerTreeSnapshot(layerTree) {
     this._lastLayerTree = layerTree;
@@ -207,11 +207,11 @@ WebInspector.TimelineFrameModel = class {
   _startFrame(startTime) {
     if (this._lastFrame)
       this._flushFrame(this._lastFrame, startTime);
-    this._lastFrame = new WebInspector.TimelineFrame(startTime, startTime - this._minimumRecordTime);
+    this._lastFrame = new TimelineModel.TimelineFrame(startTime, startTime - this._minimumRecordTime);
   }
 
   /**
-   * @param {!WebInspector.TimelineFrame} frame
+   * @param {!TimelineModel.TimelineFrame} frame
    * @param {number} endTime
    */
   _flushFrame(frame, endTime) {
@@ -236,8 +236,8 @@ WebInspector.TimelineFrameModel = class {
 
   /**
    * @param {!Array.<string>} types
-   * @param {!WebInspector.TimelineModel.Record} record
-   * @return {?WebInspector.TimelineModel.Record} record
+   * @param {!TimelineModel.TimelineModel.Record} record
+   * @return {?TimelineModel.TimelineModel.Record} record
    */
   _findRecordRecursively(types, record) {
     if (types.indexOf(record.type()) >= 0)
@@ -253,8 +253,8 @@ WebInspector.TimelineFrameModel = class {
   }
 
   /**
-   * @param {?WebInspector.Target} target
-   * @param {!Array.<!WebInspector.TracingModel.Event>} events
+   * @param {?SDK.Target} target
+   * @param {!Array.<!SDK.TracingModel.Event>} events
    * @param {string} sessionId
    */
   addTraceEvents(target, events, sessionId) {
@@ -269,10 +269,10 @@ WebInspector.TimelineFrameModel = class {
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} event
+   * @param {!SDK.TracingModel.Event} event
    */
   _addTraceEvent(event) {
-    var eventNames = WebInspector.TimelineModel.RecordType;
+    var eventNames = TimelineModel.TimelineModel.RecordType;
 
     if (event.name === eventNames.SetLayerTreeId) {
       var sessionId = event.args['sessionId'] || event.args['data']['sessionId'];
@@ -281,24 +281,24 @@ WebInspector.TimelineFrameModel = class {
     } else if (event.name === eventNames.TracingStartedInPage) {
       this._mainThread = event.thread;
     } else if (
-        event.phase === WebInspector.TracingModel.Phase.SnapshotObject &&
+        event.phase === SDK.TracingModel.Phase.SnapshotObject &&
         event.name === eventNames.LayerTreeHostImplSnapshot && parseInt(event.id, 0) === this._layerTreeId) {
-      var snapshot = /** @type {!WebInspector.TracingModel.ObjectSnapshot} */ (event);
-      this.handleLayerTreeSnapshot(new WebInspector.TracingFrameLayerTree(this._target, snapshot));
+      var snapshot = /** @type {!SDK.TracingModel.ObjectSnapshot} */ (event);
+      this.handleLayerTreeSnapshot(new TimelineModel.TracingFrameLayerTree(this._target, snapshot));
     } else {
       this._processCompositorEvents(event);
       if (event.thread === this._mainThread)
         this._addMainThreadTraceEvent(event);
-      else if (this._lastFrame && event.selfTime && !WebInspector.TracingModel.isTopLevelEvent(event))
+      else if (this._lastFrame && event.selfTime && !SDK.TracingModel.isTopLevelEvent(event))
         this._lastFrame._addTimeForCategory(this._categoryMapper(event), event.selfTime);
     }
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} event
+   * @param {!SDK.TracingModel.Event} event
    */
   _processCompositorEvents(event) {
-    var eventNames = WebInspector.TimelineModel.RecordType;
+    var eventNames = TimelineModel.TimelineModel.RecordType;
 
     if (event.args['layerTreeId'] !== this._layerTreeId)
       return;
@@ -317,20 +317,20 @@ WebInspector.TimelineFrameModel = class {
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} event
+   * @param {!SDK.TracingModel.Event} event
    */
   _addMainThreadTraceEvent(event) {
-    var eventNames = WebInspector.TimelineModel.RecordType;
+    var eventNames = TimelineModel.TimelineModel.RecordType;
     var timestamp = event.startTime;
     var selfTime = event.selfTime || 0;
 
-    if (WebInspector.TracingModel.isTopLevelEvent(event)) {
+    if (SDK.TracingModel.isTopLevelEvent(event)) {
       this._currentTaskTimeByCategory = {};
       this._lastTaskBeginTime = event.startTime;
     }
-    if (!this._framePendingCommit && WebInspector.TimelineFrameModel._mainFrameMarkers.indexOf(event.name) >= 0)
+    if (!this._framePendingCommit && TimelineModel.TimelineFrameModel._mainFrameMarkers.indexOf(event.name) >= 0)
       this._framePendingCommit =
-          new WebInspector.PendingFrame(this._lastTaskBeginTime || event.startTime, this._currentTaskTimeByCategory);
+          new TimelineModel.PendingFrame(this._lastTaskBeginTime || event.startTime, this._currentTaskTimeByCategory);
     if (!this._framePendingCommit) {
       this._addTimeForCategory(this._currentTaskTimeByCategory, event);
       return;
@@ -339,15 +339,15 @@ WebInspector.TimelineFrameModel = class {
 
     if (event.name === eventNames.BeginMainThreadFrame && event.args['data'] && event.args['data']['frameId'])
       this._framePendingCommit.mainFrameId = event.args['data']['frameId'];
-    if (event.name === eventNames.Paint && event.args['data']['layerId'] && WebInspector.TimelineData.forEvent(event).picture && this._target)
-      this._framePendingCommit.paints.push(new WebInspector.LayerPaintEvent(event, this._target));
+    if (event.name === eventNames.Paint && event.args['data']['layerId'] && TimelineModel.TimelineData.forEvent(event).picture && this._target)
+      this._framePendingCommit.paints.push(new TimelineModel.LayerPaintEvent(event, this._target));
     if (event.name === eventNames.CompositeLayers && event.args['layerTreeId'] === this._layerTreeId)
       this.handleCompositeLayers();
   }
 
   /**
    * @param {!Object.<string, number>} timeByCategory
-   * @param {!WebInspector.TracingModel.Event} event
+   * @param {!SDK.TracingModel.Event} event
    */
   _addTimeForCategory(timeByCategory, event) {
     if (!event.selfTime)
@@ -357,29 +357,29 @@ WebInspector.TimelineFrameModel = class {
   }
 };
 
-WebInspector.TimelineFrameModel._mainFrameMarkers = [
-  WebInspector.TimelineModel.RecordType.ScheduleStyleRecalculation,
-  WebInspector.TimelineModel.RecordType.InvalidateLayout, WebInspector.TimelineModel.RecordType.BeginMainThreadFrame,
-  WebInspector.TimelineModel.RecordType.ScrollLayer
+TimelineModel.TimelineFrameModel._mainFrameMarkers = [
+  TimelineModel.TimelineModel.RecordType.ScheduleStyleRecalculation,
+  TimelineModel.TimelineModel.RecordType.InvalidateLayout, TimelineModel.TimelineModel.RecordType.BeginMainThreadFrame,
+  TimelineModel.TimelineModel.RecordType.ScrollLayer
 ];
 
 /**
  * @unrestricted
  */
-WebInspector.TracingFrameLayerTree = class {
+TimelineModel.TracingFrameLayerTree = class {
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!WebInspector.TracingModel.ObjectSnapshot} snapshot
+   * @param {!SDK.Target} target
+   * @param {!SDK.TracingModel.ObjectSnapshot} snapshot
    */
   constructor(target, snapshot) {
     this._target = target;
     this._snapshot = snapshot;
-    /** @type {!Array<!WebInspector.LayerPaintEvent>|undefined} */
+    /** @type {!Array<!TimelineModel.LayerPaintEvent>|undefined} */
     this._paints;
   }
 
   /**
-   * @return {!Promise<?WebInspector.TracingLayerTree>}
+   * @return {!Promise<?TimelineModel.TracingLayerTree>}
    */
   layerTreePromise() {
     return this._snapshot.objectPromise().then(result => {
@@ -389,7 +389,7 @@ WebInspector.TracingFrameLayerTree = class {
       var tiles = result['active_tiles'];
       var rootLayer = result['active_tree']['root_layer'];
       var layers = result['active_tree']['layers'];
-      var layerTree = new WebInspector.TracingLayerTree(this._target);
+      var layerTree = new TimelineModel.TracingLayerTree(this._target);
       layerTree.setViewportSize(viewport);
       layerTree.setTiles(tiles);
       return new Promise(
@@ -398,14 +398,14 @@ WebInspector.TracingFrameLayerTree = class {
   }
 
   /**
-   * @return {!Array<!WebInspector.LayerPaintEvent>}
+   * @return {!Array<!TimelineModel.LayerPaintEvent>}
    */
   paints() {
     return this._paints || [];
   }
 
   /**
-   * @param {!Array<!WebInspector.LayerPaintEvent>} paints
+   * @param {!Array<!TimelineModel.LayerPaintEvent>} paints
    */
   _setPaints(paints) {
     this._paints = paints;
@@ -415,7 +415,7 @@ WebInspector.TracingFrameLayerTree = class {
 /**
  * @unrestricted
  */
-WebInspector.TimelineFrame = class {
+TimelineModel.TimelineFrame = class {
   /**
    * @param {number} startTime
    * @param {number} startTimeOffset
@@ -428,9 +428,9 @@ WebInspector.TimelineFrame = class {
     this.timeByCategory = {};
     this.cpuTime = 0;
     this.idle = false;
-    /** @type {?WebInspector.TracingFrameLayerTree} */
+    /** @type {?TimelineModel.TracingFrameLayerTree} */
     this.layerTree = null;
-    /** @type {!Array.<!WebInspector.LayerPaintEvent>} */
+    /** @type {!Array.<!TimelineModel.LayerPaintEvent>} */
     this._paints = [];
     /** @type {number|undefined} */
     this._mainFrameId = undefined;
@@ -453,7 +453,7 @@ WebInspector.TimelineFrame = class {
   }
 
   /**
-   * @param {?WebInspector.TracingFrameLayerTree} layerTree
+   * @param {?TimelineModel.TracingFrameLayerTree} layerTree
    */
   _setLayerTree(layerTree) {
     this.layerTree = layerTree;
@@ -480,10 +480,10 @@ WebInspector.TimelineFrame = class {
 /**
  * @unrestricted
  */
-WebInspector.LayerPaintEvent = class {
+TimelineModel.LayerPaintEvent = class {
   /**
-   * @param {!WebInspector.TracingModel.Event} event
-   * @param {?WebInspector.Target} target
+   * @param {!SDK.TracingModel.Event} event
+   * @param {?SDK.Target} target
    */
   constructor(event, target) {
     this._event = event;
@@ -498,7 +498,7 @@ WebInspector.LayerPaintEvent = class {
   }
 
   /**
-   * @return {!WebInspector.TracingModel.Event}
+   * @return {!SDK.TracingModel.Event}
    */
   event() {
     return this._event;
@@ -508,7 +508,7 @@ WebInspector.LayerPaintEvent = class {
    * @return {!Promise<?{rect: !Array<number>, serializedPicture: string}>}
    */
   picturePromise() {
-    var picture = WebInspector.TimelineData.forEvent(this._event).picture;
+    var picture = TimelineModel.TimelineData.forEvent(this._event).picture;
     return picture.objectPromise().then(result => {
       if (!result)
         return null;
@@ -519,13 +519,13 @@ WebInspector.LayerPaintEvent = class {
   }
 
   /**
-   * @return !Promise<?{rect: !Array<number>, snapshot: !WebInspector.PaintProfilerSnapshot}>}
+   * @return !Promise<?{rect: !Array<number>, snapshot: !SDK.PaintProfilerSnapshot}>}
    */
   snapshotPromise() {
     return this.picturePromise().then(picture => {
       if (!picture || !this._target)
         return null;
-      return WebInspector.PaintProfilerSnapshot.load(this._target, picture.serializedPicture)
+      return SDK.PaintProfilerSnapshot.load(this._target, picture.serializedPicture)
           .then(snapshot => snapshot ? {rect: picture.rect, snapshot: snapshot} : null);
     });
   }
@@ -534,7 +534,7 @@ WebInspector.LayerPaintEvent = class {
 /**
  * @unrestricted
  */
-WebInspector.PendingFrame = class {
+TimelineModel.PendingFrame = class {
   /**
    * @param {number} triggerTime
    * @param {!Object.<string, number>} timeByCategory
@@ -542,7 +542,7 @@ WebInspector.PendingFrame = class {
   constructor(triggerTime, timeByCategory) {
     /** @type {!Object.<string, number>} */
     this.timeByCategory = timeByCategory;
-    /** @type {!Array.<!WebInspector.LayerPaintEvent>} */
+    /** @type {!Array.<!TimelineModel.LayerPaintEvent>} */
     this.paints = [];
     /** @type {number|undefined} */
     this.mainFrameId = undefined;

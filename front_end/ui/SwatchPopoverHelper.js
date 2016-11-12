@@ -4,10 +4,10 @@
 /**
  * @unrestricted
  */
-WebInspector.SwatchPopoverHelper = class extends WebInspector.Object {
+UI.SwatchPopoverHelper = class extends Common.Object {
   constructor() {
     super();
-    this._popover = new WebInspector.Popover();
+    this._popover = new UI.Popover();
     this._popover.setCanShrink(false);
     this._popover.setNoPadding(true);
     this._popover.element.addEventListener('mousedown', (e) => e.consume(), false);
@@ -35,7 +35,7 @@ WebInspector.SwatchPopoverHelper = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Widget} view
+   * @param {!UI.Widget} view
    * @param {!Element} anchorElement
    * @param {function(boolean)=} hiddenCallback
    */
@@ -66,7 +66,7 @@ WebInspector.SwatchPopoverHelper = class extends WebInspector.Object {
     this._popover.showView(this._view, this._anchorElement);
     this._view.contentElement.addEventListener('focusout', this._boundFocusOut, false);
     if (!this._focusRestorer)
-      this._focusRestorer = new WebInspector.WidgetFocusRestorer(this._view);
+      this._focusRestorer = new UI.WidgetFocusRestorer(this._view);
   }
 
   /**

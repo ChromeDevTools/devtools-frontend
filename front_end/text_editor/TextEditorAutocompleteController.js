@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.SuggestBoxDelegate}
+ * @implements {UI.SuggestBoxDelegate}
  * @unrestricted
  */
-WebInspector.TextEditorAutocompleteController = class {
+TextEditor.TextEditorAutocompleteController = class {
   /**
-   * @param {!WebInspector.CodeMirrorTextEditor} textEditor
+   * @param {!TextEditor.CodeMirrorTextEditor} textEditor
    * @param {!CodeMirror} codeMirror
-   * @param {!WebInspector.AutocompleteConfig} config
+   * @param {!UI.AutocompleteConfig} config
    */
   constructor(textEditor, codeMirror, config) {
     this._textEditor = textEditor;
@@ -38,7 +38,7 @@ WebInspector.TextEditorAutocompleteController = class {
     this._codeMirror.on('blur', this._blur);
     if (this._config.isWordChar) {
       this._codeMirror.on('beforeChange', this._beforeChange);
-      this._dictionary = new WebInspector.TextDictionary();
+      this._dictionary = new Common.TextDictionary();
       this._addWordsFromText(this._codeMirror.getValue());
     }
   }
@@ -71,12 +71,12 @@ WebInspector.TextEditorAutocompleteController = class {
    * @param {string} text
    */
   _addWordsFromText(text) {
-    WebInspector.TextUtils.textToWords(
+    Common.TextUtils.textToWords(
         text, /** @type {function(string):boolean} */ (this._config.isWordChar), addWord.bind(this));
 
     /**
      * @param {string} word
-     * @this {WebInspector.TextEditorAutocompleteController}
+     * @this {TextEditor.TextEditorAutocompleteController}
      */
     function addWord(word) {
       if (word.length && (word[0] < '0' || word[0] > '9'))
@@ -88,7 +88,7 @@ WebInspector.TextEditorAutocompleteController = class {
    * @param {string} text
    */
   _removeWordsFromText(text) {
-    WebInspector.TextUtils.textToWords(
+    Common.TextUtils.textToWords(
         text, /** @type {function(string):boolean} */ (this._config.isWordChar),
         (word) => this._dictionary.removeWord(word));
   }
@@ -96,7 +96,7 @@ WebInspector.TextEditorAutocompleteController = class {
   /**
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?WebInspector.TextRange}
+   * @return {?Common.TextRange}
    */
   _substituteRange(lineNumber, columnNumber) {
     var range =
@@ -107,11 +107,11 @@ WebInspector.TextEditorAutocompleteController = class {
   }
 
   /**
-   * @param {!WebInspector.TextRange} queryRange
-   * @param {!WebInspector.TextRange} substituteRange
+   * @param {!Common.TextRange} queryRange
+   * @param {!Common.TextRange} substituteRange
    * @param {boolean=} force
    * @param {string=} tokenType
-   * @return {!Promise.<!WebInspector.SuggestBox.Suggestions>}
+   * @return {!Promise.<!UI.SuggestBox.Suggestions>}
    */
   _wordsWithQuery(queryRange, substituteRange, force, tokenType) {
     var external =
@@ -147,7 +147,7 @@ WebInspector.TextEditorAutocompleteController = class {
       var linesToUpdate = {};
       for (var changeIndex = 0; changeIndex < changes.length; ++changeIndex) {
         var changeObject = changes[changeIndex];
-        var editInfo = WebInspector.CodeMirrorUtils.changeObjectToEditOperation(changeObject);
+        var editInfo = TextEditor.CodeMirrorUtils.changeObjectToEditOperation(changeObject);
         for (var i = editInfo.newRange.startLine; i <= editInfo.newRange.endLine; ++i)
           linesToUpdate[i] = this._codeMirror.getLine(i);
       }
@@ -192,7 +192,7 @@ WebInspector.TextEditorAutocompleteController = class {
   }
 
   /**
-   * @param {!WebInspector.TextRange} mainSelection
+   * @param {!Common.TextRange} mainSelection
    * @return {boolean}
    */
   _validateSelectionsContexts(mainSelection) {
@@ -239,8 +239,8 @@ WebInspector.TextEditorAutocompleteController = class {
     this._wordsWithQuery(queryRange, substituteRange, force, tokenType).then(wordsAcquired.bind(this));
 
     /**
-     * @param {!WebInspector.SuggestBox.Suggestions} wordsWithQuery
-     * @this {WebInspector.TextEditorAutocompleteController}
+     * @param {!UI.SuggestBox.Suggestions} wordsWithQuery
+     * @this {TextEditor.TextEditorAutocompleteController}
      */
     function wordsAcquired(wordsWithQuery) {
       if (!wordsWithQuery.length || (wordsWithQuery.length === 1 && query === wordsWithQuery[0].title) ||
@@ -250,7 +250,7 @@ WebInspector.TextEditorAutocompleteController = class {
         return;
       }
       if (!this._suggestBox)
-        this._suggestBox = new WebInspector.SuggestBox(this, 20, this._config.captureEnter);
+        this._suggestBox = new UI.SuggestBox(this, 20, this._config.captureEnter);
 
       var oldQueryRange = this._queryRange;
       this._queryRange = queryRange;
@@ -277,7 +277,7 @@ WebInspector.TextEditorAutocompleteController = class {
     var cursor = this._codeMirror.getCursor('to');
     if (this._hintMarker) {
       var position = this._hintMarker.position();
-      if (!position || !position.equal(WebInspector.TextRange.createFromLocation(cursor.line, cursor.ch))) {
+      if (!position || !position.equal(Common.TextRange.createFromLocation(cursor.line, cursor.ch))) {
         this._hintMarker.clear();
         this._hintMarker = null;
       }
@@ -285,7 +285,7 @@ WebInspector.TextEditorAutocompleteController = class {
 
     if (!this._hintMarker)
       this._hintMarker = this._textEditor.addBookmark(
-          cursor.line, cursor.ch, this._hintElement, WebInspector.TextEditorAutocompleteController.HintBookmark, true);
+          cursor.line, cursor.ch, this._hintElement, TextEditor.TextEditorAutocompleteController.HintBookmark, true);
     else if (this._lastHintText !== hint)
       this._hintMarker.refresh();
     this._lastHintText = hint;
@@ -301,7 +301,7 @@ WebInspector.TextEditorAutocompleteController = class {
   }
 
   /**
-   * @param {!WebInspector.SuggestBox.Suggestions} suggestions
+   * @param {!UI.SuggestBox.Suggestions} suggestions
    */
   _onSuggestionsShownForTest(suggestions) {
   }
@@ -328,12 +328,12 @@ WebInspector.TextEditorAutocompleteController = class {
     if (!this._suggestBox)
       return false;
     switch (event.keyCode) {
-      case WebInspector.KeyboardShortcut.Keys.Tab.code:
+      case UI.KeyboardShortcut.Keys.Tab.code:
         this._suggestBox.acceptSuggestion();
         this.clearAutocomplete();
         return true;
-      case WebInspector.KeyboardShortcut.Keys.End.code:
-      case WebInspector.KeyboardShortcut.Keys.Right.code:
+      case UI.KeyboardShortcut.Keys.End.code:
+      case UI.KeyboardShortcut.Keys.Right.code:
         if (this._isCursorAtEndOfLine()) {
           this._suggestBox.acceptSuggestion();
           this.clearAutocomplete();
@@ -342,11 +342,11 @@ WebInspector.TextEditorAutocompleteController = class {
           this.clearAutocomplete();
           return false;
         }
-      case WebInspector.KeyboardShortcut.Keys.Left.code:
-      case WebInspector.KeyboardShortcut.Keys.Home.code:
+      case UI.KeyboardShortcut.Keys.Left.code:
+      case UI.KeyboardShortcut.Keys.Home.code:
         this.clearAutocomplete();
         return false;
-      case WebInspector.KeyboardShortcut.Keys.Esc.code:
+      case UI.KeyboardShortcut.Keys.Esc.code:
         this.clearAutocomplete();
         return true;
     }
@@ -427,4 +427,4 @@ WebInspector.TextEditorAutocompleteController = class {
   }
 };
 
-WebInspector.TextEditorAutocompleteController.HintBookmark = Symbol('hint');
+TextEditor.TextEditorAutocompleteController.HintBookmark = Symbol('hint');

@@ -31,7 +31,7 @@ function postMessageWrapper(message) {
   postMessage(message);
 }
 
-var dispatcher = new WebInspector.HeapSnapshotWorkerDispatcher(this, postMessageWrapper);
+var dispatcher = new HeapSnapshotWorker.HeapSnapshotWorkerDispatcher(this, postMessageWrapper);
 
 /**
  * @param {function(!Event)} listener

@@ -4,18 +4,18 @@
 /**
  * @unrestricted
  */
-WebInspector.NetworkLogViewColumns = class {
+Network.NetworkLogViewColumns = class {
   /**
-   * @param {!WebInspector.NetworkLogView} networkLogView
-   * @param {!WebInspector.NetworkTransferTimeCalculator} timeCalculator
-   * @param {!WebInspector.NetworkTransferDurationCalculator} durationCalculator
-   * @param {!WebInspector.Setting} networkLogLargeRowsSetting
+   * @param {!Network.NetworkLogView} networkLogView
+   * @param {!Network.NetworkTransferTimeCalculator} timeCalculator
+   * @param {!Network.NetworkTransferDurationCalculator} durationCalculator
+   * @param {!Common.Setting} networkLogLargeRowsSetting
    */
   constructor(networkLogView, timeCalculator, durationCalculator, networkLogLargeRowsSetting) {
     this._networkLogView = networkLogView;
 
-    /** @type {!WebInspector.Setting} */
-    this._persistantSettings = WebInspector.settings.createSetting('networkLogColumns', {});
+    /** @type {!Common.Setting} */
+    this._persistantSettings = Common.settings.createSetting('networkLogColumns', {});
 
     this._networkLogLargeRowsSetting = networkLogLargeRowsSetting;
     this._networkLogLargeRowsSetting.addChangeListener(this._updateRowsSize, this);
@@ -26,30 +26,30 @@ WebInspector.NetworkLogViewColumns = class {
 
     this._gridMode = true;
 
-    /** @type {!Array.<!WebInspector.NetworkLogViewColumns.Descriptor>} */
+    /** @type {!Array.<!Network.NetworkLogViewColumns.Descriptor>} */
     this._columns = [];
 
     this._waterfallRequestsAreStale = false;
     this._waterfallScrollerWidthIsStale = true;
 
-    /** @type {!WebInspector.Linkifier} */
-    this._popupLinkifier = new WebInspector.Linkifier();
+    /** @type {!Components.Linkifier} */
+    this._popupLinkifier = new Components.Linkifier();
 
-    /** @type {!Map<string, !WebInspector.NetworkTimeCalculator>} */
+    /** @type {!Map<string, !Network.NetworkTimeCalculator>} */
     this._calculatorsMap = new Map();
-    this._calculatorsMap.set(WebInspector.NetworkLogViewColumns._calculatorTypes.Time, timeCalculator);
-    this._calculatorsMap.set(WebInspector.NetworkLogViewColumns._calculatorTypes.Duration, durationCalculator);
+    this._calculatorsMap.set(Network.NetworkLogViewColumns._calculatorTypes.Time, timeCalculator);
+    this._calculatorsMap.set(Network.NetworkLogViewColumns._calculatorTypes.Duration, durationCalculator);
 
     this._setupDataGrid();
     this._setupWaterfall();
   }
 
   /**
-   * @param {!WebInspector.NetworkLogViewColumns.Descriptor} columnConfig
-   * @return {!WebInspector.DataGrid.ColumnDescriptor}
+   * @param {!Network.NetworkLogViewColumns.Descriptor} columnConfig
+   * @return {!UI.DataGrid.ColumnDescriptor}
    */
   static _convertToDataGridDescriptor(columnConfig) {
-    return /** @type {!WebInspector.DataGrid.ColumnDescriptor} */ ({
+    return /** @type {!UI.DataGrid.ColumnDescriptor} */ ({
       id: columnConfig.id,
       title: columnConfig.title,
       sortable: columnConfig.sortable,
@@ -74,12 +74,12 @@ WebInspector.NetworkLogViewColumns = class {
   }
 
   _setupDataGrid() {
-    var defaultColumns = WebInspector.NetworkLogViewColumns._defaultColumns;
-    var defaultColumnConfig = WebInspector.NetworkLogViewColumns._defaultColumnConfig;
+    var defaultColumns = Network.NetworkLogViewColumns._defaultColumns;
+    var defaultColumnConfig = Network.NetworkLogViewColumns._defaultColumnConfig;
 
-    this._columns = /** @type {!Array<!WebInspector.NetworkLogViewColumns.Descriptor>} */ ([]);
+    this._columns = /** @type {!Array<!Network.NetworkLogViewColumns.Descriptor>} */ ([]);
     for (var currentConfigColumn of defaultColumns) {
-      var columnConfig = /** @type {!WebInspector.NetworkLogViewColumns.Descriptor} */ (
+      var columnConfig = /** @type {!Network.NetworkLogViewColumns.Descriptor} */ (
           Object.assign(/** @type {!Object} */ ({}), defaultColumnConfig, currentConfigColumn));
       columnConfig.id = columnConfig.id;
       if (columnConfig.subtitle)
@@ -88,12 +88,12 @@ WebInspector.NetworkLogViewColumns = class {
     }
     this._loadColumns();
 
-    this._popoverHelper = new WebInspector.PopoverHelper(this._networkLogView.element);
+    this._popoverHelper = new UI.PopoverHelper(this._networkLogView.element);
     this._popoverHelper.initializeCallbacks(
         this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
 
-    this._dataGrid = new WebInspector.SortableDataGrid(
-        this._columns.map(WebInspector.NetworkLogViewColumns._convertToDataGridDescriptor));
+    this._dataGrid = new UI.SortableDataGrid(
+        this._columns.map(Network.NetworkLogViewColumns._convertToDataGridDescriptor));
     this._dataGrid.element.addEventListener('mousedown', event => {
       if ((!this._dataGrid.selectedNode && event.button) || event.target.enclosingNodeOrSelfWithNodeName('a'))
         event.consume();
@@ -102,14 +102,14 @@ WebInspector.NetworkLogViewColumns = class {
     this._dataGridScroller = this._dataGrid.scrollContainer;
 
     this._updateColumns();
-    this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._sortHandler, this);
+    this._dataGrid.addEventListener(UI.DataGrid.Events.SortingChanged, this._sortHandler, this);
     this._dataGrid.setHeaderContextMenuCallback(this._innerHeaderContextMenu.bind(this));
 
-    this._activeWaterfallSortId = WebInspector.NetworkLogViewColumns.WaterfallSortIds.StartTime;
+    this._activeWaterfallSortId = Network.NetworkLogViewColumns.WaterfallSortIds.StartTime;
     this._dataGrid.markColumnAsSortedBy(
-        WebInspector.NetworkLogViewColumns._initialSortColumn, WebInspector.DataGrid.Order.Ascending);
+        Network.NetworkLogViewColumns._initialSortColumn, UI.DataGrid.Order.Ascending);
 
-    this._splitWidget = new WebInspector.SplitWidget(true, true, 'networkPanelSplitViewWaterfall', 200);
+    this._splitWidget = new UI.SplitWidget(true, true, 'networkPanelSplitViewWaterfall', 200);
     var widget = this._dataGrid.asWidget();
     widget.setMinimumSize(150, 0);
     this._splitWidget.setMainWidget(widget);
@@ -117,7 +117,7 @@ WebInspector.NetworkLogViewColumns = class {
 
   _setupWaterfall() {
     this._waterfallColumn =
-        new WebInspector.NetworkWaterfallColumn(this._networkLogView.rowHeight(), this._networkLogView.calculator());
+        new Network.NetworkWaterfallColumn(this._networkLogView.rowHeight(), this._networkLogView.calculator());
 
     this._waterfallColumn.element.addEventListener('contextmenu', handleContextMenu.bind(this));
     this._waterfallColumn.element.addEventListener('mousewheel', this._onMouseWheel.bind(this, false), {passive: true});
@@ -136,12 +136,12 @@ WebInspector.NetworkLogViewColumns = class {
     this._waterfallScroller.addEventListener('scroll', this._syncScrollers.bind(this), {passive: true});
     this._waterfallScrollerContent = this._waterfallScroller.createChild('div', 'network-waterfall-v-scroll-content');
 
-    this._dataGrid.addEventListener(WebInspector.DataGrid.Events.PaddingChanged, () => {
+    this._dataGrid.addEventListener(UI.DataGrid.Events.PaddingChanged, () => {
       this._waterfallScrollerWidthIsStale = true;
       this._syncScrollers();
     });
     this._dataGrid.addEventListener(
-        WebInspector.ViewportDataGrid.Events.ViewportCalculated, this._redrawWaterfallColumn.bind(this));
+        UI.ViewportDataGrid.Events.ViewportCalculated, this._redrawWaterfallColumn.bind(this));
 
     this._createWaterfallHeader();
     this._waterfallColumn.contentElement.classList.add('network-waterfall-view');
@@ -153,13 +153,13 @@ WebInspector.NetworkLogViewColumns = class {
 
     /**
      * @param {!Event} event
-     * @this {WebInspector.NetworkLogViewColumns}
+     * @this {Network.NetworkLogViewColumns}
      */
     function handleContextMenu(event) {
       var request = this._waterfallColumn.getRequestFromPoint(event.offsetX, event.offsetY);
       if (!request)
         return;
-      var contextMenu = new WebInspector.ContextMenu(event);
+      var contextMenu = new UI.ContextMenu(event);
       this._networkLogView.handleContextMenuForRequest(contextMenu, request);
       contextMenu.show();
     }
@@ -202,7 +202,7 @@ WebInspector.NetworkLogViewColumns = class {
       return;
     }
     var currentNode = this._dataGrid.rootNode();
-    /** @type {!WebInspector.NetworkWaterfallColumn.RequestData} */
+    /** @type {!Network.NetworkWaterfallColumn.RequestData} */
     var requestData = {requests: [], navigationRequest: null};
     while (currentNode = currentNode.traverseNextNode(true)) {
       if (currentNode.isNavigationRequest())
@@ -213,7 +213,7 @@ WebInspector.NetworkLogViewColumns = class {
   }
 
   /**
-   * @param {?WebInspector.NetworkRequest} request
+   * @param {?SDK.NetworkRequest} request
    * @param {boolean} highlightInitiatorChain
    */
   setHoveredRequest(request, highlightInitiatorChain) {
@@ -224,17 +224,17 @@ WebInspector.NetworkLogViewColumns = class {
     this._waterfallHeaderElement = this._waterfallColumn.contentElement.createChild('div', 'network-waterfall-header');
     this._waterfallHeaderElement.addEventListener('click', waterfallHeaderClicked.bind(this));
     this._waterfallHeaderElement.addEventListener(
-        'contextmenu', event => this._innerHeaderContextMenu(new WebInspector.ContextMenu(event)));
+        'contextmenu', event => this._innerHeaderContextMenu(new UI.ContextMenu(event)));
     var innerElement = this._waterfallHeaderElement.createChild('div');
-    innerElement.textContent = WebInspector.UIString('Waterfall');
+    innerElement.textContent = Common.UIString('Waterfall');
     this._waterfallColumnSortIcon = this._waterfallHeaderElement.createChild('div', 'sort-order-icon-container')
         .createChild('div', 'sort-order-icon');
 
     /**
-     * @this {WebInspector.NetworkLogViewColumns}
+     * @this {Network.NetworkLogViewColumns}
      */
     function waterfallHeaderClicked() {
-      var sortOrders = WebInspector.DataGrid.Order;
+      var sortOrders = UI.DataGrid.Order;
       var sortOrder =
           this._dataGrid.sortOrder() === sortOrders.Ascending ? sortOrders.Descending : sortOrders.Ascending;
       this._dataGrid.markColumnAsSortedBy('waterfall', sortOrder);
@@ -243,7 +243,7 @@ WebInspector.NetworkLogViewColumns = class {
   }
 
   /**
-   * @param {!WebInspector.NetworkTimeCalculator} x
+   * @param {!Network.NetworkTimeCalculator} x
    */
   setCalculator(x) {
     this._waterfallColumn.setCalculator(x);
@@ -273,7 +273,7 @@ WebInspector.NetworkLogViewColumns = class {
   }
 
   /**
-   * @return {!WebInspector.SortableDataGrid} dataGrid
+   * @return {!UI.SortableDataGrid} dataGrid
    */
   dataGrid() {
     return this._dataGrid;
@@ -289,14 +289,14 @@ WebInspector.NetworkLogViewColumns = class {
     if (columnId === 'waterfall') {
       this._waterfallColumnSortIcon.classList.remove('sort-ascending', 'sort-descending');
 
-      if (this._dataGrid.sortOrder() === WebInspector.DataGrid.Order.Ascending)
+      if (this._dataGrid.sortOrder() === UI.DataGrid.Order.Ascending)
         this._waterfallColumnSortIcon.classList.add('sort-ascending');
       else
         this._waterfallColumnSortIcon.classList.add('sort-descending');
 
       this._waterfallRequestsAreStale = true;
       var sortFunction =
-          WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, this._activeWaterfallSortId);
+          Network.NetworkDataGridNode.RequestPropertyComparator.bind(null, this._activeWaterfallSortId);
       this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
       return;
     }
@@ -348,7 +348,7 @@ WebInspector.NetworkLogViewColumns = class {
   }
 
   /**
-   * @param {!WebInspector.NetworkLogViewColumns.Descriptor} columnConfig
+   * @param {!Network.NetworkLogViewColumns.Descriptor} columnConfig
    */
   _toggleColumnVisibility(columnConfig) {
     this._loadColumns();
@@ -394,7 +394,7 @@ WebInspector.NetworkLogViewColumns = class {
   }
 
   /**
-   * @param {!WebInspector.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu} contextMenu
    */
   _innerHeaderContextMenu(contextMenu) {
     var columnConfigs = this._columns.filter(columnConfig => columnConfig.hideable);
@@ -406,7 +406,7 @@ WebInspector.NetworkLogViewColumns = class {
 
     contextMenu.appendSeparator();
 
-    var responseSubMenu = contextMenu.appendSubMenuItem(WebInspector.UIString('Response Headers'));
+    var responseSubMenu = contextMenu.appendSubMenuItem(Common.UIString('Response Headers'));
     var responseHeaders = columnConfigs.filter(columnConfig => columnConfig.isResponseHeader);
     for (var columnConfig of responseHeaders) {
       responseSubMenu.appendCheckboxItem(
@@ -415,43 +415,43 @@ WebInspector.NetworkLogViewColumns = class {
 
     responseSubMenu.appendSeparator();
     responseSubMenu.appendItem(
-        WebInspector.UIString('Manage Header Columns\u2026'), this._manageCustomHeaderDialog.bind(this));
+        Common.UIString('Manage Header Columns\u2026'), this._manageCustomHeaderDialog.bind(this));
 
     contextMenu.appendSeparator();
 
-    var waterfallSortIds = WebInspector.NetworkLogViewColumns.WaterfallSortIds;
-    var waterfallSubMenu = contextMenu.appendSubMenuItem(WebInspector.UIString('Waterfall'));
+    var waterfallSortIds = Network.NetworkLogViewColumns.WaterfallSortIds;
+    var waterfallSubMenu = contextMenu.appendSubMenuItem(Common.UIString('Waterfall'));
     waterfallSubMenu.appendCheckboxItem(
-        WebInspector.UIString('Start Time'), setWaterfallMode.bind(this, waterfallSortIds.StartTime),
+        Common.UIString('Start Time'), setWaterfallMode.bind(this, waterfallSortIds.StartTime),
         this._activeWaterfallSortId === waterfallSortIds.StartTime);
     waterfallSubMenu.appendCheckboxItem(
-        WebInspector.UIString('Response Time'), setWaterfallMode.bind(this, waterfallSortIds.ResponseTime),
+        Common.UIString('Response Time'), setWaterfallMode.bind(this, waterfallSortIds.ResponseTime),
         this._activeWaterfallSortId === waterfallSortIds.ResponseTime);
     waterfallSubMenu.appendCheckboxItem(
-        WebInspector.UIString('End Time'), setWaterfallMode.bind(this, waterfallSortIds.EndTime),
+        Common.UIString('End Time'), setWaterfallMode.bind(this, waterfallSortIds.EndTime),
         this._activeWaterfallSortId === waterfallSortIds.EndTime);
     waterfallSubMenu.appendCheckboxItem(
-        WebInspector.UIString('Total Duration'), setWaterfallMode.bind(this, waterfallSortIds.Duration),
+        Common.UIString('Total Duration'), setWaterfallMode.bind(this, waterfallSortIds.Duration),
         this._activeWaterfallSortId === waterfallSortIds.Duration);
     waterfallSubMenu.appendCheckboxItem(
-        WebInspector.UIString('Latency'), setWaterfallMode.bind(this, waterfallSortIds.Latency),
+        Common.UIString('Latency'), setWaterfallMode.bind(this, waterfallSortIds.Latency),
         this._activeWaterfallSortId === waterfallSortIds.Latency);
 
     contextMenu.show();
 
     /**
-     * @param {!WebInspector.NetworkLogViewColumns.WaterfallSortIds} sortId
-     * @this {WebInspector.NetworkLogViewColumns}
+     * @param {!Network.NetworkLogViewColumns.WaterfallSortIds} sortId
+     * @this {Network.NetworkLogViewColumns}
      */
     function setWaterfallMode(sortId) {
-      var calculator = this._calculatorsMap.get(WebInspector.NetworkLogViewColumns._calculatorTypes.Time);
-      var waterfallSortIds = WebInspector.NetworkLogViewColumns.WaterfallSortIds;
+      var calculator = this._calculatorsMap.get(Network.NetworkLogViewColumns._calculatorTypes.Time);
+      var waterfallSortIds = Network.NetworkLogViewColumns.WaterfallSortIds;
       if (sortId === waterfallSortIds.Duration || sortId === waterfallSortIds.Latency)
-        calculator = this._calculatorsMap.get(WebInspector.NetworkLogViewColumns._calculatorTypes.Duration);
+        calculator = this._calculatorsMap.get(Network.NetworkLogViewColumns._calculatorTypes.Duration);
       this._networkLogView.setCalculator(calculator);
 
       this._activeWaterfallSortId = sortId;
-      this._dataGrid.markColumnAsSortedBy('waterfall', WebInspector.DataGrid.Order.Ascending);
+      this._dataGrid.markColumnAsSortedBy('waterfall', UI.DataGrid.Order.Ascending);
       this._sortHandler();
     }
   }
@@ -462,10 +462,10 @@ WebInspector.NetworkLogViewColumns = class {
       if (columnConfig.isResponseHeader)
         customHeaders.push({title: columnConfig.title, editable: columnConfig.isCustomHeader});
     }
-    var manageCustomHeaders = new WebInspector.NetworkManageCustomHeadersView(
+    var manageCustomHeaders = new Network.NetworkManageCustomHeadersView(
         customHeaders, headerTitle => !!this._addCustomHeader(headerTitle), this._changeCustomHeader.bind(this),
         this._removeCustomHeader.bind(this));
-    var dialog = new WebInspector.Dialog();
+    var dialog = new UI.Dialog();
     manageCustomHeaders.show(dialog.element);
     dialog.setWrapsContent(true);
     dialog.show();
@@ -491,7 +491,7 @@ WebInspector.NetworkLogViewColumns = class {
    * @param {string} headerTitle
    * @param {string=} headerId
    * @param {number=} index
-   * @return {?WebInspector.NetworkLogViewColumns.Descriptor}
+   * @return {?Network.NetworkLogViewColumns.Descriptor}
    */
   _addCustomHeader(headerTitle, headerId, index) {
     if (!headerId)
@@ -503,18 +503,18 @@ WebInspector.NetworkLogViewColumns = class {
     if (currentColumnConfig)
       return null;
 
-    var columnConfig = /** @type {!WebInspector.NetworkLogViewColumns.Descriptor} */ (
-        Object.assign(/** @type {!Object} */ ({}), WebInspector.NetworkLogViewColumns._defaultColumnConfig, {
+    var columnConfig = /** @type {!Network.NetworkLogViewColumns.Descriptor} */ (
+        Object.assign(/** @type {!Object} */ ({}), Network.NetworkLogViewColumns._defaultColumnConfig, {
           id: headerId,
           title: headerTitle,
           isResponseHeader: true,
           isCustomHeader: true,
           visible: true,
-          sortingFunction: WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, headerId)
+          sortingFunction: Network.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, headerId)
         }));
     this._columns.splice(index, 0, columnConfig);
     if (this._dataGrid)
-      this._dataGrid.addColumn(WebInspector.NetworkLogViewColumns._convertToDataGridDescriptor(columnConfig), index);
+      this._dataGrid.addColumn(Network.NetworkLogViewColumns._convertToDataGridDescriptor(columnConfig), index);
     this._saveColumns();
     this._updateColumns();
     return columnConfig;
@@ -552,7 +552,7 @@ WebInspector.NetworkLogViewColumns = class {
       return;
     var anchor = element.enclosingNodeOrSelfWithClass('network-script-initiated');
     if (anchor && anchor.request) {
-      var initiator = /** @type {!WebInspector.NetworkRequest} */ (anchor.request).initiator();
+      var initiator = /** @type {!SDK.NetworkRequest} */ (anchor.request).initiator();
       if (initiator && initiator.stack)
         return anchor;
     }
@@ -560,12 +560,12 @@ WebInspector.NetworkLogViewColumns = class {
 
   /**
    * @param {!Element} anchor
-   * @param {!WebInspector.Popover} popover
+   * @param {!UI.Popover} popover
    */
   _showPopover(anchor, popover) {
-    var request = /** @type {!WebInspector.NetworkRequest} */ (anchor.request);
+    var request = /** @type {!SDK.NetworkRequest} */ (anchor.request);
     var initiator = /** @type {!Protocol.Network.Initiator} */ (request.initiator());
-    var content = WebInspector.DOMPresentationUtils.buildStackTracePreviewContents(
+    var content = Components.DOMPresentationUtils.buildStackTracePreviewContents(
         request.target(), this._popupLinkifier, initiator.stack);
     popover.setCanShrink(true);
     popover.showForAnchor(content, anchor);
@@ -611,17 +611,17 @@ WebInspector.NetworkLogViewColumns = class {
    * @param {number} time
    */
   selectFilmStripFrame(time) {
-    this._eventDividers.set(WebInspector.NetworkLogViewColumns._filmStripDividerColor, [time]);
+    this._eventDividers.set(Network.NetworkLogViewColumns._filmStripDividerColor, [time]);
     this._redrawWaterfallColumn();
   }
 
   clearFilmStripFrame() {
-    this._eventDividers.delete(WebInspector.NetworkLogViewColumns._filmStripDividerColor);
+    this._eventDividers.delete(Network.NetworkLogViewColumns._filmStripDividerColor);
     this._redrawWaterfallColumn();
   }
 };
 
-WebInspector.NetworkLogViewColumns._initialSortColumn = 'waterfall';
+Network.NetworkLogViewColumns._initialSortColumn = 'waterfall';
 
 /**
  * @typedef {{
@@ -634,16 +634,16 @@ WebInspector.NetworkLogViewColumns._initialSortColumn = 'waterfall';
  *     hideable: boolean,
  *     nonSelectable: boolean,
  *     sortable: boolean,
- *     align: (?WebInspector.DataGrid.Align|undefined),
+ *     align: (?UI.DataGrid.Align|undefined),
  *     isResponseHeader: boolean,
- *     sortingFunction: (!function(!WebInspector.NetworkDataGridNode, !WebInspector.NetworkDataGridNode):number|undefined),
+ *     sortingFunction: (!function(!Network.NetworkDataGridNode, !Network.NetworkDataGridNode):number|undefined),
  *     isCustomHeader: boolean
  * }}
  */
-WebInspector.NetworkLogViewColumns.Descriptor;
+Network.NetworkLogViewColumns.Descriptor;
 
 /** @enum {string} */
-WebInspector.NetworkLogViewColumns._calculatorTypes = {
+Network.NetworkLogViewColumns._calculatorTypes = {
   Duration: 'Duration',
   Time: 'Time'
 };
@@ -651,7 +651,7 @@ WebInspector.NetworkLogViewColumns._calculatorTypes = {
 /**
  * @type {!Object} column
  */
-WebInspector.NetworkLogViewColumns._defaultColumnConfig = {
+Network.NetworkLogViewColumns._defaultColumnConfig = {
   subtitle: null,
   visible: false,
   weight: 6,
@@ -664,170 +664,170 @@ WebInspector.NetworkLogViewColumns._defaultColumnConfig = {
 };
 
 /**
- * @type {!Array.<!WebInspector.NetworkLogViewColumns.Descriptor>} column
+ * @type {!Array.<!Network.NetworkLogViewColumns.Descriptor>} column
  */
-WebInspector.NetworkLogViewColumns._defaultColumns = [
+Network.NetworkLogViewColumns._defaultColumns = [
   {
     id: 'name',
-    title: WebInspector.UIString('Name'),
-    subtitle: WebInspector.UIString('Path'),
+    title: Common.UIString('Name'),
+    subtitle: Common.UIString('Path'),
     visible: true,
     weight: 20,
     hideable: false,
     nonSelectable: false,
     alwaysVisible: true,
-    sortingFunction: WebInspector.NetworkDataGridNode.NameComparator
+    sortingFunction: Network.NetworkDataGridNode.NameComparator
   },
   {
     id: 'method',
-    title: WebInspector.UIString('Method'),
-    sortingFunction: WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, 'requestMethod')
+    title: Common.UIString('Method'),
+    sortingFunction: Network.NetworkDataGridNode.RequestPropertyComparator.bind(null, 'requestMethod')
   },
   {
     id: 'status',
-    title: WebInspector.UIString('Status'),
+    title: Common.UIString('Status'),
     visible: true,
-    subtitle: WebInspector.UIString('Text'),
-    sortingFunction: WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, 'statusCode')
+    subtitle: Common.UIString('Text'),
+    sortingFunction: Network.NetworkDataGridNode.RequestPropertyComparator.bind(null, 'statusCode')
   },
   {
     id: 'protocol',
-    title: WebInspector.UIString('Protocol'),
-    sortingFunction: WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, 'protocol')
+    title: Common.UIString('Protocol'),
+    sortingFunction: Network.NetworkDataGridNode.RequestPropertyComparator.bind(null, 'protocol')
   },
   {
     id: 'scheme',
-    title: WebInspector.UIString('Scheme'),
-    sortingFunction: WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, 'scheme')
+    title: Common.UIString('Scheme'),
+    sortingFunction: Network.NetworkDataGridNode.RequestPropertyComparator.bind(null, 'scheme')
   },
   {
     id: 'domain',
-    title: WebInspector.UIString('Domain'),
-    sortingFunction: WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, 'domain')
+    title: Common.UIString('Domain'),
+    sortingFunction: Network.NetworkDataGridNode.RequestPropertyComparator.bind(null, 'domain')
   },
   {
     id: 'remoteaddress',
-    title: WebInspector.UIString('Remote Address'),
+    title: Common.UIString('Remote Address'),
     weight: 10,
-    align: WebInspector.DataGrid.Align.Right,
-    sortingFunction: WebInspector.NetworkDataGridNode.RemoteAddressComparator
+    align: UI.DataGrid.Align.Right,
+    sortingFunction: Network.NetworkDataGridNode.RemoteAddressComparator
   },
   {
     id: 'type',
-    title: WebInspector.UIString('Type'),
+    title: Common.UIString('Type'),
     visible: true,
-    sortingFunction: WebInspector.NetworkDataGridNode.TypeComparator
+    sortingFunction: Network.NetworkDataGridNode.TypeComparator
   },
   {
     id: 'initiator',
-    title: WebInspector.UIString('Initiator'),
+    title: Common.UIString('Initiator'),
     visible: true,
     weight: 10,
-    sortingFunction: WebInspector.NetworkDataGridNode.InitiatorComparator
+    sortingFunction: Network.NetworkDataGridNode.InitiatorComparator
   },
   {
     id: 'cookies',
-    title: WebInspector.UIString('Cookies'),
-    align: WebInspector.DataGrid.Align.Right,
-    sortingFunction: WebInspector.NetworkDataGridNode.RequestCookiesCountComparator
+    title: Common.UIString('Cookies'),
+    align: UI.DataGrid.Align.Right,
+    sortingFunction: Network.NetworkDataGridNode.RequestCookiesCountComparator
   },
   {
     id: 'setcookies',
-    title: WebInspector.UIString('Set Cookies'),
-    align: WebInspector.DataGrid.Align.Right,
-    sortingFunction: WebInspector.NetworkDataGridNode.ResponseCookiesCountComparator
+    title: Common.UIString('Set Cookies'),
+    align: UI.DataGrid.Align.Right,
+    sortingFunction: Network.NetworkDataGridNode.ResponseCookiesCountComparator
   },
   {
     id: 'size',
-    title: WebInspector.UIString('Size'),
+    title: Common.UIString('Size'),
     visible: true,
-    subtitle: WebInspector.UIString('Content'),
-    align: WebInspector.DataGrid.Align.Right,
-    sortingFunction: WebInspector.NetworkDataGridNode.SizeComparator
+    subtitle: Common.UIString('Content'),
+    align: UI.DataGrid.Align.Right,
+    sortingFunction: Network.NetworkDataGridNode.SizeComparator
   },
   {
     id: 'time',
-    title: WebInspector.UIString('Time'),
+    title: Common.UIString('Time'),
     visible: true,
-    subtitle: WebInspector.UIString('Latency'),
-    align: WebInspector.DataGrid.Align.Right,
-    sortingFunction: WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, 'duration')
+    subtitle: Common.UIString('Latency'),
+    align: UI.DataGrid.Align.Right,
+    sortingFunction: Network.NetworkDataGridNode.RequestPropertyComparator.bind(null, 'duration')
   },
   {
     id: 'priority',
-    title: WebInspector.UIString('Priority'),
-    sortingFunction: WebInspector.NetworkDataGridNode.InitialPriorityComparator
+    title: Common.UIString('Priority'),
+    sortingFunction: Network.NetworkDataGridNode.InitialPriorityComparator
   },
   {
     id: 'connectionid',
-    title: WebInspector.UIString('Connection ID'),
-    sortingFunction: WebInspector.NetworkDataGridNode.RequestPropertyComparator.bind(null, 'connectionId')
+    title: Common.UIString('Connection ID'),
+    sortingFunction: Network.NetworkDataGridNode.RequestPropertyComparator.bind(null, 'connectionId')
   },
   {
     id: 'cache-control',
     isResponseHeader: true,
-    title: WebInspector.UIString('Cache-Control'),
-    sortingFunction: WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'cache-control')
+    title: Common.UIString('Cache-Control'),
+    sortingFunction: Network.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'cache-control')
   },
   {
     id: 'connection',
     isResponseHeader: true,
-    title: WebInspector.UIString('Connection'),
-    sortingFunction: WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'connection')
+    title: Common.UIString('Connection'),
+    sortingFunction: Network.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'connection')
   },
   {
     id: 'content-encoding',
     isResponseHeader: true,
-    title: WebInspector.UIString('Content-Encoding'),
-    sortingFunction: WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'content-encoding')
+    title: Common.UIString('Content-Encoding'),
+    sortingFunction: Network.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'content-encoding')
   },
   {
     id: 'content-length',
     isResponseHeader: true,
-    title: WebInspector.UIString('Content-Length'),
-    align: WebInspector.DataGrid.Align.Right,
-    sortingFunction: WebInspector.NetworkDataGridNode.ResponseHeaderNumberComparator.bind(null, 'content-length')
+    title: Common.UIString('Content-Length'),
+    align: UI.DataGrid.Align.Right,
+    sortingFunction: Network.NetworkDataGridNode.ResponseHeaderNumberComparator.bind(null, 'content-length')
   },
   {
     id: 'etag',
     isResponseHeader: true,
-    title: WebInspector.UIString('ETag'),
-    sortingFunction: WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'etag')
+    title: Common.UIString('ETag'),
+    sortingFunction: Network.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'etag')
   },
   {
     id: 'keep-alive',
     isResponseHeader: true,
-    title: WebInspector.UIString('Keep-Alive'),
-    sortingFunction: WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'keep-alive')
+    title: Common.UIString('Keep-Alive'),
+    sortingFunction: Network.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'keep-alive')
   },
   {
     id: 'last-modified',
     isResponseHeader: true,
-    title: WebInspector.UIString('Last-Modified'),
-    sortingFunction: WebInspector.NetworkDataGridNode.ResponseHeaderDateComparator.bind(null, 'last-modified')
+    title: Common.UIString('Last-Modified'),
+    sortingFunction: Network.NetworkDataGridNode.ResponseHeaderDateComparator.bind(null, 'last-modified')
   },
   {
     id: 'server',
     isResponseHeader: true,
-    title: WebInspector.UIString('Server'),
-    sortingFunction: WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'server')
+    title: Common.UIString('Server'),
+    sortingFunction: Network.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'server')
   },
   {
     id: 'vary',
     isResponseHeader: true,
-    title: WebInspector.UIString('Vary'),
-    sortingFunction: WebInspector.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'vary')
+    title: Common.UIString('Vary'),
+    sortingFunction: Network.NetworkDataGridNode.ResponseHeaderStringComparator.bind(null, 'vary')
   },
   // This header is a placeholder to let datagrid know that it can be sorted by this column, but never shown.
   {id: 'waterfall', title: '', visible: false, hideable: false}
 ];
 
-WebInspector.NetworkLogViewColumns._filmStripDividerColor = '#fccc49';
+Network.NetworkLogViewColumns._filmStripDividerColor = '#fccc49';
 
 /**
  * @enum {string}
  */
-WebInspector.NetworkLogViewColumns.WaterfallSortIds = {
+Network.NetworkLogViewColumns.WaterfallSortIds = {
   StartTime: 'startTime',
   ResponseTime: 'responseReceivedTime',
   EndTime: 'endTime',

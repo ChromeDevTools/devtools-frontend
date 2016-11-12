@@ -4,12 +4,12 @@
 /**
  * @unrestricted
  */
-WebInspector.CSSStyleDeclaration = class {
+SDK.CSSStyleDeclaration = class {
   /**
-   * @param {!WebInspector.CSSModel} cssModel
-   * @param {?WebInspector.CSSRule} parentRule
+   * @param {!SDK.CSSModel} cssModel
+   * @param {?SDK.CSSRule} parentRule
    * @param {!Protocol.CSS.CSSStyle} payload
-   * @param {!WebInspector.CSSStyleDeclaration.Type} type
+   * @param {!SDK.CSSStyleDeclaration.Type} type
    */
   constructor(cssModel, parentRule, payload, type) {
     this._cssModel = cssModel;
@@ -19,7 +19,7 @@ WebInspector.CSSStyleDeclaration = class {
   }
 
   /**
-   * @param {!WebInspector.CSSModel.Edit} edit
+   * @param {!SDK.CSSModel.Edit} edit
    */
   rebase(edit) {
     if (this.styleSheetId !== edit.styleSheetId || !this.range)
@@ -38,7 +38,7 @@ WebInspector.CSSStyleDeclaration = class {
    */
   _reinitialize(payload) {
     this.styleSheetId = payload.styleSheetId;
-    this.range = payload.range ? WebInspector.TextRange.fromObject(payload.range) : null;
+    this.range = payload.range ? Common.TextRange.fromObject(payload.range) : null;
 
     var shorthandEntries = payload.shorthandEntries;
     /** @type {!Map.<string, string>} */
@@ -53,7 +53,7 @@ WebInspector.CSSStyleDeclaration = class {
 
     this._allProperties = [];
     for (var i = 0; i < payload.cssProperties.length; ++i) {
-      var property = WebInspector.CSSProperty.parsePayload(this, i, payload.cssProperties[i]);
+      var property = SDK.CSSProperty.parsePayload(this, i, payload.cssProperties[i]);
       this._allProperties.push(property);
     }
 
@@ -86,7 +86,7 @@ WebInspector.CSSStyleDeclaration = class {
     // For style-based properties, generate shorthands with values when possible.
     for (var property of this._allProperties) {
       // For style-based properties, try generating shorthands.
-      var shorthands = WebInspector.cssMetadata().shorthands(property.name) || [];
+      var shorthands = SDK.cssMetadata().shorthands(property.name) || [];
       for (var shorthand of shorthands) {
         if (propertiesSet.has(shorthand))
           continue;  // There already is a shorthand this longhands falls under.
@@ -96,7 +96,7 @@ WebInspector.CSSStyleDeclaration = class {
 
         // Generate synthetic shorthand we have a value for.
         var shorthandImportance = !!this._shorthandIsImportant.has(shorthand);
-        var shorthandProperty = new WebInspector.CSSProperty(
+        var shorthandProperty = new SDK.CSSProperty(
             this, this.allProperties.length, shorthand, shorthandValue, shorthandImportance, false, true, false);
         generatedProperties.push(shorthandProperty);
         propertiesSet.add(shorthand);
@@ -106,11 +106,11 @@ WebInspector.CSSStyleDeclaration = class {
   }
 
   /**
-   * @return {!Array.<!WebInspector.CSSProperty>}
+   * @return {!Array.<!SDK.CSSProperty>}
    */
   _computeLeadingProperties() {
     /**
-     * @param {!WebInspector.CSSProperty} property
+     * @param {!SDK.CSSProperty} property
      * @return {boolean}
      */
     function propertyHasRange(property) {
@@ -122,7 +122,7 @@ WebInspector.CSSStyleDeclaration = class {
 
     var leadingProperties = [];
     for (var property of this._allProperties) {
-      var shorthands = WebInspector.cssMetadata().shorthands(property.name) || [];
+      var shorthands = SDK.cssMetadata().shorthands(property.name) || [];
       var belongToAnyShorthand = false;
       for (var shorthand of shorthands) {
         if (this._shorthandValues.get(shorthand)) {
@@ -138,7 +138,7 @@ WebInspector.CSSStyleDeclaration = class {
   }
 
   /**
-   * @return {!Array.<!WebInspector.CSSProperty>}
+   * @return {!Array.<!SDK.CSSProperty>}
    */
   leadingProperties() {
     if (!this._leadingProperties)
@@ -147,14 +147,14 @@ WebInspector.CSSStyleDeclaration = class {
   }
 
   /**
-   * @return {!WebInspector.Target}
+   * @return {!SDK.Target}
    */
   target() {
     return this._cssModel.target();
   }
 
   /**
-   * @return {!WebInspector.CSSModel}
+   * @return {!SDK.CSSModel}
    */
   cssModel() {
     return this._cssModel;
@@ -168,7 +168,7 @@ WebInspector.CSSStyleDeclaration = class {
         property._setActive(false);
         continue;
       }
-      var canonicalName = WebInspector.cssMetadata().canonicalPropertyName(property.name);
+      var canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
       var activeProperty = activeProperties[canonicalName];
       if (!activeProperty) {
         activeProperties[canonicalName] = property;
@@ -205,10 +205,10 @@ WebInspector.CSSStyleDeclaration = class {
 
   /**
    * @param {string} name
-   * @return {!Array.<!WebInspector.CSSProperty>}
+   * @return {!Array.<!SDK.CSSProperty>}
    */
   longhandProperties(name) {
-    var longhands = WebInspector.cssMetadata().longhands(name);
+    var longhands = SDK.cssMetadata().longhands(name);
     var result = [];
     for (var i = 0; longhands && i < longhands.length; ++i) {
       var property = this._activePropertyMap.get(longhands[i]);
@@ -220,7 +220,7 @@ WebInspector.CSSStyleDeclaration = class {
 
   /**
    * @param {number} index
-   * @return {?WebInspector.CSSProperty}
+   * @return {?SDK.CSSProperty}
    */
   propertyAt(index) {
     return (index < this.allProperties.length) ? this.allProperties[index] : null;
@@ -239,7 +239,7 @@ WebInspector.CSSStyleDeclaration = class {
 
   /**
    * @param {number} index
-   * @return {!WebInspector.TextRange}
+   * @return {!Common.TextRange}
    */
   _insertionRange(index) {
     var property = this.propertyAt(index);
@@ -248,12 +248,12 @@ WebInspector.CSSStyleDeclaration = class {
 
   /**
    * @param {number=} index
-   * @return {!WebInspector.CSSProperty}
+   * @return {!SDK.CSSProperty}
    */
   newBlankProperty(index) {
     index = (typeof index === 'undefined') ? this.pastLastSourcePropertyIndex() : index;
     var property =
-        new WebInspector.CSSProperty(this, index, '', '', false, false, true, false, '', this._insertionRange(index));
+        new SDK.CSSProperty(this, index, '', '', false, false, true, false, '', this._insertionRange(index));
     return property;
   }
 
@@ -287,7 +287,7 @@ WebInspector.CSSStyleDeclaration = class {
 };
 
 /** @enum {string} */
-WebInspector.CSSStyleDeclaration.Type = {
+SDK.CSSStyleDeclaration.Type = {
   Regular: 'Regular',
   Inline: 'Inline',
   Attributes: 'Attributes'

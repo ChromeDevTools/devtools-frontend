@@ -1,9 +1,9 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "commandMenu.show",
-            "className": "WebInspector.CommandMenu.ShowActionDelegate",
+            "className": "UI.CommandMenu.ShowActionDelegate",
             "bindings": [
                 {
                     "platform": "windows,linux",

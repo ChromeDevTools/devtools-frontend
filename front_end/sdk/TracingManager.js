@@ -6,12 +6,12 @@
 /**
  * @interface
  */
-WebInspector.TracingManagerClient = function() {};
+SDK.TracingManagerClient = function() {};
 
-WebInspector.TracingManagerClient.prototype = {
+SDK.TracingManagerClient.prototype = {
   tracingStarted: function() {},
   /**
-   * @param {!Array.<!WebInspector.TracingManager.EventPayload>} events
+   * @param {!Array.<!SDK.TracingManager.EventPayload>} events
    */
   traceEventsCollected: function(events) {},
   tracingComplete: function() {},
@@ -28,22 +28,22 @@ WebInspector.TracingManagerClient.prototype = {
 /**
  * @unrestricted
  */
-WebInspector.TracingManager = class {
+SDK.TracingManager = class {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   constructor(target) {
     this._target = target;
-    target.registerTracingDispatcher(new WebInspector.TracingDispatcher(this));
+    target.registerTracingDispatcher(new SDK.TracingDispatcher(this));
 
-    /** @type {?WebInspector.TracingManagerClient} */
+    /** @type {?SDK.TracingManagerClient} */
     this._activeClient = null;
     this._eventBufferSize = 0;
     this._eventsRetrieved = 0;
   }
 
   /**
-   * @return {?WebInspector.Target}
+   * @return {?SDK.Target}
    */
   target() {
     return this._target;
@@ -60,7 +60,7 @@ WebInspector.TracingManager = class {
   }
 
   /**
-   * @param {!Array.<!WebInspector.TracingManager.EventPayload>} events
+   * @param {!Array.<!SDK.TracingManager.EventPayload>} events
    */
   _eventsCollected(events) {
     this._activeClient.traceEventsCollected(events);
@@ -81,7 +81,7 @@ WebInspector.TracingManager = class {
   }
 
   /**
-   * @param {!WebInspector.TracingManagerClient} client
+   * @param {!SDK.TracingManagerClient} client
    * @param {string} categoryFilter
    * @param {string} options
    * @param {function(?string)=} callback
@@ -92,7 +92,7 @@ WebInspector.TracingManager = class {
     var bufferUsageReportingIntervalMs = 500;
     this._activeClient = client;
     this._target.tracingAgent().start(
-        categoryFilter, options, bufferUsageReportingIntervalMs, WebInspector.TracingManager.TransferMode.ReportEvents,
+        categoryFilter, options, bufferUsageReportingIntervalMs, SDK.TracingManager.TransferMode.ReportEvents,
         callback);
     this._activeClient.tracingStarted();
   }
@@ -123,9 +123,9 @@ WebInspector.TracingManager = class {
         s: string
     }}
  */
-WebInspector.TracingManager.EventPayload;
+SDK.TracingManager.EventPayload;
 
-WebInspector.TracingManager.TransferMode = {
+SDK.TracingManager.TransferMode = {
   ReportEvents: 'ReportEvents',
   ReturnAsStream: 'ReturnAsStream'
 };
@@ -134,9 +134,9 @@ WebInspector.TracingManager.TransferMode = {
  * @implements {Protocol.TracingDispatcher}
  * @unrestricted
  */
-WebInspector.TracingDispatcher = class {
+SDK.TracingDispatcher = class {
   /**
-   * @param {!WebInspector.TracingManager} tracingManager
+   * @param {!SDK.TracingManager} tracingManager
    */
   constructor(tracingManager) {
     this._tracingManager = tracingManager;
@@ -154,7 +154,7 @@ WebInspector.TracingDispatcher = class {
 
   /**
    * @override
-   * @param {!Array.<!WebInspector.TracingManager.EventPayload>} data
+   * @param {!Array.<!SDK.TracingManager.EventPayload>} data
    */
   dataCollected(data) {
     this._tracingManager._eventsCollected(data);

@@ -31,57 +31,57 @@
 /**
  * @unrestricted
  */
-WebInspector.SASSSourceMapping = class {
+Bindings.SASSSourceMapping = class {
   /**
-   * @param {!WebInspector.CSSModel} cssModel
-   * @param {!WebInspector.NetworkMapping} networkMapping
-   * @param {!WebInspector.NetworkProject} networkProject
+   * @param {!SDK.CSSModel} cssModel
+   * @param {!Bindings.NetworkMapping} networkMapping
+   * @param {!Bindings.NetworkProject} networkProject
    */
   constructor(cssModel, networkMapping, networkProject) {
     this._cssModel = cssModel;
     this._networkProject = networkProject;
     this._networkMapping = networkMapping;
     this._eventListeners = [
-      this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapAttached, this._sourceMapAttached, this),
-      this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapDetached, this._sourceMapDetached, this),
-      this._cssModel.addEventListener(WebInspector.CSSModel.Events.SourceMapChanged, this._sourceMapChanged, this)
+      this._cssModel.addEventListener(SDK.CSSModel.Events.SourceMapAttached, this._sourceMapAttached, this),
+      this._cssModel.addEventListener(SDK.CSSModel.Events.SourceMapDetached, this._sourceMapDetached, this),
+      this._cssModel.addEventListener(SDK.CSSModel.Events.SourceMapChanged, this._sourceMapChanged, this)
     ];
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _sourceMapAttached(event) {
-    var header = /** @type {!WebInspector.CSSStyleSheetHeader} */ (event.data);
+    var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
     var sourceMap = this._cssModel.sourceMapForHeader(header);
     for (var sassURL of sourceMap.sourceURLs()) {
-      var contentProvider = sourceMap.sourceContentProvider(sassURL, WebInspector.resourceTypes.SourceMapStyleSheet);
+      var contentProvider = sourceMap.sourceContentProvider(sassURL, Common.resourceTypes.SourceMapStyleSheet);
       var embeddedContent = sourceMap.embeddedContentByURL(sassURL);
       var embeddedContentLength = typeof embeddedContent === 'string' ? embeddedContent.length : null;
       this._networkProject.addFile(
-          contentProvider, WebInspector.ResourceTreeFrame.fromStyleSheet(header), false, embeddedContentLength);
+          contentProvider, SDK.ResourceTreeFrame.fromStyleSheet(header), false, embeddedContentLength);
     }
-    WebInspector.cssWorkspaceBinding.updateLocations(header);
+    Bindings.cssWorkspaceBinding.updateLocations(header);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _sourceMapDetached(event) {
-    var header = /** @type {!WebInspector.CSSStyleSheetHeader} */ (event.data);
-    WebInspector.cssWorkspaceBinding.updateLocations(header);
+    var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
+    Bindings.cssWorkspaceBinding.updateLocations(header);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _sourceMapChanged(event) {
-    var sourceMap = /** @type {!WebInspector.SourceMap} */ (event.data.sourceMap);
+    var sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
     var newSources = /** @type {!Map<string, string>} */ (event.data.newSources);
     var headers = this._cssModel.headersForSourceMap(sourceMap);
     var handledUISourceCodes = new Set();
     for (var header of headers) {
-      WebInspector.cssWorkspaceBinding.updateLocations(header);
+      Bindings.cssWorkspaceBinding.updateLocations(header);
       for (var sourceURL of newSources.keys()) {
         var uiSourceCode = this._networkMapping.uiSourceCodeForStyleURL(sourceURL, header);
         if (!uiSourceCode) {
@@ -98,8 +98,8 @@ WebInspector.SASSSourceMapping = class {
   }
 
   /**
-   * @param {!WebInspector.CSSLocation} rawLocation
-   * @return {?WebInspector.UILocation}
+   * @param {!SDK.CSSLocation} rawLocation
+   * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
     var sourceMap = this._cssModel.sourceMapForHeader(rawLocation.header());
@@ -115,6 +115,6 @@ WebInspector.SASSSourceMapping = class {
   }
 
   dispose() {
-    WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
   }
 };

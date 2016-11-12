@@ -189,7 +189,13 @@ class ReleaseBuilder(object):
                 non_autostart_deps = deps & non_autostart
                 if len(non_autostart_deps):
                     bail_error('Non-autostart dependencies specified for the autostarted module "%s": %s' % (name, non_autostart_deps))
+
+                namespace = name.replace('_lazy', '')
+                if namespace == 'sdk' or namespace == 'ui':
+                    namespace = namespace.upper();
+                namespace = "".join(map(lambda x: x[0].upper() + x[1:], namespace.split('_')))
                 output.write('\n/* Module %s */\n' % name)
+                output.write('\nself[\'%s\'] = self[\'%s\'] || {};\n' % (namespace, namespace))
                 modular_build.concatenate_scripts(desc.get('scripts'), join(self.application_dir, name), self.output_dir, output)
             else:
                 non_autostart.add(name)

@@ -2,31 +2,31 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.App}
+ * @implements {Common.App}
  * @unrestricted
  */
-WebInspector.SimpleApp = class {
+Main.SimpleApp = class {
   /**
    * @override
    * @param {!Document} document
    */
   presentUI(document) {
-    var rootView = new WebInspector.RootView();
-    WebInspector.inspectorView.show(rootView.element);
+    var rootView = new UI.RootView();
+    UI.inspectorView.show(rootView.element);
     rootView.attachToDocument(document);
   }
 };
 
 /**
- * @implements {WebInspector.AppProvider}
+ * @implements {Common.AppProvider}
  * @unrestricted
  */
-WebInspector.SimpleAppProvider = class {
+Main.SimpleAppProvider = class {
   /**
    * @override
-   * @return {!WebInspector.App}
+   * @return {!Common.App}
    */
   createApp() {
-    return new WebInspector.SimpleApp();
+    return new Main.SimpleApp();
   }
 };

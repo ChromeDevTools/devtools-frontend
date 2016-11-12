@@ -31,10 +31,10 @@ if (!window.InspectorExtensionRegistry) {
   /**
    * @unrestricted
    */
-  WebInspector.InspectorExtensionRegistryStub = class {
+  Extensions.InspectorExtensionRegistryStub = class {
     getExtensionsAsync() {
     }
   };
 
-  var InspectorExtensionRegistry = new WebInspector.InspectorExtensionRegistryStub();
+  var InspectorExtensionRegistry = new Extensions.InspectorExtensionRegistryStub();
 }

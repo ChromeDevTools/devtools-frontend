@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.EmptyWidget = class extends WebInspector.VBox {
+UI.EmptyWidget = class extends UI.VBox {
   constructor(text) {
     super();
     this.registerRequiredCSS('ui/emptyWidget.css');

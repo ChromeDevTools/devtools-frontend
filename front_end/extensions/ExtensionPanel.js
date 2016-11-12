@@ -28,12 +28,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.Searchable}
+ * @implements {UI.Searchable}
  * @unrestricted
  */
-WebInspector.ExtensionPanel = class extends WebInspector.Panel {
+Extensions.ExtensionPanel = class extends UI.Panel {
   /**
-   * @param {!WebInspector.ExtensionServer} server
+   * @param {!Extensions.ExtensionServer} server
    * @param {string} panelName
    * @param {string} id
    * @param {string} pageURL
@@ -43,17 +43,17 @@ WebInspector.ExtensionPanel = class extends WebInspector.Panel {
     this._server = server;
     this._id = id;
     this.setHideOnDetach();
-    this._panelToolbar = new WebInspector.Toolbar('hidden', this.element);
+    this._panelToolbar = new UI.Toolbar('hidden', this.element);
 
-    this._searchableView = new WebInspector.SearchableView(this);
+    this._searchableView = new UI.SearchableView(this);
     this._searchableView.show(this.element);
 
-    var extensionView = new WebInspector.ExtensionView(server, this._id, pageURL, 'extension');
+    var extensionView = new Extensions.ExtensionView(server, this._id, pageURL, 'extension');
     extensionView.show(this._searchableView.element);
   }
 
   /**
-   * @param {!WebInspector.ToolbarItem} item
+   * @param {!UI.ToolbarItem} item
    */
   addToolbarItem(item) {
     this._panelToolbar.element.classList.remove('hidden');
@@ -64,13 +64,13 @@ WebInspector.ExtensionPanel = class extends WebInspector.Panel {
    * @override
    */
   searchCanceled() {
-    this._server.notifySearchAction(this._id, WebInspector.extensionAPI.panels.SearchAction.CancelSearch);
+    this._server.notifySearchAction(this._id, Extensions.extensionAPI.panels.SearchAction.CancelSearch);
     this._searchableView.updateSearchMatchesCount(0);
   }
 
   /**
    * @override
-   * @return {!WebInspector.SearchableView}
+   * @return {!UI.SearchableView}
    */
   searchableView() {
     return this._searchableView;
@@ -78,27 +78,27 @@ WebInspector.ExtensionPanel = class extends WebInspector.Panel {
 
   /**
    * @override
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {boolean} shouldJump
    * @param {boolean=} jumpBackwards
    */
   performSearch(searchConfig, shouldJump, jumpBackwards) {
     var query = searchConfig.query;
-    this._server.notifySearchAction(this._id, WebInspector.extensionAPI.panels.SearchAction.PerformSearch, query);
+    this._server.notifySearchAction(this._id, Extensions.extensionAPI.panels.SearchAction.PerformSearch, query);
   }
 
   /**
    * @override
    */
   jumpToNextSearchResult() {
-    this._server.notifySearchAction(this._id, WebInspector.extensionAPI.panels.SearchAction.NextSearchResult);
+    this._server.notifySearchAction(this._id, Extensions.extensionAPI.panels.SearchAction.NextSearchResult);
   }
 
   /**
    * @override
    */
   jumpToPreviousSearchResult() {
-    this._server.notifySearchAction(this._id, WebInspector.extensionAPI.panels.SearchAction.PreviousSearchResult);
+    this._server.notifySearchAction(this._id, Extensions.extensionAPI.panels.SearchAction.PreviousSearchResult);
   }
 
   /**
@@ -121,9 +121,9 @@ WebInspector.ExtensionPanel = class extends WebInspector.Panel {
 /**
  * @unrestricted
  */
-WebInspector.ExtensionButton = class {
+Extensions.ExtensionButton = class {
   /**
-   * @param {!WebInspector.ExtensionServer} server
+   * @param {!Extensions.ExtensionServer} server
    * @param {string} id
    * @param {string} iconURL
    * @param {string=} tooltip
@@ -132,7 +132,7 @@ WebInspector.ExtensionButton = class {
   constructor(server, id, iconURL, tooltip, disabled) {
     this._id = id;
 
-    this._toolbarButton = new WebInspector.ToolbarButton('', '');
+    this._toolbarButton = new UI.ToolbarButton('', '');
     this._toolbarButton.addEventListener('click', server.notifyButtonClicked.bind(server, this._id));
     this.update(iconURL, tooltip, disabled);
   }
@@ -152,7 +152,7 @@ WebInspector.ExtensionButton = class {
   }
 
   /**
-   * @return {!WebInspector.ToolbarButton}
+   * @return {!UI.ToolbarButton}
    */
   toolbarButton() {
     return this._toolbarButton;
@@ -162,9 +162,9 @@ WebInspector.ExtensionButton = class {
 /**
  * @unrestricted
  */
-WebInspector.ExtensionSidebarPane = class extends WebInspector.SimpleView {
+Extensions.ExtensionSidebarPane = class extends UI.SimpleView {
   /**
-   * @param {!WebInspector.ExtensionServer} server
+   * @param {!Extensions.ExtensionServer} server
    * @param {string} panelName
    * @param {string} title
    * @param {string} id
@@ -198,7 +198,7 @@ WebInspector.ExtensionSidebarPane = class extends WebInspector.SimpleView {
    */
   setObject(object, title, callback) {
     this._createObjectPropertiesView();
-    this._setObject(WebInspector.RemoteObject.fromLocalObject(object), title, callback);
+    this._setObject(SDK.RemoteObject.fromLocalObject(object), title, callback);
   }
 
   /**
@@ -225,7 +225,7 @@ WebInspector.ExtensionSidebarPane = class extends WebInspector.SimpleView {
     if (this._extensionView)
       this._extensionView.detach();
 
-    this._extensionView = new WebInspector.ExtensionView(this._server, this._id, url, 'extension fill');
+    this._extensionView = new Extensions.ExtensionView(this._server, this._id, url, 'extension fill');
     this._extensionView.show(this.element);
 
     if (!this.element.style.height)
@@ -243,14 +243,14 @@ WebInspector.ExtensionSidebarPane = class extends WebInspector.SimpleView {
    * @param {string} title
    * @param {function(?string=)} callback
    * @param {?Protocol.Error} error
-   * @param {?WebInspector.RemoteObject} result
+   * @param {?SDK.RemoteObject} result
    * @param {boolean=} wasThrown
    */
   _onEvaluate(title, callback, error, result, wasThrown) {
     if (error)
       callback(error.toString());
     else
-      this._setObject(/** @type {!WebInspector.RemoteObject} */ (result), title, callback);
+      this._setObject(/** @type {!SDK.RemoteObject} */ (result), title, callback);
   }
 
   _createObjectPropertiesView() {
@@ -260,12 +260,12 @@ WebInspector.ExtensionSidebarPane = class extends WebInspector.SimpleView {
       this._extensionView.detach();
       delete this._extensionView;
     }
-    this._objectPropertiesView = new WebInspector.ExtensionNotifierView(this._server, this._id);
+    this._objectPropertiesView = new Extensions.ExtensionNotifierView(this._server, this._id);
     this._objectPropertiesView.show(this.element);
   }
 
   /**
-   * @param {!WebInspector.RemoteObject} object
+   * @param {!SDK.RemoteObject} object
    * @param {string} title
    * @param {function(?string=)} callback
    */
@@ -276,7 +276,7 @@ WebInspector.ExtensionSidebarPane = class extends WebInspector.SimpleView {
       return;
     }
     this._objectPropertiesView.element.removeChildren();
-    var section = new WebInspector.ObjectPropertiesSection(object, title);
+    var section = new Components.ObjectPropertiesSection(object, title);
     if (!title)
       section.titleLessMode();
     section.expand();

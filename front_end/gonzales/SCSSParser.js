@@ -4,17 +4,17 @@
 
 /**
  * @constructor
- * @implements {WebInspector.FormatterWorkerContentParser}
+ * @implements {FormatterWorker.FormatterWorkerContentParser}
  */
-WebInspector.SCSSParser = function()
+Gonzales.SCSSParser = function()
 {
 }
 
-WebInspector.SCSSParser.prototype = {
+Gonzales.SCSSParser.prototype = {
     /**
      * @override
      * @param {string} content
-     * @return {!Array<!WebInspector.SCSSParser.Rule>}
+     * @return {!Array<!Gonzales.SCSSParser.Rule>}
      */
     parse: function(content)
     {
@@ -33,7 +33,7 @@ WebInspector.SCSSParser.prototype = {
         /** @type {!Array<!{properties: !Array<!Gonzales.Node>, node: !Gonzales.Node}>} */
         var blocks = [rootBlock];
         ast.selectors = [];
-        WebInspector.SCSSParser.extractNodes(ast, blocks, rootBlock);
+        Gonzales.SCSSParser.extractNodes(ast, blocks, rootBlock);
 
         var rules = [];
         for (var block of blocks)
@@ -43,13 +43,13 @@ WebInspector.SCSSParser.prototype = {
 
     /**
      * @param {!{node: !Gonzales.Node, properties: !Array<!Gonzales.Node>}} block
-     * @param {!Array<!WebInspector.SCSSParser.Rule>} output
+     * @param {!Array<!Gonzales.SCSSParser.Rule>} output
      */
     _handleBlock: function(block, output)
     {
-        var selectors = block.node.selectors.map(WebInspector.SCSSParser.rangeFromNode);
+        var selectors = block.node.selectors.map(Gonzales.SCSSParser.rangeFromNode);
         var properties = [];
-        var styleRange = WebInspector.SCSSParser.rangeFromNode(block.node);
+        var styleRange = Gonzales.SCSSParser.rangeFromNode(block.node);
         styleRange.startColumn += 1;
         styleRange.endColumn -= 1;
         for (var node of block.properties) {
@@ -62,13 +62,13 @@ WebInspector.SCSSParser.prototype = {
         }
         if (!selectors.length && !properties.length)
             return;
-        var rule = new WebInspector.SCSSParser.Rule(selectors, properties, styleRange);
+        var rule = new Gonzales.SCSSParser.Rule(selectors, properties, styleRange);
         output.push(rule);
     },
 
     /**
      * @param {!Gonzales.Node} node
-     * @param {!Array<!WebInspector.SCSSParser.Property>} output
+     * @param {!Array<!Gonzales.SCSSParser.Property>} output
      */
     _handleDeclaration: function(node, output)
     {
@@ -77,39 +77,39 @@ WebInspector.SCSSParser.prototype = {
         if (!propertyNode || !valueNode)
             return;
 
-        var nameRange = WebInspector.SCSSParser.rangeFromNode(propertyNode);
-        var valueRange = WebInspector.SCSSParser.rangeFromNode(valueNode);
-        var range = /** @type {!WebInspector.TextRange} */(node.declarationRange);
+        var nameRange = Gonzales.SCSSParser.rangeFromNode(propertyNode);
+        var valueRange = Gonzales.SCSSParser.rangeFromNode(valueNode);
+        var range = /** @type {!Common.TextRange} */(node.declarationRange);
 
-        var property = new WebInspector.SCSSParser.Property(range, nameRange, valueRange, false);
+        var property = new Gonzales.SCSSParser.Property(range, nameRange, valueRange, false);
         output.push(property);
     },
 
     /**
      * @param {!Gonzales.Node} node
-     * @param {!Array<!WebInspector.SCSSParser.Property>} output
+     * @param {!Array<!Gonzales.SCSSParser.Property>} output
      */
     _handleInclude: function(node, output)
     {
         var mixinName = node.content.find(node => node.type === "ident");
         if (!mixinName)
             return;
-        var nameRange = WebInspector.SCSSParser.rangeFromNode(mixinName);
+        var nameRange = Gonzales.SCSSParser.rangeFromNode(mixinName);
         var mixinArguments = node.content.find(node => node.type === "arguments");
         if (!mixinArguments)
             return;
         var parameters = mixinArguments.content.filter(node => node.type !== "delimiter" && node.type !== "space");
         for (var parameter of parameters) {
-            var range = WebInspector.SCSSParser.rangeFromNode(node);
-            var valueRange = WebInspector.SCSSParser.rangeFromNode(parameter);
-            var property = new WebInspector.SCSSParser.Property(range, nameRange, valueRange, false);
+            var range = Gonzales.SCSSParser.rangeFromNode(node);
+            var valueRange = Gonzales.SCSSParser.rangeFromNode(parameter);
+            var property = new Gonzales.SCSSParser.Property(range, nameRange, valueRange, false);
             output.push(property);
         }
     },
 
     /**
      * @param {!Gonzales.Node} node
-     * @param {!Array<!WebInspector.SCSSParser.Property>} output
+     * @param {!Array<!Gonzales.SCSSParser.Property>} output
      */
     _handleComment: function(node, output)
     {
@@ -127,21 +127,21 @@ WebInspector.SCSSParser.prototype = {
 
 /**
  * @param {!Gonzales.Node} node
- * @return {!WebInspector.TextRange}
+ * @return {!Common.TextRange}
  */
-WebInspector.SCSSParser.rangeFromNode = function(node)
+Gonzales.SCSSParser.rangeFromNode = function(node)
 {
-    return new WebInspector.TextRange(node.start.line - 1, node.start.column - 1, node.end.line - 1, node.end.column);
+    return new Common.TextRange(node.start.line - 1, node.start.column - 1, node.end.line - 1, node.end.column);
 }
 
 /**
  * @constructor
- * @param {!WebInspector.TextRange} range
- * @param {!WebInspector.TextRange} nameRange
- * @param {!WebInspector.TextRange} valueRange
+ * @param {!Common.TextRange} range
+ * @param {!Common.TextRange} nameRange
+ * @param {!Common.TextRange} valueRange
  * @param {boolean} disabled
  */
-WebInspector.SCSSParser.Property = function(range, nameRange, valueRange, disabled)
+Gonzales.SCSSParser.Property = function(range, nameRange, valueRange, disabled)
 {
     this.range = range;
     this.name = nameRange;
@@ -149,41 +149,41 @@ WebInspector.SCSSParser.Property = function(range, nameRange, valueRange, disabl
     this.disabled = disabled;
 }
 
-WebInspector.SCSSParser.Property.prototype = {
+Gonzales.SCSSParser.Property.prototype = {
     /**
      * @param {!Gonzales.Node} commentNode
-     * @return {!WebInspector.SCSSParser.Property}
+     * @return {!Gonzales.SCSSParser.Property}
      */
     rebaseInsideOneLineComment: function(commentNode)
     {
         var lineOffset = commentNode.start.line - 1;
         // Account for the "/*".
         var columnOffset = commentNode.start.column - 1 + 2;
-        var range = WebInspector.SCSSParser.rangeFromNode(commentNode);
+        var range = Gonzales.SCSSParser.rangeFromNode(commentNode);
         var name = rebaseRange(this.name, lineOffset, columnOffset);
         var value = rebaseRange(this.value, lineOffset, columnOffset);
-        return new WebInspector.SCSSParser.Property(range, name, value, true);
+        return new Gonzales.SCSSParser.Property(range, name, value, true);
 
         /**
-         * @param {!WebInspector.TextRange} range
+         * @param {!Common.TextRange} range
          * @param {number} lineOffset
          * @param {number} columnOffset
-         * @return {!WebInspector.TextRange}
+         * @return {!Common.TextRange}
          */
         function rebaseRange(range, lineOffset, columnOffset)
         {
-            return new WebInspector.TextRange(range.startLine + lineOffset, range.startColumn + columnOffset, range.endLine + lineOffset, range.endColumn + columnOffset);
+            return new Common.TextRange(range.startLine + lineOffset, range.startColumn + columnOffset, range.endLine + lineOffset, range.endColumn + columnOffset);
         }
     }
 }
 
 /**
  * @constructor
- * @param {!Array<!WebInspector.TextRange>} selectors
- * @param {!Array<!WebInspector.SCSSParser.Property>} properties
- * @param {!WebInspector.TextRange} styleRange
+ * @param {!Array<!Common.TextRange>} selectors
+ * @param {!Array<!Gonzales.SCSSParser.Property>} properties
+ * @param {!Common.TextRange} styleRange
  */
-WebInspector.SCSSParser.Rule = function(selectors, properties, styleRange)
+Gonzales.SCSSParser.Rule = function(selectors, properties, styleRange)
 {
     this.selectors = selectors;
     this.properties = properties;
@@ -195,7 +195,7 @@ WebInspector.SCSSParser.Rule = function(selectors, properties, styleRange)
  * @param {!Array<{node: !Gonzales.Node, properties: !Array<!Gonzales.Node>}>} blocks
  * @param {!{node: !Gonzales.Node, properties: !Array<!Gonzales.Node>}} lastBlock
  */
-WebInspector.SCSSParser.extractNodes = function(node, blocks, lastBlock)
+Gonzales.SCSSParser.extractNodes = function(node, blocks, lastBlock)
 {
     if (!Array.isArray(node.content))
         return;
@@ -224,9 +224,9 @@ WebInspector.SCSSParser.extractNodes = function(node, blocks, lastBlock)
             lastBlock.properties.push(child);
         if (child.type === "declaration") {
             lastDeclaration = child;
-            lastDeclaration.declarationRange = WebInspector.TextRange.createFromLocation(child.start.line - 1, child.start.column - 1);
+            lastDeclaration.declarationRange = Common.TextRange.createFromLocation(child.start.line - 1, child.start.column - 1);
         }
-        WebInspector.SCSSParser.extractNodes(child, blocks, lastBlock);
+        Gonzales.SCSSParser.extractNodes(child, blocks, lastBlock);
     }
     if (lastDeclaration) {
         lastDeclaration.declarationRange.endLine = node.end.line - 1;

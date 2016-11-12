@@ -4,20 +4,20 @@
 /**
  * @unrestricted
  */
-WebInspector.HistoryInput = class extends HTMLInputElement {
+UI.HistoryInput = class extends HTMLInputElement {
   constructor() {
     super();
   }
 
   /**
-   * @return {!WebInspector.HistoryInput}
+   * @return {!UI.HistoryInput}
    */
   static create() {
-    if (!WebInspector.HistoryInput._constructor)
-      WebInspector.HistoryInput._constructor =
-          registerCustomElement('input', 'history-input', WebInspector.HistoryInput.prototype);
+    if (!UI.HistoryInput._constructor)
+      UI.HistoryInput._constructor =
+          registerCustomElement('input', 'history-input', UI.HistoryInput.prototype);
 
-    return /** @type {!WebInspector.HistoryInput} */ (new WebInspector.HistoryInput._constructor());
+    return /** @type {!UI.HistoryInput} */ (new UI.HistoryInput._constructor());
   }
 
   /**
@@ -42,17 +42,17 @@ WebInspector.HistoryInput = class extends HTMLInputElement {
    * @param {!Event} event
    */
   _onKeyDown(event) {
-    if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Up.code) {
+    if (event.keyCode === UI.KeyboardShortcut.Keys.Up.code) {
       this._historyPosition = Math.max(this._historyPosition - 1, 0);
       this.value = this._history[this._historyPosition];
       this.dispatchEvent(new Event('input', {'bubbles': true, 'cancelable': true}));
       event.consume(true);
-    } else if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Down.code) {
+    } else if (event.keyCode === UI.KeyboardShortcut.Keys.Down.code) {
       this._historyPosition = Math.min(this._historyPosition + 1, this._history.length - 1);
       this.value = this._history[this._historyPosition];
       this.dispatchEvent(new Event('input', {'bubbles': true, 'cancelable': true}));
       event.consume(true);
-    } else if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Enter.code) {
+    } else if (event.keyCode === UI.KeyboardShortcut.Keys.Enter.code) {
       this._saveToHistory();
     }
   }

@@ -31,10 +31,10 @@
 /**
  * @unrestricted
  */
-WebInspector.FileManager = class extends WebInspector.Object {
+Workspace.FileManager = class extends Common.Object {
   constructor() {
     super();
-    this._savedURLsSetting = WebInspector.settings.createLocalSetting('savedURLs', {});
+    this._savedURLsSetting = Common.settings.createLocalSetting('savedURLs', {});
 
     /** @type {!Object.<string, ?function(boolean)>} */
     this._saveCallbacks = {};
@@ -61,14 +61,14 @@ WebInspector.FileManager = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _savedURL(event) {
     var url = /** @type {string} */ (event.data);
     var savedURLs = this._savedURLsSetting.get();
     savedURLs[url] = true;
     this._savedURLsSetting.set(savedURLs);
-    this.dispatchEventToListeners(WebInspector.FileManager.Events.SavedURL, url);
+    this.dispatchEventToListeners(Workspace.FileManager.Events.SavedURL, url);
     this._invokeSaveCallback(url, true);
   }
 
@@ -84,7 +84,7 @@ WebInspector.FileManager = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _canceledSaveURL(event) {
     var url = /** @type {string} */ (event.data);
@@ -116,21 +116,21 @@ WebInspector.FileManager = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _appendedToURL(event) {
     var url = /** @type {string} */ (event.data);
-    this.dispatchEventToListeners(WebInspector.FileManager.Events.AppendedToURL, url);
+    this.dispatchEventToListeners(Workspace.FileManager.Events.AppendedToURL, url);
   }
 };
 
 /** @enum {symbol} */
-WebInspector.FileManager.Events = {
+Workspace.FileManager.Events = {
   SavedURL: Symbol('SavedURL'),
   AppendedToURL: Symbol('AppendedToURL')
 };
 
 /**
- * @type {?WebInspector.FileManager}
+ * @type {?Workspace.FileManager}
  */
-WebInspector.fileManager = null;
+Workspace.fileManager;

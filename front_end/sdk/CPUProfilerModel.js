@@ -29,23 +29,23 @@
  * @implements {Protocol.ProfilerDispatcher}
  * @unrestricted
  */
-WebInspector.CPUProfilerModel = class extends WebInspector.SDKModel {
+SDK.CPUProfilerModel = class extends SDK.SDKModel {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(WebInspector.CPUProfilerModel, target);
+    super(SDK.CPUProfilerModel, target);
     this._isRecording = false;
     target.registerProfilerDispatcher(this);
     target.profilerAgent().enable();
 
     this._configureCpuProfilerSamplingInterval();
-    WebInspector.moduleSetting('highResolutionCpuProfiling')
+    Common.moduleSetting('highResolutionCpuProfiling')
         .addChangeListener(this._configureCpuProfilerSamplingInterval, this);
   }
 
   _configureCpuProfilerSamplingInterval() {
-    var intervalUs = WebInspector.moduleSetting('highResolutionCpuProfiling').get() ? 100 : 1000;
+    var intervalUs = Common.moduleSetting('highResolutionCpuProfiling').get() ? 100 : 1000;
     this.target().profilerAgent().setSamplingInterval(intervalUs);
   }
 
@@ -56,7 +56,7 @@ WebInspector.CPUProfilerModel = class extends WebInspector.SDKModel {
    * @param {string=} title
    */
   consoleProfileStarted(id, scriptLocation, title) {
-    this._dispatchProfileEvent(WebInspector.CPUProfilerModel.Events.ConsoleProfileStarted, id, scriptLocation, title);
+    this._dispatchProfileEvent(SDK.CPUProfilerModel.Events.ConsoleProfileStarted, id, scriptLocation, title);
   }
 
   /**
@@ -68,7 +68,7 @@ WebInspector.CPUProfilerModel = class extends WebInspector.SDKModel {
    */
   consoleProfileFinished(id, scriptLocation, cpuProfile, title) {
     this._dispatchProfileEvent(
-        WebInspector.CPUProfilerModel.Events.ConsoleProfileFinished, id, scriptLocation, title, cpuProfile);
+        SDK.CPUProfilerModel.Events.ConsoleProfileFinished, id, scriptLocation, title, cpuProfile);
   }
 
   /**
@@ -82,10 +82,10 @@ WebInspector.CPUProfilerModel = class extends WebInspector.SDKModel {
     // Make sure ProfilesPanel is initialized and CPUProfileType is created.
     self.runtime.loadModulePromise('profiler').then(_ => {
       var debuggerModel =
-          /** @type {!WebInspector.DebuggerModel} */ (WebInspector.DebuggerModel.fromTarget(this.target()));
-      var debuggerLocation = WebInspector.DebuggerModel.Location.fromPayload(debuggerModel, scriptLocation);
+          /** @type {!SDK.DebuggerModel} */ (SDK.DebuggerModel.fromTarget(this.target()));
+      var debuggerLocation = SDK.DebuggerModel.Location.fromPayload(debuggerModel, scriptLocation);
       var globalId = this.target().id() + '.' + id;
-      var data = /** @type {!WebInspector.CPUProfilerModel.EventData} */ (
+      var data = /** @type {!SDK.CPUProfilerModel.EventData} */ (
           {id: globalId, scriptLocation: debuggerLocation, cpuProfile: cpuProfile, title: title});
       this.dispatchEventToListeners(eventName, data);
     });
@@ -101,7 +101,7 @@ WebInspector.CPUProfilerModel = class extends WebInspector.SDKModel {
   startRecording() {
     this._isRecording = true;
     this.target().profilerAgent().start();
-    WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.ProfilesCPUProfileTaken);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.ProfilesCPUProfileTaken);
   }
 
   /**
@@ -124,16 +124,16 @@ WebInspector.CPUProfilerModel = class extends WebInspector.SDKModel {
    * @override
    */
   dispose() {
-    WebInspector.moduleSetting('highResolutionCpuProfiling')
+    Common.moduleSetting('highResolutionCpuProfiling')
         .removeChangeListener(this._configureCpuProfilerSamplingInterval, this);
   }
 };
 
 /** @enum {symbol} */
-WebInspector.CPUProfilerModel.Events = {
+SDK.CPUProfilerModel.Events = {
   ConsoleProfileStarted: Symbol('ConsoleProfileStarted'),
   ConsoleProfileFinished: Symbol('ConsoleProfileFinished')
 };
 
-/** @typedef {!{id: string, scriptLocation: !WebInspector.DebuggerModel.Location, title: (string|undefined), cpuProfile: (!Protocol.Profiler.Profile|undefined)}} */
-WebInspector.CPUProfilerModel.EventData;
+/** @typedef {!{id: string, scriptLocation: !SDK.DebuggerModel.Location, title: (string|undefined), cpuProfile: (!Protocol.Profiler.Profile|undefined)}} */
+SDK.CPUProfilerModel.EventData;

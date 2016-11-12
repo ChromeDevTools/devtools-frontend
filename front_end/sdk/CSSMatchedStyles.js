@@ -4,10 +4,10 @@
 /**
  * @unrestricted
  */
-WebInspector.CSSMatchedStyles = class {
+SDK.CSSMatchedStyles = class {
   /**
-   * @param {!WebInspector.CSSModel} cssModel
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.CSSModel} cssModel
+   * @param {!SDK.DOMNode} node
    * @param {?Protocol.CSS.CSSStyle} inlinePayload
    * @param {?Protocol.CSS.CSSStyle} attributesPayload
    * @param {!Array.<!Protocol.CSS.RuleMatch>} matchedPayload
@@ -34,21 +34,21 @@ WebInspector.CSSMatchedStyles = class {
     this._matchingSelectors = new Map();
 
     /**
-     * @this {WebInspector.CSSMatchedStyles}
+     * @this {SDK.CSSMatchedStyles}
      */
     function addAttributesStyle() {
       if (!attributesPayload)
         return;
-      var style = new WebInspector.CSSStyleDeclaration(
-          cssModel, null, attributesPayload, WebInspector.CSSStyleDeclaration.Type.Attributes);
+      var style = new SDK.CSSStyleDeclaration(
+          cssModel, null, attributesPayload, SDK.CSSStyleDeclaration.Type.Attributes);
       this._nodeForStyle.set(style, this._node);
       this._nodeStyles.push(style);
     }
 
     // Inline style has the greatest specificity.
     if (inlinePayload && this._node.nodeType() === Node.ELEMENT_NODE) {
-      var style = new WebInspector.CSSStyleDeclaration(
-          cssModel, null, inlinePayload, WebInspector.CSSStyleDeclaration.Type.Inline);
+      var style = new SDK.CSSStyleDeclaration(
+          cssModel, null, inlinePayload, SDK.CSSStyleDeclaration.Type.Inline);
       this._nodeForStyle.set(style, this._node);
       this._nodeStyles.push(style);
     }
@@ -56,7 +56,7 @@ WebInspector.CSSMatchedStyles = class {
     // Add rules in reverse order to match the cascade order.
     var addedAttributesStyle;
     for (var i = matchedPayload.length - 1; i >= 0; --i) {
-      var rule = new WebInspector.CSSStyleRule(cssModel, matchedPayload[i].rule);
+      var rule = new SDK.CSSStyleRule(cssModel, matchedPayload[i].rule);
       if ((rule.isInjected() || rule.isUserAgent()) && !addedAttributesStyle) {
         // Show element's Style Attributes after all author rules.
         addedAttributesStyle = true;
@@ -75,8 +75,8 @@ WebInspector.CSSMatchedStyles = class {
     for (var i = 0; parentNode && inheritedPayload && i < inheritedPayload.length; ++i) {
       var entryPayload = inheritedPayload[i];
       var inheritedInlineStyle = entryPayload.inlineStyle ?
-          new WebInspector.CSSStyleDeclaration(
-              cssModel, null, entryPayload.inlineStyle, WebInspector.CSSStyleDeclaration.Type.Inline) :
+          new SDK.CSSStyleDeclaration(
+              cssModel, null, entryPayload.inlineStyle, SDK.CSSStyleDeclaration.Type.Inline) :
           null;
       if (inheritedInlineStyle && this._containsInherited(inheritedInlineStyle)) {
         this._nodeForStyle.set(inheritedInlineStyle, parentNode);
@@ -86,7 +86,7 @@ WebInspector.CSSMatchedStyles = class {
 
       var inheritedMatchedCSSRules = entryPayload.matchedCSSRules || [];
       for (var j = inheritedMatchedCSSRules.length - 1; j >= 0; --j) {
-        var inheritedRule = new WebInspector.CSSStyleRule(cssModel, inheritedMatchedCSSRules[j].rule);
+        var inheritedRule = new SDK.CSSStyleRule(cssModel, inheritedMatchedCSSRules[j].rule);
         addMatchingSelectors.call(this, parentNode, inheritedRule, inheritedMatchedCSSRules[j].matchingSelectors);
         if (!this._containsInherited(inheritedRule.style))
           continue;
@@ -107,7 +107,7 @@ WebInspector.CSSMatchedStyles = class {
         var pseudoStyles = [];
         var rules = entryPayload.matches || [];
         for (var j = rules.length - 1; j >= 0; --j) {
-          var pseudoRule = new WebInspector.CSSStyleRule(cssModel, rules[j].rule);
+          var pseudoRule = new SDK.CSSStyleRule(cssModel, rules[j].rule);
           pseudoStyles.push(pseudoRule.style);
           this._nodeForStyle.set(pseudoRule.style, pseudoElement);
           if (pseudoElement)
@@ -118,15 +118,15 @@ WebInspector.CSSMatchedStyles = class {
     }
 
     if (animationsPayload)
-      this._keyframes = animationsPayload.map(rule => new WebInspector.CSSKeyframesRule(cssModel, rule));
+      this._keyframes = animationsPayload.map(rule => new SDK.CSSKeyframesRule(cssModel, rule));
 
     this.resetActiveProperties();
 
     /**
-     * @param {!WebInspector.DOMNode} node
-     * @param {!WebInspector.CSSStyleRule} rule
+     * @param {!SDK.DOMNode} node
+     * @param {!SDK.CSSStyleRule} rule
      * @param {!Array<number>} matchingSelectorIndices
-     * @this {WebInspector.CSSMatchedStyles}
+     * @this {SDK.CSSMatchedStyles}
      */
     function addMatchingSelectors(node, rule, matchingSelectorIndices) {
       for (var matchingSelectorIndex of matchingSelectorIndices) {
@@ -137,21 +137,21 @@ WebInspector.CSSMatchedStyles = class {
   }
 
   /**
-   * @return {!WebInspector.DOMNode}
+   * @return {!SDK.DOMNode}
    */
   node() {
     return this._node;
   }
 
   /**
-   * @return {!WebInspector.CSSModel}
+   * @return {!SDK.CSSModel}
    */
   cssModel() {
     return this._cssModel;
   }
 
   /**
-   * @param {!WebInspector.CSSStyleRule} rule
+   * @param {!SDK.CSSStyleRule} rule
    * @return {boolean}
    */
   hasMatchingSelectors(rule) {
@@ -160,7 +160,7 @@ WebInspector.CSSMatchedStyles = class {
   }
 
   /**
-   * @param {!WebInspector.CSSStyleRule} rule
+   * @param {!SDK.CSSStyleRule} rule
    * @return {!Array<number>}
    */
   matchingSelectors(rule) {
@@ -179,7 +179,7 @@ WebInspector.CSSMatchedStyles = class {
   }
 
   /**
-   * @param {!WebInspector.CSSStyleRule} rule
+   * @param {!SDK.CSSStyleRule} rule
    * @return {!Promise}
    */
   recomputeMatchingSelectors(rule) {
@@ -192,10 +192,10 @@ WebInspector.CSSMatchedStyles = class {
     return Promise.all(promises);
 
     /**
-     * @param {!WebInspector.DOMNode} node
+     * @param {!SDK.DOMNode} node
      * @param {string} selectorText
      * @return {!Promise}
-     * @this {WebInspector.CSSMatchedStyles}
+     * @this {SDK.CSSMatchedStyles}
      */
     function querySelector(node, selectorText) {
       var ownerDocument = node.ownerDocument || null;
@@ -213,11 +213,11 @@ WebInspector.CSSMatchedStyles = class {
     }
 
     /**
-     * @param {!WebInspector.DOMNode} node
+     * @param {!SDK.DOMNode} node
      * @param {string} selectorText
      * @param {function()} callback
      * @param {!Array.<!Protocol.DOM.NodeId>=} matchingNodeIds
-     * @this {WebInspector.CSSMatchedStyles}
+     * @this {SDK.CSSMatchedStyles}
      */
     function onQueryComplete(node, selectorText, callback, matchingNodeIds) {
       if (matchingNodeIds)
@@ -227,8 +227,8 @@ WebInspector.CSSMatchedStyles = class {
   }
 
   /**
-   * @param {!WebInspector.CSSStyleRule} rule
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.CSSStyleRule} rule
+   * @param {!SDK.DOMNode} node
    * @return {!Promise}
    */
   addNewRule(rule, node) {
@@ -237,7 +237,7 @@ WebInspector.CSSMatchedStyles = class {
   }
 
   /**
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.DOMNode} node
    * @param {string} selectorText
    * @param {boolean} value
    */
@@ -251,7 +251,7 @@ WebInspector.CSSMatchedStyles = class {
   }
 
   /**
-   * @param {!WebInspector.CSSStyleDeclaration} style
+   * @param {!SDK.CSSStyleDeclaration} style
    * @return {boolean}
    */
   mediaMatches(style) {
@@ -264,28 +264,28 @@ WebInspector.CSSMatchedStyles = class {
   }
 
   /**
-   * @return {!Array<!WebInspector.CSSStyleDeclaration>}
+   * @return {!Array<!SDK.CSSStyleDeclaration>}
    */
   nodeStyles() {
     return this._nodeStyles;
   }
 
   /**
-   * @return {!Array.<!WebInspector.CSSKeyframesRule>}
+   * @return {!Array.<!SDK.CSSKeyframesRule>}
    */
   keyframes() {
     return this._keyframes;
   }
 
   /**
-   * @return {!Map.<!Protocol.DOM.PseudoType, !Array<!WebInspector.CSSStyleDeclaration>>}
+   * @return {!Map.<!Protocol.DOM.PseudoType, !Array<!SDK.CSSStyleDeclaration>>}
    */
   pseudoStyles() {
     return this._pseudoStyles;
   }
 
   /**
-   * @param {!WebInspector.CSSStyleDeclaration} style
+   * @param {!SDK.CSSStyleDeclaration} style
    * @return {boolean}
    */
   _containsInherited(style) {
@@ -293,22 +293,22 @@ WebInspector.CSSMatchedStyles = class {
     for (var i = 0; i < properties.length; ++i) {
       var property = properties[i];
       // Does this style contain non-overridden inherited property?
-      if (property.activeInStyle() && WebInspector.cssMetadata().isPropertyInherited(property.name))
+      if (property.activeInStyle() && SDK.cssMetadata().isPropertyInherited(property.name))
         return true;
     }
     return false;
   }
 
   /**
-   * @param {!WebInspector.CSSStyleDeclaration} style
-   * @return {?WebInspector.DOMNode}
+   * @param {!SDK.CSSStyleDeclaration} style
+   * @return {?SDK.DOMNode}
    */
   nodeForStyle(style) {
     return this._nodeForStyle.get(style) || null;
   }
 
   /**
-   * @param {!WebInspector.CSSStyleDeclaration} style
+   * @param {!SDK.CSSStyleDeclaration} style
    * @return {boolean}
    */
   isInherited(style) {
@@ -316,8 +316,8 @@ WebInspector.CSSMatchedStyles = class {
   }
 
   /**
-   * @param {!WebInspector.CSSProperty} property
-   * @return {?WebInspector.CSSMatchedStyles.PropertyState}
+   * @param {!SDK.CSSProperty} property
+   * @return {?SDK.CSSMatchedStyles.PropertyState}
    */
   propertyState(property) {
     if (this._propertiesState.size === 0) {
@@ -329,20 +329,20 @@ WebInspector.CSSMatchedStyles = class {
   }
 
   resetActiveProperties() {
-    /** @type {!Map<!WebInspector.CSSProperty, !WebInspector.CSSMatchedStyles.PropertyState>} */
+    /** @type {!Map<!SDK.CSSProperty, !SDK.CSSMatchedStyles.PropertyState>} */
     this._propertiesState = new Map();
   }
 
   /**
-   * @param {!Array<!WebInspector.CSSStyleDeclaration>} styles
-   * @param {!Map<!WebInspector.CSSProperty, !WebInspector.CSSMatchedStyles.PropertyState>} result
+   * @param {!Array<!SDK.CSSStyleDeclaration>} styles
+   * @param {!Map<!SDK.CSSProperty, !SDK.CSSMatchedStyles.PropertyState>} result
    */
   _computeActiveProperties(styles, result) {
     /** @type {!Set.<string>} */
     var foundImportantProperties = new Set();
-    /** @type {!Map.<string, !Map<string, !WebInspector.CSSProperty>>} */
+    /** @type {!Map.<string, !Map<string, !SDK.CSSProperty>>} */
     var propertyToEffectiveRule = new Map();
-    /** @type {!Map.<string, !WebInspector.DOMNode>} */
+    /** @type {!Map.<string, !SDK.DOMNode>} */
     var inheritedPropertyToNode = new Map();
     /** @type {!Set<string>} */
     var allUsedProperties = new Set();
@@ -350,12 +350,12 @@ WebInspector.CSSMatchedStyles = class {
       var style = styles[i];
       var rule = style.parentRule;
       // Compute cascade for CSSStyleRules only.
-      if (rule && !(rule instanceof WebInspector.CSSStyleRule))
+      if (rule && !(rule instanceof SDK.CSSStyleRule))
         continue;
       if (rule && !this.hasMatchingSelectors(rule))
         continue;
 
-      /** @type {!Map<string, !WebInspector.CSSProperty>} */
+      /** @type {!Map<string, !SDK.CSSProperty>} */
       var styleActiveProperties = new Map();
       var allProperties = style.allProperties;
       for (var j = 0; j < allProperties.length; ++j) {
@@ -363,22 +363,22 @@ WebInspector.CSSMatchedStyles = class {
 
         // Do not pick non-inherited properties from inherited styles.
         var inherited = this.isInherited(style);
-        if (inherited && !WebInspector.cssMetadata().isPropertyInherited(property.name))
+        if (inherited && !SDK.cssMetadata().isPropertyInherited(property.name))
           continue;
 
         if (!property.activeInStyle()) {
-          result.set(property, WebInspector.CSSMatchedStyles.PropertyState.Overloaded);
+          result.set(property, SDK.CSSMatchedStyles.PropertyState.Overloaded);
           continue;
         }
 
-        var canonicalName = WebInspector.cssMetadata().canonicalPropertyName(property.name);
+        var canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
         if (foundImportantProperties.has(canonicalName)) {
-          result.set(property, WebInspector.CSSMatchedStyles.PropertyState.Overloaded);
+          result.set(property, SDK.CSSMatchedStyles.PropertyState.Overloaded);
           continue;
         }
 
         if (!property.important && allUsedProperties.has(canonicalName)) {
-          result.set(property, WebInspector.CSSMatchedStyles.PropertyState.Overloaded);
+          result.set(property, SDK.CSSMatchedStyles.PropertyState.Overloaded);
           continue;
         }
 
@@ -389,15 +389,15 @@ WebInspector.CSSMatchedStyles = class {
 
         if (property.important) {
           if (inherited && isKnownProperty && inheritedFromNode !== inheritedPropertyToNode.get(canonicalName)) {
-            result.set(property, WebInspector.CSSMatchedStyles.PropertyState.Overloaded);
+            result.set(property, SDK.CSSMatchedStyles.PropertyState.Overloaded);
             continue;
           }
 
           foundImportantProperties.add(canonicalName);
           if (isKnownProperty) {
-            var overloaded = /** @type {!WebInspector.CSSProperty} */ (
+            var overloaded = /** @type {!SDK.CSSProperty} */ (
                 propertyToEffectiveRule.get(canonicalName).get(canonicalName));
-            result.set(overloaded, WebInspector.CSSMatchedStyles.PropertyState.Overloaded);
+            result.set(overloaded, SDK.CSSMatchedStyles.PropertyState.Overloaded);
             propertyToEffectiveRule.get(canonicalName).delete(canonicalName);
           }
         }
@@ -405,12 +405,12 @@ WebInspector.CSSMatchedStyles = class {
         styleActiveProperties.set(canonicalName, property);
         allUsedProperties.add(canonicalName);
         propertyToEffectiveRule.set(canonicalName, styleActiveProperties);
-        result.set(property, WebInspector.CSSMatchedStyles.PropertyState.Active);
+        result.set(property, SDK.CSSMatchedStyles.PropertyState.Active);
       }
 
       // If every longhand of the shorthand is not active, then the shorthand is not active too.
       for (var property of style.leadingProperties()) {
-        var canonicalName = WebInspector.cssMetadata().canonicalPropertyName(property.name);
+        var canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
         if (!styleActiveProperties.has(canonicalName))
           continue;
         var longhands = style.longhandProperties(property.name);
@@ -418,21 +418,21 @@ WebInspector.CSSMatchedStyles = class {
           continue;
         var notUsed = true;
         for (var longhand of longhands) {
-          var longhandCanonicalName = WebInspector.cssMetadata().canonicalPropertyName(longhand.name);
+          var longhandCanonicalName = SDK.cssMetadata().canonicalPropertyName(longhand.name);
           notUsed = notUsed && !styleActiveProperties.has(longhandCanonicalName);
         }
         if (!notUsed)
           continue;
         styleActiveProperties.delete(canonicalName);
         allUsedProperties.delete(canonicalName);
-        result.set(property, WebInspector.CSSMatchedStyles.PropertyState.Overloaded);
+        result.set(property, SDK.CSSMatchedStyles.PropertyState.Overloaded);
       }
     }
   }
 };
 
 /** @enum {string} */
-WebInspector.CSSMatchedStyles.PropertyState = {
+SDK.CSSMatchedStyles.PropertyState = {
   Active: 'Active',
   Overloaded: 'Overloaded'
 };

@@ -27,17 +27,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-WebInspector.Geometry = {};
+Common.Geometry = {};
 
 /**
  * @type {number}
  */
-WebInspector.Geometry._Eps = 1e-5;
+Common.Geometry._Eps = 1e-5;
 
 /**
  * @unrestricted
  */
-WebInspector.Geometry.Vector = class {
+Common.Geometry.Vector = class {
   /**
    * @param {number} x
    * @param {number} y
@@ -58,7 +58,7 @@ WebInspector.Geometry.Vector = class {
 
   normalize() {
     var length = this.length();
-    if (length <= WebInspector.Geometry._Eps)
+    if (length <= Common.Geometry._Eps)
       return;
 
     this.x /= length;
@@ -70,7 +70,7 @@ WebInspector.Geometry.Vector = class {
 /**
  * @unrestricted
  */
-WebInspector.Geometry.Point = class {
+Common.Geometry.Point = class {
   /**
    * @param {number} x
    * @param {number} y
@@ -81,7 +81,7 @@ WebInspector.Geometry.Point = class {
   }
 
   /**
-   * @param {!WebInspector.Geometry.Point} p
+   * @param {!Common.Geometry.Point} p
    * @return {number}
    */
   distanceTo(p) {
@@ -89,21 +89,21 @@ WebInspector.Geometry.Point = class {
   }
 
   /**
-   * @param {!WebInspector.Geometry.Point} line
-   * @return {!WebInspector.Geometry.Point}
+   * @param {!Common.Geometry.Point} line
+   * @return {!Common.Geometry.Point}
    */
   projectOn(line) {
     if (line.x === 0 && line.y === 0)
-      return new WebInspector.Geometry.Point(0, 0);
+      return new Common.Geometry.Point(0, 0);
     return line.scale((this.x * line.x + this.y * line.y) / (Math.pow(line.x, 2) + Math.pow(line.y, 2)));
   }
 
   /**
    * @param {number} scalar
-   * @return {!WebInspector.Geometry.Point}
+   * @return {!Common.Geometry.Point}
    */
   scale(scalar) {
-    return new WebInspector.Geometry.Point(this.x * scalar, this.y * scalar);
+    return new Common.Geometry.Point(this.x * scalar, this.y * scalar);
   }
 
   /**
@@ -118,10 +118,10 @@ WebInspector.Geometry.Point = class {
 /**
  * @unrestricted
  */
-WebInspector.Geometry.CubicBezier = class {
+Common.Geometry.CubicBezier = class {
   /**
-   * @param {!WebInspector.Geometry.Point} point1
-   * @param {!WebInspector.Geometry.Point} point2
+   * @param {!Common.Geometry.Point} point1
+   * @param {!Common.Geometry.Point} point2
    */
   constructor(point1, point2) {
     this.controlPoints = [point1, point2];
@@ -129,26 +129,26 @@ WebInspector.Geometry.CubicBezier = class {
 
   /**
    * @param {string} text
-   * @return {?WebInspector.Geometry.CubicBezier}
+   * @return {?Common.Geometry.CubicBezier}
    */
   static parse(text) {
-    var keywordValues = WebInspector.Geometry.CubicBezier.KeywordValues;
+    var keywordValues = Common.Geometry.CubicBezier.KeywordValues;
     var value = text.toLowerCase().replace(/\s+/g, '');
     if (Object.keys(keywordValues).indexOf(value) !== -1)
-      return WebInspector.Geometry.CubicBezier.parse(keywordValues[value]);
+      return Common.Geometry.CubicBezier.parse(keywordValues[value]);
     var bezierRegex = /^cubic-bezier\(([^,]+),([^,]+),([^,]+),([^,]+)\)$/;
     var match = value.match(bezierRegex);
     if (match) {
-      var control1 = new WebInspector.Geometry.Point(parseFloat(match[1]), parseFloat(match[2]));
-      var control2 = new WebInspector.Geometry.Point(parseFloat(match[3]), parseFloat(match[4]));
-      return new WebInspector.Geometry.CubicBezier(control1, control2);
+      var control1 = new Common.Geometry.Point(parseFloat(match[1]), parseFloat(match[2]));
+      var control2 = new Common.Geometry.Point(parseFloat(match[3]), parseFloat(match[4]));
+      return new Common.Geometry.CubicBezier(control1, control2);
     }
     return null;
   }
 
   /**
    * @param {number} t
-   * @return {!WebInspector.Geometry.Point}
+   * @return {!Common.Geometry.Point}
    */
   evaluateAt(t) {
     /**
@@ -162,7 +162,7 @@ WebInspector.Geometry.CubicBezier = class {
 
     var x = evaluate(this.controlPoints[0].x, this.controlPoints[1].x, t);
     var y = evaluate(this.controlPoints[0].y, this.controlPoints[1].y, t);
-    return new WebInspector.Geometry.Point(x, y);
+    return new Common.Geometry.Point(x, y);
   }
 
   /**
@@ -170,7 +170,7 @@ WebInspector.Geometry.CubicBezier = class {
    */
   asCSSText() {
     var raw = 'cubic-bezier(' + this.controlPoints.join(', ') + ')';
-    var keywordValues = WebInspector.Geometry.CubicBezier.KeywordValues;
+    var keywordValues = Common.Geometry.CubicBezier.KeywordValues;
     for (var keyword in keywordValues) {
       if (raw === keywordValues[keyword])
         return keyword;
@@ -180,9 +180,9 @@ WebInspector.Geometry.CubicBezier = class {
 };
 
 /** @type {!RegExp} */
-WebInspector.Geometry.CubicBezier.Regex = /((cubic-bezier\([^)]+\))|\b(linear|ease-in-out|ease-in|ease-out|ease)\b)/g;
+Common.Geometry.CubicBezier.Regex = /((cubic-bezier\([^)]+\))|\b(linear|ease-in-out|ease-in|ease-out|ease)\b)/g;
 
-WebInspector.Geometry.CubicBezier.KeywordValues = {
+Common.Geometry.CubicBezier.KeywordValues = {
   'linear': 'cubic-bezier(0, 0, 1, 1)',
   'ease': 'cubic-bezier(0.25, 0.1, 0.25, 1)',
   'ease-in': 'cubic-bezier(0.42, 0, 1, 1)',
@@ -194,7 +194,7 @@ WebInspector.Geometry.CubicBezier.KeywordValues = {
 /**
  * @unrestricted
  */
-WebInspector.Geometry.EulerAngles = class {
+Common.Geometry.EulerAngles = class {
   /**
    * @param {number} alpha
    * @param {number} beta
@@ -208,7 +208,7 @@ WebInspector.Geometry.EulerAngles = class {
 
   /**
    * @param {!CSSMatrix} rotationMatrix
-   * @return {!WebInspector.Geometry.EulerAngles}
+   * @return {!Common.Geometry.EulerAngles}
    */
   static fromRotationMatrix(rotationMatrix) {
     var beta = Math.atan2(rotationMatrix.m23, rotationMatrix.m33);
@@ -216,17 +216,17 @@ WebInspector.Geometry.EulerAngles = class {
         -rotationMatrix.m13,
         Math.sqrt(rotationMatrix.m11 * rotationMatrix.m11 + rotationMatrix.m12 * rotationMatrix.m12));
     var alpha = Math.atan2(rotationMatrix.m12, rotationMatrix.m11);
-    return new WebInspector.Geometry.EulerAngles(
-        WebInspector.Geometry.radiansToDegrees(alpha), WebInspector.Geometry.radiansToDegrees(beta),
-        WebInspector.Geometry.radiansToDegrees(gamma));
+    return new Common.Geometry.EulerAngles(
+        Common.Geometry.radiansToDegrees(alpha), Common.Geometry.radiansToDegrees(beta),
+        Common.Geometry.radiansToDegrees(gamma));
   }
 
   /**
    * @return {string}
    */
   toRotate3DString() {
-    var gammaAxisY = -Math.sin(WebInspector.Geometry.degreesToRadians(this.beta));
-    var gammaAxisZ = Math.cos(WebInspector.Geometry.degreesToRadians(this.beta));
+    var gammaAxisY = -Math.sin(Common.Geometry.degreesToRadians(this.beta));
+    var gammaAxisZ = Math.cos(Common.Geometry.degreesToRadians(this.beta));
     var axis = {alpha: [0, 1, 0], beta: [-1, 0, 0], gamma: [0, gammaAxisY, gammaAxisZ]};
     return 'rotate3d(' + axis.alpha.join(',') + ',' + this.alpha + 'deg) ' +
         'rotate3d(' + axis.beta.join(',') + ',' + this.beta + 'deg) ' +
@@ -236,72 +236,72 @@ WebInspector.Geometry.EulerAngles = class {
 
 
 /**
- * @param {!WebInspector.Geometry.Vector} u
- * @param {!WebInspector.Geometry.Vector} v
+ * @param {!Common.Geometry.Vector} u
+ * @param {!Common.Geometry.Vector} v
  * @return {number}
  */
-WebInspector.Geometry.scalarProduct = function(u, v) {
+Common.Geometry.scalarProduct = function(u, v) {
   return u.x * v.x + u.y * v.y + u.z * v.z;
 };
 
 /**
- * @param {!WebInspector.Geometry.Vector} u
- * @param {!WebInspector.Geometry.Vector} v
- * @return {!WebInspector.Geometry.Vector}
+ * @param {!Common.Geometry.Vector} u
+ * @param {!Common.Geometry.Vector} v
+ * @return {!Common.Geometry.Vector}
  */
-WebInspector.Geometry.crossProduct = function(u, v) {
+Common.Geometry.crossProduct = function(u, v) {
   var x = u.y * v.z - u.z * v.y;
   var y = u.z * v.x - u.x * v.z;
   var z = u.x * v.y - u.y * v.x;
-  return new WebInspector.Geometry.Vector(x, y, z);
+  return new Common.Geometry.Vector(x, y, z);
 };
 
 /**
- * @param {!WebInspector.Geometry.Vector} u
- * @param {!WebInspector.Geometry.Vector} v
- * @return {!WebInspector.Geometry.Vector}
+ * @param {!Common.Geometry.Vector} u
+ * @param {!Common.Geometry.Vector} v
+ * @return {!Common.Geometry.Vector}
  */
-WebInspector.Geometry.subtract = function(u, v) {
+Common.Geometry.subtract = function(u, v) {
   var x = u.x - v.x;
   var y = u.y - v.y;
   var z = u.z - v.z;
-  return new WebInspector.Geometry.Vector(x, y, z);
+  return new Common.Geometry.Vector(x, y, z);
 };
 
 /**
- * @param {!WebInspector.Geometry.Vector} v
+ * @param {!Common.Geometry.Vector} v
  * @param {!CSSMatrix} m
- * @return {!WebInspector.Geometry.Vector}
+ * @return {!Common.Geometry.Vector}
  */
-WebInspector.Geometry.multiplyVectorByMatrixAndNormalize = function(v, m) {
+Common.Geometry.multiplyVectorByMatrixAndNormalize = function(v, m) {
   var t = v.x * m.m14 + v.y * m.m24 + v.z * m.m34 + m.m44;
   var x = (v.x * m.m11 + v.y * m.m21 + v.z * m.m31 + m.m41) / t;
   var y = (v.x * m.m12 + v.y * m.m22 + v.z * m.m32 + m.m42) / t;
   var z = (v.x * m.m13 + v.y * m.m23 + v.z * m.m33 + m.m43) / t;
-  return new WebInspector.Geometry.Vector(x, y, z);
+  return new Common.Geometry.Vector(x, y, z);
 };
 
 /**
- * @param {!WebInspector.Geometry.Vector} u
- * @param {!WebInspector.Geometry.Vector} v
+ * @param {!Common.Geometry.Vector} u
+ * @param {!Common.Geometry.Vector} v
  * @return {number}
  */
-WebInspector.Geometry.calculateAngle = function(u, v) {
+Common.Geometry.calculateAngle = function(u, v) {
   var uLength = u.length();
   var vLength = v.length();
-  if (uLength <= WebInspector.Geometry._Eps || vLength <= WebInspector.Geometry._Eps)
+  if (uLength <= Common.Geometry._Eps || vLength <= Common.Geometry._Eps)
     return 0;
-  var cos = WebInspector.Geometry.scalarProduct(u, v) / uLength / vLength;
+  var cos = Common.Geometry.scalarProduct(u, v) / uLength / vLength;
   if (Math.abs(cos) > 1)
     return 0;
-  return WebInspector.Geometry.radiansToDegrees(Math.acos(cos));
+  return Common.Geometry.radiansToDegrees(Math.acos(cos));
 };
 
 /**
  * @param {number} deg
  * @return {number}
  */
-WebInspector.Geometry.degreesToRadians = function(deg) {
+Common.Geometry.degreesToRadians = function(deg) {
   return deg * Math.PI / 180;
 };
 
@@ -309,7 +309,7 @@ WebInspector.Geometry.degreesToRadians = function(deg) {
  * @param {number} rad
  * @return {number}
  */
-WebInspector.Geometry.radiansToDegrees = function(rad) {
+Common.Geometry.radiansToDegrees = function(rad) {
   return rad * 180 / Math.PI;
 };
 
@@ -319,14 +319,14 @@ WebInspector.Geometry.radiansToDegrees = function(rad) {
  * @param {{minX: number, maxX: number, minY: number, maxY: number}=} aggregateBounds
  * @return {!{minX: number, maxX: number, minY: number, maxY: number}}
  */
-WebInspector.Geometry.boundsForTransformedPoints = function(matrix, points, aggregateBounds) {
+Common.Geometry.boundsForTransformedPoints = function(matrix, points, aggregateBounds) {
   if (!aggregateBounds)
     aggregateBounds = {minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity};
   if (points.length % 3)
     console.assert('Invalid size of points array');
   for (var p = 0; p < points.length; p += 3) {
-    var vector = new WebInspector.Geometry.Vector(points[p], points[p + 1], points[p + 2]);
-    vector = WebInspector.Geometry.multiplyVectorByMatrixAndNormalize(vector, matrix);
+    var vector = new Common.Geometry.Vector(points[p], points[p + 1], points[p + 2]);
+    vector = Common.Geometry.multiplyVectorByMatrixAndNormalize(vector, matrix);
     aggregateBounds.minX = Math.min(aggregateBounds.minX, vector.x);
     aggregateBounds.maxX = Math.max(aggregateBounds.maxX, vector.x);
     aggregateBounds.minY = Math.min(aggregateBounds.minY, vector.y);
@@ -419,7 +419,7 @@ var Insets = class {
 /**
  * @unrestricted
  */
-WebInspector.Rect = class {
+Common.Rect = class {
   /**
    * @param {number} left
    * @param {number} top
@@ -434,7 +434,7 @@ WebInspector.Rect = class {
   }
 
   /**
-   * @param {?WebInspector.Rect} rect
+   * @param {?Common.Rect} rect
    * @return {boolean}
    */
   isEqual(rect) {
@@ -444,10 +444,10 @@ WebInspector.Rect = class {
 
   /**
    * @param {number} scale
-   * @return {!WebInspector.Rect}
+   * @return {!Common.Rect}
    */
   scale(scale) {
-    return new WebInspector.Rect(this.left * scale, this.top * scale, this.width * scale, this.height * scale);
+    return new Common.Rect(this.left * scale, this.top * scale, this.width * scale, this.height * scale);
   }
 
   /**

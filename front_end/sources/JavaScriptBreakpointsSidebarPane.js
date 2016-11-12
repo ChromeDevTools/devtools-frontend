@@ -2,20 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.ContextFlavorListener}
+ * @implements {UI.ContextFlavorListener}
  * @unrestricted
  */
-WebInspector.JavaScriptBreakpointsSidebarPane = class extends WebInspector.VBox {
+Sources.JavaScriptBreakpointsSidebarPane = class extends UI.VBox {
   constructor() {
     super();
     this.registerRequiredCSS('components/breakpointsList.css');
 
-    this._breakpointManager = WebInspector.breakpointManager;
+    this._breakpointManager = Bindings.breakpointManager;
 
     this._listElement = createElementWithClass('ol', 'breakpoint-list');
 
     this.emptyElement = this.element.createChild('div', 'gray-info-message');
-    this.emptyElement.textContent = WebInspector.UIString('No Breakpoints');
+    this.emptyElement.textContent = Common.UIString('No Breakpoints');
 
     this._items = new Map();
 
@@ -24,49 +24,49 @@ WebInspector.JavaScriptBreakpointsSidebarPane = class extends WebInspector.VBox 
       this._addBreakpoint(breakpointLocations[i].breakpoint, breakpointLocations[i].uiLocation);
 
     this._breakpointManager.addEventListener(
-        WebInspector.BreakpointManager.Events.BreakpointAdded, this._breakpointAdded, this);
+        Bindings.BreakpointManager.Events.BreakpointAdded, this._breakpointAdded, this);
     this._breakpointManager.addEventListener(
-        WebInspector.BreakpointManager.Events.BreakpointRemoved, this._breakpointRemoved, this);
+        Bindings.BreakpointManager.Events.BreakpointRemoved, this._breakpointRemoved, this);
 
     this.emptyElement.addEventListener('contextmenu', this._emptyElementContextMenu.bind(this), true);
     this._breakpointManager.addEventListener(
-        WebInspector.BreakpointManager.Events.BreakpointsActiveStateChanged, this._breakpointsActiveStateChanged, this);
+        Bindings.BreakpointManager.Events.BreakpointsActiveStateChanged, this._breakpointsActiveStateChanged, this);
     this._breakpointsActiveStateChanged();
     this._update();
   }
 
   _emptyElementContextMenu(event) {
-    var contextMenu = new WebInspector.ContextMenu(event);
+    var contextMenu = new UI.ContextMenu(event);
     this._appendBreakpointActiveItem(contextMenu);
     contextMenu.show();
   }
 
   /**
-   * @param {!WebInspector.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu} contextMenu
    */
   _appendBreakpointActiveItem(contextMenu) {
     var breakpointActive = this._breakpointManager.breakpointsActive();
-    var breakpointActiveTitle = breakpointActive ? WebInspector.UIString.capitalize('Deactivate ^breakpoints') :
-                                                   WebInspector.UIString.capitalize('Activate ^breakpoints');
+    var breakpointActiveTitle = breakpointActive ? Common.UIString.capitalize('Deactivate ^breakpoints') :
+                                                   Common.UIString.capitalize('Activate ^breakpoints');
     contextMenu.appendItem(
         breakpointActiveTitle,
         this._breakpointManager.setBreakpointsActive.bind(this._breakpointManager, !breakpointActive));
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _breakpointAdded(event) {
     this._breakpointRemoved(event);
 
-    var breakpoint = /** @type {!WebInspector.BreakpointManager.Breakpoint} */ (event.data.breakpoint);
-    var uiLocation = /** @type {!WebInspector.UILocation} */ (event.data.uiLocation);
+    var breakpoint = /** @type {!Bindings.BreakpointManager.Breakpoint} */ (event.data.breakpoint);
+    var uiLocation = /** @type {!Workspace.UILocation} */ (event.data.uiLocation);
     this._addBreakpoint(breakpoint, uiLocation);
   }
 
   /**
-   * @param {!WebInspector.BreakpointManager.Breakpoint} breakpoint
-   * @param {!WebInspector.UILocation} uiLocation
+   * @param {!Bindings.BreakpointManager.Breakpoint} breakpoint
+   * @param {!Workspace.UILocation} uiLocation
    */
   _addBreakpoint(breakpoint, uiLocation) {
     var element = createElementWithClass('li', 'cursor-pointer');
@@ -81,12 +81,12 @@ WebInspector.JavaScriptBreakpointsSidebarPane = class extends WebInspector.VBox 
 
     /**
      * @param {?string} content
-     * @this {WebInspector.JavaScriptBreakpointsSidebarPane}
+     * @this {Sources.JavaScriptBreakpointsSidebarPane}
      */
     function didRequestContent(content) {
       var lineNumber = uiLocation.lineNumber;
       var columnNumber = uiLocation.columnNumber;
-      var text = new WebInspector.Text(content || '');
+      var text = new Common.Text(content || '');
       if (lineNumber < text.lineCount()) {
         var lineText = text.lineAt(lineNumber);
         var maxSnippetLength = 200;
@@ -112,7 +112,7 @@ WebInspector.JavaScriptBreakpointsSidebarPane = class extends WebInspector.VBox 
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
    */
@@ -120,10 +120,10 @@ WebInspector.JavaScriptBreakpointsSidebarPane = class extends WebInspector.VBox 
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _breakpointRemoved(event) {
-    var breakpoint = /** @type {!WebInspector.BreakpointManager.Breakpoint} */ (event.data.breakpoint);
+    var breakpoint = /** @type {!Bindings.BreakpointManager.Breakpoint} */ (event.data.breakpoint);
     var breakpointItem = this._items.get(breakpoint);
     if (!breakpointItem)
       return;
@@ -140,9 +140,9 @@ WebInspector.JavaScriptBreakpointsSidebarPane = class extends WebInspector.VBox 
   }
 
   _update() {
-    var details = WebInspector.context.flavor(WebInspector.DebuggerPausedDetails);
+    var details = UI.context.flavor(SDK.DebuggerPausedDetails);
     var uiLocation = details && details.callFrames.length ?
-        WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location()) :
+        Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location()) :
         null;
     var breakpoint = uiLocation ?
         this._breakpointManager.findBreakpoint(
@@ -159,7 +159,7 @@ WebInspector.JavaScriptBreakpointsSidebarPane = class extends WebInspector.VBox 
 
     breakpointItem.element.classList.add('breakpoint-hit');
     this._highlightedBreakpointItem = breakpointItem;
-    WebInspector.viewManager.showView('sources.jsBreakpoints');
+    UI.viewManager.showView('sources.jsBreakpoints');
   }
 
   _breakpointsActiveStateChanged() {
@@ -167,14 +167,14 @@ WebInspector.JavaScriptBreakpointsSidebarPane = class extends WebInspector.VBox 
   }
 
   /**
-   * @param {!WebInspector.UILocation} uiLocation
+   * @param {!Workspace.UILocation} uiLocation
    */
   _breakpointClicked(uiLocation) {
-    WebInspector.Revealer.reveal(uiLocation);
+    Common.Revealer.reveal(uiLocation);
   }
 
   /**
-   * @param {!WebInspector.BreakpointManager.Breakpoint} breakpoint
+   * @param {!Bindings.BreakpointManager.Breakpoint} breakpoint
    * @param {!Event} event
    */
   _breakpointCheckboxClicked(breakpoint, event) {
@@ -184,15 +184,15 @@ WebInspector.JavaScriptBreakpointsSidebarPane = class extends WebInspector.VBox 
   }
 
   /**
-   * @param {!WebInspector.BreakpointManager.Breakpoint} breakpoint
+   * @param {!Bindings.BreakpointManager.Breakpoint} breakpoint
    * @param {!Event} event
    */
   _breakpointContextMenu(breakpoint, event) {
     var breakpoints = this._items.valuesArray();
-    var contextMenu = new WebInspector.ContextMenu(event);
-    contextMenu.appendItem(WebInspector.UIString.capitalize('Remove ^breakpoint'), breakpoint.remove.bind(breakpoint));
+    var contextMenu = new UI.ContextMenu(event);
+    contextMenu.appendItem(Common.UIString.capitalize('Remove ^breakpoint'), breakpoint.remove.bind(breakpoint));
     if (breakpoints.length > 1) {
-      var removeAllTitle = WebInspector.UIString.capitalize('Remove ^all ^breakpoints');
+      var removeAllTitle = Common.UIString.capitalize('Remove ^all ^breakpoints');
       contextMenu.appendItem(
           removeAllTitle, this._breakpointManager.removeAllBreakpoints.bind(this._breakpointManager));
     }
@@ -210,8 +210,8 @@ WebInspector.JavaScriptBreakpointsSidebarPane = class extends WebInspector.VBox 
     }
     if (breakpoints.length > 1) {
       var enableBreakpointCount = enabledBreakpointCount(breakpoints);
-      var enableTitle = WebInspector.UIString.capitalize('Enable ^all ^breakpoints');
-      var disableTitle = WebInspector.UIString.capitalize('Disable ^all ^breakpoints');
+      var enableTitle = Common.UIString.capitalize('Enable ^all ^breakpoints');
+      var disableTitle = Common.UIString.capitalize('Disable ^all ^breakpoints');
 
       contextMenu.appendSeparator();
 

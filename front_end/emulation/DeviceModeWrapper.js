@@ -4,18 +4,18 @@
 /**
  * @unrestricted
  */
-WebInspector.DeviceModeWrapper = class extends WebInspector.VBox {
+Emulation.DeviceModeWrapper = class extends UI.VBox {
   /**
-   * @param {!WebInspector.InspectedPagePlaceholder} inspectedPagePlaceholder
+   * @param {!Emulation.InspectedPagePlaceholder} inspectedPagePlaceholder
    */
   constructor(inspectedPagePlaceholder) {
     super();
-    WebInspector.DeviceModeView._wrapperInstance = this;
+    Emulation.DeviceModeView._wrapperInstance = this;
     this._inspectedPagePlaceholder = inspectedPagePlaceholder;
-    /** @type {?WebInspector.DeviceModeView} */
+    /** @type {?Emulation.DeviceModeView} */
     this._deviceModeView = null;
-    this._toggleDeviceModeAction = WebInspector.actionRegistry.action('emulation.toggle-device-mode');
-    this._showDeviceModeSetting = WebInspector.settings.createSetting('emulation.showDeviceMode', false);
+    this._toggleDeviceModeAction = UI.actionRegistry.action('emulation.toggle-device-mode');
+    this._showDeviceModeSetting = Common.settings.createSetting('emulation.showDeviceMode', false);
     this._showDeviceModeSetting.addChangeListener(this._update.bind(this, false));
     this._update(true);
   }
@@ -47,7 +47,7 @@ WebInspector.DeviceModeWrapper = class extends WebInspector.VBox {
 
     if (this._showDeviceModeSetting.get()) {
       if (!this._deviceModeView)
-        this._deviceModeView = new WebInspector.DeviceModeView();
+        this._deviceModeView = new Emulation.DeviceModeView();
       this._deviceModeView.show(this.element);
       this._inspectedPagePlaceholder.clearMinimumSizeAndMargins();
       this._inspectedPagePlaceholder.show(this._deviceModeView.element);
@@ -60,28 +60,28 @@ WebInspector.DeviceModeWrapper = class extends WebInspector.VBox {
   }
 };
 
-/** @type {!WebInspector.DeviceModeWrapper} */
-WebInspector.DeviceModeView._wrapperInstance;
+/** @type {!Emulation.DeviceModeWrapper} */
+Emulation.DeviceModeView._wrapperInstance;
 
 /**
- * @implements {WebInspector.ActionDelegate}
+ * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-WebInspector.DeviceModeWrapper.ActionDelegate = class {
+Emulation.DeviceModeWrapper.ActionDelegate = class {
   /**
    * @override
-   * @param {!WebInspector.Context} context
+   * @param {!UI.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    if (WebInspector.DeviceModeView._wrapperInstance) {
+    if (Emulation.DeviceModeView._wrapperInstance) {
       if (actionId === 'emulation.toggle-device-mode') {
-        WebInspector.DeviceModeView._wrapperInstance._toggleDeviceMode();
+        Emulation.DeviceModeView._wrapperInstance._toggleDeviceMode();
         return true;
       }
       if (actionId === 'emulation.capture-screenshot')
-        return WebInspector.DeviceModeView._wrapperInstance._captureScreenshot();
+        return Emulation.DeviceModeView._wrapperInstance._captureScreenshot();
     }
     return false;
   }

@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.DOMSyntaxHighlighter = class {
+UI.DOMSyntaxHighlighter = class {
   /**
    * @param {string} mimeType
    * @param {boolean} stripExtraWhitespace
@@ -64,11 +64,11 @@ WebInspector.DOMSyntaxHighlighter = class {
     var plainTextStart;
     var line;
 
-    return self.runtime.extension(WebInspector.TokenizerFactory).instance().then(processTokens.bind(this));
+    return self.runtime.extension(Common.TokenizerFactory).instance().then(processTokens.bind(this));
 
     /**
-     * @param {!WebInspector.TokenizerFactory} tokenizerFactory
-     * @this {WebInspector.DOMSyntaxHighlighter}
+     * @param {!Common.TokenizerFactory} tokenizerFactory
+     * @this {UI.DOMSyntaxHighlighter}
      */
     function processTokens(tokenizerFactory) {
       node.removeChildren();
@@ -91,7 +91,7 @@ WebInspector.DOMSyntaxHighlighter = class {
      * @param {?string} tokenType
      * @param {number} column
      * @param {number} newColumn
-     * @this {WebInspector.DOMSyntaxHighlighter}
+     * @this {UI.DOMSyntaxHighlighter}
      */
     function processToken(token, tokenType, column, newColumn) {
       if (!tokenType)

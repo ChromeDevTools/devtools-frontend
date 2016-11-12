@@ -28,17 +28,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.ViewLocationResolver}
+ * @implements {UI.ViewLocationResolver}
  * @unrestricted
  */
-WebInspector.InspectorView = class extends WebInspector.VBox {
+UI.InspectorView = class extends UI.VBox {
   constructor() {
     super();
-    WebInspector.Dialog.setModalHostView(this);
+    UI.Dialog.setModalHostView(this);
     this.setMinimumSize(240, 72);
 
     // DevTools sidebar is a vertical split of panels tabbed pane and a drawer.
-    this._drawerSplitWidget = new WebInspector.SplitWidget(false, true, 'Inspector.drawerSplitViewState', 200, 200);
+    this._drawerSplitWidget = new UI.SplitWidget(false, true, 'Inspector.drawerSplitViewState', 200, 200);
     this._drawerSplitWidget.hideSidebar();
     this._drawerSplitWidget.hideDefaultResizer();
     this._drawerSplitWidget.enableShowModeSaving();
@@ -46,24 +46,24 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
 
     // Create drawer tabbed pane.
     this._drawerTabbedLocation =
-        WebInspector.viewManager.createTabbedLocation(this._showDrawer.bind(this, false), 'drawer-view', true);
+        UI.viewManager.createTabbedLocation(this._showDrawer.bind(this, false), 'drawer-view', true);
     this._drawerTabbedLocation.enableMoreTabsButton();
     this._drawerTabbedPane = this._drawerTabbedLocation.tabbedPane();
     this._drawerTabbedPane.setMinimumSize(0, 27);
     var closeDrawerButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Close drawer'), 'largeicon-delete');
+        new UI.ToolbarButton(Common.UIString('Close drawer'), 'largeicon-delete');
     closeDrawerButton.addEventListener('click', this._closeDrawer.bind(this));
     this._drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
     this._drawerSplitWidget.installResizer(this._drawerTabbedPane.headerElement());
     this._drawerSplitWidget.setSidebarWidget(this._drawerTabbedPane);
 
     // Create main area tabbed pane.
-    this._tabbedLocation = WebInspector.viewManager.createTabbedLocation(
+    this._tabbedLocation = UI.viewManager.createTabbedLocation(
         InspectorFrontendHost.bringToFront.bind(InspectorFrontendHost), 'panel', true, true);
     this._tabbedPane = this._tabbedLocation.tabbedPane();
     this._tabbedPane.registerRequiredCSS('ui/inspectorViewTabbedPane.css');
     this._tabbedPane.setTabSlider(true);
-    this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabSelected, this._tabSelected, this);
+    this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
 
     if (InspectorFrontendHost.isUnderTest())
       this._tabbedPane.setAutoSelectFirstItemOnShow(false);
@@ -73,8 +73,8 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
 
     /**
-     * @this {WebInspector.InspectorView}
-     * @param {!WebInspector.Event} event
+     * @this {UI.InspectorView}
+     * @param {!Common.Event} event
      */
     function showPanel(event) {
       var panelName = /** @type {string} */ (event.data);
@@ -83,10 +83,10 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {!WebInspector.InspectorView}
+   * @return {!UI.InspectorView}
    */
   static instance() {
-    return /** @type {!WebInspector.InspectorView} */ (self.runtime.sharedInstance(WebInspector.InspectorView));
+    return /** @type {!UI.InspectorView} */ (self.runtime.sharedInstance(UI.InspectorView));
   }
 
   /**
@@ -106,7 +106,7 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
   /**
    * @override
    * @param {string} locationName
-   * @return {?WebInspector.ViewLocation}
+   * @return {?UI.ViewLocation}
    */
   resolveLocation(locationName) {
     return this._drawerTabbedLocation;
@@ -118,7 +118,7 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.View} view
+   * @param {!UI.View} view
    */
   addPanel(view) {
     this._tabbedLocation.appendView(view);
@@ -134,10 +134,10 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
 
   /**
    * @param {string} panelName
-   * @return {!Promise.<!WebInspector.Panel>}
+   * @return {!Promise.<!UI.Panel>}
    */
   panel(panelName) {
-    return /** @type {!Promise.<!WebInspector.Panel>} */ (WebInspector.viewManager.view(panelName).widget());
+    return /** @type {!Promise.<!UI.Panel>} */ (UI.viewManager.view(panelName).widget());
   }
 
   /**
@@ -160,10 +160,10 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
 
   /**
    * @param {string} panelName
-   * @return {!Promise.<?WebInspector.Panel>}
+   * @return {!Promise.<?UI.Panel>}
    */
   showPanel(panelName) {
-    return WebInspector.viewManager.showView(panelName);
+    return UI.viewManager.showView(panelName);
   }
 
   /**
@@ -176,11 +176,11 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {!WebInspector.Panel}
+   * @return {!UI.Panel}
    */
   currentPanelDeprecated() {
-    return /** @type {!WebInspector.Panel} */ (
-        WebInspector.viewManager.materializedWidget(this._tabbedPane.selectedTabId || ''));
+    return /** @type {!UI.Panel} */ (
+        UI.viewManager.materializedWidget(this._tabbedPane.selectedTabId || ''));
   }
 
   /**
@@ -191,7 +191,7 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
       return;
     this._drawerSplitWidget.showBoth();
     if (focus)
-      this._focusRestorer = new WebInspector.WidgetFocusRestorer(this._drawerTabbedPane);
+      this._focusRestorer = new UI.WidgetFocusRestorer(this._drawerTabbedPane);
     else
       this._focusRestorer = null;
   }
@@ -227,12 +227,12 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
   }
 
   _keyDown(event) {
-    if (!WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(event))
+    if (!UI.KeyboardShortcut.eventHasCtrlOrMeta(event))
       return;
 
     var keyboardEvent = /** @type {!KeyboardEvent} */ (event);
     // Ctrl/Cmd + 1-9 should show corresponding panel.
-    var panelShortcutEnabled = WebInspector.moduleSetting('shortcutPanelSwitch').get();
+    var panelShortcutEnabled = Common.moduleSetting('shortcutPanelSwitch').get();
     if (panelShortcutEnabled && !event.shiftKey && !event.altKey) {
       var panelIndex = -1;
       if (event.keyCode > 0x30 && event.keyCode < 0x3A)
@@ -244,7 +244,7 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
       if (panelIndex !== -1) {
         var panelName = this._tabbedPane.allTabs()[panelIndex];
         if (panelName) {
-          if (!WebInspector.Dialog.hasInstance() && !this._currentPanelLocked)
+          if (!UI.Dialog.hasInstance() && !this._currentPanelLocked)
             this.showPanel(panelName);
           event.consume(true);
         }
@@ -256,7 +256,7 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
    * @override
    */
   onResize() {
-    WebInspector.Dialog.modalHostRepositioned();
+    UI.Dialog.modalHostRepositioned();
   }
 
   /**
@@ -271,15 +271,15 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _tabSelected(event) {
     var tabId = /** @type {string} */ (event.data['tabId']);
-    WebInspector.userMetrics.panelShown(tabId);
+    Host.userMetrics.panelShown(tabId);
   }
 
   /**
-   * @param {!WebInspector.SplitWidget} splitWidget
+   * @param {!UI.SplitWidget} splitWidget
    */
   setOwnerSplit(splitWidget) {
     this._ownerSplitWidget = splitWidget;
@@ -298,26 +298,26 @@ WebInspector.InspectorView = class extends WebInspector.VBox {
 
 
 /**
- * @type {!WebInspector.InspectorView}
+ * @type {!UI.InspectorView}
  */
-WebInspector.inspectorView;
+UI.inspectorView;
 
 /**
- * @implements {WebInspector.ActionDelegate}
+ * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-WebInspector.InspectorView.DrawerToggleActionDelegate = class {
+UI.InspectorView.DrawerToggleActionDelegate = class {
   /**
    * @override
-   * @param {!WebInspector.Context} context
+   * @param {!UI.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    if (WebInspector.inspectorView.drawerVisible())
-      WebInspector.inspectorView._closeDrawer();
+    if (UI.inspectorView.drawerVisible())
+      UI.inspectorView._closeDrawer();
     else
-      WebInspector.inspectorView._showDrawer(true);
+      UI.inspectorView._showDrawer(true);
     return true;
   }
 };

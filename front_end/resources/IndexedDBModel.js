@@ -31,17 +31,17 @@
 /**
  * @unrestricted
  */
-WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
+Resources.IndexedDBModel = class extends SDK.SDKModel {
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!WebInspector.SecurityOriginManager} securityOriginManager
+   * @param {!SDK.Target} target
+   * @param {!SDK.SecurityOriginManager} securityOriginManager
    */
   constructor(target, securityOriginManager) {
-    super(WebInspector.IndexedDBModel, target);
+    super(Resources.IndexedDBModel, target);
     this._securityOriginManager = securityOriginManager;
     this._agent = target.indexedDBAgent();
 
-    /** @type {!Map.<!WebInspector.IndexedDBModel.DatabaseId, !WebInspector.IndexedDBModel.Database>} */
+    /** @type {!Map.<!Resources.IndexedDBModel.DatabaseId, !Resources.IndexedDBModel.Database>} */
     this._databases = new Map();
     /** @type {!Object.<string, !Array.<string>>} */
     this._databaseNamesBySecurityOrigin = {};
@@ -66,21 +66,21 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
     switch (typeof(idbKey)) {
       case 'number':
         key.number = idbKey;
-        type = WebInspector.IndexedDBModel.KeyTypes.NumberType;
+        type = Resources.IndexedDBModel.KeyTypes.NumberType;
         break;
       case 'string':
         key.string = idbKey;
-        type = WebInspector.IndexedDBModel.KeyTypes.StringType;
+        type = Resources.IndexedDBModel.KeyTypes.StringType;
         break;
       case 'object':
         if (idbKey instanceof Date) {
           key.date = idbKey.getTime();
-          type = WebInspector.IndexedDBModel.KeyTypes.DateType;
+          type = Resources.IndexedDBModel.KeyTypes.DateType;
         } else if (Array.isArray(idbKey)) {
           key.array = [];
           for (var i = 0; i < idbKey.length; ++i)
-            key.array.push(WebInspector.IndexedDBModel.keyFromIDBKey(idbKey[i]));
-          type = WebInspector.IndexedDBModel.KeyTypes.ArrayType;
+            key.array.push(Resources.IndexedDBModel.keyFromIDBKey(idbKey[i]));
+          type = Resources.IndexedDBModel.KeyTypes.ArrayType;
         }
         break;
       default:
@@ -100,8 +100,8 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
       return null;
 
     var keyRange = {};
-    keyRange.lower = WebInspector.IndexedDBModel.keyFromIDBKey(idbKeyRange.lower);
-    keyRange.upper = WebInspector.IndexedDBModel.keyFromIDBKey(idbKeyRange.upper);
+    keyRange.lower = Resources.IndexedDBModel.keyFromIDBKey(idbKeyRange.lower);
+    keyRange.upper = Resources.IndexedDBModel.keyFromIDBKey(idbKeyRange.upper);
     keyRange.lowerOpen = !!idbKeyRange.lowerOpen;
     keyRange.upperOpen = !!idbKeyRange.upperOpen;
     return keyRange;
@@ -114,13 +114,13 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
   static idbKeyPathFromKeyPath(keyPath) {
     var idbKeyPath;
     switch (keyPath.type) {
-      case WebInspector.IndexedDBModel.KeyPathTypes.NullType:
+      case Resources.IndexedDBModel.KeyPathTypes.NullType:
         idbKeyPath = null;
         break;
-      case WebInspector.IndexedDBModel.KeyPathTypes.StringType:
+      case Resources.IndexedDBModel.KeyPathTypes.StringType:
         idbKeyPath = keyPath.string;
         break;
-      case WebInspector.IndexedDBModel.KeyPathTypes.ArrayType:
+      case Resources.IndexedDBModel.KeyPathTypes.ArrayType:
         idbKeyPath = keyPath.array;
         break;
     }
@@ -140,13 +140,13 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @return {!WebInspector.IndexedDBModel}
+   * @param {!SDK.Target} target
+   * @return {!Resources.IndexedDBModel}
    */
   static fromTarget(target) {
-    var model = /** @type {?WebInspector.IndexedDBModel} */ (target.model(WebInspector.IndexedDBModel));
+    var model = /** @type {?Resources.IndexedDBModel} */ (target.model(Resources.IndexedDBModel));
     if (!model)
-      model = new WebInspector.IndexedDBModel(target, WebInspector.SecurityOriginManager.fromTarget(target));
+      model = new Resources.IndexedDBModel(target, SDK.SecurityOriginManager.fromTarget(target));
     return model;
   }
 
@@ -156,9 +156,9 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
 
     this._agent.enable();
     this._securityOriginManager.addEventListener(
-        WebInspector.SecurityOriginManager.Events.SecurityOriginAdded, this._securityOriginAdded, this);
+        SDK.SecurityOriginManager.Events.SecurityOriginAdded, this._securityOriginAdded, this);
     this._securityOriginManager.addEventListener(
-        WebInspector.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
+        SDK.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
 
     for (var securityOrigin of this._securityOriginManager.securityOrigins())
       this._addOrigin(securityOrigin);
@@ -183,14 +183,14 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.IndexedDBModel.DatabaseId} databaseId
+   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
    */
   refreshDatabase(databaseId) {
     this._loadDatabase(databaseId);
   }
 
   /**
-   * @param {!WebInspector.IndexedDBModel.DatabaseId} databaseId
+   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
    * @param {string} objectStoreName
    * @param {function()} callback
    */
@@ -199,7 +199,7 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _securityOriginAdded(event) {
     var securityOrigin = /** @type {string} */ (event.data);
@@ -207,7 +207,7 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _securityOriginRemoved(event) {
     var securityOrigin = /** @type {string} */ (event.data);
@@ -254,14 +254,14 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @return {!Array.<!WebInspector.IndexedDBModel.DatabaseId>}
+   * @return {!Array.<!Resources.IndexedDBModel.DatabaseId>}
    */
   databases() {
     var result = [];
     for (var securityOrigin in this._databaseNamesBySecurityOrigin) {
       var databaseNames = this._databaseNamesBySecurityOrigin[securityOrigin];
       for (var i = 0; i < databaseNames.length; ++i) {
-        result.push(new WebInspector.IndexedDBModel.DatabaseId(securityOrigin, databaseNames[i]));
+        result.push(new Resources.IndexedDBModel.DatabaseId(securityOrigin, databaseNames[i]));
       }
     }
     return result;
@@ -272,8 +272,8 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
    * @param {string} databaseName
    */
   _databaseAdded(securityOrigin, databaseName) {
-    var databaseId = new WebInspector.IndexedDBModel.DatabaseId(securityOrigin, databaseName);
-    this.dispatchEventToListeners(WebInspector.IndexedDBModel.Events.DatabaseAdded, databaseId);
+    var databaseId = new Resources.IndexedDBModel.DatabaseId(securityOrigin, databaseName);
+    this.dispatchEventToListeners(Resources.IndexedDBModel.Events.DatabaseAdded, databaseId);
   }
 
   /**
@@ -281,8 +281,8 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
    * @param {string} databaseName
    */
   _databaseRemoved(securityOrigin, databaseName) {
-    var databaseId = new WebInspector.IndexedDBModel.DatabaseId(securityOrigin, databaseName);
-    this.dispatchEventToListeners(WebInspector.IndexedDBModel.Events.DatabaseRemoved, databaseId);
+    var databaseId = new Resources.IndexedDBModel.DatabaseId(securityOrigin, databaseName);
+    this.dispatchEventToListeners(Resources.IndexedDBModel.Events.DatabaseRemoved, databaseId);
   }
 
   /**
@@ -292,7 +292,7 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
     /**
      * @param {?Protocol.Error} error
      * @param {!Array.<string>} databaseNames
-     * @this {WebInspector.IndexedDBModel}
+     * @this {Resources.IndexedDBModel}
      */
     function callback(error, databaseNames) {
       if (error) {
@@ -309,13 +309,13 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.IndexedDBModel.DatabaseId} databaseId
+   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
    */
   _loadDatabase(databaseId) {
     /**
      * @param {?Protocol.Error} error
      * @param {!Protocol.IndexedDB.DatabaseWithObjectStores} databaseWithObjectStores
-     * @this {WebInspector.IndexedDBModel}
+     * @this {Resources.IndexedDBModel}
      */
     function callback(error, databaseWithObjectStores) {
       if (error) {
@@ -325,49 +325,49 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
 
       if (!this._databaseNamesBySecurityOrigin[databaseId.securityOrigin])
         return;
-      var databaseModel = new WebInspector.IndexedDBModel.Database(databaseId, databaseWithObjectStores.version);
+      var databaseModel = new Resources.IndexedDBModel.Database(databaseId, databaseWithObjectStores.version);
       this._databases.set(databaseId, databaseModel);
       for (var i = 0; i < databaseWithObjectStores.objectStores.length; ++i) {
         var objectStore = databaseWithObjectStores.objectStores[i];
-        var objectStoreIDBKeyPath = WebInspector.IndexedDBModel.idbKeyPathFromKeyPath(objectStore.keyPath);
-        var objectStoreModel = new WebInspector.IndexedDBModel.ObjectStore(
+        var objectStoreIDBKeyPath = Resources.IndexedDBModel.idbKeyPathFromKeyPath(objectStore.keyPath);
+        var objectStoreModel = new Resources.IndexedDBModel.ObjectStore(
             objectStore.name, objectStoreIDBKeyPath, objectStore.autoIncrement);
         for (var j = 0; j < objectStore.indexes.length; ++j) {
           var index = objectStore.indexes[j];
-          var indexIDBKeyPath = WebInspector.IndexedDBModel.idbKeyPathFromKeyPath(index.keyPath);
+          var indexIDBKeyPath = Resources.IndexedDBModel.idbKeyPathFromKeyPath(index.keyPath);
           var indexModel =
-              new WebInspector.IndexedDBModel.Index(index.name, indexIDBKeyPath, index.unique, index.multiEntry);
+              new Resources.IndexedDBModel.Index(index.name, indexIDBKeyPath, index.unique, index.multiEntry);
           objectStoreModel.indexes[indexModel.name] = indexModel;
         }
         databaseModel.objectStores[objectStoreModel.name] = objectStoreModel;
       }
 
-      this.dispatchEventToListeners(WebInspector.IndexedDBModel.Events.DatabaseLoaded, databaseModel);
+      this.dispatchEventToListeners(Resources.IndexedDBModel.Events.DatabaseLoaded, databaseModel);
     }
 
     this._agent.requestDatabase(databaseId.securityOrigin, databaseId.name, callback.bind(this));
   }
 
   /**
-   * @param {!WebInspector.IndexedDBModel.DatabaseId} databaseId
+   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
    * @param {string} objectStoreName
    * @param {?IDBKeyRange} idbKeyRange
    * @param {number} skipCount
    * @param {number} pageSize
-   * @param {function(!Array.<!WebInspector.IndexedDBModel.Entry>, boolean)} callback
+   * @param {function(!Array.<!Resources.IndexedDBModel.Entry>, boolean)} callback
    */
   loadObjectStoreData(databaseId, objectStoreName, idbKeyRange, skipCount, pageSize, callback) {
     this._requestData(databaseId, databaseId.name, objectStoreName, '', idbKeyRange, skipCount, pageSize, callback);
   }
 
   /**
-   * @param {!WebInspector.IndexedDBModel.DatabaseId} databaseId
+   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
    * @param {string} objectStoreName
    * @param {string} indexName
    * @param {?IDBKeyRange} idbKeyRange
    * @param {number} skipCount
    * @param {number} pageSize
-   * @param {function(!Array.<!WebInspector.IndexedDBModel.Entry>, boolean)} callback
+   * @param {function(!Array.<!Resources.IndexedDBModel.Entry>, boolean)} callback
    */
   loadIndexData(databaseId, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback) {
     this._requestData(
@@ -375,21 +375,21 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.IndexedDBModel.DatabaseId} databaseId
+   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
    * @param {string} databaseName
    * @param {string} objectStoreName
    * @param {string} indexName
    * @param {?IDBKeyRange} idbKeyRange
    * @param {number} skipCount
    * @param {number} pageSize
-   * @param {function(!Array.<!WebInspector.IndexedDBModel.Entry>, boolean)} callback
+   * @param {function(!Array.<!Resources.IndexedDBModel.Entry>, boolean)} callback
    */
   _requestData(databaseId, databaseName, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback) {
     /**
      * @param {?Protocol.Error} error
      * @param {!Array.<!Protocol.IndexedDB.DataEntry>} dataEntries
      * @param {boolean} hasMore
-     * @this {WebInspector.IndexedDBModel}
+     * @this {Resources.IndexedDBModel}
      */
     function innerCallback(error, dataEntries, hasMore) {
       if (error) {
@@ -404,26 +404,26 @@ WebInspector.IndexedDBModel = class extends WebInspector.SDKModel {
         var key = this.target().runtimeModel.createRemoteObject(dataEntries[i].key);
         var primaryKey = this.target().runtimeModel.createRemoteObject(dataEntries[i].primaryKey);
         var value = this.target().runtimeModel.createRemoteObject(dataEntries[i].value);
-        entries.push(new WebInspector.IndexedDBModel.Entry(key, primaryKey, value));
+        entries.push(new Resources.IndexedDBModel.Entry(key, primaryKey, value));
       }
       callback(entries, hasMore);
     }
 
-    var keyRange = WebInspector.IndexedDBModel.keyRangeFromIDBKeyRange(idbKeyRange);
+    var keyRange = Resources.IndexedDBModel.keyRangeFromIDBKeyRange(idbKeyRange);
     this._agent.requestData(
         databaseId.securityOrigin, databaseName, objectStoreName, indexName, skipCount, pageSize,
         keyRange ? keyRange : undefined, innerCallback.bind(this));
   }
 };
 
-WebInspector.IndexedDBModel.KeyTypes = {
+Resources.IndexedDBModel.KeyTypes = {
   NumberType: 'number',
   StringType: 'string',
   DateType: 'date',
   ArrayType: 'array'
 };
 
-WebInspector.IndexedDBModel.KeyPathTypes = {
+Resources.IndexedDBModel.KeyPathTypes = {
   NullType: 'null',
   StringType: 'string',
   ArrayType: 'array'
@@ -431,7 +431,7 @@ WebInspector.IndexedDBModel.KeyPathTypes = {
 
 
 /** @enum {symbol} */
-WebInspector.IndexedDBModel.Events = {
+Resources.IndexedDBModel.Events = {
   DatabaseAdded: Symbol('DatabaseAdded'),
   DatabaseRemoved: Symbol('DatabaseRemoved'),
   DatabaseLoaded: Symbol('DatabaseLoaded')
@@ -440,11 +440,11 @@ WebInspector.IndexedDBModel.Events = {
 /**
  * @unrestricted
  */
-WebInspector.IndexedDBModel.Entry = class {
+Resources.IndexedDBModel.Entry = class {
   /**
-   * @param {!WebInspector.RemoteObject} key
-   * @param {!WebInspector.RemoteObject} primaryKey
-   * @param {!WebInspector.RemoteObject} value
+   * @param {!SDK.RemoteObject} key
+   * @param {!SDK.RemoteObject} primaryKey
+   * @param {!SDK.RemoteObject} value
    */
   constructor(key, primaryKey, value) {
     this.key = key;
@@ -456,7 +456,7 @@ WebInspector.IndexedDBModel.Entry = class {
 /**
  * @unrestricted
  */
-WebInspector.IndexedDBModel.DatabaseId = class {
+Resources.IndexedDBModel.DatabaseId = class {
   /**
    * @param {string} securityOrigin
    * @param {string} name
@@ -467,7 +467,7 @@ WebInspector.IndexedDBModel.DatabaseId = class {
   }
 
   /**
-   * @param {!WebInspector.IndexedDBModel.DatabaseId} databaseId
+   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
    * @return {boolean}
    */
   equals(databaseId) {
@@ -478,9 +478,9 @@ WebInspector.IndexedDBModel.DatabaseId = class {
 /**
  * @unrestricted
  */
-WebInspector.IndexedDBModel.Database = class {
+Resources.IndexedDBModel.Database = class {
   /**
-   * @param {!WebInspector.IndexedDBModel.DatabaseId} databaseId
+   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
    * @param {number} version
    */
   constructor(databaseId, version) {
@@ -493,7 +493,7 @@ WebInspector.IndexedDBModel.Database = class {
 /**
  * @unrestricted
  */
-WebInspector.IndexedDBModel.ObjectStore = class {
+Resources.IndexedDBModel.ObjectStore = class {
   /**
    * @param {string} name
    * @param {*} keyPath
@@ -511,14 +511,14 @@ WebInspector.IndexedDBModel.ObjectStore = class {
    */
   get keyPathString() {
     return /** @type {string}*/ (
-        WebInspector.IndexedDBModel.keyPathStringFromIDBKeyPath(/** @type {string}*/ (this.keyPath)));
+        Resources.IndexedDBModel.keyPathStringFromIDBKeyPath(/** @type {string}*/ (this.keyPath)));
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.IndexedDBModel.Index = class {
+Resources.IndexedDBModel.Index = class {
   /**
    * @param {string} name
    * @param {*} keyPath
@@ -537,6 +537,6 @@ WebInspector.IndexedDBModel.Index = class {
    */
   get keyPathString() {
     return /** @type {string}*/ (
-        WebInspector.IndexedDBModel.keyPathStringFromIDBKeyPath(/** @type {string}*/ (this.keyPath)));
+        Resources.IndexedDBModel.keyPathStringFromIDBKeyPath(/** @type {string}*/ (this.keyPath)));
   }
 };

@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.ChartViewport = class extends WebInspector.VBox {
+UI.ChartViewport = class extends UI.VBox {
   constructor() {
     super(true);
 
@@ -12,10 +12,10 @@ WebInspector.ChartViewport = class extends WebInspector.VBox {
     this.contentElement.addEventListener('keydown', this._handleZoomPanKeys.bind(this), false);
 
     this.viewportElement = this.contentElement.createChild('div', 'fill');
-    WebInspector.installInertialDragHandle(
+    UI.installInertialDragHandle(
         this.viewportElement, this._startDragging.bind(this), this._dragging.bind(this), this._endDragging.bind(this),
         '-webkit-grabbing', null);
-    WebInspector.installDragHandle(
+    UI.installDragHandle(
         this.viewportElement, this._startRangeSelection.bind(this), this._rangeSelectionDragging.bind(this),
         this._endRangeSelection.bind(this), 'text', null);
 
@@ -300,7 +300,7 @@ WebInspector.ChartViewport = class extends WebInspector.VBox {
    * @private
    */
   _handleZoomPanKeys(e) {
-    if (!WebInspector.KeyboardShortcut.hasNoModifiers(e))
+    if (!UI.KeyboardShortcut.hasNoModifiers(e))
       return;
     var zoomMultiplier = e.shiftKey ? 0.8 : 0.3;
     var panMultiplier = e.shiftKey ? 320 : 80;
@@ -365,7 +365,7 @@ WebInspector.ChartViewport = class extends WebInspector.VBox {
   _requestWindowTimes(bounds) {
     bounds.left = Number.constrain(bounds.left, this._minimumBoundary, this._totalTime + this._minimumBoundary);
     bounds.right = Number.constrain(bounds.right, this._minimumBoundary, this._totalTime + this._minimumBoundary);
-    if (bounds.right - bounds.left < WebInspector.FlameChart.MinimalTimeWindowMs)
+    if (bounds.right - bounds.left < UI.FlameChart.MinimalTimeWindowMs)
       return;
     this._flameChartDelegate.requestWindowTimes(bounds.left, bounds.right);
   }
@@ -429,7 +429,7 @@ WebInspector.ChartViewport = class extends WebInspector.VBox {
       return;
     }
     this._cancelAnimation();
-    this._cancelWindowTimesAnimation = WebInspector.animateFunction(
+    this._cancelWindowTimesAnimation = UI.animateFunction(
         this.element.window(), this._animateWindowTimes.bind(this),
         [{from: this._timeWindowLeft, to: startTime}, {from: this._timeWindowRight, to: endTime}], 5,
         this._animationCompleted.bind(this));

@@ -4,26 +4,26 @@
 /**
  * @unrestricted
  */
-WebInspector.TimelineIRModel = class {
+TimelineModel.TimelineIRModel = class {
   constructor() {
     this.reset();
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} event
-   * @return {!WebInspector.TimelineIRModel.Phases}
+   * @param {!SDK.TracingModel.Event} event
+   * @return {!TimelineModel.TimelineIRModel.Phases}
    */
   static phaseForEvent(event) {
-    return event[WebInspector.TimelineIRModel._eventIRPhase];
+    return event[TimelineModel.TimelineIRModel._eventIRPhase];
   }
 
   /**
-   * @param {?Array<!WebInspector.TracingModel.AsyncEvent>} inputLatencies
-   * @param {?Array<!WebInspector.TracingModel.AsyncEvent>} animations
+   * @param {?Array<!SDK.TracingModel.AsyncEvent>} inputLatencies
+   * @param {?Array<!SDK.TracingModel.AsyncEvent>} animations
    */
   populate(inputLatencies, animations) {
-    var eventTypes = WebInspector.TimelineIRModel.InputEvents;
-    var phases = WebInspector.TimelineIRModel.Phases;
+    var eventTypes = TimelineModel.TimelineIRModel.InputEvents;
+    var phases = TimelineModel.TimelineIRModel.Phases;
 
     this.reset();
     if (!inputLatencies)
@@ -31,7 +31,7 @@ WebInspector.TimelineIRModel = class {
     this._processInputLatencies(inputLatencies);
     if (animations)
       this._processAnimations(animations);
-    var range = new WebInspector.SegmentedRange();
+    var range = new Common.SegmentedRange();
     range.appendRange(this._drags);  // Drags take lower precedence than animation, as we can't detect them reliably.
     range.appendRange(this._cssAnimations);
     range.appendRange(this._scrolls);
@@ -40,12 +40,12 @@ WebInspector.TimelineIRModel = class {
   }
 
   /**
-   * @param {!Array<!WebInspector.TracingModel.AsyncEvent>} events
+   * @param {!Array<!SDK.TracingModel.AsyncEvent>} events
    */
   _processInputLatencies(events) {
-    var eventTypes = WebInspector.TimelineIRModel.InputEvents;
-    var phases = WebInspector.TimelineIRModel.Phases;
-    var thresholdsMs = WebInspector.TimelineIRModel._mergeThresholdsMs;
+    var eventTypes = TimelineModel.TimelineIRModel.InputEvents;
+    var phases = TimelineModel.TimelineIRModel.Phases;
+    var thresholdsMs = TimelineModel.TimelineIRModel._mergeThresholdsMs;
 
     var scrollStart;
     var flingStart;
@@ -81,8 +81,8 @@ WebInspector.TimelineIRModel = class {
 
         case eventTypes.FlingStart:
           if (flingStart) {
-            WebInspector.console.error(
-                WebInspector.UIString('Two flings at the same time? %s vs %s', flingStart.startTime, event.startTime));
+            Common.console.error(
+                Common.UIString('Two flings at the same time? %s vs %s', flingStart.startTime, event.startTime));
             break;
           }
           flingStart = event;
@@ -115,12 +115,12 @@ WebInspector.TimelineIRModel = class {
           // We do not produce any response segment for TouchStart -- there's either going to be one upon
           // TouchMove for drag, or one for GestureTap.
           if (touchStart) {
-            WebInspector.console.error(
-                WebInspector.UIString('Two touches at the same time? %s vs %s', touchStart.startTime, event.startTime));
+            Common.console.error(
+                Common.UIString('Two touches at the same time? %s vs %s', touchStart.startTime, event.startTime));
             break;
           }
           touchStart = event;
-          event.steps[0][WebInspector.TimelineIRModel._eventIRPhase] = phases.Response;
+          event.steps[0][TimelineModel.TimelineIRModel._eventIRPhase] = phases.Response;
           firstTouchMove = null;
           break;
 
@@ -174,8 +174,8 @@ WebInspector.TimelineIRModel = class {
 
     /**
      * @param {number} threshold
-     * @param {!WebInspector.TracingModel.AsyncEvent} first
-     * @param {!WebInspector.TracingModel.AsyncEvent} second
+     * @param {!SDK.TracingModel.AsyncEvent} first
+     * @param {!SDK.TracingModel.AsyncEvent} second
      * @return {boolean}
      */
     function canMerge(threshold, first, second) {
@@ -184,63 +184,63 @@ WebInspector.TimelineIRModel = class {
   }
 
   /**
-   * @param {!Array<!WebInspector.TracingModel.AsyncEvent>} events
+   * @param {!Array<!SDK.TracingModel.AsyncEvent>} events
    */
   _processAnimations(events) {
     for (var i = 0; i < events.length; ++i)
-      this._cssAnimations.append(this._segmentForEvent(events[i], WebInspector.TimelineIRModel.Phases.Animation));
+      this._cssAnimations.append(this._segmentForEvent(events[i], TimelineModel.TimelineIRModel.Phases.Animation));
   }
 
   /**
-   * @param {!WebInspector.TracingModel.AsyncEvent} event
-   * @param {!WebInspector.TimelineIRModel.Phases} phase
-   * @return {!WebInspector.Segment}
+   * @param {!SDK.TracingModel.AsyncEvent} event
+   * @param {!TimelineModel.TimelineIRModel.Phases} phase
+   * @return {!Common.Segment}
    */
   _segmentForEvent(event, phase) {
     this._setPhaseForEvent(event, phase);
-    return new WebInspector.Segment(event.startTime, event.endTime, phase);
+    return new Common.Segment(event.startTime, event.endTime, phase);
   }
 
   /**
-   * @param {!WebInspector.TracingModel.AsyncEvent} startEvent
-   * @param {!WebInspector.TracingModel.AsyncEvent} endEvent
-   * @param {!WebInspector.TimelineIRModel.Phases} phase
-   * @return {!WebInspector.Segment}
+   * @param {!SDK.TracingModel.AsyncEvent} startEvent
+   * @param {!SDK.TracingModel.AsyncEvent} endEvent
+   * @param {!TimelineModel.TimelineIRModel.Phases} phase
+   * @return {!Common.Segment}
    */
   _segmentForEventRange(startEvent, endEvent, phase) {
     this._setPhaseForEvent(startEvent, phase);
     this._setPhaseForEvent(endEvent, phase);
-    return new WebInspector.Segment(startEvent.startTime, endEvent.endTime, phase);
+    return new Common.Segment(startEvent.startTime, endEvent.endTime, phase);
   }
 
   /**
-   * @param {!WebInspector.TracingModel.AsyncEvent} asyncEvent
-   * @param {!WebInspector.TimelineIRModel.Phases} phase
+   * @param {!SDK.TracingModel.AsyncEvent} asyncEvent
+   * @param {!TimelineModel.TimelineIRModel.Phases} phase
    */
   _setPhaseForEvent(asyncEvent, phase) {
-    asyncEvent.steps[0][WebInspector.TimelineIRModel._eventIRPhase] = phase;
+    asyncEvent.steps[0][TimelineModel.TimelineIRModel._eventIRPhase] = phase;
   }
 
   /**
-   * @return {!Array<!WebInspector.Segment>}
+   * @return {!Array<!Common.Segment>}
    */
   interactionRecords() {
     return this._segments;
   }
 
   reset() {
-    var thresholdsMs = WebInspector.TimelineIRModel._mergeThresholdsMs;
+    var thresholdsMs = TimelineModel.TimelineIRModel._mergeThresholdsMs;
 
     this._segments = [];
-    this._drags = new WebInspector.SegmentedRange(merge.bind(null, thresholdsMs.mouse));
-    this._cssAnimations = new WebInspector.SegmentedRange(merge.bind(null, thresholdsMs.animation));
-    this._responses = new WebInspector.SegmentedRange(merge.bind(null, 0));
-    this._scrolls = new WebInspector.SegmentedRange(merge.bind(null, thresholdsMs.animation));
+    this._drags = new Common.SegmentedRange(merge.bind(null, thresholdsMs.mouse));
+    this._cssAnimations = new Common.SegmentedRange(merge.bind(null, thresholdsMs.animation));
+    this._responses = new Common.SegmentedRange(merge.bind(null, 0));
+    this._scrolls = new Common.SegmentedRange(merge.bind(null, thresholdsMs.animation));
 
     /**
      * @param {number} threshold
-     * @param {!WebInspector.Segment} first
-     * @param {!WebInspector.Segment} second
+     * @param {!Common.Segment} first
+     * @param {!Common.Segment} second
      */
     function merge(threshold, first, second) {
       return first.end + threshold >= second.begin && first.data === second.data ? first : null;
@@ -249,24 +249,24 @@ WebInspector.TimelineIRModel = class {
 
   /**
    * @param {string} eventName
-   * @return {?WebInspector.TimelineIRModel.InputEvents}
+   * @return {?TimelineModel.TimelineIRModel.InputEvents}
    */
   _inputEventType(eventName) {
     var prefix = 'InputLatency::';
     if (!eventName.startsWith(prefix)) {
-      if (eventName === WebInspector.TimelineIRModel.InputEvents.ImplSideFling)
-        return /** @type {!WebInspector.TimelineIRModel.InputEvents} */ (eventName);
+      if (eventName === TimelineModel.TimelineIRModel.InputEvents.ImplSideFling)
+        return /** @type {!TimelineModel.TimelineIRModel.InputEvents} */ (eventName);
       console.error('Unrecognized input latency event: ' + eventName);
       return null;
     }
-    return /** @type {!WebInspector.TimelineIRModel.InputEvents} */ (eventName.substr(prefix.length));
+    return /** @type {!TimelineModel.TimelineIRModel.InputEvents} */ (eventName.substr(prefix.length));
   }
 };
 
 /**
  * @enum {string}
  */
-WebInspector.TimelineIRModel.Phases = {
+TimelineModel.TimelineIRModel.Phases = {
   Idle: 'Idle',
   Response: 'Response',
   Scroll: 'Scroll',
@@ -279,13 +279,13 @@ WebInspector.TimelineIRModel.Phases = {
 /**
  * @enum {string}
  */
-WebInspector.TimelineIRModel.InputEvents = {
+TimelineModel.TimelineIRModel.InputEvents = {
   Char: 'Char',
   Click: 'GestureClick',
   ContextMenu: 'ContextMenu',
   FlingCancel: 'GestureFlingCancel',
   FlingStart: 'GestureFlingStart',
-  ImplSideFling: WebInspector.TimelineModel.RecordType.ImplSideFling,
+  ImplSideFling: TimelineModel.TimelineModel.RecordType.ImplSideFling,
   KeyDown: 'KeyDown',
   KeyDownRaw: 'RawKeyDown',
   KeyUp: 'KeyUp',
@@ -311,9 +311,9 @@ WebInspector.TimelineIRModel.InputEvents = {
   TouchStart: 'TouchStart'
 };
 
-WebInspector.TimelineIRModel._mergeThresholdsMs = {
+TimelineModel.TimelineIRModel._mergeThresholdsMs = {
   animation: 1,
   mouse: 40,
 };
 
-WebInspector.TimelineIRModel._eventIRPhase = Symbol('eventIRPhase');
+TimelineModel.TimelineIRModel._eventIRPhase = Symbol('eventIRPhase');

@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.CSSFormatter = class {
+FormatterWorker.CSSFormatter = class {
   /**
-   * @param {!WebInspector.FormattedContentBuilder} builder
+   * @param {!FormatterWorker.FormattedContentBuilder} builder
    */
   constructor(builder) {
     this._builder = builder;
@@ -51,7 +51,7 @@ WebInspector.CSSFormatter = class {
     this._toOffset = toOffset;
     this._lastLine = -1;
     this._state = {};
-    var tokenize = WebInspector.createTokenizer('text/css');
+    var tokenize = FormatterWorker.createTokenizer('text/css');
     var oldEnforce = this._builder.setEnforceSpaceBetweenWords(false);
     tokenize(text.substring(this._fromOffset, this._toOffset), this._tokenCallback.bind(this));
     this._builder.setEnforceSpaceBetweenWords(oldEnforce);

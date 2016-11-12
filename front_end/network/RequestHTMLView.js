@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.RequestHTMLView = class extends WebInspector.RequestView {
+Network.RequestHTMLView = class extends Network.RequestView {
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @param {string} dataURL
    */
   constructor(request, dataURL) {

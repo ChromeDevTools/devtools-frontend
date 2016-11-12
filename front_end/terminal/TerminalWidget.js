@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.TerminalWidget = class extends WebInspector.VBox {
+Terminal.TerminalWidget = class extends UI.VBox {
   constructor() {
     super(false);
     this.registerRequiredCSS('terminal/xterm.js/build/xterm.css');
@@ -12,23 +12,23 @@ WebInspector.TerminalWidget = class extends WebInspector.VBox {
     this.element.classList.add('terminal-root');
     this.element.addEventListener('mousemove', this._mouseMove.bind(this), false);
     this._init();
-    this._linkifier = new WebInspector.Linkifier();
+    this._linkifier = new Components.Linkifier();
     this._linkifyFunction = this._linkifyURL.bind(this);
   }
 
   _init() {
-    WebInspector.serviceManager.createRemoteService('Terminal').then(this._initialized.bind(this));
+    Services.serviceManager.createRemoteService('Terminal').then(this._initialized.bind(this));
   }
 
   /**
-   * @param {?WebInspector.ServiceManager.Service} backend
+   * @param {?Services.ServiceManager.Service} backend
    */
   _initialized(backend) {
     if (!backend) {
       if (!this._unavailableLabel) {
         this._unavailableLabel = this.element.createChild('div', 'terminal-error-message fill');
         this._unavailableLabel.createChild('div').textContent =
-            WebInspector.UIString('Terminal service is not available');
+            Common.UIString('Terminal service is not available');
       }
       if (this.isShowing())
         setTimeout(this._init.bind(this), 2000);
@@ -111,7 +111,7 @@ WebInspector.TerminalWidget = class extends WebInspector.VBox {
       }
       var nextNode = node.nextSibling;
       node.remove();
-      var linkified = WebInspector.linkifyStringAsFragmentWithCustomLinkifier(node.textContent, this._linkifyFunction);
+      var linkified = Components.linkifyStringAsFragmentWithCustomLinkifier(node.textContent, this._linkifyFunction);
       line.insertBefore(linkified, nextNode);
       node = nextNode;
     }

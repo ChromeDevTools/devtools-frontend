@@ -4,14 +4,14 @@
 /**
  * @unrestricted
  */
-WebInspector.ForwardedInputEventHandler = class {
+UI.ForwardedInputEventHandler = class {
   constructor() {
     InspectorFrontendHost.events.addEventListener(
         InspectorFrontendHostAPI.Events.KeyEventUnhandled, this._onKeyEventUnhandled, this);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onKeyEventUnhandled(event) {
     var data = event.data;
@@ -23,12 +23,12 @@ WebInspector.ForwardedInputEventHandler = class {
     if (type !== 'keydown')
       return;
 
-    WebInspector.context.setFlavor(
-        WebInspector.ShortcutRegistry.ForwardedShortcut, WebInspector.ShortcutRegistry.ForwardedShortcut.instance);
-    WebInspector.shortcutRegistry.handleKey(WebInspector.KeyboardShortcut.makeKey(keyCode, modifiers), key);
-    WebInspector.context.setFlavor(WebInspector.ShortcutRegistry.ForwardedShortcut, null);
+    UI.context.setFlavor(
+        UI.ShortcutRegistry.ForwardedShortcut, UI.ShortcutRegistry.ForwardedShortcut.instance);
+    UI.shortcutRegistry.handleKey(UI.KeyboardShortcut.makeKey(keyCode, modifiers), key);
+    UI.context.setFlavor(UI.ShortcutRegistry.ForwardedShortcut, null);
   }
 };
 
-/** @type {!WebInspector.ForwardedInputEventHandler} */
-WebInspector.forwardedEventHandler = new WebInspector.ForwardedInputEventHandler();
+/** @type {!UI.ForwardedInputEventHandler} */
+UI.forwardedEventHandler = new UI.ForwardedInputEventHandler();

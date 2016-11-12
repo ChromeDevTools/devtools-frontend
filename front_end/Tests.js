@@ -199,7 +199,7 @@
 
   /**
    * Waits for current throttler invocations, if any.
-   * @param {!WebInspector.Throttler} throttler
+   * @param {!Common.Throttler} throttler
    * @param {function()} callback
    */
   TestSuite.prototype.waitForThrottler = function(throttler, callback) {
@@ -233,7 +233,7 @@
    * @param {string} panelName Name of the panel to show.
    */
   TestSuite.prototype.showPanel = function(panelName) {
-    return WebInspector.inspectorView.showPanel(panelName);
+    return UI.inspectorView.showPanel(panelName);
   };
 
   // UI Tests
@@ -260,8 +260,8 @@
    */
   TestSuite.prototype.testScriptsTabIsPopulatedOnInspectedPageRefresh = function() {
     var test = this;
-    var debuggerModel = WebInspector.DebuggerModel.fromTarget(WebInspector.targetManager.mainTarget());
-    debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, waitUntilScriptIsParsed);
+    var debuggerModel = SDK.DebuggerModel.fromTarget(SDK.targetManager.mainTarget());
+    debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, waitUntilScriptIsParsed);
 
     this.showPanel('elements').then(function() {
       // Reload inspected page. It will reset the debugger agent.
@@ -269,7 +269,7 @@
     });
 
     function waitUntilScriptIsParsed() {
-      debuggerModel.removeEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, waitUntilScriptIsParsed);
+      debuggerModel.removeEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, waitUntilScriptIsParsed);
       test.showPanel('sources').then(function() {
         test._waitUntilScriptsAreParsed(['debugger_test_page.html'], function() {
           test.releaseControl();
@@ -350,7 +350,7 @@
   // Tests that debugger works correctly if pause event occurs when DevTools
   // frontend is being loaded.
   TestSuite.prototype.testPauseWhenLoadingDevTools = function() {
-    var debuggerModel = WebInspector.DebuggerModel.fromTarget(WebInspector.targetManager.mainTarget());
+    var debuggerModel = SDK.DebuggerModel.fromTarget(SDK.targetManager.mainTarget());
     if (debuggerModel.debuggerPausedDetails)
       return;
 
@@ -380,7 +380,7 @@
     function testScriptPause() {
       // The script should be in infinite loop. Click "Pause" button to
       // pause it and wait for the result.
-      WebInspector.panels.sources._togglePause();
+      UI.panels.sources._togglePause();
 
       this._waitForScriptPause(this.releaseControl.bind(this));
     }
@@ -399,7 +399,7 @@
       test.releaseControl();
     }
 
-    this.addSniffer(WebInspector.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource);
 
     // Reload inspected page to sniff network events
     test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
@@ -418,7 +418,7 @@
       test.releaseControl();
     }
 
-    this.addSniffer(WebInspector.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource);
 
     // Send synchronous XHR to sniff network events
     test.evaluateInConsole_(
@@ -442,7 +442,7 @@
       test.releaseControl();
     }
 
-    this.addSniffer(WebInspector.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource);
 
     // Reload inspected page to sniff network events
     test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
@@ -477,7 +477,7 @@
       test.releaseControl();
     }
 
-    this.addSniffer(WebInspector.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource);
 
     // Reload inspected page to sniff network events
     test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
@@ -509,7 +509,7 @@
         test.releaseControl();
     }
 
-    this.addSniffer(WebInspector.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource, true);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource, true);
 
     test.evaluateInConsole_('addImage(\'' + url + '\')', function(resultText) {});
     test.evaluateInConsole_('addImage(\'' + url + '?pushUseNullEndTime\')', function(resultText) {});
@@ -519,21 +519,21 @@
   TestSuite.prototype.testConsoleOnNavigateBack = function() {
 
     function filteredMessages() {
-       return WebInspector.multitargetConsoleModel.messages().filter(
-           a => a.source !== WebInspector.ConsoleMessage.MessageSource.Violation);
+       return SDK.multitargetConsoleModel.messages().filter(
+           a => a.source !== SDK.ConsoleMessage.MessageSource.Violation);
     }
 
     if (filteredMessages().length === 1)
       firstConsoleMessageReceived.call(this, null);
     else
-      WebInspector.multitargetConsoleModel.addEventListener(
-          WebInspector.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
+      SDK.multitargetConsoleModel.addEventListener(
+          SDK.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
 
     function firstConsoleMessageReceived(event) {
-      if (event && event.data.source === WebInspector.ConsoleMessage.MessageSource.Violation)
+      if (event && event.data.source === SDK.ConsoleMessage.MessageSource.Violation)
         return;
-      WebInspector.multitargetConsoleModel.removeEventListener(
-          WebInspector.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
+      SDK.multitargetConsoleModel.removeEventListener(
+          SDK.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
       this.evaluateInConsole_('clickLink();', didClickLink.bind(this));
     }
 
@@ -571,7 +571,7 @@
     this._waitForTargets(2, callback.bind(this));
 
     function callback() {
-      var target = WebInspector.targetManager.targets(WebInspector.Target.Capability.JS)[0];
+      var target = SDK.targetManager.targets(SDK.Target.Capability.JS)[0];
       InspectorBackendClass.deprecatedRunAfterPendingDispatches(this.releaseControl.bind(this));
     }
   };
@@ -581,8 +581,8 @@
     this._waitForTargets(2, callback.bind(this));
 
     function callback() {
-      var target = WebInspector.targetManager.targets(WebInspector.Target.Capability.JS)[0];
-      var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
+      var target = SDK.targetManager.targets(SDK.Target.Capability.JS)[0];
+      var debuggerModel = SDK.DebuggerModel.fromTarget(target);
       if (debuggerModel.isPaused()) {
         this.releaseControl();
         return;
@@ -592,17 +592,17 @@
   };
 
   TestSuite.prototype.enableTouchEmulation = function() {
-    var deviceModeModel = new WebInspector.DeviceModeModel(function() {});
-    deviceModeModel._target = WebInspector.targetManager.mainTarget();
+    var deviceModeModel = new Emulation.DeviceModeModel(function() {});
+    deviceModeModel._target = SDK.targetManager.mainTarget();
     deviceModeModel._applyTouch(true, true);
   };
 
   TestSuite.prototype.enableAutoAttachToCreatedPages = function() {
-    WebInspector.settingForTest('autoAttachToCreatedPages').set(true);
+    Common.settingForTest('autoAttachToCreatedPages').set(true);
   };
 
   TestSuite.prototype.waitForDebuggerPaused = function() {
-    var debuggerModel = WebInspector.DebuggerModel.fromTarget(WebInspector.targetManager.mainTarget());
+    var debuggerModel = SDK.DebuggerModel.fromTarget(SDK.targetManager.mainTarget());
     if (debuggerModel.debuggerPausedDetails)
       return;
 
@@ -625,7 +625,7 @@
     var test = this;
 
     function testOverrides(params, metrics, callback) {
-      WebInspector.targetManager.mainTarget().emulationAgent().invoke_setDeviceMetricsOverride(params, getMetrics);
+      SDK.targetManager.mainTarget().emulationAgent().invoke_setDeviceMetricsOverride(params, getMetrics);
 
       function getMetrics() {
         test.evaluateInConsole_('(' + dumpPageMetrics.toString() + ')()', checkMetrics);
@@ -671,9 +671,9 @@
   };
 
   TestSuite.prototype.testDispatchKeyEventDoesNotCrash = function() {
-    WebInspector.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
+    SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
         {type: 'rawKeyDown', windowsVirtualKeyCode: 0x23, key: 'End'});
-    WebInspector.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
+    SDK.targetManager.mainTarget().inputAgent().invoke_dispatchKeyEvent(
         {type: 'keyUp', windowsVirtualKeyCode: 0x23, key: 'End'});
   };
 
@@ -690,15 +690,15 @@
 
         messages.splice(index, 1);
         if (!messages.length) {
-          WebInspector.multitargetConsoleModel.removeEventListener(
-              WebInspector.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+          SDK.multitargetConsoleModel.removeEventListener(
+              SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
           next();
         }
       }
 
-      WebInspector.multitargetConsoleModel.addEventListener(
-          WebInspector.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
-      WebInspector.multitargetNetworkManager.setNetworkConditions(preset);
+      SDK.multitargetConsoleModel.addEventListener(
+          SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+      SDK.multitargetNetworkManager.setNetworkConditions(preset);
     }
 
     test.takeControl();
@@ -706,20 +706,20 @@
 
     function step1() {
       testPreset(
-          WebInspector.NetworkConditionsSelector._presets[0],
+          Components.NetworkConditionsSelector._presets[0],
           ['offline event: online = false', 'connection change event: type = none; downlinkMax = 0'], step2);
     }
 
     function step2() {
       testPreset(
-          WebInspector.NetworkConditionsSelector._presets[2],
+          Components.NetworkConditionsSelector._presets[2],
           ['online event: online = true', 'connection change event: type = cellular; downlinkMax = 0.244140625'],
           step3);
     }
 
     function step3() {
       testPreset(
-          WebInspector.NetworkConditionsSelector._presets[8],
+          Components.NetworkConditionsSelector._presets[8],
           ['connection change event: type = wifi; downlinkMax = 30'], test.releaseControl.bind(test));
     }
   };
@@ -744,14 +744,14 @@
       }
     }
 
-    var captureFilmStripSetting = WebInspector.settings.createSetting('timelineCaptureFilmStrip', false);
+    var captureFilmStripSetting = Common.settings.createSetting('timelineCaptureFilmStrip', false);
     captureFilmStripSetting.set(true);
     test.evaluateInConsole_(performActionsInPage.toString(), function() {});
     test.invokeAsyncWithTimeline_('performActionsInPage', onTimelineDone);
 
     function onTimelineDone() {
       captureFilmStripSetting.set(false);
-      var filmStripModel = new WebInspector.FilmStripModel(WebInspector.panels.timeline._tracingModel);
+      var filmStripModel = new Components.FilmStripModel(UI.panels.timeline._tracingModel);
       var frames = filmStripModel.frames();
       test.assertTrue(frames.length > 4 && typeof frames.length === 'number');
       loadFrameImages(frames);
@@ -815,9 +815,9 @@
     setTimeout(reset, 0);
 
     function createSettings() {
-      var localSetting = WebInspector.settings.createSetting('local', undefined, true);
+      var localSetting = Common.settings.createSetting('local', undefined, true);
       localSetting.set({s: 'local', n: 1});
-      var globalSetting = WebInspector.settings.createSetting('global', undefined, false);
+      var globalSetting = Common.settings.createSetting('global', undefined, false);
       globalSetting.set({s: 'global', n: 2});
     }
 
@@ -827,13 +827,13 @@
     }
 
     function gotPreferences(prefs) {
-      WebInspector.Main._instanceForTest._createSettings(prefs);
+      Main.Main._instanceForTest._createSettings(prefs);
 
-      var localSetting = WebInspector.settings.createSetting('local', undefined, true);
+      var localSetting = Common.settings.createSetting('local', undefined, true);
       test.assertEquals('object', typeof localSetting.get());
       test.assertEquals('local', localSetting.get().s);
       test.assertEquals(1, localSetting.get().n);
-      var globalSetting = WebInspector.settings.createSetting('global', undefined, false);
+      var globalSetting = Common.settings.createSetting('global', undefined, false);
       test.assertEquals('object', typeof globalSetting.get());
       test.assertEquals('global', globalSetting.get().s);
       test.assertEquals(2, globalSetting.get().n);
@@ -842,7 +842,7 @@
   };
 
   TestSuite.prototype.testWindowInitializedOnNavigateBack = function() {
-    var messages = WebInspector.multitargetConsoleModel.messages();
+    var messages = SDK.multitargetConsoleModel.messages();
     this.assertEquals(1, messages.length);
     var text = messages[0].messageText;
     if (text.indexOf('Uncaught') !== -1)
@@ -855,7 +855,7 @@
     this.showPanel('console').then(() => this._waitForExecutionContexts(2, onExecutionContexts.bind(this)));
 
     function onExecutionContexts() {
-      var consoleView = WebInspector.ConsoleView.instance();
+      var consoleView = Console.ConsoleView.instance();
       var options = consoleView._consoleContextSelector._selectElement.options;
       var values = [];
       for (var i = 0; i < options.length; ++i)
@@ -868,11 +868,11 @@
 
   TestSuite.prototype.testDevToolsSharedWorker = function() {
     this.takeControl();
-    WebInspector.TempFile.ensureTempStorageCleared().then(() => this.releaseControl());
+    Bindings.TempFile.ensureTempStorageCleared().then(() => this.releaseControl());
   };
 
   TestSuite.prototype.waitForTestResultsInConsole = function() {
-    var messages = WebInspector.multitargetConsoleModel.messages();
+    var messages = SDK.multitargetConsoleModel.messages();
     for (var i = 0; i < messages.length; ++i) {
       var text = messages[i].messageText;
       if (text === 'PASS')
@@ -889,8 +889,8 @@
         this.fail(text);
     }
 
-    WebInspector.multitargetConsoleModel.addEventListener(
-        WebInspector.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+    SDK.multitargetConsoleModel.addEventListener(
+        SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
     this.takeControl();
   };
 
@@ -914,14 +914,14 @@
   TestSuite.prototype.startTimeline = function(callback) {
     var test = this;
     this.showPanel('timeline').then(function() {
-      var timeline = WebInspector.panels.timeline;
+      var timeline = UI.panels.timeline;
       test._overrideMethod(timeline, 'recordingStarted', callback);
       timeline._toggleRecording();
     });
   };
 
   TestSuite.prototype.stopTimeline = function(callback) {
-    var timeline = WebInspector.panels.timeline;
+    var timeline = UI.panels.timeline;
     this._overrideMethod(timeline, 'loadingComplete', callback);
     timeline._toggleRecording();
   };
@@ -934,14 +934,14 @@
         Array.prototype.slice.call(arguments, 1, -1).map(arg => JSON.stringify(arg)).join(',') + ',';
     this.evaluateInConsole_(
         `${functionName}(${argsString} function() { console.log('${doneMessage}'); });`, function() {});
-    WebInspector.multitargetConsoleModel.addEventListener(
-        WebInspector.ConsoleModel.Events.MessageAdded, onConsoleMessage);
+    SDK.multitargetConsoleModel.addEventListener(
+        SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage);
 
     function onConsoleMessage(event) {
       var text = event.data.messageText;
       if (text === doneMessage) {
-        WebInspector.multitargetConsoleModel.removeEventListener(
-            WebInspector.ConsoleModel.Events.MessageAdded, onConsoleMessage);
+        SDK.multitargetConsoleModel.removeEventListener(
+            SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage);
         callback();
       }
     }
@@ -967,16 +967,16 @@
 
   TestSuite.prototype.checkInputEventsPresent = function() {
     var expectedEvents = new Set(arguments);
-    var model = WebInspector.panels.timeline._model;
+    var model = UI.panels.timeline._model;
     var asyncEvents = model.mainThreadAsyncEvents();
-    var input = asyncEvents.get(WebInspector.TimelineModel.AsyncEventGroup.input) || [];
+    var input = asyncEvents.get(TimelineModel.TimelineModel.AsyncEventGroup.input) || [];
     var prefix = 'InputLatency::';
     for (var e of input) {
       if (!e.name.startsWith(prefix))
         continue;
       if (e.steps.length < 2)
         continue;
-      if (e.name.startsWith(prefix + 'Mouse') && typeof WebInspector.TimelineData.forEvent(e.steps[0]).timeWaitingForMainThread !== 'number')
+      if (e.name.startsWith(prefix + 'Mouse') && typeof TimelineModel.TimelineData.forEvent(e.steps[0]).timeWaitingForMainThread !== 'number')
         throw `Missing timeWaitingForMainThread on ${e.name}`;
       expectedEvents.delete(e.name.substr(prefix.length));
     }
@@ -986,7 +986,7 @@
 
   /**
    * Serializes array of uiSourceCodes to string.
-   * @param {!Array.<!WebInspectorUISourceCode>} uiSourceCodes
+   * @param {!Array.<!Workspace.UISourceCode>} uiSourceCodes
    * @return {string}
    */
   TestSuite.prototype.uiSourceCodesToString_ = function(uiSourceCodes) {
@@ -998,17 +998,17 @@
 
   /**
    * Returns all loaded non anonymous uiSourceCodes.
-   * @return {!Array.<!WebInspectorUISourceCode>}
+   * @return {!Array.<!Workspace.UISourceCode>}
    */
   TestSuite.prototype.nonAnonymousUISourceCodes_ = function() {
     /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
+     * @param {!Workspace.UISourceCode} uiSourceCode
      */
     function filterOutService(uiSourceCode) {
       return !uiSourceCode.isFromServiceProject();
     }
 
-    var uiSourceCodes = WebInspector.workspace.uiSourceCodes();
+    var uiSourceCodes = Workspace.workspace.uiSourceCodes();
     return uiSourceCodes.filter(filterOutService);
   };
 
@@ -1020,21 +1020,21 @@
  */
   TestSuite.prototype.evaluateInConsole_ = function(code, callback) {
     function innerEvaluate() {
-      WebInspector.context.removeFlavorChangeListener(WebInspector.ExecutionContext, showConsoleAndEvaluate, this);
-      var consoleView = WebInspector.ConsoleView.instance();
+      UI.context.removeFlavorChangeListener(SDK.ExecutionContext, showConsoleAndEvaluate, this);
+      var consoleView = Console.ConsoleView.instance();
       consoleView._prompt._appendCommand(code);
 
-      this.addSniffer(WebInspector.ConsoleView.prototype, '_consoleMessageAddedForTest', function(viewMessage) {
+      this.addSniffer(Console.ConsoleView.prototype, '_consoleMessageAddedForTest', function(viewMessage) {
         callback(viewMessage.toMessageElement().deepTextContent());
       }.bind(this));
     }
 
     function showConsoleAndEvaluate() {
-      WebInspector.console.showPromise().then(innerEvaluate.bind(this));
+      Common.console.showPromise().then(innerEvaluate.bind(this));
     }
 
-    if (!WebInspector.context.flavor(WebInspector.ExecutionContext)) {
-      WebInspector.context.addFlavorChangeListener(WebInspector.ExecutionContext, showConsoleAndEvaluate, this);
+    if (!UI.context.flavor(SDK.ExecutionContext)) {
+      UI.context.addFlavorChangeListener(SDK.ExecutionContext, showConsoleAndEvaluate, this);
       return;
     }
     showConsoleAndEvaluate.call(this);
@@ -1068,7 +1068,7 @@
    * @param {function():void} callback
    */
   TestSuite.prototype._waitForScriptPause = function(callback) {
-    this.addSniffer(WebInspector.DebuggerModel.prototype, '_pausedScript', callback);
+    this.addSniffer(SDK.DebuggerModel.prototype, '_pausedScript', callback);
   };
 
   /**
@@ -1081,7 +1081,7 @@
       if (test._scriptsAreParsed(expectedScripts))
         callback();
       else
-        test.addSniffer(WebInspector.panels.sources.sourcesView(), '_addUISourceCode', waitForAllScripts);
+        test.addSniffer(UI.panels.sources.sourcesView(), '_addUISourceCode', waitForAllScripts);
     }
 
     waitForAllScripts();
@@ -1091,15 +1091,15 @@
     checkTargets.call(this);
 
     function checkTargets() {
-      if (WebInspector.targetManager.targets().length >= n)
+      if (SDK.targetManager.targets().length >= n)
         callback.call(null);
       else
-        this.addSniffer(WebInspector.TargetManager.prototype, 'addTarget', checkTargets.bind(this));
+        this.addSniffer(SDK.TargetManager.prototype, 'addTarget', checkTargets.bind(this));
     }
   };
 
   TestSuite.prototype._waitForExecutionContexts = function(n, callback) {
-    var runtimeModel = WebInspector.targetManager.mainTarget().runtimeModel;
+    var runtimeModel = SDK.targetManager.mainTarget().runtimeModel;
     checkForExecutionContexts.call(this);
 
     function checkForExecutionContexts() {
@@ -1107,7 +1107,7 @@
         callback.call(null);
       else
         this.addSniffer(
-            WebInspector.RuntimeModel.prototype, '_executionContextCreated', checkForExecutionContexts.bind(this));
+            SDK.RuntimeModel.prototype, '_executionContextCreated', checkForExecutionContexts.bind(this));
     }
   };
 

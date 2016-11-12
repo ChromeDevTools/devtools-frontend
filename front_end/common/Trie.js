@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.Trie = class {
+Common.Trie = class {
   constructor() {
     this.clear();
   }

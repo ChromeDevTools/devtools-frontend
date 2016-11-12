@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.ExtensionView = class extends WebInspector.Widget {
+Extensions.ExtensionView = class extends UI.Widget {
   /**
-   * @param {!WebInspector.ExtensionServer} server
+   * @param {!Extensions.ExtensionServer} server
    * @param {string} id
    * @param {string} src
    * @param {string} className
@@ -81,9 +81,9 @@ WebInspector.ExtensionView = class extends WebInspector.Widget {
 /**
  * @unrestricted
  */
-WebInspector.ExtensionNotifierView = class extends WebInspector.VBox {
+Extensions.ExtensionNotifierView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.ExtensionServer} server
+   * @param {!Extensions.ExtensionServer} server
    * @param {string} id
    */
   constructor(server, id) {

@@ -31,15 +31,15 @@
 /**
  * @unrestricted
  */
-WebInspector.RequestPreviewView = class extends WebInspector.RequestContentView {
+Network.RequestPreviewView = class extends Network.RequestContentView {
   /**
-   * @param {!WebInspector.NetworkRequest} request
-   * @param {!WebInspector.Widget} responseView
+   * @param {!SDK.NetworkRequest} request
+   * @param {!UI.Widget} responseView
    */
   constructor(request, responseView) {
     super(request);
     this._responseView = responseView;
-    /** @type {?WebInspector.Widget} */
+    /** @type {?UI.Widget} */
     this._previewView = null;
   }
 
@@ -67,15 +67,15 @@ WebInspector.RequestPreviewView = class extends WebInspector.RequestContentView 
       this._previewView.show(this.element);
 
     /**
-     * @param {!WebInspector.Widget} view
-     * @this {WebInspector.RequestPreviewView}
+     * @param {!UI.Widget} view
+     * @this {Network.RequestPreviewView}
      */
     function handlePreviewView(view) {
       this._previewView = view;
       view.show(this.element);
-      if (view instanceof WebInspector.SimpleView) {
-        var toolbar = new WebInspector.Toolbar('network-item-preview-toolbar', this.element);
-        for (var item of /** @type {!WebInspector.SimpleView} */ (this._previewView).syncToolbarItems())
+      if (view instanceof UI.SimpleView) {
+        var toolbar = new UI.Toolbar('network-item-preview-toolbar', this.element);
+        for (var item of /** @type {!UI.SimpleView} */ (this._previewView).syncToolbarItems())
           toolbar.appendToolbarItem(item);
       }
       this._previewViewHandledForTest(view);
@@ -83,24 +83,24 @@ WebInspector.RequestPreviewView = class extends WebInspector.RequestContentView 
   }
 
   /**
-   * @param {!WebInspector.Widget} view
+   * @param {!UI.Widget} view
    */
   _previewViewHandledForTest(view) {
   }
 
   /**
-   * @return {!WebInspector.EmptyWidget}
+   * @return {!UI.EmptyWidget}
    */
   _createEmptyWidget() {
-    return this._createMessageView(WebInspector.UIString('This request has no preview available.'));
+    return this._createMessageView(Common.UIString('This request has no preview available.'));
   }
 
   /**
    * @param {string} message
-   * @return {!WebInspector.EmptyWidget}
+   * @return {!UI.EmptyWidget}
    */
   _createMessageView(message) {
-    return new WebInspector.EmptyWidget(message);
+    return new UI.EmptyWidget(message);
   }
 
   /**
@@ -112,25 +112,25 @@ WebInspector.RequestPreviewView = class extends WebInspector.RequestContentView 
   }
 
   /**
-   * @param {?WebInspector.ParsedJSON} parsedJSON
-   * @return {?WebInspector.SearchableView}
+   * @param {?Network.ParsedJSON} parsedJSON
+   * @return {?UI.SearchableView}
    */
   _jsonView(parsedJSON) {
     if (!parsedJSON || typeof parsedJSON.data !== 'object')
       return null;
-    return WebInspector.JSONView.createSearchableView(/** @type {!WebInspector.ParsedJSON} */ (parsedJSON));
+    return Network.JSONView.createSearchableView(/** @type {!Network.ParsedJSON} */ (parsedJSON));
   }
 
   /**
-   * @return {?WebInspector.SearchableView}
+   * @return {?UI.SearchableView}
    */
   _xmlView() {
-    var parsedXML = WebInspector.XMLView.parseXML(this._requestContent(), this.request.mimeType);
-    return parsedXML ? WebInspector.XMLView.createSearchableView(parsedXML) : null;
+    var parsedXML = Network.XMLView.parseXML(this._requestContent(), this.request.mimeType);
+    return parsedXML ? Network.XMLView.createSearchableView(parsedXML) : null;
   }
 
   /**
-   * @return {?WebInspector.RequestHTMLView}
+   * @return {?Network.RequestHTMLView}
    */
   _htmlErrorPreview() {
     var whitelist = ['text/html', 'text/plain', 'application/xhtml+xml'];
@@ -141,15 +141,15 @@ WebInspector.RequestPreviewView = class extends WebInspector.RequestContentView 
     if (dataURL === null)
       return null;
 
-    return new WebInspector.RequestHTMLView(this.request, dataURL);
+    return new Network.RequestHTMLView(this.request, dataURL);
   }
 
   /**
-   * @param {function(!WebInspector.Widget)} callback
+   * @param {function(!UI.Widget)} callback
    */
   _createPreviewView(callback) {
     if (this.request.contentError()) {
-      callback(this._createMessageView(WebInspector.UIString('Failed to load response data')));
+      callback(this._createMessageView(Common.UIString('Failed to load response data')));
       return;
     }
 
@@ -159,12 +159,12 @@ WebInspector.RequestPreviewView = class extends WebInspector.RequestContentView 
       return;
     }
 
-    WebInspector.JSONView.parseJSON(this._requestContent()).then(chooseView.bind(this)).then(callback);
+    Network.JSONView.parseJSON(this._requestContent()).then(chooseView.bind(this)).then(callback);
 
     /**
-     * @this {WebInspector.RequestPreviewView}
-     * @param {?WebInspector.ParsedJSON} jsonData
-     * @return {!WebInspector.Widget}
+     * @this {Network.RequestPreviewView}
+     * @param {?Network.ParsedJSON} jsonData
+     * @return {!UI.Widget}
      */
     function chooseView(jsonData) {
       if (jsonData) {
@@ -173,7 +173,7 @@ WebInspector.RequestPreviewView = class extends WebInspector.RequestContentView 
           return jsonView;
       }
 
-      if (this.request.hasErrorStatusCode() || this.request.resourceType() === WebInspector.resourceTypes.XHR) {
+      if (this.request.hasErrorStatusCode() || this.request.resourceType() === Common.resourceTypes.XHR) {
         var htmlErrorPreview = this._htmlErrorPreview();
         if (htmlErrorPreview)
           return htmlErrorPreview;
@@ -182,10 +182,10 @@ WebInspector.RequestPreviewView = class extends WebInspector.RequestContentView 
       if (this._responseView.sourceView)
         return this._responseView.sourceView;
 
-      if (this.request.resourceType() === WebInspector.resourceTypes.Other)
+      if (this.request.resourceType() === Common.resourceTypes.Other)
         return this._createEmptyWidget();
 
-      return WebInspector.RequestView.nonSourceViewForRequest(this.request);
+      return Network.RequestView.nonSourceViewForRequest(this.request);
     }
   }
 };

@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.Geolocation = class {
+Emulation.Geolocation = class {
   /**
    * @param {number} latitude
    * @param {number} longitude
@@ -17,7 +17,7 @@ WebInspector.Geolocation = class {
   }
 
   /**
-   * @return {!WebInspector.Geolocation}
+   * @return {!Emulation.Geolocation}
    */
   static parseSetting(value) {
     if (value) {
@@ -25,32 +25,32 @@ WebInspector.Geolocation = class {
       if (splitError.length === 2) {
         var splitPosition = splitError[0].split('@');
         if (splitPosition.length === 2)
-          return new WebInspector.Geolocation(
+          return new Emulation.Geolocation(
               parseFloat(splitPosition[0]), parseFloat(splitPosition[1]), splitError[1]);
       }
     }
-    return new WebInspector.Geolocation(0, 0, false);
+    return new Emulation.Geolocation(0, 0, false);
   }
 
   /**
    * @param {string} latitudeString
    * @param {string} longitudeString
    * @param {string} errorStatus
-   * @return {?WebInspector.Geolocation}
+   * @return {?Emulation.Geolocation}
    */
   static parseUserInput(latitudeString, longitudeString, errorStatus) {
     if (!latitudeString && !longitudeString)
       return null;
 
-    var isLatitudeValid = WebInspector.Geolocation.latitudeValidator(latitudeString);
-    var isLongitudeValid = WebInspector.Geolocation.longitudeValidator(longitudeString);
+    var isLatitudeValid = Emulation.Geolocation.latitudeValidator(latitudeString);
+    var isLongitudeValid = Emulation.Geolocation.longitudeValidator(longitudeString);
 
     if (!isLatitudeValid && !isLongitudeValid)
       return null;
 
     var latitude = isLatitudeValid ? parseFloat(latitudeString) : -1;
     var longitude = isLongitudeValid ? parseFloat(longitudeString) : -1;
-    return new WebInspector.Geolocation(latitude, longitude, !!errorStatus);
+    return new Emulation.Geolocation(latitude, longitude, !!errorStatus);
   }
 
   /**
@@ -81,20 +81,20 @@ WebInspector.Geolocation = class {
   }
 
   apply() {
-    for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser)) {
+    for (var target of SDK.targetManager.targets(SDK.Target.Capability.Browser)) {
       if (this.error)
         target.emulationAgent().setGeolocationOverride();
       else
         target.emulationAgent().setGeolocationOverride(
-            this.latitude, this.longitude, WebInspector.Geolocation.DefaultMockAccuracy);
+            this.latitude, this.longitude, Emulation.Geolocation.DefaultMockAccuracy);
     }
   }
 
   clear() {
-    for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser))
+    for (var target of SDK.targetManager.targets(SDK.Target.Capability.Browser))
       target.emulationAgent().clearGeolocationOverride();
   }
 };
 
 
-WebInspector.Geolocation.DefaultMockAccuracy = 150;
+Emulation.Geolocation.DefaultMockAccuracy = 150;

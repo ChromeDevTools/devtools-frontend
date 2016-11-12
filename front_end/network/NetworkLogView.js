@@ -28,39 +28,39 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.Searchable}
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {UI.Searchable}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.NetworkLogView = class extends WebInspector.VBox {
+Network.NetworkLogView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.FilterBar} filterBar
+   * @param {!UI.FilterBar} filterBar
    * @param {!Element} progressBarContainer
-   * @param {!WebInspector.Setting} networkLogLargeRowsSetting
+   * @param {!Common.Setting} networkLogLargeRowsSetting
    */
   constructor(filterBar, progressBarContainer, networkLogLargeRowsSetting) {
     super();
     this.setMinimumSize(50, 64);
     this.registerRequiredCSS('network/networkLogView.css');
 
-    this._networkHideDataURLSetting = WebInspector.settings.createSetting('networkHideDataURL', false);
-    this._networkResourceTypeFiltersSetting = WebInspector.settings.createSetting('networkResourceTypeFilters', {});
+    this._networkHideDataURLSetting = Common.settings.createSetting('networkHideDataURL', false);
+    this._networkResourceTypeFiltersSetting = Common.settings.createSetting('networkResourceTypeFilters', {});
     this._networkShowPrimaryLoadWaterfallSetting =
-        WebInspector.settings.createSetting('networkShowPrimaryLoadWaterfall', false);
+        Common.settings.createSetting('networkShowPrimaryLoadWaterfall', false);
 
     this._filterBar = filterBar;
     this._progressBarContainer = progressBarContainer;
     this._networkLogLargeRowsSetting = networkLogLargeRowsSetting;
     this._networkLogLargeRowsSetting.addChangeListener(updateRowHeight.bind(this), this);
 
-    /** @type {!WebInspector.NetworkTransferTimeCalculator} */
-    this._timeCalculator = new WebInspector.NetworkTransferTimeCalculator();
-    /** @type {!WebInspector.NetworkTransferDurationCalculator} */
-    this._durationCalculator = new WebInspector.NetworkTransferDurationCalculator();
+    /** @type {!Network.NetworkTransferTimeCalculator} */
+    this._timeCalculator = new Network.NetworkTransferTimeCalculator();
+    /** @type {!Network.NetworkTransferDurationCalculator} */
+    this._durationCalculator = new Network.NetworkTransferDurationCalculator();
     this._calculator = this._timeCalculator;
 
     /**
-     * @this {WebInspector.NetworkLogView}
+     * @this {Network.NetworkLogView}
      */
     function updateRowHeight() {
       /** @type {number} */
@@ -68,10 +68,10 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
     }
     updateRowHeight.call(this);
 
-    this._columns = new WebInspector.NetworkLogViewColumns(
+    this._columns = new Network.NetworkLogViewColumns(
         this, this._timeCalculator, this._durationCalculator, networkLogLargeRowsSetting);
 
-    /** @type {!Map.<string, !WebInspector.NetworkDataGridNode>} */
+    /** @type {!Map.<string, !Network.NetworkDataGridNode>} */
     this._nodesByRequestId = new Map();
     /** @type {!Object.<string, boolean>} */
     this._staleRequestIds = {};
@@ -82,16 +82,16 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
     this._matchedRequestCount = 0;
     this._highlightedSubstringChanges = [];
 
-    /** @type {!Array.<!WebInspector.NetworkLogView.Filter>} */
+    /** @type {!Array.<!Network.NetworkLogView.Filter>} */
     this._filters = [];
-    /** @type {?WebInspector.NetworkLogView.Filter} */
+    /** @type {?Network.NetworkLogView.Filter} */
     this._timeFilter = null;
 
     this._currentMatchedRequestNode = null;
     this._currentMatchedRequestIndex = -1;
 
-    /** @type {!WebInspector.Linkifier} */
-    this.linkifier = new WebInspector.Linkifier();
+    /** @type {!Components.Linkifier} */
+    this.linkifier = new Components.Linkifier();
 
     this._recording = false;
     this._preserveLog = false;
@@ -102,20 +102,20 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
     this._resetSuggestionBuilder();
     this._initializeView();
 
-    WebInspector.moduleSetting('networkColorCodeResourceTypes').addChangeListener(this._invalidateAllItems, this);
+    Common.moduleSetting('networkColorCodeResourceTypes').addChangeListener(this._invalidateAllItems, this);
 
-    WebInspector.targetManager.observeTargets(this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestUpdated, this._onRequestUpdated, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestFinished, this._onRequestUpdated, this);
+    SDK.targetManager.observeTargets(this);
+    SDK.targetManager.addModelListener(
+        SDK.NetworkManager, SDK.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
+    SDK.targetManager.addModelListener(
+        SDK.NetworkManager, SDK.NetworkManager.Events.RequestUpdated, this._onRequestUpdated, this);
+    SDK.targetManager.addModelListener(
+        SDK.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this._onRequestUpdated, this);
   }
 
   /**
-   * @param {!WebInspector.NetworkLogView.Filter} filter
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!Network.NetworkLogView.Filter} filter
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _negativeFilter(filter, request) {
@@ -124,7 +124,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
   /**
    * @param {?RegExp} regex
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _requestPathFilter(regex, request) {
@@ -150,7 +150,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
   /**
    * @param {string} value
-   * @return {!WebInspector.NetworkLogView.Filter}
+   * @return {!Network.NetworkLogView.Filter}
    */
   static _createRequestDomainFilter(value) {
     /**
@@ -161,12 +161,12 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
       return string.escapeForRegExp();
     }
     var escapedPattern = value.split('*').map(escapeForRegExp).join('.*');
-    return WebInspector.NetworkLogView._requestDomainFilter.bind(null, new RegExp('^' + escapedPattern + '$', 'i'));
+    return Network.NetworkLogView._requestDomainFilter.bind(null, new RegExp('^' + escapedPattern + '$', 'i'));
   }
 
   /**
    * @param {!RegExp} regex
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _requestDomainFilter(regex, request) {
@@ -174,7 +174,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _runningRequestFilter(request) {
@@ -183,7 +183,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
   /**
    * @param {string} value
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _requestResponseHeaderFilter(value, request) {
@@ -192,7 +192,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
   /**
    * @param {string} value
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _requestMethodFilter(value, request) {
@@ -201,7 +201,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
   /**
    * @param {string} value
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _requestMimeTypeFilter(value, request) {
@@ -209,18 +209,18 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.NetworkLogView.MixedContentFilterValues} value
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!Network.NetworkLogView.MixedContentFilterValues} value
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _requestMixedContentFilter(value, request) {
-    if (value === WebInspector.NetworkLogView.MixedContentFilterValues.Displayed) {
+    if (value === Network.NetworkLogView.MixedContentFilterValues.Displayed) {
       return request.mixedContentType === 'optionally-blockable';
-    } else if (value === WebInspector.NetworkLogView.MixedContentFilterValues.Blocked) {
+    } else if (value === Network.NetworkLogView.MixedContentFilterValues.Blocked) {
       return request.mixedContentType === 'blockable' && request.wasBlocked();
-    } else if (value === WebInspector.NetworkLogView.MixedContentFilterValues.BlockOverridden) {
+    } else if (value === Network.NetworkLogView.MixedContentFilterValues.BlockOverridden) {
       return request.mixedContentType === 'blockable' && !request.wasBlocked();
-    } else if (value === WebInspector.NetworkLogView.MixedContentFilterValues.All) {
+    } else if (value === Network.NetworkLogView.MixedContentFilterValues.All) {
       return request.mixedContentType !== 'none';
     }
     return false;
@@ -228,7 +228,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
   /**
    * @param {string} value
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _requestSchemeFilter(value, request) {
@@ -237,7 +237,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
   /**
    * @param {string} value
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _requestSetCookieDomainFilter(value, request) {
@@ -251,7 +251,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
   /**
    * @param {string} value
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _requestSetCookieNameFilter(value, request) {
@@ -265,7 +265,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
   /**
    * @param {string} value
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _requestSetCookieValueFilter(value, request) {
@@ -279,7 +279,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
   /**
    * @param {number} value
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _requestSizeLargerThanFilter(value, request) {
@@ -288,7 +288,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
   /**
    * @param {string} value
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _statusCodeFilter(value, request) {
@@ -296,15 +296,15 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static HTTPRequestsFilter(request) {
-    return request.parsedURL.isValid && (request.scheme in WebInspector.NetworkLogView.HTTPSchemas);
+    return request.parsedURL.isValid && (request.scheme in Network.NetworkLogView.HTTPSchemas);
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static FinishedRequestsFilter(request) {
@@ -314,7 +314,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   /**
    * @param {number} windowStart
    * @param {number} windowEnd
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static _requestTimeFilter(windowStart, windowEnd, request) {
@@ -349,37 +349,37 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     if (!target.parentTarget()) {
-      var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+      var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
       if (resourceTreeModel) {
         resourceTreeModel.addEventListener(
-            WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this);
-        resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.Load, this._loadEventFired, this);
+            SDK.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this);
+        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
         resourceTreeModel.addEventListener(
-            WebInspector.ResourceTreeModel.Events.DOMContentLoaded, this._domContentLoadedEventFired, this);
+            SDK.ResourceTreeModel.Events.DOMContentLoaded, this._domContentLoadedEventFired, this);
       }
     }
-    var networkLog = WebInspector.NetworkLog.fromTarget(target);
+    var networkLog = SDK.NetworkLog.fromTarget(target);
     if (networkLog)
       networkLog.requests().forEach(this._appendRequest.bind(this));
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
     if (!target.parentTarget()) {
-      var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+      var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
       if (resourceTreeModel) {
         resourceTreeModel.removeEventListener(
-            WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this);
-        resourceTreeModel.removeEventListener(WebInspector.ResourceTreeModel.Events.Load, this._loadEventFired, this);
+            SDK.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this);
+        resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
         resourceTreeModel.removeEventListener(
-            WebInspector.ResourceTreeModel.Events.DOMContentLoaded, this._domContentLoadedEventFired, this);
+            SDK.ResourceTreeModel.Events.DOMContentLoaded, this._domContentLoadedEventFired, this);
       }
     }
   }
@@ -393,8 +393,8 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
       this._timeFilter = null;
       this._timeCalculator.setWindow(null);
     } else {
-      this._timeFilter = WebInspector.NetworkLogView._requestTimeFilter.bind(null, start, end);
-      this._timeCalculator.setWindow(new WebInspector.NetworkTimeBoundary(start, end));
+      this._timeFilter = Network.NetworkLogView._requestTimeFilter.bind(null, start, end);
+      this._timeCalculator.setWindow(new Network.NetworkTimeBoundary(start, end));
     }
     this._filterRequests();
   }
@@ -405,41 +405,41 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   _addFilters() {
-    this._textFilterUI = new WebInspector.TextFilterUI(true);
-    this._textFilterUI.addEventListener(WebInspector.FilterUI.Events.FilterChanged, this._filterChanged, this);
+    this._textFilterUI = new UI.TextFilterUI(true);
+    this._textFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, this._filterChanged, this);
     this._filterBar.addFilter(this._textFilterUI);
 
     var dataURLSetting = this._networkHideDataURLSetting;
-    this._dataURLFilterUI = new WebInspector.CheckboxFilterUI(
-        'hide-data-url', WebInspector.UIString('Hide data URLs'), true, dataURLSetting);
+    this._dataURLFilterUI = new UI.CheckboxFilterUI(
+        'hide-data-url', Common.UIString('Hide data URLs'), true, dataURLSetting);
     this._dataURLFilterUI.addEventListener(
-        WebInspector.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
+        UI.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
     this._filterBar.addFilter(this._dataURLFilterUI);
 
     var filterItems = [];
-    for (var categoryId in WebInspector.resourceCategories) {
-      var category = WebInspector.resourceCategories[categoryId];
+    for (var categoryId in Common.resourceCategories) {
+      var category = Common.resourceCategories[categoryId];
       filterItems.push({name: category.title, label: category.shortTitle, title: category.title});
     }
     this._resourceCategoryFilterUI =
-        new WebInspector.NamedBitSetFilterUI(filterItems, this._networkResourceTypeFiltersSetting);
+        new UI.NamedBitSetFilterUI(filterItems, this._networkResourceTypeFiltersSetting);
     this._resourceCategoryFilterUI.addEventListener(
-        WebInspector.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
+        UI.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
     this._filterBar.addFilter(this._resourceCategoryFilterUI);
   }
 
   _resetSuggestionBuilder() {
-    this._suggestionBuilder = new WebInspector.FilterSuggestionBuilder(WebInspector.NetworkLogView._searchKeys);
+    this._suggestionBuilder = new Network.FilterSuggestionBuilder(Network.NetworkLogView._searchKeys);
     this._suggestionBuilder.addItem(
-        WebInspector.NetworkLogView.FilterType.Is, WebInspector.NetworkLogView.IsFilterType.Running);
-    this._suggestionBuilder.addItem(WebInspector.NetworkLogView.FilterType.LargerThan, '100');
-    this._suggestionBuilder.addItem(WebInspector.NetworkLogView.FilterType.LargerThan, '10k');
-    this._suggestionBuilder.addItem(WebInspector.NetworkLogView.FilterType.LargerThan, '1M');
+        Network.NetworkLogView.FilterType.Is, Network.NetworkLogView.IsFilterType.Running);
+    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.LargerThan, '100');
+    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.LargerThan, '10k');
+    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.LargerThan, '1M');
     this._textFilterUI.setSuggestionBuilder(this._suggestionBuilder);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _filterChanged(event) {
     this.removeAllNodeHighlights();
@@ -463,18 +463,18 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
     this._recordingHint = this.element.createChild('div', 'network-status-pane fill');
     var hintText = this._recordingHint.createChild('div', 'recording-hint');
     var reloadShortcutNode = this._recordingHint.createChild('b');
-    reloadShortcutNode.textContent = WebInspector.shortcutRegistry.shortcutDescriptorsForAction('main.reload')[0].name;
+    reloadShortcutNode.textContent = UI.shortcutRegistry.shortcutDescriptorsForAction('main.reload')[0].name;
 
     if (this._recording) {
       var recordingText = hintText.createChild('span');
-      recordingText.textContent = WebInspector.UIString('Recording network activity\u2026');
+      recordingText.textContent = Common.UIString('Recording network activity\u2026');
       hintText.createChild('br');
       hintText.appendChild(
-          WebInspector.formatLocalized('Perform a request or hit %s to record the reload.', [reloadShortcutNode]));
+          UI.formatLocalized('Perform a request or hit %s to record the reload.', [reloadShortcutNode]));
     } else {
       var recordNode = hintText.createChild('b');
-      recordNode.textContent = WebInspector.shortcutRegistry.shortcutTitleForAction('network.toggle-recording');
-      hintText.appendChild(WebInspector.formatLocalized(
+      recordNode.textContent = UI.shortcutRegistry.shortcutTitleForAction('network.toggle-recording');
+      hintText.appendChild(UI.formatLocalized(
           'Record (%s) or reload (%s) to display network activity.', [recordNode, reloadShortcutNode]));
     }
   }
@@ -501,7 +501,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
         (contextMenu, node) => this.handleContextMenuForRequest(contextMenu, node.request()));
     this._dataGrid.setStickToBottom(true);
     this._dataGrid.setName('networkLog');
-    this._dataGrid.setResizeMethod(WebInspector.DataGrid.ResizeMethod.Last);
+    this._dataGrid.setResizeMethod(UI.DataGrid.ResizeMethod.Last);
     this._dataGrid.element.classList.add('network-log-grid');
     this._dataGrid.element.addEventListener('mousedown', this._dataGridMouseDown.bind(this), true);
     this._dataGrid.element.addEventListener('mousemove', this._dataGridMouseMove.bind(this), true);
@@ -524,7 +524,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {?WebInspector.NetworkRequest} request
+   * @param {?SDK.NetworkRequest} request
    * @param {boolean} highlightInitiatorChain
    */
   setHoveredRequest(request, highlightInitiatorChain) {
@@ -533,7 +533,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {?WebInspector.NetworkDataGridNode} node
+   * @param {?Network.NetworkDataGridNode} node
    * @param {boolean=} highlightInitiatorChain
    */
   _setHoveredNode(node, highlightInitiatorChain) {
@@ -554,7 +554,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {?WebInspector.NetworkRequest} request
+   * @param {?SDK.NetworkRequest} request
    */
   _highlightInitiatorChain(request) {
     if (this._requestWithHighlightedInitiators === request)
@@ -601,12 +601,12 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
       var request = nodes[i].request();
       var requestTransferSize = request.transferSize;
       transferSize += requestTransferSize;
-      if (!nodes[i][WebInspector.NetworkLogView._isFilteredOutSymbol]) {
+      if (!nodes[i][Network.NetworkLogView._isFilteredOutSymbol]) {
         selectedRequestsNumber++;
         selectedTransferSize += requestTransferSize;
       }
       if (request.url === request.target().inspectedURL() &&
-          request.resourceType() === WebInspector.resourceTypes.Document)
+          request.resourceType() === Common.resourceTypes.Document)
         baseTime = request.startTime;
       if (request.endTime > maxTime)
         maxTime = request.endTime;
@@ -628,27 +628,27 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
     }
 
     if (selectedRequestsNumber !== requestsNumber) {
-      appendChunk(WebInspector.UIString('%d / %d requests', selectedRequestsNumber, requestsNumber));
+      appendChunk(Common.UIString('%d / %d requests', selectedRequestsNumber, requestsNumber));
       appendChunk(separator);
-      appendChunk(WebInspector.UIString(
+      appendChunk(Common.UIString(
           '%s / %s transferred', Number.bytesToString(selectedTransferSize), Number.bytesToString(transferSize)));
     } else {
-      appendChunk(WebInspector.UIString('%d requests', requestsNumber));
+      appendChunk(Common.UIString('%d requests', requestsNumber));
       appendChunk(separator);
-      appendChunk(WebInspector.UIString('%s transferred', Number.bytesToString(transferSize)));
+      appendChunk(Common.UIString('%s transferred', Number.bytesToString(transferSize)));
     }
     if (baseTime !== -1 && maxTime !== -1) {
       appendChunk(separator);
-      appendChunk(WebInspector.UIString('Finish: %s', Number.secondsToString(maxTime - baseTime)));
+      appendChunk(Common.UIString('Finish: %s', Number.secondsToString(maxTime - baseTime)));
       if (this._mainRequestDOMContentLoadedTime !== -1 && this._mainRequestDOMContentLoadedTime > baseTime) {
         appendChunk(separator);
-        var domContentLoadedText = WebInspector.UIString(
+        var domContentLoadedText = Common.UIString(
             'DOMContentLoaded: %s', Number.secondsToString(this._mainRequestDOMContentLoadedTime - baseTime));
         appendChunk(domContentLoadedText).classList.add('summary-blue');
       }
       if (this._mainRequestLoadTime !== -1) {
         appendChunk(separator);
-        var loadText = WebInspector.UIString('Load: %s', Number.secondsToString(this._mainRequestLoadTime - baseTime));
+        var loadText = Common.UIString('Load: %s', Number.secondsToString(this._mainRequestLoadTime - baseTime));
         appendChunk(loadText).classList.add('summary-red');
       }
     }
@@ -696,21 +696,21 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {!WebInspector.NetworkTimeCalculator}
+   * @return {!Network.NetworkTimeCalculator}
    */
   timeCalculator() {
     return this._timeCalculator;
   }
 
   /**
-   * @return {!WebInspector.NetworkTimeCalculator}
+   * @return {!Network.NetworkTimeCalculator}
    */
   calculator() {
     return this._calculator;
   }
 
   /**
-   * @param {!WebInspector.NetworkTimeCalculator} x
+   * @param {!Network.NetworkTimeCalculator} x
    */
   setCalculator(x) {
     if (!x || this._calculator === x)
@@ -731,7 +731,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _loadEventFired(event) {
     if (!this._recording)
@@ -745,7 +745,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _domContentLoadedEventFired(event) {
     if (!this._recording)
@@ -783,9 +783,9 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
     var dataGrid = this._dataGrid;
     var rootNode = dataGrid.rootNode();
-    /** @type {!Array<!WebInspector.NetworkDataGridNode> } */
+    /** @type {!Array<!Network.NetworkDataGridNode> } */
     var nodesToInsert = [];
-    /** @type {!Array<!WebInspector.NetworkDataGridNode> } */
+    /** @type {!Array<!Network.NetworkDataGridNode> } */
     var nodesToRefresh = [];
     for (var requestId in this._staleRequestIds) {
       var node = this._nodesByRequestId.get(requestId);
@@ -794,13 +794,13 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
       var isFilteredOut = !this._applyFilter(node);
       if (isFilteredOut && node === this._hoveredNode)
         this._setHoveredNode(null);
-      if (node[WebInspector.NetworkLogView._isFilteredOutSymbol] !== isFilteredOut) {
-        if (!node[WebInspector.NetworkLogView._isFilteredOutSymbol])
+      if (node[Network.NetworkLogView._isFilteredOutSymbol] !== isFilteredOut) {
+        if (!node[Network.NetworkLogView._isFilteredOutSymbol])
           rootNode.removeChild(node);
 
-        node[WebInspector.NetworkLogView._isFilteredOutSymbol] = isFilteredOut;
+        node[Network.NetworkLogView._isFilteredOutSymbol] = isFilteredOut;
 
-        if (!node[WebInspector.NetworkLogView._isFilteredOutSymbol])
+        if (!node[Network.NetworkLogView._isFilteredOutSymbol])
           nodesToInsert.push(node);
       }
       if (!isFilteredOut)
@@ -814,7 +814,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
       var node = nodesToInsert[i];
       var request = node.request();
       dataGrid.insertChild(node);
-      node[WebInspector.NetworkLogView._isMatchingSearchQuerySymbol] = this._matchRequest(request);
+      node[Network.NetworkLogView._isMatchingSearchQuerySymbol] = this._matchRequest(request);
     }
 
     for (var node of nodesToRefresh)
@@ -831,7 +831,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
   reset() {
     this._requestWithHighlightedInitiators = null;
-    this.dispatchEventToListeners(WebInspector.NetworkLogView.Events.RequestSelected, null);
+    this.dispatchEventToListeners(Network.NetworkLogView.Events.RequestSelected, null);
 
     this._clearSearchMatchedList();
 
@@ -871,22 +871,22 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onRequestStarted(event) {
     if (!this._recording)
       return;
-    var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
+    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     this._appendRequest(request);
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   _appendRequest(request) {
-    var node = new WebInspector.NetworkDataGridNode(this, request);
-    node[WebInspector.NetworkLogView._isFilteredOutSymbol] = true;
-    node[WebInspector.NetworkLogView._isMatchingSearchQuerySymbol] = false;
+    var node = new Network.NetworkDataGridNode(this, request);
+    node[Network.NetworkLogView._isFilteredOutSymbol] = true;
+    node[Network.NetworkLogView._isMatchingSearchQuerySymbol] = false;
 
     // In case of redirect request id is reassigned to a redirected
     // request and we need to update _nodesByRequestId and search results.
@@ -905,76 +905,76 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onRequestUpdated(event) {
-    var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
+    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     this._refreshRequest(request);
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   _refreshRequest(request) {
     if (!this._nodesByRequestId.get(request.requestId))
       return;
 
-    WebInspector.NetworkLogView._subdomains(request.domain)
+    Network.NetworkLogView._subdomains(request.domain)
         .forEach(this._suggestionBuilder.addItem.bind(
-            this._suggestionBuilder, WebInspector.NetworkLogView.FilterType.Domain));
-    this._suggestionBuilder.addItem(WebInspector.NetworkLogView.FilterType.Method, request.requestMethod);
-    this._suggestionBuilder.addItem(WebInspector.NetworkLogView.FilterType.MimeType, request.mimeType);
-    this._suggestionBuilder.addItem(WebInspector.NetworkLogView.FilterType.Scheme, '' + request.scheme);
-    this._suggestionBuilder.addItem(WebInspector.NetworkLogView.FilterType.StatusCode, '' + request.statusCode);
+            this._suggestionBuilder, Network.NetworkLogView.FilterType.Domain));
+    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.Method, request.requestMethod);
+    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.MimeType, request.mimeType);
+    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.Scheme, '' + request.scheme);
+    this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.StatusCode, '' + request.statusCode);
 
     if (request.mixedContentType !== 'none') {
       this._suggestionBuilder.addItem(
-          WebInspector.NetworkLogView.FilterType.MixedContent,
-          WebInspector.NetworkLogView.MixedContentFilterValues.All);
+          Network.NetworkLogView.FilterType.MixedContent,
+          Network.NetworkLogView.MixedContentFilterValues.All);
     }
 
     if (request.mixedContentType === 'optionally-blockable') {
       this._suggestionBuilder.addItem(
-          WebInspector.NetworkLogView.FilterType.MixedContent,
-          WebInspector.NetworkLogView.MixedContentFilterValues.Displayed);
+          Network.NetworkLogView.FilterType.MixedContent,
+          Network.NetworkLogView.MixedContentFilterValues.Displayed);
     }
 
     if (request.mixedContentType === 'blockable') {
-      var suggestion = request.wasBlocked() ? WebInspector.NetworkLogView.MixedContentFilterValues.Blocked :
-                                              WebInspector.NetworkLogView.MixedContentFilterValues.BlockOverridden;
-      this._suggestionBuilder.addItem(WebInspector.NetworkLogView.FilterType.MixedContent, suggestion);
+      var suggestion = request.wasBlocked() ? Network.NetworkLogView.MixedContentFilterValues.Blocked :
+                                              Network.NetworkLogView.MixedContentFilterValues.BlockOverridden;
+      this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.MixedContent, suggestion);
     }
 
     var responseHeaders = request.responseHeaders;
     for (var i = 0, l = responseHeaders.length; i < l; ++i)
       this._suggestionBuilder.addItem(
-          WebInspector.NetworkLogView.FilterType.HasResponseHeader, responseHeaders[i].name);
+          Network.NetworkLogView.FilterType.HasResponseHeader, responseHeaders[i].name);
     var cookies = request.responseCookies;
     for (var i = 0, l = cookies ? cookies.length : 0; i < l; ++i) {
       var cookie = cookies[i];
-      this._suggestionBuilder.addItem(WebInspector.NetworkLogView.FilterType.SetCookieDomain, cookie.domain());
-      this._suggestionBuilder.addItem(WebInspector.NetworkLogView.FilterType.SetCookieName, cookie.name());
-      this._suggestionBuilder.addItem(WebInspector.NetworkLogView.FilterType.SetCookieValue, cookie.value());
+      this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.SetCookieDomain, cookie.domain());
+      this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.SetCookieName, cookie.name());
+      this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.SetCookieValue, cookie.value());
     }
 
     this._staleRequestIds[request.requestId] = true;
-    this.dispatchEventToListeners(WebInspector.NetworkLogView.Events.UpdateRequest, request);
+    this.dispatchEventToListeners(Network.NetworkLogView.Events.UpdateRequest, request);
     this.scheduleRefresh();
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _mainFrameNavigated(event) {
     if (!this._recording)
       return;
 
-    var frame = /** @type {!WebInspector.ResourceTreeFrame} */ (event.data);
+    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
     var loaderId = frame.loaderId;
 
     // Pick provisional load requests.
     var requestsToPick = [];
-    var networkLog = WebInspector.NetworkLog.fromTarget(frame.target());
+    var networkLog = SDK.NetworkLog.fromTarget(frame.target());
     var requests = networkLog ? networkLog.requests() : [];
     for (var i = 0; i < requests.length; ++i) {
       var request = requests[i];
@@ -1012,79 +1012,79 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.ContextMenu} contextMenu
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!SDK.NetworkRequest} request
    */
   handleContextMenuForRequest(contextMenu, request) {
     contextMenu.appendApplicableItems(request);
-    var copyMenu = contextMenu.appendSubMenuItem(WebInspector.UIString('Copy'));
+    var copyMenu = contextMenu.appendSubMenuItem(Common.UIString('Copy'));
     if (request) {
       copyMenu.appendItem(
-          WebInspector.copyLinkAddressLabel(),
+          UI.copyLinkAddressLabel(),
           InspectorFrontendHost.copyText.bind(InspectorFrontendHost, request.contentURL()));
       copyMenu.appendSeparator();
 
       if (request.requestHeadersText())
         copyMenu.appendItem(
-            WebInspector.UIString.capitalize('Copy ^request ^headers'), this._copyRequestHeaders.bind(this, request));
+            Common.UIString.capitalize('Copy ^request ^headers'), this._copyRequestHeaders.bind(this, request));
       if (request.responseHeadersText)
         copyMenu.appendItem(
-            WebInspector.UIString.capitalize('Copy ^response ^headers'), this._copyResponseHeaders.bind(this, request));
+            Common.UIString.capitalize('Copy ^response ^headers'), this._copyResponseHeaders.bind(this, request));
       if (request.finished)
-        copyMenu.appendItem(WebInspector.UIString.capitalize('Copy ^response'), this._copyResponse.bind(this, request));
+        copyMenu.appendItem(Common.UIString.capitalize('Copy ^response'), this._copyResponse.bind(this, request));
 
-      if (WebInspector.isWin()) {
+      if (Host.isWin()) {
         copyMenu.appendItem(
-            WebInspector.UIString('Copy as cURL (cmd)'), this._copyCurlCommand.bind(this, request, 'win'));
+            Common.UIString('Copy as cURL (cmd)'), this._copyCurlCommand.bind(this, request, 'win'));
         copyMenu.appendItem(
-            WebInspector.UIString('Copy as cURL (bash)'), this._copyCurlCommand.bind(this, request, 'unix'));
+            Common.UIString('Copy as cURL (bash)'), this._copyCurlCommand.bind(this, request, 'unix'));
         copyMenu.appendItem(
-            WebInspector.UIString('Copy All as cURL (cmd)'), this._copyAllCurlCommand.bind(this, 'win'));
+            Common.UIString('Copy All as cURL (cmd)'), this._copyAllCurlCommand.bind(this, 'win'));
         copyMenu.appendItem(
-            WebInspector.UIString('Copy All as cURL (bash)'), this._copyAllCurlCommand.bind(this, 'unix'));
+            Common.UIString('Copy All as cURL (bash)'), this._copyAllCurlCommand.bind(this, 'unix'));
       } else {
-        copyMenu.appendItem(WebInspector.UIString('Copy as cURL'), this._copyCurlCommand.bind(this, request, 'unix'));
-        copyMenu.appendItem(WebInspector.UIString('Copy All as cURL'), this._copyAllCurlCommand.bind(this, 'unix'));
+        copyMenu.appendItem(Common.UIString('Copy as cURL'), this._copyCurlCommand.bind(this, request, 'unix'));
+        copyMenu.appendItem(Common.UIString('Copy All as cURL'), this._copyAllCurlCommand.bind(this, 'unix'));
       }
     } else {
-      copyMenu = contextMenu.appendSubMenuItem(WebInspector.UIString('Copy'));
+      copyMenu = contextMenu.appendSubMenuItem(Common.UIString('Copy'));
     }
-    copyMenu.appendItem(WebInspector.UIString.capitalize('Copy ^all as HAR'), this._copyAll.bind(this));
+    copyMenu.appendItem(Common.UIString.capitalize('Copy ^all as HAR'), this._copyAll.bind(this));
 
     contextMenu.appendSeparator();
-    contextMenu.appendItem(WebInspector.UIString.capitalize('Save as HAR with ^content'), this._exportAll.bind(this));
+    contextMenu.appendItem(Common.UIString.capitalize('Save as HAR with ^content'), this._exportAll.bind(this));
 
     contextMenu.appendSeparator();
     contextMenu.appendItem(
-        WebInspector.UIString.capitalize('Clear ^browser ^cache'), this._clearBrowserCache.bind(this));
+        Common.UIString.capitalize('Clear ^browser ^cache'), this._clearBrowserCache.bind(this));
     contextMenu.appendItem(
-        WebInspector.UIString.capitalize('Clear ^browser ^cookies'), this._clearBrowserCookies.bind(this));
+        Common.UIString.capitalize('Clear ^browser ^cookies'), this._clearBrowserCookies.bind(this));
 
-    var blockedSetting = WebInspector.moduleSetting('blockedURLs');
+    var blockedSetting = Common.moduleSetting('blockedURLs');
     if (request && Runtime.experiments.isEnabled('requestBlocking')) {  // Disabled until ready.
       contextMenu.appendSeparator();
 
       var urlWithoutScheme = request.parsedURL.urlWithoutScheme();
       if (urlWithoutScheme && blockedSetting.get().indexOf(urlWithoutScheme) === -1)
         contextMenu.appendItem(
-            WebInspector.UIString.capitalize('Block ^request URL'), addBlockedURL.bind(null, urlWithoutScheme));
+            Common.UIString.capitalize('Block ^request URL'), addBlockedURL.bind(null, urlWithoutScheme));
 
       var domain = request.parsedURL.domain();
       if (domain && blockedSetting.get().indexOf(domain) === -1)
         contextMenu.appendItem(
-            WebInspector.UIString.capitalize('Block ^request ^domain'), addBlockedURL.bind(null, domain));
+            Common.UIString.capitalize('Block ^request ^domain'), addBlockedURL.bind(null, domain));
 
       function addBlockedURL(url) {
         var list = blockedSetting.get();
         list.push(url);
         blockedSetting.set(list);
-        WebInspector.viewManager.showView('network.blocked-urls');
+        UI.viewManager.showView('network.blocked-urls');
       }
     }
 
-    if (request && request.resourceType() === WebInspector.resourceTypes.XHR) {
+    if (request && request.resourceType() === Common.resourceTypes.XHR) {
       contextMenu.appendSeparator();
-      contextMenu.appendItem(WebInspector.UIString('Replay XHR'), request.replayXHR.bind(request));
+      contextMenu.appendItem(Common.UIString('Replay XHR'), request.replayXHR.bind(request));
       contextMenu.appendSeparator();
     }
   }
@@ -1093,24 +1093,24 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
     var requests = this._nodesByRequestId.valuesArray().map(function(node) {
       return node.request();
     });
-    var httpRequests = requests.filter(WebInspector.NetworkLogView.HTTPRequestsFilter);
-    return httpRequests.filter(WebInspector.NetworkLogView.FinishedRequestsFilter);
+    var httpRequests = requests.filter(Network.NetworkLogView.HTTPRequestsFilter);
+    return httpRequests.filter(Network.NetworkLogView.FinishedRequestsFilter);
   }
 
   _copyAll() {
-    var harArchive = {log: (new WebInspector.HARLog(this._harRequests())).build()};
+    var harArchive = {log: (new SDK.HARLog(this._harRequests())).build()};
     InspectorFrontendHost.copyText(JSON.stringify(harArchive, null, 2));
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   _copyRequestHeaders(request) {
     InspectorFrontendHost.copyText(request.requestHeadersText());
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   _copyResponse(request) {
     /**
@@ -1125,14 +1125,14 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   _copyResponseHeaders(request) {
     InspectorFrontendHost.copyText(request.responseHeadersText);
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @param {string} platform
    */
   _copyCurlCommand(request, platform) {
@@ -1154,38 +1154,38 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   _exportAll() {
-    var url = WebInspector.targetManager.mainTarget().inspectedURL();
+    var url = SDK.targetManager.mainTarget().inspectedURL();
     var parsedURL = url.asParsedURL();
     var filename = parsedURL ? parsedURL.host : 'network-log';
-    var stream = new WebInspector.FileOutputStream();
+    var stream = new Bindings.FileOutputStream();
     stream.open(filename + '.har', openCallback.bind(this));
 
     /**
      * @param {boolean} accepted
-     * @this {WebInspector.NetworkLogView}
+     * @this {Network.NetworkLogView}
      */
     function openCallback(accepted) {
       if (!accepted)
         return;
-      var progressIndicator = new WebInspector.ProgressIndicator();
+      var progressIndicator = new UI.ProgressIndicator();
       this._progressBarContainer.appendChild(progressIndicator.element);
-      var harWriter = new WebInspector.HARWriter();
+      var harWriter = new Network.HARWriter();
       harWriter.write(stream, this._harRequests(), progressIndicator);
     }
   }
 
   _clearBrowserCache() {
-    if (confirm(WebInspector.UIString('Are you sure you want to clear browser cache?')))
-      WebInspector.multitargetNetworkManager.clearBrowserCache();
+    if (confirm(Common.UIString('Are you sure you want to clear browser cache?')))
+      SDK.multitargetNetworkManager.clearBrowserCache();
   }
 
   _clearBrowserCookies() {
-    if (confirm(WebInspector.UIString('Are you sure you want to clear browser cookies?')))
-      WebInspector.multitargetNetworkManager.clearBrowserCookies();
+    if (confirm(Common.UIString('Are you sure you want to clear browser cookies?')))
+      SDK.multitargetNetworkManager.clearBrowserCookies();
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   _matchRequest(request) {
@@ -1206,7 +1206,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   _removeAllHighlights() {
     this.removeAllNodeHighlights();
     for (var i = 0; i < this._highlightedSubstringChanges.length; ++i)
-      WebInspector.revertDomChanges(this._highlightedSubstringChanges[i]);
+      UI.revertDomChanges(this._highlightedSubstringChanges[i]);
     this._highlightedSubstringChanges = [];
   }
 
@@ -1222,12 +1222,12 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   _highlightNthMatchedRequestForSearch(n, reveal) {
     this._removeAllHighlights();
 
-    /** @type {!Array.<!WebInspector.NetworkDataGridNode>} */
+    /** @type {!Array.<!Network.NetworkDataGridNode>} */
     var nodes = this._dataGrid.rootNode().children;
     var matchCount = 0;
     var node = null;
     for (var i = 0; i < nodes.length; ++i) {
-      if (nodes[i][WebInspector.NetworkLogView._isMatchingSearchQuerySymbol]) {
+      if (nodes[i][Network.NetworkLogView._isMatchingSearchQuerySymbol]) {
         if (matchCount === n) {
           node = nodes[i];
           break;
@@ -1242,18 +1242,18 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
 
     var request = node.request();
     if (reveal)
-      WebInspector.Revealer.reveal(request);
+      Common.Revealer.reveal(request);
     var highlightedSubstringChanges = node.highlightMatchedSubstring(this._searchRegex);
     this._highlightedSubstringChanges.push(highlightedSubstringChanges);
 
     this._currentMatchedRequestNode = node;
     this._currentMatchedRequestIndex = n;
-    this.dispatchEventToListeners(WebInspector.NetworkLogView.Events.SearchIndexUpdated, n);
+    this.dispatchEventToListeners(Network.NetworkLogView.Events.SearchIndexUpdated, n);
   }
 
   /**
    * @override
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {boolean} shouldJump
    * @param {boolean=} jumpBackwards
    */
@@ -1263,10 +1263,10 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
     this._clearSearchMatchedList();
     this._searchRegex = createPlainTextSearchRegex(query, 'i');
 
-    /** @type {!Array.<!WebInspector.NetworkDataGridNode>} */
+    /** @type {!Array.<!Network.NetworkDataGridNode>} */
     var nodes = this._dataGrid.rootNode().children;
     for (var i = 0; i < nodes.length; ++i)
-      nodes[i][WebInspector.NetworkLogView._isMatchingSearchQuerySymbol] = this._matchRequest(nodes[i].request());
+      nodes[i][Network.NetworkLogView._isMatchingSearchQuerySymbol] = this._matchRequest(nodes[i].request());
     var newMatchedRequestIndex = this._updateMatchCountAndFindMatchIndex(currentMatchedRequestNode);
     if (!newMatchedRequestIndex && jumpBackwards)
       newMatchedRequestIndex = this._matchedRequestCount - 1;
@@ -1290,16 +1290,16 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {?WebInspector.NetworkDataGridNode} node
+   * @param {?Network.NetworkDataGridNode} node
    * @return {number}
    */
   _updateMatchCountAndFindMatchIndex(node) {
-    /** @type {!Array.<!WebInspector.NetworkDataGridNode>} */
+    /** @type {!Array.<!Network.NetworkDataGridNode>} */
     var nodes = this._dataGrid.rootNode().children;
     var matchCount = 0;
     var matchIndex = 0;
     for (var i = 0; i < nodes.length; ++i) {
-      if (!nodes[i][WebInspector.NetworkLogView._isMatchingSearchQuerySymbol])
+      if (!nodes[i][Network.NetworkLogView._isMatchingSearchQuerySymbol])
         continue;
       if (node === nodes[i])
         matchIndex = matchCount;
@@ -1307,7 +1307,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
     }
     if (this._matchedRequestCount !== matchCount) {
       this._matchedRequestCount = matchCount;
-      this.dispatchEventToListeners(WebInspector.NetworkLogView.Events.SearchCountUpdated, matchCount);
+      this.dispatchEventToListeners(Network.NetworkLogView.Events.SearchCountUpdated, matchCount);
     }
     return matchIndex;
   }
@@ -1321,7 +1321,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.NetworkDataGridNode} node
+   * @param {!Network.NetworkDataGridNode} node
    * @return {boolean}
    */
   _applyFilter(node) {
@@ -1357,14 +1357,14 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
     var n = parsedQuery.filters.length;
     for (var i = 0; i < n; ++i) {
       var filter = parsedQuery.filters[i];
-      var filterType = /** @type {!WebInspector.NetworkLogView.FilterType} */ (filter.type.toLowerCase());
+      var filterType = /** @type {!Network.NetworkLogView.FilterType} */ (filter.type.toLowerCase());
       this._filters.push(this._createFilter(filterType, filter.data, filter.negative));
     }
   }
 
   /**
    * @param {string} text
-   * @return {!WebInspector.NetworkLogView.Filter}
+   * @return {!Network.NetworkLogView.Filter}
    */
   _createTextFilter(text) {
     var negative = false;
@@ -1378,79 +1378,79 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
       regex = this._textFilterUI.regex();
     }
 
-    var filter = WebInspector.NetworkLogView._requestPathFilter.bind(null, regex);
+    var filter = Network.NetworkLogView._requestPathFilter.bind(null, regex);
     if (negative)
-      filter = WebInspector.NetworkLogView._negativeFilter.bind(null, filter);
+      filter = Network.NetworkLogView._negativeFilter.bind(null, filter);
     return filter;
   }
 
   /**
-   * @param {!WebInspector.NetworkLogView.FilterType} type
+   * @param {!Network.NetworkLogView.FilterType} type
    * @param {string} value
    * @param {boolean} negative
-   * @return {!WebInspector.NetworkLogView.Filter}
+   * @return {!Network.NetworkLogView.Filter}
    */
   _createFilter(type, value, negative) {
     var filter = this._createSpecialFilter(type, value);
     if (!filter)
       return this._createTextFilter((negative ? '-' : '') + type + ':' + value);
     if (negative)
-      return WebInspector.NetworkLogView._negativeFilter.bind(null, filter);
+      return Network.NetworkLogView._negativeFilter.bind(null, filter);
     return filter;
   }
 
   /**
-   * @param {!WebInspector.NetworkLogView.FilterType} type
+   * @param {!Network.NetworkLogView.FilterType} type
    * @param {string} value
-   * @return {?WebInspector.NetworkLogView.Filter}
+   * @return {?Network.NetworkLogView.Filter}
    */
   _createSpecialFilter(type, value) {
     switch (type) {
-      case WebInspector.NetworkLogView.FilterType.Domain:
-        return WebInspector.NetworkLogView._createRequestDomainFilter(value);
+      case Network.NetworkLogView.FilterType.Domain:
+        return Network.NetworkLogView._createRequestDomainFilter(value);
 
-      case WebInspector.NetworkLogView.FilterType.HasResponseHeader:
-        return WebInspector.NetworkLogView._requestResponseHeaderFilter.bind(null, value);
+      case Network.NetworkLogView.FilterType.HasResponseHeader:
+        return Network.NetworkLogView._requestResponseHeaderFilter.bind(null, value);
 
-      case WebInspector.NetworkLogView.FilterType.Is:
-        if (value.toLowerCase() === WebInspector.NetworkLogView.IsFilterType.Running)
-          return WebInspector.NetworkLogView._runningRequestFilter;
+      case Network.NetworkLogView.FilterType.Is:
+        if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.Running)
+          return Network.NetworkLogView._runningRequestFilter;
         break;
 
-      case WebInspector.NetworkLogView.FilterType.LargerThan:
+      case Network.NetworkLogView.FilterType.LargerThan:
         return this._createSizeFilter(value.toLowerCase());
 
-      case WebInspector.NetworkLogView.FilterType.Method:
-        return WebInspector.NetworkLogView._requestMethodFilter.bind(null, value);
+      case Network.NetworkLogView.FilterType.Method:
+        return Network.NetworkLogView._requestMethodFilter.bind(null, value);
 
-      case WebInspector.NetworkLogView.FilterType.MimeType:
-        return WebInspector.NetworkLogView._requestMimeTypeFilter.bind(null, value);
+      case Network.NetworkLogView.FilterType.MimeType:
+        return Network.NetworkLogView._requestMimeTypeFilter.bind(null, value);
 
-      case WebInspector.NetworkLogView.FilterType.MixedContent:
-        return WebInspector.NetworkLogView._requestMixedContentFilter.bind(
-            null, /** @type {!WebInspector.NetworkLogView.MixedContentFilterValues} */ (value));
+      case Network.NetworkLogView.FilterType.MixedContent:
+        return Network.NetworkLogView._requestMixedContentFilter.bind(
+            null, /** @type {!Network.NetworkLogView.MixedContentFilterValues} */ (value));
 
-      case WebInspector.NetworkLogView.FilterType.Scheme:
-        return WebInspector.NetworkLogView._requestSchemeFilter.bind(null, value);
+      case Network.NetworkLogView.FilterType.Scheme:
+        return Network.NetworkLogView._requestSchemeFilter.bind(null, value);
 
-      case WebInspector.NetworkLogView.FilterType.SetCookieDomain:
-        return WebInspector.NetworkLogView._requestSetCookieDomainFilter.bind(null, value);
+      case Network.NetworkLogView.FilterType.SetCookieDomain:
+        return Network.NetworkLogView._requestSetCookieDomainFilter.bind(null, value);
 
-      case WebInspector.NetworkLogView.FilterType.SetCookieName:
-        return WebInspector.NetworkLogView._requestSetCookieNameFilter.bind(null, value);
+      case Network.NetworkLogView.FilterType.SetCookieName:
+        return Network.NetworkLogView._requestSetCookieNameFilter.bind(null, value);
 
-      case WebInspector.NetworkLogView.FilterType.SetCookieValue:
-        return WebInspector.NetworkLogView._requestSetCookieValueFilter.bind(null, value);
+      case Network.NetworkLogView.FilterType.SetCookieValue:
+        return Network.NetworkLogView._requestSetCookieValueFilter.bind(null, value);
 
-      case WebInspector.NetworkLogView.FilterType.StatusCode:
-        return WebInspector.NetworkLogView._statusCodeFilter.bind(null, value);
+      case Network.NetworkLogView.FilterType.StatusCode:
+        return Network.NetworkLogView._statusCodeFilter.bind(null, value);
     }
     return null;
   }
 
   /**
    * @param {string} value
-   * @return {?WebInspector.NetworkLogView.Filter}
+   * @return {?Network.NetworkLogView.Filter}
    */
   _createSizeFilter(value) {
     var multiplier = 1;
@@ -1464,7 +1464,7 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
     var quantity = Number(value);
     if (isNaN(quantity))
       return null;
-    return WebInspector.NetworkLogView._requestSizeLargerThanFilter.bind(null, quantity * multiplier);
+    return Network.NetworkLogView._requestSizeLargerThanFilter.bind(null, quantity * multiplier);
   }
 
   _filterRequests() {
@@ -1498,11 +1498,11 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   searchCanceled() {
     delete this._searchRegex;
     this._clearSearchMatchedList();
-    this.dispatchEventToListeners(WebInspector.NetworkLogView.Events.SearchCountUpdated, 0);
+    this.dispatchEventToListeners(Network.NetworkLogView.Events.SearchCountUpdated, 0);
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   revealAndHighlightRequest(request) {
     this.removeAllNodeHighlights();
@@ -1522,15 +1522,15 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.NetworkDataGridNode} node
+   * @param {!Network.NetworkDataGridNode} node
    */
   _highlightNode(node) {
-    WebInspector.runCSSAnimationOnce(node.element(), 'highlighted-row');
+    UI.runCSSAnimationOnce(node.element(), 'highlighted-row');
     this._highlightedNode = node;
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @param {string} platform
    * @return {string}
    */
@@ -1648,21 +1648,21 @@ WebInspector.NetworkLogView = class extends WebInspector.VBox {
   }
 };
 
-WebInspector.NetworkLogView._isFilteredOutSymbol = Symbol('isFilteredOut');
-WebInspector.NetworkLogView._isMatchingSearchQuerySymbol = Symbol('isMatchingSearchQuery');
+Network.NetworkLogView._isFilteredOutSymbol = Symbol('isFilteredOut');
+Network.NetworkLogView._isMatchingSearchQuerySymbol = Symbol('isMatchingSearchQuery');
 
-WebInspector.NetworkLogView.HTTPSchemas = {
+Network.NetworkLogView.HTTPSchemas = {
   'http': true,
   'https': true,
   'ws': true,
   'wss': true
 };
 
-WebInspector.NetworkLogView._waterfallMinOvertime = 1;
-WebInspector.NetworkLogView._waterfallMaxOvertime = 3;
+Network.NetworkLogView._waterfallMinOvertime = 1;
+Network.NetworkLogView._waterfallMaxOvertime = 3;
 
 /** @enum {symbol} */
-WebInspector.NetworkLogView.Events = {
+Network.NetworkLogView.Events = {
   RequestSelected: Symbol('RequestSelected'),
   SearchCountUpdated: Symbol('SearchCountUpdated'),
   SearchIndexUpdated: Symbol('SearchIndexUpdated'),
@@ -1670,7 +1670,7 @@ WebInspector.NetworkLogView.Events = {
 };
 
 /** @enum {string} */
-WebInspector.NetworkLogView.FilterType = {
+Network.NetworkLogView.FilterType = {
   Domain: 'domain',
   HasResponseHeader: 'has-response-header',
   Is: 'is',
@@ -1686,7 +1686,7 @@ WebInspector.NetworkLogView.FilterType = {
 };
 
 /** @enum {string} */
-WebInspector.NetworkLogView.MixedContentFilterValues = {
+Network.NetworkLogView.MixedContentFilterValues = {
   All: 'all',
   Displayed: 'displayed',
   Blocked: 'blocked',
@@ -1694,13 +1694,13 @@ WebInspector.NetworkLogView.MixedContentFilterValues = {
 };
 
 /** @enum {string} */
-WebInspector.NetworkLogView.IsFilterType = {
+Network.NetworkLogView.IsFilterType = {
   Running: 'running'
 };
 
 /** @type {!Array<string>} */
-WebInspector.NetworkLogView._searchKeys =
-    Object.keys(WebInspector.NetworkLogView.FilterType).map(key => WebInspector.NetworkLogView.FilterType[key]);
+Network.NetworkLogView._searchKeys =
+    Object.keys(Network.NetworkLogView.FilterType).map(key => Network.NetworkLogView.FilterType[key]);
 
-/** @typedef {function(!WebInspector.NetworkRequest): boolean} */
-WebInspector.NetworkLogView.Filter;
+/** @typedef {function(!SDK.NetworkRequest): boolean} */
+Network.NetworkLogView.Filter;

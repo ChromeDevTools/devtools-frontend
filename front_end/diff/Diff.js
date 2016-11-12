@@ -1,7 +1,7 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-WebInspector.Diff = {
+Diff.Diff = {
   /**
    * @param {string} text1
    * @param {string} text2
@@ -18,12 +18,12 @@ WebInspector.Diff = {
    * @return {!Array.<!{0: number, 1: !Array.<string>}>}
    */
   lineDiff: function(lines1, lines2) {
-    /** @type {!WebInspector.CharacterIdMap<string>} */
-    var idMap = new WebInspector.CharacterIdMap();
+    /** @type {!Common.CharacterIdMap<string>} */
+    var idMap = new Common.CharacterIdMap();
     var text1 = lines1.map(line => idMap.toChar(line)).join('');
     var text2 = lines2.map(line => idMap.toChar(line)).join('');
 
-    var diff = WebInspector.Diff.charDiff(text1, text2);
+    var diff = Diff.Diff.charDiff(text1, text2);
     var lineDiff = [];
     for (var i = 0; i < diff.length; i++) {
       var lines = [];
@@ -45,10 +45,10 @@ WebInspector.Diff = {
     var removed = 0;
     for (var i = 0; i < diff.length; ++i) {
       var token = diff[i];
-      if (token[0] === WebInspector.Diff.Operation.Equal) {
+      if (token[0] === Diff.Diff.Operation.Equal) {
         flush();
-        normalized.push([WebInspector.Diff.Operation.Equal, token[1].length]);
-      } else if (token[0] === WebInspector.Diff.Operation.Delete) {
+        normalized.push([Diff.Diff.Operation.Equal, token[1].length]);
+      } else if (token[0] === Diff.Diff.Operation.Delete) {
         removed += token[1].length;
       } else {
         added += token[1].length;
@@ -60,13 +60,13 @@ WebInspector.Diff = {
     function flush() {
       if (added && removed) {
         var min = Math.min(added, removed);
-        normalized.push([WebInspector.Diff.Operation.Edit, min]);
+        normalized.push([Diff.Diff.Operation.Edit, min]);
         added -= min;
         removed -= min;
       }
       if (added || removed) {
         var balance = added - removed;
-        var type = balance < 0 ? WebInspector.Diff.Operation.Delete : WebInspector.Diff.Operation.Insert;
+        var type = balance < 0 ? Diff.Diff.Operation.Delete : Diff.Diff.Operation.Insert;
         normalized.push([type, Math.abs(balance)]);
         added = 0;
         removed = 0;
@@ -76,7 +76,7 @@ WebInspector.Diff = {
 
 };
 
-WebInspector.Diff.Operation = {
+Diff.Diff.Operation = {
   Equal: 0,
   Insert: 1,
   Delete: -1,

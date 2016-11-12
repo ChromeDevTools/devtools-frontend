@@ -28,13 +28,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.ContentProvider}
+ * @implements {Common.ContentProvider}
  * @unrestricted
  */
-WebInspector.CompilerSourceMappingContentProvider = class {
+SDK.CompilerSourceMappingContentProvider = class {
   /**
    * @param {string} sourceURL
-   * @param {!WebInspector.ResourceType} contentType
+   * @param {!Common.ResourceType} contentType
    */
   constructor(sourceURL, contentType) {
     this._sourceURL = sourceURL;
@@ -51,7 +51,7 @@ WebInspector.CompilerSourceMappingContentProvider = class {
 
   /**
    * @override
-   * @return {!WebInspector.ResourceType}
+   * @return {!Common.ResourceType}
    */
   contentType() {
     return this._contentType;
@@ -64,14 +64,14 @@ WebInspector.CompilerSourceMappingContentProvider = class {
   requestContent() {
     var callback;
     var promise = new Promise(fulfill => callback = fulfill);
-    WebInspector.multitargetNetworkManager.loadResource(this._sourceURL, contentLoaded.bind(this));
+    SDK.multitargetNetworkManager.loadResource(this._sourceURL, contentLoaded.bind(this));
     return promise;
 
     /**
      * @param {number} statusCode
      * @param {!Object.<string, string>} headers
      * @param {string} content
-     * @this {WebInspector.CompilerSourceMappingContentProvider}
+     * @this {SDK.CompilerSourceMappingContentProvider}
      */
     function contentLoaded(statusCode, headers, content) {
       if (statusCode >= 400) {
@@ -91,7 +91,7 @@ WebInspector.CompilerSourceMappingContentProvider = class {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
    */
   searchInContent(query, caseSensitive, isRegex, callback) {
     this.requestContent().then(contentLoaded);
@@ -105,7 +105,7 @@ WebInspector.CompilerSourceMappingContentProvider = class {
         return;
       }
 
-      callback(WebInspector.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
+      callback(Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
     }
   }
 };

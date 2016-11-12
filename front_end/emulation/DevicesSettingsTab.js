@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.ListWidget.Delegate}
+ * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-WebInspector.DevicesSettingsTab = class extends WebInspector.VBox {
+Emulation.DevicesSettingsTab = class extends UI.VBox {
   constructor() {
     super();
     this.element.classList.add('settings-tab-container');
@@ -13,26 +13,26 @@ WebInspector.DevicesSettingsTab = class extends WebInspector.VBox {
     this.registerRequiredCSS('emulation/devicesSettingsTab.css');
 
     var header = this.element.createChild('header');
-    header.createChild('h3').createTextChild(WebInspector.UIString('Emulated Devices'));
+    header.createChild('h3').createTextChild(Common.UIString('Emulated Devices'));
     this.containerElement = this.element.createChild('div', 'help-container-wrapper')
                                 .createChild('div', 'settings-tab help-content help-container');
 
     var buttonsRow = this.containerElement.createChild('div', 'devices-button-row');
     this._addCustomButton =
-        createTextButton(WebInspector.UIString('Add custom device...'), this._addCustomDevice.bind(this));
+        createTextButton(Common.UIString('Add custom device...'), this._addCustomDevice.bind(this));
     buttonsRow.appendChild(this._addCustomButton);
 
-    this._list = new WebInspector.ListWidget(this);
+    this._list = new UI.ListWidget(this);
     this._list.registerRequiredCSS('emulation/devicesSettingsTab.css');
     this._list.element.classList.add('devices-list');
     this._list.show(this.containerElement);
 
     this._muteUpdate = false;
-    this._emulatedDevicesList = WebInspector.EmulatedDevicesList.instance();
+    this._emulatedDevicesList = Emulation.EmulatedDevicesList.instance();
     this._emulatedDevicesList.addEventListener(
-        WebInspector.EmulatedDevicesList.Events.CustomDevicesUpdated, this._devicesUpdated, this);
+        Emulation.EmulatedDevicesList.Events.CustomDevicesUpdated, this._devicesUpdated, this);
     this._emulatedDevicesList.addEventListener(
-        WebInspector.EmulatedDevicesList.Events.StandardDevicesUpdated, this._devicesUpdated, this);
+        Emulation.EmulatedDevicesList.Events.StandardDevicesUpdated, this._devicesUpdated, this);
 
     this.setDefaultFocusedElement(this._addCustomButton);
   }
@@ -58,7 +58,7 @@ WebInspector.DevicesSettingsTab = class extends WebInspector.VBox {
     this._list.appendSeparator();
 
     devices = this._emulatedDevicesList.standard().slice();
-    devices.sort(WebInspector.EmulatedDevice.deviceComparator);
+    devices.sort(Emulation.EmulatedDevice.deviceComparator);
     for (var i = 0; i < devices.length; ++i)
       this._list.appendItem(devices[i], false);
   }
@@ -76,7 +76,7 @@ WebInspector.DevicesSettingsTab = class extends WebInspector.VBox {
   }
 
   _addCustomDevice() {
-    var device = new WebInspector.EmulatedDevice();
+    var device = new Emulation.EmulatedDevice();
     device.deviceScaleFactor = 0;
     device.horizontal.width = 700;
     device.horizontal.height = 400;
@@ -100,7 +100,7 @@ WebInspector.DevicesSettingsTab = class extends WebInspector.VBox {
    * @return {!Element}
    */
   renderItem(item, editable) {
-    var device = /** @type {!WebInspector.EmulatedDevice} */ (item);
+    var device = /** @type {!Emulation.EmulatedDevice} */ (item);
     var element = createElementWithClass('div', 'devices-list-item');
     var checkbox = element.createChild('input', 'devices-list-checkbox');
     checkbox.type = 'checkbox';
@@ -111,7 +111,7 @@ WebInspector.DevicesSettingsTab = class extends WebInspector.VBox {
 
     /**
      * @param {!Event} event
-     * @this {WebInspector.DevicesSettingsTab}
+     * @this {Emulation.DevicesSettingsTab}
      */
     function onItemClicked(event) {
       var show = !checkbox.checked;
@@ -128,17 +128,17 @@ WebInspector.DevicesSettingsTab = class extends WebInspector.VBox {
    * @param {number} index
    */
   removeItemRequested(item, index) {
-    this._emulatedDevicesList.removeCustomDevice(/** @type {!WebInspector.EmulatedDevice} */ (item));
+    this._emulatedDevicesList.removeCustomDevice(/** @type {!Emulation.EmulatedDevice} */ (item));
   }
 
   /**
    * @override
    * @param {*} item
-   * @param {!WebInspector.ListWidget.Editor} editor
+   * @param {!UI.ListWidget.Editor} editor
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {
-    var device = /** @type {!WebInspector.EmulatedDevice} */ (item);
+    var device = /** @type {!Emulation.EmulatedDevice} */ (item);
     device.title = editor.control('title').value.trim();
     device.vertical.width = editor.control('width').value ? parseInt(editor.control('width').value, 10) : 0;
     device.vertical.height = editor.control('height').value ? parseInt(editor.control('height').value, 10) : 0;
@@ -148,15 +148,15 @@ WebInspector.DevicesSettingsTab = class extends WebInspector.VBox {
     device.userAgent = editor.control('user-agent').value;
     device.modes = [];
     device.modes.push(
-        {title: '', orientation: WebInspector.EmulatedDevice.Vertical, insets: new Insets(0, 0, 0, 0), image: null});
+        {title: '', orientation: Emulation.EmulatedDevice.Vertical, insets: new Insets(0, 0, 0, 0), image: null});
     device.modes.push(
-        {title: '', orientation: WebInspector.EmulatedDevice.Horizontal, insets: new Insets(0, 0, 0, 0), image: null});
+        {title: '', orientation: Emulation.EmulatedDevice.Horizontal, insets: new Insets(0, 0, 0, 0), image: null});
     device.capabilities = [];
     var uaType = editor.control('ua-type').value;
-    if (uaType === WebInspector.DeviceModeModel.UA.Mobile || uaType === WebInspector.DeviceModeModel.UA.MobileNoTouch)
-      device.capabilities.push(WebInspector.EmulatedDevice.Capability.Mobile);
-    if (uaType === WebInspector.DeviceModeModel.UA.Mobile || uaType === WebInspector.DeviceModeModel.UA.DesktopTouch)
-      device.capabilities.push(WebInspector.EmulatedDevice.Capability.Touch);
+    if (uaType === Emulation.DeviceModeModel.UA.Mobile || uaType === Emulation.DeviceModeModel.UA.MobileNoTouch)
+      device.capabilities.push(Emulation.EmulatedDevice.Capability.Mobile);
+    if (uaType === Emulation.DeviceModeModel.UA.Mobile || uaType === Emulation.DeviceModeModel.UA.DesktopTouch)
+      device.capabilities.push(Emulation.EmulatedDevice.Capability.Touch);
     if (isNew)
       this._emulatedDevicesList.addCustomDevice(device);
     else
@@ -168,10 +168,10 @@ WebInspector.DevicesSettingsTab = class extends WebInspector.VBox {
   /**
    * @override
    * @param {*} item
-   * @return {!WebInspector.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor}
    */
   beginEdit(item) {
-    var device = /** @type {!WebInspector.EmulatedDevice} */ (item);
+    var device = /** @type {!Emulation.EmulatedDevice} */ (item);
     var editor = this._createEditor();
     editor.control('title').value = device.title;
     editor.control('width').value = this._toNumericInputValue(device.vertical.width);
@@ -180,40 +180,40 @@ WebInspector.DevicesSettingsTab = class extends WebInspector.VBox {
     editor.control('user-agent').value = device.userAgent;
     var uaType;
     if (device.mobile())
-      uaType = device.touch() ? WebInspector.DeviceModeModel.UA.Mobile : WebInspector.DeviceModeModel.UA.MobileNoTouch;
+      uaType = device.touch() ? Emulation.DeviceModeModel.UA.Mobile : Emulation.DeviceModeModel.UA.MobileNoTouch;
     else
-      uaType = device.touch() ? WebInspector.DeviceModeModel.UA.DesktopTouch : WebInspector.DeviceModeModel.UA.Desktop;
+      uaType = device.touch() ? Emulation.DeviceModeModel.UA.DesktopTouch : Emulation.DeviceModeModel.UA.Desktop;
     editor.control('ua-type').value = uaType;
     return editor;
   }
 
   /**
-   * @return {!WebInspector.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor}
    */
   _createEditor() {
     if (this._editor)
       return this._editor;
 
-    var editor = new WebInspector.ListWidget.Editor();
+    var editor = new UI.ListWidget.Editor();
     this._editor = editor;
     var content = editor.contentElement();
 
     var fields = content.createChild('div', 'devices-edit-fields');
     fields.createChild('div', 'hbox')
-        .appendChild(editor.createInput('title', 'text', WebInspector.UIString('Device name'), titleValidator));
+        .appendChild(editor.createInput('title', 'text', Common.UIString('Device name'), titleValidator));
     var screen = fields.createChild('div', 'hbox');
-    screen.appendChild(editor.createInput('width', 'text', WebInspector.UIString('Width'), sizeValidator));
-    screen.appendChild(editor.createInput('height', 'text', WebInspector.UIString('height'), sizeValidator));
-    var dpr = editor.createInput('scale', 'text', WebInspector.UIString('Device pixel ratio'), scaleValidator);
+    screen.appendChild(editor.createInput('width', 'text', Common.UIString('Width'), sizeValidator));
+    screen.appendChild(editor.createInput('height', 'text', Common.UIString('height'), sizeValidator));
+    var dpr = editor.createInput('scale', 'text', Common.UIString('Device pixel ratio'), scaleValidator);
     dpr.classList.add('device-edit-fixed');
     screen.appendChild(dpr);
     var ua = fields.createChild('div', 'hbox');
-    ua.appendChild(editor.createInput('user-agent', 'text', WebInspector.UIString('User agent string'), () => true));
+    ua.appendChild(editor.createInput('user-agent', 'text', Common.UIString('User agent string'), () => true));
     var uaType = editor.createSelect(
         'ua-type',
         [
-          WebInspector.DeviceModeModel.UA.Mobile, WebInspector.DeviceModeModel.UA.MobileNoTouch,
-          WebInspector.DeviceModeModel.UA.Desktop, WebInspector.DeviceModeModel.UA.DesktopTouch
+          Emulation.DeviceModeModel.UA.Mobile, Emulation.DeviceModeModel.UA.MobileNoTouch,
+          Emulation.DeviceModeModel.UA.Desktop, Emulation.DeviceModeModel.UA.DesktopTouch
         ],
         () => true);
     uaType.classList.add('device-edit-fixed');
@@ -239,7 +239,7 @@ WebInspector.DevicesSettingsTab = class extends WebInspector.VBox {
      * @return {boolean}
      */
     function sizeValidator(item, index, input) {
-      return WebInspector.DeviceModeModel.deviceSizeValidator(input.value);
+      return Emulation.DeviceModeModel.deviceSizeValidator(input.value);
     }
 
     /**
@@ -249,7 +249,7 @@ WebInspector.DevicesSettingsTab = class extends WebInspector.VBox {
      * @return {boolean}
      */
     function scaleValidator(item, index, input) {
-      return WebInspector.DeviceModeModel.deviceScaleFactorValidator(input.value);
+      return Emulation.DeviceModeModel.deviceScaleFactorValidator(input.value);
     }
   }
 };

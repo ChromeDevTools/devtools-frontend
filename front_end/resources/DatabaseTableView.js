@@ -26,22 +26,22 @@
 /**
  * @unrestricted
  */
-WebInspector.DatabaseTableView = class extends WebInspector.SimpleView {
+Resources.DatabaseTableView = class extends UI.SimpleView {
   constructor(database, tableName) {
-    super(WebInspector.UIString('Database'));
+    super(Common.UIString('Database'));
 
     this.database = database;
     this.tableName = tableName;
 
     this.element.classList.add('storage-view', 'table');
 
-    this._visibleColumnsSetting = WebInspector.settings.createSetting('databaseTableViewVisibleColumns', {});
+    this._visibleColumnsSetting = Common.settings.createSetting('databaseTableViewVisibleColumns', {});
 
-    this.refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'largeicon-refresh');
+    this.refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     this.refreshButton.addEventListener('click', this._refreshButtonClicked, this);
-    this._visibleColumnsInput = new WebInspector.ToolbarInput(WebInspector.UIString('Visible columns'), 1);
+    this._visibleColumnsInput = new UI.ToolbarInput(Common.UIString('Visible columns'), 1);
     this._visibleColumnsInput.addEventListener(
-        WebInspector.ToolbarInput.Event.TextChanged, this._onVisibleColumnsChanged, this);
+        UI.ToolbarInput.Event.TextChanged, this._onVisibleColumnsChanged, this);
   }
 
   /**
@@ -53,7 +53,7 @@ WebInspector.DatabaseTableView = class extends WebInspector.SimpleView {
 
   /**
    * @override
-   * @return {!Array.<!WebInspector.ToolbarItem>}
+   * @return {!Array.<!UI.ToolbarItem>}
    */
   syncToolbarItems() {
     return [this.refreshButton, this._visibleColumnsInput];
@@ -77,11 +77,11 @@ WebInspector.DatabaseTableView = class extends WebInspector.SimpleView {
     this.detachChildWidgets();
     this.element.removeChildren();
 
-    this._dataGrid = WebInspector.SortableDataGrid.create(columnNames, values);
+    this._dataGrid = UI.SortableDataGrid.create(columnNames, values);
     this._visibleColumnsInput.setVisible(!!this._dataGrid);
     if (!this._dataGrid) {
       this._emptyWidget =
-          new WebInspector.EmptyWidget(WebInspector.UIString('The “%s”\ntable is empty.', this.tableName));
+          new UI.EmptyWidget(Common.UIString('The “%s”\ntable is empty.', this.tableName));
       this._emptyWidget.show(this.element);
       return;
     }
@@ -133,7 +133,7 @@ WebInspector.DatabaseTableView = class extends WebInspector.SimpleView {
     var errorMsgElement = createElement('div');
     errorMsgElement.className = 'storage-table-error';
     errorMsgElement.textContent =
-        WebInspector.UIString('An error occurred trying to\nread the “%s” table.', this.tableName);
+        Common.UIString('An error occurred trying to\nread the “%s” table.', this.tableName);
     this.element.appendChild(errorMsgElement);
   }
 

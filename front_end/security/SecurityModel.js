@@ -4,26 +4,26 @@
 /**
  * @unrestricted
  */
-WebInspector.SecurityModel = class extends WebInspector.SDKModel {
+Security.SecurityModel = class extends SDK.SDKModel {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(WebInspector.SecurityModel, target);
-    this._dispatcher = new WebInspector.SecurityDispatcher(this);
+    super(Security.SecurityModel, target);
+    this._dispatcher = new Security.SecurityDispatcher(this);
     this._securityAgent = target.securityAgent();
     target.registerSecurityDispatcher(this._dispatcher);
     this._securityAgent.enable();
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @return {?WebInspector.SecurityModel}
+   * @param {!SDK.Target} target
+   * @return {?Security.SecurityModel}
    */
   static fromTarget(target) {
-    var model = /** @type {?WebInspector.SecurityModel} */ (target.model(WebInspector.SecurityModel));
+    var model = /** @type {?Security.SecurityModel} */ (target.model(Security.SecurityModel));
     if (!model)
-      model = new WebInspector.SecurityModel(target);
+      model = new Security.SecurityModel(target);
     return model;
   }
 
@@ -34,8 +34,8 @@ WebInspector.SecurityModel = class extends WebInspector.SDKModel {
    */
   static SecurityStateComparator(a, b) {
     var securityStateMap;
-    if (WebInspector.SecurityModel._symbolicToNumericSecurityState) {
-      securityStateMap = WebInspector.SecurityModel._symbolicToNumericSecurityState;
+    if (Security.SecurityModel._symbolicToNumericSecurityState) {
+      securityStateMap = Security.SecurityModel._symbolicToNumericSecurityState;
     } else {
       securityStateMap = new Map();
       var ordering = [
@@ -47,7 +47,7 @@ WebInspector.SecurityModel = class extends WebInspector.SDKModel {
       ];
       for (var i = 0; i < ordering.length; i++)
         securityStateMap.set(ordering[i], i + 1);
-      WebInspector.SecurityModel._symbolicToNumericSecurityState = securityStateMap;
+      Security.SecurityModel._symbolicToNumericSecurityState = securityStateMap;
     }
     var aScore = securityStateMap.get(a) || 0;
     var bScore = securityStateMap.get(b) || 0;
@@ -61,7 +61,7 @@ WebInspector.SecurityModel = class extends WebInspector.SDKModel {
 };
 
 /** @enum {symbol} */
-WebInspector.SecurityModel.Events = {
+Security.SecurityModel.Events = {
   SecurityStateChanged: Symbol('SecurityStateChanged')
 };
 
@@ -69,7 +69,7 @@ WebInspector.SecurityModel.Events = {
 /**
  * @unrestricted
  */
-WebInspector.PageSecurityState = class {
+Security.PageSecurityState = class {
   /**
    * @param {!Protocol.Security.SecurityState} securityState
    * @param {!Array<!Protocol.Security.SecurityStateExplanation>} explanations
@@ -88,7 +88,7 @@ WebInspector.PageSecurityState = class {
  * @implements {Protocol.SecurityDispatcher}
  * @unrestricted
  */
-WebInspector.SecurityDispatcher = class {
+Security.SecurityDispatcher = class {
   constructor(model) {
     this._model = model;
   }
@@ -101,8 +101,8 @@ WebInspector.SecurityDispatcher = class {
    * @param {boolean=} schemeIsCryptographic
    */
   securityStateChanged(securityState, explanations, insecureContentStatus, schemeIsCryptographic) {
-    var pageSecurityState = new WebInspector.PageSecurityState(
+    var pageSecurityState = new Security.PageSecurityState(
         securityState, explanations || [], insecureContentStatus || null, schemeIsCryptographic || false);
-    this._model.dispatchEventToListeners(WebInspector.SecurityModel.Events.SecurityStateChanged, pageSecurityState);
+    this._model.dispatchEventToListeners(Security.SecurityModel.Events.SecurityStateChanged, pageSecurityState);
   }
 };

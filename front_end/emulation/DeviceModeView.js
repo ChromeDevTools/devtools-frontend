@@ -4,34 +4,34 @@
 /**
  * @unrestricted
  */
-WebInspector.DeviceModeView = class extends WebInspector.VBox {
+Emulation.DeviceModeView = class extends UI.VBox {
   constructor() {
     super(true);
     this.setMinimumSize(150, 150);
     this.element.classList.add('device-mode-view');
     this.registerRequiredCSS('emulation/deviceModeView.css');
-    WebInspector.Tooltip.addNativeOverrideContainer(this.contentElement);
+    UI.Tooltip.addNativeOverrideContainer(this.contentElement);
 
-    this._model = new WebInspector.DeviceModeModel(this._updateUI.bind(this));
-    this._mediaInspector = new WebInspector.MediaQueryInspector(
+    this._model = new Emulation.DeviceModeModel(this._updateUI.bind(this));
+    this._mediaInspector = new Emulation.MediaQueryInspector(
         () => this._model.appliedDeviceSize().width, this._model.setWidth.bind(this._model));
-    this._showMediaInspectorSetting = WebInspector.settings.moduleSetting('showMediaQueryInspector');
+    this._showMediaInspectorSetting = Common.settings.moduleSetting('showMediaQueryInspector');
     this._showMediaInspectorSetting.addChangeListener(this._updateUI, this);
-    this._showRulersSetting = WebInspector.settings.moduleSetting('emulation.showRulers');
+    this._showRulersSetting = Common.settings.moduleSetting('emulation.showRulers');
     this._showRulersSetting.addChangeListener(this._updateUI, this);
 
-    this._topRuler = new WebInspector.DeviceModeView.Ruler(true, this._model.setWidthAndScaleToFit.bind(this._model));
+    this._topRuler = new Emulation.DeviceModeView.Ruler(true, this._model.setWidthAndScaleToFit.bind(this._model));
     this._topRuler.element.classList.add('device-mode-ruler-top');
     this._leftRuler =
-        new WebInspector.DeviceModeView.Ruler(false, this._model.setHeightAndScaleToFit.bind(this._model));
+        new Emulation.DeviceModeView.Ruler(false, this._model.setHeightAndScaleToFit.bind(this._model));
     this._leftRuler.element.classList.add('device-mode-ruler-left');
     this._createUI();
-    WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
+    UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
   }
 
   _createUI() {
     this._toolbar =
-        new WebInspector.DeviceModeToolbar(this._model, this._showMediaInspectorSetting, this._showRulersSetting);
+        new Emulation.DeviceModeToolbar(this._model, this._showMediaInspectorSetting, this._showRulersSetting);
     this.contentElement.appendChild(this._toolbar.element());
 
     this._contentClip = this.contentElement.createChild('div', 'device-mode-content-clip vbox');
@@ -71,7 +71,7 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
     this._bottomResizerElement.createChild('div', '');
     this._createResizer(this._bottomResizerElement, 0, 1);
     this._bottomResizerElement.addEventListener('dblclick', this._model.setHeight.bind(this._model, 0), false);
-    this._bottomResizerElement.title = WebInspector.UIString('Double-click for full height');
+    this._bottomResizerElement.title = Common.UIString('Double-click for full height');
 
     this._pageArea = this._screenArea.createChild('div', 'device-mode-page-area');
     this._pageArea.createChild('content');
@@ -80,9 +80,9 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
   _populatePresetsContainer() {
     var sizes = [320, 375, 425, 768, 1024, 1440, 2560];
     var titles = [
-      WebInspector.UIString('Mobile S'), WebInspector.UIString('Mobile M'), WebInspector.UIString('Mobile L'),
-      WebInspector.UIString('Tablet'), WebInspector.UIString('Laptop'), WebInspector.UIString('Laptop L'),
-      WebInspector.UIString('4K')
+      Common.UIString('Mobile S'), Common.UIString('Mobile M'), Common.UIString('Mobile L'),
+      Common.UIString('Tablet'), Common.UIString('Laptop'), Common.UIString('Laptop L'),
+      Common.UIString('4K')
     ];
     this._presetBlocks = [];
     var inner = this._responsivePresetsContainer.createChild('div', 'device-mode-presets-container-inner');
@@ -98,10 +98,10 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
     /**
      * @param {number} width
      * @param {!Event} e
-     * @this {WebInspector.DeviceModeView}
+     * @this {Emulation.DeviceModeView}
      */
     function applySize(width, e) {
-      this._model.emulate(WebInspector.DeviceModeModel.Type.Responsive, null, null);
+      this._model.emulate(Emulation.DeviceModeModel.Type.Responsive, null, null);
       this._model.setSizeAndScaleToFit(width, 0);
       e.consume();
     }
@@ -111,10 +111,10 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
    * @param {!Element} element
    * @param {number} widthFactor
    * @param {number} heightFactor
-   * @return {!WebInspector.ResizerWidget}
+   * @return {!UI.ResizerWidget}
    */
   _createResizer(element, widthFactor, heightFactor) {
-    var resizer = new WebInspector.ResizerWidget();
+    var resizer = new UI.ResizerWidget();
     resizer.addElement(element);
     var cursor = widthFactor ? 'ew-resize' : 'ns-resize';
     if (widthFactor * heightFactor > 0)
@@ -122,15 +122,15 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
     if (widthFactor * heightFactor < 0)
       cursor = 'nesw-resize';
     resizer.setCursor(cursor);
-    resizer.addEventListener(WebInspector.ResizerWidget.Events.ResizeStart, this._onResizeStart, this);
+    resizer.addEventListener(UI.ResizerWidget.Events.ResizeStart, this._onResizeStart, this);
     resizer.addEventListener(
-        WebInspector.ResizerWidget.Events.ResizeUpdate, this._onResizeUpdate.bind(this, widthFactor, heightFactor));
-    resizer.addEventListener(WebInspector.ResizerWidget.Events.ResizeEnd, this._onResizeEnd, this);
+        UI.ResizerWidget.Events.ResizeUpdate, this._onResizeUpdate.bind(this, widthFactor, heightFactor));
+    resizer.addEventListener(UI.ResizerWidget.Events.ResizeEnd, this._onResizeEnd, this);
     return resizer;
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onResizeStart(event) {
     this._slowPositionStart = null;
@@ -141,7 +141,7 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
   /**
    * @param {number} widthFactor
    * @param {number} heightFactor
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onResizeUpdate(widthFactor, heightFactor, event) {
     if (event.data.shiftKey !== !!this._slowPositionStart)
@@ -157,36 +157,36 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
     }
 
     if (widthFactor) {
-      var dipOffsetX = cssOffsetX * WebInspector.zoomManager.zoomFactor();
+      var dipOffsetX = cssOffsetX * UI.zoomManager.zoomFactor();
       var newWidth = this._resizeStart.width + dipOffsetX * widthFactor;
       newWidth = Math.round(newWidth / this._model.scale());
-      if (newWidth >= WebInspector.DeviceModeModel.MinDeviceSize &&
-          newWidth <= WebInspector.DeviceModeModel.MaxDeviceSize)
+      if (newWidth >= Emulation.DeviceModeModel.MinDeviceSize &&
+          newWidth <= Emulation.DeviceModeModel.MaxDeviceSize)
         this._model.setWidth(newWidth);
     }
 
     if (heightFactor) {
-      var dipOffsetY = cssOffsetY * WebInspector.zoomManager.zoomFactor();
+      var dipOffsetY = cssOffsetY * UI.zoomManager.zoomFactor();
       var newHeight = this._resizeStart.height + dipOffsetY * heightFactor;
       newHeight = Math.round(newHeight / this._model.scale());
-      if (newHeight >= WebInspector.DeviceModeModel.MinDeviceSize &&
-          newHeight <= WebInspector.DeviceModeModel.MaxDeviceSize)
+      if (newHeight >= Emulation.DeviceModeModel.MinDeviceSize &&
+          newHeight <= Emulation.DeviceModeModel.MaxDeviceSize)
         this._model.setHeight(newHeight);
     }
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onResizeEnd(event) {
     delete this._resizeStart;
-    WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.ResizedViewInResponsiveMode);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.ResizedViewInResponsiveMode);
   }
 
   _updateUI() {
     /**
      * @param {!Element} element
-     * @param {!WebInspector.Rect} rect
+     * @param {!Common.Rect} rect
      */
     function applyRect(element, rect) {
       element.style.left = rect.left + 'px';
@@ -198,9 +198,9 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
     if (!this.isShowing())
       return;
 
-    var zoomFactor = WebInspector.zoomManager.zoomFactor();
+    var zoomFactor = UI.zoomManager.zoomFactor();
     var callDoResize = false;
-    var showRulers = this._showRulersSetting.get() && this._model.type() !== WebInspector.DeviceModeModel.Type.None;
+    var showRulers = this._showRulersSetting.get() && this._model.type() !== Emulation.DeviceModeModel.Type.None;
     var contentAreaResized = false;
     var updateRulers = false;
 
@@ -227,7 +227,7 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
     }
     this._contentClip.classList.toggle('device-mode-outline-visible', !!this._model.outlineImage());
 
-    var resizable = this._model.type() === WebInspector.DeviceModeModel.Type.Responsive;
+    var resizable = this._model.type() === Emulation.DeviceModeModel.Type.Responsive;
     if (resizable !== this._cachedResizable) {
       this._rightResizerElement.classList.toggle('hidden', !resizable);
       this._leftResizerElement.classList.toggle('hidden', !resizable);
@@ -238,7 +238,7 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
     }
 
     var mediaInspectorVisible =
-        this._showMediaInspectorSetting.get() && this._model.type() !== WebInspector.DeviceModeModel.Type.None;
+        this._showMediaInspectorSetting.get() && this._model.type() !== Emulation.DeviceModeModel.Type.None;
     if (mediaInspectorVisible !== this._cachedMediaInspectorVisible) {
       if (mediaInspectorVisible)
         this._mediaInspector.show(this._mediaInspectorContainer);
@@ -312,7 +312,7 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
   }
 
   _contentAreaResized() {
-    var zoomFactor = WebInspector.zoomManager.zoomFactor();
+    var zoomFactor = UI.zoomManager.zoomFactor();
     var rect = this._contentArea.getBoundingClientRect();
     var availableSize = new Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
     var preferredSize = new Size(
@@ -360,23 +360,23 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
    * @override
    */
   willHide() {
-    this._model.emulate(WebInspector.DeviceModeModel.Type.None, null, null);
+    this._model.emulate(Emulation.DeviceModeModel.Type.None, null, null);
   }
 
   captureScreenshot() {
-    var mainTarget = WebInspector.targetManager.mainTarget();
+    var mainTarget = SDK.targetManager.mainTarget();
     if (!mainTarget)
       return;
-    WebInspector.DOMModel.muteHighlight();
+    SDK.DOMModel.muteHighlight();
 
-    var zoomFactor = WebInspector.zoomManager.zoomFactor();
+    var zoomFactor = UI.zoomManager.zoomFactor();
     var rect = this._contentArea.getBoundingClientRect();
     var availableSize = new Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
     var outlineVisible = this._model.deviceOutlineSetting().get();
 
     if (availableSize.width < this._model.screenRect().width ||
         availableSize.height < this._model.screenRect().height) {
-      WebInspector.inspectorView.minimize();
+      UI.inspectorView.minimize();
       this._model.deviceOutlineSetting().set(false);
     }
 
@@ -385,7 +385,7 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
     /**
      * @param {?Protocol.Error} error
      * @param {string} content
-     * @this {WebInspector.DeviceModeView}
+     * @this {Emulation.DeviceModeView}
      */
     function screenshotCaptured(error, content) {
       this._model.deviceOutlineSetting().set(outlineVisible);
@@ -400,8 +400,8 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
       outlineRect.left = 0;
       outlineRect.top = 0;
 
-      WebInspector.DOMModel.unmuteHighlight();
-      WebInspector.inspectorView.restore();
+      SDK.DOMModel.unmuteHighlight();
+      UI.inspectorView.restore();
 
       if (error) {
         console.error(error);
@@ -425,7 +425,7 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
 
       /**
        * @param {string} src
-       * @param {!WebInspector.Rect} rect
+       * @param {!Common.Rect} rect
        * @return {!Promise<undefined>}
        */
       function paintImage(src, rect) {
@@ -452,7 +452,7 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
       }
 
       /**
-       * @this {WebInspector.DeviceModeView}
+       * @this {Emulation.DeviceModeView}
        */
       function paintScreenshot() {
         var pageImage = new Image();
@@ -462,8 +462,8 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
             Math.min(pageImage.naturalHeight, screenRect.height));
         var url = mainTarget && mainTarget.inspectedURL();
         var fileName = url ? url.trimURL().removeURLFragment() : '';
-        if (this._model.type() === WebInspector.DeviceModeModel.Type.Device)
-          fileName += WebInspector.UIString('(%s)', this._model.device().title);
+        if (this._model.type() === Emulation.DeviceModeModel.Type.Device)
+          fileName += Common.UIString('(%s)', this._model.device().title);
         // Trigger download.
         var link = createElement('a');
         link.download = fileName + '.png';
@@ -477,7 +477,7 @@ WebInspector.DeviceModeView = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.DeviceModeView.Ruler = class extends WebInspector.VBox {
+Emulation.DeviceModeView.Ruler = class extends UI.VBox {
   /**
    * @param {boolean} horizontal
    * @param {function(number)} applyCallback
@@ -490,7 +490,7 @@ WebInspector.DeviceModeView.Ruler = class extends WebInspector.VBox {
     this._horizontal = horizontal;
     this._scale = 1;
     this._count = 0;
-    this._throttler = new WebInspector.Throttler(0);
+    this._throttler = new Common.Throttler(0);
     this._applyCallback = applyCallback;
   }
 
@@ -513,7 +513,7 @@ WebInspector.DeviceModeView.Ruler = class extends WebInspector.VBox {
    * @return {!Promise.<?>}
    */
   _update() {
-    var zoomFactor = WebInspector.zoomManager.zoomFactor();
+    var zoomFactor = UI.zoomManager.zoomFactor();
     var size = this._horizontal ? this._contentElement.offsetWidth : this._contentElement.offsetHeight;
 
     if (this._scale !== this._renderedScale || zoomFactor !== this._renderedZoomFactor) {

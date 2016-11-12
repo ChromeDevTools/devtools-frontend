@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotWorkerDispatcher = class {
+HeapSnapshotWorker.HeapSnapshotWorkerDispatcher = class {
   constructor(globalObject, postMessage) {
     this._objects = [];
     this._global = globalObject;
@@ -55,7 +55,7 @@ WebInspector.HeapSnapshotWorkerDispatcher = class {
   }
 
   dispatchMessage(event) {
-    var data = /** @type {!WebInspector.HeapSnapshotCommon.WorkerCommand } */ (event.data);
+    var data = /** @type {!Profiler.HeapSnapshotCommon.WorkerCommand } */ (event.data);
     var response = {callId: data.callId};
     try {
       switch (data.disposition) {

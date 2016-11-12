@@ -1,11 +1,11 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Settings",
             "actionId": "settings.show",
             "title": "Settings",
-            "className": "WebInspector.SettingsScreen.ActionDelegate",
+            "className": "Settings.SettingsScreen.ActionDelegate",
             "bindings": [
                 {
                     "shortcut": "F1 Shift+?"
@@ -13,23 +13,23 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Settings",
             "actionId": "settings.help",
             "title": "Help",
-            "className": "WebInspector.SettingsScreen.ActionDelegate"
+            "className": "Settings.SettingsScreen.ActionDelegate"
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Settings",
             "actionId": "settings.shortcuts",
             "title": "Shortcuts",
-            "className": "WebInspector.SettingsScreen.ActionDelegate"
+            "className": "Settings.SettingsScreen.ActionDelegate"
         },
         {
-            "type": "@WebInspector.Revealer",
-            "contextTypes": ["WebInspector.Setting"],
-            "className": "WebInspector.SettingsScreen.Revealer"
+            "type": "@Common.Revealer",
+            "contextTypes": ["Common.Setting"],
+            "className": "Settings.SettingsScreen.Revealer"
         },
         {
             "type": "context-menu-item",
@@ -55,7 +55,7 @@
             "id": "preferences",
             "title": "Preferences",
             "order": "0",
-            "className": "WebInspector.GenericSettingsTab"
+            "className": "Settings.GenericSettingsTab"
         },
         {
             "type": "view",
@@ -63,7 +63,7 @@
             "id": "workspace",
             "title": "Workspace",
             "order": "1",
-            "className": "WebInspector.WorkspaceSettingsTab"
+            "className": "Settings.WorkspaceSettingsTab"
         },
         {
             "type": "view",
@@ -72,7 +72,7 @@
             "title": "Experiments",
             "order": "2",
             "experiment": "*",
-            "className": "WebInspector.ExperimentsSettingsTab"
+            "className": "Settings.ExperimentsSettingsTab"
         },
         {
             "type": "view",
@@ -80,12 +80,12 @@
             "id": "blackbox",
             "title": "Blackboxing",
             "order": "3",
-            "className": "WebInspector.FrameworkBlackboxSettingsTab"
+            "className": "Settings.FrameworkBlackboxSettingsTab"
         },
         {
-            "type": "@WebInspector.ViewLocationResolver",
+            "type": "@UI.ViewLocationResolver",
             "name": "settings-view",
-            "className": "WebInspector.SettingsScreen"
+            "className": "Settings.SettingsScreen"
         }
     ],
     "dependencies": [

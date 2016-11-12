@@ -4,12 +4,12 @@
 /**
  * @unrestricted
  */
-WebInspector.NetworkMapping = class {
+Bindings.NetworkMapping = class {
   /**
-   * @param {!WebInspector.TargetManager} targetManager
-   * @param {!WebInspector.Workspace} workspace
-   * @param {!WebInspector.FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
-   * @param {!WebInspector.FileSystemMapping} fileSystemMapping
+   * @param {!SDK.TargetManager} targetManager
+   * @param {!Workspace.Workspace} workspace
+   * @param {!Bindings.FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
+   * @param {!Workspace.FileSystemMapping} fileSystemMapping
    */
   constructor(targetManager, workspace, fileSystemWorkspaceBinding, fileSystemMapping) {
     this._targetManager = targetManager;
@@ -22,15 +22,15 @@ WebInspector.NetworkMapping = class {
     var fileSystemManager = fileSystemWorkspaceBinding.fileSystemManager();
     this._eventListeners = [
       fileSystemManager.addEventListener(
-          WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this),
+          Workspace.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this),
       fileSystemManager.addEventListener(
-          WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this),
+          Workspace.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this),
     ];
     fileSystemManager.waitForFileSystems().then(this._fileSystemsLoaded.bind(this));
   }
 
   /**
-   * @param {!Array<!WebInspector.IsolatedFileSystem>} fileSystems
+   * @param {!Array<!Workspace.IsolatedFileSystem>} fileSystems
    */
   _fileSystemsLoaded(fileSystems) {
     for (var fileSystem of fileSystems)
@@ -38,15 +38,15 @@ WebInspector.NetworkMapping = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _fileSystemAdded(event) {
-    var fileSystem = /** @type {!WebInspector.IsolatedFileSystem} */ (event.data);
+    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
     this._addMappingsForFilesystem(fileSystem);
   }
 
   /**
-   * @param {!WebInspector.IsolatedFileSystem} fileSystem
+   * @param {!Workspace.IsolatedFileSystem} fileSystem
    */
   _addMappingsForFilesystem(fileSystem) {
     this._addingFileSystem = true;
@@ -67,38 +67,38 @@ WebInspector.NetworkMapping = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _fileSystemRemoved(event) {
-    var fileSystem = /** @type {!WebInspector.IsolatedFileSystem} */ (event.data);
+    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
     this._fileSystemMapping.removeFileSystem(fileSystem.path());
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @param {?WebInspector.ResourceTreeFrame} frame
+   * @param {!SDK.Target} target
+   * @param {?SDK.ResourceTreeFrame} frame
    * @param {string} url
-   * @return {?WebInspector.UISourceCode}
+   * @return {?Workspace.UISourceCode}
    */
   _networkUISourceCodeForURL(target, frame, url) {
-    return this._workspace.uiSourceCode(WebInspector.NetworkProject.projectId(target, frame, false), url);
+    return this._workspace.uiSourceCode(Bindings.NetworkProject.projectId(target, frame, false), url);
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @param {?WebInspector.ResourceTreeFrame} frame
+   * @param {!SDK.Target} target
+   * @param {?SDK.ResourceTreeFrame} frame
    * @param {string} url
-   * @return {?WebInspector.UISourceCode}
+   * @return {?Workspace.UISourceCode}
    */
   _contentScriptUISourceCodeForURL(target, frame, url) {
-    return this._workspace.uiSourceCode(WebInspector.NetworkProject.projectId(target, frame, true), url);
+    return this._workspace.uiSourceCode(Bindings.NetworkProject.projectId(target, frame, true), url);
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @param {?WebInspector.ResourceTreeFrame} frame
+   * @param {!SDK.Target} target
+   * @param {?SDK.ResourceTreeFrame} frame
    * @param {string} url
-   * @return {?WebInspector.UISourceCode}
+   * @return {?Workspace.UISourceCode}
    */
   _uiSourceCodeForURL(target, frame, url) {
     return this._networkUISourceCodeForURL(target, frame, url) ||
@@ -107,50 +107,50 @@ WebInspector.NetworkMapping = class {
 
   /**
    * @param {string} url
-   * @param {!WebInspector.Script} script
-   * @return {?WebInspector.UISourceCode}
+   * @param {!SDK.Script} script
+   * @return {?Workspace.UISourceCode}
    */
   uiSourceCodeForScriptURL(url, script) {
-    var frame = WebInspector.ResourceTreeFrame.fromScript(script);
+    var frame = SDK.ResourceTreeFrame.fromScript(script);
     return this._uiSourceCodeForURL(script.target(), frame, url);
   }
 
   /**
    * @param {string} url
-   * @param {!WebInspector.CSSStyleSheetHeader} header
-   * @return {?WebInspector.UISourceCode}
+   * @param {!SDK.CSSStyleSheetHeader} header
+   * @return {?Workspace.UISourceCode}
    */
   uiSourceCodeForStyleURL(url, header) {
-    var frame = WebInspector.ResourceTreeFrame.fromStyleSheet(header);
+    var frame = SDK.ResourceTreeFrame.fromStyleSheet(header);
     return this._uiSourceCodeForURL(header.target(), frame, url);
   }
 
   /**
    * @param {string} url
-   * @return {?WebInspector.UISourceCode}
+   * @return {?Workspace.UISourceCode}
    */
   uiSourceCodeForURLForAnyTarget(url) {
-    return WebInspector.workspace.uiSourceCodeForURL(url);
+    return Workspace.workspace.uiSourceCodeForURL(url);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} networkUISourceCode
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} networkUISourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   addMapping(networkUISourceCode, uiSourceCode) {
-    var fileSystemPath = WebInspector.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
+    var fileSystemPath = Bindings.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
     this._fileSystemMapping.addMappingForResource(networkUISourceCode.url(), fileSystemPath, uiSourceCode.url());
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   removeMapping(uiSourceCode) {
     this._fileSystemMapping.removeMappingForURL(uiSourceCode.url());
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _revealSourceLine(event) {
     var url = /** @type {string} */ (event.data['url']);
@@ -159,31 +159,31 @@ WebInspector.NetworkMapping = class {
 
     var uiSourceCode = this.uiSourceCodeForURLForAnyTarget(url);
     if (uiSourceCode) {
-      WebInspector.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
+      Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
       return;
     }
 
     /**
-     * @param {!WebInspector.Event} event
-     * @this {WebInspector.NetworkMapping}
+     * @param {!Common.Event} event
+     * @this {Bindings.NetworkMapping}
      */
     function listener(event) {
-      var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
+      var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
       if (uiSourceCode.url() === url) {
-        WebInspector.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
-        this._workspace.removeEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, listener, this);
+        Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
+        this._workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener, this);
       }
     }
 
-    this._workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeAdded, listener, this);
+    this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener, this);
   }
 
   dispose() {
-    WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
   }
 };
 
 /**
- * @type {!WebInspector.NetworkMapping}
+ * @type {!Bindings.NetworkMapping}
  */
-WebInspector.networkMapping;
+Bindings.networkMapping;

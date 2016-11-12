@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.TargetsComboBoxController = class {
+Profiler.TargetsComboBoxController = class {
   /**
    * @param {!Element} selectElement
    * @param {!Element} elementToHide
@@ -15,25 +15,25 @@ WebInspector.TargetsComboBoxController = class {
     selectElement.addEventListener('change', this._onComboBoxSelectionChange.bind(this), false);
     this._selectElement = selectElement;
     this._elementToHide = elementToHide;
-    /** @type {!Map.<!WebInspector.Target, !Element>} */
+    /** @type {!Map.<!SDK.Target, !Element>} */
     this._targetToOption = new Map();
 
-    WebInspector.context.addFlavorChangeListener(WebInspector.Target, this._targetChangedExternally, this);
-    WebInspector.targetManager.addEventListener(
-        WebInspector.TargetManager.Events.NameChanged, this._targetNameChanged, this);
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.JS);
+    UI.context.addFlavorChangeListener(SDK.Target, this._targetChangedExternally, this);
+    SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.NameChanged, this._targetNameChanged, this);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.JS);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     var option = this._selectElement.createChild('option');
     option.text = target.name();
     option.__target = target;
     this._targetToOption.set(target, option);
-    if (WebInspector.context.flavor(WebInspector.Target) === target)
+    if (UI.context.flavor(SDK.Target) === target)
       this._selectElement.selectedIndex = Array.prototype.indexOf.call(/** @type {?} */ (this._selectElement), option);
 
     this._updateVisibility();
@@ -41,7 +41,7 @@ WebInspector.TargetsComboBoxController = class {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
     var option = this._targetToOption.remove(target);
@@ -50,10 +50,10 @@ WebInspector.TargetsComboBoxController = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _targetNameChanged(event) {
-    var target = /** @type {!WebInspector.Target} */ (event.data);
+    var target = /** @type {!SDK.Target} */ (event.data);
     var option = this._targetToOption.get(target);
     option.text = target.name();
   }
@@ -63,7 +63,7 @@ WebInspector.TargetsComboBoxController = class {
     if (!selectedOption)
       return;
 
-    WebInspector.context.setFlavor(WebInspector.Target, selectedOption.__target);
+    UI.context.setFlavor(SDK.Target, selectedOption.__target);
   }
 
   _updateVisibility() {
@@ -72,10 +72,10 @@ WebInspector.TargetsComboBoxController = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _targetChangedExternally(event) {
-    var target = /** @type {?WebInspector.Target} */ (event.data);
+    var target = /** @type {?SDK.Target} */ (event.data);
     if (target) {
       var option = /** @type {!Element} */ (this._targetToOption.get(target));
       this._select(option);

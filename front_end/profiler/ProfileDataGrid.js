@@ -26,10 +26,10 @@
 /**
  * @unrestricted
  */
-WebInspector.ProfileDataGridNode = class extends WebInspector.DataGridNode {
+Profiler.ProfileDataGridNode = class extends UI.DataGridNode {
   /**
-   * @param {!WebInspector.ProfileNode} profileNode
-   * @param {!WebInspector.ProfileDataGridTree} owningTree
+   * @param {!SDK.ProfileNode} profileNode
+   * @param {!Profiler.ProfileDataGridTree} owningTree
    * @param {boolean} hasChildren
    */
   constructor(profileNode, owningTree, hasChildren) {
@@ -37,20 +37,20 @@ WebInspector.ProfileDataGridNode = class extends WebInspector.DataGridNode {
 
     this.profileNode = profileNode;
     this.tree = owningTree;
-    /** @type {!Map<string, !WebInspector.ProfileDataGridNode>} */
+    /** @type {!Map<string, !Profiler.ProfileDataGridNode>} */
     this.childrenByCallUID = new Map();
     this.lastComparator = null;
 
     this.callUID = profileNode.callUID;
     this.self = profileNode.self;
     this.total = profileNode.total;
-    this.functionName = WebInspector.beautifyFunctionName(profileNode.functionName);
+    this.functionName = UI.beautifyFunctionName(profileNode.functionName);
     this._deoptReason = profileNode.deoptReason || '';
     this.url = profileNode.url;
   }
 
   /**
-   * @param {!Array<!Array<!WebInspector.ProfileDataGridNode>>} gridNodeGroups
+   * @param {!Array<!Array<!Profiler.ProfileDataGridNode>>} gridNodeGroups
    * @param {function(!T, !T)} comparator
    * @param {boolean} force
    * @template T
@@ -89,8 +89,8 @@ WebInspector.ProfileDataGridNode = class extends WebInspector.DataGridNode {
   }
 
   /**
-   * @param {!WebInspector.ProfileDataGridNode|!WebInspector.ProfileDataGridTree} container
-   * @param {!WebInspector.ProfileDataGridNode} child
+   * @param {!Profiler.ProfileDataGridNode|!Profiler.ProfileDataGridTree} container
+   * @param {!Profiler.ProfileDataGridNode} child
    * @param {boolean} shouldAbsorb
    */
   static merge(container, child, shouldAbsorb) {
@@ -118,14 +118,14 @@ WebInspector.ProfileDataGridNode = class extends WebInspector.DataGridNode {
       var existingChild = container.childrenByCallUID.get(orphanedChild.callUID);
 
       if (existingChild)
-        existingChild.merge(/** @type{!WebInspector.ProfileDataGridNode} */ (orphanedChild), false);
+        existingChild.merge(/** @type{!Profiler.ProfileDataGridNode} */ (orphanedChild), false);
       else
         container.appendChild(orphanedChild);
     }
   }
 
   /**
-   * @param {!WebInspector.ProfileDataGridNode|!WebInspector.ProfileDataGridTree} container
+   * @param {!Profiler.ProfileDataGridNode|!Profiler.ProfileDataGridTree} container
    */
   static populate(container) {
     if (container._populated)
@@ -163,8 +163,8 @@ WebInspector.ProfileDataGridNode = class extends WebInspector.DataGridNode {
         cell.classList.toggle('highlight', this._searchMatchedFunctionColumn);
         if (this._deoptReason) {
           cell.classList.add('not-optimized');
-          var warningIcon = WebInspector.Icon.create('smallicon-warning', 'profile-warn-marker');
-          warningIcon.title = WebInspector.UIString('Not optimized: %s', this._deoptReason);
+          var warningIcon = UI.Icon.create('smallicon-warning', 'profile-warn-marker');
+          warningIcon.title = Common.UIString('Not optimized: %s', this._deoptReason);
           cell.appendChild(warningIcon);
         }
         cell.createTextChild(this.functionName);
@@ -203,29 +203,29 @@ WebInspector.ProfileDataGridNode = class extends WebInspector.DataGridNode {
    * @template T
    */
   sort(comparator, force) {
-    return WebInspector.ProfileDataGridNode.sort([[this]], comparator, force);
+    return Profiler.ProfileDataGridNode.sort([[this]], comparator, force);
   }
 
   /**
    * @override
-   * @param {!WebInspector.DataGridNode} profileDataGridNode
+   * @param {!UI.DataGridNode} profileDataGridNode
    * @param {number} index
    */
   insertChild(profileDataGridNode, index) {
     super.insertChild(profileDataGridNode, index);
 
     this.childrenByCallUID.set(
-        profileDataGridNode.callUID, /** @type {!WebInspector.ProfileDataGridNode} */ (profileDataGridNode));
+        profileDataGridNode.callUID, /** @type {!Profiler.ProfileDataGridNode} */ (profileDataGridNode));
   }
 
   /**
    * @override
-   * @param {!WebInspector.DataGridNode} profileDataGridNode
+   * @param {!UI.DataGridNode} profileDataGridNode
    */
   removeChild(profileDataGridNode) {
     super.removeChild(profileDataGridNode);
 
-    this.childrenByCallUID.delete((/** @type {!WebInspector.ProfileDataGridNode} */ (profileDataGridNode)).callUID);
+    this.childrenByCallUID.delete((/** @type {!Profiler.ProfileDataGridNode} */ (profileDataGridNode)).callUID);
   }
 
   /**
@@ -238,8 +238,8 @@ WebInspector.ProfileDataGridNode = class extends WebInspector.DataGridNode {
   }
 
   /**
-   * @param {!WebInspector.ProfileDataGridNode} node
-   * @return {?WebInspector.ProfileDataGridNode}
+   * @param {!Profiler.ProfileDataGridNode} node
+   * @return {?Profiler.ProfileDataGridNode}
    */
   findChild(node) {
     if (!node)
@@ -259,7 +259,7 @@ WebInspector.ProfileDataGridNode = class extends WebInspector.DataGridNode {
    * @override
    */
   populate() {
-    WebInspector.ProfileDataGridNode.populate(this);
+    Profiler.ProfileDataGridNode.populate(this);
   }
 
   /**
@@ -305,23 +305,23 @@ WebInspector.ProfileDataGridNode = class extends WebInspector.DataGridNode {
   }
 
   /**
-   * @param {!WebInspector.ProfileDataGridNode} child
+   * @param {!Profiler.ProfileDataGridNode} child
    * @param {boolean} shouldAbsorb
    */
   merge(child, shouldAbsorb) {
-    WebInspector.ProfileDataGridNode.merge(this, child, shouldAbsorb);
+    Profiler.ProfileDataGridNode.merge(this, child, shouldAbsorb);
   }
 };
 
 
 /**
- * @implements {WebInspector.Searchable}
+ * @implements {UI.Searchable}
  * @unrestricted
  */
-WebInspector.ProfileDataGridTree = class {
+Profiler.ProfileDataGridTree = class {
   /**
-   * @param {!WebInspector.ProfileDataGridNode.Formatter} formatter
-   * @param {!WebInspector.SearchableView} searchableView
+   * @param {!Profiler.ProfileDataGridNode.Formatter} formatter
+   * @param {!UI.SearchableView} searchableView
    * @param {number} total
    */
   constructor(formatter, searchableView, total) {
@@ -340,7 +340,7 @@ WebInspector.ProfileDataGridTree = class {
    * @return {function(!Object.<string, *>, !Object.<string, *>)}
    */
   static propertyComparator(property, isAscending) {
-    var comparator = WebInspector.ProfileDataGridTree.propertyComparators[(isAscending ? 1 : 0)][property];
+    var comparator = Profiler.ProfileDataGridTree.propertyComparators[(isAscending ? 1 : 0)][property];
 
     if (!comparator) {
       if (isAscending) {
@@ -365,7 +365,7 @@ WebInspector.ProfileDataGridTree = class {
         };
       }
 
-      WebInspector.ProfileDataGridTree.propertyComparators[(isAscending ? 1 : 0)][property] = comparator;
+      Profiler.ProfileDataGridTree.propertyComparators[(isAscending ? 1 : 0)][property] = comparator;
     }
 
     return comparator;
@@ -393,8 +393,8 @@ WebInspector.ProfileDataGridTree = class {
   }
 
   /**
-   * @param {!WebInspector.ProfileDataGridNode} node
-   * @return {?WebInspector.ProfileDataGridNode}
+   * @param {!Profiler.ProfileDataGridNode} node
+   * @return {?Profiler.ProfileDataGridNode}
    */
   findChild(node) {
     if (!node)
@@ -408,7 +408,7 @@ WebInspector.ProfileDataGridTree = class {
    * @template T
    */
   sort(comparator, force) {
-    return WebInspector.ProfileDataGridNode.sort([[this]], comparator, force);
+    return Profiler.ProfileDataGridNode.sort([[this]], comparator, force);
   }
 
   /**
@@ -439,8 +439,8 @@ WebInspector.ProfileDataGridTree = class {
   }
 
   /**
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
-   * @return {?function(!WebInspector.ProfileDataGridNode):boolean}
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
+   * @return {?function(!Profiler.ProfileDataGridNode):boolean}
    */
   _matchFunction(searchConfig) {
     var query = searchConfig.query.trim();
@@ -471,7 +471,7 @@ WebInspector.ProfileDataGridTree = class {
     var matcher = createPlainTextSearchRegex(query, 'i');
 
     /**
-     * @param {!WebInspector.ProfileDataGridNode} profileDataGridNode
+     * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
      * @return {boolean}
      */
     function matchesQuery(profileDataGridNode) {
@@ -536,7 +536,7 @@ WebInspector.ProfileDataGridTree = class {
 
   /**
    * @override
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {boolean} shouldJump
    * @param {boolean=} jumpBackwards
    */
@@ -623,31 +623,31 @@ WebInspector.ProfileDataGridTree = class {
   }
 };
 
-WebInspector.ProfileDataGridTree.propertyComparators = [{}, {}];
+Profiler.ProfileDataGridTree.propertyComparators = [{}, {}];
 
 
 /**
  * @interface
  */
-WebInspector.ProfileDataGridNode.Formatter = function() {};
+Profiler.ProfileDataGridNode.Formatter = function() {};
 
-WebInspector.ProfileDataGridNode.Formatter.prototype = {
+Profiler.ProfileDataGridNode.Formatter.prototype = {
   /**
    * @param {number} value
-   * @param {!WebInspector.ProfileDataGridNode} node
+   * @param {!Profiler.ProfileDataGridNode} node
    * @return {string}
    */
   formatValue: function(value, node) {},
 
   /**
    * @param {number} value
-   * @param {!WebInspector.ProfileDataGridNode} node
+   * @param {!Profiler.ProfileDataGridNode} node
    * @return {string}
    */
   formatPercent: function(value, node) {},
 
   /**
-   * @param  {!WebInspector.ProfileDataGridNode} node
+   * @param  {!Profiler.ProfileDataGridNode} node
    * @return {?Element}
    */
   linkifyNode: function(node) {}

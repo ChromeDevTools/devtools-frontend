@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.IDBDatabaseView = class extends WebInspector.VBox {
+Resources.IDBDatabaseView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.IndexedDBModel.Database} database
+   * @param {!Resources.IndexedDBModel.Database} database
    */
   constructor(database) {
     super();
@@ -62,14 +62,14 @@ WebInspector.IDBDatabaseView = class extends WebInspector.VBox {
 
   _refreshDatabase() {
     this._formatHeader(
-        this._securityOriginElement, WebInspector.UIString('Security origin'),
+        this._securityOriginElement, Common.UIString('Security origin'),
         this._database.databaseId.securityOrigin);
-    this._formatHeader(this._nameElement, WebInspector.UIString('Name'), this._database.databaseId.name);
-    this._formatHeader(this._versionElement, WebInspector.UIString('Version'), this._database.version);
+    this._formatHeader(this._nameElement, Common.UIString('Name'), this._database.databaseId.name);
+    this._formatHeader(this._versionElement, Common.UIString('Version'), this._database.version);
   }
 
   /**
-   * @param {!WebInspector.IndexedDBModel.Database} database
+   * @param {!Resources.IndexedDBModel.Database} database
    */
   update(database) {
     this._database = database;
@@ -80,15 +80,15 @@ WebInspector.IDBDatabaseView = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.IDBDataView = class extends WebInspector.SimpleView {
+Resources.IDBDataView = class extends UI.SimpleView {
   /**
-   * @param {!WebInspector.IndexedDBModel} model
-   * @param {!WebInspector.IndexedDBModel.DatabaseId} databaseId
-   * @param {!WebInspector.IndexedDBModel.ObjectStore} objectStore
-   * @param {?WebInspector.IndexedDBModel.Index} index
+   * @param {!Resources.IndexedDBModel} model
+   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
+   * @param {!Resources.IndexedDBModel.ObjectStore} objectStore
+   * @param {?Resources.IndexedDBModel.Index} index
    */
   constructor(model, databaseId, objectStore, index) {
-    super(WebInspector.UIString('IDB'));
+    super(Common.UIString('IDB'));
     this.registerRequiredCSS('resources/indexedDBViews.css');
 
     this._model = model;
@@ -99,11 +99,11 @@ WebInspector.IDBDataView = class extends WebInspector.SimpleView {
 
     this._createEditorToolbar();
 
-    this._refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'largeicon-refresh');
+    this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     this._refreshButton.addEventListener('click', this._refreshButtonClicked, this);
 
     this._clearButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Clear object store'), 'largeicon-clear');
+        new UI.ToolbarButton(Common.UIString('Clear object store'), 'largeicon-clear');
     this._clearButton.addEventListener('click', this._clearButtonClicked, this);
 
     this._pageSize = 50;
@@ -114,28 +114,28 @@ WebInspector.IDBDataView = class extends WebInspector.SimpleView {
   }
 
   /**
-   * @return {!WebInspector.DataGrid}
+   * @return {!UI.DataGrid}
    */
   _createDataGrid() {
     var keyPath = this._isIndex ? this._index.keyPath : this._objectStore.keyPath;
 
-    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([]);
-    columns.push({id: 'number', title: WebInspector.UIString('#'), sortable: false, width: '50px'});
+    var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([]);
+    columns.push({id: 'number', title: Common.UIString('#'), sortable: false, width: '50px'});
     columns.push({
       id: 'key',
-      titleDOMFragment: this._keyColumnHeaderFragment(WebInspector.UIString('Key'), keyPath),
+      titleDOMFragment: this._keyColumnHeaderFragment(Common.UIString('Key'), keyPath),
       sortable: false
     });
     if (this._isIndex)
       columns.push({
         id: 'primaryKey',
         titleDOMFragment:
-            this._keyColumnHeaderFragment(WebInspector.UIString('Primary key'), this._objectStore.keyPath),
+            this._keyColumnHeaderFragment(Common.UIString('Primary key'), this._objectStore.keyPath),
         sortable: false
       });
-    columns.push({id: 'value', title: WebInspector.UIString('Value'), sortable: false});
+    columns.push({id: 'value', title: Common.UIString('Value'), sortable: false});
 
-    var dataGrid = new WebInspector.DataGrid(columns);
+    var dataGrid = new UI.DataGrid(columns);
     return dataGrid;
   }
 
@@ -150,7 +150,7 @@ WebInspector.IDBDataView = class extends WebInspector.SimpleView {
     if (keyPath === null)
       return keyColumnHeaderFragment;
 
-    keyColumnHeaderFragment.createTextChild(' (' + WebInspector.UIString('Key path: '));
+    keyColumnHeaderFragment.createTextChild(' (' + Common.UIString('Key path: '));
     if (Array.isArray(keyPath)) {
       keyColumnHeaderFragment.createTextChild('[');
       for (var i = 0; i < keyPath.length; ++i) {
@@ -181,21 +181,21 @@ WebInspector.IDBDataView = class extends WebInspector.SimpleView {
   }
 
   _createEditorToolbar() {
-    var editorToolbar = new WebInspector.Toolbar('data-view-toolbar', this.element);
+    var editorToolbar = new UI.Toolbar('data-view-toolbar', this.element);
 
     this._pageBackButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Show previous page'), 'largeicon-play-back');
+        new UI.ToolbarButton(Common.UIString('Show previous page'), 'largeicon-play-back');
     this._pageBackButton.addEventListener('click', this._pageBackButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageBackButton);
 
     this._pageForwardButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Show next page'), 'largeicon-play');
+        new UI.ToolbarButton(Common.UIString('Show next page'), 'largeicon-play');
     this._pageForwardButton.setEnabled(false);
     this._pageForwardButton.addEventListener('click', this._pageForwardButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageForwardButton);
 
     this._keyInputElement = editorToolbar.element.createChild('input', 'key-input');
-    this._keyInputElement.placeholder = WebInspector.UIString('Start from key');
+    this._keyInputElement.placeholder = Common.UIString('Start from key');
     this._keyInputElement.addEventListener('paste', this._keyInputChanged.bind(this), false);
     this._keyInputElement.addEventListener('cut', this._keyInputChanged.bind(this), false);
     this._keyInputElement.addEventListener('keypress', this._keyInputChanged.bind(this), false);
@@ -217,8 +217,8 @@ WebInspector.IDBDataView = class extends WebInspector.SimpleView {
   }
 
   /**
-   * @param {!WebInspector.IndexedDBModel.ObjectStore} objectStore
-   * @param {?WebInspector.IndexedDBModel.Index} index
+   * @param {!Resources.IndexedDBModel.ObjectStore} objectStore
+   * @param {?Resources.IndexedDBModel.Index} index
    */
   update(objectStore, index) {
     this._objectStore = objectStore;
@@ -268,9 +268,9 @@ WebInspector.IDBDataView = class extends WebInspector.SimpleView {
     this._lastSkipCount = skipCount;
 
     /**
-     * @param {!Array.<!WebInspector.IndexedDBModel.Entry>} entries
+     * @param {!Array.<!Resources.IndexedDBModel.Entry>} entries
      * @param {boolean} hasMore
-     * @this {WebInspector.IDBDataView}
+     * @this {Resources.IDBDataView}
      */
     function callback(entries, hasMore) {
       this._refreshButton.setEnabled(true);
@@ -283,7 +283,7 @@ WebInspector.IDBDataView = class extends WebInspector.SimpleView {
         data['primaryKey'] = entries[i].primaryKey;
         data['value'] = entries[i].value;
 
-        var node = new WebInspector.IDBDataGridNode(data);
+        var node = new Resources.IDBDataGridNode(data);
         this._dataGrid.rootNode().appendChild(node);
       }
 
@@ -307,7 +307,7 @@ WebInspector.IDBDataView = class extends WebInspector.SimpleView {
 
   _clearButtonClicked(event) {
     /**
-     * @this {WebInspector.IDBDataView}
+     * @this {Resources.IDBDataView}
      */
     function cleared() {
       this._clearButton.setEnabled(true);
@@ -319,7 +319,7 @@ WebInspector.IDBDataView = class extends WebInspector.SimpleView {
 
   /**
    * @override
-   * @return {!Array.<!WebInspector.ToolbarItem>}
+   * @return {!Array.<!UI.ToolbarItem>}
    */
   syncToolbarItems() {
     return [this._refreshButton, this._clearButton];
@@ -334,7 +334,7 @@ WebInspector.IDBDataView = class extends WebInspector.SimpleView {
 /**
  * @unrestricted
  */
-WebInspector.IDBDataGridNode = class extends WebInspector.DataGridNode {
+Resources.IDBDataGridNode = class extends UI.DataGridNode {
   /**
    * @param {!Object.<string, *>} data
    */
@@ -349,14 +349,14 @@ WebInspector.IDBDataGridNode = class extends WebInspector.DataGridNode {
    */
   createCell(columnIdentifier) {
     var cell = super.createCell(columnIdentifier);
-    var value = /** @type {!WebInspector.RemoteObject} */ (this.data[columnIdentifier]);
+    var value = /** @type {!SDK.RemoteObject} */ (this.data[columnIdentifier]);
 
     switch (columnIdentifier) {
       case 'value':
       case 'key':
       case 'primaryKey':
         cell.removeChildren();
-        var objectElement = WebInspector.ObjectPropertiesSection.defaultObjectPresentation(value, undefined, true);
+        var objectElement = Components.ObjectPropertiesSection.defaultObjectPresentation(value, undefined, true);
         cell.appendChild(objectElement);
         break;
       default:

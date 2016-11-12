@@ -4,33 +4,33 @@
 /**
  * @unrestricted
  */
-WebInspector.ProfileTypeRegistry = class {
+Profiler.ProfileTypeRegistry = class {
   constructor() {
     this._profileTypes = [];
 
-    this.cpuProfileType = new WebInspector.CPUProfileType();
+    this.cpuProfileType = new Profiler.CPUProfileType();
     this._addProfileType(this.cpuProfileType);
-    this.heapSnapshotProfileType = new WebInspector.HeapSnapshotProfileType();
+    this.heapSnapshotProfileType = new Profiler.HeapSnapshotProfileType();
     this._addProfileType(this.heapSnapshotProfileType);
-    this.trackingHeapSnapshotProfileType = new WebInspector.TrackingHeapSnapshotProfileType();
+    this.trackingHeapSnapshotProfileType = new Profiler.TrackingHeapSnapshotProfileType();
     this._addProfileType(this.trackingHeapSnapshotProfileType);
-    this.samplingHeapProfileType = new WebInspector.SamplingHeapProfileType();
+    this.samplingHeapProfileType = new Profiler.SamplingHeapProfileType();
     this._addProfileType(this.samplingHeapProfileType);
   }
 
   /**
-   * @param {!WebInspector.ProfileType} profileType
+   * @param {!Profiler.ProfileType} profileType
    */
   _addProfileType(profileType) {
     this._profileTypes.push(profileType);
   }
 
   /**
-   * @return {!Array.<!WebInspector.ProfileType>}
+   * @return {!Array.<!Profiler.ProfileType>}
    */
   profileTypes() {
     return this._profileTypes;
   }
 };
 
-WebInspector.ProfileTypeRegistry.instance = new WebInspector.ProfileTypeRegistry();
+Profiler.ProfileTypeRegistry.instance = new Profiler.ProfileTypeRegistry();

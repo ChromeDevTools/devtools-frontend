@@ -2,79 +2,79 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.ServiceWorkersView = class extends WebInspector.VBox {
+Resources.ServiceWorkersView = class extends UI.VBox {
   constructor() {
     super(true);
 
-    this._reportView = new WebInspector.ReportView(WebInspector.UIString('Service Workers'));
+    this._reportView = new UI.ReportView(Common.UIString('Service Workers'));
     this._reportView.show(this.contentElement);
 
     this._toolbar = this._reportView.createToolbar();
 
-    /** @type {!Map<!WebInspector.ServiceWorkerRegistration, !WebInspector.ServiceWorkersView.Section>} */
+    /** @type {!Map<!SDK.ServiceWorkerRegistration, !Resources.ServiceWorkersView.Section>} */
     this._sections = new Map();
 
-    this._toolbar.appendToolbarItem(WebInspector.NetworkConditionsSelector.createOfflineToolbarCheckbox());
-    var forceUpdate = new WebInspector.ToolbarCheckbox(
-        WebInspector.UIString('Update on reload'), WebInspector.UIString('Force update Service Worker on page reload'),
-        WebInspector.settings.createSetting('serviceWorkerUpdateOnReload', false));
+    this._toolbar.appendToolbarItem(Components.NetworkConditionsSelector.createOfflineToolbarCheckbox());
+    var forceUpdate = new UI.ToolbarCheckbox(
+        Common.UIString('Update on reload'), Common.UIString('Force update Service Worker on page reload'),
+        Common.settings.createSetting('serviceWorkerUpdateOnReload', false));
     this._toolbar.appendToolbarItem(forceUpdate);
-    var fallbackToNetwork = new WebInspector.ToolbarCheckbox(
-        WebInspector.UIString('Bypass for network'),
-        WebInspector.UIString('Bypass Service Worker and load resources from the network'),
-        WebInspector.settings.createSetting('bypassServiceWorker', false));
+    var fallbackToNetwork = new UI.ToolbarCheckbox(
+        Common.UIString('Bypass for network'),
+        Common.UIString('Bypass Service Worker and load resources from the network'),
+        Common.settings.createSetting('bypassServiceWorker', false));
     this._toolbar.appendToolbarItem(fallbackToNetwork);
     this._toolbar.appendSpacer();
-    this._showAllCheckbox = new WebInspector.ToolbarCheckbox(
-        WebInspector.UIString('Show all'), WebInspector.UIString('Show all Service Workers regardless of the origin'));
+    this._showAllCheckbox = new UI.ToolbarCheckbox(
+        Common.UIString('Show all'), Common.UIString('Show all Service Workers regardless of the origin'));
     this._showAllCheckbox.inputElement.addEventListener('change', this._updateSectionVisibility.bind(this), false);
     this._toolbar.appendToolbarItem(this._showAllCheckbox);
 
-    /** @type {!Map<!WebInspector.Target, !Array<!WebInspector.EventTarget.EventDescriptor>>}*/
+    /** @type {!Map<!SDK.Target, !Array<!Common.EventTarget.EventDescriptor>>}*/
     this._eventListeners = new Map();
-    WebInspector.targetManager.observeTargets(this);
+    SDK.targetManager.observeTargets(this);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     if (this._manager || !target.serviceWorkerManager)
       return;
     this._manager = target.serviceWorkerManager;
     this._subTargetsManager = target.subTargetsManager;
-    this._securityOriginManager = WebInspector.SecurityOriginManager.fromTarget(target);
+    this._securityOriginManager = SDK.SecurityOriginManager.fromTarget(target);
 
     for (var registration of this._manager.registrations().values())
       this._updateRegistration(registration);
 
     this._eventListeners.set(target, [
       this._manager.addEventListener(
-          WebInspector.ServiceWorkerManager.Events.RegistrationUpdated, this._registrationUpdated, this),
+          SDK.ServiceWorkerManager.Events.RegistrationUpdated, this._registrationUpdated, this),
       this._manager.addEventListener(
-          WebInspector.ServiceWorkerManager.Events.RegistrationDeleted, this._registrationDeleted, this),
+          SDK.ServiceWorkerManager.Events.RegistrationDeleted, this._registrationDeleted, this),
       this._manager.addEventListener(
-          WebInspector.ServiceWorkerManager.Events.RegistrationErrorAdded, this._registrationErrorAdded, this),
+          SDK.ServiceWorkerManager.Events.RegistrationErrorAdded, this._registrationErrorAdded, this),
       this._securityOriginManager.addEventListener(
-          WebInspector.SecurityOriginManager.Events.SecurityOriginAdded, this._updateSectionVisibility, this),
+          SDK.SecurityOriginManager.Events.SecurityOriginAdded, this._updateSectionVisibility, this),
       this._securityOriginManager.addEventListener(
-          WebInspector.SecurityOriginManager.Events.SecurityOriginRemoved, this._updateSectionVisibility, this),
+          SDK.SecurityOriginManager.Events.SecurityOriginRemoved, this._updateSectionVisibility, this),
     ]);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
     if (!this._manager || this._manager !== target.serviceWorkerManager)
       return;
 
-    WebInspector.EventTarget.removeEventListeners(this._eventListeners.get(target));
+    Common.EventTarget.removeEventListeners(this._eventListeners.get(target));
     this._eventListeners.delete(target);
     this._manager = null;
     this._subTargetsManager = null;
@@ -90,18 +90,18 @@ WebInspector.ServiceWorkersView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _registrationUpdated(event) {
-    var registration = /** @type {!WebInspector.ServiceWorkerRegistration} */ (event.data);
+    var registration = /** @type {!SDK.ServiceWorkerRegistration} */ (event.data);
     this._updateRegistration(registration);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _registrationErrorAdded(event) {
-    var registration = /** @type {!WebInspector.ServiceWorkerRegistration} */ (event.data['registration']);
+    var registration = /** @type {!SDK.ServiceWorkerRegistration} */ (event.data['registration']);
     var error = /** @type {!Protocol.ServiceWorker.ServiceWorkerErrorMessage} */ (event.data['error']);
     var section = this._sections.get(registration);
     if (!section)
@@ -110,12 +110,12 @@ WebInspector.ServiceWorkersView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.ServiceWorkerRegistration} registration
+   * @param {!SDK.ServiceWorkerRegistration} registration
    */
   _updateRegistration(registration) {
     var section = this._sections.get(registration);
     if (!section) {
-      section = new WebInspector.ServiceWorkersView.Section(
+      section = new Resources.ServiceWorkersView.Section(
           this._manager, this._subTargetsManager, this._reportView.appendSection(''), registration);
       this._sections.set(registration, section);
     }
@@ -124,10 +124,10 @@ WebInspector.ServiceWorkersView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _registrationDeleted(event) {
-    var registration = /** @type {!WebInspector.ServiceWorkerRegistration} */ (event.data);
+    var registration = /** @type {!SDK.ServiceWorkerRegistration} */ (event.data);
     var section = this._sections.get(registration);
     if (section)
       section._section.remove();
@@ -138,12 +138,12 @@ WebInspector.ServiceWorkersView = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.ServiceWorkersView.Section = class {
+Resources.ServiceWorkersView.Section = class {
   /**
-   * @param {!WebInspector.ServiceWorkerManager} manager
-   * @param {!WebInspector.SubTargetsManager} subTargetsManager
-   * @param {!WebInspector.ReportView.Section} section
-   * @param {!WebInspector.ServiceWorkerRegistration} registration
+   * @param {!SDK.ServiceWorkerManager} manager
+   * @param {!SDK.SubTargetsManager} subTargetsManager
+   * @param {!UI.ReportView.Section} section
+   * @param {!SDK.ServiceWorkerRegistration} registration
    */
   constructor(manager, subTargetsManager, section, registration) {
     this._manager = manager;
@@ -154,40 +154,40 @@ WebInspector.ServiceWorkersView.Section = class {
     this._toolbar = section.createToolbar();
     this._toolbar.renderAsLinks();
     this._updateButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Update'), undefined, WebInspector.UIString('Update'));
+        new UI.ToolbarButton(Common.UIString('Update'), undefined, Common.UIString('Update'));
     this._updateButton.addEventListener('click', this._updateButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(this._updateButton);
-    this._pushButton = new WebInspector.ToolbarButton(
-        WebInspector.UIString('Emulate push event'), undefined, WebInspector.UIString('Push'));
+    this._pushButton = new UI.ToolbarButton(
+        Common.UIString('Emulate push event'), undefined, Common.UIString('Push'));
     this._pushButton.addEventListener('click', this._pushButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(this._pushButton);
-    this._syncButton = new WebInspector.ToolbarButton(
-        WebInspector.UIString('Emulate background sync event'), undefined, WebInspector.UIString('Sync'));
+    this._syncButton = new UI.ToolbarButton(
+        Common.UIString('Emulate background sync event'), undefined, Common.UIString('Sync'));
     this._syncButton.addEventListener('click', this._syncButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(this._syncButton);
-    this._deleteButton = new WebInspector.ToolbarButton(
-        WebInspector.UIString('Unregister service worker'), undefined, WebInspector.UIString('Unregister'));
+    this._deleteButton = new UI.ToolbarButton(
+        Common.UIString('Unregister service worker'), undefined, Common.UIString('Unregister'));
     this._deleteButton.addEventListener('click', this._unregisterButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(this._deleteButton);
 
     // Preserve the order.
-    this._section.appendField(WebInspector.UIString('Source'));
-    this._section.appendField(WebInspector.UIString('Status'));
-    this._section.appendField(WebInspector.UIString('Clients'));
-    this._section.appendField(WebInspector.UIString('Errors'));
+    this._section.appendField(Common.UIString('Source'));
+    this._section.appendField(Common.UIString('Status'));
+    this._section.appendField(Common.UIString('Clients'));
+    this._section.appendField(Common.UIString('Errors'));
     this._errorsList = this._wrapWidget(this._section.appendRow());
     this._errorsList.classList.add('service-worker-error-stack', 'monospace', 'hidden');
 
-    this._linkifier = new WebInspector.Linkifier();
-    /** @type {!Map<string, !WebInspector.TargetInfo>} */
+    this._linkifier = new Components.Linkifier();
+    /** @type {!Map<string, !SDK.TargetInfo>} */
     this._clientInfoCache = new Map();
     for (var error of registration.errors)
       this._addError(error);
-    this._throttler = new WebInspector.Throttler(500);
+    this._throttler = new Common.Throttler(500);
   }
 
   _scheduleUpdate() {
-    if (WebInspector.ServiceWorkersView._noThrottle) {
+    if (Resources.ServiceWorkersView._noThrottle) {
       this._update();
       return;
     }
@@ -196,7 +196,7 @@ WebInspector.ServiceWorkersView.Section = class {
 
   /**
    * @param {string} versionId
-   * @return {?WebInspector.Target}
+   * @return {?SDK.Target}
    */
   _targetForVersionId(versionId) {
     var version = this._manager.findVersion(versionId);
@@ -217,48 +217,48 @@ WebInspector.ServiceWorkersView.Section = class {
     this._toolbar.setEnabled(!this._registration.isDeleted);
 
     var versions = this._registration.versionsByMode();
-    var title = this._registration.isDeleted ? WebInspector.UIString('%s - deleted', this._registration.scopeURL) :
+    var title = this._registration.isDeleted ? Common.UIString('%s - deleted', this._registration.scopeURL) :
                                                this._registration.scopeURL;
     this._section.setTitle(title);
 
-    var active = versions.get(WebInspector.ServiceWorkerVersion.Modes.Active);
-    var waiting = versions.get(WebInspector.ServiceWorkerVersion.Modes.Waiting);
-    var installing = versions.get(WebInspector.ServiceWorkerVersion.Modes.Installing);
+    var active = versions.get(SDK.ServiceWorkerVersion.Modes.Active);
+    var waiting = versions.get(SDK.ServiceWorkerVersion.Modes.Waiting);
+    var installing = versions.get(SDK.ServiceWorkerVersion.Modes.Installing);
 
-    var statusValue = this._wrapWidget(this._section.appendField(WebInspector.UIString('Status')));
+    var statusValue = this._wrapWidget(this._section.appendField(Common.UIString('Status')));
     statusValue.removeChildren();
     var versionsStack = statusValue.createChild('div', 'service-worker-version-stack');
     versionsStack.createChild('div', 'service-worker-version-stack-bar');
 
     if (active) {
-      var scriptElement = this._section.appendField(WebInspector.UIString('Source'));
+      var scriptElement = this._section.appendField(Common.UIString('Source'));
       scriptElement.removeChildren();
-      var fileName = WebInspector.ParsedURL.extractName(active.scriptURL);
-      scriptElement.appendChild(WebInspector.linkifyURLAsNode(active.scriptURL, fileName));
+      var fileName = Common.ParsedURL.extractName(active.scriptURL);
+      scriptElement.appendChild(UI.linkifyURLAsNode(active.scriptURL, fileName));
       scriptElement.createChild('div', 'report-field-value-subtitle').textContent =
-          WebInspector.UIString('Received %s', new Date(active.scriptResponseTime * 1000).toLocaleString());
+          Common.UIString('Received %s', new Date(active.scriptResponseTime * 1000).toLocaleString());
 
       var activeEntry = versionsStack.createChild('div', 'service-worker-version');
       activeEntry.createChild('div', 'service-worker-active-circle');
       activeEntry.createChild('span').textContent =
-          WebInspector.UIString('#%s activated and is %s', active.id, active.runningStatus);
+          Common.UIString('#%s activated and is %s', active.id, active.runningStatus);
 
       if (active.isRunning() || active.isStarting()) {
-        createLink(activeEntry, WebInspector.UIString('stop'), this._stopButtonClicked.bind(this, active.id));
+        createLink(activeEntry, Common.UIString('stop'), this._stopButtonClicked.bind(this, active.id));
         if (!this._targetForVersionId(active.id))
-          createLink(activeEntry, WebInspector.UIString('inspect'), this._inspectButtonClicked.bind(this, active.id));
+          createLink(activeEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, active.id));
       } else if (active.isStartable()) {
-        createLink(activeEntry, WebInspector.UIString('start'), this._startButtonClicked.bind(this));
+        createLink(activeEntry, Common.UIString('start'), this._startButtonClicked.bind(this));
       }
 
-      var clientsList = this._wrapWidget(this._section.appendField(WebInspector.UIString('Clients')));
+      var clientsList = this._wrapWidget(this._section.appendField(Common.UIString('Clients')));
       clientsList.removeChildren();
-      this._section.setFieldVisible(WebInspector.UIString('Clients'), active.controlledClients.length);
+      this._section.setFieldVisible(Common.UIString('Clients'), active.controlledClients.length);
       for (var client of active.controlledClients) {
         var clientLabelText = clientsList.createChild('div', 'service-worker-client');
         if (this._clientInfoCache.has(client))
           this._updateClientInfo(
-              clientLabelText, /** @type {!WebInspector.TargetInfo} */ (this._clientInfoCache.get(client)));
+              clientLabelText, /** @type {!SDK.TargetInfo} */ (this._clientInfoCache.get(client)));
         this._subTargetsManager.getTargetInfo(client, this._onClientInfo.bind(this, clientLabelText));
       }
     }
@@ -266,34 +266,34 @@ WebInspector.ServiceWorkersView.Section = class {
     if (waiting) {
       var waitingEntry = versionsStack.createChild('div', 'service-worker-version');
       waitingEntry.createChild('div', 'service-worker-waiting-circle');
-      waitingEntry.createChild('span').textContent = WebInspector.UIString('#%s waiting to activate', waiting.id);
-      createLink(waitingEntry, WebInspector.UIString('skipWaiting'), this._skipButtonClicked.bind(this));
+      waitingEntry.createChild('span').textContent = Common.UIString('#%s waiting to activate', waiting.id);
+      createLink(waitingEntry, Common.UIString('skipWaiting'), this._skipButtonClicked.bind(this));
       waitingEntry.createChild('div', 'service-worker-subtitle').textContent =
           new Date(waiting.scriptResponseTime * 1000).toLocaleString();
       if (!this._targetForVersionId(waiting.id) && (waiting.isRunning() || waiting.isStarting()))
-        createLink(waitingEntry, WebInspector.UIString('inspect'), this._inspectButtonClicked.bind(this, waiting.id));
+        createLink(waitingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, waiting.id));
     }
     if (installing) {
       var installingEntry = versionsStack.createChild('div', 'service-worker-version');
       installingEntry.createChild('div', 'service-worker-installing-circle');
-      installingEntry.createChild('span').textContent = WebInspector.UIString('#%s installing', installing.id);
+      installingEntry.createChild('span').textContent = Common.UIString('#%s installing', installing.id);
       installingEntry.createChild('div', 'service-worker-subtitle').textContent =
           new Date(installing.scriptResponseTime * 1000).toLocaleString();
       if (!this._targetForVersionId(installing.id) && (installing.isRunning() || installing.isStarting()))
         createLink(
-            installingEntry, WebInspector.UIString('inspect'), this._inspectButtonClicked.bind(this, installing.id));
+            installingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, installing.id));
     }
 
-    this._section.setFieldVisible(WebInspector.UIString('Errors'), !!this._registration.errors.length);
-    var errorsValue = this._wrapWidget(this._section.appendField(WebInspector.UIString('Errors')));
+    this._section.setFieldVisible(Common.UIString('Errors'), !!this._registration.errors.length);
+    var errorsValue = this._wrapWidget(this._section.appendField(Common.UIString('Errors')));
     var errorsLabel = createLabel(String(this._registration.errors.length), 'smallicon-error');
     errorsLabel.classList.add('service-worker-errors-label');
     errorsValue.appendChild(errorsLabel);
     this._moreButton = createLink(
-        errorsValue, this._errorsList.classList.contains('hidden') ? WebInspector.UIString('details') :
-                                                                     WebInspector.UIString('hide'),
+        errorsValue, this._errorsList.classList.contains('hidden') ? Common.UIString('details') :
+                                                                     Common.UIString('hide'),
         this._moreErrorsButtonClicked.bind(this));
-    createLink(errorsValue, WebInspector.UIString('clear'), this._clearErrorsButtonClicked.bind(this));
+    createLink(errorsValue, Common.UIString('clear'), this._clearErrorsButtonClicked.bind(this));
 
     /**
      * @param {!Element} parent
@@ -343,7 +343,7 @@ WebInspector.ServiceWorkersView.Section = class {
 
   /**
    * @param {!Element} element
-   * @param {?WebInspector.TargetInfo} targetInfo
+   * @param {?SDK.TargetInfo} targetInfo
    */
   _onClientInfo(element, targetInfo) {
     if (!targetInfo)
@@ -354,7 +354,7 @@ WebInspector.ServiceWorkersView.Section = class {
 
   /**
    * @param {!Element} element
-   * @param {!WebInspector.TargetInfo} targetInfo
+   * @param {!SDK.TargetInfo} targetInfo
    */
   _updateClientInfo(element, targetInfo) {
     if (!targetInfo.canActivate) {
@@ -392,7 +392,7 @@ WebInspector.ServiceWorkersView.Section = class {
 
   _moreErrorsButtonClicked() {
     var newVisible = this._errorsList.classList.contains('hidden');
-    this._moreButton.textContent = newVisible ? WebInspector.UIString('hide') : WebInspector.UIString('details');
+    this._moreButton.textContent = newVisible ? Common.UIString('hide') : Common.UIString('details');
     this._errorsList.classList.toggle('hidden', !newVisible);
   }
 
@@ -416,8 +416,8 @@ WebInspector.ServiceWorkersView.Section = class {
    * @return {!Element}
    */
   _wrapWidget(container) {
-    var shadowRoot = WebInspector.createShadowRootWithCoreStyles(container);
-    WebInspector.appendStyle(shadowRoot, 'resources/serviceWorkersView.css');
+    var shadowRoot = UI.createShadowRootWithCoreStyles(container);
+    UI.appendStyle(shadowRoot, 'resources/serviceWorkersView.css');
     var contentElement = createElement('div');
     shadowRoot.appendChild(contentElement);
     return contentElement;

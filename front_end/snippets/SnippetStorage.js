@@ -31,15 +31,15 @@
 /**
  * @unrestricted
  */
-WebInspector.SnippetStorage = class extends WebInspector.Object {
+Snippets.SnippetStorage = class extends Common.Object {
   constructor(settingPrefix, namePrefix) {
     super();
-    /** @type {!Map<string,!WebInspector.Snippet>} */
+    /** @type {!Map<string,!Snippets.Snippet>} */
     this._snippets = new Map();
 
     this._lastSnippetIdentifierSetting =
-        WebInspector.settings.createSetting(settingPrefix + 'Snippets_lastIdentifier', 0);
-    this._snippetsSetting = WebInspector.settings.createSetting(settingPrefix + 'Snippets', []);
+        Common.settings.createSetting(settingPrefix + 'Snippets_lastIdentifier', 0);
+    this._snippetsSetting = Common.settings.createSetting(settingPrefix + 'Snippets', []);
     this._namePrefix = namePrefix;
 
     this._loadSettings();
@@ -57,7 +57,7 @@ WebInspector.SnippetStorage = class extends WebInspector.Object {
   }
 
   /**
-   * @return {!Array<!WebInspector.Snippet>}
+   * @return {!Array<!Snippets.Snippet>}
    */
   snippets() {
     return this._snippets.valuesArray();
@@ -65,7 +65,7 @@ WebInspector.SnippetStorage = class extends WebInspector.Object {
 
   /**
    * @param {string} id
-   * @return {?WebInspector.Snippet}
+   * @return {?Snippets.Snippet}
    */
   snippetForId(id) {
     return this._snippets.get(id);
@@ -73,7 +73,7 @@ WebInspector.SnippetStorage = class extends WebInspector.Object {
 
   /**
    * @param {string} name
-   * @return {?WebInspector.Snippet}
+   * @return {?Snippets.Snippet}
    */
   snippetForName(name) {
     for (var snippet of this._snippets.values()) {
@@ -86,11 +86,11 @@ WebInspector.SnippetStorage = class extends WebInspector.Object {
   _loadSettings() {
     var savedSnippets = this._snippetsSetting.get();
     for (var i = 0; i < savedSnippets.length; ++i)
-      this._snippetAdded(WebInspector.Snippet.fromObject(this, savedSnippets[i]));
+      this._snippetAdded(Snippets.Snippet.fromObject(this, savedSnippets[i]));
   }
 
   /**
-   * @param {!WebInspector.Snippet} snippet
+   * @param {!Snippets.Snippet} snippet
    */
   deleteSnippet(snippet) {
     this._snippets.delete(snippet.id);
@@ -98,20 +98,20 @@ WebInspector.SnippetStorage = class extends WebInspector.Object {
   }
 
   /**
-   * @return {!WebInspector.Snippet}
+   * @return {!Snippets.Snippet}
    */
   createSnippet() {
     var nextId = this._lastSnippetIdentifierSetting.get() + 1;
     var snippetId = String(nextId);
     this._lastSnippetIdentifierSetting.set(nextId);
-    var snippet = new WebInspector.Snippet(this, snippetId);
+    var snippet = new Snippets.Snippet(this, snippetId);
     this._snippetAdded(snippet);
     this._saveSettings();
     return snippet;
   }
 
   /**
-   * @param {!WebInspector.Snippet} snippet
+   * @param {!Snippets.Snippet} snippet
    */
   _snippetAdded(snippet) {
     this._snippets.set(snippet.id, snippet);
@@ -121,9 +121,9 @@ WebInspector.SnippetStorage = class extends WebInspector.Object {
 /**
  * @unrestricted
  */
-WebInspector.Snippet = class extends WebInspector.Object {
+Snippets.Snippet = class extends Common.Object {
   /**
-   * @param {!WebInspector.SnippetStorage} storage
+   * @param {!Snippets.SnippetStorage} storage
    * @param {string} id
    * @param {string=} name
    * @param {string=} content
@@ -137,12 +137,12 @@ WebInspector.Snippet = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.SnippetStorage} storage
+   * @param {!Snippets.SnippetStorage} storage
    * @param {!Object} serializedSnippet
-   * @return {!WebInspector.Snippet}
+   * @return {!Snippets.Snippet}
    */
   static fromObject(storage, serializedSnippet) {
-    return new WebInspector.Snippet(storage, serializedSnippet.id, serializedSnippet.name, serializedSnippet.content);
+    return new Snippets.Snippet(storage, serializedSnippet.id, serializedSnippet.name, serializedSnippet.content);
   }
 
   /**

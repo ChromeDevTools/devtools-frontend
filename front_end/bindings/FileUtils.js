@@ -30,20 +30,20 @@
 /**
  * @interface
  */
-WebInspector.OutputStreamDelegate = function() {};
+Bindings.OutputStreamDelegate = function() {};
 
-WebInspector.OutputStreamDelegate.prototype = {
+Bindings.OutputStreamDelegate.prototype = {
   onTransferStarted: function() {},
 
   onTransferFinished: function() {},
 
   /**
-   * @param {!WebInspector.ChunkedReader} reader
+   * @param {!Bindings.ChunkedReader} reader
    */
   onChunkTransferred: function(reader) {},
 
   /**
-   * @param {!WebInspector.ChunkedReader} reader
+   * @param {!Bindings.ChunkedReader} reader
    * @param {!Event} event
    */
   onError: function(reader, event) {},
@@ -52,9 +52,9 @@ WebInspector.OutputStreamDelegate.prototype = {
 /**
  * @interface
  */
-WebInspector.ChunkedReader = function() {};
+Bindings.ChunkedReader = function() {};
 
-WebInspector.ChunkedReader.prototype = {
+Bindings.ChunkedReader.prototype = {
   /**
    * @return {number}
    */
@@ -74,14 +74,14 @@ WebInspector.ChunkedReader.prototype = {
 };
 
 /**
- * @implements {WebInspector.ChunkedReader}
+ * @implements {Bindings.ChunkedReader}
  * @unrestricted
  */
-WebInspector.ChunkedFileReader = class {
+Bindings.ChunkedFileReader = class {
   /**
    * @param {!File} file
    * @param {number} chunkSize
-   * @param {!WebInspector.OutputStreamDelegate} delegate
+   * @param {!Bindings.OutputStreamDelegate} delegate
    */
   constructor(file, chunkSize, delegate) {
     this._file = file;
@@ -94,7 +94,7 @@ WebInspector.ChunkedFileReader = class {
   }
 
   /**
-   * @param {!WebInspector.OutputStream} output
+   * @param {!Common.OutputStream} output
    */
   start(output) {
     this._output = output;
@@ -179,7 +179,7 @@ WebInspector.ChunkedFileReader = class {
  * @param {function(!File)} callback
  * @return {!Node}
  */
-WebInspector.createFileSelectorElement = function(callback) {
+Bindings.createFileSelectorElement = function(callback) {
   var fileSelectorElement = createElement('input');
   fileSelectorElement.type = 'file';
   fileSelectorElement.style.display = 'none';
@@ -192,10 +192,10 @@ WebInspector.createFileSelectorElement = function(callback) {
 };
 
 /**
- * @implements {WebInspector.OutputStream}
+ * @implements {Common.OutputStream}
  * @unrestricted
  */
-WebInspector.FileOutputStream = class {
+Bindings.FileOutputStream = class {
   /**
    * @param {string} fileName
    * @param {function(boolean)} callback
@@ -207,25 +207,25 @@ WebInspector.FileOutputStream = class {
 
     /**
      * @param {boolean} accepted
-     * @this {WebInspector.FileOutputStream}
+     * @this {Bindings.FileOutputStream}
      */
     function callbackWrapper(accepted) {
       if (accepted)
-        WebInspector.fileManager.addEventListener(
-            WebInspector.FileManager.Events.AppendedToURL, this._onAppendDone, this);
+        Workspace.fileManager.addEventListener(
+            Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
       callback(accepted);
     }
-    WebInspector.fileManager.save(this._fileName, '', true, callbackWrapper.bind(this));
+    Workspace.fileManager.save(this._fileName, '', true, callbackWrapper.bind(this));
   }
 
   /**
    * @override
    * @param {string} data
-   * @param {function(!WebInspector.OutputStream)=} callback
+   * @param {function(!Common.OutputStream)=} callback
    */
   write(data, callback) {
     this._writeCallbacks.push(callback);
-    WebInspector.fileManager.append(this._fileName, data);
+    Workspace.fileManager.append(this._fileName, data);
   }
 
   /**
@@ -235,13 +235,13 @@ WebInspector.FileOutputStream = class {
     this._closed = true;
     if (this._writeCallbacks.length)
       return;
-    WebInspector.fileManager.removeEventListener(
-        WebInspector.FileManager.Events.AppendedToURL, this._onAppendDone, this);
-    WebInspector.fileManager.close(this._fileName);
+    Workspace.fileManager.removeEventListener(
+        Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
+    Workspace.fileManager.close(this._fileName);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onAppendDone(event) {
     if (event.data !== this._fileName)
@@ -251,9 +251,9 @@ WebInspector.FileOutputStream = class {
       callback(this);
     if (!this._writeCallbacks.length) {
       if (this._closed) {
-        WebInspector.fileManager.removeEventListener(
-            WebInspector.FileManager.Events.AppendedToURL, this._onAppendDone, this);
-        WebInspector.fileManager.close(this._fileName);
+        Workspace.fileManager.removeEventListener(
+            Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
+        Workspace.fileManager.close(this._fileName);
       }
     }
   }

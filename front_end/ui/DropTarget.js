@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.DropTarget = class {
+UI.DropTarget = class {
   /**
    * @param {!Element} element
    * @param {!Array.<string>} transferTypes
@@ -59,7 +59,7 @@ WebInspector.DropTarget = class {
     if (this._dragMaskElement)
       return;
     this._dragMaskElement = this._element.createChild('div', '');
-    var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this._dragMaskElement, 'ui/dropTarget.css');
+    var shadowRoot = UI.createShadowRootWithCoreStyles(this._dragMaskElement, 'ui/dropTarget.css');
     shadowRoot.createChild('div', 'drop-target-message').textContent = this._messageText;
     this._dragMaskElement.addEventListener('drop', this._onDrop.bind(this), true);
     this._dragMaskElement.addEventListener('dragleave', this._onDragLeave.bind(this), true);
@@ -89,7 +89,7 @@ WebInspector.DropTarget = class {
   }
 };
 
-WebInspector.DropTarget.Types = {
+UI.DropTarget.Types = {
   Files: 'Files',
   URIList: 'text/uri-list'
 };

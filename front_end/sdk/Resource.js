@@ -26,18 +26,18 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.ContentProvider}
+ * @implements {Common.ContentProvider}
  * @unrestricted
  */
-WebInspector.Resource = class extends WebInspector.SDKObject {
+SDK.Resource = class extends SDK.SDKObject {
   /**
-   * @param {!WebInspector.Target} target
-   * @param {?WebInspector.NetworkRequest} request
+   * @param {!SDK.Target} target
+   * @param {?SDK.NetworkRequest} request
    * @param {string} url
    * @param {string} documentURL
    * @param {!Protocol.Page.FrameId} frameId
    * @param {!Protocol.Network.LoaderId} loaderId
-   * @param {!WebInspector.ResourceType} type
+   * @param {!Common.ResourceType} type
    * @param {string} mimeType
    * @param {?Date} lastModified
    * @param {?number} contentSize
@@ -49,7 +49,7 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
     this._documentURL = documentURL;
     this._frameId = frameId;
     this._loaderId = loaderId;
-    this._type = type || WebInspector.resourceTypes.Other;
+    this._type = type || Common.resourceTypes.Other;
     this._mimeType = mimeType;
 
     this._lastModified = lastModified && lastModified.isValid() ? lastModified : null;
@@ -59,7 +59,7 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
     /** @type {boolean} */ this._contentEncoded;
     this._pendingContentCallbacks = [];
     if (this._request && !this._request.finished)
-      this._request.addEventListener(WebInspector.NetworkRequest.Events.FinishedLoading, this._requestFinished, this);
+      this._request.addEventListener(SDK.NetworkRequest.Events.FinishedLoading, this._requestFinished, this);
   }
 
   /**
@@ -84,7 +84,7 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {?WebInspector.NetworkRequest}
+   * @return {?SDK.NetworkRequest}
    */
   get request() {
     return this._request;
@@ -102,7 +102,7 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
    */
   set url(x) {
     this._url = x;
-    this._parsedURL = new WebInspector.ParsedURL(x);
+    this._parsedURL = new Common.ParsedURL(x);
   }
 
   get parsedURL() {
@@ -138,7 +138,7 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!WebInspector.ResourceType}
+   * @return {!Common.ResourceType}
    */
   resourceType() {
     return this._request ? this._request.resourceType() : this._type;
@@ -175,11 +175,11 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
 
   /**
    * @override
-   * @return {!WebInspector.ResourceType}
+   * @return {!Common.ResourceType}
    */
   contentType() {
-    if (this.resourceType() === WebInspector.resourceTypes.Document && this.mimeType.indexOf('javascript') !== -1)
-      return WebInspector.resourceTypes.Script;
+    if (this.resourceType() === Common.resourceTypes.Document && this.mimeType.indexOf('javascript') !== -1)
+      return Common.resourceTypes.Script;
     return this.resourceType();
   }
 
@@ -211,7 +211,7 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
    */
   searchInContent(query, caseSensitive, isRegex, callback) {
     /**
@@ -235,10 +235,10 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
   populateImageSource(image) {
     /**
      * @param {?string} content
-     * @this {WebInspector.Resource}
+     * @this {SDK.Resource}
      */
     function onResourceContent(content) {
-      var imageSrc = WebInspector.ContentProvider.contentAsDataURL(content, this._mimeType, true);
+      var imageSrc = Common.ContentProvider.contentAsDataURL(content, this._mimeType, true);
       if (imageSrc === null)
         imageSrc = this._url;
       image.src = imageSrc;
@@ -248,7 +248,7 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
   }
 
   _requestFinished() {
-    this._request.removeEventListener(WebInspector.NetworkRequest.Events.FinishedLoading, this._requestFinished, this);
+    this._request.removeEventListener(SDK.NetworkRequest.Events.FinishedLoading, this._requestFinished, this);
     if (this._pendingContentCallbacks.length)
       this._innerRequestContent();
   }
@@ -262,7 +262,7 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
      * @param {?Protocol.Error} error
      * @param {?string} content
      * @param {boolean} contentEncoded
-     * @this {WebInspector.Resource}
+     * @this {SDK.Resource}
      */
     function contentLoaded(error, content, contentEncoded) {
       if (error || content === null) {
@@ -275,7 +275,7 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
     /**
      * @param {?string} content
      * @param {boolean} contentEncoded
-     * @this {WebInspector.Resource}
+     * @this {SDK.Resource}
      */
     function replyWithContent(content, contentEncoded) {
       this._content = content;
@@ -291,7 +291,7 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
      * @param {?Protocol.Error} error
      * @param {string} content
      * @param {boolean} contentEncoded
-     * @this {WebInspector.Resource}
+     * @this {SDK.Resource}
      */
     function resourceContentLoaded(error, content, contentEncoded) {
       contentLoaded.call(this, error, content, contentEncoded);
@@ -304,7 +304,7 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
 
     /**
      * @param {?string} content
-     * @this {WebInspector.Resource}
+     * @this {SDK.Resource}
      */
     function requestContentLoaded(content) {
       contentLoaded.call(this, null, content, this.request.contentEncoded);
@@ -319,7 +319,7 @@ WebInspector.Resource = class extends WebInspector.SDKObject {
   hasTextContent() {
     if (this._type.isTextType())
       return true;
-    if (this._type === WebInspector.resourceTypes.Other)
+    if (this._type === Common.resourceTypes.Other)
       return !!this._content && !this._contentEncoded;
     return false;
   }

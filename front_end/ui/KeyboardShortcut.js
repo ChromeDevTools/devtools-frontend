@@ -30,7 +30,7 @@
 /**
  * @unrestricted
  */
-WebInspector.KeyboardShortcut = class {
+UI.KeyboardShortcut = class {
   /**
    * Creates a number encoding keyCode in the lower 8 bits and modifiers mask in the higher 8 bits.
    * It is useful for matching pressed keys.
@@ -42,8 +42,8 @@ WebInspector.KeyboardShortcut = class {
   static makeKey(keyCode, modifiers) {
     if (typeof keyCode === 'string')
       keyCode = keyCode.charCodeAt(0) - (/^[a-z]/.test(keyCode) ? 32 : 0);
-    modifiers = modifiers || WebInspector.KeyboardShortcut.Modifiers.None;
-    return WebInspector.KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, modifiers);
+    modifiers = modifiers || UI.KeyboardShortcut.Modifiers.None;
+    return UI.KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, modifiers);
   }
 
   /**
@@ -51,19 +51,19 @@ WebInspector.KeyboardShortcut = class {
    * @return {number}
    */
   static makeKeyFromEvent(keyboardEvent) {
-    var modifiers = WebInspector.KeyboardShortcut.Modifiers.None;
+    var modifiers = UI.KeyboardShortcut.Modifiers.None;
     if (keyboardEvent.shiftKey)
-      modifiers |= WebInspector.KeyboardShortcut.Modifiers.Shift;
+      modifiers |= UI.KeyboardShortcut.Modifiers.Shift;
     if (keyboardEvent.ctrlKey)
-      modifiers |= WebInspector.KeyboardShortcut.Modifiers.Ctrl;
+      modifiers |= UI.KeyboardShortcut.Modifiers.Ctrl;
     if (keyboardEvent.altKey)
-      modifiers |= WebInspector.KeyboardShortcut.Modifiers.Alt;
+      modifiers |= UI.KeyboardShortcut.Modifiers.Alt;
     if (keyboardEvent.metaKey)
-      modifiers |= WebInspector.KeyboardShortcut.Modifiers.Meta;
+      modifiers |= UI.KeyboardShortcut.Modifiers.Meta;
 
     // Use either a real or a synthetic keyCode (for events originating from extensions).
     var keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
-    return WebInspector.KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, modifiers);
+    return UI.KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, modifiers);
   }
 
   /**
@@ -72,8 +72,8 @@ WebInspector.KeyboardShortcut = class {
    */
   static makeKeyFromEventIgnoringModifiers(keyboardEvent) {
     var keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
-    return WebInspector.KeyboardShortcut._makeKeyFromCodeAndModifiers(
-        keyCode, WebInspector.KeyboardShortcut.Modifiers.None);
+    return UI.KeyboardShortcut._makeKeyFromCodeAndModifiers(
+        keyCode, UI.KeyboardShortcut.Modifiers.None);
   }
 
   /**
@@ -81,7 +81,7 @@ WebInspector.KeyboardShortcut = class {
    * @return {boolean}
    */
   static eventHasCtrlOrMeta(event) {
-    return WebInspector.isMac() ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
+    return Host.isMac() ? event.metaKey && !event.ctrlKey : event.ctrlKey && !event.metaKey;
   }
 
   /**
@@ -93,28 +93,28 @@ WebInspector.KeyboardShortcut = class {
   }
 
   /**
-   * @param {string|!WebInspector.KeyboardShortcut.Key} key
+   * @param {string|!UI.KeyboardShortcut.Key} key
    * @param {number=} modifiers
-   * @return {!WebInspector.KeyboardShortcut.Descriptor}
+   * @return {!UI.KeyboardShortcut.Descriptor}
    */
   static makeDescriptor(key, modifiers) {
     return {
-      key: WebInspector.KeyboardShortcut.makeKey(typeof key === 'string' ? key : key.code, modifiers),
-      name: WebInspector.KeyboardShortcut.shortcutToString(key, modifiers)
+      key: UI.KeyboardShortcut.makeKey(typeof key === 'string' ? key : key.code, modifiers),
+      name: UI.KeyboardShortcut.shortcutToString(key, modifiers)
     };
   }
 
   /**
    * @param {string} shortcut
-   * @return {?WebInspector.KeyboardShortcut.Descriptor}
+   * @return {?UI.KeyboardShortcut.Descriptor}
    */
   static makeDescriptorFromBindingShortcut(shortcut) {
     var parts = shortcut.split(/\+(?!$)/);
     var modifiers = 0;
     var keyString;
     for (var i = 0; i < parts.length; ++i) {
-      if (typeof WebInspector.KeyboardShortcut.Modifiers[parts[i]] !== 'undefined') {
-        modifiers |= WebInspector.KeyboardShortcut.Modifiers[parts[i]];
+      if (typeof UI.KeyboardShortcut.Modifiers[parts[i]] !== 'undefined') {
+        modifiers |= UI.KeyboardShortcut.Modifiers[parts[i]];
         continue;
       }
       console.assert(
@@ -126,23 +126,23 @@ WebInspector.KeyboardShortcut = class {
     if (!keyString)
       return null;
 
-    var key = WebInspector.KeyboardShortcut.Keys[keyString] || WebInspector.KeyboardShortcut.KeyBindings[keyString];
+    var key = UI.KeyboardShortcut.Keys[keyString] || UI.KeyboardShortcut.KeyBindings[keyString];
     if (key && key.shiftKey)
-      modifiers |= WebInspector.KeyboardShortcut.Modifiers.Shift;
-    return WebInspector.KeyboardShortcut.makeDescriptor(key ? key : keyString, modifiers);
+      modifiers |= UI.KeyboardShortcut.Modifiers.Shift;
+    return UI.KeyboardShortcut.makeDescriptor(key ? key : keyString, modifiers);
   }
 
   /**
-   * @param {string|!WebInspector.KeyboardShortcut.Key} key
+   * @param {string|!UI.KeyboardShortcut.Key} key
    * @param {number=} modifiers
    * @return {string}
    */
   static shortcutToString(key, modifiers) {
-    return WebInspector.KeyboardShortcut._modifiersToString(modifiers) + WebInspector.KeyboardShortcut._keyName(key);
+    return UI.KeyboardShortcut._modifiersToString(modifiers) + UI.KeyboardShortcut._keyName(key);
   }
 
   /**
-   * @param {string|!WebInspector.KeyboardShortcut.Key} key
+   * @param {string|!UI.KeyboardShortcut.Key} key
    * @return {string}
    */
   static _keyName(key) {
@@ -150,7 +150,7 @@ WebInspector.KeyboardShortcut = class {
       return key.toUpperCase();
     if (typeof key.name === 'string')
       return key.name;
-    return key.name[WebInspector.platform()] || key.name.other || '';
+    return key.name[Host.platform()] || key.name.other || '';
   }
 
   /**
@@ -175,8 +175,8 @@ WebInspector.KeyboardShortcut = class {
    * @return {string}
    */
   static _modifiersToString(modifiers) {
-    var isMac = WebInspector.isMac();
-    var m = WebInspector.KeyboardShortcut.Modifiers;
+    var isMac = Host.isMac();
+    var m = UI.KeyboardShortcut.Modifiers;
     var modifierNames = new Map([
       [m.Ctrl, isMac ? 'Ctrl\u2004' : 'Ctrl\u200A+\u200A'], [m.Alt, isMac ? '\u2325\u2004' : 'Alt\u200A+\u200A'],
       [m.Shift, isMac ? '\u21e7\u2004' : 'Shift\u200A+\u200A'], [m.Meta, isMac ? '\u2318\u2004' : 'Win\u200A+\u200A']
@@ -197,7 +197,7 @@ WebInspector.KeyboardShortcut = class {
  * Constants for encoding modifier key set as a bit mask.
  * @see #_makeKeyFromCodeAndModifiers
  */
-WebInspector.KeyboardShortcut.Modifiers = {
+UI.KeyboardShortcut.Modifiers = {
   None: 0,  // Constant for empty modifiers set.
   Shift: 1,
   Ctrl: 2,
@@ -205,19 +205,19 @@ WebInspector.KeyboardShortcut.Modifiers = {
   Meta: 8,  // Command key on Mac, Win key on other platforms.
   get CtrlOrMeta() {
     // "default" command/ctrl key for platform, Command on Mac, Ctrl on other platforms
-    return WebInspector.isMac() ? this.Meta : this.Ctrl;
+    return Host.isMac() ? this.Meta : this.Ctrl;
   },
   get ShiftOrOption() {
     // Option on Mac, Shift on other platforms
-    return WebInspector.isMac() ? this.Alt : this.Shift;
+    return Host.isMac() ? this.Alt : this.Shift;
   }
 };
 
 /** @typedef {!{code: number, name: (string|!Object.<string, string>)}} */
-WebInspector.KeyboardShortcut.Key;
+UI.KeyboardShortcut.Key;
 
-/** @type {!Object.<string, !WebInspector.KeyboardShortcut.Key>} */
-WebInspector.KeyboardShortcut.Keys = {
+/** @type {!Object.<string, !UI.KeyboardShortcut.Key>} */
+UI.KeyboardShortcut.Keys = {
   Backspace: {code: 8, name: '\u21a4'},
   Tab: {code: 9, name: {mac: '\u21e5', other: 'Tab'}},
   Enter: {code: 13, name: {mac: '\u21a9', other: 'Enter'}},
@@ -269,26 +269,26 @@ WebInspector.KeyboardShortcut.Keys = {
   SingleQuote: {code: 222, name: '\''},
   get CtrlOrMeta() {
     // "default" command/ctrl key for platform, Command on Mac, Ctrl on other platforms
-    return WebInspector.isMac() ? this.Meta : this.Ctrl;
+    return Host.isMac() ? this.Meta : this.Ctrl;
   },
 };
 
-WebInspector.KeyboardShortcut.KeyBindings = {};
+UI.KeyboardShortcut.KeyBindings = {};
 
 (function() {
-  for (var key in WebInspector.KeyboardShortcut.Keys) {
-    var descriptor = WebInspector.KeyboardShortcut.Keys[key];
+  for (var key in UI.KeyboardShortcut.Keys) {
+    var descriptor = UI.KeyboardShortcut.Keys[key];
     if (typeof descriptor === 'object' && descriptor['code']) {
       var name = typeof descriptor['name'] === 'string' ? descriptor['name'] : key;
-      WebInspector.KeyboardShortcut.KeyBindings[name] = descriptor;
+      UI.KeyboardShortcut.KeyBindings[name] = descriptor;
     }
   }
 })();
 
 
 /** @typedef {!{key: number, name: string}} */
-WebInspector.KeyboardShortcut.Descriptor;
+UI.KeyboardShortcut.Descriptor;
 
 
-WebInspector.KeyboardShortcut.SelectAll =
-    WebInspector.KeyboardShortcut.makeKey('a', WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta);
+UI.KeyboardShortcut.SelectAll =
+    UI.KeyboardShortcut.makeKey('a', UI.KeyboardShortcut.Modifiers.CtrlOrMeta);

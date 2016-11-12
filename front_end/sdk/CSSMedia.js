@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.CSSMediaQuery = class {
+SDK.CSSMediaQuery = class {
   /**
    * @param {!Protocol.CSS.MediaQuery} payload
    */
@@ -12,15 +12,15 @@ WebInspector.CSSMediaQuery = class {
     this._active = payload.active;
     this._expressions = [];
     for (var j = 0; j < payload.expressions.length; ++j)
-      this._expressions.push(WebInspector.CSSMediaQueryExpression.parsePayload(payload.expressions[j]));
+      this._expressions.push(SDK.CSSMediaQueryExpression.parsePayload(payload.expressions[j]));
   }
 
   /**
    * @param {!Protocol.CSS.MediaQuery} payload
-   * @return {!WebInspector.CSSMediaQuery}
+   * @return {!SDK.CSSMediaQuery}
    */
   static parsePayload(payload) {
-    return new WebInspector.CSSMediaQuery(payload);
+    return new SDK.CSSMediaQuery(payload);
   }
 
   /**
@@ -31,7 +31,7 @@ WebInspector.CSSMediaQuery = class {
   }
 
   /**
-   * @return {!Array.<!WebInspector.CSSMediaQueryExpression>}
+   * @return {!Array.<!SDK.CSSMediaQueryExpression>}
    */
   expressions() {
     return this._expressions;
@@ -42,7 +42,7 @@ WebInspector.CSSMediaQuery = class {
 /**
  * @unrestricted
  */
-WebInspector.CSSMediaQueryExpression = class {
+SDK.CSSMediaQueryExpression = class {
   /**
    * @param {!Protocol.CSS.MediaQueryExpression} payload
    */
@@ -50,16 +50,16 @@ WebInspector.CSSMediaQueryExpression = class {
     this._value = payload.value;
     this._unit = payload.unit;
     this._feature = payload.feature;
-    this._valueRange = payload.valueRange ? WebInspector.TextRange.fromObject(payload.valueRange) : null;
+    this._valueRange = payload.valueRange ? Common.TextRange.fromObject(payload.valueRange) : null;
     this._computedLength = payload.computedLength || null;
   }
 
   /**
    * @param {!Protocol.CSS.MediaQueryExpression} payload
-   * @return {!WebInspector.CSSMediaQueryExpression}
+   * @return {!SDK.CSSMediaQueryExpression}
    */
   static parsePayload(payload) {
-    return new WebInspector.CSSMediaQueryExpression(payload);
+    return new SDK.CSSMediaQueryExpression(payload);
   }
 
   /**
@@ -84,7 +84,7 @@ WebInspector.CSSMediaQueryExpression = class {
   }
 
   /**
-   * @return {?WebInspector.TextRange}
+   * @return {?Common.TextRange}
    */
   valueRange() {
     return this._valueRange;
@@ -102,9 +102,9 @@ WebInspector.CSSMediaQueryExpression = class {
 /**
  * @unrestricted
  */
-WebInspector.CSSMedia = class {
+SDK.CSSMedia = class {
   /**
-   * @param {!WebInspector.CSSModel} cssModel
+   * @param {!SDK.CSSModel} cssModel
    * @param {!Protocol.CSS.CSSMedia} payload
    */
   constructor(cssModel, payload) {
@@ -113,23 +113,23 @@ WebInspector.CSSMedia = class {
   }
 
   /**
-   * @param {!WebInspector.CSSModel} cssModel
+   * @param {!SDK.CSSModel} cssModel
    * @param {!Protocol.CSS.CSSMedia} payload
-   * @return {!WebInspector.CSSMedia}
+   * @return {!SDK.CSSMedia}
    */
   static parsePayload(cssModel, payload) {
-    return new WebInspector.CSSMedia(cssModel, payload);
+    return new SDK.CSSMedia(cssModel, payload);
   }
 
   /**
-   * @param {!WebInspector.CSSModel} cssModel
+   * @param {!SDK.CSSModel} cssModel
    * @param {!Array.<!Protocol.CSS.CSSMedia>} payload
-   * @return {!Array.<!WebInspector.CSSMedia>}
+   * @return {!Array.<!SDK.CSSMedia>}
    */
   static parseMediaArrayPayload(cssModel, payload) {
     var result = [];
     for (var i = 0; i < payload.length; ++i)
-      result.push(WebInspector.CSSMedia.parsePayload(cssModel, payload[i]));
+      result.push(SDK.CSSMedia.parsePayload(cssModel, payload[i]));
     return result;
   }
 
@@ -140,18 +140,18 @@ WebInspector.CSSMedia = class {
     this.text = payload.text;
     this.source = payload.source;
     this.sourceURL = payload.sourceURL || '';
-    this.range = payload.range ? WebInspector.TextRange.fromObject(payload.range) : null;
+    this.range = payload.range ? Common.TextRange.fromObject(payload.range) : null;
     this.styleSheetId = payload.styleSheetId;
     this.mediaList = null;
     if (payload.mediaList) {
       this.mediaList = [];
       for (var i = 0; i < payload.mediaList.length; ++i)
-        this.mediaList.push(WebInspector.CSSMediaQuery.parsePayload(payload.mediaList[i]));
+        this.mediaList.push(SDK.CSSMediaQuery.parsePayload(payload.mediaList[i]));
     }
   }
 
   /**
-   * @param {!WebInspector.CSSModel.Edit} edit
+   * @param {!SDK.CSSModel.Edit} edit
    */
   rebase(edit) {
     if (this.styleSheetId !== edit.styleSheetId || !this.range)
@@ -163,7 +163,7 @@ WebInspector.CSSMedia = class {
   }
 
   /**
-   * @param {!WebInspector.CSSMedia} other
+   * @param {!SDK.CSSMedia} other
    * @return {boolean}
    */
   equal(other) {
@@ -210,25 +210,25 @@ WebInspector.CSSMedia = class {
   }
 
   /**
-   * @return {?WebInspector.CSSStyleSheetHeader}
+   * @return {?SDK.CSSStyleSheetHeader}
    */
   header() {
     return this.styleSheetId ? this._cssModel.styleSheetHeaderForId(this.styleSheetId) : null;
   }
 
   /**
-   * @return {?WebInspector.CSSLocation}
+   * @return {?SDK.CSSLocation}
    */
   rawLocation() {
     var header = this.header();
     if (!header || this.lineNumberInSource() === undefined)
       return null;
     var lineNumber = Number(this.lineNumberInSource());
-    return new WebInspector.CSSLocation(header, lineNumber, this.columnNumberInSource());
+    return new SDK.CSSLocation(header, lineNumber, this.columnNumberInSource());
   }
 };
 
-WebInspector.CSSMedia.Source = {
+SDK.CSSMedia.Source = {
   LINKED_SHEET: 'linkedSheet',
   INLINE_SHEET: 'inlineSheet',
   MEDIA_RULE: 'mediaRule',

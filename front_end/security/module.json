@@ -6,7 +6,7 @@
             "id": "security",
             "title": "Security",
             "order": 80,
-            "className": "WebInspector.SecurityPanel"
+            "className": "Security.SecurityPanel"
         }
     ],
     "dependencies": ["network", "platform", "ui", "sdk"],

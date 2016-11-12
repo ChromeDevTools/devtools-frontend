@@ -7,7 +7,7 @@
             "title": "Terminal",
             "order": 10,
             "persistence": "closeable",
-            "factoryName": "WebInspector.TerminalWidget"
+            "factoryName": "Terminal.TerminalWidget"
         }
     ],
     "dependencies": [

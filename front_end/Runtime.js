@@ -764,6 +764,14 @@ Runtime.Module = class {
   _loadScripts() {
     if (!this._descriptor.scripts || !this._descriptor.scripts.length)
       return Promise.resolve();
+
+    // Module namespaces.
+    var namespace = this._name.replace('_lazy', '');
+    if (namespace === 'sdk' || namespace === 'ui')
+        namespace = namespace.toUpperCase();
+    namespace = namespace.split('_').map(a => a.substring(0, 1).toUpperCase() + a.substring(1)).join('');
+    self[namespace] = self[namespace] || {};
+
     return Runtime._loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this), this._remoteBase());
   }
 
@@ -882,7 +890,7 @@ Runtime.Extension = class {
    * @return {string}
    */
   title() {
-    // FIXME: should be WebInspector.UIString() but runtime is not l10n aware yet.
+    // FIXME: should be Common.UIString() but runtime is not l10n aware yet.
     return this._descriptor['title-' + Runtime._platform] || this._descriptor['title'];
   }
 

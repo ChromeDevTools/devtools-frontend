@@ -28,10 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.RenderingOptionsView = class extends WebInspector.VBox {
+Main.RenderingOptionsView = class extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('main/renderingOptions.css');
@@ -41,23 +41,23 @@ WebInspector.RenderingOptionsView = class extends WebInspector.VBox {
 
     var options = [
       {
-        label: WebInspector.UIString('Paint Flashing'),
-        subtitle: WebInspector.UIString('Highlights areas of the page that need to be repainted'),
+        label: Common.UIString('Paint Flashing'),
+        subtitle: Common.UIString('Highlights areas of the page that need to be repainted'),
         setterName: 'setShowPaintRects'
       },
       {
-        label: WebInspector.UIString('Layer Borders'),
-        subtitle: WebInspector.UIString('Shows layer borders (orange/olive) and tiles (cyan)'),
+        label: Common.UIString('Layer Borders'),
+        subtitle: Common.UIString('Shows layer borders (orange/olive) and tiles (cyan)'),
         setterName: 'setShowDebugBorders'
       },
       {
-        label: WebInspector.UIString('FPS Meter'),
-        subtitle: WebInspector.UIString('Plots frames per second, frame rate distribution, and GPU memory'),
+        label: Common.UIString('FPS Meter'),
+        subtitle: Common.UIString('Plots frames per second, frame rate distribution, and GPU memory'),
         setterName: 'setShowFPSCounter'
       },
       {
-        label: WebInspector.UIString('Scrolling Performance Issues'),
-        subtitle: WebInspector.UIString('Shows areas of the page that slow down scrolling'),
+        label: Common.UIString('Scrolling Performance Issues'),
+        subtitle: Common.UIString('Shows areas of the page that slow down scrolling'),
         setterName: 'setShowScrollBottleneckRects',
         tooltip:
             'Touch and mousewheel event listeners can delay scrolling.\nSome areas need to repaint their content when scrolled.'
@@ -68,29 +68,29 @@ WebInspector.RenderingOptionsView = class extends WebInspector.VBox {
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    var cssMediaSubtitle = WebInspector.UIString('Forces media type for testing print and screen styles');
-    var checkboxLabel = createCheckboxLabel(WebInspector.UIString('Emulate CSS Media'), false, cssMediaSubtitle);
+    var cssMediaSubtitle = Common.UIString('Forces media type for testing print and screen styles');
+    var checkboxLabel = createCheckboxLabel(Common.UIString('Emulate CSS Media'), false, cssMediaSubtitle);
     this._mediaCheckbox = checkboxLabel.checkboxElement;
     this._mediaCheckbox.addEventListener('click', this._mediaToggled.bind(this), false);
     this.contentElement.appendChild(checkboxLabel);
 
     var mediaRow = this.contentElement.createChild('div', 'media-row');
     this._mediaSelect = mediaRow.createChild('select', 'chrome-select');
-    this._mediaSelect.appendChild(new Option(WebInspector.UIString('print'), 'print'));
-    this._mediaSelect.appendChild(new Option(WebInspector.UIString('screen'), 'screen'));
+    this._mediaSelect.appendChild(new Option(Common.UIString('print'), 'print'));
+    this._mediaSelect.appendChild(new Option(Common.UIString('screen'), 'screen'));
     this._mediaSelect.addEventListener('change', this._mediaToggled.bind(this), false);
     this._mediaSelect.disabled = true;
 
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
   }
 
   /**
-   * @return {!WebInspector.RenderingOptionsView}
+   * @return {!Main.RenderingOptionsView}
    */
   static instance() {
-    if (!WebInspector.RenderingOptionsView._instanceObject)
-      WebInspector.RenderingOptionsView._instanceObject = new WebInspector.RenderingOptionsView();
-    return WebInspector.RenderingOptionsView._instanceObject;
+    if (!Main.RenderingOptionsView._instanceObject)
+      Main.RenderingOptionsView._instanceObject = new Main.RenderingOptionsView();
+    return Main.RenderingOptionsView._instanceObject;
   }
 
   /**
@@ -113,13 +113,13 @@ WebInspector.RenderingOptionsView = class extends WebInspector.VBox {
    */
   _settingToggled(setterName) {
     var enabled = this._settings.get(setterName).checked;
-    for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser))
+    for (var target of SDK.targetManager.targets(SDK.Target.Capability.Browser))
       target.renderingAgent()[setterName](enabled);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     for (var setterName of this._settings.keysArray()) {
@@ -132,24 +132,24 @@ WebInspector.RenderingOptionsView = class extends WebInspector.VBox {
 
   _mediaToggled() {
     this._mediaSelect.disabled = !this._mediaCheckbox.checked;
-    var targets = WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser);
+    var targets = SDK.targetManager.targets(SDK.Target.Capability.Browser);
     for (var target of targets)
       this._applyPrintMediaOverride(target);
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   _applyPrintMediaOverride(target) {
     target.emulationAgent().setEmulatedMedia(this._mediaCheckbox.checked ? this._mediaSelect.value : '');
-    var cssModel = WebInspector.CSSModel.fromTarget(target);
+    var cssModel = SDK.CSSModel.fromTarget(target);
     if (cssModel)
       cssModel.mediaQueryResultChanged();
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
   }

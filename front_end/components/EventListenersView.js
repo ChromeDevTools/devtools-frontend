@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @typedef {Array<{object: !WebInspector.RemoteObject, eventListeners: ?Array<!WebInspector.EventListener>, frameworkEventListeners: ?{eventListeners: ?Array<!WebInspector.EventListener>, internalHandlers: ?WebInspector.RemoteArray}, isInternal: ?Array<boolean>}>}
+ * @typedef {Array<{object: !SDK.RemoteObject, eventListeners: ?Array<!SDK.EventListener>, frameworkEventListeners: ?{eventListeners: ?Array<!SDK.EventListener>, internalHandlers: ?SDK.RemoteArray}, isInternal: ?Array<boolean>}>}
  */
-WebInspector.EventListenersResult;
+Components.EventListenersResult;
 
 /**
  * @unrestricted
  */
-WebInspector.EventListenersView = class {
+Components.EventListenersView = class {
   /**
    * @param {!Element} element
    * @param {function()} changeCallback
@@ -21,18 +21,18 @@ WebInspector.EventListenersView = class {
     this._treeOutline.hideOverflow();
     this._treeOutline.registerRequiredCSS('components/objectValue.css');
     this._treeOutline.registerRequiredCSS('components/eventListenersView.css');
-    this._treeOutline.setComparator(WebInspector.EventListenersTreeElement.comparator);
+    this._treeOutline.setComparator(Components.EventListenersTreeElement.comparator);
     this._treeOutline.element.classList.add('monospace');
     this._element.appendChild(this._treeOutline.element);
     this._emptyHolder = createElementWithClass('div', 'gray-info-message');
-    this._emptyHolder.textContent = WebInspector.UIString('No Event Listeners');
-    this._linkifier = new WebInspector.Linkifier();
-    /** @type {!Map<string, !WebInspector.EventListenersTreeElement>} */
+    this._emptyHolder.textContent = Common.UIString('No Event Listeners');
+    this._linkifier = new Components.Linkifier();
+    /** @type {!Map<string, !Components.EventListenersTreeElement>} */
     this._treeItemMap = new Map();
   }
 
   /**
-   * @param {!Array<!WebInspector.RemoteObject>} objects
+   * @param {!Array<!SDK.RemoteObject>} objects
    * @return {!Promise<undefined>}
    */
   addObjects(objects) {
@@ -46,29 +46,29 @@ WebInspector.EventListenersView = class {
   }
 
   /**
-   * @param {!WebInspector.RemoteObject} object
+   * @param {!SDK.RemoteObject} object
    * @return {!Promise<undefined>}
    */
   _addObject(object) {
-    /** @type {?Array<!WebInspector.EventListener>} */
+    /** @type {?Array<!SDK.EventListener>} */
     var eventListeners = null;
-    /** @type {?WebInspector.FrameworkEventListenersObject}*/
+    /** @type {?Components.FrameworkEventListenersObject}*/
     var frameworkEventListenersObject = null;
 
     var promises = [];
     promises.push(object.eventListeners().then(storeEventListeners));
-    promises.push(WebInspector.EventListener.frameworkEventListeners(object).then(storeFrameworkEventListenersObject));
+    promises.push(SDK.EventListener.frameworkEventListeners(object).then(storeFrameworkEventListenersObject));
     return Promise.all(promises).then(markInternalEventListeners).then(addEventListeners.bind(this));
 
     /**
-     * @param {?Array<!WebInspector.EventListener>} result
+     * @param {?Array<!SDK.EventListener>} result
      */
     function storeEventListeners(result) {
       eventListeners = result;
     }
 
     /**
-     * @param {?WebInspector.FrameworkEventListenersObject} result
+     * @param {?Components.FrameworkEventListenersObject} result
      */
     function storeFrameworkEventListenersObject(result) {
       frameworkEventListenersObject = result;
@@ -85,11 +85,11 @@ WebInspector.EventListenersView = class {
           .then(setIsInternal);
 
       /**
-       * @param {!WebInspector.EventListener} listener
+       * @param {!SDK.EventListener} listener
        * @return {!Protocol.Runtime.CallArgument}
        */
       function handlerArgument(listener) {
-        return WebInspector.RemoteObject.toCallArgument(listener.handler());
+        return SDK.RemoteObject.toCallArgument(listener.handler());
       }
 
       /**
@@ -117,7 +117,7 @@ WebInspector.EventListenersView = class {
     }
 
     /**
-     * @this {WebInspector.EventListenersView}
+     * @this {Components.EventListenersView}
      */
     function addEventListeners() {
       this._addObjectEventListeners(object, eventListeners);
@@ -126,8 +126,8 @@ WebInspector.EventListenersView = class {
   }
 
   /**
-   * @param {!WebInspector.RemoteObject} object
-   * @param {?Array<!WebInspector.EventListener>} eventListeners
+   * @param {!SDK.RemoteObject} object
+   * @param {?Array<!SDK.EventListener>} eventListeners
    */
   _addObjectEventListeners(object, eventListeners) {
     if (!eventListeners)
@@ -167,12 +167,12 @@ WebInspector.EventListenersView = class {
 
   /**
    * @param {string} type
-   * @return {!WebInspector.EventListenersTreeElement}
+   * @return {!Components.EventListenersTreeElement}
    */
   _getOrCreateTreeElementForType(type) {
     var treeItem = this._treeItemMap.get(type);
     if (!treeItem) {
-      treeItem = new WebInspector.EventListenersTreeElement(type, this._linkifier, this._changeCallback);
+      treeItem = new Components.EventListenersTreeElement(type, this._linkifier, this._changeCallback);
       this._treeItemMap.set(type, treeItem);
       treeItem.hidden = true;
       this._treeOutline.appendChild(treeItem);
@@ -205,10 +205,10 @@ WebInspector.EventListenersView = class {
 /**
  * @unrestricted
  */
-WebInspector.EventListenersTreeElement = class extends TreeElement {
+Components.EventListenersTreeElement = class extends TreeElement {
   /**
    * @param {string} type
-   * @param {!WebInspector.Linkifier} linkifier
+   * @param {!Components.Linkifier} linkifier
    * @param {function()} changeCallback
    */
   constructor(type, linkifier, changeCallback) {
@@ -231,12 +231,12 @@ WebInspector.EventListenersTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!WebInspector.EventListener} eventListener
-   * @param {!WebInspector.RemoteObject} object
+   * @param {!SDK.EventListener} eventListener
+   * @param {!SDK.RemoteObject} object
    */
   addObjectEventListener(eventListener, object) {
     var treeElement =
-        new WebInspector.ObjectEventListenerBar(eventListener, object, this._linkifier, this._changeCallback);
+        new Components.ObjectEventListenerBar(eventListener, object, this._linkifier, this._changeCallback);
     this.appendChild(/** @type {!TreeElement} */ (treeElement));
   }
 };
@@ -245,11 +245,11 @@ WebInspector.EventListenersTreeElement = class extends TreeElement {
 /**
  * @unrestricted
  */
-WebInspector.ObjectEventListenerBar = class extends TreeElement {
+Components.ObjectEventListenerBar = class extends TreeElement {
   /**
-   * @param {!WebInspector.EventListener} eventListener
-   * @param {!WebInspector.RemoteObject} object
-   * @param {!WebInspector.Linkifier} linkifier
+   * @param {!SDK.EventListener} eventListener
+   * @param {!SDK.RemoteObject} object
+   * @param {!Components.Linkifier} linkifier
    * @param {function()} changeCallback
    */
   constructor(eventListener, object, linkifier, changeCallback) {
@@ -272,40 +272,40 @@ WebInspector.ObjectEventListenerBar = class extends TreeElement {
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('passive', eventListener.passive()));
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('once', eventListener.once()));
     if (typeof eventListener.handler() !== 'undefined')
-      properties.push(new WebInspector.RemoteObjectProperty('handler', eventListener.handler()));
-    WebInspector.ObjectPropertyTreeElement.populateWithProperties(this, properties, [], true, null);
+      properties.push(new SDK.RemoteObjectProperty('handler', eventListener.handler()));
+    Components.ObjectPropertyTreeElement.populateWithProperties(this, properties, [], true, null);
   }
 
   /**
-   * @param {!WebInspector.RemoteObject} object
-   * @param {!WebInspector.Linkifier} linkifier
+   * @param {!SDK.RemoteObject} object
+   * @param {!Components.Linkifier} linkifier
    */
   _setTitle(object, linkifier) {
     var title = this.listItemElement.createChild('span');
     var subtitle = this.listItemElement.createChild('span', 'event-listener-tree-subtitle');
     subtitle.appendChild(linkifier.linkifyRawLocation(this._eventListener.location(), this._eventListener.sourceURL()));
 
-    title.appendChild(WebInspector.ObjectPropertiesSection.createValueElement(object, false));
+    title.appendChild(Components.ObjectPropertiesSection.createValueElement(object, false));
 
     if (this._eventListener.removeFunction()) {
       var deleteButton = title.createChild('span', 'event-listener-button');
-      deleteButton.textContent = WebInspector.UIString('Remove');
-      deleteButton.title = WebInspector.UIString('Delete event listener');
+      deleteButton.textContent = Common.UIString('Remove');
+      deleteButton.title = Common.UIString('Delete event listener');
       deleteButton.addEventListener('click', removeListener.bind(this), false);
       title.appendChild(deleteButton);
     }
 
     if (this._eventListener.isScrollBlockingType() && this._eventListener.isNormalListenerType()) {
       var passiveButton = title.createChild('span', 'event-listener-button');
-      passiveButton.textContent = WebInspector.UIString('Toggle Passive');
-      passiveButton.title = WebInspector.UIString('Toggle whether event listener is passive or blocking');
+      passiveButton.textContent = Common.UIString('Toggle Passive');
+      passiveButton.title = Common.UIString('Toggle whether event listener is passive or blocking');
       passiveButton.addEventListener('click', togglePassiveListener.bind(this), false);
       title.appendChild(passiveButton);
     }
 
     /**
-     * @param {!WebInspector.Event} event
-     * @this {WebInspector.ObjectEventListenerBar}
+     * @param {!Common.Event} event
+     * @this {Components.ObjectEventListenerBar}
      */
     function removeListener(event) {
       event.consume();
@@ -314,8 +314,8 @@ WebInspector.ObjectEventListenerBar = class extends TreeElement {
     }
 
     /**
-     * @param {!WebInspector.Event} event
-     * @this {WebInspector.ObjectEventListenerBar}
+     * @param {!Common.Event} event
+     * @this {Components.ObjectEventListenerBar}
      */
     function togglePassiveListener(event) {
       event.consume();
@@ -338,7 +338,7 @@ WebInspector.ObjectEventListenerBar = class extends TreeElement {
   }
 
   /**
-   * @return {!WebInspector.EventListener}
+   * @return {!SDK.EventListener}
    */
   eventListener() {
     return this._eventListener;

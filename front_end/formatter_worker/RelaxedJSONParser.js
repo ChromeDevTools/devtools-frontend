@@ -1,16 +1,16 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-WebInspector.RelaxedJSONParser = {};
+FormatterWorker.RelaxedJSONParser = {};
 
 /** @enum {string} */
-WebInspector.RelaxedJSONParser.States = {
+FormatterWorker.RelaxedJSONParser.States = {
   ExpectKey: 'ExpectKey',
   ExpectValue: 'ExpectValue'
 };
 
 /** @enum {*} */
-WebInspector.RelaxedJSONParser.Keywords = {
+FormatterWorker.RelaxedJSONParser.Keywords = {
   'NaN': NaN,
   'true': true,
   'false': false,
@@ -23,9 +23,9 @@ WebInspector.RelaxedJSONParser.Keywords = {
  * @param {string} content
  * @return {*}
  */
-WebInspector.RelaxedJSONParser.parse = function(content) {
-  var Keywords = WebInspector.RelaxedJSONParser.Keywords;
-  var States = WebInspector.RelaxedJSONParser.States;
+FormatterWorker.RelaxedJSONParser.parse = function(content) {
+  var Keywords = FormatterWorker.RelaxedJSONParser.Keywords;
+  var States = FormatterWorker.RelaxedJSONParser.States;
   content = '(' + content + ')';
 
   try {
@@ -34,14 +34,14 @@ WebInspector.RelaxedJSONParser.parse = function(content) {
     return null;
   }
 
-  var walker = new WebInspector.ESTreeWalker(beforeVisit, afterVisit);
+  var walker = new FormatterWorker.ESTreeWalker(beforeVisit, afterVisit);
 
   var rootTip = [];
 
-  /** @type {!Array.<!WebInspector.RelaxedJSONParser.Context>} */
+  /** @type {!Array.<!FormatterWorker.RelaxedJSONParser.Context>} */
   var stack = [];
 
-  var stackData = /** @type {!WebInspector.RelaxedJSONParser.Context} */ (
+  var stackData = /** @type {!FormatterWorker.RelaxedJSONParser.Context} */ (
       {key: 0, tip: rootTip, state: States.ExpectValue, parentIsArray: true});
 
   walker.setWalkNulls(true);
@@ -54,7 +54,7 @@ WebInspector.RelaxedJSONParser.parse = function(content) {
   return rootTip.length ? rootTip[0] : null;
 
   /**
-   * @param {!WebInspector.RelaxedJSONParser.Context} newStack
+   * @param {!FormatterWorker.RelaxedJSONParser.Context} newStack
    */
   function pushStack(newStack) {
     stack.push(stackData);
@@ -86,14 +86,14 @@ WebInspector.RelaxedJSONParser.parse = function(content) {
         var newTip = {};
         applyValue(newTip);
 
-        pushStack(/** @type {!WebInspector.RelaxedJSONParser.Context} */ (
+        pushStack(/** @type {!FormatterWorker.RelaxedJSONParser.Context} */ (
             {key: null, tip: newTip, state: null, parentIsArray: false}));
         break;
       case 'ArrayExpression':
         var newTip = [];
         applyValue(newTip);
 
-        pushStack(/** @type {!WebInspector.RelaxedJSONParser.Context} */ (
+        pushStack(/** @type {!FormatterWorker.RelaxedJSONParser.Context} */ (
             {key: 0, tip: newTip, state: States.ExpectValue, parentIsArray: true}));
         break;
       case 'Property':
@@ -105,7 +105,7 @@ WebInspector.RelaxedJSONParser.parse = function(content) {
           stackData.state = States.ExpectValue;
         } else if (stackData.state === States.ExpectValue) {
           applyValue(extractValue(node));
-          return WebInspector.ESTreeWalker.SkipSubtree;
+          return FormatterWorker.ESTreeWalker.SkipSubtree;
         }
         break;
       case 'Identifier':
@@ -114,13 +114,13 @@ WebInspector.RelaxedJSONParser.parse = function(content) {
           stackData.state = States.ExpectValue;
         } else if (stackData.state === States.ExpectValue) {
           applyValue(extractValue(node));
-          return WebInspector.ESTreeWalker.SkipSubtree;
+          return FormatterWorker.ESTreeWalker.SkipSubtree;
         }
         break;
       case 'UnaryExpression':
         if (stackData.state === States.ExpectValue) {
           applyValue(extractValue(node));
-          return WebInspector.ESTreeWalker.SkipSubtree;
+          return FormatterWorker.ESTreeWalker.SkipSubtree;
         }
         break;
       case 'Program':
@@ -129,7 +129,7 @@ WebInspector.RelaxedJSONParser.parse = function(content) {
       default:
         if (stackData.state === States.ExpectValue)
           applyValue(extractValue(node));
-        return WebInspector.ESTreeWalker.SkipSubtree;
+        return FormatterWorker.ESTreeWalker.SkipSubtree;
     }
   }
 
@@ -176,6 +176,6 @@ WebInspector.RelaxedJSONParser.parse = function(content) {
 };
 
 /**
- * @typedef {!{key: (number|string), tip: (!Array|!Object), state: ?WebInspector.RelaxedJSONParser.States, parentIsArray: boolean}}
+ * @typedef {!{key: (number|string), tip: (!Array|!Object), state: ?FormatterWorker.RelaxedJSONParser.States, parentIsArray: boolean}}
  */
-WebInspector.RelaxedJSONParser.Context;
+FormatterWorker.RelaxedJSONParser.Context;

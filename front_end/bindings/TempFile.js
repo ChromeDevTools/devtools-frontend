@@ -32,7 +32,7 @@ window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileS
 /**
  * @unrestricted
  */
-WebInspector.TempFile = class {
+Bindings.TempFile = class {
   constructor() {
     this._fileEntry = null;
     this._writer = null;
@@ -41,10 +41,10 @@ WebInspector.TempFile = class {
   /**
    * @param {string} dirPath
    * @param {string} name
-   * @return {!Promise.<!WebInspector.TempFile>}
+   * @return {!Promise.<!Bindings.TempFile>}
    */
   static create(dirPath, name) {
-    var file = new WebInspector.TempFile();
+    var file = new Bindings.TempFile();
 
     function requestTempFileSystem() {
       return new Promise(window.requestFileSystem.bind(window, window.TEMPORARY, 10));
@@ -107,7 +107,7 @@ WebInspector.TempFile = class {
       return new Promise(truncate).then(didTruncate, onTruncateError);
     }
 
-    return WebInspector.TempFile.ensureTempStorageCleared()
+    return Bindings.TempFile.ensureTempStorageCleared()
         .then(requestTempFileSystem)
         .then(getDirectoryEntry)
         .then(getFileEntry)
@@ -119,14 +119,14 @@ WebInspector.TempFile = class {
    * @return {!Promise.<undefined>}
    */
   static ensureTempStorageCleared() {
-    if (!WebInspector.TempFile._storageCleanerPromise) {
-      WebInspector.TempFile._storageCleanerPromise =
-          WebInspector.serviceManager.createAppService('utility_shared_worker', 'TempStorage', true).then(service => {
+    if (!Bindings.TempFile._storageCleanerPromise) {
+      Bindings.TempFile._storageCleanerPromise =
+          Services.serviceManager.createAppService('utility_shared_worker', 'TempStorage', true).then(service => {
             if (service)
               return service.send('clear');
           });
     }
-    return WebInspector.TempFile._storageCleanerPromise;
+    return Bindings.TempFile._storageCleanerPromise;
   }
 
   /**
@@ -136,7 +136,7 @@ WebInspector.TempFile = class {
   write(strings, callback) {
     var blob = new Blob(strings, {type: 'text/plain'});
     this._writer.onerror = function(e) {
-      WebInspector.console.error('Failed to write into a temp file: ' + e.target.error.message);
+      Common.console.error('Failed to write into a temp file: ' + e.target.error.message);
       callback(-1);
     };
     this._writer.onwriteend = function(e) {
@@ -177,32 +177,32 @@ WebInspector.TempFile = class {
         callback(/** @type {?string} */ (this.result));
       };
       reader.onerror = function(error) {
-        WebInspector.console.error('Failed to read from temp file: ' + error.message);
+        Common.console.error('Failed to read from temp file: ' + error.message);
       };
       reader.readAsText(file);
     }
     function didFailToGetFile(error) {
-      WebInspector.console.error('Failed to load temp file: ' + error.message);
+      Common.console.error('Failed to load temp file: ' + error.message);
       callback(null);
     }
     this._fileEntry.file(didGetFile, didFailToGetFile);
   }
 
   /**
-   * @param {!WebInspector.OutputStream} outputStream
-   * @param {!WebInspector.OutputStreamDelegate} delegate
+   * @param {!Common.OutputStream} outputStream
+   * @param {!Bindings.OutputStreamDelegate} delegate
    */
   copyToOutputStream(outputStream, delegate) {
     /**
      * @param {!File} file
      */
     function didGetFile(file) {
-      var reader = new WebInspector.ChunkedFileReader(file, 10 * 1000 * 1000, delegate);
+      var reader = new Bindings.ChunkedFileReader(file, 10 * 1000 * 1000, delegate);
       reader.start(outputStream);
     }
 
     function didFailToGetFile(error) {
-      WebInspector.console.error('Failed to load temp file: ' + error.message);
+      Common.console.error('Failed to load temp file: ' + error.message);
       outputStream.close();
     }
 
@@ -219,7 +219,7 @@ WebInspector.TempFile = class {
 /**
  * @unrestricted
  */
-WebInspector.DeferredTempFile = class {
+Bindings.DeferredTempFile = class {
   /**
    * @param {string} dirPath
    * @param {string} name
@@ -233,7 +233,7 @@ WebInspector.DeferredTempFile = class {
     this._finishedWriting = false;
     this._callsPendingOpen = [];
     this._pendingReads = [];
-    WebInspector.TempFile.create(dirPath, name)
+    Bindings.TempFile.create(dirPath, name)
         .then(this._didCreateTempFile.bind(this), this._failedToCreateTempFile.bind(this));
   }
 
@@ -250,7 +250,7 @@ WebInspector.DeferredTempFile = class {
   }
 
   /**
-   * @param {function(?WebInspector.TempFile)} callback
+   * @param {function(?Bindings.TempFile)} callback
    */
   finishWriting(callback) {
     this._finishCallback = callback;
@@ -264,12 +264,12 @@ WebInspector.DeferredTempFile = class {
    * @param {*} e
    */
   _failedToCreateTempFile(e) {
-    WebInspector.console.error('Failed to create temp file ' + e.code + ' : ' + e.message);
+    Common.console.error('Failed to create temp file ' + e.code + ' : ' + e.message);
     this._notifyFinished();
   }
 
   /**
-   * @param {!WebInspector.TempFile} tempFile
+   * @param {!Bindings.TempFile} tempFile
    */
   _didCreateTempFile(tempFile) {
     this._tempFile = tempFile;
@@ -346,8 +346,8 @@ WebInspector.DeferredTempFile = class {
   }
 
   /**
-   * @param {!WebInspector.OutputStream} outputStream
-   * @param {!WebInspector.OutputStreamDelegate} delegate
+   * @param {!Common.OutputStream} outputStream
+   * @param {!Bindings.OutputStreamDelegate} delegate
    */
   copyToOutputStream(outputStream, delegate) {
     if (!this._finishedWriting) {
@@ -371,10 +371,10 @@ WebInspector.DeferredTempFile = class {
 
 
 /**
- * @implements {WebInspector.BackingStorage}
+ * @implements {SDK.BackingStorage}
  * @unrestricted
  */
-WebInspector.TempFileBackingStorage = class {
+Bindings.TempFileBackingStorage = class {
   /**
    * @param {string} dirName
    */
@@ -403,11 +403,11 @@ WebInspector.TempFileBackingStorage = class {
   appendAccessibleString(string) {
     this._flush(false);
     this._strings.push(string);
-    var chunk = /** @type {!WebInspector.TempFileBackingStorage.Chunk} */ (this._flush(true));
+    var chunk = /** @type {!Bindings.TempFileBackingStorage.Chunk} */ (this._flush(true));
 
     /**
-     * @param {!WebInspector.TempFileBackingStorage.Chunk} chunk
-     * @param {!WebInspector.DeferredTempFile} file
+     * @param {!Bindings.TempFileBackingStorage.Chunk} chunk
+     * @param {!Bindings.DeferredTempFile} file
      * @return {!Promise.<?string>}
      */
     function readString(chunk, file) {
@@ -435,7 +435,7 @@ WebInspector.TempFileBackingStorage = class {
 
   /**
    * @param {boolean} createChunk
-   * @return {?WebInspector.TempFileBackingStorage.Chunk}
+   * @return {?Bindings.TempFileBackingStorage.Chunk}
    */
   _flush(createChunk) {
     if (!this._strings.length)
@@ -448,8 +448,8 @@ WebInspector.TempFileBackingStorage = class {
     }
 
     /**
-     * @this {WebInspector.TempFileBackingStorage}
-     * @param {?WebInspector.TempFileBackingStorage.Chunk} chunk
+     * @this {Bindings.TempFileBackingStorage}
+     * @param {?Bindings.TempFileBackingStorage.Chunk} chunk
      * @param {number} fileSize
      */
     function didWrite(chunk, fileSize) {
@@ -483,7 +483,7 @@ WebInspector.TempFileBackingStorage = class {
   reset() {
     if (this._file)
       this._file.remove();
-    this._file = new WebInspector.DeferredTempFile(this._dirName, String(Date.now()));
+    this._file = new Bindings.DeferredTempFile(this._dirName, String(Date.now()));
     /**
      * @type {!Array.<string>}
      */
@@ -493,8 +493,8 @@ WebInspector.TempFileBackingStorage = class {
   }
 
   /**
-   * @param {!WebInspector.OutputStream} outputStream
-   * @param {!WebInspector.OutputStreamDelegate} delegate
+   * @param {!Common.OutputStream} outputStream
+   * @param {!Bindings.OutputStreamDelegate} delegate
    */
   writeToStream(outputStream, delegate) {
     this._file.copyToOutputStream(outputStream, delegate);
@@ -508,4 +508,4 @@ WebInspector.TempFileBackingStorage = class {
  *      endOffset: number
  * }}
  */
-WebInspector.TempFileBackingStorage.Chunk;
+Bindings.TempFileBackingStorage.Chunk;

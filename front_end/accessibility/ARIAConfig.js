@@ -1,4 +1,4 @@
-WebInspector.ARIAMetadata._config = {
+Accessibility.ARIAMetadata._config = {
   'attributes': {
     'aria-activedescendant': {'type': 'IDREF'},
     'aria-atomic': {'default': 'false', 'type': 'boolean'},

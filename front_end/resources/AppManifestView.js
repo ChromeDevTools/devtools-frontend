@@ -2,74 +2,74 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.AppManifestView = class extends WebInspector.VBox {
+Resources.AppManifestView = class extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('resources/appManifestView.css');
 
-    this._reportView = new WebInspector.ReportView(WebInspector.UIString('App Manifest'));
+    this._reportView = new UI.ReportView(Common.UIString('App Manifest'));
     this._reportView.show(this.contentElement);
 
-    this._errorsSection = this._reportView.appendSection(WebInspector.UIString('Errors and warnings'));
-    this._identitySection = this._reportView.appendSection(WebInspector.UIString('Identity'));
+    this._errorsSection = this._reportView.appendSection(Common.UIString('Errors and warnings'));
+    this._identitySection = this._reportView.appendSection(Common.UIString('Identity'));
     var toolbar = this._identitySection.createToolbar();
     toolbar.renderAsLinks();
-    var addToHomeScreen = new WebInspector.ToolbarButton(
-        WebInspector.UIString('Add to homescreen'), undefined, WebInspector.UIString('Add to homescreen'));
+    var addToHomeScreen = new UI.ToolbarButton(
+        Common.UIString('Add to homescreen'), undefined, Common.UIString('Add to homescreen'));
     addToHomeScreen.addEventListener('click', this._addToHomescreen.bind(this));
     toolbar.appendToolbarItem(addToHomeScreen);
 
-    this._presentationSection = this._reportView.appendSection(WebInspector.UIString('Presentation'));
-    this._iconsSection = this._reportView.appendSection(WebInspector.UIString('Icons'));
+    this._presentationSection = this._reportView.appendSection(Common.UIString('Presentation'));
+    this._iconsSection = this._reportView.appendSection(Common.UIString('Icons'));
 
-    this._nameField = this._identitySection.appendField(WebInspector.UIString('Name'));
-    this._shortNameField = this._identitySection.appendField(WebInspector.UIString('Short name'));
+    this._nameField = this._identitySection.appendField(Common.UIString('Name'));
+    this._shortNameField = this._identitySection.appendField(Common.UIString('Short name'));
 
-    this._startURLField = this._presentationSection.appendField(WebInspector.UIString('Start URL'));
+    this._startURLField = this._presentationSection.appendField(Common.UIString('Start URL'));
 
-    var themeColorField = this._presentationSection.appendField(WebInspector.UIString('Theme color'));
-    this._themeColorSwatch = WebInspector.ColorSwatch.create();
+    var themeColorField = this._presentationSection.appendField(Common.UIString('Theme color'));
+    this._themeColorSwatch = UI.ColorSwatch.create();
     themeColorField.appendChild(this._themeColorSwatch);
 
-    var backgroundColorField = this._presentationSection.appendField(WebInspector.UIString('Background color'));
-    this._backgroundColorSwatch = WebInspector.ColorSwatch.create();
+    var backgroundColorField = this._presentationSection.appendField(Common.UIString('Background color'));
+    this._backgroundColorSwatch = UI.ColorSwatch.create();
     backgroundColorField.appendChild(this._backgroundColorSwatch);
 
-    this._orientationField = this._presentationSection.appendField(WebInspector.UIString('Orientation'));
-    this._displayField = this._presentationSection.appendField(WebInspector.UIString('Display'));
+    this._orientationField = this._presentationSection.appendField(Common.UIString('Orientation'));
+    this._displayField = this._presentationSection.appendField(Common.UIString('Display'));
 
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.DOM);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.DOM);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     if (this._resourceTreeModel)
       return;
-    var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
     if (!resourceTreeModel)
       return;
     this._resourceTreeModel = resourceTreeModel;
     this._updateManifest();
     resourceTreeModel.addEventListener(
-        WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._updateManifest, this);
+        SDK.ResourceTreeModel.Events.MainFrameNavigated, this._updateManifest, this);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-    var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
     if (!this._resourceTreeModel || this._resourceTreeModel !== resourceTreeModel)
       return;
     resourceTreeModel.removeEventListener(
-        WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._updateManifest, this);
+        SDK.ResourceTreeModel.Events.MainFrameNavigated, this._updateManifest, this);
     delete this._resourceTreeModel;
   }
 
@@ -99,18 +99,18 @@ WebInspector.AppManifestView = class extends WebInspector.VBox {
     this._startURLField.removeChildren();
     var startURL = stringProperty('start_url');
     if (startURL)
-      this._startURLField.appendChild(WebInspector.linkifyResourceAsNode(
-          /** @type {string} */ (WebInspector.ParsedURL.completeURL(url, startURL)), undefined, undefined, undefined,
+      this._startURLField.appendChild(Components.linkifyResourceAsNode(
+          /** @type {string} */ (Common.ParsedURL.completeURL(url, startURL)), undefined, undefined, undefined,
           undefined, startURL));
 
     this._themeColorSwatch.classList.toggle('hidden', !stringProperty('theme_color'));
     var themeColor =
-        WebInspector.Color.parse(stringProperty('theme_color') || 'white') || WebInspector.Color.parse('white');
-    this._themeColorSwatch.setColor(/** @type {!WebInspector.Color} */ (themeColor));
+        Common.Color.parse(stringProperty('theme_color') || 'white') || Common.Color.parse('white');
+    this._themeColorSwatch.setColor(/** @type {!Common.Color} */ (themeColor));
     this._backgroundColorSwatch.classList.toggle('hidden', !stringProperty('background_color'));
     var backgroundColor =
-        WebInspector.Color.parse(stringProperty('background_color') || 'white') || WebInspector.Color.parse('white');
-    this._backgroundColorSwatch.setColor(/** @type {!WebInspector.Color} */ (backgroundColor));
+        Common.Color.parse(stringProperty('background_color') || 'white') || Common.Color.parse('white');
+    this._backgroundColorSwatch.setColor(/** @type {!Common.Color} */ (backgroundColor));
 
     this._orientationField.textContent = stringProperty('orientation');
     this._displayField.textContent = stringProperty('display');
@@ -123,7 +123,7 @@ WebInspector.AppManifestView = class extends WebInspector.VBox {
       var imageElement = field.createChild('img');
       imageElement.style.maxWidth = '200px';
       imageElement.style.maxHeight = '200px';
-      imageElement.src = WebInspector.ParsedURL.completeURL(url, icon['src']);
+      imageElement.src = Common.ParsedURL.completeURL(url, icon['src']);
     }
 
     /**
@@ -139,10 +139,10 @@ WebInspector.AppManifestView = class extends WebInspector.VBox {
   }
 
   _addToHomescreen() {
-    var target = WebInspector.targetManager.mainTarget();
+    var target = SDK.targetManager.mainTarget();
     if (target && target.hasBrowserCapability()) {
       target.pageAgent().requestAppBanner();
-      WebInspector.console.show();
+      Common.console.show();
     }
   }
 };

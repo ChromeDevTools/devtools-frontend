@@ -31,25 +31,25 @@
 /**
  * @unrestricted
  */
-WebInspector.CSSSourceFrame = class extends WebInspector.UISourceCodeFrame {
+Sources.CSSSourceFrame = class extends Sources.UISourceCodeFrame {
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   constructor(uiSourceCode) {
     super(uiSourceCode);
     this._registerShortcuts();
-    this._swatchPopoverHelper = new WebInspector.SwatchPopoverHelper();
+    this._swatchPopoverHelper = new UI.SwatchPopoverHelper();
     this._muteSwatchProcessing = false;
     this.configureAutocomplete(
         {suggestionsCallback: this._cssSuggestions.bind(this), isWordChar: this._isWordChar.bind(this)});
-    this.textEditor.addEventListener(WebInspector.SourcesTextEditor.Events.ScrollChanged, () => {
+    this.textEditor.addEventListener(SourceFrame.SourcesTextEditor.Events.ScrollChanged, () => {
       if (this._swatchPopoverHelper.isShowing())
         this._swatchPopoverHelper.hide(true);
     });
   }
 
   _registerShortcuts() {
-    var shortcutKeys = WebInspector.ShortcutsScreen.SourcesPanelShortcuts;
+    var shortcutKeys = Components.ShortcutsScreen.SourcesPanelShortcuts;
     for (var i = 0; i < shortcutKeys.IncreaseCSSUnitByOne.length; ++i)
       this.addShortcut(shortcutKeys.IncreaseCSSUnitByOne[i].key, this._handleUnitModification.bind(this, 1));
     for (var i = 0; i < shortcutKeys.DecreaseCSSUnitByOne.length; ++i)
@@ -90,7 +90,7 @@ WebInspector.CSSSourceFrame = class extends WebInspector.UISourceCodeFrame {
       return false;
 
     var cssUnitRange =
-        new WebInspector.TextRange(selection.startLine, token.startColumn, selection.startLine, token.endColumn);
+        new Common.TextRange(selection.startLine, token.startColumn, selection.startLine, token.endColumn);
     var cssUnitText = this.textEditor.text(cssUnitRange);
     var newUnitText = this._modifyUnit(cssUnitText, change);
     if (!newUnitText)
@@ -111,16 +111,16 @@ WebInspector.CSSSourceFrame = class extends WebInspector.UISourceCodeFrame {
     var swatchPositions = [];
 
     var regexes = [
-      WebInspector.CSSMetadata.VariableRegex, WebInspector.CSSMetadata.URLRegex,
-      WebInspector.Geometry.CubicBezier.Regex, WebInspector.Color.Regex
+      SDK.CSSMetadata.VariableRegex, SDK.CSSMetadata.URLRegex,
+      Common.Geometry.CubicBezier.Regex, Common.Color.Regex
     ];
     var handlers = new Map();
-    handlers.set(WebInspector.Color.Regex, this._createColorSwatch.bind(this));
-    handlers.set(WebInspector.Geometry.CubicBezier.Regex, this._createBezierSwatch.bind(this));
+    handlers.set(Common.Color.Regex, this._createColorSwatch.bind(this));
+    handlers.set(Common.Geometry.CubicBezier.Regex, this._createBezierSwatch.bind(this));
 
     for (var lineNumber = startLine; lineNumber <= endLine; lineNumber++) {
-      var line = this.textEditor.line(lineNumber).substring(0, WebInspector.CSSSourceFrame.maxSwatchProcessingLength);
-      var results = WebInspector.TextUtils.splitStringByRegexes(line, regexes);
+      var line = this.textEditor.line(lineNumber).substring(0, Sources.CSSSourceFrame.maxSwatchProcessingLength);
+      var results = Common.TextUtils.splitStringByRegexes(line, regexes);
       for (var i = 0; i < results.length; i++) {
         var result = results[i];
         if (result.regexIndex === -1 || !handlers.has(regexes[result.regexIndex]))
@@ -135,40 +135,40 @@ WebInspector.CSSSourceFrame = class extends WebInspector.UISourceCodeFrame {
         if (!swatch)
           continue;
         swatches.push(swatch);
-        swatchPositions.push(WebInspector.TextRange.createFromLocation(lineNumber, result.position));
+        swatchPositions.push(Common.TextRange.createFromLocation(lineNumber, result.position));
       }
     }
     this.textEditor.operation(putSwatchesInline.bind(this));
 
     /**
-     * @this {WebInspector.CSSSourceFrame}
+     * @this {Sources.CSSSourceFrame}
      */
     function putSwatchesInline() {
-      var clearRange = new WebInspector.TextRange(startLine, 0, endLine, this.textEditor.line(endLine).length);
-      this.textEditor.bookmarks(clearRange, WebInspector.CSSSourceFrame.SwatchBookmark)
+      var clearRange = new Common.TextRange(startLine, 0, endLine, this.textEditor.line(endLine).length);
+      this.textEditor.bookmarks(clearRange, Sources.CSSSourceFrame.SwatchBookmark)
           .forEach(marker => marker.clear());
 
       for (var i = 0; i < swatches.length; i++) {
         var swatch = swatches[i];
         var swatchPosition = swatchPositions[i];
         var bookmark = this.textEditor.addBookmark(
-            swatchPosition.startLine, swatchPosition.startColumn, swatch, WebInspector.CSSSourceFrame.SwatchBookmark);
-        swatch[WebInspector.CSSSourceFrame.SwatchBookmark] = bookmark;
+            swatchPosition.startLine, swatchPosition.startColumn, swatch, Sources.CSSSourceFrame.SwatchBookmark);
+        swatch[Sources.CSSSourceFrame.SwatchBookmark] = bookmark;
       }
     }
   }
 
   /**
    * @param {string} text
-   * @return {?WebInspector.ColorSwatch}
+   * @return {?UI.ColorSwatch}
    */
   _createColorSwatch(text) {
-    var color = WebInspector.Color.parse(text);
+    var color = Common.Color.parse(text);
     if (!color)
       return null;
-    var swatch = WebInspector.ColorSwatch.create();
+    var swatch = UI.ColorSwatch.create();
     swatch.setColor(color);
-    swatch.iconElement().title = WebInspector.UIString('Open color picker.');
+    swatch.iconElement().title = Common.UIString('Open color picker.');
     swatch.iconElement().addEventListener('click', this._swatchIconClicked.bind(this, swatch), false);
     swatch.hideText(true);
     return swatch;
@@ -176,14 +176,14 @@ WebInspector.CSSSourceFrame = class extends WebInspector.UISourceCodeFrame {
 
   /**
    * @param {string} text
-   * @return {?WebInspector.BezierSwatch}
+   * @return {?UI.BezierSwatch}
    */
   _createBezierSwatch(text) {
-    if (!WebInspector.Geometry.CubicBezier.parse(text))
+    if (!Common.Geometry.CubicBezier.parse(text))
       return null;
-    var swatch = WebInspector.BezierSwatch.create();
+    var swatch = UI.BezierSwatch.create();
     swatch.setBezierText(text);
-    swatch.iconElement().title = WebInspector.UIString('Open cubic bezier editor.');
+    swatch.iconElement().title = Common.UIString('Open cubic bezier editor.');
     swatch.iconElement().addEventListener('click', this._swatchIconClicked.bind(this, swatch), false);
     swatch.hideText(true);
     return swatch;
@@ -197,44 +197,44 @@ WebInspector.CSSSourceFrame = class extends WebInspector.UISourceCodeFrame {
     event.consume(true);
     this._hadSwatchChange = false;
     this._muteSwatchProcessing = true;
-    var swatchPosition = swatch[WebInspector.CSSSourceFrame.SwatchBookmark].position();
+    var swatchPosition = swatch[Sources.CSSSourceFrame.SwatchBookmark].position();
     this.textEditor.setSelection(swatchPosition);
     this._editedSwatchTextRange = swatchPosition.clone();
     this._editedSwatchTextRange.endColumn += swatch.textContent.length;
     this._currentSwatch = swatch;
 
-    if (swatch instanceof WebInspector.ColorSwatch)
+    if (swatch instanceof UI.ColorSwatch)
       this._showSpectrum(swatch);
-    else if (swatch instanceof WebInspector.BezierSwatch)
+    else if (swatch instanceof UI.BezierSwatch)
       this._showBezierEditor(swatch);
   }
 
   /**
-   * @param {!WebInspector.ColorSwatch} swatch
+   * @param {!UI.ColorSwatch} swatch
    */
   _showSpectrum(swatch) {
     if (!this._spectrum) {
-      this._spectrum = new WebInspector.Spectrum();
-      this._spectrum.addEventListener(WebInspector.Spectrum.Events.SizeChanged, this._spectrumResized, this);
-      this._spectrum.addEventListener(WebInspector.Spectrum.Events.ColorChanged, this._spectrumChanged, this);
+      this._spectrum = new Components.Spectrum();
+      this._spectrum.addEventListener(Components.Spectrum.Events.SizeChanged, this._spectrumResized, this);
+      this._spectrum.addEventListener(Components.Spectrum.Events.ColorChanged, this._spectrumChanged, this);
     }
     this._spectrum.setColor(swatch.color(), swatch.format());
     this._swatchPopoverHelper.show(this._spectrum, swatch.iconElement(), this._swatchPopoverHidden.bind(this));
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _spectrumResized(event) {
     this._swatchPopoverHelper.reposition();
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _spectrumChanged(event) {
     var colorString = /** @type {string} */ (event.data);
-    var color = WebInspector.Color.parse(colorString);
+    var color = Common.Color.parse(colorString);
     if (!color)
       return;
     this._currentSwatch.setColor(color);
@@ -242,23 +242,23 @@ WebInspector.CSSSourceFrame = class extends WebInspector.UISourceCodeFrame {
   }
 
   /**
-   * @param {!WebInspector.BezierSwatch} swatch
+   * @param {!UI.BezierSwatch} swatch
    */
   _showBezierEditor(swatch) {
     if (!this._bezierEditor) {
-      this._bezierEditor = new WebInspector.BezierEditor();
-      this._bezierEditor.addEventListener(WebInspector.BezierEditor.Events.BezierChanged, this._bezierChanged, this);
+      this._bezierEditor = new UI.BezierEditor();
+      this._bezierEditor.addEventListener(UI.BezierEditor.Events.BezierChanged, this._bezierChanged, this);
     }
-    var cubicBezier = WebInspector.Geometry.CubicBezier.parse(swatch.bezierText());
+    var cubicBezier = Common.Geometry.CubicBezier.parse(swatch.bezierText());
     if (!cubicBezier)
       cubicBezier =
-          /** @type {!WebInspector.Geometry.CubicBezier} */ (WebInspector.Geometry.CubicBezier.parse('linear'));
+          /** @type {!Common.Geometry.CubicBezier} */ (Common.Geometry.CubicBezier.parse('linear'));
     this._bezierEditor.setBezier(cubicBezier);
     this._swatchPopoverHelper.show(this._bezierEditor, swatch.iconElement(), this._swatchPopoverHidden.bind(this));
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _bezierChanged(event) {
     var bezierString = /** @type {string} */ (event.data);
@@ -295,8 +295,8 @@ WebInspector.CSSSourceFrame = class extends WebInspector.UISourceCodeFrame {
 
   /**
    * @override
-   * @param {!WebInspector.TextRange} oldRange
-   * @param {!WebInspector.TextRange} newRange
+   * @param {!Common.TextRange} oldRange
+   * @param {!Common.TextRange} newRange
    */
   onTextChanged(oldRange, newRange) {
     super.onTextChanged(oldRange, newRange);
@@ -309,13 +309,13 @@ WebInspector.CSSSourceFrame = class extends WebInspector.UISourceCodeFrame {
    * @return {boolean}
    */
   _isWordChar(char) {
-    return WebInspector.TextUtils.isWordChar(char) || char === '.' || char === '-' || char === '$';
+    return Common.TextUtils.isWordChar(char) || char === '.' || char === '-' || char === '$';
   }
 
   /**
-   * @param {!WebInspector.TextRange} prefixRange
-   * @param {!WebInspector.TextRange} substituteRange
-   * @return {?Promise.<!WebInspector.SuggestBox.Suggestions>}
+   * @param {!Common.TextRange} prefixRange
+   * @param {!Common.TextRange} substituteRange
+   * @return {?Promise.<!UI.SuggestBox.Suggestions>}
    */
   _cssSuggestions(prefixRange, substituteRange) {
     var prefix = this._textEditor.text(prefixRange);
@@ -328,7 +328,7 @@ WebInspector.CSSSourceFrame = class extends WebInspector.UISourceCodeFrame {
 
     var line = this._textEditor.line(prefixRange.startLine);
     var tokenContent = line.substring(propertyToken.startColumn, propertyToken.endColumn);
-    var propertyValues = WebInspector.cssMetadata().propertyValues(tokenContent);
+    var propertyValues = SDK.cssMetadata().propertyValues(tokenContent);
     return Promise.resolve(propertyValues.filter(value => value.startsWith(prefix)).map(value => ({title: value})));
   }
 
@@ -365,6 +365,6 @@ WebInspector.CSSSourceFrame = class extends WebInspector.UISourceCodeFrame {
 };
 
 /** @type {number} */
-WebInspector.CSSSourceFrame.maxSwatchProcessingLength = 300;
+Sources.CSSSourceFrame.maxSwatchProcessingLength = 300;
 /** @type {symbol} */
-WebInspector.CSSSourceFrame.SwatchBookmark = Symbol('swatch');
+Sources.CSSSourceFrame.SwatchBookmark = Symbol('swatch');

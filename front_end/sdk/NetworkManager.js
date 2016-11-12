@@ -31,19 +31,19 @@
 /**
  * @unrestricted
  */
-WebInspector.NetworkManager = class extends WebInspector.SDKModel {
+SDK.NetworkManager = class extends SDK.SDKModel {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(WebInspector.NetworkManager, target);
-    this._dispatcher = new WebInspector.NetworkDispatcher(this);
+    super(SDK.NetworkManager, target);
+    this._dispatcher = new SDK.NetworkDispatcher(this);
     this._target = target;
     this._networkAgent = target.networkAgent();
     target.registerNetworkDispatcher(this._dispatcher);
-    if (WebInspector.moduleSetting('cacheDisabled').get())
+    if (Common.moduleSetting('cacheDisabled').get())
       this._networkAgent.setCacheDisabled(true);
-    if (WebInspector.moduleSetting('monitoringXHREnabled').get())
+    if (Common.moduleSetting('monitoringXHREnabled').get())
       this._networkAgent.setMonitoringXHREnabled(true);
 
     // Limit buffer when talking to a remote device.
@@ -52,34 +52,34 @@ WebInspector.NetworkManager = class extends WebInspector.SDKModel {
     else
       this._networkAgent.enable();
 
-    this._bypassServiceWorkerSetting = WebInspector.settings.createSetting('bypassServiceWorker', false);
+    this._bypassServiceWorkerSetting = Common.settings.createSetting('bypassServiceWorker', false);
     if (this._bypassServiceWorkerSetting.get())
       this._bypassServiceWorkerChanged();
     this._bypassServiceWorkerSetting.addChangeListener(this._bypassServiceWorkerChanged, this);
 
-    WebInspector.moduleSetting('cacheDisabled').addChangeListener(this._cacheDisabledSettingChanged, this);
+    Common.moduleSetting('cacheDisabled').addChangeListener(this._cacheDisabledSettingChanged, this);
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @return {?WebInspector.NetworkManager}
+   * @param {!SDK.Target} target
+   * @return {?SDK.NetworkManager}
    */
   static fromTarget(target) {
-    return /** @type {?WebInspector.NetworkManager} */ (target.model(WebInspector.NetworkManager));
+    return /** @type {?SDK.NetworkManager} */ (target.model(SDK.NetworkManager));
   }
 
   /**
-   * @param {!WebInspector.NetworkManager.Conditions} conditions
+   * @param {!SDK.NetworkManager.Conditions} conditions
    * @return {!Protocol.Network.ConnectionType}
    * TODO(allada): this belongs to NetworkConditionsSelector, which should hardcode/guess it.
    */
   static _connectionType(conditions) {
     if (!conditions.download && !conditions.upload)
       return Protocol.Network.ConnectionType.None;
-    var types = WebInspector.NetworkManager._connectionTypes;
+    var types = SDK.NetworkManager._connectionTypes;
     if (!types) {
-      WebInspector.NetworkManager._connectionTypes = [];
-      types = WebInspector.NetworkManager._connectionTypes;
+      SDK.NetworkManager._connectionTypes = [];
+      types = SDK.NetworkManager._connectionTypes;
       types.push(['2g', Protocol.Network.ConnectionType.Cellular2g]);
       types.push(['3g', Protocol.Network.ConnectionType.Cellular3g]);
       types.push(['4g', Protocol.Network.ConnectionType.Cellular4g]);
@@ -96,14 +96,14 @@ WebInspector.NetworkManager = class extends WebInspector.SDKModel {
 
   /**
    * @param {string} url
-   * @return {!WebInspector.NetworkRequest}
+   * @return {!SDK.NetworkRequest}
    */
   inflightRequestForURL(url) {
     return this._dispatcher._inflightRequestsByURL[url];
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _cacheDisabledSettingChanged(event) {
     var enabled = /** @type {boolean} */ (event.data);
@@ -114,7 +114,7 @@ WebInspector.NetworkManager = class extends WebInspector.SDKModel {
    * @override
    */
   dispose() {
-    WebInspector.moduleSetting('cacheDisabled').removeChangeListener(this._cacheDisabledSettingChanged, this);
+    Common.moduleSetting('cacheDisabled').removeChangeListener(this._cacheDisabledSettingChanged, this);
   }
 
   _bypassServiceWorkerChanged() {
@@ -123,7 +123,7 @@ WebInspector.NetworkManager = class extends WebInspector.SDKModel {
 };
 
 /** @enum {symbol} */
-WebInspector.NetworkManager.Events = {
+SDK.NetworkManager.Events = {
   RequestStarted: Symbol('RequestStarted'),
   RequestUpdated: Symbol('RequestUpdated'),
   RequestFinished: Symbol('RequestFinished'),
@@ -131,7 +131,7 @@ WebInspector.NetworkManager.Events = {
   ResponseReceived: Symbol('ResponseReceived')
 };
 
-WebInspector.NetworkManager._MIMETypes = {
+SDK.NetworkManager._MIMETypes = {
   'text/html': {'document': true},
   'text/xml': {'document': true},
   'text/plain': {'document': true},
@@ -144,17 +144,17 @@ WebInspector.NetworkManager._MIMETypes = {
 
 
 /** @typedef {{download: number, upload: number, latency: number, title: string}} */
-WebInspector.NetworkManager.Conditions;
-/** @type {!WebInspector.NetworkManager.Conditions} */
-WebInspector.NetworkManager.NoThrottlingConditions = {
-  title: WebInspector.UIString('No throttling'),
+SDK.NetworkManager.Conditions;
+/** @type {!SDK.NetworkManager.Conditions} */
+SDK.NetworkManager.NoThrottlingConditions = {
+  title: Common.UIString('No throttling'),
   download: -1,
   upload: -1,
   latency: 0
 };
-/** @type {!WebInspector.NetworkManager.Conditions} */
-WebInspector.NetworkManager.OfflineConditions = {
-  title: WebInspector.UIString('Offline'),
+/** @type {!SDK.NetworkManager.Conditions} */
+SDK.NetworkManager.OfflineConditions = {
+  title: Common.UIString('Offline'),
   download: 0,
   upload: 0,
   latency: 0
@@ -165,7 +165,7 @@ WebInspector.NetworkManager.OfflineConditions = {
  * @implements {Protocol.NetworkDispatcher}
  * @unrestricted
  */
-WebInspector.NetworkDispatcher = class {
+SDK.NetworkDispatcher = class {
   constructor(manager) {
     this._manager = manager;
     this._inflightRequestsById = {};
@@ -174,7 +174,7 @@ WebInspector.NetworkDispatcher = class {
 
   /**
    * @param {!Protocol.Network.Headers} headersMap
-   * @return {!Array.<!WebInspector.NetworkRequest.NameValue>}
+   * @return {!Array.<!SDK.NetworkRequest.NameValue>}
    */
   _headersMapToHeadersArray(headersMap) {
     var result = [];
@@ -187,7 +187,7 @@ WebInspector.NetworkDispatcher = class {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} networkRequest
+   * @param {!SDK.NetworkRequest} networkRequest
    * @param {!Protocol.Network.Request} request
    */
   _updateNetworkRequestWithRequest(networkRequest, request) {
@@ -199,7 +199,7 @@ WebInspector.NetworkDispatcher = class {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} networkRequest
+   * @param {!SDK.NetworkRequest} networkRequest
    * @param {!Protocol.Network.Response=} response
    */
   _updateNetworkRequestWithResponse(networkRequest, response) {
@@ -236,13 +236,13 @@ WebInspector.NetworkDispatcher = class {
 
     if (!this._mimeTypeIsConsistentWithType(networkRequest)) {
       var consoleModel = this._manager._target.consoleModel;
-      consoleModel.addMessage(new WebInspector.ConsoleMessage(
-          consoleModel.target(), WebInspector.ConsoleMessage.MessageSource.Network,
-          WebInspector.ConsoleMessage.MessageLevel.Log,
-          WebInspector.UIString(
+      consoleModel.addMessage(new SDK.ConsoleMessage(
+          consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network,
+          SDK.ConsoleMessage.MessageLevel.Log,
+          Common.UIString(
               'Resource interpreted as %s but transferred with MIME type %s: "%s".',
               networkRequest.resourceType().title(), networkRequest.mimeType, networkRequest.url),
-          WebInspector.ConsoleMessage.MessageType.Log, '', 0, 0, networkRequest.requestId));
+          SDK.ConsoleMessage.MessageType.Log, '', 0, 0, networkRequest.requestId));
     }
 
     if (response.securityDetails)
@@ -250,7 +250,7 @@ WebInspector.NetworkDispatcher = class {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} networkRequest
+   * @param {!SDK.NetworkRequest} networkRequest
    * @return {boolean}
    */
   _mimeTypeIsConsistentWithType(networkRequest) {
@@ -264,16 +264,16 @@ WebInspector.NetworkDispatcher = class {
       return true;
 
     var resourceType = networkRequest.resourceType();
-    if (resourceType !== WebInspector.resourceTypes.Stylesheet &&
-        resourceType !== WebInspector.resourceTypes.Document && resourceType !== WebInspector.resourceTypes.TextTrack) {
+    if (resourceType !== Common.resourceTypes.Stylesheet &&
+        resourceType !== Common.resourceTypes.Document && resourceType !== Common.resourceTypes.TextTrack) {
       return true;
     }
 
     if (!networkRequest.mimeType)
       return true;  // Might be not known for cached resources with null responses.
 
-    if (networkRequest.mimeType in WebInspector.NetworkManager._MIMETypes)
-      return resourceType.name() in WebInspector.NetworkManager._MIMETypes[networkRequest.mimeType];
+    if (networkRequest.mimeType in SDK.NetworkManager._MIMETypes)
+      return resourceType.name() in SDK.NetworkManager._MIMETypes[networkRequest.mimeType];
 
     return false;
   }
@@ -326,7 +326,7 @@ WebInspector.NetworkDispatcher = class {
     networkRequest.hasNetworkData = true;
     this._updateNetworkRequestWithRequest(networkRequest, request);
     networkRequest.setIssueTime(time, wallTime);
-    networkRequest.setResourceType(WebInspector.resourceTypes[resourceType]);
+    networkRequest.setResourceType(Common.resourceTypes[resourceType]);
 
     this._startNetworkRequest(networkRequest);
   }
@@ -364,17 +364,17 @@ WebInspector.NetworkDispatcher = class {
       eventData.mimeType = response.mimeType;
       var lastModifiedHeader = response.headers['last-modified'];
       eventData.lastModified = lastModifiedHeader ? new Date(lastModifiedHeader) : null;
-      this._manager.dispatchEventToListeners(WebInspector.NetworkManager.Events.RequestUpdateDropped, eventData);
+      this._manager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestUpdateDropped, eventData);
       return;
     }
 
     networkRequest.responseReceivedTime = time;
-    networkRequest.setResourceType(WebInspector.resourceTypes[resourceType]);
+    networkRequest.setResourceType(Common.resourceTypes[resourceType]);
 
     this._updateNetworkRequestWithResponse(networkRequest, response);
 
     this._updateNetworkRequest(networkRequest);
-    this._manager.dispatchEventToListeners(WebInspector.NetworkManager.Events.ResponseReceived, networkRequest);
+    this._manager.dispatchEventToListeners(SDK.NetworkManager.Events.ResponseReceived, networkRequest);
   }
 
   /**
@@ -425,17 +425,17 @@ WebInspector.NetworkDispatcher = class {
       return;
 
     networkRequest.failed = true;
-    networkRequest.setResourceType(WebInspector.resourceTypes[resourceType]);
+    networkRequest.setResourceType(Common.resourceTypes[resourceType]);
     networkRequest.canceled = canceled;
     if (blockedReason) {
       networkRequest.setBlockedReason(blockedReason);
       if (blockedReason === Protocol.Network.BlockedReason.Inspector) {
         var consoleModel = this._manager._target.consoleModel;
-        consoleModel.addMessage(new WebInspector.ConsoleMessage(
-            consoleModel.target(), WebInspector.ConsoleMessage.MessageSource.Network,
-            WebInspector.ConsoleMessage.MessageLevel.Warning,
-            WebInspector.UIString('Request was blocked by DevTools: "%s".', networkRequest.url),
-            WebInspector.ConsoleMessage.MessageType.Log, '', 0, 0, networkRequest.requestId));
+        consoleModel.addMessage(new SDK.ConsoleMessage(
+            consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network,
+            SDK.ConsoleMessage.MessageLevel.Warning,
+            Common.UIString('Request was blocked by DevTools: "%s".', networkRequest.url),
+            SDK.ConsoleMessage.MessageType.Log, '', 0, 0, networkRequest.requestId));
       }
     }
     networkRequest.localizedFailDescription = localizedDescription;
@@ -450,8 +450,8 @@ WebInspector.NetworkDispatcher = class {
    */
   webSocketCreated(requestId, requestURL, initiator) {
     var networkRequest =
-        new WebInspector.NetworkRequest(this._manager._target, requestId, requestURL, '', '', '', initiator || null);
-    networkRequest.setResourceType(WebInspector.resourceTypes.WebSocket);
+        new SDK.NetworkRequest(this._manager._target, requestId, requestURL, '', '', '', initiator || null);
+    networkRequest.setResourceType(Common.resourceTypes.WebSocket);
     this._startNetworkRequest(networkRequest);
   }
 
@@ -581,7 +581,7 @@ WebInspector.NetworkDispatcher = class {
    * @param {!Protocol.Network.RequestId} requestId
    * @param {!Protocol.Network.Timestamp} time
    * @param {string} redirectURL
-   * @return {!WebInspector.NetworkRequest}
+   * @return {!SDK.NetworkRequest}
    */
   _appendRedirect(requestId, time, redirectURL) {
     var originalNetworkRequest = this._inflightRequestsById[requestId];
@@ -599,23 +599,23 @@ WebInspector.NetworkDispatcher = class {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} networkRequest
+   * @param {!SDK.NetworkRequest} networkRequest
    */
   _startNetworkRequest(networkRequest) {
     this._inflightRequestsById[networkRequest.requestId] = networkRequest;
     this._inflightRequestsByURL[networkRequest.url] = networkRequest;
-    this._dispatchEventToListeners(WebInspector.NetworkManager.Events.RequestStarted, networkRequest);
+    this._dispatchEventToListeners(SDK.NetworkManager.Events.RequestStarted, networkRequest);
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} networkRequest
+   * @param {!SDK.NetworkRequest} networkRequest
    */
   _updateNetworkRequest(networkRequest) {
-    this._dispatchEventToListeners(WebInspector.NetworkManager.Events.RequestUpdated, networkRequest);
+    this._dispatchEventToListeners(SDK.NetworkManager.Events.RequestUpdated, networkRequest);
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} networkRequest
+   * @param {!SDK.NetworkRequest} networkRequest
    * @param {!Protocol.Network.Timestamp} finishTime
    * @param {number} encodedDataLength
    */
@@ -624,14 +624,14 @@ WebInspector.NetworkDispatcher = class {
     networkRequest.finished = true;
     if (encodedDataLength >= 0)
       networkRequest.setTransferSize(encodedDataLength);
-    this._dispatchEventToListeners(WebInspector.NetworkManager.Events.RequestFinished, networkRequest);
+    this._dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, networkRequest);
     delete this._inflightRequestsById[networkRequest.requestId];
     delete this._inflightRequestsByURL[networkRequest.url];
   }
 
   /**
    * @param {string} eventType
-   * @param {!WebInspector.NetworkRequest} networkRequest
+   * @param {!SDK.NetworkRequest} networkRequest
    */
   _dispatchEventToListeners(eventType, networkRequest) {
     this._manager.dispatchEventToListeners(eventType, networkRequest);
@@ -646,22 +646,22 @@ WebInspector.NetworkDispatcher = class {
    * @param {?Protocol.Network.Initiator} initiator
    */
   _createNetworkRequest(requestId, frameId, loaderId, url, documentURL, initiator) {
-    return new WebInspector.NetworkRequest(
+    return new SDK.NetworkRequest(
         this._manager._target, requestId, url, documentURL, frameId, loaderId, initiator);
   }
 };
 
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.MultitargetNetworkManager = class extends WebInspector.Object {
+SDK.MultitargetNetworkManager = class extends Common.Object {
   constructor() {
     super();
 
     /** @type {!Set<string>} */
     this._blockedURLs = new Set();
-    this._blockedSetting = WebInspector.moduleSetting('blockedURLs');
+    this._blockedSetting = Common.moduleSetting('blockedURLs');
     this._blockedSetting.addChangeListener(this._updateBlockedURLs, this);
     this._blockedSetting.set([]);
     this._updateBlockedURLs();
@@ -669,10 +669,10 @@ WebInspector.MultitargetNetworkManager = class extends WebInspector.Object {
     this._userAgentOverride = '';
     /** @type {!Set<!Protocol.NetworkAgent>} */
     this._agents = new Set();
-    /** @type {!WebInspector.NetworkManager.Conditions} */
-    this._networkConditions = WebInspector.NetworkManager.NoThrottlingConditions;
+    /** @type {!SDK.NetworkManager.Conditions} */
+    this._networkConditions = SDK.NetworkManager.NoThrottlingConditions;
 
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Network);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Network);
   }
 
   /**
@@ -690,7 +690,7 @@ WebInspector.MultitargetNetworkManager = class extends WebInspector.Object {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     var networkAgent = target.networkAgent();
@@ -707,7 +707,7 @@ WebInspector.MultitargetNetworkManager = class extends WebInspector.Object {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
     this._agents.delete(target.networkAgent());
@@ -729,17 +729,17 @@ WebInspector.MultitargetNetworkManager = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.NetworkManager.Conditions} conditions
+   * @param {!SDK.NetworkManager.Conditions} conditions
    */
   setNetworkConditions(conditions) {
     this._networkConditions = conditions;
     for (var agent of this._agents)
       this._updateNetworkConditions(agent);
-    this.dispatchEventToListeners(WebInspector.MultitargetNetworkManager.Events.ConditionsChanged);
+    this.dispatchEventToListeners(SDK.MultitargetNetworkManager.Events.ConditionsChanged);
   }
 
   /**
-   * @return {!WebInspector.NetworkManager.Conditions}
+   * @return {!SDK.NetworkManager.Conditions}
    */
   networkConditions() {
     return this._networkConditions;
@@ -755,7 +755,7 @@ WebInspector.MultitargetNetworkManager = class extends WebInspector.Object {
     } else {
       networkAgent.emulateNetworkConditions(
           this.isOffline(), conditions.latency, conditions.download < 0 ? 0 : conditions.download,
-          conditions.upload < 0 ? 0 : conditions.upload, WebInspector.NetworkManager._connectionType(conditions));
+          conditions.upload < 0 ? 0 : conditions.upload, SDK.NetworkManager._connectionType(conditions));
     }
   }
 
@@ -777,7 +777,7 @@ WebInspector.MultitargetNetworkManager = class extends WebInspector.Object {
 
   _updateUserAgentOverride() {
     var userAgent = this._currentUserAgent();
-    WebInspector.ResourceLoader.targetUserAgent = userAgent;
+    Host.ResourceLoader.targetUserAgent = userAgent;
     for (var agent of this._agents)
       agent.setUserAgentOverride(userAgent);
   }
@@ -791,7 +791,7 @@ WebInspector.MultitargetNetworkManager = class extends WebInspector.Object {
     this._userAgentOverride = userAgent;
     if (!this._customUserAgent)
       this._updateUserAgentOverride();
-    this.dispatchEventToListeners(WebInspector.MultitargetNetworkManager.Events.UserAgentChanged);
+    this.dispatchEventToListeners(SDK.MultitargetNetworkManager.Events.UserAgentChanged);
   }
 
   /**
@@ -854,7 +854,7 @@ WebInspector.MultitargetNetworkManager = class extends WebInspector.Object {
    * @param {function(!Array<string>)} callback
    */
   getCertificate(origin, callback) {
-    var target = WebInspector.targetManager.mainTarget();
+    var target = SDK.targetManager.mainTarget();
     target.networkAgent().getCertificate(origin, mycallback);
 
     /**
@@ -877,21 +877,21 @@ WebInspector.MultitargetNetworkManager = class extends WebInspector.Object {
     if (currentUserAgent)
       headers['User-Agent'] = currentUserAgent;
 
-    if (WebInspector.moduleSetting('cacheDisabled').get())
+    if (Common.moduleSetting('cacheDisabled').get())
       headers['Cache-Control'] = 'no-cache';
 
-    WebInspector.ResourceLoader.load(url, headers, callback);
+    Host.ResourceLoader.load(url, headers, callback);
   }
 };
 
 /** @enum {symbol} */
-WebInspector.MultitargetNetworkManager.Events = {
+SDK.MultitargetNetworkManager.Events = {
   ConditionsChanged: Symbol('ConditionsChanged'),
   UserAgentChanged: Symbol('UserAgentChanged')
 };
 
 
 /**
- * @type {!WebInspector.MultitargetNetworkManager}
+ * @type {!SDK.MultitargetNetworkManager}
  */
-WebInspector.multitargetNetworkManager;
+SDK.multitargetNetworkManager;

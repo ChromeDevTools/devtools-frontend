@@ -4,12 +4,12 @@
 /**
  * @unrestricted
  */
-WebInspector.ARIAMetadata = class {
+Accessibility.ARIAMetadata = class {
   /**
    * @param {?Object} config
    */
   constructor(config) {
-    /** @type {!Map<string, !WebInspector.ARIAMetadata.Attribute>} */
+    /** @type {!Map<string, !Accessibility.ARIAMetadata.Attribute>} */
     this._attributes = new Map();
 
     if (config)
@@ -27,7 +27,7 @@ WebInspector.ARIAMetadata = class {
       var attributeConfig = attributes[name];
       if (attributeConfig.type === 'boolean')
         attributeConfig.enum = booleanEnum;
-      this._attributes.set(name, new WebInspector.ARIAMetadata.Attribute(attributeConfig));
+      this._attributes.set(name, new Accessibility.ARIAMetadata.Attribute(attributeConfig));
     }
 
     /** @type {!Array<string>} */
@@ -50,18 +50,18 @@ WebInspector.ARIAMetadata = class {
 };
 
 /**
- * @return {!WebInspector.ARIAMetadata}
+ * @return {!Accessibility.ARIAMetadata}
  */
-WebInspector.ariaMetadata = function() {
-  if (!WebInspector.ARIAMetadata._instance)
-    WebInspector.ARIAMetadata._instance = new WebInspector.ARIAMetadata(WebInspector.ARIAMetadata._config || null);
-  return WebInspector.ARIAMetadata._instance;
+Accessibility.ariaMetadata = function() {
+  if (!Accessibility.ARIAMetadata._instance)
+    Accessibility.ARIAMetadata._instance = new Accessibility.ARIAMetadata(Accessibility.ARIAMetadata._config || null);
+  return Accessibility.ARIAMetadata._instance;
 };
 
 /**
  * @unrestricted
  */
-WebInspector.ARIAMetadata.Attribute = class {
+Accessibility.ARIAMetadata.Attribute = class {
   /**
    * @param {!Object} config
    */

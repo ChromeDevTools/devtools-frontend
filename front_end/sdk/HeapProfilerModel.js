@@ -1,13 +1,13 @@
 /**
  * @unrestricted
  */
-WebInspector.HeapProfilerModel = class extends WebInspector.SDKModel {
+SDK.HeapProfilerModel = class extends SDK.SDKModel {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(WebInspector.HeapProfilerModel, target);
-    target.registerHeapProfilerDispatcher(new WebInspector.HeapProfilerDispatcher(this));
+    super(SDK.HeapProfilerModel, target);
+    target.registerHeapProfilerDispatcher(new SDK.HeapProfilerDispatcher(this));
     this._enabled = false;
     this._heapProfilerAgent = target.heapProfilerAgent();
   }
@@ -36,7 +36,7 @@ WebInspector.HeapProfilerModel = class extends WebInspector.SDKModel {
    * @param {!Array.<number>} samples
    */
   heapStatsUpdate(samples) {
-    this.dispatchEventToListeners(WebInspector.HeapProfilerModel.Events.HeapStatsUpdate, samples);
+    this.dispatchEventToListeners(SDK.HeapProfilerModel.Events.HeapStatsUpdate, samples);
   }
 
   /**
@@ -45,7 +45,7 @@ WebInspector.HeapProfilerModel = class extends WebInspector.SDKModel {
    */
   lastSeenObjectId(lastSeenObjectId, timestamp) {
     this.dispatchEventToListeners(
-        WebInspector.HeapProfilerModel.Events.LastSeenObjectId,
+        SDK.HeapProfilerModel.Events.LastSeenObjectId,
         {lastSeenObjectId: lastSeenObjectId, timestamp: timestamp});
   }
 
@@ -53,7 +53,7 @@ WebInspector.HeapProfilerModel = class extends WebInspector.SDKModel {
    * @param {string} chunk
    */
   addHeapSnapshotChunk(chunk) {
-    this.dispatchEventToListeners(WebInspector.HeapProfilerModel.Events.AddHeapSnapshotChunk, chunk);
+    this.dispatchEventToListeners(SDK.HeapProfilerModel.Events.AddHeapSnapshotChunk, chunk);
   }
 
   /**
@@ -63,17 +63,17 @@ WebInspector.HeapProfilerModel = class extends WebInspector.SDKModel {
    */
   reportHeapSnapshotProgress(done, total, finished) {
     this.dispatchEventToListeners(
-        WebInspector.HeapProfilerModel.Events.ReportHeapSnapshotProgress,
+        SDK.HeapProfilerModel.Events.ReportHeapSnapshotProgress,
         {done: done, total: total, finished: finished});
   }
 
   resetProfiles() {
-    this.dispatchEventToListeners(WebInspector.HeapProfilerModel.Events.ResetProfiles);
+    this.dispatchEventToListeners(SDK.HeapProfilerModel.Events.ResetProfiles);
   }
 };
 
 /** @enum {symbol} */
-WebInspector.HeapProfilerModel.Events = {
+SDK.HeapProfilerModel.Events = {
   HeapStatsUpdate: Symbol('HeapStatsUpdate'),
   LastSeenObjectId: Symbol('LastSeenObjectId'),
   AddHeapSnapshotChunk: Symbol('AddHeapSnapshotChunk'),
@@ -85,7 +85,7 @@ WebInspector.HeapProfilerModel.Events = {
  * @implements {Protocol.HeapProfilerDispatcher}
  * @unrestricted
  */
-WebInspector.HeapProfilerDispatcher = class {
+SDK.HeapProfilerDispatcher = class {
   constructor(model) {
     this._heapProfilerModel = model;
   }

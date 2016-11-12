@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.RequestHeadersView = class extends WebInspector.VBox {
+Network.RequestHeadersView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   constructor(request) {
     super();
@@ -54,7 +54,7 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
     this.element.appendChild(root.element);
 
     var generalCategory =
-        new WebInspector.RequestHeadersView.Category(root, 'general', WebInspector.UIString('General'));
+        new Network.RequestHeadersView.Category(root, 'general', Common.UIString('General'));
     generalCategory.hidden = false;
     this._urlItem = generalCategory.createLeaf();
     this._requestMethodItem = generalCategory.createLeaf();
@@ -62,12 +62,12 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
     this._remoteAddressItem = generalCategory.createLeaf();
     this._remoteAddressItem.hidden = true;
 
-    this._responseHeadersCategory = new WebInspector.RequestHeadersView.Category(root, 'responseHeaders', '');
-    this._requestHeadersCategory = new WebInspector.RequestHeadersView.Category(root, 'requestHeaders', '');
-    this._queryStringCategory = new WebInspector.RequestHeadersView.Category(root, 'queryString', '');
-    this._formDataCategory = new WebInspector.RequestHeadersView.Category(root, 'formData', '');
+    this._responseHeadersCategory = new Network.RequestHeadersView.Category(root, 'responseHeaders', '');
+    this._requestHeadersCategory = new Network.RequestHeadersView.Category(root, 'requestHeaders', '');
+    this._queryStringCategory = new Network.RequestHeadersView.Category(root, 'queryString', '');
+    this._formDataCategory = new Network.RequestHeadersView.Category(root, 'formData', '');
     this._requestPayloadCategory =
-        new WebInspector.RequestHeadersView.Category(root, 'requestPayload', WebInspector.UIString('Request Payload'));
+        new Network.RequestHeadersView.Category(root, 'requestPayload', Common.UIString('Request Payload'));
   }
 
   /**
@@ -75,13 +75,13 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
    */
   wasShown() {
     this._request.addEventListener(
-        WebInspector.NetworkRequest.Events.RemoteAddressChanged, this._refreshRemoteAddress, this);
+        SDK.NetworkRequest.Events.RemoteAddressChanged, this._refreshRemoteAddress, this);
     this._request.addEventListener(
-        WebInspector.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestHeaders, this);
+        SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestHeaders, this);
     this._request.addEventListener(
-        WebInspector.NetworkRequest.Events.ResponseHeadersChanged, this._refreshResponseHeaders, this);
+        SDK.NetworkRequest.Events.ResponseHeadersChanged, this._refreshResponseHeaders, this);
     this._request.addEventListener(
-        WebInspector.NetworkRequest.Events.FinishedLoading, this._refreshHTTPInformation, this);
+        SDK.NetworkRequest.Events.FinishedLoading, this._refreshHTTPInformation, this);
 
     this._refreshURL();
     this._refreshQueryString();
@@ -96,13 +96,13 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
    */
   willHide() {
     this._request.removeEventListener(
-        WebInspector.NetworkRequest.Events.RemoteAddressChanged, this._refreshRemoteAddress, this);
+        SDK.NetworkRequest.Events.RemoteAddressChanged, this._refreshRemoteAddress, this);
     this._request.removeEventListener(
-        WebInspector.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestHeaders, this);
+        SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestHeaders, this);
     this._request.removeEventListener(
-        WebInspector.NetworkRequest.Events.ResponseHeadersChanged, this._refreshResponseHeaders, this);
+        SDK.NetworkRequest.Events.ResponseHeadersChanged, this._refreshResponseHeaders, this);
     this._request.removeEventListener(
-        WebInspector.NetworkRequest.Events.FinishedLoading, this._refreshHTTPInformation, this);
+        SDK.NetworkRequest.Events.FinishedLoading, this._refreshHTTPInformation, this);
   }
 
   /**
@@ -141,14 +141,14 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
     if (value === '')
       div.classList.add('empty-value');
     if (errorDecoding)
-      div.createChild('span', 'header-decode-error').textContent = WebInspector.UIString('(unable to decode value)');
+      div.createChild('span', 'header-decode-error').textContent = Common.UIString('(unable to decode value)');
     else
       div.textContent = value;
     return div;
   }
 
   _refreshURL() {
-    this._urlItem.title = this._formatHeader(WebInspector.UIString('Request URL'), this._request.url);
+    this._urlItem.title = this._formatHeader(Common.UIString('Request URL'), this._request.url);
   }
 
   _refreshQueryString() {
@@ -157,7 +157,7 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
     this._queryStringCategory.hidden = !queryParameters;
     if (queryParameters)
       this._refreshParams(
-          WebInspector.UIString('Query String Parameters'), queryParameters, queryString, this._queryStringCategory);
+          Common.UIString('Query String Parameters'), queryParameters, queryString, this._queryStringCategory);
   }
 
   _refreshFormData() {
@@ -171,7 +171,7 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
     var formParameters = this._request.formParameters;
     if (formParameters) {
       this._formDataCategory.hidden = false;
-      this._refreshParams(WebInspector.UIString('Form Data'), formParameters, formData, this._formDataCategory);
+      this._refreshParams(Common.UIString('Form Data'), formParameters, formData, this._formDataCategory);
     } else {
       this._requestPayloadCategory.hidden = false;
       try {
@@ -199,7 +199,7 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
 
   /**
    * @param {string} title
-   * @param {?Array.<!WebInspector.NetworkRequest.NameValue>} params
+   * @param {?Array.<!SDK.NetworkRequest.NameValue>} params
    * @param {?string} sourceText
    * @param {!TreeElement} paramsTreeElement
    */
@@ -210,12 +210,12 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
     paramsTreeElement.listItemElement.createTextChild(title);
 
     var headerCount = createElementWithClass('span', 'header-count');
-    headerCount.textContent = WebInspector.UIString('\u00A0(%d)', params.length);
+    headerCount.textContent = Common.UIString('\u00A0(%d)', params.length);
     paramsTreeElement.listItemElement.appendChild(headerCount);
 
     /**
      * @param {!Event} event
-     * @this {WebInspector.RequestHeadersView}
+     * @this {Network.RequestHeadersView}
      */
     function toggleViewSource(event) {
       paramsTreeElement._viewSource = !paramsTreeElement._viewSource;
@@ -231,8 +231,8 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
       return;
     }
 
-    var toggleTitle = this._decodeRequestParameters ? WebInspector.UIString('view URL encoded') :
-                                                      WebInspector.UIString('view decoded');
+    var toggleTitle = this._decodeRequestParameters ? Common.UIString('view URL encoded') :
+                                                      Common.UIString('view decoded');
     var toggleButton = this._createToggleButton(toggleTitle);
     toggleButton.addEventListener('click', this._toggleURLDecoding.bind(this), false);
     paramsTreeElement.listItemElement.appendChild(toggleButton);
@@ -246,7 +246,7 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
         paramNameValue.appendChild(value);
       } else {
         paramNameValue.appendChild(this._formatParameter(
-            WebInspector.UIString('(empty)'), 'empty-request-header', this._decodeRequestParameters));
+            Common.UIString('(empty)'), 'empty-request-header', this._decodeRequestParameters));
       }
 
       var paramTreeElement = new TreeElement(paramNameValue);
@@ -269,7 +269,7 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
 
     /**
      * @param {!Event} event
-     * @this {WebInspector.RequestHeadersView}
+     * @this {Network.RequestHeadersView}
      */
     function toggleViewSource(event) {
       treeElement._viewSource = !treeElement._viewSource;
@@ -281,8 +281,8 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
     if (treeElement._viewSource) {
       this._populateTreeElementWithSourceText(this._requestPayloadCategory, sourceText);
     } else {
-      var object = WebInspector.RemoteObject.fromLocalObject(parsedObject);
-      var section = new WebInspector.ObjectPropertiesSection(object, object.description);
+      var object = SDK.RemoteObject.fromLocalObject(parsedObject);
+      var section = new Components.ObjectPropertiesSection(object, object.description);
       section.expand();
       section.editable = false;
       treeElement.appendChild(new TreeElement(section.element));
@@ -296,7 +296,7 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
    */
   _createViewSourceToggle(viewSource, handler) {
     var viewSourceToggleTitle =
-        viewSource ? WebInspector.UIString('view parsed') : WebInspector.UIString('view source');
+        viewSource ? Common.UIString('view parsed') : Common.UIString('view source');
     var viewSourceToggleButton = this._createToggleButton(viewSourceToggleTitle);
     viewSourceToggleButton.addEventListener('click', handler, false);
     return viewSourceToggleButton;
@@ -321,9 +321,9 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
     var headersText = this._request.requestHeadersText();
 
     if (this._showRequestHeadersText && headersText)
-      this._refreshHeadersText(WebInspector.UIString('Request Headers'), headers.length, headersText, treeElement);
+      this._refreshHeadersText(Common.UIString('Request Headers'), headers.length, headersText, treeElement);
     else
-      this._refreshHeaders(WebInspector.UIString('Request Headers'), headers, treeElement, headersText === undefined);
+      this._refreshHeaders(Common.UIString('Request Headers'), headers, treeElement, headersText === undefined);
 
     if (headersText) {
       var toggleButton = this._createHeadersToggleButton(this._showRequestHeadersText);
@@ -340,9 +340,9 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
     var headersText = this._request.responseHeadersText;
 
     if (this._showResponseHeadersText)
-      this._refreshHeadersText(WebInspector.UIString('Response Headers'), headers.length, headersText, treeElement);
+      this._refreshHeadersText(Common.UIString('Response Headers'), headers.length, headersText, treeElement);
     else
-      this._refreshHeaders(WebInspector.UIString('Response Headers'), headers, treeElement);
+      this._refreshHeaders(Common.UIString('Response Headers'), headers, treeElement);
 
     if (headersText) {
       var toggleButton = this._createHeadersToggleButton(this._showResponseHeadersText);
@@ -359,7 +359,7 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
 
     if (this._request.statusCode) {
       var statusCodeFragment = createDocumentFragment();
-      statusCodeFragment.createChild('div', 'header-name').textContent = WebInspector.UIString('Status Code') + ':';
+      statusCodeFragment.createChild('div', 'header-name').textContent = Common.UIString('Status Code') + ':';
 
       var statusCodeImage = statusCodeFragment.createChild('label', 'resource-status-image', 'dt-icon-label');
       statusCodeImage.title = this._request.statusCode + ' ' + this._request.statusText;
@@ -372,18 +372,18 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
         statusCodeImage.type = 'smallicon-red-ball';
 
       requestMethodElement.title =
-          this._formatHeader(WebInspector.UIString('Request Method'), this._request.requestMethod);
+          this._formatHeader(Common.UIString('Request Method'), this._request.requestMethod);
 
       var statusTextElement = statusCodeFragment.createChild('div', 'header-value source-code');
       var statusText = this._request.statusCode + ' ' + this._request.statusText;
       if (this._request.fetchedViaServiceWorker) {
-        statusText += ' ' + WebInspector.UIString('(from ServiceWorker)');
+        statusText += ' ' + Common.UIString('(from ServiceWorker)');
         statusTextElement.classList.add('status-from-cache');
       } else if (this._request.cached()) {
         if (this._request.cachedInMemory())
-          statusText += ' ' + WebInspector.UIString('(from memory cache)');
+          statusText += ' ' + Common.UIString('(from memory cache)');
         else
-          statusText += ' ' + WebInspector.UIString('(from disk cache)');
+          statusText += ' ' + Common.UIString('(from disk cache)');
         statusTextElement.classList.add('status-from-cache');
       }
       statusTextElement.textContent = statusText;
@@ -401,13 +401,13 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
     headersTreeElement.listItemElement.removeChildren();
     headersTreeElement.listItemElement.createTextChild(title);
 
-    var headerCount = WebInspector.UIString('\u00A0(%d)', headersLength);
+    var headerCount = Common.UIString('\u00A0(%d)', headersLength);
     headersTreeElement.listItemElement.createChild('span', 'header-count').textContent = headerCount;
   }
 
   /**
    * @param {string} title
-   * @param {!Array.<!WebInspector.NetworkRequest.NameValue>} headers
+   * @param {!Array.<!SDK.NetworkRequest.NameValue>} headers
    * @param {!TreeElement} headersTreeElement
    * @param {boolean=} provisionalHeaders
    */
@@ -418,7 +418,7 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
     this._refreshHeadersTitle(title, headersTreeElement, length);
 
     if (provisionalHeaders) {
-      var cautionText = WebInspector.UIString('Provisional headers are shown');
+      var cautionText = Common.UIString('Provisional headers are shown');
       var cautionFragment = createDocumentFragment();
       cautionFragment.createChild('label', '', 'dt-icon-label').type = 'smallicon-warning';
       cautionFragment.createChild('div', 'caution').textContent = cautionText;
@@ -451,7 +451,7 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
     var treeElement = this._remoteAddressItem;
     treeElement.hidden = !remoteAddress;
     if (remoteAddress)
-      treeElement.title = this._formatHeader(WebInspector.UIString('Remote Address'), remoteAddress);
+      treeElement.title = this._formatHeader(Common.UIString('Remote Address'), remoteAddress);
   }
 
   /**
@@ -487,7 +487,7 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
    * @return {!Element}
    */
   _createHeadersToggleButton(isHeadersTextShown) {
-    var toggleTitle = isHeadersTextShown ? WebInspector.UIString('view parsed') : WebInspector.UIString('view source');
+    var toggleTitle = isHeadersTextShown ? Common.UIString('view parsed') : Common.UIString('view source');
     return this._createToggleButton(toggleTitle);
   }
 };
@@ -495,7 +495,7 @@ WebInspector.RequestHeadersView = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.RequestHeadersView.Category = class extends TreeElement {
+Network.RequestHeadersView.Category = class extends TreeElement {
   /**
    * @param {!TreeOutline} root
    * @param {string} name
@@ -506,7 +506,7 @@ WebInspector.RequestHeadersView.Category = class extends TreeElement {
     this.selectable = false;
     this.toggleOnClick = true;
     this.hidden = true;
-    this._expandedSetting = WebInspector.settings.createSetting('request-info-' + name + '-category-expanded', true);
+    this._expandedSetting = Common.settings.createSetting('request-info-' + name + '-category-expanded', true);
     this.expanded = this._expandedSetting.get();
     root.appendChild(this);
   }

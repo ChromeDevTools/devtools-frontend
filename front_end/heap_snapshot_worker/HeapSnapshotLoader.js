@@ -31,13 +31,13 @@
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotLoader = class {
+HeapSnapshotWorker.HeapSnapshotLoader = class {
   /**
-   * @param {!WebInspector.HeapSnapshotWorkerDispatcher} dispatcher
+   * @param {!HeapSnapshotWorker.HeapSnapshotWorkerDispatcher} dispatcher
    */
   constructor(dispatcher) {
     this._reset();
-    this._progress = new WebInspector.HeapSnapshotProgress(dispatcher);
+    this._progress = new HeapSnapshotWorker.HeapSnapshotProgress(dispatcher);
   }
 
   dispose() {
@@ -56,11 +56,11 @@ WebInspector.HeapSnapshotLoader = class {
   }
 
   /**
-   * @return {!WebInspector.JSHeapSnapshot}
+   * @return {!HeapSnapshotWorker.JSHeapSnapshot}
    */
   buildSnapshot() {
     this._progress.updateStatus('Processing snapshot\u2026');
-    var result = new WebInspector.JSHeapSnapshot(this._snapshot, this._progress);
+    var result = new HeapSnapshotWorker.JSHeapSnapshot(this._snapshot, this._progress);
     this._reset();
     return result;
   }
@@ -129,7 +129,7 @@ WebInspector.HeapSnapshotLoader = class {
           this._state = 'parse-snapshot-info';
           this._progress.updateStatus('Loading snapshot info\u2026');
           this._json = null;  // tokenizer takes over input.
-          this._jsonTokenizer = new WebInspector.TextUtils.BalancedJSONTokenizer(this._writeBalancedJSON.bind(this));
+          this._jsonTokenizer = new Common.TextUtils.BalancedJSONTokenizer(this._writeBalancedJSON.bind(this));
           // Fall through with adjusted payload.
           chunk = json;
         }

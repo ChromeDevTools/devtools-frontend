@@ -4,42 +4,42 @@
 /**
  * @unrestricted
  */
-WebInspector.Automapping = class {
+Persistence.Automapping = class {
   /**
-   * @param {!WebInspector.Workspace} workspace
-   * @param {function(!WebInspector.PersistenceBinding)} onBindingCreated
-   * @param {function(!WebInspector.PersistenceBinding)} onBindingRemoved
+   * @param {!Workspace.Workspace} workspace
+   * @param {function(!Persistence.PersistenceBinding)} onBindingCreated
+   * @param {function(!Persistence.PersistenceBinding)} onBindingRemoved
    */
   constructor(workspace, onBindingCreated, onBindingRemoved) {
     this._workspace = workspace;
 
     this._onBindingCreated = onBindingCreated;
     this._onBindingRemoved = onBindingRemoved;
-    /** @type {!Set<!WebInspector.PersistenceBinding>} */
+    /** @type {!Set<!Persistence.PersistenceBinding>} */
     this._bindings = new Set();
 
-    /** @type {!Map<string, !WebInspector.UISourceCode>} */
+    /** @type {!Map<string, !Workspace.UISourceCode>} */
     this._fileSystemUISourceCodes = new Map();
-    this._sweepThrottler = new WebInspector.Throttler(100);
+    this._sweepThrottler = new Common.Throttler(100);
 
-    var pathEncoder = new WebInspector.Automapping.PathEncoder();
-    this._filesIndex = new WebInspector.Automapping.FilePathIndex(pathEncoder);
-    this._projectFoldersIndex = new WebInspector.Automapping.FolderIndex(pathEncoder);
-    this._activeFoldersIndex = new WebInspector.Automapping.FolderIndex(pathEncoder);
+    var pathEncoder = new Persistence.Automapping.PathEncoder();
+    this._filesIndex = new Persistence.Automapping.FilePathIndex(pathEncoder);
+    this._projectFoldersIndex = new Persistence.Automapping.FolderIndex(pathEncoder);
+    this._activeFoldersIndex = new Persistence.Automapping.FolderIndex(pathEncoder);
 
     this._eventListeners = [
       this._workspace.addEventListener(
-          WebInspector.Workspace.Events.UISourceCodeAdded,
-          event => this._onUISourceCodeAdded(/** @type {!WebInspector.UISourceCode} */ (event.data))),
+          Workspace.Workspace.Events.UISourceCodeAdded,
+          event => this._onUISourceCodeAdded(/** @type {!Workspace.UISourceCode} */ (event.data))),
       this._workspace.addEventListener(
-          WebInspector.Workspace.Events.UISourceCodeRemoved,
-          event => this._onUISourceCodeRemoved(/** @type {!WebInspector.UISourceCode} */ (event.data))),
+          Workspace.Workspace.Events.UISourceCodeRemoved,
+          event => this._onUISourceCodeRemoved(/** @type {!Workspace.UISourceCode} */ (event.data))),
       this._workspace.addEventListener(
-          WebInspector.Workspace.Events.ProjectAdded,
-          event => this._onProjectAdded(/** @type {!WebInspector.Project} */ (event.data)), this),
+          Workspace.Workspace.Events.ProjectAdded,
+          event => this._onProjectAdded(/** @type {!Workspace.Project} */ (event.data)), this),
       this._workspace.addEventListener(
-          WebInspector.Workspace.Events.ProjectRemoved,
-          event => this._onProjectRemoved(/** @type {!WebInspector.Project} */ (event.data)), this),
+          Workspace.Workspace.Events.ProjectRemoved,
+          event => this._onProjectRemoved(/** @type {!Workspace.Project} */ (event.data)), this),
     ];
 
     for (var fileSystem of workspace.projects())
@@ -58,11 +58,11 @@ WebInspector.Automapping = class {
     this._sweepThrottler.schedule(sweepUnmapped.bind(this));
 
     /**
-     * @this {WebInspector.Automapping}
+     * @this {Persistence.Automapping}
      * @return {!Promise}
      */
     function sweepUnmapped() {
-      var networkProjects = this._workspace.projectsForType(WebInspector.projectTypes.Network);
+      var networkProjects = this._workspace.projectsForType(Workspace.projectTypes.Network);
       for (var networkProject of networkProjects) {
         for (var uiSourceCode of networkProject.uiSourceCodes())
           this._bindNetwork(uiSourceCode);
@@ -76,14 +76,14 @@ WebInspector.Automapping = class {
   }
 
   /**
-   * @param {!WebInspector.Project} project
+   * @param {!Workspace.Project} project
    */
   _onProjectRemoved(project) {
     for (var uiSourceCode of project.uiSourceCodes())
       this._onUISourceCodeRemoved(uiSourceCode);
-    if (project.type() !== WebInspector.projectTypes.FileSystem)
+    if (project.type() !== Workspace.projectTypes.FileSystem)
       return;
-    var fileSystem = /** @type {!WebInspector.FileSystemWorkspaceBinding.FileSystem} */ (project);
+    var fileSystem = /** @type {!Bindings.FileSystemWorkspaceBinding.FileSystem} */ (project);
     for (var gitFolder of fileSystem.gitFolders())
       this._projectFoldersIndex.removeFolder(gitFolder);
     this._projectFoldersIndex.removeFolder(fileSystem.fileSystemPath());
@@ -91,12 +91,12 @@ WebInspector.Automapping = class {
   }
 
   /**
-   * @param {!WebInspector.Project} project
+   * @param {!Workspace.Project} project
    */
   _onProjectAdded(project) {
-    if (project.type() !== WebInspector.projectTypes.FileSystem)
+    if (project.type() !== Workspace.projectTypes.FileSystem)
       return;
-    var fileSystem = /** @type {!WebInspector.FileSystemWorkspaceBinding.FileSystem} */ (project);
+    var fileSystem = /** @type {!Bindings.FileSystemWorkspaceBinding.FileSystem} */ (project);
     for (var gitFolder of fileSystem.gitFolders())
       this._projectFoldersIndex.addFolder(gitFolder);
     this._projectFoldersIndex.addFolder(fileSystem.fileSystemPath());
@@ -104,59 +104,59 @@ WebInspector.Automapping = class {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _onUISourceCodeAdded(uiSourceCode) {
-    if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem) {
+    if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem) {
       this._filesIndex.addPath(uiSourceCode.url());
       this._fileSystemUISourceCodes.set(uiSourceCode.url(), uiSourceCode);
       this._scheduleSweep();
-    } else if (uiSourceCode.project().type() === WebInspector.projectTypes.Network) {
+    } else if (uiSourceCode.project().type() === Workspace.projectTypes.Network) {
       this._bindNetwork(uiSourceCode);
     }
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _onUISourceCodeRemoved(uiSourceCode) {
-    if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem) {
+    if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem) {
       this._filesIndex.removePath(uiSourceCode.url());
       this._fileSystemUISourceCodes.delete(uiSourceCode.url());
-      var binding = uiSourceCode[WebInspector.Automapping._binding];
+      var binding = uiSourceCode[Persistence.Automapping._binding];
       if (binding)
         this._unbindNetwork(binding.network);
-    } else if (uiSourceCode.project().type() === WebInspector.projectTypes.Network) {
+    } else if (uiSourceCode.project().type() === Workspace.projectTypes.Network) {
       this._unbindNetwork(uiSourceCode);
     }
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} networkSourceCode
+   * @param {!Workspace.UISourceCode} networkSourceCode
    */
   _bindNetwork(networkSourceCode) {
-    if (networkSourceCode[WebInspector.Automapping._processingPromise] ||
-        networkSourceCode[WebInspector.Automapping._binding])
+    if (networkSourceCode[Persistence.Automapping._processingPromise] ||
+        networkSourceCode[Persistence.Automapping._binding])
       return;
     var createBindingPromise = this._createBinding(networkSourceCode).then(onBinding.bind(this));
-    networkSourceCode[WebInspector.Automapping._processingPromise] = createBindingPromise;
+    networkSourceCode[Persistence.Automapping._processingPromise] = createBindingPromise;
 
     /**
-     * @param {?WebInspector.PersistenceBinding} binding
-     * @this {WebInspector.Automapping}
+     * @param {?Persistence.PersistenceBinding} binding
+     * @this {Persistence.Automapping}
      */
     function onBinding(binding) {
-      if (networkSourceCode[WebInspector.Automapping._processingPromise] !== createBindingPromise)
+      if (networkSourceCode[Persistence.Automapping._processingPromise] !== createBindingPromise)
         return;
-      networkSourceCode[WebInspector.Automapping._processingPromise] = null;
+      networkSourceCode[Persistence.Automapping._processingPromise] = null;
       if (!binding) {
         this._onBindingFailedForTest();
         return;
       }
 
       this._bindings.add(binding);
-      binding.network[WebInspector.Automapping._binding] = binding;
-      binding.fileSystem[WebInspector.Automapping._binding] = binding;
+      binding.network[Persistence.Automapping._binding] = binding;
+      binding.fileSystem[Persistence.Automapping._binding] = binding;
       if (binding.exactMatch) {
         var projectFolder = this._projectFoldersIndex.closestParentFolder(binding.fileSystem.url());
         var newFolderAdded = projectFolder ? this._activeFoldersIndex.addFolder(projectFolder) : false;
@@ -171,20 +171,20 @@ WebInspector.Automapping = class {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} networkSourceCode
+   * @param {!Workspace.UISourceCode} networkSourceCode
    */
   _unbindNetwork(networkSourceCode) {
-    if (networkSourceCode[WebInspector.Automapping._processingPromise]) {
-      networkSourceCode[WebInspector.Automapping._processingPromise] = null;
+    if (networkSourceCode[Persistence.Automapping._processingPromise]) {
+      networkSourceCode[Persistence.Automapping._processingPromise] = null;
       return;
     }
-    var binding = networkSourceCode[WebInspector.Automapping._binding];
+    var binding = networkSourceCode[Persistence.Automapping._binding];
     if (!binding)
       return;
 
     this._bindings.delete(binding);
-    binding.network[WebInspector.Automapping._binding] = null;
-    binding.fileSystem[WebInspector.Automapping._binding] = null;
+    binding.network[Persistence.Automapping._binding] = null;
+    binding.fileSystem[Persistence.Automapping._binding] = null;
     if (binding.exactMatch) {
       var projectFolder = this._projectFoldersIndex.closestParentFolder(binding.fileSystem.url());
       if (projectFolder)
@@ -194,39 +194,39 @@ WebInspector.Automapping = class {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} networkSourceCode
-   * @return {!Promise<?WebInspector.PersistenceBinding>}
+   * @param {!Workspace.UISourceCode} networkSourceCode
+   * @return {!Promise<?Persistence.PersistenceBinding>}
    */
   _createBinding(networkSourceCode) {
     if (networkSourceCode.url().startsWith('file://')) {
       var fileSourceCode = this._fileSystemUISourceCodes.get(networkSourceCode.url());
-      var binding = fileSourceCode ? new WebInspector.PersistenceBinding(networkSourceCode, fileSourceCode, false) : null;
+      var binding = fileSourceCode ? new Persistence.PersistenceBinding(networkSourceCode, fileSourceCode, false) : null;
       return Promise.resolve(binding);
     }
 
-    var networkPath = WebInspector.ParsedURL.extractPath(networkSourceCode.url());
+    var networkPath = Common.ParsedURL.extractPath(networkSourceCode.url());
     if (networkPath === null)
-      return Promise.resolve(/** @type {?WebInspector.PersistenceBinding} */ (null));
+      return Promise.resolve(/** @type {?Persistence.PersistenceBinding} */ (null));
 
     if (networkPath.endsWith('/'))
       networkPath += 'index.html';
     var similarFiles = this._filesIndex.similarFiles(networkPath).map(path => this._fileSystemUISourceCodes.get(path));
     if (!similarFiles.length)
-      return Promise.resolve(/** @type {?WebInspector.PersistenceBinding} */ (null));
+      return Promise.resolve(/** @type {?Persistence.PersistenceBinding} */ (null));
 
     return this._pullMetadatas(similarFiles.concat(networkSourceCode)).then(onMetadatas.bind(this));
 
     /**
-     * @this {WebInspector.Automapping}
+     * @this {Persistence.Automapping}
      */
     function onMetadatas() {
       var activeFiles = similarFiles.filter(file => !!this._activeFoldersIndex.closestParentFolder(file.url()));
-      var networkMetadata = networkSourceCode[WebInspector.Automapping._metadata];
+      var networkMetadata = networkSourceCode[Persistence.Automapping._metadata];
       if (!networkMetadata || (!networkMetadata.modificationTime && typeof networkMetadata.contentSize !== 'number')) {
         // If networkSourceCode does not have metadata, try to match against active folders.
         if (activeFiles.length !== 1)
           return null;
-        return new WebInspector.PersistenceBinding(networkSourceCode, activeFiles[0], false);
+        return new Persistence.PersistenceBinding(networkSourceCode, activeFiles[0], false);
       }
 
       // Try to find exact matches, prioritizing active folders.
@@ -235,12 +235,12 @@ WebInspector.Automapping = class {
         exactMatches = this._filterWithMetadata(similarFiles, networkMetadata);
       if (exactMatches.length !== 1)
         return null;
-      return new WebInspector.PersistenceBinding(networkSourceCode, exactMatches[0], true);
+      return new Persistence.PersistenceBinding(networkSourceCode, exactMatches[0], true);
     }
   }
 
   /**
-   * @param {!Array<!WebInspector.UISourceCode>} uiSourceCodes
+   * @param {!Array<!Workspace.UISourceCode>} uiSourceCodes
    * @return {!Promise}
    */
   _pullMetadatas(uiSourceCodes) {
@@ -248,22 +248,22 @@ WebInspector.Automapping = class {
     return Promise.all(promises);
 
     /**
-     * @param {!WebInspector.UISourceCode} file
+     * @param {!Workspace.UISourceCode} file
      * @return {!Promise}
      */
     function fetchMetadata(file) {
-      return file.requestMetadata().then(metadata => file[WebInspector.Automapping._metadata] = metadata);
+      return file.requestMetadata().then(metadata => file[Persistence.Automapping._metadata] = metadata);
     }
   }
 
   /**
-   * @param {!Array<!WebInspector.UISourceCode>} files
-   * @param {!WebInspector.UISourceCodeMetadata} networkMetadata
-   * @return {!Array<!WebInspector.UISourceCode>}
+   * @param {!Array<!Workspace.UISourceCode>} files
+   * @param {!Workspace.UISourceCodeMetadata} networkMetadata
+   * @return {!Array<!Workspace.UISourceCode>}
    */
   _filterWithMetadata(files, networkMetadata) {
     return files.filter(file => {
-      var fileMetadata = file[WebInspector.Automapping._metadata];
+      var fileMetadata = file[Persistence.Automapping._metadata];
       if (!fileMetadata)
         return false;
       // Allow a second of difference due to network timestamps lack of precision.
@@ -275,17 +275,17 @@ WebInspector.Automapping = class {
   }
 };
 
-WebInspector.Automapping._binding = Symbol('Automapping.Binding');
-WebInspector.Automapping._processingPromise = Symbol('Automapping.ProcessingPromise');
-WebInspector.Automapping._metadata = Symbol('Automapping.Metadata');
+Persistence.Automapping._binding = Symbol('Automapping.Binding');
+Persistence.Automapping._processingPromise = Symbol('Automapping.ProcessingPromise');
+Persistence.Automapping._metadata = Symbol('Automapping.Metadata');
 
 /**
  * @unrestricted
  */
-WebInspector.Automapping.PathEncoder = class {
+Persistence.Automapping.PathEncoder = class {
   constructor() {
-    /** @type {!WebInspector.CharacterIdMap<string>} */
-    this._encoder = new WebInspector.CharacterIdMap();
+    /** @type {!Common.CharacterIdMap<string>} */
+    this._encoder = new Common.CharacterIdMap();
   }
 
   /**
@@ -308,13 +308,13 @@ WebInspector.Automapping.PathEncoder = class {
 /**
  * @unrestricted
  */
-WebInspector.Automapping.FilePathIndex = class {
+Persistence.Automapping.FilePathIndex = class {
   /**
-   * @param {!WebInspector.Automapping.PathEncoder} encoder
+   * @param {!Persistence.Automapping.PathEncoder} encoder
    */
   constructor(encoder) {
     this._encoder = encoder;
-    this._reversedIndex = new WebInspector.Trie();
+    this._reversedIndex = new Common.Trie();
   }
 
   /**
@@ -350,13 +350,13 @@ WebInspector.Automapping.FilePathIndex = class {
 /**
  * @unrestricted
  */
-WebInspector.Automapping.FolderIndex = class {
+Persistence.Automapping.FolderIndex = class {
   /**
-   * @param {!WebInspector.Automapping.PathEncoder} encoder
+   * @param {!Persistence.Automapping.PathEncoder} encoder
    */
   constructor(encoder) {
     this._encoder = encoder;
-    this._index = new WebInspector.Trie();
+    this._index = new Common.Trie();
     /** @type {!Map<string, number>} */
     this._folderCount = new Map();
   }

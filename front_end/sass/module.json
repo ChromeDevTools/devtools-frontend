@@ -9,8 +9,8 @@
     ],
     "extensions": [
         {
-            "type": "@WebInspector.SourceMapFactory",
-            "className": "WebInspector.SASSSourceMapFactory",
+            "type": "@SDK.SourceMapFactory",
+            "className": "Sass.SASSSourceMapFactory",
             "experiment": "liveSASS",
             "extensions": [
                 "scss"

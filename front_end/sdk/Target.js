@@ -7,13 +7,13 @@
 /**
  * @unrestricted
  */
-WebInspector.Target = class extends Protocol.TargetBase {
+SDK.Target = class extends Protocol.TargetBase {
   /**
-   * @param {!WebInspector.TargetManager} targetManager
+   * @param {!SDK.TargetManager} targetManager
    * @param {string} name
    * @param {number} capabilitiesMask
    * @param {!InspectorBackendClass.Connection.Factory} connectionFactory
-   * @param {?WebInspector.Target} parentTarget
+   * @param {?SDK.Target} parentTarget
    */
   constructor(targetManager, name, capabilitiesMask, connectionFactory, parentTarget) {
     super(connectionFactory);
@@ -22,9 +22,9 @@ WebInspector.Target = class extends Protocol.TargetBase {
     this._inspectedURL = '';
     this._capabilitiesMask = capabilitiesMask;
     this._parentTarget = parentTarget;
-    this._id = WebInspector.Target._nextId++;
+    this._id = SDK.Target._nextId++;
 
-    /** @type {!Map.<!Function, !WebInspector.SDKModel>} */
+    /** @type {!Map.<!Function, !SDK.SDKModel>} */
     this._modelByConstructor = new Map();
   }
 
@@ -33,7 +33,7 @@ WebInspector.Target = class extends Protocol.TargetBase {
    */
   isNodeJS() {
     // TODO(lushnikov): this is an unreliable way to detect Node.js targets.
-    return this._capabilitiesMask === WebInspector.Target.Capability.JS || this._isNodeJSForTest;
+    return this._capabilitiesMask === SDK.Target.Capability.JS || this._isNodeJSForTest;
   }
 
   setIsNodeJSForTest() {
@@ -55,7 +55,7 @@ WebInspector.Target = class extends Protocol.TargetBase {
   }
 
   /**
-   * @return {!WebInspector.TargetManager}
+   * @return {!SDK.TargetManager}
    */
   targetManager() {
     return this._targetManager;
@@ -81,46 +81,46 @@ WebInspector.Target = class extends Protocol.TargetBase {
    * @return {boolean}
    */
   hasBrowserCapability() {
-    return this.hasAllCapabilities(WebInspector.Target.Capability.Browser);
+    return this.hasAllCapabilities(SDK.Target.Capability.Browser);
   }
 
   /**
    * @return {boolean}
    */
   hasJSCapability() {
-    return this.hasAllCapabilities(WebInspector.Target.Capability.JS);
+    return this.hasAllCapabilities(SDK.Target.Capability.JS);
   }
 
   /**
    * @return {boolean}
    */
   hasLogCapability() {
-    return this.hasAllCapabilities(WebInspector.Target.Capability.Log);
+    return this.hasAllCapabilities(SDK.Target.Capability.Log);
   }
 
   /**
    * @return {boolean}
    */
   hasNetworkCapability() {
-    return this.hasAllCapabilities(WebInspector.Target.Capability.Network);
+    return this.hasAllCapabilities(SDK.Target.Capability.Network);
   }
 
   /**
    * @return {boolean}
    */
   hasTargetCapability() {
-    return this.hasAllCapabilities(WebInspector.Target.Capability.Target);
+    return this.hasAllCapabilities(SDK.Target.Capability.Target);
   }
 
   /**
    * @return {boolean}
    */
   hasDOMCapability() {
-    return this.hasAllCapabilities(WebInspector.Target.Capability.DOM);
+    return this.hasAllCapabilities(SDK.Target.Capability.DOM);
   }
 
   /**
-   * @return {?WebInspector.Target}
+   * @return {?SDK.Target}
    */
   parentTarget() {
     return this._parentTarget;
@@ -137,14 +137,14 @@ WebInspector.Target = class extends Protocol.TargetBase {
 
   /**
    * @param {!Function} modelClass
-   * @return {?WebInspector.SDKModel}
+   * @return {?SDK.SDKModel}
    */
   model(modelClass) {
     return this._modelByConstructor.get(modelClass) || null;
   }
 
   /**
-   * @return {!Array<!WebInspector.SDKModel>}
+   * @return {!Array<!SDK.SDKModel>}
    */
   models() {
     return this._modelByConstructor.valuesArray();
@@ -166,16 +166,16 @@ WebInspector.Target = class extends Protocol.TargetBase {
     this._inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + this._id;
     if (!this.parentTarget())
       InspectorFrontendHost.inspectedURLChanged(inspectedURL || '');
-    this._targetManager.dispatchEventToListeners(WebInspector.TargetManager.Events.InspectedURLChanged, this);
+    this._targetManager.dispatchEventToListeners(SDK.TargetManager.Events.InspectedURLChanged, this);
     if (!this._name)
-      this._targetManager.dispatchEventToListeners(WebInspector.TargetManager.Events.NameChanged, this);
+      this._targetManager.dispatchEventToListeners(SDK.TargetManager.Events.NameChanged, this);
   }
 };
 
 /**
  * @enum {number}
  */
-WebInspector.Target.Capability = {
+SDK.Target.Capability = {
   Browser: 1,
   DOM: 2,
   JS: 4,
@@ -184,14 +184,14 @@ WebInspector.Target.Capability = {
   Target: 32
 };
 
-WebInspector.Target._nextId = 1;
+SDK.Target._nextId = 1;
 
 /**
  * @unrestricted
  */
-WebInspector.SDKObject = class extends WebInspector.Object {
+SDK.SDKObject = class extends Common.Object {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   constructor(target) {
     super();
@@ -199,7 +199,7 @@ WebInspector.SDKObject = class extends WebInspector.Object {
   }
 
   /**
-   * @return {!WebInspector.Target}
+   * @return {!SDK.Target}
    */
   target() {
     return this._target;
@@ -209,10 +209,10 @@ WebInspector.SDKObject = class extends WebInspector.Object {
 /**
  * @unrestricted
  */
-WebInspector.SDKModel = class extends WebInspector.SDKObject {
+SDK.SDKModel = class extends SDK.SDKObject {
   /**
    * @param {!Function} modelClass
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   constructor(modelClass, target) {
     super(target);
@@ -237,10 +237,10 @@ WebInspector.SDKModel = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _targetDisposed(event) {
-    var target = /** @type {!WebInspector.Target} */ (event.data);
+    var target = /** @type {!SDK.Target} */ (event.data);
     if (target !== this._target)
       return;
     this.dispose();

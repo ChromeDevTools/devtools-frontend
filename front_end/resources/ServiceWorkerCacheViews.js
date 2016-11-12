@@ -4,13 +4,13 @@
 /**
  * @unrestricted
  */
-WebInspector.ServiceWorkerCacheView = class extends WebInspector.SimpleView {
+Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
   /**
-   * @param {!WebInspector.ServiceWorkerCacheModel} model
-   * @param {!WebInspector.ServiceWorkerCacheModel.Cache} cache
+   * @param {!SDK.ServiceWorkerCacheModel} model
+   * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    */
   constructor(model, cache) {
-    super(WebInspector.UIString('Cache'));
+    super(Common.UIString('Cache'));
     this.registerRequiredCSS('resources/serviceWorkerCacheViews.css');
 
     this._model = model;
@@ -20,7 +20,7 @@ WebInspector.ServiceWorkerCacheView = class extends WebInspector.SimpleView {
 
     this._createEditorToolbar();
 
-    this._refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'largeicon-refresh');
+    this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     this._refreshButton.addEventListener('click', this._refreshButtonClicked, this);
 
     this._pageSize = 50;
@@ -31,28 +31,28 @@ WebInspector.ServiceWorkerCacheView = class extends WebInspector.SimpleView {
   }
 
   /**
-   * @return {!WebInspector.DataGrid}
+   * @return {!UI.DataGrid}
    */
   _createDataGrid() {
-    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'number', title: WebInspector.UIString('#'), width: '50px'},
-      {id: 'request', title: WebInspector.UIString('Request')},
-      {id: 'response', title: WebInspector.UIString('Response')}
+    var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
+      {id: 'number', title: Common.UIString('#'), width: '50px'},
+      {id: 'request', title: Common.UIString('Request')},
+      {id: 'response', title: Common.UIString('Response')}
     ]);
-    return new WebInspector.DataGrid(
+    return new UI.DataGrid(
         columns, undefined, this._deleteButtonClicked.bind(this), this._updateData.bind(this, true));
   }
 
   _createEditorToolbar() {
-    var editorToolbar = new WebInspector.Toolbar('data-view-toolbar', this.element);
+    var editorToolbar = new UI.Toolbar('data-view-toolbar', this.element);
 
     this._pageBackButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Show previous page'), 'largeicon-play-back');
+        new UI.ToolbarButton(Common.UIString('Show previous page'), 'largeicon-play-back');
     this._pageBackButton.addEventListener('click', this._pageBackButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageBackButton);
 
     this._pageForwardButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Show next page'), 'largeicon-play');
+        new UI.ToolbarButton(Common.UIString('Show next page'), 'largeicon-play');
     this._pageForwardButton.setEnabled(false);
     this._pageForwardButton.addEventListener('click', this._pageForwardButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageForwardButton);
@@ -69,14 +69,14 @@ WebInspector.ServiceWorkerCacheView = class extends WebInspector.SimpleView {
   }
 
   /**
-   * @param {!WebInspector.DataGridNode} node
+   * @param {!UI.DataGridNode} node
    */
   _deleteButtonClicked(node) {
     this._model.deleteCacheEntry(this._cache, /** @type {string} */ (node.data['request']), node.remove.bind(node));
   }
 
   /**
-   * @param {!WebInspector.ServiceWorkerCacheModel.Cache} cache
+   * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    */
   update(cache) {
     this._cache = cache;
@@ -91,9 +91,9 @@ WebInspector.ServiceWorkerCacheView = class extends WebInspector.SimpleView {
 
   /**
    * @param {number} skipCount
-   * @param {!Array.<!WebInspector.ServiceWorkerCacheModel.Entry>} entries
+   * @param {!Array.<!SDK.ServiceWorkerCacheModel.Entry>} entries
    * @param {boolean} hasMore
-   * @this {WebInspector.ServiceWorkerCacheView}
+   * @this {Resources.ServiceWorkerCacheView}
    */
   _updateDataCallback(skipCount, entries, hasMore) {
     this._refreshButton.setEnabled(true);
@@ -104,7 +104,7 @@ WebInspector.ServiceWorkerCacheView = class extends WebInspector.SimpleView {
       data['number'] = i + skipCount;
       data['request'] = entries[i].request;
       data['response'] = entries[i].response;
-      var node = new WebInspector.DataGridNode(data);
+      var node = new UI.DataGridNode(data);
       node.selectable = true;
       this._dataGrid.rootNode().appendChild(node);
     }
@@ -138,7 +138,7 @@ WebInspector.ServiceWorkerCacheView = class extends WebInspector.SimpleView {
 
   /**
    * @override
-   * @return {!Array.<!WebInspector.ToolbarItem>}
+   * @return {!Array.<!UI.ToolbarItem>}
    */
   syncToolbarItems() {
     return [this._refreshButton];

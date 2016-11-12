@@ -4,27 +4,27 @@
 /**
  * @unrestricted
  */
-WebInspector.ElementsSidebarPane = class extends WebInspector.VBox {
+Elements.ElementsSidebarPane = class extends UI.VBox {
   constructor() {
     super();
     this.element.classList.add('flex-none');
-    this._computedStyleModel = new WebInspector.ComputedStyleModel();
+    this._computedStyleModel = new Elements.ComputedStyleModel();
     this._computedStyleModel.addEventListener(
-        WebInspector.ComputedStyleModel.Events.ComputedStyleChanged, this.onCSSModelChanged, this);
+        Elements.ComputedStyleModel.Events.ComputedStyleChanged, this.onCSSModelChanged, this);
 
-    this._updateThrottler = new WebInspector.Throttler(100);
+    this._updateThrottler = new Common.Throttler(100);
     this._updateWhenVisible = false;
   }
 
   /**
-   * @return {?WebInspector.DOMNode}
+   * @return {?SDK.DOMNode}
    */
   node() {
     return this._computedStyleModel.node();
   }
 
   /**
-   * @return {?WebInspector.CSSModel}
+   * @return {?SDK.CSSModel}
    */
   cssModel() {
     return this._computedStyleModel.cssModel();
@@ -46,7 +46,7 @@ WebInspector.ElementsSidebarPane = class extends WebInspector.VBox {
 
     /**
      * @return {!Promise.<?>}
-     * @this {WebInspector.ElementsSidebarPane}
+     * @this {Elements.ElementsSidebarPane}
      */
     function innerUpdate() {
       return this.isShowing() ? this.doUpdate() : Promise.resolve();
@@ -63,7 +63,7 @@ WebInspector.ElementsSidebarPane = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   onCSSModelChanged(event) {
   }

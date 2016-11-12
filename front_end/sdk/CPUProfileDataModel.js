@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.CPUProfileNode = class extends WebInspector.ProfileNode {
+SDK.CPUProfileNode = class extends SDK.ProfileNode {
   /**
    * @param {!Protocol.Profiler.ProfileNode} node
    * @param {number} sampleTime
@@ -30,7 +30,7 @@ WebInspector.CPUProfileNode = class extends WebInspector.ProfileNode {
 /**
  * @unrestricted
  */
-WebInspector.CPUProfileDataModel = class extends WebInspector.ProfileTreeModel {
+SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
   /**
    * @param {!Protocol.Profiler.Profile} profile
    */
@@ -101,7 +101,7 @@ WebInspector.CPUProfileDataModel = class extends WebInspector.ProfileTreeModel {
 
   /**
    * @param {!Array<!Protocol.Profiler.ProfileNode>} nodes
-   * @return {!WebInspector.CPUProfileNode}
+   * @return {!SDK.CPUProfileNode}
    */
   _translateProfileTree(nodes) {
     /**
@@ -138,11 +138,11 @@ WebInspector.CPUProfileDataModel = class extends WebInspector.ProfileTreeModel {
     buildChildrenFromParents(nodes);
     this.totalHitCount = nodes.reduce((acc, node) => acc + node.hitCount, 0);
     var sampleTime = (this.profileEndTime - this.profileStartTime) / this.totalHitCount;
-    var keepNatives = !!WebInspector.moduleSetting('showNativeFunctionsInJSProfile').get();
+    var keepNatives = !!Common.moduleSetting('showNativeFunctionsInJSProfile').get();
     var root = nodes[0];
     /** @type {!Map<number, number>} */
     var idMap = new Map([[root.id, root.id]]);
-    var resultRoot = new WebInspector.CPUProfileNode(root, sampleTime);
+    var resultRoot = new SDK.CPUProfileNode(root, sampleTime);
     var parentNodeStack = root.children.map(() => resultRoot);
     var sourceNodeStack = root.children.map(id => nodeByIdMap.get(id));
     while (sourceNodeStack.length) {
@@ -150,7 +150,7 @@ WebInspector.CPUProfileDataModel = class extends WebInspector.ProfileTreeModel {
       var sourceNode = sourceNodeStack.pop();
       if (!sourceNode.children)
         sourceNode.children = [];
-      var targetNode = new WebInspector.CPUProfileNode(sourceNode, sampleTime);
+      var targetNode = new SDK.CPUProfileNode(sourceNode, sampleTime);
       if (keepNatives || !isNativeNode(sourceNode)) {
         parentNode.children.push(targetNode);
         parentNode = targetNode;
@@ -218,7 +218,7 @@ WebInspector.CPUProfileDataModel = class extends WebInspector.ProfileTreeModel {
   }
 
   _buildIdToNodeMap() {
-    /** @type {!Map<number, !WebInspector.CPUProfileNode>} */
+    /** @type {!Map<number, !SDK.CPUProfileNode>} */
     this._idToNode = new Map();
     var idToNode = this._idToNode;
     var stack = [this.profileHead];
@@ -243,8 +243,8 @@ WebInspector.CPUProfileDataModel = class extends WebInspector.ProfileTreeModel {
   }
 
   /**
-   * @param {function(number, !WebInspector.CPUProfileNode, number)} openFrameCallback
-   * @param {function(number, !WebInspector.CPUProfileNode, number, number, number)} closeFrameCallback
+   * @param {function(number, !SDK.CPUProfileNode, number)} openFrameCallback
+   * @param {function(number, !SDK.CPUProfileNode, number, number, number)} closeFrameCallback
    * @param {number=} startTime
    * @param {number=} stopTime
    */
@@ -315,7 +315,7 @@ WebInspector.CPUProfileDataModel = class extends WebInspector.ProfileTreeModel {
         var duration = sampleTime - start;
         stackChildrenDuration[stackTop - 1] += duration;
         closeFrameCallback(
-            prevNode.depth, /** @type {!WebInspector.CPUProfileNode} */ (prevNode), start, duration,
+            prevNode.depth, /** @type {!SDK.CPUProfileNode} */ (prevNode), start, duration,
             duration - stackChildrenDuration[stackTop]);
         --stackTop;
         if (node.depth === prevNode.depth) {
@@ -349,7 +349,7 @@ WebInspector.CPUProfileDataModel = class extends WebInspector.ProfileTreeModel {
       var duration = sampleTime - start;
       stackChildrenDuration[stackTop - 1] += duration;
       closeFrameCallback(
-          node.depth, /** @type {!WebInspector.CPUProfileNode} */ (node), start, duration,
+          node.depth, /** @type {!SDK.CPUProfileNode} */ (node), start, duration,
           duration - stackChildrenDuration[stackTop]);
       --stackTop;
     }
@@ -357,7 +357,7 @@ WebInspector.CPUProfileDataModel = class extends WebInspector.ProfileTreeModel {
 
   /**
    * @param {number} index
-   * @return {?WebInspector.CPUProfileNode}
+   * @return {?SDK.CPUProfileNode}
    */
   nodeByIndex(index) {
     return this._idToNode.get(this.samples[index]) || null;

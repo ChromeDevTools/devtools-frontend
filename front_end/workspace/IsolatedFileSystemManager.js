@@ -31,15 +31,15 @@
 /**
  * @unrestricted
  */
-WebInspector.IsolatedFileSystemManager = class extends WebInspector.Object {
+Workspace.IsolatedFileSystemManager = class extends Common.Object {
   constructor() {
     super();
 
-    /** @type {!Map<string, !WebInspector.IsolatedFileSystem>} */
+    /** @type {!Map<string, !Workspace.IsolatedFileSystem>} */
     this._fileSystems = new Map();
     /** @type {!Map<number, function(!Array.<string>)>} */
     this._callbacks = new Map();
-    /** @type {!Map<number, !WebInspector.Progress>} */
+    /** @type {!Map<number, !Common.Progress>} */
     this._progresses = new Map();
 
     InspectorFrontendHost.events.addEventListener(
@@ -63,7 +63,7 @@ WebInspector.IsolatedFileSystemManager = class extends WebInspector.Object {
   }
 
   /**
-   * @return {!Promise<!Array<!WebInspector.IsolatedFileSystem>>}
+   * @return {!Promise<!Array<!Workspace.IsolatedFileSystem>>}
    */
   _requestFileSystems() {
     var fulfill;
@@ -74,11 +74,11 @@ WebInspector.IsolatedFileSystemManager = class extends WebInspector.Object {
     return promise;
 
     /**
-     * @param {!WebInspector.Event} event
-     * @this {WebInspector.IsolatedFileSystemManager}
+     * @param {!Common.Event} event
+     * @this {Workspace.IsolatedFileSystemManager}
      */
     function onFileSystemsLoaded(event) {
-      var fileSystems = /** @type {!Array.<!WebInspector.IsolatedFileSystemManager.FileSystem>} */ (event.data);
+      var fileSystems = /** @type {!Array.<!Workspace.IsolatedFileSystemManager.FileSystem>} */ (event.data);
       var promises = [];
       for (var i = 0; i < fileSystems.length; ++i)
         promises.push(this._innerAddFileSystem(fileSystems[i], false));
@@ -86,7 +86,7 @@ WebInspector.IsolatedFileSystemManager = class extends WebInspector.Object {
     }
 
     /**
-     * @param {!Array<?WebInspector.IsolatedFileSystem>} fileSystems
+     * @param {!Array<?Workspace.IsolatedFileSystem>} fileSystems
      */
     function onFileSystemsAdded(fileSystems) {
       fulfill(fileSystems.filter(fs => !!fs));
@@ -98,82 +98,82 @@ WebInspector.IsolatedFileSystemManager = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.IsolatedFileSystem} fileSystem
+   * @param {!Workspace.IsolatedFileSystem} fileSystem
    */
   removeFileSystem(fileSystem) {
     InspectorFrontendHost.removeFileSystem(fileSystem.embedderPath());
   }
 
   /**
-   * @return {!Promise<!Array<!WebInspector.IsolatedFileSystem>>}
+   * @return {!Promise<!Array<!Workspace.IsolatedFileSystem>>}
    */
   waitForFileSystems() {
     return this._fileSystemsLoadedPromise;
   }
 
   /**
-   * @param {!WebInspector.IsolatedFileSystemManager.FileSystem} fileSystem
+   * @param {!Workspace.IsolatedFileSystemManager.FileSystem} fileSystem
    * @param {boolean} dispatchEvent
-   * @return {!Promise<?WebInspector.IsolatedFileSystem>}
+   * @return {!Promise<?Workspace.IsolatedFileSystem>}
    */
   _innerAddFileSystem(fileSystem, dispatchEvent) {
     var embedderPath = fileSystem.fileSystemPath;
-    var fileSystemURL = WebInspector.ParsedURL.platformPathToURL(fileSystem.fileSystemPath);
-    var promise = WebInspector.IsolatedFileSystem.create(
+    var fileSystemURL = Common.ParsedURL.platformPathToURL(fileSystem.fileSystemPath);
+    var promise = Workspace.IsolatedFileSystem.create(
         this, fileSystemURL, embedderPath, fileSystem.fileSystemName, fileSystem.rootURL);
     return promise.then(storeFileSystem.bind(this));
 
     /**
-     * @param {?WebInspector.IsolatedFileSystem} fileSystem
-     * @this {WebInspector.IsolatedFileSystemManager}
+     * @param {?Workspace.IsolatedFileSystem} fileSystem
+     * @this {Workspace.IsolatedFileSystemManager}
      */
     function storeFileSystem(fileSystem) {
       if (!fileSystem)
         return null;
       this._fileSystems.set(fileSystemURL, fileSystem);
       if (dispatchEvent)
-        this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, fileSystem);
+        this.dispatchEventToListeners(Workspace.IsolatedFileSystemManager.Events.FileSystemAdded, fileSystem);
       return fileSystem;
     }
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onFileSystemAdded(event) {
     var errorMessage = /** @type {string} */ (event.data['errorMessage']);
-    var fileSystem = /** @type {?WebInspector.IsolatedFileSystemManager.FileSystem} */ (event.data['fileSystem']);
+    var fileSystem = /** @type {?Workspace.IsolatedFileSystemManager.FileSystem} */ (event.data['fileSystem']);
     if (errorMessage)
-      WebInspector.console.error(errorMessage);
+      Common.console.error(errorMessage);
     else if (fileSystem)
       this._innerAddFileSystem(fileSystem, true);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onFileSystemRemoved(event) {
     var embedderPath = /** @type {string} */ (event.data);
-    var fileSystemPath = WebInspector.ParsedURL.platformPathToURL(embedderPath);
+    var fileSystemPath = Common.ParsedURL.platformPathToURL(embedderPath);
     var isolatedFileSystem = this._fileSystems.get(fileSystemPath);
     if (!isolatedFileSystem)
       return;
     this._fileSystems.delete(fileSystemPath);
     isolatedFileSystem.fileSystemRemoved();
-    this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, isolatedFileSystem);
+    this.dispatchEventToListeners(Workspace.IsolatedFileSystemManager.Events.FileSystemRemoved, isolatedFileSystem);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onFileSystemFilesChanged(event) {
     var embedderPaths = /** @type {!Array<string>} */ (event.data);
-    var paths = embedderPaths.map(embedderPath => WebInspector.ParsedURL.platformPathToURL(embedderPath));
-    this.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.FileSystemFilesChanged, paths);
+    var paths = embedderPaths.map(embedderPath => Common.ParsedURL.platformPathToURL(embedderPath));
+    this.dispatchEventToListeners(Workspace.IsolatedFileSystemManager.Events.FileSystemFilesChanged, paths);
   }
 
   /**
-   * @return {!Array<!WebInspector.IsolatedFileSystem>}
+   * @return {!Array<!Workspace.IsolatedFileSystem>}
    */
   fileSystems() {
     return this._fileSystems.valuesArray();
@@ -181,7 +181,7 @@ WebInspector.IsolatedFileSystemManager = class extends WebInspector.Object {
 
   /**
    * @param {string} fileSystemPath
-   * @return {?WebInspector.IsolatedFileSystem}
+   * @return {?Workspace.IsolatedFileSystem}
    */
   fileSystem(fileSystemPath) {
     return this._fileSystems.get(fileSystemPath) || null;
@@ -199,19 +199,19 @@ WebInspector.IsolatedFileSystemManager = class extends WebInspector.Object {
     ];
     var defaultLinuxExcludedFolders = ['/.*~$'];
     var defaultExcludedFolders = defaultCommonExcludedFolders;
-    if (WebInspector.isWin())
+    if (Host.isWin())
       defaultExcludedFolders = defaultExcludedFolders.concat(defaultWinExcludedFolders);
-    else if (WebInspector.isMac())
+    else if (Host.isMac())
       defaultExcludedFolders = defaultExcludedFolders.concat(defaultMacExcludedFolders);
     else
       defaultExcludedFolders = defaultExcludedFolders.concat(defaultLinuxExcludedFolders);
     var defaultExcludedFoldersPattern = defaultExcludedFolders.join('|');
-    this._workspaceFolderExcludePatternSetting = WebInspector.settings.createRegExpSetting(
-        'workspaceFolderExcludePattern', defaultExcludedFoldersPattern, WebInspector.isWin() ? 'i' : '');
+    this._workspaceFolderExcludePatternSetting = Common.settings.createRegExpSetting(
+        'workspaceFolderExcludePattern', defaultExcludedFoldersPattern, Host.isWin() ? 'i' : '');
   }
 
   /**
-   * @return {!WebInspector.Setting}
+   * @return {!Common.Setting}
    */
   workspaceFolderExcludePatternSetting() {
     return this._workspaceFolderExcludePatternSetting;
@@ -222,23 +222,23 @@ WebInspector.IsolatedFileSystemManager = class extends WebInspector.Object {
    * @return {number}
    */
   registerCallback(callback) {
-    var requestId = ++WebInspector.IsolatedFileSystemManager._lastRequestId;
+    var requestId = ++Workspace.IsolatedFileSystemManager._lastRequestId;
     this._callbacks.set(requestId, callback);
     return requestId;
   }
 
   /**
-   * @param {!WebInspector.Progress} progress
+   * @param {!Common.Progress} progress
    * @return {number}
    */
   registerProgress(progress) {
-    var requestId = ++WebInspector.IsolatedFileSystemManager._lastRequestId;
+    var requestId = ++Workspace.IsolatedFileSystemManager._lastRequestId;
     this._progresses.set(requestId, progress);
     return requestId;
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onIndexingTotalWorkCalculated(event) {
     var requestId = /** @type {number} */ (event.data['requestId']);
@@ -251,7 +251,7 @@ WebInspector.IsolatedFileSystemManager = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onIndexingWorked(event) {
     var requestId = /** @type {number} */ (event.data['requestId']);
@@ -268,7 +268,7 @@ WebInspector.IsolatedFileSystemManager = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onIndexingDone(event) {
     var requestId = /** @type {number} */ (event.data['requestId']);
@@ -281,7 +281,7 @@ WebInspector.IsolatedFileSystemManager = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onSearchCompleted(event) {
     var requestId = /** @type {number} */ (event.data['requestId']);
@@ -296,10 +296,10 @@ WebInspector.IsolatedFileSystemManager = class extends WebInspector.Object {
 };
 
 /** @typedef {!{fileSystemName: string, rootURL: string, fileSystemPath: string}} */
-WebInspector.IsolatedFileSystemManager.FileSystem;
+Workspace.IsolatedFileSystemManager.FileSystem;
 
 /** @enum {symbol} */
-WebInspector.IsolatedFileSystemManager.Events = {
+Workspace.IsolatedFileSystemManager.Events = {
   FileSystemAdded: Symbol('FileSystemAdded'),
   FileSystemRemoved: Symbol('FileSystemRemoved'),
   FileSystemFilesChanged: Symbol('FileSystemFilesChanged'),
@@ -307,9 +307,9 @@ WebInspector.IsolatedFileSystemManager.Events = {
   ExcludedFolderRemoved: Symbol('ExcludedFolderRemoved')
 };
 
-WebInspector.IsolatedFileSystemManager._lastRequestId = 0;
+Workspace.IsolatedFileSystemManager._lastRequestId = 0;
 
 /**
- * @type {!WebInspector.IsolatedFileSystemManager}
+ * @type {!Workspace.IsolatedFileSystemManager}
  */
-WebInspector.isolatedFileSystemManager;
+Workspace.isolatedFileSystemManager;

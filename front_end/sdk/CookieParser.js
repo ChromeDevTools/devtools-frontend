@@ -37,34 +37,34 @@
 /**
  * @unrestricted
  */
-WebInspector.CookieParser = class {
+SDK.CookieParser = class {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   constructor(target) {
     this._target = target;
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {string|undefined} header
-   * @return {?Array.<!WebInspector.Cookie>}
+   * @return {?Array.<!SDK.Cookie>}
    */
   static parseCookie(target, header) {
-    return (new WebInspector.CookieParser(target)).parseCookie(header);
+    return (new SDK.CookieParser(target)).parseCookie(header);
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {string|undefined} header
-   * @return {?Array.<!WebInspector.Cookie>}
+   * @return {?Array.<!SDK.Cookie>}
    */
   static parseSetCookie(target, header) {
-    return (new WebInspector.CookieParser(target)).parseSetCookie(header);
+    return (new SDK.CookieParser(target)).parseSetCookie(header);
   }
 
   /**
-   * @return {!Array.<!WebInspector.Cookie>}
+   * @return {!Array.<!SDK.Cookie>}
    */
   cookies() {
     return this._cookies;
@@ -72,7 +72,7 @@ WebInspector.CookieParser = class {
 
   /**
    * @param {string|undefined} cookieHeader
-   * @return {?Array.<!WebInspector.Cookie>}
+   * @return {?Array.<!SDK.Cookie>}
    */
   parseCookie(cookieHeader) {
     if (!this._initialize(cookieHeader))
@@ -82,7 +82,7 @@ WebInspector.CookieParser = class {
       if (kv.key.charAt(0) === '$' && this._lastCookie)
         this._lastCookie.addAttribute(kv.key.slice(1), kv.value);
       else if (kv.key.toLowerCase() !== '$version' && typeof kv.value === 'string')
-        this._addCookie(kv, WebInspector.Cookie.Type.Request);
+        this._addCookie(kv, SDK.Cookie.Type.Request);
       this._advanceAndCheckCookieDelimiter();
     }
     this._flushCookie();
@@ -91,7 +91,7 @@ WebInspector.CookieParser = class {
 
   /**
    * @param {string|undefined} setCookieHeader
-   * @return {?Array.<!WebInspector.Cookie>}
+   * @return {?Array.<!SDK.Cookie>}
    */
   parseSetCookie(setCookieHeader) {
     if (!this._initialize(setCookieHeader))
@@ -100,7 +100,7 @@ WebInspector.CookieParser = class {
       if (this._lastCookie)
         this._lastCookie.addAttribute(kv.key, kv.value);
       else
-        this._addCookie(kv, WebInspector.Cookie.Type.Response);
+        this._addCookie(kv, SDK.Cookie.Type.Response);
       if (this._advanceAndCheckCookieDelimiter())
         this._flushCookie();
     }
@@ -129,7 +129,7 @@ WebInspector.CookieParser = class {
   }
 
   /**
-   * @return {?WebInspector.CookieParser.KeyValue}
+   * @return {?SDK.CookieParser.KeyValue}
    */
   _extractKeyValue() {
     if (!this._input || !this._input.length)
@@ -145,7 +145,7 @@ WebInspector.CookieParser = class {
       return null;
     }
 
-    var result = new WebInspector.CookieParser.KeyValue(
+    var result = new SDK.CookieParser.KeyValue(
         keyValueMatch[1], keyValueMatch[2] && keyValueMatch[2].trim(), this._originalInputLength - this._input.length);
     this._input = this._input.slice(keyValueMatch[0].length);
     return result;
@@ -163,8 +163,8 @@ WebInspector.CookieParser = class {
   }
 
   /**
-   * @param {!WebInspector.CookieParser.KeyValue} keyValue
-   * @param {!WebInspector.Cookie.Type} type
+   * @param {!SDK.CookieParser.KeyValue} keyValue
+   * @param {!SDK.Cookie.Type} type
    */
   _addCookie(keyValue, type) {
     if (this._lastCookie)
@@ -172,8 +172,8 @@ WebInspector.CookieParser = class {
     // Mozilla bug 169091: Mozilla, IE and Chrome treat single token (w/o "=") as
     // specifying a value for a cookie with empty name.
     this._lastCookie = typeof keyValue.value === 'string' ?
-        new WebInspector.Cookie(this._target, keyValue.key, keyValue.value, type) :
-        new WebInspector.Cookie(this._target, '', keyValue.key, type);
+        new SDK.Cookie(this._target, keyValue.key, keyValue.value, type) :
+        new SDK.Cookie(this._target, '', keyValue.key, type);
     this._lastCookiePosition = keyValue.position;
     this._cookies.push(this._lastCookie);
   }
@@ -182,7 +182,7 @@ WebInspector.CookieParser = class {
 /**
  * @unrestricted
  */
-WebInspector.CookieParser.KeyValue = class {
+SDK.CookieParser.KeyValue = class {
   /**
    * @param {string} key
    * @param {string|undefined} value
@@ -199,12 +199,12 @@ WebInspector.CookieParser.KeyValue = class {
 /**
  * @unrestricted
  */
-WebInspector.Cookie = class {
+SDK.Cookie = class {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {string} name
    * @param {string} value
-   * @param {?WebInspector.Cookie.Type} type
+   * @param {?SDK.Cookie.Type} type
    */
   constructor(target, name, value, type) {
     this._target = target;
@@ -229,7 +229,7 @@ WebInspector.Cookie = class {
   }
 
   /**
-   * @return {?WebInspector.Cookie.Type}
+   * @return {?SDK.Cookie.Type}
    */
   type() {
     return this._type;
@@ -357,20 +357,20 @@ WebInspector.Cookie = class {
 /**
  * @enum {number}
  */
-WebInspector.Cookie.Type = {
+SDK.Cookie.Type = {
   Request: 0,
   Response: 1
 };
 
-WebInspector.Cookies = {};
+SDK.Cookies = {};
 
 /**
- * @param {function(!Array.<!WebInspector.Cookie>)} callback
+ * @param {function(!Array.<!SDK.Cookie>)} callback
  */
-WebInspector.Cookies.getCookiesAsync = function(callback) {
+SDK.Cookies.getCookiesAsync = function(callback) {
   var allCookies = [];
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {?Protocol.Error} error
    * @param {!Array.<!Protocol.Network.Cookie>} cookies
    */
@@ -380,22 +380,22 @@ WebInspector.Cookies.getCookiesAsync = function(callback) {
       return;
     }
     for (var i = 0; i < cookies.length; ++i)
-      allCookies.push(WebInspector.Cookies._parseProtocolCookie(target, cookies[i]));
+      allCookies.push(SDK.Cookies._parseProtocolCookie(target, cookies[i]));
   }
 
   var barrier = new CallbackBarrier();
-  for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Network))
+  for (var target of SDK.targetManager.targets(SDK.Target.Capability.Network))
     target.networkAgent().getCookies(barrier.createCallback(mycallback.bind(null, target)));
   barrier.callWhenDone(callback.bind(null, allCookies));
 };
 
 /**
- * @param {!WebInspector.Target} target
+ * @param {!SDK.Target} target
  * @param {!Protocol.Network.Cookie} protocolCookie
- * @return {!WebInspector.Cookie}
+ * @return {!SDK.Cookie}
  */
-WebInspector.Cookies._parseProtocolCookie = function(target, protocolCookie) {
-  var cookie = new WebInspector.Cookie(target, protocolCookie.name, protocolCookie.value, null);
+SDK.Cookies._parseProtocolCookie = function(target, protocolCookie) {
+  var cookie = new SDK.Cookie(target, protocolCookie.name, protocolCookie.value, null);
   cookie.addAttribute('domain', protocolCookie['domain']);
   cookie.addAttribute('path', protocolCookie['path']);
   cookie.addAttribute('port', protocolCookie['port']);
@@ -412,13 +412,13 @@ WebInspector.Cookies._parseProtocolCookie = function(target, protocolCookie) {
 };
 
 /**
- * @param {!WebInspector.Cookie} cookie
+ * @param {!SDK.Cookie} cookie
  * @param {string} resourceURL
  * @return {boolean}
  */
-WebInspector.Cookies.cookieMatchesResourceURL = function(cookie, resourceURL) {
+SDK.Cookies.cookieMatchesResourceURL = function(cookie, resourceURL) {
   var url = resourceURL.asParsedURL();
-  if (!url || !WebInspector.Cookies.cookieDomainMatchesResourceDomain(cookie.domain(), url.host))
+  if (!url || !SDK.Cookies.cookieDomainMatchesResourceDomain(cookie.domain(), url.host))
     return false;
   return (
       url.path.startsWith(cookie.path()) && (!cookie.port() || url.port === cookie.port()) &&
@@ -430,7 +430,7 @@ WebInspector.Cookies.cookieMatchesResourceURL = function(cookie, resourceURL) {
  * @param {string} resourceDomain
  * @return {boolean}
  */
-WebInspector.Cookies.cookieDomainMatchesResourceDomain = function(cookieDomain, resourceDomain) {
+SDK.Cookies.cookieDomainMatchesResourceDomain = function(cookieDomain, resourceDomain) {
   if (cookieDomain.charAt(0) !== '.')
     return resourceDomain === cookieDomain;
   return !!resourceDomain.match(new RegExp('^([^\\.]+\\.)*' + cookieDomain.substring(1).escapeForRegExp() + '$', 'i'));

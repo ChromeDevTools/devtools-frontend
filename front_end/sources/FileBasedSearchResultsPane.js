@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-WebInspector.FileBasedSearchResultsPane = class extends WebInspector.SearchResultsPane {
+Sources.FileBasedSearchResultsPane = class extends Sources.SearchResultsPane {
   /**
-   * @param {!WebInspector.ProjectSearchConfig} searchConfig
+   * @param {!Workspace.ProjectSearchConfig} searchConfig
    */
   constructor(searchConfig) {
     super(searchConfig);
@@ -21,7 +21,7 @@ WebInspector.FileBasedSearchResultsPane = class extends WebInspector.SearchResul
 
   /**
    * @override
-   * @param {!WebInspector.FileBasedSearchResult} searchResult
+   * @param {!Sources.FileBasedSearchResult} searchResult
    */
   addSearchResult(searchResult) {
     this._searchResults.push(searchResult);
@@ -32,28 +32,28 @@ WebInspector.FileBasedSearchResultsPane = class extends WebInspector.SearchResul
   }
 
   /**
-   * @param {!WebInspector.FileBasedSearchResult} searchResult
+   * @param {!Sources.FileBasedSearchResult} searchResult
    */
   _addFileTreeElement(searchResult) {
-    var fileTreeElement = new WebInspector.FileBasedSearchResultsPane.FileTreeElement(this._searchConfig, searchResult);
+    var fileTreeElement = new Sources.FileBasedSearchResultsPane.FileTreeElement(this._searchConfig, searchResult);
     this._treeOutline.appendChild(fileTreeElement);
     // Expand until at least a certain number of matches is expanded.
-    if (this._matchesExpandedCount < WebInspector.FileBasedSearchResultsPane.matchesExpandedByDefaultCount)
+    if (this._matchesExpandedCount < Sources.FileBasedSearchResultsPane.matchesExpandedByDefaultCount)
       fileTreeElement.expand();
     this._matchesExpandedCount += searchResult.searchMatches.length;
   }
 };
 
-WebInspector.FileBasedSearchResultsPane.matchesExpandedByDefaultCount = 20;
-WebInspector.FileBasedSearchResultsPane.fileMatchesShownAtOnce = 20;
+Sources.FileBasedSearchResultsPane.matchesExpandedByDefaultCount = 20;
+Sources.FileBasedSearchResultsPane.fileMatchesShownAtOnce = 20;
 
 /**
  * @unrestricted
  */
-WebInspector.FileBasedSearchResultsPane.FileTreeElement = class extends TreeElement {
+Sources.FileBasedSearchResultsPane.FileTreeElement = class extends TreeElement {
   /**
-   * @param {!WebInspector.ProjectSearchConfig} searchConfig
-   * @param {!WebInspector.FileBasedSearchResult} searchResult
+   * @param {!Workspace.ProjectSearchConfig} searchConfig
+   * @param {!Sources.FileBasedSearchResult} searchResult
    */
   constructor(searchConfig, searchResult) {
     super('', true);
@@ -78,7 +78,7 @@ WebInspector.FileBasedSearchResultsPane.FileTreeElement = class extends TreeElem
   _updateMatchesUI() {
     this.removeChildren();
     var toIndex = Math.min(
-        this._searchResult.searchMatches.length, WebInspector.FileBasedSearchResultsPane.fileMatchesShownAtOnce);
+        this._searchResult.searchMatches.length, Sources.FileBasedSearchResultsPane.fileMatchesShownAtOnce);
     if (toIndex < this._searchResult.searchMatches.length) {
       this._appendSearchMatches(0, toIndex - 1);
       this._appendShowMoreMatchesElement(toIndex - 1);
@@ -107,9 +107,9 @@ WebInspector.FileBasedSearchResultsPane.FileTreeElement = class extends TreeElem
 
     var searchMatchesCount = this._searchResult.searchMatches.length;
     if (searchMatchesCount === 1)
-      matchesCountSpan.textContent = WebInspector.UIString('(%d match)', searchMatchesCount);
+      matchesCountSpan.textContent = Common.UIString('(%d match)', searchMatchesCount);
     else
-      matchesCountSpan.textContent = WebInspector.UIString('(%d matches)', searchMatchesCount);
+      matchesCountSpan.textContent = Common.UIString('(%d matches)', searchMatchesCount);
 
     this.listItemElement.appendChild(matchesCountSpan);
     if (this.expanded)
@@ -161,7 +161,7 @@ WebInspector.FileBasedSearchResultsPane.FileTreeElement = class extends TreeElem
    */
   _appendShowMoreMatchesElement(startMatchIndex) {
     var matchesLeftCount = this._searchResult.searchMatches.length - startMatchIndex;
-    var showMoreMatchesText = WebInspector.UIString('Show all matches (%d more).', matchesLeftCount);
+    var showMoreMatchesText = Common.UIString('Show all matches (%d more).', matchesLeftCount);
     this._showMoreMatchesTreeElement = new TreeElement(showMoreMatchesText);
     this.appendChild(this._showMoreMatchesTreeElement);
     this._showMoreMatchesTreeElement.listItemElement.classList.add('show-more-matches');
@@ -169,38 +169,38 @@ WebInspector.FileBasedSearchResultsPane.FileTreeElement = class extends TreeElem
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {!Element}
    */
   _createAnchor(uiSourceCode, lineNumber, columnNumber) {
-    return WebInspector.Linkifier.linkifyUsingRevealer(uiSourceCode.uiLocation(lineNumber, columnNumber), '');
+    return Components.Linkifier.linkifyUsingRevealer(uiSourceCode.uiLocation(lineNumber, columnNumber), '');
   }
 
   /**
    * @param {string} lineContent
-   * @param {!Array.<!WebInspector.SourceRange>} matchRanges
+   * @param {!Array.<!Common.SourceRange>} matchRanges
    */
   _createContentSpan(lineContent, matchRanges) {
     var contentSpan = createElement('span');
     contentSpan.className = 'search-match-content';
     contentSpan.textContent = lineContent;
-    WebInspector.highlightRangesWithStyleClass(contentSpan, matchRanges, 'highlighted-match');
+    UI.highlightRangesWithStyleClass(contentSpan, matchRanges, 'highlighted-match');
     return contentSpan;
   }
 
   /**
    * @param {string} lineContent
    * @param {!RegExp} regex
-   * @return {!Array.<!WebInspector.SourceRange>}
+   * @return {!Array.<!Common.SourceRange>}
    */
   _regexMatchRanges(lineContent, regex) {
     regex.lastIndex = 0;
     var match;
     var matchRanges = [];
     while ((regex.lastIndex < lineContent.length) && (match = regex.exec(lineContent)))
-      matchRanges.push(new WebInspector.SourceRange(match.index, match[0].length));
+      matchRanges.push(new Common.SourceRange(match.index, match[0].length));
 
     return matchRanges;
   }

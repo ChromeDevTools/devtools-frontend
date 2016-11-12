@@ -31,40 +31,40 @@
 /**
  * @unrestricted
  */
-WebInspector.NetworkLog = class extends WebInspector.SDKModel {
+SDK.NetworkLog = class extends SDK.SDKModel {
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!WebInspector.ResourceTreeModel} resourceTreeModel
-   * @param {!WebInspector.NetworkManager} networkManager
+   * @param {!SDK.Target} target
+   * @param {!SDK.ResourceTreeModel} resourceTreeModel
+   * @param {!SDK.NetworkManager} networkManager
    */
   constructor(target, resourceTreeModel, networkManager) {
-    super(WebInspector.NetworkLog, target);
+    super(SDK.NetworkLog, target);
 
     this._requests = [];
     this._requestForId = {};
-    networkManager.addEventListener(WebInspector.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
+    networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
     resourceTreeModel.addEventListener(
-        WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
-    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.Load, this._onLoad, this);
+        SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, this._onLoad, this);
     resourceTreeModel.addEventListener(
-        WebInspector.ResourceTreeModel.Events.DOMContentLoaded, this._onDOMContentLoaded, this);
+        SDK.ResourceTreeModel.Events.DOMContentLoaded, this._onDOMContentLoaded, this);
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @return {?WebInspector.NetworkLog}
+   * @param {!SDK.Target} target
+   * @return {?SDK.NetworkLog}
    */
   static fromTarget(target) {
-    return /** @type {?WebInspector.NetworkLog} */ (target.model(WebInspector.NetworkLog));
+    return /** @type {?SDK.NetworkLog} */ (target.model(SDK.NetworkLog));
   }
 
   /**
    * @param {string} url
-   * @return {?WebInspector.NetworkRequest}
+   * @return {?SDK.NetworkRequest}
    */
   static requestForURL(url) {
-    for (var target of WebInspector.targetManager.targets()) {
-      var networkLog = WebInspector.NetworkLog.fromTarget(target);
+    for (var target of SDK.targetManager.targets()) {
+      var networkLog = SDK.NetworkLog.fromTarget(target);
       var result = networkLog && networkLog.requestForURL(url);
       if (result)
         return result;
@@ -73,12 +73,12 @@ WebInspector.NetworkLog = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @return {!Array.<!WebInspector.NetworkRequest>}
+   * @return {!Array.<!SDK.NetworkRequest>}
    */
   static requests() {
     var result = [];
-    for (var target of WebInspector.targetManager.targets()) {
-      var networkLog = WebInspector.NetworkLog.fromTarget(target);
+    for (var target of SDK.targetManager.targets()) {
+      var networkLog = SDK.NetworkLog.fromTarget(target);
       if (networkLog)
         result = result.concat(networkLog.requests());
     }
@@ -86,7 +86,7 @@ WebInspector.NetworkLog = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @return {!Array.<!WebInspector.NetworkRequest>}
+   * @return {!Array.<!SDK.NetworkRequest>}
    */
   requests() {
     return this._requests;
@@ -94,7 +94,7 @@ WebInspector.NetworkLog = class extends WebInspector.SDKModel {
 
   /**
    * @param {string} url
-   * @return {?WebInspector.NetworkRequest}
+   * @return {?SDK.NetworkRequest}
    */
   requestForURL(url) {
     for (var i = 0; i < this._requests.length; ++i) {
@@ -105,18 +105,18 @@ WebInspector.NetworkLog = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
-   * @return {!WebInspector.PageLoad}
+   * @param {!SDK.NetworkRequest} request
+   * @return {!SDK.PageLoad}
    */
   pageLoadForRequest(request) {
     return request.__page;
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onMainFrameNavigated(event) {
-    var mainFrame = /** type {WebInspector.ResourceTreeFrame} */ event.data;
+    var mainFrame = /** type {SDK.ResourceTreeFrame} */ event.data;
     // Preserve requests from the new session.
     this._currentPageLoad = null;
     var oldRequests = this._requests.splice(0, this._requests.length);
@@ -125,7 +125,7 @@ WebInspector.NetworkLog = class extends WebInspector.SDKModel {
       var request = oldRequests[i];
       if (request.loaderId === mainFrame.loaderId) {
         if (!this._currentPageLoad)
-          this._currentPageLoad = new WebInspector.PageLoad(request);
+          this._currentPageLoad = new SDK.PageLoad(request);
         this._requests.push(request);
         this._requestForId[request.requestId] = request;
         request.__page = this._currentPageLoad;
@@ -134,17 +134,17 @@ WebInspector.NetworkLog = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onRequestStarted(event) {
-    var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
+    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     this._requests.push(request);
     this._requestForId[request.requestId] = request;
     request.__page = this._currentPageLoad;
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onDOMContentLoaded(event) {
     if (this._currentPageLoad)
@@ -152,7 +152,7 @@ WebInspector.NetworkLog = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onLoad(event) {
     if (this._currentPageLoad)
@@ -161,7 +161,7 @@ WebInspector.NetworkLog = class extends WebInspector.SDKModel {
 
   /**
    * @param {!Protocol.Network.RequestId} requestId
-   * @return {?WebInspector.NetworkRequest}
+   * @return {?SDK.NetworkRequest}
    */
   requestForId(requestId) {
     return this._requestForId[requestId];
@@ -172,15 +172,15 @@ WebInspector.NetworkLog = class extends WebInspector.SDKModel {
 /**
  * @unrestricted
  */
-WebInspector.PageLoad = class {
+SDK.PageLoad = class {
   /**
-   * @param {!WebInspector.NetworkRequest} mainRequest
+   * @param {!SDK.NetworkRequest} mainRequest
    */
   constructor(mainRequest) {
-    this.id = ++WebInspector.PageLoad._lastIdentifier;
+    this.id = ++SDK.PageLoad._lastIdentifier;
     this.url = mainRequest.url;
     this.startTime = mainRequest.startTime;
   }
 };
 
-WebInspector.PageLoad._lastIdentifier = 0;
+SDK.PageLoad._lastIdentifier = 0;

@@ -31,11 +31,11 @@
 /**
  * @unrestricted
  */
-WebInspector.ObjectPopoverHelper = class extends WebInspector.PopoverHelper {
+Components.ObjectPopoverHelper = class extends UI.PopoverHelper {
   /**
    * @param {!Element} panelElement
    * @param {function(!Element, !Event):(!Element|!AnchorBox|undefined)} getAnchor
-   * @param {function(!Element, function(!WebInspector.RemoteObject, boolean, !Element=):undefined, string):undefined} queryObject
+   * @param {function(!Element, function(!SDK.RemoteObject, boolean, !Element=):undefined, string):undefined} queryObject
    * @param {function()=} onHide
    * @param {boolean=} disableOnClick
    */
@@ -50,17 +50,17 @@ WebInspector.ObjectPopoverHelper = class extends WebInspector.PopoverHelper {
 
   /**
    * @param {!Element} element
-   * @param {!WebInspector.Popover} popover
+   * @param {!UI.Popover} popover
    */
   _showObjectPopover(element, popover) {
     /**
-     * @param {!WebInspector.RemoteObject} funcObject
+     * @param {!SDK.RemoteObject} funcObject
      * @param {!Element} popoverContentElement
      * @param {!Element} popoverValueElement
      * @param {!Element} anchorElement
-     * @param {?Array.<!WebInspector.RemoteObjectProperty>} properties
-     * @param {?Array.<!WebInspector.RemoteObjectProperty>} internalProperties
-     * @this {WebInspector.ObjectPopoverHelper}
+     * @param {?Array.<!SDK.RemoteObjectProperty>} properties
+     * @param {?Array.<!SDK.RemoteObjectProperty>} internalProperties
+     * @this {Components.ObjectPopoverHelper}
      */
     function didGetFunctionProperties(
         funcObject, popoverContentElement, popoverValueElement, anchorElement, properties, internalProperties) {
@@ -72,7 +72,7 @@ WebInspector.ObjectPopoverHelper = class extends WebInspector.PopoverHelper {
           }
         }
       }
-      WebInspector.ObjectPropertiesSection.formatObjectAsFunction(funcObject, popoverValueElement, true);
+      Components.ObjectPropertiesSection.formatObjectAsFunction(funcObject, popoverValueElement, true);
       funcObject.debuggerModel()
           .functionDetailsPromise(funcObject)
           .then(didGetFunctionDetails.bind(this, popoverContentElement, anchorElement));
@@ -81,8 +81,8 @@ WebInspector.ObjectPopoverHelper = class extends WebInspector.PopoverHelper {
     /**
      * @param {!Element} popoverContentElement
      * @param {!Element} anchorElement
-     * @param {?WebInspector.DebuggerModel.FunctionDetails} response
-     * @this {WebInspector.ObjectPopoverHelper}
+     * @param {?SDK.DebuggerModel.FunctionDetails} response
+     * @this {Components.ObjectPopoverHelper}
      */
     function didGetFunctionDetails(popoverContentElement, anchorElement, response) {
       if (!response || popover.disposed)
@@ -91,14 +91,14 @@ WebInspector.ObjectPopoverHelper = class extends WebInspector.PopoverHelper {
       var container = createElementWithClass('div', 'object-popover-container');
       var title = container.createChild('div', 'function-popover-title source-code');
       var functionName = title.createChild('span', 'function-name');
-      functionName.textContent = WebInspector.beautifyFunctionName(response.functionName);
+      functionName.textContent = UI.beautifyFunctionName(response.functionName);
 
       var rawLocation = response.location;
       var linkContainer = title.createChild('div', 'function-title-link-container');
       if (rawLocation && Runtime.experiments.isEnabled('continueToFirstInvocation')) {
-        var sectionToolbar = new WebInspector.Toolbar('function-location-step-into', linkContainer);
-        var stepInto = new WebInspector.ToolbarButton(
-            WebInspector.UIString('Continue to first invocation'), 'largeicon-step-in');
+        var sectionToolbar = new UI.Toolbar('function-location-step-into', linkContainer);
+        var stepInto = new UI.ToolbarButton(
+            Common.UIString('Continue to first invocation'), 'largeicon-step-in');
         stepInto.addEventListener('click', () => rawLocation.continueToLocation());
         sectionToolbar.appendToolbarItem(stepInto);
       }
@@ -110,10 +110,10 @@ WebInspector.ObjectPopoverHelper = class extends WebInspector.PopoverHelper {
     }
 
     /**
-     * @param {!WebInspector.RemoteObject} result
+     * @param {!SDK.RemoteObject} result
      * @param {boolean} wasThrown
      * @param {!Element=} anchorOverride
-     * @this {WebInspector.ObjectPopoverHelper}
+     * @this {Components.ObjectPopoverHelper}
      */
     function didQueryObject(result, wasThrown, anchorOverride) {
       if (popover.disposed)
@@ -124,11 +124,11 @@ WebInspector.ObjectPopoverHelper = class extends WebInspector.PopoverHelper {
       }
       this._objectTarget = result.target();
       var anchorElement = anchorOverride || element;
-      var description = result.description.trimEnd(WebInspector.ObjectPopoverHelper.MaxPopoverTextLength);
+      var description = result.description.trimEnd(Components.ObjectPopoverHelper.MaxPopoverTextLength);
       var popoverContentElement = null;
       if (result.type !== 'object') {
         popoverContentElement = createElement('span');
-        WebInspector.appendStyle(popoverContentElement, 'components/objectValue.css');
+        UI.appendStyle(popoverContentElement, 'components/objectValue.css');
         var valueElement = popoverContentElement.createChild('span', 'monospace object-value-' + result.type);
         valueElement.style.whiteSpace = 'pre';
 
@@ -145,19 +145,19 @@ WebInspector.ObjectPopoverHelper = class extends WebInspector.PopoverHelper {
         popover.showForAnchor(popoverContentElement, anchorElement);
       } else {
         if (result.subtype === 'node') {
-          WebInspector.DOMModel.highlightObjectAsDOMNode(result);
+          SDK.DOMModel.highlightObjectAsDOMNode(result);
           this._resultHighlightedAsDOM = true;
         }
 
         if (result.customPreview()) {
-          var customPreviewComponent = new WebInspector.CustomPreviewComponent(result);
+          var customPreviewComponent = new Components.CustomPreviewComponent(result);
           customPreviewComponent.expandIfPossible();
           popoverContentElement = customPreviewComponent.element;
         } else {
           popoverContentElement = createElement('div');
           this._titleElement = popoverContentElement.createChild('div', 'monospace');
           this._titleElement.createChild('span', 'source-frame-popover-title').textContent = description;
-          var section = new WebInspector.ObjectPropertiesSection(result, '', this._lazyLinkifier());
+          var section = new Components.ObjectPropertiesSection(result, '', this._lazyLinkifier());
           section.element.classList.add('source-frame-popover-tree');
           section.titleLessMode();
           popoverContentElement.appendChild(section.element);
@@ -172,7 +172,7 @@ WebInspector.ObjectPopoverHelper = class extends WebInspector.PopoverHelper {
 
   _onHideObjectPopover() {
     if (this._resultHighlightedAsDOM) {
-      WebInspector.DOMModel.hideDOMNodeHighlight();
+      SDK.DOMModel.hideDOMNodeHighlight();
       delete this._resultHighlightedAsDOM;
     }
     if (this._linkifier) {
@@ -188,13 +188,13 @@ WebInspector.ObjectPopoverHelper = class extends WebInspector.PopoverHelper {
   }
 
   /**
-   * @return {!WebInspector.Linkifier}
+   * @return {!Components.Linkifier}
    */
   _lazyLinkifier() {
     if (!this._linkifier)
-      this._linkifier = new WebInspector.Linkifier();
+      this._linkifier = new Components.Linkifier();
     return this._linkifier;
   }
 };
 
-WebInspector.ObjectPopoverHelper.MaxPopoverTextLength = 10000;
+Components.ObjectPopoverHelper.MaxPopoverTextLength = 10000;

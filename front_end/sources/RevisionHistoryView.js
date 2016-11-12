@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.RevisionHistoryView = class extends WebInspector.VBox {
+Sources.RevisionHistoryView = class extends UI.VBox {
   constructor() {
     super();
     this._uiSourceCodeItems = new Map();
@@ -42,34 +42,34 @@ WebInspector.RevisionHistoryView = class extends WebInspector.VBox {
     this.element.appendChild(this._treeOutline.element);
 
     /**
-     * @param {!WebInspector.UISourceCode} uiSourceCode
-     * @this {WebInspector.RevisionHistoryView}
+     * @param {!Workspace.UISourceCode} uiSourceCode
+     * @this {Sources.RevisionHistoryView}
      */
     function populateRevisions(uiSourceCode) {
       if (uiSourceCode.history.length)
         this._createUISourceCodeItem(uiSourceCode);
     }
 
-    WebInspector.workspace.uiSourceCodes().forEach(populateRevisions.bind(this));
-    WebInspector.workspace.addEventListener(
-        WebInspector.Workspace.Events.WorkingCopyCommittedByUser, this._revisionAdded, this);
-    WebInspector.workspace.addEventListener(
-        WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
-    WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
+    Workspace.workspace.uiSourceCodes().forEach(populateRevisions.bind(this));
+    Workspace.workspace.addEventListener(
+        Workspace.Workspace.Events.WorkingCopyCommittedByUser, this._revisionAdded, this);
+    Workspace.workspace.addEventListener(
+        Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
+    Workspace.workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   static showHistory(uiSourceCode) {
-    WebInspector.viewManager.showView('sources.history');
-    var historyView = /** @type {!WebInspector.RevisionHistoryView} */ (
-        self.runtime.sharedInstance(WebInspector.RevisionHistoryView));
+    UI.viewManager.showView('sources.history');
+    var historyView = /** @type {!Sources.RevisionHistoryView} */ (
+        self.runtime.sharedInstance(Sources.RevisionHistoryView));
     historyView._revealUISourceCode(uiSourceCode);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _createUISourceCodeItem(uiSourceCode) {
     var uiSourceCodeItem = new TreeElement(uiSourceCode.displayName(), true);
@@ -92,7 +92,7 @@ WebInspector.RevisionHistoryView = class extends WebInspector.VBox {
     for (var i = revisionCount - 1; i >= 0; --i) {
       var revision = uiSourceCode.history[i];
       var historyItem =
-          new WebInspector.RevisionHistoryTreeElement(revision, uiSourceCode.history[i - 1], i !== revisionCount - 1);
+          new Sources.RevisionHistoryTreeElement(revision, uiSourceCode.history[i - 1], i !== revisionCount - 1);
       uiSourceCodeItem.appendChild(historyItem);
     }
 
@@ -102,31 +102,31 @@ WebInspector.RevisionHistoryView = class extends WebInspector.VBox {
 
     var revertToOriginal =
         linkItem.listItemElement.createChild('span', 'revision-history-link revision-history-link-row');
-    revertToOriginal.textContent = WebInspector.UIString('apply original content');
+    revertToOriginal.textContent = Common.UIString('apply original content');
     revertToOriginal.addEventListener('click', this._revertToOriginal.bind(this, uiSourceCode));
 
     var clearHistoryElement = uiSourceCodeItem.listItemElement.createChild('span', 'revision-history-link');
-    clearHistoryElement.textContent = WebInspector.UIString('revert');
+    clearHistoryElement.textContent = Common.UIString('revert');
     clearHistoryElement.addEventListener('click', this._clearHistory.bind(this, uiSourceCode));
     return uiSourceCodeItem;
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _revertToOriginal(uiSourceCode) {
     uiSourceCode.revertToOriginal();
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _clearHistory(uiSourceCode) {
     uiSourceCode.revertAndClearHistory(this._removeUISourceCode.bind(this));
   }
 
   _revisionAdded(event) {
-    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data.uiSourceCode);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
     var uiSourceCodeItem = this._uiSourceCodeItems.get(uiSourceCode);
     if (!uiSourceCodeItem) {
       uiSourceCodeItem = this._createUISourceCodeItem(uiSourceCode);
@@ -134,7 +134,7 @@ WebInspector.RevisionHistoryView = class extends WebInspector.VBox {
     }
 
     var historyLength = uiSourceCode.history.length;
-    var historyItem = new WebInspector.RevisionHistoryTreeElement(
+    var historyItem = new Sources.RevisionHistoryTreeElement(
         uiSourceCode.history[historyLength - 1], uiSourceCode.history[historyLength - 2], false);
     if (uiSourceCodeItem.firstChild())
       uiSourceCodeItem.firstChild().allowRevert();
@@ -142,7 +142,7 @@ WebInspector.RevisionHistoryView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _revealUISourceCode(uiSourceCode) {
     var uiSourceCodeItem = this._uiSourceCodeItems.get(uiSourceCode);
@@ -153,12 +153,12 @@ WebInspector.RevisionHistoryView = class extends WebInspector.VBox {
   }
 
   _uiSourceCodeRemoved(event) {
-    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     this._removeUISourceCode(uiSourceCode);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _removeUISourceCode(uiSourceCode) {
     var uiSourceCodeItem = this._uiSourceCodeItems.get(uiSourceCode);
@@ -178,10 +178,10 @@ WebInspector.RevisionHistoryView = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.RevisionHistoryTreeElement = class extends TreeElement {
+Sources.RevisionHistoryTreeElement = class extends TreeElement {
   /**
-   * @param {!WebInspector.Revision} revision
-   * @param {!WebInspector.Revision} baseRevision
+   * @param {!Workspace.Revision} revision
+   * @param {!Workspace.Revision} baseRevision
    * @param {boolean} allowRevert
    */
   constructor(revision, baseRevision, allowRevert) {
@@ -193,7 +193,7 @@ WebInspector.RevisionHistoryTreeElement = class extends TreeElement {
 
     this._revertElement = createElement('span');
     this._revertElement.className = 'revision-history-link';
-    this._revertElement.textContent = WebInspector.UIString('apply revision content');
+    this._revertElement.textContent = Common.UIString('apply revision content');
     this._revertElement.addEventListener('click', event => {
       this._revision.revertToThis();
     }, false);
@@ -226,12 +226,12 @@ WebInspector.RevisionHistoryTreeElement = class extends TreeElement {
     /**
      * @param {?string} baseContent
      * @param {?string} newContent
-     * @this {WebInspector.RevisionHistoryTreeElement}
+     * @this {Sources.RevisionHistoryTreeElement}
      */
     function diff(baseContent, newContent) {
       var baseLines = baseContent.split('\n');
       var newLines = newContent.split('\n');
-      var opcodes = WebInspector.Diff.lineDiff(baseLines, newLines);
+      var opcodes = Diff.Diff.lineDiff(baseLines, newLines);
       var lastWasSeparator = false;
 
       var baseLineNumber = 0;
@@ -239,18 +239,18 @@ WebInspector.RevisionHistoryTreeElement = class extends TreeElement {
       for (var idx = 0; idx < opcodes.length; idx++) {
         var code = opcodes[idx][0];
         var rowCount = opcodes[idx][1].length;
-        if (code === WebInspector.Diff.Operation.Equal) {
+        if (code === Diff.Diff.Operation.Equal) {
           baseLineNumber += rowCount;
           newLineNumber += rowCount;
           if (!lastWasSeparator)
             this._createLine(null, null, '    \u2026', 'separator');
           lastWasSeparator = true;
-        } else if (code === WebInspector.Diff.Operation.Delete) {
+        } else if (code === Diff.Diff.Operation.Delete) {
           lastWasSeparator = false;
           for (var i = 0; i < rowCount; ++i)
             this._createLine(baseLineNumber + i, null, baseLines[baseLineNumber + i], 'removed');
           baseLineNumber += rowCount;
-        } else if (code === WebInspector.Diff.Operation.Insert) {
+        } else if (code === Diff.Diff.Operation.Insert) {
           lastWasSeparator = false;
           for (var i = 0; i < rowCount; ++i)
             this._createLine(null, newLineNumber + i, newLines[newLineNumber + i], 'added');

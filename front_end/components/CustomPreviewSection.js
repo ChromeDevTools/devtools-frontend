@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-WebInspector.CustomPreviewSection = class {
+Components.CustomPreviewSection = class {
   /**
-   * @param {!WebInspector.RemoteObject} object
+   * @param {!SDK.RemoteObject} object
    */
   constructor(object) {
     this._sectionElement = createElementWithClass('span', 'custom-expandable-section');
@@ -18,12 +18,12 @@ WebInspector.CustomPreviewSection = class {
     try {
       var headerJSON = JSON.parse(customPreview.header);
     } catch (e) {
-      WebInspector.console.error('Broken formatter: header is invalid json ' + e);
+      Common.console.error('Broken formatter: header is invalid json ' + e);
       return;
     }
     this._header = this._renderJSONMLTag(headerJSON);
     if (this._header.nodeType === Node.TEXT_NODE) {
-      WebInspector.console.error('Broken formatter: header should be an element node.');
+      Common.console.error('Broken formatter: header should be an element node.');
       return;
     }
 
@@ -64,8 +64,8 @@ WebInspector.CustomPreviewSection = class {
    */
   _renderElement(object) {
     var tagName = object.shift();
-    if (!WebInspector.CustomPreviewSection._tagsWhiteList.has(tagName)) {
-      WebInspector.console.error('Broken formatter: element ' + tagName + ' is not allowed!');
+    if (!Components.CustomPreviewSection._tagsWhiteList.has(tagName)) {
+      Common.console.error('Broken formatter: element ' + tagName + ' is not allowed!');
       return createElement('span');
     }
     var element = createElement(/** @type {string} */ (tagName));
@@ -94,9 +94,9 @@ WebInspector.CustomPreviewSection = class {
     var remoteObject =
         this._object.target().runtimeModel.createRemoteObject(/** @type {!Protocol.Runtime.RemoteObject} */ (attributes));
     if (remoteObject.customPreview())
-      return (new WebInspector.CustomPreviewSection(remoteObject)).element();
+      return (new Components.CustomPreviewSection(remoteObject)).element();
 
-    var sectionElement = WebInspector.ObjectPropertiesSection.defaultObjectPresentation(remoteObject);
+    var sectionElement = Components.ObjectPropertiesSection.defaultObjectPresentation(remoteObject);
     sectionElement.classList.toggle('custom-expandable-section-standard-section', remoteObject.hasChildren);
     return sectionElement;
   }
@@ -183,7 +183,7 @@ WebInspector.CustomPreviewSection = class {
 
     /**
      * @param {*} bodyJsonML
-     * @this {WebInspector.CustomPreviewSection}
+     * @this {Components.CustomPreviewSection}
      */
     function onBodyLoaded(bodyJsonML) {
       if (!bodyJsonML)
@@ -199,15 +199,15 @@ WebInspector.CustomPreviewSection = class {
 /**
  * @unrestricted
  */
-WebInspector.CustomPreviewComponent = class {
+Components.CustomPreviewComponent = class {
   /**
-   * @param {!WebInspector.RemoteObject} object
+   * @param {!SDK.RemoteObject} object
    */
   constructor(object) {
     this._object = object;
-    this._customPreviewSection = new WebInspector.CustomPreviewSection(object);
+    this._customPreviewSection = new Components.CustomPreviewSection(object);
     this.element = createElementWithClass('span', 'source-code');
-    var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, 'components/customPreviewSection.css');
+    var shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'components/customPreviewSection.css');
     this.element.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
     shadowRoot.appendChild(this._customPreviewSection.element());
   }
@@ -221,10 +221,10 @@ WebInspector.CustomPreviewComponent = class {
    * @param {!Event} event
    */
   _contextMenuEventFired(event) {
-    var contextMenu = new WebInspector.ContextMenu(event);
+    var contextMenu = new UI.ContextMenu(event);
     if (this._customPreviewSection)
       contextMenu.appendItem(
-          WebInspector.UIString.capitalize('Show as Javascript ^object'), this._disassemble.bind(this));
+          Common.UIString.capitalize('Show as Javascript ^object'), this._disassemble.bind(this));
     contextMenu.appendApplicableItems(this._object);
     contextMenu.show();
   }
@@ -232,8 +232,8 @@ WebInspector.CustomPreviewComponent = class {
   _disassemble() {
     this.element.shadowRoot.textContent = '';
     this._customPreviewSection = null;
-    this.element.shadowRoot.appendChild(WebInspector.ObjectPropertiesSection.defaultObjectPresentation(this._object));
+    this.element.shadowRoot.appendChild(Components.ObjectPropertiesSection.defaultObjectPresentation(this._object));
   }
 };
 
-WebInspector.CustomPreviewSection._tagsWhiteList = new Set(['span', 'div', 'ol', 'li', 'table', 'tr', 'td']);
+Components.CustomPreviewSection._tagsWhiteList = new Set(['span', 'div', 'ol', 'li', 'table', 'tr', 'td']);

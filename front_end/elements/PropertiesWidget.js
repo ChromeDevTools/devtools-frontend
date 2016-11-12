@@ -30,28 +30,28 @@
 /**
  * @unrestricted
  */
-WebInspector.PropertiesWidget = class extends WebInspector.ThrottledWidget {
+Elements.PropertiesWidget = class extends UI.ThrottledWidget {
   constructor() {
     super();
 
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrModified, this._onNodeChange, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrRemoved, this._onNodeChange, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
-    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._setNode, this);
-    this._node = WebInspector.context.flavor(WebInspector.DOMNode);
+    SDK.targetManager.addModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onNodeChange, this);
+    SDK.targetManager.addModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onNodeChange, this);
+    SDK.targetManager.addModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
+    SDK.targetManager.addModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
+    UI.context.addFlavorChangeListener(SDK.DOMNode, this._setNode, this);
+    this._node = UI.context.flavor(SDK.DOMNode);
     this.update();
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _setNode(event) {
-    this._node = /** @type {?WebInspector.DOMNode} */ (event.data);
+    this._node = /** @type {?SDK.DOMNode} */ (event.data);
     this.update();
   }
 
@@ -63,7 +63,7 @@ WebInspector.PropertiesWidget = class extends WebInspector.ThrottledWidget {
   doUpdate() {
     if (this._lastRequestedNode) {
       this._lastRequestedNode.target().runtimeAgent().releaseObjectGroup(
-          WebInspector.PropertiesWidget._objectGroupName);
+          Elements.PropertiesWidget._objectGroupName);
       delete this._lastRequestedNode;
     }
 
@@ -74,12 +74,12 @@ WebInspector.PropertiesWidget = class extends WebInspector.ThrottledWidget {
     }
 
     this._lastRequestedNode = this._node;
-    return this._node.resolveToObjectPromise(WebInspector.PropertiesWidget._objectGroupName)
+    return this._node.resolveToObjectPromise(Elements.PropertiesWidget._objectGroupName)
         .then(nodeResolved.bind(this));
 
     /**
-     * @param {?WebInspector.RemoteObject} object
-     * @this {WebInspector.PropertiesWidget}
+     * @param {?SDK.RemoteObject} object
+     * @this {Elements.PropertiesWidget}
      */
     function nodeResolved(object) {
       if (!object)
@@ -105,8 +105,8 @@ WebInspector.PropertiesWidget = class extends WebInspector.ThrottledWidget {
     }
 
     /**
-     * @param {!{object: ?WebInspector.RemoteObject, wasThrown: (boolean|undefined)}} result
-     * @this {WebInspector.PropertiesWidget}
+     * @param {!{object: ?SDK.RemoteObject, wasThrown: (boolean|undefined)}} result
+     * @this {Elements.PropertiesWidget}
      */
     function nodePrototypesReady(result) {
       if (!result.object || result.wasThrown)
@@ -118,8 +118,8 @@ WebInspector.PropertiesWidget = class extends WebInspector.ThrottledWidget {
     }
 
     /**
-     * @param {!{properties: ?Array.<!WebInspector.RemoteObjectProperty>, internalProperties: ?Array.<!WebInspector.RemoteObjectProperty>}} result
-     * @this {WebInspector.PropertiesWidget}
+     * @param {!{properties: ?Array.<!SDK.RemoteObjectProperty>, internalProperties: ?Array.<!SDK.RemoteObjectProperty>}} result
+     * @this {Elements.PropertiesWidget}
      */
     function fillSection(result) {
       if (!result || !result.properties)
@@ -141,7 +141,7 @@ WebInspector.PropertiesWidget = class extends WebInspector.ThrottledWidget {
         var property = properties[i].value;
         var title = property.description;
         title = title.replace(/Prototype$/, '');
-        var section = new WebInspector.ObjectPropertiesSection(property, title);
+        var section = new Components.ObjectPropertiesSection(property, title);
         section.element.classList.add('properties-widget-section');
         this.sections.push(section);
         this.element.appendChild(section.element);
@@ -153,27 +153,27 @@ WebInspector.PropertiesWidget = class extends WebInspector.ThrottledWidget {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _propertyExpanded(event) {
-    WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.DOMPropertiesExpanded);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
     for (var section of this.sections) {
       section.removeEventListener(TreeOutline.Events.ElementExpanded, this._propertyExpanded, this);
     }
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onNodeChange(event) {
     if (!this._node)
       return;
     var data = event.data;
-    var node = /** @type {!WebInspector.DOMNode} */ (data instanceof WebInspector.DOMNode ? data : data.node);
+    var node = /** @type {!SDK.DOMNode} */ (data instanceof SDK.DOMNode ? data : data.node);
     if (this._node !== node)
       return;
     this.update();
   }
 };
 
-WebInspector.PropertiesWidget._objectGroupName = 'properties-sidebar-pane';
+Elements.PropertiesWidget._objectGroupName = 'properties-sidebar-pane';

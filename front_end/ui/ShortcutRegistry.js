@@ -4,26 +4,26 @@
 /**
  * @unrestricted
  */
-WebInspector.ShortcutRegistry = class {
+UI.ShortcutRegistry = class {
   /**
-   * @param {!WebInspector.ActionRegistry} actionRegistry
+   * @param {!UI.ActionRegistry} actionRegistry
    * @param {!Document} document
    */
   constructor(actionRegistry, document) {
     this._actionRegistry = actionRegistry;
     /** @type {!Multimap.<string, string>} */
     this._defaultKeyToActions = new Multimap();
-    /** @type {!Multimap.<string, !WebInspector.KeyboardShortcut.Descriptor>} */
+    /** @type {!Multimap.<string, !UI.KeyboardShortcut.Descriptor>} */
     this._defaultActionToShortcut = new Multimap();
     this._registerBindings(document);
   }
 
   /**
    * @param {number} key
-   * @return {!Array.<!WebInspector.Action>}
+   * @return {!Array.<!UI.Action>}
    */
   _applicableActions(key) {
-    return this._actionRegistry.applicableActions(this._defaultActionsForKey(key).valuesArray(), WebInspector.context);
+    return this._actionRegistry.applicableActions(this._defaultActionsForKey(key).valuesArray(), UI.context);
   }
 
   /**
@@ -36,7 +36,7 @@ WebInspector.ShortcutRegistry = class {
 
   /**
    * @param {string} actionId
-   * @return {!Array.<!WebInspector.KeyboardShortcut.Descriptor>}
+   * @return {!Array.<!UI.KeyboardShortcut.Descriptor>}
    */
   shortcutDescriptorsForAction(actionId) {
     return this._defaultActionToShortcut.get(actionId).valuesArray();
@@ -70,7 +70,7 @@ WebInspector.ShortcutRegistry = class {
    * @param {!KeyboardEvent} event
    */
   handleShortcut(event) {
-    this.handleKey(WebInspector.KeyboardShortcut.makeKeyFromEvent(event), event.key, event);
+    this.handleKey(UI.KeyboardShortcut.makeKeyFromEvent(event), event.key, event);
   }
 
   /**
@@ -83,7 +83,7 @@ WebInspector.ShortcutRegistry = class {
     var actions = this._applicableActions(key);
     if (!actions.length)
       return;
-    if (WebInspector.Dialog.hasInstance()) {
+    if (UI.Dialog.hasInstance()) {
       if (event && !isPossiblyInputKey())
         event.consume(true);
       return;
@@ -99,7 +99,7 @@ WebInspector.ShortcutRegistry = class {
 
     /**
      * @param {boolean} handled
-     * @this {WebInspector.ShortcutRegistry}
+     * @this {UI.ShortcutRegistry}
      */
     function processNextAction(handled) {
       delete this._pendingActionTimer;
@@ -114,15 +114,15 @@ WebInspector.ShortcutRegistry = class {
      * @return {boolean}
      */
     function isPossiblyInputKey() {
-      if (!event || !WebInspector.isEditing() || /^F\d+|Control|Shift|Alt|Meta|Escape|Win|U\+001B$/.test(domKey))
+      if (!event || !UI.isEditing() || /^F\d+|Control|Shift|Alt|Meta|Escape|Win|U\+001B$/.test(domKey))
         return false;
 
       if (!keyModifiers)
         return true;
 
-      var modifiers = WebInspector.KeyboardShortcut.Modifiers;
+      var modifiers = UI.KeyboardShortcut.Modifiers;
       if ((keyModifiers & (modifiers.Ctrl | modifiers.Alt)) === (modifiers.Ctrl | modifiers.Alt))
-        return WebInspector.isWin();
+        return Host.isWin();
 
       return !hasModifier(modifiers.Ctrl) && !hasModifier(modifiers.Alt) && !hasModifier(modifiers.Meta);
     }
@@ -141,7 +141,7 @@ WebInspector.ShortcutRegistry = class {
    * @param {string} shortcut
    */
   registerShortcut(actionId, shortcut) {
-    var descriptor = WebInspector.KeyboardShortcut.makeDescriptorFromBindingShortcut(shortcut);
+    var descriptor = UI.KeyboardShortcut.makeDescriptorFromBindingShortcut(shortcut);
     if (!descriptor)
       return;
     this._defaultActionToShortcut.set(actionId, descriptor);
@@ -160,12 +160,12 @@ WebInspector.ShortcutRegistry = class {
    */
   _registerBindings(document) {
     document.addEventListener('input', this.dismissPendingShortcutAction.bind(this), true);
-    var extensions = self.runtime.extensions(WebInspector.ActionDelegate);
+    var extensions = self.runtime.extensions(UI.ActionDelegate);
     extensions.forEach(registerExtension, this);
 
     /**
      * @param {!Runtime.Extension} extension
-     * @this {WebInspector.ShortcutRegistry}
+     * @this {UI.ShortcutRegistry}
      */
     function registerExtension(extension) {
       var descriptor = extension.descriptor();
@@ -187,7 +187,7 @@ WebInspector.ShortcutRegistry = class {
         return true;
       var platforms = platformsString.split(',');
       var isMatch = false;
-      var currentPlatform = WebInspector.platform();
+      var currentPlatform = Host.platform();
       for (var i = 0; !isMatch && i < platforms.length; ++i)
         isMatch = platforms[i] === currentPlatform;
       return isMatch;
@@ -198,9 +198,9 @@ WebInspector.ShortcutRegistry = class {
 /**
  * @unrestricted
  */
-WebInspector.ShortcutRegistry.ForwardedShortcut = class {};
+UI.ShortcutRegistry.ForwardedShortcut = class {};
 
-WebInspector.ShortcutRegistry.ForwardedShortcut.instance = new WebInspector.ShortcutRegistry.ForwardedShortcut();
+UI.ShortcutRegistry.ForwardedShortcut.instance = new UI.ShortcutRegistry.ForwardedShortcut();
 
-/** @type {!WebInspector.ShortcutRegistry} */
-WebInspector.shortcutRegistry;
+/** @type {!UI.ShortcutRegistry} */
+UI.shortcutRegistry;

@@ -4,27 +4,27 @@
 /**
  * @unrestricted
  */
-WebInspector.EmulatedDevice = class {
+Emulation.EmulatedDevice = class {
   constructor() {
     /** @type {string} */
     this.title = '';
     /** @type {string} */
-    this.type = WebInspector.EmulatedDevice.Type.Unknown;
-    /** @type {!WebInspector.EmulatedDevice.Orientation} */
+    this.type = Emulation.EmulatedDevice.Type.Unknown;
+    /** @type {!Emulation.EmulatedDevice.Orientation} */
     this.vertical = {width: 0, height: 0, outlineInsets: null, outlineImage: null};
-    /** @type {!WebInspector.EmulatedDevice.Orientation} */
+    /** @type {!Emulation.EmulatedDevice.Orientation} */
     this.horizontal = {width: 0, height: 0, outlineInsets: null, outlineImage: null};
     /** @type {number} */
     this.deviceScaleFactor = 1;
     /** @type {!Array.<string>} */
-    this.capabilities = [WebInspector.EmulatedDevice.Capability.Touch, WebInspector.EmulatedDevice.Capability.Mobile];
+    this.capabilities = [Emulation.EmulatedDevice.Capability.Touch, Emulation.EmulatedDevice.Capability.Mobile];
     /** @type {string} */
     this.userAgent = '';
-    /** @type {!Array.<!WebInspector.EmulatedDevice.Mode>} */
+    /** @type {!Array.<!Emulation.EmulatedDevice.Mode>} */
     this.modes = [];
 
     /** @type {string} */
-    this._show = WebInspector.EmulatedDevice._Show.Default;
+    this._show = Emulation.EmulatedDevice._Show.Default;
     /** @type {boolean} */
     this._showByDefault = true;
 
@@ -34,7 +34,7 @@ WebInspector.EmulatedDevice = class {
 
   /**
    * @param {*} json
-   * @return {?WebInspector.EmulatedDevice}
+   * @return {?Emulation.EmulatedDevice}
    */
   static fromJSONV1(json) {
     try {
@@ -81,19 +81,19 @@ WebInspector.EmulatedDevice = class {
 
       /**
        * @param {*} json
-       * @return {!WebInspector.EmulatedDevice.Orientation}
+       * @return {!Emulation.EmulatedDevice.Orientation}
        */
       function parseOrientation(json) {
         var result = {};
 
         result.width = parseIntValue(json, 'width');
-        if (result.width < 0 || result.width > WebInspector.DeviceModeModel.MaxDeviceSize ||
-            result.width < WebInspector.DeviceModeModel.MinDeviceSize)
+        if (result.width < 0 || result.width > Emulation.DeviceModeModel.MaxDeviceSize ||
+            result.width < Emulation.DeviceModeModel.MinDeviceSize)
           throw new Error('Emulated device has wrong width: ' + result.width);
 
         result.height = parseIntValue(json, 'height');
-        if (result.height < 0 || result.height > WebInspector.DeviceModeModel.MaxDeviceSize ||
-            result.height < WebInspector.DeviceModeModel.MinDeviceSize)
+        if (result.height < 0 || result.height > Emulation.DeviceModeModel.MaxDeviceSize ||
+            result.height < Emulation.DeviceModeModel.MinDeviceSize)
           throw new Error('Emulated device has wrong height: ' + result.height);
 
         var outlineInsets = parseValue(json['outline'], 'insets', 'object', null);
@@ -103,14 +103,14 @@ WebInspector.EmulatedDevice = class {
             throw new Error('Emulated device has wrong outline insets');
           result.outlineImage = /** @type {string} */ (parseValue(json['outline'], 'image', 'string'));
         }
-        return /** @type {!WebInspector.EmulatedDevice.Orientation} */ (result);
+        return /** @type {!Emulation.EmulatedDevice.Orientation} */ (result);
       }
 
-      var result = new WebInspector.EmulatedDevice();
+      var result = new Emulation.EmulatedDevice();
       result.title = /** @type {string} */ (parseValue(json, 'title', 'string'));
       result.type = /** @type {string} */ (parseValue(json, 'type', 'string'));
       var rawUserAgent = /** @type {string} */ (parseValue(json, 'user-agent', 'string'));
-      result.userAgent = WebInspector.MultitargetNetworkManager.patchUserAgentWithChromeVersion(rawUserAgent);
+      result.userAgent = SDK.MultitargetNetworkManager.patchUserAgentWithChromeVersion(rawUserAgent);
 
       var capabilities = parseValue(json, 'capabilities', 'object', []);
       if (!Array.isArray(capabilities))
@@ -137,8 +137,8 @@ WebInspector.EmulatedDevice = class {
         var mode = {};
         mode.title = /** @type {string} */ (parseValue(modes[i], 'title', 'string'));
         mode.orientation = /** @type {string} */ (parseValue(modes[i], 'orientation', 'string'));
-        if (mode.orientation !== WebInspector.EmulatedDevice.Vertical &&
-            mode.orientation !== WebInspector.EmulatedDevice.Horizontal)
+        if (mode.orientation !== Emulation.EmulatedDevice.Vertical &&
+            mode.orientation !== Emulation.EmulatedDevice.Horizontal)
           throw new Error('Emulated device mode has wrong orientation \'' + mode.orientation + '\'');
         var orientation = result.orientationByName(mode.orientation);
         mode.insets = parseInsets(parseValue(modes[i], 'insets', 'object'));
@@ -153,7 +153,7 @@ WebInspector.EmulatedDevice = class {
 
       result._showByDefault = /** @type {boolean} */ (parseValue(json, 'show-by-default', 'boolean', undefined));
       result._show =
-          /** @type {string} */ (parseValue(json, 'show', 'string', WebInspector.EmulatedDevice._Show.Default));
+          /** @type {string} */ (parseValue(json, 'show', 'string', Emulation.EmulatedDevice._Show.Default));
 
       return result;
     } catch (e) {
@@ -162,8 +162,8 @@ WebInspector.EmulatedDevice = class {
   }
 
   /**
-   * @param {!WebInspector.EmulatedDevice} device1
-   * @param {!WebInspector.EmulatedDevice} device2
+   * @param {!Emulation.EmulatedDevice} device1
+   * @param {!Emulation.EmulatedDevice} device2
    * @return {number}
    */
   static deviceComparator(device1, device2) {
@@ -192,7 +192,7 @@ WebInspector.EmulatedDevice = class {
 
   /**
    * @param {string} orientation
-   * @return {!Array.<!WebInspector.EmulatedDevice.Mode>}
+   * @return {!Array.<!Emulation.EmulatedDevice.Mode>}
    */
   modesForOrientation(orientation) {
     var result = [];
@@ -240,7 +240,7 @@ WebInspector.EmulatedDevice = class {
   }
 
   /**
-   * @param {!WebInspector.EmulatedDevice.Orientation} orientation
+   * @param {!Emulation.EmulatedDevice.Orientation} orientation
    * @return {*}
    */
   _orientationToJSON(orientation) {
@@ -260,7 +260,7 @@ WebInspector.EmulatedDevice = class {
   }
 
   /**
-   * @param {!WebInspector.EmulatedDevice.Mode} mode
+   * @param {!Emulation.EmulatedDevice.Mode} mode
    * @return {string}
    */
   modeImage(mode) {
@@ -272,7 +272,7 @@ WebInspector.EmulatedDevice = class {
   }
 
   /**
-   * @param {!WebInspector.EmulatedDevice.Mode} mode
+   * @param {!Emulation.EmulatedDevice.Mode} mode
    * @return {string}
    */
   outlineImage(mode) {
@@ -286,30 +286,30 @@ WebInspector.EmulatedDevice = class {
 
   /**
    * @param {string} name
-   * @return {!WebInspector.EmulatedDevice.Orientation}
+   * @return {!Emulation.EmulatedDevice.Orientation}
    */
   orientationByName(name) {
-    return name === WebInspector.EmulatedDevice.Vertical ? this.vertical : this.horizontal;
+    return name === Emulation.EmulatedDevice.Vertical ? this.vertical : this.horizontal;
   }
 
   /**
    * @return {boolean}
    */
   show() {
-    if (this._show === WebInspector.EmulatedDevice._Show.Default)
+    if (this._show === Emulation.EmulatedDevice._Show.Default)
       return this._showByDefault;
-    return this._show === WebInspector.EmulatedDevice._Show.Always;
+    return this._show === Emulation.EmulatedDevice._Show.Always;
   }
 
   /**
    * @param {boolean} show
    */
   setShow(show) {
-    this._show = show ? WebInspector.EmulatedDevice._Show.Always : WebInspector.EmulatedDevice._Show.Never;
+    this._show = show ? Emulation.EmulatedDevice._Show.Always : Emulation.EmulatedDevice._Show.Never;
   }
 
   /**
-   * @param {!WebInspector.EmulatedDevice} other
+   * @param {!Emulation.EmulatedDevice} other
    */
   copyShowFrom(other) {
     this._show = other._show;
@@ -319,27 +319,27 @@ WebInspector.EmulatedDevice = class {
    * @return {boolean}
    */
   touch() {
-    return this.capabilities.indexOf(WebInspector.EmulatedDevice.Capability.Touch) !== -1;
+    return this.capabilities.indexOf(Emulation.EmulatedDevice.Capability.Touch) !== -1;
   }
 
   /**
    * @return {boolean}
    */
   mobile() {
-    return this.capabilities.indexOf(WebInspector.EmulatedDevice.Capability.Mobile) !== -1;
+    return this.capabilities.indexOf(Emulation.EmulatedDevice.Capability.Mobile) !== -1;
   }
 };
 
 /** @typedef {!{title: string, orientation: string, insets: !Insets, image: ?string}} */
-WebInspector.EmulatedDevice.Mode;
+Emulation.EmulatedDevice.Mode;
 
 /** @typedef {!{width: number, height: number, outlineInsets: ?Insets, outlineImage: ?string}} */
-WebInspector.EmulatedDevice.Orientation;
+Emulation.EmulatedDevice.Orientation;
 
-WebInspector.EmulatedDevice.Horizontal = 'horizontal';
-WebInspector.EmulatedDevice.Vertical = 'vertical';
+Emulation.EmulatedDevice.Horizontal = 'horizontal';
+Emulation.EmulatedDevice.Vertical = 'vertical';
 
-WebInspector.EmulatedDevice.Type = {
+Emulation.EmulatedDevice.Type = {
   Phone: 'phone',
   Tablet: 'tablet',
   Notebook: 'notebook',
@@ -347,12 +347,12 @@ WebInspector.EmulatedDevice.Type = {
   Unknown: 'unknown'
 };
 
-WebInspector.EmulatedDevice.Capability = {
+Emulation.EmulatedDevice.Capability = {
   Touch: 'touch',
   Mobile: 'mobile'
 };
 
-WebInspector.EmulatedDevice._Show = {
+Emulation.EmulatedDevice._Show = {
   Always: 'Always',
   Default: 'Default',
   Never: 'Never'
@@ -362,39 +362,39 @@ WebInspector.EmulatedDevice._Show = {
 /**
  * @unrestricted
  */
-WebInspector.EmulatedDevicesList = class extends WebInspector.Object {
+Emulation.EmulatedDevicesList = class extends Common.Object {
   constructor() {
     super();
 
-    /** @type {!WebInspector.Setting} */
-    this._standardSetting = WebInspector.settings.createSetting('standardEmulatedDeviceList', []);
-    /** @type {!Array.<!WebInspector.EmulatedDevice>} */
+    /** @type {!Common.Setting} */
+    this._standardSetting = Common.settings.createSetting('standardEmulatedDeviceList', []);
+    /** @type {!Array.<!Emulation.EmulatedDevice>} */
     this._standard = [];
     this._listFromJSONV1(this._standardSetting.get(), this._standard);
     this._updateStandardDevices();
 
-    /** @type {!WebInspector.Setting} */
-    this._customSetting = WebInspector.settings.createSetting('customEmulatedDeviceList', []);
-    /** @type {!Array.<!WebInspector.EmulatedDevice>} */
+    /** @type {!Common.Setting} */
+    this._customSetting = Common.settings.createSetting('customEmulatedDeviceList', []);
+    /** @type {!Array.<!Emulation.EmulatedDevice>} */
     this._custom = [];
     if (!this._listFromJSONV1(this._customSetting.get(), this._custom))
       this.saveCustomDevices();
   }
 
   /**
-   * @return {!WebInspector.EmulatedDevicesList}
+   * @return {!Emulation.EmulatedDevicesList}
    */
   static instance() {
-    if (!WebInspector.EmulatedDevicesList._instance)
-      WebInspector.EmulatedDevicesList._instance = new WebInspector.EmulatedDevicesList();
-    return /** @type {!WebInspector.EmulatedDevicesList} */ (WebInspector.EmulatedDevicesList._instance);
+    if (!Emulation.EmulatedDevicesList._instance)
+      Emulation.EmulatedDevicesList._instance = new Emulation.EmulatedDevicesList();
+    return /** @type {!Emulation.EmulatedDevicesList} */ (Emulation.EmulatedDevicesList._instance);
   }
 
   _updateStandardDevices() {
     var devices = [];
     var extensions = self.runtime.extensions('emulated-device');
     for (var i = 0; i < extensions.length; ++i) {
-      var device = WebInspector.EmulatedDevice.fromJSONV1(extensions[i].descriptor()['device']);
+      var device = Emulation.EmulatedDevice.fromJSONV1(extensions[i].descriptor()['device']);
       device.setExtension(extensions[i]);
       devices.push(device);
     }
@@ -405,7 +405,7 @@ WebInspector.EmulatedDevicesList = class extends WebInspector.Object {
 
   /**
    * @param {!Array.<*>} jsonArray
-   * @param {!Array.<!WebInspector.EmulatedDevice>} result
+   * @param {!Array.<!Emulation.EmulatedDevice>} result
    * @return {boolean}
    */
   _listFromJSONV1(jsonArray, result) {
@@ -413,19 +413,19 @@ WebInspector.EmulatedDevicesList = class extends WebInspector.Object {
       return false;
     var success = true;
     for (var i = 0; i < jsonArray.length; ++i) {
-      var device = WebInspector.EmulatedDevice.fromJSONV1(jsonArray[i]);
+      var device = Emulation.EmulatedDevice.fromJSONV1(jsonArray[i]);
       if (device) {
         result.push(device);
         if (!device.modes.length) {
           device.modes.push({
             title: '',
-            orientation: WebInspector.EmulatedDevice.Horizontal,
+            orientation: Emulation.EmulatedDevice.Horizontal,
             insets: new Insets(0, 0, 0, 0),
             image: null
           });
           device.modes.push({
             title: '',
-            orientation: WebInspector.EmulatedDevice.Vertical,
+            orientation: Emulation.EmulatedDevice.Vertical,
             insets: new Insets(0, 0, 0, 0),
             image: null
           });
@@ -438,25 +438,25 @@ WebInspector.EmulatedDevicesList = class extends WebInspector.Object {
   }
 
   /**
-   * @return {!Array.<!WebInspector.EmulatedDevice>}
+   * @return {!Array.<!Emulation.EmulatedDevice>}
    */
   standard() {
     return this._standard;
   }
 
   /**
-   * @return {!Array.<!WebInspector.EmulatedDevice>}
+   * @return {!Array.<!Emulation.EmulatedDevice>}
    */
   custom() {
     return this._custom;
   }
 
   revealCustomSetting() {
-    WebInspector.Revealer.reveal(this._customSetting);
+    Common.Revealer.reveal(this._customSetting);
   }
 
   /**
-   * @param {!WebInspector.EmulatedDevice} device
+   * @param {!Emulation.EmulatedDevice} device
    */
   addCustomDevice(device) {
     this._custom.push(device);
@@ -464,7 +464,7 @@ WebInspector.EmulatedDevicesList = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.EmulatedDevice} device
+   * @param {!Emulation.EmulatedDevice} device
    */
   removeCustomDevice(device) {
     this._custom.remove(device);
@@ -472,24 +472,24 @@ WebInspector.EmulatedDevicesList = class extends WebInspector.Object {
   }
 
   saveCustomDevices() {
-    var json = this._custom.map(/** @param {!WebInspector.EmulatedDevice} device */ function(device) {
+    var json = this._custom.map(/** @param {!Emulation.EmulatedDevice} device */ function(device) {
       return device._toJSON();
     });
     this._customSetting.set(json);
-    this.dispatchEventToListeners(WebInspector.EmulatedDevicesList.Events.CustomDevicesUpdated);
+    this.dispatchEventToListeners(Emulation.EmulatedDevicesList.Events.CustomDevicesUpdated);
   }
 
   saveStandardDevices() {
-    var json = this._standard.map(/** @param {!WebInspector.EmulatedDevice} device */ function(device) {
+    var json = this._standard.map(/** @param {!Emulation.EmulatedDevice} device */ function(device) {
       return device._toJSON();
     });
     this._standardSetting.set(json);
-    this.dispatchEventToListeners(WebInspector.EmulatedDevicesList.Events.StandardDevicesUpdated);
+    this.dispatchEventToListeners(Emulation.EmulatedDevicesList.Events.StandardDevicesUpdated);
   }
 
   /**
-   * @param {!Array.<!WebInspector.EmulatedDevice>} from
-   * @param {!Array.<!WebInspector.EmulatedDevice>} to
+   * @param {!Array.<!Emulation.EmulatedDevice>} from
+   * @param {!Array.<!Emulation.EmulatedDevice>} to
    */
   _copyShowValues(from, to) {
     var deviceById = new Map();
@@ -499,16 +499,16 @@ WebInspector.EmulatedDevicesList = class extends WebInspector.Object {
     for (var i = 0; i < to.length; ++i) {
       var title = to[i].title;
       if (deviceById.has(title))
-        to[i].copyShowFrom(/** @type {!WebInspector.EmulatedDevice} */ (deviceById.get(title)));
+        to[i].copyShowFrom(/** @type {!Emulation.EmulatedDevice} */ (deviceById.get(title)));
     }
   }
 };
 
 /** @enum {symbol} */
-WebInspector.EmulatedDevicesList.Events = {
+Emulation.EmulatedDevicesList.Events = {
   CustomDevicesUpdated: Symbol('CustomDevicesUpdated'),
   StandardDevicesUpdated: Symbol('StandardDevicesUpdated')
 };
 
-/** @type {?WebInspector.EmulatedDevicesList} */
-WebInspector.EmulatedDevicesList._instance;
+/** @type {?Emulation.EmulatedDevicesList} */
+Emulation.EmulatedDevicesList._instance;

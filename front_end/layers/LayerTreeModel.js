@@ -31,27 +31,27 @@
 /**
  * @unrestricted
  */
-WebInspector.LayerTreeModel = class extends WebInspector.SDKModel {
+Layers.LayerTreeModel = class extends SDK.SDKModel {
   constructor(target) {
-    super(WebInspector.LayerTreeModel, target);
-    target.registerLayerTreeDispatcher(new WebInspector.LayerTreeDispatcher(this));
-    WebInspector.targetManager.addEventListener(
-        WebInspector.TargetManager.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
-    /** @type {?WebInspector.LayerTreeBase} */
+    super(Layers.LayerTreeModel, target);
+    target.registerLayerTreeDispatcher(new Layers.LayerTreeDispatcher(this));
+    SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
+    /** @type {?SDK.LayerTreeBase} */
     this._layerTree = null;
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @return {?WebInspector.LayerTreeModel}
+   * @param {!SDK.Target} target
+   * @return {?Layers.LayerTreeModel}
    */
   static fromTarget(target) {
     if (!target.hasDOMCapability())
       return null;
 
-    var model = /** @type {?WebInspector.LayerTreeModel} */ (target.model(WebInspector.LayerTreeModel));
+    var model = /** @type {?Layers.LayerTreeModel} */ (target.model(Layers.LayerTreeModel));
     if (!model)
-      model = new WebInspector.LayerTreeModel(target);
+      model = new Layers.LayerTreeModel(target);
     return model;
   }
 
@@ -72,12 +72,12 @@ WebInspector.LayerTreeModel = class extends WebInspector.SDKModel {
   _forceEnable() {
     this._lastPaintRectByLayerId = {};
     if (!this._layerTree)
-      this._layerTree = new WebInspector.AgentLayerTree(this.target());
+      this._layerTree = new Layers.AgentLayerTree(this.target());
     this.target().layerTreeAgent().enable();
   }
 
   /**
-   * @return {?WebInspector.LayerTreeBase}
+   * @return {?SDK.LayerTreeBase}
    */
   layerTree() {
     return this._layerTree;
@@ -89,11 +89,11 @@ WebInspector.LayerTreeModel = class extends WebInspector.SDKModel {
   _layerTreeChanged(layers) {
     if (!this._enabled)
       return;
-    var layerTree = /** @type {!WebInspector.AgentLayerTree} */ (this._layerTree);
+    var layerTree = /** @type {!Layers.AgentLayerTree} */ (this._layerTree);
     layerTree.setLayers(layers, onLayersSet.bind(this));
 
     /**
-     * @this {WebInspector.LayerTreeModel}
+     * @this {Layers.LayerTreeModel}
      */
     function onLayersSet() {
       for (var layerId in this._lastPaintRectByLayerId) {
@@ -104,7 +104,7 @@ WebInspector.LayerTreeModel = class extends WebInspector.SDKModel {
       }
       this._lastPaintRectByLayerId = {};
 
-      this.dispatchEventToListeners(WebInspector.LayerTreeModel.Events.LayerTreeChanged);
+      this.dispatchEventToListeners(Layers.LayerTreeModel.Events.LayerTreeChanged);
     }
   }
 
@@ -115,14 +115,14 @@ WebInspector.LayerTreeModel = class extends WebInspector.SDKModel {
   _layerPainted(layerId, clipRect) {
     if (!this._enabled)
       return;
-    var layerTree = /** @type {!WebInspector.AgentLayerTree} */ (this._layerTree);
+    var layerTree = /** @type {!Layers.AgentLayerTree} */ (this._layerTree);
     var layer = layerTree.layerById(layerId);
     if (!layer) {
       this._lastPaintRectByLayerId[layerId] = clipRect;
       return;
     }
     layer._didPaint(clipRect);
-    this.dispatchEventToListeners(WebInspector.LayerTreeModel.Events.LayerPainted, layer);
+    this.dispatchEventToListeners(Layers.LayerTreeModel.Events.LayerPainted, layer);
   }
 
   _onMainFrameNavigated() {
@@ -133,7 +133,7 @@ WebInspector.LayerTreeModel = class extends WebInspector.SDKModel {
 };
 
 /** @enum {symbol} */
-WebInspector.LayerTreeModel.Events = {
+Layers.LayerTreeModel.Events = {
   LayerTreeChanged: Symbol('LayerTreeChanged'),
   LayerPainted: Symbol('LayerPainted'),
 };
@@ -141,9 +141,9 @@ WebInspector.LayerTreeModel.Events = {
 /**
  * @unrestricted
  */
-WebInspector.AgentLayerTree = class extends WebInspector.LayerTreeBase {
+Layers.AgentLayerTree = class extends SDK.LayerTreeBase {
   /**
-   * @param {?WebInspector.Target} target
+   * @param {?SDK.Target} target
    */
   constructor(target) {
     super(target);
@@ -169,7 +169,7 @@ WebInspector.AgentLayerTree = class extends WebInspector.LayerTreeBase {
     this._resolveBackendNodeIds(idsToResolve, onBackendNodeIdsResolved.bind(this));
 
     /**
-     * @this {WebInspector.AgentLayerTree}
+     * @this {Layers.AgentLayerTree}
      */
     function onBackendNodeIdsResolved() {
       this._innerSetLayers(payload);
@@ -195,7 +195,7 @@ WebInspector.AgentLayerTree = class extends WebInspector.LayerTreeBase {
       if (layer)
         layer._reset(layers[i]);
       else
-        layer = new WebInspector.AgentLayer(this._target, layers[i]);
+        layer = new Layers.AgentLayer(this._target, layers[i]);
       this._layersById[layerId] = layer;
       var backendNodeId = layers[i].backendNodeId;
       if (backendNodeId)
@@ -222,12 +222,12 @@ WebInspector.AgentLayerTree = class extends WebInspector.LayerTreeBase {
 };
 
 /**
- * @implements {WebInspector.Layer}
+ * @implements {SDK.Layer}
  * @unrestricted
  */
-WebInspector.AgentLayer = class {
+Layers.AgentLayer = class {
   /**
-   * @param {?WebInspector.Target} target
+   * @param {?SDK.Target} target
    * @param {!Protocol.LayerTree.Layer} layerPayload
    */
   constructor(target, layerPayload) {
@@ -253,7 +253,7 @@ WebInspector.AgentLayer = class {
 
   /**
    * @override
-   * @return {?WebInspector.Layer}
+   * @return {?SDK.Layer}
    */
   parent() {
     return this._parent;
@@ -269,7 +269,7 @@ WebInspector.AgentLayer = class {
 
   /**
    * @override
-   * @return {!Array.<!WebInspector.Layer>}
+   * @return {!Array.<!SDK.Layer>}
    */
   children() {
     return this._children;
@@ -277,7 +277,7 @@ WebInspector.AgentLayer = class {
 
   /**
    * @override
-   * @param {!WebInspector.Layer} child
+   * @param {!SDK.Layer} child
    */
   addChild(child) {
     if (child._parent)
@@ -287,7 +287,7 @@ WebInspector.AgentLayer = class {
   }
 
   /**
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    */
   _setNode(node) {
     this._node = node;
@@ -295,7 +295,7 @@ WebInspector.AgentLayer = class {
 
   /**
    * @override
-   * @return {?WebInspector.DOMNode}
+   * @return {?SDK.DOMNode}
    */
   node() {
     return this._node;
@@ -303,7 +303,7 @@ WebInspector.AgentLayer = class {
 
   /**
    * @override
-   * @return {?WebInspector.DOMNode}
+   * @return {?SDK.DOMNode}
    */
   nodeForSelfOrAncestor() {
     for (var layer = this; layer; layer = layer._parent) {
@@ -442,14 +442,14 @@ WebInspector.AgentLayer = class {
 
   /**
    * @override
-   * @return {!Array<!Promise<?WebInspector.SnapshotWithRect>>}
+   * @return {!Array<!Promise<?SDK.SnapshotWithRect>>}
    */
   snapshots() {
     var rect = {x: 0, y: 0, width: this.width(), height: this.height()};
     var promise = this._target.layerTreeAgent().makeSnapshot(
         this.id(), (error, snapshotId) => error || !this._target ?
             null :
-            {rect: rect, snapshot: new WebInspector.PaintProfilerSnapshot(this._target, snapshotId)});
+            {rect: rect, snapshot: new SDK.PaintProfilerSnapshot(this._target, snapshotId)});
     return [promise];
   }
 
@@ -466,7 +466,7 @@ WebInspector.AgentLayer = class {
    * @param {!Protocol.LayerTree.Layer} layerPayload
    */
   _reset(layerPayload) {
-    /** @type {?WebInspector.DOMNode} */
+    /** @type {?SDK.DOMNode} */
     this._node = null;
     this._children = [];
     this._parent = null;
@@ -497,10 +497,10 @@ WebInspector.AgentLayer = class {
 
     if (this._layerPayload.transform) {
       var transformMatrix = this._matrixFromArray(this._layerPayload.transform);
-      var anchorVector = new WebInspector.Geometry.Vector(
+      var anchorVector = new Common.Geometry.Vector(
           this._layerPayload.width * this.anchorPoint()[0], this._layerPayload.height * this.anchorPoint()[1],
           this.anchorPoint()[2]);
-      var anchorPoint = WebInspector.Geometry.multiplyVectorByMatrixAndNormalize(anchorVector, matrix);
+      var anchorPoint = Common.Geometry.multiplyVectorByMatrixAndNormalize(anchorVector, matrix);
       var anchorMatrix = new WebKitCSSMatrix().translate(-anchorPoint.x, -anchorPoint.y, -anchorPoint.z);
       matrix = anchorMatrix.inverse().multiply(transformMatrix.multiply(anchorMatrix.multiply(matrix)));
     }
@@ -526,8 +526,8 @@ WebInspector.AgentLayer = class {
     this._quad = [];
     var vertices = this._createVertexArrayForRect(this._layerPayload.width, this._layerPayload.height);
     for (var i = 0; i < 4; ++i) {
-      var point = WebInspector.Geometry.multiplyVectorByMatrixAndNormalize(
-          new WebInspector.Geometry.Vector(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]), matrix);
+      var point = Common.Geometry.multiplyVectorByMatrixAndNormalize(
+          new Common.Geometry.Vector(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]), matrix);
       this._quad.push(point.x, point.y);
     }
 
@@ -543,9 +543,9 @@ WebInspector.AgentLayer = class {
  * @implements {Protocol.LayerTreeDispatcher}
  * @unrestricted
  */
-WebInspector.LayerTreeDispatcher = class {
+Layers.LayerTreeDispatcher = class {
   /**
-   * @param {!WebInspector.LayerTreeModel} layerTreeModel
+   * @param {!Layers.LayerTreeModel} layerTreeModel
    */
   constructor(layerTreeModel) {
     this._layerTreeModel = layerTreeModel;

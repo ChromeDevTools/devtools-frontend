@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.FilterBar = class extends WebInspector.HBox {
+UI.FilterBar = class extends UI.HBox {
   /**
    * @param {string} name
    * @param {boolean=} visibleByDefault
@@ -43,29 +43,29 @@ WebInspector.FilterBar = class extends WebInspector.HBox {
     this._enabled = true;
     this.element.classList.add('filter-bar');
 
-    this._filterButton = new WebInspector.ToolbarToggle(WebInspector.UIString('Filter'), 'largeicon-filter');
+    this._filterButton = new UI.ToolbarToggle(Common.UIString('Filter'), 'largeicon-filter');
     this._filterButton.addEventListener('click', this._handleFilterButtonClick, this);
 
     this._filters = [];
 
-    this._stateSetting = WebInspector.settings.createSetting('filterBar-' + name + '-toggled', !!visibleByDefault);
+    this._stateSetting = Common.settings.createSetting('filterBar-' + name + '-toggled', !!visibleByDefault);
     this._setState(this._stateSetting.get());
   }
 
   /**
-   * @return {!WebInspector.ToolbarButton}
+   * @return {!UI.ToolbarButton}
    */
   filterButton() {
     return this._filterButton;
   }
 
   /**
-   * @param {!WebInspector.FilterUI} filter
+   * @param {!UI.FilterUI} filter
    */
   addFilter(filter) {
     this._filters.push(filter);
     this.element.appendChild(filter.element());
-    filter.addEventListener(WebInspector.FilterUI.Events.FilterChanged, this._filterChanged, this);
+    filter.addEventListener(UI.FilterUI.Events.FilterChanged, this._filterChanged, this);
     this._updateFilterButton();
   }
 
@@ -88,7 +88,7 @@ WebInspector.FilterBar = class extends WebInspector.HBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _filterChanged(event) {
     this._updateFilterButton();
@@ -99,8 +99,8 @@ WebInspector.FilterBar = class extends WebInspector.HBox {
     this.element.classList.toggle('hidden', !visible);
     if (visible) {
       for (var i = 0; i < this._filters.length; ++i) {
-        if (this._filters[i] instanceof WebInspector.TextFilterUI) {
-          var textFilterUI = /** @type {!WebInspector.TextFilterUI} */ (this._filters[i]);
+        if (this._filters[i] instanceof UI.TextFilterUI) {
+          var textFilterUI = /** @type {!UI.TextFilterUI} */ (this._filters[i]);
           textFilterUI.focus();
         }
       }
@@ -122,7 +122,7 @@ WebInspector.FilterBar = class extends WebInspector.HBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _handleFilterButtonClick(event) {
     this._setState(!this._filtersShown);
@@ -141,7 +141,7 @@ WebInspector.FilterBar = class extends WebInspector.HBox {
 
     this._updateFilterButton();
     this._updateFilterBar();
-    this.dispatchEventToListeners(WebInspector.FilterBar.Events.Toggled);
+    this.dispatchEventToListeners(UI.FilterBar.Events.Toggled);
   }
 
   clear() {
@@ -151,29 +151,29 @@ WebInspector.FilterBar = class extends WebInspector.HBox {
   }
 };
 
-WebInspector.FilterBar.FilterBarState = {
+UI.FilterBar.FilterBarState = {
   Inactive: 'inactive',
   Active: 'active',
   Shown: 'on'
 };
 
 /** @enum {symbol} */
-WebInspector.FilterBar.Events = {
+UI.FilterBar.Events = {
   Toggled: Symbol('Toggled')
 };
 
 /**
  * @interface
- * @extends {WebInspector.EventTarget}
+ * @extends {Common.EventTarget}
  */
-WebInspector.FilterUI = function() {};
+UI.FilterUI = function() {};
 
 /** @enum {symbol} */
-WebInspector.FilterUI.Events = {
+UI.FilterUI.Events = {
   FilterChanged: Symbol('FilterChanged')
 };
 
-WebInspector.FilterUI.prototype = {
+UI.FilterUI.prototype = {
   /**
    * @return {boolean}
    */
@@ -186,11 +186,11 @@ WebInspector.FilterUI.prototype = {
 };
 
 /**
- * @implements {WebInspector.FilterUI}
- * @implements {WebInspector.SuggestBoxDelegate}
+ * @implements {UI.FilterUI}
+ * @implements {UI.SuggestBoxDelegate}
  * @unrestricted
  */
-WebInspector.TextFilterUI = class extends WebInspector.Object {
+UI.TextFilterUI = class extends Common.Object {
   /**
    * @param {boolean=} supportRegex
    */
@@ -204,21 +204,21 @@ WebInspector.TextFilterUI = class extends WebInspector.Object {
 
     this._filterInputElement =
         /** @type {!HTMLInputElement} */ (this._filterElement.createChild('input', 'filter-input-field'));
-    this._filterInputElement.placeholder = WebInspector.UIString('Filter');
+    this._filterInputElement.placeholder = Common.UIString('Filter');
     this._filterInputElement.id = 'filter-input-field';
     this._filterInputElement.addEventListener('input', this._onInput.bind(this), false);
     this._filterInputElement.addEventListener('change', this._onChange.bind(this), false);
     this._filterInputElement.addEventListener('keydown', this._onInputKeyDown.bind(this), true);
     this._filterInputElement.addEventListener('blur', this._onBlur.bind(this), true);
 
-    /** @type {?WebInspector.TextFilterUI.SuggestionBuilder} */
+    /** @type {?UI.TextFilterUI.SuggestionBuilder} */
     this._suggestionBuilder = null;
 
-    this._suggestBox = new WebInspector.SuggestBox(this);
+    this._suggestBox = new UI.SuggestBox(this);
 
     if (this._supportRegex) {
       this._filterElement.classList.add('supports-regex');
-      var label = createCheckboxLabel(WebInspector.UIString('Regex'));
+      var label = createCheckboxLabel(Common.UIString('Regex'));
       this._regexCheckBox = label.checkboxElement;
       this._regexCheckBox.id = 'text-filter-regex';
       this._regexCheckBox.addEventListener('change', this._onInput.bind(this), false);
@@ -308,7 +308,7 @@ WebInspector.TextFilterUI = class extends WebInspector.Object {
   }
 
   /**
-   * @param {?WebInspector.TextFilterUI.SuggestionBuilder} suggestionBuilder
+   * @param {?UI.TextFilterUI.SuggestionBuilder} suggestionBuilder
    */
   setSuggestionBuilder(suggestionBuilder) {
     this._cancelSuggestion();
@@ -365,7 +365,7 @@ WebInspector.TextFilterUI = class extends WebInspector.Object {
   }
 
   _dispatchFilterChanged() {
-    this.dispatchEventToListeners(WebInspector.FilterUI.Events.FilterChanged, null);
+    this.dispatchEventToListeners(UI.FilterUI.Events.FilterChanged, null);
   }
 
   /**
@@ -416,9 +416,9 @@ WebInspector.TextFilterUI = class extends WebInspector.Object {
 /**
  * @interface
  */
-WebInspector.TextFilterUI.SuggestionBuilder = function() {};
+UI.TextFilterUI.SuggestionBuilder = function() {};
 
-WebInspector.TextFilterUI.SuggestionBuilder.prototype = {
+UI.TextFilterUI.SuggestionBuilder.prototype = {
   /**
    * @param {!HTMLInputElement} input
    * @return {?Array.<string>}
@@ -439,24 +439,24 @@ WebInspector.TextFilterUI.SuggestionBuilder.prototype = {
 };
 
 /**
- * @implements {WebInspector.FilterUI}
+ * @implements {UI.FilterUI}
  * @unrestricted
  */
-WebInspector.NamedBitSetFilterUI = class extends WebInspector.Object {
+UI.NamedBitSetFilterUI = class extends Common.Object {
   /**
-   * @param {!Array.<!WebInspector.NamedBitSetFilterUI.Item>} items
-   * @param {!WebInspector.Setting=} setting
+   * @param {!Array.<!UI.NamedBitSetFilterUI.Item>} items
+   * @param {!Common.Setting=} setting
    */
   constructor(items, setting) {
     super();
     this._filtersElement = createElementWithClass('div', 'filter-bitset-filter');
-    this._filtersElement.title = WebInspector.UIString(
+    this._filtersElement.title = Common.UIString(
         '%sClick to select multiple types',
-        WebInspector.KeyboardShortcut.shortcutToString('', WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta));
+        UI.KeyboardShortcut.shortcutToString('', UI.KeyboardShortcut.Modifiers.CtrlOrMeta));
 
     this._allowedTypes = {};
     this._typeFilterElements = {};
-    this._addBit(WebInspector.NamedBitSetFilterUI.ALL_TYPES, WebInspector.UIString('All'));
+    this._addBit(UI.NamedBitSetFilterUI.ALL_TYPES, Common.UIString('All'));
     this._filtersElement.createChild('div', 'filter-bitset-filter-divider');
 
     for (var i = 0; i < items.length; ++i)
@@ -467,12 +467,12 @@ WebInspector.NamedBitSetFilterUI = class extends WebInspector.Object {
       setting.addChangeListener(this._settingChanged.bind(this));
       this._settingChanged();
     } else {
-      this._toggleTypeFilter(WebInspector.NamedBitSetFilterUI.ALL_TYPES, false /* allowMultiSelect */);
+      this._toggleTypeFilter(UI.NamedBitSetFilterUI.ALL_TYPES, false /* allowMultiSelect */);
     }
   }
 
   reset() {
-    this._toggleTypeFilter(WebInspector.NamedBitSetFilterUI.ALL_TYPES, false /* allowMultiSelect */);
+    this._toggleTypeFilter(UI.NamedBitSetFilterUI.ALL_TYPES, false /* allowMultiSelect */);
   }
 
   /**
@@ -480,7 +480,7 @@ WebInspector.NamedBitSetFilterUI = class extends WebInspector.Object {
    * @return {boolean}
    */
   isActive() {
-    return !this._allowedTypes[WebInspector.NamedBitSetFilterUI.ALL_TYPES];
+    return !this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES];
   }
 
   /**
@@ -496,7 +496,7 @@ WebInspector.NamedBitSetFilterUI = class extends WebInspector.Object {
    * @return {boolean}
    */
   accept(typeName) {
-    return !!this._allowedTypes[WebInspector.NamedBitSetFilterUI.ALL_TYPES] || !!this._allowedTypes[typeName];
+    return !!this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES] || !!this._allowedTypes[typeName];
   }
 
   _settingChanged() {
@@ -511,13 +511,13 @@ WebInspector.NamedBitSetFilterUI = class extends WebInspector.Object {
 
   _update() {
     if ((Object.keys(this._allowedTypes).length === 0) ||
-        this._allowedTypes[WebInspector.NamedBitSetFilterUI.ALL_TYPES]) {
+        this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES]) {
       this._allowedTypes = {};
-      this._allowedTypes[WebInspector.NamedBitSetFilterUI.ALL_TYPES] = true;
+      this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES] = true;
     }
     for (var typeName in this._typeFilterElements)
       this._typeFilterElements[typeName].classList.toggle('selected', this._allowedTypes[typeName]);
-    this.dispatchEventToListeners(WebInspector.FilterUI.Events.FilterChanged, null);
+    this.dispatchEventToListeners(UI.FilterUI.Events.FilterChanged, null);
   }
 
   /**
@@ -540,7 +540,7 @@ WebInspector.NamedBitSetFilterUI = class extends WebInspector.Object {
    */
   _onTypeFilterClicked(e) {
     var toggle;
-    if (WebInspector.isMac())
+    if (Host.isMac())
       toggle = e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey;
     else
       toggle = e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey;
@@ -552,8 +552,8 @@ WebInspector.NamedBitSetFilterUI = class extends WebInspector.Object {
    * @param {boolean} allowMultiSelect
    */
   _toggleTypeFilter(typeName, allowMultiSelect) {
-    if (allowMultiSelect && typeName !== WebInspector.NamedBitSetFilterUI.ALL_TYPES)
-      this._allowedTypes[WebInspector.NamedBitSetFilterUI.ALL_TYPES] = false;
+    if (allowMultiSelect && typeName !== UI.NamedBitSetFilterUI.ALL_TYPES)
+      this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES] = false;
     else
       this._allowedTypes = {};
 
@@ -567,15 +567,15 @@ WebInspector.NamedBitSetFilterUI = class extends WebInspector.Object {
 };
 
 /** @typedef {{name: string, label: string, title: (string|undefined)}} */
-WebInspector.NamedBitSetFilterUI.Item;
+UI.NamedBitSetFilterUI.Item;
 
-WebInspector.NamedBitSetFilterUI.ALL_TYPES = 'all';
+UI.NamedBitSetFilterUI.ALL_TYPES = 'all';
 
 /**
- * @implements {WebInspector.FilterUI}
+ * @implements {UI.FilterUI}
  * @unrestricted
  */
-WebInspector.ComboBoxFilterUI = class extends WebInspector.Object {
+UI.ComboBoxFilterUI = class extends Common.Object {
   /**
    * @param {!Array.<!{value: *, label: string, title: string}>} options
    */
@@ -585,7 +585,7 @@ WebInspector.ComboBoxFilterUI = class extends WebInspector.Object {
     this._filterElement.className = 'filter-combobox-filter';
 
     this._options = options;
-    this._filterComboBox = new WebInspector.ToolbarComboBox(this._filterChanged.bind(this));
+    this._filterComboBox = new UI.ToolbarComboBox(this._filterChanged.bind(this));
     for (var i = 0; i < options.length; ++i) {
       var filterOption = options[i];
       var option = createElement('option');
@@ -641,20 +641,20 @@ WebInspector.ComboBoxFilterUI = class extends WebInspector.Object {
   _filterChanged(event) {
     var option = this._options[this._filterComboBox.selectedIndex()];
     this._filterComboBox.element.title = option.title;
-    this.dispatchEventToListeners(WebInspector.FilterUI.Events.FilterChanged, null);
+    this.dispatchEventToListeners(UI.FilterUI.Events.FilterChanged, null);
   }
 };
 
 /**
- * @implements {WebInspector.FilterUI}
+ * @implements {UI.FilterUI}
  * @unrestricted
  */
-WebInspector.CheckboxFilterUI = class extends WebInspector.Object {
+UI.CheckboxFilterUI = class extends Common.Object {
   /**
    * @param {string} className
    * @param {string} title
    * @param {boolean=} activeWhenChecked
-   * @param {!WebInspector.Setting=} setting
+   * @param {!Common.Setting=} setting
    */
   constructor(className, title, activeWhenChecked, setting) {
     super();
@@ -664,7 +664,7 @@ WebInspector.CheckboxFilterUI = class extends WebInspector.Object {
     this._filterElement.appendChild(this._label);
     this._checkboxElement = this._label.checkboxElement;
     if (setting)
-      WebInspector.SettingsUI.bindCheckbox(this._checkboxElement, setting);
+      UI.SettingsUI.bindCheckbox(this._checkboxElement, setting);
     else
       this._checkboxElement.checked = true;
     this._checkboxElement.addEventListener('change', this._fireUpdated.bind(this), false);
@@ -708,7 +708,7 @@ WebInspector.CheckboxFilterUI = class extends WebInspector.Object {
   }
 
   _fireUpdated() {
-    this.dispatchEventToListeners(WebInspector.FilterUI.Events.FilterChanged, null);
+    this.dispatchEventToListeners(UI.FilterUI.Events.FilterChanged, null);
   }
 
   /**

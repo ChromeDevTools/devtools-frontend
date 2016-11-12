@@ -6,7 +6,7 @@
             "id": "console",
             "title": "Console",
             "order": 20,
-            "className": "WebInspector.ConsolePanel"
+            "className": "Console.ConsolePanel"
         },
         {
             "type": "view",
@@ -15,17 +15,17 @@
             "title": "Console",
             "persistence": "permanent",
             "order": 0,
-            "className": "WebInspector.ConsolePanel.WrapperView"
+            "className": "Console.ConsolePanel.WrapperView"
         },
         {
-            "type": "@WebInspector.Revealer",
-            "contextTypes": ["WebInspector.Console"],
-            "className": "WebInspector.ConsolePanel.ConsoleRevealer"
+            "type": "@Common.Revealer",
+            "contextTypes": ["Common.Console"],
+            "className": "Console.ConsolePanel.ConsoleRevealer"
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "console.show",
-            "className": "WebInspector.ConsoleView.ActionDelegate",
+            "className": "Console.ConsoleView.ActionDelegate",
             "bindings": [
                 {
                     "shortcut": "Ctrl+`"
@@ -33,12 +33,12 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Console",
             "actionId": "console.clear",
             "title": "Clear console",
             "iconClass": "largeicon-clear",
-            "className": "WebInspector.ConsoleView.ActionDelegate",
+            "className": "Console.ConsoleView.ActionDelegate",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -51,11 +51,11 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Console",
             "actionId": "console.clear.history",
             "title": "Clear console history",
-            "className": "WebInspector.ConsoleView.ActionDelegate"
+            "className": "Console.ConsoleView.ActionDelegate"
         },
         {
             "type": "setting",

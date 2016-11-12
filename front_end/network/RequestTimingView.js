@@ -31,10 +31,10 @@
 /**
  * @unrestricted
  */
-WebInspector.RequestTimingView = class extends WebInspector.VBox {
+Network.RequestTimingView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.NetworkRequest} request
-   * @param {!WebInspector.NetworkTimeCalculator} calculator
+   * @param {!SDK.NetworkRequest} request
+   * @param {!Network.NetworkTimeCalculator} calculator
    */
   constructor(request, calculator) {
     super();
@@ -45,53 +45,53 @@ WebInspector.RequestTimingView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.RequestTimeRangeNames} name
+   * @param {!Network.RequestTimeRangeNames} name
    * @return {string}
    */
   static _timeRangeTitle(name) {
     switch (name) {
-      case WebInspector.RequestTimeRangeNames.Push:
-        return WebInspector.UIString('Receiving Push');
-      case WebInspector.RequestTimeRangeNames.Queueing:
-        return WebInspector.UIString('Queueing');
-      case WebInspector.RequestTimeRangeNames.Blocking:
-        return WebInspector.UIString('Stalled');
-      case WebInspector.RequestTimeRangeNames.Connecting:
-        return WebInspector.UIString('Initial connection');
-      case WebInspector.RequestTimeRangeNames.DNS:
-        return WebInspector.UIString('DNS Lookup');
-      case WebInspector.RequestTimeRangeNames.Proxy:
-        return WebInspector.UIString('Proxy negotiation');
-      case WebInspector.RequestTimeRangeNames.ReceivingPush:
-        return WebInspector.UIString('Reading Push');
-      case WebInspector.RequestTimeRangeNames.Receiving:
-        return WebInspector.UIString('Content Download');
-      case WebInspector.RequestTimeRangeNames.Sending:
-        return WebInspector.UIString('Request sent');
-      case WebInspector.RequestTimeRangeNames.ServiceWorker:
-        return WebInspector.UIString('Request to ServiceWorker');
-      case WebInspector.RequestTimeRangeNames.ServiceWorkerPreparation:
-        return WebInspector.UIString('ServiceWorker Preparation');
-      case WebInspector.RequestTimeRangeNames.SSL:
-        return WebInspector.UIString('SSL');
-      case WebInspector.RequestTimeRangeNames.Total:
-        return WebInspector.UIString('Total');
-      case WebInspector.RequestTimeRangeNames.Waiting:
-        return WebInspector.UIString('Waiting (TTFB)');
+      case Network.RequestTimeRangeNames.Push:
+        return Common.UIString('Receiving Push');
+      case Network.RequestTimeRangeNames.Queueing:
+        return Common.UIString('Queueing');
+      case Network.RequestTimeRangeNames.Blocking:
+        return Common.UIString('Stalled');
+      case Network.RequestTimeRangeNames.Connecting:
+        return Common.UIString('Initial connection');
+      case Network.RequestTimeRangeNames.DNS:
+        return Common.UIString('DNS Lookup');
+      case Network.RequestTimeRangeNames.Proxy:
+        return Common.UIString('Proxy negotiation');
+      case Network.RequestTimeRangeNames.ReceivingPush:
+        return Common.UIString('Reading Push');
+      case Network.RequestTimeRangeNames.Receiving:
+        return Common.UIString('Content Download');
+      case Network.RequestTimeRangeNames.Sending:
+        return Common.UIString('Request sent');
+      case Network.RequestTimeRangeNames.ServiceWorker:
+        return Common.UIString('Request to ServiceWorker');
+      case Network.RequestTimeRangeNames.ServiceWorkerPreparation:
+        return Common.UIString('ServiceWorker Preparation');
+      case Network.RequestTimeRangeNames.SSL:
+        return Common.UIString('SSL');
+      case Network.RequestTimeRangeNames.Total:
+        return Common.UIString('Total');
+      case Network.RequestTimeRangeNames.Waiting:
+        return Common.UIString('Waiting (TTFB)');
       default:
-        return WebInspector.UIString(name);
+        return Common.UIString(name);
     }
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @param {number} navigationStart
-   * @return {!Array.<!WebInspector.RequestTimeRange>}
+   * @return {!Array.<!Network.RequestTimeRange>}
    */
   static calculateRequestTimeRanges(request, navigationStart) {
     var result = [];
     /**
-     * @param {!WebInspector.RequestTimeRangeNames} name
+     * @param {!Network.RequestTimeRangeNames} name
      * @param {number} start
      * @param {number} end
      */
@@ -113,7 +113,7 @@ WebInspector.RequestTimingView = class extends WebInspector.VBox {
     }
 
     /**
-     * @param {!WebInspector.RequestTimeRangeNames} name
+     * @param {!Network.RequestTimeRangeNames} name
      * @param {number} start
      * @param {number} end
      */
@@ -127,9 +127,9 @@ WebInspector.RequestTimingView = class extends WebInspector.VBox {
       var start = request.issueTime() !== -1 ? request.issueTime() : request.startTime !== -1 ? request.startTime : 0;
       var middle = (request.responseReceivedTime === -1) ? Number.MAX_VALUE : request.responseReceivedTime;
       var end = (request.endTime === -1) ? Number.MAX_VALUE : request.endTime;
-      addRange(WebInspector.RequestTimeRangeNames.Total, start, end);
-      addRange(WebInspector.RequestTimeRangeNames.Blocking, start, middle);
-      addRange(WebInspector.RequestTimeRangeNames.Receiving, middle, end);
+      addRange(Network.RequestTimeRangeNames.Total, start, end);
+      addRange(Network.RequestTimeRangeNames.Blocking, start, middle);
+      addRange(Network.RequestTimeRangeNames.Receiving, middle, end);
       return result;
     }
 
@@ -137,45 +137,45 @@ WebInspector.RequestTimingView = class extends WebInspector.VBox {
     var startTime = timing.requestTime;
     var endTime = firstPositive([request.endTime, request.responseReceivedTime]) || startTime;
 
-    addRange(WebInspector.RequestTimeRangeNames.Total, issueTime < startTime ? issueTime : startTime, endTime);
+    addRange(Network.RequestTimeRangeNames.Total, issueTime < startTime ? issueTime : startTime, endTime);
     if (timing.pushStart) {
       var pushEnd = timing.pushEnd || endTime;
       // Only show the part of push that happened after the navigation/reload.
       // Pushes that happened on the same connection before we started main request will not be shown.
       if (pushEnd > navigationStart)
-        addRange(WebInspector.RequestTimeRangeNames.Push, Math.max(timing.pushStart, navigationStart), pushEnd);
+        addRange(Network.RequestTimeRangeNames.Push, Math.max(timing.pushStart, navigationStart), pushEnd);
     }
     if (issueTime < startTime)
-      addRange(WebInspector.RequestTimeRangeNames.Queueing, issueTime, startTime);
+      addRange(Network.RequestTimeRangeNames.Queueing, issueTime, startTime);
 
     if (request.fetchedViaServiceWorker) {
-      addOffsetRange(WebInspector.RequestTimeRangeNames.Blocking, 0, timing.workerStart);
+      addOffsetRange(Network.RequestTimeRangeNames.Blocking, 0, timing.workerStart);
       addOffsetRange(
-          WebInspector.RequestTimeRangeNames.ServiceWorkerPreparation, timing.workerStart, timing.workerReady);
-      addOffsetRange(WebInspector.RequestTimeRangeNames.ServiceWorker, timing.workerReady, timing.sendEnd);
-      addOffsetRange(WebInspector.RequestTimeRangeNames.Waiting, timing.sendEnd, timing.receiveHeadersEnd);
+          Network.RequestTimeRangeNames.ServiceWorkerPreparation, timing.workerStart, timing.workerReady);
+      addOffsetRange(Network.RequestTimeRangeNames.ServiceWorker, timing.workerReady, timing.sendEnd);
+      addOffsetRange(Network.RequestTimeRangeNames.Waiting, timing.sendEnd, timing.receiveHeadersEnd);
     } else if (!timing.pushStart) {
       var blocking = firstPositive([timing.dnsStart, timing.connectStart, timing.sendStart]) || 0;
-      addOffsetRange(WebInspector.RequestTimeRangeNames.Blocking, 0, blocking);
-      addOffsetRange(WebInspector.RequestTimeRangeNames.Proxy, timing.proxyStart, timing.proxyEnd);
-      addOffsetRange(WebInspector.RequestTimeRangeNames.DNS, timing.dnsStart, timing.dnsEnd);
-      addOffsetRange(WebInspector.RequestTimeRangeNames.Connecting, timing.connectStart, timing.connectEnd);
-      addOffsetRange(WebInspector.RequestTimeRangeNames.SSL, timing.sslStart, timing.sslEnd);
-      addOffsetRange(WebInspector.RequestTimeRangeNames.Sending, timing.sendStart, timing.sendEnd);
-      addOffsetRange(WebInspector.RequestTimeRangeNames.Waiting, timing.sendEnd, timing.receiveHeadersEnd);
+      addOffsetRange(Network.RequestTimeRangeNames.Blocking, 0, blocking);
+      addOffsetRange(Network.RequestTimeRangeNames.Proxy, timing.proxyStart, timing.proxyEnd);
+      addOffsetRange(Network.RequestTimeRangeNames.DNS, timing.dnsStart, timing.dnsEnd);
+      addOffsetRange(Network.RequestTimeRangeNames.Connecting, timing.connectStart, timing.connectEnd);
+      addOffsetRange(Network.RequestTimeRangeNames.SSL, timing.sslStart, timing.sslEnd);
+      addOffsetRange(Network.RequestTimeRangeNames.Sending, timing.sendStart, timing.sendEnd);
+      addOffsetRange(Network.RequestTimeRangeNames.Waiting, timing.sendEnd, timing.receiveHeadersEnd);
     }
 
     if (request.endTime !== -1)
       addRange(
-          timing.pushStart ? WebInspector.RequestTimeRangeNames.ReceivingPush :
-                             WebInspector.RequestTimeRangeNames.Receiving,
+          timing.pushStart ? Network.RequestTimeRangeNames.ReceivingPush :
+                             Network.RequestTimeRangeNames.Receiving,
           request.responseReceivedTime, endTime);
 
     return result;
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @param {number} navigationStart
    * @return {!Element}
    */
@@ -186,7 +186,7 @@ WebInspector.RequestTimingView = class extends WebInspector.VBox {
     colgroup.createChild('col', 'bars');
     colgroup.createChild('col', 'duration');
 
-    var timeRanges = WebInspector.RequestTimingView.calculateRequestTimeRanges(request, navigationStart);
+    var timeRanges = Network.RequestTimingView.calculateRequestTimeRanges(request, navigationStart);
     var startTime = timeRanges.map(r => r.start).reduce((a, b) => Math.min(a, b));
     var endTime = timeRanges.map(r => r.end).reduce((a, b) => Math.max(a, b));
     var scale = 100 / (endTime - startTime);
@@ -198,18 +198,18 @@ WebInspector.RequestTimingView = class extends WebInspector.VBox {
     for (var i = 0; i < timeRanges.length; ++i) {
       var range = timeRanges[i];
       var rangeName = range.name;
-      if (rangeName === WebInspector.RequestTimeRangeNames.Total) {
+      if (rangeName === Network.RequestTimeRangeNames.Total) {
         totalDuration = range.end - range.start;
         continue;
       }
-      if (rangeName === WebInspector.RequestTimeRangeNames.Push) {
-        createHeader(WebInspector.UIString('Server Push'));
-      } else if (WebInspector.RequestTimingView.ConnectionSetupRangeNames.has(rangeName)) {
+      if (rangeName === Network.RequestTimeRangeNames.Push) {
+        createHeader(Common.UIString('Server Push'));
+      } else if (Network.RequestTimingView.ConnectionSetupRangeNames.has(rangeName)) {
         if (!connectionHeader)
-          connectionHeader = createHeader(WebInspector.UIString('Connection Setup'));
+          connectionHeader = createHeader(Common.UIString('Connection Setup'));
       } else {
         if (!dataHeader)
-          dataHeader = createHeader(WebInspector.UIString('Request/Response'));
+          dataHeader = createHeader(Common.UIString('Request/Response'));
       }
 
       var left = (scale * (range.start - startTime));
@@ -217,7 +217,7 @@ WebInspector.RequestTimingView = class extends WebInspector.VBox {
       var duration = range.end - range.start;
 
       var tr = tableElement.createChild('tr');
-      tr.createChild('td').createTextChild(WebInspector.RequestTimingView._timeRangeTitle(rangeName));
+      tr.createChild('td').createTextChild(Network.RequestTimingView._timeRangeTitle(rangeName));
 
       var row = tr.createChild('td').createChild('div', 'network-timing-row');
       var bar = row.createChild('span', 'network-timing-bar ' + rangeName);
@@ -231,15 +231,15 @@ WebInspector.RequestTimingView = class extends WebInspector.VBox {
     if (!request.finished) {
       var cell = tableElement.createChild('tr').createChild('td', 'caution');
       cell.colSpan = 3;
-      cell.createTextChild(WebInspector.UIString('CAUTION: request is not finished yet!'));
+      cell.createTextChild(Common.UIString('CAUTION: request is not finished yet!'));
     }
 
     var footer = tableElement.createChild('tr', 'network-timing-footer');
     var note = footer.createChild('td');
     note.colSpan = 2;
-    note.appendChild(WebInspector.linkifyDocumentationURLAsNode(
+    note.appendChild(UI.linkifyDocumentationURLAsNode(
         'profile/network-performance/resource-loading#view-network-timing-details-for-a-specific-resource',
-        WebInspector.UIString('Explanation')));
+        Common.UIString('Explanation')));
     footer.createChild('td').createTextChild(Number.secondsToString(totalDuration, true));
 
     var serverTimings = request.serverTimings;
@@ -253,9 +253,9 @@ WebInspector.RequestTimingView = class extends WebInspector.VBox {
     breakElement.createChild('hr', 'break');
 
     var serverHeader = tableElement.createChild('tr', 'network-timing-table-header');
-    serverHeader.createChild('td').createTextChild(WebInspector.UIString('Server Timing'));
+    serverHeader.createChild('td').createTextChild(Common.UIString('Server Timing'));
     serverHeader.createChild('td');
-    serverHeader.createChild('td').createTextChild(WebInspector.UIString('TIME'));
+    serverHeader.createChild('td').createTextChild(Common.UIString('TIME'));
 
     serverTimings.filter(item => item.metric.toLowerCase() !== 'total')
         .forEach(item => addTiming(item, lastTimingRightEdge));
@@ -265,12 +265,12 @@ WebInspector.RequestTimingView = class extends WebInspector.VBox {
     return tableElement;
 
     /**
-     * @param {!WebInspector.ServerTiming} serverTiming
+     * @param {!SDK.ServerTiming} serverTiming
      * @param {number} right
      */
     function addTiming(serverTiming, right) {
       var colorGenerator =
-          new WebInspector.FlameChart.ColorGenerator({min: 0, max: 360, count: 36}, {min: 50, max: 80}, 80);
+          new UI.FlameChart.ColorGenerator({min: 0, max: 360, count: 36}, {min: 50, max: 80}, 80);
       var isTotal = serverTiming.metric.toLowerCase() === 'total';
       var tr = tableElement.createChild('tr', isTotal ? 'network-timing-footer' : '');
       var metric = tr.createChild('td', 'network-timing-metric');
@@ -297,7 +297,7 @@ WebInspector.RequestTimingView = class extends WebInspector.VBox {
       var dataHeader = tableElement.createChild('tr', 'network-timing-table-header');
       dataHeader.createChild('td').createTextChild(title);
       dataHeader.createChild('td').createTextChild('');
-      dataHeader.createChild('td').createTextChild(WebInspector.UIString('TIME'));
+      dataHeader.createChild('td').createTextChild(Common.UIString('TIME'));
       return dataHeader;
     }
   }
@@ -306,9 +306,9 @@ WebInspector.RequestTimingView = class extends WebInspector.VBox {
    * @override
    */
   wasShown() {
-    this._request.addEventListener(WebInspector.NetworkRequest.Events.TimingChanged, this._refresh, this);
-    this._request.addEventListener(WebInspector.NetworkRequest.Events.FinishedLoading, this._refresh, this);
-    this._calculator.addEventListener(WebInspector.NetworkTimeCalculator.Events.BoundariesChanged, this._refresh, this);
+    this._request.addEventListener(SDK.NetworkRequest.Events.TimingChanged, this._refresh, this);
+    this._request.addEventListener(SDK.NetworkRequest.Events.FinishedLoading, this._refresh, this);
+    this._calculator.addEventListener(Network.NetworkTimeCalculator.Events.BoundariesChanged, this._refresh, this);
     this._refresh();
   }
 
@@ -316,10 +316,10 @@ WebInspector.RequestTimingView = class extends WebInspector.VBox {
    * @override
    */
   willHide() {
-    this._request.removeEventListener(WebInspector.NetworkRequest.Events.TimingChanged, this._refresh, this);
-    this._request.removeEventListener(WebInspector.NetworkRequest.Events.FinishedLoading, this._refresh, this);
+    this._request.removeEventListener(SDK.NetworkRequest.Events.TimingChanged, this._refresh, this);
+    this._request.removeEventListener(SDK.NetworkRequest.Events.FinishedLoading, this._refresh, this);
     this._calculator.removeEventListener(
-        WebInspector.NetworkTimeCalculator.Events.BoundariesChanged, this._refresh, this);
+        Network.NetworkTimeCalculator.Events.BoundariesChanged, this._refresh, this);
   }
 
   _refresh() {
@@ -327,13 +327,13 @@ WebInspector.RequestTimingView = class extends WebInspector.VBox {
       this._tableElement.remove();
 
     this._tableElement =
-        WebInspector.RequestTimingView.createTimingTable(this._request, this._calculator.minimumBoundary());
+        Network.RequestTimingView.createTimingTable(this._request, this._calculator.minimumBoundary());
     this.element.appendChild(this._tableElement);
   }
 };
 
 /** @enum {string} */
-WebInspector.RequestTimeRangeNames = {
+Network.RequestTimeRangeNames = {
   Push: 'push',
   Queueing: 'queueing',
   Blocking: 'blocking',
@@ -350,11 +350,11 @@ WebInspector.RequestTimeRangeNames = {
   Waiting: 'waiting'
 };
 
-WebInspector.RequestTimingView.ConnectionSetupRangeNames = new Set([
-  WebInspector.RequestTimeRangeNames.Queueing, WebInspector.RequestTimeRangeNames.Blocking,
-  WebInspector.RequestTimeRangeNames.Connecting, WebInspector.RequestTimeRangeNames.DNS,
-  WebInspector.RequestTimeRangeNames.Proxy, WebInspector.RequestTimeRangeNames.SSL
+Network.RequestTimingView.ConnectionSetupRangeNames = new Set([
+  Network.RequestTimeRangeNames.Queueing, Network.RequestTimeRangeNames.Blocking,
+  Network.RequestTimeRangeNames.Connecting, Network.RequestTimeRangeNames.DNS,
+  Network.RequestTimeRangeNames.Proxy, Network.RequestTimeRangeNames.SSL
 ]);
 
-/** @typedef {{name: !WebInspector.RequestTimeRangeNames, start: number, end: number}} */
-WebInspector.RequestTimeRange;
+/** @typedef {{name: !Network.RequestTimeRangeNames, start: number, end: number}} */
+Network.RequestTimeRange;

@@ -31,10 +31,10 @@
 /**
  * @unrestricted
  */
-WebInspector.BottomUpProfileDataGridNode = class extends WebInspector.ProfileDataGridNode {
+Profiler.BottomUpProfileDataGridNode = class extends Profiler.ProfileDataGridNode {
   /**
-   * @param {!WebInspector.ProfileNode} profileNode
-   * @param {!WebInspector.TopDownProfileDataGridTree} owningTree
+   * @param {!SDK.ProfileNode} profileNode
+   * @param {!Profiler.TopDownProfileDataGridTree} owningTree
    */
   constructor(profileNode, owningTree) {
     super(profileNode, owningTree, !!profileNode.parent && !!profileNode.parent.parent);
@@ -42,7 +42,7 @@ WebInspector.BottomUpProfileDataGridNode = class extends WebInspector.ProfileDat
   }
 
   /**
-   * @param {!WebInspector.BottomUpProfileDataGridNode|!WebInspector.BottomUpProfileDataGridTree} container
+   * @param {!Profiler.BottomUpProfileDataGridNode|!Profiler.BottomUpProfileDataGridTree} container
    */
   static _sharedPopulate(container) {
     var remainingNodeInfos = container._remainingNodeInfos;
@@ -65,8 +65,8 @@ WebInspector.BottomUpProfileDataGridNode = class extends WebInspector.ProfileDat
       } else {
         // If not, add it as a true ancestor.
         // In heavy mode, we take our visual identity from ancestor node...
-        child = new WebInspector.BottomUpProfileDataGridNode(
-            ancestor, /** @type {!WebInspector.TopDownProfileDataGridTree} */ (container.tree));
+        child = new Profiler.BottomUpProfileDataGridNode(
+            ancestor, /** @type {!Profiler.TopDownProfileDataGridTree} */ (container.tree));
 
         if (ancestor !== focusNode) {
           // But the actual statistics from the "root" node (bottom of the callstack).
@@ -88,7 +88,7 @@ WebInspector.BottomUpProfileDataGridNode = class extends WebInspector.ProfileDat
   }
 
   /**
-   * @param {!WebInspector.ProfileDataGridNode} profileDataGridNode
+   * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
    */
   _takePropertiesFromProfileDataGridNode(profileDataGridNode) {
     this.save();
@@ -98,7 +98,7 @@ WebInspector.BottomUpProfileDataGridNode = class extends WebInspector.ProfileDat
 
   /**
    * When focusing, we keep just the members of the callstack.
-   * @param {!WebInspector.ProfileDataGridNode} child
+   * @param {!Profiler.ProfileDataGridNode} child
    */
   _keepOnlyChild(child) {
     this.save();
@@ -140,7 +140,7 @@ WebInspector.BottomUpProfileDataGridNode = class extends WebInspector.ProfileDat
 
   /**
    * @override
-   * @param {!WebInspector.ProfileDataGridNode} child
+   * @param {!Profiler.ProfileDataGridNode} child
    * @param {boolean} shouldAbsorb
    */
   merge(child, shouldAbsorb) {
@@ -152,7 +152,7 @@ WebInspector.BottomUpProfileDataGridNode = class extends WebInspector.ProfileDat
    * @override
    */
   populateChildren() {
-    WebInspector.BottomUpProfileDataGridNode._sharedPopulate(this);
+    Profiler.BottomUpProfileDataGridNode._sharedPopulate(this);
   }
 
   _willHaveChildren(profileNode) {
@@ -166,11 +166,11 @@ WebInspector.BottomUpProfileDataGridNode = class extends WebInspector.ProfileDat
 /**
  * @unrestricted
  */
-WebInspector.BottomUpProfileDataGridTree = class extends WebInspector.ProfileDataGridTree {
+Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTree {
   /**
-   * @param {!WebInspector.ProfileDataGridNode.Formatter} formatter
-   * @param {!WebInspector.SearchableView} searchableView
-   * @param {!WebInspector.ProfileNode} rootProfileNode
+   * @param {!Profiler.ProfileDataGridNode.Formatter} formatter
+   * @param {!UI.SearchableView} searchableView
+   * @param {!SDK.ProfileNode} rootProfileNode
    * @param {number} total
    */
   constructor(formatter, searchableView, rootProfileNode, total) {
@@ -230,14 +230,14 @@ WebInspector.BottomUpProfileDataGridTree = class extends WebInspector.ProfileDat
     }
 
     // Populate the top level nodes.
-    WebInspector.ProfileDataGridNode.populate(this);
+    Profiler.ProfileDataGridNode.populate(this);
 
     return this;
   }
 
   /**
    * When focusing, we keep the entire callstack up to this ancestor.
-   * @param {!WebInspector.ProfileDataGridNode} profileDataGridNode
+   * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
    */
   focus(profileDataGridNode) {
     if (!profileDataGridNode)
@@ -248,13 +248,13 @@ WebInspector.BottomUpProfileDataGridTree = class extends WebInspector.ProfileDat
     var currentNode = profileDataGridNode;
     var focusNode = profileDataGridNode;
 
-    while (currentNode.parent && (currentNode instanceof WebInspector.ProfileDataGridNode)) {
+    while (currentNode.parent && (currentNode instanceof Profiler.ProfileDataGridNode)) {
       currentNode._takePropertiesFromProfileDataGridNode(profileDataGridNode);
 
       focusNode = currentNode;
       currentNode = currentNode.parent;
 
-      if (currentNode instanceof WebInspector.ProfileDataGridNode)
+      if (currentNode instanceof Profiler.ProfileDataGridNode)
         currentNode._keepOnlyChild(focusNode);
     }
 
@@ -263,7 +263,7 @@ WebInspector.BottomUpProfileDataGridTree = class extends WebInspector.ProfileDat
   }
 
   /**
-   * @param {!WebInspector.ProfileDataGridNode} profileDataGridNode
+   * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
    */
   exclude(profileDataGridNode) {
     if (!profileDataGridNode)
@@ -291,7 +291,7 @@ WebInspector.BottomUpProfileDataGridTree = class extends WebInspector.ProfileDat
 
   /**
    * @override
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {boolean} shouldJump
    * @param {boolean=} jumpBackwards
    */
@@ -315,6 +315,6 @@ WebInspector.BottomUpProfileDataGridTree = class extends WebInspector.ProfileDat
    * @override
    */
   populateChildren() {
-    WebInspector.BottomUpProfileDataGridNode._sharedPopulate(this);
+    Profiler.BottomUpProfileDataGridNode._sharedPopulate(this);
   }
 };

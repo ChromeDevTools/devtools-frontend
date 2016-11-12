@@ -7,10 +7,10 @@
 /**
  * @unrestricted
  */
-WebInspector.TimelineLayersView = class extends WebInspector.SplitWidget {
+Timeline.TimelineLayersView = class extends UI.SplitWidget {
   /**
-   * @param {!WebInspector.TimelineModel} model
-   * @param {function(!WebInspector.PaintProfilerSnapshot)} showPaintProfilerCallback
+   * @param {!TimelineModel.TimelineModel} model
+   * @param {function(!SDK.PaintProfilerSnapshot)} showPaintProfilerCallback
    */
   constructor(model, showPaintProfilerCallback) {
     super(true, false, 'timelineLayersView');
@@ -18,31 +18,31 @@ WebInspector.TimelineLayersView = class extends WebInspector.SplitWidget {
     this._showPaintProfilerCallback = showPaintProfilerCallback;
 
     this.element.classList.add('timeline-layers-view');
-    this._rightSplitWidget = new WebInspector.SplitWidget(true, true, 'timelineLayersViewDetails');
+    this._rightSplitWidget = new UI.SplitWidget(true, true, 'timelineLayersViewDetails');
     this._rightSplitWidget.element.classList.add('timeline-layers-view-properties');
     this.setMainWidget(this._rightSplitWidget);
 
-    var vbox = new WebInspector.VBox();
+    var vbox = new UI.VBox();
     this.setSidebarWidget(vbox);
 
-    this._layerViewHost = new WebInspector.LayerViewHost();
+    this._layerViewHost = new LayerViewer.LayerViewHost();
 
-    var layerTreeOutline = new WebInspector.LayerTreeOutline(this._layerViewHost);
+    var layerTreeOutline = new LayerViewer.LayerTreeOutline(this._layerViewHost);
     vbox.element.appendChild(layerTreeOutline.element);
 
-    this._layers3DView = new WebInspector.Layers3DView(this._layerViewHost);
+    this._layers3DView = new LayerViewer.Layers3DView(this._layerViewHost);
     this._layers3DView.addEventListener(
-        WebInspector.Layers3DView.Events.PaintProfilerRequested, this._onPaintProfilerRequested, this);
+        LayerViewer.Layers3DView.Events.PaintProfilerRequested, this._onPaintProfilerRequested, this);
     this._rightSplitWidget.setMainWidget(this._layers3DView);
 
-    var layerDetailsView = new WebInspector.LayerDetailsView(this._layerViewHost);
+    var layerDetailsView = new LayerViewer.LayerDetailsView(this._layerViewHost);
     this._rightSplitWidget.setSidebarWidget(layerDetailsView);
     layerDetailsView.addEventListener(
-        WebInspector.LayerDetailsView.Events.PaintProfilerRequested, this._onPaintProfilerRequested, this);
+        LayerViewer.LayerDetailsView.Events.PaintProfilerRequested, this._onPaintProfilerRequested, this);
   }
 
   /**
-   * @param {!WebInspector.TracingFrameLayerTree} frameLayerTree
+   * @param {!TimelineModel.TracingFrameLayerTree} frameLayerTree
    */
   showLayerTree(frameLayerTree) {
     this._frameLayerTree = frameLayerTree;
@@ -63,10 +63,10 @@ WebInspector.TimelineLayersView = class extends WebInspector.SplitWidget {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onPaintProfilerRequested(event) {
-    var selection = /** @type {!WebInspector.LayerView.Selection} */ (event.data);
+    var selection = /** @type {!LayerViewer.LayerView.Selection} */ (event.data);
     this._layers3DView.snapshotForSelection(selection).then(snapshotWithRect => {
       if (snapshotWithRect)
         this._showPaintProfilerCallback(snapshotWithRect.snapshot);

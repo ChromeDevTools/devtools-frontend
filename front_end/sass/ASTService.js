@@ -4,22 +4,22 @@
 /**
  * @unrestricted
  */
-WebInspector.ASTService = class {
+Sass.ASTService = class {
   /**
    * @param {string} url
    * @param {string} text
-   * @return {!Promise<!WebInspector.SASSSupport.AST>}
+   * @return {!Promise<!Sass.SASSSupport.AST>}
    */
   parseCSS(url, text) {
-    return WebInspector.SASSSupport.parseSCSS(url, text);
+    return Sass.SASSSupport.parseSCSS(url, text);
   }
 
   /**
    * @param {string} url
    * @param {string} text
-   * @return {!Promise<!WebInspector.SASSSupport.AST>}
+   * @return {!Promise<!Sass.SASSSupport.AST>}
    */
   parseSCSS(url, text) {
-    return WebInspector.SASSSupport.parseSCSS(url, text);
+    return Sass.SASSSupport.parseSCSS(url, text);
   }
 };

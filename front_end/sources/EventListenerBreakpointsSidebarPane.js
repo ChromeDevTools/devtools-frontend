@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VBox {
+Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
   constructor() {
     super();
     this.registerRequiredCSS('components/breakpointsList.css');
 
-    this._eventListenerBreakpointsSetting = WebInspector.settings.createLocalSetting('eventListenerBreakpoints', []);
+    this._eventListenerBreakpointsSetting = Common.settings.createLocalSetting('eventListenerBreakpoints', []);
 
     this._categoriesTreeOutline = new TreeOutlineInShadow();
     this._categoriesTreeOutline.element.tabIndex = 0;
@@ -21,27 +21,27 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
     this._categoryItems = [];
     // FIXME: uncomment following once inspector stops being drop targer in major ports.
     // Otherwise, inspector page reacts on drop event and tries to load the event data.
-    // this._createCategory(WebInspector.UIString("Drag"), ["drag", "drop", "dragstart", "dragend", "dragenter", "dragleave", "dragover"]);
+    // this._createCategory(Common.UIString("Drag"), ["drag", "drop", "dragstart", "dragend", "dragenter", "dragleave", "dragover"]);
     this._createCategory(
-        WebInspector.UIString('Animation'), ['requestAnimationFrame', 'cancelAnimationFrame', 'animationFrameFired'],
+        Common.UIString('Animation'), ['requestAnimationFrame', 'cancelAnimationFrame', 'animationFrameFired'],
         true);
     this._createCategory(
-        WebInspector.UIString('Clipboard'), ['copy', 'cut', 'paste', 'beforecopy', 'beforecut', 'beforepaste']);
+        Common.UIString('Clipboard'), ['copy', 'cut', 'paste', 'beforecopy', 'beforecut', 'beforepaste']);
     this._createCategory(
-        WebInspector.UIString('Control'),
+        Common.UIString('Control'),
         ['resize', 'scroll', 'zoom', 'focus', 'blur', 'select', 'change', 'submit', 'reset']);
-    this._createCategory(WebInspector.UIString('Device'), ['deviceorientation', 'devicemotion']);
-    this._createCategory(WebInspector.UIString('DOM Mutation'), [
+    this._createCategory(Common.UIString('Device'), ['deviceorientation', 'devicemotion']);
+    this._createCategory(Common.UIString('DOM Mutation'), [
       'DOMActivate', 'DOMFocusIn', 'DOMFocusOut', 'DOMAttrModified', 'DOMCharacterDataModified', 'DOMNodeInserted',
       'DOMNodeInsertedIntoDocument', 'DOMNodeRemoved', 'DOMNodeRemovedFromDocument', 'DOMSubtreeModified',
       'DOMContentLoaded'
     ]);
-    this._createCategory(WebInspector.UIString('Drag / drop'), ['dragenter', 'dragover', 'dragleave', 'drop']);
-    this._createCategory(WebInspector.UIString('Keyboard'), ['keydown', 'keyup', 'keypress', 'input']);
+    this._createCategory(Common.UIString('Drag / drop'), ['dragenter', 'dragover', 'dragleave', 'drop']);
+    this._createCategory(Common.UIString('Keyboard'), ['keydown', 'keyup', 'keypress', 'input']);
     this._createCategory(
-        WebInspector.UIString('Load'), ['load', 'beforeunload', 'unload', 'abort', 'error', 'hashchange', 'popstate']);
+        Common.UIString('Load'), ['load', 'beforeunload', 'unload', 'abort', 'error', 'hashchange', 'popstate']);
     this._createCategory(
-        WebInspector.UIString('Media'),
+        Common.UIString('Media'),
         [
           'play',      'pause',          'playing',    'canplay',    'canplaythrough', 'seeking',
           'seeked',    'timeupdate',     'ended',      'ratechange', 'durationchange', 'volumechange',
@@ -49,31 +49,31 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
           'stalled',   'loadedmetadata', 'loadeddata', 'waiting'
         ],
         false, ['audio', 'video']);
-    this._createCategory(WebInspector.UIString('Mouse'), [
+    this._createCategory(Common.UIString('Mouse'), [
       'auxclick', 'click', 'dblclick', 'mousedown', 'mouseup', 'mouseover', 'mousemove', 'mouseout', 'mouseenter',
       'mouseleave', 'mousewheel', 'wheel', 'contextmenu'
     ]);
-    this._createCategory(WebInspector.UIString('Parse'), ['setInnerHTML'], true);
-    this._createCategory(WebInspector.UIString('Pointer'), [
+    this._createCategory(Common.UIString('Parse'), ['setInnerHTML'], true);
+    this._createCategory(Common.UIString('Pointer'), [
       'pointerover', 'pointerout', 'pointerenter', 'pointerleave', 'pointerdown', 'pointerup', 'pointermove',
       'pointercancel', 'gotpointercapture', 'lostpointercapture'
     ]);
-    this._createCategory(WebInspector.UIString('Script'), ['scriptFirstStatement', 'scriptBlockedByCSP'], true);
-    this._createCategory(WebInspector.UIString('Timer'), ['setTimer', 'clearTimer', 'timerFired'], true);
-    this._createCategory(WebInspector.UIString('Touch'), ['touchstart', 'touchmove', 'touchend', 'touchcancel']);
-    this._createCategory(WebInspector.UIString('WebGL'), ['webglErrorFired', 'webglWarningFired'], true);
-    this._createCategory(WebInspector.UIString('Window'), ['close'], true);
+    this._createCategory(Common.UIString('Script'), ['scriptFirstStatement', 'scriptBlockedByCSP'], true);
+    this._createCategory(Common.UIString('Timer'), ['setTimer', 'clearTimer', 'timerFired'], true);
+    this._createCategory(Common.UIString('Touch'), ['touchstart', 'touchmove', 'touchend', 'touchcancel']);
+    this._createCategory(Common.UIString('WebGL'), ['webglErrorFired', 'webglWarningFired'], true);
+    this._createCategory(Common.UIString('Window'), ['close'], true);
     this._createCategory(
-        WebInspector.UIString('XHR'),
+        Common.UIString('XHR'),
         ['readystatechange', 'load', 'loadstart', 'loadend', 'abort', 'error', 'progress', 'timeout'], false,
         ['XMLHttpRequest', 'XMLHttpRequestUpload']);
 
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.DOM);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerPaused, this._update, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerResumed, this._update, this);
-    WebInspector.context.addFlavorChangeListener(WebInspector.Target, this._update, this);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.DOM);
+    SDK.targetManager.addModelListener(
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._update, this);
+    SDK.targetManager.addModelListener(
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._update, this);
+    UI.context.addFlavorChangeListener(SDK.Target, this._update, this);
   }
 
   /**
@@ -82,19 +82,19 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
    * @return {string}
    */
   static eventNameForUI(eventName, auxData) {
-    if (!WebInspector.EventListenerBreakpointsSidebarPane._eventNamesForUI) {
-      WebInspector.EventListenerBreakpointsSidebarPane._eventNamesForUI = {
-        'instrumentation:setTimer': WebInspector.UIString('Set Timer'),
-        'instrumentation:clearTimer': WebInspector.UIString('Clear Timer'),
-        'instrumentation:timerFired': WebInspector.UIString('Timer Fired'),
-        'instrumentation:scriptFirstStatement': WebInspector.UIString('Script First Statement'),
-        'instrumentation:scriptBlockedByCSP': WebInspector.UIString('Script Blocked by Content Security Policy'),
-        'instrumentation:requestAnimationFrame': WebInspector.UIString('Request Animation Frame'),
-        'instrumentation:cancelAnimationFrame': WebInspector.UIString('Cancel Animation Frame'),
-        'instrumentation:animationFrameFired': WebInspector.UIString('Animation Frame Fired'),
-        'instrumentation:webglErrorFired': WebInspector.UIString('WebGL Error Fired'),
-        'instrumentation:webglWarningFired': WebInspector.UIString('WebGL Warning Fired'),
-        'instrumentation:setInnerHTML': WebInspector.UIString('Set innerHTML'),
+    if (!Sources.EventListenerBreakpointsSidebarPane._eventNamesForUI) {
+      Sources.EventListenerBreakpointsSidebarPane._eventNamesForUI = {
+        'instrumentation:setTimer': Common.UIString('Set Timer'),
+        'instrumentation:clearTimer': Common.UIString('Clear Timer'),
+        'instrumentation:timerFired': Common.UIString('Timer Fired'),
+        'instrumentation:scriptFirstStatement': Common.UIString('Script First Statement'),
+        'instrumentation:scriptBlockedByCSP': Common.UIString('Script Blocked by Content Security Policy'),
+        'instrumentation:requestAnimationFrame': Common.UIString('Request Animation Frame'),
+        'instrumentation:cancelAnimationFrame': Common.UIString('Cancel Animation Frame'),
+        'instrumentation:animationFrameFired': Common.UIString('Animation Frame Fired'),
+        'instrumentation:webglErrorFired': Common.UIString('WebGL Error Fired'),
+        'instrumentation:webglWarningFired': Common.UIString('WebGL Warning Fired'),
+        'instrumentation:setInnerHTML': Common.UIString('Set innerHTML'),
       };
     }
     if (auxData) {
@@ -102,19 +102,19 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
         var errorName = auxData['webglErrorName'];
         // If there is a hex code of the error, display only this.
         errorName = errorName.replace(/^.*(0x[0-9a-f]+).*$/i, '$1');
-        return WebInspector.UIString('WebGL Error Fired (%s)', errorName);
+        return Common.UIString('WebGL Error Fired (%s)', errorName);
       }
       if (eventName === 'instrumentation:scriptBlockedByCSP' && auxData['directiveText'])
-        return WebInspector.UIString(
+        return Common.UIString(
             'Script blocked due to Content Security Policy directive: %s', auxData['directiveText']);
     }
-    return WebInspector.EventListenerBreakpointsSidebarPane._eventNamesForUI[eventName] ||
+    return Sources.EventListenerBreakpointsSidebarPane._eventNamesForUI[eventName] ||
         eventName.substring(eventName.indexOf(':') + 1);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     this._restoreBreakpoints(target);
@@ -122,7 +122,7 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
   }
@@ -145,16 +145,16 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
     categoryItem.checkbox.addEventListener('click', this._categoryCheckboxClicked.bind(this, categoryItem), true);
 
     categoryItem.targetNames =
-        this._stringArrayToLowerCase(targetNames || [WebInspector.EventListenerBreakpointsSidebarPane.eventTargetAny]);
+        this._stringArrayToLowerCase(targetNames || [Sources.EventListenerBreakpointsSidebarPane.eventTargetAny]);
     categoryItem.children = {};
     var category =
-        (isInstrumentationEvent ? WebInspector.EventListenerBreakpointsSidebarPane.categoryInstrumentation :
-                                  WebInspector.EventListenerBreakpointsSidebarPane.categoryListener);
+        (isInstrumentationEvent ? Sources.EventListenerBreakpointsSidebarPane.categoryInstrumentation :
+                                  Sources.EventListenerBreakpointsSidebarPane.categoryListener);
     for (var i = 0; i < eventNames.length; ++i) {
       var eventName = category + eventNames[i];
 
       var breakpointItem = {};
-      var title = WebInspector.EventListenerBreakpointsSidebarPane.eventNameForUI(eventName);
+      var title = Sources.EventListenerBreakpointsSidebarPane.eventNameForUI(eventName);
 
       labelNode = createCheckboxLabel(title);
       labelNode.classList.add('source-code');
@@ -176,11 +176,11 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
   }
 
   _update() {
-    var target = WebInspector.context.flavor(WebInspector.Target);
-    var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
+    var target = UI.context.flavor(SDK.Target);
+    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
     var details = debuggerModel ? debuggerModel.debuggerPausedDetails() : null;
 
-    if (!details || details.reason !== WebInspector.DebuggerModel.BreakReason.EventListener) {
+    if (!details || details.reason !== SDK.DebuggerModel.BreakReason.EventListener) {
       if (this._highlightedElement) {
         this._highlightedElement.classList.remove('breakpoint-hit');
         delete this._highlightedElement;
@@ -192,10 +192,10 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
     var breakpointItem = this._findBreakpointItem(eventName, targetName);
     if (!breakpointItem || !breakpointItem.checkbox.checked)
       breakpointItem =
-          this._findBreakpointItem(eventName, WebInspector.EventListenerBreakpointsSidebarPane.eventTargetAny);
+          this._findBreakpointItem(eventName, Sources.EventListenerBreakpointsSidebarPane.eventTargetAny);
     if (!breakpointItem)
       return;
-    WebInspector.viewManager.showView('sources.eventListenerBreakpoints');
+    UI.viewManager.showView('sources.eventListenerBreakpoints');
     breakpointItem.parent.element.expand();
     breakpointItem.element.listItemElement.classList.add('breakpoint-hit');
     this._highlightedElement = breakpointItem.element.listItemElement;
@@ -241,10 +241,10 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
   /**
    * @param {string} eventName
    * @param {?Array.<string>=} eventTargetNames
-   * @param {!WebInspector.Target=} target
+   * @param {!SDK.Target=} target
    */
   _setBreakpoint(eventName, eventTargetNames, target) {
-    eventTargetNames = eventTargetNames || [WebInspector.EventListenerBreakpointsSidebarPane.eventTargetAny];
+    eventTargetNames = eventTargetNames || [Sources.EventListenerBreakpointsSidebarPane.eventTargetAny];
     for (var i = 0; i < eventTargetNames.length; ++i) {
       var eventTargetName = eventTargetNames[i];
       var breakpointItem = this._findBreakpointItem(eventName, eventTargetName);
@@ -260,10 +260,10 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
   /**
    * @param {string} eventName
    * @param {?Array.<string>=} eventTargetNames
-   * @param {!WebInspector.Target=} target
+   * @param {!SDK.Target=} target
    */
   _removeBreakpoint(eventName, eventTargetNames, target) {
-    eventTargetNames = eventTargetNames || [WebInspector.EventListenerBreakpointsSidebarPane.eventTargetAny];
+    eventTargetNames = eventTargetNames || [Sources.EventListenerBreakpointsSidebarPane.eventTargetAny];
     for (var i = 0; i < eventTargetNames.length; ++i) {
       var eventTargetName = eventTargetNames[i];
       var breakpointItem = this._findBreakpointItem(eventName, eventTargetName);
@@ -280,21 +280,21 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
    * @param {string} eventName
    * @param {string} eventTargetName
    * @param {boolean} enable
-   * @param {!WebInspector.Target=} target
+   * @param {!SDK.Target=} target
    */
   _updateBreakpointOnTarget(eventName, eventTargetName, enable, target) {
-    var targets = target ? [target] : WebInspector.targetManager.targets(WebInspector.Target.Capability.DOM);
+    var targets = target ? [target] : SDK.targetManager.targets(SDK.Target.Capability.DOM);
     for (target of targets) {
-      if (eventName.startsWith(WebInspector.EventListenerBreakpointsSidebarPane.categoryListener)) {
+      if (eventName.startsWith(Sources.EventListenerBreakpointsSidebarPane.categoryListener)) {
         var protocolEventName =
-            eventName.substring(WebInspector.EventListenerBreakpointsSidebarPane.categoryListener.length);
+            eventName.substring(Sources.EventListenerBreakpointsSidebarPane.categoryListener.length);
         if (enable)
           target.domdebuggerAgent().setEventListenerBreakpoint(protocolEventName, eventTargetName);
         else
           target.domdebuggerAgent().removeEventListenerBreakpoint(protocolEventName, eventTargetName);
-      } else if (eventName.startsWith(WebInspector.EventListenerBreakpointsSidebarPane.categoryInstrumentation)) {
+      } else if (eventName.startsWith(Sources.EventListenerBreakpointsSidebarPane.categoryInstrumentation)) {
         var protocolEventName =
-            eventName.substring(WebInspector.EventListenerBreakpointsSidebarPane.categoryInstrumentation.length);
+            eventName.substring(Sources.EventListenerBreakpointsSidebarPane.categoryInstrumentation.length);
         if (enable)
           target.domdebuggerAgent().setInstrumentationBreakpoint(protocolEventName);
         else
@@ -329,7 +329,7 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
    * @return {?Object}
    */
   _findBreakpointItem(eventName, targetName) {
-    targetName = (targetName || WebInspector.EventListenerBreakpointsSidebarPane.eventTargetAny).toLowerCase();
+    targetName = (targetName || Sources.EventListenerBreakpointsSidebarPane.eventTargetAny).toLowerCase();
     for (var i = 0; i < this._categoryItems.length; ++i) {
       var categoryItem = this._categoryItems[i];
       if (categoryItem.targetNames.indexOf(targetName) === -1)
@@ -355,7 +355,7 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   _restoreBreakpoints(target) {
     var breakpoints = this._eventListenerBreakpointsSetting.get();
@@ -367,6 +367,6 @@ WebInspector.EventListenerBreakpointsSidebarPane = class extends WebInspector.VB
   }
 };
 
-WebInspector.EventListenerBreakpointsSidebarPane.categoryListener = 'listener:';
-WebInspector.EventListenerBreakpointsSidebarPane.categoryInstrumentation = 'instrumentation:';
-WebInspector.EventListenerBreakpointsSidebarPane.eventTargetAny = '*';
+Sources.EventListenerBreakpointsSidebarPane.categoryListener = 'listener:';
+Sources.EventListenerBreakpointsSidebarPane.categoryInstrumentation = 'instrumentation:';
+Sources.EventListenerBreakpointsSidebarPane.eventTargetAny = '*';

@@ -2,18 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.ClearStorageView = class extends WebInspector.VBox {
+Resources.ClearStorageView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.ResourcesPanel} resourcesPanel
+   * @param {!Resources.ResourcesPanel} resourcesPanel
    */
   constructor(resourcesPanel) {
     super(true);
 
     this._resourcesPanel = resourcesPanel;
-    this._reportView = new WebInspector.ReportView(WebInspector.UIString('Clear storage'));
+    this._reportView = new UI.ReportView(Common.UIString('Clear storage'));
     this._reportView.registerRequiredCSS('resources/clearStorageView.css');
     this._reportView.element.classList.add('clear-storage-header');
     this._reportView.show(this.contentElement);
@@ -24,67 +24,67 @@ WebInspector.ClearStorageView = class extends WebInspector.VBox {
                  Protocol.Storage.StorageType.Cookies, Protocol.Storage.StorageType.Indexeddb,
                  Protocol.Storage.StorageType.Local_storage, Protocol.Storage.StorageType.Service_workers,
                  Protocol.Storage.StorageType.Websql]) {
-      this._settings.set(type, WebInspector.settings.createSetting('clear-storage-' + type, true));
+      this._settings.set(type, Common.settings.createSetting('clear-storage-' + type, true));
     }
 
-    var application = this._reportView.appendSection(WebInspector.UIString('Application'));
-    this._appendItem(application, WebInspector.UIString('Unregister service workers'), 'service_workers');
+    var application = this._reportView.appendSection(Common.UIString('Application'));
+    this._appendItem(application, Common.UIString('Unregister service workers'), 'service_workers');
 
-    var storage = this._reportView.appendSection(WebInspector.UIString('Storage'));
-    this._appendItem(storage, WebInspector.UIString('Local and session storage'), 'local_storage');
-    this._appendItem(storage, WebInspector.UIString('Indexed DB'), 'indexeddb');
-    this._appendItem(storage, WebInspector.UIString('Web SQL'), 'websql');
-    this._appendItem(storage, WebInspector.UIString('Cookies'), 'cookies');
+    var storage = this._reportView.appendSection(Common.UIString('Storage'));
+    this._appendItem(storage, Common.UIString('Local and session storage'), 'local_storage');
+    this._appendItem(storage, Common.UIString('Indexed DB'), 'indexeddb');
+    this._appendItem(storage, Common.UIString('Web SQL'), 'websql');
+    this._appendItem(storage, Common.UIString('Cookies'), 'cookies');
 
-    var caches = this._reportView.appendSection(WebInspector.UIString('Cache'));
-    this._appendItem(caches, WebInspector.UIString('Cache storage'), 'cache_storage');
-    this._appendItem(caches, WebInspector.UIString('Application cache'), 'appcache');
+    var caches = this._reportView.appendSection(Common.UIString('Cache'));
+    this._appendItem(caches, Common.UIString('Cache storage'), 'cache_storage');
+    this._appendItem(caches, Common.UIString('Application cache'), 'appcache');
 
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
     var footer = this._reportView.appendSection('', 'clear-storage-button').appendRow();
     this._clearButton = createTextButton(
-        WebInspector.UIString('Clear site data'), this._clear.bind(this), WebInspector.UIString('Clear site data'));
+        Common.UIString('Clear site data'), this._clear.bind(this), Common.UIString('Clear site data'));
     footer.appendChild(this._clearButton);
   }
 
   /**
-   * @param {!WebInspector.ReportView.Section} section
+   * @param {!UI.ReportView.Section} section
    * @param {string} title
    * @param {string} settingName
    */
   _appendItem(section, title, settingName) {
     var row = section.appendRow();
-    row.appendChild(WebInspector.SettingsUI.createSettingCheckbox(title, this._settings.get(settingName), true));
+    row.appendChild(UI.SettingsUI.createSettingCheckbox(title, this._settings.get(settingName), true));
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     if (this._target)
       return;
     this._target = target;
-    var securityOriginManager = WebInspector.SecurityOriginManager.fromTarget(target);
+    var securityOriginManager = SDK.SecurityOriginManager.fromTarget(target);
     this._updateOrigin(securityOriginManager.mainSecurityOrigin());
     securityOriginManager.addEventListener(
-        WebInspector.SecurityOriginManager.Events.MainSecurityOriginChanged, this._originChanged, this);
+        SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this._originChanged, this);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
     if (this._target !== target)
       return;
-    var securityOriginManager = WebInspector.SecurityOriginManager.fromTarget(target);
+    var securityOriginManager = SDK.SecurityOriginManager.fromTarget(target);
     securityOriginManager.removeEventListener(
-        WebInspector.SecurityOriginManager.Events.MainSecurityOriginChanged, this._originChanged, this);
+        SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this._originChanged, this);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _originChanged(event) {
     var origin = /** *@type {string} */ (event.data);
@@ -95,7 +95,7 @@ WebInspector.ClearStorageView = class extends WebInspector.VBox {
    * @param {string} url
    */
   _updateOrigin(url) {
-    this._securityOrigin = new WebInspector.ParsedURL(url).securityOrigin();
+    this._securityOrigin = new Common.ParsedURL(url).securityOrigin();
     this._reportView.setSubtitle(this._securityOrigin);
   }
 
@@ -114,21 +114,21 @@ WebInspector.ClearStorageView = class extends WebInspector.VBox {
       this._resourcesPanel.clearCookies(this._securityOrigin);
 
     if (set.has(Protocol.Storage.StorageType.Indexeddb) || hasAll) {
-      for (var target of WebInspector.targetManager.targets()) {
-        var indexedDBModel = WebInspector.IndexedDBModel.fromTarget(target);
+      for (var target of SDK.targetManager.targets()) {
+        var indexedDBModel = Resources.IndexedDBModel.fromTarget(target);
         if (indexedDBModel)
           indexedDBModel.clearForOrigin(this._securityOrigin);
       }
     }
 
     if (set.has(Protocol.Storage.StorageType.Local_storage) || hasAll) {
-      var storageModel = WebInspector.DOMStorageModel.fromTarget(this._target);
+      var storageModel = Resources.DOMStorageModel.fromTarget(this._target);
       if (storageModel)
         storageModel.clearForOrigin(this._securityOrigin);
     }
 
     if (set.has(Protocol.Storage.StorageType.Websql) || hasAll) {
-      var databaseModel = WebInspector.DatabaseModel.fromTarget(this._target);
+      var databaseModel = Resources.DatabaseModel.fromTarget(this._target);
       if (databaseModel) {
         databaseModel.disable();
         databaseModel.enable();
@@ -136,23 +136,23 @@ WebInspector.ClearStorageView = class extends WebInspector.VBox {
     }
 
     if (set.has(Protocol.Storage.StorageType.Cache_storage) || hasAll) {
-      var target = WebInspector.targetManager.mainTarget();
-      var model = target && WebInspector.ServiceWorkerCacheModel.fromTarget(target);
+      var target = SDK.targetManager.mainTarget();
+      var model = target && SDK.ServiceWorkerCacheModel.fromTarget(target);
       if (model)
         model.clearForOrigin(this._securityOrigin);
     }
 
     if (set.has(Protocol.Storage.StorageType.Appcache) || hasAll) {
-      var appcacheModel = WebInspector.ApplicationCacheModel.fromTarget(this._target);
+      var appcacheModel = SDK.ApplicationCacheModel.fromTarget(this._target);
       if (appcacheModel)
         appcacheModel.reset();
     }
 
     this._clearButton.disabled = true;
-    this._clearButton.textContent = WebInspector.UIString('Clearing...');
+    this._clearButton.textContent = Common.UIString('Clearing...');
     setTimeout(() => {
       this._clearButton.disabled = false;
-      this._clearButton.textContent = WebInspector.UIString('Clear selected');
+      this._clearButton.textContent = Common.UIString('Clear selected');
     }, 500);
   }
 };

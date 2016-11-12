@@ -4,20 +4,20 @@
 /**
  * @unrestricted
  */
-WebInspector.ServiceManager = class {
+Services.ServiceManager = class {
   /**
    * @param {string} serviceName
-   * @return {!Promise<?WebInspector.ServiceManager.Service>}
+   * @return {!Promise<?Services.ServiceManager.Service>}
    */
   createRemoteService(serviceName) {
     if (!this._remoteConnection) {
       var url = Runtime.queryParam('service-backend');
       if (!url) {
         console.error('No endpoint address specified');
-        return /** @type {!Promise<?WebInspector.ServiceManager.Service>} */ (Promise.resolve(null));
+        return /** @type {!Promise<?Services.ServiceManager.Service>} */ (Promise.resolve(null));
       }
       this._remoteConnection =
-          new WebInspector.ServiceManager.Connection(new WebInspector.ServiceManager.RemoteServicePort(url));
+          new Services.ServiceManager.Connection(new Services.ServiceManager.RemoteServicePort(url));
     }
     return this._remoteConnection._createService(serviceName);
   }
@@ -26,7 +26,7 @@ WebInspector.ServiceManager = class {
    * @param {string} appName
    * @param {string} serviceName
    * @param {boolean} isSharedWorker
-   * @return {!Promise<?WebInspector.ServiceManager.Service>}
+   * @return {!Promise<?Services.ServiceManager.Service>}
    */
   createAppService(appName, serviceName, isSharedWorker) {
     var url = appName + '.js';
@@ -36,7 +36,7 @@ WebInspector.ServiceManager = class {
 
     var worker = isSharedWorker ? new SharedWorker(url, appName) : new Worker(url);
     var connection =
-        new WebInspector.ServiceManager.Connection(new WebInspector.ServiceManager.WorkerServicePort(worker));
+        new Services.ServiceManager.Connection(new Services.ServiceManager.WorkerServicePort(worker));
     return connection._createService(serviceName);
   }
 };
@@ -44,7 +44,7 @@ WebInspector.ServiceManager = class {
 /**
  * @unrestricted
  */
-WebInspector.ServiceManager.Connection = class {
+Services.ServiceManager.Connection = class {
   /**
    * @param {!ServicePort} port
    */
@@ -55,13 +55,13 @@ WebInspector.ServiceManager.Connection = class {
     this._lastId = 1;
     /** @type {!Map<number, function(?Object)>}*/
     this._callbacks = new Map();
-    /** @type {!Map<string, !WebInspector.ServiceManager.Service>}*/
+    /** @type {!Map<string, !Services.ServiceManager.Service>}*/
     this._services = new Map();
   }
 
   /**
    * @param {string} serviceName
-   * @return {!Promise<?WebInspector.ServiceManager.Service>}
+   * @return {!Promise<?Services.ServiceManager.Service>}
    */
   _createService(serviceName) {
     return this._sendCommand(serviceName + '.create').then(result => {
@@ -69,14 +69,14 @@ WebInspector.ServiceManager.Connection = class {
         console.error('Could not initialize service: ' + serviceName);
         return null;
       }
-      var service = new WebInspector.ServiceManager.Service(this, serviceName, result.id);
+      var service = new Services.ServiceManager.Service(this, serviceName, result.id);
       this._services.set(serviceName + ':' + result.id, service);
       return service;
     });
   }
 
   /**
-   * @param {!WebInspector.ServiceManager.Service} service
+   * @param {!Services.ServiceManager.Service} service
    */
   _serviceDisposed(service) {
     this._services.delete(service._serviceName + ':' + service._objectId);
@@ -144,9 +144,9 @@ WebInspector.ServiceManager.Connection = class {
 /**
  * @unrestricted
  */
-WebInspector.ServiceManager.Service = class {
+Services.ServiceManager.Service = class {
   /**
-   * @param {!WebInspector.ServiceManager.Connection} connection
+   * @param {!Services.ServiceManager.Connection} connection
    * @param {string} serviceName
    * @param {string} objectId
    */
@@ -205,7 +205,7 @@ WebInspector.ServiceManager.Service = class {
  * @implements {ServicePort}
  * @unrestricted
  */
-WebInspector.ServiceManager.RemoteServicePort = class {
+Services.ServiceManager.RemoteServicePort = class {
   /**
    * @param {string} url
    */
@@ -233,7 +233,7 @@ WebInspector.ServiceManager.RemoteServicePort = class {
 
     /**
      * @param {function(boolean)} fulfill
-     * @this {WebInspector.ServiceManager.RemoteServicePort}
+     * @this {Services.ServiceManager.RemoteServicePort}
      */
     function promiseBody(fulfill) {
       var socket;
@@ -247,7 +247,7 @@ WebInspector.ServiceManager.RemoteServicePort = class {
       }
 
       /**
-       * @this {WebInspector.ServiceManager.RemoteServicePort}
+       * @this {Services.ServiceManager.RemoteServicePort}
        */
       function onConnect() {
         this._socket = socket;
@@ -256,7 +256,7 @@ WebInspector.ServiceManager.RemoteServicePort = class {
 
       /**
        * @param {!Event} event
-       * @this {WebInspector.ServiceManager.RemoteServicePort}
+       * @this {Services.ServiceManager.RemoteServicePort}
        */
       function onMessage(event) {
         this._messageHandler(event.data);
@@ -299,7 +299,7 @@ WebInspector.ServiceManager.RemoteServicePort = class {
  * @implements {ServicePort}
  * @unrestricted
  */
-WebInspector.ServiceManager.WorkerServicePort = class {
+Services.ServiceManager.WorkerServicePort = class {
   /**
    * @param {!Worker|!SharedWorker} worker
    */
@@ -320,7 +320,7 @@ WebInspector.ServiceManager.WorkerServicePort = class {
 
     /**
      * @param {!Event} event
-     * @this {WebInspector.ServiceManager.WorkerServicePort}
+     * @this {Services.ServiceManager.WorkerServicePort}
      */
     function onMessage(event) {
       if (event.data === 'workerReady') {
@@ -373,4 +373,4 @@ WebInspector.ServiceManager.WorkerServicePort = class {
   }
 };
 
-WebInspector.serviceManager = new WebInspector.ServiceManager();
+Services.serviceManager = new Services.ServiceManager();

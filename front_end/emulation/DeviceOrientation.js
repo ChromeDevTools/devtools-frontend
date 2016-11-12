@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.DeviceOrientation = class {
+Emulation.DeviceOrientation = class {
   /**
    * @param {number} alpha
    * @param {number} beta
@@ -17,26 +17,26 @@ WebInspector.DeviceOrientation = class {
   }
 
   /**
-   * @return {!WebInspector.DeviceOrientation}
+   * @return {!Emulation.DeviceOrientation}
    */
   static parseSetting(value) {
     if (value) {
       var jsonObject = JSON.parse(value);
-      return new WebInspector.DeviceOrientation(jsonObject.alpha, jsonObject.beta, jsonObject.gamma);
+      return new Emulation.DeviceOrientation(jsonObject.alpha, jsonObject.beta, jsonObject.gamma);
     }
-    return new WebInspector.DeviceOrientation(0, 0, 0);
+    return new Emulation.DeviceOrientation(0, 0, 0);
   }
 
   /**
-   * @return {?WebInspector.DeviceOrientation}
+   * @return {?Emulation.DeviceOrientation}
    */
   static parseUserInput(alphaString, betaString, gammaString) {
     if (!alphaString && !betaString && !gammaString)
       return null;
 
-    var isAlphaValid = WebInspector.DeviceOrientation.validator(alphaString);
-    var isBetaValid = WebInspector.DeviceOrientation.validator(betaString);
-    var isGammaValid = WebInspector.DeviceOrientation.validator(gammaString);
+    var isAlphaValid = Emulation.DeviceOrientation.validator(alphaString);
+    var isBetaValid = Emulation.DeviceOrientation.validator(betaString);
+    var isGammaValid = Emulation.DeviceOrientation.validator(gammaString);
 
     if (!isAlphaValid && !isBetaValid && !isGammaValid)
       return null;
@@ -45,7 +45,7 @@ WebInspector.DeviceOrientation = class {
     var beta = isBetaValid ? parseFloat(betaString) : -1;
     var gamma = isGammaValid ? parseFloat(gammaString) : -1;
 
-    return new WebInspector.DeviceOrientation(alpha, beta, gamma);
+    return new Emulation.DeviceOrientation(alpha, beta, gamma);
   }
 
   /**
@@ -64,12 +64,12 @@ WebInspector.DeviceOrientation = class {
   }
 
   apply() {
-    for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser))
+    for (var target of SDK.targetManager.targets(SDK.Target.Capability.Browser))
       target.deviceOrientationAgent().setDeviceOrientationOverride(this.alpha, this.beta, this.gamma);
   }
 
   clear() {
-    for (var target of WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser))
+    for (var target of SDK.targetManager.targets(SDK.Target.Capability.Browser))
       target.deviceOrientationAgent().clearDeviceOrientationOverride();
   }
 };

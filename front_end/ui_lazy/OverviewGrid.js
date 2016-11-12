@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.OverviewGrid = class {
+UI.OverviewGrid = class {
   /**
    * @param {string} prefix
    */
@@ -39,13 +39,13 @@ WebInspector.OverviewGrid = class {
     this.element = createElement('div');
     this.element.id = prefix + '-overview-container';
 
-    this._grid = new WebInspector.TimelineGrid();
+    this._grid = new UI.TimelineGrid();
     this._grid.element.id = prefix + '-overview-grid';
     this._grid.setScrollTop(0);
 
     this.element.appendChild(this._grid.element);
 
-    this._window = new WebInspector.OverviewGrid.Window(this.element, this._grid.dividersLabelBarElement);
+    this._window = new UI.OverviewGrid.Window(this.element, this._grid.dividersLabelBarElement);
   }
 
   /**
@@ -56,7 +56,7 @@ WebInspector.OverviewGrid = class {
   }
 
   /**
-   * @param {!WebInspector.TimelineGrid.Calculator} calculator
+   * @param {!UI.TimelineGrid.Calculator} calculator
    */
   updateDividers(calculator) {
     this._grid.updateDividers(calculator);
@@ -101,9 +101,9 @@ WebInspector.OverviewGrid = class {
 
   /**
    * @param {string} eventType
-   * @param {function(!WebInspector.Event)} listener
+   * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
-   * @return {!WebInspector.EventTarget.EventDescriptor}
+   * @return {!Common.EventTarget.EventDescriptor}
    */
   addEventListener(eventType, listener, thisObject) {
     return this._window.addEventListener(eventType, listener, thisObject);
@@ -125,16 +125,16 @@ WebInspector.OverviewGrid = class {
   }
 };
 
-WebInspector.OverviewGrid.MinSelectableSize = 14;
+UI.OverviewGrid.MinSelectableSize = 14;
 
-WebInspector.OverviewGrid.WindowScrollSpeedFactor = .3;
+UI.OverviewGrid.WindowScrollSpeedFactor = .3;
 
-WebInspector.OverviewGrid.ResizerOffset = 3.5;  // half pixel because offset values are not rounded but ceiled
+UI.OverviewGrid.ResizerOffset = 3.5;  // half pixel because offset values are not rounded but ceiled
 
 /**
  * @unrestricted
  */
-WebInspector.OverviewGrid.Window = class extends WebInspector.Object {
+UI.OverviewGrid.Window = class extends Common.Object {
   /**
    * @param {!Element} parentElement
    * @param {!Element=} dividersLabelBarElement
@@ -143,24 +143,24 @@ WebInspector.OverviewGrid.Window = class extends WebInspector.Object {
     super();
     this._parentElement = parentElement;
 
-    WebInspector.installDragHandle(
+    UI.installDragHandle(
         this._parentElement, this._startWindowSelectorDragging.bind(this), this._windowSelectorDragging.bind(this),
         this._endWindowSelectorDragging.bind(this), 'text', null);
     if (dividersLabelBarElement)
-      WebInspector.installDragHandle(
+      UI.installDragHandle(
           dividersLabelBarElement, this._startWindowDragging.bind(this), this._windowDragging.bind(this), null,
           '-webkit-grabbing', '-webkit-grab');
 
     this._parentElement.addEventListener('mousewheel', this._onMouseWheel.bind(this), true);
     this._parentElement.addEventListener('dblclick', this._resizeWindowMaximum.bind(this), true);
-    WebInspector.appendStyle(this._parentElement, 'ui_lazy/overviewGrid.css');
+    UI.appendStyle(this._parentElement, 'ui_lazy/overviewGrid.css');
 
     this._leftResizeElement = parentElement.createChild('div', 'overview-grid-window-resizer');
-    WebInspector.installDragHandle(
+    UI.installDragHandle(
         this._leftResizeElement, this._resizerElementStartDragging.bind(this),
         this._leftResizeElementDragging.bind(this), null, 'ew-resize');
     this._rightResizeElement = parentElement.createChild('div', 'overview-grid-window-resizer');
-    WebInspector.installDragHandle(
+    UI.installDragHandle(
         this._rightResizeElement, this._resizerElementStartDragging.bind(this),
         this._rightResizeElementDragging.bind(this), null, 'ew-resize');
 
@@ -219,7 +219,7 @@ WebInspector.OverviewGrid.Window = class extends WebInspector.Object {
       return false;
     this._offsetLeft = this._parentElement.totalOffsetLeft();
     var position = event.x - this._offsetLeft;
-    this._overviewWindowSelector = new WebInspector.OverviewGrid.WindowSelector(this._parentElement, position);
+    this._overviewWindowSelector = new UI.OverviewGrid.WindowSelector(this._parentElement, position);
     return true;
   }
 
@@ -239,16 +239,16 @@ WebInspector.OverviewGrid.Window = class extends WebInspector.Object {
     delete this._overviewWindowSelector;
     var clickThreshold = 3;
     if (window.end - window.start < clickThreshold) {
-      if (this.dispatchEventToListeners(WebInspector.OverviewGrid.Events.Click, event))
+      if (this.dispatchEventToListeners(UI.OverviewGrid.Events.Click, event))
         return;
       var middle = window.end;
-      window.start = Math.max(0, middle - WebInspector.OverviewGrid.MinSelectableSize / 2);
-      window.end = Math.min(this._parentElement.clientWidth, middle + WebInspector.OverviewGrid.MinSelectableSize / 2);
-    } else if (window.end - window.start < WebInspector.OverviewGrid.MinSelectableSize) {
-      if (this._parentElement.clientWidth - window.end > WebInspector.OverviewGrid.MinSelectableSize)
-        window.end = window.start + WebInspector.OverviewGrid.MinSelectableSize;
+      window.start = Math.max(0, middle - UI.OverviewGrid.MinSelectableSize / 2);
+      window.end = Math.min(this._parentElement.clientWidth, middle + UI.OverviewGrid.MinSelectableSize / 2);
+    } else if (window.end - window.start < UI.OverviewGrid.MinSelectableSize) {
+      if (this._parentElement.clientWidth - window.end > UI.OverviewGrid.MinSelectableSize)
+        window.end = window.start + UI.OverviewGrid.MinSelectableSize;
       else
-        window.start = window.end - WebInspector.OverviewGrid.MinSelectableSize;
+        window.start = window.end - UI.OverviewGrid.MinSelectableSize;
     }
     this._setWindowPosition(window.start, window.end);
   }
@@ -299,8 +299,8 @@ WebInspector.OverviewGrid.Window = class extends WebInspector.Object {
     // Glue to edge.
     if (end > this._parentElement.clientWidth - 10)
       end = this._parentElement.clientWidth;
-    else if (end < this._leftResizeElement.offsetLeft + WebInspector.OverviewGrid.MinSelectableSize)
-      end = this._leftResizeElement.offsetLeft + WebInspector.OverviewGrid.MinSelectableSize;
+    else if (end < this._leftResizeElement.offsetLeft + UI.OverviewGrid.MinSelectableSize)
+      end = this._leftResizeElement.offsetLeft + UI.OverviewGrid.MinSelectableSize;
     this._setWindowPosition(null, end);
   }
 
@@ -316,7 +316,7 @@ WebInspector.OverviewGrid.Window = class extends WebInspector.Object {
     this.windowLeft = windowLeft;
     this.windowRight = windowRight;
     this._updateCurtains();
-    this.dispatchEventToListeners(WebInspector.OverviewGrid.Events.WindowChanged);
+    this.dispatchEventToListeners(UI.OverviewGrid.Events.WindowChanged);
   }
 
   _updateCurtains() {
@@ -326,7 +326,7 @@ WebInspector.OverviewGrid.Window = class extends WebInspector.Object {
 
     // We allow actual time window to be arbitrarily small but don't want the UI window to be too small.
     var widthInPixels = width * this._parentElement.clientWidth;
-    var minWidthInPixels = WebInspector.OverviewGrid.MinSelectableSize / 2;
+    var minWidthInPixels = UI.OverviewGrid.MinSelectableSize / 2;
     if (widthInPixels < minWidthInPixels) {
       var factor = minWidthInPixels / widthInPixels;
       left = ((this.windowRight + this.windowLeft) - width * factor) / 2;
@@ -364,9 +364,9 @@ WebInspector.OverviewGrid.Window = class extends WebInspector.Object {
       this._zoom(Math.pow(zoomFactor, -event.wheelDeltaY * mouseWheelZoomSpeed), reference);
     }
     if (typeof event.wheelDeltaX === 'number' && event.wheelDeltaX) {
-      var offset = Math.round(event.wheelDeltaX * WebInspector.OverviewGrid.WindowScrollSpeedFactor);
-      var windowLeft = this._leftResizeElement.offsetLeft + WebInspector.OverviewGrid.ResizerOffset;
-      var windowRight = this._rightResizeElement.offsetLeft + WebInspector.OverviewGrid.ResizerOffset;
+      var offset = Math.round(event.wheelDeltaX * UI.OverviewGrid.WindowScrollSpeedFactor);
+      var windowLeft = this._leftResizeElement.offsetLeft + UI.OverviewGrid.ResizerOffset;
+      var windowRight = this._rightResizeElement.offsetLeft + UI.OverviewGrid.ResizerOffset;
 
       if (windowLeft - offset < 0)
         offset = windowLeft;
@@ -403,7 +403,7 @@ WebInspector.OverviewGrid.Window = class extends WebInspector.Object {
 };
 
 /** @enum {symbol} */
-WebInspector.OverviewGrid.Events = {
+UI.OverviewGrid.Events = {
   WindowChanged: Symbol('WindowChanged'),
   Click: Symbol('Click')
 };
@@ -411,7 +411,7 @@ WebInspector.OverviewGrid.Events = {
 /**
  * @unrestricted
  */
-WebInspector.OverviewGrid.WindowSelector = class {
+UI.OverviewGrid.WindowSelector = class {
   constructor(parent, position) {
     this._startPosition = position;
     this._width = parent.offsetWidth;

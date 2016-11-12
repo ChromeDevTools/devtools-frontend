@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.ResizerWidget = class extends WebInspector.Object {
+UI.ResizerWidget = class extends Common.Object {
   constructor() {
     super();
 
@@ -96,7 +96,7 @@ WebInspector.ResizerWidget = class extends WebInspector.Object {
     // Only handle drags of the nodes specified.
     if (this._elements.indexOf(event.target) === -1)
       return false;
-    WebInspector.elementDragStart(
+    UI.elementDragStart(
         /** @type {!Element} */ (event.target), this._dragStart.bind(this), this._drag.bind(this),
         this._dragEnd.bind(this), this.cursor(), event);
   }
@@ -120,7 +120,7 @@ WebInspector.ResizerWidget = class extends WebInspector.Object {
    */
   sendDragStart(x, y) {
     this.dispatchEventToListeners(
-        WebInspector.ResizerWidget.Events.ResizeStart, {startX: x, currentX: x, startY: y, currentY: y});
+        UI.ResizerWidget.Events.ResizeStart, {startX: x, currentX: x, startY: y, currentY: y});
   }
 
   /**
@@ -147,7 +147,7 @@ WebInspector.ResizerWidget = class extends WebInspector.Object {
    */
   sendDragMove(startX, currentX, startY, currentY, shiftKey) {
     this.dispatchEventToListeners(
-        WebInspector.ResizerWidget.Events.ResizeUpdate,
+        UI.ResizerWidget.Events.ResizeUpdate,
         {startX: startX, currentX: currentX, startY: startY, currentY: currentY, shiftKey: shiftKey});
   }
 
@@ -155,14 +155,14 @@ WebInspector.ResizerWidget = class extends WebInspector.Object {
    * @param {!MouseEvent} event
    */
   _dragEnd(event) {
-    this.dispatchEventToListeners(WebInspector.ResizerWidget.Events.ResizeEnd);
+    this.dispatchEventToListeners(UI.ResizerWidget.Events.ResizeEnd);
     delete this._startX;
     delete this._startY;
   }
 };
 
 /** @enum {symbol} */
-WebInspector.ResizerWidget.Events = {
+UI.ResizerWidget.Events = {
   ResizeStart: Symbol('ResizeStart'),
   ResizeUpdate: Symbol('ResizeUpdate'),
   ResizeEnd: Symbol('ResizeEnd')
@@ -171,7 +171,7 @@ WebInspector.ResizerWidget.Events = {
 /**
  * @unrestricted
  */
-WebInspector.SimpleResizerWidget = class extends WebInspector.ResizerWidget {
+UI.SimpleResizerWidget = class extends UI.ResizerWidget {
   constructor() {
     super();
     this._isVertical = true;
@@ -209,7 +209,7 @@ WebInspector.SimpleResizerWidget = class extends WebInspector.ResizerWidget {
   sendDragStart(x, y) {
     var position = this._isVertical ? y : x;
     this.dispatchEventToListeners(
-        WebInspector.ResizerWidget.Events.ResizeStart, {startPosition: position, currentPosition: position});
+        UI.ResizerWidget.Events.ResizeStart, {startPosition: position, currentPosition: position});
   }
 
   /**
@@ -223,11 +223,11 @@ WebInspector.SimpleResizerWidget = class extends WebInspector.ResizerWidget {
   sendDragMove(startX, currentX, startY, currentY, shiftKey) {
     if (this._isVertical)
       this.dispatchEventToListeners(
-          WebInspector.ResizerWidget.Events.ResizeUpdate,
+          UI.ResizerWidget.Events.ResizeUpdate,
           {startPosition: startY, currentPosition: currentY, shiftKey: shiftKey});
     else
       this.dispatchEventToListeners(
-          WebInspector.ResizerWidget.Events.ResizeUpdate,
+          UI.ResizerWidget.Events.ResizeUpdate,
           {startPosition: startX, currentPosition: currentX, shiftKey: shiftKey});
   }
 };

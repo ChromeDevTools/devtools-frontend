@@ -28,10 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.ListWidget.Delegate}
+ * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-WebInspector.EditFileSystemView = class extends WebInspector.VBox {
+Settings.EditFileSystemView = class extends UI.VBox {
   /**
    * @param {string} fileSystemPath
    */
@@ -41,48 +41,48 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
     this._fileSystemPath = fileSystemPath;
 
     this._eventListeners = [
-      WebInspector.fileSystemMapping.addEventListener(
-          WebInspector.FileSystemMapping.Events.FileMappingAdded, this._update, this),
-      WebInspector.fileSystemMapping.addEventListener(
-          WebInspector.FileSystemMapping.Events.FileMappingRemoved, this._update, this),
-      WebInspector.isolatedFileSystemManager.addEventListener(
-          WebInspector.IsolatedFileSystemManager.Events.ExcludedFolderAdded, this._update, this),
-      WebInspector.isolatedFileSystemManager.addEventListener(
-          WebInspector.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, this._update, this)
+      Workspace.fileSystemMapping.addEventListener(
+          Workspace.FileSystemMapping.Events.FileMappingAdded, this._update, this),
+      Workspace.fileSystemMapping.addEventListener(
+          Workspace.FileSystemMapping.Events.FileMappingRemoved, this._update, this),
+      Workspace.isolatedFileSystemManager.addEventListener(
+          Workspace.IsolatedFileSystemManager.Events.ExcludedFolderAdded, this._update, this),
+      Workspace.isolatedFileSystemManager.addEventListener(
+          Workspace.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, this._update, this)
     ];
 
-    this._mappingsList = new WebInspector.ListWidget(this);
+    this._mappingsList = new UI.ListWidget(this);
     this._mappingsList.element.classList.add('file-system-list');
     this._mappingsList.registerRequiredCSS('settings/editFileSystemView.css');
     var mappingsPlaceholder = createElementWithClass('div', 'file-system-list-empty');
     var mappingsHeader = this.contentElement.createChild('div', 'file-system-header');
-    mappingsHeader.createChild('div', 'file-system-header-text').textContent = WebInspector.UIString('Mappings');
+    mappingsHeader.createChild('div', 'file-system-header-text').textContent = Common.UIString('Mappings');
     if (Runtime.experiments.isEnabled('persistence2')) {
       var div = mappingsPlaceholder.createChild('div');
       div.createTextChild(
-          WebInspector.UIString('Mappings are inferred automatically via the \'Persistence 2.0\' experiment. Please '));
-      div.appendChild(WebInspector.linkifyURLAsNode(
+          Common.UIString('Mappings are inferred automatically via the \'Persistence 2.0\' experiment. Please '));
+      div.appendChild(UI.linkifyURLAsNode(
           'https://bugs.chromium.org/p/chromium/issues/entry?template=Defect%20report%20from%20user&components=Platform%3EDevTools%3EAuthoring&comment=DevTools%20failed%20to%20link%20network%20resource%20to%20filesystem.%0A%0APlatform%3A%20%3CLinux%2FWin%2FMac%3E%0AChrome%20version%3A%20%3Cyour%20chrome%20version%3E%0A%0AWhat%20are%20the%20details%20of%20your%20project%3F%0A-%20Source%20code%20(if%20any)%3A%20http%3A%2F%2Fgithub.com%2Fexample%2Fexample%0A-%20Build%20System%3A%20gulp%2Fgrunt%2Fwebpack%2Frollup%2F...%0A-%20HTTP%20server%3A%20node%20HTTP%2Fnginx%2Fapache...%0A%0AAssets%20failed%20to%20link%20(or%20incorrectly%20linked)%3A%0A1.%0A2.%0A3.%0A%0AIf%20possible%2C%20please%20attach%20a%20screenshot%20of%20network%20sources%20navigator%20which%20should%0Ashow%20which%20resources%20failed%20to%20map',
-          WebInspector.UIString('report'), undefined, true));
-      div.createTextChild(WebInspector.UIString(' any bugs.'));
+          Common.UIString('report'), undefined, true));
+      div.createTextChild(Common.UIString(' any bugs.'));
     } else {
-      mappingsPlaceholder.textContent = WebInspector.UIString('No mappings');
+      mappingsPlaceholder.textContent = Common.UIString('No mappings');
       mappingsHeader.appendChild(
-          createTextButton(WebInspector.UIString('Add'), this._addMappingButtonClicked.bind(this), 'add-button'));
+          createTextButton(Common.UIString('Add'), this._addMappingButtonClicked.bind(this), 'add-button'));
     }
     this._mappingsList.setEmptyPlaceholder(mappingsPlaceholder);
     this._mappingsList.show(this.contentElement);
 
     var excludedFoldersHeader = this.contentElement.createChild('div', 'file-system-header');
     excludedFoldersHeader.createChild('div', 'file-system-header-text').textContent =
-        WebInspector.UIString('Excluded folders');
+        Common.UIString('Excluded folders');
     excludedFoldersHeader.appendChild(
-        createTextButton(WebInspector.UIString('Add'), this._addExcludedFolderButtonClicked.bind(this), 'add-button'));
-    this._excludedFoldersList = new WebInspector.ListWidget(this);
+        createTextButton(Common.UIString('Add'), this._addExcludedFolderButtonClicked.bind(this), 'add-button'));
+    this._excludedFoldersList = new UI.ListWidget(this);
     this._excludedFoldersList.element.classList.add('file-system-list');
     this._excludedFoldersList.registerRequiredCSS('settings/editFileSystemView.css');
     var excludedFoldersPlaceholder = createElementWithClass('div', 'file-system-list-empty');
-    excludedFoldersPlaceholder.textContent = WebInspector.UIString('No excluded folders');
+    excludedFoldersPlaceholder.textContent = Common.UIString('No excluded folders');
     this._excludedFoldersList.setEmptyPlaceholder(excludedFoldersPlaceholder);
     this._excludedFoldersList.show(this.contentElement);
 
@@ -91,7 +91,7 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
   }
 
   dispose() {
-    WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
   }
 
   _update() {
@@ -102,7 +102,7 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
     this._mappings = [];
     if (Runtime.experiments.isEnabled('persistence2'))
       return;
-    var mappings = WebInspector.fileSystemMapping.mappingEntries(this._fileSystemPath);
+    var mappings = Workspace.fileSystemMapping.mappingEntries(this._fileSystemPath);
     for (var entry of mappings) {
       if (entry.configurable) {
         this._mappingsList.appendItem(entry, true);
@@ -118,13 +118,13 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
 
     this._excludedFoldersList.clear();
     this._excludedFolders = [];
-    for (var folder of WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+    for (var folder of Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
              .excludedFolders()
              .values()) {
       this._excludedFolders.push(folder);
       this._excludedFoldersList.appendItem(folder, true);
     }
-    for (var folder of WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+    for (var folder of Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
              .nonConfigurableExcludedFolders()
              .values()) {
       this._excludedFolders.push(folder);
@@ -133,7 +133,7 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
   }
 
   _addMappingButtonClicked() {
-    var entry = new WebInspector.FileSystemMapping.Entry(this._fileSystemPath, '', '', true);
+    var entry = new Workspace.FileSystemMapping.Entry(this._fileSystemPath, '', '', true);
     this._mappingsList.addNewItem(0, entry);
   }
 
@@ -151,10 +151,10 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
     var element = createElementWithClass('div', 'file-system-list-item');
     if (!editable)
       element.classList.add('locked');
-    if (item instanceof WebInspector.FileSystemMapping.Entry) {
-      var entry = /** @type {!WebInspector.FileSystemMapping.Entry} */ (item);
+    if (item instanceof Workspace.FileSystemMapping.Entry) {
+      var entry = /** @type {!Workspace.FileSystemMapping.Entry} */ (item);
       var urlPrefix =
-          entry.configurable ? entry.urlPrefix : WebInspector.UIString('%s (via .devtools)', entry.urlPrefix);
+          entry.configurable ? entry.urlPrefix : Common.UIString('%s (via .devtools)', entry.urlPrefix);
       var urlPrefixElement = element.createChild('div', 'file-system-value');
       urlPrefixElement.textContent = urlPrefix;
       urlPrefixElement.title = urlPrefix;
@@ -163,12 +163,12 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
       pathPrefixElement.textContent = entry.pathPrefix;
       pathPrefixElement.title = entry.pathPrefix;
     } else {
-      var pathPrefix = /** @type {string} */ (editable ? item : WebInspector.UIString('%s (via .devtools)', item));
+      var pathPrefix = /** @type {string} */ (editable ? item : Common.UIString('%s (via .devtools)', item));
       var pathPrefixElement = element.createChild('div', 'file-system-value');
       pathPrefixElement.textContent = pathPrefix;
       pathPrefixElement.title = pathPrefix;
     }
-    element.createChild('div', 'file-system-locked').title = WebInspector.UIString('From .devtools file');
+    element.createChild('div', 'file-system-locked').title = Common.UIString('From .devtools file');
     return element;
   }
 
@@ -178,11 +178,11 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
    * @param {number} index
    */
   removeItemRequested(item, index) {
-    if (item instanceof WebInspector.FileSystemMapping.Entry) {
+    if (item instanceof Workspace.FileSystemMapping.Entry) {
       var entry = this._mappings[index];
-      WebInspector.fileSystemMapping.removeFileMapping(entry.fileSystemPath, entry.urlPrefix, entry.pathPrefix);
+      Workspace.fileSystemMapping.removeFileMapping(entry.fileSystemPath, entry.urlPrefix, entry.pathPrefix);
     } else {
-      WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+      Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
           .removeExcludedFolder(this._excludedFolders[index]);
     }
   }
@@ -190,23 +190,23 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
   /**
    * @override
    * @param {*} item
-   * @param {!WebInspector.ListWidget.Editor} editor
+   * @param {!UI.ListWidget.Editor} editor
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {
     this._muteUpdate = true;
-    if (item instanceof WebInspector.FileSystemMapping.Entry) {
-      var entry = /** @type {!WebInspector.FileSystemMapping.Entry} */ (item);
+    if (item instanceof Workspace.FileSystemMapping.Entry) {
+      var entry = /** @type {!Workspace.FileSystemMapping.Entry} */ (item);
       if (!isNew)
-        WebInspector.fileSystemMapping.removeFileMapping(this._fileSystemPath, entry.urlPrefix, entry.pathPrefix);
-      WebInspector.fileSystemMapping.addFileMapping(
+        Workspace.fileSystemMapping.removeFileMapping(this._fileSystemPath, entry.urlPrefix, entry.pathPrefix);
+      Workspace.fileSystemMapping.addFileMapping(
           this._fileSystemPath, this._normalizePrefix(editor.control('urlPrefix').value),
           this._normalizePrefix(editor.control('pathPrefix').value));
     } else {
       if (!isNew)
-        WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+        Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
             .removeExcludedFolder(/** @type {string} */ (item));
-      WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+      Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
           .addExcludedFolder(this._normalizePrefix(editor.control('pathPrefix').value));
     }
     this._muteUpdate = false;
@@ -216,11 +216,11 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
   /**
    * @override
    * @param {*} item
-   * @return {!WebInspector.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor}
    */
   beginEdit(item) {
-    if (item instanceof WebInspector.FileSystemMapping.Entry) {
-      var entry = /** @type {!WebInspector.FileSystemMapping.Entry} */ (item);
+    if (item instanceof Workspace.FileSystemMapping.Entry) {
+      var entry = /** @type {!Workspace.FileSystemMapping.Entry} */ (item);
       var editor = this._createMappingEditor();
       editor.control('urlPrefix').value = entry.urlPrefix;
       editor.control('pathPrefix').value = entry.pathPrefix;
@@ -233,20 +233,20 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {!WebInspector.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor}
    */
   _createMappingEditor() {
     if (this._mappingEditor)
       return this._mappingEditor;
 
-    var editor = new WebInspector.ListWidget.Editor();
+    var editor = new UI.ListWidget.Editor();
     this._mappingEditor = editor;
     var content = editor.contentElement();
 
     var titles = content.createChild('div', 'file-system-edit-row');
-    titles.createChild('div', 'file-system-value').textContent = WebInspector.UIString('URL prefix');
+    titles.createChild('div', 'file-system-value').textContent = Common.UIString('URL prefix');
     titles.createChild('div', 'file-system-separator file-system-separator-invisible');
-    titles.createChild('div', 'file-system-value').textContent = WebInspector.UIString('Folder path');
+    titles.createChild('div', 'file-system-value').textContent = Common.UIString('Folder path');
 
     var fields = content.createChild('div', 'file-system-edit-row');
     fields.createChild('div', 'file-system-value')
@@ -263,7 +263,7 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
      * @return {boolean}
-     * @this {WebInspector.EditFileSystemView}
+     * @this {Settings.EditFileSystemView}
      */
     function urlPrefixValidator(item, index, input) {
       var prefix = this._normalizePrefix(input.value);
@@ -279,7 +279,7 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
      * @return {boolean}
-     * @this {WebInspector.EditFileSystemView}
+     * @this {Settings.EditFileSystemView}
      */
     function pathPrefixValidator(item, index, input) {
       var prefix = this._normalizePrefix(input.value);
@@ -292,18 +292,18 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {!WebInspector.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor}
    */
   _createExcludedFolderEditor() {
     if (this._excludedFolderEditor)
       return this._excludedFolderEditor;
 
-    var editor = new WebInspector.ListWidget.Editor();
+    var editor = new UI.ListWidget.Editor();
     this._excludedFolderEditor = editor;
     var content = editor.contentElement();
 
     var titles = content.createChild('div', 'file-system-edit-row');
-    titles.createChild('div', 'file-system-value').textContent = WebInspector.UIString('Folder path');
+    titles.createChild('div', 'file-system-value').textContent = Common.UIString('Folder path');
 
     var fields = content.createChild('div', 'file-system-edit-row');
     fields.createChild('div', 'file-system-value')
@@ -316,12 +316,12 @@ WebInspector.EditFileSystemView = class extends WebInspector.VBox {
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
      * @return {boolean}
-     * @this {WebInspector.EditFileSystemView}
+     * @this {Settings.EditFileSystemView}
      */
     function pathPrefixValidator(item, index, input) {
       var prefix = this._normalizePrefix(input.value);
       var configurableCount =
-          WebInspector.isolatedFileSystemManager.fileSystem(this._fileSystemPath).excludedFolders().size;
+          Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath).excludedFolders().size;
       for (var i = 0; i < configurableCount; ++i) {
         if (i !== index && this._excludedFolders[i] === prefix)
           return false;

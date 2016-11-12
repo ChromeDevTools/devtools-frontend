@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.ShowMoreDataGridNode = class extends WebInspector.DataGridNode {
+UI.ShowMoreDataGridNode = class extends UI.DataGridNode {
   /**
    * @param {function(number, number)} callback
    * @param {number} startPosition
@@ -48,7 +48,7 @@ WebInspector.ShowMoreDataGridNode = class extends WebInspector.DataGridNode {
     this.showNext = createElement('button');
     this.showNext.setAttribute('type', 'button');
     this.showNext.addEventListener('click', this._showNextChunk.bind(this), false);
-    this.showNext.textContent = WebInspector.UIString('Show %d before', this._chunkSize);
+    this.showNext.textContent = Common.UIString('Show %d before', this._chunkSize);
 
     this.showAll = createElement('button');
     this.showAll.setAttribute('type', 'button');
@@ -57,7 +57,7 @@ WebInspector.ShowMoreDataGridNode = class extends WebInspector.DataGridNode {
     this.showLast = createElement('button');
     this.showLast.setAttribute('type', 'button');
     this.showLast.addEventListener('click', this._showLastChunk.bind(this), false);
-    this.showLast.textContent = WebInspector.UIString('Show %d after', this._chunkSize);
+    this.showLast.textContent = Common.UIString('Show %d after', this._chunkSize);
 
     this._updateLabels();
     this.selectable = false;
@@ -84,7 +84,7 @@ WebInspector.ShowMoreDataGridNode = class extends WebInspector.DataGridNode {
       this.showNext.classList.add('hidden');
       this.showLast.classList.add('hidden');
     }
-    this.showAll.textContent = WebInspector.UIString('Show all %d', totalSize);
+    this.showAll.textContent = Common.UIString('Show all %d', totalSize);
   }
 
   /**

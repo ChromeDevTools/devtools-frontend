@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.CommandMenu = class {
+UI.CommandMenu = class {
   constructor() {
     this._commands = [];
     this._loadCommands();
@@ -17,26 +17,26 @@ WebInspector.CommandMenu = class {
    * @param {string} shortcut
    * @param {function()} executeHandler
    * @param {function()=} availableHandler
-   * @return {!WebInspector.CommandMenu.Command}
+   * @return {!UI.CommandMenu.Command}
    */
   static createCommand(category, keys, title, shortcut, executeHandler, availableHandler) {
     // Separate keys by null character, to prevent fuzzy matching from matching across them.
     var key = keys.replace(/,/g, '\0');
-    return new WebInspector.CommandMenu.Command(category, title, key, shortcut, executeHandler, availableHandler);
+    return new UI.CommandMenu.Command(category, title, key, shortcut, executeHandler, availableHandler);
   }
 
   /**
    * @param {!Runtime.Extension} extension
    * @param {string} title
    * @param {V} value
-   * @return {!WebInspector.CommandMenu.Command}
+   * @return {!UI.CommandMenu.Command}
    * @template V
    */
   static createSettingCommand(extension, title, value) {
     var category = extension.descriptor()['category'] || '';
     var tags = extension.descriptor()['tags'] || '';
-    var setting = WebInspector.settings.moduleSetting(extension.descriptor()['settingName']);
-    return WebInspector.CommandMenu.createCommand(
+    var setting = Common.settings.moduleSetting(extension.descriptor()['settingName']);
+    return UI.CommandMenu.createCommand(
         category, tags, title, '', setting.set.bind(setting, value), availableHandler);
 
     /**
@@ -48,24 +48,24 @@ WebInspector.CommandMenu = class {
   }
 
   /**
-   * @param {!WebInspector.Action} action
-   * @return {!WebInspector.CommandMenu.Command}
+   * @param {!UI.Action} action
+   * @return {!UI.CommandMenu.Command}
    */
   static createActionCommand(action) {
-    var shortcut = WebInspector.shortcutRegistry.shortcutTitleForAction(action.id()) || '';
-    return WebInspector.CommandMenu.createCommand(
+    var shortcut = UI.shortcutRegistry.shortcutTitleForAction(action.id()) || '';
+    return UI.CommandMenu.createCommand(
         action.category(), action.tags(), action.title(), shortcut, action.execute.bind(action));
   }
 
   /**
    * @param {!Runtime.Extension} extension
-   * @return {!WebInspector.CommandMenu.Command}
+   * @return {!UI.CommandMenu.Command}
    */
   static createRevealPanelCommand(extension) {
     var panelName = extension.descriptor()['name'];
     var tags = extension.descriptor()['tags'] || '';
-    return WebInspector.CommandMenu.createCommand(
-        WebInspector.UIString('Panel'), tags, WebInspector.UIString('Show %s', extension.title()), '', executeHandler,
+    return UI.CommandMenu.createCommand(
+        Common.UIString('Panel'), tags, Common.UIString('Show %s', extension.title()), '', executeHandler,
         availableHandler);
 
     /**
@@ -76,34 +76,34 @@ WebInspector.CommandMenu = class {
     }
 
     function executeHandler() {
-      WebInspector.viewManager.showView(panelName);
+      UI.viewManager.showView(panelName);
     }
   }
 
   /**
    * @param {!Runtime.Extension} extension
-   * @return {!WebInspector.CommandMenu.Command}
+   * @return {!UI.CommandMenu.Command}
    */
   static createRevealDrawerCommand(extension) {
     var drawerId = extension.descriptor()['id'];
-    var executeHandler = WebInspector.viewManager.showView.bind(WebInspector.viewManager, drawerId);
+    var executeHandler = UI.viewManager.showView.bind(UI.viewManager, drawerId);
     var tags = extension.descriptor()['tags'] || '';
-    return WebInspector.CommandMenu.createCommand(
-        WebInspector.UIString('Drawer'), tags, WebInspector.UIString('Show %s', extension.title()), '', executeHandler);
+    return UI.CommandMenu.createCommand(
+        Common.UIString('Drawer'), tags, Common.UIString('Show %s', extension.title()), '', executeHandler);
   }
 
   _loadCommands() {
     // Populate panels.
-    var panelExtensions = self.runtime.extensions(WebInspector.Panel);
+    var panelExtensions = self.runtime.extensions(UI.Panel);
     for (var extension of panelExtensions)
-      this._commands.push(WebInspector.CommandMenu.createRevealPanelCommand(extension));
+      this._commands.push(UI.CommandMenu.createRevealPanelCommand(extension));
 
     // Populate drawers.
     var drawerExtensions = self.runtime.extensions('view');
     for (var extension of drawerExtensions) {
       if (extension.descriptor()['location'] !== 'drawer-view')
         continue;
-      this._commands.push(WebInspector.CommandMenu.createRevealDrawerCommand(extension));
+      this._commands.push(UI.CommandMenu.createRevealDrawerCommand(extension));
     }
 
     // Populate whitelisted settings.
@@ -113,12 +113,12 @@ WebInspector.CommandMenu = class {
       if (!options || !extension.descriptor()['category'])
         continue;
       for (var pair of options)
-        this._commands.push(WebInspector.CommandMenu.createSettingCommand(extension, pair['title'], pair['value']));
+        this._commands.push(UI.CommandMenu.createSettingCommand(extension, pair['title'], pair['value']));
     }
   }
 
   /**
-   * @return {!Array.<!WebInspector.CommandMenu.Command>}
+   * @return {!Array.<!UI.CommandMenu.Command>}
    */
   commands() {
     return this._commands;
@@ -128,7 +128,7 @@ WebInspector.CommandMenu = class {
 /**
  * @unrestricted
  */
-WebInspector.CommandMenuDelegate = class extends WebInspector.FilteredListWidget.Delegate {
+UI.CommandMenuDelegate = class extends UI.FilteredListWidget.Delegate {
   constructor() {
     super([]);
     this._commands = [];
@@ -136,13 +136,13 @@ WebInspector.CommandMenuDelegate = class extends WebInspector.FilteredListWidget
   }
 
   _appendAvailableCommands() {
-    var allCommands = WebInspector.commandMenu.commands();
+    var allCommands = UI.commandMenu.commands();
 
     // Populate whitelisted actions.
-    var actions = WebInspector.actionRegistry.availableActions();
+    var actions = UI.actionRegistry.availableActions();
     for (var action of actions) {
       if (action.category())
-        this._commands.push(WebInspector.CommandMenu.createActionCommand(action));
+        this._commands.push(UI.CommandMenu.createActionCommand(action));
     }
 
     for (var command of allCommands) {
@@ -153,8 +153,8 @@ WebInspector.CommandMenuDelegate = class extends WebInspector.FilteredListWidget
     this._commands = this._commands.sort(commandComparator);
 
     /**
-     * @param {!WebInspector.CommandMenu.Command} left
-     * @param {!WebInspector.CommandMenu.Command} right
+     * @param {!UI.CommandMenu.Command} left
+     * @param {!UI.CommandMenu.Command} right
      * @return {number}
      */
     function commandComparator(left, right) {
@@ -188,11 +188,11 @@ WebInspector.CommandMenuDelegate = class extends WebInspector.FilteredListWidget
    */
   itemScoreAt(itemIndex, query) {
     var command = this._commands[itemIndex];
-    var opcodes = WebInspector.Diff.charDiff(query.toLowerCase(), command.title().toLowerCase());
+    var opcodes = Diff.Diff.charDiff(query.toLowerCase(), command.title().toLowerCase());
     var score = 0;
     // Score longer sequences higher.
     for (var i = 0; i < opcodes.length; ++i) {
-      if (opcodes[i][0] === WebInspector.Diff.Operation.Equal)
+      if (opcodes[i][0] === Diff.Diff.Operation.Equal)
         score += opcodes[i][1].length * opcodes[i][1].length;
     }
 
@@ -216,8 +216,8 @@ WebInspector.CommandMenuDelegate = class extends WebInspector.FilteredListWidget
     var command = this._commands[itemIndex];
     titleElement.removeChildren();
     var tagElement = titleElement.createChild('span', 'tag');
-    var index = String.hashCode(command.category()) % WebInspector.CommandMenuDelegate.MaterialPaletteColors.length;
-    tagElement.style.backgroundColor = WebInspector.CommandMenuDelegate.MaterialPaletteColors[index];
+    var index = String.hashCode(command.category()) % UI.CommandMenuDelegate.MaterialPaletteColors.length;
+    tagElement.style.backgroundColor = UI.CommandMenuDelegate.MaterialPaletteColors[index];
     tagElement.textContent = command.category();
     titleElement.createTextChild(command.title());
     this.highlightRanges(titleElement, query);
@@ -250,7 +250,7 @@ WebInspector.CommandMenuDelegate = class extends WebInspector.FilteredListWidget
   }
 };
 
-WebInspector.CommandMenuDelegate.MaterialPaletteColors = [
+UI.CommandMenuDelegate.MaterialPaletteColors = [
   '#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A',
   '#CDDC39', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'
 ];
@@ -258,7 +258,7 @@ WebInspector.CommandMenuDelegate.MaterialPaletteColors = [
 /**
  * @unrestricted
  */
-WebInspector.CommandMenu.Command = class {
+UI.CommandMenu.Command = class {
   /**
    * @param {string} category
    * @param {string} title
@@ -317,22 +317,22 @@ WebInspector.CommandMenu.Command = class {
 };
 
 
-/** @type {!WebInspector.CommandMenu} */
-WebInspector.commandMenu = new WebInspector.CommandMenu();
+/** @type {!UI.CommandMenu} */
+UI.commandMenu = new UI.CommandMenu();
 
 /**
- * @implements {WebInspector.ActionDelegate}
+ * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-WebInspector.CommandMenu.ShowActionDelegate = class {
+UI.CommandMenu.ShowActionDelegate = class {
   /**
    * @override
-   * @param {!WebInspector.Context} context
+   * @param {!UI.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    new WebInspector.FilteredListWidget(new WebInspector.CommandMenuDelegate()).showAsDialog();
+    new UI.FilteredListWidget(new UI.CommandMenuDelegate()).showAsDialog();
     InspectorFrontendHost.bringToFront();
     return true;
   }

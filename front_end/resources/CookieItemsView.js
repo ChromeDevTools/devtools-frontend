@@ -30,30 +30,30 @@
 /**
  * @unrestricted
  */
-WebInspector.CookieItemsView = class extends WebInspector.SimpleView {
+Resources.CookieItemsView = class extends UI.SimpleView {
   constructor(treeElement, cookieDomain) {
-    super(WebInspector.UIString('Cookies'));
+    super(Common.UIString('Cookies'));
 
     this.element.classList.add('storage-view');
 
-    this._deleteButton = new WebInspector.ToolbarButton(WebInspector.UIString('Delete'), 'largeicon-delete');
+    this._deleteButton = new UI.ToolbarButton(Common.UIString('Delete'), 'largeicon-delete');
     this._deleteButton.setVisible(false);
     this._deleteButton.addEventListener('click', this._deleteButtonClicked, this);
 
-    this._clearButton = new WebInspector.ToolbarButton(WebInspector.UIString('Clear'), 'largeicon-clear');
+    this._clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
     this._clearButton.setVisible(false);
     this._clearButton.addEventListener('click', this._clearButtonClicked, this);
 
-    this._refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'largeicon-refresh');
+    this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     this._refreshButton.addEventListener('click', this._refreshButtonClicked, this);
 
     this._treeElement = treeElement;
     this._cookieDomain = cookieDomain;
 
-    this._emptyWidget = new WebInspector.EmptyWidget(
+    this._emptyWidget = new UI.EmptyWidget(
         cookieDomain ?
-            WebInspector.UIString('This site has no cookies.') :
-            WebInspector.UIString(
+            Common.UIString('This site has no cookies.') :
+            Common.UIString(
                 'By default cookies are disabled for local files.\nYou could override this by starting the browser with --enable-file-cookies command line flag.'));
     this._emptyWidget.show(this.element);
 
@@ -62,7 +62,7 @@ WebInspector.CookieItemsView = class extends WebInspector.SimpleView {
 
   /**
    * @override
-   * @return {!Array.<!WebInspector.ToolbarItem>}
+   * @return {!Array.<!UI.ToolbarItem>}
    */
   syncToolbarItems() {
     return [this._refreshButton, this._clearButton, this._deleteButton];
@@ -83,11 +83,11 @@ WebInspector.CookieItemsView = class extends WebInspector.SimpleView {
   }
 
   _update() {
-    WebInspector.Cookies.getCookiesAsync(this._updateWithCookies.bind(this));
+    SDK.Cookies.getCookiesAsync(this._updateWithCookies.bind(this));
   }
 
   /**
-   * @param {!Array.<!WebInspector.Cookie>} allCookies
+   * @param {!Array.<!SDK.Cookie>} allCookies
    */
   _updateWithCookies(allCookies) {
     this._cookies = this._filterCookiesForDomain(allCookies);
@@ -104,19 +104,19 @@ WebInspector.CookieItemsView = class extends WebInspector.SimpleView {
 
     if (!this._cookiesTable)
       this._cookiesTable =
-          new WebInspector.CookiesTable(false, this._update.bind(this), this._showDeleteButton.bind(this));
+          new Components.CookiesTable(false, this._update.bind(this), this._showDeleteButton.bind(this));
 
     this._cookiesTable.setCookies(this._cookies);
     this._emptyWidget.detach();
     this._cookiesTable.show(this.element);
     this._treeElement.subtitle = String.sprintf(
-        WebInspector.UIString('%d cookies (%s)'), this._cookies.length, Number.bytesToString(this._totalSize));
+        Common.UIString('%d cookies (%s)'), this._cookies.length, Number.bytesToString(this._totalSize));
     this._clearButton.setVisible(true);
     this._deleteButton.setVisible(!!this._cookiesTable.selectedCookie());
   }
 
   /**
-   * @param {!Array.<!WebInspector.Cookie>} allCookies
+   * @param {!Array.<!SDK.Cookie>} allCookies
    */
   _filterCookiesForDomain(allCookies) {
     var cookies = [];
@@ -124,21 +124,21 @@ WebInspector.CookieItemsView = class extends WebInspector.SimpleView {
     this._totalSize = 0;
 
     /**
-     * @this {WebInspector.CookieItemsView}
+     * @this {Resources.CookieItemsView}
      */
     function populateResourcesForDocuments(resource) {
       var url = resource.documentURL.asParsedURL();
       if (url && url.securityOrigin() === this._cookieDomain)
         resourceURLsForDocumentURL.push(resource.url);
     }
-    WebInspector.forAllResources(populateResourcesForDocuments.bind(this));
+    Bindings.forAllResources(populateResourcesForDocuments.bind(this));
 
     for (var i = 0; i < allCookies.length; ++i) {
       var pushed = false;
       var size = allCookies[i].size();
       for (var j = 0; j < resourceURLsForDocumentURL.length; ++j) {
         var resourceURL = resourceURLsForDocumentURL[j];
-        if (WebInspector.Cookies.cookieMatchesResourceURL(allCookies[i], resourceURL)) {
+        if (SDK.Cookies.cookieMatchesResourceURL(allCookies[i], resourceURL)) {
           this._totalSize += size;
           if (!pushed) {
             pushed = true;
@@ -177,8 +177,8 @@ WebInspector.CookieItemsView = class extends WebInspector.SimpleView {
 
   _contextMenu(event) {
     if (!this._cookies.length) {
-      var contextMenu = new WebInspector.ContextMenu(event);
-      contextMenu.appendItem(WebInspector.UIString('Refresh'), this._update.bind(this));
+      var contextMenu = new UI.ContextMenu(event);
+      contextMenu.appendItem(Common.UIString('Refresh'), this._update.bind(this));
       contextMenu.show();
     }
   }

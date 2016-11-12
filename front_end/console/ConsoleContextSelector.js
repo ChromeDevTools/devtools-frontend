@@ -2,45 +2,45 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.ConsoleContextSelector = class {
+Console.ConsoleContextSelector = class {
   /**
    * @param {!Element} selectElement
    */
   constructor(selectElement) {
     this._selectElement = selectElement;
     /**
-     * @type {!Map.<!WebInspector.ExecutionContext, !Element>}
+     * @type {!Map.<!SDK.ExecutionContext, !Element>}
      */
     this._optionByExecutionContext = new Map();
 
-    WebInspector.targetManager.observeTargets(this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.RuntimeModel, WebInspector.RuntimeModel.Events.ExecutionContextCreated,
+    SDK.targetManager.observeTargets(this);
+    SDK.targetManager.addModelListener(
+        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated,
         this._onExecutionContextCreated, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.RuntimeModel, WebInspector.RuntimeModel.Events.ExecutionContextChanged,
+    SDK.targetManager.addModelListener(
+        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextChanged,
         this._onExecutionContextChanged, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.RuntimeModel, WebInspector.RuntimeModel.Events.ExecutionContextDestroyed,
+    SDK.targetManager.addModelListener(
+        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextDestroyed,
         this._onExecutionContextDestroyed, this);
 
     this._selectElement.addEventListener('change', this._executionContextChanged.bind(this), false);
-    WebInspector.context.addFlavorChangeListener(
-        WebInspector.ExecutionContext, this._executionContextChangedExternally, this);
+    UI.context.addFlavorChangeListener(
+        SDK.ExecutionContext, this._executionContextChangedExternally, this);
   }
 
   /**
-   * @param {!WebInspector.ExecutionContext} executionContext
+   * @param {!SDK.ExecutionContext} executionContext
    * @return {string}
    */
   _titleFor(executionContext) {
     var result;
     if (executionContext.isDefault) {
       if (executionContext.frameId) {
-        var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(executionContext.target());
+        var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(executionContext.target());
         var frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
         result = frame ? frame.displayName() : executionContext.label();
       } else {
@@ -55,7 +55,7 @@ WebInspector.ConsoleContextSelector = class {
   }
 
   /**
-   * @param {!WebInspector.ExecutionContext} executionContext
+   * @param {!SDK.ExecutionContext} executionContext
    */
   _executionContextCreated(executionContext) {
     // FIXME(413886): We never want to show execution context for the main thread of shadow page in service/shared worker frontend.
@@ -72,12 +72,12 @@ WebInspector.ConsoleContextSelector = class {
     var index = contexts.lowerBound(executionContext, executionContext.runtimeModel.executionContextComparator());
     this._selectElement.insertBefore(newOption, options[index]);
 
-    if (executionContext === WebInspector.context.flavor(WebInspector.ExecutionContext))
+    if (executionContext === UI.context.flavor(SDK.ExecutionContext))
       this._select(newOption);
 
     /**
      * @param {!Element} option
-     * @return {!WebInspector.ExecutionContext}
+     * @return {!SDK.ExecutionContext}
      */
     function mapping(option) {
       return option.__executionContext;
@@ -85,19 +85,19 @@ WebInspector.ConsoleContextSelector = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onExecutionContextCreated(event) {
-    var executionContext = /** @type {!WebInspector.ExecutionContext} */ (event.data);
+    var executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
     this._executionContextCreated(executionContext);
     this._updateSelectionWarning();
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onExecutionContextChanged(event) {
-    var executionContext = /** @type {!WebInspector.ExecutionContext} */ (event.data);
+    var executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
     var option = this._optionByExecutionContext.get(executionContext);
     if (option)
       option.text = this._titleFor(executionContext);
@@ -105,7 +105,7 @@ WebInspector.ConsoleContextSelector = class {
   }
 
   /**
-   * @param {!WebInspector.ExecutionContext} executionContext
+   * @param {!SDK.ExecutionContext} executionContext
    */
   _executionContextDestroyed(executionContext) {
     var option = this._optionByExecutionContext.remove(executionContext);
@@ -113,19 +113,19 @@ WebInspector.ConsoleContextSelector = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onExecutionContextDestroyed(event) {
-    var executionContext = /** @type {!WebInspector.ExecutionContext} */ (event.data);
+    var executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
     this._executionContextDestroyed(executionContext);
     this._updateSelectionWarning();
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _executionContextChangedExternally(event) {
-    var executionContext = /** @type {?WebInspector.ExecutionContext} */ (event.data);
+    var executionContext = /** @type {?SDK.ExecutionContext} */ (event.data);
     if (!executionContext)
       return;
 
@@ -139,24 +139,24 @@ WebInspector.ConsoleContextSelector = class {
   _executionContextChanged() {
     var option = this._selectedOption();
     var newContext = option ? option.__executionContext : null;
-    WebInspector.context.setFlavor(WebInspector.ExecutionContext, newContext);
+    UI.context.setFlavor(SDK.ExecutionContext, newContext);
     this._updateSelectionWarning();
   }
 
   _updateSelectionWarning() {
-    var executionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
+    var executionContext = UI.context.flavor(SDK.ExecutionContext);
     this._selectElement.parentElement.classList.toggle(
         'warning', !this._isTopContext(executionContext) && this._hasTopContext());
   }
 
   /**
-   * @param {?WebInspector.ExecutionContext} executionContext
+   * @param {?SDK.ExecutionContext} executionContext
    * @return {boolean}
    */
   _isTopContext(executionContext) {
     if (!executionContext || !executionContext.isDefault)
       return false;
-    var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(executionContext.target());
+    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(executionContext.target());
     var frame = executionContext.frameId && resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
     if (!frame)
       return false;
@@ -177,7 +177,7 @@ WebInspector.ConsoleContextSelector = class {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     target.runtimeModel.executionContexts().forEach(this._executionContextCreated, this);
@@ -185,7 +185,7 @@ WebInspector.ConsoleContextSelector = class {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
     var executionContexts = this._optionByExecutionContext.keysArray();

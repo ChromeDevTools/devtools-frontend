@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.Segment = class {
+Common.Segment = class {
   /**
    * @param {number} begin
    * @param {number} end
@@ -19,7 +19,7 @@ WebInspector.Segment = class {
   }
 
   /**
-   * @param {!WebInspector.Segment} that
+   * @param {!Common.Segment} that
    * @return {boolean}
    */
   intersects(that) {
@@ -30,18 +30,18 @@ WebInspector.Segment = class {
 /**
  * @unrestricted
  */
-WebInspector.SegmentedRange = class {
+Common.SegmentedRange = class {
   /**
-   * @param {(function(!WebInspector.Segment, !WebInspector.Segment): ?WebInspector.Segment)=} mergeCallback
+   * @param {(function(!Common.Segment, !Common.Segment): ?Common.Segment)=} mergeCallback
    */
   constructor(mergeCallback) {
-    /** @type {!Array<!WebInspector.Segment>} */
+    /** @type {!Array<!Common.Segment>} */
     this._segments = [];
     this._mergeCallback = mergeCallback;
   }
 
   /**
-   * @param {!WebInspector.Segment} newSegment
+   * @param {!Common.Segment} newSegment
    */
   append(newSegment) {
     // 1. Find the proper insertion point for new segment
@@ -60,7 +60,7 @@ WebInspector.SegmentedRange = class {
         // If an old segment entirely contains new one, split it in two.
         if (newSegment.end < precedingSegment.end)
           this._segments.splice(
-              startIndex, 0, new WebInspector.Segment(newSegment.end, precedingSegment.end, precedingSegment.data));
+              startIndex, 0, new Common.Segment(newSegment.end, precedingSegment.end, precedingSegment.data));
         precedingSegment.end = newSegment.begin;
       }
     }
@@ -80,23 +80,23 @@ WebInspector.SegmentedRange = class {
   }
 
   /**
-   * @param {!WebInspector.SegmentedRange} that
+   * @param {!Common.SegmentedRange} that
    */
   appendRange(that) {
     that.segments().forEach(segment => this.append(segment));
   }
 
   /**
-   * @return {!Array<!WebInspector.Segment>}
+   * @return {!Array<!Common.Segment>}
    */
   segments() {
     return this._segments;
   }
 
   /**
-   * @param {!WebInspector.Segment} first
-   * @param {!WebInspector.Segment} second
-   * @return {?WebInspector.Segment}
+   * @param {!Common.Segment} first
+   * @param {!Common.Segment} second
+   * @return {?Common.Segment}
    */
   _tryMerge(first, second) {
     var merged = this._mergeCallback && this._mergeCallback(first, second);

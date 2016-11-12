@@ -31,42 +31,42 @@
 /**
  * @unrestricted
  */
-WebInspector.NetworkItemView = class extends WebInspector.TabbedPane {
+Network.NetworkItemView = class extends UI.TabbedPane {
   /**
-   * @param {!WebInspector.NetworkRequest} request
-   * @param {!WebInspector.NetworkTimeCalculator} calculator
+   * @param {!SDK.NetworkRequest} request
+   * @param {!Network.NetworkTimeCalculator} calculator
    */
   constructor(request, calculator) {
     super();
     this.renderWithNoHeaderBackground();
     this.element.classList.add('network-item-view');
 
-    this._resourceViewTabSetting = WebInspector.settings.createSetting('resourceViewTab', 'preview');
+    this._resourceViewTabSetting = Common.settings.createSetting('resourceViewTab', 'preview');
 
-    var headersView = new WebInspector.RequestHeadersView(request);
-    this.appendTab('headers', WebInspector.UIString('Headers'), headersView);
+    var headersView = new Network.RequestHeadersView(request);
+    this.appendTab('headers', Common.UIString('Headers'), headersView);
 
-    this.addEventListener(WebInspector.TabbedPane.Events.TabSelected, this._tabSelected, this);
+    this.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
 
-    if (request.resourceType() === WebInspector.resourceTypes.WebSocket) {
-      var frameView = new WebInspector.ResourceWebSocketFrameView(request);
-      this.appendTab('webSocketFrames', WebInspector.UIString('Frames'), frameView);
+    if (request.resourceType() === Common.resourceTypes.WebSocket) {
+      var frameView = new Network.ResourceWebSocketFrameView(request);
+      this.appendTab('webSocketFrames', Common.UIString('Frames'), frameView);
     } else if (request.mimeType === 'text/event-stream') {
       this.appendTab(
-          'eventSource', WebInspector.UIString('EventStream'), new WebInspector.EventSourceMessagesView(request));
+          'eventSource', Common.UIString('EventStream'), new Network.EventSourceMessagesView(request));
     } else {
-      var responseView = new WebInspector.RequestResponseView(request);
-      var previewView = new WebInspector.RequestPreviewView(request, responseView);
-      this.appendTab('preview', WebInspector.UIString('Preview'), previewView);
-      this.appendTab('response', WebInspector.UIString('Response'), responseView);
+      var responseView = new Network.RequestResponseView(request);
+      var previewView = new Network.RequestPreviewView(request, responseView);
+      this.appendTab('preview', Common.UIString('Preview'), previewView);
+      this.appendTab('response', Common.UIString('Response'), responseView);
     }
 
     if (request.requestCookies || request.responseCookies) {
-      this._cookiesView = new WebInspector.RequestCookiesView(request);
-      this.appendTab('cookies', WebInspector.UIString('Cookies'), this._cookiesView);
+      this._cookiesView = new Network.RequestCookiesView(request);
+      this.appendTab('cookies', Common.UIString('Cookies'), this._cookiesView);
     }
 
-    this.appendTab('timing', WebInspector.UIString('Timing'), new WebInspector.RequestTimingView(request, calculator));
+    this.appendTab('timing', Common.UIString('Timing'), new Network.RequestTimingView(request, calculator));
 
     this._request = request;
   }
@@ -98,7 +98,7 @@ WebInspector.NetworkItemView = class extends WebInspector.TabbedPane {
   }
 
   /**
-   * @return {!WebInspector.NetworkRequest}
+   * @return {!SDK.NetworkRequest}
    */
   request() {
     return this._request;
@@ -108,9 +108,9 @@ WebInspector.NetworkItemView = class extends WebInspector.TabbedPane {
 /**
  * @unrestricted
  */
-WebInspector.RequestContentView = class extends WebInspector.RequestView {
+Network.RequestContentView = class extends Network.RequestView {
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   constructor(request) {
     super(request);
@@ -130,7 +130,7 @@ WebInspector.RequestContentView = class extends WebInspector.RequestView {
 
     /**
      * @param {?string} content
-     * @this {WebInspector.RequestContentView}
+     * @this {Network.RequestContentView}
      */
     function callback(content) {
       this._innerViewShowRequested = false;

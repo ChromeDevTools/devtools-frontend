@@ -29,17 +29,17 @@
 /**
  * @unrestricted
  */
-WebInspector.ConsolePanel = class extends WebInspector.Panel {
+Console.ConsolePanel = class extends UI.Panel {
   constructor() {
     super('console');
-    this._view = WebInspector.ConsoleView.instance();
+    this._view = Console.ConsoleView.instance();
   }
 
   /**
-   * @return {!WebInspector.ConsolePanel}
+   * @return {!Console.ConsolePanel}
    */
   static instance() {
-    return /** @type {!WebInspector.ConsolePanel} */ (self.runtime.sharedInstance(WebInspector.ConsolePanel));
+    return /** @type {!Console.ConsolePanel} */ (self.runtime.sharedInstance(Console.ConsolePanel));
   }
 
   /**
@@ -47,9 +47,9 @@ WebInspector.ConsolePanel = class extends WebInspector.Panel {
    */
   wasShown() {
     super.wasShown();
-    var wrapper = WebInspector.ConsolePanel.WrapperView._instance;
+    var wrapper = Console.ConsolePanel.WrapperView._instance;
     if (wrapper && wrapper.isShowing())
-      WebInspector.inspectorView.setDrawerMinimized(true);
+      UI.inspectorView.setDrawerMinimized(true);
     this._view.show(this.element);
   }
 
@@ -58,48 +58,48 @@ WebInspector.ConsolePanel = class extends WebInspector.Panel {
    */
   willHide() {
     super.willHide();
-    if (WebInspector.ConsolePanel.WrapperView._instance)
-      WebInspector.ConsolePanel.WrapperView._instance._showViewInWrapper();
-    WebInspector.inspectorView.setDrawerMinimized(false);
+    if (Console.ConsolePanel.WrapperView._instance)
+      Console.ConsolePanel.WrapperView._instance._showViewInWrapper();
+    UI.inspectorView.setDrawerMinimized(false);
   }
 
   /**
    * @override
-   * @return {?WebInspector.SearchableView}
+   * @return {?UI.SearchableView}
    */
   searchableView() {
-    return WebInspector.ConsoleView.instance().searchableView();
+    return Console.ConsoleView.instance().searchableView();
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.ConsolePanel.WrapperView = class extends WebInspector.VBox {
+Console.ConsolePanel.WrapperView = class extends UI.VBox {
   constructor() {
     super();
     this.element.classList.add('console-view-wrapper');
 
-    WebInspector.ConsolePanel.WrapperView._instance = this;
+    Console.ConsolePanel.WrapperView._instance = this;
 
-    this._view = WebInspector.ConsoleView.instance();
+    this._view = Console.ConsoleView.instance();
   }
 
   /**
    * @override
    */
   wasShown() {
-    if (!WebInspector.ConsolePanel.instance().isShowing())
+    if (!Console.ConsolePanel.instance().isShowing())
       this._showViewInWrapper();
     else
-      WebInspector.inspectorView.setDrawerMinimized(true);
+      UI.inspectorView.setDrawerMinimized(true);
   }
 
   /**
    * @override
    */
   willHide() {
-    WebInspector.inspectorView.setDrawerMinimized(false);
+    UI.inspectorView.setDrawerMinimized(false);
   }
 
   _showViewInWrapper() {
@@ -108,22 +108,22 @@ WebInspector.ConsolePanel.WrapperView = class extends WebInspector.VBox {
 };
 
 /**
- * @implements {WebInspector.Revealer}
+ * @implements {Common.Revealer}
  * @unrestricted
  */
-WebInspector.ConsolePanel.ConsoleRevealer = class {
+Console.ConsolePanel.ConsoleRevealer = class {
   /**
    * @override
    * @param {!Object} object
    * @return {!Promise}
    */
   reveal(object) {
-    var consoleView = WebInspector.ConsoleView.instance();
+    var consoleView = Console.ConsoleView.instance();
     if (consoleView.isShowing()) {
       consoleView.focus();
       return Promise.resolve();
     }
-    WebInspector.viewManager.showView('console-view');
+    UI.viewManager.showView('console-view');
     return Promise.resolve();
   }
 };

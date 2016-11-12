@@ -28,42 +28,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.Searchable}
- * @implements {WebInspector.Replaceable}
- * @implements {WebInspector.SourcesTextEditorDelegate}
+ * @implements {UI.Searchable}
+ * @implements {UI.Replaceable}
+ * @implements {SourceFrame.SourcesTextEditorDelegate}
  * @unrestricted
  */
-WebInspector.SourceFrame = class extends WebInspector.SimpleView {
+SourceFrame.SourceFrame = class extends UI.SimpleView {
   /**
    * @param {string} url
    * @param {function(): !Promise<?string>} lazyContent
    */
   constructor(url, lazyContent) {
-    super(WebInspector.UIString('Source'));
+    super(Common.UIString('Source'));
 
     this._url = url;
     this._lazyContent = lazyContent;
 
-    this._textEditor = new WebInspector.SourcesTextEditor(this);
+    this._textEditor = new SourceFrame.SourcesTextEditor(this);
 
     this._currentSearchResultIndex = -1;
     this._searchResults = [];
 
     this._textEditor.addEventListener(
-        WebInspector.SourcesTextEditor.Events.EditorFocused, this._resetCurrentSearchResultIndex, this);
+        SourceFrame.SourcesTextEditor.Events.EditorFocused, this._resetCurrentSearchResultIndex, this);
     this._textEditor.addEventListener(
-        WebInspector.SourcesTextEditor.Events.SelectionChanged, this._updateSourcePosition, this);
+        SourceFrame.SourcesTextEditor.Events.SelectionChanged, this._updateSourcePosition, this);
     this._textEditor.addEventListener(
-        WebInspector.SourcesTextEditor.Events.TextChanged,
+        SourceFrame.SourcesTextEditor.Events.TextChanged,
         event => this.onTextChanged(event.data.oldRange, event.data.newRange));
 
     this._shortcuts = {};
     this.element.addEventListener('keydown', this._handleKeyDown.bind(this), false);
 
-    this._sourcePosition = new WebInspector.ToolbarText();
+    this._sourcePosition = new UI.ToolbarText();
 
     /**
-     * @type {?WebInspector.SearchableView}
+     * @type {?UI.SearchableView}
      */
     this._searchableView = null;
     this._editable = false;
@@ -113,7 +113,7 @@ WebInspector.SourceFrame = class extends WebInspector.SimpleView {
 
   /**
    * @override
-   * @return {!Array<!WebInspector.ToolbarItem>}
+   * @return {!Array<!UI.ToolbarItem>}
    */
   syncToolbarItems() {
     return [this._sourcePosition];
@@ -186,14 +186,14 @@ WebInspector.SourceFrame = class extends WebInspector.SimpleView {
   }
 
   /**
-   * @return {!WebInspector.TextRange}
+   * @return {!Common.TextRange}
    */
   selection() {
     return this.textEditor.selection();
   }
 
   /**
-   * @param {!WebInspector.TextRange} textRange
+   * @param {!Common.TextRange} textRange
    */
   setSelection(textRange) {
     this._selectionToSet = textRange;
@@ -218,8 +218,8 @@ WebInspector.SourceFrame = class extends WebInspector.SimpleView {
   }
 
   /**
-   * @param {!WebInspector.TextRange} oldRange
-   * @param {!WebInspector.TextRange} newRange
+   * @param {!Common.TextRange} oldRange
+   * @param {!Common.TextRange} newRange
    */
   onTextChanged(oldRange, newRange) {
     if (this._searchConfig && this._searchableView)
@@ -287,14 +287,14 @@ WebInspector.SourceFrame = class extends WebInspector.SimpleView {
   }
 
   /**
-   * @param {?WebInspector.SearchableView} view
+   * @param {?UI.SearchableView} view
    */
   setSearchableView(view) {
     this._searchableView = view;
   }
 
   /**
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {boolean} shouldJump
    * @param {boolean} jumpBackwards
    */
@@ -321,7 +321,7 @@ WebInspector.SourceFrame = class extends WebInspector.SimpleView {
 
   /**
    * @override
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {boolean} shouldJump
    * @param {boolean=} jumpBackwards
    */
@@ -389,7 +389,7 @@ WebInspector.SourceFrame = class extends WebInspector.SimpleView {
    */
   _searchResultIndexForCurrentSelection() {
     return this._searchResults.lowerBound(
-        this._textEditor.selection().collapseToEnd(), WebInspector.TextRange.comparator);
+        this._textEditor.selection().collapseToEnd(), Common.TextRange.comparator);
   }
 
   /**
@@ -440,7 +440,7 @@ WebInspector.SourceFrame = class extends WebInspector.SimpleView {
 
   /**
    * @override
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {string} replacement
    */
   replaceSelectionWith(searchConfig, replacement) {
@@ -465,7 +465,7 @@ WebInspector.SourceFrame = class extends WebInspector.SimpleView {
 
   /**
    * @override
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {string} replacement
    */
   replaceAllWith(searchConfig, replacement) {
@@ -487,7 +487,7 @@ WebInspector.SourceFrame = class extends WebInspector.SimpleView {
       return;
 
     // Calculate the position of the end of the last range to be edited.
-    var currentRangeIndex = ranges.lowerBound(this._textEditor.selection(), WebInspector.TextRange.comparator);
+    var currentRangeIndex = ranges.lowerBound(this._textEditor.selection(), Common.TextRange.comparator);
     var lastRangeIndex = mod(currentRangeIndex - 1, ranges.length);
     var lastRange = ranges[lastRangeIndex];
     var replacementLineEndings = replacement.computeLineEndings();
@@ -500,7 +500,7 @@ WebInspector.SourceFrame = class extends WebInspector.SimpleView {
 
     this._textEditor.editRange(range, text);
     this._textEditor.revealPosition(lastLineNumber, lastColumnNumber);
-    this._textEditor.setSelection(WebInspector.TextRange.createFromLocation(lastLineNumber, lastColumnNumber));
+    this._textEditor.setSelection(Common.TextRange.createFromLocation(lastLineNumber, lastColumnNumber));
   }
 
   _collectRegexMatches(regexObject) {
@@ -513,7 +513,7 @@ WebInspector.SourceFrame = class extends WebInspector.SimpleView {
         if (match) {
           var matchEndIndex = match.index + Math.max(match[0].length, 1);
           if (match[0].length)
-            ranges.push(new WebInspector.TextRange(i, offset + match.index, i, offset + matchEndIndex));
+            ranges.push(new Common.TextRange(i, offset + match.index, i, offset + matchEndIndex));
           offset += matchEndIndex;
           line = line.substring(matchEndIndex);
         }
@@ -550,27 +550,27 @@ WebInspector.SourceFrame = class extends WebInspector.SimpleView {
     if (!selections.length)
       return;
     if (selections.length > 1) {
-      this._sourcePosition.setText(WebInspector.UIString('%d selection regions', selections.length));
+      this._sourcePosition.setText(Common.UIString('%d selection regions', selections.length));
       return;
     }
     var textRange = selections[0];
     if (textRange.isEmpty()) {
       this._sourcePosition.setText(
-          WebInspector.UIString('Line %d, Column %d', textRange.endLine + 1, textRange.endColumn + 1));
+          Common.UIString('Line %d, Column %d', textRange.endLine + 1, textRange.endColumn + 1));
       return;
     }
     textRange = textRange.normalize();
 
     var selectedText = this._textEditor.text(textRange);
     if (textRange.startLine === textRange.endLine)
-      this._sourcePosition.setText(WebInspector.UIString('%d characters selected', selectedText.length));
+      this._sourcePosition.setText(Common.UIString('%d characters selected', selectedText.length));
     else
-      this._sourcePosition.setText(WebInspector.UIString(
+      this._sourcePosition.setText(Common.UIString(
           '%d lines, %d characters selected', textRange.endLine - textRange.startLine + 1, selectedText.length));
   }
 
   _handleKeyDown(e) {
-    var shortcutKey = WebInspector.KeyboardShortcut.makeKeyFromEvent(e);
+    var shortcutKey = UI.KeyboardShortcut.makeKeyFromEvent(e);
     var handler = this._shortcuts[shortcutKey];
     if (handler && handler())
       e.consume(true);

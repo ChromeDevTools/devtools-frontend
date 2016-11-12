@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-WebInspector.CSSProperty = class {
+SDK.CSSProperty = class {
   /**
-   * @param {!WebInspector.CSSStyleDeclaration} ownerStyle
+   * @param {!SDK.CSSStyleDeclaration} ownerStyle
    * @param {number} index
    * @param {string} name
    * @param {string} value
@@ -27,17 +27,17 @@ WebInspector.CSSProperty = class {
     this.parsedOk = parsedOk;
     this.implicit = implicit;  // A longhand, implicitly set by missing values of shorthand.
     this.text = text;
-    this.range = range ? WebInspector.TextRange.fromObject(range) : null;
+    this.range = range ? Common.TextRange.fromObject(range) : null;
     this._active = true;
     this._nameRange = null;
     this._valueRange = null;
   }
 
   /**
-   * @param {!WebInspector.CSSStyleDeclaration} ownerStyle
+   * @param {!SDK.CSSStyleDeclaration} ownerStyle
    * @param {number} index
    * @param {!Protocol.CSS.CSSProperty} payload
-   * @return {!WebInspector.CSSProperty}
+   * @return {!SDK.CSSProperty}
    */
   static parsePayload(ownerStyle, index, payload) {
     // The following default field values are used in the payload:
@@ -45,7 +45,7 @@ WebInspector.CSSProperty = class {
     // parsedOk: true
     // implicit: false
     // disabled: false
-    var result = new WebInspector.CSSProperty(
+    var result = new SDK.CSSProperty(
         ownerStyle, index, payload.name, payload.value, payload.important || false, payload.disabled || false,
         ('parsedOk' in payload) ? !!payload.parsedOk : true, !!payload.implicit, payload.text, payload.range);
     return result;
@@ -55,7 +55,7 @@ WebInspector.CSSProperty = class {
     if (this._nameRange && this._valueRange)
       return;
     var range = this.range;
-    var text = this.text ? new WebInspector.Text(this.text) : null;
+    var text = this.text ? new Common.Text(this.text) : null;
     if (!range || !text)
       return;
 
@@ -64,17 +64,17 @@ WebInspector.CSSProperty = class {
     if (nameIndex === -1 || valueIndex === -1 || nameIndex > valueIndex)
       return;
 
-    var nameSourceRange = new WebInspector.SourceRange(nameIndex, this.name.length);
-    var valueSourceRange = new WebInspector.SourceRange(valueIndex, this.value.length);
+    var nameSourceRange = new Common.SourceRange(nameIndex, this.name.length);
+    var valueSourceRange = new Common.SourceRange(valueIndex, this.value.length);
 
     this._nameRange = rebase(text.toTextRange(nameSourceRange), range.startLine, range.startColumn);
     this._valueRange = rebase(text.toTextRange(valueSourceRange), range.startLine, range.startColumn);
 
     /**
-     * @param {!WebInspector.TextRange} oneLineRange
+     * @param {!Common.TextRange} oneLineRange
      * @param {number} lineOffset
      * @param {number} columnOffset
-     * @return {!WebInspector.TextRange}
+     * @return {!Common.TextRange}
      */
     function rebase(oneLineRange, lineOffset, columnOffset) {
       if (oneLineRange.startLine === 0) {
@@ -88,7 +88,7 @@ WebInspector.CSSProperty = class {
   }
 
   /**
-   * @return {?WebInspector.TextRange}
+   * @return {?Common.TextRange}
    */
   nameRange() {
     this._ensureRanges();
@@ -96,7 +96,7 @@ WebInspector.CSSProperty = class {
   }
 
   /**
-   * @return {?WebInspector.TextRange}
+   * @return {?Common.TextRange}
    */
   valueRange() {
     this._ensureRanges();
@@ -104,7 +104,7 @@ WebInspector.CSSProperty = class {
   }
 
   /**
-   * @param {!WebInspector.CSSModel.Edit} edit
+   * @param {!SDK.CSSModel.Edit} edit
    */
   rebase(edit) {
     if (this.ownerStyle.styleSheetId !== edit.styleSheetId)
@@ -153,7 +153,7 @@ WebInspector.CSSProperty = class {
       return Promise.reject(new Error('Style not editable'));
 
     if (majorChange)
-      WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.StyleRuleEdited);
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     if (overwrite && propertyText === this.propertyText) {
       if (majorChange)
@@ -163,19 +163,19 @@ WebInspector.CSSProperty = class {
 
     var range = this.range.relativeTo(this.ownerStyle.range.startLine, this.ownerStyle.range.startColumn);
     var indentation = this.ownerStyle.cssText ? this._detectIndentation(this.ownerStyle.cssText) :
-                                                WebInspector.moduleSetting('textEditorIndent').get();
+                                                Common.moduleSetting('textEditorIndent').get();
     var endIndentation = this.ownerStyle.cssText ? indentation.substring(0, this.ownerStyle.range.endColumn) : '';
-    var text = new WebInspector.Text(this.ownerStyle.cssText || '');
+    var text = new Common.Text(this.ownerStyle.cssText || '');
     var newStyleText = text.replaceRange(range, String.sprintf(';%s;', propertyText));
 
-    return self.runtime.extension(WebInspector.TokenizerFactory)
+    return self.runtime.extension(Common.TokenizerFactory)
         .instance()
         .then(this._formatStyle.bind(this, newStyleText, indentation, endIndentation))
         .then(setStyleText.bind(this));
 
     /**
      * @param {string} styleText
-     * @this {WebInspector.CSSProperty}
+     * @this {SDK.CSSProperty}
      * @return {!Promise.<boolean>}
      */
     function setStyleText(styleText) {
@@ -187,7 +187,7 @@ WebInspector.CSSProperty = class {
    * @param {string} styleText
    * @param {string} indentation
    * @param {string} endIndentation
-   * @param {!WebInspector.TokenizerFactory} tokenizerFactory
+   * @param {!Common.TokenizerFactory} tokenizerFactory
    * @return {string}
    */
   _formatStyle(styleText, indentation, endIndentation, tokenizerFactory) {
@@ -245,7 +245,7 @@ WebInspector.CSSProperty = class {
       if (colon === -1)
         return false;
       var propertyName = text.substring(2, colon).trim();
-      return WebInspector.cssMetadata().isCSSPropertyName(propertyName);
+      return SDK.cssMetadata().isCSSPropertyName(propertyName);
     }
   }
 
@@ -257,7 +257,7 @@ WebInspector.CSSProperty = class {
     var lines = text.split('\n');
     if (lines.length < 2)
       return '';
-    return WebInspector.TextUtils.lineIndent(lines[1]);
+    return Common.TextUtils.lineIndent(lines[1]);
   }
 
   /**

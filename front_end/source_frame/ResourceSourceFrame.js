@@ -30,9 +30,9 @@
 /**
  * @unrestricted
  */
-WebInspector.ResourceSourceFrame = class extends WebInspector.SourceFrame {
+SourceFrame.ResourceSourceFrame = class extends SourceFrame.SourceFrame {
   /**
-   * @param {!WebInspector.ContentProvider} resource
+   * @param {!Common.ContentProvider} resource
    */
   constructor(resource) {
     super(resource.contentURL(), resource.requestContent.bind(resource));
@@ -40,15 +40,15 @@ WebInspector.ResourceSourceFrame = class extends WebInspector.SourceFrame {
   }
 
   /**
-   * @param {!WebInspector.ContentProvider} resource
+   * @param {!Common.ContentProvider} resource
    * @param {string} highlighterType
-   * @return {!WebInspector.SearchableView}
+   * @return {!UI.SearchableView}
    */
   static createSearchableView(resource, highlighterType) {
-    var sourceFrame = new WebInspector.ResourceSourceFrame(resource);
+    var sourceFrame = new SourceFrame.ResourceSourceFrame(resource);
     sourceFrame.setHighlighterType(highlighterType);
-    var searchableView = new WebInspector.SearchableView(sourceFrame);
-    searchableView.setPlaceholder(WebInspector.UIString('Find'));
+    var searchableView = new UI.SearchableView(sourceFrame);
+    searchableView.setPlaceholder(Common.UIString('Find'));
     sourceFrame.show(searchableView.element);
     sourceFrame.setSearchableView(searchableView);
     return searchableView;
@@ -60,7 +60,7 @@ WebInspector.ResourceSourceFrame = class extends WebInspector.SourceFrame {
 
   /**
    * @override
-   * @param {!WebInspector.ContextMenu} contextMenu
+   * @param {!UI.ContextMenu} contextMenu
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {!Promise}

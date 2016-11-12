@@ -31,10 +31,10 @@
 /**
  * @unrestricted
  */
-WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNode {
+Network.NetworkDataGridNode = class extends UI.SortableDataGridNode {
   /**
-   * @param {!WebInspector.NetworkLogView} parentView
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!Network.NetworkLogView} parentView
+   * @param {!SDK.NetworkRequest} request
    */
   constructor(parentView, request) {
     super({});
@@ -45,8 +45,8 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
   }
 
   /**
-   * @param {!WebInspector.NetworkDataGridNode} a
-   * @param {!WebInspector.NetworkDataGridNode} b
+   * @param {!Network.NetworkDataGridNode} a
+   * @param {!Network.NetworkDataGridNode} b
    * @return {number}
    */
   static NameComparator(a, b) {
@@ -60,8 +60,8 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
   }
 
   /**
-   * @param {!WebInspector.NetworkDataGridNode} a
-   * @param {!WebInspector.NetworkDataGridNode} b
+   * @param {!Network.NetworkDataGridNode} a
+   * @param {!Network.NetworkDataGridNode} b
    * @return {number}
    */
   static RemoteAddressComparator(a, b) {
@@ -75,8 +75,8 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
   }
 
   /**
-   * @param {!WebInspector.NetworkDataGridNode} a
-   * @param {!WebInspector.NetworkDataGridNode} b
+   * @param {!Network.NetworkDataGridNode} a
+   * @param {!Network.NetworkDataGridNode} b
    * @return {number}
    */
   static SizeComparator(a, b) {
@@ -88,8 +88,8 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
   }
 
   /**
-   * @param {!WebInspector.NetworkDataGridNode} a
-   * @param {!WebInspector.NetworkDataGridNode} b
+   * @param {!Network.NetworkDataGridNode} a
+   * @param {!Network.NetworkDataGridNode} b
    * @return {number}
    */
   static TypeComparator(a, b) {
@@ -104,8 +104,8 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
   }
 
   /**
-   * @param {!WebInspector.NetworkDataGridNode} a
-   * @param {!WebInspector.NetworkDataGridNode} b
+   * @param {!Network.NetworkDataGridNode} a
+   * @param {!Network.NetworkDataGridNode} b
    * @return {number}
    */
   static InitiatorComparator(a, b) {
@@ -118,9 +118,9 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
       return 1;
 
     if (typeof aInitiator.__source === 'undefined')
-      aInitiator.__source = WebInspector.displayNameForURL(aInitiator.url);
+      aInitiator.__source = Bindings.displayNameForURL(aInitiator.url);
     if (typeof bInitiator.__source === 'undefined')
-      bInitiator.__source = WebInspector.displayNameForURL(bInitiator.url);
+      bInitiator.__source = Bindings.displayNameForURL(bInitiator.url);
 
     if (aInitiator.__source < bInitiator.__source)
       return -1;
@@ -141,8 +141,8 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
   }
 
   /**
-   * @param {!WebInspector.NetworkDataGridNode} a
-   * @param {!WebInspector.NetworkDataGridNode} b
+   * @param {!Network.NetworkDataGridNode} a
+   * @param {!Network.NetworkDataGridNode} b
    * @return {number}
    */
   static RequestCookiesCountComparator(a, b) {
@@ -152,8 +152,8 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
   }
 
   /**
-   * @param {!WebInspector.NetworkDataGridNode} a
-   * @param {!WebInspector.NetworkDataGridNode} b
+   * @param {!Network.NetworkDataGridNode} a
+   * @param {!Network.NetworkDataGridNode} b
    * @return {number}
    */
   static ResponseCookiesCountComparator(a, b) {
@@ -163,15 +163,15 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
   }
 
   /**
-   * @param {!WebInspector.NetworkDataGridNode} a
-   * @param {!WebInspector.NetworkDataGridNode} b
+   * @param {!Network.NetworkDataGridNode} a
+   * @param {!Network.NetworkDataGridNode} b
    * @return {number}
    */
   static InitialPriorityComparator(a, b) {
-    var priorityMap = WebInspector.NetworkDataGridNode._symbolicToNumericPriority;
+    var priorityMap = Network.NetworkDataGridNode._symbolicToNumericPriority;
     if (!priorityMap) {
-      WebInspector.NetworkDataGridNode._symbolicToNumericPriority = new Map();
-      priorityMap = WebInspector.NetworkDataGridNode._symbolicToNumericPriority;
+      Network.NetworkDataGridNode._symbolicToNumericPriority = new Map();
+      priorityMap = Network.NetworkDataGridNode._symbolicToNumericPriority;
       priorityMap.set(Protocol.Network.ResourcePriority.VeryLow, 1);
       priorityMap.set(Protocol.Network.ResourcePriority.Low, 2);
       priorityMap.set(Protocol.Network.ResourcePriority.Medium, 3);
@@ -186,8 +186,8 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
 
   /**
    * @param {string} propertyName
-   * @param {!WebInspector.NetworkDataGridNode} a
-   * @param {!WebInspector.NetworkDataGridNode} b
+   * @param {!Network.NetworkDataGridNode} a
+   * @param {!Network.NetworkDataGridNode} b
    * @return {number}
    */
   static RequestPropertyComparator(propertyName, a, b) {
@@ -200,8 +200,8 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
 
   /**
    * @param {string} propertyName
-   * @param {!WebInspector.NetworkDataGridNode} a
-   * @param {!WebInspector.NetworkDataGridNode} b
+   * @param {!Network.NetworkDataGridNode} a
+   * @param {!Network.NetworkDataGridNode} b
    * @return {number}
    */
   static ResponseHeaderStringComparator(propertyName, a, b) {
@@ -212,8 +212,8 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
 
   /**
    * @param {string} propertyName
-   * @param {!WebInspector.NetworkDataGridNode} a
-   * @param {!WebInspector.NetworkDataGridNode} b
+   * @param {!Network.NetworkDataGridNode} a
+   * @param {!Network.NetworkDataGridNode} b
    * @return {number}
    */
   static ResponseHeaderNumberComparator(propertyName, a, b) {
@@ -230,8 +230,8 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
 
   /**
    * @param {string} propertyName
-   * @param {!WebInspector.NetworkDataGridNode} a
-   * @param {!WebInspector.NetworkDataGridNode} b
+   * @param {!Network.NetworkDataGridNode} a
+   * @param {!Network.NetworkDataGridNode} b
    * @return {number}
    */
   static ResponseHeaderDateComparator(propertyName, a, b) {
@@ -252,14 +252,14 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
     var resourceType = this._request.resourceType();
     var simpleType = resourceType.name();
 
-    if (resourceType === WebInspector.resourceTypes.Other || resourceType === WebInspector.resourceTypes.Image)
+    if (resourceType === Common.resourceTypes.Other || resourceType === Common.resourceTypes.Image)
       simpleType = mimeType.replace(/^(application|image)\//, '');
 
     return simpleType;
   }
 
   /**
-   * @return {!WebInspector.NetworkRequest}
+   * @return {!SDK.NetworkRequest}
    */
   request() {
     return this._request;
@@ -342,7 +342,7 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
         this._setTextAndTitle(cell, this._arrayLength(this._request.responseCookies));
         break;
       case 'priority':
-        this._setTextAndTitle(cell, WebInspector.uiLabelForPriority(this._request.initialPriority()));
+        this._setTextAndTitle(cell, Components.uiLabelForPriority(this._request.initialPriority()));
         break;
       case 'connectionid':
         this._setTextAndTitle(cell, this._request.connectionId);
@@ -383,7 +383,7 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
    * @protected
    */
   willAttach() {
-    if (this._initiatorCell && this._request.initiatorInfo().type === WebInspector.NetworkRequest.InitiatorType.Script)
+    if (this._initiatorCell && this._request.initiatorInfo().type === SDK.NetworkRequest.InitiatorType.Script)
       this._initiatorCell.insertBefore(this._linkifiedInitiatorAnchor, this._initiatorCell.firstChild);
   }
 
@@ -406,7 +406,7 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
    */
   select(supressSelectedEvent) {
     super.select(supressSelectedEvent);
-    this._parentView.dispatchEventToListeners(WebInspector.NetworkLogView.Events.RequestSelected, this._request);
+    this._parentView.dispatchEventToListeners(Network.NetworkLogView.Events.RequestSelected, this._request);
   }
 
   /**
@@ -419,7 +419,7 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
     var domChanges = [];
     var matchInfo = this._nameCell.textContent.match(regexp);
     if (matchInfo)
-      WebInspector.highlightSearchResult(this._nameCell, matchInfo.index, matchInfo[0].length, domChanges);
+      UI.highlightSearchResult(this._nameCell, matchInfo.index, matchInfo[0].length, domChanges);
     return domChanges;
   }
 
@@ -441,7 +441,7 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
     this._nameCell = cell;
     cell.addEventListener('dblclick', this._openInNewTab.bind(this), false);
     var iconElement;
-    if (this._request.resourceType() === WebInspector.resourceTypes.Image) {
+    if (this._request.resourceType() === Common.resourceTypes.Image) {
       var previewImage = createElementWithClass('img', 'image-network-icon-preview');
       this._request.populateImageSource(previewImage);
 
@@ -466,7 +466,7 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
         'network-dim-cell', !this._isFailed() && (this._request.cached() || !this._request.statusCode));
 
     if (this._request.failed && !this._request.canceled && !this._request.wasBlocked()) {
-      var failText = WebInspector.UIString('(failed)');
+      var failText = Common.UIString('(failed)');
       if (this._request.localizedFailDescription) {
         cell.createTextChild(failText);
         this._appendSubtitle(cell, this._request.localizedFailDescription);
@@ -478,33 +478,33 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
       this._appendSubtitle(cell, this._request.statusText);
       cell.title = this._request.statusCode + ' ' + this._request.statusText;
     } else if (this._request.parsedURL.isDataURL()) {
-      this._setTextAndTitle(cell, WebInspector.UIString('(data)'));
+      this._setTextAndTitle(cell, Common.UIString('(data)'));
     } else if (this._request.canceled) {
-      this._setTextAndTitle(cell, WebInspector.UIString('(canceled)'));
+      this._setTextAndTitle(cell, Common.UIString('(canceled)'));
     } else if (this._request.wasBlocked()) {
-      var reason = WebInspector.UIString('other');
+      var reason = Common.UIString('other');
       switch (this._request.blockedReason()) {
         case Protocol.Network.BlockedReason.Csp:
-          reason = WebInspector.UIString('csp');
+          reason = Common.UIString('csp');
           break;
         case Protocol.Network.BlockedReason.MixedContent:
-          reason = WebInspector.UIString('mixed-content');
+          reason = Common.UIString('mixed-content');
           break;
         case Protocol.Network.BlockedReason.Origin:
-          reason = WebInspector.UIString('origin');
+          reason = Common.UIString('origin');
           break;
         case Protocol.Network.BlockedReason.Inspector:
-          reason = WebInspector.UIString('devtools');
+          reason = Common.UIString('devtools');
           break;
         case Protocol.Network.BlockedReason.Other:
-          reason = WebInspector.UIString('other');
+          reason = Common.UIString('other');
           break;
       }
-      this._setTextAndTitle(cell, WebInspector.UIString('(blocked:%s)', reason));
+      this._setTextAndTitle(cell, Common.UIString('(blocked:%s)', reason));
     } else if (this._request.finished) {
-      this._setTextAndTitle(cell, WebInspector.UIString('Finished'));
+      this._setTextAndTitle(cell, Common.UIString('Finished'));
     } else {
-      this._setTextAndTitle(cell, WebInspector.UIString('(pending)'));
+      this._setTextAndTitle(cell, Common.UIString('(pending)'));
     }
   }
 
@@ -517,41 +517,41 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
     var initiator = request.initiatorInfo();
 
     if (request.timing && request.timing.pushStart)
-      cell.appendChild(createTextNode(WebInspector.UIString('Push / ')));
+      cell.appendChild(createTextNode(Common.UIString('Push / ')));
     switch (initiator.type) {
-      case WebInspector.NetworkRequest.InitiatorType.Parser:
+      case SDK.NetworkRequest.InitiatorType.Parser:
         cell.title = initiator.url + ':' + (initiator.lineNumber + 1);
-        var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(initiator.url);
-        cell.appendChild(WebInspector.linkifyResourceAsNode(
+        var uiSourceCode = Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(initiator.url);
+        cell.appendChild(Components.linkifyResourceAsNode(
             initiator.url, initiator.lineNumber, initiator.columnNumber, undefined, undefined,
             uiSourceCode ? uiSourceCode.displayName() : undefined));
-        this._appendSubtitle(cell, WebInspector.UIString('Parser'));
+        this._appendSubtitle(cell, Common.UIString('Parser'));
         break;
 
-      case WebInspector.NetworkRequest.InitiatorType.Redirect:
+      case SDK.NetworkRequest.InitiatorType.Redirect:
         cell.title = initiator.url;
         console.assert(request.redirectSource);
-        var redirectSource = /** @type {!WebInspector.NetworkRequest} */ (request.redirectSource);
-        cell.appendChild(WebInspector.linkifyRequestAsNode(redirectSource));
-        this._appendSubtitle(cell, WebInspector.UIString('Redirect'));
+        var redirectSource = /** @type {!SDK.NetworkRequest} */ (request.redirectSource);
+        cell.appendChild(Components.linkifyRequestAsNode(redirectSource));
+        this._appendSubtitle(cell, Common.UIString('Redirect'));
         break;
 
-      case WebInspector.NetworkRequest.InitiatorType.Script:
+      case SDK.NetworkRequest.InitiatorType.Script:
         if (!this._linkifiedInitiatorAnchor) {
           this._linkifiedInitiatorAnchor = this._parentView.linkifier.linkifyScriptLocation(
               request.target(), initiator.scriptId, initiator.url, initiator.lineNumber, initiator.columnNumber);
           this._linkifiedInitiatorAnchor.title = '';
         }
         cell.appendChild(this._linkifiedInitiatorAnchor);
-        this._appendSubtitle(cell, WebInspector.UIString('Script'));
+        this._appendSubtitle(cell, Common.UIString('Script'));
         cell.classList.add('network-script-initiated');
         cell.request = request;
         break;
 
       default:
-        cell.title = WebInspector.UIString('Other');
+        cell.title = Common.UIString('Other');
         cell.classList.add('network-dim-cell');
-        cell.appendChild(createTextNode(WebInspector.UIString('Other')));
+        cell.appendChild(createTextNode(Common.UIString('Other')));
     }
   }
 
@@ -560,13 +560,13 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
    */
   _renderSizeCell(cell) {
     if (this._request.fetchedViaServiceWorker) {
-      this._setTextAndTitle(cell, WebInspector.UIString('(from ServiceWorker)'));
+      this._setTextAndTitle(cell, Common.UIString('(from ServiceWorker)'));
       cell.classList.add('network-dim-cell');
     } else if (this._request.cached()) {
       if (this._request.cachedInMemory())
-        this._setTextAndTitle(cell, WebInspector.UIString('(from memory cache)'));
+        this._setTextAndTitle(cell, Common.UIString('(from memory cache)'));
       else
-        this._setTextAndTitle(cell, WebInspector.UIString('(from disk cache)'));
+        this._setTextAndTitle(cell, Common.UIString('(from disk cache)'));
       cell.classList.add('network-dim-cell');
     } else {
       var resourceSize = Number.bytesToString(this._request.resourceSize);
@@ -585,7 +585,7 @@ WebInspector.NetworkDataGridNode = class extends WebInspector.SortableDataGridNo
       this._appendSubtitle(cell, Number.secondsToString(this._request.latency));
     } else {
       cell.classList.add('network-dim-cell');
-      this._setTextAndTitle(cell, WebInspector.UIString('Pending'));
+      this._setTextAndTitle(cell, Common.UIString('Pending'));
     }
   }
 

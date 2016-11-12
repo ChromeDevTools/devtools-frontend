@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-WebInspector.TextUtils = {
+Common.TextUtils = {
   /**
    * @param {string} char
    * @return {boolean}
@@ -42,7 +42,7 @@ WebInspector.TextUtils = {
    * @return {boolean}
    */
   isWordChar: function(char) {
-    return !WebInspector.TextUtils.isStopChar(char) && !WebInspector.TextUtils.isSpaceChar(char);
+    return !Common.TextUtils.isStopChar(char) && !Common.TextUtils.isSpaceChar(char);
   },
 
   /**
@@ -50,7 +50,7 @@ WebInspector.TextUtils = {
    * @return {boolean}
    */
   isSpaceChar: function(char) {
-    return WebInspector.TextUtils._SpaceCharRegex.test(char);
+    return Common.TextUtils._SpaceCharRegex.test(char);
   },
 
   /**
@@ -59,7 +59,7 @@ WebInspector.TextUtils = {
    */
   isWord: function(word) {
     for (var i = 0; i < word.length; ++i) {
-      if (!WebInspector.TextUtils.isWordChar(word.charAt(i)))
+      if (!Common.TextUtils.isWordChar(word.charAt(i)))
         return false;
     }
     return true;
@@ -86,7 +86,7 @@ WebInspector.TextUtils = {
    * @return {boolean}
    */
   isBraceChar: function(char) {
-    return WebInspector.TextUtils.isOpeningBraceChar(char) || WebInspector.TextUtils.isClosingBraceChar(char);
+    return Common.TextUtils.isOpeningBraceChar(char) || Common.TextUtils.isClosingBraceChar(char);
   },
 
   /**
@@ -114,7 +114,7 @@ WebInspector.TextUtils = {
    */
   lineIndent: function(line) {
     var indentation = 0;
-    while (indentation < line.length && WebInspector.TextUtils.isSpaceChar(line.charAt(indentation)))
+    while (indentation < line.length && Common.TextUtils.isSpaceChar(line.charAt(indentation)))
       ++indentation;
     return line.substr(0, indentation);
   },
@@ -183,12 +183,12 @@ WebInspector.TextUtils = {
   }
 };
 
-WebInspector.TextUtils._SpaceCharRegex = /\s/;
+Common.TextUtils._SpaceCharRegex = /\s/;
 
 /**
  * @enum {string}
  */
-WebInspector.TextUtils.Indent = {
+Common.TextUtils.Indent = {
   TwoSpaces: '  ',
   FourSpaces: '    ',
   EightSpaces: '        ',
@@ -198,7 +198,7 @@ WebInspector.TextUtils.Indent = {
 /**
  * @unrestricted
  */
-WebInspector.TextUtils.BalancedJSONTokenizer = class {
+Common.TextUtils.BalancedJSONTokenizer = class {
   /**
    * @param {function(string)} callback
    * @param {boolean=} findMultiple
@@ -270,9 +270,9 @@ WebInspector.TextUtils.BalancedJSONTokenizer = class {
 /**
  * @interface
  */
-WebInspector.TokenizerFactory = function() {};
+Common.TokenizerFactory = function() {};
 
-WebInspector.TokenizerFactory.prototype = {
+Common.TokenizerFactory.prototype = {
   /**
    * @param {string} mimeType
    * @return {function(string, function(string, ?string, number, number))}

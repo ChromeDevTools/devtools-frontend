@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.Throttler = class {
+Common.Throttler = class {
   /**
    * @param {number} timeout
    */
@@ -95,4 +95,4 @@ WebInspector.Throttler = class {
 };
 
 /** @typedef {function(!Error=)} */
-WebInspector.Throttler.FinishCallback;
+Common.Throttler.FinishCallback;

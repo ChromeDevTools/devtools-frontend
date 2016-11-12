@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.Searchable}
+ * @implements {UI.Searchable}
  * @unrestricted
  */
-WebInspector.XMLView = class extends WebInspector.Widget {
+Network.XMLView = class extends UI.Widget {
   /**
    * @param {!Document} parsedXML
    */
@@ -17,26 +17,26 @@ WebInspector.XMLView = class extends WebInspector.Widget {
     this._treeOutline.registerRequiredCSS('network/xmlTree.css');
     this.contentElement.appendChild(this._treeOutline.element);
 
-    /** @type {?WebInspector.SearchableView} */
+    /** @type {?UI.SearchableView} */
     this._searchableView;
     /** @type {number} */
     this._currentSearchFocusIndex = 0;
     /** @type {!Array.<!TreeElement>} */
     this._currentSearchTreeElements = [];
-    /** @type {?WebInspector.SearchableView.SearchConfig} */
+    /** @type {?UI.SearchableView.SearchConfig} */
     this._searchConfig;
 
-    WebInspector.XMLView.Node.populate(this._treeOutline, parsedXML, this);
+    Network.XMLView.Node.populate(this._treeOutline, parsedXML, this);
   }
 
   /**
    * @param {!Document} parsedXML
-   * @return {!WebInspector.SearchableView}
+   * @return {!UI.SearchableView}
    */
   static createSearchableView(parsedXML) {
-    var xmlView = new WebInspector.XMLView(parsedXML);
-    var searchableView = new WebInspector.SearchableView(xmlView);
-    searchableView.setPlaceholder(WebInspector.UIString('Find'));
+    var xmlView = new Network.XMLView(parsedXML);
+    var searchableView = new UI.SearchableView(xmlView);
+    searchableView.setPlaceholder(Common.UIString('Find'));
     xmlView._searchableView = searchableView;
     xmlView.show(searchableView.element);
     xmlView.contentElement.setAttribute('tabIndex', 0);
@@ -77,7 +77,7 @@ WebInspector.XMLView = class extends WebInspector.Widget {
       this._updateSearchIndex(index);
       if (shouldJump)
         newFocusElement.reveal(true);
-      newFocusElement.setSearchRegex(regex, WebInspector.highlightedCurrentSearchResultClassName);
+      newFocusElement.setSearchRegex(regex, UI.highlightedCurrentSearchResultClassName);
     } else {
       this._updateSearchIndex(0);
     }
@@ -116,7 +116,7 @@ WebInspector.XMLView = class extends WebInspector.Widget {
     var regex = this._searchConfig.toSearchRegex(true);
 
     for (var element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof WebInspector.XMLView.Node))
+      if (!(element instanceof Network.XMLView.Node))
         continue;
       var hasMatch = element.setSearchRegex(regex);
       if (hasMatch)
@@ -142,7 +142,7 @@ WebInspector.XMLView = class extends WebInspector.Widget {
 
   _innerSearchCanceled() {
     for (var element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof WebInspector.XMLView.Node))
+      if (!(element instanceof Network.XMLView.Node))
         continue;
       element.revertHighlightChanges();
     }
@@ -161,7 +161,7 @@ WebInspector.XMLView = class extends WebInspector.Widget {
 
   /**
    * @override
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {boolean} shouldJump
    * @param {boolean=} jumpBackwards
    */
@@ -213,11 +213,11 @@ WebInspector.XMLView = class extends WebInspector.Widget {
 /**
  * @unrestricted
  */
-WebInspector.XMLView.Node = class extends TreeElement {
+Network.XMLView.Node = class extends TreeElement {
   /**
    * @param {!Node} node
    * @param {boolean} closeTag
-   * @param {!WebInspector.XMLView} xmlView
+   * @param {!Network.XMLView} xmlView
    */
   constructor(node, closeTag, xmlView) {
     super('', !closeTag && !!node.childElementCount);
@@ -233,7 +233,7 @@ WebInspector.XMLView.Node = class extends TreeElement {
   /**
    * @param {!TreeOutline|!TreeElement} root
    * @param {!Node} xmlNode
-   * @param {!WebInspector.XMLView} xmlView
+   * @param {!Network.XMLView} xmlView
    */
   static populate(root, xmlNode, xmlView) {
     var node = xmlNode.firstChild;
@@ -247,7 +247,7 @@ WebInspector.XMLView.Node = class extends TreeElement {
       // ignore ATTRIBUTE, ENTITY_REFERENCE, ENTITY, DOCUMENT, DOCUMENT_TYPE, DOCUMENT_FRAGMENT, NOTATION
       if ((nodeType !== 1) && (nodeType !== 3) && (nodeType !== 4) && (nodeType !== 7) && (nodeType !== 8))
         continue;
-      root.appendChild(new WebInspector.XMLView.Node(currentNode, false, xmlView));
+      root.appendChild(new Network.XMLView.Node(currentNode, false, xmlView));
     }
   }
 
@@ -263,23 +263,23 @@ WebInspector.XMLView.Node = class extends TreeElement {
     if (this._closeTag && this.parent && !this.parent.expanded)
       return false;
     regex.lastIndex = 0;
-    var cssClasses = WebInspector.highlightedSearchResultClassName;
+    var cssClasses = UI.highlightedSearchResultClassName;
     if (additionalCssClassName)
       cssClasses += ' ' + additionalCssClassName;
     var content = this.listItemElement.textContent.replace(/\xA0/g, ' ');
     var match = regex.exec(content);
     var ranges = [];
     while (match) {
-      ranges.push(new WebInspector.SourceRange(match.index, match[0].length));
+      ranges.push(new Common.SourceRange(match.index, match[0].length));
       match = regex.exec(content);
     }
     if (ranges.length)
-      WebInspector.highlightRangesWithStyleClass(this.listItemElement, ranges, cssClasses, this._highlightChanges);
+      UI.highlightRangesWithStyleClass(this.listItemElement, ranges, cssClasses, this._highlightChanges);
     return !!this._highlightChanges.length;
   }
 
   revertHighlightChanges() {
-    WebInspector.revertDomChanges(this._highlightChanges);
+    UI.revertDomChanges(this._highlightChanges);
     this._highlightChanges = [];
   }
 
@@ -369,7 +369,7 @@ WebInspector.XMLView.Node = class extends TreeElement {
    * @override
    */
   onpopulate() {
-    WebInspector.XMLView.Node.populate(this, this._node, this._xmlView);
-    this.appendChild(new WebInspector.XMLView.Node(this._node, true, this._xmlView));
+    Network.XMLView.Node.populate(this, this._node, this._xmlView);
+    this.appendChild(new Network.XMLView.Node(this._node, true, this._xmlView));
   }
 };

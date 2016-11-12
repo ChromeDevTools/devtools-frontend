@@ -4,48 +4,48 @@
 /**
  * @unrestricted
  */
-WebInspector.Console = class extends WebInspector.Object {
+Common.Console = class extends Common.Object {
   constructor() {
     super();
-    /** @type {!Array.<!WebInspector.Console.Message>} */
+    /** @type {!Array.<!Common.Console.Message>} */
     this._messages = [];
   }
 
   /**
    * @param {string} text
-   * @param {!WebInspector.Console.MessageLevel} level
+   * @param {!Common.Console.MessageLevel} level
    * @param {boolean=} show
    */
   addMessage(text, level, show) {
-    var message = new WebInspector.Console.Message(
-        text, level || WebInspector.Console.MessageLevel.Log, Date.now(), show || false);
+    var message = new Common.Console.Message(
+        text, level || Common.Console.MessageLevel.Log, Date.now(), show || false);
     this._messages.push(message);
-    this.dispatchEventToListeners(WebInspector.Console.Events.MessageAdded, message);
+    this.dispatchEventToListeners(Common.Console.Events.MessageAdded, message);
   }
 
   /**
    * @param {string} text
    */
   log(text) {
-    this.addMessage(text, WebInspector.Console.MessageLevel.Log);
+    this.addMessage(text, Common.Console.MessageLevel.Log);
   }
 
   /**
    * @param {string} text
    */
   warn(text) {
-    this.addMessage(text, WebInspector.Console.MessageLevel.Warning);
+    this.addMessage(text, Common.Console.MessageLevel.Warning);
   }
 
   /**
    * @param {string} text
    */
   error(text) {
-    this.addMessage(text, WebInspector.Console.MessageLevel.Error, true);
+    this.addMessage(text, Common.Console.MessageLevel.Error, true);
   }
 
   /**
-   * @return {!Array.<!WebInspector.Console.Message>}
+   * @return {!Array.<!Common.Console.Message>}
    */
   messages() {
     return this._messages;
@@ -59,19 +59,19 @@ WebInspector.Console = class extends WebInspector.Object {
    * @return {!Promise.<undefined>}
    */
   showPromise() {
-    return WebInspector.Revealer.revealPromise(this);
+    return Common.Revealer.revealPromise(this);
   }
 };
 
 /** @enum {symbol} */
-WebInspector.Console.Events = {
+Common.Console.Events = {
   MessageAdded: Symbol('messageAdded')
 };
 
 /**
  * @enum {string}
  */
-WebInspector.Console.MessageLevel = {
+Common.Console.MessageLevel = {
   Log: 'log',
   Warning: 'warning',
   Error: 'error'
@@ -80,10 +80,10 @@ WebInspector.Console.MessageLevel = {
 /**
  * @unrestricted
  */
-WebInspector.Console.Message = class {
+Common.Console.Message = class {
   /**
    * @param {string} text
-   * @param {!WebInspector.Console.MessageLevel} level
+   * @param {!Common.Console.MessageLevel} level
    * @param {number} timestamp
    * @param {boolean} show
    */
@@ -95,4 +95,4 @@ WebInspector.Console.Message = class {
   }
 };
 
-WebInspector.console = new WebInspector.Console();
+Common.console = new Common.Console();

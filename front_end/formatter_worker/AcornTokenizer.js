@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.AcornTokenizer = class {
+FormatterWorker.AcornTokenizer = class {
   /**
    * @param {string} content
    */

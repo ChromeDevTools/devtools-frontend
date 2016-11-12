@@ -23,16 +23,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.EventTarget}
+ * @implements {Common.EventTarget}
  * @unrestricted
  */
-WebInspector.Object = class {
+Common.Object = class {
   /**
    * @override
    * @param {string|symbol} eventType
-   * @param {function(!WebInspector.Event)} listener
+   * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
-   * @return {!WebInspector.EventTarget.EventDescriptor}
+   * @return {!Common.EventTarget.EventDescriptor}
    */
   addEventListener(eventType, listener, thisObject) {
     if (!listener)
@@ -43,13 +43,13 @@ WebInspector.Object = class {
     if (!this._listeners.has(eventType))
       this._listeners.set(eventType, []);
     this._listeners.get(eventType).push({thisObject: thisObject, listener: listener});
-    return new WebInspector.EventTarget.EventDescriptor(this, eventType, thisObject, listener);
+    return new Common.EventTarget.EventDescriptor(this, eventType, thisObject, listener);
   }
 
   /**
    * @override
    * @param {string|symbol} eventType
-   * @param {function(!WebInspector.Event)} listener
+   * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
    */
   removeEventListener(eventType, listener, thisObject) {
@@ -93,7 +93,7 @@ WebInspector.Object = class {
     if (!this._listeners || !this._listeners.has(eventType))
       return false;
 
-    var event = new WebInspector.Event(this, eventType, eventData);
+    var event = new Common.Event(this, eventType, eventData);
     var listeners = this._listeners.get(eventType).slice(0);
     for (var i = 0; i < listeners.length; ++i) {
       listeners[i].listener.call(listeners[i].thisObject, event);
@@ -108,9 +108,9 @@ WebInspector.Object = class {
 /**
  * @unrestricted
  */
-WebInspector.Event = class {
+Common.Event = class {
   /**
-   * @param {!WebInspector.EventTarget} target
+   * @param {!Common.EventTarget} target
    * @param {string|symbol} type
    * @param {*=} data
    */
@@ -143,12 +143,12 @@ WebInspector.Event = class {
 /**
  * @interface
  */
-WebInspector.EventTarget = function() {};
+Common.EventTarget = function() {};
 
 /**
- * @param {!Array<!WebInspector.EventTarget.EventDescriptor>} eventList
+ * @param {!Array<!Common.EventTarget.EventDescriptor>} eventList
  */
-WebInspector.EventTarget.removeEventListeners = function(eventList) {
+Common.EventTarget.removeEventListeners = function(eventList) {
   for (var i = 0; i < eventList.length; ++i) {
     var eventInfo = eventList[i];
     eventInfo.eventTarget.removeEventListener(eventInfo.eventType, eventInfo.method, eventInfo.receiver);
@@ -157,18 +157,18 @@ WebInspector.EventTarget.removeEventListeners = function(eventList) {
   eventList.splice(0, eventList.length);
 };
 
-WebInspector.EventTarget.prototype = {
+Common.EventTarget.prototype = {
   /**
    * @param {string|symbol} eventType
-   * @param {function(!WebInspector.Event)} listener
+   * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
-   * @return {!WebInspector.EventTarget.EventDescriptor}
+   * @return {!Common.EventTarget.EventDescriptor}
    */
   addEventListener: function(eventType, listener, thisObject) {},
 
   /**
    * @param {string|symbol} eventType
-   * @param {function(!WebInspector.Event)} listener
+   * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
    */
   removeEventListener: function(eventType, listener, thisObject) {},
@@ -192,9 +192,9 @@ WebInspector.EventTarget.prototype = {
 /**
  * @unrestricted
  */
-WebInspector.EventTarget.EventDescriptor = class {
+Common.EventTarget.EventDescriptor = class {
   /**
-   * @param {!WebInspector.EventTarget} eventTarget
+   * @param {!Common.EventTarget} eventTarget
    * @param {string|symbol} eventType
    * @param {(!Object|undefined)} receiver
    * @param {function(?):?} method

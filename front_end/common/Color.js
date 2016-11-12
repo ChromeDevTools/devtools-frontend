@@ -30,10 +30,10 @@
 /**
  * @unrestricted
  */
-WebInspector.Color = class {
+Common.Color = class {
   /**
    * @param {!Array.<number>} rgba
-   * @param {!WebInspector.Color.Format} format
+   * @param {!Common.Color.Format} format
    * @param {string=} originalText
    */
   constructor(rgba, format, originalText) {
@@ -58,7 +58,7 @@ WebInspector.Color = class {
 
   /**
    * @param {string} text
-   * @return {?WebInspector.Color}
+   * @return {?Common.Color}
    */
   static parse(text) {
     // Simple - #hex, rgb(), nickname, hsl()
@@ -71,31 +71,31 @@ WebInspector.Color = class {
         var hex = match[1].toLowerCase();
         var format;
         if (hex.length === 3) {
-          format = WebInspector.Color.Format.ShortHEX;
+          format = Common.Color.Format.ShortHEX;
           hex = hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
         } else
-          format = WebInspector.Color.Format.HEX;
+          format = Common.Color.Format.HEX;
         var r = parseInt(hex.substring(0, 2), 16);
         var g = parseInt(hex.substring(2, 4), 16);
         var b = parseInt(hex.substring(4, 6), 16);
-        return new WebInspector.Color([r / 255, g / 255, b / 255, 1], format, text);
+        return new Common.Color([r / 255, g / 255, b / 255, 1], format, text);
       }
 
       if (match[2]) {  // rgb
         var rgbString = match[2].split(/\s*,\s*/);
         var rgba = [
-          WebInspector.Color._parseRgbNumeric(rgbString[0]), WebInspector.Color._parseRgbNumeric(rgbString[1]),
-          WebInspector.Color._parseRgbNumeric(rgbString[2]), 1
+          Common.Color._parseRgbNumeric(rgbString[0]), Common.Color._parseRgbNumeric(rgbString[1]),
+          Common.Color._parseRgbNumeric(rgbString[2]), 1
         ];
-        return new WebInspector.Color(rgba, WebInspector.Color.Format.RGB, text);
+        return new Common.Color(rgba, Common.Color.Format.RGB, text);
       }
 
       if (match[3]) {  // nickname
         var nickname = match[3].toLowerCase();
-        if (nickname in WebInspector.Color.Nicknames) {
-          var rgba = WebInspector.Color.Nicknames[nickname];
-          var color = WebInspector.Color.fromRGBA(rgba);
-          color._format = WebInspector.Color.Format.Nickname;
+        if (nickname in Common.Color.Nicknames) {
+          var rgba = Common.Color.Nicknames[nickname];
+          var color = Common.Color.fromRGBA(rgba);
+          color._format = Common.Color.Format.Nickname;
           color._originalText = text;
           return color;
         }
@@ -105,12 +105,12 @@ WebInspector.Color = class {
       if (match[4]) {  // hsl
         var hslString = match[4].replace(/%/g, '').split(/\s*,\s*/);
         var hsla = [
-          WebInspector.Color._parseHueNumeric(hslString[0]), WebInspector.Color._parseSatLightNumeric(hslString[1]),
-          WebInspector.Color._parseSatLightNumeric(hslString[2]), 1
+          Common.Color._parseHueNumeric(hslString[0]), Common.Color._parseSatLightNumeric(hslString[1]),
+          Common.Color._parseSatLightNumeric(hslString[2]), 1
         ];
         var rgba = [];
-        WebInspector.Color.hsl2rgb(hsla, rgba);
-        return new WebInspector.Color(rgba, WebInspector.Color.Format.HSL, text);
+        Common.Color.hsl2rgb(hsla, rgba);
+        return new Common.Color(rgba, Common.Color.Format.HSL, text);
       }
 
       return null;
@@ -124,21 +124,21 @@ WebInspector.Color = class {
       if (match[1]) {  // rgba
         var rgbaString = match[1].split(/\s*,\s*/);
         var rgba = [
-          WebInspector.Color._parseRgbNumeric(rgbaString[0]), WebInspector.Color._parseRgbNumeric(rgbaString[1]),
-          WebInspector.Color._parseRgbNumeric(rgbaString[2]), WebInspector.Color._parseAlphaNumeric(rgbaString[3])
+          Common.Color._parseRgbNumeric(rgbaString[0]), Common.Color._parseRgbNumeric(rgbaString[1]),
+          Common.Color._parseRgbNumeric(rgbaString[2]), Common.Color._parseAlphaNumeric(rgbaString[3])
         ];
-        return new WebInspector.Color(rgba, WebInspector.Color.Format.RGBA, text);
+        return new Common.Color(rgba, Common.Color.Format.RGBA, text);
       }
 
       if (match[2]) {  // hsla
         var hslaString = match[2].replace(/%/g, '').split(/\s*,\s*/);
         var hsla = [
-          WebInspector.Color._parseHueNumeric(hslaString[0]), WebInspector.Color._parseSatLightNumeric(hslaString[1]),
-          WebInspector.Color._parseSatLightNumeric(hslaString[2]), WebInspector.Color._parseAlphaNumeric(hslaString[3])
+          Common.Color._parseHueNumeric(hslaString[0]), Common.Color._parseSatLightNumeric(hslaString[1]),
+          Common.Color._parseSatLightNumeric(hslaString[2]), Common.Color._parseAlphaNumeric(hslaString[3])
         ];
         var rgba = [];
-        WebInspector.Color.hsl2rgb(hsla, rgba);
-        return new WebInspector.Color(rgba, WebInspector.Color.Format.HSLA, text);
+        Common.Color.hsl2rgb(hsla, rgba);
+        return new Common.Color(rgba, Common.Color.Format.HSLA, text);
       }
     }
 
@@ -147,21 +147,21 @@ WebInspector.Color = class {
 
   /**
    * @param {!Array.<number>} rgba
-   * @return {!WebInspector.Color}
+   * @return {!Common.Color}
    */
   static fromRGBA(rgba) {
-    return new WebInspector.Color(
-        [rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]], WebInspector.Color.Format.RGBA);
+    return new Common.Color(
+        [rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]], Common.Color.Format.RGBA);
   }
 
   /**
    * @param {!Array.<number>} hsva
-   * @return {!WebInspector.Color}
+   * @return {!Common.Color}
    */
   static fromHSVA(hsva) {
     var rgba = [];
-    WebInspector.Color.hsva2rgba(hsva, rgba);
-    return new WebInspector.Color(rgba, WebInspector.Color.Format.HSLA);
+    Common.Color.hsva2rgba(hsva, rgba);
+    return new Common.Color(rgba, Common.Color.Format.HSLA);
   }
 
   /**
@@ -272,11 +272,11 @@ WebInspector.Color = class {
    * @param {!Array<number>} out_rgba
    */
   static hsva2rgba(hsva, out_rgba) {
-    WebInspector.Color._hsva2hsla(hsva, WebInspector.Color.hsva2rgba._tmpHSLA);
-    WebInspector.Color.hsl2rgb(WebInspector.Color.hsva2rgba._tmpHSLA, out_rgba);
+    Common.Color._hsva2hsla(hsva, Common.Color.hsva2rgba._tmpHSLA);
+    Common.Color.hsl2rgb(Common.Color.hsva2rgba._tmpHSLA, out_rgba);
 
-    for (var i = 0; i < WebInspector.Color.hsva2rgba._tmpHSLA.length; i++)
-      WebInspector.Color.hsva2rgba._tmpHSLA[i] = 0;
+    for (var i = 0; i < Common.Color.hsva2rgba._tmpHSLA.length; i++)
+      Common.Color.hsva2rgba._tmpHSLA[i] = 0;
   }
 
   /**
@@ -321,14 +321,14 @@ WebInspector.Color = class {
    * @return {number}
    */
   static calculateContrastRatio(fgRGBA, bgRGBA) {
-    WebInspector.Color.blendColors(fgRGBA, bgRGBA, WebInspector.Color.calculateContrastRatio._blendedFg);
+    Common.Color.blendColors(fgRGBA, bgRGBA, Common.Color.calculateContrastRatio._blendedFg);
 
-    var fgLuminance = WebInspector.Color.luminance(WebInspector.Color.calculateContrastRatio._blendedFg);
-    var bgLuminance = WebInspector.Color.luminance(bgRGBA);
+    var fgLuminance = Common.Color.luminance(Common.Color.calculateContrastRatio._blendedFg);
+    var bgLuminance = Common.Color.luminance(bgRGBA);
     var contrastRatio = (Math.max(fgLuminance, bgLuminance) + 0.05) / (Math.min(fgLuminance, bgLuminance) + 0.05);
 
-    for (var i = 0; i < WebInspector.Color.calculateContrastRatio._blendedFg.length; i++)
-      WebInspector.Color.calculateContrastRatio._blendedFg[i] = 0;
+    for (var i = 0; i < Common.Color.calculateContrastRatio._blendedFg.length; i++)
+      Common.Color.calculateContrastRatio._blendedFg[i] = 0;
 
     return contrastRatio;
   }
@@ -360,13 +360,13 @@ WebInspector.Color = class {
   }
 
   /**
-   * @param {!WebInspector.Color} color
-   * @return {!WebInspector.Color.Format}
+   * @param {!Common.Color} color
+   * @return {!Common.Color.Format}
    */
   static detectColorFormat(color) {
-    const cf = WebInspector.Color.Format;
+    const cf = Common.Color.Format;
     var format;
-    var formatSetting = WebInspector.moduleSetting('colorFormat').get();
+    var formatSetting = Common.moduleSetting('colorFormat').get();
     if (formatSetting === cf.Original)
       format = cf.Original;
     else if (formatSetting === cf.RGB)
@@ -382,7 +382,7 @@ WebInspector.Color = class {
   }
 
   /**
-   * @return {!WebInspector.Color.Format}
+   * @return {!Common.Color.Format}
    */
   format() {
     return this._format;
@@ -504,35 +504,35 @@ WebInspector.Color = class {
     }
 
     switch (format) {
-      case WebInspector.Color.Format.Original:
+      case Common.Color.Format.Original:
         return this._originalText;
-      case WebInspector.Color.Format.RGB:
+      case Common.Color.Format.RGB:
         if (this.hasAlpha())
           return null;
         return String.sprintf(
             'rgb(%d, %d, %d)', toRgbValue(this._rgba[0]), toRgbValue(this._rgba[1]), toRgbValue(this._rgba[2]));
-      case WebInspector.Color.Format.RGBA:
+      case Common.Color.Format.RGBA:
         return String.sprintf(
             'rgba(%d, %d, %d, %f)', toRgbValue(this._rgba[0]), toRgbValue(this._rgba[1]), toRgbValue(this._rgba[2]),
             this._rgba[3]);
-      case WebInspector.Color.Format.HSL:
+      case Common.Color.Format.HSL:
         if (this.hasAlpha())
           return null;
         var hsl = this.hsla();
         return String.sprintf(
             'hsl(%d, %d%, %d%)', Math.round(hsl[0] * 360), Math.round(hsl[1] * 100), Math.round(hsl[2] * 100));
-      case WebInspector.Color.Format.HSLA:
+      case Common.Color.Format.HSLA:
         var hsla = this.hsla();
         return String.sprintf(
             'hsla(%d, %d%, %d%, %f)', Math.round(hsla[0] * 360), Math.round(hsla[1] * 100), Math.round(hsla[2] * 100),
             hsla[3]);
-      case WebInspector.Color.Format.HEX:
+      case Common.Color.Format.HEX:
         if (this.hasAlpha())
           return null;
         return String
             .sprintf('#%s%s%s', toHexValue(this._rgba[0]), toHexValue(this._rgba[1]), toHexValue(this._rgba[2]))
             .toLowerCase();
-      case WebInspector.Color.Format.ShortHEX:
+      case Common.Color.Format.ShortHEX:
         if (!this.canBeShortHex())
           return null;
         return String
@@ -540,7 +540,7 @@ WebInspector.Color = class {
                 '#%s%s%s', toShortHexValue(this._rgba[0]), toShortHexValue(this._rgba[1]),
                 toShortHexValue(this._rgba[2]))
             .toLowerCase();
-      case WebInspector.Color.Format.Nickname:
+      case Common.Color.Format.Nickname:
         return this.nickname();
     }
 
@@ -569,17 +569,17 @@ WebInspector.Color = class {
    * @return {?string} nickname
    */
   nickname() {
-    if (!WebInspector.Color._rgbaToNickname) {
-      WebInspector.Color._rgbaToNickname = {};
-      for (var nickname in WebInspector.Color.Nicknames) {
-        var rgba = WebInspector.Color.Nicknames[nickname];
+    if (!Common.Color._rgbaToNickname) {
+      Common.Color._rgbaToNickname = {};
+      for (var nickname in Common.Color.Nicknames) {
+        var rgba = Common.Color.Nicknames[nickname];
         if (rgba.length !== 4)
           rgba = rgba.concat(1);
-        WebInspector.Color._rgbaToNickname[rgba] = nickname;
+        Common.Color._rgbaToNickname[rgba] = nickname;
       }
     }
 
-    return WebInspector.Color._rgbaToNickname[this.canonicalRGBA()] || null;
+    return Common.Color._rgbaToNickname[this.canonicalRGBA()] || null;
   }
 
   /**
@@ -594,7 +594,7 @@ WebInspector.Color = class {
   }
 
   /**
-   * @return {!WebInspector.Color}
+   * @return {!Common.Color}
    */
   invert() {
     var rgba = [];
@@ -602,27 +602,27 @@ WebInspector.Color = class {
     rgba[1] = 1 - this._rgba[1];
     rgba[2] = 1 - this._rgba[2];
     rgba[3] = this._rgba[3];
-    return new WebInspector.Color(rgba, WebInspector.Color.Format.RGBA);
+    return new Common.Color(rgba, Common.Color.Format.RGBA);
   }
 
   /**
    * @param {number} alpha
-   * @return {!WebInspector.Color}
+   * @return {!Common.Color}
    */
   setAlpha(alpha) {
     var rgba = this._rgba.slice();
     rgba[3] = alpha;
-    return new WebInspector.Color(rgba, WebInspector.Color.Format.RGBA);
+    return new Common.Color(rgba, Common.Color.Format.RGBA);
   }
 };
 
 /** @type {!RegExp} */
-WebInspector.Color.Regex = /((?:rgb|hsl)a?\([^)]+\)|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|\b[a-zA-Z]+\b(?!-))/g;
+Common.Color.Regex = /((?:rgb|hsl)a?\([^)]+\)|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|\b[a-zA-Z]+\b(?!-))/g;
 
 /**
  * @enum {string}
  */
-WebInspector.Color.Format = {
+Common.Color.Format = {
   Original: 'original',
   Nickname: 'nickname',
   HEX: 'hex',
@@ -635,13 +635,13 @@ WebInspector.Color.Format = {
 
 
 /** @type {!Array<number>} */
-WebInspector.Color.hsva2rgba._tmpHSLA = [0, 0, 0, 0];
+Common.Color.hsva2rgba._tmpHSLA = [0, 0, 0, 0];
 
 
-WebInspector.Color.calculateContrastRatio._blendedFg = [0, 0, 0, 0];
+Common.Color.calculateContrastRatio._blendedFg = [0, 0, 0, 0];
 
 
-WebInspector.Color.Nicknames = {
+Common.Color.Nicknames = {
   'aliceblue': [240, 248, 255],
   'antiquewhite': [250, 235, 215],
   'aqua': [0, 255, 255],
@@ -793,17 +793,17 @@ WebInspector.Color.Nicknames = {
   'transparent': [0, 0, 0, 0],
 };
 
-WebInspector.Color.PageHighlight = {
-  Content: WebInspector.Color.fromRGBA([111, 168, 220, .66]),
-  ContentLight: WebInspector.Color.fromRGBA([111, 168, 220, .5]),
-  ContentOutline: WebInspector.Color.fromRGBA([9, 83, 148]),
-  Padding: WebInspector.Color.fromRGBA([147, 196, 125, .55]),
-  PaddingLight: WebInspector.Color.fromRGBA([147, 196, 125, .4]),
-  Border: WebInspector.Color.fromRGBA([255, 229, 153, .66]),
-  BorderLight: WebInspector.Color.fromRGBA([255, 229, 153, .5]),
-  Margin: WebInspector.Color.fromRGBA([246, 178, 107, .66]),
-  MarginLight: WebInspector.Color.fromRGBA([246, 178, 107, .5]),
-  EventTarget: WebInspector.Color.fromRGBA([255, 196, 196, .66]),
-  Shape: WebInspector.Color.fromRGBA([96, 82, 177, 0.8]),
-  ShapeMargin: WebInspector.Color.fromRGBA([96, 82, 127, .6])
+Common.Color.PageHighlight = {
+  Content: Common.Color.fromRGBA([111, 168, 220, .66]),
+  ContentLight: Common.Color.fromRGBA([111, 168, 220, .5]),
+  ContentOutline: Common.Color.fromRGBA([9, 83, 148]),
+  Padding: Common.Color.fromRGBA([147, 196, 125, .55]),
+  PaddingLight: Common.Color.fromRGBA([147, 196, 125, .4]),
+  Border: Common.Color.fromRGBA([255, 229, 153, .66]),
+  BorderLight: Common.Color.fromRGBA([255, 229, 153, .5]),
+  Margin: Common.Color.fromRGBA([246, 178, 107, .66]),
+  MarginLight: Common.Color.fromRGBA([246, 178, 107, .5]),
+  EventTarget: Common.Color.fromRGBA([255, 196, 196, .66]),
+  Shape: Common.Color.fromRGBA([96, 82, 177, 0.8]),
+  ShapeMargin: Common.Color.fromRGBA([96, 82, 127, .6])
 };

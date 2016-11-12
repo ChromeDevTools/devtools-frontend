@@ -6,21 +6,21 @@
             "id": "sources",
             "title": "Sources",
             "order": 30,
-            "className": "WebInspector.SourcesPanel"
+            "className": "Sources.SourcesPanel"
         },
         {
-            "type": "@WebInspector.ContextMenu.Provider",
-            "contextTypes": ["WebInspector.UISourceCode", "WebInspector.UILocation", "WebInspector.RemoteObject", "WebInspector.NetworkRequest", "WebInspector.UISourceCodeFrame"],
-            "className": "WebInspector.SourcesPanel"
+            "type": "@UI.ContextMenu.Provider",
+            "contextTypes": ["Workspace.UISourceCode", "Workspace.UILocation", "SDK.RemoteObject", "SDK.NetworkRequest", "Sources.UISourceCodeFrame"],
+            "className": "Sources.SourcesPanel"
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Debugger",
             "actionId": "debugger.toggle-pause",
             "iconClass": "largeicon-pause",
             "toggledIconClass": "largeicon-resume",
-            "className": "WebInspector.SourcesPanel.RevealingActionDelegate",
-            "contextTypes": ["WebInspector.SourcesPanel", "WebInspector.ShortcutRegistry.ForwardedShortcut"],
+            "className": "Sources.SourcesPanel.RevealingActionDelegate",
+            "contextTypes": ["Sources.SourcesPanel", "UI.ShortcutRegistry.ForwardedShortcut"],
             "options": [
                 { "value": true, "title": "Pause script execution" },
                 { "value": false, "title": "Resume script execution" }
@@ -37,12 +37,12 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "debugger.step-over",
-            "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
+            "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step over next function call",
             "iconClass": "largeicon-step-over",
-            "contextTypes": ["WebInspector.SourcesPanel"],
+            "contextTypes": ["Sources.SourcesPanel"],
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -55,12 +55,12 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "debugger.step-into",
-            "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
+            "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step into next function call",
             "iconClass": "largeicon-step-in",
-            "contextTypes": ["WebInspector.SourcesPanel"],
+            "contextTypes": ["Sources.SourcesPanel"],
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -73,12 +73,12 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "debugger.step-out",
-            "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
+            "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step out of current function",
             "iconClass": "largeicon-step-out",
-            "contextTypes": ["WebInspector.SourcesPanel"],
+            "contextTypes": ["Sources.SourcesPanel"],
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -91,12 +91,12 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "debugger.run-snippet",
-            "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
+            "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Run snippet",
             "iconClass": "largeicon-play",
-            "contextTypes": ["WebInspector.SourcesPanel"],
+            "contextTypes": ["Sources.SourcesPanel"],
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -109,10 +109,10 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "sources.search.toggle",
             "title": "Search all files",
-            "className": "WebInspector.AdvancedSearchView.ActionDelegate",
+            "className": "Sources.AdvancedSearchView.ActionDelegate",
             "category": "DevTools",
             "bindings": [
                 {
@@ -126,13 +126,13 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Debugger",
             "actionId": "debugger.toggle-breakpoints-active",
             "iconClass": "largeicon-deactivate-breakpoints",
             "toggledIconClass": "largeicon-activate-breakpoints",
-            "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
-            "contextTypes": ["WebInspector.SourcesPanel"],
+            "className": "Sources.SourcesPanel.DebuggingActionDelegate",
+            "contextTypes": ["Sources.SourcesPanel"],
             "options": [
                 { "value": true, "title": "Deactivate breakpoints" },
                 { "value": false, "title": "Activate breakpoints" }
@@ -149,11 +149,11 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "sources.add-to-watch",
-            "className": "WebInspector.WatchExpressionsSidebarPane",
+            "className": "Sources.WatchExpressionsSidebarPane",
             "title": "Add selected text to watches",
-            "contextTypes": ["WebInspector.UISourceCodeFrame"],
+            "contextTypes": ["Sources.UISourceCodeFrame"],
             "bindings": [
                 {
                     "shortcut": "Ctrl+Shift+A'"
@@ -161,16 +161,16 @@
             ]
         },
         {
-            "type": "@WebInspector.ContextMenu.Provider",
-            "contextTypes": ["WebInspector.CodeMirrorTextEditor"],
-            "className": "WebInspector.WatchExpressionsSidebarPane"
+            "type": "@UI.ContextMenu.Provider",
+            "contextTypes": ["TextEditor.CodeMirrorTextEditor"],
+            "className": "Sources.WatchExpressionsSidebarPane"
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "debugger.evaluate-selection",
-            "className": "WebInspector.SourcesPanel.DebuggingActionDelegate",
+            "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Evaluate in console",
-            "contextTypes": ["WebInspector.UISourceCodeFrame"],
+            "contextTypes": ["Sources.UISourceCodeFrame"],
             "bindings": [
                 {
                     "shortcut": "Ctrl+E'"
@@ -188,32 +188,32 @@
             "actionId": "sources.go-to-source"
         },
         {
-            "type": "@WebInspector.Revealer",
-            "contextTypes": ["WebInspector.UILocation"],
-            "className": "WebInspector.SourcesPanel.UILocationRevealer"
+            "type": "@Common.Revealer",
+            "contextTypes": ["Workspace.UILocation"],
+            "className": "Sources.SourcesPanel.UILocationRevealer"
         },
         {
-            "type": "@WebInspector.Revealer",
-            "contextTypes": ["WebInspector.DebuggerModel.Location"],
-            "className": "WebInspector.SourcesPanel.DebuggerLocationRevealer"
+            "type": "@Common.Revealer",
+            "contextTypes": ["SDK.DebuggerModel.Location"],
+            "className": "Sources.SourcesPanel.DebuggerLocationRevealer"
         },
         {
-            "type": "@WebInspector.Revealer",
-            "contextTypes": ["WebInspector.UISourceCode"],
-            "className": "WebInspector.SourcesPanel.UISourceCodeRevealer"
+            "type": "@Common.Revealer",
+            "contextTypes": ["Workspace.UISourceCode"],
+            "className": "Sources.SourcesPanel.UISourceCodeRevealer"
         },
         {
-            "type": "@WebInspector.Revealer",
-            "contextTypes": ["WebInspector.DebuggerPausedDetails"],
-            "className": "WebInspector.SourcesPanel.DebuggerPausedDetailsRevealer"
+            "type": "@Common.Revealer",
+            "contextTypes": ["SDK.DebuggerPausedDetails"],
+            "className": "Sources.SourcesPanel.DebuggerPausedDetailsRevealer"
         },
         {
-            "type": "@WebInspector.SourcesView.EditorAction",
-            "className": "WebInspector.InplaceFormatterEditorAction"
+            "type": "@Sources.SourcesView.EditorAction",
+            "className": "Sources.InplaceFormatterEditorAction"
         },
         {
-            "type": "@WebInspector.SourcesView.EditorAction",
-            "className": "WebInspector.ScriptFormatterEditorAction"
+            "type": "@Sources.SourcesView.EditorAction",
+            "className": "Sources.ScriptFormatterEditorAction"
         },
         {
             "type": "view",
@@ -222,7 +222,7 @@
             "title": "Sources",
             "order": 1,
             "persistence": "permanent",
-            "className": "WebInspector.SourcesNavigatorView",
+            "className": "Sources.SourcesNavigatorView",
             "experiment": "!persistence2"
         },
         {
@@ -232,7 +232,7 @@
             "title": "Network",
             "order": 2,
             "persistence": "permanent",
-            "className": "WebInspector.NetworkNavigatorView",
+            "className": "Sources.NetworkNavigatorView",
             "experiment": "persistence2"
         },
         {
@@ -242,7 +242,7 @@
             "title": "Filesystem",
             "order": 3,
             "persistence": "permanent",
-            "className": "WebInspector.FilesNavigatorView",
+            "className": "Sources.FilesNavigatorView",
             "experiment": "persistence2"
         },
         {
@@ -252,7 +252,7 @@
             "title": "Content scripts",
             "order": 4,
             "persistence": "permanent",
-            "className": "WebInspector.ContentScriptsNavigatorView"
+            "className": "Sources.ContentScriptsNavigatorView"
         },
         {
             "type": "view",
@@ -261,41 +261,41 @@
             "title": "Snippets",
             "order": 5,
             "persistence": "permanent",
-            "className": "WebInspector.SnippetsNavigatorView"
+            "className": "Sources.SnippetsNavigatorView"
         },
         {
-            "type": "@WebInspector.NavigatorView",
+            "type": "@Sources.NavigatorView",
             "viewId": "navigator-sources",
-            "className": "WebInspector.SourcesNavigatorView",
+            "className": "Sources.SourcesNavigatorView",
             "experiment": "!persistence2"
         },
         {
-            "type": "@WebInspector.NavigatorView",
+            "type": "@Sources.NavigatorView",
             "viewId": "navigator-network",
-            "className": "WebInspector.NetworkNavigatorView",
+            "className": "Sources.NetworkNavigatorView",
             "experiment": "persistence2"
         },
         {
-            "type": "@WebInspector.NavigatorView",
+            "type": "@Sources.NavigatorView",
             "viewId": "navigator-files",
-            "className": "WebInspector.FilesNavigatorView",
+            "className": "Sources.FilesNavigatorView",
             "experiment": "persistence2"
         },
         {
-            "type": "@WebInspector.NavigatorView",
+            "type": "@Sources.NavigatorView",
             "viewId": "navigator-contentScripts",
-            "className": "WebInspector.ContentScriptsNavigatorView"
+            "className": "Sources.ContentScriptsNavigatorView"
         },
         {
-            "type": "@WebInspector.NavigatorView",
+            "type": "@Sources.NavigatorView",
             "viewId": "navigator-snippets",
-            "className": "WebInspector.SnippetsNavigatorView"
+            "className": "Sources.SnippetsNavigatorView"
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "sources.go-to-source",
             "title": "Go to file...",
-            "className": "WebInspector.SourcesPanel.RevealingActionDelegate",
+            "className": "Sources.SourcesPanel.RevealingActionDelegate",
             "order": 100,
             "bindings": [
                 {
@@ -309,10 +309,10 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "sources.switch-file",
-            "className": "WebInspector.SourcesView.SwitchFileActionDelegate",
-            "contextTypes": ["WebInspector.SourcesView"],
+            "className": "Sources.SourcesView.SwitchFileActionDelegate",
+            "contextTypes": ["Sources.SourcesView"],
             "bindings": [
                 {
                     "shortcut": "Alt+O"
@@ -409,7 +409,7 @@
             "title": "Search",
             "persistence": "closeable",
             "order": 100,
-            "className": "WebInspector.AdvancedSearchView"
+            "className": "Sources.AdvancedSearchView"
         },
         {
             "type": "view",
@@ -417,7 +417,7 @@
             "id": "sources.history",
             "title": "History",
             "persistence": "transient",
-            "className": "WebInspector.RevisionHistoryView"
+            "className": "Sources.RevisionHistoryView"
         },
         {
             "type": "view",
@@ -426,24 +426,24 @@
             "title": "Quick source",
             "persistence": "closeable",
             "order": 1000,
-            "className": "WebInspector.SourcesPanel.WrapperView"
+            "className": "Sources.SourcesPanel.WrapperView"
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Sources",
             "actionId": "sources.close-all",
-            "className": "WebInspector.SourcesView.CloseAllActionDelegate",
+            "className": "Sources.SourcesView.CloseAllActionDelegate",
             "title": "Close All"
         },
         {
-            "type": "@WebInspector.ViewLocationResolver",
+            "type": "@UI.ViewLocationResolver",
             "name": "navigator-view",
-            "className": "WebInspector.SourcesPanel"
+            "className": "Sources.SourcesPanel"
         },
         {
-            "type": "@WebInspector.ViewLocationResolver",
+            "type": "@UI.ViewLocationResolver",
             "name": "sources-sidebar",
-            "className": "WebInspector.SourcesPanel"
+            "className": "Sources.SourcesPanel"
         },
         {
             "type": "view",
@@ -453,7 +453,7 @@
             "order": 5,
             "hasToolbar": "true",
             "persistence": "permanent",
-            "className": "WebInspector.XHRBreakpointsSidebarPane"
+            "className": "Sources.XHRBreakpointsSidebarPane"
         },
         {
             "type": "view",
@@ -462,7 +462,7 @@
             "title": "DOM Breakpoints",
             "order": 7,
             "persistence": "permanent",
-            "factoryName": "WebInspector.DOMBreakpointsSidebarPane.Proxy"
+            "factoryName": "Components.DOMBreakpointsSidebarPane.Proxy"
         },
         {
             "type": "view",
@@ -472,7 +472,7 @@
             "order": 8,
             "hasToolbar": "true",
             "persistence": "permanent",
-            "className": "WebInspector.ObjectEventListenersSidebarPane"
+            "className": "Sources.ObjectEventListenersSidebarPane"
         },
         {
             "type": "view",
@@ -481,21 +481,21 @@
             "title": "Event Listener Breakpoints",
             "order": 9,
             "persistence": "permanent",
-            "className": "WebInspector.EventListenerBreakpointsSidebarPane"
+            "className": "Sources.EventListenerBreakpointsSidebarPane"
         },
         {
             "type": "view",
             "id": "sources.threads",
             "title": "Threads",
             "persistence": "permanent",
-            "className": "WebInspector.ThreadsSidebarPane"
+            "className": "Sources.ThreadsSidebarPane"
         },
         {
             "type": "view",
             "id": "sources.scopeChain",
             "title": "Scope",
             "persistence": "permanent",
-            "className": "WebInspector.ScopeChainSidebarPane"
+            "className": "Sources.ScopeChainSidebarPane"
         },
         {
             "type": "view",
@@ -503,39 +503,39 @@
             "title": "Watch",
             "hasToolbar": true,
             "persistence": "permanent",
-            "className": "WebInspector.WatchExpressionsSidebarPane"
+            "className": "Sources.WatchExpressionsSidebarPane"
         },
         {
             "type": "view",
             "id": "sources.jsBreakpoints",
             "title": "Breakpoints",
             "persistence": "permanent",
-            "className": "WebInspector.JavaScriptBreakpointsSidebarPane"
+            "className": "Sources.JavaScriptBreakpointsSidebarPane"
         },
         {
-            "type": "@WebInspector.ContextFlavorListener",
-            "contextTypes": ["WebInspector.DebuggerPausedDetails"],
-            "className": "WebInspector.JavaScriptBreakpointsSidebarPane"
+            "type": "@UI.ContextFlavorListener",
+            "contextTypes": ["SDK.DebuggerPausedDetails"],
+            "className": "Sources.JavaScriptBreakpointsSidebarPane"
         },
         {
-            "type": "@WebInspector.ContextFlavorListener",
-            "contextTypes": ["WebInspector.DebuggerPausedDetails"],
-            "className": "WebInspector.XHRBreakpointsSidebarPane"
+            "type": "@UI.ContextFlavorListener",
+            "contextTypes": ["SDK.DebuggerPausedDetails"],
+            "className": "Sources.XHRBreakpointsSidebarPane"
         },
         {
-            "type": "@WebInspector.ContextFlavorListener",
-            "contextTypes": ["WebInspector.DebuggerPausedDetails"],
-            "className": "WebInspector.DOMBreakpointsSidebarPane"
+            "type": "@UI.ContextFlavorListener",
+            "contextTypes": ["SDK.DebuggerPausedDetails"],
+            "className": "Components.DOMBreakpointsSidebarPane"
         },
         {
-            "type": "@WebInspector.ContextFlavorListener",
-            "contextTypes": ["WebInspector.DebuggerPausedDetails"],
-            "className": "WebInspector.CallStackSidebarPane"
+            "type": "@UI.ContextFlavorListener",
+            "contextTypes": ["SDK.DebuggerPausedDetails"],
+            "className": "Sources.CallStackSidebarPane"
         },
         {
-            "type": "@WebInspector.ContextFlavorListener",
-            "contextTypes": ["WebInspector.DebuggerModel.CallFrame"],
-            "className": "WebInspector.ScopeChainSidebarPane"
+            "type": "@UI.ContextFlavorListener",
+            "contextTypes": ["SDK.DebuggerModel.CallFrame"],
+            "className": "Sources.ScopeChainSidebarPane"
         }
     ],
     "dependencies": [

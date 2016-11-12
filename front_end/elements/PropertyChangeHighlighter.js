@@ -4,12 +4,12 @@
 /**
  * @unrestricted
  */
-WebInspector.PropertyChangeHighlighter = class {
+Elements.PropertyChangeHighlighter = class {
   /**
-   * @param {!WebInspector.StylesSidebarPane} ssp
-   * @param {!WebInspector.CSSModel} cssModel
+   * @param {!Elements.StylesSidebarPane} ssp
+   * @param {!SDK.CSSModel} cssModel
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
-   * @param {!WebInspector.TextRange} range
+   * @param {!Common.TextRange} range
    */
   constructor(ssp, cssModel, styleSheetId, range) {
     this._styleSidebarPane = ssp;
@@ -80,8 +80,8 @@ WebInspector.PropertyChangeHighlighter = class {
 
   /**
    *
-   * @param {!WebInspector.TextRange} outterRange
-   * @param {!WebInspector.TextRange} innerRange
+   * @param {!Common.TextRange} outterRange
+   * @param {!Common.TextRange} innerRange
    * @return {boolean}
    */
   _checkRanges(outterRange, innerRange) {
@@ -98,10 +98,10 @@ WebInspector.PropertyChangeHighlighter = class {
 /**
  * @unrestricted
  */
-WebInspector.PropertyRevealHighlighter = class {
+Elements.PropertyRevealHighlighter = class {
   /**
-   * @param {!WebInspector.StylesSidebarPane} ssp
-   * @param {!WebInspector.CSSProperty} cssProperty
+   * @param {!Elements.StylesSidebarPane} ssp
+   * @param {!SDK.CSSProperty} cssProperty
    */
   constructor(ssp, cssProperty) {
     this._styleSidebarPane = ssp;

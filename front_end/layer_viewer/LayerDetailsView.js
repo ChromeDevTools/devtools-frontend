@@ -28,31 +28,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.LayerView}
+ * @implements {LayerViewer.LayerView}
  * @unrestricted
  */
-WebInspector.LayerDetailsView = class extends WebInspector.Widget {
+LayerViewer.LayerDetailsView = class extends UI.Widget {
   /**
-   * @param {!WebInspector.LayerViewHost} layerViewHost
+   * @param {!LayerViewer.LayerViewHost} layerViewHost
    */
   constructor(layerViewHost) {
     super(true);
     this.registerRequiredCSS('layer_viewer/layerDetailsView.css');
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
-    this._emptyWidget = new WebInspector.EmptyWidget(WebInspector.UIString('Select a layer to see its details'));
+    this._emptyWidget = new UI.EmptyWidget(Common.UIString('Select a layer to see its details'));
     this._buildContent();
   }
 
   /**
-   * @param {?WebInspector.LayerView.Selection} selection
+   * @param {?LayerViewer.LayerView.Selection} selection
    * @override
    */
   hoverObject(selection) {
   }
 
   /**
-   * @param {?WebInspector.LayerView.Selection} selection
+   * @param {?LayerViewer.LayerView.Selection} selection
    * @override
    */
   selectObject(selection) {
@@ -62,7 +62,7 @@ WebInspector.LayerDetailsView = class extends WebInspector.Widget {
   }
 
   /**
-   * @param {?WebInspector.LayerTreeBase} layerTree
+   * @param {?SDK.LayerTreeBase} layerTree
    * @override
    */
   setLayerTree(layerTree) {
@@ -83,12 +83,12 @@ WebInspector.LayerDetailsView = class extends WebInspector.Widget {
   _onScrollRectClicked(index, event) {
     if (event.which !== 1)
       return;
-    this._layerViewHost.selectObject(new WebInspector.LayerView.ScrollRectSelection(this._selection.layer(), index));
+    this._layerViewHost.selectObject(new LayerViewer.LayerView.ScrollRectSelection(this._selection.layer(), index));
   }
 
   _onPaintProfilerButtonClicked() {
-    if (this._selection.type() === WebInspector.LayerView.Selection.Type.Snapshot || this._selection.layer())
-      this.dispatchEventToListeners(WebInspector.LayerDetailsView.Events.PaintProfilerRequested, this._selection);
+    if (this._selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot || this._selection.layer())
+      this.dispatchEventToListeners(LayerViewer.LayerDetailsView.Events.PaintProfilerRequested, this._selection);
   }
 
   /**
@@ -101,8 +101,8 @@ WebInspector.LayerDetailsView = class extends WebInspector.Widget {
     var element = this._scrollRectsCell.createChild('span', 'scroll-rect');
     if (this._selection.scrollRectIndex === index)
       element.classList.add('active');
-    element.textContent = WebInspector.UIString(
-        '%s (%s, %s, %s, %s)', WebInspector.LayerDetailsView._slowScrollRectNames.get(scrollRect.type),
+    element.textContent = Common.UIString(
+        '%s (%s, %s, %s, %s)', LayerViewer.LayerDetailsView._slowScrollRectNames.get(scrollRect.type),
         scrollRect.rect.x, scrollRect.rect.y, scrollRect.rect.width, scrollRect.rect.height);
     element.addEventListener('click', this._onScrollRectClicked.bind(this, index), false);
   }
@@ -119,15 +119,15 @@ WebInspector.LayerDetailsView = class extends WebInspector.Widget {
     this.contentElement.appendChild(this._tableElement);
     this.contentElement.appendChild(this._paintProfilerButton);
     this._sizeCell.textContent =
-        WebInspector.UIString('%d × %d (at %d,%d)', layer.width(), layer.height(), layer.offsetX(), layer.offsetY());
+        Common.UIString('%d × %d (at %d,%d)', layer.width(), layer.height(), layer.offsetX(), layer.offsetY());
     this._paintCountCell.parentElement.classList.toggle('hidden', !layer.paintCount());
     this._paintCountCell.textContent = layer.paintCount();
     this._memoryEstimateCell.textContent = Number.bytesToString(layer.gpuMemoryUsage());
     layer.requestCompositingReasons(this._updateCompositingReasons.bind(this));
     this._scrollRectsCell.removeChildren();
     layer.scrollRects().forEach(this._createScrollRectElement.bind(this));
-    var snapshot = this._selection.type() === WebInspector.LayerView.Selection.Type.Snapshot ?
-        /** @type {!WebInspector.LayerView.SnapshotSelection} */ (this._selection).snapshot() :
+    var snapshot = this._selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot ?
+        /** @type {!LayerViewer.LayerView.SnapshotSelection} */ (this._selection).snapshot() :
         null;
     this._paintProfilerButton.classList.toggle('hidden', !snapshot);
   }
@@ -135,13 +135,13 @@ WebInspector.LayerDetailsView = class extends WebInspector.Widget {
   _buildContent() {
     this._tableElement = this.contentElement.createChild('table');
     this._tbodyElement = this._tableElement.createChild('tbody');
-    this._sizeCell = this._createRow(WebInspector.UIString('Size'));
-    this._compositingReasonsCell = this._createRow(WebInspector.UIString('Compositing Reasons'));
-    this._memoryEstimateCell = this._createRow(WebInspector.UIString('Memory estimate'));
-    this._paintCountCell = this._createRow(WebInspector.UIString('Paint count'));
-    this._scrollRectsCell = this._createRow(WebInspector.UIString('Slow scroll regions'));
+    this._sizeCell = this._createRow(Common.UIString('Size'));
+    this._compositingReasonsCell = this._createRow(Common.UIString('Compositing Reasons'));
+    this._memoryEstimateCell = this._createRow(Common.UIString('Memory estimate'));
+    this._paintCountCell = this._createRow(Common.UIString('Paint count'));
+    this._scrollRectsCell = this._createRow(Common.UIString('Slow scroll regions'));
     this._paintProfilerButton = this.contentElement.createChild('a', 'hidden link');
-    this._paintProfilerButton.textContent = WebInspector.UIString('Paint Profiler');
+    this._paintProfilerButton.textContent = Common.UIString('Paint Profiler');
     this._paintProfilerButton.addEventListener('click', this._onPaintProfilerButtonClicked.bind(this));
   }
 
@@ -166,7 +166,7 @@ WebInspector.LayerDetailsView = class extends WebInspector.Widget {
     this._compositingReasonsCell.removeChildren();
     var list = this._compositingReasonsCell.createChild('ul');
     for (var i = 0; i < compositingReasons.length; ++i) {
-      var text = WebInspector.LayerDetailsView.CompositingReasonDetail[compositingReasons[i]] || compositingReasons[i];
+      var text = LayerViewer.LayerDetailsView.CompositingReasonDetail[compositingReasons[i]] || compositingReasons[i];
       // If the text is more than one word but does not terminate with period, add the period.
       if (/\s.*[^.]$/.test(text))
         text += '.';
@@ -179,65 +179,65 @@ WebInspector.LayerDetailsView = class extends WebInspector.Widget {
  * @enum {string}
  */
 /** @enum {symbol} */
-WebInspector.LayerDetailsView.Events = {
+LayerViewer.LayerDetailsView.Events = {
   PaintProfilerRequested: Symbol('PaintProfilerRequested')
 };
 
 /**
  * @type {!Object.<string, string>}
  */
-WebInspector.LayerDetailsView.CompositingReasonDetail = {
-  'transform3D': WebInspector.UIString('Composition due to association with an element with a CSS 3D transform.'),
-  'video': WebInspector.UIString('Composition due to association with a <video> element.'),
-  'canvas': WebInspector.UIString('Composition due to the element being a <canvas> element.'),
-  'plugin': WebInspector.UIString('Composition due to association with a plugin.'),
-  'iFrame': WebInspector.UIString('Composition due to association with an <iframe> element.'),
-  'backfaceVisibilityHidden': WebInspector.UIString(
+LayerViewer.LayerDetailsView.CompositingReasonDetail = {
+  'transform3D': Common.UIString('Composition due to association with an element with a CSS 3D transform.'),
+  'video': Common.UIString('Composition due to association with a <video> element.'),
+  'canvas': Common.UIString('Composition due to the element being a <canvas> element.'),
+  'plugin': Common.UIString('Composition due to association with a plugin.'),
+  'iFrame': Common.UIString('Composition due to association with an <iframe> element.'),
+  'backfaceVisibilityHidden': Common.UIString(
       'Composition due to association with an element with a "backface-visibility: hidden" style.'),
-  'animation': WebInspector.UIString('Composition due to association with an animated element.'),
-  'filters': WebInspector.UIString('Composition due to association with an element with CSS filters applied.'),
-  'scrollDependentPosition': WebInspector.UIString(
+  'animation': Common.UIString('Composition due to association with an animated element.'),
+  'filters': Common.UIString('Composition due to association with an element with CSS filters applied.'),
+  'scrollDependentPosition': Common.UIString(
       'Composition due to association with an element with a "position: fixed" or "position: sticky" style.'),
   'overflowScrollingTouch':
-      WebInspector.UIString('Composition due to association with an element with a "overflow-scrolling: touch" style.'),
+      Common.UIString('Composition due to association with an element with a "overflow-scrolling: touch" style.'),
   'blending':
-      WebInspector.UIString('Composition due to association with an element that has blend mode other than "normal".'),
-  'assumedOverlap': WebInspector.UIString(
+      Common.UIString('Composition due to association with an element that has blend mode other than "normal".'),
+  'assumedOverlap': Common.UIString(
       'Composition due to association with an element that may overlap other composited elements.'),
   'overlap':
-      WebInspector.UIString('Composition due to association with an element overlapping other composited elements.'),
-  'negativeZIndexChildren': WebInspector.UIString(
+      Common.UIString('Composition due to association with an element overlapping other composited elements.'),
+  'negativeZIndexChildren': Common.UIString(
       'Composition due to association with an element with descendants that have a negative z-index.'),
   'transformWithCompositedDescendants':
-      WebInspector.UIString('Composition due to association with an element with composited descendants.'),
-  'opacityWithCompositedDescendants': WebInspector.UIString(
+      Common.UIString('Composition due to association with an element with composited descendants.'),
+  'opacityWithCompositedDescendants': Common.UIString(
       'Composition due to association with an element with opacity applied and composited descendants.'),
   'maskWithCompositedDescendants':
-      WebInspector.UIString('Composition due to association with a masked element and composited descendants.'),
-  'reflectionWithCompositedDescendants': WebInspector.UIString(
+      Common.UIString('Composition due to association with a masked element and composited descendants.'),
+  'reflectionWithCompositedDescendants': Common.UIString(
       'Composition due to association with an element with a reflection and composited descendants.'),
-  'filterWithCompositedDescendants': WebInspector.UIString(
+  'filterWithCompositedDescendants': Common.UIString(
       'Composition due to association with an element with CSS filters applied and composited descendants.'),
-  'blendingWithCompositedDescendants': WebInspector.UIString(
+  'blendingWithCompositedDescendants': Common.UIString(
       'Composition due to association with an element with CSS blending applied and composited descendants.'),
   'clipsCompositingDescendants':
-      WebInspector.UIString('Composition due to association with an element clipping compositing descendants.'),
-  'perspective': WebInspector.UIString('Composition due to association with an element with perspective applied.'),
-  'preserve3D': WebInspector.UIString(
+      Common.UIString('Composition due to association with an element clipping compositing descendants.'),
+  'perspective': Common.UIString('Composition due to association with an element with perspective applied.'),
+  'preserve3D': Common.UIString(
       'Composition due to association with an element with a "transform-style: preserve-3d" style.'),
-  'root': WebInspector.UIString('Root layer.'),
-  'layerForClip': WebInspector.UIString('Layer for clip.'),
-  'layerForScrollbar': WebInspector.UIString('Layer for scrollbar.'),
-  'layerForScrollingContainer': WebInspector.UIString('Layer for scrolling container.'),
-  'layerForForeground': WebInspector.UIString('Layer for foreground.'),
-  'layerForBackground': WebInspector.UIString('Layer for background.'),
-  'layerForMask': WebInspector.UIString('Layer for mask.'),
-  'layerForVideoOverlay': WebInspector.UIString('Layer for video overlay.'),
+  'root': Common.UIString('Root layer.'),
+  'layerForClip': Common.UIString('Layer for clip.'),
+  'layerForScrollbar': Common.UIString('Layer for scrollbar.'),
+  'layerForScrollingContainer': Common.UIString('Layer for scrolling container.'),
+  'layerForForeground': Common.UIString('Layer for foreground.'),
+  'layerForBackground': Common.UIString('Layer for background.'),
+  'layerForMask': Common.UIString('Layer for mask.'),
+  'layerForVideoOverlay': Common.UIString('Layer for video overlay.'),
 };
 
-WebInspector.LayerDetailsView._slowScrollRectNames = new Map([
-  [WebInspector.Layer.ScrollRectType.NonFastScrollable, WebInspector.UIString('Non fast scrollable')],
-  [WebInspector.Layer.ScrollRectType.TouchEventHandler, WebInspector.UIString('Touch event handler')],
-  [WebInspector.Layer.ScrollRectType.WheelEventHandler, WebInspector.UIString('Wheel event handler')],
-  [WebInspector.Layer.ScrollRectType.RepaintsOnScroll, WebInspector.UIString('Repaints on scroll')]
+LayerViewer.LayerDetailsView._slowScrollRectNames = new Map([
+  [SDK.Layer.ScrollRectType.NonFastScrollable, Common.UIString('Non fast scrollable')],
+  [SDK.Layer.ScrollRectType.TouchEventHandler, Common.UIString('Touch event handler')],
+  [SDK.Layer.ScrollRectType.WheelEventHandler, Common.UIString('Wheel event handler')],
+  [SDK.Layer.ScrollRectType.RepaintsOnScroll, Common.UIString('Repaints on scroll')]
 ]);

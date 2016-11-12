@@ -29,27 +29,27 @@
 /**
  * @unrestricted
  */
-WebInspector.StyleSheetOutlineDialog = class extends WebInspector.FilteredListWidget.Delegate {
+Sources.StyleSheetOutlineDialog = class extends UI.FilteredListWidget.Delegate {
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {function(number, number)} selectItemCallback
    */
   constructor(uiSourceCode, selectItemCallback) {
     super([]);
     this._selectItemCallback = selectItemCallback;
-    this._cssParser = new WebInspector.CSSParser();
-    this._cssParser.addEventListener(WebInspector.CSSParser.Events.RulesParsed, this.refresh.bind(this));
+    this._cssParser = new SDK.CSSParser();
+    this._cssParser.addEventListener(SDK.CSSParser.Events.RulesParsed, this.refresh.bind(this));
     this._cssParser.parse(uiSourceCode.workingCopy());
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {function(number, number)} selectItemCallback
    */
   static show(uiSourceCode, selectItemCallback) {
-    WebInspector.StyleSheetOutlineDialog._instanceForTests =
-        new WebInspector.StyleSheetOutlineDialog(uiSourceCode, selectItemCallback);
-    new WebInspector.FilteredListWidget(WebInspector.StyleSheetOutlineDialog._instanceForTests).showAsDialog();
+    Sources.StyleSheetOutlineDialog._instanceForTests =
+        new Sources.StyleSheetOutlineDialog(uiSourceCode, selectItemCallback);
+    new UI.FilteredListWidget(Sources.StyleSheetOutlineDialog._instanceForTests).showAsDialog();
   }
 
   /**

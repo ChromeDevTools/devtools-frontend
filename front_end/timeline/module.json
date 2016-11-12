@@ -6,7 +6,7 @@
             "id": "timeline",
             "title": "Timeline",
             "order": 50,
-            "className": "WebInspector.TimelinePanel"
+            "className": "Timeline.TimelinePanel"
         },
         {
             "type": "setting",
@@ -17,9 +17,9 @@
             "defaultValue": false
         },
         {
-            "type": "@WebInspector.QueryParamHandler",
+            "type": "@Common.QueryParamHandler",
             "name": "loadTimelineFromURL",
-            "className": "WebInspector.LoadTimelineHandler"
+            "className": "Timeline.LoadTimelineHandler"
         },
         {
             "type": "context-menu-item",
@@ -32,13 +32,13 @@
             "actionId": "timeline.save-to-file"
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "timeline.toggle-recording",
             "iconClass": "largeicon-start-recording",
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
-            "contextTypes": ["WebInspector.TimelinePanel"],
-            "className": "WebInspector.TimelinePanel.ActionDelegate",
+            "contextTypes": ["Timeline.TimelinePanel"],
+            "className": "Timeline.TimelinePanel.ActionDelegate",
             "options": [
                 { "value": true, "title": "Record" },
                 { "value": false, "title": "Stop" }
@@ -55,11 +55,11 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Timeline",
             "actionId": "timeline.save-to-file",
-            "contextTypes": ["WebInspector.TimelinePanel"],
-            "className": "WebInspector.TimelinePanel.ActionDelegate",
+            "contextTypes": ["Timeline.TimelinePanel"],
+            "className": "Timeline.TimelinePanel.ActionDelegate",
             "title": "Save Timeline data\u2026",
             "bindings": [
                 {
@@ -73,12 +73,12 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Timeline",
             "actionId": "timeline.load-from-file",
-            "contextTypes": ["WebInspector.TimelinePanel"],
+            "contextTypes": ["Timeline.TimelinePanel"],
             "order": "10",
-            "className": "WebInspector.TimelinePanel.ActionDelegate",
+            "className": "Timeline.TimelinePanel.ActionDelegate",
             "title": "Load Timeline data\u2026",
             "bindings": [
                 {
@@ -92,10 +92,10 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "timeline.jump-to-previous-frame",
-            "contextTypes": ["WebInspector.TimelinePanel"],
-            "className": "WebInspector.TimelinePanel.ActionDelegate",
+            "contextTypes": ["Timeline.TimelinePanel"],
+            "className": "Timeline.TimelinePanel.ActionDelegate",
             "bindings": [
                 {
                     "shortcut": "["
@@ -103,10 +103,10 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "timeline.jump-to-next-frame",
-            "contextTypes": ["WebInspector.TimelinePanel"],
-            "className": "WebInspector.TimelinePanel.ActionDelegate",
+            "contextTypes": ["Timeline.TimelinePanel"],
+            "className": "Timeline.TimelinePanel.ActionDelegate",
             "bindings": [
                 {
                     "shortcut": "]"

@@ -5,7 +5,7 @@
  * @template T
  * @unrestricted
  */
-WebInspector.CharacterIdMap = class {
+Common.CharacterIdMap = class {
   constructor() {
     /** @type {!Map<T, string>} */
     this._elementToCharacter = new Map();

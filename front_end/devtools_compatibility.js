@@ -64,7 +64,7 @@
      */
     addExtensions(extensions) {
       // Support for legacy front-ends (<M41).
-      if (window['WebInspector']['addExtensions'])
+      if (window['WebInspector'] && window['WebInspector']['addExtensions'])
         window['WebInspector']['addExtensions'](extensions);
       else
         this._dispatchOnInspectorFrontendAPI('addExtensions', [extensions]);
@@ -252,7 +252,7 @@
      */
     setInspectedTabId(tabId) {
       // Support for legacy front-ends (<M41).
-      if (window['WebInspector']['setInspectedTabId'])
+      if (window['WebInspector'] && window['WebInspector']['setInspectedTabId'])
         window['WebInspector']['setInspectedTabId'](tabId);
       else
         this._dispatchOnInspectorFrontendAPI('setInspectedTabId', [tabId]);

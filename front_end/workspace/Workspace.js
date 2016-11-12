@@ -30,9 +30,9 @@
 /**
  * @interface
  */
-WebInspector.ProjectSearchConfig = function() {};
+Workspace.ProjectSearchConfig = function() {};
 
-WebInspector.ProjectSearchConfig.prototype = {
+Workspace.ProjectSearchConfig.prototype = {
   /**
    * @return {string}
    */
@@ -63,20 +63,20 @@ WebInspector.ProjectSearchConfig.prototype = {
 /**
  * @interface
  */
-WebInspector.Project = function() {};
+Workspace.Project = function() {};
 
 /**
- * @param {!WebInspector.Project} project
+ * @param {!Workspace.Project} project
  * @return {boolean}
  */
-WebInspector.Project.isServiceProject = function(project) {
-  return project.type() === WebInspector.projectTypes.Debugger ||
-      project.type() === WebInspector.projectTypes.Formatter || project.type() === WebInspector.projectTypes.Service;
+Workspace.Project.isServiceProject = function(project) {
+  return project.type() === Workspace.projectTypes.Debugger ||
+      project.type() === Workspace.projectTypes.Formatter || project.type() === Workspace.projectTypes.Service;
 };
 
-WebInspector.Project.prototype = {
+Workspace.Project.prototype = {
   /**
-   * @return {!WebInspector.Workspace}
+   * @return {!Workspace.Workspace}
    */
   workspace: function() {},
 
@@ -96,13 +96,13 @@ WebInspector.Project.prototype = {
   displayName: function() {},
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @return {!Promise<?WebInspector.UISourceCodeMetadata>}
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {!Promise<?Workspace.UISourceCodeMetadata>}
    */
   requestMetadata: function(uiSourceCode) {},
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {function(?string)} callback
    */
   requestFileContent: function(uiSourceCode, callback) {},
@@ -113,7 +113,7 @@ WebInspector.Project.prototype = {
   canSetFileContent: function() {},
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newContent
    * @param {function(?string)} callback
    */
@@ -125,9 +125,9 @@ WebInspector.Project.prototype = {
   canRename: function() {},
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newName
-   * @param {function(boolean, string=, string=, !WebInspector.ResourceType=)} callback
+   * @param {function(boolean, string=, string=, !Common.ResourceType=)} callback
    */
   rename: function(uiSourceCode, newName, callback) {},
 
@@ -140,7 +140,7 @@ WebInspector.Project.prototype = {
    * @param {string} path
    * @param {?string} name
    * @param {string} content
-   * @param {function(?WebInspector.UISourceCode)} callback
+   * @param {function(?Workspace.UISourceCode)} callback
    */
   createFile: function(path, name, content, callback) {},
 
@@ -152,35 +152,35 @@ WebInspector.Project.prototype = {
   remove: function() {},
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
    */
   searchInFileContent: function(uiSourceCode, query, caseSensitive, isRegex, callback) {},
 
   /**
-   * @param {!WebInspector.ProjectSearchConfig} searchConfig
+   * @param {!Workspace.ProjectSearchConfig} searchConfig
    * @param {!Array.<string>} filesMathingFileQuery
-   * @param {!WebInspector.Progress} progress
+   * @param {!Common.Progress} progress
    * @param {function(!Array.<string>)} callback
    */
   findFilesMatchingSearchRequest: function(searchConfig, filesMathingFileQuery, progress, callback) {},
 
   /**
-   * @param {!WebInspector.Progress} progress
+   * @param {!Common.Progress} progress
    */
   indexContent: function(progress) {},
 
   /**
    * @param {string} url
-   * @return {?WebInspector.UISourceCode}
+   * @return {?Workspace.UISourceCode}
    */
   uiSourceCodeForURL: function(url) {},
 
   /**
-   * @return {!Array.<!WebInspector.UISourceCode>}
+   * @return {!Array.<!Workspace.UISourceCode>}
    */
   uiSourceCodes: function() {}
 };
@@ -188,7 +188,7 @@ WebInspector.Project.prototype = {
 /**
  * @enum {string}
  */
-WebInspector.projectTypes = {
+Workspace.projectTypes = {
   Debugger: 'debugger',
   Formatter: 'formatter',
   Network: 'network',
@@ -201,11 +201,11 @@ WebInspector.projectTypes = {
 /**
  * @unrestricted
  */
-WebInspector.ProjectStore = class {
+Workspace.ProjectStore = class {
   /**
-   * @param {!WebInspector.Workspace} workspace
+   * @param {!Workspace.Workspace} workspace
    * @param {string} id
-   * @param {!WebInspector.projectTypes} type
+   * @param {!Workspace.projectTypes} type
    * @param {string} displayName
    */
   constructor(workspace, id, type, displayName) {
@@ -214,12 +214,12 @@ WebInspector.ProjectStore = class {
     this._type = type;
     this._displayName = displayName;
 
-    /** @type {!Map.<string, !{uiSourceCode: !WebInspector.UISourceCode, index: number}>} */
+    /** @type {!Map.<string, !{uiSourceCode: !Workspace.UISourceCode, index: number}>} */
     this._uiSourceCodesMap = new Map();
-    /** @type {!Array.<!WebInspector.UISourceCode>} */
+    /** @type {!Array.<!Workspace.UISourceCode>} */
     this._uiSourceCodesList = [];
 
-    this._project = /** @type {!WebInspector.Project} */ (this);
+    this._project = /** @type {!Workspace.Project} */ (this);
   }
 
   /**
@@ -244,7 +244,7 @@ WebInspector.ProjectStore = class {
   }
 
   /**
-   * @return {!WebInspector.Workspace}
+   * @return {!Workspace.Workspace}
    */
   workspace() {
     return this._workspace;
@@ -252,15 +252,15 @@ WebInspector.ProjectStore = class {
 
   /**
    * @param {string} url
-   * @param {!WebInspector.ResourceType} contentType
-   * @return {!WebInspector.UISourceCode}
+   * @param {!Common.ResourceType} contentType
+   * @return {!Workspace.UISourceCode}
    */
   createUISourceCode(url, contentType) {
-    return new WebInspector.UISourceCode(this._project, url, contentType);
+    return new Workspace.UISourceCode(this._project, url, contentType);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {boolean=} replace
    * @return {boolean}
    */
@@ -274,7 +274,7 @@ WebInspector.ProjectStore = class {
     }
     this._uiSourceCodesMap.set(url, {uiSourceCode: uiSourceCode, index: this._uiSourceCodesList.length});
     this._uiSourceCodesList.push(uiSourceCode);
-    this._workspace.dispatchEventToListeners(WebInspector.Workspace.Events.UISourceCodeAdded, uiSourceCode);
+    this._workspace.dispatchEventToListeners(Workspace.Workspace.Events.UISourceCodeAdded, uiSourceCode);
     return true;
   }
 
@@ -293,7 +293,7 @@ WebInspector.ProjectStore = class {
     movedEntry.index = entry.index;
     this._uiSourceCodesList.splice(this._uiSourceCodesList.length - 1, 1);
     this._uiSourceCodesMap.delete(url);
-    this._workspace.dispatchEventToListeners(WebInspector.Workspace.Events.UISourceCodeRemoved, entry.uiSourceCode);
+    this._workspace.dispatchEventToListeners(Workspace.Workspace.Events.UISourceCodeRemoved, entry.uiSourceCode);
   }
 
   removeProject() {
@@ -304,7 +304,7 @@ WebInspector.ProjectStore = class {
 
   /**
    * @param {string} url
-   * @return {?WebInspector.UISourceCode}
+   * @return {?Workspace.UISourceCode}
    */
   uiSourceCodeForURL(url) {
     var entry = this._uiSourceCodesMap.get(url);
@@ -312,21 +312,21 @@ WebInspector.ProjectStore = class {
   }
 
   /**
-   * @return {!Array.<!WebInspector.UISourceCode>}
+   * @return {!Array.<!Workspace.UISourceCode>}
    */
   uiSourceCodes() {
     return this._uiSourceCodesList;
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newName
    */
   renameUISourceCode(uiSourceCode, newName) {
     var oldPath = uiSourceCode.url();
     var newPath = uiSourceCode.parentURL() ? uiSourceCode.parentURL() + '/' + newName : newName;
     var value =
-        /** @type {!{uiSourceCode: !WebInspector.UISourceCode, index: number}} */ (this._uiSourceCodesMap.get(oldPath));
+        /** @type {!{uiSourceCode: !Workspace.UISourceCode, index: number}} */ (this._uiSourceCodesMap.get(oldPath));
     this._uiSourceCodesMap.set(newPath, value);
     this._uiSourceCodesMap.delete(oldPath);
   }
@@ -335,10 +335,10 @@ WebInspector.ProjectStore = class {
 /**
  * @unrestricted
  */
-WebInspector.Workspace = class extends WebInspector.Object {
+Workspace.Workspace = class extends Common.Object {
   constructor() {
     super();
-    /** @type {!Map<string, !WebInspector.Project>} */
+    /** @type {!Map<string, !Workspace.Project>} */
     this._projects = new Map();
     this._hasResourceContentTrackingExtensions = false;
   }
@@ -346,7 +346,7 @@ WebInspector.Workspace = class extends WebInspector.Object {
   /**
    * @param {string} projectId
    * @param {string} url
-   * @return {?WebInspector.UISourceCode}
+   * @return {?Workspace.UISourceCode}
    */
   uiSourceCode(projectId, url) {
     var project = this._projects.get(projectId);
@@ -355,7 +355,7 @@ WebInspector.Workspace = class extends WebInspector.Object {
 
   /**
    * @param {string} url
-   * @return {?WebInspector.UISourceCode}
+   * @return {?Workspace.UISourceCode}
    */
   uiSourceCodeForURL(url) {
     for (var project of this._projects.values()) {
@@ -368,7 +368,7 @@ WebInspector.Workspace = class extends WebInspector.Object {
 
   /**
    * @param {string} type
-   * @return {!Array.<!WebInspector.UISourceCode>}
+   * @return {!Array.<!Workspace.UISourceCode>}
    */
   uiSourceCodesForProjectType(type) {
     var result = [];
@@ -380,32 +380,32 @@ WebInspector.Workspace = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Project} project
+   * @param {!Workspace.Project} project
    */
   addProject(project) {
     console.assert(!this._projects.has(project.id()), `A project with id ${project.id()} already exists!`);
     this._projects.set(project.id(), project);
-    this.dispatchEventToListeners(WebInspector.Workspace.Events.ProjectAdded, project);
+    this.dispatchEventToListeners(Workspace.Workspace.Events.ProjectAdded, project);
   }
 
   /**
-   * @param {!WebInspector.Project} project
+   * @param {!Workspace.Project} project
    */
   _removeProject(project) {
     this._projects.delete(project.id());
-    this.dispatchEventToListeners(WebInspector.Workspace.Events.ProjectRemoved, project);
+    this.dispatchEventToListeners(Workspace.Workspace.Events.ProjectRemoved, project);
   }
 
   /**
    * @param {string} projectId
-   * @return {?WebInspector.Project}
+   * @return {?Workspace.Project}
    */
   project(projectId) {
     return this._projects.get(projectId) || null;
   }
 
   /**
-   * @return {!Array.<!WebInspector.Project>}
+   * @return {!Array.<!Workspace.Project>}
    */
   projects() {
     return this._projects.valuesArray();
@@ -413,7 +413,7 @@ WebInspector.Workspace = class extends WebInspector.Object {
 
   /**
    * @param {string} type
-   * @return {!Array.<!WebInspector.Project>}
+   * @return {!Array.<!Workspace.Project>}
    */
   projectsForType(type) {
     function filterByType(project) {
@@ -423,7 +423,7 @@ WebInspector.Workspace = class extends WebInspector.Object {
   }
 
   /**
-   * @return {!Array.<!WebInspector.UISourceCode>}
+   * @return {!Array.<!Workspace.UISourceCode>}
    */
   uiSourceCodes() {
     var result = [];
@@ -448,7 +448,7 @@ WebInspector.Workspace = class extends WebInspector.Object {
 };
 
 /** @enum {symbol} */
-WebInspector.Workspace.Events = {
+Workspace.Workspace.Events = {
   UISourceCodeAdded: Symbol('UISourceCodeAdded'),
   UISourceCodeRemoved: Symbol('UISourceCodeRemoved'),
   WorkingCopyChanged: Symbol('WorkingCopyChanged'),
@@ -459,6 +459,6 @@ WebInspector.Workspace.Events = {
 };
 
 /**
- * @type {!WebInspector.Workspace}
+ * @type {!Workspace.Workspace}
  */
-WebInspector.workspace;
+Workspace.workspace;

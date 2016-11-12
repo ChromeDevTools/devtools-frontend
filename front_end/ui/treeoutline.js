@@ -29,7 +29,7 @@
 /**
  * @unrestricted
  */
-var TreeOutline = class extends WebInspector.Object {
+var TreeOutline = class extends Common.Object {
   /**
    * @param {boolean=} nonFocusable
    */
@@ -224,7 +224,7 @@ var TreeOutline = class extends WebInspector.Object {
       handled = this.selectedTreeElement.ondelete();
     else if (isEnterKey(event))
       handled = this.selectedTreeElement.onenter();
-    else if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Space.code)
+    else if (event.keyCode === UI.KeyboardShortcut.Keys.Space.code)
       handled = this.selectedTreeElement.onspace();
 
     if (handled)
@@ -269,7 +269,7 @@ var TreeOutlineInShadow = class extends TreeOutline {
 
     // Redefine element to the external one.
     this.element = createElement('div');
-    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, 'ui/treeoutline.css');
+    this._shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'ui/treeoutline.css');
     this._disclosureElement = this._shadowRoot.createChild('div', 'tree-outline-disclosure');
     this._disclosureElement.appendChild(this.contentElement);
     this._renderSelection = true;
@@ -279,7 +279,7 @@ var TreeOutlineInShadow = class extends TreeOutline {
    * @param {string} cssFile
    */
   registerRequiredCSS(cssFile) {
-    WebInspector.appendStyle(this._shadowRoot, cssFile);
+    UI.appendStyle(this._shadowRoot, cssFile);
   }
 
   hideOverflow() {
@@ -599,10 +599,10 @@ var TreeElement = class {
   }
 
   /**
-   * @param {!WebInspector.InplaceEditor.Config} editingConfig
+   * @param {!UI.InplaceEditor.Config} editingConfig
    */
   startEditingTitle(editingConfig) {
-    WebInspector.InplaceEditor.startEditing(this._titleElement, editingConfig);
+    UI.InplaceEditor.startEditing(this._titleElement, editingConfig);
     this.treeOutline._shadowRoot.getSelection().setBaseAndExtent(this._titleElement, 0, this._titleElement, 1);
   }
 

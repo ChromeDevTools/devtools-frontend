@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.RequestCookiesView = class extends WebInspector.VBox {
+Network.RequestCookiesView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   constructor(request) {
     super();
@@ -48,13 +48,13 @@ WebInspector.RequestCookiesView = class extends WebInspector.VBox {
    */
   wasShown() {
     this._request.addEventListener(
-        WebInspector.NetworkRequest.Events.RequestHeadersChanged, this._refreshCookies, this);
+        SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshCookies, this);
     this._request.addEventListener(
-        WebInspector.NetworkRequest.Events.ResponseHeadersChanged, this._refreshCookies, this);
+        SDK.NetworkRequest.Events.ResponseHeadersChanged, this._refreshCookies, this);
 
     if (!this._gotCookies) {
       if (!this._emptyWidget) {
-        this._emptyWidget = new WebInspector.EmptyWidget(WebInspector.UIString('This request has no cookies.'));
+        this._emptyWidget = new UI.EmptyWidget(Common.UIString('This request has no cookies.'));
         this._emptyWidget.show(this.element);
       }
       return;
@@ -69,9 +69,9 @@ WebInspector.RequestCookiesView = class extends WebInspector.VBox {
    */
   willHide() {
     this._request.removeEventListener(
-        WebInspector.NetworkRequest.Events.RequestHeadersChanged, this._refreshCookies, this);
+        SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshCookies, this);
     this._request.removeEventListener(
-        WebInspector.NetworkRequest.Events.ResponseHeadersChanged, this._refreshCookies, this);
+        SDK.NetworkRequest.Events.ResponseHeadersChanged, this._refreshCookies, this);
   }
 
   get _gotCookies() {
@@ -82,10 +82,10 @@ WebInspector.RequestCookiesView = class extends WebInspector.VBox {
   _buildCookiesTable() {
     this.detachChildWidgets();
 
-    this._cookiesTable = new WebInspector.CookiesTable(true);
+    this._cookiesTable = new Components.CookiesTable(true);
     this._cookiesTable.setCookieFolders([
-      {folderName: WebInspector.UIString('Request Cookies'), cookies: this._request.requestCookies},
-      {folderName: WebInspector.UIString('Response Cookies'), cookies: this._request.responseCookies}
+      {folderName: Common.UIString('Request Cookies'), cookies: this._request.requestCookies},
+      {folderName: Common.UIString('Response Cookies'), cookies: this._request.responseCookies}
     ]);
     this._cookiesTable.show(this.element);
   }

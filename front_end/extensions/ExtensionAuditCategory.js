@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.ExtensionAuditCategory = class {
+Extensions.ExtensionAuditCategory = class {
   /**
    * @param {string} extensionOrigin
    * @param {string} id
@@ -49,9 +49,9 @@ WebInspector.ExtensionAuditCategory = class {
 /**
  * @interface
  */
-WebInspector.ExtensionAuditCategoryResults = function() {};
+Extensions.ExtensionAuditCategoryResults = function() {};
 
-WebInspector.ExtensionAuditCategoryResults.prototype = {
+Extensions.ExtensionAuditCategoryResults.prototype = {
   /**
    * @return {string}
    */

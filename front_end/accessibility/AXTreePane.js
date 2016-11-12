@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-WebInspector.AXTreePane = class extends WebInspector.AccessibilitySubPane {
+Accessibility.AXTreePane = class extends Accessibility.AccessibilitySubPane {
   constructor() {
-    super(WebInspector.UIString('Accessibility Tree'));
+    super(Common.UIString('Accessibility Tree'));
 
     this._treeOutline = this.createTreeOutline();
 
@@ -16,7 +16,7 @@ WebInspector.AXTreePane = class extends WebInspector.AccessibilitySubPane {
   }
 
   /**
-   * @param {?WebInspector.AccessibilityNode} axNode
+   * @param {?Accessibility.AccessibilityNode} axNode
    * @override
    */
   setAXNode(axNode) {
@@ -31,7 +31,7 @@ WebInspector.AXTreePane = class extends WebInspector.AccessibilitySubPane {
 
     treeOutline.element.classList.remove('hidden');
     var previousTreeElement = treeOutline.rootElement();
-    var inspectedNodeTreeElement = new WebInspector.AXNodeTreeElement(axNode, this);
+    var inspectedNodeTreeElement = new Accessibility.AXNodeTreeElement(axNode, this);
     inspectedNodeTreeElement.setInspected(true);
 
     var parent = axNode.parentNode();
@@ -45,12 +45,12 @@ WebInspector.AXTreePane = class extends WebInspector.AccessibilitySubPane {
         ancestor = ancestor.parentNode();
       }
       for (var ancestorNode of chain) {
-        var ancestorTreeElement = new WebInspector.AXNodeTreeElement(ancestorNode, this);
+        var ancestorTreeElement = new Accessibility.AXNodeTreeElement(ancestorNode, this);
         previousTreeElement.appendChild(ancestorTreeElement);
         previousTreeElement.expand();
         previousTreeElement = ancestorTreeElement;
       }
-      var parentTreeElement = new WebInspector.AXNodeTreeParentElement(parent, inspectedNodeTreeElement, this);
+      var parentTreeElement = new Accessibility.AXNodeTreeParentElement(parent, inspectedNodeTreeElement, this);
       previousTreeElement.appendChild(parentTreeElement);
       if (this.isExpanded(parent.backendDOMNodeId()))
         parentTreeElement.appendSiblings();
@@ -65,7 +65,7 @@ WebInspector.AXTreePane = class extends WebInspector.AccessibilitySubPane {
     previousTreeElement.expand();
 
     for (var child of axNode.children()) {
-      var childTreeElement = new WebInspector.AXNodeTreeElement(child, this);
+      var childTreeElement = new Accessibility.AXNodeTreeElement(child, this);
       inspectedNodeTreeElement.appendChild(childTreeElement);
     }
 
@@ -88,7 +88,7 @@ WebInspector.AXTreePane = class extends WebInspector.AccessibilitySubPane {
   }
 
   /**
-   * @return {!WebInspector.Target}
+   * @return {!SDK.Target}
    */
   target() {
     return this.node().target();
@@ -119,10 +119,10 @@ WebInspector.AXTreePane = class extends WebInspector.AccessibilitySubPane {
   }
 };
 
-WebInspector.InspectNodeButton = class {
+Accessibility.InspectNodeButton = class {
   /**
-   * @param {!WebInspector.AccessibilityNode} axNode
-   * @param {!WebInspector.AXTreePane} treePane
+   * @param {!Accessibility.AccessibilityNode} axNode
+   * @param {!Accessibility.AXTreePane} treePane
    */
   constructor(axNode, treePane) {
     this._axNode = axNode;
@@ -137,36 +137,36 @@ WebInspector.InspectNodeButton = class {
    */
   _handleMouseDown(event) {
     this._treePane.setSelectedByUser(true);
-    WebInspector.Revealer.reveal(this._axNode.deferredDOMNode());
+    Common.Revealer.reveal(this._axNode.deferredDOMNode());
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.AXNodeTreeElement = class extends TreeElement {
+Accessibility.AXNodeTreeElement = class extends TreeElement {
   /**
-   * @param {!WebInspector.AccessibilityNode} axNode
-   * @param {!WebInspector.AXTreePane} treePane
+   * @param {!Accessibility.AccessibilityNode} axNode
+   * @param {!Accessibility.AXTreePane} treePane
    */
   constructor(axNode, treePane) {
     // Pass an empty title, the title gets made later in onattach.
     super('');
 
-    /** @type {!WebInspector.AccessibilityNode} */
+    /** @type {!Accessibility.AccessibilityNode} */
     this._axNode = axNode;
 
-    /** @type {!WebInspector.AXTreePane} */
+    /** @type {!Accessibility.AXTreePane} */
     this._treePane = treePane;
 
     this.selectable = true;
 
     this._inspectNodeButton =
-        new WebInspector.InspectNodeButton(axNode, treePane);
+        new Accessibility.InspectNodeButton(axNode, treePane);
   }
 
   /**
-   * @return {!WebInspector.AccessibilityNode}
+   * @return {!Accessibility.AccessibilityNode}
    */
   axNode() {
     return this._axNode;
@@ -201,7 +201,7 @@ WebInspector.AXNodeTreeElement = class extends TreeElement {
 
   inspectDOMNode() {
     this._treePane.setSelectedByUser(true);
-    WebInspector.Revealer.reveal(this._axNode.deferredDOMNode());
+    Common.Revealer.reveal(this._axNode.deferredDOMNode());
   }
 
   /**
@@ -277,7 +277,7 @@ WebInspector.AXNodeTreeElement = class extends TreeElement {
       return;
 
     var roleElement = createElementWithClass('span', 'monospace');
-    roleElement.classList.add(WebInspector.AXNodeTreeElement.RoleStyles[role.type]);
+    roleElement.classList.add(Accessibility.AXNodeTreeElement.RoleStyles[role.type]);
     roleElement.setTextContentTruncatedIfNeeded(role.value || '');
 
     this.listItemElement.appendChild(roleElement);
@@ -285,7 +285,7 @@ WebInspector.AXNodeTreeElement = class extends TreeElement {
 
   _appendIgnoredNodeElement() {
     var ignoredNodeElement = createElementWithClass('span', 'monospace');
-    ignoredNodeElement.textContent = WebInspector.UIString('Ignored');
+    ignoredNodeElement.textContent = Common.UIString('Ignored');
     ignoredNodeElement.classList.add('ax-tree-ignored-node');
     this.listItemElement.appendChild(ignoredNodeElement);
   }
@@ -304,7 +304,7 @@ WebInspector.AXNodeTreeElement = class extends TreeElement {
 };
 
 /** @type {!Object<string, string>} */
-WebInspector.AXNodeTreeElement.RoleStyles = {
+Accessibility.AXNodeTreeElement.RoleStyles = {
   internalRole: 'ax-internal-role',
   role: 'ax-role',
 };
@@ -312,16 +312,16 @@ WebInspector.AXNodeTreeElement.RoleStyles = {
 /**
  * @unrestricted
  */
-WebInspector.ExpandSiblingsButton = class {
+Accessibility.ExpandSiblingsButton = class {
   /**
-   * @param {!WebInspector.AXNodeTreeParentElement} treeElement
+   * @param {!Accessibility.AXNodeTreeParentElement} treeElement
    * @param {number} numSiblings
    */
   constructor(treeElement, numSiblings) {
     this._treeElement = treeElement;
 
     this.element = createElementWithClass('button', 'expand-siblings');
-    this.element.textContent = WebInspector.UIString(
+    this.element.textContent = Common.UIString(
         (numSiblings === 1 ? '+ %d node' : '+ %d nodes'), numSiblings);
     this.element.addEventListener('mousedown', this._handleMouseDown.bind(this));
   }
@@ -338,18 +338,18 @@ WebInspector.ExpandSiblingsButton = class {
 /**
  * @unrestricted
  */
-WebInspector.AXNodeTreeParentElement = class extends WebInspector.AXNodeTreeElement {
+Accessibility.AXNodeTreeParentElement = class extends Accessibility.AXNodeTreeElement {
   /**
-   * @param {!WebInspector.AccessibilityNode} axNode
-   * @param {!WebInspector.AXNodeTreeElement} inspectedNodeTreeElement
-   * @param {!WebInspector.AXTreePane} treePane
+   * @param {!Accessibility.AccessibilityNode} axNode
+   * @param {!Accessibility.AXNodeTreeElement} inspectedNodeTreeElement
+   * @param {!Accessibility.AXTreePane} treePane
    */
   constructor(axNode, inspectedNodeTreeElement, treePane) {
     super(axNode, treePane);
 
     this._inspectedNodeTreeElement = inspectedNodeTreeElement;
     var numSiblings = axNode.children().length - 1;
-    this._expandSiblingsButton = new WebInspector.ExpandSiblingsButton(this, numSiblings);
+    this._expandSiblingsButton = new Accessibility.ExpandSiblingsButton(this, numSiblings);
     this._partiallyExpanded = false;
   }
 
@@ -407,7 +407,7 @@ WebInspector.AXNodeTreeParentElement = class extends WebInspector.AXNodeTreeElem
         foundInspectedNode = true;
         continue;
       }
-      siblingTreeElement = new WebInspector.AXNodeTreeElement(sibling, this._treePane);
+      siblingTreeElement = new Accessibility.AXNodeTreeElement(sibling, this._treePane);
       if (foundInspectedNode)
         this.appendChild(siblingTreeElement);
       else

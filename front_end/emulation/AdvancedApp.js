@@ -2,22 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.App}
+ * @implements {Common.App}
  * @unrestricted
  */
-WebInspector.AdvancedApp = class {
+Emulation.AdvancedApp = class {
   constructor() {
-    WebInspector.dockController.addEventListener(
-        WebInspector.DockController.Events.BeforeDockSideChanged, this._openToolboxWindow, this);
+    Components.dockController.addEventListener(
+        Components.DockController.Events.BeforeDockSideChanged, this._openToolboxWindow, this);
   }
 
   /**
-   * @return {!WebInspector.AdvancedApp}
+   * @return {!Emulation.AdvancedApp}
    */
   static _instance() {
-    if (!WebInspector.AdvancedApp._appInstance)
-      WebInspector.AdvancedApp._appInstance = new WebInspector.AdvancedApp();
-    return WebInspector.AdvancedApp._appInstance;
+    if (!Emulation.AdvancedApp._appInstance)
+      Emulation.AdvancedApp._appInstance = new Emulation.AdvancedApp();
+    return Emulation.AdvancedApp._appInstance;
   }
 
   /**
@@ -25,25 +25,25 @@ WebInspector.AdvancedApp = class {
    * @param {!Document} document
    */
   presentUI(document) {
-    var rootView = new WebInspector.RootView();
+    var rootView = new UI.RootView();
 
-    this._rootSplitWidget = new WebInspector.SplitWidget(false, true, 'InspectorView.splitViewState', 555, 300, true);
+    this._rootSplitWidget = new UI.SplitWidget(false, true, 'InspectorView.splitViewState', 555, 300, true);
     this._rootSplitWidget.show(rootView.element);
 
-    this._rootSplitWidget.setSidebarWidget(WebInspector.inspectorView);
-    WebInspector.inspectorView.setOwnerSplit(this._rootSplitWidget);
+    this._rootSplitWidget.setSidebarWidget(UI.inspectorView);
+    UI.inspectorView.setOwnerSplit(this._rootSplitWidget);
 
-    this._inspectedPagePlaceholder = new WebInspector.InspectedPagePlaceholder();
+    this._inspectedPagePlaceholder = new Emulation.InspectedPagePlaceholder();
     this._inspectedPagePlaceholder.addEventListener(
-        WebInspector.InspectedPagePlaceholder.Events.Update, this._onSetInspectedPageBounds.bind(this), this);
-    this._deviceModeView = new WebInspector.DeviceModeWrapper(this._inspectedPagePlaceholder);
+        Emulation.InspectedPagePlaceholder.Events.Update, this._onSetInspectedPageBounds.bind(this), this);
+    this._deviceModeView = new Emulation.DeviceModeWrapper(this._inspectedPagePlaceholder);
 
-    WebInspector.dockController.addEventListener(
-        WebInspector.DockController.Events.BeforeDockSideChanged, this._onBeforeDockSideChange, this);
-    WebInspector.dockController.addEventListener(
-        WebInspector.DockController.Events.DockSideChanged, this._onDockSideChange, this);
-    WebInspector.dockController.addEventListener(
-        WebInspector.DockController.Events.AfterDockSideChanged, this._onAfterDockSideChange, this);
+    Components.dockController.addEventListener(
+        Components.DockController.Events.BeforeDockSideChanged, this._onBeforeDockSideChange, this);
+    Components.dockController.addEventListener(
+        Components.DockController.Events.DockSideChanged, this._onDockSideChange, this);
+    Components.dockController.addEventListener(
+        Components.DockController.Events.AfterDockSideChanged, this._onAfterDockSideChange, this);
     this._onDockSideChange();
 
     console.timeStamp('AdvancedApp.attachToBody');
@@ -52,10 +52,10 @@ WebInspector.AdvancedApp = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _openToolboxWindow(event) {
-    if (/** @type {string} */ (event.data.to) !== WebInspector.DockController.State.Undocked)
+    if (/** @type {string} */ (event.data.to) !== Components.DockController.State.Undocked)
       return;
 
     if (this._toolboxWindow)
@@ -69,12 +69,12 @@ WebInspector.AdvancedApp = class {
    * @param {!Document} toolboxDocument
    */
   toolboxLoaded(toolboxDocument) {
-    WebInspector.initializeUIUtils(toolboxDocument, WebInspector.settings.createSetting('uiTheme', 'default'));
-    WebInspector.installComponentRootStyles(/** @type {!Element} */ (toolboxDocument.body));
-    WebInspector.ContextMenu.installHandler(toolboxDocument);
-    WebInspector.Tooltip.installHandler(toolboxDocument);
+    UI.initializeUIUtils(toolboxDocument, Common.settings.createSetting('uiTheme', 'default'));
+    UI.installComponentRootStyles(/** @type {!Element} */ (toolboxDocument.body));
+    UI.ContextMenu.installHandler(toolboxDocument);
+    UI.Tooltip.installHandler(toolboxDocument);
 
-    this._toolboxRootView = new WebInspector.RootView();
+    this._toolboxRootView = new UI.RootView();
     this._toolboxRootView.attachToDocument(toolboxDocument);
 
     this._updateDeviceModeView();
@@ -88,10 +88,10 @@ WebInspector.AdvancedApp = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onBeforeDockSideChange(event) {
-    if (/** @type {string} */ (event.data.to) === WebInspector.DockController.State.Undocked && this._toolboxRootView) {
+    if (/** @type {string} */ (event.data.to) === Components.DockController.State.Undocked && this._toolboxRootView) {
       // Hide inspectorView and force layout to mimic the undocked state.
       this._rootSplitWidget.hideSidebar();
       this._inspectedPagePlaceholder.update();
@@ -101,17 +101,17 @@ WebInspector.AdvancedApp = class {
   }
 
   /**
-   * @param {!WebInspector.Event=} event
+   * @param {!Common.Event=} event
    */
   _onDockSideChange(event) {
     this._updateDeviceModeView();
 
-    var toDockSide = event ? /** @type {string} */ (event.data.to) : WebInspector.dockController.dockSide();
-    if (toDockSide === WebInspector.DockController.State.Undocked) {
+    var toDockSide = event ? /** @type {string} */ (event.data.to) : Components.dockController.dockSide();
+    if (toDockSide === Components.DockController.State.Undocked) {
       this._updateForUndocked();
     } else if (
         this._toolboxRootView && event &&
-        /** @type {string} */ (event.data.from) === WebInspector.DockController.State.Undocked) {
+        /** @type {string} */ (event.data.from) === Components.DockController.State.Undocked) {
       // Don't update yet for smooth transition.
       this._rootSplitWidget.hideSidebar();
     } else {
@@ -120,13 +120,13 @@ WebInspector.AdvancedApp = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onAfterDockSideChange(event) {
     // We may get here on the first dock side change while loading without BeforeDockSideChange.
     if (!this._changingDockSide)
       return;
-    if (/** @type {string} */ (event.data.from) === WebInspector.DockController.State.Undocked) {
+    if (/** @type {string} */ (event.data.from) === Components.DockController.State.Undocked) {
       // Restore docked layout in case of smooth transition.
       this._updateForDocked(/** @type {string} */ (event.data.to));
     }
@@ -138,28 +138,28 @@ WebInspector.AdvancedApp = class {
    * @param {string} dockSide
    */
   _updateForDocked(dockSide) {
-    this._rootSplitWidget.setVertical(dockSide === WebInspector.DockController.State.DockedToRight);
+    this._rootSplitWidget.setVertical(dockSide === Components.DockController.State.DockedToRight);
     this._rootSplitWidget.setSecondIsSidebar(
-        dockSide === WebInspector.DockController.State.DockedToRight ||
-        dockSide === WebInspector.DockController.State.DockedToBottom);
+        dockSide === Components.DockController.State.DockedToRight ||
+        dockSide === Components.DockController.State.DockedToBottom);
     this._rootSplitWidget.toggleResizer(this._rootSplitWidget.resizerElement(), true);
     this._rootSplitWidget.toggleResizer(
-        WebInspector.inspectorView.topResizerElement(), dockSide === WebInspector.DockController.State.DockedToBottom);
+        UI.inspectorView.topResizerElement(), dockSide === Components.DockController.State.DockedToBottom);
     this._rootSplitWidget.showBoth();
   }
 
   _updateForUndocked() {
     this._rootSplitWidget.toggleResizer(this._rootSplitWidget.resizerElement(), false);
-    this._rootSplitWidget.toggleResizer(WebInspector.inspectorView.topResizerElement(), false);
+    this._rootSplitWidget.toggleResizer(UI.inspectorView.topResizerElement(), false);
     this._rootSplitWidget.hideMain();
   }
 
   _isDocked() {
-    return WebInspector.dockController.dockSide() !== WebInspector.DockController.State.Undocked;
+    return Components.dockController.dockSide() !== Components.DockController.State.Undocked;
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onSetInspectedPageBounds(event) {
     if (this._changingDockSide)
@@ -175,20 +175,20 @@ WebInspector.AdvancedApp = class {
   }
 };
 
-/** @type {!WebInspector.AdvancedApp} */
-WebInspector.AdvancedApp._appInstance;
+/** @type {!Emulation.AdvancedApp} */
+Emulation.AdvancedApp._appInstance;
 
 
 /**
- * @implements {WebInspector.AppProvider}
+ * @implements {Common.AppProvider}
  * @unrestricted
  */
-WebInspector.AdvancedAppProvider = class {
+Emulation.AdvancedAppProvider = class {
   /**
    * @override
-   * @return {!WebInspector.App}
+   * @return {!Common.App}
    */
   createApp() {
-    return WebInspector.AdvancedApp._instance();
+    return Emulation.AdvancedApp._instance();
   }
 };

@@ -27,23 +27,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-WebInspector.SettingsUI = {};
+UI.SettingsUI = {};
 
 /**
  * @param {string} name
- * @param {!WebInspector.Setting} setting
+ * @param {!Common.Setting} setting
  * @param {boolean=} omitParagraphElement
  * @param {string=} tooltip
  * @return {!Element}
  */
-WebInspector.SettingsUI.createSettingCheckbox = function(name, setting, omitParagraphElement, tooltip) {
+UI.SettingsUI.createSettingCheckbox = function(name, setting, omitParagraphElement, tooltip) {
   var label = createCheckboxLabel(name);
   if (tooltip)
     label.title = tooltip;
 
   var input = label.checkboxElement;
   input.name = name;
-  WebInspector.SettingsUI.bindCheckbox(input, setting);
+  UI.SettingsUI.bindCheckbox(input, setting);
 
   if (omitParagraphElement)
     return label;
@@ -55,9 +55,9 @@ WebInspector.SettingsUI.createSettingCheckbox = function(name, setting, omitPara
 
 /**
  * @param {!Element} input
- * @param {!WebInspector.Setting} setting
+ * @param {!Common.Setting} setting
  */
-WebInspector.SettingsUI.bindCheckbox = function(input, setting) {
+UI.SettingsUI.bindCheckbox = function(input, setting) {
   function settingChanged() {
     if (input.checked !== setting.get())
       input.checked = setting.get();
@@ -77,7 +77,7 @@ WebInspector.SettingsUI.bindCheckbox = function(input, setting) {
  * @param {!Element} element
  * @return {!Element}
  */
-WebInspector.SettingsUI.createCustomSetting = function(name, element) {
+UI.SettingsUI.createCustomSetting = function(name, element) {
   var p = createElement('p');
   var fieldsetElement = p.createChild('fieldset');
   fieldsetElement.createChild('label').textContent = name;
@@ -86,10 +86,10 @@ WebInspector.SettingsUI.createCustomSetting = function(name, element) {
 };
 
 /**
- * @param {!WebInspector.Setting} setting
+ * @param {!Common.Setting} setting
  * @return {!Element}
  */
-WebInspector.SettingsUI.createSettingFieldset = function(setting) {
+UI.SettingsUI.createSettingFieldset = function(setting) {
   var fieldset = createElement('fieldset');
   fieldset.disabled = !setting.get();
   setting.addChangeListener(settingChanged);
@@ -103,9 +103,9 @@ WebInspector.SettingsUI.createSettingFieldset = function(setting) {
 /**
  * @interface
  */
-WebInspector.SettingUI = function() {};
+UI.SettingUI = function() {};
 
-WebInspector.SettingUI.prototype = {
+UI.SettingUI.prototype = {
   /**
    * @return {?Element}
    */

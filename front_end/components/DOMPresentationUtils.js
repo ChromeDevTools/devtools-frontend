@@ -28,13 +28,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-WebInspector.DOMPresentationUtils = {};
+Components.DOMPresentationUtils = {};
 
 /**
- * @param {!WebInspector.DOMNode} node
+ * @param {!SDK.DOMNode} node
  * @param {!Element} parentElement
  */
-WebInspector.DOMPresentationUtils.decorateNodeLabel = function(node, parentElement) {
+Components.DOMPresentationUtils.decorateNodeLabel = function(node, parentElement) {
   var originalNode = node;
   var isPseudo = node.nodeType() === Node.ELEMENT_NODE && node.pseudoType();
   if (isPseudo && node.parentNode)
@@ -88,7 +88,7 @@ WebInspector.DOMPresentationUtils.decorateNodeLabel = function(node, parentEleme
  * @param {!Element} container
  * @param {string} nodeTitle
  */
-WebInspector.DOMPresentationUtils.createSpansForNodeTitle = function(container, nodeTitle) {
+Components.DOMPresentationUtils.createSpansForNodeTitle = function(container, nodeTitle) {
   var match = nodeTitle.match(/([^#.]+)(#[^.]+)?(\..*)?/);
   container.createChild('span', 'webkit-html-tag-name').textContent = match[1];
   if (match[2])
@@ -98,62 +98,62 @@ WebInspector.DOMPresentationUtils.createSpansForNodeTitle = function(container, 
 };
 
 /**
- * @param {?WebInspector.DOMNode} node
+ * @param {?SDK.DOMNode} node
  * @param {string=} idref
  * @return {!Node}
  */
-WebInspector.DOMPresentationUtils.linkifyNodeReference = function(node, idref) {
+Components.DOMPresentationUtils.linkifyNodeReference = function(node, idref) {
   if (!node)
-    return createTextNode(WebInspector.UIString('<node>'));
+    return createTextNode(Common.UIString('<node>'));
 
   var root = createElementWithClass('span', 'monospace');
-  var shadowRoot = WebInspector.createShadowRootWithCoreStyles(root, 'components/domUtils.css');
+  var shadowRoot = UI.createShadowRootWithCoreStyles(root, 'components/domUtils.css');
   var link = shadowRoot.createChild('div', 'node-link');
 
   if (idref)
     link.createChild('span', 'node-label-id').createTextChild('#' + idref);
   else
-    WebInspector.DOMPresentationUtils.decorateNodeLabel(node, link);
+    Components.DOMPresentationUtils.decorateNodeLabel(node, link);
 
-  link.addEventListener('click', WebInspector.Revealer.reveal.bind(WebInspector.Revealer, node, undefined), false);
+  link.addEventListener('click', Common.Revealer.reveal.bind(Common.Revealer, node, undefined), false);
   link.addEventListener('mouseover', node.highlight.bind(node, undefined, undefined), false);
-  link.addEventListener('mouseleave', WebInspector.DOMModel.hideDOMNodeHighlight.bind(WebInspector.DOMModel), false);
+  link.addEventListener('mouseleave', SDK.DOMModel.hideDOMNodeHighlight.bind(SDK.DOMModel), false);
 
   return root;
 };
 
 /**
- * @param {!WebInspector.DeferredDOMNode} deferredNode
+ * @param {!SDK.DeferredDOMNode} deferredNode
  * @return {!Node}
  */
-WebInspector.DOMPresentationUtils.linkifyDeferredNodeReference = function(deferredNode) {
+Components.DOMPresentationUtils.linkifyDeferredNodeReference = function(deferredNode) {
   var root = createElement('div');
-  var shadowRoot = WebInspector.createShadowRootWithCoreStyles(root, 'components/domUtils.css');
+  var shadowRoot = UI.createShadowRootWithCoreStyles(root, 'components/domUtils.css');
   var link = shadowRoot.createChild('div', 'node-link');
   link.createChild('content');
   link.addEventListener('click', deferredNode.resolve.bind(deferredNode, onDeferredNodeResolved), false);
   link.addEventListener('mousedown', (e) => e.consume(), false);
 
   /**
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    */
   function onDeferredNodeResolved(node) {
-    WebInspector.Revealer.reveal(node);
+    Common.Revealer.reveal(node);
   }
 
   return root;
 };
 
 /**
- * @param {!WebInspector.Target} target
+ * @param {!SDK.Target} target
  * @param {string} originalImageURL
  * @param {boolean} showDimensions
  * @param {function(!Element=)} userCallback
  * @param {!Object=} precomputedFeatures
  */
-WebInspector.DOMPresentationUtils.buildImagePreviewContents = function(
+Components.DOMPresentationUtils.buildImagePreviewContents = function(
     target, originalImageURL, showDimensions, userCallback, precomputedFeatures) {
-  var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+  var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
   if (!resourceTreeModel) {
     userCallback();
     return;
@@ -180,11 +180,11 @@ WebInspector.DOMPresentationUtils.buildImagePreviewContents = function(
   }
 
   /**
-   * @param {?WebInspector.Resource} resource
+   * @param {?SDK.Resource} resource
    * @return {boolean}
    */
   function isImageResource(resource) {
-    return !!resource && resource.resourceType() === WebInspector.resourceTypes.Image;
+    return !!resource && resource.resourceType() === Common.resourceTypes.Image;
   }
 
   function buildContent() {
@@ -197,9 +197,9 @@ WebInspector.DOMPresentationUtils.buildImagePreviewContents = function(
     var description;
     if (showDimensions) {
       if (offsetHeight === naturalHeight && offsetWidth === naturalWidth)
-        description = WebInspector.UIString('%d \xd7 %d pixels', offsetWidth, offsetHeight);
+        description = Common.UIString('%d \xd7 %d pixels', offsetWidth, offsetHeight);
       else
-        description = WebInspector.UIString(
+        description = Common.UIString(
             '%d \xd7 %d pixels (Natural: %d \xd7 %d pixels)', offsetWidth, offsetHeight, naturalWidth, naturalHeight);
     }
 
@@ -214,15 +214,15 @@ WebInspector.DOMPresentationUtils.buildImagePreviewContents = function(
 };
 
 /**
- * @param {!WebInspector.Target} target
- * @param {!WebInspector.Linkifier} linkifier
+ * @param {!SDK.Target} target
+ * @param {!Components.Linkifier} linkifier
  * @param {!Protocol.Runtime.StackTrace=} stackTrace
  * @return {!Element}
  */
-WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(target, linkifier, stackTrace) {
+Components.DOMPresentationUtils.buildStackTracePreviewContents = function(target, linkifier, stackTrace) {
   var element = createElement('span');
   element.style.display = 'inline-block';
-  var shadowRoot = WebInspector.createShadowRootWithCoreStyles(element, 'components/domUtils.css');
+  var shadowRoot = UI.createShadowRootWithCoreStyles(element, 'components/domUtils.css');
   var contentElement = shadowRoot.createChild('table', 'stack-preview-container');
 
   /**
@@ -232,7 +232,7 @@ WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(targ
     for (var stackFrame of stackTrace.callFrames) {
       var row = createElement('tr');
       row.createChild('td').textContent = '\n';
-      row.createChild('td', 'function-name').textContent = WebInspector.beautifyFunctionName(stackFrame.functionName);
+      row.createChild('td', 'function-name').textContent = UI.beautifyFunctionName(stackFrame.functionName);
       var link = linkifier.maybeLinkifyConsoleCallFrame(target, stackFrame);
       if (link) {
         row.createChild('td').textContent = ' @ ';
@@ -256,7 +256,7 @@ WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(targ
     var row = contentElement.createChild('tr');
     row.createChild('td').textContent = '\n';
     row.createChild('td', 'stack-preview-async-description').textContent =
-        WebInspector.asyncStackTraceLabel(asyncStackTrace.description);
+        UI.asyncStackTraceLabel(asyncStackTrace.description);
     row.createChild('td');
     row.createChild('td');
     appendStackTrace(asyncStackTrace);
@@ -267,21 +267,21 @@ WebInspector.DOMPresentationUtils.buildStackTracePreviewContents = function(targ
 };
 
 /**
- * @param {!WebInspector.DOMNode} node
+ * @param {!SDK.DOMNode} node
  * @param {boolean=} justSelector
  * @return {string}
  */
-WebInspector.DOMPresentationUtils.fullQualifiedSelector = function(node, justSelector) {
+Components.DOMPresentationUtils.fullQualifiedSelector = function(node, justSelector) {
   if (node.nodeType() !== Node.ELEMENT_NODE)
     return node.localName() || node.nodeName().toLowerCase();
-  return WebInspector.DOMPresentationUtils.cssPath(node, justSelector);
+  return Components.DOMPresentationUtils.cssPath(node, justSelector);
 };
 
 /**
- * @param {!WebInspector.DOMNode} node
+ * @param {!SDK.DOMNode} node
  * @return {string}
  */
-WebInspector.DOMPresentationUtils.simpleSelector = function(node) {
+Components.DOMPresentationUtils.simpleSelector = function(node) {
   var lowerCaseName = node.localName() || node.nodeName().toLowerCase();
   if (node.nodeType() !== Node.ELEMENT_NODE)
     return lowerCaseName;
@@ -296,18 +296,18 @@ WebInspector.DOMPresentationUtils.simpleSelector = function(node) {
 };
 
 /**
- * @param {!WebInspector.DOMNode} node
+ * @param {!SDK.DOMNode} node
  * @param {boolean=} optimized
  * @return {string}
  */
-WebInspector.DOMPresentationUtils.cssPath = function(node, optimized) {
+Components.DOMPresentationUtils.cssPath = function(node, optimized) {
   if (node.nodeType() !== Node.ELEMENT_NODE)
     return '';
 
   var steps = [];
   var contextNode = node;
   while (contextNode) {
-    var step = WebInspector.DOMPresentationUtils._cssPathStep(contextNode, !!optimized, contextNode === node);
+    var step = Components.DOMPresentationUtils._cssPathStep(contextNode, !!optimized, contextNode === node);
     if (!step)
       break;  // Error - bail out early.
     steps.push(step);
@@ -321,33 +321,33 @@ WebInspector.DOMPresentationUtils.cssPath = function(node, optimized) {
 };
 
 /**
- * @param {!WebInspector.DOMNode} node
+ * @param {!SDK.DOMNode} node
  * @param {boolean} optimized
  * @param {boolean} isTargetNode
- * @return {?WebInspector.DOMNodePathStep}
+ * @return {?Components.DOMNodePathStep}
  */
-WebInspector.DOMPresentationUtils._cssPathStep = function(node, optimized, isTargetNode) {
+Components.DOMPresentationUtils._cssPathStep = function(node, optimized, isTargetNode) {
   if (node.nodeType() !== Node.ELEMENT_NODE)
     return null;
 
   var id = node.getAttribute('id');
   if (optimized) {
     if (id)
-      return new WebInspector.DOMNodePathStep(idSelector(id), true);
+      return new Components.DOMNodePathStep(idSelector(id), true);
     var nodeNameLower = node.nodeName().toLowerCase();
     if (nodeNameLower === 'body' || nodeNameLower === 'head' || nodeNameLower === 'html')
-      return new WebInspector.DOMNodePathStep(node.nodeNameInCorrectCase(), true);
+      return new Components.DOMNodePathStep(node.nodeNameInCorrectCase(), true);
   }
   var nodeName = node.nodeNameInCorrectCase();
 
   if (id)
-    return new WebInspector.DOMNodePathStep(nodeName + idSelector(id), true);
+    return new Components.DOMNodePathStep(nodeName + idSelector(id), true);
   var parent = node.parentNode;
   if (!parent || parent.nodeType() === Node.DOCUMENT_NODE)
-    return new WebInspector.DOMNodePathStep(nodeName, true);
+    return new Components.DOMNodePathStep(nodeName, true);
 
   /**
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.DOMNode} node
    * @return {!Array.<string>}
    */
   function prefixedElementClassNames(node) {
@@ -470,22 +470,22 @@ WebInspector.DOMPresentationUtils._cssPathStep = function(node, optimized, isTar
       result += '.' + escapeIdentifierIfNeeded(prefixedName.substr(1));
   }
 
-  return new WebInspector.DOMNodePathStep(result, false);
+  return new Components.DOMNodePathStep(result, false);
 };
 
 /**
- * @param {!WebInspector.DOMNode} node
+ * @param {!SDK.DOMNode} node
  * @param {boolean=} optimized
  * @return {string}
  */
-WebInspector.DOMPresentationUtils.xPath = function(node, optimized) {
+Components.DOMPresentationUtils.xPath = function(node, optimized) {
   if (node.nodeType() === Node.DOCUMENT_NODE)
     return '/';
 
   var steps = [];
   var contextNode = node;
   while (contextNode) {
-    var step = WebInspector.DOMPresentationUtils._xPathValue(contextNode, optimized);
+    var step = Components.DOMPresentationUtils._xPathValue(contextNode, optimized);
     if (!step)
       break;  // Error - bail out early.
     steps.push(step);
@@ -499,20 +499,20 @@ WebInspector.DOMPresentationUtils.xPath = function(node, optimized) {
 };
 
 /**
- * @param {!WebInspector.DOMNode} node
+ * @param {!SDK.DOMNode} node
  * @param {boolean=} optimized
- * @return {?WebInspector.DOMNodePathStep}
+ * @return {?Components.DOMNodePathStep}
  */
-WebInspector.DOMPresentationUtils._xPathValue = function(node, optimized) {
+Components.DOMPresentationUtils._xPathValue = function(node, optimized) {
   var ownValue;
-  var ownIndex = WebInspector.DOMPresentationUtils._xPathIndex(node);
+  var ownIndex = Components.DOMPresentationUtils._xPathIndex(node);
   if (ownIndex === -1)
     return null;  // Error.
 
   switch (node.nodeType()) {
     case Node.ELEMENT_NODE:
       if (optimized && node.getAttribute('id'))
-        return new WebInspector.DOMNodePathStep('//*[@id="' + node.getAttribute('id') + '"]', true);
+        return new Components.DOMNodePathStep('//*[@id="' + node.getAttribute('id') + '"]', true);
       ownValue = node.localName();
       break;
     case Node.ATTRIBUTE_NODE:
@@ -539,14 +539,14 @@ WebInspector.DOMPresentationUtils._xPathValue = function(node, optimized) {
   if (ownIndex > 0)
     ownValue += '[' + ownIndex + ']';
 
-  return new WebInspector.DOMNodePathStep(ownValue, node.nodeType() === Node.DOCUMENT_NODE);
+  return new Components.DOMNodePathStep(ownValue, node.nodeType() === Node.DOCUMENT_NODE);
 };
 
 /**
- * @param {!WebInspector.DOMNode} node
+ * @param {!SDK.DOMNode} node
  * @return {number}
  */
-WebInspector.DOMPresentationUtils._xPathIndex = function(node) {
+Components.DOMPresentationUtils._xPathIndex = function(node) {
   // Returns -1 in case of error, 0 if no siblings matching the same expression, <XPath index among the same expression-matching sibling nodes> otherwise.
   function areNodesSimilar(left, right) {
     if (left === right)
@@ -590,7 +590,7 @@ WebInspector.DOMPresentationUtils._xPathIndex = function(node) {
 /**
  * @unrestricted
  */
-WebInspector.DOMNodePathStep = class {
+Components.DOMNodePathStep = class {
   /**
    * @param {string} value
    * @param {boolean} optimized
@@ -612,32 +612,32 @@ WebInspector.DOMNodePathStep = class {
 /**
  * @interface
  */
-WebInspector.DOMPresentationUtils.MarkerDecorator = function() {};
+Components.DOMPresentationUtils.MarkerDecorator = function() {};
 
-WebInspector.DOMPresentationUtils.MarkerDecorator.prototype = {
+Components.DOMPresentationUtils.MarkerDecorator.prototype = {
   /**
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.DOMNode} node
    * @return {?{title: string, color: string}}
    */
   decorate: function(node) {}
 };
 
 /**
- * @implements {WebInspector.DOMPresentationUtils.MarkerDecorator}
+ * @implements {Components.DOMPresentationUtils.MarkerDecorator}
  * @unrestricted
  */
-WebInspector.DOMPresentationUtils.GenericDecorator = class {
+Components.DOMPresentationUtils.GenericDecorator = class {
   /**
    * @param {!Runtime.Extension} extension
    */
   constructor(extension) {
-    this._title = WebInspector.UIString(extension.title());
+    this._title = Common.UIString(extension.title());
     this._color = extension.descriptor()['color'];
   }
 
   /**
    * @override
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.DOMNode} node
    * @return {?{title: string, color: string}}
    */
   decorate(node) {

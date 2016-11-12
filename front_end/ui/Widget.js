@@ -27,7 +27,7 @@
 /**
  * @unrestricted
  */
-WebInspector.Widget = class extends WebInspector.Object {
+UI.Widget = class extends Common.Object {
   /**
    * @param {boolean=} isWebComponent
    */
@@ -36,7 +36,7 @@ WebInspector.Widget = class extends WebInspector.Object {
     this.contentElement = createElementWithClass('div', 'widget');
     if (isWebComponent) {
       this.element = createElementWithClass('div', 'vbox flex-auto');
-      this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element);
+      this._shadowRoot = UI.createShadowRootWithCoreStyles(this.element);
       this._shadowRoot.appendChild(this.contentElement);
     } else {
       this.element = this.contentElement;
@@ -102,26 +102,26 @@ WebInspector.Widget = class extends WebInspector.Object {
   }
 
   markAsRoot() {
-    WebInspector.Widget.__assert(!this.element.parentElement, 'Attempt to mark as root attached node');
+    UI.Widget.__assert(!this.element.parentElement, 'Attempt to mark as root attached node');
     this._isRoot = true;
   }
 
   /**
-   * @return {?WebInspector.Widget}
+   * @return {?UI.Widget}
    */
   parentWidget() {
     return this._parentWidget;
   }
 
   /**
-   * @return {!Array.<!WebInspector.Widget>}
+   * @return {!Array.<!UI.Widget>}
    */
   children() {
     return this._children;
   }
 
   /**
-   * @param {!WebInspector.Widget} widget
+   * @param {!UI.Widget} widget
    * @protected
    */
   childWasDetached(widget) {
@@ -167,7 +167,7 @@ WebInspector.Widget = class extends WebInspector.Object {
   }
 
   /**
-   * @param {function(this:WebInspector.Widget)} method
+   * @param {function(this:UI.Widget)} method
    */
   _callOnVisibleChildren(method) {
     var copy = this._children.slice();
@@ -221,7 +221,7 @@ WebInspector.Widget = class extends WebInspector.Object {
   }
 
   /**
-   * @param {function(this:WebInspector.Widget)} notification
+   * @param {function(this:UI.Widget)} notification
    */
   _notify(notification) {
     ++this._notificationDepth;
@@ -252,14 +252,14 @@ WebInspector.Widget = class extends WebInspector.Object {
    * @param {?Element=} insertBefore
    */
   show(parentElement, insertBefore) {
-    WebInspector.Widget.__assert(parentElement, 'Attempt to attach widget with no parent element');
+    UI.Widget.__assert(parentElement, 'Attempt to attach widget with no parent element');
 
     if (!this._isRoot) {
       // Update widget hierarchy.
       var currentParent = parentElement;
       while (currentParent && !currentParent.__widget)
         currentParent = currentParent.parentElementOrShadowHost();
-      WebInspector.Widget.__assert(currentParent, 'Attempt to attach widget to orphan node');
+      UI.Widget.__assert(currentParent, 'Attempt to attach widget to orphan node');
       this.attach(currentParent.__widget);
     }
 
@@ -267,7 +267,7 @@ WebInspector.Widget = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Widget} parentWidget
+   * @param {!UI.Widget} parentWidget
    */
   attach(parentWidget) {
     if (parentWidget === this._parentWidget)
@@ -289,9 +289,9 @@ WebInspector.Widget = class extends WebInspector.Object {
       currentParent = currentParent.parentElementOrShadowHost();
 
     if (this._isRoot)
-      WebInspector.Widget.__assert(!currentParent, 'Attempt to show root widget under another widget');
+      UI.Widget.__assert(!currentParent, 'Attempt to show root widget under another widget');
     else
-      WebInspector.Widget.__assert(
+      UI.Widget.__assert(
           currentParent && currentParent.__widget === this._parentWidget,
           'Attempt to show under node belonging to alien widget');
 
@@ -308,11 +308,11 @@ WebInspector.Widget = class extends WebInspector.Object {
 
     // Reparent
     if (this.element.parentElement !== parentElement) {
-      WebInspector.Widget._incrementWidgetCounter(parentElement, this.element);
+      UI.Widget._incrementWidgetCounter(parentElement, this.element);
       if (insertBefore)
-        WebInspector.Widget._originalInsertBefore.call(parentElement, this.element, insertBefore);
+        UI.Widget._originalInsertBefore.call(parentElement, this.element, insertBefore);
       else
-        WebInspector.Widget._originalAppendChild.call(parentElement, this.element);
+        UI.Widget._originalAppendChild.call(parentElement, this.element);
     }
 
     if (!wasVisible && this._parentIsShowing())
@@ -346,8 +346,8 @@ WebInspector.Widget = class extends WebInspector.Object {
       this.element.classList.add('hidden');
     } else {
       // Force legal removal
-      WebInspector.Widget._decrementWidgetCounter(parentElement, this.element);
-      WebInspector.Widget._originalRemoveChild.call(parentElement, this.element);
+      UI.Widget._decrementWidgetCounter(parentElement, this.element);
+      UI.Widget._originalRemoveChild.call(parentElement, this.element);
     }
 
     if (this._parentIsShowing())
@@ -366,7 +366,7 @@ WebInspector.Widget = class extends WebInspector.Object {
     // Update widget hierarchy.
     if (this._parentWidget) {
       var childIndex = this._parentWidget._children.indexOf(this);
-      WebInspector.Widget.__assert(childIndex >= 0, 'Attempt to remove non-child widget');
+      UI.Widget.__assert(childIndex >= 0, 'Attempt to remove non-child widget');
       this._parentWidget._children.splice(childIndex, 1);
       if (this._parentWidget._defaultFocusedChild === this)
         this._parentWidget._defaultFocusedChild = null;
@@ -375,7 +375,7 @@ WebInspector.Widget = class extends WebInspector.Object {
       this._parentWidget = null;
       this._processWasDetachedFromHierarchy();
     } else {
-      WebInspector.Widget.__assert(this._isRoot, 'Removing non-root widget from DOM');
+      UI.Widget.__assert(this._isRoot, 'Removing non-root widget from DOM');
     }
   }
 
@@ -431,7 +431,7 @@ WebInspector.Widget = class extends WebInspector.Object {
    * @param {string} cssFile
    */
   registerRequiredCSS(cssFile) {
-    WebInspector.appendStyle(this._isWebComponent ? this._shadowRoot : this.element, cssFile);
+    UI.appendStyle(this._isWebComponent ? this._shadowRoot : this.element, cssFile);
   }
 
   printWidgetHierarchy() {
@@ -458,10 +458,10 @@ WebInspector.Widget = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Widget} child
+   * @param {!UI.Widget} child
    */
   setDefaultFocusedChild(child) {
-    WebInspector.Widget.__assert(child._parentWidget === this, 'Attempt to set non-child widget as default focused.');
+    UI.Widget.__assert(child._parentWidget === this, 'Attempt to set non-child widget as default focused.');
     this._defaultFocusedChild = child;
   }
 
@@ -503,15 +503,15 @@ WebInspector.Widget = class extends WebInspector.Object {
     var oldParent = this.element.parentElement;
     var oldNextSibling = this.element.nextSibling;
 
-    WebInspector.Widget._originalAppendChild.call(document.body, this.element);
+    UI.Widget._originalAppendChild.call(document.body, this.element);
     this.element.positionAt(0, 0);
     var result = new Size(this.element.offsetWidth, this.element.offsetHeight);
 
     this.element.positionAt(undefined, undefined);
     if (oldParent)
-      WebInspector.Widget._originalInsertBefore.call(oldParent, this.element, oldNextSibling);
+      UI.Widget._originalInsertBefore.call(oldParent, this.element, oldNextSibling);
     else
-      WebInspector.Widget._originalRemoveChild.call(document.body, this.element);
+      UI.Widget._originalRemoveChild.call(document.body, this.element);
     return result;
   }
 
@@ -594,16 +594,16 @@ WebInspector.Widget = class extends WebInspector.Object {
   }
 };
 
-WebInspector.Widget._originalAppendChild = Element.prototype.appendChild;
-WebInspector.Widget._originalInsertBefore = Element.prototype.insertBefore;
-WebInspector.Widget._originalRemoveChild = Element.prototype.removeChild;
-WebInspector.Widget._originalRemoveChildren = Element.prototype.removeChildren;
+UI.Widget._originalAppendChild = Element.prototype.appendChild;
+UI.Widget._originalInsertBefore = Element.prototype.insertBefore;
+UI.Widget._originalRemoveChild = Element.prototype.removeChild;
+UI.Widget._originalRemoveChildren = Element.prototype.removeChildren;
 
 
 /**
  * @unrestricted
  */
-WebInspector.VBox = class extends WebInspector.Widget {
+UI.VBox = class extends UI.Widget {
   /**
    * @param {boolean=} isWebComponent
    */
@@ -620,7 +620,7 @@ WebInspector.VBox = class extends WebInspector.Widget {
     var constraints = new Constraints();
 
     /**
-     * @this {!WebInspector.Widget}
+     * @this {!UI.Widget}
      * @suppressReceiverCheck
      */
     function updateForChild() {
@@ -637,7 +637,7 @@ WebInspector.VBox = class extends WebInspector.Widget {
 /**
  * @unrestricted
  */
-WebInspector.HBox = class extends WebInspector.Widget {
+UI.HBox = class extends UI.Widget {
   /**
    * @param {boolean=} isWebComponent
    */
@@ -654,7 +654,7 @@ WebInspector.HBox = class extends WebInspector.Widget {
     var constraints = new Constraints();
 
     /**
-     * @this {!WebInspector.Widget}
+     * @this {!UI.Widget}
      * @suppressReceiverCheck
      */
     function updateForChild() {
@@ -671,7 +671,7 @@ WebInspector.HBox = class extends WebInspector.Widget {
 /**
  * @unrestricted
  */
-WebInspector.VBoxWithResizeCallback = class extends WebInspector.VBox {
+UI.VBoxWithResizeCallback = class extends UI.VBox {
   /**
    * @param {function()} resizeCallback
    */
@@ -691,9 +691,9 @@ WebInspector.VBoxWithResizeCallback = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.WidgetFocusRestorer = class {
+UI.WidgetFocusRestorer = class {
   /**
-   * @param {!WebInspector.Widget} widget
+   * @param {!UI.Widget} widget
    */
   constructor(widget) {
     this._widget = widget;
@@ -718,9 +718,9 @@ WebInspector.WidgetFocusRestorer = class {
  * @suppress {duplicate}
  */
 Element.prototype.appendChild = function(child) {
-  WebInspector.Widget.__assert(
+  UI.Widget.__assert(
       !child.__widget || child.parentElement === this, 'Attempt to add widget via regular DOM operation.');
-  return WebInspector.Widget._originalAppendChild.call(this, child);
+  return UI.Widget._originalAppendChild.call(this, child);
 };
 
 /**
@@ -731,9 +731,9 @@ Element.prototype.appendChild = function(child) {
  * @suppress {duplicate}
  */
 Element.prototype.insertBefore = function(child, anchor) {
-  WebInspector.Widget.__assert(
+  UI.Widget.__assert(
       !child.__widget || child.parentElement === this, 'Attempt to add widget via regular DOM operation.');
-  return WebInspector.Widget._originalInsertBefore.call(this, child, anchor);
+  return UI.Widget._originalInsertBefore.call(this, child, anchor);
 };
 
 /**
@@ -743,14 +743,14 @@ Element.prototype.insertBefore = function(child, anchor) {
  * @suppress {duplicate}
  */
 Element.prototype.removeChild = function(child) {
-  WebInspector.Widget.__assert(
+  UI.Widget.__assert(
       !child.__widgetCounter && !child.__widget,
       'Attempt to remove element containing widget via regular DOM operation');
-  return WebInspector.Widget._originalRemoveChild.call(this, child);
+  return UI.Widget._originalRemoveChild.call(this, child);
 };
 
 Element.prototype.removeChildren = function() {
-  WebInspector.Widget.__assert(
+  UI.Widget.__assert(
       !this.__widgetCounter, 'Attempt to remove element containing widget via regular DOM operation');
-  WebInspector.Widget._originalRemoveChildren.call(this);
+  UI.Widget._originalRemoveChildren.call(this);
 };

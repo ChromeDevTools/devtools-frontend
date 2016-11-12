@@ -4,10 +4,10 @@
  * found in the LICENSE file.
  */
 /**
- * @implements {WebInspector.ListWidget.Delegate}
+ * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-WebInspector.NetworkManageCustomHeadersView = class extends WebInspector.VBox {
+Network.NetworkManageCustomHeadersView = class extends UI.VBox {
   /**
    * @param {!Array.<!{title: string, editable: boolean}>} columnData
    * @param {function(string) : boolean} addHeaderColumnCallback
@@ -19,18 +19,18 @@ WebInspector.NetworkManageCustomHeadersView = class extends WebInspector.VBox {
     this.registerRequiredCSS('network/networkManageCustomHeadersView.css');
 
     this.contentElement.classList.add('custom-headers-wrapper');
-    this.contentElement.createChild('div', 'header').textContent = WebInspector.UIString('Manage Header Columns');
+    this.contentElement.createChild('div', 'header').textContent = Common.UIString('Manage Header Columns');
 
-    this._list = new WebInspector.ListWidget(this);
+    this._list = new UI.ListWidget(this);
     this._list.element.classList.add('custom-headers-list');
     this._list.registerRequiredCSS('network/networkManageCustomHeadersView.css');
 
     var placeholder = createElementWithClass('div', 'custom-headers-list-list-empty');
-    placeholder.textContent = WebInspector.UIString('No custom headers');
+    placeholder.textContent = Common.UIString('No custom headers');
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.contentElement);
     this.contentElement.appendChild(createTextButton(
-        WebInspector.UIString('Add custom header\u2026'), this._addButtonClicked.bind(this), 'add-button'));
+        Common.UIString('Add custom header\u2026'), this._addButtonClicked.bind(this), 'add-button'));
 
     /** @type {!Map.<string, !{title: string, editable: boolean}>} */
     this._columnConfigs = new Map();
@@ -87,7 +87,7 @@ WebInspector.NetworkManageCustomHeadersView = class extends WebInspector.VBox {
   /**
    * @override
    * @param {*} item
-   * @param {!WebInspector.ListWidget.Editor} editor
+   * @param {!UI.ListWidget.Editor} editor
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {
@@ -109,7 +109,7 @@ WebInspector.NetworkManageCustomHeadersView = class extends WebInspector.VBox {
   /**
    * @override
    * @param {*} item
-   * @return {!WebInspector.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor}
    */
   beginEdit(item) {
     var editor = this._createEditor();
@@ -118,18 +118,18 @@ WebInspector.NetworkManageCustomHeadersView = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {!WebInspector.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor}
    */
   _createEditor() {
     if (this._editor)
       return this._editor;
 
-    var editor = new WebInspector.ListWidget.Editor();
+    var editor = new UI.ListWidget.Editor();
     this._editor = editor;
     var content = editor.contentElement();
 
     var titles = content.createChild('div', 'custom-headers-edit-row');
-    titles.createChild('div', 'custom-headers-header').textContent = WebInspector.UIString('Header Name');
+    titles.createChild('div', 'custom-headers-header').textContent = Common.UIString('Header Name');
 
     var fields = content.createChild('div', 'custom-headers-edit-row');
     fields.createChild('div', 'custom-headers-header')
@@ -141,7 +141,7 @@ WebInspector.NetworkManageCustomHeadersView = class extends WebInspector.VBox {
      * @param {*} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @this {WebInspector.NetworkManageCustomHeadersView}
+     * @this {Network.NetworkManageCustomHeadersView}
      * @return {boolean}
      */
     function validateHeader(item, index, input) {

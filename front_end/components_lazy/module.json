@@ -8,13 +8,13 @@
     ],
     "extensions": [
         {
-            "type": "@WebInspector.UISourceCodeFrame.LineDecorator",
-            "className": "WebInspector.LineLevelProfile.LineDecorator",
+            "type": "@Sources.UISourceCodeFrame.LineDecorator",
+            "className": "Components.LineLevelProfile.LineDecorator",
             "decoratorType": "performance"
         },
         {
-           "type": "@WebInspector.UISourceCodeFrame.LineDecorator",
-           "className": "WebInspector.CoverageProfile.LineDecorator",
+           "type": "@Sources.UISourceCodeFrame.LineDecorator",
+           "className": "Components.CoverageProfile.LineDecorator",
            "decoratorType": "coverage"
         }
     ],

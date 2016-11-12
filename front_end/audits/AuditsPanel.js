@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.AuditsPanel = class extends WebInspector.PanelWithSidebar {
+Audits.AuditsPanel = class extends UI.PanelWithSidebar {
   constructor() {
     super('audits');
     this.registerRequiredCSS('ui/panelEnablerView.css');
@@ -41,10 +41,10 @@ WebInspector.AuditsPanel = class extends WebInspector.PanelWithSidebar {
     this._sidebarTree.registerRequiredCSS('audits/auditsSidebarTree.css');
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
 
-    this._auditsItemTreeElement = new WebInspector.AuditsSidebarTreeElement(this);
+    this._auditsItemTreeElement = new Audits.AuditsSidebarTreeElement(this);
     this._sidebarTree.appendChild(this._auditsItemTreeElement);
 
-    this._auditResultsTreeElement = new TreeElement(WebInspector.UIString('RESULTS'), true);
+    this._auditResultsTreeElement = new TreeElement(Common.UIString('RESULTS'), true);
     this._auditResultsTreeElement.selectable = false;
     this._auditResultsTreeElement.listItemElement.classList.add('audits-sidebar-results');
     this._auditResultsTreeElement.expand();
@@ -52,37 +52,37 @@ WebInspector.AuditsPanel = class extends WebInspector.PanelWithSidebar {
 
     this._constructCategories();
 
-    this._auditController = new WebInspector.AuditController(this);
-    this._launcherView = new WebInspector.AuditLauncherView(this._auditController);
+    this._auditController = new Audits.AuditController(this);
+    this._launcherView = new Audits.AuditLauncherView(this._auditController);
     for (var id in this.categoriesById)
       this._launcherView.addCategory(this.categoriesById[id]);
 
-    var extensionCategories = WebInspector.extensionServer.auditCategories();
+    var extensionCategories = Extensions.extensionServer.auditCategories();
     for (var i = 0; i < extensionCategories.length; ++i) {
       var category = extensionCategories[i];
-      this.addCategory(new WebInspector.AuditExtensionCategory(
+      this.addCategory(new Audits.AuditExtensionCategory(
           category.extensionOrigin, category.id, category.displayName, category.ruleCount));
     }
-    WebInspector.extensionServer.addEventListener(
-        WebInspector.ExtensionServer.Events.AuditCategoryAdded, this._extensionAuditCategoryAdded, this);
+    Extensions.extensionServer.addEventListener(
+        Extensions.ExtensionServer.Events.AuditCategoryAdded, this._extensionAuditCategoryAdded, this);
   }
 
   /**
-   * @return {!WebInspector.AuditsPanel}
+   * @return {!Audits.AuditsPanel}
    */
   static instance() {
-    return /** @type {!WebInspector.AuditsPanel} */ (self.runtime.sharedInstance(WebInspector.AuditsPanel));
+    return /** @type {!Audits.AuditsPanel} */ (self.runtime.sharedInstance(Audits.AuditsPanel));
   }
 
   /**
-   * @return {!Object.<string, !WebInspector.AuditCategory>}
+   * @return {!Object.<string, !Audits.AuditCategory>}
    */
   get categoriesById() {
     return this._auditCategoriesById;
   }
 
   /**
-   * @param {!WebInspector.AuditCategory} category
+   * @param {!Audits.AuditCategory} category
    */
   addCategory(category) {
     this.categoriesById[category.id] = category;
@@ -91,7 +91,7 @@ WebInspector.AuditsPanel = class extends WebInspector.PanelWithSidebar {
 
   /**
    * @param {string} id
-   * @return {!WebInspector.AuditCategory}
+   * @return {!Audits.AuditCategory}
    */
   getCategory(id) {
     return this.categoriesById[id];
@@ -99,8 +99,8 @@ WebInspector.AuditsPanel = class extends WebInspector.PanelWithSidebar {
 
   _constructCategories() {
     this._auditCategoriesById = {};
-    for (var categoryCtorID in WebInspector.AuditCategories) {
-      var auditCategory = new WebInspector.AuditCategories[categoryCtorID]();
+    for (var categoryCtorID in Audits.AuditCategories) {
+      var auditCategory = new Audits.AuditCategories[categoryCtorID]();
       auditCategory._id = categoryCtorID;
       this.categoriesById[categoryCtorID] = auditCategory;
     }
@@ -108,7 +108,7 @@ WebInspector.AuditsPanel = class extends WebInspector.PanelWithSidebar {
 
   /**
    * @param {string} mainResourceURL
-   * @param {!Array.<!WebInspector.AuditCategoryResult>} results
+   * @param {!Array.<!Audits.AuditCategoryResult>} results
    */
   auditFinishedCallback(mainResourceURL, results) {
     var ordinal = 1;
@@ -117,21 +117,21 @@ WebInspector.AuditsPanel = class extends WebInspector.PanelWithSidebar {
         ordinal++;
     }
 
-    var resultTreeElement = new WebInspector.AuditResultSidebarTreeElement(this, results, mainResourceURL, ordinal);
+    var resultTreeElement = new Audits.AuditResultSidebarTreeElement(this, results, mainResourceURL, ordinal);
     this._auditResultsTreeElement.appendChild(resultTreeElement);
     resultTreeElement.revealAndSelect();
   }
 
   /**
-   * @param {!Array.<!WebInspector.AuditCategoryResult>} categoryResults
+   * @param {!Array.<!Audits.AuditCategoryResult>} categoryResults
    */
   showResults(categoryResults) {
     if (!categoryResults._resultLocation) {
       categoryResults.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
-      var resultView = WebInspector.viewManager.createStackLocation();
+      var resultView = UI.viewManager.createStackLocation();
       resultView.widget().element.classList.add('audit-result-view');
       for (var i = 0; i < categoryResults.length; ++i)
-        resultView.showView(new WebInspector.AuditCategoryResultPane(categoryResults[i]));
+        resultView.showView(new Audits.AuditCategoryResultPane(categoryResults[i]));
       categoryResults._resultLocation = resultView;
     }
     this.visibleView = categoryResults._resultLocation.widget();
@@ -180,20 +180,20 @@ WebInspector.AuditsPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _extensionAuditCategoryAdded(event) {
-    var category = /** @type {!WebInspector.ExtensionAuditCategory} */ (event.data);
-    this.addCategory(new WebInspector.AuditExtensionCategory(
+    var category = /** @type {!Extensions.ExtensionAuditCategory} */ (event.data);
+    this.addCategory(new Audits.AuditExtensionCategory(
         category.extensionOrigin, category.id, category.displayName, category.ruleCount));
   }
 };
 
 /**
- * @implements {WebInspector.AuditCategory}
+ * @implements {Audits.AuditCategory}
  * @unrestricted
  */
-WebInspector.AuditCategoryImpl = class {
+Audits.AuditCategoryImpl = class {
   /**
    * @param {string} displayName
    */
@@ -220,8 +220,8 @@ WebInspector.AuditCategoryImpl = class {
   }
 
   /**
-   * @param {!WebInspector.AuditRule} rule
-   * @param {!WebInspector.AuditRule.Severity} severity
+   * @param {!Audits.AuditRule} rule
+   * @param {!Audits.AuditRule.Severity} severity
    */
   addRule(rule, severity) {
     rule.severity = severity;
@@ -230,10 +230,10 @@ WebInspector.AuditCategoryImpl = class {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
-   * @param {!Array.<!WebInspector.NetworkRequest>} requests
-   * @param {function(!WebInspector.AuditRuleResult)} ruleResultCallback
-   * @param {!WebInspector.Progress} progress
+   * @param {!SDK.Target} target
+   * @param {!Array.<!SDK.NetworkRequest>} requests
+   * @param {function(!Audits.AuditRuleResult)} ruleResultCallback
+   * @param {!Common.Progress} progress
    */
   run(target, requests, ruleResultCallback, progress) {
     this._ensureInitialized();
@@ -265,7 +265,7 @@ WebInspector.AuditCategoryImpl = class {
 /**
  * @unrestricted
  */
-WebInspector.AuditRule = class {
+Audits.AuditRule = class {
   /**
    * @param {string} id
    * @param {string} displayName
@@ -284,33 +284,33 @@ WebInspector.AuditRule = class {
   }
 
   /**
-   * @param {!WebInspector.AuditRule.Severity} severity
+   * @param {!Audits.AuditRule.Severity} severity
    */
   set severity(severity) {
     this._severity = severity;
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!Array.<!WebInspector.NetworkRequest>} requests
-   * @param {function(?WebInspector.AuditRuleResult)} callback
-   * @param {!WebInspector.Progress} progress
+   * @param {!SDK.Target} target
+   * @param {!Array.<!SDK.NetworkRequest>} requests
+   * @param {function(?Audits.AuditRuleResult)} callback
+   * @param {!Common.Progress} progress
    */
   run(target, requests, callback, progress) {
     if (progress.isCanceled())
       return;
 
-    var result = new WebInspector.AuditRuleResult(this.displayName);
+    var result = new Audits.AuditRuleResult(this.displayName);
     result.severity = this._severity;
     this.doRun(target, requests, result, callback, progress);
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!Array.<!WebInspector.NetworkRequest>} requests
-   * @param {!WebInspector.AuditRuleResult} result
-   * @param {function(?WebInspector.AuditRuleResult)} callback
-   * @param {!WebInspector.Progress} progress
+   * @param {!SDK.Target} target
+   * @param {!Array.<!SDK.NetworkRequest>} requests
+   * @param {!Audits.AuditRuleResult} result
+   * @param {function(?Audits.AuditRuleResult)} callback
+   * @param {!Common.Progress} progress
    */
   doRun(target, requests, result, callback, progress) {
     throw new Error('doRun() not implemented');
@@ -320,13 +320,13 @@ WebInspector.AuditRule = class {
 /**
  * @enum {string}
  */
-WebInspector.AuditRule.Severity = {
+Audits.AuditRule.Severity = {
   Info: 'info',
   Warning: 'warning',
   Severe: 'severe'
 };
 
-WebInspector.AuditRule.SeverityOrder = {
+Audits.AuditRule.SeverityOrder = {
   'info': 3,
   'warning': 2,
   'severe': 1
@@ -335,9 +335,9 @@ WebInspector.AuditRule.SeverityOrder = {
 /**
  * @unrestricted
  */
-WebInspector.AuditCategoryResult = class {
+Audits.AuditCategoryResult = class {
   /**
-   * @param {!WebInspector.AuditCategory} category
+   * @param {!Audits.AuditCategory} category
    */
   constructor(category) {
     this.title = category.displayName;
@@ -345,7 +345,7 @@ WebInspector.AuditCategoryResult = class {
   }
 
   /**
-   * @param {!WebInspector.AuditRuleResult} ruleResult
+   * @param {!Audits.AuditRuleResult} ruleResult
    */
   addRuleResult(ruleResult) {
     this.ruleResults.push(ruleResult);
@@ -355,7 +355,7 @@ WebInspector.AuditCategoryResult = class {
 /**
  * @unrestricted
  */
-WebInspector.AuditRuleResult = class {
+Audits.AuditRuleResult = class {
   /**
    * @param {(string|boolean|number|!Object)} value
    * @param {boolean=} expanded
@@ -366,7 +366,7 @@ WebInspector.AuditRuleResult = class {
     this.className = className;
     this.expanded = expanded;
     this.violationCount = 0;
-    this._formatters = {r: WebInspector.AuditRuleResult.linkifyDisplayName};
+    this._formatters = {r: Audits.AuditRuleResult.linkifyDisplayName};
     var standardFormatters = Object.keys(String.standardFormatters);
     for (var i = 0; i < standardFormatters.length; ++i)
       this._formatters[standardFormatters[i]] = String.standardFormatters[standardFormatters[i]];
@@ -377,7 +377,7 @@ WebInspector.AuditRuleResult = class {
    * @return {!Element}
    */
   static linkifyDisplayName(url) {
-    return WebInspector.linkifyURLAsNode(url, WebInspector.displayNameForURL(url));
+    return UI.linkifyURLAsNode(url, Bindings.displayNameForURL(url));
   }
 
   /**
@@ -385,19 +385,19 @@ WebInspector.AuditRuleResult = class {
    * @return {string}
    */
   static resourceDomain(domain) {
-    return domain || WebInspector.UIString('[empty domain]');
+    return domain || Common.UIString('[empty domain]');
   }
 
   /**
    * @param {(string|boolean|number|!Object)} value
    * @param {boolean=} expanded
    * @param {string=} className
-   * @return {!WebInspector.AuditRuleResult}
+   * @return {!Audits.AuditRuleResult}
    */
   addChild(value, expanded, className) {
     if (!this.children)
       this.children = [];
-    var entry = new WebInspector.AuditRuleResult(value, expanded, className);
+    var entry = new Audits.AuditRuleResult(value, expanded, className);
     this.children.push(entry);
     return entry;
   }
@@ -406,7 +406,7 @@ WebInspector.AuditRuleResult = class {
    * @param {string} url
    */
   addURL(url) {
-    this.addChild(WebInspector.AuditRuleResult.linkifyDisplayName(url));
+    this.addChild(Audits.AuditRuleResult.linkifyDisplayName(url));
   }
 
   /**
@@ -427,7 +427,7 @@ WebInspector.AuditRuleResult = class {
   /**
    * @param {string} format
    * @param {...*} vararg
-   * @return {!WebInspector.AuditRuleResult}
+   * @return {!Audits.AuditRuleResult}
    */
   addFormatted(format, vararg) {
     var substitutions = Array.prototype.slice.call(arguments, 1);
@@ -451,12 +451,12 @@ WebInspector.AuditRuleResult = class {
 /**
  * @unrestricted
  */
-WebInspector.AuditsSidebarTreeElement = class extends TreeElement {
+Audits.AuditsSidebarTreeElement = class extends TreeElement {
   /**
-   * @param {!WebInspector.AuditsPanel} panel
+   * @param {!Audits.AuditsPanel} panel
    */
   constructor(panel) {
-    super(WebInspector.UIString('Audits'), false);
+    super(Common.UIString('Audits'), false);
     this.selectable = true;
     this._panel = panel;
     this.listItemElement.classList.add('audits-sidebar-header');
@@ -476,10 +476,10 @@ WebInspector.AuditsSidebarTreeElement = class extends TreeElement {
 /**
  * @unrestricted
  */
-WebInspector.AuditResultSidebarTreeElement = class extends TreeElement {
+Audits.AuditResultSidebarTreeElement = class extends TreeElement {
   /**
-   * @param {!WebInspector.AuditsPanel} panel
-   * @param {!Array.<!WebInspector.AuditCategoryResult>} results
+   * @param {!Audits.AuditsPanel} panel
+   * @param {!Array.<!Audits.AuditCategoryResult>} results
    * @param {string} mainResourceURL
    * @param {number} ordinal
    */
@@ -505,10 +505,10 @@ WebInspector.AuditResultSidebarTreeElement = class extends TreeElement {
 
 
 // Contributed audit rules should go into this namespace.
-WebInspector.AuditRules = {};
+Audits.AuditRules = {};
 
 /**
  * Contributed audit categories should go into this namespace.
- * @type {!Object.<string, function(new:WebInspector.AuditCategory)>}
+ * @type {!Object.<string, function(new:Audits.AuditCategory)>}
  */
-WebInspector.AuditCategories = {};
+Audits.AuditCategories = {};

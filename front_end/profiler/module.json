@@ -6,12 +6,12 @@
             "id": "profiles",
             "title": "Profiles",
             "order": 60,
-            "className": "WebInspector.ProfilesPanel"
+            "className": "Profiler.ProfilesPanel"
         },
         {
-            "type": "@WebInspector.ContextMenu.Provider",
-            "contextTypes": ["WebInspector.RemoteObject"],
-            "className": "WebInspector.ProfilesPanel.ContextMenuProvider"
+            "type": "@UI.ContextMenu.Provider",
+            "contextTypes": ["SDK.RemoteObject"],
+            "className": "Profiler.ProfilesPanel.ContextMenuProvider"
         },
         {
             "type": "setting",
@@ -38,13 +38,13 @@
             "defaultValue": false
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "profiler.toggle-recording",
             "iconClass": "largeicon-start-recording",
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
-            "contextTypes": ["WebInspector.ProfilesPanel"],
-            "className": "WebInspector.ProfilesPanel.RecordActionDelegate",
+            "contextTypes": ["Profiler.ProfilesPanel"],
+            "className": "Profiler.ProfilesPanel.RecordActionDelegate",
             "bindings": [
                 {
                     "platform": "windows,linux",

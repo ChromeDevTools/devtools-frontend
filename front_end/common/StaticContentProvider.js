@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.ContentProvider}
+ * @implements {Common.ContentProvider}
  * @unrestricted
  */
-WebInspector.StaticContentProvider = class {
+Common.StaticContentProvider = class {
   /**
    * @param {string} contentURL
-   * @param {!WebInspector.ResourceType} contentType
+   * @param {!Common.ResourceType} contentType
    * @param {function():!Promise<string>} lazyContent
    */
   constructor(contentURL, contentType, lazyContent) {
@@ -19,13 +19,13 @@ WebInspector.StaticContentProvider = class {
 
   /**
    * @param {string} contentURL
-   * @param {!WebInspector.ResourceType} contentType
+   * @param {!Common.ResourceType} contentType
    * @param {string} content
-   * @return {!WebInspector.StaticContentProvider}
+   * @return {!Common.StaticContentProvider}
    */
   static fromString(contentURL, contentType, content) {
     var lazyContent = () => Promise.resolve(content);
-    return new WebInspector.StaticContentProvider(contentURL, contentType, lazyContent);
+    return new Common.StaticContentProvider(contentURL, contentType, lazyContent);
   }
 
   /**
@@ -38,7 +38,7 @@ WebInspector.StaticContentProvider = class {
 
   /**
    * @override
-   * @return {!WebInspector.ResourceType}
+   * @return {!Common.ResourceType}
    */
   contentType() {
     return this._contentType;
@@ -57,14 +57,14 @@ WebInspector.StaticContentProvider = class {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
    */
   searchInContent(query, caseSensitive, isRegex, callback) {
     /**
      * @param {string} content
      */
     function performSearch(content) {
-      callback(WebInspector.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
+      callback(Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
     }
 
     this._lazyContent().then(performSearch);

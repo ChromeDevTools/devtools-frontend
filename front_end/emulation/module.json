@@ -1,16 +1,16 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.AppProvider",
+            "type": "@Common.AppProvider",
             "condition": "can_dock",
-            "className": "WebInspector.AdvancedAppProvider",
+            "className": "Emulation.AdvancedAppProvider",
             "order": 0
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Mobile",
             "actionId": "emulation.toggle-device-mode",
-            "className": "WebInspector.DeviceModeWrapper.ActionDelegate",
+            "className": "Emulation.DeviceModeWrapper.ActionDelegate",
             "condition": "can_dock",
             "title": "Toggle device toolbar",
             "iconClass": "largeicon-phone",
@@ -26,10 +26,10 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "emulation.capture-screenshot",
             "category": "Mobile",
-            "className": "WebInspector.DeviceModeWrapper.ActionDelegate",
+            "className": "Emulation.DeviceModeWrapper.ActionDelegate",
             "title": "Capture screenshot",
             "tags": "device"
         },
@@ -40,7 +40,7 @@
             "actionId": "emulation.capture-screenshot"
         },
         {
-            "type": "@WebInspector.ToolbarItem.Provider",
+            "type": "@UI.ToolbarItem.Provider",
             "actionId": "emulation.toggle-device-mode",
             "condition": "can_dock",
             "location": "main-toolbar-left",
@@ -88,17 +88,17 @@
             "id": "devices",
             "title": "Devices",
             "order": "30",
-            "className": "WebInspector.DevicesSettingsTab",
+            "className": "Emulation.DevicesSettingsTab",
             "settings": [
                 "standardEmulatedDeviceList",
                 "customEmulatedDeviceList"
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "emulation.show-sensors",
             "title": "Sensors",
-            "className": "WebInspector.SensorsView.ShowActionDelegate"
+            "className": "Emulation.SensorsView.ShowActionDelegate"
         },
         {
             "type": "view",
@@ -107,7 +107,7 @@
             "title": "Sensors",
             "persistence": "closeable",
             "order": 100,
-            "className": "WebInspector.SensorsView",
+            "className": "Emulation.SensorsView",
             "tags": "geolocation, accelerometer, device orientation"
         }
     ],

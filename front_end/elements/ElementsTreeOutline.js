@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.ElementsTreeOutline = class extends TreeOutline {
+Elements.ElementsTreeOutline = class extends TreeOutline {
   /**
-   * @param {!WebInspector.DOMModel} domModel
+   * @param {!SDK.DOMModel} domModel
    * @param {boolean=} omitRootDOMNode
    * @param {boolean=} selectEnabled
    */
@@ -43,7 +43,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
     this._domModel = domModel;
     this._treeElementSymbol = Symbol('treeElement');
     var shadowContainer = createElement('div');
-    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(shadowContainer, 'elements/elementsTreeOutline.css');
+    this._shadowRoot = UI.createShadowRootWithCoreStyles(shadowContainer, 'elements/elementsTreeOutline.css');
     var outlineDisclosureElement = this._shadowRoot.createChild('div', 'elements-disclosure');
 
     this._element = this.element;
@@ -67,33 +67,33 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
 
     this._includeRootDOMNode = !omitRootDOMNode;
     this._selectEnabled = selectEnabled;
-    /** @type {?WebInspector.DOMNode} */
+    /** @type {?SDK.DOMNode} */
     this._rootDOMNode = null;
-    /** @type {?WebInspector.DOMNode} */
+    /** @type {?SDK.DOMNode} */
     this._selectedDOMNode = null;
 
     this._visible = false;
 
-    this._popoverHelper = new WebInspector.PopoverHelper(this._element);
+    this._popoverHelper = new UI.PopoverHelper(this._element);
     this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
     this._popoverHelper.setTimeout(0, 100);
 
-    /** @type {!Map<!WebInspector.DOMNode, !WebInspector.ElementsTreeOutline.UpdateRecord>} */
+    /** @type {!Map<!SDK.DOMNode, !Elements.ElementsTreeOutline.UpdateRecord>} */
     this._updateRecords = new Map();
-    /** @type {!Set<!WebInspector.ElementsTreeElement>} */
+    /** @type {!Set<!Elements.ElementsTreeElement>} */
     this._treeElementsBeingUpdated = new Set();
 
-    this._domModel.addEventListener(WebInspector.DOMModel.Events.MarkersChanged, this._markersChanged, this);
-    this._showHTMLCommentsSetting = WebInspector.moduleSetting('showHTMLComments');
+    this._domModel.addEventListener(SDK.DOMModel.Events.MarkersChanged, this._markersChanged, this);
+    this._showHTMLCommentsSetting = Common.moduleSetting('showHTMLComments');
     this._showHTMLCommentsSetting.addChangeListener(this._onShowHTMLCommentsChange.bind(this));
   }
 
   /**
-   * @param {!WebInspector.DOMModel} domModel
-   * @return {?WebInspector.ElementsTreeOutline}
+   * @param {!SDK.DOMModel} domModel
+   * @return {?Elements.ElementsTreeOutline}
    */
   static forDOMModel(domModel) {
-    return domModel[WebInspector.ElementsTreeOutline._treeOutlineSymbol] || null;
+    return domModel[Elements.ElementsTreeOutline._treeOutlineSymbol] || null;
   }
 
   _onShowHTMLCommentsChange() {
@@ -125,14 +125,14 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @return {!WebInspector.DOMModel}
+   * @return {!SDK.DOMModel}
    */
   domModel() {
     return this._domModel;
   }
 
   /**
-   * @param {?WebInspector.InplaceEditor.Controller} multilineEditing
+   * @param {?UI.InplaceEditor.Controller} multilineEditing
    */
   setMultilineEditing(multilineEditing) {
     this._multilineEditing = multilineEditing;
@@ -155,7 +155,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {?WebInspector.ElementsTreeOutline.ClipboardData} data
+   * @param {?Elements.ElementsTreeOutline.ClipboardData} data
    */
   _setClipboardData(data) {
     if (this._clipboardNodeData) {
@@ -174,7 +174,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.DOMNode} removedNode
+   * @param {!SDK.DOMNode} removedNode
    */
   resetClipboardIfNeeded(removedNode) {
     if (this._clipboardNodeData && this._clipboardNodeData.node === removedNode)
@@ -201,7 +201,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
       return;
 
     // Do not interfere with text editing.
-    if (WebInspector.isEditing())
+    if (UI.isEditing())
       return;
 
     var targetNode = this.selectedDOMNode();
@@ -216,7 +216,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
 
   /**
    * @param {boolean} isCut
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    */
   performCopyOrCut(isCut, node) {
     if (isCut && (node.isShadowRoot() || node.ancestorUserAgentShadowRoot()))
@@ -227,7 +227,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.DOMNode} targetNode
+   * @param {!SDK.DOMNode} targetNode
    * @return {boolean}
    */
   canPaste(targetNode) {
@@ -247,7 +247,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.DOMNode} targetNode
+   * @param {!SDK.DOMNode} targetNode
    */
   pasteNode(targetNode) {
     if (this.canPaste(targetNode))
@@ -259,7 +259,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
    */
   _onPaste(event) {
     // Do not interfere with text editing.
-    if (WebInspector.isEditing())
+    if (UI.isEditing())
       return;
 
     var targetNode = this.selectedDOMNode();
@@ -271,7 +271,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.DOMNode} targetNode
+   * @param {!SDK.DOMNode} targetNode
    */
   _performPaste(targetNode) {
     if (this._clipboardNodeData.isCut) {
@@ -284,7 +284,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
     /**
      * @param {?Protocol.Error} error
      * @param {!Protocol.DOM.NodeId} nodeId
-     * @this {WebInspector.ElementsTreeOutline}
+     * @this {Elements.ElementsTreeOutline}
      */
     function expandCallback(error, nodeId) {
       if (error)
@@ -333,14 +333,14 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @return {?WebInspector.DOMNode}
+   * @return {?SDK.DOMNode}
    */
   selectedDOMNode() {
     return this._selectedDOMNode;
   }
 
   /**
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    * @param {boolean=} focus
    */
   selectDOMNode(node, focus) {
@@ -400,19 +400,19 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
    */
   _selectedNodeChanged(focus) {
     this.dispatchEventToListeners(
-        WebInspector.ElementsTreeOutline.Events.SelectedNodeChanged, {node: this._selectedDOMNode, focus: focus});
+        Elements.ElementsTreeOutline.Events.SelectedNodeChanged, {node: this._selectedDOMNode, focus: focus});
   }
 
   /**
-   * @param {!Array.<!WebInspector.DOMNode>} nodes
+   * @param {!Array.<!SDK.DOMNode>} nodes
    */
   _fireElementsTreeUpdated(nodes) {
-    this.dispatchEventToListeners(WebInspector.ElementsTreeOutline.Events.ElementsTreeUpdated, nodes);
+    this.dispatchEventToListeners(Elements.ElementsTreeOutline.Events.ElementsTreeUpdated, nodes);
   }
 
   /**
-   * @param {!WebInspector.DOMNode} node
-   * @return {?WebInspector.ElementsTreeElement}
+   * @param {!SDK.DOMNode} node
+   * @return {?Elements.ElementsTreeElement}
    */
   findTreeElement(node) {
     var treeElement = this._lookUpTreeElement(node);
@@ -421,11 +421,11 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
       treeElement = this._lookUpTreeElement(node.parentNode);
     }
 
-    return /** @type {?WebInspector.ElementsTreeElement} */ (treeElement);
+    return /** @type {?Elements.ElementsTreeElement} */ (treeElement);
   }
 
   /**
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    * @return {?TreeElement}
    */
   _lookUpTreeElement(node) {
@@ -458,8 +458,8 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.DOMNode} node
-   * @return {?WebInspector.ElementsTreeElement}
+   * @param {!SDK.DOMNode} node
+   * @return {?Elements.ElementsTreeElement}
    */
   createTreeElementFor(node) {
     var treeElement = this.findTreeElement(node);
@@ -479,7 +479,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    * @param {boolean} omitFocus
    */
   _revealAndSelectNode(node, omitFocus) {
@@ -539,7 +539,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.DOMNode} node
    * @param {function()} callback
    */
   _loadDimensionsForNode(node, callback) {
@@ -578,14 +578,14 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
 
   /**
    * @param {!Element} anchor
-   * @param {!WebInspector.Popover} popover
+   * @param {!UI.Popover} popover
    */
   _showPopover(anchor, popover) {
     var listItem = anchor.enclosingNodeOrSelfWithNodeName('li');
-    var node = /** @type {!WebInspector.ElementsTreeElement} */ (listItem.treeElement).node();
+    var node = /** @type {!Elements.ElementsTreeElement} */ (listItem.treeElement).node();
     this._loadDimensionsForNode(
-        node, WebInspector.DOMPresentationUtils.buildImagePreviewContents.bind(
-                  WebInspector.DOMPresentationUtils, node.target(), anchor.href, true, showPopover));
+        node, Components.DOMPresentationUtils.buildImagePreviewContents.bind(
+                  Components.DOMPresentationUtils, node.target(), anchor.href, true, showPopover));
 
     /**
      * @param {!Element=} contents
@@ -632,21 +632,21 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
 
     this.setHoverEffect(element);
 
-    if (element instanceof WebInspector.ElementsTreeElement) {
+    if (element instanceof Elements.ElementsTreeElement) {
       this._domModel.highlightDOMNodeWithConfig(
-          element.node().id, {mode: 'all', showInfo: !WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(event)});
+          element.node().id, {mode: 'all', showInfo: !UI.KeyboardShortcut.eventHasCtrlOrMeta(event)});
       return;
     }
 
-    if (element instanceof WebInspector.ElementsTreeOutline.ShortcutTreeElement)
+    if (element instanceof Elements.ElementsTreeOutline.ShortcutTreeElement)
       this._domModel.highlightDOMNodeWithConfig(
-          undefined, {mode: 'all', showInfo: !WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(event)},
+          undefined, {mode: 'all', showInfo: !UI.KeyboardShortcut.eventHasCtrlOrMeta(event)},
           element.backendNodeId());
   }
 
   _onmouseleave(event) {
     this.setHoverEffect(null);
-    WebInspector.DOMModel.hideDOMNodeHighlight();
+    SDK.DOMModel.hideDOMNodeHighlight();
   }
 
   _ondragstart(event) {
@@ -666,7 +666,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
     event.dataTransfer.effectAllowed = 'copyMove';
     this._treeElementBeingDragged = treeElement;
 
-    WebInspector.DOMModel.hideDOMNodeHighlight();
+    SDK.DOMModel.hideDOMNodeHighlight();
 
     return true;
   }
@@ -707,9 +707,9 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
     if (!treeElement)
       return false;
 
-    if (!(treeElement instanceof WebInspector.ElementsTreeElement))
+    if (!(treeElement instanceof Elements.ElementsTreeElement))
       return false;
-    var elementsTreeElement = /** @type {!WebInspector.ElementsTreeElement} */ (treeElement);
+    var elementsTreeElement = /** @type {!Elements.ElementsTreeElement} */ (treeElement);
 
     var node = elementsTreeElement.node();
     if (!node.parentNode || node.parentNode.nodeType() !== Node.ELEMENT_NODE)
@@ -766,19 +766,19 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
 
   _contextMenuEventFired(event) {
     var treeElement = this._treeElementFromEvent(event);
-    if (treeElement instanceof WebInspector.ElementsTreeElement)
+    if (treeElement instanceof Elements.ElementsTreeElement)
       this.showContextMenu(treeElement, event);
   }
 
   /**
-   * @param {!WebInspector.ElementsTreeElement} treeElement
+   * @param {!Elements.ElementsTreeElement} treeElement
    * @param {!Event} event
    */
   showContextMenu(treeElement, event) {
-    if (WebInspector.isEditing())
+    if (UI.isEditing())
       return;
 
-    var contextMenu = new WebInspector.ContextMenu(event);
+    var contextMenu = new UI.ContextMenu(event);
     var isPseudoElement = !!treeElement.node().pseudoType();
     var isTag = treeElement.node().nodeType() === Node.ELEMENT_NODE && !isPseudoElement;
     var textNode = event.target.enclosingNodeOrSelfWithClass('webkit-html-text-node');
@@ -815,7 +815,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
     if (!treeElement)
       return;
 
-    if (WebInspector.KeyboardShortcut.eventHasCtrlOrMeta(event) && node.parentNode) {
+    if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event) && node.parentNode) {
       if (event.key === 'ArrowUp' && node.previousSibling) {
         node.moveTo(node.parentNode, node.previousSibling, this.selectNodeAfterEdit.bind(this, treeElement.expanded));
         event.handled = true;
@@ -831,7 +831,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.DOMNode} node
    * @param {boolean=} startEditing
    * @param {function()=} callback
    */
@@ -850,7 +850,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
     treeElement.toggleEditAsHTML(editingFinished.bind(this), startEditing);
 
     /**
-     * @this {WebInspector.ElementsTreeOutline}
+     * @this {Elements.ElementsTreeOutline}
      * @param {boolean} success
      */
     function editingFinished(success) {
@@ -880,7 +880,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
    * @param {boolean} wasExpanded
    * @param {?Protocol.Error} error
    * @param {!Protocol.DOM.NodeId=} nodeId
-   * @return {?WebInspector.ElementsTreeElement} nodeId
+   * @return {?Elements.ElementsTreeElement} nodeId
    */
   selectNodeAfterEdit(wasExpanded, error, nodeId) {
     if (error)
@@ -909,8 +909,8 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
    * containing a rule to set "visibility: hidden" on the class and all it's
    * ancestors.
    *
-   * @param {!WebInspector.DOMNode} node
-   * @param {function(?WebInspector.RemoteObject, boolean=)=} userCallback
+   * @param {!SDK.DOMNode} node
+   * @param {function(?SDK.RemoteObject, boolean=)=} userCallback
    */
   toggleHideElement(node, userCallback) {
     var pseudoType = node.pseudoType();
@@ -973,7 +973,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.DOMNode} node
    * @return {boolean}
    */
   isToggledToHidden(node) {
@@ -985,56 +985,56 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
     this.selectDOMNode(null, false);
     this._popoverHelper.hidePopover();
     delete this._clipboardNodeData;
-    WebInspector.DOMModel.hideDOMNodeHighlight();
+    SDK.DOMModel.hideDOMNodeHighlight();
     this._updateRecords.clear();
   }
 
   wireToDOMModel() {
-    this._domModel[WebInspector.ElementsTreeOutline._treeOutlineSymbol] = this;
-    this._domModel.addEventListener(WebInspector.DOMModel.Events.NodeInserted, this._nodeInserted, this);
-    this._domModel.addEventListener(WebInspector.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
-    this._domModel.addEventListener(WebInspector.DOMModel.Events.AttrModified, this._attributeModified, this);
-    this._domModel.addEventListener(WebInspector.DOMModel.Events.AttrRemoved, this._attributeRemoved, this);
+    this._domModel[Elements.ElementsTreeOutline._treeOutlineSymbol] = this;
+    this._domModel.addEventListener(SDK.DOMModel.Events.NodeInserted, this._nodeInserted, this);
+    this._domModel.addEventListener(SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
+    this._domModel.addEventListener(SDK.DOMModel.Events.AttrModified, this._attributeModified, this);
+    this._domModel.addEventListener(SDK.DOMModel.Events.AttrRemoved, this._attributeRemoved, this);
     this._domModel.addEventListener(
-        WebInspector.DOMModel.Events.CharacterDataModified, this._characterDataModified, this);
-    this._domModel.addEventListener(WebInspector.DOMModel.Events.DocumentUpdated, this._documentUpdated, this);
+        SDK.DOMModel.Events.CharacterDataModified, this._characterDataModified, this);
+    this._domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this._documentUpdated, this);
     this._domModel.addEventListener(
-        WebInspector.DOMModel.Events.ChildNodeCountUpdated, this._childNodeCountUpdated, this);
+        SDK.DOMModel.Events.ChildNodeCountUpdated, this._childNodeCountUpdated, this);
     this._domModel.addEventListener(
-        WebInspector.DOMModel.Events.DistributedNodesChanged, this._distributedNodesChanged, this);
+        SDK.DOMModel.Events.DistributedNodesChanged, this._distributedNodesChanged, this);
   }
 
   unwireFromDOMModel() {
-    this._domModel.removeEventListener(WebInspector.DOMModel.Events.NodeInserted, this._nodeInserted, this);
-    this._domModel.removeEventListener(WebInspector.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
-    this._domModel.removeEventListener(WebInspector.DOMModel.Events.AttrModified, this._attributeModified, this);
-    this._domModel.removeEventListener(WebInspector.DOMModel.Events.AttrRemoved, this._attributeRemoved, this);
+    this._domModel.removeEventListener(SDK.DOMModel.Events.NodeInserted, this._nodeInserted, this);
+    this._domModel.removeEventListener(SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
+    this._domModel.removeEventListener(SDK.DOMModel.Events.AttrModified, this._attributeModified, this);
+    this._domModel.removeEventListener(SDK.DOMModel.Events.AttrRemoved, this._attributeRemoved, this);
     this._domModel.removeEventListener(
-        WebInspector.DOMModel.Events.CharacterDataModified, this._characterDataModified, this);
-    this._domModel.removeEventListener(WebInspector.DOMModel.Events.DocumentUpdated, this._documentUpdated, this);
+        SDK.DOMModel.Events.CharacterDataModified, this._characterDataModified, this);
+    this._domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this._documentUpdated, this);
     this._domModel.removeEventListener(
-        WebInspector.DOMModel.Events.ChildNodeCountUpdated, this._childNodeCountUpdated, this);
+        SDK.DOMModel.Events.ChildNodeCountUpdated, this._childNodeCountUpdated, this);
     this._domModel.removeEventListener(
-        WebInspector.DOMModel.Events.DistributedNodesChanged, this._distributedNodesChanged, this);
-    delete this._domModel[WebInspector.ElementsTreeOutline._treeOutlineSymbol];
+        SDK.DOMModel.Events.DistributedNodesChanged, this._distributedNodesChanged, this);
+    delete this._domModel[Elements.ElementsTreeOutline._treeOutlineSymbol];
   }
 
   /**
-   * @param {!WebInspector.DOMNode} node
-   * @return {!WebInspector.ElementsTreeOutline.UpdateRecord}
+   * @param {!SDK.DOMNode} node
+   * @return {!Elements.ElementsTreeOutline.UpdateRecord}
    */
   _addUpdateRecord(node) {
     var record = this._updateRecords.get(node);
     if (!record) {
-      record = new WebInspector.ElementsTreeOutline.UpdateRecord();
+      record = new Elements.ElementsTreeOutline.UpdateRecord();
       this._updateRecords.set(node, record);
     }
     return record;
   }
 
   /**
-   * @param {!WebInspector.DOMNode} node
-   * @return {?WebInspector.ElementsTreeOutline.UpdateRecord}
+   * @param {!SDK.DOMNode} node
+   * @return {?Elements.ElementsTreeOutline.UpdateRecord}
    */
   _updateRecordForHighlight(node) {
     if (!this._visible)
@@ -1043,7 +1043,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _documentUpdated(event) {
     var inspectedRootDocument = event.data;
@@ -1057,28 +1057,28 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _attributeModified(event) {
-    var node = /** @type {!WebInspector.DOMNode} */ (event.data.node);
+    var node = /** @type {!SDK.DOMNode} */ (event.data.node);
     this._addUpdateRecord(node).attributeModified(event.data.name);
     this._updateModifiedNodesSoon();
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _attributeRemoved(event) {
-    var node = /** @type {!WebInspector.DOMNode} */ (event.data.node);
+    var node = /** @type {!SDK.DOMNode} */ (event.data.node);
     this._addUpdateRecord(node).attributeRemoved(event.data.name);
     this._updateModifiedNodesSoon();
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _characterDataModified(event) {
-    var node = /** @type {!WebInspector.DOMNode} */ (event.data);
+    var node = /** @type {!SDK.DOMNode} */ (event.data);
     this._addUpdateRecord(node).charDataModified();
     // Text could be large and force us to render itself as the child in the tree outline.
     if (node.parentNode && node.parentNode.firstChild === node.parentNode.lastChild)
@@ -1087,39 +1087,39 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _nodeInserted(event) {
-    var node = /** @type {!WebInspector.DOMNode} */ (event.data);
-    this._addUpdateRecord(/** @type {!WebInspector.DOMNode} */ (node.parentNode)).nodeInserted(node);
+    var node = /** @type {!SDK.DOMNode} */ (event.data);
+    this._addUpdateRecord(/** @type {!SDK.DOMNode} */ (node.parentNode)).nodeInserted(node);
     this._updateModifiedNodesSoon();
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _nodeRemoved(event) {
-    var node = /** @type {!WebInspector.DOMNode} */ (event.data.node);
-    var parentNode = /** @type {!WebInspector.DOMNode} */ (event.data.parent);
+    var node = /** @type {!SDK.DOMNode} */ (event.data.node);
+    var parentNode = /** @type {!SDK.DOMNode} */ (event.data.parent);
     this.resetClipboardIfNeeded(node);
     this._addUpdateRecord(parentNode).nodeRemoved(node);
     this._updateModifiedNodesSoon();
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _childNodeCountUpdated(event) {
-    var node = /** @type {!WebInspector.DOMNode} */ (event.data);
+    var node = /** @type {!SDK.DOMNode} */ (event.data);
     this._addUpdateRecord(node).childrenModified();
     this._updateModifiedNodesSoon();
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _distributedNodesChanged(event) {
-    var node = /** @type {!WebInspector.DOMNode} */ (event.data);
+    var node = /** @type {!SDK.DOMNode} */ (event.data);
     this._addUpdateRecord(node).childrenModified();
     this._updateModifiedNodesSoon();
   }
@@ -1186,7 +1186,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.ElementsTreeElement} treeElement
+   * @param {!Elements.ElementsTreeElement} treeElement
    */
   populateTreeElement(treeElement) {
     if (treeElement.childCount() || !treeElement.isExpandable())
@@ -1196,12 +1196,12 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.DOMNode} node
    * @param {boolean=} closingTag
-   * @return {!WebInspector.ElementsTreeElement}
+   * @return {!Elements.ElementsTreeElement}
    */
   _createElementTreeElement(node, closingTag) {
-    var treeElement = new WebInspector.ElementsTreeElement(node, closingTag);
+    var treeElement = new Elements.ElementsTreeElement(node, closingTag);
     treeElement.setExpandable(!closingTag && this._hasVisibleChildren(node));
     if (node.nodeType() === Node.ELEMENT_NODE && node.parentNode && node.parentNode.nodeType() === Node.DOCUMENT_NODE &&
         !node.parentNode.parentNode)
@@ -1211,9 +1211,9 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.ElementsTreeElement} treeElement
-   * @param {!WebInspector.DOMNode} child
-   * @return {?WebInspector.ElementsTreeElement}
+   * @param {!Elements.ElementsTreeElement} treeElement
+   * @param {!SDK.DOMNode} child
+   * @return {?Elements.ElementsTreeElement}
    */
   _showChild(treeElement, child) {
     if (treeElement.isClosingTag())
@@ -1225,15 +1225,15 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
 
     if (index >= treeElement.expandedChildrenLimit())
       this.setExpandedChildrenLimit(treeElement, index + 1);
-    return /** @type {!WebInspector.ElementsTreeElement} */ (treeElement.childAt(index));
+    return /** @type {!Elements.ElementsTreeElement} */ (treeElement.childAt(index));
   }
 
   /**
-   * @param {!WebInspector.DOMNode} node
-   * @return {!Array.<!WebInspector.DOMNode>} visibleChildren
+   * @param {!SDK.DOMNode} node
+   * @return {!Array.<!SDK.DOMNode>} visibleChildren
    */
   _visibleChildren(node) {
-    var visibleChildren = WebInspector.ElementsTreeElement.visibleShadowRoots(node);
+    var visibleChildren = Elements.ElementsTreeElement.visibleShadowRoots(node);
 
     var importedDocument = node.importedDocument();
     if (importedDocument)
@@ -1262,7 +1262,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.DOMNode} node
    * @return {boolean}
    */
   _hasVisibleChildren(node) {
@@ -1270,17 +1270,17 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
       return true;
     if (node.templateContent())
       return true;
-    if (WebInspector.ElementsTreeElement.visibleShadowRoots(node).length)
+    if (Elements.ElementsTreeElement.visibleShadowRoots(node).length)
       return true;
     if (node.hasPseudoElements())
       return true;
     if (node.isInsertionPoint())
       return true;
-    return !!node.childNodeCount() && !WebInspector.ElementsTreeElement.canShowInlineText(node);
+    return !!node.childNodeCount() && !Elements.ElementsTreeElement.canShowInlineText(node);
   }
 
   /**
-   * @param {!WebInspector.ElementsTreeElement} treeElement
+   * @param {!Elements.ElementsTreeElement} treeElement
    */
   _createExpandAllButtonTreeElement(treeElement) {
     var button = createTextButton('', handleLoadAllChildren.bind(this));
@@ -1292,7 +1292,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
     return expandAllButtonElement;
 
     /**
-     * @this {WebInspector.ElementsTreeOutline}
+     * @this {Elements.ElementsTreeOutline}
      * @param {!Event} event
      */
     function handleLoadAllChildren(event) {
@@ -1300,13 +1300,13 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
       this.setExpandedChildrenLimit(
           treeElement, Math.max(
                            visibleChildCount, treeElement.expandedChildrenLimit() +
-                               WebInspector.ElementsTreeElement.InitialChildrenLimit));
+                               Elements.ElementsTreeElement.InitialChildrenLimit));
       event.consume();
     }
   }
 
   /**
-   * @param {!WebInspector.ElementsTreeElement} treeElement
+   * @param {!Elements.ElementsTreeElement} treeElement
    * @param {number} expandedChildrenLimit
    */
   setExpandedChildrenLimit(treeElement, expandedChildrenLimit) {
@@ -1319,7 +1319,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.ElementsTreeElement} treeElement
+   * @param {!Elements.ElementsTreeElement} treeElement
    */
   _updateChildren(treeElement) {
     if (!treeElement.isExpandable()) {
@@ -1335,8 +1335,8 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
     treeElement.node().getChildNodes(childNodesLoaded.bind(this));
 
     /**
-     * @param {?Array.<!WebInspector.DOMNode>} children
-     * @this {WebInspector.ElementsTreeOutline}
+     * @param {?Array.<!SDK.DOMNode>} children
+     * @this {Elements.ElementsTreeOutline}
      */
     function childNodesLoaded(children) {
       // FIXME: sort this out, it should not happen.
@@ -1347,11 +1347,11 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.ElementsTreeElement} treeElement
-   * @param {!WebInspector.DOMNode} child
+   * @param {!Elements.ElementsTreeElement} treeElement
+   * @param {!SDK.DOMNode} child
    * @param {number} index
    * @param {boolean=} closingTag
-   * @return {!WebInspector.ElementsTreeElement}
+   * @return {!Elements.ElementsTreeElement}
    */
   insertChildElement(treeElement, child, index, closingTag) {
     var newElement = this._createElementTreeElement(child, closingTag);
@@ -1360,8 +1360,8 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.ElementsTreeElement} treeElement
-   * @param {!WebInspector.ElementsTreeElement} child
+   * @param {!Elements.ElementsTreeElement} treeElement
+   * @param {!Elements.ElementsTreeElement} child
    * @param {number} targetIndex
    */
   _moveChild(treeElement, child, targetIndex) {
@@ -1376,7 +1376,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.ElementsTreeElement} treeElement
+   * @param {!Elements.ElementsTreeElement} treeElement
    */
   _innerUpdateChildren(treeElement) {
     if (this._treeElementsBeingUpdated.has(treeElement))
@@ -1393,12 +1393,12 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
     var existingTreeElements = new Map();
     for (var i = treeElement.childCount() - 1; i >= 0; --i) {
       var existingTreeElement = treeElement.childAt(i);
-      if (!(existingTreeElement instanceof WebInspector.ElementsTreeElement)) {
+      if (!(existingTreeElement instanceof Elements.ElementsTreeElement)) {
         // Remove expand all button and shadow host toolbar.
         treeElement.removeChildAtIndex(i);
         continue;
       }
-      var elementsTreeElement = /** @type {!WebInspector.ElementsTreeElement} */ (existingTreeElement);
+      var elementsTreeElement = /** @type {!Elements.ElementsTreeElement} */ (existingTreeElement);
       var existingNode = elementsTreeElement.node();
 
       if (visibleChildrenSet.has(existingNode)) {
@@ -1419,7 +1419,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
         // No existing element found, insert a new element.
         var newElement = this.insertChildElement(treeElement, child, i);
         if (this._updateRecordForHighlight(node) && treeElement.expanded)
-          WebInspector.ElementsTreeElement.animateOnDOMUpdate(newElement);
+          Elements.ElementsTreeElement.animateOnDOMUpdate(newElement);
         // If a node was inserted in the middle of existing list dynamically we might need to increase the limit.
         if (treeElement.childCount() > treeElement.expandedChildrenLimit())
           this.setExpandedChildrenLimit(treeElement, treeElement.expandedChildrenLimit() + 1);
@@ -1434,7 +1434,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
         treeElement.expandAllButtonElement = this._createExpandAllButtonTreeElement(treeElement);
       treeElement.insertChild(treeElement.expandAllButtonElement, targetButtonIndex);
       treeElement.expandAllButtonElement.button.textContent =
-          WebInspector.UIString('Show All Nodes (%d More)', visibleChildren.length - expandedChildCount);
+          Common.UIString('Show All Nodes (%d More)', visibleChildren.length - expandedChildCount);
     } else if (treeElement.expandAllButtonElement) {
       delete treeElement.expandAllButtonElement;
     }
@@ -1442,7 +1442,7 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
     // Insert shortcuts to distrubuted children.
     if (node.isInsertionPoint()) {
       for (var distributedNode of node.distributedNodes())
-        treeElement.appendChild(new WebInspector.ElementsTreeOutline.ShortcutTreeElement(distributedNode));
+        treeElement.appendChild(new Elements.ElementsTreeOutline.ShortcutTreeElement(distributedNode));
     }
 
     // Insert close tag.
@@ -1453,24 +1453,24 @@ WebInspector.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _markersChanged(event) {
-    var node = /** @type {!WebInspector.DOMNode} */ (event.data);
+    var node = /** @type {!SDK.DOMNode} */ (event.data);
     var treeElement = node[this._treeElementSymbol];
     if (treeElement)
       treeElement.updateDecorations();
   }
 };
 
-WebInspector.ElementsTreeOutline._treeOutlineSymbol = Symbol('treeOutline');
+Elements.ElementsTreeOutline._treeOutlineSymbol = Symbol('treeOutline');
 
 
-/** @typedef {{node: !WebInspector.DOMNode, isCut: boolean}} */
-WebInspector.ElementsTreeOutline.ClipboardData;
+/** @typedef {{node: !SDK.DOMNode, isCut: boolean}} */
+Elements.ElementsTreeOutline.ClipboardData;
 
 /** @enum {symbol} */
-WebInspector.ElementsTreeOutline.Events = {
+Elements.ElementsTreeOutline.Events = {
   SelectedNodeChanged: Symbol('SelectedNodeChanged'),
   ElementsTreeUpdated: Symbol('ElementsTreeUpdated')
 };
@@ -1479,7 +1479,7 @@ WebInspector.ElementsTreeOutline.Events = {
  * @const
  * @type {!Object.<string, string>}
  */
-WebInspector.ElementsTreeOutline.MappedCharToEntity = {
+Elements.ElementsTreeOutline.MappedCharToEntity = {
   '\u00a0': 'nbsp',
   '\u0093': '#147',  // <control>
   '\u00ad': 'shy',
@@ -1503,7 +1503,7 @@ WebInspector.ElementsTreeOutline.MappedCharToEntity = {
 /**
  * @unrestricted
  */
-WebInspector.ElementsTreeOutline.UpdateRecord = class {
+Elements.ElementsTreeOutline.UpdateRecord = class {
   /**
    * @param {string} attrName
    */
@@ -1527,7 +1527,7 @@ WebInspector.ElementsTreeOutline.UpdateRecord = class {
   }
 
   /**
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.DOMNode} node
    */
   nodeInserted(node) {
     this._hasChangedChildren = true;
@@ -1584,10 +1584,10 @@ WebInspector.ElementsTreeOutline.UpdateRecord = class {
 };
 
 /**
- * @implements {WebInspector.Renderer}
+ * @implements {Common.Renderer}
  * @unrestricted
  */
-WebInspector.ElementsTreeOutline.Renderer = class {
+Elements.ElementsTreeOutline.Renderer = class {
   /**
    * @override
    * @param {!Object} object
@@ -1601,12 +1601,12 @@ WebInspector.ElementsTreeOutline.Renderer = class {
      * @param {function(!Error)} reject
      */
     function renderPromise(resolve, reject) {
-      if (object instanceof WebInspector.DOMNode) {
-        onNodeResolved(/** @type {!WebInspector.DOMNode} */ (object));
-      } else if (object instanceof WebInspector.DeferredDOMNode) {
-        (/** @type {!WebInspector.DeferredDOMNode} */ (object)).resolve(onNodeResolved);
-      } else if (object instanceof WebInspector.RemoteObject) {
-        var domModel = WebInspector.DOMModel.fromTarget((/** @type {!WebInspector.RemoteObject} */ (object)).target());
+      if (object instanceof SDK.DOMNode) {
+        onNodeResolved(/** @type {!SDK.DOMNode} */ (object));
+      } else if (object instanceof SDK.DeferredDOMNode) {
+        (/** @type {!SDK.DeferredDOMNode} */ (object)).resolve(onNodeResolved);
+      } else if (object instanceof SDK.RemoteObject) {
+        var domModel = SDK.DOMModel.fromTarget((/** @type {!SDK.RemoteObject} */ (object)).target());
         if (domModel)
           domModel.pushObjectAsNodeToFrontend(object, onNodeResolved);
         else
@@ -1616,14 +1616,14 @@ WebInspector.ElementsTreeOutline.Renderer = class {
       }
 
       /**
-       * @param {?WebInspector.DOMNode} node
+       * @param {?SDK.DOMNode} node
        */
       function onNodeResolved(node) {
         if (!node) {
           reject(new Error('Could not resolve node.'));
           return;
         }
-        var treeOutline = new WebInspector.ElementsTreeOutline(node.domModel(), false, false);
+        var treeOutline = new Elements.ElementsTreeOutline(node.domModel(), false, false);
         treeOutline.rootDOMNode = node;
         if (!treeOutline.firstChild().isExpandable())
           treeOutline._element.classList.add('single-node');
@@ -1638,9 +1638,9 @@ WebInspector.ElementsTreeOutline.Renderer = class {
 /**
  * @unrestricted
  */
-WebInspector.ElementsTreeOutline.ShortcutTreeElement = class extends TreeElement {
+Elements.ElementsTreeOutline.ShortcutTreeElement = class extends TreeElement {
   /**
-   * @param {!WebInspector.DOMNodeShortcut} nodeShortcut
+   * @param {!SDK.DOMNodeShortcut} nodeShortcut
    */
   constructor(nodeShortcut) {
     super('');
@@ -1651,10 +1651,10 @@ WebInspector.ElementsTreeOutline.ShortcutTreeElement = class extends TreeElement
       text = '<' + text + '>';
     title.textContent = '\u21AA ' + text;
 
-    var link = WebInspector.DOMPresentationUtils.linkifyDeferredNodeReference(nodeShortcut.deferredNode);
+    var link = Components.DOMPresentationUtils.linkifyDeferredNodeReference(nodeShortcut.deferredNode);
     this.listItemElement.createTextChild(' ');
     link.classList.add('elements-tree-shortcut-link');
-    link.textContent = WebInspector.UIString('reveal');
+    link.textContent = Common.UIString('reveal');
     this.listItemElement.appendChild(link);
     this._nodeShortcut = nodeShortcut;
   }
@@ -1694,8 +1694,8 @@ WebInspector.ElementsTreeOutline.ShortcutTreeElement = class extends TreeElement
     this._nodeShortcut.deferredNode.highlight();
     this._nodeShortcut.deferredNode.resolve(resolved.bind(this));
     /**
-     * @param {?WebInspector.DOMNode} node
-     * @this {WebInspector.ElementsTreeOutline.ShortcutTreeElement}
+     * @param {?SDK.DOMNode} node
+     * @this {Elements.ElementsTreeOutline.ShortcutTreeElement}
      */
     function resolved(node) {
       if (node) {

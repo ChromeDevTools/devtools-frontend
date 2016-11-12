@@ -4,11 +4,11 @@
 /**
  * @unrestricted
  */
-WebInspector.InspectedPagePlaceholder = class extends WebInspector.Widget {
+Emulation.InspectedPagePlaceholder = class extends UI.Widget {
   constructor() {
     super(true);
     this.registerRequiredCSS('emulation/inspectedPagePlaceholder.css');
-    WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._scheduleUpdate, this);
+    UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._scheduleUpdate, this);
     this._margins = {top: 0, right: 0, bottom: 0, left: 0};
     this.restoreMinimumSizeAndMargins();
   }
@@ -23,10 +23,10 @@ WebInspector.InspectedPagePlaceholder = class extends WebInspector.Widget {
         var parent = widget.parentWidget();
         // This view assumes it's always inside the main split widget element, not a sidebar.
         // Every parent which is not a split widget, must be of the same size as this widget.
-        if (parent instanceof WebInspector.SplitWidget) {
+        if (parent instanceof UI.SplitWidget) {
           var side = parent.sidebarSide();
           if (adjacent[side] && !parent.hasCustomResizer() && parent.isResizable())
-            margins[side] = WebInspector.InspectedPagePlaceholder.MarginValue;
+            margins[side] = Emulation.InspectedPagePlaceholder.MarginValue;
           adjacent[side] = false;
         }
         widget = parent;
@@ -67,7 +67,7 @@ WebInspector.InspectedPagePlaceholder = class extends WebInspector.Widget {
   }
 
   _dipPageRect() {
-    var zoomFactor = WebInspector.zoomManager.zoomFactor();
+    var zoomFactor = UI.zoomManager.zoomFactor();
     var rect = this.element.getBoundingClientRect();
     var bodyRect = this.element.ownerDocument.body.getBoundingClientRect();
 
@@ -88,13 +88,13 @@ WebInspector.InspectedPagePlaceholder = class extends WebInspector.Widget {
       height: Math.max(1, Math.round(rect.height)),
       width: Math.max(1, Math.round(rect.width))
     };
-    this.dispatchEventToListeners(WebInspector.InspectedPagePlaceholder.Events.Update, bounds);
+    this.dispatchEventToListeners(Emulation.InspectedPagePlaceholder.Events.Update, bounds);
   }
 };
 
 /** @enum {symbol} */
-WebInspector.InspectedPagePlaceholder.Events = {
+Emulation.InspectedPagePlaceholder.Events = {
   Update: Symbol('Update')
 };
 
-WebInspector.InspectedPagePlaceholder.MarginValue = 3;
+Emulation.InspectedPagePlaceholder.MarginValue = 3;

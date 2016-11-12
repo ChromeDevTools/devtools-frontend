@@ -36,9 +36,9 @@
 /**
  * @unrestricted
  */
-WebInspector.HAREntry = class {
+SDK.HAREntry = class {
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   constructor(request) {
     this._request = request;
@@ -62,8 +62,8 @@ WebInspector.HAREntry = class {
       ipAddress = ipAddress.substr(0, portPositionInString);
 
     var entry = {
-      startedDateTime: WebInspector.HARLog.pseudoWallTime(this._request, this._request.startTime),
-      time: this._request.timing ? WebInspector.HAREntry._toMilliseconds(this._request.duration) : 0,
+      startedDateTime: SDK.HARLog.pseudoWallTime(this._request, this._request.startTime),
+      time: this._request.timing ? SDK.HAREntry._toMilliseconds(this._request.duration) : 0,
       request: this._buildRequest(),
       response: this._buildResponse(),
       cache: {},  // Not supported yet.
@@ -166,7 +166,7 @@ WebInspector.HAREntry = class {
 
     var send = timing.sendEnd - timing.sendStart;
     var wait = timing.receiveHeadersEnd - timing.sendEnd;
-    var receive = WebInspector.HAREntry._toMilliseconds(this._request.duration) - timing.receiveHeadersEnd;
+    var receive = SDK.HAREntry._toMilliseconds(this._request.duration) - timing.receiveHeadersEnd;
 
     var ssl = -1;
     if (timing.sslStart >= 0 && timing.sslEnd >= 0)
@@ -202,7 +202,7 @@ WebInspector.HAREntry = class {
   }
 
   /**
-   * @param {!Array.<!WebInspector.Cookie>} cookies
+   * @param {!Array.<!SDK.Cookie>} cookies
    * @return {!Array.<!Object>}
    */
   _buildCookies(cookies) {
@@ -210,7 +210,7 @@ WebInspector.HAREntry = class {
   }
 
   /**
-   * @param {!WebInspector.Cookie} cookie
+   * @param {!SDK.Cookie} cookie
    * @return {!Object}
    */
   _buildCookie(cookie) {
@@ -219,7 +219,7 @@ WebInspector.HAREntry = class {
       value: cookie.value(),
       path: cookie.path(),
       domain: cookie.domain(),
-      expires: cookie.expiresDate(WebInspector.HARLog.pseudoWallTime(this._request, this._request.startTime)),
+      expires: cookie.expiresDate(SDK.HARLog.pseudoWallTime(this._request, this._request.startTime)),
       httpOnly: cookie.httpOnly(),
       secure: cookie.secure()
     };
@@ -262,16 +262,16 @@ WebInspector.HAREntry = class {
 /**
  * @unrestricted
  */
-WebInspector.HARLog = class {
+SDK.HARLog = class {
   /**
-   * @param {!Array.<!WebInspector.NetworkRequest>} requests
+   * @param {!Array.<!SDK.NetworkRequest>} requests
    */
   constructor(requests) {
     this._requests = requests;
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @param {number} monotonicTime
    * @return {!Date}
    */
@@ -315,13 +315,13 @@ WebInspector.HARLog = class {
   }
 
   /**
-   * @param {!WebInspector.PageLoad} page
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.PageLoad} page
+   * @param {!SDK.NetworkRequest} request
    * @return {!Object}
    */
   _convertPage(page, request) {
     return {
-      startedDateTime: WebInspector.HARLog.pseudoWallTime(request, page.startTime),
+      startedDateTime: SDK.HARLog.pseudoWallTime(request, page.startTime),
       id: 'page_' + page.id,
       title: page.url,  // We don't have actual page title here. URL is probably better than nothing.
       pageTimings: {
@@ -332,15 +332,15 @@ WebInspector.HARLog = class {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {!Object}
    */
   _convertResource(request) {
-    return (new WebInspector.HAREntry(request)).build();
+    return (new SDK.HAREntry(request)).build();
   }
 
   /**
-   * @param {!WebInspector.PageLoad} page
+   * @param {!SDK.PageLoad} page
    * @param {number} time
    * @return {number}
    */
@@ -348,6 +348,6 @@ WebInspector.HARLog = class {
     var startTime = page.startTime;
     if (time === -1 || startTime === -1)
       return -1;
-    return WebInspector.HAREntry._toMilliseconds(time - startTime);
+    return SDK.HAREntry._toMilliseconds(time - startTime);
   }
 };

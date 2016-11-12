@@ -27,27 +27,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-WebInspector.HeapSnapshotProgressEvent = {
+
+self['Profiler'] = self['Profiler'] || {};
+
+Profiler.HeapSnapshotProgressEvent = {
   Update: 'ProgressUpdate',
   BrokenSnapshot: 'BrokenSnapshot'
 };
 
-WebInspector.HeapSnapshotCommon = {};
+Profiler.HeapSnapshotCommon = {};
 
-WebInspector.HeapSnapshotCommon.baseSystemDistance = 100000000;
+Profiler.HeapSnapshotCommon.baseSystemDistance = 100000000;
 
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.AllocationNodeCallers = class {
+Profiler.HeapSnapshotCommon.AllocationNodeCallers = class {
   /**
-   * @param {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} nodesWithSingleCaller
-   * @param {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} branchingCallers
+   * @param {!Array.<!Profiler.HeapSnapshotCommon.SerializedAllocationNode>} nodesWithSingleCaller
+   * @param {!Array.<!Profiler.HeapSnapshotCommon.SerializedAllocationNode>} branchingCallers
    */
   constructor(nodesWithSingleCaller, branchingCallers) {
-    /** @type {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} */
+    /** @type {!Array.<!Profiler.HeapSnapshotCommon.SerializedAllocationNode>} */
     this.nodesWithSingleCaller = nodesWithSingleCaller;
-    /** @type {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>} */
+    /** @type {!Array.<!Profiler.HeapSnapshotCommon.SerializedAllocationNode>} */
     this.branchingCallers = branchingCallers;
   }
 };
@@ -55,7 +58,7 @@ WebInspector.HeapSnapshotCommon.AllocationNodeCallers = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.SerializedAllocationNode = class {
+Profiler.HeapSnapshotCommon.SerializedAllocationNode = class {
   /**
    * @param {number} nodeId
    * @param {string} functionName
@@ -98,7 +101,7 @@ WebInspector.HeapSnapshotCommon.SerializedAllocationNode = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.AllocationStackFrame = class {
+Profiler.HeapSnapshotCommon.AllocationStackFrame = class {
   /**
    * @param {string} functionName
    * @param {string} scriptName
@@ -123,7 +126,7 @@ WebInspector.HeapSnapshotCommon.AllocationStackFrame = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.Node = class {
+Profiler.HeapSnapshotCommon.Node = class {
   /**
    * @param {number} id
    * @param {string} name
@@ -150,10 +153,10 @@ WebInspector.HeapSnapshotCommon.Node = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.Edge = class {
+Profiler.HeapSnapshotCommon.Edge = class {
   /**
    * @param {string} name
-   * @param {!WebInspector.HeapSnapshotCommon.Node} node
+   * @param {!Profiler.HeapSnapshotCommon.Node} node
    * @param {string} type
    * @param {number} edgeIndex
    */
@@ -168,7 +171,7 @@ WebInspector.HeapSnapshotCommon.Edge = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.Aggregate = class {
+Profiler.HeapSnapshotCommon.Aggregate = class {
   constructor() {
     /** @type {number} */
     this.count;
@@ -190,7 +193,7 @@ WebInspector.HeapSnapshotCommon.Aggregate = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.AggregateForDiff = class {
+Profiler.HeapSnapshotCommon.AggregateForDiff = class {
   constructor() {
     /** @type {!Array.<number>} */
     this.indexes = [];
@@ -204,7 +207,7 @@ WebInspector.HeapSnapshotCommon.AggregateForDiff = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.Diff = class {
+Profiler.HeapSnapshotCommon.Diff = class {
   constructor() {
     /** @type {number} */
     this.addedCount = 0;
@@ -224,7 +227,7 @@ WebInspector.HeapSnapshotCommon.Diff = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.DiffForClass = class {
+Profiler.HeapSnapshotCommon.DiffForClass = class {
   constructor() {
     /** @type {number} */
     this.addedCount;
@@ -249,7 +252,7 @@ WebInspector.HeapSnapshotCommon.DiffForClass = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.ComparatorConfig = class {
+Profiler.HeapSnapshotCommon.ComparatorConfig = class {
   constructor() {
     /** @type {string} */
     this.fieldName1;
@@ -265,7 +268,7 @@ WebInspector.HeapSnapshotCommon.ComparatorConfig = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.WorkerCommand = class {
+Profiler.HeapSnapshotCommon.WorkerCommand = class {
   constructor() {
     /** @type {number} */
     this.callId;
@@ -287,7 +290,7 @@ WebInspector.HeapSnapshotCommon.WorkerCommand = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.ItemsRange = class {
+Profiler.HeapSnapshotCommon.ItemsRange = class {
   /**
    * @param {number} startPosition
    * @param {number} endPosition
@@ -309,7 +312,7 @@ WebInspector.HeapSnapshotCommon.ItemsRange = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.StaticData = class {
+Profiler.HeapSnapshotCommon.StaticData = class {
   /**
    * @param {number} nodeCount
    * @param {number} rootNodeIndex
@@ -331,7 +334,7 @@ WebInspector.HeapSnapshotCommon.StaticData = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.Statistics = class {
+Profiler.HeapSnapshotCommon.Statistics = class {
   constructor() {
     /** @type {number} */
     this.total;
@@ -353,7 +356,7 @@ WebInspector.HeapSnapshotCommon.Statistics = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.NodeFilter = class {
+Profiler.HeapSnapshotCommon.NodeFilter = class {
   /**
    * @param {number=} minNodeId
    * @param {number=} maxNodeId
@@ -368,7 +371,7 @@ WebInspector.HeapSnapshotCommon.NodeFilter = class {
   }
 
   /**
-   * @param {!WebInspector.HeapSnapshotCommon.NodeFilter} o
+   * @param {!Profiler.HeapSnapshotCommon.NodeFilter} o
    * @return {boolean}
    */
   equals(o) {
@@ -380,7 +383,7 @@ WebInspector.HeapSnapshotCommon.NodeFilter = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.SearchConfig = class {
+Profiler.HeapSnapshotCommon.SearchConfig = class {
   /**
    * @param {string} query
    * @param {boolean} caseSensitive
@@ -400,7 +403,7 @@ WebInspector.HeapSnapshotCommon.SearchConfig = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotCommon.Samples = class {
+Profiler.HeapSnapshotCommon.Samples = class {
   /**
    * @param {!Array.<number>} timestamps
    * @param {!Array.<number>} lastAssignedIds

@@ -28,14 +28,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.TimelineModeView}
+ * @implements {Timeline.TimelineModeView}
  * @unrestricted
  */
-WebInspector.CountersGraph = class extends WebInspector.VBox {
+Timeline.CountersGraph = class extends UI.VBox {
   /**
-   * @param {!WebInspector.TimelineModeViewDelegate} delegate
-   * @param {!WebInspector.TimelineModel} model
-   * @param {!Array<!WebInspector.TimelineModel.Filter>} filters
+   * @param {!Timeline.TimelineModeViewDelegate} delegate
+   * @param {!TimelineModel.TimelineModel} model
+   * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
    */
   constructor(delegate, model, filters) {
     super();
@@ -45,16 +45,16 @@ WebInspector.CountersGraph = class extends WebInspector.VBox {
     this._delegate = delegate;
     this._model = model;
     this._filters = filters;
-    this._calculator = new WebInspector.CounterGraphCalculator(this._model);
+    this._calculator = new Timeline.CounterGraphCalculator(this._model);
 
     // Create selectors
-    this._infoWidget = new WebInspector.HBox();
+    this._infoWidget = new UI.HBox();
     this._infoWidget.element.classList.add('memory-counter-selector-swatches', 'timeline-toolbar-resizer');
     this._infoWidget.show(this.element);
 
-    this._graphsContainer = new WebInspector.VBox();
+    this._graphsContainer = new UI.VBox();
     this._graphsContainer.show(this.element);
-    var canvasWidget = new WebInspector.VBoxWithResizeCallback(this._resize.bind(this));
+    var canvasWidget = new UI.VBoxWithResizeCallback(this._resize.bind(this));
     canvasWidget.show(this._graphsContainer.element);
     this._createCurrentValuesBar();
     this._canvasContainer = canvasWidget.element;
@@ -67,7 +67,7 @@ WebInspector.CountersGraph = class extends WebInspector.VBox {
     this._canvasContainer.addEventListener('mouseleave', this._onMouseLeave.bind(this), true);
     this._canvasContainer.addEventListener('click', this._onClick.bind(this), true);
     // We create extra timeline grid here to reuse its event dividers.
-    this._timelineGrid = new WebInspector.TimelineGrid();
+    this._timelineGrid = new UI.TimelineGrid();
     this._canvasContainer.appendChild(this._timelineGrid.dividersElement);
 
     this._counters = [];
@@ -84,19 +84,19 @@ WebInspector.CountersGraph = class extends WebInspector.VBox {
    * @param {string} uiValueTemplate
    * @param {string} color
    * @param {function(number):string=} formatter
-   * @return {!WebInspector.CountersGraph.Counter}
+   * @return {!Timeline.CountersGraph.Counter}
    */
   createCounter(uiName, uiValueTemplate, color, formatter) {
-    var counter = new WebInspector.CountersGraph.Counter();
+    var counter = new Timeline.CountersGraph.Counter();
     this._counters.push(counter);
     this._counterUI.push(
-        new WebInspector.CountersGraph.CounterUI(this, uiName, uiValueTemplate, color, counter, formatter));
+        new Timeline.CountersGraph.CounterUI(this, uiName, uiValueTemplate, color, counter, formatter));
     return counter;
   }
 
   /**
    * @override
-   * @return {!WebInspector.Widget}
+   * @return {!UI.Widget}
    */
   view() {
     return this;
@@ -147,7 +147,7 @@ WebInspector.CountersGraph = class extends WebInspector.VBox {
   }
 
   scheduleRefresh() {
-    WebInspector.invokeOnceAfterBatchUpdate(this, this.refresh);
+    UI.invokeOnceAfterBatchUpdate(this, this.refresh);
   }
 
   draw() {
@@ -231,7 +231,7 @@ WebInspector.CountersGraph = class extends WebInspector.VBox {
 
   /**
    * @override
-   * @param {?WebInspector.TracingModel.Event} event
+   * @param {?SDK.TracingModel.Event} event
    * @param {string=} regex
    * @param {boolean=} select
    */
@@ -240,14 +240,14 @@ WebInspector.CountersGraph = class extends WebInspector.VBox {
 
   /**
    * @override
-   * @param {?WebInspector.TracingModel.Event} event
+   * @param {?SDK.TracingModel.Event} event
    */
   highlightEvent(event) {
   }
 
   /**
    * @override
-   * @param {?WebInspector.TimelineSelection} selection
+   * @param {?Timeline.TimelineSelection} selection
    */
   setSelection(selection) {
   }
@@ -256,7 +256,7 @@ WebInspector.CountersGraph = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.CountersGraph.Counter = class {
+Timeline.CountersGraph.Counter = class {
   constructor() {
     this.times = [];
     this.values = [];
@@ -309,7 +309,7 @@ WebInspector.CountersGraph.Counter = class {
   }
 
   /**
-   * @param {!WebInspector.CounterGraphCalculator} calculator
+   * @param {!Timeline.CounterGraphCalculator} calculator
    */
   _calculateVisibleIndexes(calculator) {
     var start = calculator.minimumBoundary();
@@ -344,13 +344,13 @@ WebInspector.CountersGraph.Counter = class {
 /**
  * @unrestricted
  */
-WebInspector.CountersGraph.CounterUI = class {
+Timeline.CountersGraph.CounterUI = class {
   /**
-   * @param {!WebInspector.CountersGraph} memoryCountersPane
+   * @param {!Timeline.CountersGraph} memoryCountersPane
    * @param {string} title
    * @param {string} currentValueLabel
    * @param {string} graphColor
-   * @param {!WebInspector.CountersGraph.Counter} counter
+   * @param {!Timeline.CountersGraph.Counter} counter
    * @param {(function(number): string)|undefined} formatter
    */
   constructor(memoryCountersPane, title, currentValueLabel, graphColor, counter, formatter) {
@@ -359,10 +359,10 @@ WebInspector.CountersGraph.CounterUI = class {
     this._formatter = formatter || Number.withThousandsSeparator;
     var container = memoryCountersPane._infoWidget.element.createChild('div', 'memory-counter-selector-info');
 
-    this._setting = WebInspector.settings.createSetting('timelineCountersGraph-' + title, true);
-    this._filter = new WebInspector.ToolbarCheckbox(title, title, this._setting);
+    this._setting = Common.settings.createSetting('timelineCountersGraph-' + title, true);
+    this._filter = new UI.ToolbarCheckbox(title, title, this._setting);
     this._filter.inputElement.classList.add('-theme-preserve');
-    var color = WebInspector.Color.parse(graphColor).setAlpha(0.5).asString(WebInspector.Color.Format.RGBA);
+    var color = Common.Color.parse(graphColor).setAlpha(0.5).asString(Common.Color.Format.RGBA);
     if (color) {
       this._filter.element.backgroundColor = color;
       this._filter.element.borderColor = 'transparent';
@@ -374,7 +374,7 @@ WebInspector.CountersGraph.CounterUI = class {
     this._value = memoryCountersPane._currentValuesBar.createChild('span', 'memory-counter-value');
     this._value.style.color = graphColor;
     this.graphColor = graphColor;
-    this.limitColor = WebInspector.Color.parse(graphColor).setAlpha(0.3).asString(WebInspector.Color.Format.RGBA);
+    this.limitColor = Common.Color.parse(graphColor).setAlpha(0.3).asString(Common.Color.Format.RGBA);
     this.graphYValues = [];
     this._verticalPadding = 10;
 
@@ -395,11 +395,11 @@ WebInspector.CountersGraph.CounterUI = class {
   setRange(minValue, maxValue) {
     var min = this._formatter(minValue);
     var max = this._formatter(maxValue);
-    this._range.textContent = WebInspector.UIString('[%s\u2009\u2013\u2009%s]', min, max);
+    this._range.textContent = Common.UIString('[%s\u2009\u2013\u2009%s]', min, max);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _toggleCounterGraph(event) {
     this._value.classList.toggle('hidden', !this._filter.checked());
@@ -424,7 +424,7 @@ WebInspector.CountersGraph.CounterUI = class {
       return;
     var index = this._recordIndexAt(x);
     var value = Number.withThousandsSeparator(this.counter.values[index]);
-    this._value.textContent = WebInspector.UIString(this._currentValueLabel, value);
+    this._value.textContent = Common.UIString(this._currentValueLabel, value);
     var y = this.graphYValues[index] / window.devicePixelRatio;
     this._marker.style.left = x + 'px';
     this._marker.style.top = y + 'px';
@@ -508,12 +508,12 @@ WebInspector.CountersGraph.CounterUI = class {
 };
 
 /**
- * @implements {WebInspector.TimelineGrid.Calculator}
+ * @implements {UI.TimelineGrid.Calculator}
  * @unrestricted
  */
-WebInspector.CounterGraphCalculator = class {
+Timeline.CounterGraphCalculator = class {
   /**
-   * @param {!WebInspector.TimelineModel} model
+   * @param {!TimelineModel.TimelineModel} model
    */
   constructor(model) {
     this._model = model;
@@ -547,7 +547,7 @@ WebInspector.CounterGraphCalculator = class {
    */
   setDisplayWindow(clientWidth, paddingLeft) {
     this._paddingLeft = paddingLeft || 0;
-    this._workingArea = clientWidth - WebInspector.CounterGraphCalculator._minWidth - this._paddingLeft;
+    this._workingArea = clientWidth - Timeline.CounterGraphCalculator._minWidth - this._paddingLeft;
   }
 
   /**
@@ -593,4 +593,4 @@ WebInspector.CounterGraphCalculator = class {
   }
 };
 
-WebInspector.CounterGraphCalculator._minWidth = 5;
+Timeline.CounterGraphCalculator._minWidth = 5;

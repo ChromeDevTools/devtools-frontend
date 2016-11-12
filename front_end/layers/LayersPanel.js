@@ -28,43 +28,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.LayersPanel = class extends WebInspector.PanelWithSidebar {
+Layers.LayersPanel = class extends UI.PanelWithSidebar {
   constructor() {
     super('layers', 225);
 
-    /** @type {?WebInspector.LayerTreeModel} */
+    /** @type {?Layers.LayerTreeModel} */
     this._model = null;
 
-    WebInspector.targetManager.observeTargets(this);
-    this._layerViewHost = new WebInspector.LayerViewHost();
-    this._layerTreeOutline = new WebInspector.LayerTreeOutline(this._layerViewHost);
+    SDK.targetManager.observeTargets(this);
+    this._layerViewHost = new LayerViewer.LayerViewHost();
+    this._layerTreeOutline = new LayerViewer.LayerTreeOutline(this._layerViewHost);
     this.panelSidebarElement().appendChild(this._layerTreeOutline.element);
     this.setDefaultFocusedElement(this._layerTreeOutline.element);
 
-    this._rightSplitWidget = new WebInspector.SplitWidget(false, true, 'layerDetailsSplitViewState');
+    this._rightSplitWidget = new UI.SplitWidget(false, true, 'layerDetailsSplitViewState');
     this.splitWidget().setMainWidget(this._rightSplitWidget);
 
-    this._layers3DView = new WebInspector.Layers3DView(this._layerViewHost);
+    this._layers3DView = new LayerViewer.Layers3DView(this._layerViewHost);
     this._rightSplitWidget.setMainWidget(this._layers3DView);
     this._layers3DView.addEventListener(
-        WebInspector.Layers3DView.Events.PaintProfilerRequested, this._onPaintProfileRequested, this);
-    this._layers3DView.addEventListener(WebInspector.Layers3DView.Events.ScaleChanged, this._onScaleChanged, this);
+        LayerViewer.Layers3DView.Events.PaintProfilerRequested, this._onPaintProfileRequested, this);
+    this._layers3DView.addEventListener(LayerViewer.Layers3DView.Events.ScaleChanged, this._onScaleChanged, this);
 
-    this._tabbedPane = new WebInspector.TabbedPane();
+    this._tabbedPane = new UI.TabbedPane();
     this._rightSplitWidget.setSidebarWidget(this._tabbedPane);
 
-    this._layerDetailsView = new WebInspector.LayerDetailsView(this._layerViewHost);
+    this._layerDetailsView = new LayerViewer.LayerDetailsView(this._layerViewHost);
     this._layerDetailsView.addEventListener(
-        WebInspector.LayerDetailsView.Events.PaintProfilerRequested, this._onPaintProfileRequested, this);
+        LayerViewer.LayerDetailsView.Events.PaintProfilerRequested, this._onPaintProfileRequested, this);
     this._tabbedPane.appendTab(
-        WebInspector.LayersPanel.DetailsViewTabs.Details, WebInspector.UIString('Details'), this._layerDetailsView);
+        Layers.LayersPanel.DetailsViewTabs.Details, Common.UIString('Details'), this._layerDetailsView);
 
-    this._paintProfilerView = new WebInspector.LayerPaintProfilerView(this._showImage.bind(this));
-    this._tabbedPane.addEventListener(WebInspector.TabbedPane.Events.TabClosed, this._onTabClosed, this);
-    this._updateThrottler = new WebInspector.Throttler(100);
+    this._paintProfilerView = new Layers.LayerPaintProfilerView(this._showImage.bind(this));
+    this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, this._onTabClosed, this);
+    this._updateThrottler = new Common.Throttler(100);
   }
 
   /**
@@ -95,30 +95,30 @@ WebInspector.LayersPanel = class extends WebInspector.PanelWithSidebar {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     if (this._model)
       return;
-    this._model = WebInspector.LayerTreeModel.fromTarget(target);
+    this._model = Layers.LayerTreeModel.fromTarget(target);
     if (!this._model)
       return;
-    this._model.addEventListener(WebInspector.LayerTreeModel.Events.LayerTreeChanged, this._onLayerTreeUpdated, this);
-    this._model.addEventListener(WebInspector.LayerTreeModel.Events.LayerPainted, this._onLayerPainted, this);
+    this._model.addEventListener(Layers.LayerTreeModel.Events.LayerTreeChanged, this._onLayerTreeUpdated, this);
+    this._model.addEventListener(Layers.LayerTreeModel.Events.LayerPainted, this._onLayerPainted, this);
     if (this.isShowing())
       this._model.enable();
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
     if (!this._model || this._model.target() !== target)
       return;
     this._model.removeEventListener(
-        WebInspector.LayerTreeModel.Events.LayerTreeChanged, this._onLayerTreeUpdated, this);
-    this._model.removeEventListener(WebInspector.LayerTreeModel.Events.LayerPainted, this._onLayerPainted, this);
+        Layers.LayerTreeModel.Events.LayerTreeChanged, this._onLayerTreeUpdated, this);
+    this._model.removeEventListener(Layers.LayerTreeModel.Events.LayerPainted, this._onLayerPainted, this);
     this._model.disable();
     this._model = null;
   }
@@ -137,39 +137,39 @@ WebInspector.LayersPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onLayerPainted(event) {
     if (!this._model)
       return;
-    var layer = /** @type {!WebInspector.Layer} */ (event.data);
+    var layer = /** @type {!SDK.Layer} */ (event.data);
     if (this._layerViewHost.selection() && this._layerViewHost.selection().layer() === layer)
       this._layerDetailsView.update();
     this._layers3DView.updateLayerSnapshot(layer);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onPaintProfileRequested(event) {
-    var selection = /** @type {!WebInspector.LayerView.Selection} */ (event.data);
+    var selection = /** @type {!LayerViewer.LayerView.Selection} */ (event.data);
     this._layers3DView.snapshotForSelection(selection).then(snapshotWithRect => {
       if (!snapshotWithRect)
         return;
       this._layerBeingProfiled = selection.layer();
       this._tabbedPane.appendTab(
-          WebInspector.LayersPanel.DetailsViewTabs.Profiler, WebInspector.UIString('Profiler'), this._paintProfilerView,
+          Layers.LayersPanel.DetailsViewTabs.Profiler, Common.UIString('Profiler'), this._paintProfilerView,
           undefined, true, true);
-      this._tabbedPane.selectTab(WebInspector.LayersPanel.DetailsViewTabs.Profiler);
+      this._tabbedPane.selectTab(Layers.LayersPanel.DetailsViewTabs.Profiler);
       this._paintProfilerView.profile(snapshotWithRect.snapshot);
     });
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onTabClosed(event) {
-    if (event.data.tabId !== WebInspector.LayersPanel.DetailsViewTabs.Profiler || !this._layerBeingProfiled)
+    if (event.data.tabId !== Layers.LayersPanel.DetailsViewTabs.Profiler || !this._layerBeingProfiled)
       return;
     this._paintProfilerView.reset();
     this._layers3DView.showImageForLayer(this._layerBeingProfiled, undefined);
@@ -184,14 +184,14 @@ WebInspector.LayersPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onScaleChanged(event) {
     this._paintProfilerView.setScale(/** @type {number} */ (event.data));
   }
 };
 
-WebInspector.LayersPanel.DetailsViewTabs = {
+Layers.LayersPanel.DetailsViewTabs = {
   Details: 'details',
   Profiler: 'profiler'
 };

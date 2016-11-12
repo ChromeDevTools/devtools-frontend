@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-WebInspector.AccessibilityNode = class extends WebInspector.SDKObject {
+Accessibility.AccessibilityNode = class extends SDK.SDKObject {
   /**
-   * @param {!WebInspector.AccessibilityModel} accessibilityModel
+   * @param {!Accessibility.AccessibilityModel} accessibilityModel
    * @param {!Protocol.Accessibility.AXNode} payload
    */
   constructor(accessibilityModel, payload) {
@@ -20,7 +20,7 @@ WebInspector.AccessibilityNode = class extends WebInspector.SDKObject {
       accessibilityModel._setAXNodeForBackendDOMNodeId(payload.backendDOMNodeId, this);
       this._backendDOMNodeId = payload.backendDOMNodeId;
       this._deferredDOMNode =
-          new WebInspector.DeferredDOMNode(this.target(),
+          new SDK.DeferredDOMNode(this.target(),
                                            payload.backendDOMNodeId);
     } else {
       this._backendDOMNodeId = null;
@@ -105,14 +105,14 @@ WebInspector.AccessibilityNode = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {?WebInspector.AccessibilityNode}
+   * @return {?Accessibility.AccessibilityNode}
    */
   parentNode() {
     return this._parentNode;
   }
 
   /**
-   * @param {?WebInspector.AccessibilityNode} parentNode
+   * @param {?Accessibility.AccessibilityNode} parentNode
    */
   _setParentNode(parentNode) {
     this._parentNode = parentNode;
@@ -133,14 +133,14 @@ WebInspector.AccessibilityNode = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {?WebInspector.DeferredDOMNode}
+   * @return {?SDK.DeferredDOMNode}
    */
   deferredDOMNode() {
     return this._deferredDOMNode;
   }
 
   /**
-   * @return {!Array<!WebInspector.AccessibilityNode>}
+   * @return {!Array<!Accessibility.AccessibilityNode>}
    */
   children() {
     var children = [];
@@ -177,7 +177,7 @@ WebInspector.AccessibilityNode = class extends WebInspector.SDKObject {
 
   /**
    * TODO(aboxhall): Remove once protocol is stable.
-   * @param {!WebInspector.AccessibilityNode} inspectedNode
+   * @param {!Accessibility.AccessibilityNode} inspectedNode
    * @param {string=} leadingSpace
    * @return {string}
    */
@@ -202,28 +202,28 @@ WebInspector.AccessibilityNode = class extends WebInspector.SDKObject {
 /**
  * @unrestricted
  */
-WebInspector.AccessibilityModel = class extends WebInspector.SDKModel {
+Accessibility.AccessibilityModel = class extends SDK.SDKModel {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(WebInspector.AccessibilityModel, target);
+    super(Accessibility.AccessibilityModel, target);
     this._agent = target.accessibilityAgent();
 
-    /** @type {!Map<string, !WebInspector.AccessibilityNode>} */
+    /** @type {!Map<string, !Accessibility.AccessibilityNode>} */
     this._axIdToAXNode = new Map();
     this._backendDOMNodeIdToAXNode = new Map();
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @return {!WebInspector.AccessibilityModel}
+   * @param {!SDK.Target} target
+   * @return {!Accessibility.AccessibilityModel}
    */
   static fromTarget(target) {
-    if (!target[WebInspector.AccessibilityModel._symbol])
-      target[WebInspector.AccessibilityModel._symbol] = new WebInspector.AccessibilityModel(target);
+    if (!target[Accessibility.AccessibilityModel._symbol])
+      target[Accessibility.AccessibilityModel._symbol] = new Accessibility.AccessibilityModel(target);
 
-    return target[WebInspector.AccessibilityModel._symbol];
+    return target[Accessibility.AccessibilityModel._symbol];
   }
 
   clear() {
@@ -231,12 +231,12 @@ WebInspector.AccessibilityModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.DOMNode} node
    * @return {!Promise}
    */
   requestPartialAXTree(node) {
     /**
-     * @this {WebInspector.AccessibilityModel}
+     * @this {Accessibility.AccessibilityModel}
      * @param {?string} error
      * @param {!Array<!Protocol.Accessibility.AXNode>=} payloads
      */
@@ -250,7 +250,7 @@ WebInspector.AccessibilityModel = class extends WebInspector.SDKModel {
         return;
 
       for (var payload of payloads)
-        new WebInspector.AccessibilityNode(this, payload);
+        new Accessibility.AccessibilityNode(this, payload);
 
       for (var axNode of this._axIdToAXNode.values()) {
         for (var axChild of axNode.children()) {
@@ -263,7 +263,7 @@ WebInspector.AccessibilityModel = class extends WebInspector.SDKModel {
 
   /**
    * @param {string} axId
-   * @return {?WebInspector.AccessibilityNode}
+   * @return {?Accessibility.AccessibilityNode}
    */
   axNodeForId(axId) {
     return this._axIdToAXNode.get(axId);
@@ -271,15 +271,15 @@ WebInspector.AccessibilityModel = class extends WebInspector.SDKModel {
 
   /**
    * @param {string} axId
-   * @param {!WebInspector.AccessibilityNode} axNode
+   * @param {!Accessibility.AccessibilityNode} axNode
    */
   _setAXNodeForAXId(axId, axNode) {
     this._axIdToAXNode.set(axId, axNode);
   }
 
   /**
-   * @param {?WebInspector.DOMNode} domNode
-   * @return {?WebInspector.AccessibilityNode}
+   * @param {?SDK.DOMNode} domNode
+   * @return {?Accessibility.AccessibilityNode}
    */
   axNodeForDOMNode(domNode) {
     if (!domNode)
@@ -289,7 +289,7 @@ WebInspector.AccessibilityModel = class extends WebInspector.SDKModel {
 
   /**
    * @param {number} backendDOMNodeId
-   * @param {!WebInspector.AccessibilityNode} axNode
+   * @param {!Accessibility.AccessibilityNode} axNode
    */
   _setAXNodeForBackendDOMNodeId(backendDOMNodeId, axNode) {
     this._backendDOMNodeIdToAXNode.set(backendDOMNodeId,
@@ -298,7 +298,7 @@ WebInspector.AccessibilityModel = class extends WebInspector.SDKModel {
 
   // TODO(aboxhall): Remove once protocol is stable.
   /**
-   * @param {!WebInspector.DOMNode} inspectedNode
+   * @param {!SDK.DOMNode} inspectedNode
    */
   logTree(inspectedNode) {
     var rootNode = inspectedNode;
@@ -308,4 +308,4 @@ WebInspector.AccessibilityModel = class extends WebInspector.SDKModel {
   }
 };
 
-WebInspector.AccessibilityModel._symbol = Symbol('AccessibilityModel');
+Accessibility.AccessibilityModel._symbol = Symbol('AccessibilityModel');

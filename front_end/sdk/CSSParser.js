@@ -7,7 +7,7 @@
 /**
  * @unrestricted
  */
-WebInspector.CSSParser = class extends WebInspector.Object {
+SDK.CSSParser = class extends Common.Object {
   constructor() {
     super();
     this._rules = [];
@@ -15,8 +15,8 @@ WebInspector.CSSParser = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.CSSStyleSheetHeader} styleSheetHeader
-   * @param {function(!Array.<!WebInspector.CSSParser.Rule>)=} callback
+   * @param {!SDK.CSSStyleSheetHeader} styleSheetHeader
+   * @param {function(!Array.<!SDK.CSSParser.Rule>)=} callback
    */
   fetchAndParse(styleSheetHeader, callback) {
     this._lock();
@@ -26,7 +26,7 @@ WebInspector.CSSParser = class extends WebInspector.Object {
 
   /**
    * @param {string} text
-   * @param {function(!Array.<!WebInspector.CSSParser.Rule>)=} callback
+   * @param {function(!Array.<!SDK.CSSParser.Rule>)=} callback
    */
   parse(text, callback) {
     this._lock();
@@ -36,7 +36,7 @@ WebInspector.CSSParser = class extends WebInspector.Object {
 
   /**
    * @param {string} text
-   * @return {!Promise<!Array.<!WebInspector.CSSParser.Rule>>}
+   * @return {!Promise<!Array.<!SDK.CSSParser.Rule>>}
    */
   parsePromise(text) {
     return new Promise(promiseConstructor.bind(this));
@@ -44,7 +44,7 @@ WebInspector.CSSParser = class extends WebInspector.Object {
     /**
      * @param {function()} succ
      * @param {function()} fail
-     * @this {WebInspector.CSSParser}
+     * @this {SDK.CSSParser}
      */
     function promiseConstructor(succ, fail) {
       this.parse(text, succ);
@@ -59,7 +59,7 @@ WebInspector.CSSParser = class extends WebInspector.Object {
   }
 
   /**
-   * @return {!Array.<!WebInspector.CSSParser.Rule>}
+   * @return {!Array.<!SDK.CSSParser.Rule>}
    */
   rules() {
     return this._rules;
@@ -80,7 +80,7 @@ WebInspector.CSSParser = class extends WebInspector.Object {
   _innerParse(text) {
     this._rules = [];
     var params = {content: text};
-    WebInspector.formatterWorkerPool.runChunkedTask('parseCSS', params, this._onRuleChunk.bind(this));
+    Common.formatterWorkerPool.runChunkedTask('parseCSS', params, this._onRuleChunk.bind(this));
   }
 
   /**
@@ -91,17 +91,17 @@ WebInspector.CSSParser = class extends WebInspector.Object {
       return;
     if (!event) {
       this._onFinishedParsing();
-      this.dispatchEventToListeners(WebInspector.CSSParser.Events.RulesParsed);
+      this.dispatchEventToListeners(SDK.CSSParser.Events.RulesParsed);
       return;
     }
-    var data = /** @type {!WebInspector.CSSParser.DataChunk} */ (event.data);
+    var data = /** @type {!SDK.CSSParser.DataChunk} */ (event.data);
     var chunk = data.chunk;
     for (var i = 0; i < chunk.length; ++i)
       this._rules.push(chunk[i]);
 
     if (data.isLastChunk)
       this._onFinishedParsing();
-    this.dispatchEventToListeners(WebInspector.CSSParser.Events.RulesParsed);
+    this.dispatchEventToListeners(SDK.CSSParser.Events.RulesParsed);
   }
 
   _onFinishedParsing() {
@@ -110,7 +110,7 @@ WebInspector.CSSParser = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!Array<!WebInspector.CSSRule>} rules
+   * @param {!Array<!SDK.CSSRule>} rules
    */
   _runFinishedCallback(rules) {
     var callback = this._finishedCallback;
@@ -121,29 +121,29 @@ WebInspector.CSSParser = class extends WebInspector.Object {
 };
 
 /** @enum {symbol} */
-WebInspector.CSSParser.Events = {
+SDK.CSSParser.Events = {
   RulesParsed: Symbol('RulesParsed')
 };
 
 /**
- * @typedef {{isLastChunk: boolean, chunk: !Array.<!WebInspector.CSSParser.Rule>}}
+ * @typedef {{isLastChunk: boolean, chunk: !Array.<!SDK.CSSParser.Rule>}}
  */
-WebInspector.CSSParser.DataChunk;
+SDK.CSSParser.DataChunk;
 
 /**
  * @unrestricted
  */
-WebInspector.CSSParser.StyleRule = class {
+SDK.CSSParser.StyleRule = class {
   constructor() {
     /** @type {string} */
     this.selectorText;
-    /** @type {!WebInspector.CSSParser.Range} */
+    /** @type {!SDK.CSSParser.Range} */
     this.styleRange;
     /** @type {number} */
     this.lineNumber;
     /** @type {number} */
     this.columnNumber;
-    /** @type {!Array.<!WebInspector.CSSParser.Property>} */
+    /** @type {!Array.<!SDK.CSSParser.Property>} */
     this.properties;
   }
 };
@@ -151,32 +151,32 @@ WebInspector.CSSParser.StyleRule = class {
 /**
  * @typedef {{atRule: string, lineNumber: number, columnNumber: number}}
  */
-WebInspector.CSSParser.AtRule;
+SDK.CSSParser.AtRule;
 
 /**
- * @typedef {(WebInspector.CSSParser.StyleRule|WebInspector.CSSParser.AtRule)}
+ * @typedef {(SDK.CSSParser.StyleRule|SDK.CSSParser.AtRule)}
  */
-WebInspector.CSSParser.Rule;
+SDK.CSSParser.Rule;
 
 /**
  * @typedef {{startLine: number, startColumn: number, endLine: number, endColumn: number}}
  */
-WebInspector.CSSParser.Range;
+SDK.CSSParser.Range;
 
 /**
  * @unrestricted
  */
-WebInspector.CSSParser.Property = class {
+SDK.CSSParser.Property = class {
   constructor() {
     /** @type {string} */
     this.name;
-    /** @type {!WebInspector.CSSParser.Range} */
+    /** @type {!SDK.CSSParser.Range} */
     this.nameRange;
     /** @type {string} */
     this.value;
-    /** @type {!WebInspector.CSSParser.Range} */
+    /** @type {!SDK.CSSParser.Range} */
     this.valueRange;
-    /** @type {!WebInspector.CSSParser.Range} */
+    /** @type {!SDK.CSSParser.Range} */
     this.range;
     /** @type {(boolean|undefined)} */
     this.disabled;

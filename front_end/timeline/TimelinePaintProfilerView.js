@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-WebInspector.TimelinePaintProfilerView = class extends WebInspector.SplitWidget {
+Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
   /**
-   * @param {!WebInspector.TimelineFrameModel} frameModel
+   * @param {!TimelineModel.TimelineFrameModel} frameModel
    */
   constructor(frameModel) {
     super(false, false);
@@ -15,18 +15,18 @@ WebInspector.TimelinePaintProfilerView = class extends WebInspector.SplitWidget 
     this.setResizable(false);
 
     this._frameModel = frameModel;
-    this._logAndImageSplitWidget = new WebInspector.SplitWidget(true, false);
+    this._logAndImageSplitWidget = new UI.SplitWidget(true, false);
     this._logAndImageSplitWidget.element.classList.add('timeline-paint-profiler-log-split');
     this.setMainWidget(this._logAndImageSplitWidget);
-    this._imageView = new WebInspector.TimelinePaintImageView();
+    this._imageView = new Timeline.TimelinePaintImageView();
     this._logAndImageSplitWidget.setMainWidget(this._imageView);
 
-    this._paintProfilerView = new WebInspector.PaintProfilerView(this._imageView.showImage.bind(this._imageView));
+    this._paintProfilerView = new LayerViewer.PaintProfilerView(this._imageView.showImage.bind(this._imageView));
     this._paintProfilerView.addEventListener(
-        WebInspector.PaintProfilerView.Events.WindowChanged, this._onWindowChanged, this);
+        LayerViewer.PaintProfilerView.Events.WindowChanged, this._onWindowChanged, this);
     this.setSidebarWidget(this._paintProfilerView);
 
-    this._logTreeView = new WebInspector.PaintProfilerCommandLogView();
+    this._logTreeView = new LayerViewer.PaintProfilerCommandLogView();
     this._logAndImageSplitWidget.setSidebarWidget(this._logTreeView);
   }
 
@@ -41,7 +41,7 @@ WebInspector.TimelinePaintProfilerView = class extends WebInspector.SplitWidget 
   }
 
   /**
-   * @param {!WebInspector.PaintProfilerSnapshot} snapshot
+   * @param {!SDK.PaintProfilerSnapshot} snapshot
    */
   setSnapshot(snapshot) {
     this._releaseSnapshot();
@@ -51,8 +51,8 @@ WebInspector.TimelinePaintProfilerView = class extends WebInspector.SplitWidget 
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!WebInspector.TracingModel.Event} event
+   * @param {!SDK.Target} target
+   * @param {!SDK.TracingModel.Event} event
    * @return {boolean}
    */
   setEvent(target, event) {
@@ -62,9 +62,9 @@ WebInspector.TimelinePaintProfilerView = class extends WebInspector.SplitWidget 
     this._event = event;
 
     this._updateWhenVisible();
-    if (this._event.name === WebInspector.TimelineModel.RecordType.Paint)
-      return !!WebInspector.TimelineData.forEvent(event).picture;
-    if (this._event.name === WebInspector.TimelineModel.RecordType.RasterTask)
+    if (this._event.name === TimelineModel.TimelineModel.RecordType.Paint)
+      return !!TimelineModel.TimelineData.forEvent(event).picture;
+    if (this._event.name === TimelineModel.TimelineModel.RecordType.RasterTask)
       return this._frameModel.hasRasterTile(this._event);
     return false;
   }
@@ -83,12 +83,12 @@ WebInspector.TimelinePaintProfilerView = class extends WebInspector.SplitWidget 
     var snapshotPromise;
     if (this._pendingSnapshot)
       snapshotPromise = Promise.resolve({rect: null, snapshot: this._pendingSnapshot});
-    else if (this._event.name === WebInspector.TimelineModel.RecordType.Paint) {
-      var picture = WebInspector.TimelineData.forEvent(this._event).picture;
+    else if (this._event.name === TimelineModel.TimelineModel.RecordType.Paint) {
+      var picture = TimelineModel.TimelineData.forEvent(this._event).picture;
       snapshotPromise = picture.objectPromise()
-                            .then(data => WebInspector.PaintProfilerSnapshot.load(this._target, data['skp64']))
+                            .then(data => SDK.PaintProfilerSnapshot.load(this._target, data['skp64']))
                             .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
-    } else if (this._event.name === WebInspector.TimelineModel.RecordType.RasterTask) {
+    } else if (this._event.name === TimelineModel.TimelineModel.RecordType.RasterTask) {
       snapshotPromise = this._frameModel.rasterTilePromise(this._event);
     } else {
       console.assert(false, 'Unexpected event type or no snapshot');
@@ -107,10 +107,10 @@ WebInspector.TimelinePaintProfilerView = class extends WebInspector.SplitWidget 
     });
 
     /**
-     * @param {!WebInspector.PaintProfilerSnapshot} snapshot
+     * @param {!SDK.PaintProfilerSnapshot} snapshot
      * @param {?Protocol.DOM.Rect} clipRect
-     * @param {!Array.<!WebInspector.PaintProfilerLogItem>=} log
-     * @this {WebInspector.TimelinePaintProfilerView}
+     * @param {!Array.<!SDK.PaintProfilerLogItem>=} log
+     * @this {Timeline.TimelinePaintProfilerView}
      */
     function onCommandLogDone(snapshot, clipRect, log) {
       this._logTreeView.setCommandLog(snapshot.target(), log || []);
@@ -133,7 +133,7 @@ WebInspector.TimelinePaintProfilerView = class extends WebInspector.SplitWidget 
 /**
  * @unrestricted
  */
-WebInspector.TimelinePaintImageView = class extends WebInspector.Widget {
+Timeline.TimelinePaintImageView = class extends UI.Widget {
   constructor() {
     super(true);
     this.registerRequiredCSS('timeline/timelinePaintProfiler.css');
@@ -143,9 +143,9 @@ WebInspector.TimelinePaintImageView = class extends WebInspector.Widget {
     this._maskElement = this._imageContainer.createChild('div');
     this._imageElement.addEventListener('load', this._updateImagePosition.bind(this), false);
 
-    this._transformController = new WebInspector.TransformController(this.contentElement, true);
+    this._transformController = new LayerViewer.TransformController(this.contentElement, true);
     this._transformController.addEventListener(
-        WebInspector.TransformController.Events.TransformChanged, this._updateImagePosition, this);
+        LayerViewer.TransformController.Events.TransformChanged, this._updateImagePosition, this);
   }
 
   /**
@@ -184,7 +184,7 @@ WebInspector.TimelinePaintImageView = class extends WebInspector.Widget {
                      .translate(clientWidth / 2, clientHeight / 2)
                      .scale(scale, scale)
                      .translate(-width / 2, -height / 2);
-    var bounds = WebInspector.Geometry.boundsForTransformedPoints(matrix, [0, 0, 0, width, height, 0]);
+    var bounds = Common.Geometry.boundsForTransformedPoints(matrix, [0, 0, 0, width, height, 0]);
     this._transformController.clampOffsets(
         paddingX - bounds.maxX, clientWidth - paddingX - bounds.minX, paddingY - bounds.maxY,
         clientHeight - paddingY - bounds.minY);

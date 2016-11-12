@@ -4,20 +4,20 @@
 /**
  * @unrestricted
  */
-WebInspector.Tooltip = class {
+UI.Tooltip = class {
   /**
    * @param {!Document} doc
    */
   constructor(doc) {
     this.element = doc.body.createChild('div');
-    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, 'ui/tooltip.css');
+    this._shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'ui/tooltip.css');
 
     this._tooltipElement = this._shadowRoot.createChild('div', 'tooltip');
     doc.addEventListener('mousemove', this._mouseMove.bind(this), true);
     doc.addEventListener('mousedown', this._hide.bind(this, true), true);
     doc.addEventListener('mouseleave', this._hide.bind(this, false), true);
     doc.addEventListener('keydown', this._hide.bind(this, true), true);
-    WebInspector.zoomManager.addEventListener(WebInspector.ZoomManager.Events.ZoomChanged, this._reset, this);
+    UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._reset, this);
     doc.defaultView.addEventListener('resize', this._reset.bind(this), false);
   }
 
@@ -25,7 +25,7 @@ WebInspector.Tooltip = class {
    * @param {!Document} doc
    */
   static installHandler(doc) {
-    new WebInspector.Tooltip(doc);
+    new UI.Tooltip(doc);
   }
 
   /**
@@ -36,17 +36,17 @@ WebInspector.Tooltip = class {
    */
   static install(element, tooltipContent, actionId, options) {
     if (typeof tooltipContent === 'string' && tooltipContent === '') {
-      delete element[WebInspector.Tooltip._symbol];
+      delete element[UI.Tooltip._symbol];
       return;
     }
-    element[WebInspector.Tooltip._symbol] = {content: tooltipContent, actionId: actionId, options: options || {}};
+    element[UI.Tooltip._symbol] = {content: tooltipContent, actionId: actionId, options: options || {}};
   }
 
   /**
    * @param {!Element} element
    */
   static addNativeOverrideContainer(element) {
-    WebInspector.Tooltip._nativeOverrideContainer.push(element);
+    UI.Tooltip._nativeOverrideContainer.push(element);
   }
 
   /**
@@ -64,7 +64,7 @@ WebInspector.Tooltip = class {
     for (var element of path) {
       if (element === this._anchorElement) {
         return;
-      } else if (element[WebInspector.Tooltip._symbol]) {
+      } else if (element[UI.Tooltip._symbol]) {
         this._show(element, mouseEvent);
         return;
       }
@@ -76,14 +76,14 @@ WebInspector.Tooltip = class {
    * @param {!Event} event
    */
   _show(anchorElement, event) {
-    var tooltip = anchorElement[WebInspector.Tooltip._symbol];
+    var tooltip = anchorElement[UI.Tooltip._symbol];
     this._anchorElement = anchorElement;
     this._tooltipElement.removeChildren();
 
     // Check if native tooltips should be used.
-    for (var element of WebInspector.Tooltip._nativeOverrideContainer) {
+    for (var element of UI.Tooltip._nativeOverrideContainer) {
       if (this._anchorElement.isSelfOrDescendant(element)) {
-        Object.defineProperty(this._anchorElement, 'title', WebInspector.Tooltip._nativeTitle);
+        Object.defineProperty(this._anchorElement, 'title', UI.Tooltip._nativeTitle);
         this._anchorElement.title = tooltip.content;
         return;
       }
@@ -95,7 +95,7 @@ WebInspector.Tooltip = class {
       this._tooltipElement.appendChild(tooltip.content);
 
     if (tooltip.actionId) {
-      var shortcuts = WebInspector.shortcutRegistry.shortcutDescriptorsForAction(tooltip.actionId);
+      var shortcuts = UI.shortcutRegistry.shortcutDescriptorsForAction(tooltip.actionId);
       for (var shortcut of shortcuts) {
         var shortcutElement = this._tooltipElement.createChild('div', 'tooltip-shortcut');
         shortcutElement.textContent = shortcut.name;
@@ -109,12 +109,12 @@ WebInspector.Tooltip = class {
     // Show tooltip instantly if a tooltip was shown recently.
     var now = Date.now();
     var instant =
-        (this._tooltipLastClosed && now - this._tooltipLastClosed < WebInspector.Tooltip.Timing.InstantThreshold);
+        (this._tooltipLastClosed && now - this._tooltipLastClosed < UI.Tooltip.Timing.InstantThreshold);
     this._tooltipElement.classList.toggle('instant', instant);
-    this._tooltipLastOpened = instant ? now : now + WebInspector.Tooltip.Timing.OpeningDelay;
+    this._tooltipLastOpened = instant ? now : now + UI.Tooltip.Timing.OpeningDelay;
 
     // Get container element.
-    var container = WebInspector.Dialog.modalHostView().element;
+    var container = UI.Dialog.modalHostView().element;
     if (!anchorElement.isDescendant(container))
       container = this.element.parentElement;
 
@@ -166,19 +166,19 @@ WebInspector.Tooltip = class {
   }
 };
 
-WebInspector.Tooltip.Timing = {
+UI.Tooltip.Timing = {
   // Max time between tooltips showing that no opening delay is required.
   'InstantThreshold': 300,
   // Wait time before opening a tooltip.
   'OpeningDelay': 600
 };
 
-WebInspector.Tooltip._symbol = Symbol('Tooltip');
+UI.Tooltip._symbol = Symbol('Tooltip');
 
 
 /** @type {!Array.<!Element>} */
-WebInspector.Tooltip._nativeOverrideContainer = [];
-WebInspector.Tooltip._nativeTitle =
+UI.Tooltip._nativeOverrideContainer = [];
+UI.Tooltip._nativeTitle =
     /** @type {!ObjectPropertyDescriptor} */ (Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'title'));
 
 Object.defineProperty(HTMLElement.prototype, 'title', {
@@ -187,7 +187,7 @@ Object.defineProperty(HTMLElement.prototype, 'title', {
    * @this {!Element}
    */
   get: function() {
-    var tooltip = this[WebInspector.Tooltip._symbol];
+    var tooltip = this[UI.Tooltip._symbol];
     return tooltip ? tooltip.content : '';
   },
 
@@ -196,6 +196,6 @@ Object.defineProperty(HTMLElement.prototype, 'title', {
    * @this {!Element}
    */
   set: function(x) {
-    WebInspector.Tooltip.install(this, x);
+    UI.Tooltip.install(this, x);
   }
 });

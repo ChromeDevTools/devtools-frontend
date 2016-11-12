@@ -30,14 +30,14 @@
 /**
  * @typedef {!{x: number, y: number, picture: string}}
  */
-WebInspector.PictureFragment;
+SDK.PictureFragment;
 
 /**
  * @unrestricted
  */
-WebInspector.PaintProfilerSnapshot = class {
+SDK.PaintProfilerSnapshot = class {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {string} snapshotId
    */
   constructor(target, snapshotId) {
@@ -47,23 +47,23 @@ WebInspector.PaintProfilerSnapshot = class {
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!Array.<!WebInspector.PictureFragment>} fragments
-   * @return {!Promise<?WebInspector.PaintProfilerSnapshot>}
+   * @param {!SDK.Target} target
+   * @param {!Array.<!SDK.PictureFragment>} fragments
+   * @return {!Promise<?SDK.PaintProfilerSnapshot>}
    */
   static loadFromFragments(target, fragments) {
     return target.layerTreeAgent().loadSnapshot(
-        fragments, (error, snapshotId) => error ? null : new WebInspector.PaintProfilerSnapshot(target, snapshotId));
+        fragments, (error, snapshotId) => error ? null : new SDK.PaintProfilerSnapshot(target, snapshotId));
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {string} encodedPicture
-   * @return {!Promise<?WebInspector.PaintProfilerSnapshot>}
+   * @return {!Promise<?SDK.PaintProfilerSnapshot>}
    */
   static load(target, encodedPicture) {
     var fragment = {x: 0, y: 0, picture: encodedPicture};
-    return WebInspector.PaintProfilerSnapshot.loadFromFragments(target, [fragment]);
+    return SDK.PaintProfilerSnapshot.loadFromFragments(target, [fragment]);
   }
 
   release() {
@@ -78,7 +78,7 @@ WebInspector.PaintProfilerSnapshot = class {
   }
 
   /**
-   * @return {!WebInspector.Target}
+   * @return {!SDK.Target}
    */
   target() {
     return this._target;
@@ -105,7 +105,7 @@ WebInspector.PaintProfilerSnapshot = class {
   }
 
   /**
-   * @return {!Promise<?Array<!WebInspector.PaintProfilerLogItem>>}
+   * @return {!Promise<?Array<!SDK.PaintProfilerLogItem>>}
    */
   commandLog() {
     return this._target.layerTreeAgent().snapshotCommandLog(this._id, processLog);
@@ -118,8 +118,8 @@ WebInspector.PaintProfilerSnapshot = class {
       if (error)
         return null;
       return log.map(
-          (entry, index) => new WebInspector.PaintProfilerLogItem(
-              /** @type {!WebInspector.RawPaintProfilerLogItem} */ (entry), index));
+          (entry, index) => new SDK.PaintProfilerLogItem(
+              /** @type {!SDK.RawPaintProfilerLogItem} */ (entry), index));
     }
   }
 };
@@ -128,14 +128,14 @@ WebInspector.PaintProfilerSnapshot = class {
 /**
  * @typedef {!{method: string, params: ?Object<string, *>}}
  */
-WebInspector.RawPaintProfilerLogItem;
+SDK.RawPaintProfilerLogItem;
 
 /**
  * @unrestricted
  */
-WebInspector.PaintProfilerLogItem = class {
+SDK.PaintProfilerLogItem = class {
   /**
-   * @param {!WebInspector.RawPaintProfilerLogItem} rawEntry
+   * @param {!SDK.RawPaintProfilerLogItem} rawEntry
    * @param {number} commandIndex
    */
   constructor(rawEntry, commandIndex) {

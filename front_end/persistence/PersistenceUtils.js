@@ -2,56 +2,56 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-WebInspector.PersistenceUtils = class {
+Persistence.PersistenceUtils = class {
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {string}
    */
   static tooltipForUISourceCode(uiSourceCode) {
-    var binding = WebInspector.persistence.binding(uiSourceCode);
+    var binding = Persistence.persistence.binding(uiSourceCode);
     if (!binding)
       return '';
     if (uiSourceCode === binding.network)
-      return WebInspector.UIString('Persisted to file system: %s', binding.fileSystem.url().trimMiddle(150));
+      return Common.UIString('Persisted to file system: %s', binding.fileSystem.url().trimMiddle(150));
     if (binding.network.contentType().isFromSourceMap())
-      return WebInspector.UIString('Linked to source map: %s', binding.network.url().trimMiddle(150));
-    return WebInspector.UIString('Linked to %s', binding.network.url().trimMiddle(150));
+      return Common.UIString('Linked to source map: %s', binding.network.url().trimMiddle(150));
+    return Common.UIString('Linked to %s', binding.network.url().trimMiddle(150));
   }
 };
 
 /**
- * @extends {WebInspector.Object}
- * @implements {WebInspector.LinkDecorator}
+ * @extends {Common.Object}
+ * @implements {Components.LinkDecorator}
  */
-WebInspector.PersistenceUtils.LinkDecorator = class extends WebInspector.Object {
+Persistence.PersistenceUtils.LinkDecorator = class extends Common.Object {
   /**
-   * @param {!WebInspector.Persistence} persistence
+   * @param {!Persistence.Persistence} persistence
    */
   constructor(persistence) {
     super();
-    persistence.addEventListener(WebInspector.Persistence.Events.BindingCreated, this._bindingChanged, this);
-    persistence.addEventListener(WebInspector.Persistence.Events.BindingRemoved, this._bindingChanged, this);
+    persistence.addEventListener(Persistence.Persistence.Events.BindingCreated, this._bindingChanged, this);
+    persistence.addEventListener(Persistence.Persistence.Events.BindingRemoved, this._bindingChanged, this);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _bindingChanged(event) {
-    var binding = /** @type {!WebInspector.PersistenceBinding} */(event.data);
-    this.dispatchEventToListeners(WebInspector.LinkDecorator.Events.LinkIconChanged, binding.network);
+    var binding = /** @type {!Persistence.PersistenceBinding} */(event.data);
+    this.dispatchEventToListeners(Components.LinkDecorator.Events.LinkIconChanged, binding.network);
   }
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @return {?WebInspector.Icon}
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {?UI.Icon}
    */
   linkIcon(uiSourceCode) {
-    var binding = WebInspector.persistence.binding(uiSourceCode);
+    var binding = Persistence.persistence.binding(uiSourceCode);
     if (!binding)
       return null;
-    var icon = WebInspector.Icon.create('smallicon-green-checkmark');
-    icon.title = WebInspector.PersistenceUtils.tooltipForUISourceCode(uiSourceCode);
+    var icon = UI.Icon.create('smallicon-green-checkmark');
+    icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(uiSourceCode);
     return icon;
   }
 };

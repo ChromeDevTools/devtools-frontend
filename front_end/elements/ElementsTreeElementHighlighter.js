@@ -4,37 +4,37 @@
 /**
  * @unrestricted
  */
-WebInspector.ElementsTreeElementHighlighter = class {
+Elements.ElementsTreeElementHighlighter = class {
   /**
-   * @param {!WebInspector.ElementsTreeOutline} treeOutline
+   * @param {!Elements.ElementsTreeOutline} treeOutline
    */
   constructor(treeOutline) {
-    this._throttler = new WebInspector.Throttler(100);
+    this._throttler = new Common.Throttler(100);
     this._treeOutline = treeOutline;
     this._treeOutline.addEventListener(TreeOutline.Events.ElementExpanded, this._clearState, this);
     this._treeOutline.addEventListener(TreeOutline.Events.ElementCollapsed, this._clearState, this);
     this._treeOutline.addEventListener(
-        WebInspector.ElementsTreeOutline.Events.SelectedNodeChanged, this._clearState, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeHighlightedInOverlay, this._highlightNode, this);
+        Elements.ElementsTreeOutline.Events.SelectedNodeChanged, this._clearState, this);
+    SDK.targetManager.addModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.NodeHighlightedInOverlay, this._highlightNode, this);
     this._treeOutline.domModel().addEventListener(
-        WebInspector.DOMModel.Events.InspectModeWillBeToggled, this._clearState, this);
+        SDK.DOMModel.Events.InspectModeWillBeToggled, this._clearState, this);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _highlightNode(event) {
-    if (!WebInspector.moduleSetting('highlightNodeOnHoverInOverlay').get())
+    if (!Common.moduleSetting('highlightNodeOnHoverInOverlay').get())
       return;
 
-    var domNode = /** @type {!WebInspector.DOMNode} */ (event.data);
+    var domNode = /** @type {!SDK.DOMNode} */ (event.data);
 
     this._throttler.schedule(callback.bind(this));
     this._pendingHighlightNode = this._treeOutline.domModel() === domNode.domModel() ? domNode : null;
 
     /**
-     * @this {WebInspector.ElementsTreeElementHighlighter}
+     * @this {Elements.ElementsTreeElementHighlighter}
      */
     function callback() {
       this._highlightNodeInternal(this._pendingHighlightNode);
@@ -44,7 +44,7 @@ WebInspector.ElementsTreeElementHighlighter = class {
   }
 
   /**
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    */
   _highlightNodeInternal(node) {
     this._isModifyingTreeOutline = true;

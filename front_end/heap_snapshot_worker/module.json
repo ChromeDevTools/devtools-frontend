@@ -1,7 +1,6 @@
 {
     "scripts": [
         "../platform/utilities.js",
-        "../common/WebInspector.js",
         "../common/UIString.js",
         "../common/TextUtils.js",
         "../profiler/HeapSnapshotCommon.js",

@@ -29,12 +29,12 @@
  */
 /**
  * @param {string} url
- * @return {?WebInspector.Resource}
+ * @return {?SDK.Resource}
  */
-WebInspector.resourceForURL = function(url) {
-  var targets = WebInspector.targetManager.targets(WebInspector.Target.Capability.DOM);
+Bindings.resourceForURL = function(url) {
+  var targets = SDK.targetManager.targets(SDK.Target.Capability.DOM);
   for (var i = 0; i < targets.length; ++i) {
-    var resource = WebInspector.ResourceTreeModel.fromTarget(targets[i]).resourceForURL(url);
+    var resource = SDK.ResourceTreeModel.fromTarget(targets[i]).resourceForURL(url);
     if (resource)
       return resource;
   }
@@ -42,31 +42,31 @@ WebInspector.resourceForURL = function(url) {
 };
 
 /**
- * @param {function(!WebInspector.Resource)} callback
+ * @param {function(!SDK.Resource)} callback
  */
-WebInspector.forAllResources = function(callback) {
-  var targets = WebInspector.targetManager.targets(WebInspector.Target.Capability.DOM);
+Bindings.forAllResources = function(callback) {
+  var targets = SDK.targetManager.targets(SDK.Target.Capability.DOM);
   for (var i = 0; i < targets.length; ++i)
-    WebInspector.ResourceTreeModel.fromTarget(targets[i]).forAllResources(callback);
+    SDK.ResourceTreeModel.fromTarget(targets[i]).forAllResources(callback);
 };
 
 /**
  * @param {string} url
  * @return {string}
  */
-WebInspector.displayNameForURL = function(url) {
+Bindings.displayNameForURL = function(url) {
   if (!url)
     return '';
 
-  var resource = WebInspector.resourceForURL(url);
+  var resource = Bindings.resourceForURL(url);
   if (resource)
     return resource.displayName;
 
-  var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(url);
+  var uiSourceCode = Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(url);
   if (uiSourceCode)
     return uiSourceCode.displayName();
 
-  var mainTarget = WebInspector.targetManager.mainTarget();
+  var mainTarget = SDK.targetManager.mainTarget();
   var inspectedURL = mainTarget && mainTarget.inspectedURL();
   if (!inspectedURL)
     return url.trimURL('');

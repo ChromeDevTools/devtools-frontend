@@ -32,34 +32,34 @@
 /**
  * @unrestricted
  */
-WebInspector.SearchableView = class extends WebInspector.VBox {
+UI.SearchableView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.Searchable} searchable
+   * @param {!UI.Searchable} searchable
    * @param {string=} settingName
    */
   constructor(searchable, settingName) {
     super(true);
     this.registerRequiredCSS('ui/searchableView.css');
-    this.element[WebInspector.SearchableView._symbol] = this;
+    this.element[UI.SearchableView._symbol] = this;
 
     this._searchProvider = searchable;
-    this._setting = settingName ? WebInspector.settings.createSetting(settingName, {}) : null;
+    this._setting = settingName ? Common.settings.createSetting(settingName, {}) : null;
 
     this.contentElement.createChild('content');
     this._footerElementContainer = this.contentElement.createChild('div', 'search-bar hidden');
     this._footerElementContainer.style.order = 100;
 
-    var toolbar = new WebInspector.Toolbar('search-toolbar', this._footerElementContainer);
+    var toolbar = new UI.Toolbar('search-toolbar', this._footerElementContainer);
 
     if (this._searchProvider.supportsCaseSensitiveSearch()) {
-      this._caseSensitiveButton = new WebInspector.ToolbarToggle(WebInspector.UIString('Case sensitive'), '');
+      this._caseSensitiveButton = new UI.ToolbarToggle(Common.UIString('Case sensitive'), '');
       this._caseSensitiveButton.setText('Aa');
       this._caseSensitiveButton.addEventListener('click', this._toggleCaseSensitiveSearch, this);
       toolbar.appendToolbarItem(this._caseSensitiveButton);
     }
 
     if (this._searchProvider.supportsRegexSearch()) {
-      this._regexButton = new WebInspector.ToolbarToggle(WebInspector.UIString('Regex'), '');
+      this._regexButton = new UI.ToolbarToggle(Common.UIString('Regex'), '');
       this._regexButton.setText('.*');
       this._regexButton.addEventListener('click', this._toggleRegexSearch, this);
       toolbar.appendToolbarItem(this._regexButton);
@@ -75,12 +75,12 @@ WebInspector.SearchableView = class extends WebInspector.VBox {
     var searchControlElementColumn = this._firstRowElement.createChild('td');
     this._searchControlElement = searchControlElementColumn.createChild('span', 'toolbar-search-control');
 
-    this._searchInputElement = WebInspector.HistoryInput.create();
+    this._searchInputElement = UI.HistoryInput.create();
     this._searchInputElement.classList.add('search-replace');
     this._searchControlElement.appendChild(this._searchInputElement);
 
     this._searchInputElement.id = 'search-input-field';
-    this._searchInputElement.placeholder = WebInspector.UIString('Find');
+    this._searchInputElement.placeholder = Common.UIString('Find');
 
     this._matchesElement = this._searchControlElement.createChild('label', 'search-results-matches');
     this._matchesElement.setAttribute('for', 'search-input-field');
@@ -90,12 +90,12 @@ WebInspector.SearchableView = class extends WebInspector.VBox {
     this._searchNavigationPrevElement =
         this._searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-prev');
     this._searchNavigationPrevElement.addEventListener('click', this._onPrevButtonSearch.bind(this), false);
-    this._searchNavigationPrevElement.title = WebInspector.UIString('Search Previous');
+    this._searchNavigationPrevElement.title = Common.UIString('Search Previous');
 
     this._searchNavigationNextElement =
         this._searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-next');
     this._searchNavigationNextElement.addEventListener('click', this._onNextButtonSearch.bind(this), false);
-    this._searchNavigationNextElement.title = WebInspector.UIString('Search Next');
+    this._searchNavigationNextElement.title = Common.UIString('Search Next');
 
     this._searchInputElement.addEventListener('keydown', this._onSearchKeyDown.bind(this), true);
     this._searchInputElement.addEventListener('input', this._onInput.bind(this), false);
@@ -103,17 +103,17 @@ WebInspector.SearchableView = class extends WebInspector.VBox {
     this._replaceInputElement =
         this._secondRowElement.createChild('td').createChild('input', 'search-replace toolbar-replace-control');
     this._replaceInputElement.addEventListener('keydown', this._onReplaceKeyDown.bind(this), true);
-    this._replaceInputElement.placeholder = WebInspector.UIString('Replace');
+    this._replaceInputElement.placeholder = Common.UIString('Replace');
 
     // Column 2
     this._findButtonElement =
         this._firstRowElement.createChild('td').createChild('button', 'search-action-button hidden');
-    this._findButtonElement.textContent = WebInspector.UIString('Find');
+    this._findButtonElement.textContent = Common.UIString('Find');
     this._findButtonElement.tabIndex = -1;
     this._findButtonElement.addEventListener('click', this._onFindClick.bind(this), false);
 
     this._replaceButtonElement = this._secondRowElement.createChild('td').createChild('button', 'search-action-button');
-    this._replaceButtonElement.textContent = WebInspector.UIString('Replace');
+    this._replaceButtonElement.textContent = Common.UIString('Replace');
     this._replaceButtonElement.disabled = true;
     this._replaceButtonElement.tabIndex = -1;
     this._replaceButtonElement.addEventListener('click', this._replace.bind(this), false);
@@ -121,21 +121,21 @@ WebInspector.SearchableView = class extends WebInspector.VBox {
     // Column 3
     this._prevButtonElement =
         this._firstRowElement.createChild('td').createChild('button', 'search-action-button hidden');
-    this._prevButtonElement.textContent = WebInspector.UIString('Previous');
+    this._prevButtonElement.textContent = Common.UIString('Previous');
     this._prevButtonElement.tabIndex = -1;
     this._prevButtonElement.addEventListener('click', this._onPreviousClick.bind(this), false);
 
     this._replaceAllButtonElement =
         this._secondRowElement.createChild('td').createChild('button', 'search-action-button');
-    this._replaceAllButtonElement.textContent = WebInspector.UIString('Replace All');
+    this._replaceAllButtonElement.textContent = Common.UIString('Replace All');
     this._replaceAllButtonElement.addEventListener('click', this._replaceAll.bind(this), false);
 
     // Column 4
     this._replaceElement = this._firstRowElement.createChild('td').createChild('span');
 
-    this._replaceLabelElement = createCheckboxLabel(WebInspector.UIString('Replace'));
+    this._replaceLabelElement = createCheckboxLabel(Common.UIString('Replace'));
     this._replaceCheckboxElement = this._replaceLabelElement.checkboxElement;
-    this._uniqueId = ++WebInspector.SearchableView._lastUniqueId;
+    this._uniqueId = ++UI.SearchableView._lastUniqueId;
     var replaceCheckboxId = 'search-replace-trigger' + this._uniqueId;
     this._replaceCheckboxElement.id = replaceCheckboxId;
     this._replaceCheckboxElement.addEventListener('change', this._updateSecondRowVisibility.bind(this), false);
@@ -144,7 +144,7 @@ WebInspector.SearchableView = class extends WebInspector.VBox {
 
     // Column 5
     var cancelButtonElement = this._firstRowElement.createChild('td').createChild('button', 'search-action-button');
-    cancelButtonElement.textContent = WebInspector.UIString('Cancel');
+    cancelButtonElement.textContent = Common.UIString('Cancel');
     cancelButtonElement.tabIndex = -1;
     cancelButtonElement.addEventListener('click', this.closeSearch.bind(this), false);
     this._minimalSearchQuerySize = 3;
@@ -154,12 +154,12 @@ WebInspector.SearchableView = class extends WebInspector.VBox {
 
   /**
    * @param {?Element} element
-   * @return {?WebInspector.SearchableView}
+   * @return {?UI.SearchableView}
    */
   static fromElement(element) {
     var view = null;
     while (element && !view) {
-      view = element[WebInspector.SearchableView._symbol];
+      view = element[UI.SearchableView._symbol];
       element = element.parentElementOrShadowHost();
     }
     return view;
@@ -329,11 +329,11 @@ WebInspector.SearchableView = class extends WebInspector.VBox {
     if (!this._currentQuery)
       this._matchesElement.textContent = '';
     else if (matches === 0 || currentMatchIndex >= 0)
-      this._matchesElement.textContent = WebInspector.UIString('%d of %d', currentMatchIndex + 1, matches);
+      this._matchesElement.textContent = Common.UIString('%d of %d', currentMatchIndex + 1, matches);
     else if (matches === 1)
-      this._matchesElement.textContent = WebInspector.UIString('1 match');
+      this._matchesElement.textContent = Common.UIString('1 match');
     else
-      this._matchesElement.textContent = WebInspector.UIString('%d matches', matches);
+      this._matchesElement.textContent = Common.UIString('%d matches', matches);
     this._updateSearchNavigationButtonState(matches > 0);
   }
 
@@ -464,13 +464,13 @@ WebInspector.SearchableView = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {!WebInspector.SearchableView.SearchConfig}
+   * @return {!UI.SearchableView.SearchConfig}
    */
   _currentSearchConfig() {
     var query = this._searchInputElement.value;
     var caseSensitive = this._caseSensitiveButton ? this._caseSensitiveButton.toggled() : false;
     var isRegex = this._regexButton ? this._regexButton.toggled() : false;
-    return new WebInspector.SearchableView.SearchConfig(query, caseSensitive, isRegex);
+    return new UI.SearchableView.SearchConfig(query, caseSensitive, isRegex);
   }
 
   _updateSecondRowVisibility() {
@@ -491,7 +491,7 @@ WebInspector.SearchableView = class extends WebInspector.VBox {
 
   _replace() {
     var searchConfig = this._currentSearchConfig();
-    /** @type {!WebInspector.Replaceable} */ (this._searchProvider)
+    /** @type {!UI.Replaceable} */ (this._searchProvider)
         .replaceSelectionWith(searchConfig, this._replaceInputElement.value);
     delete this._currentQuery;
     this._performSearch(true, true);
@@ -499,7 +499,7 @@ WebInspector.SearchableView = class extends WebInspector.VBox {
 
   _replaceAll() {
     var searchConfig = this._currentSearchConfig();
-    /** @type {!WebInspector.Replaceable} */ (this._searchProvider)
+    /** @type {!UI.Replaceable} */ (this._searchProvider)
         .replaceAllWith(searchConfig, this._replaceInputElement.value);
   }
 
@@ -521,21 +521,21 @@ WebInspector.SearchableView = class extends WebInspector.VBox {
   }
 };
 
-WebInspector.SearchableView._lastUniqueId = 0;
+UI.SearchableView._lastUniqueId = 0;
 
-WebInspector.SearchableView._symbol = Symbol('searchableView');
+UI.SearchableView._symbol = Symbol('searchableView');
 
 
 /**
  * @interface
  */
-WebInspector.Searchable = function() {};
+UI.Searchable = function() {};
 
-WebInspector.Searchable.prototype = {
+UI.Searchable.prototype = {
   searchCanceled: function() {},
 
   /**
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {boolean} shouldJump
    * @param {boolean=} jumpBackwards
    */
@@ -559,17 +559,17 @@ WebInspector.Searchable.prototype = {
 /**
  * @interface
  */
-WebInspector.Replaceable = function() {};
+UI.Replaceable = function() {};
 
-WebInspector.Replaceable.prototype = {
+UI.Replaceable.prototype = {
   /**
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {string} replacement
    */
   replaceSelectionWith: function(searchConfig, replacement) {},
 
   /**
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {string} replacement
    */
   replaceAllWith: function(searchConfig, replacement) {}
@@ -578,7 +578,7 @@ WebInspector.Replaceable.prototype = {
 /**
  * @unrestricted
  */
-WebInspector.SearchableView.SearchConfig = class {
+UI.SearchableView.SearchConfig = class {
   /**
    * @param {string} query
    * @param {boolean} caseSensitive

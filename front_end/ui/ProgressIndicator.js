@@ -28,13 +28,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.Progress}
+ * @implements {Common.Progress}
  * @unrestricted
  */
-WebInspector.ProgressIndicator = class {
+UI.ProgressIndicator = class {
   constructor() {
     this.element = createElementWithClass('div', 'progress-indicator');
-    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, 'ui/progressIndicator.css');
+    this._shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'ui/progressIndicator.css');
     this._contentElement = this._shadowRoot.createChild('div', 'progress-indicator-shadow-container');
 
     this._labelElement = this._contentElement.createChild('div', 'title');

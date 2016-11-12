@@ -4,12 +4,12 @@
  * found in the LICENSE file.
  */
 /**
- * @implements {WebInspector.StaticViewportControl.Provider}
+ * @implements {UI.StaticViewportControl.Provider}
  * @unrestricted
  */
-WebInspector.FilteredListWidget = class extends WebInspector.VBox {
+UI.FilteredListWidget = class extends UI.VBox {
   /**
-   * @param {!WebInspector.FilteredListWidget.Delegate} delegate
+   * @param {!UI.FilteredListWidget.Delegate} delegate
    */
   constructor(delegate) {
     super(true);
@@ -25,7 +25,7 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
     this._promptElement = this.contentElement.createChild('div', 'filtered-list-widget-input');
     this._promptElement.setAttribute('spellcheck', 'false');
     this._promptElement.setAttribute('contenteditable', 'plaintext-only');
-    this._prompt = new WebInspector.TextPrompt();
+    this._prompt = new UI.TextPrompt();
     this._prompt.initialize(() => undefined);
     this._prompt.renderAsBlock();
     var promptProxy = this._prompt.attach(this._promptElement);
@@ -33,7 +33,7 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
     promptProxy.classList.add('filtered-list-widget-prompt-element');
 
     this._filteredItems = [];
-    this._viewportControl = new WebInspector.StaticViewportControl(this);
+    this._viewportControl = new UI.StaticViewportControl(this);
     this._itemElementsContainer = this._viewportControl.element;
     this._itemElementsContainer.classList.add('container');
     this._itemElementsContainer.addEventListener('click', this._onClick.bind(this), false);
@@ -70,7 +70,7 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
   }
 
   showAsDialog() {
-    this._dialog = new WebInspector.Dialog();
+    this._dialog = new UI.Dialog();
     this._dialog.setMaxSize(new Size(504, 340));
     this._dialog.setPosition(undefined, 22);
     this.show(this._dialog.element);
@@ -165,7 +165,7 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
 
     var query = this._delegate.rewriteQuery(this._value());
     this._query = query;
-    var filterRegex = query ? WebInspector.FilteredListWidget.filterRegex(query) : null;
+    var filterRegex = query ? UI.FilteredListWidget.filterRegex(query) : null;
 
     var oldSelectedAbsoluteIndex =
         this._selectedIndexInFiltered ? this._filteredItems[this._selectedIndexInFiltered] : null;
@@ -191,7 +191,7 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
 
     /**
      * @param {number} fromIndex
-     * @this {WebInspector.FilteredListWidget}
+     * @this {UI.FilteredListWidget}
      */
     function scoreItems(fromIndex) {
       var maxWorkItems = 1000;
@@ -273,32 +273,32 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
     var newSelectedIndex = this._selectedIndexInFiltered;
 
     switch (event.keyCode) {
-      case WebInspector.KeyboardShortcut.Keys.Down.code:
+      case UI.KeyboardShortcut.Keys.Down.code:
         if (++newSelectedIndex >= this._filteredItems.length)
           newSelectedIndex = 0;
         this._updateSelection(newSelectedIndex, true);
         event.consume(true);
         break;
-      case WebInspector.KeyboardShortcut.Keys.Up.code:
+      case UI.KeyboardShortcut.Keys.Up.code:
         if (--newSelectedIndex < 0)
           newSelectedIndex = this._filteredItems.length - 1;
         this._updateSelection(newSelectedIndex, false);
         event.consume(true);
         break;
-      case WebInspector.KeyboardShortcut.Keys.PageDown.code:
+      case UI.KeyboardShortcut.Keys.PageDown.code:
         newSelectedIndex = Math.min(newSelectedIndex + this._rowsPerViewport(), this._filteredItems.length - 1);
         this._updateSelection(newSelectedIndex, true);
         event.consume(true);
         break;
-      case WebInspector.KeyboardShortcut.Keys.PageUp.code:
+      case UI.KeyboardShortcut.Keys.PageUp.code:
         newSelectedIndex = Math.max(newSelectedIndex - this._rowsPerViewport(), 0);
         this._updateSelection(newSelectedIndex, false);
         event.consume(true);
         break;
-      case WebInspector.KeyboardShortcut.Keys.Enter.code:
+      case UI.KeyboardShortcut.Keys.Enter.code:
         this._onEnter(event);
         break;
-      case WebInspector.KeyboardShortcut.Keys.Tab.code:
+      case UI.KeyboardShortcut.Keys.Tab.code:
         this._tabKeyPressed();
         break;
       default:
@@ -355,7 +355,7 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
     if (!this._rowHeight) {
       var delegateIndex = this._filteredItems[index];
       var element = this._createItemElement(delegateIndex);
-      this._rowHeight = WebInspector.measurePreferredSize(element, this._itemElementsContainer).height;
+      this._rowHeight = UI.measurePreferredSize(element, this._itemElementsContainer).height;
     }
     return this._rowHeight;
   }
@@ -376,7 +376,7 @@ WebInspector.FilteredListWidget = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.FilteredListWidget.Delegate = class {
+UI.FilteredListWidget.Delegate = class {
   /**
    * @param {!Array<string>} promptHistory
    */
@@ -444,17 +444,17 @@ WebInspector.FilteredListWidget.Delegate = class {
     /**
      * @param {string} text
      * @param {string} query
-     * @return {?Array.<!WebInspector.SourceRange>}
+     * @return {?Array.<!Common.SourceRange>}
      */
     function rangesForMatch(text, query) {
-      var opcodes = WebInspector.Diff.charDiff(query, text);
+      var opcodes = Diff.Diff.charDiff(query, text);
       var offset = 0;
       var ranges = [];
       for (var i = 0; i < opcodes.length; ++i) {
         var opcode = opcodes[i];
-        if (opcode[0] === WebInspector.Diff.Operation.Equal)
-          ranges.push(new WebInspector.SourceRange(offset, opcode[1].length));
-        else if (opcode[0] !== WebInspector.Diff.Operation.Insert)
+        if (opcode[0] === Diff.Diff.Operation.Equal)
+          ranges.push(new Common.SourceRange(offset, opcode[1].length));
+        else if (opcode[0] !== Diff.Diff.Operation.Insert)
           return null;
         offset += opcode[1].length;
       }
@@ -466,7 +466,7 @@ WebInspector.FilteredListWidget.Delegate = class {
     if (!ranges || !this.caseSensitive())
       ranges = rangesForMatch(text.toUpperCase(), query.toUpperCase());
     if (ranges) {
-      WebInspector.highlightRangesWithStyleClass(element, ranges, 'highlight');
+      UI.highlightRangesWithStyleClass(element, ranges, 'highlight');
       return true;
     }
     return false;

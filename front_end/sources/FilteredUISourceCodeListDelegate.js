@@ -7,38 +7,38 @@
 /**
  * @unrestricted
  */
-WebInspector.FilteredUISourceCodeListDelegate = class extends WebInspector.FilteredListWidget.Delegate {
+Sources.FilteredUISourceCodeListDelegate = class extends UI.FilteredListWidget.Delegate {
   /**
-   * @param {!Map.<!WebInspector.UISourceCode, number>=} defaultScores
+   * @param {!Map.<!Workspace.UISourceCode, number>=} defaultScores
    * @param {!Array<string>=} history
    */
   constructor(defaultScores, history) {
     super(history || []);
 
     this._defaultScores = defaultScores;
-    this._scorer = new WebInspector.FilePathScoreFunction('');
-    WebInspector.workspace.addEventListener(
-        WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
-    WebInspector.workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
+    this._scorer = new Sources.FilePathScoreFunction('');
+    Workspace.workspace.addEventListener(
+        Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
+    Workspace.workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _projectRemoved(event) {
-    var project = /** @type {!WebInspector.Project} */ (event.data);
+    var project = /** @type {!Workspace.Project} */ (event.data);
     this.populate(project);
     this.refresh();
   }
 
   /**
    * @protected
-   * @param {!WebInspector.Project=} skipProject
+   * @param {!Workspace.Project=} skipProject
    */
   populate(skipProject) {
-    /** @type {!Array.<!WebInspector.UISourceCode>} */
+    /** @type {!Array.<!Workspace.UISourceCode>} */
     this._uiSourceCodes = [];
-    var projects = WebInspector.workspace.projects().filter(this.filterProject.bind(this));
+    var projects = Workspace.workspace.projects().filter(this.filterProject.bind(this));
     for (var i = 0; i < projects.length; ++i) {
       if (skipProject && projects[i] === skipProject)
         continue;
@@ -48,16 +48,16 @@ WebInspector.FilteredUISourceCodeListDelegate = class extends WebInspector.Filte
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {boolean}
    */
   _filterUISourceCode(uiSourceCode) {
-    var binding = WebInspector.persistence.binding(uiSourceCode);
+    var binding = Persistence.persistence.binding(uiSourceCode);
     return !binding || binding.network === uiSourceCode;
   }
 
   /**
-   * @param {?WebInspector.UISourceCode} uiSourceCode
+   * @param {?Workspace.UISourceCode} uiSourceCode
    * @param {number=} lineNumber
    * @param {number=} columnNumber
    */
@@ -66,7 +66,7 @@ WebInspector.FilteredUISourceCodeListDelegate = class extends WebInspector.Filte
   }
 
   /**
-   * @param {!WebInspector.Project} project
+   * @param {!Workspace.Project} project
    * @return {boolean}
    */
   filterProject(project) {
@@ -105,7 +105,7 @@ WebInspector.FilteredUISourceCodeListDelegate = class extends WebInspector.Filte
 
     if (this._query !== query) {
       this._query = query;
-      this._scorer = new WebInspector.FilePathScoreFunction(query);
+      this._scorer = new Sources.FilePathScoreFunction(query);
     }
 
     var url = uiSourceCode.url();
@@ -124,7 +124,7 @@ WebInspector.FilteredUISourceCodeListDelegate = class extends WebInspector.Filte
     var uiSourceCode = this._uiSourceCodes[itemIndex];
     var fullDisplayName = uiSourceCode.fullDisplayName();
     var indexes = [];
-    var score = new WebInspector.FilePathScoreFunction(query).score(fullDisplayName, indexes);
+    var score = new Sources.FilePathScoreFunction(query).score(fullDisplayName, indexes);
     var fileNameIndex = fullDisplayName.lastIndexOf('/');
 
     titleElement.textContent = uiSourceCode.displayName() + (this._queryLineNumberAndColumnNumber || '');
@@ -137,9 +137,9 @@ WebInspector.FilteredUISourceCodeListDelegate = class extends WebInspector.Filte
     if (indexes[0] > fileNameIndex) {
       for (var i = 0; i < ranges.length; ++i)
         ranges[i].offset -= fileNameIndex + 1;
-      WebInspector.highlightRangesWithStyleClass(titleElement, ranges, 'highlight');
+      UI.highlightRangesWithStyleClass(titleElement, ranges, 'highlight');
     } else {
-      WebInspector.highlightRangesWithStyleClass(subtitleElement, ranges, 'highlight');
+      UI.highlightRangesWithStyleClass(subtitleElement, ranges, 'highlight');
     }
   }
 
@@ -194,10 +194,10 @@ WebInspector.FilteredUISourceCodeListDelegate = class extends WebInspector.Filte
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _uiSourceCodeAdded(event) {
-    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     if (!this._filterUISourceCode(uiSourceCode) || !this.filterProject(uiSourceCode.project()))
       return;
     this._uiSourceCodes.push(uiSourceCode);
@@ -208,9 +208,9 @@ WebInspector.FilteredUISourceCodeListDelegate = class extends WebInspector.Filte
    * @override
    */
   dispose() {
-    WebInspector.workspace.removeEventListener(
-        WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
-    WebInspector.workspace.removeEventListener(
-        WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
+    Workspace.workspace.removeEventListener(
+        Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
+    Workspace.workspace.removeEventListener(
+        Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
   }
 };

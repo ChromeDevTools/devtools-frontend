@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.ContentProvider}
+ * @implements {Common.ContentProvider}
  * @unrestricted
  */
-WebInspector.CSSStyleSheetHeader = class {
+SDK.CSSStyleSheetHeader = class {
   /**
-   * @param {!WebInspector.CSSModel} cssModel
+   * @param {!SDK.CSSModel} cssModel
    * @param {!Protocol.CSS.CSSStyleSheetHeader} payload
    */
   constructor(cssModel, payload) {
@@ -23,18 +23,18 @@ WebInspector.CSSStyleSheetHeader = class {
     this.startLine = payload.startLine;
     this.startColumn = payload.startColumn;
     if (payload.ownerNode)
-      this.ownerNode = new WebInspector.DeferredDOMNode(cssModel.target(), payload.ownerNode);
+      this.ownerNode = new SDK.DeferredDOMNode(cssModel.target(), payload.ownerNode);
     this.setSourceMapURL(payload.sourceMapURL);
   }
 
   /**
-   * @return {!WebInspector.ContentProvider}
+   * @return {!Common.ContentProvider}
    */
   originalContentProvider() {
     if (!this._originalContentProvider) {
       var lazyContent = this._cssModel.originalStyleSheetText.bind(this._cssModel, this);
       this._originalContentProvider =
-          new WebInspector.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
+          new Common.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
     }
     return this._originalContentProvider;
   }
@@ -44,20 +44,20 @@ WebInspector.CSSStyleSheetHeader = class {
    */
   setSourceMapURL(sourceMapURL) {
     var completeSourceMapURL = this.sourceURL && sourceMapURL ?
-        WebInspector.ParsedURL.completeURL(this.sourceURL, sourceMapURL) :
+        Common.ParsedURL.completeURL(this.sourceURL, sourceMapURL) :
         sourceMapURL;
     this.sourceMapURL = completeSourceMapURL;
   }
 
   /**
-   * @return {!WebInspector.Target}
+   * @return {!SDK.Target}
    */
   target() {
     return this._cssModel.target();
   }
 
   /**
-   * @return {!WebInspector.CSSModel}
+   * @return {!SDK.CSSModel}
    */
   cssModel() {
     return this._cssModel;
@@ -74,10 +74,10 @@ WebInspector.CSSStyleSheetHeader = class {
    * @return {string}
    */
   _viaInspectorResourceURL() {
-    var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(this.target());
+    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(this.target());
     var frame = resourceTreeModel.frameForId(this.frameId);
     console.assert(frame);
-    var parsedURL = new WebInspector.ParsedURL(frame.url);
+    var parsedURL = new Common.ParsedURL(frame.url);
     var fakeURL = 'inspector://' + parsedURL.host + parsedURL.folderPathComponents;
     if (!fakeURL.endsWith('/'))
       fakeURL += '/';
@@ -112,10 +112,10 @@ WebInspector.CSSStyleSheetHeader = class {
 
   /**
    * @override
-   * @return {!WebInspector.ResourceType}
+   * @return {!Common.ResourceType}
    */
   contentType() {
-    return WebInspector.resourceTypes.Stylesheet;
+    return Common.resourceTypes.Stylesheet;
   }
 
   /**
@@ -131,11 +131,11 @@ WebInspector.CSSStyleSheetHeader = class {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
    */
   searchInContent(query, caseSensitive, isRegex, callback) {
     function performSearch(content) {
-      callback(WebInspector.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
+      callback(Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
     }
 
     // searchInContent should call back later.
@@ -151,12 +151,12 @@ WebInspector.CSSStyleSheetHeader = class {
 };
 
 /**
- * @implements {WebInspector.ContentProvider}
+ * @implements {Common.ContentProvider}
  * @unrestricted
  */
-WebInspector.CSSStyleSheetHeader.OriginalContentProvider = class {
+SDK.CSSStyleSheetHeader.OriginalContentProvider = class {
   /**
-   * @param {!WebInspector.CSSStyleSheetHeader} header
+   * @param {!SDK.CSSStyleSheetHeader} header
    */
   constructor(header) {
     this._header = header;
@@ -172,7 +172,7 @@ WebInspector.CSSStyleSheetHeader.OriginalContentProvider = class {
 
   /**
    * @override
-   * @return {!WebInspector.ResourceType}
+   * @return {!Common.ResourceType}
    */
   contentType() {
     return this._header.contentType();
@@ -191,7 +191,7 @@ WebInspector.CSSStyleSheetHeader.OriginalContentProvider = class {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
    */
   searchInContent(query, caseSensitive, isRegex, callback) {
     /**
@@ -199,7 +199,7 @@ WebInspector.CSSStyleSheetHeader.OriginalContentProvider = class {
      */
     function performSearch(content) {
       var searchResults =
-          content ? WebInspector.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex) : [];
+          content ? Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex) : [];
       callback(searchResults);
     }
 

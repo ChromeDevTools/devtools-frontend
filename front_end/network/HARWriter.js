@@ -31,15 +31,15 @@
 /**
  * @unrestricted
  */
-WebInspector.HARWriter = class {
+Network.HARWriter = class {
   /**
-   * @param {!WebInspector.OutputStream} stream
-   * @param {!Array.<!WebInspector.NetworkRequest>} requests
-   * @param {!WebInspector.Progress} progress
+   * @param {!Common.OutputStream} stream
+   * @param {!Array.<!SDK.NetworkRequest>} requests
+   * @param {!Common.Progress} progress
    */
   write(stream, requests, progress) {
     this._stream = stream;
-    this._harLog = (new WebInspector.HARLog(requests)).build();
+    this._harLog = (new SDK.HARLog(requests)).build();
     this._pendingRequests = 1;  // Guard against completing resource transfer before all requests are made.
     var entries = this._harLog.entries;
     for (var i = 0; i < entries.length; ++i) {
@@ -50,11 +50,11 @@ WebInspector.HARWriter = class {
       } else if (content !== null)
         this._setEntryContent(entries[i], requests[i]);
     }
-    var compositeProgress = new WebInspector.CompositeProgress(progress);
+    var compositeProgress = new Common.CompositeProgress(progress);
     this._writeProgress = compositeProgress.createSubProgress();
     if (--this._pendingRequests) {
       this._requestsProgress = compositeProgress.createSubProgress();
-      this._requestsProgress.setTitle(WebInspector.UIString('Collecting content…'));
+      this._requestsProgress.setTitle(Common.UIString('Collecting content…'));
       this._requestsProgress.setTotalWork(this._pendingRequests);
     } else
       this._beginWrite();
@@ -62,7 +62,7 @@ WebInspector.HARWriter = class {
 
   /**
    * @param {!Object} entry
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   _setEntryContent(entry, request) {
     if (request.content !== null)
@@ -73,7 +73,7 @@ WebInspector.HARWriter = class {
 
   /**
    * @param {!Object} entry
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @param {?string} content
    */
   _onContentAvailable(entry, request, content) {
@@ -89,14 +89,14 @@ WebInspector.HARWriter = class {
   _beginWrite() {
     const jsonIndent = 2;
     this._text = JSON.stringify({log: this._harLog}, null, jsonIndent);
-    this._writeProgress.setTitle(WebInspector.UIString('Writing file…'));
+    this._writeProgress.setTitle(Common.UIString('Writing file…'));
     this._writeProgress.setTotalWork(this._text.length);
     this._bytesWritten = 0;
     this._writeNextChunk(this._stream);
   }
 
   /**
-   * @param {!WebInspector.OutputStream} stream
+   * @param {!Common.OutputStream} stream
    * @param {string=} error
    */
   _writeNextChunk(stream, error) {

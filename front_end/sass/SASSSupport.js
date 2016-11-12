@@ -1,46 +1,46 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-WebInspector.SASSSupport = {};
+Sass.SASSSupport = {};
 
 /**
  * @param {string} url
  * @param {string} content
- * @return {!Promise<!WebInspector.SASSSupport.AST>}
+ * @return {!Promise<!Sass.SASSSupport.AST>}
  */
-WebInspector.SASSSupport.parseSCSS = function(url, content) {
-  var text = new WebInspector.Text(content);
-  var document = new WebInspector.SASSSupport.ASTDocument(url, text);
+Sass.SASSSupport.parseSCSS = function(url, content) {
+  var text = new Common.Text(content);
+  var document = new Sass.SASSSupport.ASTDocument(url, text);
 
-  return WebInspector.formatterWorkerPool.runTask('parseSCSS', {content: content}).then(onParsed);
+  return Common.formatterWorkerPool.runTask('parseSCSS', {content: content}).then(onParsed);
 
   /**
    * @param {?MessageEvent} event
-   * @return {!WebInspector.SASSSupport.AST}
+   * @return {!Sass.SASSSupport.AST}
    */
   function onParsed(event) {
     if (!event)
-      return new WebInspector.SASSSupport.AST(document, []);
+      return new Sass.SASSSupport.AST(document, []);
     var data = /** @type {!Array<!Object>} */ (event.data);
     var rules = [];
     for (var i = 0; i < data.length; ++i) {
       var rulePayload = data[i];
       var selectors = rulePayload.selectors.map(createTextNode);
       var properties = rulePayload.properties.map(createProperty);
-      var range = WebInspector.TextRange.fromObject(rulePayload.styleRange);
-      var rule = new WebInspector.SASSSupport.Rule(document, selectors, range, properties);
+      var range = Common.TextRange.fromObject(rulePayload.styleRange);
+      var rule = new Sass.SASSSupport.Rule(document, selectors, range, properties);
       rules.push(rule);
     }
-    return new WebInspector.SASSSupport.AST(document, rules);
+    return new Sass.SASSSupport.AST(document, rules);
   }
 
   /**
    * @param {!Object} payload
    */
   function createTextNode(payload) {
-    var range = WebInspector.TextRange.fromObject(payload);
+    var range = Common.TextRange.fromObject(payload);
     var value = text.extract(range);
-    return new WebInspector.SASSSupport.TextNode(document, text.extract(range), range);
+    return new Sass.SASSSupport.TextNode(document, text.extract(range), range);
   }
 
   /**
@@ -49,18 +49,18 @@ WebInspector.SASSSupport.parseSCSS = function(url, content) {
   function createProperty(payload) {
     var name = createTextNode(payload.name);
     var value = createTextNode(payload.value);
-    return new WebInspector.SASSSupport.Property(
-        document, name, value, WebInspector.TextRange.fromObject(payload.range), payload.disabled);
+    return new Sass.SASSSupport.Property(
+        document, name, value, Common.TextRange.fromObject(payload.range), payload.disabled);
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.SASSSupport.ASTDocument = class {
+Sass.SASSSupport.ASTDocument = class {
   /**
    * @param {string} url
-   * @param {!WebInspector.Text} text
+   * @param {!Common.Text} text
    */
   constructor(url, text) {
     this.url = url;
@@ -69,10 +69,10 @@ WebInspector.SASSSupport.ASTDocument = class {
   }
 
   /**
-   * @return {!WebInspector.SASSSupport.ASTDocument}
+   * @return {!Sass.SASSSupport.ASTDocument}
    */
   clone() {
-    return new WebInspector.SASSSupport.ASTDocument(this.url, this.text);
+    return new Sass.SASSSupport.ASTDocument(this.url, this.text);
   }
 
   /**
@@ -83,7 +83,7 @@ WebInspector.SASSSupport.ASTDocument = class {
   }
 
   /**
-   * @return {!WebInspector.Text}
+   * @return {!Common.Text}
    */
   newText() {
     this.edits.stableSort(sequentialOrder);
@@ -91,13 +91,13 @@ WebInspector.SASSSupport.ASTDocument = class {
     for (var i = this.edits.length - 1; i >= 0; --i) {
       var range = this.edits[i].oldRange;
       var newText = this.edits[i].newText;
-      text = new WebInspector.Text(text.replaceRange(range, newText));
+      text = new Common.Text(text.replaceRange(range, newText));
     }
     return text;
 
     /**
-     * @param {!WebInspector.SourceEdit} edit1
-     * @param {!WebInspector.SourceEdit} edit2
+     * @param {!Common.SourceEdit} edit1
+     * @param {!Common.SourceEdit} edit2
      * @return {number}
      */
     function sequentialOrder(edit1, edit2) {
@@ -113,9 +113,9 @@ WebInspector.SASSSupport.ASTDocument = class {
 /**
  * @unrestricted
  */
-WebInspector.SASSSupport.Node = class {
+Sass.SASSSupport.Node = class {
   /**
-   * @param {!WebInspector.SASSSupport.ASTDocument} document
+   * @param {!Sass.SASSSupport.ASTDocument} document
    */
   constructor(document) {
     this.document = document;
@@ -125,11 +125,11 @@ WebInspector.SASSSupport.Node = class {
 /**
  * @unrestricted
  */
-WebInspector.SASSSupport.TextNode = class extends WebInspector.SASSSupport.Node {
+Sass.SASSSupport.TextNode = class extends Sass.SASSSupport.Node {
   /**
-   * @param {!WebInspector.SASSSupport.ASTDocument} document
+   * @param {!Sass.SASSSupport.ASTDocument} document
    * @param {string} text
-   * @param {!WebInspector.TextRange} range
+   * @param {!Common.TextRange} range
    */
   constructor(document, text, range) {
     super(document);
@@ -144,20 +144,20 @@ WebInspector.SASSSupport.TextNode = class extends WebInspector.SASSSupport.Node 
     if (this.text === newText)
       return;
     this.text = newText;
-    this.document.edits.push(new WebInspector.SourceEdit(this.document.url, this.range, newText));
+    this.document.edits.push(new Common.SourceEdit(this.document.url, this.range, newText));
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.ASTDocument} document
-   * @return {!WebInspector.SASSSupport.TextNode}
+   * @param {!Sass.SASSSupport.ASTDocument} document
+   * @return {!Sass.SASSSupport.TextNode}
    */
   clone(document) {
-    return new WebInspector.SASSSupport.TextNode(document, this.text, this.range.clone());
+    return new Sass.SASSSupport.TextNode(document, this.text, this.range.clone());
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.TextNode} other
-   * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>=} outNodeMapping
+   * @param {!Sass.SASSSupport.TextNode} other
+   * @param {!Map<!Sass.SASSSupport.Node, !Sass.SASSSupport.Node>=} outNodeMapping
    * @return {boolean}
    */
   match(other, outNodeMapping) {
@@ -172,12 +172,12 @@ WebInspector.SASSSupport.TextNode = class extends WebInspector.SASSSupport.Node 
 /**
  * @unrestricted
  */
-WebInspector.SASSSupport.Property = class extends WebInspector.SASSSupport.Node {
+Sass.SASSSupport.Property = class extends Sass.SASSSupport.Node {
   /**
-   * @param {!WebInspector.SASSSupport.ASTDocument} document
-   * @param {!WebInspector.SASSSupport.TextNode} name
-   * @param {!WebInspector.SASSSupport.TextNode} value
-   * @param {!WebInspector.TextRange} range
+   * @param {!Sass.SASSSupport.ASTDocument} document
+   * @param {!Sass.SASSSupport.TextNode} name
+   * @param {!Sass.SASSSupport.TextNode} value
+   * @param {!Common.TextRange} range
    * @param {boolean} disabled
    */
   constructor(document, name, value, range, disabled) {
@@ -191,16 +191,16 @@ WebInspector.SASSSupport.Property = class extends WebInspector.SASSSupport.Node 
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.ASTDocument} document
-   * @return {!WebInspector.SASSSupport.Property}
+   * @param {!Sass.SASSSupport.ASTDocument} document
+   * @return {!Sass.SASSSupport.Property}
    */
   clone(document) {
-    return new WebInspector.SASSSupport.Property(
+    return new Sass.SASSSupport.Property(
         document, this.name.clone(document), this.value.clone(document), this.range.clone(), this.disabled);
   }
 
   /**
-   * @param {function(!WebInspector.SASSSupport.Node)} callback
+   * @param {function(!Sass.SASSSupport.Node)} callback
    */
   visit(callback) {
     callback(this);
@@ -209,8 +209,8 @@ WebInspector.SASSSupport.Property = class extends WebInspector.SASSSupport.Node 
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.Property} other
-   * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>=} outNodeMapping
+   * @param {!Sass.SASSSupport.Property} other
+   * @param {!Map<!Sass.SASSSupport.Node, !Sass.SASSSupport.Node>=} outNodeMapping
    * @return {boolean}
    */
   match(other, outNodeMapping) {
@@ -229,23 +229,23 @@ WebInspector.SASSSupport.Property = class extends WebInspector.SASSSupport.Node 
       return;
     this.disabled = disabled;
     if (disabled) {
-      var oldRange1 = WebInspector.TextRange.createFromLocation(this.range.startLine, this.range.startColumn);
-      var edit1 = new WebInspector.SourceEdit(this.document.url, oldRange1, '/* ');
-      var oldRange2 = WebInspector.TextRange.createFromLocation(this.range.endLine, this.range.endColumn);
-      var edit2 = new WebInspector.SourceEdit(this.document.url, oldRange2, ' */');
+      var oldRange1 = Common.TextRange.createFromLocation(this.range.startLine, this.range.startColumn);
+      var edit1 = new Common.SourceEdit(this.document.url, oldRange1, '/* ');
+      var oldRange2 = Common.TextRange.createFromLocation(this.range.endLine, this.range.endColumn);
+      var edit2 = new Common.SourceEdit(this.document.url, oldRange2, ' */');
       this.document.edits.push(edit1, edit2);
       return;
     }
-    var oldRange1 = new WebInspector.TextRange(
+    var oldRange1 = new Common.TextRange(
         this.range.startLine, this.range.startColumn, this.range.startLine, this.name.range.startColumn);
-    var edit1 = new WebInspector.SourceEdit(this.document.url, oldRange1, '');
+    var edit1 = new Common.SourceEdit(this.document.url, oldRange1, '');
 
     var propertyText = this.document.text.extract(this.range);
     var endsWithSemicolon = propertyText.slice(0, -2).trim().endsWith(';');
-    var oldRange2 = new WebInspector.TextRange(
+    var oldRange2 = new Common.TextRange(
         this.range.endLine, this.value.range.endColumn + (endsWithSemicolon ? 1 : 0), this.range.endLine,
         this.range.endColumn);
-    var edit2 = new WebInspector.SourceEdit(this.document.url, oldRange2, '');
+    var edit2 = new Common.SourceEdit(this.document.url, oldRange2, '');
     this.document.edits.push(edit1, edit2);
   }
 
@@ -256,25 +256,25 @@ WebInspector.SASSSupport.Property = class extends WebInspector.SASSSupport.Node 
     rule.properties.splice(index, 1);
     this.parent = null;
 
-    var lineRange = new WebInspector.TextRange(this.range.startLine, 0, this.range.endLine + 1, 0);
+    var lineRange = new Common.TextRange(this.range.startLine, 0, this.range.endLine + 1, 0);
     var oldRange;
     if (this.document.text.extract(lineRange).trim() === this.document.text.extract(this.range).trim())
       oldRange = lineRange;
     else
       oldRange = this.range;
-    this.document.edits.push(new WebInspector.SourceEdit(this.document.url, oldRange, ''));
+    this.document.edits.push(new Common.SourceEdit(this.document.url, oldRange, ''));
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.SASSSupport.Rule = class extends WebInspector.SASSSupport.Node {
+Sass.SASSSupport.Rule = class extends Sass.SASSSupport.Node {
   /**
-   * @param {!WebInspector.SASSSupport.ASTDocument} document
-   * @param {!Array<!WebInspector.SASSSupport.TextNode>} selectors
-   * @param {!WebInspector.TextRange} styleRange
-   * @param {!Array<!WebInspector.SASSSupport.Property>} properties
+   * @param {!Sass.SASSSupport.ASTDocument} document
+   * @param {!Array<!Sass.SASSSupport.TextNode>} selectors
+   * @param {!Common.TextRange} styleRange
+   * @param {!Array<!Sass.SASSSupport.Property>} properties
    */
   constructor(document, selectors, styleRange, properties) {
     super(document);
@@ -285,7 +285,7 @@ WebInspector.SASSSupport.Rule = class extends WebInspector.SASSSupport.Node {
     var blockStartRange = styleRange.collapseToStart();
     blockStartRange.startColumn -= 1;
     this.blockStart =
-        new WebInspector.SASSSupport.TextNode(document, this.document.text.extract(blockStartRange), blockStartRange);
+        new Sass.SASSSupport.TextNode(document, this.document.text.extract(blockStartRange), blockStartRange);
     this.blockStart.parent = this;
 
     for (var i = 0; i < this.properties.length; ++i)
@@ -296,8 +296,8 @@ WebInspector.SASSSupport.Rule = class extends WebInspector.SASSSupport.Node {
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.ASTDocument} document
-   * @return {!WebInspector.SASSSupport.Rule}
+   * @param {!Sass.SASSSupport.ASTDocument} document
+   * @return {!Sass.SASSSupport.Rule}
    */
   clone(document) {
     var properties = [];
@@ -306,11 +306,11 @@ WebInspector.SASSSupport.Rule = class extends WebInspector.SASSSupport.Node {
     var selectors = [];
     for (var i = 0; i < this.selectors.length; ++i)
       selectors.push(this.selectors[i].clone(document));
-    return new WebInspector.SASSSupport.Rule(document, selectors, this.styleRange.clone(), properties);
+    return new Sass.SASSSupport.Rule(document, selectors, this.styleRange.clone(), properties);
   }
 
   /**
-   * @param {function(!WebInspector.SASSSupport.Node)} callback
+   * @param {function(!Sass.SASSSupport.Node)} callback
    */
   visit(callback) {
     callback(this);
@@ -322,8 +322,8 @@ WebInspector.SASSSupport.Rule = class extends WebInspector.SASSSupport.Node {
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.Rule} other
-   * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>=} outNodeMapping
+   * @param {!Sass.SASSSupport.Rule} other
+   * @param {!Map<!Sass.SASSSupport.Node, !Sass.SASSSupport.Node>=} outNodeMapping
    * @return {boolean}
    */
   match(other, outNodeMapping) {
@@ -346,15 +346,15 @@ WebInspector.SASSSupport.Rule = class extends WebInspector.SASSSupport.Node {
       return;
     this._hasTrailingSemicolon = true;
     this.document.edits.push(
-        new WebInspector.SourceEdit(this.document.url, this.properties.peekLast().range.collapseToEnd(), ';'));
+        new Common.SourceEdit(this.document.url, this.properties.peekLast().range.collapseToEnd(), ';'));
   }
 
   /**
-   * @param {?WebInspector.SASSSupport.Property} anchorProperty
+   * @param {?Sass.SASSSupport.Property} anchorProperty
    * @param {!Array<string>} nameTexts
    * @param {!Array<string>} valueTexts
    * @param {!Array<boolean>} disabledStates
-   * @return {!Array<!WebInspector.SASSSupport.Property>}
+   * @return {!Array<!Sass.SASSSupport.Property>}
    */
   insertProperties(anchorProperty, nameTexts, valueTexts, disabledStates) {
     console.assert(
@@ -370,12 +370,12 @@ WebInspector.SASSSupport.Rule = class extends WebInspector.SASSSupport.Node {
       var disabled = disabledStates[i];
       this.document.edits.push(this._insertPropertyEdit(anchorProperty, nameText, valueText, disabled));
 
-      var name = new WebInspector.SASSSupport.TextNode(
-          this.document, nameText, WebInspector.TextRange.createFromLocation(0, 0));
-      var value = new WebInspector.SASSSupport.TextNode(
-          this.document, valueText, WebInspector.TextRange.createFromLocation(0, 0));
-      var newProperty = new WebInspector.SASSSupport.Property(
-          this.document, name, value, WebInspector.TextRange.createFromLocation(0, 0), disabled);
+      var name = new Sass.SASSSupport.TextNode(
+          this.document, nameText, Common.TextRange.createFromLocation(0, 0));
+      var value = new Sass.SASSSupport.TextNode(
+          this.document, valueText, Common.TextRange.createFromLocation(0, 0));
+      var newProperty = new Sass.SASSSupport.Property(
+          this.document, name, value, Common.TextRange.createFromLocation(0, 0), disabled);
 
       this.properties.splice(index + i + 1, 0, newProperty);
       newProperty.parent = this;
@@ -385,11 +385,11 @@ WebInspector.SASSSupport.Rule = class extends WebInspector.SASSSupport.Node {
   }
 
   /**
-   * @param {?WebInspector.SASSSupport.Property} anchorProperty
+   * @param {?Sass.SASSSupport.Property} anchorProperty
    * @param {string} nameText
    * @param {string} valueText
    * @param {boolean} disabled
-   * @return {!WebInspector.SourceEdit}
+   * @return {!Common.SourceEdit}
    */
   _insertPropertyEdit(anchorProperty, nameText, valueText, disabled) {
     var anchorRange = anchorProperty ? anchorProperty.range : this.blockStart.range;
@@ -397,7 +397,7 @@ WebInspector.SASSSupport.Rule = class extends WebInspector.SASSSupport.Node {
     var leftComment = disabled ? '/* ' : '';
     var rightComment = disabled ? ' */' : '';
     var newText = String.sprintf('\n%s%s%s: %s;%s', indent, leftComment, nameText, valueText, rightComment);
-    return new WebInspector.SourceEdit(this.document.url, anchorRange.collapseToEnd(), newText);
+    return new Common.SourceEdit(this.document.url, anchorRange.collapseToEnd(), newText);
   }
 
   /**
@@ -407,13 +407,13 @@ WebInspector.SASSSupport.Rule = class extends WebInspector.SASSSupport.Node {
     var indentProperty = this.properties.find(property => !property.range.isEmpty());
     var result = '';
     if (indentProperty) {
-      result = this.document.text.extract(new WebInspector.TextRange(
+      result = this.document.text.extract(new Common.TextRange(
           indentProperty.range.startLine, 0, indentProperty.range.startLine, indentProperty.range.startColumn));
     } else {
       var lineNumber = this.blockStart.range.startLine;
       var columnNumber = this.blockStart.range.startColumn;
-      var baseLine = this.document.text.extract(new WebInspector.TextRange(lineNumber, 0, lineNumber, columnNumber));
-      result = WebInspector.TextUtils.lineIndent(baseLine) + WebInspector.moduleSetting('textEditorIndent').get();
+      var baseLine = this.document.text.extract(new Common.TextRange(lineNumber, 0, lineNumber, columnNumber));
+      result = Common.TextUtils.lineIndent(baseLine) + Common.moduleSetting('textEditorIndent').get();
     }
     return result.isWhitespace() ? result : '';
   }
@@ -422,10 +422,10 @@ WebInspector.SASSSupport.Rule = class extends WebInspector.SASSSupport.Node {
 /**
  * @unrestricted
  */
-WebInspector.SASSSupport.AST = class extends WebInspector.SASSSupport.Node {
+Sass.SASSSupport.AST = class extends Sass.SASSSupport.Node {
   /**
-   * @param {!WebInspector.SASSSupport.ASTDocument} document
-   * @param {!Array<!WebInspector.SASSSupport.Rule>} rules
+   * @param {!Sass.SASSSupport.ASTDocument} document
+   * @param {!Array<!Sass.SASSSupport.Rule>} rules
    */
   constructor(document, rules) {
     super(document);
@@ -435,19 +435,19 @@ WebInspector.SASSSupport.AST = class extends WebInspector.SASSSupport.Node {
   }
 
   /**
-   * @return {!WebInspector.SASSSupport.AST}
+   * @return {!Sass.SASSSupport.AST}
    */
   clone() {
     var document = this.document.clone();
     var rules = [];
     for (var i = 0; i < this.rules.length; ++i)
       rules.push(this.rules[i].clone(document));
-    return new WebInspector.SASSSupport.AST(document, rules);
+    return new Sass.SASSSupport.AST(document, rules);
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.AST} other
-   * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>=} outNodeMapping
+   * @param {!Sass.SASSSupport.AST} other
+   * @param {!Map<!Sass.SASSSupport.Node, !Sass.SASSSupport.Node>=} outNodeMapping
    * @return {boolean}
    */
   match(other, outNodeMapping) {
@@ -464,7 +464,7 @@ WebInspector.SASSSupport.AST = class extends WebInspector.SASSSupport.Node {
   }
 
   /**
-   * @param {function(!WebInspector.SASSSupport.Node)} callback
+   * @param {function(!Sass.SASSSupport.Node)} callback
    */
   visit(callback) {
     callback(this);
@@ -475,7 +475,7 @@ WebInspector.SASSSupport.AST = class extends WebInspector.SASSSupport.Node {
   /**
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?WebInspector.SASSSupport.TextNode}
+   * @return {?Sass.SASSSupport.TextNode}
    */
   findNodeForPosition(lineNumber, columnNumber) {
     this._ensureNodePositionsIndex();
@@ -487,7 +487,7 @@ WebInspector.SASSSupport.AST = class extends WebInspector.SASSSupport.Node {
 
     /**
      * @param {!{lineNumber: number, columnNumber: number}} position
-     * @param {!WebInspector.SASSSupport.TextNode} textNode
+     * @param {!Sass.SASSSupport.TextNode} textNode
      * @return {number}
      */
     function nodeComparator(position, textNode) {
@@ -503,28 +503,28 @@ WebInspector.SASSSupport.AST = class extends WebInspector.SASSSupport.Node {
     this._sortedTextNodes.sort(nodeComparator);
 
     /**
-     * @param {!WebInspector.SASSSupport.Node} node
-     * @this {WebInspector.SASSSupport.AST}
+     * @param {!Sass.SASSSupport.Node} node
+     * @this {Sass.SASSSupport.AST}
      */
     function onNode(node) {
-      if (!(node instanceof WebInspector.SASSSupport.TextNode))
+      if (!(node instanceof Sass.SASSSupport.TextNode))
         return;
       this._sortedTextNodes.push(node);
     }
 
     /**
-     * @param {!WebInspector.SASSSupport.TextNode} text1
-     * @param {!WebInspector.SASSSupport.TextNode} text2
+     * @param {!Sass.SASSSupport.TextNode} text1
+     * @param {!Sass.SASSSupport.TextNode} text2
      * @return {number}
      */
     function nodeComparator(text1, text2) {
-      return WebInspector.TextRange.comparator(text1.range, text2.range);
+      return Common.TextRange.comparator(text1.range, text2.range);
     }
   }
 };
 
 /** @enum {string} */
-WebInspector.SASSSupport.PropertyChangeType = {
+Sass.SASSSupport.PropertyChangeType = {
   PropertyAdded: 'PropertyAdded',
   PropertyRemoved: 'PropertyRemoved',
   PropertyToggled: 'PropertyToggled',
@@ -535,11 +535,11 @@ WebInspector.SASSSupport.PropertyChangeType = {
 /**
  * @unrestricted
  */
-WebInspector.SASSSupport.PropertyChange = class {
+Sass.SASSSupport.PropertyChange = class {
   /**
-   * @param {!WebInspector.SASSSupport.PropertyChangeType} type
-   * @param {!WebInspector.SASSSupport.Rule} oldRule
-   * @param {!WebInspector.SASSSupport.Rule} newRule
+   * @param {!Sass.SASSSupport.PropertyChangeType} type
+   * @param {!Sass.SASSSupport.Rule} oldRule
+   * @param {!Sass.SASSSupport.Rule} newRule
    * @param {number} oldPropertyIndex
    * @param {number} newPropertyIndex
    */
@@ -552,14 +552,14 @@ WebInspector.SASSSupport.PropertyChange = class {
   }
 
   /**
-   * @return {?WebInspector.SASSSupport.Property}
+   * @return {?Sass.SASSSupport.Property}
    */
   oldProperty() {
     return this.oldRule.properties[this.oldPropertyIndex] || null;
   }
 
   /**
-   * @return {?WebInspector.SASSSupport.Property}
+   * @return {?Sass.SASSSupport.Property}
    */
   newProperty() {
     return this.newRule.properties[this.newPropertyIndex] || null;
@@ -569,13 +569,13 @@ WebInspector.SASSSupport.PropertyChange = class {
 /**
  * @unrestricted
  */
-WebInspector.SASSSupport.ASTDiff = class {
+Sass.SASSSupport.ASTDiff = class {
   /**
    * @param {string} url
-   * @param {!WebInspector.SASSSupport.AST} oldAST
-   * @param {!WebInspector.SASSSupport.AST} newAST
-   * @param {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} mapping
-   * @param {!Array<!WebInspector.SASSSupport.PropertyChange>} changes
+   * @param {!Sass.SASSSupport.AST} oldAST
+   * @param {!Sass.SASSSupport.AST} newAST
+   * @param {!Map<!Sass.SASSSupport.TextNode, !Sass.SASSSupport.TextNode>} mapping
+   * @param {!Array<!Sass.SASSSupport.PropertyChange>} changes
    */
   constructor(url, oldAST, newAST, mapping, changes) {
     this.url = url;
@@ -587,40 +587,40 @@ WebInspector.SASSSupport.ASTDiff = class {
 };
 
 /**
- * @param {!WebInspector.SASSSupport.AST} oldAST
- * @param {!WebInspector.SASSSupport.AST} newAST
- * @return {!WebInspector.SASSSupport.ASTDiff}
+ * @param {!Sass.SASSSupport.AST} oldAST
+ * @param {!Sass.SASSSupport.AST} newAST
+ * @return {!Sass.SASSSupport.ASTDiff}
  */
-WebInspector.SASSSupport.diffModels = function(oldAST, newAST) {
+Sass.SASSSupport.diffModels = function(oldAST, newAST) {
   console.assert(oldAST.rules.length === newAST.rules.length, 'Not implemented for rule diff.');
   console.assert(oldAST.document.url === newAST.document.url, 'Diff makes sense for models with the same url.');
-  var T = WebInspector.SASSSupport.PropertyChangeType;
+  var T = Sass.SASSSupport.PropertyChangeType;
   var changes = [];
-  /** @type {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} */
+  /** @type {!Map<!Sass.SASSSupport.TextNode, !Sass.SASSSupport.TextNode>} */
   var mapping = new Map();
   for (var i = 0; i < oldAST.rules.length; ++i) {
     var oldRule = oldAST.rules[i];
     var newRule = newAST.rules[i];
     computeRuleDiff(mapping, oldRule, newRule);
   }
-  return new WebInspector.SASSSupport.ASTDiff(oldAST.document.url, oldAST, newAST, mapping, changes);
+  return new Sass.SASSSupport.ASTDiff(oldAST.document.url, oldAST, newAST, mapping, changes);
 
   /**
-   * @param {!WebInspector.SASSSupport.PropertyChangeType} type
-   * @param {!WebInspector.SASSSupport.Rule} oldRule
-   * @param {!WebInspector.SASSSupport.Rule} newRule
+   * @param {!Sass.SASSSupport.PropertyChangeType} type
+   * @param {!Sass.SASSSupport.Rule} oldRule
+   * @param {!Sass.SASSSupport.Rule} newRule
    * @param {number} oldPropertyIndex
    * @param {number} newPropertyIndex
    */
   function addChange(type, oldRule, newRule, oldPropertyIndex, newPropertyIndex) {
     changes.push(
-        new WebInspector.SASSSupport.PropertyChange(type, oldRule, newRule, oldPropertyIndex, newPropertyIndex));
+        new Sass.SASSSupport.PropertyChange(type, oldRule, newRule, oldPropertyIndex, newPropertyIndex));
   }
 
   /**
-   * @param {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} mapping
-   * @param {!WebInspector.SASSSupport.Rule} oldRule
-   * @param {!WebInspector.SASSSupport.Rule} newRule
+   * @param {!Map<!Sass.SASSSupport.TextNode, !Sass.SASSSupport.TextNode>} mapping
+   * @param {!Sass.SASSSupport.Rule} oldRule
+   * @param {!Sass.SASSSupport.Rule} newRule
    */
   function computeRuleDiff(mapping, oldRule, newRule) {
     var oldLines = [];
@@ -629,16 +629,16 @@ WebInspector.SASSSupport.diffModels = function(oldAST, newAST) {
     var newLines = [];
     for (var i = 0; i < newRule.properties.length; ++i)
       newLines.push(newRule.properties[i].name.text.trim() + ':' + newRule.properties[i].value.text.trim());
-    var diff = WebInspector.Diff.lineDiff(oldLines, newLines);
-    diff = WebInspector.Diff.convertToEditDiff(diff);
+    var diff = Diff.Diff.lineDiff(oldLines, newLines);
+    diff = Diff.Diff.convertToEditDiff(diff);
 
     var p1 = 0, p2 = 0;
     for (var i = 0; i < diff.length; ++i) {
       var token = diff[i];
-      if (token[0] === WebInspector.Diff.Operation.Delete) {
+      if (token[0] === Diff.Diff.Operation.Delete) {
         for (var j = 0; j < token[1]; ++j)
           addChange(T.PropertyRemoved, oldRule, newRule, p1++, p2);
-      } else if (token[0] === WebInspector.Diff.Operation.Insert) {
+      } else if (token[0] === Diff.Diff.Operation.Insert) {
         for (var j = 0; j < token[1]; ++j)
           addChange(T.PropertyAdded, oldRule, newRule, p1, p2++);
       } else {
@@ -649,9 +649,9 @@ WebInspector.SASSSupport.diffModels = function(oldAST, newAST) {
   }
 
   /**
-   * @param {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} mapping
-   * @param {!WebInspector.SASSSupport.Rule} oldRule
-   * @param {!WebInspector.SASSSupport.Rule} newRule
+   * @param {!Map<!Sass.SASSSupport.TextNode, !Sass.SASSSupport.TextNode>} mapping
+   * @param {!Sass.SASSSupport.Rule} oldRule
+   * @param {!Sass.SASSSupport.Rule} newRule
    * @param {number} oldPropertyIndex
    * @param {number} newPropertyIndex
    */

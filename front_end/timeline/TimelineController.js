@@ -3,28 +3,28 @@
 // found in the LICENSE file.
 
 /** @typedef {!{range: !Protocol.CSS.SourceRange, styleSheetId: !Protocol.CSS.StyleSheetId, wasUsed: boolean}} */
-WebInspector.CSSModel.RuleUsage;
+SDK.CSSModel.RuleUsage;
 
 /**
- * @implements {WebInspector.TargetManager.Observer}
- * @implements {WebInspector.TracingManagerClient}
+ * @implements {SDK.TargetManager.Observer}
+ * @implements {SDK.TracingManagerClient}
  * @unrestricted
  */
-WebInspector.TimelineController = class {
+Timeline.TimelineController = class {
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!WebInspector.TimelineLifecycleDelegate} delegate
-   * @param {!WebInspector.TracingModel} tracingModel
+   * @param {!SDK.Target} target
+   * @param {!Timeline.TimelineLifecycleDelegate} delegate
+   * @param {!SDK.TracingModel} tracingModel
    */
   constructor(target, delegate, tracingModel) {
     this._delegate = delegate;
     this._target = target;
     this._tracingModel = tracingModel;
     this._targets = [];
-    WebInspector.targetManager.observeTargets(this);
+    SDK.targetManager.observeTargets(this);
 
     if (Runtime.experiments.isEnabled('timelineRuleUsageRecording'))
-      this._markUnusedCSS = WebInspector.settings.createSetting('timelineMarkUnusedCSS', false);
+      this._markUnusedCSS = Common.settings.createSetting('timelineMarkUnusedCSS', false);
   }
 
   /**
@@ -35,17 +35,17 @@ WebInspector.TimelineController = class {
    * @param {boolean} captureFilmStrip
    */
   startRecording(captureCauses, enableJSSampling, captureMemory, capturePictures, captureFilmStrip) {
-    this._extensionTraceProviders = WebInspector.extensionServer.traceProviders().slice();
+    this._extensionTraceProviders = Extensions.extensionServer.traceProviders().slice();
 
     function disabledByDefault(category) {
       return 'disabled-by-default-' + category;
     }
     var categoriesArray = [
       '-*', 'devtools.timeline', 'v8.execute', disabledByDefault('devtools.timeline'),
-      disabledByDefault('devtools.timeline.frame'), WebInspector.TracingModel.TopLevelEventCategory,
-      WebInspector.TimelineModel.Category.Console, WebInspector.TimelineModel.Category.UserTiming
+      disabledByDefault('devtools.timeline.frame'), SDK.TracingModel.TopLevelEventCategory,
+      TimelineModel.TimelineModel.Category.Console, TimelineModel.TimelineModel.Category.UserTiming
     ];
-    categoriesArray.push(WebInspector.TimelineModel.Category.LatencyInfo);
+    categoriesArray.push(TimelineModel.TimelineModel.Category.LatencyInfo);
 
     if (Runtime.experiments.isEnabled('timelineFlowEvents')) {
       categoriesArray.push(disabledByDefault('toplevel.flow'), disabledByDefault('ipc.flow'));
@@ -54,7 +54,7 @@ WebInspector.TimelineController = class {
       categoriesArray.push(disabledByDefault('v8.runtime_stats_sampling'));
     if (Runtime.experiments.isEnabled('timelineTracingJSProfile') && enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
-      if (WebInspector.moduleSetting('highResolutionCpuProfiling').get())
+      if (Common.moduleSetting('highResolutionCpuProfiling').get())
         categoriesArray.push(disabledByDefault('v8.cpu_profiler.hires'));
     }
     if (captureCauses || enableJSSampling)
@@ -83,7 +83,7 @@ WebInspector.TimelineController = class {
     this._target.tracingManager.stop();
 
     if (!Runtime.experiments.isEnabled('timelineRuleUsageRecording') || !this._markUnusedCSS.get())
-      tracingStoppedPromises.push(WebInspector.targetManager.resumeAllTargets());
+      tracingStoppedPromises.push(SDK.targetManager.resumeAllTargets());
     else
       this._addUnusedRulesToCoverage();
 
@@ -97,7 +97,7 @@ WebInspector.TimelineController = class {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     this._targets.push(target);
@@ -107,7 +107,7 @@ WebInspector.TimelineController = class {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
     this._targets.remove(target, true);
@@ -116,13 +116,13 @@ WebInspector.TimelineController = class {
   }
 
   _addUnusedRulesToCoverage() {
-    var mainTarget = WebInspector.targetManager.mainTarget();
+    var mainTarget = SDK.targetManager.mainTarget();
     if (!mainTarget)
       return;
-    var cssModel = WebInspector.CSSModel.fromTarget(mainTarget);
+    var cssModel = SDK.CSSModel.fromTarget(mainTarget);
 
     /**
-     * @param {!Array<!WebInspector.CSSModel.RuleUsage>} ruleUsageList
+     * @param {!Array<!SDK.CSSModel.RuleUsage>} ruleUsageList
      */
     function ruleListReceived(ruleUsageList) {
 
@@ -133,7 +133,7 @@ WebInspector.TimelineController = class {
         var styleSheetHeader = cssModel.styleSheetHeaderForId(rule.styleSheetId);
         var url = styleSheetHeader.sourceURL;
 
-        WebInspector.CoverageProfile.instance().appendUnusedRule(url, rule.range);
+        Components.CoverageProfile.instance().appendUnusedRule(url, rule.range);
       }
     }
 
@@ -141,7 +141,7 @@ WebInspector.TimelineController = class {
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @return {!Promise}
    */
   _startProfilingOnTarget(target) {
@@ -152,14 +152,14 @@ WebInspector.TimelineController = class {
    * @return {!Promise}
    */
   _startProfilingOnAllTargets() {
-    var intervalUs = WebInspector.moduleSetting('highResolutionCpuProfiling').get() ? 100 : 1000;
+    var intervalUs = Common.moduleSetting('highResolutionCpuProfiling').get() ? 100 : 1000;
     this._target.profilerAgent().setSamplingInterval(intervalUs);
     this._profiling = true;
     return Promise.all(this._targets.map(this._startProfilingOnTarget));
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @return {!Promise}
    */
   _stopProfilingOnTarget(target) {
@@ -174,7 +174,7 @@ WebInspector.TimelineController = class {
    */
   _addCpuProfile(targetId, error, cpuProfile) {
     if (!cpuProfile) {
-      WebInspector.console.warn(WebInspector.UIString('CPU profile for a target is not available. %s', error || ''));
+      Common.console.warn(Common.UIString('CPU profile for a target is not available. %s', error || ''));
       return;
     }
     if (!this._cpuProfiles)
@@ -199,22 +199,22 @@ WebInspector.TimelineController = class {
   _startRecordingWithCategories(categories, enableJSSampling, callback) {
 
     if (!Runtime.experiments.isEnabled('timelineRuleUsageRecording') || !this._markUnusedCSS.get())
-      WebInspector.targetManager.suspendAllTargets();
+      SDK.targetManager.suspendAllTargets();
 
     var profilingStartedPromise = enableJSSampling && !Runtime.experiments.isEnabled('timelineTracingJSProfile') ?
         this._startProfilingOnAllTargets() :
         Promise.resolve();
-    var samplingFrequencyHz = WebInspector.moduleSetting('highResolutionCpuProfiling').get() ? 10000 : 1000;
+    var samplingFrequencyHz = Common.moduleSetting('highResolutionCpuProfiling').get() ? 10000 : 1000;
     var options = 'sampling-frequency=' + samplingFrequencyHz;
     var target = this._target;
     var tracingManager = target.tracingManager;
-    WebInspector.targetManager.suspendReload(target);
+    SDK.targetManager.suspendReload(target);
     profilingStartedPromise.then(tracingManager.start.bind(tracingManager, this, categories, options, onTraceStarted));
     /**
      * @param {?string} error
      */
     function onTraceStarted(error) {
-      WebInspector.targetManager.resumeReload(target);
+      SDK.targetManager.resumeReload(target);
       if (callback)
         callback(error);
     }
@@ -229,7 +229,7 @@ WebInspector.TimelineController = class {
   }
 
   /**
-   * @param {!Array.<!WebInspector.TracingManager.EventPayload>} events
+   * @param {!Array.<!SDK.TracingManager.EventPayload>} events
    * @override
    */
   traceEventsCollected(events) {
@@ -258,13 +258,13 @@ WebInspector.TimelineController = class {
   _injectCpuProfileEvent(pid, tid, cpuProfile) {
     if (!cpuProfile)
       return;
-    var cpuProfileEvent = /** @type {!WebInspector.TracingManager.EventPayload} */ ({
-      cat: WebInspector.TracingModel.DevToolsMetadataEventCategory,
-      ph: WebInspector.TracingModel.Phase.Instant,
+    var cpuProfileEvent = /** @type {!SDK.TracingManager.EventPayload} */ ({
+      cat: SDK.TracingModel.DevToolsMetadataEventCategory,
+      ph: SDK.TracingModel.Phase.Instant,
       ts: this._tracingModel.maximumRecordTime() * 1000,
       pid: pid,
       tid: tid,
-      name: WebInspector.TimelineModel.RecordType.CpuProfile,
+      name: TimelineModel.TimelineModel.RecordType.CpuProfile,
       args: {data: {cpuProfile: cpuProfile}}
     });
     this._tracingModel.addEvents([cpuProfileEvent]);
@@ -274,7 +274,7 @@ WebInspector.TimelineController = class {
     if (!this._cpuProfiles)
       return;
 
-    var metadataEventTypes = WebInspector.TimelineModel.DevToolsMetadataEvent;
+    var metadataEventTypes = TimelineModel.TimelineModel.DevToolsMetadataEvent;
     var metadataEvents = this._tracingModel.devToolsMetadataEvents();
     var mainMetaEvent =
         metadataEvents.filter(event => event.name === metadataEventTypes.TracingStartedInPage).peekLast();

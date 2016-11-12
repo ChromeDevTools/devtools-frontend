@@ -1,20 +1,20 @@
 {
     "extensions": [
         {
-            "type": "@WebInspector.AppProvider",
-            "className": "WebInspector.SimpleAppProvider",
+            "type": "@Common.AppProvider",
+            "className": "Main.SimpleAppProvider",
             "order": 10
         },
         {
-            "type": "@WebInspector.ContextMenu.Provider",
-            "contextTypes": ["WebInspector.UISourceCode", "WebInspector.Resource", "WebInspector.NetworkRequest", "Node"],
-            "className": "WebInspector.HandlerRegistry.ContextMenuProvider"
+            "type": "@UI.ContextMenu.Provider",
+            "contextTypes": ["Workspace.UISourceCode", "SDK.Resource", "SDK.NetworkRequest", "Node"],
+            "className": "Components.HandlerRegistry.ContextMenuProvider"
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Navigation",
             "actionId": "main.reload",
-            "className": "WebInspector.Main.ReloadActionDelegate",
+            "className": "Main.Main.ReloadActionDelegate",
             "title": "Reload page",
             "bindings": [
                 {
@@ -28,10 +28,10 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Navigation",
             "actionId": "main.hard-reload",
-            "className": "WebInspector.Main.ReloadActionDelegate",
+            "className": "Main.Main.ReloadActionDelegate",
             "title": "Hard reload page",
             "bindings": [
                 {
@@ -45,10 +45,10 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Drawer",
             "actionId": "main.toggle-drawer",
-            "className": "WebInspector.InspectorView.DrawerToggleActionDelegate",
+            "className": "UI.InspectorView.DrawerToggleActionDelegate",
             "order": 100,
             "title": "Toggle drawer",
             "bindings": [
@@ -58,9 +58,9 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "main.debug-reload",
-            "className": "WebInspector.Main.ReloadActionDelegate",
+            "className": "Main.Main.ReloadActionDelegate",
             "bindings": [
                 {
                     "shortcut": "Alt+R"
@@ -68,11 +68,11 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "DevTools",
             "title": "Restore last dock position",
             "actionId": "main.toggle-dock",
-            "className": "WebInspector.DockController.ToggleDockActionDelegate",
+            "className": "Components.DockController.ToggleDockActionDelegate",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -85,9 +85,9 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "main.zoom-in",
-            "className": "WebInspector.Main.ZoomActionDelegate",
+            "className": "Main.Main.ZoomActionDelegate",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -100,9 +100,9 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "main.zoom-out",
-            "className": "WebInspector.Main.ZoomActionDelegate",
+            "className": "Main.Main.ZoomActionDelegate",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -115,9 +115,9 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "main.zoom-reset",
-            "className": "WebInspector.Main.ZoomActionDelegate",
+            "className": "Main.Main.ZoomActionDelegate",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -130,9 +130,9 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "main.search-in-panel.find",
-            "className": "WebInspector.Main.SearchActionDelegate",
+            "className": "Main.Main.SearchActionDelegate",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -145,9 +145,9 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "main.search-in-panel.cancel",
-            "className": "WebInspector.Main.SearchActionDelegate",
+            "className": "Main.Main.SearchActionDelegate",
             "order": 10,
             "bindings": [
                 {
@@ -156,9 +156,9 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "main.search-in-panel.find-next",
-            "className": "WebInspector.Main.SearchActionDelegate",
+            "className": "Main.Main.SearchActionDelegate",
             "bindings": [
                 {
                     "platform": "mac",
@@ -167,9 +167,9 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "main.search-in-panel.find-previous",
-            "className": "WebInspector.Main.SearchActionDelegate",
+            "className": "Main.Main.SearchActionDelegate",
             "bindings": [
                 {
                     "platform": "mac",
@@ -178,32 +178,32 @@
             ]
         },
         {
-            "type": "@WebInspector.ToolbarItem.Provider",
+            "type": "@UI.ToolbarItem.Provider",
             "separator": true,
             "location": "main-toolbar-left",
             "order": 100
         },
         {
-            "type": "@WebInspector.ToolbarItem.Provider",
-            "className": "WebInspector.Main.WarningErrorCounter",
+            "type": "@UI.ToolbarItem.Provider",
+            "className": "Main.Main.WarningErrorCounter",
             "order": 1,
             "location": "main-toolbar-right"
         },
         {
-            "type": "@WebInspector.ToolbarItem.Provider",
+            "type": "@UI.ToolbarItem.Provider",
             "separator": true,
             "order": 98,
             "location": "main-toolbar-right"
         },
         {
-            "type": "@WebInspector.ToolbarItem.Provider",
-            "className": "WebInspector.Main.MainMenuItem",
+            "type": "@UI.ToolbarItem.Provider",
+            "className": "Main.Main.MainMenuItem",
             "order": 99,
             "location": "main-toolbar-right"
         },
         {
-            "type": "@WebInspector.ToolbarItem.Provider",
-            "className": "WebInspector.DockController.CloseButtonProvider",
+            "type": "@UI.ToolbarItem.Provider",
+            "className": "Components.DockController.CloseButtonProvider",
             "order": 100,
             "location": "main-toolbar-right"
         },
@@ -297,15 +297,15 @@
             "defaultValue": false
         },
         {
-            "type": "@WebInspector.SettingUI",
+            "type": "@UI.SettingUI",
             "category": "Extensions",
-            "className": "WebInspector.HandlerRegistry.OpenAnchorLocationSettingUI"
+            "className": "Components.HandlerRegistry.OpenAnchorLocationSettingUI"
         },
         {
-            "type": "@WebInspector.SettingUI",
+            "type": "@UI.SettingUI",
             "category": "Elements",
             "order": 3,
-            "className": "WebInspector.ShowMetricsRulersSettingUI"
+            "className": "Main.ShowMetricsRulersSettingUI"
         },
         {
             "type": "context-menu-item",
@@ -321,7 +321,7 @@
             "title": "Rendering",
             "persistence": "closeable",
             "order": 50,
-            "className": "WebInspector.RenderingOptionsView"
+            "className": "Main.RenderingOptionsView"
         },
         {
             "type": "setting",
@@ -336,9 +336,9 @@
             ]
         },
         {
-            "type": "@WebInspector.ViewLocationResolver",
+            "type": "@UI.ViewLocationResolver",
             "name": "drawer-view",
-            "className": "WebInspector.InspectorView"
+            "className": "UI.InspectorView"
         }
     ],
     "dependencies": [

@@ -2,25 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.SourceMap}
+ * @implements {SDK.SourceMap}
  * @unrestricted
  */
-WebInspector.ASTSourceMap = class {
+Sass.ASTSourceMap = class {
   /**
    * @param {string} compiledURL
    * @param {string} sourceMapURL
-   * @param {!Map<string, !WebInspector.SASSSupport.AST>} models
-   * @param {?function(!WebInspector.ASTSourceMap, !Array<!WebInspector.TextRange>, !Array<string>):!Promise<?WebInspector.SourceMap.EditResult>} editCallback
+   * @param {!Map<string, !Sass.SASSSupport.AST>} models
+   * @param {?function(!Sass.ASTSourceMap, !Array<!Common.TextRange>, !Array<string>):!Promise<?SDK.SourceMap.EditResult>} editCallback
    */
   constructor(compiledURL, sourceMapURL, models, editCallback) {
     this._editCallback = editCallback;
     this._compiledURL = compiledURL;
     this._sourceMapURL = sourceMapURL;
-    /** @type {!Map<string, !WebInspector.SASSSupport.AST>} */
+    /** @type {!Map<string, !Sass.SASSSupport.AST>} */
     this._models = models;
-    /** @type {!Map<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} */
+    /** @type {!Map<!Sass.SASSSupport.TextNode, !Sass.SASSSupport.TextNode>} */
     this._compiledToSource = new Map();
-    /** @type {!Multimap<!WebInspector.SASSSupport.TextNode, !WebInspector.SASSSupport.TextNode>} */
+    /** @type {!Multimap<!Sass.SASSSupport.TextNode, !Sass.SASSSupport.TextNode>} */
     this._sourceToCompiled = new Multimap();
   }
 
@@ -51,13 +51,13 @@ WebInspector.ASTSourceMap = class {
   /**
    * @override
    * @param {string} sourceURL
-   * @param {!WebInspector.ResourceType} contentType
-   * @return {!WebInspector.ContentProvider}
+   * @param {!Common.ResourceType} contentType
+   * @return {!Common.ContentProvider}
    */
   sourceContentProvider(sourceURL, contentType) {
     var model = this.modelForURL(sourceURL);
     var sourceContent = model ? model.document.text.value() : '';
-    return WebInspector.StaticContentProvider.fromString(sourceURL, contentType, sourceContent);
+    return Common.StaticContentProvider.fromString(sourceURL, contentType, sourceContent);
   }
 
   /**
@@ -74,7 +74,7 @@ WebInspector.ASTSourceMap = class {
    * @override
    * @param {number} lineNumber
    * @param {number=} columnNumber
-   * @return {?WebInspector.SourceMapEntry}
+   * @return {?SDK.SourceMapEntry}
    */
   findEntry(lineNumber, columnNumber) {
     columnNumber = columnNumber || 0;
@@ -84,7 +84,7 @@ WebInspector.ASTSourceMap = class {
     var sourceNode = this.toSourceNode(compiledNode);
     if (!sourceNode)
       return null;
-    return new WebInspector.SourceMapEntry(
+    return new SDK.SourceMapEntry(
         lineNumber, columnNumber, sourceNode.document.url, sourceNode.range.startLine, sourceNode.range.startColumn);
   }
 
@@ -98,48 +98,48 @@ WebInspector.ASTSourceMap = class {
 
   /**
    * @override
-   * @param {!Array<!WebInspector.TextRange>} ranges
+   * @param {!Array<!Common.TextRange>} ranges
    * @param {!Array<string>} texts
-   * @return {!Promise<?WebInspector.SourceMap.EditResult>}
+   * @return {!Promise<?SDK.SourceMap.EditResult>}
    */
   editCompiled(ranges, texts) {
     return this._editCallback.call(null, this, ranges, texts);
   }
 
   /**
-   * @return {!WebInspector.SASSSupport.AST}
+   * @return {!Sass.SASSSupport.AST}
    */
   compiledModel() {
-    return /** @type {!WebInspector.SASSSupport.AST} */ (this._models.get(this._compiledURL));
+    return /** @type {!Sass.SASSSupport.AST} */ (this._models.get(this._compiledURL));
   }
 
   /**
-   * @return {!Map<string, !WebInspector.SASSSupport.AST>}
+   * @return {!Map<string, !Sass.SASSSupport.AST>}
    */
   sourceModels() {
-    var sourceModels = /** @type {!Map<string, !WebInspector.SASSSupport.AST>} */ (new Map(this._models));
+    var sourceModels = /** @type {!Map<string, !Sass.SASSSupport.AST>} */ (new Map(this._models));
     sourceModels.delete(this._compiledURL);
     return sourceModels;
   }
 
   /**
-   * @return {!Map<string, !WebInspector.SASSSupport.AST>}
+   * @return {!Map<string, !Sass.SASSSupport.AST>}
    */
   models() {
-    return /** @type {!Map<string, !WebInspector.SASSSupport.AST>} */ (new Map(this._models));
+    return /** @type {!Map<string, !Sass.SASSSupport.AST>} */ (new Map(this._models));
   }
 
   /**
    * @param {string} url
-   * @return {?WebInspector.SASSSupport.AST}
+   * @return {?Sass.SASSSupport.AST}
    */
   modelForURL(url) {
     return this._models.get(url) || null;
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.TextNode} compiled
-   * @param {!WebInspector.SASSSupport.TextNode} source
+   * @param {!Sass.SASSSupport.TextNode} compiled
+   * @param {!Sass.SASSSupport.TextNode} source
    */
   addMapping(compiled, source) {
     this._compiledToSource.set(compiled, source);
@@ -147,8 +147,8 @@ WebInspector.ASTSourceMap = class {
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.TextNode} compiled
-   * @param {!WebInspector.SASSSupport.TextNode} source
+   * @param {!Sass.SASSSupport.TextNode} compiled
+   * @param {!Sass.SASSSupport.TextNode} source
    */
   removeMapping(compiled, source) {
     this._compiledToSource.delete(compiled);
@@ -156,16 +156,16 @@ WebInspector.ASTSourceMap = class {
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.TextNode} compiled
-   * @return {?WebInspector.SASSSupport.TextNode}
+   * @param {!Sass.SASSSupport.TextNode} compiled
+   * @return {?Sass.SASSSupport.TextNode}
    */
   toSourceNode(compiled) {
     return this._compiledToSource.get(compiled) || null;
   }
 
   /**
-   * @param {!WebInspector.SASSSupport.TextNode} source
-   * @return {!Array<!WebInspector.SASSSupport.TextNode>}
+   * @param {!Sass.SASSSupport.TextNode} source
+   * @return {!Array<!Sass.SASSSupport.TextNode>}
    */
   toCompiledNodes(source) {
     var compiledNodes = this._sourceToCompiled.get(source);
@@ -173,15 +173,15 @@ WebInspector.ASTSourceMap = class {
   }
 
   /**
-   * @param {!Array<!WebInspector.SASSSupport.AST>} updated
-   * @param {!Map<!WebInspector.SASSSupport.Node, !WebInspector.SASSSupport.Node>=} outNodeMapping
-   * @return {?WebInspector.ASTSourceMap}
+   * @param {!Array<!Sass.SASSSupport.AST>} updated
+   * @param {!Map<!Sass.SASSSupport.Node, !Sass.SASSSupport.Node>=} outNodeMapping
+   * @return {?Sass.ASTSourceMap}
    */
   rebase(updated, outNodeMapping) {
     outNodeMapping = outNodeMapping || new Map();
     outNodeMapping.clear();
 
-    var models = /** @type {!Map<string, !WebInspector.SASSSupport.AST>} */ (new Map(this._models));
+    var models = /** @type {!Map<string, !Sass.SASSSupport.AST>} */ (new Map(this._models));
     for (var newAST of updated) {
       var oldAST = models.get(newAST.document.url);
       if (!oldAST.match(newAST, outNodeMapping))
@@ -189,15 +189,15 @@ WebInspector.ASTSourceMap = class {
       models.set(newAST.document.url, newAST);
     }
 
-    var newMap = new WebInspector.ASTSourceMap(this._compiledURL, this._sourceMapURL, models, this._editCallback);
+    var newMap = new Sass.ASTSourceMap(this._compiledURL, this._sourceMapURL, models, this._editCallback);
     var compiledNodes = this._compiledToSource.keysArray();
     for (var i = 0; i < compiledNodes.length; ++i) {
       var compiledNode = compiledNodes[i];
-      var sourceNode = /** @type {!WebInspector.SASSSupport.TextNode} */ (this._compiledToSource.get(compiledNode));
+      var sourceNode = /** @type {!Sass.SASSSupport.TextNode} */ (this._compiledToSource.get(compiledNode));
       var mappedCompiledNode =
-          /** @type {!WebInspector.SASSSupport.TextNode} */ (outNodeMapping.get(compiledNode) || compiledNode);
+          /** @type {!Sass.SASSSupport.TextNode} */ (outNodeMapping.get(compiledNode) || compiledNode);
       var mappedSourceNode =
-          /** @type {!WebInspector.SASSSupport.TextNode} */ (outNodeMapping.get(sourceNode) || sourceNode);
+          /** @type {!Sass.SASSSupport.TextNode} */ (outNodeMapping.get(sourceNode) || sourceNode);
       newMap.addMapping(mappedCompiledNode, mappedSourceNode);
     }
     return newMap;

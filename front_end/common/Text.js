@@ -1,10 +1,13 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
+self['Common'] = self['Common'] || {};
+
 /**
  * @unrestricted
  */
-WebInspector.Text = class {
+Common.Text = class {
   /**
    * @param {string} value
    */
@@ -59,22 +62,22 @@ WebInspector.Text = class {
   }
 
   /**
-   * @param {!WebInspector.TextRange} range
-   * @return {!WebInspector.SourceRange}
+   * @param {!Common.TextRange} range
+   * @return {!Common.SourceRange}
    */
   toSourceRange(range) {
     var start = this.offsetFromPosition(range.startLine, range.startColumn);
     var end = this.offsetFromPosition(range.endLine, range.endColumn);
-    return new WebInspector.SourceRange(start, end - start);
+    return new Common.SourceRange(start, end - start);
   }
 
   /**
-   * @param {!WebInspector.SourceRange} sourceRange
-   * @return {!WebInspector.TextRange}
+   * @param {!Common.SourceRange} sourceRange
+   * @return {!Common.TextRange}
    */
   toTextRange(sourceRange) {
-    var cursor = new WebInspector.TextCursor(this.lineEndings());
-    var result = WebInspector.TextRange.createFromLocation(0, 0);
+    var cursor = new Common.TextCursor(this.lineEndings());
+    var result = Common.TextRange.createFromLocation(0, 0);
 
     cursor.resetTo(sourceRange.offset);
     result.startLine = cursor.lineNumber();
@@ -87,7 +90,7 @@ WebInspector.Text = class {
   }
 
   /**
-   * @param {!WebInspector.TextRange} range
+   * @param {!Common.TextRange} range
    * @param {string} replacement
    * @return {string}
    */
@@ -98,7 +101,7 @@ WebInspector.Text = class {
   }
 
   /**
-   * @param {!WebInspector.TextRange} range
+   * @param {!Common.TextRange} range
    * @return {string}
    */
   extract(range) {
@@ -110,7 +113,7 @@ WebInspector.Text = class {
 /**
  * @unrestricted
  */
-WebInspector.TextCursor = class {
+Common.TextCursor = class {
   /**
    * @param {!Array<number>} lineEndings
    */

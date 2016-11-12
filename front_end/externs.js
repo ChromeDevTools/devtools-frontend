@@ -272,8 +272,6 @@ DevToolsHost.isolatedFileSystem = function(fileSystemId, registeredName) {};
  */
 DevToolsHost.upgradeDraggedFileSystemPermissions = function(fileSystem) {};
 
-var WebInspector = function() {};
-
 /** Extensions API */
 
 /** @constructor */
@@ -805,3 +803,50 @@ Terminal.prototype = {
   /** @param {string} eventName * @param {!Function} handler */
   on: function(eventName, handler) {}
 };
+
+// Module namespaces.
+var Accessibility = {};
+var Animation = {};
+var Audits = {};
+var Audits2 = {};
+var Audits2Worker = {};
+var Bindings = {};
+var CmModes = {};
+var Common = {};
+var Components = {};
+var Console = {};
+var Devices = {};
+var Diff = {};
+var Elements = {};
+var Emulation = {};
+var Extensions = {};
+var FormatterWorker = {};
+var Gonzales = {};
+var HeapSnapshotWorker = {};
+var Host = {};
+var LayerViewer = {};
+var Layers = {};
+var Main = {};
+var Network = {};
+var Persistence = {};
+var Platform = {};
+var Profiler = {};
+var Resources = {};
+var Sass = {};
+var Screencast = {};
+var SDK = {};
+var Security = {};
+var Services = {};
+var Settings = {};
+var Snippets = {};
+var SourceFrame = {};
+var Sources = {};
+var Terminal = {};
+var TextEditor = {};
+var Timeline = {};
+var TimelineModel = {};
+var ToolboxBootstrap = {};
+var UI = {};
+var UtilitySharedWorker = {};
+var WorkerService = {};
+var Workspace = {};

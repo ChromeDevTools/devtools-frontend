@@ -4,32 +4,32 @@
 /**
  * @unrestricted
  */
-WebInspector.AccessibilitySidebarView = class extends WebInspector.ThrottledWidget {
+Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
   constructor() {
     super();
     this._node = null;
     this._axNode = null;
-    this._sidebarPaneStack = WebInspector.viewManager.createStackLocation();
-    this._treeSubPane = new WebInspector.AXTreePane();
+    this._sidebarPaneStack = UI.viewManager.createStackLocation();
+    this._treeSubPane = new Accessibility.AXTreePane();
     this._sidebarPaneStack.showView(this._treeSubPane);
-    this._ariaSubPane = new WebInspector.ARIAAttributesPane();
+    this._ariaSubPane = new Accessibility.ARIAAttributesPane();
     this._sidebarPaneStack.showView(this._ariaSubPane);
-    this._axNodeSubPane = new WebInspector.AXNodeSubPane();
+    this._axNodeSubPane = new Accessibility.AXNodeSubPane();
     this._sidebarPaneStack.showView(this._axNodeSubPane);
     this._sidebarPaneStack.widget().show(this.element);
-    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._pullNode, this);
+    UI.context.addFlavorChangeListener(SDK.DOMNode, this._pullNode, this);
     this._pullNode();
   }
 
   /**
-   * @return {?WebInspector.DOMNode}
+   * @return {?SDK.DOMNode}
    */
   node() {
     return this._node;
   }
 
   /**
-   * @param {?WebInspector.AccessibilityNode} axNode
+   * @param {?Accessibility.AccessibilityNode} axNode
    */
   accessibilityNodeCallback(axNode) {
     if (!axNode)
@@ -60,7 +60,7 @@ WebInspector.AccessibilitySidebarView = class extends WebInspector.ThrottledWidg
     this._ariaSubPane.setNode(node);
     if (!node)
       return Promise.resolve();
-    var accessibilityModel = WebInspector.AccessibilityModel.fromTarget(node.target());
+    var accessibilityModel = Accessibility.AccessibilityModel.fromTarget(node.target());
     accessibilityModel.clear();
     return accessibilityModel.requestPartialAXTree(node)
         .then(() => {
@@ -78,37 +78,37 @@ WebInspector.AccessibilitySidebarView = class extends WebInspector.ThrottledWidg
     this._axNodeSubPane.setNode(this.node());
     this._ariaSubPane.setNode(this.node());
 
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrModified, this._onAttrChange, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
+    SDK.targetManager.addModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);
+    SDK.targetManager.addModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
+    SDK.targetManager.addModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
+    SDK.targetManager.addModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
   }
 
   /**
    * @override
    */
   willHide() {
-    WebInspector.targetManager.removeModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrModified, this._onAttrChange, this);
-    WebInspector.targetManager.removeModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
-    WebInspector.targetManager.removeModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
-    WebInspector.targetManager.removeModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
+    SDK.targetManager.removeModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);
+    SDK.targetManager.removeModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
+    SDK.targetManager.removeModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
+    SDK.targetManager.removeModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.ChildNodeCountUpdated, this._onNodeChange, this);
   }
 
   _pullNode() {
-    this._node = WebInspector.context.flavor(WebInspector.DOMNode);
+    this._node = UI.context.flavor(SDK.DOMNode);
     this.update();
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onAttrChange(event) {
     if (!this.node())
@@ -120,7 +120,7 @@ WebInspector.AccessibilitySidebarView = class extends WebInspector.ThrottledWidg
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onNodeChange(event) {
     if (!this.node())
@@ -135,7 +135,7 @@ WebInspector.AccessibilitySidebarView = class extends WebInspector.ThrottledWidg
 /**
  * @unrestricted
  */
-WebInspector.AccessibilitySubPane = class extends WebInspector.SimpleView {
+Accessibility.AccessibilitySubPane = class extends UI.SimpleView {
   /**
    * @param {string} name
    */
@@ -147,21 +147,21 @@ WebInspector.AccessibilitySubPane = class extends WebInspector.SimpleView {
   }
 
   /**
-   * @param {?WebInspector.AccessibilityNode} axNode
+   * @param {?Accessibility.AccessibilityNode} axNode
    * @protected
    */
   setAXNode(axNode) {
   }
 
   /**
-   * @return {?WebInspector.DOMNode}
+   * @return {?SDK.DOMNode}
    */
   node() {
     return this._node;
   }
 
   /**
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    */
   setNode(node) {
     this._node = node;

@@ -1,9 +1,9 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-WebInspector.AccessibilityStrings = {};
+Accessibility.AccessibilityStrings = {};
 
-WebInspector.AccessibilityStrings.AXAttributes = {
+Accessibility.AccessibilityStrings.AXAttributes = {
   'disabled': {
     name: 'Disabled',
     description: 'If true, this element currently cannot be interacted with.',
@@ -162,7 +162,7 @@ WebInspector.AccessibilityStrings.AXAttributes = {
   'description': {name: 'Description', description: 'The accessible description for this element.', group: 'Default'}
 };
 
-WebInspector.AccessibilityStrings.AXSourceTypes = {
+Accessibility.AccessibilityStrings.AXSourceTypes = {
   'attribute': {name: 'From attribute', description: 'Value from attribute.'},
   'implicit': {
     name: 'Implicit',
@@ -174,7 +174,7 @@ WebInspector.AccessibilityStrings.AXSourceTypes = {
   'relatedElement': {name: 'Related element', description: 'Value from related element.'}
 };
 
-WebInspector.AccessibilityStrings.AXNativeSourceTypes = {
+Accessibility.AccessibilityStrings.AXNativeSourceTypes = {
   'figcaption': {name: 'From caption', description: 'Value from figcaption element.'},
   'label': {name: 'From label', description: 'Value from label element.'},
   'labelfor': {name: 'From label (for)', description: 'Value from label element with for= attribute.'},

@@ -27,34 +27,34 @@
 /**
  * @unrestricted
  */
-WebInspector.DOMStorageItemsView = class extends WebInspector.SimpleView {
+Resources.DOMStorageItemsView = class extends UI.SimpleView {
   constructor(domStorage) {
-    super(WebInspector.UIString('DOM Storage'));
+    super(Common.UIString('DOM Storage'));
 
     this.domStorage = domStorage;
 
     this.element.classList.add('storage-view', 'table');
 
-    this.deleteButton = new WebInspector.ToolbarButton(WebInspector.UIString('Delete'), 'largeicon-delete');
+    this.deleteButton = new UI.ToolbarButton(Common.UIString('Delete'), 'largeicon-delete');
     this.deleteButton.setVisible(false);
     this.deleteButton.addEventListener('click', this._deleteButtonClicked, this);
 
-    this.refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'largeicon-refresh');
+    this.refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     this.refreshButton.addEventListener('click', this._refreshButtonClicked, this);
 
     this.domStorage.addEventListener(
-        WebInspector.DOMStorage.Events.DOMStorageItemsCleared, this._domStorageItemsCleared, this);
+        Resources.DOMStorage.Events.DOMStorageItemsCleared, this._domStorageItemsCleared, this);
     this.domStorage.addEventListener(
-        WebInspector.DOMStorage.Events.DOMStorageItemRemoved, this._domStorageItemRemoved, this);
+        Resources.DOMStorage.Events.DOMStorageItemRemoved, this._domStorageItemRemoved, this);
     this.domStorage.addEventListener(
-        WebInspector.DOMStorage.Events.DOMStorageItemAdded, this._domStorageItemAdded, this);
+        Resources.DOMStorage.Events.DOMStorageItemAdded, this._domStorageItemAdded, this);
     this.domStorage.addEventListener(
-        WebInspector.DOMStorage.Events.DOMStorageItemUpdated, this._domStorageItemUpdated, this);
+        Resources.DOMStorage.Events.DOMStorageItemUpdated, this._domStorageItemUpdated, this);
   }
 
   /**
    * @override
-   * @return {!Array.<!WebInspector.ToolbarItem>}
+   * @return {!Array.<!UI.ToolbarItem>}
    */
   syncToolbarItems() {
     return [this.refreshButton, this.deleteButton];
@@ -75,7 +75,7 @@ WebInspector.DOMStorageItemsView = class extends WebInspector.SimpleView {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _domStorageItemsCleared(event) {
     if (!this.isShowing() || !this._dataGrid)
@@ -88,7 +88,7 @@ WebInspector.DOMStorageItemsView = class extends WebInspector.SimpleView {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _domStorageItemRemoved(event) {
     if (!this.isShowing() || !this._dataGrid)
@@ -111,7 +111,7 @@ WebInspector.DOMStorageItemsView = class extends WebInspector.SimpleView {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _domStorageItemAdded(event) {
     if (!this.isShowing() || !this._dataGrid)
@@ -128,12 +128,12 @@ WebInspector.DOMStorageItemsView = class extends WebInspector.SimpleView {
       if (children[i].data.key === storageData.key)
         return;
 
-    var childNode = new WebInspector.DataGridNode({key: storageData.key, value: storageData.value}, false);
+    var childNode = new UI.DataGridNode({key: storageData.key, value: storageData.value}, false);
     rootNode.insertChild(childNode, children.length - 1);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _domStorageItemUpdated(event) {
     if (!this.isShowing() || !this._dataGrid)
@@ -180,9 +180,9 @@ WebInspector.DOMStorageItemsView = class extends WebInspector.SimpleView {
   }
 
   _dataGridForDOMStorageItems(items) {
-    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'key', title: WebInspector.UIString('Key'), sortable: false, editable: true, weight: 50},
-      {id: 'value', title: WebInspector.UIString('Value'), sortable: false, editable: true, weight: 50}
+    var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
+      {id: 'key', title: Common.UIString('Key'), sortable: false, editable: true, weight: 50},
+      {id: 'value', title: Common.UIString('Value'), sortable: false, editable: true, weight: 50}
     ]);
 
     var nodes = [];
@@ -192,14 +192,14 @@ WebInspector.DOMStorageItemsView = class extends WebInspector.SimpleView {
     for (var i = 0; i < items.length; i++) {
       var key = items[i][0];
       var value = items[i][1];
-      var node = new WebInspector.DataGridNode({key: key, value: value}, false);
+      var node = new UI.DataGridNode({key: key, value: value}, false);
       node.selectable = true;
       nodes.push(node);
       keys.push(key);
     }
 
     var dataGrid =
-        new WebInspector.DataGrid(columns, this._editingCallback.bind(this), this._deleteCallback.bind(this));
+        new UI.DataGrid(columns, this._editingCallback.bind(this), this._deleteCallback.bind(this));
     dataGrid.setName('DOMStorageItemsView');
     length = nodes.length;
     for (var i = 0; i < length; ++i)
@@ -233,7 +233,7 @@ WebInspector.DOMStorageItemsView = class extends WebInspector.SimpleView {
   }
 
   /**
-   * @param {!WebInspector.DataGridNode} masterNode
+   * @param {!UI.DataGridNode} masterNode
    */
   _removeDupes(masterNode) {
     var rootNode = this._dataGrid.rootNode();

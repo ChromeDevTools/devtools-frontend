@@ -28,18 +28,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.DOMNodeHighlighter}
+ * @implements {SDK.DOMNodeHighlighter}
  * @unrestricted
  */
-WebInspector.ScreencastView = class extends WebInspector.VBox {
+Screencast.ScreencastView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!WebInspector.ResourceTreeModel} resourceTreeModel
+   * @param {!SDK.Target} target
+   * @param {!SDK.ResourceTreeModel} resourceTreeModel
    */
   constructor(target, resourceTreeModel) {
     super();
     this._target = target;
-    this._domModel = WebInspector.DOMModel.fromTarget(target);
+    this._domModel = SDK.DOMModel.fromTarget(target);
     this._resourceTreeModel = resourceTreeModel;
 
     this.setMinimumSize(150, 150);
@@ -87,16 +87,16 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
     this._checkerboardPattern = this._createCheckerboardPattern(this._context);
 
     this._shortcuts = /** !Object.<number, function(Event=):boolean> */ ({});
-    this._shortcuts[WebInspector.KeyboardShortcut.makeKey('l', WebInspector.KeyboardShortcut.Modifiers.Ctrl)] =
+    this._shortcuts[UI.KeyboardShortcut.makeKey('l', UI.KeyboardShortcut.Modifiers.Ctrl)] =
         this._focusNavigationBar.bind(this);
 
     this._resourceTreeModel.addEventListener(
-        WebInspector.ResourceTreeModel.Events.ScreencastFrame, this._screencastFrame, this);
+        SDK.ResourceTreeModel.Events.ScreencastFrame, this._screencastFrame, this);
     this._resourceTreeModel.addEventListener(
-        WebInspector.ResourceTreeModel.Events.ScreencastVisibilityChanged, this._screencastVisibilityChanged, this);
+        SDK.ResourceTreeModel.Events.ScreencastVisibilityChanged, this._screencastVisibilityChanged, this);
 
-    WebInspector.targetManager.addEventListener(
-        WebInspector.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChange, this);
+    SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChange, this);
     this._updateGlasspane();
   }
 
@@ -115,7 +115,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
   }
 
   _startCasting() {
-    if (WebInspector.targetManager.allTargetsSuspended())
+    if (SDK.targetManager.allTargetsSuspended())
       return;
     if (this._isCasting)
       return;
@@ -145,7 +145,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _screencastFrame(event) {
     var metadata = /** type {Protocol.Page.ScreencastFrameMetadata} */ (event.data.metadata);
@@ -163,7 +163,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
         dimensionsCSS.width / this._imageElement.naturalWidth,
         dimensionsCSS.height / (this._imageElement.naturalWidth * deviceSizeRatio));
     this._viewportElement.classList.remove('hidden');
-    var bordersSize = WebInspector.ScreencastView._bordersSize;
+    var bordersSize = Screencast.ScreencastView._bordersSize;
     if (this._imageZoom < 1.01 / window.devicePixelRatio)
       this._imageZoom = 1 / window.devicePixelRatio;
     this._screenZoom = this._imageElement.naturalWidth * this._imageZoom / metadata.deviceWidth;
@@ -178,7 +178,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _screencastVisibilityChanged(event) {
     this._targetInactive = !event.data.visible;
@@ -186,10 +186,10 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onSuspendStateChange(event) {
-    if (WebInspector.targetManager.allTargetsSuspended())
+    if (SDK.targetManager.allTargetsSuspended())
       this._stopCasting();
     else
       this._startCasting();
@@ -198,10 +198,10 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
 
   _updateGlasspane() {
     if (this._targetInactive) {
-      this._glassPaneElement.textContent = WebInspector.UIString('The tab is inactive');
+      this._glassPaneElement.textContent = Common.UIString('The tab is inactive');
       this._glassPaneElement.classList.remove('hidden');
-    } else if (WebInspector.targetManager.allTargetsSuspended()) {
-      this._glassPaneElement.textContent = WebInspector.UIString('Profiling in progress');
+    } else if (SDK.targetManager.allTargetsSuspended()) {
+      this._glassPaneElement.textContent = Common.UIString('Profiling in progress');
       this._glassPaneElement.classList.remove('hidden');
     } else {
       this._glassPaneElement.classList.add('hidden');
@@ -234,8 +234,8 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
         position.y / this._pageScaleFactor + this._scrollOffsetY, callback.bind(this));
 
     /**
-     * @param {?WebInspector.DOMNode} node
-     * @this {WebInspector.ScreencastView}
+     * @param {?SDK.DOMNode} node
+     * @this {Screencast.ScreencastView}
      */
     function callback(node) {
       if (!node)
@@ -244,7 +244,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
         this.highlightDOMNode(node, this._inspectModeConfig);
         this._domModel.nodeHighlightRequested(node.id);
       } else if (event.type === 'click') {
-        WebInspector.Revealer.reveal(node);
+        Common.Revealer.reveal(node);
       }
     }
   }
@@ -258,7 +258,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
       return;
     }
 
-    var shortcutKey = WebInspector.KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
+    var shortcutKey = UI.KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
     var handler = this._shortcuts[shortcutKey];
     if (handler && handler(event)) {
       event.consume();
@@ -416,7 +416,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
 
   /**
    * @override
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    * @param {?Protocol.DOM.HighlightConfig} config
    * @param {!Protocol.DOM.BackendNodeId=} backendNodeId
    * @param {!Protocol.Runtime.RemoteObjectId=} objectId
@@ -438,7 +438,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
 
     /**
      * @param {?Protocol.DOM.BoxModel} model
-     * @this {WebInspector.ScreencastView}
+     * @this {Screencast.ScreencastView}
      */
     function callback(model) {
       if (!model || !this._pageScaleFactor) {
@@ -458,7 +458,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
   _scaleModel(model) {
     /**
      * @param {!Protocol.DOM.Quad} quad
-     * @this {WebInspector.ScreencastView}
+     * @this {Screencast.ScreencastView}
      */
     function scaleQuad(quad) {
       for (var i = 0; i < quad.length; i += 2) {
@@ -532,7 +532,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
   _cssColor(color) {
     if (!color)
       return 'transparent';
-    return WebInspector.Color.fromRGBA([color.r, color.g, color.b, color.a]).asString(WebInspector.Color.Format.RGBA) ||
+    return Common.Color.fromRGBA([color.r, color.g, color.b, color.a]).asString(Common.Color.Format.RGBA) ||
         '';
   }
 
@@ -662,9 +662,9 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
    */
   _viewportDimensions() {
     const gutterSize = 30;
-    const bordersSize = WebInspector.ScreencastView._bordersSize;
+    const bordersSize = Screencast.ScreencastView._bordersSize;
     var width = this.element.offsetWidth - bordersSize - gutterSize;
-    var height = this.element.offsetHeight - bordersSize - gutterSize - WebInspector.ScreencastView._navBarHeight;
+    var height = this.element.offsetHeight - bordersSize - gutterSize - Screencast.ScreencastView._navBarHeight;
     return {width: width, height: height};
   }
 
@@ -725,11 +725,11 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
     this._navigationUrl.addEventListener('keyup', this._navigationUrlKeyUp.bind(this), true);
 
     this._navigationProgressBar =
-        new WebInspector.ScreencastView.ProgressTracker(this._navigationBar.createChild('div', 'progress'));
+        new Screencast.ScreencastView.ProgressTracker(this._navigationBar.createChild('div', 'progress'));
 
     this._requestNavigationHistory();
-    WebInspector.targetManager.addEventListener(
-        WebInspector.TargetManager.Events.InspectedURLChanged, this._requestNavigationHistory, this);
+    SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.InspectedURLChanged, this._requestNavigationHistory, this);
   }
 
   _navigateToHistoryEntry(offset) {
@@ -750,7 +750,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
     var url = this._navigationUrl.value;
     if (!url)
       return;
-    if (!url.match(WebInspector.ScreencastView._SchemeRegex))
+    if (!url.match(Screencast.ScreencastView._SchemeRegex))
       url = 'http://' + url;
     this._target.pageAgent().navigate(url);
     this._canvasElement.focus();
@@ -771,7 +771,7 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
     this._navigationForward.disabled = currentIndex === (entries.length - 1);
 
     var url = entries[currentIndex].url;
-    var match = url.match(WebInspector.ScreencastView._HttpRegex);
+    var match = url.match(Screencast.ScreencastView._HttpRegex);
     if (match)
       url = match[1];
     InspectorFrontendHost.inspectedURLChanged(url);
@@ -785,33 +785,33 @@ WebInspector.ScreencastView = class extends WebInspector.VBox {
   }
 };
 
-WebInspector.ScreencastView._bordersSize = 44;
+Screencast.ScreencastView._bordersSize = 44;
 
-WebInspector.ScreencastView._navBarHeight = 29;
+Screencast.ScreencastView._navBarHeight = 29;
 
-WebInspector.ScreencastView._HttpRegex = /^http:\/\/(.+)/;
+Screencast.ScreencastView._HttpRegex = /^http:\/\/(.+)/;
 
-WebInspector.ScreencastView._SchemeRegex = /^(https?|about|chrome):/;
+Screencast.ScreencastView._SchemeRegex = /^(https?|about|chrome):/;
 
 /**
  * @unrestricted
  */
-WebInspector.ScreencastView.ProgressTracker = class {
+Screencast.ScreencastView.ProgressTracker = class {
   /**
    * @param {!Element} element
    */
   constructor(element) {
     this._element = element;
 
-    WebInspector.targetManager.addModelListener(
-        WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.MainFrameNavigated,
+    SDK.targetManager.addModelListener(
+        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.MainFrameNavigated,
         this._onMainFrameNavigated, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.ResourceTreeModel, WebInspector.ResourceTreeModel.Events.Load, this._onLoad, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
+    SDK.targetManager.addModelListener(
+        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._onLoad, this);
+    SDK.targetManager.addModelListener(
+        SDK.NetworkManager, SDK.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
+    SDK.targetManager.addModelListener(
+        SDK.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
   }
 
   _onMainFrameNavigated() {
@@ -838,9 +838,9 @@ WebInspector.ScreencastView.ProgressTracker = class {
   _onRequestStarted(event) {
     if (!this._navigationProgressVisible())
       return;
-    var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
+    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     // Ignore long-living WebSockets for the sake of progress indicator, as we won't be waiting them anyway.
-    if (request.type === WebInspector.resourceTypes.WebSocket)
+    if (request.type === Common.resourceTypes.WebSocket)
       return;
     this._requestIds[request.requestId] = request;
     ++this._startedRequests;
@@ -849,7 +849,7 @@ WebInspector.ScreencastView.ProgressTracker = class {
   _onRequestFinished(event) {
     if (!this._navigationProgressVisible())
       return;
-    var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
+    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     if (!(request.requestId in this._requestIds))
       return;
     ++this._finishedRequests;

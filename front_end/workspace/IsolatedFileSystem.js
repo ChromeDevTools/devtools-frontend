@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.IsolatedFileSystem = class {
+Workspace.IsolatedFileSystem = class {
   /**
-   * @param {!WebInspector.IsolatedFileSystemManager} manager
+   * @param {!Workspace.IsolatedFileSystemManager} manager
    * @param {string} path
    * @param {string} embedderPath
    * @param {!DOMFileSystem} domFileSystem
@@ -43,7 +43,7 @@ WebInspector.IsolatedFileSystem = class {
     this._path = path;
     this._embedderPath = embedderPath;
     this._domFileSystem = domFileSystem;
-    this._excludedFoldersSetting = WebInspector.settings.createLocalSetting('workspaceExcludedFolders', {});
+    this._excludedFoldersSetting = Common.settings.createLocalSetting('workspaceExcludedFolders', {});
     /** @type {!Set<string>} */
     this._excludedFolders = new Set(this._excludedFoldersSetting.get()[path] || []);
     /** @type {!Set<string>} */
@@ -56,23 +56,23 @@ WebInspector.IsolatedFileSystem = class {
   }
 
   /**
-   * @param {!WebInspector.IsolatedFileSystemManager} manager
+   * @param {!Workspace.IsolatedFileSystemManager} manager
    * @param {string} path
    * @param {string} embedderPath
    * @param {string} name
    * @param {string} rootURL
-   * @return {!Promise<?WebInspector.IsolatedFileSystem>}
+   * @return {!Promise<?Workspace.IsolatedFileSystem>}
    */
   static create(manager, path, embedderPath, name, rootURL) {
     var domFileSystem = InspectorFrontendHost.isolatedFileSystem(name, rootURL);
     if (!domFileSystem)
-      return Promise.resolve(/** @type {?WebInspector.IsolatedFileSystem} */ (null));
+      return Promise.resolve(/** @type {?Workspace.IsolatedFileSystem} */ (null));
 
-    var fileSystem = new WebInspector.IsolatedFileSystem(manager, path, embedderPath, domFileSystem);
+    var fileSystem = new Workspace.IsolatedFileSystem(manager, path, embedderPath, domFileSystem);
     var fileContentPromise = fileSystem.requestFileContentPromise('.devtools');
     return fileContentPromise.then(onConfigAvailable)
         .then(() => fileSystem)
-        .catchException(/** @type {?WebInspector.IsolatedFileSystem} */ (null));
+        .catchException(/** @type {?Workspace.IsolatedFileSystem} */ (null));
 
     /**
      * @param {?string} projectText
@@ -85,7 +85,7 @@ WebInspector.IsolatedFileSystem = class {
           fileSystem._initializeProject(
               typeof projectObject === 'object' ? /** @type {!Object} */ (projectObject) : null);
         } catch (e) {
-          WebInspector.console.error('Invalid project file: ' + projectText);
+          Common.console.error('Invalid project file: ' + projectText);
         }
       }
       return fileSystem._initializeFilePaths();
@@ -97,7 +97,7 @@ WebInspector.IsolatedFileSystem = class {
    * @return {string}
    */
   static errorMessage(error) {
-    return WebInspector.UIString('File system error: %s', error.message);
+    return Common.UIString('File system error: %s', error.message);
   }
 
   /**
@@ -121,7 +121,7 @@ WebInspector.IsolatedFileSystem = class {
      * @param {!FileError} error
      */
     function errorHandler(error) {
-      var errorMessage = WebInspector.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when getting file metadata \'' + path);
       fulfill(null);
     }
@@ -191,7 +191,7 @@ WebInspector.IsolatedFileSystem = class {
 
     /**
      * @param {!Array.<!FileEntry>} entries
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      */
     function innerCallback(entries) {
       for (var i = 0; i < entries.length; ++i) {
@@ -232,7 +232,7 @@ WebInspector.IsolatedFileSystem = class {
 
     /**
      * @param {!DirectoryEntry} dirEntry
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      */
     function dirEntryLoaded(dirEntry) {
       var nameCandidate = name;
@@ -246,7 +246,7 @@ WebInspector.IsolatedFileSystem = class {
       }
 
       /**
-       * @this {WebInspector.IsolatedFileSystem}
+       * @this {Workspace.IsolatedFileSystem}
        */
       function fileCreationError(error) {
         if (error.name === 'InvalidModificationError') {
@@ -254,7 +254,7 @@ WebInspector.IsolatedFileSystem = class {
           return;
         }
 
-        var errorMessage = WebInspector.IsolatedFileSystem.errorMessage(error);
+        var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
         console.error(
             errorMessage + ' when testing if file exists \'' + (this._path + '/' + path + '/' + nameCandidate) + '\'');
         callback(null);
@@ -262,10 +262,10 @@ WebInspector.IsolatedFileSystem = class {
     }
 
     /**
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      */
     function errorHandler(error) {
-      var errorMessage = WebInspector.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
       var filePath = this._path + '/' + path;
       if (nameCandidate)
         filePath += '/' + nameCandidate;
@@ -282,7 +282,7 @@ WebInspector.IsolatedFileSystem = class {
 
     /**
      * @param {!FileEntry} fileEntry
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      */
     function fileEntryLoaded(fileEntry) {
       fileEntry.remove(fileEntryRemoved, errorHandler.bind(this));
@@ -293,12 +293,12 @@ WebInspector.IsolatedFileSystem = class {
 
     /**
      * @param {!FileError} error
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      * @suppress {checkTypes}
      * TODO(jsbell): Update externs replacing FileError with DOMException. https://crbug.com/496901
      */
     function errorHandler(error) {
-      var errorMessage = WebInspector.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when deleting file \'' + (this._path + '/' + path) + '\'');
     }
   }
@@ -323,7 +323,7 @@ WebInspector.IsolatedFileSystem = class {
 
     /**
      * @param {!FileEntry} entry
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      */
     function fileEntryLoaded(entry) {
       entry.file(fileLoaded, errorHandler.bind(this));
@@ -335,7 +335,7 @@ WebInspector.IsolatedFileSystem = class {
     function fileLoaded(file) {
       var reader = new FileReader();
       reader.onloadend = readerLoadEnd;
-      if (WebInspector.IsolatedFileSystem.ImageExtensions.has(WebInspector.ParsedURL.extractExtension(path)))
+      if (Workspace.IsolatedFileSystem.ImageExtensions.has(Common.ParsedURL.extractExtension(path)))
         reader.readAsDataURL(file);
       else
         reader.readAsText(file);
@@ -356,7 +356,7 @@ WebInspector.IsolatedFileSystem = class {
     }
 
     /**
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      */
     function errorHandler(error) {
       if (error.name === 'NotFoundError') {
@@ -364,7 +364,7 @@ WebInspector.IsolatedFileSystem = class {
         return;
       }
 
-      var errorMessage = WebInspector.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when getting content for file \'' + (this._path + '/' + path) + '\'');
       callback(null);
     }
@@ -376,12 +376,12 @@ WebInspector.IsolatedFileSystem = class {
    * @param {function()} callback
    */
   setFileContent(path, content, callback) {
-    WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.FileSavedInWorkspace);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.FileSavedInWorkspace);
     this._domFileSystem.root.getFile(path, {create: true}, fileEntryLoaded.bind(this), errorHandler.bind(this));
 
     /**
      * @param {!FileEntry} entry
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      */
     function fileEntryLoaded(entry) {
       entry.createWriter(fileWriterCreated.bind(this), errorHandler.bind(this));
@@ -389,7 +389,7 @@ WebInspector.IsolatedFileSystem = class {
 
     /**
      * @param {!FileWriter} fileWriter
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      */
     function fileWriterCreated(fileWriter) {
       fileWriter.onerror = errorHandler.bind(this);
@@ -404,10 +404,10 @@ WebInspector.IsolatedFileSystem = class {
     }
 
     /**
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      */
     function errorHandler(error) {
-      var errorMessage = WebInspector.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when setting content for file \'' + (this._path + '/' + path) + '\'');
       callback();
     }
@@ -431,7 +431,7 @@ WebInspector.IsolatedFileSystem = class {
 
     /**
      * @param {!FileEntry} entry
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      */
     function fileEntryLoaded(entry) {
       if (entry.name === newName) {
@@ -445,7 +445,7 @@ WebInspector.IsolatedFileSystem = class {
 
     /**
      * @param {!Entry} entry
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      */
     function dirEntryLoaded(entry) {
       dirEntry = entry;
@@ -460,7 +460,7 @@ WebInspector.IsolatedFileSystem = class {
     }
 
     /**
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      */
     function newFileEntryLoadErrorHandler(error) {
       if (error.name !== 'NotFoundError') {
@@ -478,10 +478,10 @@ WebInspector.IsolatedFileSystem = class {
     }
 
     /**
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      */
     function errorHandler(error) {
-      var errorMessage = WebInspector.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when renaming file \'' + (this._path + '/' + path) + '\' to \'' + newName + '\'');
       callback(false);
     }
@@ -511,7 +511,7 @@ WebInspector.IsolatedFileSystem = class {
     dirReader.readEntries(innerCallback, errorHandler);
 
     function errorHandler(error) {
-      var errorMessage = WebInspector.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when reading directory \'' + dirEntry.fullPath + '\'');
       callback([]);
     }
@@ -526,14 +526,14 @@ WebInspector.IsolatedFileSystem = class {
 
     /**
      * @param {!DirectoryEntry} dirEntry
-     * @this {WebInspector.IsolatedFileSystem}
+     * @this {Workspace.IsolatedFileSystem}
      */
     function innerCallback(dirEntry) {
       this._readDirectory(dirEntry, callback);
     }
 
     function errorHandler(error) {
-      var errorMessage = WebInspector.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when requesting entry \'' + path + '\'');
       callback([]);
     }
@@ -551,7 +551,7 @@ WebInspector.IsolatedFileSystem = class {
   addExcludedFolder(path) {
     this._excludedFolders.add(path);
     this._saveExcludedFolders();
-    this._manager.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.ExcludedFolderAdded, path);
+    this._manager.dispatchEventToListeners(Workspace.IsolatedFileSystemManager.Events.ExcludedFolderAdded, path);
   }
 
   /**
@@ -560,7 +560,7 @@ WebInspector.IsolatedFileSystem = class {
   removeExcludedFolder(path) {
     this._excludedFolders.delete(path);
     this._saveExcludedFolders();
-    this._manager.dispatchEventToListeners(WebInspector.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, path);
+    this._manager.dispatchEventToListeners(Workspace.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, path);
   }
 
   fileSystemRemoved() {
@@ -596,7 +596,7 @@ WebInspector.IsolatedFileSystem = class {
 
   /**
    * @param {string} query
-   * @param {!WebInspector.Progress} progress
+   * @param {!Common.Progress} progress
    * @param {function(!Array.<string>)} callback
    */
   searchInPath(query, progress, callback) {
@@ -607,14 +607,14 @@ WebInspector.IsolatedFileSystem = class {
      * @param {!Array.<string>} files
      */
     function innerCallback(files) {
-      files = files.map(embedderPath => WebInspector.ParsedURL.platformPathToURL(embedderPath));
+      files = files.map(embedderPath => Common.ParsedURL.platformPathToURL(embedderPath));
       progress.worked(1);
       callback(files);
     }
   }
 
   /**
-   * @param {!WebInspector.Progress} progress
+   * @param {!Common.Progress} progress
    */
   indexContent(progress) {
     progress.setTotalWork(1);
@@ -623,5 +623,5 @@ WebInspector.IsolatedFileSystem = class {
   }
 };
 
-WebInspector.IsolatedFileSystem.ImageExtensions =
+Workspace.IsolatedFileSystem.ImageExtensions =
     new Set(['jpeg', 'jpg', 'svg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp']);

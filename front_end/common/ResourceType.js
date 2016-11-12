@@ -30,11 +30,11 @@
 /**
  * @unrestricted
  */
-WebInspector.ResourceType = class {
+Common.ResourceType = class {
   /**
    * @param {string} name
    * @param {string} title
-   * @param {!WebInspector.ResourceCategory} category
+   * @param {!Common.ResourceCategory} category
    * @param {boolean} isTextType
    */
   constructor(name, title, category, isTextType) {
@@ -49,12 +49,12 @@ WebInspector.ResourceType = class {
    * @return {string|undefined}
    */
   static mimeFromURL(url) {
-    var name = WebInspector.ParsedURL.extractName(url);
-    if (WebInspector.ResourceType._mimeTypeByName.has(name)) {
-      return WebInspector.ResourceType._mimeTypeByName.get(name);
+    var name = Common.ParsedURL.extractName(url);
+    if (Common.ResourceType._mimeTypeByName.has(name)) {
+      return Common.ResourceType._mimeTypeByName.get(name);
     }
-    var ext = WebInspector.ParsedURL.extractExtension(url).toLowerCase();
-    return WebInspector.ResourceType._mimeTypeByExtension.get(ext);
+    var ext = Common.ParsedURL.extractExtension(url).toLowerCase();
+    return Common.ResourceType._mimeTypeByExtension.get(ext);
   }
 
   /**
@@ -72,7 +72,7 @@ WebInspector.ResourceType = class {
   }
 
   /**
-   * @return {!WebInspector.ResourceCategory}
+   * @return {!Common.ResourceCategory}
    */
   category() {
     return this._category;
@@ -152,7 +152,7 @@ WebInspector.ResourceType = class {
 /**
  * @unrestricted
  */
-WebInspector.ResourceCategory = class {
+Common.ResourceCategory = class {
   /**
    * @param {string} title
    * @param {string} shortTitle
@@ -163,51 +163,51 @@ WebInspector.ResourceCategory = class {
   }
 };
 
-WebInspector.resourceCategories = {
-  XHR: new WebInspector.ResourceCategory('XHR and Fetch', 'XHR'),
-  Script: new WebInspector.ResourceCategory('Scripts', 'JS'),
-  Stylesheet: new WebInspector.ResourceCategory('Stylesheets', 'CSS'),
-  Image: new WebInspector.ResourceCategory('Images', 'Img'),
-  Media: new WebInspector.ResourceCategory('Media', 'Media'),
-  Font: new WebInspector.ResourceCategory('Fonts', 'Font'),
-  Document: new WebInspector.ResourceCategory('Documents', 'Doc'),
-  WebSocket: new WebInspector.ResourceCategory('WebSockets', 'WS'),
-  Manifest: new WebInspector.ResourceCategory('Manifest', 'Manifest'),
-  Other: new WebInspector.ResourceCategory('Other', 'Other')
+Common.resourceCategories = {
+  XHR: new Common.ResourceCategory('XHR and Fetch', 'XHR'),
+  Script: new Common.ResourceCategory('Scripts', 'JS'),
+  Stylesheet: new Common.ResourceCategory('Stylesheets', 'CSS'),
+  Image: new Common.ResourceCategory('Images', 'Img'),
+  Media: new Common.ResourceCategory('Media', 'Media'),
+  Font: new Common.ResourceCategory('Fonts', 'Font'),
+  Document: new Common.ResourceCategory('Documents', 'Doc'),
+  WebSocket: new Common.ResourceCategory('WebSockets', 'WS'),
+  Manifest: new Common.ResourceCategory('Manifest', 'Manifest'),
+  Other: new Common.ResourceCategory('Other', 'Other')
 };
 
 /**
  * Keep these in sync with WebCore::InspectorPageAgent::resourceTypeJson
- * @enum {!WebInspector.ResourceType}
+ * @enum {!Common.ResourceType}
  */
-WebInspector.resourceTypes = {
-  XHR: new WebInspector.ResourceType('xhr', 'XHR', WebInspector.resourceCategories.XHR, true),
-  Fetch: new WebInspector.ResourceType('fetch', 'Fetch', WebInspector.resourceCategories.XHR, true),
-  EventSource: new WebInspector.ResourceType('eventsource', 'EventSource', WebInspector.resourceCategories.XHR, true),
-  Script: new WebInspector.ResourceType('script', 'Script', WebInspector.resourceCategories.Script, true),
-  Snippet: new WebInspector.ResourceType('snippet', 'Snippet', WebInspector.resourceCategories.Script, true),
+Common.resourceTypes = {
+  XHR: new Common.ResourceType('xhr', 'XHR', Common.resourceCategories.XHR, true),
+  Fetch: new Common.ResourceType('fetch', 'Fetch', Common.resourceCategories.XHR, true),
+  EventSource: new Common.ResourceType('eventsource', 'EventSource', Common.resourceCategories.XHR, true),
+  Script: new Common.ResourceType('script', 'Script', Common.resourceCategories.Script, true),
+  Snippet: new Common.ResourceType('snippet', 'Snippet', Common.resourceCategories.Script, true),
   Stylesheet:
-      new WebInspector.ResourceType('stylesheet', 'Stylesheet', WebInspector.resourceCategories.Stylesheet, true),
-  Image: new WebInspector.ResourceType('image', 'Image', WebInspector.resourceCategories.Image, false),
-  Media: new WebInspector.ResourceType('media', 'Media', WebInspector.resourceCategories.Media, false),
-  Font: new WebInspector.ResourceType('font', 'Font', WebInspector.resourceCategories.Font, false),
-  Document: new WebInspector.ResourceType('document', 'Document', WebInspector.resourceCategories.Document, true),
-  TextTrack: new WebInspector.ResourceType('texttrack', 'TextTrack', WebInspector.resourceCategories.Other, true),
-  WebSocket: new WebInspector.ResourceType('websocket', 'WebSocket', WebInspector.resourceCategories.WebSocket, false),
-  Other: new WebInspector.ResourceType('other', 'Other', WebInspector.resourceCategories.Other, false),
-  SourceMapScript: new WebInspector.ResourceType('sm-script', 'Script', WebInspector.resourceCategories.Script, false),
+      new Common.ResourceType('stylesheet', 'Stylesheet', Common.resourceCategories.Stylesheet, true),
+  Image: new Common.ResourceType('image', 'Image', Common.resourceCategories.Image, false),
+  Media: new Common.ResourceType('media', 'Media', Common.resourceCategories.Media, false),
+  Font: new Common.ResourceType('font', 'Font', Common.resourceCategories.Font, false),
+  Document: new Common.ResourceType('document', 'Document', Common.resourceCategories.Document, true),
+  TextTrack: new Common.ResourceType('texttrack', 'TextTrack', Common.resourceCategories.Other, true),
+  WebSocket: new Common.ResourceType('websocket', 'WebSocket', Common.resourceCategories.WebSocket, false),
+  Other: new Common.ResourceType('other', 'Other', Common.resourceCategories.Other, false),
+  SourceMapScript: new Common.ResourceType('sm-script', 'Script', Common.resourceCategories.Script, false),
   SourceMapStyleSheet:
-      new WebInspector.ResourceType('sm-stylesheet', 'Stylesheet', WebInspector.resourceCategories.Stylesheet, false),
-  Manifest: new WebInspector.ResourceType('manifest', 'Manifest', WebInspector.resourceCategories.Manifest, true),
+      new Common.ResourceType('sm-stylesheet', 'Stylesheet', Common.resourceCategories.Stylesheet, false),
+  Manifest: new Common.ResourceType('manifest', 'Manifest', Common.resourceCategories.Manifest, true),
 };
 
 
-WebInspector.ResourceType._mimeTypeByName = new Map([
+Common.ResourceType._mimeTypeByName = new Map([
   // CoffeeScript
   ['Cakefile', 'text/x-coffeescript']
 ]);
 
-WebInspector.ResourceType._mimeTypeByExtension = new Map([
+Common.ResourceType._mimeTypeByExtension = new Map([
   // Web extensions
   ['js', 'text/javascript'], ['css', 'text/css'], ['html', 'text/html'], ['htm', 'text/html'],
   ['xml', 'application/xml'], ['xsl', 'application/xml'],

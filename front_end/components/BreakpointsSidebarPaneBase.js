@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.BreakpointsSidebarPaneBase = class extends WebInspector.VBox {
+Components.BreakpointsSidebarPaneBase = class extends UI.VBox {
   constructor() {
     super();
     this.registerRequiredCSS('components/breakpointsList.css');
@@ -41,7 +41,7 @@ WebInspector.BreakpointsSidebarPaneBase = class extends WebInspector.VBox {
 
     this.emptyElement = createElement('div');
     this.emptyElement.className = 'gray-info-message';
-    this.emptyElement.textContent = WebInspector.UIString('No Breakpoints');
+    this.emptyElement.textContent = Common.UIString('No Breakpoints');
 
     this.element.appendChild(this.emptyElement);
   }

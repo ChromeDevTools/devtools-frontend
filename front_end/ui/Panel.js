@@ -26,12 +26,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 // For testing.
-WebInspector.panels = [];
+UI.panels = [];
 
 /**
  * @unrestricted
  */
-WebInspector.Panel = class extends WebInspector.VBox {
+UI.Panel = class extends UI.VBox {
   constructor(name) {
     super();
 
@@ -41,7 +41,7 @@ WebInspector.Panel = class extends WebInspector.VBox {
     this._panelName = name;
 
     // For testing.
-    WebInspector.panels[name] = this;
+    UI.panels[name] = this;
 
     this._shortcuts = /** !Object.<number, function(Event=):boolean> */ ({});
   }
@@ -51,7 +51,7 @@ WebInspector.Panel = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {?WebInspector.SearchableView}
+   * @return {?UI.SearchableView}
    */
   searchableView() {
     return null;
@@ -69,14 +69,14 @@ WebInspector.Panel = class extends WebInspector.VBox {
    * @param {!KeyboardEvent} event
    */
   handleShortcut(event) {
-    var shortcutKey = WebInspector.KeyboardShortcut.makeKeyFromEvent(event);
+    var shortcutKey = UI.KeyboardShortcut.makeKeyFromEvent(event);
     var handler = this._shortcuts[shortcutKey];
     if (handler && handler(event))
       event.handled = true;
   }
 
   /**
-   * @param {!Array.<!WebInspector.KeyboardShortcut.Descriptor>} keys
+   * @param {!Array.<!UI.KeyboardShortcut.Descriptor>} keys
    * @param {function(!Event=):boolean} handler
    */
   registerShortcuts(keys, handler) {
@@ -85,7 +85,7 @@ WebInspector.Panel = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Infobar} infobar
+   * @param {!UI.Infobar} infobar
    */
   showInfobar(infobar) {
     infobar.setCloseCallback(this._onInfobarClosed.bind(this, infobar));
@@ -98,7 +98,7 @@ WebInspector.Panel = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Infobar} infobar
+   * @param {!UI.Infobar} infobar
    */
   _onInfobarClosed(infobar) {
     infobar.element.remove();
@@ -107,12 +107,12 @@ WebInspector.Panel = class extends WebInspector.VBox {
 };
 
 // Should by in sync with style declarations.
-WebInspector.Panel.counterRightMargin = 25;
+UI.Panel.counterRightMargin = 25;
 
 /**
  * @unrestricted
  */
-WebInspector.PanelWithSidebar = class extends WebInspector.Panel {
+UI.PanelWithSidebar = class extends UI.Panel {
   /**
    * @param {string} name
    * @param {number=} defaultWidth
@@ -121,13 +121,13 @@ WebInspector.PanelWithSidebar = class extends WebInspector.Panel {
     super(name);
 
     this._panelSplitWidget =
-        new WebInspector.SplitWidget(true, false, this._panelName + 'PanelSplitViewState', defaultWidth || 200);
+        new UI.SplitWidget(true, false, this._panelName + 'PanelSplitViewState', defaultWidth || 200);
     this._panelSplitWidget.show(this.element);
 
-    this._mainWidget = new WebInspector.VBox();
+    this._mainWidget = new UI.VBox();
     this._panelSplitWidget.setMainWidget(this._mainWidget);
 
-    this._sidebarWidget = new WebInspector.VBox();
+    this._sidebarWidget = new UI.VBox();
     this._sidebarWidget.setMinimumSize(100, 25);
     this._panelSplitWidget.setSidebarWidget(this._sidebarWidget);
 
@@ -149,7 +149,7 @@ WebInspector.PanelWithSidebar = class extends WebInspector.Panel {
   }
 
   /**
-   * @return {!WebInspector.SplitWidget}
+   * @return {!UI.SplitWidget}
    */
   splitWidget() {
     return this._panelSplitWidget;

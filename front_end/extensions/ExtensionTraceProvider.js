@@ -1,7 +1,7 @@
 /**
  * @unrestricted
  */
-WebInspector.ExtensionTraceProvider = class {
+Extensions.ExtensionTraceProvider = class {
   /**
    * @param {string} extensionOrigin
    * @param {string} id
@@ -15,10 +15,10 @@ WebInspector.ExtensionTraceProvider = class {
     this._categoryTooltip = categoryTooltip;
   }
   start() {
-    WebInspector.extensionServer.startTraceRecording(this._id);
+    Extensions.extensionServer.startTraceRecording(this._id);
   }
 
   stop() {
-    WebInspector.extensionServer.stopTraceRecording(this._id);
+    Extensions.extensionServer.stopTraceRecording(this._id);
   }
 };

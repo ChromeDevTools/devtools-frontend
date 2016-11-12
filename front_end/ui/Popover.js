@@ -31,14 +31,14 @@
 /**
  * @unrestricted
  */
-WebInspector.Popover = class extends WebInspector.Widget {
+UI.Popover = class extends UI.Widget {
   /**
-   * @param {!WebInspector.PopoverHelper=} popoverHelper
+   * @param {!UI.PopoverHelper=} popoverHelper
    */
   constructor(popoverHelper) {
     super();
     this.markAsRoot();
-    this.element.className = WebInspector.Popover._classNamePrefix;  // Override
+    this.element.className = UI.Popover._classNamePrefix;  // Override
     this._containerElement = createElementWithClass('div', 'fill popover-container');
 
     this._popupArrowElement = this.element.createChild('div', 'arrow');
@@ -53,14 +53,14 @@ WebInspector.Popover = class extends WebInspector.Widget {
    * @param {!Element|!AnchorBox} anchor
    * @param {?number=} preferredWidth
    * @param {?number=} preferredHeight
-   * @param {?WebInspector.Popover.Orientation=} arrowDirection
+   * @param {?UI.Popover.Orientation=} arrowDirection
    */
   showForAnchor(element, anchor, preferredWidth, preferredHeight, arrowDirection) {
     this._innerShow(null, element, anchor, preferredWidth, preferredHeight, arrowDirection);
   }
 
   /**
-   * @param {!WebInspector.Widget} view
+   * @param {!UI.Widget} view
    * @param {!Element|!AnchorBox} anchor
    * @param {?number=} preferredWidth
    * @param {?number=} preferredHeight
@@ -70,12 +70,12 @@ WebInspector.Popover = class extends WebInspector.Widget {
   }
 
   /**
-   * @param {?WebInspector.Widget} view
+   * @param {?UI.Widget} view
    * @param {!Element} contentElement
    * @param {!Element|!AnchorBox} anchor
    * @param {?number=} preferredWidth
    * @param {?number=} preferredHeight
-   * @param {?WebInspector.Popover.Orientation=} arrowDirection
+   * @param {?UI.Popover.Orientation=} arrowDirection
    */
   _innerShow(view, contentElement, anchor, preferredWidth, preferredHeight, arrowDirection) {
     if (this._disposed)
@@ -83,15 +83,15 @@ WebInspector.Popover = class extends WebInspector.Widget {
     this._contentElement = contentElement;
 
     // This should not happen, but we hide previous popup to be on the safe side.
-    if (WebInspector.Popover._popover)
-      WebInspector.Popover._popover.hide();
-    WebInspector.Popover._popover = this;
+    if (UI.Popover._popover)
+      UI.Popover._popover.hide();
+    UI.Popover._popover = this;
 
     var document = anchor instanceof Element ? anchor.ownerDocument : contentElement.ownerDocument;
     var window = document.defaultView;
 
     // Temporarily attach in order to measure preferred dimensions.
-    var preferredSize = view ? view.measurePreferredSize() : WebInspector.measurePreferredSize(this._contentElement);
+    var preferredSize = view ? view.measurePreferredSize() : UI.measurePreferredSize(this._contentElement);
     this._preferredWidth = preferredWidth || preferredSize.width;
     this._preferredHeight = preferredHeight || preferredSize.height;
 
@@ -117,7 +117,7 @@ WebInspector.Popover = class extends WebInspector.Widget {
     this._containerElement.ownerDocument.defaultView.removeEventListener('resize', this._hideBound, false);
     this.detach();
     this._containerElement.remove();
-    delete WebInspector.Popover._popover;
+    delete UI.Popover._popover;
   }
 
   get disposed() {
@@ -150,7 +150,7 @@ WebInspector.Popover = class extends WebInspector.Widget {
    * @param {!Element|!AnchorBox} anchorElement
    * @param {number=} preferredWidth
    * @param {number=} preferredHeight
-   * @param {?WebInspector.Popover.Orientation=} arrowDirection
+   * @param {?UI.Popover.Orientation=} arrowDirection
    */
   positionElement(anchorElement, preferredWidth, preferredHeight, arrowDirection) {
     const borderWidth = this._hasNoPadding ? 0 : 8;
@@ -165,7 +165,7 @@ WebInspector.Popover = class extends WebInspector.Widget {
     // Skinny tooltips are not pretty, their arrow location is not nice.
     preferredWidth = Math.max(preferredWidth, 50);
     // Position relative to main DevTools element.
-    const container = WebInspector.Dialog.modalHostView().element;
+    const container = UI.Dialog.modalHostView().element;
     const totalWidth = container.offsetWidth;
     const totalHeight = container.offsetHeight;
 
@@ -178,10 +178,10 @@ WebInspector.Popover = class extends WebInspector.Widget {
     var roomBelow = totalHeight - anchorBox.y - anchorBox.height;
     this._popupArrowElement.hidden = false;
 
-    if ((roomAbove > roomBelow) || (arrowDirection === WebInspector.Popover.Orientation.Bottom)) {
+    if ((roomAbove > roomBelow) || (arrowDirection === UI.Popover.Orientation.Bottom)) {
       // Positioning above the anchor.
       if ((anchorBox.y > newElementPosition.height + arrowHeight + borderRadius) ||
-          (arrowDirection === WebInspector.Popover.Orientation.Bottom))
+          (arrowDirection === UI.Popover.Orientation.Bottom))
         newElementPosition.y = anchorBox.y - newElementPosition.height - arrowHeight;
       else {
         this._popupArrowElement.hidden = true;
@@ -192,12 +192,12 @@ WebInspector.Popover = class extends WebInspector.Widget {
           newElementPosition.height = preferredHeight;
         }
       }
-      verticalAlignment = WebInspector.Popover.Orientation.Bottom;
+      verticalAlignment = UI.Popover.Orientation.Bottom;
     } else {
       // Positioning below the anchor.
       newElementPosition.y = anchorBox.y + anchorBox.height + arrowHeight;
       if ((newElementPosition.y + newElementPosition.height + borderRadius >= totalHeight) &&
-          (arrowDirection !== WebInspector.Popover.Orientation.Top)) {
+          (arrowDirection !== UI.Popover.Orientation.Top)) {
         this._popupArrowElement.hidden = true;
         newElementPosition.height = totalHeight - borderRadius - newElementPosition.y;
         if (this._hasFixedHeight && newElementPosition.height < preferredHeight) {
@@ -206,7 +206,7 @@ WebInspector.Popover = class extends WebInspector.Widget {
         }
       }
       // Align arrow.
-      verticalAlignment = WebInspector.Popover.Orientation.Top;
+      verticalAlignment = UI.Popover.Orientation.Top;
     }
 
     var horizontalAlignment;
@@ -228,7 +228,7 @@ WebInspector.Popover = class extends WebInspector.Widget {
       newElementPosition.width = totalWidth - borderRadius * 2;
       newElementPosition.height += scrollerWidth;
       horizontalAlignment = 'left';
-      if (verticalAlignment === WebInspector.Popover.Orientation.Bottom)
+      if (verticalAlignment === UI.Popover.Orientation.Bottom)
         newElementPosition.y -= scrollerWidth;
       // Position arrow accurately.
       this._popupArrowElement.style.left =
@@ -236,19 +236,19 @@ WebInspector.Popover = class extends WebInspector.Widget {
     }
 
     this.element.className =
-        WebInspector.Popover._classNamePrefix + ' ' + verticalAlignment + '-' + horizontalAlignment + '-arrow';
+        UI.Popover._classNamePrefix + ' ' + verticalAlignment + '-' + horizontalAlignment + '-arrow';
     this.element.positionAt(newElementPosition.x, newElementPosition.y - borderWidth, container);
     this.element.style.width = newElementPosition.width + borderWidth * 2 + 'px';
     this.element.style.height = newElementPosition.height + borderWidth * 2 + 'px';
   }
 };
 
-WebInspector.Popover._classNamePrefix = 'popover';
+UI.Popover._classNamePrefix = 'popover';
 
 /**
  * @unrestricted
  */
-WebInspector.PopoverHelper = class {
+UI.PopoverHelper = class {
   /**
    * @param {!Element} panelElement
    * @param {boolean=} disableOnClick
@@ -263,7 +263,7 @@ WebInspector.PopoverHelper = class {
 
   /**
    * @param {function(!Element, !Event):(!Element|!AnchorBox|undefined)} getAnchor
-   * @param {function(!Element, !WebInspector.Popover):undefined} showPopover
+   * @param {function(!Element, !UI.Popover):undefined} showPopover
    * @param {function()=} onHide
    */
   initializeCallbacks(getAnchor, showPopover, onHide) {
@@ -335,7 +335,7 @@ WebInspector.PopoverHelper = class {
       return;
 
     /**
-     * @this {WebInspector.PopoverHelper}
+     * @this {UI.PopoverHelper}
      */
     function doHide() {
       this._hidePopover();
@@ -390,7 +390,7 @@ WebInspector.PopoverHelper = class {
     delete this._hoverTimer;
     this._hoverElement = element;
     this._hidePopover();
-    this._popover = new WebInspector.Popover(this);
+    this._popover = new UI.Popover(this);
     this._showPopover(element, this._popover);
   }
 
@@ -407,7 +407,7 @@ WebInspector.PopoverHelper = class {
 };
 
 /** @enum {string} */
-WebInspector.Popover.Orientation = {
+UI.Popover.Orientation = {
   Top: 'top',
   Bottom: 'bottom'
 };

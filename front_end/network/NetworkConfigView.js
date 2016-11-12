@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.NetworkConfigView = class extends WebInspector.VBox {
+Network.NetworkConfigView = class extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('network/networkConfigView.css');
@@ -21,19 +21,19 @@ WebInspector.NetworkConfigView = class extends WebInspector.VBox {
    * @return {{select: !Element, input: !Element}}
    */
   static createUserAgentSelectAndInput() {
-    var userAgentSetting = WebInspector.settings.createSetting('customUserAgent', '');
+    var userAgentSetting = Common.settings.createSetting('customUserAgent', '');
     var userAgentSelectElement = createElement('select');
 
-    const customOverride = {title: WebInspector.UIString('Custom...'), value: 'custom'};
+    const customOverride = {title: Common.UIString('Custom...'), value: 'custom'};
     userAgentSelectElement.appendChild(new Option(customOverride.title, customOverride.value));
 
-    var groups = WebInspector.NetworkConfigView._userAgentGroups;
+    var groups = Network.NetworkConfigView._userAgentGroups;
     for (var userAgentDescriptor of groups) {
       var groupElement = userAgentSelectElement.createChild('optgroup');
       groupElement.label = userAgentDescriptor.title;
       for (var userAgentVersion of userAgentDescriptor.values) {
         var userAgentValue =
-            WebInspector.MultitargetNetworkManager.patchUserAgentWithChromeVersion(userAgentVersion.value);
+            SDK.MultitargetNetworkManager.patchUserAgentWithChromeVersion(userAgentVersion.value);
         groupElement.appendChild(new Option(userAgentVersion.title, userAgentValue));
       }
     }
@@ -44,7 +44,7 @@ WebInspector.NetworkConfigView = class extends WebInspector.VBox {
     otherUserAgentElement.type = 'text';
     otherUserAgentElement.value = userAgentSetting.get();
     otherUserAgentElement.title = userAgentSetting.get();
-    otherUserAgentElement.placeholder = WebInspector.UIString('Enter a custom user agent');
+    otherUserAgentElement.placeholder = Common.UIString('Enter a custom user agent');
     otherUserAgentElement.required = true;
 
     settingChanged();
@@ -103,29 +103,29 @@ WebInspector.NetworkConfigView = class extends WebInspector.VBox {
   }
 
   _createCacheSection() {
-    var section = this._createSection(WebInspector.UIString('Caching'), 'network-config-disable-cache');
-    section.appendChild(WebInspector.SettingsUI.createSettingCheckbox(
-        WebInspector.UIString('Disable cache'), WebInspector.moduleSetting('cacheDisabled'), true));
+    var section = this._createSection(Common.UIString('Caching'), 'network-config-disable-cache');
+    section.appendChild(UI.SettingsUI.createSettingCheckbox(
+        Common.UIString('Disable cache'), Common.moduleSetting('cacheDisabled'), true));
   }
 
   _createNetworkThrottlingSection() {
-    var section = this._createSection(WebInspector.UIString('Network throttling'), 'network-config-throttling');
-    WebInspector.NetworkConditionsSelector.decorateSelect(
+    var section = this._createSection(Common.UIString('Network throttling'), 'network-config-throttling');
+    Components.NetworkConditionsSelector.decorateSelect(
         /** @type {!HTMLSelectElement} */ (section.createChild('select', 'chrome-select')));
   }
 
   _createUserAgentSection() {
-    var section = this._createSection(WebInspector.UIString('User agent'), 'network-config-ua');
-    var checkboxLabel = createCheckboxLabel(WebInspector.UIString('Select automatically'), true);
+    var section = this._createSection(Common.UIString('User agent'), 'network-config-ua');
+    var checkboxLabel = createCheckboxLabel(Common.UIString('Select automatically'), true);
     section.appendChild(checkboxLabel);
     this._autoCheckbox = checkboxLabel.checkboxElement;
     this._autoCheckbox.addEventListener('change', this._userAgentTypeChanged.bind(this));
 
-    this._customUserAgentSetting = WebInspector.settings.createSetting('customUserAgent', '');
+    this._customUserAgentSetting = Common.settings.createSetting('customUserAgent', '');
     this._customUserAgentSetting.addChangeListener(this._customUserAgentChanged, this);
 
     this._customUserAgent = section.createChild('div', 'network-config-ua-custom');
-    this._customSelectAndInput = WebInspector.NetworkConfigView.createUserAgentSelectAndInput();
+    this._customSelectAndInput = Network.NetworkConfigView.createUserAgentSelectAndInput();
     this._customSelectAndInput.select.classList.add('chrome-select');
     this._customUserAgent.appendChild(this._customSelectAndInput.select);
     this._customUserAgent.appendChild(this._customSelectAndInput.input);
@@ -135,7 +135,7 @@ WebInspector.NetworkConfigView = class extends WebInspector.VBox {
   _customUserAgentChanged() {
     if (this._autoCheckbox.checked)
       return;
-    WebInspector.multitargetNetworkManager.setCustomUserAgentOverride(this._customUserAgentSetting.get());
+    SDK.multitargetNetworkManager.setCustomUserAgentOverride(this._customUserAgentSetting.get());
   }
 
   _userAgentTypeChanged() {
@@ -144,13 +144,13 @@ WebInspector.NetworkConfigView = class extends WebInspector.VBox {
     this._customSelectAndInput.select.disabled = !useCustomUA;
     this._customSelectAndInput.input.disabled = !useCustomUA;
     var customUA = useCustomUA ? this._customUserAgentSetting.get() : '';
-    WebInspector.multitargetNetworkManager.setCustomUserAgentOverride(customUA);
+    SDK.multitargetNetworkManager.setCustomUserAgentOverride(customUA);
   }
 };
 
 
 /** @type {!Array.<{title: string, values: !Array.<{title: string, value: string}>}>} */
-WebInspector.NetworkConfigView._userAgentGroups = [
+Network.NetworkConfigView._userAgentGroups = [
   {
     title: 'Android',
     values: [

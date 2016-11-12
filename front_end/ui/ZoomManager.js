@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.ZoomManager = class extends WebInspector.Object {
+UI.ZoomManager = class extends Common.Object {
   /**
    * @param {!Window} window
    * @param {!InspectorFrontendHostAPI} frontendHost
@@ -44,16 +44,16 @@ WebInspector.ZoomManager = class extends WebInspector.Object {
     this._zoomFactor = this._frontendHost.zoomFactor();
     if (oldZoomFactor !== this._zoomFactor)
       this.dispatchEventToListeners(
-          WebInspector.ZoomManager.Events.ZoomChanged, {from: oldZoomFactor, to: this._zoomFactor});
+          UI.ZoomManager.Events.ZoomChanged, {from: oldZoomFactor, to: this._zoomFactor});
   }
 };
 
 /** @enum {symbol} */
-WebInspector.ZoomManager.Events = {
+UI.ZoomManager.Events = {
   ZoomChanged: Symbol('ZoomChanged')
 };
 
 /**
- * @type {!WebInspector.ZoomManager}
+ * @type {!UI.ZoomManager}
  */
-WebInspector.zoomManager;
+UI.zoomManager;

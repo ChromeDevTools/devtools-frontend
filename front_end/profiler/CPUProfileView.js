@@ -23,20 +23,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.Searchable}
+ * @implements {UI.Searchable}
  * @unrestricted
  */
-WebInspector.CPUProfileView = class extends WebInspector.ProfileView {
+Profiler.CPUProfileView = class extends Profiler.ProfileView {
   /**
-   * @param {!WebInspector.CPUProfileHeader} profileHeader
+   * @param {!Profiler.CPUProfileHeader} profileHeader
    */
   constructor(profileHeader) {
     super();
     this._profileHeader = profileHeader;
-    this.profile = new WebInspector.CPUProfileDataModel(profileHeader._profile || profileHeader.protocolProfile());
+    this.profile = new SDK.CPUProfileDataModel(profileHeader._profile || profileHeader.protocolProfile());
     this.adjustedTotal = this.profile.profileHead.total;
     this.adjustedTotal -= this.profile.idleNode ? this.profile.idleNode.total : 0;
-    this.initialize(new WebInspector.CPUProfileView.NodeFormatter(this));
+    this.initialize(new Profiler.CPUProfileView.NodeFormatter(this));
   }
 
   /**
@@ -44,7 +44,7 @@ WebInspector.CPUProfileView = class extends WebInspector.ProfileView {
    */
   wasShown() {
     super.wasShown();
-    var lineLevelProfile = WebInspector.LineLevelProfile.instance();
+    var lineLevelProfile = Components.LineLevelProfile.instance();
     lineLevelProfile.reset();
     lineLevelProfile.appendCPUProfile(this.profile);
   }
@@ -57,39 +57,39 @@ WebInspector.CPUProfileView = class extends WebInspector.ProfileView {
   columnHeader(columnId) {
     switch (columnId) {
       case 'self':
-        return WebInspector.UIString('Self Time');
+        return Common.UIString('Self Time');
       case 'total':
-        return WebInspector.UIString('Total Time');
+        return Common.UIString('Total Time');
     }
     return '';
   }
 
   /**
    * @override
-   * @return {!WebInspector.FlameChartDataProvider}
+   * @return {!UI.FlameChartDataProvider}
    */
   createFlameChartDataProvider() {
-    return new WebInspector.CPUFlameChartDataProvider(this.profile, this._profileHeader.target());
+    return new Profiler.CPUFlameChartDataProvider(this.profile, this._profileHeader.target());
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.CPUProfileType = class extends WebInspector.ProfileType {
+Profiler.CPUProfileType = class extends Profiler.ProfileType {
   constructor() {
-    super(WebInspector.CPUProfileType.TypeId, WebInspector.UIString('Record JavaScript CPU Profile'));
+    super(Profiler.CPUProfileType.TypeId, Common.UIString('Record JavaScript CPU Profile'));
     this._recording = false;
 
     this._nextAnonymousConsoleProfileNumber = 1;
     this._anonymousConsoleProfileIdToTitle = {};
 
-    WebInspector.CPUProfileType.instance = this;
-    WebInspector.targetManager.addModelListener(
-        WebInspector.CPUProfilerModel, WebInspector.CPUProfilerModel.Events.ConsoleProfileStarted,
+    Profiler.CPUProfileType.instance = this;
+    SDK.targetManager.addModelListener(
+        SDK.CPUProfilerModel, SDK.CPUProfilerModel.Events.ConsoleProfileStarted,
         this._consoleProfileStarted, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.CPUProfilerModel, WebInspector.CPUProfilerModel.Events.ConsoleProfileFinished,
+    SDK.targetManager.addModelListener(
+        SDK.CPUProfilerModel, SDK.CPUProfilerModel.Events.ConsoleProfileFinished,
         this._consoleProfileFinished, this);
   }
 
@@ -110,7 +110,7 @@ WebInspector.CPUProfileType = class extends WebInspector.ProfileType {
   }
 
   get buttonTooltip() {
-    return this._recording ? WebInspector.UIString('Stop CPU profiling') : WebInspector.UIString('Start CPU profiling');
+    return this._recording ? Common.UIString('Stop CPU profiling') : Common.UIString('Start CPU profiling');
   }
 
   /**
@@ -128,58 +128,58 @@ WebInspector.CPUProfileType = class extends WebInspector.ProfileType {
   }
 
   get treeItemTitle() {
-    return WebInspector.UIString('CPU PROFILES');
+    return Common.UIString('CPU PROFILES');
   }
 
   get description() {
-    return WebInspector.UIString(
+    return Common.UIString(
         'CPU profiles show where the execution time is spent in your page\'s JavaScript functions.');
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _consoleProfileStarted(event) {
-    var data = /** @type {!WebInspector.CPUProfilerModel.EventData} */ (event.data);
+    var data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
     var resolvedTitle = data.title;
     if (!resolvedTitle) {
-      resolvedTitle = WebInspector.UIString('Profile %s', this._nextAnonymousConsoleProfileNumber++);
+      resolvedTitle = Common.UIString('Profile %s', this._nextAnonymousConsoleProfileNumber++);
       this._anonymousConsoleProfileIdToTitle[data.id] = resolvedTitle;
     }
     this._addMessageToConsole(
-        WebInspector.ConsoleMessage.MessageType.Profile, data.scriptLocation,
-        WebInspector.UIString('Profile \'%s\' started.', resolvedTitle));
+        SDK.ConsoleMessage.MessageType.Profile, data.scriptLocation,
+        Common.UIString('Profile \'%s\' started.', resolvedTitle));
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _consoleProfileFinished(event) {
-    var data = /** @type {!WebInspector.CPUProfilerModel.EventData} */ (event.data);
+    var data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
     var cpuProfile = /** @type {!Protocol.Profiler.Profile} */ (data.cpuProfile);
     var resolvedTitle = data.title;
     if (typeof resolvedTitle === 'undefined') {
       resolvedTitle = this._anonymousConsoleProfileIdToTitle[data.id];
       delete this._anonymousConsoleProfileIdToTitle[data.id];
     }
-    var profile = new WebInspector.CPUProfileHeader(data.scriptLocation.target(), this, resolvedTitle);
+    var profile = new Profiler.CPUProfileHeader(data.scriptLocation.target(), this, resolvedTitle);
     profile.setProtocolProfile(cpuProfile);
     this.addProfile(profile);
     this._addMessageToConsole(
-        WebInspector.ConsoleMessage.MessageType.ProfileEnd, data.scriptLocation,
-        WebInspector.UIString('Profile \'%s\' finished.', resolvedTitle));
+        SDK.ConsoleMessage.MessageType.ProfileEnd, data.scriptLocation,
+        Common.UIString('Profile \'%s\' finished.', resolvedTitle));
   }
 
   /**
    * @param {string} type
-   * @param {!WebInspector.DebuggerModel.Location} scriptLocation
+   * @param {!SDK.DebuggerModel.Location} scriptLocation
    * @param {string} messageText
    */
   _addMessageToConsole(type, scriptLocation, messageText) {
     var script = scriptLocation.script();
     var target = scriptLocation.target();
-    var message = new WebInspector.ConsoleMessage(
-        target, WebInspector.ConsoleMessage.MessageSource.ConsoleAPI, WebInspector.ConsoleMessage.MessageLevel.Debug,
+    var message = new SDK.ConsoleMessage(
+        target, SDK.ConsoleMessage.MessageSource.ConsoleAPI, SDK.ConsoleMessage.MessageLevel.Debug,
         messageText, type, undefined, undefined, undefined, undefined, [{
           functionName: '',
           scriptId: scriptLocation.scriptId,
@@ -192,14 +192,14 @@ WebInspector.CPUProfileType = class extends WebInspector.ProfileType {
   }
 
   startRecordingProfile() {
-    var target = WebInspector.context.flavor(WebInspector.Target);
+    var target = UI.context.flavor(SDK.Target);
     if (this._profileBeingRecorded || !target)
       return;
-    var profile = new WebInspector.CPUProfileHeader(target, this);
+    var profile = new Profiler.CPUProfileHeader(target, this);
     this.setProfileBeingRecorded(profile);
-    WebInspector.targetManager.suspendAllTargets();
+    SDK.targetManager.suspendAllTargets();
     this.addProfile(profile);
-    profile.updateStatus(WebInspector.UIString('Recording\u2026'));
+    profile.updateStatus(Common.UIString('Recording\u2026'));
     this._recording = true;
     target.cpuProfilerModel.startRecording();
   }
@@ -213,7 +213,7 @@ WebInspector.CPUProfileType = class extends WebInspector.ProfileType {
 
     /**
      * @param {?Protocol.Profiler.Profile} profile
-     * @this {WebInspector.CPUProfileType}
+     * @this {Profiler.CPUProfileType}
      */
     function didStopProfiling(profile) {
       if (!this._profileBeingRecorded)
@@ -226,26 +226,26 @@ WebInspector.CPUProfileType = class extends WebInspector.ProfileType {
     }
 
     /**
-     * @this {WebInspector.CPUProfileType}
+     * @this {Profiler.CPUProfileType}
      */
     function fireEvent() {
-      this.dispatchEventToListeners(WebInspector.ProfileType.Events.ProfileComplete, recordedProfile);
+      this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, recordedProfile);
     }
 
     this._profileBeingRecorded.target()
         .cpuProfilerModel.stopRecording()
         .then(didStopProfiling.bind(this))
-        .then(WebInspector.targetManager.resumeAllTargets.bind(WebInspector.targetManager))
+        .then(SDK.targetManager.resumeAllTargets.bind(SDK.targetManager))
         .then(fireEvent.bind(this));
   }
 
   /**
    * @override
    * @param {string} title
-   * @return {!WebInspector.ProfileHeader}
+   * @return {!Profiler.ProfileHeader}
    */
   createProfileLoadedFromFile(title) {
-    return new WebInspector.CPUProfileHeader(null, this, title);
+    return new Profiler.CPUProfileHeader(null, this, title);
   }
 
   /**
@@ -256,15 +256,15 @@ WebInspector.CPUProfileType = class extends WebInspector.ProfileType {
   }
 };
 
-WebInspector.CPUProfileType.TypeId = 'CPU';
+Profiler.CPUProfileType.TypeId = 'CPU';
 
 /**
  * @unrestricted
  */
-WebInspector.CPUProfileHeader = class extends WebInspector.WritableProfileHeader {
+Profiler.CPUProfileHeader = class extends Profiler.WritableProfileHeader {
   /**
-   * @param {?WebInspector.Target} target
-   * @param {!WebInspector.CPUProfileType} type
+   * @param {?SDK.Target} target
+   * @param {!Profiler.CPUProfileType} type
    * @param {string=} title
    */
   constructor(target, type, title) {
@@ -273,10 +273,10 @@ WebInspector.CPUProfileHeader = class extends WebInspector.WritableProfileHeader
 
   /**
    * @override
-   * @return {!WebInspector.ProfileView}
+   * @return {!Profiler.ProfileView}
    */
   createView() {
-    return new WebInspector.CPUProfileView(this);
+    return new Profiler.CPUProfileView(this);
   }
 
   /**
@@ -288,10 +288,10 @@ WebInspector.CPUProfileHeader = class extends WebInspector.WritableProfileHeader
 };
 
 /**
- * @implements {WebInspector.ProfileDataGridNode.Formatter}
+ * @implements {Profiler.ProfileDataGridNode.Formatter}
  * @unrestricted
  */
-WebInspector.CPUProfileView.NodeFormatter = class {
+Profiler.CPUProfileView.NodeFormatter = class {
   constructor(profileView) {
     this._profileView = profileView;
   }
@@ -302,22 +302,22 @@ WebInspector.CPUProfileView.NodeFormatter = class {
    * @return {string}
    */
   formatValue(value) {
-    return WebInspector.UIString('%.1f\u2009ms', value);
+    return Common.UIString('%.1f\u2009ms', value);
   }
 
   /**
    * @override
    * @param {number} value
-   * @param {!WebInspector.ProfileDataGridNode} node
+   * @param {!Profiler.ProfileDataGridNode} node
    * @return {string}
    */
   formatPercent(value, node) {
-    return node.profileNode === this._profileView.profile.idleNode ? '' : WebInspector.UIString('%.2f\u2009%%', value);
+    return node.profileNode === this._profileView.profile.idleNode ? '' : Common.UIString('%.2f\u2009%%', value);
   }
 
   /**
    * @override
-   * @param  {!WebInspector.ProfileDataGridNode} node
+   * @param  {!Profiler.ProfileDataGridNode} node
    * @return {?Element}
    */
   linkifyNode(node) {
@@ -329,10 +329,10 @@ WebInspector.CPUProfileView.NodeFormatter = class {
 /**
  * @unrestricted
  */
-WebInspector.CPUFlameChartDataProvider = class extends WebInspector.ProfileFlameChartDataProvider {
+Profiler.CPUFlameChartDataProvider = class extends Profiler.ProfileFlameChartDataProvider {
   /**
-   * @param {!WebInspector.CPUProfileDataModel} cpuProfile
-   * @param {?WebInspector.Target} target
+   * @param {!SDK.CPUProfileDataModel} cpuProfile
+   * @param {?SDK.Target} target
    */
   constructor(cpuProfile, target) {
     super(target);
@@ -341,10 +341,10 @@ WebInspector.CPUFlameChartDataProvider = class extends WebInspector.ProfileFlame
 
   /**
    * @override
-   * @return {!WebInspector.FlameChart.TimelineData}
+   * @return {!UI.FlameChart.TimelineData}
    */
   _calculateTimelineData() {
-    /** @type {!Array.<?WebInspector.CPUFlameChartDataProvider.ChartEntry>} */
+    /** @type {!Array.<?Profiler.CPUFlameChartDataProvider.ChartEntry>} */
     var entries = [];
     /** @type {!Array.<number>} */
     var stack = [];
@@ -358,7 +358,7 @@ WebInspector.CPUFlameChartDataProvider = class extends WebInspector.ProfileFlame
     }
     /**
      * @param {number} depth
-     * @param {!WebInspector.CPUProfileNode} node
+     * @param {!SDK.CPUProfileNode} node
      * @param {number} startTime
      * @param {number} totalTime
      * @param {number} selfTime
@@ -366,12 +366,12 @@ WebInspector.CPUFlameChartDataProvider = class extends WebInspector.ProfileFlame
     function onCloseFrame(depth, node, startTime, totalTime, selfTime) {
       var index = stack.pop();
       entries[index] =
-          new WebInspector.CPUFlameChartDataProvider.ChartEntry(depth, totalTime, startTime, selfTime, node);
+          new Profiler.CPUFlameChartDataProvider.ChartEntry(depth, totalTime, startTime, selfTime, node);
       maxDepth = Math.max(maxDepth, depth);
     }
     this._cpuProfile.forEachFrame(onOpenFrame, onCloseFrame);
 
-    /** @type {!Array<!WebInspector.CPUProfileNode>} */
+    /** @type {!Array<!SDK.CPUProfileNode>} */
     var entryNodes = new Array(entries.length);
     var entryLevels = new Uint16Array(entries.length);
     var entryTotalTimes = new Float32Array(entries.length);
@@ -390,9 +390,9 @@ WebInspector.CPUFlameChartDataProvider = class extends WebInspector.ProfileFlame
 
     this._maxStackDepth = maxDepth;
 
-    this._timelineData = new WebInspector.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
+    this._timelineData = new UI.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
 
-    /** @type {!Array<!WebInspector.CPUProfileNode>} */
+    /** @type {!Array<!SDK.CPUProfileNode>} */
     this._entryNodes = entryNodes;
     this._entrySelfTimes = entrySelfTimes;
 
@@ -426,39 +426,39 @@ WebInspector.CPUFlameChartDataProvider = class extends WebInspector.ProfileFlame
       if (ms === 0)
         return '0';
       if (ms < 1000)
-        return WebInspector.UIString('%.1f\u2009ms', ms);
+        return Common.UIString('%.1f\u2009ms', ms);
       return Number.secondsToString(ms / 1000, true);
     }
-    var name = WebInspector.beautifyFunctionName(node.functionName);
-    pushEntryInfoRow(WebInspector.UIString('Name'), name);
+    var name = UI.beautifyFunctionName(node.functionName);
+    pushEntryInfoRow(Common.UIString('Name'), name);
     var selfTime = millisecondsToString(this._entrySelfTimes[entryIndex]);
     var totalTime = millisecondsToString(timelineData.entryTotalTimes[entryIndex]);
-    pushEntryInfoRow(WebInspector.UIString('Self time'), selfTime);
-    pushEntryInfoRow(WebInspector.UIString('Total time'), totalTime);
-    var linkifier = new WebInspector.Linkifier();
+    pushEntryInfoRow(Common.UIString('Self time'), selfTime);
+    pushEntryInfoRow(Common.UIString('Total time'), totalTime);
+    var linkifier = new Components.Linkifier();
     var link = linkifier.maybeLinkifyConsoleCallFrame(this._target, node.callFrame);
     if (link)
-      pushEntryInfoRow(WebInspector.UIString('URL'), link.textContent);
+      pushEntryInfoRow(Common.UIString('URL'), link.textContent);
     linkifier.dispose();
-    pushEntryInfoRow(WebInspector.UIString('Aggregated self time'), Number.secondsToString(node.self / 1000, true));
-    pushEntryInfoRow(WebInspector.UIString('Aggregated total time'), Number.secondsToString(node.total / 1000, true));
+    pushEntryInfoRow(Common.UIString('Aggregated self time'), Number.secondsToString(node.self / 1000, true));
+    pushEntryInfoRow(Common.UIString('Aggregated total time'), Number.secondsToString(node.total / 1000, true));
     if (node.deoptReason)
-      pushEntryInfoRow(WebInspector.UIString('Not optimized'), node.deoptReason);
+      pushEntryInfoRow(Common.UIString('Not optimized'), node.deoptReason);
 
-    return WebInspector.ProfileView.buildPopoverTable(entryInfo);
+    return Profiler.ProfileView.buildPopoverTable(entryInfo);
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.CPUFlameChartDataProvider.ChartEntry = class {
+Profiler.CPUFlameChartDataProvider.ChartEntry = class {
   /**
    * @param {number} depth
    * @param {number} duration
    * @param {number} startTime
    * @param {number} selfTime
-   * @param {!WebInspector.CPUProfileNode} node
+   * @param {!SDK.CPUProfileNode} node
    */
   constructor(depth, duration, startTime, selfTime, node) {
     this.depth = depth;

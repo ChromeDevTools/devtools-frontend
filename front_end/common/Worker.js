@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.Worker = class {
+Common.Worker = class {
   /**
    * @param {string} appName
    */
@@ -48,7 +48,7 @@ WebInspector.Worker = class {
 
       /**
        * @param {!Event} event
-       * @this {WebInspector.Worker}
+       * @this {Common.Worker}
        */
       function onMessage(event) {
         console.assert(event.data === 'workerReady');

@@ -9,8 +9,8 @@
             "defaultValue": false
         },
         {
-            "type": "@WebInspector.DOMPresentationUtils.MarkerDecorator",
-            "factoryName": "WebInspector.DOMPresentationUtils.GenericDecorator",
+            "type": "@Components.DOMPresentationUtils.MarkerDecorator",
+            "factoryName": "Components.DOMPresentationUtils.GenericDecorator",
             "marker": "breakpoint-marker",
             "title": "DOM Breakpoint",
             "color": "rgb(105, 140, 254)"
@@ -22,19 +22,19 @@
             "defaultValue": []
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "components.network-offline",
             "category": "Network",
             "title": "Go offline",
-            "className": "WebInspector.NetworkConditionsActionDelegate",
+            "className": "Components.NetworkConditionsActionDelegate",
             "tags": "device"
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "components.network-online",
             "category": "Network",
             "title": "Go online",
-            "className": "WebInspector.NetworkConditionsActionDelegate",
+            "className": "Components.NetworkConditionsActionDelegate",
             "tags": "device"
         },
         {
@@ -43,16 +43,16 @@
             "id": "network-conditions",
             "title": "Throttling",
             "order": "35",
-            "className": "WebInspector.NetworkConditionsSettingsTab",
+            "className": "Components.NetworkConditionsSettingsTab",
             "settings": [
                 "customNetworkConditions"
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "category": "Mobile",
             "actionId": "components.request-app-banner",
-            "className": "WebInspector.RequestAppBannerActionDelegate",
+            "className": "Components.RequestAppBannerActionDelegate",
             "title": "Add to homescreen"
         }
     ],

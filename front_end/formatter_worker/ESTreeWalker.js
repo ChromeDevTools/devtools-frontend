@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.ESTreeWalker = class {
+FormatterWorker.ESTreeWalker = class {
   /**
    * @param {function(!ESTree.Node):(!Object|undefined)} beforeVisit
    * @param {function(!ESTree.Node)=} afterVisit
@@ -44,12 +44,12 @@ WebInspector.ESTreeWalker = class {
       return;
     node.parent = parent;
 
-    if (this._beforeVisit.call(null, node) === WebInspector.ESTreeWalker.SkipSubtree) {
+    if (this._beforeVisit.call(null, node) === FormatterWorker.ESTreeWalker.SkipSubtree) {
       this._afterVisit.call(null, node);
       return;
     }
 
-    var walkOrder = WebInspector.ESTreeWalker._walkOrder[node.type];
+    var walkOrder = FormatterWorker.ESTreeWalker._walkOrder[node.type];
     if (!walkOrder) {
       console.error('Walk order not defined for ' + node.type);
       return;
@@ -86,11 +86,11 @@ WebInspector.ESTreeWalker = class {
   }
 };
 
-/** @typedef {!Object} WebInspector.ESTreeWalker.SkipSubtree */
-WebInspector.ESTreeWalker.SkipSubtree = {};
+/** @typedef {!Object} FormatterWorker.ESTreeWalker.SkipSubtree */
+FormatterWorker.ESTreeWalker.SkipSubtree = {};
 
 /** @enum {!Array.<string>} */
-WebInspector.ESTreeWalker._walkOrder = {
+FormatterWorker.ESTreeWalker._walkOrder = {
   'ArrayExpression': ['elements'],
   'ArrowFunctionExpression': ['params', 'body'],
   'AssignmentExpression': ['left', 'right'],

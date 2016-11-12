@@ -2,24 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.ToolbarItem.ItemsProvider}
+ * @implements {UI.ToolbarItem.ItemsProvider}
  * @unrestricted
  */
-WebInspector.ObjectEventListenersSidebarPane = class extends WebInspector.VBox {
+Sources.ObjectEventListenersSidebarPane = class extends UI.VBox {
   constructor() {
     super();
     this.element.classList.add('event-listeners-sidebar-pane');
 
-    this._refreshButton = new WebInspector.ToolbarButton(WebInspector.UIString('Refresh'), 'largeicon-refresh');
+    this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     this._refreshButton.addEventListener('click', this._refreshClick.bind(this));
     this._refreshButton.setEnabled(false);
 
-    this._eventListenersView = new WebInspector.EventListenersView(this.element, this.update.bind(this));
+    this._eventListenersView = new Components.EventListenersView(this.element, this.update.bind(this));
   }
 
   /**
    * @override
-   * @return {!Array<!WebInspector.ToolbarItem>}
+   * @return {!Array<!UI.ToolbarItem>}
    */
   toolbarItems() {
     return [this._refreshButton];
@@ -28,10 +28,10 @@ WebInspector.ObjectEventListenersSidebarPane = class extends WebInspector.VBox {
   update() {
     if (this._lastRequestedContext) {
       this._lastRequestedContext.target().runtimeAgent().releaseObjectGroup(
-          WebInspector.ObjectEventListenersSidebarPane._objectGroupName);
+          Sources.ObjectEventListenersSidebarPane._objectGroupName);
       delete this._lastRequestedContext;
     }
-    var executionContext = WebInspector.context.flavor(WebInspector.ExecutionContext);
+    var executionContext = UI.context.flavor(SDK.ExecutionContext);
     if (!executionContext) {
       this._eventListenersView.reset();
       this._eventListenersView.addEmptyHolderIfNeeded();
@@ -47,7 +47,7 @@ WebInspector.ObjectEventListenersSidebarPane = class extends WebInspector.VBox {
    */
   wasShown() {
     super.wasShown();
-    WebInspector.context.addFlavorChangeListener(WebInspector.ExecutionContext, this.update, this);
+    UI.context.addFlavorChangeListener(SDK.ExecutionContext, this.update, this);
     this._refreshButton.setEnabled(true);
     this.update();
   }
@@ -57,13 +57,13 @@ WebInspector.ObjectEventListenersSidebarPane = class extends WebInspector.VBox {
    */
   willHide() {
     super.willHide();
-    WebInspector.context.removeFlavorChangeListener(WebInspector.ExecutionContext, this.update, this);
+    UI.context.removeFlavorChangeListener(SDK.ExecutionContext, this.update, this);
     this._refreshButton.setEnabled(false);
   }
 
   /**
-   * @param {!WebInspector.ExecutionContext} executionContext
-   * @return {!Promise<!WebInspector.RemoteObject>} object
+   * @param {!SDK.ExecutionContext} executionContext
+   * @return {!Promise<!SDK.RemoteObject>} object
    */
   _windowObjectInContext(executionContext) {
     return new Promise(windowObjectInContext);
@@ -73,10 +73,10 @@ WebInspector.ObjectEventListenersSidebarPane = class extends WebInspector.VBox {
      */
     function windowObjectInContext(fulfill, reject) {
       executionContext.evaluate(
-          'self', WebInspector.ObjectEventListenersSidebarPane._objectGroupName, false, true, false, false, false,
+          'self', Sources.ObjectEventListenersSidebarPane._objectGroupName, false, true, false, false, false,
           mycallback);
       /**
-       * @param {?WebInspector.RemoteObject} object
+       * @param {?SDK.RemoteObject} object
        */
       function mycallback(object) {
         if (object)
@@ -88,7 +88,7 @@ WebInspector.ObjectEventListenersSidebarPane = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _refreshClick(event) {
     event.consume();
@@ -96,4 +96,4 @@ WebInspector.ObjectEventListenersSidebarPane = class extends WebInspector.VBox {
   }
 };
 
-WebInspector.ObjectEventListenersSidebarPane._objectGroupName = 'object-event-listeners-sidebar-pane';
+Sources.ObjectEventListenersSidebarPane._objectGroupName = 'object-event-listeners-sidebar-pane';

@@ -6,12 +6,12 @@
             "id": "resources",
             "title": "Application",
             "order": 70,
-            "className": "WebInspector.ResourcesPanel"
+            "className": "Resources.ResourcesPanel"
         },
         {
-            "type": "@WebInspector.Revealer",
-            "contextTypes": ["WebInspector.Resource"],
-            "className": "WebInspector.ResourcesPanel.ResourceRevealer"
+            "type": "@Common.Revealer",
+            "contextTypes": ["SDK.Resource"],
+            "className": "Resources.ResourcesPanel.ResourceRevealer"
         }
     ],
     "dependencies": ["source_frame", "ui_lazy", "components_lazy"],

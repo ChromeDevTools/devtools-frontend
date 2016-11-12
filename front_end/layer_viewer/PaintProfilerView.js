@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.PaintProfilerView = class extends WebInspector.HBox {
+LayerViewer.PaintProfilerView = class extends UI.HBox {
   /**
    * @param {function(string=)} showImageCallback
    */
@@ -41,8 +41,8 @@ WebInspector.PaintProfilerView = class extends WebInspector.HBox {
     this.contentElement.classList.add('paint-profiler-overview');
     this._canvasContainer = this.contentElement.createChild('div', 'paint-profiler-canvas-container');
     this._progressBanner = this.contentElement.createChild('div', 'full-widget-dimmed-banner hidden');
-    this._progressBanner.textContent = WebInspector.UIString('Profiling\u2026');
-    this._pieChart = new WebInspector.PieChart(55, this._formatPieChartTime.bind(this), true);
+    this._progressBanner.textContent = Common.UIString('Profiling\u2026');
+    this._pieChart = new UI.PieChart(55, this._formatPieChartTime.bind(this), true);
     this._pieChart.element.classList.add('paint-profiler-pie-chart');
     this.contentElement.appendChild(this._pieChart.element);
 
@@ -50,8 +50,8 @@ WebInspector.PaintProfilerView = class extends WebInspector.HBox {
 
     this._canvas = this._canvasContainer.createChild('canvas', 'fill');
     this._context = this._canvas.getContext('2d');
-    this._selectionWindow = new WebInspector.OverviewGrid.Window(this._canvasContainer);
-    this._selectionWindow.addEventListener(WebInspector.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
+    this._selectionWindow = new UI.OverviewGrid.Window(this._canvasContainer);
+    this._selectionWindow.addEventListener(UI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
 
     this._innerBarWidth = 4 * window.devicePixelRatio;
     this._minBarHeight = window.devicePixelRatio;
@@ -64,28 +64,28 @@ WebInspector.PaintProfilerView = class extends WebInspector.HBox {
   }
 
   /**
-   * @return {!Object.<string, !WebInspector.PaintProfilerCategory>}
+   * @return {!Object.<string, !LayerViewer.PaintProfilerCategory>}
    */
   static categories() {
-    if (WebInspector.PaintProfilerView._categories)
-      return WebInspector.PaintProfilerView._categories;
-    WebInspector.PaintProfilerView._categories = {
-      shapes: new WebInspector.PaintProfilerCategory('shapes', WebInspector.UIString('Shapes'), 'rgb(255, 161, 129)'),
-      bitmap: new WebInspector.PaintProfilerCategory('bitmap', WebInspector.UIString('Bitmap'), 'rgb(136, 196, 255)'),
-      text: new WebInspector.PaintProfilerCategory('text', WebInspector.UIString('Text'), 'rgb(180, 255, 137)'),
-      misc: new WebInspector.PaintProfilerCategory('misc', WebInspector.UIString('Misc'), 'rgb(206, 160, 255)')
+    if (LayerViewer.PaintProfilerView._categories)
+      return LayerViewer.PaintProfilerView._categories;
+    LayerViewer.PaintProfilerView._categories = {
+      shapes: new LayerViewer.PaintProfilerCategory('shapes', Common.UIString('Shapes'), 'rgb(255, 161, 129)'),
+      bitmap: new LayerViewer.PaintProfilerCategory('bitmap', Common.UIString('Bitmap'), 'rgb(136, 196, 255)'),
+      text: new LayerViewer.PaintProfilerCategory('text', Common.UIString('Text'), 'rgb(180, 255, 137)'),
+      misc: new LayerViewer.PaintProfilerCategory('misc', Common.UIString('Misc'), 'rgb(206, 160, 255)')
     };
-    return WebInspector.PaintProfilerView._categories;
+    return LayerViewer.PaintProfilerView._categories;
   }
 
   /**
-   * @return {!Object.<string, !WebInspector.PaintProfilerCategory>}
+   * @return {!Object.<string, !LayerViewer.PaintProfilerCategory>}
    */
   static _initLogItemCategories() {
-    if (WebInspector.PaintProfilerView._logItemCategoriesMap)
-      return WebInspector.PaintProfilerView._logItemCategoriesMap;
+    if (LayerViewer.PaintProfilerView._logItemCategoriesMap)
+      return LayerViewer.PaintProfilerView._logItemCategoriesMap;
 
-    var categories = WebInspector.PaintProfilerView.categories();
+    var categories = LayerViewer.PaintProfilerView.categories();
 
     var logItemCategories = {};
     logItemCategories['Clear'] = categories['misc'];
@@ -125,21 +125,21 @@ WebInspector.PaintProfilerView = class extends WebInspector.HBox {
     logItemCategories['DrawPosTextH'] = categories['text'];
     logItemCategories['DrawTextOnPath'] = categories['text'];
 
-    WebInspector.PaintProfilerView._logItemCategoriesMap = logItemCategories;
+    LayerViewer.PaintProfilerView._logItemCategoriesMap = logItemCategories;
     return logItemCategories;
   }
 
   /**
    * @param {!Object} logItem
-   * @return {!WebInspector.PaintProfilerCategory}
+   * @return {!LayerViewer.PaintProfilerCategory}
    */
   static _categoryForLogItem(logItem) {
     var method = logItem.method.toTitleCase();
 
-    var logItemCategories = WebInspector.PaintProfilerView._initLogItemCategories();
+    var logItemCategories = LayerViewer.PaintProfilerView._initLogItemCategories();
     var result = logItemCategories[method];
     if (!result) {
-      result = WebInspector.PaintProfilerView.categories()['misc'];
+      result = LayerViewer.PaintProfilerView.categories()['misc'];
       logItemCategories[method] = result;
     }
     return result;
@@ -153,8 +153,8 @@ WebInspector.PaintProfilerView = class extends WebInspector.HBox {
   }
 
   /**
-   * @param {?WebInspector.PaintProfilerSnapshot} snapshot
-   * @param {!Array.<!WebInspector.PaintProfilerLogItem>} log
+   * @param {?SDK.PaintProfilerSnapshot} snapshot
+   * @param {!Array.<!SDK.PaintProfilerLogItem>} log
    * @param {?Protocol.DOM.Rect} clipRect
    */
   setSnapshotAndLog(snapshot, log, clipRect) {
@@ -163,7 +163,7 @@ WebInspector.PaintProfilerView = class extends WebInspector.HBox {
     if (this._snapshot)
       this._snapshot.addReference();
     this._log = log;
-    this._logCategories = this._log.map(WebInspector.PaintProfilerView._categoryForLogItem);
+    this._logCategories = this._log.map(LayerViewer.PaintProfilerView._categoryForLogItem);
 
     if (!this._snapshot) {
       this._update();
@@ -177,7 +177,7 @@ WebInspector.PaintProfilerView = class extends WebInspector.HBox {
     snapshot.profile(clipRect, onProfileDone.bind(this));
     /**
      * @param {!Array.<!Protocol.LayerTree.PaintProfile>=} profiles
-     * @this {WebInspector.PaintProfilerView}
+     * @this {LayerViewer.PaintProfilerView}
      */
     function onProfileDone(profiles) {
       this._progressBanner.classList.add('hidden');
@@ -254,7 +254,7 @@ WebInspector.PaintProfilerView = class extends WebInspector.HBox {
    * @param {!Object.<string, number>} heightByCategory
    */
   _renderBar(index, heightByCategory) {
-    var categories = WebInspector.PaintProfilerView.categories();
+    var categories = LayerViewer.PaintProfilerView.categories();
     var currentHeight = 0;
     var x = this._barPaddingWidth + index * this._outerBarWidth;
     for (var categoryName in categories) {
@@ -268,7 +268,7 @@ WebInspector.PaintProfilerView = class extends WebInspector.HBox {
   }
 
   _onWindowChanged() {
-    this.dispatchEventToListeners(WebInspector.PaintProfilerView.Events.WindowChanged);
+    this.dispatchEventToListeners(LayerViewer.PaintProfilerView.Events.WindowChanged);
     this._updatePieChart();
     if (this._updateImageTimer)
       return;
@@ -283,7 +283,7 @@ WebInspector.PaintProfilerView = class extends WebInspector.HBox {
     var timeByCategory = {};
     for (var i = window.left; i < window.right; ++i) {
       var logEntry = this._log[i];
-      var category = WebInspector.PaintProfilerView._categoryForLogItem(logEntry);
+      var category = LayerViewer.PaintProfilerView._categoryForLogItem(logEntry);
       timeByCategory[category.color] = timeByCategory[category.color] || 0;
       for (var j = 0; j < this._profiles.length; ++j) {
         var time = this._profiles[j][logEntry.commandIndex];
@@ -350,14 +350,14 @@ WebInspector.PaintProfilerView = class extends WebInspector.HBox {
 };
 
 /** @enum {symbol} */
-WebInspector.PaintProfilerView.Events = {
+LayerViewer.PaintProfilerView.Events = {
   WindowChanged: Symbol('WindowChanged')
 };
 
 /**
  * @unrestricted
  */
-WebInspector.PaintProfilerCommandLogView = class extends WebInspector.ThrottledWidget {
+LayerViewer.PaintProfilerCommandLogView = class extends UI.ThrottledWidget {
   constructor() {
     super();
     this.setMinimumSize(100, 25);
@@ -370,24 +370,24 @@ WebInspector.PaintProfilerCommandLogView = class extends WebInspector.ThrottledW
   }
 
   /**
-   * @param {?WebInspector.Target} target
-   * @param {!Array.<!WebInspector.PaintProfilerLogItem>} log
+   * @param {?SDK.Target} target
+   * @param {!Array.<!SDK.PaintProfilerLogItem>} log
    */
   setCommandLog(target, log) {
     this._target = target;
     this._log = log;
-    /** @type {!Map<!WebInspector.PaintProfilerLogItem>} */
+    /** @type {!Map<!SDK.PaintProfilerLogItem>} */
     this._treeItemCache = new Map();
     this.updateWindow({left: 0, right: this._log.length});
   }
 
   /**
-   * @param {!WebInspector.PaintProfilerLogItem} logItem
+   * @param {!SDK.PaintProfilerLogItem} logItem
    */
   _appendLogItem(logItem) {
     var treeElement = this._treeItemCache.get(logItem);
     if (!treeElement) {
-      treeElement = new WebInspector.LogTreeElement(this, logItem);
+      treeElement = new LayerViewer.LogTreeElement(this, logItem);
       this._treeItemCache.set(logItem, treeElement);
     } else if (treeElement.parent) {
       return;
@@ -434,10 +434,10 @@ WebInspector.PaintProfilerCommandLogView = class extends WebInspector.ThrottledW
 /**
  * @unrestricted
  */
-WebInspector.LogTreeElement = class extends TreeElement {
+LayerViewer.LogTreeElement = class extends TreeElement {
   /**
-   * @param {!WebInspector.PaintProfilerCommandLogView} ownerView
-   * @param {!WebInspector.PaintProfilerLogItem} logItem
+   * @param {!LayerViewer.PaintProfilerCommandLogView} ownerView
+   * @param {!SDK.PaintProfilerLogItem} logItem
    */
   constructor(ownerView, logItem) {
     super('', !!logItem.params);
@@ -458,7 +458,7 @@ WebInspector.LogTreeElement = class extends TreeElement {
    */
   onpopulate() {
     for (var param in this._logItem.params)
-      WebInspector.LogPropertyTreeElement._appendLogPropertyItem(this, param, this._logItem.params[param]);
+      LayerViewer.LogPropertyTreeElement._appendLogPropertyItem(this, param, this._logItem.params[param]);
   }
 
   /**
@@ -506,7 +506,7 @@ WebInspector.LogTreeElement = class extends TreeElement {
 /**
  * @unrestricted
  */
-WebInspector.LogPropertyTreeElement = class extends TreeElement {
+LayerViewer.LogPropertyTreeElement = class extends TreeElement {
   /**
    * @param {!{name: string, value}} property
    */
@@ -521,11 +521,11 @@ WebInspector.LogPropertyTreeElement = class extends TreeElement {
    * @param {*} value
    */
   static _appendLogPropertyItem(element, name, value) {
-    var treeElement = new WebInspector.LogPropertyTreeElement({name: name, value: value});
+    var treeElement = new LayerViewer.LogPropertyTreeElement({name: name, value: value});
     element.appendChild(treeElement);
     if (value && typeof value === 'object') {
       for (var property in value)
-        WebInspector.LogPropertyTreeElement._appendLogPropertyItem(treeElement, property, value[property]);
+        LayerViewer.LogPropertyTreeElement._appendLogPropertyItem(treeElement, property, value[property]);
     }
   }
 
@@ -551,7 +551,7 @@ WebInspector.LogPropertyTreeElement = class extends TreeElement {
 /**
  * @unrestricted
  */
-WebInspector.PaintProfilerCategory = class {
+LayerViewer.PaintProfilerCategory = class {
   /**
    * @param {string} name
    * @param {string} title

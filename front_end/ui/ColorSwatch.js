@@ -4,24 +4,24 @@
 /**
  * @unrestricted
  */
-WebInspector.ColorSwatch = class extends HTMLSpanElement {
+UI.ColorSwatch = class extends HTMLSpanElement {
   constructor() {
     super();
   }
 
   /**
-   * @return {!WebInspector.ColorSwatch}
+   * @return {!UI.ColorSwatch}
    */
   static create() {
-    if (!WebInspector.ColorSwatch._constructor)
-      WebInspector.ColorSwatch._constructor =
-          registerCustomElement('span', 'color-swatch', WebInspector.ColorSwatch.prototype);
+    if (!UI.ColorSwatch._constructor)
+      UI.ColorSwatch._constructor =
+          registerCustomElement('span', 'color-swatch', UI.ColorSwatch.prototype);
 
-    return /** @type {!WebInspector.ColorSwatch} */ (new WebInspector.ColorSwatch._constructor());
+    return /** @type {!UI.ColorSwatch} */ (new UI.ColorSwatch._constructor());
   }
 
   /**
-   * @param {!WebInspector.Color} color
+   * @param {!Common.Color} color
    * @param {string} curFormat
    */
   static _nextColorFormat(color, curFormat) {
@@ -32,7 +32,7 @@ WebInspector.ColorSwatch = class extends HTMLSpanElement {
     // * nickname (if the color has a nickname)
     // * shorthex (if has short hex)
     // * hex
-    var cf = WebInspector.Color.Format;
+    var cf = Common.Color.Format;
 
     switch (curFormat) {
       case cf.Original:
@@ -69,14 +69,14 @@ WebInspector.ColorSwatch = class extends HTMLSpanElement {
   }
 
   /**
-   * @return {!WebInspector.Color} color
+   * @return {!Common.Color} color
    */
   color() {
     return this._color;
   }
 
   /**
-   * @param {!WebInspector.Color} color
+   * @param {!Common.Color} color
    */
   setColor(color) {
     this._color = color;
@@ -94,14 +94,14 @@ WebInspector.ColorSwatch = class extends HTMLSpanElement {
   }
 
   /**
-   * @return {!WebInspector.Color.Format}
+   * @return {!Common.Color.Format}
    */
   format() {
     return this._format;
   }
 
   /**
-   * @param {!WebInspector.Color.Format} format
+   * @param {!Common.Color.Format} format
    */
   setFormat(format) {
     this._format = format;
@@ -110,7 +110,7 @@ WebInspector.ColorSwatch = class extends HTMLSpanElement {
 
   toggleNextFormat() {
     do {
-      this._format = WebInspector.ColorSwatch._nextColorFormat(this._color, this._format);
+      this._format = UI.ColorSwatch._nextColorFormat(this._color, this._format);
       var currentValue = this._color.asString(this._format);
     } while (currentValue === this._colorValueElement.textContent);
     this._colorValueElement.textContent = currentValue;
@@ -127,10 +127,10 @@ WebInspector.ColorSwatch = class extends HTMLSpanElement {
    * @override
    */
   createdCallback() {
-    var root = WebInspector.createShadowRootWithCoreStyles(this, 'ui/colorSwatch.css');
+    var root = UI.createShadowRootWithCoreStyles(this, 'ui/colorSwatch.css');
 
     this._iconElement = root.createChild('span', 'color-swatch');
-    this._iconElement.title = WebInspector.UIString('Shift-click to change color format');
+    this._iconElement.title = Common.UIString('Shift-click to change color format');
     this._swatchInner = this._iconElement.createChild('span', 'color-swatch-inner');
     this._swatchInner.addEventListener('dblclick', (e) => e.consume(), false);
     this._swatchInner.addEventListener('mousedown', (e) => e.consume(), false);
@@ -155,20 +155,20 @@ WebInspector.ColorSwatch = class extends HTMLSpanElement {
 /**
  * @unrestricted
  */
-WebInspector.BezierSwatch = class extends HTMLSpanElement {
+UI.BezierSwatch = class extends HTMLSpanElement {
   constructor() {
     super();
   }
 
   /**
-   * @return {!WebInspector.BezierSwatch}
+   * @return {!UI.BezierSwatch}
    */
   static create() {
-    if (!WebInspector.BezierSwatch._constructor)
-      WebInspector.BezierSwatch._constructor =
-          registerCustomElement('span', 'bezier-swatch', WebInspector.BezierSwatch.prototype);
+    if (!UI.BezierSwatch._constructor)
+      UI.BezierSwatch._constructor =
+          registerCustomElement('span', 'bezier-swatch', UI.BezierSwatch.prototype);
 
-    return /** @type {!WebInspector.BezierSwatch} */ (new WebInspector.BezierSwatch._constructor());
+    return /** @type {!UI.BezierSwatch} */ (new UI.BezierSwatch._constructor());
   }
 
   /**
@@ -203,8 +203,8 @@ WebInspector.BezierSwatch = class extends HTMLSpanElement {
    * @override
    */
   createdCallback() {
-    var root = WebInspector.createShadowRootWithCoreStyles(this, 'ui/bezierSwatch.css');
-    this._iconElement = WebInspector.Icon.create('smallicon-bezier', 'bezier-swatch-icon');
+    var root = UI.createShadowRootWithCoreStyles(this, 'ui/bezierSwatch.css');
+    this._iconElement = UI.Icon.create('smallicon-bezier', 'bezier-swatch-icon');
     root.appendChild(this._iconElement);
     this._textElement = this.createChild('span');
     root.createChild('content');
@@ -215,41 +215,41 @@ WebInspector.BezierSwatch = class extends HTMLSpanElement {
 /**
  * @unrestricted
  */
-WebInspector.CSSShadowSwatch = class extends HTMLSpanElement {
+UI.CSSShadowSwatch = class extends HTMLSpanElement {
   constructor() {
     super();
   }
 
   /**
-   * @return {!WebInspector.CSSShadowSwatch}
+   * @return {!UI.CSSShadowSwatch}
    */
   static create() {
-    if (!WebInspector.CSSShadowSwatch._constructor)
-      WebInspector.CSSShadowSwatch._constructor =
-          registerCustomElement('span', 'css-shadow-swatch', WebInspector.CSSShadowSwatch.prototype);
+    if (!UI.CSSShadowSwatch._constructor)
+      UI.CSSShadowSwatch._constructor =
+          registerCustomElement('span', 'css-shadow-swatch', UI.CSSShadowSwatch.prototype);
 
-    return /** @type {!WebInspector.CSSShadowSwatch} */ (new WebInspector.CSSShadowSwatch._constructor());
+    return /** @type {!UI.CSSShadowSwatch} */ (new UI.CSSShadowSwatch._constructor());
   }
 
   /**
-   * @return {!WebInspector.CSSShadowModel} cssShadowModel
+   * @return {!Common.CSSShadowModel} cssShadowModel
    */
   model() {
     return this._model;
   }
 
   /**
-   * @param {!WebInspector.CSSShadowModel} model
+   * @param {!Common.CSSShadowModel} model
    */
   setCSSShadow(model) {
     this._model = model;
     this._contentElement.removeChildren();
-    var results = WebInspector.TextUtils.splitStringByRegexes(model.asCSSText(), [/inset/g, WebInspector.Color.Regex]);
+    var results = Common.TextUtils.splitStringByRegexes(model.asCSSText(), [/inset/g, Common.Color.Regex]);
     for (var i = 0; i < results.length; i++) {
       var result = results[i];
       if (result.regexIndex === 1) {
         if (!this._colorSwatch)
-          this._colorSwatch = WebInspector.ColorSwatch.create();
+          this._colorSwatch = UI.ColorSwatch.create();
         this._colorSwatch.setColor(model.color());
         this._contentElement.appendChild(this._colorSwatch);
       } else {
@@ -273,7 +273,7 @@ WebInspector.CSSShadowSwatch = class extends HTMLSpanElement {
   }
 
   /**
-   * @return {?WebInspector.ColorSwatch}
+   * @return {?UI.ColorSwatch}
    */
   colorSwatch() {
     return this._colorSwatch;
@@ -283,8 +283,8 @@ WebInspector.CSSShadowSwatch = class extends HTMLSpanElement {
    * @override
    */
   createdCallback() {
-    var root = WebInspector.createShadowRootWithCoreStyles(this, 'ui/cssShadowSwatch.css');
-    this._iconElement = WebInspector.Icon.create('smallicon-shadow', 'shadow-swatch-icon');
+    var root = UI.createShadowRootWithCoreStyles(this, 'ui/cssShadowSwatch.css');
+    this._iconElement = UI.Icon.create('smallicon-shadow', 'shadow-swatch-icon');
     root.appendChild(this._iconElement);
     root.createChild('content');
     this._contentElement = this.createChild('span');

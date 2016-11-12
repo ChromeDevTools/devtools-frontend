@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 /** @typedef {!{
         bounds: {height: number, width: number},
-        children: Array.<!WebInspector.TracingLayerPayload>,
+        children: Array.<!TimelineModel.TracingLayerPayload>,
         layer_id: number,
         position: Array.<number>,
         scroll_offset: Array.<number>,
@@ -15,7 +15,7 @@
         compositing_reasons: Array.<string>
     }}
 */
-WebInspector.TracingLayerPayload;
+TimelineModel.TracingLayerPayload;
 
 /** @typedef {!{
         id: string,
@@ -24,32 +24,25 @@ WebInspector.TracingLayerPayload;
         content_rect: !Array.<number>
     }}
 */
-WebInspector.TracingLayerTile;
-
-/** @typedef {!{
-        rect: !Protocol.DOM.Rect,
-        snapshot: !WebInspector.PaintProfilerSnapshot
-    }}
-*/
-WebInspector.SnapshotWithRect;
+TimelineModel.TracingLayerTile;
 
 /**
  * @unrestricted
  */
-WebInspector.TracingLayerTree = class extends WebInspector.LayerTreeBase {
+TimelineModel.TracingLayerTree = class extends SDK.LayerTreeBase {
   /**
-   * @param {?WebInspector.Target} target
+   * @param {?SDK.Target} target
    */
   constructor(target) {
     super(target);
-    /** @type {!Map.<string, !WebInspector.TracingLayerTile>} */
+    /** @type {!Map.<string, !TimelineModel.TracingLayerTile>} */
     this._tileById = new Map();
   }
 
   /**
-   * @param {?WebInspector.TracingLayerPayload} root
-   * @param {?Array<!WebInspector.TracingLayerPayload>} layers
-   * @param {!Array<!WebInspector.LayerPaintEvent>} paints
+   * @param {?TimelineModel.TracingLayerPayload} root
+   * @param {?Array<!TimelineModel.TracingLayerPayload>} layers
+   * @param {!Array<!TimelineModel.LayerPaintEvent>} paints
    * @param {function()} callback
    */
   setLayers(root, layers, paints, callback) {
@@ -65,7 +58,7 @@ WebInspector.TracingLayerTree = class extends WebInspector.LayerTreeBase {
     this._resolveBackendNodeIds(idsToResolve, onBackendNodeIdsResolved.bind(this));
 
     /**
-     * @this {WebInspector.TracingLayerTree}
+     * @this {TimelineModel.TracingLayerTree}
      */
     function onBackendNodeIdsResolved() {
       var oldLayersById = this._layersById;
@@ -89,7 +82,7 @@ WebInspector.TracingLayerTree = class extends WebInspector.LayerTreeBase {
   }
 
   /**
-   * @param {!Array.<!WebInspector.TracingLayerTile>} tiles
+   * @param {!Array.<!TimelineModel.TracingLayerTile>} tiles
    */
   setTiles(tiles) {
     this._tileById = new Map();
@@ -99,24 +92,24 @@ WebInspector.TracingLayerTree = class extends WebInspector.LayerTreeBase {
 
   /**
    * @param {string} tileId
-   * @return {!Promise<?WebInspector.SnapshotWithRect>}
+   * @return {!Promise<?SDK.SnapshotWithRect>}
    */
   pictureForRasterTile(tileId) {
     var tile = this._tileById.get('cc::Tile/' + tileId);
     if (!tile) {
-      WebInspector.console.error(`Tile ${tileId} is missing`);
-      return /** @type {!Promise<?WebInspector.SnapshotWithRect>} */ (Promise.resolve(null));
+      Common.console.error(`Tile ${tileId} is missing`);
+      return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(null));
     }
     var layer = this.layerById(tile.layer_id);
     if (!layer) {
-      WebInspector.console.error(`Layer ${tile.layer_id} for tile ${tileId} is not found`);
-      return /** @type {!Promise<?WebInspector.SnapshotWithRect>} */ (Promise.resolve(null));
+      Common.console.error(`Layer ${tile.layer_id} for tile ${tileId} is not found`);
+      return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(null));
     }
     return layer._pictureForRect(tile.content_rect);
   }
 
   /**
-   * @param {!Array<!WebInspector.LayerPaintEvent>} paints
+   * @param {!Array<!TimelineModel.LayerPaintEvent>} paints
    */
   _setPaints(paints) {
     for (var i = 0; i < paints.length; ++i) {
@@ -127,16 +120,16 @@ WebInspector.TracingLayerTree = class extends WebInspector.LayerTreeBase {
   }
 
   /**
-   * @param {!Object<(string|number), !WebInspector.Layer>} oldLayersById
-   * @param {!WebInspector.TracingLayerPayload} payload
-   * @return {!WebInspector.TracingLayer}
+   * @param {!Object<(string|number), !SDK.Layer>} oldLayersById
+   * @param {!TimelineModel.TracingLayerPayload} payload
+   * @return {!TimelineModel.TracingLayer}
    */
   _innerSetLayers(oldLayersById, payload) {
-    var layer = /** @type {?WebInspector.TracingLayer} */ (oldLayersById[payload.layer_id]);
+    var layer = /** @type {?TimelineModel.TracingLayer} */ (oldLayersById[payload.layer_id]);
     if (layer)
       layer._reset(payload);
     else
-      layer = new WebInspector.TracingLayer(this.target(), payload);
+      layer = new TimelineModel.TracingLayer(this.target(), payload);
     this._layersById[payload.layer_id] = layer;
     if (payload.owner_node)
       layer._setNode(this._backendNodeIdToNode.get(payload.owner_node) || null);
@@ -150,7 +143,7 @@ WebInspector.TracingLayerTree = class extends WebInspector.LayerTreeBase {
   /**
    * @param {!Set<number>} nodeIdsToResolve
    * @param {!Object} seenNodeIds
-   * @param {!WebInspector.TracingLayerPayload} payload
+   * @param {!TimelineModel.TracingLayerPayload} payload
    */
   _extractNodeIdsToResolve(nodeIdsToResolve, seenNodeIds, payload) {
     var backendNodeId = payload.owner_node;
@@ -162,13 +155,13 @@ WebInspector.TracingLayerTree = class extends WebInspector.LayerTreeBase {
 };
 
 /**
- * @implements {WebInspector.Layer}
+ * @implements {SDK.Layer}
  * @unrestricted
  */
-WebInspector.TracingLayer = class {
+TimelineModel.TracingLayer = class {
   /**
-   * @param {!WebInspector.TracingLayerPayload} payload
-   * @param {?WebInspector.Target} target
+   * @param {!TimelineModel.TracingLayerPayload} payload
+   * @param {?SDK.Target} target
    */
   constructor(target, payload) {
     this._target = target;
@@ -176,10 +169,10 @@ WebInspector.TracingLayer = class {
   }
 
   /**
-   * @param {!WebInspector.TracingLayerPayload} payload
+   * @param {!TimelineModel.TracingLayerPayload} payload
    */
   _reset(payload) {
-    /** @type {?WebInspector.DOMNode} */
+    /** @type {?SDK.DOMNode} */
     this._node = null;
     this._layerId = String(payload.layer_id);
     this._offsetX = payload.position[0];
@@ -215,7 +208,7 @@ WebInspector.TracingLayer = class {
 
   /**
    * @override
-   * @return {?WebInspector.Layer}
+   * @return {?SDK.Layer}
    */
   parent() {
     return this._parent;
@@ -231,7 +224,7 @@ WebInspector.TracingLayer = class {
 
   /**
    * @override
-   * @return {!Array.<!WebInspector.Layer>}
+   * @return {!Array.<!SDK.Layer>}
    */
   children() {
     return this._children;
@@ -239,7 +232,7 @@ WebInspector.TracingLayer = class {
 
   /**
    * @override
-   * @param {!WebInspector.Layer} child
+   * @param {!SDK.Layer} child
    */
   addChild(child) {
     if (child._parent)
@@ -250,7 +243,7 @@ WebInspector.TracingLayer = class {
   }
 
   /**
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    */
   _setNode(node) {
     this._node = node;
@@ -258,7 +251,7 @@ WebInspector.TracingLayer = class {
 
   /**
    * @override
-   * @return {?WebInspector.DOMNode}
+   * @return {?SDK.DOMNode}
    */
   node() {
     return this._node;
@@ -266,7 +259,7 @@ WebInspector.TracingLayer = class {
 
   /**
    * @override
-   * @return {?WebInspector.DOMNode}
+   * @return {?SDK.DOMNode}
    */
   nodeForSelfOrAncestor() {
     for (var layer = this; layer; layer = layer._parent) {
@@ -374,7 +367,7 @@ WebInspector.TracingLayer = class {
 
   /**
    * @override
-   * @return {!Array<!Promise<?WebInspector.SnapshotWithRect>>}
+   * @return {!Array<!Promise<?SDK.SnapshotWithRect>>}
    */
   snapshots() {
     return this._paints.map(paint => paint.snapshotPromise().then(snapshot => {
@@ -387,7 +380,7 @@ WebInspector.TracingLayer = class {
 
   /**
    * @param {!Array<number>} targetRect
-   * @return {!Promise<?WebInspector.SnapshotWithRect>}
+   * @return {!Promise<?SDK.SnapshotWithRect>}
    */
   _pictureForRect(targetRect) {
     return Promise.all(this._paints.map(paint => paint.picturePromise())).then(pictures => {
@@ -400,7 +393,7 @@ WebInspector.TracingLayer = class {
       var y0 = fragments.reduce((min, item) => Math.min(min, item.y), Infinity);
       // Rect is in layer content coordinates, make it relative to picture by offsetting to the top left corner.
       var rect = {x: targetRect[0] - x0, y: targetRect[1] - y0, width: targetRect[2], height: targetRect[3]};
-      return WebInspector.PaintProfilerSnapshot.loadFromFragments(this._target, fragments)
+      return SDK.PaintProfilerSnapshot.loadFromFragments(this._target, fragments)
           .then(snapshot => snapshot ? {rect: rect, snapshot: snapshot} : null);
     });
 
@@ -437,26 +430,26 @@ WebInspector.TracingLayer = class {
   }
 
   /**
-   * @param {!WebInspector.TracingLayerPayload} payload
+   * @param {!TimelineModel.TracingLayerPayload} payload
    */
   _createScrollRects(payload) {
     this._scrollRects = [];
     if (payload.non_fast_scrollable_region)
       this._scrollRects.push(this._scrollRectsFromParams(
-          payload.non_fast_scrollable_region, WebInspector.Layer.ScrollRectType.NonFastScrollable.name));
+          payload.non_fast_scrollable_region, SDK.Layer.ScrollRectType.NonFastScrollable.name));
     if (payload.touch_event_handler_region)
       this._scrollRects.push(this._scrollRectsFromParams(
-          payload.touch_event_handler_region, WebInspector.Layer.ScrollRectType.TouchEventHandler.name));
+          payload.touch_event_handler_region, SDK.Layer.ScrollRectType.TouchEventHandler.name));
     if (payload.wheel_event_handler_region)
       this._scrollRects.push(this._scrollRectsFromParams(
-          payload.wheel_event_handler_region, WebInspector.Layer.ScrollRectType.WheelEventHandler.name));
+          payload.wheel_event_handler_region, SDK.Layer.ScrollRectType.WheelEventHandler.name));
     if (payload.scroll_event_handler_region)
       this._scrollRects.push(this._scrollRectsFromParams(
-          payload.scroll_event_handler_region, WebInspector.Layer.ScrollRectType.RepaintsOnScroll.name));
+          payload.scroll_event_handler_region, SDK.Layer.ScrollRectType.RepaintsOnScroll.name));
   }
 
   /**
-   * @param {!WebInspector.LayerPaintEvent} paint
+   * @param {!TimelineModel.LayerPaintEvent} paint
    */
   _addPaintEvent(paint) {
     this._paints.push(paint);

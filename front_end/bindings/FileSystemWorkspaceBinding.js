@@ -31,23 +31,23 @@
 /**
  * @unrestricted
  */
-WebInspector.FileSystemWorkspaceBinding = class {
+Bindings.FileSystemWorkspaceBinding = class {
   /**
-   * @param {!WebInspector.IsolatedFileSystemManager} isolatedFileSystemManager
-   * @param {!WebInspector.Workspace} workspace
+   * @param {!Workspace.IsolatedFileSystemManager} isolatedFileSystemManager
+   * @param {!Workspace.Workspace} workspace
    */
   constructor(isolatedFileSystemManager, workspace) {
     this._isolatedFileSystemManager = isolatedFileSystemManager;
     this._workspace = workspace;
     this._eventListeners = [
       this._isolatedFileSystemManager.addEventListener(
-          WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._onFileSystemAdded, this),
+          Workspace.IsolatedFileSystemManager.Events.FileSystemAdded, this._onFileSystemAdded, this),
       this._isolatedFileSystemManager.addEventListener(
-          WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._onFileSystemRemoved, this),
+          Workspace.IsolatedFileSystemManager.Events.FileSystemRemoved, this._onFileSystemRemoved, this),
       this._isolatedFileSystemManager.addEventListener(
-          WebInspector.IsolatedFileSystemManager.Events.FileSystemFilesChanged, this._fileSystemFilesChanged, this)
+          Workspace.IsolatedFileSystemManager.Events.FileSystemFilesChanged, this._fileSystemFilesChanged, this)
     ];
-    /** @type {!Map.<string, !WebInspector.FileSystemWorkspaceBinding.FileSystem>} */
+    /** @type {!Map.<string, !Bindings.FileSystemWorkspaceBinding.FileSystem>} */
     this._boundFileSystems = new Map();
     this._isolatedFileSystemManager.waitForFileSystems().then(this._onFileSystemsLoaded.bind(this));
   }
@@ -61,39 +61,39 @@ WebInspector.FileSystemWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {!Array<string>}
    */
   static relativePath(uiSourceCode) {
     var baseURL =
-        /** @type {!WebInspector.FileSystemWorkspaceBinding.FileSystem}*/ (uiSourceCode.project())._fileSystemBaseURL;
+        /** @type {!Bindings.FileSystemWorkspaceBinding.FileSystem}*/ (uiSourceCode.project())._fileSystemBaseURL;
     return uiSourceCode.url().substring(baseURL.length).split('/');
   }
 
   /**
-   * @param {!WebInspector.Project} project
+   * @param {!Workspace.Project} project
    * @param {string} relativePath
    * @return {string}
    */
   static completeURL(project, relativePath) {
-    var fsProject = /** @type {!WebInspector.FileSystemWorkspaceBinding.FileSystem}*/ (project);
+    var fsProject = /** @type {!Bindings.FileSystemWorkspaceBinding.FileSystem}*/ (project);
     return fsProject._fileSystemBaseURL + relativePath;
   }
 
   /**
    * @param {string} extension
-   * @return {!WebInspector.ResourceType}
+   * @return {!Common.ResourceType}
    */
   static _contentTypeForExtension(extension) {
-    if (WebInspector.FileSystemWorkspaceBinding._styleSheetExtensions.has(extension))
-      return WebInspector.resourceTypes.Stylesheet;
-    if (WebInspector.FileSystemWorkspaceBinding._documentExtensions.has(extension))
-      return WebInspector.resourceTypes.Document;
-    if (WebInspector.FileSystemWorkspaceBinding._imageExtensions.has(extension))
-      return WebInspector.resourceTypes.Image;
-    if (WebInspector.FileSystemWorkspaceBinding._scriptExtensions.has(extension))
-      return WebInspector.resourceTypes.Script;
-    return WebInspector.resourceTypes.Other;
+    if (Bindings.FileSystemWorkspaceBinding._styleSheetExtensions.has(extension))
+      return Common.resourceTypes.Stylesheet;
+    if (Bindings.FileSystemWorkspaceBinding._documentExtensions.has(extension))
+      return Common.resourceTypes.Document;
+    if (Bindings.FileSystemWorkspaceBinding._imageExtensions.has(extension))
+      return Common.resourceTypes.Image;
+    if (Bindings.FileSystemWorkspaceBinding._scriptExtensions.has(extension))
+      return Common.resourceTypes.Script;
+    return Common.resourceTypes.Other;
   }
 
   /**
@@ -105,14 +105,14 @@ WebInspector.FileSystemWorkspaceBinding = class {
   }
 
   /**
-   * @return {!WebInspector.IsolatedFileSystemManager}
+   * @return {!Workspace.IsolatedFileSystemManager}
    */
   fileSystemManager() {
     return this._isolatedFileSystemManager;
   }
 
   /**
-   * @param {!Array<!WebInspector.IsolatedFileSystem>} fileSystems
+   * @param {!Array<!Workspace.IsolatedFileSystem>} fileSystems
    */
   _onFileSystemsLoaded(fileSystems) {
     for (var fileSystem of fileSystems)
@@ -120,33 +120,33 @@ WebInspector.FileSystemWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onFileSystemAdded(event) {
-    var fileSystem = /** @type {!WebInspector.IsolatedFileSystem} */ (event.data);
+    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
     this._addFileSystem(fileSystem);
   }
 
   /**
-   * @param {!WebInspector.IsolatedFileSystem} fileSystem
+   * @param {!Workspace.IsolatedFileSystem} fileSystem
    */
   _addFileSystem(fileSystem) {
-    var boundFileSystem = new WebInspector.FileSystemWorkspaceBinding.FileSystem(this, fileSystem, this._workspace);
+    var boundFileSystem = new Bindings.FileSystemWorkspaceBinding.FileSystem(this, fileSystem, this._workspace);
     this._boundFileSystems.set(fileSystem.path(), boundFileSystem);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onFileSystemRemoved(event) {
-    var fileSystem = /** @type {!WebInspector.IsolatedFileSystem} */ (event.data);
+    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
     var boundFileSystem = this._boundFileSystems.get(fileSystem.path());
     boundFileSystem.dispose();
     this._boundFileSystems.remove(fileSystem.path());
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _fileSystemFilesChanged(event) {
     var paths = /** @type {!Array<string>} */ (event.data);
@@ -160,7 +160,7 @@ WebInspector.FileSystemWorkspaceBinding = class {
   }
 
   dispose() {
-    WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     for (var fileSystem of this._boundFileSystems.values()) {
       fileSystem.dispose();
       this._boundFileSystems.remove(fileSystem._fileSystem.path());
@@ -168,33 +168,33 @@ WebInspector.FileSystemWorkspaceBinding = class {
   }
 };
 
-WebInspector.FileSystemWorkspaceBinding._styleSheetExtensions = new Set(['css', 'scss', 'sass', 'less']);
-WebInspector.FileSystemWorkspaceBinding._documentExtensions = new Set(['htm', 'html', 'asp', 'aspx', 'phtml', 'jsp']);
-WebInspector.FileSystemWorkspaceBinding._scriptExtensions = new Set([
+Bindings.FileSystemWorkspaceBinding._styleSheetExtensions = new Set(['css', 'scss', 'sass', 'less']);
+Bindings.FileSystemWorkspaceBinding._documentExtensions = new Set(['htm', 'html', 'asp', 'aspx', 'phtml', 'jsp']);
+Bindings.FileSystemWorkspaceBinding._scriptExtensions = new Set([
   'asp', 'aspx', 'c', 'cc', 'cljs', 'coffee', 'cpp', 'cs', 'dart', 'java', 'js',
   'jsp', 'jsx',  'h', 'm',  'mm',   'py',     'sh',  'ts', 'tsx',  'ls'
 ]);
 
-WebInspector.FileSystemWorkspaceBinding._imageExtensions = WebInspector.IsolatedFileSystem.ImageExtensions;
+Bindings.FileSystemWorkspaceBinding._imageExtensions = Workspace.IsolatedFileSystem.ImageExtensions;
 
 
 /**
- * @implements {WebInspector.Project}
+ * @implements {Workspace.Project}
  * @unrestricted
  */
-WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.ProjectStore {
+Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.ProjectStore {
   /**
-   * @param {!WebInspector.FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
-   * @param {!WebInspector.IsolatedFileSystem} isolatedFileSystem
-   * @param {!WebInspector.Workspace} workspace
+   * @param {!Bindings.FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
+   * @param {!Workspace.IsolatedFileSystem} isolatedFileSystem
+   * @param {!Workspace.Workspace} workspace
    */
   constructor(fileSystemWorkspaceBinding, isolatedFileSystem, workspace) {
     var fileSystemPath = isolatedFileSystem.path();
-    var id = WebInspector.FileSystemWorkspaceBinding.projectId(fileSystemPath);
+    var id = Bindings.FileSystemWorkspaceBinding.projectId(fileSystemPath);
     console.assert(!workspace.project(id));
     var displayName = fileSystemPath.substr(fileSystemPath.lastIndexOf('/') + 1);
 
-    super(workspace, id, WebInspector.projectTypes.FileSystem, displayName);
+    super(workspace, id, Workspace.projectTypes.FileSystem, displayName);
 
     this._fileSystem = isolatedFileSystem;
     this._fileSystemBaseURL = this._fileSystem.path() + '/';
@@ -220,7 +220,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {string}
    */
   _filePathForUISourceCode(uiSourceCode) {
@@ -229,37 +229,37 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @return {!Promise<?WebInspector.UISourceCodeMetadata>}
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {!Promise<?Workspace.UISourceCodeMetadata>}
    */
   requestMetadata(uiSourceCode) {
-    if (uiSourceCode[WebInspector.FileSystemWorkspaceBinding._metadata])
-      return uiSourceCode[WebInspector.FileSystemWorkspaceBinding._metadata];
+    if (uiSourceCode[Bindings.FileSystemWorkspaceBinding._metadata])
+      return uiSourceCode[Bindings.FileSystemWorkspaceBinding._metadata];
     var relativePath = this._filePathForUISourceCode(uiSourceCode);
     var promise = this._fileSystem.getMetadata(relativePath).then(onMetadata);
-    uiSourceCode[WebInspector.FileSystemWorkspaceBinding._metadata] = promise;
+    uiSourceCode[Bindings.FileSystemWorkspaceBinding._metadata] = promise;
     return promise;
 
     /**
      * @param {?{modificationTime: !Date, size: number}} metadata
-     * @return {?WebInspector.UISourceCodeMetadata}
+     * @return {?Workspace.UISourceCodeMetadata}
      */
     function onMetadata(metadata) {
       if (!metadata)
         return null;
-      return new WebInspector.UISourceCodeMetadata(metadata.modificationTime, metadata.size);
+      return new Workspace.UISourceCodeMetadata(metadata.modificationTime, metadata.size);
     }
   }
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {function(?string)} callback
    */
   requestFileContent(uiSourceCode, callback) {
     var filePath = this._filePathForUISourceCode(uiSourceCode);
     var isImage =
-        WebInspector.FileSystemWorkspaceBinding._imageExtensions.has(WebInspector.ParsedURL.extractExtension(filePath));
+        Bindings.FileSystemWorkspaceBinding._imageExtensions.has(Common.ParsedURL.extractExtension(filePath));
 
     this._fileSystem.requestFileContent(filePath, isImage ? base64CallbackWrapper : callback);
 
@@ -286,7 +286,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newContent
    * @param {function(?string)} callback
    */
@@ -305,9 +305,9 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newName
-   * @param {function(boolean, string=, string=, !WebInspector.ResourceType=)} callback
+   * @param {function(boolean, string=, string=, !Common.ResourceType=)} callback
    */
   rename(uiSourceCode, newName, callback) {
     if (newName === uiSourceCode.name()) {
@@ -321,7 +321,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
     /**
      * @param {boolean} success
      * @param {string=} newName
-     * @this {WebInspector.FileSystemWorkspaceBinding.FileSystem}
+     * @this {Bindings.FileSystemWorkspaceBinding.FileSystem}
      */
     function innerCallback(success, newName) {
       if (!success || !newName) {
@@ -335,7 +335,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
       filePath = filePath.substr(1);
       var extension = this._extensionForPath(newName);
       var newURL = this._fileSystemBaseURL + filePath;
-      var newContentType = WebInspector.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
+      var newContentType = Bindings.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
       this.renameUISourceCode(uiSourceCode, newName);
       callback(true, newName, newURL, newContentType);
     }
@@ -343,11 +343,11 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
    */
   searchInFileContent(uiSourceCode, query, caseSensitive, isRegex, callback) {
     var filePath = this._filePathForUISourceCode(uiSourceCode);
@@ -359,16 +359,16 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
     function contentCallback(content) {
       var result = [];
       if (content !== null)
-        result = WebInspector.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
+        result = Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
       callback(result);
     }
   }
 
   /**
    * @override
-   * @param {!WebInspector.ProjectSearchConfig} searchConfig
+   * @param {!Workspace.ProjectSearchConfig} searchConfig
    * @param {!Array.<string>} filesMathingFileQuery
-   * @param {!WebInspector.Progress} progress
+   * @param {!Common.Progress} progress
    * @param {function(!Array.<string>)} callback
    */
   findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress, callback) {
@@ -380,7 +380,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
     searchNextQuery.call(this);
 
     /**
-     * @this {WebInspector.FileSystemWorkspaceBinding.FileSystem}
+     * @this {Bindings.FileSystemWorkspaceBinding.FileSystem}
      */
     function searchNextQuery() {
       if (!queriesToRun.length) {
@@ -394,7 +394,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
 
     /**
      * @param {!Array.<string>} files
-     * @this {WebInspector.FileSystemWorkspaceBinding.FileSystem}
+     * @this {Bindings.FileSystemWorkspaceBinding.FileSystem}
      */
     function innerCallback(files) {
       files = files.sort();
@@ -406,7 +406,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
 
   /**
    * @override
-   * @param {!WebInspector.Progress} progress
+   * @param {!Common.Progress} progress
    */
   indexContent(progress) {
     this._fileSystem.indexContent(progress);
@@ -430,7 +430,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
 
     /**
      * @param {number} from
-     * @this {WebInspector.FileSystemWorkspaceBinding.FileSystem}
+     * @this {Bindings.FileSystemWorkspaceBinding.FileSystem}
      */
     function reportFileChunk(from) {
       var to = Math.min(from + chunkSize, filePaths.length);
@@ -466,7 +466,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
    * @param {string} path
    * @param {?string} name
    * @param {string} content
-   * @param {function(?WebInspector.UISourceCode)} callback
+   * @param {function(?Workspace.UISourceCode)} callback
    */
   createFile(path, name, content, callback) {
     this._fileSystem.createFile(path, name, innerCallback.bind(this));
@@ -474,7 +474,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
 
     /**
      * @param {?string} filePath
-     * @this {WebInspector.FileSystemWorkspaceBinding.FileSystem}
+     * @this {Bindings.FileSystemWorkspaceBinding.FileSystem}
      */
     function innerCallback(filePath) {
       if (!filePath) {
@@ -490,7 +490,7 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
     }
 
     /**
-     * @this {WebInspector.FileSystemWorkspaceBinding.FileSystem}
+     * @this {Bindings.FileSystemWorkspaceBinding.FileSystem}
      */
     function contentSet() {
       callback(this._addFile(createFilePath));
@@ -515,11 +515,11 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
 
   /**
    * @param {string} filePath
-   * @return {!WebInspector.UISourceCode}
+   * @return {!Workspace.UISourceCode}
    */
   _addFile(filePath) {
     var extension = this._extensionForPath(filePath);
-    var contentType = WebInspector.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
+    var contentType = Bindings.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
 
     var uiSourceCode = this.createUISourceCode(this._fileSystemBaseURL + filePath, contentType);
     this.addUISourceCode(uiSourceCode);
@@ -532,11 +532,11 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
   _fileChanged(path) {
     var uiSourceCode = this.uiSourceCodeForURL(path);
     if (!uiSourceCode) {
-      var contentType = WebInspector.FileSystemWorkspaceBinding._contentTypeForExtension(this._extensionForPath(path));
+      var contentType = Bindings.FileSystemWorkspaceBinding._contentTypeForExtension(this._extensionForPath(path));
       this.addUISourceCode(this.createUISourceCode(path, contentType));
       return;
     }
-    uiSourceCode[WebInspector.FileSystemWorkspaceBinding._metadata] = null;
+    uiSourceCode[Bindings.FileSystemWorkspaceBinding._metadata] = null;
     uiSourceCode.checkContentUpdated();
   }
 
@@ -545,4 +545,4 @@ WebInspector.FileSystemWorkspaceBinding.FileSystem = class extends WebInspector.
   }
 };
 
-WebInspector.FileSystemWorkspaceBinding._metadata = Symbol('FileSystemWorkspaceBinding.Metadata');
+Bindings.FileSystemWorkspaceBinding._metadata = Symbol('FileSystemWorkspaceBinding.Metadata');

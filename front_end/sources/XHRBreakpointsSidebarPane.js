@@ -2,30 +2,30 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.ContextFlavorListener}
- * @implements {WebInspector.TargetManager.Observer}
- * @implements {WebInspector.ToolbarItem.ItemsProvider}
+ * @implements {UI.ContextFlavorListener}
+ * @implements {SDK.TargetManager.Observer}
+ * @implements {UI.ToolbarItem.ItemsProvider}
  * @unrestricted
  */
-WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsSidebarPaneBase {
+Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarPaneBase {
   constructor() {
     super();
-    this._xhrBreakpointsSetting = WebInspector.settings.createLocalSetting('xhrBreakpoints', []);
+    this._xhrBreakpointsSetting = Common.settings.createLocalSetting('xhrBreakpoints', []);
 
     /** @type {!Map.<string, !Element>} */
     this._breakpointElements = new Map();
 
-    this._addButton = new WebInspector.ToolbarButton(WebInspector.UIString('Add breakpoint'), 'largeicon-add');
+    this._addButton = new UI.ToolbarButton(Common.UIString('Add breakpoint'), 'largeicon-add');
     this._addButton.addEventListener('click', this._addButtonClicked.bind(this));
 
     this.emptyElement.addEventListener('contextmenu', this._emptyElementContextMenu.bind(this), true);
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
     this._update();
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     this._restoreBreakpoints(target);
@@ -33,22 +33,22 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
   }
 
   /**
    * @override
-   * @return {!Array<!WebInspector.ToolbarItem>}
+   * @return {!Array<!UI.ToolbarItem>}
    */
   toolbarItems() {
     return [this._addButton];
   }
 
   _emptyElementContextMenu(event) {
-    var contextMenu = new WebInspector.ContextMenu(event);
-    contextMenu.appendItem(WebInspector.UIString.capitalize('Add ^breakpoint'), this._addButtonClicked.bind(this));
+    var contextMenu = new UI.ContextMenu(event);
+    contextMenu.appendItem(Common.UIString.capitalize('Add ^breakpoint'), this._addButtonClicked.bind(this));
     contextMenu.show();
   }
 
@@ -56,10 +56,10 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
     if (event)
       event.consume();
 
-    WebInspector.viewManager.showView('sources.xhrBreakpoints');
+    UI.viewManager.showView('sources.xhrBreakpoints');
 
     var inputElementContainer = createElementWithClass('p', 'breakpoint-condition');
-    inputElementContainer.textContent = WebInspector.UIString('Break when URL contains:');
+    inputElementContainer.textContent = Common.UIString('Break when URL contains:');
 
     var inputElement = inputElementContainer.createChild('span', 'editing');
     inputElement.id = 'breakpoint-condition-input';
@@ -69,7 +69,7 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
      * @param {boolean} accept
      * @param {!Element} e
      * @param {string} text
-     * @this {WebInspector.XHRBreakpointsSidebarPane}
+     * @this {Sources.XHRBreakpointsSidebarPane}
      */
     function finishEditing(accept, e, text) {
       this.removeListElement(inputElementContainer);
@@ -79,14 +79,14 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
       }
     }
 
-    var config = new WebInspector.InplaceEditor.Config(finishEditing.bind(this, true), finishEditing.bind(this, false));
-    WebInspector.InplaceEditor.startEditing(inputElement, config);
+    var config = new UI.InplaceEditor.Config(finishEditing.bind(this, true), finishEditing.bind(this, false));
+    UI.InplaceEditor.startEditing(inputElement, config);
   }
 
   /**
    * @param {string} url
    * @param {boolean} enabled
-   * @param {!WebInspector.Target=} target
+   * @param {!SDK.Target=} target
    */
   _setBreakpoint(url, enabled, target) {
     if (enabled)
@@ -101,7 +101,7 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
     element._url = url;
     element.addEventListener('contextmenu', this._contextMenu.bind(this, url), true);
 
-    var title = url ? WebInspector.UIString('URL contains "%s"', url) : WebInspector.UIString('Any XHR');
+    var title = url ? Common.UIString('URL contains "%s"', url) : Common.UIString('Any XHR');
     var label = createCheckboxLabel(title, enabled);
     element.appendChild(label);
     label.checkboxElement.addEventListener('click', this._checkboxClicked.bind(this, url), false);
@@ -122,7 +122,7 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
 
   /**
    * @param {string} url
-   * @param {!WebInspector.Target=} target
+   * @param {!SDK.Target=} target
    */
   _removeBreakpoint(url, target) {
     var element = this._breakpointElements.get(url);
@@ -138,10 +138,10 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
   /**
    * @param {string} url
    * @param {boolean} enable
-   * @param {!WebInspector.Target=} target
+   * @param {!SDK.Target=} target
    */
   _updateBreakpointOnTarget(url, enable, target) {
-    var targets = target ? [target] : WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser);
+    var targets = target ? [target] : SDK.targetManager.targets(SDK.Target.Capability.Browser);
     for (target of targets) {
       if (enable)
         target.domdebuggerAgent().setXHRBreakpoint(url);
@@ -151,10 +151,10 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
   }
 
   _contextMenu(url, event) {
-    var contextMenu = new WebInspector.ContextMenu(event);
+    var contextMenu = new UI.ContextMenu(event);
 
     /**
-     * @this {WebInspector.XHRBreakpointsSidebarPane}
+     * @this {Sources.XHRBreakpointsSidebarPane}
      */
     function removeBreakpoint() {
       this._removeBreakpoint(url);
@@ -162,17 +162,17 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
     }
 
     /**
-     * @this {WebInspector.XHRBreakpointsSidebarPane}
+     * @this {Sources.XHRBreakpointsSidebarPane}
      */
     function removeAllBreakpoints() {
       for (var url of this._breakpointElements.keys())
         this._removeBreakpoint(url);
       this._saveBreakpoints();
     }
-    var removeAllTitle = WebInspector.UIString.capitalize('Remove ^all ^breakpoints');
+    var removeAllTitle = Common.UIString.capitalize('Remove ^all ^breakpoints');
 
-    contextMenu.appendItem(WebInspector.UIString.capitalize('Add ^breakpoint'), this._addButtonClicked.bind(this));
-    contextMenu.appendItem(WebInspector.UIString.capitalize('Remove ^breakpoint'), removeBreakpoint.bind(this));
+    contextMenu.appendItem(Common.UIString.capitalize('Add ^breakpoint'), this._addButtonClicked.bind(this));
+    contextMenu.appendItem(Common.UIString.capitalize('Remove ^breakpoint'), removeBreakpoint.bind(this));
     contextMenu.appendItem(removeAllTitle, removeAllBreakpoints.bind(this));
     contextMenu.show();
   }
@@ -193,7 +193,7 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
      * @param {boolean} accept
      * @param {!Element} e
      * @param {string} text
-     * @this {WebInspector.XHRBreakpointsSidebarPane}
+     * @this {Sources.XHRBreakpointsSidebarPane}
      */
     function finishEditing(accept, e, text) {
       this.removeListElement(inputElement);
@@ -205,9 +205,9 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
         element.classList.remove('hidden');
     }
 
-    WebInspector.InplaceEditor.startEditing(
+    UI.InplaceEditor.startEditing(
         inputElement,
-        new WebInspector.InplaceEditor.Config(finishEditing.bind(this, true), finishEditing.bind(this, false)));
+        new UI.InplaceEditor.Config(finishEditing.bind(this, true), finishEditing.bind(this, false)));
   }
 
   /**
@@ -219,8 +219,8 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
   }
 
   _update() {
-    var details = WebInspector.context.flavor(WebInspector.DebuggerPausedDetails);
-    if (!details || details.reason !== WebInspector.DebuggerModel.BreakReason.XHR) {
+    var details = UI.context.flavor(SDK.DebuggerPausedDetails);
+    if (!details || details.reason !== SDK.DebuggerModel.BreakReason.XHR) {
       if (this._highlightedElement) {
         this._highlightedElement.classList.remove('breakpoint-hit');
         delete this._highlightedElement;
@@ -231,7 +231,7 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
     var element = this._breakpointElements.get(url);
     if (!element)
       return;
-    WebInspector.viewManager.showView('sources.xhrBreakpoints');
+    UI.viewManager.showView('sources.xhrBreakpoints');
     element.classList.add('breakpoint-hit');
     this._highlightedElement = element;
   }
@@ -244,7 +244,7 @@ WebInspector.XHRBreakpointsSidebarPane = class extends WebInspector.BreakpointsS
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   _restoreBreakpoints(target) {
     var breakpoints = this._xhrBreakpointsSetting.get();

@@ -4,39 +4,39 @@
 /**
  * @unrestricted
  */
-WebInspector.ActionRegistry = class {
+UI.ActionRegistry = class {
   constructor() {
-    /** @type {!Map.<string, !WebInspector.Action>} */
+    /** @type {!Map.<string, !UI.Action>} */
     this._actionsById = new Map();
     this._registerActions();
   }
 
   _registerActions() {
-    self.runtime.extensions(WebInspector.ActionDelegate).forEach(registerExtension, this);
+    self.runtime.extensions(UI.ActionDelegate).forEach(registerExtension, this);
 
     /**
      * @param {!Runtime.Extension} extension
-     * @this {WebInspector.ActionRegistry}
+     * @this {UI.ActionRegistry}
      */
     function registerExtension(extension) {
       var actionId = extension.descriptor()['actionId'];
       console.assert(actionId);
       console.assert(!this._actionsById.get(actionId));
-      this._actionsById.set(actionId, new WebInspector.Action(extension));
+      this._actionsById.set(actionId, new UI.Action(extension));
     }
   }
 
   /**
-   * @return {!Array.<!WebInspector.Action>}
+   * @return {!Array.<!UI.Action>}
    */
   availableActions() {
-    return this.applicableActions(this._actionsById.keysArray(), WebInspector.context);
+    return this.applicableActions(this._actionsById.keysArray(), UI.context);
   }
 
   /**
    * @param {!Array.<string>} actionIds
-   * @param {!WebInspector.Context} context
-   * @return {!Array.<!WebInspector.Action>}
+   * @param {!UI.Context} context
+   * @return {!Array.<!UI.Action>}
    */
   applicableActions(actionIds, context) {
     var extensions = [];
@@ -49,17 +49,17 @@ WebInspector.ActionRegistry = class {
 
     /**
      * @param {!Runtime.Extension} extension
-     * @return {!WebInspector.Action}
-     * @this {WebInspector.ActionRegistry}
+     * @return {!UI.Action}
+     * @this {UI.ActionRegistry}
      */
     function extensionToAction(extension) {
-      return /** @type {!WebInspector.Action} */ (this.action(extension.descriptor()['actionId']));
+      return /** @type {!UI.Action} */ (this.action(extension.descriptor()['actionId']));
     }
   }
 
   /**
    * @param {string} actionId
-   * @return {?WebInspector.Action}
+   * @return {?UI.Action}
    */
   action(actionId) {
     return this._actionsById.get(actionId) || null;
@@ -69,7 +69,7 @@ WebInspector.ActionRegistry = class {
 /**
  * @unrestricted
  */
-WebInspector.Action = class extends WebInspector.Object {
+UI.Action = class extends Common.Object {
   /**
    * @param {!Runtime.Extension} extension
    */
@@ -96,12 +96,12 @@ WebInspector.Action = class extends WebInspector.Object {
     /**
      * @param {!Object} actionDelegate
      * @return {boolean}
-     * @this {WebInspector.Action}
+     * @this {UI.Action}
      */
     function handleAction(actionDelegate) {
       var actionId = this._extension.descriptor()['actionId'];
-      var delegate = /** @type {!WebInspector.ActionDelegate} */ (actionDelegate);
-      return delegate.handleAction(WebInspector.context, actionId);
+      var delegate = /** @type {!UI.ActionDelegate} */ (actionDelegate);
+      return delegate.handleAction(UI.context, actionId);
     }
   }
 
@@ -134,7 +134,7 @@ WebInspector.Action = class extends WebInspector.Object {
       return;
 
     this._enabled = enabled;
-    this.dispatchEventToListeners(WebInspector.Action.Events.Enabled, enabled);
+    this.dispatchEventToListeners(UI.Action.Events.Enabled, enabled);
   }
 
   /**
@@ -188,12 +188,12 @@ WebInspector.Action = class extends WebInspector.Object {
       return;
 
     this._toggled = toggled;
-    this.dispatchEventToListeners(WebInspector.Action.Events.Toggled, toggled);
+    this.dispatchEventToListeners(UI.Action.Events.Toggled, toggled);
   }
 };
 
 /** @enum {symbol} */
-WebInspector.Action.Events = {
+UI.Action.Events = {
   Enabled: Symbol('Enabled'),
   Toggled: Symbol('Toggled')
 };
@@ -201,16 +201,16 @@ WebInspector.Action.Events = {
 /**
  * @interface
  */
-WebInspector.ActionDelegate = function() {};
+UI.ActionDelegate = function() {};
 
-WebInspector.ActionDelegate.prototype = {
+UI.ActionDelegate.prototype = {
   /**
-   * @param {!WebInspector.Context} context
+   * @param {!UI.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction: function(context, actionId) {}
 };
 
-/** @type {!WebInspector.ActionRegistry} */
-WebInspector.actionRegistry;
+/** @type {!UI.ActionRegistry} */
+UI.actionRegistry;

@@ -31,46 +31,46 @@
 /**
  * @unrestricted
  */
-WebInspector.PresentationConsoleMessageHelper = class {
+Bindings.PresentationConsoleMessageHelper = class {
   /**
-   * @param {!WebInspector.Workspace} workspace
+   * @param {!Workspace.Workspace} workspace
    */
   constructor(workspace) {
     this._workspace = workspace;
 
-    /** @type {!Object.<string, !Array.<!WebInspector.ConsoleMessage>>} */
+    /** @type {!Object.<string, !Array.<!SDK.ConsoleMessage>>} */
     this._pendingConsoleMessages = {};
 
-    /** @type {!Array.<!WebInspector.PresentationConsoleMessage>} */
+    /** @type {!Array.<!Bindings.PresentationConsoleMessage>} */
     this._presentationConsoleMessages = [];
 
-    WebInspector.multitargetConsoleModel.addEventListener(
-        WebInspector.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
-    WebInspector.multitargetConsoleModel.addEventListener(
-        WebInspector.ConsoleModel.Events.MessageAdded, this._onConsoleMessageAdded, this);
-    WebInspector.multitargetConsoleModel.messages().forEach(this._consoleMessageAdded, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource,
+    SDK.multitargetConsoleModel.addEventListener(
+        SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
+    SDK.multitargetConsoleModel.addEventListener(
+        SDK.ConsoleModel.Events.MessageAdded, this._onConsoleMessageAdded, this);
+    SDK.multitargetConsoleModel.messages().forEach(this._consoleMessageAdded, this);
+    SDK.targetManager.addModelListener(
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource,
         this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.FailedToParseScriptSource,
+    SDK.targetManager.addModelListener(
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.FailedToParseScriptSource,
         this._parsedScriptSource, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
+    SDK.targetManager.addModelListener(
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
 
-    this._locationPool = new WebInspector.LiveLocationPool();
+    this._locationPool = new Bindings.LiveLocationPool();
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onConsoleMessageAdded(event) {
-    var message = /** @type {!WebInspector.ConsoleMessage} */ (event.data);
+    var message = /** @type {!SDK.ConsoleMessage} */ (event.data);
     this._consoleMessageAdded(message);
   }
 
   /**
-   * @param {!WebInspector.ConsoleMessage} message
+   * @param {!SDK.ConsoleMessage} message
    */
   _consoleMessageAdded(message) {
     if (!message.isErrorOrWarning())
@@ -84,11 +84,11 @@ WebInspector.PresentationConsoleMessageHelper = class {
   }
 
   /**
-   * @param {!WebInspector.ConsoleMessage} message
-   * @return {?WebInspector.DebuggerModel.Location}
+   * @param {!SDK.ConsoleMessage} message
+   * @return {?SDK.DebuggerModel.Location}
    */
   _rawLocation(message) {
-    var debuggerModel = WebInspector.DebuggerModel.fromTarget(message.target());
+    var debuggerModel = SDK.DebuggerModel.fromTarget(message.target());
     if (!debuggerModel)
       return null;
     if (message.scriptId)
@@ -103,16 +103,16 @@ WebInspector.PresentationConsoleMessageHelper = class {
   }
 
   /**
-   * @param {!WebInspector.ConsoleMessage} message
-   * @param {!WebInspector.DebuggerModel.Location} rawLocation
+   * @param {!SDK.ConsoleMessage} message
+   * @param {!SDK.DebuggerModel.Location} rawLocation
    */
   _addConsoleMessageToScript(message, rawLocation) {
     this._presentationConsoleMessages.push(
-        new WebInspector.PresentationConsoleMessage(message, rawLocation, this._locationPool));
+        new Bindings.PresentationConsoleMessage(message, rawLocation, this._locationPool));
   }
 
   /**
-   * @param {!WebInspector.ConsoleMessage} message
+   * @param {!SDK.ConsoleMessage} message
    */
   _addPendingConsoleMessage(message) {
     if (!message.url)
@@ -123,10 +123,10 @@ WebInspector.PresentationConsoleMessageHelper = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _parsedScriptSource(event) {
-    var script = /** @type {!WebInspector.Script} */ (event.data);
+    var script = /** @type {!SDK.Script} */ (event.data);
 
     var messages = this._pendingConsoleMessages[script.sourceURL];
     if (!messages)
@@ -166,23 +166,23 @@ WebInspector.PresentationConsoleMessageHelper = class {
 /**
  * @unrestricted
  */
-WebInspector.PresentationConsoleMessage = class {
+Bindings.PresentationConsoleMessage = class {
   /**
-   * @param {!WebInspector.ConsoleMessage} message
-   * @param {!WebInspector.DebuggerModel.Location} rawLocation
-   * @param {!WebInspector.LiveLocationPool} locationPool
+   * @param {!SDK.ConsoleMessage} message
+   * @param {!SDK.DebuggerModel.Location} rawLocation
+   * @param {!Bindings.LiveLocationPool} locationPool
    */
   constructor(message, rawLocation, locationPool) {
     this._text = message.messageText;
-    this._level = message.level === WebInspector.ConsoleMessage.MessageLevel.Error ?
-        WebInspector.UISourceCode.Message.Level.Error :
-        WebInspector.UISourceCode.Message.Level.Warning;
-    WebInspector.debuggerWorkspaceBinding.createLiveLocation(
+    this._level = message.level === SDK.ConsoleMessage.MessageLevel.Error ?
+        Workspace.UISourceCode.Message.Level.Error :
+        Workspace.UISourceCode.Message.Level.Warning;
+    Bindings.debuggerWorkspaceBinding.createLiveLocation(
         rawLocation, this._updateLocation.bind(this), locationPool);
   }
 
   /**
-   * @param {!WebInspector.LiveLocation} liveLocation
+   * @param {!Bindings.LiveLocation} liveLocation
    */
   _updateLocation(liveLocation) {
     if (this._uiMessage)
@@ -200,5 +200,5 @@ WebInspector.PresentationConsoleMessage = class {
   }
 };
 
-/** @type {!WebInspector.PresentationConsoleMessageHelper} */
-WebInspector.presentationConsoleMessageHelper;
+/** @type {!Bindings.PresentationConsoleMessageHelper} */
+Bindings.presentationConsoleMessageHelper;

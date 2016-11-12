@@ -6,17 +6,17 @@
             "id": "network",
             "title": "Network",
             "order": 40,
-            "className": "WebInspector.NetworkPanel"
+            "className": "Network.NetworkPanel"
         },
         {
-            "type": "@WebInspector.ContextMenu.Provider",
-            "contextTypes": ["WebInspector.NetworkRequest", "WebInspector.Resource", "WebInspector.UISourceCode"],
-            "className": "WebInspector.NetworkPanel.ContextMenuProvider"
+            "type": "@UI.ContextMenu.Provider",
+            "contextTypes": ["SDK.NetworkRequest", "SDK.Resource", "Workspace.UISourceCode"],
+            "className": "Network.NetworkPanel.ContextMenuProvider"
         },
         {
-            "type": "@WebInspector.Revealer",
-            "contextTypes": ["WebInspector.NetworkRequest"],
-            "className": "WebInspector.NetworkPanel.RequestRevealer"
+            "type": "@Common.Revealer",
+            "contextTypes": ["SDK.NetworkRequest"],
+            "className": "Network.NetworkPanel.RequestRevealer"
         },
         {
             "type": "setting",
@@ -32,20 +32,20 @@
             ]
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "network.blocked-urls.show",
-            "className": "WebInspector.BlockedURLsPane.ActionDelegate",
+            "className": "Network.BlockedURLsPane.ActionDelegate",
             "iconClass": "largeicon-block",
             "title": "Block network requests"
         },
         {
-            "type": "@WebInspector.ActionDelegate",
+            "type": "@UI.ActionDelegate",
             "actionId": "network.toggle-recording",
             "iconClass": "largeicon-start-recording",
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
-            "contextTypes": ["WebInspector.NetworkPanel"],
-            "className": "WebInspector.NetworkPanel.RecordActionDelegate",
+            "contextTypes": ["Network.NetworkPanel"],
+            "className": "Network.NetworkPanel.RecordActionDelegate",
             "options": [
                 { "value": true, "title": "Record network log" },
                 { "value": false, "title": "Stop recording network log" }
@@ -68,7 +68,7 @@
             "title": "Request blocking",
             "persistence": "closeable",
             "order": 60,
-            "className": "WebInspector.BlockedURLsPane",
+            "className": "Network.BlockedURLsPane",
             "experiment": "requestBlocking"
         },
         {
@@ -78,7 +78,7 @@
             "title": "Network conditions",
             "persistence": "closeable",
             "order": 40,
-            "className": "WebInspector.NetworkConfigView",
+            "className": "Network.NetworkConfigView",
             "tags": "disk cache, network throttling, useragent, user agent"
         }
     ],

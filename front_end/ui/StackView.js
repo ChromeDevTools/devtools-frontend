@@ -29,7 +29,7 @@
 /**
  * @unrestricted
  */
-WebInspector.StackView = class extends WebInspector.VBox {
+UI.StackView = class extends UI.VBox {
   /**
    * @param {boolean} isVertical
    */
@@ -40,14 +40,14 @@ WebInspector.StackView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Widget} view
+   * @param {!UI.Widget} view
    * @param {string=} sidebarSizeSettingName
    * @param {number=} defaultSidebarWidth
    * @param {number=} defaultSidebarHeight
-   * @return {?WebInspector.SplitWidget}
+   * @return {?UI.SplitWidget}
    */
   appendView(view, sidebarSizeSettingName, defaultSidebarWidth, defaultSidebarHeight) {
-    var splitWidget = new WebInspector.SplitWidget(
+    var splitWidget = new UI.SplitWidget(
         this._isVertical, true, sidebarSizeSettingName, defaultSidebarWidth, defaultSidebarHeight);
     splitWidget.setMainWidget(view);
     splitWidget.hideSidebar();

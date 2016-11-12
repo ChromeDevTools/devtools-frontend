@@ -2,67 +2,67 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.DeviceModeModel = class {
+Emulation.DeviceModeModel = class {
   /**
    * @param {function()} updateCallback
    */
   constructor(updateCallback) {
     this._updateCallback = updateCallback;
-    this._screenRect = new WebInspector.Rect(0, 0, 1, 1);
-    this._visiblePageRect = new WebInspector.Rect(0, 0, 1, 1);
+    this._screenRect = new Common.Rect(0, 0, 1, 1);
+    this._visiblePageRect = new Common.Rect(0, 0, 1, 1);
     this._availableSize = new Size(1, 1);
     this._preferredSize = new Size(1, 1);
     this._initialized = false;
-    this._deviceMetricsThrottler = new WebInspector.Throttler(0);
+    this._deviceMetricsThrottler = new Common.Throttler(0);
     this._appliedDeviceSize = new Size(1, 1);
     this._appliedDeviceScaleFactor = window.devicePixelRatio;
-    this._appliedUserAgentType = WebInspector.DeviceModeModel.UA.Desktop;
+    this._appliedUserAgentType = Emulation.DeviceModeModel.UA.Desktop;
 
-    this._scaleSetting = WebInspector.settings.createSetting('emulation.deviceScale', 1);
+    this._scaleSetting = Common.settings.createSetting('emulation.deviceScale', 1);
     // We've used to allow zero before.
     if (!this._scaleSetting.get())
       this._scaleSetting.set(1);
     this._scaleSetting.addChangeListener(this._scaleSettingChanged, this);
 
-    this._widthSetting = WebInspector.settings.createSetting('emulation.deviceWidth', 400);
-    if (this._widthSetting.get() < WebInspector.DeviceModeModel.MinDeviceSize)
-      this._widthSetting.set(WebInspector.DeviceModeModel.MinDeviceSize);
-    if (this._widthSetting.get() > WebInspector.DeviceModeModel.MaxDeviceSize)
-      this._widthSetting.set(WebInspector.DeviceModeModel.MaxDeviceSize);
+    this._widthSetting = Common.settings.createSetting('emulation.deviceWidth', 400);
+    if (this._widthSetting.get() < Emulation.DeviceModeModel.MinDeviceSize)
+      this._widthSetting.set(Emulation.DeviceModeModel.MinDeviceSize);
+    if (this._widthSetting.get() > Emulation.DeviceModeModel.MaxDeviceSize)
+      this._widthSetting.set(Emulation.DeviceModeModel.MaxDeviceSize);
     this._widthSetting.addChangeListener(this._widthSettingChanged, this);
 
-    this._heightSetting = WebInspector.settings.createSetting('emulation.deviceHeight', 0);
-    if (this._heightSetting.get() && this._heightSetting.get() < WebInspector.DeviceModeModel.MinDeviceSize)
-      this._heightSetting.set(WebInspector.DeviceModeModel.MinDeviceSize);
-    if (this._heightSetting.get() > WebInspector.DeviceModeModel.MaxDeviceSize)
-      this._heightSetting.set(WebInspector.DeviceModeModel.MaxDeviceSize);
+    this._heightSetting = Common.settings.createSetting('emulation.deviceHeight', 0);
+    if (this._heightSetting.get() && this._heightSetting.get() < Emulation.DeviceModeModel.MinDeviceSize)
+      this._heightSetting.set(Emulation.DeviceModeModel.MinDeviceSize);
+    if (this._heightSetting.get() > Emulation.DeviceModeModel.MaxDeviceSize)
+      this._heightSetting.set(Emulation.DeviceModeModel.MaxDeviceSize);
     this._heightSetting.addChangeListener(this._heightSettingChanged, this);
 
-    this._uaSetting = WebInspector.settings.createSetting('emulation.deviceUA', WebInspector.DeviceModeModel.UA.Mobile);
+    this._uaSetting = Common.settings.createSetting('emulation.deviceUA', Emulation.DeviceModeModel.UA.Mobile);
     this._uaSetting.addChangeListener(this._uaSettingChanged, this);
-    this._deviceScaleFactorSetting = WebInspector.settings.createSetting('emulation.deviceScaleFactor', 0);
+    this._deviceScaleFactorSetting = Common.settings.createSetting('emulation.deviceScaleFactor', 0);
     this._deviceScaleFactorSetting.addChangeListener(this._deviceScaleFactorSettingChanged, this);
 
-    this._deviceOutlineSetting = WebInspector.settings.moduleSetting('emulation.showDeviceOutline');
+    this._deviceOutlineSetting = Common.settings.moduleSetting('emulation.showDeviceOutline');
     this._deviceOutlineSetting.addChangeListener(this._deviceOutlineSettingChanged, this);
 
-    /** @type {!WebInspector.DeviceModeModel.Type} */
-    this._type = WebInspector.DeviceModeModel.Type.None;
-    /** @type {?WebInspector.EmulatedDevice} */
+    /** @type {!Emulation.DeviceModeModel.Type} */
+    this._type = Emulation.DeviceModeModel.Type.None;
+    /** @type {?Emulation.EmulatedDevice} */
     this._device = null;
-    /** @type {?WebInspector.EmulatedDevice.Mode} */
+    /** @type {?Emulation.EmulatedDevice.Mode} */
     this._mode = null;
     /** @type {number} */
     this._fitScale = 1;
 
-    /** @type {?WebInspector.Target} */
+    /** @type {?SDK.Target} */
     this._target = null;
     /** @type {?function()} */
     this._onTargetAvailable = null;
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
   }
 
   /**
@@ -70,8 +70,8 @@ WebInspector.DeviceModeModel = class {
    * @return {boolean}
    */
   static deviceSizeValidator(value) {
-    if (/^[\d]+$/.test(value) && value >= WebInspector.DeviceModeModel.MinDeviceSize &&
-        value <= WebInspector.DeviceModeModel.MaxDeviceSize)
+    if (/^[\d]+$/.test(value) && value >= Emulation.DeviceModeModel.MinDeviceSize &&
+        value <= Emulation.DeviceModeModel.MaxDeviceSize)
       return true;
     return false;
   }
@@ -98,16 +98,16 @@ WebInspector.DeviceModeModel = class {
   }
 
   /**
-   * @param {!WebInspector.DeviceModeModel.Type} type
-   * @param {?WebInspector.EmulatedDevice} device
-   * @param {?WebInspector.EmulatedDevice.Mode} mode
+   * @param {!Emulation.DeviceModeModel.Type} type
+   * @param {?Emulation.EmulatedDevice} device
+   * @param {?Emulation.EmulatedDevice.Mode} mode
    * @param {number=} scale
    */
   emulate(type, device, mode, scale) {
     var resetPageScaleFactor = this._type !== type || this._device !== device || this._mode !== mode;
     this._type = type;
 
-    if (type === WebInspector.DeviceModeModel.Type.Device) {
+    if (type === Emulation.DeviceModeModel.Type.Device) {
       console.assert(device && mode, 'Must pass device and mode for device emulation');
       this._mode = mode;
       this._device = device;
@@ -123,8 +123,8 @@ WebInspector.DeviceModeModel = class {
       this._mode = null;
     }
 
-    if (type !== WebInspector.DeviceModeModel.Type.None)
-      WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.DeviceModeEnabled);
+    if (type !== Emulation.DeviceModeModel.Type.None)
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.DeviceModeEnabled);
     this._calculateAndEmulate(resetPageScaleFactor);
   }
 
@@ -132,7 +132,7 @@ WebInspector.DeviceModeModel = class {
    * @param {number} width
    */
   setWidth(width) {
-    var max = Math.min(WebInspector.DeviceModeModel.MaxDeviceSize, this._preferredScaledWidth());
+    var max = Math.min(Emulation.DeviceModeModel.MaxDeviceSize, this._preferredScaledWidth());
     width = Math.max(Math.min(width, max), 1);
     this._widthSetting.set(width);
   }
@@ -141,7 +141,7 @@ WebInspector.DeviceModeModel = class {
    * @param {number} width
    */
   setWidthAndScaleToFit(width) {
-    width = Math.max(Math.min(width, WebInspector.DeviceModeModel.MaxDeviceSize), 1);
+    width = Math.max(Math.min(width, Emulation.DeviceModeModel.MaxDeviceSize), 1);
     this._scaleSetting.set(this._calculateFitScale(width, this._heightSetting.get()));
     this._widthSetting.set(width);
   }
@@ -150,7 +150,7 @@ WebInspector.DeviceModeModel = class {
    * @param {number} height
    */
   setHeight(height) {
-    var max = Math.min(WebInspector.DeviceModeModel.MaxDeviceSize, this._preferredScaledHeight());
+    var max = Math.min(Emulation.DeviceModeModel.MaxDeviceSize, this._preferredScaledHeight());
     height = Math.max(Math.min(height, max), 0);
     if (height === this._preferredScaledHeight())
       height = 0;
@@ -161,7 +161,7 @@ WebInspector.DeviceModeModel = class {
    * @param {number} height
    */
   setHeightAndScaleToFit(height) {
-    height = Math.max(Math.min(height, WebInspector.DeviceModeModel.MaxDeviceSize), 0);
+    height = Math.max(Math.min(height, Emulation.DeviceModeModel.MaxDeviceSize), 0);
     this._scaleSetting.set(this._calculateFitScale(this._widthSetting.get(), height));
     this._heightSetting.set(height);
   }
@@ -174,21 +174,21 @@ WebInspector.DeviceModeModel = class {
   }
 
   /**
-   * @return {?WebInspector.EmulatedDevice}
+   * @return {?Emulation.EmulatedDevice}
    */
   device() {
     return this._device;
   }
 
   /**
-   * @return {?WebInspector.EmulatedDevice.Mode}
+   * @return {?Emulation.EmulatedDevice.Mode}
    */
   mode() {
     return this._mode;
   }
 
   /**
-   * @return {!WebInspector.DeviceModeModel.Type}
+   * @return {!Emulation.DeviceModeModel.Type}
    */
   type() {
     return this._type;
@@ -210,21 +210,21 @@ WebInspector.DeviceModeModel = class {
   }
 
   /**
-   * @return {!WebInspector.Rect}
+   * @return {!Common.Rect}
    */
   outlineRect() {
     return this._outlineRect;
   }
 
   /**
-   * @return {!WebInspector.Rect}
+   * @return {!Common.Rect}
    */
   screenRect() {
     return this._screenRect;
   }
 
   /**
-   * @return {!WebInspector.Rect}
+   * @return {!Common.Rect}
    */
   visiblePageRect() {
     return this._visiblePageRect;
@@ -259,7 +259,7 @@ WebInspector.DeviceModeModel = class {
   }
 
   /**
-   * @return {!WebInspector.DeviceModeModel.UA}
+   * @return {!Emulation.DeviceModeModel.UA}
    */
   appliedUserAgentType() {
     return this._appliedUserAgentType;
@@ -273,28 +273,28 @@ WebInspector.DeviceModeModel = class {
   }
 
   /**
-   * @return {!WebInspector.Setting}
+   * @return {!Common.Setting}
    */
   scaleSetting() {
     return this._scaleSetting;
   }
 
   /**
-   * @return {!WebInspector.Setting}
+   * @return {!Common.Setting}
    */
   uaSetting() {
     return this._uaSetting;
   }
 
   /**
-   * @return {!WebInspector.Setting}
+   * @return {!Common.Setting}
    */
   deviceScaleFactorSetting() {
     return this._deviceScaleFactorSetting;
   }
 
   /**
-   * @return {!WebInspector.Setting}
+   * @return {!Common.Setting}
    */
   deviceOutlineSetting() {
     return this._deviceOutlineSetting;
@@ -305,12 +305,12 @@ WebInspector.DeviceModeModel = class {
     this._scaleSetting.set(1);
     this.setWidth(400);
     this.setHeight(0);
-    this._uaSetting.set(WebInspector.DeviceModeModel.UA.Mobile);
+    this._uaSetting.set(Emulation.DeviceModeModel.UA.Mobile);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     if (!this._target) {
@@ -325,7 +325,7 @@ WebInspector.DeviceModeModel = class {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
     if (this._target === target)
@@ -375,7 +375,7 @@ WebInspector.DeviceModeModel = class {
    */
   _currentOutline() {
     var outline = new Insets(0, 0, 0, 0);
-    if (this._type !== WebInspector.DeviceModeModel.Type.Device)
+    if (this._type !== Emulation.DeviceModeModel.Type.Device)
       return outline;
     var orientation = this._device.orientationByName(this._mode.orientation);
     if (this._deviceOutlineSetting.get())
@@ -387,7 +387,7 @@ WebInspector.DeviceModeModel = class {
    * @return {!Insets}
    */
   _currentInsets() {
-    if (this._type !== WebInspector.DeviceModeModel.Type.Device)
+    if (this._type !== Emulation.DeviceModeModel.Type.Device)
       return new Insets(0, 0, 0, 0);
     return this._mode.insets;
   }
@@ -399,55 +399,55 @@ WebInspector.DeviceModeModel = class {
     if (!this._target)
       this._onTargetAvailable = this._calculateAndEmulate.bind(this, resetPageScaleFactor);
 
-    if (this._type === WebInspector.DeviceModeModel.Type.Device) {
+    if (this._type === Emulation.DeviceModeModel.Type.Device) {
       var orientation = this._device.orientationByName(this._mode.orientation);
       var outline = this._currentOutline();
       var insets = this._currentInsets();
       this._fitScale = this._calculateFitScale(orientation.width, orientation.height, outline, insets);
       if (this._device.mobile())
-        this._appliedUserAgentType = this._device.touch() ? WebInspector.DeviceModeModel.UA.Mobile :
-                                                            WebInspector.DeviceModeModel.UA.MobileNoTouch;
+        this._appliedUserAgentType = this._device.touch() ? Emulation.DeviceModeModel.UA.Mobile :
+                                                            Emulation.DeviceModeModel.UA.MobileNoTouch;
       else
-        this._appliedUserAgentType = this._device.touch() ? WebInspector.DeviceModeModel.UA.DesktopTouch :
-                                                            WebInspector.DeviceModeModel.UA.Desktop;
+        this._appliedUserAgentType = this._device.touch() ? Emulation.DeviceModeModel.UA.DesktopTouch :
+                                                            Emulation.DeviceModeModel.UA.Desktop;
       this._applyDeviceMetrics(
           new Size(orientation.width, orientation.height), insets, outline, this._scaleSetting.get(),
           this._device.deviceScaleFactor, this._device.mobile(),
-          this._mode.orientation === WebInspector.EmulatedDevice.Horizontal ? 'landscapePrimary' : 'portraitPrimary',
+          this._mode.orientation === Emulation.EmulatedDevice.Horizontal ? 'landscapePrimary' : 'portraitPrimary',
           resetPageScaleFactor);
       this._applyUserAgent(this._device.userAgent);
       this._applyTouch(this._device.touch(), this._device.mobile());
-    } else if (this._type === WebInspector.DeviceModeModel.Type.None) {
+    } else if (this._type === Emulation.DeviceModeModel.Type.None) {
       this._fitScale = this._calculateFitScale(this._availableSize.width, this._availableSize.height);
-      this._appliedUserAgentType = WebInspector.DeviceModeModel.UA.Desktop;
+      this._appliedUserAgentType = Emulation.DeviceModeModel.UA.Desktop;
       this._applyDeviceMetrics(
           this._availableSize, new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0), 1, 0, false, '', resetPageScaleFactor);
       this._applyUserAgent('');
       this._applyTouch(false, false);
-    } else if (this._type === WebInspector.DeviceModeModel.Type.Responsive) {
+    } else if (this._type === Emulation.DeviceModeModel.Type.Responsive) {
       var screenWidth = this._widthSetting.get();
       if (!screenWidth || screenWidth > this._preferredScaledWidth())
         screenWidth = this._preferredScaledWidth();
       var screenHeight = this._heightSetting.get();
       if (!screenHeight || screenHeight > this._preferredScaledHeight())
         screenHeight = this._preferredScaledHeight();
-      var mobile = this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile ||
-          this._uaSetting.get() === WebInspector.DeviceModeModel.UA.MobileNoTouch;
-      var defaultDeviceScaleFactor = mobile ? WebInspector.DeviceModeModel.defaultMobileScaleFactor : 0;
+      var mobile = this._uaSetting.get() === Emulation.DeviceModeModel.UA.Mobile ||
+          this._uaSetting.get() === Emulation.DeviceModeModel.UA.MobileNoTouch;
+      var defaultDeviceScaleFactor = mobile ? Emulation.DeviceModeModel.defaultMobileScaleFactor : 0;
       this._fitScale = this._calculateFitScale(this._widthSetting.get(), this._heightSetting.get());
       this._appliedUserAgentType = this._uaSetting.get();
       this._applyDeviceMetrics(
           new Size(screenWidth, screenHeight), new Insets(0, 0, 0, 0), new Insets(0, 0, 0, 0), this._scaleSetting.get(),
           this._deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile,
           screenHeight >= screenWidth ? 'portraitPrimary' : 'landscapePrimary', resetPageScaleFactor);
-      this._applyUserAgent(mobile ? WebInspector.DeviceModeModel._defaultMobileUserAgent : '');
+      this._applyUserAgent(mobile ? Emulation.DeviceModeModel._defaultMobileUserAgent : '');
       this._applyTouch(
-          this._uaSetting.get() === WebInspector.DeviceModeModel.UA.DesktopTouch ||
-              this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile,
-          this._uaSetting.get() === WebInspector.DeviceModeModel.UA.Mobile);
+          this._uaSetting.get() === Emulation.DeviceModeModel.UA.DesktopTouch ||
+              this._uaSetting.get() === Emulation.DeviceModeModel.UA.Mobile,
+          this._uaSetting.get() === Emulation.DeviceModeModel.UA.Mobile);
     }
     if (this._target)
-      this._target.renderingAgent().setShowViewportSizeOnResize(this._type === WebInspector.DeviceModeModel.Type.None);
+      this._target.renderingAgent().setShowViewportSizeOnResize(this._type === Emulation.DeviceModeModel.Type.None);
     this._updateCallback.call(null);
   }
 
@@ -495,7 +495,7 @@ WebInspector.DeviceModeModel = class {
    * @param {string} userAgent
    */
   _applyUserAgent(userAgent) {
-    WebInspector.multitargetNetworkManager.setUserAgentOverride(userAgent);
+    SDK.multitargetNetworkManager.setUserAgentOverride(userAgent);
   }
 
   /**
@@ -529,13 +529,13 @@ WebInspector.DeviceModeModel = class {
 
     this._appliedDeviceSize = screenSize;
     this._appliedDeviceScaleFactor = deviceScaleFactor || window.devicePixelRatio;
-    this._screenRect = new WebInspector.Rect(
+    this._screenRect = new Common.Rect(
         Math.max(0, (this._availableSize.width - screenSize.width * scale) / 2), outline.top * scale,
         screenSize.width * scale, screenSize.height * scale);
-    this._outlineRect = new WebInspector.Rect(
+    this._outlineRect = new Common.Rect(
         this._screenRect.left - outline.left * scale, 0, (outline.left + screenSize.width + outline.right) * scale,
         (outline.top + screenSize.height + outline.bottom) * scale);
-    this._visiblePageRect = new WebInspector.Rect(
+    this._visiblePageRect = new Common.Rect(
         positionX * scale, positionY * scale,
         Math.min(pageWidth * scale, this._availableSize.width - this._screenRect.left - positionX * scale),
         Math.min(pageHeight * scale, this._availableSize.height - this._screenRect.top - positionY * scale));
@@ -557,7 +557,7 @@ WebInspector.DeviceModeModel = class {
     this._deviceMetricsThrottler.schedule(setDeviceMetricsOverride.bind(this));
 
     /**
-     * @this {WebInspector.DeviceModeModel}
+     * @this {Emulation.DeviceModeModel}
      * @return {!Promise.<?>}
      */
     function setDeviceMetricsOverride() {
@@ -604,32 +604,32 @@ WebInspector.DeviceModeModel = class {
    * @param {boolean} mobile
    */
   _applyTouch(touchEnabled, mobile) {
-    WebInspector.MultitargetTouchModel.instance().setTouchEnabled(touchEnabled, mobile);
+    Emulation.MultitargetTouchModel.instance().setTouchEnabled(touchEnabled, mobile);
   }
 };
 
 /** @enum {string} */
-WebInspector.DeviceModeModel.Type = {
+Emulation.DeviceModeModel.Type = {
   None: 'None',
   Responsive: 'Responsive',
   Device: 'Device'
 };
 
 /** @enum {string} */
-WebInspector.DeviceModeModel.UA = {
-  Mobile: WebInspector.UIString('Mobile'),
-  MobileNoTouch: WebInspector.UIString('Mobile (no touch)'),
-  Desktop: WebInspector.UIString('Desktop'),
-  DesktopTouch: WebInspector.UIString('Desktop (touch)')
+Emulation.DeviceModeModel.UA = {
+  Mobile: Common.UIString('Mobile'),
+  MobileNoTouch: Common.UIString('Mobile (no touch)'),
+  Desktop: Common.UIString('Desktop'),
+  DesktopTouch: Common.UIString('Desktop (touch)')
 };
 
-WebInspector.DeviceModeModel.MinDeviceSize = 50;
-WebInspector.DeviceModeModel.MaxDeviceSize = 9999;
+Emulation.DeviceModeModel.MinDeviceSize = 50;
+Emulation.DeviceModeModel.MaxDeviceSize = 9999;
 
 
-WebInspector.DeviceModeModel._defaultMobileUserAgent =
+Emulation.DeviceModeModel._defaultMobileUserAgent =
     'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36';
-WebInspector.DeviceModeModel._defaultMobileUserAgent =
-    WebInspector.MultitargetNetworkManager.patchUserAgentWithChromeVersion(
-        WebInspector.DeviceModeModel._defaultMobileUserAgent);
-WebInspector.DeviceModeModel.defaultMobileScaleFactor = 2;
+Emulation.DeviceModeModel._defaultMobileUserAgent =
+    SDK.MultitargetNetworkManager.patchUserAgentWithChromeVersion(
+        Emulation.DeviceModeModel._defaultMobileUserAgent);
+Emulation.DeviceModeModel.defaultMobileScaleFactor = 2;

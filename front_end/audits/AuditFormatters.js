@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.AuditFormatters = class {
+Audits.AuditFormatters = class {
   /**
    * @param {string|boolean|number|!Object} value
    * @return {!Node}
@@ -45,7 +45,7 @@ WebInspector.AuditFormatters = class {
       case 'string':
       case 'boolean':
       case 'number':
-        formatter = WebInspector.AuditFormatters.Registry.text;
+        formatter = Audits.AuditFormatters.Registry.text;
         args = [value.toString()];
         break;
 
@@ -53,10 +53,10 @@ WebInspector.AuditFormatters = class {
         if (value instanceof Node)
           return value;
         if (Array.isArray(value)) {
-          formatter = WebInspector.AuditFormatters.Registry.concat;
+          formatter = Audits.AuditFormatters.Registry.concat;
           args = value;
         } else if (value.type && value.arguments) {
-          formatter = WebInspector.AuditFormatters.Registry[value.type];
+          formatter = Audits.AuditFormatters.Registry[value.type];
           args = value.arguments;
         }
     }
@@ -81,7 +81,7 @@ WebInspector.AuditFormatters = class {
   }
 };
 
-WebInspector.AuditFormatters.Registry = {
+Audits.AuditFormatters.Registry = {
 
   /**
    * @param {string} text
@@ -108,7 +108,7 @@ WebInspector.AuditFormatters.Registry = {
   concat: function() {
     var parent = createElement('span');
     for (var arg = 0; arg < arguments.length; ++arg)
-      parent.appendChild(WebInspector.auditFormatters.apply(arguments[arg]));
+      parent.appendChild(Audits.auditFormatters.apply(arguments[arg]));
     return parent;
   },
 
@@ -118,7 +118,7 @@ WebInspector.AuditFormatters.Registry = {
    * @return {!Element}
    */
   url: function(url, displayText) {
-    return WebInspector.linkifyURLAsNode(url, displayText, undefined, true);
+    return UI.linkifyURLAsNode(url, displayText, undefined, true);
   },
 
   /**
@@ -127,9 +127,9 @@ WebInspector.AuditFormatters.Registry = {
    * @return {!Element}
    */
   resourceLink: function(url, line) {
-    // FIXME: use WebInspector.Linkifier
-    return WebInspector.linkifyResourceAsNode(url, line, undefined, 'resource-url webkit-html-resource-link');
+    // FIXME: use Components.Linkifier
+    return Components.linkifyResourceAsNode(url, line, undefined, 'resource-url webkit-html-resource-link');
   }
 };
 
-WebInspector.auditFormatters = new WebInspector.AuditFormatters();
+Audits.auditFormatters = new Audits.AuditFormatters();

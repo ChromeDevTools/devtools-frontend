@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.DockController = class extends WebInspector.Object {
+Components.DockController = class extends Common.Object {
   /**
    * @param {boolean} canDock
    */
@@ -39,22 +39,22 @@ WebInspector.DockController = class extends WebInspector.Object {
     super();
     this._canDock = canDock;
 
-    this._closeButton = new WebInspector.ToolbarButton(WebInspector.UIString('Close'), 'largeicon-delete');
+    this._closeButton = new UI.ToolbarButton(Common.UIString('Close'), 'largeicon-delete');
     this._closeButton.addEventListener('click', InspectorFrontendHost.closeWindow.bind(InspectorFrontendHost));
 
     if (!canDock) {
-      this._dockSide = WebInspector.DockController.State.Undocked;
+      this._dockSide = Components.DockController.State.Undocked;
       this._updateUI();
       return;
     }
 
     this._states = [
-      WebInspector.DockController.State.DockedToRight, WebInspector.DockController.State.DockedToBottom,
-      WebInspector.DockController.State.Undocked
+      Components.DockController.State.DockedToRight, Components.DockController.State.DockedToBottom,
+      Components.DockController.State.Undocked
     ];
-    this._currentDockStateSetting = WebInspector.settings.moduleSetting('currentDockState');
+    this._currentDockStateSetting = Common.settings.moduleSetting('currentDockState');
     this._currentDockStateSetting.addChangeListener(this._dockSideChanged, this);
-    this._lastDockStateSetting = WebInspector.settings.createSetting('lastDockState', 'bottom');
+    this._lastDockStateSetting = Common.settings.createSetting('lastDockState', 'bottom');
     if (this._states.indexOf(this._currentDockStateSetting.get()) === -1)
       this._currentDockStateSetting.set('right');
     if (this._states.indexOf(this._lastDockStateSetting.get()) === -1)
@@ -66,8 +66,8 @@ WebInspector.DockController = class extends WebInspector.Object {
       return;
 
     this._titles = [
-      WebInspector.UIString('Dock to right'), WebInspector.UIString('Dock to bottom'),
-      WebInspector.UIString('Undock into separate window')
+      Common.UIString('Dock to right'), Common.UIString('Dock to bottom'),
+      Common.UIString('Undock into separate window')
     ];
     this._dockSideChanged();
   }
@@ -94,7 +94,7 @@ WebInspector.DockController = class extends WebInspector.Object {
    * @return {boolean}
    */
   isVertical() {
-    return this._dockSide === WebInspector.DockController.State.DockedToRight;
+    return this._dockSide === Components.DockController.State.DockedToRight;
   }
 
   /**
@@ -113,21 +113,21 @@ WebInspector.DockController = class extends WebInspector.Object {
 
     this._savedFocus = document.deepActiveElement();
     var eventData = {from: this._dockSide, to: dockSide};
-    this.dispatchEventToListeners(WebInspector.DockController.Events.BeforeDockSideChanged, eventData);
+    this.dispatchEventToListeners(Components.DockController.Events.BeforeDockSideChanged, eventData);
     console.timeStamp('DockController.setIsDocked');
     this._dockSide = dockSide;
     this._currentDockStateSetting.set(dockSide);
     InspectorFrontendHost.setIsDocked(
-        dockSide !== WebInspector.DockController.State.Undocked, this._setIsDockedResponse.bind(this, eventData));
+        dockSide !== Components.DockController.State.Undocked, this._setIsDockedResponse.bind(this, eventData));
     this._updateUI();
-    this.dispatchEventToListeners(WebInspector.DockController.Events.DockSideChanged, eventData);
+    this.dispatchEventToListeners(Components.DockController.Events.DockSideChanged, eventData);
   }
 
   /**
    * @param {{from: string, to: string}} eventData
    */
   _setIsDockedResponse(eventData) {
-    this.dispatchEventToListeners(WebInspector.DockController.Events.AfterDockSideChanged, eventData);
+    this.dispatchEventToListeners(Components.DockController.Events.AfterDockSideChanged, eventData);
     if (this._savedFocus) {
       this._savedFocus.focus();
       this._savedFocus = null;
@@ -140,23 +140,23 @@ WebInspector.DockController = class extends WebInspector.Object {
   _updateUI() {
     var body = document.body;  // Only for main window.
     switch (this._dockSide) {
-      case WebInspector.DockController.State.DockedToBottom:
+      case Components.DockController.State.DockedToBottom:
         body.classList.remove('undocked');
         body.classList.remove('dock-to-right');
         body.classList.add('dock-to-bottom');
         break;
-      case WebInspector.DockController.State.DockedToRight:
+      case Components.DockController.State.DockedToRight:
         body.classList.remove('undocked');
         body.classList.add('dock-to-right');
         body.classList.remove('dock-to-bottom');
         break;
-      case WebInspector.DockController.State.Undocked:
+      case Components.DockController.State.Undocked:
         body.classList.add('undocked');
         body.classList.remove('dock-to-right');
         body.classList.remove('dock-to-bottom');
         break;
     }
-    this._closeButton.setVisible(this._dockSide !== WebInspector.DockController.State.Undocked);
+    this._closeButton.setVisible(this._dockSide !== Components.DockController.State.Undocked);
   }
 
   _toggleDockSide() {
@@ -168,7 +168,7 @@ WebInspector.DockController = class extends WebInspector.Object {
   }
 };
 
-WebInspector.DockController.State = {
+Components.DockController.State = {
   DockedToBottom: 'bottom',
   DockedToRight: 'right',
   Undocked: 'undocked'
@@ -179,44 +179,44 @@ WebInspector.DockController.State = {
 // after frontend is docked/undocked in the browser.
 
 /** @enum {symbol} */
-WebInspector.DockController.Events = {
+Components.DockController.Events = {
   BeforeDockSideChanged: Symbol('BeforeDockSideChanged'),
   DockSideChanged: Symbol('DockSideChanged'),
   AfterDockSideChanged: Symbol('AfterDockSideChanged')
 };
 
 /**
- * @implements {WebInspector.ActionDelegate}
+ * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-WebInspector.DockController.ToggleDockActionDelegate = class {
+Components.DockController.ToggleDockActionDelegate = class {
   /**
    * @override
-   * @param {!WebInspector.Context} context
+   * @param {!UI.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    WebInspector.dockController._toggleDockSide();
+    Components.dockController._toggleDockSide();
     return true;
   }
 };
 
 /**
- * @implements {WebInspector.ToolbarItem.Provider}
+ * @implements {UI.ToolbarItem.Provider}
  * @unrestricted
  */
-WebInspector.DockController.CloseButtonProvider = class {
+Components.DockController.CloseButtonProvider = class {
   /**
    * @override
-   * @return {?WebInspector.ToolbarItem}
+   * @return {?UI.ToolbarItem}
    */
   item() {
-    return WebInspector.dockController._closeButton;
+    return Components.dockController._closeButton;
   }
 };
 
 /**
- * @type {!WebInspector.DockController}
+ * @type {!Components.DockController}
  */
-WebInspector.dockController;
+Components.dockController;

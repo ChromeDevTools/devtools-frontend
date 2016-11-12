@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.RequestView = class extends WebInspector.VBox {
+Network.RequestView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   constructor(request) {
     super();
@@ -43,29 +43,29 @@ WebInspector.RequestView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
   static hasTextContent(request) {
     if (request.resourceType().isTextType())
       return true;
-    if (request.resourceType() === WebInspector.resourceTypes.Other || request.hasErrorStatusCode())
+    if (request.resourceType() === Common.resourceTypes.Other || request.hasErrorStatusCode())
       return !!request.content && !request.contentEncoded;
     return false;
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
-   * @return {!WebInspector.Widget}
+   * @param {!SDK.NetworkRequest} request
+   * @return {!UI.Widget}
    */
   static nonSourceViewForRequest(request) {
     switch (request.resourceType()) {
-      case WebInspector.resourceTypes.Image:
-        return new WebInspector.ImageView(request.mimeType, request);
-      case WebInspector.resourceTypes.Font:
-        return new WebInspector.FontView(request.mimeType, request);
+      case Common.resourceTypes.Image:
+        return new SourceFrame.ImageView(request.mimeType, request);
+      case Common.resourceTypes.Font:
+        return new SourceFrame.FontView(request.mimeType, request);
       default:
-        return new WebInspector.RequestView(request);
+        return new Network.RequestView(request);
     }
   }
 };

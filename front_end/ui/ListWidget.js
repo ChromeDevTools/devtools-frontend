@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-WebInspector.ListWidget = class extends WebInspector.VBox {
+UI.ListWidget = class extends UI.VBox {
   /**
-   * @param {!WebInspector.ListWidget.Delegate} delegate
+   * @param {!UI.ListWidget.Delegate} delegate
    */
   constructor(delegate) {
     super(true);
@@ -15,7 +15,7 @@ WebInspector.ListWidget = class extends WebInspector.VBox {
 
     this._list = this.contentElement.createChild('div', 'list');
 
-    /** @type {?WebInspector.ListWidget.Editor} */
+    /** @type {?UI.ListWidget.Editor} */
     this._editor = null;
     /** @type {*|null} */
     this._editItem = null;
@@ -118,18 +118,18 @@ WebInspector.ListWidget = class extends WebInspector.VBox {
     var buttons = controls.createChild('div', 'controls-buttons');
 
     var editButton = buttons.createChild('div', 'edit-button');
-    editButton.title = WebInspector.UIString('Edit');
+    editButton.title = Common.UIString('Edit');
     editButton.addEventListener('click', onEditClicked.bind(this), false);
 
     var removeButton = buttons.createChild('div', 'remove-button');
-    removeButton.title = WebInspector.UIString('Remove');
+    removeButton.title = Common.UIString('Remove');
     removeButton.addEventListener('click', onRemoveClicked.bind(this), false);
 
     return controls;
 
     /**
      * @param {!Event} event
-     * @this {WebInspector.ListWidget}
+     * @this {UI.ListWidget}
      */
     function onEditClicked(event) {
       event.consume();
@@ -140,7 +140,7 @@ WebInspector.ListWidget = class extends WebInspector.VBox {
 
     /**
      * @param {!Event} event
-     * @this {WebInspector.ListWidget}
+     * @this {UI.ListWidget}
      */
     function onRemoveClicked(event) {
       event.consume();
@@ -189,14 +189,14 @@ WebInspector.ListWidget = class extends WebInspector.VBox {
     this._updatePlaceholder();
     this._list.insertBefore(this._editor.element, insertionPoint);
     this._editor.beginEdit(
-        item, index, element ? WebInspector.UIString('Save') : WebInspector.UIString('Add'),
+        item, index, element ? Common.UIString('Save') : Common.UIString('Add'),
         this._commitEditing.bind(this), this._stopEditing.bind(this));
   }
 
   _commitEditing() {
     var editItem = this._editItem;
     var isNew = !this._editElement;
-    var editor = /** @type {!WebInspector.ListWidget.Editor} */ (this._editor);
+    var editor = /** @type {!UI.ListWidget.Editor} */ (this._editor);
     this._stopEditing();
     this._delegate.commitEdit(editItem, editor, isNew);
   }
@@ -218,9 +218,9 @@ WebInspector.ListWidget = class extends WebInspector.VBox {
 /**
  * @interface
  */
-WebInspector.ListWidget.Delegate = function() {};
+UI.ListWidget.Delegate = function() {};
 
-WebInspector.ListWidget.Delegate.prototype = {
+UI.ListWidget.Delegate.prototype = {
   /**
    * @param {*} item
    * @param {boolean} editable
@@ -236,13 +236,13 @@ WebInspector.ListWidget.Delegate.prototype = {
 
   /**
    * @param {*} item
-   * @return {!WebInspector.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor}
    */
   beginEdit: function(item) {},
 
   /**
    * @param {*} item
-   * @param {!WebInspector.ListWidget.Editor} editor
+   * @param {!UI.ListWidget.Editor} editor
    * @param {boolean} isNew
    */
   commitEdit: function(item, editor, isNew) {}
@@ -251,7 +251,7 @@ WebInspector.ListWidget.Delegate.prototype = {
 /**
  * @unrestricted
  */
-WebInspector.ListWidget.Editor = class {
+UI.ListWidget.Editor = class {
   constructor() {
     this.element = createElementWithClass('div', 'editor-container');
     this.element.addEventListener('keydown', onKeyDown.bind(null, isEscKey, this._cancelClicked.bind(this)), false);
@@ -262,7 +262,7 @@ WebInspector.ListWidget.Editor = class {
     var buttonsRow = this.element.createChild('div', 'editor-buttons');
     this._commitButton = createTextButton('', this._commitClicked.bind(this));
     buttonsRow.appendChild(this._commitButton);
-    this._cancelButton = createTextButton(WebInspector.UIString('Cancel'), this._cancelClicked.bind(this));
+    this._cancelButton = createTextButton(Common.UIString('Cancel'), this._cancelClicked.bind(this));
     this._cancelButton.addEventListener(
         'keydown', onKeyDown.bind(null, isEnterKey, this._cancelClicked.bind(this)), false);
     buttonsRow.appendChild(this._cancelButton);

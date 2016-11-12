@@ -31,13 +31,13 @@
 /**
  * @unrestricted
  */
-WebInspector.CodeMirrorUtils = class extends WebInspector.InplaceEditor {
+TextEditor.CodeMirrorUtils = class extends UI.InplaceEditor {
   constructor() {
     super();
   }
 
   /**
-   * @param {!WebInspector.TextRange} range
+   * @param {!Common.TextRange} range
    * @return {!{start: !CodeMirror.Pos, end: !CodeMirror.Pos}}
    */
   static toPos(range) {
@@ -50,18 +50,18 @@ WebInspector.CodeMirrorUtils = class extends WebInspector.InplaceEditor {
   /**
    * @param {!CodeMirror.Pos} start
    * @param {!CodeMirror.Pos} end
-   * @return {!WebInspector.TextRange}
+   * @return {!Common.TextRange}
    */
   static toRange(start, end) {
-    return new WebInspector.TextRange(start.line, start.ch, end.line, end.ch);
+    return new Common.TextRange(start.line, start.ch, end.line, end.ch);
   }
 
   /**
    * @param {!CodeMirror.ChangeObject} changeObject
-   * @return {{oldRange: !WebInspector.TextRange, newRange: !WebInspector.TextRange}}
+   * @return {{oldRange: !Common.TextRange, newRange: !Common.TextRange}}
    */
   static changeObjectToEditOperation(changeObject) {
-    var oldRange = WebInspector.CodeMirrorUtils.toRange(changeObject.from, changeObject.to);
+    var oldRange = TextEditor.CodeMirrorUtils.toRange(changeObject.from, changeObject.to);
     var newRange = oldRange.clone();
     var linesAdded = changeObject.text.length;
     if (linesAdded === 0) {
@@ -99,7 +99,7 @@ WebInspector.CodeMirrorUtils = class extends WebInspector.InplaceEditor {
    * @param {!Element} element
    */
   static appendThemeStyle(element) {
-    if (WebInspector.themeSupport.hasTheme())
+    if (UI.themeSupport.hasTheme())
       return;
     var backgroundColor = InspectorFrontendHost.getSelectionBackgroundColor();
     var backgroundColorRule =
@@ -136,7 +136,7 @@ WebInspector.CodeMirrorUtils = class extends WebInspector.InplaceEditor {
   setUpEditor(editingContext) {
     var element = editingContext.element;
     var config = editingContext.config;
-    editingContext.cssLoadView = new WebInspector.CodeMirrorCSSLoadView();
+    editingContext.cssLoadView = new TextEditor.CodeMirrorCSSLoadView();
     editingContext.cssLoadView.show(element);
     element.focus();
     element.addEventListener('copy', this._consumeCopy, false);
@@ -189,10 +189,10 @@ WebInspector.CodeMirrorUtils = class extends WebInspector.InplaceEditor {
 
 
 /**
- * @implements {WebInspector.TokenizerFactory}
+ * @implements {Common.TokenizerFactory}
  * @unrestricted
  */
-WebInspector.CodeMirrorUtils.TokenizerFactory = class {
+TextEditor.CodeMirrorUtils.TokenizerFactory = class {
   /**
    * @override
    * @param {string} mimeType
@@ -217,7 +217,7 @@ WebInspector.CodeMirrorUtils.TokenizerFactory = class {
 /**
  * @unrestricted
  */
-WebInspector.CodeMirrorCSSLoadView = class extends WebInspector.VBox {
+TextEditor.CodeMirrorCSSLoadView = class extends UI.VBox {
   /**
    * This bogus view is needed to load/unload CodeMirror-related CSS on demand.
    */
@@ -226,6 +226,6 @@ WebInspector.CodeMirrorCSSLoadView = class extends WebInspector.VBox {
     this.element.classList.add('hidden');
     this.registerRequiredCSS('cm/codemirror.css');
     this.registerRequiredCSS('text_editor/cmdevtools.css');
-    WebInspector.CodeMirrorUtils.appendThemeStyle(this.element);
+    TextEditor.CodeMirrorUtils.appendThemeStyle(this.element);
   }
 };

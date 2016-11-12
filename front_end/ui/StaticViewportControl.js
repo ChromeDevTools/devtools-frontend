@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-WebInspector.StaticViewportControl = class {
+UI.StaticViewportControl = class {
   /**
-   * @param {!WebInspector.StaticViewportControl.Provider} provider
+   * @param {!UI.StaticViewportControl.Provider} provider
    */
   constructor(provider) {
     this.element = createElement('div');
@@ -19,7 +19,7 @@ WebInspector.StaticViewportControl = class {
     this._provider = provider;
     this.element.addEventListener('scroll', this._update.bind(this), false);
     this._itemCount = 0;
-    this._indexSymbol = Symbol('WebInspector.StaticViewportControl._indexSymbol');
+    this._indexSymbol = Symbol('UI.StaticViewportControl._indexSymbol');
   }
 
   refresh() {
@@ -141,9 +141,9 @@ WebInspector.StaticViewportControl = class {
 /**
  * @interface
  */
-WebInspector.StaticViewportControl.Provider = function() {};
+UI.StaticViewportControl.Provider = function() {};
 
-WebInspector.StaticViewportControl.Provider.prototype = {
+UI.StaticViewportControl.Provider.prototype = {
   /**
    * @param {number} index
    * @return {number}

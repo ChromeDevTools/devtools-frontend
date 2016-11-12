@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.ElementsBreadcrumbs = class extends WebInspector.HBox {
+Elements.ElementsBreadcrumbs = class extends UI.HBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('elements/breadcrumbs.css');
@@ -23,7 +23,7 @@ WebInspector.ElementsBreadcrumbs = class extends WebInspector.HBox {
   }
 
   /**
-   * @param {!Array.<!WebInspector.DOMNode>} nodes
+   * @param {!Array.<!SDK.DOMNode>} nodes
    */
   updateNodes(nodes) {
     if (!nodes.length)
@@ -39,7 +39,7 @@ WebInspector.ElementsBreadcrumbs = class extends WebInspector.HBox {
   }
 
   /**
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    */
   setSelectedNode(node) {
     this._currentDOMNode = node;
@@ -49,14 +49,14 @@ WebInspector.ElementsBreadcrumbs = class extends WebInspector.HBox {
   _mouseMovedInCrumbs(event) {
     var nodeUnderMouse = event.target;
     var crumbElement = nodeUnderMouse.enclosingNodeOrSelfWithClass('crumb');
-    var node = /** @type {?WebInspector.DOMNode} */ (crumbElement ? crumbElement[this._nodeSymbol] : null);
+    var node = /** @type {?SDK.DOMNode} */ (crumbElement ? crumbElement[this._nodeSymbol] : null);
     if (node)
       node.highlight();
   }
 
   _mouseMovedOutOfCrumbs(event) {
     if (this._currentDOMNode)
-      WebInspector.DOMModel.hideDOMNodeHighlight();
+      SDK.DOMModel.hideDOMNodeHighlight();
   }
 
   /**
@@ -95,13 +95,13 @@ WebInspector.ElementsBreadcrumbs = class extends WebInspector.HBox {
 
     /**
      * @param {!Event} event
-     * @this {WebInspector.ElementsBreadcrumbs}
+     * @this {Elements.ElementsBreadcrumbs}
      */
     function selectCrumb(event) {
       event.preventDefault();
       var crumb = /** @type {!Element} */ (event.currentTarget);
       if (!crumb.classList.contains('collapsed')) {
-        this.dispatchEventToListeners(WebInspector.ElementsBreadcrumbs.Events.NodeSelected, crumb[this._nodeSymbol]);
+        this.dispatchEventToListeners(Elements.ElementsBreadcrumbs.Events.NodeSelected, crumb[this._nodeSymbol]);
         return;
       }
 
@@ -138,11 +138,11 @@ WebInspector.ElementsBreadcrumbs = class extends WebInspector.HBox {
           if (current.pseudoType())
             crumbTitle = '::' + current.pseudoType();
           else
-            WebInspector.DOMPresentationUtils.decorateNodeLabel(current, crumb);
+            Components.DOMPresentationUtils.decorateNodeLabel(current, crumb);
           break;
 
         case Node.TEXT_NODE:
-          crumbTitle = WebInspector.UIString('(text)');
+          crumbTitle = Common.UIString('(text)');
           break;
 
         case Node.COMMENT_NODE:
@@ -415,6 +415,6 @@ WebInspector.ElementsBreadcrumbs = class extends WebInspector.HBox {
 };
 
 /** @enum {symbol} */
-WebInspector.ElementsBreadcrumbs.Events = {
+Elements.ElementsBreadcrumbs.Events = {
   NodeSelected: Symbol('NodeSelected')
 };

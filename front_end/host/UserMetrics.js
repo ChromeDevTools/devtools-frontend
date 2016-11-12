@@ -31,13 +31,13 @@
 /**
  * @unrestricted
  */
-WebInspector.UserMetrics = class {
+Host.UserMetrics = class {
   /**
    * @param {string} panelName
    */
   panelShown(panelName) {
-    var code = WebInspector.UserMetrics._PanelCodes[panelName] || 0;
-    var size = Object.keys(WebInspector.UserMetrics._PanelCodes).length + 1;
+    var code = Host.UserMetrics._PanelCodes[panelName] || 0;
+    var size = Object.keys(Host.UserMetrics._PanelCodes).length + 1;
     InspectorFrontendHost.recordEnumeratedHistogram('DevTools.PanelShown', code, size);
   }
 
@@ -49,10 +49,10 @@ WebInspector.UserMetrics = class {
   }
 
   /**
-   * @param {!WebInspector.UserMetrics.Action} action
+   * @param {!Host.UserMetrics.Action} action
    */
   actionTaken(action) {
-    var size = Object.keys(WebInspector.UserMetrics.Action).length + 1;
+    var size = Object.keys(Host.UserMetrics.Action).length + 1;
     InspectorFrontendHost.recordEnumeratedHistogram('DevTools.ActionTaken', action, size);
   }
 };
@@ -62,7 +62,7 @@ WebInspector.UserMetrics = class {
 // in order to add more codes.
 
 /** @enum {number} */
-WebInspector.UserMetrics.Action = {
+Host.UserMetrics.Action = {
   WindowDocked: 1,
   WindowUndocked: 2,
   ScriptsBreakpointSet: 3,
@@ -82,7 +82,7 @@ WebInspector.UserMetrics.Action = {
   ResizedViewInResponsiveMode: 17
 };
 
-WebInspector.UserMetrics._PanelCodes = {
+Host.UserMetrics._PanelCodes = {
   elements: 1,
   resources: 2,
   network: 3,
@@ -101,5 +101,5 @@ WebInspector.UserMetrics._PanelCodes = {
   security: 16
 };
 
-/** @type {!WebInspector.UserMetrics} */
-WebInspector.userMetrics = new WebInspector.UserMetrics();
+/** @type {!Host.UserMetrics} */
+Host.userMetrics = new Host.UserMetrics();

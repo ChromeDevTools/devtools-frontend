@@ -4,16 +4,16 @@
 /**
  * @unrestricted
  */
-WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
+SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
   /**
    * Invariant: This model can only be constructed on a ServiceWorker target.
-   * @param {!WebInspector.Target} target
-   * @param {!WebInspector.SecurityOriginManager} securityOriginManager
+   * @param {!SDK.Target} target
+   * @param {!SDK.SecurityOriginManager} securityOriginManager
    */
   constructor(target, securityOriginManager) {
-    super(WebInspector.ServiceWorkerCacheModel, target);
+    super(SDK.ServiceWorkerCacheModel, target);
 
-    /** @type {!Map<string, !WebInspector.ServiceWorkerCacheModel.Cache>} */
+    /** @type {!Map<string, !SDK.ServiceWorkerCacheModel.Cache>} */
     this._caches = new Map();
 
     this._agent = target.cacheStorageAgent();
@@ -25,17 +25,17 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @return {?WebInspector.ServiceWorkerCacheModel}
+   * @param {!SDK.Target} target
+   * @return {?SDK.ServiceWorkerCacheModel}
    */
   static fromTarget(target) {
     if (!target.hasBrowserCapability())
       return null;
     var instance =
-        /** @type {?WebInspector.ServiceWorkerCacheModel} */ (target.model(WebInspector.ServiceWorkerCacheModel));
+        /** @type {?SDK.ServiceWorkerCacheModel} */ (target.model(SDK.ServiceWorkerCacheModel));
     if (!instance)
       instance =
-          new WebInspector.ServiceWorkerCacheModel(target, WebInspector.SecurityOriginManager.fromTarget(target));
+          new SDK.ServiceWorkerCacheModel(target, SDK.SecurityOriginManager.fromTarget(target));
     return instance;
   }
 
@@ -44,9 +44,9 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
       return;
 
     this._securityOriginManager.addEventListener(
-        WebInspector.SecurityOriginManager.Events.SecurityOriginAdded, this._securityOriginAdded, this);
+        SDK.SecurityOriginManager.Events.SecurityOriginAdded, this._securityOriginAdded, this);
     this._securityOriginManager.addEventListener(
-        WebInspector.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
+        SDK.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
 
     for (var securityOrigin of this._securityOriginManager.securityOrigins())
       this._addOrigin(securityOrigin);
@@ -71,11 +71,11 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.ServiceWorkerCacheModel.Cache} cache
+   * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    */
   deleteCache(cache) {
     /**
-     * @this {WebInspector.ServiceWorkerCacheModel}
+     * @this {SDK.ServiceWorkerCacheModel}
      */
     function callback(error) {
       if (error) {
@@ -89,7 +89,7 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.ServiceWorkerCacheModel.Cache} cache
+   * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    * @param {string} request
    * @param {function()} callback
    */
@@ -99,7 +99,7 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
      */
     function myCallback(error) {
       if (error) {
-        WebInspector.console.error(WebInspector.UIString(
+        Common.console.error(Common.UIString(
             'ServiceWorkerCacheAgent error deleting cache entry %s in cache: %s', cache.toString(), error));
         return;
       }
@@ -109,17 +109,17 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.ServiceWorkerCacheModel.Cache} cache
+   * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    * @param {number} skipCount
    * @param {number} pageSize
-   * @param {function(!Array.<!WebInspector.ServiceWorkerCacheModel.Entry>, boolean)} callback
+   * @param {function(!Array.<!SDK.ServiceWorkerCacheModel.Entry>, boolean)} callback
    */
   loadCacheData(cache, skipCount, pageSize, callback) {
     this._requestEntries(cache, skipCount, pageSize, callback);
   }
 
   /**
-   * @return {!Array.<!WebInspector.ServiceWorkerCacheModel.Cache>}
+   * @return {!Array.<!SDK.ServiceWorkerCacheModel.Cache>}
    */
   caches() {
     var caches = new Array();
@@ -137,9 +137,9 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
     this._caches.clear();
     if (this._enabled) {
       this._securityOriginManager.removeEventListener(
-          WebInspector.SecurityOriginManager.Events.SecurityOriginAdded, this._securityOriginAdded, this);
+          SDK.SecurityOriginManager.Events.SecurityOriginAdded, this._securityOriginAdded, this);
       this._securityOriginManager.removeEventListener(
-          WebInspector.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
+          SDK.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
     }
   }
 
@@ -166,8 +166,8 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
   _loadCacheNames(securityOrigin) {
     /**
      * @param {?Protocol.Error} error
-     * @param {!Array.<!WebInspector.ServiceWorkerCacheModel.Cache>} caches
-     * @this {WebInspector.ServiceWorkerCacheModel}
+     * @param {!Array.<!SDK.ServiceWorkerCacheModel.Cache>} caches
+     * @this {SDK.ServiceWorkerCacheModel}
      */
     function callback(error, caches) {
       if (error) {
@@ -185,8 +185,8 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
    */
   _updateCacheNames(securityOrigin, cachesJson) {
     /**
-     * @param {!WebInspector.ServiceWorkerCacheModel.Cache} cache
-     * @this {WebInspector.ServiceWorkerCacheModel}
+     * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
+     * @this {SDK.ServiceWorkerCacheModel}
      */
     function deleteAndSaveOldCaches(cache) {
       if (cache.securityOrigin === securityOrigin && !updatingCachesIds.has(cache.cacheId)) {
@@ -197,13 +197,13 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
 
     /** @type {!Set<string>} */
     var updatingCachesIds = new Set();
-    /** @type {!Map<string, !WebInspector.ServiceWorkerCacheModel.Cache>} */
+    /** @type {!Map<string, !SDK.ServiceWorkerCacheModel.Cache>} */
     var newCaches = new Map();
-    /** @type {!Map<string, !WebInspector.ServiceWorkerCacheModel.Cache>} */
+    /** @type {!Map<string, !SDK.ServiceWorkerCacheModel.Cache>} */
     var oldCaches = new Map();
 
     for (var cacheJson of cachesJson) {
-      var cache = new WebInspector.ServiceWorkerCacheModel.Cache(
+      var cache = new SDK.ServiceWorkerCacheModel.Cache(
           cacheJson.securityOrigin, cacheJson.cacheName, cacheJson.cacheId);
       updatingCachesIds.add(cache.cacheId);
       if (this._caches.has(cache.cacheId))
@@ -217,7 +217,7 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _securityOriginAdded(event) {
     var securityOrigin = /** @type {string} */ (event.data);
@@ -225,7 +225,7 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _securityOriginRemoved(event) {
     var securityOrigin = /** @type {string} */ (event.data);
@@ -233,29 +233,29 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.ServiceWorkerCacheModel.Cache} cache
+   * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    */
   _cacheAdded(cache) {
-    this.dispatchEventToListeners(WebInspector.ServiceWorkerCacheModel.Events.CacheAdded, cache);
+    this.dispatchEventToListeners(SDK.ServiceWorkerCacheModel.Events.CacheAdded, cache);
   }
 
   /**
-   * @param {!WebInspector.ServiceWorkerCacheModel.Cache} cache
+   * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    */
   _cacheRemoved(cache) {
-    this.dispatchEventToListeners(WebInspector.ServiceWorkerCacheModel.Events.CacheRemoved, cache);
+    this.dispatchEventToListeners(SDK.ServiceWorkerCacheModel.Events.CacheRemoved, cache);
   }
 
   /**
-   * @param {!WebInspector.ServiceWorkerCacheModel.Cache} cache
+   * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    * @param {number} skipCount
    * @param {number} pageSize
-   * @param {function(!Array.<!WebInspector.ServiceWorkerCacheModel.Entry>, boolean)} callback
+   * @param {function(!Array.<!SDK.ServiceWorkerCacheModel.Entry>, boolean)} callback
    */
   _requestEntries(cache, skipCount, pageSize, callback) {
     /**
      * @param {?Protocol.Error} error
-     * @param {!Array.<!WebInspector.ServiceWorkerCacheModel.Entry>} dataEntries
+     * @param {!Array.<!SDK.ServiceWorkerCacheModel.Entry>} dataEntries
      * @param {boolean} hasMore
      */
     function innerCallback(error, dataEntries, hasMore) {
@@ -265,7 +265,7 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
       }
       var entries = [];
       for (var i = 0; i < dataEntries.length; ++i) {
-        entries.push(new WebInspector.ServiceWorkerCacheModel.Entry(dataEntries[i].request, dataEntries[i].response));
+        entries.push(new SDK.ServiceWorkerCacheModel.Entry(dataEntries[i].request, dataEntries[i].response));
       }
       callback(entries, hasMore);
     }
@@ -274,7 +274,7 @@ WebInspector.ServiceWorkerCacheModel = class extends WebInspector.SDKModel {
 };
 
 /** @enum {symbol} */
-WebInspector.ServiceWorkerCacheModel.Events = {
+SDK.ServiceWorkerCacheModel.Events = {
   CacheAdded: Symbol('CacheAdded'),
   CacheRemoved: Symbol('CacheRemoved')
 };
@@ -282,7 +282,7 @@ WebInspector.ServiceWorkerCacheModel.Events = {
 /**
  * @unrestricted
  */
-WebInspector.ServiceWorkerCacheModel.Entry = class {
+SDK.ServiceWorkerCacheModel.Entry = class {
   /**
    * @param {string} request
    * @param {string} response
@@ -296,7 +296,7 @@ WebInspector.ServiceWorkerCacheModel.Entry = class {
 /**
  * @unrestricted
  */
-WebInspector.ServiceWorkerCacheModel.Cache = class {
+SDK.ServiceWorkerCacheModel.Cache = class {
   /**
    * @param {string} securityOrigin
    * @param {string} cacheName
@@ -309,7 +309,7 @@ WebInspector.ServiceWorkerCacheModel.Cache = class {
   }
 
   /**
-   * @param {!WebInspector.ServiceWorkerCacheModel.Cache} cache
+   * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    * @return {boolean}
    */
   equals(cache) {

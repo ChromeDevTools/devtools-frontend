@@ -4,14 +4,14 @@
 /**
  * @unrestricted
  */
-WebInspector.FilmStripView = class extends WebInspector.HBox {
+Components.FilmStripView = class extends UI.HBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('components_lazy/filmStripView.css');
     this.contentElement.classList.add('film-strip-view');
     this._statusLabel = this.contentElement.createChild('div', 'label');
     this.reset();
-    this.setMode(WebInspector.FilmStripView.Modes.TimeBased);
+    this.setMode(Components.FilmStripView.Modes.TimeBased);
   }
 
   /**
@@ -28,12 +28,12 @@ WebInspector.FilmStripView = class extends WebInspector.HBox {
    */
   setMode(mode) {
     this._mode = mode;
-    this.contentElement.classList.toggle('time-based', mode === WebInspector.FilmStripView.Modes.TimeBased);
+    this.contentElement.classList.toggle('time-based', mode === Components.FilmStripView.Modes.TimeBased);
     this.update();
   }
 
   /**
-   * @param {!WebInspector.FilmStripModel} filmStripModel
+   * @param {!Components.FilmStripModel} filmStripModel
    * @param {number} zeroTime
    * @param {number} spanTime
    */
@@ -50,25 +50,25 @@ WebInspector.FilmStripView = class extends WebInspector.HBox {
   }
 
   /**
-   * @param {!WebInspector.FilmStripModel.Frame} frame
+   * @param {!Components.FilmStripModel.Frame} frame
    * @return {!Promise<!Element>}
    */
   createFrameElement(frame) {
     var time = frame.timestamp;
     var element = createElementWithClass('div', 'frame');
-    element.title = WebInspector.UIString('Doubleclick to zoom image. Click to view preceding requests.');
+    element.title = Common.UIString('Doubleclick to zoom image. Click to view preceding requests.');
     element.createChild('div', 'time').textContent = Number.millisToString(time - this._zeroTime);
     var imageElement = element.createChild('div', 'thumbnail').createChild('img');
     element.addEventListener(
-        'mousedown', this._onMouseEvent.bind(this, WebInspector.FilmStripView.Events.FrameSelected, time), false);
+        'mousedown', this._onMouseEvent.bind(this, Components.FilmStripView.Events.FrameSelected, time), false);
     element.addEventListener(
-        'mouseenter', this._onMouseEvent.bind(this, WebInspector.FilmStripView.Events.FrameEnter, time), false);
+        'mouseenter', this._onMouseEvent.bind(this, Components.FilmStripView.Events.FrameEnter, time), false);
     element.addEventListener(
-        'mouseout', this._onMouseEvent.bind(this, WebInspector.FilmStripView.Events.FrameExit, time), false);
+        'mouseout', this._onMouseEvent.bind(this, Components.FilmStripView.Events.FrameExit, time), false);
     element.addEventListener('dblclick', this._onDoubleClick.bind(this, frame), false);
 
     return frame.imageDataPromise()
-        .then(WebInspector.FilmStripView._setImageData.bind(null, imageElement))
+        .then(Components.FilmStripView._setImageData.bind(null, imageElement))
         .then(returnElement);
     /**
      * @return {!Element}
@@ -80,12 +80,12 @@ WebInspector.FilmStripView = class extends WebInspector.HBox {
 
   /**
    * @param {number} time
-   * @return {!WebInspector.FilmStripModel.Frame}
+   * @return {!Components.FilmStripModel.Frame}
    */
   frameByTime(time) {
     /**
      * @param {number} time
-     * @param {!WebInspector.FilmStripModel.Frame} frame
+     * @param {!Components.FilmStripModel.Frame} frame
      * @return {number}
      */
     function comparator(time, frame) {
@@ -105,7 +105,7 @@ WebInspector.FilmStripView = class extends WebInspector.HBox {
     if (!frames.length)
       return;
 
-    if (this._mode === WebInspector.FilmStripView.Modes.FrameBased) {
+    if (this._mode === Components.FilmStripView.Modes.FrameBased) {
       Promise.all(frames.map(this.createFrameElement.bind(this))).then(appendElements.bind(this));
       return;
     }
@@ -116,11 +116,11 @@ WebInspector.FilmStripView = class extends WebInspector.HBox {
         continueWhenFrameImageLoaded.bind(this));  // Calculate frame width basing on the first frame.
 
     /**
-     * @this {WebInspector.FilmStripView}
+     * @this {Components.FilmStripView}
      * @param {!Element} element0
      */
     function continueWhenFrameImageLoaded(element0) {
-      var frameWidth = Math.ceil(WebInspector.measurePreferredSize(element0, this.contentElement).width);
+      var frameWidth = Math.ceil(UI.measurePreferredSize(element0, this.contentElement).width);
       if (!frameWidth)
         return;
 
@@ -142,7 +142,7 @@ WebInspector.FilmStripView = class extends WebInspector.HBox {
 
     /**
      * @param {!Array.<!Element>} elements
-     * @this {WebInspector.FilmStripView}
+     * @this {Components.FilmStripView}
      */
     function appendElements(elements) {
       this.contentElement.removeChildren();
@@ -155,7 +155,7 @@ WebInspector.FilmStripView = class extends WebInspector.HBox {
    * @override
    */
   onResize() {
-    if (this._mode === WebInspector.FilmStripView.Modes.FrameBased)
+    if (this._mode === Components.FilmStripView.Modes.FrameBased)
       return;
     this.update();
   }
@@ -169,10 +169,10 @@ WebInspector.FilmStripView = class extends WebInspector.HBox {
   }
 
   /**
-   * @param {!WebInspector.FilmStripModel.Frame} filmStripFrame
+   * @param {!Components.FilmStripModel.Frame} filmStripFrame
    */
   _onDoubleClick(filmStripFrame) {
-    new WebInspector.FilmStripView.Dialog(filmStripFrame, this._zeroTime);
+    new Components.FilmStripView.Dialog(filmStripFrame, this._zeroTime);
   }
 
   reset() {
@@ -190,13 +190,13 @@ WebInspector.FilmStripView = class extends WebInspector.HBox {
 };
 
 /** @enum {symbol} */
-WebInspector.FilmStripView.Events = {
+Components.FilmStripView.Events = {
   FrameSelected: Symbol('FrameSelected'),
   FrameEnter: Symbol('FrameEnter'),
   FrameExit: Symbol('FrameExit'),
 };
 
-WebInspector.FilmStripView.Modes = {
+Components.FilmStripView.Modes = {
   TimeBased: 'TimeBased',
   FrameBased: 'FrameBased'
 };
@@ -205,9 +205,9 @@ WebInspector.FilmStripView.Modes = {
 /**
  * @unrestricted
  */
-WebInspector.FilmStripView.Dialog = class extends WebInspector.VBox {
+Components.FilmStripView.Dialog = class extends UI.VBox {
   /**
-   * @param {!WebInspector.FilmStripModel.Frame} filmStripFrame
+   * @param {!Components.FilmStripModel.Frame} filmStripFrame
    * @param {number=} zeroTime
    */
   constructor(filmStripFrame, zeroTime) {
@@ -224,11 +224,11 @@ WebInspector.FilmStripView.Dialog = class extends WebInspector.VBox {
     var footerElement = this.contentElement.createChild('div', 'filmstrip-dialog-footer');
     footerElement.createChild('div', 'flex-auto');
     var prevButton =
-        createTextButton('\u25C0', this._onPrevFrame.bind(this), undefined, WebInspector.UIString('Previous frame'));
+        createTextButton('\u25C0', this._onPrevFrame.bind(this), undefined, Common.UIString('Previous frame'));
     footerElement.appendChild(prevButton);
     this._timeLabel = footerElement.createChild('div', 'filmstrip-dialog-label');
     var nextButton =
-        createTextButton('\u25B6', this._onNextFrame.bind(this), undefined, WebInspector.UIString('Next frame'));
+        createTextButton('\u25B6', this._onNextFrame.bind(this), undefined, Common.UIString('Next frame'));
     footerElement.appendChild(nextButton);
     footerElement.createChild('div', 'flex-auto');
 
@@ -239,7 +239,7 @@ WebInspector.FilmStripView.Dialog = class extends WebInspector.VBox {
 
   _resize() {
     if (!this._dialog) {
-      this._dialog = new WebInspector.Dialog();
+      this._dialog = new UI.Dialog();
       this.show(this._dialog.element);
       this._dialog.setWrapsContent(true);
       this._dialog.show();
@@ -253,14 +253,14 @@ WebInspector.FilmStripView.Dialog = class extends WebInspector.VBox {
   _keyDown(event) {
     switch (event.key) {
       case 'ArrowLeft':
-        if (WebInspector.isMac() && event.metaKey)
+        if (Host.isMac() && event.metaKey)
           this._onFirstFrame();
         else
           this._onPrevFrame();
         break;
 
       case 'ArrowRight':
-        if (WebInspector.isMac() && event.metaKey)
+        if (Host.isMac() && event.metaKey)
           this._onLastFrame();
         else
           this._onNextFrame();
@@ -305,7 +305,7 @@ WebInspector.FilmStripView.Dialog = class extends WebInspector.VBox {
     var frame = this._frames[this._index];
     this._timeLabel.textContent = Number.millisToString(frame.timestamp - this._zeroTime);
     return frame.imageDataPromise()
-        .then(WebInspector.FilmStripView._setImageData.bind(null, this._imageElement))
+        .then(Components.FilmStripView._setImageData.bind(null, this._imageElement))
         .then(this._resize.bind(this));
   }
 };

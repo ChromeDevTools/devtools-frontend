@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.NetworkTimeBoundary = class {
+Network.NetworkTimeBoundary = class {
   /**
    * @param {number} minimum
    * @param {number} maximum
@@ -42,7 +42,7 @@ WebInspector.NetworkTimeBoundary = class {
   }
 
   /**
-   * @param {!WebInspector.NetworkTimeBoundary} other
+   * @param {!Network.NetworkTimeBoundary} other
    * @return {boolean}
    */
   equals(other) {
@@ -51,20 +51,20 @@ WebInspector.NetworkTimeBoundary = class {
 };
 
 /**
- * @implements {WebInspector.TimelineGrid.Calculator}
+ * @implements {UI.TimelineGrid.Calculator}
  * @unrestricted
  */
-WebInspector.NetworkTimeCalculator = class extends WebInspector.Object {
+Network.NetworkTimeCalculator = class extends Common.Object {
   constructor(startAtZero) {
     super();
     this.startAtZero = startAtZero;
-    this._boundryChangedEventThrottler = new WebInspector.Throttler(0);
-    /** @type {?WebInspector.NetworkTimeBoundary} */
+    this._boundryChangedEventThrottler = new Common.Throttler(0);
+    /** @type {?Network.NetworkTimeBoundary} */
     this._window = null;
   }
 
   /**
-   * @param {?WebInspector.NetworkTimeBoundary} window
+   * @param {?Network.NetworkTimeBoundary} window
    */
   setWindow(window) {
     this._window = window;
@@ -128,10 +128,10 @@ WebInspector.NetworkTimeCalculator = class extends WebInspector.Object {
   }
 
   /**
-   * @return {!WebInspector.NetworkTimeBoundary}
+   * @return {!Network.NetworkTimeBoundary}
    */
   boundary() {
-    return new WebInspector.NetworkTimeBoundary(this.minimumBoundary(), this.maximumBoundary());
+    return new Network.NetworkTimeBoundary(this.minimumBoundary(), this.maximumBoundary());
   }
 
   /**
@@ -163,7 +163,7 @@ WebInspector.NetworkTimeCalculator = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {!{start: number, middle: number, end: number}}
    */
   computeBarGraphPercentages(request) {
@@ -218,10 +218,10 @@ WebInspector.NetworkTimeCalculator = class extends WebInspector.Object {
 
     /**
      * @return {!Promise.<undefined>}
-     * @this {WebInspector.NetworkTimeCalculator}
+     * @this {Network.NetworkTimeCalculator}
      */
     function dispatchEvent() {
-      this.dispatchEventToListeners(WebInspector.NetworkTimeCalculator.Events.BoundariesChanged);
+      this.dispatchEventToListeners(Network.NetworkTimeCalculator.Events.BoundariesChanged);
       return Promise.resolve();
     }
   }
@@ -240,7 +240,7 @@ WebInspector.NetworkTimeCalculator = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {!{left: string, right: string, tooltip: (string|undefined)}}
    */
   computeBarGraphLabels(request) {
@@ -259,22 +259,22 @@ WebInspector.NetworkTimeCalculator = class extends WebInspector.Object {
 
     if (hasLatency && rightLabel) {
       var total = Number.secondsToString(request.duration);
-      var tooltip = WebInspector.NetworkTimeCalculator._latencyDownloadTotalFormat.format(leftLabel, rightLabel, total);
+      var tooltip = Network.NetworkTimeCalculator._latencyDownloadTotalFormat.format(leftLabel, rightLabel, total);
     } else if (hasLatency) {
-      var tooltip = WebInspector.NetworkTimeCalculator._latencyFormat.format(leftLabel);
+      var tooltip = Network.NetworkTimeCalculator._latencyFormat.format(leftLabel);
     } else if (rightLabel) {
-      var tooltip = WebInspector.NetworkTimeCalculator._downloadFormat.format(rightLabel);
+      var tooltip = Network.NetworkTimeCalculator._downloadFormat.format(rightLabel);
     }
 
     if (request.fetchedViaServiceWorker)
-      tooltip = WebInspector.NetworkTimeCalculator._fromServiceWorkerFormat.format(tooltip);
+      tooltip = Network.NetworkTimeCalculator._fromServiceWorkerFormat.format(tooltip);
     else if (request.cached())
-      tooltip = WebInspector.NetworkTimeCalculator._fromCacheFormat.format(tooltip);
+      tooltip = Network.NetworkTimeCalculator._fromCacheFormat.format(tooltip);
     return {left: leftLabel, right: rightLabel, tooltip: tooltip};
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   updateBoundaries(request) {
     var lowerBound = this._lowerBound(request);
@@ -295,7 +295,7 @@ WebInspector.NetworkTimeCalculator = class extends WebInspector.Object {
   _extendBoundariesToIncludeTimestamp(timestamp) {
     var previousMinimumBoundary = this._minimumBoundary;
     var previousMaximumBoundary = this._maximumBoundary;
-    const minOffset = WebInspector.NetworkTimeCalculator._minimumSpread;
+    const minOffset = Network.NetworkTimeCalculator._minimumSpread;
     if (typeof this._minimumBoundary === 'undefined' || typeof this._maximumBoundary === 'undefined') {
       this._minimumBoundary = timestamp;
       this._maximumBoundary = timestamp + minOffset;
@@ -307,7 +307,7 @@ WebInspector.NetworkTimeCalculator = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {number}
    */
   _lowerBound(request) {
@@ -315,7 +315,7 @@ WebInspector.NetworkTimeCalculator = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {number}
    */
   _upperBound(request) {
@@ -323,34 +323,34 @@ WebInspector.NetworkTimeCalculator = class extends WebInspector.Object {
   }
 };
 
-WebInspector.NetworkTimeCalculator._minimumSpread = 0.1;
+Network.NetworkTimeCalculator._minimumSpread = 0.1;
 
 /** @enum {symbol} */
-WebInspector.NetworkTimeCalculator.Events = {
+Network.NetworkTimeCalculator.Events = {
   BoundariesChanged: Symbol('BoundariesChanged')
 };
 
-/** @type {!WebInspector.UIStringFormat} */
-WebInspector.NetworkTimeCalculator._latencyDownloadTotalFormat =
-    new WebInspector.UIStringFormat('%s latency, %s download (%s total)');
+/** @type {!Common.UIStringFormat} */
+Network.NetworkTimeCalculator._latencyDownloadTotalFormat =
+    new Common.UIStringFormat('%s latency, %s download (%s total)');
 
-/** @type {!WebInspector.UIStringFormat} */
-WebInspector.NetworkTimeCalculator._latencyFormat = new WebInspector.UIStringFormat('%s latency');
+/** @type {!Common.UIStringFormat} */
+Network.NetworkTimeCalculator._latencyFormat = new Common.UIStringFormat('%s latency');
 
-/** @type {!WebInspector.UIStringFormat} */
-WebInspector.NetworkTimeCalculator._downloadFormat = new WebInspector.UIStringFormat('%s download');
+/** @type {!Common.UIStringFormat} */
+Network.NetworkTimeCalculator._downloadFormat = new Common.UIStringFormat('%s download');
 
-/** @type {!WebInspector.UIStringFormat} */
-WebInspector.NetworkTimeCalculator._fromServiceWorkerFormat =
-    new WebInspector.UIStringFormat('%s (from ServiceWorker)');
+/** @type {!Common.UIStringFormat} */
+Network.NetworkTimeCalculator._fromServiceWorkerFormat =
+    new Common.UIStringFormat('%s (from ServiceWorker)');
 
-/** @type {!WebInspector.UIStringFormat} */
-WebInspector.NetworkTimeCalculator._fromCacheFormat = new WebInspector.UIStringFormat('%s (from cache)');
+/** @type {!Common.UIStringFormat} */
+Network.NetworkTimeCalculator._fromCacheFormat = new Common.UIStringFormat('%s (from cache)');
 
 /**
  * @unrestricted
  */
-WebInspector.NetworkTransferTimeCalculator = class extends WebInspector.NetworkTimeCalculator {
+Network.NetworkTransferTimeCalculator = class extends Network.NetworkTimeCalculator {
   constructor() {
     super(false);
   }
@@ -367,7 +367,7 @@ WebInspector.NetworkTransferTimeCalculator = class extends WebInspector.NetworkT
 
   /**
    * @override
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {number}
    */
   _lowerBound(request) {
@@ -376,7 +376,7 @@ WebInspector.NetworkTransferTimeCalculator = class extends WebInspector.NetworkT
 
   /**
    * @override
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {number}
    */
   _upperBound(request) {
@@ -387,7 +387,7 @@ WebInspector.NetworkTransferTimeCalculator = class extends WebInspector.NetworkT
 /**
  * @unrestricted
  */
-WebInspector.NetworkTransferDurationCalculator = class extends WebInspector.NetworkTimeCalculator {
+Network.NetworkTransferDurationCalculator = class extends Network.NetworkTimeCalculator {
   constructor() {
     super(true);
   }
@@ -404,7 +404,7 @@ WebInspector.NetworkTransferDurationCalculator = class extends WebInspector.Netw
 
   /**
    * @override
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {number}
    */
   _upperBound(request) {

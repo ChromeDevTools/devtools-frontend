@@ -7,9 +7,9 @@
 /**
  * @unrestricted
  */
-WebInspector.JavaScriptOutlineDialog = class extends WebInspector.FilteredListWidget.Delegate {
+Sources.JavaScriptOutlineDialog = class extends UI.FilteredListWidget.Delegate {
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {function(number, number)} selectItemCallback
    */
   constructor(uiSourceCode, selectItemCallback) {
@@ -17,18 +17,18 @@ WebInspector.JavaScriptOutlineDialog = class extends WebInspector.FilteredListWi
 
     this._functionItems = [];
     this._selectItemCallback = selectItemCallback;
-    WebInspector.formatterWorkerPool.runChunkedTask(
+    Common.formatterWorkerPool.runChunkedTask(
         'javaScriptOutline', {content: uiSourceCode.workingCopy()}, this._didBuildOutlineChunk.bind(this));
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {function(number, number)} selectItemCallback
    */
   static show(uiSourceCode, selectItemCallback) {
-    WebInspector.JavaScriptOutlineDialog._instanceForTests =
-        new WebInspector.JavaScriptOutlineDialog(uiSourceCode, selectItemCallback);
-    new WebInspector.FilteredListWidget(WebInspector.JavaScriptOutlineDialog._instanceForTests).showAsDialog();
+    Sources.JavaScriptOutlineDialog._instanceForTests =
+        new Sources.JavaScriptOutlineDialog(uiSourceCode, selectItemCallback);
+    new UI.FilteredListWidget(Sources.JavaScriptOutlineDialog._instanceForTests).showAsDialog();
   }
 
   /**
@@ -40,7 +40,7 @@ WebInspector.JavaScriptOutlineDialog = class extends WebInspector.FilteredListWi
       this.refresh();
       return;
     }
-    var data = /** @type {!WebInspector.JavaScriptOutlineDialog.MessageEventData} */ (event.data);
+    var data = /** @type {!Sources.JavaScriptOutlineDialog.MessageEventData} */ (event.data);
     var chunk = data.chunk;
     for (var i = 0; i < chunk.length; ++i)
       this._functionItems.push(chunk[i]);
@@ -121,4 +121,4 @@ WebInspector.JavaScriptOutlineDialog = class extends WebInspector.FilteredListWi
 /**
  * @typedef {{isLastChunk: boolean, chunk: !Array.<!{selectorText: string, lineNumber: number, columnNumber: number}>}}
  */
-WebInspector.JavaScriptOutlineDialog.MessageEventData;
+Sources.JavaScriptOutlineDialog.MessageEventData;

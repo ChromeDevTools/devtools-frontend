@@ -4,30 +4,30 @@
 /**
  * @unrestricted
  */
-WebInspector.BlockedURLsPane = class extends WebInspector.VBox {
+Network.BlockedURLsPane = class extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('network/blockedURLsPane.css');
     this.contentElement.classList.add('blocked-urls-pane');
 
-    WebInspector.BlockedURLsPane._instance = this;
+    Network.BlockedURLsPane._instance = this;
 
-    this._blockedURLsSetting = WebInspector.moduleSetting('blockedURLs');
+    this._blockedURLsSetting = Common.moduleSetting('blockedURLs');
     this._blockedURLsSetting.addChangeListener(this._update, this);
 
-    this._toolbar = new WebInspector.Toolbar('', this.contentElement);
+    this._toolbar = new UI.Toolbar('', this.contentElement);
     this._toolbar.element.addEventListener('click', (e) => e.consume());
-    var addButton = new WebInspector.ToolbarButton(WebInspector.UIString('Add pattern'), 'largeicon-add');
+    var addButton = new UI.ToolbarButton(Common.UIString('Add pattern'), 'largeicon-add');
     addButton.addEventListener('click', this._addButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(addButton);
-    var clearButton = new WebInspector.ToolbarButton(WebInspector.UIString('Remove all'), 'largeicon-clear');
+    var clearButton = new UI.ToolbarButton(Common.UIString('Remove all'), 'largeicon-clear');
     clearButton.addEventListener('click', this._removeAll.bind(this));
     this._toolbar.appendToolbarItem(clearButton);
 
     this._emptyElement = this.contentElement.createChild('div', 'no-blocked-urls');
-    this._emptyElement.createChild('span').textContent = WebInspector.UIString('Requests are not blocked. ');
+    this._emptyElement.createChild('span').textContent = Common.UIString('Requests are not blocked. ');
     var addLink = this._emptyElement.createChild('span', 'link');
-    addLink.textContent = WebInspector.UIString('Add pattern.');
+    addLink.textContent = Common.UIString('Add pattern.');
     addLink.href = '';
     addLink.addEventListener('click', this._addButtonClicked.bind(this), false);
     this._emptyElement.addEventListener('contextmenu', this._emptyElementContextMenu.bind(this), true);
@@ -36,25 +36,25 @@ WebInspector.BlockedURLsPane = class extends WebInspector.VBox {
 
     /** @type {!Map<string, number>} */
     this._blockedCountForUrl = new Map();
-    WebInspector.targetManager.addModelListener(
-        WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
+    SDK.targetManager.addModelListener(
+        SDK.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
 
-    this._updateThrottler = new WebInspector.Throttler(200);
+    this._updateThrottler = new Common.Throttler(200);
 
     this._update();
   }
 
   static reset() {
-    if (WebInspector.BlockedURLsPane._instance)
-      WebInspector.BlockedURLsPane._instance.reset();
+    if (Network.BlockedURLsPane._instance)
+      Network.BlockedURLsPane._instance.reset();
   }
 
   /**
    * @param {!Event} event
    */
   _emptyElementContextMenu(event) {
-    var contextMenu = new WebInspector.ContextMenu(event);
-    contextMenu.appendItem(WebInspector.UIString.capitalize('Add ^pattern'), this._addButtonClicked.bind(this));
+    var contextMenu = new UI.ContextMenu(event);
+    contextMenu.appendItem(Common.UIString.capitalize('Add ^pattern'), this._addButtonClicked.bind(this));
     contextMenu.show();
   }
 
@@ -79,13 +79,13 @@ WebInspector.BlockedURLsPane = class extends WebInspector.VBox {
     var input = element.createChild('input');
     input.setAttribute('type', 'text');
     input.value = content;
-    input.placeholder = WebInspector.UIString('Text pattern to block matching requests; use * for wildcard');
+    input.placeholder = Common.UIString('Text pattern to block matching requests; use * for wildcard');
     input.addEventListener('blur', commit.bind(this), false);
     input.addEventListener('keydown', keydown.bind(this), false);
     input.focus();
 
     /**
-     * @this {WebInspector.BlockedURLsPane}
+     * @this {Network.BlockedURLsPane}
      */
     function finish() {
       this._editing = false;
@@ -94,7 +94,7 @@ WebInspector.BlockedURLsPane = class extends WebInspector.VBox {
     }
 
     /**
-     * @this {WebInspector.BlockedURLsPane}
+     * @this {Network.BlockedURLsPane}
      */
     function commit() {
       if (!this._editing)
@@ -108,14 +108,14 @@ WebInspector.BlockedURLsPane = class extends WebInspector.VBox {
     }
 
     /**
-     * @this {WebInspector.BlockedURLsPane}
+     * @this {Network.BlockedURLsPane}
      * @param {!Event} event
      */
     function keydown(event) {
       if (isEnterKey(event)) {
         event.consume();
         commit.call(this);
-      } else if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code || event.key === 'Escape') {
+      } else if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code || event.key === 'Escape') {
         event.consume();
         finish.call(this);
         this._update();
@@ -160,11 +160,11 @@ WebInspector.BlockedURLsPane = class extends WebInspector.VBox {
    * @param {!Event} event
    */
   _contextMenu(index, event) {
-    var contextMenu = new WebInspector.ContextMenu(event);
-    contextMenu.appendItem(WebInspector.UIString.capitalize('Add ^pattern'), this._addButtonClicked.bind(this));
+    var contextMenu = new UI.ContextMenu(event);
+    contextMenu.appendItem(Common.UIString.capitalize('Add ^pattern'), this._addButtonClicked.bind(this));
     contextMenu.appendItem(
-        WebInspector.UIString.capitalize('Remove ^pattern'), this._removeBlockedURL.bind(this, index));
-    contextMenu.appendItem(WebInspector.UIString.capitalize('Remove ^all'), this._removeAll.bind(this));
+        Common.UIString.capitalize('Remove ^pattern'), this._removeBlockedURL.bind(this, index));
+    contextMenu.appendItem(Common.UIString.capitalize('Remove ^all'), this._removeAll.bind(this));
     contextMenu.show();
   }
 
@@ -198,11 +198,11 @@ WebInspector.BlockedURLsPane = class extends WebInspector.VBox {
     var count = this._blockedRequestsCount(url);
     var countElement = element.createChild('div', 'blocked-count monospace');
     countElement.textContent = String.sprintf('[%d]', count);
-    countElement.title = WebInspector.UIString(
+    countElement.title = Common.UIString(
         count === 1 ? '%d request blocked by this pattern' : '%d requests blocked by this pattern', count);
 
     var removeButton = element.createChild('div', 'remove-button');
-    removeButton.title = WebInspector.UIString('Remove');
+    removeButton.title = Common.UIString('Remove');
     removeButton.addEventListener('click', this._removeBlockedURL.bind(this, index), false);
 
     element.addEventListener('contextmenu', this._contextMenu.bind(this, index), true);
@@ -252,10 +252,10 @@ WebInspector.BlockedURLsPane = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onRequestFinished(event) {
-    var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
+    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     if (request.wasBlocked()) {
       var count = this._blockedCountForUrl.get(request.url) || 0;
       this._blockedCountForUrl.set(request.url, count + 1);
@@ -264,23 +264,23 @@ WebInspector.BlockedURLsPane = class extends WebInspector.VBox {
   }
 };
 
-/** @type {?WebInspector.BlockedURLsPane} */
-WebInspector.BlockedURLsPane._instance = null;
+/** @type {?Network.BlockedURLsPane} */
+Network.BlockedURLsPane._instance = null;
 
 
 /**
- * @implements {WebInspector.ActionDelegate}
+ * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-WebInspector.BlockedURLsPane.ActionDelegate = class {
+Network.BlockedURLsPane.ActionDelegate = class {
   /**
    * @override
-   * @param {!WebInspector.Context} context
+   * @param {!UI.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    WebInspector.viewManager.showView('network.blocked-urls');
+    UI.viewManager.showView('network.blocked-urls');
     return true;
   }
 };

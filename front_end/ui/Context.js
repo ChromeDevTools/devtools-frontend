@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.Context = class {
+UI.Context = class {
   constructor() {
     this._flavors = new Map();
     this._eventDispatchers = new Map();
@@ -33,42 +33,42 @@ WebInspector.Context = class {
    * @template T
    */
   _dispatchFlavorChange(flavorType, flavorValue) {
-    for (var extension of self.runtime.extensions(WebInspector.ContextFlavorListener)) {
+    for (var extension of self.runtime.extensions(UI.ContextFlavorListener)) {
       if (extension.hasContextType(flavorType))
         extension.instance().then(
-            instance => /** @type {!WebInspector.ContextFlavorListener} */ (instance).flavorChanged(flavorValue));
+            instance => /** @type {!UI.ContextFlavorListener} */ (instance).flavorChanged(flavorValue));
     }
     var dispatcher = this._eventDispatchers.get(flavorType);
     if (!dispatcher)
       return;
-    dispatcher.dispatchEventToListeners(WebInspector.Context.Events.FlavorChanged, flavorValue);
+    dispatcher.dispatchEventToListeners(UI.Context.Events.FlavorChanged, flavorValue);
   }
 
   /**
    * @param {function(new:Object, ...)} flavorType
-   * @param {function(!WebInspector.Event)} listener
+   * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
    */
   addFlavorChangeListener(flavorType, listener, thisObject) {
     var dispatcher = this._eventDispatchers.get(flavorType);
     if (!dispatcher) {
-      dispatcher = new WebInspector.Object();
+      dispatcher = new Common.Object();
       this._eventDispatchers.set(flavorType, dispatcher);
     }
-    dispatcher.addEventListener(WebInspector.Context.Events.FlavorChanged, listener, thisObject);
+    dispatcher.addEventListener(UI.Context.Events.FlavorChanged, listener, thisObject);
   }
 
   /**
    * @param {function(new:Object, ...)} flavorType
-   * @param {function(!WebInspector.Event)} listener
+   * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
    */
   removeFlavorChangeListener(flavorType, listener, thisObject) {
     var dispatcher = this._eventDispatchers.get(flavorType);
     if (!dispatcher)
       return;
-    dispatcher.removeEventListener(WebInspector.Context.Events.FlavorChanged, listener, thisObject);
-    if (!dispatcher.hasEventListeners(WebInspector.Context.Events.FlavorChanged))
+    dispatcher.removeEventListener(UI.Context.Events.FlavorChanged, listener, thisObject);
+    if (!dispatcher.hasEventListeners(UI.Context.Events.FlavorChanged))
       this._eventDispatchers.remove(flavorType);
   }
 
@@ -106,20 +106,20 @@ WebInspector.Context = class {
 };
 
 /** @enum {symbol} */
-WebInspector.Context.Events = {
+UI.Context.Events = {
   FlavorChanged: Symbol('FlavorChanged')
 };
 
 /**
  * @interface
  */
-WebInspector.ContextFlavorListener = function() {};
+UI.ContextFlavorListener = function() {};
 
-WebInspector.ContextFlavorListener.prototype = {
+UI.ContextFlavorListener.prototype = {
   /**
    * @param {?Object} object
    */
   flavorChanged: function(object) {}
 };
 
-WebInspector.context = new WebInspector.Context();
+UI.context = new UI.Context();

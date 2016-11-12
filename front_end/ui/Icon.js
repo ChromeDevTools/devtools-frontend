@@ -6,7 +6,7 @@
  * @constructor
  * @extends {HTMLSpanElement}
  */
-WebInspector.Icon = class extends HTMLSpanElement {
+UI.Icon = class extends HTMLSpanElement {
   constructor() {
     super();
     throw new Error('icon must be created via factory method.');
@@ -15,13 +15,13 @@ WebInspector.Icon = class extends HTMLSpanElement {
   /**
    * @param {string=} iconType
    * @param {string=} className
-   * @return {!WebInspector.Icon}
+   * @return {!UI.Icon}
    */
   static create(iconType, className) {
-    if (!WebInspector.Icon._constructor)
-      WebInspector.Icon._constructor = registerCustomElement('span', 'ui-icon', WebInspector.Icon.prototype);
+    if (!UI.Icon._constructor)
+      UI.Icon._constructor = registerCustomElement('span', 'ui-icon', UI.Icon.prototype);
 
-    var icon = /** @type {!WebInspector.Icon} */ (new WebInspector.Icon._constructor());
+    var icon = /** @type {!UI.Icon} */ (new UI.Icon._constructor());
     if (className)
       icon.className = className;
     if (iconType)
@@ -33,7 +33,7 @@ WebInspector.Icon = class extends HTMLSpanElement {
    * @override
    */
   createdCallback() {
-    /** @type {?WebInspector.Icon.Descriptor} */
+    /** @type {?UI.Icon.Descriptor} */
     this._descriptor = null;
     /** @type {string} */
     this._iconType = '';
@@ -53,7 +53,7 @@ WebInspector.Icon = class extends HTMLSpanElement {
       this._iconType = '';
       this._descriptor = null;
     }
-    var descriptor = WebInspector.Icon.Descriptors[iconType] || null;
+    var descriptor = UI.Icon.Descriptors[iconType] || null;
     if (descriptor) {
       this._iconType = iconType;
       this._descriptor = descriptor;
@@ -92,10 +92,10 @@ WebInspector.Icon = class extends HTMLSpanElement {
 };
 
 /** @typedef {{x: number, y: number, width: number, height: number, spritesheet: string, isMask: (boolean|undefined)}} */
-WebInspector.Icon.Descriptor;
+UI.Icon.Descriptor;
 
-/** @enum {!WebInspector.Icon.Descriptor} */
-WebInspector.Icon.Descriptors = {
+/** @enum {!UI.Icon.Descriptor} */
+UI.Icon.Descriptors = {
   'smallicon-error': {x: -20, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-revoked-error': {x: -40, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-warning': {x: -60, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},

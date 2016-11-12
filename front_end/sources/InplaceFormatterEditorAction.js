@@ -2,20 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.SourcesView.EditorAction}
+ * @implements {Sources.SourcesView.EditorAction}
  * @unrestricted
  */
-WebInspector.InplaceFormatterEditorAction = class {
+Sources.InplaceFormatterEditorAction = class {
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _editorSelected(event) {
-    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     this._updateButton(uiSourceCode);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _editorClosed(event) {
     var wasSelected = /** @type {boolean} */ (event.data.wasSelected);
@@ -24,7 +24,7 @@ WebInspector.InplaceFormatterEditorAction = class {
   }
 
   /**
-   * @param {?WebInspector.UISourceCode} uiSourceCode
+   * @param {?Workspace.UISourceCode} uiSourceCode
    */
   _updateButton(uiSourceCode) {
     this._button.element.classList.toggle('hidden', !this._isFormattable(uiSourceCode));
@@ -32,18 +32,18 @@ WebInspector.InplaceFormatterEditorAction = class {
 
   /**
    * @override
-   * @param {!WebInspector.SourcesView} sourcesView
-   * @return {!WebInspector.ToolbarButton}
+   * @param {!Sources.SourcesView} sourcesView
+   * @return {!UI.ToolbarButton}
    */
   button(sourcesView) {
     if (this._button)
       return this._button;
 
     this._sourcesView = sourcesView;
-    this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
-    this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorClosed, this._editorClosed.bind(this));
+    this._sourcesView.addEventListener(Sources.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
+    this._sourcesView.addEventListener(Sources.SourcesView.Events.EditorClosed, this._editorClosed.bind(this));
 
-    this._button = new WebInspector.ToolbarButton(WebInspector.UIString('Format'), 'largeicon-pretty-print');
+    this._button = new UI.ToolbarButton(Common.UIString('Format'), 'largeicon-pretty-print');
     this._button.addEventListener('click', this._formatSourceInPlace, this);
     this._updateButton(sourcesView.currentUISourceCode());
 
@@ -51,18 +51,18 @@ WebInspector.InplaceFormatterEditorAction = class {
   }
 
   /**
-   * @param {?WebInspector.UISourceCode} uiSourceCode
+   * @param {?Workspace.UISourceCode} uiSourceCode
    * @return {boolean}
    */
   _isFormattable(uiSourceCode) {
     if (!uiSourceCode)
       return false;
-    if (uiSourceCode.project().type() === WebInspector.projectTypes.FileSystem)
+    if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem)
       return true;
-    if (WebInspector.persistence.binding(uiSourceCode))
+    if (Persistence.persistence.binding(uiSourceCode))
       return true;
     return uiSourceCode.contentType().isStyleSheet() ||
-        uiSourceCode.project().type() === WebInspector.projectTypes.Snippets;
+        uiSourceCode.project().type() === Workspace.projectTypes.Snippets;
   }
 
   _formatSourceInPlace() {
@@ -76,19 +76,19 @@ WebInspector.InplaceFormatterEditorAction = class {
       uiSourceCode.requestContent().then(contentLoaded.bind(this));
 
     /**
-     * @this {WebInspector.InplaceFormatterEditorAction}
+     * @this {Sources.InplaceFormatterEditorAction}
      * @param {?string} content
      */
     function contentLoaded(content) {
-      var highlighterType = WebInspector.NetworkProject.uiSourceCodeMimeType(uiSourceCode);
-      WebInspector.Formatter.format(
+      var highlighterType = Bindings.NetworkProject.uiSourceCodeMimeType(uiSourceCode);
+      Sources.Formatter.format(
           uiSourceCode.contentType(), highlighterType, content || '', innerCallback.bind(this));
     }
 
     /**
-     * @this {WebInspector.InplaceFormatterEditorAction}
+     * @this {Sources.InplaceFormatterEditorAction}
      * @param {string} formattedContent
-     * @param {!WebInspector.FormatterSourceMapping} formatterMapping
+     * @param {!Sources.FormatterSourceMapping} formatterMapping
      */
     function innerCallback(formattedContent, formatterMapping) {
       if (uiSourceCode.workingCopy() === formattedContent)

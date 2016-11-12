@@ -66,7 +66,7 @@ SourceMapV3.Offset = class {
 /**
  * @unrestricted
  */
-WebInspector.SourceMapEntry = class {
+SDK.SourceMapEntry = class {
   /**
    * @param {number} lineNumber
    * @param {number} columnNumber
@@ -88,9 +88,9 @@ WebInspector.SourceMapEntry = class {
 /**
  * @interface
  */
-WebInspector.SourceMap = function() {};
+SDK.SourceMap = function() {};
 
-WebInspector.SourceMap.prototype = {
+SDK.SourceMap.prototype = {
   /**
    * @return {string}
    */
@@ -108,8 +108,8 @@ WebInspector.SourceMap.prototype = {
 
   /**
    * @param {string} sourceURL
-   * @param {!WebInspector.ResourceType} contentType
-   * @return {!WebInspector.ContentProvider}
+   * @param {!Common.ResourceType} contentType
+   * @return {!Common.ContentProvider}
    */
   sourceContentProvider: function(sourceURL, contentType) {},
 
@@ -122,7 +122,7 @@ WebInspector.SourceMap.prototype = {
   /**
    * @param {number} lineNumber in compiled resource
    * @param {number} columnNumber in compiled resource
-   * @return {?WebInspector.SourceMapEntry}
+   * @return {?SDK.SourceMapEntry}
    */
   findEntry: function(lineNumber, columnNumber) {},
 
@@ -132,9 +132,9 @@ WebInspector.SourceMap.prototype = {
   editable: function() {},
 
   /**
-   * @param {!Array<!WebInspector.TextRange>} ranges
+   * @param {!Array<!Common.TextRange>} ranges
    * @param {!Array<string>} texts
-   * @return {!Promise<?WebInspector.SourceMap.EditResult>}
+   * @return {!Promise<?SDK.SourceMap.EditResult>}
    */
   editCompiled: function(ranges, texts) {},
 };
@@ -142,10 +142,10 @@ WebInspector.SourceMap.prototype = {
 /**
  * @unrestricted
  */
-WebInspector.SourceMap.EditResult = class {
+SDK.SourceMap.EditResult = class {
   /**
-   * @param {!WebInspector.SourceMap} map
-   * @param {!Array<!WebInspector.SourceEdit>} compiledEdits
+   * @param {!SDK.SourceMap} map
+   * @param {!Array<!Common.SourceEdit>} compiledEdits
    * @param {!Map<string, string>} newSources
    */
   constructor(map, compiledEdits, newSources) {
@@ -158,22 +158,22 @@ WebInspector.SourceMap.EditResult = class {
 /**
  * @interface
  */
-WebInspector.SourceMapFactory = function() {};
+SDK.SourceMapFactory = function() {};
 
-WebInspector.SourceMapFactory.prototype = {
+SDK.SourceMapFactory.prototype = {
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!WebInspector.SourceMap} sourceMap
-   * @return {!Promise<?WebInspector.SourceMap>}
+   * @param {!SDK.Target} target
+   * @param {!SDK.SourceMap} sourceMap
+   * @return {!Promise<?SDK.SourceMap>}
    */
   editableSourceMap: function(target, sourceMap) {},
 };
 
 /**
- * @implements {WebInspector.SourceMap}
+ * @implements {SDK.SourceMap}
  * @unrestricted
  */
-WebInspector.TextSourceMap = class {
+SDK.TextSourceMap = class {
   /**
    * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
    * for format description.
@@ -182,19 +182,19 @@ WebInspector.TextSourceMap = class {
    * @param {!SourceMapV3} payload
    */
   constructor(compiledURL, sourceMappingURL, payload) {
-    if (!WebInspector.TextSourceMap._base64Map) {
+    if (!SDK.TextSourceMap._base64Map) {
       const base64Digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-      WebInspector.TextSourceMap._base64Map = {};
+      SDK.TextSourceMap._base64Map = {};
       for (var i = 0; i < base64Digits.length; ++i)
-        WebInspector.TextSourceMap._base64Map[base64Digits.charAt(i)] = i;
+        SDK.TextSourceMap._base64Map[base64Digits.charAt(i)] = i;
     }
 
     this._json = payload;
     this._compiledURL = compiledURL;
     this._sourceMappingURL = sourceMappingURL;
-    /** @type {?Array<!WebInspector.SourceMapEntry>} */
+    /** @type {?Array<!SDK.SourceMapEntry>} */
     this._mappings = null;
-    /** @type {!Map<string, !WebInspector.TextSourceMap.SourceInfo>} */
+    /** @type {!Map<string, !SDK.TextSourceMap.SourceInfo>} */
     this._sourceInfos = new Map();
     this._eachSection(this._parseSources.bind(this));
   }
@@ -202,13 +202,13 @@ WebInspector.TextSourceMap = class {
   /**
    * @param {string} sourceMapURL
    * @param {string} compiledURL
-   * @return {!Promise<?WebInspector.TextSourceMap>}
-   * @this {WebInspector.TextSourceMap}
+   * @return {!Promise<?SDK.TextSourceMap>}
+   * @this {SDK.TextSourceMap}
    */
   static load(sourceMapURL, compiledURL) {
     var callback;
     var promise = new Promise(fulfill => callback = fulfill);
-    WebInspector.multitargetNetworkManager.loadResource(sourceMapURL, contentLoaded);
+    SDK.multitargetNetworkManager.loadResource(sourceMapURL, contentLoaded);
     return promise;
 
     /**
@@ -227,10 +227,10 @@ WebInspector.TextSourceMap = class {
       try {
         var payload = /** @type {!SourceMapV3} */ (JSON.parse(content));
         var baseURL = sourceMapURL.startsWith('data:') ? compiledURL : sourceMapURL;
-        callback(new WebInspector.TextSourceMap(compiledURL, baseURL, payload));
+        callback(new SDK.TextSourceMap(compiledURL, baseURL, payload));
       } catch (e) {
         console.error(e);
-        WebInspector.console.warn('DevTools failed to parse SourceMap: ' + sourceMapURL);
+        Common.console.warn('DevTools failed to parse SourceMap: ' + sourceMapURL);
         callback(null);
       }
     }
@@ -263,14 +263,14 @@ WebInspector.TextSourceMap = class {
   /**
    * @override
    * @param {string} sourceURL
-   * @param {!WebInspector.ResourceType} contentType
-   * @return {!WebInspector.ContentProvider}
+   * @param {!Common.ResourceType} contentType
+   * @return {!Common.ContentProvider}
    */
   sourceContentProvider(sourceURL, contentType) {
     var info = this._sourceInfos.get(sourceURL);
     if (info.content)
-      return WebInspector.StaticContentProvider.fromString(sourceURL, contentType, info.content);
-    return new WebInspector.CompilerSourceMappingContentProvider(sourceURL, contentType);
+      return Common.StaticContentProvider.fromString(sourceURL, contentType, info.content);
+    return new SDK.CompilerSourceMappingContentProvider(sourceURL, contentType);
   }
 
   /**
@@ -294,19 +294,19 @@ WebInspector.TextSourceMap = class {
 
   /**
    * @override
-   * @param {!Array<!WebInspector.TextRange>} ranges
+   * @param {!Array<!Common.TextRange>} ranges
    * @param {!Array<string>} texts
-   * @return {!Promise<?WebInspector.SourceMap.EditResult>}
+   * @return {!Promise<?SDK.SourceMap.EditResult>}
    */
   editCompiled(ranges, texts) {
-    return Promise.resolve(/** @type {?WebInspector.SourceMap.EditResult} */ (null));
+    return Promise.resolve(/** @type {?SDK.SourceMap.EditResult} */ (null));
   }
 
   /**
    * @override
    * @param {number} lineNumber in compiled resource
    * @param {number} columnNumber in compiled resource
-   * @return {?WebInspector.SourceMapEntry}
+   * @return {?SDK.SourceMapEntry}
    */
   findEntry(lineNumber, columnNumber) {
     var first = 0;
@@ -334,7 +334,7 @@ WebInspector.TextSourceMap = class {
   /**
    * @param {string} sourceURL
    * @param {number} lineNumber
-   * @return {?WebInspector.SourceMapEntry}
+   * @return {?SDK.SourceMapEntry}
    */
   firstSourceLineMapping(sourceURL, lineNumber) {
     var mappings = this._reversedMappings(sourceURL);
@@ -345,7 +345,7 @@ WebInspector.TextSourceMap = class {
 
     /**
      * @param {number} lineNumber
-     * @param {!WebInspector.SourceMapEntry} mapping
+     * @param {!SDK.SourceMapEntry} mapping
      * @return {number}
      */
     function lineComparator(lineNumber, mapping) {
@@ -354,7 +354,7 @@ WebInspector.TextSourceMap = class {
   }
 
   /**
-   * @return {!Array<!WebInspector.SourceMapEntry>}
+   * @return {!Array<!SDK.SourceMapEntry>}
    */
   mappings() {
     if (this._mappings === null) {
@@ -362,12 +362,12 @@ WebInspector.TextSourceMap = class {
       this._eachSection(this._parseMap.bind(this));
       this._json = null;
     }
-    return /** @type {!Array<!WebInspector.SourceMapEntry>} */ (this._mappings);
+    return /** @type {!Array<!SDK.SourceMapEntry>} */ (this._mappings);
   }
 
   /**
    * @param {string} sourceURL
-   * @return {!Array.<!WebInspector.SourceMapEntry>}
+   * @return {!Array.<!SDK.SourceMapEntry>}
    */
   _reversedMappings(sourceURL) {
     if (!this._sourceInfos.has(sourceURL))
@@ -380,8 +380,8 @@ WebInspector.TextSourceMap = class {
     return info.reverseMappings;
 
     /**
-     * @param {!WebInspector.SourceMapEntry} a
-     * @param {!WebInspector.SourceMapEntry} b
+     * @param {!SDK.SourceMapEntry} a
+     * @param {!SDK.SourceMapEntry} b
      * @return {number}
      */
     function sourceMappingComparator(a, b) {
@@ -419,14 +419,14 @@ WebInspector.TextSourceMap = class {
       sourceRoot += '/';
     for (var i = 0; i < sourceMap.sources.length; ++i) {
       var href = sourceRoot + sourceMap.sources[i];
-      var url = WebInspector.ParsedURL.completeURL(this._sourceMappingURL, href) || href;
+      var url = Common.ParsedURL.completeURL(this._sourceMappingURL, href) || href;
       var source = sourceMap.sourcesContent && sourceMap.sourcesContent[i];
       if (url === this._compiledURL && source)
-        url += WebInspector.UIString(' [sm]');
-      this._sourceInfos.set(url, new WebInspector.TextSourceMap.SourceInfo(source, null));
+        url += Common.UIString(' [sm]');
+      this._sourceInfos.set(url, new SDK.TextSourceMap.SourceInfo(source, null));
       sourcesList.push(url);
     }
-    sourceMap[WebInspector.TextSourceMap._sourcesListSymbol] = sourcesList;
+    sourceMap[SDK.TextSourceMap._sourcesListSymbol] = sourcesList;
   }
 
   /**
@@ -439,9 +439,9 @@ WebInspector.TextSourceMap = class {
     var sourceLineNumber = 0;
     var sourceColumnNumber = 0;
     var nameIndex = 0;
-    var sources = map[WebInspector.TextSourceMap._sourcesListSymbol];
+    var sources = map[SDK.TextSourceMap._sourcesListSymbol];
     var names = map.names || [];
-    var stringCharIterator = new WebInspector.TextSourceMap.StringCharIterator(map.mappings);
+    var stringCharIterator = new SDK.TextSourceMap.StringCharIterator(map.mappings);
     var sourceURL = sources[sourceIndex];
 
     while (true) {
@@ -459,7 +459,7 @@ WebInspector.TextSourceMap = class {
 
       columnNumber += this._decodeVLQ(stringCharIterator);
       if (!stringCharIterator.hasNext() || this._isSeparator(stringCharIterator.peek())) {
-        this._mappings.push(new WebInspector.SourceMapEntry(lineNumber, columnNumber));
+        this._mappings.push(new SDK.SourceMapEntry(lineNumber, columnNumber));
         continue;
       }
 
@@ -473,12 +473,12 @@ WebInspector.TextSourceMap = class {
 
       if (!stringCharIterator.hasNext() || this._isSeparator(stringCharIterator.peek())) {
         this._mappings.push(
-            new WebInspector.SourceMapEntry(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber));
+            new SDK.SourceMapEntry(lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber));
         continue;
       }
 
       nameIndex += this._decodeVLQ(stringCharIterator);
-      this._mappings.push(new WebInspector.SourceMapEntry(
+      this._mappings.push(new SDK.SourceMapEntry(
           lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
     }
   }
@@ -492,7 +492,7 @@ WebInspector.TextSourceMap = class {
   }
 
   /**
-   * @param {!WebInspector.TextSourceMap.StringCharIterator} stringCharIterator
+   * @param {!SDK.TextSourceMap.StringCharIterator} stringCharIterator
    * @return {number}
    */
   _decodeVLQ(stringCharIterator) {
@@ -500,10 +500,10 @@ WebInspector.TextSourceMap = class {
     var result = 0;
     var shift = 0;
     do {
-      var digit = WebInspector.TextSourceMap._base64Map[stringCharIterator.next()];
-      result += (digit & WebInspector.TextSourceMap._VLQ_BASE_MASK) << shift;
-      shift += WebInspector.TextSourceMap._VLQ_BASE_SHIFT;
-    } while (digit & WebInspector.TextSourceMap._VLQ_CONTINUATION_MASK);
+      var digit = SDK.TextSourceMap._base64Map[stringCharIterator.next()];
+      result += (digit & SDK.TextSourceMap._VLQ_BASE_MASK) << shift;
+      shift += SDK.TextSourceMap._VLQ_BASE_SHIFT;
+    } while (digit & SDK.TextSourceMap._VLQ_CONTINUATION_MASK);
 
     // Fix the sign.
     var negative = result & 1;
@@ -513,13 +513,13 @@ WebInspector.TextSourceMap = class {
 
   /**
    * @param {string} url
-   * @param {!WebInspector.TextRange} textRange
-   * @return {!WebInspector.TextRange}
+   * @param {!Common.TextRange} textRange
+   * @return {!Common.TextRange}
    */
   reverseMapTextRange(url, textRange) {
     /**
      * @param {!{lineNumber: number, columnNumber: number}} position
-     * @param {!WebInspector.SourceMapEntry} mapping
+     * @param {!SDK.SourceMapEntry} mapping
      * @return {number}
      */
     function comparator(position, mapping) {
@@ -536,20 +536,20 @@ WebInspector.TextSourceMap = class {
 
     var startMapping = mappings[startIndex];
     var endMapping = mappings[endIndex];
-    return new WebInspector.TextRange(
+    return new Common.TextRange(
         startMapping.lineNumber, startMapping.columnNumber, endMapping.lineNumber, endMapping.columnNumber);
   }
 };
 
-WebInspector.TextSourceMap._VLQ_BASE_SHIFT = 5;
-WebInspector.TextSourceMap._VLQ_BASE_MASK = (1 << 5) - 1;
-WebInspector.TextSourceMap._VLQ_CONTINUATION_MASK = 1 << 5;
+SDK.TextSourceMap._VLQ_BASE_SHIFT = 5;
+SDK.TextSourceMap._VLQ_BASE_MASK = (1 << 5) - 1;
+SDK.TextSourceMap._VLQ_CONTINUATION_MASK = 1 << 5;
 
 
 /**
  * @unrestricted
  */
-WebInspector.TextSourceMap.StringCharIterator = class {
+SDK.TextSourceMap.StringCharIterator = class {
   /**
    * @param {string} string
    */
@@ -583,10 +583,10 @@ WebInspector.TextSourceMap.StringCharIterator = class {
 /**
  * @unrestricted
  */
-WebInspector.TextSourceMap.SourceInfo = class {
+SDK.TextSourceMap.SourceInfo = class {
   /**
    * @param {?string} content
-   * @param {?Array<!WebInspector.SourceMapEntry>} reverseMappings
+   * @param {?Array<!SDK.SourceMapEntry>} reverseMappings
    */
   constructor(content, reverseMappings) {
     this.content = content;
@@ -594,4 +594,4 @@ WebInspector.TextSourceMap.SourceInfo = class {
   }
 };
 
-WebInspector.TextSourceMap._sourcesListSymbol = Symbol('sourcesList');
+SDK.TextSourceMap._sourcesListSymbol = Symbol('sourcesList');

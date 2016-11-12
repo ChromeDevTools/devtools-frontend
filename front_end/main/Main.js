@@ -31,12 +31,12 @@
 /**
  * @unrestricted
  */
-WebInspector.Main = class {
+Main.Main = class {
   /**
    * @suppressGlobalPropertiesCheck
    */
   constructor() {
-    WebInspector.Main._instanceForTest = this;
+    Main.Main._instanceForTest = this;
     runOnWindowLoad(this._loaded.bind(this));
   }
 
@@ -44,9 +44,9 @@ WebInspector.Main = class {
    * @param {boolean} hard
    */
   static _reloadPage(hard) {
-    var mainTarget = WebInspector.targetManager.mainTarget();
+    var mainTarget = SDK.targetManager.mainTarget();
     if (mainTarget && mainTarget.hasBrowserCapability())
-      WebInspector.targetManager.reloadPage(hard);
+      SDK.targetManager.reloadPage(hard);
   }
 
   _loaded() {
@@ -54,7 +54,7 @@ WebInspector.Main = class {
 
     if (InspectorFrontendHost.isUnderTest())
       self.runtime.useTestBase();
-    Runtime.setPlatform(WebInspector.platform());
+    Runtime.setPlatform(Host.platform());
     InspectorFrontendHost.getPreferences(this._gotPreferences.bind(this));
   }
 
@@ -73,17 +73,17 @@ WebInspector.Main = class {
    */
   _createSettings(prefs) {
     this._initializeExperiments(prefs);
-    var storagePrefix = WebInspector.isCustomDevtoolsFrontend() ? '__custom__' : '';
+    var storagePrefix = Host.isCustomDevtoolsFrontend() ? '__custom__' : '';
     var clearLocalStorage = window.localStorage ? window.localStorage.clear.bind(window.localStorage) : undefined;
     var localStorage =
-        new WebInspector.SettingsStorage(window.localStorage || {}, undefined, undefined, clearLocalStorage, storagePrefix);
-    var globalStorage = new WebInspector.SettingsStorage(
+        new Common.SettingsStorage(window.localStorage || {}, undefined, undefined, clearLocalStorage, storagePrefix);
+    var globalStorage = new Common.SettingsStorage(
         prefs, InspectorFrontendHost.setPreference, InspectorFrontendHost.removePreference,
         InspectorFrontendHost.clearPreferences, storagePrefix);
-    WebInspector.settings = new WebInspector.Settings(globalStorage, localStorage);
+    Common.settings = new Common.Settings(globalStorage, localStorage);
 
     if (!InspectorFrontendHost.isUnderTest())
-      new WebInspector.VersionController().updateVersion();
+      new Common.VersionController().updateVersion();
   }
 
   /**
@@ -145,89 +145,89 @@ WebInspector.Main = class {
   _createAppUI() {
     console.time('Main._createAppUI');
 
-    WebInspector.viewManager = new WebInspector.ViewManager();
+    UI.viewManager = new UI.ViewManager();
 
     // Request filesystems early, we won't create connections until callback is fired. Things will happen in parallel.
-    WebInspector.isolatedFileSystemManager = new WebInspector.IsolatedFileSystemManager();
+    Workspace.isolatedFileSystemManager = new Workspace.IsolatedFileSystemManager();
 
-    var themeSetting = WebInspector.settings.createSetting('uiTheme', 'default');
-    WebInspector.initializeUIUtils(document, themeSetting);
-    themeSetting.addChangeListener(WebInspector.reload.bind(WebInspector));
+    var themeSetting = Common.settings.createSetting('uiTheme', 'default');
+    UI.initializeUIUtils(document, themeSetting);
+    themeSetting.addChangeListener(Components.reload.bind(Components));
 
-    WebInspector.installComponentRootStyles(/** @type {!Element} */ (document.body));
+    UI.installComponentRootStyles(/** @type {!Element} */ (document.body));
 
     this._addMainEventListeners(document);
 
     var canDock = !!Runtime.queryParam('can_dock');
-    WebInspector.zoomManager = new WebInspector.ZoomManager(window, InspectorFrontendHost);
-    WebInspector.inspectorView = WebInspector.InspectorView.instance();
-    WebInspector.ContextMenu.initialize();
-    WebInspector.ContextMenu.installHandler(document);
-    WebInspector.Tooltip.installHandler(document);
-    WebInspector.dockController = new WebInspector.DockController(canDock);
-    WebInspector.multitargetConsoleModel = new WebInspector.MultitargetConsoleModel();
-    WebInspector.multitargetNetworkManager = new WebInspector.MultitargetNetworkManager();
-    WebInspector.targetManager.addEventListener(
-        WebInspector.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
+    UI.zoomManager = new UI.ZoomManager(window, InspectorFrontendHost);
+    UI.inspectorView = UI.InspectorView.instance();
+    UI.ContextMenu.initialize();
+    UI.ContextMenu.installHandler(document);
+    UI.Tooltip.installHandler(document);
+    Components.dockController = new Components.DockController(canDock);
+    SDK.multitargetConsoleModel = new SDK.MultitargetConsoleModel();
+    SDK.multitargetNetworkManager = new SDK.MultitargetNetworkManager();
+    SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
 
-    WebInspector.shortcutsScreen = new WebInspector.ShortcutsScreen();
+    Components.shortcutsScreen = new Components.ShortcutsScreen();
     // set order of some sections explicitly
-    WebInspector.shortcutsScreen.section(WebInspector.UIString('Elements Panel'));
-    WebInspector.shortcutsScreen.section(WebInspector.UIString('Styles Pane'));
-    WebInspector.shortcutsScreen.section(WebInspector.UIString('Debugger'));
-    WebInspector.shortcutsScreen.section(WebInspector.UIString('Console'));
+    Components.shortcutsScreen.section(Common.UIString('Elements Panel'));
+    Components.shortcutsScreen.section(Common.UIString('Styles Pane'));
+    Components.shortcutsScreen.section(Common.UIString('Debugger'));
+    Components.shortcutsScreen.section(Common.UIString('Console'));
 
-    WebInspector.fileManager = new WebInspector.FileManager();
-    WebInspector.workspace = new WebInspector.Workspace();
-    WebInspector.formatterWorkerPool = new WebInspector.FormatterWorkerPool();
-    WebInspector.fileSystemMapping = new WebInspector.FileSystemMapping();
+    Workspace.fileManager = new Workspace.FileManager();
+    Workspace.workspace = new Workspace.Workspace();
+    Common.formatterWorkerPool = new Common.FormatterWorkerPool();
+    Workspace.fileSystemMapping = new Workspace.FileSystemMapping();
 
     var fileSystemWorkspaceBinding =
-        new WebInspector.FileSystemWorkspaceBinding(WebInspector.isolatedFileSystemManager, WebInspector.workspace);
-    WebInspector.networkMapping = new WebInspector.NetworkMapping(
-        WebInspector.targetManager, WebInspector.workspace, fileSystemWorkspaceBinding, WebInspector.fileSystemMapping);
-    WebInspector.networkProjectManager =
-        new WebInspector.NetworkProjectManager(WebInspector.targetManager, WebInspector.workspace);
-    WebInspector.presentationConsoleMessageHelper =
-        new WebInspector.PresentationConsoleMessageHelper(WebInspector.workspace);
-    WebInspector.cssWorkspaceBinding = new WebInspector.CSSWorkspaceBinding(
-        WebInspector.targetManager, WebInspector.workspace, WebInspector.networkMapping);
-    WebInspector.debuggerWorkspaceBinding = new WebInspector.DebuggerWorkspaceBinding(
-        WebInspector.targetManager, WebInspector.workspace, WebInspector.networkMapping);
-    WebInspector.breakpointManager = new WebInspector.BreakpointManager(
-        null, WebInspector.workspace, WebInspector.targetManager, WebInspector.debuggerWorkspaceBinding);
-    WebInspector.extensionServer = new WebInspector.ExtensionServer();
+        new Bindings.FileSystemWorkspaceBinding(Workspace.isolatedFileSystemManager, Workspace.workspace);
+    Bindings.networkMapping = new Bindings.NetworkMapping(
+        SDK.targetManager, Workspace.workspace, fileSystemWorkspaceBinding, Workspace.fileSystemMapping);
+    Main.networkProjectManager =
+        new Bindings.NetworkProjectManager(SDK.targetManager, Workspace.workspace);
+    Bindings.presentationConsoleMessageHelper =
+        new Bindings.PresentationConsoleMessageHelper(Workspace.workspace);
+    Bindings.cssWorkspaceBinding = new Bindings.CSSWorkspaceBinding(
+        SDK.targetManager, Workspace.workspace, Bindings.networkMapping);
+    Bindings.debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding(
+        SDK.targetManager, Workspace.workspace, Bindings.networkMapping);
+    Bindings.breakpointManager = new Bindings.BreakpointManager(
+        null, Workspace.workspace, SDK.targetManager, Bindings.debuggerWorkspaceBinding);
+    Extensions.extensionServer = new Extensions.ExtensionServer();
 
-    WebInspector.persistence = new WebInspector.Persistence(
-        WebInspector.workspace, WebInspector.breakpointManager, WebInspector.fileSystemMapping);
+    Persistence.persistence = new Persistence.Persistence(
+        Workspace.workspace, Bindings.breakpointManager, Workspace.fileSystemMapping);
 
-    new WebInspector.OverlayController();
-    new WebInspector.ExecutionContextSelector(WebInspector.targetManager, WebInspector.context);
-    WebInspector.blackboxManager = new WebInspector.BlackboxManager(WebInspector.debuggerWorkspaceBinding);
+    new Main.OverlayController();
+    new Components.ExecutionContextSelector(SDK.targetManager, UI.context);
+    Bindings.blackboxManager = new Bindings.BlackboxManager(Bindings.debuggerWorkspaceBinding);
 
-    var autoselectPanel = WebInspector.UIString('auto');
-    var openAnchorLocationSetting = WebInspector.settings.createSetting('openLinkHandler', autoselectPanel);
-    WebInspector.openAnchorLocationRegistry = new WebInspector.HandlerRegistry(openAnchorLocationSetting);
-    WebInspector.openAnchorLocationRegistry.registerHandler(autoselectPanel, function() {
+    var autoselectPanel = Common.UIString('auto');
+    var openAnchorLocationSetting = Common.settings.createSetting('openLinkHandler', autoselectPanel);
+    Components.openAnchorLocationRegistry = new Components.HandlerRegistry(openAnchorLocationSetting);
+    Components.openAnchorLocationRegistry.registerHandler(autoselectPanel, function() {
       return false;
     });
-    WebInspector.Linkifier.setLinkHandler(new WebInspector.HandlerRegistry.LinkHandler());
+    Components.Linkifier.setLinkHandler(new Components.HandlerRegistry.LinkHandler());
 
-    new WebInspector.Main.PauseListener();
-    new WebInspector.Main.InspectedNodeRevealer();
-    new WebInspector.NetworkPanelIndicator();
-    new WebInspector.SourcesPanelIndicator();
-    new WebInspector.BackendSettingsSync();
-    WebInspector.domBreakpointsSidebarPane = new WebInspector.DOMBreakpointsSidebarPane();
+    new Main.Main.PauseListener();
+    new Main.Main.InspectedNodeRevealer();
+    new Main.NetworkPanelIndicator();
+    new Main.SourcesPanelIndicator();
+    new Main.BackendSettingsSync();
+    Components.domBreakpointsSidebarPane = new Components.DOMBreakpointsSidebarPane();
 
-    WebInspector.actionRegistry = new WebInspector.ActionRegistry();
-    WebInspector.shortcutRegistry = new WebInspector.ShortcutRegistry(WebInspector.actionRegistry, document);
-    WebInspector.ShortcutsScreen.registerShortcuts();
+    UI.actionRegistry = new UI.ActionRegistry();
+    UI.shortcutRegistry = new UI.ShortcutRegistry(UI.actionRegistry, document);
+    Components.ShortcutsScreen.registerShortcuts();
     this._registerForwardedShortcuts();
     this._registerMessageSinkListener();
-    new WebInspector.Main.InspectorDomainObserver();
+    new Main.Main.InspectorDomainObserver();
 
-    self.runtime.extension(WebInspector.AppProvider).instance().then(this._showAppUI.bind(this));
+    self.runtime.extension(Common.AppProvider).instance().then(this._showAppUI.bind(this));
     console.timeEnd('Main._createAppUI');
   }
 
@@ -237,24 +237,24 @@ WebInspector.Main = class {
    */
   _showAppUI(appProvider) {
     console.time('Main._showAppUI');
-    var app = /** @type {!WebInspector.AppProvider} */ (appProvider).createApp();
+    var app = /** @type {!Common.AppProvider} */ (appProvider).createApp();
     // It is important to kick controller lifetime after apps are instantiated.
-    WebInspector.dockController.initialize();
+    Components.dockController.initialize();
     app.presentUI(document);
 
-    var toggleSearchNodeAction = WebInspector.actionRegistry.action('elements.toggle-element-search');
+    var toggleSearchNodeAction = UI.actionRegistry.action('elements.toggle-element-search');
     // TODO: we should not access actions from other modules.
     if (toggleSearchNodeAction)
       InspectorFrontendHost.events.addEventListener(
           InspectorFrontendHostAPI.Events.EnterInspectElementMode,
           toggleSearchNodeAction.execute.bind(toggleSearchNodeAction), this);
-    WebInspector.inspectorView.createToolbars();
+    UI.inspectorView.createToolbars();
     InspectorFrontendHost.loadCompleted();
 
     InspectorFrontendHost.events.addEventListener(
         InspectorFrontendHostAPI.Events.ReloadInspectedPage, this._reloadInspectedPage, this);
 
-    var extensions = self.runtime.extensions(WebInspector.QueryParamHandler);
+    var extensions = self.runtime.extensions(Common.QueryParamHandler);
     for (var extension of extensions) {
       var value = Runtime.queryParam(extension.descriptor()['name']);
       if (value !== null)
@@ -263,7 +263,7 @@ WebInspector.Main = class {
 
     /**
      * @param {string} value
-     * @param {!WebInspector.QueryParamHandler} handler
+     * @param {!Common.QueryParamHandler} handler
      */
     function handleQueryParam(value, handler) {
       handler.handleQueryParam(value);
@@ -276,7 +276,7 @@ WebInspector.Main = class {
 
   _initializeTarget() {
     console.time('Main._initializeTarget');
-    WebInspector.targetManager.connectToMainTarget(webSocketConnectionLost);
+    SDK.targetManager.connectToMainTarget(webSocketConnectionLost);
 
     InspectorFrontendHost.readyForTest();
     // Asynchronously run the extensions.
@@ -284,35 +284,35 @@ WebInspector.Main = class {
     console.timeEnd('Main._initializeTarget');
 
     function webSocketConnectionLost() {
-      if (!WebInspector._disconnectedScreenWithReasonWasShown)
-        WebInspector.RemoteDebuggingTerminatedScreen.show('WebSocket disconnected');
+      if (!Main._disconnectedScreenWithReasonWasShown)
+        Main.RemoteDebuggingTerminatedScreen.show('WebSocket disconnected');
     }
   }
 
   _lateInitialization() {
     console.timeStamp('Main._lateInitialization');
     this._registerShortcuts();
-    WebInspector.extensionServer.initializeExtensions();
+    Extensions.extensionServer.initializeExtensions();
   }
 
   _registerForwardedShortcuts() {
     /** @const */ var forwardedActions =
         ['main.toggle-dock', 'debugger.toggle-breakpoints-active', 'debugger.toggle-pause', 'commandMenu.show'];
-    var actionKeys = WebInspector.shortcutRegistry.keysForActions(forwardedActions)
-                         .map(WebInspector.KeyboardShortcut.keyCodeAndModifiersFromKey);
+    var actionKeys = UI.shortcutRegistry.keysForActions(forwardedActions)
+                         .map(UI.KeyboardShortcut.keyCodeAndModifiersFromKey);
     InspectorFrontendHost.setWhitelistedShortcuts(JSON.stringify(actionKeys));
   }
 
   _registerMessageSinkListener() {
-    WebInspector.console.addEventListener(WebInspector.Console.Events.MessageAdded, messageAdded);
+    Common.console.addEventListener(Common.Console.Events.MessageAdded, messageAdded);
 
     /**
-     * @param {!WebInspector.Event} event
+     * @param {!Common.Event} event
      */
     function messageAdded(event) {
-      var message = /** @type {!WebInspector.Console.Message} */ (event.data);
+      var message = /** @type {!Common.Console.Message} */ (event.data);
       if (message.show)
-        WebInspector.console.show();
+        Common.console.show();
     }
   }
 
@@ -334,39 +334,39 @@ WebInspector.Main = class {
       return;
 
     function followLink() {
-      if (WebInspector.isBeingEdited(target))
+      if (UI.isBeingEdited(target))
         return;
-      if (WebInspector.openAnchorLocationRegistry.dispatch({url: anchor.href, lineNumber: anchor.lineNumber}))
+      if (Components.openAnchorLocationRegistry.dispatch({url: anchor.href, lineNumber: anchor.lineNumber}))
         return;
 
-      var uiSourceCode = WebInspector.networkMapping.uiSourceCodeForURLForAnyTarget(anchor.href);
+      var uiSourceCode = Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(anchor.href);
       if (uiSourceCode) {
-        WebInspector.Revealer.reveal(uiSourceCode.uiLocation(anchor.lineNumber || 0, anchor.columnNumber || 0));
+        Common.Revealer.reveal(uiSourceCode.uiLocation(anchor.lineNumber || 0, anchor.columnNumber || 0));
         return;
       }
 
-      var resource = WebInspector.resourceForURL(anchor.href);
+      var resource = Bindings.resourceForURL(anchor.href);
       if (resource) {
-        WebInspector.Revealer.reveal(resource);
+        Common.Revealer.reveal(resource);
         return;
       }
 
-      var request = WebInspector.NetworkLog.requestForURL(anchor.href);
+      var request = SDK.NetworkLog.requestForURL(anchor.href);
       if (request) {
-        WebInspector.Revealer.reveal(request);
+        Common.Revealer.reveal(request);
         return;
       }
       InspectorFrontendHost.openInNewTab(anchor.href);
     }
 
-    if (WebInspector.followLinkTimeout)
-      clearTimeout(WebInspector.followLinkTimeout);
+    if (Main.followLinkTimeout)
+      clearTimeout(Main.followLinkTimeout);
 
     if (anchor.preventFollowOnDoubleClick) {
       // Start a timeout if this is the first click, if the timeout is canceled
       // before it fires, then a double clicked happened or another link was clicked.
       if (event.detail === 1)
-        WebInspector.followLinkTimeout = setTimeout(followLink, 333);
+        Main.followLinkTimeout = setTimeout(followLink, 333);
       return;
     }
 
@@ -377,54 +377,54 @@ WebInspector.Main = class {
   }
 
   _registerShortcuts() {
-    var shortcut = WebInspector.KeyboardShortcut;
-    var section = WebInspector.shortcutsScreen.section(WebInspector.UIString('All Panels'));
+    var shortcut = UI.KeyboardShortcut;
+    var section = Components.shortcutsScreen.section(Common.UIString('All Panels'));
     var keys = [
       shortcut.makeDescriptor('[', shortcut.Modifiers.CtrlOrMeta),
       shortcut.makeDescriptor(']', shortcut.Modifiers.CtrlOrMeta)
     ];
-    section.addRelatedKeys(keys, WebInspector.UIString('Go to the panel to the left/right'));
+    section.addRelatedKeys(keys, Common.UIString('Go to the panel to the left/right'));
 
     keys = [
       shortcut.makeDescriptor('[', shortcut.Modifiers.CtrlOrMeta | shortcut.Modifiers.Alt),
       shortcut.makeDescriptor(']', shortcut.Modifiers.CtrlOrMeta | shortcut.Modifiers.Alt)
     ];
-    section.addRelatedKeys(keys, WebInspector.UIString('Go back/forward in panel history'));
+    section.addRelatedKeys(keys, Common.UIString('Go back/forward in panel history'));
 
-    var toggleConsoleLabel = WebInspector.UIString('Show console');
+    var toggleConsoleLabel = Common.UIString('Show console');
     section.addKey(shortcut.makeDescriptor(shortcut.Keys.Tilde, shortcut.Modifiers.Ctrl), toggleConsoleLabel);
-    section.addKey(shortcut.makeDescriptor(shortcut.Keys.Esc), WebInspector.UIString('Toggle drawer'));
-    if (WebInspector.dockController.canDock()) {
+    section.addKey(shortcut.makeDescriptor(shortcut.Keys.Esc), Common.UIString('Toggle drawer'));
+    if (Components.dockController.canDock()) {
       section.addKey(
           shortcut.makeDescriptor('M', shortcut.Modifiers.CtrlOrMeta | shortcut.Modifiers.Shift),
-          WebInspector.UIString('Toggle device mode'));
+          Common.UIString('Toggle device mode'));
       section.addKey(
           shortcut.makeDescriptor('D', shortcut.Modifiers.CtrlOrMeta | shortcut.Modifiers.Shift),
-          WebInspector.UIString('Toggle dock side'));
+          Common.UIString('Toggle dock side'));
     }
-    section.addKey(shortcut.makeDescriptor('f', shortcut.Modifiers.CtrlOrMeta), WebInspector.UIString('Search'));
+    section.addKey(shortcut.makeDescriptor('f', shortcut.Modifiers.CtrlOrMeta), Common.UIString('Search'));
 
-    var advancedSearchShortcutModifier = WebInspector.isMac() ?
-        WebInspector.KeyboardShortcut.Modifiers.Meta | WebInspector.KeyboardShortcut.Modifiers.Alt :
-        WebInspector.KeyboardShortcut.Modifiers.Ctrl | WebInspector.KeyboardShortcut.Modifiers.Shift;
+    var advancedSearchShortcutModifier = Host.isMac() ?
+        UI.KeyboardShortcut.Modifiers.Meta | UI.KeyboardShortcut.Modifiers.Alt :
+        UI.KeyboardShortcut.Modifiers.Ctrl | UI.KeyboardShortcut.Modifiers.Shift;
     var advancedSearchShortcut = shortcut.makeDescriptor('f', advancedSearchShortcutModifier);
-    section.addKey(advancedSearchShortcut, WebInspector.UIString('Search across all sources'));
+    section.addKey(advancedSearchShortcut, Common.UIString('Search across all sources'));
 
     var inspectElementModeShortcuts =
-        WebInspector.shortcutRegistry.shortcutDescriptorsForAction('elements.toggle-element-search');
+        UI.shortcutRegistry.shortcutDescriptorsForAction('elements.toggle-element-search');
     if (inspectElementModeShortcuts.length)
-      section.addKey(inspectElementModeShortcuts[0], WebInspector.UIString('Select node to inspect'));
+      section.addKey(inspectElementModeShortcuts[0], Common.UIString('Select node to inspect'));
 
     var openResourceShortcut =
-        WebInspector.KeyboardShortcut.makeDescriptor('p', WebInspector.KeyboardShortcut.Modifiers.CtrlOrMeta);
-    section.addKey(openResourceShortcut, WebInspector.UIString('Go to source'));
+        UI.KeyboardShortcut.makeDescriptor('p', UI.KeyboardShortcut.Modifiers.CtrlOrMeta);
+    section.addKey(openResourceShortcut, Common.UIString('Go to source'));
 
-    if (WebInspector.isMac()) {
+    if (Host.isMac()) {
       keys = [
         shortcut.makeDescriptor('g', shortcut.Modifiers.Meta),
         shortcut.makeDescriptor('g', shortcut.Modifiers.Meta | shortcut.Modifiers.Shift)
       ];
-      section.addRelatedKeys(keys, WebInspector.UIString('Find next/previous'));
+      section.addRelatedKeys(keys, Common.UIString('Find next/previous'));
     }
   }
 
@@ -440,15 +440,15 @@ WebInspector.Main = class {
         event.preventDefault();
     }
 
-    if (!WebInspector.Dialog.hasInstance() && WebInspector.inspectorView.currentPanelDeprecated()) {
-      WebInspector.inspectorView.currentPanelDeprecated().handleShortcut(event);
+    if (!UI.Dialog.hasInstance() && UI.inspectorView.currentPanelDeprecated()) {
+      UI.inspectorView.currentPanelDeprecated().handleShortcut(event);
       if (event.handled) {
         event.consume(true);
         return;
       }
     }
 
-    WebInspector.shortcutRegistry.handleShortcut(event);
+    UI.shortcutRegistry.handleShortcut(event);
   }
 
   /**
@@ -484,40 +484,40 @@ WebInspector.Main = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _reloadInspectedPage(event) {
     var hard = /** @type {boolean} */ (event.data);
-    WebInspector.Main._reloadPage(hard);
+    Main.Main._reloadPage(hard);
   }
 
   _onSuspendStateChanged() {
-    var suspended = WebInspector.targetManager.allTargetsSuspended();
-    WebInspector.inspectorView.onSuspendStateChanged(suspended);
+    var suspended = SDK.targetManager.allTargetsSuspended();
+    UI.inspectorView.onSuspendStateChanged(suspended);
   }
 };
 
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.Main.InspectorDomainObserver = class {
+Main.Main.InspectorDomainObserver = class {
   constructor() {
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    target.registerInspectorDispatcher(new WebInspector.Main.InspectorDomainDispatcher(target));
+    target.registerInspectorDispatcher(new Main.Main.InspectorDomainDispatcher(target));
     target.inspectorAgent().enable();
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
   }
@@ -527,9 +527,9 @@ WebInspector.Main.InspectorDomainObserver = class {
  * @implements {Protocol.InspectorDispatcher}
  * @unrestricted
  */
-WebInspector.Main.InspectorDomainDispatcher = class {
+Main.Main.InspectorDomainDispatcher = class {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   constructor(target) {
     this._target = target;
@@ -540,41 +540,41 @@ WebInspector.Main.InspectorDomainDispatcher = class {
    * @param {string} reason
    */
   detached(reason) {
-    WebInspector._disconnectedScreenWithReasonWasShown = true;
-    WebInspector.RemoteDebuggingTerminatedScreen.show(reason);
+    Main._disconnectedScreenWithReasonWasShown = true;
+    Main.RemoteDebuggingTerminatedScreen.show(reason);
   }
 
   /**
    * @override
    */
   targetCrashed() {
-    var debuggerModel = WebInspector.DebuggerModel.fromTarget(this._target);
+    var debuggerModel = SDK.DebuggerModel.fromTarget(this._target);
     if (debuggerModel)
-      WebInspector.TargetCrashedScreen.show(debuggerModel);
+      Main.TargetCrashedScreen.show(debuggerModel);
   }
 };
 
 /**
- * @implements {WebInspector.ActionDelegate}
+ * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-WebInspector.Main.ReloadActionDelegate = class {
+Main.Main.ReloadActionDelegate = class {
   /**
    * @override
-   * @param {!WebInspector.Context} context
+   * @param {!UI.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction(context, actionId) {
     switch (actionId) {
       case 'main.reload':
-        WebInspector.Main._reloadPage(false);
+        Main.Main._reloadPage(false);
         return true;
       case 'main.hard-reload':
-        WebInspector.Main._reloadPage(true);
+        Main.Main._reloadPage(true);
         return true;
       case 'main.debug-reload':
-        WebInspector.reload();
+        Components.reload();
         return true;
     }
     return false;
@@ -582,13 +582,13 @@ WebInspector.Main.ReloadActionDelegate = class {
 };
 
 /**
- * @implements {WebInspector.ActionDelegate}
+ * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-WebInspector.Main.ZoomActionDelegate = class {
+Main.Main.ZoomActionDelegate = class {
   /**
    * @override
-   * @param {!WebInspector.Context} context
+   * @param {!UI.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
@@ -612,20 +612,20 @@ WebInspector.Main.ZoomActionDelegate = class {
 };
 
 /**
- * @implements {WebInspector.ActionDelegate}
+ * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-WebInspector.Main.SearchActionDelegate = class {
+Main.Main.SearchActionDelegate = class {
   /**
    * @override
-   * @param {!WebInspector.Context} context
+   * @param {!UI.Context} context
    * @param {string} actionId
    * @return {boolean}
    * @suppressGlobalPropertiesCheck
    */
   handleAction(context, actionId) {
-    var searchableView = WebInspector.SearchableView.fromElement(document.deepActiveElement()) ||
-        WebInspector.inspectorView.currentPanelDeprecated().searchableView();
+    var searchableView = UI.SearchableView.fromElement(document.deepActiveElement()) ||
+        UI.inspectorView.currentPanelDeprecated().searchableView();
     if (!searchableView)
       return false;
     switch (actionId) {
@@ -644,29 +644,29 @@ WebInspector.Main.SearchActionDelegate = class {
 
 
 /**
- * @implements {WebInspector.ToolbarItem.Provider}
+ * @implements {UI.ToolbarItem.Provider}
  * @unrestricted
  */
-WebInspector.Main.WarningErrorCounter = class {
+Main.Main.WarningErrorCounter = class {
   constructor() {
-    WebInspector.Main.WarningErrorCounter._instanceForTest = this;
+    Main.Main.WarningErrorCounter._instanceForTest = this;
 
     this._counter = createElement('div');
-    this._counter.addEventListener('click', WebInspector.console.show.bind(WebInspector.console), false);
-    this._toolbarItem = new WebInspector.ToolbarItem(this._counter);
-    var shadowRoot = WebInspector.createShadowRootWithCoreStyles(this._counter, 'main/errorWarningCounter.css');
+    this._counter.addEventListener('click', Common.console.show.bind(Common.console), false);
+    this._toolbarItem = new UI.ToolbarItem(this._counter);
+    var shadowRoot = UI.createShadowRootWithCoreStyles(this._counter, 'main/errorWarningCounter.css');
 
     this._errors = this._createItem(shadowRoot, 'smallicon-error');
     this._revokedErrors = this._createItem(shadowRoot, 'smallicon-revoked-error');
     this._warnings = this._createItem(shadowRoot, 'smallicon-warning');
     this._titles = [];
 
-    WebInspector.multitargetConsoleModel.addEventListener(
-        WebInspector.ConsoleModel.Events.ConsoleCleared, this._update, this);
-    WebInspector.multitargetConsoleModel.addEventListener(
-        WebInspector.ConsoleModel.Events.MessageAdded, this._update, this);
-    WebInspector.multitargetConsoleModel.addEventListener(
-        WebInspector.ConsoleModel.Events.MessageUpdated, this._update, this);
+    SDK.multitargetConsoleModel.addEventListener(
+        SDK.ConsoleModel.Events.ConsoleCleared, this._update, this);
+    SDK.multitargetConsoleModel.addEventListener(
+        SDK.ConsoleModel.Events.MessageAdded, this._update, this);
+    SDK.multitargetConsoleModel.addEventListener(
+        SDK.ConsoleModel.Events.MessageUpdated, this._update, this);
     this._update();
   }
 
@@ -702,7 +702,7 @@ WebInspector.Main.WarningErrorCounter = class {
     var errors = 0;
     var revokedErrors = 0;
     var warnings = 0;
-    var targets = WebInspector.targetManager.targets();
+    var targets = SDK.targetManager.targets();
     for (var i = 0; i < targets.length; ++i) {
       errors += targets[i].consoleModel.errors();
       revokedErrors += targets[i].consoleModel.revokedErrors();
@@ -712,21 +712,21 @@ WebInspector.Main.WarningErrorCounter = class {
     this._titles = [];
     this._toolbarItem.setVisible(!!(errors || revokedErrors || warnings));
     this._updateItem(
-        this._errors, errors, false, WebInspector.UIString(errors === 1 ? '%d error' : '%d errors', errors));
+        this._errors, errors, false, Common.UIString(errors === 1 ? '%d error' : '%d errors', errors));
     this._updateItem(
         this._revokedErrors, revokedErrors, !errors,
-        WebInspector.UIString(
+        Common.UIString(
             revokedErrors === 1 ? '%d handled promise rejection' : '%d handled promise rejections', revokedErrors));
     this._updateItem(
         this._warnings, warnings, !errors && !revokedErrors,
-        WebInspector.UIString(warnings === 1 ? '%d warning' : '%d warnings', warnings));
+        Common.UIString(warnings === 1 ? '%d warning' : '%d warnings', warnings));
     this._counter.title = this._titles.join(', ');
-    WebInspector.inspectorView.toolbarItemResized();
+    UI.inspectorView.toolbarItemResized();
   }
 
   /**
    * @override
-   * @return {?WebInspector.ToolbarItem}
+   * @return {?UI.ToolbarItem}
    */
   item() {
     return this._toolbarItem;
@@ -734,52 +734,52 @@ WebInspector.Main.WarningErrorCounter = class {
 };
 
 /**
- * @implements {WebInspector.ToolbarItem.Provider}
+ * @implements {UI.ToolbarItem.Provider}
  * @unrestricted
  */
-WebInspector.Main.MainMenuItem = class {
+Main.Main.MainMenuItem = class {
   constructor() {
     this._item =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Customize and control DevTools'), 'largeicon-menu');
+        new UI.ToolbarButton(Common.UIString('Customize and control DevTools'), 'largeicon-menu');
     this._item.addEventListener('mousedown', this._mouseDown, this);
   }
 
   /**
    * @override
-   * @return {?WebInspector.ToolbarItem}
+   * @return {?UI.ToolbarItem}
    */
   item() {
     return this._item;
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _mouseDown(event) {
-    var contextMenu = new WebInspector.ContextMenu(
+    var contextMenu = new UI.ContextMenu(
         /** @type {!Event} */ (event.data), true, this._item.element.totalOffsetLeft(),
         this._item.element.totalOffsetTop() + this._item.element.offsetHeight);
 
-    if (WebInspector.dockController.canDock()) {
+    if (Components.dockController.canDock()) {
       var dockItemElement = createElementWithClass('div', 'flex-centered flex-auto');
       var titleElement = dockItemElement.createChild('span', 'flex-auto');
-      titleElement.textContent = WebInspector.UIString('Dock side');
-      var toggleDockSideShorcuts = WebInspector.shortcutRegistry.shortcutDescriptorsForAction('main.toggle-dock');
-      titleElement.title = WebInspector.UIString(
+      titleElement.textContent = Common.UIString('Dock side');
+      var toggleDockSideShorcuts = UI.shortcutRegistry.shortcutDescriptorsForAction('main.toggle-dock');
+      titleElement.title = Common.UIString(
           'Placement of DevTools relative to the page. (%s to restore last position)', toggleDockSideShorcuts[0].name);
       dockItemElement.appendChild(titleElement);
-      var dockItemToolbar = new WebInspector.Toolbar('', dockItemElement);
+      var dockItemToolbar = new UI.Toolbar('', dockItemElement);
       dockItemToolbar.makeBlueOnHover();
-      var undock = new WebInspector.ToolbarToggle(
-          WebInspector.UIString('Undock into separate window'), 'largeicon-undock');
-      var bottom = new WebInspector.ToolbarToggle(WebInspector.UIString('Dock to bottom'), 'largeicon-dock-to-bottom');
-      var right = new WebInspector.ToolbarToggle(WebInspector.UIString('Dock to right'), 'largeicon-dock-to-right');
-      undock.addEventListener('mouseup', setDockSide.bind(null, WebInspector.DockController.State.Undocked));
-      bottom.addEventListener('mouseup', setDockSide.bind(null, WebInspector.DockController.State.DockedToBottom));
-      right.addEventListener('mouseup', setDockSide.bind(null, WebInspector.DockController.State.DockedToRight));
-      undock.setToggled(WebInspector.dockController.dockSide() === WebInspector.DockController.State.Undocked);
-      bottom.setToggled(WebInspector.dockController.dockSide() === WebInspector.DockController.State.DockedToBottom);
-      right.setToggled(WebInspector.dockController.dockSide() === WebInspector.DockController.State.DockedToRight);
+      var undock = new UI.ToolbarToggle(
+          Common.UIString('Undock into separate window'), 'largeicon-undock');
+      var bottom = new UI.ToolbarToggle(Common.UIString('Dock to bottom'), 'largeicon-dock-to-bottom');
+      var right = new UI.ToolbarToggle(Common.UIString('Dock to right'), 'largeicon-dock-to-right');
+      undock.addEventListener('mouseup', setDockSide.bind(null, Components.DockController.State.Undocked));
+      bottom.addEventListener('mouseup', setDockSide.bind(null, Components.DockController.State.DockedToBottom));
+      right.addEventListener('mouseup', setDockSide.bind(null, Components.DockController.State.DockedToRight));
+      undock.setToggled(Components.dockController.dockSide() === Components.DockController.State.Undocked);
+      bottom.setToggled(Components.dockController.dockSide() === Components.DockController.State.DockedToBottom);
+      right.setToggled(Components.dockController.dockSide() === Components.DockController.State.DockedToRight);
       dockItemToolbar.appendToolbarItem(undock);
       dockItemToolbar.appendToolbarItem(bottom);
       dockItemToolbar.appendToolbarItem(right);
@@ -791,14 +791,14 @@ WebInspector.Main.MainMenuItem = class {
      * @param {string} side
      */
     function setDockSide(side) {
-      WebInspector.dockController.setDockSide(side);
+      Components.dockController.setDockSide(side);
       contextMenu.discard();
     }
 
     contextMenu.appendAction(
-        'main.toggle-drawer', WebInspector.inspectorView.drawerVisible() ?
-            WebInspector.UIString('Hide console drawer') :
-            WebInspector.UIString('Show console drawer'));
+        'main.toggle-drawer', UI.inspectorView.drawerVisible() ?
+            Common.UIString('Hide console drawer') :
+            Common.UIString('Show console drawer'));
     contextMenu.appendItemsAtLocation('mainMenu');
     var moreTools = contextMenu.namedSubMenu('mainMenuMoreTools');
     var extensions = self.runtime.extensions('view', undefined, true);
@@ -809,7 +809,7 @@ WebInspector.Main.MainMenuItem = class {
       if (descriptor['location'] !== 'drawer-view' && descriptor['location'] !== 'panel')
         continue;
       moreTools.appendItem(
-          extension.title(), WebInspector.viewManager.showView.bind(WebInspector.viewManager, descriptor['id']));
+          extension.title(), UI.viewManager.showView.bind(UI.viewManager, descriptor['id']));
     }
 
     contextMenu.show();
@@ -819,26 +819,26 @@ WebInspector.Main.MainMenuItem = class {
 /**
  * @unrestricted
  */
-WebInspector.NetworkPanelIndicator = class {
+Main.NetworkPanelIndicator = class {
   constructor() {
     // TODO: we should not access network from other modules.
-    if (!WebInspector.inspectorView.hasPanel('network'))
+    if (!UI.inspectorView.hasPanel('network'))
       return;
-    var manager = WebInspector.multitargetNetworkManager;
-    manager.addEventListener(WebInspector.MultitargetNetworkManager.Events.ConditionsChanged, updateVisibility);
-    var blockedURLsSetting = WebInspector.moduleSetting('blockedURLs');
+    var manager = SDK.multitargetNetworkManager;
+    manager.addEventListener(SDK.MultitargetNetworkManager.Events.ConditionsChanged, updateVisibility);
+    var blockedURLsSetting = Common.moduleSetting('blockedURLs');
     blockedURLsSetting.addChangeListener(updateVisibility);
     updateVisibility();
 
     function updateVisibility() {
       if (manager.isThrottling()) {
-        WebInspector.inspectorView.setPanelIcon(
-            'network', 'smallicon-warning', WebInspector.UIString('Network throttling is enabled'));
+        UI.inspectorView.setPanelIcon(
+            'network', 'smallicon-warning', Common.UIString('Network throttling is enabled'));
       } else if (blockedURLsSetting.get().length) {
-        WebInspector.inspectorView.setPanelIcon(
-            'network', 'smallicon-warning', WebInspector.UIString('Requests may be blocked'));
+        UI.inspectorView.setPanelIcon(
+            'network', 'smallicon-warning', Common.UIString('Requests may be blocked'));
       } else {
-        WebInspector.inspectorView.setPanelIcon('network', '', '');
+        UI.inspectorView.setPanelIcon('network', '', '');
       }
     }
   }
@@ -847,18 +847,18 @@ WebInspector.NetworkPanelIndicator = class {
 /**
  * @unrestricted
  */
-WebInspector.SourcesPanelIndicator = class {
+Main.SourcesPanelIndicator = class {
   constructor() {
-    WebInspector.moduleSetting('javaScriptDisabled').addChangeListener(javaScriptDisabledChanged);
+    Common.moduleSetting('javaScriptDisabled').addChangeListener(javaScriptDisabledChanged);
     javaScriptDisabledChanged();
 
     function javaScriptDisabledChanged() {
-      var javaScriptDisabled = WebInspector.moduleSetting('javaScriptDisabled').get();
+      var javaScriptDisabled = Common.moduleSetting('javaScriptDisabled').get();
       if (javaScriptDisabled) {
-        WebInspector.inspectorView.setPanelIcon(
-            'sources', 'smallicon-warning', WebInspector.UIString('JavaScript is disabled'));
+        UI.inspectorView.setPanelIcon(
+            'sources', 'smallicon-warning', Common.UIString('JavaScript is disabled'));
       } else {
-        WebInspector.inspectorView.setPanelIcon('sources', '', '');
+        UI.inspectorView.setPanelIcon('sources', '', '');
       }
     }
   }
@@ -867,40 +867,40 @@ WebInspector.SourcesPanelIndicator = class {
 /**
  * @unrestricted
  */
-WebInspector.Main.PauseListener = class {
+Main.Main.PauseListener = class {
   constructor() {
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
+    SDK.targetManager.addModelListener(
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _debuggerPaused(event) {
-    WebInspector.targetManager.removeModelListener(
-        WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
-    var debuggerPausedDetails = /** @type {!WebInspector.DebuggerPausedDetails} */ (event.data);
-    var debuggerModel = /** @type {!WebInspector.DebuggerModel} */ (event.target);
-    WebInspector.context.setFlavor(WebInspector.Target, debuggerModel.target());
-    WebInspector.Revealer.reveal(debuggerPausedDetails);
+    SDK.targetManager.removeModelListener(
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
+    var debuggerPausedDetails = /** @type {!SDK.DebuggerPausedDetails} */ (event.data);
+    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.target);
+    UI.context.setFlavor(SDK.Target, debuggerModel.target());
+    Common.Revealer.reveal(debuggerPausedDetails);
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.Main.InspectedNodeRevealer = class {
+Main.Main.InspectedNodeRevealer = class {
   constructor() {
-    WebInspector.targetManager.addModelListener(
-        WebInspector.DOMModel, WebInspector.DOMModel.Events.NodeInspected, this._inspectNode, this);
+    SDK.targetManager.addModelListener(
+        SDK.DOMModel, SDK.DOMModel.Events.NodeInspected, this._inspectNode, this);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _inspectNode(event) {
-    var deferredNode = /** @type {!WebInspector.DeferredDOMNode} */ (event.data);
-    WebInspector.Revealer.reveal(deferredNode);
+    var deferredNode = /** @type {!SDK.DeferredDOMNode} */ (event.data);
+    Common.Revealer.reveal(deferredNode);
   }
 };
 
@@ -909,7 +909,7 @@ WebInspector.Main.InspectedNodeRevealer = class {
  * @param {?Object} params
  * @return {!Promise}
  */
-WebInspector.sendOverProtocol = function(method, params) {
+Main.sendOverProtocol = function(method, params) {
   return new Promise((resolve, reject) => {
     InspectorBackendClass.sendRawMessageForTesting(method, params, (err, result) => {
       if (err)
@@ -922,7 +922,7 @@ WebInspector.sendOverProtocol = function(method, params) {
 /**
  * @unrestricted
  */
-WebInspector.RemoteDebuggingTerminatedScreen = class extends WebInspector.VBox {
+Main.RemoteDebuggingTerminatedScreen = class extends UI.VBox {
   /**
    * @param {string} reason
    */
@@ -930,11 +930,11 @@ WebInspector.RemoteDebuggingTerminatedScreen = class extends WebInspector.VBox {
     super(true);
     this.registerRequiredCSS('main/remoteDebuggingTerminatedScreen.css');
     var message = this.contentElement.createChild('div', 'message');
-    message.createChild('span').textContent = WebInspector.UIString('Debugging connection was closed. Reason: ');
+    message.createChild('span').textContent = Common.UIString('Debugging connection was closed. Reason: ');
     message.createChild('span', 'reason').textContent = reason;
     this.contentElement.createChild('div', 'message').textContent =
-        WebInspector.UIString('Reconnect when ready by reopening DevTools.');
-    var button = createTextButton(WebInspector.UIString('Reconnect DevTools'), () => window.location.reload());
+        Common.UIString('Reconnect when ready by reopening DevTools.');
+    var button = createTextButton(Common.UIString('Reconnect DevTools'), () => window.location.reload());
     this.contentElement.createChild('div', 'button').appendChild(button);
   }
 
@@ -942,11 +942,11 @@ WebInspector.RemoteDebuggingTerminatedScreen = class extends WebInspector.VBox {
    * @param {string} reason
    */
   static show(reason) {
-    var dialog = new WebInspector.Dialog();
+    var dialog = new UI.Dialog();
     dialog.setWrapsContent(true);
     dialog.addCloseButton();
     dialog.setDimmed(true);
-    new WebInspector.RemoteDebuggingTerminatedScreen(reason).show(dialog.element);
+    new Main.RemoteDebuggingTerminatedScreen(reason).show(dialog.element);
     dialog.show();
   }
 };
@@ -955,7 +955,7 @@ WebInspector.RemoteDebuggingTerminatedScreen = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.TargetCrashedScreen = class extends WebInspector.VBox {
+Main.TargetCrashedScreen = class extends UI.VBox {
   /**
    * @param {function()} hideCallback
    */
@@ -963,28 +963,28 @@ WebInspector.TargetCrashedScreen = class extends WebInspector.VBox {
     super(true);
     this.registerRequiredCSS('main/targetCrashedScreen.css');
     this.contentElement.createChild('div', 'message').textContent =
-        WebInspector.UIString('DevTools was disconnected from the page.');
+        Common.UIString('DevTools was disconnected from the page.');
     this.contentElement.createChild('div', 'message').textContent =
-        WebInspector.UIString('Once page is reloaded, DevTools will automatically reconnect.');
+        Common.UIString('Once page is reloaded, DevTools will automatically reconnect.');
     this._hideCallback = hideCallback;
   }
 
   /**
-   * @param {!WebInspector.DebuggerModel} debuggerModel
+   * @param {!SDK.DebuggerModel} debuggerModel
    */
   static show(debuggerModel) {
-    var dialog = new WebInspector.Dialog();
+    var dialog = new UI.Dialog();
     dialog.setWrapsContent(true);
     dialog.addCloseButton();
     dialog.setDimmed(true);
     var hideBound = dialog.detach.bind(dialog);
-    debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, hideBound);
+    debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, hideBound);
 
-    new WebInspector.TargetCrashedScreen(onHide).show(dialog.element);
+    new Main.TargetCrashedScreen(onHide).show(dialog.element);
     dialog.show();
 
     function onHide() {
-      debuggerModel.removeEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, hideBound);
+      debuggerModel.removeEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, hideBound);
     }
   }
 
@@ -998,20 +998,20 @@ WebInspector.TargetCrashedScreen = class extends WebInspector.VBox {
 
 
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.BackendSettingsSync = class {
+Main.BackendSettingsSync = class {
   constructor() {
-    this._autoAttachSetting = WebInspector.settings.moduleSetting('autoAttachToCreatedPages');
+    this._autoAttachSetting = Common.settings.moduleSetting('autoAttachToCreatedPages');
     this._autoAttachSetting.addChangeListener(this._update, this);
-    this._disableJavascriptSetting = WebInspector.settings.moduleSetting('javaScriptDisabled');
+    this._disableJavascriptSetting = Common.settings.moduleSetting('javaScriptDisabled');
     this._disableJavascriptSetting.addChangeListener(this._update, this);
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Browser);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   _updateTarget(target) {
     target.pageAgent().setAutoAttachToCreatedPages(this._autoAttachSetting.get());
@@ -1019,11 +1019,11 @@ WebInspector.BackendSettingsSync = class {
   }
 
   _update() {
-    WebInspector.targetManager.targets(WebInspector.Target.Capability.Browser).forEach(this._updateTarget, this);
+    SDK.targetManager.targets(SDK.Target.Capability.Browser).forEach(this._updateTarget, this);
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @override
    */
   targetAdded(target) {
@@ -1032,7 +1032,7 @@ WebInspector.BackendSettingsSync = class {
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @override
    */
   targetRemoved(target) {
@@ -1040,18 +1040,18 @@ WebInspector.BackendSettingsSync = class {
 };
 
 /**
- * @implements {WebInspector.SettingUI}
+ * @implements {UI.SettingUI}
  * @unrestricted
  */
-WebInspector.ShowMetricsRulersSettingUI = class {
+Main.ShowMetricsRulersSettingUI = class {
   /**
    * @override
    * @return {?Element}
    */
   settingElement() {
-    return WebInspector.SettingsUI.createSettingCheckbox(
-        WebInspector.UIString('Show rulers'), WebInspector.moduleSetting('showMetricsRulers'));
+    return UI.SettingsUI.createSettingCheckbox(
+        Common.UIString('Show rulers'), Common.moduleSetting('showMetricsRulers'));
   }
 };
 
-new WebInspector.Main();
+new Main.Main();

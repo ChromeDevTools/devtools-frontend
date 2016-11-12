@@ -29,21 +29,21 @@
 /**
  * @unrestricted
  */
-WebInspector.ApplicationCacheModel = class extends WebInspector.SDKModel {
+SDK.ApplicationCacheModel = class extends SDK.SDKModel {
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!WebInspector.ResourceTreeModel} resourceTreeModel
+   * @param {!SDK.Target} target
+   * @param {!SDK.ResourceTreeModel} resourceTreeModel
    */
   constructor(target, resourceTreeModel) {
-    super(WebInspector.ApplicationCacheModel, target);
+    super(SDK.ApplicationCacheModel, target);
 
-    target.registerApplicationCacheDispatcher(new WebInspector.ApplicationCacheDispatcher(this));
+    target.registerApplicationCacheDispatcher(new SDK.ApplicationCacheDispatcher(this));
     this._agent = target.applicationCacheAgent();
     this._agent.enable();
 
     resourceTreeModel.addEventListener(
-        WebInspector.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
-    resourceTreeModel.addEventListener(WebInspector.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
+        SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
 
     this._statuses = {};
     this._manifestURLsByFrame = {};
@@ -53,15 +53,15 @@ WebInspector.ApplicationCacheModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @return {?WebInspector.ApplicationCacheModel}
+   * @param {!SDK.Target} target
+   * @return {?SDK.ApplicationCacheModel}
    */
   static fromTarget(target) {
-    return /** @type {?WebInspector.ApplicationCacheModel} */ (target.model(WebInspector.ApplicationCacheModel));
+    return /** @type {?SDK.ApplicationCacheModel} */ (target.model(SDK.ApplicationCacheModel));
   }
 
   _frameNavigated(event) {
-    var frame = /** @type {!WebInspector.ResourceTreeFrame} */ (event.data);
+    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
     if (frame.isMainFrame()) {
       this._mainFrameNavigated();
       return;
@@ -71,17 +71,17 @@ WebInspector.ApplicationCacheModel = class extends WebInspector.SDKModel {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _frameDetached(event) {
-    var frame = /** @type {!WebInspector.ResourceTreeFrame} */ (event.data);
+    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
     this._frameManifestRemoved(frame.id);
   }
 
   reset() {
     this._statuses = {};
     this._manifestURLsByFrame = {};
-    this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.Events.FrameManifestsReset);
+    this.dispatchEventToListeners(SDK.ApplicationCacheModel.Events.FrameManifestsReset);
   }
 
   _mainFrameNavigated() {
@@ -140,11 +140,11 @@ WebInspector.ApplicationCacheModel = class extends WebInspector.SDKModel {
 
     if (!this._manifestURLsByFrame[frameId]) {
       this._manifestURLsByFrame[frameId] = manifestURL;
-      this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.Events.FrameManifestAdded, frameId);
+      this.dispatchEventToListeners(SDK.ApplicationCacheModel.Events.FrameManifestAdded, frameId);
     }
 
     if (statusChanged)
-      this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.Events.FrameManifestStatusUpdated, frameId);
+      this.dispatchEventToListeners(SDK.ApplicationCacheModel.Events.FrameManifestStatusUpdated, frameId);
   }
 
   /**
@@ -157,7 +157,7 @@ WebInspector.ApplicationCacheModel = class extends WebInspector.SDKModel {
     delete this._manifestURLsByFrame[frameId];
     delete this._statuses[frameId];
 
-    this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.Events.FrameManifestRemoved, frameId);
+    this.dispatchEventToListeners(SDK.ApplicationCacheModel.Events.FrameManifestRemoved, frameId);
   }
 
   /**
@@ -219,12 +219,12 @@ WebInspector.ApplicationCacheModel = class extends WebInspector.SDKModel {
    */
   _networkStateUpdated(isNowOnline) {
     this._onLine = isNowOnline;
-    this.dispatchEventToListeners(WebInspector.ApplicationCacheModel.Events.NetworkStateChanged, isNowOnline);
+    this.dispatchEventToListeners(SDK.ApplicationCacheModel.Events.NetworkStateChanged, isNowOnline);
   }
 };
 
 /** @enum {symbol} */
-WebInspector.ApplicationCacheModel.Events = {
+SDK.ApplicationCacheModel.Events = {
   FrameManifestStatusUpdated: Symbol('FrameManifestStatusUpdated'),
   FrameManifestAdded: Symbol('FrameManifestAdded'),
   FrameManifestRemoved: Symbol('FrameManifestRemoved'),
@@ -236,7 +236,7 @@ WebInspector.ApplicationCacheModel.Events = {
  * @implements {Protocol.ApplicationCacheDispatcher}
  * @unrestricted
  */
-WebInspector.ApplicationCacheDispatcher = class {
+SDK.ApplicationCacheDispatcher = class {
   constructor(applicationCacheModel) {
     this._applicationCacheModel = applicationCacheModel;
   }

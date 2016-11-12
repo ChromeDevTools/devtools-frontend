@@ -2,46 +2,46 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
+Security.SecurityPanel = class extends UI.PanelWithSidebar {
   constructor() {
     super('security');
 
-    this._mainView = new WebInspector.SecurityMainView(this);
+    this._mainView = new Security.SecurityMainView(this);
 
-    this._sidebarMainViewElement = new WebInspector.SecurityPanelSidebarTreeElement(
-        WebInspector.UIString('Overview'), this._setVisibleView.bind(this, this._mainView),
+    this._sidebarMainViewElement = new Security.SecurityPanelSidebarTreeElement(
+        Common.UIString('Overview'), this._setVisibleView.bind(this, this._mainView),
         'security-main-view-sidebar-tree-item', 'lock-icon');
     this._sidebarTree =
-        new WebInspector.SecurityPanelSidebarTree(this._sidebarMainViewElement, this.showOrigin.bind(this));
+        new Security.SecurityPanelSidebarTree(this._sidebarMainViewElement, this.showOrigin.bind(this));
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
 
-    /** @type {!Map<!Protocol.Network.LoaderId, !WebInspector.NetworkRequest>} */
+    /** @type {!Map<!Protocol.Network.LoaderId, !SDK.NetworkRequest>} */
     this._lastResponseReceivedForLoaderId = new Map();
 
-    /** @type {!Map<!WebInspector.SecurityPanel.Origin, !WebInspector.SecurityPanel.OriginState>} */
+    /** @type {!Map<!Security.SecurityPanel.Origin, !Security.SecurityPanel.OriginState>} */
     this._origins = new Map();
 
-    /** @type {!Map<!WebInspector.NetworkLogView.MixedContentFilterValues, number>} */
+    /** @type {!Map<!Network.NetworkLogView.MixedContentFilterValues, number>} */
     this._filterRequestCounts = new Map();
 
-    /** @type {!Map<!WebInspector.Target, !Array<!WebInspector.EventTarget.EventDescriptor>>}*/
+    /** @type {!Map<!SDK.Target, !Array<!Common.EventTarget.EventDescriptor>>}*/
     this._eventListeners = new Map();
-    WebInspector.targetManager.observeTargets(this, WebInspector.Target.Capability.Network);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Network);
   }
 
   /**
-   * @return {!WebInspector.SecurityPanel}
+   * @return {!Security.SecurityPanel}
    */
   static _instance() {
-    return /** @type {!WebInspector.SecurityPanel} */ (self.runtime.sharedInstance(WebInspector.SecurityPanel));
+    return /** @type {!Security.SecurityPanel} */ (self.runtime.sharedInstance(Security.SecurityPanel));
   }
 
   /**
    * @param {string} text
-   * @param {!WebInspector.SecurityPanel} panel
+   * @param {!Security.SecurityPanel} panel
    * @return {!Element}
    */
   static createCertificateViewerButton(text, panel) {
@@ -71,7 +71,7 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
       }
 
       e.consume();
-      WebInspector.multitargetNetworkManager.getCertificate(origin, certificateCallback);
+      SDK.multitargetNetworkManager.getCertificate(origin, certificateCallback);
     }
 
     return createTextButton(text, showCertificateViewer, 'security-certificate-button');
@@ -103,10 +103,10 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onSecurityStateChanged(event) {
-    var data = /** @type {!WebInspector.PageSecurityState} */ (event.data);
+    var data = /** @type {!Security.PageSecurityState} */ (event.data);
     var securityState = /** @type {!Protocol.Security.SecurityState} */ (data.securityState);
     var explanations = /** @type {!Array<!Protocol.Security.SecurityStateExplanation>} */ (data.explanations);
     var insecureContentStatus = /** @type {?Protocol.Security.InsecureContentStatus} */ (data.insecureContentStatus);
@@ -119,12 +119,12 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
     this._sidebarMainViewElement.select();
   }
   /**
-   * @param {!WebInspector.SecurityPanel.Origin} origin
+   * @param {!Security.SecurityPanel.Origin} origin
    */
   showOrigin(origin) {
     var originState = this._origins.get(origin);
     if (!originState.originView)
-      originState.originView = new WebInspector.SecurityOriginView(this, origin, originState);
+      originState.originView = new Security.SecurityOriginView(this, origin, originState);
 
     this._setVisibleView(originState.originView);
   }
@@ -146,7 +146,7 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!WebInspector.VBox} view
+   * @param {!UI.VBox} view
    */
   _setVisibleView(view) {
     if (this._visibleView === view)
@@ -162,19 +162,19 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onResponseReceived(event) {
-    var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
-    if (request.resourceType() === WebInspector.resourceTypes.Document)
+    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
+    if (request.resourceType() === Common.resourceTypes.Document)
       this._lastResponseReceivedForLoaderId.set(request.loaderId, request);
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   _processRequest(request) {
-    var origin = WebInspector.ParsedURL.extractOrigin(request.url);
+    var origin = Common.ParsedURL.extractOrigin(request.url);
 
     if (!origin) {
       // We don't handle resources like data: URIs. Most of them don't affect the lock icon.
@@ -218,29 +218,29 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onRequestFinished(event) {
-    var request = /** @type {!WebInspector.NetworkRequest} */ (event.data);
+    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     this._updateFilterRequestCounts(request);
     this._processRequest(request);
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    */
   _updateFilterRequestCounts(request) {
     if (request.mixedContentType === Protocol.Network.RequestMixedContentType.None)
       return;
 
-    /** @type {!WebInspector.NetworkLogView.MixedContentFilterValues} */
-    var filterKey = WebInspector.NetworkLogView.MixedContentFilterValues.All;
+    /** @type {!Network.NetworkLogView.MixedContentFilterValues} */
+    var filterKey = Network.NetworkLogView.MixedContentFilterValues.All;
     if (request.wasBlocked())
-      filterKey = WebInspector.NetworkLogView.MixedContentFilterValues.Blocked;
+      filterKey = Network.NetworkLogView.MixedContentFilterValues.Blocked;
     else if (request.mixedContentType === Protocol.Network.RequestMixedContentType.Blockable)
-      filterKey = WebInspector.NetworkLogView.MixedContentFilterValues.BlockOverridden;
+      filterKey = Network.NetworkLogView.MixedContentFilterValues.BlockOverridden;
     else if (request.mixedContentType === Protocol.Network.RequestMixedContentType.OptionallyBlockable)
-      filterKey = WebInspector.NetworkLogView.MixedContentFilterValues.Displayed;
+      filterKey = Network.NetworkLogView.MixedContentFilterValues.Displayed;
 
     if (!this._filterRequestCounts.has(filterKey))
       this._filterRequestCounts.set(filterKey, 1);
@@ -251,7 +251,7 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   /**
-   * @param {!WebInspector.NetworkLogView.MixedContentFilterValues} filterKey
+   * @param {!Network.NetworkLogView.MixedContentFilterValues} filterKey
    * @return {number}
    */
   filterRequestCount(filterKey) {
@@ -259,7 +259,7 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
   }
 
   showCertificateViewer() {
-    var securityModel = WebInspector.SecurityModel.fromTarget(this._target);
+    var securityModel = Security.SecurityModel.fromTarget(this._target);
     securityModel.showCertificateViewer();
   }
 
@@ -269,44 +269,44 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
    * @return {!Protocol.Security.SecurityState}
    */
   _securityStateMin(stateA, stateB) {
-    return WebInspector.SecurityModel.SecurityStateComparator(stateA, stateB) < 0 ? stateA : stateB;
+    return Security.SecurityModel.SecurityStateComparator(stateA, stateB) < 0 ? stateA : stateB;
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     if (this._target)
       return;
 
     var listeners = [];
-    var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
     if (resourceTreeModel) {
       listeners = listeners.concat([
         resourceTreeModel.addEventListener(
-            WebInspector.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this),
+            SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this),
         resourceTreeModel.addEventListener(
-            WebInspector.ResourceTreeModel.Events.InterstitialShown, this._onInterstitialShown, this),
+            SDK.ResourceTreeModel.Events.InterstitialShown, this._onInterstitialShown, this),
         resourceTreeModel.addEventListener(
-            WebInspector.ResourceTreeModel.Events.InterstitialHidden, this._onInterstitialHidden, this),
+            SDK.ResourceTreeModel.Events.InterstitialHidden, this._onInterstitialHidden, this),
       ]);
     }
 
-    var networkManager = WebInspector.NetworkManager.fromTarget(target);
+    var networkManager = SDK.NetworkManager.fromTarget(target);
     if (networkManager) {
       listeners = listeners.concat([
         networkManager.addEventListener(
-            WebInspector.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this),
+            SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this),
         networkManager.addEventListener(
-            WebInspector.NetworkManager.Events.RequestFinished, this._onRequestFinished, this),
+            SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this),
       ]);
     }
 
-    var securityModel = WebInspector.SecurityModel.fromTarget(target);
+    var securityModel = Security.SecurityModel.fromTarget(target);
     if (securityModel) {
       listeners = listeners.concat([securityModel.addEventListener(
-          WebInspector.SecurityModel.Events.SecurityStateChanged, this._onSecurityStateChanged, this)]);
+          Security.SecurityModel.Events.SecurityStateChanged, this._onSecurityStateChanged, this)]);
     }
 
     this._target = target;
@@ -315,7 +315,7 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
     if (this._target !== target)
@@ -323,12 +323,12 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
 
     delete this._target;
 
-    WebInspector.EventTarget.removeEventListeners(this._eventListeners.get(target));
+    Common.EventTarget.removeEventListeners(this._eventListeners.get(target));
     this._eventListeners.delete(target);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onMainFrameNavigated(event) {
     var frame = /** type {!Protocol.Page.Frame}*/ (event.data);
@@ -344,7 +344,7 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
     this._mainView.refreshExplanations();
 
     if (request) {
-      var origin = WebInspector.ParsedURL.extractOrigin(request.url);
+      var origin = Common.ParsedURL.extractOrigin(request.url);
       this._sidebarTree.setMainOrigin(origin);
       this._processRequest(request);
     }
@@ -364,25 +364,25 @@ WebInspector.SecurityPanel = class extends WebInspector.PanelWithSidebar {
 };
 
 /** @typedef {string} */
-WebInspector.SecurityPanel.Origin;
+Security.SecurityPanel.Origin;
 
 /**
  * @typedef {Object}
  * @property {!Protocol.Security.SecurityState} securityState - Current security state of the origin.
  * @property {?Protocol.Network.SecurityDetails} securityDetails - Security details of the origin, if available.
  * @property {?Promise<>} certificateDetailsPromise - Certificate details of the origin.
- * @property {?WebInspector.SecurityOriginView} originView - Current SecurityOriginView corresponding to origin.
+ * @property {?Security.SecurityOriginView} originView - Current SecurityOriginView corresponding to origin.
  */
-WebInspector.SecurityPanel.OriginState;
+Security.SecurityPanel.OriginState;
 
 
 /**
  * @unrestricted
  */
-WebInspector.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
+Security.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
   /**
-   * @param {!WebInspector.SecurityPanelSidebarTreeElement} mainViewElement
-   * @param {function(!WebInspector.SecurityPanel.Origin)} showOriginInPanel
+   * @param {!Security.SecurityPanelSidebarTreeElement} mainViewElement
+   * @param {function(!Security.SecurityPanel.Origin)} showOriginInPanel
    */
   constructor(mainViewElement, showOriginInPanel) {
     super();
@@ -393,11 +393,11 @@ WebInspector.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
     this._showOriginInPanel = showOriginInPanel;
     this._mainOrigin = null;
 
-    /** @type {!Map<!WebInspector.SecurityPanelSidebarTree.OriginGroupName, !TreeElement>} */
+    /** @type {!Map<!Security.SecurityPanelSidebarTree.OriginGroupName, !TreeElement>} */
     this._originGroups = new Map();
 
-    for (var key in WebInspector.SecurityPanelSidebarTree.OriginGroupName) {
-      var originGroupName = WebInspector.SecurityPanelSidebarTree.OriginGroupName[key];
+    for (var key in Security.SecurityPanelSidebarTree.OriginGroupName) {
+      var originGroupName = Security.SecurityPanelSidebarTree.OriginGroupName[key];
       var originGroup = new TreeElement(originGroupName, true);
       originGroup.selectable = false;
       originGroup.expand();
@@ -408,13 +408,13 @@ WebInspector.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
     this._clearOriginGroups();
 
     // This message will be removed by clearOrigins() during the first new page load after the panel was opened.
-    var mainViewReloadMessage = new TreeElement(WebInspector.UIString('Reload to view details'));
+    var mainViewReloadMessage = new TreeElement(Common.UIString('Reload to view details'));
     mainViewReloadMessage.selectable = false;
     mainViewReloadMessage.listItemElement.classList.add('security-main-view-reload-message');
-    this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.MainOrigin)
+    this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.MainOrigin)
         .appendChild(mainViewReloadMessage);
 
-    /** @type {!Map<!WebInspector.SecurityPanel.Origin, !WebInspector.SecurityPanelSidebarTreeElement>} */
+    /** @type {!Map<!Security.SecurityPanel.Origin, !Security.SecurityPanelSidebarTreeElement>} */
     this._elementsByOrigin = new Map();
   }
 
@@ -422,8 +422,8 @@ WebInspector.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
    * @param {boolean} hidden
    */
   toggleOriginsList(hidden) {
-    for (var key in WebInspector.SecurityPanelSidebarTree.OriginGroupName) {
-      var originGroupName = WebInspector.SecurityPanelSidebarTree.OriginGroupName[key];
+    for (var key in Security.SecurityPanelSidebarTree.OriginGroupName) {
+      var originGroupName = Security.SecurityPanelSidebarTree.OriginGroupName[key];
       var group = this._originGroups.get(originGroupName);
       if (group)
         group.hidden = hidden;
@@ -431,11 +431,11 @@ WebInspector.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
   }
 
   /**
-   * @param {!WebInspector.SecurityPanel.Origin} origin
+   * @param {!Security.SecurityPanel.Origin} origin
    * @param {!Protocol.Security.SecurityState} securityState
    */
   addOrigin(origin, securityState) {
-    var originElement = new WebInspector.SecurityPanelSidebarTreeElement(
+    var originElement = new Security.SecurityPanelSidebarTreeElement(
         origin, this._showOriginInPanel.bind(this, origin), 'security-sidebar-tree-item', 'security-property');
     originElement.listItemElement.title = origin;
     this._elementsByOrigin.set(origin, originElement);
@@ -443,34 +443,34 @@ WebInspector.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
   }
 
   /**
-   * @param {!WebInspector.SecurityPanel.Origin} origin
+   * @param {!Security.SecurityPanel.Origin} origin
    */
   setMainOrigin(origin) {
     this._mainOrigin = origin;
   }
 
   /**
-   * @param {!WebInspector.SecurityPanel.Origin} origin
+   * @param {!Security.SecurityPanel.Origin} origin
    * @param {!Protocol.Security.SecurityState} securityState
    */
   updateOrigin(origin, securityState) {
     var originElement =
-        /** @type {!WebInspector.SecurityPanelSidebarTreeElement} */ (this._elementsByOrigin.get(origin));
+        /** @type {!Security.SecurityPanelSidebarTreeElement} */ (this._elementsByOrigin.get(origin));
     originElement.setSecurityState(securityState);
 
     var newParent;
     if (origin === this._mainOrigin) {
-      newParent = this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.MainOrigin);
+      newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.MainOrigin);
     } else {
       switch (securityState) {
         case Protocol.Security.SecurityState.Secure:
-          newParent = this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.Secure);
+          newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.Secure);
           break;
         case Protocol.Security.SecurityState.Unknown:
-          newParent = this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.Unknown);
+          newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.Unknown);
           break;
         default:
-          newParent = this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.NonSecure);
+          newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.NonSecure);
           break;
       }
     }
@@ -492,7 +492,7 @@ WebInspector.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
       originGroup.removeChildren();
       originGroup.hidden = true;
     }
-    this._originGroups.get(WebInspector.SecurityPanelSidebarTree.OriginGroupName.MainOrigin).hidden = false;
+    this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.MainOrigin).hidden = false;
   }
 
   clearOrigins() {
@@ -506,17 +506,17 @@ WebInspector.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
  * Note: The names are used as keys into a map, so they must be distinct from each other.
  * @enum {string}
  */
-WebInspector.SecurityPanelSidebarTree.OriginGroupName = {
-  MainOrigin: WebInspector.UIString('Main Origin'),
-  NonSecure: WebInspector.UIString('Non-Secure Origins'),
-  Secure: WebInspector.UIString('Secure Origins'),
-  Unknown: WebInspector.UIString('Unknown / Canceled')
+Security.SecurityPanelSidebarTree.OriginGroupName = {
+  MainOrigin: Common.UIString('Main Origin'),
+  NonSecure: Common.UIString('Non-Secure Origins'),
+  Secure: Common.UIString('Secure Origins'),
+  Unknown: Common.UIString('Unknown / Canceled')
 };
 
 /**
  * @unrestricted
  */
-WebInspector.SecurityPanelSidebarTreeElement = class extends TreeElement {
+Security.SecurityPanelSidebarTreeElement = class extends TreeElement {
   /**
    * @param {string} text
    * @param {function()} selectCallback
@@ -535,12 +535,12 @@ WebInspector.SecurityPanelSidebarTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!WebInspector.SecurityPanelSidebarTreeElement} a
-   * @param {!WebInspector.SecurityPanelSidebarTreeElement} b
+   * @param {!Security.SecurityPanelSidebarTreeElement} a
+   * @param {!Security.SecurityPanelSidebarTreeElement} b
    * @return {number}
    */
   static SecurityStateComparator(a, b) {
-    return WebInspector.SecurityModel.SecurityStateComparator(a.securityState(), b.securityState());
+    return Security.SecurityModel.SecurityStateComparator(a.securityState(), b.securityState());
   }
 
   /**
@@ -575,9 +575,9 @@ WebInspector.SecurityPanelSidebarTreeElement = class extends TreeElement {
 /**
  * @unrestricted
  */
-WebInspector.SecurityMainView = class extends WebInspector.VBox {
+Security.SecurityMainView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.SecurityPanel} panel
+   * @param {!Security.SecurityPanel} panel
    */
   constructor(panel) {
     super(true);
@@ -598,13 +598,13 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
 
     // Fill the security summary section.
     this._summarySection.createChild('div', 'security-summary-section-title').textContent =
-        WebInspector.UIString('Security Overview');
+        Common.UIString('Security Overview');
 
     var lockSpectrum = this._summarySection.createChild('div', 'lock-spectrum');
-    lockSpectrum.createChild('div', 'lock-icon lock-icon-secure').title = WebInspector.UIString('Secure');
-    lockSpectrum.createChild('div', 'lock-icon lock-icon-neutral').title = WebInspector.UIString('Not Secure');
+    lockSpectrum.createChild('div', 'lock-icon lock-icon-secure').title = Common.UIString('Secure');
+    lockSpectrum.createChild('div', 'lock-icon lock-icon-neutral').title = Common.UIString('Not Secure');
     lockSpectrum.createChild('div', 'lock-icon lock-icon-insecure').title =
-        WebInspector.UIString('Not Secure (Broken)');
+        Common.UIString('Not Secure (Broken)');
 
     this._summarySection.createChild('div', 'triangle-pointer-container')
         .createChild('div', 'triangle-pointer-wrapper')
@@ -629,8 +629,8 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
     text.createChild('div').textContent = explanation.description;
 
     if (explanation.hasCertificate) {
-      text.appendChild(WebInspector.SecurityPanel.createCertificateViewerButton(
-          WebInspector.UIString('View certificate'), this._panel));
+      text.appendChild(Security.SecurityPanel.createCertificateViewerButton(
+          Common.UIString('View certificate'), this._panel));
     }
 
     return text;
@@ -651,10 +651,10 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
     this._securityState = newSecurityState;
     this._summarySection.classList.add('security-summary-' + this._securityState);
     var summaryExplanationStrings = {
-      'unknown': WebInspector.UIString('The security of this page is unknown.'),
-      'insecure': WebInspector.UIString('This page is not secure (broken HTTPS).'),
-      'neutral': WebInspector.UIString('This page is not secure.'),
-      'secure': WebInspector.UIString('This page is secure (valid HTTPS).')
+      'unknown': Common.UIString('The security of this page is unknown.'),
+      'insecure': Common.UIString('This page is not secure (broken HTTPS).'),
+      'neutral': Common.UIString('This page is not secure.'),
+      'secure': Common.UIString('This page is secure (valid HTTPS).')
     };
     this._summaryText.textContent = summaryExplanationStrings[this._securityState];
 
@@ -688,8 +688,8 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
          !this._insecureContentStatus.ranContentWithCertErrors)) {
       this._addExplanation(this._securityExplanationsMain, /** @type {!Protocol.Security.SecurityStateExplanation} */ ({
                              'securityState': Protocol.Security.SecurityState.Secure,
-                             'summary': WebInspector.UIString('Secure Resources'),
-                             'description': WebInspector.UIString('All resources on this page are served securely.')
+                             'summary': Common.UIString('Secure Resources'),
+                             'description': Common.UIString('All resources on this page are served securely.')
                            }));
     }
   }
@@ -703,33 +703,33 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
       if (this._insecureContentStatus.ranMixedContent)
         this._addMixedContentExplanation(
             this._securityExplanationsMain, this._insecureContentStatus.ranInsecureContentStyle,
-            WebInspector.UIString('Active Mixed Content'),
-            WebInspector.UIString(
+            Common.UIString('Active Mixed Content'),
+            Common.UIString(
                 'You have recently allowed non-secure content (such as scripts or iframes) to run on this site.'),
-            WebInspector.NetworkLogView.MixedContentFilterValues.BlockOverridden,
+            Network.NetworkLogView.MixedContentFilterValues.BlockOverridden,
             showBlockOverriddenMixedContentInNetworkPanel);
       if (this._insecureContentStatus.displayedMixedContent)
         this._addMixedContentExplanation(
             this._securityExplanationsMain, this._insecureContentStatus.displayedInsecureContentStyle,
-            WebInspector.UIString('Mixed Content'), WebInspector.UIString('The site includes HTTP resources.'),
-            WebInspector.NetworkLogView.MixedContentFilterValues.Displayed, showDisplayedMixedContentInNetworkPanel);
+            Common.UIString('Mixed Content'), Common.UIString('The site includes HTTP resources.'),
+            Network.NetworkLogView.MixedContentFilterValues.Displayed, showDisplayedMixedContentInNetworkPanel);
     }
 
-    if (this._panel.filterRequestCount(WebInspector.NetworkLogView.MixedContentFilterValues.Blocked) > 0)
+    if (this._panel.filterRequestCount(Network.NetworkLogView.MixedContentFilterValues.Blocked) > 0)
       this._addMixedContentExplanation(
           this._securityExplanationsExtra, Protocol.Security.SecurityState.Info,
-          WebInspector.UIString('Blocked mixed content'),
-          WebInspector.UIString('Your page requested non-secure resources that were blocked.'),
-          WebInspector.NetworkLogView.MixedContentFilterValues.Blocked, showBlockedMixedContentInNetworkPanel);
+          Common.UIString('Blocked mixed content'),
+          Common.UIString('Your page requested non-secure resources that were blocked.'),
+          Network.NetworkLogView.MixedContentFilterValues.Blocked, showBlockedMixedContentInNetworkPanel);
 
     /**
      * @param {!Event} e
      */
     function showDisplayedMixedContentInNetworkPanel(e) {
       e.consume();
-      WebInspector.NetworkPanel.revealAndFilter([{
-        filterType: WebInspector.NetworkLogView.FilterType.MixedContent,
-        filterValue: WebInspector.NetworkLogView.MixedContentFilterValues.Displayed
+      Network.NetworkPanel.revealAndFilter([{
+        filterType: Network.NetworkLogView.FilterType.MixedContent,
+        filterValue: Network.NetworkLogView.MixedContentFilterValues.Displayed
       }]);
     }
 
@@ -738,9 +738,9 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
      */
     function showBlockOverriddenMixedContentInNetworkPanel(e) {
       e.consume();
-      WebInspector.NetworkPanel.revealAndFilter([{
-        filterType: WebInspector.NetworkLogView.FilterType.MixedContent,
-        filterValue: WebInspector.NetworkLogView.MixedContentFilterValues.BlockOverridden
+      Network.NetworkPanel.revealAndFilter([{
+        filterType: Network.NetworkLogView.FilterType.MixedContent,
+        filterValue: Network.NetworkLogView.MixedContentFilterValues.BlockOverridden
       }]);
     }
 
@@ -749,9 +749,9 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
      */
     function showBlockedMixedContentInNetworkPanel(e) {
       e.consume();
-      WebInspector.NetworkPanel.revealAndFilter([{
-        filterType: WebInspector.NetworkLogView.FilterType.MixedContent,
-        filterValue: WebInspector.NetworkLogView.MixedContentFilterValues.Blocked
+      Network.NetworkPanel.revealAndFilter([{
+        filterType: Network.NetworkLogView.FilterType.MixedContent,
+        filterValue: Network.NetworkLogView.MixedContentFilterValues.Blocked
       }]);
     }
   }
@@ -761,7 +761,7 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
    * @param {!Protocol.Security.SecurityState} securityState
    * @param {string} summary
    * @param {string} description
-   * @param {!WebInspector.NetworkLogView.MixedContentFilterValues} filterKey
+   * @param {!Network.NetworkLogView.MixedContentFilterValues} filterKey
    * @param {!Function} networkFilterFn
    */
   _addMixedContentExplanation(parent, securityState, summary, description, filterKey, networkFilterFn) {
@@ -778,15 +778,15 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
       // instead of pointing them to the Network panel to get prompted
       // to refresh.
       var refreshPrompt = explanation.createChild('div', 'security-mixed-content');
-      refreshPrompt.textContent = WebInspector.UIString('Reload the page to record requests for HTTP resources.');
+      refreshPrompt.textContent = Common.UIString('Reload the page to record requests for HTTP resources.');
       return;
     }
 
     var requestsAnchor = explanation.createChild('div', 'security-mixed-content link');
     if (filterRequestCount === 1) {
-      requestsAnchor.textContent = WebInspector.UIString('View %d request in Network Panel', filterRequestCount);
+      requestsAnchor.textContent = Common.UIString('View %d request in Network Panel', filterRequestCount);
     } else {
-      requestsAnchor.textContent = WebInspector.UIString('View %d requests in Network Panel', filterRequestCount);
+      requestsAnchor.textContent = Common.UIString('View %d requests in Network Panel', filterRequestCount);
     }
     requestsAnchor.href = '';
     requestsAnchor.addEventListener('click', networkFilterFn);
@@ -803,8 +803,8 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
       this._addExplanation(
           this._securityExplanationsMain, /** @type {!Protocol.Security.SecurityStateExplanation} */ ({
             'securityState': this._insecureContentStatus.ranInsecureContentStyle,
-            'summary': WebInspector.UIString('Active content with certificate errors'),
-            'description': WebInspector.UIString(
+            'summary': Common.UIString('Active content with certificate errors'),
+            'description': Common.UIString(
                 'You have recently allowed content loaded with certificate errors (such as scripts or iframes) to run on this site.')
           }));
     }
@@ -812,8 +812,8 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
     if (this._insecureContentStatus.displayedContentWithCertErrors) {
       this._addExplanation(this._securityExplanationsMain, /** @type {!Protocol.Security.SecurityStateExplanation} */ ({
                              'securityState': this._insecureContentStatus.displayedInsecureContentStyle,
-                             'summary': WebInspector.UIString('Content with certificate errors'),
-                             'description': WebInspector.UIString(
+                             'summary': Common.UIString('Content with certificate errors'),
+                             'description': Common.UIString(
                                  'This site includes resources that were loaded with certificate errors.')
                            }));
     }
@@ -823,11 +823,11 @@ WebInspector.SecurityMainView = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.SecurityOriginView = class extends WebInspector.VBox {
+Security.SecurityOriginView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.SecurityPanel} panel
-   * @param {!WebInspector.SecurityPanel.Origin} origin
-   * @param {!WebInspector.SecurityPanel.OriginState} originState
+   * @param {!Security.SecurityPanel} panel
+   * @param {!Security.SecurityPanel.Origin} origin
+   * @param {!Security.SecurityPanel.OriginState} originState
    */
   constructor(panel, origin, originState) {
     super();
@@ -845,12 +845,12 @@ WebInspector.SecurityOriginView = class extends WebInspector.VBox {
     // TODO(lgarron): Highlight the origin scheme. https://crbug.com/523589
     originDisplay.createChild('span', 'origin').textContent = origin;
     var originNetworkLink = titleSection.createChild('div', 'link');
-    originNetworkLink.textContent = WebInspector.UIString('View requests in Network Panel');
+    originNetworkLink.textContent = Common.UIString('View requests in Network Panel');
     function showOriginRequestsInNetworkPanel() {
-      var parsedURL = new WebInspector.ParsedURL(origin);
-      WebInspector.NetworkPanel.revealAndFilter([
-        {filterType: WebInspector.NetworkLogView.FilterType.Domain, filterValue: parsedURL.host},
-        {filterType: WebInspector.NetworkLogView.FilterType.Scheme, filterValue: parsedURL.scheme}
+      var parsedURL = new Common.ParsedURL(origin);
+      Network.NetworkPanel.revealAndFilter([
+        {filterType: Network.NetworkLogView.FilterType.Domain, filterValue: parsedURL.host},
+        {filterType: Network.NetworkLogView.FilterType.Scheme, filterValue: parsedURL.scheme}
       ]);
     }
     originNetworkLink.addEventListener('click', showOriginRequestsInNetworkPanel, false);
@@ -858,9 +858,9 @@ WebInspector.SecurityOriginView = class extends WebInspector.VBox {
     if (originState.securityDetails) {
       var connectionSection = this.element.createChild('div', 'origin-view-section');
       connectionSection.createChild('div', 'origin-view-section-title').textContent =
-          WebInspector.UIString('Connection');
+          Common.UIString('Connection');
 
-      var table = new WebInspector.SecurityDetailsTable();
+      var table = new Security.SecurityDetailsTable();
       connectionSection.appendChild(table.element());
       table.addRow('Protocol', originState.securityDetails.protocol);
       if (originState.securityDetails.keyExchange)
@@ -874,70 +874,70 @@ WebInspector.SecurityOriginView = class extends WebInspector.VBox {
       // Create the certificate section outside the callback, so that it appears in the right place.
       var certificateSection = this.element.createChild('div', 'origin-view-section');
       certificateSection.createChild('div', 'origin-view-section-title').textContent =
-          WebInspector.UIString('Certificate');
+          Common.UIString('Certificate');
 
       if (originState.securityDetails.signedCertificateTimestampList.length) {
         // Create the Certificate Transparency section outside the callback, so that it appears in the right place.
         var sctSection = this.element.createChild('div', 'origin-view-section');
         sctSection.createChild('div', 'origin-view-section-title').textContent =
-            WebInspector.UIString('Certificate Transparency');
+            Common.UIString('Certificate Transparency');
       }
 
       var sanDiv = this._createSanDiv(originState.securityDetails.sanList);
       var validFromString = new Date(1000 * originState.securityDetails.validFrom).toUTCString();
       var validUntilString = new Date(1000 * originState.securityDetails.validTo).toUTCString();
 
-      table = new WebInspector.SecurityDetailsTable();
+      table = new Security.SecurityDetailsTable();
       certificateSection.appendChild(table.element());
-      table.addRow(WebInspector.UIString('Subject'), originState.securityDetails.subjectName);
-      table.addRow(WebInspector.UIString('SAN'), sanDiv);
-      table.addRow(WebInspector.UIString('Valid From'), validFromString);
-      table.addRow(WebInspector.UIString('Valid Until'), validUntilString);
-      table.addRow(WebInspector.UIString('Issuer'), originState.securityDetails.issuer);
+      table.addRow(Common.UIString('Subject'), originState.securityDetails.subjectName);
+      table.addRow(Common.UIString('SAN'), sanDiv);
+      table.addRow(Common.UIString('Valid From'), validFromString);
+      table.addRow(Common.UIString('Valid Until'), validUntilString);
+      table.addRow(Common.UIString('Issuer'), originState.securityDetails.issuer);
       table.addRow(
-          '', WebInspector.SecurityPanel.createCertificateViewerButton2(
-                  WebInspector.UIString('Open full certificate details'), origin));
+          '', Security.SecurityPanel.createCertificateViewerButton2(
+                  Common.UIString('Open full certificate details'), origin));
 
       if (!originState.securityDetails.signedCertificateTimestampList.length)
         return;
 
       // Show summary of SCT(s) of Certificate Transparency.
-      var sctSummaryTable = new WebInspector.SecurityDetailsTable();
+      var sctSummaryTable = new Security.SecurityDetailsTable();
       sctSummaryTable.element().classList.add('sct-summary');
       sctSection.appendChild(sctSummaryTable.element());
       for (var i = 0; i < originState.securityDetails.signedCertificateTimestampList.length; i++) {
         var sct = originState.securityDetails.signedCertificateTimestampList[i];
         sctSummaryTable.addRow(
-            WebInspector.UIString('SCT'), sct.logDescription + ' (' + sct.origin + ', ' + sct.status + ')');
+            Common.UIString('SCT'), sct.logDescription + ' (' + sct.origin + ', ' + sct.status + ')');
       }
 
       // Show detailed SCT(s) of Certificate Transparency.
       var sctTableWrapper = sctSection.createChild('div', 'sct-details');
       sctTableWrapper.classList.add('hidden');
       for (var i = 0; i < originState.securityDetails.signedCertificateTimestampList.length; i++) {
-        var sctTable = new WebInspector.SecurityDetailsTable();
+        var sctTable = new Security.SecurityDetailsTable();
         sctTableWrapper.appendChild(sctTable.element());
         var sct = originState.securityDetails.signedCertificateTimestampList[i];
-        sctTable.addRow(WebInspector.UIString('Log Name'), sct.logDescription);
-        sctTable.addRow(WebInspector.UIString('Log ID'), sct.logId.replace(/(.{2})/g, '$1 '));
-        sctTable.addRow(WebInspector.UIString('Validation Status'), sct.status);
-        sctTable.addRow(WebInspector.UIString('Source'), sct.origin);
-        sctTable.addRow(WebInspector.UIString('Issued At'), new Date(sct.timestamp).toUTCString());
-        sctTable.addRow(WebInspector.UIString('Hash Algorithm'), sct.hashAlgorithm);
-        sctTable.addRow(WebInspector.UIString('Signature Algorithm'), sct.signatureAlgorithm);
-        sctTable.addRow(WebInspector.UIString('Signature Data'), sct.signatureData.replace(/(.{2})/g, '$1 '));
+        sctTable.addRow(Common.UIString('Log Name'), sct.logDescription);
+        sctTable.addRow(Common.UIString('Log ID'), sct.logId.replace(/(.{2})/g, '$1 '));
+        sctTable.addRow(Common.UIString('Validation Status'), sct.status);
+        sctTable.addRow(Common.UIString('Source'), sct.origin);
+        sctTable.addRow(Common.UIString('Issued At'), new Date(sct.timestamp).toUTCString());
+        sctTable.addRow(Common.UIString('Hash Algorithm'), sct.hashAlgorithm);
+        sctTable.addRow(Common.UIString('Signature Algorithm'), sct.signatureAlgorithm);
+        sctTable.addRow(Common.UIString('Signature Data'), sct.signatureData.replace(/(.{2})/g, '$1 '));
       }
 
       // Add link to toggle between displaying of the summary of the SCT(s) and the detailed SCT(s).
       var toggleSctsDetailsLink = sctSection.createChild('div', 'link');
       toggleSctsDetailsLink.classList.add('sct-toggle');
-      toggleSctsDetailsLink.textContent = WebInspector.UIString('Show full details');
+      toggleSctsDetailsLink.textContent = Common.UIString('Show full details');
       function toggleSctDetailsDisplay() {
         var isDetailsShown = !sctTableWrapper.classList.contains('hidden');
         if (isDetailsShown)
-          toggleSctsDetailsLink.textContent = WebInspector.UIString('Show full details');
+          toggleSctsDetailsLink.textContent = Common.UIString('Show full details');
         else
-          toggleSctsDetailsLink.textContent = WebInspector.UIString('Hide full details');
+          toggleSctsDetailsLink.textContent = Common.UIString('Hide full details');
         sctSummaryTable.element().classList.toggle('hidden');
         sctTableWrapper.classList.toggle('hidden');
       }
@@ -946,19 +946,19 @@ WebInspector.SecurityOriginView = class extends WebInspector.VBox {
       var noteSection = this.element.createChild('div', 'origin-view-section');
       // TODO(lgarron): Fix the issue and then remove this section. See comment in SecurityPanel._processRequest().
       noteSection.createChild('div').textContent =
-          WebInspector.UIString('The security details above are from the first inspected response.');
+          Common.UIString('The security details above are from the first inspected response.');
     } else if (originState.securityState !== Protocol.Security.SecurityState.Unknown) {
       var notSecureSection = this.element.createChild('div', 'origin-view-section');
       notSecureSection.createChild('div', 'origin-view-section-title').textContent =
-          WebInspector.UIString('Not Secure');
+          Common.UIString('Not Secure');
       notSecureSection.createChild('div').textContent =
-          WebInspector.UIString('Your connection to this origin is not secure.');
+          Common.UIString('Your connection to this origin is not secure.');
     } else {
       var noInfoSection = this.element.createChild('div', 'origin-view-section');
       noInfoSection.createChild('div', 'origin-view-section-title').textContent =
-          WebInspector.UIString('No Security Information');
+          Common.UIString('No Security Information');
       noInfoSection.createChild('div').textContent =
-          WebInspector.UIString('No security details are available for this origin.');
+          Common.UIString('No security details are available for this origin.');
     }
   }
 
@@ -969,7 +969,7 @@ WebInspector.SecurityOriginView = class extends WebInspector.VBox {
   _createSanDiv(sanList) {
     var sanDiv = createElement('div');
     if (sanList.length === 0) {
-      sanDiv.textContent = WebInspector.UIString('(N/A)');
+      sanDiv.textContent = Common.UIString('(N/A)');
       sanDiv.classList.add('empty-san');
     } else {
       var truncatedNumToShow = 2;
@@ -987,10 +987,10 @@ WebInspector.SecurityOriginView = class extends WebInspector.VBox {
         function toggleSANTruncation() {
           if (sanDiv.classList.contains('truncated-san')) {
             sanDiv.classList.remove('truncated-san');
-            truncatedSANToggle.textContent = WebInspector.UIString('Show less');
+            truncatedSANToggle.textContent = Common.UIString('Show less');
           } else {
             sanDiv.classList.add('truncated-san');
-            truncatedSANToggle.textContent = WebInspector.UIString('Show more (%d total)', sanList.length);
+            truncatedSANToggle.textContent = Common.UIString('Show more (%d total)', sanList.length);
           }
         }
         truncatedSANToggle.addEventListener('click', toggleSANTruncation, false);
@@ -1016,7 +1016,7 @@ WebInspector.SecurityOriginView = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.SecurityDetailsTable = class {
+Security.SecurityDetailsTable = class {
   constructor() {
     this._element = createElement('table');
     this._element.classList.add('details-table');

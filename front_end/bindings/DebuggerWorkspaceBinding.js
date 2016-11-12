@@ -2,52 +2,52 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.DebuggerWorkspaceBinding = class {
+Bindings.DebuggerWorkspaceBinding = class {
   /**
-   * @param {!WebInspector.TargetManager} targetManager
-   * @param {!WebInspector.Workspace} workspace
-   * @param {!WebInspector.NetworkMapping} networkMapping
+   * @param {!SDK.TargetManager} targetManager
+   * @param {!Workspace.Workspace} workspace
+   * @param {!Bindings.NetworkMapping} networkMapping
    */
   constructor(targetManager, workspace, networkMapping) {
     this._workspace = workspace;
     this._networkMapping = networkMapping;
 
     // FIXME: Migrate from _targetToData to _debuggerModelToData.
-    /** @type {!Map.<!WebInspector.Target, !WebInspector.DebuggerWorkspaceBinding.TargetData>} */
+    /** @type {!Map.<!SDK.Target, !Bindings.DebuggerWorkspaceBinding.TargetData>} */
     this._targetToData = new Map();
     targetManager.observeTargets(this);
 
     targetManager.addModelListener(
-        WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared,
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared,
         this);
     targetManager.addModelListener(
-        WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.BeforeDebuggerPaused, this._beforeDebuggerPaused,
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.BeforeDebuggerPaused, this._beforeDebuggerPaused,
         this);
     targetManager.addModelListener(
-        WebInspector.DebuggerModel, WebInspector.DebuggerModel.Events.DebuggerResumed, this._debuggerResumed, this);
-    workspace.addEventListener(WebInspector.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
-    workspace.addEventListener(WebInspector.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._debuggerResumed, this);
+    workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
+    workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
+    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
     if (debuggerModel)
-      this._targetToData.set(target, new WebInspector.DebuggerWorkspaceBinding.TargetData(debuggerModel, this));
+      this._targetToData.set(target, new Bindings.DebuggerWorkspaceBinding.TargetData(debuggerModel, this));
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-    if (!WebInspector.DebuggerModel.fromTarget(target))
+    if (!SDK.DebuggerModel.fromTarget(target))
       return;
     var targetData = this._targetToData.get(target);
     targetData._dispose();
@@ -55,20 +55,20 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _uiSourceCodeRemoved(event) {
-    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     var targetDatas = this._targetToData.valuesArray();
     for (var i = 0; i < targetDatas.length; ++i)
       targetDatas[i]._uiSourceCodeRemoved(uiSourceCode);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _projectRemoved(event) {
-    var project = /** @type {!WebInspector.Project} */ (event.data);
+    var project = /** @type {!Workspace.Project} */ (event.data);
     var targetDatas = this._targetToData.valuesArray();
     var uiSourceCodes = project.uiSourceCodes();
     for (var i = 0; i < targetDatas.length; ++i) {
@@ -78,8 +78,8 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.Script} script
-   * @param {!WebInspector.DebuggerSourceMapping} sourceMapping
+   * @param {!SDK.Script} script
+   * @param {!Bindings.DebuggerSourceMapping} sourceMapping
    */
   pushSourceMapping(script, sourceMapping) {
     var info = this._ensureInfoForScript(script);
@@ -87,8 +87,8 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.Script} script
-   * @return {!WebInspector.DebuggerSourceMapping}
+   * @param {!SDK.Script} script
+   * @return {!Bindings.DebuggerSourceMapping}
    */
   popSourceMapping(script) {
     var info = this._infoForScript(script.target(), script.scriptId);
@@ -97,9 +97,9 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @param {?WebInspector.DebuggerSourceMapping} sourceMapping
+   * @param {!SDK.Target} target
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {?Bindings.DebuggerSourceMapping} sourceMapping
    */
   setSourceMapping(target, uiSourceCode, sourceMapping) {
     var data = this._targetToData.get(target);
@@ -108,7 +108,7 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.Script} script
+   * @param {!SDK.Script} script
    */
   updateLocations(script) {
     var info = this._infoForScript(script.target(), script.scriptId);
@@ -117,39 +117,39 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.DebuggerModel.Location} rawLocation
-   * @param {function(!WebInspector.LiveLocation)} updateDelegate
-   * @param {!WebInspector.LiveLocationPool} locationPool
-   * @return {!WebInspector.DebuggerWorkspaceBinding.Location}
+   * @param {!SDK.DebuggerModel.Location} rawLocation
+   * @param {function(!Bindings.LiveLocation)} updateDelegate
+   * @param {!Bindings.LiveLocationPool} locationPool
+   * @return {!Bindings.DebuggerWorkspaceBinding.Location}
    */
   createLiveLocation(rawLocation, updateDelegate, locationPool) {
     var info = this._infoForScript(rawLocation.target(), rawLocation.scriptId);
     console.assert(info);
-    var location = new WebInspector.DebuggerWorkspaceBinding.Location(
+    var location = new Bindings.DebuggerWorkspaceBinding.Location(
         info._script, rawLocation, this, updateDelegate, locationPool);
     info._addLocation(location);
     return location;
   }
 
   /**
-   * @param {!Array<!WebInspector.DebuggerModel.Location>} rawLocations
-   * @param {function(!WebInspector.LiveLocation)} updateDelegate
-   * @param {!WebInspector.LiveLocationPool} locationPool
-   * @return {!WebInspector.LiveLocation}
+   * @param {!Array<!SDK.DebuggerModel.Location>} rawLocations
+   * @param {function(!Bindings.LiveLocation)} updateDelegate
+   * @param {!Bindings.LiveLocationPool} locationPool
+   * @return {!Bindings.LiveLocation}
    */
   createStackTraceTopFrameLiveLocation(rawLocations, updateDelegate, locationPool) {
     console.assert(rawLocations.length);
-    var location = new WebInspector.DebuggerWorkspaceBinding.StackTraceTopFrameLocation(
+    var location = new Bindings.DebuggerWorkspaceBinding.StackTraceTopFrameLocation(
         rawLocations, this, updateDelegate, locationPool);
     location.update();
     return location;
   }
 
   /**
-   * @param {!WebInspector.DebuggerModel.Location} location
-   * @param {function(!WebInspector.LiveLocation)} updateDelegate
-   * @param {!WebInspector.LiveLocationPool} locationPool
-   * @return {?WebInspector.DebuggerWorkspaceBinding.Location}
+   * @param {!SDK.DebuggerModel.Location} location
+   * @param {function(!Bindings.LiveLocation)} updateDelegate
+   * @param {!Bindings.LiveLocationPool} locationPool
+   * @return {?Bindings.DebuggerWorkspaceBinding.Location}
    */
   createCallFrameLiveLocation(location, updateDelegate, locationPool) {
     var script = location.script();
@@ -163,8 +163,8 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.DebuggerModel.Location} rawLocation
-   * @return {!WebInspector.UILocation}
+   * @param {!SDK.DebuggerModel.Location} rawLocation
+   * @return {!Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
     var info = this._infoForScript(rawLocation.target(), rawLocation.scriptId);
@@ -173,24 +173,24 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!SDK.Target} target
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?WebInspector.DebuggerModel.Location}
+   * @return {?SDK.DebuggerModel.Location}
    */
   uiLocationToRawLocation(target, uiSourceCode, lineNumber, columnNumber) {
     var targetData = this._targetToData.get(target);
-    return targetData ? /** @type {?WebInspector.DebuggerModel.Location} */ (
+    return targetData ? /** @type {?SDK.DebuggerModel.Location} */ (
                             targetData._uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber)) :
                         null;
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {!Array.<!WebInspector.DebuggerModel.Location>}
+   * @return {!Array.<!SDK.DebuggerModel.Location>}
    */
   uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
     var result = [];
@@ -204,11 +204,11 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.UILocation} uiLocation
-   * @return {!WebInspector.UILocation}
+   * @param {!Workspace.UILocation} uiLocation
+   * @return {!Workspace.UILocation}
    */
   normalizeUILocation(uiLocation) {
-    var target = WebInspector.NetworkProject.targetForUISourceCode(uiLocation.uiSourceCode);
+    var target = Bindings.NetworkProject.targetForUISourceCode(uiLocation.uiSourceCode);
     if (target) {
       var rawLocation =
           this.uiLocationToRawLocation(target, uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
@@ -219,7 +219,7 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @return {boolean}
    */
@@ -233,9 +233,9 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @param {!WebInspector.Target} target
-   * @return {?WebInspector.ResourceScriptFile}
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!SDK.Target} target
+   * @return {?Bindings.ResourceScriptFile}
    */
   scriptFile(uiSourceCode, target) {
     var targetData = this._targetToData.get(target);
@@ -243,8 +243,8 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.Script} script
-   * @return {?WebInspector.TextSourceMap}
+   * @param {!SDK.Script} script
+   * @return {?SDK.TextSourceMap}
    */
   sourceMapForScript(script) {
     var targetData = this._targetToData.get(script.target());
@@ -254,7 +254,7 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.Script} script
+   * @param {!SDK.Script} script
    */
   maybeLoadSourceMap(script) {
     var targetData = this._targetToData.get(script.target());
@@ -264,15 +264,15 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _globalObjectCleared(event) {
-    var debuggerModel = /** @type {!WebInspector.DebuggerModel} */ (event.target);
+    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.target);
     this._reset(debuggerModel.target());
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   _reset(target) {
     var targetData = this._targetToData.get(target);
@@ -281,23 +281,23 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.Script} script
-   * @return {!WebInspector.DebuggerWorkspaceBinding.ScriptInfo}
+   * @param {!SDK.Script} script
+   * @return {!Bindings.DebuggerWorkspaceBinding.ScriptInfo}
    */
   _ensureInfoForScript(script) {
     var scriptDataMap = this._targetToData.get(script.target()).scriptDataMap;
     var info = scriptDataMap.get(script.scriptId);
     if (!info) {
-      info = new WebInspector.DebuggerWorkspaceBinding.ScriptInfo(script);
+      info = new Bindings.DebuggerWorkspaceBinding.ScriptInfo(script);
       scriptDataMap.set(script.scriptId, info);
     }
     return info;
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {string} scriptId
-   * @return {?WebInspector.DebuggerWorkspaceBinding.ScriptInfo}
+   * @return {?Bindings.DebuggerWorkspaceBinding.ScriptInfo}
    */
   _infoForScript(target, scriptId) {
     var data = this._targetToData.get(target);
@@ -307,8 +307,8 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!WebInspector.DebuggerWorkspaceBinding.Location} location
+   * @param {!SDK.Target} target
+   * @param {!Bindings.DebuggerWorkspaceBinding.Location} location
    */
   _registerCallFrameLiveLocation(target, location) {
     var locations = this._targetToData.get(target).callFrameLocations;
@@ -316,7 +316,7 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.DebuggerWorkspaceBinding.Location} location
+   * @param {!Bindings.DebuggerWorkspaceBinding.Location} location
    */
   _removeLiveLocation(location) {
     var info = this._infoForScript(location._script.target(), location._script.scriptId);
@@ -325,15 +325,15 @@ WebInspector.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _debuggerResumed(event) {
-    var debuggerModel = /** @type {!WebInspector.DebuggerModel} */ (event.target);
+    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.target);
     this._reset(debuggerModel.target());
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _beforeDebuggerPaused(event) {
     var rawLocation = event.data.callFrames[0].location();
@@ -348,56 +348,56 @@ WebInspector.DebuggerWorkspaceBinding = class {
 /**
  * @unrestricted
  */
-WebInspector.DebuggerWorkspaceBinding.TargetData = class {
+Bindings.DebuggerWorkspaceBinding.TargetData = class {
   /**
-   * @param {!WebInspector.DebuggerModel} debuggerModel
-   * @param {!WebInspector.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
+   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
   constructor(debuggerModel, debuggerWorkspaceBinding) {
     this._target = debuggerModel.target();
 
-    /** @type {!Map.<string, !WebInspector.DebuggerWorkspaceBinding.ScriptInfo>} */
+    /** @type {!Map.<string, !Bindings.DebuggerWorkspaceBinding.ScriptInfo>} */
     this.scriptDataMap = new Map();
 
-    /** @type {!Set.<!WebInspector.DebuggerWorkspaceBinding.Location>} */
+    /** @type {!Set.<!Bindings.DebuggerWorkspaceBinding.Location>} */
     this.callFrameLocations = new Set();
 
     var workspace = debuggerWorkspaceBinding._workspace;
     var networkMapping = debuggerWorkspaceBinding._networkMapping;
 
-    this._defaultMapping = new WebInspector.DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
+    this._defaultMapping = new Bindings.DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._resourceMapping =
-        new WebInspector.ResourceScriptMapping(debuggerModel, workspace, networkMapping, debuggerWorkspaceBinding);
-    this._compilerMapping = new WebInspector.CompilerScriptMapping(
-        debuggerModel, workspace, networkMapping, WebInspector.NetworkProject.forTarget(this._target),
+        new Bindings.ResourceScriptMapping(debuggerModel, workspace, networkMapping, debuggerWorkspaceBinding);
+    this._compilerMapping = new Bindings.CompilerScriptMapping(
+        debuggerModel, workspace, networkMapping, Bindings.NetworkProject.forTarget(this._target),
         debuggerWorkspaceBinding);
 
-    /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.DebuggerSourceMapping>} */
+    /** @type {!Map.<!Workspace.UISourceCode, !Bindings.DebuggerSourceMapping>} */
     this._uiSourceCodeToSourceMapping = new Map();
 
     this._eventListeners = [
       debuggerModel.addEventListener(
-          WebInspector.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
+          SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
       debuggerModel.addEventListener(
-          WebInspector.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this)
+          SDK.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this)
     ];
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _parsedScriptSource(event) {
-    var script = /** @type {!WebInspector.Script} */ (event.data);
+    var script = /** @type {!SDK.Script} */ (event.data);
     this._defaultMapping.addScript(script);
     this._resourceMapping.addScript(script);
 
-    if (WebInspector.moduleSetting('jsSourceMapsEnabled').get())
+    if (Common.moduleSetting('jsSourceMapsEnabled').get())
       this._compilerMapping.addScript(script);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @param {?WebInspector.DebuggerSourceMapping} sourceMapping
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {?Bindings.DebuggerSourceMapping} sourceMapping
    */
   _setSourceMapping(uiSourceCode, sourceMapping) {
     if (this._uiSourceCodeToSourceMapping.get(uiSourceCode) === sourceMapping)
@@ -409,15 +409,15 @@ WebInspector.DebuggerWorkspaceBinding.TargetData = class {
       this._uiSourceCodeToSourceMapping.remove(uiSourceCode);
 
     uiSourceCode.dispatchEventToListeners(
-        WebInspector.UISourceCode.Events.SourceMappingChanged,
+        Workspace.UISourceCode.Events.SourceMappingChanged,
         {target: this._target, isIdentity: sourceMapping ? sourceMapping.isIdentity() : false});
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?WebInspector.DebuggerModel.Location}
+   * @return {?SDK.DebuggerModel.Location}
    */
   _uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
     var sourceMapping = this._uiSourceCodeToSourceMapping.get(uiSourceCode);
@@ -425,7 +425,7 @@ WebInspector.DebuggerWorkspaceBinding.TargetData = class {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @return {boolean}
    */
@@ -435,14 +435,14 @@ WebInspector.DebuggerWorkspaceBinding.TargetData = class {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _uiSourceCodeRemoved(uiSourceCode) {
     this._uiSourceCodeToSourceMapping.remove(uiSourceCode);
   }
 
   _dispose() {
-    WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     this._compilerMapping.dispose();
     this._resourceMapping.dispose();
     this._defaultMapping.dispose();
@@ -453,22 +453,22 @@ WebInspector.DebuggerWorkspaceBinding.TargetData = class {
 /**
  * @unrestricted
  */
-WebInspector.DebuggerWorkspaceBinding.ScriptInfo = class {
+Bindings.DebuggerWorkspaceBinding.ScriptInfo = class {
   /**
-   * @param {!WebInspector.Script} script
+   * @param {!SDK.Script} script
    */
   constructor(script) {
     this._script = script;
 
-    /** @type {!Array.<!WebInspector.DebuggerSourceMapping>} */
+    /** @type {!Array.<!Bindings.DebuggerSourceMapping>} */
     this._sourceMappings = [];
 
-    /** @type {!Set<!WebInspector.LiveLocation>} */
+    /** @type {!Set<!Bindings.LiveLocation>} */
     this._locations = new Set();
   }
 
   /**
-   * @param {!WebInspector.DebuggerSourceMapping} sourceMapping
+   * @param {!Bindings.DebuggerSourceMapping} sourceMapping
    */
   _pushSourceMapping(sourceMapping) {
     this._sourceMappings.push(sourceMapping);
@@ -476,7 +476,7 @@ WebInspector.DebuggerWorkspaceBinding.ScriptInfo = class {
   }
 
   /**
-   * @return {!WebInspector.DebuggerSourceMapping}
+   * @return {!Bindings.DebuggerSourceMapping}
    */
   _popSourceMapping() {
     var sourceMapping = this._sourceMappings.pop();
@@ -485,7 +485,7 @@ WebInspector.DebuggerWorkspaceBinding.ScriptInfo = class {
   }
 
   /**
-   * @param {!WebInspector.LiveLocation} location
+   * @param {!Bindings.LiveLocation} location
    */
   _addLocation(location) {
     this._locations.add(location);
@@ -493,7 +493,7 @@ WebInspector.DebuggerWorkspaceBinding.ScriptInfo = class {
   }
 
   /**
-   * @param {!WebInspector.LiveLocation} location
+   * @param {!Bindings.LiveLocation} location
    */
   _removeLocation(location) {
     this._locations.delete(location);
@@ -505,28 +505,28 @@ WebInspector.DebuggerWorkspaceBinding.ScriptInfo = class {
   }
 
   /**
-   * @param {!WebInspector.DebuggerModel.Location} rawLocation
-   * @return {!WebInspector.UILocation}
+   * @param {!SDK.DebuggerModel.Location} rawLocation
+   * @return {!Workspace.UILocation}
    */
   _rawLocationToUILocation(rawLocation) {
     var uiLocation;
     for (var i = this._sourceMappings.length - 1; !uiLocation && i >= 0; --i)
       uiLocation = this._sourceMappings[i].rawLocationToUILocation(rawLocation);
     console.assert(uiLocation, 'Script raw location cannot be mapped to any UI location.');
-    return /** @type {!WebInspector.UILocation} */ (uiLocation);
+    return /** @type {!Workspace.UILocation} */ (uiLocation);
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.DebuggerWorkspaceBinding.Location = class extends WebInspector.LiveLocationWithPool {
+Bindings.DebuggerWorkspaceBinding.Location = class extends Bindings.LiveLocationWithPool {
   /**
-   * @param {!WebInspector.Script} script
-   * @param {!WebInspector.DebuggerModel.Location} rawLocation
-   * @param {!WebInspector.DebuggerWorkspaceBinding} binding
-   * @param {function(!WebInspector.LiveLocation)} updateDelegate
-   * @param {!WebInspector.LiveLocationPool} locationPool
+   * @param {!SDK.Script} script
+   * @param {!SDK.DebuggerModel.Location} rawLocation
+   * @param {!Bindings.DebuggerWorkspaceBinding} binding
+   * @param {function(!Bindings.LiveLocation)} updateDelegate
+   * @param {!Bindings.LiveLocationPool} locationPool
    */
   constructor(script, rawLocation, binding, updateDelegate, locationPool) {
     super(updateDelegate, locationPool);
@@ -537,7 +537,7 @@ WebInspector.DebuggerWorkspaceBinding.Location = class extends WebInspector.Live
 
   /**
    * @override
-   * @return {!WebInspector.UILocation}
+   * @return {!Workspace.UILocation}
    */
   uiLocation() {
     var debuggerModelLocation = this._rawLocation;
@@ -557,25 +557,25 @@ WebInspector.DebuggerWorkspaceBinding.Location = class extends WebInspector.Live
    * @return {boolean}
    */
   isBlackboxed() {
-    return WebInspector.blackboxManager.isBlackboxedRawLocation(this._rawLocation);
+    return Bindings.blackboxManager.isBlackboxedRawLocation(this._rawLocation);
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.DebuggerWorkspaceBinding.StackTraceTopFrameLocation = class extends WebInspector.LiveLocationWithPool {
+Bindings.DebuggerWorkspaceBinding.StackTraceTopFrameLocation = class extends Bindings.LiveLocationWithPool {
   /**
-   * @param {!Array<!WebInspector.DebuggerModel.Location>} rawLocations
-   * @param {!WebInspector.DebuggerWorkspaceBinding} binding
-   * @param {function(!WebInspector.LiveLocation)} updateDelegate
-   * @param {!WebInspector.LiveLocationPool} locationPool
+   * @param {!Array<!SDK.DebuggerModel.Location>} rawLocations
+   * @param {!Bindings.DebuggerWorkspaceBinding} binding
+   * @param {function(!Bindings.LiveLocation)} updateDelegate
+   * @param {!Bindings.LiveLocationPool} locationPool
    */
   constructor(rawLocations, binding, updateDelegate, locationPool) {
     super(updateDelegate, locationPool);
 
     this._updateScheduled = true;
-    /** @type {!Set<!WebInspector.LiveLocation>} */
+    /** @type {!Set<!Bindings.LiveLocation>} */
     this._locations = new Set();
     for (var location of rawLocations)
       this._locations.add(binding.createLiveLocation(location, this._scheduleUpdate.bind(this), locationPool));
@@ -584,7 +584,7 @@ WebInspector.DebuggerWorkspaceBinding.StackTraceTopFrameLocation = class extends
 
   /**
    * @override
-   * @return {!WebInspector.UILocation}
+   * @return {!Workspace.UILocation}
    */
   uiLocation() {
     return this._current.uiLocation();
@@ -630,20 +630,20 @@ WebInspector.DebuggerWorkspaceBinding.StackTraceTopFrameLocation = class extends
 /**
  * @interface
  */
-WebInspector.DebuggerSourceMapping = function() {};
+Bindings.DebuggerSourceMapping = function() {};
 
-WebInspector.DebuggerSourceMapping.prototype = {
+Bindings.DebuggerSourceMapping.prototype = {
   /**
-   * @param {!WebInspector.DebuggerModel.Location} rawLocation
-   * @return {?WebInspector.UILocation}
+   * @param {!SDK.DebuggerModel.Location} rawLocation
+   * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation: function(rawLocation) {},
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?WebInspector.DebuggerModel.Location}
+   * @return {?SDK.DebuggerModel.Location}
    */
   uiLocationToRawLocation: function(uiSourceCode, lineNumber, columnNumber) {},
 
@@ -653,7 +653,7 @@ WebInspector.DebuggerSourceMapping.prototype = {
   isIdentity: function() {},
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @return {boolean}
    */
@@ -661,6 +661,6 @@ WebInspector.DebuggerSourceMapping.prototype = {
 };
 
 /**
- * @type {!WebInspector.DebuggerWorkspaceBinding}
+ * @type {!Bindings.DebuggerWorkspaceBinding}
  */
-WebInspector.debuggerWorkspaceBinding;
+Bindings.debuggerWorkspaceBinding;

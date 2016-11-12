@@ -4,26 +4,26 @@
 /**
  * @unrestricted
  */
-WebInspector.SecurityOriginManager = class extends WebInspector.SDKModel {
+SDK.SecurityOriginManager = class extends SDK.SDKModel {
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(WebInspector.SecurityOriginManager, target);
+    super(SDK.SecurityOriginManager, target);
 
     this._securityOriginCounter = new Map();
     this._mainSecurityOrigin = '';
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @return {!WebInspector.SecurityOriginManager}
+   * @param {!SDK.Target} target
+   * @return {!SDK.SecurityOriginManager}
    */
   static fromTarget(target) {
     var securityOriginManager =
-        /** @type {?WebInspector.SecurityOriginManager} */ (target.model(WebInspector.SecurityOriginManager));
+        /** @type {?SDK.SecurityOriginManager} */ (target.model(SDK.SecurityOriginManager));
     if (!securityOriginManager)
-      securityOriginManager = new WebInspector.SecurityOriginManager(target);
+      securityOriginManager = new SDK.SecurityOriginManager(target);
     return securityOriginManager;
   }
 
@@ -34,7 +34,7 @@ WebInspector.SecurityOriginManager = class extends WebInspector.SDKModel {
     var currentCount = this._securityOriginCounter.get(securityOrigin);
     if (!currentCount) {
       this._securityOriginCounter.set(securityOrigin, 1);
-      this.dispatchEventToListeners(WebInspector.SecurityOriginManager.Events.SecurityOriginAdded, securityOrigin);
+      this.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginAdded, securityOrigin);
       return;
     }
     this._securityOriginCounter.set(securityOrigin, currentCount + 1);
@@ -47,7 +47,7 @@ WebInspector.SecurityOriginManager = class extends WebInspector.SDKModel {
     var currentCount = this._securityOriginCounter.get(securityOrigin);
     if (currentCount === 1) {
       this._securityOriginCounter.delete(securityOrigin);
-      this.dispatchEventToListeners(WebInspector.SecurityOriginManager.Events.SecurityOriginRemoved, securityOrigin);
+      this.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginRemoved, securityOrigin);
       return;
     }
     this._securityOriginCounter.set(securityOrigin, currentCount - 1);
@@ -72,12 +72,12 @@ WebInspector.SecurityOriginManager = class extends WebInspector.SDKModel {
    */
   setMainSecurityOrigin(securityOrigin) {
     this._mainSecurityOrigin = securityOrigin;
-    this.dispatchEventToListeners(WebInspector.SecurityOriginManager.Events.MainSecurityOriginChanged, securityOrigin);
+    this.dispatchEventToListeners(SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, securityOrigin);
   }
 };
 
 /** @enum {symbol} */
-WebInspector.SecurityOriginManager.Events = {
+SDK.SecurityOriginManager.Events = {
   SecurityOriginAdded: Symbol('SecurityOriginAdded'),
   SecurityOriginRemoved: Symbol('SecurityOriginRemoved'),
   MainSecurityOriginChanged: Symbol('MainSecurityOriginChanged')

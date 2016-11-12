@@ -4,102 +4,102 @@
 /**
  * @unrestricted
  */
-WebInspector.ComputedStyleModel = class extends WebInspector.Object {
+Elements.ComputedStyleModel = class extends Common.Object {
   constructor() {
     super();
-    this._node = WebInspector.context.flavor(WebInspector.DOMNode);
-    WebInspector.context.addFlavorChangeListener(WebInspector.DOMNode, this._onNodeChanged, this);
+    this._node = UI.context.flavor(SDK.DOMNode);
+    UI.context.addFlavorChangeListener(SDK.DOMNode, this._onNodeChanged, this);
   }
 
   /**
-   * @return {?WebInspector.DOMNode}
+   * @return {?SDK.DOMNode}
    */
   node() {
     return this._node;
   }
 
   /**
-   * @return {?WebInspector.CSSModel}
+   * @return {?SDK.CSSModel}
    */
   cssModel() {
     return this._cssModel && this._cssModel.isEnabled() ? this._cssModel : null;
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onNodeChanged(event) {
-    this._node = /** @type {?WebInspector.DOMNode} */ (event.data);
+    this._node = /** @type {?SDK.DOMNode} */ (event.data);
     this._updateTarget(this._node ? this._node.target() : null);
     this._onComputedStyleChanged(null);
   }
 
   /**
-   * @param {?WebInspector.Target} target
+   * @param {?SDK.Target} target
    */
   _updateTarget(target) {
     if (this._target === target)
       return;
     if (this._targetEvents)
-      WebInspector.EventTarget.removeEventListeners(this._targetEvents);
+      Common.EventTarget.removeEventListeners(this._targetEvents);
     this._target = target;
 
     var domModel = null;
     var resourceTreeModel = null;
     if (target) {
-      this._cssModel = WebInspector.CSSModel.fromTarget(target);
-      domModel = WebInspector.DOMModel.fromTarget(target);
-      resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+      this._cssModel = SDK.CSSModel.fromTarget(target);
+      domModel = SDK.DOMModel.fromTarget(target);
+      resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
     }
 
     if (this._cssModel && domModel && resourceTreeModel) {
       this._targetEvents = [
         this._cssModel.addEventListener(
-            WebInspector.CSSModel.Events.StyleSheetAdded, this._onComputedStyleChanged, this),
+            SDK.CSSModel.Events.StyleSheetAdded, this._onComputedStyleChanged, this),
         this._cssModel.addEventListener(
-            WebInspector.CSSModel.Events.StyleSheetRemoved, this._onComputedStyleChanged, this),
+            SDK.CSSModel.Events.StyleSheetRemoved, this._onComputedStyleChanged, this),
         this._cssModel.addEventListener(
-            WebInspector.CSSModel.Events.StyleSheetChanged, this._onComputedStyleChanged, this),
-        this._cssModel.addEventListener(WebInspector.CSSModel.Events.FontsUpdated, this._onComputedStyleChanged, this),
+            SDK.CSSModel.Events.StyleSheetChanged, this._onComputedStyleChanged, this),
+        this._cssModel.addEventListener(SDK.CSSModel.Events.FontsUpdated, this._onComputedStyleChanged, this),
         this._cssModel.addEventListener(
-            WebInspector.CSSModel.Events.MediaQueryResultChanged, this._onComputedStyleChanged, this),
+            SDK.CSSModel.Events.MediaQueryResultChanged, this._onComputedStyleChanged, this),
         this._cssModel.addEventListener(
-            WebInspector.CSSModel.Events.PseudoStateForced, this._onComputedStyleChanged, this),
+            SDK.CSSModel.Events.PseudoStateForced, this._onComputedStyleChanged, this),
         this._cssModel.addEventListener(
-            WebInspector.CSSModel.Events.ModelWasEnabled, this._onComputedStyleChanged, this),
-        domModel.addEventListener(WebInspector.DOMModel.Events.DOMMutated, this._onDOMModelChanged, this),
+            SDK.CSSModel.Events.ModelWasEnabled, this._onComputedStyleChanged, this),
+        domModel.addEventListener(SDK.DOMModel.Events.DOMMutated, this._onDOMModelChanged, this),
         resourceTreeModel.addEventListener(
-            WebInspector.ResourceTreeModel.Events.FrameResized, this._onFrameResized, this),
+            SDK.ResourceTreeModel.Events.FrameResized, this._onFrameResized, this),
       ];
     }
   }
 
   /**
-   * @param {?WebInspector.Event} event
+   * @param {?Common.Event} event
    */
   _onComputedStyleChanged(event) {
     delete this._computedStylePromise;
     this.dispatchEventToListeners(
-        WebInspector.ComputedStyleModel.Events.ComputedStyleChanged, event ? event.data : null);
+        Elements.ComputedStyleModel.Events.ComputedStyleChanged, event ? event.data : null);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onDOMModelChanged(event) {
     // Any attribute removal or modification can affect the styles of "related" nodes.
-    var node = /** @type {!WebInspector.DOMNode} */ (event.data);
+    var node = /** @type {!SDK.DOMNode} */ (event.data);
     if (!this._node || this._node !== node && node.parentNode !== this._node.parentNode && !node.isAncestor(this._node))
       return;
     this._onComputedStyleChanged(null);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _onFrameResized(event) {
     /**
-     * @this {WebInspector.ComputedStyleModel}
+     * @this {Elements.ComputedStyleModel}
      */
     function refreshContents() {
       this._onComputedStyleChanged(null);
@@ -113,20 +113,20 @@ WebInspector.ComputedStyleModel = class extends WebInspector.Object {
   }
 
   /**
-   * @return {?WebInspector.DOMNode}
+   * @return {?SDK.DOMNode}
    */
   _elementNode() {
     return this.node() ? this.node().enclosingElementOrSelf() : null;
   }
 
   /**
-   * @return {!Promise.<?WebInspector.ComputedStyleModel.ComputedStyle>}
+   * @return {!Promise.<?Elements.ComputedStyleModel.ComputedStyle>}
    */
   fetchComputedStyle() {
     var elementNode = this._elementNode();
     var cssModel = this.cssModel();
     if (!elementNode || !cssModel)
-      return Promise.resolve(/** @type {?WebInspector.ComputedStyleModel.ComputedStyle} */ (null));
+      return Promise.resolve(/** @type {?Elements.ComputedStyleModel.ComputedStyle} */ (null));
 
     if (!this._computedStylePromise)
       this._computedStylePromise =
@@ -135,30 +135,30 @@ WebInspector.ComputedStyleModel = class extends WebInspector.Object {
     return this._computedStylePromise;
 
     /**
-     * @param {!WebInspector.DOMNode} elementNode
+     * @param {!SDK.DOMNode} elementNode
      * @param {?Map.<string, string>} style
-     * @return {?WebInspector.ComputedStyleModel.ComputedStyle}
-     * @this {WebInspector.ComputedStyleModel}
+     * @return {?Elements.ComputedStyleModel.ComputedStyle}
+     * @this {Elements.ComputedStyleModel}
      */
     function verifyOutdated(elementNode, style) {
       return elementNode === this._elementNode() && style ?
-          new WebInspector.ComputedStyleModel.ComputedStyle(elementNode, style) :
-          /** @type {?WebInspector.ComputedStyleModel.ComputedStyle} */ (null);
+          new Elements.ComputedStyleModel.ComputedStyle(elementNode, style) :
+          /** @type {?Elements.ComputedStyleModel.ComputedStyle} */ (null);
     }
   }
 };
 
 /** @enum {symbol} */
-WebInspector.ComputedStyleModel.Events = {
+Elements.ComputedStyleModel.Events = {
   ComputedStyleChanged: Symbol('ComputedStyleChanged')
 };
 
 /**
  * @unrestricted
  */
-WebInspector.ComputedStyleModel.ComputedStyle = class {
+Elements.ComputedStyleModel.ComputedStyle = class {
   /**
-   * @param {!WebInspector.DOMNode} node
+   * @param {!SDK.DOMNode} node
    * @param {!Map.<string, string>} computedStyle
    */
   constructor(node, computedStyle) {

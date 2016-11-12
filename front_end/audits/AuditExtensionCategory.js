@@ -28,10 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.AuditCategory}
+ * @implements {Audits.AuditCategory}
  * @unrestricted
  */
-WebInspector.AuditExtensionCategory = class {
+Audits.AuditExtensionCategory = class {
   /**
    * @param {string} extensionOrigin
    * @param {string} id
@@ -61,27 +61,27 @@ WebInspector.AuditExtensionCategory = class {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
-   * @param {!Array.<!WebInspector.NetworkRequest>} requests
-   * @param {function(!WebInspector.AuditRuleResult)} ruleResultCallback
-   * @param {!WebInspector.Progress} progress
+   * @param {!SDK.Target} target
+   * @param {!Array.<!SDK.NetworkRequest>} requests
+   * @param {function(!Audits.AuditRuleResult)} ruleResultCallback
+   * @param {!Common.Progress} progress
    */
   run(target, requests, ruleResultCallback, progress) {
-    var results = new WebInspector.AuditExtensionCategoryResults(this, target, ruleResultCallback, progress);
-    WebInspector.extensionServer.startAuditRun(this.id, results);
+    var results = new Audits.AuditExtensionCategoryResults(this, target, ruleResultCallback, progress);
+    Extensions.extensionServer.startAuditRun(this.id, results);
   }
 };
 
 /**
- * @implements {WebInspector.ExtensionAuditCategoryResults}
+ * @implements {Extensions.ExtensionAuditCategoryResults}
  * @unrestricted
  */
-WebInspector.AuditExtensionCategoryResults = class {
+Audits.AuditExtensionCategoryResults = class {
   /**
-   * @param {!WebInspector.AuditExtensionCategory} category
-   * @param {!WebInspector.Target} target
-   * @param {function(!WebInspector.AuditRuleResult)} ruleResultCallback
-   * @param {!WebInspector.Progress} progress
+   * @param {!Audits.AuditExtensionCategory} category
+   * @param {!SDK.Target} target
+   * @param {function(!Audits.AuditRuleResult)} ruleResultCallback
+   * @param {!Common.Progress} progress
    */
   constructor(category, target, ruleResultCallback, progress) {
     this._target = target;
@@ -92,7 +92,7 @@ WebInspector.AuditExtensionCategoryResults = class {
     this._expectedResults = category._ruleCount;
     this._actualResults = 0;
 
-    this._id = category.id + '-' + ++WebInspector.AuditExtensionCategoryResults._lastId;
+    this._id = category.id + '-' + ++Audits.AuditExtensionCategoryResults._lastId;
   }
 
   /**
@@ -107,7 +107,7 @@ WebInspector.AuditExtensionCategoryResults = class {
    * @override
    */
   done() {
-    WebInspector.extensionServer.stopAuditRun(this);
+    Extensions.extensionServer.stopAuditRun(this);
     this._progress.done();
   }
 
@@ -119,7 +119,7 @@ WebInspector.AuditExtensionCategoryResults = class {
    * @param {!Object} details
    */
   addResult(displayName, description, severity, details) {
-    var result = new WebInspector.AuditRuleResult(displayName);
+    var result = new Audits.AuditRuleResult(displayName);
     if (description)
       result.addChild(description);
     result.severity = severity;
@@ -130,7 +130,7 @@ WebInspector.AuditExtensionCategoryResults = class {
 
   _addNode(parent, node) {
     var contents =
-        WebInspector.auditFormatters.partiallyApply(WebInspector.AuditExtensionFormatters, this, node.contents);
+        Audits.auditFormatters.partiallyApply(Audits.AuditExtensionFormatters, this, node.contents);
     var addedNode = parent.addChild(contents, node.expanded);
     if (node.children) {
       for (var i = 0; i < node.children.length; ++i)
@@ -159,14 +159,14 @@ WebInspector.AuditExtensionCategoryResults = class {
   /**
    * @param {string} expression
    * @param {?Object} evaluateOptions
-   * @param {function(!WebInspector.RemoteObject)} callback
+   * @param {function(!SDK.RemoteObject)} callback
    */
   evaluate(expression, evaluateOptions, callback) {
     /**
      * @param {?string} error
      * @param {!Protocol.Runtime.RemoteObject} result
      * @param {boolean=} wasThrown
-     * @this {WebInspector.AuditExtensionCategoryResults}
+     * @this {Audits.AuditExtensionCategoryResults}
      */
     function onEvaluate(error, result, wasThrown) {
       if (wasThrown)
@@ -176,15 +176,15 @@ WebInspector.AuditExtensionCategoryResults = class {
     }
 
     var evaluateCallback =
-        /** @type {function(?string, ?WebInspector.RemoteObject, boolean=)} */ (onEvaluate.bind(this));
-    WebInspector.extensionServer.evaluate(
+        /** @type {function(?string, ?SDK.RemoteObject, boolean=)} */ (onEvaluate.bind(this));
+    Extensions.extensionServer.evaluate(
         expression, false, false, evaluateOptions, this._category._extensionOrigin, evaluateCallback);
   }
 };
 
-WebInspector.AuditExtensionFormatters = {
+Audits.AuditExtensionFormatters = {
   /**
-   * @this {WebInspector.AuditExtensionCategoryResults}
+   * @this {Audits.AuditExtensionCategoryResults}
    * @param {string} expression
    * @param {string} title
    * @param {?Object} evaluateOptions
@@ -193,7 +193,7 @@ WebInspector.AuditExtensionFormatters = {
   object: function(expression, title, evaluateOptions) {
     var parentElement = createElement('div');
     function onEvaluate(remoteObject) {
-      var section = new WebInspector.ObjectPropertiesSection(remoteObject, title);
+      var section = new Components.ObjectPropertiesSection(remoteObject, title);
       section.expand();
       section.editable = false;
       parentElement.appendChild(section.element);
@@ -203,7 +203,7 @@ WebInspector.AuditExtensionFormatters = {
   },
 
   /**
-   * @this {WebInspector.AuditExtensionCategoryResults}
+   * @this {Audits.AuditExtensionCategoryResults}
    * @param {string} expression
    * @param {?Object} evaluateOptions
    * @return {!Element}
@@ -213,10 +213,10 @@ WebInspector.AuditExtensionFormatters = {
     this.evaluate(expression, evaluateOptions, onEvaluate);
 
     /**
-     * @param {!WebInspector.RemoteObject} remoteObject
+     * @param {!SDK.RemoteObject} remoteObject
      */
     function onEvaluate(remoteObject) {
-      WebInspector.Renderer.renderPromise(remoteObject)
+      Common.Renderer.renderPromise(remoteObject)
           .then(appendRenderer)
           .then(remoteObject.release.bind(remoteObject));
 
@@ -231,4 +231,4 @@ WebInspector.AuditExtensionFormatters = {
   }
 };
 
-WebInspector.AuditExtensionCategoryResults._lastId = 0;
+Audits.AuditExtensionCategoryResults._lastId = 0;

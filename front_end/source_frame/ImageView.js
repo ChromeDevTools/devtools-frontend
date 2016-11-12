@@ -29,31 +29,31 @@
 /**
  * @unrestricted
  */
-WebInspector.ImageView = class extends WebInspector.SimpleView {
+SourceFrame.ImageView = class extends UI.SimpleView {
   /**
    * @param {string} mimeType
-   * @param {!WebInspector.ContentProvider} contentProvider
+   * @param {!Common.ContentProvider} contentProvider
    */
   constructor(mimeType, contentProvider) {
-    super(WebInspector.UIString('Image'));
+    super(Common.UIString('Image'));
     this.registerRequiredCSS('source_frame/imageView.css');
     this.element.classList.add('image-view');
     this._url = contentProvider.contentURL();
-    this._parsedURL = new WebInspector.ParsedURL(this._url);
+    this._parsedURL = new Common.ParsedURL(this._url);
     this._mimeType = mimeType;
     this._contentProvider = contentProvider;
-    this._sizeLabel = new WebInspector.ToolbarText();
-    this._dimensionsLabel = new WebInspector.ToolbarText();
-    this._mimeTypeLabel = new WebInspector.ToolbarText(mimeType);
+    this._sizeLabel = new UI.ToolbarText();
+    this._dimensionsLabel = new UI.ToolbarText();
+    this._mimeTypeLabel = new UI.ToolbarText(mimeType);
   }
 
   /**
    * @override
-   * @return {!Array<!WebInspector.ToolbarItem>}
+   * @return {!Array<!UI.ToolbarItem>}
    */
   syncToolbarItems() {
     return [
-      this._sizeLabel, new WebInspector.ToolbarSeparator(), this._dimensionsLabel, new WebInspector.ToolbarSeparator(),
+      this._sizeLabel, new UI.ToolbarSeparator(), this._dimensionsLabel, new UI.ToolbarSeparator(),
       this._mimeTypeLabel
     ];
   }
@@ -77,16 +77,16 @@ WebInspector.ImageView = class extends WebInspector.SimpleView {
 
     /**
      * @param {?string} content
-     * @this {WebInspector.ImageView}
+     * @this {SourceFrame.ImageView}
      */
     function onContentAvailable(content) {
-      var imageSrc = WebInspector.ContentProvider.contentAsDataURL(content, this._mimeType, true);
+      var imageSrc = Common.ContentProvider.contentAsDataURL(content, this._mimeType, true);
       if (imageSrc === null)
         imageSrc = this._url;
       imagePreviewElement.src = imageSrc;
       this._sizeLabel.setText(Number.bytesToString(this._base64ToSize(content)));
       this._dimensionsLabel.setText(
-          WebInspector.UIString('%d × %d', imagePreviewElement.naturalWidth, imagePreviewElement.naturalHeight));
+          Common.UIString('%d × %d', imagePreviewElement.naturalWidth, imagePreviewElement.naturalHeight));
     }
     this._imagePreviewElement = imagePreviewElement;
   }
@@ -107,14 +107,14 @@ WebInspector.ImageView = class extends WebInspector.SimpleView {
   }
 
   _contextMenu(event) {
-    var contextMenu = new WebInspector.ContextMenu(event);
+    var contextMenu = new UI.ContextMenu(event);
     if (!this._parsedURL.isDataURL())
-      contextMenu.appendItem(WebInspector.UIString.capitalize('Copy ^image URL'), this._copyImageURL.bind(this));
+      contextMenu.appendItem(Common.UIString.capitalize('Copy ^image URL'), this._copyImageURL.bind(this));
     if (this._imagePreviewElement.src)
       contextMenu.appendItem(
-          WebInspector.UIString.capitalize('Copy ^image as Data URI'), this._copyImageAsDataURL.bind(this));
-    contextMenu.appendItem(WebInspector.UIString.capitalize('Open ^image in ^new ^tab'), this._openInNewTab.bind(this));
-    contextMenu.appendItem(WebInspector.UIString.capitalize('Save\u2026'), this._saveImage.bind(this));
+          Common.UIString.capitalize('Copy ^image as Data URI'), this._copyImageAsDataURL.bind(this));
+    contextMenu.appendItem(Common.UIString.capitalize('Open ^image in ^new ^tab'), this._openInNewTab.bind(this));
+    contextMenu.appendItem(Common.UIString.capitalize('Save\u2026'), this._saveImage.bind(this));
     contextMenu.show();
   }
 

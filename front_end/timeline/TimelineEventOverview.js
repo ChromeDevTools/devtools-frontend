@@ -31,11 +31,11 @@
 /**
  * @unrestricted
  */
-WebInspector.TimelineEventOverview = class extends WebInspector.TimelineOverviewBase {
+Timeline.TimelineEventOverview = class extends UI.TimelineOverviewBase {
   /**
    * @param {string} id
    * @param {?string} title
-   * @param {!WebInspector.TimelineModel} model
+   * @param {!TimelineModel.TimelineModel} model
    */
   constructor(id, title, model) {
     super();
@@ -92,9 +92,9 @@ WebInspector.TimelineEventOverview = class extends WebInspector.TimelineOverview
 /**
  * @unrestricted
  */
-WebInspector.TimelineEventOverviewInput = class extends WebInspector.TimelineEventOverview {
+Timeline.TimelineEventOverviewInput = class extends Timeline.TimelineEventOverview {
   /**
-   * @param {!WebInspector.TimelineModel} model
+   * @param {!TimelineModel.TimelineModel} model
    */
   constructor(model) {
     super('input', null, model);
@@ -107,8 +107,8 @@ WebInspector.TimelineEventOverviewInput = class extends WebInspector.TimelineEve
     super.update();
     var events = this._model.mainThreadEvents();
     var height = this._canvas.height;
-    var descriptors = WebInspector.TimelineUIUtils.eventDispatchDesciptors();
-    /** @type {!Map.<string,!WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor>} */
+    var descriptors = Timeline.TimelineUIUtils.eventDispatchDesciptors();
+    /** @type {!Map.<string,!Timeline.TimelineUIUtils.EventDispatchTypeDescriptor>} */
     var descriptorsByType = new Map();
     var maxPriority = -1;
     for (var descriptor of descriptors) {
@@ -126,7 +126,7 @@ WebInspector.TimelineEventOverviewInput = class extends WebInspector.TimelineEve
     for (var priority = 0; priority <= maxPriority; ++priority) {
       for (var i = 0; i < events.length; ++i) {
         var event = events[i];
-        if (event.name !== WebInspector.TimelineModel.RecordType.EventDispatch)
+        if (event.name !== TimelineModel.TimelineModel.RecordType.EventDispatch)
           continue;
         var descriptor = descriptorsByType.get(event.args['data']['type']);
         if (!descriptor || descriptor.priority !== priority)
@@ -143,12 +143,12 @@ WebInspector.TimelineEventOverviewInput = class extends WebInspector.TimelineEve
 /**
  * @unrestricted
  */
-WebInspector.TimelineEventOverviewNetwork = class extends WebInspector.TimelineEventOverview {
+Timeline.TimelineEventOverviewNetwork = class extends Timeline.TimelineEventOverview {
   /**
-   * @param {!WebInspector.TimelineModel} model
+   * @param {!TimelineModel.TimelineModel} model
    */
   constructor(model) {
-    super('network', WebInspector.UIString('NET'), model);
+    super('network', Common.UIString('NET'), model);
   }
 
   /**
@@ -157,7 +157,7 @@ WebInspector.TimelineEventOverviewNetwork = class extends WebInspector.TimelineE
   update() {
     super.update();
     var height = this._canvas.height;
-    var numBands = categoryBand(WebInspector.TimelineUIUtils.NetworkCategory.Other) + 1;
+    var numBands = categoryBand(Timeline.TimelineUIUtils.NetworkCategory.Other) + 1;
     var bandHeight = Math.floor(height / numBands);
     var devicePixelRatio = window.devicePixelRatio;
     var timeOffset = this._model.minimumRecordTime();
@@ -178,11 +178,11 @@ WebInspector.TimelineEventOverviewNetwork = class extends WebInspector.TimelineE
     }
 
     /**
-     * @param {!WebInspector.TimelineUIUtils.NetworkCategory} category
+     * @param {!Timeline.TimelineUIUtils.NetworkCategory} category
      * @return {number}
      */
     function categoryBand(category) {
-      var categories = WebInspector.TimelineUIUtils.NetworkCategory;
+      var categories = Timeline.TimelineUIUtils.NetworkCategory;
       switch (category) {
         case categories.HTML:
           return 0;
@@ -198,12 +198,12 @@ WebInspector.TimelineEventOverviewNetwork = class extends WebInspector.TimelineE
     }
 
     /**
-     * @param {!WebInspector.TimelineModel.NetworkRequest} request
+     * @param {!TimelineModel.TimelineModel.NetworkRequest} request
      */
     function drawRequest(request) {
       var tickWidth = 2 * devicePixelRatio;
-      var category = WebInspector.TimelineUIUtils.networkRequestCategory(request);
-      var style = WebInspector.TimelineUIUtils.networkCategoryColor(category);
+      var category = Timeline.TimelineUIUtils.networkRequestCategory(request);
+      var style = Timeline.TimelineUIUtils.networkCategoryColor(category);
       var band = categoryBand(category);
       var y = band * bandHeight;
       var path = paths.get(style);
@@ -226,12 +226,12 @@ WebInspector.TimelineEventOverviewNetwork = class extends WebInspector.TimelineE
 /**
  * @unrestricted
  */
-WebInspector.TimelineEventOverviewCPUActivity = class extends WebInspector.TimelineEventOverview {
+Timeline.TimelineEventOverviewCPUActivity = class extends Timeline.TimelineEventOverview {
   /**
-   * @param {!WebInspector.TimelineModel} model
+   * @param {!TimelineModel.TimelineModel} model
    */
   constructor(model) {
-    super('cpu-activity', WebInspector.UIString('CPU'), model);
+    super('cpu-activity', Common.UIString('CPU'), model);
     this._backgroundCanvas = this.element.createChild('canvas', 'fill background');
   }
 
@@ -257,7 +257,7 @@ WebInspector.TimelineEventOverviewCPUActivity = class extends WebInspector.Timel
     var timeSpan = this._model.maximumRecordTime() - timeOffset;
     var scale = width / timeSpan;
     var quantTime = quantSizePx / scale;
-    var categories = WebInspector.TimelineUIUtils.categories();
+    var categories = Timeline.TimelineUIUtils.categories();
     var categoryOrder = ['idle', 'loading', 'painting', 'rendering', 'scripting', 'other'];
     var otherIndex = categoryOrder.indexOf('other');
     var idleIndex = 0;
@@ -273,10 +273,10 @@ WebInspector.TimelineEventOverviewCPUActivity = class extends WebInspector.Timel
 
     /**
      * @param {!CanvasRenderingContext2D} ctx
-     * @param {!Array<!WebInspector.TracingModel.Event>} events
+     * @param {!Array<!SDK.TracingModel.Event>} events
      */
     function drawThreadEvents(ctx, events) {
-      var quantizer = new WebInspector.Quantizer(timeOffset, quantTime, drawSample);
+      var quantizer = new Timeline.Quantizer(timeOffset, quantTime, drawSample);
       var x = 0;
       var categoryIndexStack = [];
       var paths = [];
@@ -302,22 +302,22 @@ WebInspector.TimelineEventOverviewCPUActivity = class extends WebInspector.Timel
       }
 
       /**
-       * @param {!WebInspector.TracingModel.Event} e
+       * @param {!SDK.TracingModel.Event} e
        */
       function onEventStart(e) {
         var index = categoryIndexStack.length ? categoryIndexStack.peekLast() : idleIndex;
         quantizer.appendInterval(e.startTime, index);
-        categoryIndexStack.push(WebInspector.TimelineUIUtils.eventStyle(e).category._overviewIndex || otherIndex);
+        categoryIndexStack.push(Timeline.TimelineUIUtils.eventStyle(e).category._overviewIndex || otherIndex);
       }
 
       /**
-       * @param {!WebInspector.TracingModel.Event} e
+       * @param {!SDK.TracingModel.Event} e
        */
       function onEventEnd(e) {
         quantizer.appendInterval(e.endTime, categoryIndexStack.pop());
       }
 
-      WebInspector.TimelineModel.forEachEvent(events, onEventStart, onEventEnd);
+      TimelineModel.TimelineModel.forEachEvent(events, onEventStart, onEventEnd);
       quantizer.appendInterval(timeOffset + timeSpan + quantTime, idleIndex);  // Kick drawing the last bucket.
       for (var i = categoryOrder.length - 1; i > 0; --i) {
         paths[i].lineTo(width, height);
@@ -347,10 +347,10 @@ WebInspector.TimelineEventOverviewCPUActivity = class extends WebInspector.Timel
 /**
  * @unrestricted
  */
-WebInspector.TimelineEventOverviewResponsiveness = class extends WebInspector.TimelineEventOverview {
+Timeline.TimelineEventOverviewResponsiveness = class extends Timeline.TimelineEventOverview {
   /**
-   * @param {!WebInspector.TimelineModel} model
-   * @param {!WebInspector.TimelineFrameModel} frameModel
+   * @param {!TimelineModel.TimelineModel} model
+   * @param {!TimelineModel.TimelineFrameModel} frameModel
    */
   constructor(model, frameModel) {
     super('responsiveness', null, model);
@@ -379,7 +379,7 @@ WebInspector.TimelineEventOverviewResponsiveness = class extends WebInspector.Ti
 
     var events = this._model.mainThreadEvents();
     for (var i = 0; i < events.length; ++i) {
-      if (!WebInspector.TimelineData.forEvent(events[i]).warning)
+      if (!TimelineModel.TimelineData.forEvent(events[i]).warning)
         continue;
       paintWarningDecoration(events[i].startTime, events[i].duration);
     }
@@ -407,10 +407,10 @@ WebInspector.TimelineEventOverviewResponsiveness = class extends WebInspector.Ti
 /**
  * @unrestricted
  */
-WebInspector.TimelineFilmStripOverview = class extends WebInspector.TimelineEventOverview {
+Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOverview {
   /**
-   * @param {!WebInspector.TimelineModel} model
-   * @param {!WebInspector.FilmStripModel} filmStripModel
+   * @param {!TimelineModel.TimelineModel} model
+   * @param {!Components.FilmStripModel} filmStripModel
    */
   constructor(model, filmStripModel) {
     super('filmstrip', null, model);
@@ -434,7 +434,7 @@ WebInspector.TimelineFilmStripOverview = class extends WebInspector.TimelineEven
         return;
       if (!image.naturalWidth || !image.naturalHeight)
         return;
-      var imageHeight = this._canvas.height - 2 * WebInspector.TimelineFilmStripOverview.Padding;
+      var imageHeight = this._canvas.height - 2 * Timeline.TimelineFilmStripOverview.Padding;
       var imageWidth = Math.ceil(imageHeight * image.naturalWidth / image.naturalHeight);
       var popoverScale = Math.min(200 / image.naturalWidth, 1);
       this._emptyImage = new Image(image.naturalWidth * popoverScale, image.naturalHeight * popoverScale);
@@ -443,7 +443,7 @@ WebInspector.TimelineFilmStripOverview = class extends WebInspector.TimelineEven
   }
 
   /**
-   * @param {!WebInspector.FilmStripModel.Frame} frame
+   * @param {!Components.FilmStripModel.Frame} frame
    * @return {!Promise<!HTMLImageElement>}
    */
   _imageByFrame(frame) {
@@ -484,7 +484,7 @@ WebInspector.TimelineFilmStripOverview = class extends WebInspector.TimelineEven
       return;
     if (!this._filmStripModel.frames().length)
       return;
-    var padding = WebInspector.TimelineFilmStripOverview.Padding;
+    var padding = Timeline.TimelineFilmStripOverview.Padding;
     var width = this._canvas.width;
     var zeroTime = this._filmStripModel.zeroTime();
     var spanTime = this._filmStripModel.spanTime();
@@ -507,7 +507,7 @@ WebInspector.TimelineFilmStripOverview = class extends WebInspector.TimelineEven
     /**
      * @param {number} x
      * @param {!HTMLImageElement} image
-     * @this {WebInspector.TimelineFilmStripOverview}
+     * @this {Timeline.TimelineFilmStripOverview}
      */
     function drawFrameImage(x, image) {
       // Ignore draws deferred from a previous update call.
@@ -534,14 +534,14 @@ WebInspector.TimelineFilmStripOverview = class extends WebInspector.TimelineEven
     return imagePromise.then(createFrameElement.bind(this));
 
     /**
-     * @this {WebInspector.TimelineFilmStripOverview}
+     * @this {Timeline.TimelineFilmStripOverview}
      * @param {!HTMLImageElement} image
      * @return {?Element}
      */
     function createFrameElement(image) {
       var element = createElementWithClass('div', 'frame');
       element.createChild('div', 'thumbnail').appendChild(image);
-      WebInspector.appendStyle(element, 'timeline/timelinePanel.css');
+      UI.appendStyle(element, 'timeline/timelinePanel.css');
       this._lastFrame = frame;
       this._lastElement = element;
       return element;
@@ -554,24 +554,24 @@ WebInspector.TimelineFilmStripOverview = class extends WebInspector.TimelineEven
   reset() {
     this._lastFrame = undefined;
     this._lastElement = null;
-    /** @type {!Map<!WebInspector.FilmStripModel.Frame,!Promise<!HTMLImageElement>>} */
+    /** @type {!Map<!Components.FilmStripModel.Frame,!Promise<!HTMLImageElement>>} */
     this._frameToImagePromise = new Map();
     this._imageWidth = 0;
   }
 };
 
-WebInspector.TimelineFilmStripOverview.Padding = 2;
+Timeline.TimelineFilmStripOverview.Padding = 2;
 
 /**
  * @unrestricted
  */
-WebInspector.TimelineEventOverviewFrames = class extends WebInspector.TimelineEventOverview {
+Timeline.TimelineEventOverviewFrames = class extends Timeline.TimelineEventOverview {
   /**
-   * @param {!WebInspector.TimelineModel} model
-   * @param {!WebInspector.TimelineFrameModel} frameModel
+   * @param {!TimelineModel.TimelineModel} model
+   * @param {!TimelineModel.TimelineFrameModel} frameModel
    */
   constructor(model, frameModel) {
-    super('framerate', WebInspector.UIString('FPS'), model);
+    super('framerate', Common.UIString('FPS'), model);
     this._frameModel = frameModel;
   }
 
@@ -627,12 +627,12 @@ WebInspector.TimelineEventOverviewFrames = class extends WebInspector.TimelineEv
 /**
  * @unrestricted
  */
-WebInspector.TimelineEventOverviewMemory = class extends WebInspector.TimelineEventOverview {
+Timeline.TimelineEventOverviewMemory = class extends Timeline.TimelineEventOverview {
   /**
-   * @param {!WebInspector.TimelineModel} model
+   * @param {!TimelineModel.TimelineModel} model
    */
   constructor(model) {
-    super('memory', WebInspector.UIString('HEAP'), model);
+    super('memory', Common.UIString('HEAP'), model);
     this._heapSizeLabel = this.element.createChild('div', 'memory-graph-label');
   }
 
@@ -659,15 +659,15 @@ WebInspector.TimelineEventOverviewMemory = class extends WebInspector.TimelineEv
     var minTime = this._model.minimumRecordTime();
     var maxTime = this._model.maximumRecordTime();
     /**
-     * @param {!WebInspector.TracingModel.Event} event
+     * @param {!SDK.TracingModel.Event} event
      * @return {boolean}
      */
     function isUpdateCountersEvent(event) {
-      return event.name === WebInspector.TimelineModel.RecordType.UpdateCounters;
+      return event.name === TimelineModel.TimelineModel.RecordType.UpdateCounters;
     }
     events = events.filter(isUpdateCountersEvent);
     /**
-     * @param {!WebInspector.TracingModel.Event} event
+     * @param {!SDK.TracingModel.Event} event
      */
     function calculateMinMaxSizes(event) {
       var counters = event.args.data;
@@ -688,7 +688,7 @@ WebInspector.TimelineEventOverviewMemory = class extends WebInspector.TimelineEv
     var histogram = new Array(width);
 
     /**
-     * @param {!WebInspector.TracingModel.Event} event
+     * @param {!SDK.TracingModel.Event} event
      */
     function buildHistogram(event) {
       var counters = event.args.data;
@@ -734,7 +734,7 @@ WebInspector.TimelineEventOverviewMemory = class extends WebInspector.TimelineEv
     ctx.strokeStyle = 'hsl(220, 90%, 70%)';
     ctx.stroke();
 
-    this._heapSizeLabel.textContent = WebInspector.UIString(
+    this._heapSizeLabel.textContent = Common.UIString(
         '%s \u2013 %s', Number.bytesToString(minUsedHeapSize), Number.bytesToString(maxUsedHeapSize));
   }
 };
@@ -742,7 +742,7 @@ WebInspector.TimelineEventOverviewMemory = class extends WebInspector.TimelineEv
 /**
  * @unrestricted
  */
-WebInspector.Quantizer = class {
+Timeline.Quantizer = class {
   /**
    * @param {number} startTime
    * @param {number} quantDuration

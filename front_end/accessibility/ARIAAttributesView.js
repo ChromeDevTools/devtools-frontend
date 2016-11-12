@@ -4,17 +4,17 @@
 /**
  * @unrestricted
  */
-WebInspector.ARIAAttributesPane = class extends WebInspector.AccessibilitySubPane {
+Accessibility.ARIAAttributesPane = class extends Accessibility.AccessibilitySubPane {
   constructor() {
-    super(WebInspector.UIString('ARIA Attributes'));
+    super(Common.UIString('ARIA Attributes'));
 
-    this._noPropertiesInfo = this.createInfo(WebInspector.UIString('No ARIA attributes'));
+    this._noPropertiesInfo = this.createInfo(Common.UIString('No ARIA attributes'));
     this._treeOutline = this.createTreeOutline();
   }
 
   /**
    * @override
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    */
   setNode(node) {
     super.setNode(node);
@@ -25,9 +25,9 @@ WebInspector.ARIAAttributesPane = class extends WebInspector.AccessibilitySubPan
     var attributes = node.attributes();
     for (var i = 0; i < attributes.length; ++i) {
       var attribute = attributes[i];
-      if (WebInspector.ARIAAttributesPane._attributes.indexOf(attribute.name) < 0)
+      if (Accessibility.ARIAAttributesPane._attributes.indexOf(attribute.name) < 0)
         continue;
-      this._treeOutline.appendChild(new WebInspector.ARIAAttributesTreeElement(this, attribute, target));
+      this._treeOutline.appendChild(new Accessibility.ARIAAttributesTreeElement(this, attribute, target));
     }
 
     var foundAttributes = (this._treeOutline.rootElement().childCount() !== 0);
@@ -39,11 +39,11 @@ WebInspector.ARIAAttributesPane = class extends WebInspector.AccessibilitySubPan
 /**
  * @unrestricted
  */
-WebInspector.ARIAAttributesTreeElement = class extends TreeElement {
+Accessibility.ARIAAttributesTreeElement = class extends TreeElement {
   /**
-   * @param {!WebInspector.ARIAAttributesPane} parentPane
-   * @param {!WebInspector.DOMNode.Attribute} attribute
-   * @param {!WebInspector.Target} target
+   * @param {!Accessibility.ARIAAttributesPane} parentPane
+   * @param {!SDK.DOMNode.Attribute} attribute
+   * @param {!SDK.Target} target
    */
   constructor(parentPane, attribute, target) {
     super('');
@@ -95,7 +95,7 @@ WebInspector.ARIAAttributesTreeElement = class extends TreeElement {
    * @param {string} value
    */
   appendAttributeValueElement(value) {
-    this._valueElement = WebInspector.ARIAAttributesTreeElement.createARIAValueElement(value);
+    this._valueElement = Accessibility.ARIAAttributesTreeElement.createARIAValueElement(value);
     this.listItemElement.appendChild(this._valueElement);
   }
 
@@ -114,7 +114,7 @@ WebInspector.ARIAAttributesTreeElement = class extends TreeElement {
   _startEditing() {
     var valueElement = this._valueElement;
 
-    if (WebInspector.isBeingEdited(valueElement))
+    if (UI.isBeingEdited(valueElement))
       return;
 
     var previousContent = valueElement.textContent;
@@ -122,15 +122,15 @@ WebInspector.ARIAAttributesTreeElement = class extends TreeElement {
     /**
      * @param {string} previousContent
      * @param {!Event} event
-     * @this {WebInspector.ARIAAttributesTreeElement}
+     * @this {Accessibility.ARIAAttributesTreeElement}
      */
     function blurListener(previousContent, event) {
       var text = event.target.textContent;
       this._editingCommitted(text, previousContent);
     }
 
-    this._prompt = new WebInspector.ARIAAttributesPane.ARIAAttributePrompt(
-        WebInspector.ariaMetadata().valuesForProperty(this._nameElement.textContent), this);
+    this._prompt = new Accessibility.ARIAAttributesPane.ARIAAttributePrompt(
+        Accessibility.ariaMetadata().valuesForProperty(this._nameElement.textContent), this);
     this._prompt.setAutocompletionTimeout(0);
     var proxyElement = this._prompt.attachAndStartEditing(valueElement, blurListener.bind(this, previousContent));
 
@@ -177,7 +177,7 @@ WebInspector.ARIAAttributesTreeElement = class extends TreeElement {
       return;
     }
 
-    if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code || event.keyIdentifier === 'U+001B') {
+    if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code || event.keyIdentifier === 'U+001B') {
       this._editingCancelled();
       event.consume();
       return;
@@ -189,10 +189,10 @@ WebInspector.ARIAAttributesTreeElement = class extends TreeElement {
 /**
  * @unrestricted
  */
-WebInspector.ARIAAttributesPane.ARIAAttributePrompt = class extends WebInspector.TextPrompt {
+Accessibility.ARIAAttributesPane.ARIAAttributePrompt = class extends UI.TextPrompt {
   /**
    * @param {!Array<string>} ariaCompletions
-   * @param {!WebInspector.ARIAAttributesTreeElement} treeElement
+   * @param {!Accessibility.ARIAAttributesTreeElement} treeElement
    */
   constructor(ariaCompletions, treeElement) {
     super();
@@ -223,7 +223,7 @@ WebInspector.ARIAAttributesPane.ARIAAttributePrompt = class extends WebInspector
   }
 };
 
-WebInspector.ARIAAttributesPane._attributes = [
+Accessibility.ARIAAttributesPane._attributes = [
   'role',
   'aria-busy',
   'aria-checked',

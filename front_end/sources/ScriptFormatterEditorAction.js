@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.DebuggerSourceMapping}
+ * @implements {Bindings.DebuggerSourceMapping}
  * @unrestricted
  */
-WebInspector.FormatterScriptMapping = class {
+Sources.FormatterScriptMapping = class {
   /**
-   * @param {!WebInspector.DebuggerModel} debuggerModel
-   * @param {!WebInspector.ScriptFormatterEditorAction} editorAction
+   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!Sources.ScriptFormatterEditorAction} editorAction
    */
   constructor(debuggerModel, editorAction) {
     this._debuggerModel = debuggerModel;
@@ -17,11 +17,11 @@ WebInspector.FormatterScriptMapping = class {
 
   /**
    * @override
-   * @param {!WebInspector.DebuggerModel.Location} rawLocation
-   * @return {?WebInspector.UILocation}
+   * @param {!SDK.DebuggerModel.Location} rawLocation
+   * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var debuggerModelLocation = /** @type {!WebInspector.DebuggerModel.Location} */ (rawLocation);
+    var debuggerModelLocation = /** @type {!SDK.DebuggerModel.Location} */ (rawLocation);
     var script = debuggerModelLocation.script();
     if (!script)
       return null;
@@ -41,10 +41,10 @@ WebInspector.FormatterScriptMapping = class {
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?WebInspector.DebuggerModel.Location}
+   * @return {?SDK.DebuggerModel.Location}
    */
   uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
     var formatData = this._editorAction._formatData.get(uiSourceCode);
@@ -68,7 +68,7 @@ WebInspector.FormatterScriptMapping = class {
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @return {boolean}
    */
@@ -80,12 +80,12 @@ WebInspector.FormatterScriptMapping = class {
 /**
  * @unrestricted
  */
-WebInspector.FormatterScriptMapping.FormatData = class {
+Sources.FormatterScriptMapping.FormatData = class {
   /**
    * @param {string} projectId
    * @param {string} path
-   * @param {!WebInspector.FormatterSourceMapping} mapping
-   * @param {!Array.<!WebInspector.Script>} scripts
+   * @param {!Sources.FormatterSourceMapping} mapping
+   * @param {!Array.<!SDK.Script>} scripts
    */
   constructor(projectId, path, mapping, scripts) {
     this.projectId = projectId;
@@ -96,62 +96,62 @@ WebInspector.FormatterScriptMapping.FormatData = class {
 };
 
 /**
- * @implements {WebInspector.SourcesView.EditorAction}
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {Sources.SourcesView.EditorAction}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.ScriptFormatterEditorAction = class {
+Sources.ScriptFormatterEditorAction = class {
   constructor() {
     this._projectId = 'formatter:';
-    this._project = new WebInspector.ContentProviderBasedProject(
-        WebInspector.workspace, this._projectId, WebInspector.projectTypes.Formatter, 'formatter');
+    this._project = new Bindings.ContentProviderBasedProject(
+        Workspace.workspace, this._projectId, Workspace.projectTypes.Formatter, 'formatter');
 
-    /** @type {!Map.<!WebInspector.Script, !WebInspector.UISourceCode>} */
+    /** @type {!Map.<!SDK.Script, !Workspace.UISourceCode>} */
     this._uiSourceCodes = new Map();
     /** @type {!Map.<string, string>} */
     this._formattedPaths = new Map();
-    /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.FormatterScriptMapping.FormatData>} */
+    /** @type {!Map.<!Workspace.UISourceCode, !Sources.FormatterScriptMapping.FormatData>} */
     this._formatData = new Map();
 
     /** @type {!Set.<string>} */
     this._pathsToFormatOnLoad = new Set();
 
-    /** @type {!Map.<!WebInspector.Target, !WebInspector.FormatterScriptMapping>} */
+    /** @type {!Map.<!SDK.Target, !Sources.FormatterScriptMapping>} */
     this._scriptMappingByTarget = new Map();
-    this._workspace = WebInspector.workspace;
-    WebInspector.targetManager.observeTargets(this);
+    this._workspace = Workspace.workspace;
+    SDK.targetManager.observeTargets(this);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
+    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
     if (!debuggerModel)
       return;
-    this._scriptMappingByTarget.set(target, new WebInspector.FormatterScriptMapping(debuggerModel, this));
-    debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
+    this._scriptMappingByTarget.set(target, new Sources.FormatterScriptMapping(debuggerModel, this));
+    debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-    var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
+    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
     if (!debuggerModel)
       return;
     this._scriptMappingByTarget.remove(target);
     this._cleanForTarget(target);
-    debuggerModel.removeEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
+    debuggerModel.removeEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _editorSelected(event) {
-    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     this._updateButton(uiSourceCode);
 
     var path = uiSourceCode.project().id() + ':' + uiSourceCode.url();
@@ -161,10 +161,10 @@ WebInspector.ScriptFormatterEditorAction = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _editorClosed(event) {
-    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data.uiSourceCode);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
     var wasSelected = /** @type {boolean} */ (event.data.wasSelected);
 
     if (wasSelected)
@@ -173,7 +173,7 @@ WebInspector.ScriptFormatterEditorAction = class {
   }
 
   /**
-   * @param {?WebInspector.UISourceCode} uiSourceCode
+   * @param {?Workspace.UISourceCode} uiSourceCode
    */
   _updateButton(uiSourceCode) {
     this._button.element.classList.toggle('hidden', !this._isFormatableScript(uiSourceCode));
@@ -181,18 +181,18 @@ WebInspector.ScriptFormatterEditorAction = class {
 
   /**
    * @override
-   * @param {!WebInspector.SourcesView} sourcesView
-   * @return {!WebInspector.ToolbarButton}
+   * @param {!Sources.SourcesView} sourcesView
+   * @return {!UI.ToolbarButton}
    */
   button(sourcesView) {
     if (this._button)
       return this._button;
 
     this._sourcesView = sourcesView;
-    this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
-    this._sourcesView.addEventListener(WebInspector.SourcesView.Events.EditorClosed, this._editorClosed.bind(this));
+    this._sourcesView.addEventListener(Sources.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
+    this._sourcesView.addEventListener(Sources.SourcesView.Events.EditorClosed, this._editorClosed.bind(this));
 
-    this._button = new WebInspector.ToolbarButton(WebInspector.UIString('Pretty print'), 'largeicon-pretty-print');
+    this._button = new UI.ToolbarButton(Common.UIString('Pretty print'), 'largeicon-pretty-print');
     this._button.addEventListener('click', this._toggleFormatScriptSource, this);
     this._updateButton(sourcesView.currentUISourceCode());
 
@@ -200,16 +200,16 @@ WebInspector.ScriptFormatterEditorAction = class {
   }
 
   /**
-   * @param {?WebInspector.UISourceCode} uiSourceCode
+   * @param {?Workspace.UISourceCode} uiSourceCode
    * @return {boolean}
    */
   _isFormatableScript(uiSourceCode) {
     if (!uiSourceCode)
       return false;
-    if (WebInspector.persistence.binding(uiSourceCode))
+    if (Persistence.persistence.binding(uiSourceCode))
       return false;
     var supportedProjectTypes = [
-      WebInspector.projectTypes.Network, WebInspector.projectTypes.Debugger, WebInspector.projectTypes.ContentScripts
+      Workspace.projectTypes.Network, Workspace.projectTypes.Debugger, Workspace.projectTypes.ContentScripts
     ];
     if (supportedProjectTypes.indexOf(uiSourceCode.project().type()) === -1)
       return false;
@@ -223,9 +223,9 @@ WebInspector.ScriptFormatterEditorAction = class {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @param {!WebInspector.UISourceCode} formattedUISourceCode
-   * @param {!WebInspector.FormatterSourceMapping} mapping
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} formattedUISourceCode
+   * @param {!Sources.FormatterSourceMapping} mapping
    * @private
    */
   _showIfNeeded(uiSourceCode, formattedUISourceCode, mapping) {
@@ -242,7 +242,7 @@ WebInspector.ScriptFormatterEditorAction = class {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} formattedUISourceCode
+   * @param {!Workspace.UISourceCode} formattedUISourceCode
    */
   _discardFormattedUISourceCodeScript(formattedUISourceCode) {
     var formatData = this._formatData.get(formattedUISourceCode);
@@ -255,18 +255,18 @@ WebInspector.ScriptFormatterEditorAction = class {
     this._pathsToFormatOnLoad.delete(path);
     for (var i = 0; i < formatData.scripts.length; ++i) {
       this._uiSourceCodes.remove(formatData.scripts[i]);
-      WebInspector.debuggerWorkspaceBinding.popSourceMapping(formatData.scripts[i]);
+      Bindings.debuggerWorkspaceBinding.popSourceMapping(formatData.scripts[i]);
     }
     this._project.removeFile(formattedUISourceCode.url());
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   _cleanForTarget(target) {
     var uiSourceCodes = this._formatData.keysArray();
     for (var i = 0; i < uiSourceCodes.length; ++i) {
-      WebInspector.debuggerWorkspaceBinding.setSourceMapping(target, uiSourceCodes[i], null);
+      Bindings.debuggerWorkspaceBinding.setSourceMapping(target, uiSourceCodes[i], null);
       var formatData = this._formatData.get(uiSourceCodes[i]);
       var scripts = [];
       for (var j = 0; j < formatData.scripts.length; ++j) {
@@ -287,35 +287,35 @@ WebInspector.ScriptFormatterEditorAction = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _debuggerReset(event) {
-    var debuggerModel = /** @type {!WebInspector.DebuggerModel} */ (event.target);
+    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.target);
     this._cleanForTarget(debuggerModel.target());
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @return {!Array.<!WebInspector.Script>}
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {!Array.<!SDK.Script>}
    */
   _scriptsForUISourceCode(uiSourceCode) {
     /**
-     * @param {!WebInspector.Script} script
+     * @param {!SDK.Script} script
      * @return {boolean}
      */
     function isInlineScript(script) {
       return script.isInlineScript() && !script.hasSourceURL;
     }
 
-    if (uiSourceCode.contentType() === WebInspector.resourceTypes.Document) {
+    if (uiSourceCode.contentType() === Common.resourceTypes.Document) {
       var scripts = [];
-      var debuggerModels = WebInspector.DebuggerModel.instances();
+      var debuggerModels = SDK.DebuggerModel.instances();
       for (var i = 0; i < debuggerModels.length; ++i)
         scripts.pushAll(debuggerModels[i].scriptsForSourceURL(uiSourceCode.url()));
       return scripts.filter(isInlineScript);
     }
     if (uiSourceCode.contentType().isScript()) {
-      var rawLocations = WebInspector.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, 0, 0);
+      var rawLocations = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, 0, 0);
       return rawLocations.map(function(rawLocation) {
         return rawLocation.script();
       });
@@ -324,7 +324,7 @@ WebInspector.ScriptFormatterEditorAction = class {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _formatUISourceCodeScript(uiSourceCode) {
     var formattedPath = this._formattedPaths.get(uiSourceCode.project().id() + ':' + uiSourceCode.url());
@@ -334,35 +334,35 @@ WebInspector.ScriptFormatterEditorAction = class {
       var formatData = formattedUISourceCode ? this._formatData.get(formattedUISourceCode) : null;
       if (formatData)
         this._showIfNeeded(
-            uiSourceCode, /** @type {!WebInspector.UISourceCode} */ (formattedUISourceCode), formatData.mapping);
+            uiSourceCode, /** @type {!Workspace.UISourceCode} */ (formattedUISourceCode), formatData.mapping);
       return;
     }
 
     uiSourceCode.requestContent().then(contentLoaded.bind(this));
 
     /**
-     * @this {WebInspector.ScriptFormatterEditorAction}
+     * @this {Sources.ScriptFormatterEditorAction}
      * @param {?string} content
      */
     function contentLoaded(content) {
-      var highlighterType = WebInspector.NetworkProject.uiSourceCodeMimeType(uiSourceCode);
-      WebInspector.Formatter.format(
+      var highlighterType = Bindings.NetworkProject.uiSourceCodeMimeType(uiSourceCode);
+      Sources.Formatter.format(
           uiSourceCode.contentType(), highlighterType, content || '', innerCallback.bind(this));
     }
 
     /**
-     * @this {WebInspector.ScriptFormatterEditorAction}
+     * @this {Sources.ScriptFormatterEditorAction}
      * @param {string} formattedContent
-     * @param {!WebInspector.FormatterSourceMapping} formatterMapping
+     * @param {!Sources.FormatterSourceMapping} formatterMapping
      */
     function innerCallback(formattedContent, formatterMapping) {
       var scripts = this._scriptsForUISourceCode(uiSourceCode);
       var formattedURL = uiSourceCode.url() + ':formatted';
       var contentProvider =
-          WebInspector.StaticContentProvider.fromString(formattedURL, uiSourceCode.contentType(), formattedContent);
+          Common.StaticContentProvider.fromString(formattedURL, uiSourceCode.contentType(), formattedContent);
       var formattedUISourceCode = this._project.addContentProvider(formattedURL, contentProvider);
       var formattedPath = formattedUISourceCode.url();
-      var formatData = new WebInspector.FormatterScriptMapping.FormatData(
+      var formatData = new Sources.FormatterScriptMapping.FormatData(
           uiSourceCode.project().id(), uiSourceCode.url(), formatterMapping, scripts);
       this._formatData.set(formattedUISourceCode, formatData);
       var path = uiSourceCode.project().id() + ':' + uiSourceCode.url();
@@ -371,15 +371,15 @@ WebInspector.ScriptFormatterEditorAction = class {
       for (var i = 0; i < scripts.length; ++i) {
         this._uiSourceCodes.set(scripts[i], formattedUISourceCode);
         var scriptMapping =
-            /** @type {!WebInspector.FormatterScriptMapping} */ (this._scriptMappingByTarget.get(scripts[i].target()));
-        WebInspector.debuggerWorkspaceBinding.pushSourceMapping(scripts[i], scriptMapping);
+            /** @type {!Sources.FormatterScriptMapping} */ (this._scriptMappingByTarget.get(scripts[i].target()));
+        Bindings.debuggerWorkspaceBinding.pushSourceMapping(scripts[i], scriptMapping);
       }
 
-      var targets = WebInspector.targetManager.targets();
+      var targets = SDK.targetManager.targets();
       for (var i = 0; i < targets.length; ++i) {
         var scriptMapping =
-            /** @type {!WebInspector.FormatterScriptMapping} */ (this._scriptMappingByTarget.get(targets[i]));
-        WebInspector.debuggerWorkspaceBinding.setSourceMapping(targets[i], formattedUISourceCode, scriptMapping);
+            /** @type {!Sources.FormatterScriptMapping} */ (this._scriptMappingByTarget.get(targets[i]));
+        Bindings.debuggerWorkspaceBinding.setSourceMapping(targets[i], formattedUISourceCode, scriptMapping);
       }
       this._showIfNeeded(uiSourceCode, formattedUISourceCode, formatterMapping);
     }

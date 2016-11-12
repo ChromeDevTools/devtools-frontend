@@ -4,7 +4,6 @@
         "../cm/headlesscodemirror.js",
         "../cm/css.js",
         "../cm/xml.js",
-        "../common/WebInspector.js",
         "../common/Text.js",
         "../common/TextRange.js",
         "ESTreeWalker.js",

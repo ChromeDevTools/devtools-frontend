@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.AuditCategoryResultPane = class extends WebInspector.SimpleView {
+Audits.AuditCategoryResultPane = class extends UI.SimpleView {
   /**
-   * @param {!WebInspector.AuditCategoryResult} categoryResult
+   * @param {!Audits.AuditCategoryResult} categoryResult
    */
   constructor(categoryResult) {
     super(categoryResult.title);
@@ -45,7 +45,7 @@ WebInspector.AuditCategoryResultPane = class extends WebInspector.SimpleView {
 
     function ruleSorter(a, b) {
       var result =
-          WebInspector.AuditRule.SeverityOrder[a.severity || 0] - WebInspector.AuditRule.SeverityOrder[b.severity || 0];
+          Audits.AuditRule.SeverityOrder[a.severity || 0] - Audits.AuditRule.SeverityOrder[b.severity || 0];
       if (!result)
         result = (a.value || '').localeCompare(b.value || '');
       return result;
@@ -63,8 +63,8 @@ WebInspector.AuditCategoryResultPane = class extends WebInspector.SimpleView {
 
   /**
    * @param {!TreeElement} parentTreeNode
-   * @param {!WebInspector.AuditRuleResult} result
-   * @param {?WebInspector.AuditRule.Severity=} severity
+   * @param {!Audits.AuditRuleResult} result
+   * @param {?Audits.AuditRule.Severity=} severity
    */
   _appendResult(parentTreeNode, result, severity) {
     var title = '';
@@ -77,12 +77,12 @@ WebInspector.AuditCategoryResultPane = class extends WebInspector.SimpleView {
 
     var titleFragment = createDocumentFragment();
     if (severity) {
-      var severityElement = WebInspector.Icon.create();
-      if (severity === WebInspector.AuditRule.Severity.Info)
+      var severityElement = UI.Icon.create();
+      if (severity === Audits.AuditRule.Severity.Info)
         severityElement.setIconType('smallicon-green-ball');
-      else if (severity === WebInspector.AuditRule.Severity.Warning)
+      else if (severity === Audits.AuditRule.Severity.Warning)
         severityElement.setIconType('smallicon-orange-ball');
-      else if (severity === WebInspector.AuditRule.Severity.Severe)
+      else if (severity === Audits.AuditRule.Severity.Severe)
         severityElement.setIconType('smallicon-red-ball');
       severityElement.classList.add('severity');
       titleFragment.appendChild(severityElement);
@@ -96,7 +96,7 @@ WebInspector.AuditCategoryResultPane = class extends WebInspector.SimpleView {
     if (result.className)
       treeElement.listItemElement.classList.add(result.className);
     if (typeof result.value !== 'string')
-      treeElement.listItemElement.appendChild(WebInspector.auditFormatters.apply(result.value));
+      treeElement.listItemElement.appendChild(Audits.auditFormatters.apply(result.value));
 
     if (result.children) {
       for (var i = 0; i < result.children.length; ++i)

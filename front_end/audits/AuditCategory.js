@@ -28,9 +28,9 @@
 /**
  * @interface
  */
-WebInspector.AuditCategory = function() {};
+Audits.AuditCategory = function() {};
 
-WebInspector.AuditCategory.prototype = {
+Audits.AuditCategory.prototype = {
   /**
    * @return {string}
    */
@@ -42,10 +42,10 @@ WebInspector.AuditCategory.prototype = {
   get displayName() {},
 
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!Array.<!WebInspector.NetworkRequest>} requests
-   * @param {function(!WebInspector.AuditRuleResult)} ruleResultCallback
-   * @param {!WebInspector.Progress} progress
+   * @param {!SDK.Target} target
+   * @param {!Array.<!SDK.NetworkRequest>} requests
+   * @param {function(!Audits.AuditRuleResult)} ruleResultCallback
+   * @param {!Common.Progress} progress
    */
   run: function(target, requests, ruleResultCallback, progress) {}
 };

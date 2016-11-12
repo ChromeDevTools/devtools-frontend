@@ -28,21 +28,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.Searchable}
+ * @implements {UI.Searchable}
  * @unrestricted
  */
-WebInspector.JSONView = class extends WebInspector.VBox {
+Network.JSONView = class extends UI.VBox {
   /**
-   * @param {!WebInspector.ParsedJSON} parsedJSON
+   * @param {!Network.ParsedJSON} parsedJSON
    */
   constructor(parsedJSON) {
     super();
     this._parsedJSON = parsedJSON;
     this.element.classList.add('json-view');
 
-    /** @type {?WebInspector.SearchableView} */
+    /** @type {?UI.SearchableView} */
     this._searchableView;
-    /** @type {!WebInspector.ObjectPropertiesSection} */
+    /** @type {!Components.ObjectPropertiesSection} */
     this._treeOutline;
     /** @type {number} */
     this._currentSearchFocusIndex = 0;
@@ -53,13 +53,13 @@ WebInspector.JSONView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.ParsedJSON} parsedJSON
-   * @return {!WebInspector.SearchableView}
+   * @param {!Network.ParsedJSON} parsedJSON
+   * @return {!UI.SearchableView}
    */
   static createSearchableView(parsedJSON) {
-    var jsonView = new WebInspector.JSONView(parsedJSON);
-    var searchableView = new WebInspector.SearchableView(jsonView);
-    searchableView.setPlaceholder(WebInspector.UIString('Find'));
+    var jsonView = new Network.JSONView(parsedJSON);
+    var searchableView = new UI.SearchableView(jsonView);
+    searchableView.setPlaceholder(Common.UIString('Find'));
     jsonView._searchableView = searchableView;
     jsonView.show(searchableView.element);
     jsonView.element.setAttribute('tabIndex', 0);
@@ -68,20 +68,20 @@ WebInspector.JSONView = class extends WebInspector.VBox {
 
   /**
    * @param {?string} text
-   * @return {!Promise<?WebInspector.ParsedJSON>}
+   * @return {!Promise<?Network.ParsedJSON>}
    */
   static parseJSON(text) {
     var returnObj = null;
     if (text)
-      returnObj = WebInspector.JSONView._extractJSON(/** @type {string} */ (text));
+      returnObj = Network.JSONView._extractJSON(/** @type {string} */ (text));
     if (!returnObj)
-      return Promise.resolve(/** @type {?WebInspector.ParsedJSON} */ (null));
-    return WebInspector.formatterWorkerPool.runTask('relaxedJSONParser', {content: returnObj.data})
+      return Promise.resolve(/** @type {?Network.ParsedJSON} */ (null));
+    return Common.formatterWorkerPool.runTask('relaxedJSONParser', {content: returnObj.data})
         .then(handleReturnedJSON);
 
     /**
      * @param {?MessageEvent} event
-     * @return {?WebInspector.ParsedJSON}
+     * @return {?Network.ParsedJSON}
      */
     function handleReturnedJSON(event) {
       if (!event || !event.data)
@@ -93,14 +93,14 @@ WebInspector.JSONView = class extends WebInspector.VBox {
 
   /**
    * @param {string} text
-   * @return {?WebInspector.ParsedJSON}
+   * @return {?Network.ParsedJSON}
    */
   static _extractJSON(text) {
     // Do not treat HTML as JSON.
     if (text.startsWith('<'))
       return null;
-    var inner = WebInspector.JSONView._findBrackets(text, '{', '}');
-    var inner2 = WebInspector.JSONView._findBrackets(text, '[', ']');
+    var inner = Network.JSONView._findBrackets(text, '{', '}');
+    var inner2 = Network.JSONView._findBrackets(text, '[', ']');
     inner = inner2.length > inner.length ? inner2 : inner;
 
     // Return on blank payloads or on payloads significantly smaller than original text.
@@ -115,7 +115,7 @@ WebInspector.JSONView = class extends WebInspector.VBox {
     if (suffix.trim().length && !(suffix.trim().startsWith(')') && prefix.trim().endsWith('(')))
       return null;
 
-    return new WebInspector.ParsedJSON(text, prefix, suffix);
+    return new Network.ParsedJSON(text, prefix, suffix);
   }
 
   /**
@@ -145,9 +145,9 @@ WebInspector.JSONView = class extends WebInspector.VBox {
       return;
     this._initialized = true;
 
-    var obj = WebInspector.RemoteObject.fromLocalObject(this._parsedJSON.data);
+    var obj = SDK.RemoteObject.fromLocalObject(this._parsedJSON.data);
     var title = this._parsedJSON.prefix + obj.description + this._parsedJSON.suffix;
-    this._treeOutline = new WebInspector.ObjectPropertiesSection(obj, title);
+    this._treeOutline = new Components.ObjectPropertiesSection(obj, title);
     this._treeOutline.setEditable(false);
     this._treeOutline.expand();
     this.element.appendChild(this._treeOutline.element);
@@ -166,7 +166,7 @@ WebInspector.JSONView = class extends WebInspector.VBox {
     var newFocusElement = this._currentSearchTreeElements[index];
     if (newFocusElement) {
       this._updateSearchIndex(index);
-      newFocusElement.setSearchRegex(this._searchRegex, WebInspector.highlightedCurrentSearchResultClassName);
+      newFocusElement.setSearchRegex(this._searchRegex, UI.highlightedCurrentSearchResultClassName);
       newFocusElement.reveal();
     } else {
       this._updateSearchIndex(0);
@@ -200,7 +200,7 @@ WebInspector.JSONView = class extends WebInspector.VBox {
     this._currentSearchTreeElements = [];
 
     for (var element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof WebInspector.ObjectPropertyTreeElement))
+      if (!(element instanceof Components.ObjectPropertyTreeElement))
         continue;
       element.revertHighlightChanges();
     }
@@ -210,7 +210,7 @@ WebInspector.JSONView = class extends WebInspector.VBox {
 
   /**
    * @override
-   * @param {!WebInspector.SearchableView.SearchConfig} searchConfig
+   * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {boolean} shouldJump
    * @param {boolean=} jumpBackwards
    */
@@ -221,7 +221,7 @@ WebInspector.JSONView = class extends WebInspector.VBox {
     this._searchRegex = searchConfig.toSearchRegex(true);
 
     for (var element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof WebInspector.ObjectPropertyTreeElement))
+      if (!(element instanceof Components.ObjectPropertyTreeElement))
         continue;
       var hasMatch = element.setSearchRegex(this._searchRegex);
       if (hasMatch)
@@ -286,7 +286,7 @@ WebInspector.JSONView = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.ParsedJSON = class {
+Network.ParsedJSON = class {
   /**
    * @param {*} data
    * @param {string} prefix

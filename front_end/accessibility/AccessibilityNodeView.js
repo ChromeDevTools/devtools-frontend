@@ -4,13 +4,13 @@
 /**
  * @unrestricted
  */
-WebInspector.AXNodeSubPane = class extends WebInspector.AccessibilitySubPane {
+Accessibility.AXNodeSubPane = class extends Accessibility.AccessibilitySubPane {
   constructor() {
-    super(WebInspector.UIString('Computed Properties'));
+    super(Common.UIString('Computed Properties'));
 
-    this._noNodeInfo = this.createInfo(WebInspector.UIString('No accessibility node'));
+    this._noNodeInfo = this.createInfo(Common.UIString('No accessibility node'));
     this._ignoredInfo =
-        this.createInfo(WebInspector.UIString('Accessibility node not exposed'), 'ax-ignored-info hidden');
+        this.createInfo(Common.UIString('Accessibility node not exposed'), 'ax-ignored-info hidden');
 
     this._treeOutline = this.createTreeOutline();
     this._ignoredReasonsTree = this.createTreeOutline();
@@ -19,7 +19,7 @@ WebInspector.AXNodeSubPane = class extends WebInspector.AccessibilitySubPane {
   }
 
   /**
-   * @param {?WebInspector.AccessibilityNode} axNode
+   * @param {?Accessibility.AccessibilityNode} axNode
    * @override
    */
   setAXNode(axNode) {
@@ -54,8 +54,8 @@ WebInspector.AXNodeSubPane = class extends WebInspector.AccessibilitySubPane {
        * @param {!Protocol.Accessibility.AXProperty} property
        */
       function addIgnoredReason(property) {
-        ignoredReasons.appendChild(new WebInspector.AXNodeIgnoredReasonTreeElement(
-            property, /** @type {!WebInspector.AccessibilityNode} */ (axNode)));
+        ignoredReasons.appendChild(new Accessibility.AXNodeIgnoredReasonTreeElement(
+            property, /** @type {!Accessibility.AccessibilityNode} */ (axNode)));
       }
       var ignoredReasonsArray = /** @type {!Array<!Protocol.Accessibility.AXProperty>} */ (axNode.ignoredReasons());
       for (var reason of ignoredReasonsArray)
@@ -76,8 +76,8 @@ WebInspector.AXNodeSubPane = class extends WebInspector.AccessibilitySubPane {
      * @param {!Protocol.Accessibility.AXProperty} property
      */
     function addProperty(property) {
-      treeOutline.appendChild(new WebInspector.AXNodePropertyTreePropertyElement(
-          property, /** @type {!WebInspector.AccessibilityNode} */ (axNode)));
+      treeOutline.appendChild(new Accessibility.AXNodePropertyTreePropertyElement(
+          property, /** @type {!Accessibility.AccessibilityNode} */ (axNode)));
     }
 
     for (var property of axNode.coreProperties())
@@ -105,7 +105,7 @@ WebInspector.AXNodeSubPane = class extends WebInspector.AccessibilitySubPane {
 
   /**
    * @override
-   * @param {?WebInspector.DOMNode} node
+   * @param {?SDK.DOMNode} node
    */
   setNode(node) {
     super.setNode(node);
@@ -116,9 +116,9 @@ WebInspector.AXNodeSubPane = class extends WebInspector.AccessibilitySubPane {
 /**
  * @unrestricted
  */
-WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
+Accessibility.AXNodePropertyTreeElement = class extends TreeElement {
   /**
-   * @param {!WebInspector.AccessibilityNode} axNode
+   * @param {!Accessibility.AccessibilityNode} axNode
    */
   constructor(axNode) {
     // Pass an empty title, the title gets made later in onattach.
@@ -139,7 +139,7 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
     else
       valueElement = createElementWithClass('span', 'monospace');
     var valueText;
-    var isStringProperty = type && WebInspector.AXNodePropertyTreeElement.StringProperties.has(type);
+    var isStringProperty = type && Accessibility.AXNodePropertyTreeElement.StringProperties.has(type);
     if (isStringProperty) {
       // Render \n as a nice unicode cr symbol.
       valueText = '"' + value.replace(/\n/g, '\u21B5') + '"';
@@ -148,8 +148,8 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
       valueText = String(value);
     }
 
-    if (type && type in WebInspector.AXNodePropertyTreeElement.TypeStyles)
-      valueElement.classList.add(WebInspector.AXNodePropertyTreeElement.TypeStyles[type]);
+    if (type && type in Accessibility.AXNodePropertyTreeElement.TypeStyles)
+      valueElement.classList.add(Accessibility.AXNodePropertyTreeElement.TypeStyles[type]);
 
     valueElement.setTextContentTruncatedIfNeeded(valueText || '');
 
@@ -174,9 +174,9 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
    */
   appendNameElement(name) {
     var nameElement = createElement('span');
-    var AXAttributes = WebInspector.AccessibilityStrings.AXAttributes;
+    var AXAttributes = Accessibility.AccessibilityStrings.AXAttributes;
     if (name in AXAttributes) {
-      nameElement.textContent = WebInspector.UIString(AXAttributes[name].name);
+      nameElement.textContent = Common.UIString(AXAttributes[name].name);
       nameElement.title = AXAttributes[name].description;
       nameElement.classList.add('ax-readable-name');
     } else {
@@ -202,12 +202,12 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
       var sources = value.sources;
       for (var i = 0; i < sources.length; i++) {
         var source = sources[i];
-        var child = new WebInspector.AXValueSourceTreeElement(source, this._axNode);
+        var child = new Accessibility.AXValueSourceTreeElement(source, this._axNode);
         this.appendChild(child);
       }
       this.expand();
     }
-    var element = WebInspector.AXNodePropertyTreeElement.createSimpleValueElement(value.type, String(value.value));
+    var element = Accessibility.AXNodePropertyTreeElement.createSimpleValueElement(value.type, String(value.value));
     this.listItemElement.appendChild(element);
     return element;
   }
@@ -217,8 +217,8 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
    * @param {number} index
    */
   appendRelatedNode(relatedNode, index) {
-    var deferredNode = new WebInspector.DeferredDOMNode(this._axNode.target(), relatedNode.backendDOMNodeId);
-    var nodeTreeElement = new WebInspector.AXRelatedNodeSourceTreeElement({deferredNode: deferredNode}, relatedNode);
+    var deferredNode = new SDK.DeferredDOMNode(this._axNode.target(), relatedNode.backendDOMNodeId);
+    var nodeTreeElement = new Accessibility.AXRelatedNodeSourceTreeElement({deferredNode: deferredNode}, relatedNode);
     this.appendChild(nodeTreeElement);
   }
 
@@ -226,8 +226,8 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
    * @param {!Protocol.Accessibility.AXRelatedNode} relatedNode
    */
   appendRelatedNodeInline(relatedNode) {
-    var deferredNode = new WebInspector.DeferredDOMNode(this._axNode.target(), relatedNode.backendDOMNodeId);
-    var linkedNode = new WebInspector.AXRelatedNodeElement({deferredNode: deferredNode}, relatedNode);
+    var deferredNode = new SDK.DeferredDOMNode(this._axNode.target(), relatedNode.backendDOMNodeId);
+    var linkedNode = new Accessibility.AXRelatedNodeElement({deferredNode: deferredNode}, relatedNode);
     this.listItemElement.appendChild(linkedNode.render());
   }
 
@@ -250,7 +250,7 @@ WebInspector.AXNodePropertyTreeElement = class extends TreeElement {
 
 
 /** @type {!Object<string, string>} */
-WebInspector.AXNodePropertyTreeElement.TypeStyles = {
+Accessibility.AXNodePropertyTreeElement.TypeStyles = {
   attribute: 'ax-value-string',
   boolean: 'object-value-boolean',
   booleanOrUndefined: 'object-value-boolean',
@@ -267,7 +267,7 @@ WebInspector.AXNodePropertyTreeElement.TypeStyles = {
 };
 
 /** @type {!Set.<!Protocol.Accessibility.AXValueType>} */
-WebInspector.AXNodePropertyTreeElement.StringProperties = new Set([
+Accessibility.AXNodePropertyTreeElement.StringProperties = new Set([
   Protocol.Accessibility.AXValueType.String, Protocol.Accessibility.AXValueType.ComputedString,
   Protocol.Accessibility.AXValueType.IdrefList, Protocol.Accessibility.AXValueType.Idref
 ]);
@@ -275,10 +275,10 @@ WebInspector.AXNodePropertyTreeElement.StringProperties = new Set([
 /**
  * @unrestricted
  */
-WebInspector.AXNodePropertyTreePropertyElement = class extends WebInspector.AXNodePropertyTreeElement {
+Accessibility.AXNodePropertyTreePropertyElement = class extends Accessibility.AXNodePropertyTreeElement {
   /**
    * @param {!Protocol.Accessibility.AXProperty} property
-   * @param {!WebInspector.AccessibilityNode} axNode
+   * @param {!Accessibility.AccessibilityNode} axNode
    */
   constructor(property, axNode) {
     super(axNode);
@@ -313,10 +313,10 @@ WebInspector.AXNodePropertyTreePropertyElement = class extends WebInspector.AXNo
 /**
  * @unrestricted
  */
-WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropertyTreeElement {
+Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePropertyTreeElement {
   /**
    * @param {!Protocol.Accessibility.AXValueSource} source
-   * @param {!WebInspector.AccessibilityNode} axNode
+   * @param {!Accessibility.AccessibilityNode} axNode
    */
   constructor(source, axNode) {
     super(axNode);
@@ -337,9 +337,9 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
    * @param {string} idref
    */
   appendRelatedNodeWithIdref(relatedNode, index, idref) {
-    var deferredNode = new WebInspector.DeferredDOMNode(this._axNode.target(), relatedNode.backendDOMNodeId);
+    var deferredNode = new SDK.DeferredDOMNode(this._axNode.target(), relatedNode.backendDOMNodeId);
     var nodeTreeElement =
-        new WebInspector.AXRelatedNodeSourceTreeElement({deferredNode: deferredNode, idref: idref}, relatedNode);
+        new Accessibility.AXRelatedNodeSourceTreeElement({deferredNode: deferredNode, idref: idref}, relatedNode);
     this.appendChild(nodeTreeElement);
   }
 
@@ -358,7 +358,7 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
       if (matchingNode) {
         this.appendRelatedNodeWithIdref(matchingNode, 0, idref);
       } else {
-        this.listItemElement.appendChild(new WebInspector.AXRelatedNodeElement({idref: idref}).render());
+        this.listItemElement.appendChild(new Accessibility.AXRelatedNodeElement({idref: idref}).render());
       }
     } else {
       // TODO(aboxhall): exclamation mark if not idreflist type
@@ -368,7 +368,7 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
         if (matchingNode) {
           this.appendRelatedNodeWithIdref(matchingNode, i, idref);
         } else {
-          this.appendChild(new WebInspector.AXRelatedNodeSourceTreeElement({idref: idref}));
+          this.appendChild(new Accessibility.AXRelatedNodeSourceTreeElement({idref: idref}));
         }
       }
     }
@@ -408,10 +408,10 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
       case AXValueSourceType.Placeholder:
       case AXValueSourceType.RelatedElement:
         if (source.nativeSource) {
-          var AXNativeSourceTypes = WebInspector.AccessibilityStrings.AXNativeSourceTypes;
+          var AXNativeSourceTypes = Accessibility.AccessibilityStrings.AXNativeSourceTypes;
           var nativeSource = source.nativeSource;
-          nameElement.textContent = WebInspector.UIString(AXNativeSourceTypes[nativeSource].name);
-          nameElement.title = WebInspector.UIString(AXNativeSourceTypes[nativeSource].description);
+          nameElement.textContent = Common.UIString(AXNativeSourceTypes[nativeSource].name);
+          nameElement.title = Common.UIString(AXNativeSourceTypes[nativeSource].description);
           nameElement.classList.add('ax-readable-name');
           break;
         }
@@ -420,14 +420,14 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
         nameElement.classList.add('monospace');
         break;
       default:
-        var AXSourceTypes = WebInspector.AccessibilityStrings.AXSourceTypes;
+        var AXSourceTypes = Accessibility.AccessibilityStrings.AXSourceTypes;
         if (type in AXSourceTypes) {
-          nameElement.textContent = WebInspector.UIString(AXSourceTypes[type].name);
-          nameElement.title = WebInspector.UIString(AXSourceTypes[type].description);
+          nameElement.textContent = Common.UIString(AXSourceTypes[type].name);
+          nameElement.title = Common.UIString(AXSourceTypes[type].description);
           nameElement.classList.add('ax-readable-name');
         } else {
           console.warn(type, 'not in AXSourceTypes');
-          nameElement.textContent = WebInspector.UIString(type);
+          nameElement.textContent = Common.UIString(type);
         }
     }
     this.listItemElement.appendChild(nameElement);
@@ -438,7 +438,7 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
 
     if (this._source.invalid) {
       var exclamationMark =
-          WebInspector.AXNodePropertyTreeElement.createExclamationMark(WebInspector.UIString('Invalid source.'));
+          Accessibility.AXNodePropertyTreeElement.createExclamationMark(Common.UIString('Invalid source.'));
       this.listItemElement.appendChild(exclamationMark);
       this.listItemElement.classList.add('ax-value-source-invalid');
     } else if (this._source.superseded) {
@@ -458,8 +458,8 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
     } else if (this._source.value) {
       this.appendValueElement(this._source.value);
     } else {
-      var valueElement = WebInspector.AXNodePropertyTreeElement.createSimpleValueElement(
-          Protocol.Accessibility.AXValueType.ValueUndefined, WebInspector.UIString('Not specified'));
+      var valueElement = Accessibility.AXNodePropertyTreeElement.createSimpleValueElement(
+          Protocol.Accessibility.AXValueType.ValueUndefined, Common.UIString('Not specified'));
       this.listItemElement.appendChild(valueElement);
       this.listItemElement.classList.add('ax-value-source-unused');
     }
@@ -476,7 +476,7 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
   appendValueElement(value) {
     var element = super.appendValueElement(value);
     if (!element) {
-      element = WebInspector.AXNodePropertyTreeElement.createSimpleValueElement(value.type, String(value.value));
+      element = Accessibility.AXNodePropertyTreeElement.createSimpleValueElement(value.type, String(value.value));
       this.listItemElement.appendChild(element);
     }
     return element;
@@ -486,16 +486,16 @@ WebInspector.AXValueSourceTreeElement = class extends WebInspector.AXNodePropert
 /**
  * @unrestricted
  */
-WebInspector.AXRelatedNodeSourceTreeElement = class extends TreeElement {
+Accessibility.AXRelatedNodeSourceTreeElement = class extends TreeElement {
   /**
-   * @param {{deferredNode: (!WebInspector.DeferredDOMNode|undefined), idref: (string|undefined)}} node
+   * @param {{deferredNode: (!SDK.DeferredDOMNode|undefined), idref: (string|undefined)}} node
    * @param {!Protocol.Accessibility.AXRelatedNode=} value
    */
   constructor(node, value) {
     super('');
 
     this._value = value;
-    this._axRelatedNodeElement = new WebInspector.AXRelatedNodeElement(node, value);
+    this._axRelatedNodeElement = new Accessibility.AXRelatedNodeElement(node, value);
     this.selectable = false;
   }
 
@@ -508,7 +508,7 @@ WebInspector.AXRelatedNodeSourceTreeElement = class extends TreeElement {
       return;
 
     if (this._value.text)
-      this.listItemElement.appendChild(WebInspector.AXNodePropertyTreeElement.createSimpleValueElement(
+      this.listItemElement.appendChild(Accessibility.AXNodePropertyTreeElement.createSimpleValueElement(
           Protocol.Accessibility.AXValueType.ComputedString, this._value.text));
   }
 };
@@ -516,9 +516,9 @@ WebInspector.AXRelatedNodeSourceTreeElement = class extends TreeElement {
 /**
  * @unrestricted
  */
-WebInspector.AXRelatedNodeElement = class {
+Accessibility.AXRelatedNodeElement = class {
   /**
-   * @param {{deferredNode: (!WebInspector.DeferredDOMNode|undefined), idref: (string|undefined)}} node
+   * @param {{deferredNode: (!SDK.DeferredDOMNode|undefined), idref: (string|undefined)}} node
    * @param {!Protocol.Accessibility.AXRelatedNode=} value
    */
   constructor(node, value) {
@@ -535,11 +535,11 @@ WebInspector.AXRelatedNodeElement = class {
     var valueElement;
 
     /**
-     * @param {?WebInspector.DOMNode} node
-     * @this {!WebInspector.AXRelatedNodeElement}
+     * @param {?SDK.DOMNode} node
+     * @this {!Accessibility.AXRelatedNodeElement}
      */
     function onNodeResolved(node) {
-      valueElement.appendChild(WebInspector.DOMPresentationUtils.linkifyNodeReference(node, this._idref));
+      valueElement.appendChild(Components.DOMPresentationUtils.linkifyNodeReference(node, this._idref));
     }
 
     if (this._deferredNode) {
@@ -549,7 +549,7 @@ WebInspector.AXRelatedNodeElement = class {
     } else if (this._idref) {
       element.classList.add('invalid');
       valueElement =
-          WebInspector.AXNodePropertyTreeElement.createExclamationMark(WebInspector.UIString('No node with this ID.'));
+          Accessibility.AXNodePropertyTreeElement.createExclamationMark(Common.UIString('No node with this ID.'));
       valueElement.createTextChild(this._idref);
       element.appendChild(valueElement);
     }
@@ -561,10 +561,10 @@ WebInspector.AXRelatedNodeElement = class {
 /**
  * @unrestricted
  */
-WebInspector.AXNodeIgnoredReasonTreeElement = class extends WebInspector.AXNodePropertyTreeElement {
+Accessibility.AXNodeIgnoredReasonTreeElement = class extends Accessibility.AXNodePropertyTreeElement {
   /**
    * @param {!Protocol.Accessibility.AXProperty} property
-   * @param {!WebInspector.AccessibilityNode} axNode
+   * @param {!Accessibility.AccessibilityNode} axNode
    */
   constructor(property, axNode) {
     super(axNode);
@@ -576,67 +576,67 @@ WebInspector.AXNodeIgnoredReasonTreeElement = class extends WebInspector.AXNodeP
 
   /**
    * @param {?string} reason
-   * @param {?WebInspector.AccessibilityNode} axNode
+   * @param {?Accessibility.AccessibilityNode} axNode
    * @return {?Element}
    */
   static createReasonElement(reason, axNode) {
     var reasonElement = null;
     switch (reason) {
       case 'activeModalDialog':
-        reasonElement = WebInspector.formatLocalized('Element is hidden by active modal dialog:\u00a0', []);
+        reasonElement = UI.formatLocalized('Element is hidden by active modal dialog:\u00a0', []);
         break;
       case 'ancestorDisallowsChild':
-        reasonElement = WebInspector.formatLocalized('Element is not permitted as child of ', []);
+        reasonElement = UI.formatLocalized('Element is not permitted as child of ', []);
         break;
       // http://www.w3.org/TR/wai-aria/roles#childrenArePresentational
       case 'ancestorIsLeafNode':
-        reasonElement = WebInspector.formatLocalized('Ancestor\'s children are all presentational:\u00a0', []);
+        reasonElement = UI.formatLocalized('Ancestor\'s children are all presentational:\u00a0', []);
         break;
       case 'ariaHidden':
         var ariaHiddenSpan = createElement('span', 'source-code').textContent = 'aria-hidden';
-        reasonElement = WebInspector.formatLocalized('Element is %s.', [ariaHiddenSpan]);
+        reasonElement = UI.formatLocalized('Element is %s.', [ariaHiddenSpan]);
         break;
       case 'ariaHiddenRoot':
         var ariaHiddenSpan = createElement('span', 'source-code').textContent = 'aria-hidden';
         var trueSpan = createElement('span', 'source-code').textContent = 'true';
-        reasonElement = WebInspector.formatLocalized('%s is %s on ancestor:\u00a0', [ariaHiddenSpan, trueSpan]);
+        reasonElement = UI.formatLocalized('%s is %s on ancestor:\u00a0', [ariaHiddenSpan, trueSpan]);
         break;
       case 'emptyAlt':
-        reasonElement = WebInspector.formatLocalized('Element has empty alt text.', []);
+        reasonElement = UI.formatLocalized('Element has empty alt text.', []);
         break;
       case 'emptyText':
-        reasonElement = WebInspector.formatLocalized('No text content.', []);
+        reasonElement = UI.formatLocalized('No text content.', []);
         break;
       case 'inert':
-        reasonElement = WebInspector.formatLocalized('Element is inert.', []);
+        reasonElement = UI.formatLocalized('Element is inert.', []);
         break;
       case 'inheritsPresentation':
-        reasonElement = WebInspector.formatLocalized('Element inherits presentational role from\u00a0', []);
+        reasonElement = UI.formatLocalized('Element inherits presentational role from\u00a0', []);
         break;
       case 'labelContainer':
-        reasonElement = WebInspector.formatLocalized('Part of label element:\u00a0', []);
+        reasonElement = UI.formatLocalized('Part of label element:\u00a0', []);
         break;
       case 'labelFor':
-        reasonElement = WebInspector.formatLocalized('Label for\u00a0', []);
+        reasonElement = UI.formatLocalized('Label for\u00a0', []);
         break;
       case 'notRendered':
-        reasonElement = WebInspector.formatLocalized('Element is not rendered.', []);
+        reasonElement = UI.formatLocalized('Element is not rendered.', []);
         break;
       case 'notVisible':
-        reasonElement = WebInspector.formatLocalized('Element is not visible.', []);
+        reasonElement = UI.formatLocalized('Element is not visible.', []);
         break;
       case 'presentationalRole':
         var rolePresentationSpan = createElement('span', 'source-code').textContent = 'role=' + axNode.role().value;
-        reasonElement = WebInspector.formatLocalized('Element has %s.', [rolePresentationSpan]);
+        reasonElement = UI.formatLocalized('Element has %s.', [rolePresentationSpan]);
         break;
       case 'probablyPresentational':
-        reasonElement = WebInspector.formatLocalized('Element is presentational.', []);
+        reasonElement = UI.formatLocalized('Element is presentational.', []);
         break;
       case 'staticTextUsedAsNameFor':
-        reasonElement = WebInspector.formatLocalized('Static text node is used as name for\u00a0', []);
+        reasonElement = UI.formatLocalized('Static text node is used as name for\u00a0', []);
         break;
       case 'uninteresting':
-        reasonElement = WebInspector.formatLocalized('Element not interesting for accessibility.', []);
+        reasonElement = UI.formatLocalized('Element not interesting for accessibility.', []);
         break;
     }
     if (reasonElement)
@@ -651,7 +651,7 @@ WebInspector.AXNodeIgnoredReasonTreeElement = class extends WebInspector.AXNodeP
     this.listItemElement.removeChildren();
 
     this._reasonElement =
-        WebInspector.AXNodeIgnoredReasonTreeElement.createReasonElement(this._property.name, this._axNode);
+        Accessibility.AXNodeIgnoredReasonTreeElement.createReasonElement(this._property.name, this._axNode);
     this.listItemElement.appendChild(this._reasonElement);
 
     var value = this._property.value;

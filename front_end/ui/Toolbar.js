@@ -31,38 +31,38 @@
 /**
  * @unrestricted
  */
-WebInspector.Toolbar = class {
+UI.Toolbar = class {
   /**
    * @param {string} className
    * @param {!Element=} parentElement
    */
   constructor(className, parentElement) {
-    /** @type {!Array.<!WebInspector.ToolbarItem>} */
+    /** @type {!Array.<!UI.ToolbarItem>} */
     this._items = [];
     this._reverse = false;
     this.element = parentElement ? parentElement.createChild('div') : createElement('div');
     this.element.className = className;
     this.element.classList.add('toolbar');
-    this._shadowRoot = WebInspector.createShadowRootWithCoreStyles(this.element, 'ui/toolbar.css');
+    this._shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'ui/toolbar.css');
     this._contentElement = this._shadowRoot.createChild('div', 'toolbar-shadow');
     this._insertionPoint = this._contentElement.createChild('content');
   }
 
   /**
-   * @param {!WebInspector.Action} action
-   * @param {!Array<!WebInspector.ToolbarButton>=} toggledOptions
-   * @param {!Array<!WebInspector.ToolbarButton>=} untoggledOptions
-   * @return {!WebInspector.ToolbarItem}
+   * @param {!UI.Action} action
+   * @param {!Array<!UI.ToolbarButton>=} toggledOptions
+   * @param {!Array<!UI.ToolbarButton>=} untoggledOptions
+   * @return {!UI.ToolbarItem}
    */
   static createActionButton(action, toggledOptions, untoggledOptions) {
-    var button = new WebInspector.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
+    var button = new UI.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
     button.setToggleWithRedColor(action.toggleWithRedColor());
     button.addEventListener('click', action.execute, action);
-    action.addEventListener(WebInspector.Action.Events.Enabled, enabledChanged);
-    action.addEventListener(WebInspector.Action.Events.Toggled, toggled);
-    /** @type {?WebInspector.LongClickController} */
+    action.addEventListener(UI.Action.Events.Enabled, enabledChanged);
+    action.addEventListener(UI.Action.Events.Toggled, toggled);
+    /** @type {?UI.LongClickController} */
     var longClickController = null;
-    /** @type {?Array<!WebInspector.ToolbarButton>} */
+    /** @type {?Array<!UI.ToolbarButton>} */
     var longClickButtons = null;
     /** @type {?Element} */
     var longClickGlyph = null;
@@ -70,7 +70,7 @@ WebInspector.Toolbar = class {
     return button;
 
     /**
-     * @param {!WebInspector.Event} event
+     * @param {!Common.Event} event
      */
     function enabledChanged(event) {
       button.setEnabled(/** @type {boolean} */ (event.data));
@@ -79,7 +79,7 @@ WebInspector.Toolbar = class {
     function toggled() {
       button.setToggled(action.toggled());
       if (action.title())
-        WebInspector.Tooltip.install(button.element, action.title(), action.id());
+        UI.Tooltip.install(button.element, action.title(), action.id());
       updateOptions();
     }
 
@@ -88,8 +88,8 @@ WebInspector.Toolbar = class {
 
       if (buttons && buttons.length) {
         if (!longClickController) {
-          longClickController = new WebInspector.LongClickController(button.element, showOptions);
-          longClickGlyph = WebInspector.Icon.create('largeicon-longclick-triangle', 'long-click-glyph');
+          longClickController = new UI.LongClickController(button.element, showOptions);
+          longClickGlyph = UI.Icon.create('largeicon-longclick-triangle', 'long-click-glyph');
           button.element.appendChild(longClickGlyph);
           longClickButtons = buttons;
         }
@@ -106,11 +106,11 @@ WebInspector.Toolbar = class {
 
     function showOptions() {
       var buttons = longClickButtons.slice();
-      var mainButtonClone = new WebInspector.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
+      var mainButtonClone = new UI.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
       mainButtonClone.addEventListener('click', clicked);
 
       /**
-       * @param {!WebInspector.Event} event
+       * @param {!Common.Event} event
        */
       function clicked(event) {
         button._clicked(/** @type {!Event} */ (event.data));
@@ -122,8 +122,8 @@ WebInspector.Toolbar = class {
       var document = button.element.ownerDocument;
       document.documentElement.addEventListener('mouseup', mouseUp, false);
 
-      var optionsGlassPane = new WebInspector.GlassPane(document);
-      var optionsBar = new WebInspector.Toolbar('fill', optionsGlassPane.element);
+      var optionsGlassPane = new UI.GlassPane(document);
+      var optionsBar = new UI.Toolbar('fill', optionsGlassPane.element);
       optionsBar._contentElement.classList.add('floating');
       const buttonHeight = 26;
 
@@ -182,11 +182,11 @@ WebInspector.Toolbar = class {
 
   /**
    * @param {string} actionId
-   * @return {?WebInspector.ToolbarItem}
+   * @return {?UI.ToolbarItem}
    */
   static createActionButtonForId(actionId) {
-    var action = WebInspector.actionRegistry.action(actionId);
-    return /** @type {?WebInspector.ToolbarItem} */ (action ? WebInspector.Toolbar.createActionButton(action) : null);
+    var action = UI.actionRegistry.action(actionId);
+    return /** @type {?UI.ToolbarItem} */ (action ? UI.Toolbar.createActionButton(action) : null);
   }
 
   /**
@@ -224,7 +224,7 @@ WebInspector.Toolbar = class {
   }
 
   /**
-   * @param {!WebInspector.ToolbarItem} item
+   * @param {!UI.ToolbarItem} item
    */
   appendToolbarItem(item) {
     this._items.push(item);
@@ -237,18 +237,18 @@ WebInspector.Toolbar = class {
   }
 
   appendSeparator() {
-    this.appendToolbarItem(new WebInspector.ToolbarSeparator());
+    this.appendToolbarItem(new UI.ToolbarSeparator());
   }
 
   appendSpacer() {
-    this.appendToolbarItem(new WebInspector.ToolbarSeparator(true));
+    this.appendToolbarItem(new UI.ToolbarSeparator(true));
   }
 
   /**
    * @param {string} text
    */
   appendText(text) {
-    this.appendToolbarItem(new WebInspector.ToolbarText(text));
+    this.appendToolbarItem(new UI.ToolbarText(text));
   }
 
   removeToolbarItems() {
@@ -286,7 +286,7 @@ WebInspector.Toolbar = class {
     var lastSeparator;
     var nonSeparatorVisible = false;
     for (var i = 0; i < this._items.length; ++i) {
-      if (this._items[i] instanceof WebInspector.ToolbarSeparator) {
+      if (this._items[i] instanceof UI.ToolbarSeparator) {
         this._items[i].setVisible(!previousIsSeparator);
         previousIsSeparator = true;
         lastSeparator = this._items[i];
@@ -308,7 +308,7 @@ WebInspector.Toolbar = class {
    * @param {string} location
    */
   appendLocationItems(location) {
-    var extensions = self.runtime.extensions(WebInspector.ToolbarItem.Provider);
+    var extensions = self.runtime.extensions(UI.ToolbarItem.Provider);
     var promises = [];
     for (var i = 0; i < extensions.length; ++i) {
       if (extensions[i].descriptor()['location'] === location)
@@ -318,27 +318,27 @@ WebInspector.Toolbar = class {
 
     /**
      * @param {!Runtime.Extension} extension
-     * @return {!Promise.<?WebInspector.ToolbarItem>}
+     * @return {!Promise.<?UI.ToolbarItem>}
      */
     function resolveItem(extension) {
       var descriptor = extension.descriptor();
       if (descriptor['separator'])
-        return Promise.resolve(/** @type {?WebInspector.ToolbarItem} */ (new WebInspector.ToolbarSeparator()));
+        return Promise.resolve(/** @type {?UI.ToolbarItem} */ (new UI.ToolbarSeparator()));
       if (descriptor['actionId'])
-        return Promise.resolve(WebInspector.Toolbar.createActionButtonForId(descriptor['actionId']));
+        return Promise.resolve(UI.Toolbar.createActionButtonForId(descriptor['actionId']));
       return extension.instance().then(fetchItemFromProvider);
 
       /**
        * @param {!Object} provider
        */
       function fetchItemFromProvider(provider) {
-        return /** @type {!WebInspector.ToolbarItem.Provider} */ (provider).item();
+        return /** @type {!UI.ToolbarItem.Provider} */ (provider).item();
       }
     }
 
     /**
-     * @param {!Array.<?WebInspector.ToolbarItem>} items
-     * @this {WebInspector.Toolbar}
+     * @param {!Array.<?UI.ToolbarItem>} items
+     * @this {UI.Toolbar}
      */
     function appendItemsInOrder(items) {
       for (var i = 0; i < items.length; ++i) {
@@ -353,7 +353,7 @@ WebInspector.Toolbar = class {
 /**
  * @unrestricted
  */
-WebInspector.ToolbarItem = class extends WebInspector.Object {
+UI.ToolbarItem = class extends Common.Object {
   /**
    * @param {!Element} element
    */
@@ -374,7 +374,7 @@ WebInspector.ToolbarItem = class extends WebInspector.Object {
     if (this._title === title)
       return;
     this._title = title;
-    WebInspector.Tooltip.install(this.element, title);
+    UI.Tooltip.install(this.element, title);
   }
 
   _mouseEnter() {
@@ -414,7 +414,7 @@ WebInspector.ToolbarItem = class extends WebInspector.Object {
       return;
     this.element.classList.toggle('hidden', !x);
     this._visible = x;
-    if (this._toolbar && !(this instanceof WebInspector.ToolbarSeparator))
+    if (this._toolbar && !(this instanceof UI.ToolbarSeparator))
       this._toolbar._hideSeparatorDupes();
   }
 };
@@ -422,7 +422,7 @@ WebInspector.ToolbarItem = class extends WebInspector.Object {
 /**
  * @unrestricted
  */
-WebInspector.ToolbarText = class extends WebInspector.ToolbarItem {
+UI.ToolbarText = class extends UI.ToolbarItem {
   /**
    * @param {string=} text
    */
@@ -443,7 +443,7 @@ WebInspector.ToolbarText = class extends WebInspector.ToolbarItem {
 /**
  * @unrestricted
  */
-WebInspector.ToolbarButton = class extends WebInspector.ToolbarItem {
+UI.ToolbarButton = class extends UI.ToolbarItem {
   /**
    * @param {string} title
    * @param {string=} glyph
@@ -455,7 +455,7 @@ WebInspector.ToolbarButton = class extends WebInspector.ToolbarItem {
     this.element.addEventListener('mousedown', this._mouseDown.bind(this), false);
     this.element.addEventListener('mouseup', this._mouseUp.bind(this), false);
 
-    this._glyphElement = WebInspector.Icon.create('', 'toolbar-glyph hidden');
+    this._glyphElement = UI.Icon.create('', 'toolbar-glyph hidden');
     this.element.appendChild(this._glyphElement);
     this._textElement = this.element.createChild('div', 'toolbar-text hidden');
 
@@ -501,7 +501,7 @@ WebInspector.ToolbarButton = class extends WebInspector.ToolbarItem {
    */
   turnIntoSelect(width) {
     this.element.classList.add('toolbar-has-dropdown');
-    var dropdownArrowIcon = WebInspector.Icon.create('smallicon-dropdown-arrow', 'toolbar-dropdown-arrow');
+    var dropdownArrowIcon = UI.Icon.create('smallicon-dropdown-arrow', 'toolbar-dropdown-arrow');
     this.element.appendChild(dropdownArrowIcon);
     if (width)
       this.element.style.width = width + 'px';
@@ -533,7 +533,7 @@ WebInspector.ToolbarButton = class extends WebInspector.ToolbarItem {
 /**
  * @unrestricted
  */
-WebInspector.ToolbarInput = class extends WebInspector.ToolbarItem {
+UI.ToolbarInput = class extends UI.ToolbarItem {
   /**
    * @param {string=} placeholder
    * @param {number=} growFactor
@@ -564,18 +564,18 @@ WebInspector.ToolbarInput = class extends WebInspector.ToolbarItem {
   }
 
   _onChangeCallback() {
-    this.dispatchEventToListeners(WebInspector.ToolbarInput.Event.TextChanged, this.element.value);
+    this.dispatchEventToListeners(UI.ToolbarInput.Event.TextChanged, this.element.value);
   }
 };
 
-WebInspector.ToolbarInput.Event = {
+UI.ToolbarInput.Event = {
   TextChanged: 'TextChanged'
 };
 
 /**
  * @unrestricted
  */
-WebInspector.ToolbarToggle = class extends WebInspector.ToolbarButton {
+UI.ToolbarToggle = class extends UI.ToolbarButton {
   /**
    * @param {string} title
    * @param {string=} glyph
@@ -621,9 +621,9 @@ WebInspector.ToolbarToggle = class extends WebInspector.ToolbarButton {
 /**
  * @unrestricted
  */
-WebInspector.ToolbarMenuButton = class extends WebInspector.ToolbarButton {
+UI.ToolbarMenuButton = class extends UI.ToolbarButton {
   /**
-   * @param {function(!WebInspector.ContextMenu)} contextMenuHandler
+   * @param {function(!UI.ContextMenu)} contextMenuHandler
    * @param {boolean=} useSoftMenu
    */
   constructor(contextMenuHandler, useSoftMenu) {
@@ -656,7 +656,7 @@ WebInspector.ToolbarMenuButton = class extends WebInspector.ToolbarButton {
     // after the window gains focus. See crbug.com/655556
     if (this._lastTriggerTime && Date.now() - this._lastTriggerTime < 300)
       return;
-    var contextMenu = new WebInspector.ContextMenu(
+    var contextMenu = new UI.ContextMenu(
         event, this._useSoftMenu, this.element.totalOffsetLeft(),
         this.element.totalOffsetTop() + this.element.offsetHeight);
     this._contextMenuHandler(contextMenu);
@@ -679,9 +679,9 @@ WebInspector.ToolbarMenuButton = class extends WebInspector.ToolbarButton {
 /**
  * @unrestricted
  */
-WebInspector.ToolbarSettingToggle = class extends WebInspector.ToolbarToggle {
+UI.ToolbarSettingToggle = class extends UI.ToolbarToggle {
   /**
-   * @param {!WebInspector.Setting} setting
+   * @param {!Common.Setting} setting
    * @param {string} glyph
    * @param {string} title
    * @param {string=} toggledTitle
@@ -714,7 +714,7 @@ WebInspector.ToolbarSettingToggle = class extends WebInspector.ToolbarToggle {
 /**
  * @unrestricted
  */
-WebInspector.ToolbarSeparator = class extends WebInspector.ToolbarItem {
+UI.ToolbarSeparator = class extends UI.ToolbarItem {
   /**
    * @param {boolean=} spacer
    */
@@ -726,11 +726,11 @@ WebInspector.ToolbarSeparator = class extends WebInspector.ToolbarItem {
 /**
  * @interface
  */
-WebInspector.ToolbarItem.Provider = function() {};
+UI.ToolbarItem.Provider = function() {};
 
-WebInspector.ToolbarItem.Provider.prototype = {
+UI.ToolbarItem.Provider.prototype = {
   /**
-   * @return {?WebInspector.ToolbarItem}
+   * @return {?UI.ToolbarItem}
    */
   item: function() {}
 };
@@ -738,11 +738,11 @@ WebInspector.ToolbarItem.Provider.prototype = {
 /**
  * @interface
  */
-WebInspector.ToolbarItem.ItemsProvider = function() {};
+UI.ToolbarItem.ItemsProvider = function() {};
 
-WebInspector.ToolbarItem.ItemsProvider.prototype = {
+UI.ToolbarItem.ItemsProvider.prototype = {
   /**
-   * @return {!Array<!WebInspector.ToolbarItem>}
+   * @return {!Array<!UI.ToolbarItem>}
    */
   toolbarItems: function() {}
 };
@@ -750,7 +750,7 @@ WebInspector.ToolbarItem.ItemsProvider.prototype = {
 /**
  * @unrestricted
  */
-WebInspector.ToolbarComboBox = class extends WebInspector.ToolbarItem {
+UI.ToolbarComboBox = class extends UI.ToolbarItem {
   /**
    * @param {?function(!Event)} changeHandler
    * @param {string=} className
@@ -759,7 +759,7 @@ WebInspector.ToolbarComboBox = class extends WebInspector.ToolbarItem {
     super(createElementWithClass('span', 'toolbar-select-container'));
 
     this._selectElement = this.element.createChild('select', 'toolbar-item');
-    var dropdownArrowIcon = WebInspector.Icon.create('smallicon-dropdown-arrow', 'toolbar-dropdown-arrow');
+    var dropdownArrowIcon = UI.Icon.create('smallicon-dropdown-arrow', 'toolbar-dropdown-arrow');
     this.element.appendChild(dropdownArrowIcon);
     if (changeHandler)
       this._selectElement.addEventListener('change', changeHandler, false);
@@ -870,11 +870,11 @@ WebInspector.ToolbarComboBox = class extends WebInspector.ToolbarItem {
 /**
  * @unrestricted
  */
-WebInspector.ToolbarCheckbox = class extends WebInspector.ToolbarItem {
+UI.ToolbarCheckbox = class extends UI.ToolbarItem {
   /**
    * @param {string} text
    * @param {string=} title
-   * @param {!WebInspector.Setting=} setting
+   * @param {!Common.Setting=} setting
    * @param {function()=} listener
    */
   constructor(text, title, setting, listener) {
@@ -884,7 +884,7 @@ WebInspector.ToolbarCheckbox = class extends WebInspector.ToolbarItem {
     if (title)
       this.element.title = title;
     if (setting)
-      WebInspector.SettingsUI.bindCheckbox(this.inputElement, setting);
+      UI.SettingsUI.bindCheckbox(this.inputElement, setting);
     if (listener)
       this.inputElement.addEventListener('click', listener, false);
   }

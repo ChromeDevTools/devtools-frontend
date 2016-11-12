@@ -29,26 +29,26 @@
  */
 
 /**
- * @implements {WebInspector.Project}
+ * @implements {Workspace.Project}
  * @unrestricted
  */
-WebInspector.ContentProviderBasedProject = class extends WebInspector.ProjectStore {
+Bindings.ContentProviderBasedProject = class extends Workspace.ProjectStore {
   /**
-   * @param {!WebInspector.Workspace} workspace
+   * @param {!Workspace.Workspace} workspace
    * @param {string} id
-   * @param {!WebInspector.projectTypes} type
+   * @param {!Workspace.projectTypes} type
    * @param {string} displayName
    */
   constructor(workspace, id, type, displayName) {
     super(workspace, id, type, displayName);
-    /** @type {!Object.<string, !WebInspector.ContentProvider>} */
+    /** @type {!Object.<string, !Common.ContentProvider>} */
     this._contentProviders = {};
     workspace.addProject(this);
   }
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {function(?string)} callback
    */
   requestFileContent(uiSourceCode, callback) {
@@ -58,11 +58,11 @@ WebInspector.ContentProviderBasedProject = class extends WebInspector.ProjectSto
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @return {!Promise<?WebInspector.UISourceCodeMetadata>}
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {!Promise<?Workspace.UISourceCodeMetadata>}
    */
   requestMetadata(uiSourceCode) {
-    return Promise.resolve(uiSourceCode[WebInspector.ContentProviderBasedProject._metadata]);
+    return Promise.resolve(uiSourceCode[Bindings.ContentProviderBasedProject._metadata]);
   }
 
   /**
@@ -75,7 +75,7 @@ WebInspector.ContentProviderBasedProject = class extends WebInspector.ProjectSto
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newContent
    * @param {function(?string)} callback
    */
@@ -93,9 +93,9 @@ WebInspector.ContentProviderBasedProject = class extends WebInspector.ProjectSto
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newName
-   * @param {function(boolean, string=, string=, !WebInspector.ResourceType=)} callback
+   * @param {function(boolean, string=, string=, !Common.ResourceType=)} callback
    */
   rename(uiSourceCode, newName, callback) {
     var path = uiSourceCode.url();
@@ -104,7 +104,7 @@ WebInspector.ContentProviderBasedProject = class extends WebInspector.ProjectSto
     /**
      * @param {boolean} success
      * @param {string=} newName
-     * @this {WebInspector.ContentProviderBasedProject}
+     * @this {Bindings.ContentProviderBasedProject}
      */
     function innerCallback(success, newName) {
       if (success && newName) {
@@ -131,7 +131,7 @@ WebInspector.ContentProviderBasedProject = class extends WebInspector.ProjectSto
    * @param {string} path
    * @param {?string} name
    * @param {string} content
-   * @param {function(?WebInspector.UISourceCode)} callback
+   * @param {function(?Workspace.UISourceCode)} callback
    */
   createFile(path, name, content, callback) {
   }
@@ -160,11 +160,11 @@ WebInspector.ContentProviderBasedProject = class extends WebInspector.ProjectSto
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
    */
   searchInFileContent(uiSourceCode, query, caseSensitive, isRegex, callback) {
     var contentProvider = this._contentProviders[uiSourceCode.url()];
@@ -173,9 +173,9 @@ WebInspector.ContentProviderBasedProject = class extends WebInspector.ProjectSto
 
   /**
    * @override
-   * @param {!WebInspector.ProjectSearchConfig} searchConfig
+   * @param {!Workspace.ProjectSearchConfig} searchConfig
    * @param {!Array.<string>} filesMathingFileQuery
-   * @param {!WebInspector.Progress} progress
+   * @param {!Common.Progress} progress
    * @param {function(!Array.<string>)} callback
    */
   findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress, callback) {
@@ -197,14 +197,14 @@ WebInspector.ContentProviderBasedProject = class extends WebInspector.ProjectSto
     /**
      * @param {string} path
      * @param {function(boolean)} callback
-     * @this {WebInspector.ContentProviderBasedProject}
+     * @this {Bindings.ContentProviderBasedProject}
      */
     function searchInContent(path, callback) {
       var queriesToRun = searchConfig.queries().slice();
       searchNextQuery.call(this);
 
       /**
-       * @this {WebInspector.ContentProviderBasedProject}
+       * @this {Bindings.ContentProviderBasedProject}
        */
       function searchNextQuery() {
         if (!queriesToRun.length) {
@@ -217,8 +217,8 @@ WebInspector.ContentProviderBasedProject = class extends WebInspector.ProjectSto
       }
 
       /**
-       * @param {!Array.<!WebInspector.ContentProvider.SearchMatch>} searchMatches
-       * @this {WebInspector.ContentProviderBasedProject}
+       * @param {!Array.<!Common.ContentProvider.SearchMatch>} searchMatches
+       * @this {Bindings.ContentProviderBasedProject}
        */
       function contentCallback(searchMatches) {
         if (!searchMatches.length) {
@@ -247,27 +247,27 @@ WebInspector.ContentProviderBasedProject = class extends WebInspector.ProjectSto
 
   /**
    * @override
-   * @param {!WebInspector.Progress} progress
+   * @param {!Common.Progress} progress
    */
   indexContent(progress) {
     setImmediate(progress.done.bind(progress));
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @param {!WebInspector.ContentProvider} contentProvider
-   * @param {?WebInspector.UISourceCodeMetadata} metadata
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Common.ContentProvider} contentProvider
+   * @param {?Workspace.UISourceCodeMetadata} metadata
    */
   addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata) {
     this._contentProviders[uiSourceCode.url()] = contentProvider;
-    uiSourceCode[WebInspector.ContentProviderBasedProject._metadata] = metadata;
+    uiSourceCode[Bindings.ContentProviderBasedProject._metadata] = metadata;
     this.addUISourceCode(uiSourceCode, true);
   }
 
   /**
    * @param {string} url
-   * @param {!WebInspector.ContentProvider} contentProvider
-   * @return {!WebInspector.UISourceCode}
+   * @param {!Common.ContentProvider} contentProvider
+   * @return {!Workspace.UISourceCode}
    */
   addContentProvider(url, contentProvider) {
     var uiSourceCode = this.createUISourceCode(url, contentProvider.contentType());
@@ -295,4 +295,4 @@ WebInspector.ContentProviderBasedProject = class extends WebInspector.ProjectSto
   }
 };
 
-WebInspector.ContentProviderBasedProject._metadata = Symbol('ContentProviderBasedProject.Metadata');
+Bindings.ContentProviderBasedProject._metadata = Symbol('ContentProviderBasedProject.Metadata');

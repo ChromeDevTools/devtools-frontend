@@ -28,10 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.TextFilterUI.SuggestionBuilder}
+ * @implements {UI.TextFilterUI.SuggestionBuilder}
  * @unrestricted
  */
-WebInspector.FilterSuggestionBuilder = class {
+Network.FilterSuggestionBuilder = class {
   /**
    * @param {!Array.<string>} keys
    */
@@ -161,7 +161,7 @@ WebInspector.FilterSuggestionBuilder = class {
 
   /**
    * @param {string} query
-   * @return {{text: !Array.<string>, filters: !Array.<!WebInspector.FilterSuggestionBuilder.Filter>}}
+   * @return {{text: !Array.<string>, filters: !Array.<!Network.FilterSuggestionBuilder.Filter>}}
    */
   parseQuery(query) {
     var filters = [];
@@ -192,4 +192,4 @@ WebInspector.FilterSuggestionBuilder = class {
 };
 
 /** @typedef {{type: string, data: string, negative: boolean}} */
-WebInspector.FilterSuggestionBuilder.Filter;
+Network.FilterSuggestionBuilder.Filter;

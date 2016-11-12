@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-WebInspector.ViewportControl = class {
+UI.ViewportControl = class {
   /**
-   * @param {!WebInspector.ViewportControl.Provider} provider
+   * @param {!UI.ViewportControl.Provider} provider
    */
   constructor(provider) {
     this.element = createElement('div');
@@ -128,7 +128,7 @@ WebInspector.ViewportControl = class {
 
   /**
    * @param {number} index
-   * @return {?WebInspector.ViewportElement}
+   * @return {?UI.ViewportElement}
    */
   _providerElement(index) {
     if (!this._cachedProviderElements)
@@ -355,7 +355,7 @@ WebInspector.ViewportControl = class {
         this._cumulativeHeights[this._cumulativeHeights.length - 1] - this._cumulativeHeights[this._lastActiveIndex];
 
     /**
-     * @this {WebInspector.ViewportControl}
+     * @this {UI.ViewportControl}
      */
     function prepare() {
       this._topGapElement.style.height = topGapHeight + 'px';
@@ -575,9 +575,9 @@ WebInspector.ViewportControl = class {
 /**
  * @interface
  */
-WebInspector.ViewportControl.Provider = function() {};
+UI.ViewportControl.Provider = function() {};
 
-WebInspector.ViewportControl.Provider.prototype = {
+UI.ViewportControl.Provider.prototype = {
   /**
    * @param {number} index
    * @return {number}
@@ -602,7 +602,7 @@ WebInspector.ViewportControl.Provider.prototype = {
 
   /**
    * @param {number} index
-   * @return {?WebInspector.ViewportElement}
+   * @return {?UI.ViewportElement}
    */
   itemElement: function(index) {
     return null;
@@ -612,8 +612,8 @@ WebInspector.ViewportControl.Provider.prototype = {
 /**
  * @interface
  */
-WebInspector.ViewportElement = function() {};
-WebInspector.ViewportElement.prototype = {
+UI.ViewportElement = function() {};
+UI.ViewportElement.prototype = {
   willHide: function() {},
 
   wasShown: function() {},
@@ -625,10 +625,10 @@ WebInspector.ViewportElement.prototype = {
 };
 
 /**
- * @implements {WebInspector.ViewportElement}
+ * @implements {UI.ViewportElement}
  * @unrestricted
  */
-WebInspector.StaticViewportElement = class {
+UI.StaticViewportElement = class {
   /**
    * @param {!Element} element
    */

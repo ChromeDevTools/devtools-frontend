@@ -4,19 +4,19 @@
 /**
  * @unrestricted
  */
-WebInspector.NetworkConditionsSelector = class {
+Components.NetworkConditionsSelector = class {
   /**
-   * @param {function(!Array<!WebInspector.NetworkConditionsGroup>):!Array<?WebInspector.NetworkManager.Conditions>} populateCallback
+   * @param {function(!Array<!Components.NetworkConditionsGroup>):!Array<?SDK.NetworkManager.Conditions>} populateCallback
    * @param {function(number)} selectCallback
    */
   constructor(populateCallback, selectCallback) {
     this._populateCallback = populateCallback;
     this._selectCallback = selectCallback;
-    this._customSetting = WebInspector.moduleSetting('customNetworkConditions');
+    this._customSetting = Common.moduleSetting('customNetworkConditions');
     this._customSetting.addChangeListener(this._populateOptions, this);
-    this._manager = WebInspector.multitargetNetworkManager;
+    this._manager = SDK.multitargetNetworkManager;
     this._manager.addEventListener(
-        WebInspector.MultitargetNetworkManager.Events.ConditionsChanged, this._conditionsChanged, this);
+        SDK.MultitargetNetworkManager.Events.ConditionsChanged, this._conditionsChanged, this);
     this._populateOptions();
   }
 
@@ -31,14 +31,14 @@ WebInspector.NetworkConditionsSelector = class {
     var throughputInKbps = throughput / (1024 / 8);
     var delimiter = plainText ? '' : ' ';
     if (throughputInKbps < 1024)
-      return WebInspector.UIString('%d%skb/s', throughputInKbps, delimiter);
+      return Common.UIString('%d%skb/s', throughputInKbps, delimiter);
     if (throughputInKbps < 1024 * 10)
-      return WebInspector.UIString('%.1f%sMb/s', throughputInKbps / 1024, delimiter);
-    return WebInspector.UIString('%d%sMb/s', (throughputInKbps / 1024) | 0, delimiter);
+      return Common.UIString('%.1f%sMb/s', throughputInKbps / 1024, delimiter);
+    return Common.UIString('%d%sMb/s', (throughputInKbps / 1024) | 0, delimiter);
   }
 
   /**
-   * @param {!WebInspector.NetworkManager.Conditions} conditions
+   * @param {!SDK.NetworkManager.Conditions} conditions
    * @param {boolean=} plainText
    * @return {!{text: string, title: string}}
    */
@@ -46,17 +46,17 @@ WebInspector.NetworkConditionsSelector = class {
     var downloadInKbps = conditions.download / (1024 / 8);
     var uploadInKbps = conditions.upload / (1024 / 8);
     var isThrottling = (downloadInKbps >= 0) || (uploadInKbps >= 0) || (conditions.latency > 0);
-    var conditionTitle = WebInspector.UIString(conditions.title);
+    var conditionTitle = Common.UIString(conditions.title);
     if (!isThrottling)
       return {text: conditionTitle, title: conditionTitle};
 
-    var downloadText = WebInspector.NetworkConditionsSelector._throughputText(conditions.download, plainText);
-    var uploadText = WebInspector.NetworkConditionsSelector._throughputText(conditions.upload, plainText);
+    var downloadText = Components.NetworkConditionsSelector._throughputText(conditions.download, plainText);
+    var uploadText = Components.NetworkConditionsSelector._throughputText(conditions.upload, plainText);
     var pattern = plainText ? '%s (%dms, %s, %s)' : '%s (%dms RTT, %s\u2b07, %s\u2b06)';
-    var title = WebInspector.UIString(pattern, conditionTitle, conditions.latency, downloadText, uploadText);
+    var title = Common.UIString(pattern, conditionTitle, conditions.latency, downloadText, uploadText);
     return {
       text: title,
-      title: WebInspector.UIString(
+      title: Common.UIString(
           'Maximum download throughput: %s.\r\nMaximum upload throughput: %s.\r\nMinimum round-trip time: %dms.',
           downloadText, uploadText, conditions.latency)
     };
@@ -67,12 +67,12 @@ WebInspector.NetworkConditionsSelector = class {
    */
   static decorateSelect(selectElement) {
     var options = [];
-    var selector = new WebInspector.NetworkConditionsSelector(populate, select);
+    var selector = new Components.NetworkConditionsSelector(populate, select);
     selectElement.addEventListener('change', optionSelected, false);
 
     /**
-     * @param {!Array.<!WebInspector.NetworkConditionsGroup>} groups
-     * @return {!Array<?WebInspector.NetworkManager.Conditions>}
+     * @param {!Array.<!Components.NetworkConditionsGroup>} groups
+     * @return {!Array<?SDK.NetworkManager.Conditions>}
      */
     function populate(groups) {
       selectElement.removeChildren();
@@ -82,11 +82,11 @@ WebInspector.NetworkConditionsSelector = class {
         var groupElement = selectElement.createChild('optgroup');
         groupElement.label = group.title;
         if (!i) {
-          groupElement.appendChild(new Option(WebInspector.UIString('Add\u2026'), WebInspector.UIString('Add\u2026')));
+          groupElement.appendChild(new Option(Common.UIString('Add\u2026'), Common.UIString('Add\u2026')));
           options.push(null);
         }
         for (var conditions of group.items) {
-          var title = WebInspector.NetworkConditionsSelector._conditionsTitle(conditions, true);
+          var title = Components.NetworkConditionsSelector._conditionsTitle(conditions, true);
           var option = new Option(title.text, title.text);
           option.title = title.title;
           groupElement.appendChild(option);
@@ -113,21 +113,21 @@ WebInspector.NetworkConditionsSelector = class {
   }
 
   /**
-   * @return {!WebInspector.ToolbarMenuButton}
+   * @return {!UI.ToolbarMenuButton}
    */
   static createToolbarMenuButton() {
-    var button = new WebInspector.ToolbarMenuButton(appendItems);
+    var button = new UI.ToolbarMenuButton(appendItems);
     button.setGlyph('');
     button.turnIntoSelect();
 
-    /** @type {!Array<?WebInspector.NetworkManager.Conditions>} */
+    /** @type {!Array<?SDK.NetworkManager.Conditions>} */
     var options = [];
     var selectedIndex = -1;
-    var selector = new WebInspector.NetworkConditionsSelector(populate, select);
+    var selector = new Components.NetworkConditionsSelector(populate, select);
     return button;
 
     /**
-     * @param {!WebInspector.ContextMenu} contextMenu
+     * @param {!UI.ContextMenu} contextMenu
      */
     function appendItems(contextMenu) {
       for (var index = 0; index < options.length; ++index) {
@@ -136,15 +136,15 @@ WebInspector.NetworkConditionsSelector = class {
           contextMenu.appendSeparator();
         else
           contextMenu.appendCheckboxItem(
-              WebInspector.NetworkConditionsSelector._conditionsTitle(conditions, true).text,
+              Components.NetworkConditionsSelector._conditionsTitle(conditions, true).text,
               selector.optionSelected.bind(selector, conditions), selectedIndex === index);
       }
-      contextMenu.appendItem(WebInspector.UIString('Edit\u2026'), selector.revealAndUpdate.bind(selector));
+      contextMenu.appendItem(Common.UIString('Edit\u2026'), selector.revealAndUpdate.bind(selector));
     }
 
     /**
-     * @param {!Array.<!WebInspector.NetworkConditionsGroup>} groups
-     * @return {!Array<?WebInspector.NetworkManager.Conditions>}
+     * @param {!Array.<!Components.NetworkConditionsGroup>} groups
+     * @return {!Array<?SDK.NetworkManager.Conditions>}
      */
     function populate(groups) {
       options = [];
@@ -166,52 +166,52 @@ WebInspector.NetworkConditionsSelector = class {
   }
 
   /**
-   * @return {!WebInspector.ToolbarCheckbox}
+   * @return {!UI.ToolbarCheckbox}
    */
   static createOfflineToolbarCheckbox() {
-    var checkbox = new WebInspector.ToolbarCheckbox(
-        WebInspector.UIString('Offline'), WebInspector.UIString('Force disconnected from network'), undefined,
+    var checkbox = new UI.ToolbarCheckbox(
+        Common.UIString('Offline'), Common.UIString('Force disconnected from network'), undefined,
         forceOffline);
-    WebInspector.multitargetNetworkManager.addEventListener(
-        WebInspector.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
+    SDK.multitargetNetworkManager.addEventListener(
+        SDK.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
     checkbox.setChecked(
-        WebInspector.multitargetNetworkManager.networkConditions() === WebInspector.NetworkManager.OfflineConditions);
+        SDK.multitargetNetworkManager.networkConditions() === SDK.NetworkManager.OfflineConditions);
 
     var lastNetworkConditions;
 
     function forceOffline() {
       if (checkbox.checked()) {
-        lastNetworkConditions = WebInspector.multitargetNetworkManager.networkConditions();
-        WebInspector.multitargetNetworkManager.setNetworkConditions(WebInspector.NetworkManager.OfflineConditions);
+        lastNetworkConditions = SDK.multitargetNetworkManager.networkConditions();
+        SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
       } else {
-        WebInspector.multitargetNetworkManager.setNetworkConditions(lastNetworkConditions);
+        SDK.multitargetNetworkManager.setNetworkConditions(lastNetworkConditions);
       }
     }
 
     function networkConditionsChanged() {
-      var conditions = WebInspector.multitargetNetworkManager.networkConditions();
-      if (conditions !== WebInspector.NetworkManager.OfflineConditions)
+      var conditions = SDK.multitargetNetworkManager.networkConditions();
+      if (conditions !== SDK.NetworkManager.OfflineConditions)
         lastNetworkConditions = conditions;
-      checkbox.setChecked(conditions === WebInspector.NetworkManager.OfflineConditions);
+      checkbox.setChecked(conditions === SDK.NetworkManager.OfflineConditions);
     }
     return checkbox;
   }
 
   _populateOptions() {
-    var customGroup = {title: WebInspector.UIString('Custom'), items: this._customSetting.get()};
+    var customGroup = {title: Common.UIString('Custom'), items: this._customSetting.get()};
     var presetsGroup = {
-      title: WebInspector.UIString('Presets'),
-      items: WebInspector.NetworkConditionsSelector._presets
+      title: Common.UIString('Presets'),
+      items: Components.NetworkConditionsSelector._presets
     };
     var disabledGroup = {
-      title: WebInspector.UIString('Disabled'),
-      items: [WebInspector.NetworkManager.NoThrottlingConditions]
+      title: Common.UIString('Disabled'),
+      items: [SDK.NetworkManager.NoThrottlingConditions]
     };
     this._options = this._populateCallback([customGroup, presetsGroup, disabledGroup]);
     if (!this._conditionsChanged()) {
       for (var i = this._options.length - 1; i >= 0; i--) {
         if (this._options[i]) {
-          this.optionSelected(/** @type {!WebInspector.NetworkManager.Conditions} */ (this._options[i]));
+          this.optionSelected(/** @type {!SDK.NetworkManager.Conditions} */ (this._options[i]));
           break;
         }
       }
@@ -219,12 +219,12 @@ WebInspector.NetworkConditionsSelector = class {
   }
 
   revealAndUpdate() {
-    WebInspector.Revealer.reveal(this._customSetting);
+    Common.Revealer.reveal(this._customSetting);
     this._conditionsChanged();
   }
 
   /**
-   * @param {!WebInspector.NetworkManager.Conditions} conditions
+   * @param {!SDK.NetworkManager.Conditions} conditions
    */
   optionSelected(conditions) {
     this._manager.setNetworkConditions(conditions);
@@ -247,13 +247,13 @@ WebInspector.NetworkConditionsSelector = class {
   }
 };
 
-/** @typedef {!{title: string, items: !Array<!WebInspector.NetworkManager.Conditions>}} */
-WebInspector.NetworkConditionsGroup;
+/** @typedef {!{title: string, items: !Array<!SDK.NetworkManager.Conditions>}} */
+Components.NetworkConditionsGroup;
 
 
-/** @type {!Array.<!WebInspector.NetworkManager.Conditions>} */
-WebInspector.NetworkConditionsSelector._presets = [
-  WebInspector.NetworkManager.OfflineConditions,
+/** @type {!Array.<!SDK.NetworkManager.Conditions>} */
+Components.NetworkConditionsSelector._presets = [
+  SDK.NetworkManager.OfflineConditions,
   {title: 'GPRS', download: 50 * 1024 / 8, upload: 20 * 1024 / 8, latency: 500},
   {title: 'Regular 2G', download: 250 * 1024 / 8, upload: 50 * 1024 / 8, latency: 300},
   {title: 'Good 2G', download: 450 * 1024 / 8, upload: 150 * 1024 / 8, latency: 150},
@@ -266,26 +266,26 @@ WebInspector.NetworkConditionsSelector._presets = [
 
 
 /**
- * @implements {WebInspector.ListWidget.Delegate}
+ * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-WebInspector.NetworkConditionsSettingsTab = class extends WebInspector.VBox {
+Components.NetworkConditionsSettingsTab = class extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('components/networkConditionsSettingsTab.css');
 
-    this.contentElement.createChild('div', 'header').textContent = WebInspector.UIString('Network Throttling Profiles');
+    this.contentElement.createChild('div', 'header').textContent = Common.UIString('Network Throttling Profiles');
 
     var addButton = createTextButton(
-        WebInspector.UIString('Add custom profile...'), this._addButtonClicked.bind(this), 'add-conditions-button');
+        Common.UIString('Add custom profile...'), this._addButtonClicked.bind(this), 'add-conditions-button');
     this.contentElement.appendChild(addButton);
 
-    this._list = new WebInspector.ListWidget(this);
+    this._list = new UI.ListWidget(this);
     this._list.element.classList.add('conditions-list');
     this._list.registerRequiredCSS('components/networkConditionsSettingsTab.css');
     this._list.show(this.contentElement);
 
-    this._customSetting = WebInspector.moduleSetting('customNetworkConditions');
+    this._customSetting = Common.moduleSetting('customNetworkConditions');
     this._customSetting.addChangeListener(this._conditionsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);
@@ -309,7 +309,7 @@ WebInspector.NetworkConditionsSettingsTab = class extends WebInspector.VBox {
 
     this._list.appendSeparator();
 
-    conditions = WebInspector.NetworkConditionsSelector._presets;
+    conditions = Components.NetworkConditionsSelector._presets;
     for (var i = 0; i < conditions.length; ++i)
       this._list.appendItem(conditions[i], false);
   }
@@ -325,7 +325,7 @@ WebInspector.NetworkConditionsSettingsTab = class extends WebInspector.VBox {
    * @return {!Element}
    */
   renderItem(item, editable) {
-    var conditions = /** @type {!WebInspector.NetworkManager.Conditions} */ (item);
+    var conditions = /** @type {!SDK.NetworkManager.Conditions} */ (item);
     var element = createElementWithClass('div', 'conditions-list-item');
     var title = element.createChild('div', 'conditions-list-text conditions-list-title');
     var titleText = title.createChild('div', 'conditions-list-title-text');
@@ -333,12 +333,12 @@ WebInspector.NetworkConditionsSettingsTab = class extends WebInspector.VBox {
     titleText.title = conditions.title;
     element.createChild('div', 'conditions-list-separator');
     element.createChild('div', 'conditions-list-text').textContent =
-        WebInspector.NetworkConditionsSelector._throughputText(conditions.download);
+        Components.NetworkConditionsSelector._throughputText(conditions.download);
     element.createChild('div', 'conditions-list-separator');
     element.createChild('div', 'conditions-list-text').textContent =
-        WebInspector.NetworkConditionsSelector._throughputText(conditions.upload);
+        Components.NetworkConditionsSelector._throughputText(conditions.upload);
     element.createChild('div', 'conditions-list-separator');
-    element.createChild('div', 'conditions-list-text').textContent = WebInspector.UIString('%dms', conditions.latency);
+    element.createChild('div', 'conditions-list-text').textContent = Common.UIString('%dms', conditions.latency);
     return element;
   }
 
@@ -356,11 +356,11 @@ WebInspector.NetworkConditionsSettingsTab = class extends WebInspector.VBox {
   /**
    * @override
    * @param {*} item
-   * @param {!WebInspector.ListWidget.Editor} editor
+   * @param {!UI.ListWidget.Editor} editor
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {
-    var conditions = /** @type {?WebInspector.NetworkManager.Conditions} */ (item);
+    var conditions = /** @type {?SDK.NetworkManager.Conditions} */ (item);
     conditions.title = editor.control('title').value.trim();
     var download = editor.control('download').value.trim();
     conditions.download = download ? parseInt(download, 10) * (1024 / 8) : -1;
@@ -378,10 +378,10 @@ WebInspector.NetworkConditionsSettingsTab = class extends WebInspector.VBox {
   /**
    * @override
    * @param {*} item
-   * @return {!WebInspector.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor}
    */
   beginEdit(item) {
-    var conditions = /** @type {?WebInspector.NetworkManager.Conditions} */ (item);
+    var conditions = /** @type {?SDK.NetworkManager.Conditions} */ (item);
     var editor = this._createEditor();
     editor.control('title').value = conditions.title;
     editor.control('download').value = conditions.download <= 0 ? '' : String(conditions.download / (1024 / 8));
@@ -391,25 +391,25 @@ WebInspector.NetworkConditionsSettingsTab = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {!WebInspector.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor}
    */
   _createEditor() {
     if (this._editor)
       return this._editor;
 
-    var editor = new WebInspector.ListWidget.Editor();
+    var editor = new UI.ListWidget.Editor();
     this._editor = editor;
     var content = editor.contentElement();
 
     var titles = content.createChild('div', 'conditions-edit-row');
     titles.createChild('div', 'conditions-list-text conditions-list-title').textContent =
-        WebInspector.UIString('Profile Name');
+        Common.UIString('Profile Name');
     titles.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
-    titles.createChild('div', 'conditions-list-text').textContent = WebInspector.UIString('Download');
+    titles.createChild('div', 'conditions-list-text').textContent = Common.UIString('Download');
     titles.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
-    titles.createChild('div', 'conditions-list-text').textContent = WebInspector.UIString('Upload');
+    titles.createChild('div', 'conditions-list-text').textContent = Common.UIString('Upload');
     titles.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
-    titles.createChild('div', 'conditions-list-text').textContent = WebInspector.UIString('Latency');
+    titles.createChild('div', 'conditions-list-text').textContent = Common.UIString('Latency');
 
     var fields = content.createChild('div', 'conditions-edit-row');
     fields.createChild('div', 'conditions-list-text conditions-list-title')
@@ -417,18 +417,18 @@ WebInspector.NetworkConditionsSettingsTab = class extends WebInspector.VBox {
     fields.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
 
     var cell = fields.createChild('div', 'conditions-list-text');
-    cell.appendChild(editor.createInput('download', 'text', WebInspector.UIString('kb/s'), throughputValidator));
-    cell.createChild('div', 'conditions-edit-optional').textContent = WebInspector.UIString('optional');
+    cell.appendChild(editor.createInput('download', 'text', Common.UIString('kb/s'), throughputValidator));
+    cell.createChild('div', 'conditions-edit-optional').textContent = Common.UIString('optional');
     fields.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
 
     cell = fields.createChild('div', 'conditions-list-text');
-    cell.appendChild(editor.createInput('upload', 'text', WebInspector.UIString('kb/s'), throughputValidator));
-    cell.createChild('div', 'conditions-edit-optional').textContent = WebInspector.UIString('optional');
+    cell.appendChild(editor.createInput('upload', 'text', Common.UIString('kb/s'), throughputValidator));
+    cell.createChild('div', 'conditions-edit-optional').textContent = Common.UIString('optional');
     fields.createChild('div', 'conditions-list-separator conditions-list-separator-invisible');
 
     cell = fields.createChild('div', 'conditions-list-text');
-    cell.appendChild(editor.createInput('latency', 'text', WebInspector.UIString('ms'), latencyValidator));
-    cell.createChild('div', 'conditions-edit-optional').textContent = WebInspector.UIString('optional');
+    cell.appendChild(editor.createInput('latency', 'text', Common.UIString('ms'), latencyValidator));
+    cell.createChild('div', 'conditions-edit-optional').textContent = Common.UIString('optional');
 
     return editor;
 
@@ -468,23 +468,23 @@ WebInspector.NetworkConditionsSettingsTab = class extends WebInspector.VBox {
 };
 
 /**
- * @implements {WebInspector.ActionDelegate}
+ * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-WebInspector.NetworkConditionsActionDelegate = class {
+Components.NetworkConditionsActionDelegate = class {
   /**
    * @override
-   * @param {!WebInspector.Context} context
+   * @param {!UI.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction(context, actionId) {
     if (actionId === 'components.network-online') {
-      WebInspector.multitargetNetworkManager.setNetworkConditions(WebInspector.NetworkManager.NoThrottlingConditions);
+      SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.NoThrottlingConditions);
       return true;
     }
     if (actionId === 'components.network-offline') {
-      WebInspector.multitargetNetworkManager.setNetworkConditions(WebInspector.NetworkManager.OfflineConditions);
+      SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
       return true;
     }
     return false;
@@ -495,17 +495,17 @@ WebInspector.NetworkConditionsActionDelegate = class {
  * @param {?Protocol.Network.ResourcePriority} priority
  * @return {string}
  */
-WebInspector.uiLabelForPriority = function(priority) {
-  var labelMap = WebInspector.uiLabelForPriority._priorityToUILabel;
+Components.uiLabelForPriority = function(priority) {
+  var labelMap = Components.uiLabelForPriority._priorityToUILabel;
   if (!labelMap) {
     labelMap = new Map([
-      [Protocol.Network.ResourcePriority.VeryLow, WebInspector.UIString('Lowest')],
-      [Protocol.Network.ResourcePriority.Low, WebInspector.UIString('Low')],
-      [Protocol.Network.ResourcePriority.Medium, WebInspector.UIString('Medium')],
-      [Protocol.Network.ResourcePriority.High, WebInspector.UIString('High')],
-      [Protocol.Network.ResourcePriority.VeryHigh, WebInspector.UIString('Highest')]
+      [Protocol.Network.ResourcePriority.VeryLow, Common.UIString('Lowest')],
+      [Protocol.Network.ResourcePriority.Low, Common.UIString('Low')],
+      [Protocol.Network.ResourcePriority.Medium, Common.UIString('Medium')],
+      [Protocol.Network.ResourcePriority.High, Common.UIString('High')],
+      [Protocol.Network.ResourcePriority.VeryHigh, Common.UIString('Highest')]
     ]);
-    WebInspector.uiLabelForPriority._priorityToUILabel = labelMap;
+    Components.uiLabelForPriority._priorityToUILabel = labelMap;
   }
-  return labelMap.get(priority) || WebInspector.UIString('Unknown');
+  return labelMap.get(priority) || Common.UIString('Unknown');
 };

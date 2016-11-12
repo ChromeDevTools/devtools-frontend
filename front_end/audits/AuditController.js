@@ -32,29 +32,29 @@
 /**
  * @unrestricted
  */
-WebInspector.AuditController = class {
+Audits.AuditController = class {
   /**
-   * @param {!WebInspector.AuditsPanel} auditsPanel
+   * @param {!Audits.AuditsPanel} auditsPanel
    */
   constructor(auditsPanel) {
     this._auditsPanel = auditsPanel;
-    WebInspector.targetManager.addEventListener(
-        WebInspector.TargetManager.Events.Load, this._didMainResourceLoad, this);
-    WebInspector.targetManager.addModelListener(
-        WebInspector.NetworkManager, WebInspector.NetworkManager.Events.RequestFinished, this._didLoadResource, this);
+    SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.Load, this._didMainResourceLoad, this);
+    SDK.targetManager.addModelListener(
+        SDK.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this._didLoadResource, this);
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!Array.<!WebInspector.AuditCategory>} categories
-   * @param {function(string, !Array.<!WebInspector.AuditCategoryResult>)} resultCallback
+   * @param {!SDK.Target} target
+   * @param {!Array.<!Audits.AuditCategory>} categories
+   * @param {function(string, !Array.<!Audits.AuditCategoryResult>)} resultCallback
    */
   _executeAudit(target, categories, resultCallback) {
-    this._progress.setTitle(WebInspector.UIString('Running audit'));
+    this._progress.setTitle(Common.UIString('Running audit'));
 
     /**
-     * @param {!WebInspector.AuditCategoryResult} categoryResult
-     * @param {!WebInspector.AuditRuleResult} ruleResult
+     * @param {!Audits.AuditCategoryResult} categoryResult
+     * @param {!Audits.AuditRuleResult} ruleResult
      */
     function ruleResultReadyCallback(categoryResult, ruleResult) {
       if (ruleResult && ruleResult.children)
@@ -71,19 +71,19 @@ WebInspector.AuditController = class {
       resultCallback(mainResourceURL, results);
     }
 
-    var networkLog = WebInspector.NetworkLog.fromTarget(target);
+    var networkLog = SDK.NetworkLog.fromTarget(target);
     var requests = networkLog ? networkLog.requests().slice() : [];
-    var compositeProgress = new WebInspector.CompositeProgress(this._progress);
+    var compositeProgress = new Common.CompositeProgress(this._progress);
     var subprogresses = [];
     for (var i = 0; i < categories.length; ++i)
-      subprogresses.push(new WebInspector.ProgressProxy(compositeProgress.createSubProgress(), categoryDoneCallback));
+      subprogresses.push(new Common.ProgressProxy(compositeProgress.createSubProgress(), categoryDoneCallback));
     for (var i = 0; i < categories.length; ++i) {
       if (this._progress.isCanceled()) {
         subprogresses[i].done();
         continue;
       }
       var category = categories[i];
-      var result = new WebInspector.AuditCategoryResult(category);
+      var result = new Audits.AuditCategoryResult(category);
       results.push(result);
       category.run(target, requests, ruleResultReadyCallback.bind(null, result), subprogresses[i]);
     }
@@ -91,7 +91,7 @@ WebInspector.AuditController = class {
 
   /**
    * @param {string} mainResourceURL
-   * @param {!Array.<!WebInspector.AuditCategoryResult>} results
+   * @param {!Array.<!Audits.AuditCategoryResult>} results
    */
   _auditFinishedCallback(mainResourceURL, results) {
     if (!this._progress.isCanceled())
@@ -101,12 +101,12 @@ WebInspector.AuditController = class {
 
   /**
    * @param {!Array.<string>} categoryIds
-   * @param {!WebInspector.Progress} progress
+   * @param {!Common.Progress} progress
    * @param {boolean} runImmediately
    * @param {function()} startedCallback
    */
   initiateAudit(categoryIds, progress, runImmediately, startedCallback) {
-    var target = WebInspector.targetManager.mainTarget();
+    var target = SDK.targetManager.mainTarget();
     if (!categoryIds || !categoryIds.length || !target)
       return;
 
@@ -121,12 +121,12 @@ WebInspector.AuditController = class {
     else
       this._reloadResources(this._startAuditWhenResourcesReady.bind(this, target, categories, startedCallback));
 
-    WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.AuditsStarted);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.AuditsStarted);
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @param {!Array<!WebInspector.AuditCategory>} categories
+   * @param {!SDK.Target} target
+   * @param {!Array<!Audits.AuditCategory>} categories
    * @param {function()} startedCallback
    */
   _startAuditWhenResourcesReady(target, categories, startedCallback) {
@@ -143,7 +143,7 @@ WebInspector.AuditController = class {
    */
   _reloadResources(callback) {
     this._pageReloadCallback = callback;
-    WebInspector.targetManager.reloadPage();
+    SDK.targetManager.reloadPage();
   }
 
   _didLoadResource() {

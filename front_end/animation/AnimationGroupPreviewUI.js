@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-WebInspector.AnimationGroupPreviewUI = class {
+Animation.AnimationGroupPreviewUI = class {
   /**
-   * @param {!WebInspector.AnimationModel.AnimationGroup} model
+   * @param {!Animation.AnimationModel.AnimationGroup} model
    */
   constructor(model) {
     this._model = model;
@@ -67,7 +67,7 @@ WebInspector.AnimationGroupPreviewUI = class {
       var y = Math.floor(this._viewBoxHeight / Math.max(6, numberOfAnimations) * i + 1);
       line.setAttribute('y1', y);
       line.setAttribute('y2', y);
-      line.style.stroke = WebInspector.AnimationUI.Color(this._model.animations()[i]);
+      line.style.stroke = Animation.AnimationUI.Color(this._model.animations()[i]);
     }
   }
 };

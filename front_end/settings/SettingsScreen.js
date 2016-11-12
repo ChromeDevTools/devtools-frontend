@@ -28,10 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.ViewLocationResolver}
+ * @implements {UI.ViewLocationResolver}
  * @unrestricted
  */
-WebInspector.SettingsScreen = class extends WebInspector.VBox {
+Settings.SettingsScreen = class extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('settings/settingsScreen.css');
@@ -41,18 +41,18 @@ WebInspector.SettingsScreen = class extends WebInspector.VBox {
     this.contentElement.classList.add('vbox');
 
     var settingsLabelElement = createElement('div');
-    WebInspector.createShadowRootWithCoreStyles(settingsLabelElement, 'settings/settingsScreen.css')
+    UI.createShadowRootWithCoreStyles(settingsLabelElement, 'settings/settingsScreen.css')
         .createChild('div', 'settings-window-title')
-        .textContent = WebInspector.UIString('Settings');
+        .textContent = Common.UIString('Settings');
 
-    this._tabbedLocation = WebInspector.viewManager.createTabbedLocation(
-        () => WebInspector.SettingsScreen._showSettingsScreen(), 'settings-view');
+    this._tabbedLocation = UI.viewManager.createTabbedLocation(
+        () => Settings.SettingsScreen._showSettingsScreen(), 'settings-view');
     var tabbedPane = this._tabbedLocation.tabbedPane();
-    tabbedPane.leftToolbar().appendToolbarItem(new WebInspector.ToolbarItem(settingsLabelElement));
+    tabbedPane.leftToolbar().appendToolbarItem(new UI.ToolbarItem(settingsLabelElement));
     tabbedPane.setShrinkableTabs(false);
     tabbedPane.setVerticalTabLayout(true);
-    var shortcutsView = new WebInspector.SimpleView(WebInspector.UIString('Shortcuts'));
-    WebInspector.shortcutsScreen.createShortcutsTabView().show(shortcutsView.element);
+    var shortcutsView = new UI.SimpleView(Common.UIString('Shortcuts'));
+    Components.shortcutsScreen.createShortcutsTabView().show(shortcutsView.element);
     this._tabbedLocation.appendView(shortcutsView);
     tabbedPane.show(this.contentElement);
 
@@ -66,10 +66,10 @@ WebInspector.SettingsScreen = class extends WebInspector.VBox {
    */
   static _showSettingsScreen(name) {
     var settingsScreen =
-        /** @type {!WebInspector.SettingsScreen} */ (self.runtime.sharedInstance(WebInspector.SettingsScreen));
+        /** @type {!Settings.SettingsScreen} */ (self.runtime.sharedInstance(Settings.SettingsScreen));
     if (settingsScreen.isShowing())
       return;
-    var dialog = new WebInspector.Dialog();
+    var dialog = new UI.Dialog();
     dialog.addCloseButton();
     settingsScreen.show(dialog.element);
     dialog.show();
@@ -79,7 +79,7 @@ WebInspector.SettingsScreen = class extends WebInspector.VBox {
   /**
    * @override
    * @param {string} locationName
-   * @return {?WebInspector.ViewLocation}
+   * @return {?UI.ViewLocation}
    */
   resolveLocation(locationName) {
     return this._tabbedLocation;
@@ -89,7 +89,7 @@ WebInspector.SettingsScreen = class extends WebInspector.VBox {
    * @param {string} name
    */
   _selectTab(name) {
-    WebInspector.viewManager.showView(name);
+    UI.viewManager.showView(name);
   }
 
   /**
@@ -106,7 +106,7 @@ WebInspector.SettingsScreen = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.SettingsTab = class extends WebInspector.VBox {
+Settings.SettingsTab = class extends UI.VBox {
   /**
    * @param {string} name
    * @param {string=} id
@@ -160,9 +160,9 @@ WebInspector.SettingsTab = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.GenericSettingsTab = class extends WebInspector.SettingsTab {
+Settings.GenericSettingsTab = class extends Settings.SettingsTab {
   constructor() {
-    super(WebInspector.UIString('Preferences'), 'preferences-tab-content');
+    super(Common.UIString('Preferences'), 'preferences-tab-content');
 
     /** @const */
     var explicitSectionOrder =
@@ -174,14 +174,14 @@ WebInspector.GenericSettingsTab = class extends WebInspector.SettingsTab {
     for (var sectionName of explicitSectionOrder)
       this._sectionElement(sectionName);
     self.runtime.extensions('setting').forEach(this._addSetting.bind(this));
-    self.runtime.extensions(WebInspector.SettingUI).forEach(this._addSettingUI.bind(this));
+    self.runtime.extensions(UI.SettingUI).forEach(this._addSettingUI.bind(this));
 
     this._appendSection().appendChild(
-        createTextButton(WebInspector.UIString('Restore defaults and reload'), restoreAndReload));
+        createTextButton(Common.UIString('Restore defaults and reload'), restoreAndReload));
 
     function restoreAndReload() {
-      WebInspector.settings.clearAll();
-      WebInspector.reload();
+      Common.settings.clearAll();
+      Components.reload();
     }
   }
 
@@ -202,20 +202,20 @@ WebInspector.GenericSettingsTab = class extends WebInspector.SettingsTab {
    * @param {!Runtime.Extension} extension
    */
   _addSetting(extension) {
-    if (!WebInspector.GenericSettingsTab.isSettingVisible(extension))
+    if (!Settings.GenericSettingsTab.isSettingVisible(extension))
       return;
     var descriptor = extension.descriptor();
     var sectionName = descriptor['category'];
     var settingName = descriptor['settingName'];
-    var setting = WebInspector.moduleSetting(settingName);
-    var uiTitle = WebInspector.UIString(extension.title());
+    var setting = Common.moduleSetting(settingName);
+    var uiTitle = Common.UIString(extension.title());
 
     var sectionElement = this._sectionElement(sectionName);
     var settingControl;
 
     switch (descriptor['settingType']) {
       case 'boolean':
-        settingControl = WebInspector.SettingsUI.createSettingCheckbox(uiTitle, setting);
+        settingControl = UI.SettingsUI.createSettingCheckbox(uiTitle, setting);
         break;
       case 'enum':
         var descriptorOptions = descriptor['options'];
@@ -223,7 +223,7 @@ WebInspector.GenericSettingsTab = class extends WebInspector.SettingsTab {
         for (var i = 0; i < options.length; ++i) {
           // The "raw" flag indicates text is non-i18n-izable.
           var optionName = descriptorOptions[i]['raw'] ? descriptorOptions[i]['text'] :
-                                                         WebInspector.UIString(descriptorOptions[i]['text']);
+                                                         Common.UIString(descriptorOptions[i]['text']);
           options[i] = [optionName, descriptorOptions[i]['value']];
         }
         settingControl = this._createSelectSetting(uiTitle, options, setting);
@@ -246,10 +246,10 @@ WebInspector.GenericSettingsTab = class extends WebInspector.SettingsTab {
 
     /**
      * @param {!Object} object
-     * @this {WebInspector.GenericSettingsTab}
+     * @this {Settings.GenericSettingsTab}
      */
     function appendCustomSetting(object) {
-      var settingUI = /** @type {!WebInspector.SettingUI} */ (object);
+      var settingUI = /** @type {!UI.SettingUI} */ (object);
       var element = settingUI.settingElement();
       if (element)
         this._sectionElement(sectionName).appendChild(element);
@@ -263,7 +263,7 @@ WebInspector.GenericSettingsTab = class extends WebInspector.SettingsTab {
   _sectionElement(sectionName) {
     var sectionElement = this._nameToSection.get(sectionName);
     if (!sectionElement) {
-      var uiSectionName = sectionName && WebInspector.UIString(sectionName);
+      var uiSectionName = sectionName && Common.UIString(sectionName);
       sectionElement = this._appendSection(uiSectionName);
       this._nameToSection.set(sectionName, sectionElement);
     }
@@ -275,13 +275,13 @@ WebInspector.GenericSettingsTab = class extends WebInspector.SettingsTab {
 /**
  * @unrestricted
  */
-WebInspector.WorkspaceSettingsTab = class extends WebInspector.SettingsTab {
+Settings.WorkspaceSettingsTab = class extends Settings.SettingsTab {
   constructor() {
-    super(WebInspector.UIString('Workspace'), 'workspace-tab-content');
-    WebInspector.isolatedFileSystemManager.addEventListener(
-        WebInspector.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
-    WebInspector.isolatedFileSystemManager.addEventListener(
-        WebInspector.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
+    super(Common.UIString('Workspace'), 'workspace-tab-content');
+    Workspace.isolatedFileSystemManager.addEventListener(
+        Workspace.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
+    Workspace.isolatedFileSystemManager.addEventListener(
+        Workspace.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
 
     var folderExcludePatternInput = this._createFolderExcludePatternInput();
     folderExcludePatternInput.classList.add('folder-exclude-pattern');
@@ -290,15 +290,15 @@ WebInspector.WorkspaceSettingsTab = class extends WebInspector.SettingsTab {
     this._fileSystemsListContainer = this.containerElement.createChild('div', '');
 
     this.containerElement.appendChild(
-        createTextButton(WebInspector.UIString('Add folder\u2026'), this._addFileSystemClicked.bind(this)));
+        createTextButton(Common.UIString('Add folder\u2026'), this._addFileSystemClicked.bind(this)));
 
     /** @type {!Map<string, !Element>} */
     this._elementByPath = new Map();
 
-    /** @type {!Map<string, !WebInspector.EditFileSystemView>} */
+    /** @type {!Map<string, !Settings.EditFileSystemView>} */
     this._mappingViewByPath = new Map();
 
-    var fileSystems = WebInspector.isolatedFileSystemManager.fileSystems();
+    var fileSystems = Workspace.isolatedFileSystemManager.fileSystems();
     for (var i = 0; i < fileSystems.length; ++i)
       this._addItem(fileSystems[i]);
   }
@@ -309,12 +309,12 @@ WebInspector.WorkspaceSettingsTab = class extends WebInspector.SettingsTab {
   _createFolderExcludePatternInput() {
     var p = createElement('p');
     var labelElement = p.createChild('label');
-    labelElement.textContent = WebInspector.UIString('Folder exclude pattern');
+    labelElement.textContent = Common.UIString('Folder exclude pattern');
     var inputElement = p.createChild('input');
     inputElement.type = 'text';
     inputElement.style.width = '270px';
-    var folderExcludeSetting = WebInspector.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
-    var setValue = WebInspector.bindInput(
+    var folderExcludeSetting = Workspace.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
+    var setValue = UI.bindInput(
         inputElement, folderExcludeSetting.set.bind(folderExcludeSetting), regexValidator, false);
     folderExcludeSetting.addChangeListener(() => setValue.call(null, folderExcludeSetting.get()));
     setValue(folderExcludeSetting.get());
@@ -335,7 +335,7 @@ WebInspector.WorkspaceSettingsTab = class extends WebInspector.SettingsTab {
   }
 
   /**
-   * @param {!WebInspector.IsolatedFileSystem} fileSystem
+   * @param {!Workspace.IsolatedFileSystem} fileSystem
    */
   _addItem(fileSystem) {
     var element = this._renderFileSystem(fileSystem);
@@ -343,19 +343,19 @@ WebInspector.WorkspaceSettingsTab = class extends WebInspector.SettingsTab {
 
     this._fileSystemsListContainer.appendChild(element);
 
-    var mappingView = new WebInspector.EditFileSystemView(fileSystem.path());
+    var mappingView = new Settings.EditFileSystemView(fileSystem.path());
     this._mappingViewByPath.set(fileSystem.path(), mappingView);
     mappingView.element.classList.add('file-system-mapping-view');
     mappingView.show(element);
   }
 
   /**
-   * @param {!WebInspector.IsolatedFileSystem} fileSystem
+   * @param {!Workspace.IsolatedFileSystem} fileSystem
    * @return {!Element}
    */
   _renderFileSystem(fileSystem) {
     var fileSystemPath = fileSystem.path();
-    var lastIndexOfSlash = fileSystemPath.lastIndexOf(WebInspector.isWin() ? '\\' : '/');
+    var lastIndexOfSlash = fileSystemPath.lastIndexOf(Host.isWin() ? '\\' : '/');
     var folderName = fileSystemPath.substr(lastIndexOfSlash + 1);
 
     var element = createElementWithClass('div', 'file-system-container');
@@ -366,8 +366,8 @@ WebInspector.WorkspaceSettingsTab = class extends WebInspector.SettingsTab {
     path.textContent = fileSystemPath;
     path.title = fileSystemPath;
 
-    var toolbar = new WebInspector.Toolbar('');
-    var button = new WebInspector.ToolbarButton(WebInspector.UIString('Remove'), 'largeicon-delete');
+    var toolbar = new UI.Toolbar('');
+    var button = new UI.ToolbarButton(Common.UIString('Remove'), 'largeicon-delete');
     button.addEventListener('click', this._removeFileSystemClicked.bind(this, fileSystem));
     toolbar.appendToolbarItem(button);
     header.appendChild(toolbar.element);
@@ -376,23 +376,23 @@ WebInspector.WorkspaceSettingsTab = class extends WebInspector.SettingsTab {
   }
 
   /**
-   * @param {!WebInspector.IsolatedFileSystem} fileSystem
+   * @param {!Workspace.IsolatedFileSystem} fileSystem
    */
   _removeFileSystemClicked(fileSystem) {
-    WebInspector.isolatedFileSystemManager.removeFileSystem(fileSystem);
+    Workspace.isolatedFileSystemManager.removeFileSystem(fileSystem);
   }
 
   _addFileSystemClicked() {
-    WebInspector.isolatedFileSystemManager.addFileSystem();
+    Workspace.isolatedFileSystemManager.addFileSystem();
   }
 
   _fileSystemAdded(event) {
-    var fileSystem = /** @type {!WebInspector.IsolatedFileSystem} */ (event.data);
+    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
     this._addItem(fileSystem);
   }
 
   _fileSystemRemoved(event) {
-    var fileSystem = /** @type {!WebInspector.IsolatedFileSystem} */ (event.data);
+    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
 
     var mappingView = this._mappingViewByPath.get(fileSystem.path());
     if (mappingView) {
@@ -411,9 +411,9 @@ WebInspector.WorkspaceSettingsTab = class extends WebInspector.SettingsTab {
 /**
  * @unrestricted
  */
-WebInspector.ExperimentsSettingsTab = class extends WebInspector.SettingsTab {
+Settings.ExperimentsSettingsTab = class extends Settings.SettingsTab {
   constructor() {
-    super(WebInspector.UIString('Experiments'), 'experiments-tab-content');
+    super(Common.UIString('Experiments'), 'experiments-tab-content');
 
     var experiments = Runtime.experiments.allConfigurableExperiments();
     if (experiments.length) {
@@ -430,15 +430,15 @@ WebInspector.ExperimentsSettingsTab = class extends WebInspector.SettingsTab {
   _createExperimentsWarningSubsection() {
     var subsection = createElement('div');
     var warning = subsection.createChild('span', 'settings-experiments-warning-subsection-warning');
-    warning.textContent = WebInspector.UIString('WARNING:');
+    warning.textContent = Common.UIString('WARNING:');
     subsection.createTextChild(' ');
     var message = subsection.createChild('span', 'settings-experiments-warning-subsection-message');
-    message.textContent = WebInspector.UIString('These experiments could be dangerous and may require restart.');
+    message.textContent = Common.UIString('These experiments could be dangerous and may require restart.');
     return subsection;
   }
 
   _createExperimentCheckbox(experiment) {
-    var label = createCheckboxLabel(WebInspector.UIString(experiment.title), experiment.isEnabled());
+    var label = createCheckboxLabel(Common.UIString(experiment.title), experiment.isEnabled());
     var input = label.checkboxElement;
     input.name = experiment.name;
     function listener() {
@@ -454,26 +454,26 @@ WebInspector.ExperimentsSettingsTab = class extends WebInspector.SettingsTab {
 };
 
 /**
- * @implements {WebInspector.ActionDelegate}
+ * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-WebInspector.SettingsScreen.ActionDelegate = class {
+Settings.SettingsScreen.ActionDelegate = class {
   /**
    * @override
-   * @param {!WebInspector.Context} context
+   * @param {!UI.Context} context
    * @param {string} actionId
    * @return {boolean}
    */
   handleAction(context, actionId) {
     switch (actionId) {
       case 'settings.show':
-        WebInspector.SettingsScreen._showSettingsScreen();
+        Settings.SettingsScreen._showSettingsScreen();
         return true;
       case 'settings.help':
         InspectorFrontendHost.openInNewTab('https://developers.google.com/web/tools/chrome-devtools/');
         return true;
       case 'settings.shortcuts':
-        WebInspector.SettingsScreen._showSettingsScreen(WebInspector.UIString('Shortcuts'));
+        Settings.SettingsScreen._showSettingsScreen(Common.UIString('Shortcuts'));
         return true;
     }
     return false;
@@ -481,22 +481,22 @@ WebInspector.SettingsScreen.ActionDelegate = class {
 };
 
 /**
- * @implements {WebInspector.Revealer}
+ * @implements {Common.Revealer}
  * @unrestricted
  */
-WebInspector.SettingsScreen.Revealer = class {
+Settings.SettingsScreen.Revealer = class {
   /**
    * @override
    * @param {!Object} object
    * @return {!Promise}
    */
   reveal(object) {
-    console.assert(object instanceof WebInspector.Setting);
-    var setting = /** @type {!WebInspector.Setting} */ (object);
+    console.assert(object instanceof Common.Setting);
+    var setting = /** @type {!Common.Setting} */ (object);
     var success = false;
 
     self.runtime.extensions('setting').forEach(revealModuleSetting);
-    self.runtime.extensions(WebInspector.SettingUI).forEach(revealSettingUI);
+    self.runtime.extensions(UI.SettingUI).forEach(revealSettingUI);
     self.runtime.extensions('view').forEach(revealSettingsView);
 
     return success ? Promise.resolve() : Promise.reject();
@@ -505,11 +505,11 @@ WebInspector.SettingsScreen.Revealer = class {
      * @param {!Runtime.Extension} extension
      */
     function revealModuleSetting(extension) {
-      if (!WebInspector.GenericSettingsTab.isSettingVisible(extension))
+      if (!Settings.GenericSettingsTab.isSettingVisible(extension))
         return;
       if (extension.descriptor()['settingName'] === setting.name) {
         InspectorFrontendHost.bringToFront();
-        WebInspector.SettingsScreen._showSettingsScreen();
+        Settings.SettingsScreen._showSettingsScreen();
         success = true;
       }
     }
@@ -521,7 +521,7 @@ WebInspector.SettingsScreen.Revealer = class {
       var settings = extension.descriptor()['settings'];
       if (settings && settings.indexOf(setting.name) !== -1) {
         InspectorFrontendHost.bringToFront();
-        WebInspector.SettingsScreen._showSettingsScreen();
+        Settings.SettingsScreen._showSettingsScreen();
         success = true;
       }
     }
@@ -536,7 +536,7 @@ WebInspector.SettingsScreen.Revealer = class {
       var settings = extension.descriptor()['settings'];
       if (settings && settings.indexOf(setting.name) !== -1) {
         InspectorFrontendHost.bringToFront();
-        WebInspector.SettingsScreen._showSettingsScreen(extension.descriptor()['id']);
+        Settings.SettingsScreen._showSettingsScreen(extension.descriptor()['id']);
         success = true;
       }
     }

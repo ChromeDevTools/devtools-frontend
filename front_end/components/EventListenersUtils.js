@@ -1,24 +1,24 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/** @typedef {{eventListeners:!Array<!WebInspector.EventListener>, internalHandlers:?WebInspector.RemoteArray}} */
-WebInspector.FrameworkEventListenersObject;
+/** @typedef {{eventListeners:!Array<!SDK.EventListener>, internalHandlers:?SDK.RemoteArray}} */
+Components.FrameworkEventListenersObject;
 
 /** @typedef {{type: string, useCapture: boolean, passive: boolean, once: boolean, handler: function()}} */
-WebInspector.EventListenerObjectInInspectedPage;
+Components.EventListenerObjectInInspectedPage;
 
 /**
- * @param {!WebInspector.RemoteObject} object
- * @return {!Promise<!WebInspector.FrameworkEventListenersObject>}
+ * @param {!SDK.RemoteObject} object
+ * @return {!Promise<!Components.FrameworkEventListenersObject>}
  */
-WebInspector.EventListener.frameworkEventListeners = function(object) {
+SDK.EventListener.frameworkEventListeners = function(object) {
   if (!object.target().hasDOMCapability()) {
     // TODO(kozyatinskiy): figure out how this should work for |window|.
     return Promise.resolve(
-        /** @type {!WebInspector.FrameworkEventListenersObject} */ ({eventListeners: [], internalHandlers: null}));
+        /** @type {!Components.FrameworkEventListenersObject} */ ({eventListeners: [], internalHandlers: null}));
   }
 
-  var listenersResult = /** @type {!WebInspector.FrameworkEventListenersObject} */ ({eventListeners: []});
+  var listenersResult = /** @type {!Components.FrameworkEventListenersObject} */ ({eventListeners: []});
   return object.callFunctionPromise(frameworkEventListeners, undefined)
       .then(assertCallFunctionResult)
       .then(getOwnProperties)
@@ -27,15 +27,15 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
       .catchException(listenersResult);
 
   /**
-   * @param {!WebInspector.RemoteObject} object
-   * @return {!Promise<!{properties: ?Array.<!WebInspector.RemoteObjectProperty>, internalProperties: ?Array.<!WebInspector.RemoteObjectProperty>}>}
+   * @param {!SDK.RemoteObject} object
+   * @return {!Promise<!{properties: ?Array.<!SDK.RemoteObjectProperty>, internalProperties: ?Array.<!SDK.RemoteObjectProperty>}>}
    */
   function getOwnProperties(object) {
     return object.getOwnPropertiesPromise();
   }
 
   /**
-   * @param {!{properties: ?Array<!WebInspector.RemoteObjectProperty>, internalProperties: ?Array<!WebInspector.RemoteObjectProperty>}} result
+   * @param {!{properties: ?Array<!SDK.RemoteObjectProperty>, internalProperties: ?Array<!SDK.RemoteObjectProperty>}} result
    * @return {!Promise<undefined>}
    */
   function createEventListeners(result) {
@@ -54,17 +54,17 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
   }
 
   /**
-   * @param {!WebInspector.RemoteObject} pageEventListenersObject
-   * @return {!Promise<!Array<!WebInspector.EventListener>>}
+   * @param {!SDK.RemoteObject} pageEventListenersObject
+   * @return {!Promise<!Array<!SDK.EventListener>>}
    */
   function convertToEventListeners(pageEventListenersObject) {
-    return WebInspector.RemoteArray.objectAsArray(pageEventListenersObject)
+    return SDK.RemoteArray.objectAsArray(pageEventListenersObject)
         .map(toEventListener)
         .then(filterOutEmptyObjects);
 
     /**
-     * @param {!WebInspector.RemoteObject} listenerObject
-     * @return {!Promise<?WebInspector.EventListener>}
+     * @param {!SDK.RemoteObject} listenerObject
+     * @return {!Promise<?SDK.EventListener>}
      */
     function toEventListener(listenerObject) {
       /** @type {string} */
@@ -75,13 +75,13 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
       var passive;
       /** @type {boolean} */
       var once;
-      /** @type {?WebInspector.RemoteObject} */
+      /** @type {?SDK.RemoteObject} */
       var handler = null;
-      /** @type {?WebInspector.RemoteObject} */
+      /** @type {?SDK.RemoteObject} */
       var originalHandler = null;
-      /** @type {?WebInspector.DebuggerModel.Location} */
+      /** @type {?SDK.DebuggerModel.Location} */
       var location = null;
-      /** @type {?WebInspector.RemoteObject} */
+      /** @type {?SDK.RemoteObject} */
       var removeFunctionObject = null;
 
       var promises = [];
@@ -90,7 +90,7 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
 
       /**
        * @suppressReceiverCheck
-       * @this {WebInspector.EventListenerObjectInInspectedPage}
+       * @this {Components.EventListenerObjectInInspectedPage}
        * @return {!{type:string, useCapture:boolean, passive:boolean, once:boolean}}
        */
       function truncatePageEventListener() {
@@ -116,15 +116,15 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
       /**
        * @suppressReceiverCheck
        * @return {function()}
-       * @this {WebInspector.EventListenerObjectInInspectedPage}
+       * @this {Components.EventListenerObjectInInspectedPage}
        */
       function handlerFunction() {
         return this.handler;
       }
 
       /**
-       * @param {!WebInspector.RemoteObject} functionObject
-       * @return {!WebInspector.RemoteObject}
+       * @param {!SDK.RemoteObject} functionObject
+       * @return {!SDK.RemoteObject}
        */
       function storeOriginalHandler(functionObject) {
         originalHandler = functionObject;
@@ -132,7 +132,7 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
       }
 
       /**
-       * @param {!WebInspector.RemoteObject} functionObject
+       * @param {!SDK.RemoteObject} functionObject
        * @return {!Promise<undefined>}
        */
       function storeFunctionWithDetails(functionObject) {
@@ -142,7 +142,7 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
       }
 
       /**
-       * @param {?WebInspector.DebuggerModel.FunctionDetails} functionDetails
+       * @param {?SDK.DebuggerModel.FunctionDetails} functionDetails
        */
       function storeFunctionDetails(functionDetails) {
         location = functionDetails ? functionDetails.location : null;
@@ -155,14 +155,14 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
       /**
        * @suppressReceiverCheck
        * @return {function()}
-       * @this {WebInspector.EventListenerObjectInInspectedPage}
+       * @this {Components.EventListenerObjectInInspectedPage}
        */
       function getRemoveFunction() {
         return this.remove;
       }
 
       /**
-       * @param {!WebInspector.RemoteObject} functionObject
+       * @param {!SDK.RemoteObject} functionObject
        */
       function storeRemoveFunction(functionObject) {
         if (functionObject.type !== 'function')
@@ -172,15 +172,15 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
 
       return Promise.all(promises)
           .then(createEventListener)
-          .catchException(/** @type {?WebInspector.EventListener} */ (null));
+          .catchException(/** @type {?SDK.EventListener} */ (null));
 
       /**
-       * @return {!WebInspector.EventListener}
+       * @return {!SDK.EventListener}
        */
       function createEventListener() {
         if (!location)
           throw new Error('Empty event listener\'s location');
-        return new WebInspector.EventListener(
+        return new SDK.EventListener(
             handler._target, object, type, useCapture, passive, once, handler, originalHandler, location,
             removeFunctionObject, 'frameworkUser');
       }
@@ -188,54 +188,54 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
   }
 
   /**
-   * @param {!WebInspector.RemoteObject} pageInternalHandlersObject
-   * @return {!Promise<!WebInspector.RemoteArray>}
+   * @param {!SDK.RemoteObject} pageInternalHandlersObject
+   * @return {!Promise<!SDK.RemoteArray>}
    */
   function convertToInternalHandlers(pageInternalHandlersObject) {
-    return WebInspector.RemoteArray.objectAsArray(pageInternalHandlersObject)
+    return SDK.RemoteArray.objectAsArray(pageInternalHandlersObject)
         .map(toTargetFunction)
-        .then(WebInspector.RemoteArray.createFromRemoteObjects);
+        .then(SDK.RemoteArray.createFromRemoteObjects);
   }
 
   /**
-   * @param {!WebInspector.RemoteObject} functionObject
-   * @return {!Promise<!WebInspector.RemoteObject>}
+   * @param {!SDK.RemoteObject} functionObject
+   * @return {!Promise<!SDK.RemoteObject>}
    */
   function toTargetFunction(functionObject) {
-    return WebInspector.RemoteFunction.objectAsFunction(functionObject).targetFunction();
+    return SDK.RemoteFunction.objectAsFunction(functionObject).targetFunction();
   }
 
   /**
-   * @param {!Array<!WebInspector.EventListener>} eventListeners
+   * @param {!Array<!SDK.EventListener>} eventListeners
    */
   function storeEventListeners(eventListeners) {
     listenersResult.eventListeners = eventListeners;
   }
 
   /**
-   * @param {!WebInspector.RemoteArray} internalHandlers
+   * @param {!SDK.RemoteArray} internalHandlers
    */
   function storeInternalHandlers(internalHandlers) {
     listenersResult.internalHandlers = internalHandlers;
   }
 
   /**
-   * @param {!WebInspector.RemoteObject} errorString
+   * @param {!SDK.RemoteObject} errorString
    */
   function printErrorString(errorString) {
-    WebInspector.console.error(errorString.value);
+    Common.console.error(errorString.value);
   }
 
   /**
-   * @return {!WebInspector.FrameworkEventListenersObject}
+   * @return {!Components.FrameworkEventListenersObject}
    */
   function returnResult() {
     return listenersResult;
   }
 
   /**
-   * @param {!WebInspector.CallFunctionResult} result
-   * @return {!WebInspector.RemoteObject}
+   * @param {!SDK.CallFunctionResult} result
+   * @return {!SDK.RemoteObject}
    */
   function assertCallFunctionResult(result) {
     if (result.wasThrown || !result.object)
@@ -286,7 +286,7 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
     */
   /**
    * @suppressReceiverCheck
-   * @return {!{eventListeners:!Array<!WebInspector.EventListenerObjectInInspectedPage>, internalHandlers:?Array<function()>}}
+   * @return {!{eventListeners:!Array<!Components.EventListenerObjectInInspectedPage>, internalHandlers:?Array<function()>}}
    * @this {Object}
    */
   function frameworkEventListeners() {
@@ -344,7 +344,7 @@ WebInspector.EventListener.frameworkEventListeners = function(object) {
 
     /**
      * @param {*} eventListener
-     * @return {?WebInspector.EventListenerObjectInInspectedPage}
+     * @return {?Components.EventListenerObjectInInspectedPage}
      */
     function checkEventListener(eventListener) {
       try {

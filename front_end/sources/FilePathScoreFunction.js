@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.FilePathScoreFunction = class {
+Sources.FilePathScoreFunction = class {
   /**
    * @param {string} query
    */

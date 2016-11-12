@@ -7,7 +7,7 @@
             "title": "Animations",
             "persistence": "closeable",
             "order": 0,
-            "className": "WebInspector.AnimationTimeline"
+            "className": "Animation.AnimationTimeline"
         }
     ],
     "dependencies": [

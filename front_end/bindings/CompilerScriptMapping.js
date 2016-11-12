@@ -28,16 +28,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.DebuggerSourceMapping}
+ * @implements {Bindings.DebuggerSourceMapping}
  * @unrestricted
  */
-WebInspector.CompilerScriptMapping = class {
+Bindings.CompilerScriptMapping = class {
   /**
-   * @param {!WebInspector.DebuggerModel} debuggerModel
-   * @param {!WebInspector.Workspace} workspace
-   * @param {!WebInspector.NetworkMapping} networkMapping
-   * @param {!WebInspector.NetworkProject} networkProject
-   * @param {!WebInspector.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
+   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!Workspace.Workspace} workspace
+   * @param {!Bindings.NetworkMapping} networkMapping
+   * @param {!Bindings.NetworkProject} networkProject
+   * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
   constructor(debuggerModel, workspace, networkMapping, networkProject, debuggerWorkspaceBinding) {
     this._target = debuggerModel.target();
@@ -46,37 +46,37 @@ WebInspector.CompilerScriptMapping = class {
     this._networkProject = networkProject;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
-    /** @type {!Map<string, !Promise<?WebInspector.TextSourceMap>>} */
+    /** @type {!Map<string, !Promise<?SDK.TextSourceMap>>} */
     this._sourceMapLoadingPromises = new Map();
-    /** @type {!Map<string, !WebInspector.TextSourceMap>} */
+    /** @type {!Map<string, !SDK.TextSourceMap>} */
     this._sourceMapForScriptId = new Map();
-    /** @type {!Map.<!WebInspector.TextSourceMap, !WebInspector.Script>} */
+    /** @type {!Map.<!SDK.TextSourceMap, !SDK.Script>} */
     this._scriptForSourceMap = new Map();
-    /** @type {!Map.<string, !WebInspector.TextSourceMap>} */
+    /** @type {!Map.<string, !SDK.TextSourceMap>} */
     this._sourceMapForURL = new Map();
-    /** @type {!Map.<string, !WebInspector.UISourceCode>} */
+    /** @type {!Map.<string, !Workspace.UISourceCode>} */
     this._stubUISourceCodes = new Map();
 
-    var projectId = WebInspector.CompilerScriptMapping.projectIdForTarget(this._target);
+    var projectId = Bindings.CompilerScriptMapping.projectIdForTarget(this._target);
     this._stubProject =
-        new WebInspector.ContentProviderBasedProject(workspace, projectId, WebInspector.projectTypes.Service, '');
+        new Bindings.ContentProviderBasedProject(workspace, projectId, Workspace.projectTypes.Service, '');
     this._eventListeners = [
       workspace.addEventListener(
-          WebInspector.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAddedToWorkspace, this),
-      debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this)
+          Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAddedToWorkspace, this),
+      debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this)
     ];
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {?string}
    */
   static uiSourceCodeOrigin(uiSourceCode) {
-    return uiSourceCode[WebInspector.CompilerScriptMapping._originSymbol] || null;
+    return uiSourceCode[Bindings.CompilerScriptMapping._originSymbol] || null;
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @return {string}
    */
   static projectIdForTarget(target) {
@@ -84,7 +84,7 @@ WebInspector.CompilerScriptMapping = class {
   }
 
   /**
-   * @param {!WebInspector.DebuggerModel.Location} rawLocation
+   * @param {!SDK.DebuggerModel.Location} rawLocation
    * @return {boolean}
    */
   mapsToSourceCode(rawLocation) {
@@ -97,15 +97,15 @@ WebInspector.CompilerScriptMapping = class {
 
   /**
    * @override
-   * @param {!WebInspector.DebuggerModel.Location} rawLocation
-   * @return {?WebInspector.UILocation}
+   * @param {!SDK.DebuggerModel.Location} rawLocation
+   * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var debuggerModelLocation = /** @type {!WebInspector.DebuggerModel.Location} */ (rawLocation);
+    var debuggerModelLocation = /** @type {!SDK.DebuggerModel.Location} */ (rawLocation);
 
     var stubUISourceCode = this._stubUISourceCodes.get(debuggerModelLocation.scriptId);
     if (stubUISourceCode)
-      return new WebInspector.UILocation(stubUISourceCode, rawLocation.lineNumber, rawLocation.columnNumber);
+      return new Workspace.UILocation(stubUISourceCode, rawLocation.lineNumber, rawLocation.columnNumber);
 
     var sourceMap = this._sourceMapForScriptId.get(debuggerModelLocation.scriptId);
     if (!sourceMap)
@@ -127,18 +127,18 @@ WebInspector.CompilerScriptMapping = class {
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?WebInspector.DebuggerModel.Location}
+   * @return {?SDK.DebuggerModel.Location}
    */
   uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
-    if (uiSourceCode.project().type() === WebInspector.projectTypes.Service)
+    if (uiSourceCode.project().type() === Workspace.projectTypes.Service)
       return null;
     var sourceMap = this._sourceMapForURL.get(uiSourceCode.url());
     if (!sourceMap)
       return null;
-    var script = /** @type {!WebInspector.Script} */ (this._scriptForSourceMap.get(sourceMap));
+    var script = /** @type {!SDK.Script} */ (this._scriptForSourceMap.get(sourceMap));
     console.assert(script);
     var entry = sourceMap.firstSourceLineMapping(uiSourceCode.url(), lineNumber);
     if (!entry)
@@ -147,11 +147,11 @@ WebInspector.CompilerScriptMapping = class {
   }
 
   /**
-   * @param {!WebInspector.Script} script
+   * @param {!SDK.Script} script
    */
   addScript(script) {
     if (!script.sourceMapURL) {
-      script.addEventListener(WebInspector.Script.Events.SourceMapURLAdded, this._sourceMapURLAdded.bind(this));
+      script.addEventListener(SDK.Script.Events.SourceMapURLAdded, this._sourceMapURLAdded.bind(this));
       return;
     }
 
@@ -159,15 +159,15 @@ WebInspector.CompilerScriptMapping = class {
   }
 
   /**
-   * @param {!WebInspector.Script} script
-   * @return {?WebInspector.TextSourceMap}
+   * @param {!SDK.Script} script
+   * @return {?SDK.TextSourceMap}
    */
   sourceMapForScript(script) {
     return this._sourceMapForScriptId.get(script.scriptId) || null;
   }
 
   /**
-   * @param {!WebInspector.Script} script
+   * @param {!SDK.Script} script
    */
   maybeLoadSourceMap(script) {
     if (!script.sourceMapURL)
@@ -180,26 +180,26 @@ WebInspector.CompilerScriptMapping = class {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _sourceMapURLAdded(event) {
-    var script = /** @type {!WebInspector.Script} */ (event.target);
+    var script = /** @type {!SDK.Script} */ (event.target);
     if (!script.sourceMapURL)
       return;
     this._processScript(script);
   }
 
   /**
-   * @param {!WebInspector.Script} script
+   * @param {!SDK.Script} script
    */
   _processScript(script) {
-    if (WebInspector.blackboxManager.isBlackboxedURL(script.sourceURL, script.isContentScript()))
+    if (Bindings.blackboxManager.isBlackboxedURL(script.sourceURL, script.isContentScript()))
       return;
     // Create stub UISourceCode for the time source mapping is being loaded.
     var stubUISourceCode = this._stubProject.addContentProvider(
         script.sourceURL,
-        WebInspector.StaticContentProvider.fromString(
-            script.sourceURL, WebInspector.resourceTypes.Script,
+        Common.StaticContentProvider.fromString(
+            script.sourceURL, Common.resourceTypes.Script,
             '\n\n\n\n\n// Please wait a bit.\n// Compiled script is not shown while source map is being loaded!'));
     this._stubUISourceCodes.set(script.scriptId, stubUISourceCode);
 
@@ -208,12 +208,12 @@ WebInspector.CompilerScriptMapping = class {
   }
 
   /**
-   * @param {!WebInspector.Script} script
+   * @param {!SDK.Script} script
    * @param {string} uiSourceCodePath
-   * @param {?WebInspector.TextSourceMap} sourceMap
+   * @param {?SDK.TextSourceMap} sourceMap
    */
   _sourceMapLoaded(script, uiSourceCodePath, sourceMap) {
-    WebInspector.blackboxManager.sourceMapLoaded(script, sourceMap);
+    Bindings.blackboxManager.sourceMapLoaded(script, sourceMap);
 
     this._stubUISourceCodes.delete(script.scriptId);
     this._stubProject.removeFile(uiSourceCodePath);
@@ -240,13 +240,13 @@ WebInspector.CompilerScriptMapping = class {
       this._sourceMapForURL.set(sourceURL, sourceMap);
       var uiSourceCode = this._networkMapping.uiSourceCodeForScriptURL(sourceURL, script);
       if (!uiSourceCode) {
-        var contentProvider = sourceMap.sourceContentProvider(sourceURL, WebInspector.resourceTypes.SourceMapScript);
+        var contentProvider = sourceMap.sourceContentProvider(sourceURL, Common.resourceTypes.SourceMapScript);
         var embeddedContent = sourceMap.embeddedContentByURL(sourceURL);
         var embeddedContentLength = typeof embeddedContent === 'string' ? embeddedContent.length : null;
         uiSourceCode = this._networkProject.addFile(
-            contentProvider, WebInspector.ResourceTreeFrame.fromScript(script), script.isContentScript(),
+            contentProvider, SDK.ResourceTreeFrame.fromScript(script), script.isContentScript(),
             embeddedContentLength);
-        uiSourceCode[WebInspector.CompilerScriptMapping._originSymbol] = script.sourceURL;
+        uiSourceCode[Bindings.CompilerScriptMapping._originSymbol] = script.sourceURL;
       }
       if (uiSourceCode) {
         this._bindUISourceCode(uiSourceCode);
@@ -258,7 +258,7 @@ WebInspector.CompilerScriptMapping = class {
       }
     }
     if (missingSources.length) {
-      WebInspector.console.warn(WebInspector.UIString(
+      Common.console.warn(Common.UIString(
           'Source map %s points to the files missing from the workspace: [%s]', sourceMap.url(),
           missingSources.join(', ')));
     }
@@ -276,7 +276,7 @@ WebInspector.CompilerScriptMapping = class {
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @return {boolean}
    */
@@ -288,59 +288,59 @@ WebInspector.CompilerScriptMapping = class {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _bindUISourceCode(uiSourceCode) {
     this._debuggerWorkspaceBinding.setSourceMapping(this._target, uiSourceCode, this);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _unbindUISourceCode(uiSourceCode) {
     this._debuggerWorkspaceBinding.setSourceMapping(this._target, uiSourceCode, null);
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _uiSourceCodeAddedToWorkspace(event) {
-    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.data);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     if (!this._sourceMapForURL.get(uiSourceCode.url()))
       return;
     this._bindUISourceCode(uiSourceCode);
   }
 
   /**
-   * @param {!WebInspector.Script} script
-   * @return {!Promise<?WebInspector.TextSourceMap>}
+   * @param {!SDK.Script} script
+   * @return {!Promise<?SDK.TextSourceMap>}
    */
   _loadSourceMapForScript(script) {
     // script.sourceURL can be a random string, but is generally an absolute path -> complete it to inspected page url for
     // relative links.
-    var scriptURL = WebInspector.ParsedURL.completeURL(this._target.inspectedURL(), script.sourceURL);
+    var scriptURL = Common.ParsedURL.completeURL(this._target.inspectedURL(), script.sourceURL);
     if (!scriptURL)
-      return Promise.resolve(/** @type {?WebInspector.TextSourceMap} */ (null));
+      return Promise.resolve(/** @type {?SDK.TextSourceMap} */ (null));
 
     console.assert(script.sourceMapURL);
     var scriptSourceMapURL = /** @type {string} */ (script.sourceMapURL);
 
-    var sourceMapURL = WebInspector.ParsedURL.completeURL(scriptURL, scriptSourceMapURL);
+    var sourceMapURL = Common.ParsedURL.completeURL(scriptURL, scriptSourceMapURL);
     if (!sourceMapURL)
-      return Promise.resolve(/** @type {?WebInspector.TextSourceMap} */ (null));
+      return Promise.resolve(/** @type {?SDK.TextSourceMap} */ (null));
 
     var loadingPromise = this._sourceMapLoadingPromises.get(sourceMapURL);
     if (!loadingPromise) {
       loadingPromise =
-          WebInspector.TextSourceMap.load(sourceMapURL, scriptURL).then(sourceMapLoaded.bind(this, sourceMapURL));
+          SDK.TextSourceMap.load(sourceMapURL, scriptURL).then(sourceMapLoaded.bind(this, sourceMapURL));
       this._sourceMapLoadingPromises.set(sourceMapURL, loadingPromise);
     }
     return loadingPromise;
 
     /**
      * @param {string} url
-     * @param {?WebInspector.TextSourceMap} sourceMap
-     * @this {WebInspector.CompilerScriptMapping}
+     * @param {?SDK.TextSourceMap} sourceMap
+     * @this {Bindings.CompilerScriptMapping}
      */
     function sourceMapLoaded(url, sourceMap) {
       if (!sourceMap) {
@@ -354,8 +354,8 @@ WebInspector.CompilerScriptMapping = class {
 
   _debuggerReset() {
     /**
-     * @param {!WebInspector.TextSourceMap} sourceMap
-     * @this {WebInspector.CompilerScriptMapping}
+     * @param {!SDK.TextSourceMap} sourceMap
+     * @this {Bindings.CompilerScriptMapping}
      */
     function unbindSourceMapSources(sourceMap) {
       var script = this._scriptForSourceMap.get(sourceMap);
@@ -377,10 +377,10 @@ WebInspector.CompilerScriptMapping = class {
   }
 
   dispose() {
-    WebInspector.EventTarget.removeEventListeners(this._eventListeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     this._debuggerReset();
     this._stubProject.dispose();
   }
 };
 
-WebInspector.CompilerScriptMapping._originSymbol = Symbol('origin');
+Bindings.CompilerScriptMapping._originSymbol = Symbol('origin');

@@ -24,14 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.ContextFlavorListener}
+ * @implements {UI.ContextFlavorListener}
  * @unrestricted
  */
-WebInspector.ScopeChainSidebarPane = class extends WebInspector.VBox {
+Sources.ScopeChainSidebarPane = class extends UI.VBox {
   constructor() {
     super();
-    this._expandController = new WebInspector.ObjectPropertiesSectionExpandController();
-    this._linkifier = new WebInspector.Linkifier();
+    this._expandController = new Components.ObjectPropertiesSectionExpandController();
+    this._linkifier = new Components.Linkifier();
     this._update();
   }
 
@@ -44,17 +44,17 @@ WebInspector.ScopeChainSidebarPane = class extends WebInspector.VBox {
   }
 
   _update() {
-    var callFrame = WebInspector.context.flavor(WebInspector.DebuggerModel.CallFrame);
-    var details = WebInspector.context.flavor(WebInspector.DebuggerPausedDetails);
+    var callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    var details = UI.context.flavor(SDK.DebuggerPausedDetails);
     this._linkifier.reset();
-    WebInspector.SourceMapNamesResolver.resolveThisObject(callFrame).then(
+    Sources.SourceMapNamesResolver.resolveThisObject(callFrame).then(
         this._innerUpdate.bind(this, details, callFrame));
   }
 
   /**
-   * @param {?WebInspector.DebuggerPausedDetails} details
-   * @param {?WebInspector.DebuggerModel.CallFrame} callFrame
-   * @param {?WebInspector.RemoteObject} thisObject
+   * @param {?SDK.DebuggerPausedDetails} details
+   * @param {?SDK.DebuggerModel.CallFrame} callFrame
+   * @param {?SDK.RemoteObject} thisObject
    */
   _innerUpdate(details, callFrame, thisObject) {
     this.element.removeChildren();
@@ -62,7 +62,7 @@ WebInspector.ScopeChainSidebarPane = class extends WebInspector.VBox {
     if (!details || !callFrame) {
       var infoElement = createElement('div');
       infoElement.className = 'gray-info-message';
-      infoElement.textContent = WebInspector.UIString('Not Paused');
+      infoElement.textContent = Common.UIString('Not Paused');
       this.element.appendChild(infoElement);
       return;
     }
@@ -78,45 +78,45 @@ WebInspector.ScopeChainSidebarPane = class extends WebInspector.VBox {
       switch (scope.type()) {
         case Protocol.Debugger.ScopeType.Local:
           foundLocalScope = true;
-          title = WebInspector.UIString('Local');
-          emptyPlaceholder = WebInspector.UIString('No Variables');
+          title = Common.UIString('Local');
+          emptyPlaceholder = Common.UIString('No Variables');
           if (thisObject)
-            extraProperties.push(new WebInspector.RemoteObjectProperty('this', thisObject));
+            extraProperties.push(new SDK.RemoteObjectProperty('this', thisObject));
           if (i === 0) {
             var exception = details.exception();
             if (exception)
-              extraProperties.push(new WebInspector.RemoteObjectProperty(
-                  WebInspector.UIString.capitalize('Exception'), exception, undefined, undefined, undefined, undefined,
+              extraProperties.push(new SDK.RemoteObjectProperty(
+                  Common.UIString.capitalize('Exception'), exception, undefined, undefined, undefined, undefined,
                   undefined, true));
             var returnValue = callFrame.returnValue();
             if (returnValue)
-              extraProperties.push(new WebInspector.RemoteObjectProperty(
-                  WebInspector.UIString.capitalize('Return ^value'), returnValue, undefined, undefined, undefined,
+              extraProperties.push(new SDK.RemoteObjectProperty(
+                  Common.UIString.capitalize('Return ^value'), returnValue, undefined, undefined, undefined,
                   undefined, undefined, true));
           }
           break;
         case Protocol.Debugger.ScopeType.Closure:
           var scopeName = scope.name();
           if (scopeName)
-            title = WebInspector.UIString('Closure (%s)', WebInspector.beautifyFunctionName(scopeName));
+            title = Common.UIString('Closure (%s)', UI.beautifyFunctionName(scopeName));
           else
-            title = WebInspector.UIString('Closure');
-          emptyPlaceholder = WebInspector.UIString('No Variables');
+            title = Common.UIString('Closure');
+          emptyPlaceholder = Common.UIString('No Variables');
           break;
         case Protocol.Debugger.ScopeType.Catch:
-          title = WebInspector.UIString('Catch');
+          title = Common.UIString('Catch');
           break;
         case Protocol.Debugger.ScopeType.Block:
-          title = WebInspector.UIString('Block');
+          title = Common.UIString('Block');
           break;
         case Protocol.Debugger.ScopeType.Script:
-          title = WebInspector.UIString('Script');
+          title = Common.UIString('Script');
           break;
         case Protocol.Debugger.ScopeType.With:
-          title = WebInspector.UIString('With Block');
+          title = Common.UIString('With Block');
           break;
         case Protocol.Debugger.ScopeType.Global:
-          title = WebInspector.UIString('Global');
+          title = Common.UIString('Global');
           break;
       }
 
@@ -128,8 +128,8 @@ WebInspector.ScopeChainSidebarPane = class extends WebInspector.VBox {
       titleElement.createChild('div', 'scope-chain-sidebar-pane-section-subtitle').textContent = subtitle;
       titleElement.createChild('div', 'scope-chain-sidebar-pane-section-title').textContent = title;
 
-      var section = new WebInspector.ObjectPropertiesSection(
-          WebInspector.SourceMapNamesResolver.resolveScopeInObject(scope), titleElement, this._linkifier,
+      var section = new Components.ObjectPropertiesSection(
+          Sources.SourceMapNamesResolver.resolveScopeInObject(scope), titleElement, this._linkifier,
           emptyPlaceholder, true, extraProperties);
       this._expandController.watchSection(title + (subtitle ? ':' + subtitle : ''), section);
 
@@ -148,4 +148,4 @@ WebInspector.ScopeChainSidebarPane = class extends WebInspector.VBox {
   }
 };
 
-WebInspector.ScopeChainSidebarPane._pathSymbol = Symbol('path');
+Sources.ScopeChainSidebarPane._pathSymbol = Symbol('path');

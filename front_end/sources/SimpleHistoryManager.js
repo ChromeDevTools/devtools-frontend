@@ -30,9 +30,9 @@
 /**
  * @interface
  */
-WebInspector.HistoryEntry = function() {};
+Sources.HistoryEntry = function() {};
 
-WebInspector.HistoryEntry.prototype = {
+Sources.HistoryEntry.prototype = {
   /**
    * @return {boolean}
    */
@@ -44,7 +44,7 @@ WebInspector.HistoryEntry.prototype = {
 /**
  * @unrestricted
  */
-WebInspector.SimpleHistoryManager = class {
+Sources.SimpleHistoryManager = class {
   /**
    * @param {number} historyDepth
    */
@@ -71,7 +71,7 @@ WebInspector.SimpleHistoryManager = class {
   }
 
   /**
-   * @param {function(!WebInspector.HistoryEntry):boolean} filterOutCallback
+   * @param {function(!Sources.HistoryEntry):boolean} filterOutCallback
    */
   filterOut(filterOutCallback) {
     if (this.readOnly())
@@ -96,14 +96,14 @@ WebInspector.SimpleHistoryManager = class {
   }
 
   /**
-   * @return {?WebInspector.HistoryEntry}
+   * @return {?Sources.HistoryEntry}
    */
   active() {
     return this.empty() ? null : this._entries[this._activeEntryIndex];
   }
 
   /**
-   * @param {!WebInspector.HistoryEntry} entry
+   * @param {!Sources.HistoryEntry} entry
    */
   push(entry) {
     if (this.readOnly())

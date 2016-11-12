@@ -31,7 +31,7 @@
  * @implements {InspectorFrontendHostAPI}
  * @unrestricted
  */
-WebInspector.InspectorFrontendHostStub = class {
+Host.InspectorFrontendHostStub = class {
   /**
    * @suppressGlobalPropertiesCheck
    */
@@ -41,7 +41,7 @@ WebInspector.InspectorFrontendHostStub = class {
      */
     function stopEventPropagation(event) {
       // Let browser handle Ctrl+/Ctrl- shortcuts in hosted mode.
-      var zoomModifier = WebInspector.isMac() ? event.metaKey : event.ctrlKey;
+      var zoomModifier = Host.isMac() ? event.metaKey : event.ctrlKey;
       if (zoomModifier && (event.keyCode === 187 || event.keyCode === 189))
         event.stopPropagation();
     }
@@ -135,7 +135,7 @@ WebInspector.InspectorFrontendHostStub = class {
    * @suppressGlobalPropertiesCheck
    */
   inspectedURLChanged(url) {
-    document.title = WebInspector.UIString('Developer Tools - %s', url);
+    document.title = Common.UIString('Developer Tools - %s', url);
   }
 
   /**
@@ -143,7 +143,7 @@ WebInspector.InspectorFrontendHostStub = class {
    * @param {string} text
    */
   copyText(text) {
-    WebInspector.console.error('Clipboard is not enabled in hosted mode. Please inspect using chrome://inspect');
+    Common.console.error('Clipboard is not enabled in hosted mode. Please inspect using chrome://inspect');
   }
 
   /**
@@ -161,7 +161,7 @@ WebInspector.InspectorFrontendHostStub = class {
    * @param {boolean} forceSaveAs
    */
   save(url, content, forceSaveAs) {
-    WebInspector.console.error('Saving files is not enabled in hosted mode. Please inspect using chrome://inspect');
+    Common.console.error('Saving files is not enabled in hosted mode. Please inspect using chrome://inspect');
     this.events.dispatchEventToListeners(InspectorFrontendHostAPI.Events.CanceledSaveURL, url);
   }
 
@@ -171,7 +171,7 @@ WebInspector.InspectorFrontendHostStub = class {
    * @param {string} content
    */
   append(url, content) {
-    WebInspector.console.error('Saving files is not enabled in hosted mode. Please inspect using chrome://inspect');
+    Common.console.error('Saving files is not enabled in hosted mode. Please inspect using chrome://inspect');
   }
 
   /**
@@ -231,7 +231,7 @@ WebInspector.InspectorFrontendHostStub = class {
   loadNetworkResource(url, headers, streamId, callback) {
     Runtime.loadResourcePromise(url)
         .then(function(text) {
-          WebInspector.ResourceLoader.streamWrite(streamId, text);
+          Host.ResourceLoader.streamWrite(streamId, text);
           callback({statusCode: 200});
         })
         .catch(function() {
@@ -470,7 +470,7 @@ var InspectorFrontendAPIImpl = class {
    * @param {string} chunk
    */
   streamWrite(id, chunk) {
-    WebInspector.ResourceLoader.streamWrite(id, chunk);
+    Host.ResourceLoader.streamWrite(id, chunk);
   }
 };
 
@@ -484,10 +484,10 @@ window.InspectorFrontendHost = InspectorFrontendHost;
   function initializeInspectorFrontendHost() {
     if (!InspectorFrontendHost) {
       // Instantiate stub for web-hosted mode if necessary.
-      window.InspectorFrontendHost = InspectorFrontendHost = new WebInspector.InspectorFrontendHostStub();
+      window.InspectorFrontendHost = InspectorFrontendHost = new Host.InspectorFrontendHostStub();
     } else {
       // Otherwise add stubs for missing methods that are declared in the interface.
-      var proto = WebInspector.InspectorFrontendHostStub.prototype;
+      var proto = Host.InspectorFrontendHostStub.prototype;
       for (var name in proto) {
         var value = proto[name];
         if (typeof value !== 'function' || InspectorFrontendHost[name])
@@ -508,17 +508,17 @@ window.InspectorFrontendHost = InspectorFrontendHost;
     }
 
     // Attach the events object.
-    InspectorFrontendHost.events = new WebInspector.Object();
+    InspectorFrontendHost.events = new Common.Object();
   }
 
   // FIXME: This file is included into both apps, since the devtools_app needs the InspectorFrontendHostAPI only,
   // so the host instance should not initialized there.
   initializeInspectorFrontendHost();
   window.InspectorFrontendAPI = new InspectorFrontendAPIImpl();
-  WebInspector.setLocalizationPlatform(InspectorFrontendHost.platform());
+  Common.setLocalizationPlatform(InspectorFrontendHost.platform());
 })();
 
 /**
- * @type {!WebInspector.EventTarget}
+ * @type {!Common.EventTarget}
  */
 InspectorFrontendHost.events;

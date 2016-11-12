@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-WebInspector.TimelineJSProfileProcessor = class {
+TimelineModel.TimelineJSProfileProcessor = class {
   /**
-   * @param {!WebInspector.CPUProfileDataModel} jsProfileModel
-   * @param {!WebInspector.TracingModel.Thread} thread
-   * @return {!Array<!WebInspector.TracingModel.Event>}
+   * @param {!SDK.CPUProfileDataModel} jsProfileModel
+   * @param {!SDK.TracingModel.Thread} thread
+   * @return {!Array<!SDK.TracingModel.Event>}
    */
   static generateTracingEventsFromCpuProfile(jsProfileModel, thread) {
     var idleNode = jsProfileModel.idleNode;
@@ -33,9 +33,9 @@ WebInspector.TimelineJSProfileProcessor = class {
         for (var j = 0; node.parent; node = node.parent)
           callFrames[j++] = /** @type {!Protocol.Runtime.CallFrame} */ (node);
       }
-      var jsSampleEvent = new WebInspector.TracingModel.Event(
-          WebInspector.TracingModel.DevToolsTimelineEventCategory, WebInspector.TimelineModel.RecordType.JSSample,
-          WebInspector.TracingModel.Phase.Instant, timestamps[i], thread);
+      var jsSampleEvent = new SDK.TracingModel.Event(
+          SDK.TracingModel.DevToolsTimelineEventCategory, TimelineModel.TimelineModel.RecordType.JSSample,
+          SDK.TracingModel.Phase.Instant, timestamps[i], thread);
       jsSampleEvent.args['data'] = {stackTrace: callFrames};
       jsEvents.push(jsSampleEvent);
     }
@@ -43,8 +43,8 @@ WebInspector.TimelineJSProfileProcessor = class {
   }
 
   /**
-   * @param {!Array<!WebInspector.TracingModel.Event>} events
-   * @return {!Array<!WebInspector.TracingModel.Event>}
+   * @param {!Array<!SDK.TracingModel.Event>} events
+   * @return {!Array<!SDK.TracingModel.Event>}
    */
   static generateJSFrameEvents(events) {
     /**
@@ -57,14 +57,14 @@ WebInspector.TimelineJSProfileProcessor = class {
     }
 
     /**
-     * @param {!WebInspector.TracingModel.Event} e
+     * @param {!SDK.TracingModel.Event} e
      * @return {boolean}
      */
     function isJSInvocationEvent(e) {
       switch (e.name) {
-        case WebInspector.TimelineModel.RecordType.RunMicrotasks:
-        case WebInspector.TimelineModel.RecordType.FunctionCall:
-        case WebInspector.TimelineModel.RecordType.EvaluateScript:
+        case TimelineModel.TimelineModel.RecordType.RunMicrotasks:
+        case TimelineModel.TimelineModel.RecordType.FunctionCall:
+        case TimelineModel.TimelineModel.RecordType.EvaluateScript:
           return true;
       }
       return false;
@@ -76,10 +76,10 @@ WebInspector.TimelineJSProfileProcessor = class {
     var ordinal = 0;
     const showAllEvents = Runtime.experiments.isEnabled('timelineShowAllEvents');
     const showRuntimeCallStats = Runtime.experiments.isEnabled('timelineV8RuntimeCallStats');
-    const showNativeFunctions = WebInspector.moduleSetting('showNativeFunctionsInJSProfile').get();
+    const showNativeFunctions = Common.moduleSetting('showNativeFunctionsInJSProfile').get();
 
     /**
-     * @param {!WebInspector.TracingModel.Event} e
+     * @param {!SDK.TracingModel.Event} e
      */
     function onStartEvent(e) {
       e.ordinal = ++ordinal;
@@ -89,8 +89,8 @@ WebInspector.TimelineJSProfileProcessor = class {
     }
 
     /**
-     * @param {!WebInspector.TracingModel.Event} e
-     * @param {?WebInspector.TracingModel.Event} parent
+     * @param {!SDK.TracingModel.Event} e
+     * @param {?SDK.TracingModel.Event} parent
      */
     function onInstantEvent(e, parent) {
       e.ordinal = ++ordinal;
@@ -99,7 +99,7 @@ WebInspector.TimelineJSProfileProcessor = class {
     }
 
     /**
-     * @param {!WebInspector.TracingModel.Event} e
+     * @param {!SDK.TracingModel.Event} e
      */
     function onEndEvent(e) {
       truncateJSStack(lockedJsStackDepth.pop(), e.endTime);
@@ -131,7 +131,7 @@ WebInspector.TimelineJSProfileProcessor = class {
      * @return {boolean}
      */
     function showNativeName(name) {
-      return showRuntimeCallStats && !!WebInspector.TimelineJSProfileProcessor.nativeGroup(name);
+      return showRuntimeCallStats && !!TimelineModel.TimelineJSProfileProcessor.nativeGroup(name);
     }
 
     /**
@@ -147,7 +147,7 @@ WebInspector.TimelineJSProfileProcessor = class {
         const isNativeFrame = url && url.startsWith('native ');
         if (!showNativeFunctions && isNativeFrame)
           continue;
-        if (WebInspector.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame) && !showNativeName(frame.functionName))
+        if (TimelineModel.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame) && !showNativeName(frame.functionName))
           continue;
         if (isPreviousFrameNative && isNativeFrame)
           continue;
@@ -158,10 +158,10 @@ WebInspector.TimelineJSProfileProcessor = class {
     }
 
     /**
-     * @param {!WebInspector.TracingModel.Event} e
+     * @param {!SDK.TracingModel.Event} e
      */
     function extractStackTrace(e) {
-      const recordTypes = WebInspector.TimelineModel.RecordType;
+      const recordTypes = TimelineModel.TimelineModel.RecordType;
       /** @type {!Array<!Protocol.Runtime.CallFrame>} */
       const callFrames = e.name === recordTypes.JSSample
         ? e.args['data']['stackTrace'].slice().reverse()
@@ -180,9 +180,9 @@ WebInspector.TimelineJSProfileProcessor = class {
       truncateJSStack(i, e.startTime);
       for (; i < callFrames.length; ++i) {
         const frame = callFrames[i];
-        const jsFrameEvent = new WebInspector.TracingModel.Event(
-            WebInspector.TracingModel.DevToolsTimelineEventCategory, recordTypes.JSFrame,
-            WebInspector.TracingModel.Phase.Complete, e.startTime, e.thread);
+        const jsFrameEvent = new SDK.TracingModel.Event(
+            SDK.TracingModel.DevToolsTimelineEventCategory, recordTypes.JSFrame,
+            SDK.TracingModel.Phase.Complete, e.startTime, e.thread);
         jsFrameEvent.ordinal = e.ordinal;
         jsFrameEvent.addArgs({data: frame});
         jsFrameEvent.setEndTime(endTime);
@@ -191,9 +191,9 @@ WebInspector.TimelineJSProfileProcessor = class {
       }
     }
 
-    const firstTopLevelEvent = events.find(WebInspector.TracingModel.isTopLevelEvent);
+    const firstTopLevelEvent = events.find(SDK.TracingModel.isTopLevelEvent);
     if (firstTopLevelEvent)
-      WebInspector.TimelineModel.forEachEvent(
+      TimelineModel.TimelineModel.forEachEvent(
           events, onStartEvent, onEndEvent, onInstantEvent, firstTopLevelEvent.startTime);
     return jsFrameEvents;
   }
@@ -208,12 +208,12 @@ WebInspector.TimelineJSProfileProcessor = class {
 
   /**
    * @param {string} nativeName
-   * @return {?WebInspector.TimelineJSProfileProcessor.NativeGroups}
+   * @return {?TimelineModel.TimelineJSProfileProcessor.NativeGroups}
    */
   static nativeGroup(nativeName) {
-    var map = WebInspector.TimelineJSProfileProcessor.nativeGroup._map;
+    var map = TimelineModel.TimelineJSProfileProcessor.nativeGroup._map;
     if (!map) {
-      const nativeGroups = WebInspector.TimelineJSProfileProcessor.NativeGroups;
+      const nativeGroups = TimelineModel.TimelineJSProfileProcessor.NativeGroups;
       map = new Map([
         ['Compile', nativeGroups.Compile],
         ['CompileCode', nativeGroups.Compile],
@@ -230,15 +230,15 @@ WebInspector.TimelineJSProfileProcessor = class {
         ['RecompileSynchronous', nativeGroups.Compile],
         ['ParseLazy', nativeGroups.Parse]
       ]);
-      /** @type {!Map<string, !WebInspector.TimelineJSProfileProcessor.NativeGroups>} */
-      WebInspector.TimelineJSProfileProcessor.nativeGroup._map = map;
+      /** @type {!Map<string, !TimelineModel.TimelineJSProfileProcessor.NativeGroups>} */
+      TimelineModel.TimelineJSProfileProcessor.nativeGroup._map = map;
     }
     return map.get(nativeName) || null;
   }
 };
 
 /** @enum {string} */
-WebInspector.TimelineJSProfileProcessor.NativeGroups = {
+TimelineModel.TimelineJSProfileProcessor.NativeGroups = {
   'Compile': 'Compile',
   'Parse': 'Parse'
 };

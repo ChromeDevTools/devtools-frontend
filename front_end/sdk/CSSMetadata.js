@@ -33,7 +33,7 @@
 /**
  * @unrestricted
  */
-WebInspector.CSSMetadata = class {
+SDK.CSSMetadata = class {
   /**
    * @param {!Array.<!{name: string, longhands: !Array.<string>}>} properties
    */
@@ -101,7 +101,7 @@ WebInspector.CSSMetadata = class {
    * @return {boolean}
    */
   isColorAwareProperty(propertyName) {
-    return !!WebInspector.CSSMetadata._colorAwareProperties.has(propertyName.toLowerCase()) ||
+    return !!SDK.CSSMetadata._colorAwareProperties.has(propertyName.toLowerCase()) ||
         this.isCustomProperty(propertyName.toLowerCase());
   }
 
@@ -113,7 +113,7 @@ WebInspector.CSSMetadata = class {
     propertyName = propertyName.toLowerCase();
     if (propertyName === 'line-height')
       return false;
-    return WebInspector.CSSMetadata._distanceProperties.has(propertyName) || propertyName.startsWith('margin') ||
+    return SDK.CSSMetadata._distanceProperties.has(propertyName) || propertyName.startsWith('margin') ||
         propertyName.startsWith('padding') || propertyName.indexOf('width') !== -1 ||
         propertyName.indexOf('height') !== -1;
   }
@@ -124,7 +124,7 @@ WebInspector.CSSMetadata = class {
    */
   isBezierAwareProperty(propertyName) {
     propertyName = propertyName.toLowerCase();
-    return !!WebInspector.CSSMetadata._bezierAwareProperties.has(propertyName) || this.isCustomProperty(propertyName);
+    return !!SDK.CSSMetadata._bezierAwareProperties.has(propertyName) || this.isCustomProperty(propertyName);
   }
 
   /**
@@ -178,13 +178,13 @@ WebInspector.CSSMetadata = class {
     var acceptedKeywords = ['inherit', 'initial'];
     propertyName = propertyName.toLowerCase();
     var unprefixedName = propertyName.replace(/^-webkit-/, '');
-    var entry = WebInspector.CSSMetadata._propertyDataMap[propertyName] ||
-        WebInspector.CSSMetadata._propertyDataMap[unprefixedName];
+    var entry = SDK.CSSMetadata._propertyDataMap[propertyName] ||
+        SDK.CSSMetadata._propertyDataMap[unprefixedName];
     if (entry && entry.values)
       acceptedKeywords.pushAll(entry.values);
     if (this.isColorAwareProperty(propertyName)) {
       acceptedKeywords.push('currentColor');
-      for (var color in WebInspector.Color.Nicknames)
+      for (var color in Common.Color.Nicknames)
         acceptedKeywords.push(color);
     }
     return acceptedKeywords.sort();
@@ -198,9 +198,9 @@ WebInspector.CSSMetadata = class {
     var maxWeight = 0;
     var index = 0;
     for (var i = 0; i < properties.length; i++) {
-      var weight = WebInspector.CSSMetadata.Weight[properties[i]];
+      var weight = SDK.CSSMetadata.Weight[properties[i]];
       if (!weight)
-        weight = WebInspector.CSSMetadata.Weight[this.canonicalPropertyName(properties[i])];
+        weight = SDK.CSSMetadata.Weight[this.canonicalPropertyName(properties[i])];
       if (weight > maxWeight) {
         maxWeight = weight;
         index = i;
@@ -210,30 +210,30 @@ WebInspector.CSSMetadata = class {
   }
 };
 
-WebInspector.CSSMetadata.VariableRegex = /(var\(--.*?\))/g;
-WebInspector.CSSMetadata.URLRegex = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
+SDK.CSSMetadata.VariableRegex = /(var\(--.*?\))/g;
+SDK.CSSMetadata.URLRegex = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
 
 /**
- * @return {!WebInspector.CSSMetadata}
+ * @return {!SDK.CSSMetadata}
  */
-WebInspector.cssMetadata = function() {
-  if (!WebInspector.CSSMetadata._instance)
-    WebInspector.CSSMetadata._instance =
-        new WebInspector.CSSMetadata(WebInspector.CSSMetadata._generatedProperties || []);
-  return WebInspector.CSSMetadata._instance;
+SDK.cssMetadata = function() {
+  if (!SDK.CSSMetadata._instance)
+    SDK.CSSMetadata._instance =
+        new SDK.CSSMetadata(SDK.CSSMetadata._generatedProperties || []);
+  return SDK.CSSMetadata._instance;
 };
 
-WebInspector.CSSMetadata._distanceProperties = new Set([
+SDK.CSSMetadata._distanceProperties = new Set([
   'background-position', 'border-spacing', 'bottom', 'font-size', 'height', 'left', 'letter-spacing', 'max-height',
   'max-width', 'min-height', 'min-width', 'right', 'text-indent', 'top', 'width', 'word-spacing'
 ]);
 
-WebInspector.CSSMetadata._bezierAwareProperties = new Set([
+SDK.CSSMetadata._bezierAwareProperties = new Set([
   'animation', 'animation-timing-function', 'transition', 'transition-timing-function', '-webkit-animation',
   '-webkit-animation-timing-function', '-webkit-transition', '-webkit-transition-timing-function'
 ]);
 
-WebInspector.CSSMetadata._colorAwareProperties = new Set([
+SDK.CSSMetadata._colorAwareProperties = new Set([
   'backdrop-filter',
   'background',
   'background-color',
@@ -287,7 +287,7 @@ WebInspector.CSSMetadata._colorAwareProperties = new Set([
   '-webkit-text-stroke-color'
 ]);
 
-WebInspector.CSSMetadata._propertyDataMap = {
+SDK.CSSMetadata._propertyDataMap = {
   'table-layout': {values: ['auto', 'fixed']},
   'visibility': {values: ['hidden', 'visible', 'collapse']},
   'background-repeat': {values: ['repeat', 'repeat-x', 'repeat-y', 'no-repeat', 'space', 'round']},
@@ -700,7 +700,7 @@ WebInspector.CSSMetadata._propertyDataMap = {
 };
 
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity
-WebInspector.CSSMetadata.Weight = {
+SDK.CSSMetadata.Weight = {
   'align-content': 57,
   'align-items': 129,
   'align-self': 55,

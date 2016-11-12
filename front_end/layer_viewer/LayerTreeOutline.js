@@ -28,12 +28,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.LayerView}
+ * @implements {LayerViewer.LayerView}
  * @unrestricted
  */
-WebInspector.LayerTreeOutline = class extends WebInspector.Object {
+LayerViewer.LayerTreeOutline = class extends Common.Object {
   /**
-   * @param {!WebInspector.LayerViewHost} layerViewHost
+   * @param {!LayerViewer.LayerViewHost} layerViewHost
    */
   constructor(layerViewHost) {
     super();
@@ -56,13 +56,13 @@ WebInspector.LayerTreeOutline = class extends WebInspector.Object {
   }
 
   /**
-   * @param {?WebInspector.LayerView.Selection} selection
+   * @param {?LayerViewer.LayerView.Selection} selection
    * @override
    */
   selectObject(selection) {
     this.hoverObject(null);
     var layer = selection && selection.layer();
-    var node = layer && layer[WebInspector.LayerTreeElement._symbol];
+    var node = layer && layer[LayerViewer.LayerTreeElement._symbol];
     if (node)
       node.revealAndSelect(true);
     else if (this._treeOutline.selectedTreeElement)
@@ -70,12 +70,12 @@ WebInspector.LayerTreeOutline = class extends WebInspector.Object {
   }
 
   /**
-   * @param {?WebInspector.LayerView.Selection} selection
+   * @param {?LayerViewer.LayerView.Selection} selection
    * @override
    */
   hoverObject(selection) {
     var layer = selection && selection.layer();
-    var node = layer && layer[WebInspector.LayerTreeElement._symbol];
+    var node = layer && layer[LayerViewer.LayerTreeElement._symbol];
     if (node === this._lastHoveredNode)
       return;
     if (this._lastHoveredNode)
@@ -86,7 +86,7 @@ WebInspector.LayerTreeOutline = class extends WebInspector.Object {
   }
 
   /**
-   * @param {?WebInspector.LayerTreeBase} layerTree
+   * @param {?SDK.LayerTreeBase} layerTree
    * @override
    */
   setLayerTree(layerTree) {
@@ -106,8 +106,8 @@ WebInspector.LayerTreeOutline = class extends WebInspector.Object {
     }
 
     /**
-     * @param {!WebInspector.Layer} layer
-     * @this {WebInspector.LayerTreeOutline}
+     * @param {!SDK.Layer} layer
+     * @this {LayerViewer.LayerTreeOutline}
      */
     function updateLayer(layer) {
       if (!layer.drawsContent() && !showInternalLayers)
@@ -115,19 +115,19 @@ WebInspector.LayerTreeOutline = class extends WebInspector.Object {
       if (seenLayers.get(layer))
         console.assert(false, 'Duplicate layer: ' + layer.id());
       seenLayers.set(layer, true);
-      var node = layer[WebInspector.LayerTreeElement._symbol];
+      var node = layer[LayerViewer.LayerTreeElement._symbol];
       var parentLayer = layer.parent();
       // Skip till nearest visible ancestor.
       while (parentLayer && parentLayer !== root && !parentLayer.drawsContent() && !showInternalLayers)
         parentLayer = parentLayer.parent();
       var parent =
-          layer === root ? this._treeOutline.rootElement() : parentLayer[WebInspector.LayerTreeElement._symbol];
+          layer === root ? this._treeOutline.rootElement() : parentLayer[LayerViewer.LayerTreeElement._symbol];
       if (!parent) {
         console.assert(false, 'Parent is not in the tree');
         return;
       }
       if (!node) {
-        node = new WebInspector.LayerTreeElement(this, layer);
+        node = new LayerViewer.LayerTreeElement(this, layer);
         parent.appendChild(node);
         // Expand all new non-content layers to expose content layers better.
         if (!layer.drawsContent())
@@ -162,7 +162,7 @@ WebInspector.LayerTreeOutline = class extends WebInspector.Object {
     if (!this._treeOutline.selectedTreeElement) {
       var elementToSelect = this._layerTree.contentRoot() || this._layerTree.root();
       if (elementToSelect)
-        elementToSelect[WebInspector.LayerTreeElement._symbol].revealAndSelect(true);
+        elementToSelect[LayerViewer.LayerTreeElement._symbol].revealAndSelect(true);
     }
   }
 
@@ -177,7 +177,7 @@ WebInspector.LayerTreeOutline = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.LayerTreeElement} node
+   * @param {!LayerViewer.LayerTreeElement} node
    */
   _selectedNodeChanged(node) {
     this._layerViewHost.selectObject(this._selectionForNode(node));
@@ -188,41 +188,41 @@ WebInspector.LayerTreeOutline = class extends WebInspector.Object {
    */
   _onContextMenu(event) {
     var selection = this._selectionForNode(this._treeOutline.treeElementFromEvent(event));
-    var contextMenu = new WebInspector.ContextMenu(event);
+    var contextMenu = new UI.ContextMenu(event);
     this._layerViewHost.showContextMenu(contextMenu, selection);
   }
 
   /**
    * @param {?TreeElement} node
-   * @return {?WebInspector.LayerView.Selection}
+   * @return {?LayerViewer.LayerView.Selection}
    */
   _selectionForNode(node) {
-    return node && node._layer ? new WebInspector.LayerView.LayerSelection(node._layer) : null;
+    return node && node._layer ? new LayerViewer.LayerView.LayerSelection(node._layer) : null;
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.LayerTreeElement = class extends TreeElement {
+LayerViewer.LayerTreeElement = class extends TreeElement {
   /**
-   * @param {!WebInspector.LayerTreeOutline} tree
-   * @param {!WebInspector.Layer} layer
+   * @param {!LayerViewer.LayerTreeOutline} tree
+   * @param {!SDK.Layer} layer
    */
   constructor(tree, layer) {
     super();
     this._treeOutline = tree;
     this._layer = layer;
-    this._layer[WebInspector.LayerTreeElement._symbol] = this;
+    this._layer[LayerViewer.LayerTreeElement._symbol] = this;
     this._update();
   }
 
   _update() {
     var node = this._layer.nodeForSelfOrAncestor();
     var title = createDocumentFragment();
-    title.createTextChild(node ? WebInspector.DOMPresentationUtils.simpleSelector(node) : '#' + this._layer.id());
+    title.createTextChild(node ? Components.DOMPresentationUtils.simpleSelector(node) : '#' + this._layer.id());
     var details = title.createChild('span', 'dimmed');
-    details.textContent = WebInspector.UIString(' (%d × %d)', this._layer.width(), this._layer.height());
+    details.textContent = Common.UIString(' (%d × %d)', this._layer.width(), this._layer.height());
     this.title = title;
   }
 
@@ -243,4 +243,4 @@ WebInspector.LayerTreeElement = class extends TreeElement {
   }
 };
 
-WebInspector.LayerTreeElement._symbol = Symbol('layer');
+LayerViewer.LayerTreeElement._symbol = Symbol('layer');

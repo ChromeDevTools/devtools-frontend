@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.AllocationProfile = class {
+HeapSnapshotWorker.AllocationProfile = class {
   constructor(profile, liveObjectStats) {
     this._strings = profile.strings;
     this._liveObjectStats = liveObjectStats;
@@ -64,7 +64,7 @@ WebInspector.AllocationProfile = class {
     var functionInfos = this._functionInfos = new Array(infoLength / functionInfoFieldCount);
     var index = 0;
     for (var i = 0; i < infoLength; i += functionInfoFieldCount) {
-      functionInfos[index++] = new WebInspector.FunctionAllocationInfo(
+      functionInfos[index++] = new HeapSnapshotWorker.FunctionAllocationInfo(
           strings[rawInfos[i + functionNameOffset]], strings[rawInfos[i + scriptNameOffset]],
           rawInfos[i + scriptIdOffset], rawInfos[i + lineOffset], rawInfos[i + columnOffset]);
     }
@@ -89,7 +89,7 @@ WebInspector.AllocationProfile = class {
       var stats = liveObjectStats[id];
       var liveCount = stats ? stats.count : 0;
       var liveSize = stats ? stats.size : 0;
-      var result = new WebInspector.TopDownAllocationNode(
+      var result = new HeapSnapshotWorker.TopDownAllocationNode(
           id, functionInfo, rawNodeArray[nodeOffset + allocationCountOffset],
           rawNodeArray[nodeOffset + allocationSizeOffset], liveCount, liveSize, parent);
       idToTopDownNode[id] = result;
@@ -106,7 +106,7 @@ WebInspector.AllocationProfile = class {
   }
 
   /**
-   * @return {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>}
+   * @return {!Array.<!Profiler.HeapSnapshotCommon.SerializedAllocationNode>}
    */
   serializeTraceTops() {
     if (this._traceTops)
@@ -131,7 +131,7 @@ WebInspector.AllocationProfile = class {
 
   /**
    * @param {number} nodeId
-   * @return {!WebInspector.HeapSnapshotCommon.AllocationNodeCallers}
+   * @return {!Profiler.HeapSnapshotCommon.AllocationNodeCallers}
    */
   serializeCallers(nodeId) {
     var node = this._ensureBottomUpNode(nodeId);
@@ -146,19 +146,19 @@ WebInspector.AllocationProfile = class {
     for (var i = 0; i < callers.length; i++) {
       branchingCallers.push(this._serializeCaller(callers[i]));
     }
-    return new WebInspector.HeapSnapshotCommon.AllocationNodeCallers(nodesWithSingleCaller, branchingCallers);
+    return new Profiler.HeapSnapshotCommon.AllocationNodeCallers(nodesWithSingleCaller, branchingCallers);
   }
 
   /**
    * @param {number} traceNodeId
-   * @return {!Array.<!WebInspector.HeapSnapshotCommon.AllocationStackFrame>}
+   * @return {!Array.<!Profiler.HeapSnapshotCommon.AllocationStackFrame>}
    */
   serializeAllocationStack(traceNodeId) {
     var node = this._idToTopDownNode[traceNodeId];
     var result = [];
     while (node) {
       var functionInfo = node.functionInfo;
-      result.push(new WebInspector.HeapSnapshotCommon.AllocationStackFrame(
+      result.push(new Profiler.HeapSnapshotCommon.AllocationStackFrame(
           functionInfo.functionName, functionInfo.scriptName, functionInfo.scriptId, functionInfo.line,
           functionInfo.column));
       node = node.parent;
@@ -176,7 +176,7 @@ WebInspector.AllocationProfile = class {
 
   /**
    * @param {number} nodeId
-   * @return {!WebInspector.BottomUpAllocationNode}
+   * @return {!HeapSnapshotWorker.BottomUpAllocationNode}
    */
   _ensureBottomUpNode(nodeId) {
     var node = this._idToNode[nodeId];
@@ -190,8 +190,8 @@ WebInspector.AllocationProfile = class {
   }
 
   /**
-   * @param {!WebInspector.BottomUpAllocationNode} node
-   * @return {!WebInspector.HeapSnapshotCommon.SerializedAllocationNode}
+   * @param {!HeapSnapshotWorker.BottomUpAllocationNode} node
+   * @return {!Profiler.HeapSnapshotCommon.SerializedAllocationNode}
    */
   _serializeCaller(node) {
     var callerId = this._nextNodeId++;
@@ -203,16 +203,16 @@ WebInspector.AllocationProfile = class {
 
   /**
    * @param {number} nodeId
-   * @param {!WebInspector.FunctionAllocationInfo} functionInfo
+   * @param {!HeapSnapshotWorker.FunctionAllocationInfo} functionInfo
    * @param {number} count
    * @param {number} size
    * @param {number} liveCount
    * @param {number} liveSize
    * @param {boolean} hasChildren
-   * @return {!WebInspector.HeapSnapshotCommon.SerializedAllocationNode}
+   * @return {!Profiler.HeapSnapshotCommon.SerializedAllocationNode}
    */
   _serializeNode(nodeId, functionInfo, count, size, liveCount, liveSize, hasChildren) {
-    return new WebInspector.HeapSnapshotCommon.SerializedAllocationNode(
+    return new Profiler.HeapSnapshotCommon.SerializedAllocationNode(
         nodeId, functionInfo.functionName, functionInfo.scriptName, functionInfo.scriptId, functionInfo.line,
         functionInfo.column, count, size, liveCount, liveSize, hasChildren);
   }
@@ -221,15 +221,15 @@ WebInspector.AllocationProfile = class {
 /**
  * @unrestricted
  */
-WebInspector.TopDownAllocationNode = class {
+HeapSnapshotWorker.TopDownAllocationNode = class {
   /**
    * @param {number} id
-   * @param {!WebInspector.FunctionAllocationInfo} functionInfo
+   * @param {!HeapSnapshotWorker.FunctionAllocationInfo} functionInfo
    * @param {number} count
    * @param {number} size
    * @param {number} liveCount
    * @param {number} liveSize
-   * @param {?WebInspector.TopDownAllocationNode} parent
+   * @param {?HeapSnapshotWorker.TopDownAllocationNode} parent
    */
   constructor(id, functionInfo, count, size, liveCount, liveSize, parent) {
     this.id = id;
@@ -246,9 +246,9 @@ WebInspector.TopDownAllocationNode = class {
 /**
  * @unrestricted
  */
-WebInspector.BottomUpAllocationNode = class {
+HeapSnapshotWorker.BottomUpAllocationNode = class {
   /**
-   * @param {!WebInspector.FunctionAllocationInfo} functionInfo
+   * @param {!HeapSnapshotWorker.FunctionAllocationInfo} functionInfo
    */
   constructor(functionInfo) {
     this.functionInfo = functionInfo;
@@ -261,8 +261,8 @@ WebInspector.BottomUpAllocationNode = class {
   }
 
   /**
-   * @param {!WebInspector.TopDownAllocationNode} traceNode
-   * @return {!WebInspector.BottomUpAllocationNode}
+   * @param {!HeapSnapshotWorker.TopDownAllocationNode} traceNode
+   * @return {!HeapSnapshotWorker.BottomUpAllocationNode}
    */
   addCaller(traceNode) {
     var functionInfo = traceNode.functionInfo;
@@ -275,14 +275,14 @@ WebInspector.BottomUpAllocationNode = class {
       }
     }
     if (!result) {
-      result = new WebInspector.BottomUpAllocationNode(functionInfo);
+      result = new HeapSnapshotWorker.BottomUpAllocationNode(functionInfo);
       this._callers.push(result);
     }
     return result;
   }
 
   /**
-   * @return {!Array.<!WebInspector.BottomUpAllocationNode>}
+   * @return {!Array.<!HeapSnapshotWorker.BottomUpAllocationNode>}
    */
   callers() {
     return this._callers;
@@ -299,7 +299,7 @@ WebInspector.BottomUpAllocationNode = class {
 /**
  * @unrestricted
  */
-WebInspector.FunctionAllocationInfo = class {
+HeapSnapshotWorker.FunctionAllocationInfo = class {
   /**
    * @param {string} functionName
    * @param {string} scriptName
@@ -321,7 +321,7 @@ WebInspector.FunctionAllocationInfo = class {
   }
 
   /**
-   * @param {!WebInspector.TopDownAllocationNode} node
+   * @param {!HeapSnapshotWorker.TopDownAllocationNode} node
    */
   addTraceTopNode(node) {
     if (node.allocationCount === 0)
@@ -334,7 +334,7 @@ WebInspector.FunctionAllocationInfo = class {
   }
 
   /**
-   * @return {?WebInspector.BottomUpAllocationNode}
+   * @return {?HeapSnapshotWorker.BottomUpAllocationNode}
    */
   bottomUpRoot() {
     if (!this._traceTops.length)
@@ -345,7 +345,7 @@ WebInspector.FunctionAllocationInfo = class {
   }
 
   _buildAllocationTraceTree() {
-    this._bottomUpTree = new WebInspector.BottomUpAllocationNode(this);
+    this._bottomUpTree = new HeapSnapshotWorker.BottomUpAllocationNode(this);
 
     for (var i = 0; i < this._traceTops.length; i++) {
       var node = this._traceTops[i];

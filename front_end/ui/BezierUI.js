@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.BezierUI = class {
+UI.BezierUI = class {
   /**
    * @param {number} width
    * @param {number} height
@@ -21,12 +21,12 @@ WebInspector.BezierUI = class {
   }
 
   /**
-   * @param {!WebInspector.Geometry.CubicBezier} bezier
+   * @param {!Common.Geometry.CubicBezier} bezier
    * @param {!Element} path
    * @param {number} width
    */
   static drawVelocityChart(bezier, path, width) {
-    var height = WebInspector.BezierUI.Height;
+    var height = UI.BezierUI.Height;
     var pathBuilder = ['M', 0, height];
     /** @const */ var sampleSize = 1 / 40;
 
@@ -89,7 +89,7 @@ WebInspector.BezierUI = class {
   }
 
   /**
-   * @param {?WebInspector.Geometry.CubicBezier} bezier
+   * @param {?Common.Geometry.CubicBezier} bezier
    * @param {!Element} svg
    */
   drawCurve(bezier, svg) {
@@ -107,13 +107,13 @@ WebInspector.BezierUI = class {
 
     var curve = group.createSVGChild('path', 'bezier-path');
     var curvePoints = [
-      new WebInspector.Geometry.Point(
+      new Common.Geometry.Point(
           bezier.controlPoints[0].x * width + this.radius,
           (1 - bezier.controlPoints[0].y) * height + this.radius + this.marginTop),
-      new WebInspector.Geometry.Point(
+      new Common.Geometry.Point(
           bezier.controlPoints[1].x * width + this.radius,
           (1 - bezier.controlPoints[1].y) * height + this.radius + this.marginTop),
-      new WebInspector.Geometry.Point(width + this.radius, this.marginTop + this.radius)
+      new Common.Geometry.Point(width + this.radius, this.marginTop + this.radius)
     ];
     curve.setAttribute(
         'd', 'M' + this.radius + ',' + (height + this.radius + this.marginTop) + ' C' + curvePoints.join(' '));
@@ -125,4 +125,4 @@ WebInspector.BezierUI = class {
   }
 };
 
-WebInspector.BezierUI.Height = 26;
+UI.BezierUI.Height = 26;

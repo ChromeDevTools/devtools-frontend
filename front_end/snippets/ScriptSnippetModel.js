@@ -28,59 +28,59 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
+Snippets.ScriptSnippetModel = class extends Common.Object {
   /**
-   * @param {!WebInspector.Workspace} workspace
+   * @param {!Workspace.Workspace} workspace
    */
   constructor(workspace) {
     super();
     this._workspace = workspace;
-    /** @type {!Object.<string, !WebInspector.UISourceCode>} */
+    /** @type {!Object.<string, !Workspace.UISourceCode>} */
     this._uiSourceCodeForSnippetId = {};
-    /** @type {!Map.<!WebInspector.UISourceCode, string>} */
+    /** @type {!Map.<!Workspace.UISourceCode, string>} */
     this._snippetIdForUISourceCode = new Map();
 
-    /** @type {!Map.<!WebInspector.Target, !WebInspector.SnippetScriptMapping>} */
+    /** @type {!Map.<!SDK.Target, !Snippets.SnippetScriptMapping>} */
     this._mappingForTarget = new Map();
-    this._snippetStorage = new WebInspector.SnippetStorage('script', 'Script snippet #');
-    this._lastSnippetEvaluationIndexSetting = WebInspector.settings.createSetting('lastSnippetEvaluationIndex', 0);
-    this._project = new WebInspector.SnippetsProject(workspace, this);
+    this._snippetStorage = new Snippets.SnippetStorage('script', 'Script snippet #');
+    this._lastSnippetEvaluationIndexSetting = Common.settings.createSetting('lastSnippetEvaluationIndex', 0);
+    this._project = new Snippets.SnippetsProject(workspace, this);
     this._loadSnippets();
-    WebInspector.targetManager.observeTargets(this);
+    SDK.targetManager.observeTargets(this);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    var debuggerModel = WebInspector.DebuggerModel.fromTarget(target);
+    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
     if (debuggerModel)
-      this._mappingForTarget.set(target, new WebInspector.SnippetScriptMapping(debuggerModel, this));
+      this._mappingForTarget.set(target, new Snippets.SnippetScriptMapping(debuggerModel, this));
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-    if (WebInspector.DebuggerModel.fromTarget(target))
+    if (SDK.DebuggerModel.fromTarget(target))
       this._mappingForTarget.remove(target);
   }
 
   /**
-   * @param {!WebInspector.Target} target
-   * @return {!WebInspector.SnippetScriptMapping|undefined}
+   * @param {!SDK.Target} target
+   * @return {!Snippets.SnippetScriptMapping|undefined}
    */
   snippetScriptMapping(target) {
     return this._mappingForTarget.get(target);
   }
 
   /**
-   * @return {!WebInspector.Project}
+   * @return {!Workspace.Project}
    */
   project() {
     return this._project;
@@ -93,7 +93,7 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
 
   /**
    * @param {string} content
-   * @return {!WebInspector.UISourceCode}
+   * @return {!Workspace.UISourceCode}
    */
   createScriptSnippet(content) {
     var snippet = this._snippetStorage.createSnippet();
@@ -102,12 +102,12 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Snippet} snippet
-   * @return {!WebInspector.UISourceCode}
+   * @param {!Snippets.Snippet} snippet
+   * @return {!Workspace.UISourceCode}
    */
   _addScriptSnippet(snippet) {
-    var uiSourceCode = this._project.addSnippet(snippet.name, new WebInspector.SnippetContentProvider(snippet));
-    uiSourceCode.addEventListener(WebInspector.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this);
+    var uiSourceCode = this._project.addSnippet(snippet.name, new Snippets.SnippetContentProvider(snippet));
+    uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this);
     this._snippetIdForUISourceCode.set(uiSourceCode, snippet.id);
     var breakpointLocations = this._removeBreakpoints(uiSourceCode);
     this._restoreBreakpoints(uiSourceCode, breakpointLocations);
@@ -116,10 +116,10 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _workingCopyChanged(event) {
-    var uiSourceCode = /** @type {!WebInspector.UISourceCode} */ (event.target);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.target);
     this._scriptSnippetEdited(uiSourceCode);
   }
 
@@ -174,7 +174,7 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _scriptSnippetEdited(uiSourceCode) {
     var breakpointLocations = this._removeBreakpoints(uiSourceCode);
@@ -195,8 +195,8 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.ExecutionContext} executionContext
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!SDK.ExecutionContext} executionContext
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   evaluateScriptSnippet(executionContext, uiSourceCode) {
     var breakpointLocations = this._removeBreakpoints(uiSourceCode);
@@ -212,25 +212,25 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
     uiSourceCode.requestContent().then(compileSnippet.bind(this));
 
     /**
-     * @this {WebInspector.ScriptSnippetModel}
+     * @this {Snippets.ScriptSnippetModel}
      */
     function compileSnippet() {
       var expression = uiSourceCode.workingCopy();
-      WebInspector.console.show();
+      Common.console.show();
       runtimeModel.compileScript(expression, '', true, executionContext.id, compileCallback.bind(this));
     }
 
     /**
      * @param {!Protocol.Runtime.ScriptId=} scriptId
      * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     * @this {WebInspector.ScriptSnippetModel}
+     * @this {Snippets.ScriptSnippetModel}
      */
     function compileCallback(scriptId, exceptionDetails) {
       var mapping = this._mappingForTarget.get(target);
       if (mapping.evaluationIndex(uiSourceCode) !== evaluationIndex)
         return;
 
-      var script = /** @type {!WebInspector.Script} */ (
+      var script = /** @type {!SDK.Script} */ (
           executionContext.debuggerModel.scriptForId(/** @type {string} */ (scriptId || exceptionDetails.scriptId)));
       mapping._addScript(script, uiSourceCode);
       if (!scriptId) {
@@ -248,7 +248,7 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
 
   /**
    * @param {!Protocol.Runtime.ScriptId} scriptId
-   * @param {!WebInspector.ExecutionContext} executionContext
+   * @param {!SDK.ExecutionContext} executionContext
    * @param {?string=} sourceURL
    */
   _runScript(scriptId, executionContext, sourceURL) {
@@ -259,10 +259,10 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
         runCallback.bind(this, target));
 
     /**
-     * @param {!WebInspector.Target} target
+     * @param {!SDK.Target} target
      * @param {?Protocol.Runtime.RemoteObject} result
      * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     * @this {WebInspector.ScriptSnippetModel}
+     * @this {Snippets.ScriptSnippetModel}
      */
     function runCallback(target, result, exceptionDetails) {
       if (!exceptionDetails)
@@ -273,54 +273,54 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {?Protocol.Runtime.RemoteObject} result
    * @param {!Protocol.Runtime.ScriptId} scriptId
    * @param {?string=} sourceURL
    */
   _printRunScriptResult(target, result, scriptId, sourceURL) {
-    var consoleMessage = new WebInspector.ConsoleMessage(
-        target, WebInspector.ConsoleMessage.MessageSource.JS, WebInspector.ConsoleMessage.MessageLevel.Log, '',
+    var consoleMessage = new SDK.ConsoleMessage(
+        target, SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Log, '',
         undefined, sourceURL, undefined, undefined, undefined, [result], undefined, undefined, undefined, scriptId);
     target.consoleModel.addMessage(consoleMessage);
   }
 
   /**
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    * @param {?string=} sourceURL
    */
   _printRunOrCompileScriptResultFailure(target, exceptionDetails, sourceURL) {
-    target.consoleModel.addMessage(WebInspector.ConsoleMessage.fromException(
+    target.consoleModel.addMessage(SDK.ConsoleMessage.fromException(
         target, exceptionDetails, undefined, undefined, sourceURL || undefined));
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @return {!Array.<!{breakpoint: !WebInspector.BreakpointManager.Breakpoint, uiLocation: !WebInspector.UILocation}>}
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {!Array.<!{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UILocation}>}
    */
   _removeBreakpoints(uiSourceCode) {
-    var breakpointLocations = WebInspector.breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode);
+    var breakpointLocations = Bindings.breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode);
     for (var i = 0; i < breakpointLocations.length; ++i)
       breakpointLocations[i].breakpoint.remove();
     return breakpointLocations;
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @param {!Array.<!{breakpoint: !WebInspector.BreakpointManager.Breakpoint, uiLocation: !WebInspector.UILocation}>} breakpointLocations
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Array.<!{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UILocation}>} breakpointLocations
    */
   _restoreBreakpoints(uiSourceCode, breakpointLocations) {
     for (var i = 0; i < breakpointLocations.length; ++i) {
       var uiLocation = breakpointLocations[i].uiLocation;
       var breakpoint = breakpointLocations[i].breakpoint;
-      WebInspector.breakpointManager.setBreakpoint(
+      Bindings.breakpointManager.setBreakpoint(
           uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, breakpoint.condition(), breakpoint.enabled());
     }
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _releaseSnippetScript(uiSourceCode) {
     this._mappingForTarget.valuesArray().forEach(function(mapping) {
@@ -333,7 +333,7 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
    * @return {?string}
    */
   _snippetIdForSourceURL(sourceURL) {
-    var snippetPrefix = WebInspector.ScriptSnippetModel.snippetSourceURLPrefix;
+    var snippetPrefix = Snippets.ScriptSnippetModel.snippetSourceURLPrefix;
     if (!sourceURL.startsWith(snippetPrefix))
       return null;
     var splitURL = sourceURL.substring(snippetPrefix.length).split('_');
@@ -342,32 +342,32 @@ WebInspector.ScriptSnippetModel = class extends WebInspector.Object {
   }
 };
 
-WebInspector.ScriptSnippetModel.snippetSourceURLPrefix = 'snippets:///';
+Snippets.ScriptSnippetModel.snippetSourceURLPrefix = 'snippets:///';
 
 /**
- * @implements {WebInspector.DebuggerSourceMapping}
+ * @implements {Bindings.DebuggerSourceMapping}
  * @unrestricted
  */
-WebInspector.SnippetScriptMapping = class {
+Snippets.SnippetScriptMapping = class {
   /**
-   * @param {!WebInspector.DebuggerModel} debuggerModel
-   * @param {!WebInspector.ScriptSnippetModel} scriptSnippetModel
+   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!Snippets.ScriptSnippetModel} scriptSnippetModel
    */
   constructor(debuggerModel, scriptSnippetModel) {
     this._target = debuggerModel.target();
     this._debuggerModel = debuggerModel;
     this._scriptSnippetModel = scriptSnippetModel;
-    /** @type {!Object.<string, !WebInspector.UISourceCode>} */
+    /** @type {!Object.<string, !Workspace.UISourceCode>} */
     this._uiSourceCodeForScriptId = {};
-    /** @type {!Map.<!WebInspector.UISourceCode, !WebInspector.Script>} */
+    /** @type {!Map.<!Workspace.UISourceCode, !SDK.Script>} */
     this._scriptForUISourceCode = new Map();
-    /** @type {!Map.<!WebInspector.UISourceCode, number>} */
+    /** @type {!Map.<!Workspace.UISourceCode, number>} */
     this._evaluationIndexForUISourceCode = new Map();
-    debuggerModel.addEventListener(WebInspector.DebuggerModel.Events.GlobalObjectCleared, this._reset, this);
+    debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._reset, this);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _releaseSnippetScript(uiSourceCode) {
     var script = this._scriptForUISourceCode.get(uiSourceCode);
@@ -381,14 +381,14 @@ WebInspector.SnippetScriptMapping = class {
 
   /**
    * @param {number} evaluationIndex
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _setEvaluationIndex(evaluationIndex, uiSourceCode) {
     this._evaluationIndexForUISourceCode.set(uiSourceCode, evaluationIndex);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {number|undefined}
    */
   evaluationIndex(uiSourceCode) {
@@ -396,13 +396,13 @@ WebInspector.SnippetScriptMapping = class {
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {string}
    */
   _evaluationSourceURL(uiSourceCode) {
     var evaluationSuffix = '_' + this._evaluationIndexForUISourceCode.get(uiSourceCode);
     var snippetId = this._scriptSnippetModel._snippetIdForUISourceCode.get(uiSourceCode);
-    return WebInspector.ScriptSnippetModel.snippetSourceURLPrefix + snippetId + evaluationSuffix;
+    return Snippets.ScriptSnippetModel.snippetSourceURLPrefix + snippetId + evaluationSuffix;
   }
 
   _reset() {
@@ -413,11 +413,11 @@ WebInspector.SnippetScriptMapping = class {
 
   /**
    * @override
-   * @param {!WebInspector.DebuggerModel.Location} rawLocation
-   * @return {?WebInspector.UILocation}
+   * @param {!SDK.DebuggerModel.Location} rawLocation
+   * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var debuggerModelLocation = /** @type {!WebInspector.DebuggerModel.Location} */ (rawLocation);
+    var debuggerModelLocation = /** @type {!SDK.DebuggerModel.Location} */ (rawLocation);
     var uiSourceCode = this._uiSourceCodeForScriptId[debuggerModelLocation.scriptId];
     if (!uiSourceCode)
       return null;
@@ -427,10 +427,10 @@ WebInspector.SnippetScriptMapping = class {
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?WebInspector.DebuggerModel.Location}
+   * @return {?SDK.DebuggerModel.Location}
    */
   uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
     var script = this._scriptForUISourceCode.get(uiSourceCode);
@@ -441,28 +441,28 @@ WebInspector.SnippetScriptMapping = class {
   }
 
   /**
-   * @param {!WebInspector.Script} script
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!SDK.Script} script
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _addScript(script, uiSourceCode) {
     console.assert(!this._scriptForUISourceCode.get(uiSourceCode));
-    WebInspector.debuggerWorkspaceBinding.setSourceMapping(this._target, uiSourceCode, this);
+    Bindings.debuggerWorkspaceBinding.setSourceMapping(this._target, uiSourceCode, this);
     this._uiSourceCodeForScriptId[script.scriptId] = uiSourceCode;
     this._scriptForUISourceCode.set(uiSourceCode, script);
-    WebInspector.debuggerWorkspaceBinding.pushSourceMapping(script, this);
+    Bindings.debuggerWorkspaceBinding.pushSourceMapping(script, this);
   }
 
   /**
-   * @param {!WebInspector.UISourceCode} uiSourceCode
-   * @param {!Array.<!{breakpoint: !WebInspector.BreakpointManager.Breakpoint, uiLocation: !WebInspector.UILocation}>} breakpointLocations
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Array.<!{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UILocation}>} breakpointLocations
    */
   _restoreBreakpoints(uiSourceCode, breakpointLocations) {
     var script = this._scriptForUISourceCode.get(uiSourceCode);
     if (!script)
       return;
     var rawLocation =
-        /** @type {!WebInspector.DebuggerModel.Location} */ (this._debuggerModel.createRawLocation(script, 0, 0));
-    var scriptUISourceCode = WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation).uiSourceCode;
+        /** @type {!SDK.DebuggerModel.Location} */ (this._debuggerModel.createRawLocation(script, 0, 0));
+    var scriptUISourceCode = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation).uiSourceCode;
     if (scriptUISourceCode)
       this._scriptSnippetModel._restoreBreakpoints(scriptUISourceCode, breakpointLocations);
   }
@@ -477,7 +477,7 @@ WebInspector.SnippetScriptMapping = class {
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @return {boolean}
    */
@@ -487,12 +487,12 @@ WebInspector.SnippetScriptMapping = class {
 };
 
 /**
- * @implements {WebInspector.ContentProvider}
+ * @implements {Common.ContentProvider}
  * @unrestricted
  */
-WebInspector.SnippetContentProvider = class {
+Snippets.SnippetContentProvider = class {
   /**
-   * @param {!WebInspector.Snippet} snippet
+   * @param {!Snippets.Snippet} snippet
    */
   constructor(snippet) {
     this._snippet = snippet;
@@ -508,10 +508,10 @@ WebInspector.SnippetContentProvider = class {
 
   /**
    * @override
-   * @return {!WebInspector.ResourceType}
+   * @return {!Common.ResourceType}
    */
   contentType() {
-    return WebInspector.resourceTypes.Snippet;
+    return Common.resourceTypes.Snippet;
   }
 
   /**
@@ -527,15 +527,15 @@ WebInspector.SnippetContentProvider = class {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
    */
   searchInContent(query, caseSensitive, isRegex, callback) {
     /**
-     * @this {WebInspector.SnippetContentProvider}
+     * @this {Snippets.SnippetContentProvider}
      */
     function performSearch() {
       callback(
-          WebInspector.ContentProvider.performSearchInContent(this._snippet.content, query, caseSensitive, isRegex));
+          Common.ContentProvider.performSearchInContent(this._snippet.content, query, caseSensitive, isRegex));
     }
 
     // searchInContent should call back later.
@@ -546,20 +546,20 @@ WebInspector.SnippetContentProvider = class {
 /**
  * @unrestricted
  */
-WebInspector.SnippetsProject = class extends WebInspector.ContentProviderBasedProject {
+Snippets.SnippetsProject = class extends Bindings.ContentProviderBasedProject {
   /**
-   * @param {!WebInspector.Workspace} workspace
-   * @param {!WebInspector.ScriptSnippetModel} model
+   * @param {!Workspace.Workspace} workspace
+   * @param {!Snippets.ScriptSnippetModel} model
    */
   constructor(workspace, model) {
-    super(workspace, 'snippets:', WebInspector.projectTypes.Snippets, '');
+    super(workspace, 'snippets:', Workspace.projectTypes.Snippets, '');
     this._model = model;
   }
 
   /**
    * @param {string} name
-   * @param {!WebInspector.ContentProvider} contentProvider
-   * @return {!WebInspector.UISourceCode}
+   * @param {!Common.ContentProvider} contentProvider
+   * @return {!Workspace.UISourceCode}
    */
   addSnippet(name, contentProvider) {
     return this.addContentProvider(name, contentProvider);
@@ -575,7 +575,7 @@ WebInspector.SnippetsProject = class extends WebInspector.ContentProviderBasedPr
 
   /**
    * @override
-   * @param {!WebInspector.UISourceCode} uiSourceCode
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newContent
    * @param {function(?string)} callback
    */
@@ -607,7 +607,7 @@ WebInspector.SnippetsProject = class extends WebInspector.ContentProviderBasedPr
    * @param {string} url
    * @param {?string} name
    * @param {string} content
-   * @param {function(?WebInspector.UISourceCode)} callback
+   * @param {function(?Workspace.UISourceCode)} callback
    */
   createFile(url, name, content, callback) {
     callback(this._model.createScriptSnippet(content));
@@ -623,6 +623,6 @@ WebInspector.SnippetsProject = class extends WebInspector.ContentProviderBasedPr
 };
 
 /**
- * @type {!WebInspector.ScriptSnippetModel}
+ * @type {!Snippets.ScriptSnippetModel}
  */
-WebInspector.scriptSnippetModel = new WebInspector.ScriptSnippetModel(WebInspector.workspace);
+Snippets.scriptSnippetModel = new Snippets.ScriptSnippetModel(Workspace.workspace);

@@ -4,10 +4,10 @@
 /**
  * @unrestricted
  */
-WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
+Network.NetworkWaterfallColumn = class extends UI.VBox {
   /**
    * @param {number} rowHeight
-   * @param {!WebInspector.NetworkTimeCalculator} calculator
+   * @param {!Network.NetworkTimeCalculator} calculator
    */
   constructor(rowHeight, calculator) {
     // TODO(allada) Make this a shadowDOM when the NetworkWaterfallColumn gets moved into NetworkLogViewColumns.
@@ -30,34 +30,34 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
     this._headerHeight = 0;
     this._calculator = calculator;
 
-    this._popoverHelper = new WebInspector.PopoverHelper(this.element);
+    this._popoverHelper = new UI.PopoverHelper(this.element);
     this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
     this._popoverHelper.setTimeout(300, 300);
 
-    /** @type {!Array<!WebInspector.NetworkRequest>} */
+    /** @type {!Array<!SDK.NetworkRequest>} */
     this._requestData = [];
 
-    /** @type {?WebInspector.NetworkRequest} */
+    /** @type {?SDK.NetworkRequest} */
     this._hoveredRequest = null;
-    /** @type {?WebInspector.NetworkRequest.InitiatorGraph} */
+    /** @type {?SDK.NetworkRequest.InitiatorGraph} */
     this._initiatorGraph = null;
 
-    /** @type {?WebInspector.NetworkRequest} */
+    /** @type {?SDK.NetworkRequest} */
     this._navigationRequest = null;
 
     /** @type {!Map<string, !Array<number>>} */
     this._eventDividers = new Map();
 
-    var colorUsage = WebInspector.ThemeSupport.ColorUsage;
-    this._rowNavigationRequestColor = WebInspector.themeSupport.patchColor('#def', colorUsage.Background);
-    this._rowStripeColor = WebInspector.themeSupport.patchColor('#f5f5f5', colorUsage.Background);
-    this._rowHoverColor = WebInspector.themeSupport.patchColor(
-        '#ebf2fc', /** @type {!WebInspector.ThemeSupport.ColorUsage} */ (colorUsage.Background | colorUsage.Selection));
+    var colorUsage = UI.ThemeSupport.ColorUsage;
+    this._rowNavigationRequestColor = UI.themeSupport.patchColor('#def', colorUsage.Background);
+    this._rowStripeColor = UI.themeSupport.patchColor('#f5f5f5', colorUsage.Background);
+    this._rowHoverColor = UI.themeSupport.patchColor(
+        '#ebf2fc', /** @type {!UI.ThemeSupport.ColorUsage} */ (colorUsage.Background | colorUsage.Selection));
     this._parentInitiatorColor =
-        WebInspector.themeSupport.patchColor('hsla(120, 68%, 54%, 0.2)', colorUsage.Background);
-    this._initiatedColor = WebInspector.themeSupport.patchColor('hsla(0, 68%, 54%, 0.2)', colorUsage.Background);
+        UI.themeSupport.patchColor('hsla(120, 68%, 54%, 0.2)', colorUsage.Background);
+    this._initiatedColor = UI.themeSupport.patchColor('hsla(0, 68%, 54%, 0.2)', colorUsage.Background);
 
-    /** @type {!Map<!WebInspector.ResourceType, string>} */
+    /** @type {!Map<!Common.ResourceType, string>} */
     this._borderColorsForResourceTypeCache = new Map();
     /** @type {!Map<string, !CanvasGradient>} */
     this._colorsForResourceTypeCache = new Map();
@@ -86,10 +86,10 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
     if (!this._hoveredRequest)
       return;
     var useTimingBars =
-        !WebInspector.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
+        !Common.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
     if (useTimingBars) {
-      var range = WebInspector.RequestTimingView.calculateRequestTimeRanges(this._hoveredRequest, 0)
-          .find(data => data.name === WebInspector.RequestTimeRangeNames.Total);
+      var range = Network.RequestTimingView.calculateRequestTimeRanges(this._hoveredRequest, 0)
+          .find(data => data.name === Network.RequestTimeRangeNames.Total);
       var start = this._timeToPosition(range.start);
       var end = this._timeToPosition(range.end);
     } else {
@@ -124,18 +124,18 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
 
   /**
    * @param {!Element|!AnchorBox} anchor
-   * @param {!WebInspector.Popover} popover
+   * @param {!UI.Popover} popover
    */
   _showPopover(anchor, popover) {
     if (!this._hoveredRequest)
       return;
     var content =
-        WebInspector.RequestTimingView.createTimingTable(this._hoveredRequest, this._calculator.minimumBoundary());
+        Network.RequestTimingView.createTimingTable(this._hoveredRequest, this._calculator.minimumBoundary());
     popover.showForAnchor(content, anchor);
   }
 
   /**
-   * @param {?WebInspector.NetworkRequest} request
+   * @param {?SDK.NetworkRequest} request
    * @param {boolean} highlightInitiatorChain
    */
   setHoveredRequest(request, highlightInitiatorChain) {
@@ -167,7 +167,7 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.NetworkTimeCalculator} calculator
+   * @param {!Network.NetworkTimeCalculator} calculator
    */
   setCalculator(calculator) {
     this._calculator = calculator;
@@ -176,7 +176,7 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
   /**
    * @param {number} x
    * @param {number} y
-   * @return {?WebInspector.NetworkRequest}
+   * @return {?SDK.NetworkRequest}
    */
   getRequestFromPoint(x, y) {
     return this._requestData[Math.floor((this._scrollTop + y - this._headerHeight) / this._rowHeight)] || null;
@@ -191,7 +191,7 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
   /**
    * @param {number=} scrollTop
    * @param {!Map<string, !Array<number>>=} eventDividers
-   * @param {!WebInspector.NetworkWaterfallColumn.RequestData=} requestData
+   * @param {!Network.NetworkWaterfallColumn.RequestData=} requestData
    */
   update(scrollTop, eventDividers, requestData) {
     if (scrollTop !== undefined)
@@ -237,11 +237,11 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.RequestTimeRangeNames} type
+   * @param {!Network.RequestTimeRangeNames} type
    * @return {string}
    */
   _colorForType(type) {
-    var types = WebInspector.RequestTimeRangeNames;
+    var types = Network.RequestTimeRangeNames;
     switch (type) {
       case types.Receiving:
       case types.ReceivingPush:
@@ -281,7 +281,7 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
 
   _draw() {
     var useTimingBars =
-        !WebInspector.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
+        !Common.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
     var requests = this._requestData;
     var context = this._canvas.getContext('2d');
     context.save();
@@ -305,7 +305,7 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
     context.restore();
 
     const freeZoneAtLeft = 75;
-    WebInspector.TimelineGrid.drawCanvasGrid(context, this._calculator, this._fontSize, freeZoneAtLeft);
+    UI.TimelineGrid.drawCanvasGrid(context, this._calculator, this._fontSize, freeZoneAtLeft);
   }
 
   /**
@@ -335,11 +335,11 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.RequestTimeRangeNames=} type
+   * @param {!Network.RequestTimeRangeNames=} type
    * @return {number}
    */
   _getBarHeight(type) {
-    var types = WebInspector.RequestTimeRangeNames;
+    var types = Network.RequestTimeRangeNames;
     switch (type) {
       case types.Connecting:
       case types.SSL:
@@ -355,16 +355,16 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {string}
    */
   _borderColorForResourceType(request) {
     var resourceType = request.resourceType();
     if (this._borderColorsForResourceTypeCache.has(resourceType))
       return this._borderColorsForResourceTypeCache.get(resourceType);
-    var colorsForResourceType = WebInspector.NetworkWaterfallColumn._colorsForResourceType;
+    var colorsForResourceType = Network.NetworkWaterfallColumn._colorsForResourceType;
     var color = colorsForResourceType[resourceType] || colorsForResourceType.Other;
-    var parsedColor = WebInspector.Color.parse(color);
+    var parsedColor = Common.Color.parse(color);
     var hsla = parsedColor.hsla();
     hsla[1] /= 2;
     hsla[2] -= Math.min(hsla[2], 0.2);
@@ -375,11 +375,11 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @return {string|!CanvasGradient}
    */
   _colorForResourceType(context, request) {
-    var colorsForResourceType = WebInspector.NetworkWaterfallColumn._colorsForResourceType;
+    var colorsForResourceType = Network.NetworkWaterfallColumn._colorsForResourceType;
     var resourceType = request.resourceType();
     var color = colorsForResourceType[resourceType] || colorsForResourceType.Other;
     if (request.cached())
@@ -387,7 +387,7 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
 
     if (this._colorsForResourceTypeCache.has(color))
       return this._colorsForResourceTypeCache.get(color);
-    var parsedColor = WebInspector.Color.parse(color);
+    var parsedColor = Common.Color.parse(color);
     var hsla = parsedColor.hsla();
     hsla[1] -= Math.min(hsla[1], 0.28);
     hsla[2] -= Math.min(hsla[2], 0.15);
@@ -399,7 +399,7 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @param {number} borderOffset
    * @return {!{start: number, mid: number, end: number}}
    */
@@ -415,7 +415,7 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @param {number} y
    */
   _drawSimplifiedBars(context, request, y) {
@@ -454,8 +454,8 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
     }
 
     if (!this._calculator.startAtZero) {
-      var queueingRange = WebInspector.RequestTimingView.calculateRequestTimeRanges(request, 0)
-          .find(data => data.name === WebInspector.RequestTimeRangeNames.Total);
+      var queueingRange = Network.RequestTimingView.calculateRequestTimeRanges(request, 0)
+          .find(data => data.name === Network.RequestTimeRangeNames.Total);
       var leftLabelWidth = labels ? context.measureText(labels.left).width : 0;
       var leftTextPlacedInBar = leftLabelWidth < ranges.mid - ranges.start;
       const wiskerTextPadding = 13;
@@ -464,8 +464,8 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
       if (ranges.start - textOffset > queueingStart) {
         context.beginPath();
         context.globalAlpha = 1;
-        context.strokeStyle = WebInspector.themeSupport.patchColor(
-            '#a5a5a5', WebInspector.ThemeSupport.ColorUsage.Foreground);
+        context.strokeStyle = UI.themeSupport.patchColor(
+            '#a5a5a5', UI.ThemeSupport.ColorUsage.Foreground);
         context.moveTo(queueingStart, Math.floor(height / 2));
         context.lineTo(ranges.start - textOffset, Math.floor(height / 2));
 
@@ -495,8 +495,8 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
     var height = this._getBarHeight();
     var leftLabelWidth = context.measureText(leftText).width;
     var rightLabelWidth = context.measureText(rightText).width;
-    context.fillStyle = WebInspector.themeSupport.patchColor('#444', WebInspector.ThemeSupport.ColorUsage.Foreground);
-    context.strokeStyle = WebInspector.themeSupport.patchColor('#444', WebInspector.ThemeSupport.ColorUsage.Foreground);
+    context.fillStyle = UI.themeSupport.patchColor('#444', UI.ThemeSupport.ColorUsage.Foreground);
+    context.strokeStyle = UI.themeSupport.patchColor('#444', UI.ThemeSupport.ColorUsage.Foreground);
     if (leftLabelWidth < midX - startX) {
       var midBarX = startX + (midX - startX) / 2 - leftLabelWidth / 2;
       context.fillText(leftText, midBarX, this._fontSize);
@@ -531,25 +531,25 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @param {number} y
    */
   _drawTimingBars(context, request, y) {
     context.save();
-    var ranges = WebInspector.RequestTimingView.calculateRequestTimeRanges(request, 0);
+    var ranges = Network.RequestTimingView.calculateRequestTimeRanges(request, 0);
     for (var range of ranges) {
-      if (range.name === WebInspector.RequestTimeRangeNames.Total ||
-          range.name === WebInspector.RequestTimeRangeNames.Sending || range.end - range.start === 0)
+      if (range.name === Network.RequestTimeRangeNames.Total ||
+          range.name === Network.RequestTimeRangeNames.Sending || range.end - range.start === 0)
         continue;
       context.beginPath();
       var lineWidth = 0;
       var color = this._colorForType(range.name);
       var borderColor = color;
-      if (range.name === WebInspector.RequestTimeRangeNames.Queueing) {
+      if (range.name === Network.RequestTimeRangeNames.Queueing) {
         borderColor = 'lightgrey';
         lineWidth = 2;
       }
-      if (range.name === WebInspector.RequestTimeRangeNames.Receiving)
+      if (range.name === Network.RequestTimeRangeNames.Receiving)
         lineWidth = 2;
       context.fillStyle = color;
       var height = this._getBarHeight(range.name);
@@ -569,7 +569,7 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!WebInspector.NetworkRequest} request
+   * @param {!SDK.NetworkRequest} request
    * @param {number} rowNumber
    * @param {number} y
    */
@@ -590,7 +590,7 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
 
     /**
      * @return {string}
-     * @this {WebInspector.NetworkWaterfallColumn}
+     * @this {Network.NetworkWaterfallColumn}
      */
     function getRowColor() {
       if (this._hoveredRequest === request)
@@ -611,11 +611,11 @@ WebInspector.NetworkWaterfallColumn = class extends WebInspector.VBox {
 };
 
 /**
- * @typedef {{requests: !Array<!WebInspector.NetworkRequest>, navigationRequest: ?WebInspector.NetworkRequest}}
+ * @typedef {{requests: !Array<!SDK.NetworkRequest>, navigationRequest: ?SDK.NetworkRequest}}
  */
-WebInspector.NetworkWaterfallColumn.RequestData;
+Network.NetworkWaterfallColumn.RequestData;
 
-WebInspector.NetworkWaterfallColumn._colorsForResourceType = {
+Network.NetworkWaterfallColumn._colorsForResourceType = {
   document: 'hsl(215, 100%, 80%)',
   font: 'hsl(8, 100%, 80%)',
   media: 'hsl(272, 64%, 80%)',

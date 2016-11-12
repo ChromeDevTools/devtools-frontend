@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /** @interface */
-WebInspector.LiveLocation = function() {};
+Bindings.LiveLocation = function() {};
 
-WebInspector.LiveLocation.prototype = {
+Bindings.LiveLocation.prototype = {
   update: function() {},
 
   /**
-   * @return {?WebInspector.UILocation}
+   * @return {?Workspace.UILocation}
    */
   uiLocation: function() {},
 
@@ -21,13 +21,13 @@ WebInspector.LiveLocation.prototype = {
 };
 
 /**
- * @implements {WebInspector.LiveLocation}
+ * @implements {Bindings.LiveLocation}
  * @unrestricted
  */
-WebInspector.LiveLocationWithPool = class {
+Bindings.LiveLocationWithPool = class {
   /**
-   * @param {function(!WebInspector.LiveLocation)} updateDelegate
-   * @param {!WebInspector.LiveLocationPool} locationPool
+   * @param {function(!Bindings.LiveLocation)} updateDelegate
+   * @param {!Bindings.LiveLocationPool} locationPool
    */
   constructor(updateDelegate, locationPool) {
     this._updateDelegate = updateDelegate;
@@ -44,7 +44,7 @@ WebInspector.LiveLocationWithPool = class {
 
   /**
    * @override
-   * @return {?WebInspector.UILocation}
+   * @return {?Workspace.UILocation}
    */
   uiLocation() {
     throw 'Not implemented';
@@ -70,20 +70,20 @@ WebInspector.LiveLocationWithPool = class {
 /**
  * @unrestricted
  */
-WebInspector.LiveLocationPool = class {
+Bindings.LiveLocationPool = class {
   constructor() {
     this._locations = new Set();
   }
 
   /**
-   * @param {!WebInspector.LiveLocation} location
+   * @param {!Bindings.LiveLocation} location
    */
   _add(location) {
     this._locations.add(location);
   }
 
   /**
-   * @param {!WebInspector.LiveLocation} location
+   * @param {!Bindings.LiveLocation} location
    */
   _delete(location) {
     this._locations.delete(location);

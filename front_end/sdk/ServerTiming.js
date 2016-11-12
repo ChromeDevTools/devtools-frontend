@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.ServerTiming = class {
+SDK.ServerTiming = class {
   /**
    * @param {string} metric
    * @param {number} value
@@ -17,8 +17,8 @@ WebInspector.ServerTiming = class {
   }
 
   /**
-   * @param {!Array<!WebInspector.NetworkRequest.NameValue>} headers
-   * @return {?Array<!WebInspector.ServerTiming>}
+   * @param {!Array<!SDK.NetworkRequest.NameValue>} headers
+   * @return {?Array<!SDK.ServerTiming>}
    */
   static parseHeaders(headers) {
     var rawServerTimingHeaders = headers.filter(item => item.name.toLowerCase() === 'server-timing');
@@ -27,7 +27,7 @@ WebInspector.ServerTiming = class {
 
     /**
      * @param {?string} valueString
-     * @return {?Array<!WebInspector.ServerTiming>}
+     * @return {?Array<!SDK.ServerTiming>}
      */
     function createFromHeaderValue(valueString) {
       // https://www.w3.org/TR/server-timing/
@@ -42,7 +42,7 @@ WebInspector.ServerTiming = class {
         if (value !== null)
           value = Math.abs(parseFloat(metricMatch[2]));
         valueString = metricMatch[5];  // comma delimited headers
-        result.push(new WebInspector.ServerTiming(metric, value, description));
+        result.push(new SDK.ServerTiming(metric, value, description));
       }
       return result;
     }

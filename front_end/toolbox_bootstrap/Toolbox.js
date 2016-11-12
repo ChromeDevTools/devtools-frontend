@@ -8,7 +8,7 @@
   function toolboxLoaded() {
     if (!window.opener)
       return;
-    var app = window.opener.WebInspector['AdvancedApp']['_instance']();
+    var app = window.opener['Emulation']['AdvancedApp']['_instance']();
     app['toolboxLoaded'](document);
   }
 

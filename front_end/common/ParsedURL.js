@@ -29,7 +29,7 @@
 /**
  * @unrestricted
  */
-WebInspector.ParsedURL = class {
+Common.ParsedURL = class {
   /**
    * @param {string} url
    */
@@ -45,7 +45,7 @@ WebInspector.ParsedURL = class {
     this.folderPathComponents = '';
     this.lastPathComponent = '';
 
-    var match = url.match(WebInspector.ParsedURL._urlRegex());
+    var match = url.match(Common.ParsedURL._urlRegex());
     if (match) {
       this.isValid = true;
       this.scheme = match[1].toLowerCase();
@@ -94,8 +94,8 @@ WebInspector.ParsedURL = class {
    * @return {!RegExp}
    */
   static _urlRegex() {
-    if (WebInspector.ParsedURL._urlRegexInstance)
-      return WebInspector.ParsedURL._urlRegexInstance;
+    if (Common.ParsedURL._urlRegexInstance)
+      return Common.ParsedURL._urlRegexInstance;
     // RegExp groups:
     // 1 - scheme (using the RFC3986 grammar)
     // 2 - hostname
@@ -110,10 +110,10 @@ WebInspector.ParsedURL = class {
     var queryRegex = /(?:\?([^#]*))?/;
     var fragmentRegex = /(?:#(.*))?/;
 
-    WebInspector.ParsedURL._urlRegexInstance = new RegExp(
+    Common.ParsedURL._urlRegexInstance = new RegExp(
         '^' + schemeRegex.source + hostRegex.source + portRegex.source + pathRegex.source + queryRegex.source +
         fragmentRegex.source + '$');
-    return WebInspector.ParsedURL._urlRegexInstance;
+    return Common.ParsedURL._urlRegexInstance;
   }
 
   /**
@@ -321,10 +321,10 @@ WebInspector.ParsedURL = class {
 
 
 /**
- * @return {?WebInspector.ParsedURL}
+ * @return {?Common.ParsedURL}
  */
 String.prototype.asParsedURL = function() {
-  var parsedURL = new WebInspector.ParsedURL(this.toString());
+  var parsedURL = new Common.ParsedURL(this.toString());
   if (parsedURL.isValid)
     return parsedURL;
   return null;

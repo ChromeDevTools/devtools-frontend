@@ -7,7 +7,7 @@
 /**
  * @unrestricted
  */
-WebInspector.TransformController = class extends WebInspector.Object {
+LayerViewer.TransformController = class extends Common.Object {
   /**
    * @param {!Element} element
    * @param {boolean=} disableRotate
@@ -19,7 +19,7 @@ WebInspector.TransformController = class extends WebInspector.Object {
     if (this.element.tabIndex < 0)
       this.element.tabIndex = 0;
     this._registerShortcuts();
-    WebInspector.installDragHandle(
+    UI.installDragHandle(
         element, this._onDragStart.bind(this), this._onDrag.bind(this), this._onDragEnd.bind(this), 'move', null);
     element.addEventListener('keydown', this._onKeyDown.bind(this), false);
     element.addEventListener('keyup', this._onKeyUp.bind(this), false);
@@ -27,26 +27,26 @@ WebInspector.TransformController = class extends WebInspector.Object {
     this._minScale = 0;
     this._maxScale = Infinity;
 
-    this._controlPanelToolbar = new WebInspector.Toolbar('transform-control-panel');
+    this._controlPanelToolbar = new UI.Toolbar('transform-control-panel');
 
-    /** @type {!Object<string, !WebInspector.ToolbarToggle>} */
+    /** @type {!Object<string, !UI.ToolbarToggle>} */
     this._modeButtons = {};
     if (!disableRotate) {
-      var panModeButton = new WebInspector.ToolbarToggle(WebInspector.UIString('Pan mode (X)'), 'largeicon-pan');
-      panModeButton.addEventListener('click', this._setMode.bind(this, WebInspector.TransformController.Modes.Pan));
-      this._modeButtons[WebInspector.TransformController.Modes.Pan] = panModeButton;
+      var panModeButton = new UI.ToolbarToggle(Common.UIString('Pan mode (X)'), 'largeicon-pan');
+      panModeButton.addEventListener('click', this._setMode.bind(this, LayerViewer.TransformController.Modes.Pan));
+      this._modeButtons[LayerViewer.TransformController.Modes.Pan] = panModeButton;
       this._controlPanelToolbar.appendToolbarItem(panModeButton);
       var rotateModeButton =
-          new WebInspector.ToolbarToggle(WebInspector.UIString('Rotate mode (V)'), 'largeicon-rotate');
+          new UI.ToolbarToggle(Common.UIString('Rotate mode (V)'), 'largeicon-rotate');
       rotateModeButton.addEventListener(
-          'click', this._setMode.bind(this, WebInspector.TransformController.Modes.Rotate));
-      this._modeButtons[WebInspector.TransformController.Modes.Rotate] = rotateModeButton;
+          'click', this._setMode.bind(this, LayerViewer.TransformController.Modes.Rotate));
+      this._modeButtons[LayerViewer.TransformController.Modes.Rotate] = rotateModeButton;
       this._controlPanelToolbar.appendToolbarItem(rotateModeButton);
     }
-    this._setMode(WebInspector.TransformController.Modes.Pan);
+    this._setMode(LayerViewer.TransformController.Modes.Pan);
 
     var resetButton =
-        new WebInspector.ToolbarButton(WebInspector.UIString('Reset transform (0)'), 'largeicon-center');
+        new UI.ToolbarButton(Common.UIString('Reset transform (0)'), 'largeicon-center');
     resetButton.addEventListener('click', this.resetAndNotify.bind(this, undefined));
     this._controlPanelToolbar.appendToolbarItem(resetButton);
 
@@ -54,26 +54,26 @@ WebInspector.TransformController = class extends WebInspector.Object {
   }
 
   /**
-   * @return {!WebInspector.Toolbar}
+   * @return {!UI.Toolbar}
    */
   toolbar() {
     return this._controlPanelToolbar;
   }
 
   _onKeyDown(event) {
-    if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Shift.code) {
+    if (event.keyCode === UI.KeyboardShortcut.Keys.Shift.code) {
       this._toggleMode();
       return;
     }
 
-    var shortcutKey = WebInspector.KeyboardShortcut.makeKeyFromEventIgnoringModifiers(event);
+    var shortcutKey = UI.KeyboardShortcut.makeKeyFromEventIgnoringModifiers(event);
     var handler = this._shortcuts[shortcutKey];
     if (handler && handler(event))
       event.consume();
   }
 
   _onKeyUp(event) {
-    if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Shift.code)
+    if (event.keyCode === UI.KeyboardShortcut.Keys.Shift.code)
       this._toggleMode();
   }
 
@@ -83,30 +83,30 @@ WebInspector.TransformController = class extends WebInspector.Object {
   }
 
   _registerShortcuts() {
-    this._addShortcuts(WebInspector.ShortcutsScreen.LayersPanelShortcuts.ResetView, this.resetAndNotify.bind(this));
+    this._addShortcuts(Components.ShortcutsScreen.LayersPanelShortcuts.ResetView, this.resetAndNotify.bind(this));
     this._addShortcuts(
-        WebInspector.ShortcutsScreen.LayersPanelShortcuts.PanMode,
-        this._setMode.bind(this, WebInspector.TransformController.Modes.Pan));
+        Components.ShortcutsScreen.LayersPanelShortcuts.PanMode,
+        this._setMode.bind(this, LayerViewer.TransformController.Modes.Pan));
     this._addShortcuts(
-        WebInspector.ShortcutsScreen.LayersPanelShortcuts.RotateMode,
-        this._setMode.bind(this, WebInspector.TransformController.Modes.Rotate));
+        Components.ShortcutsScreen.LayersPanelShortcuts.RotateMode,
+        this._setMode.bind(this, LayerViewer.TransformController.Modes.Rotate));
     var zoomFactor = 1.1;
     this._addShortcuts(
-        WebInspector.ShortcutsScreen.LayersPanelShortcuts.ZoomIn, this._onKeyboardZoom.bind(this, zoomFactor));
+        Components.ShortcutsScreen.LayersPanelShortcuts.ZoomIn, this._onKeyboardZoom.bind(this, zoomFactor));
     this._addShortcuts(
-        WebInspector.ShortcutsScreen.LayersPanelShortcuts.ZoomOut, this._onKeyboardZoom.bind(this, 1 / zoomFactor));
+        Components.ShortcutsScreen.LayersPanelShortcuts.ZoomOut, this._onKeyboardZoom.bind(this, 1 / zoomFactor));
     this._addShortcuts(
-        WebInspector.ShortcutsScreen.LayersPanelShortcuts.Up, this._onKeyboardPanOrRotate.bind(this, 0, -1));
+        Components.ShortcutsScreen.LayersPanelShortcuts.Up, this._onKeyboardPanOrRotate.bind(this, 0, -1));
     this._addShortcuts(
-        WebInspector.ShortcutsScreen.LayersPanelShortcuts.Down, this._onKeyboardPanOrRotate.bind(this, 0, 1));
+        Components.ShortcutsScreen.LayersPanelShortcuts.Down, this._onKeyboardPanOrRotate.bind(this, 0, 1));
     this._addShortcuts(
-        WebInspector.ShortcutsScreen.LayersPanelShortcuts.Left, this._onKeyboardPanOrRotate.bind(this, -1, 0));
+        Components.ShortcutsScreen.LayersPanelShortcuts.Left, this._onKeyboardPanOrRotate.bind(this, -1, 0));
     this._addShortcuts(
-        WebInspector.ShortcutsScreen.LayersPanelShortcuts.Right, this._onKeyboardPanOrRotate.bind(this, 1, 0));
+        Components.ShortcutsScreen.LayersPanelShortcuts.Right, this._onKeyboardPanOrRotate.bind(this, 1, 0));
   }
 
   _postChangeEvent() {
-    this.dispatchEventToListeners(WebInspector.TransformController.Events.TransformChanged);
+    this.dispatchEventToListeners(LayerViewer.TransformController.Events.TransformChanged);
   }
 
   _reset() {
@@ -119,12 +119,12 @@ WebInspector.TransformController = class extends WebInspector.Object {
 
   _toggleMode() {
     this._setMode(
-        this._mode === WebInspector.TransformController.Modes.Pan ? WebInspector.TransformController.Modes.Rotate :
-                                                                    WebInspector.TransformController.Modes.Pan);
+        this._mode === LayerViewer.TransformController.Modes.Pan ? LayerViewer.TransformController.Modes.Rotate :
+                                                                    LayerViewer.TransformController.Modes.Pan);
   }
 
   /**
-   * @param {!WebInspector.TransformController.Modes} mode
+   * @param {!LayerViewer.TransformController.Modes} mode
    */
   _setMode(mode) {
     if (this._mode === mode)
@@ -254,7 +254,7 @@ WebInspector.TransformController = class extends WebInspector.Object {
     var panStepInPixels = 6;
     var rotateStepInDegrees = 5;
 
-    if (this._mode === WebInspector.TransformController.Modes.Rotate) {
+    if (this._mode === LayerViewer.TransformController.Modes.Rotate) {
       // Sic! _onRotate treats X and Y as "rotate around X" and "rotate around Y", so swap X/Y multiplers.
       this._onRotate(
           this._rotateX + yMultiplier * rotateStepInDegrees, this._rotateY + xMultiplier * rotateStepInDegrees);
@@ -280,7 +280,7 @@ WebInspector.TransformController = class extends WebInspector.Object {
    * @param {!Event} event
    */
   _onDrag(event) {
-    if (this._mode === WebInspector.TransformController.Modes.Rotate) {
+    if (this._mode === LayerViewer.TransformController.Modes.Rotate) {
       this._onRotate(
           this._oldRotateX + (this._originY - event.clientY) / this.element.clientHeight * 180,
           this._oldRotateY - (this._originX - event.clientX) / this.element.clientWidth * 180);
@@ -312,14 +312,14 @@ WebInspector.TransformController = class extends WebInspector.Object {
 };
 
 /** @enum {symbol} */
-WebInspector.TransformController.Events = {
+LayerViewer.TransformController.Events = {
   TransformChanged: Symbol('TransformChanged')
 };
 
 /**
  * @enum {string}
  */
-WebInspector.TransformController.Modes = {
+LayerViewer.TransformController.Modes = {
   Pan: 'Pan',
   Rotate: 'Rotate',
 };

@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.Dialog = class extends WebInspector.Widget {
+UI.Dialog = class extends UI.Widget {
   constructor() {
     super(true);
     this.markAsRoot();
@@ -52,49 +52,49 @@ WebInspector.Dialog = class extends WebInspector.Widget {
    * @return {boolean}
    */
   static hasInstance() {
-    return !!WebInspector.Dialog._instance;
+    return !!UI.Dialog._instance;
   }
 
   /**
-   * @param {!WebInspector.Widget} view
+   * @param {!UI.Widget} view
    */
   static setModalHostView(view) {
-    WebInspector.Dialog._modalHostView = view;
+    UI.Dialog._modalHostView = view;
   }
 
   /**
    * FIXME: make utility method in Dialog, so clients use it instead of this getter.
    * Method should be like Dialog.showModalElement(position params, reposition callback).
-   * @return {?WebInspector.Widget}
+   * @return {?UI.Widget}
    */
   static modalHostView() {
-    return WebInspector.Dialog._modalHostView;
+    return UI.Dialog._modalHostView;
   }
 
   static modalHostRepositioned() {
-    if (WebInspector.Dialog._instance)
-      WebInspector.Dialog._instance._position();
+    if (UI.Dialog._instance)
+      UI.Dialog._instance._position();
   }
 
   /**
    * @override
    */
   show() {
-    if (WebInspector.Dialog._instance)
-      WebInspector.Dialog._instance.detach();
-    WebInspector.Dialog._instance = this;
+    if (UI.Dialog._instance)
+      UI.Dialog._instance.detach();
+    UI.Dialog._instance = this;
 
-    var document = /** @type {!Document} */ (WebInspector.Dialog._modalHostView.element.ownerDocument);
+    var document = /** @type {!Document} */ (UI.Dialog._modalHostView.element.ownerDocument);
     this._disableTabIndexOnElements(document);
 
-    this._glassPane = new WebInspector.GlassPane(document, this._dimmed);
+    this._glassPane = new UI.GlassPane(document, this._dimmed);
     this._glassPane.element.addEventListener('click', this._onGlassPaneClick.bind(this), false);
     this.element.ownerDocument.body.addEventListener('keydown', this._keyDownBound, false);
 
     super.show(this._glassPane.element);
 
     this._position();
-    this._focusRestorer = new WebInspector.WidgetFocusRestorer(this);
+    this._focusRestorer = new UI.WidgetFocusRestorer(this);
   }
 
   /**
@@ -111,7 +111,7 @@ WebInspector.Dialog = class extends WebInspector.Widget {
 
     this._restoreTabIndexOnElements();
 
-    delete WebInspector.Dialog._instance;
+    delete UI.Dialog._instance;
   }
 
   addCloseButton() {
@@ -195,7 +195,7 @@ WebInspector.Dialog = class extends WebInspector.Widget {
   }
 
   _position() {
-    var container = WebInspector.Dialog._modalHostView.element;
+    var container = UI.Dialog._modalHostView.element;
 
     var width = container.offsetWidth - 10;
     var height = container.offsetHeight - 10;
@@ -235,7 +235,7 @@ WebInspector.Dialog = class extends WebInspector.Widget {
    * @param {!Event} event
    */
   _onKeyDown(event) {
-    if (event.keyCode === WebInspector.KeyboardShortcut.Keys.Esc.code) {
+    if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
       event.consume(true);
       this.detach();
     }
@@ -244,7 +244,7 @@ WebInspector.Dialog = class extends WebInspector.Widget {
 
 
 /** @type {?Element} */
-WebInspector.Dialog._previousFocusedElement = null;
+UI.Dialog._previousFocusedElement = null;
 
-/** @type {?WebInspector.Widget} */
-WebInspector.Dialog._modalHostView = null;
+/** @type {?UI.Widget} */
+UI.Dialog._modalHostView = null;

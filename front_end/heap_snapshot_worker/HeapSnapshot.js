@@ -30,9 +30,9 @@
 /**
  * @interface
  */
-WebInspector.HeapSnapshotItem = function() {};
+HeapSnapshotWorker.HeapSnapshotItem = function() {};
 
-WebInspector.HeapSnapshotItem.prototype = {
+HeapSnapshotWorker.HeapSnapshotItem.prototype = {
   /**
    * @return {number}
    */
@@ -45,12 +45,12 @@ WebInspector.HeapSnapshotItem.prototype = {
 };
 
 /**
- * @implements {WebInspector.HeapSnapshotItem}
+ * @implements {HeapSnapshotWorker.HeapSnapshotItem}
  * @unrestricted
  */
-WebInspector.HeapSnapshotEdge = class {
+HeapSnapshotWorker.HeapSnapshotEdge = class {
   /**
-   * @param {!WebInspector.HeapSnapshot} snapshot
+   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
    * @param {number=} edgeIndex
    */
   constructor(snapshot, edgeIndex) {
@@ -60,10 +60,10 @@ WebInspector.HeapSnapshotEdge = class {
   }
 
   /**
-   * @return {!WebInspector.HeapSnapshotEdge}
+   * @return {!HeapSnapshotWorker.HeapSnapshotEdge}
    */
   clone() {
-    return new WebInspector.HeapSnapshotEdge(this._snapshot, this.edgeIndex);
+    return new HeapSnapshotWorker.HeapSnapshotEdge(this._snapshot, this.edgeIndex);
   }
 
   /**
@@ -81,7 +81,7 @@ WebInspector.HeapSnapshotEdge = class {
   }
 
   /**
-   * @return {!WebInspector.HeapSnapshotNode}
+   * @return {!HeapSnapshotWorker.HeapSnapshotNode}
    */
   node() {
     return this._snapshot.createNode(this.nodeIndex());
@@ -119,10 +119,10 @@ WebInspector.HeapSnapshotEdge = class {
 
   /**
    * @override
-   * @return {!WebInspector.HeapSnapshotCommon.Edge}
+   * @return {!Profiler.HeapSnapshotCommon.Edge}
    */
   serialize() {
-    return new WebInspector.HeapSnapshotCommon.Edge(this.name(), this.node().serialize(), this.type(), this.edgeIndex);
+    return new Profiler.HeapSnapshotCommon.Edge(this.name(), this.node().serialize(), this.type(), this.edgeIndex);
   }
 
   /**
@@ -137,16 +137,16 @@ WebInspector.HeapSnapshotEdge = class {
 /**
  * @interface
  */
-WebInspector.HeapSnapshotItemIterator = function() {};
+HeapSnapshotWorker.HeapSnapshotItemIterator = function() {};
 
-WebInspector.HeapSnapshotItemIterator.prototype = {
+HeapSnapshotWorker.HeapSnapshotItemIterator.prototype = {
   /**
    * @return {boolean}
    */
   hasNext: function() {},
 
   /**
-   * @return {!WebInspector.HeapSnapshotItem}
+   * @return {!HeapSnapshotWorker.HeapSnapshotItem}
    */
   item: function() {},
 
@@ -156,23 +156,23 @@ WebInspector.HeapSnapshotItemIterator.prototype = {
 /**
  * @interface
  */
-WebInspector.HeapSnapshotItemIndexProvider = function() {};
+HeapSnapshotWorker.HeapSnapshotItemIndexProvider = function() {};
 
-WebInspector.HeapSnapshotItemIndexProvider.prototype = {
+HeapSnapshotWorker.HeapSnapshotItemIndexProvider.prototype = {
   /**
    * @param {number} newIndex
-   * @return {!WebInspector.HeapSnapshotItem}
+   * @return {!HeapSnapshotWorker.HeapSnapshotItem}
    */
   itemForIndex: function(newIndex) {},
 };
 
 /**
- * @implements {WebInspector.HeapSnapshotItemIndexProvider}
+ * @implements {HeapSnapshotWorker.HeapSnapshotItemIndexProvider}
  * @unrestricted
  */
-WebInspector.HeapSnapshotNodeIndexProvider = class {
+HeapSnapshotWorker.HeapSnapshotNodeIndexProvider = class {
   /**
-   * @param {!WebInspector.HeapSnapshot} snapshot
+   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
    */
   constructor(snapshot) {
     this._node = snapshot.createNode();
@@ -181,7 +181,7 @@ WebInspector.HeapSnapshotNodeIndexProvider = class {
   /**
    * @override
    * @param {number} index
-   * @return {!WebInspector.HeapSnapshotNode}
+   * @return {!HeapSnapshotWorker.HeapSnapshotNode}
    */
   itemForIndex(index) {
     this._node.nodeIndex = index;
@@ -190,12 +190,12 @@ WebInspector.HeapSnapshotNodeIndexProvider = class {
 };
 
 /**
- * @implements {WebInspector.HeapSnapshotItemIndexProvider}
+ * @implements {HeapSnapshotWorker.HeapSnapshotItemIndexProvider}
  * @unrestricted
  */
-WebInspector.HeapSnapshotEdgeIndexProvider = class {
+HeapSnapshotWorker.HeapSnapshotEdgeIndexProvider = class {
   /**
-   * @param {!WebInspector.HeapSnapshot} snapshot
+   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
    */
   constructor(snapshot) {
     this._edge = snapshot.createEdge(0);
@@ -204,7 +204,7 @@ WebInspector.HeapSnapshotEdgeIndexProvider = class {
   /**
    * @override
    * @param {number} index
-   * @return {!WebInspector.HeapSnapshotEdge}
+   * @return {!HeapSnapshotWorker.HeapSnapshotEdge}
    */
   itemForIndex(index) {
     this._edge.edgeIndex = index;
@@ -213,12 +213,12 @@ WebInspector.HeapSnapshotEdgeIndexProvider = class {
 };
 
 /**
- * @implements {WebInspector.HeapSnapshotItemIndexProvider}
+ * @implements {HeapSnapshotWorker.HeapSnapshotItemIndexProvider}
  * @unrestricted
  */
-WebInspector.HeapSnapshotRetainerEdgeIndexProvider = class {
+HeapSnapshotWorker.HeapSnapshotRetainerEdgeIndexProvider = class {
   /**
-   * @param {!WebInspector.HeapSnapshot} snapshot
+   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
    */
   constructor(snapshot) {
     this._retainerEdge = snapshot.createRetainingEdge(0);
@@ -227,7 +227,7 @@ WebInspector.HeapSnapshotRetainerEdgeIndexProvider = class {
   /**
    * @override
    * @param {number} index
-   * @return {!WebInspector.HeapSnapshotRetainerEdge}
+   * @return {!HeapSnapshotWorker.HeapSnapshotRetainerEdge}
    */
   itemForIndex(index) {
     this._retainerEdge.setRetainerIndex(index);
@@ -236,12 +236,12 @@ WebInspector.HeapSnapshotRetainerEdgeIndexProvider = class {
 };
 
 /**
- * @implements {WebInspector.HeapSnapshotItemIterator}
+ * @implements {HeapSnapshotWorker.HeapSnapshotItemIterator}
  * @unrestricted
  */
-WebInspector.HeapSnapshotEdgeIterator = class {
+HeapSnapshotWorker.HeapSnapshotEdgeIterator = class {
   /**
-   * @param {!WebInspector.HeapSnapshotNode} node
+   * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
    */
   constructor(node) {
     this._sourceNode = node;
@@ -258,7 +258,7 @@ WebInspector.HeapSnapshotEdgeIterator = class {
 
   /**
    * @override
-   * @return {!WebInspector.HeapSnapshotEdge}
+   * @return {!HeapSnapshotWorker.HeapSnapshotEdge}
    */
   item() {
     return this.edge;
@@ -273,12 +273,12 @@ WebInspector.HeapSnapshotEdgeIterator = class {
 };
 
 /**
- * @implements {WebInspector.HeapSnapshotItem}
+ * @implements {HeapSnapshotWorker.HeapSnapshotItem}
  * @unrestricted
  */
-WebInspector.HeapSnapshotRetainerEdge = class {
+HeapSnapshotWorker.HeapSnapshotRetainerEdge = class {
   /**
-   * @param {!WebInspector.HeapSnapshot} snapshot
+   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
    * @param {number} retainerIndex
    */
   constructor(snapshot, retainerIndex) {
@@ -287,10 +287,10 @@ WebInspector.HeapSnapshotRetainerEdge = class {
   }
 
   /**
-   * @return {!WebInspector.HeapSnapshotRetainerEdge}
+   * @return {!HeapSnapshotWorker.HeapSnapshotRetainerEdge}
    */
   clone() {
-    return new WebInspector.HeapSnapshotRetainerEdge(this._snapshot, this.retainerIndex());
+    return new HeapSnapshotWorker.HeapSnapshotRetainerEdge(this._snapshot, this.retainerIndex());
   }
 
   /**
@@ -308,7 +308,7 @@ WebInspector.HeapSnapshotRetainerEdge = class {
   }
 
   /**
-   * @return {!WebInspector.HeapSnapshotNode}
+   * @return {!HeapSnapshotWorker.HeapSnapshotNode}
    */
   node() {
     return this._node();
@@ -378,10 +378,10 @@ WebInspector.HeapSnapshotRetainerEdge = class {
 
   /**
    * @override
-   * @return {!WebInspector.HeapSnapshotCommon.Edge}
+   * @return {!Profiler.HeapSnapshotCommon.Edge}
    */
   serialize() {
-    return new WebInspector.HeapSnapshotCommon.Edge(
+    return new Profiler.HeapSnapshotCommon.Edge(
         this.name(), this.node().serialize(), this.type(), this._globalEdgeIndex);
   }
 
@@ -394,12 +394,12 @@ WebInspector.HeapSnapshotRetainerEdge = class {
 };
 
 /**
- * @implements {WebInspector.HeapSnapshotItemIterator}
+ * @implements {HeapSnapshotWorker.HeapSnapshotItemIterator}
  * @unrestricted
  */
-WebInspector.HeapSnapshotRetainerEdgeIterator = class {
+HeapSnapshotWorker.HeapSnapshotRetainerEdgeIterator = class {
   /**
-   * @param {!WebInspector.HeapSnapshotNode} retainedNode
+   * @param {!HeapSnapshotWorker.HeapSnapshotNode} retainedNode
    */
   constructor(retainedNode) {
     var snapshot = retainedNode._snapshot;
@@ -419,7 +419,7 @@ WebInspector.HeapSnapshotRetainerEdgeIterator = class {
 
   /**
    * @override
-   * @return {!WebInspector.HeapSnapshotRetainerEdge}
+   * @return {!HeapSnapshotWorker.HeapSnapshotRetainerEdge}
    */
   item() {
     return this.retainer;
@@ -434,12 +434,12 @@ WebInspector.HeapSnapshotRetainerEdgeIterator = class {
 };
 
 /**
- * @implements {WebInspector.HeapSnapshotItem}
+ * @implements {HeapSnapshotWorker.HeapSnapshotItem}
  * @unrestricted
  */
-WebInspector.HeapSnapshotNode = class {
+HeapSnapshotWorker.HeapSnapshotNode = class {
   /**
-   * @param {!WebInspector.HeapSnapshot} snapshot
+   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
    * @param {number=} nodeIndex
    */
   constructor(snapshot, nodeIndex) {
@@ -477,10 +477,10 @@ WebInspector.HeapSnapshotNode = class {
   }
 
   /**
-   * @return {!WebInspector.HeapSnapshotEdgeIterator}
+   * @return {!HeapSnapshotWorker.HeapSnapshotEdgeIterator}
    */
   edges() {
-    return new WebInspector.HeapSnapshotEdgeIterator(this);
+    return new HeapSnapshotWorker.HeapSnapshotEdgeIterator(this);
   }
 
   /**
@@ -519,10 +519,10 @@ WebInspector.HeapSnapshotNode = class {
   }
 
   /**
-   * @return {!WebInspector.HeapSnapshotRetainerEdgeIterator}
+   * @return {!HeapSnapshotWorker.HeapSnapshotRetainerEdgeIterator}
    */
   retainers() {
-    return new WebInspector.HeapSnapshotRetainerEdgeIterator(this);
+    return new HeapSnapshotWorker.HeapSnapshotRetainerEdgeIterator(this);
   }
 
   /**
@@ -567,10 +567,10 @@ WebInspector.HeapSnapshotNode = class {
 
   /**
    * @override
-   * @return {!WebInspector.HeapSnapshotCommon.Node}
+   * @return {!Profiler.HeapSnapshotCommon.Node}
    */
   serialize() {
-    return new WebInspector.HeapSnapshotCommon.Node(
+    return new Profiler.HeapSnapshotCommon.Node(
         this.id(), this.name(), this.distance(), this.nodeIndex, this.retainedSize(), this.selfSize(), this.type());
   }
 
@@ -621,12 +621,12 @@ WebInspector.HeapSnapshotNode = class {
 };
 
 /**
- * @implements {WebInspector.HeapSnapshotItemIterator}
+ * @implements {HeapSnapshotWorker.HeapSnapshotItemIterator}
  * @unrestricted
  */
-WebInspector.HeapSnapshotNodeIterator = class {
+HeapSnapshotWorker.HeapSnapshotNodeIterator = class {
   /**
-   * @param {!WebInspector.HeapSnapshotNode} node
+   * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
    */
   constructor(node) {
     this.node = node;
@@ -643,7 +643,7 @@ WebInspector.HeapSnapshotNodeIterator = class {
 
   /**
    * @override
-   * @return {!WebInspector.HeapSnapshotNode}
+   * @return {!HeapSnapshotWorker.HeapSnapshotNode}
    */
   item() {
     return this.node;
@@ -658,12 +658,12 @@ WebInspector.HeapSnapshotNodeIterator = class {
 };
 
 /**
- * @implements {WebInspector.HeapSnapshotItemIterator}
+ * @implements {HeapSnapshotWorker.HeapSnapshotItemIterator}
  * @unrestricted
  */
-WebInspector.HeapSnapshotIndexRangeIterator = class {
+HeapSnapshotWorker.HeapSnapshotIndexRangeIterator = class {
   /**
-   * @param {!WebInspector.HeapSnapshotItemIndexProvider} itemProvider
+   * @param {!HeapSnapshotWorker.HeapSnapshotItemIndexProvider} itemProvider
    * @param {!Array.<number>|!Uint32Array} indexes
    */
   constructor(itemProvider, indexes) {
@@ -682,7 +682,7 @@ WebInspector.HeapSnapshotIndexRangeIterator = class {
 
   /**
    * @override
-   * @return {!WebInspector.HeapSnapshotItem}
+   * @return {!HeapSnapshotWorker.HeapSnapshotItem}
    */
   item() {
     var index = this._indexes[this._position];
@@ -698,13 +698,13 @@ WebInspector.HeapSnapshotIndexRangeIterator = class {
 };
 
 /**
- * @implements {WebInspector.HeapSnapshotItemIterator}
+ * @implements {HeapSnapshotWorker.HeapSnapshotItemIterator}
  * @unrestricted
  */
-WebInspector.HeapSnapshotFilteredIterator = class {
+HeapSnapshotWorker.HeapSnapshotFilteredIterator = class {
   /**
-   * @param {!WebInspector.HeapSnapshotItemIterator} iterator
-   * @param {function(!WebInspector.HeapSnapshotItem):boolean=} filter
+   * @param {!HeapSnapshotWorker.HeapSnapshotItemIterator} iterator
+   * @param {function(!HeapSnapshotWorker.HeapSnapshotItem):boolean=} filter
    */
   constructor(iterator, filter) {
     this._iterator = iterator;
@@ -722,7 +722,7 @@ WebInspector.HeapSnapshotFilteredIterator = class {
 
   /**
    * @override
-   * @return {!WebInspector.HeapSnapshotItem}
+   * @return {!HeapSnapshotWorker.HeapSnapshotItem}
    */
   item() {
     return this._iterator.item();
@@ -746,9 +746,9 @@ WebInspector.HeapSnapshotFilteredIterator = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotProgress = class {
+HeapSnapshotWorker.HeapSnapshotProgress = class {
   /**
-   * @param {!WebInspector.HeapSnapshotWorkerDispatcher=} dispatcher
+   * @param {!HeapSnapshotWorker.HeapSnapshotWorkerDispatcher=} dispatcher
    */
   constructor(dispatcher) {
     this._dispatcher = dispatcher;
@@ -758,7 +758,7 @@ WebInspector.HeapSnapshotProgress = class {
    * @param {string} status
    */
   updateStatus(status) {
-    this._sendUpdateEvent(WebInspector.UIString(status));
+    this._sendUpdateEvent(Common.UIString(status));
   }
 
   /**
@@ -768,7 +768,7 @@ WebInspector.HeapSnapshotProgress = class {
    */
   updateProgress(title, value, total) {
     var percentValue = ((total ? (value / total) : 0) * 100).toFixed(0);
-    this._sendUpdateEvent(WebInspector.UIString(title, percentValue));
+    this._sendUpdateEvent(Common.UIString(title, percentValue));
   }
 
   /**
@@ -777,7 +777,7 @@ WebInspector.HeapSnapshotProgress = class {
   reportProblem(error) {
     // May be undefined in tests.
     if (this._dispatcher)
-      this._dispatcher.sendEvent(WebInspector.HeapSnapshotProgressEvent.BrokenSnapshot, error);
+      this._dispatcher.sendEvent(Profiler.HeapSnapshotProgressEvent.BrokenSnapshot, error);
   }
 
   /**
@@ -786,14 +786,14 @@ WebInspector.HeapSnapshotProgress = class {
   _sendUpdateEvent(text) {
     // May be undefined in tests.
     if (this._dispatcher)
-      this._dispatcher.sendEvent(WebInspector.HeapSnapshotProgressEvent.Update, text);
+      this._dispatcher.sendEvent(Profiler.HeapSnapshotProgressEvent.Update, text);
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotProblemReport = class {
+HeapSnapshotWorker.HeapSnapshotProblemReport = class {
   /**
    * @param {string} title
    */
@@ -822,10 +822,10 @@ WebInspector.HeapSnapshotProblemReport = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshot = class {
+HeapSnapshotWorker.HeapSnapshot = class {
   /**
    * @param {!Object} profile
-   * @param {!WebInspector.HeapSnapshotProgress} progress
+   * @param {!HeapSnapshotWorker.HeapSnapshotProgress} progress
    */
   constructor(profile, progress) {
     /** @type {!Uint32Array} */
@@ -836,7 +836,7 @@ WebInspector.HeapSnapshot = class {
     this._metaNode = profile.snapshot.meta;
     /** @type {!Array.<number>} */
     this._rawSamples = profile.samples;
-    /** @type {?WebInspector.HeapSnapshotCommon.Samples} */
+    /** @type {?Profiler.HeapSnapshotCommon.Samples} */
     this._samples = null;
     /** @type {!Array.<string>} */
     this.strings = profile.strings;
@@ -945,7 +945,7 @@ WebInspector.HeapSnapshot = class {
         stats.size += node.selfSize();
         stats.ids.push(node.id());
       }
-      this._allocationProfile = new WebInspector.AllocationProfile(this._profile, liveObjects);
+      this._allocationProfile = new HeapSnapshotWorker.AllocationProfile(this._profile, liveObjects);
       this._progress.updateStatus('Done');
     }
   }
@@ -1019,7 +1019,7 @@ WebInspector.HeapSnapshot = class {
 
   /**
    * @param {number} edgeIndex
-   * @return {!WebInspector.JSHeapSnapshotEdge}
+   * @return {!HeapSnapshotWorker.JSHeapSnapshotEdge}
    */
   createEdge(edgeIndex) {
     throw new Error('Not implemented');
@@ -1027,18 +1027,18 @@ WebInspector.HeapSnapshot = class {
 
   /**
    * @param {number} retainerIndex
-   * @return {!WebInspector.JSHeapSnapshotRetainerEdge}
+   * @return {!HeapSnapshotWorker.JSHeapSnapshotRetainerEdge}
    */
   createRetainingEdge(retainerIndex) {
     throw new Error('Not implemented');
   }
 
   _allNodes() {
-    return new WebInspector.HeapSnapshotNodeIterator(this.rootNode());
+    return new HeapSnapshotWorker.HeapSnapshotNodeIterator(this.rootNode());
   }
 
   /**
-   * @return {!WebInspector.HeapSnapshotNode}
+   * @return {!HeapSnapshotWorker.HeapSnapshotNode}
    */
   rootNode() {
     return this.createNode(this._rootNodeIndex);
@@ -1059,8 +1059,8 @@ WebInspector.HeapSnapshot = class {
   }
 
   /**
-   * @param {!WebInspector.HeapSnapshotCommon.NodeFilter} nodeFilter
-   * @return {undefined|function(!WebInspector.HeapSnapshotNode):boolean}
+   * @param {!Profiler.HeapSnapshotCommon.NodeFilter} nodeFilter
+   * @return {undefined|function(!HeapSnapshotWorker.HeapSnapshotNode):boolean}
    */
   _createFilter(nodeFilter) {
     var minNodeId = nodeFilter.minNodeId;
@@ -1078,8 +1078,8 @@ WebInspector.HeapSnapshot = class {
   }
 
   /**
-   * @param {!WebInspector.HeapSnapshotCommon.SearchConfig} searchConfig
-   * @param {!WebInspector.HeapSnapshotCommon.NodeFilter} nodeFilter
+   * @param {!Profiler.HeapSnapshotCommon.SearchConfig} searchConfig
+   * @param {!Profiler.HeapSnapshotCommon.NodeFilter} nodeFilter
    * @return {!Array.<number>}
    */
   search(searchConfig, nodeFilter) {
@@ -1124,8 +1124,8 @@ WebInspector.HeapSnapshot = class {
   }
 
   /**
-   * @param {!WebInspector.HeapSnapshotCommon.NodeFilter} nodeFilter
-   * @return {!Object.<string, !WebInspector.HeapSnapshotCommon.Aggregate>}
+   * @param {!Profiler.HeapSnapshotCommon.NodeFilter} nodeFilter
+   * @return {!Object.<string, !Profiler.HeapSnapshotCommon.Aggregate>}
    */
   aggregatesWithFilter(nodeFilter) {
     var filter = this._createFilter(nodeFilter);
@@ -1136,11 +1136,11 @@ WebInspector.HeapSnapshot = class {
   /**
    * @param {number} minNodeId
    * @param {number} maxNodeId
-   * @return {function(!WebInspector.HeapSnapshotNode):boolean}
+   * @return {function(!HeapSnapshotWorker.HeapSnapshotNode):boolean}
    */
   _createNodeIdFilter(minNodeId, maxNodeId) {
     /**
-     * @param {!WebInspector.HeapSnapshotNode} node
+     * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
      * @return {boolean}
      */
     function nodeIdFilter(node) {
@@ -1152,7 +1152,7 @@ WebInspector.HeapSnapshot = class {
 
   /**
    * @param {number} bottomUpAllocationNodeId
-   * @return {function(!WebInspector.HeapSnapshotNode):boolean|undefined}
+   * @return {function(!HeapSnapshotWorker.HeapSnapshotNode):boolean|undefined}
    */
   _createAllocationStackFilter(bottomUpAllocationNodeId) {
     var traceIds = this._allocationProfile.traceIds(bottomUpAllocationNodeId);
@@ -1162,7 +1162,7 @@ WebInspector.HeapSnapshot = class {
     for (var i = 0; i < traceIds.length; i++)
       set[traceIds[i]] = true;
     /**
-     * @param {!WebInspector.HeapSnapshotNode} node
+     * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
      * @return {boolean}
      */
     function traceIdFilter(node) {
@@ -1174,8 +1174,8 @@ WebInspector.HeapSnapshot = class {
   /**
    * @param {boolean} sortedIndexes
    * @param {string=} key
-   * @param {function(!WebInspector.HeapSnapshotNode):boolean=} filter
-   * @return {!Object.<string, !WebInspector.HeapSnapshotCommon.Aggregate>}
+   * @param {function(!HeapSnapshotWorker.HeapSnapshotNode):boolean=} filter
+   * @return {!Object.<string, !Profiler.HeapSnapshotCommon.Aggregate>}
    */
   aggregates(sortedIndexes, key, filter) {
     var aggregatesByClassName = key && this._aggregates[key];
@@ -1196,7 +1196,7 @@ WebInspector.HeapSnapshot = class {
   }
 
   /**
-   * @return {!Array.<!WebInspector.HeapSnapshotCommon.SerializedAllocationNode>}
+   * @return {!Array.<!Profiler.HeapSnapshotCommon.SerializedAllocationNode>}
    */
   allocationTracesTops() {
     return this._allocationProfile.serializeTraceTops();
@@ -1204,7 +1204,7 @@ WebInspector.HeapSnapshot = class {
 
   /**
    * @param {number} nodeId
-   * @return {!WebInspector.HeapSnapshotCommon.AllocationNodeCallers}
+   * @return {!Profiler.HeapSnapshotCommon.AllocationNodeCallers}
    */
   allocationNodeCallers(nodeId) {
     return this._allocationProfile.serializeCallers(nodeId);
@@ -1212,7 +1212,7 @@ WebInspector.HeapSnapshot = class {
 
   /**
    * @param {number} nodeIndex
-   * @return {?Array.<!WebInspector.HeapSnapshotCommon.AllocationStackFrame>}
+   * @return {?Array.<!Profiler.HeapSnapshotCommon.AllocationStackFrame>}
    */
   allocationStack(nodeIndex) {
     var node = this.createNode(nodeIndex);
@@ -1223,7 +1223,7 @@ WebInspector.HeapSnapshot = class {
   }
 
   /**
-   * @return {!Object.<string, !WebInspector.HeapSnapshotCommon.AggregateForDiff>}
+   * @return {!Object.<string, !Profiler.HeapSnapshotCommon.AggregateForDiff>}
    */
   aggregatesForDiff() {
     if (this._aggregatesForDiff)
@@ -1251,7 +1251,7 @@ WebInspector.HeapSnapshot = class {
 
   /**
    * @protected
-   * @param {!WebInspector.HeapSnapshotNode} node
+   * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
    * @return {boolean}
    */
   isUserRoot(node) {
@@ -1259,7 +1259,7 @@ WebInspector.HeapSnapshot = class {
   }
 
   /**
-   * @param {function(!WebInspector.HeapSnapshotNode)} action
+   * @param {function(!HeapSnapshotWorker.HeapSnapshotNode)} action
    * @param {boolean=} userRootsOnly
    */
   forEachRoot(action, userRootsOnly) {
@@ -1271,7 +1271,7 @@ WebInspector.HeapSnapshot = class {
   }
 
   /**
-   * @param {function(!WebInspector.HeapSnapshotNode,!WebInspector.HeapSnapshotEdge):boolean=} filter
+   * @param {function(!HeapSnapshotWorker.HeapSnapshotNode,!HeapSnapshotWorker.HeapSnapshotEdge):boolean=} filter
    */
   calculateDistances(filter) {
     var nodeCount = this.nodeCount;
@@ -1285,7 +1285,7 @@ WebInspector.HeapSnapshot = class {
 
     /**
      * @param {number} distance
-     * @param {!WebInspector.HeapSnapshotNode} node
+     * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
      */
     function enqueueNode(distance, node) {
       var ordinal = node.ordinal();
@@ -1300,7 +1300,7 @@ WebInspector.HeapSnapshot = class {
 
     // bfs for the rest of objects
     nodesToVisitLength = 0;
-    this.forEachRoot(enqueueNode.bind(null, WebInspector.HeapSnapshotCommon.baseSystemDistance), false);
+    this.forEachRoot(enqueueNode.bind(null, Profiler.HeapSnapshotCommon.baseSystemDistance), false);
     this._bfs(nodesToVisit, nodesToVisitLength, distances, filter);
   }
 
@@ -1308,7 +1308,7 @@ WebInspector.HeapSnapshot = class {
    * @param {!Uint32Array} nodesToVisit
    * @param {number} nodesToVisitLength
    * @param {!Int32Array} distances
-   * @param {function(!WebInspector.HeapSnapshotNode,!WebInspector.HeapSnapshotEdge):boolean=} filter
+   * @param {function(!HeapSnapshotWorker.HeapSnapshotNode,!HeapSnapshotWorker.HeapSnapshotEdge):boolean=} filter
    */
   _bfs(nodesToVisit, nodesToVisitLength, distances, filter) {
     // Preload fields into local variables for better performance.
@@ -1547,7 +1547,7 @@ WebInspector.HeapSnapshot = class {
 
       if (postOrderIndex === nodeCount || iteration > 1)
         break;
-      var errors = new WebInspector.HeapSnapshotProblemReport(
+      var errors = new HeapSnapshotWorker.HeapSnapshotProblemReport(
           `Heap snapshot: ${nodeCount -
           postOrderIndex} nodes are unreachable from the root. Following nodes have only weak retainers:`);
       var dumpNode = this.rootNode();
@@ -1577,7 +1577,7 @@ WebInspector.HeapSnapshot = class {
 
     // If we already processed all orphan nodes that have only weak retainers and still have some orphans...
     if (postOrderIndex !== nodeCount) {
-      var errors = new WebInspector.HeapSnapshotProblemReport(
+      var errors = new HeapSnapshotWorker.HeapSnapshotProblemReport(
           'Still found ' + (nodeCount - postOrderIndex) + ' unreachable nodes in heap snapshot:');
       var dumpNode = this.rootNode();
       // Remove root from the result (last node in the array) and put it at the bottom of the stack so that it is
@@ -1845,11 +1845,11 @@ WebInspector.HeapSnapshot = class {
       }
       sizeForRange[rangeIndex] += node.selfSize();
     }
-    this._samples = new WebInspector.HeapSnapshotCommon.Samples(timestamps, lastAssignedIds, sizeForRange);
+    this._samples = new Profiler.HeapSnapshotCommon.Samples(timestamps, lastAssignedIds, sizeForRange);
   }
 
   /**
-   * @return {?WebInspector.HeapSnapshotCommon.Samples}
+   * @return {?Profiler.HeapSnapshotCommon.Samples}
    */
   getSamples() {
     return this._samples;
@@ -1875,8 +1875,8 @@ WebInspector.HeapSnapshot = class {
 
   /**
    * @param {string} baseSnapshotId
-   * @param {!Object.<string, !WebInspector.HeapSnapshotCommon.AggregateForDiff>} baseSnapshotAggregates
-   * @return {!Object.<string, !WebInspector.HeapSnapshotCommon.Diff>}
+   * @param {!Object.<string, !Profiler.HeapSnapshotCommon.AggregateForDiff>} baseSnapshotAggregates
+   * @return {!Object.<string, !Profiler.HeapSnapshotCommon.Diff>}
    */
   calculateSnapshotDiff(baseSnapshotId, baseSnapshotAggregates) {
     var snapshotDiff = this._snapshotDiffs[baseSnapshotId];
@@ -1891,7 +1891,7 @@ WebInspector.HeapSnapshot = class {
       if (diff)
         snapshotDiff[className] = diff;
     }
-    var emptyBaseAggregate = new WebInspector.HeapSnapshotCommon.AggregateForDiff();
+    var emptyBaseAggregate = new Profiler.HeapSnapshotCommon.AggregateForDiff();
     for (var className in aggregates) {
       if (className in baseSnapshotAggregates)
         continue;
@@ -1903,9 +1903,9 @@ WebInspector.HeapSnapshot = class {
   }
 
   /**
-   * @param {!WebInspector.HeapSnapshotCommon.AggregateForDiff} baseAggregate
-   * @param {!WebInspector.HeapSnapshotCommon.Aggregate} aggregate
-   * @return {?WebInspector.HeapSnapshotCommon.Diff}
+   * @param {!Profiler.HeapSnapshotCommon.AggregateForDiff} baseAggregate
+   * @param {!Profiler.HeapSnapshotCommon.Aggregate} aggregate
+   * @return {?Profiler.HeapSnapshotCommon.Diff}
    */
   _calculateDiffForClass(baseAggregate, aggregate) {
     var baseIds = baseAggregate.ids;
@@ -1916,7 +1916,7 @@ WebInspector.HeapSnapshot = class {
 
     var i = 0, l = baseIds.length;
     var j = 0, m = indexes.length;
-    var diff = new WebInspector.HeapSnapshotCommon.Diff();
+    var diff = new Profiler.HeapSnapshotCommon.Diff();
 
     var nodeB = this.createNode(indexes[j]);
     while (i < l && j < m) {
@@ -1991,35 +1991,35 @@ WebInspector.HeapSnapshot = class {
 
   /**
    * @param {number} nodeIndex
-   * @return {!WebInspector.HeapSnapshotEdgesProvider}
+   * @return {!HeapSnapshotWorker.HeapSnapshotEdgesProvider}
    */
   createEdgesProvider(nodeIndex) {
     var node = this.createNode(nodeIndex);
     var filter = this.containmentEdgesFilter();
-    var indexProvider = new WebInspector.HeapSnapshotEdgeIndexProvider(this);
-    return new WebInspector.HeapSnapshotEdgesProvider(this, filter, node.edges(), indexProvider);
+    var indexProvider = new HeapSnapshotWorker.HeapSnapshotEdgeIndexProvider(this);
+    return new HeapSnapshotWorker.HeapSnapshotEdgesProvider(this, filter, node.edges(), indexProvider);
   }
 
   /**
    * @param {number} nodeIndex
-   * @param {?function(!WebInspector.HeapSnapshotEdge):boolean} filter
-   * @return {!WebInspector.HeapSnapshotEdgesProvider}
+   * @param {?function(!HeapSnapshotWorker.HeapSnapshotEdge):boolean} filter
+   * @return {!HeapSnapshotWorker.HeapSnapshotEdgesProvider}
    */
   createEdgesProviderForTest(nodeIndex, filter) {
     var node = this.createNode(nodeIndex);
-    var indexProvider = new WebInspector.HeapSnapshotEdgeIndexProvider(this);
-    return new WebInspector.HeapSnapshotEdgesProvider(this, filter, node.edges(), indexProvider);
+    var indexProvider = new HeapSnapshotWorker.HeapSnapshotEdgeIndexProvider(this);
+    return new HeapSnapshotWorker.HeapSnapshotEdgesProvider(this, filter, node.edges(), indexProvider);
   }
 
   /**
-   * @return {?function(!WebInspector.HeapSnapshotEdge):boolean}
+   * @return {?function(!HeapSnapshotWorker.HeapSnapshotEdge):boolean}
    */
   retainingEdgesFilter() {
     return null;
   }
 
   /**
-   * @return {?function(!WebInspector.HeapSnapshotEdge):boolean}
+   * @return {?function(!HeapSnapshotWorker.HeapSnapshotEdge):boolean}
    */
   containmentEdgesFilter() {
     return null;
@@ -2027,36 +2027,36 @@ WebInspector.HeapSnapshot = class {
 
   /**
    * @param {number} nodeIndex
-   * @return {!WebInspector.HeapSnapshotEdgesProvider}
+   * @return {!HeapSnapshotWorker.HeapSnapshotEdgesProvider}
    */
   createRetainingEdgesProvider(nodeIndex) {
     var node = this.createNode(nodeIndex);
     var filter = this.retainingEdgesFilter();
-    var indexProvider = new WebInspector.HeapSnapshotRetainerEdgeIndexProvider(this);
-    return new WebInspector.HeapSnapshotEdgesProvider(this, filter, node.retainers(), indexProvider);
+    var indexProvider = new HeapSnapshotWorker.HeapSnapshotRetainerEdgeIndexProvider(this);
+    return new HeapSnapshotWorker.HeapSnapshotEdgesProvider(this, filter, node.retainers(), indexProvider);
   }
 
   /**
    * @param {string} baseSnapshotId
    * @param {string} className
-   * @return {!WebInspector.HeapSnapshotNodesProvider}
+   * @return {!HeapSnapshotWorker.HeapSnapshotNodesProvider}
    */
   createAddedNodesProvider(baseSnapshotId, className) {
     var snapshotDiff = this._snapshotDiffs[baseSnapshotId];
     var diffForClass = snapshotDiff[className];
-    return new WebInspector.HeapSnapshotNodesProvider(this, null, diffForClass.addedIndexes);
+    return new HeapSnapshotWorker.HeapSnapshotNodesProvider(this, null, diffForClass.addedIndexes);
   }
 
   /**
    * @param {!Array.<number>} nodeIndexes
-   * @return {!WebInspector.HeapSnapshotNodesProvider}
+   * @return {!HeapSnapshotWorker.HeapSnapshotNodesProvider}
    */
   createDeletedNodesProvider(nodeIndexes) {
-    return new WebInspector.HeapSnapshotNodesProvider(this, null, nodeIndexes);
+    return new HeapSnapshotWorker.HeapSnapshotNodesProvider(this, null, nodeIndexes);
   }
 
   /**
-   * @return {?function(!WebInspector.HeapSnapshotNode):boolean}
+   * @return {?function(!HeapSnapshotWorker.HeapSnapshotNode):boolean}
    */
   classNodesFilter() {
     return null;
@@ -2064,11 +2064,11 @@ WebInspector.HeapSnapshot = class {
 
   /**
    * @param {string} className
-   * @param {!WebInspector.HeapSnapshotCommon.NodeFilter} nodeFilter
-   * @return {!WebInspector.HeapSnapshotNodesProvider}
+   * @param {!Profiler.HeapSnapshotCommon.NodeFilter} nodeFilter
+   * @return {!HeapSnapshotWorker.HeapSnapshotNodesProvider}
    */
   createNodesProviderForClass(className, nodeFilter) {
-    return new WebInspector.HeapSnapshotNodesProvider(
+    return new HeapSnapshotWorker.HeapSnapshotNodesProvider(
         this, this.classNodesFilter(), this.aggregatesWithFilter(nodeFilter)[className].idxs);
   }
 
@@ -2092,10 +2092,10 @@ WebInspector.HeapSnapshot = class {
   }
 
   /**
-   * @return {!WebInspector.HeapSnapshotCommon.StaticData}
+   * @return {!Profiler.HeapSnapshotCommon.StaticData}
    */
   updateStaticData() {
-    return new WebInspector.HeapSnapshotCommon.StaticData(
+    return new Profiler.HeapSnapshotCommon.StaticData(
         this.nodeCount, this._rootNodeIndex, this.totalSize, this._maxJsNodeId());
   }
 };
@@ -2134,10 +2134,10 @@ var HeapSnapshotHeader = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotItemProvider = class {
+HeapSnapshotWorker.HeapSnapshotItemProvider = class {
   /**
-   * @param {!WebInspector.HeapSnapshotItemIterator} iterator
-   * @param {!WebInspector.HeapSnapshotItemIndexProvider} indexProvider
+   * @param {!HeapSnapshotWorker.HeapSnapshotItemIterator} iterator
+   * @param {!HeapSnapshotWorker.HeapSnapshotItemIndexProvider} indexProvider
    */
   constructor(iterator, indexProvider) {
     this._iterator = iterator;
@@ -2168,7 +2168,7 @@ WebInspector.HeapSnapshotItemProvider = class {
   /**
    * @param {number} begin
    * @param {number} end
-   * @return {!WebInspector.HeapSnapshotCommon.ItemsRange}
+   * @return {!Profiler.HeapSnapshotCommon.ItemsRange}
    */
   serializeItemsRange(begin, end) {
     this._createIterationOrder();
@@ -2193,7 +2193,7 @@ WebInspector.HeapSnapshotItemProvider = class {
       var item = this._indexProvider.itemForIndex(itemIndex);
       result[i] = item.serialize();
     }
-    return new WebInspector.HeapSnapshotCommon.ItemsRange(begin, end, this._iterationOrder.length, result);
+    return new Profiler.HeapSnapshotCommon.ItemsRange(begin, end, this._iterationOrder.length, result);
   }
 
   sortAndRewind(comparator) {
@@ -2206,24 +2206,24 @@ WebInspector.HeapSnapshotItemProvider = class {
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotEdgesProvider = class extends WebInspector.HeapSnapshotItemProvider {
+HeapSnapshotWorker.HeapSnapshotEdgesProvider = class extends HeapSnapshotWorker.HeapSnapshotItemProvider {
   /**
-   * @param {!WebInspector.HeapSnapshot} snapshot
-   * @param {?function(!WebInspector.HeapSnapshotEdge):boolean} filter
-   * @param {!WebInspector.HeapSnapshotEdgeIterator} edgesIter
-   * @param {!WebInspector.HeapSnapshotItemIndexProvider} indexProvider
+   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
+   * @param {?function(!HeapSnapshotWorker.HeapSnapshotEdge):boolean} filter
+   * @param {!HeapSnapshotWorker.HeapSnapshotEdgeIterator} edgesIter
+   * @param {!HeapSnapshotWorker.HeapSnapshotItemIndexProvider} indexProvider
    */
   constructor(snapshot, filter, edgesIter, indexProvider) {
     var iter = filter ?
-        new WebInspector.HeapSnapshotFilteredIterator(
-            edgesIter, /** @type {function(!WebInspector.HeapSnapshotItem):boolean} */ (filter)) :
+        new HeapSnapshotWorker.HeapSnapshotFilteredIterator(
+            edgesIter, /** @type {function(!HeapSnapshotWorker.HeapSnapshotItem):boolean} */ (filter)) :
         edgesIter;
     super(iter, indexProvider);
     this.snapshot = snapshot;
   }
 
   /**
-   * @param {!WebInspector.HeapSnapshotCommon.ComparatorConfig} comparator
+   * @param {!Profiler.HeapSnapshotCommon.ComparatorConfig} comparator
    * @param {number} leftBound
    * @param {number} rightBound
    * @param {number} windowLeft
@@ -2305,19 +2305,19 @@ WebInspector.HeapSnapshotEdgesProvider = class extends WebInspector.HeapSnapshot
 /**
  * @unrestricted
  */
-WebInspector.HeapSnapshotNodesProvider = class extends WebInspector.HeapSnapshotItemProvider {
+HeapSnapshotWorker.HeapSnapshotNodesProvider = class extends HeapSnapshotWorker.HeapSnapshotItemProvider {
   /**
-   * @param {!WebInspector.HeapSnapshot} snapshot
-   * @param {?function(!WebInspector.HeapSnapshotNode):boolean} filter
+   * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
+   * @param {?function(!HeapSnapshotWorker.HeapSnapshotNode):boolean} filter
    * @param {(!Array.<number>|!Uint32Array)} nodeIndexes
    */
   constructor(snapshot, filter, nodeIndexes) {
-    var indexProvider = new WebInspector.HeapSnapshotNodeIndexProvider(snapshot);
-    var it = new WebInspector.HeapSnapshotIndexRangeIterator(indexProvider, nodeIndexes);
+    var indexProvider = new HeapSnapshotWorker.HeapSnapshotNodeIndexProvider(snapshot);
+    var it = new HeapSnapshotWorker.HeapSnapshotIndexRangeIterator(indexProvider, nodeIndexes);
 
     if (filter)
-      it = new WebInspector.HeapSnapshotFilteredIterator(
-          it, /** @type {function(!WebInspector.HeapSnapshotItem):boolean} */ (filter));
+      it = new HeapSnapshotWorker.HeapSnapshotFilteredIterator(
+          it, /** @type {function(!HeapSnapshotWorker.HeapSnapshotItem):boolean} */ (filter));
     super(it, indexProvider);
     this.snapshot = snapshot;
   }
@@ -2386,7 +2386,7 @@ WebInspector.HeapSnapshotNodesProvider = class extends WebInspector.HeapSnapshot
   }
 
   /**
-   * @param {!WebInspector.HeapSnapshotCommon.ComparatorConfig} comparator
+   * @param {!Profiler.HeapSnapshotCommon.ComparatorConfig} comparator
    * @param {number} leftBound
    * @param {number} rightBound
    * @param {number} windowLeft

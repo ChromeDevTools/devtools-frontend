@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.CookiesTable = class extends WebInspector.VBox {
+Components.CookiesTable = class extends UI.VBox {
   /**
    * @param {boolean} expandable
    * @param {function()=} refreshCallback
@@ -43,63 +43,63 @@ WebInspector.CookiesTable = class extends WebInspector.VBox {
     var readOnly = expandable;
     this._refreshCallback = refreshCallback;
 
-    var columns = /** @type {!Array<!WebInspector.DataGrid.ColumnDescriptor>} */ ([
+    var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
       {
         id: 'name',
-        title: WebInspector.UIString('Name'),
+        title: Common.UIString('Name'),
         sortable: true,
         disclosure: expandable,
-        sort: WebInspector.DataGrid.Order.Ascending,
+        sort: UI.DataGrid.Order.Ascending,
         longText: true,
         weight: 24
       },
-      {id: 'value', title: WebInspector.UIString('Value'), sortable: true, longText: true, weight: 34},
-      {id: 'domain', title: WebInspector.UIString('Domain'), sortable: true, weight: 7},
-      {id: 'path', title: WebInspector.UIString('Path'), sortable: true, weight: 7},
-      {id: 'expires', title: WebInspector.UIString('Expires / Max-Age'), sortable: true, weight: 7}, {
+      {id: 'value', title: Common.UIString('Value'), sortable: true, longText: true, weight: 34},
+      {id: 'domain', title: Common.UIString('Domain'), sortable: true, weight: 7},
+      {id: 'path', title: Common.UIString('Path'), sortable: true, weight: 7},
+      {id: 'expires', title: Common.UIString('Expires / Max-Age'), sortable: true, weight: 7}, {
         id: 'size',
-        title: WebInspector.UIString('Size'),
+        title: Common.UIString('Size'),
         sortable: true,
-        align: WebInspector.DataGrid.Align.Right,
+        align: UI.DataGrid.Align.Right,
         weight: 7
       },
       {
         id: 'httpOnly',
-        title: WebInspector.UIString('HTTP'),
+        title: Common.UIString('HTTP'),
         sortable: true,
-        align: WebInspector.DataGrid.Align.Center,
+        align: UI.DataGrid.Align.Center,
         weight: 7
       },
       {
         id: 'secure',
-        title: WebInspector.UIString('Secure'),
+        title: Common.UIString('Secure'),
         sortable: true,
-        align: WebInspector.DataGrid.Align.Center,
+        align: UI.DataGrid.Align.Center,
         weight: 7
       },
       {
         id: 'sameSite',
-        title: WebInspector.UIString('SameSite'),
+        title: Common.UIString('SameSite'),
         sortable: true,
-        align: WebInspector.DataGrid.Align.Center,
+        align: UI.DataGrid.Align.Center,
         weight: 7
       }
     ]);
 
     if (readOnly) {
-      this._dataGrid = new WebInspector.DataGrid(columns);
+      this._dataGrid = new UI.DataGrid(columns);
     } else {
-      this._dataGrid = new WebInspector.DataGrid(columns, undefined, this._onDeleteCookie.bind(this), refreshCallback);
+      this._dataGrid = new UI.DataGrid(columns, undefined, this._onDeleteCookie.bind(this), refreshCallback);
       this._dataGrid.setRowContextMenuCallback(this._onRowContextMenu.bind(this));
     }
 
     this._dataGrid.setName('cookiesTable');
-    this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged, this._rebuildTable, this);
+    this._dataGrid.addEventListener(UI.DataGrid.Events.SortingChanged, this._rebuildTable, this);
 
     if (selectedCallback)
-      this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SelectedNode, selectedCallback, this);
+      this._dataGrid.addEventListener(UI.DataGrid.Events.SelectedNode, selectedCallback, this);
 
-    this._nextSelectedCookie = /** @type {?WebInspector.Cookie} */ (null);
+    this._nextSelectedCookie = /** @type {?SDK.Cookie} */ (null);
 
     this._dataGrid.asWidget().show(this.element);
     this._data = [];
@@ -114,8 +114,8 @@ WebInspector.CookiesTable = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.ContextMenu} contextMenu
-   * @param {!WebInspector.DataGridNode} node
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.DataGridNode} node
    */
   _onRowContextMenu(contextMenu, node) {
     if (node === this._dataGrid.creationNode)
@@ -123,19 +123,19 @@ WebInspector.CookiesTable = class extends WebInspector.VBox {
     var domain = node.cookie.domain();
     if (domain)
       contextMenu.appendItem(
-          WebInspector.UIString.capitalize('Clear ^all from "%s"', domain), this._clearAndRefresh.bind(this, domain));
-    contextMenu.appendItem(WebInspector.UIString.capitalize('Clear ^all'), this._clearAndRefresh.bind(this, null));
+          Common.UIString.capitalize('Clear ^all from "%s"', domain), this._clearAndRefresh.bind(this, domain));
+    contextMenu.appendItem(Common.UIString.capitalize('Clear ^all'), this._clearAndRefresh.bind(this, null));
   }
 
   /**
-   * @param {!Array.<!WebInspector.Cookie>} cookies
+   * @param {!Array.<!SDK.Cookie>} cookies
    */
   setCookies(cookies) {
     this.setCookieFolders([{cookies: cookies}]);
   }
 
   /**
-   * @param {!Array.<!{folderName: ?string, cookies: !Array.<!WebInspector.Cookie>}>} cookieFolders
+   * @param {!Array.<!{folderName: ?string, cookies: !Array.<!SDK.Cookie>}>} cookieFolders
    */
   setCookieFolders(cookieFolders) {
     this._data = cookieFolders;
@@ -143,7 +143,7 @@ WebInspector.CookiesTable = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {?WebInspector.Cookie}
+   * @return {?SDK.Cookie}
    */
   selectedCookie() {
     var node = this._dataGrid.selectedNode;
@@ -181,7 +181,7 @@ WebInspector.CookiesTable = class extends WebInspector.VBox {
           secure: '',
           sameSite: ''
         };
-        var groupNode = new WebInspector.DataGridNode(groupData);
+        var groupNode = new UI.DataGridNode(groupData);
         groupNode.selectable = true;
         this._dataGrid.rootNode().appendChild(groupNode);
         groupNode.element().classList.add('row-group');
@@ -193,9 +193,9 @@ WebInspector.CookiesTable = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.DataGridNode} parentNode
-   * @param {?Array.<!WebInspector.Cookie>} cookies
-   * @param {?WebInspector.Cookie} selectedCookie
+   * @param {!UI.DataGridNode} parentNode
+   * @param {?Array.<!SDK.Cookie>} cookies
+   * @param {?SDK.Cookie} selectedCookie
    */
   _populateNode(parentNode, cookies, selectedCookie) {
     parentNode.removeChildren();
@@ -221,15 +221,15 @@ WebInspector.CookiesTable = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!Array.<!WebInspector.Cookie>} cookies
+   * @param {!Array.<!SDK.Cookie>} cookies
    */
   _sortCookies(cookies) {
     var sortDirection = this._dataGrid.isSortOrderAscending() ? 1 : -1;
 
     /**
      * @param {string} property
-     * @param {!WebInspector.Cookie} cookie1
-     * @param {!WebInspector.Cookie} cookie2
+     * @param {!SDK.Cookie} cookie1
+     * @param {!SDK.Cookie} cookie2
      */
     function compareTo(property, cookie1, cookie2) {
       return sortDirection *
@@ -237,16 +237,16 @@ WebInspector.CookiesTable = class extends WebInspector.VBox {
     }
 
     /**
-     * @param {!WebInspector.Cookie} cookie1
-     * @param {!WebInspector.Cookie} cookie2
+     * @param {!SDK.Cookie} cookie1
+     * @param {!SDK.Cookie} cookie2
      */
     function numberCompare(cookie1, cookie2) {
       return sortDirection * (cookie1.size() - cookie2.size());
     }
 
     /**
-     * @param {!WebInspector.Cookie} cookie1
-     * @param {!WebInspector.Cookie} cookie2
+     * @param {!SDK.Cookie} cookie1
+     * @param {!SDK.Cookie} cookie2
      */
     function expiresCompare(cookie1, cookie2) {
       if (cookie1.session() !== cookie2.session())
@@ -274,17 +274,17 @@ WebInspector.CookiesTable = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Cookie} cookie
-   * @return {!WebInspector.DataGridNode}
+   * @param {!SDK.Cookie} cookie
+   * @return {!UI.DataGridNode}
    */
   _createGridNode(cookie) {
     var data = {};
     data.name = cookie.name();
     data.value = cookie.value();
-    if (cookie.type() === WebInspector.Cookie.Type.Request) {
-      data.domain = WebInspector.UIString('N/A');
-      data.path = WebInspector.UIString('N/A');
-      data.expires = WebInspector.UIString('N/A');
+    if (cookie.type() === SDK.Cookie.Type.Request) {
+      data.domain = Common.UIString('N/A');
+      data.path = Common.UIString('N/A');
+      data.expires = Common.UIString('N/A');
     } else {
       data.domain = cookie.domain() || '';
       data.path = cookie.path() || '';
@@ -293,7 +293,7 @@ WebInspector.CookiesTable = class extends WebInspector.VBox {
       else if (cookie.expires())
         data.expires = new Date(cookie.expires()).toISOString();
       else
-        data.expires = WebInspector.UIString('Session');
+        data.expires = Common.UIString('Session');
     }
     data.size = cookie.size();
     const checkmark = '\u2713';
@@ -301,7 +301,7 @@ WebInspector.CookiesTable = class extends WebInspector.VBox {
     data.secure = (cookie.secure() ? checkmark : '');
     data.sameSite = cookie.sameSite() || '';
 
-    var node = new WebInspector.DataGridNode(data);
+    var node = new UI.DataGridNode(data);
     node.cookie = cookie;
     node.selectable = true;
     return node;

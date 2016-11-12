@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.BezierEditor = class extends WebInspector.VBox {
+UI.BezierEditor = class extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('ui/bezierEditor.css');
@@ -21,17 +21,17 @@ WebInspector.BezierEditor = class extends WebInspector.VBox {
 
     // Presets UI
     this._presetsContainer = this._outerContainer.createChild('div', 'bezier-presets');
-    this._presetUI = new WebInspector.BezierUI(40, 40, 0, 2, false);
+    this._presetUI = new UI.BezierUI(40, 40, 0, 2, false);
     this._presetCategories = [];
-    for (var i = 0; i < WebInspector.BezierEditor.Presets.length; i++) {
-      this._presetCategories[i] = this._createCategory(WebInspector.BezierEditor.Presets[i]);
+    for (var i = 0; i < UI.BezierEditor.Presets.length; i++) {
+      this._presetCategories[i] = this._createCategory(UI.BezierEditor.Presets[i]);
       this._presetsContainer.appendChild(this._presetCategories[i].icon);
     }
 
     // Curve UI
-    this._curveUI = new WebInspector.BezierUI(150, 250, 50, 7, true);
+    this._curveUI = new UI.BezierUI(150, 250, 50, 7, true);
     this._curve = this._outerContainer.createSVGChild('svg', 'bezier-curve');
-    WebInspector.installDragHandle(
+    UI.installDragHandle(
         this._curve, this._dragStart.bind(this), this._dragMove.bind(this), this._dragEnd.bind(this), 'default');
 
     this._header = this.contentElement.createChild('div', 'bezier-header');
@@ -43,7 +43,7 @@ WebInspector.BezierEditor = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {?WebInspector.Geometry.CubicBezier} bezier
+   * @param {?Common.Geometry.CubicBezier} bezier
    */
   setBezier(bezier) {
     if (!bezier)
@@ -53,7 +53,7 @@ WebInspector.BezierEditor = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {!WebInspector.Geometry.CubicBezier}
+   * @return {!Common.Geometry.CubicBezier}
    */
   bezier() {
     return this._bezier;
@@ -80,13 +80,13 @@ WebInspector.BezierEditor = class extends WebInspector.VBox {
 
   _onchange() {
     this._updateUI();
-    this.dispatchEventToListeners(WebInspector.BezierEditor.Events.BezierChanged, this._bezier.asCSSText());
+    this.dispatchEventToListeners(UI.BezierEditor.Events.BezierChanged, this._bezier.asCSSText());
   }
 
   _updateUI() {
     var labelText = this._selectedCategory ? this._selectedCategory.presets[this._selectedCategory.presetIndex].name :
                                              this._bezier.asCSSText().replace(/\s(-\d\.\d)/g, '$1');
-    this._label.textContent = WebInspector.UIString(labelText);
+    this._label.textContent = Common.UIString(labelText);
     this._curveUI.drawCurve(this._bezier, this._curve);
     this._previewOnion.removeChildren();
   }
@@ -96,9 +96,9 @@ WebInspector.BezierEditor = class extends WebInspector.VBox {
    * @return {boolean}
    */
   _dragStart(event) {
-    this._mouseDownPosition = new WebInspector.Geometry.Point(event.x, event.y);
+    this._mouseDownPosition = new Common.Geometry.Point(event.x, event.y);
     var ui = this._curveUI;
-    this._controlPosition = new WebInspector.Geometry.Point(
+    this._controlPosition = new Common.Geometry.Point(
         Number.constrain((event.offsetX - ui.radius) / ui.curveWidth(), 0, 1),
         (ui.curveHeight() + ui.marginTop + ui.radius - event.offsetY) / ui.curveHeight());
 
@@ -121,7 +121,7 @@ WebInspector.BezierEditor = class extends WebInspector.VBox {
   _updateControlPosition(mouseX, mouseY) {
     var deltaX = (mouseX - this._mouseDownPosition.x) / this._curveUI.curveWidth();
     var deltaY = (mouseY - this._mouseDownPosition.y) / this._curveUI.curveHeight();
-    var newPosition = new WebInspector.Geometry.Point(
+    var newPosition = new Common.Geometry.Point(
         Number.constrain(this._controlPosition.x + deltaX, 0, 1), this._controlPosition.y - deltaY);
     this._bezier.controlPoints[this._selectedPoint] = newPosition;
   }
@@ -145,13 +145,13 @@ WebInspector.BezierEditor = class extends WebInspector.VBox {
 
   /**
    * @param {!Array<{name: string, value: string}>} presetGroup
-   * @return {!WebInspector.BezierEditor.PresetCategory}
+   * @return {!UI.BezierEditor.PresetCategory}
    */
   _createCategory(presetGroup) {
     var presetElement = createElementWithClass('div', 'bezier-preset-category');
     var iconElement = presetElement.createSVGChild('svg', 'bezier-preset monospace');
     var category = {presets: presetGroup, presetIndex: 0, icon: presetElement};
-    this._presetUI.drawCurve(WebInspector.Geometry.CubicBezier.parse(category.presets[0].value), iconElement);
+    this._presetUI.drawCurve(Common.Geometry.CubicBezier.parse(category.presets[0].value), iconElement);
     iconElement.addEventListener('click', this._presetCategorySelected.bind(this, category));
     return category;
   }
@@ -179,7 +179,7 @@ WebInspector.BezierEditor = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.BezierEditor.PresetCategory} category
+   * @param {!UI.BezierEditor.PresetCategory} category
    * @param {!Event=} event
    */
   _presetCategorySelected(category, event) {
@@ -189,7 +189,7 @@ WebInspector.BezierEditor = class extends WebInspector.VBox {
     this._header.classList.add('bezier-header-active');
     this._selectedCategory = category;
     this._selectedCategory.icon.classList.add('bezier-preset-selected');
-    this.setBezier(WebInspector.Geometry.CubicBezier.parse(category.presets[category.presetIndex].value));
+    this.setBezier(Common.Geometry.CubicBezier.parse(category.presets[category.presetIndex].value));
     this._onchange();
     this._startPreviewAnimation();
     if (event)
@@ -206,7 +206,7 @@ WebInspector.BezierEditor = class extends WebInspector.VBox {
 
     var length = this._selectedCategory.presets.length;
     this._selectedCategory.presetIndex = (this._selectedCategory.presetIndex + (intensify ? 1 : -1) + length) % length;
-    this.setBezier(WebInspector.Geometry.CubicBezier.parse(
+    this.setBezier(Common.Geometry.CubicBezier.parse(
         this._selectedCategory.presets[this._selectedCategory.presetIndex].value));
     this._onchange();
     this._startPreviewAnimation();
@@ -238,11 +238,11 @@ WebInspector.BezierEditor = class extends WebInspector.VBox {
 };
 
 /** @enum {symbol} */
-WebInspector.BezierEditor.Events = {
+UI.BezierEditor.Events = {
   BezierChanged: Symbol('BezierChanged')
 };
 
-WebInspector.BezierEditor.Presets = [
+UI.BezierEditor.Presets = [
   [
     {name: 'ease-in-out', value: 'ease-in-out'}, {name: 'In Out · Sine', value: 'cubic-bezier(0.45, 0.05, 0.55, 0.95)'},
     {name: 'In Out · Quadratic', value: 'cubic-bezier(0.46, 0.03, 0.52, 0.96)'},
@@ -267,4 +267,4 @@ WebInspector.BezierEditor.Presets = [
 ];
 
 /** @typedef {{presets: !Array.<{name: string, value: string}>, icon: !Element, presetIndex: number}} */
-WebInspector.BezierEditor.PresetCategory;
+UI.BezierEditor.PresetCategory;

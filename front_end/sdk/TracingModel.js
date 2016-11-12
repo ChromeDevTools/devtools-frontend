@@ -7,9 +7,9 @@
 /**
  * @unrestricted
  */
-WebInspector.TracingModel = class {
+SDK.TracingModel = class {
   /**
-   * @param {!WebInspector.BackingStorage} backingStorage
+   * @param {!SDK.BackingStorage} backingStorage
    */
   constructor(backingStorage) {
     this._backingStorage = backingStorage;
@@ -39,7 +39,7 @@ WebInspector.TracingModel = class {
    * @return {boolean}
    */
   static isAsyncPhase(phase) {
-    return WebInspector.TracingModel.isNestableAsyncPhase(phase) || phase === 'S' || phase === 'T' || phase === 'F' ||
+    return SDK.TracingModel.isNestableAsyncPhase(phase) || phase === 'S' || phase === 'T' || phase === 'F' ||
         phase === 'p';
   }
 
@@ -52,17 +52,17 @@ WebInspector.TracingModel = class {
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} event
+   * @param {!SDK.TracingModel.Event} event
    * @return {boolean}
    */
   static isTopLevelEvent(event) {
-    return event.hasCategory(WebInspector.TracingModel.TopLevelEventCategory) ||
-        event.hasCategory(WebInspector.TracingModel.DevToolsMetadataEventCategory) &&
+    return event.hasCategory(SDK.TracingModel.TopLevelEventCategory) ||
+        event.hasCategory(SDK.TracingModel.DevToolsMetadataEventCategory) &&
         event.name === 'Program';  // Older timelines may have this instead of toplevel.
   }
 
   /**
-   * @param {!WebInspector.TracingManager.EventPayload} payload
+   * @param {!SDK.TracingManager.EventPayload} payload
    * @return {string|undefined}
    */
   static _extractId(payload) {
@@ -78,8 +78,8 @@ WebInspector.TracingModel = class {
   }
 
   /**
-   * @param {!WebInspector.TracingModel} tracingModel
-   * @return {?WebInspector.TracingModel.Thread}
+   * @param {!SDK.TracingModel} tracingModel
+   * @return {?SDK.TracingModel.Thread}
    *
    * TODO: Move this to a better place. This is here just for convenience o
    * re-use between modules. This really belongs to a higher level, since it
@@ -105,20 +105,20 @@ WebInspector.TracingModel = class {
         tracingModel.devToolsMetadataEvents().filter(e => e.name === 'TracingStartedInBrowser');
     if (tracingStartedInBrowser.length === 1)
       return tracingStartedInBrowser[0].thread;
-    WebInspector.console.error(
+    Common.console.error(
         'Failed to find browser main thread in trace, some timeline features may be unavailable');
     return null;
   }
 
   /**
-   * @return {!Array.<!WebInspector.TracingModel.Event>}
+   * @return {!Array.<!SDK.TracingModel.Event>}
    */
   devToolsMetadataEvents() {
     return this._devToolsMetadataEvents;
   }
 
   /**
-   * @param {!Array.<!WebInspector.TracingManager.EventPayload>} events
+   * @param {!Array.<!SDK.TracingManager.EventPayload>} events
    */
   setEventsForTest(events) {
     this.reset();
@@ -127,7 +127,7 @@ WebInspector.TracingModel = class {
   }
 
   /**
-   * @param {!Array.<!WebInspector.TracingManager.EventPayload>} events
+   * @param {!Array.<!SDK.TracingManager.EventPayload>} events
    */
   addEvents(events) {
     for (var i = 0; i < events.length; ++i)
@@ -146,7 +146,7 @@ WebInspector.TracingModel = class {
   }
 
   reset() {
-    /** @type {!Map<(number|string), !WebInspector.TracingModel.Process>} */
+    /** @type {!Map<(number|string), !SDK.TracingModel.Process>} */
     this._processById = new Map();
     this._processByName = new Map();
     this._minimumRecordTime = 0;
@@ -156,25 +156,25 @@ WebInspector.TracingModel = class {
       this._backingStorage.reset();
 
     this._firstWritePending = true;
-    /** @type {!Array<!WebInspector.TracingModel.Event>} */
+    /** @type {!Array<!SDK.TracingModel.Event>} */
     this._asyncEvents = [];
-    /** @type {!Map<string, !WebInspector.TracingModel.AsyncEvent>} */
+    /** @type {!Map<string, !SDK.TracingModel.AsyncEvent>} */
     this._openAsyncEvents = new Map();
-    /** @type {!Map<string, !Array<!WebInspector.TracingModel.AsyncEvent>>} */
+    /** @type {!Map<string, !Array<!SDK.TracingModel.AsyncEvent>>} */
     this._openNestableAsyncEvents = new Map();
-    /** @type {!Map<string, !WebInspector.TracingModel.ProfileEventsGroup>} */
+    /** @type {!Map<string, !SDK.TracingModel.ProfileEventsGroup>} */
     this._profileGroups = new Map();
     /** @type {!Map<string, !Set<string>>} */
     this._parsedCategories = new Map();
   }
 
   /**
-   * @param {!WebInspector.TracingManager.EventPayload} payload
+   * @param {!SDK.TracingManager.EventPayload} payload
    */
   _addEvent(payload) {
     var process = this._processById.get(payload.pid);
     if (!process) {
-      process = new WebInspector.TracingModel.Process(this, payload.pid);
+      process = new SDK.TracingModel.Process(this, payload.pid);
       this._processById.set(payload.pid, process);
     }
 
@@ -182,7 +182,7 @@ WebInspector.TracingModel = class {
     this._backingStorage.appendString(this._firstWritePending ? '[' : eventsDelimiter);
     this._firstWritePending = false;
     var stringPayload = JSON.stringify(payload);
-    var isAccessible = payload.ph === WebInspector.TracingModel.Phase.SnapshotObject;
+    var isAccessible = payload.ph === SDK.TracingModel.Phase.SnapshotObject;
     var backingStorage = null;
     var keepStringsLessThan = 10000;
     if (isAccessible && stringPayload.length > keepStringsLessThan)
@@ -200,54 +200,54 @@ WebInspector.TracingModel = class {
     var event = process._addEvent(payload);
     if (!event)
       return;
-    if (payload.ph === WebInspector.TracingModel.Phase.Sample) {
+    if (payload.ph === SDK.TracingModel.Phase.Sample) {
       this._addSampleEvent(event);
       return;
     }
     // Build async event when we've got events from all threads & processes, so we can sort them and process in the
     // chronological order. However, also add individual async events to the thread flow (above), so we can easily
     // display them on the same chart as other events, should we choose so.
-    if (WebInspector.TracingModel.isAsyncPhase(payload.ph))
+    if (SDK.TracingModel.isAsyncPhase(payload.ph))
       this._asyncEvents.push(event);
     event._setBackingStorage(backingStorage);
-    if (event.hasCategory(WebInspector.TracingModel.DevToolsMetadataEventCategory))
+    if (event.hasCategory(SDK.TracingModel.DevToolsMetadataEventCategory))
       this._devToolsMetadataEvents.push(event);
 
-    if (payload.ph !== WebInspector.TracingModel.Phase.Metadata)
+    if (payload.ph !== SDK.TracingModel.Phase.Metadata)
       return;
 
     switch (payload.name) {
-      case WebInspector.TracingModel.MetadataEvent.ProcessSortIndex:
+      case SDK.TracingModel.MetadataEvent.ProcessSortIndex:
         process._setSortIndex(payload.args['sort_index']);
         break;
-      case WebInspector.TracingModel.MetadataEvent.ProcessName:
+      case SDK.TracingModel.MetadataEvent.ProcessName:
         var processName = payload.args['name'];
         process._setName(processName);
         this._processByName.set(processName, process);
         break;
-      case WebInspector.TracingModel.MetadataEvent.ThreadSortIndex:
+      case SDK.TracingModel.MetadataEvent.ThreadSortIndex:
         process.threadById(payload.tid)._setSortIndex(payload.args['sort_index']);
         break;
-      case WebInspector.TracingModel.MetadataEvent.ThreadName:
+      case SDK.TracingModel.MetadataEvent.ThreadName:
         process.threadById(payload.tid)._setName(payload.args['name']);
         break;
     }
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} event
+   * @param {!SDK.TracingModel.Event} event
    */
   _addSampleEvent(event) {
     var group = this._profileGroups.get(event.id);
     if (group)
       group._addChild(event);
     else
-      this._profileGroups.set(event.id, new WebInspector.TracingModel.ProfileEventsGroup(event));
+      this._profileGroups.set(event.id, new SDK.TracingModel.ProfileEventsGroup(event));
   }
 
   /**
    * @param {string} id
-   * @return {?WebInspector.TracingModel.ProfileEventsGroup}
+   * @return {?SDK.TracingModel.ProfileEventsGroup}
    */
   profileGroup(id) {
     return this._profileGroups.get(id) || null;
@@ -268,15 +268,15 @@ WebInspector.TracingModel = class {
   }
 
   /**
-   * @return {!Array.<!WebInspector.TracingModel.Process>}
+   * @return {!Array.<!SDK.TracingModel.Process>}
    */
   sortedProcesses() {
-    return WebInspector.TracingModel.NamedObject._sort(this._processById.valuesArray());
+    return SDK.TracingModel.NamedObject._sort(this._processById.valuesArray());
   }
 
   /**
    * @param {string} name
-   * @return {?WebInspector.TracingModel.Process}
+   * @return {?SDK.TracingModel.Process}
    */
   processByName(name) {
     return this._processByName.get(name);
@@ -285,7 +285,7 @@ WebInspector.TracingModel = class {
   /**
    * @param {string} processName
    * @param {string} threadName
-   * @return {?WebInspector.TracingModel.Thread}
+   * @return {?SDK.TracingModel.Thread}
    */
   threadByName(processName, threadName) {
     var process = this.processByName(processName);
@@ -293,10 +293,10 @@ WebInspector.TracingModel = class {
   }
 
   _processPendingAsyncEvents() {
-    this._asyncEvents.stableSort(WebInspector.TracingModel.Event.compareStartTime);
+    this._asyncEvents.stableSort(SDK.TracingModel.Event.compareStartTime);
     for (var i = 0; i < this._asyncEvents.length; ++i) {
       var event = this._asyncEvents[i];
-      if (WebInspector.TracingModel.isNestableAsyncPhase(event.phase))
+      if (SDK.TracingModel.isNestableAsyncPhase(event.phase))
         this._addNestableAsyncEvent(event);
       else
         this._addAsyncEvent(event);
@@ -322,10 +322,10 @@ WebInspector.TracingModel = class {
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} event
+   * @param {!SDK.TracingModel.Event} event
    */
   _addNestableAsyncEvent(event) {
-    var phase = WebInspector.TracingModel.Phase;
+    var phase = SDK.TracingModel.Phase;
     var key = event.categoriesString + '.' + event.id;
     var openEventsStack = this._openNestableAsyncEvents.get(key);
 
@@ -335,7 +335,7 @@ WebInspector.TracingModel = class {
           openEventsStack = [];
           this._openNestableAsyncEvents.set(key, openEventsStack);
         }
-        var asyncEvent = new WebInspector.TracingModel.AsyncEvent(event);
+        var asyncEvent = new SDK.TracingModel.AsyncEvent(event);
         openEventsStack.push(asyncEvent);
         event.thread._addAsyncEvent(asyncEvent);
         break;
@@ -359,10 +359,10 @@ WebInspector.TracingModel = class {
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} event
+   * @param {!SDK.TracingModel.Event} event
    */
   _addAsyncEvent(event) {
-    var phase = WebInspector.TracingModel.Phase;
+    var phase = SDK.TracingModel.Phase;
     var key = event.categoriesString + '.' + event.name + '.' + event.id;
     var asyncEvent = this._openAsyncEvents.get(key);
 
@@ -371,7 +371,7 @@ WebInspector.TracingModel = class {
         console.error(`Event ${event.name} has already been started`);
         return;
       }
-      asyncEvent = new WebInspector.TracingModel.AsyncEvent(event);
+      asyncEvent = new SDK.TracingModel.AsyncEvent(event);
       this._openAsyncEvents.set(key, asyncEvent);
       event.thread._addAsyncEvent(asyncEvent);
       return;
@@ -416,7 +416,7 @@ WebInspector.TracingModel = class {
 /**
  * @enum {string}
  */
-WebInspector.TracingModel.Phase = {
+SDK.TracingModel.Phase = {
   Begin: 'B',
   End: 'E',
   Complete: 'X',
@@ -439,26 +439,26 @@ WebInspector.TracingModel.Phase = {
   DeleteObject: 'D'
 };
 
-WebInspector.TracingModel.MetadataEvent = {
+SDK.TracingModel.MetadataEvent = {
   ProcessSortIndex: 'process_sort_index',
   ProcessName: 'process_name',
   ThreadSortIndex: 'thread_sort_index',
   ThreadName: 'thread_name'
 };
 
-WebInspector.TracingModel.TopLevelEventCategory = 'toplevel';
-WebInspector.TracingModel.DevToolsMetadataEventCategory = 'disabled-by-default-devtools.timeline';
-WebInspector.TracingModel.DevToolsTimelineEventCategory = 'disabled-by-default-devtools.timeline';
+SDK.TracingModel.TopLevelEventCategory = 'toplevel';
+SDK.TracingModel.DevToolsMetadataEventCategory = 'disabled-by-default-devtools.timeline';
+SDK.TracingModel.DevToolsTimelineEventCategory = 'disabled-by-default-devtools.timeline';
 
-WebInspector.TracingModel.FrameLifecycleEventCategory = 'cc,devtools';
+SDK.TracingModel.FrameLifecycleEventCategory = 'cc,devtools';
 
 
 /**
  * @interface
  */
-WebInspector.BackingStorage = function() {};
+SDK.BackingStorage = function() {};
 
-WebInspector.BackingStorage.prototype = {
+SDK.BackingStorage.prototype = {
   /**
    * @param {string} string
    */
@@ -478,13 +478,13 @@ WebInspector.BackingStorage.prototype = {
 /**
  * @unrestricted
  */
-WebInspector.TracingModel.Event = class {
+SDK.TracingModel.Event = class {
   /**
    * @param {string} categories
    * @param {string} name
-   * @param {!WebInspector.TracingModel.Phase} phase
+   * @param {!SDK.TracingModel.Phase} phase
    * @param {number} startTime
-   * @param {!WebInspector.TracingModel.Thread} thread
+   * @param {!SDK.TracingModel.Thread} thread
    */
   constructor(categories, name, phase, startTime, thread) {
     /** @type {string} */
@@ -493,11 +493,11 @@ WebInspector.TracingModel.Event = class {
     this._parsedCategories = thread._model._parsedCategoriesForString(categories);
     /** @type {string} */
     this.name = name;
-    /** @type {!WebInspector.TracingModel.Phase} */
+    /** @type {!SDK.TracingModel.Phase} */
     this.phase = phase;
     /** @type {number} */
     this.startTime = startTime;
-    /** @type {!WebInspector.TracingModel.Thread} */
+    /** @type {!SDK.TracingModel.Thread} */
     this.thread = thread;
     /** @type {!Object} */
     this.args = {};
@@ -507,13 +507,13 @@ WebInspector.TracingModel.Event = class {
   }
 
   /**
-   * @param {!WebInspector.TracingManager.EventPayload} payload
-   * @param {!WebInspector.TracingModel.Thread} thread
-   * @return {!WebInspector.TracingModel.Event}
+   * @param {!SDK.TracingManager.EventPayload} payload
+   * @param {!SDK.TracingModel.Thread} thread
+   * @return {!SDK.TracingModel.Event}
    */
   static fromPayload(payload, thread) {
-    var event = new WebInspector.TracingModel.Event(
-        payload.cat, payload.name, /** @type {!WebInspector.TracingModel.Phase} */ (payload.ph), payload.ts / 1000,
+    var event = new SDK.TracingModel.Event(
+        payload.cat, payload.name, /** @type {!SDK.TracingModel.Phase} */ (payload.ph), payload.ts / 1000,
         thread);
     if (payload.args)
       event.addArgs(payload.args);
@@ -521,7 +521,7 @@ WebInspector.TracingModel.Event = class {
       console.error('Missing mandatory event argument \'args\' at ' + payload.ts / 1000);
     if (typeof payload.dur === 'number')
       event.setEndTime((payload.ts + payload.dur) / 1000);
-    var id = WebInspector.TracingModel._extractId(payload);
+    var id = SDK.TracingModel._extractId(payload);
     if (typeof id !== 'undefined')
       event.id = id;
     if (payload.bind_id)
@@ -531,8 +531,8 @@ WebInspector.TracingModel.Event = class {
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} a
-   * @param {!WebInspector.TracingModel.Event} b
+   * @param {!SDK.TracingModel.Event} a
+   * @param {!SDK.TracingModel.Event} b
    * @return {number}
    */
   static compareStartTime(a, b) {
@@ -540,8 +540,8 @@ WebInspector.TracingModel.Event = class {
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} a
-   * @param {!WebInspector.TracingModel.Event} b
+   * @param {!SDK.TracingModel.Event} a
+   * @param {!SDK.TracingModel.Event} b
    * @return {number}
    */
   static compareStartAndEndTime(a, b) {
@@ -550,8 +550,8 @@ WebInspector.TracingModel.Event = class {
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} a
-   * @param {!WebInspector.TracingModel.Event} b
+   * @param {!SDK.TracingModel.Event} a
+   * @param {!SDK.TracingModel.Event} b
    * @return {number}
    */
   static orderedCompareStartTime(a, b) {
@@ -594,7 +594,7 @@ WebInspector.TracingModel.Event = class {
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} endEvent
+   * @param {!SDK.TracingModel.Event} endEvent
    */
   _complete(endEvent) {
     if (endEvent.args)
@@ -615,25 +615,25 @@ WebInspector.TracingModel.Event = class {
 /**
  * @unrestricted
  */
-WebInspector.TracingModel.ObjectSnapshot = class extends WebInspector.TracingModel.Event {
+SDK.TracingModel.ObjectSnapshot = class extends SDK.TracingModel.Event {
   /**
    * @param {string} category
    * @param {string} name
    * @param {number} startTime
-   * @param {!WebInspector.TracingModel.Thread} thread
+   * @param {!SDK.TracingModel.Thread} thread
    */
   constructor(category, name, startTime, thread) {
-    super(category, name, WebInspector.TracingModel.Phase.SnapshotObject, startTime, thread);
+    super(category, name, SDK.TracingModel.Phase.SnapshotObject, startTime, thread);
   }
 
   /**
-   * @param {!WebInspector.TracingManager.EventPayload} payload
-   * @param {!WebInspector.TracingModel.Thread} thread
-   * @return {!WebInspector.TracingModel.ObjectSnapshot}
+   * @param {!SDK.TracingManager.EventPayload} payload
+   * @param {!SDK.TracingModel.Thread} thread
+   * @return {!SDK.TracingModel.ObjectSnapshot}
    */
   static fromPayload(payload, thread) {
-    var snapshot = new WebInspector.TracingModel.ObjectSnapshot(payload.cat, payload.name, payload.ts / 1000, thread);
-    var id = WebInspector.TracingModel._extractId(payload);
+    var snapshot = new SDK.TracingModel.ObjectSnapshot(payload.cat, payload.name, payload.ts / 1000, thread);
+    var id = SDK.TracingModel._extractId(payload);
     if (typeof id !== 'undefined')
       snapshot.id = id;
     if (!payload.args || !payload.args['snapshot']) {
@@ -667,7 +667,7 @@ WebInspector.TracingModel.ObjectSnapshot = class extends WebInspector.TracingMod
         var payload = JSON.parse(result);
         callback(payload['args']['snapshot']);
       } catch (e) {
-        WebInspector.console.error('Malformed event data in backing storage');
+        Common.console.error('Malformed event data in backing storage');
         callback(null);
       }
     }
@@ -698,9 +698,9 @@ WebInspector.TracingModel.ObjectSnapshot = class extends WebInspector.TracingMod
 /**
  * @unrestricted
  */
-WebInspector.TracingModel.AsyncEvent = class extends WebInspector.TracingModel.Event {
+SDK.TracingModel.AsyncEvent = class extends SDK.TracingModel.Event {
   /**
-   * @param {!WebInspector.TracingModel.Event} startEvent
+   * @param {!SDK.TracingModel.Event} startEvent
    */
   constructor(startEvent) {
     super(startEvent.categoriesString, startEvent.name, startEvent.phase, startEvent.startTime, startEvent.thread);
@@ -709,12 +709,12 @@ WebInspector.TracingModel.AsyncEvent = class extends WebInspector.TracingModel.E
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} event
+   * @param {!SDK.TracingModel.Event} event
    */
   _addStep(event) {
     this.steps.push(event);
-    if (event.phase === WebInspector.TracingModel.Phase.AsyncEnd ||
-        event.phase === WebInspector.TracingModel.Phase.NestableAsyncEnd) {
+    if (event.phase === SDK.TracingModel.Phase.AsyncEnd ||
+        event.phase === SDK.TracingModel.Phase.NestableAsyncEnd) {
       this.setEndTime(event.startTime);
       // FIXME: ideally, we shouldn't do this, but this makes the logic of converting
       // async console events to sync ones much simpler.
@@ -726,17 +726,17 @@ WebInspector.TracingModel.AsyncEvent = class extends WebInspector.TracingModel.E
 /**
  * @unrestricted
  */
-WebInspector.TracingModel.ProfileEventsGroup = class {
+SDK.TracingModel.ProfileEventsGroup = class {
   /**
-   * @param {!WebInspector.TracingModel.Event} event
+   * @param {!SDK.TracingModel.Event} event
    */
   constructor(event) {
-    /** @type {!Array<!WebInspector.TracingModel.Event>} */
+    /** @type {!Array<!SDK.TracingModel.Event>} */
     this.children = [event];
   }
 
   /**
-   * @param {!WebInspector.TracingModel.Event} event
+   * @param {!SDK.TracingModel.Event} event
    */
   _addChild(event) {
     this.children.push(event);
@@ -746,14 +746,14 @@ WebInspector.TracingModel.ProfileEventsGroup = class {
 /**
  * @unrestricted
  */
-WebInspector.TracingModel.NamedObject = class {
+SDK.TracingModel.NamedObject = class {
   /**
-   * @param {!Array.<!WebInspector.TracingModel.NamedObject>} array
+   * @param {!Array.<!SDK.TracingModel.NamedObject>} array
    */
   static _sort(array) {
     /**
-     * @param {!WebInspector.TracingModel.NamedObject} a
-     * @param {!WebInspector.TracingModel.NamedObject} b
+     * @param {!SDK.TracingModel.NamedObject} a
+     * @param {!SDK.TracingModel.NamedObject} b
      */
     function comparator(a, b) {
       return a._sortIndex !== b._sortIndex ? a._sortIndex - b._sortIndex : a.name().localeCompare(b.name());
@@ -787,16 +787,16 @@ WebInspector.TracingModel.NamedObject = class {
 /**
  * @unrestricted
  */
-WebInspector.TracingModel.Process = class extends WebInspector.TracingModel.NamedObject {
+SDK.TracingModel.Process = class extends SDK.TracingModel.NamedObject {
   /**
-   * @param {!WebInspector.TracingModel} model
+   * @param {!SDK.TracingModel} model
    * @param {number} id
    */
   constructor(model, id) {
     super();
     this._setName('Process ' + id);
     this._id = id;
-    /** @type {!Map<number, !WebInspector.TracingModel.Thread>} */
+    /** @type {!Map<number, !SDK.TracingModel.Thread>} */
     this._threads = new Map();
     this._threadByName = new Map();
     this._model = model;
@@ -811,12 +811,12 @@ WebInspector.TracingModel.Process = class extends WebInspector.TracingModel.Name
 
   /**
    * @param {number} id
-   * @return {!WebInspector.TracingModel.Thread}
+   * @return {!SDK.TracingModel.Thread}
    */
   threadById(id) {
     var thread = this._threads.get(id);
     if (!thread) {
-      thread = new WebInspector.TracingModel.Thread(this, id);
+      thread = new SDK.TracingModel.Thread(this, id);
       this._threads.set(id, thread);
     }
     return thread;
@@ -824,7 +824,7 @@ WebInspector.TracingModel.Process = class extends WebInspector.TracingModel.Name
 
   /**
    * @param {string} name
-   * @return {?WebInspector.TracingModel.Thread}
+   * @return {?SDK.TracingModel.Thread}
    */
   threadByName(name) {
     return this._threadByName.get(name) || null;
@@ -832,34 +832,34 @@ WebInspector.TracingModel.Process = class extends WebInspector.TracingModel.Name
 
   /**
    * @param {string} name
-   * @param {!WebInspector.TracingModel.Thread} thread
+   * @param {!SDK.TracingModel.Thread} thread
    */
   _setThreadByName(name, thread) {
     this._threadByName.set(name, thread);
   }
 
   /**
-   * @param {!WebInspector.TracingManager.EventPayload} payload
-   * @return {?WebInspector.TracingModel.Event} event
+   * @param {!SDK.TracingManager.EventPayload} payload
+   * @return {?SDK.TracingModel.Event} event
    */
   _addEvent(payload) {
     return this.threadById(payload.tid)._addEvent(payload);
   }
 
   /**
-   * @return {!Array.<!WebInspector.TracingModel.Thread>}
+   * @return {!Array.<!SDK.TracingModel.Thread>}
    */
   sortedThreads() {
-    return WebInspector.TracingModel.NamedObject._sort(this._threads.valuesArray());
+    return SDK.TracingModel.NamedObject._sort(this._threads.valuesArray());
   }
 };
 
 /**
  * @unrestricted
  */
-WebInspector.TracingModel.Thread = class extends WebInspector.TracingModel.NamedObject {
+SDK.TracingModel.Thread = class extends SDK.TracingModel.NamedObject {
   /**
-   * @param {!WebInspector.TracingModel.Process} process
+   * @param {!SDK.TracingModel.Process} process
    * @param {number} id
    */
   constructor(process, id) {
@@ -873,9 +873,9 @@ WebInspector.TracingModel.Thread = class extends WebInspector.TracingModel.Named
   }
 
   tracingComplete() {
-    this._asyncEvents.stableSort(WebInspector.TracingModel.Event.compareStartAndEndTime);
-    this._events.stableSort(WebInspector.TracingModel.Event.compareStartTime);
-    var phases = WebInspector.TracingModel.Phase;
+    this._asyncEvents.stableSort(SDK.TracingModel.Event.compareStartAndEndTime);
+    this._events.stableSort(SDK.TracingModel.Event.compareStartTime);
+    var phases = SDK.TracingModel.Phase;
     var stack = [];
     for (var i = 0; i < this._events.length; ++i) {
       var e = this._events[i];
@@ -905,14 +905,14 @@ WebInspector.TracingModel.Thread = class extends WebInspector.TracingModel.Named
   }
 
   /**
-   * @param {!WebInspector.TracingManager.EventPayload} payload
-   * @return {?WebInspector.TracingModel.Event} event
+   * @param {!SDK.TracingManager.EventPayload} payload
+   * @return {?SDK.TracingModel.Event} event
    */
   _addEvent(payload) {
-    var event = payload.ph === WebInspector.TracingModel.Phase.SnapshotObject ?
-        WebInspector.TracingModel.ObjectSnapshot.fromPayload(payload, this) :
-        WebInspector.TracingModel.Event.fromPayload(payload, this);
-    if (WebInspector.TracingModel.isTopLevelEvent(event)) {
+    var event = payload.ph === SDK.TracingModel.Phase.SnapshotObject ?
+        SDK.TracingModel.ObjectSnapshot.fromPayload(payload, this) :
+        SDK.TracingModel.Event.fromPayload(payload, this);
+    if (SDK.TracingModel.isTopLevelEvent(event)) {
       // Discard nested "top-level" events.
       if (this._lastTopLevelEvent && this._lastTopLevelEvent.endTime > event.startTime)
         return null;
@@ -923,7 +923,7 @@ WebInspector.TracingModel.Thread = class extends WebInspector.TracingModel.Named
   }
 
   /**
-   * @param {!WebInspector.TracingModel.AsyncEvent} asyncEvent
+   * @param {!SDK.TracingModel.AsyncEvent} asyncEvent
    */
   _addAsyncEvent(asyncEvent) {
     this._asyncEvents.push(asyncEvent);
@@ -946,21 +946,21 @@ WebInspector.TracingModel.Thread = class extends WebInspector.TracingModel.Named
   }
 
   /**
-   * @return {!WebInspector.TracingModel.Process}
+   * @return {!SDK.TracingModel.Process}
    */
   process() {
     return this._process;
   }
 
   /**
-   * @return {!Array.<!WebInspector.TracingModel.Event>}
+   * @return {!Array.<!SDK.TracingModel.Event>}
    */
   events() {
     return this._events;
   }
 
   /**
-   * @return {!Array.<!WebInspector.TracingModel.AsyncEvent>}
+   * @return {!Array.<!SDK.TracingModel.AsyncEvent>}
    */
   asyncEvents() {
     return this._asyncEvents;

@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-WebInspector.DevicesView = class extends WebInspector.VBox {
+Devices.DevicesView = class extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('devices/devicesView.css');
@@ -12,17 +12,17 @@ WebInspector.DevicesView = class extends WebInspector.VBox {
 
     var hbox = this.contentElement.createChild('div', 'hbox devices-container');
     var sidebar = hbox.createChild('div', 'devices-sidebar');
-    sidebar.createChild('div', 'devices-view-title').createTextChild(WebInspector.UIString('Devices'));
+    sidebar.createChild('div', 'devices-view-title').createTextChild(Common.UIString('Devices'));
     this._sidebarList = sidebar.createChild('div', 'devices-sidebar-list');
 
-    this._discoveryView = new WebInspector.DevicesView.DiscoveryView();
+    this._discoveryView = new Devices.DevicesView.DiscoveryView();
     this._sidebarListSpacer = this._sidebarList.createChild('div', 'devices-sidebar-spacer');
     this._discoveryListItem = this._sidebarList.createChild('div', 'devices-sidebar-item');
-    this._discoveryListItem.textContent = WebInspector.UIString('Settings');
+    this._discoveryListItem.textContent = Common.UIString('Settings');
     this._discoveryListItem.addEventListener(
         'click', this._selectSidebarListItem.bind(this, this._discoveryListItem, this._discoveryView));
 
-    /** @type {!Map<string, !WebInspector.DevicesView.DeviceView>} */
+    /** @type {!Map<string, !Devices.DevicesView.DeviceView>} */
     this._viewById = new Map();
     /** @type {!Array<!Adb.Device>} */
     this._devices = [];
@@ -33,11 +33,11 @@ WebInspector.DevicesView = class extends WebInspector.VBox {
 
     var discoveryFooter = this.contentElement.createChild('div', 'devices-footer');
     this._deviceCountSpan = discoveryFooter.createChild('span');
-    discoveryFooter.createChild('span').textContent = WebInspector.UIString(' Read ');
-    discoveryFooter.appendChild(WebInspector.linkifyURLAsNode(
+    discoveryFooter.createChild('span').textContent = Common.UIString(' Read ');
+    discoveryFooter.appendChild(UI.linkifyURLAsNode(
         'https://developers.google.com/chrome-developer-tools/docs/remote-debugging',
-        WebInspector.UIString('remote debugging documentation'), undefined, true));
-    discoveryFooter.createChild('span').textContent = WebInspector.UIString(' for more information.');
+        Common.UIString('remote debugging documentation'), undefined, true));
+    discoveryFooter.createChild('span').textContent = Common.UIString(' for more information.');
     this._updateFooter();
     this._selectSidebarListItem(this._discoveryListItem, this._discoveryView);
 
@@ -54,17 +54,17 @@ WebInspector.DevicesView = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {!WebInspector.DevicesView}
+   * @return {!Devices.DevicesView}
    */
   static _instance() {
-    if (!WebInspector.DevicesView._instanceObject)
-      WebInspector.DevicesView._instanceObject = new WebInspector.DevicesView();
-    return WebInspector.DevicesView._instanceObject;
+    if (!Devices.DevicesView._instanceObject)
+      Devices.DevicesView._instanceObject = new Devices.DevicesView();
+    return Devices.DevicesView._instanceObject;
   }
 
   /**
    * @param {!Element} listItem
-   * @param {!WebInspector.Widget} view
+   * @param {!UI.Widget} view
    */
   _selectSidebarListItem(listItem, view) {
     if (this._selectedListItem === listItem)
@@ -82,14 +82,14 @@ WebInspector.DevicesView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _devicesUpdated(event) {
     this._devices =
         /** @type {!Array.<!Adb.Device>} */ (event.data).slice().filter(d => d.adbSerial.toUpperCase() !== 'WEBRTC');
     for (var device of this._devices) {
       if (!device.adbConnected)
-        device.adbModel = WebInspector.UIString('Unknown');
+        device.adbModel = Common.UIString('Unknown');
     }
 
     var ids = new Set();
@@ -113,7 +113,7 @@ WebInspector.DevicesView = class extends WebInspector.VBox {
       var listItem = this._listItemById.get(device.id);
 
       if (!view) {
-        view = new WebInspector.DevicesView.DeviceView();
+        view = new Devices.DevicesView.DeviceView();
         this._viewById.set(device.id, view);
         listItem = this._createSidebarListItem(view);
         this._listItemById.set(device.id, listItem);
@@ -122,7 +122,7 @@ WebInspector.DevicesView = class extends WebInspector.VBox {
 
       listItem._title.textContent = device.adbModel;
       listItem._status.textContent =
-          device.adbConnected ? WebInspector.UIString('Connected') : WebInspector.UIString('Pending Authorization');
+          device.adbConnected ? Common.UIString('Connected') : Common.UIString('Pending Authorization');
       listItem.classList.toggle('device-connected', device.adbConnected);
       view.update(device);
     }
@@ -134,7 +134,7 @@ WebInspector.DevicesView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Widget} view
+   * @param {!UI.Widget} view
    * @return {!Element}
    */
   _createSidebarListItem(view) {
@@ -146,7 +146,7 @@ WebInspector.DevicesView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _devicesDiscoveryConfigChanged(event) {
     var discoverUsbDevices = /** @type {boolean} */ (event.data['discoverUsbDevices']);
@@ -156,7 +156,7 @@ WebInspector.DevicesView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.Event} event
+   * @param {!Common.Event} event
    */
   _devicesPortForwardingStatusChanged(event) {
     var status = /** @type {!Adb.PortForwardingStatus} */ (event.data);
@@ -174,9 +174,9 @@ WebInspector.DevicesView = class extends WebInspector.VBox {
 
   _updateFooter() {
     this._deviceCountSpan.textContent = !this._devices.length ?
-        WebInspector.UIString('No devices detected.') :
-        this._devices.length === 1 ? WebInspector.UIString('1 device detected.') :
-                                     WebInspector.UIString('%d devices detected.', this._devices.length);
+        Common.UIString('No devices detected.') :
+        this._devices.length === 1 ? Common.UIString('1 device detected.') :
+                                     Common.UIString('%d devices detected.', this._devices.length);
   }
 
   /**
@@ -198,54 +198,54 @@ WebInspector.DevicesView = class extends WebInspector.VBox {
 
 
 /**
- * @implements {WebInspector.ListWidget.Delegate}
+ * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-WebInspector.DevicesView.DiscoveryView = class extends WebInspector.VBox {
+Devices.DevicesView.DiscoveryView = class extends UI.VBox {
   constructor() {
     super();
     this.setMinimumSize(100, 100);
     this.element.classList.add('discovery-view');
 
     this.contentElement.createChild('div', 'hbox device-text-row').createChild('div', 'view-title').textContent =
-        WebInspector.UIString('Settings');
+        Common.UIString('Settings');
 
-    var discoverUsbDevicesCheckbox = createCheckboxLabel(WebInspector.UIString('Discover USB devices'));
+    var discoverUsbDevicesCheckbox = createCheckboxLabel(Common.UIString('Discover USB devices'));
     discoverUsbDevicesCheckbox.classList.add('usb-checkbox');
     this.element.appendChild(discoverUsbDevicesCheckbox);
     this._discoverUsbDevicesCheckbox = discoverUsbDevicesCheckbox.checkboxElement;
     this._discoverUsbDevicesCheckbox.addEventListener('click', this._updateDiscoveryConfig.bind(this), false);
 
     var help = this.element.createChild('div', 'discovery-help');
-    help.createChild('span').textContent = WebInspector.UIString('Need help? Read Chrome ');
-    help.appendChild(WebInspector.linkifyURLAsNode(
+    help.createChild('span').textContent = Common.UIString('Need help? Read Chrome ');
+    help.appendChild(UI.linkifyURLAsNode(
         'https://developers.google.com/chrome-developer-tools/docs/remote-debugging',
-        WebInspector.UIString('remote debugging documentation.'), undefined, true));
+        Common.UIString('remote debugging documentation.'), undefined, true));
 
     var portForwardingHeader = this.element.createChild('div', 'port-forwarding-header');
-    var portForwardingEnabledCheckbox = createCheckboxLabel(WebInspector.UIString('Port forwarding'));
+    var portForwardingEnabledCheckbox = createCheckboxLabel(Common.UIString('Port forwarding'));
     portForwardingEnabledCheckbox.classList.add('port-forwarding-checkbox');
     portForwardingHeader.appendChild(portForwardingEnabledCheckbox);
     this._portForwardingEnabledCheckbox = portForwardingEnabledCheckbox.checkboxElement;
     this._portForwardingEnabledCheckbox.addEventListener('click', this._updateDiscoveryConfig.bind(this), false);
 
     var portForwardingFooter = this.element.createChild('div', 'port-forwarding-footer');
-    portForwardingFooter.createChild('span').textContent = WebInspector.UIString(
+    portForwardingFooter.createChild('span').textContent = Common.UIString(
         'Define the listening port on your device that maps to a port accessible from your development machine. ');
-    portForwardingFooter.appendChild(WebInspector.linkifyURLAsNode(
+    portForwardingFooter.appendChild(UI.linkifyURLAsNode(
         'https://developer.chrome.com/devtools/docs/remote-debugging#port-forwarding',
-        WebInspector.UIString('Learn more'), undefined, true));
+        Common.UIString('Learn more'), undefined, true));
 
-    this._list = new WebInspector.ListWidget(this);
+    this._list = new UI.ListWidget(this);
     this._list.registerRequiredCSS('devices/devicesView.css');
     this._list.element.classList.add('port-forwarding-list');
     var placeholder = createElementWithClass('div', 'port-forwarding-list-empty');
-    placeholder.textContent = WebInspector.UIString('No rules');
+    placeholder.textContent = Common.UIString('No rules');
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.element);
 
     this.element.appendChild(
-        createTextButton(WebInspector.UIString('Add rule'), this._addRuleButtonClicked.bind(this), 'add-rule-button'));
+        createTextButton(Common.UIString('Add rule'), this._addRuleButtonClicked.bind(this), 'add-rule-button'));
 
     /** @type {!Array<!Adb.PortForwardingRule>} */
     this._portForwardingConfig = [];
@@ -283,7 +283,7 @@ WebInspector.DevicesView.DiscoveryView = class extends WebInspector.VBox {
     var rule = /** @type {!Adb.PortForwardingRule} */ (item);
     var element = createElementWithClass('div', 'port-forwarding-list-item');
     var port = element.createChild('div', 'port-forwarding-value port-forwarding-port');
-    port.createChild('span', 'port-localhost').textContent = WebInspector.UIString('localhost:');
+    port.createChild('span', 'port-localhost').textContent = Common.UIString('localhost:');
     port.createTextChild(rule.port);
     element.createChild('div', 'port-forwarding-separator');
     element.createChild('div', 'port-forwarding-value').textContent = rule.address;
@@ -304,7 +304,7 @@ WebInspector.DevicesView.DiscoveryView = class extends WebInspector.VBox {
   /**
    * @override
    * @param {*} item
-   * @param {!WebInspector.ListWidget.Editor} editor
+   * @param {!UI.ListWidget.Editor} editor
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {
@@ -319,7 +319,7 @@ WebInspector.DevicesView.DiscoveryView = class extends WebInspector.VBox {
   /**
    * @override
    * @param {*} item
-   * @return {!WebInspector.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor}
    */
   beginEdit(item) {
     var rule = /** @type {!Adb.PortForwardingRule} */ (item);
@@ -330,13 +330,13 @@ WebInspector.DevicesView.DiscoveryView = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {!WebInspector.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor}
    */
   _createEditor() {
     if (this._editor)
       return this._editor;
 
-    var editor = new WebInspector.ListWidget.Editor();
+    var editor = new UI.ListWidget.Editor();
     this._editor = editor;
     var content = editor.contentElement();
     var fields = content.createChild('div', 'port-forwarding-edit-row');
@@ -351,7 +351,7 @@ WebInspector.DevicesView.DiscoveryView = class extends WebInspector.VBox {
      * @param {*} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @this {WebInspector.DevicesView.DiscoveryView}
+     * @this {Devices.DevicesView.DiscoveryView}
      * @return {boolean}
      */
     function portValidator(item, index, input) {
@@ -396,7 +396,7 @@ WebInspector.DevicesView.DiscoveryView = class extends WebInspector.VBox {
 /**
  * @unrestricted
  */
-WebInspector.DevicesView.DeviceView = class extends WebInspector.VBox {
+Devices.DevicesView.DeviceView = class extends UI.VBox {
   constructor() {
     super();
     this.setMinimumSize(100, 100);
@@ -409,14 +409,14 @@ WebInspector.DevicesView.DeviceView = class extends WebInspector.VBox {
 
     this._deviceOffline = this.contentElement.createChild('div');
     this._deviceOffline.textContent =
-        WebInspector.UIString('Pending authentication: please accept debugging session on the device.');
+        Common.UIString('Pending authentication: please accept debugging session on the device.');
 
     this._noBrowsers = this.contentElement.createChild('div');
-    this._noBrowsers.textContent = WebInspector.UIString('No browsers detected.');
+    this._noBrowsers.textContent = Common.UIString('No browsers detected.');
 
     this._browsers = this.contentElement.createChild('div', 'device-browser-list vbox');
 
-    /** @type {!Map<string, !WebInspector.DevicesView.BrowserSection>} */
+    /** @type {!Map<string, !Devices.DevicesView.BrowserSection>} */
     this._browserById = new Map();
 
     this._device = null;
@@ -461,7 +461,7 @@ WebInspector.DevicesView.DeviceView = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {!WebInspector.DevicesView.BrowserSection}
+   * @return {!Devices.DevicesView.BrowserSection}
    */
   _createBrowserSection() {
     var element = createElementWithClass('div', 'vbox flex-none');
@@ -469,12 +469,12 @@ WebInspector.DevicesView.DeviceView = class extends WebInspector.VBox {
     var title = topRow.createChild('div', 'device-browser-title');
 
     var newTabRow = element.createChild('div', 'device-browser-new-tab');
-    newTabRow.createChild('div', '').textContent = WebInspector.UIString('New tab:');
+    newTabRow.createChild('div', '').textContent = Common.UIString('New tab:');
     var newTabInput = newTabRow.createChild('input', '');
     newTabInput.type = 'text';
-    newTabInput.placeholder = WebInspector.UIString('Enter URL');
+    newTabInput.placeholder = Common.UIString('Enter URL');
     newTabInput.addEventListener('keydown', newTabKeyDown, false);
-    var newTabButton = createTextButton(WebInspector.UIString('Open'), openNewTab);
+    var newTabButton = createTextButton(Common.UIString('Open'), openNewTab);
     newTabRow.appendChild(newTabButton);
 
     var pages = element.createChild('div', 'device-page-list vbox');
@@ -501,8 +501,8 @@ WebInspector.DevicesView.DeviceView = class extends WebInspector.VBox {
 
     function updateViewMoreTitle() {
       viewMore.textContent = pages.classList.contains('device-view-more-toggled') ?
-          WebInspector.UIString('View less tabs\u2026') :
-          WebInspector.UIString('View more tabs\u2026');
+          Common.UIString('View less tabs\u2026') :
+          Common.UIString('View more tabs\u2026');
     }
 
     /**
@@ -524,7 +524,7 @@ WebInspector.DevicesView.DeviceView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.DevicesView.BrowserSection} section
+   * @param {!Devices.DevicesView.BrowserSection} section
    * @param {!Adb.Browser} browser
    */
   _updateBrowserSection(section, browser) {
@@ -569,7 +569,7 @@ WebInspector.DevicesView.DeviceView = class extends WebInspector.VBox {
   }
 
   /**
-   * @return {!WebInspector.DevicesView.PageSection}
+   * @return {!Devices.DevicesView.PageSection}
    */
   _createPageSection() {
     var element = createElementWithClass('div', 'vbox');
@@ -577,11 +577,11 @@ WebInspector.DevicesView.DeviceView = class extends WebInspector.VBox {
     var titleRow = element.createChild('div', 'device-page-title-row');
     var title = titleRow.createChild('div', 'device-page-title');
     var inspect =
-        createTextButton(WebInspector.UIString('Inspect'), doAction.bind(null, 'inspect'), 'device-inspect-button');
+        createTextButton(Common.UIString('Inspect'), doAction.bind(null, 'inspect'), 'device-inspect-button');
     titleRow.appendChild(inspect);
 
-    var toolbar = new WebInspector.Toolbar('');
-    toolbar.appendToolbarItem(new WebInspector.ToolbarMenuButton(appendActions));
+    var toolbar = new UI.Toolbar('');
+    toolbar.appendToolbarItem(new UI.ToolbarMenuButton(appendActions));
     titleRow.appendChild(toolbar.element);
 
     var url = element.createChild('div', 'device-page-url');
@@ -589,12 +589,12 @@ WebInspector.DevicesView.DeviceView = class extends WebInspector.VBox {
     return section;
 
     /**
-     * @param {!WebInspector.ContextMenu} contextMenu
+     * @param {!UI.ContextMenu} contextMenu
      */
     function appendActions(contextMenu) {
-      contextMenu.appendItem(WebInspector.UIString('Reload'), doAction.bind(null, 'reload'));
-      contextMenu.appendItem(WebInspector.UIString('Focus'), doAction.bind(null, 'activate'));
-      contextMenu.appendItem(WebInspector.UIString('Close'), doAction.bind(null, 'close'));
+      contextMenu.appendItem(Common.UIString('Reload'), doAction.bind(null, 'reload'));
+      contextMenu.appendItem(Common.UIString('Focus'), doAction.bind(null, 'activate'));
+      contextMenu.appendItem(Common.UIString('Close'), doAction.bind(null, 'close'));
     }
 
     /**
@@ -607,7 +607,7 @@ WebInspector.DevicesView.DeviceView = class extends WebInspector.VBox {
   }
 
   /**
-   * @param {!WebInspector.DevicesView.PageSection} section
+   * @param {!Devices.DevicesView.PageSection} section
    * @param {!Adb.Page} page
    */
   _updatePageSection(section, page) {
@@ -617,7 +617,7 @@ WebInspector.DevicesView.DeviceView = class extends WebInspector.VBox {
     }
     if (!section.page || section.page.url !== page.url) {
       section.url.textContent = '';
-      section.url.appendChild(WebInspector.linkifyURLAsNode(page.url, undefined, undefined, true));
+      section.url.appendChild(UI.linkifyURLAsNode(page.url, undefined, undefined, true));
     }
     section.inspect.disabled = page.attached;
 
@@ -635,7 +635,7 @@ WebInspector.DevicesView.DeviceView = class extends WebInspector.VBox {
 
     this._portStatus.removeChildren();
     this._portStatus.createChild('div', 'device-port-status-text').textContent =
-        WebInspector.UIString('Port Forwarding:');
+        Common.UIString('Port Forwarding:');
     var connected = [];
     var transient = [];
     var error = [];
@@ -668,18 +668,18 @@ WebInspector.DevicesView.DeviceView = class extends WebInspector.VBox {
 
     var title = [];
     if (connected.length)
-      title.push(WebInspector.UIString('Connected: %s', connected.join(', ')));
+      title.push(Common.UIString('Connected: %s', connected.join(', ')));
     if (transient.length)
-      title.push(WebInspector.UIString('Transient: %s', transient.join(', ')));
+      title.push(Common.UIString('Transient: %s', transient.join(', ')));
     if (error.length)
-      title.push(WebInspector.UIString('Error: %s', error.join(', ')));
+      title.push(Common.UIString('Error: %s', error.join(', ')));
     this._portStatus.title = title.join('; ');
     this._portStatus.classList.toggle('hidden', empty);
   }
 };
 
-/** @typedef {!{browser: ?Adb.Browser, element: !Element, title: !Element, pages: !Element, viewMore: !Element, newTab: !Element, pageSections: !Map<string, !WebInspector.DevicesView.PageSection>}} */
-WebInspector.DevicesView.BrowserSection;
+/** @typedef {!{browser: ?Adb.Browser, element: !Element, title: !Element, pages: !Element, viewMore: !Element, newTab: !Element, pageSections: !Map<string, !Devices.DevicesView.PageSection>}} */
+Devices.DevicesView.BrowserSection;
 
 /** @typedef {!{page: ?Adb.Page, element: !Element, title: !Element, url: !Element, inspect: !Element}} */
-WebInspector.DevicesView.PageSection;
+Devices.DevicesView.PageSection;

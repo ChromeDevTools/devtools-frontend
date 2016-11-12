@@ -4,14 +4,14 @@
 /**
  * @unrestricted
  */
-WebInspector.HTMLFormatter = class {
+FormatterWorker.HTMLFormatter = class {
   /**
-   * @param {!WebInspector.FormattedContentBuilder} builder
+   * @param {!FormatterWorker.FormattedContentBuilder} builder
    */
   constructor(builder) {
     this._builder = builder;
-    this._jsFormatter = new WebInspector.JavaScriptFormatter(builder);
-    this._cssFormatter = new WebInspector.CSSFormatter(builder);
+    this._jsFormatter = new FormatterWorker.JavaScriptFormatter(builder);
+    this._cssFormatter = new FormatterWorker.CSSFormatter(builder);
   }
 
   /**
@@ -21,12 +21,12 @@ WebInspector.HTMLFormatter = class {
   format(text, lineEndings) {
     this._text = text;
     this._lineEndings = lineEndings;
-    this._model = new WebInspector.HTMLModel(text);
+    this._model = new FormatterWorker.HTMLModel(text);
     this._walk(this._model.document());
   }
 
   /**
-   * @param {!WebInspector.HTMLModel.Element} element
+   * @param {!FormatterWorker.HTMLModel.Element} element
    * @param {number} offset
    */
   _formatTokensTill(element, offset) {
@@ -37,7 +37,7 @@ WebInspector.HTMLFormatter = class {
   }
 
   /**
-   * @param {!WebInspector.HTMLModel.Element} element
+   * @param {!FormatterWorker.HTMLModel.Element} element
    */
   _walk(element) {
     if (element.parent)
@@ -55,7 +55,7 @@ WebInspector.HTMLFormatter = class {
   }
 
   /**
-   * @param {!WebInspector.HTMLModel.Element} element
+   * @param {!FormatterWorker.HTMLModel.Element} element
    */
   _beforeOpenTag(element) {
     if (!element.children.length || element === this._model.document())
@@ -64,7 +64,7 @@ WebInspector.HTMLFormatter = class {
   }
 
   /**
-   * @param {!WebInspector.HTMLModel.Element} element
+   * @param {!FormatterWorker.HTMLModel.Element} element
    */
   _afterOpenTag(element) {
     if (!element.children.length || element === this._model.document())
@@ -74,7 +74,7 @@ WebInspector.HTMLFormatter = class {
   }
 
   /**
-   * @param {!WebInspector.HTMLModel.Element} element
+   * @param {!FormatterWorker.HTMLModel.Element} element
    */
   _beforeCloseTag(element) {
     if (!element.children.length || element === this._model.document())
@@ -84,15 +84,15 @@ WebInspector.HTMLFormatter = class {
   }
 
   /**
-   * @param {!WebInspector.HTMLModel.Element} element
+   * @param {!FormatterWorker.HTMLModel.Element} element
    */
   _afterCloseTag(element) {
     this._builder.addNewLine();
   }
 
   /**
-   * @param {!WebInspector.HTMLModel.Element} element
-   * @param {!WebInspector.HTMLModel.Token} token
+   * @param {!FormatterWorker.HTMLModel.Element} element
+   * @param {!FormatterWorker.HTMLModel.Token} token
    */
   _formatToken(element, token) {
     if (token.value.isWhitespace())
@@ -118,7 +118,7 @@ WebInspector.HTMLFormatter = class {
       this._builder.increaseNestingLevel();
       var mimeType =
           element.openTag.attributes.has('type') ? element.openTag.attributes.get('type').toLowerCase() : null;
-      if (!mimeType || WebInspector.HTMLFormatter.SupportedJavaScriptMimeTypes.has(mimeType)) {
+      if (!mimeType || FormatterWorker.HTMLFormatter.SupportedJavaScriptMimeTypes.has(mimeType)) {
         this._jsFormatter.format(this._text, this._lineEndings, token.startOffset, token.endOffset);
       } else {
         this._builder.addToken(token.value, token.startOffset);
@@ -135,22 +135,22 @@ WebInspector.HTMLFormatter = class {
   }
 };
 
-WebInspector.HTMLFormatter.SupportedJavaScriptMimeTypes =
+FormatterWorker.HTMLFormatter.SupportedJavaScriptMimeTypes =
     new Set(['text/javascript', 'text/ecmascript', 'application/javascript', 'application/ecmascript']);
 
 /**
  * @unrestricted
  */
-WebInspector.HTMLModel = class {
+FormatterWorker.HTMLModel = class {
   /**
    * @param {string} text
    */
   constructor(text) {
-    this._state = WebInspector.HTMLModel.ParseState.Initial;
-    this._document = new WebInspector.HTMLModel.Element('document');
-    this._document.openTag = new WebInspector.HTMLModel.Tag('document', 0, 0, new Map(), true, false);
+    this._state = FormatterWorker.HTMLModel.ParseState.Initial;
+    this._document = new FormatterWorker.HTMLModel.Element('document');
+    this._document.openTag = new FormatterWorker.HTMLModel.Tag('document', 0, 0, new Map(), true, false);
     this._document.closeTag =
-        new WebInspector.HTMLModel.Tag('document', text.length, text.length, new Map(), false, false);
+        new FormatterWorker.HTMLModel.Tag('document', text.length, text.length, new Map(), false, false);
 
     this._stack = [this._document];
 
@@ -163,7 +163,7 @@ WebInspector.HTMLModel = class {
    * @param {string} text
    */
   _build(text) {
-    var tokenizer = WebInspector.createTokenizer('text/html');
+    var tokenizer = FormatterWorker.createTokenizer('text/html');
     var lastOffset = 0;
     var lowerCaseText = text.toLowerCase();
 
@@ -178,12 +178,12 @@ WebInspector.HTMLModel = class {
       var tokenStart = element.openTag.endOffset;
       var tokenEnd = lastOffset;
       var tokenValue = text.substring(tokenStart, tokenEnd);
-      this._tokens.push(new WebInspector.HTMLModel.Token(tokenValue, new Set(), tokenStart, tokenEnd));
+      this._tokens.push(new FormatterWorker.HTMLModel.Token(tokenValue, new Set(), tokenStart, tokenEnd));
     }
 
     while (this._stack.length > 1) {
       var element = this._stack.peekLast();
-      this._popElement(new WebInspector.HTMLModel.Tag(element.name, text.length, text.length, new Map(), false, false));
+      this._popElement(new FormatterWorker.HTMLModel.Tag(element.name, text.length, text.length, new Map(), false, false));
     }
 
     /**
@@ -193,7 +193,7 @@ WebInspector.HTMLModel = class {
      * @param {number} tokenStart
      * @param {number} tokenEnd
      * @return {(!Object|undefined)}
-     * @this {WebInspector.HTMLModel}
+     * @this {FormatterWorker.HTMLModel}
      */
     function processToken(baseOffset, tokenValue, type, tokenStart, tokenEnd) {
       tokenStart += baseOffset;
@@ -201,22 +201,22 @@ WebInspector.HTMLModel = class {
       lastOffset = tokenEnd;
 
       var tokenType = type ? new Set(type.split(' ')) : new Set();
-      var token = new WebInspector.HTMLModel.Token(tokenValue, tokenType, tokenStart, tokenEnd);
+      var token = new FormatterWorker.HTMLModel.Token(tokenValue, tokenType, tokenStart, tokenEnd);
       this._tokens.push(token);
       this._updateDOM(token);
 
       var element = this._stack.peekLast();
       if (element && (element.name === 'script' || element.name === 'style') &&
           element.openTag.endOffset === lastOffset)
-        return WebInspector.AbortTokenization;
+        return FormatterWorker.AbortTokenization;
     }
   }
 
   /**
-   * @param {!WebInspector.HTMLModel.Token} token
+   * @param {!FormatterWorker.HTMLModel.Token} token
    */
   _updateDOM(token) {
-    var S = WebInspector.HTMLModel.ParseState;
+    var S = FormatterWorker.HTMLModel.ParseState;
     var value = token.value;
     var type = token.type;
     switch (this._state) {
@@ -259,7 +259,7 @@ WebInspector.HTMLModel = class {
   }
 
   /**
-   * @param {!WebInspector.HTMLModel.Token} token
+   * @param {!FormatterWorker.HTMLModel.Token} token
    */
   _onStartTag(token) {
     this._tagName = '';
@@ -271,18 +271,18 @@ WebInspector.HTMLModel = class {
   }
 
   /**
-   * @param {!WebInspector.HTMLModel.Token} token
+   * @param {!FormatterWorker.HTMLModel.Token} token
    */
   _onEndTag(token) {
     this._tagEndOffset = token.endOffset;
-    var selfClosingTag = token.value === '/>' || WebInspector.HTMLModel.SelfClosingTags.has(this._tagName);
-    var tag = new WebInspector.HTMLModel.Tag(
+    var selfClosingTag = token.value === '/>' || FormatterWorker.HTMLModel.SelfClosingTags.has(this._tagName);
+    var tag = new FormatterWorker.HTMLModel.Tag(
         this._tagName, this._tagStartOffset, this._tagEndOffset, this._attributes, this._isOpenTag, selfClosingTag);
     this._onTagComplete(tag);
   }
 
   /**
-   * @param {!WebInspector.HTMLModel.Tag} tag
+   * @param {!FormatterWorker.HTMLModel.Tag} tag
    */
   _onTagComplete(tag) {
     if (tag.isOpenTag) {
@@ -290,8 +290,8 @@ WebInspector.HTMLModel = class {
       if (topElement !== this._document && topElement.openTag.selfClosingTag)
         this._popElement(autocloseTag(topElement, topElement.openTag.endOffset));
       else if (
-          (topElement.name in WebInspector.HTMLModel.AutoClosingTags) &&
-          WebInspector.HTMLModel.AutoClosingTags[topElement.name].has(tag.name))
+          (topElement.name in FormatterWorker.HTMLModel.AutoClosingTags) &&
+          FormatterWorker.HTMLModel.AutoClosingTags[topElement.name].has(tag.name))
         this._popElement(autocloseTag(topElement, tag.startOffset));
       this._pushElement(tag);
       return;
@@ -304,17 +304,17 @@ WebInspector.HTMLModel = class {
     this._popElement(tag);
 
     /**
-     * @param {!WebInspector.HTMLModel.Element} element
+     * @param {!FormatterWorker.HTMLModel.Element} element
      * @param {number} offset
-     * @return {!WebInspector.HTMLModel.Tag}
+     * @return {!FormatterWorker.HTMLModel.Tag}
      */
     function autocloseTag(element, offset) {
-      return new WebInspector.HTMLModel.Tag(element.name, offset, offset, new Map(), false, false);
+      return new FormatterWorker.HTMLModel.Tag(element.name, offset, offset, new Map(), false, false);
     }
   }
 
   /**
-   * @param {!WebInspector.HTMLModel.Tag} closeTag
+   * @param {!FormatterWorker.HTMLModel.Tag} closeTag
    */
   _popElement(closeTag) {
     var element = this._stack.pop();
@@ -322,11 +322,11 @@ WebInspector.HTMLModel = class {
   }
 
   /**
-   * @param {!WebInspector.HTMLModel.Tag} openTag
+   * @param {!FormatterWorker.HTMLModel.Tag} openTag
    */
   _pushElement(openTag) {
     var topElement = this._stack.peekLast();
-    var newElement = new WebInspector.HTMLModel.Element(openTag.name);
+    var newElement = new FormatterWorker.HTMLModel.Element(openTag.name);
     newElement.parent = topElement;
     topElement.children.push(newElement);
     newElement.openTag = openTag;
@@ -334,34 +334,34 @@ WebInspector.HTMLModel = class {
   }
 
   /**
-   * @return {?WebInspector.HTMLModel.Token}
+   * @return {?FormatterWorker.HTMLModel.Token}
    */
   peekToken() {
     return this._tokenIndex < this._tokens.length ? this._tokens[this._tokenIndex] : null;
   }
 
   /**
-   * @return {?WebInspector.HTMLModel.Token}
+   * @return {?FormatterWorker.HTMLModel.Token}
    */
   nextToken() {
     return this._tokens[this._tokenIndex++];
   }
 
   /**
-   * @return {!WebInspector.HTMLModel.Element}
+   * @return {!FormatterWorker.HTMLModel.Element}
    */
   document() {
     return this._document;
   }
 };
 
-WebInspector.HTMLModel.SelfClosingTags = new Set([
+FormatterWorker.HTMLModel.SelfClosingTags = new Set([
   'area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source',
   'track', 'wbr'
 ]);
 
 // @see https://www.w3.org/TR/html/syntax.html 8.1.2.4 Optional tags
-WebInspector.HTMLModel.AutoClosingTags = {
+FormatterWorker.HTMLModel.AutoClosingTags = {
   'head': new Set(['body']),
   'li': new Set(['li']),
   'dt': new Set(['dt', 'dd']),
@@ -387,7 +387,7 @@ WebInspector.HTMLModel.AutoClosingTags = {
 };
 
 /** @enum {string} */
-WebInspector.HTMLModel.ParseState = {
+FormatterWorker.HTMLModel.ParseState = {
   Initial: 'Initial',
   Tag: 'Tag',
   AttributeName: 'AttributeName',
@@ -397,7 +397,7 @@ WebInspector.HTMLModel.ParseState = {
 /**
  * @unrestricted
  */
-WebInspector.HTMLModel.Token = class {
+FormatterWorker.HTMLModel.Token = class {
   /**
    * @param {string} value
    * @param {!Set<string>} type
@@ -415,7 +415,7 @@ WebInspector.HTMLModel.Token = class {
 /**
  * @unrestricted
  */
-WebInspector.HTMLModel.Tag = class {
+FormatterWorker.HTMLModel.Tag = class {
   /**
    * @param {string} name
    * @param {number} startOffset
@@ -437,7 +437,7 @@ WebInspector.HTMLModel.Tag = class {
 /**
  * @unrestricted
  */
-WebInspector.HTMLModel.Element = class {
+FormatterWorker.HTMLModel.Element = class {
   /**
    * @param {string} name
    */

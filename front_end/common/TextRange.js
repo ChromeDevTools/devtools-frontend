@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-WebInspector.TextRange = class {
+Common.TextRange = class {
   /**
    * @param {number} startLine
    * @param {number} startColumn
@@ -48,25 +48,25 @@ WebInspector.TextRange = class {
   /**
    * @param {number} line
    * @param {number} column
-   * @return {!WebInspector.TextRange}
+   * @return {!Common.TextRange}
    */
   static createFromLocation(line, column) {
-    return new WebInspector.TextRange(line, column, line, column);
+    return new Common.TextRange(line, column, line, column);
   }
 
   /**
    * @param {!Object} serializedTextRange
-   * @return {!WebInspector.TextRange}
+   * @return {!Common.TextRange}
    */
   static fromObject(serializedTextRange) {
-    return new WebInspector.TextRange(
+    return new Common.TextRange(
         serializedTextRange.startLine, serializedTextRange.startColumn, serializedTextRange.endLine,
         serializedTextRange.endColumn);
   }
 
   /**
-   * @param {!WebInspector.TextRange} range1
-   * @param {!WebInspector.TextRange} range2
+   * @param {!Common.TextRange} range1
+   * @param {!Common.TextRange} range2
    * @return {number}
    */
   static comparator(range1, range2) {
@@ -74,9 +74,9 @@ WebInspector.TextRange = class {
   }
 
   /**
-   * @param {!WebInspector.TextRange} oldRange
+   * @param {!Common.TextRange} oldRange
    * @param {string} newText
-   * @return {!WebInspector.TextRange}
+   * @return {!Common.TextRange}
    */
   static fromEdit(oldRange, newText) {
     var endLine = oldRange.startLine;
@@ -87,7 +87,7 @@ WebInspector.TextRange = class {
       var len = lineEndings.length;
       endColumn = lineEndings[len - 1] - lineEndings[len - 2] - 1;
     }
-    return new WebInspector.TextRange(oldRange.startLine, oldRange.startColumn, endLine, endColumn);
+    return new Common.TextRange(oldRange.startLine, oldRange.startColumn, endLine, endColumn);
   }
 
   /**
@@ -98,7 +98,7 @@ WebInspector.TextRange = class {
   }
 
   /**
-   * @param {!WebInspector.TextRange} range
+   * @param {!Common.TextRange} range
    * @return {boolean}
    */
   immediatelyPrecedes(range) {
@@ -108,7 +108,7 @@ WebInspector.TextRange = class {
   }
 
   /**
-   * @param {!WebInspector.TextRange} range
+   * @param {!Common.TextRange} range
    * @return {boolean}
    */
   immediatelyFollows(range) {
@@ -118,7 +118,7 @@ WebInspector.TextRange = class {
   }
 
   /**
-   * @param {!WebInspector.TextRange} range
+   * @param {!Common.TextRange} range
    * @return {boolean}
    */
   follows(range) {
@@ -133,34 +133,34 @@ WebInspector.TextRange = class {
   }
 
   /**
-   * @return {!WebInspector.TextRange}
+   * @return {!Common.TextRange}
    */
   collapseToEnd() {
-    return new WebInspector.TextRange(this.endLine, this.endColumn, this.endLine, this.endColumn);
+    return new Common.TextRange(this.endLine, this.endColumn, this.endLine, this.endColumn);
   }
 
   /**
-   * @return {!WebInspector.TextRange}
+   * @return {!Common.TextRange}
    */
   collapseToStart() {
-    return new WebInspector.TextRange(this.startLine, this.startColumn, this.startLine, this.startColumn);
+    return new Common.TextRange(this.startLine, this.startColumn, this.startLine, this.startColumn);
   }
 
   /**
-   * @return {!WebInspector.TextRange}
+   * @return {!Common.TextRange}
    */
   normalize() {
     if (this.startLine > this.endLine || (this.startLine === this.endLine && this.startColumn > this.endColumn))
-      return new WebInspector.TextRange(this.endLine, this.endColumn, this.startLine, this.startColumn);
+      return new Common.TextRange(this.endLine, this.endColumn, this.startLine, this.startColumn);
     else
       return this.clone();
   }
 
   /**
-   * @return {!WebInspector.TextRange}
+   * @return {!Common.TextRange}
    */
   clone() {
-    return new WebInspector.TextRange(this.startLine, this.startColumn, this.endLine, this.endColumn);
+    return new Common.TextRange(this.startLine, this.startColumn, this.endLine, this.endColumn);
   }
 
   /**
@@ -176,7 +176,7 @@ WebInspector.TextRange = class {
   }
 
   /**
-   * @param {!WebInspector.TextRange} other
+   * @param {!Common.TextRange} other
    * @return {number}
    */
   compareTo(other) {
@@ -205,7 +205,7 @@ WebInspector.TextRange = class {
   }
 
   /**
-   * @param {!WebInspector.TextRange} other
+   * @param {!Common.TextRange} other
    * @return {boolean}
    */
   equal(other) {
@@ -216,7 +216,7 @@ WebInspector.TextRange = class {
   /**
    * @param {number} line
    * @param {number} column
-   * @return {!WebInspector.TextRange}
+   * @return {!Common.TextRange}
    */
   relativeTo(line, column) {
     var relative = this.clone();
@@ -232,9 +232,9 @@ WebInspector.TextRange = class {
   }
 
   /**
-   * @param {!WebInspector.TextRange} originalRange
-   * @param {!WebInspector.TextRange} editedRange
-   * @return {!WebInspector.TextRange}
+   * @param {!Common.TextRange} originalRange
+   * @param {!Common.TextRange} editedRange
+   * @return {!Common.TextRange}
    */
   rebaseAfterTextEdit(originalRange, editedRange) {
     console.assert(originalRange.startLine === editedRange.startLine);
@@ -281,7 +281,7 @@ WebInspector.TextRange = class {
 /**
  * @unrestricted
  */
-WebInspector.SourceRange = class {
+Common.SourceRange = class {
   /**
    * @param {number} offset
    * @param {number} length
@@ -295,10 +295,10 @@ WebInspector.SourceRange = class {
 /**
  * @unrestricted
  */
-WebInspector.SourceEdit = class {
+Common.SourceEdit = class {
   /**
    * @param {string} sourceURL
-   * @param {!WebInspector.TextRange} oldRange
+   * @param {!Common.TextRange} oldRange
    * @param {string} newText
    */
   constructor(sourceURL, oldRange, newText) {
@@ -308,18 +308,18 @@ WebInspector.SourceEdit = class {
   }
 
   /**
-   * @param {!WebInspector.SourceEdit} edit1
-   * @param {!WebInspector.SourceEdit} edit2
+   * @param {!Common.SourceEdit} edit1
+   * @param {!Common.SourceEdit} edit2
    * @return {number}
    */
   static comparator(edit1, edit2) {
-    return WebInspector.TextRange.comparator(edit1.oldRange, edit2.oldRange);
+    return Common.TextRange.comparator(edit1.oldRange, edit2.oldRange);
   }
 
   /**
-   * @return {!WebInspector.TextRange}
+   * @return {!Common.TextRange}
    */
   newRange() {
-    return WebInspector.TextRange.fromEdit(this.oldRange, this.newText);
+    return Common.TextRange.fromEdit(this.oldRange, this.newText);
   }
 };

@@ -2,27 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {WebInspector.App}
- * @implements {WebInspector.TargetManager.Observer}
+ * @implements {Common.App}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-WebInspector.ScreencastApp = class {
+Screencast.ScreencastApp = class {
   constructor() {
-    this._enabledSetting = WebInspector.settings.createSetting('screencastEnabled', true);
+    this._enabledSetting = Common.settings.createSetting('screencastEnabled', true);
     this._toggleButton =
-        new WebInspector.ToolbarToggle(WebInspector.UIString('Toggle screencast'), 'largeicon-phone');
+        new UI.ToolbarToggle(Common.UIString('Toggle screencast'), 'largeicon-phone');
     this._toggleButton.setToggled(this._enabledSetting.get());
     this._toggleButton.addEventListener('click', this._toggleButtonClicked, this);
-    WebInspector.targetManager.observeTargets(this);
+    SDK.targetManager.observeTargets(this);
   }
 
   /**
-   * @return {!WebInspector.ScreencastApp}
+   * @return {!Screencast.ScreencastApp}
    */
   static _instance() {
-    if (!WebInspector.ScreencastApp._appInstance)
-      WebInspector.ScreencastApp._appInstance = new WebInspector.ScreencastApp();
-    return WebInspector.ScreencastApp._appInstance;
+    if (!Screencast.ScreencastApp._appInstance)
+      Screencast.ScreencastApp._appInstance = new Screencast.ScreencastApp();
+    return Screencast.ScreencastApp._appInstance;
   }
 
   /**
@@ -30,31 +30,31 @@ WebInspector.ScreencastApp = class {
    * @param {!Document} document
    */
   presentUI(document) {
-    var rootView = new WebInspector.RootView();
+    var rootView = new UI.RootView();
 
     this._rootSplitWidget =
-        new WebInspector.SplitWidget(false, true, 'InspectorView.screencastSplitViewState', 300, 300);
+        new UI.SplitWidget(false, true, 'InspectorView.screencastSplitViewState', 300, 300);
     this._rootSplitWidget.setVertical(true);
     this._rootSplitWidget.setSecondIsSidebar(true);
     this._rootSplitWidget.show(rootView.element);
     this._rootSplitWidget.hideMain();
 
-    this._rootSplitWidget.setSidebarWidget(WebInspector.inspectorView);
+    this._rootSplitWidget.setSidebarWidget(UI.inspectorView);
     rootView.attachToDocument(document);
   }
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetAdded(target) {
     if (this._target)
       return;
     this._target = target;
 
-    var resourceTreeModel = WebInspector.ResourceTreeModel.fromTarget(target);
+    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
     if (resourceTreeModel) {
-      this._screencastView = new WebInspector.ScreencastView(target, resourceTreeModel);
+      this._screencastView = new Screencast.ScreencastView(target, resourceTreeModel);
       this._rootSplitWidget.setMainWidget(this._screencastView);
       this._screencastView.initialize();
     } else {
@@ -65,7 +65,7 @@ WebInspector.ScreencastApp = class {
 
   /**
    * @override
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    */
   targetRemoved(target) {
     if (this._target === target) {
@@ -97,34 +97,34 @@ WebInspector.ScreencastApp = class {
   }
 };
 
-/** @type {!WebInspector.ScreencastApp} */
-WebInspector.ScreencastApp._appInstance;
+/** @type {!Screencast.ScreencastApp} */
+Screencast.ScreencastApp._appInstance;
 
 
 /**
- * @implements {WebInspector.ToolbarItem.Provider}
+ * @implements {UI.ToolbarItem.Provider}
  * @unrestricted
  */
-WebInspector.ScreencastApp.ToolbarButtonProvider = class {
+Screencast.ScreencastApp.ToolbarButtonProvider = class {
   /**
    * @override
-   * @return {?WebInspector.ToolbarItem}
+   * @return {?UI.ToolbarItem}
    */
   item() {
-    return WebInspector.ScreencastApp._instance()._toggleButton;
+    return Screencast.ScreencastApp._instance()._toggleButton;
   }
 };
 
 /**
- * @implements {WebInspector.AppProvider}
+ * @implements {Common.AppProvider}
  * @unrestricted
  */
-WebInspector.ScreencastAppProvider = class {
+Screencast.ScreencastAppProvider = class {
   /**
    * @override
-   * @return {!WebInspector.App}
+   * @return {!Common.App}
    */
   createApp() {
-    return WebInspector.ScreencastApp._instance();
+    return Screencast.ScreencastApp._instance();
   }
 };

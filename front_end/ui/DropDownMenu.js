@@ -4,13 +4,13 @@
 /**
  * @unrestricted
  */
-WebInspector.DropDownMenu = class extends WebInspector.Object {
+UI.DropDownMenu = class extends Common.Object {
   /**
    * @param {!Element} element
    */
   constructor(element) {
     super();
-    /** @type {!Array.<!WebInspector.DropDownMenu.Item>} */
+    /** @type {!Array.<!UI.DropDownMenu.Item>} */
     this._items = [];
 
     element.addEventListener('mousedown', this._onMouseDown.bind(this));
@@ -22,7 +22,7 @@ WebInspector.DropDownMenu = class extends WebInspector.Object {
   _onMouseDown(event) {
     if (event.which !== 1)
       return;
-    var menu = new WebInspector.ContextMenu(event);
+    var menu = new UI.ContextMenu(event);
     for (var item of this._items)
       menu.appendCheckboxItem(item.title, this._itemHandler.bind(this, item.id), item.id === this._selectedItemId);
     menu.show();
@@ -32,7 +32,7 @@ WebInspector.DropDownMenu = class extends WebInspector.Object {
    * @param {string} id
    */
   _itemHandler(id) {
-    this.dispatchEventToListeners(WebInspector.DropDownMenu.Events.ItemSelected, id);
+    this.dispatchEventToListeners(UI.DropDownMenu.Events.ItemSelected, id);
   }
 
   /**
@@ -57,9 +57,9 @@ WebInspector.DropDownMenu = class extends WebInspector.Object {
 };
 
 /** @typedef {{id: string, title: string}} */
-WebInspector.DropDownMenu.Item;
+UI.DropDownMenu.Item;
 
 /** @enum {symbol} */
-WebInspector.DropDownMenu.Events = {
+UI.DropDownMenu.Events = {
   ItemSelected: Symbol('ItemSelected')
 };

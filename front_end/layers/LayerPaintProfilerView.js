@@ -4,20 +4,20 @@
 /**
  * @unrestricted
  */
-WebInspector.LayerPaintProfilerView = class extends WebInspector.SplitWidget {
+Layers.LayerPaintProfilerView = class extends UI.SplitWidget {
   /**
    * @param {function(string=)} showImageCallback
    */
   constructor(showImageCallback) {
     super(true, false);
 
-    this._logTreeView = new WebInspector.PaintProfilerCommandLogView();
+    this._logTreeView = new LayerViewer.PaintProfilerCommandLogView();
     this.setSidebarWidget(this._logTreeView);
-    this._paintProfilerView = new WebInspector.PaintProfilerView(showImageCallback);
+    this._paintProfilerView = new LayerViewer.PaintProfilerView(showImageCallback);
     this.setMainWidget(this._paintProfilerView);
 
     this._paintProfilerView.addEventListener(
-        WebInspector.PaintProfilerView.Events.WindowChanged, this._onWindowChanged, this);
+        LayerViewer.PaintProfilerView.Events.WindowChanged, this._onWindowChanged, this);
   }
 
   reset() {
@@ -25,16 +25,16 @@ WebInspector.LayerPaintProfilerView = class extends WebInspector.SplitWidget {
   }
 
   /**
-   * @param {!WebInspector.PaintProfilerSnapshot} snapshot
+   * @param {!SDK.PaintProfilerSnapshot} snapshot
    */
   profile(snapshot) {
     this._showImageCallback = null;
     snapshot.commandLog().then(log => setSnapshotAndLog.call(this, snapshot, log));
 
     /**
-     * @param {?WebInspector.PaintProfilerSnapshot} snapshot
-     * @param {?Array<!WebInspector.PaintProfilerLogItem>} log
-     * @this {WebInspector.LayerPaintProfilerView}
+     * @param {?SDK.PaintProfilerSnapshot} snapshot
+     * @param {?Array<!SDK.PaintProfilerLogItem>} log
+     * @this {Layers.LayerPaintProfilerView}
      */
     function setSnapshotAndLog(snapshot, log) {
       this._logTreeView.setCommandLog(snapshot && snapshot.target(), log || []);

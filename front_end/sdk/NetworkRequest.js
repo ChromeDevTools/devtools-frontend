@@ -28,13 +28,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {WebInspector.ContentProvider}
+ * @implements {Common.ContentProvider}
  * @unrestricted
  */
-WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
+SDK.NetworkRequest = class extends SDK.SDKObject {
   /**
    * @param {!Protocol.Network.RequestId} requestId
-   * @param {!WebInspector.Target} target
+   * @param {!SDK.Target} target
    * @param {string} url
    * @param {string} documentURL
    * @param {!Protocol.Page.FrameId} frameId
@@ -44,8 +44,8 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   constructor(target, requestId, url, documentURL, frameId, loaderId, initiator) {
     super(target);
 
-    this._networkLog = /** @type {!WebInspector.NetworkLog} */ (WebInspector.NetworkLog.fromTarget(target));
-    this._networkManager = /** @type {!WebInspector.NetworkManager} */ (WebInspector.NetworkManager.fromTarget(target));
+    this._networkLog = /** @type {!SDK.NetworkLog} */ (SDK.NetworkLog.fromTarget(target));
+    this._networkManager = /** @type {!SDK.NetworkManager} */ (SDK.NetworkManager.fromTarget(target));
     this._requestId = requestId;
     this.url = url;
     this._documentURL = documentURL;
@@ -72,13 +72,13 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
     /** @type {?Protocol.Network.ResourcePriority} */
     this._currentPriority = null;
 
-    /** @type {!WebInspector.ResourceType} */
-    this._resourceType = WebInspector.resourceTypes.Other;
+    /** @type {!Common.ResourceType} */
+    this._resourceType = Common.resourceTypes.Other;
     this._contentEncoded = false;
     this._pendingContentCallbacks = [];
-    /** @type {!Array.<!WebInspector.NetworkRequest.WebSocketFrame>} */
+    /** @type {!Array.<!SDK.NetworkRequest.WebSocketFrame>} */
     this._frames = [];
-    /** @type {!Array.<!WebInspector.NetworkRequest.EventSourceMessage>} */
+    /** @type {!Array.<!SDK.NetworkRequest.EventSourceMessage>} */
     this._eventSourceMessages = [];
 
     this._responseHeaderValues = {};
@@ -95,7 +95,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest} other
+   * @param {!SDK.NetworkRequest} other
    * @return {number}
    */
   indentityCompare(other) {
@@ -135,7 +135,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
       return;
 
     this._url = x;
-    this._parsedURL = new WebInspector.ParsedURL(x);
+    this._parsedURL = new Common.ParsedURL(x);
     delete this._queryString;
     delete this._parsedQueryParameters;
     delete this._name;
@@ -173,7 +173,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
    */
   setRemoteAddress(ip, port) {
     this._remoteAddress = ip + ':' + port;
-    this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.RemoteAddressChanged, this);
+    this.dispatchEventToListeners(SDK.NetworkRequest.Events.RemoteAddressChanged, this);
   }
 
   /**
@@ -277,7 +277,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
       if (this._responseReceivedTime > x)
         this._responseReceivedTime = x;
     }
-    this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.TimingChanged, this);
+    this.dispatchEventToListeners(SDK.NetworkRequest.Events.TimingChanged, this);
   }
 
   /**
@@ -350,7 +350,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
     this._finished = x;
 
     if (x) {
-      this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.FinishedLoading, this);
+      this.dispatchEventToListeners(SDK.NetworkRequest.Events.FinishedLoading, this);
       if (this._pendingContentCallbacks.length)
         this._innerRequestContent();
     }
@@ -460,7 +460,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
       this._responseReceivedTime = x.requestTime + x.receiveHeadersEnd / 1000.0;
 
       this._timing = x;
-      this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.TimingChanged, this);
+      this.dispatchEventToListeners(SDK.NetworkRequest.Events.TimingChanged, this);
     }
   }
 
@@ -545,14 +545,14 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!WebInspector.ResourceType}
+   * @return {!Common.ResourceType}
    */
   resourceType() {
     return this._resourceType;
   }
 
   /**
-   * @param {!WebInspector.ResourceType} resourceType
+   * @param {!Common.ResourceType} resourceType
    */
   setResourceType(resourceType) {
     this._resourceType = resourceType;
@@ -573,7 +573,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {?WebInspector.NetworkRequest}
+   * @return {?SDK.NetworkRequest}
    */
   get redirectSource() {
     if (this.redirects && this.redirects.length > 0)
@@ -582,7 +582,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @param {?WebInspector.NetworkRequest} x
+   * @param {?SDK.NetworkRequest} x
    */
   set redirectSource(x) {
     this._redirectSource = x;
@@ -590,20 +590,20 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!Array.<!WebInspector.NetworkRequest.NameValue>}
+   * @return {!Array.<!SDK.NetworkRequest.NameValue>}
    */
   requestHeaders() {
     return this._requestHeaders || [];
   }
 
   /**
-   * @param {!Array.<!WebInspector.NetworkRequest.NameValue>} headers
+   * @param {!Array.<!SDK.NetworkRequest.NameValue>} headers
    */
   setRequestHeaders(headers) {
     this._requestHeaders = headers;
     delete this._requestCookies;
 
-    this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.RequestHeadersChanged);
+    this.dispatchEventToListeners(SDK.NetworkRequest.Events.RequestHeadersChanged);
   }
 
   /**
@@ -619,7 +619,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   setRequestHeadersText(text) {
     this._requestHeadersText = text;
 
-    this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.RequestHeadersChanged);
+    this.dispatchEventToListeners(SDK.NetworkRequest.Events.RequestHeadersChanged);
   }
 
   /**
@@ -631,11 +631,11 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!Array.<!WebInspector.Cookie>}
+   * @return {!Array.<!SDK.Cookie>}
    */
   get requestCookies() {
     if (!this._requestCookies)
-      this._requestCookies = WebInspector.CookieParser.parseCookie(this.target(), this.requestHeaderValue('Cookie'));
+      this._requestCookies = SDK.CookieParser.parseCookie(this.target(), this.requestHeaderValue('Cookie'));
     return this._requestCookies;
   }
 
@@ -667,14 +667,14 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!Array.<!WebInspector.NetworkRequest.NameValue>}
+   * @return {!Array.<!SDK.NetworkRequest.NameValue>}
    */
   get responseHeaders() {
     return this._responseHeaders || [];
   }
 
   /**
-   * @param {!Array.<!WebInspector.NetworkRequest.NameValue>} x
+   * @param {!Array.<!SDK.NetworkRequest.NameValue>} x
    */
   set responseHeaders(x) {
     this._responseHeaders = x;
@@ -683,7 +683,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
     delete this._responseCookies;
     this._responseHeaderValues = {};
 
-    this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.ResponseHeadersChanged);
+    this.dispatchEventToListeners(SDK.NetworkRequest.Events.ResponseHeadersChanged);
   }
 
   /**
@@ -699,11 +699,11 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   set responseHeadersText(x) {
     this._responseHeadersText = x;
 
-    this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.ResponseHeadersChanged);
+    this.dispatchEventToListeners(SDK.NetworkRequest.Events.ResponseHeadersChanged);
   }
 
   /**
-   * @return {!Array.<!WebInspector.NetworkRequest.NameValue>}
+   * @return {!Array.<!SDK.NetworkRequest.NameValue>}
    */
   get sortedResponseHeaders() {
     if (this._sortedResponseHeaders !== undefined)
@@ -730,12 +730,12 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!Array.<!WebInspector.Cookie>}
+   * @return {!Array.<!SDK.Cookie>}
    */
   get responseCookies() {
     if (!this._responseCookies)
       this._responseCookies =
-          WebInspector.CookieParser.parseSetCookie(this.target(), this.responseHeaderValue('Set-Cookie'));
+          SDK.CookieParser.parseSetCookie(this.target(), this.responseHeaderValue('Set-Cookie'));
     return this._responseCookies;
   }
 
@@ -747,11 +747,11 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {?Array.<!WebInspector.ServerTiming>}
+   * @return {?Array.<!SDK.ServerTiming>}
    */
   get serverTimings() {
     if (typeof this._serverTimings === 'undefined')
-      this._serverTimings = WebInspector.ServerTiming.parseHeaders(this.responseHeaders);
+      this._serverTimings = SDK.ServerTiming.parseHeaders(this.responseHeaders);
     return this._serverTimings;
   }
 
@@ -776,7 +776,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {?Array.<!WebInspector.NetworkRequest.NameValue>}
+   * @return {?Array.<!SDK.NetworkRequest.NameValue>}
    */
   get queryParameters() {
     if (this._parsedQueryParameters)
@@ -789,7 +789,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {?Array.<!WebInspector.NetworkRequest.NameValue>}
+   * @return {?Array.<!SDK.NetworkRequest.NameValue>}
    */
   get formParameters() {
     if (this._parsedFormParameters)
@@ -817,7 +817,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
 
   /**
    * @param {string} queryString
-   * @return {!Array.<!WebInspector.NetworkRequest.NameValue>}
+   * @return {!Array.<!SDK.NetworkRequest.NameValue>}
    */
   _parseParameters(queryString) {
     function parseNameValue(pair) {
@@ -831,7 +831,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @param {!Array.<!WebInspector.NetworkRequest.NameValue>} headers
+   * @param {!Array.<!SDK.NetworkRequest.NameValue>} headers
    * @param {string} headerName
    * @return {string|undefined}
    */
@@ -882,7 +882,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
 
   /**
    * @override
-   * @return {!WebInspector.ResourceType}
+   * @return {!Common.ResourceType}
    */
   contentType() {
     return this._resourceType;
@@ -896,7 +896,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
     // We do not support content retrieval for WebSockets at the moment.
     // Since WebSockets are potentially long-living, fail requests immediately
     // to prevent caller blocking until resource is marked as finished.
-    if (this._resourceType === WebInspector.resourceTypes.WebSocket)
+    if (this._resourceType === Common.resourceTypes.WebSocket)
       return Promise.resolve(/** @type {?string} */ (null));
     if (typeof this._content !== 'undefined')
       return Promise.resolve(/** @type {?string} */ (this.content || null));
@@ -913,7 +913,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!WebInspector.ContentProvider.SearchMatch>)} callback
+   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
    */
   searchInContent(query, caseSensitive, isRegex, callback) {
     callback([]);
@@ -974,10 +974,10 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   populateImageSource(image) {
     /**
      * @param {?string} content
-     * @this {WebInspector.NetworkRequest}
+     * @this {SDK.NetworkRequest}
      */
     function onResourceContent(content) {
-      var imageSrc = WebInspector.ContentProvider.contentAsDataURL(content, this._mimeType, true);
+      var imageSrc = Common.ContentProvider.contentAsDataURL(content, this._mimeType, true);
       if (imageSrc === null)
         imageSrc = this._url;
       image.src = imageSrc;
@@ -996,7 +996,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
       content = content.toBase64();
       charset = 'utf-8';
     }
-    return WebInspector.ContentProvider.contentAsDataURL(content, this.mimeType, true, charset);
+    return Common.ContentProvider.contentAsDataURL(content, this.mimeType, true, charset);
   }
 
   _innerRequestContent() {
@@ -1008,7 +1008,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
      * @param {?Protocol.Error} error
      * @param {string} content
      * @param {boolean} contentEncoded
-     * @this {WebInspector.NetworkRequest}
+     * @this {SDK.NetworkRequest}
      */
     function onResourceContent(error, content, contentEncoded) {
       this._content = error ? null : content;
@@ -1031,13 +1031,13 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!{type: !WebInspector.NetworkRequest.InitiatorType, url: string, lineNumber: number, columnNumber: number, scriptId: ?string}}
+   * @return {!{type: !SDK.NetworkRequest.InitiatorType, url: string, lineNumber: number, columnNumber: number, scriptId: ?string}}
    */
   initiatorInfo() {
     if (this._initiatorInfo)
       return this._initiatorInfo;
 
-    var type = WebInspector.NetworkRequest.InitiatorType.Other;
+    var type = SDK.NetworkRequest.InitiatorType.Other;
     var url = '';
     var lineNumber = -Infinity;
     var columnNumber = -Infinity;
@@ -1045,11 +1045,11 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
     var initiator = this._initiator;
 
     if (this.redirectSource) {
-      type = WebInspector.NetworkRequest.InitiatorType.Redirect;
+      type = SDK.NetworkRequest.InitiatorType.Redirect;
       url = this.redirectSource.url;
     } else if (initiator) {
       if (initiator.type === Protocol.Network.InitiatorType.Parser) {
-        type = WebInspector.NetworkRequest.InitiatorType.Parser;
+        type = SDK.NetworkRequest.InitiatorType.Parser;
         url = initiator.url ? initiator.url : url;
         lineNumber = initiator.lineNumber ? initiator.lineNumber : lineNumber;
       } else if (initiator.type === Protocol.Network.InitiatorType.Script) {
@@ -1057,8 +1057,8 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
           var topFrame = stack.callFrames.length ? stack.callFrames[0] : null;
           if (!topFrame)
             continue;
-          type = WebInspector.NetworkRequest.InitiatorType.Script;
-          url = topFrame.url || WebInspector.UIString('<anonymous>');
+          type = SDK.NetworkRequest.InitiatorType.Script;
+          url = topFrame.url || Common.UIString('<anonymous>');
           lineNumber = topFrame.lineNumber;
           columnNumber = topFrame.columnNumber;
           scriptId = topFrame.scriptId;
@@ -1073,7 +1073,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {?WebInspector.NetworkRequest}
+   * @return {?SDK.NetworkRequest}
    */
   initiatorRequest() {
     if (this._initiatorRequest === undefined)
@@ -1082,7 +1082,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!WebInspector.NetworkRequest.InitiatorGraph}
+   * @return {!SDK.NetworkRequest.InitiatorGraph}
    */
   initiatorGraph() {
     var initiated = new Set();
@@ -1096,7 +1096,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!Set<!WebInspector.NetworkRequest>}
+   * @return {!Set<!SDK.NetworkRequest>}
    */
   _initiatorChain() {
     if (this._initiatorChainCache)
@@ -1111,7 +1111,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!Array.<!WebInspector.NetworkRequest.WebSocketFrame>}
+   * @return {!Array.<!SDK.NetworkRequest.WebSocketFrame>}
    */
   frames() {
     return this._frames;
@@ -1123,7 +1123,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
    */
   addFrameError(errorMessage, time) {
     this._addFrame({
-      type: WebInspector.NetworkRequest.WebSocketFrameType.Error,
+      type: SDK.NetworkRequest.WebSocketFrameType.Error,
       text: errorMessage,
       time: this.pseudoWallTime(time),
       opCode: -1,
@@ -1137,8 +1137,8 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
    * @param {boolean} sent
    */
   addFrame(response, time, sent) {
-    var type = sent ? WebInspector.NetworkRequest.WebSocketFrameType.Send :
-                      WebInspector.NetworkRequest.WebSocketFrameType.Receive;
+    var type = sent ? SDK.NetworkRequest.WebSocketFrameType.Send :
+                      SDK.NetworkRequest.WebSocketFrameType.Receive;
     this._addFrame({
       type: type,
       text: response.payloadData,
@@ -1149,15 +1149,15 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @param {!WebInspector.NetworkRequest.WebSocketFrame} frame
+   * @param {!SDK.NetworkRequest.WebSocketFrame} frame
    */
   _addFrame(frame) {
     this._frames.push(frame);
-    this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.WebsocketFrameAdded, frame);
+    this.dispatchEventToListeners(SDK.NetworkRequest.Events.WebsocketFrameAdded, frame);
   }
 
   /**
-   * @return {!Array.<!WebInspector.NetworkRequest.EventSourceMessage>}
+   * @return {!Array.<!SDK.NetworkRequest.EventSourceMessage>}
    */
   eventSourceMessages() {
     return this._eventSourceMessages;
@@ -1172,7 +1172,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   addEventSourceMessage(time, eventName, eventId, data) {
     var message = {time: this.pseudoWallTime(time), eventName: eventName, eventId: eventId, data: data};
     this._eventSourceMessages.push(message);
-    this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.EventSourceMessageAdded, message);
+    this.dispatchEventToListeners(SDK.NetworkRequest.Events.EventSourceMessageAdded, message);
   }
 
   replayXHR() {
@@ -1180,14 +1180,14 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
   }
 
   /**
-   * @return {!WebInspector.NetworkLog}
+   * @return {!SDK.NetworkLog}
    */
   networkLog() {
     return this._networkLog;
   }
 
   /**
-   * @return {!WebInspector.NetworkManager}
+   * @return {!SDK.NetworkManager}
    */
   networkManager() {
     return this._networkManager;
@@ -1195,7 +1195,7 @@ WebInspector.NetworkRequest = class extends WebInspector.SDKObject {
 };
 
 /** @enum {symbol} */
-WebInspector.NetworkRequest.Events = {
+SDK.NetworkRequest.Events = {
   FinishedLoading: Symbol('FinishedLoading'),
   TimingChanged: Symbol('TimingChanged'),
   RemoteAddressChanged: Symbol('RemoteAddressChanged'),
@@ -1206,7 +1206,7 @@ WebInspector.NetworkRequest.Events = {
 };
 
 /** @enum {string} */
-WebInspector.NetworkRequest.InitiatorType = {
+SDK.NetworkRequest.InitiatorType = {
   Other: 'other',
   Parser: 'parser',
   Redirect: 'redirect',
@@ -1214,20 +1214,20 @@ WebInspector.NetworkRequest.InitiatorType = {
 };
 
 /** @typedef {!{name: string, value: string}} */
-WebInspector.NetworkRequest.NameValue;
+SDK.NetworkRequest.NameValue;
 
 /** @enum {string} */
-WebInspector.NetworkRequest.WebSocketFrameType = {
+SDK.NetworkRequest.WebSocketFrameType = {
   Send: 'send',
   Receive: 'receive',
   Error: 'error'
 };
 
-/** @typedef {!{type: WebInspector.NetworkRequest.WebSocketFrameType, time: number, text: string, opCode: number, mask: boolean}} */
-WebInspector.NetworkRequest.WebSocketFrame;
+/** @typedef {!{type: SDK.NetworkRequest.WebSocketFrameType, time: number, text: string, opCode: number, mask: boolean}} */
+SDK.NetworkRequest.WebSocketFrame;
 
 /** @typedef {!{time: number, eventName: string, eventId: string, data: string}} */
-WebInspector.NetworkRequest.EventSourceMessage;
+SDK.NetworkRequest.EventSourceMessage;
 
-/** @typedef {!{initiators: !Set<!WebInspector.NetworkRequest>, initiated: !Set<!WebInspector.NetworkRequest>}} */
-WebInspector.NetworkRequest.InitiatorGraph;
+/** @typedef {!{initiators: !Set<!SDK.NetworkRequest>, initiated: !Set<!SDK.NetworkRequest>}} */
+SDK.NetworkRequest.InitiatorGraph;

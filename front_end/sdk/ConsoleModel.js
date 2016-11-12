@@ -50,8 +50,12 @@ WebInspector.ConsoleModel = class extends WebInspector.SDKModel {
     if (this._logAgent) {
       target.registerLogDispatcher(new WebInspector.LogDispatcher(this));
       this._logAgent.enable();
-      if (!InspectorFrontendHost.isUnderTest())
-        this._logAgent.setReportViolationsEnabled(true);
+      if (!InspectorFrontendHost.isUnderTest()) {
+        this._logAgent.startViolationsReport([
+            {name: 'longTask', threshold: 50 },
+            {name: 'longLayout', threshold: 30},
+            {name: 'blockedEvent', threshold: 100}]);
+      }
     }
   }
 

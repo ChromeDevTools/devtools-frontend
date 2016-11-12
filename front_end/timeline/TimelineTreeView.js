@@ -322,26 +322,25 @@ WebInspector.TimelineTreeView.GridNode = class extends WebInspector.SortableData
    * @return {!Element}
    */
   _createNameCell(columnId) {
-    var cell = this.createTD(columnId);
-    var container = cell.createChild('div', 'name-container');
-    var icon = container.createChild('div', 'activity-icon');
-    var name = container.createChild('div', 'activity-name');
-    var event = this._profileNode.event;
+    const cell = this.createTD(columnId);
+    const container = cell.createChild('div', 'name-container');
+    const icon = container.createChild('div', 'activity-icon');
+    const name = container.createChild('div', 'activity-name');
+    const event = this._profileNode.event;
     if (this._profileNode.isGroupNode()) {
-      var treeView = /** @type {!WebInspector.AggregatedTimelineTreeView} */ (this._treeView);
-      var info = treeView._displayInfoForGroupNode(this._profileNode);
+      const treeView = /** @type {!WebInspector.AggregatedTimelineTreeView} */ (this._treeView);
+      const info = treeView._displayInfoForGroupNode(this._profileNode);
       name.textContent = info.name;
       icon.style.backgroundColor = info.color;
     } else if (event) {
-      var data = event.args['data'];
-      var deoptReason = data && data['deoptReason'];
-      if (deoptReason)
+      const data = event.args['data'];
+      const deoptReason = data && data['deoptReason'];
+      if (deoptReason) {
         container.createChild('div', 'activity-warning').title =
             WebInspector.UIString('Not optimized: %s', deoptReason);
-      name.textContent = event.name === WebInspector.TimelineModel.RecordType.JSFrame ?
-          WebInspector.beautifyFunctionName(event.args['data']['functionName']) :
-          WebInspector.TimelineUIUtils.eventTitle(event);
-      var link = this._treeView._linkifyLocation(event);
+      }
+      name.textContent = WebInspector.TimelineUIUtils.eventTitle(event);
+      const link = this._treeView._linkifyLocation(event);
       if (link)
         container.createChild('div', 'activity-link').appendChild(link);
       icon.style.backgroundColor = WebInspector.TimelineUIUtils.eventColor(event);
@@ -545,17 +544,14 @@ WebInspector.AggregatedTimelineTreeView = class extends WebInspector.TimelineTre
       if (id === this._groupBySetting.get())
         this._groupByCombobox.select(option);
     }
-    addGroupingOption.call(this, WebInspector.UIString('No Grouping'), WebInspector.AggregatedTimelineTreeView.GroupBy.None);
-    addGroupingOption.call(
-        this, WebInspector.UIString('Group by Activity'), WebInspector.AggregatedTimelineTreeView.GroupBy.EventName);
-    addGroupingOption.call(
-        this, WebInspector.UIString('Group by Category'), WebInspector.AggregatedTimelineTreeView.GroupBy.Category);
-    addGroupingOption.call(
-        this, WebInspector.UIString('Group by Domain'), WebInspector.AggregatedTimelineTreeView.GroupBy.Domain);
-    addGroupingOption.call(
-        this, WebInspector.UIString('Group by Subdomain'), WebInspector.AggregatedTimelineTreeView.GroupBy.Subdomain);
-    addGroupingOption.call(this, WebInspector.UIString('Group by URL'), WebInspector.AggregatedTimelineTreeView.GroupBy.URL);
-    addGroupingOption.call(this, WebInspector.UIString('Group by Frame'), WebInspector.AggregatedTimelineTreeView.GroupBy.Frame);
+    const groupBy = WebInspector.AggregatedTimelineTreeView.GroupBy;
+    addGroupingOption.call(this, WebInspector.UIString('No Grouping'), groupBy.None);
+    addGroupingOption.call(this, WebInspector.UIString('Group by Activity'), groupBy.EventName);
+    addGroupingOption.call(this, WebInspector.UIString('Group by Category'), groupBy.Category);
+    addGroupingOption.call(this, WebInspector.UIString('Group by Domain'), groupBy.Domain);
+    addGroupingOption.call(this, WebInspector.UIString('Group by Subdomain'), groupBy.Subdomain);
+    addGroupingOption.call(this, WebInspector.UIString('Group by URL'), groupBy.URL);
+    addGroupingOption.call(this, WebInspector.UIString('Group by Frame'), groupBy.Frame);
     panelToolbar.appendToolbarItem(this._groupByCombobox);
   }
 

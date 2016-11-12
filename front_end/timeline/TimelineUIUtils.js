@@ -224,6 +224,22 @@ WebInspector.TimelineUIUtils = class {
   }
 
   /**
+   * @param {!Protocol.Runtime.CallFrame} frame
+   * @return {string}
+   */
+  static frameDisplayName(frame) {
+    if (!WebInspector.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame))
+      return WebInspector.beautifyFunctionName(frame.functionName);
+    const nativeGroup = WebInspector.TimelineJSProfileProcessor.nativeGroup(frame.functionName);
+    const groups = WebInspector.TimelineJSProfileProcessor.NativeGroups;
+    switch (nativeGroup) {
+      case groups.Compile: return WebInspector.UIString('Compile');
+      case groups.Parse: return WebInspector.UIString('Parse');
+    }
+    return frame.functionName;
+  }
+
+  /**
    * @param {!WebInspector.TracingModel.Event} traceEvent
    * @param {!RegExp} regExp
    * @return {boolean}
@@ -295,14 +311,17 @@ WebInspector.TimelineUIUtils = class {
    * @return {string}
    */
   static eventTitle(event) {
-    var title = WebInspector.TimelineUIUtils.eventStyle(event).title;
+    const recordType = WebInspector.TimelineModel.RecordType;
+    const eventData = event.args['data'];
+    if (event.name === recordType.JSFrame)
+      return WebInspector.TimelineUIUtils.frameDisplayName(eventData);
+    const title = WebInspector.TimelineUIUtils.eventStyle(event).title;
     if (event.hasCategory(WebInspector.TimelineModel.Category.Console))
       return title;
-    if (event.name === WebInspector.TimelineModel.RecordType.TimeStamp)
-      return WebInspector.UIString('%s: %s', title, event.args['data']['message']);
-    if (event.name === WebInspector.TimelineModel.RecordType.Animation && event.args['data'] &&
-        event.args['data']['name'])
-      return WebInspector.UIString('%s: %s', title, event.args['data']['name']);
+    if (event.name === recordType.TimeStamp)
+      return WebInspector.UIString('%s: %s', title, eventData['message']);
+    if (event.name === recordType.Animation && eventData && eventData['name'])
+      return WebInspector.UIString('%s: %s', title, eventData['name']);
     return title;
   }
 
@@ -438,7 +457,7 @@ WebInspector.TimelineUIUtils = class {
           detailsText = linkifyLocationAsText(eventData['scriptId'], eventData['lineNumber'], 0);
         break;
       case recordType.JSFrame:
-        detailsText = WebInspector.beautifyFunctionName(eventData['functionName']);
+        detailsText = WebInspector.TimelineUIUtils.frameDisplayName(eventData);
         break;
       case recordType.EventDispatch:
         detailsText = eventData ? eventData['type'] : null;
@@ -600,8 +619,8 @@ WebInspector.TimelineUIUtils = class {
       case recordType.FunctionCall:
       case recordType.JSFrame:
         details = createElement('span');
-        details.createTextChild(WebInspector.beautifyFunctionName(eventData['functionName']));
-        var location = linkifyLocation(
+        details.createTextChild(WebInspector.TimelineUIUtils.frameDisplayName(eventData));
+        const location = linkifyLocation(
             eventData['scriptId'], eventData['url'], eventData['lineNumber'], eventData['columnNumber']);
         if (location) {
           details.createTextChild(' @ ');
@@ -1815,7 +1834,7 @@ WebInspector.TimelineUIUtils.InvalidationsGroupElement = class extends TreeEleme
     if (topFrame && this._contentHelper.linkifier()) {
       title.createTextChild(WebInspector.UIString('. '));
       var stack = title.createChild('span', 'monospace');
-      stack.createChild('span').textContent = WebInspector.beautifyFunctionName(topFrame.functionName);
+      stack.createChild('span').textContent = WebInspector.TimelineUIUtils.frameDisplayName(topFrame);
       var link = this._contentHelper.linkifier().maybeLinkifyConsoleCallFrame(target, topFrame);
       if (link) {
         stack.createChild('span').textContent = ' @ ';

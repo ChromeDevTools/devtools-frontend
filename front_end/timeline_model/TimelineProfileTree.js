@@ -1,6 +1,7 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 WebInspector.TimelineProfileTree = {};
 
 /**
@@ -213,13 +214,16 @@ WebInspector.TimelineProfileTree.eventStackFrame = function(event) {
  * @return {string}
  */
 WebInspector.TimelineProfileTree._eventId = function(event) {
-  if (event.name === WebInspector.TimelineModel.RecordType.JSFrame) {
-    var data = event.args['data'];
-    return 'f:' + data['functionName'] + '@' + (data['scriptId'] || data['url'] || '');
-  }
-  return event.name;
+  if (event.name !== WebInspector.TimelineModel.RecordType.JSFrame)
+    return event.name;
+  const frame = event.args['data'];
+  const location = frame['scriptId'] || frame['url'] || '';
+  const functionName = frame['functionName'];
+  const name = WebInspector.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame)
+      ? WebInspector.TimelineJSProfileProcessor.nativeGroup(functionName) || functionName
+      : functionName;
+  return `f:${name}@${location}`;
 };
-
 
 /**
  * @unrestricted

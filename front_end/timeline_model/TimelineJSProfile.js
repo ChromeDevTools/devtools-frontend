@@ -78,25 +78,6 @@ WebInspector.TimelineJSProfileProcessor = class {
     const showRuntimeCallStats = Runtime.experiments.isEnabled('timelineV8RuntimeCallStats');
     const showNativeFunctions = WebInspector.moduleSetting('showNativeFunctionsInJSProfile').get();
 
-    const visibleV8RuntimeStatsItems = new Set([
-      'Compile',
-      'CompileCode',
-      'CompileCodeLazy',
-      'CompileDeserialize',
-      'CompileEval',
-      'CompileFullCode',
-      'CompileIgnition',
-      'CompilerDispatcher',
-      'CompileSerialize',
-      'DeoptimizeCode',
-      'OptimizeCode',
-      'ParseProgram',
-      'ParseFunction',
-      'RecompileConcurrent',
-      'RecompileSynchronous',
-      'ParseLazy'
-    ]);
-
     /**
      * @param {!WebInspector.TracingModel.Event} e
      */
@@ -146,6 +127,14 @@ WebInspector.TimelineJSProfileProcessor = class {
     }
 
     /**
+     * @param {string} name
+     * @return {boolean}
+     */
+    function showNativeName(name) {
+      return showRuntimeCallStats && !!WebInspector.TimelineJSProfileProcessor.nativeGroup(name);
+    }
+
+    /**
      * @param {!Array<!Protocol.Runtime.CallFrame>} stack
      */
     function filterStackFrames(stack) {
@@ -158,7 +147,7 @@ WebInspector.TimelineJSProfileProcessor = class {
         const isNativeFrame = url && url.startsWith('native ');
         if (!showNativeFunctions && isNativeFrame)
           continue;
-        if (url === 'native V8Runtime' && (!visibleV8RuntimeStatsItems.has(frame.functionName) || !showRuntimeCallStats))
+        if (WebInspector.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame) && !showNativeName(frame.functionName))
           continue;
         if (isPreviousFrameNative && isNativeFrame)
           continue;
@@ -208,4 +197,48 @@ WebInspector.TimelineJSProfileProcessor = class {
           events, onStartEvent, onEndEvent, onInstantEvent, firstTopLevelEvent.startTime);
     return jsFrameEvents;
   }
+
+  /**
+   * @param {!Protocol.Runtime.CallFrame} frame
+   * @return {boolean}
+   */
+  static isNativeRuntimeFrame(frame) {
+    return frame.url === 'native V8Runtime';
+  }
+
+  /**
+   * @param {string} nativeName
+   * @return {?WebInspector.TimelineJSProfileProcessor.NativeGroups}
+   */
+  static nativeGroup(nativeName) {
+    var map = WebInspector.TimelineJSProfileProcessor.nativeGroup._map;
+    if (!map) {
+      const nativeGroups = WebInspector.TimelineJSProfileProcessor.NativeGroups;
+      map = new Map([
+        ['Compile', nativeGroups.Compile],
+        ['CompileCode', nativeGroups.Compile],
+        ['CompileCodeLazy', nativeGroups.Compile],
+        ['CompileDeserialize', nativeGroups.Compile],
+        ['CompileEval', nativeGroups.Compile],
+        ['CompileFullCode', nativeGroups.Compile],
+        ['CompileIgnition', nativeGroups.Compile],
+        ['CompilerDispatcher', nativeGroups.Compile],
+        ['CompileSerialize', nativeGroups.Compile],
+        ['ParseProgram', nativeGroups.Parse],
+        ['ParseFunction', nativeGroups.Parse],
+        ['RecompileConcurrent', nativeGroups.Compile],
+        ['RecompileSynchronous', nativeGroups.Compile],
+        ['ParseLazy', nativeGroups.Parse]
+      ]);
+      /** @type {!Map<string, !WebInspector.TimelineJSProfileProcessor.NativeGroups>} */
+      WebInspector.TimelineJSProfileProcessor.nativeGroup._map = map;
+    }
+    return map.get(nativeName) || null;
+  }
+};
+
+/** @enum {string} */
+WebInspector.TimelineJSProfileProcessor.NativeGroups = {
+  'Compile': 'Compile',
+  'Parse': 'Parse'
 };

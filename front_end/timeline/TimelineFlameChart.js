@@ -387,8 +387,17 @@ WebInspector.TimelineFlameChartDataProvider = class extends WebInspector.Timelin
       this._appendAsyncEventsGroup(title, animations, this._interactionsHeaderLevel2);
     }
     var threads = this._model.virtualThreads();
-    this._appendThreadTimelineData(
-        WebInspector.UIString('Main'), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents(), true);
+    if (!Runtime.experiments.isEnabled('timelinePerFrameTrack')) {
+      this._appendThreadTimelineData(
+          WebInspector.UIString('Main'), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents(), true);
+    } else {
+      this._appendThreadTimelineData(
+          WebInspector.UIString('Page'), this._model.eventsForFrame(WebInspector.TimelineModel.PageFrame.mainFrameId), this._model.mainThreadAsyncEvents(), true);
+      for (var frame of this._model.rootFrames()) {
+        // Ignore top frame itself, since it should be part of page events.
+        frame.children.forEach(this._appendFrameEvents.bind(this, 0));
+      }
+    }
     var compositorThreads = threads.filter(thread => thread.name.startsWith('CompositorTileWorker'));
     var otherThreads = threads.filter(thread => !thread.name.startsWith('CompositorTileWorker'));
     if (compositorThreads.length) {
@@ -415,6 +424,19 @@ WebInspector.TimelineFlameChartDataProvider = class extends WebInspector.Timelin
 
     this._flowEventIndexById = {};
     return this._timelineData;
+  }
+
+  /**
+   * @param {number} level
+   * @param {!WebInspector.TimelineModel.PageFrame} frame
+   */
+  _appendFrameEvents(level, frame) {
+    var events = this._model.eventsForFrame(frame.id);
+    var clonedHeader = Object.assign({}, this._headerLevel1);
+    clonedHeader.nestingLevel = level;
+    this._appendSyncEvents(events, WebInspector.TimelineUIUtils.displayNameForFrame(frame),
+                           /** @type {!WebInspector.FlameChart.GroupStyle} */ (clonedHeader));
+    frame.children.forEach(this._appendFrameEvents.bind(this, level + 1));
   }
 
   /**

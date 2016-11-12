@@ -119,6 +119,7 @@ WebInspector.Main = class {
     Runtime.experiments.register('timelineTracingJSProfile', 'Timeline tracing based JS profiler', true);
     Runtime.experiments.register('timelineV8RuntimeCallStats', 'V8 Runtime Call Stats on Timeline', true);
     Runtime.experiments.register('timelineRuleUsageRecording', 'Track CSS rules usage while recording Timeline.');
+    Runtime.experiments.register('timelinePerFrameTrack', 'Show track per frame on Timeline', true);
 
     Runtime.experiments.cleanUpStaleExperiments();
 

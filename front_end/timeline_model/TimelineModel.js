@@ -562,6 +562,7 @@ WebInspector.TimelineModel = class {
   _processThreadEvents(tracingModel, startTime, endTime, thread, isMainThread) {
     var events = this._injectJSFrameEvents(tracingModel, thread);
     var asyncEvents = thread.asyncEvents();
+    var groupByFrame = isMainThread && Runtime.experiments.isEnabled('timelinePerFrameTrack');
 
     var threadEvents;
     var threadAsyncEventsByGroup;
@@ -584,6 +585,19 @@ WebInspector.TimelineModel = class {
         break;
       if (!this._processEvent(event))
         continue;
+      if (groupByFrame) {
+        var frameId = WebInspector.TimelineData.forEvent(event).frameId;
+        var pageFrame = frameId && this._pageFrames.get(frameId);
+        var isMainFrame = !frameId || !pageFrame || !pageFrame.parent;
+        if (isMainFrame)
+          frameId = WebInspector.TimelineModel.PageFrame.mainFrameId;
+        var frameEvents = this._eventsByFrame.get(frameId);
+        if (!frameEvents) {
+          frameEvents = [];
+          this._eventsByFrame.set(frameId, frameEvents);
+        }
+        frameEvents.push(event);
+      }
       threadEvents.push(event);
       this._inspectedTargetEvents.push(event);
     }
@@ -650,7 +664,7 @@ WebInspector.TimelineModel = class {
     var pageFrameId = WebInspector.TimelineModel.eventFrameId(event);
     if (!pageFrameId && eventStack.length)
       pageFrameId = WebInspector.TimelineData.forEvent(eventStack.peekLast()).frameId;
-    timelineData.frameId = pageFrameId || WebInspector.TimelineData.mainFrameId;
+    timelineData.frameId = pageFrameId || WebInspector.TimelineModel.PageFrame.mainFrameId;
     this._asyncEventTracker.processEvent(event);
     switch (event.name) {
       case recordTypes.ResourceSendRequest:
@@ -781,8 +795,8 @@ WebInspector.TimelineModel = class {
           break;
         this._paintImageEventByPixelRefId[event.args['LazyPixelRef']] = paintImageEvent;
         var paintImageData = WebInspector.TimelineData.forEvent(paintImageEvent);
-        event.backendNodeId = paintImageData.backendNodeId;
-        event.url = paintImageData.url;
+        timelineData.backendNodeId = paintImageData.backendNodeId;
+        timelineData.url = paintImageData.url;
         break;
 
       case recordTypes.MarkDOMContent:
@@ -795,12 +809,10 @@ WebInspector.TimelineModel = class {
       case recordTypes.CommitLoad:
         var frameId = WebInspector.TimelineModel.eventFrameId(event);
         var pageFrame = this._pageFrames.get(frameId);
-        if (pageFrame) {
-          pageFrame.url = eventData.url || '';
-          pageFrame.name = eventData.name || '';
-        } else {
+        if (pageFrame)
+          pageFrame.update(eventData.name || '', eventData.url || '');
+        else
           this._addPageFrame(event, eventData);
-        }
         var page = eventData['page'];
         if (page && page !== this._currentPage)
           return false;
@@ -954,6 +966,8 @@ WebInspector.TimelineModel = class {
     this._workerIdByThread = new WeakMap();
     /** @type {!Map<string, !WebInspector.TimelineModel.PageFrame>} */
     this._pageFrames = new Map();
+    /** @type {!Map<string, !Array<!WebInspector.TracingModel.Event>>} */
+    this._eventsByFrame = new Map();
 
     this._minimumRecordTime = 0;
     this._maximumRecordTime = 0;
@@ -1037,11 +1051,26 @@ WebInspector.TimelineModel = class {
   }
 
   /**
+   * @return {!Array<!WebInspector.TimelineModel.PageFrame>}
+   */
+  rootFrames() {
+    return Array.from(this._pageFrames.values()).filter(frame => !frame.parent);
+  }
+
+  /**
    * @param {string} frameId
    * @return {?WebInspector.TimelineModel.PageFrame}
    */
   pageFrameById(frameId) {
     return frameId ? this._pageFrames.get(frameId) || null : null;
+  }
+
+  /**
+   * @param {string} frameId
+   * @return {!Array<!WebInspector.TracingModel.Event>}
+   */
+  eventsForFrame(frameId) {
+    return this._eventsByFrame.get(frameId) || [];
   }
 
   /**
@@ -1365,7 +1394,7 @@ WebInspector.TimelineModel.PageFrame = class {
    */
   constructor(target, pid, payload) {
     this.frameId = payload['frame'];
-    this.url = payload['url'];
+    this.url = payload['url'] || '';
     this.name = payload['name'];
     this.processId = pid;
     this.children = [];
@@ -1376,6 +1405,15 @@ WebInspector.TimelineModel.PageFrame = class {
   }
 
   /**
+   * @param {string} name
+   * @param {string} url
+   */
+  update(name, url) {
+    this.name = name;
+    this.url = url;
+  }
+
+  /**
    * @param {!WebInspector.TimelineModel.PageFrame} child
    */
   addChild(child) {
@@ -1383,6 +1421,9 @@ WebInspector.TimelineModel.PageFrame = class {
     child.parent = this;
   }
 };
+
+WebInspector.TimelineModel.PageFrame.mainFrameId = '';
+
 
 /**
  * @unrestricted
@@ -1952,5 +1993,4 @@ WebInspector.TimelineData = class {
   }
 };
 
-WebInspector.TimelineData.mainFrameId = '';
 WebInspector.TimelineData._symbol = Symbol('timelineData');

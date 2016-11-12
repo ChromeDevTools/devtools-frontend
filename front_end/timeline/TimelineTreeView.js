@@ -509,11 +509,7 @@ WebInspector.AggregatedTimelineTreeView = class extends WebInspector.TimelineTre
         break;
       case WebInspector.AggregatedTimelineTreeView.GroupBy.Frame:
         var frame = this._model.pageFrameById(node.id);
-        var frameName;
-        if (frame && frame.url)
-          frameName = frame.url.startsWith('about:') && frame.name ? `"${frame.name}"` : frame.url;
-        else
-          frameName = WebInspector.UIString('Page');
+        var frameName = frame ? WebInspector.TimelineUIUtils.displayNameForFrame(frame, 80) : WebInspector.UIString('Page');
         return {
           name: frameName,
           color: color

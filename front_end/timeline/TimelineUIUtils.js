@@ -1757,6 +1757,17 @@ WebInspector.TimelineUIUtils = class {
     }
     return span;
   }
+
+  /**
+   * @param {!WebInspector.TimelineModel.PageFrame} frame
+   * @param {number=} trimAt
+   */
+  static displayNameForFrame(frame, trimAt) {
+    var url = frame.url;
+    if (!trimAt)
+      trimAt = 30;
+    return url.startsWith('about:') ? `"${frame.name.trimMiddle(trimAt)}"` : frame.url.trimEnd(trimAt);
+  }
 };
 
 /**

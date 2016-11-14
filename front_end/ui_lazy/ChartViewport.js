@@ -8,10 +8,10 @@ UI.ChartViewport = class extends UI.VBox {
   constructor() {
     super(true);
 
-    this.contentElement.addEventListener('mousewheel', this._onMouseWheel.bind(this), false);
-    this.contentElement.addEventListener('keydown', this._handleZoomPanKeys.bind(this), false);
-
     this.viewportElement = this.contentElement.createChild('div', 'fill');
+    this.viewportElement.addEventListener('mousewheel', this._onMouseWheel.bind(this), false);
+    this.viewportElement.addEventListener('keydown', this._handleZoomPanKeys.bind(this), false);
+
     UI.installInertialDragHandle(
         this.viewportElement, this._startDragging.bind(this), this._dragging.bind(this), this._endDragging.bind(this),
         '-webkit-grabbing', null);

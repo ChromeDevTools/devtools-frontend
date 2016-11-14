@@ -349,7 +349,7 @@
 }
 
 .network-waterfall-header:hover {
-    background-color:hsla(0, 0%, 80%, .5);
+    background-color: hsl(0, 0%, 90%);
 }
 
 .network-waterfall-header div {

@@ -13,3 +13,5 @@ npm-debug.log
 /.test_cache
 /release
 /scripts/local_node/runtimes
+/front_end/InspectorBackendCommands.js
+/front_end/SupportedCSSProperties.js

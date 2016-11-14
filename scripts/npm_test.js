@@ -226,16 +226,10 @@ function buildAndTest(buildDirectoryPath)
 function build(contentShellResourcesPath)
 {
     var devtoolsResourcesPath = path.resolve(contentShellResourcesPath, "inspector");
-    var copiedFrontendPath = path.resolve(devtoolsResourcesPath, "front_end");
-    var debugPath = path.resolve(devtoolsResourcesPath, "debug");
-    utils.removeRecursive(copiedFrontendPath);
-    utils.removeRecursive(debugPath);
-    utils.copyRecursive(SOURCE_PATH, devtoolsResourcesPath);
-    fs.renameSync(copiedFrontendPath, debugPath);
     var inspectorBackendCommandsPath = path.resolve(devtoolsResourcesPath, "InspectorBackendCommands.js");
     var supportedCSSPropertiesPath = path.resolve(devtoolsResourcesPath, "SupportedCSSProperties.js");
-    utils.copy(inspectorBackendCommandsPath, debugPath);
-    utils.copy(supportedCSSPropertiesPath, debugPath);
+    utils.copy(inspectorBackendCommandsPath, SOURCE_PATH);
+    utils.copy(supportedCSSPropertiesPath, SOURCE_PATH);
 }
 
 function runTests(buildDirectoryPath, options)
@@ -245,8 +239,10 @@ function runTests(buildDirectoryPath, options)
         "--build-directory",
         buildDirectoryPath,
     ]);
-    if (!options.useRelease)
+    if (!options.useRelease) {
         testArgs.push("--additional-driver-flag=--debug-devtools");
+        testArgs.push(`--additional-driver-flag=--custom-devtools-frontend=${SOURCE_PATH}`);
+    }
     if (IS_DEBUG_ENABLED) {
         testArgs.push("--additional-driver-flag=--remote-debugging-port=9222");
         testArgs.push("--time-out-ms=6000000");

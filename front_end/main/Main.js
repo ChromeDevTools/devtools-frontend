@@ -73,7 +73,11 @@ Main.Main = class {
    */
   _createSettings(prefs) {
     this._initializeExperiments(prefs);
-    var storagePrefix = Host.isCustomDevtoolsFrontend() ? '__custom__' : '';
+    var storagePrefix = '';
+    if (Host.isCustomDevtoolsFrontend())
+      storagePrefix = '__custom__';
+    else if (!Runtime.queryParam('can_dock') && !!Runtime.queryParam('debugFrontend'))
+      storagePrefix = '__bundled__';
     var clearLocalStorage = window.localStorage ? window.localStorage.clear.bind(window.localStorage) : undefined;
     var localStorage =
         new Common.SettingsStorage(window.localStorage || {}, undefined, undefined, clearLocalStorage, storagePrefix);

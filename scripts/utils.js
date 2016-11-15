@@ -7,6 +7,7 @@ var http = require("http");
 var https = require("https");
 var path = require("path");
 var parseURL = require("url").parse;
+var shell = require("child_process").execSync;
 var Stream = require("stream").Transform;
 
 function fetch(url)
@@ -121,6 +122,11 @@ function includes(sequence, target)
     return sequence.indexOf(target) > -1;
 }
 
+function shellOutput(command)
+{
+    return shell(command).toString().trim();
+}
+
 module.exports = {
     fetch,
     atob,
@@ -130,4 +136,5 @@ module.exports = {
     copyRecursive,
     removeRecursive,
     includes,
+    shellOutput,
 };

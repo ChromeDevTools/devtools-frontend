@@ -116,7 +116,27 @@ function proxy(filePath)
         if (proxyFileCache.has(proxyFileURL))
             return Promise.resolve(proxyFileCache.get(proxyFileURL));
         return utils.fetch(proxyFileURL)
-            .then(cacheProxyFile.bind(null, proxyFileURL));
+            .then(cacheProxyFile.bind(null, proxyFileURL))
+            .catch(onMissingFile);
+    }
+
+    function onMissingFile() {
+        var isFullCheckout = utils.shellOutput("git config --get remote.origin.url") === "https://chromium.googlesource.com/chromium/src.git";
+        var earlierCommitHash;
+        var gitLogCommand = `git log --max-count=1 --grep="Commit-Position" --before="12 hours ago"`;
+        if (isFullCheckout) {
+            earlierCommitHash = utils.shellOutput(`${gitLogCommand} --pretty=format:"%H"`);
+        } else {
+            var commitMessage = utils.shellOutput(`${gitLogCommand}`);
+            earlierCommitHash = commitMessage.match(/Cr-Mirrored-Commit: (.*)/)[1];
+        }
+        var fallbackURL = proxyFilePathToURL[filePath](earlierCommitHash);
+        console.log("WARNING: Unable to fetch generated file based on browser's revision");
+        console.log("Fetching earlier revision of same file as fallback");
+        console.log("There may be a mismatch between the front-end and back-end");
+        console.log(fallbackURL, "\n");
+        return utils.fetch(fallbackURL)
+            .then(cacheProxyFile.bind(null, fallbackURL));
     }
 
     function cacheProxyFile(proxyFileURL, data)

@@ -32,12 +32,66 @@
  * @unrestricted
  */
 Workspace.FileSystemMapping = class extends Common.Object {
-  constructor() {
+  /**
+   * @param {!Workspace.IsolatedFileSystemManager} fileSystemManager
+   */
+  constructor(fileSystemManager) {
     super();
     this._fileSystemMappingSetting = Common.settings.createLocalSetting('fileSystemMapping', {});
     /** @type {!Object.<string, !Array.<!Workspace.FileSystemMapping.Entry>>} */
     this._fileSystemMappings = {};
     this._loadFromSettings();
+
+    this._eventListeners = [
+      fileSystemManager.addEventListener(
+          Workspace.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this),
+      fileSystemManager.addEventListener(
+          Workspace.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this),
+    ];
+    fileSystemManager.waitForFileSystems().then(this._fileSystemsLoaded.bind(this));
+  }
+
+  /**
+   * @param {!Array<!Workspace.IsolatedFileSystem>} fileSystems
+   */
+  _fileSystemsLoaded(fileSystems) {
+    for (var fileSystem of fileSystems)
+      this._addMappingsForFilesystem(fileSystem);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _fileSystemAdded(event) {
+    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
+    this._addMappingsForFilesystem(fileSystem);
+  }
+
+  /**
+   * @param {!Workspace.IsolatedFileSystem} fileSystem
+   */
+  _addMappingsForFilesystem(fileSystem) {
+    this.addFileSystem(fileSystem.path());
+
+    var mappings = fileSystem.projectProperty('mappings');
+    for (var i = 0; Array.isArray(mappings) && i < mappings.length; ++i) {
+      var mapping = mappings[i];
+      if (!mapping || typeof mapping !== 'object')
+        continue;
+      var folder = mapping['folder'];
+      var url = mapping['url'];
+      if (typeof folder !== 'string' || typeof url !== 'string')
+        continue;
+      this.addNonConfigurableFileMapping(fileSystem.path(), url, folder);
+    }
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _fileSystemRemoved(event) {
+    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
+    this.removeFileSystem(fileSystem.path());
   }
 
   _loadFromSettings() {
@@ -299,6 +353,10 @@ Workspace.FileSystemMapping = class extends Common.Object {
 
   resetForTesting() {
     this._fileSystemMappings = {};
+  }
+
+  dispose() {
+    Common.EventTarget.removeEventListeners(this._eventListeners);
   }
 };
 

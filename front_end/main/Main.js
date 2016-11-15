@@ -184,12 +184,11 @@ Main.Main = class {
     Workspace.fileManager = new Workspace.FileManager();
     Workspace.workspace = new Workspace.Workspace();
     Common.formatterWorkerPool = new Common.FormatterWorkerPool();
-    Workspace.fileSystemMapping = new Workspace.FileSystemMapping();
+    Workspace.fileSystemMapping = new Workspace.FileSystemMapping(Workspace.isolatedFileSystemManager);
 
     var fileSystemWorkspaceBinding =
         new Bindings.FileSystemWorkspaceBinding(Workspace.isolatedFileSystemManager, Workspace.workspace);
-    Bindings.networkMapping = new Bindings.NetworkMapping(
-        SDK.targetManager, Workspace.workspace, fileSystemWorkspaceBinding, Workspace.fileSystemMapping);
+    Bindings.networkMapping = new Bindings.NetworkMapping(Workspace.workspace);
     Main.networkProjectManager = new Bindings.NetworkProjectManager(SDK.targetManager, Workspace.workspace);
     Bindings.presentationConsoleMessageHelper = new Bindings.PresentationConsoleMessageHelper(Workspace.workspace);
     Bindings.cssWorkspaceBinding =

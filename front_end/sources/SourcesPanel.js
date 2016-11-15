@@ -743,16 +743,16 @@ Sources.SourcesPanel = class extends UI.Panel {
   mapFileSystemToNetwork(uiSourceCode) {
     Sources.SelectUISourceCodeForProjectTypesDialog.show(
         uiSourceCode.name(), [Workspace.projectTypes.Network, Workspace.projectTypes.ContentScripts],
-        mapFileSystemToNetwork.bind(this));
+        mapFileSystemToNetwork);
 
     /**
      * @param {?Workspace.UISourceCode} networkUISourceCode
-     * @this {Sources.SourcesPanel}
      */
     function mapFileSystemToNetwork(networkUISourceCode) {
       if (!networkUISourceCode)
         return;
-      this._networkMapping.addMapping(networkUISourceCode, uiSourceCode);
+      var fileSystemPath = Bindings.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
+      Workspace.fileSystemMapping.addMappingForResource(networkUISourceCode.url(), fileSystemPath, uiSourceCode.url());
     }
   }
 
@@ -761,16 +761,16 @@ Sources.SourcesPanel = class extends UI.Panel {
    */
   mapNetworkToFileSystem(networkUISourceCode) {
     Sources.SelectUISourceCodeForProjectTypesDialog.show(
-        networkUISourceCode.name(), [Workspace.projectTypes.FileSystem], mapNetworkToFileSystem.bind(this));
+        networkUISourceCode.name(), [Workspace.projectTypes.FileSystem], mapNetworkToFileSystem);
 
     /**
      * @param {?Workspace.UISourceCode} uiSourceCode
-     * @this {Sources.SourcesPanel}
      */
     function mapNetworkToFileSystem(uiSourceCode) {
       if (!uiSourceCode)
         return;
-      this._networkMapping.addMapping(networkUISourceCode, uiSourceCode);
+      var fileSystemPath = Bindings.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
+      Workspace.fileSystemMapping.addMappingForResource(networkUISourceCode.url(), fileSystemPath, uiSourceCode.url());
     }
   }
 
@@ -778,7 +778,7 @@ Sources.SourcesPanel = class extends UI.Panel {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _removeNetworkMapping(uiSourceCode) {
-    this._networkMapping.removeMapping(uiSourceCode);
+    Workspace.fileSystemMapping.removeMappingForURL(uiSourceCode.url());
   }
 
   /**

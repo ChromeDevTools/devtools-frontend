@@ -6,72 +6,12 @@
  */
 Bindings.NetworkMapping = class {
   /**
-   * @param {!SDK.TargetManager} targetManager
    * @param {!Workspace.Workspace} workspace
-   * @param {!Bindings.FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
-   * @param {!Workspace.FileSystemMapping} fileSystemMapping
    */
-  constructor(targetManager, workspace, fileSystemWorkspaceBinding, fileSystemMapping) {
-    this._targetManager = targetManager;
+  constructor(workspace) {
     this._workspace = workspace;
-    this._fileSystemWorkspaceBinding = fileSystemWorkspaceBinding;
-    this._fileSystemMapping = fileSystemMapping;
     InspectorFrontendHost.events.addEventListener(
         InspectorFrontendHostAPI.Events.RevealSourceLine, this._revealSourceLine, this);
-
-    var fileSystemManager = fileSystemWorkspaceBinding.fileSystemManager();
-    this._eventListeners = [
-      fileSystemManager.addEventListener(
-          Workspace.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this),
-      fileSystemManager.addEventListener(
-          Workspace.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this),
-    ];
-    fileSystemManager.waitForFileSystems().then(this._fileSystemsLoaded.bind(this));
-  }
-
-  /**
-   * @param {!Array<!Workspace.IsolatedFileSystem>} fileSystems
-   */
-  _fileSystemsLoaded(fileSystems) {
-    for (var fileSystem of fileSystems)
-      this._addMappingsForFilesystem(fileSystem);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _fileSystemAdded(event) {
-    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
-    this._addMappingsForFilesystem(fileSystem);
-  }
-
-  /**
-   * @param {!Workspace.IsolatedFileSystem} fileSystem
-   */
-  _addMappingsForFilesystem(fileSystem) {
-    this._addingFileSystem = true;
-    this._fileSystemMapping.addFileSystem(fileSystem.path());
-
-    var mappings = fileSystem.projectProperty('mappings');
-    for (var i = 0; Array.isArray(mappings) && i < mappings.length; ++i) {
-      var mapping = mappings[i];
-      if (!mapping || typeof mapping !== 'object')
-        continue;
-      var folder = mapping['folder'];
-      var url = mapping['url'];
-      if (typeof folder !== 'string' || typeof url !== 'string')
-        continue;
-      this._fileSystemMapping.addNonConfigurableFileMapping(fileSystem.path(), url, folder);
-    }
-    this._addingFileSystem = false;
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _fileSystemRemoved(event) {
-    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
-    this._fileSystemMapping.removeFileSystem(fileSystem.path());
   }
 
   /**
@@ -134,22 +74,6 @@ Bindings.NetworkMapping = class {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} networkUISourceCode
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   */
-  addMapping(networkUISourceCode, uiSourceCode) {
-    var fileSystemPath = Bindings.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
-    this._fileSystemMapping.addMappingForResource(networkUISourceCode.url(), fileSystemPath, uiSourceCode.url());
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   */
-  removeMapping(uiSourceCode) {
-    this._fileSystemMapping.removeMappingForURL(uiSourceCode.url());
-  }
-
-  /**
    * @param {!Common.Event} event
    */
   _revealSourceLine(event) {
@@ -176,10 +100,6 @@ Bindings.NetworkMapping = class {
     }
 
     this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener, this);
-  }
-
-  dispose() {
-    Common.EventTarget.removeEventListeners(this._eventListeners);
   }
 };
 

@@ -72,6 +72,10 @@
     vertical-align: middle;
 }
 
+.network-log-grid.data-grid .corner {
+    display: none;
+}
+
 .network-log-grid.data-grid.small td {
     height: 21px;
 }

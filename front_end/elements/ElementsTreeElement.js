@@ -263,18 +263,7 @@ Elements.ElementsTreeElement = class extends TreeElement {
     }
 
     this.updateTitle();
-    this._preventFollowingLinksOnDoubleClick();
     this.listItemElement.draggable = true;
-  }
-
-  _preventFollowingLinksOnDoubleClick() {
-    var links = this.listItemElement.querySelectorAll(
-        'li .webkit-html-tag > .webkit-html-attribute > .webkit-html-external-link, li .webkit-html-tag > .webkit-html-attribute > .webkit-html-resource-link');
-    if (!links)
-      return;
-
-    for (var i = 0; i < links.length; ++i)
-      links[i].preventFollowOnDoubleClick = true;
   }
 
   /**
@@ -1022,7 +1011,6 @@ Elements.ElementsTreeElement = class extends TreeElement {
     delete this.selectionElement;
     if (this.selected)
       this._createSelection();
-    this._preventFollowingLinksOnDoubleClick();
     this._highlightSearchResults();
   }
 

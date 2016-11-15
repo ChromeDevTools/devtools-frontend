@@ -362,17 +362,6 @@ Main.Main = class {
       InspectorFrontendHost.openInNewTab(anchor.href);
     }
 
-    if (Main.followLinkTimeout)
-      clearTimeout(Main.followLinkTimeout);
-
-    if (anchor.preventFollowOnDoubleClick) {
-      // Start a timeout if this is the first click, if the timeout is canceled
-      // before it fires, then a double clicked happened or another link was clicked.
-      if (event.detail === 1)
-        Main.followLinkTimeout = setTimeout(followLink, 333);
-      return;
-    }
-
     if (!anchor.classList.contains('webkit-html-external-link'))
       followLink();
     else

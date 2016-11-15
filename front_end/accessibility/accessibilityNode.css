@@ -170,12 +170,8 @@ li.siblings-expanded button.expand-siblings {
     display: none;
 }
 
-button.inspect-dom-node {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-position: -10px -127px;
+li .inspect-dom-node {
     background-color: #5a5a5a;
-    width: 11px;
-    height: 11px;
     padding: 0;
     margin-left: 5px;
     border: 0;
@@ -184,6 +180,6 @@ button.inspect-dom-node {
     top: 2px;
 }
 
-.tree-outline:focus li.selected button.inspect-dom-node {
+.tree-outline:focus li.selected .inspect-dom-node {
     background-color: white;
 }

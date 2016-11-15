@@ -43,15 +43,10 @@
 }
 
 .goto-source-icon {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-position: 0 -120px;
     background-color: #5a5a5a;
-    width: 28px;
-    height: 24px;
     display: none;
     position: absolute;
-    top: -6px;
-    left: -27px;
+    left: -16px;
 }
 
 .goto-source-icon:hover {

@@ -322,7 +322,7 @@ label[is=dt-icon-label] {
     z-index: 500;
 }
 
-span[is=ui-icon] {
+[is=ui-icon] {
     display: inline-block;
     flex-shrink: 0;
 }

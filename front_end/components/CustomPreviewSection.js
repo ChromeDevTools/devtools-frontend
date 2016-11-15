@@ -30,6 +30,8 @@ Components.CustomPreviewSection = class {
     if (customPreview.hasBody) {
       this._header.classList.add('custom-expandable-section-header');
       this._header.addEventListener('click', this._onClick.bind(this), false);
+      this._expandIcon = UI.Icon.create('smallicon-triangle-right', 'custom-expand-icon');
+      this._header.insertBefore(this._expandIcon, this._header.firstChild);
     }
 
     this._sectionElement.appendChild(this._header);
@@ -51,10 +53,7 @@ Components.CustomPreviewSection = class {
       return createTextNode(jsonML + '');
 
     var array = /** @type {!Array.<*>} */ (jsonML);
-    if (array[0] === 'object')
-      return this._layoutObjectTag(array);
-    else
-      return this._renderElement(array);
+    return array[0] === 'object' ? this._layoutObjectTag(array) : this._renderElement(array);
   }
 
   /**
@@ -125,6 +124,10 @@ Components.CustomPreviewSection = class {
     this._expanded = !this._expanded;
     this._header.classList.toggle('expanded', this._expanded);
     this._cachedContent.classList.toggle('hidden', !this._expanded);
+    if (this._expanded)
+      this._expandIcon.setIconType('smallicon-triangle-bottom');
+    else
+      this._expandIcon.setIconType('smallicon-triangle-right');
   }
 
   _loadBody() {

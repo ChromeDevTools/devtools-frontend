@@ -106,20 +106,10 @@
 }
 
 .toolbar-glyph {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
     background-color: #5a5a5a;
-    width: 28px;
-    height: 24px;
     flex: none;
     transform: translateX(-2px);
 }
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.toolbar-glyph {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
 
 /* Button */
 

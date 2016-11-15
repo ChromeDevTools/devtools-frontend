@@ -9,32 +9,11 @@
     flex-direction: column;
 }
 
-.custom-expandable-section-header::before {
+.custom-expand-icon {
     -webkit-user-select: none;
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
     opacity: 0.5;
-    content: "a";
-    width: 8px;
     margin-right: 4px;
-    padding-right: 2px;
-    color: transparent;
-    text-shadow: none;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-    .custom-expandable-section-header::before {
-        background-image: url(Images/toolbarButtonGlyphs_2x.png);
-    }
-} /* media */
-
-
-.custom-expandable-section-header::before {
-    background-position: -4px -96px;
-}
-
-.custom-expandable-section-header.expanded::before {
-    background-position: -20px -96px;
+    background: black;
 }
 
 .custom-expandable-section-standard-section {

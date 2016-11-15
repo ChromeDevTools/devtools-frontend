@@ -128,7 +128,7 @@ Accessibility.InspectNodeButton = class {
     this._axNode = axNode;
     this._treePane = treePane;
 
-    this.element = createElementWithClass('button', 'inspect-dom-node');
+    this.element = UI.Icon.create('smallicon-arrow-in-circle', 'inspect-dom-node');
     this.element.addEventListener('mousedown', this._handleMouseDown.bind(this));
   }
 

@@ -113,6 +113,9 @@ UI.Icon.Descriptors = {
   'smallicon-dropdown-arrow': {x: -18, y: -96, width: 12, height: 12, spritesheet: 'largeicons', isMask: true},
   'smallicon-checkmark': {x: -100, y: -20, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
   'smallicon-green-checkmark': {x: -120, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
+  'smallicon-triangle-right': {x: -4, y: -98, width: 10, height: 8, spritesheet: 'largeicons', isMask: true},
+  'smallicon-triangle-bottom': {x: -20, y: -98, width: 10, height: 8, spritesheet: 'largeicons', isMask: true},
+  'smallicon-arrow-in-circle': {x: -10,  y: -127, width: 11, height: 11, spritesheet: 'largeicons', isMask: true},
 
   'largeicon-longclick-triangle': {x: -290, y: -46, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
   'largeicon-menu': {x: -192, y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},

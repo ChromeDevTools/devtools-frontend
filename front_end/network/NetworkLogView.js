@@ -182,6 +182,14 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   /**
+   * @param {!SDK.NetworkRequest} request
+   * @return {boolean}
+   */
+  static _fromCacheRequestFilter(request) {
+    return request.cached();
+  }
+
+  /**
    * @param {string} value
    * @param {!SDK.NetworkRequest} request
    * @return {boolean}
@@ -429,6 +437,8 @@ Network.NetworkLogView = class extends UI.VBox {
   _resetSuggestionBuilder() {
     this._suggestionBuilder = new Network.FilterSuggestionBuilder(Network.NetworkLogView._searchKeys);
     this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.Is, Network.NetworkLogView.IsFilterType.Running);
+    this._suggestionBuilder.addItem(
+        Network.NetworkLogView.FilterType.Is, Network.NetworkLogView.IsFilterType.FromCache);
     this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.LargerThan, '100');
     this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.LargerThan, '10k');
     this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.LargerThan, '1M');
@@ -1410,6 +1420,8 @@ Network.NetworkLogView = class extends UI.VBox {
       case Network.NetworkLogView.FilterType.Is:
         if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.Running)
           return Network.NetworkLogView._runningRequestFilter;
+        if (value.toLowerCase() === Network.NetworkLogView.IsFilterType.FromCache)
+          return Network.NetworkLogView._fromCacheRequestFilter;
         break;
 
       case Network.NetworkLogView.FilterType.LargerThan:
@@ -1690,7 +1702,8 @@ Network.NetworkLogView.MixedContentFilterValues = {
 
 /** @enum {string} */
 Network.NetworkLogView.IsFilterType = {
-  Running: 'running'
+  Running: 'running',
+  FromCache: 'from-cache'
 };
 
 /** @type {!Array<string>} */

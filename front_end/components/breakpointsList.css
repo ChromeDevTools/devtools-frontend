@@ -27,6 +27,34 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+.breakpoint-entry {
+    padding: 3px 8px 3px 8px;
+    min-height: 18px;
+    line-height: 15px;
+    border-top: 1px solid #efefef;
+}
+
+.breakpoint-entry [is=dt-checkbox] {
+    max-width: 100%;
+}
+
+.breakpoint-entry .dt-checkbox-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+:not(.breakpoints-list-deactivated) > .breakpoint-entry:hover {
+    background-color: #eee;
+}
+
+.breakpoint-entry > .source-text {
+    cursor: pointer;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .breakpoint-condition {
     display: block;
     margin-top: 4px;

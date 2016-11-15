@@ -613,10 +613,10 @@ Network.NetworkWaterfallColumn.RequestData;
 Network.NetworkWaterfallColumn._colorsForResourceType = {
   document: 'hsl(215, 100%, 80%)',
   font: 'hsl(8, 100%, 80%)',
-  media: 'hsl(272, 64%, 80%)',
-  image: 'hsl(272, 64%, 80%)',
+  media: 'hsl(90, 50%, 80%)',
+  image: 'hsl(90, 50%, 80%)',
   script: 'hsl(31, 100%, 80%)',
-  stylesheet: 'hsl(90, 50%, 80%)',
+  stylesheet: 'hsl(272, 64%, 80%)',
   texttrack: 'hsl(8, 100%, 80%)',
   websocket: 'hsl(0, 0%, 95%)',
   xhr: 'hsl(53, 100%, 80%)',

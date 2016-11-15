@@ -58,8 +58,7 @@ Sources.NavigatorView = class extends UI.VBox {
 
     this._initGrouping();
     SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated,
-        this);
+        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
     SDK.targetManager.addModelListener(
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
 
@@ -74,8 +73,7 @@ Sources.NavigatorView = class extends UI.VBox {
       Persistence.persistence.addEventListener(
           Persistence.Persistence.Events.BindingRemoved, this._onBindingRemoved, this);
     }
-    SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.NameChanged, this._targetNameChanged, this);
+    SDK.targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, this._targetNameChanged, this);
 
     SDK.targetManager.observeTargets(this);
     this._resetWorkspace(Workspace.workspace);
@@ -229,10 +227,8 @@ Sources.NavigatorView = class extends UI.VBox {
   _resetWorkspace(workspace) {
     this._workspace = workspace;
     this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
-    this._workspace.addEventListener(
-        Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
-    this._workspace.addEventListener(
-        Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved.bind(this), this);
+    this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
+    this._workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved.bind(this), this);
   }
 
   /**
@@ -376,8 +372,7 @@ Sources.NavigatorView = class extends UI.VBox {
 
     var parentNode =
         this._folderNode(uiSourceCode, project, target, frame, projectOrigin, path.slice(0, -1), fromSourceMap);
-    var type = fromSourceMap ? Sources.NavigatorView.Types.SourceMapFolder :
-                               Sources.NavigatorView.Types.NetworkFolder;
+    var type = fromSourceMap ? Sources.NavigatorView.Types.SourceMapFolder : Sources.NavigatorView.Types.NetworkFolder;
     if (project.type() === Workspace.projectTypes.FileSystem)
       type = Sources.NavigatorView.Types.FileSystemFolder;
     var name = path[path.length - 1];
@@ -541,8 +536,7 @@ Sources.NavigatorView = class extends UI.VBox {
       parentNode = node.parent;
       if (!parentNode || !node.isEmpty())
         break;
-      if (!(node instanceof Sources.NavigatorGroupTreeNode ||
-            node instanceof Sources.NavigatorFolderTreeNode))
+      if (!(node instanceof Sources.NavigatorGroupTreeNode || node instanceof Sources.NavigatorFolderTreeNode))
         break;
       if (node._type === Sources.NavigatorView.Types.Frame)
         break;
@@ -622,8 +616,7 @@ Sources.NavigatorView = class extends UI.VBox {
     var project = uiSourceCode.project();
     if (project.type() === Workspace.projectTypes.FileSystem) {
       var parentURL = uiSourceCode.parentURL();
-      contextMenu.appendItem(
-          Common.UIString('Rename\u2026'), this._handleContextMenuRename.bind(this, uiSourceCode));
+      contextMenu.appendItem(Common.UIString('Rename\u2026'), this._handleContextMenuRename.bind(this, uiSourceCode));
       contextMenu.appendItem(
           Common.UIString('Make a copy\u2026'),
           this._handleContextMenuCreate.bind(this, project, parentURL, uiSourceCode));
@@ -651,8 +644,7 @@ Sources.NavigatorView = class extends UI.VBox {
       return;
 
     contextMenu.appendItem(Common.UIString('New file'), this._handleContextMenuCreate.bind(this, project, path));
-    contextMenu.appendItem(
-        Common.UIString('Exclude folder'), this._handleContextMenuExclude.bind(this, project, path));
+    contextMenu.appendItem(Common.UIString('Exclude folder'), this._handleContextMenuExclude.bind(this, project, path));
 
     function removeFolder() {
       var shouldRemove = window.confirm(Common.UIString('Are you sure you want to remove this folder?'));
@@ -1449,8 +1441,7 @@ Sources.NavigatorFolderTreeNode = class extends Sources.NavigatorTreeNode {
   }
 
   _shouldMerge(node) {
-    return this._type !== Sources.NavigatorView.Types.Domain &&
-        node instanceof Sources.NavigatorFolderTreeNode;
+    return this._type !== Sources.NavigatorView.Types.Domain && node instanceof Sources.NavigatorFolderTreeNode;
   }
 
   /**

@@ -91,8 +91,8 @@ Elements.PlatformFontsWidget = class extends UI.ThrottledWidget {
       fontDelimeterElement.textContent = '\u2014';
 
       var fontOrigin = fontStatElement.createChild('span');
-      fontOrigin.textContent = platformFonts[i].isCustomFont ? Common.UIString('Network resource') :
-                                                               Common.UIString('Local file');
+      fontOrigin.textContent =
+          platformFonts[i].isCustomFont ? Common.UIString('Network resource') : Common.UIString('Local file');
 
       var fontUsageElement = fontStatElement.createChild('span', 'font-usage');
       var usage = platformFonts[i].glyphCount;

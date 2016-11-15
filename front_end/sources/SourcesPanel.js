@@ -56,15 +56,13 @@ Sources.SourcesPanel = class extends UI.Panel {
     this._debuggerPausedMessage = new Sources.DebuggerPausedMessage();
 
     const initialDebugSidebarWidth = 225;
-    this._splitWidget =
-        new UI.SplitWidget(true, true, 'sourcesPanelSplitViewState', initialDebugSidebarWidth);
+    this._splitWidget = new UI.SplitWidget(true, true, 'sourcesPanelSplitViewState', initialDebugSidebarWidth);
     this._splitWidget.enableShowModeSaving();
     this._splitWidget.show(this.element);
 
     // Create scripts navigator
     const initialNavigatorWidth = 225;
-    this.editorView =
-        new UI.SplitWidget(true, false, 'sourcesPanelNavigatorSplitViewState', initialNavigatorWidth);
+    this.editorView = new UI.SplitWidget(true, false, 'sourcesPanelNavigatorSplitViewState', initialNavigatorWidth);
     this.editorView.enableShowModeSaving();
     this.editorView.element.tabIndex = 0;
     this._splitWidget.setMainWidget(this.editorView);
@@ -110,8 +108,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     UI.context.addFlavorChangeListener(SDK.Target, this._onCurrentTargetChanged, this);
     UI.context.addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this._callFrameChanged, this);
     SDK.targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerWasEnabled, this._debuggerWasEnabled,
-        this);
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerWasEnabled, this._debuggerWasEnabled, this);
     SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
     SDK.targetManager.addModelListener(
@@ -143,8 +140,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     panel._sourcesView.leftToolbar().removeToolbarItems();
     panel._sourcesView.rightToolbar().removeToolbarItems();
     panel._sourcesView.bottomToolbar().removeToolbarItems();
-    var isInWrapper =
-        Sources.SourcesPanel.WrapperView.isShowing() && !UI.inspectorView.isDrawerMinimized();
+    var isInWrapper = Sources.SourcesPanel.WrapperView.isShowing() && !UI.inspectorView.isDrawerMinimized();
     if (panel._splitWidget.isVertical() || isInWrapper)
       panel._splitWidget.uninstallResizer(panel._sourcesView.toolbarContainerElement());
     else
@@ -180,8 +176,10 @@ Sources.SourcesPanel = class extends UI.Panel {
   _showThreadsIfNeeded() {
     if (Sources.ThreadsSidebarPane.shouldBeShown() && !this._threadsSidebarPane) {
       this._threadsSidebarPane = /** @type {!UI.View} */ (UI.viewManager.view('sources.threads'));
-      if (this._sidebarPaneStack)
-        this._sidebarPaneStack.showView(this._threadsSidebarPane, this._splitWidget.isVertical() ? this._watchSidebarPane : this._callstackPane);
+      if (this._sidebarPaneStack) {
+        this._sidebarPaneStack.showView(
+            this._threadsSidebarPane, this._splitWidget.isVertical() ? this._watchSidebarPane : this._callstackPane);
+      }
     }
   }
 
@@ -360,8 +358,8 @@ Sources.SourcesPanel = class extends UI.Panel {
    */
   showUISourceCode(uiSourceCode, lineNumber, columnNumber, omitFocus) {
     if (omitFocus) {
-      var wrapperShowing = Sources.SourcesPanel.WrapperView._instance &&
-          Sources.SourcesPanel.WrapperView._instance.isShowing();
+      var wrapperShowing =
+          Sources.SourcesPanel.WrapperView._instance && Sources.SourcesPanel.WrapperView._instance.isShowing();
       if (!this.isShowing() && !wrapperShowing)
         return;
     } else {
@@ -685,11 +683,10 @@ Sources.SourcesPanel = class extends UI.Panel {
   _createDebugToolbar() {
     var debugToolbar = new UI.Toolbar('scripts-debug-toolbar');
 
-    var longResumeButton = new UI.ToolbarButton(
-        Common.UIString('Resume with all pauses blocked for 500 ms'), 'largeicon-play');
+    var longResumeButton =
+        new UI.ToolbarButton(Common.UIString('Resume with all pauses blocked for 500 ms'), 'largeicon-play');
     longResumeButton.addEventListener('click', this._longResume.bind(this), this);
-    debugToolbar.appendToolbarItem(
-        UI.Toolbar.createActionButton(this._togglePauseAction, [longResumeButton], []));
+    debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._togglePauseAction, [longResumeButton], []));
 
     debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepOverAction));
     debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepIntoAction));
@@ -795,14 +792,15 @@ Sources.SourcesPanel = class extends UI.Panel {
       return;
     if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem) {
       var binding = Persistence.persistence.binding(uiSourceCode);
-      if (!binding)
+      if (!binding) {
         contextMenu.appendItem(
             Common.UIString.capitalize('Map to ^network ^resource\u2026'),
             this.mapFileSystemToNetwork.bind(this, uiSourceCode));
-      else
+      } else {
         contextMenu.appendItem(
             Common.UIString.capitalize('Remove ^network ^mapping'),
             this._removeNetworkMapping.bind(this, binding.network));
+      }
     }
 
     /**
@@ -816,10 +814,11 @@ Sources.SourcesPanel = class extends UI.Panel {
         uiSourceCode.project().type() === Workspace.projectTypes.ContentScripts) {
       if (!this._workspace.projects().filter(filterProject).length)
         return;
-      if (this._networkMapping.uiSourceCodeForURLForAnyTarget(uiSourceCode.url()) === uiSourceCode)
+      if (this._networkMapping.uiSourceCodeForURLForAnyTarget(uiSourceCode.url()) === uiSourceCode) {
         contextMenu.appendItem(
             Common.UIString.capitalize('Map to ^file ^system ^resource\u2026'),
             this.mapNetworkToFileSystem.bind(this, uiSourceCode));
+      }
     }
   }
 
@@ -838,15 +837,14 @@ Sources.SourcesPanel = class extends UI.Panel {
     if (projectType !== Workspace.projectTypes.Debugger &&
         !event.target.isSelfOrDescendant(this._navigatorTabbedLocation.widget().element)) {
       contextMenu.appendItem(
-          Common.UIString.capitalize('Reveal in ^navigator'),
-          this._handleContextMenuReveal.bind(this, uiSourceCode));
+          Common.UIString.capitalize('Reveal in ^navigator'), this._handleContextMenuReveal.bind(this, uiSourceCode));
       contextMenu.appendSeparator();
     }
     this._appendUISourceCodeMappingItems(contextMenu, uiSourceCode);
-    if (projectType !== Workspace.projectTypes.FileSystem)
+    if (projectType !== Workspace.projectTypes.FileSystem) {
       contextMenu.appendItem(
-          Common.UIString.capitalize('Local ^modifications\u2026'),
-          this._showLocalHistory.bind(this, uiSourceCode));
+          Common.UIString.capitalize('Local ^modifications\u2026'), this._showLocalHistory.bind(this, uiSourceCode));
+    }
   }
 
   /**
@@ -875,9 +873,10 @@ Sources.SourcesPanel = class extends UI.Panel {
     if (contentType.hasScripts()) {
       var target = UI.context.flavor(SDK.Target);
       var debuggerModel = SDK.DebuggerModel.fromTarget(target);
-      if (debuggerModel && debuggerModel.isPaused())
+      if (debuggerModel && debuggerModel.isPaused()) {
         contextMenu.appendItem(
             Common.UIString.capitalize('Continue to ^here'), this._continueToLocation.bind(this, uiLocation));
+      }
     }
 
     if (contentType.hasScripts() && projectType !== Workspace.projectTypes.Snippets)
@@ -901,12 +900,12 @@ Sources.SourcesPanel = class extends UI.Panel {
       return;
     var remoteObject = /** @type {!SDK.RemoteObject} */ (target);
     contextMenu.appendItem(
-        Common.UIString.capitalize('Store as ^global ^variable'),
-        this._saveToTempVariable.bind(this, remoteObject));
-    if (remoteObject.type === 'function')
+        Common.UIString.capitalize('Store as ^global ^variable'), this._saveToTempVariable.bind(this, remoteObject));
+    if (remoteObject.type === 'function') {
       contextMenu.appendItem(
           Common.UIString.capitalize('Show ^function ^definition'),
           this._showFunctionDefinition.bind(this, remoteObject));
+    }
   }
 
   /**
@@ -952,11 +951,12 @@ Sources.SourcesPanel = class extends UI.Panel {
         return name;
       }
 
-      if (!!exceptionDetails || !global)
+      if (!!exceptionDetails || !global) {
         failedToSave(global);
-      else
+      } else {
         global.callFunction(
             remoteFunction, [SDK.RemoteObject.toCallArgument(remoteObject)], didSave.bind(null, global));
+      }
     }
 
     /**
@@ -966,11 +966,12 @@ Sources.SourcesPanel = class extends UI.Panel {
      */
     function didSave(global, result, wasThrown) {
       global.release();
-      if (wasThrown || !result || result.type !== 'string')
+      if (wasThrown || !result || result.type !== 'string') {
         failedToSave(result);
-      else
+      } else {
         SDK.ConsoleModel.evaluateCommandInConsole(
             /** @type {!SDK.ExecutionContext} */ (currentExecutionContext), result.value);
+      }
     }
 
     /**
@@ -1303,8 +1304,7 @@ Sources.SourcesPanel.WrapperView = class extends UI.VBox {
    * @return {boolean}
    */
   static isShowing() {
-    return !!Sources.SourcesPanel.WrapperView._instance &&
-        Sources.SourcesPanel.WrapperView._instance.isShowing();
+    return !!Sources.SourcesPanel.WrapperView._instance && Sources.SourcesPanel.WrapperView._instance.isShowing();
   }
 
   /**

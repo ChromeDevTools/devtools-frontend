@@ -21,8 +21,7 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
     var proxyElement = this._prompt.attach(this._input);
     proxyElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
 
-    SDK.targetManager.addModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.DOMMutated, this._onDOMMutated, this);
+    SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.DOMMutated, this._onDOMMutated, this);
     /** @type {!Set<!SDK.DOMNode>} */
     this._mutatingNodes = new Set();
     UI.context.addFlavorChangeListener(SDK.DOMNode, this._update, this);

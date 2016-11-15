@@ -53,8 +53,7 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
     this._controlButton = createTextButton('', this._controlButtonClicked.bind(this), 'control-profiling');
     this._contentElement.appendChild(this._controlButton);
     this._recordButtonEnabled = true;
-    this._loadButton =
-        createTextButton(Common.UIString('Load'), this._loadButtonClicked.bind(this), 'load-profile');
+    this._loadButton = createTextButton(Common.UIString('Load'), this._loadButtonClicked.bind(this), 'load-profile');
     this._contentElement.appendChild(this._loadButton);
     SDK.targetManager.observeTargets(this);
   }
@@ -83,8 +82,7 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
   }
 
   _updateLoadButtonLayout() {
-    this._loadButton.classList.toggle(
-        'multi-target', SDK.targetManager.targets(SDK.Target.Capability.JS).length > 1);
+    this._loadButton.classList.toggle('multi-target', SDK.targetManager.targets(SDK.Target.Capability.JS).length > 1);
   }
 
   /**

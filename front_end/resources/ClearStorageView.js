@@ -23,9 +23,9 @@ Resources.ClearStorageView = class extends UI.VBox {
              of [Protocol.Storage.StorageType.Appcache, Protocol.Storage.StorageType.Cache_storage,
                  Protocol.Storage.StorageType.Cookies, Protocol.Storage.StorageType.Indexeddb,
                  Protocol.Storage.StorageType.Local_storage, Protocol.Storage.StorageType.Service_workers,
-                 Protocol.Storage.StorageType.Websql]) {
+                 Protocol.Storage.StorageType.Websql])
       this._settings.set(type, Common.settings.createSetting('clear-storage-' + type, true));
-    }
+
 
     var application = this._reportView.appendSection(Common.UIString('Application'));
     this._appendItem(application, Common.UIString('Unregister service workers'), 'service_workers');

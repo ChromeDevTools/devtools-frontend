@@ -219,9 +219,11 @@ TimelineModel.TimelineFrameModel = class {
     frame._setEndTime(endTime);
     if (this._lastLayerTree)
       this._lastLayerTree._setPaints(frame._paints);
-    if (this._frames.length && (frame.startTime !== this._frames.peekLast().endTime || frame.startTime > frame.endTime))
+    if (this._frames.length &&
+        (frame.startTime !== this._frames.peekLast().endTime || frame.startTime > frame.endTime)) {
       console.assert(
           false, `Inconsistent frame time for frame ${this._frames.length} (${frame.startTime} - ${frame.endTime})`);
+    }
     this._frames.push(frame);
     if (typeof frame._mainFrameId === 'number')
       this._frameById[frame._mainFrameId] = frame;
@@ -281,8 +283,8 @@ TimelineModel.TimelineFrameModel = class {
     } else if (event.name === eventNames.TracingStartedInPage) {
       this._mainThread = event.thread;
     } else if (
-        event.phase === SDK.TracingModel.Phase.SnapshotObject &&
-        event.name === eventNames.LayerTreeHostImplSnapshot && parseInt(event.id, 0) === this._layerTreeId) {
+        event.phase === SDK.TracingModel.Phase.SnapshotObject && event.name === eventNames.LayerTreeHostImplSnapshot &&
+        parseInt(event.id, 0) === this._layerTreeId) {
       var snapshot = /** @type {!SDK.TracingModel.ObjectSnapshot} */ (event);
       this.handleLayerTreeSnapshot(new TimelineModel.TracingFrameLayerTree(this._target, snapshot));
     } else {
@@ -328,9 +330,10 @@ TimelineModel.TimelineFrameModel = class {
       this._currentTaskTimeByCategory = {};
       this._lastTaskBeginTime = event.startTime;
     }
-    if (!this._framePendingCommit && TimelineModel.TimelineFrameModel._mainFrameMarkers.indexOf(event.name) >= 0)
+    if (!this._framePendingCommit && TimelineModel.TimelineFrameModel._mainFrameMarkers.indexOf(event.name) >= 0) {
       this._framePendingCommit =
           new TimelineModel.PendingFrame(this._lastTaskBeginTime || event.startTime, this._currentTaskTimeByCategory);
+    }
     if (!this._framePendingCommit) {
       this._addTimeForCategory(this._currentTaskTimeByCategory, event);
       return;
@@ -339,7 +342,8 @@ TimelineModel.TimelineFrameModel = class {
 
     if (event.name === eventNames.BeginMainThreadFrame && event.args['data'] && event.args['data']['frameId'])
       this._framePendingCommit.mainFrameId = event.args['data']['frameId'];
-    if (event.name === eventNames.Paint && event.args['data']['layerId'] && TimelineModel.TimelineData.forEvent(event).picture && this._target)
+    if (event.name === eventNames.Paint && event.args['data']['layerId'] &&
+        TimelineModel.TimelineData.forEvent(event).picture && this._target)
       this._framePendingCommit.paints.push(new TimelineModel.LayerPaintEvent(event, this._target));
     if (event.name === eventNames.CompositeLayers && event.args['layerTreeId'] === this._layerTreeId)
       this.handleCompositeLayers();

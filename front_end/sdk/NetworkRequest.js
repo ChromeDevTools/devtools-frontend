@@ -517,10 +517,10 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
 
       var inspectedURL = this.target().inspectedURL().asParsedURL();
       this._path = this._path.trimURL(inspectedURL ? inspectedURL.host : '');
-      if (this._parsedURL.lastPathComponent || this._parsedURL.queryParams)
+      if (this._parsedURL.lastPathComponent || this._parsedURL.queryParams) {
         this._name =
             this._parsedURL.lastPathComponent + (this._parsedURL.queryParams ? '?' + this._parsedURL.queryParams : '');
-      else if (this._parsedURL.folderPathComponents) {
+      } else if (this._parsedURL.folderPathComponents) {
         this._name =
             this._parsedURL.folderPathComponents.substring(this._parsedURL.folderPathComponents.lastIndexOf('/') + 1) +
             '/';
@@ -734,8 +734,7 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
    */
   get responseCookies() {
     if (!this._responseCookies)
-      this._responseCookies =
-          SDK.CookieParser.parseSetCookie(this.target(), this.responseHeaderValue('Set-Cookie'));
+      this._responseCookies = SDK.CookieParser.parseSetCookie(this.target(), this.responseHeaderValue('Set-Cookie'));
     return this._responseCookies;
   }
 
@@ -1137,8 +1136,7 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
    * @param {boolean} sent
    */
   addFrame(response, time, sent) {
-    var type = sent ? SDK.NetworkRequest.WebSocketFrameType.Send :
-                      SDK.NetworkRequest.WebSocketFrameType.Receive;
+    var type = sent ? SDK.NetworkRequest.WebSocketFrameType.Send : SDK.NetworkRequest.WebSocketFrameType.Receive;
     this._addFrame({
       type: type,
       text: response.payloadData,

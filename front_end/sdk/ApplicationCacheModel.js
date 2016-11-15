@@ -41,8 +41,7 @@ SDK.ApplicationCacheModel = class extends SDK.SDKModel {
     this._agent = target.applicationCacheAgent();
     this._agent.enable();
 
-    resourceTreeModel.addEventListener(
-        SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
 
     this._statuses = {};
@@ -113,9 +112,10 @@ SDK.ApplicationCacheModel = class extends SDK.SDKModel {
       return;
     }
 
-    for (var i = 0; i < framesWithManifests.length; ++i)
+    for (var i = 0; i < framesWithManifests.length; ++i) {
       this._frameManifestUpdated(
           framesWithManifests[i].frameId, framesWithManifests[i].manifestURL, framesWithManifests[i].status);
+    }
   }
 
   /**

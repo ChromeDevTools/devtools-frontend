@@ -73,8 +73,7 @@ Components.LineLevelProfile = class {
       var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
       if (!uiSourceCode)
         continue;
-      var target =
-          Bindings.NetworkProject.targetForUISourceCode(uiSourceCode) || SDK.targetManager.mainTarget();
+      var target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode) || SDK.targetManager.mainTarget();
       var debuggerModel = target ? SDK.DebuggerModel.fromTarget(target) : null;
       if (!debuggerModel)
         continue;
@@ -110,13 +109,15 @@ Components.LineLevelProfile.Presentation = class {
    * @param {!Bindings.LiveLocation} liveLocation
    */
   updateLocation(liveLocation) {
-    if (this._uiLocation)
+    if (this._uiLocation) {
       this._uiLocation.uiSourceCode.removeLineDecoration(
           this._uiLocation.lineNumber, Components.LineLevelProfile.LineDecorator.type);
+    }
     this._uiLocation = liveLocation.uiLocation();
-    if (this._uiLocation)
+    if (this._uiLocation) {
       this._uiLocation.uiSourceCode.addLineDecoration(
           this._uiLocation.lineNumber, Components.LineLevelProfile.LineDecorator.type, this._time);
+    }
   }
 };
 

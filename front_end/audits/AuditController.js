@@ -38,8 +38,7 @@ Audits.AuditController = class {
    */
   constructor(auditsPanel) {
     this._auditsPanel = auditsPanel;
-    SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.Load, this._didMainResourceLoad, this);
+    SDK.targetManager.addEventListener(SDK.TargetManager.Events.Load, this._didMainResourceLoad, this);
     SDK.targetManager.addModelListener(
         SDK.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this._didLoadResource, this);
   }

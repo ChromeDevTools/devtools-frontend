@@ -260,9 +260,8 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
     var result = [];
     for (var securityOrigin in this._databaseNamesBySecurityOrigin) {
       var databaseNames = this._databaseNamesBySecurityOrigin[securityOrigin];
-      for (var i = 0; i < databaseNames.length; ++i) {
+      for (var i = 0; i < databaseNames.length; ++i)
         result.push(new Resources.IndexedDBModel.DatabaseId(securityOrigin, databaseNames[i]));
-      }
     }
     return result;
   }

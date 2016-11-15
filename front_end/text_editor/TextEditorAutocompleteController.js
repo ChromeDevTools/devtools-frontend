@@ -114,8 +114,9 @@ TextEditor.TextEditorAutocompleteController = class {
    * @return {!Promise.<!UI.SuggestBox.Suggestions>}
    */
   _wordsWithQuery(queryRange, substituteRange, force, tokenType) {
-    var external =
-        this._config.suggestionsCallback ? this._config.suggestionsCallback(queryRange, substituteRange, force, tokenType) : null;
+    var external = this._config.suggestionsCallback ?
+        this._config.suggestionsCallback(queryRange, substituteRange, force, tokenType) :
+        null;
     if (external)
       return external;
 
@@ -283,11 +284,12 @@ TextEditor.TextEditorAutocompleteController = class {
       }
     }
 
-    if (!this._hintMarker)
+    if (!this._hintMarker) {
       this._hintMarker = this._textEditor.addBookmark(
           cursor.line, cursor.ch, this._hintElement, TextEditor.TextEditorAutocompleteController.HintBookmark, true);
-    else if (this._lastHintText !== hint)
+    } else if (this._lastHintText !== hint) {
       this._hintMarker.refresh();
+    }
     this._lastHintText = hint;
   }
 
@@ -391,9 +393,9 @@ TextEditor.TextEditorAutocompleteController = class {
     var scrollInfo = this._codeMirror.getScrollInfo();
     var topmostLineNumber = this._codeMirror.lineAtHeight(scrollInfo.top, 'local');
     var bottomLine = this._codeMirror.lineAtHeight(scrollInfo.top + scrollInfo.clientHeight, 'local');
-    if (cursor.line < topmostLineNumber || cursor.line > bottomLine)
+    if (cursor.line < topmostLineNumber || cursor.line > bottomLine) {
       this.clearAutocomplete();
-    else {
+    } else {
       this._updateAnchorBox();
       this._suggestBox.setPosition(this._anchorBox);
     }

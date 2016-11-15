@@ -73,8 +73,9 @@ Common.Color = class {
         if (hex.length === 3) {
           format = Common.Color.Format.ShortHEX;
           hex = hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
-        } else
+        } else {
           format = Common.Color.Format.HEX;
+        }
         var r = parseInt(hex.substring(0, 2), 16);
         var g = parseInt(hex.substring(2, 4), 16);
         var b = parseInt(hex.substring(4, 6), 16);
@@ -150,8 +151,7 @@ Common.Color = class {
    * @return {!Common.Color}
    */
   static fromRGBA(rgba) {
-    return new Common.Color(
-        [rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]], Common.Color.Format.RGBA);
+    return new Common.Color([rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]], Common.Color.Format.RGBA);
   }
 
   /**

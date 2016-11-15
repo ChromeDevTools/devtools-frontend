@@ -14,8 +14,7 @@ UI.HistoryInput = class extends HTMLInputElement {
    */
   static create() {
     if (!UI.HistoryInput._constructor)
-      UI.HistoryInput._constructor =
-          registerCustomElement('input', 'history-input', UI.HistoryInput.prototype);
+      UI.HistoryInput._constructor = registerCustomElement('input', 'history-input', UI.HistoryInput.prototype);
 
     return /** @type {!UI.HistoryInput} */ (new UI.HistoryInput._constructor());
   }

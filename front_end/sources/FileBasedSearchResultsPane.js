@@ -77,8 +77,8 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends TreeElement {
 
   _updateMatchesUI() {
     this.removeChildren();
-    var toIndex = Math.min(
-        this._searchResult.searchMatches.length, Sources.FileBasedSearchResultsPane.fileMatchesShownAtOnce);
+    var toIndex =
+        Math.min(this._searchResult.searchMatches.length, Sources.FileBasedSearchResultsPane.fileMatchesShownAtOnce);
     if (toIndex < this._searchResult.searchMatches.length) {
       this._appendSearchMatches(0, toIndex - 1);
       this._appendShowMoreMatchesElement(toIndex - 1);

@@ -531,8 +531,7 @@ UI.TabbedPane = class extends UI.VBox {
     var dropDownContainer = createElementWithClass('div', 'tabbed-pane-header-tabs-drop-down-container');
     dropDownContainer.createChild('div', 'glyph');
     this._dropDownMenu = new UI.DropDownMenu(dropDownContainer);
-    this._dropDownMenu.addEventListener(
-        UI.DropDownMenu.Events.ItemSelected, this._dropDownMenuItemSelected, this);
+    this._dropDownMenu.addEventListener(UI.DropDownMenu.Events.ItemSelected, this._dropDownMenuItemSelected, this);
 
     return dropDownContainer;
   }
@@ -690,9 +689,10 @@ UI.TabbedPane = class extends UI.VBox {
       var extraWidth = measuredWidths[i] - measuredWidths[i - 1];
       totalExtraWidth += (measuredWidths.length - i) * extraWidth;
 
-      if (totalWidth + totalExtraWidth >= totalMeasuredWidth)
+      if (totalWidth + totalExtraWidth >= totalMeasuredWidth) {
         return measuredWidths[i - 1] +
             (totalWidth + totalExtraWidth - totalMeasuredWidth) / (measuredWidths.length - i);
+      }
     }
 
     return totalWidth / measuredWidths.length;
@@ -1039,10 +1039,11 @@ UI.TabbedPaneTab = class {
       tabElement.addEventListener('mouseup', this._tabMouseUp.bind(this), false);
 
       tabElement.addEventListener('contextmenu', this._tabContextMenu.bind(this), false);
-      if (this._tabbedPane._allowTabReorder)
+      if (this._tabbedPane._allowTabReorder) {
         UI.installDragHandle(
             tabElement, this._startTabDragging.bind(this), this._tabDragging.bind(this),
             this._endTabDragging.bind(this), '-webkit-grabbing', 'pointer', 200);
+      }
     }
 
     return tabElement;

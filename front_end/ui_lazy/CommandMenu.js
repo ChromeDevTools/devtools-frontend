@@ -36,8 +36,7 @@ UI.CommandMenu = class {
     var category = extension.descriptor()['category'] || '';
     var tags = extension.descriptor()['tags'] || '';
     var setting = Common.settings.moduleSetting(extension.descriptor()['settingName']);
-    return UI.CommandMenu.createCommand(
-        category, tags, title, '', setting.set.bind(setting, value), availableHandler);
+    return UI.CommandMenu.createCommand(category, tags, title, '', setting.set.bind(setting, value), availableHandler);
 
     /**
      * @return {boolean}

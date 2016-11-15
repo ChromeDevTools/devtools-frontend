@@ -46,8 +46,7 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
         Resources.DOMStorage.Events.DOMStorageItemsCleared, this._domStorageItemsCleared, this);
     this.domStorage.addEventListener(
         Resources.DOMStorage.Events.DOMStorageItemRemoved, this._domStorageItemRemoved, this);
-    this.domStorage.addEventListener(
-        Resources.DOMStorage.Events.DOMStorageItemAdded, this._domStorageItemAdded, this);
+    this.domStorage.addEventListener(Resources.DOMStorage.Events.DOMStorageItemAdded, this._domStorageItemAdded, this);
     this.domStorage.addEventListener(
         Resources.DOMStorage.Events.DOMStorageItemUpdated, this._domStorageItemUpdated, this);
   }
@@ -124,9 +123,10 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
     event.consume(true);
     this.deleteButton.setVisible(true);
 
-    for (var i = 0; i < children.length; ++i)
+    for (var i = 0; i < children.length; ++i) {
       if (children[i].data.key === storageData.key)
         return;
+    }
 
     var childNode = new UI.DataGridNode({key: storageData.key, value: storageData.value}, false);
     rootNode.insertChild(childNode, children.length - 1);
@@ -198,8 +198,7 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
       keys.push(key);
     }
 
-    var dataGrid =
-        new UI.DataGrid(columns, this._editingCallback.bind(this), this._deleteCallback.bind(this));
+    var dataGrid = new UI.DataGrid(columns, this._editingCallback.bind(this), this._deleteCallback.bind(this));
     dataGrid.setName('DOMStorageItemsView');
     length = nodes.length;
     for (var i = 0; i < length; ++i)
@@ -228,8 +227,9 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
         domStorage.removeItem(oldText);
       domStorage.setItem(newText, editingNode.data.value || '');
       this._removeDupes(editingNode);
-    } else
+    } else {
       domStorage.setItem(editingNode.data.key || '', newText);
+    }
   }
 
   /**

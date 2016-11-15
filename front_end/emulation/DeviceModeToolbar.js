@@ -85,8 +85,8 @@ Emulation.DeviceModeToolbar = class {
     widthInput.maxLength = 4;
     widthInput.type = 'text';
     widthInput.title = Common.UIString('Width');
-    this._updateWidthInput = UI.bindInput(
-        widthInput, this._applyWidth.bind(this), Emulation.DeviceModeModel.deviceSizeValidator, true);
+    this._updateWidthInput =
+        UI.bindInput(widthInput, this._applyWidth.bind(this), Emulation.DeviceModeModel.deviceSizeValidator, true);
     this._widthInput = widthInput;
     this._widthItem = this._wrapToolbarItem(widthInput);
     toolbar.appendToolbarItem(this._widthItem);
@@ -282,20 +282,17 @@ Emulation.DeviceModeToolbar = class {
   _appendOptionsMenuItems(contextMenu) {
     var model = this._model;
     appendToggleItem(
-        this._deviceOutlineSetting, Common.UIString('Hide device frame'),
-        Common.UIString('Show device frame'), model.type() !== Emulation.DeviceModeModel.Type.Device);
+        this._deviceOutlineSetting, Common.UIString('Hide device frame'), Common.UIString('Show device frame'),
+        model.type() !== Emulation.DeviceModeModel.Type.Device);
     appendToggleItem(
-        this._showMediaInspectorSetting, Common.UIString('Hide media queries'),
-        Common.UIString('Show media queries'));
-    appendToggleItem(
-        this._showRulersSetting, Common.UIString('Hide rulers'), Common.UIString('Show rulers'));
+        this._showMediaInspectorSetting, Common.UIString('Hide media queries'), Common.UIString('Show media queries'));
+    appendToggleItem(this._showRulersSetting, Common.UIString('Hide rulers'), Common.UIString('Show rulers'));
     contextMenu.appendSeparator();
     appendToggleItem(
         this._showDeviceScaleFactorSetting, Common.UIString('Remove device pixel ratio'),
         Common.UIString('Add device pixel ratio'));
     appendToggleItem(
-        this._showUserAgentTypeSetting, Common.UIString('Remove device type'),
-        Common.UIString('Add device type'));
+        this._showUserAgentTypeSetting, Common.UIString('Remove device type'), Common.UIString('Add device type'));
     appendToggleItem(
         this._showNetworkConditionsSetting, Common.UIString('Remove network throttling'),
         Common.UIString('Add network throttling'));
@@ -395,8 +392,8 @@ Emulation.DeviceModeToolbar = class {
     appendGroup.call(this, this._customDevices());
     contextMenu.appendSeparator();
     contextMenu.appendItem(
-        Common.UIString('Edit\u2026'),
-        this._emulatedDevicesList.revealCustomSetting.bind(this._emulatedDevicesList), false);
+        Common.UIString('Edit\u2026'), this._emulatedDevicesList.revealCustomSetting.bind(this._emulatedDevicesList),
+        false);
 
     /**
      * @param {!Array<!Emulation.EmulatedDevice>} devices
@@ -406,9 +403,10 @@ Emulation.DeviceModeToolbar = class {
       if (!devices.length)
         return;
       contextMenu.appendSeparator();
-      for (var device of devices)
+      for (var device of devices) {
         contextMenu.appendCheckboxItem(
             device.title, this._emulateDevice.bind(this, device), this._model.device() === device, false);
+      }
     }
   }
 
@@ -546,16 +544,16 @@ Emulation.DeviceModeToolbar = class {
       if (device) {
         var modeCount = device ? device.modes.length : 0;
         this._modeButton.setEnabled(modeCount >= 2);
-        this._modeButton.setTitle(
-            modeCount === 2 ? Common.UIString('Rotate') : Common.UIString('Screen options'));
+        this._modeButton.setTitle(modeCount === 2 ? Common.UIString('Rotate') : Common.UIString('Screen options'));
       }
       this._cachedModelDevice = device;
     }
 
-    if (this._model.type() === Emulation.DeviceModeModel.Type.Device)
+    if (this._model.type() === Emulation.DeviceModeModel.Type.Device) {
       this._lastMode.set(
           /** @type {!Emulation.EmulatedDevice} */ (this._model.device()),
           /** @type {!Emulation.EmulatedDevice.Mode} */ (this._model.mode()));
+    }
 
     if (this._model.mode() !== this._cachedModelMode && this._model.type() !== Emulation.DeviceModeModel.Type.None) {
       this._cachedModelMode = this._model.mode();

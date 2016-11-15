@@ -39,16 +39,15 @@ SDK.CSSMatchedStyles = class {
     function addAttributesStyle() {
       if (!attributesPayload)
         return;
-      var style = new SDK.CSSStyleDeclaration(
-          cssModel, null, attributesPayload, SDK.CSSStyleDeclaration.Type.Attributes);
+      var style =
+          new SDK.CSSStyleDeclaration(cssModel, null, attributesPayload, SDK.CSSStyleDeclaration.Type.Attributes);
       this._nodeForStyle.set(style, this._node);
       this._nodeStyles.push(style);
     }
 
     // Inline style has the greatest specificity.
     if (inlinePayload && this._node.nodeType() === Node.ELEMENT_NODE) {
-      var style = new SDK.CSSStyleDeclaration(
-          cssModel, null, inlinePayload, SDK.CSSStyleDeclaration.Type.Inline);
+      var style = new SDK.CSSStyleDeclaration(cssModel, null, inlinePayload, SDK.CSSStyleDeclaration.Type.Inline);
       this._nodeForStyle.set(style, this._node);
       this._nodeStyles.push(style);
     }
@@ -75,8 +74,7 @@ SDK.CSSMatchedStyles = class {
     for (var i = 0; parentNode && inheritedPayload && i < inheritedPayload.length; ++i) {
       var entryPayload = inheritedPayload[i];
       var inheritedInlineStyle = entryPayload.inlineStyle ?
-          new SDK.CSSStyleDeclaration(
-              cssModel, null, entryPayload.inlineStyle, SDK.CSSStyleDeclaration.Type.Inline) :
+          new SDK.CSSStyleDeclaration(cssModel, null, entryPayload.inlineStyle, SDK.CSSStyleDeclaration.Type.Inline) :
           null;
       if (inheritedInlineStyle && this._containsInherited(inheritedInlineStyle)) {
         this._nodeForStyle.set(inheritedInlineStyle, parentNode);
@@ -395,8 +393,8 @@ SDK.CSSMatchedStyles = class {
 
           foundImportantProperties.add(canonicalName);
           if (isKnownProperty) {
-            var overloaded = /** @type {!SDK.CSSProperty} */ (
-                propertyToEffectiveRule.get(canonicalName).get(canonicalName));
+            var overloaded =
+                /** @type {!SDK.CSSProperty} */ (propertyToEffectiveRule.get(canonicalName).get(canonicalName));
             result.set(overloaded, SDK.CSSMatchedStyles.PropertyState.Overloaded);
             propertyToEffectiveRule.get(canonicalName).delete(canonicalName);
           }

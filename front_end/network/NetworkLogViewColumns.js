@@ -92,8 +92,8 @@ Network.NetworkLogViewColumns = class {
     this._popoverHelper.initializeCallbacks(
         this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
 
-    this._dataGrid = new UI.SortableDataGrid(
-        this._columns.map(Network.NetworkLogViewColumns._convertToDataGridDescriptor));
+    this._dataGrid =
+        new UI.SortableDataGrid(this._columns.map(Network.NetworkLogViewColumns._convertToDataGridDescriptor));
     this._dataGrid.element.addEventListener('mousedown', event => {
       if ((!this._dataGrid.selectedNode && event.button) || event.target.enclosingNodeOrSelfWithNodeName('a'))
         event.consume();
@@ -106,8 +106,7 @@ Network.NetworkLogViewColumns = class {
     this._dataGrid.setHeaderContextMenuCallback(this._innerHeaderContextMenu.bind(this));
 
     this._activeWaterfallSortId = Network.NetworkLogViewColumns.WaterfallSortIds.StartTime;
-    this._dataGrid.markColumnAsSortedBy(
-        Network.NetworkLogViewColumns._initialSortColumn, UI.DataGrid.Order.Ascending);
+    this._dataGrid.markColumnAsSortedBy(Network.NetworkLogViewColumns._initialSortColumn, UI.DataGrid.Order.Ascending);
 
     this._splitWidget = new UI.SplitWidget(true, true, 'networkPanelSplitViewWaterfall', 200);
     var widget = this._dataGrid.asWidget();
@@ -228,7 +227,7 @@ Network.NetworkLogViewColumns = class {
     var innerElement = this._waterfallHeaderElement.createChild('div');
     innerElement.textContent = Common.UIString('Waterfall');
     this._waterfallColumnSortIcon = this._waterfallHeaderElement.createChild('div', 'sort-order-icon-container')
-        .createChild('div', 'sort-order-icon');
+                                        .createChild('div', 'sort-order-icon');
 
     /**
      * @this {Network.NetworkLogViewColumns}
@@ -295,8 +294,7 @@ Network.NetworkLogViewColumns = class {
         this._waterfallColumnSortIcon.classList.add('sort-descending');
 
       this._waterfallRequestsAreStale = true;
-      var sortFunction =
-          Network.NetworkDataGridNode.RequestPropertyComparator.bind(null, this._activeWaterfallSortId);
+      var sortFunction = Network.NetworkDataGridNode.RequestPropertyComparator.bind(null, this._activeWaterfallSortId);
       this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
       return;
     }
@@ -359,9 +357,9 @@ Network.NetworkLogViewColumns = class {
 
   _saveColumns() {
     var saveableSettings = {};
-    for (var columnConfig of this._columns) {
+    for (var columnConfig of this._columns)
       saveableSettings[columnConfig.id] = {visible: columnConfig.visible, title: columnConfig.title};
-    }
+
     this._persistantSettings.set(saveableSettings);
   }
 

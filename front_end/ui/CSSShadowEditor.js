@@ -29,8 +29,7 @@ UI.CSSShadowEditor = class extends UI.VBox {
     this._xySlider.tabIndex = -1;
     this._halfCanvasSize = UI.CSSShadowEditor.canvasSize / 2;
     this._innerCanvasSize = this._halfCanvasSize - UI.CSSShadowEditor.sliderThumbRadius;
-    UI.installDragHandle(
-        this._xySlider, this._dragStart.bind(this), this._dragMove.bind(this), null, 'default');
+    UI.installDragHandle(this._xySlider, this._dragStart.bind(this), this._dragMove.bind(this), null, 'default');
     this._xySlider.addEventListener('keydown', this._onCanvasArrowKey.bind(this), false);
     this._xySlider.addEventListener('blur', this._onCanvasBlur.bind(this), false);
 
@@ -299,17 +298,17 @@ UI.CSSShadowEditor = class extends UI.VBox {
     var newY = Math.round((constrainedPoint.y / this._innerCanvasSize) * UI.CSSShadowEditor.maxRange);
 
     if (event.shiftKey) {
-      this._model.setOffsetX(
-          new Common.CSSLength(newX, this._model.offsetX().unit || UI.CSSShadowEditor.defaultUnit));
-      this._model.setOffsetY(
-          new Common.CSSLength(newY, this._model.offsetY().unit || UI.CSSShadowEditor.defaultUnit));
+      this._model.setOffsetX(new Common.CSSLength(newX, this._model.offsetX().unit || UI.CSSShadowEditor.defaultUnit));
+      this._model.setOffsetY(new Common.CSSLength(newY, this._model.offsetY().unit || UI.CSSShadowEditor.defaultUnit));
     } else {
-      if (!event.altKey)
+      if (!event.altKey) {
         this._model.setOffsetX(
             new Common.CSSLength(newX, this._model.offsetX().unit || UI.CSSShadowEditor.defaultUnit));
-      if (!UI.KeyboardShortcut.eventHasCtrlOrMeta(event))
+      }
+      if (!UI.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
         this._model.setOffsetY(
             new Common.CSSLength(newY, this._model.offsetY().unit || UI.CSSShadowEditor.defaultUnit));
+      }
     }
     this._xInput.value = this._model.offsetX().asCSSText();
     this._yInput.value = this._model.offsetY().asCSSText();
@@ -344,23 +343,21 @@ UI.CSSShadowEditor = class extends UI.VBox {
 
     if (shiftX) {
       var offsetX = this._model.offsetX();
-      var newAmount = Number.constrain(
-          offsetX.amount + shiftX, -UI.CSSShadowEditor.maxRange, UI.CSSShadowEditor.maxRange);
+      var newAmount =
+          Number.constrain(offsetX.amount + shiftX, -UI.CSSShadowEditor.maxRange, UI.CSSShadowEditor.maxRange);
       if (newAmount === offsetX.amount)
         return;
-      this._model.setOffsetX(
-          new Common.CSSLength(newAmount, offsetX.unit || UI.CSSShadowEditor.defaultUnit));
+      this._model.setOffsetX(new Common.CSSLength(newAmount, offsetX.unit || UI.CSSShadowEditor.defaultUnit));
       this._xInput.value = this._model.offsetX().asCSSText();
       this._xInput.classList.remove('invalid');
     }
     if (shiftY) {
       var offsetY = this._model.offsetY();
-      var newAmount = Number.constrain(
-          offsetY.amount + shiftY, -UI.CSSShadowEditor.maxRange, UI.CSSShadowEditor.maxRange);
+      var newAmount =
+          Number.constrain(offsetY.amount + shiftY, -UI.CSSShadowEditor.maxRange, UI.CSSShadowEditor.maxRange);
       if (newAmount === offsetY.amount)
         return;
-      this._model.setOffsetY(
-          new Common.CSSLength(newAmount, offsetY.unit || UI.CSSShadowEditor.defaultUnit));
+      this._model.setOffsetY(new Common.CSSLength(newAmount, offsetY.unit || UI.CSSShadowEditor.defaultUnit));
       this._yInput.value = this._model.offsetY().asCSSText();
       this._yInput.classList.remove('invalid');
     }

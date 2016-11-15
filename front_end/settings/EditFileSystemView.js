@@ -153,8 +153,7 @@ Settings.EditFileSystemView = class extends UI.VBox {
       element.classList.add('locked');
     if (item instanceof Workspace.FileSystemMapping.Entry) {
       var entry = /** @type {!Workspace.FileSystemMapping.Entry} */ (item);
-      var urlPrefix =
-          entry.configurable ? entry.urlPrefix : Common.UIString('%s (via .devtools)', entry.urlPrefix);
+      var urlPrefix = entry.configurable ? entry.urlPrefix : Common.UIString('%s (via .devtools)', entry.urlPrefix);
       var urlPrefixElement = element.createChild('div', 'file-system-value');
       urlPrefixElement.textContent = urlPrefix;
       urlPrefixElement.title = urlPrefix;
@@ -203,9 +202,10 @@ Settings.EditFileSystemView = class extends UI.VBox {
           this._fileSystemPath, this._normalizePrefix(editor.control('urlPrefix').value),
           this._normalizePrefix(editor.control('pathPrefix').value));
     } else {
-      if (!isNew)
+      if (!isNew) {
         Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
             .removeExcludedFolder(/** @type {string} */ (item));
+      }
       Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
           .addExcludedFolder(this._normalizePrefix(editor.control('pathPrefix').value));
     }

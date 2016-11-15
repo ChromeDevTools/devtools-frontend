@@ -341,8 +341,7 @@ Network.NetworkTimeCalculator._latencyFormat = new Common.UIStringFormat('%s lat
 Network.NetworkTimeCalculator._downloadFormat = new Common.UIStringFormat('%s download');
 
 /** @type {!Common.UIStringFormat} */
-Network.NetworkTimeCalculator._fromServiceWorkerFormat =
-    new Common.UIStringFormat('%s (from ServiceWorker)');
+Network.NetworkTimeCalculator._fromServiceWorkerFormat = new Common.UIStringFormat('%s (from ServiceWorker)');
 
 /** @type {!Common.UIStringFormat} */
 Network.NetworkTimeCalculator._fromCacheFormat = new Common.UIStringFormat('%s (from cache)');

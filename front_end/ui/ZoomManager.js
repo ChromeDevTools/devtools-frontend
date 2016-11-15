@@ -43,8 +43,7 @@ UI.ZoomManager = class extends Common.Object {
     var oldZoomFactor = this._zoomFactor;
     this._zoomFactor = this._frontendHost.zoomFactor();
     if (oldZoomFactor !== this._zoomFactor)
-      this.dispatchEventToListeners(
-          UI.ZoomManager.Events.ZoomChanged, {from: oldZoomFactor, to: this._zoomFactor});
+      this.dispatchEventToListeners(UI.ZoomManager.Events.ZoomChanged, {from: oldZoomFactor, to: this._zoomFactor});
   }
 };
 

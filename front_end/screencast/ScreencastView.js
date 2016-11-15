@@ -90,13 +90,11 @@ Screencast.ScreencastView = class extends UI.VBox {
     this._shortcuts[UI.KeyboardShortcut.makeKey('l', UI.KeyboardShortcut.Modifiers.Ctrl)] =
         this._focusNavigationBar.bind(this);
 
-    this._resourceTreeModel.addEventListener(
-        SDK.ResourceTreeModel.Events.ScreencastFrame, this._screencastFrame, this);
+    this._resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ScreencastFrame, this._screencastFrame, this);
     this._resourceTreeModel.addEventListener(
         SDK.ResourceTreeModel.Events.ScreencastVisibilityChanged, this._screencastVisibilityChanged, this);
 
-    SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChange, this);
+    SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChange, this);
     this._updateGlasspane();
   }
 
@@ -532,8 +530,7 @@ Screencast.ScreencastView = class extends UI.VBox {
   _cssColor(color) {
     if (!color)
       return 'transparent';
-    return Common.Color.fromRGBA([color.r, color.g, color.b, color.a]).asString(Common.Color.Format.RGBA) ||
-        '';
+    return Common.Color.fromRGBA([color.r, color.g, color.b, color.a]).asString(Common.Color.Format.RGBA) || '';
   }
 
   /**
@@ -625,8 +622,9 @@ Screencast.ScreencastView = class extends UI.VBox {
     } else if (anchorTop - titleHeight - arrowHeight > 0) {
       boxY = anchorTop - titleHeight - arrowHeight + 3;
       renderArrowDown = true;
-    } else
+    } else {
       boxY = arrowHeight;
+    }
 
     this._context.save();
     this._context.translate(0.5, 0.5);
@@ -804,10 +802,8 @@ Screencast.ScreencastView.ProgressTracker = class {
     this._element = element;
 
     SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.MainFrameNavigated,
-        this._onMainFrameNavigated, this);
-    SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._onLoad, this);
+        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
+    SDK.targetManager.addModelListener(SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._onLoad, this);
     SDK.targetManager.addModelListener(
         SDK.NetworkManager, SDK.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
     SDK.targetManager.addModelListener(

@@ -192,8 +192,8 @@ LayerViewer.LayerDetailsView.CompositingReasonDetail = {
   'canvas': Common.UIString('Composition due to the element being a <canvas> element.'),
   'plugin': Common.UIString('Composition due to association with a plugin.'),
   'iFrame': Common.UIString('Composition due to association with an <iframe> element.'),
-  'backfaceVisibilityHidden': Common.UIString(
-      'Composition due to association with an element with a "backface-visibility: hidden" style.'),
+  'backfaceVisibilityHidden':
+      Common.UIString('Composition due to association with an element with a "backface-visibility: hidden" style.'),
   'animation': Common.UIString('Composition due to association with an animated element.'),
   'filters': Common.UIString('Composition due to association with an element with CSS filters applied.'),
   'scrollDependentPosition': Common.UIString(
@@ -202,20 +202,19 @@ LayerViewer.LayerDetailsView.CompositingReasonDetail = {
       Common.UIString('Composition due to association with an element with a "overflow-scrolling: touch" style.'),
   'blending':
       Common.UIString('Composition due to association with an element that has blend mode other than "normal".'),
-  'assumedOverlap': Common.UIString(
-      'Composition due to association with an element that may overlap other composited elements.'),
-  'overlap':
-      Common.UIString('Composition due to association with an element overlapping other composited elements.'),
-  'negativeZIndexChildren': Common.UIString(
-      'Composition due to association with an element with descendants that have a negative z-index.'),
+  'assumedOverlap':
+      Common.UIString('Composition due to association with an element that may overlap other composited elements.'),
+  'overlap': Common.UIString('Composition due to association with an element overlapping other composited elements.'),
+  'negativeZIndexChildren':
+      Common.UIString('Composition due to association with an element with descendants that have a negative z-index.'),
   'transformWithCompositedDescendants':
       Common.UIString('Composition due to association with an element with composited descendants.'),
   'opacityWithCompositedDescendants': Common.UIString(
       'Composition due to association with an element with opacity applied and composited descendants.'),
   'maskWithCompositedDescendants':
       Common.UIString('Composition due to association with a masked element and composited descendants.'),
-  'reflectionWithCompositedDescendants': Common.UIString(
-      'Composition due to association with an element with a reflection and composited descendants.'),
+  'reflectionWithCompositedDescendants':
+      Common.UIString('Composition due to association with an element with a reflection and composited descendants.'),
   'filterWithCompositedDescendants': Common.UIString(
       'Composition due to association with an element with CSS filters applied and composited descendants.'),
   'blendingWithCompositedDescendants': Common.UIString(
@@ -223,8 +222,8 @@ LayerViewer.LayerDetailsView.CompositingReasonDetail = {
   'clipsCompositingDescendants':
       Common.UIString('Composition due to association with an element clipping compositing descendants.'),
   'perspective': Common.UIString('Composition due to association with an element with perspective applied.'),
-  'preserve3D': Common.UIString(
-      'Composition due to association with an element with a "transform-style: preserve-3d" style.'),
+  'preserve3D':
+      Common.UIString('Composition due to association with an element with a "transform-style: preserve-3d" style.'),
   'root': Common.UIString('Root layer.'),
   'layerForClip': Common.UIString('Layer for clip.'),
   'layerForScrollbar': Common.UIString('Layer for scrollbar.'),

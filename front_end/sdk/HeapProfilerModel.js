@@ -45,8 +45,7 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
    */
   lastSeenObjectId(lastSeenObjectId, timestamp) {
     this.dispatchEventToListeners(
-        SDK.HeapProfilerModel.Events.LastSeenObjectId,
-        {lastSeenObjectId: lastSeenObjectId, timestamp: timestamp});
+        SDK.HeapProfilerModel.Events.LastSeenObjectId, {lastSeenObjectId: lastSeenObjectId, timestamp: timestamp});
   }
 
   /**
@@ -63,8 +62,7 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
    */
   reportHeapSnapshotProgress(done, total, finished) {
     this.dispatchEventToListeners(
-        SDK.HeapProfilerModel.Events.ReportHeapSnapshotProgress,
-        {done: done, total: total, finished: finished});
+        SDK.HeapProfilerModel.Events.ReportHeapSnapshotProgress, {done: done, total: total, finished: finished});
   }
 
   resetProfiles() {

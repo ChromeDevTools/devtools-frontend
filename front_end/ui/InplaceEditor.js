@@ -154,7 +154,7 @@ UI.InplaceEditor = class {
      */
     function defaultFinishHandler(event) {
       var isMetaOrCtrl = Host.isMac() ? event.metaKey && !event.shiftKey && !event.ctrlKey && !event.altKey :
-                                                event.ctrlKey && !event.shiftKey && !event.metaKey && !event.altKey;
+                                        event.ctrlKey && !event.shiftKey && !event.metaKey && !event.altKey;
       if (isEnterKey(event) && (event.isMetaOrCtrlForTest || !isMultiline || isMetaOrCtrl))
         return 'commit';
       else if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code || event.key === 'Escape')

@@ -97,16 +97,13 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     if (originURL) {
       var parsedURL = originURL.asParsedURL();
       if (parsedURL)
-        result.push(
-            new UI.ToolbarText(Common.UIString('(source mapped from %s)', parsedURL.displayName)));
+        result.push(new UI.ToolbarText(Common.UIString('(source mapped from %s)', parsedURL.displayName)));
     }
 
     if (this.uiSourceCode().project().type() === Workspace.projectTypes.Snippets) {
       result.push(new UI.ToolbarSeparator(true));
       var runSnippet = UI.Toolbar.createActionButtonForId('debugger.run-snippet');
-      runSnippet.setText(Host.isMac() ?
-        Common.UIString('\u2318+Enter') :
-        Common.UIString('Ctrl+Enter'));
+      runSnippet.setText(Host.isMac() ? Common.UIString('\u2318+Enter') : Common.UIString('Ctrl+Enter'));
       result.push(runSnippet);
     }
 
@@ -124,8 +121,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     if (this._divergedInfobar)
       this._divergedInfobar.dispose();
 
-    var infobar = new UI.Infobar(
-        UI.Infobar.Type.Warning, Common.UIString('Workspace mapping mismatch'));
+    var infobar = new UI.Infobar(UI.Infobar.Type.Warning, Common.UIString('Workspace mapping mismatch'));
     this._divergedInfobar = infobar;
 
     var fileURL = this.uiSourceCode().url();
@@ -139,11 +135,12 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     infobar.createDetailsRowMessage();
     infobar.createDetailsRowMessage(Common.UIString('Possible solutions are:'));
 
-    if (Common.moduleSetting('cacheDisabled').get())
+    if (Common.moduleSetting('cacheDisabled').get()) {
       infobar.createDetailsRowMessage(' - ').createTextChild(Common.UIString('Reload inspected page'));
-    else
+    } else {
       infobar.createDetailsRowMessage(' - ').createTextChild(Common.UIString(
           'Check "Disable cache" in settings and reload inspected page (recommended setup for authoring and debugging)'));
+    }
     infobar.createDetailsRowMessage(' - ').createTextChild(Common.UIString(
         'Check that your file and script are both loaded from the correct source and their contents match'));
 
@@ -172,8 +169,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     if (this._blackboxInfobar)
       this._blackboxInfobar.dispose();
 
-    var infobar = new UI.Infobar(
-        UI.Infobar.Type.Warning, Common.UIString('This script is blackboxed in debugger'));
+    var infobar = new UI.Infobar(UI.Infobar.Type.Warning, Common.UIString('This script is blackboxed in debugger'));
     this._blackboxInfobar = infobar;
 
     infobar.createDetailsRowMessage(
@@ -263,22 +259,18 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
         contextMenu.appendItem(
             Common.UIString('Add conditional breakpoint…'), this._editBreakpointCondition.bind(this, lineNumber));
         contextMenu.appendItem(
-            Common.UIString('Never pause here'),
-            this._createNewBreakpoint.bind(this, lineNumber, 'false', true));
+            Common.UIString('Never pause here'), this._createNewBreakpoint.bind(this, lineNumber, 'false', true));
       } else {
         var breakpoint = breakpoints[0];
 
         // This row has a breakpoint, we want to show edit and remove breakpoint, and either disable or enable.
         contextMenu.appendItem(Common.UIString('Remove breakpoint'), breakpoint.remove.bind(breakpoint));
         contextMenu.appendItem(
-            Common.UIString('Edit breakpoint…'),
-            this._editBreakpointCondition.bind(this, lineNumber, breakpoint));
+            Common.UIString('Edit breakpoint…'), this._editBreakpointCondition.bind(this, lineNumber, breakpoint));
         if (breakpoint.enabled())
-          contextMenu.appendItem(
-              Common.UIString('Disable breakpoint'), breakpoint.setEnabled.bind(breakpoint, false));
+          contextMenu.appendItem(Common.UIString('Disable breakpoint'), breakpoint.setEnabled.bind(breakpoint, false));
         else
-          contextMenu.appendItem(
-              Common.UIString('Enable breakpoint'), breakpoint.setEnabled.bind(breakpoint, true));
+          contextMenu.appendItem(Common.UIString('Enable breakpoint'), breakpoint.setEnabled.bind(breakpoint, true));
       }
       resolve();
     }
@@ -401,9 +393,10 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
 
   _restoreBreakpointsIfConsistentScripts() {
     var scriptFiles = this._scriptFileForTarget.valuesArray();
-    for (var i = 0; i < scriptFiles.length; ++i)
+    for (var i = 0; i < scriptFiles.length; ++i) {
       if (scriptFiles[i].hasDivergedFromVM() || scriptFiles[i].isMergingToVM())
         return;
+    }
 
     this._restoreBreakpointsAfterEditing();
   }
@@ -667,9 +660,10 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
 
     var localScope = callFrame.localScope();
     var functionLocation = callFrame.functionLocation();
-    if (localScope && functionLocation)
+    if (localScope && functionLocation) {
       Sources.SourceMapNamesResolver.resolveScopeInObject(localScope)
           .getAllProperties(false, this._prepareScopeVariables.bind(this, callFrame));
+    }
 
     if (this._clearValueWidgetsTimer) {
       clearTimeout(this._clearValueWidgetsTimer);
@@ -856,9 +850,10 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
       return;
 
     var breakpoint = /** @type {!Bindings.BreakpointManager.Breakpoint} */ (event.data.breakpoint);
-    if (this.loaded)
+    if (this.loaded) {
       this._addBreakpointDecoration(
           uiLocation.lineNumber, uiLocation.columnNumber, breakpoint.condition(), breakpoint.enabled(), false);
+    }
   }
 
   _breakpointRemoved(event) {
@@ -914,8 +909,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
 
     if (newScriptFile) {
       newScriptFile.addEventListener(Bindings.ResourceScriptFile.Events.DidMergeToVM, this._didMergeToVM, this);
-      newScriptFile.addEventListener(
-          Bindings.ResourceScriptFile.Events.DidDivergeFromVM, this._didDivergeFromVM, this);
+      newScriptFile.addEventListener(Bindings.ResourceScriptFile.Events.DidDivergeFromVM, this._didDivergeFromVM, this);
       if (this.loaded)
         newScriptFile.checkMapping();
       if (newScriptFile.hasSourceMapURL()) {
@@ -1021,8 +1015,9 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
         breakpoints[0].setEnabled(!breakpoints[0].enabled());
       else
         breakpoints[0].remove();
-    } else
+    } else {
       this._createNewBreakpoint(lineNumber, '', true);
+    }
   }
 
   /**
@@ -1032,8 +1027,8 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
    */
   _createNewBreakpoint(lineNumber, condition, enabled) {
     findPossibleBreakpoints.call(this, lineNumber)
-      .then(checkNextLineIfNeeded.bind(this, lineNumber, 4))
-      .then(setBreakpoint.bind(this));
+        .then(checkNextLineIfNeeded.bind(this, lineNumber, 4))
+        .then(setBreakpoint.bind(this));
 
     /**
      * @this {!Sources.JavaScriptSourceFrame}
@@ -1043,10 +1038,11 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     function findPossibleBreakpoints(lineNumber) {
       const maxLengthToCheck = 1024;
       if (lineNumber >= this._textEditor.linesCount)
-        return Promise.resolve(/** @type {?Array<!Workspace.UILocation>} */([]));
+        return Promise.resolve(/** @type {?Array<!Workspace.UILocation>} */ ([]));
       if (this._textEditor.line(lineNumber).length >= maxLengthToCheck)
-        return Promise.resolve(/** @type {?Array<!Workspace.UILocation>} */([]));
-      return this._breakpointManager.possibleBreakpoints(this.uiSourceCode(), new Common.TextRange(lineNumber, 0, lineNumber + 1, 0))
+        return Promise.resolve(/** @type {?Array<!Workspace.UILocation>} */ ([]));
+      return this._breakpointManager
+          .possibleBreakpoints(this.uiSourceCode(), new Common.TextRange(lineNumber, 0, lineNumber + 1, 0))
           .then(locations => locations.length ? locations : null);
     }
 

@@ -434,18 +434,22 @@ TimelineModel.TracingLayer = class {
    */
   _createScrollRects(payload) {
     this._scrollRects = [];
-    if (payload.non_fast_scrollable_region)
+    if (payload.non_fast_scrollable_region) {
       this._scrollRects.push(this._scrollRectsFromParams(
           payload.non_fast_scrollable_region, SDK.Layer.ScrollRectType.NonFastScrollable.name));
-    if (payload.touch_event_handler_region)
+    }
+    if (payload.touch_event_handler_region) {
       this._scrollRects.push(this._scrollRectsFromParams(
           payload.touch_event_handler_region, SDK.Layer.ScrollRectType.TouchEventHandler.name));
-    if (payload.wheel_event_handler_region)
+    }
+    if (payload.wheel_event_handler_region) {
       this._scrollRects.push(this._scrollRectsFromParams(
           payload.wheel_event_handler_region, SDK.Layer.ScrollRectType.WheelEventHandler.name));
-    if (payload.scroll_event_handler_region)
+    }
+    if (payload.scroll_event_handler_region) {
       this._scrollRects.push(this._scrollRectsFromParams(
           payload.scroll_event_handler_region, SDK.Layer.ScrollRectType.RepaintsOnScroll.name));
+    }
   }
 
   /**

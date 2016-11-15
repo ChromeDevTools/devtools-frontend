@@ -510,8 +510,7 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
   }
 
   _update() {
-    if ((Object.keys(this._allowedTypes).length === 0) ||
-        this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES]) {
+    if ((Object.keys(this._allowedTypes).length === 0) || this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES]) {
       this._allowedTypes = {};
       this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES] = true;
     }

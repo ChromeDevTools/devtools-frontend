@@ -101,8 +101,9 @@ Common.TextUtils = {
         if (startWord !== -1)
           wordCallback(text.substring(startWord, i));
         startWord = -1;
-      } else if (startWord === -1)
+      } else if (startWord === -1) {
         startWord = i;
+      }
     }
     if (startWord !== -1)
       wordCallback(text.substring(startWord));

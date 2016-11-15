@@ -132,8 +132,7 @@ UI.DragHandler = class {
     this._elementDraggingEventListener = elementDrag;
     this._elementEndDraggingEventListener = elementDragEnd;
     console.assert(
-        (UI.DragHandler._documentForMouseOut || targetDocument) === targetDocument,
-        'Dragging on multiple documents.');
+        (UI.DragHandler._documentForMouseOut || targetDocument) === targetDocument, 'Dragging on multiple documents.');
     UI.DragHandler._documentForMouseOut = targetDocument;
     this._dragEventsTargetDocument = targetDocument;
     this._dragEventsTargetDocumentTop = targetDocument.defaultView.top.document;
@@ -310,9 +309,8 @@ UI.GlassPane = class {
   constructor(document, dimmed) {
     this.element = createElement('div');
     var background = dimmed ? 'rgba(255, 255, 255, 0.5)' : 'transparent';
-    this._zIndex = UI._glassPane ?
-        UI._glassPane._zIndex + 1000 :
-        3000;  // Deliberately starts with 3000 to hide other z-indexed elements below.
+    this._zIndex = UI._glassPane ? UI._glassPane._zIndex + 1000 :
+                                   3000;  // Deliberately starts with 3000 to hide other z-indexed elements below.
     this.element.style.cssText = 'position:absolute;top:0;bottom:0;left:0;right:0;background-color:' + background +
         ';z-index:' + this._zIndex + ';overflow:hidden;';
     document.body.appendChild(this.element);
@@ -524,9 +522,10 @@ UI.createReplacementString = function(wordString, event, customNumberHandler) {
       prefix = matches[1];
       suffix = matches[3];
       number = UI._modifiedFloatNumber(parseFloat(matches[2]), event);
-      if (number !== null)
+      if (number !== null) {
         replacementString =
             customNumberHandler ? customNumberHandler(prefix, number, suffix) : prefix + number + suffix;
+      }
     }
   }
   return replacementString;
@@ -540,8 +539,7 @@ UI.createReplacementString = function(wordString, event, customNumberHandler) {
  * @param {function(string, number, string):string=} customNumberHandler
  * @return {boolean}
  */
-UI.handleElementValueModifications = function(
-    event, element, finishHandler, suggestionHandler, customNumberHandler) {
+UI.handleElementValueModifications = function(event, element, finishHandler, suggestionHandler, customNumberHandler) {
   /**
    * @return {?Range}
    * @suppressGlobalPropertiesCheck
@@ -852,8 +850,7 @@ UI.highlightSearchResult = function(element, offset, length, domChanges) {
  * @return {!Array.<!Element>}
  */
 UI.highlightSearchResults = function(element, resultRanges, changes) {
-  return UI.highlightRangesWithStyleClass(
-      element, resultRanges, UI.highlightedSearchResultClassName, changes);
+  return UI.highlightRangesWithStyleClass(element, resultRanges, UI.highlightedSearchResultClassName, changes);
 };
 
 /**
@@ -1336,9 +1333,8 @@ UI.appendStyle = function(node, cssFile) {
     styleElement.textContent = themeStyleSheet + '\n' + Runtime.resolveSourceURL(cssFile + '.theme');
     node.appendChild(styleElement);
   }
-}
+};
 
-;
 (function() {
   registerCustomElement('button', 'text-button', {
     /**
@@ -1614,7 +1610,7 @@ UI.bindInput = function(input, apply, validate, numeric) {
   return setValue;
 };
 
-  /**
+/**
    * @param {!CanvasRenderingContext2D} context
    * @param {string} text
    * @param {number} maxWidth

@@ -74,9 +74,10 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
 
   _saveExpressions() {
     var toSave = [];
-    for (var i = 0; i < this._watchExpressions.length; i++)
+    for (var i = 0; i < this._watchExpressions.length; i++) {
       if (this._watchExpressions[i].expression())
         toSave.push(this._watchExpressions[i].expression());
+    }
 
     this._watchExpressionsSetting.set(toSave);
   }
@@ -167,19 +168,20 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
       isEditing |= watchExpression.isEditing();
 
     if (!isEditing)
-      contextMenu.appendItem(
-          Common.UIString.capitalize('Add ^watch ^expression'), this._addButtonClicked.bind(this));
+      contextMenu.appendItem(Common.UIString.capitalize('Add ^watch ^expression'), this._addButtonClicked.bind(this));
 
-    if (this._watchExpressions.length > 1)
+    if (this._watchExpressions.length > 1) {
       contextMenu.appendItem(
           Common.UIString.capitalize('Delete ^all ^watch ^expressions'), this._deleteAllButtonClicked.bind(this));
+    }
 
     var target = event.deepElementFromPoint();
     if (!target)
       return;
-    for (var watchExpression of this._watchExpressions)
+    for (var watchExpression of this._watchExpressions) {
       if (watchExpression.element().isSelfOrAncestor(target))
         watchExpression._populateContextMenu(contextMenu, event);
+    }
   }
 
   _deleteAllButtonClicked() {
@@ -254,10 +256,11 @@ Sources.WatchExpression = class extends Common.Object {
 
   update() {
     var currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
-    if (currentExecutionContext && this._expression)
+    if (currentExecutionContext && this._expression) {
       currentExecutionContext.evaluate(
           this._expression, Sources.WatchExpression._watchObjectGroupId, false, true, false, false, false,
           this._createWatchExpression.bind(this));
+    }
   }
 
   startEditing() {
@@ -410,9 +413,10 @@ Sources.WatchExpression = class extends Common.Object {
    * @param {!Event} event
    */
   _populateContextMenu(contextMenu, event) {
-    if (!this.isEditing())
+    if (!this.isEditing()) {
       contextMenu.appendItem(
           Common.UIString.capitalize('Delete ^watch ^expression'), this._updateExpression.bind(this, null));
+    }
 
     if (!this.isEditing() && this._result && (this._result.type === 'number' || this._result.type === 'string'))
       contextMenu.appendItem(Common.UIString.capitalize('Copy ^value'), this._copyValueButtonClicked.bind(this));

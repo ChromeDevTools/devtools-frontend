@@ -329,10 +329,11 @@
     function checkNoDuplicates() {
       var uiSourceCodes = test.nonAnonymousUISourceCodes_();
       for (var i = 0; i < uiSourceCodes.length; i++) {
-        for (var j = i + 1; j < uiSourceCodes.length; j++)
+        for (var j = i + 1; j < uiSourceCodes.length; j++) {
           test.assertTrue(
               uiSourceCodes[i].url() !== uiSourceCodes[j].url(),
               'Found script duplicates: ' + test.uiSourceCodesToString_(uiSourceCodes));
+        }
       }
     }
 
@@ -519,15 +520,16 @@
   TestSuite.prototype.testConsoleOnNavigateBack = function() {
 
     function filteredMessages() {
-       return SDK.multitargetConsoleModel.messages().filter(
-           a => a.source !== SDK.ConsoleMessage.MessageSource.Violation);
+      return SDK.multitargetConsoleModel.messages().filter(
+          a => a.source !== SDK.ConsoleMessage.MessageSource.Violation);
     }
 
-    if (filteredMessages().length === 1)
+    if (filteredMessages().length === 1) {
       firstConsoleMessageReceived.call(this, null);
-    else
+    } else {
       SDK.multitargetConsoleModel.addEventListener(
           SDK.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
+    }
 
     function firstConsoleMessageReceived(event) {
       if (event && event.data.source === SDK.ConsoleMessage.MessageSource.Violation)
@@ -690,14 +692,12 @@
 
         messages.splice(index, 1);
         if (!messages.length) {
-          SDK.multitargetConsoleModel.removeEventListener(
-              SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+          SDK.multitargetConsoleModel.removeEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
           next();
         }
       }
 
-      SDK.multitargetConsoleModel.addEventListener(
-          SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+      SDK.multitargetConsoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
       SDK.multitargetNetworkManager.setNetworkConditions(preset);
     }
 
@@ -719,8 +719,8 @@
 
     function step3() {
       testPreset(
-          Components.NetworkConditionsSelector._presets[8],
-          ['connection change event: type = wifi; downlinkMax = 30'], test.releaseControl.bind(test));
+          Components.NetworkConditionsSelector._presets[8], ['connection change event: type = wifi; downlinkMax = 30'],
+          test.releaseControl.bind(test));
     }
   };
 
@@ -889,8 +889,7 @@
         this.fail(text);
     }
 
-    SDK.multitargetConsoleModel.addEventListener(
-        SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+    SDK.multitargetConsoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
     this.takeControl();
   };
 
@@ -934,14 +933,12 @@
         Array.prototype.slice.call(arguments, 1, -1).map(arg => JSON.stringify(arg)).join(',') + ',';
     this.evaluateInConsole_(
         `${functionName}(${argsString} function() { console.log('${doneMessage}'); });`, function() {});
-    SDK.multitargetConsoleModel.addEventListener(
-        SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage);
+    SDK.multitargetConsoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage);
 
     function onConsoleMessage(event) {
       var text = event.data.messageText;
       if (text === doneMessage) {
-        SDK.multitargetConsoleModel.removeEventListener(
-            SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage);
+        SDK.multitargetConsoleModel.removeEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage);
         callback();
       }
     }
@@ -976,7 +973,8 @@
         continue;
       if (e.steps.length < 2)
         continue;
-      if (e.name.startsWith(prefix + 'Mouse') && typeof TimelineModel.TimelineData.forEvent(e.steps[0]).timeWaitingForMainThread !== 'number')
+      if (e.name.startsWith(prefix + 'Mouse') &&
+          typeof TimelineModel.TimelineData.forEvent(e.steps[0]).timeWaitingForMainThread !== 'number')
         throw `Missing timeWaitingForMainThread on ${e.name}`;
       expectedEvents.delete(e.name.substr(prefix.length));
     }
@@ -1106,8 +1104,7 @@
       if (runtimeModel.executionContexts().length >= n)
         callback.call(null);
       else
-        this.addSniffer(
-            SDK.RuntimeModel.prototype, '_executionContextCreated', checkForExecutionContexts.bind(this));
+        this.addSniffer(SDK.RuntimeModel.prototype, '_executionContextCreated', checkForExecutionContexts.bind(this));
     }
   };
 

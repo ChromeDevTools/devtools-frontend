@@ -46,19 +46,17 @@ Sources.DebuggerPausedMessage = class {
     } else if (details.reason === SDK.DebuggerModel.BreakReason.PromiseRejection) {
       var description = details.auxData['description'] || details.auxData['value'] || '';
       var descriptionFirstLine = description.split('\n', 1)[0];
-      messageWrapper =
-          buildWrapper(Common.UIString('Paused on promise rejection'), descriptionFirstLine, description);
+      messageWrapper = buildWrapper(Common.UIString('Paused on promise rejection'), descriptionFirstLine, description);
     } else if (details.reason === SDK.DebuggerModel.BreakReason.Assert) {
       messageWrapper = buildWrapper(Common.UIString('Paused on assertion'));
     } else if (details.reason === SDK.DebuggerModel.BreakReason.DebugCommand) {
       messageWrapper = buildWrapper(Common.UIString('Paused on debugged function'));
     } else if (details.callFrames.length) {
       var uiLocation = debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location());
-      var breakpoint =
-          uiLocation ? breakpointManager.findBreakpoint(
-              uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber) : null;
-      var defaultText =
-          breakpoint ? Common.UIString('Paused on breakpoint') : Common.UIString('Debugger paused');
+      var breakpoint = uiLocation ?
+          breakpointManager.findBreakpoint(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber) :
+          null;
+      var defaultText = breakpoint ? Common.UIString('Paused on breakpoint') : Common.UIString('Debugger paused');
       messageWrapper = buildWrapper(defaultText);
     } else {
       console.warn(

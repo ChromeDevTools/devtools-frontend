@@ -14,14 +14,14 @@ Main.OverlayController = class {
     // TODO(dgozman): we should get DebuggerResumed on navigations instead of listening to GlobalObjectCleared.
     SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this._updateOverlay, this);
-    SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this._updateAllOverlays, this);
+    SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._updateAllOverlays, this);
   }
 
   _updateAllOverlays() {
-    for (var target of SDK.targetManager.targets(SDK.Target.Capability.Browser))
+    for (var target of SDK.targetManager.targets(SDK.Target.Capability.Browser)) {
       this._updateTargetOverlay(
           /** @type {!SDK.DebuggerModel} */ (SDK.DebuggerModel.fromTarget(target)));
+    }
   }
 
   /**

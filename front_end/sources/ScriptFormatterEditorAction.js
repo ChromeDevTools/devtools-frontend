@@ -208,9 +208,8 @@ Sources.ScriptFormatterEditorAction = class {
       return false;
     if (Persistence.persistence.binding(uiSourceCode))
       return false;
-    var supportedProjectTypes = [
-      Workspace.projectTypes.Network, Workspace.projectTypes.Debugger, Workspace.projectTypes.ContentScripts
-    ];
+    var supportedProjectTypes =
+        [Workspace.projectTypes.Network, Workspace.projectTypes.Debugger, Workspace.projectTypes.ContentScripts];
     if (supportedProjectTypes.indexOf(uiSourceCode.project().type()) === -1)
       return false;
     return uiSourceCode.contentType().hasScripts();
@@ -276,9 +275,9 @@ Sources.ScriptFormatterEditorAction = class {
           scripts.push(formatData.scripts[j]);
       }
 
-      if (scripts.length)
+      if (scripts.length) {
         formatData.scripts = scripts;
-      else {
+      } else {
         this._formattedPaths.remove(formatData.projectId + ':' + formatData.path);
         this._formatData.remove(uiSourceCodes[i]);
         this._project.removeFile(uiSourceCodes[i].url());
@@ -332,9 +331,10 @@ Sources.ScriptFormatterEditorAction = class {
       var uiSourceCodePath = formattedPath;
       var formattedUISourceCode = this._workspace.uiSourceCode(this._projectId, uiSourceCodePath);
       var formatData = formattedUISourceCode ? this._formatData.get(formattedUISourceCode) : null;
-      if (formatData)
+      if (formatData) {
         this._showIfNeeded(
             uiSourceCode, /** @type {!Workspace.UISourceCode} */ (formattedUISourceCode), formatData.mapping);
+      }
       return;
     }
 
@@ -346,8 +346,7 @@ Sources.ScriptFormatterEditorAction = class {
      */
     function contentLoaded(content) {
       var highlighterType = Bindings.NetworkProject.uiSourceCodeMimeType(uiSourceCode);
-      Sources.Formatter.format(
-          uiSourceCode.contentType(), highlighterType, content || '', innerCallback.bind(this));
+      Sources.Formatter.format(uiSourceCode.contentType(), highlighterType, content || '', innerCallback.bind(this));
     }
 
     /**

@@ -19,9 +19,7 @@ Accessibility.AccessibilityNode = class extends SDK.SDKObject {
     if (payload.backendDOMNodeId) {
       accessibilityModel._setAXNodeForBackendDOMNodeId(payload.backendDOMNodeId, this);
       this._backendDOMNodeId = payload.backendDOMNodeId;
-      this._deferredDOMNode =
-          new SDK.DeferredDOMNode(this.target(),
-                                           payload.backendDOMNodeId);
+      this._deferredDOMNode = new SDK.DeferredDOMNode(this.target(), payload.backendDOMNodeId);
     } else {
       this._backendDOMNodeId = null;
       this._deferredDOMNode = null;
@@ -68,8 +66,10 @@ Accessibility.AccessibilityNode = class extends SDK.SDKObject {
 
     if (this._name)
       properties.push(/** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'name', value: this._name}));
-    if (this._description)
-      properties.push(/** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'description', value: this._description}));
+    if (this._description) {
+      properties.push(
+          /** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'description', value: this._description}));
+    }
     if (this._value)
       properties.push(/** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'value', value: this._value}));
 
@@ -253,9 +253,8 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
         new Accessibility.AccessibilityNode(this, payload);
 
       for (var axNode of this._axIdToAXNode.values()) {
-        for (var axChild of axNode.children()) {
+        for (var axChild of axNode.children())
           axChild._setParentNode(axNode);
-        }
       }
     }
     return this._agent.getPartialAXTree(node.id, true, parsePayload.bind(this));
@@ -292,8 +291,7 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
    * @param {!Accessibility.AccessibilityNode} axNode
    */
   _setAXNodeForBackendDOMNodeId(backendDOMNodeId, axNode) {
-    this._backendDOMNodeIdToAXNode.set(backendDOMNodeId,
-                                       axNode);
+    this._backendDOMNodeIdToAXNode.set(backendDOMNodeId, axNode);
   }
 
   // TODO(aboxhall): Remove once protocol is stable.

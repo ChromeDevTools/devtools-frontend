@@ -53,8 +53,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._rowStripeColor = UI.themeSupport.patchColor('#f5f5f5', colorUsage.Background);
     this._rowHoverColor = UI.themeSupport.patchColor(
         '#ebf2fc', /** @type {!UI.ThemeSupport.ColorUsage} */ (colorUsage.Background | colorUsage.Selection));
-    this._parentInitiatorColor =
-        UI.themeSupport.patchColor('hsla(120, 68%, 54%, 0.2)', colorUsage.Background);
+    this._parentInitiatorColor = UI.themeSupport.patchColor('hsla(120, 68%, 54%, 0.2)', colorUsage.Background);
     this._initiatedColor = UI.themeSupport.patchColor('hsla(0, 68%, 54%, 0.2)', colorUsage.Background);
 
     /** @type {!Map<!Common.ResourceType, string>} */
@@ -85,11 +84,10 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
   _getPopoverAnchor(element, event) {
     if (!this._hoveredRequest)
       return;
-    var useTimingBars =
-        !Common.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
+    var useTimingBars = !Common.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
     if (useTimingBars) {
       var range = Network.RequestTimingView.calculateRequestTimeRanges(this._hoveredRequest, 0)
-          .find(data => data.name === Network.RequestTimeRangeNames.Total);
+                      .find(data => data.name === Network.RequestTimeRangeNames.Total);
       var start = this._timeToPosition(range.start);
       var end = this._timeToPosition(range.end);
     } else {
@@ -129,8 +127,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
   _showPopover(anchor, popover) {
     if (!this._hoveredRequest)
       return;
-    var content =
-        Network.RequestTimingView.createTimingTable(this._hoveredRequest, this._calculator.minimumBoundary());
+    var content = Network.RequestTimingView.createTimingTable(this._hoveredRequest, this._calculator.minimumBoundary());
     popover.showForAnchor(content, anchor);
   }
 
@@ -280,8 +277,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
   }
 
   _draw() {
-    var useTimingBars =
-        !Common.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
+    var useTimingBars = !Common.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
     var requests = this._requestData;
     var context = this._canvas.getContext('2d');
     context.save();
@@ -455,7 +451,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
     if (!this._calculator.startAtZero) {
       var queueingRange = Network.RequestTimingView.calculateRequestTimeRanges(request, 0)
-          .find(data => data.name === Network.RequestTimeRangeNames.Total);
+                              .find(data => data.name === Network.RequestTimeRangeNames.Total);
       var leftLabelWidth = labels ? context.measureText(labels.left).width : 0;
       var leftTextPlacedInBar = leftLabelWidth < ranges.mid - ranges.start;
       const wiskerTextPadding = 13;
@@ -464,8 +460,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       if (ranges.start - textOffset > queueingStart) {
         context.beginPath();
         context.globalAlpha = 1;
-        context.strokeStyle = UI.themeSupport.patchColor(
-            '#a5a5a5', UI.ThemeSupport.ColorUsage.Foreground);
+        context.strokeStyle = UI.themeSupport.patchColor('#a5a5a5', UI.ThemeSupport.ColorUsage.Foreground);
         context.moveTo(queueingStart, Math.floor(height / 2));
         context.lineTo(ranges.start - textOffset, Math.floor(height / 2));
 
@@ -538,8 +533,8 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     context.save();
     var ranges = Network.RequestTimingView.calculateRequestTimeRanges(request, 0);
     for (var range of ranges) {
-      if (range.name === Network.RequestTimeRangeNames.Total ||
-          range.name === Network.RequestTimeRangeNames.Sending || range.end - range.start === 0)
+      if (range.name === Network.RequestTimeRangeNames.Total || range.name === Network.RequestTimeRangeNames.Sending ||
+          range.end - range.start === 0)
         continue;
       context.beginPath();
       var lineWidth = 0;

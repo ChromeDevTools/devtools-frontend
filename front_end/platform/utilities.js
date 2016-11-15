@@ -333,8 +333,9 @@ String.naturalOrderComparator = function(a, b) {
         else
           return chunkb.length - chunka.length;
       }
-    } else if (chunka !== chunkb)
+    } else if (chunka !== chunkb) {
       return (chunka < chunkb) ? -1 : 1;
+    }
     a = a.substring(chunka.length);
     b = b.substring(chunkb.length);
   }
@@ -632,10 +633,11 @@ Object.defineProperty(Array.prototype, 'qselect', {
   value: function(k, comparator) {
     if (k < 0 || k >= this.length)
       return;
-    if (!comparator)
+    if (!comparator) {
       comparator = function(a, b) {
         return a - b;
       };
+    }
 
     var low = 0;
     var high = this.length - 1;

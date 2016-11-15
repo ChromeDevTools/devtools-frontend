@@ -162,8 +162,7 @@ Network.BlockedURLsPane = class extends UI.VBox {
   _contextMenu(index, event) {
     var contextMenu = new UI.ContextMenu(event);
     contextMenu.appendItem(Common.UIString.capitalize('Add ^pattern'), this._addButtonClicked.bind(this));
-    contextMenu.appendItem(
-        Common.UIString.capitalize('Remove ^pattern'), this._removeBlockedURL.bind(this, index));
+    contextMenu.appendItem(Common.UIString.capitalize('Remove ^pattern'), this._removeBlockedURL.bind(this, index));
     contextMenu.appendItem(Common.UIString.capitalize('Remove ^all'), this._removeAll.bind(this));
     contextMenu.show();
   }

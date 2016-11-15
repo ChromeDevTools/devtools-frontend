@@ -388,8 +388,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @return {number}
    */
   _searchResultIndexForCurrentSelection() {
-    return this._searchResults.lowerBound(
-        this._textEditor.selection().collapseToEnd(), Common.TextRange.comparator);
+    return this._searchResults.lowerBound(this._textEditor.selection().collapseToEnd(), Common.TextRange.comparator);
   }
 
   /**
@@ -452,12 +451,13 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     var oldText = this._textEditor.text(range);
     var regex = searchConfig.toSearchRegex();
     var text;
-    if (regex.__fromRegExpQuery)
+    if (regex.__fromRegExpQuery) {
       text = oldText.replace(regex, replacement);
-    else
+    } else {
       text = oldText.replace(regex, function() {
         return replacement;
       });
+    }
 
     var newRange = this._textEditor.editRange(range, text);
     this._textEditor.setSelection(newRange.collapseToEnd());
@@ -475,12 +475,13 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     var range = this._textEditor.fullRange();
 
     var regex = searchConfig.toSearchRegex(true);
-    if (regex.__fromRegExpQuery)
+    if (regex.__fromRegExpQuery) {
       text = text.replace(regex, replacement);
-    else
+    } else {
       text = text.replace(regex, function() {
         return replacement;
       });
+    }
 
     var ranges = this._collectRegexMatches(regex);
     if (!ranges.length)
@@ -494,9 +495,10 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     var replacementLineCount = replacementLineEndings.length;
     var lastLineNumber = lastRange.startLine + replacementLineEndings.length - 1;
     var lastColumnNumber = lastRange.startColumn;
-    if (replacementLineEndings.length > 1)
+    if (replacementLineEndings.length > 1) {
       lastColumnNumber =
           replacementLineEndings[replacementLineCount - 1] - replacementLineEndings[replacementLineCount - 2] - 1;
+    }
 
     this._textEditor.editRange(range, text);
     this._textEditor.revealPosition(lastLineNumber, lastColumnNumber);
@@ -562,11 +564,12 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     textRange = textRange.normalize();
 
     var selectedText = this._textEditor.text(textRange);
-    if (textRange.startLine === textRange.endLine)
+    if (textRange.startLine === textRange.endLine) {
       this._sourcePosition.setText(Common.UIString('%d characters selected', selectedText.length));
-    else
+    } else {
       this._sourcePosition.setText(Common.UIString(
           '%d lines, %d characters selected', textRange.endLine - textRange.startLine + 1, selectedText.length));
+    }
   }
 
   _handleKeyDown(e) {

@@ -47,10 +47,8 @@ Network.RequestCookiesView = class extends UI.VBox {
    * @override
    */
   wasShown() {
-    this._request.addEventListener(
-        SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshCookies, this);
-    this._request.addEventListener(
-        SDK.NetworkRequest.Events.ResponseHeadersChanged, this._refreshCookies, this);
+    this._request.addEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshCookies, this);
+    this._request.addEventListener(SDK.NetworkRequest.Events.ResponseHeadersChanged, this._refreshCookies, this);
 
     if (!this._gotCookies) {
       if (!this._emptyWidget) {
@@ -68,10 +66,8 @@ Network.RequestCookiesView = class extends UI.VBox {
    * @override
    */
   willHide() {
-    this._request.removeEventListener(
-        SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshCookies, this);
-    this._request.removeEventListener(
-        SDK.NetworkRequest.Events.ResponseHeadersChanged, this._refreshCookies, this);
+    this._request.removeEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshCookies, this);
+    this._request.removeEventListener(SDK.NetworkRequest.Events.ResponseHeadersChanged, this._refreshCookies, this);
   }
 
   get _gotCookies() {

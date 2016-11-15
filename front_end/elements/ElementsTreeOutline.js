@@ -638,10 +638,10 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
       return;
     }
 
-    if (element instanceof Elements.ElementsTreeOutline.ShortcutTreeElement)
+    if (element instanceof Elements.ElementsTreeOutline.ShortcutTreeElement) {
       this._domModel.highlightDOMNodeWithConfig(
-          undefined, {mode: 'all', showInfo: !UI.KeyboardShortcut.eventHasCtrlOrMeta(event)},
-          element.backendNodeId());
+          undefined, {mode: 'all', showInfo: !UI.KeyboardShortcut.eventHasCtrlOrMeta(event)}, element.backendNodeId());
+    }
   }
 
   _onmouseleave(event) {
@@ -995,13 +995,10 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
     this._domModel.addEventListener(SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
     this._domModel.addEventListener(SDK.DOMModel.Events.AttrModified, this._attributeModified, this);
     this._domModel.addEventListener(SDK.DOMModel.Events.AttrRemoved, this._attributeRemoved, this);
-    this._domModel.addEventListener(
-        SDK.DOMModel.Events.CharacterDataModified, this._characterDataModified, this);
+    this._domModel.addEventListener(SDK.DOMModel.Events.CharacterDataModified, this._characterDataModified, this);
     this._domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this._documentUpdated, this);
-    this._domModel.addEventListener(
-        SDK.DOMModel.Events.ChildNodeCountUpdated, this._childNodeCountUpdated, this);
-    this._domModel.addEventListener(
-        SDK.DOMModel.Events.DistributedNodesChanged, this._distributedNodesChanged, this);
+    this._domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this._childNodeCountUpdated, this);
+    this._domModel.addEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this._distributedNodesChanged, this);
   }
 
   unwireFromDOMModel() {
@@ -1009,11 +1006,9 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
     this._domModel.removeEventListener(SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
     this._domModel.removeEventListener(SDK.DOMModel.Events.AttrModified, this._attributeModified, this);
     this._domModel.removeEventListener(SDK.DOMModel.Events.AttrRemoved, this._attributeRemoved, this);
-    this._domModel.removeEventListener(
-        SDK.DOMModel.Events.CharacterDataModified, this._characterDataModified, this);
+    this._domModel.removeEventListener(SDK.DOMModel.Events.CharacterDataModified, this._characterDataModified, this);
     this._domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this._documentUpdated, this);
-    this._domModel.removeEventListener(
-        SDK.DOMModel.Events.ChildNodeCountUpdated, this._childNodeCountUpdated, this);
+    this._domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this._childNodeCountUpdated, this);
     this._domModel.removeEventListener(
         SDK.DOMModel.Events.DistributedNodesChanged, this._distributedNodesChanged, this);
     delete this._domModel[Elements.ElementsTreeOutline._treeOutlineSymbol];
@@ -1299,8 +1294,8 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
       var visibleChildCount = this._visibleChildren(treeElement.node()).length;
       this.setExpandedChildrenLimit(
           treeElement, Math.max(
-                           visibleChildCount, treeElement.expandedChildrenLimit() +
-                               Elements.ElementsTreeElement.InitialChildrenLimit));
+                           visibleChildCount,
+                           treeElement.expandedChildrenLimit() + Elements.ElementsTreeElement.InitialChildrenLimit));
       event.consume();
     }
   }

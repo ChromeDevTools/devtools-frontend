@@ -23,8 +23,7 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
     // Otherwise, inspector page reacts on drop event and tries to load the event data.
     // this._createCategory(Common.UIString("Drag"), ["drag", "drop", "dragstart", "dragend", "dragenter", "dragleave", "dragover"]);
     this._createCategory(
-        Common.UIString('Animation'), ['requestAnimationFrame', 'cancelAnimationFrame', 'animationFrameFired'],
-        true);
+        Common.UIString('Animation'), ['requestAnimationFrame', 'cancelAnimationFrame', 'animationFrameFired'], true);
     this._createCategory(
         Common.UIString('Clipboard'), ['copy', 'cut', 'paste', 'beforecopy', 'beforecut', 'beforepaste']);
     this._createCategory(
@@ -69,10 +68,8 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
         ['XMLHttpRequest', 'XMLHttpRequestUpload']);
 
     SDK.targetManager.observeTargets(this, SDK.Target.Capability.DOM);
-    SDK.targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._update, this);
-    SDK.targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._update, this);
+    SDK.targetManager.addModelListener(SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._update, this);
+    SDK.targetManager.addModelListener(SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._update, this);
     UI.context.addFlavorChangeListener(SDK.Target, this._update, this);
   }
 
@@ -105,8 +102,7 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
         return Common.UIString('WebGL Error Fired (%s)', errorName);
       }
       if (eventName === 'instrumentation:scriptBlockedByCSP' && auxData['directiveText'])
-        return Common.UIString(
-            'Script blocked due to Content Security Policy directive: %s', auxData['directiveText']);
+        return Common.UIString('Script blocked due to Content Security Policy directive: %s', auxData['directiveText']);
     }
     return Sources.EventListenerBreakpointsSidebarPane._eventNamesForUI[eventName] ||
         eventName.substring(eventName.indexOf(':') + 1);
@@ -191,8 +187,7 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
     var targetName = details.auxData['targetName'];
     var breakpointItem = this._findBreakpointItem(eventName, targetName);
     if (!breakpointItem || !breakpointItem.checkbox.checked)
-      breakpointItem =
-          this._findBreakpointItem(eventName, Sources.EventListenerBreakpointsSidebarPane.eventTargetAny);
+      breakpointItem = this._findBreakpointItem(eventName, Sources.EventListenerBreakpointsSidebarPane.eventTargetAny);
     if (!breakpointItem)
       return;
     UI.viewManager.showView('sources.eventListenerBreakpoints');

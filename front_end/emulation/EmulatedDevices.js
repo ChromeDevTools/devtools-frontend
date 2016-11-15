@@ -144,9 +144,9 @@ Emulation.EmulatedDevice = class {
         mode.insets = parseInsets(parseValue(modes[i], 'insets', 'object'));
         if (mode.insets.top < 0 || mode.insets.left < 0 || mode.insets.right < 0 || mode.insets.bottom < 0 ||
             mode.insets.top + mode.insets.bottom > orientation.height ||
-            mode.insets.left + mode.insets.right > orientation.width) {
+            mode.insets.left + mode.insets.right > orientation.width)
           throw new Error('Emulated device mode \'' + mode.title + '\'has wrong mode insets');
-        }
+
         mode.image = /** @type {string} */ (parseValue(modes[i], 'image', 'string', null));
         result.modes.push(mode);
       }
@@ -423,12 +423,8 @@ Emulation.EmulatedDevicesList = class extends Common.Object {
             insets: new Insets(0, 0, 0, 0),
             image: null
           });
-          device.modes.push({
-            title: '',
-            orientation: Emulation.EmulatedDevice.Vertical,
-            insets: new Insets(0, 0, 0, 0),
-            image: null
-          });
+          device.modes.push(
+              {title: '', orientation: Emulation.EmulatedDevice.Vertical, insets: new Insets(0, 0, 0, 0), image: null});
         }
       } else {
         success = false;

@@ -56,8 +56,7 @@ Components.Spectrum = class extends UI.VBox {
     this._contrastRatioLine = contrastRatioSVG.createSVGChild('path', 'spectrum-contrast-line');
 
     var toolbar = new UI.Toolbar('spectrum-eye-dropper', this.contentElement);
-    this._colorPickerButton =
-        new UI.ToolbarToggle(Common.UIString('Toggle color picker'), 'largeicon-eyedropper');
+    this._colorPickerButton = new UI.ToolbarToggle(Common.UIString('Toggle color picker'), 'largeicon-eyedropper');
     this._colorPickerButton.setToggled(true);
     this._colorPickerButton.addEventListener('click', this._toggleColorPicker.bind(this, undefined));
     toolbar.appendToolbarItem(this._colorPickerButton);
@@ -169,9 +168,9 @@ Components.Spectrum = class extends UI.VBox {
       var hsva = this._hsv.slice();
       hsva[3] = Number.constrain(newAlpha, 0, 1);
       var colorFormat = undefined;
-      if (hsva[3] !== 1 && (this._colorFormat === Common.Color.Format.ShortHEX ||
-                            this._colorFormat === Common.Color.Format.HEX ||
-                            this._colorFormat === Common.Color.Format.Nickname))
+      if (hsva[3] !== 1 &&
+          (this._colorFormat === Common.Color.Format.ShortHEX || this._colorFormat === Common.Color.Format.HEX ||
+           this._colorFormat === Common.Color.Format.Nickname))
         colorFormat = Common.Color.Format.RGB;
       this._innerSetColor(hsva, '', colorFormat, Components.Spectrum._ChangeSource.Other);
     }
@@ -256,8 +255,7 @@ Components.Spectrum = class extends UI.VBox {
         shadow = colorElement.createChild('div', 'spectrum-palette-color spectrum-palette-color-shadow');
         shadow.style.background = palette.colors[i];
         colorElement.title = Common.UIString(palette.colors[i] + '. Long-click to show alternate shades.');
-        new UI.LongClickController(
-            colorElement, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
+        new UI.LongClickController(colorElement, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
       }
       this._paletteContainer.appendChild(colorElement);
     }
@@ -326,8 +324,7 @@ Components.Spectrum = class extends UI.VBox {
   _slotIndexForEvent(e) {
     var localX = e.pageX - this._paletteContainer.totalOffsetLeft();
     var localY = e.pageY - this._paletteContainer.totalOffsetTop();
-    var col =
-        Math.min(localX / Components.Spectrum._colorChipSize | 0, Components.Spectrum._itemsPerPaletteRow - 1);
+    var col = Math.min(localX / Components.Spectrum._colorChipSize | 0, Components.Spectrum._itemsPerPaletteRow - 1);
     var row = (localY / Components.Spectrum._colorChipSize) | 0;
     return Math.min(
         row * Components.Spectrum._itemsPerPaletteRow + col, this._customPaletteSetting.get().colors.length - 1);
@@ -366,8 +363,7 @@ Components.Spectrum = class extends UI.VBox {
     if (e.pageX < this._paletteContainer.totalOffsetLeft() || e.pageY < this._paletteContainer.totalOffsetTop())
       return;
     var newIndex = this._slotIndexForEvent(e);
-    var offsetX =
-        e.pageX - (newIndex % Components.Spectrum._itemsPerPaletteRow) * Components.Spectrum._colorChipSize;
+    var offsetX = e.pageX - (newIndex % Components.Spectrum._itemsPerPaletteRow) * Components.Spectrum._colorChipSize;
     var offsetY =
         e.pageY - (newIndex / Components.Spectrum._itemsPerPaletteRow | 0) * Components.Spectrum._colorChipSize;
 
@@ -529,8 +525,7 @@ Components.Spectrum = class extends UI.VBox {
       return;
     var contextMenu = new UI.ContextMenu(event);
     if (colorIndex !== -1) {
-      contextMenu.appendItem(
-          Common.UIString('Remove color'), this._deletePaletteColors.bind(this, colorIndex, false));
+      contextMenu.appendItem(Common.UIString('Remove color'), this._deletePaletteColors.bind(this, colorIndex, false));
       contextMenu.appendItem(
           Common.UIString('Remove all to the right'), this._deletePaletteColors.bind(this, colorIndex, true));
     }

@@ -78,8 +78,8 @@ Sass.SASSSourceMapFactory = class {
       var sassNode = sassAST.findNodeForPosition(entry.sourceLineNumber, entry.sourceColumnNumber);
       if (!sassNode)
         return;
-      if (cssNode.parent && (cssNode.parent instanceof Sass.SASSSupport.Property) &&
-          cssNode === cssNode.parent.name && cssNode.text.trim() !== sassNode.text.trim()) {
+      if (cssNode.parent && (cssNode.parent instanceof Sass.SASSSupport.Property) && cssNode === cssNode.parent.name &&
+          cssNode.text.trim() !== sassNode.text.trim()) {
         valid = false;
         reportError(cssNode, sassNode);
         return;

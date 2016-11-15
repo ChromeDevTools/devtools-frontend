@@ -80,8 +80,7 @@ Emulation.SensorsView = class extends UI.VBox {
     this._latitudeInput.setAttribute('type', 'number');
     this._latitudeInput.value = 0;
     this._latitudeSetter = UI.bindInput(
-        this._latitudeInput, this._applyGeolocationUserInput.bind(this), Emulation.Geolocation.latitudeValidator,
-        true);
+        this._latitudeInput, this._applyGeolocationUserInput.bind(this), Emulation.Geolocation.latitudeValidator, true);
     this._latitudeSetter(String(geolocation.latitude));
 
     this._longitudeInput = longitudeGroup.createChild('input');
@@ -121,8 +120,8 @@ Emulation.SensorsView = class extends UI.VBox {
   }
 
   _applyGeolocationUserInput() {
-    var geolocation = Emulation.Geolocation.parseUserInput(
-        this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), '');
+    var geolocation =
+        Emulation.Geolocation.parseUserInput(this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), '');
     if (!geolocation)
       return;
 
@@ -467,10 +466,9 @@ Emulation.SensorsView.PresetLocations = [
   },
   {
     title: 'Error',
-    value: [{
-      title: Common.UIString('Location unavailable'),
-      location: Emulation.SensorsView.NonPresetOptions.Unavailable
-    }]
+    value: [
+      {title: Common.UIString('Location unavailable'), location: Emulation.SensorsView.NonPresetOptions.Unavailable}
+    ]
   }
 ];
 

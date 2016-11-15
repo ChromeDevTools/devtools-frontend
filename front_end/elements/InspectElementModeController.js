@@ -39,8 +39,7 @@ Elements.InspectElementModeController = class {
     }
 
     this._mode = Protocol.DOM.InspectMode.None;
-    SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
+    SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     SDK.targetManager.observeTargets(this, SDK.Target.Capability.DOM);
   }
 
@@ -94,11 +93,12 @@ Elements.InspectElementModeController = class {
       return;
 
     var mode;
-    if (this.isInInspectElementMode())
+    if (this.isInInspectElementMode()) {
       mode = Protocol.DOM.InspectMode.None;
-    else
+    } else {
       mode = Common.moduleSetting('showUAShadowDOM').get() ? Protocol.DOM.InspectMode.SearchForUAShadowDOM :
-                                                                   Protocol.DOM.InspectMode.SearchForNode;
+                                                             Protocol.DOM.InspectMode.SearchForNode;
+    }
 
     this._setMode(mode);
   }

@@ -40,8 +40,7 @@ Resources.DatabaseTableView = class extends UI.SimpleView {
     this.refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     this.refreshButton.addEventListener('click', this._refreshButtonClicked, this);
     this._visibleColumnsInput = new UI.ToolbarInput(Common.UIString('Visible columns'), 1);
-    this._visibleColumnsInput.addEventListener(
-        UI.ToolbarInput.Event.TextChanged, this._onVisibleColumnsChanged, this);
+    this._visibleColumnsInput.addEventListener(UI.ToolbarInput.Event.TextChanged, this._onVisibleColumnsChanged, this);
   }
 
   /**
@@ -80,8 +79,7 @@ Resources.DatabaseTableView = class extends UI.SimpleView {
     this._dataGrid = UI.SortableDataGrid.create(columnNames, values);
     this._visibleColumnsInput.setVisible(!!this._dataGrid);
     if (!this._dataGrid) {
-      this._emptyWidget =
-          new UI.EmptyWidget(Common.UIString('The “%s”\ntable is empty.', this.tableName));
+      this._emptyWidget = new UI.EmptyWidget(Common.UIString('The “%s”\ntable is empty.', this.tableName));
       this._emptyWidget.show(this.element);
       return;
     }
@@ -132,8 +130,7 @@ Resources.DatabaseTableView = class extends UI.SimpleView {
 
     var errorMsgElement = createElement('div');
     errorMsgElement.className = 'storage-table-error';
-    errorMsgElement.textContent =
-        Common.UIString('An error occurred trying to\nread the “%s” table.', this.tableName);
+    errorMsgElement.textContent = Common.UIString('An error occurred trying to\nread the “%s” table.', this.tableName);
     this.element.appendChild(errorMsgElement);
   }
 

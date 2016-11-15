@@ -345,10 +345,11 @@ Protocol.TargetBase = class {
       --this._pendingResponsesCount;
       delete this._callbacks[messageObject.id];
 
-      if (InspectorBackendClass.Options.dumpInspectorTimeStats)
+      if (InspectorBackendClass.Options.dumpInspectorTimeStats) {
         console.log(
             'time-stats: ' + callback.methodName + ' = ' + (processingStartTime - callback.sendRequestTime) + ' + ' +
             (Date.now() - processingStartTime));
+      }
 
       if (this._scripts && !this._pendingResponsesCount)
         this._deprecatedRunAfterPendingDispatches();

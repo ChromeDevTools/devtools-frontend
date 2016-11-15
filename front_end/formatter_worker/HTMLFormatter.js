@@ -183,7 +183,8 @@ FormatterWorker.HTMLModel = class {
 
     while (this._stack.length > 1) {
       var element = this._stack.peekLast();
-      this._popElement(new FormatterWorker.HTMLModel.Tag(element.name, text.length, text.length, new Map(), false, false));
+      this._popElement(
+          new FormatterWorker.HTMLModel.Tag(element.name, text.length, text.length, new Map(), false, false));
     }
 
     /**

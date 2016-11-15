@@ -23,8 +23,7 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
     this._scale = 1;
 
     SDK.targetManager.observeTargets(this);
-    UI.zoomManager.addEventListener(
-        UI.ZoomManager.Events.ZoomChanged, this._renderMediaQueries.bind(this), this);
+    UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._renderMediaQueries.bind(this), this);
   }
 
   /**
@@ -38,12 +37,9 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
     this._cssModel = SDK.CSSModel.fromTarget(target);
     if (!this._cssModel)
       return;
-    this._cssModel.addEventListener(
-        SDK.CSSModel.Events.StyleSheetAdded, this._scheduleMediaQueriesUpdate, this);
-    this._cssModel.addEventListener(
-        SDK.CSSModel.Events.StyleSheetRemoved, this._scheduleMediaQueriesUpdate, this);
-    this._cssModel.addEventListener(
-        SDK.CSSModel.Events.StyleSheetChanged, this._scheduleMediaQueriesUpdate, this);
+    this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._scheduleMediaQueriesUpdate, this);
+    this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._scheduleMediaQueriesUpdate, this);
+    this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, this._scheduleMediaQueriesUpdate, this);
     this._cssModel.addEventListener(
         SDK.CSSModel.Events.MediaQueryResultChanged, this._scheduleMediaQueriesUpdate, this);
   }
@@ -55,12 +51,9 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
   targetRemoved(target) {
     if (SDK.CSSModel.fromTarget(target) !== this._cssModel)
       return;
-    this._cssModel.removeEventListener(
-        SDK.CSSModel.Events.StyleSheetAdded, this._scheduleMediaQueriesUpdate, this);
-    this._cssModel.removeEventListener(
-        SDK.CSSModel.Events.StyleSheetRemoved, this._scheduleMediaQueriesUpdate, this);
-    this._cssModel.removeEventListener(
-        SDK.CSSModel.Events.StyleSheetChanged, this._scheduleMediaQueriesUpdate, this);
+    this._cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._scheduleMediaQueriesUpdate, this);
+    this._cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._scheduleMediaQueriesUpdate, this);
+    this._cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetChanged, this._scheduleMediaQueriesUpdate, this);
     this._cssModel.removeEventListener(
         SDK.CSSModel.Events.MediaQueryResultChanged, this._scheduleMediaQueriesUpdate, this);
     delete this._cssModel;
@@ -128,8 +121,7 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
     for (var i = 0; i < contextMenuItems.length; ++i) {
       var title = contextMenuItems[i];
       subMenuItem.appendItem(
-          title,
-          this._revealSourceLocation.bind(this, /** @type {!Workspace.UILocation} */ (uiLocations.get(title))));
+          title, this._revealSourceLocation.bind(this, /** @type {!Workspace.UILocation} */ (uiLocations.get(title))));
     }
     contextMenu.show();
   }

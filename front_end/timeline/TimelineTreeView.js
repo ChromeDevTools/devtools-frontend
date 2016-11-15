@@ -140,8 +140,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     }
     for (var child of tree.children.values()) {
       // Exclude the idle time off the total calculation.
-      var gridNode =
-          new Timeline.TimelineTreeView.TreeGridNode(child, tree.totalTime, maxSelfTime, maxTotalTime, this);
+      var gridNode = new Timeline.TimelineTreeView.TreeGridNode(child, tree.totalTime, maxSelfTime, maxTotalTime, this);
       this._dataGrid.insertChild(gridNode);
     }
     this._sortingChanged();
@@ -168,10 +167,8 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @param {!Array<!UI.DataGrid.ColumnDescriptor>} columns
    */
   _populateColumns(columns) {
-    columns.push(
-        {id: 'self', title: Common.UIString('Self Time'), width: '110px', fixedWidth: true, sortable: true});
-    columns.push(
-        {id: 'total', title: Common.UIString('Total Time'), width: '110px', fixedWidth: true, sortable: true});
+    columns.push({id: 'self', title: Common.UIString('Self Time'), width: '110px', fixedWidth: true, sortable: true});
+    columns.push({id: 'total', title: Common.UIString('Total Time'), width: '110px', fixedWidth: true, sortable: true});
     columns.push({id: 'activity', title: Common.UIString('Activity'), disclosure: true, sortable: true});
   }
 
@@ -335,10 +332,9 @@ Timeline.TimelineTreeView.GridNode = class extends UI.SortableDataGridNode {
     } else if (event) {
       const data = event.args['data'];
       const deoptReason = data && data['deoptReason'];
-      if (deoptReason) {
-        container.createChild('div', 'activity-warning').title =
-            Common.UIString('Not optimized: %s', deoptReason);
-      }
+      if (deoptReason)
+        container.createChild('div', 'activity-warning').title = Common.UIString('Not optimized: %s', deoptReason);
+
       name.textContent = Timeline.TimelineUIUtils.eventTitle(event);
       const link = this._treeView._linkifyLocation(event);
       if (link)
@@ -381,9 +377,10 @@ Timeline.TimelineTreeView.GridNode = class extends UI.SortableDataGridNode {
     var textDiv = cell.createChild('div');
     textDiv.createChild('span').textContent = Common.UIString('%.1f\u2009ms', value);
 
-    if (showPercents && this._treeView._exposePercentages())
+    if (showPercents && this._treeView._exposePercentages()) {
       textDiv.createChild('span', 'percent-column').textContent =
           Common.UIString('%.1f\u2009%%', value / this._grandTotalTime * 100);
+    }
     if (maxTime) {
       textDiv.classList.add('background-percent-bar');
       cell.createChild('div', 'background-bar-container').createChild('div', 'background-bar').style.width =
@@ -510,10 +507,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
       case Timeline.AggregatedTimelineTreeView.GroupBy.Frame:
         var frame = this._model.pageFrameById(node.id);
         var frameName = frame ? Timeline.TimelineUIUtils.displayNameForFrame(frame, 80) : Common.UIString('Page');
-        return {
-          name: frameName,
-          color: color
-        };
+        return {name: frameName, color: color};
         break;
 
       default:
@@ -742,8 +736,7 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
   constructor(model, filters, delegate) {
     super();
     this._filtersControl = new Timeline.TimelineFilters();
-    this._filtersControl.addEventListener(
-        Timeline.TimelineFilters.Events.FilterChanged, this._onFilterChanged, this);
+    this._filtersControl.addEventListener(Timeline.TimelineFilters.Events.FilterChanged, this._onFilterChanged, this);
     this._init(model, filters);
     this._delegate = delegate;
     this._filters.push.apply(this._filters, this._filtersControl.filters());
@@ -818,13 +811,8 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
    * @param {!Array<!UI.DataGrid.ColumnDescriptor>} columns
    */
   _populateColumns(columns) {
-    columns.push({
-      id: 'startTime',
-      title: Common.UIString('Start Time'),
-      width: '110px',
-      fixedWidth: true,
-      sortable: true
-    });
+    columns.push(
+        {id: 'startTime', title: Common.UIString('Start Time'), width: '110px', fixedWidth: true, sortable: true});
     super._populateColumns(columns);
   }
 

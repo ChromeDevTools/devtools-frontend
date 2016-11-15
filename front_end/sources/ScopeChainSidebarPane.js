@@ -47,8 +47,7 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
     var callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
     var details = UI.context.flavor(SDK.DebuggerPausedDetails);
     this._linkifier.reset();
-    Sources.SourceMapNamesResolver.resolveThisObject(callFrame).then(
-        this._innerUpdate.bind(this, details, callFrame));
+    Sources.SourceMapNamesResolver.resolveThisObject(callFrame).then(this._innerUpdate.bind(this, details, callFrame));
   }
 
   /**
@@ -84,15 +83,17 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
             extraProperties.push(new SDK.RemoteObjectProperty('this', thisObject));
           if (i === 0) {
             var exception = details.exception();
-            if (exception)
+            if (exception) {
               extraProperties.push(new SDK.RemoteObjectProperty(
                   Common.UIString.capitalize('Exception'), exception, undefined, undefined, undefined, undefined,
                   undefined, true));
+            }
             var returnValue = callFrame.returnValue();
-            if (returnValue)
+            if (returnValue) {
               extraProperties.push(new SDK.RemoteObjectProperty(
-                  Common.UIString.capitalize('Return ^value'), returnValue, undefined, undefined, undefined,
-                  undefined, undefined, true));
+                  Common.UIString.capitalize('Return ^value'), returnValue, undefined, undefined, undefined, undefined,
+                  undefined, true));
+            }
           }
           break;
         case Protocol.Debugger.ScopeType.Closure:
@@ -129,8 +130,8 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
       titleElement.createChild('div', 'scope-chain-sidebar-pane-section-title').textContent = title;
 
       var section = new Components.ObjectPropertiesSection(
-          Sources.SourceMapNamesResolver.resolveScopeInObject(scope), titleElement, this._linkifier,
-          emptyPlaceholder, true, extraProperties);
+          Sources.SourceMapNamesResolver.resolveScopeInObject(scope), titleElement, this._linkifier, emptyPlaceholder,
+          true, extraProperties);
       this._expandController.watchSection(title + (subtitle ? ':' + subtitle : ''), section);
 
       if (scope.type() === Protocol.Debugger.ScopeType.Global)

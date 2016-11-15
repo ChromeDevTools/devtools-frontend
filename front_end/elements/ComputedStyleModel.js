@@ -54,22 +54,16 @@ Elements.ComputedStyleModel = class extends Common.Object {
 
     if (this._cssModel && domModel && resourceTreeModel) {
       this._targetEvents = [
-        this._cssModel.addEventListener(
-            SDK.CSSModel.Events.StyleSheetAdded, this._onComputedStyleChanged, this),
-        this._cssModel.addEventListener(
-            SDK.CSSModel.Events.StyleSheetRemoved, this._onComputedStyleChanged, this),
-        this._cssModel.addEventListener(
-            SDK.CSSModel.Events.StyleSheetChanged, this._onComputedStyleChanged, this),
+        this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._onComputedStyleChanged, this),
+        this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._onComputedStyleChanged, this),
+        this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, this._onComputedStyleChanged, this),
         this._cssModel.addEventListener(SDK.CSSModel.Events.FontsUpdated, this._onComputedStyleChanged, this),
         this._cssModel.addEventListener(
             SDK.CSSModel.Events.MediaQueryResultChanged, this._onComputedStyleChanged, this),
-        this._cssModel.addEventListener(
-            SDK.CSSModel.Events.PseudoStateForced, this._onComputedStyleChanged, this),
-        this._cssModel.addEventListener(
-            SDK.CSSModel.Events.ModelWasEnabled, this._onComputedStyleChanged, this),
+        this._cssModel.addEventListener(SDK.CSSModel.Events.PseudoStateForced, this._onComputedStyleChanged, this),
+        this._cssModel.addEventListener(SDK.CSSModel.Events.ModelWasEnabled, this._onComputedStyleChanged, this),
         domModel.addEventListener(SDK.DOMModel.Events.DOMMutated, this._onDOMModelChanged, this),
-        resourceTreeModel.addEventListener(
-            SDK.ResourceTreeModel.Events.FrameResized, this._onFrameResized, this),
+        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameResized, this._onFrameResized, this),
       ];
     }
   }
@@ -79,8 +73,7 @@ Elements.ComputedStyleModel = class extends Common.Object {
    */
   _onComputedStyleChanged(event) {
     delete this._computedStylePromise;
-    this.dispatchEventToListeners(
-        Elements.ComputedStyleModel.Events.ComputedStyleChanged, event ? event.data : null);
+    this.dispatchEventToListeners(Elements.ComputedStyleModel.Events.ComputedStyleChanged, event ? event.data : null);
   }
 
   /**
@@ -128,9 +121,10 @@ Elements.ComputedStyleModel = class extends Common.Object {
     if (!elementNode || !cssModel)
       return Promise.resolve(/** @type {?Elements.ComputedStyleModel.ComputedStyle} */ (null));
 
-    if (!this._computedStylePromise)
+    if (!this._computedStylePromise) {
       this._computedStylePromise =
           cssModel.computedStylePromise(elementNode.id).then(verifyOutdated.bind(this, elementNode));
+    }
 
     return this._computedStylePromise;
 

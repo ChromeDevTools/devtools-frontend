@@ -84,11 +84,11 @@ Timeline.TimelineLoader = class {
       this._delegate.loadingProgress(this._totalSize ? this._loadedBytes / this._totalSize : undefined);
 
     if (this._state === Timeline.TimelineLoader.State.Initial) {
-      if (chunk[0] === '{')
+      if (chunk[0] === '{') {
         this._state = Timeline.TimelineLoader.State.LookingForEvents;
-      else if (chunk[0] === '[')
+      } else if (chunk[0] === '[') {
         this._state = Timeline.TimelineLoader.State.ReadingEvents;
-      else {
+      } else {
         this._reportErrorAndCancelLoading(Common.UIString('Malformed timeline data: Unknown JSON format'));
         return;
       }

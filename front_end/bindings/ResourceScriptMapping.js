@@ -91,9 +91,10 @@ Bindings.ResourceScriptMapping = class {
     var scripts = this._scriptsForUISourceCode(uiSourceCode);
     console.assert(scripts.length);
     var script = scripts[scripts.length - 1];
-    if (script.isInlineScriptWithSourceURL())
+    if (script.isInlineScriptWithSourceURL()) {
       return this._debuggerModel.createRawLocation(
           script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset);
+    }
     return this._debuggerModel.createRawLocation(script, lineNumber, columnNumber);
   }
 
@@ -333,8 +334,7 @@ Bindings.ResourceScriptFile = class extends Common.Object {
       if (!error && !exceptionDetails)
         return;
       if (!exceptionDetails) {
-        Common.console.addMessage(
-            Common.UIString('LiveEdit failed: %s', error), Common.Console.MessageLevel.Warning);
+        Common.console.addMessage(Common.UIString('LiveEdit failed: %s', error), Common.Console.MessageLevel.Warning);
         return;
       }
       var messageText = Common.UIString('LiveEdit compile failed: %s', exceptionDetails.text);

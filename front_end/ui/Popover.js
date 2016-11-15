@@ -181,9 +181,9 @@ UI.Popover = class extends UI.Widget {
     if ((roomAbove > roomBelow) || (arrowDirection === UI.Popover.Orientation.Bottom)) {
       // Positioning above the anchor.
       if ((anchorBox.y > newElementPosition.height + arrowHeight + borderRadius) ||
-          (arrowDirection === UI.Popover.Orientation.Bottom))
+          (arrowDirection === UI.Popover.Orientation.Bottom)) {
         newElementPosition.y = anchorBox.y - newElementPosition.height - arrowHeight;
-      else {
+      } else {
         this._popupArrowElement.hidden = true;
         newElementPosition.y = borderRadius;
         newElementPosition.height = anchorBox.y - borderRadius * 2 - arrowHeight;
@@ -298,9 +298,9 @@ UI.PopoverHelper = class {
   }
 
   _mouseDown(event) {
-    if (this._disableOnClick || !this._eventInHoverElement(event))
+    if (this._disableOnClick || !this._eventInHoverElement(event)) {
       this.hidePopover();
-    else {
+    } else {
       this._killHidePopoverTimer();
       this._handleMouseAction(event, true);
     }

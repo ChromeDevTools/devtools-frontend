@@ -81,9 +81,9 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
     this._paintProfilerView.setSnapshotAndLog(null, [], null);
 
     var snapshotPromise;
-    if (this._pendingSnapshot)
+    if (this._pendingSnapshot) {
       snapshotPromise = Promise.resolve({rect: null, snapshot: this._pendingSnapshot});
-    else if (this._event.name === TimelineModel.TimelineModel.RecordType.Paint) {
+    } else if (this._event.name === TimelineModel.TimelineModel.RecordType.Paint) {
       var picture = TimelineModel.TimelineData.forEvent(this._event).picture;
       snapshotPromise = picture.objectPromise()
                             .then(data => SDK.PaintProfilerSnapshot.load(this._target, data['skp64']))

@@ -114,8 +114,7 @@ UI.SortableDataGrid = class extends UI.ViewportDataGrid {
         }
       }
 
-      var comparator = columnIsNumeric ? UI.SortableDataGrid.NumericComparator :
-                                         UI.SortableDataGrid.StringComparator;
+      var comparator = columnIsNumeric ? UI.SortableDataGrid.NumericComparator : UI.SortableDataGrid.StringComparator;
       dataGrid.sortNodes(comparator.bind(null, sortColumnId), !dataGrid.isSortOrderAscending());
     }
     return dataGrid;

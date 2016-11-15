@@ -29,8 +29,8 @@ Network.NetworkManageCustomHeadersView = class extends UI.VBox {
     placeholder.textContent = Common.UIString('No custom headers');
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.contentElement);
-    this.contentElement.appendChild(createTextButton(
-        Common.UIString('Add custom header\u2026'), this._addButtonClicked.bind(this), 'add-button'));
+    this.contentElement.appendChild(
+        createTextButton(Common.UIString('Add custom header\u2026'), this._addButtonClicked.bind(this), 'add-button'));
 
     /** @type {!Map.<string, !{title: string, editable: boolean}>} */
     this._columnConfigs = new Map();

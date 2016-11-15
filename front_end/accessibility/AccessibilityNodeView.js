@@ -9,8 +9,7 @@ Accessibility.AXNodeSubPane = class extends Accessibility.AccessibilitySubPane {
     super(Common.UIString('Computed Properties'));
 
     this._noNodeInfo = this.createInfo(Common.UIString('No accessibility node'));
-    this._ignoredInfo =
-        this.createInfo(Common.UIString('Accessibility node not exposed'), 'ax-ignored-info hidden');
+    this._ignoredInfo = this.createInfo(Common.UIString('Accessibility node not exposed'), 'ax-ignored-info hidden');
 
     this._treeOutline = this.createTreeOutline();
     this._ignoredReasonsTree = this.createTreeOutline();
@@ -355,21 +354,20 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
     if (idrefs.length === 1) {
       var idref = idrefs[0];
       var matchingNode = relatedNodes.find(node => node.idref === idref);
-      if (matchingNode) {
+      if (matchingNode)
         this.appendRelatedNodeWithIdref(matchingNode, 0, idref);
-      } else {
+      else
         this.listItemElement.appendChild(new Accessibility.AXRelatedNodeElement({idref: idref}).render());
-      }
+
     } else {
       // TODO(aboxhall): exclamation mark if not idreflist type
       for (var i = 0; i < idrefs.length; ++i) {
         var idref = idrefs[i];
         var matchingNode = relatedNodes.find(node => node.idref === idref);
-        if (matchingNode) {
+        if (matchingNode)
           this.appendRelatedNodeWithIdref(matchingNode, i, idref);
-        } else {
+        else
           this.appendChild(new Accessibility.AXRelatedNodeSourceTreeElement({idref: idref}));
-        }
       }
     }
   }
@@ -383,11 +381,11 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
     var numNodes = relatedNodes.length;
 
     if (value.type === Protocol.Accessibility.AXValueType.IdrefList ||
-        value.type === Protocol.Accessibility.AXValueType.Idref) {
+        value.type === Protocol.Accessibility.AXValueType.Idref)
       this.appendIDRefValueElement(value);
-    } else {
+    else
       super.appendRelatedNodeListValueElement(value);
-    }
+
 
     if (numNodes <= 3)
       this.expand();
@@ -507,9 +505,10 @@ Accessibility.AXRelatedNodeSourceTreeElement = class extends TreeElement {
     if (!this._value)
       return;
 
-    if (this._value.text)
+    if (this._value.text) {
       this.listItemElement.appendChild(Accessibility.AXNodePropertyTreeElement.createSimpleValueElement(
           Protocol.Accessibility.AXValueType.ComputedString, this._value.text));
+    }
   }
 };
 

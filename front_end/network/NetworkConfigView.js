@@ -32,8 +32,7 @@ Network.NetworkConfigView = class extends UI.VBox {
       var groupElement = userAgentSelectElement.createChild('optgroup');
       groupElement.label = userAgentDescriptor.title;
       for (var userAgentVersion of userAgentDescriptor.values) {
-        var userAgentValue =
-            SDK.MultitargetNetworkManager.patchUserAgentWithChromeVersion(userAgentVersion.value);
+        var userAgentValue = SDK.MultitargetNetworkManager.patchUserAgentWithChromeVersion(userAgentVersion.value);
         groupElement.appendChild(new Option(userAgentVersion.title, userAgentValue));
       }
     }

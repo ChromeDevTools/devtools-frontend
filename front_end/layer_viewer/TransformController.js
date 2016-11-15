@@ -36,8 +36,7 @@ LayerViewer.TransformController = class extends Common.Object {
       panModeButton.addEventListener('click', this._setMode.bind(this, LayerViewer.TransformController.Modes.Pan));
       this._modeButtons[LayerViewer.TransformController.Modes.Pan] = panModeButton;
       this._controlPanelToolbar.appendToolbarItem(panModeButton);
-      var rotateModeButton =
-          new UI.ToolbarToggle(Common.UIString('Rotate mode (V)'), 'largeicon-rotate');
+      var rotateModeButton = new UI.ToolbarToggle(Common.UIString('Rotate mode (V)'), 'largeicon-rotate');
       rotateModeButton.addEventListener(
           'click', this._setMode.bind(this, LayerViewer.TransformController.Modes.Rotate));
       this._modeButtons[LayerViewer.TransformController.Modes.Rotate] = rotateModeButton;
@@ -45,8 +44,7 @@ LayerViewer.TransformController = class extends Common.Object {
     }
     this._setMode(LayerViewer.TransformController.Modes.Pan);
 
-    var resetButton =
-        new UI.ToolbarButton(Common.UIString('Reset transform (0)'), 'largeicon-center');
+    var resetButton = new UI.ToolbarButton(Common.UIString('Reset transform (0)'), 'largeicon-center');
     resetButton.addEventListener('click', this.resetAndNotify.bind(this, undefined));
     this._controlPanelToolbar.appendToolbarItem(resetButton);
 
@@ -120,7 +118,7 @@ LayerViewer.TransformController = class extends Common.Object {
   _toggleMode() {
     this._setMode(
         this._mode === LayerViewer.TransformController.Modes.Pan ? LayerViewer.TransformController.Modes.Rotate :
-                                                                    LayerViewer.TransformController.Modes.Pan);
+                                                                   LayerViewer.TransformController.Modes.Pan);
   }
 
   /**

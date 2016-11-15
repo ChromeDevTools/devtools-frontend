@@ -193,8 +193,8 @@ Audits.AuditRules.CombineExternalResourcesRule = class extends Audits.AuditRule 
 Audits.AuditRules.CombineJsResourcesRule = class extends Audits.AuditRules.CombineExternalResourcesRule {
   constructor(allowedPerDomain) {
     super(
-        'page-externaljs', Common.UIString('Combine external JavaScript'), Common.resourceTypes.Script,
-        'JavaScript', allowedPerDomain);
+        'page-externaljs', Common.UIString('Combine external JavaScript'), Common.resourceTypes.Script, 'JavaScript',
+        allowedPerDomain);
   }
 };
 
@@ -628,9 +628,9 @@ Audits.AuditRules.CacheControlRule = class extends Audits.AuditRule {
     var freshnessLifetimeMs;
     var maxAgeMatch = this.responseHeaderMatch(request, 'Cache-Control', 'max-age=(\\d+)');
 
-    if (maxAgeMatch)
+    if (maxAgeMatch) {
       freshnessLifetimeMs = (maxAgeMatch[1]) ? 1000 * maxAgeMatch[1] : 0;
-    else {
+    } else {
       var expiresHeader = this.responseHeader(request, 'Expires');
       if (expiresHeader) {
         var expDate = Date.parse(expiresHeader);
@@ -1121,8 +1121,8 @@ Audits.AuditRules.StylesScriptsOrderRule = class extends Audits.AuditRule {
         var lateStyleUrls = [];
         for (var i = 0; i < lateStyleIds.length; ++i) {
           var lateStyleNode = domModel.nodeForId(lateStyleIds[i]);
-          var completeHref = Common.ParsedURL.completeURL(
-              lateStyleNode.ownerDocument.baseURL, lateStyleNode.getAttribute('href'));
+          var completeHref =
+              Common.ParsedURL.completeURL(lateStyleNode.ownerDocument.baseURL, lateStyleNode.getAttribute('href'));
           lateStyleUrls.push(completeHref || '<empty>');
         }
         result = [lateStyleUrls, cssBeforeInlineCount];
@@ -1402,10 +1402,11 @@ Audits.AuditRules.CookieSizeRule = class extends Audits.AuditRules.CookieRuleBas
 
     for (var i = 0, len = sortedCookieSizes.length; i < len; ++i) {
       var maxCookieSize = sortedCookieSizes[i].maxCookieSize;
-      if (maxCookieSize > this._maxBytesThreshold)
+      if (maxCookieSize > this._maxBytesThreshold) {
         hugeCookieDomains.push(
             Audits.AuditRuleResult.resourceDomain(sortedCookieSizes[i].domain) + ': ' +
             Number.bytesToString(maxCookieSize));
+      }
     }
 
     var bigAvgCookieDomains = [];
@@ -1413,9 +1414,10 @@ Audits.AuditRules.CookieSizeRule = class extends Audits.AuditRules.CookieRuleBas
     for (var i = 0, len = sortedCookieSizes.length; i < len; ++i) {
       var domain = sortedCookieSizes[i].domain;
       var avgCookieSize = sortedCookieSizes[i].avgCookieSize;
-      if (avgCookieSize > this._avgBytesThreshold && avgCookieSize < this._maxBytesThreshold)
+      if (avgCookieSize > this._avgBytesThreshold && avgCookieSize < this._maxBytesThreshold) {
         bigAvgCookieDomains.push(
             Audits.AuditRuleResult.resourceDomain(domain) + ': ' + Number.bytesToString(avgCookieSize));
+      }
     }
     result.addChild(Common.UIString(
         'The average cookie size for all requests on this page is %s', Number.bytesToString(avgAllCookiesSize)));

@@ -144,8 +144,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     if (resourceTreeModel.cachedResourcesLoaded())
       this._initialize();
 
-    resourceTreeModel.addEventListener(
-        SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this._initialize, this);
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this._initialize, this);
     resourceTreeModel.addEventListener(
         SDK.ResourceTreeModel.Events.WillLoadCachedResources, this._resetWithFrames, this);
   }
@@ -161,14 +160,12 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
 
     var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
     if (resourceTreeModel) {
-      resourceTreeModel.removeEventListener(
-          SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this._initialize, this);
+      resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this._initialize, this);
       resourceTreeModel.removeEventListener(
           SDK.ResourceTreeModel.Events.WillLoadCachedResources, this._resetWithFrames, this);
     }
     this._databaseModel.removeEventListener(Resources.DatabaseModel.Events.DatabaseAdded, this._databaseAdded, this);
-    this._databaseModel.removeEventListener(
-        Resources.DatabaseModel.Events.DatabasesRemoved, this._resetWebSQL, this);
+    this._databaseModel.removeEventListener(Resources.DatabaseModel.Events.DatabasesRemoved, this._resetWebSQL, this);
 
     this._resetWithFrames();
   }
@@ -232,9 +229,10 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     }
 
     var queryViews = this._databaseQueryViews.valuesArray();
-    for (var i = 0; i < queryViews.length; ++i)
+    for (var i = 0; i < queryViews.length; ++i) {
       queryViews[i].removeEventListener(
           Resources.DatabaseQueryView.Events.SchemaUpdated, this._updateDatabaseTables, this);
+    }
     this._databaseTableViews.clear();
     this._databaseQueryViews.clear();
     this._databaseTreeElements.clear();
@@ -304,8 +302,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
   _populateResourceTree(resourceTreeModel) {
     this._treeElementForFrameId = {};
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameAdded, this._frameAdded, this);
-    resourceTreeModel.addEventListener(
-        SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ResourceAdded, this._resourceAdded, this);
 
@@ -613,9 +610,10 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
   }
 
   showApplicationCache(frameId) {
-    if (!this._applicationCacheViews[frameId])
+    if (!this._applicationCacheViews[frameId]) {
       this._applicationCacheViews[frameId] =
           new Resources.ApplicationCacheItemsView(this._applicationCacheModel, frameId);
+    }
 
     this._innerShowView(this._applicationCacheViews[frameId]);
   }
@@ -698,8 +696,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     domStorageModel.enable();
     domStorageModel.storages().forEach(this._addDOMStorage.bind(this));
     domStorageModel.addEventListener(Resources.DOMStorageModel.Events.DOMStorageAdded, this._domStorageAdded, this);
-    domStorageModel.addEventListener(
-        Resources.DOMStorageModel.Events.DOMStorageRemoved, this._domStorageRemoved, this);
+    domStorageModel.addEventListener(Resources.DOMStorageModel.Events.DOMStorageRemoved, this._domStorageRemoved, this);
   }
 
   /**
@@ -715,14 +712,13 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     this._applicationCacheModel.addEventListener(
         SDK.ApplicationCacheModel.Events.FrameManifestAdded, this._applicationCacheFrameManifestAdded, this);
     this._applicationCacheModel.addEventListener(
-        SDK.ApplicationCacheModel.Events.FrameManifestRemoved, this._applicationCacheFrameManifestRemoved,
-        this);
+        SDK.ApplicationCacheModel.Events.FrameManifestRemoved, this._applicationCacheFrameManifestRemoved, this);
     this._applicationCacheModel.addEventListener(
         SDK.ApplicationCacheModel.Events.FrameManifestsReset, this._resetAppCache, this);
 
     this._applicationCacheModel.addEventListener(
-        SDK.ApplicationCacheModel.Events.FrameManifestStatusUpdated,
-        this._applicationCacheFrameManifestStatusChanged, this);
+        SDK.ApplicationCacheModel.Events.FrameManifestStatusUpdated, this._applicationCacheFrameManifestStatusChanged,
+        this);
     this._applicationCacheModel.addEventListener(
         SDK.ApplicationCacheModel.Events.NetworkStateChanged, this._applicationCacheNetworkStateChanged, this);
   }
@@ -995,8 +991,7 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
   appendResource(resource) {
     var resourceType = resource.resourceType();
     var categoryName = resourceType.name();
-    var categoryElement =
-        resourceType === Common.resourceTypes.Document ? this : this._categoryElements[categoryName];
+    var categoryElement = resourceType === Common.resourceTypes.Document ? this : this._categoryElements[categoryName];
     if (!categoryElement) {
       categoryElement = new Resources.StorageCategoryTreeElement(
           this._storagePanel, resource.resourceType().category().title, categoryName, null, true);
@@ -1223,9 +1218,7 @@ Resources.ServiceWorkerCacheTreeElement = class extends Resources.StorageCategor
    * @param {!Resources.ResourcesPanel} storagePanel
    */
   constructor(storagePanel) {
-    super(
-        storagePanel, Common.UIString('Cache Storage'), 'CacheStorage',
-        ['database-tree-item', 'resource-tree-item']);
+    super(storagePanel, Common.UIString('Cache Storage'), 'CacheStorage', ['database-tree-item', 'resource-tree-item']);
   }
 
   _initialize() {
@@ -1238,11 +1231,9 @@ Resources.ServiceWorkerCacheTreeElement = class extends Resources.StorageCategor
         this._addCache(model, cache);
     }
     SDK.targetManager.addModelListener(
-        SDK.ServiceWorkerCacheModel, SDK.ServiceWorkerCacheModel.Events.CacheAdded, this._cacheAdded,
-        this);
+        SDK.ServiceWorkerCacheModel, SDK.ServiceWorkerCacheModel.Events.CacheAdded, this._cacheAdded, this);
     SDK.targetManager.addModelListener(
-        SDK.ServiceWorkerCacheModel, SDK.ServiceWorkerCacheModel.Events.CacheRemoved,
-        this._cacheRemoved, this);
+        SDK.ServiceWorkerCacheModel, SDK.ServiceWorkerCacheModel.Events.CacheRemoved, this._cacheRemoved, this);
   }
 
   /**
@@ -1397,9 +1388,7 @@ Resources.ServiceWorkersTreeElement = class extends Resources.BaseStorageTreeEle
    * @param {!Resources.ResourcesPanel} storagePanel
    */
   constructor(storagePanel) {
-    super(
-        storagePanel, Common.UIString('Service Workers'), ['service-worker-tree-item', 'resource-tree-item'],
-        false);
+    super(storagePanel, Common.UIString('Service Workers'), ['service-worker-tree-item', 'resource-tree-item'], false);
   }
 
   /**

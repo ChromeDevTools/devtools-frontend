@@ -34,8 +34,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
     var instance =
         /** @type {?SDK.ServiceWorkerCacheModel} */ (target.model(SDK.ServiceWorkerCacheModel));
     if (!instance)
-      instance =
-          new SDK.ServiceWorkerCacheModel(target, SDK.SecurityOriginManager.fromTarget(target));
+      instance = new SDK.ServiceWorkerCacheModel(target, SDK.SecurityOriginManager.fromTarget(target));
     return instance;
   }
 
@@ -203,8 +202,8 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
     var oldCaches = new Map();
 
     for (var cacheJson of cachesJson) {
-      var cache = new SDK.ServiceWorkerCacheModel.Cache(
-          cacheJson.securityOrigin, cacheJson.cacheName, cacheJson.cacheId);
+      var cache =
+          new SDK.ServiceWorkerCacheModel.Cache(cacheJson.securityOrigin, cacheJson.cacheName, cacheJson.cacheId);
       updatingCachesIds.add(cache.cacheId);
       if (this._caches.has(cache.cacheId))
         continue;
@@ -264,9 +263,9 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
         return;
       }
       var entries = [];
-      for (var i = 0; i < dataEntries.length; ++i) {
+      for (var i = 0; i < dataEntries.length; ++i)
         entries.push(new SDK.ServiceWorkerCacheModel.Entry(dataEntries[i].request, dataEntries[i].response));
-      }
+
       callback(entries, hasMore);
     }
     this._agent.requestEntries(cache.cacheId, skipCount, pageSize, innerCallback);

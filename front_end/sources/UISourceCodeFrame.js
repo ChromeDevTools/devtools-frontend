@@ -311,9 +311,10 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     if (lineNumber < 0)
       lineNumber = 0;
 
-    if (!this._rowMessageBuckets[lineNumber])
+    if (!this._rowMessageBuckets[lineNumber]) {
       this._rowMessageBuckets[lineNumber] =
           new Sources.UISourceCodeFrame.RowMessageBucket(this, this._textEditor, lineNumber);
+    }
     var messageBucket = this._rowMessageBuckets[lineNumber];
     messageBucket.addMessage(message);
   }
@@ -555,9 +556,9 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
    */
   messagesDescription() {
     this._messagesDescriptionElement.removeChildren();
-    for (var i = 0; i < this._messages.length; ++i) {
+    for (var i = 0; i < this._messages.length; ++i)
       this._messagesDescriptionElement.appendChild(this._messages[i].element);
-    }
+
     return this._messagesDescriptionElement;
   }
 
@@ -567,8 +568,7 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
       return;
     var lineNumber = position.lineNumber;
     if (this._level)
-      this._textEditor.toggleLineClass(
-          lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
+      this._textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
     if (this._hasDecoration)
       this._textEditor.removeDecoration(this._decoration, lineNumber);
     this._hasDecoration = false;
@@ -635,8 +635,7 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
     this._updateWavePosition(lineNumber, columnNumber);
 
     if (this._level) {
-      this._textEditor.toggleLineClass(
-          lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
+      this._textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
       this._icon.type = '';
     }
     this._level = maxMessage.level();

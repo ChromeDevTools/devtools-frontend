@@ -52,10 +52,11 @@ FormatterWorker.javaScriptOutline = function(content) {
       };
       addedFunction = true;
       previousIdentifier = null;
-    } else if (AT.punctuator(token, '.') && previousToken && AT.identifier(previousToken))
+    } else if (AT.punctuator(token, '.') && previousToken && AT.identifier(previousToken)) {
       previousIdentifier += '.';
-    else if (AT.punctuator(token, '(') && addedFunction)
+    } else if (AT.punctuator(token, '(') && addedFunction) {
       isReadingArguments = true;
+    }
     if (isReadingArguments && tokenValue)
       argumentsText += tokenValue;
 

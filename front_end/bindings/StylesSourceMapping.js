@@ -51,14 +51,12 @@ Bindings.StylesSourceMapping = class {
       this._workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this),
       this._workspace.addEventListener(
           Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAddedToWorkspace, this),
-      this._workspace.addEventListener(
-          Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this),
+      this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this),
       this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this),
       this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this),
       this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, this._styleSheetChanged, this),
       SDK.ResourceTreeModel.fromTarget(cssModel.target())
-          .addEventListener(
-              SDK.ResourceTreeModel.Events.MainFrameNavigated, this._unbindAllUISourceCodes, this)
+          .addEventListener(SDK.ResourceTreeModel.Events.MainFrameNavigated, this._unbindAllUISourceCodes, this)
     ];
   }
 

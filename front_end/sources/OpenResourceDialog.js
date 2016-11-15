@@ -26,10 +26,8 @@ Sources.OpenResourceDialog = class extends Sources.FilteredUISourceCodeListDeleg
    * @param {!Array<string>} history
    */
   static show(sourcesView, query, defaultScores, history) {
-    Sources.OpenResourceDialog._instanceForTest =
-        new Sources.OpenResourceDialog(sourcesView, defaultScores, history);
-    var filteredItemSelectionDialog =
-        new UI.FilteredListWidget(Sources.OpenResourceDialog._instanceForTest);
+    Sources.OpenResourceDialog._instanceForTest = new Sources.OpenResourceDialog(sourcesView, defaultScores, history);
+    var filteredItemSelectionDialog = new UI.FilteredListWidget(Sources.OpenResourceDialog._instanceForTest);
     filteredItemSelectionDialog.showAsDialog();
     filteredItemSelectionDialog.setQuery(query);
   }

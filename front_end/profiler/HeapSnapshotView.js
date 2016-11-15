@@ -70,8 +70,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._statisticsView = new Profiler.HeapSnapshotStatisticsView();
 
     this._constructorsDataGrid = new Profiler.HeapSnapshotConstructorsDataGrid(this);
-    this._constructorsDataGrid.addEventListener(
-        UI.DataGrid.Events.SelectedNode, this._selectionChanged, this);
+    this._constructorsDataGrid.addEventListener(UI.DataGrid.Events.SelectedNode, this._selectionChanged, this);
     this._constructorsWidget = this._constructorsDataGrid.asWidget();
     this._constructorsWidget.setMinimumSize(50, 25);
 
@@ -82,8 +81,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
 
     if (isHeapTimeline && Common.moduleSetting('recordAllocationStacks').get()) {
       this._allocationDataGrid = new Profiler.AllocationDataGrid(profile.target(), this);
-      this._allocationDataGrid.addEventListener(
-          UI.DataGrid.Events.SelectedNode, this._onSelectAllocationNode, this);
+      this._allocationDataGrid.addEventListener(UI.DataGrid.Events.SelectedNode, this._onSelectAllocationNode, this);
       this._allocationWidget = this._allocationDataGrid.asWidget();
       this._allocationWidget.setMinimumSize(50, 25);
 
@@ -103,8 +101,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
       this._tabbedPane = new UI.TabbedPane();
 
       this._tabbedPane.appendTab('retainers', Common.UIString('Retainers'), this._retainmentWidget);
-      this._tabbedPane.appendTab(
-          'allocation-stack', Common.UIString('Allocation stack'), this._allocationStackView);
+      this._tabbedPane.appendTab('allocation-stack', Common.UIString('Allocation stack'), this._allocationStackView);
 
       splitWidgetResizer = this._tabbedPane.headerElement();
       this._objectDetailsView = this._tabbedPane;
@@ -122,8 +119,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._splitWidget.hideDefaultResizer();
     this._splitWidget.installResizer(splitWidgetResizer);
 
-    this._retainmentDataGrid.addEventListener(
-        UI.DataGrid.Events.SelectedNode, this._inspectedObjectChanged, this);
+    this._retainmentDataGrid.addEventListener(UI.DataGrid.Events.SelectedNode, this._inspectedObjectChanged, this);
     this._retainmentDataGrid.reset();
 
     this._perspectives = [];
@@ -866,8 +862,7 @@ Profiler.HeapSnapshotView.ContainmentPerspective = class extends Profiler.HeapSn
 Profiler.HeapSnapshotView.AllocationPerspective = class extends Profiler.HeapSnapshotView.Perspective {
   constructor() {
     super(Common.UIString('Allocation'));
-    this._allocationSplitWidget =
-        new UI.SplitWidget(false, true, 'heapSnapshotAllocationSplitViewState', 200, 200);
+    this._allocationSplitWidget = new UI.SplitWidget(false, true, 'heapSnapshotAllocationSplitViewState', 200, 200);
     this._allocationSplitWidget.setSidebarWidget(new UI.VBox());
   }
 
@@ -958,8 +953,7 @@ Profiler.HeapSnapshotProfileType = class extends Profiler.ProfileType {
     SDK.targetManager.addModelListener(
         SDK.HeapProfilerModel, SDK.HeapProfilerModel.Events.ResetProfiles, this._resetProfiles, this);
     SDK.targetManager.addModelListener(
-        SDK.HeapProfilerModel, SDK.HeapProfilerModel.Events.AddHeapSnapshotChunk,
-        this._addHeapSnapshotChunk, this);
+        SDK.HeapProfilerModel, SDK.HeapProfilerModel.Events.AddHeapSnapshotChunk, this._addHeapSnapshotChunk, this);
     SDK.targetManager.addModelListener(
         SDK.HeapProfilerModel, SDK.HeapProfilerModel.Events.ReportHeapSnapshotProgress,
         this._reportHeapSnapshotProgress, this);
@@ -1617,8 +1611,7 @@ Profiler.SaveSnapshotOutputStreamDelegate = class {
    * @param {!Event} event
    */
   onError(reader, event) {
-    Common.console.error(
-        'Failed to read heap snapshot from temp file: ' + /** @type {!ErrorEvent} */ (event).message);
+    Common.console.error('Failed to read heap snapshot from temp file: ' + /** @type {!ErrorEvent} */ (event).message);
     this.onTransferFinished();
   }
 };

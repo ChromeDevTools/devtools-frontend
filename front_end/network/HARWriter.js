@@ -47,8 +47,9 @@ Network.HARWriter = class {
       if (typeof content === 'undefined' && requests[i].finished) {
         ++this._pendingRequests;
         requests[i].requestContent().then(this._onContentAvailable.bind(this, entries[i], requests[i]));
-      } else if (content !== null)
+      } else if (content !== null) {
         this._setEntryContent(entries[i], requests[i]);
+      }
     }
     var compositeProgress = new Common.CompositeProgress(progress);
     this._writeProgress = compositeProgress.createSubProgress();
@@ -56,8 +57,9 @@ Network.HARWriter = class {
       this._requestsProgress = compositeProgress.createSubProgress();
       this._requestsProgress.setTitle(Common.UIString('Collecting content…'));
       this._requestsProgress.setTotalWork(this._pendingRequests);
-    } else
+    } else {
       this._beginWrite();
+    }
   }
 
   /**

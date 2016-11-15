@@ -65,8 +65,7 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
       if (value === this._dispatchFilterBySetting.get())
         dispatchFilter.select(option);
     }
-    addDispatchFilterOption.call(
-        this, Common.UIString('All'), Elements.EventListenersWidget.DispatchFilterBy.All);
+    addDispatchFilterOption.call(this, Common.UIString('All'), Elements.EventListenersWidget.DispatchFilterBy.All);
     addDispatchFilterOption.call(
         this, Common.UIString('Passive'), Elements.EventListenersWidget.DispatchFilterBy.Passive);
     addDispatchFilterOption.call(
@@ -74,8 +73,8 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
     dispatchFilter.setMaxWidth(200);
     this._toolbarItems.push(dispatchFilter);
     this._toolbarItems.push(new UI.ToolbarCheckbox(
-        Common.UIString('Framework listeners'),
-        Common.UIString('Resolve event listeners bound with framework'), this._showFrameworkListenersSetting));
+        Common.UIString('Framework listeners'), Common.UIString('Resolve event listeners bound with framework'),
+        this._showFrameworkListenersSetting));
 
     UI.context.addFlavorChangeListener(SDK.DOMNode, this.update, this);
     this.update();

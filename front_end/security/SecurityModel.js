@@ -39,8 +39,9 @@ Security.SecurityModel = class extends SDK.SDKModel {
     } else {
       securityStateMap = new Map();
       var ordering = [
-        Protocol.Security.SecurityState.Info, Protocol.Security.SecurityState.Insecure, Protocol.Security.SecurityState.Neutral,
-        Protocol.Security.SecurityState.Warning, Protocol.Security.SecurityState.Secure,
+        Protocol.Security.SecurityState.Info, Protocol.Security.SecurityState.Insecure,
+        Protocol.Security.SecurityState.Neutral, Protocol.Security.SecurityState.Warning,
+        Protocol.Security.SecurityState.Secure,
         // Unknown is max so that failed/cancelled requests don't overwrite the origin security state for successful requests,
         // and so that failed/cancelled requests appear at the bottom of the origins list.
         Protocol.Security.SecurityState.Unknown

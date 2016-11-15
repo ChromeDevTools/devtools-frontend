@@ -63,8 +63,8 @@ Sources.RevisionHistoryView = class extends UI.VBox {
    */
   static showHistory(uiSourceCode) {
     UI.viewManager.showView('sources.history');
-    var historyView = /** @type {!Sources.RevisionHistoryView} */ (
-        self.runtime.sharedInstance(Sources.RevisionHistoryView));
+    var historyView =
+        /** @type {!Sources.RevisionHistoryView} */ (self.runtime.sharedInstance(Sources.RevisionHistoryView));
     historyView._revealUISourceCode(uiSourceCode);
   }
 

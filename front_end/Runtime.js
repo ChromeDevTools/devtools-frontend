@@ -767,8 +767,11 @@ Runtime.Module = class {
 
     // Module namespaces.
     var namespace = this._name.replace('_lazy', '');
+    // the namespace keyword confuses clang-format
+    // clang-format off
     if (namespace === 'sdk' || namespace === 'ui')
-        namespace = namespace.toUpperCase();
+      namespace = namespace.toUpperCase();
+    // clang-format on
     namespace = namespace.split('_').map(a => a.substring(0, 1).toUpperCase() + a.substring(1)).join('');
     self[namespace] = self[namespace] || {};
 

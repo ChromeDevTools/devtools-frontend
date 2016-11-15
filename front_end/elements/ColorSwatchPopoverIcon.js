@@ -34,9 +34,10 @@ Elements.BezierPopoverIcon = class {
 
     this._bezierEditor = new UI.BezierEditor();
     var cubicBezier = Common.Geometry.CubicBezier.parse(this._swatch.bezierText());
-    if (!cubicBezier)
+    if (!cubicBezier) {
       cubicBezier =
           /** @type {!Common.Geometry.CubicBezier} */ (Common.Geometry.CubicBezier.parse('linear'));
+    }
     this._bezierEditor.setBezier(cubicBezier);
     this._bezierEditor.addEventListener(UI.BezierEditor.Events.BezierChanged, this._boundBezierChanged);
     this._swatchPopoverHelper.show(this._bezierEditor, this._swatch.iconElement(), this._onPopoverHidden.bind(this));
@@ -46,8 +47,7 @@ Elements.BezierPopoverIcon = class {
 
     this._originalPropertyText = this._treeElement.property.propertyText;
     this._treeElement.parentPane().setEditingStyle(true);
-    var uiLocation =
-        Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
+    var uiLocation = Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
     if (uiLocation)
       Common.Revealer.reveal(uiLocation, true /* omitFocus */);
   }
@@ -157,8 +157,7 @@ Elements.ColorSwatchPopoverIcon = class {
 
     this._originalPropertyText = this._treeElement.property.propertyText;
     this._treeElement.parentPane().setEditingStyle(true);
-    var uiLocation =
-        Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
+    var uiLocation = Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
     if (uiLocation)
       Common.Revealer.reveal(uiLocation, true /* omitFocus */);
   }
@@ -205,8 +204,7 @@ Elements.ColorSwatchPopoverIcon = class {
   }
 };
 
-Elements.ColorSwatchPopoverIcon._treeElementSymbol =
-    Symbol('Elements.ColorSwatchPopoverIcon._treeElementSymbol');
+Elements.ColorSwatchPopoverIcon._treeElementSymbol = Symbol('Elements.ColorSwatchPopoverIcon._treeElementSymbol');
 
 
 /**
@@ -264,8 +262,7 @@ Elements.ShadowSwatchPopoverHelper = class {
 
     this._originalPropertyText = this._treeElement.property.propertyText;
     this._treeElement.parentPane().setEditingStyle(true);
-    var uiLocation =
-        Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
+    var uiLocation = Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
     if (uiLocation)
       Common.Revealer.reveal(uiLocation, true /* omitFocus */);
   }
@@ -292,8 +289,7 @@ Elements.ShadowSwatchPopoverHelper = class {
     if (this._scrollerElement)
       this._scrollerElement.removeEventListener('scroll', this._boundOnScroll, false);
 
-    this._cssShadowEditor.removeEventListener(
-        UI.CSSShadowEditor.Events.ShadowChanged, this._boundShadowChanged);
+    this._cssShadowEditor.removeEventListener(UI.CSSShadowEditor.Events.ShadowChanged, this._boundShadowChanged);
     delete this._cssShadowEditor;
 
     var propertyText = commitEdit ? this._treeElement.renderedPropertyText() : this._originalPropertyText;
@@ -303,5 +299,4 @@ Elements.ShadowSwatchPopoverHelper = class {
   }
 };
 
-Elements.ShadowSwatchPopoverHelper._treeElementSymbol =
-    Symbol('Elements.ShadowSwatchPopoverHelper._treeElementSymbol');
+Elements.ShadowSwatchPopoverHelper._treeElementSymbol = Symbol('Elements.ShadowSwatchPopoverHelper._treeElementSymbol');

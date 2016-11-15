@@ -218,8 +218,9 @@ UI.FilteredListWidget = class extends UI.VBox {
             bestItems.length = bestItemsToCollect;
           }
           minBestScore = bestScores.peekLast();
-        } else
+        } else {
           filteredItems.push(i);
+        }
       }
 
       // Process everything in chunks.

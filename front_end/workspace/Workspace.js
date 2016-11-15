@@ -70,8 +70,8 @@ Workspace.Project = function() {};
  * @return {boolean}
  */
 Workspace.Project.isServiceProject = function(project) {
-  return project.type() === Workspace.projectTypes.Debugger ||
-      project.type() === Workspace.projectTypes.Formatter || project.type() === Workspace.projectTypes.Service;
+  return project.type() === Workspace.projectTypes.Debugger || project.type() === Workspace.projectTypes.Formatter ||
+      project.type() === Workspace.projectTypes.Service;
 };
 
 Workspace.Project.prototype = {

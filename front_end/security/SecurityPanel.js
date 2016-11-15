@@ -14,8 +14,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     this._sidebarMainViewElement = new Security.SecurityPanelSidebarTreeElement(
         Common.UIString('Overview'), this._setVisibleView.bind(this, this._mainView),
         'security-main-view-sidebar-tree-item', 'lock-icon');
-    this._sidebarTree =
-        new Security.SecurityPanelSidebarTree(this._sidebarMainViewElement, this.showOrigin.bind(this));
+    this._sidebarTree = new Security.SecurityPanelSidebarTree(this._sidebarMainViewElement, this.showOrigin.bind(this));
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
 
     /** @type {!Map<!Protocol.Network.LoaderId, !SDK.NetworkRequest>} */
@@ -183,7 +182,8 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
 
     var securityState = /** @type {!Protocol.Security.SecurityState} */ (request.securityState());
 
-    if (request.mixedContentType === Protocol.Network.RequestMixedContentType.Blockable && this._ranInsecureContentStyle)
+    if (request.mixedContentType === Protocol.Network.RequestMixedContentType.Blockable &&
+        this._ranInsecureContentStyle)
       securityState = this._ranInsecureContentStyle;
     else if (
         request.mixedContentType === Protocol.Network.RequestMixedContentType.OptionallyBlockable &&
@@ -205,9 +205,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       originState.securityState = securityState;
 
       var securityDetails = request.securityDetails();
-      if (securityDetails) {
+      if (securityDetails)
         originState.securityDetails = securityDetails;
-      }
+
 
       this._origins.set(origin, originState);
 
@@ -296,10 +296,8 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     var networkManager = SDK.NetworkManager.fromTarget(target);
     if (networkManager) {
       listeners = listeners.concat([
-        networkManager.addEventListener(
-            SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this),
-        networkManager.addEventListener(
-            SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this),
+        networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this),
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this),
       ]);
     }
 
@@ -603,8 +601,7 @@ Security.SecurityMainView = class extends UI.VBox {
     var lockSpectrum = this._summarySection.createChild('div', 'lock-spectrum');
     lockSpectrum.createChild('div', 'lock-icon lock-icon-secure').title = Common.UIString('Secure');
     lockSpectrum.createChild('div', 'lock-icon lock-icon-neutral').title = Common.UIString('Not Secure');
-    lockSpectrum.createChild('div', 'lock-icon lock-icon-insecure').title =
-        Common.UIString('Not Secure (Broken)');
+    lockSpectrum.createChild('div', 'lock-icon lock-icon-insecure').title = Common.UIString('Not Secure (Broken)');
 
     this._summarySection.createChild('div', 'triangle-pointer-container')
         .createChild('div', 'triangle-pointer-wrapper')
@@ -629,8 +626,8 @@ Security.SecurityMainView = class extends UI.VBox {
     text.createChild('div').textContent = explanation.description;
 
     if (explanation.hasCertificate) {
-      text.appendChild(Security.SecurityPanel.createCertificateViewerButton(
-          Common.UIString('View certificate'), this._panel));
+      text.appendChild(
+          Security.SecurityPanel.createCertificateViewerButton(Common.UIString('View certificate'), this._panel));
     }
 
     return text;
@@ -671,11 +668,10 @@ Security.SecurityMainView = class extends UI.VBox {
     this._securityExplanationsMain.removeChildren();
     this._securityExplanationsExtra.removeChildren();
     for (var explanation of this._explanations) {
-      if (explanation.securityState === Protocol.Security.SecurityState.Info) {
+      if (explanation.securityState === Protocol.Security.SecurityState.Info)
         this._addExplanation(this._securityExplanationsExtra, explanation);
-      } else {
+      else
         this._addExplanation(this._securityExplanationsMain, explanation);
-      }
     }
 
     this._addMixedContentExplanations();
@@ -700,7 +696,7 @@ Security.SecurityMainView = class extends UI.VBox {
 
     if (this._insecureContentStatus &&
         (this._insecureContentStatus.ranMixedContent || this._insecureContentStatus.displayedMixedContent)) {
-      if (this._insecureContentStatus.ranMixedContent)
+      if (this._insecureContentStatus.ranMixedContent) {
         this._addMixedContentExplanation(
             this._securityExplanationsMain, this._insecureContentStatus.ranInsecureContentStyle,
             Common.UIString('Active Mixed Content'),
@@ -708,19 +704,22 @@ Security.SecurityMainView = class extends UI.VBox {
                 'You have recently allowed non-secure content (such as scripts or iframes) to run on this site.'),
             Network.NetworkLogView.MixedContentFilterValues.BlockOverridden,
             showBlockOverriddenMixedContentInNetworkPanel);
-      if (this._insecureContentStatus.displayedMixedContent)
+      }
+      if (this._insecureContentStatus.displayedMixedContent) {
         this._addMixedContentExplanation(
             this._securityExplanationsMain, this._insecureContentStatus.displayedInsecureContentStyle,
             Common.UIString('Mixed Content'), Common.UIString('The site includes HTTP resources.'),
             Network.NetworkLogView.MixedContentFilterValues.Displayed, showDisplayedMixedContentInNetworkPanel);
+      }
     }
 
-    if (this._panel.filterRequestCount(Network.NetworkLogView.MixedContentFilterValues.Blocked) > 0)
+    if (this._panel.filterRequestCount(Network.NetworkLogView.MixedContentFilterValues.Blocked) > 0) {
       this._addMixedContentExplanation(
           this._securityExplanationsExtra, Protocol.Security.SecurityState.Info,
           Common.UIString('Blocked mixed content'),
           Common.UIString('Your page requested non-secure resources that were blocked.'),
           Network.NetworkLogView.MixedContentFilterValues.Blocked, showBlockedMixedContentInNetworkPanel);
+    }
 
     /**
      * @param {!Event} e
@@ -783,11 +782,11 @@ Security.SecurityMainView = class extends UI.VBox {
     }
 
     var requestsAnchor = explanation.createChild('div', 'security-mixed-content link');
-    if (filterRequestCount === 1) {
+    if (filterRequestCount === 1)
       requestsAnchor.textContent = Common.UIString('View %d request in Network Panel', filterRequestCount);
-    } else {
+    else
       requestsAnchor.textContent = Common.UIString('View %d requests in Network Panel', filterRequestCount);
-    }
+
     requestsAnchor.href = '';
     requestsAnchor.addEventListener('click', networkFilterFn);
   }
@@ -810,12 +809,12 @@ Security.SecurityMainView = class extends UI.VBox {
     }
 
     if (this._insecureContentStatus.displayedContentWithCertErrors) {
-      this._addExplanation(this._securityExplanationsMain, /** @type {!Protocol.Security.SecurityStateExplanation} */ ({
-                             'securityState': this._insecureContentStatus.displayedInsecureContentStyle,
-                             'summary': Common.UIString('Content with certificate errors'),
-                             'description': Common.UIString(
-                                 'This site includes resources that were loaded with certificate errors.')
-                           }));
+      this._addExplanation(
+          this._securityExplanationsMain, /** @type {!Protocol.Security.SecurityStateExplanation} */ ({
+            'securityState': this._insecureContentStatus.displayedInsecureContentStyle,
+            'summary': Common.UIString('Content with certificate errors'),
+            'description': Common.UIString('This site includes resources that were loaded with certificate errors.')
+          }));
     }
   }
 };
@@ -857,8 +856,7 @@ Security.SecurityOriginView = class extends UI.VBox {
 
     if (originState.securityDetails) {
       var connectionSection = this.element.createChild('div', 'origin-view-section');
-      connectionSection.createChild('div', 'origin-view-section-title').textContent =
-          Common.UIString('Connection');
+      connectionSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Connection');
 
       var table = new Security.SecurityDetailsTable();
       connectionSection.appendChild(table.element());
@@ -873,8 +871,7 @@ Security.SecurityOriginView = class extends UI.VBox {
 
       // Create the certificate section outside the callback, so that it appears in the right place.
       var certificateSection = this.element.createChild('div', 'origin-view-section');
-      certificateSection.createChild('div', 'origin-view-section-title').textContent =
-          Common.UIString('Certificate');
+      certificateSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Certificate');
 
       if (originState.securityDetails.signedCertificateTimestampList.length) {
         // Create the Certificate Transparency section outside the callback, so that it appears in the right place.
@@ -949,8 +946,7 @@ Security.SecurityOriginView = class extends UI.VBox {
           Common.UIString('The security details above are from the first inspected response.');
     } else if (originState.securityState !== Protocol.Security.SecurityState.Unknown) {
       var notSecureSection = this.element.createChild('div', 'origin-view-section');
-      notSecureSection.createChild('div', 'origin-view-section-title').textContent =
-          Common.UIString('Not Secure');
+      notSecureSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Not Secure');
       notSecureSection.createChild('div').textContent =
           Common.UIString('Your connection to this origin is not secure.');
     } else {
@@ -1038,10 +1034,9 @@ Security.SecurityDetailsTable = class {
     row.createChild('div').textContent = key;
 
     var valueDiv = row.createChild('div');
-    if (typeof value === 'string') {
+    if (typeof value === 'string')
       valueDiv.textContent = value;
-    } else {
+    else
       valueDiv.appendChild(value);
-    }
   }
 };

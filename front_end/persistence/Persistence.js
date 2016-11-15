@@ -33,8 +33,8 @@ Persistence.Persistence = class extends Common.Object {
    */
   _onBindingCreated(binding) {
     if (binding.network.isDirty()) {
-      Common.console.log(Common.UIString(
-          '%s can not be persisted to file system due to unsaved changes.', binding.network.name()));
+      Common.console.log(
+          Common.UIString('%s can not be persisted to file system due to unsaved changes.', binding.network.name()));
       return;
     }
     if (binding.fileSystem.isDirty())
@@ -108,10 +108,10 @@ Persistence.Persistence = class extends Common.Object {
   _syncNodeJSContent(binding, uiSourceCode, currentContent, newContent) {
     if (uiSourceCode === binding.fileSystem) {
       if (newContent.startsWith(Persistence.Persistence._NodePrefix) &&
-          newContent.endsWith(Persistence.Persistence._NodeSuffix))
+          newContent.endsWith(Persistence.Persistence._NodeSuffix)) {
         newContent = newContent.substring(
-            Persistence.Persistence._NodePrefix.length,
-            newContent.length - Persistence.Persistence._NodeSuffix.length);
+            Persistence.Persistence._NodePrefix.length, newContent.length - Persistence.Persistence._NodeSuffix.length);
+      }
       if (currentContent.startsWith(Persistence.Persistence._NodeShebang))
         newContent = Persistence.Persistence._NodeShebang + newContent;
     } else {
@@ -149,9 +149,10 @@ Persistence.Persistence = class extends Common.Object {
    */
   _copyBreakpoints(from, to) {
     var breakpoints = this._breakpointManager.breakpointsForUISourceCode(from);
-    for (var breakpoint of breakpoints)
+    for (var breakpoint of breakpoints) {
       this._breakpointManager.setBreakpoint(
           to, breakpoint.lineNumber(), breakpoint.columnNumber(), breakpoint.condition(), breakpoint.enabled());
+    }
   }
 
   /**

@@ -429,9 +429,9 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
 
     if (!valid(charNumber, length))
       return constrainPosition(lineNumber, length, charNumber);
-    if (isWordStart(text, charNumber) || isWordEnd(text, charNumber)) {
+    if (isWordStart(text, charNumber) || isWordEnd(text, charNumber))
       return {lineNumber: lineNumber, columnNumber: charNumber};
-    }
+
 
     return {lineNumber: lineNumber, columnNumber: direction === -1 ? charNumber + 1 : charNumber};
   }
@@ -849,11 +849,12 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
     var newPaddingBottom;
     var linesElement = this._codeMirrorElement.querySelector('.CodeMirror-lines');
     var lineCount = this._codeMirror.lineCount();
-    if (lineCount <= 1)
+    if (lineCount <= 1) {
       newPaddingBottom = 0;
-    else
+    } else {
       newPaddingBottom =
           Math.max(scrollInfo.clientHeight - this._codeMirror.getLineHandle(this._codeMirror.lastLine()).height, 0);
+    }
     newPaddingBottom += 'px';
     linesElement.style.paddingBottom = newPaddingBottom;
     this._codeMirror.setSize(width, height);
@@ -1425,9 +1426,9 @@ TextEditor.CodeMirrorTextEditor.SelectNextOccurrenceController = class {
 
     var last = selections[selections.length - 1];
     var next = last;
-    do {
+    do
       next = this._findNextOccurrence(next, !!this._fullWordSelection);
-    } while (next && this._findRange(selections, next) && !next.equal(last));
+    while (next && this._findRange(selections, next) && !next.equal(last));
 
     if (!next)
       return;

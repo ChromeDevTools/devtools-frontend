@@ -10,12 +10,14 @@ Components.JavaScriptAutocomplete = {};
  * @param {boolean} force
  * @param {function(!Array.<string>, number=)} completionsReadyCallback
  */
-Components.JavaScriptAutocomplete.completionsForTextPromptInCurrentContext = function(proxyElement, wordRange, force, completionsReadyCallback) {
+Components.JavaScriptAutocomplete.completionsForTextPromptInCurrentContext = function(
+    proxyElement, wordRange, force, completionsReadyCallback) {
   var expressionRange = wordRange.cloneRange();
   expressionRange.collapse(true);
   expressionRange.setStartBefore(proxyElement);
-  Components.JavaScriptAutocomplete.completionsForTextInCurrentContext(expressionRange.toString(), wordRange.toString(), force)
-    .then(completionsReadyCallback);
+  Components.JavaScriptAutocomplete
+      .completionsForTextInCurrentContext(expressionRange.toString(), wordRange.toString(), force)
+      .then(completionsReadyCallback);
 };
 
 /**
@@ -54,7 +56,7 @@ Components.JavaScriptAutocomplete.completionsForTextInCurrentContext = function(
 };
 
 
-  /**
+/**
    * @param {string} expressionString
    * @param {string} query
    * @param {boolean=} force
@@ -106,9 +108,9 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
      */
     function extractTarget(object) {
       if (!object)
-        return Promise.resolve(/** @type {?SDK.RemoteObject} */(null));
+        return Promise.resolve(/** @type {?SDK.RemoteObject} */ (null));
       if (object.type !== 'object' || object.subtype !== 'proxy')
-        return Promise.resolve(/** @type {?SDK.RemoteObject} */(object));
+        return Promise.resolve(/** @type {?SDK.RemoteObject} */ (object));
       return object.getOwnPropertiesPromise().then(extractTargetFromProperties).then(extractTarget);
     }
 
@@ -139,7 +141,7 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
       else
         object = this;
 
-      var resultSet = { __proto__: null };
+      var resultSet = {__proto__: null};
       try {
         for (var o = object; o; o = Object.getPrototypeOf(o)) {
           if ((type === 'array' || type === 'typedarray') && o === object && ArrayBuffer.isView(o) && o.length > 9999)
@@ -162,16 +164,16 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
      * @param {?SDK.RemoteObject} object
      */
     function completionsForObject(object) {
-      if (!object)
+      if (!object) {
         receivedPropertyNames(null);
-      else if (object.type === 'object' || object.type === 'function')
+      } else if (object.type === 'object' || object.type === 'function') {
         object.callFunctionJSON(
-          getCompletions, [SDK.RemoteObject.toCallArgument(object.subtype)],
-          receivedPropertyNames);
-      else if (object.type === 'string' || object.type === 'number' || object.type === 'boolean')
+            getCompletions, [SDK.RemoteObject.toCallArgument(object.subtype)], receivedPropertyNames);
+      } else if (object.type === 'string' || object.type === 'number' || object.type === 'boolean') {
         executionContext.evaluate(
-          '(' + getCompletions + ')("' + result.type + '")', 'completion', false, true, true, false, false,
-          receivedPropertyNamesFromEval);
+            '(' + getCompletions + ')("' + result.type + '")', 'completion', false, true, true, false, false,
+            receivedPropertyNamesFromEval);
+      }
     }
 
     extractTarget(result).then(completionsForObject);
@@ -184,7 +186,7 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
   function receivedPropertyNamesFromEval(result, exceptionDetails) {
     executionContext.target().runtimeAgent().releaseObjectGroup('completion');
     if (result && !exceptionDetails)
-      receivedPropertyNames(/** @type {!Object} */(result.value));
+      receivedPropertyNames(/** @type {!Object} */ (result.value));
     else
       fufill([]);
   }
@@ -226,11 +228,11 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
         propertyNames[commandLineAPI[i]] = true;
     }
     fufill(Components.JavaScriptAutocomplete._completionsForQuery(
-      dotNotation, bracketNotation, expressionString, query, Object.keys(propertyNames)));
+        dotNotation, bracketNotation, expressionString, query, Object.keys(propertyNames)));
   }
 };
 
-  /**
+/**
    * @param {boolean} dotNotation
    * @param {boolean} bracketNotation
    * @param {string} expressionString
@@ -238,7 +240,8 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
    * @param {!Array.<string>} properties
    * @return {!Array<string>}
    */
-Components.JavaScriptAutocomplete._completionsForQuery = function(dotNotation, bracketNotation, expressionString, query, properties) {
+Components.JavaScriptAutocomplete._completionsForQuery = function(
+    dotNotation, bracketNotation, expressionString, query, properties) {
   if (bracketNotation) {
     if (query.length && query[0] === '\'')
       var quoteUsed = '\'';
@@ -248,9 +251,9 @@ Components.JavaScriptAutocomplete._completionsForQuery = function(dotNotation, b
 
   if (!expressionString) {
     const keywords = [
-      'break', 'case', 'catch', 'continue', 'default', 'delete', 'do', 'else', 'finally',
-      'for', 'function', 'if', 'in', 'instanceof', 'new', 'return', 'switch', 'this',
-      'throw', 'try', 'typeof', 'var', 'void', 'while', 'with'
+      'break', 'case',     'catch',  'continue', 'default',    'delete', 'do',     'else',   'finally',
+      'for',   'function', 'if',     'in',       'instanceof', 'new',    'return', 'switch', 'this',
+      'throw', 'try',      'typeof', 'var',      'void',       'while',  'with'
     ];
     properties = properties.concat(keywords);
   }
@@ -290,5 +293,7 @@ Components.JavaScriptAutocomplete._completionsForQuery = function(dotNotation, b
     else
       caseInsensitiveAnywhere.push(prop);
   }
-  return caseSensitivePrefix.concat(caseInsensitivePrefix).concat(caseSensitiveAnywhere).concat(caseInsensitiveAnywhere);
+  return caseSensitivePrefix.concat(caseInsensitivePrefix)
+      .concat(caseSensitiveAnywhere)
+      .concat(caseInsensitiveAnywhere);
 };

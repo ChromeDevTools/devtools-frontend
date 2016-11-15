@@ -125,9 +125,10 @@ Profiler.HeapSnapshotGridNode = class extends UI.DataGridNode {
   dispose() {
     if (this._providerObject)
       this._providerObject.dispose();
-    for (var node = this.children[0]; node; node = node.traverseNextNode(true, this, true))
+    for (var node = this.children[0]; node; node = node.traverseNextNode(true, this, true)) {
       if (node.dispose)
         node.dispose();
+    }
   }
 
   /**
@@ -159,8 +160,7 @@ Profiler.HeapSnapshotGridNode = class extends UI.DataGridNode {
    */
   _toUIDistance(distance) {
     var baseSystemDistance = Profiler.HeapSnapshotCommon.baseSystemDistance;
-    return distance >= 0 && distance < baseSystemDistance ? Common.UIString('%d', distance) :
-                                                            Common.UIString('\u2212');
+    return distance >= 0 && distance < baseSystemDistance ? Common.UIString('%d', distance) : Common.UIString('\u2212');
   }
 
   /**
@@ -490,13 +490,14 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
     this._retainedSize = node.retainedSize;
     this.snapshotNodeId = node.id;
     this.snapshotNodeIndex = node.nodeIndex;
-    if (this._type === 'string')
+    if (this._type === 'string') {
       this._reachableFromWindow = true;
-    else if (this._type === 'object' && this._name.startsWith('Window')) {
+    } else if (this._type === 'object' && this._name.startsWith('Window')) {
       this._name = this.shortenWindowURL(this._name, false);
       this._reachableFromWindow = true;
-    } else if (node.canBeQueried)
+    } else if (node.canBeQueried) {
       this._reachableFromWindow = true;
+    }
     if (node.detachedDOMTreeNode)
       this.detachedDOMTreeNode = true;
 
@@ -616,8 +617,7 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
       if (!error && object.type)
         callback(target.runtimeModel.createRemoteObject(object));
       else
-        callback(target.runtimeModel.createRemoteObjectFromPrimitiveValue(
-            Common.UIString('Preview is not available')));
+        callback(target.runtimeModel.createRemoteObjectFromPrimitiveValue(Common.UIString('Preview is not available')));
     }
 
     if (this._type === 'string')
@@ -650,8 +650,9 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
       if (url.length > 40)
         url = url.trimMiddle(40);
       return fullName.substr(0, startPos + 2) + url + fullName.substr(endPos);
-    } else
+    } else {
       return fullName;
+    }
   }
 };
 
@@ -1200,9 +1201,10 @@ Profiler.HeapSnapshotDiffNodesProvider = class {
       var items = itemsRange.items;
       for (var i = 0; i < items.length; i++)
         items[i].isAddedNotRemoved = true;
-      if (itemsRange.endPosition < endPosition)
+      if (itemsRange.endPosition < endPosition) {
         return this._deletedNodesProvider.serializeItemsRange(
             0, endPosition - itemsRange.endPosition, didReceiveDeletedItems.bind(this, itemsRange));
+      }
 
       itemsRange.totalLength = this._addedCount + this._removedCount;
       didReceiveAllItems.call(this, itemsRange);

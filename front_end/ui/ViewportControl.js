@@ -243,10 +243,11 @@ UI.ViewportControl = class {
     } else if (!hasVisibleSelection) {
       firstSelected = startSelection;
       lastSelected = endSelection;
-    } else if (topOverlap)
+    } else if (topOverlap) {
       firstSelected = isBackward ? this._headSelection : this._anchorSelection;
-    else if (bottomOverlap)
+    } else if (bottomOverlap) {
       lastSelected = isBackward ? this._anchorSelection : this._headSelection;
+    }
 
     if (isBackward) {
       this._anchorSelection = lastSelected;
@@ -503,11 +504,12 @@ UI.ViewportControl = class {
    */
   lastVisibleIndex() {
     var lastVisibleIndex;
-    if (this._stickToBottom)
+    if (this._stickToBottom) {
       lastVisibleIndex = this._itemCount - 1;
-    else
+    } else {
       lastVisibleIndex =
           this.firstVisibleIndex() + Math.ceil(this._visibleHeight() / this._provider.minimumRowHeight()) - 1;
+    }
     return Math.min(lastVisibleIndex, this._lastActiveIndex);
   }
 

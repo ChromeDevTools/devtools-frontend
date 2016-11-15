@@ -32,18 +32,15 @@ Profiler.ProfileView = class extends UI.SimpleView {
 
     this.viewSelectComboBox = new UI.ToolbarComboBox(this._changeView.bind(this));
 
-    this.focusButton =
-        new UI.ToolbarButton(Common.UIString('Focus selected function'), 'largeicon-visibility');
+    this.focusButton = new UI.ToolbarButton(Common.UIString('Focus selected function'), 'largeicon-visibility');
     this.focusButton.setEnabled(false);
     this.focusButton.addEventListener('click', this._focusClicked, this);
 
-    this.excludeButton =
-        new UI.ToolbarButton(Common.UIString('Exclude selected function'), 'largeicon-delete');
+    this.excludeButton = new UI.ToolbarButton(Common.UIString('Exclude selected function'), 'largeicon-delete');
     this.excludeButton.setEnabled(false);
     this.excludeButton.addEventListener('click', this._excludeClicked, this);
 
-    this.resetButton =
-        new UI.ToolbarButton(Common.UIString('Restore all functions'), 'largeicon-refresh');
+    this.resetButton = new UI.ToolbarButton(Common.UIString('Restore all functions'), 'largeicon-refresh');
     this.resetButton.setEnabled(false);
     this.resetButton.addEventListener('click', this._resetClicked, this);
 
@@ -74,8 +71,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
 
     this._viewType = Common.settings.createSetting('profileView', Profiler.ProfileView.ViewTypes.Heavy);
     viewTypes = viewTypes || [
-      Profiler.ProfileView.ViewTypes.Flame, Profiler.ProfileView.ViewTypes.Heavy,
-      Profiler.ProfileView.ViewTypes.Tree
+      Profiler.ProfileView.ViewTypes.Flame, Profiler.ProfileView.ViewTypes.Heavy, Profiler.ProfileView.ViewTypes.Tree
     ];
 
     var optionNames = new Map([
@@ -142,9 +138,10 @@ Profiler.ProfileView = class extends UI.SimpleView {
    * @return {!Profiler.ProfileDataGridTree}
    */
   _getBottomUpProfileDataGridTree() {
-    if (!this._bottomUpProfileDataGridTree)
+    if (!this._bottomUpProfileDataGridTree) {
       this._bottomUpProfileDataGridTree = new Profiler.BottomUpProfileDataGridTree(
           this._nodeFormatter, this._searchableView, this.profile.root, this.adjustedTotal);
+    }
     return this._bottomUpProfileDataGridTree;
   }
 
@@ -152,9 +149,10 @@ Profiler.ProfileView = class extends UI.SimpleView {
    * @return {!Profiler.ProfileDataGridTree}
    */
   _getTopDownProfileDataGridTree() {
-    if (!this._topDownProfileDataGridTree)
+    if (!this._topDownProfileDataGridTree) {
       this._topDownProfileDataGridTree = new Profiler.TopDownProfileDataGridTree(
           this._nodeFormatter, this._searchableView, this.profile.root, this.adjustedTotal);
+    }
     return this._topDownProfileDataGridTree;
   }
 
@@ -401,8 +399,7 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
    */
   onTransferStarted() {
     this._jsonifiedProfile = '';
-    this.updateStatus(
-        Common.UIString('Loading\u2026 %s', Number.bytesToString(this._jsonifiedProfile.length)), true);
+    this.updateStatus(Common.UIString('Loading\u2026 %s', Number.bytesToString(this._jsonifiedProfile.length)), true);
   }
 
   /**

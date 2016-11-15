@@ -29,16 +29,14 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
       this._agent.setRemoteLocations(defaultLocations);
       this._agent.setDiscoverTargets(true);
     }
-    SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
+    SDK.targetManager.addEventListener(SDK.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
   }
 
   /**
    * @param {!SDK.Target} target
    * @return {?SDK.SubTargetsManager}
    */
-  static fromTarget(target)
-  {
+  static fromTarget(target) {
     return /** @type {?SDK.SubTargetsManager} */ (target.model(SDK.SubTargetsManager));
   }
 
@@ -128,12 +126,11 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
     if (type === 'worker')
       return SDK.Target.Capability.JS | SDK.Target.Capability.Log;
     if (type === 'service_worker')
-      return SDK.Target.Capability.Log | SDK.Target.Capability.Network |
-          SDK.Target.Capability.Target;
-    if (type === 'iframe')
-      return SDK.Target.Capability.Browser | SDK.Target.Capability.DOM |
-          SDK.Target.Capability.JS | SDK.Target.Capability.Log |
-          SDK.Target.Capability.Network | SDK.Target.Capability.Target;
+      return SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target;
+    if (type === 'iframe') {
+      return SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.JS |
+          SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target;
+    }
     if (type === 'node')
       return SDK.Target.Capability.JS;
     return 0;
@@ -193,7 +190,8 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
     var connection = this._connections.get(targetId);
     connection._onDisconnect.call(null, 'target terminated');
     this._connections.delete(targetId);
-    this.dispatchEventToListeners(SDK.SubTargetsManager.Events.PendingTargetDetached, this._pendingTargets.get(targetId));
+    this.dispatchEventToListeners(
+        SDK.SubTargetsManager.Events.PendingTargetDetached, this._pendingTargets.get(targetId));
   }
 
   /**
@@ -447,8 +445,7 @@ SDK.PendingTarget = class {
   /**
    * @param {!SDK.Target} target
    */
-  notifyAttached(target)
-  {
+  notifyAttached(target) {
     if (this._attachedCallback)
       this._attachedCallback(target);
     this._connectPromise = null;
@@ -458,8 +455,7 @@ SDK.PendingTarget = class {
   /**
    * @return {boolean}
    */
-  canConnect()
-  {
+  canConnect() {
     return this._isRemote;
   }
 };

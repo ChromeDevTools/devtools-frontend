@@ -32,8 +32,7 @@
 Sources.SourcesNavigatorView = class extends Sources.NavigatorView {
   constructor() {
     super();
-    SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
+    SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
   }
 
   /**
@@ -95,8 +94,7 @@ Sources.SourcesNavigatorView = class extends Sources.NavigatorView {
 Sources.NetworkNavigatorView = class extends Sources.NavigatorView {
   constructor() {
     super();
-    SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
+    SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
   }
 
   /**
@@ -148,8 +146,7 @@ Sources.FilesNavigatorView = class extends Sources.NavigatorView {
     var toolbar = new UI.Toolbar('navigator-toolbar');
     var title = Common.UIString('Add folder to workspace');
     var addButton = new UI.ToolbarButton(title, 'largeicon-add', title);
-    addButton.addEventListener('click', () =>
-      Workspace.isolatedFileSystemManager.addFileSystem());
+    addButton.addEventListener('click', () => Workspace.isolatedFileSystemManager.addFileSystem());
     toolbar.appendToolbarItem(addButton);
     this.element.insertBefore(toolbar.element, this.element.firstChild);
   }

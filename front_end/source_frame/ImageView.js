@@ -53,8 +53,7 @@ SourceFrame.ImageView = class extends UI.SimpleView {
    */
   syncToolbarItems() {
     return [
-      this._sizeLabel, new UI.ToolbarSeparator(), this._dimensionsLabel, new UI.ToolbarSeparator(),
-      this._mimeTypeLabel
+      this._sizeLabel, new UI.ToolbarSeparator(), this._dimensionsLabel, new UI.ToolbarSeparator(), this._mimeTypeLabel
     ];
   }
 
@@ -110,9 +109,10 @@ SourceFrame.ImageView = class extends UI.SimpleView {
     var contextMenu = new UI.ContextMenu(event);
     if (!this._parsedURL.isDataURL())
       contextMenu.appendItem(Common.UIString.capitalize('Copy ^image URL'), this._copyImageURL.bind(this));
-    if (this._imagePreviewElement.src)
+    if (this._imagePreviewElement.src) {
       contextMenu.appendItem(
           Common.UIString.capitalize('Copy ^image as Data URI'), this._copyImageAsDataURL.bind(this));
+    }
     contextMenu.appendItem(Common.UIString.capitalize('Open ^image in ^new ^tab'), this._openInNewTab.bind(this));
     contextMenu.appendItem(Common.UIString.capitalize('Save\u2026'), this._saveImage.bind(this));
     contextMenu.show();

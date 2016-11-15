@@ -26,9 +26,10 @@ Bindings.CSSWorkspaceBinding = class {
    */
   targetAdded(target) {
     var cssModel = SDK.CSSModel.fromTarget(target);
-    if (cssModel)
+    if (cssModel) {
       this._modelToTargetInfo.set(
           cssModel, new Bindings.CSSWorkspaceBinding.TargetInfo(cssModel, this._workspace, this._networkMapping));
+    }
   }
 
   /**
@@ -153,8 +154,8 @@ Bindings.CSSWorkspaceBinding.TargetInfo = class {
   constructor(cssModel, workspace, networkMapping) {
     this._cssModel = cssModel;
     this._stylesSourceMapping = new Bindings.StylesSourceMapping(cssModel, workspace, networkMapping);
-    this._sassSourceMapping = new Bindings.SASSSourceMapping(
-        cssModel, networkMapping, Bindings.NetworkProject.forTarget(cssModel.target()));
+    this._sassSourceMapping =
+        new Bindings.SASSSourceMapping(cssModel, networkMapping, Bindings.NetworkProject.forTarget(cssModel.target()));
 
     /** @type {!Multimap<!SDK.CSSStyleSheetHeader, !Bindings.LiveLocation>} */
     this._locations = new Multimap();

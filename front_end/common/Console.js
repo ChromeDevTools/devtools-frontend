@@ -17,8 +17,7 @@ Common.Console = class extends Common.Object {
    * @param {boolean=} show
    */
   addMessage(text, level, show) {
-    var message = new Common.Console.Message(
-        text, level || Common.Console.MessageLevel.Log, Date.now(), show || false);
+    var message = new Common.Console.Message(text, level || Common.Console.MessageLevel.Log, Date.now(), show || false);
     this._messages.push(message);
     this.dispatchEventToListeners(Common.Console.Events.MessageAdded, message);
   }

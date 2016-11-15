@@ -189,8 +189,7 @@ UI.ProvidedView = class {
     }
 
     if (this._extension.descriptor()['hasToolbar'])
-      return this.widget().then(
-          widget => /** @type {!UI.ToolbarItem.ItemsProvider} */ (widget).toolbarItems());
+      return this.widget().then(widget => /** @type {!UI.ToolbarItem.ItemsProvider} */ (widget).toolbarItems());
     return Promise.resolve([]);
   }
 
@@ -433,8 +432,7 @@ UI.ViewManager._ContainerWidget = class extends UI.VBox {
     if (this._materializePromise)
       return this._materializePromise;
     var promises = [];
-    promises.push(this._view.toolbarItems().then(
-        UI.ViewManager._populateToolbar.bind(UI.ViewManager, this.element)));
+    promises.push(this._view.toolbarItems().then(UI.ViewManager._populateToolbar.bind(UI.ViewManager, this.element)));
     promises.push(this._view.widget().then(widget => {
       // Move focus from |this| to loaded |widget| if any.
       var shouldFocus = this.element.hasFocus();
@@ -480,8 +478,8 @@ UI.ViewManager._ExpandableContainerWidget = class extends UI.VBox {
     if (this._materializePromise)
       return this._materializePromise;
     var promises = [];
-    promises.push(this._view.toolbarItems().then(
-        UI.ViewManager._populateToolbar.bind(UI.ViewManager, this._titleElement)));
+    promises.push(
+        this._view.toolbarItems().then(UI.ViewManager._populateToolbar.bind(UI.ViewManager, this._titleElement)));
     promises.push(this._view.widget().then(widget => {
       this._widget = widget;
       this._view[UI.View._widgetSymbol] = widget;
@@ -612,8 +610,7 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
    * @override
    */
   enableMoreTabsButton() {
-    this._tabbedPane.leftToolbar().appendToolbarItem(
-        new UI.ToolbarMenuButton(this._appendTabsToMenu.bind(this)));
+    this._tabbedPane.leftToolbar().appendToolbarItem(new UI.ToolbarMenuButton(this._appendTabsToMenu.bind(this)));
     this._tabbedPane.disableOverflowMenu();
   }
 
@@ -628,9 +625,7 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
       var persistedOrders = this._tabOrderSetting.get();
       var orders = new Map();
       for (var view of views)
-        orders.set(
-            view.viewId(),
-            persistedOrders[view.viewId()] || (++i) * UI.ViewManager._TabbedLocation.orderStep);
+        orders.set(view.viewId(), persistedOrders[view.viewId()] || (++i) * UI.ViewManager._TabbedLocation.orderStep);
       views.sort((a, b) => orders.get(a.viewId()) - orders.get(b.viewId()));
     }
 

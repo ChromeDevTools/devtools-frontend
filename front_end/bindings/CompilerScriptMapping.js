@@ -89,9 +89,9 @@ Bindings.CompilerScriptMapping = class {
    */
   mapsToSourceCode(rawLocation) {
     var sourceMap = this._sourceMapForScriptId.get(rawLocation.scriptId);
-    if (!sourceMap) {
+    if (!sourceMap)
       return true;
-    }
+
     return !!sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
   }
 
@@ -244,8 +244,7 @@ Bindings.CompilerScriptMapping = class {
         var embeddedContent = sourceMap.embeddedContentByURL(sourceURL);
         var embeddedContentLength = typeof embeddedContent === 'string' ? embeddedContent.length : null;
         uiSourceCode = this._networkProject.addFile(
-            contentProvider, SDK.ResourceTreeFrame.fromScript(script), script.isContentScript(),
-            embeddedContentLength);
+            contentProvider, SDK.ResourceTreeFrame.fromScript(script), script.isContentScript(), embeddedContentLength);
         uiSourceCode[Bindings.CompilerScriptMapping._originSymbol] = script.sourceURL;
       }
       if (uiSourceCode) {
@@ -331,8 +330,7 @@ Bindings.CompilerScriptMapping = class {
 
     var loadingPromise = this._sourceMapLoadingPromises.get(sourceMapURL);
     if (!loadingPromise) {
-      loadingPromise =
-          SDK.TextSourceMap.load(sourceMapURL, scriptURL).then(sourceMapLoaded.bind(this, sourceMapURL));
+      loadingPromise = SDK.TextSourceMap.load(sourceMapURL, scriptURL).then(sourceMapLoaded.bind(this, sourceMapURL));
       this._sourceMapLoadingPromises.set(sourceMapURL, loadingPromise);
     }
     return loadingPromise;

@@ -100,8 +100,7 @@ Components.HandlerRegistry = class extends Common.Object {
     if (!contentProvider.contentURL())
       return;
 
-    contextMenu.appendItem(
-        UI.openLinkExternallyLabel(), this._openInNewTab.bind(this, contentProvider.contentURL()));
+    contextMenu.appendItem(UI.openLinkExternallyLabel(), this._openInNewTab.bind(this, contentProvider.contentURL()));
     // Skip 0th handler, as it's 'Use default panel' one.
     for (var i = 1; i < this.handlerNames.length; ++i) {
       var handler = this.handlerNames[i];
@@ -196,11 +195,10 @@ Components.HandlerRegistry = class extends Common.Object {
       else
         InspectorFrontendHost.openInNewTab(resourceURL);
     }
-    if (!targetNode.enclosingNodeOrSelfWithClassList(['resources', 'panel']) &&
-        Bindings.resourceForURL(resourceURL))
+    if (!targetNode.enclosingNodeOrSelfWithClassList(['resources', 'panel']) && Bindings.resourceForURL(resourceURL)) {
       contextMenu.appendItem(
-          Common.UIString.capitalize('Open ^link in Application ^panel'),
-          openInResourcesPanel.bind(null, resourceURL));
+          Common.UIString.capitalize('Open ^link in Application ^panel'), openInResourcesPanel.bind(null, resourceURL));
+    }
 
     contextMenu.appendItem(
         UI.copyLinkAddressLabel(), InspectorFrontendHost.copyText.bind(InspectorFrontendHost, resourceURL));
@@ -221,8 +219,7 @@ Components.HandlerSelector = class {
     this.element = createElementWithClass('select', 'chrome-select');
     this.element.addEventListener('change', this._onChange.bind(this), false);
     this._update();
-    this._handlerRegistry.addEventListener(
-        Components.HandlerRegistry.Events.HandlersUpdated, this._update.bind(this));
+    this._handlerRegistry.addEventListener(Components.HandlerRegistry.Events.HandlersUpdated, this._update.bind(this));
   }
 
   _update() {
@@ -292,8 +289,7 @@ Components.HandlerRegistry.OpenAnchorLocationSettingUI = class {
       return null;
 
     var handlerSelector = new Components.HandlerSelector(Components.openAnchorLocationRegistry);
-    return UI.SettingsUI.createCustomSetting(
-        Common.UIString('Link handling:'), handlerSelector.element);
+    return UI.SettingsUI.createCustomSetting(Common.UIString('Link handling:'), handlerSelector.element);
   }
 };
 

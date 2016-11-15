@@ -15,8 +15,7 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
     this.profile = new Profiler.SamplingHeapProfileModel(profileHeader._profile || profileHeader.protocolProfile());
     this.adjustedTotal = this.profile.total;
     var views = [
-      Profiler.ProfileView.ViewTypes.Flame, Profiler.ProfileView.ViewTypes.Heavy,
-      Profiler.ProfileView.ViewTypes.Tree
+      Profiler.ProfileView.ViewTypes.Flame, Profiler.ProfileView.ViewTypes.Heavy, Profiler.ProfileView.ViewTypes.Tree
     ];
     this.initialize(new Profiler.HeapProfileView.NodeFormatter(this), views);
   }
@@ -72,8 +71,7 @@ Profiler.SamplingHeapProfileType = class extends Profiler.ProfileType {
   }
 
   get buttonTooltip() {
-    return this._recording ? Common.UIString('Stop heap profiling') :
-                             Common.UIString('Start heap profiling');
+    return this._recording ? Common.UIString('Stop heap profiling') : Common.UIString('Start heap profiling');
   }
 
   /**

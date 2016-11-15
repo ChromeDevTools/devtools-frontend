@@ -67,8 +67,7 @@ Sources.JavaScriptCompiler = class {
         return;
       var text = SDK.ConsoleMessage.simpleTextFromException(exceptionDetails);
       this._sourceFrame.uiSourceCode().addLineMessage(
-          Workspace.UISourceCode.Message.Level.Error, text, exceptionDetails.lineNumber,
-          exceptionDetails.columnNumber);
+          Workspace.UISourceCode.Message.Level.Error, text, exceptionDetails.lineNumber, exceptionDetails.columnNumber);
       this._compilationFinishedForTest();
     }
   }

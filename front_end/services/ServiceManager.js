@@ -35,8 +35,7 @@ Services.ServiceManager = class {
       url += '?remoteBase=' + remoteBase;
 
     var worker = isSharedWorker ? new SharedWorker(url, appName) : new Worker(url);
-    var connection =
-        new Services.ServiceManager.Connection(new Services.ServiceManager.WorkerServicePort(worker));
+    var connection = new Services.ServiceManager.Connection(new Services.ServiceManager.WorkerServicePort(worker));
     return connection._createService(serviceName);
   }
 };

@@ -102,15 +102,16 @@ Resources.CookieItemsView = class extends UI.SimpleView {
       return;
     }
 
-    if (!this._cookiesTable)
+    if (!this._cookiesTable) {
       this._cookiesTable =
           new Components.CookiesTable(false, this._update.bind(this), this._showDeleteButton.bind(this));
+    }
 
     this._cookiesTable.setCookies(this._cookies);
     this._emptyWidget.detach();
     this._cookiesTable.show(this.element);
-    this._treeElement.subtitle = String.sprintf(
-        Common.UIString('%d cookies (%s)'), this._cookies.length, Number.bytesToString(this._totalSize));
+    this._treeElement.subtitle =
+        String.sprintf(Common.UIString('%d cookies (%s)'), this._cookies.length, Number.bytesToString(this._totalSize));
     this._clearButton.setVisible(true);
     this._deleteButton.setVisible(!!this._cookiesTable.selectedCookie());
   }

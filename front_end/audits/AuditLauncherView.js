@@ -266,9 +266,10 @@ Audits.AuditLauncherView = class extends UI.VBox {
   }
 
   _updateResourceProgress() {
-    if (this._displayResourceLoadingProgress)
+    if (this._displayResourceLoadingProgress) {
       this._progressIndicator.setTitle(
           Common.UIString('Loading (%d of %d)', this._loadedResources, this._totalResources));
+    }
   }
 
   /**

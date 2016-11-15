@@ -331,9 +331,10 @@ Components.ObjectEventListenerBar = class extends TreeElement {
       return;
     }
     var allHidden = true;
-    for (var i = 0; i < parent.childCount(); ++i)
+    for (var i = 0; i < parent.childCount(); ++i) {
       if (!parent.childAt(i).hidden)
         allHidden = false;
+    }
     parent.hidden = allHidden;
   }
 

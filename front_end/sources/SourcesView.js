@@ -26,15 +26,14 @@ Sources.SourcesView = class extends UI.VBox {
     /** @type {!Map.<!Workspace.UISourceCode, !UI.Widget>} */
     this._sourceViewByUISourceCode = new Map();
 
-    var tabbedEditorPlaceholderText = Host.isMac() ? Common.UIString('Hit \u2318+P to open a file') :
-                                                             Common.UIString('Hit Ctrl+P to open a file');
+    var tabbedEditorPlaceholderText =
+        Host.isMac() ? Common.UIString('Hit \u2318+P to open a file') : Common.UIString('Hit Ctrl+P to open a file');
     this._editorContainer = new Sources.TabbedEditorContainer(
         this, Common.settings.createLocalSetting('previouslyViewedFiles', []), tabbedEditorPlaceholderText);
     this._editorContainer.show(this._searchableView.element);
     this._editorContainer.addEventListener(
         Sources.TabbedEditorContainer.Events.EditorSelected, this._editorSelected, this);
-    this._editorContainer.addEventListener(
-        Sources.TabbedEditorContainer.Events.EditorClosed, this._editorClosed, this);
+    this._editorContainer.addEventListener(Sources.TabbedEditorContainer.Events.EditorClosed, this._editorClosed, this);
 
     this._historyManager = new Sources.EditingLocationHistoryManager(this, this.currentSourceFrame.bind(this));
 
@@ -331,11 +330,9 @@ Sources.SourcesView = class extends UI.VBox {
     else if (contentType.isStyleSheet())
       sourceFrame = new Sources.CSSSourceFrame(uiSourceCode);
     else if (contentType === Common.resourceTypes.Image)
-      sourceView =
-          new SourceFrame.ImageView(Bindings.NetworkProject.uiSourceCodeMimeType(uiSourceCode), uiSourceCode);
+      sourceView = new SourceFrame.ImageView(Bindings.NetworkProject.uiSourceCodeMimeType(uiSourceCode), uiSourceCode);
     else if (contentType === Common.resourceTypes.Font)
-      sourceView =
-          new SourceFrame.FontView(Bindings.NetworkProject.uiSourceCodeMimeType(uiSourceCode), uiSourceCode);
+      sourceView = new SourceFrame.FontView(Bindings.NetworkProject.uiSourceCodeMimeType(uiSourceCode), uiSourceCode);
     else
       sourceFrame = new Sources.UISourceCodeFrame(uiSourceCode);
 
@@ -401,8 +398,7 @@ Sources.SourcesView = class extends UI.VBox {
   _removeSourceFrame(uiSourceCode) {
     var sourceView = this._sourceViewByUISourceCode.get(uiSourceCode);
     this._sourceViewByUISourceCode.remove(uiSourceCode);
-    uiSourceCode.removeEventListener(
-        Workspace.UISourceCode.Events.TitleChanged, this._uiSourceCodeTitleChanged, this);
+    uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.TitleChanged, this._uiSourceCodeTitleChanged, this);
     if (sourceView && sourceView instanceof Sources.UISourceCodeFrame)
       /** @type {!Sources.UISourceCodeFrame} */ (sourceView).dispose();
   }

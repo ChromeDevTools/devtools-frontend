@@ -303,15 +303,13 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
     var entryType = this._entryType(entryIndex);
     if (entryType === Timeline.TimelineFlameChartEntryType.Event) {
       var event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
-      if (event.phase === SDK.TracingModel.Phase.AsyncStepInto ||
-          event.phase === SDK.TracingModel.Phase.AsyncStepPast)
+      if (event.phase === SDK.TracingModel.Phase.AsyncStepInto || event.phase === SDK.TracingModel.Phase.AsyncStepPast)
         return event.name + ':' + event.args['step'];
       if (event._blackboxRoot)
         return Common.UIString('Blackboxed');
       var name = Timeline.TimelineUIUtils.eventStyle(event).title;
       // TODO(yurys): support event dividers
-      var detailsText =
-          Timeline.TimelineUIUtils.buildDetailsTextForTraceEvent(event, this._model.targetByEvent(event));
+      var detailsText = Timeline.TimelineUIUtils.buildDetailsTextForTraceEvent(event, this._model.targetByEvent(event));
       if (event.name === TimelineModel.TimelineModel.RecordType.JSFrame && detailsText)
         return detailsText;
       return detailsText ? Common.UIString('%s (%s)', name, detailsText) : name;
@@ -392,7 +390,8 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
           Common.UIString('Main'), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents(), true);
     } else {
       this._appendThreadTimelineData(
-          Common.UIString('Page'), this._model.eventsForFrame(TimelineModel.TimelineModel.PageFrame.mainFrameId), this._model.mainThreadAsyncEvents(), true);
+          Common.UIString('Page'), this._model.eventsForFrame(TimelineModel.TimelineModel.PageFrame.mainFrameId),
+          this._model.mainThreadAsyncEvents(), true);
       for (var frame of this._model.rootFrames()) {
         // Ignore top frame itself, since it should be part of page events.
         frame.children.forEach(this._appendFrameEvents.bind(this, 0));
@@ -402,9 +401,10 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
     var otherThreads = threads.filter(thread => !thread.name.startsWith('CompositorTileWorker'));
     if (compositorThreads.length) {
       this._appendHeader(Common.UIString('Raster'), this._headerLevel1);
-      for (var i = 0; i < compositorThreads.length; ++i)
+      for (var i = 0; i < compositorThreads.length; ++i) {
         this._appendSyncEvents(
             compositorThreads[i].events, Common.UIString('Rasterizer Thread %d', i), this._headerLevel2);
+      }
     }
     this._appendGPUEvents();
 
@@ -434,8 +434,9 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
     var events = this._model.eventsForFrame(frame.id);
     var clonedHeader = Object.assign({}, this._headerLevel1);
     clonedHeader.nestingLevel = level;
-    this._appendSyncEvents(events, Timeline.TimelineUIUtils.displayNameForFrame(frame),
-                           /** @type {!UI.FlameChart.GroupStyle} */ (clonedHeader));
+    this._appendSyncEvents(
+        events, Timeline.TimelineUIUtils.displayNameForFrame(frame),
+        /** @type {!UI.FlameChart.GroupStyle} */ (clonedHeader));
     frame.children.forEach(this._appendFrameEvents.bind(this, level + 1));
   }
 
@@ -463,10 +464,11 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
     var maxStackDepth = 0;
     for (var i = 0; i < events.length; ++i) {
       var e = events[i];
-      if (TimelineModel.TimelineModel.isMarkerEvent(e))
+      if (TimelineModel.TimelineModel.isMarkerEvent(e)) {
         this._markers.push(new Timeline.TimelineFlameChartMarker(
             e.startTime, e.startTime - this._model.minimumRecordTime(),
             Timeline.TimelineUIUtils.markerStyleForEvent(e)));
+      }
       if (!SDK.TracingModel.isFlowPhase(e.phase)) {
         if (!e.endTime && e.phase !== SDK.TracingModel.Phase.Instant)
           continue;
@@ -779,7 +781,8 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
     var type = this._entryType(entryIndex);
     return type === Timeline.TimelineFlameChartEntryType.Frame ||
         type === Timeline.TimelineFlameChartEntryType.Event &&
-        !!TimelineModel.TimelineData.forEvent(/** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex])).warning;
+        !!TimelineModel.TimelineData.forEvent(/** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]))
+              .warning;
   }
 
   /**
@@ -904,12 +907,13 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
   createSelection(entryIndex) {
     var type = this._entryType(entryIndex);
     var timelineSelection = null;
-    if (type === Timeline.TimelineFlameChartEntryType.Event)
+    if (type === Timeline.TimelineFlameChartEntryType.Event) {
       timelineSelection = Timeline.TimelineSelection.fromTraceEvent(
           /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]));
-    else if (type === Timeline.TimelineFlameChartEntryType.Frame)
+    } else if (type === Timeline.TimelineFlameChartEntryType.Frame) {
       timelineSelection = Timeline.TimelineSelection.fromFrame(
           /** @type {!TimelineModel.TimelineFrame} */ (this._entryData[entryIndex]));
+    }
     if (timelineSelection)
       this._lastSelection = new Timeline.TimelineFlameChartView.Selection(timelineSelection, entryIndex);
     return timelineSelection;
@@ -992,8 +996,8 @@ Timeline.TimelineFlameChartNetworkDataProvider = class extends Timeline.Timeline
     if (index === -1)
       return null;
     var request = this._requests[index];
-    this._lastSelection = new Timeline.TimelineFlameChartView.Selection(
-        Timeline.TimelineSelection.fromNetworkRequest(request), index);
+    this._lastSelection =
+        new Timeline.TimelineFlameChartView.Selection(Timeline.TimelineSelection.fromNetworkRequest(request), index);
     return this._lastSelection.timelineSelection;
   }
 
@@ -1012,9 +1016,10 @@ Timeline.TimelineFlameChartNetworkDataProvider = class extends Timeline.Timeline
       return -1;
     var request = /** @type{!TimelineModel.TimelineModel.NetworkRequest} */ (selection.object());
     var index = this._requests.indexOf(request);
-    if (index !== -1)
-      this._lastSelection = new Timeline.TimelineFlameChartView.Selection(
-          Timeline.TimelineSelection.fromNetworkRequest(request), index);
+    if (index !== -1) {
+      this._lastSelection =
+          new Timeline.TimelineFlameChartView.Selection(Timeline.TimelineSelection.fromNetworkRequest(request), index);
+    }
     return index;
   }
 
@@ -1331,8 +1336,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._splitWidget = new UI.SplitWidget(false, false, 'timelineFlamechartMainView', 150);
 
     this._dataProvider = new Timeline.TimelineFlameChartDataProvider(this._model, frameModel, irModel, filters);
-    var mainViewGroupExpansionSetting =
-        Common.settings.createSetting('timelineFlamechartMainViewGroupExpansion', {});
+    var mainViewGroupExpansionSetting = Common.settings.createSetting('timelineFlamechartMainViewGroupExpansion', {});
     this._mainView = new UI.FlameChart(this._dataProvider, this, mainViewGroupExpansionSetting);
 
     this._networkDataProvider = new Timeline.TimelineFlameChartNetworkDataProvider(this._model);
@@ -1345,8 +1349,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._onMainEntrySelected = this._onEntrySelected.bind(this, this._dataProvider);
     this._onNetworkEntrySelected = this._onEntrySelected.bind(this, this._networkDataProvider);
     this._mainView.addEventListener(UI.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
-    this._networkView.addEventListener(
-        UI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
+    this._networkView.addEventListener(UI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
     Bindings.blackboxManager.addChangeListener(this.refreshRecords, this);
   }
 
@@ -1355,8 +1358,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    */
   dispose() {
     this._mainView.removeEventListener(UI.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
-    this._networkView.removeEventListener(
-        UI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
+    this._networkView.removeEventListener(UI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
     Bindings.blackboxManager.removeChangeListener(this.refreshRecords, this);
   }
 

@@ -90,8 +90,8 @@ Components.CustomPreviewSection = class {
   _layoutObjectTag(objectTag) {
     objectTag.shift();
     var attributes = objectTag.shift();
-    var remoteObject =
-        this._object.target().runtimeModel.createRemoteObject(/** @type {!Protocol.Runtime.RemoteObject} */ (attributes));
+    var remoteObject = this._object.target().runtimeModel.createRemoteObject(
+        /** @type {!Protocol.Runtime.RemoteObject} */ (attributes));
     if (remoteObject.customPreview())
       return (new Components.CustomPreviewSection(remoteObject)).element();
 
@@ -226,8 +226,7 @@ Components.CustomPreviewComponent = class {
   _contextMenuEventFired(event) {
     var contextMenu = new UI.ContextMenu(event);
     if (this._customPreviewSection)
-      contextMenu.appendItem(
-          Common.UIString.capitalize('Show as Javascript ^object'), this._disassemble.bind(this));
+      contextMenu.appendItem(Common.UIString.capitalize('Show as Javascript ^object'), this._disassemble.bind(this));
     contextMenu.appendApplicableItems(this._object);
     contextMenu.show();
   }

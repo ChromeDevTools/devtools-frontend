@@ -91,10 +91,11 @@ Common.Settings = class {
    * @return {!Common.Setting}
    */
   createSetting(key, defaultValue, isLocal) {
-    if (!this._registry.get(key))
+    if (!this._registry.get(key)) {
       this._registry.set(
           key, new Common.Setting(
                    this, key, defaultValue, this._eventSupport, isLocal ? this._localStorage : this._settingsStorage));
+    }
     return /** @type {!Common.Setting} */ (this._registry.get(key));
   }
 
@@ -115,11 +116,12 @@ Common.Settings = class {
    * @return {!Common.RegExpSetting}
    */
   createRegExpSetting(key, defaultValue, regexFlags, isLocal) {
-    if (!this._registry.get(key))
+    if (!this._registry.get(key)) {
       this._registry.set(
           key, new Common.RegExpSetting(
                    this, key, defaultValue, this._eventSupport, isLocal ? this._localStorage : this._settingsStorage,
                    regexFlags));
+    }
     return /** @type {!Common.RegExpSetting} */ (this._registry.get(key));
   }
 
@@ -635,12 +637,13 @@ Common.VersionController = class {
     if (Array.isArray(oldValue)) {
       for (var preset of oldValue) {
         if (typeof preset.title === 'string' && typeof preset.value === 'object' &&
-            typeof preset.value.throughput === 'number' && typeof preset.value.latency === 'number')
+            typeof preset.value.throughput === 'number' && typeof preset.value.latency === 'number') {
           newValue.push({
             title: preset.title,
             value:
                 {download: preset.value.throughput, upload: preset.value.throughput, latency: preset.value.latency}
           });
+        }
       }
     }
     setting.set(newValue);

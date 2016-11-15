@@ -98,9 +98,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   _executionContextCreated(context) {
     // The private script context should be hidden behind an experiment.
     if (context.name === SDK.RuntimeModel._privateScript && !context.origin &&
-        !Runtime.experiments.isEnabled('privateScriptInspection')) {
+        !Runtime.experiments.isEnabled('privateScriptInspection'))
       return;
-    }
+
     var data = context.auxData || {isDefault: true};
     var executionContext = new SDK.ExecutionContext(
         this.target(), context.id, context.name, context.origin, data['isDefault'], data['frameId']);
@@ -392,9 +392,9 @@ SDK.RuntimeDispatcher = class {
    */
   exceptionRevoked(reason, exceptionId) {
     var consoleMessage = new SDK.ConsoleMessage(
-        this._runtimeModel.target(), SDK.ConsoleMessage.MessageSource.JS,
-        SDK.ConsoleMessage.MessageLevel.RevokedError, reason, undefined, undefined, undefined, undefined,
-        undefined, undefined, undefined, undefined, undefined, undefined);
+        this._runtimeModel.target(), SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.RevokedError,
+        reason, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+        undefined);
     consoleMessage.setRevokedExceptionId(exceptionId);
     this._runtimeModel.target().consoleModel.addMessage(consoleMessage);
   }
@@ -411,8 +411,7 @@ SDK.RuntimeDispatcher = class {
     var level = SDK.ConsoleMessage.MessageLevel.Log;
     if (type === SDK.ConsoleMessage.MessageType.Debug)
       level = SDK.ConsoleMessage.MessageLevel.Debug;
-    if (type === SDK.ConsoleMessage.MessageType.Error ||
-        type === SDK.ConsoleMessage.MessageType.Assert)
+    if (type === SDK.ConsoleMessage.MessageType.Error || type === SDK.ConsoleMessage.MessageType.Assert)
       level = SDK.ConsoleMessage.MessageLevel.Error;
     if (type === SDK.ConsoleMessage.MessageType.Warning)
       level = SDK.ConsoleMessage.MessageLevel.Warning;

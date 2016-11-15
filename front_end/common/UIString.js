@@ -51,12 +51,13 @@ Common.UIString.capitalize = function(string, vararg) {
 
   var localized = Common.localize(string);
   var capitalized;
-  if (Common._useLowerCaseMenuTitles)
+  if (Common._useLowerCaseMenuTitles) {
     capitalized = localized.replace(/\^(.)/g, '$1');
-  else
+  } else {
     capitalized = localized.replace(/\^(.)/g, function(str, char) {
       return char.toUpperCase();
     });
+  }
   return String.vsprintf(capitalized, Array.prototype.slice.call(arguments, 1));
 };
 

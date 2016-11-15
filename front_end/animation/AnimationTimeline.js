@@ -32,8 +32,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._symbol = Symbol('animationTimeline');
     /** @type {!Map.<string, !Animation.AnimationModel.Animation>} */
     this._animationsMap = new Map();
-    SDK.targetManager.addModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
+    SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
     SDK.targetManager.observeTargets(this, SDK.Target.Capability.DOM);
     UI.context.addFlavorChangeListener(SDK.DOMNode, this._nodeChanged, this);
   }
@@ -125,8 +124,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._playbackRateButtons = [];
     for (var playbackRate of Animation.AnimationTimeline.GlobalPlaybackRates) {
       var button = playbackRateControl.createChild('div', 'animation-playback-rate-button');
-      button.textContent =
-          playbackRate ? Common.UIString(playbackRate * 100 + '%') : Common.UIString('Pause');
+      button.textContent = playbackRate ? Common.UIString(playbackRate * 100 + '%') : Common.UIString('Pause');
       button.playbackRate = playbackRate;
       button.addEventListener('click', this._setPlaybackRate.bind(this, playbackRate));
       button.title = Common.UIString('Set speed to ') + button.textContent;
@@ -146,8 +144,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._currentTime = controls.createChild('div', 'animation-timeline-current-time monospace');
 
     var toolbar = new UI.Toolbar('animation-controls-toolbar', controls);
-    this._controlButton =
-        new UI.ToolbarToggle(Common.UIString('Replay timeline'), 'largeicon-replay-animation');
+    this._controlButton = new UI.ToolbarToggle(Common.UIString('Replay timeline'), 'largeicon-replay-animation');
     this._controlState = Animation.AnimationTimeline._ControlState.Replay;
     this._controlButton.setToggled(true);
     this._controlButton.addEventListener('click', this._controlButtonToggle.bind(this));
@@ -213,8 +210,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._allPaused = !this._allPaused;
     this._pauseButton.setToggled(this._allPaused);
     this._setPlaybackRate(this._playbackRate);
-    this._pauseButton.setTitle(
-        this._allPaused ? Common.UIString('Resume all') : Common.UIString('Pause all'));
+    this._pauseButton.setTitle(this._allPaused ? Common.UIString('Resume all') : Common.UIString('Pause all'));
   }
 
   /**
@@ -596,11 +592,10 @@ Animation.AnimationTimeline = class extends UI.VBox {
     if (!this._scrubberPlayer)
       return;
     this._currentTime.textContent = Common.UIString(Number.millisToString(this._scrubberPlayer.currentTime));
-    if (this._scrubberPlayer.playState === 'pending' || this._scrubberPlayer.playState === 'running') {
+    if (this._scrubberPlayer.playState === 'pending' || this._scrubberPlayer.playState === 'running')
       this.element.window().requestAnimationFrame(this._updateScrubber.bind(this));
-    } else if (this._scrubberPlayer.playState === 'finished') {
+    else if (this._scrubberPlayer.playState === 'finished')
       this._currentTime.textContent = '';
-    }
   }
 
   /**

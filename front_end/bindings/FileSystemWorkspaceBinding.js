@@ -258,8 +258,7 @@ Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Project
    */
   requestFileContent(uiSourceCode, callback) {
     var filePath = this._filePathForUISourceCode(uiSourceCode);
-    var isImage =
-        Bindings.FileSystemWorkspaceBinding._imageExtensions.has(Common.ParsedURL.extractExtension(filePath));
+    var isImage = Bindings.FileSystemWorkspaceBinding._imageExtensions.has(Common.ParsedURL.extractExtension(filePath));
 
     this._fileSystem.requestFileContent(filePath, isImage ? base64CallbackWrapper : callback);
 

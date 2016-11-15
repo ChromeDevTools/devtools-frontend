@@ -62,8 +62,7 @@ Resources.IDBDatabaseView = class extends UI.VBox {
 
   _refreshDatabase() {
     this._formatHeader(
-        this._securityOriginElement, Common.UIString('Security origin'),
-        this._database.databaseId.securityOrigin);
+        this._securityOriginElement, Common.UIString('Security origin'), this._database.databaseId.securityOrigin);
     this._formatHeader(this._nameElement, Common.UIString('Name'), this._database.databaseId.name);
     this._formatHeader(this._versionElement, Common.UIString('Version'), this._database.version);
   }
@@ -102,8 +101,7 @@ Resources.IDBDataView = class extends UI.SimpleView {
     this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     this._refreshButton.addEventListener('click', this._refreshButtonClicked, this);
 
-    this._clearButton =
-        new UI.ToolbarButton(Common.UIString('Clear object store'), 'largeicon-clear');
+    this._clearButton = new UI.ToolbarButton(Common.UIString('Clear object store'), 'largeicon-clear');
     this._clearButton.addEventListener('click', this._clearButtonClicked, this);
 
     this._pageSize = 50;
@@ -121,18 +119,15 @@ Resources.IDBDataView = class extends UI.SimpleView {
 
     var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([]);
     columns.push({id: 'number', title: Common.UIString('#'), sortable: false, width: '50px'});
-    columns.push({
-      id: 'key',
-      titleDOMFragment: this._keyColumnHeaderFragment(Common.UIString('Key'), keyPath),
-      sortable: false
-    });
-    if (this._isIndex)
+    columns.push(
+        {id: 'key', titleDOMFragment: this._keyColumnHeaderFragment(Common.UIString('Key'), keyPath), sortable: false});
+    if (this._isIndex) {
       columns.push({
         id: 'primaryKey',
-        titleDOMFragment:
-            this._keyColumnHeaderFragment(Common.UIString('Primary key'), this._objectStore.keyPath),
+        titleDOMFragment: this._keyColumnHeaderFragment(Common.UIString('Primary key'), this._objectStore.keyPath),
         sortable: false
       });
+    }
     columns.push({id: 'value', title: Common.UIString('Value'), sortable: false});
 
     var dataGrid = new UI.DataGrid(columns);
@@ -183,13 +178,11 @@ Resources.IDBDataView = class extends UI.SimpleView {
   _createEditorToolbar() {
     var editorToolbar = new UI.Toolbar('data-view-toolbar', this.element);
 
-    this._pageBackButton =
-        new UI.ToolbarButton(Common.UIString('Show previous page'), 'largeicon-play-back');
+    this._pageBackButton = new UI.ToolbarButton(Common.UIString('Show previous page'), 'largeicon-play-back');
     this._pageBackButton.addEventListener('click', this._pageBackButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageBackButton);
 
-    this._pageForwardButton =
-        new UI.ToolbarButton(Common.UIString('Show next page'), 'largeicon-play');
+    this._pageForwardButton = new UI.ToolbarButton(Common.UIString('Show next page'), 'largeicon-play');
     this._pageForwardButton.setEnabled(false);
     this._pageForwardButton.addEventListener('click', this._pageForwardButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageForwardButton);
@@ -292,13 +285,14 @@ Resources.IDBDataView = class extends UI.SimpleView {
     }
 
     var idbKeyRange = key ? window.IDBKeyRange.lowerBound(key) : null;
-    if (this._isIndex)
+    if (this._isIndex) {
       this._model.loadIndexData(
           this._databaseId, this._objectStore.name, this._index.name, idbKeyRange, skipCount, pageSize,
           callback.bind(this));
-    else
+    } else {
       this._model.loadObjectStoreData(
           this._databaseId, this._objectStore.name, idbKeyRange, skipCount, pageSize, callback.bind(this));
+    }
   }
 
   _refreshButtonClicked(event) {

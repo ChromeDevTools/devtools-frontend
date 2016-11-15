@@ -522,9 +522,10 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, testHook
      */
     addCategory: function(displayName, resultCount) {
       var id = 'extension-audit-category-' + extensionServer.nextObjectId();
-      if (typeof resultCount !== 'undefined')
+      if (typeof resultCount !== 'undefined') {
         console.warn(
             'Passing resultCount to audits.addCategory() is deprecated. Use AuditResult.updateProgress() instead.');
+      }
       extensionServer.sendRequest(
           {command: commands.AddAuditCategory, id: id, displayName: displayName, resultCount: resultCount});
       return new AuditCategory(id);

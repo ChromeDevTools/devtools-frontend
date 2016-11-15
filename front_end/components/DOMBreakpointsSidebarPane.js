@@ -40,8 +40,7 @@ Components.DOMBreakpointsSidebarPane = class extends Components.BreakpointsSideb
     /** @type {!Map<string, !Element>} */
     this._breakpointElements = new Map();
 
-    SDK.targetManager.addModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
+    SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
     this._update();
   }
 
@@ -102,8 +101,7 @@ Components.DOMBreakpointsSidebarPane = class extends Components.BreakpointsSideb
       this._saveBreakpoints();
     }
 
-    var breakpointsMenu =
-        createSubMenu ? contextMenu.appendSubMenuItem(Common.UIString('Break on...')) : contextMenu;
+    var breakpointsMenu = createSubMenu ? contextMenu.appendSubMenuItem(Common.UIString('Break on...')) : contextMenu;
     for (var key in Components.DOMBreakpointsSidebarPane.BreakpointTypes) {
       var type = Components.DOMBreakpointsSidebarPane.BreakpointTypes[key];
       var label = Components.DOMBreakpointsSidebarPane.BreakpointTypeNouns[type];
@@ -316,13 +314,14 @@ Components.DOMBreakpointsSidebarPane = class extends Components.BreakpointsSideb
       if (breakpoint.url !== this._inspectedURL)
         breakpoints.push(breakpoint);
     }
-    for (var element of this._breakpointElements.values())
+    for (var element of this._breakpointElements.values()) {
       breakpoints.push({
         url: this._inspectedURL,
         path: element._node.path(),
         type: element._type,
         enabled: element._checkboxElement.checked
       });
+    }
     this._domBreakpointsSetting.set(breakpoints);
   }
 

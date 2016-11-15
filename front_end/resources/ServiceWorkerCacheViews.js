@@ -35,24 +35,20 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    */
   _createDataGrid() {
     var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'number', title: Common.UIString('#'), width: '50px'},
-      {id: 'request', title: Common.UIString('Request')},
+      {id: 'number', title: Common.UIString('#'), width: '50px'}, {id: 'request', title: Common.UIString('Request')},
       {id: 'response', title: Common.UIString('Response')}
     ]);
-    return new UI.DataGrid(
-        columns, undefined, this._deleteButtonClicked.bind(this), this._updateData.bind(this, true));
+    return new UI.DataGrid(columns, undefined, this._deleteButtonClicked.bind(this), this._updateData.bind(this, true));
   }
 
   _createEditorToolbar() {
     var editorToolbar = new UI.Toolbar('data-view-toolbar', this.element);
 
-    this._pageBackButton =
-        new UI.ToolbarButton(Common.UIString('Show previous page'), 'largeicon-play-back');
+    this._pageBackButton = new UI.ToolbarButton(Common.UIString('Show previous page'), 'largeicon-play-back');
     this._pageBackButton.addEventListener('click', this._pageBackButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageBackButton);
 
-    this._pageForwardButton =
-        new UI.ToolbarButton(Common.UIString('Show next page'), 'largeicon-play');
+    this._pageForwardButton = new UI.ToolbarButton(Common.UIString('Show next page'), 'largeicon-play');
     this._pageForwardButton.setEnabled(false);
     this._pageForwardButton.addEventListener('click', this._pageForwardButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageForwardButton);

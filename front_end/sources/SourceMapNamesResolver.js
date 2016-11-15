@@ -73,8 +73,7 @@ Sources.SourceMapNamesResolver._scopeIdentifiers = function(scope) {
         continue;
       var start = scopeStart + id.offset - prefix.length;
       cursor.resetTo(start);
-      result.push(
-          new Sources.SourceMapNamesResolver.Identifier(id.name, cursor.lineNumber(), cursor.columnNumber()));
+      result.push(new Sources.SourceMapNamesResolver.Identifier(id.name, cursor.lineNumber(), cursor.columnNumber()));
     }
     return result;
   }
@@ -254,8 +253,8 @@ Sources.SourceMapNamesResolver.resolveExpression = function(
 Sources.SourceMapNamesResolver._resolveExpression = function(
     callFrame, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber) {
   var target = callFrame.target();
-  var rawLocation = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(
-      target, uiSourceCode, lineNumber, startColumnNumber);
+  var rawLocation =
+      Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(target, uiSourceCode, lineNumber, startColumnNumber);
   if (!rawLocation)
     return Promise.resolve('');
 
@@ -282,8 +281,7 @@ Sources.SourceMapNamesResolver._resolveExpression = function(
     var originalText = text.extract(textRange);
     if (!originalText)
       return Promise.resolve('');
-    return Common.formatterWorkerPool.runTask('evaluatableJavaScriptSubstring', {content: originalText})
-        .then(onResult);
+    return Common.formatterWorkerPool.runTask('evaluatableJavaScriptSubstring', {content: originalText}).then(onResult);
   }
 
   /**

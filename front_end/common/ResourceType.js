@@ -50,9 +50,9 @@ Common.ResourceType = class {
    */
   static mimeFromURL(url) {
     var name = Common.ParsedURL.extractName(url);
-    if (Common.ResourceType._mimeTypeByName.has(name)) {
+    if (Common.ResourceType._mimeTypeByName.has(name))
       return Common.ResourceType._mimeTypeByName.get(name);
-    }
+
     var ext = Common.ParsedURL.extractExtension(url).toLowerCase();
     return Common.ResourceType._mimeTypeByExtension.get(ext);
   }
@@ -186,8 +186,7 @@ Common.resourceTypes = {
   EventSource: new Common.ResourceType('eventsource', 'EventSource', Common.resourceCategories.XHR, true),
   Script: new Common.ResourceType('script', 'Script', Common.resourceCategories.Script, true),
   Snippet: new Common.ResourceType('snippet', 'Snippet', Common.resourceCategories.Script, true),
-  Stylesheet:
-      new Common.ResourceType('stylesheet', 'Stylesheet', Common.resourceCategories.Stylesheet, true),
+  Stylesheet: new Common.ResourceType('stylesheet', 'Stylesheet', Common.resourceCategories.Stylesheet, true),
   Image: new Common.ResourceType('image', 'Image', Common.resourceCategories.Image, false),
   Media: new Common.ResourceType('media', 'Media', Common.resourceCategories.Media, false),
   Font: new Common.ResourceType('font', 'Font', Common.resourceCategories.Font, false),

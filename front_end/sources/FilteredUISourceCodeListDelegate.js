@@ -17,8 +17,7 @@ Sources.FilteredUISourceCodeListDelegate = class extends UI.FilteredListWidget.D
 
     this._defaultScores = defaultScores;
     this._scorer = new Sources.FilePathScoreFunction('');
-    Workspace.workspace.addEventListener(
-        Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
+    Workspace.workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
     Workspace.workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
   }
 
@@ -210,7 +209,6 @@ Sources.FilteredUISourceCodeListDelegate = class extends UI.FilteredListWidget.D
   dispose() {
     Workspace.workspace.removeEventListener(
         Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
-    Workspace.workspace.removeEventListener(
-        Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
+    Workspace.workspace.removeEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
   }
 };

@@ -21,11 +21,9 @@ Bindings.DebuggerWorkspaceBinding = class {
     targetManager.observeTargets(this);
 
     targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared,
-        this);
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this);
     targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.BeforeDebuggerPaused, this._beforeDebuggerPaused,
-        this);
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.BeforeDebuggerPaused, this._beforeDebuggerPaused, this);
     targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._debuggerResumed, this);
     workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
@@ -125,8 +123,8 @@ Bindings.DebuggerWorkspaceBinding = class {
   createLiveLocation(rawLocation, updateDelegate, locationPool) {
     var info = this._infoForScript(rawLocation.target(), rawLocation.scriptId);
     console.assert(info);
-    var location = new Bindings.DebuggerWorkspaceBinding.Location(
-        info._script, rawLocation, this, updateDelegate, locationPool);
+    var location =
+        new Bindings.DebuggerWorkspaceBinding.Location(info._script, rawLocation, this, updateDelegate, locationPool);
     info._addLocation(location);
     return location;
   }
@@ -376,10 +374,8 @@ Bindings.DebuggerWorkspaceBinding.TargetData = class {
     this._uiSourceCodeToSourceMapping = new Map();
 
     this._eventListeners = [
-      debuggerModel.addEventListener(
-          SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
-      debuggerModel.addEventListener(
-          SDK.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this)
+      debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
+      debuggerModel.addEventListener(SDK.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this)
     ];
   }
 

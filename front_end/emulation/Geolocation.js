@@ -25,8 +25,7 @@ Emulation.Geolocation = class {
       if (splitError.length === 2) {
         var splitPosition = splitError[0].split('@');
         if (splitPosition.length === 2)
-          return new Emulation.Geolocation(
-              parseFloat(splitPosition[0]), parseFloat(splitPosition[1]), splitError[1]);
+          return new Emulation.Geolocation(parseFloat(splitPosition[0]), parseFloat(splitPosition[1]), splitError[1]);
       }
     }
     return new Emulation.Geolocation(0, 0, false);
@@ -82,11 +81,12 @@ Emulation.Geolocation = class {
 
   apply() {
     for (var target of SDK.targetManager.targets(SDK.Target.Capability.Browser)) {
-      if (this.error)
+      if (this.error) {
         target.emulationAgent().setGeolocationOverride();
-      else
+      } else {
         target.emulationAgent().setGeolocationOverride(
             this.latitude, this.longitude, Emulation.Geolocation.DefaultMockAccuracy);
+      }
     }
   }
 

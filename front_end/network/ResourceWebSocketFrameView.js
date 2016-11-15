@@ -33,13 +33,8 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     this._splitWidget.show(this.element);
 
     var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'data', title: Common.UIString('Data'), sortable: false, weight: 88}, {
-        id: 'length',
-        title: Common.UIString('Length'),
-        sortable: false,
-        align: UI.DataGrid.Align.Right,
-        weight: 5
-      },
+      {id: 'data', title: Common.UIString('Data'), sortable: false, weight: 88},
+      {id: 'length', title: Common.UIString('Length'), sortable: false, align: UI.DataGrid.Align.Right, weight: 5},
       {id: 'time', title: Common.UIString('Time'), sortable: true, weight: 7}
     ]);
 
@@ -47,8 +42,8 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     this._dataGrid.setRowContextMenuCallback(onRowContextMenu);
     this._dataGrid.setStickToBottom(true);
     this._dataGrid.setCellClass('websocket-frame-view-td');
-    this._timeComparator = /** @type {!UI.SortableDataGrid.NodeComparator} */ (
-        Network.ResourceWebSocketFrameNodeTimeComparator);
+    this._timeComparator =
+        /** @type {!UI.SortableDataGrid.NodeComparator} */ (Network.ResourceWebSocketFrameNodeTimeComparator);
     this._dataGrid.sortNodes(this._timeComparator, false);
     this._dataGrid.markColumnAsSortedBy('time', UI.DataGrid.Order.Ascending);
     this._dataGrid.addEventListener(UI.DataGrid.Events.SortingChanged, this._sortItems, this);
@@ -240,8 +235,7 @@ Network.ResourceWebSocketFrameNode = class extends UI.SortableDataGridNode {
    * @return {!Common.ContentProvider}
    */
   contentProvider() {
-    return Common.StaticContentProvider.fromString(
-        this._url, Common.resourceTypes.WebSocket, this._dataText);
+    return Common.StaticContentProvider.fromString(this._url, Common.resourceTypes.WebSocket, this._dataText);
   }
 };
 

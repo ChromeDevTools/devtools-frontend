@@ -70,9 +70,10 @@ SDK.TracingModel = class {
     if (typeof payload.id2 === 'undefined')
       return scope && payload.id ? `${scope}@${payload.id}` : payload.id;
     var id2 = payload.id2;
-    if (typeof id2 === 'object' && ('global' in id2) !== ('local' in id2))
+    if (typeof id2 === 'object' && ('global' in id2) !== ('local' in id2)) {
       return typeof id2['global'] !== 'undefined' ? `:${scope}:${id2['global']}` :
                                                     `:${scope}:${payload.pid}:${id2['local']}`;
+    }
     console.error(
         `Unexpected id2 field at ${payload.ts / 1000}, one and only one of 'local' and 'global' should be present.`);
   }
@@ -105,8 +106,7 @@ SDK.TracingModel = class {
         tracingModel.devToolsMetadataEvents().filter(e => e.name === 'TracingStartedInBrowser');
     if (tracingStartedInBrowser.length === 1)
       return tracingStartedInBrowser[0].thread;
-    Common.console.error(
-        'Failed to find browser main thread in trace, some timeline features may be unavailable');
+    Common.console.error('Failed to find browser main thread in trace, some timeline features may be unavailable');
     return null;
   }
 
@@ -513,8 +513,7 @@ SDK.TracingModel.Event = class {
    */
   static fromPayload(payload, thread) {
     var event = new SDK.TracingModel.Event(
-        payload.cat, payload.name, /** @type {!SDK.TracingModel.Phase} */ (payload.ph), payload.ts / 1000,
-        thread);
+        payload.cat, payload.name, /** @type {!SDK.TracingModel.Phase} */ (payload.ph), payload.ts / 1000, thread);
     if (payload.args)
       event.addArgs(payload.args);
     else
@@ -713,8 +712,7 @@ SDK.TracingModel.AsyncEvent = class extends SDK.TracingModel.Event {
    */
   _addStep(event) {
     this.steps.push(event);
-    if (event.phase === SDK.TracingModel.Phase.AsyncEnd ||
-        event.phase === SDK.TracingModel.Phase.NestableAsyncEnd) {
+    if (event.phase === SDK.TracingModel.Phase.AsyncEnd || event.phase === SDK.TracingModel.Phase.NestableAsyncEnd) {
       this.setEndTime(event.startTime);
       // FIXME: ideally, we shouldn't do this, but this makes the logic of converting
       // async console events to sync ones much simpler.
@@ -887,12 +885,13 @@ SDK.TracingModel.Thread = class extends SDK.TracingModel.NamedObject {
           if (!stack.length)
             continue;
           var top = stack.pop();
-          if (top.name !== e.name || top.categoriesString !== e.categoriesString)
+          if (top.name !== e.name || top.categoriesString !== e.categoriesString) {
             console.error(
                 'B/E events mismatch at ' + top.startTime + ' (' + top.name + ') vs. ' + e.startTime + ' (' + e.name +
                 ')');
-          else
+          } else {
             top._complete(e);
+          }
           break;
         case phases.Begin:
           stack.push(e);

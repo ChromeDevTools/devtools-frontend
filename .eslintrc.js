@@ -39,6 +39,7 @@ module.exports = {
             "getWithoutSet": false,
             "setWithoutGet": false
         }],
+        "curly": [2, "multi-or-nest", "consistent"],
 
         // anti-patterns
         "no-with": 2,

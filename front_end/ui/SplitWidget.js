@@ -141,8 +141,7 @@ UI.SplitWidget = class extends UI.Widget {
       widget.element.classList.add('insertion-point-main');
       widget.element.classList.remove('insertion-point-sidebar');
       widget.attach(this);
-      if (this._showMode === UI.SplitWidget.ShowMode.OnlyMain ||
-          this._showMode === UI.SplitWidget.ShowMode.Both)
+      if (this._showMode === UI.SplitWidget.ShowMode.OnlyMain || this._showMode === UI.SplitWidget.ShowMode.Both)
         widget.showWidget(this.element);
       this.setDefaultFocusedChild(widget);
     }
@@ -163,8 +162,7 @@ UI.SplitWidget = class extends UI.Widget {
       widget.element.classList.add('insertion-point-sidebar');
       widget.element.classList.remove('insertion-point-main');
       widget.attach(this);
-      if (this._showMode === UI.SplitWidget.ShowMode.OnlySidebar ||
-          this._showMode === UI.SplitWidget.ShowMode.Both)
+      if (this._showMode === UI.SplitWidget.ShowMode.OnlySidebar || this._showMode === UI.SplitWidget.ShowMode.Both)
         widget.showWidget(this.element);
     }
     this.resumeInvalidations();
@@ -427,9 +425,10 @@ UI.SplitWidget = class extends UI.Widget {
     if (this._sidebarSizeDIP === sizeDIP)
       return;
 
-    if (!this._resizerElementSize)
+    if (!this._resizerElementSize) {
       this._resizerElementSize =
           this._isVertical ? this._resizerElement.offsetWidth : this._resizerElement.offsetHeight;
+    }
 
     // Invalidate layout below.
 
@@ -636,8 +635,7 @@ UI.SplitWidget = class extends UI.Widget {
    * @override
    */
   willHide() {
-    UI.zoomManager.removeEventListener(
-        UI.ZoomManager.Events.ZoomChanged, this._onZoomChanged, this);
+    UI.zoomManager.removeEventListener(UI.ZoomManager.Events.ZoomChanged, this._onZoomChanged, this);
   }
 
   /**

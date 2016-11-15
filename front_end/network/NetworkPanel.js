@@ -54,8 +54,7 @@ Network.NetworkPanel = class extends UI.Panel {
 
     // Create top overview component.
     this._overviewPane = new UI.TimelineOverviewPane('network');
-    this._overviewPane.addEventListener(
-        UI.TimelineOverviewPane.Events.WindowChanged, this._onWindowChanged.bind(this));
+    this._overviewPane.addEventListener(UI.TimelineOverviewPane.Events.WindowChanged, this._onWindowChanged.bind(this));
     this._overviewPane.element.id = 'network-overview-panel';
     this._networkOverview = new Network.NetworkOverview();
     this._overviewPane.setOverviewControls([this._networkOverview]);
@@ -97,18 +96,14 @@ Network.NetworkPanel = class extends UI.Panel {
     this._updateUI();
 
     SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.WillReloadPage, this._willReloadPage,
-        this);
-    SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._load, this);
-    this._networkLogView.addEventListener(
-        Network.NetworkLogView.Events.RequestSelected, this._onRequestSelected, this);
+        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.WillReloadPage, this._willReloadPage, this);
+    SDK.targetManager.addModelListener(SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._load, this);
+    this._networkLogView.addEventListener(Network.NetworkLogView.Events.RequestSelected, this._onRequestSelected, this);
     this._networkLogView.addEventListener(
         Network.NetworkLogView.Events.SearchCountUpdated, this._onSearchCountUpdated, this);
     this._networkLogView.addEventListener(
         Network.NetworkLogView.Events.SearchIndexUpdated, this._onSearchIndexUpdated, this);
-    this._networkLogView.addEventListener(
-        Network.NetworkLogView.Events.UpdateRequest, this._onUpdateRequest, this);
+    this._networkLogView.addEventListener(Network.NetworkLogView.Events.UpdateRequest, this._onUpdateRequest, this);
 
     Components.DataSaverInfobar.maybeShowInPanel(this);
   }
@@ -293,9 +288,10 @@ Network.NetworkPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _load(event) {
-    if (this._filmStripRecorder && this._filmStripRecorder.isRecording())
+    if (this._filmStripRecorder && this._filmStripRecorder.isRecording()) {
       this._pendingStopTimer =
           setTimeout(this._stopFilmStripRecording.bind(this), Network.NetworkPanel.displayScreenshotDelay);
+    }
   }
 
   _stopFilmStripRecording() {

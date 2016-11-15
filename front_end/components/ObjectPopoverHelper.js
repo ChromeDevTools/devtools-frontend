@@ -97,8 +97,7 @@ Components.ObjectPopoverHelper = class extends UI.PopoverHelper {
       var linkContainer = title.createChild('div', 'function-title-link-container');
       if (rawLocation && Runtime.experiments.isEnabled('continueToFirstInvocation')) {
         var sectionToolbar = new UI.Toolbar('function-location-step-into', linkContainer);
-        var stepInto = new UI.ToolbarButton(
-            Common.UIString('Continue to first invocation'), 'largeicon-step-in');
+        var stepInto = new UI.ToolbarButton(Common.UIString('Continue to first invocation'), 'largeicon-step-in');
         stepInto.addEventListener('click', () => rawLocation.continueToLocation());
         sectionToolbar.appendToolbarItem(stepInto);
       }

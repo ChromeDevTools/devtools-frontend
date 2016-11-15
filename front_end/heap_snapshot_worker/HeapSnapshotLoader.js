@@ -72,9 +72,9 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
     while (true) {
       while (index < length) {
         var code = this._json.charCodeAt(index);
-        if (char0 <= code && code <= char9)
+        if (char0 <= code && code <= char9) {
           break;
-        else if (code === closingBracket) {
+        } else if (code === closingBracket) {
           this._json = this._json.slice(index + 1);
           return false;
         }

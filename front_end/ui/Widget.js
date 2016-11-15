@@ -288,12 +288,13 @@ UI.Widget = class extends Common.Object {
     while (currentParent && !currentParent.__widget)
       currentParent = currentParent.parentElementOrShadowHost();
 
-    if (this._isRoot)
+    if (this._isRoot) {
       UI.Widget.__assert(!currentParent, 'Attempt to show root widget under another widget');
-    else
+    } else {
       UI.Widget.__assert(
           currentParent && currentParent.__widget === this._parentWidget,
           'Attempt to show under node belonging to alien widget');
+    }
 
     var wasVisible = this._visible;
     if (wasVisible && this.element.parentElement === parentElement)
@@ -750,7 +751,6 @@ Element.prototype.removeChild = function(child) {
 };
 
 Element.prototype.removeChildren = function() {
-  UI.Widget.__assert(
-      !this.__widgetCounter, 'Attempt to remove element containing widget via regular DOM operation');
+  UI.Widget.__assert(!this.__widgetCounter, 'Attempt to remove element containing widget via regular DOM operation');
   UI.Widget._originalRemoveChildren.call(this);
 };

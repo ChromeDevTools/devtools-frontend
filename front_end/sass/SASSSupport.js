@@ -370,10 +370,8 @@ Sass.SASSSupport.Rule = class extends Sass.SASSSupport.Node {
       var disabled = disabledStates[i];
       this.document.edits.push(this._insertPropertyEdit(anchorProperty, nameText, valueText, disabled));
 
-      var name = new Sass.SASSSupport.TextNode(
-          this.document, nameText, Common.TextRange.createFromLocation(0, 0));
-      var value = new Sass.SASSSupport.TextNode(
-          this.document, valueText, Common.TextRange.createFromLocation(0, 0));
+      var name = new Sass.SASSSupport.TextNode(this.document, nameText, Common.TextRange.createFromLocation(0, 0));
+      var value = new Sass.SASSSupport.TextNode(this.document, valueText, Common.TextRange.createFromLocation(0, 0));
       var newProperty = new Sass.SASSSupport.Property(
           this.document, name, value, Common.TextRange.createFromLocation(0, 0), disabled);
 
@@ -613,8 +611,7 @@ Sass.SASSSupport.diffModels = function(oldAST, newAST) {
    * @param {number} newPropertyIndex
    */
   function addChange(type, oldRule, newRule, oldPropertyIndex, newPropertyIndex) {
-    changes.push(
-        new Sass.SASSSupport.PropertyChange(type, oldRule, newRule, oldPropertyIndex, newPropertyIndex));
+    changes.push(new Sass.SASSSupport.PropertyChange(type, oldRule, newRule, oldPropertyIndex, newPropertyIndex));
   }
 
   /**

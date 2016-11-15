@@ -19,8 +19,7 @@ Profiler.TargetsComboBoxController = class {
     this._targetToOption = new Map();
 
     UI.context.addFlavorChangeListener(SDK.Target, this._targetChangedExternally, this);
-    SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.NameChanged, this._targetNameChanged, this);
+    SDK.targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, this._targetNameChanged, this);
     SDK.targetManager.observeTargets(this, SDK.Target.Capability.JS);
   }
 

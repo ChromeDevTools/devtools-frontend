@@ -201,13 +201,13 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
         this._removeBreakpoint(url);
         this._setBreakpoint(text, element._checkboxElement.checked);
         this._saveBreakpoints();
-      } else
+      } else {
         element.classList.remove('hidden');
+      }
     }
 
     UI.InplaceEditor.startEditing(
-        inputElement,
-        new UI.InplaceEditor.Config(finishEditing.bind(this, true), finishEditing.bind(this, false)));
+        inputElement, new UI.InplaceEditor.Config(finishEditing.bind(this, true), finishEditing.bind(this, false)));
   }
 
   /**

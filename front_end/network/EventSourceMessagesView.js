@@ -40,16 +40,14 @@ Network.EventSourceMessagesView = class extends UI.VBox {
     for (var i = 0; i < messages.length; ++i)
       this._dataGrid.insertChild(new Network.EventSourceMessageNode(messages[i]));
 
-    this._request.addEventListener(
-        SDK.NetworkRequest.Events.EventSourceMessageAdded, this._messageAdded, this);
+    this._request.addEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, this._messageAdded, this);
   }
 
   /**
    * @override
    */
   willHide() {
-    this._request.removeEventListener(
-        SDK.NetworkRequest.Events.EventSourceMessageAdded, this._messageAdded, this);
+    this._request.removeEventListener(SDK.NetworkRequest.Events.EventSourceMessageAdded, this._messageAdded, this);
   }
 
   /**

@@ -46,9 +46,10 @@ Profiler.TopDownProfileDataGridNode = class extends Profiler.ProfileDataGridNode
     var children = container._remainingChildren;
     var childrenLength = children.length;
 
-    for (var i = 0; i < childrenLength; ++i)
+    for (var i = 0; i < childrenLength; ++i) {
       container.appendChild(new Profiler.TopDownProfileDataGridNode(
           children[i], /** @type {!Profiler.TopDownProfileDataGridTree} */ (container.tree)));
+    }
 
     container._remainingChildren = null;
   }

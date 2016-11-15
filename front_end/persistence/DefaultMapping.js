@@ -23,10 +23,8 @@ Persistence.DefaultMapping = class {
       workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._onUISourceCodeAdded, this),
       workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._onUISourceCodeRemoved, this),
       workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._onProjectRemoved, this),
-      this._fileSystemMapping.addEventListener(
-          Workspace.FileSystemMapping.Events.FileMappingAdded, this._remap, this),
-      this._fileSystemMapping.addEventListener(
-          Workspace.FileSystemMapping.Events.FileMappingRemoved, this._remap, this)
+      this._fileSystemMapping.addEventListener(Workspace.FileSystemMapping.Events.FileMappingAdded, this._remap, this),
+      this._fileSystemMapping.addEventListener(Workspace.FileSystemMapping.Events.FileMappingRemoved, this._remap, this)
     ];
     this._remap();
   }

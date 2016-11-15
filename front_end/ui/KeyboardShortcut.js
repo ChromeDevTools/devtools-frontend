@@ -72,8 +72,7 @@ UI.KeyboardShortcut = class {
    */
   static makeKeyFromEventIgnoringModifiers(keyboardEvent) {
     var keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
-    return UI.KeyboardShortcut._makeKeyFromCodeAndModifiers(
-        keyCode, UI.KeyboardShortcut.Modifiers.None);
+    return UI.KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, UI.KeyboardShortcut.Modifiers.None);
   }
 
   /**
@@ -290,5 +289,4 @@ UI.KeyboardShortcut.KeyBindings = {};
 UI.KeyboardShortcut.Descriptor;
 
 
-UI.KeyboardShortcut.SelectAll =
-    UI.KeyboardShortcut.makeKey('a', UI.KeyboardShortcut.Modifiers.CtrlOrMeta);
+UI.KeyboardShortcut.SelectAll = UI.KeyboardShortcut.makeKey('a', UI.KeyboardShortcut.Modifiers.CtrlOrMeta);

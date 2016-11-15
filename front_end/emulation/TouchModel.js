@@ -67,9 +67,10 @@ Emulation.MultitargetTouchModel = class {
       var recepients = [window.__proto__, document.__proto__];
       for (var i = 0; i < touchEvents.length; ++i) {
         for (var j = 0; j < recepients.length; ++j) {
-          if (!(touchEvents[i] in recepients[j]))
+          if (!(touchEvents[i] in recepients[j])) {
             Object.defineProperty(
                 recepients[j], touchEvents[i], {value: null, writable: true, configurable: true, enumerable: true});
+          }
         }
       }
     };
@@ -128,8 +129,7 @@ Emulation.MultitargetTouchModel = class {
   targetRemoved(target) {
     var domModel = SDK.DOMModel.fromTarget(target);
     if (domModel)
-      domModel.removeEventListener(
-          SDK.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeToggled, this);
+      domModel.removeEventListener(SDK.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeToggled, this);
   }
 };
 

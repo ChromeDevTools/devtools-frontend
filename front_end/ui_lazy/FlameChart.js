@@ -750,10 +750,11 @@ UI.FlameChart = class extends UI.ChartViewport {
     context.fillStyle = UI.themeSupport.patchColor('#6e6e6e', colorUsage.Foreground);
     context.beginPath();
     forEachGroup.call(this, (offset, index, group) => {
-      if (this._isGroupCollapsible(index))
+      if (this._isGroupCollapsible(index)) {
         drawExpansionArrow.call(
             this, this._expansionArrowIndent * (group.style.nestingLevel + 1),
             offset + textBaseHeight - this._arrowSide / 2, !!group.expanded);
+      }
     });
     context.fill();
 

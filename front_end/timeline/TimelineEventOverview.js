@@ -734,8 +734,8 @@ Timeline.TimelineEventOverviewMemory = class extends Timeline.TimelineEventOverv
     ctx.strokeStyle = 'hsl(220, 90%, 70%)';
     ctx.stroke();
 
-    this._heapSizeLabel.textContent = Common.UIString(
-        '%s \u2013 %s', Number.bytesToString(minUsedHeapSize), Number.bytesToString(maxUsedHeapSize));
+    this._heapSizeLabel.textContent =
+        Common.UIString('%s \u2013 %s', Number.bytesToString(minUsedHeapSize), Number.bytesToString(maxUsedHeapSize));
   }
 };
 

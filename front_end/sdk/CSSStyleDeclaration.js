@@ -252,8 +252,7 @@ SDK.CSSStyleDeclaration = class {
    */
   newBlankProperty(index) {
     index = (typeof index === 'undefined') ? this.pastLastSourcePropertyIndex() : index;
-    var property =
-        new SDK.CSSProperty(this, index, '', '', false, false, true, false, '', this._insertionRange(index));
+    var property = new SDK.CSSProperty(this, index, '', '', false, false, true, false, '', this._insertionRange(index));
     return property;
   }
 

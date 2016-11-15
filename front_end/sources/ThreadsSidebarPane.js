@@ -20,29 +20,28 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
     this.threadList = new Sources.UIList();
     this.threadList.show(this.element);
     SDK.targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._onDebuggerStateChanged,
-        this);
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._onDebuggerStateChanged, this);
     SDK.targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._onDebuggerStateChanged,
-        this);
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._onDebuggerStateChanged, this);
     SDK.targetManager.addModelListener(
-        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextChanged,
-        this._onExecutionContextChanged, this);
+        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextChanged, this._onExecutionContextChanged, this);
     UI.context.addFlavorChangeListener(SDK.Target, this._targetChanged, this);
-    SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.NameChanged, this._targetNameChanged, this);
-    SDK.targetManager.addModelListener(SDK.SubTargetsManager, SDK.SubTargetsManager.Events.PendingTargetAdded, this._addTargetItem, this);
-    SDK.targetManager.addModelListener(SDK.SubTargetsManager, SDK.SubTargetsManager.Events.PendingTargetRemoved, this._pendingTargetRemoved, this);
-    SDK.targetManager.addModelListener(SDK.SubTargetsManager, SDK.SubTargetsManager.Events.PendingTargetAttached, this._addTargetItem, this);
-    SDK.targetManager.addModelListener(SDK.SubTargetsManager, SDK.SubTargetsManager.Events.PendingTargetDetached, this._targetDetached, this);
+    SDK.targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, this._targetNameChanged, this);
+    SDK.targetManager.addModelListener(
+        SDK.SubTargetsManager, SDK.SubTargetsManager.Events.PendingTargetAdded, this._addTargetItem, this);
+    SDK.targetManager.addModelListener(
+        SDK.SubTargetsManager, SDK.SubTargetsManager.Events.PendingTargetRemoved, this._pendingTargetRemoved, this);
+    SDK.targetManager.addModelListener(
+        SDK.SubTargetsManager, SDK.SubTargetsManager.Events.PendingTargetAttached, this._addTargetItem, this);
+    SDK.targetManager.addModelListener(
+        SDK.SubTargetsManager, SDK.SubTargetsManager.Events.PendingTargetDetached, this._targetDetached, this);
     SDK.targetManager.observeTargets(this);
 
     var pendingTargets = [];
     for (var target of SDK.targetManager.targets(SDK.Target.Capability.Target))
       pendingTargets = pendingTargets.concat(SDK.SubTargetsManager.fromTarget(target).pendingTargets());
 
-    pendingTargets
-        .sort(Sources.ThreadsSidebarPane._pendingTargetsComparator)
+    pendingTargets.sort(Sources.ThreadsSidebarPane._pendingTargetsComparator)
         .forEach(pendingTarget => this._addListItem(pendingTarget));
   }
 
@@ -67,13 +66,12 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
    * @param {!SDK.PendingTarget} c2
    * @return {number}
    */
-  static _pendingTargetsComparator(c1, c2)
-  {
+  static _pendingTargetsComparator(c1, c2) {
     var t1 = c1.target();
     var t2 = c2.target();
     var name1 = t1 ? t1.name() : c1.name();
     var name2 = t2 ? t2.name() : c2.name();
-    if (!!t1 === !!t2) { // Either both are connected or disconnected
+    if (!!t1 === !!t2) {  // Either both are connected or disconnected
       return name1.toLowerCase().localeCompare(name2.toLowerCase());
     } else if (t1) {
       return -1;
@@ -298,7 +296,7 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
    */
   _targetRemoved(pendingTarget) {
     var item = this._pendingToListItem.get(pendingTarget);
-    if (!item) // Not all targets are represented in the UI.
+    if (!item)  // Not all targets are represented in the UI.
       return;
     var target = item[Sources.ThreadsSidebarPane._targetSymbol];
     item[Sources.ThreadsSidebarPane._targetSymbol] = null;

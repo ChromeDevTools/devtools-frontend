@@ -125,7 +125,7 @@ TimelineModel.TimelineModel = class {
     var data = event.args['data'] || event.args['beginData'];
     var frame = data && data['frame'];
     if (!frame)
-        return '';
+      return '';
     var processId = event.thread.process().id();
     return `${processId}.${frame}`;
   }
@@ -317,13 +317,13 @@ TimelineModel.TimelineModel = class {
     }
     var result = {
       page: pageDevToolsMetadataEvents.filter(checkSessionId).sort(SDK.TracingModel.Event.compareStartTime),
-      workers:
-          workersDevToolsMetadataEvents.filter(checkSessionId).sort(SDK.TracingModel.Event.compareStartTime)
+      workers: workersDevToolsMetadataEvents.filter(checkSessionId).sort(SDK.TracingModel.Event.compareStartTime)
     };
-    if (mismatchingIds.size)
+    if (mismatchingIds.size) {
       Common.console.error(
           'Timeline recording was started in more than one page simultaneously. Session id mismatch: ' +
           this._sessionId + ' and ' + mismatchingIds.valuesArray() + '.');
+    }
     return result;
   }
 
@@ -354,8 +354,7 @@ TimelineModel.TimelineModel = class {
 
     // First Paint is actually a DrawFrame that happened after first CompositeLayers following last CommitLoadEvent.
     var recordTypes = TimelineModel.TimelineModel.RecordType;
-    var i = this._inspectedTargetEvents.lowerBound(
-        this._firstCompositeLayers, SDK.TracingModel.Event.compareStartTime);
+    var i = this._inspectedTargetEvents.lowerBound(this._firstCompositeLayers, SDK.TracingModel.Event.compareStartTime);
     for (; i < this._inspectedTargetEvents.length && this._inspectedTargetEvents[i].name !== recordTypes.DrawFrame;
          ++i) {
     }
@@ -434,8 +433,7 @@ TimelineModel.TimelineModel = class {
       var event = threadEvents[i];
       for (var top = recordStack.peekLast(); top && top._event.endTime <= event.startTime; top = recordStack.peekLast())
         recordStack.pop();
-      if (event.phase === SDK.TracingModel.Phase.AsyncEnd ||
-          event.phase === SDK.TracingModel.Phase.NestableAsyncEnd)
+      if (event.phase === SDK.TracingModel.Phase.AsyncEnd || event.phase === SDK.TracingModel.Phase.NestableAsyncEnd)
         continue;
       var parentRecord = recordStack.peekLast();
       // Maintain the back-end logic of old timeline, skip console.time() / console.timeEnd() that are not properly nested.
@@ -761,8 +759,10 @@ TimelineModel.TimelineModel = class {
         if (!layerUpdateEvent || layerUpdateEvent.args['layerTreeId'] !== this._inspectedTargetLayerTreeId)
           break;
         var paintEvent = this._lastPaintForLayer[layerUpdateEvent.args['layerId']];
-        if (paintEvent)
-          TimelineModel.TimelineData.forEvent(paintEvent).picture = /** @type {!SDK.TracingModel.ObjectSnapshot} */ (event);
+        if (paintEvent) {
+          TimelineModel.TimelineData.forEvent(paintEvent).picture =
+              /** @type {!SDK.TracingModel.ObjectSnapshot} */ (event);
+        }
         break;
 
       case recordTypes.ScrollLayer:
@@ -828,9 +828,9 @@ TimelineModel.TimelineModel = class {
         break;
 
       case recordTypes.FireIdleCallback:
-        if (event.duration > eventData['allottedMilliseconds']) {
+        if (event.duration > eventData['allottedMilliseconds'])
           timelineData.warning = TimelineModel.TimelineModel.WarningType.IdleDeadlineExceeded;
-        }
+
         break;
     }
     if (SDK.TracingModel.isAsyncPhase(event.phase))
@@ -843,10 +843,11 @@ TimelineModel.TimelineModel = class {
       parent.selfTime -= duration;
       if (parent.selfTime < 0) {
         var epsilon = 1e-3;
-        if (parent.selfTime < -epsilon)
+        if (parent.selfTime < -epsilon) {
           console.error(
               'Children are longer than parent at ' + event.startTime + ' (' +
               (event.startTime - this.minimumRecordTime()).toFixed(3) + ') by ' + parent.selfTime.toFixed(3));
+        }
         parent.selfTime = 0;
       }
     }
@@ -894,7 +895,8 @@ TimelineModel.TimelineModel = class {
         var rendererMain = data['INPUT_EVENT_LATENCY_RENDERER_MAIN_COMPONENT'];
         if (rendererMain) {
           var time = rendererMain['time'] / 1000;
-          TimelineModel.TimelineData.forEvent(asyncEvent.steps[0]).timeWaitingForMainThread = time - asyncEvent.steps[0].startTime;
+          TimelineModel.TimelineData.forEvent(asyncEvent.steps[0]).timeWaitingForMainThread =
+              time - asyncEvent.steps[0].startTime;
         }
       }
       return groups.input;
@@ -1323,9 +1325,8 @@ TimelineModel.TimelineModel.Record = class {
   target() {
     var threadName = this._event.thread.name();
     // FIXME: correctly specify target
-    return threadName === TimelineModel.TimelineModel.RendererMainThreadName ?
-        SDK.targetManager.targets()[0] || null :
-        null;
+    return threadName === TimelineModel.TimelineModel.RendererMainThreadName ? SDK.targetManager.targets()[0] || null :
+                                                                               null;
   }
 
   /**

@@ -86,11 +86,9 @@ Profiler.CPUProfileType = class extends Profiler.ProfileType {
 
     Profiler.CPUProfileType.instance = this;
     SDK.targetManager.addModelListener(
-        SDK.CPUProfilerModel, SDK.CPUProfilerModel.Events.ConsoleProfileStarted,
-        this._consoleProfileStarted, this);
+        SDK.CPUProfilerModel, SDK.CPUProfilerModel.Events.ConsoleProfileStarted, this._consoleProfileStarted, this);
     SDK.targetManager.addModelListener(
-        SDK.CPUProfilerModel, SDK.CPUProfilerModel.Events.ConsoleProfileFinished,
-        this._consoleProfileFinished, this);
+        SDK.CPUProfilerModel, SDK.CPUProfilerModel.Events.ConsoleProfileFinished, this._consoleProfileFinished, this);
   }
 
   /**
@@ -132,8 +130,7 @@ Profiler.CPUProfileType = class extends Profiler.ProfileType {
   }
 
   get description() {
-    return Common.UIString(
-        'CPU profiles show where the execution time is spent in your page\'s JavaScript functions.');
+    return Common.UIString('CPU profiles show where the execution time is spent in your page\'s JavaScript functions.');
   }
 
   /**
@@ -179,8 +176,8 @@ Profiler.CPUProfileType = class extends Profiler.ProfileType {
     var script = scriptLocation.script();
     var target = scriptLocation.target();
     var message = new SDK.ConsoleMessage(
-        target, SDK.ConsoleMessage.MessageSource.ConsoleAPI, SDK.ConsoleMessage.MessageLevel.Debug,
-        messageText, type, undefined, undefined, undefined, undefined, [{
+        target, SDK.ConsoleMessage.MessageSource.ConsoleAPI, SDK.ConsoleMessage.MessageLevel.Debug, messageText, type,
+        undefined, undefined, undefined, undefined, [{
           functionName: '',
           scriptId: scriptLocation.scriptId,
           url: script ? script.contentURL() : '',
@@ -365,8 +362,7 @@ Profiler.CPUFlameChartDataProvider = class extends Profiler.ProfileFlameChartDat
      */
     function onCloseFrame(depth, node, startTime, totalTime, selfTime) {
       var index = stack.pop();
-      entries[index] =
-          new Profiler.CPUFlameChartDataProvider.ChartEntry(depth, totalTime, startTime, selfTime, node);
+      entries[index] = new Profiler.CPUFlameChartDataProvider.ChartEntry(depth, totalTime, startTime, selfTime, node);
       maxDepth = Math.max(maxDepth, depth);
     }
     this._cpuProfile.forEachFrame(onOpenFrame, onCloseFrame);

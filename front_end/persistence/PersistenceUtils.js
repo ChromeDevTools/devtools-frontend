@@ -37,7 +37,7 @@ Persistence.PersistenceUtils.LinkDecorator = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _bindingChanged(event) {
-    var binding = /** @type {!Persistence.PersistenceBinding} */(event.data);
+    var binding = /** @type {!Persistence.PersistenceBinding} */ (event.data);
     this.dispatchEventToListeners(Components.LinkDecorator.Events.LinkIconChanged, binding.network);
   }
 

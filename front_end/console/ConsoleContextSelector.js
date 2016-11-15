@@ -18,18 +18,14 @@ Console.ConsoleContextSelector = class {
 
     SDK.targetManager.observeTargets(this);
     SDK.targetManager.addModelListener(
-        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated,
-        this._onExecutionContextCreated, this);
+        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated, this._onExecutionContextCreated, this);
     SDK.targetManager.addModelListener(
-        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextChanged,
-        this._onExecutionContextChanged, this);
+        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextChanged, this._onExecutionContextChanged, this);
     SDK.targetManager.addModelListener(
-        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextDestroyed,
-        this._onExecutionContextDestroyed, this);
+        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextDestroyed, this._onExecutionContextDestroyed, this);
 
     this._selectElement.addEventListener('change', this._executionContextChanged.bind(this), false);
-    UI.context.addFlavorChangeListener(
-        SDK.ExecutionContext, this._executionContextChangedExternally, this);
+    UI.context.addFlavorChangeListener(SDK.ExecutionContext, this._executionContextChangedExternally, this);
   }
 
   /**

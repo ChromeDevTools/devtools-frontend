@@ -231,14 +231,15 @@ Console.ConsoleViewMessage = class {
           messageElement.createTextChild(consoleMessage.request.requestMethod + ' ');
           messageElement.appendChild(Components.Linkifier.linkifyUsingRevealer(
               consoleMessage.request, consoleMessage.request.url, consoleMessage.request.url));
-          if (consoleMessage.request.failed)
+          if (consoleMessage.request.failed) {
             messageElement.createTextChildren(' ', consoleMessage.request.localizedFailDescription);
-          else
+          } else {
             messageElement.createTextChildren(
                 ' ', String(consoleMessage.request.statusCode), ' (', consoleMessage.request.statusText, ')');
+          }
         } else {
-          var fragment = Components.linkifyStringAsFragmentWithCustomLinkifier(
-              messageText, linkifyRequest.bind(consoleMessage));
+          var fragment =
+              Components.linkifyStringAsFragmentWithCustomLinkifier(messageText, linkifyRequest.bind(consoleMessage));
           messageElement.appendChild(fragment);
         }
       } else {
@@ -280,17 +281,17 @@ Console.ConsoleViewMessage = class {
   _buildMessageAnchor(consoleMessage) {
     var anchorElement = null;
     if (consoleMessage.source !== SDK.ConsoleMessage.MessageSource.Network || consoleMessage.request) {
-      if (consoleMessage.scriptId)
+      if (consoleMessage.scriptId) {
         anchorElement = this._linkifyScriptId(
             consoleMessage.scriptId, consoleMessage.url || '', consoleMessage.line, consoleMessage.column);
-      else if (consoleMessage.stackTrace && consoleMessage.stackTrace.callFrames.length)
+      } else if (consoleMessage.stackTrace && consoleMessage.stackTrace.callFrames.length) {
         anchorElement = this._linkifyStackTraceTopFrame(consoleMessage.stackTrace);
-      else if (consoleMessage.url && consoleMessage.url !== 'undefined')
+      } else if (consoleMessage.url && consoleMessage.url !== 'undefined') {
         anchorElement = this._linkifyLocation(consoleMessage.url, consoleMessage.line, consoleMessage.column);
+      }
     } else if (consoleMessage.url) {
       var url = consoleMessage.url;
-      var isExternal =
-          !Bindings.resourceForURL(url) && !Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(url);
+      var isExternal = !Bindings.resourceForURL(url) && !Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(url);
       anchorElement = UI.linkifyURLAsNode(url, url, 'console-message-url', isExternal);
     }
 
@@ -417,8 +418,8 @@ Console.ConsoleViewMessage = class {
       parameters[i] = this._parameterToRemoteObject(parameters[i], this._target());
 
     // There can be string log and string eval result. We distinguish between them based on message type.
-    var shouldFormatMessage = SDK.RemoteObject.type(
-                                  (/** @type {!Array.<!SDK.RemoteObject>} **/ (parameters))[0]) === 'string' &&
+    var shouldFormatMessage =
+        SDK.RemoteObject.type((/** @type {!Array.<!SDK.RemoteObject>} **/ (parameters))[0]) === 'string' &&
         (this._message.type !== SDK.ConsoleMessage.MessageType.Result ||
          this._message.level === SDK.ConsoleMessage.MessageLevel.Error ||
          this._message.level === SDK.ConsoleMessage.MessageLevel.RevokedError);
@@ -552,8 +553,7 @@ Console.ConsoleViewMessage = class {
      */
     function formatTargetFunction(targetFunction) {
       var functionElement = createElement('span');
-      Components.ObjectPropertiesSection.formatObjectAsFunction(
-          targetFunction, functionElement, true, includePreview);
+      Components.ObjectPropertiesSection.formatObjectAsFunction(targetFunction, functionElement, true, includePreview);
       result.appendChild(functionElement);
       if (targetFunction !== func) {
         var note = result.createChild('span', 'object-info-state-note');
@@ -846,9 +846,9 @@ Console.ConsoleViewMessage = class {
     formatters._ = bypassFormatter;
 
     function append(a, b) {
-      if (b instanceof Node)
+      if (b instanceof Node) {
         a.appendChild(b);
-      else if (typeof b !== 'undefined') {
+      } else if (typeof b !== 'undefined') {
         var toAppend = Components.linkifyStringAsFragment(String(b));
         if (currentStyle) {
           var wrapper = createElement('span');
@@ -948,12 +948,12 @@ Console.ConsoleViewMessage = class {
     var formattedMessage;
     var consoleMessage = this._message;
     var target = consoleMessage.target();
-    var shouldIncludeTrace = !!consoleMessage.stackTrace &&
-        (consoleMessage.source === SDK.ConsoleMessage.MessageSource.Network ||
-         consoleMessage.level === SDK.ConsoleMessage.MessageLevel.Error ||
-         consoleMessage.level === SDK.ConsoleMessage.MessageLevel.RevokedError ||
-         consoleMessage.type === SDK.ConsoleMessage.MessageType.Trace ||
-         consoleMessage.level === SDK.ConsoleMessage.MessageLevel.Warning);
+    var shouldIncludeTrace =
+        !!consoleMessage.stackTrace && (consoleMessage.source === SDK.ConsoleMessage.MessageSource.Network ||
+                                        consoleMessage.level === SDK.ConsoleMessage.MessageLevel.Error ||
+                                        consoleMessage.level === SDK.ConsoleMessage.MessageLevel.RevokedError ||
+                                        consoleMessage.type === SDK.ConsoleMessage.MessageType.Trace ||
+                                        consoleMessage.level === SDK.ConsoleMessage.MessageLevel.Warning);
     if (target && shouldIncludeTrace)
       formattedMessage = this._buildMessageWithStackTrace(consoleMessage, target, this._linkifier);
     else if (this._message.type === SDK.ConsoleMessage.MessageType.Table)
@@ -1086,9 +1086,10 @@ Console.ConsoleViewMessage = class {
     while ((match = this._searchRegex.exec(text)) && match[0])
       sourceRanges.push(new Common.SourceRange(match.index, match[0].length));
 
-    if (sourceRanges.length)
+    if (sourceRanges.length) {
       this._searchHighlightNodes =
           UI.highlightSearchResults(this.contentElement(), sourceRanges, this._searchHiglightNodeChanges);
+    }
   }
 
   /**

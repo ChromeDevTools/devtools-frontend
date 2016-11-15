@@ -227,8 +227,7 @@ Components.FilmStripView.Dialog = class extends UI.VBox {
         createTextButton('\u25C0', this._onPrevFrame.bind(this), undefined, Common.UIString('Previous frame'));
     footerElement.appendChild(prevButton);
     this._timeLabel = footerElement.createChild('div', 'filmstrip-dialog-label');
-    var nextButton =
-        createTextButton('\u25B6', this._onNextFrame.bind(this), undefined, Common.UIString('Next frame'));
+    var nextButton = createTextButton('\u25B6', this._onNextFrame.bind(this), undefined, Common.UIString('Next frame'));
     footerElement.appendChild(nextButton);
     footerElement.createChild('div', 'flex-auto');
 

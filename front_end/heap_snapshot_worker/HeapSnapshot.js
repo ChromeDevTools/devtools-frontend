@@ -737,9 +737,8 @@ HeapSnapshotWorker.HeapSnapshotFilteredIterator = class {
   }
 
   _skipFilteredItems() {
-    while (this._iterator.hasNext() && !this._filter(this._iterator.item())) {
+    while (this._iterator.hasNext() && !this._filter(this._iterator.item()))
       this._iterator.next();
-    }
   }
 };
 
@@ -1347,9 +1346,10 @@ HeapSnapshotWorker.HeapSnapshot = class {
         nodesToVisit[nodesToVisitLength++] = childNodeIndex;
       }
     }
-    if (nodesToVisitLength > nodeCount)
+    if (nodesToVisitLength > nodeCount) {
       throw new Error(
           'BFS failed. Nodes to visit (' + nodesToVisitLength + ') is more than nodes count (' + nodeCount + ')');
+    }
   }
 
   _buildAggregates(filter) {
@@ -1461,12 +1461,13 @@ HeapSnapshotWorker.HeapSnapshot = class {
   _sortAggregateIndexes(aggregates) {
     var nodeA = this.createNode();
     var nodeB = this.createNode();
-    for (var clss in aggregates)
+    for (var clss in aggregates) {
       aggregates[clss].idxs.sort(function(idxA, idxB) {
         nodeA.nodeIndex = idxA;
         nodeB.nodeIndex = idxB;
         return nodeA.id() < nodeB.id() ? -1 : 1;
       });
+    }
   }
 
   /**
@@ -1704,9 +1705,9 @@ HeapSnapshotWorker.HeapSnapshot = class {
             continue;
           var retanerPostOrderIndex = nodeOrdinal2PostOrderIndex[retainerNodeOrdinal];
           if (dominators[retanerPostOrderIndex] !== noEntry) {
-            if (newDominatorIndex === noEntry)
+            if (newDominatorIndex === noEntry) {
               newDominatorIndex = retanerPostOrderIndex;
-            else {
+            } else {
               while (retanerPostOrderIndex !== newDominatorIndex) {
                 while (retanerPostOrderIndex < newDominatorIndex)
                   retanerPostOrderIndex = dominators[retanerPostOrderIndex];
@@ -2315,9 +2316,10 @@ HeapSnapshotWorker.HeapSnapshotNodesProvider = class extends HeapSnapshotWorker.
     var indexProvider = new HeapSnapshotWorker.HeapSnapshotNodeIndexProvider(snapshot);
     var it = new HeapSnapshotWorker.HeapSnapshotIndexRangeIterator(indexProvider, nodeIndexes);
 
-    if (filter)
+    if (filter) {
       it = new HeapSnapshotWorker.HeapSnapshotFilteredIterator(
           it, /** @type {function(!HeapSnapshotWorker.HeapSnapshotItem):boolean} */ (filter));
+    }
     super(it, indexProvider);
     this.snapshot = snapshot;
   }

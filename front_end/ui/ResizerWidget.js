@@ -221,13 +221,12 @@ UI.SimpleResizerWidget = class extends UI.ResizerWidget {
    * @param {boolean} shiftKey
    */
   sendDragMove(startX, currentX, startY, currentY, shiftKey) {
-    if (this._isVertical)
+    if (this._isVertical) {
       this.dispatchEventToListeners(
-          UI.ResizerWidget.Events.ResizeUpdate,
-          {startPosition: startY, currentPosition: currentY, shiftKey: shiftKey});
-    else
+          UI.ResizerWidget.Events.ResizeUpdate, {startPosition: startY, currentPosition: currentY, shiftKey: shiftKey});
+    } else {
       this.dispatchEventToListeners(
-          UI.ResizerWidget.Events.ResizeUpdate,
-          {startPosition: startX, currentPosition: currentX, shiftKey: shiftKey});
+          UI.ResizerWidget.Events.ResizeUpdate, {startPosition: startX, currentPosition: currentX, shiftKey: shiftKey});
+    }
   }
 };

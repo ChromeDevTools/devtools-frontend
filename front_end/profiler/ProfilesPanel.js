@@ -428,8 +428,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     this._toggleRecordButton = UI.Toolbar.createActionButton(this._toggleRecordAction);
     toolbar.appendToolbarItem(this._toggleRecordButton);
 
-    this.clearResultsButton =
-        new UI.ToolbarButton(Common.UIString('Clear all profiles'), 'largeicon-clear');
+    this.clearResultsButton = new UI.ToolbarButton(Common.UIString('Clear all profiles'), 'largeicon-clear');
     this.clearResultsButton.addEventListener('click', this._reset, this);
     toolbar.appendToolbarItem(this.clearResultsButton);
 
@@ -455,8 +454,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
 
     this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
 
-    SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
+    SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
   }
 
   /**
@@ -678,12 +676,13 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
    */
   _handleContextMenuEvent(event) {
     var contextMenu = new UI.ContextMenu(event);
-    if (this.visibleView instanceof Profiler.HeapSnapshotView) {
+    if (this.visibleView instanceof Profiler.HeapSnapshotView)
       this.visibleView.populateContextMenu(contextMenu, event);
-    }
-    if (this.panelSidebarElement().isSelfOrAncestor(event.srcElement))
+
+    if (this.panelSidebarElement().isSelfOrAncestor(event.srcElement)) {
       contextMenu.appendItem(
           Common.UIString('Load\u2026'), this._fileSelectorElement.click.bind(this._fileSelectorElement));
+    }
     contextMenu.show();
   }
 
@@ -848,8 +847,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
         this.showObject(result, viewName);
     }
 
-    contextMenu.appendItem(
-        Common.UIString.capitalize('Reveal in Summary ^view'), revealInView.bind(this, 'Summary'));
+    contextMenu.appendItem(Common.UIString.capitalize('Reveal in Summary ^view'), revealInView.bind(this, 'Summary'));
   }
 
   /**

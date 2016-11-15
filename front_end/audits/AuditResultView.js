@@ -44,8 +44,7 @@ Audits.AuditCategoryResultPane = class extends UI.SimpleView {
     this._treeOutline.expandTreeElementsWhenArrowing = true;
 
     function ruleSorter(a, b) {
-      var result =
-          Audits.AuditRule.SeverityOrder[a.severity || 0] - Audits.AuditRule.SeverityOrder[b.severity || 0];
+      var result = Audits.AuditRule.SeverityOrder[a.severity || 0] - Audits.AuditRule.SeverityOrder[b.severity || 0];
       if (!result)
         result = (a.value || '').localeCompare(b.value || '');
       return result;

@@ -41,8 +41,7 @@ SDK.CSSRule = class {
       this.sourceURL = styleSheetHeader.sourceURL;
     }
     this.origin = payload.origin;
-    this.style = new SDK.CSSStyleDeclaration(
-        this._cssModel, this, payload.style, SDK.CSSStyleDeclaration.Type.Regular);
+    this.style = new SDK.CSSStyleDeclaration(this._cssModel, this, payload.style, SDK.CSSStyleDeclaration.Type.Regular);
   }
 
   /**
@@ -120,8 +119,7 @@ SDK.CSSStyleRule = class extends SDK.CSSRule {
       selectorList: {
         selectors: [{text: selectorText}],
       },
-      style:
-          {styleSheetId: '0', range: new Common.TextRange(0, 0, 0, 0), shorthandEntries: [], cssProperties: []}
+      style: {styleSheetId: '0', range: new Common.TextRange(0, 0, 0, 0), shorthandEntries: [], cssProperties: []}
     };
     return new SDK.CSSStyleRule(cssModel, /** @type {!Protocol.CSS.CSSRule} */ (dummyPayload));
   }
@@ -165,8 +163,7 @@ SDK.CSSStyleRule = class extends SDK.CSSRule {
     if (!firstRange)
       return null;
     var lastRange = this.selectors.peekLast().range;
-    return new Common.TextRange(
-        firstRange.startLine, firstRange.startColumn, lastRange.endLine, lastRange.endColumn);
+    return new Common.TextRange(firstRange.startLine, firstRange.startColumn, lastRange.endLine, lastRange.endColumn);
   }
 
   /**

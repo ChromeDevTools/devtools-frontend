@@ -132,12 +132,13 @@ Components.NetworkConditionsSelector = class {
     function appendItems(contextMenu) {
       for (var index = 0; index < options.length; ++index) {
         var conditions = options[index];
-        if (!conditions)
+        if (!conditions) {
           contextMenu.appendSeparator();
-        else
+        } else {
           contextMenu.appendCheckboxItem(
               Components.NetworkConditionsSelector._conditionsTitle(conditions, true).text,
               selector.optionSelected.bind(selector, conditions), selectedIndex === index);
+        }
       }
       contextMenu.appendItem(Common.UIString('Edit\u2026'), selector.revealAndUpdate.bind(selector));
     }
@@ -170,12 +171,10 @@ Components.NetworkConditionsSelector = class {
    */
   static createOfflineToolbarCheckbox() {
     var checkbox = new UI.ToolbarCheckbox(
-        Common.UIString('Offline'), Common.UIString('Force disconnected from network'), undefined,
-        forceOffline);
+        Common.UIString('Offline'), Common.UIString('Force disconnected from network'), undefined, forceOffline);
     SDK.multitargetNetworkManager.addEventListener(
         SDK.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
-    checkbox.setChecked(
-        SDK.multitargetNetworkManager.networkConditions() === SDK.NetworkManager.OfflineConditions);
+    checkbox.setChecked(SDK.multitargetNetworkManager.networkConditions() === SDK.NetworkManager.OfflineConditions);
 
     var lastNetworkConditions;
 
@@ -199,14 +198,8 @@ Components.NetworkConditionsSelector = class {
 
   _populateOptions() {
     var customGroup = {title: Common.UIString('Custom'), items: this._customSetting.get()};
-    var presetsGroup = {
-      title: Common.UIString('Presets'),
-      items: Components.NetworkConditionsSelector._presets
-    };
-    var disabledGroup = {
-      title: Common.UIString('Disabled'),
-      items: [SDK.NetworkManager.NoThrottlingConditions]
-    };
+    var presetsGroup = {title: Common.UIString('Presets'), items: Components.NetworkConditionsSelector._presets};
+    var disabledGroup = {title: Common.UIString('Disabled'), items: [SDK.NetworkManager.NoThrottlingConditions]};
     this._options = this._populateCallback([customGroup, presetsGroup, disabledGroup]);
     if (!this._conditionsChanged()) {
       for (var i = this._options.length - 1; i >= 0; i--) {
@@ -253,8 +246,7 @@ Components.NetworkConditionsGroup;
 
 /** @type {!Array.<!SDK.NetworkManager.Conditions>} */
 Components.NetworkConditionsSelector._presets = [
-  SDK.NetworkManager.OfflineConditions,
-  {title: 'GPRS', download: 50 * 1024 / 8, upload: 20 * 1024 / 8, latency: 500},
+  SDK.NetworkManager.OfflineConditions, {title: 'GPRS', download: 50 * 1024 / 8, upload: 20 * 1024 / 8, latency: 500},
   {title: 'Regular 2G', download: 250 * 1024 / 8, upload: 50 * 1024 / 8, latency: 300},
   {title: 'Good 2G', download: 450 * 1024 / 8, upload: 150 * 1024 / 8, latency: 150},
   {title: 'Regular 3G', download: 750 * 1024 / 8, upload: 250 * 1024 / 8, latency: 100},

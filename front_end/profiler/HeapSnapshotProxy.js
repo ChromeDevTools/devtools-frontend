@@ -152,9 +152,10 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
   }
 
   _checkLongRunningCalls() {
-    for (var callId of this._previousCallbacks)
+    for (var callId of this._previousCallbacks) {
       if (!this._callbacks.has(callId))
         this._previousCallbacks.delete(callId);
+    }
     var hasLongRunningCalls = !!this._previousCallbacks.size;
     this.dispatchEventToListeners('wait', hasLongRunningCalls);
     for (var callId of this._callbacks.keysArray())
@@ -172,9 +173,10 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
       return;
     }
     if (data.error) {
-      if (data.errorMethodName)
-        Common.console.error(Common.UIString(
-            'An error occurred when a call to method \'%s\' was requested', data.errorMethodName));
+      if (data.errorMethodName) {
+        Common.console.error(
+            Common.UIString('An error occurred when a call to method \'%s\' was requested', data.errorMethodName));
+      }
       Common.console.error(data['errorCallStack']);
       this._callbacks.delete(data.callId);
       return;
@@ -378,8 +380,7 @@ Profiler.HeapSnapshotProxy = class extends Profiler.HeapSnapshotProxyObject {
    * @return {!Profiler.HeapSnapshotProviderProxy}
    */
   createRetainingEdgesProvider(nodeIndex) {
-    return this.callFactoryMethod(
-        null, 'createRetainingEdgesProvider', Profiler.HeapSnapshotProviderProxy, nodeIndex);
+    return this.callFactoryMethod(null, 'createRetainingEdgesProvider', Profiler.HeapSnapshotProviderProxy, nodeIndex);
   }
 
   /**
@@ -397,8 +398,7 @@ Profiler.HeapSnapshotProxy = class extends Profiler.HeapSnapshotProxyObject {
    * @return {?Profiler.HeapSnapshotProviderProxy}
    */
   createDeletedNodesProvider(nodeIndexes) {
-    return this.callFactoryMethod(
-        null, 'createDeletedNodesProvider', Profiler.HeapSnapshotProviderProxy, nodeIndexes);
+    return this.callFactoryMethod(null, 'createDeletedNodesProvider', Profiler.HeapSnapshotProviderProxy, nodeIndexes);
   }
 
   /**

@@ -11,10 +11,8 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
     this.registerRequiredCSS('components/breakpointsList.css');
 
     this._breakpointManager = Bindings.breakpointManager;
-    this._breakpointManager.addEventListener(
-        Bindings.BreakpointManager.Events.BreakpointAdded, this.update, this);
-    this._breakpointManager.addEventListener(
-        Bindings.BreakpointManager.Events.BreakpointRemoved, this.update, this);
+    this._breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointAdded, this.update, this);
+    this._breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointRemoved, this.update, this);
     this._breakpointManager.addEventListener(
         Bindings.BreakpointManager.Events.BreakpointsActiveStateChanged, this.update, this);
 
@@ -78,19 +76,20 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
 
       var locations = Array.from(locationForEntry.get(descriptor));
       var uiLocation = locations[0].uiLocation;
-      var isSelected = !!selectedUILocation && locations.some(location => location.uiLocation.id() === selectedUILocation.id());
+      var isSelected =
+          !!selectedUILocation && locations.some(location => location.uiLocation.id() === selectedUILocation.id());
       var hasEnabled = locations.some(location => location.breakpoint.enabled());
       var hasDisabled = locations.some(location => !location.breakpoint.enabled());
-      promises.push(this._resetEntry(/** @type {!Element}*/(entry), uiLocation, isSelected, hasEnabled, hasDisabled));
+      promises.push(this._resetEntry(/** @type {!Element}*/ (entry), uiLocation, isSelected, hasEnabled, hasDisabled));
 
       if (isSelected)
         shouldShowView = true;
       entry = entry.nextSibling;
     }
     while (entry) {
-       var next = entry.nextSibling;
-       entry.remove();
-       entry = next;
+      var next = entry.nextSibling;
+      entry.remove();
+      entry = next;
     }
     if (shouldShowView)
       UI.viewManager.showView('sources.jsBreakpoints');
@@ -180,14 +179,14 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
     var breakpoints = this._breakpointManager.findBreakpoints(uiLocation.uiSourceCode, uiLocation.lineNumber);
 
     var contextMenu = new UI.ContextMenu(event);
-    var removeEntryTitle = breakpoints.length > 1 ? Common.UIString('Remove all breakpoints in line')
-                                                  : Common.UIString('Remove breakpoint');
+    var removeEntryTitle = breakpoints.length > 1 ? Common.UIString('Remove all breakpoints in line') :
+                                                    Common.UIString('Remove breakpoint');
     contextMenu.appendItem(removeEntryTitle, () => breakpoints.map(breakpoint => breakpoint.remove()));
 
     contextMenu.appendSeparator();
     var breakpointActive = this._breakpointManager.breakpointsActive();
-    var breakpointActiveTitle = breakpointActive ? Common.UIString('Deactivate breakpoints') :
-                                                   Common.UIString('Activate breakpoints');
+    var breakpointActiveTitle =
+        breakpointActive ? Common.UIString('Deactivate breakpoints') : Common.UIString('Activate breakpoints');
     contextMenu.appendItem(
         breakpointActiveTitle,
         this._breakpointManager.setBreakpointsActive.bind(this._breakpointManager, !breakpointActive));
@@ -204,8 +203,7 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
           disableTitle, this._breakpointManager.toggleAllBreakpoints.bind(this._breakpointManager, false));
     }
     var removeAllTitle = Common.UIString('Remove all breakpoints');
-    contextMenu.appendItem(
-        removeAllTitle, this._breakpointManager.removeAllBreakpoints.bind(this._breakpointManager));
+    contextMenu.appendItem(removeAllTitle, this._breakpointManager.removeAllBreakpoints.bind(this._breakpointManager));
     contextMenu.show();
   }
 

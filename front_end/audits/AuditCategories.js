@@ -61,8 +61,7 @@ Audits.AuditCategories.NetworkUtilization = class extends Audits.AuditCategoryIm
     this.addRule(new Audits.AuditRules.CombineJsResourcesRule(2), Audits.AuditRule.Severity.Severe);
     this.addRule(new Audits.AuditRules.CombineCssResourcesRule(2), Audits.AuditRule.Severity.Severe);
     this.addRule(new Audits.AuditRules.MinimizeDnsLookupsRule(4), Audits.AuditRule.Severity.Warning);
-    this.addRule(
-        new Audits.AuditRules.ParallelizeDownloadRule(4, 10, 0.5), Audits.AuditRule.Severity.Warning);
+    this.addRule(new Audits.AuditRules.ParallelizeDownloadRule(4, 10, 0.5), Audits.AuditRule.Severity.Warning);
     this.addRule(new Audits.AuditRules.BrowserCacheControlRule(), Audits.AuditRule.Severity.Severe);
   }
 };

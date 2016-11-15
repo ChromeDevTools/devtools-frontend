@@ -96,9 +96,9 @@ HeapSnapshotWorker.AllocationProfile = class {
       functionInfo.addTraceTopNode(result);
 
       var rawChildren = rawNodeArray[nodeOffset + childrenOffset];
-      for (var i = 0; i < rawChildren.length; i += nodeFieldCount) {
+      for (var i = 0; i < rawChildren.length; i += nodeFieldCount)
         result.children.push(traverseNode(rawChildren, i, result));
-      }
+
       return result;
     }
 
@@ -143,9 +143,9 @@ HeapSnapshotWorker.AllocationProfile = class {
 
     var branchingCallers = [];
     var callers = node.callers();
-    for (var i = 0; i < callers.length; i++) {
+    for (var i = 0; i < callers.length; i++)
       branchingCallers.push(this._serializeCaller(callers[i]));
-    }
+
     return new Profiler.HeapSnapshotCommon.AllocationNodeCallers(nodesWithSingleCaller, branchingCallers);
   }
 
@@ -362,9 +362,9 @@ HeapSnapshotWorker.FunctionAllocationInfo = class {
         bottomUpNode.liveSize += liveSize;
         bottomUpNode.traceTopIds.push(traceId);
         node = node.parent;
-        if (node === null) {
+        if (node === null)
           break;
-        }
+
         bottomUpNode = bottomUpNode.addCaller(node);
       }
     }

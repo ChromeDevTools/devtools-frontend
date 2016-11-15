@@ -499,8 +499,7 @@ UI.SearchableView = class extends UI.VBox {
 
   _replaceAll() {
     var searchConfig = this._currentSearchConfig();
-    /** @type {!UI.Replaceable} */ (this._searchProvider)
-        .replaceAllWith(searchConfig, this._replaceInputElement.value);
+    /** @type {!UI.Replaceable} */ (this._searchProvider).replaceAllWith(searchConfig, this._replaceInputElement.value);
   }
 
   /**

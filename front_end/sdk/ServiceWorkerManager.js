@@ -535,8 +535,7 @@ SDK.ServiceWorkerContextNamer = class {
     serviceWorkerManager.addEventListener(
         SDK.ServiceWorkerManager.Events.RegistrationDeleted, this._registrationsUpdated, this);
     SDK.targetManager.addModelListener(
-        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated,
-        this._executionContextCreated, this);
+        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated, this._executionContextCreated, this);
   }
 
   /**

@@ -129,8 +129,7 @@ Audits.AuditExtensionCategoryResults = class {
   }
 
   _addNode(parent, node) {
-    var contents =
-        Audits.auditFormatters.partiallyApply(Audits.AuditExtensionFormatters, this, node.contents);
+    var contents = Audits.auditFormatters.partiallyApply(Audits.AuditExtensionFormatters, this, node.contents);
     var addedNode = parent.addChild(contents, node.expanded);
     if (node.children) {
       for (var i = 0; i < node.children.length; ++i)
@@ -216,9 +215,7 @@ Audits.AuditExtensionFormatters = {
      * @param {!SDK.RemoteObject} remoteObject
      */
     function onEvaluate(remoteObject) {
-      Common.Renderer.renderPromise(remoteObject)
-          .then(appendRenderer)
-          .then(remoteObject.release.bind(remoteObject));
+      Common.Renderer.renderPromise(remoteObject).then(appendRenderer).then(remoteObject.release.bind(remoteObject));
 
       /**
        * @param {!Element} element

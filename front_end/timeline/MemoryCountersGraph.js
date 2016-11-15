@@ -41,14 +41,13 @@ Timeline.MemoryCountersGraph = class extends Timeline.CountersGraph {
     super(delegate, model, filters);
     this._countersByName = {};
     this._countersByName['jsHeapSizeUsed'] = this.createCounter(
-        Common.UIString('JS Heap'), Common.UIString('JS Heap: %s'), 'hsl(220, 90%, 43%)',
-        Number.bytesToString);
-    this._countersByName['documents'] = this.createCounter(
-        Common.UIString('Documents'), Common.UIString('Documents: %s'), 'hsl(0, 90%, 43%)');
+        Common.UIString('JS Heap'), Common.UIString('JS Heap: %s'), 'hsl(220, 90%, 43%)', Number.bytesToString);
+    this._countersByName['documents'] =
+        this.createCounter(Common.UIString('Documents'), Common.UIString('Documents: %s'), 'hsl(0, 90%, 43%)');
     this._countersByName['nodes'] =
         this.createCounter(Common.UIString('Nodes'), Common.UIString('Nodes: %s'), 'hsl(120, 90%, 43%)');
-    this._countersByName['jsEventListeners'] = this.createCounter(
-        Common.UIString('Listeners'), Common.UIString('Listeners: %s'), 'hsl(38, 90%, 43%)');
+    this._countersByName['jsEventListeners'] =
+        this.createCounter(Common.UIString('Listeners'), Common.UIString('Listeners: %s'), 'hsl(38, 90%, 43%)');
     this._gpuMemoryCounter = this.createCounter(
         Common.UIString('GPU Memory'), Common.UIString('GPU Memory [KB]: %s'), 'hsl(300, 90%, 43%)',
         Number.bytesToString);

@@ -174,8 +174,8 @@ SDK.TargetManager = class extends Common.Object {
     if (target.hasNetworkCapability())
       networkManager = new SDK.NetworkManager(target);
     if (networkManager && target.hasDOMCapability()) {
-      resourceTreeModel = new SDK.ResourceTreeModel(
-          target, networkManager, SDK.SecurityOriginManager.fromTarget(target));
+      resourceTreeModel =
+          new SDK.ResourceTreeModel(target, networkManager, SDK.SecurityOriginManager.fromTarget(target));
       new SDK.NetworkLog(target, resourceTreeModel, networkManager);
     }
 
@@ -225,15 +225,11 @@ SDK.TargetManager = class extends Common.Object {
     if (this._targets.length === 1 && resourceTreeModel) {
       resourceTreeModel[SDK.TargetManager._listenersSymbol] = [
         setupRedispatch.call(
-            this, SDK.ResourceTreeModel.Events.MainFrameNavigated,
-            SDK.TargetManager.Events.MainFrameNavigated),
+            this, SDK.ResourceTreeModel.Events.MainFrameNavigated, SDK.TargetManager.Events.MainFrameNavigated),
         setupRedispatch.call(this, SDK.ResourceTreeModel.Events.Load, SDK.TargetManager.Events.Load),
         setupRedispatch.call(
-            this, SDK.ResourceTreeModel.Events.PageReloadRequested,
-            SDK.TargetManager.Events.PageReloadRequested),
-        setupRedispatch.call(
-            this, SDK.ResourceTreeModel.Events.WillReloadPage,
-            SDK.TargetManager.Events.WillReloadPage)
+            this, SDK.ResourceTreeModel.Events.PageReloadRequested, SDK.TargetManager.Events.PageReloadRequested),
+        setupRedispatch.call(this, SDK.ResourceTreeModel.Events.WillReloadPage, SDK.TargetManager.Events.WillReloadPage)
       ];
     }
     var copy = this._observersForTarget(target);
@@ -344,18 +340,16 @@ SDK.TargetManager = class extends Common.Object {
   }
 
   _connectAndCreateMainTarget() {
-    var capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.DOM |
-        SDK.Target.Capability.JS | SDK.Target.Capability.Log |
-        SDK.Target.Capability.Network | SDK.Target.Capability.Target;
+    var capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.JS |
+        SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target;
     if (Runtime.queryParam('isSharedWorker')) {
-      capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.Log |
-          SDK.Target.Capability.Network | SDK.Target.Capability.Target;
+      capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
+          SDK.Target.Capability.Target;
     } else if (Runtime.queryParam('v8only')) {
       capabilities = SDK.Target.Capability.JS;
     }
 
-    var target =
-        this.createTarget(Common.UIString('Main'), capabilities, this._createMainConnection.bind(this), null);
+    var target = this.createTarget(Common.UIString('Main'), capabilities, this._createMainConnection.bind(this), null);
     target.runtimeAgent().runIfWaitingForDebugger();
   }
 

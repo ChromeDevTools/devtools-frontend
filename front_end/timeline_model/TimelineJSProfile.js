@@ -163,9 +163,8 @@ TimelineModel.TimelineJSProfileProcessor = class {
     function extractStackTrace(e) {
       const recordTypes = TimelineModel.TimelineModel.RecordType;
       /** @type {!Array<!Protocol.Runtime.CallFrame>} */
-      const callFrames = e.name === recordTypes.JSSample
-        ? e.args['data']['stackTrace'].slice().reverse()
-        : jsFramesStack.map(frameEvent => frameEvent.args['data']);
+      const callFrames = e.name === recordTypes.JSSample ? e.args['data']['stackTrace'].slice().reverse() :
+                                                           jsFramesStack.map(frameEvent => frameEvent.args['data']);
       filterStackFrames(callFrames);
       const endTime = e.endTime || e.startTime;
       const minFrames = Math.min(callFrames.length, jsFramesStack.length);
@@ -181,8 +180,8 @@ TimelineModel.TimelineJSProfileProcessor = class {
       for (; i < callFrames.length; ++i) {
         const frame = callFrames[i];
         const jsFrameEvent = new SDK.TracingModel.Event(
-            SDK.TracingModel.DevToolsTimelineEventCategory, recordTypes.JSFrame,
-            SDK.TracingModel.Phase.Complete, e.startTime, e.thread);
+            SDK.TracingModel.DevToolsTimelineEventCategory, recordTypes.JSFrame, SDK.TracingModel.Phase.Complete,
+            e.startTime, e.thread);
         jsFrameEvent.ordinal = e.ordinal;
         jsFrameEvent.addArgs({data: frame});
         jsFrameEvent.setEndTime(endTime);
@@ -192,9 +191,10 @@ TimelineModel.TimelineJSProfileProcessor = class {
     }
 
     const firstTopLevelEvent = events.find(SDK.TracingModel.isTopLevelEvent);
-    if (firstTopLevelEvent)
+    if (firstTopLevelEvent) {
       TimelineModel.TimelineModel.forEachEvent(
           events, onStartEvent, onEndEvent, onInstantEvent, firstTopLevelEvent.startTime);
+    }
     return jsFrameEvents;
   }
 
@@ -215,20 +215,13 @@ TimelineModel.TimelineJSProfileProcessor = class {
     if (!map) {
       const nativeGroups = TimelineModel.TimelineJSProfileProcessor.NativeGroups;
       map = new Map([
-        ['Compile', nativeGroups.Compile],
-        ['CompileCode', nativeGroups.Compile],
-        ['CompileCodeLazy', nativeGroups.Compile],
-        ['CompileDeserialize', nativeGroups.Compile],
-        ['CompileEval', nativeGroups.Compile],
-        ['CompileFullCode', nativeGroups.Compile],
-        ['CompileIgnition', nativeGroups.Compile],
-        ['CompilerDispatcher', nativeGroups.Compile],
-        ['CompileSerialize', nativeGroups.Compile],
-        ['ParseProgram', nativeGroups.Parse],
-        ['ParseFunction', nativeGroups.Parse],
-        ['RecompileConcurrent', nativeGroups.Compile],
-        ['RecompileSynchronous', nativeGroups.Compile],
-        ['ParseLazy', nativeGroups.Parse]
+        ['Compile', nativeGroups.Compile], ['CompileCode', nativeGroups.Compile],
+        ['CompileCodeLazy', nativeGroups.Compile], ['CompileDeserialize', nativeGroups.Compile],
+        ['CompileEval', nativeGroups.Compile], ['CompileFullCode', nativeGroups.Compile],
+        ['CompileIgnition', nativeGroups.Compile], ['CompilerDispatcher', nativeGroups.Compile],
+        ['CompileSerialize', nativeGroups.Compile], ['ParseProgram', nativeGroups.Parse],
+        ['ParseFunction', nativeGroups.Parse], ['RecompileConcurrent', nativeGroups.Compile],
+        ['RecompileSynchronous', nativeGroups.Compile], ['ParseLazy', nativeGroups.Parse]
       ]);
       /** @type {!Map<string, !TimelineModel.TimelineJSProfileProcessor.NativeGroups>} */
       TimelineModel.TimelineJSProfileProcessor.nativeGroup._map = map;

@@ -392,10 +392,11 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
       if (!position)
         continue;
       var line = this.line(position.lineNumber);
-      if (line.length === position.columnNumber && Common.TextUtils.lineIndent(line).length === line.length)
+      if (line.length === position.columnNumber && Common.TextUtils.lineIndent(line).length === line.length) {
         this.codeMirror().replaceRange(
             '', new CodeMirror.Pos(position.lineNumber, 0),
             new CodeMirror.Pos(position.lineNumber, position.columnNumber));
+      }
     }
 
     this._autoAppendedSpaces = [];
@@ -485,8 +486,7 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
   dispose() {
     super.dispose();
     Common.moduleSetting('textEditorIndent').removeChangeListener(this._onUpdateEditorIndentation, this);
-    Common.moduleSetting('textEditorAutoDetectIndent')
-        .removeChangeListener(this._onUpdateEditorIndentation, this);
+    Common.moduleSetting('textEditorAutoDetectIndent').removeChangeListener(this._onUpdateEditorIndentation, this);
     Common.moduleSetting('showWhitespacesInEditor').removeChangeListener(this._updateWhitespace, this);
   }
 
@@ -586,9 +586,9 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
         var pos = stream.pos;
         if (stream.match(/^\s+$/, true))
           return true ? 'trailing-whitespace' : null;
-        do {
+        do
           stream.next();
-        } while (!stream.eol() && stream.peek() !== ' ');
+        while (!stream.eol() && stream.peek() !== ' ');
         return null;
       }
       var whitespaceMode = {token: nextToken};
@@ -902,9 +902,9 @@ SourceFrame.SourcesTextEditor.TokenHighlighter = class {
     if (stream.match(token) && (stream.eol() || !Common.TextUtils.isWordChar(stream.peek())))
       return stream.column() === selectionStart.ch ? 'token-highlight column-with-selection' : 'token-highlight';
     var eatenChar;
-    do {
+    do
       eatenChar = stream.next();
-    } while (eatenChar && (Common.TextUtils.isWordChar(eatenChar) || stream.peek() !== tokenFirstChar));
+    while (eatenChar && (Common.TextUtils.isWordChar(eatenChar) || stream.peek() !== tokenFirstChar));
   }
 
   /**

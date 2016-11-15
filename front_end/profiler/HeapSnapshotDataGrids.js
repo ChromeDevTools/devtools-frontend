@@ -57,8 +57,7 @@ Profiler.HeapSnapshotSortableDataGrid = class extends UI.DataGrid {
      */
     this._nameFilter = null;
     this._nodeFilter = new Profiler.HeapSnapshotCommon.NodeFilter();
-    this.addEventListener(
-        Profiler.HeapSnapshotSortableDataGrid.Events.SortingComplete, this._sortingComplete, this);
+    this.addEventListener(Profiler.HeapSnapshotSortableDataGrid.Events.SortingComplete, this._sortingComplete, this);
     this.addEventListener(UI.DataGrid.Events.SortingChanged, this.sortingChanged, this);
   }
 
@@ -102,8 +101,7 @@ Profiler.HeapSnapshotSortableDataGrid = class extends UI.DataGrid {
   }
 
   _sortingComplete() {
-    this.removeEventListener(
-        Profiler.HeapSnapshotSortableDataGrid.Events.SortingComplete, this._sortingComplete, this);
+    this.removeEventListener(Profiler.HeapSnapshotSortableDataGrid.Events.SortingComplete, this._sortingComplete, this);
     this._populatedAndSorted = true;
     this.dispatchEventToListeners(Profiler.HeapSnapshotSortableDataGrid.Events.ContentShown, this);
   }
@@ -113,8 +111,7 @@ Profiler.HeapSnapshotSortableDataGrid = class extends UI.DataGrid {
    */
   willHide() {
     if (this._nameFilter)
-      this._nameFilter.removeEventListener(
-          UI.ToolbarInput.Event.TextChanged, this._onNameFilterChanged, this);
+      this._nameFilter.removeEventListener(UI.ToolbarInput.Event.TextChanged, this._onNameFilterChanged, this);
     this._clearCurrentHighlight();
   }
 
@@ -136,8 +133,7 @@ Profiler.HeapSnapshotSortableDataGrid = class extends UI.DataGrid {
     }
 
     if (node instanceof Profiler.HeapSnapshotRetainingObjectNode)
-      contextMenu.appendItem(
-          Common.UIString.capitalize('Reveal in Summary ^view'), revealInSummaryView.bind(this));
+      contextMenu.appendItem(Common.UIString.capitalize('Reveal in Summary ^view'), revealInSummaryView.bind(this));
   }
 
   resetSortingCache() {
@@ -571,13 +567,8 @@ Profiler.HeapSnapshotContainmentDataGrid = class extends Profiler.HeapSnapshotSo
     columns =
         columns || (/** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
           {id: 'object', title: Common.UIString('Object'), disclosure: true, sortable: true},
-          {id: 'distance', title: Common.UIString('Distance'), width: '65px', sortable: true, fixedWidth: true}, {
-            id: 'shallowSize',
-            title: Common.UIString('Shallow Size'),
-            width: '105px',
-            sortable: true,
-            fixedWidth: true
-          },
+          {id: 'distance', title: Common.UIString('Distance'), width: '65px', sortable: true, fixedWidth: true},
+          {id: 'shallowSize', title: Common.UIString('Shallow Size'), width: '105px', sortable: true, fixedWidth: true},
           {
             id: 'retainedSize',
             title: Common.UIString('Retained Size'),
@@ -633,20 +624,8 @@ Profiler.HeapSnapshotRetainmentDataGrid = class extends Profiler.HeapSnapshotCon
         fixedWidth: true,
         sort: UI.DataGrid.Order.Ascending
       },
-      {
-        id: 'shallowSize',
-        title: Common.UIString('Shallow Size'),
-        width: '105px',
-        sortable: true,
-        fixedWidth: true
-      },
-      {
-        id: 'retainedSize',
-        title: Common.UIString('Retained Size'),
-        width: '105px',
-        sortable: true,
-        fixedWidth: true
-      }
+      {id: 'shallowSize', title: Common.UIString('Shallow Size'), width: '105px', sortable: true, fixedWidth: true},
+      {id: 'retainedSize', title: Common.UIString('Retained Size'), width: '105px', sortable: true, fixedWidth: true}
     ]);
     super(dataDisplayDelegate, columns);
   }
@@ -700,14 +679,8 @@ Profiler.HeapSnapshotConstructorsDataGrid = class extends Profiler.HeapSnapshotV
     var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
       {id: 'object', title: Common.UIString('Constructor'), disclosure: true, sortable: true},
       {id: 'distance', title: Common.UIString('Distance'), width: '65px', sortable: true, fixedWidth: true},
-      {id: 'count', title: Common.UIString('Objects Count'), width: '90px', sortable: true, fixedWidth: true}, {
-        id: 'shallowSize',
-        title: Common.UIString('Shallow Size'),
-        width: '105px',
-        sortable: true,
-        fixedWidth: true
-      },
-      {
+      {id: 'count', title: Common.UIString('Objects Count'), width: '90px', sortable: true, fixedWidth: true},
+      {id: 'shallowSize', title: Common.UIString('Shallow Size'), width: '105px', sortable: true, fixedWidth: true}, {
         id: 'retainedSize',
         title: Common.UIString('Retained Size'),
         width: '105px',
@@ -824,10 +797,11 @@ Profiler.HeapSnapshotConstructorsDataGrid = class extends Profiler.HeapSnapshotV
     }
     this.removeTopLevelNodes();
     this.resetSortingCache();
-    for (var constructor in aggregates)
+    for (var constructor in aggregates) {
       this.appendNode(
           this.rootNode(),
           new Profiler.HeapSnapshotConstructorNode(this, constructor, aggregates[constructor], nodeFilter));
+    }
     this.sortingChanged();
     this._lastFilter = nodeFilter;
   }

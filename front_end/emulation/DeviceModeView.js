@@ -22,8 +22,7 @@ Emulation.DeviceModeView = class extends UI.VBox {
 
     this._topRuler = new Emulation.DeviceModeView.Ruler(true, this._model.setWidthAndScaleToFit.bind(this._model));
     this._topRuler.element.classList.add('device-mode-ruler-top');
-    this._leftRuler =
-        new Emulation.DeviceModeView.Ruler(false, this._model.setHeightAndScaleToFit.bind(this._model));
+    this._leftRuler = new Emulation.DeviceModeView.Ruler(false, this._model.setHeightAndScaleToFit.bind(this._model));
     this._leftRuler.element.classList.add('device-mode-ruler-left');
     this._createUI();
     UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
@@ -80,9 +79,8 @@ Emulation.DeviceModeView = class extends UI.VBox {
   _populatePresetsContainer() {
     var sizes = [320, 375, 425, 768, 1024, 1440, 2560];
     var titles = [
-      Common.UIString('Mobile S'), Common.UIString('Mobile M'), Common.UIString('Mobile L'),
-      Common.UIString('Tablet'), Common.UIString('Laptop'), Common.UIString('Laptop L'),
-      Common.UIString('4K')
+      Common.UIString('Mobile S'), Common.UIString('Mobile M'), Common.UIString('Mobile L'), Common.UIString('Tablet'),
+      Common.UIString('Laptop'), Common.UIString('Laptop L'), Common.UIString('4K')
     ];
     this._presetBlocks = [];
     var inner = this._responsivePresetsContainer.createChild('div', 'device-mode-presets-container-inner');
@@ -160,8 +158,7 @@ Emulation.DeviceModeView = class extends UI.VBox {
       var dipOffsetX = cssOffsetX * UI.zoomManager.zoomFactor();
       var newWidth = this._resizeStart.width + dipOffsetX * widthFactor;
       newWidth = Math.round(newWidth / this._model.scale());
-      if (newWidth >= Emulation.DeviceModeModel.MinDeviceSize &&
-          newWidth <= Emulation.DeviceModeModel.MaxDeviceSize)
+      if (newWidth >= Emulation.DeviceModeModel.MinDeviceSize && newWidth <= Emulation.DeviceModeModel.MaxDeviceSize)
         this._model.setWidth(newWidth);
     }
 
@@ -169,8 +166,7 @@ Emulation.DeviceModeView = class extends UI.VBox {
       var dipOffsetY = cssOffsetY * UI.zoomManager.zoomFactor();
       var newHeight = this._resizeStart.height + dipOffsetY * heightFactor;
       newHeight = Math.round(newHeight / this._model.scale());
-      if (newHeight >= Emulation.DeviceModeModel.MinDeviceSize &&
-          newHeight <= Emulation.DeviceModeModel.MaxDeviceSize)
+      if (newHeight >= Emulation.DeviceModeModel.MinDeviceSize && newHeight <= Emulation.DeviceModeModel.MaxDeviceSize)
         this._model.setHeight(newHeight);
     }
   }

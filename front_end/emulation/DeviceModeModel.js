@@ -404,12 +404,13 @@ Emulation.DeviceModeModel = class {
       var outline = this._currentOutline();
       var insets = this._currentInsets();
       this._fitScale = this._calculateFitScale(orientation.width, orientation.height, outline, insets);
-      if (this._device.mobile())
-        this._appliedUserAgentType = this._device.touch() ? Emulation.DeviceModeModel.UA.Mobile :
-                                                            Emulation.DeviceModeModel.UA.MobileNoTouch;
-      else
-        this._appliedUserAgentType = this._device.touch() ? Emulation.DeviceModeModel.UA.DesktopTouch :
-                                                            Emulation.DeviceModeModel.UA.Desktop;
+      if (this._device.mobile()) {
+        this._appliedUserAgentType =
+            this._device.touch() ? Emulation.DeviceModeModel.UA.Mobile : Emulation.DeviceModeModel.UA.MobileNoTouch;
+      } else {
+        this._appliedUserAgentType =
+            this._device.touch() ? Emulation.DeviceModeModel.UA.DesktopTouch : Emulation.DeviceModeModel.UA.Desktop;
+      }
       this._applyDeviceMetrics(
           new Size(orientation.width, orientation.height), insets, outline, this._scaleSetting.get(),
           this._device.deviceScaleFactor, this._device.mobile(),
@@ -630,6 +631,5 @@ Emulation.DeviceModeModel.MaxDeviceSize = 9999;
 Emulation.DeviceModeModel._defaultMobileUserAgent =
     'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36';
 Emulation.DeviceModeModel._defaultMobileUserAgent =
-    SDK.MultitargetNetworkManager.patchUserAgentWithChromeVersion(
-        Emulation.DeviceModeModel._defaultMobileUserAgent);
+    SDK.MultitargetNetworkManager.patchUserAgentWithChromeVersion(Emulation.DeviceModeModel._defaultMobileUserAgent);
 Emulation.DeviceModeModel.defaultMobileScaleFactor = 2;

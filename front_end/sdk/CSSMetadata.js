@@ -178,8 +178,7 @@ SDK.CSSMetadata = class {
     var acceptedKeywords = ['inherit', 'initial'];
     propertyName = propertyName.toLowerCase();
     var unprefixedName = propertyName.replace(/^-webkit-/, '');
-    var entry = SDK.CSSMetadata._propertyDataMap[propertyName] ||
-        SDK.CSSMetadata._propertyDataMap[unprefixedName];
+    var entry = SDK.CSSMetadata._propertyDataMap[propertyName] || SDK.CSSMetadata._propertyDataMap[unprefixedName];
     if (entry && entry.values)
       acceptedKeywords.pushAll(entry.values);
     if (this.isColorAwareProperty(propertyName)) {
@@ -218,8 +217,7 @@ SDK.CSSMetadata.URLRegex = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
  */
 SDK.cssMetadata = function() {
   if (!SDK.CSSMetadata._instance)
-    SDK.CSSMetadata._instance =
-        new SDK.CSSMetadata(SDK.CSSMetadata._generatedProperties || []);
+    SDK.CSSMetadata._instance = new SDK.CSSMetadata(SDK.CSSMetadata._generatedProperties || []);
   return SDK.CSSMetadata._instance;
 };
 

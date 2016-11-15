@@ -374,9 +374,10 @@ SDK.TextSourceMap = class {
       return [];
     var mappings = this.mappings();
     var info = this._sourceInfos.get(sourceURL);
-    if (info.reverseMappings === null)
+    if (info.reverseMappings === null) {
       info.reverseMappings =
           mappings.filter((mapping) => mapping.sourceURL === sourceURL).sort(sourceMappingComparator);
+    }
     return info.reverseMappings;
 
     /**
@@ -445,9 +446,9 @@ SDK.TextSourceMap = class {
     var sourceURL = sources[sourceIndex];
 
     while (true) {
-      if (stringCharIterator.peek() === ',')
+      if (stringCharIterator.peek() === ',') {
         stringCharIterator.next();
-      else {
+      } else {
         while (stringCharIterator.peek() === ';') {
           lineNumber += 1;
           columnNumber = 0;

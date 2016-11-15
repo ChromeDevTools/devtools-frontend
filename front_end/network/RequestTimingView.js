@@ -150,8 +150,7 @@ Network.RequestTimingView = class extends UI.VBox {
 
     if (request.fetchedViaServiceWorker) {
       addOffsetRange(Network.RequestTimeRangeNames.Blocking, 0, timing.workerStart);
-      addOffsetRange(
-          Network.RequestTimeRangeNames.ServiceWorkerPreparation, timing.workerStart, timing.workerReady);
+      addOffsetRange(Network.RequestTimeRangeNames.ServiceWorkerPreparation, timing.workerStart, timing.workerReady);
       addOffsetRange(Network.RequestTimeRangeNames.ServiceWorker, timing.workerReady, timing.sendEnd);
       addOffsetRange(Network.RequestTimeRangeNames.Waiting, timing.sendEnd, timing.receiveHeadersEnd);
     } else if (!timing.pushStart) {
@@ -165,11 +164,11 @@ Network.RequestTimingView = class extends UI.VBox {
       addOffsetRange(Network.RequestTimeRangeNames.Waiting, timing.sendEnd, timing.receiveHeadersEnd);
     }
 
-    if (request.endTime !== -1)
+    if (request.endTime !== -1) {
       addRange(
-          timing.pushStart ? Network.RequestTimeRangeNames.ReceivingPush :
-                             Network.RequestTimeRangeNames.Receiving,
+          timing.pushStart ? Network.RequestTimeRangeNames.ReceivingPush : Network.RequestTimeRangeNames.Receiving,
           request.responseReceivedTime, endTime);
+    }
 
     return result;
   }
@@ -269,8 +268,7 @@ Network.RequestTimingView = class extends UI.VBox {
      * @param {number} right
      */
     function addTiming(serverTiming, right) {
-      var colorGenerator =
-          new UI.FlameChart.ColorGenerator({min: 0, max: 360, count: 36}, {min: 50, max: 80}, 80);
+      var colorGenerator = new UI.FlameChart.ColorGenerator({min: 0, max: 360, count: 36}, {min: 50, max: 80}, 80);
       var isTotal = serverTiming.metric.toLowerCase() === 'total';
       var tr = tableElement.createChild('tr', isTotal ? 'network-timing-footer' : '');
       var metric = tr.createChild('td', 'network-timing-metric');
@@ -318,16 +316,14 @@ Network.RequestTimingView = class extends UI.VBox {
   willHide() {
     this._request.removeEventListener(SDK.NetworkRequest.Events.TimingChanged, this._refresh, this);
     this._request.removeEventListener(SDK.NetworkRequest.Events.FinishedLoading, this._refresh, this);
-    this._calculator.removeEventListener(
-        Network.NetworkTimeCalculator.Events.BoundariesChanged, this._refresh, this);
+    this._calculator.removeEventListener(Network.NetworkTimeCalculator.Events.BoundariesChanged, this._refresh, this);
   }
 
   _refresh() {
     if (this._tableElement)
       this._tableElement.remove();
 
-    this._tableElement =
-        Network.RequestTimingView.createTimingTable(this._request, this._calculator.minimumBoundary());
+    this._tableElement = Network.RequestTimingView.createTimingTable(this._request, this._calculator.minimumBoundary());
     this.element.appendChild(this._tableElement);
   }
 };
@@ -352,8 +348,8 @@ Network.RequestTimeRangeNames = {
 
 Network.RequestTimingView.ConnectionSetupRangeNames = new Set([
   Network.RequestTimeRangeNames.Queueing, Network.RequestTimeRangeNames.Blocking,
-  Network.RequestTimeRangeNames.Connecting, Network.RequestTimeRangeNames.DNS,
-  Network.RequestTimeRangeNames.Proxy, Network.RequestTimeRangeNames.SSL
+  Network.RequestTimeRangeNames.Connecting, Network.RequestTimeRangeNames.DNS, Network.RequestTimeRangeNames.Proxy,
+  Network.RequestTimeRangeNames.SSL
 ]);
 
 /** @typedef {{name: !Network.RequestTimeRangeNames, start: number, end: number}} */

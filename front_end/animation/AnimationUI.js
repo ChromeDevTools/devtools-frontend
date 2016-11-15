@@ -43,8 +43,7 @@ Animation.AnimationUI = class {
    */
   static Color(animation) {
     var names = Object.keys(Animation.AnimationUI.Colors);
-    var color =
-        Animation.AnimationUI.Colors[names[String.hashCode(animation.name() || animation.id()) % names.length]];
+    var color = Animation.AnimationUI.Colors[names[String.hashCode(animation.name() || animation.id()) % names.length]];
     return color.asString(Common.Color.Format.RGB);
   }
 
@@ -84,8 +83,8 @@ Animation.AnimationUI = class {
     if (!cache.animationLine)
       cache.animationLine = this._createLine(parentElement, 'animation-line');
     cache.animationLine.setAttribute(
-        'x2', (this._duration() * this._timeline.pixelMsRatio() + Animation.AnimationUI.Options.AnimationMargin)
-                  .toFixed(2));
+        'x2',
+        (this._duration() * this._timeline.pixelMsRatio() + Animation.AnimationUI.Options.AnimationMargin).toFixed(2));
   }
 
   /**
@@ -178,9 +177,10 @@ Animation.AnimationUI = class {
 
     var bezier = Common.Geometry.CubicBezier.parse(easing);
     var cache = this._cachedElements[iteration].keyframeRender;
-    if (!cache[keyframeIndex])
+    if (!cache[keyframeIndex]) {
       cache[keyframeIndex] = bezier ? parentElement.createSVGChild('path', 'animation-keyframe') :
                                       parentElement.createSVGChild('g', 'animation-keyframe-step');
+    }
     var group = cache[keyframeIndex];
     group.style.transform = 'translateX(' + leftDistance.toFixed(2) + 'px)';
 
@@ -252,9 +252,10 @@ Animation.AnimationUI = class {
    * @param {number} iteration
    */
   _renderIteration(parentElement, iteration) {
-    if (!this._cachedElements[iteration])
+    if (!this._cachedElements[iteration]) {
       this._cachedElements[iteration] =
           {animationLine: null, keyframePoints: {}, keyframeRender: {}, group: parentElement.createSVGChild('g')};
+    }
     var group = this._cachedElements[iteration].group;
     group.style.transform =
         'translateX(' + (iteration * this._duration() * this._timeline.pixelMsRatio()).toFixed(2) + 'px)';

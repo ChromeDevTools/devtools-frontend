@@ -333,7 +333,8 @@ UI.TextPrompt = class extends Common.Object {
   }
 
   _refreshGhostText() {
-    if (this._queryRange && this._isCaretAtEndOfPrompt() && this._currentSuggestion.startsWith(this.text().substring(this._queryRange.startColumn))) {
+    if (this._queryRange && this._isCaretAtEndOfPrompt() &&
+        this._currentSuggestion.startsWith(this.text().substring(this._queryRange.startColumn))) {
       this._ghostTextElement.textContent =
           this._currentSuggestion.substring(this._queryRange.endColumn - this._queryRange.startColumn);
       this._element.appendChild(this._ghostTextElement);
@@ -355,9 +356,10 @@ UI.TextPrompt = class extends Common.Object {
    */
   autoCompleteSoon(force) {
     var immediately = this._isSuggestBoxVisible() || force;
-    if (!this._completeTimeout)
+    if (!this._completeTimeout) {
       this._completeTimeout =
           setTimeout(this.complete.bind(this, force), immediately ? 0 : this._autocompletionTimeout);
+    }
   }
 
   /**
@@ -373,11 +375,11 @@ UI.TextPrompt = class extends Common.Object {
 
     var shouldExit;
 
-    if (!force && !this._isCaretAtEndOfPrompt() && !this._isSuggestBoxVisible())
+    if (!force && !this._isCaretAtEndOfPrompt() && !this._isSuggestBoxVisible()) {
       shouldExit = true;
-    else if (!selection.isCollapsed)
+    } else if (!selection.isCollapsed) {
       shouldExit = true;
-    else if (!force) {
+    } else if (!force) {
       // BUG72018: Do not show suggest box if caret is followed by a non-stop character.
       var wordSuffixRange = selectionRange.startContainer.rangeOfWord(
           selectionRange.endOffset, this._completionStopCharacters, this._element, 'forward');
@@ -483,10 +485,11 @@ UI.TextPrompt = class extends Common.Object {
 
     selectedIndex = (this._disableDefaultSuggestionForEmptyInput && !this.text()) ? -1 : (selectedIndex || 0);
 
-    if (this._suggestBox)
+    if (this._suggestBox) {
       this._suggestBox.updateSuggestions(
           this._boxForAnchorAtStart(selection, fullWordRange), annotatedCompletions, selectedIndex,
           !this._isCaretAtEndOfPrompt(), this.text());
+    }
 
     var beforeRange = this._createRange();
     beforeRange.setStart(this._element, 0);

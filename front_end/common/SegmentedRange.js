@@ -58,9 +58,10 @@ Common.SegmentedRange = class {
       } else if (this._segments[startIndex - 1].end >= newSegment.begin) {
         // 2a. If merge failed and segments overlap, adjust preceding segment.
         // If an old segment entirely contains new one, split it in two.
-        if (newSegment.end < precedingSegment.end)
+        if (newSegment.end < precedingSegment.end) {
           this._segments.splice(
               startIndex, 0, new Common.Segment(newSegment.end, precedingSegment.end, precedingSegment.data));
+        }
         precedingSegment.end = newSegment.begin;
       }
     }
@@ -73,8 +74,9 @@ Common.SegmentedRange = class {
       if (merged) {
         endIndex++;
         newSegment = merged;
-      } else if (newSegment.intersects(this._segments[endIndex]))
+      } else if (newSegment.intersects(this._segments[endIndex])) {
         this._segments[endIndex].begin = newSegment.end;
+      }
     }
     this._segments.splice(startIndex, endIndex - startIndex, newSegment);
   }

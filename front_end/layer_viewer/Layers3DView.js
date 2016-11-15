@@ -266,8 +266,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
 
     var bounds;
     for (var i = 0; i < this._rects.length; ++i)
-      bounds =
-          Common.Geometry.boundsForTransformedPoints(scaleAndRotationMatrix, this._rects[i].vertices, bounds);
+      bounds = Common.Geometry.boundsForTransformedPoints(scaleAndRotationMatrix, this._rects[i].vertices, bounds);
 
     this._transformController.clampOffsets(
         (paddingX - bounds.maxX) / window.devicePixelRatio,
@@ -544,8 +543,8 @@ LayerViewer.Layers3DView = class extends UI.VBox {
     if (!viewport)
       return;
 
-    var drawChrome = !Common.moduleSetting('frameViewerHideChromeWindow').get() &&
-        this._chromeTextures.length >= 3 && this._chromeTextures.indexOf(undefined) < 0;
+    var drawChrome = !Common.moduleSetting('frameViewerHideChromeWindow').get() && this._chromeTextures.length >= 3 &&
+        this._chromeTextures.indexOf(undefined) < 0;
     var z = (this._maxDepth + 1) * LayerViewer.Layers3DView.LayerSpacing;
     var borderWidth = Math.ceil(LayerViewer.Layers3DView.ViewportBorderWidth * this._scale);
     var vertices = [viewport.width, 0, z, viewport.width, viewport.height, z, 0, viewport.height, z, 0, 0, z];
@@ -565,7 +564,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
     var y = -chromeHeight;
     for (var i = 0; i < this._chromeTextures.length; ++i) {
       var width = i === LayerViewer.Layers3DView.ChromeTexture.Middle ? middleFragmentWidth :
-                                                                         this._chromeTextures[i].image.naturalWidth;
+                                                                        this._chromeTextures[i].image.naturalWidth;
       if (width < 0 || x + width > viewportWidth)
         break;
       vertices = [x, y, z, x + width, y, z, x + width, y + chromeHeight, z, x, y + chromeHeight, z];
@@ -694,15 +693,15 @@ LayerViewer.Layers3DView = class extends UI.VBox {
   _onContextMenu(event) {
     var contextMenu = new UI.ContextMenu(event);
     contextMenu.appendItem(
-        Common.UIString('Reset View'), this._transformController.resetAndNotify.bind(this._transformController),
-        false);
+        Common.UIString('Reset View'), this._transformController.resetAndNotify.bind(this._transformController), false);
     var selection = this._selectionFromEventPoint(event);
-    if (selection && selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot)
+    if (selection && selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot) {
       contextMenu.appendItem(
           Common.UIString('Show Paint Profiler'),
           this.dispatchEventToListeners.bind(
               this, LayerViewer.Layers3DView.Events.PaintProfilerRequested, selection.snapshot()),
           false);
+    }
     this._layerViewHost.showContextMenu(contextMenu, selection);
   }
 
@@ -1109,10 +1108,10 @@ LayerViewer.Layers3DView.Rectangle = class {
     var i;
     // Vertices of the quad with transform matrix applied
     var points = [];
-    for (i = 0; i < 4; ++i)
+    for (i = 0; i < 4; ++i) {
       points[i] = Common.Geometry.multiplyVectorByMatrixAndNormalize(
-          new Common.Geometry.Vector(this.vertices[i * 3], this.vertices[i * 3 + 1], this.vertices[i * 3 + 2]),
-          matrix);
+          new Common.Geometry.Vector(this.vertices[i * 3], this.vertices[i * 3 + 1], this.vertices[i * 3 + 2]), matrix);
+    }
     // Calculating quad plane normal
     var normal = Common.Geometry.crossProduct(
         Common.Geometry.subtract(points[1], points[0]), Common.Geometry.subtract(points[2], points[1]));
@@ -1182,10 +1181,8 @@ LayerViewer.LayerTextureManager.Tile = class {
   update(glContext, scale) {
     this._gl = glContext;
     this.scale = scale;
-    return this.snapshot.replay(null, null, scale)
-        .then(imageURL => imageURL && UI.loadImage(imageURL))
-        .then(image => {
-          this.texture = image && LayerViewer.LayerTextureManager._createTextureForImage(glContext, image);
-        });
+    return this.snapshot.replay(null, null, scale).then(imageURL => imageURL && UI.loadImage(imageURL)).then(image => {
+      this.texture = image && LayerViewer.LayerTextureManager._createTextureForImage(glContext, image);
+    });
   }
 };

@@ -56,28 +56,10 @@ Components.CookiesTable = class extends UI.VBox {
       {id: 'value', title: Common.UIString('Value'), sortable: true, longText: true, weight: 34},
       {id: 'domain', title: Common.UIString('Domain'), sortable: true, weight: 7},
       {id: 'path', title: Common.UIString('Path'), sortable: true, weight: 7},
-      {id: 'expires', title: Common.UIString('Expires / Max-Age'), sortable: true, weight: 7}, {
-        id: 'size',
-        title: Common.UIString('Size'),
-        sortable: true,
-        align: UI.DataGrid.Align.Right,
-        weight: 7
-      },
-      {
-        id: 'httpOnly',
-        title: Common.UIString('HTTP'),
-        sortable: true,
-        align: UI.DataGrid.Align.Center,
-        weight: 7
-      },
-      {
-        id: 'secure',
-        title: Common.UIString('Secure'),
-        sortable: true,
-        align: UI.DataGrid.Align.Center,
-        weight: 7
-      },
-      {
+      {id: 'expires', title: Common.UIString('Expires / Max-Age'), sortable: true, weight: 7},
+      {id: 'size', title: Common.UIString('Size'), sortable: true, align: UI.DataGrid.Align.Right, weight: 7},
+      {id: 'httpOnly', title: Common.UIString('HTTP'), sortable: true, align: UI.DataGrid.Align.Center, weight: 7},
+      {id: 'secure', title: Common.UIString('Secure'), sortable: true, align: UI.DataGrid.Align.Center, weight: 7}, {
         id: 'sameSite',
         title: Common.UIString('SameSite'),
         sortable: true,
@@ -121,9 +103,10 @@ Components.CookiesTable = class extends UI.VBox {
     if (node === this._dataGrid.creationNode)
       return;
     var domain = node.cookie.domain();
-    if (domain)
+    if (domain) {
       contextMenu.appendItem(
           Common.UIString.capitalize('Clear ^all from "%s"', domain), this._clearAndRefresh.bind(this, domain));
+    }
     contextMenu.appendItem(Common.UIString.capitalize('Clear ^all'), this._clearAndRefresh.bind(this, null));
   }
 
@@ -187,8 +170,9 @@ Components.CookiesTable = class extends UI.VBox {
         groupNode.element().classList.add('row-group');
         this._populateNode(groupNode, item.cookies, selectedCookie);
         groupNode.expand();
-      } else
+      } else {
         this._populateNode(this._dataGrid.rootNode(), item.cookies, selectedCookie);
+      }
     }
   }
 

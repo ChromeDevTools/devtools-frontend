@@ -38,8 +38,7 @@ Sources.EditingLocationHistoryManager = class {
    */
   constructor(sourcesView, currentSourceFrameCallback) {
     this._sourcesView = sourcesView;
-    this._historyManager =
-        new Sources.SimpleHistoryManager(Sources.EditingLocationHistoryManager.HistoryDepth);
+    this._historyManager = new Sources.SimpleHistoryManager(Sources.EditingLocationHistoryManager.HistoryDepth);
     this._currentSourceFrameCallback = currentSourceFrameCallback;
   }
 

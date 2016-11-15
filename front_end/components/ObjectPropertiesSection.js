@@ -280,8 +280,7 @@ Components.ObjectPropertiesSection = class extends TreeOutlineInShadow {
         var anchor = createElement('span');
         element.classList.add('linkified');
         element.appendChild(anchor);
-        element.addEventListener(
-            'click', Common.Revealer.reveal.bind(Common.Revealer, response.location, undefined));
+        element.addEventListener('click', Common.Revealer.reveal.bind(Common.Revealer, response.location, undefined));
         element = anchor;
       }
 
@@ -923,11 +922,12 @@ Components.ObjectPropertyTreeElement = class extends TreeElement {
   }
 
   _updateExpandable() {
-    if (this.property.value)
+    if (this.property.value) {
       this.setExpandable(
           !this.property.value.customPreview() && this.property.value.hasChildren && !this.property.wasThrown);
-    else
+    } else {
       this.setExpandable(false);
+    }
   }
 };
 
@@ -1076,13 +1076,13 @@ Components.ArrayGroupingTreeElement = class extends TreeElement {
           if (fromIndex === toIndex)
             Components.ArrayGroupingTreeElement._populateAsFragment(treeNode, object, fromIndex, toIndex, linkifier);
           else
-            treeNode.appendChild(
-                new Components.ArrayGroupingTreeElement(object, fromIndex, toIndex, count, linkifier));
+            treeNode.appendChild(new Components.ArrayGroupingTreeElement(object, fromIndex, toIndex, count, linkifier));
         }
       }
-      if (topLevel)
+      if (topLevel) {
         Components.ArrayGroupingTreeElement._populateNonIndexProperties(
             treeNode, object, result.skipGetOwnPropertyNames, linkifier);
+      }
     }
   }
 
@@ -1097,10 +1097,7 @@ Components.ArrayGroupingTreeElement = class extends TreeElement {
   static _populateAsFragment(treeNode, object, fromIndex, toIndex, linkifier) {
     object.callFunction(
         buildArrayFragment,
-        [
-          {value: fromIndex}, {value: toIndex},
-          {value: Components.ArrayGroupingTreeElement._sparseIterationThreshold}
-        ],
+        [{value: fromIndex}, {value: toIndex}, {value: Components.ArrayGroupingTreeElement._sparseIterationThreshold}],
         processArrayFragment.bind(this));
 
     /**

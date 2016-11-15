@@ -120,8 +120,7 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
       // Skip till nearest visible ancestor.
       while (parentLayer && parentLayer !== root && !parentLayer.drawsContent() && !showInternalLayers)
         parentLayer = parentLayer.parent();
-      var parent =
-          layer === root ? this._treeOutline.rootElement() : parentLayer[LayerViewer.LayerTreeElement._symbol];
+      var parent = layer === root ? this._treeOutline.rootElement() : parentLayer[LayerViewer.LayerTreeElement._symbol];
       if (!parent) {
         console.assert(false, 'Parent is not in the tree');
         return;

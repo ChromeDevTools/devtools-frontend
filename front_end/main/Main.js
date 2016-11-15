@@ -186,20 +186,18 @@ Main.Main = class {
         new Bindings.FileSystemWorkspaceBinding(Workspace.isolatedFileSystemManager, Workspace.workspace);
     Bindings.networkMapping = new Bindings.NetworkMapping(
         SDK.targetManager, Workspace.workspace, fileSystemWorkspaceBinding, Workspace.fileSystemMapping);
-    Main.networkProjectManager =
-        new Bindings.NetworkProjectManager(SDK.targetManager, Workspace.workspace);
-    Bindings.presentationConsoleMessageHelper =
-        new Bindings.PresentationConsoleMessageHelper(Workspace.workspace);
-    Bindings.cssWorkspaceBinding = new Bindings.CSSWorkspaceBinding(
-        SDK.targetManager, Workspace.workspace, Bindings.networkMapping);
-    Bindings.debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding(
-        SDK.targetManager, Workspace.workspace, Bindings.networkMapping);
-    Bindings.breakpointManager = new Bindings.BreakpointManager(
-        null, Workspace.workspace, SDK.targetManager, Bindings.debuggerWorkspaceBinding);
+    Main.networkProjectManager = new Bindings.NetworkProjectManager(SDK.targetManager, Workspace.workspace);
+    Bindings.presentationConsoleMessageHelper = new Bindings.PresentationConsoleMessageHelper(Workspace.workspace);
+    Bindings.cssWorkspaceBinding =
+        new Bindings.CSSWorkspaceBinding(SDK.targetManager, Workspace.workspace, Bindings.networkMapping);
+    Bindings.debuggerWorkspaceBinding =
+        new Bindings.DebuggerWorkspaceBinding(SDK.targetManager, Workspace.workspace, Bindings.networkMapping);
+    Bindings.breakpointManager =
+        new Bindings.BreakpointManager(null, Workspace.workspace, SDK.targetManager, Bindings.debuggerWorkspaceBinding);
     Extensions.extensionServer = new Extensions.ExtensionServer();
 
-    Persistence.persistence = new Persistence.Persistence(
-        Workspace.workspace, Bindings.breakpointManager, Workspace.fileSystemMapping);
+    Persistence.persistence =
+        new Persistence.Persistence(Workspace.workspace, Bindings.breakpointManager, Workspace.fileSystemMapping);
 
     new Main.OverlayController();
     new Components.ExecutionContextSelector(SDK.targetManager, UI.context);
@@ -244,10 +242,11 @@ Main.Main = class {
 
     var toggleSearchNodeAction = UI.actionRegistry.action('elements.toggle-element-search');
     // TODO: we should not access actions from other modules.
-    if (toggleSearchNodeAction)
+    if (toggleSearchNodeAction) {
       InspectorFrontendHost.events.addEventListener(
           InspectorFrontendHostAPI.Events.EnterInspectElementMode,
           toggleSearchNodeAction.execute.bind(toggleSearchNodeAction), this);
+    }
     UI.inspectorView.createToolbars();
     InspectorFrontendHost.loadCompleted();
 
@@ -298,8 +297,8 @@ Main.Main = class {
   _registerForwardedShortcuts() {
     /** @const */ var forwardedActions =
         ['main.toggle-dock', 'debugger.toggle-breakpoints-active', 'debugger.toggle-pause', 'commandMenu.show'];
-    var actionKeys = UI.shortcutRegistry.keysForActions(forwardedActions)
-                         .map(UI.KeyboardShortcut.keyCodeAndModifiersFromKey);
+    var actionKeys =
+        UI.shortcutRegistry.keysForActions(forwardedActions).map(UI.KeyboardShortcut.keyCodeAndModifiersFromKey);
     InspectorFrontendHost.setWhitelistedShortcuts(JSON.stringify(actionKeys));
   }
 
@@ -415,8 +414,7 @@ Main.Main = class {
     if (inspectElementModeShortcuts.length)
       section.addKey(inspectElementModeShortcuts[0], Common.UIString('Select node to inspect'));
 
-    var openResourceShortcut =
-        UI.KeyboardShortcut.makeDescriptor('p', UI.KeyboardShortcut.Modifiers.CtrlOrMeta);
+    var openResourceShortcut = UI.KeyboardShortcut.makeDescriptor('p', UI.KeyboardShortcut.Modifiers.CtrlOrMeta);
     section.addKey(openResourceShortcut, Common.UIString('Go to source'));
 
     if (Host.isMac()) {
@@ -661,12 +659,9 @@ Main.Main.WarningErrorCounter = class {
     this._warnings = this._createItem(shadowRoot, 'smallicon-warning');
     this._titles = [];
 
-    SDK.multitargetConsoleModel.addEventListener(
-        SDK.ConsoleModel.Events.ConsoleCleared, this._update, this);
-    SDK.multitargetConsoleModel.addEventListener(
-        SDK.ConsoleModel.Events.MessageAdded, this._update, this);
-    SDK.multitargetConsoleModel.addEventListener(
-        SDK.ConsoleModel.Events.MessageUpdated, this._update, this);
+    SDK.multitargetConsoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._update, this);
+    SDK.multitargetConsoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, this._update, this);
+    SDK.multitargetConsoleModel.addEventListener(SDK.ConsoleModel.Events.MessageUpdated, this._update, this);
     this._update();
   }
 
@@ -711,8 +706,7 @@ Main.Main.WarningErrorCounter = class {
 
     this._titles = [];
     this._toolbarItem.setVisible(!!(errors || revokedErrors || warnings));
-    this._updateItem(
-        this._errors, errors, false, Common.UIString(errors === 1 ? '%d error' : '%d errors', errors));
+    this._updateItem(this._errors, errors, false, Common.UIString(errors === 1 ? '%d error' : '%d errors', errors));
     this._updateItem(
         this._revokedErrors, revokedErrors, !errors,
         Common.UIString(
@@ -739,8 +733,7 @@ Main.Main.WarningErrorCounter = class {
  */
 Main.Main.MainMenuItem = class {
   constructor() {
-    this._item =
-        new UI.ToolbarButton(Common.UIString('Customize and control DevTools'), 'largeicon-menu');
+    this._item = new UI.ToolbarButton(Common.UIString('Customize and control DevTools'), 'largeicon-menu');
     this._item.addEventListener('mousedown', this._mouseDown, this);
   }
 
@@ -770,8 +763,7 @@ Main.Main.MainMenuItem = class {
       dockItemElement.appendChild(titleElement);
       var dockItemToolbar = new UI.Toolbar('', dockItemElement);
       dockItemToolbar.makeBlueOnHover();
-      var undock = new UI.ToolbarToggle(
-          Common.UIString('Undock into separate window'), 'largeicon-undock');
+      var undock = new UI.ToolbarToggle(Common.UIString('Undock into separate window'), 'largeicon-undock');
       var bottom = new UI.ToolbarToggle(Common.UIString('Dock to bottom'), 'largeicon-dock-to-bottom');
       var right = new UI.ToolbarToggle(Common.UIString('Dock to right'), 'largeicon-dock-to-right');
       undock.addEventListener('mouseup', setDockSide.bind(null, Components.DockController.State.Undocked));
@@ -796,9 +788,8 @@ Main.Main.MainMenuItem = class {
     }
 
     contextMenu.appendAction(
-        'main.toggle-drawer', UI.inspectorView.drawerVisible() ?
-            Common.UIString('Hide console drawer') :
-            Common.UIString('Show console drawer'));
+        'main.toggle-drawer', UI.inspectorView.drawerVisible() ? Common.UIString('Hide console drawer') :
+                                                                 Common.UIString('Show console drawer'));
     contextMenu.appendItemsAtLocation('mainMenu');
     var moreTools = contextMenu.namedSubMenu('mainMenuMoreTools');
     var extensions = self.runtime.extensions('view', undefined, true);
@@ -808,8 +799,7 @@ Main.Main.MainMenuItem = class {
         continue;
       if (descriptor['location'] !== 'drawer-view' && descriptor['location'] !== 'panel')
         continue;
-      moreTools.appendItem(
-          extension.title(), UI.viewManager.showView.bind(UI.viewManager, descriptor['id']));
+      moreTools.appendItem(extension.title(), UI.viewManager.showView.bind(UI.viewManager, descriptor['id']));
     }
 
     contextMenu.show();
@@ -831,15 +821,12 @@ Main.NetworkPanelIndicator = class {
     updateVisibility();
 
     function updateVisibility() {
-      if (manager.isThrottling()) {
-        UI.inspectorView.setPanelIcon(
-            'network', 'smallicon-warning', Common.UIString('Network throttling is enabled'));
-      } else if (blockedURLsSetting.get().length) {
-        UI.inspectorView.setPanelIcon(
-            'network', 'smallicon-warning', Common.UIString('Requests may be blocked'));
-      } else {
+      if (manager.isThrottling())
+        UI.inspectorView.setPanelIcon('network', 'smallicon-warning', Common.UIString('Network throttling is enabled'));
+      else if (blockedURLsSetting.get().length)
+        UI.inspectorView.setPanelIcon('network', 'smallicon-warning', Common.UIString('Requests may be blocked'));
+      else
         UI.inspectorView.setPanelIcon('network', '', '');
-      }
     }
   }
 };
@@ -854,12 +841,10 @@ Main.SourcesPanelIndicator = class {
 
     function javaScriptDisabledChanged() {
       var javaScriptDisabled = Common.moduleSetting('javaScriptDisabled').get();
-      if (javaScriptDisabled) {
-        UI.inspectorView.setPanelIcon(
-            'sources', 'smallicon-warning', Common.UIString('JavaScript is disabled'));
-      } else {
+      if (javaScriptDisabled)
+        UI.inspectorView.setPanelIcon('sources', 'smallicon-warning', Common.UIString('JavaScript is disabled'));
+      else
         UI.inspectorView.setPanelIcon('sources', '', '');
-      }
     }
   }
 };
@@ -891,8 +876,7 @@ Main.Main.PauseListener = class {
  */
 Main.Main.InspectedNodeRevealer = class {
   constructor() {
-    SDK.targetManager.addModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.NodeInspected, this._inspectNode, this);
+    SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.NodeInspected, this._inspectNode, this);
   }
 
   /**

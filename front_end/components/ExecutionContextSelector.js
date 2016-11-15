@@ -16,14 +16,12 @@ Components.ExecutionContextSelector = class {
     context.addFlavorChangeListener(SDK.Target, this._targetChanged, this);
 
     targetManager.addModelListener(
-        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated,
-        this._onExecutionContextCreated, this);
+        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextCreated, this._onExecutionContextCreated, this);
     targetManager.addModelListener(
-        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextDestroyed,
-        this._onExecutionContextDestroyed, this);
+        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextDestroyed, this._onExecutionContextDestroyed, this);
     targetManager.addModelListener(
-        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextOrderChanged,
-        this._onExecutionContextOrderChanged, this);
+        SDK.RuntimeModel, SDK.RuntimeModel.Events.ExecutionContextOrderChanged, this._onExecutionContextOrderChanged,
+        this);
     this._targetManager = targetManager;
     this._context = context;
   }

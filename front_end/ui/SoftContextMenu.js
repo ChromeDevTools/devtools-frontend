@@ -94,8 +94,7 @@ UI.SoftContextMenu = class {
     // Move submenus upwards if it does not fit.
     if (this._parentMenu && document.body.offsetHeight < this.element.offsetTop + this.element.offsetHeight) {
       y = Math.max(
-          UI.Dialog.modalHostView().element.totalOffsetTop(),
-          document.body.offsetHeight - this.element.offsetHeight);
+          UI.Dialog.modalHostView().element.totalOffsetTop(), document.body.offsetHeight - this.element.offsetHeight);
       this.element.style.top = y + 'px';
     }
 
@@ -270,9 +269,10 @@ UI.SoftContextMenu = class {
       this._highlightedMenuItemElement.classList.add('soft-context-menu-item-mouse-over');
       this._contextMenuElement.focus();
       if (scheduleSubMenu && this._highlightedMenuItemElement._subItems &&
-          !this._highlightedMenuItemElement._subMenuTimer)
+          !this._highlightedMenuItemElement._subMenuTimer) {
         this._highlightedMenuItemElement._subMenuTimer =
             setTimeout(this._showSubMenu.bind(this, this._highlightedMenuItemElement), 150);
+      }
     }
   }
 

@@ -17,8 +17,8 @@ Resources.AppManifestView = class extends UI.VBox {
     this._identitySection = this._reportView.appendSection(Common.UIString('Identity'));
     var toolbar = this._identitySection.createToolbar();
     toolbar.renderAsLinks();
-    var addToHomeScreen = new UI.ToolbarButton(
-        Common.UIString('Add to homescreen'), undefined, Common.UIString('Add to homescreen'));
+    var addToHomeScreen =
+        new UI.ToolbarButton(Common.UIString('Add to homescreen'), undefined, Common.UIString('Add to homescreen'));
     addToHomeScreen.addEventListener('click', this._addToHomescreen.bind(this));
     toolbar.appendToolbarItem(addToHomeScreen);
 
@@ -56,8 +56,7 @@ Resources.AppManifestView = class extends UI.VBox {
       return;
     this._resourceTreeModel = resourceTreeModel;
     this._updateManifest();
-    resourceTreeModel.addEventListener(
-        SDK.ResourceTreeModel.Events.MainFrameNavigated, this._updateManifest, this);
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.MainFrameNavigated, this._updateManifest, this);
   }
 
   /**
@@ -68,8 +67,7 @@ Resources.AppManifestView = class extends UI.VBox {
     var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
     if (!this._resourceTreeModel || this._resourceTreeModel !== resourceTreeModel)
       return;
-    resourceTreeModel.removeEventListener(
-        SDK.ResourceTreeModel.Events.MainFrameNavigated, this._updateManifest, this);
+    resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.MainFrameNavigated, this._updateManifest, this);
     delete this._resourceTreeModel;
   }
 
@@ -86,9 +84,10 @@ Resources.AppManifestView = class extends UI.VBox {
     this._reportView.setURL(url);
     this._errorsSection.clearContent();
     this._errorsSection.element.classList.toggle('hidden', !errors.length);
-    for (var error of errors)
+    for (var error of errors) {
       this._errorsSection.appendRow().appendChild(
           createLabel(error.message, error.critical ? 'smallicon-error' : 'smallicon-warning'));
+    }
 
     if (!data)
       data = '{}';
@@ -98,14 +97,14 @@ Resources.AppManifestView = class extends UI.VBox {
     this._shortNameField.textContent = stringProperty('short_name');
     this._startURLField.removeChildren();
     var startURL = stringProperty('start_url');
-    if (startURL)
+    if (startURL) {
       this._startURLField.appendChild(Components.linkifyResourceAsNode(
           /** @type {string} */ (Common.ParsedURL.completeURL(url, startURL)), undefined, undefined, undefined,
           undefined, startURL));
+    }
 
     this._themeColorSwatch.classList.toggle('hidden', !stringProperty('theme_color'));
-    var themeColor =
-        Common.Color.parse(stringProperty('theme_color') || 'white') || Common.Color.parse('white');
+    var themeColor = Common.Color.parse(stringProperty('theme_color') || 'white') || Common.Color.parse('white');
     this._themeColorSwatch.setColor(/** @type {!Common.Color} */ (themeColor));
     this._backgroundColorSwatch.classList.toggle('hidden', !stringProperty('background_color'));
     var backgroundColor =

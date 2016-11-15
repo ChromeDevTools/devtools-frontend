@@ -116,8 +116,7 @@ Layers.LayersPanel = class extends UI.PanelWithSidebar {
   targetRemoved(target) {
     if (!this._model || this._model.target() !== target)
       return;
-    this._model.removeEventListener(
-        Layers.LayerTreeModel.Events.LayerTreeChanged, this._onLayerTreeUpdated, this);
+    this._model.removeEventListener(Layers.LayerTreeModel.Events.LayerTreeChanged, this._onLayerTreeUpdated, this);
     this._model.removeEventListener(Layers.LayerTreeModel.Events.LayerPainted, this._onLayerPainted, this);
     this._model.disable();
     this._model = null;
@@ -158,8 +157,8 @@ Layers.LayersPanel = class extends UI.PanelWithSidebar {
         return;
       this._layerBeingProfiled = selection.layer();
       this._tabbedPane.appendTab(
-          Layers.LayersPanel.DetailsViewTabs.Profiler, Common.UIString('Profiler'), this._paintProfilerView,
-          undefined, true, true);
+          Layers.LayersPanel.DetailsViewTabs.Profiler, Common.UIString('Profiler'), this._paintProfilerView, undefined,
+          true, true);
       this._tabbedPane.selectTab(Layers.LayersPanel.DetailsViewTabs.Profiler);
       this._paintProfilerView.profile(snapshotWithRect.snapshot);
     });

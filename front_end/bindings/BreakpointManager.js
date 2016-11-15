@@ -55,8 +55,7 @@ Bindings.BreakpointManager = class extends Common.Object {
 
     this._workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
     this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
-    this._workspace.addEventListener(
-        Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
+    this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
 
     targetManager.observeTargets(this, SDK.Target.Capability.JS);
   }
@@ -278,10 +277,12 @@ Bindings.BreakpointManager = class extends Common.Object {
     if (!targets.length)
       return Promise.resolve([]);
     for (var target of targets) {
-      var startLocation = this._debuggerWorkspaceBinding.uiLocationToRawLocation(target, uiSourceCode, textRange.startLine, textRange.startColumn);
+      var startLocation = this._debuggerWorkspaceBinding.uiLocationToRawLocation(
+          target, uiSourceCode, textRange.startLine, textRange.startColumn);
       if (!startLocation)
         continue;
-      var endLocation = this._debuggerWorkspaceBinding.uiLocationToRawLocation(target, uiSourceCode, textRange.endLine, textRange.endColumn);
+      var endLocation = this._debuggerWorkspaceBinding.uiLocationToRawLocation(
+          target, uiSourceCode, textRange.endLine, textRange.endColumn);
       if (!endLocation)
         continue;
       var debuggerModel = SDK.DebuggerModel.fromTarget(target);
@@ -300,7 +301,7 @@ Bindings.BreakpointManager = class extends Common.Object {
       sortedLocations.sort(Workspace.UILocation.comparator);
       if (!sortedLocations.length)
         return [];
-      var result = [ sortedLocations[0] ];
+      var result = [sortedLocations[0]];
       var lastLocation = sortedLocations[0];
       for (var i = 1; i < sortedLocations.length; ++i) {
         if (sortedLocations[i].id() === lastLocation.id())
@@ -704,8 +705,7 @@ Bindings.BreakpointManager.Breakpoint = class {
    * @return {string}
    */
   _breakpointStorageId() {
-    return Bindings.BreakpointManager._breakpointStorageId(
-        this._sourceFileId, this._lineNumber, this._columnNumber);
+    return Bindings.BreakpointManager._breakpointStorageId(this._sourceFileId, this._lineNumber, this._columnNumber);
   }
 
   _fakeBreakpointAtPrimaryLocation() {
@@ -823,16 +823,17 @@ Bindings.BreakpointManager.TargetBreakpoint = class extends SDK.SDKObject {
         this._debuggerWorkspaceBinding.uiLocationToRawLocation(this.target(), uiSourceCode, lineNumber, columnNumber) :
         null;
     var newState;
-    if (this._breakpoint._isRemoved || !this._breakpoint.enabled() || this._scriptDiverged())
+    if (this._breakpoint._isRemoved || !this._breakpoint.enabled() || this._scriptDiverged()) {
       newState = null;
-    else if (debuggerLocation) {
+    } else if (debuggerLocation) {
       var script = debuggerLocation.script();
-      if (script.sourceURL)
+      if (script.sourceURL) {
         newState = new Bindings.BreakpointManager.Breakpoint.State(
             script.sourceURL, null, debuggerLocation.lineNumber, debuggerLocation.columnNumber, condition);
-      else
+      } else {
         newState = new Bindings.BreakpointManager.Breakpoint.State(
             null, debuggerLocation.scriptId, debuggerLocation.lineNumber, debuggerLocation.columnNumber, condition);
+      }
     } else if (this._breakpoint._currentState && this._breakpoint._currentState.url) {
       var position = this._breakpoint._currentState;
       newState = new Bindings.BreakpointManager.Breakpoint.State(
@@ -862,12 +863,13 @@ Bindings.BreakpointManager.TargetBreakpoint = class extends SDK.SDKObject {
     }
 
     var updateCallback = this._didSetBreakpointInDebugger.bind(this, callback);
-    if (newState.url)
+    if (newState.url) {
       this._debuggerModel.setBreakpointByURL(
           newState.url, newState.lineNumber, newState.columnNumber, this._breakpoint.condition(), updateCallback);
-    else if (newState.scriptId)
+    } else if (newState.scriptId) {
       this._debuggerModel.setBreakpointBySourceId(
           /** @type {!SDK.DebuggerModel.Location} */ (debuggerLocation), condition, updateCallback);
+    }
 
     this._currentState = newState;
   }

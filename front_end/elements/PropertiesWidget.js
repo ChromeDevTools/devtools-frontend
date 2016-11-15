@@ -34,10 +34,8 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
   constructor() {
     super();
 
-    SDK.targetManager.addModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onNodeChange, this);
-    SDK.targetManager.addModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onNodeChange, this);
+    SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onNodeChange, this);
+    SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onNodeChange, this);
     SDK.targetManager.addModelListener(
         SDK.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
     SDK.targetManager.addModelListener(
@@ -62,8 +60,7 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
    */
   doUpdate() {
     if (this._lastRequestedNode) {
-      this._lastRequestedNode.target().runtimeAgent().releaseObjectGroup(
-          Elements.PropertiesWidget._objectGroupName);
+      this._lastRequestedNode.target().runtimeAgent().releaseObjectGroup(Elements.PropertiesWidget._objectGroupName);
       delete this._lastRequestedNode;
     }
 
@@ -74,8 +71,7 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
     }
 
     this._lastRequestedNode = this._node;
-    return this._node.resolveToObjectPromise(Elements.PropertiesWidget._objectGroupName)
-        .then(nodeResolved.bind(this));
+    return this._node.resolveToObjectPromise(Elements.PropertiesWidget._objectGroupName).then(nodeResolved.bind(this));
 
     /**
      * @param {?SDK.RemoteObject} object
@@ -157,9 +153,8 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
    */
   _propertyExpanded(event) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
-    for (var section of this.sections) {
+    for (var section of this.sections)
       section.removeEventListener(TreeOutline.Events.ElementExpanded, this._propertyExpanded, this);
-    }
   }
 
   /**

@@ -426,11 +426,11 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
         if (unserializableValue === Protocol.Runtime.UnserializableValue.Infinity ||
             unserializableValue === Protocol.Runtime.UnserializableValue.NegativeInfinity ||
             unserializableValue === Protocol.Runtime.UnserializableValue.Negative0 ||
-            unserializableValue === Protocol.Runtime.UnserializableValue.NaN) {
+            unserializableValue === Protocol.Runtime.UnserializableValue.NaN)
           this.value = Number(unserializableValue);
-        } else {
+        else
           this.value = unserializableValue;
-        }
+
       } else {
         this.value = value;
       }
@@ -639,8 +639,7 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
           if (!property.value)
             continue;
           var propertyValue = this._target.runtimeModel.createRemoteObject(property.value);
-          internalPropertiesResult.push(
-              new SDK.RemoteObjectProperty(property.name, propertyValue, true, false));
+          internalPropertiesResult.push(new SDK.RemoteObjectProperty(property.name, propertyValue, true, false));
         }
       }
       callback(result, internalPropertiesResult);

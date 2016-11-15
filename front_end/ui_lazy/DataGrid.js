@@ -797,8 +797,9 @@ UI.DataGrid = class extends Common.Object {
         if (this.selectedNode.parent.selectable) {
           nextSelectedNode = this.selectedNode.parent;
           handled = nextSelectedNode ? true : false;
-        } else if (this.selectedNode.parent)
+        } else if (this.selectedNode.parent) {
           this.selectedNode.parent.collapse();
+        }
       }
     } else if (event.key === 'ArrowRight') {
       if (!this.selectedNode.revealed) {
@@ -901,8 +902,7 @@ UI.DataGrid = class extends Common.Object {
       sortOrder = UI.DataGrid.Order.Descending;
 
     if (this._sortColumnCell)
-      this._sortColumnCell.classList.remove(
-          UI.DataGrid.Order.Ascending, UI.DataGrid.Order.Descending);
+      this._sortColumnCell.classList.remove(UI.DataGrid.Order.Ascending, UI.DataGrid.Order.Descending);
     this._sortColumnCell = cell;
 
     cell.classList.add(sortOrder);
@@ -916,8 +916,7 @@ UI.DataGrid = class extends Common.Object {
    */
   markColumnAsSortedBy(columnId, sortOrder) {
     if (this._sortColumnCell)
-      this._sortColumnCell.classList.remove(
-          UI.DataGrid.Order.Ascending, UI.DataGrid.Order.Descending);
+      this._sortColumnCell.classList.remove(UI.DataGrid.Order.Ascending, UI.DataGrid.Order.Descending);
     this._sortColumnCell = this._headerTableHeaders[columnId];
     this._sortColumnCell.classList.add(sortOrder);
   }
@@ -948,8 +947,9 @@ UI.DataGrid = class extends Common.Object {
         gridNode.deselect();
       else
         gridNode.select();
-    } else
+    } else {
       gridNode.select();
+    }
   }
 
   /**
@@ -985,14 +985,14 @@ UI.DataGrid = class extends Common.Object {
 
     if (gridNode && gridNode.selectable && !gridNode.isEventWithinDisclosureTriangle(event)) {
       if (this._editCallback) {
-        if (gridNode === this.creationNode)
+        if (gridNode === this.creationNode) {
           contextMenu.appendItem(Common.UIString.capitalize('Add ^new'), this._startEditing.bind(this, target));
-        else {
+        } else {
           var columnId = this.columnIdFromNode(target);
-          if (columnId && this._columns[columnId].editable)
+          if (columnId && this._columns[columnId].editable) {
             contextMenu.appendItem(
-                Common.UIString('Edit "%s"', this._columns[columnId].title),
-                this._startEditing.bind(this, target));
+                Common.UIString('Edit "%s"', this._columns[columnId].title), this._startEditing.bind(this, target));
+          }
         }
       }
       if (this._deleteCallback && gridNode !== this.creationNode)
@@ -1649,9 +1649,10 @@ UI.DataGridNode = class extends Common.Object {
     if (this._isRoot)
       return;
 
-    if (this.revealed && !this._shouldRefreshChildren)
+    if (this.revealed && !this._shouldRefreshChildren) {
       for (var i = 0; i < this.children.length; ++i)
         this.children[i].revealed = true;
+    }
 
     if (this._shouldRefreshChildren) {
       for (var i = 0; i < this.children.length; ++i)

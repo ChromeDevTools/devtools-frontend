@@ -233,8 +233,8 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
     portForwardingFooter.createChild('span').textContent = Common.UIString(
         'Define the listening port on your device that maps to a port accessible from your development machine. ');
     portForwardingFooter.appendChild(UI.linkifyURLAsNode(
-        'https://developer.chrome.com/devtools/docs/remote-debugging#port-forwarding',
-        Common.UIString('Learn more'), undefined, true));
+        'https://developer.chrome.com/devtools/docs/remote-debugging#port-forwarding', Common.UIString('Learn more'),
+        undefined, true));
 
     this._list = new UI.ListWidget(this);
     this._list.registerRequiredCSS('devices/devicesView.css');
@@ -576,8 +576,7 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
 
     var titleRow = element.createChild('div', 'device-page-title-row');
     var title = titleRow.createChild('div', 'device-page-title');
-    var inspect =
-        createTextButton(Common.UIString('Inspect'), doAction.bind(null, 'inspect'), 'device-inspect-button');
+    var inspect = createTextButton(Common.UIString('Inspect'), doAction.bind(null, 'inspect'), 'device-inspect-button');
     titleRow.appendChild(inspect);
 
     var toolbar = new UI.Toolbar('');
@@ -634,8 +633,7 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
     this._cachedPortStatus = json;
 
     this._portStatus.removeChildren();
-    this._portStatus.createChild('div', 'device-port-status-text').textContent =
-        Common.UIString('Port Forwarding:');
+    this._portStatus.createChild('div', 'device-port-status-text').textContent = Common.UIString('Port Forwarding:');
     var connected = [];
     var transient = [];
     var error = [];

@@ -471,8 +471,9 @@ Network.NetworkDataGridNode = class extends UI.SortableDataGridNode {
         cell.createTextChild(failText);
         this._appendSubtitle(cell, this._request.localizedFailDescription);
         cell.title = failText + ' ' + this._request.localizedFailDescription;
-      } else
+      } else {
         this._setTextAndTitle(cell, failText);
+      }
     } else if (this._request.statusCode) {
       cell.createTextChild('' + this._request.statusCode);
       this._appendSubtitle(cell, this._request.statusText);

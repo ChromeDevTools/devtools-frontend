@@ -62,7 +62,7 @@ Components.Linkifier = class {
      * @param {!Common.Event} event
      */
     function onLinkIconChanged(event) {
-      var uiSourceCode = /** @type {!Workspace.UISourceCode} */(event.data);
+      var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
       var links = uiSourceCode[Components.Linkifier._sourceCodeAnchors] || [];
       for (var link of links)
         Components.Linkifier._updateLinkDecorations(link);
@@ -184,8 +184,8 @@ Components.Linkifier = class {
       return '';
     var location = /** @type {!SDK.DebuggerModel.Location} */ (
         debuggerModel.createRawLocation(script, lineNumber, columnNumber || 0));
-    var uiLocation = /** @type {!Workspace.UILocation} */ (
-        Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location));
+    var uiLocation =
+        /** @type {!Workspace.UILocation} */ (Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location));
     return uiLocation.linkText();
   }
 
@@ -551,8 +551,7 @@ Components.linkifyStringAsFragment = function(string) {
    * @return {!Node}
    */
   function linkifier(title, url, lineNumber, columnNumber) {
-    var isExternal =
-        !Bindings.resourceForURL(url) && !Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(url);
+    var isExternal = !Bindings.resourceForURL(url) && !Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(url);
     var urlNode = UI.linkifyURLAsNode(url, title, undefined, isExternal);
     if (typeof lineNumber !== 'undefined') {
       urlNode.lineNumber = lineNumber;

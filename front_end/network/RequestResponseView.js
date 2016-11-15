@@ -63,8 +63,7 @@ Network.RequestResponseView = class extends Network.RequestContentView {
   contentLoaded() {
     if ((!this.request.content || !this.sourceView) && !this.request.contentError()) {
       if (!this._emptyWidget) {
-        this._emptyWidget =
-            this._createMessageView(Common.UIString('This request has no response data available.'));
+        this._emptyWidget = this._createMessageView(Common.UIString('This request has no response data available.'));
         this._emptyWidget.show(this.element);
       }
     } else {

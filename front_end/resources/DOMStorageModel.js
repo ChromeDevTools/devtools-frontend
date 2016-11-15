@@ -122,9 +122,9 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    */
   static fromTarget(target) {
     var model = /** @type {?Resources.DOMStorageModel} */ (target.model(Resources.DOMStorageModel));
-    if (!model) {
+    if (!model)
       model = new Resources.DOMStorageModel(target, SDK.SecurityOriginManager.fromTarget(target));
-    }
+
     return model;
   }
 

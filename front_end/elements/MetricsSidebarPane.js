@@ -224,13 +224,12 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
 
     var boxes = ['content', 'padding', 'border', 'margin', 'position'];
     var boxColors = [
-      Common.Color.PageHighlight.Content, Common.Color.PageHighlight.Padding,
-      Common.Color.PageHighlight.Border, Common.Color.PageHighlight.Margin,
-      Common.Color.fromRGBA([0, 0, 0, 0])
+      Common.Color.PageHighlight.Content, Common.Color.PageHighlight.Padding, Common.Color.PageHighlight.Border,
+      Common.Color.PageHighlight.Margin, Common.Color.fromRGBA([0, 0, 0, 0])
     ];
     var boxLabels = [
-      Common.UIString('content'), Common.UIString('padding'), Common.UIString('border'),
-      Common.UIString('margin'), Common.UIString('position')
+      Common.UIString('content'), Common.UIString('padding'), Common.UIString('border'), Common.UIString('margin'),
+      Common.UIString('position')
     ];
     var previousBox = null;
     this._boxElements = [];
@@ -313,8 +312,8 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
 
     this._isEditingMetrics = true;
 
-    var config = new UI.InplaceEditor.Config(
-        this._editingCommitted.bind(this), this.editingCancelled.bind(this), context);
+    var config =
+        new UI.InplaceEditor.Config(this._editingCommitted.bind(this), this.editingCancelled.bind(this), context);
     UI.InplaceEditor.startEditing(targetElement, config);
 
     targetElement.getComponentSelection().setBaseAndExtent(targetElement, 0, targetElement, 1);
@@ -344,8 +343,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
       return prefix + number + suffix;
     }
 
-    UI.handleElementValueModifications(
-        event, element, finishHandler.bind(this), undefined, customNumberHandler);
+    UI.handleElementValueModifications(event, element, finishHandler.bind(this), undefined, customNumberHandler);
   }
 
   editingEnded(element, context) {
@@ -362,9 +360,10 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
         var pastLastSourcePropertyIndex = this.inlineStyle.pastLastSourcePropertyIndex();
         if (pastLastSourcePropertyIndex)
           this.inlineStyle.allProperties[pastLastSourcePropertyIndex - 1].setText('', false);
-      } else
+      } else {
         this.inlineStyle.allProperties[this.originalPropertyData.index].setText(
             this.originalPropertyData.propertyText, false);
+      }
     }
     this.editingEnded(element, context);
     this.update();

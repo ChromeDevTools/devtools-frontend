@@ -81,8 +81,7 @@ Sources.InplaceFormatterEditorAction = class {
      */
     function contentLoaded(content) {
       var highlighterType = Bindings.NetworkProject.uiSourceCodeMimeType(uiSourceCode);
-      Sources.Formatter.format(
-          uiSourceCode.contentType(), highlighterType, content || '', innerCallback.bind(this));
+      Sources.Formatter.format(uiSourceCode.contentType(), highlighterType, content || '', innerCallback.bind(this));
     }
 
     /**

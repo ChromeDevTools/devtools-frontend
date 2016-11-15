@@ -97,7 +97,8 @@ TimelineModel.TimelineProfileTree.buildTopDown = function(events, filters, start
     parent = parent.parent;
   }
 
-  var instantEventCallback = eventGroupIdCallback ? undefined : onStartEvent;  // Ignore instant events when aggregating.
+  var instantEventCallback =
+      eventGroupIdCallback ? undefined : onStartEvent;  // Ignore instant events when aggregating.
   TimelineModel.TimelineModel.forEachEvent(events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime);
   root.totalTime -= root.selfTime;
   root.selfTime = 0;
@@ -124,7 +125,8 @@ TimelineModel.TimelineProfileTree.buildBottomUp = function(topDownTree) {
    * @param {!TimelineModel.TimelineProfileTree.Node} tdNode
    */
   function processNode(tdNode) {
-    var buParent = typeof tdNode._groupId === 'string' ? aggregator.groupNodeForId(tdNode._groupId, tdNode.event) : buRoot;
+    var buParent =
+        typeof tdNode._groupId === 'string' ? aggregator.groupNodeForId(tdNode._groupId, tdNode.event) : buRoot;
     if (buParent !== buRoot && !buParent.parent) {
       buRoot.children.set(buParent.id, buParent);
       buParent.parent = buRoot;
@@ -219,9 +221,9 @@ TimelineModel.TimelineProfileTree._eventId = function(event) {
   const frame = event.args['data'];
   const location = frame['scriptId'] || frame['url'] || '';
   const functionName = frame['functionName'];
-  const name = TimelineModel.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame)
-      ? TimelineModel.TimelineJSProfileProcessor.nativeGroup(functionName) || functionName
-      : functionName;
+  const name = TimelineModel.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame) ?
+      TimelineModel.TimelineJSProfileProcessor.nativeGroup(functionName) || functionName :
+      functionName;
   return `f:${name}@${location}`;
 };
 

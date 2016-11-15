@@ -23,8 +23,7 @@ UI.ForwardedInputEventHandler = class {
     if (type !== 'keydown')
       return;
 
-    UI.context.setFlavor(
-        UI.ShortcutRegistry.ForwardedShortcut, UI.ShortcutRegistry.ForwardedShortcut.instance);
+    UI.context.setFlavor(UI.ShortcutRegistry.ForwardedShortcut, UI.ShortcutRegistry.ForwardedShortcut.instance);
     UI.shortcutRegistry.handleKey(UI.KeyboardShortcut.makeKey(keyCode, modifiers), key);
     UI.context.setFlavor(UI.ShortcutRegistry.ForwardedShortcut, null);
   }

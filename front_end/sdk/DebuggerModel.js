@@ -149,13 +149,13 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
 
   _pauseOnExceptionStateChanged() {
     var state;
-    if (!Common.moduleSetting('pauseOnExceptionEnabled').get()) {
+    if (!Common.moduleSetting('pauseOnExceptionEnabled').get())
       state = SDK.DebuggerModel.PauseOnExceptionsState.DontPauseOnExceptions;
-    } else if (Common.moduleSetting('pauseOnCaughtException').get()) {
+    else if (Common.moduleSetting('pauseOnCaughtException').get())
       state = SDK.DebuggerModel.PauseOnExceptionsState.PauseOnAllExceptions;
-    } else {
+    else
       state = SDK.DebuggerModel.PauseOnExceptionsState.PauseOnUncaughtExceptions;
-    }
+
     this._agent.setPauseOnExceptions(state);
   }
 
@@ -226,8 +226,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     function didSetBreakpoint(error, breakpointId, locations) {
       if (callback) {
         var rawLocations = locations ?
-            locations.map(
-                SDK.DebuggerModel.Location.fromPayload.bind(SDK.DebuggerModel.Location, this)) :
+            locations.map(SDK.DebuggerModel.Location.fromPayload.bind(SDK.DebuggerModel.Location, this)) :
             [];
         callback(error ? null : breakpointId, rawLocations);
       }
@@ -383,10 +382,11 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
       return;
     }
 
-    if (!error && callFrames && callFrames.length)
+    if (!error && callFrames && callFrames.length) {
       this._pausedScript(
           callFrames, this._debuggerPausedDetails.reason, this._debuggerPausedDetails.auxData,
           this._debuggerPausedDetails.breakpointIds, asyncStackTrace);
+    }
     callback(error, exceptionDetails);
   }
 
@@ -413,10 +413,8 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     this._debuggerPausedDetails = debuggerPausedDetails;
     if (this._debuggerPausedDetails) {
       if (Runtime.experiments.isEnabled('emptySourceMapAutoStepping')) {
-        if (this.dispatchEventToListeners(
-                SDK.DebuggerModel.Events.BeforeDebuggerPaused, this._debuggerPausedDetails)) {
+        if (this.dispatchEventToListeners(SDK.DebuggerModel.Events.BeforeDebuggerPaused, this._debuggerPausedDetails))
           return false;
-        }
       }
       this.dispatchEventToListeners(SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPausedDetails);
     }
@@ -551,9 +549,8 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
       closestScript = script;
       break;
     }
-    return closestScript ?
-        new SDK.DebuggerModel.Location(this, closestScript.scriptId, lineNumber, columnNumber) :
-        null;
+    return closestScript ? new SDK.DebuggerModel.Location(this, closestScript.scriptId, lineNumber, columnNumber) :
+                           null;
   }
 
   /**
@@ -687,9 +684,10 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
         }
       }
       var debuggerLocation = null;
-      if (location)
+      if (location) {
         debuggerLocation = this.createRawLocationByScriptId(
             location.value.scriptId, location.value.lineNumber, location.value.columnNumber);
+      }
       return {location: debuggerLocation, functionName: functionName ? functionName.value : ''};
     }
   }
@@ -761,8 +759,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    * @override
    */
   dispose() {
-    Common.moduleSetting('pauseOnExceptionEnabled')
-        .removeChangeListener(this._pauseOnExceptionStateChanged, this);
+    Common.moduleSetting('pauseOnExceptionEnabled').removeChangeListener(this._pauseOnExceptionStateChanged, this);
     Common.moduleSetting('pauseOnCaughtException').removeChangeListener(this._pauseOnExceptionStateChanged, this);
     Common.moduleSetting('enableAsyncStackTraces').removeChangeListener(this.asyncStackTracesStateChanged, this);
   }
@@ -975,8 +972,7 @@ SDK.DebuggerModel.Location = class extends SDK.SDKObject {
    * @return {!SDK.DebuggerModel.Location}
    */
   static fromPayload(debuggerModel, payload) {
-    return new SDK.DebuggerModel.Location(
-        debuggerModel, payload.scriptId, payload.lineNumber, payload.columnNumber);
+    return new SDK.DebuggerModel.Location(debuggerModel, payload.scriptId, payload.lineNumber, payload.columnNumber);
   }
 
   /**
@@ -1250,12 +1246,14 @@ SDK.DebuggerModel.Scope = class {
       return this._object;
     var runtimeModel = this._callFrame.target().runtimeModel;
 
-    var declarativeScope = this._type !== Protocol.Debugger.ScopeType.With && this._type !== Protocol.Debugger.ScopeType.Global;
-    if (declarativeScope)
+    var declarativeScope =
+        this._type !== Protocol.Debugger.ScopeType.With && this._type !== Protocol.Debugger.ScopeType.Global;
+    if (declarativeScope) {
       this._object = runtimeModel.createScopeRemoteObject(
           this._payload.object, new SDK.ScopeRef(this._ordinal, this._callFrame.id));
-    else
+    } else {
       this._object = runtimeModel.createRemoteObject(this._payload.object);
+    }
 
     return this._object;
   }
@@ -1264,7 +1262,8 @@ SDK.DebuggerModel.Scope = class {
    * @return {string}
    */
   description() {
-    var declarativeScope = this._type !== Protocol.Debugger.ScopeType.With && this._type !== Protocol.Debugger.ScopeType.Global;
+    var declarativeScope =
+        this._type !== Protocol.Debugger.ScopeType.With && this._type !== Protocol.Debugger.ScopeType.Global;
     return declarativeScope ? '' : (this._payload.object.description || '');
   }
 };

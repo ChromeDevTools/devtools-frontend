@@ -43,9 +43,8 @@ SDK.CSSStyleSheetHeader = class {
    * @param {string=} sourceMapURL
    */
   setSourceMapURL(sourceMapURL) {
-    var completeSourceMapURL = this.sourceURL && sourceMapURL ?
-        Common.ParsedURL.completeURL(this.sourceURL, sourceMapURL) :
-        sourceMapURL;
+    var completeSourceMapURL =
+        this.sourceURL && sourceMapURL ? Common.ParsedURL.completeURL(this.sourceURL, sourceMapURL) : sourceMapURL;
     this.sourceMapURL = completeSourceMapURL;
   }
 

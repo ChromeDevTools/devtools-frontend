@@ -107,8 +107,7 @@ Animation.AnimationModel = class extends SDK.SDKModel {
       this._animationGroups.set(incomingGroup.id(), incomingGroup);
       this._screenshotCapture.captureScreenshots(incomingGroup.finiteDuration(), incomingGroup._screenshots);
     }
-    this.dispatchEventToListeners(
-        Animation.AnimationModel.Events.AnimationGroupStarted, matchedGroup || incomingGroup);
+    this.dispatchEventToListeners(Animation.AnimationModel.Events.AnimationGroupStarted, matchedGroup || incomingGroup);
     return !!matchedGroup;
   }
 
@@ -799,8 +798,7 @@ Animation.AnimationModel.ScreenshotCapture = class {
     this._target = target;
     /** @type {!Array<!Animation.AnimationModel.ScreenshotCapture.Request>} */
     this._requests = [];
-    resourceTreeModel.addEventListener(
-        SDK.ResourceTreeModel.Events.ScreencastFrame, this._screencastFrame, this);
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ScreencastFrame, this._screencastFrame, this);
     this._model = model;
     this._model.addEventListener(Animation.AnimationModel.Events.ModelReset, this._stopScreencast, this);
   }

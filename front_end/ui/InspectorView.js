@@ -50,8 +50,7 @@ UI.InspectorView = class extends UI.VBox {
     this._drawerTabbedLocation.enableMoreTabsButton();
     this._drawerTabbedPane = this._drawerTabbedLocation.tabbedPane();
     this._drawerTabbedPane.setMinimumSize(0, 27);
-    var closeDrawerButton =
-        new UI.ToolbarButton(Common.UIString('Close drawer'), 'largeicon-delete');
+    var closeDrawerButton = new UI.ToolbarButton(Common.UIString('Close drawer'), 'largeicon-delete');
     closeDrawerButton.addEventListener('click', this._closeDrawer.bind(this));
     this._drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
     this._drawerSplitWidget.installResizer(this._drawerTabbedPane.headerElement());
@@ -179,8 +178,7 @@ UI.InspectorView = class extends UI.VBox {
    * @return {!UI.Panel}
    */
   currentPanelDeprecated() {
-    return /** @type {!UI.Panel} */ (
-        UI.viewManager.materializedWidget(this._tabbedPane.selectedTabId || ''));
+    return /** @type {!UI.Panel} */ (UI.viewManager.materializedWidget(this._tabbedPane.selectedTabId || ''));
   }
 
   /**

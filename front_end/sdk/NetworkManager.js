@@ -237,8 +237,7 @@ SDK.NetworkDispatcher = class {
     if (!this._mimeTypeIsConsistentWithType(networkRequest)) {
       var consoleModel = this._manager._target.consoleModel;
       consoleModel.addMessage(new SDK.ConsoleMessage(
-          consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network,
-          SDK.ConsoleMessage.MessageLevel.Log,
+          consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network, SDK.ConsoleMessage.MessageLevel.Log,
           Common.UIString(
               'Resource interpreted as %s but transferred with MIME type %s: "%s".',
               networkRequest.resourceType().title(), networkRequest.mimeType, networkRequest.url),
@@ -264,10 +263,10 @@ SDK.NetworkDispatcher = class {
       return true;
 
     var resourceType = networkRequest.resourceType();
-    if (resourceType !== Common.resourceTypes.Stylesheet &&
-        resourceType !== Common.resourceTypes.Document && resourceType !== Common.resourceTypes.TextTrack) {
+    if (resourceType !== Common.resourceTypes.Stylesheet && resourceType !== Common.resourceTypes.Document &&
+        resourceType !== Common.resourceTypes.TextTrack)
       return true;
-    }
+
 
     if (!networkRequest.mimeType)
       return true;  // Might be not known for cached resources with null responses.
@@ -321,8 +320,9 @@ SDK.NetworkDispatcher = class {
         return;
       this.responseReceived(requestId, frameId, loaderId, time, Protocol.Page.ResourceType.Other, redirectResponse);
       networkRequest = this._appendRedirect(requestId, time, request.url);
-    } else
+    } else {
       networkRequest = this._createNetworkRequest(requestId, frameId, loaderId, request.url, documentURL, initiator);
+    }
     networkRequest.hasNetworkData = true;
     this._updateNetworkRequestWithRequest(networkRequest, request);
     networkRequest.setIssueTime(time, wallTime);
@@ -432,8 +432,7 @@ SDK.NetworkDispatcher = class {
       if (blockedReason === Protocol.Network.BlockedReason.Inspector) {
         var consoleModel = this._manager._target.consoleModel;
         consoleModel.addMessage(new SDK.ConsoleMessage(
-            consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network,
-            SDK.ConsoleMessage.MessageLevel.Warning,
+            consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network, SDK.ConsoleMessage.MessageLevel.Warning,
             Common.UIString('Request was blocked by DevTools: "%s".', networkRequest.url),
             SDK.ConsoleMessage.MessageType.Log, '', 0, 0, networkRequest.requestId));
       }
@@ -646,8 +645,7 @@ SDK.NetworkDispatcher = class {
    * @param {?Protocol.Network.Initiator} initiator
    */
   _createNetworkRequest(requestId, frameId, loaderId, url, documentURL, initiator) {
-    return new SDK.NetworkRequest(
-        this._manager._target, requestId, url, documentURL, frameId, loaderId, initiator);
+    return new SDK.NetworkRequest(this._manager._target, requestId, url, documentURL, frameId, loaderId, initiator);
   }
 };
 

@@ -58,9 +58,7 @@ SDK.EventListener.frameworkEventListeners = function(object) {
    * @return {!Promise<!Array<!SDK.EventListener>>}
    */
   function convertToEventListeners(pageEventListenersObject) {
-    return SDK.RemoteArray.objectAsArray(pageEventListenersObject)
-        .map(toEventListener)
-        .then(filterOutEmptyObjects);
+    return SDK.RemoteArray.objectAsArray(pageEventListenersObject).map(toEventListener).then(filterOutEmptyObjects);
 
     /**
      * @param {!SDK.RemoteObject} listenerObject
@@ -94,7 +92,7 @@ SDK.EventListener.frameworkEventListeners = function(object) {
        * @return {!{type:string, useCapture:boolean, passive:boolean, once:boolean}}
        */
       function truncatePageEventListener() {
-          return {type: this.type, useCapture: this.useCapture, passive: this.passive, once: this.once};
+        return {type: this.type, useCapture: this.useCapture, passive: this.passive, once: this.once};
       }
 
       /**
@@ -170,9 +168,7 @@ SDK.EventListener.frameworkEventListeners = function(object) {
         removeFunctionObject = functionObject;
       }
 
-      return Promise.all(promises)
-          .then(createEventListener)
-          .catchException(/** @type {?SDK.EventListener} */ (null));
+      return Promise.all(promises).then(createEventListener).catchException(/** @type {?SDK.EventListener} */ (null));
 
       /**
        * @return {!SDK.EventListener}
@@ -308,9 +304,10 @@ SDK.EventListener.frameworkEventListeners = function(object) {
           eventListeners =
               eventListeners.concat(fetcherResult.eventListeners.map(checkEventListener).filter(nonEmptyObject));
         }
-        if (fetcherResult.internalHandlers && isArrayLike(fetcherResult.internalHandlers))
+        if (fetcherResult.internalHandlers && isArrayLike(fetcherResult.internalHandlers)) {
           internalHandlers =
               internalHandlers.concat(fetcherResult.internalHandlers.map(checkInternalHandler).filter(nonEmptyObject));
+        }
       } catch (e) {
         errorLines.push('fetcher call produced error: ' + toString(e));
       }

@@ -37,8 +37,7 @@ Snippets.SnippetStorage = class extends Common.Object {
     /** @type {!Map<string,!Snippets.Snippet>} */
     this._snippets = new Map();
 
-    this._lastSnippetIdentifierSetting =
-        Common.settings.createSetting(settingPrefix + 'Snippets_lastIdentifier', 0);
+    this._lastSnippetIdentifierSetting = Common.settings.createSetting(settingPrefix + 'Snippets_lastIdentifier', 0);
     this._snippetsSetting = Common.settings.createSetting(settingPrefix + 'Snippets', []);
     this._namePrefix = namePrefix;
 

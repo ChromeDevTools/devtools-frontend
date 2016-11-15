@@ -161,10 +161,11 @@ Workspace.UISourceCode = class extends Common.Object {
      * @this {Workspace.UISourceCode}
      */
     function innerCallback(success, newName, newURL, newContentType) {
-      if (success)
+      if (success) {
         this._updateName(
             /** @type {string} */ (newName), /** @type {string} */ (newURL),
             /** @type {!Common.ResourceType} */ (newContentType));
+      }
       callback(success);
     }
   }
@@ -356,9 +357,10 @@ Workspace.UISourceCode = class extends Common.Object {
     this.dispatchEventToListeners(Workspace.UISourceCode.Events.WorkingCopyCommitted, {content: content});
     this._project.workspace().dispatchEventToListeners(
         Workspace.Workspace.Events.WorkingCopyCommitted, {uiSourceCode: this, content: content});
-    if (committedByUser)
+    if (committedByUser) {
       this._project.workspace().dispatchEventToListeners(
           Workspace.Workspace.Events.WorkingCopyCommittedByUser, {uiSourceCode: this, content: content});
+    }
   }
 
   saveAs() {

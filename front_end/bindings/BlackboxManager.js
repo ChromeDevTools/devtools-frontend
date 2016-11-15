@@ -13,11 +13,9 @@ Bindings.BlackboxManager = class {
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
     SDK.targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource,
-        this);
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
     SDK.targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared,
-        this);
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this);
     Common.moduleSetting('skipStackFramesPattern').addChangeListener(this._patternChanged.bind(this));
     Common.moduleSetting('skipContentScripts').addChangeListener(this._patternChanged.bind(this));
 
@@ -362,9 +360,10 @@ Bindings.BlackboxManager = class {
     if (previousScriptState) {
       var hasChanged = false;
       hasChanged = previousScriptState.length !== positions.length;
-      for (var i = 0; !hasChanged && i < positions.length; ++i)
+      for (var i = 0; !hasChanged && i < positions.length; ++i) {
         hasChanged = positions[i].lineNumber !== previousScriptState[i].lineNumber ||
             positions[i].columnNumber !== previousScriptState[i].columnNumber;
+      }
       if (!hasChanged)
         return Promise.resolve();
     } else {

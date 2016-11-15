@@ -62,10 +62,9 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
       return Promise.resolve();
     var accessibilityModel = Accessibility.AccessibilityModel.fromTarget(node.target());
     accessibilityModel.clear();
-    return accessibilityModel.requestPartialAXTree(node)
-        .then(() => {
-          this.accessibilityNodeCallback(accessibilityModel.axNodeForDOMNode(node));
-        });
+    return accessibilityModel.requestPartialAXTree(node).then(() => {
+      this.accessibilityNodeCallback(accessibilityModel.axNodeForDOMNode(node));
+    });
   }
 
   /**
@@ -78,10 +77,8 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
     this._axNodeSubPane.setNode(this.node());
     this._ariaSubPane.setNode(this.node());
 
-    SDK.targetManager.addModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);
-    SDK.targetManager.addModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
+    SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);
+    SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
     SDK.targetManager.addModelListener(
         SDK.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
     SDK.targetManager.addModelListener(
@@ -92,10 +89,8 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
    * @override
    */
   willHide() {
-    SDK.targetManager.removeModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);
-    SDK.targetManager.removeModelListener(
-        SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
+    SDK.targetManager.removeModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);
+    SDK.targetManager.removeModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrRemoved, this._onAttrChange, this);
     SDK.targetManager.removeModelListener(
         SDK.DOMModel, SDK.DOMModel.Events.CharacterDataModified, this._onNodeChange, this);
     SDK.targetManager.removeModelListener(

@@ -41,14 +41,13 @@ Bindings.DefaultScriptMapping = class {
     this._debuggerModel = debuggerModel;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     var projectId = Bindings.DefaultScriptMapping.projectIdForTarget(debuggerModel.target());
-    this._project =
-        new Bindings.ContentProviderBasedProject(workspace, projectId, Workspace.projectTypes.Debugger, '');
+    this._project = new Bindings.ContentProviderBasedProject(workspace, projectId, Workspace.projectTypes.Debugger, '');
     /** @type {!Map.<string, !Workspace.UISourceCode>} */
     this._uiSourceCodeForScriptId = new Map();
     /** @type {!Map.<!Workspace.UISourceCode, string>} */
     this._scriptIdForUISourceCode = new Map();
-    this._eventListeners = [debuggerModel.addEventListener(
-        SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this)];
+    this._eventListeners =
+        [debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this)];
   }
 
   /**
@@ -93,9 +92,10 @@ Bindings.DefaultScriptMapping = class {
   uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
     var scriptId = this._scriptIdForUISourceCode.get(uiSourceCode);
     var script = this._debuggerModel.scriptForId(scriptId);
-    if (script.isInlineScriptWithSourceURL())
+    if (script.isInlineScriptWithSourceURL()) {
       return this._debuggerModel.createRawLocation(
           script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset);
+    }
     return this._debuggerModel.createRawLocation(script, lineNumber, columnNumber);
   }
 

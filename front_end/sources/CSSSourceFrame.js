@@ -111,8 +111,7 @@ Sources.CSSSourceFrame = class extends Sources.UISourceCodeFrame {
     var swatchPositions = [];
 
     var regexes = [
-      SDK.CSSMetadata.VariableRegex, SDK.CSSMetadata.URLRegex,
-      Common.Geometry.CubicBezier.Regex, Common.Color.Regex
+      SDK.CSSMetadata.VariableRegex, SDK.CSSMetadata.URLRegex, Common.Geometry.CubicBezier.Regex, Common.Color.Regex
     ];
     var handlers = new Map();
     handlers.set(Common.Color.Regex, this._createColorSwatch.bind(this));
@@ -145,8 +144,7 @@ Sources.CSSSourceFrame = class extends Sources.UISourceCodeFrame {
      */
     function putSwatchesInline() {
       var clearRange = new Common.TextRange(startLine, 0, endLine, this.textEditor.line(endLine).length);
-      this.textEditor.bookmarks(clearRange, Sources.CSSSourceFrame.SwatchBookmark)
-          .forEach(marker => marker.clear());
+      this.textEditor.bookmarks(clearRange, Sources.CSSSourceFrame.SwatchBookmark).forEach(marker => marker.clear());
 
       for (var i = 0; i < swatches.length; i++) {
         var swatch = swatches[i];
@@ -250,9 +248,10 @@ Sources.CSSSourceFrame = class extends Sources.UISourceCodeFrame {
       this._bezierEditor.addEventListener(UI.BezierEditor.Events.BezierChanged, this._bezierChanged, this);
     }
     var cubicBezier = Common.Geometry.CubicBezier.parse(swatch.bezierText());
-    if (!cubicBezier)
+    if (!cubicBezier) {
       cubicBezier =
           /** @type {!Common.Geometry.CubicBezier} */ (Common.Geometry.CubicBezier.parse('linear'));
+    }
     this._bezierEditor.setBezier(cubicBezier);
     this._swatchPopoverHelper.show(this._bezierEditor, swatch.iconElement(), this._swatchPopoverHidden.bind(this));
   }

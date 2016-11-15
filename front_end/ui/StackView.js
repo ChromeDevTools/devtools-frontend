@@ -47,8 +47,8 @@ UI.StackView = class extends UI.VBox {
    * @return {?UI.SplitWidget}
    */
   appendView(view, sidebarSizeSettingName, defaultSidebarWidth, defaultSidebarHeight) {
-    var splitWidget = new UI.SplitWidget(
-        this._isVertical, true, sidebarSizeSettingName, defaultSidebarWidth, defaultSidebarHeight);
+    var splitWidget =
+        new UI.SplitWidget(this._isVertical, true, sidebarSizeSettingName, defaultSidebarWidth, defaultSidebarHeight);
     splitWidget.setMainWidget(view);
     splitWidget.hideSidebar();
 

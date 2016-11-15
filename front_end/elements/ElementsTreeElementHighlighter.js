@@ -13,12 +13,10 @@ Elements.ElementsTreeElementHighlighter = class {
     this._treeOutline = treeOutline;
     this._treeOutline.addEventListener(TreeOutline.Events.ElementExpanded, this._clearState, this);
     this._treeOutline.addEventListener(TreeOutline.Events.ElementCollapsed, this._clearState, this);
-    this._treeOutline.addEventListener(
-        Elements.ElementsTreeOutline.Events.SelectedNodeChanged, this._clearState, this);
+    this._treeOutline.addEventListener(Elements.ElementsTreeOutline.Events.SelectedNodeChanged, this._clearState, this);
     SDK.targetManager.addModelListener(
         SDK.DOMModel, SDK.DOMModel.Events.NodeHighlightedInOverlay, this._highlightNode, this);
-    this._treeOutline.domModel().addEventListener(
-        SDK.DOMModel.Events.InspectModeWillBeToggled, this._clearState, this);
+    this._treeOutline.domModel().addEventListener(SDK.DOMModel.Events.InspectModeWillBeToggled, this._clearState, this);
   }
 
   /**

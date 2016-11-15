@@ -40,8 +40,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   constructor(target, networkManager, securityOriginManager) {
     super(SDK.ResourceTreeModel, target);
     if (networkManager) {
-      networkManager.addEventListener(
-          SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
+      networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
       networkManager.addEventListener(
           SDK.NetworkManager.Events.RequestUpdateDropped, this._onRequestUpdateDropped, this);
     }
@@ -426,9 +425,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     if (!frameB && frameA)
       return 1;
 
-    if (frameA && frameB) {
+    if (frameA && frameB)
       return frameA.id.localeCompare(frameB.id);
-    }
+
     return SDK.ExecutionContext.comparator(a, b);
   }
 };

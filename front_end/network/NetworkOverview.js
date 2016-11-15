@@ -27,8 +27,7 @@ Network.NetworkOverview = class extends UI.TimelineOverviewBase {
     SDK.targetManager.addModelListener(
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
     SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.DOMContentLoaded,
-        this._domContentLoadedEventFired, this);
+        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.DOMContentLoaded, this._domContentLoadedEventFired, this);
 
     this.reset();
   }

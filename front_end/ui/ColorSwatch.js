@@ -14,8 +14,7 @@ UI.ColorSwatch = class extends HTMLSpanElement {
    */
   static create() {
     if (!UI.ColorSwatch._constructor)
-      UI.ColorSwatch._constructor =
-          registerCustomElement('span', 'color-swatch', UI.ColorSwatch.prototype);
+      UI.ColorSwatch._constructor = registerCustomElement('span', 'color-swatch', UI.ColorSwatch.prototype);
 
     return /** @type {!UI.ColorSwatch} */ (new UI.ColorSwatch._constructor());
   }
@@ -165,8 +164,7 @@ UI.BezierSwatch = class extends HTMLSpanElement {
    */
   static create() {
     if (!UI.BezierSwatch._constructor)
-      UI.BezierSwatch._constructor =
-          registerCustomElement('span', 'bezier-swatch', UI.BezierSwatch.prototype);
+      UI.BezierSwatch._constructor = registerCustomElement('span', 'bezier-swatch', UI.BezierSwatch.prototype);
 
     return /** @type {!UI.BezierSwatch} */ (new UI.BezierSwatch._constructor());
   }
@@ -224,9 +222,10 @@ UI.CSSShadowSwatch = class extends HTMLSpanElement {
    * @return {!UI.CSSShadowSwatch}
    */
   static create() {
-    if (!UI.CSSShadowSwatch._constructor)
+    if (!UI.CSSShadowSwatch._constructor) {
       UI.CSSShadowSwatch._constructor =
           registerCustomElement('span', 'css-shadow-swatch', UI.CSSShadowSwatch.prototype);
+    }
 
     return /** @type {!UI.CSSShadowSwatch} */ (new UI.CSSShadowSwatch._constructor());
   }

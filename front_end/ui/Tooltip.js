@@ -108,8 +108,7 @@ UI.Tooltip = class {
 
     // Show tooltip instantly if a tooltip was shown recently.
     var now = Date.now();
-    var instant =
-        (this._tooltipLastClosed && now - this._tooltipLastClosed < UI.Tooltip.Timing.InstantThreshold);
+    var instant = (this._tooltipLastClosed && now - this._tooltipLastClosed < UI.Tooltip.Timing.InstantThreshold);
     this._tooltipElement.classList.toggle('instant', instant);
     this._tooltipLastOpened = instant ? now : now + UI.Tooltip.Timing.OpeningDelay;
 

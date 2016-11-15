@@ -339,8 +339,9 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
         node.nodeIndex = nodeIndex;
         if (!node.isDocumentDOMTreesRoot())
           continue;
-      } else if (edgeType !== edgeShortcutType)
+      } else if (edgeType !== edgeShortcutType) {
         continue;
+      }
       var nodeOrdinal = nodeIndex / nodeFieldCount;
       nodesToVisit[nodesToVisitLength++] = nodeOrdinal;
       flags[nodeOrdinal] |= pageObjectFlag;

@@ -44,17 +44,14 @@ Bindings.PresentationConsoleMessageHelper = class {
     /** @type {!Array.<!Bindings.PresentationConsoleMessage>} */
     this._presentationConsoleMessages = [];
 
-    SDK.multitargetConsoleModel.addEventListener(
-        SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
+    SDK.multitargetConsoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
     SDK.multitargetConsoleModel.addEventListener(
         SDK.ConsoleModel.Events.MessageAdded, this._onConsoleMessageAdded, this);
     SDK.multitargetConsoleModel.messages().forEach(this._consoleMessageAdded, this);
     SDK.targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource,
-        this);
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this);
     SDK.targetManager.addModelListener(
-        SDK.DebuggerModel, SDK.DebuggerModel.Events.FailedToParseScriptSource,
-        this._parsedScriptSource, this);
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this);
     SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
 
@@ -94,9 +91,10 @@ Bindings.PresentationConsoleMessageHelper = class {
     if (message.scriptId)
       return debuggerModel.createRawLocationByScriptId(message.scriptId, message.line, message.column);
     var callFrame = message.stackTrace && message.stackTrace.callFrames ? message.stackTrace.callFrames[0] : null;
-    if (callFrame)
+    if (callFrame) {
       return debuggerModel.createRawLocationByScriptId(
           callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
+    }
     if (message.url)
       return debuggerModel.createRawLocationByURL(message.url, message.line, message.column);
     return null;
@@ -177,8 +175,7 @@ Bindings.PresentationConsoleMessage = class {
     this._level = message.level === SDK.ConsoleMessage.MessageLevel.Error ?
         Workspace.UISourceCode.Message.Level.Error :
         Workspace.UISourceCode.Message.Level.Warning;
-    Bindings.debuggerWorkspaceBinding.createLiveLocation(
-        rawLocation, this._updateLocation.bind(this), locationPool);
+    Bindings.debuggerWorkspaceBinding.createLiveLocation(rawLocation, this._updateLocation.bind(this), locationPool);
   }
 
   /**

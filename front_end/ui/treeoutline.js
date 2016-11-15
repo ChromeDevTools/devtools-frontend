@@ -220,12 +220,13 @@ var TreeOutline = class extends Common.Object {
       } else {
         handled = this.selectedTreeElement.descendOrExpand(event.altKey);
       }
-    } else if (event.keyCode === 8 /* Backspace */ || event.keyCode === 46 /* Delete */)
+    } else if (event.keyCode === 8 /* Backspace */ || event.keyCode === 46 /* Delete */) {
       handled = this.selectedTreeElement.ondelete();
-    else if (isEnterKey(event))
+    } else if (isEnterKey(event)) {
       handled = this.selectedTreeElement.onenter();
-    else if (event.keyCode === UI.KeyboardShortcut.Keys.Space.code)
+    } else if (event.keyCode === UI.KeyboardShortcut.Keys.Space.code) {
       handled = this.selectedTreeElement.onspace();
+    }
 
     if (handled)
       event.consume(true);

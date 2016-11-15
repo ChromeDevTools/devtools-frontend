@@ -196,19 +196,21 @@ Components.DOMPresentationUtils.buildImagePreviewContents = function(
     var offsetHeight = precomputedFeatures ? precomputedFeatures.offsetHeight : naturalHeight;
     var description;
     if (showDimensions) {
-      if (offsetHeight === naturalHeight && offsetWidth === naturalWidth)
+      if (offsetHeight === naturalHeight && offsetWidth === naturalWidth) {
         description = Common.UIString('%d \xd7 %d pixels', offsetWidth, offsetHeight);
-      else
+      } else {
         description = Common.UIString(
             '%d \xd7 %d pixels (Natural: %d \xd7 %d pixels)', offsetWidth, offsetHeight, naturalWidth, naturalHeight);
+      }
     }
 
     container.createChild('tr').createChild('td', 'image-container').appendChild(imageElement);
     if (description)
       container.createChild('tr').createChild('td').createChild('span', 'description').textContent = description;
-    if (imageURL !== originalImageURL)
+    if (imageURL !== originalImageURL) {
       container.createChild('tr').createChild('td').createChild('span', 'description').textContent =
           String.sprintf('currentSrc: %s', imageURL.trimMiddle(100));
+    }
     userCallback(container);
   }
 };
@@ -289,9 +291,10 @@ Components.DOMPresentationUtils.simpleSelector = function(node) {
     return lowerCaseName + '[type="' + node.getAttribute('type') + '"]';
   if (node.getAttribute('id'))
     return lowerCaseName + '#' + node.getAttribute('id');
-  if (node.getAttribute('class'))
+  if (node.getAttribute('class')) {
     return (lowerCaseName === 'div' ? '' : lowerCaseName) + '.' +
         node.getAttribute('class').trim().replace(/\s+/g, '.');
+  }
   return lowerCaseName;
 };
 

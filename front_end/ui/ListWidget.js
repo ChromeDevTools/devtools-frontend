@@ -189,8 +189,8 @@ UI.ListWidget = class extends UI.VBox {
     this._updatePlaceholder();
     this._list.insertBefore(this._editor.element, insertionPoint);
     this._editor.beginEdit(
-        item, index, element ? Common.UIString('Save') : Common.UIString('Add'),
-        this._commitEditing.bind(this), this._stopEditing.bind(this));
+        item, index, element ? Common.UIString('Save') : Common.UIString('Add'), this._commitEditing.bind(this),
+        this._stopEditing.bind(this));
   }
 
   _commitEditing() {

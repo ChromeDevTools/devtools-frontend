@@ -34,9 +34,10 @@ UI.Context = class {
    */
   _dispatchFlavorChange(flavorType, flavorValue) {
     for (var extension of self.runtime.extensions(UI.ContextFlavorListener)) {
-      if (extension.hasContextType(flavorType))
+      if (extension.hasContextType(flavorType)) {
         extension.instance().then(
             instance => /** @type {!UI.ContextFlavorListener} */ (instance).flavorChanged(flavorValue));
+      }
     }
     var dispatcher = this._eventDispatchers.get(flavorType);
     if (!dispatcher)

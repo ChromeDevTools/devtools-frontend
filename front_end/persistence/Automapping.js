@@ -200,7 +200,8 @@ Persistence.Automapping = class {
   _createBinding(networkSourceCode) {
     if (networkSourceCode.url().startsWith('file://')) {
       var fileSourceCode = this._fileSystemUISourceCodes.get(networkSourceCode.url());
-      var binding = fileSourceCode ? new Persistence.PersistenceBinding(networkSourceCode, fileSourceCode, false) : null;
+      var binding =
+          fileSourceCode ? new Persistence.PersistenceBinding(networkSourceCode, fileSourceCode, false) : null;
       return Promise.resolve(binding);
     }
 

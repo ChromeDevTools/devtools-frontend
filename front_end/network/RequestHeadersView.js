@@ -53,8 +53,7 @@ Network.RequestHeadersView = class extends UI.VBox {
     root.expandTreeElementsWhenArrowing = true;
     this.element.appendChild(root.element);
 
-    var generalCategory =
-        new Network.RequestHeadersView.Category(root, 'general', Common.UIString('General'));
+    var generalCategory = new Network.RequestHeadersView.Category(root, 'general', Common.UIString('General'));
     generalCategory.hidden = false;
     this._urlItem = generalCategory.createLeaf();
     this._requestMethodItem = generalCategory.createLeaf();
@@ -74,14 +73,11 @@ Network.RequestHeadersView = class extends UI.VBox {
    * @override
    */
   wasShown() {
-    this._request.addEventListener(
-        SDK.NetworkRequest.Events.RemoteAddressChanged, this._refreshRemoteAddress, this);
-    this._request.addEventListener(
-        SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestHeaders, this);
+    this._request.addEventListener(SDK.NetworkRequest.Events.RemoteAddressChanged, this._refreshRemoteAddress, this);
+    this._request.addEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestHeaders, this);
     this._request.addEventListener(
         SDK.NetworkRequest.Events.ResponseHeadersChanged, this._refreshResponseHeaders, this);
-    this._request.addEventListener(
-        SDK.NetworkRequest.Events.FinishedLoading, this._refreshHTTPInformation, this);
+    this._request.addEventListener(SDK.NetworkRequest.Events.FinishedLoading, this._refreshHTTPInformation, this);
 
     this._refreshURL();
     this._refreshQueryString();
@@ -95,14 +91,12 @@ Network.RequestHeadersView = class extends UI.VBox {
    * @override
    */
   willHide() {
-    this._request.removeEventListener(
-        SDK.NetworkRequest.Events.RemoteAddressChanged, this._refreshRemoteAddress, this);
+    this._request.removeEventListener(SDK.NetworkRequest.Events.RemoteAddressChanged, this._refreshRemoteAddress, this);
     this._request.removeEventListener(
         SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestHeaders, this);
     this._request.removeEventListener(
         SDK.NetworkRequest.Events.ResponseHeadersChanged, this._refreshResponseHeaders, this);
-    this._request.removeEventListener(
-        SDK.NetworkRequest.Events.FinishedLoading, this._refreshHTTPInformation, this);
+    this._request.removeEventListener(SDK.NetworkRequest.Events.FinishedLoading, this._refreshHTTPInformation, this);
   }
 
   /**
@@ -155,9 +149,10 @@ Network.RequestHeadersView = class extends UI.VBox {
     var queryString = this._request.queryString();
     var queryParameters = this._request.queryParameters;
     this._queryStringCategory.hidden = !queryParameters;
-    if (queryParameters)
+    if (queryParameters) {
       this._refreshParams(
           Common.UIString('Query String Parameters'), queryParameters, queryString, this._queryStringCategory);
+    }
   }
 
   _refreshFormData() {
@@ -231,8 +226,8 @@ Network.RequestHeadersView = class extends UI.VBox {
       return;
     }
 
-    var toggleTitle = this._decodeRequestParameters ? Common.UIString('view URL encoded') :
-                                                      Common.UIString('view decoded');
+    var toggleTitle =
+        this._decodeRequestParameters ? Common.UIString('view URL encoded') : Common.UIString('view decoded');
     var toggleButton = this._createToggleButton(toggleTitle);
     toggleButton.addEventListener('click', this._toggleURLDecoding.bind(this), false);
     paramsTreeElement.listItemElement.appendChild(toggleButton);
@@ -245,8 +240,8 @@ Network.RequestHeadersView = class extends UI.VBox {
         paramNameValue.appendChild(name);
         paramNameValue.appendChild(value);
       } else {
-        paramNameValue.appendChild(this._formatParameter(
-            Common.UIString('(empty)'), 'empty-request-header', this._decodeRequestParameters));
+        paramNameValue.appendChild(
+            this._formatParameter(Common.UIString('(empty)'), 'empty-request-header', this._decodeRequestParameters));
       }
 
       var paramTreeElement = new TreeElement(paramNameValue);
@@ -295,8 +290,7 @@ Network.RequestHeadersView = class extends UI.VBox {
    * @return {!Element}
    */
   _createViewSourceToggle(viewSource, handler) {
-    var viewSourceToggleTitle =
-        viewSource ? Common.UIString('view parsed') : Common.UIString('view source');
+    var viewSourceToggleTitle = viewSource ? Common.UIString('view parsed') : Common.UIString('view source');
     var viewSourceToggleButton = this._createToggleButton(viewSourceToggleTitle);
     viewSourceToggleButton.addEventListener('click', handler, false);
     return viewSourceToggleButton;
@@ -371,8 +365,7 @@ Network.RequestHeadersView = class extends UI.VBox {
       else
         statusCodeImage.type = 'smallicon-red-ball';
 
-      requestMethodElement.title =
-          this._formatHeader(Common.UIString('Request Method'), this._request.requestMethod);
+      requestMethodElement.title = this._formatHeader(Common.UIString('Request Method'), this._request.requestMethod);
 
       var statusTextElement = statusCodeFragment.createChild('div', 'header-value source-code');
       var statusText = this._request.statusCode + ' ' + this._request.statusText;

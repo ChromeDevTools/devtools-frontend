@@ -62,9 +62,9 @@ SDK.InspectorBackendHostedMode.generateCommands = function(schema) {
     var types = domain['types'] || [];
     for (var j = 0; j < types.length; ++j) {
       var type = types[j];
-      if ((type['type'] === 'string') && type['enum'])
+      if ((type['type'] === 'string') && type['enum']) {
         result.push(generateEnum(domain.domain + '.' + type.id, type['enum']));
-      else if (type['type'] === 'object') {
+      } else if (type['type'] === 'object') {
         var properties = type['properties'] || [];
         for (var k = 0; k < properties.length; ++k) {
           var property = properties[k];
@@ -83,9 +83,9 @@ SDK.InspectorBackendHostedMode.generateCommands = function(schema) {
         var parameter = parameters[k];
 
         var type;
-        if (parameter.type)
+        if (parameter.type) {
           type = jsTypes[parameter.type] || parameter.type;
-        else {
+        } else {
           var ref = parameter['$ref'];
           if (ref.indexOf('.') !== -1)
             type = rawTypes[ref];

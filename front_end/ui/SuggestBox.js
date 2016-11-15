@@ -504,9 +504,10 @@ UI.SuggestBox = class {
    * @return {?Element}
    */
   itemElement(index) {
-    if (!this._elementList[index])
+    if (!this._elementList[index]) {
       this._elementList[index] =
           this._createItemElement(this._userEnteredText, this._items[index].title, this._items[index].className);
+    }
     return this._elementList[index];
   }
 };

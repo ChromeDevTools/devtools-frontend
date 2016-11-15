@@ -115,9 +115,8 @@ SDK.Script = class extends SDK.SDKObject {
     var text = Common.UIString(
         '\'//@ sourceURL\' and \'//@ sourceMappingURL\' are deprecated, please use \'//# sourceURL=\' and \'//# sourceMappingURL=\' instead.');
     var msg = new SDK.ConsoleMessage(
-        script.target(), SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Warning,
-        text, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
-        script.scriptId);
+        script.target(), SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Warning, text, undefined,
+        undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, script.scriptId);
     consoleModel.addMessage(msg);
   }
 
@@ -258,11 +257,12 @@ SDK.Script = class extends SDK.SDKObject {
     // We append correct sourceURL to script for consistency only. It's not actually needed for things to work correctly.
     newSource = this._appendSourceURLCommentIfNeeded(newSource);
 
-    if (this.scriptId)
+    if (this.scriptId) {
       this.target().debuggerAgent().setScriptSource(
           this.scriptId, newSource, undefined, didEditScriptSource.bind(this));
-    else
+    } else {
       callback('Script failed to parse');
+    }
   }
 
   /**

@@ -261,8 +261,8 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
       else
         activeProperty = property;
 
-      var renderer = new Elements.StylesSidebarPropertyRenderer(
-          null, node, property.name, /** @type {string} */ (property.value));
+      var renderer =
+          new Elements.StylesSidebarPropertyRenderer(null, node, property.name, /** @type {string} */ (property.value));
       renderer.setColorHandler(this._processColor.bind(this));
       var valueElement = renderer.renderValue();
       valueElement.classList.add('property-trace-value');

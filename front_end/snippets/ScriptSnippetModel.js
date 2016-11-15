@@ -280,8 +280,8 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    */
   _printRunScriptResult(target, result, scriptId, sourceURL) {
     var consoleMessage = new SDK.ConsoleMessage(
-        target, SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Log, '',
-        undefined, sourceURL, undefined, undefined, undefined, [result], undefined, undefined, undefined, scriptId);
+        target, SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Log, '', undefined, sourceURL,
+        undefined, undefined, undefined, [result], undefined, undefined, undefined, scriptId);
     target.consoleModel.addMessage(consoleMessage);
   }
 
@@ -291,8 +291,8 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {?string=} sourceURL
    */
   _printRunOrCompileScriptResultFailure(target, exceptionDetails, sourceURL) {
-    target.consoleModel.addMessage(SDK.ConsoleMessage.fromException(
-        target, exceptionDetails, undefined, undefined, sourceURL || undefined));
+    target.consoleModel.addMessage(
+        SDK.ConsoleMessage.fromException(target, exceptionDetails, undefined, undefined, sourceURL || undefined));
   }
 
   /**
@@ -534,8 +534,7 @@ Snippets.SnippetContentProvider = class {
      * @this {Snippets.SnippetContentProvider}
      */
     function performSearch() {
-      callback(
-          Common.ContentProvider.performSearchInContent(this._snippet.content, query, caseSensitive, isRegex));
+      callback(Common.ContentProvider.performSearchInContent(this._snippet.content, query, caseSensitive, isRegex));
     }
 
     // searchInContent should call back later.

@@ -421,8 +421,7 @@ Sources.TabbedEditorContainer = class extends Common.Object {
   }
 
   _updateHistory() {
-    var tabIds =
-        this._tabbedPane.lastOpenedTabIds(Sources.TabbedEditorContainer.maximalPreviouslyViewedFilesCount);
+    var tabIds = this._tabbedPane.lastOpenedTabIds(Sources.TabbedEditorContainer.maximalPreviouslyViewedFilesCount);
 
     /**
      * @param {string} tabId
@@ -537,8 +536,7 @@ Sources.TabbedEditorContainer = class extends Common.Object {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _removeUISourceCodeListeners(uiSourceCode) {
-    uiSourceCode.removeEventListener(
-        Workspace.UISourceCode.Events.TitleChanged, this._uiSourceCodeTitleChanged, this);
+    uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.TitleChanged, this._uiSourceCodeTitleChanged, this);
     uiSourceCode.removeEventListener(
         Workspace.UISourceCode.Events.WorkingCopyChanged, this._uiSourceCodeWorkingCopyChanged, this);
     uiSourceCode.removeEventListener(
@@ -558,7 +556,9 @@ Sources.TabbedEditorContainer = class extends Common.Object {
             tabId, 'smallicon-warning', Common.UIString('Changes to this file were not saved to file system.'));
       } else if (Runtime.experiments.isEnabled('persistence2') && Persistence.persistence.binding(uiSourceCode)) {
         var binding = Persistence.persistence.binding(uiSourceCode);
-        this._tabbedPane.setTabIcon(tabId, 'smallicon-green-checkmark', Persistence.PersistenceUtils.tooltipForUISourceCode(binding.fileSystem));
+        this._tabbedPane.setTabIcon(
+            tabId, 'smallicon-green-checkmark',
+            Persistence.PersistenceUtils.tooltipForUISourceCode(binding.fileSystem));
       } else {
         this._tabbedPane.setTabIcon(tabId, '');
       }
@@ -744,8 +744,9 @@ Sources.TabbedEditorContainer.History = class {
       if (index !== -1) {
         item = this._items[index];
         this._items.splice(index, 1);
-      } else
+      } else {
         item = new Sources.TabbedEditorContainer.HistoryItem(urls[i]);
+      }
       this._items.unshift(item);
       this._rebuildItemIndex();
     }

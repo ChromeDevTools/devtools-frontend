@@ -105,8 +105,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       if (this._hiddenCallFrames === 1)
         element.textContent = Common.UIString('1 stack frame is hidden (black-boxed).');
       else
-        element.textContent =
-            Common.UIString('%d stack frames are hidden (black-boxed).', this._hiddenCallFrames);
+        element.textContent = Common.UIString('%d stack frames are hidden (black-boxed).', this._hiddenCallFrames);
       element.createTextChild(' ');
       var showAllLink = element.createChild('span', 'link');
       showAllLink.textContent = Common.UIString('Show');
@@ -210,9 +209,10 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
   _callFrameContextMenu(callFrame, event) {
     var contextMenu = new UI.ContextMenu(event);
     var debuggerCallFrame = callFrame._debuggerCallFrame;
-    if (debuggerCallFrame)
+    if (debuggerCallFrame) {
       contextMenu.appendItem(
           Common.UIString.capitalize('Restart ^frame'), debuggerCallFrame.restart.bind(debuggerCallFrame));
+    }
 
     contextMenu.appendItem(Common.UIString.capitalize('Copy ^stack ^trace'), this._copyStackTrace.bind(this));
 
@@ -252,24 +252,25 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
 
     var manager = Bindings.blackboxManager;
     if (canBlackbox) {
-      if (isBlackboxed)
+      if (isBlackboxed) {
         contextMenu.appendItem(
             Common.UIString.capitalize('Stop ^blackboxing'),
             manager.unblackboxUISourceCode.bind(manager, uiSourceCode));
-      else
+      } else {
         contextMenu.appendItem(
-            Common.UIString.capitalize('Blackbox ^script'),
-            manager.blackboxUISourceCode.bind(manager, uiSourceCode));
+            Common.UIString.capitalize('Blackbox ^script'), manager.blackboxUISourceCode.bind(manager, uiSourceCode));
+      }
     }
     if (isContentScript) {
-      if (isBlackboxed)
+      if (isBlackboxed) {
         contextMenu.appendItem(
             Common.UIString.capitalize('Stop blackboxing ^all ^content ^scripts'),
             manager.blackboxContentScripts.bind(manager));
-      else
+      } else {
         contextMenu.appendItem(
             Common.UIString.capitalize('Blackbox ^all ^content ^scripts'),
             manager.unblackboxContentScripts.bind(manager));
+      }
     }
   }
 

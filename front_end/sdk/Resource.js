@@ -222,11 +222,12 @@ SDK.Resource = class extends SDK.SDKObject {
       callback(searchMatches || []);
     }
 
-    if (this.frameId)
+    if (this.frameId) {
       this.target().pageAgent().searchInResource(
           this.frameId, this.url, query, caseSensitive, isRegex, callbackWrapper);
-    else
+    } else {
       callback([]);
+    }
   }
 
   /**

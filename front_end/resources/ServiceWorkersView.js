@@ -153,20 +153,18 @@ Resources.ServiceWorkersView.Section = class {
 
     this._toolbar = section.createToolbar();
     this._toolbar.renderAsLinks();
-    this._updateButton =
-        new UI.ToolbarButton(Common.UIString('Update'), undefined, Common.UIString('Update'));
+    this._updateButton = new UI.ToolbarButton(Common.UIString('Update'), undefined, Common.UIString('Update'));
     this._updateButton.addEventListener('click', this._updateButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(this._updateButton);
-    this._pushButton = new UI.ToolbarButton(
-        Common.UIString('Emulate push event'), undefined, Common.UIString('Push'));
+    this._pushButton = new UI.ToolbarButton(Common.UIString('Emulate push event'), undefined, Common.UIString('Push'));
     this._pushButton.addEventListener('click', this._pushButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(this._pushButton);
-    this._syncButton = new UI.ToolbarButton(
-        Common.UIString('Emulate background sync event'), undefined, Common.UIString('Sync'));
+    this._syncButton =
+        new UI.ToolbarButton(Common.UIString('Emulate background sync event'), undefined, Common.UIString('Sync'));
     this._syncButton.addEventListener('click', this._syncButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(this._syncButton);
-    this._deleteButton = new UI.ToolbarButton(
-        Common.UIString('Unregister service worker'), undefined, Common.UIString('Unregister'));
+    this._deleteButton =
+        new UI.ToolbarButton(Common.UIString('Unregister service worker'), undefined, Common.UIString('Unregister'));
     this._deleteButton.addEventListener('click', this._unregisterButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(this._deleteButton);
 
@@ -257,8 +255,7 @@ Resources.ServiceWorkersView.Section = class {
       for (var client of active.controlledClients) {
         var clientLabelText = clientsList.createChild('div', 'service-worker-client');
         if (this._clientInfoCache.has(client))
-          this._updateClientInfo(
-              clientLabelText, /** @type {!SDK.TargetInfo} */ (this._clientInfoCache.get(client)));
+          this._updateClientInfo(clientLabelText, /** @type {!SDK.TargetInfo} */ (this._clientInfoCache.get(client)));
         this._subTargetsManager.getTargetInfo(client, this._onClientInfo.bind(this, clientLabelText));
       }
     }
@@ -280,8 +277,7 @@ Resources.ServiceWorkersView.Section = class {
       installingEntry.createChild('div', 'service-worker-subtitle').textContent =
           new Date(installing.scriptResponseTime * 1000).toLocaleString();
       if (!this._targetForVersionId(installing.id) && (installing.isRunning() || installing.isStarting()))
-        createLink(
-            installingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, installing.id));
+        createLink(installingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, installing.id));
     }
 
     this._section.setFieldVisible(Common.UIString('Errors'), !!this._registration.errors.length);
@@ -290,8 +286,8 @@ Resources.ServiceWorkersView.Section = class {
     errorsLabel.classList.add('service-worker-errors-label');
     errorsValue.appendChild(errorsLabel);
     this._moreButton = createLink(
-        errorsValue, this._errorsList.classList.contains('hidden') ? Common.UIString('details') :
-                                                                     Common.UIString('hide'),
+        errorsValue,
+        this._errorsList.classList.contains('hidden') ? Common.UIString('details') : Common.UIString('hide'),
         this._moreErrorsButtonClicked.bind(this));
     createLink(errorsValue, Common.UIString('clear'), this._clearErrorsButtonClicked.bind(this));
 

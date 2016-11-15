@@ -45,8 +45,8 @@ Settings.SettingsScreen = class extends UI.VBox {
         .createChild('div', 'settings-window-title')
         .textContent = Common.UIString('Settings');
 
-    this._tabbedLocation = UI.viewManager.createTabbedLocation(
-        () => Settings.SettingsScreen._showSettingsScreen(), 'settings-view');
+    this._tabbedLocation =
+        UI.viewManager.createTabbedLocation(() => Settings.SettingsScreen._showSettingsScreen(), 'settings-view');
     var tabbedPane = this._tabbedLocation.tabbedPane();
     tabbedPane.leftToolbar().appendToolbarItem(new UI.ToolbarItem(settingsLabelElement));
     tabbedPane.setShrinkableTabs(false);
@@ -314,8 +314,8 @@ Settings.WorkspaceSettingsTab = class extends Settings.SettingsTab {
     inputElement.type = 'text';
     inputElement.style.width = '270px';
     var folderExcludeSetting = Workspace.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
-    var setValue = UI.bindInput(
-        inputElement, folderExcludeSetting.set.bind(folderExcludeSetting), regexValidator, false);
+    var setValue =
+        UI.bindInput(inputElement, folderExcludeSetting.set.bind(folderExcludeSetting), regexValidator, false);
     folderExcludeSetting.addChangeListener(() => setValue.call(null, folderExcludeSetting.get()));
     setValue(folderExcludeSetting.get());
     return p;

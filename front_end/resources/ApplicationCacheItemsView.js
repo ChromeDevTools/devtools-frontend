@@ -45,8 +45,7 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
 
     this._frameId = frameId;
 
-    this._emptyWidget =
-        new UI.EmptyWidget(Common.UIString('No Application Cache information available.'));
+    this._emptyWidget = new UI.EmptyWidget(Common.UIString('No Application Cache information available.'));
     this._emptyWidget.show(this.element);
 
     this._markDirty();
@@ -181,12 +180,7 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
 
   _createDataGrid() {
     var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
-      {
-        id: 'resource',
-        title: Common.UIString('Resource'),
-        sort: UI.DataGrid.Order.Ascending,
-        sortable: true
-      },
+      {id: 'resource', title: Common.UIString('Resource'), sort: UI.DataGrid.Order.Ascending, sortable: true},
       {id: 'type', title: Common.UIString('Type'), sortable: true},
       {id: 'size', title: Common.UIString('Size'), align: UI.DataGrid.Align.Right, sortable: true}
     ]);

@@ -161,8 +161,7 @@ Accessibility.AXNodeTreeElement = class extends TreeElement {
 
     this.selectable = true;
 
-    this._inspectNodeButton =
-        new Accessibility.InspectNodeButton(axNode, treePane);
+    this._inspectNodeButton = new Accessibility.InspectNodeButton(axNode, treePane);
   }
 
   /**
@@ -321,8 +320,7 @@ Accessibility.ExpandSiblingsButton = class {
     this._treeElement = treeElement;
 
     this.element = createElementWithClass('button', 'expand-siblings');
-    this.element.textContent = Common.UIString(
-        (numSiblings === 1 ? '+ %d node' : '+ %d nodes'), numSiblings);
+    this.element.textContent = Common.UIString((numSiblings === 1 ? '+ %d node' : '+ %d nodes'), numSiblings);
     this.element.addEventListener('mousedown', this._handleMouseDown.bind(this));
   }
 
@@ -360,10 +358,8 @@ Accessibility.AXNodeTreeParentElement = class extends Accessibility.AXNodeTreeEl
     super.onattach();
     if (this._treePane.isExpanded(this._axNode.backendDOMNodeId()))
       this._listItemNode.classList.add('siblings-expanded');
-    if (this._axNode.numChildren() > 1) {
-      this._listItemNode.insertBefore(this._expandSiblingsButton.element,
-                                      this._inspectNodeButton.element);
-    }
+    if (this._axNode.numChildren() > 1)
+      this._listItemNode.insertBefore(this._expandSiblingsButton.element, this._inspectNodeButton.element);
   }
 
   /**

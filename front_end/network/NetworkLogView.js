@@ -761,6 +761,13 @@ Network.NetworkLogView = class extends UI.VBox {
     this._columns.wasShown();
   }
 
+  /**
+   * @override
+   */
+  willHide() {
+    this._columns.willHide();
+  }
+
   _refresh() {
     this._needsRefresh = false;
 

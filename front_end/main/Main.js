@@ -250,6 +250,9 @@ Main.Main = class {
           InspectorFrontendHostAPI.Events.EnterInspectElementMode,
           toggleSearchNodeAction.execute.bind(toggleSearchNodeAction), this);
     }
+    InspectorFrontendHost.events.addEventListener(
+        InspectorFrontendHostAPI.Events.RevealSourceLine, this._revealSourceLine, this);
+
     UI.inspectorView.createToolbars();
     InspectorFrontendHost.loadCompleted();
 
@@ -316,6 +319,34 @@ Main.Main = class {
       if (message.show)
         Common.console.show();
     }
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _revealSourceLine(event) {
+    var url = /** @type {string} */ (event.data['url']);
+    var lineNumber = /** @type {number} */ (event.data['lineNumber']);
+    var columnNumber = /** @type {number} */ (event.data['columnNumber']);
+
+    var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
+    if (uiSourceCode) {
+      Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
+      return;
+    }
+
+    /**
+     * @param {!Common.Event} event
+     */
+    function listener(event) {
+      var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+      if (uiSourceCode.url() === url) {
+        Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
+        Workspace.workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener);
+      }
+    }
+
+    Workspace.workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener);
   }
 
   _documentClick(event) {

@@ -10,8 +10,6 @@ Bindings.NetworkMapping = class {
    */
   constructor(workspace) {
     this._workspace = workspace;
-    InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.RevealSourceLine, this._revealSourceLine, this);
   }
 
   /**
@@ -71,35 +69,6 @@ Bindings.NetworkMapping = class {
    */
   uiSourceCodeForURLForAnyTarget(url) {
     return Workspace.workspace.uiSourceCodeForURL(url);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _revealSourceLine(event) {
-    var url = /** @type {string} */ (event.data['url']);
-    var lineNumber = /** @type {number} */ (event.data['lineNumber']);
-    var columnNumber = /** @type {number} */ (event.data['columnNumber']);
-
-    var uiSourceCode = this.uiSourceCodeForURLForAnyTarget(url);
-    if (uiSourceCode) {
-      Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
-      return;
-    }
-
-    /**
-     * @param {!Common.Event} event
-     * @this {Bindings.NetworkMapping}
-     */
-    function listener(event) {
-      var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
-      if (uiSourceCode.url() === url) {
-        Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
-        this._workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener, this);
-      }
-    }
-
-    this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, listener, this);
   }
 };
 

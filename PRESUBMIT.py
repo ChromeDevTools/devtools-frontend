@@ -48,14 +48,52 @@ def _CheckNodeAndNPMModules(input_api, output_api):
         return [output_api.PresubmitError(out)]
     return [output_api.PresubmitNotifyResult(out)]
 
+def _FormatDevtools(input_api, output_api):
+    affected_front_end_files = _getAffectedFrontEndFiles(input_api)
+    if len(affected_front_end_files) == 0:
+        return []
+    original_sys_path = sys.path
+    try:
+        sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts")]
+        import install_node_deps
+    finally:
+        sys.path = original_sys_path
+
+    node_path, _ = install_node_deps.resolve_node_paths()
+    format_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "format.js")
+    glob_arg = "--glob=" + ",".join(affected_front_end_files)
+    check_formatting_process = _inputPopen(input_api,
+        args=[node_path, format_path] + [glob_arg, "--output-replacements-xml"])
+    check_formatting_out, _ = check_formatting_process.communicate()
+    if check_formatting_process.returncode != 0:
+        return [output_api.PresubmitError(check_formatting_out)]
+    if "</replacement>" not in check_formatting_out:
+        return [output_api.PresubmitNotifyResult("CL is properly formatted")]
+
+    format_args = [node_path, format_path] + [glob_arg]
+    format_process = _inputPopen(input_api, format_args)
+    format_process_out, _ = format_process.communicate()
+
+    # Use eslint to autofix the braces
+    eslint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "node_modules", ".bin", "eslint")
+    eslint_process = _inputPopen(input_api,
+        [node_path, eslint_path, '--no-eslintrc', '--fix', '--env=es6',
+         '--rule={"curly": [2, "multi-or-nest", "consistent"]}']
+                                 + affected_front_end_files)
+    eslint_process.communicate()
+
+    # Need to run clang-format again to align the braces
+    reformat_process = _inputPopen(input_api, format_args)
+    reformat_process.communicate()
+
+    return [output_api.PresubmitError("ERROR: Found formatting violations.\n"
+                                      "Ran clang-format on files changed in CL\n"
+                                      "Use git status to check the formatting changes"),
+            output_api.PresubmitError(format_process_out)]
+
 
 def _CheckDevtoolsStyle(input_api, output_api):
-    local_paths = [f.AbsoluteLocalPath() for f in input_api.AffectedFiles() if f.Action() != "D"]
-
-    devtools_root = input_api.PresubmitLocalPath()
-    devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
-    affected_front_end_files = [file_name for file_name in local_paths if devtools_front_end in file_name and file_name.endswith(".js")]
-    affected_front_end_files = [input_api.os_path.relpath(file_name, devtools_root) for file_name in affected_front_end_files]
+    affected_front_end_files = _getAffectedFrontEndFiles(input_api)
     if len(affected_front_end_files) > 0:
         lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                            "scripts", "lint_javascript.py")
@@ -165,6 +203,7 @@ def _CheckCSSViolations(input_api, output_api):
 def CheckChangeOnUpload(input_api, output_api):
     results = []
     results.extend(_CheckNodeAndNPMModules(input_api, output_api))
+    results.extend(_FormatDevtools(input_api, output_api))
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
     results.extend(_CompileDevtoolsFrontend(input_api, output_api))
     results.extend(_CheckConvertSVGToPNGHashes(input_api, output_api))
@@ -175,3 +214,16 @@ def CheckChangeOnUpload(input_api, output_api):
 
 def CheckChangeOnCommit(input_api, output_api):
     return []
+
+def _getAffectedFrontEndFiles(input_api):
+    local_paths = [f.AbsoluteLocalPath() for f in input_api.AffectedFiles() if f.Action() != "D"]
+    devtools_root = input_api.PresubmitLocalPath()
+    devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
+    affected_front_end_files = [file_name for file_name in local_paths if devtools_front_end in file_name and file_name.endswith(".js")]
+    return [input_api.os_path.relpath(file_name, devtools_root) for file_name in affected_front_end_files]
+
+def _inputPopen(input_api, args):
+    return input_api.subprocess.Popen(
+        args,
+        stdout=input_api.subprocess.PIPE,
+        stderr=input_api.subprocess.STDOUT)

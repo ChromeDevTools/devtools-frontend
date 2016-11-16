@@ -4,9 +4,8 @@
 var fs = require('fs');
 var os = require('os');
 var path = require('path');
-var resolve = require('resolve').sync;
 var spawn = require('child_process').spawn;
-var glob = require("glob");
+var globby = require("globby");
 var async = require("async");
 
 var VERSION = '1.0.45';
@@ -53,7 +52,7 @@ function spawnClangFormat(args, done, stdio) {
   }
 
   // extract glob, if present
-  var filesGlob = args.filter(function(arg){return arg.indexOf('--glob=') === 0;})
+  var globString = args.filter(function(arg){return arg.indexOf('--glob=') === 0;})
                     .map(function(arg){return arg.replace('--glob=', '');})
                     .shift();
 
@@ -62,7 +61,8 @@ function spawnClangFormat(args, done, stdio) {
                     .map(function(arg){return arg.replace('--ignore=', '');})
                     .shift();
 
-  if (filesGlob) {
+  if (globString) {
+    var globs = globString.split(',');
     // remove glob and ignore from arg list
     args = args.filter(function(arg){return arg.indexOf('--glob=') === -1;})
       .filter(function(arg){return arg.indexOf('--ignore=') === -1;});
@@ -72,7 +72,7 @@ function spawnClangFormat(args, done, stdio) {
       options.ignore = ignore.split(',');
     }
 
-    return glob(filesGlob, options, function(er, files) {
+    return globby(globs, options).then(function(files) {
       // split file array into chunks of 30
       var i,j, chunks = [], chunkSize = 30;
       for (i=0,j=files.length; i<j; i+=chunkSize) {
@@ -111,21 +111,6 @@ function spawnClangFormat(args, done, stdio) {
 }
 
 function main() {
-  // Find clang-format in node_modules of the project of the .js file, or cwd.
-  var nonDashArgs = process.argv.filter(function(arg, idx) { return idx > 1 && arg[0] != '-' });
-  // Using the last file makes it less likely to collide with clang-format's argument parsing.
-  var lastFileArg = nonDashArgs[nonDashArgs.length - 1];
-  var basedir = lastFileArg ? path.dirname(lastFileArg) :  // relative to the last .js file given.
-                    process.cwd();                         // or relative to the cwd()
-  var resolvedClangFormat;
-  var clangFormatLocation;
-  try {
-    clangFormatLocation = resolve('clang-format', {basedir: basedir});
-    resolvedClangFormat = require(clangFormatLocation);
-  } catch (e) {
-    // Ignore and use the clang-format that came with this package.
-  }
-  // Run clang-format.
   try {
     // Pass all arguments to clang-format, including e.g. -version etc.
     spawnClangFormat(process.argv.slice(2), process.exit, 'inherit');

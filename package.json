@@ -33,7 +33,6 @@
     "eslint": "3.10.0",
     "clang-format": "1.0.45",
     "async": "1.5.2",
-    "glob": "7.1.1",
-    "resolve": "1.1.7"
+    "globby": "6.0.0"
   }
 }

@@ -39,7 +39,6 @@ Sources.SourcesPanel = class extends UI.Panel {
         this._handleDrop.bind(this));
 
     this._workspace = Workspace.workspace;
-    this._networkMapping = Bindings.networkMapping;
 
     this._togglePauseAction =
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('debugger.toggle-pause'));
@@ -814,7 +813,7 @@ Sources.SourcesPanel = class extends UI.Panel {
         uiSourceCode.project().type() === Workspace.projectTypes.ContentScripts) {
       if (!this._workspace.projects().filter(filterProject).length)
         return;
-      if (this._networkMapping.uiSourceCodeForURLForAnyTarget(uiSourceCode.url()) === uiSourceCode) {
+      if (this._workspace.uiSourceCodeForURL(uiSourceCode.url()) === uiSourceCode) {
         contextMenu.appendItem(
             Common.UIString.capitalize('Map to ^file ^system ^resource\u2026'),
             this.mapNetworkToFileSystem.bind(this, uiSourceCode));
@@ -916,7 +915,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     if (!(target instanceof SDK.NetworkRequest))
       return;
     var request = /** @type {!SDK.NetworkRequest} */ (target);
-    var uiSourceCode = this._networkMapping.uiSourceCodeForURLForAnyTarget(request.url);
+    var uiSourceCode = this._workspace.uiSourceCodeForURL(request.url);
     if (!uiSourceCode)
       return;
     var openText = Common.UIString.capitalize('Open in Sources ^panel');

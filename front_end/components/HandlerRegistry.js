@@ -173,7 +173,7 @@ Components.HandlerRegistry = class extends Common.Object {
     var resourceURL = uiLocation ? uiLocation.uiSourceCode.contentURL() : anchorElement.href;
     var uiSourceCode = uiLocation ?
         uiLocation.uiSourceCode :
-        (resourceURL ? Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(resourceURL) : null);
+        (resourceURL ? Workspace.workspace.uiSourceCodeForURL(resourceURL) : null);
     function open() {
       Common.Revealer.reveal(uiSourceCode);
     }

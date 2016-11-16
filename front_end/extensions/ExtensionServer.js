@@ -364,7 +364,7 @@ Extensions.ExtensionServer = class extends Common.Object {
   }
 
   _onOpenResource(message) {
-    var uiSourceCode = Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(message.url);
+    var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(message.url);
     if (uiSourceCode) {
       Common.Revealer.reveal(uiSourceCode.uiLocation(message.lineNumber, 0));
       return this._status.OK();

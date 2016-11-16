@@ -551,7 +551,7 @@ Components.linkifyStringAsFragment = function(string) {
    * @return {!Node}
    */
   function linkifier(title, url, lineNumber, columnNumber) {
-    var isExternal = !Bindings.resourceForURL(url) && !Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(url);
+    var isExternal = !Bindings.resourceForURL(url) && !Workspace.workspace.uiSourceCodeForURL(url);
     var urlNode = UI.linkifyURLAsNode(url, title, undefined, isExternal);
     if (typeof lineNumber !== 'undefined') {
       urlNode.lineNumber = lineNumber;

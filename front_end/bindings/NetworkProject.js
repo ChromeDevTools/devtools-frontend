@@ -380,6 +380,30 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
       project.removeProject();
     this._workspaceProjects.clear();
   }
+
+  /**
+   * @param {!Workspace.Workspace} workspace
+   * @param {string} url
+   * @param {!SDK.Script} script
+   * @return {?Workspace.UISourceCode}
+   */
+  static uiSourceCodeForScriptURL(workspace, url, script) {
+    var target = script.target();
+    var frame = SDK.ResourceTreeFrame.fromScript(script);
+    return workspace.uiSourceCode(Bindings.NetworkProject.projectId(target, frame, false), url) ||
+        workspace.uiSourceCode(Bindings.NetworkProject.projectId(target, frame, true), url);
+  }
+
+  /**
+   * @param {!Workspace.Workspace} workspace
+   * @param {string} url
+   * @param {!SDK.CSSStyleSheetHeader} header
+   * @return {?Workspace.UISourceCode}
+   */
+  static uiSourceCodeForStyleURL(workspace, url, header) {
+    var frame = SDK.ResourceTreeFrame.fromStyleSheet(header);
+    return workspace.uiSourceCode(Bindings.NetworkProject.projectId(header.target(), frame, false), url);
+  }
 };
 
 Bindings.NetworkProject._networkProjectSymbol = Symbol('networkProject');

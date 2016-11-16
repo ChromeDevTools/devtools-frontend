@@ -164,7 +164,6 @@ devtools_bindings_js_files = [
   "front_end/bindings/FileSystemWorkspaceBinding.js",
   "front_end/bindings/FileUtils.js",
   "front_end/bindings/LiveLocation.js",
-  "front_end/bindings/NetworkMapping.js",
   "front_end/bindings/NetworkProject.js",
   "front_end/bindings/PresentationConsoleMessageHelper.js",
   "front_end/bindings/ResourceScriptMapping.js",

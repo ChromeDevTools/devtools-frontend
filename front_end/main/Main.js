@@ -188,13 +188,12 @@ Main.Main = class {
 
     var fileSystemWorkspaceBinding =
         new Bindings.FileSystemWorkspaceBinding(Workspace.isolatedFileSystemManager, Workspace.workspace);
-    Bindings.networkMapping = new Bindings.NetworkMapping(Workspace.workspace);
     Main.networkProjectManager = new Bindings.NetworkProjectManager(SDK.targetManager, Workspace.workspace);
     Bindings.presentationConsoleMessageHelper = new Bindings.PresentationConsoleMessageHelper(Workspace.workspace);
     Bindings.cssWorkspaceBinding =
-        new Bindings.CSSWorkspaceBinding(SDK.targetManager, Workspace.workspace, Bindings.networkMapping);
+        new Bindings.CSSWorkspaceBinding(SDK.targetManager, Workspace.workspace);
     Bindings.debuggerWorkspaceBinding =
-        new Bindings.DebuggerWorkspaceBinding(SDK.targetManager, Workspace.workspace, Bindings.networkMapping);
+        new Bindings.DebuggerWorkspaceBinding(SDK.targetManager, Workspace.workspace);
     Bindings.breakpointManager =
         new Bindings.BreakpointManager(null, Workspace.workspace, SDK.targetManager, Bindings.debuggerWorkspaceBinding);
     Extensions.extensionServer = new Extensions.ExtensionServer();
@@ -372,7 +371,7 @@ Main.Main = class {
       if (Components.openAnchorLocationRegistry.dispatch({url: anchor.href, lineNumber: anchor.lineNumber}))
         return;
 
-      var uiSourceCode = Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(anchor.href);
+      var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(anchor.href);
       if (uiSourceCode) {
         Common.Revealer.reveal(uiSourceCode.uiLocation(anchor.lineNumber || 0, anchor.columnNumber || 0));
         return;

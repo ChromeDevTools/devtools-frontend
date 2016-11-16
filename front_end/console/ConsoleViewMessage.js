@@ -291,7 +291,7 @@ Console.ConsoleViewMessage = class {
       }
     } else if (consoleMessage.url) {
       var url = consoleMessage.url;
-      var isExternal = !Bindings.resourceForURL(url) && !Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(url);
+      var isExternal = !Bindings.resourceForURL(url) && !Workspace.workspace.uiSourceCodeForURL(url);
       anchorElement = UI.linkifyURLAsNode(url, url, 'console-message-url', isExternal);
     }
 

@@ -34,13 +34,13 @@
 Bindings.SASSSourceMapping = class {
   /**
    * @param {!SDK.CSSModel} cssModel
-   * @param {!Bindings.NetworkMapping} networkMapping
+   * @param {!Workspace.Workspace} workspace
    * @param {!Bindings.NetworkProject} networkProject
    */
-  constructor(cssModel, networkMapping, networkProject) {
+  constructor(cssModel, workspace, networkProject) {
     this._cssModel = cssModel;
     this._networkProject = networkProject;
-    this._networkMapping = networkMapping;
+    this._workspace = workspace;
     this._eventListeners = [
       this._cssModel.addEventListener(SDK.CSSModel.Events.SourceMapAttached, this._sourceMapAttached, this),
       this._cssModel.addEventListener(SDK.CSSModel.Events.SourceMapDetached, this._sourceMapDetached, this),
@@ -83,7 +83,7 @@ Bindings.SASSSourceMapping = class {
     for (var header of headers) {
       Bindings.cssWorkspaceBinding.updateLocations(header);
       for (var sourceURL of newSources.keys()) {
-        var uiSourceCode = this._networkMapping.uiSourceCodeForStyleURL(sourceURL, header);
+        var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForStyleURL(this._workspace, sourceURL, header);
         if (!uiSourceCode) {
           console.error('Failed to update source for ' + sourceURL);
           continue;
@@ -108,7 +108,7 @@ Bindings.SASSSourceMapping = class {
     var entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
     if (!entry || !entry.sourceURL)
       return null;
-    var uiSourceCode = this._networkMapping.uiSourceCodeForStyleURL(entry.sourceURL, rawLocation.header());
+    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForStyleURL(this._workspace, entry.sourceURL, rawLocation.header());
     if (!uiSourceCode)
       return null;
     return uiSourceCode.uiLocation(entry.sourceLineNumber || 0, entry.sourceColumnNumber);

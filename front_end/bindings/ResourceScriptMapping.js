@@ -35,13 +35,12 @@ Bindings.ResourceScriptMapping = class {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Workspace.Workspace} workspace
-   * @param {!Bindings.NetworkMapping} networkMapping
    * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
-  constructor(debuggerModel, workspace, networkMapping, debuggerWorkspaceBinding) {
+  constructor(debuggerModel, workspace, debuggerWorkspaceBinding) {
     this._target = debuggerModel.target();
     this._debuggerModel = debuggerModel;
-    this._networkMapping = networkMapping;
+    this._workspace = workspace;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     /** @type {!Set<!Workspace.UISourceCode>} */
     this._boundUISourceCodes = new Set();
@@ -193,7 +192,7 @@ Bindings.ResourceScriptMapping = class {
   _workspaceUISourceCodeForScript(script) {
     if (script.isAnonymousScript())
       return null;
-    return this._networkMapping.uiSourceCodeForScriptURL(script.sourceURL, script);
+    return Bindings.NetworkProject.uiSourceCodeForScriptURL(this._workspace, script.sourceURL, script);
   }
 
   /**

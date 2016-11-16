@@ -522,7 +522,7 @@ Network.NetworkDataGridNode = class extends UI.SortableDataGridNode {
     switch (initiator.type) {
       case SDK.NetworkRequest.InitiatorType.Parser:
         cell.title = initiator.url + ':' + (initiator.lineNumber + 1);
-        var uiSourceCode = Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(initiator.url);
+        var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(initiator.url);
         cell.appendChild(Components.linkifyResourceAsNode(
             initiator.url, initiator.lineNumber, initiator.columnNumber, undefined, undefined,
             uiSourceCode ? uiSourceCode.displayName() : undefined));

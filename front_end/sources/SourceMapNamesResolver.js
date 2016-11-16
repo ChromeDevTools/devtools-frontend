@@ -152,7 +152,7 @@ Sources.SourceMapNamesResolver._resolveScope = function(scope) {
     var sourceTextRange = new Common.TextRange(
         startEntry.sourceLineNumber, startEntry.sourceColumnNumber, endEntry.sourceLineNumber,
         endEntry.sourceColumnNumber);
-    var uiSourceCode = Bindings.networkMapping.uiSourceCodeForScriptURL(startEntry.sourceURL, script);
+    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForScriptURL(Workspace.workspace, startEntry.sourceURL, script);
     if (!uiSourceCode)
       return Promise.resolve(/** @type {?string} */ (null));
 

@@ -62,7 +62,7 @@ Bindings.displayNameForURL = function(url) {
   if (resource)
     return resource.displayName;
 
-  var uiSourceCode = Bindings.networkMapping.uiSourceCodeForURLForAnyTarget(url);
+  var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
   if (uiSourceCode)
     return uiSourceCode.displayName();
 

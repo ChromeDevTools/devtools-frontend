@@ -35,14 +35,13 @@ Bindings.CompilerScriptMapping = class {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Workspace.Workspace} workspace
-   * @param {!Bindings.NetworkMapping} networkMapping
    * @param {!Bindings.NetworkProject} networkProject
    * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
-  constructor(debuggerModel, workspace, networkMapping, networkProject, debuggerWorkspaceBinding) {
+  constructor(debuggerModel, workspace, networkProject, debuggerWorkspaceBinding) {
     this._target = debuggerModel.target();
     this._debuggerModel = debuggerModel;
-    this._networkMapping = networkMapping;
+    this._workspace = workspace;
     this._networkProject = networkProject;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
@@ -118,7 +117,7 @@ Bindings.CompilerScriptMapping = class {
     var script = rawLocation.script();
     if (!script)
       return null;
-    var uiSourceCode = this._networkMapping.uiSourceCodeForScriptURL(/** @type {string} */ (entry.sourceURL), script);
+    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForScriptURL(this._workspace, /** @type {string} */ (entry.sourceURL), script);
     if (!uiSourceCode)
       return null;
     return uiSourceCode.uiLocation(
@@ -238,7 +237,7 @@ Bindings.CompilerScriptMapping = class {
       if (this._sourceMapForURL.get(sourceURL))
         continue;
       this._sourceMapForURL.set(sourceURL, sourceMap);
-      var uiSourceCode = this._networkMapping.uiSourceCodeForScriptURL(sourceURL, script);
+      var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForScriptURL(this._workspace, sourceURL, script);
       if (!uiSourceCode) {
         var contentProvider = sourceMap.sourceContentProvider(sourceURL, Common.resourceTypes.SourceMapScript);
         var embeddedContent = sourceMap.embeddedContentByURL(sourceURL);
@@ -360,7 +359,7 @@ Bindings.CompilerScriptMapping = class {
       if (!script)
         return;
       for (var sourceURL of sourceMap.sourceURLs()) {
-        var uiSourceCode = this._networkMapping.uiSourceCodeForScriptURL(sourceURL, script);
+        var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForScriptURL(this._workspace, sourceURL, script);
         if (uiSourceCode)
           this._unbindUISourceCode(uiSourceCode);
       }

@@ -9,11 +9,9 @@ Bindings.DebuggerWorkspaceBinding = class {
   /**
    * @param {!SDK.TargetManager} targetManager
    * @param {!Workspace.Workspace} workspace
-   * @param {!Bindings.NetworkMapping} networkMapping
    */
-  constructor(targetManager, workspace, networkMapping) {
+  constructor(targetManager, workspace) {
     this._workspace = workspace;
-    this._networkMapping = networkMapping;
 
     // FIXME: Migrate from _targetToData to _debuggerModelToData.
     /** @type {!Map.<!SDK.Target, !Bindings.DebuggerWorkspaceBinding.TargetData>} */
@@ -361,13 +359,12 @@ Bindings.DebuggerWorkspaceBinding.TargetData = class {
     this.callFrameLocations = new Set();
 
     var workspace = debuggerWorkspaceBinding._workspace;
-    var networkMapping = debuggerWorkspaceBinding._networkMapping;
 
     this._defaultMapping = new Bindings.DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._resourceMapping =
-        new Bindings.ResourceScriptMapping(debuggerModel, workspace, networkMapping, debuggerWorkspaceBinding);
+        new Bindings.ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._compilerMapping = new Bindings.CompilerScriptMapping(
-        debuggerModel, workspace, networkMapping, Bindings.NetworkProject.forTarget(this._target),
+        debuggerModel, workspace, Bindings.NetworkProject.forTarget(this._target),
         debuggerWorkspaceBinding);
 
     /** @type {!Map.<!Workspace.UISourceCode, !Bindings.DebuggerSourceMapping>} */

@@ -41,6 +41,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     this._dataGrid.addEventListener(UI.DataGrid.Events.SortingChanged, this._sortingChanged, this);
     this._dataGrid.element.addEventListener('mousemove', this._onMouseMove.bind(this), true);
     this._dataGrid.setResizeMethod(UI.DataGrid.ResizeMethod.Last);
+    this._dataGrid.setRowContextMenuCallback(this._onContextMenu.bind(this));
     this._dataGrid.asWidget().show(mainView.element);
 
     this._splitWidget = new UI.SplitWidget(true, true, 'timelineTreeViewDetailsSplitWidget');
@@ -90,6 +91,13 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @param {?TimelineModel.TimelineProfileTree.Node} node
    */
   _onHover(node) {
+  }
+
+  /**
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!TimelineModel.TimelineProfileTree.Node} node
+   */
+  _appendContextMenuItems(contextMenu, node) {
   }
 
   /**
@@ -269,6 +277,17 @@ Timeline.TimelineTreeView = class extends UI.VBox {
       return;
     this._lastHoveredProfileNode = profileNode;
     this._onHover(profileNode);
+  }
+
+  /**
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!UI.DataGridNode} gridNode
+   */
+  _onContextMenu(contextMenu, gridNode) {
+    var profileNode = gridNode._profileNode;
+    if (!profileNode)
+      return;
+    this._appendContextMenuItems(contextMenu, profileNode);
   }
 
   /**
@@ -649,6 +668,21 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
         console.assert(false, `Unexpected aggregation setting: ${groupBy}`);
         return () => Symbol('uniqueGroupId');
     }
+  }
+  /**
+   * @override
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!TimelineModel.TimelineProfileTree.Node} node
+   */
+  _appendContextMenuItems(contextMenu, node) {
+    if (this._groupBySetting.get() !== Timeline.AggregatedTimelineTreeView.GroupBy.Frame)
+      return;
+    if (!node.isGroupNode())
+      return;
+    var frame = this._model.pageFrameById(node.id);
+    if (!frame || !frame.ownerNode)
+      return;
+    contextMenu.appendApplicableItems(frame.ownerNode);
   }
 
   /**

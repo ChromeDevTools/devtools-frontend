@@ -52,7 +52,7 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
       'auxclick', 'click', 'dblclick', 'mousedown', 'mouseup', 'mouseover', 'mousemove', 'mouseout', 'mouseenter',
       'mouseleave', 'mousewheel', 'wheel', 'contextmenu'
     ]);
-    this._createCategory(Common.UIString('Parse'), ['setInnerHTML'], true);
+    this._createCategory(Common.UIString('Parse'), ['setInnerHTML', 'document.write'], true);
     this._createCategory(Common.UIString('Pointer'), [
       'pointerover', 'pointerout', 'pointerenter', 'pointerleave', 'pointerdown', 'pointerup', 'pointermove',
       'pointercancel', 'gotpointercapture', 'lostpointercapture'

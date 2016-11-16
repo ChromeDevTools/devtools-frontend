@@ -53,7 +53,7 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
       if (!InspectorFrontendHost.isUnderTest()) {
         this._logAgent.startViolationsReport([
           {name: 'longTask', threshold: 50}, {name: 'longLayout', threshold: 30},
-          {name: 'blockedEvent', threshold: 100}
+          {name: 'blockedEvent', threshold: 100}, {name: 'blockedParser', threshold: -1}
         ]);
       }
     }

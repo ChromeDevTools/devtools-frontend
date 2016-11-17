@@ -330,7 +330,7 @@ UI.TextFilterUI = class extends Common.Object {
       else
         this._suggestionBuilder.applySuggestion(this._filterInputElement, suggestions[0], true);
       var anchorBox = this._filterInputElement.boxInWindow().relativeTo(new AnchorBox(-3, 0));
-      this._suggestBox.updateSuggestions(anchorBox, suggestions.map(item => ({title: item})), 0, true, '');
+      this._suggestBox.updateSuggestions(anchorBox, suggestions.map(item => ({title: item})), true, true, '');
     } else {
       this._suggestBox.hide();
     }

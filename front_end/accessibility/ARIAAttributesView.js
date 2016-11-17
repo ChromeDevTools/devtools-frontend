@@ -198,28 +198,21 @@ Accessibility.ARIAAttributesPane.ARIAAttributePrompt = class extends UI.TextProm
     super();
     this.initialize(this._buildPropertyCompletions.bind(this));
 
-    this.setSuggestBoxEnabled(true);
-
     this._ariaCompletions = ariaCompletions;
     this._treeElement = treeElement;
   }
 
   /**
-   * @param {!Element} proxyElement
-   * @param {!Range} wordRange
-   * @param {boolean} force
-   * @param {function(!Array.<string>, number=)} completionsReadyCallback
+   * @param {string} expression
+   * @param {string} prefix
+   * @param {boolean=} force
+   * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
-  _buildPropertyCompletions(proxyElement, wordRange, force, completionsReadyCallback) {
-    var prefix = wordRange.toString().toLowerCase();
-    if (!prefix && !force && (this._isEditingName || proxyElement.textContent.length)) {
-      completionsReadyCallback([]);
-      return;
-    }
-
-    var results = this._ariaCompletions.filter((value) => value.startsWith(prefix));
-
-    completionsReadyCallback(results, 0);
+  _buildPropertyCompletions(expression, prefix, force) {
+    prefix = prefix.toLowerCase();
+    if (!prefix && !force && (this._isEditingName || expression))
+      return Promise.resolve([]);
+    return Promise.resolve(this._ariaCompletions.filter((value) => value.startsWith(prefix)).map(c => ({title: c})));
   }
 };
 

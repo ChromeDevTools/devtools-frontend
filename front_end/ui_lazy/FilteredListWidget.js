@@ -26,7 +26,7 @@ UI.FilteredListWidget = class extends UI.VBox {
     this._promptElement.setAttribute('spellcheck', 'false');
     this._promptElement.setAttribute('contenteditable', 'plaintext-only');
     this._prompt = new UI.TextPrompt();
-    this._prompt.initialize(() => undefined);
+    this._prompt.initialize(() => Promise.resolve([]));
     this._prompt.renderAsBlock();
     var promptProxy = this._prompt.attach(this._promptElement);
     promptProxy.addEventListener('input', this._onInput.bind(this), false);

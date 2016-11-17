@@ -258,9 +258,8 @@ TextEditor.TextEditorAutocompleteController = class {
       if (!oldQueryRange || queryRange.startLine !== oldQueryRange.startLine ||
           queryRange.startColumn !== oldQueryRange.startColumn)
         this._updateAnchorBox();
-      this._suggestBox.updateSuggestions(this._anchorBox, wordsWithQuery, 0, !this._isCursorAtEndOfLine(), query);
+      this._suggestBox.updateSuggestions(this._anchorBox, wordsWithQuery, true, !this._isCursorAtEndOfLine(), query);
       this._onSuggestionsShownForTest(wordsWithQuery);
-      this._setHint(wordsWithQuery[0].title);
     }
   }
 

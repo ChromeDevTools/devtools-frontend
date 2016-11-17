@@ -267,14 +267,7 @@ Console.ConsolePrompt = class extends UI.Widget {
       return Promise.resolve(historyWords);
 
     return Components.JavaScriptAutocomplete.completionsForTextInCurrentContext(before, query, force)
-        .then(innerWordsWithQuery);
-    /**
-     * @param {!Array<string>} words
-     * @return {!UI.SuggestBox.Suggestions}
-     */
-    function innerWordsWithQuery(words) {
-      return words.map(item => ({title: item})).concat(historyWords);
-    }
+        .then(words => words.concat(historyWords));
   }
 
   _editorSetForTest() {

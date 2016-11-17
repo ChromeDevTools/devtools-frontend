@@ -2752,7 +2752,6 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
     // Use the same callback both for applyItemCallback and acceptItemCallback.
     super();
     this.initialize(this._buildPropertyCompletions.bind(this), UI.StyleValueDelimiters);
-    this.setSuggestBoxEnabled(true);
     this._cssCompletions = cssCompletions;
     this._treeElement = treeElement;
     this._isEditingName = isEditingName;
@@ -2877,42 +2876,39 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
   }
 
   /**
-   * @param {!Element} proxyElement
-   * @param {!Range} wordRange
-   * @param {boolean} force
-   * @param {function(!Array.<string>, number=)} completionsReadyCallback
+   * @param {string} expression
+   * @param {string} query
+   * @param {boolean=} force
+   * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
-  _buildPropertyCompletions(proxyElement, wordRange, force, completionsReadyCallback) {
-    var query = wordRange.toString().toLowerCase();
-    if (!query && !force && (this._isEditingName || proxyElement.textContent.length)) {
-      completionsReadyCallback([]);
-      return;
-    }
+  _buildPropertyCompletions(expression, query, force) {
+    var lowerQuery = query.toLowerCase();
+    if (!query && !force && (this._isEditingName || expression))
+      return Promise.resolve([]);
 
     var prefixResults = [];
     var anywhereResults = [];
     this._cssCompletions.forEach(filterCompletions);
     var results = prefixResults.concat(anywhereResults);
 
-    if (!this._isEditingName && !results.length && query.length > 1 && '!important'.startsWith(query))
-      results.push('!important');
-    var userEnteredText = wordRange.toString().replace('-', '');
+    if (!this._isEditingName && !results.length && query.length > 1 && '!important'.startsWith(lowerQuery))
+      results.push({title: '!important'});
+    var userEnteredText = query.replace('-', '');
     if (userEnteredText && (userEnteredText === userEnteredText.toUpperCase())) {
       for (var i = 0; i < results.length; ++i)
-        results[i] = results[i].toUpperCase();
+        results[i].title = results[i].title.toUpperCase();
     }
-    var selectedIndex = this._isEditingName ? SDK.cssMetadata().mostUsedProperty(prefixResults) : 0;
-    completionsReadyCallback(results, selectedIndex);
+    return Promise.resolve(results);
 
     /**
      * @param {string} completion
      */
     function filterCompletions(completion) {
-      var index = completion.indexOf(query);
+      var index = completion.indexOf(lowerQuery);
       if (index === 0)
-        prefixResults.push(completion);
+        prefixResults.push({title: completion, priority: SDK.cssMetadata().propertyUsageWeight(completion)});
       else if (index > -1)
-        anywhereResults.push(completion);
+        anywhereResults.push({title: completion});
     }
   }
 };

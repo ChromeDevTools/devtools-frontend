@@ -190,22 +190,11 @@ SDK.CSSMetadata = class {
   }
 
   /**
-   * @param {!Array.<string>} properties
+   * @param {string} property
    * @return {number}
    */
-  mostUsedProperty(properties) {
-    var maxWeight = 0;
-    var index = 0;
-    for (var i = 0; i < properties.length; i++) {
-      var weight = SDK.CSSMetadata.Weight[properties[i]];
-      if (!weight)
-        weight = SDK.CSSMetadata.Weight[this.canonicalPropertyName(properties[i])];
-      if (weight > maxWeight) {
-        maxWeight = weight;
-        index = i;
-      }
-    }
-    return index;
+  propertyUsageWeight(property) {
+    return SDK.CSSMetadata.Weight[property] || SDK.CSSMetadata.Weight[this.canonicalPropertyName(property)] || 0;
   }
 };
 

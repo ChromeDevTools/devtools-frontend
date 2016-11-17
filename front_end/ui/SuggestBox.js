@@ -255,8 +255,7 @@ UI.SuggestBox = class {
     else
       index = Number.constrain(index, 0, this._length - 1);
 
-    this._selectItem(index, true);
-    this._applySuggestion(true);
+    this._selectItem(index);
     return true;
   }
 
@@ -333,9 +332,8 @@ UI.SuggestBox = class {
 
   /**
    * @param {number} index
-   * @param {boolean} scrollIntoView
    */
-  _selectItem(index, scrollIntoView) {
+  _selectItem(index) {
     if (this._selectedElement)
       this._selectedElement.classList.remove('selected');
 
@@ -349,8 +347,8 @@ UI.SuggestBox = class {
     var elem = this._selectedElement;
     this._asyncDetails(index).then(showDetails.bind(this), function() {});
 
-    if (scrollIntoView)
-      this._viewport.scrollItemIntoView(index);
+    this._viewport.scrollItemIntoView(index);
+    this._applySuggestion(true);
 
     /**
      * @param {?{detail: string, description: string}} details
@@ -394,12 +392,18 @@ UI.SuggestBox = class {
   /**
    * @param {!AnchorBox} anchorBox
    * @param {!UI.SuggestBox.Suggestions} completions
-   * @param {number} selectedIndex
+   * @param {boolean} selectHighestPriority
    * @param {boolean} canShowForSingleItem
    * @param {string} userEnteredText
    * @param {function(number): !Promise<{detail:string, description:string}>=} asyncDetails
    */
-  updateSuggestions(anchorBox, completions, selectedIndex, canShowForSingleItem, userEnteredText, asyncDetails) {
+  updateSuggestions(
+      anchorBox,
+      completions,
+      selectHighestPriority,
+      canShowForSingleItem,
+      userEnteredText,
+      asyncDetails) {
     delete this._onlyCompletion;
     if (this._canShowBox(completions, canShowForSingleItem, userEnteredText)) {
       this._updateItems(completions, userEnteredText, asyncDetails);
@@ -407,11 +411,24 @@ UI.SuggestBox = class {
       this._updateBoxPosition(anchorBox);
       this._updateWidth();
       this._viewport.refresh();
-      this._selectItem(selectedIndex, selectedIndex > 0);
+      var highestPriorityItem = -1;
+      if (selectHighestPriority) {
+        var highestPriority = -Infinity;
+        for (var i = 0; i < completions.length; i++) {
+          var priority = completions[i].priority || 0;
+          if (highestPriority < priority) {
+            highestPriority = priority;
+            highestPriorityItem = i;
+          }
+        }
+      }
+      this._selectItem(highestPriorityItem);
       delete this._rowCountPerViewport;
     } else {
-      if (completions.length === 1)
+      if (completions.length === 1) {
         this._onlyCompletion = completions[0].title;
+        this._applySuggestion(true);
+      }
       this.hide();
     }
   }
@@ -513,7 +530,7 @@ UI.SuggestBox = class {
 };
 
 /**
- * @typedef {!Array.<{title: string, className: (string|undefined)}>}
+ * @typedef {!Array.<{title: string, className: (string|undefined), priority: (number|undefined)}>}
  */
 UI.SuggestBox.Suggestions;
 

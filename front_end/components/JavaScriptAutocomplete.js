@@ -5,26 +5,10 @@
 Components.JavaScriptAutocomplete = {};
 
 /**
- * @param {!Element} proxyElement
- * @param {!Range} wordRange
- * @param {boolean} force
- * @param {function(!Array.<string>, number=)} completionsReadyCallback
- */
-Components.JavaScriptAutocomplete.completionsForTextPromptInCurrentContext = function(
-    proxyElement, wordRange, force, completionsReadyCallback) {
-  var expressionRange = wordRange.cloneRange();
-  expressionRange.collapse(true);
-  expressionRange.setStartBefore(proxyElement);
-  Components.JavaScriptAutocomplete
-      .completionsForTextInCurrentContext(expressionRange.toString(), wordRange.toString(), force)
-      .then(completionsReadyCallback);
-};
-
-/**
  * @param {string} text
  * @param {string} query
  * @param {boolean=} force
- * @return {!Promise<!Array<string>>}
+ * @return {!Promise<!UI.SuggestBox.Suggestions>}
  */
 Components.JavaScriptAutocomplete.completionsForTextInCurrentContext = function(text, query, force) {
   var index;
@@ -60,7 +44,7 @@ Components.JavaScriptAutocomplete.completionsForTextInCurrentContext = function(
    * @param {string} expressionString
    * @param {string} query
    * @param {boolean=} force
-   * @return {!Promise<!Array<string>>}
+   * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
 Components.JavaScriptAutocomplete.completionsForExpression = function(expressionString, query, force) {
   var executionContext = UI.context.flavor(SDK.ExecutionContext);
@@ -238,7 +222,7 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
    * @param {string} expressionString
    * @param {string} query
    * @param {!Array.<string>} properties
-   * @return {!Array<string>}
+   * @return {!UI.SuggestBox.Suggestions}
    */
 Components.JavaScriptAutocomplete._completionsForQuery = function(
     dotNotation, bracketNotation, expressionString, query, properties) {
@@ -295,5 +279,6 @@ Components.JavaScriptAutocomplete._completionsForQuery = function(
   }
   return caseSensitivePrefix.concat(caseInsensitivePrefix)
       .concat(caseSensitiveAnywhere)
-      .concat(caseInsensitiveAnywhere);
+      .concat(caseInsensitiveAnywhere)
+      .map(completion => ({title: completion}));
 };

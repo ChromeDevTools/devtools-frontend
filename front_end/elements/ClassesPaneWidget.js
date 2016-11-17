@@ -208,7 +208,6 @@ Elements.ClassesPaneWidget.ClassNamePrompt = class extends UI.TextPrompt {
   constructor() {
     super();
     this.initialize(this._buildClassNameCompletions.bind(this), ' ');
-    this.setSuggestBoxEnabled(true);
     this.disableDefaultSuggestionForEmptyInput();
     this._selectedFrameId = '';
     this._classNamesPromise = null;
@@ -240,30 +239,26 @@ Elements.ClassesPaneWidget.ClassNamePrompt = class extends UI.TextPrompt {
   }
 
   /**
-   * @param {!Element} proxyElement
-   * @param {!Range} wordRange
-   * @param {boolean} force
-   * @param {function(!Array.<string>, number=)} completionsReadyCallback
+   * @param {string} expression
+   * @param {string} prefix
+   * @param {boolean=} force
+   * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
-  _buildClassNameCompletions(proxyElement, wordRange, force, completionsReadyCallback) {
-    var prefix = wordRange.toString();
+  _buildClassNameCompletions(expression, prefix, force) {
     if (!prefix || force)
       this._classNamesPromise = null;
 
     var selectedNode = UI.context.flavor(SDK.DOMNode);
-    if (!selectedNode || (!prefix && !force && !proxyElement.textContent.length)) {
-      completionsReadyCallback([]);
-      return;
-    }
+    if (!selectedNode || (!prefix && !force && !expression))
+      return Promise.resolve([]);
 
     if (!this._classNamesPromise || this._selectedFrameId !== selectedNode.frameId())
       this._classNamesPromise = this._getClassNames(selectedNode);
 
-    this._classNamesPromise.then(completions => {
+    return this._classNamesPromise.then(completions => {
       if (prefix[0] === '.')
         completions = completions.map(value => '.' + value);
-      var results = completions.filter(value => value.startsWith(prefix));
-      completionsReadyCallback(results, 0);
+      return completions.filter(value => value.startsWith(prefix)).map(completion => ({title: completion}));
     });
   }
 };

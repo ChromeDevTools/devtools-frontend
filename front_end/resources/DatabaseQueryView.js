@@ -54,16 +54,19 @@ Resources.DatabaseQueryView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Element} proxyElement
-   * @param {!Range} wordRange
-   * @param {boolean} force
-   * @param {function(!Array.<string>, number=)} completionsReadyCallback
+   * @param {string} expression
+   * @param {string} prefix
+   * @param {boolean=} force
+   * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
-  completions(proxyElement, wordRange, force, completionsReadyCallback) {
-    var prefix = wordRange.toString().toLowerCase();
+  completions(expression, prefix, force) {
     if (!prefix)
-      return;
+      return Promise.resolve([]);
+    var fulfill;
+    var promise = new Promise(x => fulfill = x);
     var results = [];
+
+    prefix = prefix.toLowerCase();
 
     function accumulateMatches(textArray) {
       for (var i = 0; i < textArray.length; ++i) {
@@ -75,7 +78,6 @@ Resources.DatabaseQueryView = class extends UI.VBox {
         results.push(textArray[i]);
       }
     }
-
     function tableNamesCallback(tableNames) {
       accumulateMatches(tableNames.map(function(name) {
         return name + ' ';
@@ -85,9 +87,10 @@ Resources.DatabaseQueryView = class extends UI.VBox {
         'INSERT INTO ', 'VALUES ('
       ]);
 
-      completionsReadyCallback(results);
+      fulfill(results.map(completion => ({title: completion})));
     }
     this.database.getTableNames(tableNamesCallback);
+    return promise;
   }
 
   _selectStart(event) {

@@ -164,6 +164,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
 
     this._needsRefresh = true;
 
+    this._mimeType = '';
     if (options.mimeType)
       this.setMimeType(options.mimeType);
     if (options.autoHeight)
@@ -264,9 +265,9 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
 
   /**
    * @param {string} mimeType
-   * @return {!Promise}
+   * @return {!Array<!Runtime.Extension>}}
    */
-  static _loadMimeTypeModes(mimeType) {
+  static _collectUninstalledModes(mimeType) {
     var installed = TextEditor.CodeMirrorTextEditor._loadedMimeModeExtensions;
 
     var nameToExtension = new Map();
@@ -288,10 +289,15 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
           modesToLoad.add(extension);
       }
     }
+    return Array.from(modesToLoad);
+  }
 
-    var promises = [];
-    for (var extension of modesToLoad)
-      promises.push(extension.instance().then(installMode.bind(null, extension)));
+  /**
+   * @param {!Array<!Runtime.Extension>} extensions
+   * @return {!Promise}
+   */
+  static _installMimeTypeModes(extensions) {
+    var promises = extensions.map(extension => extension.instance().then(installMode.bind(null, extension)));
     return Promise.all(promises);
 
     /**
@@ -299,11 +305,11 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
      * @param {!Object} instance
      */
     function installMode(extension, instance) {
-      if (installed.has(extension))
+      if (TextEditor.CodeMirrorTextEditor._loadedMimeModeExtensions.has(extension))
         return;
       var mode = /** @type {!TextEditor.CodeMirrorMimeMode} */ (instance);
       mode.install(extension);
-      installed.add(extension);
+      TextEditor.CodeMirrorTextEditor._loadedMimeModeExtensions.add(extension);
     }
   }
 
@@ -609,15 +615,41 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
 
   /**
    * @param {string} mimeType
-   * @return {!Promise}
    */
   setMimeType(mimeType) {
-    if (this._hasLongLines())
-      this._enableLongLinesMode();
+    this._mimeType = mimeType;
+    var modesToLoad = TextEditor.CodeMirrorTextEditor._collectUninstalledModes(mimeType);
+
+    if (!modesToLoad.length)
+      setMode.call(this);
     else
-      this._disableLongLinesMode();
-    return TextEditor.CodeMirrorTextEditor._loadMimeTypeModes(mimeType).then(
-        () => this._codeMirror.setOption('mode', mimeType));
+      TextEditor.CodeMirrorTextEditor._installMimeTypeModes(modesToLoad).then(setMode.bind(this));
+
+    /**
+     * @this {TextEditor.CodeMirrorTextEditor}
+     */
+    function setMode() {
+      var rewrittenMimeType = this.rewriteMimeType(mimeType);
+      if (this._codeMirror.options.mode !== rewrittenMimeType)
+        this._codeMirror.setOption('mode', rewrittenMimeType);
+    }
+  }
+
+  /**
+   * @protected
+   * @param {string} mimeType
+   */
+  rewriteMimeType(mimeType) {
+    // Overridden in SourcesTextEditor
+    return mimeType;
+  }
+
+  /**
+   * @protected
+   * @return {string}
+   */
+  mimeType() {
+    return this._mimeType;
   }
 
   /**
@@ -1078,6 +1110,11 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       this._shouldClearHistory = false;
     }
     this._detectLineSeparator(text);
+
+    if (this._hasLongLines())
+      this._enableLongLinesMode();
+    else
+      this._disableLongLinesMode();
   }
 
   /**

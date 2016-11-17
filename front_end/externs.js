@@ -529,6 +529,8 @@ CodeMirror.prototype = {
 };
 /** @type {!{cursorDiv: Element}} */
 CodeMirror.prototype.display;
+/** @type {!{mode: string}} */
+CodeMirror.prototype.options;
 /** @type {!Object} */
 CodeMirror.Pass;
 CodeMirror.showHint = function(codeMirror, hintintFunction) {};

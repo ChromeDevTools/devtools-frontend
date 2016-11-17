@@ -1201,28 +1201,28 @@ Timeline.TimelineFlameChartNetworkDataProvider = class extends Timeline.Timeline
   _updateTimelineData() {
     if (!this._timelineData)
       return;
-    var index = -1;
-    var lastTime = Infinity;
+    var lastTimeByLevel = [];
+    var maxLevel = 0;
     for (var i = 0; i < this._requests.length; ++i) {
-      var r = this._requests[i];
-      var visible = r.startTime < this._endTime && r.endTime > this._startTime;
+      const r = this._requests[i];
+      const visible = r.startTime < this._endTime && r.endTime > this._startTime;
       if (!visible) {
         this._timelineData.entryLevels[i] = -1;
         continue;
       }
-      if (lastTime > r.startTime)
-        ++index;
-      lastTime = r.endTime;
-      this._timelineData.entryLevels[i] = index;
+      while (lastTimeByLevel.length && lastTimeByLevel.peekLast() <= r.startTime)
+        lastTimeByLevel.pop();
+      this._timelineData.entryLevels[i] = lastTimeByLevel.length;
+      lastTimeByLevel.push(r.endTime);
+      maxLevel = Math.max(maxLevel, lastTimeByLevel.length);
     }
-    ++index;
     for (var i = 0; i < this._requests.length; ++i) {
       if (this._timelineData.entryLevels[i] === -1)
-        this._timelineData.entryLevels[i] = index;
+        this._timelineData.entryLevels[i] = maxLevel;
     }
     this._timelineData = new UI.FlameChart.TimelineData(
         this._timelineData.entryLevels, this._timelineData.entryTotalTimes, this._timelineData.entryStartTimes, null);
-    this._currentLevel = index;
+    this._currentLevel = maxLevel;
   }
 
   /**

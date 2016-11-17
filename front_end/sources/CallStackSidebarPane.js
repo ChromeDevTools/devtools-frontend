@@ -29,8 +29,6 @@
 Sources.CallStackSidebarPane = class extends UI.SimpleView {
   constructor() {
     super(Common.UIString('Call Stack'));
-    this.element.addEventListener('keydown', this._keyDown.bind(this), true);
-    this.element.tabIndex = 0;
     this.callFrameList = new Sources.UIList();
     this.callFrameList.show(this.element);
     this._linkifier = new Components.Linkifier();
@@ -408,14 +406,6 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     registerShortcutDelegate(
         Components.ShortcutsScreen.SourcesPanelShortcuts.PrevCallFrame,
         this._selectPreviousCallFrameOnStack.bind(this));
-  }
-
-  _keyDown(event) {
-    if (event.altKey || event.shiftKey || event.metaKey || event.ctrlKey)
-      return;
-    if (event.key === 'ArrowUp' && this._selectPreviousCallFrameOnStack() ||
-        event.key === 'ArrowDown' && this._selectNextCallFrameOnStack())
-      event.consume(true);
   }
 };
 

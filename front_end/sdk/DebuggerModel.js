@@ -976,6 +976,18 @@ SDK.DebuggerModel.Location = class extends SDK.SDKObject {
   }
 
   /**
+   * @param {!SDK.RuntimeModel.CallFrame} callFrame
+   * @return {?SDK.DebuggerModel.Location}
+   */
+  static fromRuntimeCallFrame(callFrame) {
+    var debuggerModel = SDK.DebuggerModel.fromTarget(callFrame.target());
+    if (!debuggerModel)
+      return null;
+    return new SDK.DebuggerModel.Location(
+        debuggerModel, callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
+  }
+
+  /**
    * @return {!Protocol.Debugger.Location}
    */
   payload() {
@@ -1180,7 +1192,6 @@ SDK.DebuggerModel.CallFrame = class extends SDK.SDKObject {
   }
 };
 
-
 /**
  * @unrestricted
  */
@@ -1274,7 +1285,7 @@ SDK.DebuggerModel.Scope = class {
 SDK.DebuggerPausedDetails = class extends SDK.SDKObject {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
-   * @param {!Array.<!Protocol.Debugger.CallFrame>} callFrames
+   * @param {!Array<!Protocol.Debugger.CallFrame>} callFrames
    * @param {string} reason
    * @param {!Object|undefined} auxData
    * @param {!Array.<string>} breakpointIds
@@ -1288,7 +1299,7 @@ SDK.DebuggerPausedDetails = class extends SDK.SDKObject {
     this.auxData = auxData;
     this.breakpointIds = breakpointIds;
     if (asyncStackTrace)
-      this.asyncStackTrace = this._cleanRedundantFrames(asyncStackTrace);
+      this.asyncStackTrace = SDK.RuntimeModel.StackTrace.fromPayload(debuggerModel.target(), asyncStackTrace);
   }
 
   /**
@@ -1299,24 +1310,5 @@ SDK.DebuggerPausedDetails = class extends SDK.SDKObject {
         this.reason !== SDK.DebuggerModel.BreakReason.PromiseRejection)
       return null;
     return this.target().runtimeModel.createRemoteObject(/** @type {!Protocol.Runtime.RemoteObject} */ (this.auxData));
-  }
-
-  /**
-   * @param {!Protocol.Runtime.StackTrace} asyncStackTrace
-   * @return {!Protocol.Runtime.StackTrace}
-   */
-  _cleanRedundantFrames(asyncStackTrace) {
-    var stack = asyncStackTrace;
-    var previous = null;
-    while (stack) {
-      if (stack.description === 'async function' && stack.callFrames.length)
-        stack.callFrames.shift();
-      if (previous && !stack.callFrames.length)
-        previous.parent = stack.parent;
-      else
-        previous = stack;
-      stack = stack.parent;
-    }
-    return asyncStackTrace;
   }
 };

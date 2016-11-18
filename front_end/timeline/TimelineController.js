@@ -132,7 +132,7 @@ Timeline.TimelineController = class {
         var styleSheetHeader = cssModel.styleSheetHeaderForId(rule.styleSheetId);
         var url = styleSheetHeader.sourceURL;
 
-        Components.CoverageProfile.instance().appendUnusedRule(url, rule.range);
+        Components.CoverageProfile.instance().appendUnusedRule(url, Common.TextRange.fromObject(rule.range));
       }
     }
 

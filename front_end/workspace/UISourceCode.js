@@ -60,8 +60,8 @@ Workspace.UISourceCode = class extends Common.Object {
     this._requestContentCallback = null;
     /** @type {?Promise<?string>} */
     this._requestContentPromise = null;
-    /** @type {!Map<string, !Map<number, !Workspace.UISourceCode.LineMarker>>} */
-    this._lineDecorations = new Map();
+    /** @type {!Multimap<string, !Workspace.UISourceCode.LineMarker>} */
+    this._decorations = new Multimap();
 
     /** @type {!Array.<!Workspace.Revision>} */
     this.history = [];
@@ -608,52 +608,51 @@ Workspace.UISourceCode = class extends Common.Object {
    * @param {?} data
    */
   addLineDecoration(lineNumber, type, data) {
-    var markers = this._lineDecorations.get(type);
-    if (!markers) {
-      markers = new Map();
-      this._lineDecorations.set(type, markers);
-    }
-    var marker = new Workspace.UISourceCode.LineMarker(lineNumber, type, data);
-    markers.set(lineNumber, marker);
+    this.addDecoration(Common.TextRange.createFromLocation(lineNumber, 0), type, data);
+  }
+
+  /**
+   * @param {!Common.TextRange} range
+   * @param {string} type
+   * @param {?} data
+   */
+  addDecoration(range, type, data) {
+    var marker = new Workspace.UISourceCode.LineMarker(range, type, data);
+    this._decorations.set(type, marker);
     this.dispatchEventToListeners(Workspace.UISourceCode.Events.LineDecorationAdded, marker);
   }
 
   /**
-   * @param {number} lineNumber
    * @param {string} type
    */
-  removeLineDecoration(lineNumber, type) {
-    var markers = this._lineDecorations.get(type);
-    if (!markers)
-      return;
-    var marker = markers.get(lineNumber);
-    if (!marker)
-      return;
-    markers.delete(lineNumber);
-    this.dispatchEventToListeners(Workspace.UISourceCode.Events.LineDecorationRemoved, marker);
-    if (!markers.size)
-      this._lineDecorations.delete(type);
-  }
-
-  /**
-   * @param {string} type
-   */
-  removeAllLineDecorations(type) {
-    var markers = this._lineDecorations.get(type);
-    if (!markers)
-      return;
-    this._lineDecorations.delete(type);
+  removeDecorationsForType(type) {
+    var markers = this._decorations.get(type);
+    this._decorations.removeAll(type);
     markers.forEach(marker => {
       this.dispatchEventToListeners(Workspace.UISourceCode.Events.LineDecorationRemoved, marker);
     });
   }
 
   /**
-   * @param {string} type
-   * @return {?Map<number, !Workspace.UISourceCode.LineMarker>}
+   * @return {!Array<!Workspace.UISourceCode.LineMarker>}
    */
-  lineDecorations(type) {
-    return this._lineDecorations.get(type) || null;
+  allDecorations() {
+    return this._decorations.valuesArray();
+  }
+
+  removeAllDecorations() {
+    var decorationList = this._decorations.valuesArray();
+    this._decorations.clear();
+    decorationList.forEach(marker =>
+        this.dispatchEventToListeners(Workspace.UISourceCode.Events.LineDecorationRemoved, marker));
+  }
+
+  /**
+   * @param {string} type
+   * @return {!Set<!Workspace.UISourceCode.LineMarker>}
+   */
+  decorationsForType(type) {
+    return this._decorations.get(type);
   }
 };
 
@@ -906,21 +905,21 @@ Workspace.UISourceCode.Message.Level = {
  */
 Workspace.UISourceCode.LineMarker = class {
   /**
-   * @param {number} line
+   * @param {!Common.TextRange} range
    * @param {string} type
    * @param {?} data
    */
-  constructor(line, type, data) {
-    this._line = line;
+  constructor(range, type, data) {
+    this._range = range;
     this._type = type;
     this._data = data;
   }
 
   /**
-   * @return {number}
+   * @return {!Common.TextRange}
    */
-  line() {
-    return this._line;
+  range() {
+    return this._range;
   }
 
   /**

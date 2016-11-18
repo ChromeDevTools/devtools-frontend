@@ -20,7 +20,7 @@ Components.CoverageProfile = class {
 
   /**
    * @param {string} url
-   * @param {!Protocol.CSS.SourceRange} range
+   * @param {!Common.TextRange} range
    */
   appendUnusedRule(url, range) {
     if (!url)
@@ -30,13 +30,14 @@ Components.CoverageProfile = class {
     if (!uiSourceCode)
       return;
 
-    for (var line = range.startLine; line <= range.endLine; ++line)
-      uiSourceCode.addLineDecoration(line, Components.CoverageProfile.LineDecorator.type, range.startColumn);
+    if (range.startColumn)
+      range.startColumn--;
+    uiSourceCode.addDecoration(range, Components.CoverageProfile.LineDecorator.type, 0);
   }
 
   reset() {
     Workspace.workspace.uiSourceCodes().forEach(
-        uiSourceCode => uiSourceCode.removeAllLineDecorations(Components.CoverageProfile.LineDecorator.type));
+        uiSourceCode => uiSourceCode.removeDecorationsForType(Components.CoverageProfile.LineDecorator.type));
   }
 };
 
@@ -52,16 +53,18 @@ Components.CoverageProfile.LineDecorator = class {
   decorate(uiSourceCode, textEditor) {
     var gutterType = 'CodeMirror-gutter-coverage';
 
-    var decorations = uiSourceCode.lineDecorations(Components.CoverageProfile.LineDecorator.type);
+    var decorations = uiSourceCode.decorationsForType(Components.CoverageProfile.LineDecorator.type);
     textEditor.uninstallGutter(gutterType);
-    if (!decorations)
+    if (!decorations.size)
       return;
 
     textEditor.installGutter(gutterType, false);
 
-    for (var decoration of decorations.values()) {
-      var element = createElementWithClass('div', 'text-editor-line-marker-coverage');
-      textEditor.setGutterDecoration(decoration.line(), gutterType, element);
+    for (var decoration of decorations) {
+      for (var line = decoration.range().startLine; line <= decoration.range().endLine; ++line) {
+        var element = createElementWithClass('div', 'text-editor-line-marker-coverage');
+        textEditor.setGutterDecoration(line, gutterType, element);
+      }
     }
   }
 };

@@ -67,7 +67,7 @@ Components.LineLevelProfile = class {
     // TODO(alph): use scriptId instead of urls for the target.
     this._locationPool.disposeAll();
     Workspace.workspace.uiSourceCodes().forEach(
-        uiSourceCode => uiSourceCode.removeAllLineDecorations(Components.LineLevelProfile.LineDecorator.type));
+        uiSourceCode => uiSourceCode.removeDecorationsForType(Components.LineLevelProfile.LineDecorator.type));
     for (var fileInfo of this._files) {
       var url = /** @type {string} */ (fileInfo[0]);
       var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
@@ -109,10 +109,8 @@ Components.LineLevelProfile.Presentation = class {
    * @param {!Bindings.LiveLocation} liveLocation
    */
   updateLocation(liveLocation) {
-    if (this._uiLocation) {
-      this._uiLocation.uiSourceCode.removeLineDecoration(
-          this._uiLocation.lineNumber, Components.LineLevelProfile.LineDecorator.type);
-    }
+    if (this._uiLocation)
+      this._uiLocation.uiSourceCode.removeDecorationsForType(Components.LineLevelProfile.LineDecorator.type);
     this._uiLocation = liveLocation.uiLocation();
     if (this._uiLocation) {
       this._uiLocation.uiSourceCode.addLineDecoration(
@@ -133,19 +131,19 @@ Components.LineLevelProfile.LineDecorator = class {
    */
   decorate(uiSourceCode, textEditor) {
     var gutterType = 'CodeMirror-gutter-performance';
-    var decorations = uiSourceCode.lineDecorations(Components.LineLevelProfile.LineDecorator.type);
+    var decorations = uiSourceCode.decorationsForType(Components.LineLevelProfile.LineDecorator.type);
     textEditor.uninstallGutter(gutterType);
-    if (!decorations)
+    if (!decorations.size)
       return;
     textEditor.installGutter(gutterType, false);
-    for (var decoration of decorations.values()) {
+    for (var decoration of decorations) {
       var time = /** @type {number} */ (decoration.data());
       var text = Common.UIString('%.1f\xa0ms', time);
       var intensity = Number.constrain(Math.log10(1 + 2 * time) / 5, 0.02, 1);
       var element = createElementWithClass('div', 'text-editor-line-marker-performance');
       element.textContent = text;
       element.style.backgroundColor = `hsla(44, 100%, 50%, ${intensity.toFixed(3)})`;
-      textEditor.setGutterDecoration(decoration.line(), gutterType, element);
+      textEditor.setGutterDecoration(decoration.range().startLine, gutterType, element);
     }
   }
 };

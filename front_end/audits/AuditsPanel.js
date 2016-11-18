@@ -377,7 +377,7 @@ Audits.AuditRuleResult = class {
    * @return {!Element}
    */
   static linkifyDisplayName(url) {
-    return UI.linkifyURLAsNode(url, Bindings.displayNameForURL(url));
+    return Components.Linkifier.linkifyURLAsNode(url, Bindings.displayNameForURL(url));
   }
 
   /**

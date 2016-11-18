@@ -81,7 +81,7 @@ Resources.AppManifestView = class extends UI.VBox {
    * @param {!Array<!Protocol.Page.AppManifestError>} errors
    */
   _renderManifest(url, data, errors) {
-    this._reportView.setURL(url);
+    this._reportView.setURL(Components.Linkifier.linkifyURLAsNode(url));
     this._errorsSection.clearContent();
     this._errorsSection.element.classList.toggle('hidden', !errors.length);
     for (var error of errors) {

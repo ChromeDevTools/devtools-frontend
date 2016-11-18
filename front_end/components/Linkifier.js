@@ -438,6 +438,25 @@ Components.Linkifier = class {
     }
     anchor[Components.Linkifier._iconSymbol] = icon;
   }
+
+  /**
+   * @param {string} url
+   * @param {string=} text
+   * @param {string=} className
+   * @param {number=} lineNumber
+   * @param {number=} columnNumber
+   * @return {!Element}
+   */
+  static linkifyURLAsNode(url, text, className, lineNumber, columnNumber) {
+    var isExternal = !Bindings.resourceForURL(url) && !Workspace.workspace.uiSourceCodeForURL(url);
+    if (isExternal) {
+      var link = UI.createExternalLink(url, text, className);
+      link.lineNumber = lineNumber;
+      link.columnNumber = columnNumber;
+      return link;
+    }
+    return Components.linkifyResourceAsNode(url, lineNumber, columnNumber, className, undefined, text);
+  }
 };
 
 /** @type {!Set<!Components.Linkifier>} */
@@ -551,15 +570,7 @@ Components.linkifyStringAsFragment = function(string) {
    * @return {!Node}
    */
   function linkifier(title, url, lineNumber, columnNumber) {
-    var isExternal = !Bindings.resourceForURL(url) && !Workspace.workspace.uiSourceCodeForURL(url);
-    var urlNode = UI.linkifyURLAsNode(url, title, undefined, isExternal);
-    if (typeof lineNumber !== 'undefined') {
-      urlNode.lineNumber = lineNumber;
-      if (typeof columnNumber !== 'undefined')
-        urlNode.columnNumber = columnNumber;
-    }
-
-    return urlNode;
+    return Components.Linkifier.linkifyURLAsNode(url, title, undefined, lineNumber, columnNumber);
   }
 
   return Components.linkifyStringAsFragmentWithCustomLinkifier(string, linkifier);
@@ -581,9 +592,16 @@ Components.linkifyResourceAsNode = function(url, lineNumber, columnNumber, class
     return element;
   }
   var linkText = urlDisplayName || Bindings.displayNameForURL(url);
-  if (typeof lineNumber === 'number')
+  if (typeof lineNumber === 'number' && !urlDisplayName)
     linkText += ':' + (lineNumber + 1);
-  var anchor = UI.linkifyURLAsNode(url, linkText, classes, false, tooltipText);
+
+  var anchor = createElementWithClass('a', classes);
+  if (!url.trim().toLowerCase().startsWith('javascript:')) {
+    anchor.href = url;
+    anchor.classList.add('webkit-html-resource-link');
+  }
+  anchor.title = tooltipText || (linkText !== url ? url : '');
+  anchor.textContent = linkText.trimMiddle(150);
   anchor.lineNumber = lineNumber;
   anchor.columnNumber = columnNumber;
   return anchor;
@@ -594,7 +612,7 @@ Components.linkifyResourceAsNode = function(url, lineNumber, columnNumber, class
  * @return {!Element}
  */
 Components.linkifyRequestAsNode = function(request) {
-  var anchor = UI.linkifyURLAsNode(request.url);
+  var anchor = UI.createExternalLink(request.url);
   anchor.requestId = request.requestId;
   return anchor;
 };

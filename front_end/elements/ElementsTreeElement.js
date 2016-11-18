@@ -1211,7 +1211,8 @@ Elements.ElementsTreeElement = class extends TreeElement {
       value = value.replace(closingPunctuationRegex, '$&\u200B');
       if (value.startsWith('data:'))
         value = value.trimMiddle(60);
-      var anchor = UI.linkifyURLAsNode(rewrittenHref, value, '', node.nodeName().toLowerCase() === 'a');
+      var anchor = node.nodeName().toLowerCase() === 'a' ? UI.createExternalLink(rewrittenHref, value) :
+                                                           Components.Linkifier.linkifyURLAsNode(rewrittenHref, value);
       anchor.preventFollow = true;
       return anchor;
     }

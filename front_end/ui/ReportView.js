@@ -31,18 +31,14 @@ UI.ReportView = class extends UI.VBox {
   }
 
   /**
-   * @param {?string} url
+   * @param {?Element} link
    */
-  setURL(url) {
-    if (this._url === url)
-      return;
+  setURL(link) {
     if (!this._urlElement)
       this._urlElement = this._headerElement.createChild('div', 'report-url link');
-
-    this._url = url;
     this._urlElement.removeChildren();
-    if (url)
-      this._urlElement.appendChild(UI.linkifyURLAsNode(url));
+    if (link)
+      this._urlElement.appendChild(link);
   }
 
   /**

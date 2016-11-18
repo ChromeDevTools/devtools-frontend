@@ -170,7 +170,7 @@ Sources.WorkspaceMappingTip = class {
     var rowElement =
         infobar.createDetailsRowMessage(Common.UIString('For more information on workspaces, refer to the '));
     rowElement.appendChild(
-        UI.linkifyDocumentationURLAsNode('../setup/setup-workflow', Common.UIString('workspaces documentation')));
+        UI.createDocumentationLink('../setup/setup-workflow', Common.UIString('workspaces documentation')));
     rowElement.createTextChild('.');
     uiSourceCode[Sources.WorkspaceMappingTip._infobarSymbol] = infobar;
     uiSourceCodeFrame.attachInfobars([infobar]);

@@ -34,9 +34,9 @@ Devices.DevicesView = class extends UI.VBox {
     var discoveryFooter = this.contentElement.createChild('div', 'devices-footer');
     this._deviceCountSpan = discoveryFooter.createChild('span');
     discoveryFooter.createChild('span').textContent = Common.UIString(' Read ');
-    discoveryFooter.appendChild(UI.linkifyURLAsNode(
+    discoveryFooter.appendChild(UI.createExternalLink(
         'https://developers.google.com/chrome-developer-tools/docs/remote-debugging',
-        Common.UIString('remote debugging documentation'), undefined, true));
+        Common.UIString('remote debugging documentation')));
     discoveryFooter.createChild('span').textContent = Common.UIString(' for more information.');
     this._updateFooter();
     this._selectSidebarListItem(this._discoveryListItem, this._discoveryView);
@@ -218,9 +218,9 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
 
     var help = this.element.createChild('div', 'discovery-help');
     help.createChild('span').textContent = Common.UIString('Need help? Read Chrome ');
-    help.appendChild(UI.linkifyURLAsNode(
+    help.appendChild(UI.createExternalLink(
         'https://developers.google.com/chrome-developer-tools/docs/remote-debugging',
-        Common.UIString('remote debugging documentation.'), undefined, true));
+        Common.UIString('remote debugging documentation.')));
 
     var portForwardingHeader = this.element.createChild('div', 'port-forwarding-header');
     var portForwardingEnabledCheckbox = createCheckboxLabel(Common.UIString('Port forwarding'));
@@ -232,9 +232,8 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
     var portForwardingFooter = this.element.createChild('div', 'port-forwarding-footer');
     portForwardingFooter.createChild('span').textContent = Common.UIString(
         'Define the listening port on your device that maps to a port accessible from your development machine. ');
-    portForwardingFooter.appendChild(UI.linkifyURLAsNode(
-        'https://developer.chrome.com/devtools/docs/remote-debugging#port-forwarding', Common.UIString('Learn more'),
-        undefined, true));
+    portForwardingFooter.appendChild(UI.createExternalLink(
+        'https://developer.chrome.com/devtools/docs/remote-debugging#port-forwarding', Common.UIString('Learn more')));
 
     this._list = new UI.ListWidget(this);
     this._list.registerRequiredCSS('devices/devicesView.css');
@@ -616,7 +615,7 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
     }
     if (!section.page || section.page.url !== page.url) {
       section.url.textContent = '';
-      section.url.appendChild(UI.linkifyURLAsNode(page.url, undefined, undefined, true));
+      section.url.appendChild(UI.createExternalLink(page.url));
     }
     section.inspect.disabled = page.attached;
 

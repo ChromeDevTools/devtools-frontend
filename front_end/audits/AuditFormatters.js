@@ -118,7 +118,7 @@ Audits.AuditFormatters.Registry = {
    * @return {!Element}
    */
   url: function(url, displayText) {
-    return UI.linkifyURLAsNode(url, displayText, undefined, true);
+    return UI.createExternalLink(url, displayText);
   },
 
   /**

@@ -1025,7 +1025,7 @@ Timeline.TimelineUIUtils = class {
     var duration = request.endTime - (request.startTime || -Infinity);
     var items = [];
     if (request.url)
-      contentHelper.appendElementRow(Common.UIString('URL'), UI.linkifyURLAsNode(request.url));
+      contentHelper.appendElementRow(Common.UIString('URL'), Components.Linkifier.linkifyURLAsNode(request.url));
     if (isFinite(duration))
       contentHelper.appendTextRow(Common.UIString('Duration'), Number.millisToString(duration, true));
     if (request.requestMethod)
@@ -1565,9 +1565,8 @@ Timeline.TimelineUIUtils = class {
     if (!frame.hasWarnings())
       return element;
     element.createTextChild(Common.UIString('. Long frame times are an indication of '));
-    element.appendChild(UI.linkifyURLAsNode(
-        'https://developers.google.com/web/fundamentals/performance/rendering/', Common.UIString('jank'), undefined,
-        true));
+    element.appendChild(UI.createExternalLink(
+        'https://developers.google.com/web/fundamentals/performance/rendering/', Common.UIString('jank')));
     element.createTextChild('.');
     return element;
   }
@@ -1729,7 +1728,7 @@ Timeline.TimelineUIUtils = class {
     switch (warning) {
       case warnings.ForcedStyle:
       case warnings.ForcedLayout:
-        span.appendChild(UI.linkifyDocumentationURLAsNode(
+        span.appendChild(UI.createDocumentationLink(
             '../../fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts',
             Common.UIString('Forced reflow')));
         span.createTextChild(Common.UIString(' is a likely performance bottleneck.'));
@@ -1740,9 +1739,8 @@ Timeline.TimelineUIUtils = class {
             Number.millisToString(event.duration - eventData['allottedMilliseconds'], true));
         break;
       case warnings.V8Deopt:
-        span.appendChild(UI.linkifyURLAsNode(
-            'https://github.com/GoogleChrome/devtools-docs/issues/53', Common.UIString('Not optimized'), undefined,
-            true));
+        span.appendChild(UI.createExternalLink(
+            'https://github.com/GoogleChrome/devtools-docs/issues/53', Common.UIString('Not optimized')));
         span.createTextChild(Common.UIString(': %s', eventData['deoptReason']));
         break;
       default:

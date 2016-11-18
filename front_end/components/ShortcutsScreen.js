@@ -233,7 +233,7 @@ Components.ShortcutsScreen = class {
       orderedSections[i].renderSection(container);
 
     var note = scrollPane.createChild('p', 'help-footnote');
-    note.appendChild(UI.linkifyDocumentationURLAsNode(
+    note.appendChild(UI.createDocumentationLink(
         'iterate/inspect-styles/shortcuts', Common.UIString('Full list of DevTools keyboard shortcuts and gestures')));
 
     return widget;

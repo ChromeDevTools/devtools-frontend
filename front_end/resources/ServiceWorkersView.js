@@ -232,7 +232,7 @@ Resources.ServiceWorkersView.Section = class {
       var scriptElement = this._section.appendField(Common.UIString('Source'));
       scriptElement.removeChildren();
       var fileName = Common.ParsedURL.extractName(active.scriptURL);
-      scriptElement.appendChild(UI.linkifyURLAsNode(active.scriptURL, fileName));
+      scriptElement.appendChild(Components.Linkifier.linkifyURLAsNode(active.scriptURL, fileName));
       scriptElement.createChild('div', 'report-field-value-subtitle').textContent =
           Common.UIString('Received %s', new Date(active.scriptResponseTime * 1000).toLocaleString());
 

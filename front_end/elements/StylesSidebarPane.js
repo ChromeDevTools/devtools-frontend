@@ -3016,9 +3016,7 @@ Elements.StylesSidebarPropertyRenderer = class {
       hrefUrl = Common.ParsedURL.completeURL(this._rule.resourceURL(), url);
     else if (this._node)
       hrefUrl = this._node.resolveURL(url);
-    var hasResource = hrefUrl && !!Bindings.resourceForURL(hrefUrl);
-    // FIXME: UI.linkifyURLAsNode() should really use baseURI.
-    container.appendChild(UI.linkifyURLAsNode(hrefUrl || url, url, undefined, !hasResource));
+    container.appendChild(Components.Linkifier.linkifyURLAsNode(hrefUrl || url, url));
     container.createTextChild(')');
     return container;
   }

@@ -1911,32 +1911,27 @@ UI.ThemeSupport.ColorUsage = {
 /**
  * @param {string} url
  * @param {string=} linkText
- * @param {string=} classes
- * @param {boolean=} isExternal
- * @param {string=} tooltipText
+ * @param {string=} className
  * @return {!Element}
  */
-UI.linkifyURLAsNode = function(url, linkText, classes, isExternal, tooltipText) {
+UI.createExternalLink = function(url, linkText, className) {
   if (!linkText)
     linkText = url;
 
-  var a = createElementWithClass('a', classes);
+  var a = createElementWithClass('a', className);
   var href = url;
   if (url.trim().toLowerCase().startsWith('javascript:'))
     href = null;
-  if (isExternal && Common.ParsedURL.isRelativeURL(url))
+  if (Common.ParsedURL.isRelativeURL(url))
     href = null;
   if (href !== null) {
     a.href = href;
-    a.classList.add(isExternal ? 'webkit-html-external-link' : 'webkit-html-resource-link');
+    a.classList.add('webkit-html-external-link');
   }
-  if (!tooltipText && linkText !== url)
+  if (linkText !== url)
     a.title = url;
-  else if (tooltipText)
-    a.title = tooltipText;
   a.textContent = linkText.trimMiddle(150);
-  if (isExternal)
-    a.setAttribute('target', '_blank');
+  a.setAttribute('target', '_blank');
 
   return a;
 };
@@ -1946,9 +1941,8 @@ UI.linkifyURLAsNode = function(url, linkText, classes, isExternal, tooltipText) 
  * @param {string} title
  * @return {!Element}
  */
-UI.linkifyDocumentationURLAsNode = function(article, title) {
-  return UI.linkifyURLAsNode(
-      'https://developers.google.com/web/tools/chrome-devtools/' + article, title, undefined, true);
+UI.createDocumentationLink = function(article, title) {
+  return UI.createExternalLink('https://developers.google.com/web/tools/chrome-devtools/' + article, title);
 };
 
 /**

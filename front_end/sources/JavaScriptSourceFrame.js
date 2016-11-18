@@ -126,11 +126,11 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
 
     var fileURL = this.uiSourceCode().url();
     infobar.createDetailsRowMessage(Common.UIString('The content of this file on the file system:\u00a0'))
-        .appendChild(UI.linkifyURLAsNode(fileURL, fileURL, 'source-frame-infobar-details-url', true));
+        .appendChild(UI.createExternalLink(fileURL, undefined, 'source-frame-infobar-details-url'));
 
     var scriptURL = this.uiSourceCode().url();
     infobar.createDetailsRowMessage(Common.UIString('does not match the loaded script:\u00a0'))
-        .appendChild(UI.linkifyURLAsNode(scriptURL, scriptURL, 'source-frame-infobar-details-url', true));
+        .appendChild(UI.createExternalLink(scriptURL, undefined, 'source-frame-infobar-details-url'));
 
     infobar.createDetailsRowMessage();
     infobar.createDetailsRowMessage(Common.UIString('Possible solutions are:'));

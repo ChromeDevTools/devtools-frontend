@@ -742,6 +742,8 @@ devtools_timeline_js_files = [
   "front_end/timeline/TimelineController.js",
   "front_end/timeline/TimelineEventOverview.js",
   "front_end/timeline/TimelineFlameChart.js",
+  "front_end/timeline/TimelineFlameChartView.js",
+  "front_end/timeline/TimelineNetworkFlameChart.js",
   "front_end/timeline/TimelineLayersView.js",
   "front_end/timeline/TimelineLoader.js",
   "front_end/timeline/TimelinePaintProfilerView.js",

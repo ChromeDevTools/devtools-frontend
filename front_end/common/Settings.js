@@ -691,6 +691,14 @@ Common.VersionController = class {
     oldSetting.remove();
   }
 
+  _updateVersionFrom20To21() {
+    var networkColumns = Common.settings.createSetting('networkLogColumns', {});
+    var columns = /** @type {!Object} */ (networkColumns.get());
+    delete columns['timeline'];
+    delete columns['waterfall'];
+    networkColumns.set(columns);
+  }
+
   _migrateSettingsFromLocalStorage() {
     // This step migrates all the settings except for the ones below into the browser profile.
     var localSettings = new Set([
@@ -723,7 +731,7 @@ Common.VersionController = class {
 };
 
 Common.VersionController._currentVersionName = 'inspectorVersion';
-Common.VersionController.currentVersion = 20;
+Common.VersionController.currentVersion = 21;
 
 /**
  * @type {!Common.Settings}

@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+.timeline-flamechart-popover {
+    overflow: hidden;
+}
+
 .timeline-flamechart-popover span {
     margin-right: 5px;
 }

@@ -59,8 +59,6 @@ Advanced testing:
 * `npm test -- -f --child-processes=16` - pass in additional flags to the test harness
 * `npm test -- inspector/sources inspector/console` - run specific tests
 * `npm test -- inspector/cookie-resource-match.html --debug-devtools` - debug a specific test (non-bundled & minified). You can use "-d" as a shorthand for "--debug-devtools".
-* `npm run test:build` - only builds devtools (in debug mode)
-* `npm run test:run` - only runs devtools tests
 
 #### Development
 * All devtools commits: [View the log], [RSS feed] or [@DevToolsCommits] on Twitter

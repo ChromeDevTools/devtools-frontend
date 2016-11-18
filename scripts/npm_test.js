@@ -10,17 +10,13 @@ var shell = require("child_process").execSync;
 var utils = require("./utils");
 
 var Flags = {
-    BUILD_ONLY: "--build-only",
     DEBUG_DEVTOOLS: "--debug-devtools",
     DEBUG_DEVTOOLS_SHORTHAND: "-d",
-    TEST_ONLY: "--test-only",
     FETCH_CONTENT_SHELL: "--fetch-content-shell",
 };
 
 var IS_DEBUG_ENABLED = utils.includes(process.argv, Flags.DEBUG_DEVTOOLS) ||
     utils.includes(process.argv, Flags.DEBUG_DEVTOOLS_SHORTHAND);
-var IS_BUILD_ONLY = utils.includes(process.argv, Flags.BUILD_ONLY);
-var IS_TEST_ONLY = utils.includes(process.argv, Flags.TEST_ONLY);
 var IS_FETCH_CONTENT_SHELL = utils.includes(process.argv, Flags.FETCH_CONTENT_SHELL);
 
 var CONTENT_SHELL_ZIP = "content-shell.zip";
@@ -34,6 +30,8 @@ var BLINK_TEST_PATH = path.resolve(CHROMIUM_SRC_PATH, "blink", "tools", "run_lay
 var CACHE_PATH = path.resolve(__dirname, "..", ".test_cache");
 var SOURCE_PATH = path.resolve(__dirname, "..", "front_end");
 
+var useDebugDevtools = true;
+
 function main(){
     var hasUserCompiledContentShell = utils.isFile(getContentShellBinaryPath(RELEASE_PATH));
     if (!IS_FETCH_CONTENT_SHELL && hasUserCompiledContentShell) {
@@ -42,12 +40,9 @@ function main(){
             console.log("Compiling devtools frontend");
             shell(`ninja -C ${RELEASE_PATH} devtools_frontend_resources`);
         }
-        runTests(outDir, {useRelease: !IS_DEBUG_ENABLED});
-        return;
-    }
-    if (IS_TEST_ONLY) {
-        findPreviousUploadedPosition(findMostRecentChromiumCommit())
-            .then(commitPosition => runTests(path.resolve(CACHE_PATH, commitPosition, "out"), {useRelease: false}));
+        if (!IS_DEBUG_ENABLED)
+            useDebugDevtools = false;
+        setupAndTest(outDir);
         return;
     }
     if (!utils.isDir(CACHE_PATH))
@@ -71,12 +66,12 @@ function onUploadedCommitPosition(commitPosition)
     if (hasCachedContentShell) {
         var contentShellPath = path.resolve(CACHE_PATH, commitPosition, "out");
         console.log(`Using cached content shell at: ${contentShellPath}`);
-        return buildAndTest(contentShellPath);
+        return setupAndTest(contentShellPath);
     }
     return prepareContentShellDirectory(commitPosition)
         .then(downloadContentShell)
         .then(extractContentShell)
-        .then(buildAndTest);
+        .then(setupAndTest);
 }
 
 function getPlatform()
@@ -214,16 +209,14 @@ function getContentShellBinaryPath(dirPath)
     }
 }
 
-function buildAndTest(buildDirectoryPath)
+function setupAndTest(buildDirectoryPath)
 {
     var contentShellResourcesPath = path.resolve(buildDirectoryPath, "Release", "resources");
-    build(contentShellResourcesPath);
-    if (IS_BUILD_ONLY)
-        return;
-    runTests(buildDirectoryPath, {useRelease: false});
+    copyMetadata(contentShellResourcesPath);
+    runTests(buildDirectoryPath);
 }
 
-function build(contentShellResourcesPath)
+function copyMetadata(contentShellResourcesPath)
 {
     var devtoolsResourcesPath = path.resolve(contentShellResourcesPath, "inspector");
     var inspectorBackendCommandsPath = path.resolve(devtoolsResourcesPath, "InspectorBackendCommands.js");
@@ -232,14 +225,14 @@ function build(contentShellResourcesPath)
     utils.copy(supportedCSSPropertiesPath, SOURCE_PATH);
 }
 
-function runTests(buildDirectoryPath, options)
+function runTests(buildDirectoryPath)
 {
     var testArgs = getInspectorTests().concat([
         "--no-pixel-tests",
         "--build-directory",
         buildDirectoryPath,
     ]);
-    if (!options.useRelease) {
+    if (useDebugDevtools) {
         testArgs.push("--additional-driver-flag=--debug-devtools");
         testArgs.push(`--additional-driver-flag=--custom-devtools-frontend=${SOURCE_PATH}`);
     }

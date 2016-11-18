@@ -76,7 +76,9 @@ Main.Main = class {
     var storagePrefix = '';
     if (Host.isCustomDevtoolsFrontend())
       storagePrefix = '__custom__';
-    else if (!Runtime.queryParam('can_dock') && !!Runtime.queryParam('debugFrontend'))
+    else if (
+        !Runtime.queryParam('can_dock') && !!Runtime.queryParam('debugFrontend') &&
+        !InspectorFrontendHost.isUnderTest())
       storagePrefix = '__bundled__';
     var clearLocalStorage = window.localStorage ? window.localStorage.clear.bind(window.localStorage) : undefined;
     var localStorage =
@@ -190,10 +192,8 @@ Main.Main = class {
         new Bindings.FileSystemWorkspaceBinding(Workspace.isolatedFileSystemManager, Workspace.workspace);
     Main.networkProjectManager = new Bindings.NetworkProjectManager(SDK.targetManager, Workspace.workspace);
     Bindings.presentationConsoleMessageHelper = new Bindings.PresentationConsoleMessageHelper(Workspace.workspace);
-    Bindings.cssWorkspaceBinding =
-        new Bindings.CSSWorkspaceBinding(SDK.targetManager, Workspace.workspace);
-    Bindings.debuggerWorkspaceBinding =
-        new Bindings.DebuggerWorkspaceBinding(SDK.targetManager, Workspace.workspace);
+    Bindings.cssWorkspaceBinding = new Bindings.CSSWorkspaceBinding(SDK.targetManager, Workspace.workspace);
+    Bindings.debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding(SDK.targetManager, Workspace.workspace);
     Bindings.breakpointManager =
         new Bindings.BreakpointManager(null, Workspace.workspace, SDK.targetManager, Bindings.debuggerWorkspaceBinding);
     Extensions.extensionServer = new Extensions.ExtensionServer();

@@ -11,6 +11,11 @@
             "className": "Components.HandlerRegistry.ContextMenuProvider"
         },
         {
+            "type": "@UI.ContextMenu.Provider",
+            "contextTypes": ["Node"],
+            "className": "UI.ExternaLinkContextMenuProvider"
+        },
+        {
             "type": "@UI.ActionDelegate",
             "category": "Navigation",
             "actionId": "main.reload",

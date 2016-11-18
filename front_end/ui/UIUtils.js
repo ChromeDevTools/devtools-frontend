@@ -1912,9 +1912,10 @@ UI.ThemeSupport.ColorUsage = {
  * @param {string} url
  * @param {string=} linkText
  * @param {string=} className
+ * @param {boolean=} preventClick
  * @return {!Element}
  */
-UI.createExternalLink = function(url, linkText, className) {
+UI.createExternalLink = function(url, linkText, className, preventClick) {
   if (!linkText)
     linkText = url;
 
@@ -1927,6 +1928,12 @@ UI.createExternalLink = function(url, linkText, className) {
   if (href !== null) {
     a.href = href;
     a.classList.add('webkit-html-external-link');
+    a.addEventListener('click', (event) => {
+      event.consume(true);
+      if (!preventClick)
+        InspectorFrontendHost.openInNewTab(/** @type {string} */ (href));
+    }, false);
+    a[UI._externalLinkSymbol] = true;
   }
   if (linkText !== url)
     a.title = url;
@@ -1935,6 +1942,31 @@ UI.createExternalLink = function(url, linkText, className) {
 
   return a;
 };
+
+UI._externalLinkSymbol = Symbol('UI._externalLink');
+
+/**
+ * @implements {UI.ContextMenu.Provider}
+ * @unrestricted
+ */
+UI.ExternaLinkContextMenuProvider = class {
+  /**
+   * @override
+   * @param {!Event} event
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!Object} target
+   */
+  appendApplicableItems(event, contextMenu, target) {
+    var targetNode = /** @type {!Node} */ (target);
+    while (targetNode && !targetNode[UI._externalLinkSymbol])
+      targetNode = targetNode.parentNodeOrShadowHost();
+    if (!targetNode || !targetNode.href)
+      return;
+    contextMenu.appendItem(UI.openLinkExternallyLabel(), () => InspectorFrontendHost.openInNewTab(targetNode.href));
+    contextMenu.appendItem(UI.copyLinkAddressLabel(), () => InspectorFrontendHost.copyText(targetNode.href));
+  }
+};
+
 
 /**
  * @param {string} article

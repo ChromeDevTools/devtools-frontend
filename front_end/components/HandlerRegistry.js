@@ -164,16 +164,14 @@ Components.HandlerRegistry = class extends Common.Object {
       return;
     var targetNode = /** @type {!Node} */ (target);
 
-    var anchorElement = targetNode.enclosingNodeOrSelfWithClass('webkit-html-resource-link') ||
-        targetNode.enclosingNodeOrSelfWithClass('webkit-html-external-link');
+    var anchorElement = targetNode.enclosingNodeOrSelfWithClass('webkit-html-resource-link');
     if (!anchorElement)
       return;
 
     var uiLocation = Components.Linkifier.uiLocationByAnchor(anchorElement);
     var resourceURL = uiLocation ? uiLocation.uiSourceCode.contentURL() : anchorElement.href;
-    var uiSourceCode = uiLocation ?
-        uiLocation.uiSourceCode :
-        (resourceURL ? Workspace.workspace.uiSourceCodeForURL(resourceURL) : null);
+    var uiSourceCode = uiLocation ? uiLocation.uiSourceCode :
+                                    (resourceURL ? Workspace.workspace.uiSourceCodeForURL(resourceURL) : null);
     function open() {
       Common.Revealer.reveal(uiSourceCode);
     }

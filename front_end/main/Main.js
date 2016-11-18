@@ -391,10 +391,7 @@ Main.Main = class {
       InspectorFrontendHost.openInNewTab(anchor.href);
     }
 
-    if (!anchor.classList.contains('webkit-html-external-link'))
-      followLink();
-    else
-      InspectorFrontendHost.openInNewTab(anchor.href);
+    followLink();
   }
 
   _registerShortcuts() {

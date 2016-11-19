@@ -110,50 +110,6 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     return result;
   }
 
-  _updateInfobars() {
-    this.attachInfobars([this._blackboxInfobar, this._divergedInfobar]);
-  }
-
-  _showDivergedInfobar() {
-    if (!this.uiSourceCode().contentType().isScript())
-      return;
-
-    if (this._divergedInfobar)
-      this._divergedInfobar.dispose();
-
-    var infobar = new UI.Infobar(UI.Infobar.Type.Warning, Common.UIString('Workspace mapping mismatch'));
-    this._divergedInfobar = infobar;
-
-    var fileURL = this.uiSourceCode().url();
-    infobar.createDetailsRowMessage(Common.UIString('The content of this file on the file system:\u00a0'))
-        .appendChild(UI.createExternalLink(fileURL, undefined, 'source-frame-infobar-details-url'));
-
-    var scriptURL = this.uiSourceCode().url();
-    infobar.createDetailsRowMessage(Common.UIString('does not match the loaded script:\u00a0'))
-        .appendChild(UI.createExternalLink(scriptURL, undefined, 'source-frame-infobar-details-url'));
-
-    infobar.createDetailsRowMessage();
-    infobar.createDetailsRowMessage(Common.UIString('Possible solutions are:'));
-
-    if (Common.moduleSetting('cacheDisabled').get()) {
-      infobar.createDetailsRowMessage(' - ').createTextChild(Common.UIString('Reload inspected page'));
-    } else {
-      infobar.createDetailsRowMessage(' - ').createTextChild(Common.UIString(
-          'Check "Disable cache" in settings and reload inspected page (recommended setup for authoring and debugging)'));
-    }
-    infobar.createDetailsRowMessage(' - ').createTextChild(Common.UIString(
-        'Check that your file and script are both loaded from the correct source and their contents match'));
-
-    this._updateInfobars();
-  }
-
-  _hideDivergedInfobar() {
-    if (!this._divergedInfobar)
-      return;
-    this._divergedInfobar.dispose();
-    delete this._divergedInfobar;
-  }
-
   _showBlackboxInfobarIfNeeded() {
     var uiSourceCode = this.uiSourceCode();
     if (!uiSourceCode.contentType().hasScripts())
@@ -193,7 +149,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
         Bindings.blackboxManager.unblackboxContentScripts();
     }
 
-    this._updateInfobars();
+    this.attachInfobars([this._blackboxInfobar]);
   }
 
   _hideBlackboxInfobar() {
@@ -341,14 +297,12 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
   _didMergeToVM() {
     if (this._supportsEnabledBreakpointsWhileEditing())
       return;
-    this._updateDivergedInfobar();
     this._restoreBreakpointsIfConsistentScripts();
   }
 
   _didDivergeFromVM() {
     if (this._supportsEnabledBreakpointsWhileEditing())
       return;
-    this._updateDivergedInfobar();
     this._muteBreakpointsWhileEditing();
   }
 
@@ -365,26 +319,6 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
           true);
     }
     this._muted = true;
-  }
-
-  _updateDivergedInfobar() {
-    if (this.uiSourceCode().project().type() !== Workspace.projectTypes.FileSystem) {
-      this._hideDivergedInfobar();
-      return;
-    }
-
-    var scriptFiles = this._scriptFileForTarget.valuesArray();
-    var hasDivergedScript = false;
-    for (var i = 0; i < scriptFiles.length; ++i)
-      hasDivergedScript = hasDivergedScript || scriptFiles[i].hasDivergedFromVM();
-
-    if (this._divergedInfobar) {
-      if (!hasDivergedScript)
-        this._hideDivergedInfobar();
-    } else {
-      if (hasDivergedScript && !this.uiSourceCode().isDirty())
-        this._showDivergedInfobar();
-    }
   }
 
   _supportsEnabledBreakpointsWhileEditing() {
@@ -904,8 +838,6 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     }
     if (newScriptFile)
       this._scriptFileForTarget.set(target, newScriptFile);
-
-    this._updateDivergedInfobar();
 
     if (newScriptFile) {
       newScriptFile.addEventListener(Bindings.ResourceScriptFile.Events.DidMergeToVM, this._didMergeToVM, this);

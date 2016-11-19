@@ -278,5 +278,5 @@ Common.TokenizerFactory.prototype = {
    * @param {string} mimeType
    * @return {function(string, function(string, ?string, number, number))}
    */
-  createTokenizer: function(mimeType) {}
+  createTokenizer(mimeType) {}
 };

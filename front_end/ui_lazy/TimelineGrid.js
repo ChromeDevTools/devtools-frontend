@@ -262,30 +262,30 @@ UI.TimelineGrid.Calculator.prototype = {
   /**
    * @return {number}
    */
-  paddingLeft: function() {},
+  paddingLeft() {},
 
   /**
    * @param {number} time
    * @return {number}
    */
-  computePosition: function(time) {},
+  computePosition(time) {},
 
   /**
    * @param {number} time
    * @param {number=} precision
    * @return {string}
    */
-  formatValue: function(time, precision) {},
+  formatValue(time, precision) {},
 
   /** @return {number} */
-  minimumBoundary: function() {},
+  minimumBoundary() {},
 
   /** @return {number} */
-  zeroTime: function() {},
+  zeroTime() {},
 
   /** @return {number} */
-  maximumBoundary: function() {},
+  maximumBoundary() {},
 
   /** @return {number} */
-  boundarySpan: function() {}
+  boundarySpan() {}
 };

@@ -36,28 +36,28 @@ Workspace.ProjectSearchConfig.prototype = {
   /**
    * @return {string}
    */
-  query: function() {},
+  query() {},
 
   /**
    * @return {boolean}
    */
-  ignoreCase: function() {},
+  ignoreCase() {},
 
   /**
    * @return {boolean}
    */
-  isRegex: function() {},
+  isRegex() {},
 
   /**
    * @return {!Array.<string>}
    */
-  queries: function() {},
+  queries() {},
 
   /**
    * @param {string} filePath
    * @return {boolean}
    */
-  filePathMatchesFileQuery: function(filePath) {}
+  filePathMatchesFileQuery(filePath) {}
 };
 
 /**
@@ -78,63 +78,63 @@ Workspace.Project.prototype = {
   /**
    * @return {!Workspace.Workspace}
    */
-  workspace: function() {},
+  workspace() {},
 
   /**
    * @return {string}
    */
-  id: function() {},
+  id() {},
 
   /**
    * @return {string}
    */
-  type: function() {},
+  type() {},
 
   /**
    * @return {string}
    */
-  displayName: function() {},
+  displayName() {},
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {!Promise<?Workspace.UISourceCodeMetadata>}
    */
-  requestMetadata: function(uiSourceCode) {},
+  requestMetadata(uiSourceCode) {},
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {function(?string)} callback
    */
-  requestFileContent: function(uiSourceCode, callback) {},
+  requestFileContent(uiSourceCode, callback) {},
 
   /**
    * @return {boolean}
    */
-  canSetFileContent: function() {},
+  canSetFileContent() {},
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newContent
    * @param {function(?string)} callback
    */
-  setFileContent: function(uiSourceCode, newContent, callback) {},
+  setFileContent(uiSourceCode, newContent, callback) {},
 
   /**
    * @return {boolean}
    */
-  canRename: function() {},
+  canRename() {},
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newName
    * @param {function(boolean, string=, string=, !Common.ResourceType=)} callback
    */
-  rename: function(uiSourceCode, newName, callback) {},
+  rename(uiSourceCode, newName, callback) {},
 
   /**
    * @param {string} path
    */
-  excludeFolder: function(path) {},
+  excludeFolder(path) {},
 
   /**
    * @param {string} path
@@ -142,14 +142,14 @@ Workspace.Project.prototype = {
    * @param {string} content
    * @param {function(?Workspace.UISourceCode)} callback
    */
-  createFile: function(path, name, content, callback) {},
+  createFile(path, name, content, callback) {},
 
   /**
    * @param {string} path
    */
-  deleteFile: function(path) {},
+  deleteFile(path) {},
 
-  remove: function() {},
+  remove() {},
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
@@ -158,7 +158,7 @@ Workspace.Project.prototype = {
    * @param {boolean} isRegex
    * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
    */
-  searchInFileContent: function(uiSourceCode, query, caseSensitive, isRegex, callback) {},
+  searchInFileContent(uiSourceCode, query, caseSensitive, isRegex, callback) {},
 
   /**
    * @param {!Workspace.ProjectSearchConfig} searchConfig
@@ -166,23 +166,23 @@ Workspace.Project.prototype = {
    * @param {!Common.Progress} progress
    * @param {function(!Array.<string>)} callback
    */
-  findFilesMatchingSearchRequest: function(searchConfig, filesMathingFileQuery, progress, callback) {},
+  findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress, callback) {},
 
   /**
    * @param {!Common.Progress} progress
    */
-  indexContent: function(progress) {},
+  indexContent(progress) {},
 
   /**
    * @param {string} url
    * @return {?Workspace.UISourceCode}
    */
-  uiSourceCodeForURL: function(url) {},
+  uiSourceCodeForURL(url) {},
 
   /**
    * @return {!Array.<!Workspace.UISourceCode>}
    */
-  uiSourceCodes: function() {}
+  uiSourceCodes() {}
 };
 
 /**

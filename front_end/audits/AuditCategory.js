@@ -47,5 +47,5 @@ Audits.AuditCategory.prototype = {
    * @param {function(!Audits.AuditRuleResult)} ruleResultCallback
    * @param {!Common.Progress} progress
    */
-  run: function(target, requests, ruleResultCallback, progress) {}
+  run(target, requests, ruleResultCallback, progress) {}
 };

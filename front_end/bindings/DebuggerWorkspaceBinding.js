@@ -361,11 +361,9 @@ Bindings.DebuggerWorkspaceBinding.TargetData = class {
     var workspace = debuggerWorkspaceBinding._workspace;
 
     this._defaultMapping = new Bindings.DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
-    this._resourceMapping =
-        new Bindings.ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
+    this._resourceMapping = new Bindings.ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._compilerMapping = new Bindings.CompilerScriptMapping(
-        debuggerModel, workspace, Bindings.NetworkProject.forTarget(this._target),
-        debuggerWorkspaceBinding);
+        debuggerModel, workspace, Bindings.NetworkProject.forTarget(this._target), debuggerWorkspaceBinding);
 
     /** @type {!Map.<!Workspace.UISourceCode, !Bindings.DebuggerSourceMapping>} */
     this._uiSourceCodeToSourceMapping = new Map();
@@ -630,7 +628,7 @@ Bindings.DebuggerSourceMapping.prototype = {
    * @param {!SDK.DebuggerModel.Location} rawLocation
    * @return {?Workspace.UILocation}
    */
-  rawLocationToUILocation: function(rawLocation) {},
+  rawLocationToUILocation(rawLocation) {},
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
@@ -638,19 +636,19 @@ Bindings.DebuggerSourceMapping.prototype = {
    * @param {number} columnNumber
    * @return {?SDK.DebuggerModel.Location}
    */
-  uiLocationToRawLocation: function(uiSourceCode, lineNumber, columnNumber) {},
+  uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {},
 
   /**
    * @return {boolean}
    */
-  isIdentity: function() {},
+  isIdentity() {},
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @return {boolean}
    */
-  uiLineHasMapping: function(uiSourceCode, lineNumber) {}
+  uiLineHasMapping(uiSourceCode, lineNumber) {}
 };
 
 /**

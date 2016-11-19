@@ -1274,24 +1274,24 @@ Timeline.TimelinePanel.headerHeight = 20;
 Timeline.TimelineLifecycleDelegate = function() {};
 
 Timeline.TimelineLifecycleDelegate.prototype = {
-  recordingStarted: function() {},
+  recordingStarted() {},
 
   /**
    * @param {number} usage
    */
-  recordingProgress: function(usage) {},
+  recordingProgress(usage) {},
 
-  loadingStarted: function() {},
+  loadingStarted() {},
 
   /**
    * @param {number=} progress
    */
-  loadingProgress: function(progress) {},
+  loadingProgress(progress) {},
 
   /**
    * @param {boolean} success
    */
-  loadingComplete: function(success) {},
+  loadingComplete(success) {},
 };
 
 /**
@@ -1492,41 +1492,41 @@ Timeline.TimelineModeView.prototype = {
   /**
    * @return {!UI.Widget}
    */
-  view: function() {},
+  view() {},
 
-  dispose: function() {},
+  dispose() {},
 
   /**
    * @return {?Element}
    */
-  resizerElement: function() {},
+  resizerElement() {},
 
-  reset: function() {},
+  reset() {},
 
-  refreshRecords: function() {},
+  refreshRecords() {},
 
   /**
    * @param {?SDK.TracingModel.Event} event
    * @param {string=} regex
    * @param {boolean=} select
    */
-  highlightSearchResult: function(event, regex, select) {},
+  highlightSearchResult(event, regex, select) {},
 
   /**
    * @param {number} startTime
    * @param {number} endTime
    */
-  setWindowTimes: function(startTime, endTime) {},
+  setWindowTimes(startTime, endTime) {},
 
   /**
    * @param {?Timeline.TimelineSelection} selection
    */
-  setSelection: function(selection) {},
+  setSelection(selection) {},
 
   /**
    * @param {?SDK.TracingModel.Event} event
    */
-  highlightEvent: function(event) {}
+  highlightEvent(event) {}
 };
 
 /**
@@ -1539,28 +1539,28 @@ Timeline.TimelineModeViewDelegate.prototype = {
    * @param {number} startTime
    * @param {number} endTime
    */
-  requestWindowTimes: function(startTime, endTime) {},
+  requestWindowTimes(startTime, endTime) {},
 
   /**
    * @param {?Timeline.TimelineSelection} selection
    * @param {!Timeline.TimelinePanel.DetailsTab=} preferredTab
    */
-  select: function(selection, preferredTab) {},
+  select(selection, preferredTab) {},
 
   /**
    * @param {number} time
    */
-  selectEntryAtTime: function(time) {},
+  selectEntryAtTime(time) {},
 
   /**
    * @param {!Node} node
    */
-  showInDetails: function(node) {},
+  showInDetails(node) {},
 
   /**
    * @param {?SDK.TracingModel.Event} event
    */
-  highlightEvent: function(event) {}
+  highlightEvent(event) {}
 };
 
 /**

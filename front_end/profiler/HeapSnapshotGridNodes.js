@@ -443,31 +443,31 @@ Profiler.HeapSnapshotGridNode.Events = {
 Profiler.HeapSnapshotGridNode.ChildrenProvider = function() {};
 
 Profiler.HeapSnapshotGridNode.ChildrenProvider.prototype = {
-  dispose: function() {},
+  dispose() {},
 
   /**
    * @param {number} snapshotObjectId
    * @return {!Promise<number>}
    */
-  nodePosition: function(snapshotObjectId) {},
+  nodePosition(snapshotObjectId) {},
 
   /**
    * @param {function(boolean)} callback
    */
-  isEmpty: function(callback) {},
+  isEmpty(callback) {},
 
   /**
    * @param {number} startPosition
    * @param {number} endPosition
    * @param {function(!Profiler.HeapSnapshotCommon.ItemsRange)} callback
    */
-  serializeItemsRange: function(startPosition, endPosition, callback) {},
+  serializeItemsRange(startPosition, endPosition, callback) {},
 
   /**
    * @param {!Profiler.HeapSnapshotCommon.ComparatorConfig} comparator
    * @return {!Promise<?>}
    */
-  sortAndRewind: function(comparator) {}
+  sortAndRewind(comparator) {}
 };
 
 /**

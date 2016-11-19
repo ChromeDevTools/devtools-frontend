@@ -17,117 +17,117 @@ SDK.Layer.prototype = {
   /**
    * @return {string}
    */
-  id: function() {},
+  id() {},
 
   /**
    * @return {?string}
    */
-  parentId: function() {},
+  parentId() {},
 
   /**
    * @return {?SDK.Layer}
    */
-  parent: function() {},
+  parent() {},
 
   /**
    * @return {boolean}
    */
-  isRoot: function() {},
+  isRoot() {},
 
   /**
    * @return {!Array.<!SDK.Layer>}
    */
-  children: function() {},
+  children() {},
 
   /**
    * @param {!SDK.Layer} child
    */
-  addChild: function(child) {},
+  addChild(child) {},
 
   /**
    * @return {?SDK.DOMNode}
    */
-  node: function() {},
+  node() {},
 
   /**
    * @return {?SDK.DOMNode}
    */
-  nodeForSelfOrAncestor: function() {},
+  nodeForSelfOrAncestor() {},
 
   /**
    * @return {number}
    */
-  offsetX: function() {},
+  offsetX() {},
 
   /**
    * @return {number}
    */
-  offsetY: function() {},
+  offsetY() {},
 
   /**
    * @return {number}
    */
-  width: function() {},
+  width() {},
 
   /**
    * @return {number}
    */
-  height: function() {},
+  height() {},
 
   /**
    * @return {?Array.<number>}
    */
-  transform: function() {},
+  transform() {},
 
   /**
    * @return {!Array.<number>}
    */
-  quad: function() {},
+  quad() {},
 
   /**
    * @return {!Array.<number>}
    */
-  anchorPoint: function() {},
+  anchorPoint() {},
 
   /**
    * @return {boolean}
    */
-  invisible: function() {},
+  invisible() {},
 
   /**
    * @return {number}
    */
-  paintCount: function() {},
+  paintCount() {},
 
   /**
    * @return {?Protocol.DOM.Rect}
    */
-  lastPaintRect: function() {},
+  lastPaintRect() {},
 
   /**
    * @return {!Array.<!Protocol.LayerTree.ScrollRect>}
    */
-  scrollRects: function() {},
+  scrollRects() {},
 
   /**
    * @return {number}
    */
-  gpuMemoryUsage: function() {},
+  gpuMemoryUsage() {},
 
   /**
    * @param {function(!Array.<string>)} callback
    */
-  requestCompositingReasons: function(callback) {},
+  requestCompositingReasons(callback) {},
 
   /**
    * @return {boolean}
    */
-  drawsContent: function() {},
+  drawsContent() {},
 
   /**
    * @return {!Array<!Promise<?SDK.SnapshotWithRect>>}
    */
-  snapshots: function() {}
+  snapshots() {}
 };
 
 SDK.Layer.ScrollRectType = {

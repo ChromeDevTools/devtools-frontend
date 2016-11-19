@@ -2108,19 +2108,19 @@ SDK.DOMNodeHighlighter.prototype = {
    * @param {!Protocol.DOM.BackendNodeId=} backendNodeId
    * @param {!Protocol.Runtime.RemoteObjectId=} objectId
    */
-  highlightDOMNode: function(node, config, backendNodeId, objectId) {},
+  highlightDOMNode(node, config, backendNodeId, objectId) {},
 
   /**
    * @param {!Protocol.DOM.InspectMode} mode
    * @param {!Protocol.DOM.HighlightConfig} config
    * @param {function(?Protocol.Error)=} callback
    */
-  setInspectMode: function(mode, config, callback) {},
+  setInspectMode(mode, config, callback) {},
 
   /**
    * @param {!Protocol.Page.FrameId} frameId
    */
-  highlightFrame: function(frameId) {}
+  highlightFrame(frameId) {}
 };
 
 /**

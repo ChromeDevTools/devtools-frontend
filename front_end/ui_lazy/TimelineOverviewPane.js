@@ -440,43 +440,43 @@ UI.TimelineOverview.prototype = {
    * @param {!Element} parentElement
    * @param {?Element=} insertBefore
    */
-  show: function(parentElement, insertBefore) {},
+  show(parentElement, insertBefore) {},
 
-  update: function() {},
+  update() {},
 
-  dispose: function() {},
+  dispose() {},
 
-  reset: function() {},
+  reset() {},
 
   /**
    * @param {number} x
    * @return {!Promise<?Element>}
    */
-  popoverElementPromise: function(x) {},
+  popoverElementPromise(x) {},
 
   /**
    * @param {!Event} event
    * @return {boolean}
    */
-  onClick: function(event) {},
+  onClick(event) {},
 
   /**
    * @param {number} windowLeft
    * @param {number} windowRight
    * @return {!{startTime: number, endTime: number}}
    */
-  windowTimes: function(windowLeft, windowRight) {},
+  windowTimes(windowLeft, windowRight) {},
 
   /**
    * @param {number} startTime
    * @param {number} endTime
    * @return {!{left: number, right: number}}
    */
-  windowBoundaries: function(startTime, endTime) {},
+  windowBoundaries(startTime, endTime) {},
 
-  timelineStarted: function() {},
+  timelineStarted() {},
 
-  timelineStopped: function() {},
+  timelineStopped() {},
 };
 
 /**

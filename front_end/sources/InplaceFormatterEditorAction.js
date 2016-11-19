@@ -123,8 +123,7 @@ Sources.InplaceFormatterEditorAction = class {
 
       uiSourceCode.addDecoration(
           new Common.TextRange(...startLocation, ...endLocation),
-          /** @type {string} */ (decoration.type()),
-          decoration.data());
+          /** @type {string} */ (decoration.type()), decoration.data());
     }
   }
 };

@@ -622,7 +622,7 @@ Components.DOMPresentationUtils.MarkerDecorator.prototype = {
    * @param {!SDK.DOMNode} node
    * @return {?{title: string, color: string}}
    */
-  decorate: function(node) {}
+  decorate(node) {}
 };
 
 /**

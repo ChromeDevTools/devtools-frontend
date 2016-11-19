@@ -36,17 +36,17 @@ Common.ContentProvider.prototype = {
   /**
    * @return {string}
    */
-  contentURL: function() {},
+  contentURL() {},
 
   /**
    * @return {!Common.ResourceType}
    */
-  contentType: function() {},
+  contentType() {},
 
   /**
    * @return {!Promise<?string>}
    */
-  requestContent: function() {},
+  requestContent() {},
 
   /**
    * @param {string} query
@@ -54,7 +54,7 @@ Common.ContentProvider.prototype = {
    * @param {boolean} isRegex
    * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
    */
-  searchInContent: function(query, caseSensitive, isRegex, callback) {}
+  searchInContent(query, caseSensitive, isRegex, callback) {}
 };
 
 /**

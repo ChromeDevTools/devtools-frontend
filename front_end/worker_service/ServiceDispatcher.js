@@ -11,12 +11,12 @@ Service.prototype = {
   /**
    * @return {!Promise}
    */
-  dispose: function() {},
+  dispose() {},
 
   /**
    * @return {function(string)}
    */
-  setNotify: function(notify) {}
+  setNotify(notify) {}
 };
 
 /**

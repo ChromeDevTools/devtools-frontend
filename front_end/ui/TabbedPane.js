@@ -1208,11 +1208,11 @@ UI.TabbedPaneTabDelegate.prototype = {
    * @param {!UI.TabbedPane} tabbedPane
    * @param {!Array.<string>} ids
    */
-  closeTabs: function(tabbedPane, ids) {},
+  closeTabs(tabbedPane, ids) {},
 
   /**
    * @param {string} tabId
    * @param {!UI.ContextMenu} contextMenu
    */
-  onContextMenu: function(tabId, contextMenu) {}
+  onContextMenu(tabId, contextMenu) {}
 };

@@ -148,14 +148,14 @@ UI.StaticViewportControl.Provider.prototype = {
    * @param {number} index
    * @return {number}
    */
-  fastItemHeight: function(index) {
+  fastItemHeight(index) {
     return 0;
   },
 
   /**
    * @return {number}
    */
-  itemCount: function() {
+  itemCount() {
     return 0;
   },
 
@@ -163,7 +163,7 @@ UI.StaticViewportControl.Provider.prototype = {
    * @param {number} index
    * @return {?Element}
    */
-  itemElement: function(index) {
+  itemElement(index) {
     return null;
   }
 };

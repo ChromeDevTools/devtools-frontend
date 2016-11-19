@@ -108,7 +108,8 @@ Bindings.SASSSourceMapping = class {
     var entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
     if (!entry || !entry.sourceURL)
       return null;
-    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForStyleURL(this._workspace, entry.sourceURL, rawLocation.header());
+    var uiSourceCode =
+        Bindings.NetworkProject.uiSourceCodeForStyleURL(this._workspace, entry.sourceURL, rawLocation.header());
     if (!uiSourceCode)
       return null;
     return uiSourceCode.uiLocation(entry.sourceLineNumber || 0, entry.sourceColumnNumber);

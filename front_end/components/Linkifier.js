@@ -496,7 +496,7 @@ Components.Linkifier.LinkHandler.prototype = {
    * @param {number=} lineNumber
    * @return {boolean}
    */
-  handleLink: function(url, lineNumber) {}
+  handleLink(url, lineNumber) {}
 };
 
 /**
@@ -510,7 +510,7 @@ Components.LinkDecorator.prototype = {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {?UI.Icon}
    */
-  linkIcon: function(uiSourceCode) {}
+  linkIcon(uiSourceCode) {}
 };
 
 Components.LinkDecorator.Events = {

@@ -11,7 +11,7 @@ Common.Renderer.prototype = {
    * @param {!Object} object
    * @return {!Promise.<!Element>}
    */
-  render: function(object) {}
+  render(object) {}
 };
 
 /**
@@ -73,7 +73,7 @@ Common.Revealer.prototype = {
    * @param {boolean=} omitFocus
    * @return {!Promise}
    */
-  reveal: function(object, omitFocus) {}
+  reveal(object, omitFocus) {}
 };
 
 /**
@@ -85,7 +85,7 @@ Common.App.prototype = {
   /**
    * @param {!Document} document
    */
-  presentUI: function(document) {}
+  presentUI(document) {}
 };
 
 /**
@@ -97,7 +97,7 @@ Common.AppProvider.prototype = {
   /**
    * @return {!Common.App}
    */
-  createApp: function() {}
+  createApp() {}
 };
 
 /**
@@ -109,5 +109,5 @@ Common.QueryParamHandler.prototype = {
   /**
    * @param {string} value
    */
-  handleQueryParam: function(value) {}
+  handleQueryParam(value) {}
 };

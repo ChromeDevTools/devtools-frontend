@@ -402,12 +402,12 @@ SDK.TargetManager.Observer.prototype = {
   /**
    * @param {!SDK.Target} target
    */
-  targetAdded: function(target) {},
+  targetAdded(target) {},
 
   /**
    * @param {!SDK.Target} target
    */
-  targetRemoved: function(target) {},
+  targetRemoved(target) {},
 };
 
 /**

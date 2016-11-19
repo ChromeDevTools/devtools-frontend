@@ -1106,18 +1106,18 @@ ServicePort.prototype = {
    * @param {function(string)} messageHandler
    * @param {function(string)} closeHandler
    */
-  setHandlers: function(messageHandler, closeHandler) {},
+  setHandlers(messageHandler, closeHandler) {},
 
   /**
    * @param {string} message
    * @return {!Promise<boolean>}
    */
-  send: function(message) {},
+  send(message) {},
 
   /**
    * @return {!Promise<boolean>}
    */
-  close: function() {}
+  close() {}
 };
 
 /** @type {!Runtime} */

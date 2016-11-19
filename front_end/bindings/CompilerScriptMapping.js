@@ -117,7 +117,8 @@ Bindings.CompilerScriptMapping = class {
     var script = rawLocation.script();
     if (!script)
       return null;
-    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForScriptURL(this._workspace, /** @type {string} */ (entry.sourceURL), script);
+    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForScriptURL(
+        this._workspace, /** @type {string} */ (entry.sourceURL), script);
     if (!uiSourceCode)
       return null;
     return uiSourceCode.uiLocation(

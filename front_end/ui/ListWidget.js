@@ -226,26 +226,26 @@ UI.ListWidget.Delegate.prototype = {
    * @param {boolean} editable
    * @return {!Element}
    */
-  renderItem: function(item, editable) {},
+  renderItem(item, editable) {},
 
   /**
    * @param {*} item
    * @param {number} index
    */
-  removeItemRequested: function(item, index) {},
+  removeItemRequested(item, index) {},
 
   /**
    * @param {*} item
    * @return {!UI.ListWidget.Editor}
    */
-  beginEdit: function(item) {},
+  beginEdit(item) {},
 
   /**
    * @param {*} item
    * @param {!UI.ListWidget.Editor} editor
    * @param {boolean} isNew
    */
-  commitEdit: function(item, editor, isNew) {}
+  commitEdit(item, editor, isNew) {}
 };
 
 /**

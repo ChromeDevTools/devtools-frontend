@@ -9,20 +9,20 @@
 SDK.TracingManagerClient = function() {};
 
 SDK.TracingManagerClient.prototype = {
-  tracingStarted: function() {},
+  tracingStarted() {},
   /**
    * @param {!Array.<!SDK.TracingManager.EventPayload>} events
    */
-  traceEventsCollected: function(events) {},
-  tracingComplete: function() {},
+  traceEventsCollected(events) {},
+  tracingComplete() {},
   /**
    * @param {number} usage
    */
-  tracingBufferUsage: function(usage) {},
+  tracingBufferUsage(usage) {},
   /**
    * @param {number} progress
    */
-  eventsRetrievalProgress: function(progress) {}
+  eventsRetrievalProgress(progress) {}
 };
 
 /**

@@ -11,9 +11,9 @@ Common.OutputStream.prototype = {
    * @param {string} data
    * @param {function(!Common.OutputStream)=} callback
    */
-  write: function(data, callback) {},
+  write(data, callback) {},
 
-  close: function() {}
+  close() {}
 };
 
 /**

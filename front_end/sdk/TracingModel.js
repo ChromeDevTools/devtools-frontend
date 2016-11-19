@@ -464,17 +464,17 @@ SDK.BackingStorage.prototype = {
   /**
    * @param {string} string
    */
-  appendString: function(string) {},
+  appendString(string) {},
 
   /**
    * @param {string} string
    * @return {function():!Promise.<?string>}
    */
-  appendAccessibleString: function(string) {},
+  appendAccessibleString(string) {},
 
-  finishWriting: function() {},
+  finishWriting() {},
 
-  reset: function() {},
+  reset() {},
 };
 
 /**

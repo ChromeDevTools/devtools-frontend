@@ -109,5 +109,5 @@ UI.SettingUI.prototype = {
   /**
    * @return {?Element}
    */
-  settingElement: function() {}
+  settingElement() {}
 };

@@ -584,21 +584,21 @@ UI.ViewportControl.Provider.prototype = {
    * @param {number} index
    * @return {number}
    */
-  fastHeight: function(index) {
+  fastHeight(index) {
     return 0;
   },
 
   /**
    * @return {number}
    */
-  itemCount: function() {
+  itemCount() {
     return 0;
   },
 
   /**
    * @return {number}
    */
-  minimumRowHeight: function() {
+  minimumRowHeight() {
     return 0;
   },
 
@@ -606,7 +606,7 @@ UI.ViewportControl.Provider.prototype = {
    * @param {number} index
    * @return {?UI.ViewportElement}
    */
-  itemElement: function(index) {
+  itemElement(index) {
     return null;
   }
 };
@@ -616,14 +616,14 @@ UI.ViewportControl.Provider.prototype = {
  */
 UI.ViewportElement = function() {};
 UI.ViewportElement.prototype = {
-  willHide: function() {},
+  willHide() {},
 
-  wasShown: function() {},
+  wasShown() {},
 
   /**
    * @return {!Element}
    */
-  element: function() {},
+  element() {},
 };
 
 /**

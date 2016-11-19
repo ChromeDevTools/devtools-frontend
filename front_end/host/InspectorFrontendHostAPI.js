@@ -98,98 +98,98 @@ InspectorFrontendHostAPI.prototype = {
   /**
    * @param {string=} fileSystemPath
    */
-  addFileSystem: function(fileSystemPath) {},
+  addFileSystem(fileSystemPath) {},
 
   /**
    * @param {string} url
    * @param {string} content
    */
-  append: function(url, content) {},
+  append(url, content) {},
 
-  loadCompleted: function() {},
+  loadCompleted() {},
 
   /**
    * @param {number} requestId
    * @param {string} fileSystemPath
    */
-  indexPath: function(requestId, fileSystemPath) {},
+  indexPath(requestId, fileSystemPath) {},
 
   /**
    * @return {string}
    */
-  getSelectionBackgroundColor: function() {},
+  getSelectionBackgroundColor() {},
 
   /**
    * @return {string}
    */
-  getSelectionForegroundColor: function() {},
+  getSelectionForegroundColor() {},
 
   /**
    * Requests inspected page to be placed atop of the inspector frontend with specified bounds.
    * @param {{x: number, y: number, width: number, height: number}} bounds
    */
-  setInspectedPageBounds: function(bounds) {},
+  setInspectedPageBounds(bounds) {},
 
   /**
    * @param {!Array<string>} certChain
    */
-  showCertificateViewer: function(certChain) {},
+  showCertificateViewer(certChain) {},
 
   /**
    * @param {string} shortcuts
    */
-  setWhitelistedShortcuts: function(shortcuts) {},
+  setWhitelistedShortcuts(shortcuts) {},
 
-  inspectElementCompleted: function() {},
+  inspectElementCompleted() {},
 
   /**
    * @param {string} url
    */
-  openInNewTab: function(url) {},
+  openInNewTab(url) {},
 
   /**
    * @param {string} fileSystemPath
    */
-  removeFileSystem: function(fileSystemPath) {},
+  removeFileSystem(fileSystemPath) {},
 
-  requestFileSystems: function() {},
+  requestFileSystems() {},
 
   /**
    * @param {string} url
    * @param {string} content
    * @param {boolean} forceSaveAs
    */
-  save: function(url, content, forceSaveAs) {},
+  save(url, content, forceSaveAs) {},
 
   /**
    * @param {number} requestId
    * @param {string} fileSystemPath
    * @param {string} query
    */
-  searchInPath: function(requestId, fileSystemPath, query) {},
+  searchInPath(requestId, fileSystemPath, query) {},
 
   /**
    * @param {number} requestId
    */
-  stopIndexing: function(requestId) {},
+  stopIndexing(requestId) {},
 
-  bringToFront: function() {},
+  bringToFront() {},
 
-  closeWindow: function() {},
+  closeWindow() {},
 
-  copyText: function(text) {},
+  copyText(text) {},
 
   /**
    * @param {string} url
    */
-  inspectedURLChanged: function(url) {},
+  inspectedURLChanged(url) {},
 
   /**
    * @param {string} fileSystemId
    * @param {string} registeredName
    * @return {?DOMFileSystem}
    */
-  isolatedFileSystem: function(fileSystemId, registeredName) {},
+  isolatedFileSystem(fileSystemId, registeredName) {},
 
   /**
    * @param {string} url
@@ -197,94 +197,94 @@ InspectorFrontendHostAPI.prototype = {
    * @param {number} streamId
    * @param {function(!InspectorFrontendHostAPI.LoadNetworkResourceResult)} callback
    */
-  loadNetworkResource: function(url, headers, streamId, callback) {},
+  loadNetworkResource(url, headers, streamId, callback) {},
 
   /**
    * @param {function(!Object<string, string>)} callback
    */
-  getPreferences: function(callback) {},
+  getPreferences(callback) {},
 
   /**
    * @param {string} name
    * @param {string} value
    */
-  setPreference: function(name, value) {},
+  setPreference(name, value) {},
 
   /**
    * @param {string} name
    */
-  removePreference: function(name) {},
+  removePreference(name) {},
 
-  clearPreferences: function() {},
+  clearPreferences() {},
 
   /**
    * @param {!FileSystem} fileSystem
    */
-  upgradeDraggedFileSystemPermissions: function(fileSystem) {},
+  upgradeDraggedFileSystemPermissions(fileSystem) {},
 
   /**
    * @return {string}
    */
-  platform: function() {},
+  platform() {},
 
   /**
    * @param {string} actionName
    * @param {number} actionCode
    * @param {number} bucketSize
    */
-  recordEnumeratedHistogram: function(actionName, actionCode, bucketSize) {},
+  recordEnumeratedHistogram(actionName, actionCode, bucketSize) {},
 
   /**
    * @param {string} message
    */
-  sendMessageToBackend: function(message) {},
+  sendMessageToBackend(message) {},
 
   /**
    * @param {boolean} discoverUsbDevices
    * @param {boolean} portForwardingEnabled
    * @param {!Adb.PortForwardingConfig} portForwardingConfig
    */
-  setDevicesDiscoveryConfig: function(discoverUsbDevices, portForwardingEnabled, portForwardingConfig) {},
+  setDevicesDiscoveryConfig(discoverUsbDevices, portForwardingEnabled, portForwardingConfig) {},
 
   /**
    * @param {boolean} enabled
    */
-  setDevicesUpdatesEnabled: function(enabled) {},
+  setDevicesUpdatesEnabled(enabled) {},
 
   /**
    * @param {string} pageId
    * @param {string} action
    */
-  performActionOnRemotePage: function(pageId, action) {},
+  performActionOnRemotePage(pageId, action) {},
 
   /**
    * @param {string} browserId
    * @param {string} url
    */
-  openRemotePage: function(browserId, url) {},
+  openRemotePage(browserId, url) {},
 
   /**
    * @param {string} origin
    * @param {string} script
    */
-  setInjectedScriptForOrigin: function(origin, script) {},
+  setInjectedScriptForOrigin(origin, script) {},
 
   /**
    * @param {boolean} isDocked
    * @param {function()} callback
    */
-  setIsDocked: function(isDocked, callback) {},
+  setIsDocked(isDocked, callback) {},
 
   /**
    * @return {number}
    */
-  zoomFactor: function() {},
+  zoomFactor() {},
 
-  zoomIn: function() {},
+  zoomIn() {},
 
-  zoomOut: function() {},
+  zoomOut() {},
 
-  resetZoom: function() {},
+  resetZoom() {},
 
   /**
    * @param {number} x
@@ -292,22 +292,22 @@ InspectorFrontendHostAPI.prototype = {
    * @param {!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>} items
    * @param {!Document} document
    */
-  showContextMenuAtPoint: function(x, y, items, document) {},
+  showContextMenuAtPoint(x, y, items, document) {},
 
   /**
    * @param {function()} callback
    */
-  reattach: function(callback) {},
+  reattach(callback) {},
 
   /**
    * @return {boolean}
    */
-  isUnderTest: function() {},
+  isUnderTest() {},
 
-  readyForTest: function() {},
+  readyForTest() {},
 
   /**
    * @return {boolean}
    */
-  isHostedMode: function() {}
+  isHostedMode() {}
 };

@@ -164,29 +164,29 @@ Common.EventTarget.prototype = {
    * @param {!Object=} thisObject
    * @return {!Common.EventTarget.EventDescriptor}
    */
-  addEventListener: function(eventType, listener, thisObject) {},
+  addEventListener(eventType, listener, thisObject) {},
 
   /**
    * @param {string|symbol} eventType
    * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
    */
-  removeEventListener: function(eventType, listener, thisObject) {},
+  removeEventListener(eventType, listener, thisObject) {},
 
-  removeAllListeners: function() {},
+  removeAllListeners() {},
 
   /**
    * @param {string|symbol} eventType
    * @return {boolean}
    */
-  hasEventListeners: function(eventType) {},
+  hasEventListeners(eventType) {},
 
   /**
    * @param {string|symbol} eventType
    * @param {*=} eventData
    * @return {boolean}
    */
-  dispatchEventToListeners: function(eventType, eventData) {},
+  dispatchEventToListeners(eventType, eventData) {},
 };
 
 /**

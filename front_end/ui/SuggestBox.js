@@ -37,12 +37,12 @@ UI.SuggestBoxDelegate.prototype = {
    * @param {string} suggestion
    * @param {boolean=} isIntermediateSuggestion
    */
-  applySuggestion: function(suggestion, isIntermediateSuggestion) {},
+  applySuggestion(suggestion, isIntermediateSuggestion) {},
 
   /**
    * acceptSuggestion will be always called after call to applySuggestion with isIntermediateSuggestion being equal to false.
    */
-  acceptSuggestion: function() {},
+  acceptSuggestion() {},
 };
 
 /**

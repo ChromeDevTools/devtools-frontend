@@ -177,12 +177,12 @@ UI.FilterUI.prototype = {
   /**
    * @return {boolean}
    */
-  isActive: function() {},
+  isActive() {},
 
   /**
    * @return {!Element}
    */
-  element: function() {}
+  element() {}
 };
 
 /**
@@ -423,19 +423,19 @@ UI.TextFilterUI.SuggestionBuilder.prototype = {
    * @param {!HTMLInputElement} input
    * @return {?Array.<string>}
    */
-  buildSuggestions: function(input) {},
+  buildSuggestions(input) {},
 
   /**
    * @param {!HTMLInputElement} input
    * @param {string} suggestion
    * @param {boolean} isIntermediate
    */
-  applySuggestion: function(input, suggestion, isIntermediate) {},
+  applySuggestion(input, suggestion, isIntermediate) {},
 
   /**
    * @param {!HTMLInputElement} input
    */
-  unapplySuggestion: function(input) {}
+  unapplySuggestion(input) {}
 };
 
 /**

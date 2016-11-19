@@ -637,18 +637,18 @@ Profiler.ProfileDataGridNode.Formatter.prototype = {
    * @param {!Profiler.ProfileDataGridNode} node
    * @return {string}
    */
-  formatValue: function(value, node) {},
+  formatValue(value, node) {},
 
   /**
    * @param {number} value
    * @param {!Profiler.ProfileDataGridNode} node
    * @return {string}
    */
-  formatPercent: function(value, node) {},
+  formatPercent(value, node) {},
 
   /**
    * @param  {!Profiler.ProfileDataGridNode} node
    * @return {?Element}
    */
-  linkifyNode: function(node) {}
+  linkifyNode(node) {}
 };

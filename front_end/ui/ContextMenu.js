@@ -479,5 +479,5 @@ UI.ContextMenu.Provider.prototype = {
    * @param {!UI.ContextMenu} contextMenu
    * @param {!Object} target
    */
-  appendApplicableItems: function(event, contextMenu, target) {}
+  appendApplicableItems(event, contextMenu, target) {}
 };

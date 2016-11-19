@@ -190,12 +190,12 @@ InspectorBackendClass.Connection.prototype = {
   /**
    * @param {string} message
    */
-  sendMessage: function(message) {},
+  sendMessage(message) {},
 
   /**
    * @return {!Promise}
    */
-  disconnect: function() {},
+  disconnect() {},
 };
 
 /**

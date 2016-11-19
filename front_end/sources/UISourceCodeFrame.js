@@ -455,7 +455,7 @@ Sources.UISourceCodeFrame.LineDecorator.prototype = {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {!TextEditor.CodeMirrorTextEditor} textEditor
    */
-  decorate: function(uiSourceCode, textEditor) {}
+  decorate(uiSourceCode, textEditor) {}
 };
 
 /**

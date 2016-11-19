@@ -235,7 +235,7 @@ FormatterWorker.FormatterWorkerContentParser.prototype = {
    * @param {string} content
    * @return {!Object}
    */
-  parse: function(content) {}
+  parse(content) {}
 };
 
 /**

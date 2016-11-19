@@ -10,32 +10,32 @@ UI.View.prototype = {
   /**
    * @return {string}
    */
-  viewId: function() {},
+  viewId() {},
 
   /**
    * @return {string}
    */
-  title: function() {},
+  title() {},
 
   /**
    * @return {boolean}
    */
-  isCloseable: function() {},
+  isCloseable() {},
 
   /**
    * @return {boolean}
    */
-  isTransient: function() {},
+  isTransient() {},
 
   /**
    * @return {!Promise<!Array<!UI.ToolbarItem>>}
    */
-  toolbarItems: function() {},
+  toolbarItems() {},
 
   /**
    * @return {!Promise<!UI.Widget>}
    */
-  widget: function() {}
+  widget() {}
 };
 
 UI.View._symbol = Symbol('view');
@@ -216,30 +216,30 @@ UI.ViewLocation.prototype = {
   /**
    * @param {string} locationName
    */
-  appendApplicableItems: function(locationName) {},
+  appendApplicableItems(locationName) {},
 
   /**
    * @param {!UI.View} view
    * @param {?UI.View=} insertBefore
    */
-  appendView: function(view, insertBefore) {},
+  appendView(view, insertBefore) {},
 
   /**
    * @param {!UI.View} view
    * @param {?UI.View=} insertBefore
    * @return {!Promise}
    */
-  showView: function(view, insertBefore) {},
+  showView(view, insertBefore) {},
 
   /**
    * @param {!UI.View} view
    */
-  removeView: function(view) {},
+  removeView(view) {},
 
   /**
    * @return {!UI.Widget}
    */
-  widget: function() {}
+  widget() {}
 };
 
 /**
@@ -252,9 +252,9 @@ UI.TabbedViewLocation.prototype = {
   /**
    * @return {!UI.TabbedPane}
    */
-  tabbedPane: function() {},
+  tabbedPane() {},
 
-  enableMoreTabsButton: function() {}
+  enableMoreTabsButton() {}
 };
 
 /**
@@ -267,7 +267,7 @@ UI.ViewLocationResolver.prototype = {
    * @param {string} location
    * @return {?UI.ViewLocation}
    */
-  resolveLocation: function(location) {}
+  resolveLocation(location) {}
 };
 
 /**

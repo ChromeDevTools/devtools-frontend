@@ -36,9 +36,9 @@ Sources.HistoryEntry.prototype = {
   /**
    * @return {boolean}
    */
-  valid: function() {},
+  valid() {},
 
-  reveal: function() {}
+  reveal() {}
 };
 
 /**

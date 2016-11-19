@@ -732,7 +732,7 @@ UI.ToolbarItem.Provider.prototype = {
   /**
    * @return {?UI.ToolbarItem}
    */
-  item: function() {}
+  item() {}
 };
 
 /**
@@ -744,7 +744,7 @@ UI.ToolbarItem.ItemsProvider.prototype = {
   /**
    * @return {!Array<!UI.ToolbarItem>}
    */
-  toolbarItems: function() {}
+  toolbarItems() {}
 };
 
 /**

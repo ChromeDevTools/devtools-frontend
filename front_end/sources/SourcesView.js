@@ -687,7 +687,7 @@ Sources.SourcesView.EditorAction.prototype = {
    * @param {!Sources.SourcesView} sourcesView
    * @return {!UI.ToolbarButton}
    */
-  button: function(sourcesView) {}
+  button(sourcesView) {}
 };
 
 /**

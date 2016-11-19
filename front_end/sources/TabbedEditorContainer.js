@@ -35,7 +35,7 @@ Sources.TabbedEditorContainerDelegate.prototype = {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {!UI.Widget}
    */
-  viewForFile: function(uiSourceCode) {},
+  viewForFile(uiSourceCode) {},
 };
 
 /**

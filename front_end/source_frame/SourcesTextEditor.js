@@ -631,7 +631,7 @@ SourceFrame.SourcesTextEditorDelegate.prototype = {
    * @param {number} lineNumber
    * @return {!Promise}
    */
-  populateLineGutterContextMenu: function(contextMenu, lineNumber) {},
+  populateLineGutterContextMenu(contextMenu, lineNumber) {},
 
   /**
    * @param {!UI.ContextMenu} contextMenu
@@ -639,7 +639,7 @@ SourceFrame.SourcesTextEditorDelegate.prototype = {
    * @param {number} columnNumber
    * @return {!Promise}
    */
-  populateTextAreaContextMenu: function(contextMenu, lineNumber, columnNumber) {},
+  populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber) {},
 };
 
 /**

@@ -419,18 +419,18 @@ Sources.SearchScope.prototype = {
    * @param {function(!Sources.FileBasedSearchResult)} searchResultCallback
    * @param {function(boolean)} searchFinishedCallback
    */
-  performSearch: function(searchConfig, progress, searchResultCallback, searchFinishedCallback) {},
+  performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {},
 
   /**
    * @param {!Common.Progress} progress
    */
-  performIndexing: function(progress) {},
+  performIndexing(progress) {},
 
-  stopSearch: function() {},
+  stopSearch() {},
 
   /**
    * @param {!Workspace.ProjectSearchConfig} searchConfig
    * @return {!Sources.SearchResultsPane}
    */
-  createSearchResultsPane: function(searchConfig) {}
+  createSearchResultsPane(searchConfig) {}
 };

@@ -643,8 +643,8 @@ Workspace.UISourceCode = class extends Common.Object {
   removeAllDecorations() {
     var decorationList = this._decorations.valuesArray();
     this._decorations.clear();
-    decorationList.forEach(marker =>
-        this.dispatchEventToListeners(Workspace.UISourceCode.Events.LineDecorationRemoved, marker));
+    decorationList.forEach(
+        marker => this.dispatchEventToListeners(Workspace.UISourceCode.Events.LineDecorationRemoved, marker));
   }
 
   /**

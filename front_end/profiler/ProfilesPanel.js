@@ -260,13 +260,13 @@ Profiler.ProfileType.DataDisplayDelegate.prototype = {
    * @param {?Profiler.ProfileHeader} profile
    * @return {?UI.Widget}
    */
-  showProfile: function(profile) {},
+  showProfile(profile) {},
 
   /**
    * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} snapshotObjectId
    * @param {string} perspectiveName
    */
-  showObject: function(snapshotObjectId, perspectiveName) {}
+  showObject(snapshotObjectId, perspectiveName) {}
 };
 
 /**

@@ -37,13 +37,13 @@ UI.FlameChartDelegate.prototype = {
    * @param {number} startTime
    * @param {number} endTime
    */
-  requestWindowTimes: function(startTime, endTime) {},
+  requestWindowTimes(startTime, endTime) {},
 
   /**
    * @param {number} startTime
    * @param {number} endTime
    */
-  updateRangeSelection: function(startTime, endTime) {},
+  updateRangeSelection(startTime, endTime) {},
 };
 
 /**
@@ -1210,64 +1210,64 @@ UI.FlameChartDataProvider.prototype = {
   /**
    * @return {number}
    */
-  barHeight: function() {},
+  barHeight() {},
 
   /**
    * @return {number}
    */
-  minimumBoundary: function() {},
+  minimumBoundary() {},
 
   /**
    * @return {number}
    */
-  totalTime: function() {},
+  totalTime() {},
 
   /**
    * @param {number} value
    * @param {number=} precision
    * @return {string}
    */
-  formatValue: function(value, precision) {},
+  formatValue(value, precision) {},
 
   /**
    * @return {number}
    */
-  maxStackDepth: function() {},
+  maxStackDepth() {},
 
   /**
    * @return {?UI.FlameChart.TimelineData}
    */
-  timelineData: function() {},
+  timelineData() {},
 
   /**
    * @param {number} entryIndex
    * @return {?Element}
    */
-  prepareHighlightedEntryInfo: function(entryIndex) {},
+  prepareHighlightedEntryInfo(entryIndex) {},
 
   /**
    * @param {number} entryIndex
    * @return {boolean}
    */
-  canJumpToEntry: function(entryIndex) {},
+  canJumpToEntry(entryIndex) {},
 
   /**
    * @param {number} entryIndex
    * @return {?string}
    */
-  entryTitle: function(entryIndex) {},
+  entryTitle(entryIndex) {},
 
   /**
    * @param {number} entryIndex
    * @return {?string}
    */
-  entryFont: function(entryIndex) {},
+  entryFont(entryIndex) {},
 
   /**
    * @param {number} entryIndex
    * @return {string}
    */
-  entryColor: function(entryIndex) {},
+  entryColor(entryIndex) {},
 
   /**
    * @param {number} entryIndex
@@ -1281,34 +1281,34 @@ UI.FlameChartDataProvider.prototype = {
    * @param {number} timeToPixels
    * @return {boolean}
    */
-  decorateEntry: function(entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixels) {},
+  decorateEntry(entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixels) {},
 
   /**
    * @param {number} entryIndex
    * @return {boolean}
    */
-  forceDecoration: function(entryIndex) {},
+  forceDecoration(entryIndex) {},
 
   /**
    * @param {number} entryIndex
    * @return {string}
    */
-  textColor: function(entryIndex) {},
+  textColor(entryIndex) {},
 
   /**
    * @return {number}
    */
-  textBaseline: function() {},
+  textBaseline() {},
 
   /**
    * @return {number}
    */
-  textPadding: function() {},
+  textPadding() {},
 
   /**
    * @return {number}
    */
-  paddingLeft: function() {},
+  paddingLeft() {},
 };
 
 /**
@@ -1320,17 +1320,17 @@ UI.FlameChartMarker.prototype = {
   /**
    * @return {number}
    */
-  startTime: function() {},
+  startTime() {},
 
   /**
    * @return {string}
    */
-  color: function() {},
+  color() {},
 
   /**
    * @return {string}
    */
-  title: function() {},
+  title() {},
 
   /**
    * @param {!CanvasRenderingContext2D} context
@@ -1338,7 +1338,7 @@ UI.FlameChartMarker.prototype = {
    * @param {number} height
    * @param {number} pixelsPerMillisecond
    */
-  draw: function(context, x, height, pixelsPerMillisecond) {},
+  draw(context, x, height, pixelsPerMillisecond) {},
 };
 
 /** @enum {symbol} */

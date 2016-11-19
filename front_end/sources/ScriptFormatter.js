@@ -140,14 +140,14 @@ Sources.FormatterSourceMapping.prototype = {
    * @param {number=} columnNumber
    * @return {!Array.<number>}
    */
-  originalToFormatted: function(lineNumber, columnNumber) {},
+  originalToFormatted(lineNumber, columnNumber) {},
 
   /**
    * @param {number} lineNumber
    * @param {number=} columnNumber
    * @return {!Array.<number>}
    */
-  formattedToOriginal: function(lineNumber, columnNumber) {}
+  formattedToOriginal(lineNumber, columnNumber) {}
 };
 
 /**

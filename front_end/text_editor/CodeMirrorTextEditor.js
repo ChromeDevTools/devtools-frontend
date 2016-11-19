@@ -1557,13 +1557,13 @@ TextEditor.TextEditorPositionHandle.prototype = {
   /**
    * @return {?{lineNumber: number, columnNumber: number}}
    */
-  resolve: function() {},
+  resolve() {},
 
   /**
    * @param {!TextEditor.TextEditorPositionHandle} positionHandle
    * @return {boolean}
    */
-  equal: function(positionHandle) {}
+  equal(positionHandle) {}
 };
 
 TextEditor.CodeMirrorTextEditor._overrideModeWithPrefixedTokens('css', 'css-');
@@ -1583,7 +1583,7 @@ TextEditor.CodeMirrorMimeMode.prototype = {
   /**
    * @param {!Runtime.Extension} extension
    */
-  install: function(extension) {}
+  install(extension) {}
 };
 
 /**

@@ -55,7 +55,7 @@ Extensions.ExtensionAuditCategoryResults.prototype = {
   /**
    * @return {string}
    */
-  id: function() {},
+  id() {},
 
   /**
    * @param {string} displayName
@@ -63,12 +63,12 @@ Extensions.ExtensionAuditCategoryResults.prototype = {
    * @param {string} severity
    * @param {!Object} details
    */
-  addResult: function(displayName, description, severity, details) {},
+  addResult(displayName, description, severity, details) {},
 
   /**
    * @param {number} progress
    */
-  updateProgress: function(progress) {},
+  updateProgress(progress) {},
 
-  done: function() {}
+  done() {}
 };

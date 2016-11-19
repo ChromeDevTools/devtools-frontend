@@ -63,7 +63,8 @@ Bindings.StylesSourceMapping = class {
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForStyleURL(this._workspace, rawLocation.url, rawLocation.header());
+    var uiSourceCode =
+        Bindings.NetworkProject.uiSourceCodeForStyleURL(this._workspace, rawLocation.url, rawLocation.header());
     if (!uiSourceCode)
       return null;
     var lineNumber = rawLocation.lineNumber;

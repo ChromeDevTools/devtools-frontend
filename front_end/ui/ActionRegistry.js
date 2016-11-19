@@ -209,7 +209,7 @@ UI.ActionDelegate.prototype = {
    * @param {string} actionId
    * @return {boolean}
    */
-  handleAction: function(context, actionId) {}
+  handleAction(context, actionId) {}
 };
 
 /** @type {!UI.ActionRegistry} */

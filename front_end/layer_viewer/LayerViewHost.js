@@ -12,17 +12,17 @@ LayerViewer.LayerView.prototype = {
   /**
    * @param {?LayerViewer.LayerView.Selection} selection
    */
-  hoverObject: function(selection) {},
+  hoverObject(selection) {},
 
   /**
    * @param {?LayerViewer.LayerView.Selection} selection
    */
-  selectObject: function(selection) {},
+  selectObject(selection) {},
 
   /**
    * @param {?SDK.LayerTreeBase} layerTree
    */
-  setLayerTree: function(layerTree) {}
+  setLayerTree(layerTree) {}
 };
 
 /**

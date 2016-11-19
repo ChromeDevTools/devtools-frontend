@@ -11,7 +11,7 @@ UI.TextEditorFactory.prototype = {
    * @param {!UI.TextEditor.Options} options
    * @return {!UI.TextEditor}
    */
-  createEditor: function(options) {}
+  createEditor(options) {}
 };
 
 /**
@@ -24,53 +24,53 @@ UI.TextEditor.prototype = {
   /**
    * @return {!UI.Widget}
    */
-  widget: function() {},
+  widget() {},
 
   /**
    * @return {!Common.TextRange}
    */
-  fullRange: function() {},
+  fullRange() {},
 
   /**
    * @return {!Common.TextRange}
    */
-  selection: function() {},
+  selection() {},
 
   /**
    * @param {!Common.TextRange} selection
    */
-  setSelection: function(selection) {},
+  setSelection(selection) {},
 
   /**
    * @param {!Common.TextRange=} textRange
    * @return {string}
    */
-  text: function(textRange) {},
+  text(textRange) {},
 
   /**
    * @param {string} text
    */
-  setText: function(text) {},
+  setText(text) {},
 
   /**
    * @param {number} lineNumber
    * @return {string}
    */
-  line: function(lineNumber) {},
+  line(lineNumber) {},
 
-  newlineAndIndent: function() {},
+  newlineAndIndent() {},
 
   /**
    * @param {function(!KeyboardEvent)} handler
    */
-  addKeyDownHandler: function(handler) {},
+  addKeyDownHandler(handler) {},
 
   /**
    * @param {?UI.AutocompleteConfig} config
    */
-  configureAutocomplete: function(config) {},
+  configureAutocomplete(config) {},
 
-  clearAutocomplete: function() {}
+  clearAutocomplete() {}
 };
 
 /**

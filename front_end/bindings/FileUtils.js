@@ -33,20 +33,20 @@
 Bindings.OutputStreamDelegate = function() {};
 
 Bindings.OutputStreamDelegate.prototype = {
-  onTransferStarted: function() {},
+  onTransferStarted() {},
 
-  onTransferFinished: function() {},
+  onTransferFinished() {},
 
   /**
    * @param {!Bindings.ChunkedReader} reader
    */
-  onChunkTransferred: function(reader) {},
+  onChunkTransferred(reader) {},
 
   /**
    * @param {!Bindings.ChunkedReader} reader
    * @param {!Event} event
    */
-  onError: function(reader, event) {},
+  onError(reader, event) {},
 };
 
 /**
@@ -58,19 +58,19 @@ Bindings.ChunkedReader.prototype = {
   /**
    * @return {number}
    */
-  fileSize: function() {},
+  fileSize() {},
 
   /**
    * @return {number}
    */
-  loadedSize: function() {},
+  loadedSize() {},
 
   /**
    * @return {string}
    */
-  fileName: function() {},
+  fileName() {},
 
-  cancel: function() {}
+  cancel() {}
 };
 
 /**

@@ -36,30 +36,30 @@ Common.Progress.prototype = {
   /**
    * @param {number} totalWork
    */
-  setTotalWork: function(totalWork) {},
+  setTotalWork(totalWork) {},
 
   /**
    * @param {string} title
    */
-  setTitle: function(title) {},
+  setTitle(title) {},
 
   /**
    * @param {number} worked
    * @param {string=} title
    */
-  setWorked: function(worked, title) {},
+  setWorked(worked, title) {},
 
   /**
    * @param {number=} worked
    */
-  worked: function(worked) {},
+  worked(worked) {},
 
-  done: function() {},
+  done() {},
 
   /**
    * @return {boolean}
    */
-  isCanceled: function() {
+  isCanceled() {
     return false;
   },
 };

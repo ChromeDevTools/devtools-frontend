@@ -120,7 +120,7 @@ UI.ContextFlavorListener.prototype = {
   /**
    * @param {?Object} object
    */
-  flavorChanged: function(object) {}
+  flavorChanged(object) {}
 };
 
 UI.context = new UI.Context();

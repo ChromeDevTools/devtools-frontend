@@ -24,10 +24,8 @@ Bindings.CSSWorkspaceBinding = class {
    */
   targetAdded(target) {
     var cssModel = SDK.CSSModel.fromTarget(target);
-    if (cssModel) {
-      this._modelToTargetInfo.set(
-          cssModel, new Bindings.CSSWorkspaceBinding.TargetInfo(cssModel, this._workspace));
-    }
+    if (cssModel)
+      this._modelToTargetInfo.set(cssModel, new Bindings.CSSWorkspaceBinding.TargetInfo(cssModel, this._workspace));
   }
 
   /**
@@ -55,8 +53,7 @@ Bindings.CSSWorkspaceBinding = class {
   _ensureTargetInfo(header) {
     var targetInfo = this._modelToTargetInfo.get(header.cssModel());
     if (!targetInfo) {
-      targetInfo =
-          new Bindings.CSSWorkspaceBinding.TargetInfo(header.cssModel(), this._workspace);
+      targetInfo = new Bindings.CSSWorkspaceBinding.TargetInfo(header.cssModel(), this._workspace);
       this._modelToTargetInfo.set(header.cssModel(), targetInfo);
     }
     return targetInfo;
@@ -273,7 +270,8 @@ Bindings.CSSWorkspaceBinding.LiveLocation = class extends Bindings.LiveLocationW
       var targetInfo = this._binding._targetInfo(this._header);
       return targetInfo._rawLocationToUILocation(this._header, cssLocation.lineNumber, cssLocation.columnNumber);
     }
-    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForStyleURL(this._binding._workspace, cssLocation.url, cssLocation.header());
+    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForStyleURL(
+        this._binding._workspace, cssLocation.url, cssLocation.header());
     if (!uiSourceCode)
       return null;
     return uiSourceCode.uiLocation(cssLocation.lineNumber, cssLocation.columnNumber);

@@ -36,12 +36,12 @@ HeapSnapshotWorker.HeapSnapshotItem.prototype = {
   /**
    * @return {number}
    */
-  itemIndex: function() {},
+  itemIndex() {},
 
   /**
    * @return {!Object}
    */
-  serialize: function() {}
+  serialize() {}
 };
 
 /**
@@ -143,14 +143,14 @@ HeapSnapshotWorker.HeapSnapshotItemIterator.prototype = {
   /**
    * @return {boolean}
    */
-  hasNext: function() {},
+  hasNext() {},
 
   /**
    * @return {!HeapSnapshotWorker.HeapSnapshotItem}
    */
-  item: function() {},
+  item() {},
 
-  next: function() {}
+  next() {}
 };
 
 /**
@@ -163,7 +163,7 @@ HeapSnapshotWorker.HeapSnapshotItemIndexProvider.prototype = {
    * @param {number} newIndex
    * @return {!HeapSnapshotWorker.HeapSnapshotItem}
    */
-  itemForIndex: function(newIndex) {},
+  itemForIndex(newIndex) {},
 };
 
 /**

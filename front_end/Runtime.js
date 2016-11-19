@@ -193,7 +193,7 @@ var Runtime = class {
    * @param {boolean} appendSourceURL
    * @return {!Promise<undefined>}
    */
-  static loadResourceIntoCache(url, appendSourceURL) {
+  static _loadResourceIntoCache(url, appendSourceURL) {
     return Runtime.loadResourcePromise(url).then(
         cacheResource.bind(this, url), cacheResource.bind(this, url, undefined));
 
@@ -753,7 +753,7 @@ Runtime.Module = class {
     var promises = [];
     for (var i = 0; i < resources.length; ++i) {
       var url = this._modularizeURL(resources[i]);
-      promises.push(Runtime.loadResourceIntoCache(url, true));
+      promises.push(Runtime._loadResourceIntoCache(url, true));
     }
     return Promise.all(promises).then(undefined);
   }

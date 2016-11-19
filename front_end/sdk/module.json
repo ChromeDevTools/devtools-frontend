@@ -73,7 +73,6 @@
     "scripts": [
         "InspectorBackend.js",
         "../InspectorBackendCommands.js",
-        "InspectorBackendHostedMode.js",
         "Target.js",
         "TargetManager.js",
         "ApplicationCacheModel.js",

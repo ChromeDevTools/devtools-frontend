@@ -9,6 +9,7 @@ UI.CSSShadowEditor = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('ui/cssShadowEditor.css');
     this.contentElement.tabIndex = 0;
+    this.setDefaultFocusedElement(this.contentElement);
 
     this._typeField = this.contentElement.createChild('div', 'shadow-editor-field');
     this._typeField.createChild('label', 'shadow-editor-label').textContent = Common.UIString('Type');

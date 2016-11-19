@@ -9,6 +9,7 @@ UI.BezierEditor = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('ui/bezierEditor.css');
     this.contentElement.tabIndex = 0;
+    this.setDefaultFocusedElement(this.contentElement);
 
     // Preview UI
     this._previewElement = this.contentElement.createChild('div', 'bezier-preview-container');

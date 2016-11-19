@@ -47,9 +47,6 @@ Timeline.TimelineController = class {
     ];
     categoriesArray.push(TimelineModel.TimelineModel.Category.LatencyInfo);
 
-    if (Runtime.experiments.isEnabled('timelineFlowEvents'))
-      categoriesArray.push(disabledByDefault('toplevel.flow'), disabledByDefault('ipc.flow'));
-
     if (Runtime.experiments.isEnabled('timelineV8RuntimeCallStats') && enableJSSampling)
       categoriesArray.push(disabledByDefault('v8.runtime_stats_sampling'));
     if (Runtime.experiments.isEnabled('timelineTracingJSProfile') && enableJSSampling) {

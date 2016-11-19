@@ -658,8 +658,6 @@ UI.FlameChart = class extends UI.ChartViewport {
       context.fillText(text, barX + textPadding, barY + textBaseHeight);
     }
 
-    this._drawFlowEvents(context, width, height);
-
     context.restore();
 
     UI.TimelineGrid.drawCanvasGrid(context, this._calculator, 3);
@@ -884,55 +882,6 @@ UI.FlameChart = class extends UI.ChartViewport {
      */
     function mergeCallback(a, b) {
       return a.data === b.data && a.end + 0.4 > b.end ? a : null;
-    }
-  }
-
-  /**
-   * @param {!CanvasRenderingContext2D} context
-   * @param {number} height
-   * @param {number} width
-   */
-  _drawFlowEvents(context, width, height) {
-    var timelineData = this._timelineData();
-    var timeWindowRight = this._timeWindowRight;
-    var timeWindowLeft = this._timeWindowLeft;
-    var flowStartTimes = timelineData.flowStartTimes;
-    var flowEndTimes = timelineData.flowEndTimes;
-    var flowStartLevels = timelineData.flowStartLevels;
-    var flowEndLevels = timelineData.flowEndLevels;
-    var flowCount = flowStartTimes.length;
-    var endIndex = flowStartTimes.lowerBound(timeWindowRight);
-
-    var color = [];
-    var fadeColorsCount = 8;
-    for (var i = 0; i <= fadeColorsCount; ++i)
-      color[i] = 'rgba(128, 0, 0, ' + i / fadeColorsCount + ')';
-    var fadeColorsRange = color.length;
-    var minimumFlowDistancePx = 15;
-    var flowArcHeight = 4 * this._barHeight;
-    var colorIndex = 0;
-    context.lineWidth = 0.5;
-    for (var i = 0; i < endIndex; ++i) {
-      if (flowEndTimes[i] < timeWindowLeft)
-        continue;
-      var startX = this._timeToPosition(flowStartTimes[i]);
-      var endX = this._timeToPosition(flowEndTimes[i]);
-      if (endX - startX < minimumFlowDistancePx)
-        continue;
-      if (startX < -minimumFlowDistancePx && endX > width + minimumFlowDistancePx)
-        continue;
-      // Assign a trasparent color if the flow is small enough or if the previous color was a transparent color.
-      if (endX - startX < minimumFlowDistancePx + fadeColorsRange || colorIndex !== color.length - 1) {
-        colorIndex = Math.min(fadeColorsRange - 1, Math.floor(endX - startX - minimumFlowDistancePx));
-        context.strokeStyle = color[colorIndex];
-      }
-      var startY = this._levelToHeight(flowStartLevels[i]) + this._barHeight;
-      var endY = this._levelToHeight(flowEndLevels[i]);
-      context.beginPath();
-      context.moveTo(startX, startY);
-      var arcHeight = Math.max(Math.sqrt(Math.abs(startY - endY)), flowArcHeight) + 5;
-      context.bezierCurveTo(startX, startY + arcHeight, endX, endY + arcHeight, endX, endY + this._barHeight);
-      context.stroke();
     }
   }
 
@@ -1254,10 +1203,6 @@ UI.FlameChart.TimelineData = class {
     this.groups = groups;
     /** @type {!Array.<!UI.FlameChartMarker>} */
     this.markers = [];
-    this.flowStartTimes = [];
-    this.flowStartLevels = [];
-    this.flowEndTimes = [];
-    this.flowEndLevels = [];
   }
 };
 

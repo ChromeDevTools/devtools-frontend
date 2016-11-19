@@ -119,7 +119,6 @@ Main.Main = class {
     Runtime.experiments.register('securityPanel', 'Security panel');
     Runtime.experiments.register('sourceDiff', 'Source diff');
     Runtime.experiments.register('terminalInDrawer', 'Terminal in drawer', true);
-    Runtime.experiments.register('timelineFlowEvents', 'Timeline flow events', true);
     Runtime.experiments.register('timelineInvalidationTracking', 'Timeline invalidation tracking', true);
     Runtime.experiments.register('timelineRecordingPerspectives', 'Timeline recording perspectives UI');
     Runtime.experiments.register('timelineTracingJSProfile', 'Timeline tracing based JS profiler', true);

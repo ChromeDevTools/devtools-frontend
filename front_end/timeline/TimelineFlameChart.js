@@ -159,7 +159,6 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
 
     this._timelineData = new UI.FlameChart.TimelineData([], [], [], []);
 
-    this._flowEventIndexById = {};
     this._minimumBoundary = this._model.minimumRecordTime();
     this._timeSpan = this._model.isEmpty() ? 1000 : this._model.maximumRecordTime() - this._minimumBoundary;
     this._currentLevel = 0;
@@ -217,7 +216,6 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
     this._markers.sort(compareStartTime);
     this._timelineData.markers = this._markers;
 
-    this._flowEventIndexById = {};
     return this._timelineData;
   }
 
@@ -254,7 +252,6 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
    */
   _appendSyncEvents(events, title, style, forceExpanded) {
     var openEvents = [];
-    var flowEventsEnabled = Runtime.experiments.isEnabled('timelineFlowEvents');
     var blackboxingEnabled = Runtime.experiments.isEnabled('blackboxJSFramesOnTimeline');
     var maxStackDepth = 0;
     for (var i = 0; i < events.length; ++i) {
@@ -288,8 +285,6 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
 
       var level = this._currentLevel + openEvents.length;
       this._appendEvent(e, level);
-      if (flowEventsEnabled)
-        this._appendFlowEvent(e, level);
       maxStackDepth = Math.max(maxStackDepth, openEvents.length + 1);
       if (e.endTime)
         openEvents.push(e);
@@ -604,47 +599,6 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
       duration = event.duration || Timeline.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs;
     this._timelineData.entryTotalTimes[index] = duration;
     this._timelineData.entryStartTimes[index] = event.startTime;
-  }
-
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @param {number} level
-   */
-  _appendFlowEvent(event, level) {
-    var timelineData = this._timelineData;
-    /**
-     * @param {!SDK.TracingModel.Event} event
-     * @return {number}
-     */
-    function pushStartFlow(event) {
-      var flowIndex = timelineData.flowStartTimes.length;
-      timelineData.flowStartTimes.push(event.startTime);
-      timelineData.flowStartLevels.push(level);
-      return flowIndex;
-    }
-
-    /**
-     * @param {!SDK.TracingModel.Event} event
-     * @param {number} flowIndex
-     */
-    function pushEndFlow(event, flowIndex) {
-      timelineData.flowEndTimes[flowIndex] = event.startTime;
-      timelineData.flowEndLevels[flowIndex] = level;
-    }
-
-    switch (event.phase) {
-      case SDK.TracingModel.Phase.FlowBegin:
-        this._flowEventIndexById[event.id] = pushStartFlow(event);
-        break;
-      case SDK.TracingModel.Phase.FlowStep:
-        pushEndFlow(event, this._flowEventIndexById[event.id]);
-        this._flowEventIndexById[event.id] = pushStartFlow(event);
-        break;
-      case SDK.TracingModel.Phase.FlowEnd:
-        pushEndFlow(event, this._flowEventIndexById[event.id]);
-        delete this._flowEventIndexById[event.id];
-        break;
-    }
   }
 
   /**

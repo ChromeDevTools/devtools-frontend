@@ -68,10 +68,15 @@ function launchChromeWindows()
 
 function launchChromeMac()
 {
-    var lsregister = "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister";
-    var chromeCanaryPath = shellOutput(`${lsregister} -dump | grep -i 'applications/google chrome canary.app$' | awk '{$1=""; print $0}' | head -n 1`);
-    var chromeCanaryExecPath = `${chromeCanaryPath}/Contents/MacOS/Google Chrome Canary`;
-    launchChrome(chromeCanaryExecPath, chromeArgs);
+    var chromeExecPath;
+    if (utils.isFile(process.env.CHROMIUM_PATH)) {
+        chromeExecPath = process.env.CHROMIUM_PATH;
+    } else {
+      var lsregister = "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister";
+      var chromeCanaryPath = shellOutput(`${lsregister} -dump | grep -i 'applications/google chrome canary.app$' | awk '{$1=""; print $0}' | head -n 1`);
+      chromeExecPath = `${chromeCanaryPath}/Contents/MacOS/Google Chrome Canary`;
+    }
+    launchChrome(chromeExecPath, chromeArgs);
 }
 
 function launchChromeLinux()

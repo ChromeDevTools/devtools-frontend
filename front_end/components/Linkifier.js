@@ -232,7 +232,7 @@ Components.Linkifier = class {
    */
   maybeLinkifyScriptLocation(target, scriptId, sourceURL, lineNumber, columnNumber, classes) {
     var fallbackAnchor =
-        sourceURL ? Components.linkifyResourceAsNode(sourceURL, lineNumber, columnNumber, classes) : null;
+        sourceURL ? Components.Linkifier.linkifyURL(sourceURL, undefined, classes, lineNumber, columnNumber) : null;
     if (!target || target.isDisposed())
       return fallbackAnchor;
     var debuggerModel = SDK.DebuggerModel.fromTarget(target);
@@ -267,7 +267,7 @@ Components.Linkifier = class {
    */
   linkifyScriptLocation(target, scriptId, sourceURL, lineNumber, columnNumber, classes) {
     return this.maybeLinkifyScriptLocation(target, scriptId, sourceURL, lineNumber, columnNumber, classes) ||
-        Components.linkifyResourceAsNode(sourceURL, lineNumber, columnNumber, classes);
+        Components.Linkifier.linkifyURL(sourceURL, undefined, classes, lineNumber, columnNumber);
   }
 
   /**
@@ -304,7 +304,7 @@ Components.Linkifier = class {
 
     var topFrame = stackTrace.callFrames[0];
     var fallbackAnchor =
-        Components.linkifyResourceAsNode(topFrame.url, topFrame.lineNumber, topFrame.columnNumber, classes);
+        Components.Linkifier.linkifyURL(topFrame.url, undefined, classes, topFrame.lineNumber, topFrame.columnNumber);
     if (target.isDisposed())
       return fallbackAnchor;
 
@@ -447,15 +447,27 @@ Components.Linkifier = class {
    * @param {number=} columnNumber
    * @return {!Element}
    */
-  static linkifyURLAsNode(url, text, className, lineNumber, columnNumber) {
-    var isExternal = !Bindings.resourceForURL(url) && !Workspace.workspace.uiSourceCodeForURL(url);
-    if (isExternal) {
-      var link = UI.createExternalLink(url, text, className);
-      link.lineNumber = lineNumber;
-      link.columnNumber = columnNumber;
-      return link;
+  static linkifyURL(url, text, className, lineNumber, columnNumber) {
+    if (!url) {
+      var element = createElementWithClass('span', className);
+      element.textContent = text || Common.UIString('(unknown)');
+      return element;
     }
-    return Components.linkifyResourceAsNode(url, lineNumber, columnNumber, className, undefined, text);
+
+    var linkText = text || Bindings.displayNameForURL(url);
+    if (typeof lineNumber === 'number' && !text)
+      linkText += ':' + (lineNumber + 1);
+
+    var anchor = createElementWithClass('a', className);
+    if (!url.trim().toLowerCase().startsWith('javascript:')) {
+      anchor.href = url;
+      anchor.classList.add('webkit-html-resource-link');
+    }
+    anchor.title = linkText !== url ? url : '';
+    anchor.textContent = linkText.trimMiddle(150);
+    anchor.lineNumber = lineNumber;
+    anchor.columnNumber = columnNumber;
+    return anchor;
   }
 };
 
@@ -570,39 +582,8 @@ Components.linkifyStringAsFragment = function(string) {
    * @return {!Node}
    */
   function linkifier(title, url, lineNumber, columnNumber) {
-    return Components.Linkifier.linkifyURLAsNode(url, title, undefined, lineNumber, columnNumber);
+    return Components.Linkifier.linkifyURL(url, title, undefined, lineNumber, columnNumber);
   }
 
   return Components.linkifyStringAsFragmentWithCustomLinkifier(string, linkifier);
-};
-
-/**
- * @param {string} url
- * @param {number=} lineNumber
- * @param {number=} columnNumber
- * @param {string=} classes
- * @param {string=} tooltipText
- * @param {string=} urlDisplayName
- * @return {!Element}
- */
-Components.linkifyResourceAsNode = function(url, lineNumber, columnNumber, classes, tooltipText, urlDisplayName) {
-  if (!url) {
-    var element = createElementWithClass('span', classes);
-    element.textContent = urlDisplayName || Common.UIString('(unknown)');
-    return element;
-  }
-  var linkText = urlDisplayName || Bindings.displayNameForURL(url);
-  if (typeof lineNumber === 'number' && !urlDisplayName)
-    linkText += ':' + (lineNumber + 1);
-
-  var anchor = createElementWithClass('a', classes);
-  if (!url.trim().toLowerCase().startsWith('javascript:')) {
-    anchor.href = url;
-    anchor.classList.add('webkit-html-resource-link');
-  }
-  anchor.title = tooltipText || (linkText !== url ? url : '');
-  anchor.textContent = linkText.trimMiddle(150);
-  anchor.lineNumber = lineNumber;
-  anchor.columnNumber = columnNumber;
-  return anchor;
 };

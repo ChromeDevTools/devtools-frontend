@@ -290,7 +290,7 @@ Console.ConsoleViewMessage = class {
         anchorElement = this._linkifyLocation(consoleMessage.url, consoleMessage.line, consoleMessage.column);
       }
     } else if (consoleMessage.url) {
-      anchorElement = Components.Linkifier.linkifyURLAsNode(consoleMessage.url, undefined, 'console-message-url');
+      anchorElement = Components.Linkifier.linkifyURL(consoleMessage.url, undefined, 'console-message-url');
     }
 
     // Append a space to prevent the anchor text from being glued to the console message when the user selects and copies the console messages.

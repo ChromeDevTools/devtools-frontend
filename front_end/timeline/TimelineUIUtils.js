@@ -605,7 +605,7 @@ Timeline.TimelineUIUtils = class {
       case recordType.ResourceFinish:
         var url = TimelineModel.TimelineData.forEvent(event).url;
         if (url)
-          details = Components.linkifyResourceAsNode(url);
+          details = Components.Linkifier.linkifyURL(url);
         break;
       case recordType.FunctionCall:
       case recordType.JSFrame:
@@ -782,7 +782,7 @@ Timeline.TimelineUIUtils = class {
       case recordTypes.ResourceFinish:
         var url = timelineData.url;
         if (url)
-          contentHelper.appendElementRow(Common.UIString('Resource'), Components.linkifyResourceAsNode(url));
+          contentHelper.appendElementRow(Common.UIString('Resource'), Components.Linkifier.linkifyURL(url));
         if (eventData['requestMethod'])
           contentHelper.appendTextRow(Common.UIString('Request Method'), eventData['requestMethod']);
         if (typeof eventData['statusCode'] === 'number')
@@ -827,13 +827,13 @@ Timeline.TimelineUIUtils = class {
         relatedNodeLabel = Common.UIString('Owner Element');
         if (timelineData.url) {
           contentHelper.appendElementRow(
-              Common.UIString('Image URL'), Components.linkifyResourceAsNode(timelineData.url));
+              Common.UIString('Image URL'), Components.Linkifier.linkifyURL(timelineData.url));
         }
         break;
       case recordTypes.ParseAuthorStyleSheet:
         var url = eventData['styleSheetUrl'];
         if (url)
-          contentHelper.appendElementRow(Common.UIString('Stylesheet URL'), Components.linkifyResourceAsNode(url));
+          contentHelper.appendElementRow(Common.UIString('Stylesheet URL'), Components.Linkifier.linkifyURL(url));
         break;
       case recordTypes.UpdateLayoutTree:  // We don't want to see default details.
       case recordTypes.RecalculateStyles:
@@ -1025,7 +1025,7 @@ Timeline.TimelineUIUtils = class {
     var duration = request.endTime - (request.startTime || -Infinity);
     var items = [];
     if (request.url)
-      contentHelper.appendElementRow(Common.UIString('URL'), Components.Linkifier.linkifyURLAsNode(request.url));
+      contentHelper.appendElementRow(Common.UIString('URL'), Components.Linkifier.linkifyURL(request.url));
     if (isFinite(duration))
       contentHelper.appendTextRow(Common.UIString('Duration'), Number.millisToString(duration, true));
     if (request.requestMethod)

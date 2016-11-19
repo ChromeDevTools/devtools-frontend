@@ -81,7 +81,7 @@ Resources.AppManifestView = class extends UI.VBox {
    * @param {!Array<!Protocol.Page.AppManifestError>} errors
    */
   _renderManifest(url, data, errors) {
-    this._reportView.setURL(Components.Linkifier.linkifyURLAsNode(url));
+    this._reportView.setURL(Components.Linkifier.linkifyURL(url));
     this._errorsSection.clearContent();
     this._errorsSection.element.classList.toggle('hidden', !errors.length);
     for (var error of errors) {
@@ -98,9 +98,8 @@ Resources.AppManifestView = class extends UI.VBox {
     this._startURLField.removeChildren();
     var startURL = stringProperty('start_url');
     if (startURL) {
-      this._startURLField.appendChild(Components.linkifyResourceAsNode(
-          /** @type {string} */ (Common.ParsedURL.completeURL(url, startURL)), undefined, undefined, undefined,
-          undefined, startURL));
+      this._startURLField.appendChild(Components.Linkifier.linkifyURL(
+          /** @type {string} */ (Common.ParsedURL.completeURL(url, startURL)), startURL));
     }
 
     this._themeColorSwatch.classList.toggle('hidden', !stringProperty('theme_color'));

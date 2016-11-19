@@ -523,9 +523,9 @@ Network.NetworkDataGridNode = class extends UI.SortableDataGridNode {
       case SDK.NetworkRequest.InitiatorType.Parser:
         cell.title = initiator.url + ':' + (initiator.lineNumber + 1);
         var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(initiator.url);
-        cell.appendChild(Components.linkifyResourceAsNode(
-            initiator.url, initiator.lineNumber, initiator.columnNumber, undefined, undefined,
-            uiSourceCode ? uiSourceCode.displayName() : undefined));
+        cell.appendChild(Components.Linkifier.linkifyURL(
+            initiator.url, uiSourceCode ? uiSourceCode.displayName() : undefined, '', initiator.lineNumber,
+            initiator.columnNumber));
         this._appendSubtitle(cell, Common.UIString('Parser'));
         break;
 
@@ -533,7 +533,7 @@ Network.NetworkDataGridNode = class extends UI.SortableDataGridNode {
         cell.title = initiator.url;
         console.assert(request.redirectSource);
         var redirectSource = /** @type {!SDK.NetworkRequest} */ (request.redirectSource);
-        cell.appendChild(Components.linkifyResourceAsNode(redirectSource.url));
+        cell.appendChild(Components.Linkifier.linkifyURL(redirectSource.url));
         this._appendSubtitle(cell, Common.UIString('Redirect'));
         break;
 

@@ -196,7 +196,7 @@ Sources.NavigatorView = class extends UI.VBox {
       fileSystemNode.updateTitle();
 
     // Update folder titles.
-    var pathTokens = Bindings.FileSystemWorkspaceBinding.relativePath(binding.fileSystem);
+    var pathTokens = Persistence.FileSystemWorkspaceBinding.relativePath(binding.fileSystem);
     var folderPath = '';
     for (var i = 0; i < pathTokens.length - 1; ++i) {
       folderPath += pathTokens[i];
@@ -267,7 +267,7 @@ Sources.NavigatorView = class extends UI.VBox {
     var isFromSourceMap = uiSourceCode.contentType().isFromSourceMap();
     var path;
     if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem)
-      path = Bindings.FileSystemWorkspaceBinding.relativePath(uiSourceCode).slice(0, -1);
+      path = Persistence.FileSystemWorkspaceBinding.relativePath(uiSourceCode).slice(0, -1);
     else
       path = Common.ParsedURL.extractPath(uiSourceCode.url()).split('/').slice(1, -1);
 
@@ -590,7 +590,7 @@ Sources.NavigatorView = class extends UI.VBox {
     var shouldExclude = window.confirm(Common.UIString('Are you sure you want to exclude this folder?'));
     if (shouldExclude) {
       UI.startBatchUpdate();
-      project.excludeFolder(Bindings.FileSystemWorkspaceBinding.completeURL(project, path));
+      project.excludeFolder(Persistence.FileSystemWorkspaceBinding.completeURL(project, path));
       UI.endBatchUpdate();
     }
   }
@@ -1399,7 +1399,7 @@ Sources.NavigatorFolderTreeNode = class extends Sources.NavigatorTreeNode {
     if (!this._treeElement || this._project.type() !== Workspace.projectTypes.FileSystem)
       return;
     var absoluteFileSystemPath =
-        Bindings.FileSystemWorkspaceBinding.fileSystemPath(this._project.id()) + '/' + this._folderPath;
+        Persistence.FileSystemWorkspaceBinding.fileSystemPath(this._project.id()) + '/' + this._folderPath;
     var hasMappedFiles = Runtime.experiments.isEnabled('persistence2') ?
         Persistence.persistence.filePathHasBindings(absoluteFileSystemPath) :
         true;
@@ -1579,7 +1579,7 @@ Sources.NavigatorGroupTreeNode = class extends Sources.NavigatorTreeNode {
       this._treeElement.listItemElement.classList.add('has-mapped-files');
       return;
     }
-    var fileSystemPath = Bindings.FileSystemWorkspaceBinding.fileSystemPath(this._project.id());
+    var fileSystemPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(this._project.id());
     var wasActive = this._treeElement.listItemElement.classList.contains('has-mapped-files');
     var isActive = Persistence.persistence.filePathHasBindings(fileSystemPath);
     if (wasActive === isActive)

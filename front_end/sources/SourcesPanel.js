@@ -750,7 +750,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     function mapFileSystemToNetwork(networkUISourceCode) {
       if (!networkUISourceCode)
         return;
-      var fileSystemPath = Bindings.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
+      var fileSystemPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
       Workspace.fileSystemMapping.addMappingForResource(networkUISourceCode.url(), fileSystemPath, uiSourceCode.url());
     }
   }
@@ -768,7 +768,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     function mapNetworkToFileSystem(uiSourceCode) {
       if (!uiSourceCode)
         return;
-      var fileSystemPath = Bindings.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
+      var fileSystemPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
       Workspace.fileSystemMapping.addMappingForResource(networkUISourceCode.url(), fileSystemPath, uiSourceCode.url());
     }
   }

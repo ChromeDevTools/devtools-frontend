@@ -161,7 +161,6 @@ devtools_bindings_js_files = [
   "front_end/bindings/CSSWorkspaceBinding.js",
   "front_end/bindings/DebuggerWorkspaceBinding.js",
   "front_end/bindings/DefaultScriptMapping.js",
-  "front_end/bindings/FileSystemWorkspaceBinding.js",
   "front_end/bindings/FileUtils.js",
   "front_end/bindings/LiveLocation.js",
   "front_end/bindings/NetworkProject.js",
@@ -173,6 +172,7 @@ devtools_bindings_js_files = [
   "front_end/bindings/TempFile.js",
 ]
 devtools_persistence_js_files = [
+  "front_end/persistence/FileSystemWorkspaceBinding.js",
   "front_end/persistence/DefaultMapping.js",
   "front_end/persistence/Automapping.js",
   "front_end/persistence/Persistence.js",

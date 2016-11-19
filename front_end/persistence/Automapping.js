@@ -83,7 +83,7 @@ Persistence.Automapping = class {
       this._onUISourceCodeRemoved(uiSourceCode);
     if (project.type() !== Workspace.projectTypes.FileSystem)
       return;
-    var fileSystem = /** @type {!Bindings.FileSystemWorkspaceBinding.FileSystem} */ (project);
+    var fileSystem = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project);
     for (var gitFolder of fileSystem.gitFolders())
       this._projectFoldersIndex.removeFolder(gitFolder);
     this._projectFoldersIndex.removeFolder(fileSystem.fileSystemPath());
@@ -96,7 +96,7 @@ Persistence.Automapping = class {
   _onProjectAdded(project) {
     if (project.type() !== Workspace.projectTypes.FileSystem)
       return;
-    var fileSystem = /** @type {!Bindings.FileSystemWorkspaceBinding.FileSystem} */ (project);
+    var fileSystem = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project);
     for (var gitFolder of fileSystem.gitFolders())
       this._projectFoldersIndex.addFolder(gitFolder);
     this._projectFoldersIndex.addFolder(fileSystem.fileSystemPath());

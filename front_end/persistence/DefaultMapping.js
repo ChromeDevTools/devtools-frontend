@@ -70,14 +70,14 @@ Persistence.DefaultMapping = class {
    */
   _createBinding(uiSourceCode) {
     if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem) {
-      var fileSystemPath = Bindings.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
+      var fileSystemPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
       var networkURL = this._fileSystemMapping.networkURLForFileSystemURL(fileSystemPath, uiSourceCode.url());
       var networkSourceCode = networkURL ? this._workspace.uiSourceCodeForURL(networkURL) : null;
       return networkSourceCode ? new Persistence.PersistenceBinding(networkSourceCode, uiSourceCode, false) : null;
     }
     if (uiSourceCode.project().type() === Workspace.projectTypes.Network) {
       var file = this._fileSystemMapping.fileForURL(uiSourceCode.url());
-      var projectId = file ? Bindings.FileSystemWorkspaceBinding.projectId(file.fileSystemPath) : null;
+      var projectId = file ? Persistence.FileSystemWorkspaceBinding.projectId(file.fileSystemPath) : null;
       var fileSourceCode = file && projectId ? this._workspace.uiSourceCode(projectId, file.fileURL) : null;
       return fileSourceCode ? new Persistence.PersistenceBinding(uiSourceCode, fileSourceCode, false) : null;
     }

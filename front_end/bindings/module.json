@@ -16,7 +16,6 @@
         "BreakpointManager.js",
         "ContentProviderBasedProject.js",
         "DefaultScriptMapping.js",
-        "FileSystemWorkspaceBinding.js",
         "FileUtils.js",
         "BlackboxManager.js",
         "NetworkProject.js",

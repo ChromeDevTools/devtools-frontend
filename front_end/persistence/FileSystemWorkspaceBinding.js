@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Bindings.FileSystemWorkspaceBinding = class {
+Persistence.FileSystemWorkspaceBinding = class {
   /**
    * @param {!Workspace.IsolatedFileSystemManager} isolatedFileSystemManager
    * @param {!Workspace.Workspace} workspace
@@ -47,7 +47,7 @@ Bindings.FileSystemWorkspaceBinding = class {
       this._isolatedFileSystemManager.addEventListener(
           Workspace.IsolatedFileSystemManager.Events.FileSystemFilesChanged, this._fileSystemFilesChanged, this)
     ];
-    /** @type {!Map.<string, !Bindings.FileSystemWorkspaceBinding.FileSystem>} */
+    /** @type {!Map.<string, !Persistence.FileSystemWorkspaceBinding.FileSystem>} */
     this._boundFileSystems = new Map();
     this._isolatedFileSystemManager.waitForFileSystems().then(this._onFileSystemsLoaded.bind(this));
   }
@@ -66,7 +66,7 @@ Bindings.FileSystemWorkspaceBinding = class {
    */
   static relativePath(uiSourceCode) {
     var baseURL =
-        /** @type {!Bindings.FileSystemWorkspaceBinding.FileSystem}*/ (uiSourceCode.project())._fileSystemBaseURL;
+        /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (uiSourceCode.project())._fileSystemBaseURL;
     return uiSourceCode.url().substring(baseURL.length).split('/');
   }
 
@@ -76,7 +76,7 @@ Bindings.FileSystemWorkspaceBinding = class {
    * @return {string}
    */
   static completeURL(project, relativePath) {
-    var fsProject = /** @type {!Bindings.FileSystemWorkspaceBinding.FileSystem}*/ (project);
+    var fsProject = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (project);
     return fsProject._fileSystemBaseURL + relativePath;
   }
 
@@ -85,13 +85,13 @@ Bindings.FileSystemWorkspaceBinding = class {
    * @return {!Common.ResourceType}
    */
   static _contentTypeForExtension(extension) {
-    if (Bindings.FileSystemWorkspaceBinding._styleSheetExtensions.has(extension))
+    if (Persistence.FileSystemWorkspaceBinding._styleSheetExtensions.has(extension))
       return Common.resourceTypes.Stylesheet;
-    if (Bindings.FileSystemWorkspaceBinding._documentExtensions.has(extension))
+    if (Persistence.FileSystemWorkspaceBinding._documentExtensions.has(extension))
       return Common.resourceTypes.Document;
-    if (Bindings.FileSystemWorkspaceBinding._imageExtensions.has(extension))
+    if (Persistence.FileSystemWorkspaceBinding._imageExtensions.has(extension))
       return Common.resourceTypes.Image;
-    if (Bindings.FileSystemWorkspaceBinding._scriptExtensions.has(extension))
+    if (Persistence.FileSystemWorkspaceBinding._scriptExtensions.has(extension))
       return Common.resourceTypes.Script;
     return Common.resourceTypes.Other;
   }
@@ -131,7 +131,7 @@ Bindings.FileSystemWorkspaceBinding = class {
    * @param {!Workspace.IsolatedFileSystem} fileSystem
    */
   _addFileSystem(fileSystem) {
-    var boundFileSystem = new Bindings.FileSystemWorkspaceBinding.FileSystem(this, fileSystem, this._workspace);
+    var boundFileSystem = new Persistence.FileSystemWorkspaceBinding.FileSystem(this, fileSystem, this._workspace);
     this._boundFileSystems.set(fileSystem.path(), boundFileSystem);
   }
 
@@ -168,29 +168,29 @@ Bindings.FileSystemWorkspaceBinding = class {
   }
 };
 
-Bindings.FileSystemWorkspaceBinding._styleSheetExtensions = new Set(['css', 'scss', 'sass', 'less']);
-Bindings.FileSystemWorkspaceBinding._documentExtensions = new Set(['htm', 'html', 'asp', 'aspx', 'phtml', 'jsp']);
-Bindings.FileSystemWorkspaceBinding._scriptExtensions = new Set([
+Persistence.FileSystemWorkspaceBinding._styleSheetExtensions = new Set(['css', 'scss', 'sass', 'less']);
+Persistence.FileSystemWorkspaceBinding._documentExtensions = new Set(['htm', 'html', 'asp', 'aspx', 'phtml', 'jsp']);
+Persistence.FileSystemWorkspaceBinding._scriptExtensions = new Set([
   'asp', 'aspx', 'c', 'cc', 'cljs', 'coffee', 'cpp', 'cs', 'dart', 'java', 'js',
   'jsp', 'jsx',  'h', 'm',  'mm',   'py',     'sh',  'ts', 'tsx',  'ls'
 ]);
 
-Bindings.FileSystemWorkspaceBinding._imageExtensions = Workspace.IsolatedFileSystem.ImageExtensions;
+Persistence.FileSystemWorkspaceBinding._imageExtensions = Workspace.IsolatedFileSystem.ImageExtensions;
 
 
 /**
  * @implements {Workspace.Project}
  * @unrestricted
  */
-Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.ProjectStore {
+Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.ProjectStore {
   /**
-   * @param {!Bindings.FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
+   * @param {!Persistence.FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
    * @param {!Workspace.IsolatedFileSystem} isolatedFileSystem
    * @param {!Workspace.Workspace} workspace
    */
   constructor(fileSystemWorkspaceBinding, isolatedFileSystem, workspace) {
     var fileSystemPath = isolatedFileSystem.path();
-    var id = Bindings.FileSystemWorkspaceBinding.projectId(fileSystemPath);
+    var id = Persistence.FileSystemWorkspaceBinding.projectId(fileSystemPath);
     console.assert(!workspace.project(id));
     var displayName = fileSystemPath.substr(fileSystemPath.lastIndexOf('/') + 1);
 
@@ -233,11 +233,11 @@ Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Project
    * @return {!Promise<?Workspace.UISourceCodeMetadata>}
    */
   requestMetadata(uiSourceCode) {
-    if (uiSourceCode[Bindings.FileSystemWorkspaceBinding._metadata])
-      return uiSourceCode[Bindings.FileSystemWorkspaceBinding._metadata];
+    if (uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata])
+      return uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata];
     var relativePath = this._filePathForUISourceCode(uiSourceCode);
     var promise = this._fileSystem.getMetadata(relativePath).then(onMetadata);
-    uiSourceCode[Bindings.FileSystemWorkspaceBinding._metadata] = promise;
+    uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata] = promise;
     return promise;
 
     /**
@@ -258,7 +258,8 @@ Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Project
    */
   requestFileContent(uiSourceCode, callback) {
     var filePath = this._filePathForUISourceCode(uiSourceCode);
-    var isImage = Bindings.FileSystemWorkspaceBinding._imageExtensions.has(Common.ParsedURL.extractExtension(filePath));
+    var isImage =
+        Persistence.FileSystemWorkspaceBinding._imageExtensions.has(Common.ParsedURL.extractExtension(filePath));
 
     this._fileSystem.requestFileContent(filePath, isImage ? base64CallbackWrapper : callback);
 
@@ -320,7 +321,7 @@ Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Project
     /**
      * @param {boolean} success
      * @param {string=} newName
-     * @this {Bindings.FileSystemWorkspaceBinding.FileSystem}
+     * @this {Persistence.FileSystemWorkspaceBinding.FileSystem}
      */
     function innerCallback(success, newName) {
       if (!success || !newName) {
@@ -334,7 +335,7 @@ Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Project
       filePath = filePath.substr(1);
       var extension = this._extensionForPath(newName);
       var newURL = this._fileSystemBaseURL + filePath;
-      var newContentType = Bindings.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
+      var newContentType = Persistence.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
       this.renameUISourceCode(uiSourceCode, newName);
       callback(true, newName, newURL, newContentType);
     }
@@ -379,7 +380,7 @@ Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Project
     searchNextQuery.call(this);
 
     /**
-     * @this {Bindings.FileSystemWorkspaceBinding.FileSystem}
+     * @this {Persistence.FileSystemWorkspaceBinding.FileSystem}
      */
     function searchNextQuery() {
       if (!queriesToRun.length) {
@@ -393,7 +394,7 @@ Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Project
 
     /**
      * @param {!Array.<string>} files
-     * @this {Bindings.FileSystemWorkspaceBinding.FileSystem}
+     * @this {Persistence.FileSystemWorkspaceBinding.FileSystem}
      */
     function innerCallback(files) {
       files = files.sort();
@@ -429,7 +430,7 @@ Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Project
 
     /**
      * @param {number} from
-     * @this {Bindings.FileSystemWorkspaceBinding.FileSystem}
+     * @this {Persistence.FileSystemWorkspaceBinding.FileSystem}
      */
     function reportFileChunk(from) {
       var to = Math.min(from + chunkSize, filePaths.length);
@@ -473,7 +474,7 @@ Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Project
 
     /**
      * @param {?string} filePath
-     * @this {Bindings.FileSystemWorkspaceBinding.FileSystem}
+     * @this {Persistence.FileSystemWorkspaceBinding.FileSystem}
      */
     function innerCallback(filePath) {
       if (!filePath) {
@@ -489,7 +490,7 @@ Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Project
     }
 
     /**
-     * @this {Bindings.FileSystemWorkspaceBinding.FileSystem}
+     * @this {Persistence.FileSystemWorkspaceBinding.FileSystem}
      */
     function contentSet() {
       callback(this._addFile(createFilePath));
@@ -518,7 +519,7 @@ Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Project
    */
   _addFile(filePath) {
     var extension = this._extensionForPath(filePath);
-    var contentType = Bindings.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
+    var contentType = Persistence.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
 
     var uiSourceCode = this.createUISourceCode(this._fileSystemBaseURL + filePath, contentType);
     this.addUISourceCode(uiSourceCode);
@@ -531,11 +532,11 @@ Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Project
   _fileChanged(path) {
     var uiSourceCode = this.uiSourceCodeForURL(path);
     if (!uiSourceCode) {
-      var contentType = Bindings.FileSystemWorkspaceBinding._contentTypeForExtension(this._extensionForPath(path));
+      var contentType = Persistence.FileSystemWorkspaceBinding._contentTypeForExtension(this._extensionForPath(path));
       this.addUISourceCode(this.createUISourceCode(path, contentType));
       return;
     }
-    uiSourceCode[Bindings.FileSystemWorkspaceBinding._metadata] = null;
+    uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata] = null;
     uiSourceCode.checkContentUpdated();
   }
 
@@ -544,4 +545,4 @@ Bindings.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Project
   }
 };
 
-Bindings.FileSystemWorkspaceBinding._metadata = Symbol('FileSystemWorkspaceBinding.Metadata');
+Persistence.FileSystemWorkspaceBinding._metadata = Symbol('FileSystemWorkspaceBinding.Metadata');

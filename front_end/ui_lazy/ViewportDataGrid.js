@@ -195,7 +195,10 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
   }
 
   _update() {
-    delete this._updateAnimationFrameId;
+    if (this._updateAnimationFrameId) {
+      this.element.window().cancelAnimationFrame(this._updateAnimationFrameId);
+      delete this._updateAnimationFrameId;
+    }
 
     var clientHeight = this._scrollContainer.clientHeight;
     var scrollTop = this._scrollContainer.scrollTop;

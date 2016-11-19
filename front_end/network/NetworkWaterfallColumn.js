@@ -276,6 +276,9 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     return Math.floor(this._leftPadding + (time - this._startTime) * timeToPixel);
   }
 
+  _didDrawForTest() {
+  }
+
   _draw() {
     var useTimingBars = !Common.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
     var requests = this._requestData;
@@ -302,6 +305,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
     const freeZoneAtLeft = 75;
     UI.TimelineGrid.drawCanvasGrid(context, this._calculator, this._fontSize, freeZoneAtLeft);
+    this._didDrawForTest();
   }
 
   /**

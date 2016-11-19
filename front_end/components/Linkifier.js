@@ -606,13 +606,3 @@ Components.linkifyResourceAsNode = function(url, lineNumber, columnNumber, class
   anchor.columnNumber = columnNumber;
   return anchor;
 };
-
-/**
- * @param {!SDK.NetworkRequest} request
- * @return {!Element}
- */
-Components.linkifyRequestAsNode = function(request) {
-  var anchor = UI.createExternalLink(request.url);
-  anchor.requestId = request.requestId;
-  return anchor;
-};

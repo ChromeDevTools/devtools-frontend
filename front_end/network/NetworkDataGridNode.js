@@ -533,7 +533,7 @@ Network.NetworkDataGridNode = class extends UI.SortableDataGridNode {
         cell.title = initiator.url;
         console.assert(request.redirectSource);
         var redirectSource = /** @type {!SDK.NetworkRequest} */ (request.redirectSource);
-        cell.appendChild(Components.linkifyRequestAsNode(redirectSource));
+        cell.appendChild(Components.linkifyResourceAsNode(redirectSource.url));
         this._appendSubtitle(cell, Common.UIString('Redirect'));
         break;
 

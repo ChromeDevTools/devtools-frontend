@@ -131,14 +131,6 @@ Components.Linkifier = class {
 
   /**
    * @param {!Element} anchor
-   * @return {?Workspace.UILocation} uiLocation
-   */
-  static uiLocationByAnchor(anchor) {
-    return anchor[Components.Linkifier._uiLocationSymbol];
-  }
-
-  /**
-   * @param {!Element} anchor
    * @param {!Workspace.UILocation} uiLocation
    */
   static _bindUILocation(anchor, uiLocation) {
@@ -458,16 +450,82 @@ Components.Linkifier = class {
     if (typeof lineNumber === 'number' && !text)
       linkText += ':' + (lineNumber + 1);
 
-    var anchor = createElementWithClass('a', className);
+    var link = createElementWithClass('a', className);
     if (!url.trim().toLowerCase().startsWith('javascript:')) {
-      anchor.href = url;
-      anchor.classList.add('webkit-html-resource-link');
+      link.href = url;
+      link.classList.add('webkit-html-resource-link');
+      link[Components.Linkifier._linkSymbol] = true;
+      link.addEventListener('click', Components.Linkifier._handleClick, false);
     }
-    anchor.title = linkText !== url ? url : '';
-    anchor.textContent = linkText.trimMiddle(150);
-    anchor.lineNumber = lineNumber;
-    anchor.columnNumber = columnNumber;
-    return anchor;
+    link.title = linkText !== url ? url : '';
+    link.textContent = linkText.trimMiddle(150);
+    link.lineNumber = lineNumber;
+    link.columnNumber = columnNumber;
+    return link;
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  static _handleClick(event) {
+    var link = /** @type {!Element} */ (event.currentTarget);
+    event.consume(true);
+    if (link.preventFollow || UI.isBeingEdited(/** @type {!Node} */ (event.target)))
+      return;
+    if (Components.openAnchorLocationRegistry.dispatch({url: link.href, lineNumber: link.lineNumber}))
+      return;
+    var actions = Components.Linkifier._linkActions(link);
+    if (actions.length)
+      actions[0].handler.call(null);
+  }
+
+  /**
+   * @param {?Element} link
+   * @return {!Array<{title: string, handler: function()}>}
+   */
+  static _linkActions(link) {
+    var url = null;
+    var uiLocation = null;
+    var isLiveLink = false;
+    if (link && link[Components.Linkifier._uiLocationSymbol]) {
+      uiLocation = /** @type {!Workspace.UILocation} */ (link[Components.Linkifier._uiLocationSymbol]);
+      url = uiLocation.uiSourceCode.contentURL();
+      isLiveLink = true;
+    } else if (link && link.href) {
+      url = link.href;
+      var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
+      uiLocation = uiSourceCode ? uiSourceCode.uiLocation(link.lineNumber || 0, link.columnNumber || 0) : null;
+      isLiveLink = false;
+    } else {
+      return [];
+    }
+
+    var result = [];
+    if (uiLocation)
+      result.push({title: Common.UIString('Open'), handler: () => Common.Revealer.reveal(uiLocation)});
+
+    var resource = Bindings.resourceForURL(url);
+    if (resource) {
+      result.push({
+        title: Common.UIString.capitalize('Open ^link in Application ^panel'),
+        handler: () => Common.Revealer.reveal(resource)
+      });
+    }
+
+    var request = SDK.NetworkLog.requestForURL(url);
+    if (request) {
+      result.push({
+        title: Common.UIString.capitalize('Open ^request in Network ^panel'),
+        handler: () => Common.Revealer.reveal(request)
+      });
+    }
+
+    if (resource || !isLiveLink) {
+      result.push({title: UI.openLinkExternallyLabel(), handler: () => InspectorFrontendHost.openInNewTab(url)});
+      result.push({title: UI.copyLinkAddressLabel(), handler: () => InspectorFrontendHost.copyText(url)});
+    }
+
+    return result;
   }
 };
 
@@ -482,6 +540,7 @@ Components.Linkifier._sourceCodeAnchors = Symbol('Linkifier.anchors');
 Components.Linkifier._uiLocationSymbol = Symbol('uiLocation');
 Components.Linkifier._fallbackAnchorSymbol = Symbol('fallbackAnchor');
 Components.Linkifier._liveLocationSymbol = Symbol('liveLocation');
+Components.Linkifier._linkSymbol = Symbol('Linkifier.link');
 
 /**
  * The maximum number of characters to display in a URL.
@@ -586,4 +645,27 @@ Components.linkifyStringAsFragment = function(string) {
   }
 
   return Components.linkifyStringAsFragmentWithCustomLinkifier(string, linkifier);
+};
+
+/**
+ * @implements {UI.ContextMenu.Provider}
+ * @unrestricted
+ */
+Components.Linkifier.LinkContextMenuProvider = class {
+  /**
+   * @override
+   * @param {!Event} event
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!Object} target
+   */
+  appendApplicableItems(event, contextMenu, target) {
+    var targetNode = /** @type {!Node} */ (target);
+    while (targetNode && !targetNode[Components.Linkifier._linkSymbol] &&
+           !targetNode[Components.Linkifier._uiLocationSymbol])
+      targetNode = targetNode.parentNodeOrShadowHost();
+    var link = /** @type {?Element} */ (targetNode);
+    var actions = Components.Linkifier._linkActions(link);
+    for (var action of actions)
+      contextMenu.appendItem(action.title, action.handler);
+  }
 };

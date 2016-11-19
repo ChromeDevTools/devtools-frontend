@@ -7,13 +7,18 @@
         },
         {
             "type": "@UI.ContextMenu.Provider",
-            "contextTypes": ["Workspace.UISourceCode", "SDK.Resource", "SDK.NetworkRequest", "Node"],
+            "contextTypes": ["Workspace.UISourceCode", "SDK.Resource", "SDK.NetworkRequest"],
             "className": "Components.HandlerRegistry.ContextMenuProvider"
         },
         {
             "type": "@UI.ContextMenu.Provider",
             "contextTypes": ["Node"],
             "className": "UI.ExternaLinkContextMenuProvider"
+        },
+        {
+            "type": "@UI.ContextMenu.Provider",
+            "contextTypes": ["Node"],
+            "className": "Components.Linkifier.LinkContextMenuProvider"
         },
         {
             "type": "@UI.ActionDelegate",

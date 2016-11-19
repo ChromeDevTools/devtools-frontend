@@ -154,53 +154,6 @@ Components.HandlerRegistry = class extends Common.Object {
         contextMenu.appendItem(Common.UIString.capitalize('Save ^as...'), save.bind(null, true));
     }
   }
-
-  /**
-   * @param {!UI.ContextMenu} contextMenu
-   * @param {!Object} target
-   */
-  _appendHrefItems(contextMenu, target) {
-    if (!(target instanceof Node))
-      return;
-    var targetNode = /** @type {!Node} */ (target);
-
-    var anchorElement = targetNode.enclosingNodeOrSelfWithClass('webkit-html-resource-link');
-    if (!anchorElement)
-      return;
-
-    var uiLocation = Components.Linkifier.uiLocationByAnchor(anchorElement);
-    var resourceURL = uiLocation ? uiLocation.uiSourceCode.contentURL() : anchorElement.href;
-    var uiSourceCode = uiLocation ? uiLocation.uiSourceCode :
-                                    (resourceURL ? Workspace.workspace.uiSourceCodeForURL(resourceURL) : null);
-    function open() {
-      Common.Revealer.reveal(uiSourceCode);
-    }
-    if (uiSourceCode)
-      contextMenu.appendItem('Open', open);
-
-    if (!resourceURL)
-      return;
-    // Add resource-related actions.
-    contextMenu.appendItem(UI.openLinkExternallyLabel(), this._openInNewTab.bind(this, resourceURL));
-
-    /**
-     * @param {string} resourceURL
-     */
-    function openInResourcesPanel(resourceURL) {
-      var resource = Bindings.resourceForURL(resourceURL);
-      if (resource)
-        Common.Revealer.reveal(resource);
-      else
-        InspectorFrontendHost.openInNewTab(resourceURL);
-    }
-    if (!targetNode.enclosingNodeOrSelfWithClassList(['resources', 'panel']) && Bindings.resourceForURL(resourceURL)) {
-      contextMenu.appendItem(
-          Common.UIString.capitalize('Open ^link in Application ^panel'), openInResourcesPanel.bind(null, resourceURL));
-    }
-
-    contextMenu.appendItem(
-        UI.copyLinkAddressLabel(), InspectorFrontendHost.copyText.bind(InspectorFrontendHost, resourceURL));
-  }
 };
 
 /** @enum {symbol} */
@@ -253,7 +206,6 @@ Components.HandlerRegistry.ContextMenuProvider = class {
    */
   appendApplicableItems(event, contextMenu, target) {
     Components.openAnchorLocationRegistry._appendContentProviderItems(contextMenu, target);
-    Components.openAnchorLocationRegistry._appendHrefItems(contextMenu, target);
   }
 };
 

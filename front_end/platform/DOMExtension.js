@@ -246,7 +246,11 @@ Node.prototype.parentElementOrShadowHost = function() {
  * @return {?Node}
  */
 Node.prototype.parentNodeOrShadowHost = function() {
-  return this.parentNode || this.host || null;
+  if (this.parentNode)
+    return this.parentNode;
+  if (this.nodeType === Node.DOCUMENT_FRAGMENT_NODE && this.host)
+    return this.host;
+  return null;
 };
 
 /**

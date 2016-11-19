@@ -178,11 +178,12 @@ SDK.TracingModel = class {
       this._processById.set(payload.pid, process);
     }
 
-    var eventsDelimiter = ',\n';
+    const phase = SDK.TracingModel.Phase;
+    const eventsDelimiter = ',\n';
     this._backingStorage.appendString(this._firstWritePending ? '[' : eventsDelimiter);
     this._firstWritePending = false;
     var stringPayload = JSON.stringify(payload);
-    var isAccessible = payload.ph === SDK.TracingModel.Phase.SnapshotObject;
+    var isAccessible = payload.ph === phase.SnapshotObject;
     var backingStorage = null;
     var keepStringsLessThan = 10000;
     if (isAccessible && stringPayload.length > keepStringsLessThan)
@@ -190,17 +191,18 @@ SDK.TracingModel = class {
     else
       this._backingStorage.appendString(stringPayload);
 
-    var timestamp = payload.ts / 1000;
+    const timestamp = payload.ts / 1000;
     // We do allow records for unrelated threads to arrive out-of-order,
     // so there's a chance we're getting records from the past.
-    if (timestamp && (!this._minimumRecordTime || timestamp < this._minimumRecordTime))
+    if (timestamp && (!this._minimumRecordTime || timestamp < this._minimumRecordTime) &&
+        (payload.ph === phase.Begin || payload.ph === phase.Complete || payload.ph === phase.Instant))
       this._minimumRecordTime = timestamp;
-    var endTimeStamp = (payload.ts + (payload.dur || 0)) / 1000;
+    const endTimeStamp = (payload.ts + (payload.dur || 0)) / 1000;
     this._maximumRecordTime = Math.max(this._maximumRecordTime, endTimeStamp);
-    var event = process._addEvent(payload);
+    const event = process._addEvent(payload);
     if (!event)
       return;
-    if (payload.ph === SDK.TracingModel.Phase.Sample) {
+    if (payload.ph === phase.Sample) {
       this._addSampleEvent(event);
       return;
     }
@@ -213,7 +215,7 @@ SDK.TracingModel = class {
     if (event.hasCategory(SDK.TracingModel.DevToolsMetadataEventCategory))
       this._devToolsMetadataEvents.push(event);
 
-    if (payload.ph !== SDK.TracingModel.Phase.Metadata)
+    if (payload.ph !== phase.Metadata)
       return;
 
     switch (payload.name) {

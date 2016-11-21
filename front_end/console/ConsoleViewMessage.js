@@ -637,7 +637,7 @@ Console.ConsoleViewMessage = class {
         return;
       }
 
-      var titleElement = createElement('span');
+      var titleElement = createElementWithClass('span', 'console-object-preview');
       var elements = {};
       for (var i = 0; i < properties.length; ++i) {
         var property = properties[i];

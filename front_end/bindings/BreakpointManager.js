@@ -332,7 +332,7 @@ Bindings.BreakpointManager = class extends Common.Object {
   /**
    * @return {!Array.<!Bindings.BreakpointManager.Breakpoint>}
    */
-  allBreakpoints() {
+  _allBreakpoints() {
     var result = [];
     var uiSourceCodes = this._breakpointsForUISourceCode.keysArray();
     for (var i = 0; i < uiSourceCodes.length; ++i)
@@ -380,13 +380,13 @@ Bindings.BreakpointManager = class extends Common.Object {
    * @param {boolean} toggleState
    */
   toggleAllBreakpoints(toggleState) {
-    var breakpoints = this.allBreakpoints();
+    var breakpoints = this._allBreakpoints();
     for (var i = 0; i < breakpoints.length; ++i)
       breakpoints[i].setEnabled(toggleState);
   }
 
   removeAllBreakpoints() {
-    var breakpoints = this.allBreakpoints();
+    var breakpoints = this._allBreakpoints();
     for (var i = 0; i < breakpoints.length; ++i)
       breakpoints[i].remove();
   }

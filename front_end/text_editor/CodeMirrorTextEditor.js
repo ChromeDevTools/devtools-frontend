@@ -1164,44 +1164,6 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
   }
 
   /**
-   * @param {number} line
-   * @param {string} name
-   * @param {?Object} value
-   */
-  setAttribute(line, name, value) {
-    if (line < 0 || line >= this._codeMirror.lineCount())
-      return;
-    var handle = this._codeMirror.getLineHandle(line);
-    if (handle.attributes === undefined)
-      handle.attributes = {};
-    handle.attributes[name] = value;
-  }
-
-  /**
-   * @param {number} line
-   * @param {string} name
-   * @return {?Object} value
-   */
-  getAttribute(line, name) {
-    if (line < 0 || line >= this._codeMirror.lineCount())
-      return null;
-    var handle = this._codeMirror.getLineHandle(line);
-    return handle.attributes && handle.attributes[name] !== undefined ? handle.attributes[name] : null;
-  }
-
-  /**
-   * @param {number} line
-   * @param {string} name
-   */
-  removeAttribute(line, name) {
-    if (line < 0 || line >= this._codeMirror.lineCount())
-      return;
-    var handle = this._codeMirror.getLineHandle(line);
-    if (handle && handle.attributes)
-      delete handle.attributes[name];
-  }
-
-  /**
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {!TextEditor.TextEditorPositionHandle}

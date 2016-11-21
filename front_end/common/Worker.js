@@ -37,9 +37,7 @@ Common.Worker = class {
    */
   constructor(appName) {
     var url = appName + '.js';
-    var remoteBase = Runtime.queryParam('remoteBase');
-    if (remoteBase)
-      url += '?remoteBase=' + remoteBase;
+    url += Runtime.queryParamsString();
 
     /** @type {!Promise<!Worker>} */
     this._workerPromise = new Promise(fulfill => {

@@ -327,6 +327,13 @@ var Runtime = class {
   }
 
   /**
+   * @return {string}
+   */
+  static queryParamsString() {
+    return location.search;
+  }
+
+  /**
    * @return {!Object}
    */
   static _experimentsSetting() {
@@ -1067,7 +1074,7 @@ Runtime.Experiment = class {
 
 {
   (function parseQueryParameters() {
-    var queryParams = location.search;
+    var queryParams = Runtime.queryParamsString();
     if (!queryParams)
       return;
     var params = queryParams.substring(1).split('&');

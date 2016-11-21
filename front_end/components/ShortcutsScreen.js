@@ -175,28 +175,24 @@ Components.ShortcutsScreen = class {
         Common.UIString('Start/stop recording'));
 
     // Layers panel
-    if (Runtime.experiments.isEnabled('layersPanel')) {
-      section = Components.shortcutsScreen.section(Common.UIString('Layers Panel'));
-      section.addAlternateKeys(
-          Components.ShortcutsScreen.LayersPanelShortcuts.ResetView, Common.UIString('Reset view'));
-      section.addAlternateKeys(
-          Components.ShortcutsScreen.LayersPanelShortcuts.PanMode, Common.UIString('Switch to pan mode'));
-      section.addAlternateKeys(
-          Components.ShortcutsScreen.LayersPanelShortcuts.RotateMode, Common.UIString('Switch to rotate mode'));
-      section.addAlternateKeys(
-          Components.ShortcutsScreen.LayersPanelShortcuts.TogglePanRotate,
-          Common.UIString('Temporarily toggle pan/rotate mode while held'));
-      section.addAlternateKeys(Components.ShortcutsScreen.LayersPanelShortcuts.ZoomIn, Common.UIString('Zoom in'));
-      section.addAlternateKeys(Components.ShortcutsScreen.LayersPanelShortcuts.ZoomOut, Common.UIString('Zoom out'));
-      section.addRelatedKeys(
-          Components.ShortcutsScreen.LayersPanelShortcuts.Up.concat(
-              Components.ShortcutsScreen.LayersPanelShortcuts.Down),
-          Common.UIString('Pan or rotate up/down'));
-      section.addRelatedKeys(
-          Components.ShortcutsScreen.LayersPanelShortcuts.Left.concat(
-              Components.ShortcutsScreen.LayersPanelShortcuts.Right),
-          Common.UIString('Pan or rotate left/right'));
-    }
+    section = Components.shortcutsScreen.section(Common.UIString('Layers Panel'));
+    section.addAlternateKeys(Components.ShortcutsScreen.LayersPanelShortcuts.ResetView, Common.UIString('Reset view'));
+    section.addAlternateKeys(
+        Components.ShortcutsScreen.LayersPanelShortcuts.PanMode, Common.UIString('Switch to pan mode'));
+    section.addAlternateKeys(
+        Components.ShortcutsScreen.LayersPanelShortcuts.RotateMode, Common.UIString('Switch to rotate mode'));
+    section.addAlternateKeys(
+        Components.ShortcutsScreen.LayersPanelShortcuts.TogglePanRotate,
+        Common.UIString('Temporarily toggle pan/rotate mode while held'));
+    section.addAlternateKeys(Components.ShortcutsScreen.LayersPanelShortcuts.ZoomIn, Common.UIString('Zoom in'));
+    section.addAlternateKeys(Components.ShortcutsScreen.LayersPanelShortcuts.ZoomOut, Common.UIString('Zoom out'));
+    section.addRelatedKeys(
+        Components.ShortcutsScreen.LayersPanelShortcuts.Up.concat(Components.ShortcutsScreen.LayersPanelShortcuts.Down),
+        Common.UIString('Pan or rotate up/down'));
+    section.addRelatedKeys(
+        Components.ShortcutsScreen.LayersPanelShortcuts.Left.concat(
+            Components.ShortcutsScreen.LayersPanelShortcuts.Right),
+        Common.UIString('Pan or rotate left/right'));
   }
 
   /**

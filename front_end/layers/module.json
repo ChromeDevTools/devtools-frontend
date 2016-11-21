@@ -11,7 +11,6 @@
         }
     ],
     "dependencies": ["layer_viewer"],
-    "experiment": "layersPanel",
     "scripts": [
         "LayerPaintProfilerView.js",
         "LayerTreeModel.js",

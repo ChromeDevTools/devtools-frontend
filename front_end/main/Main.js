@@ -105,7 +105,6 @@ Main.Main = class {
     Runtime.experiments.register('continueToFirstInvocation', 'Continue to first invocation', true);
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
-    Runtime.experiments.register('layersPanel', 'Layers panel');
     Runtime.experiments.register('layoutEditor', 'Layout editor', true);
     Runtime.experiments.register('inspectTooltip', 'Dark inspect element tooltip');
     Runtime.experiments.register('liveSASS', 'Live SASS');

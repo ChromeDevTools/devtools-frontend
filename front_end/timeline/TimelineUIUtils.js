@@ -1527,7 +1527,7 @@ Timeline.TimelineUIUtils = class {
     contentHelper.appendTextRow(Common.UIString('FPS'), Math.floor(1000 / durationInMillis));
     contentHelper.appendTextRow(Common.UIString('CPU time'), Number.millisToString(frame.cpuTime, true));
 
-    if (Runtime.experiments.isEnabled('layersPanel') && frame.layerTree) {
+    if (frame.layerTree) {
       contentHelper.appendElementRow(
           Common.UIString('Layer tree'),
           Components.Linkifier.linkifyUsingRevealer(frame.layerTree, Common.UIString('show')));

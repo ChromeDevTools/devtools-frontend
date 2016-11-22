@@ -1738,6 +1738,12 @@ Timeline.TimelineUIUtils = class {
             'Idle callback execution extended beyond deadline by ' +
             Number.millisToString(event.duration - eventData['allottedMilliseconds'], true));
         break;
+      case warnings.LongHandler:
+        span.textContent = Common.UIString('Handler took %s', Number.millisToString(event.duration, true));
+        break;
+      case warnings.LongRecurringHandler:
+        span.textContent = Common.UIString('Recurring handler took %s', Number.millisToString(event.duration, true));
+        break;
       case warnings.V8Deopt:
         span.appendChild(UI.createExternalLink(
             'https://github.com/GoogleChrome/devtools-docs/issues/53', Common.UIString('Not optimized')));

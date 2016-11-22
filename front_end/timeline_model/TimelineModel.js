@@ -644,6 +644,21 @@ TimelineModel.TimelineModel = class {
 
     var recordTypes = TimelineModel.TimelineModel.RecordType;
 
+    if (!eventStack.length) {
+      if (this._currentTaskLayoutAndRecalcEvents && this._currentTaskLayoutAndRecalcEvents.length) {
+        var totalTime = this._currentTaskLayoutAndRecalcEvents.reduce((time, event) => time + event.duration, 0);
+        if (totalTime > TimelineModel.TimelineModel.Thresholds.ForcedLayout) {
+          for (var e of this._currentTaskLayoutAndRecalcEvents) {
+            let timelineData = TimelineModel.TimelineData.forEvent(e);
+            timelineData.warning = e.name === recordTypes.Layout ?
+                TimelineModel.TimelineModel.WarningType.ForcedLayout :
+                TimelineModel.TimelineModel.WarningType.ForcedStyle;
+          }
+        }
+      }
+      this._currentTaskLayoutAndRecalcEvents = [];
+    }
+
     if (this._currentScriptEvent && event.startTime > this._currentScriptEvent.endTime)
       this._currentScriptEvent = null;
 
@@ -682,7 +697,7 @@ TimelineModel.TimelineModel = class {
           timelineData.setInitiator(this._lastScheduleStyleRecalculation[event.args['beginData']['frame']]);
         this._lastRecalculateStylesEvent = event;
         if (this._currentScriptEvent)
-          timelineData.warning = TimelineModel.TimelineModel.WarningType.ForcedStyle;
+          this._currentTaskLayoutAndRecalcEvents.push(event);
         break;
 
       case recordTypes.ScheduleStyleInvalidationTracking:
@@ -715,7 +730,18 @@ TimelineModel.TimelineModel = class {
           timelineData.backendNodeId = event.args['endData']['rootNode'];
         this._layoutInvalidate[frameId] = null;
         if (this._currentScriptEvent)
-          timelineData.warning = TimelineModel.TimelineModel.WarningType.ForcedLayout;
+          this._currentTaskLayoutAndRecalcEvents.push(event);
+        break;
+
+      case recordTypes.EventDispatch:
+        if (event.duration > TimelineModel.TimelineModel.Thresholds.RecurringHandler)
+            timelineData.warning = TimelineModel.TimelineModel.WarningType.LongHandler;
+        break;
+
+      case recordTypes.TimerFire:
+      case recordTypes.FireAnimationFrame:
+        if (event.duration > TimelineModel.TimelineModel.Thresholds.RecurringHandler)
+            timelineData.warning = TimelineModel.TimelineModel.WarningType.LongRecurringHandler;
         break;
 
       case recordTypes.FunctionCall:
@@ -724,14 +750,18 @@ TimelineModel.TimelineModel = class {
           eventData['url'] = eventData['scriptName'];
         if (typeof eventData['scriptLine'] === 'number')
           eventData['lineNumber'] = eventData['scriptLine'];
+
       // Fallthrough.
+
       case recordTypes.EvaluateScript:
       case recordTypes.CompileScript:
         if (typeof eventData['lineNumber'] === 'number')
           --eventData['lineNumber'];
         if (typeof eventData['columnNumber'] === 'number')
           --eventData['columnNumber'];
+
       // Fallthrough intended.
+
       case recordTypes.RunMicrotasks:
         // Microtasks technically are not necessarily scripts, but for purpose of
         // forced sync style recalc or layout detection they are.
@@ -828,9 +858,9 @@ TimelineModel.TimelineModel = class {
         break;
 
       case recordTypes.FireIdleCallback:
-        if (event.duration > eventData['allottedMilliseconds'])
+        if (event.duration >
+            eventData['allottedMilliseconds'] + TimelineModel.TimelineModel.Thresholds.IdleCallbackAddon)
           timelineData.warning = TimelineModel.TimelineModel.WarningType.IdleDeadlineExceeded;
-
         break;
     }
     if (SDK.TracingModel.isAsyncPhase(event.phase))
@@ -1250,6 +1280,8 @@ TimelineModel.TimelineModel.WarningType = {
   ForcedStyle: 'ForcedStyle',
   ForcedLayout: 'ForcedLayout',
   IdleDeadlineExceeded: 'IdleDeadlineExceeded',
+  LongHandler: 'LongHandler',
+  LongRecurringHandler: 'LongRecurringHandler',
   V8Deopt: 'V8Deopt'
 };
 
@@ -1272,6 +1304,13 @@ TimelineModel.TimelineModel.DevToolsMetadataEvent = {
   TracingStartedInBrowser: 'TracingStartedInBrowser',
   TracingStartedInPage: 'TracingStartedInPage',
   TracingSessionIdForWorker: 'TracingSessionIdForWorker',
+};
+
+TimelineModel.TimelineModel.Thresholds = {
+  Handler: 150,
+  RecurringHandler: 50,
+  ForcedLayout: 30,
+  IdleCallbackAddon: 5
 };
 
 /**

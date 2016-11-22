@@ -444,8 +444,7 @@ TimelineModel.TimelineFrame = class {
    * @return {boolean}
    */
   hasWarnings() {
-    var /** @const */ longFrameDurationThresholdMs = 22;
-    return !this.idle && this.duration > longFrameDurationThresholdMs;
+    return false;
   }
 
   /**

@@ -699,6 +699,16 @@ Common.VersionController = class {
     networkColumns.set(columns);
   }
 
+  _updateVersionFrom21To22() {
+    var breakpointsSetting = Common.settings.createLocalSetting('breakpoints', []);
+    var breakpoints = breakpointsSetting.get();
+    for (var breakpoint of breakpoints) {
+      breakpoint['url'] = breakpoint['sourceFileId'];
+      delete breakpoint['sourceFileId'];
+    }
+    breakpointsSetting.set(breakpoints);
+  }
+
   _migrateSettingsFromLocalStorage() {
     // This step migrates all the settings except for the ones below into the browser profile.
     var localSettings = new Set([
@@ -731,7 +741,7 @@ Common.VersionController = class {
 };
 
 Common.VersionController._currentVersionName = 'inspectorVersion';
-Common.VersionController.currentVersion = 21;
+Common.VersionController.currentVersion = 22;
 
 /**
  * @type {!Common.Settings}

@@ -61,24 +61,15 @@ Bindings.BreakpointManager = class extends Common.Object {
   }
 
   /**
-   * @param {string} sourceFileId
+   * @param {string} url
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {string}
    */
-  static _breakpointStorageId(sourceFileId, lineNumber, columnNumber) {
-    if (!sourceFileId)
+  static _breakpointStorageId(url, lineNumber, columnNumber) {
+    if (!url)
       return '';
-    return sourceFileId + ':' + lineNumber + ':' + columnNumber;
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {string}
-   */
-  _sourceFileId(uiSourceCode) {
-    // TODO(lushnikov): _sourceFileId is not needed any more.
-    return uiSourceCode.url();
+    return url + ':' + lineNumber + ':' + columnNumber;
   }
 
   /**
@@ -99,12 +90,12 @@ Bindings.BreakpointManager = class extends Common.Object {
   }
 
   /**
-   * @param {string} sourceFileId
+   * @param {string} url
    * @return {!Map.<string, !Bindings.BreakpointManager.Breakpoint>}
    */
-  _provisionalBreakpointsForSourceFileId(sourceFileId) {
+  _provisionalBreakpointsForURL(url) {
     var result = new Map();
-    var breakpoints = this._provisionalBreakpoints.get(sourceFileId).valuesArray();
+    var breakpoints = this._provisionalBreakpoints.get(url).valuesArray();
     for (var i = 0; i < breakpoints.length; ++i)
       result.set(breakpoints[i]._breakpointStorageId(), breakpoints[i]);
     return result;
@@ -121,17 +112,17 @@ Bindings.BreakpointManager = class extends Common.Object {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _restoreBreakpoints(uiSourceCode) {
-    var sourceFileId = this._sourceFileId(uiSourceCode);
-    if (!sourceFileId)
+    var url = uiSourceCode.url();
+    if (!url)
       return;
 
     this._storage.mute();
-    var breakpointItems = this._storage.breakpointItems(this._sourceFileId(uiSourceCode));
-    var provisionalBreakpoints = this._provisionalBreakpointsForSourceFileId(sourceFileId);
+    var breakpointItems = this._storage.breakpointItems(url);
+    var provisionalBreakpoints = this._provisionalBreakpointsForURL(url);
     for (var i = 0; i < breakpointItems.length; ++i) {
       var breakpointItem = breakpointItems[i];
       var itemStorageId = Bindings.BreakpointManager._breakpointStorageId(
-          breakpointItem.sourceFileId, breakpointItem.lineNumber, breakpointItem.columnNumber);
+          breakpointItem.url, breakpointItem.lineNumber, breakpointItem.columnNumber);
       var provisionalBreakpoint = provisionalBreakpoints.get(itemStorageId);
       if (provisionalBreakpoint) {
         if (!this._breakpointsForPrimaryUISourceCode.get(uiSourceCode))
@@ -144,7 +135,7 @@ Bindings.BreakpointManager = class extends Common.Object {
             breakpointItem.enabled);
       }
     }
-    this._provisionalBreakpoints.removeAll(sourceFileId);
+    this._provisionalBreakpoints.removeAll(url);
     this._storage.unmute();
   }
 
@@ -187,11 +178,10 @@ Bindings.BreakpointManager = class extends Common.Object {
    */
   _removeUISourceCode(uiSourceCode) {
     var breakpoints = this._breakpointsForPrimaryUISourceCode.get(uiSourceCode) || [];
-    var sourceFileId = this._sourceFileId(uiSourceCode);
     for (var i = 0; i < breakpoints.length; ++i) {
       breakpoints[i]._resetLocations();
       if (breakpoints[i].enabled())
-        this._provisionalBreakpoints.set(sourceFileId, breakpoints[i]);
+        this._provisionalBreakpoints.set(uiSourceCode.url(), breakpoints[i]);
     }
     uiSourceCode.removeEventListener(
         Workspace.UISourceCode.Events.SourceMappingChanged, this._uiSourceCodeMappingChanged, this);
@@ -233,10 +223,8 @@ Bindings.BreakpointManager = class extends Common.Object {
       return breakpoint;
     }
     var projectId = uiSourceCode.project().id();
-    var path = uiSourceCode.url();
-    var sourceFileId = this._sourceFileId(uiSourceCode);
     breakpoint = new Bindings.BreakpointManager.Breakpoint(
-        this, projectId, path, sourceFileId, lineNumber, columnNumber, condition, enabled);
+        this, projectId, uiSourceCode.url(), lineNumber, columnNumber, condition, enabled);
     if (!this._breakpointsForPrimaryUISourceCode.get(uiSourceCode))
       this._breakpointsForPrimaryUISourceCode.set(uiSourceCode, []);
     this._breakpointsForPrimaryUISourceCode.get(uiSourceCode).push(breakpoint);
@@ -408,7 +396,7 @@ Bindings.BreakpointManager = class extends Common.Object {
     breakpoints.remove(breakpoint);
     if (removeFromStorage)
       this._storage._removeBreakpoint(breakpoint);
-    this._provisionalBreakpoints.remove(breakpoint._sourceFileId, breakpoint);
+    this._provisionalBreakpoints.remove(breakpoint._url, breakpoint);
   }
 
   /**
@@ -501,20 +489,18 @@ Bindings.BreakpointManager.Breakpoint = class {
   /**
    * @param {!Bindings.BreakpointManager} breakpointManager
    * @param {string} projectId
-   * @param {string} path
-   * @param {string} sourceFileId
+   * @param {string} url
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @param {string} condition
    * @param {boolean} enabled
    */
-  constructor(breakpointManager, projectId, path, sourceFileId, lineNumber, columnNumber, condition, enabled) {
+  constructor(breakpointManager, projectId, url, lineNumber, columnNumber, condition, enabled) {
     this._breakpointManager = breakpointManager;
     this._projectId = projectId;
-    this._path = path;
+    this._url = url;
     this._lineNumber = lineNumber;
     this._columnNumber = columnNumber;
-    this._sourceFileId = sourceFileId;
 
     /** @type {!Map<string, number>} */
     this._numberOfDebuggerLocationForUILocation = new Map();
@@ -568,8 +554,8 @@ Bindings.BreakpointManager.Breakpoint = class {
   /**
    * @return {string}
    */
-  path() {
-    return this._path;
+  url() {
+    return this._url;
   }
 
   /**
@@ -590,7 +576,7 @@ Bindings.BreakpointManager.Breakpoint = class {
    * @return {?Workspace.UISourceCode}
    */
   uiSourceCode() {
-    return this._breakpointManager._workspace.uiSourceCode(this._projectId, this._path);
+    return this._breakpointManager._workspace.uiSourceCode(this._projectId, this._url);
   }
 
   /**
@@ -705,14 +691,14 @@ Bindings.BreakpointManager.Breakpoint = class {
    * @return {string}
    */
   _breakpointStorageId() {
-    return Bindings.BreakpointManager._breakpointStorageId(this._sourceFileId, this._lineNumber, this._columnNumber);
+    return Bindings.BreakpointManager._breakpointStorageId(this._url, this._lineNumber, this._columnNumber);
   }
 
   _fakeBreakpointAtPrimaryLocation() {
     if (this._isRemoved || this._numberOfDebuggerLocationForUILocation.size || this._fakePrimaryLocation)
       return;
 
-    var uiSourceCode = this._breakpointManager._workspace.uiSourceCode(this._projectId, this._path);
+    var uiSourceCode = this._breakpointManager._workspace.uiSourceCode(this._projectId, this._url);
     if (!uiSourceCode)
       return;
 
@@ -1027,8 +1013,7 @@ Bindings.BreakpointManager.Storage = class {
     for (var i = 0; i < breakpoints.length; ++i) {
       var breakpoint = /** @type {!Bindings.BreakpointManager.Storage.Item} */ (breakpoints[i]);
       breakpoint.columnNumber = breakpoint.columnNumber || 0;
-      this._breakpoints[breakpoint.sourceFileId + ':' + breakpoint.lineNumber + ':' + breakpoint.columnNumber] =
-          breakpoint;
+      this._breakpoints[breakpoint.url + ':' + breakpoint.lineNumber + ':' + breakpoint.columnNumber] = breakpoint;
     }
   }
 
@@ -1041,14 +1026,14 @@ Bindings.BreakpointManager.Storage = class {
   }
 
   /**
-   * @param {string} sourceFileId
+   * @param {string} url
    * @return {!Array.<!Bindings.BreakpointManager.Storage.Item>}
    */
-  breakpointItems(sourceFileId) {
+  breakpointItems(url) {
     var result = [];
     for (var id in this._breakpoints) {
       var breakpoint = this._breakpoints[id];
-      if (breakpoint.sourceFileId === sourceFileId)
+      if (breakpoint.url === url)
         result.push(breakpoint);
     }
     return result;
@@ -1090,7 +1075,7 @@ Bindings.BreakpointManager.Storage.Item = class {
    * @param {!Bindings.BreakpointManager.Breakpoint} breakpoint
    */
   constructor(breakpoint) {
-    this.sourceFileId = breakpoint._sourceFileId;
+    this.url = breakpoint._url;
     this.lineNumber = breakpoint.lineNumber();
     this.columnNumber = breakpoint.columnNumber();
     this.condition = breakpoint.condition();

@@ -175,7 +175,7 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends TreeElement {
    * @return {!Element}
    */
   _createAnchor(uiSourceCode, lineNumber, columnNumber) {
-    return Components.Linkifier.linkifyUsingRevealer(uiSourceCode.uiLocation(lineNumber, columnNumber), '');
+    return Components.Linkifier.linkifyRevealable(uiSourceCode.uiLocation(lineNumber, columnNumber), '');
   }
 
   /**

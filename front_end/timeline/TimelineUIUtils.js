@@ -1530,7 +1530,7 @@ Timeline.TimelineUIUtils = class {
     if (frame.layerTree) {
       contentHelper.appendElementRow(
           Common.UIString('Layer tree'),
-          Components.Linkifier.linkifyUsingRevealer(frame.layerTree, Common.UIString('show')));
+          Components.Linkifier.linkifyRevealable(frame.layerTree, Common.UIString('show')));
     }
 
     /**

@@ -95,46 +95,11 @@ Components.Linkifier = class {
   }
 
   /**
-   * @param {!Object} revealable
-   * @param {string} text
-   * @param {string=} fallbackHref
-   * @param {number=} fallbackLineNumber
-   * @param {string=} title
-   * @param {string=} classes
-   * @return {!Element}
-   */
-  static linkifyUsingRevealer(revealable, text, fallbackHref, fallbackLineNumber, title, classes) {
-    var a = createElement('a');
-    a.className = (classes || '') + ' webkit-html-resource-link';
-    a.textContent = text.trimMiddle(Components.Linkifier.MaxLengthForDisplayedURLs);
-    a.title = title || text;
-    if (fallbackHref) {
-      a.href = fallbackHref;
-      a.lineNumber = fallbackLineNumber;
-    }
-
-    /**
-     * @param {!Event} event
-     * @this {Object}
-     */
-    function clickHandler(event) {
-      event.stopImmediatePropagation();
-      event.preventDefault();
-      if (fallbackHref && Components.Linkifier.handleLink(fallbackHref, fallbackLineNumber))
-        return;
-
-      Common.Revealer.reveal(this);
-    }
-    a.addEventListener('click', clickHandler.bind(revealable), false);
-    return a;
-  }
-
-  /**
    * @param {!Element} anchor
    * @param {!Workspace.UILocation} uiLocation
    */
   static _bindUILocation(anchor, uiLocation) {
-    anchor[Components.Linkifier._uiLocationSymbol] = uiLocation;
+    Components.Linkifier._linkInfo(anchor).uiLocation = uiLocation;
     if (!uiLocation)
       return;
     var uiSourceCode = uiLocation.uiSourceCode;
@@ -150,11 +115,12 @@ Components.Linkifier = class {
    * @param {!Element} anchor
    */
   static _unbindUILocation(anchor) {
-    if (!anchor[Components.Linkifier._uiLocationSymbol])
+    var info = Components.Linkifier._linkInfo(anchor);
+    if (!info.uiLocation)
       return;
 
-    var uiSourceCode = anchor[Components.Linkifier._uiLocationSymbol].uiSourceCode;
-    anchor[Components.Linkifier._uiLocationSymbol] = null;
+    var uiSourceCode = info.uiLocation.uiSourceCode;
+    info.uiLocation = null;
     var sourceCodeAnchors = uiSourceCode[Components.Linkifier._sourceCodeAnchors];
     if (sourceCodeAnchors)
       sourceCodeAnchors.delete(anchor);
@@ -199,16 +165,15 @@ Components.Linkifier = class {
     locationPool.disposeAll();
     var anchors = this._anchorsByTarget.remove(target);
     for (var anchor of anchors) {
-      delete anchor[Components.Linkifier._liveLocationSymbol];
+      var info = Components.Linkifier._linkInfo(anchor);
+      info.liveLocation = null;
       Components.Linkifier._unbindUILocation(anchor);
-      var fallbackAnchor = anchor[Components.Linkifier._fallbackAnchorSymbol];
-      if (fallbackAnchor) {
-        anchor.href = fallbackAnchor.href;
-        anchor.lineNumber = fallbackAnchor.lineNumber;
-        anchor.title = fallbackAnchor.title;
-        anchor.className = fallbackAnchor.className;
-        anchor.textContent = fallbackAnchor.textContent;
-        delete anchor[Components.Linkifier._fallbackAnchorSymbol];
+      if (info.fallback) {
+        anchor.href = info.fallback.href;
+        anchor.title = info.fallback.title;
+        anchor.className = info.fallback.className;
+        anchor.textContent = info.fallback.textContent;
+        anchor[Components.Linkifier._infoSymbol] = info.fallback[Components.Linkifier._infoSymbol];
       }
     }
   }
@@ -237,14 +202,16 @@ Components.Linkifier = class {
     if (!rawLocation)
       return fallbackAnchor;
 
-    var anchor = this._createAnchor(classes);
-    var liveLocation = Bindings.debuggerWorkspaceBinding.createLiveLocation(
+    var anchor = Components.Linkifier._createLink('', classes || '');
+    var info = Components.Linkifier._linkInfo(anchor);
+    info.enableDecorator = this._useLinkDecorator;
+    info.fallback = fallbackAnchor;
+    info.liveLocation = Bindings.debuggerWorkspaceBinding.createLiveLocation(
         rawLocation, this._updateAnchor.bind(this, anchor),
         /** @type {!Bindings.LiveLocationPool} */ (this._locationPoolByTarget.get(rawLocation.target())));
+
     var anchors = /** @type {!Array<!Element>} */ (this._anchorsByTarget.get(rawLocation.target()));
     anchors.push(anchor);
-    anchor[Components.Linkifier._liveLocationSymbol] = liveLocation;
-    anchor[Components.Linkifier._fallbackAnchorSymbol] = fallbackAnchor;
     return anchor;
   }
 
@@ -305,14 +272,16 @@ Components.Linkifier = class {
     if (rawLocations.length === 0)
       return fallbackAnchor;
 
-    var anchor = this._createAnchor(classes);
-    var liveLocation = Bindings.debuggerWorkspaceBinding.createStackTraceTopFrameLiveLocation(
+    var anchor = Components.Linkifier._createLink('', classes || '');
+    var info = Components.Linkifier._linkInfo(anchor);
+    info.enableDecorator = this._useLinkDecorator;
+    info.fallback = fallbackAnchor;
+    info.liveLocation = Bindings.debuggerWorkspaceBinding.createStackTraceTopFrameLiveLocation(
         rawLocations, this._updateAnchor.bind(this, anchor),
         /** @type {!Bindings.LiveLocationPool} */ (this._locationPoolByTarget.get(target)));
+
     var anchors = /** @type {!Array<!Element>} */ (this._anchorsByTarget.get(target));
     anchors.push(anchor);
-    anchor[Components.Linkifier._liveLocationSymbol] = liveLocation;
-    anchor[Components.Linkifier._fallbackAnchorSymbol] = fallbackAnchor;
     return anchor;
   }
 
@@ -322,13 +291,15 @@ Components.Linkifier = class {
    * @return {!Element}
    */
   linkifyCSSLocation(rawLocation, classes) {
-    var anchor = this._createAnchor(classes);
-    var liveLocation = Bindings.cssWorkspaceBinding.createLiveLocation(
+    var anchor = Components.Linkifier._createLink('', classes || '');
+    var info = Components.Linkifier._linkInfo(anchor);
+    info.enableDecorator = this._useLinkDecorator;
+    info.liveLocation = Bindings.cssWorkspaceBinding.createLiveLocation(
         rawLocation, this._updateAnchor.bind(this, anchor),
         /** @type {!Bindings.LiveLocationPool} */ (this._locationPoolByTarget.get(rawLocation.target())));
+
     var anchors = /** @type {!Array<!Element>} */ (this._anchorsByTarget.get(rawLocation.target()));
     anchors.push(anchor);
-    anchor[Components.Linkifier._liveLocationSymbol] = liveLocation;
     return anchor;
   }
 
@@ -338,38 +309,12 @@ Components.Linkifier = class {
    */
   disposeAnchor(target, anchor) {
     Components.Linkifier._unbindUILocation(anchor);
-    delete anchor[Components.Linkifier._fallbackAnchorSymbol];
-    var liveLocation = anchor[Components.Linkifier._liveLocationSymbol];
-    if (liveLocation)
-      liveLocation.dispose();
-    delete anchor[Components.Linkifier._liveLocationSymbol];
-  }
-
-  /**
-   * @param {string=} classes
-   * @return {!Element}
-   */
-  _createAnchor(classes) {
-    var anchor = createElement('a');
-    if (this._useLinkDecorator)
-      anchor[Components.Linkifier._enableDecoratorSymbol] = true;
-    anchor.className = (classes || '') + ' webkit-html-resource-link';
-
-    /**
-     * @param {!Event} event
-     */
-    function clickHandler(event) {
-      var uiLocation = anchor[Components.Linkifier._uiLocationSymbol];
-      if (!uiLocation)
-        return;
-
-      event.consume(true);
-      if (Components.Linkifier.handleLink(uiLocation.uiSourceCode.url(), uiLocation.lineNumber))
-        return;
-      Common.Revealer.reveal(uiLocation);
+    var info = Components.Linkifier._linkInfo(anchor);
+    info.fallback = null;
+    if (info.liveLocation) {
+      info.liveLocation.dispose();
+      info.liveLocation = null;
     }
-    anchor.addEventListener('click', clickHandler, false);
-    return anchor;
   }
 
   reset() {
@@ -415,20 +360,19 @@ Components.Linkifier = class {
    * @param {!Element} anchor
    */
   static _updateLinkDecorations(anchor) {
-    if (!anchor[Components.Linkifier._enableDecoratorSymbol])
+    var info = Components.Linkifier._linkInfo(anchor);
+    if (!info || !info.enableDecorator)
       return;
-    var uiLocation = anchor[Components.Linkifier._uiLocationSymbol];
-    if (!Components.Linkifier._decorator || !uiLocation)
+    if (!Components.Linkifier._decorator || !info.uiLocation)
       return;
-    var icon = anchor[Components.Linkifier._iconSymbol];
-    if (icon)
-      icon.remove();
-    icon = Components.Linkifier._decorator.linkIcon(uiLocation.uiSourceCode);
+    if (info.icon)
+      anchor.removeChild(info.icon);
+    var icon = Components.Linkifier._decorator.linkIcon(info.uiLocation.uiSourceCode);
     if (icon) {
       icon.style.setProperty('margin-right', '2px');
       anchor.insertBefore(icon, anchor.firstChild);
     }
-    anchor[Components.Linkifier._iconSymbol] = icon;
+    info.icon = icon;
   }
 
   /**
@@ -440,28 +384,74 @@ Components.Linkifier = class {
    * @return {!Element}
    */
   static linkifyURL(url, text, className, lineNumber, columnNumber) {
-    if (!url) {
+    if (!url || url.trim().toLowerCase().startsWith('javascript:')) {
       var element = createElementWithClass('span', className);
-      element.textContent = text || Common.UIString('(unknown)');
+      element.textContent = text || url || Common.UIString('(unknown)');
       return element;
     }
 
     var linkText = text || Bindings.displayNameForURL(url);
     if (typeof lineNumber === 'number' && !text)
       linkText += ':' + (lineNumber + 1);
-
-    var link = createElementWithClass('a', className);
-    if (!url.trim().toLowerCase().startsWith('javascript:')) {
-      link.href = url;
-      link.classList.add('webkit-html-resource-link');
-      link[Components.Linkifier._linkSymbol] = true;
-      link.addEventListener('click', Components.Linkifier._handleClick, false);
-    }
-    link.title = linkText !== url ? url : '';
-    link.textContent = linkText.trimMiddle(150);
-    link.lineNumber = lineNumber;
-    link.columnNumber = columnNumber;
+    var title = linkText !== url ? url : '';
+    var link = Components.Linkifier._createLink(linkText.trimMiddle(150), className || '', title, url);
+    var info = Components.Linkifier._linkInfo(link);
+    if (typeof lineNumber === 'number')
+      info.lineNumber = lineNumber;
+    if (typeof columnNumber === 'number')
+      info.columnNumber = columnNumber;
     return link;
+  }
+
+  /**
+   * @param {!Object} revealable
+   * @param {string} text
+   * @param {string=} fallbackHref
+   * @return {!Element}
+   */
+  static linkifyRevealable(revealable, text, fallbackHref) {
+    var link = Components.Linkifier._createLink(
+        text.trimMiddle(Components.Linkifier.MaxLengthForDisplayedURLs), '', undefined, fallbackHref);
+    Components.Linkifier._linkInfo(link).revealable = revealable;
+    return link;
+  }
+
+  /**
+   * @param {string} text
+   * @param {string} className
+   * @param {string=} title
+   * @param {string=} href
+   * @returns{!Element}
+   */
+  static _createLink(text, className, title, href) {
+    var link = createElementWithClass('a', className);
+    link.classList.add('webkit-html-resource-link');
+    if (title)
+      link.title = title;
+    if (href)
+      link.href = href;
+    link.textContent = text;
+    link[Components.Linkifier._infoSymbol] = {
+      icon: null,
+      enableDecorator: false,
+      uiLocation: null,
+      liveLocation: null,
+      url: href || null,
+      lineNumber: null,
+      columnNumber: null,
+      revealable: null,
+      fallback: null
+    };
+    link.addEventListener('click', Components.Linkifier._handleClick, false);
+    return link;
+  }
+
+  /**
+   * @param {?Element} link
+   * @return {?Components._LinkInfo}
+   */
+  static _linkInfo(link) {
+    return /** @type {?Components._LinkInfo} */ (link ? link[Components.Linkifier._infoSymbol] || null : null);
   }
 
   /**
@@ -472,8 +462,17 @@ Components.Linkifier = class {
     event.consume(true);
     if (link.preventFollow || UI.isBeingEdited(/** @type {!Node} */ (event.target)))
       return;
-    if (Components.openAnchorLocationRegistry.dispatch({url: link.href, lineNumber: link.lineNumber}))
+    var info = Components.Linkifier._linkInfo(link);
+    if (info.uiLocation &&
+        Components.openAnchorLocationRegistry.dispatch(
+            {url: info.uiLocation.uiSourceCode.url(), lineNumber: info.uiLocation.lineNumber}))
       return;
+    if (info.url && Components.openAnchorLocationRegistry.dispatch({url: info.url, lineNumber: info.lineNumber}))
+      return;
+    if (info.revealable) {
+      Common.Revealer.reveal(info.revealable);
+      return;
+    }
     var actions = Components.Linkifier._linkActions(link);
     if (actions.length)
       actions[0].handler.call(null);
@@ -484,27 +483,29 @@ Components.Linkifier = class {
    * @return {!Array<{title: string, handler: function()}>}
    */
   static _linkActions(link) {
-    var url = null;
+    var info = Components.Linkifier._linkInfo(link);
+    var result = [];
+    if (!info)
+      return result;
+
+    var url = '';
     var uiLocation = null;
-    var isLiveLink = false;
-    if (link && link[Components.Linkifier._uiLocationSymbol]) {
-      uiLocation = /** @type {!Workspace.UILocation} */ (link[Components.Linkifier._uiLocationSymbol]);
+    if (info.uiLocation) {
+      uiLocation = info.uiLocation;
       url = uiLocation.uiSourceCode.contentURL();
-      isLiveLink = true;
-    } else if (link && link.href) {
-      url = link.href;
+    } else if (info.url) {
+      url = info.url;
       var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
-      uiLocation = uiSourceCode ? uiSourceCode.uiLocation(link.lineNumber || 0, link.columnNumber || 0) : null;
-      isLiveLink = false;
-    } else {
-      return [];
+      uiLocation = uiSourceCode ? uiSourceCode.uiLocation(info.lineNumber || 0, info.columnNumber || 0) : null;
     }
 
-    var result = [];
+    if (info.revealable)
+      result.push({title: Common.UIString('Reveal'), handler: () => Common.Revealer.reveal(info.revealable)});
+
     if (uiLocation)
       result.push({title: Common.UIString('Open'), handler: () => Common.Revealer.reveal(uiLocation)});
 
-    var resource = Bindings.resourceForURL(url);
+    var resource = url ? Bindings.resourceForURL(url) : null;
     if (resource) {
       result.push({
         title: Common.UIString.capitalize('Open ^link in Application ^panel'),
@@ -512,7 +513,7 @@ Components.Linkifier = class {
       });
     }
 
-    var request = SDK.NetworkLog.requestForURL(url);
+    var request = url ? SDK.NetworkLog.requestForURL(url) : null;
     if (request) {
       result.push({
         title: Common.UIString.capitalize('Open ^request in Network ^panel'),
@@ -520,7 +521,7 @@ Components.Linkifier = class {
       });
     }
 
-    if (resource || !isLiveLink) {
+    if (resource || info.url) {
       result.push({title: UI.openLinkExternallyLabel(), handler: () => InspectorFrontendHost.openInNewTab(url)});
       result.push({title: UI.copyLinkAddressLabel(), handler: () => InspectorFrontendHost.copyText(url)});
     }
@@ -534,13 +535,23 @@ Components.Linkifier._instances = new Set();
 /** @type {?Components.LinkDecorator} */
 Components.Linkifier._decorator = null;
 
-Components.Linkifier._iconSymbol = Symbol('Linkifier.iconSymbol');
-Components.Linkifier._enableDecoratorSymbol = Symbol('Linkifier.enableIconsSymbol');
 Components.Linkifier._sourceCodeAnchors = Symbol('Linkifier.anchors');
-Components.Linkifier._uiLocationSymbol = Symbol('uiLocation');
-Components.Linkifier._fallbackAnchorSymbol = Symbol('fallbackAnchor');
-Components.Linkifier._liveLocationSymbol = Symbol('liveLocation');
-Components.Linkifier._linkSymbol = Symbol('Linkifier.link');
+Components.Linkifier._infoSymbol = Symbol('Linkifier.info');
+
+/**
+ * @typedef {{
+ *     icon: ?UI.Icon,
+ *     enableDecorator: boolean,
+ *     uiLocation: ?Workspace.UILocation,
+ *     liveLocation: ?Bindings.LiveLocation,
+ *     url: ?string,
+ *     lineNumber: ?number,
+ *     columnNumber: ?number,
+ *     revealable: ?Object,
+ *     fallback: ?Element
+ * }}
+ */
+Components._LinkInfo;
 
 /**
  * The maximum number of characters to display in a URL.
@@ -660,8 +671,7 @@ Components.Linkifier.LinkContextMenuProvider = class {
    */
   appendApplicableItems(event, contextMenu, target) {
     var targetNode = /** @type {!Node} */ (target);
-    while (targetNode && !targetNode[Components.Linkifier._linkSymbol] &&
-           !targetNode[Components.Linkifier._uiLocationSymbol])
+    while (targetNode && !targetNode[Components.Linkifier._infoSymbol])
       targetNode = targetNode.parentNodeOrShadowHost();
     var link = /** @type {?Element} */ (targetNode);
     var actions = Components.Linkifier._linkActions(link);

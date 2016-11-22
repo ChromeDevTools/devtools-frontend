@@ -73,7 +73,7 @@ Persistence.Persistence = class extends Common.Object {
 
     this._removeFilePathBindingPrefixes(binding.fileSystem.url());
 
-    this._copyBreakpoints(binding.network, binding.fileSystem);
+    this._breakpointManager.copyBreakpoints(binding.network.url(), binding.fileSystem);
     this.dispatchEventToListeners(Persistence.Persistence.Events.BindingRemoved, binding);
   }
 
@@ -138,18 +138,6 @@ Persistence.Persistence = class extends Common.Object {
     var breakpoints = this._breakpointManager.breakpointsForUISourceCode(from);
     for (var breakpoint of breakpoints) {
       breakpoint.remove();
-      this._breakpointManager.setBreakpoint(
-          to, breakpoint.lineNumber(), breakpoint.columnNumber(), breakpoint.condition(), breakpoint.enabled());
-    }
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} from
-   * @param {!Workspace.UISourceCode} to
-   */
-  _copyBreakpoints(from, to) {
-    var breakpoints = this._breakpointManager.breakpointsForUISourceCode(from);
-    for (var breakpoint of breakpoints) {
       this._breakpointManager.setBreakpoint(
           to, breakpoint.lineNumber(), breakpoint.columnNumber(), breakpoint.condition(), breakpoint.enabled());
     }

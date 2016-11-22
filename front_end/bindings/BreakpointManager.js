@@ -101,6 +101,16 @@ Bindings.BreakpointManager = class extends Common.Object {
     return result;
   }
 
+  /**
+   * @param {string} fromURL
+   * @param {!Workspace.UISourceCode} toSourceCode
+   */
+  copyBreakpoints(fromURL, toSourceCode) {
+    var breakpointItems = this._storage.breakpointItems(fromURL);
+    for (var item of breakpointItems)
+      this.setBreakpoint(toSourceCode, item.lineNumber, item.columnNumber, item.condition, item.enabled);
+  }
+
   removeProvisionalBreakpointsForTest() {
     var breakpoints = this._provisionalBreakpoints.valuesArray();
     for (var i = 0; i < breakpoints.length; ++i)

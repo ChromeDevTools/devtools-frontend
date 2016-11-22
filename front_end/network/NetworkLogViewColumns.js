@@ -122,14 +122,13 @@ Network.NetworkLogViewColumns = class {
     this._waterfallColumn.element.addEventListener('mousewheel', this._onMouseWheel.bind(this, false), {passive: true});
     this._dataGridScroller.addEventListener('mousewheel', this._onMouseWheel.bind(this, true), true);
 
+    this._waterfallColumn.element.addEventListener('mousemove', event => {
+      var hoveredLogEntry =
+          this._waterfallColumn.getLogEntryFromPoint(event.offsetX, event.offsetY + event.target.offsetTop);
+      this._networkLogView.setHoveredLogEntry(hoveredLogEntry, event.shiftKey);
+    }, true);
     this._waterfallColumn.element.addEventListener(
-        'mousemove',
-        event => this._networkLogView.setHoveredRequest(
-            this._waterfallColumn.getRequestFromPoint(event.offsetX, event.offsetY + event.target.offsetTop),
-            event.shiftKey),
-        true);
-    this._waterfallColumn.element.addEventListener(
-        'mouseleave', this._networkLogView.setHoveredRequest.bind(this._networkLogView, null, false), true);
+        'mouseleave', this._networkLogView.setHoveredLogEntry.bind(this._networkLogView, null, false), true);
 
     this._waterfallScroller = this._waterfallColumn.contentElement.createChild('div', 'network-waterfall-v-scroll');
     this._waterfallScroller.addEventListener('scroll', this._syncScrollers.bind(this), {passive: true});
@@ -155,11 +154,11 @@ Network.NetworkLogViewColumns = class {
      * @this {Network.NetworkLogViewColumns}
      */
     function handleContextMenu(event) {
-      var request = this._waterfallColumn.getRequestFromPoint(event.offsetX, event.offsetY);
-      if (!request)
+      var logEntry = this._waterfallColumn.getLogEntryFromPoint(event.offsetX, event.offsetY);
+      if (!logEntry)
         return;
       var contextMenu = new UI.ContextMenu(event);
-      this._networkLogView.handleContextMenuForRequest(contextMenu, request);
+      this._networkLogView.handleContextMenuForRequest(contextMenu, logEntry.request());
       contextMenu.show();
     }
   }
@@ -173,8 +172,8 @@ Network.NetworkLogViewColumns = class {
       event.consume(true);
     this._activeScroller.scrollTop -= event.wheelDeltaY;
     this._syncScrollers();
-    this._networkLogView.setHoveredRequest(
-        this._waterfallColumn.getRequestFromPoint(event.offsetX, event.offsetY), event.shiftKey);
+    var logEntry = this._waterfallColumn.getLogEntryFromPoint(event.offsetX, event.offsetY);
+    this._networkLogView.setHoveredLogEntry(logEntry, event.shiftKey);
   }
 
   _syncScrollers() {
@@ -200,23 +199,16 @@ Network.NetworkLogViewColumns = class {
           this._activeScroller.scrollTop, this._eventDividersShown ? this._eventDividers : undefined);
       return;
     }
-    var currentNode = this._dataGrid.rootNode();
-    /** @type {!Network.NetworkWaterfallColumn.RequestData} */
-    var requestData = {requests: [], navigationRequest: null};
-    while (currentNode = currentNode.traverseNextNode(true)) {
-      if (currentNode.isNavigationRequest())
-        requestData.navigationRequest = currentNode.request();
-      requestData.requests.push(currentNode.request());
-    }
-    this._waterfallColumn.update(this._activeScroller.scrollTop, this._eventDividers, requestData);
+    var nodes = this._networkLogView.flatNodesList();
+    this._waterfallColumn.update(this._activeScroller.scrollTop, this._eventDividers, nodes);
   }
 
   /**
-   * @param {?SDK.NetworkRequest} request
+   * @param {?Network.NetworkLogEntry} logEntry
    * @param {boolean} highlightInitiatorChain
    */
-  setHoveredRequest(request, highlightInitiatorChain) {
-    this._waterfallColumn.setHoveredRequest(request, highlightInitiatorChain);
+  setHoveredLogEntry(logEntry, highlightInitiatorChain) {
+    this._waterfallColumn.setHoveredLogEntry(logEntry, highlightInitiatorChain);
   }
 
   _createWaterfallHeader() {

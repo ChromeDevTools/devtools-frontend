@@ -86,6 +86,7 @@ Network.NetworkLogView = class extends UI.VBox {
     this._filters = [];
     /** @type {?Network.NetworkLogView.Filter} */
     this._timeFilter = null;
+    this._hoveredNode = null;
 
     this._currentMatchedRequestNode = null;
     this._currentMatchedRequestIndex = -1;
@@ -531,12 +532,13 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   /**
-   * @param {?SDK.NetworkRequest} request
+   * @param {?Network.NetworkLogEntry} logEntry
    * @param {boolean} highlightInitiatorChain
    */
-  setHoveredRequest(request, highlightInitiatorChain) {
-    this._setHoveredNode(request ? this._nodesByRequestId.get(request.requestId) : null, highlightInitiatorChain);
-    this._highlightInitiatorChain((request && highlightInitiatorChain) ? request : null);
+  setHoveredLogEntry(logEntry, highlightInitiatorChain) {
+    // TODO(allada) Move this into LogEntry/NetworkDataGridNode.
+    this._setHoveredNode(/** @type {?Network.NetworkDataGridNode} */ (logEntry), highlightInitiatorChain);
+    this._highlightInitiatorChain((logEntry && highlightInitiatorChain) ? logEntry.request() : null);
   }
 
   /**
@@ -549,7 +551,7 @@ Network.NetworkLogView = class extends UI.VBox {
     this._hoveredNode = node;
     if (this._hoveredNode)
       this._hoveredNode.element().classList.add('hover');
-    this._columns.setHoveredRequest(this._hoveredNode ? this._hoveredNode.request() : null, !!highlightInitiatorChain);
+    this._columns.setHoveredLogEntry(this._hoveredNode, !!highlightInitiatorChain);
   }
 
   /**
@@ -776,6 +778,13 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   willHide() {
     this._columns.willHide();
+  }
+
+  /**
+   * @return {!Array<!Network.NetworkDataGridNode>}
+   */
+  flatNodesList() {
+    return this._dataGrid.flatNodesList();
   }
 
   _refresh() {

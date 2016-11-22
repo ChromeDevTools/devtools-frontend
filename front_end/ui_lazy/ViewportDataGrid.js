@@ -122,7 +122,7 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
   /**
    * @return {!Array.<!UI.ViewportDataGridNode>}
    */
-  _flatNodesList() {
+  flatNodesList() {
     if (this._flatNodes)
       return this._flatNodes;
     var flatNodes = [];
@@ -153,7 +153,7 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
    * @return {{topPadding: number, bottomPadding: number, contentHeight: number, visibleNodes: !Array.<!UI.ViewportDataGridNode>, offset: number}}
    */
   _calculateVisibleNodes(clientHeight, scrollTop) {
-    var nodes = this._flatNodesList();
+    var nodes = this.flatNodesList();
     if (this._inline)
       return {topPadding: 0, bottomPadding: 0, contentHeight: 0, visibleNodes: nodes, offset: 0};
 
@@ -187,7 +187,7 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
    * @return {number}
    */
   _contentHeight() {
-    var nodes = this._flatNodesList();
+    var nodes = this.flatNodesList();
     var result = 0;
     for (var i = 0, size = nodes.length; i < size; ++i)
       result += nodes[i].nodeSelfHeight();
@@ -263,7 +263,7 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
    * @param {!UI.ViewportDataGridNode} node
    */
   _revealViewportNode(node) {
-    var nodes = this._flatNodesList();
+    var nodes = this.flatNodesList();
     var index = nodes.indexOf(node);
     if (index === -1)
       return;

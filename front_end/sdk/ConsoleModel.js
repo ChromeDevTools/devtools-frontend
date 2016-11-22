@@ -50,7 +50,7 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
     if (this._logAgent) {
       target.registerLogDispatcher(new SDK.LogDispatcher(this));
       this._logAgent.enable();
-      if (!InspectorFrontendHost.isUnderTest()) {
+      if (!Host.isUnderTest()) {
         this._logAgent.startViolationsReport([
           {name: 'longTask', threshold: 200}, {name: 'longLayout', threshold: 30},
           {name: 'blockedEvent', threshold: 100}, {name: 'blockedParser', threshold: -1},

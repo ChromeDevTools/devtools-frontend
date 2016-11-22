@@ -61,7 +61,7 @@ SDK.MainConnection = class {
    * @param {!Common.Event} event
    */
   _evaluateForTestInFrontend(event) {
-    if (!InspectorFrontendHost.isUnderTest())
+    if (!Host.isUnderTest())
       return;
 
     var callId = /** @type {number} */ (event.data['callId']);

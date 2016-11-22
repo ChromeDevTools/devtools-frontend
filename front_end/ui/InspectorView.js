@@ -64,7 +64,7 @@ UI.InspectorView = class extends UI.VBox {
     this._tabbedPane.setTabSlider(true);
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
 
-    if (InspectorFrontendHost.isUnderTest())
+    if (Host.isUnderTest())
       this._tabbedPane.setAutoSelectFirstItemOnShow(false);
     this._drawerSplitWidget.setMainWidget(this._tabbedPane);
 

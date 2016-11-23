@@ -8,7 +8,7 @@
         {
             "type": "@UI.ContextMenu.Provider",
             "contextTypes": ["Workspace.UISourceCode", "SDK.Resource", "SDK.NetworkRequest"],
-            "className": "Components.HandlerRegistry.ContextMenuProvider"
+            "className": "Components.Linkifier.ContentProviderContextMenuProvider"
         },
         {
             "type": "@UI.ContextMenu.Provider",
@@ -309,7 +309,7 @@
         {
             "type": "@UI.SettingUI",
             "category": "Extensions",
-            "className": "Components.HandlerRegistry.OpenAnchorLocationSettingUI"
+            "className": "Components.Linkifier.LinkHandlerSettingUI"
         },
         {
             "type": "@UI.SettingUI",

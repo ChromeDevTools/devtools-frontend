@@ -388,22 +388,14 @@ Extensions.ExtensionServer = class extends Common.Object {
   _onSetOpenResourceHandler(message, port) {
     var name = this._registeredExtensions[port._extensionOrigin].name || ('Extension ' + port._extensionOrigin);
     if (message.handlerPresent)
-      Components.openAnchorLocationRegistry.registerHandler(name, this._handleOpenURL.bind(this, port));
+      Components.Linkifier.registerLinkHandler(name, this._handleOpenURL.bind(this, port));
     else
-      Components.openAnchorLocationRegistry.unregisterHandler(name);
+      Components.Linkifier.unregisterLinkHandler(name);
   }
 
-  _handleOpenURL(port, details) {
-    var url = /** @type {string} */ (details.url);
-    var contentProvider = Workspace.workspace.uiSourceCodeForURL(url) || Bindings.resourceForURL(url);
-    if (!contentProvider)
-      return false;
-
-    var lineNumber = details.lineNumber;
-    if (typeof lineNumber === 'number')
-      lineNumber += 1;
-    port.postMessage({command: 'open-resource', resource: this._makeResource(contentProvider), lineNumber: lineNumber});
-    return true;
+  _handleOpenURL(port, contentProvider, lineNumber) {
+    port.postMessage(
+        {command: 'open-resource', resource: this._makeResource(contentProvider), lineNumber: lineNumber + 1});
   }
 
   _onReload(message) {

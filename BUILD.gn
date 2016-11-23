@@ -66,7 +66,6 @@ devtools_components_js_files = [
   "front_end/components/DOMBreakpointsSidebarPane.js",
   "front_end/components/DOMPresentationUtils.js",
   "front_end/components/ExecutionContextSelector.js",
-  "front_end/components/HandlerRegistry.js",
   "front_end/components/JavaScriptAutocomplete.js",
   "front_end/components/BreakpointsSidebarPaneBase.js",
   "front_end/components/Linkifier.js",

@@ -201,14 +201,6 @@ Main.Main = class {
     new Components.ExecutionContextSelector(SDK.targetManager, UI.context);
     Bindings.blackboxManager = new Bindings.BlackboxManager(Bindings.debuggerWorkspaceBinding);
 
-    var autoselectPanel = Common.UIString('auto');
-    var openAnchorLocationSetting = Common.settings.createSetting('openLinkHandler', autoselectPanel);
-    Components.openAnchorLocationRegistry = new Components.HandlerRegistry(openAnchorLocationSetting);
-    Components.openAnchorLocationRegistry.registerHandler(autoselectPanel, function() {
-      return false;
-    });
-    Components.Linkifier.setLinkHandler(new Components.HandlerRegistry.LinkHandler());
-
     new Main.Main.PauseListener();
     new Main.Main.InspectedNodeRevealer();
     new Main.NetworkPanelIndicator();

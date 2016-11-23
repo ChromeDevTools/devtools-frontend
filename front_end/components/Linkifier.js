@@ -77,24 +77,6 @@ Components.Linkifier = class {
   }
 
   /**
-   * @param {?Components.Linkifier.LinkHandler} handler
-   */
-  static setLinkHandler(handler) {
-    Components.Linkifier._linkHandler = handler;
-  }
-
-  /**
-   * @param {string} url
-   * @param {number=} lineNumber
-   * @return {boolean}
-   */
-  static handleLink(url, lineNumber) {
-    if (!Components.Linkifier._linkHandler)
-      return false;
-    return Components.Linkifier._linkHandler.handleLink(url, lineNumber);
-  }
-
-  /**
    * @param {!Element} anchor
    * @param {!Workspace.UILocation} uiLocation
    */
@@ -124,27 +106,6 @@ Components.Linkifier = class {
     var sourceCodeAnchors = uiSourceCode[Components.Linkifier._sourceCodeAnchors];
     if (sourceCodeAnchors)
       sourceCodeAnchors.delete(anchor);
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @param {string} scriptId
-   * @param {number} lineNumber
-   * @param {number=} columnNumber
-   * @return {string}
-   */
-  static liveLocationText(target, scriptId, lineNumber, columnNumber) {
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
-    if (!debuggerModel)
-      return '';
-    var script = debuggerModel.scriptForId(scriptId);
-    if (!script)
-      return '';
-    var location = /** @type {!SDK.DebuggerModel.Location} */ (
-        debuggerModel.createRawLocation(script, lineNumber, columnNumber || 0));
-    var uiLocation =
-        /** @type {!Workspace.UILocation} */ (Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location));
-    return uiLocation.linkText();
   }
 
   /**
@@ -462,20 +423,37 @@ Components.Linkifier = class {
     event.consume(true);
     if (link.preventFollow || UI.isBeingEdited(/** @type {!Node} */ (event.target)))
       return;
-    var info = Components.Linkifier._linkInfo(link);
-    if (info.uiLocation &&
-        Components.openAnchorLocationRegistry.dispatch(
-            {url: info.uiLocation.uiSourceCode.url(), lineNumber: info.uiLocation.lineNumber}))
-      return;
-    if (info.url && Components.openAnchorLocationRegistry.dispatch({url: info.url, lineNumber: info.lineNumber}))
-      return;
-    if (info.revealable) {
-      Common.Revealer.reveal(info.revealable);
-      return;
-    }
     var actions = Components.Linkifier._linkActions(link);
     if (actions.length)
       actions[0].handler.call(null);
+  }
+
+  /**
+   * @return {!Common.Setting}
+   */
+  static _linkHandlerSetting() {
+    if (!Components.Linkifier._linkHandlerSettingInstance) {
+      Components.Linkifier._linkHandlerSettingInstance =
+          Common.settings.createSetting('openLinkHandler', Common.UIString('auto'));
+    }
+    return Components.Linkifier._linkHandlerSettingInstance;
+  }
+
+  /**
+   * @param {string} title
+   * @param {!Components.Linkifier.LinkHandler} handler
+   */
+  static registerLinkHandler(title, handler) {
+    Components.Linkifier._linkHandlers.set(title, handler);
+    self.runtime.sharedInstance(Components.Linkifier.LinkHandlerSettingUI)._update();
+  }
+
+  /**
+   * @param {string} title
+   */
+  static unregisterLinkHandler(title) {
+    Components.Linkifier._linkHandlers.delete(title);
+    self.runtime.sharedInstance(Components.Linkifier.LinkHandlerSettingUI)._update();
   }
 
   /**
@@ -498,34 +476,48 @@ Components.Linkifier = class {
       var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
       uiLocation = uiSourceCode ? uiSourceCode.uiLocation(info.lineNumber || 0, info.columnNumber || 0) : null;
     }
+    var resource = url ? Bindings.resourceForURL(url) : null;
+    var request = url ? SDK.NetworkLog.requestForURL(url) : null;
+    var contentProvider = uiLocation ? uiLocation.uiSourceCode : resource;
 
     if (info.revealable)
       result.push({title: Common.UIString('Reveal'), handler: () => Common.Revealer.reveal(info.revealable)});
-
-    if (uiLocation)
-      result.push({title: Common.UIString('Open'), handler: () => Common.Revealer.reveal(uiLocation)});
-
-    var resource = url ? Bindings.resourceForURL(url) : null;
+    if (uiLocation) {
+      result.push({
+        title: Common.UIString.capitalize('Open in Sources ^panel'),
+        handler: () => Common.Revealer.reveal(uiLocation)
+      });
+    }
     if (resource) {
       result.push({
-        title: Common.UIString.capitalize('Open ^link in Application ^panel'),
+        title: Common.UIString.capitalize('Open in Application ^panel'),
         handler: () => Common.Revealer.reveal(resource)
       });
     }
-
-    var request = url ? SDK.NetworkLog.requestForURL(url) : null;
     if (request) {
       result.push({
-        title: Common.UIString.capitalize('Open ^request in Network ^panel'),
+        title: Common.UIString.capitalize('Open in Network ^panel'),
         handler: () => Common.Revealer.reveal(request)
       });
     }
-
+    if (contentProvider) {
+      var lineNumber = uiLocation ? uiLocation.lineNumber : info.lineNumber || 0;
+      for (var title of Components.Linkifier._linkHandlers.keys()) {
+        var handler = Components.Linkifier._linkHandlers.get(title);
+        var action = {
+          title: Common.UIString.capitalize('Open using %s', title),
+          handler: handler.bind(null, contentProvider, lineNumber)
+        };
+        if (title === Components.Linkifier._linkHandlerSetting().get())
+          result.unshift(action);
+        else
+          result.push(action);
+      }
+    }
     if (resource || info.url) {
       result.push({title: UI.openLinkExternallyLabel(), handler: () => InspectorFrontendHost.openInNewTab(url)});
       result.push({title: UI.copyLinkAddressLabel(), handler: () => InspectorFrontendHost.copyText(url)});
     }
-
     return result;
   }
 };
@@ -568,18 +560,12 @@ Components.Linkifier.MaxLengthForDisplayedURLs = 150;
 Components.Linkifier.MaxLengthToIgnoreLinkifier = 10000;
 
 /**
- * @interface
+ * @typedef {function(!Common.ContentProvider, number)}
  */
-Components.Linkifier.LinkHandler = function() {};
+Components.Linkifier.LinkHandler;
 
-Components.Linkifier.LinkHandler.prototype = {
-  /**
-   * @param {string} url
-   * @param {number=} lineNumber
-   * @return {boolean}
-   */
-  handleLink(url, lineNumber) {}
-};
+/** @type {!Map<string, !Components.Linkifier.LinkHandler>} */
+Components.Linkifier._linkHandlers = new Map();
 
 /**
  * @extends {Common.EventTarget}
@@ -677,5 +663,114 @@ Components.Linkifier.LinkContextMenuProvider = class {
     var actions = Components.Linkifier._linkActions(link);
     for (var action of actions)
       contextMenu.appendItem(action.title, action.handler);
+  }
+};
+
+/**
+ * @implements {UI.SettingUI}
+ * @unrestricted
+ */
+Components.Linkifier.LinkHandlerSettingUI = class {
+  constructor() {
+    this._element = createElementWithClass('select', 'chrome-select');
+    this._element.addEventListener('change', this._onChange.bind(this), false);
+    this._update();
+  }
+
+  _update() {
+    this._element.removeChildren();
+    var names = Components.Linkifier._linkHandlers.keysArray();
+    names.unshift(Common.UIString('auto'));
+    for (var name of names) {
+      var option = createElement('option');
+      option.textContent = name;
+      option.selected = name === Components.Linkifier._linkHandlerSetting().get();
+      this._element.appendChild(option);
+    }
+    this._element.disabled = names.length <= 1;
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onChange(event) {
+    var value = event.target.value;
+    Components.Linkifier._linkHandlerSetting().set(value);
+  }
+
+  /**
+   * @override
+   * @return {?Element}
+   */
+  settingElement() {
+    return UI.SettingsUI.createCustomSetting(Common.UIString('Link handling:'), this._element);
+  }
+};
+
+/**
+ * @implements {UI.ContextMenu.Provider}
+ * @unrestricted
+ */
+Components.Linkifier.ContentProviderContextMenuProvider = class {
+  /**
+   * @override
+   * @param {!Event} event
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!Object} target
+   */
+  appendApplicableItems(event, contextMenu, target) {
+    var contentProvider = /** @type {!Common.ContentProvider} */ (target);
+    if (!contentProvider.contentURL())
+      return;
+
+    contextMenu.appendItem(
+        UI.openLinkExternallyLabel(), () => InspectorFrontendHost.openInNewTab(contentProvider.contentURL()));
+    for (var title of Components.Linkifier._linkHandlers.keys()) {
+      var handler = Components.Linkifier._linkHandlers.get(title);
+      contextMenu.appendItem(
+          Common.UIString.capitalize('Open using %s', title), handler.bind(null, contentProvider, 0));
+    }
+    if (contentProvider instanceof SDK.NetworkRequest)
+      return;
+
+    contextMenu.appendItem(
+        UI.copyLinkAddressLabel(), () => InspectorFrontendHost.copyText(contentProvider.contentURL()));
+    if (!contentProvider.contentType().isDocumentOrScriptOrStyleSheet())
+      return;
+
+    /**
+     * @param {boolean} forceSaveAs
+     * @param {?string} content
+     */
+    function doSave(forceSaveAs, content) {
+      var url = contentProvider.contentURL();
+      Workspace.fileManager.save(url, /** @type {string} */ (content), forceSaveAs);
+      Workspace.fileManager.close(url);
+    }
+
+    /**
+     * @param {boolean} forceSaveAs
+     */
+    function save(forceSaveAs) {
+      if (contentProvider instanceof Workspace.UISourceCode) {
+        var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (contentProvider);
+        if (forceSaveAs)
+          uiSourceCode.saveAs();
+        else
+          uiSourceCode.commitWorkingCopy();
+        return;
+      }
+      contentProvider.requestContent().then(doSave.bind(null, forceSaveAs));
+    }
+
+    contextMenu.appendSeparator();
+    contextMenu.appendItem(Common.UIString('Save'), save.bind(null, false));
+
+    if (contentProvider instanceof Workspace.UISourceCode) {
+      var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (contentProvider);
+      if (uiSourceCode.project().type() !== Workspace.projectTypes.FileSystem &&
+          uiSourceCode.project().type() !== Workspace.projectTypes.Snippets)
+        contextMenu.appendItem(Common.UIString.capitalize('Save ^as...'), save.bind(null, true));
+    }
   }
 };

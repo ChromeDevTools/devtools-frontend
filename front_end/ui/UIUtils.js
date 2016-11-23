@@ -730,7 +730,7 @@ UI.formatLocalized = function(format, substitutions) {
  * @return {string}
  */
 UI.openLinkExternallyLabel = function() {
-  return Common.UIString.capitalize('Open ^link in ^new ^tab');
+  return Common.UIString.capitalize('Open in ^new ^tab');
 };
 
 /**

@@ -70,7 +70,7 @@ SDK.RemoteObject = class {
   static arrayLength(object) {
     if (object.subtype !== 'array' && object.subtype !== 'typedarray')
       return 0;
-    var matches = object.description.match(/\[([0-9]+)\]/);
+    var matches = object.description.match(/\[([0-9]+)\]/) || object.description.match(/\(([0-9]+)\)/);
     if (!matches)
       return 0;
     return parseInt(matches[1], 10);

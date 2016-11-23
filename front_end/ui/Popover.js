@@ -83,11 +83,8 @@ UI.Popover = class extends UI.Widget {
     this._contentElement = contentElement;
 
     // This should not happen, but we hide previous popup to be on the safe side.
-    var restoreFocus;
-    if (UI.Popover._popover) {
-      restoreFocus = UI.Popover._popover.hasFocus();
+    if (UI.Popover._popover)
       UI.Popover._popover.hide();
-    }
     UI.Popover._popover = this;
 
     var document = anchor instanceof Element ? anchor.ownerDocument : contentElement.ownerDocument;
@@ -102,15 +99,10 @@ UI.Popover = class extends UI.Widget {
     document.body.appendChild(this._containerElement);
     super.show(this._containerElement);
 
-    if (view) {
+    if (view)
       view.show(this._contentDiv);
-      if (restoreFocus)
-        view.focus();
-    } else {
+    else
       this._contentDiv.appendChild(this._contentElement);
-      if (restoreFocus)
-        this._contentElement.focus();
-    }
 
     this.positionElement(anchor, this._preferredWidth, this._preferredHeight, arrowDirection);
 

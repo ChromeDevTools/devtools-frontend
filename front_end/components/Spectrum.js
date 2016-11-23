@@ -207,8 +207,14 @@ Components.Spectrum = class extends UI.VBox {
       return;
     if (show)
       this._updatePalettePanel();
+    this._focus();
     this._palettePanelShowing = show;
     this.contentElement.classList.toggle('palette-panel-showing', show);
+  }
+
+  _focus() {
+    if (this.isShowing())
+      this.contentElement.focus();
   }
 
   /**
@@ -267,6 +273,7 @@ Components.Spectrum = class extends UI.VBox {
     }
 
     this._togglePalettePanel(false);
+    this._focus();
   }
 
   /**
@@ -305,6 +312,7 @@ Components.Spectrum = class extends UI.VBox {
       this._shadesContainer.appendChild(shadeElement);
     }
 
+    this._shadesContainer.focus();
     this._shadesCloseHandler = closeLightnessShades.bind(this, colorElement);
     this._shadesContainer.ownerDocument.addEventListener('mousedown', this._shadesCloseHandler, true);
   }

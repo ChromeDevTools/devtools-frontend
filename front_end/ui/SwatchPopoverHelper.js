@@ -53,7 +53,6 @@ UI.SwatchPopoverHelper = class extends Common.Object {
     this._view = view;
     this._hiddenCallback = hiddenCallback;
     this.reposition();
-    view.focus();
 
     var document = this._popover.element.ownerDocument;
     document.addEventListener('mousedown', this._hideProxy, false);

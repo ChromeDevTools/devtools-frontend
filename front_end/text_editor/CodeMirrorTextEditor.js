@@ -1303,7 +1303,7 @@ TextEditor.CodeMirrorPositionHandle = class {
    * @return {?{lineNumber: number, columnNumber: number}}
    */
   resolve() {
-    var lineNumber = this._codeMirror.getLineNumber(this._lineHandle);
+    var lineNumber = this._lineHandle ? this._codeMirror.getLineNumber(this._lineHandle) : null;
     if (typeof lineNumber !== 'number')
       return null;
     return {lineNumber: lineNumber, columnNumber: this._columnNumber};

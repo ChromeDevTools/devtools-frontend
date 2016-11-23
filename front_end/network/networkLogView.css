@@ -83,6 +83,9 @@
 .network-waterfall-header, .network-log-grid.data-grid th {
     border-bottom: 1px solid rgb(205, 205, 205);
     border-left: 1px solid rgb(205, 205, 205);
+}
+
+.network-log-grid.data-grid th {
     background: white;
 }
 
@@ -349,7 +352,6 @@
     width: 100%;
     display: table;
     z-index: 200;
-    background-color: transparent;
 }
 
 .network-waterfall-header:hover {
@@ -367,10 +369,6 @@
     font-size: 11px;
 }
 
-.network-waterfall-header:hover .sort-order-icon-container {
-    background-color: hsl(0, 0%, 90%);
-}
-
 .network-waterfall-header .sort-order-icon-container {
     position: absolute;
     top: 1px;
@@ -379,7 +377,6 @@
     display: flex;
     align-items: center;
     padding-left: 0px;
-    background-color: white;
 }
 
 .network-waterfall-header .sort-order-icon {

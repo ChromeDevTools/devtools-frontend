@@ -97,9 +97,10 @@ UI.TimelineGrid = class {
    * @param {!CanvasRenderingContext2D} context
    * @param {!UI.TimelineGrid.Calculator} calculator
    * @param {number} paddingTop
+   * @param {number} headerHeight
    * @param {number=} freeZoneAtLeft
    */
-  static drawCanvasGrid(context, calculator, paddingTop, freeZoneAtLeft) {
+  static drawCanvasGrid(context, calculator, paddingTop, headerHeight, freeZoneAtLeft) {
     context.save();
     var ratio = window.devicePixelRatio;
     context.scale(ratio, ratio);
@@ -109,11 +110,11 @@ UI.TimelineGrid = class {
     var dividerOffsets = dividersData.offsets;
     var precision = dividersData.precision;
 
-    context.fillStyle = 'rgba(255, 255, 255, 0.5)';
-    context.fillRect(0, 0, width, 15);
+    context.fillStyle = UI.themeSupport.patchColor('rgba(255, 255, 255, 0.5)', UI.ThemeSupport.ColorUsage.Background);
+    context.fillRect(0, 0, width, headerHeight);
 
-    context.fillStyle = '#333';
-    context.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+    context.fillStyle = UI.themeSupport.patchColor('#333', UI.ThemeSupport.ColorUsage.Foreground);
+    context.strokeStyle = UI.themeSupport.patchColor('rgba(0, 0, 0, 0.1)', UI.ThemeSupport.ColorUsage.Foreground);
     context.textBaseline = 'hanging';
     context.font = '11px ' + Host.fontFamily();
     context.lineWidth = 1;

@@ -660,7 +660,8 @@ UI.FlameChart = class extends UI.ChartViewport {
 
     context.restore();
 
-    UI.TimelineGrid.drawCanvasGrid(context, this._calculator, 3);
+    const headerHeight = 15;
+    UI.TimelineGrid.drawCanvasGrid(context, this._calculator, 3, headerHeight);
     this._drawMarkers();
     this._drawGroupHeaders(width, height);
 

@@ -301,7 +301,9 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     context.restore();
 
     const freeZoneAtLeft = 75;
-    UI.TimelineGrid.drawCanvasGrid(context, this._calculator, this._fontSize, freeZoneAtLeft);
+    const freeZoneAtRight = 18;
+    UI.TimelineGrid.drawCanvasGrid(context, this._calculator, this._fontSize, this._headerHeight, freeZoneAtLeft);
+    context.clearRect(this._offsetWidth - freeZoneAtRight, 0, freeZoneAtRight, this._headerHeight);
     this._didDrawForTest();
   }
 

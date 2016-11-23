@@ -298,6 +298,10 @@ UI.ContextMenu = class extends UI.ContextSubMenuItem {
     this._id = 0;
     /** @type {!Map<string, !UI.ContextSubMenuItem>} */
     this._namedSubMenus = new Map();
+
+    var target = event.deepElementFromPoint();
+    if (target)
+      this.appendApplicableItems(/** @type {!Object} */ (target));
   }
 
   static initialize() {
@@ -321,7 +325,6 @@ UI.ContextMenu = class extends UI.ContextSubMenuItem {
      */
     function handler(event) {
       var contextMenu = new UI.ContextMenu(event);
-      contextMenu.appendApplicableItems(/** @type {!Object} */ (event.deepElementFromPoint()));
       contextMenu.show();
     }
   }

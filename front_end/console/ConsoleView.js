@@ -569,9 +569,6 @@ Console.ConsoleView = class extends UI.VBox {
   }
 
   _handleContextMenuEvent(event) {
-    if (event.target.enclosingNodeOrSelfWithNodeName('a'))
-      return;
-
     var contextMenu = new UI.ContextMenu(event);
     if (event.target.isSelfOrDescendant(this._promptElement)) {
       contextMenu.show();

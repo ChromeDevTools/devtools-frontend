@@ -558,7 +558,7 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {!Event} event
    */
   _dataGridMouseDown(event) {
-    if ((!this._dataGrid.selectedNode && event.button) || event.target.enclosingNodeOrSelfWithNodeName('a'))
+    if (!this._dataGrid.selectedNode && event.button)
       event.consume();
   }
 

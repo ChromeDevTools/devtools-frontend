@@ -785,7 +785,6 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
     if (textNode && textNode.classList.contains('bogus'))
       textNode = null;
     var commentNode = event.target.enclosingNodeOrSelfWithClass('webkit-html-comment');
-    contextMenu.appendApplicableItems(event.target);
     if (textNode) {
       contextMenu.appendSeparator();
       treeElement.populateTextContextMenu(contextMenu, textNode);

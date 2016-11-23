@@ -709,9 +709,6 @@ var TreeElement = class {
     if (!toggleOnClick && !isInTriangle)
       return;
 
-    if (event.target && event.target.enclosingNodeOrSelfWithNodeName('a'))
-      return;
-
     if (this.expanded) {
       if (event.altKey)
         this.collapseRecursively();

@@ -330,8 +330,7 @@ Console.ConsoleViewMessage = class {
      * @param {?Event} event
      */
     function toggleStackTrace(event) {
-      var linkClicked = event.target && event.target.enclosingNodeOrSelfWithNodeName('a');
-      if (event.target.hasSelection() || linkClicked)
+      if (event.target.hasSelection())
         return;
       expandStackTrace(stackTraceElement.classList.contains('hidden'));
       event.consume();

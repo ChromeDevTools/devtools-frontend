@@ -395,7 +395,7 @@ Main.Main = class {
     var target = document ? document.deepActiveElement() : null;
     if (target) {
       var anchor = target.enclosingNodeOrSelfWithNodeName('a');
-      if (anchor && anchor.preventFollow)
+      if (anchor)
         event.preventDefault();
     }
 

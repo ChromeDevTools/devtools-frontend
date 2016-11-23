@@ -342,9 +342,10 @@ Components.Linkifier = class {
    * @param {string=} className
    * @param {number=} lineNumber
    * @param {number=} columnNumber
+   * @param {boolean=} preventClick
    * @return {!Element}
    */
-  static linkifyURL(url, text, className, lineNumber, columnNumber) {
+  static linkifyURL(url, text, className, lineNumber, columnNumber, preventClick) {
     if (!url || url.trim().toLowerCase().startsWith('javascript:')) {
       var element = createElementWithClass('span', className);
       element.textContent = text || url || Common.UIString('(unknown)');
@@ -355,7 +356,7 @@ Components.Linkifier = class {
     if (typeof lineNumber === 'number' && !text)
       linkText += ':' + (lineNumber + 1);
     var title = linkText !== url ? url : '';
-    var link = Components.Linkifier._createLink(linkText.trimMiddle(150), className || '', title, url);
+    var link = Components.Linkifier._createLink(linkText.trimMiddle(150), className || '', title, url, preventClick);
     var info = Components.Linkifier._linkInfo(link);
     if (typeof lineNumber === 'number')
       info.lineNumber = lineNumber;
@@ -382,9 +383,10 @@ Components.Linkifier = class {
    * @param {string} className
    * @param {string=} title
    * @param {string=} href
+   * @param {boolean=} preventClick
    * @returns{!Element}
    */
-  static _createLink(text, className, title, href) {
+  static _createLink(text, className, title, href, preventClick) {
     var link = createElementWithClass('a', className);
     link.classList.add('webkit-html-resource-link');
     if (title)
@@ -403,7 +405,10 @@ Components.Linkifier = class {
       revealable: null,
       fallback: null
     };
-    link.addEventListener('click', Components.Linkifier._handleClick, false);
+    if (preventClick)
+      link.addEventListener('click', event => event.consume(true), false);
+    else
+      link.addEventListener('click', Components.Linkifier._handleClick, false);
     return link;
   }
 

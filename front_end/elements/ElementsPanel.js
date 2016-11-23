@@ -785,12 +785,6 @@ Elements.ElementsPanel = class extends UI.Panel {
     });
   }
 
-  _sidebarContextMenuEventFired(event) {
-    var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendApplicableItems(/** @type {!Object} */ (event.deepElementFromPoint()));
-    contextMenu.show();
-  }
-
   _showUAShadowDOMChanged() {
     for (var i = 0; i < this._treeOutlines.length; ++i)
       this._treeOutlines[i].update();
@@ -857,7 +851,6 @@ Elements.ElementsPanel = class extends UI.Panel {
 
     this.sidebarPaneView = UI.viewManager.createTabbedLocation(() => UI.viewManager.showView('elements'));
     var tabbedPane = this.sidebarPaneView.tabbedPane();
-    tabbedPane.element.addEventListener('contextmenu', this._sidebarContextMenuEventFired.bind(this), false);
     if (this._popoverHelper)
       this._popoverHelper.hidePopover();
     this._popoverHelper = new UI.PopoverHelper(tabbedPane.element);

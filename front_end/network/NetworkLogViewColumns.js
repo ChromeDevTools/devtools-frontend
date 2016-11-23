@@ -95,7 +95,7 @@ Network.NetworkLogViewColumns = class {
     this._dataGrid =
         new UI.SortableDataGrid(this._columns.map(Network.NetworkLogViewColumns._convertToDataGridDescriptor));
     this._dataGrid.element.addEventListener('mousedown', event => {
-      if ((!this._dataGrid.selectedNode && event.button) || event.target.enclosingNodeOrSelfWithNodeName('a'))
+      if (!this._dataGrid.selectedNode && event.button)
         event.consume();
     }, true);
 

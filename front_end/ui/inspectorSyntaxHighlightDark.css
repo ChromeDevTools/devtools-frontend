@@ -51,8 +51,7 @@
 .webkit-html-attribute-name{color:rgb(155, 187, 220);}
 .webkit-html-attribute-value{color:rgb(242, 151, 102);}
 .webkit-html-comment{color:rgb(137, 137, 137) !important;}
-.webkit-html-resource-link{color:rgb(231, 194, 111);}
-.webkit-html-external-link{color:rgb(231, 194, 111);}
+.devtools-link{color:rgb(231, 194, 111);}
 .webkit-html-tag{color:rgb(93, 176, 215);}
 .webkit-html-tag-name{color:rgb(93, 176, 215);}
 .webkit-html-close-tag-name{color:rgb(93, 176, 215);}

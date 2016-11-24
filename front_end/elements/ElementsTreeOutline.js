@@ -531,11 +531,10 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
    * @return {!Element|!AnchorBox|undefined}
    */
   _getPopoverAnchor(element, event) {
-    var anchor = element.enclosingNodeOrSelfWithClass('webkit-html-resource-link');
-    if (!anchor || !anchor.href)
-      return;
-
-    return anchor;
+    var link = element;
+    while (link && !link[Elements.ElementsTreeElement.HrefSymbol])
+      link = link.parentElementOrShadowHost();
+    return link ? link : undefined;
   }
 
   /**
@@ -577,15 +576,16 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!Element} anchor
+   * @param {!Element} link
    * @param {!UI.Popover} popover
    */
-  _showPopover(anchor, popover) {
-    var listItem = anchor.enclosingNodeOrSelfWithNodeName('li');
+  _showPopover(link, popover) {
+    var listItem = link.enclosingNodeOrSelfWithNodeName('li');
     var node = /** @type {!Elements.ElementsTreeElement} */ (listItem.treeElement).node();
     this._loadDimensionsForNode(
         node, Components.DOMPresentationUtils.buildImagePreviewContents.bind(
-                  Components.DOMPresentationUtils, node.target(), anchor.href, true, showPopover));
+                  Components.DOMPresentationUtils, node.target(), link[Elements.ElementsTreeElement.HrefSymbol], true,
+                  showPopover));
 
     /**
      * @param {!Element=} contents
@@ -594,7 +594,7 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
       if (!contents)
         return;
       popover.setCanShrink(false);
-      popover.showForAnchor(contents, anchor);
+      popover.showForAnchor(contents, link);
     }
   }
 

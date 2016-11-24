@@ -349,14 +349,14 @@
 }
 
 #console-messages .link,
-#console-messages a {
+#console-messages .devtools-link {
     color: rgb(33%, 33%, 33%);
     cursor: pointer;
     word-break: break-all;
 }
 
 #console-messages .link:hover,
-#console-messages a:hover {
+#console-messages .devtools-link:hover {
     color: rgb(15%, 15%, 15%);
 }
 

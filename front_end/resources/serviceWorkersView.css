@@ -30,7 +30,7 @@
     flex: auto;
 }
 
-.service-worker-error-stack a {
+.service-worker-error-stack .devtools-link {
     float: right;
     color: rgb(33%, 33%, 33%);
     cursor: pointer;

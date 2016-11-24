@@ -1919,7 +1919,7 @@ UI.createExternalLink = function(url, linkText, className, preventClick) {
   if (!linkText)
     linkText = url;
 
-  var a = createElementWithClass('a', className);
+  var a = createElementWithClass('span', className);
   var href = url;
   if (url.trim().toLowerCase().startsWith('javascript:'))
     href = null;
@@ -1927,12 +1927,15 @@ UI.createExternalLink = function(url, linkText, className, preventClick) {
     href = null;
   if (href !== null) {
     a.href = href;
-    a.classList.add('webkit-html-external-link');
-    a.addEventListener('click', (event) => {
-      event.consume(true);
-      if (!preventClick)
+    a.classList.add('devtools-link');
+    if (!preventClick) {
+      a.addEventListener('click', (event) => {
+        event.consume(true);
         InspectorFrontendHost.openInNewTab(/** @type {string} */ (href));
-    }, false);
+      }, false);
+    } else {
+      a.classList.add('devtools-link-prevent-click');
+    }
     a[UI._externalLinkSymbol] = true;
   }
   if (linkText !== url)

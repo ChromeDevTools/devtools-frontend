@@ -144,7 +144,7 @@
     color: rgb(230, 0, 0);
 }
 
-.initiator-column a {
+.initiator-column .devtools-link {
     color: inherit;
 }
 

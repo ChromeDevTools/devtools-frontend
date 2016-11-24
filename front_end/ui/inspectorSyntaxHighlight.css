@@ -103,19 +103,17 @@
     unicode-bidi: -webkit-isolate;
 }
 
-.webkit-html-external-link,
-.webkit-html-resource-link {
-    /* Keep this in sync with view-source.css (.webkit-html-external-link, .webkit-html-resource-link) */
+.devtools-link {
     color: rgb(17, 85, 204);
-    /* Required for consistency with view-source.css, since anchors may not have href attributes */
     text-decoration: underline;
+}
+
+.devtools-link:not(.devtools-link-prevent-click) {
     cursor: pointer;
 }
 
-.-theme-with-dark-background .webkit-html-external-link,
-.-theme-with-dark-background .webkit-html-resource-link,
-:host-context(.-theme-with-dark-background) .webkit-html-external-link,
-:host-context(.-theme-with-dark-background) .webkit-html-resource-link {
+.-theme-with-dark-background .devtools-link,
+:host-context(.-theme-with-dark-background) .devtools-link {
     color: hsl(0, 0%, 67%);
 }
 

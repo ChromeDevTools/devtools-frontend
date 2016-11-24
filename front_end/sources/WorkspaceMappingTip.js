@@ -141,7 +141,7 @@ Sources.WorkspaceMappingTip = class {
     infobar.createDetailsRowMessage(Common.UIString(
         'You can map files in your workspace to the ones loaded over the network. As a result, changes made in DevTools will be persisted to disk.'));
     infobar.createDetailsRowMessage(Common.UIString('Use context menu to establish the mapping at any time.'));
-    var anchor = createElementWithClass('a', 'link');
+    var anchor = createElementWithClass('span', 'link');
     anchor.textContent = Common.UIString('Establish the mapping now...');
     anchor.addEventListener('click', this._establishTheMapping.bind(this, uiSourceCode), false);
     infobar.createDetailsRowMessage('').appendChild(anchor);

@@ -523,21 +523,22 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @return {!Element|!AnchorBox|undefined}
    */
   _getPopoverAnchor(element, event) {
-    var anchor = element.enclosingNodeOrSelfWithClass('webkit-html-resource-link');
-    if (!anchor || !anchor.href)
-      return;
-
-    return anchor;
+    var link = element;
+    while (link && !link[Elements.ElementsTreeElement.HrefSymbol])
+      link = link.parentElementOrShadowHost();
+    return link ? link : undefined;
   }
 
   /**
-   * @param {!Element} anchor
+   * @param {!Element} link
    * @param {!UI.Popover} popover
    */
-  _showPopover(anchor, popover) {
+  _showPopover(link, popover) {
     var node = this.selectedDOMNode();
-    if (node)
-      Components.DOMPresentationUtils.buildImagePreviewContents(node.target(), anchor.href, true, showPopover);
+    if (node) {
+      Components.DOMPresentationUtils.buildImagePreviewContents(
+          node.target(), link[Elements.ElementsTreeElement.HrefSymbol], true, showPopover);
+    }
 
     /**
      * @param {!Element=} contents
@@ -546,7 +547,7 @@ Elements.ElementsPanel = class extends UI.Panel {
       if (!contents)
         return;
       popover.setCanShrink(false);
-      popover.showForAnchor(contents, anchor);
+      popover.showForAnchor(contents, link);
     }
   }
 

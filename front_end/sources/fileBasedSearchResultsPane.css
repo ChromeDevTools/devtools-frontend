@@ -88,7 +88,7 @@ li.search-match .highlighted-match {
     background-color: hsl(133, 100%, 30%) !important;
 }
 
-.tree-outline a {
+.tree-outline .devtools-link {
     text-decoration: none;
     display: block;
     flex: auto;

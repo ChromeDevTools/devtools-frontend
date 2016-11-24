@@ -38,7 +38,7 @@
     padding: 0 10px 0 10px;
 }
 
-.list-item > .subtitle a {
+.list-item > .subtitle .devtools-link {
     color: inherit;
 }
 

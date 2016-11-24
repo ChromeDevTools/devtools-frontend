@@ -226,7 +226,7 @@
     white-space: nowrap;
 }
 
-.styles-section .styles-section-subtitle a {
+.styles-section .styles-section-subtitle .devtools-link {
     color: inherit;
 }
 
@@ -238,7 +238,7 @@
     color: #222;
 }
 
-.styles-section .webkit-html-resource-link {
+.styles-section .devtools-link {
     user-select: none;
 }
 

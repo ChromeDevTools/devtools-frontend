@@ -3013,7 +3013,7 @@ Elements.StylesSidebarPropertyRenderer = class {
       hrefUrl = Common.ParsedURL.completeURL(this._rule.resourceURL(), url);
     else if (this._node)
       hrefUrl = this._node.resolveURL(url);
-    container.appendChild(Components.Linkifier.linkifyURL(hrefUrl || url, url));
+    container.appendChild(Components.Linkifier.linkifyURL(hrefUrl || url, url, '', undefined, undefined, true));
     container.createTextChild(')');
     return container;
   }

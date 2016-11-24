@@ -67,8 +67,7 @@
     display: flex;
 }
 
-#timeline-container .webkit-html-external-link,
-#timeline-container .webkit-html-resource-link {
+#timeline-container .devtools-link {
     color: inherit;
 }
 

@@ -232,7 +232,7 @@
     color: white;
 }
 
-.data-grid:focus tr.selected a {
+.data-grid:focus tr.selected .devtools-link {
     color: white;
 }
 

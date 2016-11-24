@@ -30,11 +30,11 @@
     padding-right: 10px;
 }
 
-a.webkit-html-resource-link {
+.devtools-link {
     color: inherit;
     text-decoration: inherit;
 }
 
-a.webkit-html-resource-link:hover {
+.devtools-link:hover {
     text-decoration: underline;
 }

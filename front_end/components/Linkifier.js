@@ -387,8 +387,8 @@ Components.Linkifier = class {
    * @returns{!Element}
    */
   static _createLink(text, className, title, href, preventClick) {
-    var link = createElementWithClass('a', className);
-    link.classList.add('webkit-html-resource-link');
+    var link = createElementWithClass('span', className);
+    link.classList.add('devtools-link');
     if (title)
       link.title = title;
     if (href)
@@ -405,10 +405,10 @@ Components.Linkifier = class {
       revealable: null,
       fallback: null
     };
-    if (preventClick)
-      link.addEventListener('click', event => event.consume(true), false);
-    else
+    if (!preventClick)
       link.addEventListener('click', Components.Linkifier._handleClick, false);
+    else
+      link.classList.add('devtools-link-prevent-click');
     return link;
   }
 

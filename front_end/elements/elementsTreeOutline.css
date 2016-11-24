@@ -241,10 +241,6 @@ button, input, select {
     white-space: nowrap;
 }
 
-.webkit-html-attribute-value a {
-    cursor: default !important;
-}
-
 .elements-tree-nowrap, .elements-tree-nowrap .li {
     white-space: pre !important;
 }
@@ -315,8 +311,7 @@ ol:focus li.selected .webkit-html-tag {
 ol:focus li.selected .webkit-html-tag-name,
 ol:focus li.selected .webkit-html-close-tag-name,
 ol:focus li.selected .webkit-html-attribute-value,
-ol:focus li.selected .webkit-html-external-link,
-ol:focus li.selected .webkit-html-resource-link {
+ol:focus li.selected .devtools-link {
     color: white;
 }
 

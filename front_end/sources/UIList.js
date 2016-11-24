@@ -227,7 +227,7 @@ Sources.UIList.Item = class {
     if (!title || !handler)
       return;
     this._actionElement = this.element.createChild('div', 'action');
-    var link = this._actionElement.createChild('a', 'action-link');
+    var link = this._actionElement.createChild('span', 'action-link');
     link.textContent = title;
     link.addEventListener('click', (event) => {
       link.disabled = true;

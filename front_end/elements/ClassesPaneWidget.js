@@ -249,7 +249,7 @@ Elements.ClassesPaneWidget.ClassNamePrompt = class extends UI.TextPrompt {
       this._classNamesPromise = null;
 
     var selectedNode = UI.context.flavor(SDK.DOMNode);
-    if (!selectedNode || (!prefix && !force && !expression))
+    if (!selectedNode || (!prefix && !force && !expression.trim()))
       return Promise.resolve([]);
 
     if (!this._classNamesPromise || this._selectedFrameId !== selectedNode.frameId())

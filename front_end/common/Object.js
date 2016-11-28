@@ -29,7 +29,7 @@
 Common.Object = class {
   /**
    * @override
-   * @param {string|symbol} eventType
+   * @param {symbol} eventType
    * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
    * @return {!Common.EventTarget.EventDescriptor}
@@ -48,7 +48,7 @@ Common.Object = class {
 
   /**
    * @override
-   * @param {string|symbol} eventType
+   * @param {symbol} eventType
    * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
    */
@@ -76,7 +76,7 @@ Common.Object = class {
 
   /**
    * @override
-   * @param {string|symbol} eventType
+   * @param {symbol} eventType
    * @return {boolean}
    */
   hasEventListeners(eventType) {
@@ -85,7 +85,7 @@ Common.Object = class {
 
   /**
    * @override
-   * @param {string|symbol} eventType
+   * @param {symbol} eventType
    * @param {*=} eventData
    * @return {boolean}
    */
@@ -111,7 +111,7 @@ Common.Object = class {
 Common.Event = class {
   /**
    * @param {!Common.EventTarget} target
-   * @param {string|symbol} type
+   * @param {symbol} type
    * @param {*=} data
    */
   constructor(target, type, data) {
@@ -159,7 +159,7 @@ Common.EventTarget.removeEventListeners = function(eventList) {
 
 Common.EventTarget.prototype = {
   /**
-   * @param {string|symbol} eventType
+   * @param {symbol} eventType
    * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
    * @return {!Common.EventTarget.EventDescriptor}
@@ -167,7 +167,7 @@ Common.EventTarget.prototype = {
   addEventListener(eventType, listener, thisObject) {},
 
   /**
-   * @param {string|symbol} eventType
+   * @param {symbol} eventType
    * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
    */
@@ -176,13 +176,13 @@ Common.EventTarget.prototype = {
   removeAllListeners() {},
 
   /**
-   * @param {string|symbol} eventType
+   * @param {symbol} eventType
    * @return {boolean}
    */
   hasEventListeners(eventType) {},
 
   /**
-   * @param {string|symbol} eventType
+   * @param {symbol} eventType
    * @param {*=} eventData
    * @return {boolean}
    */
@@ -195,7 +195,7 @@ Common.EventTarget.prototype = {
 Common.EventTarget.EventDescriptor = class {
   /**
    * @param {!Common.EventTarget} eventTarget
-   * @param {string|symbol} eventType
+   * @param {symbol} eventType
    * @param {(!Object|undefined)} receiver
    * @param {function(?):?} method
    */

@@ -100,7 +100,7 @@ UI.OverviewGrid = class {
   }
 
   /**
-   * @param {string} eventType
+   * @param {symbol} eventType
    * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
    * @return {!Common.EventTarget.EventDescriptor}

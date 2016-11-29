@@ -291,6 +291,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
         resourceTreeModel.addEventListener(
             SDK.ResourceTreeModel.Events.InterstitialHidden, this._onInterstitialHidden, this),
       ]);
+
+      if (resourceTreeModel.isInterstitialShowing())
+        this._onInterstitialShown();
     }
 
     var networkManager = SDK.NetworkManager.fromTarget(target);

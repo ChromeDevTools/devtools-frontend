@@ -55,6 +55,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
 
     this._pendingReloadOptions = null;
     this._reloadSuspensionCount = 0;
+    this._isInterstitialShowing = false;
   }
 
   /**
@@ -113,6 +114,13 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    */
   cachedResourcesLoaded() {
     return this._cachedResourcesProcessed;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isInterstitialShowing() {
+    return this._isInterstitialShowing;
   }
 
   /**
@@ -859,6 +867,7 @@ SDK.PageDispatcher = class {
    * @override
    */
   interstitialShown() {
+    this._resourceTreeModel._isInterstitialShowing = true;
     this._resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.InterstitialShown);
   }
 
@@ -866,6 +875,7 @@ SDK.PageDispatcher = class {
    * @override
    */
   interstitialHidden() {
+    this._resourceTreeModel._isInterstitialShowing = false;
     this._resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.InterstitialHidden);
   }
 

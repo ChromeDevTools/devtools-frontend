@@ -69,28 +69,31 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       return;
     }
     this._debuggerModel = details.debuggerModel;
-    var asyncStackTrace = details.asyncStackTrace || [];
+    var asyncStackTrace = details.asyncStackTrace;
 
     this._appendSidebarCallFrames(this._callFramesFromDebugger(details.callFrames));
     var topStackHidden = (this._hiddenCallFrames === this.callFrames.length);
 
-    var previousLastFrameFunctionName = details.callFrames[details.callFrames.length - 1].functionName;
-    for (var stackTrace of asyncStackTrace) {
+    var peviousStackTrace = details.callFrames;
+    while (asyncStackTrace) {
       var title = '';
-      if (stackTrace.description === 'async function') {
-        var topFrame = stackTrace.callFrames[0];
-        var lastPreviousFrameName = UI.beautifyFunctionName(previousLastFrameFunctionName);
+      if (asyncStackTrace.description === 'async function') {
+        var lastPreviousFrame = peviousStackTrace[peviousStackTrace.length - 1];
+        var topFrame = asyncStackTrace.callFrames[0];
+        var lastPreviousFrameName = UI.beautifyFunctionName(lastPreviousFrame.functionName);
         var topFrameName = UI.beautifyFunctionName(topFrame.functionName);
         title = topFrameName + ' awaits ' + lastPreviousFrameName;
       } else {
-        title = UI.asyncStackTraceLabel(stackTrace.description);
+        title = UI.asyncStackTraceLabel(asyncStackTrace.description);
       }
       var asyncCallFrame = new Sources.UIList.Item(title, '', true);
       asyncCallFrame.setHoverable(false);
       asyncCallFrame.element.addEventListener(
           'contextmenu', this._asyncCallFrameContextMenu.bind(this, this.callFrames.length), true);
-      this._appendSidebarCallFrames(this._callFramesFromRuntime(stackTrace.callFrames, asyncCallFrame), asyncCallFrame);
-      previousLastFrameFunctionName = stackTrace.callFrames[stackTrace.callFrames.length - 1].functionName;
+      this._appendSidebarCallFrames(
+          this._callFramesFromRuntime(asyncStackTrace.callFrames, asyncCallFrame), asyncCallFrame);
+      peviousStackTrace = asyncStackTrace.callFrames;
+      asyncStackTrace = asyncStackTrace.parent;
     }
 
     if (topStackHidden)
@@ -129,14 +132,16 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
   }
 
   /**
-   * @param {!Array<!SDK.RuntimeModel.CallFrame>} callFrames
+   * @param {!Array<!Protocol.Runtime.CallFrame>} callFrames
    * @param {!Sources.UIList.Item} asyncCallFrameItem
    * @return {!Array<!Sources.CallStackSidebarPane.CallFrame>}
    */
   _callFramesFromRuntime(callFrames, asyncCallFrameItem) {
     var callFrameItems = [];
-    for (var callFrame of callFrames) {
-      var location = SDK.DebuggerModel.Location.fromRuntimeCallFrame(callFrame);
+    for (var i = 0, n = callFrames.length; i < n; ++i) {
+      var callFrame = callFrames[i];
+      var location = new SDK.DebuggerModel.Location(
+          this._debuggerModel, callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
       var callFrameItem = new Sources.CallStackSidebarPane.CallFrame(
           callFrame.functionName, location, this._linkifier, null, this._locationPool, asyncCallFrameItem);
       callFrameItem.element.addEventListener('click', this._asyncCallFrameClicked.bind(this, callFrameItem), false);
@@ -159,7 +164,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       callFrameItem.element.addEventListener('contextmenu', this._callFrameContextMenu.bind(this, callFrameItem), true);
       this.callFrames.push(callFrameItem);
 
-      if (callFrameItem._location && Bindings.blackboxManager.isBlackboxedRawLocation(callFrameItem._location)) {
+      if (Bindings.blackboxManager.isBlackboxedRawLocation(callFrameItem._location)) {
         callFrameItem.setHidden(true);
         callFrameItem.setDimmed(true);
         ++this._hiddenCallFrames;
@@ -209,10 +214,8 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
 
     contextMenu.appendItem(Common.UIString.capitalize('Copy ^stack ^trace'), this._copyStackTrace.bind(this));
 
-    if (callFrame._location) {
-      var uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(callFrame._location);
-      this.appendBlackboxURLContextMenuItems(contextMenu, uiLocation.uiSourceCode);
-    }
+    var uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(callFrame._location);
+    this.appendBlackboxURLContextMenuItems(contextMenu, uiLocation.uiSourceCode);
 
     contextMenu.show();
   }
@@ -351,10 +354,8 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
    * @param {!Sources.CallStackSidebarPane.CallFrame} callFrameItem
    */
   _asyncCallFrameClicked(callFrameItem) {
-    if (callFrameItem._location) {
-      var uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(callFrameItem._location);
-      Common.Revealer.reveal(uiLocation);
-    }
+    var uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(callFrameItem._location);
+    Common.Revealer.reveal(uiLocation);
   }
 
   /**
@@ -415,7 +416,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
 Sources.CallStackSidebarPane.CallFrame = class extends Sources.UIList.Item {
   /**
    * @param {string} functionName
-   * @param {?SDK.DebuggerModel.Location} location
+   * @param {!SDK.DebuggerModel.Location} location
    * @param {!Components.Linkifier} linkifier
    * @param {?SDK.DebuggerModel.CallFrame} debuggerCallFrame
    * @param {!Bindings.LiveLocationPool} locationPool
@@ -426,8 +427,7 @@ Sources.CallStackSidebarPane.CallFrame = class extends Sources.UIList.Item {
     this._location = location;
     this._debuggerCallFrame = debuggerCallFrame;
     this._asyncCallFrame = asyncCallFrame;
-    if (location)
-      Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(location, this._update.bind(this), locationPool);
+    Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(location, this._update.bind(this), locationPool);
   }
 
   /**

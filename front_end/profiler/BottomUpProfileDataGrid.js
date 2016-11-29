@@ -135,7 +135,7 @@ Profiler.BottomUpProfileDataGridNode = class extends Profiler.ProfileDataGridNod
     super.restore();
 
     if (!this.children.length)
-      this.hasChildren = this._willHaveChildren(this.profileNode);
+      this.setHasChildren(this._willHaveChildren(this.profileNode));
   }
 
   /**

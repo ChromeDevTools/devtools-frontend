@@ -422,7 +422,7 @@ Timeline.TimelineTreeView.TreeGridNode = class extends Timeline.TimelineTreeView
    */
   constructor(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView) {
     super(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView);
-    this.hasChildren = this._profileNode.children ? this._profileNode.children.size > 0 : false;
+    this.setHasChildren(this._profileNode.children ? this._profileNode.children.size > 0 : false);
     profileNode[Timeline.TimelineTreeView.TreeGridNode._gridNodeSymbol] = this;
   }
 

@@ -390,9 +390,9 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
       var child = children[i];
       if (nameFilterValue && child.filteredOut && child.filteredOut(nameFilterValue))
         continue;
-      var hasChildren = child.hasChildren;
+      var hasChildren = child.hasChildren();
       child.removeChildren();
-      child.hasChildren = hasChildren;
+      child.setHasChildren(hasChildren);
       child.revealed = true;
       parentNode.appendChild(child);
       position += child.nodeSelfHeight();
@@ -602,7 +602,7 @@ Profiler.HeapSnapshotContainmentDataGrid = class extends Profiler.HeapSnapshotSo
    */
   sortingChanged() {
     var rootNode = this.rootNode();
-    if (rootNode.hasChildren)
+    if (rootNode.hasChildren())
       rootNode.sort();
   }
 };

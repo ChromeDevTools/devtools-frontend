@@ -346,7 +346,7 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
     child.parent = this;
     child.dataGrid = this.dataGrid;
     if (!this.children.length)
-      this.hasChildren = true;
+      this.setHasChildren(true);
     this.children.splice(index, 0, child);
     child.recalculateSiblings(index);
     if (this._expanded)
@@ -370,7 +370,7 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
     child._unlink();
     this.children.remove(child, true);
     if (!this.children.length)
-      this.hasChildren = false;
+      this.setHasChildren(false);
     if (this._expanded)
       this.dataGrid.scheduleUpdateStructure();
   }

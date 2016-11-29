@@ -631,7 +631,7 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
      * @this {Profiler.HeapSnapshotGenericObjectNode}
      */
     function isEmptyCallback(isEmpty) {
-      this.hasChildren = !isEmpty;
+      this.setHasChildren(!isEmpty);
     }
     this._provider().isEmpty(isEmptyCallback.bind(this));
   }

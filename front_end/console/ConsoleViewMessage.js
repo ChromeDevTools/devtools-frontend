@@ -48,6 +48,8 @@ Console.ConsoleViewMessage = class {
     this._dataGrid = null;
     this._previewFormatter = new Components.RemoteObjectPreviewFormatter();
     this._searchRegex = null;
+    /** @type {?UI.Icon} */
+    this._messageLevelIcon = null;
   }
 
   /**
@@ -937,6 +939,8 @@ Console.ConsoleViewMessage = class {
       return this._contentElement;
 
     var contentElement = createElementWithClass('div', 'console-message');
+    if (this._messageLevelIcon)
+      contentElement.appendChild(this._messageLevelIcon);
     this._contentElement = contentElement;
     if (this._message.type === SDK.ConsoleMessage.MessageType.StartGroup ||
         this._message.type === SDK.ConsoleMessage.MessageType.StartGroupCollapsed)
@@ -991,27 +995,47 @@ Console.ConsoleViewMessage = class {
     switch (this._message.level) {
       case SDK.ConsoleMessage.MessageLevel.Log:
         this._element.classList.add('console-log-level');
+        this._updateMessageLevelIcon('');
         break;
       case SDK.ConsoleMessage.MessageLevel.Debug:
         this._element.classList.add('console-debug-level');
+        this._updateMessageLevelIcon('');
         break;
       case SDK.ConsoleMessage.MessageLevel.Warning:
         this._element.classList.add('console-warning-level');
+        this._updateMessageLevelIcon('smallicon-warning');
         break;
       case SDK.ConsoleMessage.MessageLevel.Error:
         this._element.classList.add('console-error-level');
+        this._updateMessageLevelIcon('smallicon-error');
         break;
       case SDK.ConsoleMessage.MessageLevel.RevokedError:
         this._element.classList.add('console-revokedError-level');
+        this._updateMessageLevelIcon('smallicon-revoked-error');
         break;
       case SDK.ConsoleMessage.MessageLevel.Info:
         this._element.classList.add('console-info-level');
+        this._updateMessageLevelIcon('smallicon-info');
         break;
     }
 
     this._element.appendChild(this.contentElement());
     if (this._repeatCount > 1)
       this._showRepeatCountElement();
+  }
+
+  /**
+   * @param {string} iconType
+   */
+  _updateMessageLevelIcon(iconType) {
+    if (!iconType && !this._messageLevelIcon)
+      return;
+    if (iconType && !this._messageLevelIcon) {
+      this._messageLevelIcon = UI.Icon.create('', 'message-level-icon');
+      if (this._contentElement)
+        this._contentElement.insertBefore(this._messageLevelIcon, this._contentElement.firstChild);
+    }
+    this._messageLevelIcon.setIconType(iconType);
   }
 
   /**

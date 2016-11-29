@@ -125,6 +125,13 @@
     background-size: 190px 30px;
 }
 
+.message-level-icon {
+    position: absolute;
+    left: -17px;
+    top: 5px;
+    -webkit-user-select: none;
+}
+
 @media (-webkit-min-device-pixel-ratio: 1.1) {
 .console-message::before,
 .console-user-command::before,
@@ -143,12 +150,8 @@
     margin-left: 4px;
 }
 
-.console-error-level .repeated-message::before,
-.console-revokedError-level .repeated-message::before,
-.console-warning-level .repeated-message::before,
-.console-debug-level .repeated-message::before,
-.console-info-level .repeated-message::before {
-    visibility: hidden;
+.repeated-message .message-level-icon {
+    display: none;
 }
 
 .repeated-message .console-message-stack-trace-toggle,
@@ -295,43 +298,6 @@
 
 .console-message.console-warning-level {
     background-color: rgb(255, 250, 224);
-}
-
-.console-error-level .console-message::before,
-.console-revokedError-level .console-message::before,
-.console-warning-level .console-message::before,
-.console-debug-level .console-message::before,
-.console-info-level .console-message::before {
-    background-image: url(Images/smallIcons.png);
-    background-size: 190px 30px;
-    width: 10px;
-    height: 10px;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.console-error-level .console-message::before,
-.console-revokedError-level .console-message::before,
-.console-warning-level .console-message::before,
-.console-debug-level .console-message::before,
-.console-info-level .console-message::before {
-    background-image: url(Images/smallIcons_2x.png);
-}
-} /* media */
-
-.console-warning-level .console-message::before {
-    background-position: -60px 0;
-}
-
-.console-error-level .console-message::before {
-    background-position: -20px 0;
-}
-
-.console-revokedError-level .console-message::before {
-    background-position: -40px 0;
-}
-
-.console-info-level .console-message::before {
-    background-position: -80px 0;
 }
 
 .console-user-command .console-message {

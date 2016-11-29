@@ -366,7 +366,7 @@ Bindings.CompilerScriptMapping = class {
       }
     }
 
-    this._sourceMapForURL.valuesArray().forEach(unbindSourceMapSources.bind(this));
+    Array.from(new Set(this._sourceMapForURL.values())).forEach(unbindSourceMapSources.bind(this));
 
     this._sourceMapLoadingPromises.clear();
     this._sourceMapForScriptId.clear();

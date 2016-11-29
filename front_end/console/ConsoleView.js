@@ -103,6 +103,8 @@ Console.ConsoleView = class extends UI.VBox {
     this._currentGroup = this._topGroup;
 
     this._promptElement = this._messagesElement.createChild('div', 'source-code');
+    var promptIcon = UI.Icon.create('smallicon-text-prompt', 'console-prompt-icon');
+    this._promptElement.appendChild(promptIcon);
     this._promptElement.id = 'console-prompt';
     this._promptElement.addEventListener('input', this._promptInput.bind(this), false);
 
@@ -1205,6 +1207,9 @@ Console.ConsoleCommand = class extends Console.ConsoleViewMessage {
   contentElement() {
     if (!this._contentElement) {
       this._contentElement = createElementWithClass('div', 'console-user-command');
+      var icon = UI.Icon.create('smallicon-user-command', 'command-result-icon');
+      this._contentElement.appendChild(icon);
+
       this._contentElement.message = this;
 
       this._formattedCommand = createElementWithClass('span', 'source-code');
@@ -1253,6 +1258,10 @@ Console.ConsoleCommandResult = class extends Console.ConsoleViewMessage {
   contentElement() {
     var element = super.contentElement();
     element.classList.add('console-user-command-result');
+    if (this.consoleMessage().level === SDK.ConsoleMessage.MessageLevel.Log) {
+      var icon = UI.Icon.create('smallicon-command-result', 'command-result-icon');
+      element.insertBefore(icon, element.firstChild);
+    }
     this.updateTimestamp(false);
     return element;
   }

@@ -73,13 +73,11 @@
     padding-top: 0;
 }
 
-#console-prompt::before {
-    background-position: -20px -20px;
-    margin-left: 4px;
-}
-
-.console-log-level .console-user-command-result::before {
-    background-position: -40px -20px;
+#console-prompt .console-prompt-icon {
+    position: absolute;
+    left: -13px;
+    top: 5px;
+    -webkit-user-select: none;
 }
 
 .console-message,
@@ -97,10 +95,6 @@
     flex: auto;
 }
 
-.console-adjacent-user-command-result + .console-user-command-result.console-log-level::before {
-    background-image: none;
-}
-
 .console-timestamp {
     color: gray;
     -webkit-user-select: none;
@@ -108,38 +102,12 @@
     margin-right: 5px;
 }
 
-.console-message::before,
-.console-user-command::before,
-#console-prompt::before,
-.console-group-title::before {
-    position: absolute;
-    display: block;
-    content: "";
-    left: -17px;
-    top: 9px;
-    width: 10px;
-    height: 10px;
-    margin-top: -4px;
-    -webkit-user-select: none;
-    background-image: url(Images/smallIcons.png);
-    background-size: 190px 30px;
-}
-
-.message-level-icon {
+.message-level-icon, .command-result-icon {
     position: absolute;
     left: -17px;
     top: 5px;
     -webkit-user-select: none;
 }
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.console-message::before,
-.console-user-command::before,
-#console-prompt::before,
-.console-group-title::before {
-    background-image: url(Images/smallIcons_2x.png);
-}
-} /* media */
 
 .console-message-repeat-count {
     margin: 2px 0 0 10px;
@@ -181,32 +149,11 @@
     font-weight: bold;
 }
 
-.console-group-title::before {
+.expand-group-icon {
     -webkit-user-select: none;
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
-    float: left;
-    width: 8px;
-    content: "a";
-    color: transparent;
-    text-shadow: none;
-    margin-left: 3px;
-    margin-top: -7px;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.console-group-title::before {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-.console-group .console-group-title::before {
-    -webkit-mask-position: -20px -96px;
+    position: absolute;
     background-color: rgb(110, 110, 110);
-}
-
-.console-message-wrapper.collapsed .console-group-title::before {
-    -webkit-mask-position: -4px -96px;
+    left: -14px;
 }
 
 .console-group {
@@ -298,16 +245,6 @@
 
 .console-message.console-warning-level {
     background-color: rgb(255, 250, 224);
-}
-
-.console-user-command .console-message {
-    margin-left: -24px;
-    padding-right: 0;
-    border-bottom: none;
-}
-
-.console-user-command::before {
-    background-position: 0 -20px;
 }
 
 #console-messages .link {

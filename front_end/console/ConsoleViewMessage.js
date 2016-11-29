@@ -1232,7 +1232,9 @@ Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
   constructor(consoleMessage, linkifier, nestingLevel) {
     console.assert(consoleMessage.isGroupStartMessage());
     super(consoleMessage, linkifier, nestingLevel);
-    this.setCollapsed(consoleMessage.type === SDK.ConsoleMessage.MessageType.StartGroupCollapsed);
+    this._collapsed = consoleMessage.type === SDK.ConsoleMessage.MessageType.StartGroupCollapsed;
+    /** @type {?UI.Icon} */
+    this._expandGroupIcon = null;
   }
 
   /**
@@ -1240,8 +1242,8 @@ Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
    */
   setCollapsed(collapsed) {
     this._collapsed = collapsed;
-    if (this._element)
-      this._element.classList.toggle('collapsed', this._collapsed);
+    if (this._expandGroupIcon)
+      this._expandGroupIcon.setIconType(this._collapsed ? 'smallicon-triangle-right' : 'smallicon-triangle-bottom');
   }
 
   /**
@@ -1258,7 +1260,9 @@ Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
   toMessageElement() {
     if (!this._element) {
       super.toMessageElement();
-      this._element.classList.toggle('collapsed', this._collapsed);
+      this._expandGroupIcon = UI.Icon.create('', 'expand-group-icon');
+      this._contentElement.insertBefore(this._expandGroupIcon, this._contentElement.firstChild);
+      this.setCollapsed(this._collapsed);
     }
     return this._element;
   }

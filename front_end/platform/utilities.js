@@ -26,15 +26,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-// FIXME: This performance optimization should be moved to blink so that all developers could enjoy it.
-// console is retrieved with V8Window.getAttribute method which is slow. Here we copy it to a js variable for faster access.
-console = console;
-console.__originalAssert = console.assert;
-console.assert = function(value, message) {
-  if (value)
-    return;
-  console.__originalAssert(value, message);
-};
 
 /** @typedef {Array|NodeList|Arguments|{length: number}} */
 var ArrayLike;

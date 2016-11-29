@@ -181,7 +181,9 @@ SDK.Target.Capability = {
   JS: 4,
   Log: 8,
   Network: 16,
-  Target: 32
+  Target: 32,
+
+  AllForTests: 63
 };
 
 SDK.Target._nextId = 1;

@@ -504,6 +504,7 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _setupDataGrid() {
+    /** @type {!UI.SortableDataGrid} */
     this._dataGrid = this._columns.dataGrid();
     this._dataGrid.setRowContextMenuCallback(
         (contextMenu, node) => this.handleContextMenuForRequest(contextMenu, node.request()));
@@ -520,7 +521,8 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {!Event} event
    */
   _dataGridMouseMove(event) {
-    var node = this._dataGrid.dataGridNodeFromNode(event.target);
+    var node = /** @type {?Network.NetworkDataGridNode} */ (
+        this._dataGrid.dataGridNodeFromNode(/** @type {!Node} */ (event.target)));
     var highlightInitiatorChain = event.shiftKey;
     this._setHoveredNode(node, highlightInitiatorChain);
     this._highlightInitiatorChain((highlightInitiatorChain && node) ? node.request() : null);
@@ -784,7 +786,7 @@ Network.NetworkLogView = class extends UI.VBox {
    * @return {!Array<!Network.NetworkDataGridNode>}
    */
   flatNodesList() {
-    return this._dataGrid.flatNodesList();
+    return this._dataGrid.rootNode().flattenChildren();
   }
 
   _refresh() {

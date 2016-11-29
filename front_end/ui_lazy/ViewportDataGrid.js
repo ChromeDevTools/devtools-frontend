@@ -21,8 +21,6 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
     this._scrollContainer.addEventListener('mousewheel', this._onWheel.bind(this), true);
     /** @type {!Array.<!UI.ViewportDataGridNode>} */
     this._visibleNodes = [];
-    /** @type {?Array.<!UI.ViewportDataGridNode>} */
-    this._flatNodes = null;
     /** @type {boolean} */
     this._inline = false;
 
@@ -90,7 +88,6 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
    * @protected
    */
   scheduleUpdateStructure() {
-    this._flatNodes = null;
     this.scheduleUpdate();
   }
 
@@ -120,40 +117,12 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
   }
 
   /**
-   * @return {!Array.<!UI.ViewportDataGridNode>}
-   */
-  flatNodesList() {
-    if (this._flatNodes)
-      return this._flatNodes;
-    var flatNodes = [];
-    var children = [this._rootNode.children];
-    var counters = [0];
-    var depth = 0;
-    while (depth >= 0) {
-      var node = children[depth][counters[depth]++];
-      if (!node) {
-        depth--;
-        continue;
-      }
-      flatNodes.push(node);
-      node.setDepth(depth);
-      if (node._expanded && node.children.length) {
-        depth++;
-        children[depth] = node.children;
-        counters[depth] = 0;
-      }
-    }
-    this._flatNodes = flatNodes;
-    return this._flatNodes;
-  }
-
-  /**
    * @param {number} clientHeight
    * @param {number} scrollTop
    * @return {{topPadding: number, bottomPadding: number, contentHeight: number, visibleNodes: !Array.<!UI.ViewportDataGridNode>, offset: number}}
    */
   _calculateVisibleNodes(clientHeight, scrollTop) {
-    var nodes = this.flatNodesList();
+    var nodes = this.rootNode().flattenChildren();
     if (this._inline)
       return {topPadding: 0, bottomPadding: 0, contentHeight: 0, visibleNodes: nodes, offset: 0};
 
@@ -187,7 +156,7 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
    * @return {number}
    */
   _contentHeight() {
-    var nodes = this.flatNodesList();
+    var nodes = this.rootNode().flattenChildren();
     var result = 0;
     for (var i = 0, size = nodes.length; i < size; ++i)
       result += nodes[i].nodeSelfHeight();
@@ -263,7 +232,7 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
    * @param {!UI.ViewportDataGridNode} node
    */
   _revealViewportNode(node) {
-    var nodes = this.flatNodesList();
+    var nodes = this.rootNode().flattenChildren();
     var index = nodes.indexOf(node);
     if (index === -1)
       return;
@@ -299,6 +268,8 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
     super(data, hasChildren);
     /** @type {boolean} */
     this._stale = false;
+    /** @type {?Array<!UI.ViewportDataGridNode>} */
+    this._flatNodes = null;
   }
 
   /**
@@ -320,6 +291,42 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
     return /** @type {!Element} */ (this._element);
   }
 
+  _clearFlatNodes() {
+    this._flatNodes = null;
+    var parent = /** @type {!UI.ViewportDataGridNode} */ (this.parent);
+    if (parent)
+      parent._clearFlatNodes();
+  }
+
+  /**
+   * @return {!Array<!UI.ViewportDataGridNode>}
+   */
+  flattenChildren() {
+    if (this._flatNodes)
+      return this._flatNodes;
+    var flatNodes = [];
+    var children = [this.children];
+    var counters = [0];
+    var depth = 0;
+    while (depth >= 0) {
+      var node = children[depth][counters[depth]++];
+      if (!node) {
+        depth--;
+        continue;
+      }
+      flatNodes.push(node);
+      node.setDepth(depth);
+      if (node._expanded && node.children.length) {
+        depth++;
+        children[depth] = node.children;
+        counters[depth] = 0;
+      }
+    }
+
+    this._flatNodes = flatNodes;
+    return flatNodes;
+  }
+
   /**
    * @param {number} depth
    */
@@ -333,6 +340,7 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
    * @param {number} index
    */
   insertChild(child, index) {
+    this._clearFlatNodes();
     if (child.parent === this) {
       var currentIndex = this.children.indexOf(child);
       if (currentIndex < 0)
@@ -358,6 +366,7 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
    * @param {!UI.DataGridNode} child
    */
   removeChild(child) {
+    this._clearFlatNodes();
     if (this.dataGrid)
       this.dataGrid.updateSelectionBeforeRemoval(child, false);
     if (child.previousSibling)
@@ -379,6 +388,7 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
    * @override
    */
   removeChildren() {
+    this._clearFlatNodes();
     if (this.dataGrid)
       this.dataGrid.updateSelectionBeforeRemoval(this, true);
     for (var i = 0; i < this.children.length; ++i)
@@ -464,5 +474,14 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
    */
   reveal() {
     this.dataGrid._revealViewportNode(this);
+  }
+
+  /**
+   * @override
+   * @param {number} index
+   */
+  recalculateSiblings(index) {
+    this._clearFlatNodes();
+    super.recalculateSiblings(index);
   }
 };

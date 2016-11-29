@@ -288,6 +288,7 @@ Network.NetworkLogViewColumns = class {
       this._waterfallRequestsAreStale = true;
       var sortFunction = Network.NetworkDataGridNode.RequestPropertyComparator.bind(null, this._activeWaterfallSortId);
       this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
+      this._networkLogView.dataGridSorted();
       return;
     }
 

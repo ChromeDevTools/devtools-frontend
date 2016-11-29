@@ -46,7 +46,8 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     Common.moduleSetting('textEditorAutocompletion').addChangeListener(this._updateAutocomplete, this);
     this._updateAutocomplete();
 
-    this._rowMessageBuckets = {};
+    /** @type {!Map<number, !Sources.UISourceCodeFrame.RowMessageBucket>} */
+    this._rowMessageBuckets = new Map();
     /** @type {!Set<string>} */
     this._typeDecorationsPending = new Set();
     this._uiSourceCode.addEventListener(
@@ -174,7 +175,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     if (this._diff)
       this._diff.updateDiffMarkersWhenPossible();
     super.onTextChanged(oldRange, newRange);
-    this._clearMessages();
+    this._errorPopoverHelper.hidePopover();
     if (this._isSettingContent)
       return;
     this._muteSourceCodeEvents = true;
@@ -311,11 +312,11 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     if (lineNumber < 0)
       lineNumber = 0;
 
-    if (!this._rowMessageBuckets[lineNumber]) {
-      this._rowMessageBuckets[lineNumber] =
-          new Sources.UISourceCodeFrame.RowMessageBucket(this, this._textEditor, lineNumber);
+    var messageBucket = this._rowMessageBuckets.get(lineNumber);
+    if (!messageBucket) {
+      messageBucket = new Sources.UISourceCodeFrame.RowMessageBucket(this, this._textEditor, lineNumber);
+      this._rowMessageBuckets.set(lineNumber, messageBucket);
     }
-    var messageBucket = this._rowMessageBuckets[lineNumber];
     messageBucket.addMessage(message);
   }
 
@@ -339,25 +340,14 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     if (lineNumber < 0)
       lineNumber = 0;
 
-    var messageBucket = this._rowMessageBuckets[lineNumber];
+    var messageBucket = this._rowMessageBuckets.get(lineNumber);
     if (!messageBucket)
       return;
     messageBucket.removeMessage(message);
     if (!messageBucket.uniqueMessagesCount()) {
       messageBucket.detachFromEditor();
-      delete this._rowMessageBuckets[lineNumber];
+      this._rowMessageBuckets.delete(lineNumber);
     }
-  }
-
-  _clearMessages() {
-    for (var line in this._rowMessageBuckets) {
-      var bubble = this._rowMessageBuckets[line];
-      bubble.detachFromEditor();
-    }
-
-    this._rowMessageBuckets = {};
-    this._errorPopoverHelper.hidePopover();
-    this._uiSourceCode.removeAllMessages();
   }
 
   /**
@@ -387,10 +377,8 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   }
 
   _updateBucketDecorations() {
-    for (var line in this._rowMessageBuckets) {
-      var bucket = this._rowMessageBuckets[line];
+    for (var bucket of this._rowMessageBuckets.values())
       bucket._updateDecoration();
-    }
   }
 
   /**

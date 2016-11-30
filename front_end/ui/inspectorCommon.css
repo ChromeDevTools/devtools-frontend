@@ -332,12 +332,28 @@ label[is=dt-icon-label] {
     background-size: 190px 30px;
 }
 
-.spritesheet-smallicons-mask {
+.spritesheet-smallicons.icon-mask {
     -webkit-mask-image: -webkit-image-set(url(Images/smallIcons.png) 1x, url(Images/smallIcons_2x.png) 2x);
     -webkit-mask-size: 190px 30px;
 }
 
-.spritesheet-largeicons-mask {
+.spritesheet-largeicons.icon-mask {
     -webkit-mask-image: -webkit-image-set(url(Images/toolbarButtonGlyphs.png) 1x, url(Images/toolbarButtonGlyphs_2x.png) 2x);
     -webkit-mask-size: 352px 168px;
+}
+
+.force-white-icons .spritesheet-smallicons, .force-white-icons.spritesheet-smallicons {
+    -webkit-mask-image: -webkit-image-set(url(Images/smallIcons.png) 1x, url(Images/smallIcons_2x.png) 2x);
+    -webkit-mask-size: 190px 30px;
+    background-image: unset;
+    background-size: unset;
+    background-color: white;
+}
+
+.force-white-icons .spritesheet-largeicons, .force-white-icons.spritesheet-largeicons {
+    -webkit-mask-image: -webkit-image-set(url(Images/toolbarButtonGlyphs.png) 1x, url(Images/toolbarButtonGlyphs_2x.png) 2x);
+    -webkit-mask-size: 352px 168px;
+    background-image: unset;
+    background-size: unset;
+    background-color: white;
 }

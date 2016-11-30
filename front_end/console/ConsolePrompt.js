@@ -218,7 +218,8 @@ Console.ConsolePrompt = class extends UI.Widget {
       if (set.has(item))
         continue;
       set.add(item);
-      result.push({title: item.substring(text.length - prefix.length), className: 'additional'});
+      result.push(
+          {title: item.substring(text.length - prefix.length), iconType: 'smallicon-text-prompt', isSecondary: true});
     }
     return result;
   }

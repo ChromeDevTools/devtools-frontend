@@ -80,35 +80,16 @@
     border: 1px solid transparent;
     padding-right: 0;
     white-space: nowrap;
+    display: flex;
 }
 
-.suggest-box .suggest-box-content-item.additional {
+.suggest-box .suggest-box-content-item.secondary {
     background-color: #f9f9f9;
 }
 
-.suggest-box .suggest-box-content-item.additional::before {
-    display: inline-block;
-    content: "";
-    -webkit-user-select: none;
-    -webkit-mask-image: url(Images/smallIcons.png);
-    -webkit-mask-size: 190px 30px;
-    width: 10px;
-    height: 10px;
-    position: relative;
-    top: 2px;
-    margin-right: 4px;
-    -webkit-mask-position: -20px -20px;
-    background-color: rgb(56, 121, 217);
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.suggest-box .suggest-box-content-item.additional::before {
-    -webkit-mask-image: url(Images/smallIcons_2x.png);
-}
-} /* media */
-
-.suggest-box .suggest-box-content-item.additional.selected::before {
-    background-color: #FFF;
+.suggestion-icon {
+    user-select: none;
+    align-self: center;
 }
 
 .suggest-box .suggest-box-content-item .query {

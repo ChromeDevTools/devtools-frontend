@@ -147,7 +147,7 @@ SDK.NetworkManager._MIMETypes = {
 SDK.NetworkManager.Conditions;
 /** @type {!SDK.NetworkManager.Conditions} */
 SDK.NetworkManager.NoThrottlingConditions = {
-  title: Common.UIString('No throttling'),
+  title: Common.UIString('No network throttling'),
   download: -1,
   upload: -1,
   latency: 0

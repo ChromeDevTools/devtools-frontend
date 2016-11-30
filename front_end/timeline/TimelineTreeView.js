@@ -456,7 +456,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
   constructor(model, filters) {
     super();
     this._groupBySetting =
-        Common.settings.createSetting('timelineTreeGroupBy', Timeline.AggregatedTimelineTreeView.GroupBy.Category);
+        Common.settings.createSetting('timelineTreeGroupBy', Timeline.AggregatedTimelineTreeView.GroupBy.None);
     this._init(model, filters);
     var nonessentialEvents = [
       TimelineModel.TimelineModel.RecordType.EventDispatch, TimelineModel.TimelineModel.RecordType.FunctionCall,

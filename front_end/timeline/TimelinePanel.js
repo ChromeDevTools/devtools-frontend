@@ -51,7 +51,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._millisecondsToRecordAfterLoadEvent = 3000;
     this._toggleRecordAction =
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('timeline.toggle-recording'));
-    this._customCPUThrottlingRate = 0;
 
     /** @type {!Array<!TimelineModel.TimelineModel.Filter>} */
     this._filters = [];
@@ -397,17 +396,14 @@ Timeline.TimelinePanel = class extends UI.Panel {
       hasSelection = true;
     }
     var predefinedRates = new Map([
-      [1, Common.UIString('No CPU throttling')], [2, Common.UIString('High end device (2\xD7 slowdown)')],
-      [5, Common.UIString('Low end device (5\xD7 slowdown)')]
+      [1, Common.UIString('No CPU throttling')],
+      [2, Common.UIString('2\xD7 slowdown')],
+      [5, Common.UIString('5\xD7 slowdown')],
+      [10, Common.UIString('10\xD7 slowdown')],
+      [20, Common.UIString('20\xD7 slowdown')]
     ]);
     for (var rate of predefinedRates)
       addGroupingOption(rate[1], rate[0]);
-    if (this._customCPUThrottlingRate && !predefinedRates.has(this._customCPUThrottlingRate)) {
-      addGroupingOption(
-          Common.UIString('Custom rate (%d\xD7 slowdown)', this._customCPUThrottlingRate),
-          this._customCPUThrottlingRate);
-    }
-    addGroupingOption(Common.UIString('Set custom rate\u2026'), 0);
   }
 
   _prepareToLoadTimeline() {
@@ -534,21 +530,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _onCPUThrottlingChanged() {
     if (!this._cpuThrottlingManager)
       return;
-    var value = this._cpuThrottlingCombobox.selectedOption().value;
-    var isLastOption = this._cpuThrottlingCombobox.selectedIndex() === this._cpuThrottlingCombobox.size() - 1;
-    this._populateCPUThrottingCombobox();
-    var resultPromise = isLastOption ?
-        Timeline.TimelinePanel.CustomCPUThrottlingRateDialog.show(this._cpuThrottlingCombobox.element) :
-        Promise.resolve(value);
-    resultPromise.then(text => {
-      var value = Number.parseFloat(text);
-      if (value >= 1) {
-        if (isLastOption)
-          this._customCPUThrottlingRate = value;
-        this._cpuThrottlingManager.setRate(value);
-        this._populateCPUThrottingCombobox();
-      }
-    });
+    var text = this._cpuThrottlingCombobox.selectedOption().value;
+    this._cpuThrottlingManager.setRate(Number.parseFloat(text));
   }
 
   /**
@@ -1947,65 +1930,5 @@ Timeline.CPUThrottlingManager = class extends Common.Object {
    */
   targetRemoved(target) {
     this._targets.remove(target, true);
-  }
-};
-
-/**
- * @unrestricted
- */
-Timeline.TimelinePanel.CustomCPUThrottlingRateDialog = class extends UI.HBox {
-  constructor() {
-    super(true);
-    this.registerRequiredCSS('ui_lazy/dialog.css');
-    this.contentElement.createChild('label').textContent = Common.UIString('CPU Slowdown Rate: ');
-
-    this._input = this.contentElement.createChild('input');
-    this._input.setAttribute('type', 'text');
-    this._input.style.width = '64px';
-    this._input.addEventListener('keydown', this._onKeyDown.bind(this), false);
-
-    var addButton = this.contentElement.createChild('button');
-    addButton.textContent = Common.UIString('Set');
-    addButton.addEventListener('click', this._apply.bind(this), false);
-
-    this.setDefaultFocusedElement(this._input);
-    this.contentElement.tabIndex = 0;
-    this._resultPromise = new Promise(fulfill => this._callback = fulfill);
-  }
-
-  /**
-   * @param {!Element=} anchor
-   * @return {!Promise<string>}
-   */
-  static show(anchor) {
-    var dialog = new UI.Dialog();
-    var dialogContent = new Timeline.TimelinePanel.CustomCPUThrottlingRateDialog();
-    dialogContent.show(dialog.element);
-    dialog.setWrapsContent(true);
-    if (anchor)
-      dialog.setPosition(anchor.totalOffsetLeft() - 32, anchor.totalOffsetTop() + anchor.offsetHeight);
-    dialog.show();
-    return dialogContent.result().then(value => (dialog.detach(), value));
-  }
-
-  /**
-   * @return {!Promise<string>}
-   */
-  result() {
-    return this._resultPromise;
-  }
-
-  _apply() {
-    this._callback(this._input.value);
-  }
-
-  /**
-   * @param {!Event} event
-   */
-  _onKeyDown(event) {
-    if (event.keyCode === UI.KeyboardShortcut.Keys.Enter.code) {
-      event.preventDefault();
-      this._apply();
-    }
   }
 };

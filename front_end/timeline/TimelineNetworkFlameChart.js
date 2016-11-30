@@ -14,6 +14,19 @@ Timeline.TimelineFlameChartNetworkDataProvider = class extends Timeline.Timeline
     var loadingCategory = Timeline.TimelineUIUtils.categories()['loading'];
     this._waitingColor = loadingCategory.childColor;
     this._processingColor = loadingCategory.color;
+
+    this._style = {
+      padding: 4,
+      height: 17,
+      collapsible: true,
+      color: UI.themeSupport.patchColor('#222', UI.ThemeSupport.ColorUsage.Foreground),
+      font: this._font,
+      backgroundColor: UI.themeSupport.patchColor('white', UI.ThemeSupport.ColorUsage.Background),
+      nestingLevel: 0,
+      useFirstLineForOverview: false,
+      shareHeaderLine: false
+    };
+    this._group = {startLevel: 0, name: Common.UIString('Network'), expanded: true, style: this._style};
   }
 
   /**
@@ -283,7 +296,8 @@ Timeline.TimelineFlameChartNetworkDataProvider = class extends Timeline.Timeline
         this._timelineData.entryLevels[i] = maxLevel;
     }
     this._timelineData = new UI.FlameChart.TimelineData(
-        this._timelineData.entryLevels, this._timelineData.entryTotalTimes, this._timelineData.entryStartTimes, null);
+        this._timelineData.entryLevels, this._timelineData.entryTotalTimes, this._timelineData.entryStartTimes,
+        [this._group]);
     this._currentLevel = maxLevel;
   }
 
@@ -296,5 +310,12 @@ Timeline.TimelineFlameChartNetworkDataProvider = class extends Timeline.Timeline
     this._timelineData.entryStartTimes.push(request.startTime);
     this._timelineData.entryTotalTimes.push(request.endTime - request.startTime);
     this._timelineData.entryLevels.push(this._requests.length - 1);
+  }
+
+  /**
+   * @return {number}
+   */
+  preferredHeight() {
+    return this._style.height * (this._group.expanded ? Number.constrain(this._currentLevel + 1, 4, 8) : 2) + 2;
   }
 };

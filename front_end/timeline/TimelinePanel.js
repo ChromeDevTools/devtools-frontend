@@ -784,6 +784,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     if (this._statusPane)
       this._statusPane.hide();
     delete this._statusPane;
+    this._flameChart.resizeToPreferredHeights();
     this._overviewPane.reset();
     this._overviewPane.setBounds(this._model.minimumRecordTime(), this._model.maximumRecordTime());
     this._setAutoWindowTimes();

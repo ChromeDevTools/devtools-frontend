@@ -310,8 +310,11 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     var mainViewGroupExpansionSetting = Common.settings.createSetting('timelineFlamechartMainViewGroupExpansion', {});
     this._mainView = new UI.FlameChart(this._dataProvider, this, mainViewGroupExpansionSetting);
 
+    var networkViewGroupExpansionSetting =
+        Common.settings.createSetting('timelineFlamechartNetworkViewGroupExpansion', {});
     this._networkDataProvider = new Timeline.TimelineFlameChartNetworkDataProvider(this._model);
-    this._networkView = new UI.FlameChart(this._networkDataProvider, this);
+    this._networkView = new UI.FlameChart(this._networkDataProvider, this, networkViewGroupExpansionSetting);
+    networkViewGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights.bind(this));
 
     this._splitWidget.setMainWidget(this._mainView);
     this._splitWidget.setSidebarWidget(this._networkView);
@@ -466,6 +469,10 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
       this._splitWidget.showBoth(animate);
     else
       this._splitWidget.hideSidebar(animate);
+  }
+
+  resizeToPreferredHeights() {
+    this._splitWidget.setSidebarSize(this._networkDataProvider.preferredHeight());
   }
 };
 

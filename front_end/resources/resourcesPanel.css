@@ -89,32 +89,13 @@ li.selected .base-storage-tree-element-subtitle {
     -webkit-user-select: text;
 }
 
-.database-user-query::before,
-.database-query-prompt::before,
-.database-query-result::before {
+.prompt-icon {
     position: absolute;
     display: block;
-    content: "";
     left: 7px;
     top: 0.8em;
-    width: 10px;
-    height: 10px;
     margin-top: -7px;
     -webkit-user-select: none;
-    background-image: url(Images/smallIcons.png);
-    background-size: 190px 30px;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.database-user-query::before,
-.database-query-prompt::before,
-.database-query-result::before {
-    background-image: url(Images/smallIcons_2x.png);
-}
-} /* media */
-
-.database-query-prompt::before {
-    background-position: -20px -20px;
 }
 
 .database-user-query {
@@ -123,10 +104,6 @@ li.selected .base-storage-tree-element-subtitle {
     padding: 1px 22px 1px 24px;
     min-height: 16px;
     flex-shrink: 0;
-}
-
-.database-user-query::before {
-    background-position: 0 -20px;
 }
 
 .database-query-text {
@@ -145,10 +122,6 @@ li.selected .base-storage-tree-element-subtitle {
 .database-query-result.error {
     color: red;
     -webkit-user-select: text;
-}
-
-.database-query-result.error::before {
-    background-position: -20px 0;
 }
 
 .resource-sidebar-tree-item .icon {

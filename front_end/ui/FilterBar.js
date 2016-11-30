@@ -289,10 +289,10 @@ UI.TextFilterUI = class extends Common.Object {
   }
 
   _cancelSuggestion() {
-    if (this._suggestionBuilder && this._suggestBox.visible) {
-      this._suggestionBuilder.unapplySuggestion(this._filterInputElement);
-      this._suggestBox.hide();
-    }
+    if (!this._suggestionBuilder || !this._suggestBox.visible())
+      return;
+    this._suggestionBuilder.unapplySuggestion(this._filterInputElement);
+    this._suggestBox.hide();
   }
 
   _onInput() {

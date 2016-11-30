@@ -136,7 +136,8 @@ Main.Main = class {
         Runtime.experiments.enableForTest('accessibilityInspection');
     }
 
-    Runtime.experiments.setDefaultExperiments(['inspectTooltip', 'securityPanel', 'resolveVariableNames']);
+    Runtime.experiments.setDefaultExperiments(
+        ['inspectTooltip', 'securityPanel', 'resolveVariableNames', 'timelineRecordingPerspectives']);
   }
 
   /**

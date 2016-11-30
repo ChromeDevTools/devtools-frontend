@@ -82,7 +82,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._markUnusedCSS = Common.settings.createSetting('timelineMarkUnusedCSS', false);
 
     this._panelToolbar = new UI.Toolbar('', this.element);
-    this._createToolbarItems();
 
     var timelinePane = new UI.VBox();
     timelinePane.show(this.element);
@@ -117,6 +116,11 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     this._stackView.show(this._searchableView.element);
     this._onModeChanged();
+    this._recreateToolbarItems();
+
+    this._captureNetworkSetting.addChangeListener(this._onNetworkChanged, this);
+    this._captureMemorySetting.addChangeListener(this._onModeChanged, this);
+    this._captureFilmStripSetting.addChangeListener(this._onModeChanged, this);
 
     this._detailsSplitWidget.show(timelinePane.element);
     this._detailsSplitWidget.hideSidebar();
@@ -268,18 +272,37 @@ Timeline.TimelinePanel = class extends UI.Panel {
     return checkboxItem;
   }
 
-  _createToolbarItems() {
+  _recreateToolbarItems() {
     this._panelToolbar.removeToolbarItems();
 
     var perspectiveSetting =
         Common.settings.createSetting('timelinePerspective', Timeline.TimelinePanel.Perspectives.Load);
+
+    // Record
+    if (Runtime.experiments.isEnabled('timelineRecordingPerspectives') &&
+        perspectiveSetting.get() === Timeline.TimelinePanel.Perspectives.Load) {
+      this._reloadButton = new UI.ToolbarButton(Common.UIString('Record & Reload'), 'largeicon-refresh');
+      this._reloadButton.addEventListener('click', () => SDK.targetManager.reloadPage());
+      this._panelToolbar.appendToolbarItem(this._reloadButton);
+    } else {
+      this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
+    }
+
+    // Clear
+    var clearButton = new UI.ToolbarButton(Common.UIString('Clear recording'), 'largeicon-clear');
+    clearButton.addEventListener('click', this._clear, this);
+    this._panelToolbar.appendToolbarItem(clearButton);
+
+    this._panelToolbar.appendSeparator();
+
+    // Combo
     if (Runtime.experiments.isEnabled('timelineRecordingPerspectives')) {
       /**
        * @this {!Timeline.TimelinePanel}
        */
       function onPerspectiveChanged() {
         perspectiveSetting.set(perspectiveCombobox.selectElement().value);
-        this._createToolbarItems();
+        this._recreateToolbarItems();
       }
 
       /**
@@ -296,8 +319,11 @@ Timeline.TimelinePanel = class extends UI.Panel {
       var perspectiveCombobox = new UI.ToolbarComboBox(onPerspectiveChanged.bind(this));
       addPerspectiveOption(Timeline.TimelinePanel.Perspectives.Load, Common.UIString('Page Load'));
       addPerspectiveOption(Timeline.TimelinePanel.Perspectives.Responsiveness, Common.UIString('Responsiveness'));
+      addPerspectiveOption(Timeline.TimelinePanel.Perspectives.JavaScript, Common.UIString('JavaScript'));
       addPerspectiveOption(Timeline.TimelinePanel.Perspectives.Custom, Common.UIString('Custom'));
       this._panelToolbar.appendToolbarItem(perspectiveCombobox);
+
+      this._bulkUpdate = true;
 
       switch (perspectiveSetting.get()) {
         case Timeline.TimelinePanel.Perspectives.Load:
@@ -314,25 +340,19 @@ Timeline.TimelinePanel = class extends UI.Panel {
           this._captureLayersAndPicturesSetting.set(false);
           this._captureFilmStripSetting.set(false);
           break;
+        case Timeline.TimelinePanel.Perspectives.JavaScript:
+          this._captureNetworkSetting.set(false);
+          this._captureJSProfileSetting.set(true);
+          this._captureMemorySetting.set(false);
+          this._captureLayersAndPicturesSetting.set(false);
+          this._captureFilmStripSetting.set(false);
+          this._detailsView.selectTab(Timeline.TimelinePanel.DetailsTab.BottomUp, false);
+          break;
       }
+
+      this._bulkUpdate = false;
+      this._onModeChanged();
     }
-    if (Runtime.experiments.isEnabled('timelineRecordingPerspectives') &&
-        perspectiveSetting.get() === Timeline.TimelinePanel.Perspectives.Load) {
-      this._reloadButton = new UI.ToolbarButton(Common.UIString('Record & Reload'), 'largeicon-refresh');
-      this._reloadButton.addEventListener('click', () => SDK.targetManager.reloadPage());
-      this._panelToolbar.appendToolbarItem(this._reloadButton);
-    } else {
-      this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
-    }
-
-    this._updateTimelineControls();
-    var clearButton = new UI.ToolbarButton(Common.UIString('Clear recording'), 'largeicon-clear');
-    clearButton.addEventListener('click', this._clear, this);
-    this._panelToolbar.appendToolbarItem(clearButton);
-
-    this._panelToolbar.appendSeparator();
-
-    this._panelToolbar.appendText(Common.UIString('Capture:'));
 
     var screenshotCheckbox = this._createSettingCheckbox(
         Common.UIString('Screenshots'), this._captureFilmStripSetting,
@@ -363,10 +383,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
           Common.UIString('CSS coverage'), this._markUnusedCSS, Common.UIString('Mark unused CSS in souces.')));
     }
 
-    this._captureNetworkSetting.addChangeListener(this._onNetworkChanged, this);
-    this._captureMemorySetting.addChangeListener(this._onModeChanged, this);
-    this._captureFilmStripSetting.addChangeListener(this._onModeChanged, this);
-
     this._panelToolbar.appendSeparator();
     var garbageCollectButton = new UI.ToolbarButton(Common.UIString('Collect garbage'), 'largeicon-trash-bin');
     garbageCollectButton.addEventListener('click', this._garbageCollectButtonClicked, this);
@@ -374,8 +390,20 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     this._panelToolbar.appendSeparator();
     this._cpuThrottlingCombobox = new UI.ToolbarComboBox(this._onCPUThrottlingChanged.bind(this));
+    this._panelToolbar.appendToolbarItem(this._createNetworkConditionsSelect());
     this._panelToolbar.appendToolbarItem(this._cpuThrottlingCombobox);
     this._populateCPUThrottingCombobox();
+    this._updateTimelineControls();
+  }
+
+  /**
+   * @return {!UI.ToolbarComboBox}
+   */
+  _createNetworkConditionsSelect() {
+    var toolbarItem = new UI.ToolbarComboBox(null);
+    toolbarItem.setMaxWidth(140);
+    Components.NetworkConditionsSelector.decorateSelect(toolbarItem.selectElement());
+    return toolbarItem;
   }
 
   _populateCPUThrottingCombobox() {
@@ -492,6 +520,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   _onModeChanged() {
+    if (this._bulkUpdate)
+      return;
     // Set up overview controls.
     this._overviewControls = [];
     this._overviewControls.push(new Timeline.TimelineEventOverviewResponsiveness(this._model, this._frameModel));
@@ -1221,6 +1251,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
 Timeline.TimelinePanel.Perspectives = {
   Load: 'Load',
   Responsiveness: 'Responsiveness',
+  JavaScript: 'JavaScript',
   Custom: 'Custom'
 };
 

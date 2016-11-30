@@ -223,7 +223,7 @@ Persistence.Persistence._muteCommit = Symbol('Persistence.MuteCommit');
 
 Persistence.Persistence._NodePrefix = '(function (exports, require, module, __filename, __dirname) { ';
 Persistence.Persistence._NodeSuffix = '\n});';
-Persistence.Persistence._NodeShebang = '#!/usr/bin/env node\n';
+Persistence.Persistence._NodeShebang = '#!/usr/bin/env node';
 
 Persistence.Persistence.Events = {
   BindingCreated: Symbol('BindingCreated'),

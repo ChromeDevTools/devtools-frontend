@@ -1,0 +1,18 @@
+{
+  "modules" : [
+    { "name": "platform", "type": "autostart" },
+    { "name": "ui", "type": "autostart" },
+    { "name": "host", "type": "autostart" },
+    { "name": "common", "type": "autostart" },
+    { "name": "workspace", "type": "autostart" },
+    { "name": "source_frame", "type": "autostart" },
+    { "name": "text_editor", "type": "autostart" },
+    { "name": "cm_modes", "type": "autostart" },
+    { "name": "diff", "type": "autostart" },
+    { "name": "shell", "type": "autostart" },
+    { "name": "test_runner", "type": "autostart" },
+    { "name": "ui_lazy" }
+  ],
+
+  "has_html": true
+}

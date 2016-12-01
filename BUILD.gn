@@ -21,6 +21,8 @@ devtools_core_base_files = [
   "front_end/heap_snapshot_worker.json",
   "front_end/utility_shared_worker.js",
   "front_end/utility_shared_worker.json",
+  "front_end/unit_test_runner.js",
+  "front_end/unit_test_runner.json",
   "front_end/toolbox.js",
   "front_end/toolbox.json",
   "front_end/Runtime.js",
@@ -334,10 +336,12 @@ devtools_module_json_files = [
   "front_end/formatter_worker/module.json",
   "front_end/sdk/module.json",
   "front_end/settings/module.json",
+  "front_end/shell/module.json",
   "front_end/source_frame/module.json",
   "front_end/sources/module.json",
   "front_end/snippets/module.json",
   "front_end/utility_shared_worker/module.json",
+  "front_end/test_runner/module.json",
   "front_end/text_editor/module.json",
   "front_end/timeline_model/module.json",
   "front_end/timeline/module.json",
@@ -710,6 +714,8 @@ devtools_terminal_js_files = [
   "front_end/terminal/xterm.js/build/xterm.css",
   "front_end/terminal/xterm.js/build/xterm.js",
 ]
+devtools_shell_js_files = [ "front_end/shell/TestShell.js" ]
+devtools_test_runner_js_files = [ "front_end/test_runner/TestRunner.js" ]
 devtools_timeline_model_js_files = [
   "front_end/timeline_model/TracingLayerTree.js",
   "front_end/timeline_model/TimelineFrameModel.js",
@@ -888,9 +894,10 @@ devtools_modules_js_files =
     devtools_resources_js_files + devtools_sass_js_files +
     devtools_security_js_files + devtools_screencast_js_files +
     devtools_formatter_worker_js_files + devtools_settings_js_files +
-    devtools_services_js_files + devtools_snippets_js_files +
-    devtools_source_frame_js_files + devtools_sources_js_files +
-    devtools_utility_shared_worker_js_files + devtools_text_editor_js_files +
+    devtools_services_js_files + devtools_shell_js_files +
+    devtools_snippets_js_files + devtools_source_frame_js_files +
+    devtools_sources_js_files + devtools_utility_shared_worker_js_files +
+    devtools_text_editor_js_files + devtools_test_runner_js_files +
     devtools_terminal_js_files + devtools_timeline_model_js_files +
     devtools_timeline_js_files + devtools_ui_lazy_js_files +
     devtools_layer_viewer_js_files + devtools_worker_service_js_files
@@ -911,6 +918,8 @@ generated_entry_files = [
   "$resources_out_dir/inspector.js",
   "$resources_out_dir/toolbox.html",
   "$resources_out_dir/toolbox.js",
+  "$resources_out_dir/unit_test_runner.html",
+  "$resources_out_dir/unit_test_runner.js",
 ]
 
 generated_workers = [
@@ -957,6 +966,7 @@ generated_remote_modules = [
 devtools_applications = [
   "inspector",
   "toolbox",
+  "unit_test_runner",
   "formatter_worker",
   "heap_snapshot_worker",
   "utility_shared_worker",
@@ -1103,6 +1113,7 @@ action("build_release_devtools") {
   inputs = helper_scripts + all_devtools_files + generated_scripts + [
              "front_end/inspector.html",
              "front_end/toolbox.html",
+             "front_end/unit_test_runner.html",
            ]
 
   outputs = generated_entry_files + generated_workers +
@@ -1129,11 +1140,13 @@ if (debug_devtools) {
     inputs = all_devtools_files + [
                "front_end/inspector.html",
                "front_end/toolbox.html",
+               "front_end/unit_test_runner.html",
              ]
 
     outputs = [
       "$resources_out_debug_dir/inspector.html",
       "$resources_out_debug_dir/toolbox.html",
+      "$resources_out_debug_dir/unit_test_runner.html",
     ]
 
     args = devtools_applications + [

@@ -1,0 +1,10 @@
+{
+  "dependencies": [
+    "common",
+    "test_runner",
+    "ui"
+  ],
+  "scripts": [
+    "TestShell.js"
+  ]
+}

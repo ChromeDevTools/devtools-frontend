@@ -9,7 +9,8 @@ Profiler.ProfileTypeRegistry = class {
     this._profileTypes = [];
 
     this.cpuProfileType = new Profiler.CPUProfileType();
-    this._addProfileType(this.cpuProfileType);
+    if (Runtime.queryParam('v8only') || InspectorFrontendHost.isUnderTest())
+      this._addProfileType(this.cpuProfileType);
     this.heapSnapshotProfileType = new Profiler.HeapSnapshotProfileType();
     this._addProfileType(this.heapSnapshotProfileType);
     this.samplingHeapProfileType = new Profiler.SamplingHeapProfileType();

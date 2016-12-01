@@ -6,7 +6,17 @@
             "id": "profiles",
             "title": "Profiles",
             "order": 60,
-            "className": "Profiler.ProfilesPanel"
+            "className": "Profiler.ProfilesPanel",
+            "condition": "v8only"
+        },
+        {
+            "type": "view",
+            "location": "panel",
+            "id": "profiles",
+            "title": "Memory",
+            "order": 60,
+            "className": "Profiler.ProfilesPanel",
+            "condition": "!v8only"
         },
         {
             "type": "@UI.ContextMenu.Provider",

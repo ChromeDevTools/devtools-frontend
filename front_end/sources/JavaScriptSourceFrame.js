@@ -794,7 +794,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
             new Set(decorations.map(decoration => decoration.bookmark).filter(bookmark => !!bookmark));
         var lineEnd = this._textEditor.line(lineNumber).length;
         var bookmarks = this._textEditor.bookmarks(
-            new Common.TextRange(lineNumber, 0, lineEnd, 0),
+            new Common.TextRange(lineNumber, 0, lineNumber, lineEnd),
             Sources.JavaScriptSourceFrame.BreakpointDecoration.bookmarkSymbol);
         for (var bookmark of bookmarks) {
           if (!actualBookmarks.has(bookmark))

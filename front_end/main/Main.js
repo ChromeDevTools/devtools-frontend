@@ -111,6 +111,7 @@ Main.Main = class {
     Runtime.experiments.register('resolveVariableNames', 'Resolve variable names');
     Runtime.experiments.register('timelineShowAllEvents', 'Show all events on Timeline', true);
     Runtime.experiments.register('timelineShowAllProcesses', 'Show all processes on Timeline', true);
+    Runtime.experiments.register('inlineBreakpoints', 'Show inline breakpoints');
     Runtime.experiments.register('securityPanel', 'Security panel');
     Runtime.experiments.register('sourceDiff', 'Source diff');
     Runtime.experiments.register('terminalInDrawer', 'Terminal in drawer', true);

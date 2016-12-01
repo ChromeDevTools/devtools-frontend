@@ -211,13 +211,15 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     function populate(resolve, reject) {
       var uiLocation = new Workspace.UILocation(this.uiSourceCode(), lineNumber, 0);
       this._scriptsPanel.appendUILocationItems(contextMenu, uiLocation);
-      var breakpoints = this._lineBreakpointDecorations(lineNumber).map(decoration => decoration.breakpoint);
+      var breakpoints = this._lineBreakpointDecorations(lineNumber)
+                            .map(decoration => decoration.breakpoint)
+                            .filter(breakpoint => !!breakpoint);
       if (!breakpoints.length) {
-        // This row doesn't have a breakpoint: We want to show Add Breakpoint and Add and Edit Breakpoint.
         contextMenu.appendItem(
             Common.UIString('Add breakpoint'), this._createNewBreakpoint.bind(this, lineNumber, '', true));
         contextMenu.appendItem(
-            Common.UIString('Add conditional breakpoint\u2026'), this._editBreakpointCondition.bind(this, lineNumber));
+            Common.UIString('Add conditional breakpoint\u2026'),
+            this._editBreakpointCondition.bind(this, lineNumber, null, null));
         contextMenu.appendItem(
             Common.UIString('Never pause here'), this._createNewBreakpoint.bind(this, lineNumber, 'false', true));
       } else {
@@ -228,7 +230,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
         if (hasOneBreakpoint) {
           contextMenu.appendItem(
               Common.UIString('Edit breakpoint\u2026'),
-              this._editBreakpointCondition.bind(this, lineNumber, breakpoints[0]));
+              this._editBreakpointCondition.bind(this, lineNumber, breakpoints[0], null));
         }
         var hasEnabled = breakpoints.some(breakpoint => breakpoint.enabled());
         if (hasEnabled) {
@@ -347,11 +349,15 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     delete this._muted;
     var decorations = Array.from(this._breakpointDecorations);
     this._breakpointDecorations.clear();
+    this._textEditor.operation(() => decorations.map(decoration => decoration.hide()));
     for (var decoration of decorations) {
+      if (!decoration.breakpoint)
+        continue;
+      var enabled = decoration.enabled;
       decoration.breakpoint.remove();
       var location = decoration.handle.resolve();
       if (location)
-        this._setBreakpoint(location.lineNumber, location.columnNumber, decoration.condition, decoration.enabled);
+        this._setBreakpoint(location.lineNumber, location.columnNumber, decoration.condition, enabled);
     }
   }
 
@@ -490,9 +496,10 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
 
   /**
    * @param {number} lineNumber
-   * @param {!Bindings.BreakpointManager.Breakpoint=} breakpoint
+   * @param {?Bindings.BreakpointManager.Breakpoint} breakpoint
+   * @param {?{lineNumber: number, columnNumber: number}} location
    */
-  _editBreakpointCondition(lineNumber, breakpoint) {
+  _editBreakpointCondition(lineNumber, breakpoint, location) {
     this._conditionElement = this._createConditionElement(lineNumber);
     this.textEditor.addDecoration(this._conditionElement, lineNumber);
 
@@ -508,6 +515,8 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
 
       if (breakpoint)
         breakpoint.setCondition(newText);
+      else if (location)
+        this._setBreakpoint(location.lineNumber, location.columnNumber, newText, true);
       else
         this._createNewBreakpoint(lineNumber, newText, true);
     }
@@ -737,6 +746,22 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
   }
 
   /**
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @return {?Sources.JavaScriptSourceFrame.BreakpointDecoration}
+   */
+  _breakpointDecoration(lineNumber, columnNumber) {
+    for (var decoration of this._breakpointDecorations) {
+      var location = decoration.handle.resolve();
+      if (!location)
+        continue;
+      if (location.lineNumber === lineNumber && location.columnNumber === columnNumber)
+        return decoration;
+    }
+    return null;
+  }
+
+  /**
    * @param {!Sources.JavaScriptSourceFrame.BreakpointDecoration} decoration
    */
   _updateBreakpointDecoration(decoration) {
@@ -758,24 +783,91 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
           continue;
         lineNumbers.add(location.lineNumber);
       }
+      delete this._scheduledBreakpointDecorationUpdates;
       for (var lineNumber of lineNumbers) {
         this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint', false);
         this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint-disabled', false);
         this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint-conditional', false);
+
         var decorations = this._lineBreakpointDecorations(lineNumber);
+        var actualBookmarks =
+            new Set(decorations.map(decoration => decoration.bookmark).filter(bookmark => !!bookmark));
+        var lineEnd = this._textEditor.line(lineNumber).length;
+        var bookmarks = this._textEditor.bookmarks(
+            new Common.TextRange(lineNumber, 0, lineEnd, 0),
+            Sources.JavaScriptSourceFrame.BreakpointDecoration.bookmarkSymbol);
+        for (var bookmark of bookmarks) {
+          if (!actualBookmarks.has(bookmark))
+            bookmark.clear();
+        }
         if (!decorations.length)
           continue;
         decorations.sort(Sources.JavaScriptSourceFrame.BreakpointDecoration.mostSpecificFirst);
         this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint', true);
         this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint-disabled', !decorations[0].enabled || this._muted);
         this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint-conditional', !!decorations[0].condition);
+        if (decorations.length > 1) {
+          for (var decoration of decorations) {
+            decoration.update();
+            if (!this._muted)
+              decoration.show();
+            else
+              decoration.hide();
+          }
+        } else {
+          decorations[0].update();
+          decorations[0].hide();
+        }
       }
-      delete this._scheduledBreakpointDecorationUpdates;
       this._breakpointDecorationsUpdatedForTest();
     }
   }
 
   _breakpointDecorationsUpdatedForTest() {
+  }
+
+  /**
+   * @param {!Sources.JavaScriptSourceFrame.BreakpointDecoration} decoration
+   * @param {!Event} event
+   */
+  _inlineBreakpointClick(decoration, event) {
+    event.consume(true);
+    if (decoration.breakpoint) {
+      if (event.shiftKey)
+        decoration.breakpoint.setEnabled(!decoration.breakpoint.enabled());
+      else
+        decoration.breakpoint.remove();
+    } else {
+      var location = decoration.handle.resolve();
+      if (!location)
+        return;
+      this._setBreakpoint(location.lineNumber, location.columnNumber, decoration.condition, true);
+    }
+  }
+
+  /**
+   * @param {!Sources.JavaScriptSourceFrame.BreakpointDecoration} decoration
+   * @param {!Event} event
+   */
+  _inlineBreakpointContextMenu(decoration, event) {
+    event.consume(true);
+    var location = decoration.handle.resolve();
+    if (!location)
+      return;
+    var contextMenu = new UI.ContextMenu(event);
+    if (decoration.breakpoint) {
+      contextMenu.appendItem(
+          Common.UIString('Edit breakpoint\u2026'),
+          this._editBreakpointCondition.bind(this, location.lineNumber, decoration.breakpoint, null));
+    } else {
+      contextMenu.appendItem(
+          Common.UIString('Add conditional breakpoint\u2026'),
+          this._editBreakpointCondition.bind(this, location.lineNumber, null, location));
+      contextMenu.appendItem(
+          Common.UIString('Never pause here'),
+          this._setBreakpoint.bind(this, location.lineNumber, location.columnNumber, 'false', true));
+    }
+    contextMenu.show();
   }
 
   /**
@@ -805,12 +897,77 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     if (this._shouldIgnoreExternalBreakpointEvents(event))
       return;
     var uiLocation = /** @type {!Workspace.UILocation} */ (event.data.uiLocation);
-    var handle = this._textEditor.textEditorPositionHandle(uiLocation.lineNumber, uiLocation.columnNumber);
+    var lineDecorations = this._lineBreakpointDecorations(uiLocation.lineNumber);
     var breakpoint = /** @type {!Bindings.BreakpointManager.Breakpoint} */ (event.data.breakpoint);
-    var decoration = new Sources.JavaScriptSourceFrame.BreakpointDecoration(handle, breakpoint);
-    this._breakpointDecorations.add(decoration);
+
+    var decoration = this._breakpointDecoration(uiLocation.lineNumber, uiLocation.columnNumber);
+    if (decoration) {
+      decoration.breakpoint = breakpoint;
+      decoration.condition = breakpoint.condition();
+      decoration.enabled = breakpoint.enabled();
+    } else {
+      var handle = this._textEditor.textEditorPositionHandle(uiLocation.lineNumber, uiLocation.columnNumber);
+      decoration = new Sources.JavaScriptSourceFrame.BreakpointDecoration(
+          this._textEditor, handle, breakpoint.condition(), breakpoint.enabled(), breakpoint);
+      decoration.element.addEventListener('click', this._inlineBreakpointClick.bind(this, decoration), true);
+      decoration.element.addEventListener(
+          'contextmenu', this._inlineBreakpointContextMenu.bind(this, decoration), true);
+      this._breakpointDecorations.add(decoration);
+    }
     breakpoint[Sources.JavaScriptSourceFrame.BreakpointDecoration._decorationSymbol] = decoration;
     this._updateBreakpointDecoration(decoration);
+    if (!lineDecorations.length && Runtime.experiments.isEnabled('inlineBreakpoints')) {
+      this._willAddInlineDecorationsForTest();
+      this._breakpointManager
+          .possibleBreakpoints(
+              this.uiSourceCode(), new Common.TextRange(uiLocation.lineNumber, 0, uiLocation.lineNumber + 1, 0))
+          .then(addInlineDecorations.bind(this, uiLocation.lineNumber));
+    }
+
+    /**
+     * @this {Sources.JavaScriptSourceFrame}
+     * @param {number} lineNumber
+     * @param {!Array<!Workspace.UILocation>} possibleLocations
+     */
+    function addInlineDecorations(lineNumber, possibleLocations) {
+      var decorations = this._lineBreakpointDecorations(lineNumber);
+      if (!decorations.some(decoration => !!decoration.breakpoint)) {
+        this._didAddInlineDecorationsForTest(false);
+        return;
+      }
+      /** @type {!Set<number>} */
+      var columns = new Set();
+      for (var decoration of decorations) {
+        var location = decoration.handle.resolve();
+        if (!location)
+          continue;
+        columns.add(location.columnNumber);
+      }
+      var updateWasScheduled = false;
+      for (var location of possibleLocations) {
+        if (columns.has(location.columnNumber))
+          continue;
+        var handle = this._textEditor.textEditorPositionHandle(location.lineNumber, location.columnNumber);
+        var decoration =
+            new Sources.JavaScriptSourceFrame.BreakpointDecoration(this._textEditor, handle, '', false, null);
+        decoration.element.addEventListener('click', this._inlineBreakpointClick.bind(this, decoration), true);
+        decoration.element.addEventListener(
+            'contextmenu', this._inlineBreakpointContextMenu.bind(this, decoration), true);
+        this._breakpointDecorations.add(decoration);
+        updateWasScheduled = true;
+        this._updateBreakpointDecoration(decoration);
+      }
+      this._didAddInlineDecorationsForTest(updateWasScheduled);
+    }
+  }
+
+  _willAddInlineDecorationsForTest() {
+  }
+
+  /**
+   * @param {boolean} updateWasScheduled
+   */
+  _didAddInlineDecorationsForTest(updateWasScheduled) {
   }
 
   /**
@@ -819,13 +976,25 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
   _breakpointRemoved(event) {
     if (this._shouldIgnoreExternalBreakpointEvents(event))
       return;
+    var uiLocation = /** @type {!Workspace.UILocation} */ (event.data.uiLocation);
     var breakpoint = /** @type {!Bindings.BreakpointManager.Breakpoint} */ (event.data.breakpoint);
     var decoration = breakpoint[Sources.JavaScriptSourceFrame.BreakpointDecoration._decorationSymbol];
     if (!decoration)
       return;
-    this._breakpointDecorations.delete(decoration);
     delete breakpoint[Sources.JavaScriptSourceFrame.BreakpointDecoration._decorationSymbol];
-    this._updateBreakpointDecoration(decoration);
+
+    decoration.breakpoint = null;
+    decoration.enabled = false;
+
+    var lineDecorations = this._lineBreakpointDecorations(uiLocation.lineNumber);
+    if (!lineDecorations.some(decoration => !!decoration.breakpoint)) {
+      for (var lineDecoration of lineDecorations) {
+        this._breakpointDecorations.delete(lineDecoration);
+        this._updateBreakpointDecoration(lineDecoration);
+      }
+    } else {
+      this._updateBreakpointDecoration(decoration);
+    }
   }
 
   /**
@@ -973,7 +1142,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
       return;
     }
     var hasDisabled = this._textEditor.hasLineClass(lineNumber, 'cm-breakpoint-disabled');
-    var breakpoints = decorations.map(decoration => decoration.breakpoint);
+    var breakpoints = decorations.map(decoration => decoration.breakpoint).filter(breakpoint => !!breakpoint);
     for (var breakpoint of breakpoints) {
       if (onlyDisable)
         breakpoint.setEnabled(hasDisabled);
@@ -1097,14 +1266,23 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
  */
 Sources.JavaScriptSourceFrame.BreakpointDecoration = class {
   /**
+   * @param {!TextEditor.CodeMirrorTextEditor} textEditor
    * @param {!TextEditor.TextEditorPositionHandle} handle
-   * @param {!Bindings.BreakpointManager.Breakpoint} breakpoint
+   * @param {string} condition
+   * @param {boolean} enabled
+   * @param {?Bindings.BreakpointManager.Breakpoint} breakpoint
    */
-  constructor(handle, breakpoint) {
+  constructor(textEditor, handle, condition, enabled, breakpoint) {
+    this._textEditor = textEditor;
     this.handle = handle;
-    this.condition = breakpoint.condition();
-    this.enabled = breakpoint.enabled();
+    this.condition = condition;
+    this.enabled = enabled;
     this.breakpoint = breakpoint;
+    this.element = UI.Icon.create('smallicon-inline-breakpoint');
+    this.element.classList.toggle('cm-inline-breakpoint', true);
+
+    /** @type {?TextEditor.TextEditorBookMark} */
+    this.bookmark = null;
   }
 
   /**
@@ -1113,12 +1291,41 @@ Sources.JavaScriptSourceFrame.BreakpointDecoration = class {
    * @return {number}
    */
   static mostSpecificFirst(decoration1, decoration2) {
-    if (!!decoration1.condition !== !!decoration2.condition)
-      return !!decoration1.condition ? -1 : 1;
     if (decoration1.enabled !== decoration2.enabled)
       return decoration1.enabled ? -1 : 1;
+    if (!!decoration1.condition !== !!decoration2.condition)
+      return !!decoration1.condition ? -1 : 1;
     return 0;
+  }
+
+  update() {
+    if (!!this.condition)
+      this.element.setIconType('smallicon-inline-breakpoint');
+    else
+      this.element.setIconType('smallicon-inline-breakpoint-conditional');
+    this.element.classList.toggle('cm-inline-disabled', !this.enabled);
+  }
+
+  show() {
+    if (this.bookmark || !Runtime.experiments.isEnabled('inlineBreakpoints'))
+      return;
+    var location = this.handle.resolve();
+    if (!location)
+      return;
+    this.bookmark = this._textEditor.addBookmark(
+        location.lineNumber, location.columnNumber, this.element,
+        Sources.JavaScriptSourceFrame.BreakpointDecoration.bookmarkSymbol);
+    this.bookmark[Sources.JavaScriptSourceFrame.BreakpointDecoration._elementSymbolForTest] = this.element;
+  }
+
+  hide() {
+    if (!this.bookmark)
+      return;
+    this.bookmark.clear();
+    this.bookmark = null;
   }
 };
 
 Sources.JavaScriptSourceFrame.BreakpointDecoration._decorationSymbol = Symbol('decoration');
+Sources.JavaScriptSourceFrame.BreakpointDecoration.bookmarkSymbol = Symbol('bookmark');
+Sources.JavaScriptSourceFrame.BreakpointDecoration._elementSymbolForTest = Symbol('element');

@@ -119,6 +119,39 @@
     opacity: 0.3;
 }
 
+.cm-inline-breakpoint {
+    position:relative;
+    top: 1px;
+    cursor: pointer;
+}
+
+.cm-execution-line-tail + .CodeMirror-widget {
+    background-color: #abbffe;
+}
+
+.source-frame-eval-expression + .CodeMirror-widget {
+    border: 1px solid rgb(163, 41, 34);
+    border-left-width: 0;
+    border-right-width: 0;
+    background-color: rgb(255, 255, 194);
+}
+
+.cm-inline-breakpoint.cm-execution-line-tail {
+    background-color: #698cfe;
+}
+
+.cm-execution-line-tail .cm-inline-breakpoint {
+    background-color: white
+}
+
+.cm-inline-breakpoint.cm-inline-conditional {
+    background-color: #ef9d0d;
+}
+
+.cm-inline-breakpoint.cm-inline-disabled {
+    opacity: 0.5;
+}
+
 div.CodeMirror span.CodeMirror-matchingbracket {
     background-color: rgba(0, 0, 0, 0.07);
     border-bottom: 1px solid rgba(0, 0, 0, 0.5);

@@ -2885,7 +2885,7 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
 
     var prefixResults = [];
     var anywhereResults = [];
-    this._cssCompletions.forEach(filterCompletions);
+    this._cssCompletions.forEach(filterCompletions.bind(this));
     var results = prefixResults.concat(anywhereResults);
 
     if (!this._isEditingName && !results.length && query.length > 1 && '!important'.startsWith(lowerQuery))
@@ -2899,13 +2899,16 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
 
     /**
      * @param {string} completion
+     * @this {Elements.StylesSidebarPane.CSSPropertyPrompt}
      */
     function filterCompletions(completion) {
       var index = completion.indexOf(lowerQuery);
-      if (index === 0)
-        prefixResults.push({title: completion, priority: SDK.cssMetadata().propertyUsageWeight(completion)});
-      else if (index > -1)
+      if (index === 0) {
+        var priority = this._isEditingName ? SDK.cssMetadata().propertyUsageWeight(completion) : 1;
+        prefixResults.push({title: completion, priority: priority});
+      } else if (index > -1) {
         anywhereResults.push({title: completion});
+      }
     }
   }
 };

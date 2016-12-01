@@ -285,14 +285,16 @@ UI.SuggestBox = class {
       element.classList.add('secondary');
     element.tabIndex = -1;
     var displayText = text.trimEnd(50 + query.length);
+
+    var suggestionText = element.createChild('span', 'suggestion-text');
     var index = displayText.toLowerCase().indexOf(query.toLowerCase());
     if (index > 0)
-      element.createChild('span').textContent = displayText.substring(0, index);
+      suggestionText.createChild('span').textContent = displayText.substring(0, index);
     if (index > -1)
-      element.createChild('span', 'query').textContent = displayText.substring(index, index + query.length);
-    element.createChild('span').textContent = displayText.substring(index > -1 ? index + query.length : 0);
+      suggestionText.createChild('span', 'query').textContent = displayText.substring(index, index + query.length);
+    suggestionText.createChild('span').textContent = displayText.substring(index > -1 ? index + query.length : 0);
+    suggestionText.createChild('span', 'spacer');
     element.__fullValue = text;
-    element.createChild('span', 'spacer');
     element.addEventListener('mousedown', this._onItemMouseDown.bind(this), false);
     return element;
   }

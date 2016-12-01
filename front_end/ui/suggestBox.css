@@ -75,8 +75,6 @@
 .suggest-box .suggest-box-content-item {
     padding: 1px;
     margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
     border: 1px solid transparent;
     padding-right: 0;
     white-space: nowrap;
@@ -87,9 +85,15 @@
     background-color: #f9f9f9;
 }
 
+.suggestion-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .suggestion-icon {
     user-select: none;
     align-self: center;
+    flex-shrink: 0;
 }
 
 .suggest-box .suggest-box-content-item .query {

@@ -32,9 +32,12 @@ See http://dev.chromium.org/developers/how-tos/depottools/presubmit-scripts
 for more details about the presubmit API built into gcl.
 """
 
+from collections import namedtuple
 import sys
 
 compile_note = "Be sure to run your patch by the compile_frontend.py script prior to committing!"
+
+CheckOutput = namedtuple('CheckOutput', ['results', 'has_errors'])
 
 
 def _CheckNodeAndNPMModules(input_api, output_api):
@@ -45,13 +48,14 @@ def _CheckNodeAndNPMModules(input_api, output_api):
         stderr=input_api.subprocess.STDOUT)
     out, _ = process.communicate()
     if process.returncode != 0:
-        return [output_api.PresubmitError(out)]
-    return [output_api.PresubmitNotifyResult(out)]
+        return CheckOutput([output_api.PresubmitError(out)], has_errors=True)
+    return CheckOutput([output_api.PresubmitNotifyResult(out)], has_errors=False)
+
 
 def _FormatDevtools(input_api, output_api):
     affected_front_end_files = _getAffectedFrontEndFiles(input_api)
     if len(affected_front_end_files) == 0:
-        return []
+        return CheckOutput([], has_errors=False)
     original_sys_path = sys.path
     try:
         sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts")]
@@ -66,9 +70,9 @@ def _FormatDevtools(input_api, output_api):
         args=[node_path, format_path] + [glob_arg, "--output-replacements-xml"])
     check_formatting_out, _ = check_formatting_process.communicate()
     if check_formatting_process.returncode != 0:
-        return [output_api.PresubmitError(check_formatting_out)]
+        return CheckOutput([output_api.PresubmitError(check_formatting_out)], has_errors=True)
     if "</replacement>" not in check_formatting_out:
-        return [output_api.PresubmitNotifyResult("CL is properly formatted")]
+        return CheckOutput([output_api.PresubmitNotifyResult("CL is properly formatted")], has_errors=False)
 
     format_args = [node_path, format_path] + [glob_arg]
     format_process = _inputPopen(input_api, format_args)
@@ -86,10 +90,10 @@ def _FormatDevtools(input_api, output_api):
     reformat_process = _inputPopen(input_api, format_args)
     reformat_process.communicate()
 
-    return [output_api.PresubmitError("ERROR: Found formatting violations.\n"
+    return CheckOutput([output_api.PresubmitError("ERROR: Found formatting violations.\n"
                                       "Ran clang-format on files changed in CL\n"
                                       "Use git status to check the formatting changes"),
-            output_api.PresubmitError(format_process_out)]
+            output_api.PresubmitError(format_process_out)], has_errors=True)
 
 
 def _CheckDevtoolsStyle(input_api, output_api):
@@ -202,8 +206,19 @@ def _CheckCSSViolations(input_api, output_api):
 
 def CheckChangeOnUpload(input_api, output_api):
     results = []
-    results.extend(_CheckNodeAndNPMModules(input_api, output_api))
-    results.extend(_FormatDevtools(input_api, output_api))
+
+    (node_results, has_errors) = _CheckNodeAndNPMModules(input_api, output_api)
+    results.extend(node_results)
+    if has_errors:
+        results.append(output_api.PresubmitError("ERROR: Bailed out early because error using node.js/npm"))
+        return results
+
+    (format_results, has_errors) = _FormatDevtools(input_api, output_api)
+    results.extend(format_results)
+    if has_errors:
+        results.append(output_api.PresubmitError("ERROR: Bailed out early because formatting errors were found"))
+        return results
+
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
     results.extend(_CompileDevtoolsFrontend(input_api, output_api))
     results.extend(_CheckConvertSVGToPNGHashes(input_api, output_api))
@@ -215,12 +230,14 @@ def CheckChangeOnUpload(input_api, output_api):
 def CheckChangeOnCommit(input_api, output_api):
     return []
 
+
 def _getAffectedFrontEndFiles(input_api):
     local_paths = [f.AbsoluteLocalPath() for f in input_api.AffectedFiles() if f.Action() != "D"]
     devtools_root = input_api.PresubmitLocalPath()
     devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
     affected_front_end_files = [file_name for file_name in local_paths if devtools_front_end in file_name and file_name.endswith(".js")]
     return [input_api.os_path.relpath(file_name, devtools_root) for file_name in affected_front_end_files]
+
 
 def _inputPopen(input_api, args):
     return input_api.subprocess.Popen(

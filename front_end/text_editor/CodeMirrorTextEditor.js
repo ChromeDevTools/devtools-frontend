@@ -141,7 +141,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
     this._shouldClearHistory = true;
     this._lineSeparator = '\n';
 
-    this._fixWordMovement = new TextEditor.CodeMirrorTextEditor.FixWordMovement(this._codeMirror);
+    TextEditor.CodeMirrorTextEditor._fixWordMovement(this._codeMirror);
+
     this._selectNextOccurrenceController =
         new TextEditor.CodeMirrorTextEditor.SelectNextOccurrenceController(this, this._codeMirror);
 
@@ -155,7 +156,6 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
 
     /** @type {!Multimap<number, !TextEditor.CodeMirrorTextEditor.Decoration>} */
     this._decorations = new Multimap();
-    this._nestedUpdatesCounter = 0;
 
     this.element.addEventListener('focus', this._handleElementFocus.bind(this), false);
     this.element.addEventListener('keydown', this._handleKeyDown.bind(this), true);
@@ -311,6 +311,53 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       mode.install(extension);
       TextEditor.CodeMirrorTextEditor._loadedMimeModeExtensions.add(extension);
     }
+  }
+
+  /**
+   * @param {!CodeMirror} codeMirror
+   */
+  static _fixWordMovement(codeMirror) {
+    function moveLeft(shift, codeMirror) {
+      codeMirror.setExtending(shift);
+      var cursor = codeMirror.getCursor('head');
+      codeMirror.execCommand('goGroupLeft');
+      var newCursor = codeMirror.getCursor('head');
+      if (newCursor.ch === 0 && newCursor.line !== 0) {
+        codeMirror.setExtending(false);
+        return;
+      }
+
+      var skippedText = codeMirror.getRange(newCursor, cursor, '#');
+      if (/^\s+$/.test(skippedText))
+        codeMirror.execCommand('goGroupLeft');
+      codeMirror.setExtending(false);
+    }
+
+    function moveRight(shift, codeMirror) {
+      codeMirror.setExtending(shift);
+      var cursor = codeMirror.getCursor('head');
+      codeMirror.execCommand('goGroupRight');
+      var newCursor = codeMirror.getCursor('head');
+      if (newCursor.ch === 0 && newCursor.line !== 0) {
+        codeMirror.setExtending(false);
+        return;
+      }
+
+      var skippedText = codeMirror.getRange(cursor, newCursor, '#');
+      if (/^\s+$/.test(skippedText))
+        codeMirror.execCommand('goGroupRight');
+      codeMirror.setExtending(false);
+    }
+
+    var modifierKey = Host.isMac() ? 'Alt' : 'Ctrl';
+    var leftKey = modifierKey + '-Left';
+    var rightKey = modifierKey + '-Right';
+    var keyMap = {};
+    keyMap[leftKey] = moveLeft.bind(null, false);
+    keyMap[rightKey] = moveRight.bind(null, false);
+    keyMap['Shift-' + leftKey] = moveLeft.bind(null, true);
+    keyMap['Shift-' + rightKey] = moveRight.bind(null, true);
+    codeMirror.addKeyMap(keyMap);
   }
 
   /**
@@ -1317,58 +1364,6 @@ TextEditor.CodeMirrorPositionHandle = class {
   equal(positionHandle) {
     return positionHandle._lineHandle === this._lineHandle && positionHandle._columnNumber === this._columnNumber &&
         positionHandle._codeMirror === this._codeMirror;
-  }
-};
-
-/**
- * @unrestricted
- */
-TextEditor.CodeMirrorTextEditor.FixWordMovement = class {
-  /**
-   * @param {!CodeMirror} codeMirror
-   */
-  constructor(codeMirror) {
-    function moveLeft(shift, codeMirror) {
-      codeMirror.setExtending(shift);
-      var cursor = codeMirror.getCursor('head');
-      codeMirror.execCommand('goGroupLeft');
-      var newCursor = codeMirror.getCursor('head');
-      if (newCursor.ch === 0 && newCursor.line !== 0) {
-        codeMirror.setExtending(false);
-        return;
-      }
-
-      var skippedText = codeMirror.getRange(newCursor, cursor, '#');
-      if (/^\s+$/.test(skippedText))
-        codeMirror.execCommand('goGroupLeft');
-      codeMirror.setExtending(false);
-    }
-
-    function moveRight(shift, codeMirror) {
-      codeMirror.setExtending(shift);
-      var cursor = codeMirror.getCursor('head');
-      codeMirror.execCommand('goGroupRight');
-      var newCursor = codeMirror.getCursor('head');
-      if (newCursor.ch === 0 && newCursor.line !== 0) {
-        codeMirror.setExtending(false);
-        return;
-      }
-
-      var skippedText = codeMirror.getRange(cursor, newCursor, '#');
-      if (/^\s+$/.test(skippedText))
-        codeMirror.execCommand('goGroupRight');
-      codeMirror.setExtending(false);
-    }
-
-    var modifierKey = Host.isMac() ? 'Alt' : 'Ctrl';
-    var leftKey = modifierKey + '-Left';
-    var rightKey = modifierKey + '-Right';
-    var keyMap = {};
-    keyMap[leftKey] = moveLeft.bind(null, false);
-    keyMap[rightKey] = moveRight.bind(null, false);
-    keyMap['Shift-' + leftKey] = moveLeft.bind(null, true);
-    keyMap['Shift-' + rightKey] = moveRight.bind(null, true);
-    codeMirror.addKeyMap(keyMap);
   }
 };
 

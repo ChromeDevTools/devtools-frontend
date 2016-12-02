@@ -15,14 +15,22 @@ Components.RemoteObjectPreviewFormatter = class {
       parentElement.appendChild(this.renderPropertyPreview(preview.type, preview.subtype, description));
       return;
     }
-    if (description && preview.subtype !== 'array' && preview.subtype !== 'typedarray') {
+    var isArray = preview.subtype === 'array' || preview.subtype === 'typedarray';
+    if (description && !isArray) {
       var text = preview.subtype ? description : this._abbreviateFullQualifiedClassName(description);
       parentElement.createTextChildren(text, ' ');
     }
+
+    parentElement.createTextChild(isArray ? '[' : '{');
     if (preview.entries)
       this._appendEntriesPreview(parentElement, preview);
+    else if (isArray)
+      this._appendArrayPropertiesPreview(parentElement, preview);
     else
-      this._appendPropertiesPreview(parentElement, preview);
+      this._appendObjectPropertiesPreview(parentElement, preview);
+    if (preview.overflow)
+      parentElement.createChild('span').textContent = '\u2026';
+    parentElement.createTextChild(isArray ? ']' : '}');
   }
 
   /**
@@ -40,14 +48,8 @@ Components.RemoteObjectPreviewFormatter = class {
    * @param {!Element} parentElement
    * @param {!Protocol.Runtime.ObjectPreview} preview
    */
-  _appendPropertiesPreview(parentElement, preview) {
-    var isArray = preview.subtype === 'array' || preview.subtype === 'typedarray';
-    var arrayLength = SDK.RemoteObject.arrayLength(preview);
-    var properties = preview.properties;
-    if (isArray)
-      properties = properties.slice().stableSort(compareIndexesFirst);
-    else
-      properties = properties.slice().stableSort(compareFunctionsLast);
+  _appendObjectPropertiesPreview(parentElement, preview) {
+    var properties = preview.properties.slice().stableSort(compareFunctionsLast);
 
     /**
      * @param {!Protocol.Runtime.PropertyPreview} a
@@ -60,6 +62,26 @@ Components.RemoteObjectPreviewFormatter = class {
         return 1;
       return 0;
     }
+
+    for (var i = 0; i < properties.length; ++i) {
+      if (i > 0)
+        parentElement.createTextChild(', ');
+
+      var property = properties[i];
+      parentElement.appendChild(this._renderDisplayName(property.name));
+      parentElement.createTextChild(': ');
+      parentElement.appendChild(this._renderPropertyPreviewOrAccessor([property]));
+    }
+  }
+
+  /**
+   * @param {!Element} parentElement
+   * @param {!Protocol.Runtime.ObjectPreview} preview
+   */
+  _appendArrayPropertiesPreview(parentElement, preview) {
+    var arrayLength = SDK.RemoteObject.arrayLength(preview);
+    var properties = preview.properties;
+    properties = properties.slice().stableSort(compareIndexesFirst);
 
     /**
      * @param {!Protocol.Runtime.PropertyPreview} a
@@ -84,26 +106,17 @@ Components.RemoteObjectPreviewFormatter = class {
       return -1;
     }
 
-    parentElement.createTextChild(isArray ? '[' : '{');
     for (var i = 0; i < properties.length; ++i) {
       if (i > 0)
         parentElement.createTextChild(', ');
 
       var property = properties[i];
-      var name = property.name;
-      if (!isArray || name !== String(i) || i >= arrayLength) {
-        if (/^\s|\s$|^$|\n/.test(name))
-          parentElement.createChild('span', 'name').createTextChildren('"', name.replace(/\n/g, '\u21B5'), '"');
-        else
-          parentElement.createChild('span', 'name').textContent = name;
+      if (property.name !== String(i) || i >= arrayLength) {
+        parentElement.appendChild(this._renderDisplayName(property.name));
         parentElement.createTextChild(': ');
       }
-
       parentElement.appendChild(this._renderPropertyPreviewOrAccessor([property]));
     }
-    if (preview.overflow)
-      parentElement.createChild('span').textContent = '\u2026';
-    parentElement.createTextChild(isArray ? ']' : '}');
   }
 
   /**
@@ -111,7 +124,6 @@ Components.RemoteObjectPreviewFormatter = class {
    * @param {!Protocol.Runtime.ObjectPreview} preview
    */
   _appendEntriesPreview(parentElement, preview) {
-    parentElement.createTextChild('{');
     for (var i = 0; i < preview.entries.length; ++i) {
       if (i > 0)
         parentElement.createTextChild(', ');
@@ -123,9 +135,17 @@ Components.RemoteObjectPreviewFormatter = class {
       }
       this.appendObjectPreview(parentElement, entry.value);
     }
-    if (preview.overflow)
-      parentElement.createChild('span').textContent = '\u2026';
-    parentElement.createTextChild('}');
+  }
+
+  /**
+   * @param {string} name
+   * @return {!Element}
+   */
+  _renderDisplayName(name) {
+    var result = createElementWithClass('span', 'name');
+    var needsQuotes = /^\s|\s$|^$|\n/.test(name);
+    result.textContent = needsQuotes ? '"' + name.replace(/\n/g, '\u21B5') + '"' : name;
+    return result;
   }
 
   /**

@@ -70,6 +70,8 @@ SDK.RemoteObject = class {
   static arrayLength(object) {
     if (object.subtype !== 'array' && object.subtype !== 'typedarray')
       return 0;
+    // Array lengths in V8-generated descriptions switched from square brackets to parentheses.
+    // Both formats are checked in case the front end is dealing with an old version of V8.
     var matches = object.description.match(/\[([0-9]+)\]/) || object.description.match(/\(([0-9]+)\)/);
     if (!matches)
       return 0;

@@ -29,7 +29,6 @@
  */
 
 /**
- * @implements {Network.NetworkLogEntry}
  * @unrestricted
  */
 Network.NetworkDataGridNode = class extends UI.SortableDataGridNode {
@@ -260,7 +259,6 @@ Network.NetworkDataGridNode = class extends UI.SortableDataGridNode {
   }
 
   /**
-   * @override
    * @return {!SDK.NetworkRequest}
    */
   request() {
@@ -268,7 +266,6 @@ Network.NetworkDataGridNode = class extends UI.SortableDataGridNode {
   }
 
   /**
-   * @override
    * @return {boolean}
    */
   isNavigationRequest() {
@@ -603,21 +600,4 @@ Network.NetworkDataGridNode = class extends UI.SortableDataGridNode {
     subtitleElement.textContent = subtitleText;
     cellElement.appendChild(subtitleElement);
   }
-};
-
-/**
- * @interface
- */
-Network.NetworkLogEntry = function() {};
-
-Network.NetworkLogEntry.prototype = {
-  /**
-   * @return {!SDK.NetworkRequest}
-   */
-  request() {},
-
-  /**
-   * @return {boolean}
-   */
-  isNavigationRequest() {}
 };

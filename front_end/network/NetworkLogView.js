@@ -534,13 +534,12 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   /**
-   * @param {?Network.NetworkLogEntry} logEntry
+   * @param {?Network.NetworkDataGridNode} node
    * @param {boolean} highlightInitiatorChain
    */
-  setHoveredLogEntry(logEntry, highlightInitiatorChain) {
-    // TODO(allada) Move this into LogEntry/NetworkDataGridNode.
-    this._setHoveredNode(/** @type {?Network.NetworkDataGridNode} */ (logEntry), highlightInitiatorChain);
-    this._highlightInitiatorChain((logEntry && highlightInitiatorChain) ? logEntry.request() : null);
+  setHoveredNode(node, highlightInitiatorChain) {
+    this._setHoveredNode(node, highlightInitiatorChain);
+    this._highlightInitiatorChain((node && highlightInitiatorChain) ? node.request() : null);
   }
 
   /**
@@ -553,7 +552,7 @@ Network.NetworkLogView = class extends UI.VBox {
     this._hoveredNode = node;
     if (this._hoveredNode)
       this._hoveredNode.element().classList.add('hover');
-    this._columns.setHoveredLogEntry(this._hoveredNode, !!highlightInitiatorChain);
+    this._columns.setHoveredNode(this._hoveredNode, !!highlightInitiatorChain);
   }
 
   /**

@@ -117,7 +117,6 @@
     cursor: default;
     min-width: 100%;
     min-height: 100%;
-    -webkit-transform: translateZ(0);
     padding-left: 2px;
 }
 

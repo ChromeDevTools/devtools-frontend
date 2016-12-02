@@ -32,12 +32,6 @@
 Elements.InspectElementModeController = class {
   constructor() {
     this._toggleSearchAction = UI.actionRegistry.action('elements.toggle-element-search');
-    if (Runtime.experiments.isEnabled('layoutEditor')) {
-      this._layoutEditorButton =
-          new UI.ToolbarToggle(Common.UIString('Toggle Layout Editor'), 'largeicon-layout-editor');
-      this._layoutEditorButton.addEventListener('click', this._toggleLayoutEditor, this);
-    }
-
     this._mode = Protocol.DOM.InspectMode.None;
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     SDK.targetManager.observeTargets(this, SDK.Target.Capability.DOM);
@@ -71,21 +65,9 @@ Elements.InspectElementModeController = class {
         this._mode === Protocol.DOM.InspectMode.SearchForUAShadowDOM;
   }
 
-  /**
-   * @return {boolean}
-   */
-  isInLayoutEditorMode() {
-    return this._mode === Protocol.DOM.InspectMode.ShowLayoutEditor;
-  }
-
   stopInspection() {
     if (this._mode && this._mode !== Protocol.DOM.InspectMode.None)
       this._toggleInspectMode();
-  }
-
-  _toggleLayoutEditor() {
-    var mode = this.isInLayoutEditorMode() ? Protocol.DOM.InspectMode.None : Protocol.DOM.InspectMode.ShowLayoutEditor;
-    this._setMode(mode);
   }
 
   _toggleInspectMode() {
@@ -110,13 +92,6 @@ Elements.InspectElementModeController = class {
     this._mode = mode;
     for (var domModel of SDK.DOMModel.instances())
       domModel.setInspectMode(mode);
-
-    if (this._layoutEditorButton) {
-      this._layoutEditorButton.setEnabled(!this.isInInspectElementMode());
-      this._layoutEditorButton.setToggled(this.isInLayoutEditorMode());
-    }
-
-    this._toggleSearchAction.setEnabled(!this.isInLayoutEditorMode());
     this._toggleSearchAction.setToggled(this.isInInspectElementMode());
   }
 
@@ -126,8 +101,6 @@ Elements.InspectElementModeController = class {
 
     this._mode = Protocol.DOM.InspectMode.None;
     this._toggleSearchAction.setToggled(false);
-    if (this._layoutEditorButton)
-      this._layoutEditorButton.setToggled(false);
   }
 };
 
@@ -147,23 +120,6 @@ Elements.InspectElementModeController.ToggleSearchActionDelegate = class {
       return false;
     Elements.inspectElementModeController._toggleInspectMode();
     return true;
-  }
-};
-
-/**
- * @implements {UI.ToolbarItem.Provider}
- * @unrestricted
- */
-Elements.InspectElementModeController.LayoutEditorButtonProvider = class {
-  /**
-   * @override
-   * @return {?UI.ToolbarItem}
-   */
-  item() {
-    if (!Elements.inspectElementModeController)
-      return null;
-
-    return Elements.inspectElementModeController._layoutEditorButton;
   }
 };
 

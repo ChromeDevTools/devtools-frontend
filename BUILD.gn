@@ -448,7 +448,7 @@ devtools_elements_js_files = [
   "front_end/elements/MetricsSidebarPane.js",
   "front_end/elements/PlatformFontsWidget.js",
   "front_end/elements/PropertiesWidget.js",
-  "front_end/elements/PropertyChangeHighlighter.js",
+  "front_end/elements/StylePropertyHighlighter.js",
   "front_end/elements/StylesSidebarPane.js",
   "front_end/elements/ComputedStyleWidget.js",
 ]

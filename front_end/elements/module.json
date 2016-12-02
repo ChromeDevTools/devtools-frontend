@@ -169,13 +169,6 @@
             "order": 0
         },
         {
-            "type": "@UI.ToolbarItem.Provider",
-            "className": "Elements.InspectElementModeController.LayoutEditorButtonProvider",
-            "order": 4,
-            "location": "styles-sidebarpane-toolbar",
-            "experiment": "layoutEditor"
-        },
-        {
             "type": "@UI.ViewLocationResolver",
             "name": "elements-sidebar",
             "className": "Elements.ElementsPanel"
@@ -225,7 +218,7 @@
         "MetricsSidebarPane.js",
         "PlatformFontsWidget.js",
         "PropertiesWidget.js",
-        "PropertyChangeHighlighter.js",
+        "StylePropertyHighlighter.js",
         "StylesSidebarPane.js",
         "ComputedStyleWidget.js",
         "ElementsPanel.js",

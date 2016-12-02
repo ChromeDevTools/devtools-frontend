@@ -47,9 +47,6 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     /** @type {!Array<!Elements.SectionBlock>} */
     this._sectionBlocks = [];
     Elements.StylesSidebarPane._instance = this;
-
-    SDK.targetManager.addModelListener(
-        SDK.CSSModel, SDK.CSSModel.Events.LayoutEditorChange, this._onLayoutEditorChange, this);
     UI.context.addFlavorChangeListener(SDK.DOMNode, this.forceUpdate, this);
   }
 
@@ -151,22 +148,10 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
   }
 
   /**
-   * @param {!Common.Event} event
-   */
-  _onLayoutEditorChange(event) {
-    var cssModel = /** @type {!SDK.CSSModel} */ (event.target);
-    var styleSheetId = event.data['id'];
-    var sourceRange = /** @type {!Protocol.CSS.SourceRange} */ (event.data['range']);
-    var range = Common.TextRange.fromObject(sourceRange);
-    this._decorator = new Elements.PropertyChangeHighlighter(this, cssModel, styleSheetId, range);
-    this.update();
-  }
-
-  /**
    * @param {!SDK.CSSProperty} cssProperty
    */
   revealProperty(cssProperty) {
-    this._decorator = new Elements.PropertyRevealHighlighter(this, cssProperty);
+    this._decorator = new Elements.StylePropertyHighlighter(this, cssProperty);
     this._decorator.perform();
     this.update();
   }

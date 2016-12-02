@@ -69,6 +69,8 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
 
     /** @type {!Set<!Sources.JavaScriptSourceFrame.BreakpointDecoration>} */
     this._breakpointDecorations = new Set();
+    /** @type {!Map<!Bindings.BreakpointManager.Breakpoint, !Sources.JavaScriptSourceFrame.BreakpointDecoration>} */
+    this._decorationByBreakpoint = new Map();
 
     /** @type {!Map.<!SDK.Target, !Bindings.ResourceScriptFile>}*/
     this._scriptFileForTarget = new Map();
@@ -912,7 +914,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
           'contextmenu', this._inlineBreakpointContextMenu.bind(this, decoration), true);
       this._breakpointDecorations.add(decoration);
     }
-    breakpoint[Sources.JavaScriptSourceFrame.BreakpointDecoration._decorationSymbol] = decoration;
+    this._decorationByBreakpoint.set(breakpoint, decoration);
     this._updateBreakpointDecoration(decoration);
     if (!lineDecorations.length && Runtime.experiments.isEnabled('inlineBreakpoints')) {
       this._willAddInlineDecorationsForTest();
@@ -976,10 +978,10 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
       return;
     var uiLocation = /** @type {!Workspace.UILocation} */ (event.data.uiLocation);
     var breakpoint = /** @type {!Bindings.BreakpointManager.Breakpoint} */ (event.data.breakpoint);
-    var decoration = breakpoint[Sources.JavaScriptSourceFrame.BreakpointDecoration._decorationSymbol];
+    var decoration = this._decorationByBreakpoint.get(breakpoint);
     if (!decoration)
       return;
-    delete breakpoint[Sources.JavaScriptSourceFrame.BreakpointDecoration._decorationSymbol];
+    this._decorationByBreakpoint.delete(breakpoint);
 
     decoration.breakpoint = null;
     decoration.enabled = false;
@@ -1324,6 +1326,5 @@ Sources.JavaScriptSourceFrame.BreakpointDecoration = class {
   }
 };
 
-Sources.JavaScriptSourceFrame.BreakpointDecoration._decorationSymbol = Symbol('decoration');
 Sources.JavaScriptSourceFrame.BreakpointDecoration.bookmarkSymbol = Symbol('bookmark');
 Sources.JavaScriptSourceFrame.BreakpointDecoration._elementSymbolForTest = Symbol('element');

@@ -70,8 +70,10 @@ Sources.SourcesView = class extends UI.VBox {
 
       var unsavedSourceCodes = [];
       var projects = Workspace.workspace.projectsForType(Workspace.projectTypes.FileSystem);
-      for (var i = 0; i < projects.length; ++i)
-        unsavedSourceCodes = unsavedSourceCodes.concat(projects[i].uiSourceCodes().filter(isUnsaved));
+      for (var i = 0; i < projects.length; ++i) {
+        unsavedSourceCodes =
+            unsavedSourceCodes.concat(projects[i].uiSourceCodes().filter(sourceCode => sourceCode.isDirty()));
+      }
 
       if (!unsavedSourceCodes.length)
         return;
@@ -80,17 +82,6 @@ Sources.SourcesView = class extends UI.VBox {
       UI.viewManager.showView('sources');
       for (var i = 0; i < unsavedSourceCodes.length; ++i)
         Common.Revealer.reveal(unsavedSourceCodes[i]);
-
-      /**
-       * @param {!Workspace.UISourceCode} sourceCode
-       * @return {boolean}
-       */
-      function isUnsaved(sourceCode) {
-        var binding = Persistence.persistence.binding(sourceCode);
-        if (binding)
-          return binding.network.isDirty();
-        return sourceCode.isDirty();
-      }
     }
 
     if (!window.opener)

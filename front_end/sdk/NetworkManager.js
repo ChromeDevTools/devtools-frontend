@@ -326,7 +326,8 @@ SDK.NetworkDispatcher = class {
     networkRequest.hasNetworkData = true;
     this._updateNetworkRequestWithRequest(networkRequest, request);
     networkRequest.setIssueTime(time, wallTime);
-    networkRequest.setResourceType(Common.resourceTypes[resourceType]);
+    networkRequest.setResourceType(
+        resourceType ? Common.resourceTypes[resourceType] : Protocol.Page.ResourceType.Other);
 
     this._startNetworkRequest(networkRequest);
   }

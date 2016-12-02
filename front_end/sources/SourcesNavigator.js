@@ -243,7 +243,7 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
    */
   _handleEvaluateSnippet(uiSourceCode) {
     var executionContext = UI.context.flavor(SDK.ExecutionContext);
-    if (uiSourceCode.project().type() !== Workspace.projectTypes.Snippets || !executionContext)
+    if (!executionContext)
       return;
     Snippets.scriptSnippetModel.evaluateScriptSnippet(executionContext, uiSourceCode);
   }

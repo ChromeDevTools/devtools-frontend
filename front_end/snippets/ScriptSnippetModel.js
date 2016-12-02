@@ -199,6 +199,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   evaluateScriptSnippet(executionContext, uiSourceCode) {
+    console.assert(uiSourceCode.project().type() === Workspace.projectTypes.Snippets);
     var breakpointLocations = this._removeBreakpoints(uiSourceCode);
     this._releaseSnippetScript(uiSourceCode);
     this._restoreBreakpoints(uiSourceCode, breakpointLocations);

@@ -206,11 +206,11 @@ Sources.ScriptFormatterEditorAction = class {
   _isFormatableScript(uiSourceCode) {
     if (!uiSourceCode)
       return false;
-    if (Persistence.persistence.binding(uiSourceCode))
+    if (uiSourceCode.project().canSetFileContent())
       return false;
-    var supportedProjectTypes =
-        [Workspace.projectTypes.Network, Workspace.projectTypes.Debugger, Workspace.projectTypes.ContentScripts];
-    if (supportedProjectTypes.indexOf(uiSourceCode.project().type()) === -1)
+    if (uiSourceCode.project().type() === Workspace.projectTypes.Formatter)
+      return false;
+    if (Persistence.persistence.binding(uiSourceCode))
       return false;
     return uiSourceCode.contentType().hasScripts();
   }

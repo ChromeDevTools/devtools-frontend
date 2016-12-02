@@ -118,8 +118,6 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     if (!uiSourceCode.contentType().hasScripts())
       return;
     var projectType = uiSourceCode.project().type();
-    if (projectType === Workspace.projectTypes.Snippets)
-      return;
     if (!Bindings.blackboxManager.isBlackboxedUISourceCode(uiSourceCode)) {
       this._hideBlackboxInfobar();
       return;

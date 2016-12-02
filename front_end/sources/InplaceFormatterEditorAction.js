@@ -57,12 +57,11 @@ Sources.InplaceFormatterEditorAction = class {
   _isFormattable(uiSourceCode) {
     if (!uiSourceCode)
       return false;
-    if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem)
+    if (uiSourceCode.project().canSetFileContent())
       return true;
     if (Persistence.persistence.binding(uiSourceCode))
       return true;
-    return uiSourceCode.contentType().isStyleSheet() ||
-        uiSourceCode.project().type() === Workspace.projectTypes.Snippets;
+    return uiSourceCode.contentType().isStyleSheet();
   }
 
   _formatSourceInPlace() {

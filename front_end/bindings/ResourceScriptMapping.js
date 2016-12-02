@@ -312,7 +312,7 @@ Bindings.ResourceScriptFile = class extends Common.Object {
   }
 
   _workingCopyCommitted(event) {
-    if (this._uiSourceCode.project().type() === Workspace.projectTypes.Snippets)
+    if (this._uiSourceCode.project().canSetFileContent())
       return;
     if (!this._script)
       return;

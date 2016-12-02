@@ -540,7 +540,7 @@ Sources.SourcesPanel = class extends UI.Panel {
    */
   _runSnippet() {
     var uiSourceCode = this._sourcesView.currentUISourceCode();
-    if (uiSourceCode.project().type() !== Workspace.projectTypes.Snippets)
+    if (!uiSourceCode)
       return false;
 
     var currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
@@ -831,16 +831,14 @@ Sources.SourcesPanel = class extends UI.Panel {
       return;
 
     var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (target);
-    var projectType = uiSourceCode.project().type();
-
-    if (projectType !== Workspace.projectTypes.Debugger &&
+    if (!uiSourceCode.isFromServiceProject() &&
         !event.target.isSelfOrDescendant(this._navigatorTabbedLocation.widget().element)) {
       contextMenu.appendItem(
           Common.UIString.capitalize('Reveal in ^navigator'), this._handleContextMenuReveal.bind(this, uiSourceCode));
       contextMenu.appendSeparator();
     }
     this._appendUISourceCodeMappingItems(contextMenu, uiSourceCode);
-    if (projectType !== Workspace.projectTypes.FileSystem) {
+    if (!uiSourceCode.project().canSetFileContent()) {
       contextMenu.appendItem(
           Common.UIString.capitalize('Local ^modifications\u2026'), this._showLocalHistory.bind(this, uiSourceCode));
     }
@@ -876,10 +874,8 @@ Sources.SourcesPanel = class extends UI.Panel {
         contextMenu.appendItem(
             Common.UIString.capitalize('Continue to ^here'), this._continueToLocation.bind(this, uiLocation));
       }
-    }
-
-    if (contentType.hasScripts() && projectType !== Workspace.projectTypes.Snippets)
       this._callstackPane.appendBlackboxURLContextMenuItems(contextMenu, uiSourceCode);
+    }
   }
 
   /**

@@ -773,8 +773,7 @@ Components.Linkifier.ContentProviderContextMenuProvider = class {
 
     if (contentProvider instanceof Workspace.UISourceCode) {
       var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (contentProvider);
-      if (uiSourceCode.project().type() !== Workspace.projectTypes.FileSystem &&
-          uiSourceCode.project().type() !== Workspace.projectTypes.Snippets)
+      if (!uiSourceCode.project().canSetFileContent())
         contextMenu.appendItem(Common.UIString.capitalize('Save ^as...'), save.bind(null, true));
     }
   }

@@ -154,14 +154,11 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   _canEditSource() {
     if (Persistence.persistence.binding(this._uiSourceCode))
       return true;
-    var projectType = this._uiSourceCode.project().type();
-    if (projectType === Workspace.projectTypes.Service || projectType === Workspace.projectTypes.Debugger ||
-        projectType === Workspace.projectTypes.Formatter)
+    if (this._uiSourceCode.project().canSetFileContent())
+      return true;
+    if (this._uiSourceCode.isFromServiceProject())
       return false;
-    if (projectType === Workspace.projectTypes.Network &&
-        this._uiSourceCode.contentType() === Common.resourceTypes.Document)
-      return false;
-    return true;
+    return this._uiSourceCode.contentType() !== Common.resourceTypes.Document;
   }
 
   _windowFocused(event) {

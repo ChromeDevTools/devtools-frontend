@@ -916,7 +916,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     }
     this._decorationByBreakpoint.set(breakpoint, decoration);
     this._updateBreakpointDecoration(decoration);
-    if (!lineDecorations.length && Runtime.experiments.isEnabled('inlineBreakpoints')) {
+    if (!lineDecorations.length) {
       this._willAddInlineDecorationsForTest();
       this._breakpointManager
           .possibleBreakpoints(
@@ -1307,7 +1307,7 @@ Sources.JavaScriptSourceFrame.BreakpointDecoration = class {
   }
 
   show() {
-    if (this.bookmark || !Runtime.experiments.isEnabled('inlineBreakpoints'))
+    if (this.bookmark)
       return;
     var location = this.handle.resolve();
     if (!location)

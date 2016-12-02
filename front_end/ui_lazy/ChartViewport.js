@@ -118,7 +118,7 @@ UI.ChartViewport = class extends UI.VBox {
   /**
    * @return {number}
    */
-  scrollOffset() {
+  getScrollOffset() {
     return this._vScrollElement.scrollTop;
   }
 

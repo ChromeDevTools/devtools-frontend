@@ -407,7 +407,7 @@ UI.FlameChart = class extends UI.ChartViewport {
   _coordinatesToEntryIndex(x, y) {
     if (x < 0 || y < 0)
       return -1;
-    y += this.scrollOffset();
+    y += this.getScrollOffset();
     var timelineData = this._timelineData();
     if (!timelineData)
       return -1;
@@ -471,7 +471,7 @@ UI.FlameChart = class extends UI.ChartViewport {
   _coordinatesToGroupIndex(x, y) {
     if (x < 0 || y < 0)
       return -1;
-    y += this.scrollOffset();
+    y += this.getScrollOffset();
     var groups = this._rawTimelineData.groups || [];
     var group = this._groupOffsets.upperBound(y) - 1;
 
@@ -535,7 +535,7 @@ UI.FlameChart = class extends UI.ChartViewport {
     var context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
     context.save();
     var ratio = window.devicePixelRatio;
-    var top = this.scrollOffset();
+    var top = this.getScrollOffset();
     context.scale(ratio, ratio);
     context.translate(0, -top);
     var defaultFont = '11px ' + Host.fontFamily();
@@ -676,7 +676,7 @@ UI.FlameChart = class extends UI.ChartViewport {
    */
   _drawGroupHeaders(width, height) {
     var context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
-    var top = this.scrollOffset();
+    var top = this.getScrollOffset();
     var ratio = window.devicePixelRatio;
     var barHeight = this._barHeight;
     var textBaseHeight = barHeight - this._dataProvider.textBaseline();
@@ -1055,7 +1055,7 @@ UI.FlameChart = class extends UI.ChartViewport {
     var barCenter = barX + barWidth / 2;
     barWidth = Math.max(barWidth, elementMinWidthPx);
     barX = barCenter - barWidth / 2;
-    var barY = this._levelToHeight(timelineData.entryLevels[entryIndex]) - this.scrollOffset();
+    var barY = this._levelToHeight(timelineData.entryLevels[entryIndex]) - this.getScrollOffset();
     var style = element.style;
     style.left = barX + 'px';
     style.top = barY + 'px';

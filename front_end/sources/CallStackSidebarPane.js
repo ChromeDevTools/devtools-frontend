@@ -112,7 +112,6 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       this._hiddenCallFramesMessageElement = element;
     }
     this._selectNextVisibleCallFrame(0);
-    this.revealView();
   }
 
   /**

@@ -1765,7 +1765,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
       highlightConfig.eventTargetColor = Common.Color.PageHighlight.EventTarget.toProtocolRGBA();
       highlightConfig.shapeColor = Common.Color.PageHighlight.Shape.toProtocolRGBA();
       highlightConfig.shapeMarginColor = Common.Color.PageHighlight.ShapeMargin.toProtocolRGBA();
-      highlightConfig.displayAsMaterial = Runtime.experiments.isEnabled('inspectTooltip');
+      highlightConfig.displayAsMaterial = true;
     }
     return highlightConfig;
   }

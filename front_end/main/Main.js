@@ -101,16 +101,13 @@ Main.Main = class {
     Runtime.experiments.register('continueToFirstInvocation', 'Continue to first invocation', true);
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
-    Runtime.experiments.register('inspectTooltip', 'Dark inspect element tooltip');
     Runtime.experiments.register('liveSASS', 'Live SASS');
     Runtime.experiments.register('nodeDebugging', 'Node debugging', true);
     Runtime.experiments.register('persistence2', 'Persistence 2.0');
     Runtime.experiments.register('privateScriptInspection', 'Private script inspection');
     Runtime.experiments.register('requestBlocking', 'Request blocking', true);
-    Runtime.experiments.register('resolveVariableNames', 'Resolve variable names');
     Runtime.experiments.register('timelineShowAllEvents', 'Show all events on Timeline', true);
     Runtime.experiments.register('timelineShowAllProcesses', 'Show all processes on Timeline', true);
-    Runtime.experiments.register('securityPanel', 'Security panel');
     Runtime.experiments.register('sourceDiff', 'Source diff');
     Runtime.experiments.register('terminalInDrawer', 'Terminal in drawer', true);
     Runtime.experiments.register('timelineInvalidationTracking', 'Timeline invalidation tracking', true);
@@ -125,18 +122,11 @@ Main.Main = class {
     if (Host.isUnderTest(prefs)) {
       var testPath = JSON.parse(prefs['testPath'] || '""');
       // Enable experiments for testing.
-      if (testPath.indexOf('layers/') !== -1)
-        Runtime.experiments.enableForTest('layersPanel');
-      if (testPath.indexOf('timeline/') !== -1 || testPath.indexOf('layers/') !== -1)
-        Runtime.experiments.enableForTest('layersPanel');
-      if (testPath.indexOf('security/') !== -1)
-        Runtime.experiments.enableForTest('securityPanel');
       if (testPath.indexOf('accessibility/') !== -1)
         Runtime.experiments.enableForTest('accessibilityInspection');
     }
 
-    Runtime.experiments.setDefaultExperiments(
-        ['inspectTooltip', 'securityPanel', 'resolveVariableNames', 'timelineRecordingPerspectives']);
+    Runtime.experiments.setDefaultExperiments(['timelineRecordingPerspectives']);
   }
 
   /**

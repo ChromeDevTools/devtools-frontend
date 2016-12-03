@@ -225,7 +225,7 @@ Sources.SourceMapNamesResolver._allVariablesInCallFrame = function(callFrame) {
  */
 Sources.SourceMapNamesResolver.resolveExpression = function(
     callFrame, originalText, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber) {
-  if (!Runtime.experiments.isEnabled('resolveVariableNames') || !uiSourceCode.contentType().isFromSourceMap())
+  if (!uiSourceCode.contentType().isFromSourceMap())
     return Promise.resolve('');
 
   return Sources.SourceMapNamesResolver._allVariablesInCallFrame(callFrame).then(findCompiledName);
@@ -301,7 +301,7 @@ Sources.SourceMapNamesResolver._resolveExpression = function(
 Sources.SourceMapNamesResolver.resolveThisObject = function(callFrame) {
   if (!callFrame)
     return Promise.resolve(/** @type {?SDK.RemoteObject} */ (null));
-  if (!Runtime.experiments.isEnabled('resolveVariableNames') || !callFrame.scopeChain().length)
+  if (!callFrame.scopeChain().length)
     return Promise.resolve(callFrame.thisObject());
 
   return Sources.SourceMapNamesResolver._resolveScope(callFrame.scopeChain()[0]).then(onScopeResolved);
@@ -338,9 +338,6 @@ Sources.SourceMapNamesResolver.resolveThisObject = function(callFrame) {
  * @return {!SDK.RemoteObject}
  */
 Sources.SourceMapNamesResolver.resolveScopeInObject = function(scope) {
-  if (!Runtime.experiments.isEnabled('resolveVariableNames'))
-    return scope.object();
-
   var startLocation = scope.startLocation();
   var endLocation = scope.endLocation();
 

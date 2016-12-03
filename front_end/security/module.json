@@ -10,7 +10,6 @@
         }
     ],
     "dependencies": ["network", "platform", "ui", "sdk"],
-    "experiment": "securityPanel",
     "scripts": [
         "SecurityModel.js",
         "SecurityPanel.js"

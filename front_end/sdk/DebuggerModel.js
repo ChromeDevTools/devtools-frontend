@@ -81,7 +81,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
   static fromTarget(target) {
     if (!target || !target.hasJSCapability())
       return null;
-    return /** @type {?SDK.DebuggerModel} */ (target.model(SDK.DebuggerModel));
+    return target.model(SDK.DebuggerModel);
   }
 
   /**

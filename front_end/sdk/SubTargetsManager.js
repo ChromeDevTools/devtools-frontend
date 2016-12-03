@@ -37,7 +37,7 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
    * @return {?SDK.SubTargetsManager}
    */
   static fromTarget(target) {
-    return /** @type {?SDK.SubTargetsManager} */ (target.model(SDK.SubTargetsManager));
+    return target.model(SDK.SubTargetsManager);
   }
 
   /**

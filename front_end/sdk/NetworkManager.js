@@ -65,7 +65,7 @@ SDK.NetworkManager = class extends SDK.SDKModel {
    * @return {?SDK.NetworkManager}
    */
   static fromTarget(target) {
-    return /** @type {?SDK.NetworkManager} */ (target.model(SDK.NetworkManager));
+    return target.model(SDK.NetworkManager);
   }
 
   /**

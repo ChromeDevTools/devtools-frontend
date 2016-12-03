@@ -21,7 +21,7 @@ Security.SecurityModel = class extends SDK.SDKModel {
    * @return {?Security.SecurityModel}
    */
   static fromTarget(target) {
-    var model = /** @type {?Security.SecurityModel} */ (target.model(Security.SecurityModel));
+    var model = target.model(Security.SecurityModel);
     if (!model)
       model = new Security.SecurityModel(target);
     return model;

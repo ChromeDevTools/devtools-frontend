@@ -144,7 +144,7 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    * @return {!Resources.IndexedDBModel}
    */
   static fromTarget(target) {
-    var model = /** @type {?Resources.IndexedDBModel} */ (target.model(Resources.IndexedDBModel));
+    var model = target.model(Resources.IndexedDBModel);
     if (!model)
       model = new Resources.IndexedDBModel(target, SDK.SecurityOriginManager.fromTarget(target));
     return model;

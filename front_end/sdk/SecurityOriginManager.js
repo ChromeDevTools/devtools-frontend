@@ -20,8 +20,7 @@ SDK.SecurityOriginManager = class extends SDK.SDKModel {
    * @return {!SDK.SecurityOriginManager}
    */
   static fromTarget(target) {
-    var securityOriginManager =
-        /** @type {?SDK.SecurityOriginManager} */ (target.model(SDK.SecurityOriginManager));
+    var securityOriginManager = target.model(SDK.SecurityOriginManager);
     if (!securityOriginManager)
       securityOriginManager = new SDK.SecurityOriginManager(target);
     return securityOriginManager;

@@ -56,7 +56,7 @@ SDK.ApplicationCacheModel = class extends SDK.SDKModel {
    * @return {?SDK.ApplicationCacheModel}
    */
   static fromTarget(target) {
-    return /** @type {?SDK.ApplicationCacheModel} */ (target.model(SDK.ApplicationCacheModel));
+    return target.model(SDK.ApplicationCacheModel);
   }
 
   _frameNavigated(event) {

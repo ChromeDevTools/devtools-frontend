@@ -54,7 +54,7 @@ SDK.NetworkLog = class extends SDK.SDKModel {
    * @return {?SDK.NetworkLog}
    */
   static fromTarget(target) {
-    return /** @type {?SDK.NetworkLog} */ (target.model(SDK.NetworkLog));
+    return target.model(SDK.NetworkLog);
   }
 
   /**

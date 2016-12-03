@@ -136,8 +136,9 @@ SDK.Target = class extends Protocol.TargetBase {
   }
 
   /**
-   * @param {!Function} modelClass
-   * @return {?SDK.SDKModel}
+   * @param {function(new: (!T<!SDK.SDKModel>), ...)} modelClass
+   * @return {?T}
+   * @template T
    */
   model(modelClass) {
     return this._modelByConstructor.get(modelClass) || null;

@@ -31,8 +31,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
   static fromTarget(target) {
     if (!target.hasBrowserCapability())
       return null;
-    var instance =
-        /** @type {?SDK.ServiceWorkerCacheModel} */ (target.model(SDK.ServiceWorkerCacheModel));
+    var instance = target.model(SDK.ServiceWorkerCacheModel);
     if (!instance)
       instance = new SDK.ServiceWorkerCacheModel(target, SDK.SecurityOriginManager.fromTarget(target));
     return instance;

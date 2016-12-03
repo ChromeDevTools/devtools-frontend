@@ -63,7 +63,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    * @return {?SDK.ResourceTreeModel}
    */
   static fromTarget(target) {
-    return /** @type {?SDK.ResourceTreeModel} */ (target.model(SDK.ResourceTreeModel));
+    return target.model(SDK.ResourceTreeModel);
   }
 
   /**

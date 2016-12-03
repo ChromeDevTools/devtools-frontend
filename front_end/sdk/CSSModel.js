@@ -88,7 +88,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @return {?SDK.CSSModel}
    */
   static fromTarget(target) {
-    return /** @type {?SDK.CSSModel} */ (target.model(SDK.CSSModel));
+    return target.model(SDK.CSSModel);
   }
 
   /**

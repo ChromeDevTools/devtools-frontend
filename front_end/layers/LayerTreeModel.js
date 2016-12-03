@@ -48,7 +48,7 @@ Layers.LayerTreeModel = class extends SDK.SDKModel {
     if (!target.hasDOMCapability())
       return null;
 
-    var model = /** @type {?Layers.LayerTreeModel} */ (target.model(Layers.LayerTreeModel));
+    var model = target.model(Layers.LayerTreeModel);
     if (!model)
       model = new Layers.LayerTreeModel(target);
     return model;

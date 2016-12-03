@@ -1107,7 +1107,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
    * @return {?SDK.DOMModel}
    */
   static fromTarget(target) {
-    return /** @type {?SDK.DOMModel} */ (target.model(SDK.DOMModel));
+    return target.model(SDK.DOMModel);
   }
 
   /**

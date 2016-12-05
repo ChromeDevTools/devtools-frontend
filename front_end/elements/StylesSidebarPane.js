@@ -610,8 +610,10 @@ Elements.StylePropertiesSection = class {
         this.editable = false;
       } else {
         // Check this is a real CSSRule, not a bogus object coming from Elements.BlankStylePropertiesSection.
-        if (rule.styleSheetId)
-          this.navigable = !!rule.resourceURL();
+        if (rule.styleSheetId) {
+          var header = rule.cssModel().styleSheetHeaderForId(rule.styleSheetId);
+          this.navigable = !header.isAnonymousInlineStyleSheet();
+        }
       }
     }
 
@@ -655,7 +657,7 @@ Elements.StylePropertiesSection = class {
     }
 
     var header = rule.styleSheetId ? matchedStyles.cssModel().styleSheetHeaderForId(rule.styleSheetId) : null;
-    if (ruleLocation && rule.styleSheetId && header && header.resourceURL()) {
+    if (ruleLocation && rule.styleSheetId && header && !header.isAnonymousInlineStyleSheet()) {
       return Elements.StylePropertiesSection._linkifyRuleLocation(
           matchedStyles.cssModel(), linkifier, rule.styleSheetId, ruleLocation);
     }

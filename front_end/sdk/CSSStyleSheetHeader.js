@@ -63,6 +63,13 @@ SDK.CSSStyleSheetHeader = class {
   }
 
   /**
+   * @return {boolean}
+   */
+  isAnonymousInlineStyleSheet() {
+    return !this.resourceURL() && !this._cssModel.sourceMapForHeader(this);
+  }
+
+  /**
    * @return {string}
    */
   resourceURL() {

@@ -90,6 +90,13 @@ SDK.CSSRule = class {
   isRegular() {
     return this.origin === Protocol.CSS.StyleSheetOrigin.Regular;
   }
+
+  /**
+   * @return {!SDK.CSSModel}
+   */
+  cssModel() {
+    return this._cssModel;
+  }
 };
 
 /**

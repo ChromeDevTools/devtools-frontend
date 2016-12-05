@@ -61,7 +61,7 @@ Sources.OpenResourceDialog = class extends Sources.FilteredUISourceCodeListDeleg
    * @return {boolean}
    */
   filterProject(project) {
-    return !Workspace.Project.isServiceProject(project);
+    return !project.isServiceProject();
   }
 
   /**

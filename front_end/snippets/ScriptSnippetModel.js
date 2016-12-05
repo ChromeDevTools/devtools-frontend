@@ -552,7 +552,7 @@ Snippets.SnippetsProject = class extends Bindings.ContentProviderBasedProject {
    * @param {!Snippets.ScriptSnippetModel} model
    */
   constructor(workspace, model) {
-    super(workspace, 'snippets:', Workspace.projectTypes.Snippets, '');
+    super(workspace, 'snippets:', Workspace.projectTypes.Snippets, '', false /* isServiceProject */);
     this._model = model;
   }
 

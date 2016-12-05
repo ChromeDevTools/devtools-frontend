@@ -57,8 +57,8 @@ Bindings.CompilerScriptMapping = class {
     this._stubUISourceCodes = new Map();
 
     var projectId = Bindings.CompilerScriptMapping.projectIdForTarget(this._target);
-    this._stubProject =
-        new Bindings.ContentProviderBasedProject(workspace, projectId, Workspace.projectTypes.Service, '');
+    this._stubProject = new Bindings.ContentProviderBasedProject(
+        workspace, projectId, Workspace.projectTypes.Service, '', true /* isServiceProject */);
     this._eventListeners = [
       workspace.addEventListener(
           Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAddedToWorkspace, this),

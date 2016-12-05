@@ -41,7 +41,8 @@ Bindings.DefaultScriptMapping = class {
     this._debuggerModel = debuggerModel;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     var projectId = Bindings.DefaultScriptMapping.projectIdForTarget(debuggerModel.target());
-    this._project = new Bindings.ContentProviderBasedProject(workspace, projectId, Workspace.projectTypes.Debugger, '');
+    this._project = new Bindings.ContentProviderBasedProject(
+        workspace, projectId, Workspace.projectTypes.Debugger, '', true /* isServiceProject */);
     /** @type {!Map.<string, !Workspace.UISourceCode>} */
     this._uiSourceCodeForScriptId = new Map();
     /** @type {!Map.<!Workspace.UISourceCode, string>} */

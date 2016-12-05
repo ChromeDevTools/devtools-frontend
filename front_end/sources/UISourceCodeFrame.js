@@ -156,7 +156,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
       return true;
     if (this._uiSourceCode.project().canSetFileContent())
       return true;
-    if (this._uiSourceCode.isFromServiceProject())
+    if (this._uiSourceCode.project().isServiceProject())
       return false;
     return this._uiSourceCode.contentType() !== Common.resourceTypes.Document;
   }

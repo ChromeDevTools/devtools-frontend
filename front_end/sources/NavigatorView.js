@@ -236,7 +236,7 @@ Sources.NavigatorView = class extends UI.VBox {
    * @return {boolean}
    */
   accept(uiSourceCode) {
-    return !uiSourceCode.isFromServiceProject();
+    return !uiSourceCode.project().isServiceProject();
   }
 
   /**

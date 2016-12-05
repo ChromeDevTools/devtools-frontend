@@ -104,7 +104,8 @@ Sources.ScriptFormatterEditorAction = class {
   constructor() {
     this._projectId = 'formatter:';
     this._project = new Bindings.ContentProviderBasedProject(
-        Workspace.workspace, this._projectId, Workspace.projectTypes.Formatter, 'formatter');
+        Workspace.workspace, this._projectId, Workspace.projectTypes.Formatter, 'formatter',
+        true /* isServiceProject */);
 
     /** @type {!Map.<!SDK.Script, !Workspace.UISourceCode>} */
     this._uiSourceCodes = new Map();

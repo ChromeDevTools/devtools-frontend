@@ -229,6 +229,14 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
 
   /**
    * @override
+   * @return {boolean}
+   */
+  isServiceProject() {
+    return false;
+  }
+
+  /**
+   * @override
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {!Promise<?Workspace.UISourceCodeMetadata>}
    */

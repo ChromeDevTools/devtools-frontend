@@ -1003,7 +1003,7 @@
      * @param {!Workspace.UISourceCode} uiSourceCode
      */
     function filterOutService(uiSourceCode) {
-      return !uiSourceCode.isFromServiceProject();
+      return !uiSourceCode.project().isServiceProject();
     }
 
     var uiSourceCodes = Workspace.workspace.uiSourceCodes();

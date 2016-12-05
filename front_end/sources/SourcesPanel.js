@@ -831,7 +831,7 @@ Sources.SourcesPanel = class extends UI.Panel {
       return;
 
     var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (target);
-    if (!uiSourceCode.isFromServiceProject() &&
+    if (!uiSourceCode.project().isServiceProject() &&
         !event.target.isSelfOrDescendant(this._navigatorTabbedLocation.widget().element)) {
       contextMenu.appendItem(
           Common.UIString.capitalize('Reveal in ^navigator'), this._handleContextMenuReveal.bind(this, uiSourceCode));

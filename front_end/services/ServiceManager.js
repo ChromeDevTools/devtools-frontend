@@ -31,7 +31,9 @@ Services.ServiceManager = class {
   createAppService(appName, serviceName, isSharedWorker) {
     var url = appName + '.js';
     var remoteBase = Runtime.queryParam('remoteBase');
-    if (remoteBase)
+    // Do not pass additional query parameters to shared worker to avoid URLMismatchError
+    // in case another instance of DevTools with different remoteBase creates same shared worker.
+    if (remoteBase && !isSharedWorker)
       url += '?remoteBase=' + remoteBase;
 
     var worker = isSharedWorker ? new SharedWorker(url, appName) : new Worker(url);

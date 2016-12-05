@@ -1115,6 +1115,9 @@ Elements.StylePropertiesSection = class {
     for (var matchingIndex of matchingSelectorIndexes)
       matchingSelectors[matchingIndex] = true;
 
+    if (this._parentPane._isEditingStyle)
+      return;
+
     var fragment = this._hoverableSelectorsMode ? this._renderHoverableSelectors(selectorTexts, matchingSelectors) :
                                                   this._renderSimplifiedSelectors(selectorTexts, matchingSelectors);
     this._selectorElement.removeChildren();

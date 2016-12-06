@@ -153,6 +153,9 @@ Persistence.Automapping = class {
         this._onBindingFailedForTest();
         return;
       }
+      // TODO(lushnikov): remove this check once there's a single uiSourceCode per url. @see crbug.com/670180
+      if (binding.network[Persistence.Automapping._binding] || binding.fileSystem[Persistence.Automapping._binding])
+        return;
 
       this._bindings.add(binding);
       binding.network[Persistence.Automapping._binding] = binding;

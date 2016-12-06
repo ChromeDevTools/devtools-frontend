@@ -92,6 +92,10 @@ Persistence.DefaultMapping = class {
     var binding = this._createBinding(uiSourceCode);
     if (!binding)
       return;
+    // TODO(lushnikov): remove this check once there's a single uiSourceCode per url. @see crbug.com/670180
+    if (binding.network[Persistence.DefaultMapping._binding] || binding.fileSystem[Persistence.DefaultMapping._binding])
+      return;
+
     this._bindings.add(binding);
     binding.network[Persistence.DefaultMapping._binding] = binding;
     binding.fileSystem[Persistence.DefaultMapping._binding] = binding;

@@ -648,13 +648,10 @@ Elements.StylePropertiesSection = class {
       return createTextNode('');
 
     var ruleLocation;
-    if (rule instanceof SDK.CSSStyleRule) {
-      var matchingSelectors = matchedStyles.matchingSelectors(rule);
-      var firstMatchingIndex = matchingSelectors.length ? matchingSelectors[0] : 0;
-      ruleLocation = rule.selectors[firstMatchingIndex].range;
-    } else if (rule instanceof SDK.CSSKeyframeRule) {
+    if (rule instanceof SDK.CSSStyleRule)
+      ruleLocation = rule.style.range;
+    else if (rule instanceof SDK.CSSKeyframeRule)
       ruleLocation = rule.key().range;
-    }
 
     var header = rule.styleSheetId ? matchedStyles.cssModel().styleSheetHeaderForId(rule.styleSheetId) : null;
     if (ruleLocation && rule.styleSheetId && header && !header.isAnonymousInlineStyleSheet()) {

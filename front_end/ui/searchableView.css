@@ -10,6 +10,7 @@
     border-top: 1px solid #ccc;
     display: flex;
     overflow: hidden;
+    z-index: 0;
 }
 
 .search-bar.replaceable {

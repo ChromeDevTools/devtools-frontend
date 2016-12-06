@@ -39,6 +39,7 @@
     background-color: #f3f3f3;
     border-top: 1px solid #dadada;
     overflow: hidden;
+    z-index: 0;
 }
 
 .sources-toolbar .toolbar {

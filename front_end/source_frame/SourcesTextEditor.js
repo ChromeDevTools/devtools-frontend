@@ -275,7 +275,8 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
   _contextMenu(event) {
     var contextMenu = new UI.ContextMenu(event);
     event.consume(true);  // Consume event now to prevent document from handling the async menu
-    var target = event.target.enclosingNodeOrSelfWithClass('CodeMirror-gutter-elt');
+    var wrapper = event.target.enclosingNodeOrSelfWithClass('CodeMirror-gutter-wrapper');
+    var target = wrapper ? wrapper.querySelector('.CodeMirror-linenumber') : null;
     var promise;
     if (target) {
       promise = this._delegate.populateLineGutterContextMenu(contextMenu, parseInt(target.textContent, 10) - 1);

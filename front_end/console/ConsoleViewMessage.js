@@ -639,6 +639,8 @@ Console.ConsoleViewMessage = class {
       }
 
       var titleElement = createElementWithClass('span', 'console-object-preview');
+      if (array.subtype === 'typedarray')
+        titleElement.createTextChild(array.description + ' ');
       var elements = {};
       for (var i = 0; i < properties.length; ++i) {
         var property = properties[i];

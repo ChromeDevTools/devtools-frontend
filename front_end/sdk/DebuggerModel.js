@@ -376,9 +376,9 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
       callFrames,
       asyncStackTrace,
       needsStepIn) {
+    callback(error, exceptionDetails);
     if (needsStepIn) {
       this.stepInto();
-      this._pendingLiveEditCallback = callback.bind(this, error, exceptionDetails);
       return;
     }
 
@@ -387,7 +387,6 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
           callFrames, this._debuggerPausedDetails.reason, this._debuggerPausedDetails.auxData,
           this._debuggerPausedDetails.breakpointIds, asyncStackTrace);
     }
-    callback(error, exceptionDetails);
   }
 
   /**
@@ -435,15 +434,8 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
   _pausedScript(callFrames, reason, auxData, breakpointIds, asyncStackTrace) {
     var pausedDetails =
         new SDK.DebuggerPausedDetails(this, callFrames, reason, auxData, breakpointIds, asyncStackTrace);
-    if (this._setDebuggerPausedDetails(pausedDetails)) {
-      if (this._pendingLiveEditCallback) {
-        var callback = this._pendingLiveEditCallback;
-        delete this._pendingLiveEditCallback;
-        callback();
-      }
-    } else {
+    if (!this._setDebuggerPausedDetails(pausedDetails))
       this._agent.stepInto();
-    }
   }
 
   _resumedScript() {

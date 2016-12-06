@@ -306,6 +306,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     this._updateDebuggerButtonsAndStatus();
     UI.context.setFlavor(SDK.DebuggerPausedDetails, details);
     this._toggleDebuggerSidebarButton.setEnabled(false);
+    this._revealDebuggerSidebar();
     window.focus();
     InspectorFrontendHost.bringToFront();
   }

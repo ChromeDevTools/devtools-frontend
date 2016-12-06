@@ -918,8 +918,6 @@ generated_entry_files = [
   "$resources_out_dir/inspector.js",
   "$resources_out_dir/toolbox.html",
   "$resources_out_dir/toolbox.js",
-  "$resources_out_dir/unit_test_runner.html",
-  "$resources_out_dir/unit_test_runner.js",
 ]
 
 generated_workers = [

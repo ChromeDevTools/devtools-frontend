@@ -126,7 +126,8 @@ UI.SuggestBox = class {
 
     var spacer = 6;
     var maxHeight = Math.min(
-        Math.max(underHeight, aboveHeight) - spacer, this._maxItemsHeight ? this._maxItemsHeight * this._rowHeight : 0);
+        Math.max(underHeight, aboveHeight) - spacer,
+        this._maxItemsHeight ? this._maxItemsHeight * this._rowHeight : Infinity);
     var height = this._rowHeight * this._items.length;
     this._hasVerticalScroll = height > maxHeight;
     this._element.style.height = Math.min(maxHeight, height) + 'px';

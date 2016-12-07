@@ -30,12 +30,12 @@ UI.Tooltip = class {
 
   /**
    * @param {!Element} element
-   * @param {!Element|string} tooltipContent
+   * @param {?Element|string} tooltipContent
    * @param {string=} actionId
    * @param {!Object=} options
    */
   static install(element, tooltipContent, actionId, options) {
-    if (typeof tooltipContent === 'string' && tooltipContent === '') {
+    if (!tooltipContent) {
       delete element[UI.Tooltip._symbol];
       return;
     }

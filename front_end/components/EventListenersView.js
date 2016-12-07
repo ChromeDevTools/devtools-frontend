@@ -304,7 +304,7 @@ Components.ObjectEventListenerBar = class extends TreeElement {
     }
 
     /**
-     * @param {!Common.Event} event
+     * @param {!Event} event
      * @this {Components.ObjectEventListenerBar}
      */
     function removeListener(event) {
@@ -314,7 +314,7 @@ Components.ObjectEventListenerBar = class extends TreeElement {
     }
 
     /**
-     * @param {!Common.Event} event
+     * @param {!Event} event
      * @this {Components.ObjectEventListenerBar}
      */
     function togglePassiveListener(event) {

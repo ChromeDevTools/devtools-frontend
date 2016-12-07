@@ -411,8 +411,8 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     this._isPausing = false;
     this._debuggerPausedDetails = debuggerPausedDetails;
     if (this._debuggerPausedDetails) {
-      if (Runtime.experiments.isEnabled('emptySourceMapAutoStepping')) {
-        if (this.dispatchEventToListeners(SDK.DebuggerModel.Events.BeforeDebuggerPaused, this._debuggerPausedDetails))
+      if (Runtime.experiments.isEnabled('emptySourceMapAutoStepping') && this._beforePausedCallback) {
+        if (!this._beforePausedCallback.call(null, this._debuggerPausedDetails))
           return false;
       }
       this.dispatchEventToListeners(SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPausedDetails);
@@ -422,6 +422,13 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     else
       this.setSelectedCallFrame(null);
     return true;
+  }
+
+  /**
+   * @param {?function(!SDK.DebuggerPausedDetails):boolean} callback
+   */
+  setBeforePausedCallback(callback) {
+    this._beforePausedCallback = callback;
   }
 
   /**
@@ -807,7 +814,6 @@ SDK.DebuggerModel.PauseOnExceptionsState = {
 SDK.DebuggerModel.Events = {
   DebuggerWasEnabled: Symbol('DebuggerWasEnabled'),
   DebuggerWasDisabled: Symbol('DebuggerWasDisabled'),
-  BeforeDebuggerPaused: Symbol('BeforeDebuggerPaused'),
   DebuggerPaused: Symbol('DebuggerPaused'),
   DebuggerResumed: Symbol('DebuggerResumed'),
   ParsedScriptSource: Symbol('ParsedScriptSource'),

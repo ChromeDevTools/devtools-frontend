@@ -18,10 +18,10 @@ Network.BlockedURLsPane = class extends UI.VBox {
     this._toolbar = new UI.Toolbar('', this.contentElement);
     this._toolbar.element.addEventListener('click', (e) => e.consume());
     var addButton = new UI.ToolbarButton(Common.UIString('Add pattern'), 'largeicon-add');
-    addButton.addEventListener('click', this._addButtonClicked.bind(this));
+    addButton.addEventListener(UI.ToolbarButton.Events.Click, this._addButtonClicked, this);
     this._toolbar.appendToolbarItem(addButton);
     var clearButton = new UI.ToolbarButton(Common.UIString('Remove all'), 'largeicon-clear');
-    clearButton.addEventListener('click', this._removeAll.bind(this));
+    clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._removeAll, this);
     this._toolbar.appendToolbarItem(clearButton);
 
     this._emptyElement = this.contentElement.createChild('div', 'no-blocked-urls');

@@ -674,7 +674,7 @@ Main.Main.WarningErrorCounter = class {
 Main.Main.MainMenuItem = class {
   constructor() {
     this._item = new UI.ToolbarButton(Common.UIString('Customize and control DevTools'), 'largeicon-menu');
-    this._item.addEventListener('mousedown', this._mouseDown, this);
+    this._item.addEventListener(UI.ToolbarButton.Events.MouseDown, this._mouseDown, this);
   }
 
   /**
@@ -706,9 +706,12 @@ Main.Main.MainMenuItem = class {
       var undock = new UI.ToolbarToggle(Common.UIString('Undock into separate window'), 'largeicon-undock');
       var bottom = new UI.ToolbarToggle(Common.UIString('Dock to bottom'), 'largeicon-dock-to-bottom');
       var right = new UI.ToolbarToggle(Common.UIString('Dock to right'), 'largeicon-dock-to-right');
-      undock.addEventListener('mouseup', setDockSide.bind(null, Components.DockController.State.Undocked));
-      bottom.addEventListener('mouseup', setDockSide.bind(null, Components.DockController.State.DockedToBottom));
-      right.addEventListener('mouseup', setDockSide.bind(null, Components.DockController.State.DockedToRight));
+      undock.addEventListener(
+          UI.ToolbarButton.Events.MouseUp, setDockSide.bind(null, Components.DockController.State.Undocked));
+      bottom.addEventListener(
+          UI.ToolbarButton.Events.MouseUp, setDockSide.bind(null, Components.DockController.State.DockedToBottom));
+      right.addEventListener(
+          UI.ToolbarButton.Events.MouseUp, setDockSide.bind(null, Components.DockController.State.DockedToRight));
       undock.setToggled(Components.dockController.dockSide() === Components.DockController.State.Undocked);
       bottom.setToggled(Components.dockController.dockSide() === Components.DockController.State.DockedToBottom);
       right.setToggled(Components.dockController.dockSide() === Components.DockController.State.DockedToRight);

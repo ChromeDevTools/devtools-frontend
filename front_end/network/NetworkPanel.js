@@ -140,7 +140,7 @@ Network.NetworkPanel = class extends UI.Panel {
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
 
     this._clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
-    this._clearButton.addEventListener('click', this._onClearButtonClicked, this);
+    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._onClearButtonClicked, this);
     this._panelToolbar.appendToolbarItem(this._clearButton);
     this._panelToolbar.appendSeparator();
     var recordFilmStripButton = new UI.ToolbarSettingToggle(

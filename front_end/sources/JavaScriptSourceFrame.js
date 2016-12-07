@@ -175,8 +175,10 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
    * @override
    */
   onUISourceCodeContentChanged() {
-    for (var decoration of this._breakpointDecorations)
-      decoration.breakpoint.remove();
+    for (var decoration of this._breakpointDecorations) {
+      if (decoration.breakpoint)
+        decoration.breakpoint.remove();
+    }
     super.onUISourceCodeContentChanged();
   }
 

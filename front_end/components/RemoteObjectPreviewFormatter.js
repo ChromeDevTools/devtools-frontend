@@ -49,7 +49,7 @@ Components.RemoteObjectPreviewFormatter = class {
    * @param {!Protocol.Runtime.ObjectPreview} preview
    */
   _appendObjectPropertiesPreview(parentElement, preview) {
-    var properties = preview.properties.slice().stableSort(compareFunctionsLast);
+    var properties = preview.properties.filter(p => p.type !== 'accessor').stableSort(compareFunctionsLast);
 
     /**
      * @param {!Protocol.Runtime.PropertyPreview} a
@@ -166,6 +166,12 @@ Components.RemoteObjectPreviewFormatter = class {
   renderPropertyPreview(type, subtype, description) {
     var span = createElementWithClass('span', 'object-value-' + (subtype || type));
     description = description || '';
+
+    if (type === 'accessor') {
+      span.textContent = '(...)';
+      span.title = Common.UIString('The property is computed with a getter');
+      return span;
+    }
 
     if (type === 'function') {
       span.textContent = 'function';

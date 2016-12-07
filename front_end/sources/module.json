@@ -156,7 +156,7 @@
             "contextTypes": ["Sources.UISourceCodeFrame"],
             "bindings": [
                 {
-                    "shortcut": "Ctrl+Shift+A'"
+                    "shortcut": "Ctrl+Shift+A"
                 }
             ]
         },
@@ -173,7 +173,7 @@
             "contextTypes": ["Sources.UISourceCodeFrame"],
             "bindings": [
                 {
-                    "shortcut": "Ctrl+E'"
+                    "shortcut": "Ctrl+Shift+E"
                 }
             ]
         },

@@ -38,14 +38,14 @@ Resources.CookieItemsView = class extends UI.SimpleView {
 
     this._deleteButton = new UI.ToolbarButton(Common.UIString('Delete'), 'largeicon-delete');
     this._deleteButton.setVisible(false);
-    this._deleteButton.addEventListener(UI.ToolbarButton.Events.Click, this._deleteButtonClicked, this);
+    this._deleteButton.addEventListener('click', this._deleteButtonClicked, this);
 
     this._clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
     this._clearButton.setVisible(false);
-    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearButtonClicked, this);
+    this._clearButton.addEventListener('click', this._clearButtonClicked, this);
 
     this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
-    this._refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
+    this._refreshButton.addEventListener('click', this._refreshButtonClicked, this);
 
     this._treeElement = treeElement;
     this._cookieDomain = cookieDomain;
@@ -156,10 +156,7 @@ Resources.CookieItemsView = class extends UI.SimpleView {
     this._update();
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _clearButtonClicked(event) {
+  _clearButtonClicked() {
     this.clear();
   }
 
@@ -167,10 +164,7 @@ Resources.CookieItemsView = class extends UI.SimpleView {
     this._deleteButton.setVisible(true);
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _deleteButtonClicked(event) {
+  _deleteButtonClicked() {
     var selectedCookie = this._cookiesTable.selectedCookie();
     if (selectedCookie) {
       selectedCookie.remove();
@@ -178,9 +172,6 @@ Resources.CookieItemsView = class extends UI.SimpleView {
     }
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
   _refreshButtonClicked(event) {
     this._update();
   }

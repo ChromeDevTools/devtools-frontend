@@ -719,27 +719,25 @@ Elements.StylePropertiesSection = class {
     var items = [];
 
     var textShadowButton = new UI.ToolbarButton(Common.UIString('Add text-shadow'), 'largeicon-text-shadow');
-    textShadowButton.addEventListener(
-        UI.ToolbarButton.Events.Click, this._onInsertShadowPropertyClick.bind(this, 'text-shadow'));
+    textShadowButton.addEventListener('click', this._onInsertShadowPropertyClick.bind(this, 'text-shadow'));
     items.push(textShadowButton);
 
     var boxShadowButton = new UI.ToolbarButton(Common.UIString('Add box-shadow'), 'largeicon-box-shadow');
-    boxShadowButton.addEventListener(
-        UI.ToolbarButton.Events.Click, this._onInsertShadowPropertyClick.bind(this, 'box-shadow'));
+    boxShadowButton.addEventListener('click', this._onInsertShadowPropertyClick.bind(this, 'box-shadow'));
     items.push(boxShadowButton);
 
     var colorButton = new UI.ToolbarButton(Common.UIString('Add color'), 'largeicon-foreground-color');
-    colorButton.addEventListener(UI.ToolbarButton.Events.Click, this._onInsertColorPropertyClick, this);
+    colorButton.addEventListener('click', this._onInsertColorPropertyClick.bind(this));
     items.push(colorButton);
 
     var backgroundButton = new UI.ToolbarButton(Common.UIString('Add background-color'), 'largeicon-background-color');
-    backgroundButton.addEventListener(UI.ToolbarButton.Events.Click, this._onInsertBackgroundColorPropertyClick, this);
+    backgroundButton.addEventListener('click', this._onInsertBackgroundColorPropertyClick.bind(this));
     items.push(backgroundButton);
 
     var newRuleButton = null;
     if (this._style.parentRule) {
       newRuleButton = new UI.ToolbarButton(Common.UIString('Insert Style Rule Below'), 'largeicon-add');
-      newRuleButton.addEventListener(UI.ToolbarButton.Events.Click, this._onNewRuleClick, this);
+      newRuleButton.addEventListener('click', this._onNewRuleClick.bind(this));
       items.push(newRuleButton);
     }
 
@@ -882,7 +880,7 @@ Elements.StylePropertiesSection = class {
    * @param {!Common.Event} event
    */
   _onNewRuleClick(event) {
-    event.data.consume();
+    event.consume();
     var rule = this._style.parentRule;
     var range = Common.TextRange.createFromLocation(rule.style.range.endLine, rule.style.range.endColumn + 1);
     this._parentPane._addBlankSection(this, /** @type {string} */ (rule.styleSheetId), range);
@@ -893,7 +891,7 @@ Elements.StylePropertiesSection = class {
    * @param {!Common.Event} event
    */
   _onInsertShadowPropertyClick(propertyName, event) {
-    event.data.consume(true);
+    event.consume(true);
     var treeElement = this.addNewBlankProperty();
     treeElement.property.name = propertyName;
     treeElement.property.value = '0 0 black';
@@ -907,7 +905,7 @@ Elements.StylePropertiesSection = class {
    * @param {!Common.Event} event
    */
   _onInsertColorPropertyClick(event) {
-    event.data.consume(true);
+    event.consume(true);
     var treeElement = this.addNewBlankProperty();
     treeElement.property.name = 'color';
     treeElement.property.value = 'black';
@@ -921,7 +919,7 @@ Elements.StylePropertiesSection = class {
    * @param {!Common.Event} event
    */
   _onInsertBackgroundColorPropertyClick(event) {
-    event.data.consume(true);
+    event.consume(true);
     var treeElement = this.addNewBlankProperty();
     treeElement.property.name = 'background-color';
     treeElement.property.value = 'white';
@@ -3018,7 +3016,7 @@ Elements.StylesSidebarPropertyRenderer = class {
 Elements.StylesSidebarPane.ButtonProvider = class {
   constructor() {
     this._button = new UI.ToolbarButton(Common.UIString('New Style Rule'), 'largeicon-add');
-    this._button.addEventListener(UI.ToolbarButton.Events.Click, this._clicked, this);
+    this._button.addEventListener('click', this._clicked, this);
     var longclickTriangle = UI.Icon.create('largeicon-longclick-triangle', 'long-click-glyph');
     this._button.element.appendChild(longclickTriangle);
 
@@ -3036,10 +3034,7 @@ Elements.StylesSidebarPane.ButtonProvider = class {
     }
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _clicked(event) {
+  _clicked() {
     Elements.StylesSidebarPane._instance._createNewRuleInViaInspectorStyleSheet();
   }
 

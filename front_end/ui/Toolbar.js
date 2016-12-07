@@ -511,28 +511,23 @@ UI.ToolbarButton = class extends UI.ToolbarItem {
    * @param {!Event} event
    */
   _clicked(event) {
-    this.dispatchEventToListeners(UI.ToolbarButton.Events.Click, event);
+    var defaultPrevented = this.dispatchEventToListeners('click', event);
+    event.consume(defaultPrevented);
   }
 
   /**
    * @param {!Event} event
    */
   _mouseDown(event) {
-    this.dispatchEventToListeners(UI.ToolbarButton.Events.MouseDown, event);
+    this.dispatchEventToListeners('mousedown', event);
   }
 
   /**
    * @param {!Event} event
    */
   _mouseUp(event) {
-    this.dispatchEventToListeners(UI.ToolbarButton.Events.MouseUp, event);
+    this.dispatchEventToListeners('mouseup', event);
   }
-};
-
-UI.ToolbarButton.Events = {
-  Click: Symbol('Click'),
-  MouseDown: Symbol('MouseDown'),
-  MouseUp: Symbol('MouseUp')
 };
 
 /**
@@ -574,7 +569,7 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
 };
 
 UI.ToolbarInput.Event = {
-  TextChanged: Symbol('TextChanged')
+  TextChanged: 'TextChanged'
 };
 
 /**

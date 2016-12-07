@@ -48,7 +48,7 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
     this._eventListenersView = new Components.EventListenersView(this.element, this.update.bind(this));
 
     var refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
-    refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this.update.bind(this));
+    refreshButton.addEventListener('click', this.update.bind(this));
     this._toolbarItems.push(refreshButton);
     this._toolbarItems.push(new UI.ToolbarCheckbox(
         Common.UIString('Ancestors'), Common.UIString('Show listeners on the ancestors'),

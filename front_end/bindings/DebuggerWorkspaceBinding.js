@@ -21,6 +21,8 @@ Bindings.DebuggerWorkspaceBinding = class {
     targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this);
     targetManager.addModelListener(
+        SDK.DebuggerModel, SDK.DebuggerModel.Events.BeforeDebuggerPaused, this._beforeDebuggerPaused, this);
+    targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._debuggerResumed, this);
     workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
     workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
@@ -325,6 +327,18 @@ Bindings.DebuggerWorkspaceBinding = class {
     var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.target);
     this._reset(debuggerModel.target());
   }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _beforeDebuggerPaused(event) {
+    var rawLocation = event.data.callFrames[0].location();
+    var targetData = this._targetToData.get(rawLocation.target());
+    if (!targetData._compilerMapping.mapsToSourceCode(rawLocation)) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+  }
 };
 
 /**
@@ -336,7 +350,7 @@ Bindings.DebuggerWorkspaceBinding.TargetData = class {
    * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
   constructor(debuggerModel, debuggerWorkspaceBinding) {
-    this._debuggerModel = debuggerModel;
+    this._target = debuggerModel.target();
 
     /** @type {!Map.<string, !Bindings.DebuggerWorkspaceBinding.ScriptInfo>} */
     this.scriptDataMap = new Map();
@@ -349,25 +363,15 @@ Bindings.DebuggerWorkspaceBinding.TargetData = class {
     this._defaultMapping = new Bindings.DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._resourceMapping = new Bindings.ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._compilerMapping = new Bindings.CompilerScriptMapping(
-        debuggerModel, workspace, Bindings.NetworkProject.forTarget(this._debuggerModel.target()),
-        debuggerWorkspaceBinding);
+        debuggerModel, workspace, Bindings.NetworkProject.forTarget(this._target), debuggerWorkspaceBinding);
 
     /** @type {!Map.<!Workspace.UISourceCode, !Bindings.DebuggerSourceMapping>} */
     this._uiSourceCodeToSourceMapping = new Map();
 
-    debuggerModel.setBeforePausedCallback(this._beforePaused.bind(this));
     this._eventListeners = [
       debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
       debuggerModel.addEventListener(SDK.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this)
     ];
-  }
-
-  /**
-   * @param {!SDK.DebuggerPausedDetails} debuggerPausedDetails
-   * @return {boolean}
-   */
-  _beforePaused(debuggerPausedDetails) {
-    return !!this._compilerMapping.mapsToSourceCode(debuggerPausedDetails.callFrames[0].location());
   }
 
   /**
@@ -397,7 +401,7 @@ Bindings.DebuggerWorkspaceBinding.TargetData = class {
 
     uiSourceCode.dispatchEventToListeners(
         Workspace.UISourceCode.Events.SourceMappingChanged,
-        {target: this._debuggerModel.target(), isIdentity: sourceMapping ? sourceMapping.isIdentity() : false});
+        {target: this._target, isIdentity: sourceMapping ? sourceMapping.isIdentity() : false});
   }
 
   /**
@@ -429,7 +433,6 @@ Bindings.DebuggerWorkspaceBinding.TargetData = class {
   }
 
   _dispose() {
-    this._debuggerModel.setBeforePausedCallback(null);
     Common.EventTarget.removeEventListeners(this._eventListeners);
     this._compilerMapping.dispose();
     this._resourceMapping.dispose();

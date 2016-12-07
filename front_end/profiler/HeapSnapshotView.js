@@ -1391,7 +1391,7 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
     }
     console.assert(!this._workerProxy, 'HeapSnapshotWorkerProxy already exists');
     this._workerProxy = new Profiler.HeapSnapshotWorkerProxy(this._handleWorkerEvent.bind(this));
-    this._workerProxy.addEventListener(Profiler.HeapSnapshotWorkerProxy.Events.Wait, setProfileWait, this);
+    this._workerProxy.addEventListener('wait', setProfileWait, this);
     this._receiver = this._workerProxy.createLoader(this.uid, this._snapshotReceived.bind(this));
   }
 

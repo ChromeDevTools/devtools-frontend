@@ -282,7 +282,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     if (Runtime.experiments.isEnabled('timelineRecordingPerspectives') &&
         perspectiveSetting.get() === Timeline.TimelinePanel.Perspectives.Load) {
       this._reloadButton = new UI.ToolbarButton(Common.UIString('Record & Reload'), 'largeicon-refresh');
-      this._reloadButton.addEventListener(UI.ToolbarButton.Events.Click, () => SDK.targetManager.reloadPage());
+      this._reloadButton.addEventListener('click', () => SDK.targetManager.reloadPage());
       this._panelToolbar.appendToolbarItem(this._reloadButton);
     } else {
       this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
@@ -290,7 +290,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     // Clear
     var clearButton = new UI.ToolbarButton(Common.UIString('Clear recording'), 'largeicon-clear');
-    clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear, this);
+    clearButton.addEventListener('click', this._clear, this);
     this._panelToolbar.appendToolbarItem(clearButton);
 
     this._panelToolbar.appendSeparator();
@@ -385,7 +385,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     this._panelToolbar.appendSeparator();
     var garbageCollectButton = new UI.ToolbarButton(Common.UIString('Collect garbage'), 'largeicon-trash-bin');
-    garbageCollectButton.addEventListener(UI.ToolbarButton.Events.Click, this._garbageCollectButtonClicked, this);
+    garbageCollectButton.addEventListener('click', this._garbageCollectButtonClicked, this);
     this._panelToolbar.appendToolbarItem(garbageCollectButton);
 
     this._panelToolbar.appendSeparator();
@@ -424,8 +424,10 @@ Timeline.TimelinePanel = class extends UI.Panel {
       hasSelection = true;
     }
     var predefinedRates = new Map([
-      [1, Common.UIString('No CPU throttling')], [2, Common.UIString('2\xD7 slowdown')],
-      [5, Common.UIString('5\xD7 slowdown')], [10, Common.UIString('10\xD7 slowdown')],
+      [1, Common.UIString('No CPU throttling')],
+      [2, Common.UIString('2\xD7 slowdown')],
+      [5, Common.UIString('5\xD7 slowdown')],
+      [10, Common.UIString('10\xD7 slowdown')],
       [20, Common.UIString('20\xD7 slowdown')]
     ]);
     for (var rate of predefinedRates)
@@ -637,10 +639,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._stopRecording();
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _garbageCollectButtonClicked(event) {
+  _garbageCollectButtonClicked() {
     var targets = SDK.targetManager.targets();
     for (var i = 0; i < targets.length; ++i)
       targets[i].heapProfilerAgent().collectGarbage();

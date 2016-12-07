@@ -157,7 +157,7 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
         this._previousCallbacks.delete(callId);
     }
     var hasLongRunningCalls = !!this._previousCallbacks.size;
-    this.dispatchEventToListeners(Profiler.HeapSnapshotWorkerProxy.Events.Wait, hasLongRunningCalls);
+    this.dispatchEventToListeners('wait', hasLongRunningCalls);
     for (var callId of this._callbacks.keysArray())
       this._previousCallbacks.add(callId);
   }
@@ -191,10 +191,6 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
   _postMessage(message) {
     this._worker.postMessage(message);
   }
-};
-
-Profiler.HeapSnapshotWorkerProxy.Events = {
-  Wait: Symbol('Wait')
 };
 
 /**

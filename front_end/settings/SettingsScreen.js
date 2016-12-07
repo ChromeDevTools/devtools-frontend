@@ -368,7 +368,7 @@ Settings.WorkspaceSettingsTab = class extends Settings.SettingsTab {
 
     var toolbar = new UI.Toolbar('');
     var button = new UI.ToolbarButton(Common.UIString('Remove'), 'largeicon-delete');
-    button.addEventListener(UI.ToolbarButton.Events.Click, this._removeFileSystemClicked.bind(this, fileSystem));
+    button.addEventListener('click', this._removeFileSystemClicked.bind(this, fileSystem));
     toolbar.appendToolbarItem(button);
     header.appendChild(toolbar.element);
 

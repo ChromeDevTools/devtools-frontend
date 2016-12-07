@@ -45,7 +45,7 @@ LayerViewer.TransformController = class extends Common.Object {
     this._setMode(LayerViewer.TransformController.Modes.Pan);
 
     var resetButton = new UI.ToolbarButton(Common.UIString('Reset transform (0)'), 'largeicon-center');
-    resetButton.addEventListener(UI.ToolbarButton.Events.Click, this.resetAndNotify.bind(this, undefined));
+    resetButton.addEventListener('click', this.resetAndNotify.bind(this, undefined));
     this._controlPanelToolbar.appendToolbarItem(resetButton);
 
     this._reset();

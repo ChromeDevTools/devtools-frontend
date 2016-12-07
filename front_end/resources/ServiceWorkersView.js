@@ -154,18 +154,18 @@ Resources.ServiceWorkersView.Section = class {
     this._toolbar = section.createToolbar();
     this._toolbar.renderAsLinks();
     this._updateButton = new UI.ToolbarButton(Common.UIString('Update'), undefined, Common.UIString('Update'));
-    this._updateButton.addEventListener(UI.ToolbarButton.Events.Click, this._updateButtonClicked, this);
+    this._updateButton.addEventListener('click', this._updateButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(this._updateButton);
     this._pushButton = new UI.ToolbarButton(Common.UIString('Emulate push event'), undefined, Common.UIString('Push'));
-    this._pushButton.addEventListener(UI.ToolbarButton.Events.Click, this._pushButtonClicked, this);
+    this._pushButton.addEventListener('click', this._pushButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(this._pushButton);
     this._syncButton =
         new UI.ToolbarButton(Common.UIString('Emulate background sync event'), undefined, Common.UIString('Sync'));
-    this._syncButton.addEventListener(UI.ToolbarButton.Events.Click, this._syncButtonClicked, this);
+    this._syncButton.addEventListener('click', this._syncButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(this._syncButton);
     this._deleteButton =
         new UI.ToolbarButton(Common.UIString('Unregister service worker'), undefined, Common.UIString('Unregister'));
-    this._deleteButton.addEventListener(UI.ToolbarButton.Events.Click, this._unregisterButtonClicked, this);
+    this._deleteButton.addEventListener('click', this._unregisterButtonClicked.bind(this));
     this._toolbar.appendToolbarItem(this._deleteButton);
 
     // Preserve the order.
@@ -318,32 +318,20 @@ Resources.ServiceWorkersView.Section = class {
     message.appendChild(createLabel('#' + error.versionId + ': ' + error.errorMessage, 'smallicon-error'));
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _unregisterButtonClicked(event) {
+  _unregisterButtonClicked() {
     this._manager.deleteRegistration(this._registration.id);
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _updateButtonClicked(event) {
+  _updateButtonClicked() {
     this._manager.updateRegistration(this._registration.id);
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _pushButtonClicked(event) {
+  _pushButtonClicked() {
     var data = 'Test push message from DevTools.';
     this._manager.deliverPushMessage(this._registration.id, data);
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _syncButtonClicked(event) {
+  _syncButtonClicked() {
     var tag = 'test-tag-from-devtools';
     var lastChance = true;
     this._manager.dispatchSyncEvent(this._registration.id, tag, lastChance);

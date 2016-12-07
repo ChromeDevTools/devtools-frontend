@@ -51,7 +51,7 @@ UI.InspectorView = class extends UI.VBox {
     this._drawerTabbedPane = this._drawerTabbedLocation.tabbedPane();
     this._drawerTabbedPane.setMinimumSize(0, 27);
     var closeDrawerButton = new UI.ToolbarButton(Common.UIString('Close drawer'), 'largeicon-delete');
-    closeDrawerButton.addEventListener(UI.ToolbarButton.Events.Click, this._closeDrawer, this);
+    closeDrawerButton.addEventListener('click', this._closeDrawer.bind(this));
     this._drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
     this._drawerSplitWidget.installResizer(this._drawerTabbedPane.headerElement());
     this._drawerSplitWidget.setSidebarWidget(this._drawerTabbedPane);

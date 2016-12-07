@@ -40,8 +40,7 @@ Components.DockController = class extends Common.Object {
     this._canDock = canDock;
 
     this._closeButton = new UI.ToolbarButton(Common.UIString('Close'), 'largeicon-delete');
-    this._closeButton.addEventListener(
-        UI.ToolbarButton.Events.Click, InspectorFrontendHost.closeWindow.bind(InspectorFrontendHost));
+    this._closeButton.addEventListener('click', InspectorFrontendHost.closeWindow.bind(InspectorFrontendHost));
 
     if (!canDock) {
       this._dockSide = Components.DockController.State.Undocked;

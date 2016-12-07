@@ -44,7 +44,7 @@ Sources.InplaceFormatterEditorAction = class {
     this._sourcesView.addEventListener(Sources.SourcesView.Events.EditorClosed, this._editorClosed.bind(this));
 
     this._button = new UI.ToolbarButton(Common.UIString('Format'), 'largeicon-pretty-print');
-    this._button.addEventListener(UI.ToolbarButton.Events.Click, this._formatSourceInPlace, this);
+    this._button.addEventListener('click', this._formatSourceInPlace, this);
     this._updateButton(sourcesView.currentUISourceCode());
 
     return this._button;
@@ -64,10 +64,7 @@ Sources.InplaceFormatterEditorAction = class {
     return uiSourceCode.contentType().isStyleSheet();
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _formatSourceInPlace(event) {
+  _formatSourceInPlace() {
     var uiSourceCode = this._sourcesView.currentUISourceCode();
     if (!this._isFormattable(uiSourceCode))
       return;

@@ -595,15 +595,16 @@ Sources.SourcesPanel = class extends UI.Panel {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @return {boolean}
    */
-  _longResume(event) {
+  _longResume() {
     var debuggerModel = this._prepareToResume();
     if (!debuggerModel)
-      return;
+      return true;
 
     debuggerModel.skipAllPausesUntilReloadOrTimeout(500);
     debuggerModel.resume();
+    return true;
   }
 
   /**
@@ -680,7 +681,7 @@ Sources.SourcesPanel = class extends UI.Panel {
 
     var longResumeButton =
         new UI.ToolbarButton(Common.UIString('Resume with all pauses blocked for 500 ms'), 'largeicon-play');
-    longResumeButton.addEventListener(UI.ToolbarButton.Events.Click, this._longResume, this);
+    longResumeButton.addEventListener('click', this._longResume.bind(this), this);
     debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._togglePauseAction, [longResumeButton], []));
 
     debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepOverAction));

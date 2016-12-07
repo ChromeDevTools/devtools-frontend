@@ -112,7 +112,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
     var toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
     var topToolbar = new UI.Toolbar('animation-timeline-toolbar', toolbarContainer);
     var clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
-    clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset.bind(this));
+    clearButton.addEventListener('click', this._reset.bind(this));
     topToolbar.appendToolbarItem(clearButton);
     topToolbar.appendSeparator();
 

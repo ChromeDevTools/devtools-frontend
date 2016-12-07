@@ -140,7 +140,7 @@ Sources.SourcesSearchScope = class {
     for (var i = 0; i < uiSourceCodes.length; ++i) {
       var uiSourceCode = uiSourceCodes[i];
       var binding = Persistence.persistence.binding(uiSourceCode);
-      if (binding && binding.fileSystem === uiSourceCode)
+      if (binding && binding.network === uiSourceCode)
         continue;
       if (dirtyOnly && !uiSourceCode.isDirty())
         continue;

@@ -258,6 +258,14 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this._installMessageAndDecorationListeners();
     this._updateStyle();
     this._decorateAllTypes();
+    this.onBindingChanged();
+  }
+
+  /**
+   * @protected
+   */
+  onBindingChanged() {
+    // Overriden in subclasses.
   }
 
   _updateStyle() {

@@ -52,7 +52,7 @@ Sources.FilteredUISourceCodeListDelegate = class extends UI.FilteredListWidget.D
    */
   _filterUISourceCode(uiSourceCode) {
     var binding = Persistence.persistence.binding(uiSourceCode);
-    return !binding || binding.network === uiSourceCode;
+    return !binding || binding.fileSystem === uiSourceCode;
   }
 
   /**

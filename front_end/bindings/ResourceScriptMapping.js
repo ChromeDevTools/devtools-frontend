@@ -296,6 +296,8 @@ Bindings.ResourceScriptFile = class extends Common.Object {
     if (typeof this._scriptSource === 'undefined')
       return false;
     var workingCopy = this._uiSourceCode.workingCopy();
+    if (!workingCopy)
+      return false;
 
     // Match ignoring sourceURL.
     if (!workingCopy.startsWith(this._scriptSource.trimRight()))

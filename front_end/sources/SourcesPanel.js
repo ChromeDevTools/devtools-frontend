@@ -387,10 +387,6 @@ Sources.SourcesPanel = class extends UI.Panel {
    * @param {boolean=} skipReveal
    */
   _revealInNavigator(uiSourceCode, skipReveal) {
-    var binding = Persistence.persistence.binding(uiSourceCode);
-    if (binding && binding.network === uiSourceCode)
-      uiSourceCode = binding.fileSystem;
-
     var extensions = self.runtime.extensions(Sources.NavigatorView);
     Promise.all(extensions.map(extension => extension.instance())).then(filterNavigators.bind(this));
 

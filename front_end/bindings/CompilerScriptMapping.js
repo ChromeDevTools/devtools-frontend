@@ -197,7 +197,7 @@ Bindings.CompilerScriptMapping = class {
       return;
     // Create stub UISourceCode for the time source mapping is being loaded.
     var stubUISourceCode = this._stubProject.addContentProvider(
-        script.sourceURL,
+        script.sourceURL + ':sourcemap',
         Common.StaticContentProvider.fromString(
             script.sourceURL, Common.resourceTypes.Script,
             '\n\n\n\n\n// Please wait a bit.\n// Compiled script is not shown while source map is being loaded!'));

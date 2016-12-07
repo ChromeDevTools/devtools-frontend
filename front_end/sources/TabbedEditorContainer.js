@@ -78,30 +78,32 @@ Sources.TabbedEditorContainer = class extends Common.Object {
    */
   _onBindingCreated(event) {
     var binding = /** @type {!Persistence.PersistenceBinding} */ (event.data);
-    this._updateFileTitle(binding.network);
+    this._updateFileTitle(binding.fileSystem);
 
     var networkTabId = this._tabIds.get(binding.network);
     var fileSystemTabId = this._tabIds.get(binding.fileSystem);
-    if (!fileSystemTabId)
+
+    var wasSelectedInNetwork = this._currentFile === binding.network;
+    var currentSelectionRange = this._history.selectionRange(binding.network.url());
+    var currentScrollLineNumber = this._history.scrollLineNumber(binding.network.url());
+    this._history.remove(binding.network.url());
+
+    if (!networkTabId)
       return;
 
-    var wasSelectedInFileSystem = this._currentFile === binding.fileSystem;
-    var currentSelectionRange = this._history.selectionRange(binding.fileSystem.url());
-    var currentScrollLineNumber = this._history.scrollLineNumber(binding.fileSystem.url());
-
-    var tabIndex = this._tabbedPane.tabIndex(fileSystemTabId);
-    var tabsToClose = [fileSystemTabId];
-    if (networkTabId)
-      tabsToClose.push(networkTabId);
+    var tabIndex = this._tabbedPane.tabIndex(networkTabId);
+    var tabsToClose = [networkTabId];
+    if (fileSystemTabId)
+      tabsToClose.push(fileSystemTabId);
     this._closeTabs(tabsToClose, true);
-    networkTabId = this._appendFileTab(binding.network, false, tabIndex);
+    fileSystemTabId = this._appendFileTab(binding.fileSystem, false, tabIndex);
     this._updateHistory();
 
-    if (wasSelectedInFileSystem)
-      this._tabbedPane.selectTab(networkTabId, false);
+    if (wasSelectedInNetwork)
+      this._tabbedPane.selectTab(fileSystemTabId, false);
 
-    var networkTabView = /** @type {!UI.Widget} */ (this._tabbedPane.tabView(networkTabId));
-    this._restoreEditorProperties(networkTabView, currentSelectionRange, currentScrollLineNumber);
+    var fileSystemTabView = /** @type {!UI.Widget} */ (this._tabbedPane.tabView(fileSystemTabId));
+    this._restoreEditorProperties(fileSystemTabView, currentSelectionRange, currentScrollLineNumber);
   }
 
   /**
@@ -109,24 +111,7 @@ Sources.TabbedEditorContainer = class extends Common.Object {
    */
   _onBindingRemoved(event) {
     var binding = /** @type {!Persistence.PersistenceBinding} */ (event.data);
-    this._updateFileTitle(binding.network);
-
-    var networkTabId = this._tabIds.get(binding.network);
-    if (!networkTabId)
-      return;
-
-    var tabIndex = this._tabbedPane.tabIndex(networkTabId);
-    var wasSelected = this._currentFile === binding.network;
-    var fileSystemTabId = this._appendFileTab(binding.fileSystem, false, tabIndex);
-    this._updateHistory();
-
-    if (wasSelected)
-      this._tabbedPane.selectTab(fileSystemTabId, false);
-
-    var fileSystemTabView = /** @type {!UI.Widget} */ (this._tabbedPane.tabView(fileSystemTabId));
-    var savedSelectionRange = this._history.selectionRange(binding.network.url());
-    var savedScrollLineNumber = this._history.scrollLineNumber(binding.network.url());
-    this._restoreEditorProperties(fileSystemTabView, savedSelectionRange, savedScrollLineNumber);
+    this._updateFileTitle(binding.fileSystem);
   }
 
   /**
@@ -264,7 +249,7 @@ Sources.TabbedEditorContainer = class extends Common.Object {
    */
   _innerShowFile(uiSourceCode, userGesture) {
     var binding = Persistence.persistence.binding(uiSourceCode);
-    uiSourceCode = binding ? binding.network : uiSourceCode;
+    uiSourceCode = binding ? binding.fileSystem : uiSourceCode;
     if (this._currentFile === uiSourceCode)
       return;
 
@@ -295,10 +280,8 @@ Sources.TabbedEditorContainer = class extends Common.Object {
    * @return {string}
    */
   _titleForFile(uiSourceCode) {
-    var binding = Persistence.persistence.binding(uiSourceCode);
-    var titleUISourceCode = binding ? binding.fileSystem : uiSourceCode;
     var maxDisplayNameLength = 30;
-    var title = titleUISourceCode.displayName(true).trimMiddle(maxDisplayNameLength);
+    var title = uiSourceCode.displayName(true).trimMiddle(maxDisplayNameLength);
     if (uiSourceCode.isDirty() || Persistence.persistence.hasUnsavedCommittedChanges(uiSourceCode))
       title += '*';
     return title;

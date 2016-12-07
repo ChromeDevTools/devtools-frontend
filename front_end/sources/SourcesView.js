@@ -89,6 +89,11 @@ Sources.SourcesView = class extends UI.VBox {
 
     this._shortcuts = {};
     this.element.addEventListener('keydown', this._handleKeyDown.bind(this), false);
+
+    Persistence.persistence.addEventListener(
+        Persistence.Persistence.Events.BindingCreated, this._onBindingChanged, this);
+    Persistence.persistence.addEventListener(
+        Persistence.Persistence.Events.BindingRemoved, this._onBindingChanged, this);
   }
 
   /**
@@ -394,21 +399,42 @@ Sources.SourcesView = class extends UI.VBox {
       /** @type {!Sources.UISourceCodeFrame} */ (sourceView).dispose();
   }
 
+  /**
+   * @param {!Common.Event} event
+   */
+  _onBindingChanged(event) {
+    if (!this._executionLocation)
+      return;
+    var binding = /** @type {!Persistence.PersistenceBinding} */ (event.data);
+    var uiSourceCode = this._executionLocation.uiSourceCode;
+    if (binding.network !== uiSourceCode)
+      return;
+    this.setExecutionLocation(this._executionLocation);
+    this.showSourceLocation(
+        this._executionLocation.uiSourceCode, this._executionLocation.lineNumber, this._executionLocation.columnNumber);
+  }
+
   clearCurrentExecutionLine() {
     if (this._executionSourceFrame)
       this._executionSourceFrame.clearExecutionLine();
-    delete this._executionSourceFrame;
+    this._executionSourceFrame = null;
+    this._executionLocation = null;
   }
 
   /**
    * @param {!Workspace.UILocation} uiLocation
    */
   setExecutionLocation(uiLocation) {
-    var sourceView = this._getOrCreateSourceView(uiLocation.uiSourceCode);
+    this.clearCurrentExecutionLine();
+    var binding = Persistence.persistence.binding(uiLocation.uiSourceCode);
+    var uiSourceCode = binding ? binding.fileSystem : uiLocation.uiSourceCode;
+    var sourceView = this._getOrCreateSourceView(uiSourceCode);
     if (sourceView instanceof Sources.UISourceCodeFrame) {
       var sourceFrame = /** @type {!Sources.UISourceCodeFrame} */ (sourceView);
-      sourceFrame.setExecutionLocation(uiLocation);
+      sourceFrame.setExecutionLocation(
+          new Workspace.UILocation(uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber));
       this._executionSourceFrame = sourceFrame;
+      this._executionLocation = uiLocation;
     }
   }
 

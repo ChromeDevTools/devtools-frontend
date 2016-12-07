@@ -58,6 +58,11 @@ Bindings.BlackboxManager = class {
    * @param {!SDK.Target} target
    */
   targetRemoved(target) {
+    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
+    if (debuggerModel) {
+      this._debuggerModelData.delete(debuggerModel);
+      this._isBlackboxedURLCache.clear();
+    }
   }
 
   /**

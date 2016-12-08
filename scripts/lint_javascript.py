@@ -29,8 +29,8 @@ if len(sys.argv) >= 2:
 is_cygwin = sys.platform == "cygwin"
 
 
-def popen(arguments):
-    return subprocess.Popen(arguments, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+def popen(arguments, cwd=None):
+    return subprocess.Popen(arguments, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
 def to_platform_path(filepath):
@@ -49,7 +49,7 @@ def to_platform_path_exact(filepath):
 scripts_path = path.dirname(path.abspath(__file__))
 devtools_path = path.dirname(scripts_path)
 devtools_frontend_path = path.join(devtools_path, "front_end")
-eslint_path = path.join(devtools_path, "node_modules", ".bin", "eslint")
+eslint_path = path.join(devtools_path, "node_modules", "eslint", "bin", "eslint.js")
 
 print("Linting JavaScript with eslint...\n")
 
@@ -75,7 +75,7 @@ def js_lint(files_list=None):
         "--ignore-path", to_platform_path_exact(eslintignore_path),
     ] + files_list
 
-    eslint_proc = popen(exec_command)
+    eslint_proc = popen(exec_command, cwd=devtools_path)
     (eslint_proc_out, _) = eslint_proc.communicate()
     if eslint_proc.returncode != 0:
         eslint_errors_found = True

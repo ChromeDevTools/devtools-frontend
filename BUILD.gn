@@ -1175,6 +1175,7 @@ group("devtools_closure_compile") {
     "scripts/closure/",
     "scripts/compile_frontend.py",
     "scripts/jsdoc_validator/",
+    "scripts/utils.py",
     "//testing/scripts/run_devtools_closure_compile.py",
     "//testing/scripts/common.py",
     "//testing/xvfb.py",

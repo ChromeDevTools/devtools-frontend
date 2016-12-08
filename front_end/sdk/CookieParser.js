@@ -384,8 +384,10 @@ SDK.Cookies.getCookiesAsync = function(callback) {
   }
 
   var barrier = new CallbackBarrier();
-  for (var target of SDK.targetManager.targets(SDK.Target.Capability.Network))
-    target.networkAgent().getCookies(barrier.createCallback(mycallback.bind(null, target)));
+  for (var target of SDK.targetManager.targets(SDK.Target.Capability.Network)) {
+    var global = false;
+    target.networkAgent().getCookies(global, barrier.createCallback(mycallback.bind(null, target)));
+  }
   barrier.callWhenDone(callback.bind(null, allCookies));
 };
 

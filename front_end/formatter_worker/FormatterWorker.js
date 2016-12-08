@@ -97,7 +97,7 @@ FormatterWorker.relaxedJSONParser = function(content) {
  * @param {string} content
  */
 FormatterWorker.evaluatableJavaScriptSubstring = function(content) {
-  var tokenizer = acorn.tokenizer(content, {ecmaVersion: 6});
+  var tokenizer = acorn.tokenizer(content, {ecmaVersion: 7});
   var result = '';
   try {
     var token = tokenizer.getToken();

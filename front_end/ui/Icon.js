@@ -132,6 +132,8 @@ UI.Icon.Descriptors = {
   'largeicon-replay-animation': {x: -320, y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
   'largeicon-play-animation': {x: -320, y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
   'largeicon-eyedropper': {x: -288, y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-copy': {x: -291, y: -143, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-checkmark': {x: -260, y: -71, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
   'largeicon-rotate': {x: -160, y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
   'largeicon-center': {x: -128, y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
   'largeicon-pan': {x: -98, y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},

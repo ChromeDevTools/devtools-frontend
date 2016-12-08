@@ -63,6 +63,12 @@ Components.Spectrum = class extends UI.VBox {
 
     var swatchElement = this.contentElement.createChild('span', 'swatch');
     this._swatchInnerElement = swatchElement.createChild('span', 'swatch-inner');
+    this._swatchOverlayElement = swatchElement.createChild('span', 'swatch-overlay');
+    this._swatchOverlayElement.addEventListener('click', this._onCopyIconClick.bind(this));
+    this._swatchOverlayElement.addEventListener('mouseout', this._onCopyIconMouseout.bind(this));
+    this._swatchCopyIcon = UI.Icon.create('largeicon-copy', 'copy-color-icon');
+    this._swatchCopyIcon.title = Common.UIString('Copy color to clipboard');
+    this._swatchOverlayElement.appendChild(this._swatchCopyIcon);
 
     this._hueElement = this.contentElement.createChild('div', 'spectrum-hue');
     this._hueSlider = this._hueElement.createChild('div', 'spectrum-slider');
@@ -185,6 +191,15 @@ Components.Spectrum = class extends UI.VBox {
       hsva[2] = Number.constrain(1 - (event.y - this._colorOffset.top) / this.dragHeight, 0, 1);
       this._innerSetColor(hsva, '', undefined, Components.Spectrum._ChangeSource.Other);
     }
+  }
+
+  _onCopyIconClick() {
+    this._swatchCopyIcon.setIconType('largeicon-checkmark');
+    InspectorFrontendHost.copyText(this.colorString());
+  }
+
+  _onCopyIconMouseout() {
+    this._swatchCopyIcon.setIconType('largeicon-copy');
   }
 
   _updatePalettePanel() {

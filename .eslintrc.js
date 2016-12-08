@@ -40,6 +40,8 @@ module.exports = {
             "setWithoutGet": false
         }],
         "curly": [2, "multi-or-nest", "consistent"],
+        "new-parens": 2,
+        "func-call-spacing": 2,
 
         // anti-patterns
         "no-with": 2,
@@ -51,6 +53,15 @@ module.exports = {
         "no-octal-escape": 2,
         "no-self-compare": 2,
         "no-shadow-restricted-names": 2,
+        "no-cond-assign": 2,
+        "no-debugger": 2,
+        "no-dupe-keys": 2,
+        "no-duplicate-case": 2,
+        "no-empty-character-class": 2,
+        "no-unreachable": 2,
+        "no-unsafe-negation": 2,
+        "radix": 2,
+        "valid-typeof": 2,
 
         // es2015 features
         "require-yield": 2,

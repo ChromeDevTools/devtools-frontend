@@ -527,7 +527,6 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
         var frame = this._model.pageFrameById(node.id);
         var frameName = frame ? Timeline.TimelineUIUtils.displayNameForFrame(frame, 80) : Common.UIString('Page');
         return {name: frameName, color: color};
-        break;
 
       default:
         console.assert(false, 'Unexpected aggregation type');

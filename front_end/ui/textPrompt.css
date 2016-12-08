@@ -29,11 +29,15 @@
     white-space: pre;
 }
 
-::content .auto-complete-text,
-.text-prompt-editing ::content .auto-complete-text {
+::content .auto-complete-text {
     color: rgb(128, 128, 128) !important;
     -webkit-user-select: none;
     -webkit-user-modify: read-only;
+}
+
+::content .text-prompt:empty::before {
+    content: attr(data-placeholder);
+    color: rgb(128, 128, 128);
 }
 
 .text-prompt-editing ::content br {

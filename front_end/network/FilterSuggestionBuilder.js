@@ -27,10 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/**
- * @implements {UI.TextFilterUI.SuggestionBuilder}
- * @unrestricted
- */
+
 Network.FilterSuggestionBuilder = class {
   /**
    * @param {!Array.<string>} keys
@@ -42,23 +39,14 @@ Network.FilterSuggestionBuilder = class {
   }
 
   /**
-   * @override
-   * @param {!HTMLInputElement} input
-   * @return {?Array.<string>}
+   * @param {string} expression
+   * @param {string} prefix
+   * @param {boolean=} force
+   * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
-  buildSuggestions(input) {
-    var text = input.value;
-    var end = input.selectionEnd;
-    if (end !== text.length)
-      return null;
-
-    var start = input.selectionStart;
-    text = text.substring(0, start);
-    var prefixIndex = text.lastIndexOf(' ') + 1;
-
-    var prefix = text.substring(prefixIndex);
-    if (!prefix)
-      return [];
+  completions(expression, prefix, force) {
+    if (!prefix && !force)
+      return Promise.resolve([]);
 
     var negative = prefix.startsWith('-');
     if (negative)
@@ -71,7 +59,7 @@ Network.FilterSuggestionBuilder = class {
       var matcher = new RegExp('^' + prefix.escapeForRegExp(), 'i');
       for (var j = 0; j < this._keys.length; ++j) {
         if (this._keys[j].match(matcher))
-          suggestions.push(modifier + this._keys[j] + ':');
+          suggestions.push({title: modifier + this._keys[j] + ':'});
       }
     } else {
       var key = prefix.substring(0, valueDelimiterIndex).toLowerCase();
@@ -80,46 +68,10 @@ Network.FilterSuggestionBuilder = class {
       var items = this._values(key);
       for (var i = 0; i < items.length; ++i) {
         if (items[i].match(matcher) && (items[i] !== value))
-          suggestions.push(modifier + key + ':' + items[i]);
+          suggestions.push({title: modifier + key + ':' + items[i]});
       }
     }
-    return suggestions;
-  }
-
-  /**
-   * @override
-   * @param {!HTMLInputElement} input
-   * @param {string} suggestion
-   * @param {boolean} isIntermediate
-   */
-  applySuggestion(input, suggestion, isIntermediate) {
-    var text = input.value;
-
-    var start = input.selectionStart;
-    text = text.substring(0, start);
-    var prefixIndex = text.lastIndexOf(' ') + 1;
-
-    if (isIntermediate) {
-      text = text + suggestion.substring(text.length - prefixIndex);
-      input.value = text;
-    } else {
-      text = text.substring(0, prefixIndex) + suggestion;
-      input.value = text;
-      start = text.length;
-    }
-    input.setSelectionRange(start, text.length);
-  }
-
-  /**
-   * @override
-   * @param {!HTMLInputElement} input
-   */
-  unapplySuggestion(input) {
-    var start = input.selectionStart;
-    var end = input.selectionEnd;
-    var text = input.value;
-    if (start !== end && end === text.length)
-      input.value = text.substring(0, start);
+    return Promise.resolve(suggestions);
   }
 
   /**

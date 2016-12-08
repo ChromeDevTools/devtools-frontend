@@ -196,6 +196,13 @@ UI.TextPrompt = class extends Common.Object {
       this._proxyElement.title = title;
   }
 
+  /**
+   * @param {string} placeholder
+   */
+  setPlaceholder(placeholder) {
+    this._element.setAttribute('data-placeholder', placeholder);
+  }
+
   _removeFromElement() {
     this.clearAutocomplete();
     this._element.removeEventListener('keydown', this._boundOnKeyDown, false);
@@ -317,11 +324,16 @@ UI.TextPrompt = class extends Common.Object {
   }
 
   clearAutocomplete() {
+    var beforeText = this.textWithCurrentSuggestion();
+
     if (this._isSuggestBoxVisible())
       this._suggestBox.hide();
     this._clearAutocompleteTimeout();
     this._queryRange = null;
     this._refreshGhostText();
+
+    if (beforeText !== this.textWithCurrentSuggestion())
+      this.dispatchEventToListeners(UI.TextPrompt.Events.ItemApplied);
   }
 
   _refreshGhostText() {

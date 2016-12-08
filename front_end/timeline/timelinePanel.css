@@ -595,7 +595,7 @@
     background-color: inherit;
 }
 
-.timeline-details #filter-input-field {
+.timeline-details .filter-input-field {
     width: 120px;
 }
 

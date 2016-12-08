@@ -139,13 +139,18 @@
 }
 
 .filter-input-field {
-    -webkit-appearance: none;
     border: 1px solid rgb(163, 163, 163);
     border-radius: 2px;
     padding: 1px 3px 0;
     margin: 0 0 0 1px;
-    width: 253px;
+    width: 143px;
     height: 20px;
     line-height: 17px;
-    flex: 1;
+    -webkit-user-modify: read-write-plaintext-only;
+    -webkit-user-select: text;
+    display: inline-block;
+    background: #FFF;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: auto;
 }

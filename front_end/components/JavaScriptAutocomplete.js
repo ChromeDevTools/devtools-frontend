@@ -65,6 +65,10 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
   if ((expressionString && !isNaN(expressionString)) || (!expressionString && query && !isNaN(query)))
     return Promise.resolve([]);
 
+  // User is creating an array, do not suggest anything.
+  if (bracketNotation && !expressionString)
+    return Promise.resolve([]);
+
   if (!query && !expressionString && !force)
     return Promise.resolve([]);
 
@@ -252,7 +256,7 @@ Components.JavaScriptAutocomplete._completionsForQuery = function(
     var property = properties[i];
 
     // Assume that all non-ASCII characters are letters and thus can be used as part of identifier.
-    if (dotNotation && !/^[a-zA-Z_$\u008F-\uFFFF][a-zA-Z0-9_$\u008F-\uFFFF]*$/.test(property))
+    if (!bracketNotation && !/^[a-zA-Z_$\u008F-\uFFFF][a-zA-Z0-9_$\u008F-\uFFFF]*$/.test(property))
       continue;
 
     if (bracketNotation) {

@@ -871,6 +871,12 @@
     Bindings.TempFile.ensureTempStorageCleared().then(() => this.releaseControl());
   };
 
+  TestSuite.prototype.testTempFile = function() {
+    this.takeControl();
+    Bindings.TempFile.create('test-file', 'test')
+        .then(() => this.releaseControl(), (error) => this.fail(String(error)));
+  };
+
   TestSuite.prototype.waitForTestResultsInConsole = function() {
     var messages = SDK.multitargetConsoleModel.messages();
     for (var i = 0; i < messages.length; ++i) {

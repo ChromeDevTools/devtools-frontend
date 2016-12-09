@@ -236,8 +236,15 @@ Sources.AdvancedSearchView = class extends UI.VBox {
 
   _updateSearchResultsMessage() {
     if (this._searchMatchesCount && this._searchResultsCount) {
-      this._searchResultsMessageElement.textContent =
-          Common.UIString('Found %d matches in %d files.', this._searchMatchesCount, this._nonEmptySearchResultsCount);
+      if (this._searchMatchesCount === 1 && this._nonEmptySearchResultsCount === 1) {
+        this._searchResultsMessageElement.textContent = Common.UIString('Found 1 matching line in 1 file.');
+      } else if (this._searchMatchesCount > 1 && this._nonEmptySearchResultsCount === 1) {
+        this._searchResultsMessageElement.textContent =
+            Common.UIString('Found %d matching lines in 1 file.', this._searchMatchesCount);
+      } else {
+        this._searchResultsMessageElement.textContent = Common.UIString(
+            'Found %d matching lines in %d files.', this._searchMatchesCount, this._nonEmptySearchResultsCount);
+      }
     } else {
       this._searchResultsMessageElement.textContent = '';
     }

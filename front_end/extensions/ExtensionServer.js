@@ -1014,7 +1014,7 @@ Extensions.ExtensionStatus = class {
       var status = {code: code, description: description, details: details};
       if (code !== 'OK') {
         status.isError = true;
-        console.log('Extension server error: ' + String.vsprintf(description, details));
+        console.error('Extension server error: ' + String.vsprintf(description, details));
       }
       return status;
     }

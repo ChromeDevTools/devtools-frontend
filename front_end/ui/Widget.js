@@ -76,10 +76,8 @@ UI.Widget = class extends Common.Object {
   }
 
   static __assert(condition, message) {
-    if (!condition) {
-      console.trace();
+    if (!condition)
       throw new Error(message);
-    }
   }
 
   /**
@@ -438,7 +436,7 @@ UI.Widget = class extends Common.Object {
   printWidgetHierarchy() {
     var lines = [];
     this._collectWidgetHierarchy('', lines);
-    console.log(lines.join('\n'));
+    console.log(lines.join('\n'));  // eslint-disable-line no-console
   }
 
   _collectWidgetHierarchy(prefix, lines) {

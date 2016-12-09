@@ -141,7 +141,7 @@ SDK.CookieParser = class {
     // cookie values, though.
     var keyValueMatch = /^[ \t]*([^\s=;]+)[ \t]*(?:=[ \t]*([^;\n]*))?/.exec(this._input);
     if (!keyValueMatch) {
-      console.log('Failed parsing cookie header before: ' + this._input);
+      console.error('Failed parsing cookie header before: ' + this._input);
       return null;
     }
 

@@ -55,6 +55,7 @@ module.exports = {
         "no-shadow-restricted-names": 2,
         "no-cond-assign": 2,
         "no-debugger": 2,
+        "no-console": [2, { "allow": ["warn", "error", "assert", "timeStamp", "time", "timeEnd"] }],
         "no-dupe-keys": 2,
         "no-duplicate-case": 2,
         "no-empty-character-class": 2,
@@ -93,7 +94,6 @@ module.exports = {
         "no-mixed-spaces-and-tabs": 2,
         "no-trailing-spaces": 2,
         "linebreak-style": [ 2, "unix" ],
-
 
         /**
          * Disabled, aspirational rules

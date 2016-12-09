@@ -81,7 +81,7 @@ TimelineModel.TimelineProfileTree.buildTopDown = function(events, filters, start
     }
     parent.selfTime -= time;
     if (parent.selfTime < 0) {
-      console.log('Error: Negative self of ' + parent.selfTime, e);
+      console.error('Error: Negative self of ' + parent.selfTime, e);
       parent.selfTime = 0;
     }
     if (e.endTime)

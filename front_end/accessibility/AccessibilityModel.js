@@ -302,7 +302,7 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
     var rootNode = inspectedNode;
     while (rootNode.parentNode())
       rootNode = rootNode.parentNode();
-    console.log(rootNode.printSelfAndChildren(inspectedNode));
+    console.log(rootNode.printSelfAndChildren(inspectedNode));  // eslint-disable-line no-console
   }
 };
 

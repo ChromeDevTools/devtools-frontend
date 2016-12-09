@@ -1108,7 +1108,7 @@ Elements.StylePropertiesSection = class {
 
     var selectorTexts = rule.selectors.map(selector => selector.text);
     var matchingSelectorIndexes = this._matchedStyles.matchingSelectors(/** @type {!SDK.CSSStyleRule} */ (rule));
-    var matchingSelectors = new Array(selectorTexts.length).fill(false);
+    var matchingSelectors = /** @type {!Array<boolean>} */ (new Array(selectorTexts.length).fill(false));
     for (var matchingIndex of matchingSelectorIndexes)
       matchingSelectors[matchingIndex] = true;
 

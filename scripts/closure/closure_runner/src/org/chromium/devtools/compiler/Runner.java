@@ -186,14 +186,6 @@ public class Runner {
         }
 
         @Override
-        protected CompilerOptions createOptions() {
-            CompilerOptions options = super.createOptions();
-            options.setIdeMode(true);
-            options.setReportMissingOverride(CheckLevel.ERROR);
-            return options;
-        }
-
-        @Override
         protected void setRunOptions(CompilerOptions options)
                 throws FlagUsageException, IOException {
             super.setRunOptions(options);
@@ -201,17 +193,12 @@ public class Runner {
         }
 
         int execute() {
-            int result = 0;
-            int runs = 1;
             try {
-                for (int i = 0; i < runs && result == 0; i++) {
-                    result = doRun();
-                }
+                return doRun();
             } catch (Throwable t) {
                 t.printStackTrace();
-                result = -2;
+                return -2;
             }
-            return result;
         }
     }
 

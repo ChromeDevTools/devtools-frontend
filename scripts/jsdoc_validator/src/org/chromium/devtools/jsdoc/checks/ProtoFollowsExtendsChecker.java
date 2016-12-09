@@ -20,18 +20,18 @@ public final class ProtoFollowsExtendsChecker extends ContextTrackingChecker {
 
     @Override
     protected void enterNode(Node node) {
-        switch (node.getType()) {
-            case Token.ASSIGN:
-            case Token.VAR:
+        switch (node.getToken()) {
+            case ASSIGN:
+            case VAR:
                 handleAssignment(node);
                 break;
-            case Token.STRING_KEY:
+            case STRING_KEY:
                 handleColonNode(node);
                 break;
-            case Token.FUNCTION:
+            case FUNCTION:
                 enterFunction();
                 break;
-            case Token.CALL:
+            case CALL:
                 handleCall(node);
                 break;
             default:
@@ -81,11 +81,11 @@ public final class ProtoFollowsExtendsChecker extends ContextTrackingChecker {
 
     @Override
     protected void leaveNode(Node node) {
-        if (node.getType() == Token.SCRIPT) {
+        if (node.getToken() == Token.SCRIPT) {
             checkFinished();
             return;
         }
-        if (node.getType() == Token.FUNCTION) {
+        if (node.getToken() == Token.FUNCTION) {
             leaveFunction();
             return;
         }
@@ -140,7 +140,7 @@ public final class ProtoFollowsExtendsChecker extends ContextTrackingChecker {
             JSTypeExpression extendedType = record.getExtendedType();
             if (extendedType != null) {
                 Node rootNode = extendedType.getRoot();
-                if (rootNode.getType() == Token.BANG && rootNode.getFirstChild() != null) {
+                if (rootNode.getToken() == Token.BANG && rootNode.getFirstChild() != null) {
                     rootNode = rootNode.getFirstChild();
                 }
                 getContext().reportErrorAtOffset(rootNode.getSourceOffset(),
@@ -217,7 +217,7 @@ public final class ProtoFollowsExtendsChecker extends ContextTrackingChecker {
         }
         Node prototypeValueNode = assignment.getLastChild();
 
-        if (prototypeValueNode.getType() == Token.OBJECTLIT) {
+        if (prototypeValueNode.getToken() == Token.OBJECTLIT) {
             return;
         }
 

@@ -32,15 +32,15 @@ public final class FunctionReceiverChecker extends ContextTrackingChecker {
 
     @Override
     void enterNode(Node node) {
-        switch (node.getType()) {
-            case Token.CALL:
+        switch (node.getToken()) {
+            case CALL:
                 handleCall(node);
                 break;
-            case Token.FUNCTION: {
+            case FUNCTION: {
                 handleFunction(node);
                 break;
             }
-            case Token.THIS: {
+            case THIS: {
                 handleThis();
                 break;
             }
@@ -164,7 +164,7 @@ public final class FunctionReceiverChecker extends ContextTrackingChecker {
 
     @Override
     void leaveNode(Node node) {
-        if (node.getType() != Token.FUNCTION) {
+        if (node.getToken() != Token.FUNCTION) {
             return;
         }
 

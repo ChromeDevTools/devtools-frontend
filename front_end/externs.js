@@ -619,12 +619,6 @@ CodeMirror.doc;
 window.dispatchStandaloneTestRunnerMessages;
 
 /**
- * @param {*} obj
- * @return {boolean}
- */
-ArrayBuffer.isView = function(obj) {};
-
-/**
  * @param {Array.<Object>} keyframes
  * @param {number|Object} timing
  * @return {Object}

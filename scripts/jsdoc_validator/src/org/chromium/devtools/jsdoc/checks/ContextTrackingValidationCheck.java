@@ -27,12 +27,12 @@ public class ContextTrackingValidationCheck extends ValidationCheck {
 
     @Override
     public void doVisit(Node node) {
-        switch (node.getType()) {
-            case Token.ASSIGN:
-            case Token.VAR:
+        switch (node.getToken()) {
+            case ASSIGN:
+            case VAR:
                 enterAssignOrVarNode(node);
                 break;
-            case Token.FUNCTION:
+            case FUNCTION:
                 enterFunctionNode(node);
                 break;
             default:
@@ -46,11 +46,11 @@ public class ContextTrackingValidationCheck extends ValidationCheck {
     public void didVisit(Node node) {
         leaveNode(node);
 
-        switch (node.getType()) {
-            case Token.ASSIGN:
+        switch (node.getToken()) {
+            case ASSIGN:
                 leaveAssignNode(node);
                 break;
-            case Token.FUNCTION:
+            case FUNCTION:
                 leaveFunctionNode(node);
                 break;
             default:

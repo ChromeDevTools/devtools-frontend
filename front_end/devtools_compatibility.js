@@ -601,6 +601,7 @@
     }
 
     /**
+     * @override
      * @param {!Array<string>} certChain
      */
     showCertificateViewer(certChain) {

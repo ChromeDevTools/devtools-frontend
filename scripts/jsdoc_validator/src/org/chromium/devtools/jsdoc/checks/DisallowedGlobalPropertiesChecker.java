@@ -33,18 +33,18 @@ public final class DisallowedGlobalPropertiesChecker extends ContextTrackingChec
 
     @Override
     protected void enterNode(Node node) {
-        switch (node.getType()) {
-            case Token.VAR:
+        switch (node.getToken()) {
+            case VAR:
                 handleVar(node);
                 break;
-            case Token.NAME:
+            case NAME:
                 handleName(node);
                 break;
-            case Token.STRING:
+            case STRING:
                 handleString(node);
                 break;
-            case Token.FUNCTION:
-            case Token.SCRIPT:
+            case FUNCTION:
+            case SCRIPT:
                 enterFunctionOrScript();
                 break;
             default:
@@ -54,9 +54,9 @@ public final class DisallowedGlobalPropertiesChecker extends ContextTrackingChec
 
     @Override
     protected void leaveNode(Node node) {
-        switch (node.getType()) {
-            case Token.FUNCTION:
-            case Token.SCRIPT:
+        switch (node.getToken()) {
+            case FUNCTION:
+            case SCRIPT:
                 leaveFunctionOrScript();
                 break;
             default:
@@ -104,7 +104,7 @@ public final class DisallowedGlobalPropertiesChecker extends ContextTrackingChec
 
     private void handleName(Node nameNode) {
         Node parent = nameNode.getParent();
-        if (parent != null && parent.getType() == Token.FUNCTION) {
+        if (parent != null && parent.getToken() == Token.FUNCTION) {
             return;
         }
 
@@ -113,7 +113,7 @@ public final class DisallowedGlobalPropertiesChecker extends ContextTrackingChec
             return;
         }
 
-        if (parent != null && parent.getType() == Token.GETPROP) {
+        if (parent != null && parent.getToken() == Token.GETPROP) {
             boolean isGlobalPropertyAccess = parent.getFirstChild() == nameNode;
             if (!isGlobalPropertyAccess) {
                 return;
@@ -129,7 +129,7 @@ public final class DisallowedGlobalPropertiesChecker extends ContextTrackingChec
         }
 
         Node parent = stringNode.getParent();
-        if (parent == null || parent.getType() != Token.GETPROP) {
+        if (parent == null || parent.getToken() != Token.GETPROP) {
             return;
         }
 
@@ -151,7 +151,7 @@ public final class DisallowedGlobalPropertiesChecker extends ContextTrackingChec
         if (!GLOBAL_OBJECT_NAMES.contains(name)) {
             return false;
         }
-        return node.getType() == Token.NAME
+        return node.getToken() == Token.NAME
                 && !functionHasVisibleIdentifier(getCurrentFunction(), name);
     }
 

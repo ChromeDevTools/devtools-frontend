@@ -230,12 +230,14 @@ modules_dir = tempfile.mkdtemp()
 common_closure_args = [
     '--summary_detail_level', '3',
     '--jscomp_error', 'visibility',
+    '--jscomp_warning', 'missingOverride',
     '--compilation_level', 'SIMPLE_OPTIMIZATIONS',
     '--warning_level', 'VERBOSE',
     '--language_in=ES6_STRICT',
     '--language_out=ES5_STRICT',
     '--extra_annotation_name', 'suppressReceiverCheck',
     '--extra_annotation_name', 'suppressGlobalPropertiesCheck',
+    '--checks-only',
     '--module_output_path_prefix', to_platform_path_exact(modules_dir + path.sep)
 ]
 

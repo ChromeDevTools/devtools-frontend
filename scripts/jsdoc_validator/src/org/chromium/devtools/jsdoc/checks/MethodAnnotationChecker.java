@@ -23,14 +23,14 @@ public final class MethodAnnotationChecker extends ContextTrackingChecker {
 
     @Override
     public void enterNode(Node node) {
-        switch (node.getType()) {
-            case Token.FUNCTION:
+        switch (node.getToken()) {
+            case FUNCTION:
                 handleFunction(node);
                 break;
-            case Token.RETURN:
+            case RETURN:
                 handleReturn(node);
                 break;
-            case Token.THROW:
+            case THROW:
                 handleThrow();
                 break;
             default:
@@ -108,7 +108,7 @@ public final class MethodAnnotationChecker extends ContextTrackingChecker {
 
     @Override
     public void leaveNode(Node node) {
-        if (node.getType() != Token.FUNCTION) {
+        if (node.getToken() != Token.FUNCTION) {
             return;
         }
 

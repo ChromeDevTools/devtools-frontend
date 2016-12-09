@@ -107,7 +107,7 @@ Workspace.IsolatedFileSystem = class {
   getMetadata(path) {
     var fulfill;
     var promise = new Promise(f => fulfill = f);
-    this._domFileSystem.root.getFile(path, null, fileEntryLoaded, errorHandler);
+    this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded, errorHandler);
     return promise;
 
     /**
@@ -228,7 +228,7 @@ Workspace.IsolatedFileSystem = class {
       name = 'NewFile';
     var nameCandidate;
 
-    this._domFileSystem.root.getDirectory(path, null, dirEntryLoaded.bind(this), errorHandler.bind(this));
+    this._domFileSystem.root.getDirectory(path, undefined, dirEntryLoaded.bind(this), errorHandler.bind(this));
 
     /**
      * @param {!DirectoryEntry} dirEntry
@@ -278,7 +278,7 @@ Workspace.IsolatedFileSystem = class {
    * @param {string} path
    */
   deleteFile(path) {
-    this._domFileSystem.root.getFile(path, null, fileEntryLoaded.bind(this), errorHandler.bind(this));
+    this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
 
     /**
      * @param {!FileEntry} fileEntry
@@ -319,7 +319,7 @@ Workspace.IsolatedFileSystem = class {
    * @param {function(?string)} callback
    */
   requestFileContent(path, callback) {
-    this._domFileSystem.root.getFile(path, null, fileEntryLoaded.bind(this), errorHandler.bind(this));
+    this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
 
     /**
      * @param {!FileEntry} entry
@@ -427,7 +427,7 @@ Workspace.IsolatedFileSystem = class {
     var fileEntry;
     var dirEntry;
 
-    this._domFileSystem.root.getFile(path, null, fileEntryLoaded.bind(this), errorHandler.bind(this));
+    this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
 
     /**
      * @param {!FileEntry} entry
@@ -522,7 +522,7 @@ Workspace.IsolatedFileSystem = class {
    * @param {function(!Array.<!FileEntry>)} callback
    */
   _requestEntries(path, callback) {
-    this._domFileSystem.root.getDirectory(path, null, innerCallback.bind(this), errorHandler);
+    this._domFileSystem.root.getDirectory(path, undefined, innerCallback.bind(this), errorHandler);
 
     /**
      * @param {!DirectoryEntry} dirEntry

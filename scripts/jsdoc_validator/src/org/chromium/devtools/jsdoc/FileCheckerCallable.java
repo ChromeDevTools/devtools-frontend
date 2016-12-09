@@ -3,7 +3,10 @@ package org.chromium.devtools.jsdoc;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.jscomp.parsing.Config.JsDocParsing;
 import com.google.javascript.jscomp.parsing.Config.LanguageMode;
+import com.google.javascript.jscomp.parsing.Config.StrictMode;
+import com.google.javascript.jscomp.parsing.Config.RunMode;
 import com.google.javascript.jscomp.parsing.ParserRunner;
 import com.google.javascript.rhino.ErrorReporter;
 import com.google.javascript.rhino.Node;
@@ -55,8 +58,9 @@ public class FileCheckerCallable implements Callable<ValidatorContext> {
     }
 
     private static Node parseScript(final ValidatorContext context) {
-        Config config = ParserRunner.createConfig(
-                true, true, true, LanguageMode.ECMASCRIPT5_STRICT, EXTRA_ANNOTATIONS);
+        Config config = ParserRunner.createConfig(LanguageMode.ECMASCRIPT6,
+                JsDocParsing.INCLUDE_DESCRIPTIONS_WITH_WHITESPACE, RunMode.KEEP_GOING,
+                EXTRA_ANNOTATIONS, true, StrictMode.STRICT);
         ErrorReporter errorReporter = new ErrorReporter() {
             @Override
             public void warning(String message, String sourceName, int line, int lineOffset) {

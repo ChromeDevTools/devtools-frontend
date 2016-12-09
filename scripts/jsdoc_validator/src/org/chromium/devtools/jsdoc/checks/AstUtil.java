@@ -12,9 +12,9 @@ import java.util.List;
 public class AstUtil {
     private static final String PROTOTYPE_SUFFIX = ".prototype";
 
-    static Node parentOfType(Node node, int tokenType) {
+    static Node parentOfType(Node node, Token tokenType) {
         Node parent = node.getParent();
-        return (parent == null || parent.getType() != tokenType) ? null : parent;
+        return (parent == null || parent.getToken() != tokenType) ? null : parent;
     }
 
     /**
@@ -25,25 +25,25 @@ public class AstUtil {
 
         Node parent = node.getParent();
         if (parent != null) {
-            switch (parent.getType()) {
-                case Token.NAME:
+            switch (parent.getToken()) {
+                case NAME:
                     // var name = function() ...
                     // var name2 = function name1() ...
                     return parent;
                 // FIXME: Enable the setter and getter checks.
-                // case Token.SETTER_DEF:
-                // case Token.GETTER_DEF:
-                case Token.STRING_KEY:
+                // case SETTER_DEF:
+                // case GETTER_DEF:
+                case STRING_KEY:
                     return parent;
-                case Token.NUMBER:
+                case NUMBER:
                     return parent;
-                case Token.ASSIGN:
-                    int nameType = parent.getFirstChild().getType();
+                case ASSIGN:
+                    Token nameType = parent.getFirstChild().getToken();
                     // We only consider these types of name nodes as acceptable.
                     return nameType == Token.NAME || nameType == Token.GETPROP
                             ? parent.getFirstChild()
                             : null;
-                case Token.VAR:
+                case VAR:
                     return parent.getFirstChild();
                 default:
                     Node funNameNode = node.getFirstChild();
@@ -66,7 +66,7 @@ public class AstUtil {
     static Node getAssignedTypeNameNode(Node assignment) {
         Preconditions.checkState(assignment.isAssign() || assignment.isVar());
         Node typeNameNode = assignment.getFirstChild();
-        if (typeNameNode.getType() != Token.GETPROP && typeNameNode.getType() != Token.NAME) {
+        if (typeNameNode.getToken() != Token.GETPROP && typeNameNode.getToken() != Token.NAME) {
             return null;
         }
         return typeNameNode;

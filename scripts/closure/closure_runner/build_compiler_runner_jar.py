@@ -44,7 +44,7 @@ def build_artifacts():
         manifest_file.write('Class-Path: %s\n' % closure_jar_relpath)
         manifest_file.close()
         javac_path = os.path.join(java_bin_path, 'javac')
-        javac_command = '%s -d %s -cp %s %s' % (javac_path, bin_path, rel_to_abs(closure_jar_relpath), ' '.join(java_files))
+        javac_command = '%s -target 7 -source 7 -d %s -cp %s %s' % (javac_path, bin_path, rel_to_abs(closure_jar_relpath), ' '.join(java_files))
         run_and_communicate(javac_command, 'Error: javac returned %d')
 
         print 'Building jar...'

@@ -11,7 +11,7 @@ public class DevToolsCodingConvention extends CodingConventions.Proxy {
 
     @Override
     public boolean isPrivate(String name) {
-        return name.length() > 1 && name.charAt(0) == '_' && name.charAt(1) != '_';
+        return false; // name.length() > 1 && name.charAt(0) == '_' && name.charAt(1) != '_';
     }
 
     @Override

@@ -139,6 +139,8 @@ Sources.SourcesSearchScope = class {
     var uiSourceCodes = project.uiSourceCodes();
     for (var i = 0; i < uiSourceCodes.length; ++i) {
       var uiSourceCode = uiSourceCodes[i];
+      if (!uiSourceCode.contentType().isTextType())
+        continue;
       var binding = Persistence.persistence.binding(uiSourceCode);
       if (binding && binding.network === uiSourceCode)
         continue;

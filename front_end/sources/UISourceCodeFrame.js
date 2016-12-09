@@ -214,10 +214,10 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     if (this._isSettingContent)
       return;
     this._muteSourceCodeEvents = true;
-    if (this._textEditor.isClean())
+    if (this.textEditor.isClean())
       this._uiSourceCode.resetWorkingCopy();
     else
-      this._uiSourceCode.setWorkingCopyGetter(this._textEditor.text.bind(this._textEditor));
+      this._uiSourceCode.setWorkingCopyGetter(this.textEditor.text.bind(this.textEditor));
     delete this._muteSourceCodeEvents;
   }
 
@@ -239,7 +239,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
       this._innerSetContent(this._uiSourceCode.workingCopy());
       this.onUISourceCodeContentChanged();
     }
-    this._textEditor.markClean();
+    this.textEditor.markClean();
     this._updateStyle();
   }
 
@@ -279,7 +279,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   }
 
   _updateAutocomplete() {
-    this._textEditor.configureAutocomplete(
+    this.textEditor.configureAutocomplete(
         Common.moduleSetting('textEditorAutocompletion').get() ? this._autocompleteConfig : null);
   }
 
@@ -297,7 +297,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   _innerSetContent(content) {
     this._isSettingContent = true;
     if (this._diff) {
-      var oldContent = this._textEditor.text();
+      var oldContent = this.textEditor.text();
       this.setContent(content);
       this._diff.highlightModifiedLines(oldContent, content);
     } else {
@@ -338,7 +338,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   }
 
   dispose() {
-    this._textEditor.dispose();
+    this.textEditor.dispose();
     Common.moduleSetting('textEditorAutocompletion').removeChangeListener(this._updateAutocomplete, this);
     this.detach();
   }
@@ -358,14 +358,14 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     if (!this.loaded)
       return;
     var lineNumber = message.lineNumber();
-    if (lineNumber >= this._textEditor.linesCount)
-      lineNumber = this._textEditor.linesCount - 1;
+    if (lineNumber >= this.textEditor.linesCount)
+      lineNumber = this.textEditor.linesCount - 1;
     if (lineNumber < 0)
       lineNumber = 0;
 
     var messageBucket = this._rowMessageBuckets.get(lineNumber);
     if (!messageBucket) {
-      messageBucket = new Sources.UISourceCodeFrame.RowMessageBucket(this, this._textEditor, lineNumber);
+      messageBucket = new Sources.UISourceCodeFrame.RowMessageBucket(this, this.textEditor, lineNumber);
       this._rowMessageBuckets.set(lineNumber, messageBucket);
     }
     messageBucket.addMessage(message);
@@ -387,8 +387,8 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
       return;
 
     var lineNumber = message.lineNumber();
-    if (lineNumber >= this._textEditor.linesCount)
-      lineNumber = this._textEditor.linesCount - 1;
+    if (lineNumber >= this.textEditor.linesCount)
+      lineNumber = this.textEditor.linesCount - 1;
     if (lineNumber < 0)
       lineNumber = 0;
 
@@ -462,7 +462,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
         .then(decorator => {
           this._typeDecorationsPending.delete(type);
           decorator.decorate(
-              this._persistenceBinding ? this._persistenceBinding.network : this.uiSourceCode(), this._textEditor);
+              this._persistenceBinding ? this._persistenceBinding.network : this.uiSourceCode(), this.textEditor);
         });
   }
 
@@ -562,7 +562,7 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
    */
   constructor(sourceFrame, textEditor, lineNumber) {
     this._sourceFrame = sourceFrame;
-    this._textEditor = textEditor;
+    this.textEditor = textEditor;
     this._lineHandle = textEditor.textEditorPositionHandle(lineNumber, 0);
     this._decoration = createElementWithClass('div', 'text-editor-line-decoration');
     this._decoration._messageBucket = this;
@@ -582,14 +582,14 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
    * @param {number} columnNumber
    */
   _updateWavePosition(lineNumber, columnNumber) {
-    lineNumber = Math.min(lineNumber, this._textEditor.linesCount - 1);
-    var lineText = this._textEditor.line(lineNumber);
+    lineNumber = Math.min(lineNumber, this.textEditor.linesCount - 1);
+    var lineText = this.textEditor.line(lineNumber);
     columnNumber = Math.min(columnNumber, lineText.length);
     var lineIndent = Common.TextUtils.lineIndent(lineText).length;
     if (this._hasDecoration)
-      this._textEditor.removeDecoration(this._decoration, lineNumber);
+      this.textEditor.removeDecoration(this._decoration, lineNumber);
     this._hasDecoration = true;
-    this._textEditor.addDecoration(this._decoration, lineNumber, Math.max(columnNumber - 1, lineIndent));
+    this.textEditor.addDecoration(this._decoration, lineNumber, Math.max(columnNumber - 1, lineIndent));
   }
 
   /**
@@ -609,9 +609,9 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
       return;
     var lineNumber = position.lineNumber;
     if (this._level)
-      this._textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
+      this.textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
     if (this._hasDecoration)
-      this._textEditor.removeDecoration(this._decoration, lineNumber);
+      this.textEditor.removeDecoration(this._decoration, lineNumber);
     this._hasDecoration = false;
   }
 
@@ -676,13 +676,13 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
     this._updateWavePosition(lineNumber, columnNumber);
 
     if (this._level) {
-      this._textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
+      this.textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
       this._icon.type = '';
     }
     this._level = maxMessage.level();
     if (!this._level)
       return;
-    this._textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], true);
+    this.textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], true);
     this._icon.type = Sources.UISourceCodeFrame._iconClassPerLevel[this._level];
   }
 };

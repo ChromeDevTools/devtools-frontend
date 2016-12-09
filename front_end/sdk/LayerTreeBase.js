@@ -150,7 +150,7 @@ SDK.LayerTreeBase = class {
     this._layersById = {};
     this._root = null;
     this._contentRoot = null;
-    /** @type Map<number, ?SDK.DOMNode> */
+    /** @type {!Map<number, ?SDK.DOMNode>} */
     this._backendNodeIdToNode = new Map();
   }
 
@@ -217,7 +217,7 @@ SDK.LayerTreeBase = class {
    * @param {!Set<number>} requestedNodeIds
    * @param {function()} callback
    */
-  _resolveBackendNodeIds(requestedNodeIds, callback) {
+  resolveBackendNodeIds(requestedNodeIds, callback) {
     if (!requestedNodeIds.size || !this._domModel) {
       callback();
       return;
@@ -236,6 +236,13 @@ SDK.LayerTreeBase = class {
       }
       callback();
     }
+  }
+
+  /**
+   * @return {!Map<number, ?SDK.DOMNode>}
+   */
+  backendNodeIdToNode() {
+    return this._backendNodeIdToNode;
   }
 
   /**

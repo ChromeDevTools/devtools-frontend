@@ -57,7 +57,7 @@ Sources.SourcesNavigatorView = class extends Sources.NavigatorView {
     var inspectedURL = mainTarget && mainTarget.inspectedURL();
     if (!inspectedURL)
       return;
-    for (var node of this._uiSourceCodeNodes.valuesArray()) {
+    for (var node of this.uiSourceCodeNodes()) {
       var uiSourceCode = node.uiSourceCode();
       if (uiSourceCode.url() === inspectedURL)
         this.revealUISourceCode(uiSourceCode, true);
@@ -116,7 +116,7 @@ Sources.NetworkNavigatorView = class extends Sources.NavigatorView {
     var inspectedURL = mainTarget && mainTarget.inspectedURL();
     if (!inspectedURL)
       return;
-    for (var node of this._uiSourceCodeNodes.valuesArray()) {
+    for (var node of this.uiSourceCodeNodes()) {
       var uiSourceCode = node.uiSourceCode();
       if (uiSourceCode.url() === inspectedURL)
         this.revealUISourceCode(uiSourceCode, true);

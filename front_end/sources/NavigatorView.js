@@ -290,6 +290,13 @@ Sources.NavigatorView = class extends UI.VBox {
   }
 
   /**
+   * @return {!Array<!Sources.NavigatorUISourceCodeTreeNode>}
+   */
+  uiSourceCodeNodes() {
+    return this._uiSourceCodeNodes.valuesArray();
+  }
+
+  /**
    * @param {!Common.Event} event
    */
   _uiSourceCodeAdded(event) {

@@ -532,7 +532,7 @@ Elements.ElementsTreeElement = class extends TreeElement {
     if (this.treeOutline.selectedDOMNode() !== this._node)
       return;
 
-    var listItem = this._listItemNode;
+    var listItem = this.listItemElement;
 
     if (this._canAddAttributes) {
       var attribute = listItem.getElementsByClassName('webkit-html-attribute')[0];
@@ -749,8 +749,8 @@ Elements.ElementsTreeElement = class extends TreeElement {
       child = child.nextSibling;
     }
     // Hide children item.
-    if (this._childrenListNode)
-      this._childrenListNode.style.display = 'none';
+    if (this.childrenListElement)
+      this.childrenListElement.style.display = 'none';
     // Append editor.
     this.listItemElement.appendChild(this._htmlEditElement);
     this.listItemElement.classList.add('editing-as-html');
@@ -779,8 +779,8 @@ Elements.ElementsTreeElement = class extends TreeElement {
       this.listItemElement.removeChild(this._htmlEditElement);
       delete this._htmlEditElement;
       // Unhide children item.
-      if (this._childrenListNode)
-        this._childrenListNode.style.removeProperty('display');
+      if (this.childrenListElement)
+        this.childrenListElement.style.removeProperty('display');
       // Unhide header items.
       var child = this.listItemElement.firstChild;
       while (child) {
@@ -961,7 +961,7 @@ Elements.ElementsTreeElement = class extends TreeElement {
     // For an expanded element, it will be the last element with class "close"
     // in the child element list.
     if (this.expanded) {
-      var closers = this._childrenListNode.querySelectorAll('.close');
+      var closers = this.childrenListElement.querySelectorAll('.close');
       return closers[closers.length - 1];
     }
 

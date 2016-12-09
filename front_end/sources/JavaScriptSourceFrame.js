@@ -341,7 +341,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     delete this._muted;
     var decorations = Array.from(this._breakpointDecorations);
     this._breakpointDecorations.clear();
-    this._textEditor.operation(() => decorations.map(decoration => decoration.hide()));
+    this.textEditor.operation(() => decorations.map(decoration => decoration.hide()));
     for (var decoration of decorations) {
       if (!decoration.breakpoint)
         continue;
@@ -784,8 +784,8 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
         var decorations = this._lineBreakpointDecorations(lineNumber);
         var actualBookmarks =
             new Set(decorations.map(decoration => decoration.bookmark).filter(bookmark => !!bookmark));
-        var lineEnd = this._textEditor.line(lineNumber).length;
-        var bookmarks = this._textEditor.bookmarks(
+        var lineEnd = this.textEditor.line(lineNumber).length;
+        var bookmarks = this.textEditor.bookmarks(
             new Common.TextRange(lineNumber, 0, lineNumber, lineEnd),
             Sources.JavaScriptSourceFrame.BreakpointDecoration.bookmarkSymbol);
         for (var bookmark of bookmarks) {
@@ -905,9 +905,9 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
       decoration.condition = breakpoint.condition();
       decoration.enabled = breakpoint.enabled();
     } else {
-      var handle = this._textEditor.textEditorPositionHandle(uiLocation.lineNumber, uiLocation.columnNumber);
+      var handle = this.textEditor.textEditorPositionHandle(uiLocation.lineNumber, uiLocation.columnNumber);
       decoration = new Sources.JavaScriptSourceFrame.BreakpointDecoration(
-          this._textEditor, handle, breakpoint.condition(), breakpoint.enabled(), breakpoint);
+          this.textEditor, handle, breakpoint.condition(), breakpoint.enabled(), breakpoint);
       decoration.element.addEventListener('click', this._inlineBreakpointClick.bind(this, decoration), true);
       decoration.element.addEventListener(
           'contextmenu', this._inlineBreakpointContextMenu.bind(this, decoration), true);
@@ -946,9 +946,9 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
       for (var location of possibleLocations) {
         if (columns.has(location.columnNumber))
           continue;
-        var handle = this._textEditor.textEditorPositionHandle(location.lineNumber, location.columnNumber);
+        var handle = this.textEditor.textEditorPositionHandle(location.lineNumber, location.columnNumber);
         var decoration =
-            new Sources.JavaScriptSourceFrame.BreakpointDecoration(this._textEditor, handle, '', false, null);
+            new Sources.JavaScriptSourceFrame.BreakpointDecoration(this.textEditor, handle, '', false, null);
         decoration.element.addEventListener('click', this._inlineBreakpointClick.bind(this, decoration), true);
         decoration.element.addEventListener(
             'contextmenu', this._inlineBreakpointContextMenu.bind(this, decoration), true);
@@ -1189,7 +1189,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
       this._createNewBreakpoint(lineNumber, '', true);
       return;
     }
-    var hasDisabled = this._textEditor.hasLineClass(lineNumber, 'cm-breakpoint-disabled');
+    var hasDisabled = this.textEditor.hasLineClass(lineNumber, 'cm-breakpoint-disabled');
     var breakpoints = decorations.map(decoration => decoration.breakpoint).filter(breakpoint => !!breakpoint);
     for (var breakpoint of breakpoints) {
       if (onlyDisable)
@@ -1216,9 +1216,9 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
      */
     function findPossibleBreakpoints(lineNumber) {
       const maxLengthToCheck = 1024;
-      if (lineNumber >= this._textEditor.linesCount)
+      if (lineNumber >= this.textEditor.linesCount)
         return Promise.resolve(/** @type {?Array<!Workspace.UILocation>} */ ([]));
-      if (this._textEditor.line(lineNumber).length >= maxLengthToCheck)
+      if (this.textEditor.line(lineNumber).length >= maxLengthToCheck)
         return Promise.resolve(/** @type {?Array<!Workspace.UILocation>} */ ([]));
       return this._breakpointManager
           .possibleBreakpoints(this._debuggerSourceCode, new Common.TextRange(lineNumber, 0, lineNumber + 1, 0))
@@ -1324,7 +1324,7 @@ Sources.JavaScriptSourceFrame.BreakpointDecoration = class {
    * @param {?Bindings.BreakpointManager.Breakpoint} breakpoint
    */
   constructor(textEditor, handle, condition, enabled, breakpoint) {
-    this._textEditor = textEditor;
+    this.textEditor = textEditor;
     this.handle = handle;
     this.condition = condition;
     this.enabled = enabled;
@@ -1363,7 +1363,7 @@ Sources.JavaScriptSourceFrame.BreakpointDecoration = class {
     var location = this.handle.resolve();
     if (!location)
       return;
-    this.bookmark = this._textEditor.addBookmark(
+    this.bookmark = this.textEditor.addBookmark(
         location.lineNumber, location.columnNumber, this.element,
         Sources.JavaScriptSourceFrame.BreakpointDecoration.bookmarkSymbol);
     this.bookmark[Sources.JavaScriptSourceFrame.BreakpointDecoration._elementSymbolForTest] = this.element;

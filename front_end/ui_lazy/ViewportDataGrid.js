@@ -126,7 +126,7 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
     if (this._flatNodes)
       return this._flatNodes;
     var flatNodes = [];
-    var children = [this._rootNode.children];
+    var children = [this.rootNode().children];
     var counters = [0];
     var depth = 0;
     while (depth >= 0) {
@@ -230,7 +230,7 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
       }
     }
 
-    var previousElement = this._topFillerRow;
+    var previousElement = this.topFillerRowElement();
     if (previousElement.nextSibling === this._hiddenWheelTarget)
       previousElement = this._hiddenWheelTarget;
     var tBody = this.dataTableBody;

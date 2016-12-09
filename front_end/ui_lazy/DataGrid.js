@@ -1140,6 +1140,10 @@ UI.DataGrid = class extends Common.Object {
       this._dataGridWidget = new UI.DataGridWidget(this);
     return this._dataGridWidget;
   }
+
+  topFillerRowElement() {
+    return this._topFillerRow;
+  }
 };
 
 // Keep in sync with .data-grid col.corner style rule.

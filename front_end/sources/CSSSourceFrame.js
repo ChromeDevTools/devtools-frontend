@@ -270,7 +270,7 @@ Sources.CSSSourceFrame = class extends Sources.UISourceCodeFrame {
    */
   _changeSwatchText(text) {
     this._hadSwatchChange = true;
-    this._textEditor.editRange(this._editedSwatchTextRange, text, '*swatch-text-changed');
+    this.textEditor.editRange(this._editedSwatchTextRange, text, '*swatch-text-changed');
     this._editedSwatchTextRange.endColumn = this._editedSwatchTextRange.startColumn + text.length;
   }
 
@@ -317,7 +317,7 @@ Sources.CSSSourceFrame = class extends Sources.UISourceCodeFrame {
    * @return {?Promise.<!UI.SuggestBox.Suggestions>}
    */
   _cssSuggestions(prefixRange, substituteRange) {
-    var prefix = this._textEditor.text(prefixRange);
+    var prefix = this.textEditor.text(prefixRange);
     if (prefix.startsWith('$'))
       return null;
 
@@ -325,7 +325,7 @@ Sources.CSSSourceFrame = class extends Sources.UISourceCodeFrame {
     if (!propertyToken)
       return null;
 
-    var line = this._textEditor.line(prefixRange.startLine);
+    var line = this.textEditor.line(prefixRange.startLine);
     var tokenContent = line.substring(propertyToken.startColumn, propertyToken.endColumn);
     var propertyValues = SDK.cssMetadata().propertyValues(tokenContent);
     return Promise.resolve(propertyValues.filter(value => value.startsWith(prefix)).map(value => ({title: value})));
@@ -339,11 +339,11 @@ Sources.CSSSourceFrame = class extends Sources.UISourceCodeFrame {
   _backtrackPropertyToken(lineNumber, columnNumber) {
     var backtrackDepth = 10;
     var tokenPosition = columnNumber;
-    var line = this._textEditor.line(lineNumber);
+    var line = this.textEditor.line(lineNumber);
     var seenColon = false;
 
     for (var i = 0; i < backtrackDepth && tokenPosition >= 0; ++i) {
-      var token = this._textEditor.tokenAtTextPosition(lineNumber, tokenPosition);
+      var token = this.textEditor.tokenAtTextPosition(lineNumber, tokenPosition);
       if (!token)
         return null;
       if (token.type === 'css-property')

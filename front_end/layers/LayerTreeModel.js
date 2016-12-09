@@ -161,11 +161,11 @@ Layers.AgentLayerTree = class extends SDK.LayerTreeBase {
     var idsToResolve = new Set();
     for (var i = 0; i < payload.length; ++i) {
       var backendNodeId = payload[i].backendNodeId;
-      if (!backendNodeId || this._backendNodeIdToNode.has(backendNodeId))
+      if (!backendNodeId || this.backendNodeIdToNode().has(backendNodeId))
         continue;
       idsToResolve.add(backendNodeId);
     }
-    this._resolveBackendNodeIds(idsToResolve, onBackendNodeIdsResolved.bind(this));
+    this.resolveBackendNodeIds(idsToResolve, onBackendNodeIdsResolved.bind(this));
 
     /**
      * @this {Layers.AgentLayerTree}
@@ -198,7 +198,7 @@ Layers.AgentLayerTree = class extends SDK.LayerTreeBase {
       this._layersById[layerId] = layer;
       var backendNodeId = layers[i].backendNodeId;
       if (backendNodeId)
-        layer._setNode(this._backendNodeIdToNode.get(backendNodeId));
+        layer._setNode(this.backendNodeIdToNode().get(backendNodeId));
       if (!this.contentRoot() && layer.drawsContent())
         this.setContentRoot(layer);
       var parentId = layer.parentId();

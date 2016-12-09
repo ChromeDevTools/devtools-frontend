@@ -357,9 +357,9 @@ Accessibility.AXNodeTreeParentElement = class extends Accessibility.AXNodeTreeEl
   onattach() {
     super.onattach();
     if (this._treePane.isExpanded(this._axNode.backendDOMNodeId()))
-      this._listItemNode.classList.add('siblings-expanded');
+      this.listItemElement.classList.add('siblings-expanded');
     if (this._axNode.numChildren() > 1)
-      this._listItemNode.insertBefore(this._expandSiblingsButton.element, this._inspectNodeButton.element);
+      this.listItemElement.insertBefore(this._expandSiblingsButton.element, this._inspectNodeButton.element);
   }
 
   /**
@@ -386,7 +386,7 @@ Accessibility.AXNodeTreeParentElement = class extends Accessibility.AXNodeTreeEl
   }
 
   expandSiblings() {
-    this._listItemNode.classList.add('siblings-expanded');
+    this.listItemElement.classList.add('siblings-expanded');
     this.appendSiblings();
     this.expanded = true;
     this._partiallyExpanded = false;

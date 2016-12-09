@@ -55,7 +55,7 @@ TimelineModel.TracingLayerTree = class extends SDK.LayerTreeBase {
       for (var i = 0; i < layers.length; ++i)
         this._extractNodeIdsToResolve(idsToResolve, {}, layers[i]);
     }
-    this._resolveBackendNodeIds(idsToResolve, onBackendNodeIdsResolved.bind(this));
+    this.resolveBackendNodeIds(idsToResolve, onBackendNodeIdsResolved.bind(this));
 
     /**
      * @this {TimelineModel.TracingLayerTree}
@@ -132,7 +132,7 @@ TimelineModel.TracingLayerTree = class extends SDK.LayerTreeBase {
       layer = new TimelineModel.TracingLayer(this.target(), payload);
     this._layersById[payload.layer_id] = layer;
     if (payload.owner_node)
-      layer._setNode(this._backendNodeIdToNode.get(payload.owner_node) || null);
+      layer._setNode(this.backendNodeIdToNode().get(payload.owner_node) || null);
     if (!this.contentRoot() && layer.drawsContent())
       this.setContentRoot(layer);
     for (var i = 0; payload.children && i < payload.children.length; ++i)
@@ -147,7 +147,7 @@ TimelineModel.TracingLayerTree = class extends SDK.LayerTreeBase {
    */
   _extractNodeIdsToResolve(nodeIdsToResolve, seenNodeIds, payload) {
     var backendNodeId = payload.owner_node;
-    if (backendNodeId && !this._backendNodeIdToNode.has(backendNodeId))
+    if (backendNodeId && !this.backendNodeIdToNode().has(backendNodeId))
       nodeIdsToResolve.add(backendNodeId);
     for (var i = 0; payload.children && i < payload.children.length; ++i)
       this._extractNodeIdsToResolve(nodeIdsToResolve, seenNodeIds, payload.children[i]);

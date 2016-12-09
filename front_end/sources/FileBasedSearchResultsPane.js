@@ -35,7 +35,7 @@ Sources.FileBasedSearchResultsPane = class extends Sources.SearchResultsPane {
    * @param {!Sources.FileBasedSearchResult} searchResult
    */
   _addFileTreeElement(searchResult) {
-    var fileTreeElement = new Sources.FileBasedSearchResultsPane.FileTreeElement(this._searchConfig, searchResult);
+    var fileTreeElement = new Sources.FileBasedSearchResultsPane.FileTreeElement(this.searchConfig, searchResult);
     this._treeOutline.appendChild(fileTreeElement);
     // Expand until at least a certain number of matches is expanded.
     if (this._matchesExpandedCount < Sources.FileBasedSearchResultsPane.matchesExpandedByDefaultCount)

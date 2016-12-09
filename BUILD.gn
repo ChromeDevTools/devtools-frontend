@@ -1176,10 +1176,25 @@ group("devtools_closure_compile") {
     "scripts/compile_frontend.py",
     "scripts/jsdoc_validator/",
     "scripts/utils.py",
-    "//testing/scripts/run_devtools_closure_compile.py",
     "//testing/scripts/common.py",
+    "//testing/scripts/run_devtools_check.py",
     "//testing/xvfb.py",
     "//third_party/WebKit/Source/core/inspector/browser_protocol.json",
     "//v8/src/inspector/js_protocol.json",
+  ]
+}
+
+group("devtools_eslint") {
+  data = [
+    # Needed for isolate script to execute.
+    ".eslintignore",
+    ".eslintrc.js",
+    "devtools-node-modules/",
+    "front_end/",
+    "scripts/buildbot/run_eslint.py",
+    "scripts/local_node/",
+    "//testing/scripts/common.py",
+    "//testing/scripts/run_devtools_check.py",
+    "//testing/xvfb.py",
   ]
 }

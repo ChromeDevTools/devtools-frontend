@@ -3,6 +3,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import argparse
 import os
 import shutil
 import sys
@@ -87,7 +88,7 @@ def install_latest_node_js(version, tmp_dir):
             # Still potentiall racy, from python docs:
             # "On Windows...there may be no way to implement an atomic rename when dst
             # names an existing file."
-            os.mkdir(target_dir)
+            os.makedirs(target_dir)
             os.rename(dest, bin_location)
         except OSError:
             write_version = False
@@ -100,6 +101,16 @@ def install_latest_node_js(version, tmp_dir):
 
 
 def main(mode=None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--running-as-hook', action='store_true')
+    args, rest_args = parser.parse_known_args()
+
+    # Exit early if this is being invoked from `gclient runhooks`
+    # and not on a bot (CHROME_HEADLESS is set on all build bots).
+    if (args.running_as_hook and
+           os.environ.get('CHROME_HEADLESS', '0') != '1'):
+       return 0
+
     version = os.environ.get('NODE_VERSION', DEFAULT_VERSION)
     try:
         tmp_dir = tempfile.mkdtemp(dir=THIS_DIR)
@@ -112,7 +123,7 @@ def main(mode=None):
         # TODO(hinoka): How about Windows...?
         bin_location = os.path.join(os.path.dirname(bin_location), 'npm')
 
-    return subprocess.call([bin_location, ] + sys.argv[1:])
+    return subprocess.call([bin_location, ] + rest_args)
 
 
 if __name__ == '__main__':

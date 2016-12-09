@@ -11,6 +11,7 @@ config.gypi
 npm-debug.log
 /.dev_profile
 /.test_cache
+/devtools-node-modules
 /release
 /scripts/local_node/runtimes
 /front_end/protocol_externs.js

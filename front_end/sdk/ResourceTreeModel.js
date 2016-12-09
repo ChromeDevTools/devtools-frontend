@@ -204,8 +204,6 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
       this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.MainFrameNavigated, frame);
       if (Common.moduleSetting('preserveConsoleLog').get())
         Common.console.log(Common.UIString('Navigated to %s', frame.url));
-      else
-        this.target().consoleModel.clear();
     }
     if (addedOrigin)
       this._securityOriginManager.addSecurityOrigin(addedOrigin);
@@ -236,6 +234,21 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
       frame.parentFrame._removeChildFrame(frame);
     else
       frame._remove();
+  }
+
+  /**
+   * @param {!Protocol.Page.FrameId} frameId
+   */
+  _frameStartedLoading(frameId) {
+    // Do nothing unless cached resource tree is processed - it will overwrite everything.
+    if (!this._cachedResourcesProcessed)
+      return;
+
+    var frame = this._frames.get(frameId);
+    if (frame && !frame.isMainFrame())
+      return;
+    if (!Common.moduleSetting('preserveConsoleLog').get())
+      this.target().consoleModel.clear();
   }
 
   /**
@@ -788,6 +801,7 @@ SDK.PageDispatcher = class {
    * @param {!Protocol.Page.FrameId} frameId
    */
   frameStartedLoading(frameId) {
+    this._resourceTreeModel._frameStartedLoading(frameId);
   }
 
   /**

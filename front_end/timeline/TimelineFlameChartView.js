@@ -7,18 +7,15 @@
  * @unrestricted
  */
 Timeline.TimelineFlameChartDataProviderBase = class {
-  /**
-   * @param {!TimelineModel.TimelineModel} model
-   * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
-   */
-  constructor(model, filters) {
+  constructor() {
     UI.FlameChartDataProvider.call(this);
     this.reset();
-    this._model = model;
-    /** @type {?UI.FlameChart.TimelineData} */
-    this._timelineData;
     this._font = '11px ' + Host.fontFamily();
-    this._filters = filters;
+  }
+
+  /** @return {string} */
+  font() {
+    return this._font;
   }
 
   /**
@@ -185,16 +182,6 @@ Timeline.TimelineFlameChartDataProviderBase = class {
    */
   timelineData() {
     throw new Error('Not implemented');
-  }
-
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  _isVisible(event) {
-    return this._filters.every(function(filter) {
-      return filter.accept(event);
-    });
   }
 };
 

@@ -10,7 +10,10 @@ Timeline.TimelineFlameChartNetworkDataProvider = class extends Timeline.Timeline
    * @param {!TimelineModel.TimelineModel} model
    */
   constructor(model) {
-    super(model, []);
+    super();
+    this._model = model;
+    /** @type {?UI.FlameChart.TimelineData} */
+    this._timelineData = null;
     var loadingCategory = Timeline.TimelineUIUtils.categories()['loading'];
     this._waitingColor = loadingCategory.childColor;
     this._processingColor = loadingCategory.color;
@@ -48,6 +51,7 @@ Timeline.TimelineFlameChartNetworkDataProvider = class extends Timeline.Timeline
    */
   reset() {
     super.reset();
+    this._timelineData = null;
     /** @type {!Array<!TimelineModel.TimelineModel.NetworkRequest>} */
     this._requests = [];
   }

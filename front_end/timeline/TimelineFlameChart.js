@@ -38,18 +38,23 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
    * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
    */
   constructor(model, frameModel, irModel, filters) {
-    super(model, filters);
+    super();
+    this._model = model;
+    this._filters = filters;
+    /** @type {?UI.FlameChart.TimelineData} */
+    this._timelineData = null;
     this._frameModel = frameModel;
     this._irModel = irModel;
     this._consoleColorGenerator =
         new UI.FlameChart.ColorGenerator({min: 30, max: 55}, {min: 70, max: 100, count: 6}, 50, 0.7);
+    const font = this.font();
 
     this._headerLevel1 = {
       padding: 4,
       height: 17,
       collapsible: true,
       color: UI.themeSupport.patchColor('#222', UI.ThemeSupport.ColorUsage.Foreground),
-      font: this._font,
+      font: font,
       backgroundColor: UI.themeSupport.patchColor('white', UI.ThemeSupport.ColorUsage.Background),
       nestingLevel: 0
     };
@@ -58,7 +63,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
       padding: 2,
       height: 17,
       collapsible: false,
-      font: this._font,
+      font: font,
       color: UI.themeSupport.patchColor('#222', UI.ThemeSupport.ColorUsage.Foreground),
       backgroundColor: UI.themeSupport.patchColor('white', UI.ThemeSupport.ColorUsage.Background),
       nestingLevel: 1,
@@ -70,7 +75,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
       height: 17,
       collapsible: true,
       color: UI.themeSupport.patchColor('#222', UI.ThemeSupport.ColorUsage.Foreground),
-      font: this._font,
+      font: font,
       backgroundColor: UI.themeSupport.patchColor('white', UI.ThemeSupport.ColorUsage.Background),
       nestingLevel: 0,
       useFirstLineForOverview: true,
@@ -82,7 +87,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
       height: 17,
       collapsible: true,
       color: UI.themeSupport.patchColor('#222', UI.ThemeSupport.ColorUsage.Foreground),
-      font: this._font,
+      font: font,
       backgroundColor: UI.themeSupport.patchColor('white', UI.ThemeSupport.ColorUsage.Background),
       nestingLevel: 1,
       shareHeaderLine: true
@@ -135,6 +140,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
    */
   reset() {
     super.reset();
+    this._timelineData = null;
     /** @type {!Array<!SDK.TracingModel.Event|!TimelineModel.TimelineFrame|!TimelineModel.TimelineIRModel.Phases>} */
     this._entryData = [];
     /** @type {!Array<!Timeline.TimelineFlameChartEntryType>} */
@@ -693,6 +699,16 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
   selectionForEvent(event) {
     var entryIndex = this._entryData.indexOf(event);
     return this.createSelection(entryIndex);
+  }
+
+  /**
+   * @param {!SDK.TracingModel.Event} event
+   * @return {boolean}
+   */
+  _isVisible(event) {
+    return this._filters.every(function(filter) {
+      return filter.accept(event);
+    });
   }
 };
 

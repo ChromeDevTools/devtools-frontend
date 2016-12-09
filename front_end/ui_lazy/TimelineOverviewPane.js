@@ -492,6 +492,21 @@ UI.TimelineOverviewBase = class extends UI.VBox {
     this._context = this._canvas.getContext('2d');
   }
 
+  /** @return {number} */
+  width() {
+    return this._canvas.width;
+  }
+
+  /** @return {number} */
+  height() {
+    return this._canvas.height;
+  }
+
+  /** @return {!CanvasRenderingContext2D} */
+  context() {
+    return this._context;
+  }
+
   /**
    * @override
    */

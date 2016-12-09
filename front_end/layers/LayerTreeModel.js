@@ -194,7 +194,7 @@ Layers.AgentLayerTree = class extends SDK.LayerTreeBase {
       if (layer)
         layer._reset(layers[i]);
       else
-        layer = new Layers.AgentLayer(this._target, layers[i]);
+        layer = new Layers.AgentLayer(this.target(), layers[i]);
       this._layersById[layerId] = layer;
       var backendNodeId = layers[i].backendNodeId;
       if (backendNodeId)

@@ -211,13 +211,21 @@ Components.CookiesTable = class extends UI.VBox {
     var sortDirection = this._dataGrid.isSortOrderAscending() ? 1 : -1;
 
     /**
+     * @param {!SDK.Cookie} cookie
+     * @param {string} property
+     * @return {string}
+     */
+    function getValue(cookie, property) {
+      return typeof cookie[property] === 'function' ? String(cookie[property]()) : String(cookie.name());
+    }
+
+    /**
      * @param {string} property
      * @param {!SDK.Cookie} cookie1
      * @param {!SDK.Cookie} cookie2
      */
     function compareTo(property, cookie1, cookie2) {
-      return sortDirection *
-          (String(cookie1[property] || cookie1['name'])).compareTo(String(cookie2[property] || cookie2['name']));
+      return sortDirection * getValue(cookie1, property).compareTo(getValue(cookie2, property));
     }
 
     /**

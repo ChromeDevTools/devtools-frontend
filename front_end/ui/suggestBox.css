@@ -85,9 +85,16 @@
     background-color: #f9f9f9;
 }
 
-.suggestion-text {
+.suggestion-title {
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.suggestion-subtitle {
+    flex: auto;
+    text-align: right;
+    color: #999;
+    margin-right: 3px;
 }
 
 .suggestion-icon {
@@ -107,6 +114,9 @@
 
 .suggest-box .suggest-box-content-item.selected {
     background-color: rgb(56, 121, 217);
+}
+
+.suggest-box .suggest-box-content-item.selected > span {
     color: #FFF;
 }
 

@@ -70,14 +70,13 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
     var scopeChain = callFrame.scopeChain();
     for (var i = 0; i < scopeChain.length; ++i) {
       var scope = scopeChain[i];
-      var title = null;
+      var title = scope.typeName();
       var emptyPlaceholder = null;
       var extraProperties = [];
 
       switch (scope.type()) {
         case Protocol.Debugger.ScopeType.Local:
           foundLocalScope = true;
-          title = Common.UIString('Local');
           emptyPlaceholder = Common.UIString('No Variables');
           if (thisObject)
             extraProperties.push(new SDK.RemoteObjectProperty('this', thisObject));
@@ -103,21 +102,6 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
           else
             title = Common.UIString('Closure');
           emptyPlaceholder = Common.UIString('No Variables');
-          break;
-        case Protocol.Debugger.ScopeType.Catch:
-          title = Common.UIString('Catch');
-          break;
-        case Protocol.Debugger.ScopeType.Block:
-          title = Common.UIString('Block');
-          break;
-        case Protocol.Debugger.ScopeType.Script:
-          title = Common.UIString('Script');
-          break;
-        case Protocol.Debugger.ScopeType.With:
-          title = Common.UIString('With Block');
-          break;
-        case Protocol.Debugger.ScopeType.Global:
-          title = Common.UIString('Global');
           break;
       }
 

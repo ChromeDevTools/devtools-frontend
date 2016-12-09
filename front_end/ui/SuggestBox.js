@@ -271,12 +271,13 @@ UI.SuggestBox = class {
 
   /**
    * @param {string} query
-   * @param {string} text
+   * @param {string} title
+   * @param {string=} subtitle
    * @param {string=} iconType
    * @param {boolean=} isSecondary
    * @return {!Element}
    */
-  _createItemElement(query, text, iconType, isSecondary) {
+  _createItemElement(query, title, subtitle, iconType, isSecondary) {
     var element = createElementWithClass('div', 'suggest-box-content-item source-code');
     if (iconType) {
       var icon = UI.Icon.create(iconType, 'suggestion-icon');
@@ -285,17 +286,21 @@ UI.SuggestBox = class {
     if (isSecondary)
       element.classList.add('secondary');
     element.tabIndex = -1;
-    var displayText = text.trimEnd(50 + query.length);
+    var displayText = title.trimEnd(50 + query.length);
 
-    var suggestionText = element.createChild('span', 'suggestion-text');
+    var titleElement = element.createChild('span', 'suggestion-title');
     var index = displayText.toLowerCase().indexOf(query.toLowerCase());
     if (index > 0)
-      suggestionText.createChild('span').textContent = displayText.substring(0, index);
+      titleElement.createChild('span').textContent = displayText.substring(0, index);
     if (index > -1)
-      suggestionText.createChild('span', 'query').textContent = displayText.substring(index, index + query.length);
-    suggestionText.createChild('span').textContent = displayText.substring(index > -1 ? index + query.length : 0);
-    suggestionText.createChild('span', 'spacer');
-    element.__fullValue = text;
+      titleElement.createChild('span', 'query').textContent = displayText.substring(index, index + query.length);
+    titleElement.createChild('span').textContent = displayText.substring(index > -1 ? index + query.length : 0);
+    titleElement.createChild('span', 'spacer');
+    if (subtitle) {
+      var subtitleElement = element.createChild('span', 'suggestion-subtitle');
+      subtitleElement.textContent = subtitle.trimEnd(15);
+    }
+    element.__fullValue = title;
     element.addEventListener('mousedown', this._onItemMouseDown.bind(this), false);
     return element;
   }
@@ -536,14 +541,15 @@ UI.SuggestBox = class {
   itemElement(index) {
     if (!this._elementList[index]) {
       this._elementList[index] = this._createItemElement(
-          this._userEnteredText, this._items[index].title, this._items[index].iconType, this._items[index].isSecondary);
+          this._userEnteredText, this._items[index].title, this._items[index].subtitle, this._items[index].iconType,
+          this._items[index].isSecondary);
     }
     return this._elementList[index];
   }
 };
 
 /**
- * @typedef {!Array.<{title: string, iconType: (string|undefined), priority: (number|undefined), isSecondary: (boolean|undefined)}>}
+ * @typedef {!Array.<{title: string, subtitle: (string|undefined), iconType: (string|undefined), priority: (number|undefined), isSecondary: (boolean|undefined)}>}
  */
 UI.SuggestBox.Suggestions;
 

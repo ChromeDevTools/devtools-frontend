@@ -67,14 +67,16 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
      */
     this._searchableView = null;
     this._editable = false;
+    this._textEditor.setReadOnly(true);
   }
 
   /**
    * @param {boolean} editable
+   * @protected
    */
   setEditable(editable) {
     this._editable = editable;
-    this._textEditor.setReadOnly(editable);
+    this._textEditor.setReadOnly(!editable);
   }
 
   /**

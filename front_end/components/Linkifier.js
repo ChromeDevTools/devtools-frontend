@@ -326,7 +326,7 @@ Components.Linkifier = class {
       return;
     if (!Components.Linkifier._decorator || !info.uiLocation)
       return;
-    if (info.icon)
+    if (info.icon && info.icon.parentElement)
       anchor.removeChild(info.icon);
     var icon = Components.Linkifier._decorator.linkIcon(info.uiLocation.uiSourceCode);
     if (icon) {

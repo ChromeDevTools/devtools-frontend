@@ -88,6 +88,11 @@ ol.tree-outline:focus li.selected * {
     color: inherit;
 }
 
+.tree-outline li .icons-container {
+    margin-left: 4px;
+    align-self: center;
+}
+
 .tree-outline li::before {
     -webkit-user-select: none;
     -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);

@@ -80,24 +80,6 @@ span.ax-internal-role {
     left: -2px;
 }
 
-.tree-outline li.inspected::after {
-    -webkit-mask-image: url(Images/smallIcons.png);
-    -webkit-mask-size: 190px 30px;
-    -webkit-mask-position: -180px 0;
-    background-color: rgb(74, 139, 238);
-    content: "";
-    position: relative;
-    left: 4px;
-    top: 1px;
-    width: 10px;
-    height: 10px;
-    transform: rotate(180deg);
-}
-
-.tree-outline:focus li.inspected.selected::after {
-    background-color: white;
-}
-
 .tree-outline li.selected .selection {
     background-color: inherit;
 }

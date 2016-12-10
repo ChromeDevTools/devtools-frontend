@@ -100,6 +100,8 @@ UI.Icon.Descriptors = {
   'smallicon-green-ball': {x: -140, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-orange-ball': {x: -160, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-thick-right-arrow': {x: -180, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
+  'smallicon-thick-left-arrow':
+      {x: -180, y: 0, width: 10, height: 10, spritesheet: 'smallicons', transform: 'rotate(180deg)'},
   'smallicon-user-command': {x: 0, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-text-prompt': {x: -20, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-command-result': {x: -40, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},

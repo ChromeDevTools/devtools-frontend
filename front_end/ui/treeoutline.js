@@ -44,10 +44,22 @@ var TreeOutline = class extends Common.Object {
 
     this.contentElement = this._rootElement._childrenListNode;
     this.contentElement.addEventListener('keydown', this._treeKeyDown.bind(this), true);
+    this.contentElement.addEventListener('focus', setFocused.bind(this, true), false);
+    this.contentElement.addEventListener('blur', setFocused.bind(this, false), false);
 
     this.setFocusable(!nonFocusable);
 
     this.element = this.contentElement;
+
+    /**
+     * @param {boolean} isFocused
+     * @this {TreeOutline}
+     */
+    function setFocused(isFocused) {
+      this._focused = isFocused;
+      if (this.selectedTreeElement)
+        this.selectedTreeElement._setFocused(this._focused);
+    }
   }
 
   _createRootElement() {
@@ -308,6 +320,7 @@ var TreeElement = class {
     this.nextSibling = null;
 
     this._listItemNode = createElement('li');
+    this._titleElement = this._listItemNode.createChild('span', 'tree-element-title');
     this._listItemNode.treeElement = this;
     if (title)
       this.title = title;
@@ -552,6 +565,13 @@ var TreeElement = class {
     return this._listItemNode;
   }
 
+  /**
+   * @return {!Element}
+   */
+  titleElement() {
+    return this._titleElement;
+  }
+
   get childrenListElement() {
     return this._childrenListNode;
   }
@@ -572,7 +592,6 @@ var TreeElement = class {
     this._title = x;
 
     if (typeof x === 'string') {
-      this._titleElement = createElementWithClass('span', 'tree-element-title');
       this._titleElement.textContent = x;
       this.tooltip = x;
     } else {
@@ -585,6 +604,8 @@ var TreeElement = class {
       this._listItemNode.appendChild(this._iconElement);
 
     this._listItemNode.appendChild(this._titleElement);
+    if (this._trailingIconsElement)
+      this._listItemNode.appendChild(this._trailingIconsElement);
     this._ensureSelection();
   }
 
@@ -613,6 +634,30 @@ var TreeElement = class {
       this._listItemNode.insertBefore(this._iconElement, this._listItemNode.firstChild);
       this._ensureSelection();
     }
+  }
+
+  /**
+   * @param {!Array<!UI.Icon>} icons
+   */
+  setTrailingIcons(icons) {
+    if (!this._trailingIconsElement && !icons.length)
+      return;
+    if (!this._trailingIconsElement) {
+      this._trailingIconsElement = createElementWithClass('div', 'icons-container');
+      this._listItemNode.appendChild(this._trailingIconsElement);
+      this._ensureSelection();
+    }
+    this._trailingIconsElement.removeChildren();
+    for (var icon of icons)
+      this._trailingIconsElement.appendChild(icon);
+  }
+
+  /**
+   * @param {boolean} focused
+   */
+  _setFocused(focused) {
+    this._focused = focused;
+    this._listItemNode.classList.toggle('force-white-icons', focused);
   }
 
   /**
@@ -945,6 +990,7 @@ var TreeElement = class {
       return false;
     this.treeOutline.selectedTreeElement = this;
     this._listItemNode.classList.add('selected');
+    this._setFocused(this.treeOutline._focused);
     this.treeOutline.dispatchEventToListeners(TreeOutline.Events.ElementSelected, this);
     return this.onselect(selectedByUser);
   }
@@ -967,6 +1013,7 @@ var TreeElement = class {
     this.selected = false;
     this.treeOutline.selectedTreeElement = null;
     this._listItemNode.classList.remove('selected');
+    this._setFocused(false);
   }
 
   _populateIfNeeded() {

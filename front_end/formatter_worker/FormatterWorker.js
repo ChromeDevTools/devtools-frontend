@@ -97,7 +97,7 @@ FormatterWorker.relaxedJSONParser = function(content) {
  * @param {string} content
  */
 FormatterWorker.evaluatableJavaScriptSubstring = function(content) {
-  var tokenizer = acorn.tokenizer(content, {ecmaVersion: 7});
+  var tokenizer = acorn.tokenizer(content, {ecmaVersion: 8});
   var result = '';
   try {
     var token = tokenizer.getToken();
@@ -139,7 +139,7 @@ FormatterWorker.evaluatableJavaScriptSubstring = function(content) {
  * @param {string} content
  */
 FormatterWorker.javaScriptIdentifiers = function(content) {
-  var root = acorn.parse(content, {ranges: false, ecmaVersion: 6});
+  var root = acorn.parse(content, {ranges: false, ecmaVersion: 8});
 
   /** @type {!Array<!ESTree.Node>} */
   var identifiers = [];

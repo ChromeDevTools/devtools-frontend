@@ -91,6 +91,7 @@ FormatterWorker.ESTreeWalker.SkipSubtree = {};
 
 /** @enum {!Array.<string>} */
 FormatterWorker.ESTreeWalker._walkOrder = {
+  'AwaitExpression': ['arguments'],
   'ArrayExpression': ['elements'],
   'ArrowFunctionExpression': ['params', 'body'],
   'AssignmentExpression': ['left', 'right'],

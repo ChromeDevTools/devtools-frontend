@@ -384,11 +384,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     }
 
     this._panelToolbar.appendSeparator();
-    var garbageCollectButton = new UI.ToolbarButton(Common.UIString('Collect garbage'), 'largeicon-trash-bin');
-    garbageCollectButton.addEventListener('click', this._garbageCollectButtonClicked, this);
-    this._panelToolbar.appendToolbarItem(garbageCollectButton);
-
-    this._panelToolbar.appendSeparator();
     this._cpuThrottlingCombobox = new UI.ToolbarComboBox(this._onCPUThrottlingChanged.bind(this));
     this._panelToolbar.appendToolbarItem(this._createNetworkConditionsSelect());
     this._panelToolbar.appendToolbarItem(this._cpuThrottlingCombobox);
@@ -424,10 +419,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
       hasSelection = true;
     }
     var predefinedRates = new Map([
-      [1, Common.UIString('No CPU throttling')],
-      [2, Common.UIString('2\xD7 slowdown')],
-      [5, Common.UIString('5\xD7 slowdown')],
-      [10, Common.UIString('10\xD7 slowdown')],
+      [1, Common.UIString('No CPU throttling')], [2, Common.UIString('2\xD7 slowdown')],
+      [5, Common.UIString('5\xD7 slowdown')], [10, Common.UIString('10\xD7 slowdown')],
       [20, Common.UIString('20\xD7 slowdown')]
     ]);
     for (var rate of predefinedRates)
@@ -637,12 +630,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._startRecording(true);
     else if (this._state === Timeline.TimelinePanel.State.Recording)
       this._stopRecording();
-  }
-
-  _garbageCollectButtonClicked() {
-    var targets = SDK.targetManager.targets();
-    for (var i = 0; i < targets.length; ++i)
-      targets[i].heapProfilerAgent().collectGarbage();
   }
 
   _clear() {

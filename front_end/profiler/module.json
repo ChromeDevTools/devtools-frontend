@@ -65,6 +65,13 @@
                     "shortcut": "Meta+E"
                 }
             ]
+        },
+        {
+            "type": "@UI.ActionDelegate",
+            "actionId": "profiler.collect-garbage",
+            "title": "Collect garbage",
+            "iconClass": "largeicon-trash-bin",
+            "className": "Profiler.ProfilesPanel.GCActionDelegate"
         }
     ],
     "dependencies": [

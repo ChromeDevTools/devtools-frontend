@@ -104,6 +104,7 @@ Main.Main = class {
     Runtime.experiments.register('liveSASS', 'Live SASS');
     Runtime.experiments.register('nodeDebugging', 'Node debugging', true);
     Runtime.experiments.register('persistence2', 'Persistence 2.0');
+    Runtime.experiments.register('persistenceValidation', 'Validate persistence bindings');
     Runtime.experiments.register('privateScriptInspection', 'Private script inspection');
     Runtime.experiments.register('requestBlocking', 'Request blocking', true);
     Runtime.experiments.register('timelineShowAllEvents', 'Show all events on Timeline', true);
@@ -126,7 +127,7 @@ Main.Main = class {
         Runtime.experiments.enableForTest('accessibilityInspection');
     }
 
-    Runtime.experiments.setDefaultExperiments(['timelineRecordingPerspectives']);
+    Runtime.experiments.setDefaultExperiments(['timelineRecordingPerspectives', 'persistenceValidation']);
   }
 
   /**

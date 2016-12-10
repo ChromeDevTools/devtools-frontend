@@ -43,7 +43,7 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
    */
   setSelectedNode(node) {
     this._currentDOMNode = node;
-    this.update();
+    this.crumbsElement.window().requestAnimationFrame(() => this.update());
   }
 
   _mouseMovedInCrumbs(event) {
@@ -57,6 +57,60 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
   _mouseMovedOutOfCrumbs(event) {
     if (this._currentDOMNode)
       SDK.DOMModel.hideDOMNodeHighlight();
+  }
+
+
+  /**
+   * @param {!Event} event
+   * @this {Elements.ElementsBreadcrumbs}
+   */
+  _onClickCrumb(event) {
+    event.preventDefault();
+    var crumb = /** @type {!Element} */ (event.currentTarget);
+    if (!crumb.classList.contains('collapsed')) {
+      this.dispatchEventToListeners(Elements.ElementsBreadcrumbs.Events.NodeSelected, crumb[this._nodeSymbol]);
+      return;
+    }
+
+    // Clicking a collapsed crumb will expose the hidden crumbs.
+    if (crumb === this.crumbsElement.firstChild) {
+      // If the clicked crumb is the first child, pick the farthest crumb
+      // that is still hidden. This allows the user to expose every crumb.
+      var currentCrumb = crumb;
+      while (currentCrumb) {
+        var hidden = currentCrumb.classList.contains('hidden');
+        var collapsed = currentCrumb.classList.contains('collapsed');
+        if (!hidden && !collapsed)
+          break;
+        crumb = currentCrumb;
+        currentCrumb = currentCrumb.nextSiblingElement;
+      }
+    }
+
+    this.updateSizes(crumb);
+  }
+
+  /**
+   * @param {!SDK.DOMNode} domNode
+   * @return {?string}
+   */
+  _determineElementTitle(domNode) {
+    switch (domNode.nodeType()) {
+      case Node.ELEMENT_NODE:
+        if (domNode.pseudoType())
+          return '::' + domNode.pseudoType();
+        return null;
+      case Node.TEXT_NODE:
+        return Common.UIString('(text)');
+      case Node.COMMENT_NODE:
+        return '<!-->';
+      case Node.DOCUMENT_TYPE_NODE:
+        return '<!DOCTYPE>';
+      case Node.DOCUMENT_FRAGMENT_NODE:
+        return domNode.shadowRootType() ? '#shadow-root' : domNode.nodeNameInCorrectCase();
+      default:
+        return domNode.nodeNameInCorrectCase();
+    }
   }
 
   /**
@@ -91,81 +145,22 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
 
     crumbs.removeChildren();
 
-    var panel = this;
-
-    /**
-     * @param {!Event} event
-     * @this {Elements.ElementsBreadcrumbs}
-     */
-    function selectCrumb(event) {
-      event.preventDefault();
-      var crumb = /** @type {!Element} */ (event.currentTarget);
-      if (!crumb.classList.contains('collapsed')) {
-        this.dispatchEventToListeners(Elements.ElementsBreadcrumbs.Events.NodeSelected, crumb[this._nodeSymbol]);
-        return;
-      }
-
-      // Clicking a collapsed crumb will expose the hidden crumbs.
-      if (crumb === panel.crumbsElement.firstChild) {
-        // If the focused crumb is the first child, pick the farthest crumb
-        // that is still hidden. This allows the user to expose every crumb.
-        var currentCrumb = crumb;
-        while (currentCrumb) {
-          var hidden = currentCrumb.classList.contains('hidden');
-          var collapsed = currentCrumb.classList.contains('collapsed');
-          if (!hidden && !collapsed)
-            break;
-          crumb = currentCrumb;
-          currentCrumb = currentCrumb.nextSiblingElement;
-        }
-      }
-
-      this.updateSizes(crumb);
-    }
-
-    var boundSelectCrumb = selectCrumb.bind(this);
     for (var current = currentDOMNode; current; current = current.parentNode) {
       if (current.nodeType() === Node.DOCUMENT_NODE)
         continue;
 
       crumb = createElementWithClass('span', 'crumb');
       crumb[this._nodeSymbol] = current;
-      crumb.addEventListener('mousedown', boundSelectCrumb, false);
+      crumb.addEventListener('mousedown', this._onClickCrumb.bind(this), false);
 
-      var crumbTitle = '';
-      switch (current.nodeType()) {
-        case Node.ELEMENT_NODE:
-          if (current.pseudoType())
-            crumbTitle = '::' + current.pseudoType();
-          else
-            Components.DOMPresentationUtils.decorateNodeLabel(current, crumb);
-          break;
-
-        case Node.TEXT_NODE:
-          crumbTitle = Common.UIString('(text)');
-          break;
-
-        case Node.COMMENT_NODE:
-          crumbTitle = '<!-->';
-          break;
-
-        case Node.DOCUMENT_TYPE_NODE:
-          crumbTitle = '<!DOCTYPE>';
-          break;
-
-        case Node.DOCUMENT_FRAGMENT_NODE:
-          crumbTitle = current.shadowRootType() ? '#shadow-root' : current.nodeNameInCorrectCase();
-          break;
-
-        default:
-          crumbTitle = current.nodeNameInCorrectCase();
-      }
-
-      if (!crumb.childNodes.length) {
+      var crumbTitle = this._determineElementTitle(current);
+      if (crumbTitle) {
         var nameElement = createElement('span');
         nameElement.textContent = crumbTitle;
         crumb.appendChild(nameElement);
         crumb.title = crumbTitle;
+      } else {
+        Components.DOMPresentationUtils.decorateNodeLabel(current, crumb);
       }
 
       if (current === currentDOMNode)
@@ -178,18 +173,13 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
 
   /**
    * @param {!Element=} focusedCrumb
+   * @return {{selectedIndex: number, focusedIndex: number, selectedCrumb: ?Element}}
    */
-  updateSizes(focusedCrumb) {
-    if (!this.isShowing())
-      return;
-
+  _resetCrumbStylesAndFindSelections(focusedCrumb) {
     var crumbs = this.crumbsElement;
-    if (!crumbs.firstChild)
-      return;
-
     var selectedIndex = 0;
     var focusedIndex = 0;
-    var selectedCrumb;
+    var selectedCrumb = null;
 
     // Reset crumb styles.
     for (var i = 0; i < crumbs.childNodes.length; ++i) {
@@ -207,13 +197,30 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
       crumb.classList.remove('compact', 'collapsed', 'hidden');
     }
 
-    // Layout 1: Measure total and normal crumb sizes
-    var contentElementWidth = this.contentElement.offsetWidth;
+    return {selectedIndex: selectedIndex, focusedIndex: focusedIndex, selectedCrumb: selectedCrumb};
+  }
+
+  /**
+   * @return {{normal: !Array.<number>, compact: !Array.<number>, collapsed: number, available: number}}
+   */
+  _measureElementSizes() {
+    var crumbs = this.crumbsElement;
+
+    // Layout 1: Measure total and normal crumb sizes at the same time as a
+    // dummy element for the collapsed size.
+    var collapsedElement = createElementWithClass('span', 'crumb collapsed');
+    crumbs.insertBefore(collapsedElement, crumbs.firstChild);
+
+    var available = crumbs.offsetWidth;
+    var collapsed = collapsedElement.offsetWidth;
+
     var normalSizes = [];
-    for (var i = 0; i < crumbs.childNodes.length; ++i) {
+    for (var i = 1; i < crumbs.childNodes.length; ++i) {
       var crumb = crumbs.childNodes[i];
-      normalSizes[i] = crumb.offsetWidth;
+      normalSizes[i - 1] = crumb.offsetWidth;
     }
+
+    crumbs.removeChild(collapsedElement);
 
     // Layout 2: Measure collapsed crumb sizes
     var compactSizes = [];
@@ -226,15 +233,31 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
       compactSizes[i] = crumb.offsetWidth;
     }
 
-    // Layout 3: Measure collapsed crumb size
-    crumbs.firstChild.classList.add('collapsed');
-    var collapsedSize = crumbs.firstChild.offsetWidth;
-
     // Clean up.
     for (var i = 0; i < crumbs.childNodes.length; ++i) {
       var crumb = crumbs.childNodes[i];
       crumb.classList.remove('compact', 'collapsed');
     }
+
+    return {normal: normalSizes, compact: compactSizes, collapsed: collapsed, available: available};
+  }
+
+  /**
+   * @param {!Element=} focusedCrumb
+   */
+  updateSizes(focusedCrumb) {
+    if (!this.isShowing())
+      return;
+
+    var crumbs = this.crumbsElement;
+    if (!crumbs.firstChild)
+      return;
+
+    var selections = this._resetCrumbStylesAndFindSelections(focusedCrumb);
+    var sizes = this._measureElementSizes();
+    var selectedIndex = selections.selectedIndex;
+    var focusedIndex = selections.focusedIndex;
+    var selectedCrumb = selections.selectedCrumb;
 
     function crumbsAreSmallerThanContainer() {
       var totalSize = 0;
@@ -243,13 +266,13 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
         if (crumb.classList.contains('hidden'))
           continue;
         if (crumb.classList.contains('collapsed')) {
-          totalSize += collapsedSize;
+          totalSize += sizes.collapsed;
           continue;
         }
-        totalSize += crumb.classList.contains('compact') ? compactSizes[i] : normalSizes[i];
+        totalSize += crumb.classList.contains('compact') ? sizes.compact[i] : sizes.normal[i];
       }
       const rightPadding = 10;
-      return totalSize + rightPadding < contentElementWidth;
+      return totalSize + rightPadding < sizes.available;
     }
 
     if (crumbsAreSmallerThanContainer())

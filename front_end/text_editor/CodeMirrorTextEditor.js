@@ -172,6 +172,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
 
     this._needsRefresh = true;
 
+    this._readOnly = false;
+
     this._mimeType = '';
     if (options.mimeType)
       this.setMimeType(options.mimeType);
@@ -711,6 +713,10 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @param {boolean} readOnly
    */
   setReadOnly(readOnly) {
+    if (this._readOnly === readOnly)
+      return;
+    this.clearPositionHighlight();
+    this._readOnly = readOnly;
     this.element.classList.toggle('CodeMirror-readonly', readOnly);
     this._codeMirror.setOption('readOnly', readOnly);
   }
@@ -903,8 +909,10 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       return;
     this.scrollLineIntoView(lineNumber);
     if (shouldHighlight) {
-      this._codeMirror.addLineClass(this._highlightedLine, null, 'cm-highlight');
-      this._clearHighlightTimeout = setTimeout(this.clearPositionHighlight.bind(this), 2000);
+      this._codeMirror.addLineClass(
+          this._highlightedLine, null, this._readOnly ? 'cm-readonly-highlight' : 'cm-highlight');
+      if (!this._readOnly)
+        this._clearHighlightTimeout = setTimeout(this.clearPositionHighlight.bind(this), 2000);
     }
     this.setSelection(Common.TextRange.createFromLocation(lineNumber, columnNumber));
   }
@@ -914,8 +922,10 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       clearTimeout(this._clearHighlightTimeout);
     delete this._clearHighlightTimeout;
 
-    if (this._highlightedLine)
-      this._codeMirror.removeLineClass(this._highlightedLine, null, 'cm-highlight');
+    if (this._highlightedLine) {
+      this._codeMirror.removeLineClass(
+          this._highlightedLine, null, this._readOnly ? 'cm-readonly-highlight' : 'cm-highlight');
+    }
     delete this._highlightedLine;
   }
 

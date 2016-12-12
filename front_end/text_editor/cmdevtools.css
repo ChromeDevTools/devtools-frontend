@@ -70,6 +70,14 @@
     to { background-color: transparent; }
 }
 
+.cm-readonly-highlight {
+    background-color: rgb(255, 255, 120);
+}
+
+.-theme-with-dark-background .cm-readonly-highlight {
+    background-color: hsla(133, 100%, 30%, 0.5);
+}
+
 .cm-highlight.cm-execution-line {
     -webkit-animation: fadeout-execution-line 1s 0s;
 }
@@ -378,11 +386,11 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
     top: -9px;
 }
 
-.CodeMirror .text-editor-line-with-warning:not(.cm-execution-line) {
+.CodeMirror .text-editor-line-with-warning:not(.cm-execution-line):not(.cm-readonly-highlight) {
     background-color: rgba(241, 230, 0, 0.1);
 }
 
-.CodeMirror .text-editor-line-with-error:not(.cm-execution-line) {
+.CodeMirror .text-editor-line-with-error:not(.cm-execution-line):not(.cm-readonly-highlight) {
     background-color: rgba(255, 0, 0, 0.05);
 }
 

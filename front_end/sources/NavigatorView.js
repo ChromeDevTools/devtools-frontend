@@ -950,20 +950,7 @@ Sources.NavigatorSourceTreeElement = class extends TreeElement {
     this.listItemElement.draggable = true;
     this.listItemElement.addEventListener('click', this._onclick.bind(this), false);
     this.listItemElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), false);
-    this.listItemElement.addEventListener('mousedown', this._onmousedown.bind(this), false);
     this.listItemElement.addEventListener('dragstart', this._ondragstart.bind(this), false);
-  }
-
-  _onmousedown(event) {
-    if (event.which === 1)  // Warm-up data for drag'n'drop
-      this._uiSourceCode.requestContent().then(callback.bind(this));
-    /**
-     * @param {?string} content
-     * @this {Sources.NavigatorSourceTreeElement}
-     */
-    function callback(content) {
-      this._warmedUpContent = content;
-    }
   }
 
   _shouldRenameOnMouseDown() {
@@ -992,10 +979,12 @@ Sources.NavigatorSourceTreeElement = class extends TreeElement {
     }
   }
 
+  /**
+   * @param {!DragEvent} event
+   */
   _ondragstart(event) {
-    event.dataTransfer.setData('text/plain', this._warmedUpContent);
+    event.dataTransfer.setData('text/plain', this._uiSourceCode.url());
     event.dataTransfer.effectAllowed = 'copy';
-    return true;
   }
 
   /**

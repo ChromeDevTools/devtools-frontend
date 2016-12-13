@@ -134,6 +134,7 @@ UI.SortableDataGrid = class extends UI.ViewportDataGrid {
    */
   sortNodes(comparator, reverseMode) {
     this._sortingFunction = UI.SortableDataGrid.Comparator.bind(null, comparator, reverseMode);
+    this.rootNode().recalculateSiblings(0);
     this.rootNode()._sortChildren(reverseMode);
     this.scheduleUpdateStructure();
   }

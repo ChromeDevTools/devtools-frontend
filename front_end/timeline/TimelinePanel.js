@@ -725,9 +725,9 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _showLandingPage() {
     if (this._landingPage)
       return;
-    this._detailsSplitWidget.detach();
+    this._timelinePane.detach();
     this._landingPage = new Timeline.TimelineLandingPage();
-    this._landingPage.show(this._timelinePane.element);
+    this._landingPage.show(this.element);
   }
 
   _hideLandingPage() {
@@ -735,7 +735,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
       return;
     this._landingPage.detach();
     this._landingPage = null;
-    this._detailsSplitWidget.show(this._timelinePane.element);
+    this._timelinePane.show(this.element);
   }
 
   /**

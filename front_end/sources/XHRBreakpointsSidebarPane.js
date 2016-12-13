@@ -16,7 +16,7 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
     this._breakpointElements = new Map();
 
     this._addButton = new UI.ToolbarButton(Common.UIString('Add breakpoint'), 'largeicon-add');
-    this._addButton.addEventListener('click', this._addButtonClicked.bind(this));
+    this._addButton.addEventListener(UI.ToolbarButton.Events.Click, this._addButtonClicked.bind(this));
 
     this.emptyElement.addEventListener('contextmenu', this._emptyElementContextMenu.bind(this), true);
     SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
@@ -52,10 +52,7 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
     contextMenu.show();
   }
 
-  _addButtonClicked(event) {
-    if (event)
-      event.consume();
-
+  _addButtonClicked() {
     UI.viewManager.showView('sources.xhrBreakpoints');
 
     var inputElementContainer = createElementWithClass('p', 'breakpoint-condition');

@@ -36,7 +36,7 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
 
     this._deleteButton = new UI.ToolbarButton(Common.UIString('Delete'), 'largeicon-delete');
     this._deleteButton.setVisible(false);
-    this._deleteButton.addEventListener('click', this._deleteButtonClicked, this);
+    this._deleteButton.addEventListener(UI.ToolbarButton.Events.Click, this._deleteButtonClicked, this);
 
     this._connectivityIcon = createElement('label', 'dt-icon-label');
     this._connectivityIcon.style.margin = '0 2px 0 5px';
@@ -239,6 +239,9 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
       this._dataGrid.rootNode().children[0].selected = true;
   }
 
+  /**
+   * @param {!Common.Event} event
+   */
   _deleteButtonClicked(event) {
     if (!this._dataGrid || !this._dataGrid.selectedNode)
       return;

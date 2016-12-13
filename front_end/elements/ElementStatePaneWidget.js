@@ -108,7 +108,7 @@ Elements.ElementStatePaneWidget.ButtonProvider = class {
   constructor() {
     this._button = new UI.ToolbarToggle(Common.UIString('Toggle Element State'), '');
     this._button.setText(Common.UIString(':hov'));
-    this._button.addEventListener('click', this._clicked, this);
+    this._button.addEventListener(UI.ToolbarButton.Events.Click, this._clicked, this);
     this._button.element.classList.add('monospace');
     this._view = new Elements.ElementStatePaneWidget();
   }

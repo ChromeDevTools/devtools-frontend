@@ -110,6 +110,13 @@ UI.OverviewGrid = class {
   }
 
   /**
+   * @param {?function(!Event):boolean} clickHandler
+   */
+  setClickHandler(clickHandler) {
+    this._window.setClickHandler(clickHandler);
+  }
+
+  /**
    * @param {number} zoomFactor
    * @param {number} referencePoint
    */
@@ -185,6 +192,13 @@ UI.OverviewGrid.Window = class extends Common.Object {
   }
 
   /**
+   * @param {?function(!Event):boolean} clickHandler
+   */
+  setClickHandler(clickHandler) {
+    this._clickHandler = clickHandler;
+  }
+
+  /**
    * @param {!Event} event
    */
   _resizerElementStartDragging(event) {
@@ -240,7 +254,7 @@ UI.OverviewGrid.Window = class extends Common.Object {
     delete this._overviewWindowSelector;
     var clickThreshold = 3;
     if (window.end - window.start < clickThreshold) {
-      if (this.dispatchEventToListeners(UI.OverviewGrid.Events.Click, event))
+      if (this._clickHandler && this._clickHandler.call(null, event))
         return;
       var middle = window.end;
       window.start = Math.max(0, middle - UI.OverviewGrid.MinSelectableSize / 2);
@@ -405,8 +419,7 @@ UI.OverviewGrid.Window = class extends Common.Object {
 
 /** @enum {symbol} */
 UI.OverviewGrid.Events = {
-  WindowChanged: Symbol('WindowChanged'),
-  Click: Symbol('Click')
+  WindowChanged: Symbol('WindowChanged')
 };
 
 /**

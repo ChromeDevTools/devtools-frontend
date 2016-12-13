@@ -170,7 +170,7 @@ Emulation.DeviceModeToolbar = class {
     toolbar.appendToolbarItem(
         this._wrapToolbarItem(createElementWithClass('div', 'device-mode-empty-toolbar-element')));
     this._modeButton = new UI.ToolbarButton('', 'largeicon-rotate-screen');
-    this._modeButton.addEventListener('click', this._modeMenuClicked, this);
+    this._modeButton.addEventListener(UI.ToolbarButton.Events.Click, this._modeMenuClicked, this);
     toolbar.appendToolbarItem(this._modeButton);
   }
 

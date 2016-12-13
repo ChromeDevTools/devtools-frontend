@@ -133,7 +133,8 @@ Extensions.ExtensionButton = class {
     this._id = id;
 
     this._toolbarButton = new UI.ToolbarButton('', '');
-    this._toolbarButton.addEventListener('click', server.notifyButtonClicked.bind(server, this._id));
+    this._toolbarButton.addEventListener(
+        UI.ToolbarButton.Events.Click, server.notifyButtonClicked.bind(server, this._id));
     this.update(iconURL, tooltip, disabled);
   }
 

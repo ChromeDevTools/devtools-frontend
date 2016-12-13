@@ -426,7 +426,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     toolbar.appendToolbarItem(this._toggleRecordButton);
 
     this.clearResultsButton = new UI.ToolbarButton(Common.UIString('Clear all profiles'), 'largeicon-clear');
-    this.clearResultsButton.addEventListener('click', this._reset, this);
+    this.clearResultsButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset, this);
     toolbar.appendToolbarItem(this.clearResultsButton);
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(

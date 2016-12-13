@@ -49,7 +49,7 @@ UI.TimelineOverviewPane = class extends UI.VBox {
 
     this._overviewGrid.setResizeEnabled(false);
     this._overviewGrid.addEventListener(UI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
-    this._overviewGrid.addEventListener(UI.OverviewGrid.Events.Click, this._onClick, this);
+    this._overviewGrid.setClickHandler(this._onClick.bind(this));
     this._overviewControls = [];
     this._markers = new Map();
 
@@ -264,16 +264,15 @@ UI.TimelineOverviewPane = class extends UI.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Event} event
+   * @return {boolean}
    */
   _onClick(event) {
-    var domEvent = /** @type {!Event} */ (event.data);
     for (var overviewControl of this._overviewControls) {
-      if (overviewControl.onClick(domEvent)) {
-        event.preventDefault();
-        return;
-      }
+      if (overviewControl.onClick(event))
+        return true;
     }
+    return false;
   }
 
   /**

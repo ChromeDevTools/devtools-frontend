@@ -19,7 +19,7 @@ Resources.AppManifestView = class extends UI.VBox {
     toolbar.renderAsLinks();
     var addToHomeScreen =
         new UI.ToolbarButton(Common.UIString('Add to homescreen'), undefined, Common.UIString('Add to homescreen'));
-    addToHomeScreen.addEventListener('click', this._addToHomescreen.bind(this));
+    addToHomeScreen.addEventListener(UI.ToolbarButton.Events.Click, this._addToHomescreen, this);
     toolbar.appendToolbarItem(addToHomeScreen);
 
     this._presentationSection = this._reportView.appendSection(Common.UIString('Presentation'));
@@ -136,7 +136,10 @@ Resources.AppManifestView = class extends UI.VBox {
     }
   }
 
-  _addToHomescreen() {
+  /**
+   * @param {!Common.Event} event
+   */
+  _addToHomescreen(event) {
     var target = SDK.targetManager.mainTarget();
     if (target && target.hasBrowserCapability()) {
       target.pageAgent().requestAppBanner();

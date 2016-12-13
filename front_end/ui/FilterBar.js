@@ -44,7 +44,7 @@ UI.FilterBar = class extends UI.HBox {
     this.element.classList.add('filter-bar');
 
     this._filterButton = new UI.ToolbarToggle(Common.UIString('Filter'), 'largeicon-filter');
-    this._filterButton.addEventListener('click', this._handleFilterButtonClick, this);
+    this._filterButton.addEventListener(UI.ToolbarButton.Events.Click, this._handleFilterButtonClick, this);
 
     this._filters = [];
 

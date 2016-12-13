@@ -38,7 +38,7 @@ Resources.DatabaseTableView = class extends UI.SimpleView {
     this._visibleColumnsSetting = Common.settings.createSetting('databaseTableViewVisibleColumns', {});
 
     this.refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
-    this.refreshButton.addEventListener('click', this._refreshButtonClicked, this);
+    this.refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
     this._visibleColumnsInput = new UI.ToolbarInput(Common.UIString('Visible columns'), 1);
     this._visibleColumnsInput.addEventListener(UI.ToolbarInput.Event.TextChanged, this._onVisibleColumnsChanged, this);
   }
@@ -134,6 +134,9 @@ Resources.DatabaseTableView = class extends UI.SimpleView {
     this.element.appendChild(errorMsgElement);
   }
 
+  /**
+   * @param {!Common.Event} event
+   */
   _refreshButtonClicked(event) {
     this.update();
   }

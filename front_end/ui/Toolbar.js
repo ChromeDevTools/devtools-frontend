@@ -57,7 +57,7 @@ UI.Toolbar = class {
   static createActionButton(action, toggledOptions, untoggledOptions) {
     var button = new UI.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
     button.setToggleWithRedColor(action.toggleWithRedColor());
-    button.addEventListener('click', action.execute, action);
+    button.addEventListener(UI.ToolbarButton.Events.Click, action.execute, action);
     action.addEventListener(UI.Action.Events.Enabled, enabledChanged);
     action.addEventListener(UI.Action.Events.Toggled, toggled);
     /** @type {?UI.LongClickController} */
@@ -107,7 +107,7 @@ UI.Toolbar = class {
     function showOptions() {
       var buttons = longClickButtons.slice();
       var mainButtonClone = new UI.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
-      mainButtonClone.addEventListener('click', clicked);
+      mainButtonClone.addEventListener(UI.ToolbarButton.Events.Click, clicked);
 
       /**
        * @param {!Common.Event} event
@@ -511,23 +511,28 @@ UI.ToolbarButton = class extends UI.ToolbarItem {
    * @param {!Event} event
    */
   _clicked(event) {
-    var defaultPrevented = this.dispatchEventToListeners('click', event);
-    event.consume(defaultPrevented);
+    this.dispatchEventToListeners(UI.ToolbarButton.Events.Click, event);
   }
 
   /**
    * @param {!Event} event
    */
   _mouseDown(event) {
-    this.dispatchEventToListeners('mousedown', event);
+    this.dispatchEventToListeners(UI.ToolbarButton.Events.MouseDown, event);
   }
 
   /**
    * @param {!Event} event
    */
   _mouseUp(event) {
-    this.dispatchEventToListeners('mouseup', event);
+    this.dispatchEventToListeners(UI.ToolbarButton.Events.MouseUp, event);
   }
+};
+
+UI.ToolbarButton.Events = {
+  Click: Symbol('Click'),
+  MouseDown: Symbol('MouseDown'),
+  MouseUp: Symbol('MouseUp')
 };
 
 /**
@@ -569,7 +574,7 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
 };
 
 UI.ToolbarInput.Event = {
-  TextChanged: 'TextChanged'
+  TextChanged: Symbol('TextChanged')
 };
 
 /**

@@ -184,7 +184,7 @@ Elements.ClassesPaneWidget.ButtonProvider = class {
     this._button = new UI.ToolbarToggle(Common.UIString('Element Classes'), '');
     this._button.setText('.cls');
     this._button.element.classList.add('monospace');
-    this._button.addEventListener('click', this._clicked, this);
+    this._button.addEventListener(UI.ToolbarButton.Events.Click, this._clicked, this);
     this._view = new Elements.ClassesPaneWidget();
   }
 

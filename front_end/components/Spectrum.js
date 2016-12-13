@@ -58,7 +58,8 @@ Components.Spectrum = class extends UI.VBox {
     var toolbar = new UI.Toolbar('spectrum-eye-dropper', this.contentElement);
     this._colorPickerButton = new UI.ToolbarToggle(Common.UIString('Toggle color picker'), 'largeicon-eyedropper');
     this._colorPickerButton.setToggled(true);
-    this._colorPickerButton.addEventListener('click', this._toggleColorPicker.bind(this, undefined));
+    this._colorPickerButton.addEventListener(
+        UI.ToolbarButton.Events.Click, this._toggleColorPicker.bind(this, undefined));
     toolbar.appendToolbarItem(this._colorPickerButton);
 
     var swatchElement = this.contentElement.createChild('span', 'swatch');
@@ -136,7 +137,7 @@ Components.Spectrum = class extends UI.VBox {
 
     this._addColorToolbar = new UI.Toolbar('add-color-toolbar');
     var addColorButton = new UI.ToolbarButton(Common.UIString('Add to palette'), 'largeicon-add');
-    addColorButton.addEventListener('click', this._addColorToCustomPalette.bind(this));
+    addColorButton.addEventListener(UI.ToolbarButton.Events.Click, this._addColorToCustomPalette, this);
     this._addColorToolbar.appendToolbarItem(addColorButton);
 
     this._loadPalettes();
@@ -208,7 +209,7 @@ Components.Spectrum = class extends UI.VBox {
     title.textContent = Common.UIString('Color Palettes');
     var toolbar = new UI.Toolbar('', this._palettePanel);
     var closeButton = new UI.ToolbarButton('Return to color picker', 'largeicon-delete');
-    closeButton.addEventListener('click', this._togglePalettePanel.bind(this, false));
+    closeButton.addEventListener(UI.ToolbarButton.Events.Click, this._togglePalettePanel.bind(this, false));
     toolbar.appendToolbarItem(closeButton);
     for (var palette of this._palettes.values())
       this._palettePanel.appendChild(this._createPreviewPaletteElement(palette));
@@ -524,7 +525,10 @@ Components.Spectrum = class extends UI.VBox {
         Components.Spectrum._ChangeSource.Other);
   }
 
-  _addColorToCustomPalette() {
+  /**
+   * @param {!Common.Event} event
+   */
+  _addColorToCustomPalette(event) {
     var palette = this._customPaletteSetting.get();
     palette.colors.push(this.colorString());
     this._customPaletteSetting.set(palette);

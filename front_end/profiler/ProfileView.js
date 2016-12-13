@@ -34,15 +34,15 @@ Profiler.ProfileView = class extends UI.SimpleView {
 
     this.focusButton = new UI.ToolbarButton(Common.UIString('Focus selected function'), 'largeicon-visibility');
     this.focusButton.setEnabled(false);
-    this.focusButton.addEventListener('click', this._focusClicked, this);
+    this.focusButton.addEventListener(UI.ToolbarButton.Events.Click, this._focusClicked, this);
 
     this.excludeButton = new UI.ToolbarButton(Common.UIString('Exclude selected function'), 'largeicon-delete');
     this.excludeButton.setEnabled(false);
-    this.excludeButton.addEventListener('click', this._excludeClicked, this);
+    this.excludeButton.addEventListener(UI.ToolbarButton.Events.Click, this._excludeClicked, this);
 
     this.resetButton = new UI.ToolbarButton(Common.UIString('Restore all functions'), 'largeicon-refresh');
     this.resetButton.setEnabled(false);
-    this.resetButton.addEventListener('click', this._resetClicked, this);
+    this.resetButton.addEventListener(UI.ToolbarButton.Events.Click, this._resetClicked, this);
 
     this._linkifier = new Components.Linkifier(Profiler.ProfileView._maxLinkLength);
   }
@@ -325,6 +325,9 @@ Profiler.ProfileView = class extends UI.SimpleView {
     this.excludeButton.setEnabled(selected);
   }
 
+  /**
+   * @param {!Common.Event} event
+   */
   _focusClicked(event) {
     if (!this.dataGrid.selectedNode)
       return;
@@ -335,6 +338,9 @@ Profiler.ProfileView = class extends UI.SimpleView {
     this.refreshVisibleData();
   }
 
+  /**
+   * @param {!Common.Event} event
+   */
   _excludeClicked(event) {
     var selectedNode = this.dataGrid.selectedNode;
 
@@ -349,6 +355,9 @@ Profiler.ProfileView = class extends UI.SimpleView {
     this.refreshVisibleData();
   }
 
+  /**
+   * @param {!Common.Event} event
+   */
   _resetClicked(event) {
     this.resetButton.setEnabled(false);
     this.profileDataGridTree.restore();

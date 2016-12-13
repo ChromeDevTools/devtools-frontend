@@ -282,7 +282,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     if (Runtime.experiments.isEnabled('timelineRecordingPerspectives') &&
         perspectiveSetting.get() === Timeline.TimelinePanel.Perspectives.Load) {
       this._reloadButton = new UI.ToolbarButton(Common.UIString('Record & Reload'), 'largeicon-refresh');
-      this._reloadButton.addEventListener('click', () => SDK.targetManager.reloadPage());
+      this._reloadButton.addEventListener(UI.ToolbarButton.Events.Click, () => SDK.targetManager.reloadPage());
       this._panelToolbar.appendToolbarItem(this._reloadButton);
     } else {
       this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
@@ -290,7 +290,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     // Clear
     var clearButton = new UI.ToolbarButton(Common.UIString('Clear recording'), 'largeicon-clear');
-    clearButton.addEventListener('click', this._clear, this);
+    clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear, this);
     this._panelToolbar.appendToolbarItem(clearButton);
 
     this._panelToolbar.appendSeparator();

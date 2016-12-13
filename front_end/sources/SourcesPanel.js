@@ -595,16 +595,15 @@ Sources.SourcesPanel = class extends UI.Panel {
   }
 
   /**
-   * @return {boolean}
+   * @param {!Common.Event} event
    */
-  _longResume() {
+  _longResume(event) {
     var debuggerModel = this._prepareToResume();
     if (!debuggerModel)
-      return true;
+      return;
 
     debuggerModel.skipAllPausesUntilReloadOrTimeout(500);
     debuggerModel.resume();
-    return true;
   }
 
   /**
@@ -681,7 +680,7 @@ Sources.SourcesPanel = class extends UI.Panel {
 
     var longResumeButton =
         new UI.ToolbarButton(Common.UIString('Resume with all pauses blocked for 500 ms'), 'largeicon-play');
-    longResumeButton.addEventListener('click', this._longResume.bind(this), this);
+    longResumeButton.addEventListener(UI.ToolbarButton.Events.Click, this._longResume, this);
     debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._togglePauseAction, [longResumeButton], []));
 
     debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepOverAction));
@@ -691,7 +690,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleBreakpointsActiveAction));
 
     this._pauseOnExceptionButton = new UI.ToolbarToggle('', 'largeicon-pause-on-exceptions');
-    this._pauseOnExceptionButton.addEventListener('click', this._togglePauseOnExceptions, this);
+    this._pauseOnExceptionButton.addEventListener(UI.ToolbarButton.Events.Click, this._togglePauseOnExceptions, this);
     debugToolbar.appendToolbarItem(this._pauseOnExceptionButton);
 
     debugToolbar.appendSeparator();

@@ -112,12 +112,12 @@ Animation.AnimationTimeline = class extends UI.VBox {
     var toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
     var topToolbar = new UI.Toolbar('animation-timeline-toolbar', toolbarContainer);
     var clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
-    clearButton.addEventListener('click', this._reset.bind(this));
+    clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset.bind(this));
     topToolbar.appendToolbarItem(clearButton);
     topToolbar.appendSeparator();
 
     this._pauseButton = new UI.ToolbarToggle(Common.UIString('Pause all'), 'largeicon-pause', 'largeicon-resume');
-    this._pauseButton.addEventListener('click', this._togglePauseAll.bind(this));
+    this._pauseButton.addEventListener(UI.ToolbarButton.Events.Click, this._togglePauseAll.bind(this));
     topToolbar.appendToolbarItem(this._pauseButton);
 
     var playbackRateControl = toolbarContainer.createChild('div', 'animation-playback-rate-control');
@@ -147,7 +147,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._controlButton = new UI.ToolbarToggle(Common.UIString('Replay timeline'), 'largeicon-replay-animation');
     this._controlState = Animation.AnimationTimeline._ControlState.Replay;
     this._controlButton.setToggled(true);
-    this._controlButton.addEventListener('click', this._controlButtonToggle.bind(this));
+    this._controlButton.addEventListener(UI.ToolbarButton.Events.Click, this._controlButtonToggle.bind(this));
     toolbar.appendToolbarItem(this._controlButton);
 
     var gridHeader = container.createChild('div', 'animation-grid-header');

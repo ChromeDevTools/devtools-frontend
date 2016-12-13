@@ -146,7 +146,8 @@ Sources.FilesNavigatorView = class extends Sources.NavigatorView {
     var toolbar = new UI.Toolbar('navigator-toolbar');
     var title = Common.UIString('Add folder to workspace');
     var addButton = new UI.ToolbarButton(title, 'largeicon-add', title);
-    addButton.addEventListener('click', () => Workspace.isolatedFileSystemManager.addFileSystem());
+    addButton.addEventListener(
+        UI.ToolbarButton.Events.Click, () => Workspace.isolatedFileSystemManager.addFileSystem());
     toolbar.appendToolbarItem(addButton);
     this.element.insertBefore(toolbar.element, this.element.firstChild);
   }
@@ -197,7 +198,7 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
     super();
     var toolbar = new UI.Toolbar('navigator-toolbar');
     var newButton = new UI.ToolbarButton('', 'largeicon-add', Common.UIString('New Snippet'));
-    newButton.addEventListener('click', this._handleCreateSnippet.bind(this));
+    newButton.addEventListener(UI.ToolbarButton.Events.Click, this._handleCreateSnippet.bind(this));
     toolbar.appendToolbarItem(newButton);
     this.element.insertBefore(toolbar.element, this.element.firstChild);
   }

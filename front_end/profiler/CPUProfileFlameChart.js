@@ -33,12 +33,8 @@
  * @unrestricted
  */
 Profiler.ProfileFlameChartDataProvider = class {
-  /**
-   * @param {?SDK.Target} target
-   */
-  constructor(target) {
+  constructor() {
     UI.FlameChartDataProvider.call(this);
-    this._target = target;
     this._colorGenerator = Profiler.ProfileFlameChartDataProvider.colorGenerator();
   }
 

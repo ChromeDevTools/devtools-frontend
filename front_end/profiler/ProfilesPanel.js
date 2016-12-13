@@ -220,12 +220,9 @@ Profiler.ProfileType = class extends Common.Object {
   profileBeingRecordedRemoved() {
   }
 
-  _reset() {
-    var profiles = this._profiles.slice(0);
-    for (var i = 0; i < profiles.length; ++i)
-      this._disposeProfile(profiles[i]);
+  reset() {
+    this._profiles.slice(0).forEach(this._disposeProfile.bind(this));
     this._profiles = [];
-
     this._nextProfileUid = 1;
   }
 
@@ -598,9 +595,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
   }
 
   _reset() {
-    var types = Profiler.ProfileTypeRegistry.instance.profileTypes();
-    for (var i = 0; i < types.length; i++)
-      types[i]._reset();
+    Profiler.ProfileTypeRegistry.instance.profileTypes().forEach(type => type.reset());
 
     delete this.visibleView;
 

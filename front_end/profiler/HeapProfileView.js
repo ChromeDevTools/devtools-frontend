@@ -97,7 +97,7 @@ Profiler.SamplingHeapProfileType = class extends Profiler.ProfileType {
 
   startRecordingProfile() {
     var target = UI.context.flavor(SDK.Target);
-    if (this._profileBeingRecorded || !target)
+    if (this.profileBeingRecorded() || !target)
       return;
     var profile = new Profiler.SamplingHeapProfileHeader(target, this);
     this.setProfileBeingRecorded(profile);
@@ -110,7 +110,7 @@ Profiler.SamplingHeapProfileType = class extends Profiler.ProfileType {
 
   stopRecordingProfile() {
     this._recording = false;
-    if (!this._profileBeingRecorded || !this._profileBeingRecorded.target())
+    if (!this.profileBeingRecorded() || !this.profileBeingRecorded().target())
       return;
 
     var recordedProfile;
@@ -120,12 +120,12 @@ Profiler.SamplingHeapProfileType = class extends Profiler.ProfileType {
      * @this {Profiler.SamplingHeapProfileType}
      */
     function didStopProfiling(profile) {
-      if (!this._profileBeingRecorded)
+      if (!this.profileBeingRecorded())
         return;
       console.assert(profile);
-      this._profileBeingRecorded.setProtocolProfile(profile);
-      this._profileBeingRecorded.updateStatus('');
-      recordedProfile = this._profileBeingRecorded;
+      this.profileBeingRecorded().setProtocolProfile(profile);
+      this.profileBeingRecorded().updateStatus('');
+      recordedProfile = this.profileBeingRecorded();
       this.setProfileBeingRecorded(null);
     }
 
@@ -136,7 +136,7 @@ Profiler.SamplingHeapProfileType = class extends Profiler.ProfileType {
       this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, recordedProfile);
     }
 
-    this._profileBeingRecorded.target()
+    this.profileBeingRecorded().target()
         .heapProfilerModel.stopSampling()
         .then(didStopProfiling.bind(this))
         .then(SDK.targetManager.resumeAllTargets.bind(SDK.targetManager))
@@ -294,8 +294,9 @@ Profiler.HeapFlameChartDataProvider = class extends Profiler.ProfileFlameChartDa
    * @param {?SDK.Target} target
    */
   constructor(profile, target) {
-    super(target);
+    super();
     this._profile = profile;
+    this._target = target;
   }
 
   /**

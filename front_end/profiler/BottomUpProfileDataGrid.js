@@ -175,6 +175,7 @@ Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTre
    */
   constructor(formatter, searchableView, rootProfileNode, total) {
     super(formatter, searchableView, total);
+    this.deepSearch = false;
 
     // Iterate each node in pre-order.
     var profileNodeUIDs = 0;
@@ -287,28 +288,6 @@ Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTre
 
     if (this.lastComparator)
       this.sort(this.lastComparator, true);
-  }
-
-  /**
-   * @override
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
-   * @param {boolean} shouldJump
-   * @param {boolean=} jumpBackwards
-   */
-  performSearch(searchConfig, shouldJump, jumpBackwards) {
-    this.searchCanceled();
-    var matchesQuery = this._matchFunction(searchConfig);
-    if (!matchesQuery)
-      return;
-
-    this._searchResults = [];
-    for (var current = this.children[0]; current; current = current.traverseNextNode(true, null, true)) {
-      if (matchesQuery(current))
-        this._searchResults.push({profileNode: current});
-    }
-    this._searchResultIndex = jumpBackwards ? 0 : this._searchResults.length - 1;
-    this._searchableView.updateSearchMatchesCount(this._searchResults.length);
-    this._searchableView.updateCurrentMatchIndex(this._searchResultIndex);
   }
 
   /**

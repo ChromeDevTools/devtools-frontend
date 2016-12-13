@@ -419,8 +419,8 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
     this._jsonifiedProfile = null;
     this.updateStatus(Common.UIString('Loaded'), false);
 
-    if (this._profileType.profileBeingRecorded() === this)
-      this._profileType.setProfileBeingRecorded(null);
+    if (this.profileType().profileBeingRecorded() === this)
+      this.profileType().setProfileBeingRecorded(null);
   }
 
   /**
@@ -512,7 +512,7 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
       }
     }
     this._fileName = this._fileName ||
-        `${this._profileType.typeName()}-${new Date().toISO8601Compact()}${this._profileType.fileExtension()}`;
+        `${this.profileType().typeName()}-${new Date().toISO8601Compact()}${this.profileType().fileExtension()}`;
     fileOutputStream.open(this._fileName, onOpenForSave.bind(this));
   }
 

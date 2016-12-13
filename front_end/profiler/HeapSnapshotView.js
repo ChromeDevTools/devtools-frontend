@@ -1036,7 +1036,7 @@ Profiler.HeapSnapshotProfileType = class extends Profiler.ProfileType {
      * @this {Profiler.HeapSnapshotProfileType}
      */
     function didTakeHeapSnapshot(error) {
-      var profile = this._profileBeingRecorded;
+      var profile = this.profileBeingRecorded();
       profile.title = Common.UIString('Snapshot %d', profile.uid);
       profile._finishLoad();
       this.setProfileBeingRecorded(null);
@@ -1070,11 +1070,11 @@ Profiler.HeapSnapshotProfileType = class extends Profiler.ProfileType {
   }
 
   _resetProfiles() {
-    this._reset();
+    this.reset();
   }
 
   _snapshotReceived(profile) {
-    if (this._profileBeingRecorded === profile)
+    if (this.profileBeingRecorded() === profile)
       this.setProfileBeingRecorded(null);
     this.dispatchEventToListeners(Profiler.HeapSnapshotProfileType.SnapshotReceived, profile);
   }
@@ -1150,7 +1150,7 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
     if (profileSamples.totalTime < data.timestamp - profileSamples.timestamps[0])
       profileSamples.totalTime *= 2;
     this.dispatchEventToListeners(Profiler.TrackingHeapSnapshotProfileType.HeapStatsUpdate, this._profileSamples);
-    this._profileBeingRecorded.updateStatus(null, true);
+    this.profileBeingRecorded().updateStatus(null, true);
   }
 
   /**
@@ -1194,15 +1194,15 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
     var target = UI.context.flavor(SDK.Target);
     this.setProfileBeingRecorded(new Profiler.HeapProfileHeader(target, this, undefined));
     this._profileSamples = new Profiler.TrackingHeapSnapshotProfileType.Samples();
-    this._profileBeingRecorded._profileSamples = this._profileSamples;
+    this.profileBeingRecorded()._profileSamples = this._profileSamples;
     this._recording = true;
-    this.addProfile(this._profileBeingRecorded);
-    this._profileBeingRecorded.updateStatus(Common.UIString('Recording\u2026'));
+    this.addProfile(/** @type {!Profiler.ProfileHeader} */ (this.profileBeingRecorded()));
+    this.profileBeingRecorded().updateStatus(Common.UIString('Recording\u2026'));
     this.dispatchEventToListeners(Profiler.TrackingHeapSnapshotProfileType.TrackingStarted);
   }
 
   _stopRecordingProfile() {
-    this._profileBeingRecorded.updateStatus(Common.UIString('Snapshotting\u2026'));
+    this.profileBeingRecorded().updateStatus(Common.UIString('Snapshotting\u2026'));
     /**
      * @param {?string} error
      * @this {Profiler.HeapSnapshotProfileType}
@@ -1217,7 +1217,7 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
       this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, profile);
     }
 
-    this._profileBeingRecorded.target().heapProfilerAgent().stopTrackingHeapObjects(
+    this.profileBeingRecorded().target().heapProfilerAgent().stopTrackingHeapObjects(
         true, didTakeHeapSnapshot.bind(this));
     this._recording = false;
     this.dispatchEventToListeners(Profiler.TrackingHeapSnapshotProfileType.TrackingStopped);
@@ -1453,7 +1453,7 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
 
   notifySnapshotReceived() {
     this._fulfillLoad(this._snapshotProxy);
-    this._profileType._snapshotReceived(this);
+    this.profileType()._snapshotReceived(this);
     if (this.canSaveToFile())
       this.dispatchEventToListeners(Profiler.ProfileHeader.Events.ProfileReceived);
   }
@@ -1494,7 +1494,7 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
         this._updateSaveProgress(0, 1);
       }
     }
-    this._fileName = this._fileName || 'Heap-' + new Date().toISO8601Compact() + this._profileType.fileExtension();
+    this._fileName = this._fileName || 'Heap-' + new Date().toISO8601Compact() + this.profileType().fileExtension();
     fileOutputStream.open(this._fileName, onOpen.bind(this));
   }
 

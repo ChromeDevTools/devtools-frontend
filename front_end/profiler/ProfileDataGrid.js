@@ -332,6 +332,7 @@ Profiler.ProfileDataGridTree = class {
     this.total = total;
     this.lastComparator = null;
     this.childrenByCallUID = new Map();
+    this.deepSearch = true;
   }
 
   /**
@@ -547,7 +548,8 @@ Profiler.ProfileDataGridTree = class {
       return;
 
     this._searchResults = [];
-    for (var current = this.children[0]; current; current = current.traverseNextNode(false, null, false)) {
+    const deepSearch = this.deepSearch;
+    for (var current = this.children[0]; current; current = current.traverseNextNode(!deepSearch, null, !deepSearch)) {
       if (matchesQuery(current))
         this._searchResults.push({profileNode: current});
     }

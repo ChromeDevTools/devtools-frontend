@@ -101,6 +101,14 @@ Components.ObjectPropertiesSection = class extends TreeOutlineInShadow {
       return 1;
     if (b === '__proto__')
       return -1;
+    if (!propertyA.enumerable && propertyB.enumerable)
+      return 1;
+    if (!propertyB.enumerable && propertyA.enumerable)
+      return -1;
+    if (a.startsWith('_') && !b.startsWith('_'))
+      return 1;
+    if (b.startsWith('_') && !a.startsWith('_'))
+      return -1;
     if (propertyA.symbol && !propertyB.symbol)
       return 1;
     if (propertyB.symbol && !propertyA.symbol)
@@ -341,7 +349,8 @@ Components.ObjectPropertiesSection = class extends TreeOutlineInShadow {
       var defaultName = includePreview ? '' : 'anonymous';
       if (response && response.functionName)
         defaultName = response.functionName;
-      var valueElement = Components.ObjectPropertiesSection.valueElementForFunctionDescription(func.description, includePreview, defaultName);
+      var valueElement = Components.ObjectPropertiesSection.valueElementForFunctionDescription(
+          func.description, includePreview, defaultName);
       element.appendChild(valueElement);
     }
   }

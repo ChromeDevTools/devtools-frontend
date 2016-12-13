@@ -9,3 +9,4 @@ front_end/gonzales/*
 front_end/InspectorBackendCommands.js
 front_end/SupportedCSSProperties.js
 front_end/terminal/xterm.js/**
+front_end/protocol_externs.js

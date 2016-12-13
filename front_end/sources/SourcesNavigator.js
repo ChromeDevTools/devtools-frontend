@@ -57,9 +57,8 @@ Sources.SourcesNavigatorView = class extends Sources.NavigatorView {
     var inspectedURL = mainTarget && mainTarget.inspectedURL();
     if (!inspectedURL)
       return;
-    for (var node of this.uiSourceCodeNodes()) {
-      var uiSourceCode = node.uiSourceCode();
-      if (uiSourceCode.url() === inspectedURL)
+    for (var uiSourceCode of this.workspace().uiSourceCodes()) {
+      if (this.accept(uiSourceCode) && uiSourceCode.url() === inspectedURL)
         this.revealUISourceCode(uiSourceCode, true);
     }
   }
@@ -116,9 +115,8 @@ Sources.NetworkNavigatorView = class extends Sources.NavigatorView {
     var inspectedURL = mainTarget && mainTarget.inspectedURL();
     if (!inspectedURL)
       return;
-    for (var node of this.uiSourceCodeNodes()) {
-      var uiSourceCode = node.uiSourceCode();
-      if (uiSourceCode.url() === inspectedURL)
+    for (var uiSourceCode of this.workspace().uiSourceCodes()) {
+      if (this.accept(uiSourceCode) && uiSourceCode.url() === inspectedURL)
         this.revealUISourceCode(uiSourceCode, true);
     }
   }
@@ -225,12 +223,13 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
   /**
    * @override
    * @param {!Event} event
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Sources.NavigatorUISourceCodeTreeNode} node
    */
-  handleFileContextMenu(event, uiSourceCode) {
+  handleFileContextMenu(event, node) {
+    var uiSourceCode = node.uiSourceCode();
     var contextMenu = new UI.ContextMenu(event);
     contextMenu.appendItem(Common.UIString('Run'), this._handleEvaluateSnippet.bind(this, uiSourceCode));
-    contextMenu.appendItem(Common.UIString('Rename'), this.rename.bind(this, uiSourceCode));
+    contextMenu.appendItem(Common.UIString('Rename'), this.rename.bind(this, node));
     contextMenu.appendItem(Common.UIString('Remove'), this._handleRemoveSnippet.bind(this, uiSourceCode));
     contextMenu.appendSeparator();
     contextMenu.appendItem(Common.UIString('New'), this._handleCreateSnippet.bind(this));

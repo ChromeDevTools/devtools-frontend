@@ -262,6 +262,8 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
     var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
     if (header.isInline && !header.hasSourceURL && header.origin !== 'inspector')
       return;
+    if (!header.resourceURL())
+      return;
 
     var originalContentProvider = header.originalContentProvider();
     var uiSourceCode = this._createFile(originalContentProvider, SDK.ResourceTreeFrame.fromStyleSheet(header), false);

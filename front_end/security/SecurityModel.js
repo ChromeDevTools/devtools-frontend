@@ -97,13 +97,13 @@ Security.SecurityDispatcher = class {
   /**
    * @override
    * @param {!Protocol.Security.SecurityState} securityState
-   * @param {!Array<!Protocol.Security.SecurityStateExplanation>=} explanations
-   * @param {!Protocol.Security.InsecureContentStatus=} insecureContentStatus
-   * @param {boolean=} schemeIsCryptographic
+   * @param {!Array<!Protocol.Security.SecurityStateExplanation>} explanations
+   * @param {!Protocol.Security.InsecureContentStatus} insecureContentStatus
+   * @param {boolean} schemeIsCryptographic
    */
   securityStateChanged(securityState, explanations, insecureContentStatus, schemeIsCryptographic) {
-    var pageSecurityState = new Security.PageSecurityState(
-        securityState, explanations || [], insecureContentStatus || null, schemeIsCryptographic || false);
+    var pageSecurityState =
+        new Security.PageSecurityState(securityState, explanations, insecureContentStatus, schemeIsCryptographic);
     this._model.dispatchEventToListeners(Security.SecurityModel.Events.SecurityStateChanged, pageSecurityState);
   }
 };

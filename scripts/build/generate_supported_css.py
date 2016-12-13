@@ -49,6 +49,8 @@ def properties_from_file(file_name):
             entry = {"name": name}
             if "inherited" in attributes:
                 entry["inherited"] = True
+            if "svg" in attributes:
+                entry["svg"] = True
             propertyNames.add(name)
             longhands = line.partition("longhands=")[2].partition(",")[0]
             if longhands:

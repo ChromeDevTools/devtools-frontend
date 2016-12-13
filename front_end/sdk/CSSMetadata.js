@@ -35,7 +35,7 @@
  */
 SDK.CSSMetadata = class {
   /**
-   * @param {!Array.<!{name: string, longhands: !Array.<string>}>} properties
+   * @param {!Array.<!{name: string, longhands: !Array.<string>, inherited: boolean, svg: boolean}>} properties
    */
   constructor(properties) {
     this._values = /** !Array.<string> */ ([]);
@@ -45,6 +45,8 @@ SDK.CSSMetadata = class {
     this._shorthands = new Map();
     /** @type {!Set<string>} */
     this._inherited = new Set();
+    /** @type {!Set<string>} */
+    this._svgProperties = new Set();
     for (var i = 0; i < properties.length; ++i) {
       var property = properties[i];
       var propertyName = property.name;
@@ -54,6 +56,8 @@ SDK.CSSMetadata = class {
 
       if (property.inherited)
         this._inherited.add(propertyName);
+      if (property.svg)
+        this._svgProperties.add(propertyName);
 
       var longhands = properties[i].longhands;
       if (longhands) {
@@ -78,6 +82,15 @@ SDK.CSSMetadata = class {
    */
   allProperties() {
     return this._values;
+  }
+
+  /**
+   * @param {string} name
+   * @return {boolean}
+   */
+  isSVGProperty(name) {
+    name = name.toLowerCase();
+    return this._svgProperties.has(name);
   }
 
   /**

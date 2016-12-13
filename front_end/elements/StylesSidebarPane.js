@@ -2323,8 +2323,15 @@ Elements.StylePropertyTreeElement = class extends TreeElement {
       selectElement.parentElement.scrollIntoViewIfNeeded(false);
 
     var applyItemCallback = !isEditingName ? this._applyFreeFlowStyleTextEdit.bind(this) : undefined;
-    var cssCompletions = isEditingName ? SDK.cssMetadata().allProperties() :
-                                         SDK.cssMetadata().propertyValues(this.nameElement.textContent);
+    var cssCompletions = [];
+    if (isEditingName) {
+      cssCompletions = SDK.cssMetadata().allProperties();
+      cssCompletions =
+          cssCompletions.filter(property => SDK.cssMetadata().isSVGProperty(property) === this.node().isSVGNode());
+    } else {
+      cssCompletions = SDK.cssMetadata().propertyValues(this.nameElement.textContent);
+    }
+
     this._prompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(cssCompletions, this, isEditingName);
     this._prompt.setAutocompletionTimeout(0);
     if (applyItemCallback) {

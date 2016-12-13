@@ -75,6 +75,7 @@ SDK.DOMNode = class extends SDK.SDKObject {
     this._shadowRootType = payload.shadowRootType;
     this._frameOwnerFrameId = payload.frameId || null;
     this._xmlVersion = payload.xmlVersion;
+    this._isSVGNode = !!payload.isSVG;
 
     this._shadowRoots = [];
 
@@ -143,6 +144,13 @@ SDK.DOMNode = class extends SDK.SDKObject {
       this.name = payload.name;
       this.value = payload.value;
     }
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isSVGNode() {
+    return this._isSVGNode;
   }
 
   /**

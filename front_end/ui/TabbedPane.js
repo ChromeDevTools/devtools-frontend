@@ -455,6 +455,7 @@ UI.TabbedPane = class extends UI.VBox {
   setTabSlider(enable) {
     this._sliderEnabled = enable;
     this._tabSlider.classList.toggle('enabled', enable);
+    this._headerElement.classList.add('tabbed-pane-no-tab-borders');
   }
 
   /**

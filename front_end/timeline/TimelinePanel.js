@@ -83,16 +83,16 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     this._panelToolbar = new UI.Toolbar('', this.element);
 
-    var timelinePane = new UI.VBox();
-    timelinePane.show(this.element);
-    var topPaneElement = timelinePane.element.createChild('div', 'hbox');
+    this._timelinePane = new UI.VBox();
+    this._timelinePane.show(this.element);
+    var topPaneElement = this._timelinePane.element.createChild('div', 'hbox');
     topPaneElement.id = 'timeline-overview-panel';
 
     // Create top overview component.
     this._overviewPane = new UI.TimelineOverviewPane('timeline');
     this._overviewPane.addEventListener(UI.TimelineOverviewPane.Events.WindowChanged, this._onWindowChanged.bind(this));
     this._overviewPane.show(topPaneElement);
-    this._statusPaneContainer = timelinePane.element.createChild('div', 'status-pane-container fill');
+    this._statusPaneContainer = this._timelinePane.element.createChild('div', 'status-pane-container fill');
 
     this._createFileSelector();
 
@@ -122,7 +122,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._captureMemorySetting.addChangeListener(this._onModeChanged, this);
     this._captureFilmStripSetting.addChangeListener(this._onModeChanged, this);
 
-    this._detailsSplitWidget.show(timelinePane.element);
+    this._detailsSplitWidget.show(this._timelinePane.element);
     this._detailsSplitWidget.hideSidebar();
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
     this._showRecordingHelpMessage();
@@ -410,7 +410,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
      * @param {string} name
      * @param {number} value
      */
-    function addGroupingOption(name, value) {
+    function addOption(name, value) {
       var option = cpuThrottlingCombobox.createOption(name, '', String(value));
       cpuThrottlingCombobox.addOption(option);
       if (hasSelection || (value && value !== currentRate))
@@ -418,13 +418,9 @@ Timeline.TimelinePanel = class extends UI.Panel {
       cpuThrottlingCombobox.select(option);
       hasSelection = true;
     }
-    var predefinedRates = new Map([
-      [1, Common.UIString('No CPU throttling')], [2, Common.UIString('2\xD7 slowdown')],
-      [5, Common.UIString('5\xD7 slowdown')], [10, Common.UIString('10\xD7 slowdown')],
-      [20, Common.UIString('20\xD7 slowdown')]
-    ]);
-    for (var rate of predefinedRates)
-      addGroupingOption(rate[1], rate[0]);
+    addOption(Common.UIString('No CPU throttling'), 1);
+    for (const rate of [2, 5, 10, 20])
+      addOption(Common.UIString('%d\xD7 slowdown', rate), rate);
   }
 
   _prepareToLoadTimeline() {
@@ -633,32 +629,34 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   _clear() {
+    this._showRecordingHelpMessage();
+    this._detailsSplitWidget.hideSidebar();
+    this._reset();
+  }
+
+  _reset() {
     if (Runtime.experiments.isEnabled('timelineRuleUsageRecording') && this._markUnusedCSS.get())
       Components.CoverageProfile.instance().reset();
 
     Components.LineLevelProfile.instance().reset();
     this._tracingModel.reset();
     this._model.reset();
-    this._showRecordingHelpMessage();
 
     this.requestWindowTimes(0, Infinity);
     delete this._selection;
     this._frameModel.reset();
     this._filmStripModel.reset(this._tracingModel);
     this._overviewPane.reset();
-    for (var i = 0; i < this._currentViews.length; ++i)
-      this._currentViews[i].reset();
-    for (var i = 0; i < this._overviewControls.length; ++i)
-      this._overviewControls[i].reset();
+    this._currentViews.forEach(view => view.reset());
+    this._overviewControls.forEach(overview => overview.reset());
     this.select(null);
-    this._detailsSplitWidget.hideSidebar();
   }
 
   /**
    * @override
    */
   recordingStarted() {
-    this._clear();
+    this._reset();
     this._setState(Timeline.TimelinePanel.State.Recording);
     this._showRecordingStarted();
     this._statusPane.updateStatus(Common.UIString('Recording\u2026'));
@@ -676,6 +674,11 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   _showRecordingHelpMessage() {
+    if (Runtime.experiments.isEnabled('timelineLandingPage')) {
+      this._showLandingPage();
+      return;
+    }
+
     /**
      * @param {string} tagName
      * @param {string} contents
@@ -710,9 +713,29 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   _hideRecordingHelpMessage() {
+    if (Runtime.experiments.isEnabled('timelineLandingPage')) {
+      this._hideLandingPage();
+      return;
+    }
     if (this._helpMessageElement)
       this._helpMessageElement.remove();
     delete this._helpMessageElement;
+  }
+
+  _showLandingPage() {
+    if (this._landingPage)
+      return;
+    this._detailsSplitWidget.detach();
+    this._landingPage = new Timeline.TimelineLandingPage();
+    this._landingPage.show(this._timelinePane.element);
+  }
+
+  _hideLandingPage() {
+    if (!this._landingPage)
+      return;
+    this._landingPage.detach();
+    this._landingPage = null;
+    this._detailsSplitWidget.show(this._timelinePane.element);
   }
 
   /**

@@ -509,6 +509,14 @@ SDK.ServiceWorkerRegistration = class {
     return this._isRedundant() && (!this.errors.length || this._deleting);
   }
 
+  /**
+   * @return {boolean}
+   */
+  canBeRemoved() {
+    return this.isDeleted || this._deleting;
+  }
+
+
   clearErrors() {
     this._fingerprint = Symbol('fingerprint');
     this.errors = [];

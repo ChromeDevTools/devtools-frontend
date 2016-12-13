@@ -95,6 +95,30 @@ Resources.ServiceWorkersView = class extends UI.VBox {
   _registrationUpdated(event) {
     var registration = /** @type {!SDK.ServiceWorkerRegistration} */ (event.data);
     this._updateRegistration(registration);
+    this._gcRegistrations();
+  }
+
+  _gcRegistrations() {
+    var hasNonDeletedRegistrations = false;
+    var securityOrigins = new Set(this._securityOriginManager.securityOrigins());
+    for (var registration of this._manager.registrations().values()) {
+      var visible = this._showAllCheckbox.checked() || securityOrigins.has(registration.securityOrigin);
+      if (!visible)
+        continue;
+      if (!registration.canBeRemoved()) {
+        hasNonDeletedRegistrations = true;
+        break;
+      }
+    }
+
+    if (!hasNonDeletedRegistrations)
+      return;
+
+    for (var registration of this._manager.registrations().values()) {
+      var visible = this._showAllCheckbox.checked() || securityOrigins.has(registration.securityOrigin);
+      if (visible && registration.canBeRemoved())
+        this._removeRegistrationFromList(registration);
+    }
   }
 
   /**
@@ -128,6 +152,13 @@ Resources.ServiceWorkersView = class extends UI.VBox {
    */
   _registrationDeleted(event) {
     var registration = /** @type {!SDK.ServiceWorkerRegistration} */ (event.data);
+    this._removeRegistrationFromList(registration);
+  }
+
+  /**
+   * @param {!SDK.ServiceWorkerRegistration} registration
+   */
+  _removeRegistrationFromList(registration) {
     var section = this._sections.get(registration);
     if (section)
       section._section.remove();
@@ -429,11 +460,5 @@ Resources.ServiceWorkersView.Section = class {
     var contentElement = createElement('div');
     shadowRoot.appendChild(contentElement);
     return contentElement;
-  }
-
-  _dispose() {
-    this._linkifier.dispose();
-    if (this._pendingUpdate)
-      clearTimeout(this._pendingUpdate);
   }
 };

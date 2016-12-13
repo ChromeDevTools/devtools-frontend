@@ -52,15 +52,6 @@
     opacity: 0.5;
 }
 
-.mapped-file-checkmark {
-    background: #009802;
-    margin-left: 3px;
-}
-
-:focus .navigator-file-tree-item.selected .mapped-file-checkmark {
-    background: white !important;
-}
-
 :focus .navigator-file-tree-item.selected .icon {
     background: white !important;
 }

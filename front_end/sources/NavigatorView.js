@@ -1257,16 +1257,15 @@ Sources.NavigatorUISourceCodeTreeNode = class extends Sources.NavigatorTreeNode 
         (this._uiSourceCode.isDirty() || Persistence.persistence.hasUnsavedCommittedChanges(this._uiSourceCode)))
       titleText = '*' + titleText;
 
+    this._treeElement.title = titleText;
+
     var binding = Persistence.persistence.binding(this._uiSourceCode);
     if (binding && Runtime.experiments.isEnabled('persistence2')) {
-      var titleElement = createElement('span');
-      titleElement.textContent = titleText;
-      var icon = UI.Icon.create('smallicon-checkmark', 'mapped-file-checkmark');
+      var icon = UI.Icon.create('smallicon-green-checkmark');
       icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(this._uiSourceCode);
-      titleElement.appendChild(icon);
-      this._treeElement.title = titleElement;
+      this._treeElement.setTrailingIcons([icon]);
     } else {
-      this._treeElement.title = titleText;
+      this._treeElement.setTrailingIcons([]);
     }
 
     var tooltip = this._uiSourceCode.url();

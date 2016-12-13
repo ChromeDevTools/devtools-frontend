@@ -59,7 +59,7 @@ Timeline.MemoryCountersGraph = class extends Timeline.CountersGraph {
    */
   refreshRecords() {
     this.reset();
-    var events = this._model.mainThreadEvents();
+    var events = this.model().mainThreadEvents();
     for (var i = 0; i < events.length; ++i) {
       var event = events[i];
       if (event.name !== TimelineModel.TimelineModel.RecordType.UpdateCounters)

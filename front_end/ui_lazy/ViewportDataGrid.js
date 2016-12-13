@@ -221,7 +221,7 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
     for (var i = 0; i < this._visibleNodes.length; ++i) {
       var oldNode = this._visibleNodes[i];
       if (!visibleNodesSet.has(oldNode) && oldNode.attached()) {
-        var element = oldNode._element;
+        var element = oldNode.existingElement();
         if (element === this._wheelTarget)
           this._hiddenWheelTarget = oldNode.abandonElement();
         else
@@ -306,18 +306,13 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
    * @return {!Element}
    */
   element() {
-    if (!this._element) {
-      this.createElement();
-      this.createCells();
+    var existingElement = this.existingElement();
+    var element = existingElement || this.createElement();
+    if (!existingElement || this._stale) {
+      this.createCells(element);
       this._stale = false;
     }
-
-    if (this._stale) {
-      this.createCells();
-      this._stale = false;
-    }
-
-    return /** @type {!Element} */ (this._element);
+    return element;
   }
 
   /**
@@ -391,7 +386,7 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
 
   _unlink() {
     if (this.attached()) {
-      this._element.remove();
+      this.existingElement().remove();
       this.wasDetached();
     }
     this.dataGrid = null;
@@ -407,8 +402,8 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
     if (!this._expanded)
       return;
     this._expanded = false;
-    if (this._element)
-      this._element.classList.remove('expanded');
+    if (this.existingElement())
+      this.existingElement().classList.remove('expanded');
     this.dataGrid.scheduleUpdateStructure();
   }
 
@@ -433,7 +428,7 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
    * @return {boolean}
    */
   attached() {
-    return !!(this.dataGrid && this._element && this._element.parentElement);
+    return !!(this.dataGrid && this.existingElement() && this.existingElement().parentElement);
   }
 
   /**
@@ -444,7 +439,7 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
       this._stale = true;
       this.dataGrid.scheduleUpdate();
     } else {
-      this._element = null;
+      this.resetElement();
     }
   }
 
@@ -452,10 +447,10 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
    * @return {?Element}
    */
   abandonElement() {
-    var result = this._element;
+    var result = this.existingElement();
     if (result)
       result.style.display = 'none';
-    this._element = null;
+    this.resetElement();
     return result;
   }
 

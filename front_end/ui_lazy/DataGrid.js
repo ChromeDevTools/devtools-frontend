@@ -1255,14 +1255,15 @@ UI.DataGridNode = class extends Common.Object {
    */
   element() {
     if (!this._element) {
-      this.createElement();
-      this.createCells();
+      var element = this.createElement();
+      this.createCells(element);
     }
     return /** @type {!Element} */ (this._element);
   }
 
   /**
    * @protected
+   * @return {!Element}
    */
   createElement() {
     this._element = createElement('tr');
@@ -1276,17 +1277,33 @@ UI.DataGridNode = class extends Common.Object {
       this._element.classList.add('selected');
     if (this.revealed)
       this._element.classList.add('revealed');
+    return this._element;
+  }
+
+  /**
+   * @return {?Element}
+   */
+  existingElement() {
+    return this._element || null;
   }
 
   /**
    * @protected
    */
-  createCells() {
-    this._element.removeChildren();
+  resetElement() {
+    this._element = null;
+  }
+
+  /**
+   * @param {!Element} element
+   * @protected
+   */
+  createCells(element) {
+    element.removeChildren();
     var columnsArray = this.dataGrid._visibleColumnsArray;
     for (var i = 0; i < columnsArray.length; ++i)
-      this._element.appendChild(this.createCell(columnsArray[i].id));
-    this._element.appendChild(this._createTDWithClass('corner'));
+      element.appendChild(this.createCell(columnsArray[i].id));
+    element.appendChild(this._createTDWithClass('corner'));
   }
 
   /**
@@ -1439,7 +1456,7 @@ UI.DataGridNode = class extends Common.Object {
       this._element = null;
     if (!this._element)
       return;
-    this.createCells();
+    this.createCells(this._element);
   }
 
   /**

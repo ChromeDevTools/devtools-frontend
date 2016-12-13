@@ -8,7 +8,6 @@
         "HeapSnapshot.js",
         "HeapSnapshotLoader.js",
         "HeapSnapshotWorkerDispatcher.js",
-        "JSHeapSnapshot.js",
         "HeapSnapshotWorker.js"
     ]
 }

@@ -528,7 +528,7 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
     if (!this._filmStripModel.frames().length)
       return Promise.resolve(/** @type {?Element} */ (null));
 
-    var time = this._calculator.positionToTime(x);
+    var time = this.calculator().positionToTime(x);
     var frame = this._filmStripModel.frameByTimestamp(time);
     if (frame === this._lastFrame)
       return Promise.resolve(this._lastElement);

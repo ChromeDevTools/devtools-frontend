@@ -89,10 +89,11 @@ UI.ShowMoreDataGridNode = class extends UI.DataGridNode {
 
   /**
    * @override
+   * @param {!Element} element
    */
-  createCells() {
+  createCells(element) {
     this._hasCells = false;
-    super.createCells();
+    super.createCells(element);
   }
 
   /**

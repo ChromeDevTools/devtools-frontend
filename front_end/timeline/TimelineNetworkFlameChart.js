@@ -23,7 +23,7 @@ Timeline.TimelineFlameChartNetworkDataProvider = class extends Timeline.Timeline
       height: 17,
       collapsible: true,
       color: UI.themeSupport.patchColor('#222', UI.ThemeSupport.ColorUsage.Foreground),
-      font: this._font,
+      font: this.font(),
       backgroundColor: UI.themeSupport.patchColor('white', UI.ThemeSupport.ColorUsage.Background),
       nestingLevel: 0,
       useFirstLineForOverview: false,

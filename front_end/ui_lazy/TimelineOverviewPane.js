@@ -507,6 +507,14 @@ UI.TimelineOverviewBase = class extends UI.VBox {
   }
 
   /**
+   * @protected
+   * @return {?UI.TimelineOverviewCalculator}
+   */
+  calculator() {
+    return this._calculator;
+  }
+
+  /**
    * @override
    */
   update() {

@@ -512,7 +512,6 @@ devtools_heap_snapshot_worker_js_files = [
   "front_end/heap_snapshot_worker/HeapSnapshotLoader.js",
   "front_end/heap_snapshot_worker/HeapSnapshotWorker.js",
   "front_end/heap_snapshot_worker/HeapSnapshotWorkerDispatcher.js",
-  "front_end/heap_snapshot_worker/JSHeapSnapshot.js",
   "front_end/platform/utilities.js",
   "front_end/profiler/HeapSnapshotCommon.js",
 ]

@@ -287,14 +287,15 @@ Network.NetworkDataGridNode = class extends UI.SortableDataGridNode {
 
   /**
    * @override
+   * @param {!Element} element
    */
-  createCells() {
+  createCells(element) {
     this._nameCell = null;
     this._initiatorCell = null;
 
-    this._element.classList.toggle('network-error-row', this._isFailed());
-    this._element.classList.toggle('network-navigation-row', this._isNavigationRequest);
-    super.createCells();
+    element.classList.toggle('network-error-row', this._isFailed());
+    element.classList.toggle('network-navigation-row', this._isNavigationRequest);
+    super.createCells(element);
   }
 
   /**

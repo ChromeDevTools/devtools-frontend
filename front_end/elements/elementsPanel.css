@@ -328,11 +328,6 @@
     cursor: text;
 }
 
-.styles-element-classes-pane .new-class-input:empty:before {
-    content: attr(placeholder);
-    color: darkgray;
-}
-
 .styles-element-state-pane > div {
     margin: 8px 4px 6px;
 }

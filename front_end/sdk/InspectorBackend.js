@@ -175,7 +175,7 @@ var InspectorBackendClass = class {
   }
 };
 
-InspectorBackendClass._DevToolsErrorCode = -32000;
+InspectorBackendClass._ConnectionClosedErrorCode = -32000;
 InspectorBackendClass.DevToolsStubErrorCode = -32015;
 
 
@@ -457,7 +457,7 @@ Protocol.TargetBase = class {
   _dispatchConnectionErrorResponse(domain, methodName, callback) {
     var error = {
       message: 'Connection is closed, can\'t dispatch pending ' + methodName,
-      code: InspectorBackendClass._DevToolsErrorCode,
+      code: InspectorBackendClass._ConnectionClosedErrorCode,
       data: null
     };
     var messageObject = {error: error};
@@ -634,7 +634,7 @@ InspectorBackendClass._AgentPrototype = class {
    * @param {function(*)|function(?Protocol.Error, ?Object)} callback
    */
   dispatchResponse(messageObject, methodName, callback) {
-    if (messageObject.error && messageObject.error.code !== InspectorBackendClass._DevToolsErrorCode &&
+    if (messageObject.error && messageObject.error.code !== InspectorBackendClass._ConnectionClosedErrorCode &&
         messageObject.error.code !== InspectorBackendClass.DevToolsStubErrorCode &&
         !InspectorBackendClass.Options.suppressRequestErrors) {
       var id = InspectorBackendClass.Options.dumpInspectorProtocolMessages ? ' with id = ' + messageObject.id : '';

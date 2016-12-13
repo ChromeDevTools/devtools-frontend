@@ -107,7 +107,7 @@ Emulation.MultitargetTouchModel = class {
    * @param {!Common.Event} event
    */
   _inspectModeToggled(event) {
-    var domModel = /** @type {!SDK.DOMModel} */ (event.target);
+    var domModel = /** @type {!SDK.DOMModel} */ (event.data);
     this._applyToTarget(domModel.target());
   }
 

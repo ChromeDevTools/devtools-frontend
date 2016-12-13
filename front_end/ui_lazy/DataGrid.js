@@ -1737,7 +1737,7 @@ UI.DataGridNode = class extends Common.Object {
       this._element.classList.add('selected');
 
     if (!supressSelectedEvent)
-      this.dataGrid.dispatchEventToListeners(UI.DataGrid.Events.SelectedNode);
+      this.dataGrid.dispatchEventToListeners(UI.DataGrid.Events.SelectedNode, this);
   }
 
   revealAndSelect() {

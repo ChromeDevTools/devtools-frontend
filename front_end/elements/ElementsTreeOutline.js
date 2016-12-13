@@ -1040,7 +1040,8 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
    * @param {!Common.Event} event
    */
   _documentUpdated(event) {
-    var inspectedRootDocument = event.data;
+    var domModel = /** @type {!SDK.DOMModel} */ (event.data);
+    var inspectedRootDocument = domModel.existingDocument();
 
     this._reset();
 

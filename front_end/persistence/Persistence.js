@@ -130,7 +130,7 @@ Persistence.Persistence = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _onWorkingCopyChanged(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.target);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     var binding = uiSourceCode[Persistence.Persistence._binding];
     if (!binding || binding[Persistence.Persistence._muteWorkingCopy])
       return;
@@ -164,7 +164,7 @@ Persistence.Persistence = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _onWorkingCopyCommitted(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.target);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
     var binding = uiSourceCode[Persistence.Persistence._binding];
     if (!binding || binding[Persistence.Persistence._muteCommit])
       return;

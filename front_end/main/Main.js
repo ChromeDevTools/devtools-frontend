@@ -809,8 +809,8 @@ Main.Main.PauseListener = class {
   _debuggerPaused(event) {
     SDK.targetManager.removeModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
-    var debuggerPausedDetails = /** @type {!SDK.DebuggerPausedDetails} */ (event.data);
-    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.target);
+    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
+    var debuggerPausedDetails = debuggerModel.debuggerPausedDetails();
     UI.context.setFlavor(SDK.Target, debuggerModel.target());
     Common.Revealer.reveal(debuggerPausedDetails);
   }

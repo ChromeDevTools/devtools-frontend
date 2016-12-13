@@ -548,19 +548,28 @@ Sources.TabbedEditorContainer = class extends Common.Object {
     }
   }
 
+  /**
+   * @param {!Common.Event} event
+   */
   _uiSourceCodeTitleChanged(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.target);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     this._updateFileTitle(uiSourceCode);
     this._updateHistory();
   }
 
+  /**
+   * @param {!Common.Event} event
+   */
   _uiSourceCodeWorkingCopyChanged(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.target);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     this._updateFileTitle(uiSourceCode);
   }
 
+  /**
+   * @param {!Common.Event} event
+   */
   _uiSourceCodeWorkingCopyCommitted(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.target);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
     this._updateFileTitle(uiSourceCode);
   }
 

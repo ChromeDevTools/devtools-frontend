@@ -452,8 +452,8 @@ Emulation.DeviceModeToolbar = class {
     }
 
     var contextMenu = new UI.ContextMenu(
-        /** @type {!Event} */ (event.data), false, event.target.element.totalOffsetLeft(),
-        event.target.element.totalOffsetTop() + event.target.element.offsetHeight);
+        /** @type {!Event} */ (event.data), false, this._modeButton.element.totalOffsetLeft(),
+        this._modeButton.element.totalOffsetTop() + this._modeButton.element.offsetHeight);
     addOrientation(Emulation.EmulatedDevice.Vertical, Common.UIString('Portrait'));
     addOrientation(Emulation.EmulatedDevice.Horizontal, Common.UIString('Landscape'));
     contextMenu.show();

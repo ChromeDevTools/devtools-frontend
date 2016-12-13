@@ -272,7 +272,7 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    */
   _databaseAdded(securityOrigin, databaseName) {
     var databaseId = new Resources.IndexedDBModel.DatabaseId(securityOrigin, databaseName);
-    this.dispatchEventToListeners(Resources.IndexedDBModel.Events.DatabaseAdded, databaseId);
+    this.dispatchEventToListeners(Resources.IndexedDBModel.Events.DatabaseAdded, {model: this, databaseId: databaseId});
   }
 
   /**
@@ -281,7 +281,8 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    */
   _databaseRemoved(securityOrigin, databaseName) {
     var databaseId = new Resources.IndexedDBModel.DatabaseId(securityOrigin, databaseName);
-    this.dispatchEventToListeners(Resources.IndexedDBModel.Events.DatabaseRemoved, databaseId);
+    this.dispatchEventToListeners(
+        Resources.IndexedDBModel.Events.DatabaseRemoved, {model: this, databaseId: databaseId});
   }
 
   /**
@@ -341,7 +342,8 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
         databaseModel.objectStores[objectStoreModel.name] = objectStoreModel;
       }
 
-      this.dispatchEventToListeners(Resources.IndexedDBModel.Events.DatabaseLoaded, databaseModel);
+      this.dispatchEventToListeners(
+          Resources.IndexedDBModel.Events.DatabaseLoaded, {model: this, database: databaseModel});
     }
 
     this._agent.requestDatabase(databaseId.securityOrigin, databaseId.name, callback.bind(this));

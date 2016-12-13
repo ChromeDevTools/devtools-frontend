@@ -199,7 +199,7 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _onDebuggerStateChanged(event) {
-    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.target);
+    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
     var pendingTarget = this._targetToPending.get(debuggerModel.target());
     this._updateDebuggerState(pendingTarget);
   }

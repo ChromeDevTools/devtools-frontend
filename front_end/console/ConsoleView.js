@@ -209,7 +209,7 @@ Console.ConsoleView = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _onResourceTreeModelLoaded(event) {
-    var resourceTreeModel = event.target;
+    var resourceTreeModel = /** @type {!SDK.ResourceTreeModel} */ (event.data);
     if (resourceTreeModel.target() !== SDK.targetManager.mainTarget())
       return;
     SDK.targetManager.removeModelListener(

@@ -483,7 +483,7 @@ Sources.SourcesView = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _uiSourceCodeTitleChanged(event) {
-    this._recreateSourceFrameIfNeeded(/** @type {!Workspace.UISourceCode} */ (event.target));
+    this._recreateSourceFrameIfNeeded(/** @type {!Workspace.UISourceCode} */ (event.data));
   }
 
   /**

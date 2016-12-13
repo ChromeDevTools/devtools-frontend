@@ -289,7 +289,7 @@ SDK.Script = class extends SDK.SDKObject {
     if (this.sourceMapURL)
       return;
     this.sourceMapURL = sourceMapURL;
-    this.dispatchEventToListeners(SDK.Script.Events.SourceMapURLAdded, this.sourceMapURL);
+    this.dispatchEventToListeners(SDK.Script.Events.SourceMapURLAdded, this);
   }
 
   /**

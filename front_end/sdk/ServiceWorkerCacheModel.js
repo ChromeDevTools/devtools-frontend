@@ -234,14 +234,14 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    */
   _cacheAdded(cache) {
-    this.dispatchEventToListeners(SDK.ServiceWorkerCacheModel.Events.CacheAdded, cache);
+    this.dispatchEventToListeners(SDK.ServiceWorkerCacheModel.Events.CacheAdded, {model: this, cache: cache});
   }
 
   /**
    * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    */
   _cacheRemoved(cache) {
-    this.dispatchEventToListeners(SDK.ServiceWorkerCacheModel.Events.CacheRemoved, cache);
+    this.dispatchEventToListeners(SDK.ServiceWorkerCacheModel.Events.CacheRemoved, {model: this, cache: cache});
   }
 
   /**

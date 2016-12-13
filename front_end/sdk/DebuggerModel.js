@@ -104,7 +104,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     this._debuggerEnabled = true;
     this._pauseOnExceptionStateChanged();
     this.asyncStackTracesStateChanged();
-    this.dispatchEventToListeners(SDK.DebuggerModel.Events.DebuggerWasEnabled);
+    this.dispatchEventToListeners(SDK.DebuggerModel.Events.DebuggerWasEnabled, this);
   }
 
   /**
@@ -316,7 +316,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     this._setDebuggerPausedDetails(null);
     this._reset();
     // TODO(dgozman): move clients to ExecutionContextDestroyed/ScriptCollected events.
-    this.dispatchEventToListeners(SDK.DebuggerModel.Events.GlobalObjectCleared);
+    this.dispatchEventToListeners(SDK.DebuggerModel.Events.GlobalObjectCleared, this);
   }
 
   _reset() {
@@ -415,7 +415,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
         if (!this._beforePausedCallback.call(null, this._debuggerPausedDetails))
           return false;
       }
-      this.dispatchEventToListeners(SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPausedDetails);
+      this.dispatchEventToListeners(SDK.DebuggerModel.Events.DebuggerPaused, this);
     }
     if (debuggerPausedDetails)
       this.setSelectedCallFrame(debuggerPausedDetails.callFrames[0]);
@@ -447,7 +447,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
 
   _resumedScript() {
     this._setDebuggerPausedDetails(null);
-    this.dispatchEventToListeners(SDK.DebuggerModel.Events.DebuggerResumed);
+    this.dispatchEventToListeners(SDK.DebuggerModel.Events.DebuggerResumed, this);
   }
 
   /**

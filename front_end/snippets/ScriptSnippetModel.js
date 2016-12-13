@@ -119,7 +119,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _workingCopyChanged(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.target);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     this._scriptSnippetEdited(uiSourceCode);
   }
 

@@ -92,7 +92,7 @@ Common.Object = class {
     if (!this._listeners || !this._listeners.has(eventType))
       return;
 
-    var event = new Common.Event(this, eventData);
+    var event = new Common.Event(eventData);
     var listeners = this._listeners.get(eventType).slice(0);
     for (var i = 0; i < listeners.length; ++i)
       listeners[i].listener.call(listeners[i].thisObject, event);
@@ -104,11 +104,9 @@ Common.Object = class {
  */
 Common.Event = class {
   /**
-   * @param {!Common.EventTarget} target
    * @param {*=} data
    */
-  constructor(target, data) {
-    this.target = target;
+  constructor(data) {
     this.data = data;
   }
 };

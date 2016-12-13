@@ -313,6 +313,9 @@ Bindings.ResourceScriptFile = class extends Common.Object {
     this._update();
   }
 
+  /**
+   * @param {!Common.Event} event
+   */
   _workingCopyCommitted(event) {
     if (this._uiSourceCode.project().canSetFileContent())
       return;

@@ -1264,8 +1264,8 @@ Resources.ServiceWorkerCacheTreeElement = class extends Resources.StorageCategor
    * @param {!Common.Event} event
    */
   _cacheAdded(event) {
-    var cache = /** @type {!SDK.ServiceWorkerCacheModel.Cache} */ (event.data);
-    var model = /** @type {!SDK.ServiceWorkerCacheModel} */ (event.target);
+    var cache = /** @type {!SDK.ServiceWorkerCacheModel.Cache} */ (event.data.cache);
+    var model = /** @type {!SDK.ServiceWorkerCacheModel} */ (event.data.model);
     this._addCache(model, cache);
   }
 
@@ -1283,8 +1283,8 @@ Resources.ServiceWorkerCacheTreeElement = class extends Resources.StorageCategor
    * @param {!Common.Event} event
    */
   _cacheRemoved(event) {
-    var cache = /** @type {!SDK.ServiceWorkerCacheModel.Cache} */ (event.data);
-    var model = /** @type {!SDK.ServiceWorkerCacheModel} */ (event.target);
+    var cache = /** @type {!SDK.ServiceWorkerCacheModel.Cache} */ (event.data.cache);
+    var model = /** @type {!SDK.ServiceWorkerCacheModel} */ (event.data.model);
 
     var swCacheTreeElement = this._cacheTreeElement(model, cache);
     if (!swCacheTreeElement)
@@ -1529,8 +1529,8 @@ Resources.IndexedDBTreeElement = class extends Resources.StorageCategoryTreeElem
    * @param {!Common.Event} event
    */
   _indexedDBAdded(event) {
-    var databaseId = /** @type {!Resources.IndexedDBModel.DatabaseId} */ (event.data);
-    var model = /** @type {!Resources.IndexedDBModel} */ (event.target);
+    var databaseId = /** @type {!Resources.IndexedDBModel.DatabaseId} */ (event.data.databaseId);
+    var model = /** @type {!Resources.IndexedDBModel} */ (event.data.model);
     this._addIndexedDB(model, databaseId);
   }
 
@@ -1549,8 +1549,8 @@ Resources.IndexedDBTreeElement = class extends Resources.StorageCategoryTreeElem
    * @param {!Common.Event} event
    */
   _indexedDBRemoved(event) {
-    var databaseId = /** @type {!Resources.IndexedDBModel.DatabaseId} */ (event.data);
-    var model = /** @type {!Resources.IndexedDBModel} */ (event.target);
+    var databaseId = /** @type {!Resources.IndexedDBModel.DatabaseId} */ (event.data.databaseId);
+    var model = /** @type {!Resources.IndexedDBModel} */ (event.data.model);
 
     var idbDatabaseTreeElement = this._idbDatabaseTreeElement(model, databaseId);
     if (!idbDatabaseTreeElement)
@@ -1565,8 +1565,8 @@ Resources.IndexedDBTreeElement = class extends Resources.StorageCategoryTreeElem
    * @param {!Common.Event} event
    */
   _indexedDBLoaded(event) {
-    var database = /** @type {!Resources.IndexedDBModel.Database} */ (event.data);
-    var model = /** @type {!Resources.IndexedDBModel} */ (event.target);
+    var database = /** @type {!Resources.IndexedDBModel.Database} */ (event.data.database);
+    var model = /** @type {!Resources.IndexedDBModel} */ (event.data.model);
 
     var idbDatabaseTreeElement = this._idbDatabaseTreeElement(model, database.databaseId);
     if (!idbDatabaseTreeElement)

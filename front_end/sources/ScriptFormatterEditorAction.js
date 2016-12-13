@@ -293,7 +293,7 @@ Sources.ScriptFormatterEditorAction = class {
    * @param {!Common.Event} event
    */
   _debuggerReset(event) {
-    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.target);
+    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
     this._cleanForTarget(debuggerModel.target());
   }
 

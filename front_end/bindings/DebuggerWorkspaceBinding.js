@@ -261,7 +261,7 @@ Bindings.DebuggerWorkspaceBinding = class {
    * @param {!Common.Event} event
    */
   _globalObjectCleared(event) {
-    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.target);
+    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
     this._reset(debuggerModel.target());
   }
 
@@ -322,7 +322,7 @@ Bindings.DebuggerWorkspaceBinding = class {
    * @param {!Common.Event} event
    */
   _debuggerResumed(event) {
-    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.target);
+    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
     this._reset(debuggerModel.target());
   }
 };
@@ -395,9 +395,11 @@ Bindings.DebuggerWorkspaceBinding.TargetData = class {
     else
       this._uiSourceCodeToSourceMapping.remove(uiSourceCode);
 
-    uiSourceCode.dispatchEventToListeners(
-        Workspace.UISourceCode.Events.SourceMappingChanged,
-        {target: this._debuggerModel.target(), isIdentity: sourceMapping ? sourceMapping.isIdentity() : false});
+    uiSourceCode.dispatchEventToListeners(Workspace.UISourceCode.Events.SourceMappingChanged, {
+      uiSourceCode: uiSourceCode,
+      target: this._debuggerModel.target(),
+      isIdentity: sourceMapping ? sourceMapping.isIdentity() : false
+    });
   }
 
   /**

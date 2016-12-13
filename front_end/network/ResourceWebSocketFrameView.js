@@ -108,7 +108,7 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _onFrameSelected(event) {
-    var selectedNode = /** @type {!Network.ResourceWebSocketFrameNode} */ (event.target.selectedNode);
+    var selectedNode = /** @type {!Network.ResourceWebSocketFrameNode} */ (event.data);
     this._currentSelectedNode = selectedNode;
     var contentProvider = selectedNode.contentProvider();
     contentProvider.requestContent().then(contentHandler.bind(this));

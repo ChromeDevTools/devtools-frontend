@@ -1378,7 +1378,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
       this._document = new SDK.DOMDocument(this, payload);
     else
       this._document = null;
-    this.dispatchEventToListeners(SDK.DOMModel.Events.DocumentUpdated, this._document);
+    this.dispatchEventToListeners(SDK.DOMModel.Events.DocumentUpdated, this);
   }
 
   /**
@@ -1736,7 +1736,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
      */
     function onDocumentAvailable() {
       this._inspectModeEnabled = mode !== Protocol.DOM.InspectMode.None;
-      this.dispatchEventToListeners(SDK.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeEnabled);
+      this.dispatchEventToListeners(SDK.DOMModel.Events.InspectModeWillBeToggled, this);
       this._highlighter.setInspectMode(mode, this._buildHighlightConfig(), callback);
     }
     this.requestDocument(onDocumentAvailable.bind(this));

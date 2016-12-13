@@ -304,7 +304,7 @@ Bindings.BlackboxManager = class {
    * @param {!Common.Event} event
    */
   _globalObjectCleared(event) {
-    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.target);
+    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
     this._debuggerModelData.delete(debuggerModel);
     this._isBlackboxedURLCache.clear();
   }

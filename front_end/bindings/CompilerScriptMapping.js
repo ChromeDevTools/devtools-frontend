@@ -183,7 +183,7 @@ Bindings.CompilerScriptMapping = class {
    * @param {!Common.Event} event
    */
   _sourceMapURLAdded(event) {
-    var script = /** @type {!SDK.Script} */ (event.target);
+    var script = /** @type {!SDK.Script} */ (event.data);
     if (!script.sourceMapURL)
       return;
     this._processScript(script);

@@ -362,8 +362,8 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _documentUpdatedEvent(event) {
-    this._documentUpdated(
-        /** @type {!SDK.DOMModel} */ (event.target), /** @type {?SDK.DOMDocument} */ (event.data));
+    var domModel = /** @type {!SDK.DOMModel} */ (event.data);
+    this._documentUpdated(domModel, domModel.existingDocument());
   }
 
   /**

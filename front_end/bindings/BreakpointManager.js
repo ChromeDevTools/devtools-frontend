@@ -173,7 +173,7 @@ Bindings.BreakpointManager = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _uiSourceCodeMappingChanged(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.target);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
     var isIdentity = /** @type {boolean} */ (event.data.isIdentity);
     var target = /** @type {!SDK.Target} */ (event.data.target);
     if (isIdentity)

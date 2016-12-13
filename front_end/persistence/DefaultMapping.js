@@ -127,7 +127,7 @@ Persistence.DefaultMapping = class {
    * @param {!Common.Event} event
    */
   _onFileSystemUISourceCodeRenamed(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.target);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     var binding = uiSourceCode[Persistence.DefaultMapping._binding];
     this._unbind(binding.network);
     this._bind(binding.network);

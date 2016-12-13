@@ -106,7 +106,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     this._cachedResourcesProcessed = true;
     this.target().runtimeModel.setExecutionContextComparator(this._executionContextComparator.bind(this));
     this.target().runtimeModel.fireExecutionContextOrderChanged();
-    this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded);
+    this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this);
   }
 
   /**

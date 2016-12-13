@@ -440,20 +440,29 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
       this._dataGrid.populateContextMenu(contextMenu, event);
   }
 
+  /**
+   * @param {!Common.Event} event
+   */
   _selectionChanged(event) {
-    var selectedNode = event.target.selectedNode;
+    var selectedNode = /** @type {!Profiler.HeapSnapshotGridNode} */ (event.data);
     this._setSelectedNodeForDetailsView(selectedNode);
     this._inspectedObjectChanged(event);
   }
 
+  /**
+   * @param {!Common.Event} event
+   */
   _onSelectAllocationNode(event) {
-    var selectedNode = event.target.selectedNode;
+    var selectedNode = /** @type {!UI.DataGridNode} */ (event.data);
     this._constructorsDataGrid.setAllocationNodeId(selectedNode.allocationNodeId());
     this._setSelectedNodeForDetailsView(null);
   }
 
+  /**
+   * @param {!Common.Event} event
+   */
   _inspectedObjectChanged(event) {
-    var selectedNode = event.target.selectedNode;
+    var selectedNode = /** @type {!UI.DataGridNode} */ (event.data);
     var target = this._profile.target();
     if (target && selectedNode instanceof Profiler.HeapSnapshotGenericObjectNode)
       target.heapProfilerAgent().addInspectedHeapObject(String(selectedNode.snapshotNodeId));

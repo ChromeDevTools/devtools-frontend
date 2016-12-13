@@ -28,7 +28,7 @@ Main.OverlayController = class {
    * @param {!Common.Event} event
    */
   _updateOverlay(event) {
-    this._updateTargetOverlay(/** @type {!SDK.DebuggerModel} */ (event.target));
+    this._updateTargetOverlay(/** @type {!SDK.DebuggerModel} */ (event.data));
   }
 
   /**

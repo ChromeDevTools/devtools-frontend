@@ -180,7 +180,7 @@ Workspace.UISourceCode = class extends Common.Object {
       this._url = url;
     if (contentType)
       this._contentType = contentType;
-    this.dispatchEventToListeners(Workspace.UISourceCode.Events.TitleChanged, oldURL);
+    this.dispatchEventToListeners(Workspace.UISourceCode.Events.TitleChanged, this);
   }
 
   /**
@@ -347,7 +347,8 @@ Workspace.UISourceCode = class extends Common.Object {
     }
 
     this._innerResetWorkingCopy();
-    this.dispatchEventToListeners(Workspace.UISourceCode.Events.WorkingCopyCommitted, {content: content});
+    this.dispatchEventToListeners(
+        Workspace.UISourceCode.Events.WorkingCopyCommitted, {uiSourceCode: this, content: content});
     this._project.workspace().dispatchEventToListeners(
         Workspace.Workspace.Events.WorkingCopyCommitted, {uiSourceCode: this, content: content});
     if (committedByUser) {
@@ -456,7 +457,7 @@ Workspace.UISourceCode = class extends Common.Object {
 
   _workingCopyChanged() {
     this._removeAllMessages();
-    this.dispatchEventToListeners(Workspace.UISourceCode.Events.WorkingCopyChanged);
+    this.dispatchEventToListeners(Workspace.UISourceCode.Events.WorkingCopyChanged, this);
     this._project.workspace().dispatchEventToListeners(
         Workspace.Workspace.Events.WorkingCopyChanged, {uiSourceCode: this});
   }

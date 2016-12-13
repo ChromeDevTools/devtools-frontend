@@ -116,7 +116,7 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
     this._emptyElement.classList.add('hidden');
     var watchExpression = new Sources.WatchExpression(expression, this._expandController, this._linkifier);
     watchExpression.addEventListener(
-        Sources.WatchExpression.Events.ExpressionUpdated, this._watchExpressionUpdated.bind(this));
+        Sources.WatchExpression.Events.ExpressionUpdated, this._watchExpressionUpdated, this);
     this._bodyElement.appendChild(watchExpression.element());
     this._watchExpressions.push(watchExpression);
     return watchExpression;
@@ -126,7 +126,7 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
    * @param {!Common.Event} event
    */
   _watchExpressionUpdated(event) {
-    var watchExpression = /** @type {!Sources.WatchExpression} */ (event.target);
+    var watchExpression = /** @type {!Sources.WatchExpression} */ (event.data);
     if (!watchExpression.expression()) {
       this._watchExpressions.remove(watchExpression);
       this._bodyElement.removeChild(watchExpression.element());
@@ -304,7 +304,7 @@ Sources.WatchExpression = class extends Common.Object {
       this._expandController.stopWatchSectionsWithId(this._expression);
     this._expression = newExpression;
     this.update();
-    this.dispatchEventToListeners(Sources.WatchExpression.Events.ExpressionUpdated);
+    this.dispatchEventToListeners(Sources.WatchExpression.Events.ExpressionUpdated, this);
   }
 
   /**

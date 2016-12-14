@@ -63,28 +63,15 @@
     margin-right: 5px;
 }
 
-.blocked-url .remove-button {
-    width: 13px;
-    height: 13px;
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
-    background-position: -175px -96px;
-    visibility: hidden;
-    flex: none;
+.remove-icon {
     opacity: 0.7;
-    cursor: default;
+    visibility: hidden;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.blocked-url .remove-button {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-.blocked-url:hover .remove-button {
-    visibility: visible;
-}
-
-.blocked-url .remove-button:hover {
+.blocked-url .remove-icon:hover {
     opacity: 1.0;
+}
+
+.blocked-url:hover .remove-icon {
+    visibility: visible;
 }

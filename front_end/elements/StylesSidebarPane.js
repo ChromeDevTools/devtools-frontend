@@ -2109,10 +2109,30 @@ Elements.StylePropertyTreeElement = class extends TreeElement {
     }
   }
 
+  /**
+   * @override
+   */
+  onexpand() {
+    this._updateExpandElement();
+  }
+
+  /**
+   * @override
+   */
+  oncollapse() {
+    this._updateExpandElement();
+  }
+
+  _updateExpandElement() {
+    if (this.expanded)
+      this._expandElement.setIconType('smallicon-triangle-bottom');
+    else
+      this._expandElement.setIconType('smallicon-triangle-right');
+  }
+
   updateTitle() {
     this._updateState();
-    this._expandElement = createElement('span');
-    this._expandElement.className = 'expand-element';
+    this._expandElement = UI.Icon.create('smallicon-triangle-right', 'expand-icon');
 
     var propertyRenderer =
         new Elements.StylesSidebarPropertyRenderer(this._style.parentRule, this.node(), this.name, this.value);

@@ -179,30 +179,15 @@ ol.expanded {
     margin-left: 0 !important;
 }
 
-:host-context(.matched-styles) .tree-outline li.parent .expand-element {
+.expand-icon {
     -webkit-user-select: none;
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
-    margin-right: 2px;
-    margin-left: -6px;
     background-color: #777;
-    width: 8px;
-    height: 10px;
-    display: inline-block;
+    margin-left: -6px;
+    margin-right: 2px;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-:host-context(.matched-styles) .tree-outline li.parent .expand-element {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-:host-context(.matched-styles) .tree-outline li.parent .expand-element {
-    -webkit-mask-position: -4px -96px;
-}
-
-:host-context(.matched-styles) .tree-outline li.parent.expanded .expand-element {
-    -webkit-mask-position: -20px -96px;
+.tree-outline li:not(.parent) .expand-icon {
+    display: none;
 }
 
 :host-context(.matched-styles:not(.read-only):hover) .enabled-button {

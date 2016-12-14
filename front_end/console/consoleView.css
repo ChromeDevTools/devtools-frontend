@@ -367,27 +367,6 @@
     flex: none;
 }
 
-.console-message-stack-trace-toggle .console-message-text::before {
-    content: " ";
-    -webkit-user-select: none;
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
-    color: transparent;
-    text-shadow: none;
-    padding-right: 8px;
-    height: 12px;
+.stack-trace-expand-icon {
     background-color: rgb(110, 110, 110);
-    width: 12px;
-    flex: none;
-    -webkit-mask-position: -4px -96px;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.console-message-stack-trace-toggle .console-message-text::before {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-.console-message-stack-trace-toggle.expanded .console-message-text::before {
-    -webkit-mask-position: -20px -96px;
 }

@@ -200,7 +200,8 @@ Network.BlockedURLsPane = class extends UI.VBox {
     countElement.title = Common.UIString(
         count === 1 ? '%d request blocked by this pattern' : '%d requests blocked by this pattern', count);
 
-    var removeButton = element.createChild('div', 'remove-button');
+    var removeButton = UI.Icon.create('smallicon-cross', 'remove-icon');
+    element.appendChild(removeButton);
     removeButton.title = Common.UIString('Remove');
     removeButton.addEventListener('click', this._removeBlockedURL.bind(this, index), false);
 

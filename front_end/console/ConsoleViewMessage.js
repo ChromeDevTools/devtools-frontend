@@ -312,7 +312,10 @@ Console.ConsoleViewMessage = class {
     var contentElement = toggleElement.createChild('div', 'console-message-stack-trace-wrapper');
 
     var messageElement = this._buildMessage(consoleMessage);
+    var icon = UI.Icon.create('smallicon-triangle-right', 'stack-trace-expand-icon');
     var clickableElement = contentElement.createChild('div');
+    clickableElement.appendChild(icon);
+
     clickableElement.appendChild(messageElement);
     var stackTraceElement = contentElement.createChild('div');
     var stackTracePreview =
@@ -324,8 +327,8 @@ Console.ConsoleViewMessage = class {
      * @param {boolean} expand
      */
     function expandStackTrace(expand) {
+      icon.setIconType(expand ? 'smallicon-triangle-bottom' : 'smallicon-triangle-right');
       stackTraceElement.classList.toggle('hidden', !expand);
-      toggleElement.classList.toggle('expanded', expand);
     }
 
     /**

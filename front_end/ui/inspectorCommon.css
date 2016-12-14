@@ -337,6 +337,11 @@ label[is=dt-icon-label] {
     -webkit-mask-size: 190px 30px;
 }
 
+.spritesheet-largeicons {
+    background-image: -webkit-image-set(url(Images/toolbarButtonGlyphs.png) 1x, url(Images/toolbarButtonGlyphs_2x.png) 2x);
+    background-size: 352px 168px;
+}
+
 .spritesheet-largeicons.icon-mask {
     -webkit-mask-image: -webkit-image-set(url(Images/toolbarButtonGlyphs.png) 1x, url(Images/toolbarButtonGlyphs_2x.png) 2x);
     -webkit-mask-size: 352px 168px;

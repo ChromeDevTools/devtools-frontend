@@ -247,7 +247,7 @@ UI.Widget = class extends Common.Object {
 
   /**
    * @param {!Element} parentElement
-   * @param {?Element=} insertBefore
+   * @param {?Node=} insertBefore
    */
   show(parentElement, insertBefore) {
     UI.Widget.__assert(parentElement, 'Attempt to attach widget with no parent element');
@@ -258,30 +258,43 @@ UI.Widget = class extends Common.Object {
       while (currentParent && !currentParent.__widget)
         currentParent = currentParent.parentElementOrShadowHost();
       UI.Widget.__assert(currentParent, 'Attempt to attach widget to orphan node');
-      this.attach(currentParent.__widget);
+      this.attach(currentParent.__widget, parentElement, insertBefore);
+    } else {
+      this._attachedToParentElement = parentElement;
+      this._attachedBeforeNode = insertBefore;
     }
 
-    this.showWidget(parentElement, insertBefore);
+    this.showWidget();
   }
 
   /**
    * @param {!UI.Widget} parentWidget
+   * @param {!Element=} parentElement
+   * @param {?Node=} insertBefore
    */
-  attach(parentWidget) {
-    if (parentWidget === this._parentWidget)
+  attach(parentWidget, parentElement, insertBefore) {
+    parentElement = parentElement || parentWidget.element;
+    if (parentWidget === this._parentWidget) {
+      this._attachedToParentElement = parentElement;
+      this._attachedBeforeNode = insertBefore;
+      if (this._visible)
+        this.showWidget();
       return;
+    }
     if (this._parentWidget)
       this.detach();
     this._parentWidget = parentWidget;
     this._parentWidget._children.push(this);
+    this._attachedToParentElement = parentElement;
+    this._attachedBeforeNode = insertBefore;
     this._isRoot = false;
   }
 
-  /**
-   * @param {!Element} parentElement
-   * @param {?Element=} insertBefore
-   */
-  showWidget(parentElement, insertBefore) {
+  showWidget() {
+    UI.Widget.__assert(this._parentWidget || this._isRoot, 'Attempt to show widget that has not been attached');
+    var parentElement = this._attachedToParentElement;
+    var insertBefore = this._attachedBeforeNode;
+
     var currentParent = parentElement;
     while (currentParent && !currentParent.__widget)
       currentParent = currentParent.parentElementOrShadowHost();
@@ -324,8 +337,7 @@ UI.Widget = class extends Common.Object {
   }
 
   hideWidget() {
-    if (!this._parentWidget)
-      return;
+    UI.Widget.__assert(this._parentWidget || this._isRoot, 'Attempt to hide widget that has not been attached');
     this._hideWidget();
   }
 
@@ -337,6 +349,8 @@ UI.Widget = class extends Common.Object {
       return;
     this._visible = false;
     var parentElement = this.element.parentElement;
+    this._attachedToParentElement = parentElement;
+    this._attachedBeforeNode = this.element.nextSibling;
 
     if (this._parentIsShowing())
       this._processWillHide();
@@ -376,6 +390,9 @@ UI.Widget = class extends Common.Object {
     } else {
       UI.Widget.__assert(this._isRoot, 'Removing non-root widget from DOM');
     }
+
+    this._attachedToParentElement = null;
+    this._attachedBeforeNode = null;
   }
 
   detachChildWidgets() {
@@ -585,11 +602,6 @@ UI.Widget = class extends Common.Object {
       this._parentWidget.invalidateConstraints();
     else
       this.doLayout();
-  }
-
-  invalidateSize() {
-    if (this._parentWidget)
-      this._parentWidget.doLayout();
   }
 };
 

@@ -749,7 +749,7 @@ UI.TabbedPane = class extends UI.VBox {
   _showTab(tab) {
     tab.tabElement.classList.add('selected');
     tab.tabElement.setAttribute('aria-selected', 'true');
-    tab.view.showWidget(this.element);
+    tab.view.showWidget();
     this._updateTabSlider();
   }
 

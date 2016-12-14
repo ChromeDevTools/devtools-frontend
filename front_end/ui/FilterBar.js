@@ -95,9 +95,13 @@ UI.FilterBar = class extends UI.HBox {
   }
 
   _updateFilterBar() {
+    if (!this.parentWidget())
+      return;
     var visible = this._alwaysShowFilters || (this._filtersShown && this._enabled);
-    this.element.classList.toggle('hidden', !visible);
-    this.invalidateSize();
+    if (visible)
+      this.showWidget();
+    else
+      this.hideWidget();
   }
 
   _focusTextField() {

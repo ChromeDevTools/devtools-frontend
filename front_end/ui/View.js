@@ -177,14 +177,9 @@ UI.ProvidedView = class {
    * @return {!Promise<!Array<!UI.ToolbarItem>>}
    */
   toolbarItems() {
-    var actionIds = this._extension.descriptor()['actionIds'];
+    const actionIds = this._extension.descriptor()['actionIds'];
     if (actionIds) {
-      var result = [];
-      for (var id of actionIds.split(',')) {
-        var item = UI.Toolbar.createActionButtonForId(id.trim());
-        if (item)
-          result.push(item);
-      }
+      const result = actionIds.split(',').map(id => UI.Toolbar.createActionButtonForId(id.trim()));
       return Promise.resolve(result);
     }
 

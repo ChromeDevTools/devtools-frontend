@@ -16,12 +16,20 @@
            "type": "@Sources.UISourceCodeFrame.LineDecorator",
            "className": "Components.CoverageProfile.LineDecorator",
            "decoratorType": "coverage"
+        },
+        {
+            "type": "@UI.ActionDelegate",
+            "actionId": "components.collect-garbage",
+            "title": "Collect garbage",
+            "iconClass": "largeicon-trash-bin",
+            "className": "Components.GCActionDelegate"
         }
     ],
     "scripts": [
         "CookiesTable.js",
         "FilmStripModel.js",
         "FilmStripView.js",
+        "GCActionDelegate.js",
         "LineLevelProfile.js",
         "CoverageProfile.js"
     ],

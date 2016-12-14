@@ -429,8 +429,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     this.clearResultsButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset, this);
     toolbar.appendToolbarItem(this.clearResultsButton);
     toolbar.appendSeparator();
-    toolbar.appendToolbarItem(
-        /** @type {!UI.ToolbarItem} */ (UI.Toolbar.createActionButtonForId('profiler.collect-garbage')));
+    toolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('components.collect-garbage'));
 
     this._profileTypeToolbar = new UI.Toolbar('', this._toolbarElement);
     this._profileViewToolbar = new UI.Toolbar('', this._toolbarElement);
@@ -1204,9 +1203,6 @@ Profiler.ProfileGroupSidebarTreeElement = class extends TreeElement {
   }
 };
 
-/**
- * @unrestricted
- */
 Profiler.ProfilesSidebarTreeElement = class extends TreeElement {
   /**
    * @param {!Profiler.ProfilesPanel} panel
@@ -1239,10 +1235,8 @@ Profiler.ProfilesSidebarTreeElement = class extends TreeElement {
   }
 };
 
-
 /**
  * @implements {UI.ActionDelegate}
- * @unrestricted
  */
 Profiler.ProfilesPanel.RecordActionDelegate = class {
   /**
@@ -1255,24 +1249,6 @@ Profiler.ProfilesPanel.RecordActionDelegate = class {
     var panel = UI.context.flavor(Profiler.ProfilesPanel);
     console.assert(panel && panel instanceof Profiler.ProfilesPanel);
     panel.toggleRecord();
-    return true;
-  }
-};
-
-/**
- * @implements {UI.ActionDelegate}
- * @unrestricted
- */
-Profiler.ProfilesPanel.GCActionDelegate = class {
-  /**
-   * @override
-   * @param {!UI.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
-    for (var target of SDK.targetManager.targets())
-      target.heapProfilerAgent().collectGarbage();
     return true;
   }
 };

@@ -182,11 +182,11 @@ UI.Toolbar = class {
 
   /**
    * @param {string} actionId
-   * @return {?UI.ToolbarItem}
+   * @return {!UI.ToolbarItem}
    */
   static createActionButtonForId(actionId) {
-    var action = UI.actionRegistry.action(actionId);
-    return /** @type {?UI.ToolbarItem} */ (action ? UI.Toolbar.createActionButton(action) : null);
+    const action = UI.actionRegistry.action(actionId);
+    return UI.Toolbar.createActionButton(/** @type {!UI.Action} */ (action));
   }
 
   /**
@@ -318,18 +318,21 @@ UI.Toolbar = class {
 
     /**
      * @param {!Runtime.Extension} extension
-     * @return {!Promise.<?UI.ToolbarItem>}
+     * @return {!Promise<?UI.ToolbarItem>}
      */
     function resolveItem(extension) {
       var descriptor = extension.descriptor();
       if (descriptor['separator'])
         return Promise.resolve(/** @type {?UI.ToolbarItem} */ (new UI.ToolbarSeparator()));
-      if (descriptor['actionId'])
-        return Promise.resolve(UI.Toolbar.createActionButtonForId(descriptor['actionId']));
+      if (descriptor['actionId']) {
+        return Promise.resolve(
+            /** @type {?UI.ToolbarItem} */ (UI.Toolbar.createActionButtonForId(descriptor['actionId'])));
+      }
       return extension.instance().then(fetchItemFromProvider);
 
       /**
        * @param {!Object} provider
+       * @return {?UI.ToolbarItem}
        */
       function fetchItemFromProvider(provider) {
         return /** @type {!UI.ToolbarItem.Provider} */ (provider).item();

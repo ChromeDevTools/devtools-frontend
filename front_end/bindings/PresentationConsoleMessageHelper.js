@@ -105,6 +105,8 @@ Bindings.PresentationConsoleMessageHelper = class {
    * @param {!SDK.DebuggerModel.Location} rawLocation
    */
   _addConsoleMessageToScript(message, rawLocation) {
+    if (message.source === SDK.ConsoleMessage.MessageSource.Violation)
+      return;
     this._presentationConsoleMessages.push(
         new Bindings.PresentationConsoleMessage(message, rawLocation, this._locationPool));
   }

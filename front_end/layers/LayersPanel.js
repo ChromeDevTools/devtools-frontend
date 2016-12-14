@@ -156,9 +156,11 @@ Layers.LayersPanel = class extends UI.PanelWithSidebar {
       if (!snapshotWithRect)
         return;
       this._layerBeingProfiled = selection.layer();
-      this._tabbedPane.appendTab(
-          Layers.LayersPanel.DetailsViewTabs.Profiler, Common.UIString('Profiler'), this._paintProfilerView, undefined,
-          true, true);
+      if (!this._tabbedPane.hasTab(Layers.LayersPanel.DetailsViewTabs.Profiler)) {
+        this._tabbedPane.appendTab(
+            Layers.LayersPanel.DetailsViewTabs.Profiler, Common.UIString('Profiler'), this._paintProfilerView,
+            undefined, true, true);
+      }
       this._tabbedPane.selectTab(Layers.LayersPanel.DetailsViewTabs.Profiler);
       this._paintProfilerView.profile(snapshotWithRect.snapshot);
     });

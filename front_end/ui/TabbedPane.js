@@ -191,6 +191,7 @@ UI.TabbedPane = class extends UI.VBox {
     isCloseable = typeof isCloseable === 'boolean' ? isCloseable : this._closeableTabs;
     var tab = new UI.TabbedPaneTab(this, id, tabTitle, isCloseable, view, tabTooltip);
     tab.setDelegate(this._delegate);
+    console.assert(!this._tabsById[id], `Tabbed pane already contains a tab with id '${id}'`);
     this._tabsById[id] = tab;
     if (index !== undefined)
       this._tabs.splice(index, 0, tab);

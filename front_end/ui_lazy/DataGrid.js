@@ -1502,7 +1502,7 @@ UI.DataGridNode = class extends Common.Object {
     var data = this.data[columnId];
     if (data instanceof Node) {
       cell.appendChild(data);
-    } else {
+    } else if (data !== null) {
       cell.textContent = data;
       if (this.dataGrid._columns[columnId].longText)
         cell.title = data;

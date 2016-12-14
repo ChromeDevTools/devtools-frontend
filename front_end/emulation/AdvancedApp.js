@@ -29,8 +29,8 @@ Emulation.AdvancedApp = class {
 
     this._rootSplitWidget = new UI.SplitWidget(false, true, 'InspectorView.splitViewState', 555, 300, true);
     this._rootSplitWidget.show(rootView.element);
-
     this._rootSplitWidget.setSidebarWidget(UI.inspectorView);
+    this._rootSplitWidget.setDefaultFocusedChild(UI.inspectorView);
     UI.inspectorView.setOwnerSplit(this._rootSplitWidget);
 
     this._inspectedPagePlaceholder = new Emulation.InspectedPagePlaceholder();
@@ -48,6 +48,7 @@ Emulation.AdvancedApp = class {
 
     console.timeStamp('AdvancedApp.attachToBody');
     rootView.attachToDocument(document);
+    rootView.focus();
     this._inspectedPagePlaceholder.update();
   }
 

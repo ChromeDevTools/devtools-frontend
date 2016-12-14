@@ -97,15 +97,17 @@ UI.FilterBar = class extends UI.HBox {
   _updateFilterBar() {
     var visible = this._alwaysShowFilters || (this._filtersShown && this._enabled);
     this.element.classList.toggle('hidden', !visible);
-    if (visible) {
-      for (var i = 0; i < this._filters.length; ++i) {
-        if (this._filters[i] instanceof UI.TextFilterUI) {
-          var textFilterUI = /** @type {!UI.TextFilterUI} */ (this._filters[i]);
-          textFilterUI.focus();
-        }
+    this.invalidateSize();
+  }
+
+  _focusTextField() {
+    for (var i = 0; i < this._filters.length; ++i) {
+      if (this._filters[i] instanceof UI.TextFilterUI) {
+        var textFilterUI = /** @type {!UI.TextFilterUI} */ (this._filters[i]);
+        textFilterUI.focus();
+        break;
       }
     }
-    this.invalidateSize();
   }
 
   _updateFilterButton() {
@@ -141,6 +143,8 @@ UI.FilterBar = class extends UI.HBox {
 
     this._updateFilterButton();
     this._updateFilterBar();
+    if (this._filtersShown)
+      this._focusTextField();
     this.dispatchEventToListeners(UI.FilterBar.Events.Toggled);
   }
 

@@ -115,7 +115,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
 
   selectAndSwitchToMainView() {
     // The sidebar element will trigger displaying the main view. Rather than making a redundant call to display the main view, we rely on this.
-    this._sidebarMainViewElement.select();
+    this._sidebarMainViewElement.select(true);
   }
   /**
    * @param {!Security.SecurityPanel.Origin} origin

@@ -143,7 +143,6 @@ UI.SplitWidget = class extends UI.Widget {
       widget.attach(this);
       if (this._showMode === UI.SplitWidget.ShowMode.OnlyMain || this._showMode === UI.SplitWidget.ShowMode.Both)
         widget.showWidget(this.element);
-      this.setDefaultFocusedChild(widget);
     }
     this.resumeInvalidations();
   }

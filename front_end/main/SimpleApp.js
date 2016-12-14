@@ -14,6 +14,7 @@ Main.SimpleApp = class {
     var rootView = new UI.RootView();
     UI.inspectorView.show(rootView.element);
     rootView.attachToDocument(document);
+    rootView.focus();
   }
 };
 

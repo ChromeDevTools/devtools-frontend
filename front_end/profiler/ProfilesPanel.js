@@ -608,8 +608,6 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     this.profileViews.removeChildren();
     this._profileViewToolbar.removeToolbarItems();
 
-    this.removeAllListeners();
-
     this._profileViewToolbar.element.classList.remove('hidden');
     this.clearResultsButton.element.classList.remove('hidden');
     this.profilesItemTreeElement.select();

@@ -69,13 +69,6 @@ Common.Object = class {
 
   /**
    * @override
-   */
-  removeAllListeners() {
-    delete this._listeners;
-  }
-
-  /**
-   * @override
    * @param {symbol} eventType
    * @return {boolean}
    */
@@ -143,8 +136,6 @@ Common.EventTarget.prototype = {
    * @param {!Object=} thisObject
    */
   removeEventListener(eventType, listener, thisObject) {},
-
-  removeAllListeners() {},
 
   /**
    * @param {symbol} eventType

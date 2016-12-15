@@ -489,7 +489,7 @@ Audits.AuditRules.UnusedCssRule = class extends Audits.AuditRule {
 };
 
 /**
- * @typedef {!{sourceURL: string, rules: !Array.<!SDK.CSSParser.StyleRule>}}
+ * @typedef {!{sourceURL: string, rules: !Array.<!Common.FormatterWorkerPool.CSSStyleRule>}}
  */
 Audits.AuditRules.ParsedStyleSheet;
 
@@ -536,7 +536,7 @@ Audits.AuditRules.StyleSheetProcessor = class {
   }
 
   /**
-   * @param {!Array.<!SDK.CSSParser.Rule>} rules
+   * @param {!Array.<!Common.FormatterWorkerPool.CSSRule>} rules
    */
   _onStyleSheetParsed(rules) {
     if (this._progress.isCanceled()) {
@@ -1232,7 +1232,7 @@ Audits.AuditRules.CSSRuleBase = class extends Audits.AuditRule {
 
   /**
    * @param {!Audits.AuditRules.ParsedStyleSheet} styleSheet
-   * @param {!SDK.CSSParser.StyleRule} rule
+   * @param {!Common.FormatterWorkerPool.CSSStyleRule} rule
    * @param {!Audits.AuditRuleResult} result
    */
   _visitRule(styleSheet, rule, result) {
@@ -1261,7 +1261,7 @@ Audits.AuditRules.CSSRuleBase = class extends Audits.AuditRule {
 
   /**
    * @param {!Audits.AuditRules.ParsedStyleSheet} styleSheet
-   * @param {!SDK.CSSParser.StyleRule} rule
+   * @param {!Common.FormatterWorkerPool.CSSStyleRule} rule
    * @param {!Audits.AuditRuleResult} result
    */
   visitRule(styleSheet, rule, result) {
@@ -1270,7 +1270,7 @@ Audits.AuditRules.CSSRuleBase = class extends Audits.AuditRule {
 
   /**
    * @param {!Audits.AuditRules.ParsedStyleSheet} styleSheet
-   * @param {!SDK.CSSParser.StyleRule} rule
+   * @param {!Common.FormatterWorkerPool.CSSStyleRule} rule
    * @param {!Audits.AuditRuleResult} result
    */
   didVisitRule(styleSheet, rule, result) {
@@ -1279,8 +1279,8 @@ Audits.AuditRules.CSSRuleBase = class extends Audits.AuditRule {
 
   /**
    * @param {!Audits.AuditRules.ParsedStyleSheet} styleSheet
-   * @param {!SDK.CSSParser.StyleRule} rule
-   * @param {!SDK.CSSParser.Property} property
+   * @param {!Common.FormatterWorkerPool.CSSStyleRule} rule
+   * @param {!Common.FormatterWorkerPool.CSSProperty} property
    * @param {!Audits.AuditRuleResult} result
    */
   visitProperty(styleSheet, rule, property, result) {

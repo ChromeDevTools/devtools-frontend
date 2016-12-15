@@ -46,7 +46,7 @@ Sources.Formatter.format = function(contentType, mimeType, content, callback) {
 };
 
 /**
- * @param {!Array.<number>} lineEndings
+ * @param {!Array<number>} lineEndings
  * @param {number} lineNumber
  * @param {number} columnNumber
  * @return {number}
@@ -57,9 +57,9 @@ Sources.Formatter.locationToPosition = function(lineEndings, lineNumber, columnN
 };
 
 /**
- * @param {!Array.<number>} lineEndings
+ * @param {!Array<number>} lineEndings
  * @param {number} position
- * @return {!Array.<number>}
+ * @return {!Array<number>}
  */
 Sources.Formatter.positionToLocation = function(lineEndings, position) {
   var lineNumber = lineEndings.upperBound(position - 1);
@@ -85,27 +85,17 @@ Sources.ScriptFormatter = class {
     this._callback = callback;
     this._originalContent = content;
 
-    var parameters = {
-      mimeType: mimeType,
-      content: content,
-      indentString: Common.moduleSetting('textEditorIndent').get()
-    };
-    Common.formatterWorkerPool.runTask('format', parameters).then(this._didFormatContent.bind(this));
+    Common.formatterWorkerPool.format(mimeType, content, Common.moduleSetting('textEditorIndent').get())
+        .then(this._didFormatContent.bind(this));
   }
 
   /**
-   * @param {?MessageEvent} event
+   * @param {!Common.FormatterWorkerPool.FormatResult} formatResult
    */
-  _didFormatContent(event) {
-    var formattedContent = '';
-    var mapping = [];
-    if (event) {
-      formattedContent = event.data.content;
-      mapping = event.data['mapping'];
-    }
+  _didFormatContent(formatResult) {
     var sourceMapping = new Sources.FormatterSourceMappingImpl(
-        this._originalContent.computeLineEndings(), formattedContent.computeLineEndings(), mapping);
-    this._callback(formattedContent, sourceMapping);
+        this._originalContent.computeLineEndings(), formatResult.content.computeLineEndings(), formatResult.mapping);
+    this._callback(formatResult.content, sourceMapping);
   }
 };
 
@@ -123,11 +113,6 @@ Sources.ScriptIdentityFormatter = class {
     callback(content, new Sources.IdentityFormatterSourceMapping());
   }
 };
-
-/**
- * @typedef {{original: !Array.<number>, formatted: !Array.<number>}}
- */
-Sources.FormatterMappingPayload;
 
 /**
  * @interface
@@ -184,7 +169,7 @@ Sources.FormatterSourceMappingImpl = class {
   /**
    * @param {!Array.<number>} originalLineEndings
    * @param {!Array.<number>} formattedLineEndings
-   * @param {!Sources.FormatterMappingPayload} mapping
+   * @param {!Common.FormatterWorkerPool.FormatMapping} mapping
    */
   constructor(originalLineEndings, formattedLineEndings, mapping) {
     this._originalLineEndings = originalLineEndings;

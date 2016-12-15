@@ -76,16 +76,16 @@ Network.JSONView = class extends UI.VBox {
       returnObj = Network.JSONView._extractJSON(/** @type {string} */ (text));
     if (!returnObj)
       return Promise.resolve(/** @type {?Network.ParsedJSON} */ (null));
-    return Common.formatterWorkerPool.runTask('relaxedJSONParser', {content: returnObj.data}).then(handleReturnedJSON);
+    return Common.formatterWorkerPool.parseJSONRelaxed(returnObj.data).then(handleReturnedJSON);
 
     /**
-     * @param {?MessageEvent} event
+     * @param {*} data
      * @return {?Network.ParsedJSON}
      */
-    function handleReturnedJSON(event) {
-      if (!event || !event.data)
+    function handleReturnedJSON(data) {
+      if (!data)
         return null;
-      returnObj.data = event.data;
+      returnObj.data = data;
       return returnObj;
     }
   }

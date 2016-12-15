@@ -78,8 +78,8 @@ self.onmessage = function(event) {
     case 'evaluatableJavaScriptSubstring':
       FormatterWorker.evaluatableJavaScriptSubstring(params.content);
       break;
-    case 'relaxedJSONParser':
-      FormatterWorker.relaxedJSONParser(params.content);
+    case 'parseJSONRelaxed':
+      FormatterWorker.parseJSONRelaxed(params.content);
       break;
     default:
       console.error('Unsupport method name: ' + method);
@@ -89,7 +89,7 @@ self.onmessage = function(event) {
 /**
  * @param {string} content
  */
-FormatterWorker.relaxedJSONParser = function(content) {
+FormatterWorker.parseJSONRelaxed = function(content) {
   postMessage(FormatterWorker.RelaxedJSONParser.parse(content));
 };
 

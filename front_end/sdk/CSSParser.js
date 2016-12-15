@@ -16,7 +16,7 @@ SDK.CSSParser = class extends Common.Object {
 
   /**
    * @param {!SDK.CSSStyleSheetHeader} styleSheetHeader
-   * @param {function(!Array.<!SDK.CSSParser.Rule>)=} callback
+   * @param {function(!Array.<!Common.FormatterWorkerPool.CSSRule>)=} callback
    */
   fetchAndParse(styleSheetHeader, callback) {
     this._lock();
@@ -26,7 +26,7 @@ SDK.CSSParser = class extends Common.Object {
 
   /**
    * @param {string} text
-   * @param {function(!Array.<!SDK.CSSParser.Rule>)=} callback
+   * @param {function(!Array.<!Common.FormatterWorkerPool.CSSRule>)=} callback
    */
   parse(text, callback) {
     this._lock();
@@ -36,7 +36,7 @@ SDK.CSSParser = class extends Common.Object {
 
   /**
    * @param {string} text
-   * @return {!Promise<!Array.<!SDK.CSSParser.Rule>>}
+   * @return {!Promise<!Array.<!Common.FormatterWorkerPool.CSSRule>>}
    */
   parsePromise(text) {
     return new Promise(promiseConstructor.bind(this));
@@ -59,7 +59,7 @@ SDK.CSSParser = class extends Common.Object {
   }
 
   /**
-   * @return {!Array.<!SDK.CSSParser.Rule>}
+   * @return {!Array.<!Common.FormatterWorkerPool.CSSRule>}
    */
   rules() {
     return this._rules;
@@ -79,27 +79,18 @@ SDK.CSSParser = class extends Common.Object {
    */
   _innerParse(text) {
     this._rules = [];
-    var params = {content: text};
-    Common.formatterWorkerPool.runChunkedTask('parseCSS', params, this._onRuleChunk.bind(this));
+    Common.formatterWorkerPool.parseCSS(text || '', this._onRuleChunk.bind(this));
   }
 
   /**
-   * @param {?MessageEvent} event
+   * @param {boolean} isLastChunk
+   * @param {!Array.<!Common.FormatterWorkerPool.CSSRule>} rules
    */
-  _onRuleChunk(event) {
+  _onRuleChunk(isLastChunk, rules) {
     if (this._terminated)
       return;
-    if (!event) {
-      this._onFinishedParsing();
-      this.dispatchEventToListeners(SDK.CSSParser.Events.RulesParsed);
-      return;
-    }
-    var data = /** @type {!SDK.CSSParser.DataChunk} */ (event.data);
-    var chunk = data.chunk;
-    for (var i = 0; i < chunk.length; ++i)
-      this._rules.push(chunk[i]);
-
-    if (data.isLastChunk)
+    this._rules = this._rules.concat(rules);
+    if (isLastChunk)
       this._onFinishedParsing();
     this.dispatchEventToListeners(SDK.CSSParser.Events.RulesParsed);
   }
@@ -123,62 +114,4 @@ SDK.CSSParser = class extends Common.Object {
 /** @enum {symbol} */
 SDK.CSSParser.Events = {
   RulesParsed: Symbol('RulesParsed')
-};
-
-/**
- * @typedef {{isLastChunk: boolean, chunk: !Array.<!SDK.CSSParser.Rule>}}
- */
-SDK.CSSParser.DataChunk;
-
-/**
- * @unrestricted
- */
-SDK.CSSParser.StyleRule = class {
-  constructor() {
-    /** @type {string} */
-    this.selectorText;
-    /** @type {!SDK.CSSParser.Range} */
-    this.styleRange;
-    /** @type {number} */
-    this.lineNumber;
-    /** @type {number} */
-    this.columnNumber;
-    /** @type {!Array.<!SDK.CSSParser.Property>} */
-    this.properties;
-  }
-};
-
-/**
- * @typedef {{atRule: string, lineNumber: number, columnNumber: number}}
- */
-SDK.CSSParser.AtRule;
-
-/**
- * @typedef {(SDK.CSSParser.StyleRule|SDK.CSSParser.AtRule)}
- */
-SDK.CSSParser.Rule;
-
-/**
- * @typedef {{startLine: number, startColumn: number, endLine: number, endColumn: number}}
- */
-SDK.CSSParser.Range;
-
-/**
- * @unrestricted
- */
-SDK.CSSParser.Property = class {
-  constructor() {
-    /** @type {string} */
-    this.name;
-    /** @type {!SDK.CSSParser.Range} */
-    this.nameRange;
-    /** @type {string} */
-    this.value;
-    /** @type {!SDK.CSSParser.Range} */
-    this.valueRange;
-    /** @type {!SDK.CSSParser.Range} */
-    this.range;
-    /** @type {(boolean|undefined)} */
-    this.disabled;
-  }
 };

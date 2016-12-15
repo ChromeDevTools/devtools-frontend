@@ -51,7 +51,7 @@ Sources.SourceMapNamesResolver._scopeIdentifiers = function(scope) {
     var scopeText = text.extract(scopeRange);
     var scopeStart = text.toSourceRange(scopeRange).offset;
     var prefix = 'function fui';
-    return Common.formatterWorkerPool.runTask('javaScriptIdentifiers', {content: prefix + scopeText})
+    return Common.formatterWorkerPool.javaScriptIdentifiers(prefix + scopeText)
         .then(onIdentifiers.bind(null, text, scopeStart, prefix));
   }
 
@@ -59,11 +59,10 @@ Sources.SourceMapNamesResolver._scopeIdentifiers = function(scope) {
    * @param {!Common.Text} text
    * @param {number} scopeStart
    * @param {string} prefix
-   * @param {?MessageEvent} event
+   * @param {!Array<!{name: string, offset: number}>} identifiers
    * @return {!Array<!Sources.SourceMapNamesResolver.Identifier>}
    */
-  function onIdentifiers(text, scopeStart, prefix, event) {
-    var identifiers = event ? /** @type {!Array<!{name: string, offset: number}>} */ (event.data) : [];
+  function onIdentifiers(text, scopeStart, prefix, identifiers) {
     var result = [];
     var cursor = new Common.TextCursor(text.lineEndings());
     var promises = [];
@@ -282,15 +281,7 @@ Sources.SourceMapNamesResolver._resolveExpression = function(
     var originalText = text.extract(textRange);
     if (!originalText)
       return Promise.resolve('');
-    return Common.formatterWorkerPool.runTask('evaluatableJavaScriptSubstring', {content: originalText}).then(onResult);
-  }
-
-  /**
-   * @param {?MessageEvent} event
-   * @return {string}
-   */
-  function onResult(event) {
-    return event ? /** @type {string} */ (event.data) : '';
+    return Common.formatterWorkerPool.evaluatableJavaScriptSubstring(originalText);
   }
 };
 

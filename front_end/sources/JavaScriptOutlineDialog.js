@@ -17,8 +17,7 @@ Sources.JavaScriptOutlineDialog = class extends UI.FilteredListWidget.Delegate {
 
     this._functionItems = [];
     this._selectItemCallback = selectItemCallback;
-    Common.formatterWorkerPool.runChunkedTask(
-        'javaScriptOutline', {content: uiSourceCode.workingCopy()}, this._didBuildOutlineChunk.bind(this));
+    Common.formatterWorkerPool.javaScriptOutline(uiSourceCode.workingCopy(), this._didBuildOutlineChunk.bind(this));
   }
 
   /**
@@ -32,22 +31,11 @@ Sources.JavaScriptOutlineDialog = class extends UI.FilteredListWidget.Delegate {
   }
 
   /**
-   * @param {?MessageEvent} event
+   * @param {boolean} isLastChunk
+   * @param {!Array<!Common.FormatterWorkerPool.JSOutlineItem>} items
    */
-  _didBuildOutlineChunk(event) {
-    if (!event) {
-      this.dispose();
-      this.refresh();
-      return;
-    }
-    var data = /** @type {!Sources.JavaScriptOutlineDialog.MessageEventData} */ (event.data);
-    var chunk = data.chunk;
-    for (var i = 0; i < chunk.length; ++i)
-      this._functionItems.push(chunk[i]);
-
-    if (data.isLastChunk)
-      this.dispose();
-
+  _didBuildOutlineChunk(isLastChunk, items) {
+    this._functionItems.push(...items);
     this.refresh();
   }
 
@@ -109,16 +97,4 @@ Sources.JavaScriptOutlineDialog = class extends UI.FilteredListWidget.Delegate {
     if (!isNaN(lineNumber) && lineNumber >= 0)
       this._selectItemCallback(lineNumber, this._functionItems[itemIndex].column);
   }
-
-  /**
-   * @override
-   */
-  dispose() {
-  }
 };
-
-
-/**
- * @typedef {{isLastChunk: boolean, chunk: !Array.<!{selectorText: string, lineNumber: number, columnNumber: number}>}}
- */
-Sources.JavaScriptOutlineDialog.MessageEventData;

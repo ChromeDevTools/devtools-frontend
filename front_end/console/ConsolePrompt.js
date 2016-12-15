@@ -137,6 +137,7 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._editor.setSelection(Common.TextRange.createFromLocation(0, Infinity));
     else
       this.moveCaretToEndOfPrompt();
+    this.setMinimumSize(0, this._editor.widget().element.offsetHeight);
   }
 
   /**

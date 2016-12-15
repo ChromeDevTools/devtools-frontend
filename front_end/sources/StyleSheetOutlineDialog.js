@@ -37,9 +37,12 @@ Sources.StyleSheetOutlineDialog = class extends UI.FilteredListWidget.Delegate {
   constructor(uiSourceCode, selectItemCallback) {
     super([]);
     this._selectItemCallback = selectItemCallback;
-    this._cssParser = new SDK.CSSParser();
-    this._cssParser.addEventListener(SDK.CSSParser.Events.RulesParsed, this.refresh.bind(this));
-    this._cssParser.parse(uiSourceCode.workingCopy());
+    /** @type {!Array<!Common.FormatterWorkerPool.CSSRule>} */
+    this._rules = [];
+    Common.formatterWorkerPool.parseCSS(uiSourceCode.workingCopy(), (isLastChunk, rules) => {
+      this._rules.push(...rules);
+      this.refresh();
+    });
   }
 
   /**
@@ -57,7 +60,7 @@ Sources.StyleSheetOutlineDialog = class extends UI.FilteredListWidget.Delegate {
    * @return {number}
    */
   itemCount() {
-    return this._cssParser.rules().length;
+    return this._rules.length;
   }
 
   /**
@@ -66,7 +69,7 @@ Sources.StyleSheetOutlineDialog = class extends UI.FilteredListWidget.Delegate {
    * @return {string}
    */
   itemKeyAt(itemIndex) {
-    var rule = this._cssParser.rules()[itemIndex];
+    var rule = this._rules[itemIndex];
     return rule.selectorText || rule.atRule;
   }
 
@@ -77,7 +80,7 @@ Sources.StyleSheetOutlineDialog = class extends UI.FilteredListWidget.Delegate {
    * @return {number}
    */
   itemScoreAt(itemIndex, query) {
-    var rule = this._cssParser.rules()[itemIndex];
+    var rule = this._rules[itemIndex];
     return -rule.lineNumber;
   }
 
@@ -89,7 +92,7 @@ Sources.StyleSheetOutlineDialog = class extends UI.FilteredListWidget.Delegate {
    * @param {!Element} subtitleElement
    */
   renderItem(itemIndex, query, titleElement, subtitleElement) {
-    var rule = this._cssParser.rules()[itemIndex];
+    var rule = this._rules[itemIndex];
     titleElement.textContent = rule.selectorText || rule.atRule;
     this.highlightRanges(titleElement, query);
     subtitleElement.textContent = ':' + (rule.lineNumber + 1);
@@ -101,16 +104,9 @@ Sources.StyleSheetOutlineDialog = class extends UI.FilteredListWidget.Delegate {
    * @param {string} promptValue
    */
   selectItem(itemIndex, promptValue) {
-    var rule = this._cssParser.rules()[itemIndex];
+    var rule = this._rules[itemIndex];
     var lineNumber = rule.lineNumber;
     if (!isNaN(lineNumber) && lineNumber >= 0)
       this._selectItemCallback(lineNumber, rule.columnNumber);
-  }
-
-  /**
-   * @override
-   */
-  dispose() {
-    this._cssParser.dispose();
   }
 };

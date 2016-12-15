@@ -510,29 +510,30 @@ Audits.AuditRules.StyleSheetProcessor = class {
   }
 
   run() {
-    this._parser = new SDK.CSSParser();
     this._processNextStyleSheet();
-  }
-
-  _terminateWorker() {
-    if (this._parser) {
-      this._parser.dispose();
-      delete this._parser;
-    }
-  }
-
-  _finish() {
-    this._terminateWorker();
-    this._styleSheetsParsedCallback(this._styleSheets);
   }
 
   _processNextStyleSheet() {
     if (!this._styleSheetHeaders.length) {
-      this._finish();
+      this._styleSheetsParsedCallback(this._styleSheets);
       return;
     }
     this._currentStyleSheetHeader = this._styleSheetHeaders.shift();
-    this._parser.fetchAndParse(this._currentStyleSheetHeader, this._onStyleSheetParsed.bind(this));
+
+    var allRules = [];
+    this._currentStyleSheetHeader.requestContent().then(
+        content => Common.formatterWorkerPool.parseCSS(content || '', onRulesParsed.bind(this)));
+
+    /**
+     * @param {boolean} isLastChunk
+     * @param {!Array<!Common.FormatterWorkerPool.CSSRule>} rules
+     * @this {Audits.AuditRules.StyleSheetProcessor}
+     */
+    function onRulesParsed(isLastChunk, rules) {
+      allRules.push(...rules);
+      if (isLastChunk)
+        this._onStyleSheetParsed(allRules);
+    }
   }
 
   /**
@@ -540,7 +541,7 @@ Audits.AuditRules.StyleSheetProcessor = class {
    */
   _onStyleSheetParsed(rules) {
     if (this._progress.isCanceled()) {
-      this._finish();
+      this._styleSheetsParsedCallback(this._styleSheets);
       return;
     }
 

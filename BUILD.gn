@@ -113,7 +113,6 @@ devtools_sdk_js_files = [
   "front_end/sdk/CSSMedia.js",
   "front_end/sdk/CSSMetadata.js",
   "front_end/sdk/CSSModel.js",
-  "front_end/sdk/CSSParser.js",
   "front_end/sdk/CSSProperty.js",
   "front_end/sdk/CSSRule.js",
   "front_end/sdk/CSSStyleDeclaration.js",

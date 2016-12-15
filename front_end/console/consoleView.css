@@ -366,7 +366,3 @@
 .console-message-stack-trace-wrapper > * {
     flex: none;
 }
-
-.stack-trace-expand-icon {
-    background-color: rgb(110, 110, 110);
-}

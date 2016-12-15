@@ -41,6 +41,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     super(Common.UIString('Heap Snapshot'));
 
     this.element.classList.add('heap-snapshot-view');
+    this._profile = profile;
 
     profile.profileType().addEventListener(
         Profiler.HeapSnapshotProfileType.SnapshotReceived, this._onReceiveSnapshot, this);
@@ -123,19 +124,17 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._retainmentDataGrid.reset();
 
     this._perspectives = [];
+    this._comparisonPerspective = new Profiler.HeapSnapshotView.ComparisonPerspective();
     this._perspectives.push(new Profiler.HeapSnapshotView.SummaryPerspective());
     if (profile.profileType() !== Profiler.ProfileTypeRegistry.instance.trackingHeapSnapshotProfileType)
-      this._perspectives.push(new Profiler.HeapSnapshotView.ComparisonPerspective());
+      this._perspectives.push(this._comparisonPerspective);
     this._perspectives.push(new Profiler.HeapSnapshotView.ContainmentPerspective());
     if (this._allocationWidget)
       this._perspectives.push(new Profiler.HeapSnapshotView.AllocationPerspective());
     this._perspectives.push(new Profiler.HeapSnapshotView.StatisticsPerspective());
 
     this._perspectiveSelect = new UI.ToolbarComboBox(this._onSelectedPerspectiveChanged.bind(this));
-    for (var i = 0; i < this._perspectives.length; ++i)
-      this._perspectiveSelect.createOption(this._perspectives[i].title());
-
-    this._profile = profile;
+    this._updatePerspectiveOptions();
 
     this._baseSelect = new UI.ToolbarComboBox(this._changeBase.bind(this));
     this._baseSelect.setVisible(false);
@@ -489,19 +488,14 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
    * @param {function()} callback
    */
   _changePerspectiveAndWait(perspectiveTitle, callback) {
-    var perspectiveIndex = null;
-    for (var i = 0; i < this._perspectives.length; ++i) {
-      if (this._perspectives[i].title() === perspectiveTitle) {
-        perspectiveIndex = i;
-        break;
-      }
-    }
-    if (this._currentPerspectiveIndex === perspectiveIndex || perspectiveIndex === null) {
+    const perspectiveIndex = this._perspectives.findIndex(perspective => perspective.title() === perspectiveTitle);
+    if (perspectiveIndex === -1 || this._currentPerspectiveIndex === perspectiveIndex) {
       setTimeout(callback, 0);
       return;
     }
 
     /**
+     * @param {!Common.Event} event
      * @this {Profiler.HeapSnapshotView}
      */
     function dataGridContentShown(event) {
@@ -514,7 +508,8 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._perspectives[perspectiveIndex].masterGrid(this).addEventListener(
         Profiler.HeapSnapshotSortableDataGrid.Events.ContentShown, dataGridContentShown, this);
 
-    this._perspectiveSelect.setSelectedIndex(perspectiveIndex);
+    const option = this._perspectiveSelect.options().find(option => option.value === perspectiveIndex);
+    this._perspectiveSelect.select(/** @type {!Element} */ (option));
     this._changePerspective(perspectiveIndex);
   }
 
@@ -550,7 +545,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
   }
 
   _onSelectedPerspectiveChanged(event) {
-    this._changePerspective(event.target.selectedIndex);
+    this._changePerspective(event.target.selectedOptions[0].value);
   }
 
   /**
@@ -627,6 +622,15 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     element.node.queryObjectContent(this._profile.target(), showCallback, objectGroupName);
   }
 
+  _updatePerspectiveOptions() {
+    const multipleSnapshots = this._profiles().length > 1;
+    this._perspectiveSelect.removeOptions();
+    this._perspectives.forEach((perspective, index) => {
+      if (multipleSnapshots || perspective !== this._comparisonPerspective)
+        this._perspectiveSelect.createOption(perspective.title(), '', String(index));
+    });
+  }
+
   _updateBaseOptions() {
     var list = this._profiles();
     // We're assuming that snapshots can only be added.
@@ -659,6 +663,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
   }
 
   _updateControls() {
+    this._updatePerspectiveOptions();
     this._updateBaseOptions();
     this._updateFilterOptions();
   }
@@ -773,12 +778,12 @@ Profiler.HeapSnapshotView.SummaryPerspective = class extends Profiler.HeapSnapsh
     heapSnapshotView._splitWidget.show(heapSnapshotView._searchableView.element);
     heapSnapshotView._filterSelect.setVisible(true);
     heapSnapshotView._classNameFilter.setVisible(true);
-    if (heapSnapshotView._trackingOverviewGrid) {
-      heapSnapshotView._trackingOverviewGrid.show(
-          heapSnapshotView._searchableView.element, heapSnapshotView._splitWidget.element);
-      heapSnapshotView._trackingOverviewGrid.update();
-      heapSnapshotView._trackingOverviewGrid._updateGrid();
-    }
+    if (!heapSnapshotView._trackingOverviewGrid)
+      return;
+    heapSnapshotView._trackingOverviewGrid.show(
+        heapSnapshotView._searchableView.element, heapSnapshotView._splitWidget.element);
+    heapSnapshotView._trackingOverviewGrid.update();
+    heapSnapshotView._trackingOverviewGrid._updateGrid();
   }
 
   /**

@@ -45,8 +45,6 @@ Network.NetworkLogView = class extends UI.VBox {
 
     this._networkHideDataURLSetting = Common.settings.createSetting('networkHideDataURL', false);
     this._networkResourceTypeFiltersSetting = Common.settings.createSetting('networkResourceTypeFilters', {});
-    this._networkShowPrimaryLoadWaterfallSetting =
-        Common.settings.createSetting('networkShowPrimaryLoadWaterfall', false);
 
     this._filterBar = filterBar;
     this._progressBarContainer = progressBarContainer;
@@ -1674,9 +1672,6 @@ Network.NetworkLogView.HTTPSchemas = {
   'ws': true,
   'wss': true
 };
-
-Network.NetworkLogView._waterfallMinOvertime = 1;
-Network.NetworkLogView._waterfallMaxOvertime = 3;
 
 /** @enum {symbol} */
 Network.NetworkLogView.Events = {

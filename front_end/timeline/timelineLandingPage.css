@@ -7,19 +7,14 @@
 .timeline-landing-page {
     align-self: center;
     max-width: 500px;
-    font-size: 13px;
-}
-
-.timeline-landing-page .tabbed-pane {
-    padding: 10px 0 0 0;
+    font-size: 14px;
+    margin-top: 30px;
 }
 
 .timeline-landing-page .timeline-perspective-body {
-    align-items: stretch;
     line-height: 1.5;
     padding: 12px;
     white-space: pre-line;
-    width: 100%;
     font-size: 12px;
 }
 
@@ -29,9 +24,9 @@
 }
 
 .timeline-landing-page button {
-    min-width: 90px;
-    min-height: 26px;
-    margin: 10px 0 0 0;
+    min-width: 120px;
+    padding: 6px;
+    margin: 14px 14px 0 0;
 }
 
 .timeline-landing-page .recording-setting {

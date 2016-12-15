@@ -14,40 +14,28 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
     this._tabbedPane.renderWithNoHeaderBackground();
 
     var tab = new Timeline.TimelineLandingPage.PerspectiveTabWidget();
-    tab.setDescription(Common.UIString(
-        'Page Load mode allows you to analyze how fast the page is loaded and becomes responsive.\n' +
-        'In this mode the page is automatically reloaded right after the recording has started. ' +
-        'During recording it collects information about network requests, screen state updates, ' +
-        'and CPU threads acivity along with JavaScript stacks. ' +
-        'Recording is stopped automatically shortly after the page processes load event.'));
-    tab.setAction(recordAndReload);
+    tab.appendDescription(Common.UIString(
+        'The Performance panel lets you record what the browser does during page load and user interaction. ' +
+        'The timeline it generates can help you determine why certain parts of your page are slow.\u2002'));
+    tab.appendDescription(learnMore());
+    tab.appendDescription(createElement('p'));
+    tab.appendDescription(Common.UIString(
+        'The basic profile collects network, JavaScript and browser activity as you interact with the page.'));
     tab.appendOption(config.network, false, true);
     tab.appendOption(config.screenshots, true, true);
-    this._tabbedPane.appendTab(perspectives.Load, Common.UIString('Page Load'), tab);
+    this._tabbedPane.appendTab(perspectives.Responsiveness, Common.UIString('Basic'), tab);
 
     tab = new Timeline.TimelineLandingPage.PerspectiveTabWidget();
-    tab.setDescription(Common.UIString('Record page responsiveness.'));
-    tab.setAction(record);
-    tab.appendOption(config.network, false, true);
-    tab.appendOption(config.screenshots, true, false);
-    this._tabbedPane.appendTab(perspectives.Responsiveness, Common.UIString('Responsiveness'), tab);
-
-    tab = new Timeline.TimelineLandingPage.PerspectiveTabWidget();
-    tab.setDescription(Common.UIString(
-        'This mode is useful when you want to focus on JavaScript performance. ' +
-        'All the options besides sampling CPU profiler are turned off to minimize measurement errors.'));
-    tab.setAction(record);
-    this._tabbedPane.appendTab(perspectives.JavaScript, Common.UIString('JavaScript'), tab);
-
-    tab = new Timeline.TimelineLandingPage.PerspectiveTabWidget();
-    tab.setDescription(Common.UIString('Advanced mode that allows you to customize recording options.'));
-    tab.setAction(record);
+    tab.appendDescription(Common.UIString(
+        'Select what additional details you’d like to record. ' +
+        'By default, the advanced profile will collect all data of the basic profile.\u2002'));
+    tab.appendDescription(learnMore());
     tab.appendOption(config.network, true, true);
     tab.appendOption(config.javascript, true, true);
     tab.appendOption(config.screenshots, true, true);
     tab.appendOption(config.memory, true, false);
     tab.appendOption(config.paints, true, false);
-    this._tabbedPane.appendTab(perspectives.Custom, Common.UIString('Custom'), tab);
+    this._tabbedPane.appendTab(perspectives.Custom, Common.UIString('Advanced'), tab);
 
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
     this._tabbedPane.show(this.contentElement);
@@ -55,12 +43,13 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
         Common.settings.createSetting('timelinePerspective', Timeline.TimelinePanel.Perspectives.Load);
     this._perspectiveSetting.addChangeListener(this._perspectiveChanged, this);
 
-    function record() {
-      UI.actionRegistry.action('timeline.toggle-recording').execute();
-    }
-
-    function recordAndReload() {
-      SDK.targetManager.reloadPage();
+    /**
+     * @return {!Element}
+     */
+    function learnMore() {
+      return UI.createExternalLink(
+        'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/timeline-tool',
+        Common.UIString('Learn more'));
     }
   }
 
@@ -124,23 +113,20 @@ Timeline.TimelineLandingPage.PerspectiveTabWidget = class extends UI.VBox {
     this.contentElement.classList.add('timeline-perspective-body');
     this._enabledOptions = new Set([Timeline.TimelineLandingPage.RecordingConfig.javascript.id]);
     this._descriptionDiv = this.contentElement.createChild('div', 'timeline-perspective-description');
-    this._actionButton = createTextButton(Common.UIString('Start'));
     this._actionButtonDiv = this.contentElement.createChild('div');
-    this._actionButtonDiv.appendChild(this._actionButton);
+    this._actionButtonDiv.appendChild(createTextButton(Common.UIString('Record'), this._record.bind(this)));
+    this._actionButtonDiv.appendChild(createTextButton(Common.UIString('Record Page Load'),
+        this._recordPageLoad.bind(this)));
   }
 
   /**
-   * @param {string} text
+   * @param {!Element|string} value
    */
-  setDescription(text) {
-    this._descriptionDiv.textContent = text;
-  }
-
-  /**
-   * @param {function()} action
-   */
-  setAction(action) {
-    this._actionButton.addEventListener('click', action);
+  appendDescription(value) {
+    if (typeof value === 'string')
+      this._descriptionDiv.createTextChild(value);
+    else
+      this._descriptionDiv.appendChild(value);
   }
 
   /**
@@ -168,5 +154,13 @@ Timeline.TimelineLandingPage.PerspectiveTabWidget = class extends UI.VBox {
       const setting = Common.settings.createSetting(config.setting, false);
       setting.set(this._enabledOptions.has(id));
     }
+  }
+
+  _record() {
+    UI.actionRegistry.action('timeline.toggle-recording').execute();
+  }
+
+  _recordPageLoad() {
+    SDK.targetManager.reloadPage();
   }
 };

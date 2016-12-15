@@ -270,8 +270,8 @@
 }
 
 .tabbed-pane-no-tab-borders .tabbed-pane-header-tab {
-    border: none;
-    padding: 2px 10px;
+    border: none !important;
+    padding: 2px 0.8em;
 }
 
 .tabbed-pane-no-tab-borders .tabbed-pane-header-contents {

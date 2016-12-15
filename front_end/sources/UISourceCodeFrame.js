@@ -130,9 +130,6 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    */
   wasShown() {
     super.wasShown();
-    this._boundWindowFocused = this._windowFocused.bind(this);
-    this.element.ownerDocument.defaultView.addEventListener('focus', this._boundWindowFocused, false);
-    this._checkContentUpdated();
     // We need CodeMirrorTextEditor to be initialized prior to this call as it calls |cursorPositionToCoordinates| internally. @see crbug.com/506566
     setImmediate(this._updateBucketDecorations.bind(this));
   }
@@ -143,8 +140,6 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   willHide() {
     super.willHide();
     UI.context.setFlavor(Sources.UISourceCodeFrame, null);
-    this.element.ownerDocument.defaultView.removeEventListener('focus', this._boundWindowFocused, false);
-    delete this._boundWindowFocused;
     this._uiSourceCode.removeWorkingCopyGetter();
   }
 
@@ -159,16 +154,6 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     if (this._uiSourceCode.project().isServiceProject())
       return false;
     return this._uiSourceCode.contentType() !== Common.resourceTypes.Document;
-  }
-
-  _windowFocused(event) {
-    this._checkContentUpdated();
-  }
-
-  _checkContentUpdated() {
-    if (!this.loaded || !this.isShowing())
-      return;
-    this._uiSourceCode.checkContentUpdated(true);
   }
 
   commitEditing() {

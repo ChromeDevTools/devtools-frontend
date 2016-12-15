@@ -222,15 +222,7 @@ Sources.SourcesSearchScope = class {
       if (uiSourceCode.isDirty())
         contentLoaded.call(this, uiSourceCode, uiSourceCode.workingCopy());
       else
-        uiSourceCode.checkContentUpdated(true, contentUpdated.bind(this, uiSourceCode));
-    }
-
-    /**
-     * @param {!Workspace.UISourceCode} uiSourceCode
-     * @this {Sources.SourcesSearchScope}
-     */
-    function contentUpdated(uiSourceCode) {
-      uiSourceCode.requestContent().then(contentLoaded.bind(this, uiSourceCode));
+        uiSourceCode.requestContent().then(contentLoaded.bind(this, uiSourceCode));
     }
 
     /**

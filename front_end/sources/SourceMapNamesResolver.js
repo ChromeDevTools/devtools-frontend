@@ -65,7 +65,6 @@ Sources.SourceMapNamesResolver._scopeIdentifiers = function(scope) {
   function onIdentifiers(text, scopeStart, prefix, identifiers) {
     var result = [];
     var cursor = new Common.TextCursor(text.lineEndings());
-    var promises = [];
     for (var i = 0; i < identifiers.length; ++i) {
       var id = identifiers[i];
       if (id.offset < prefix.length)

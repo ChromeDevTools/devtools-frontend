@@ -216,7 +216,6 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     }
     columnNumber = Math.max(columnNumber, minColumnNumber);
 
-    var target = this.target();
     /**
      * @param {?Protocol.Error} error
      * @param {!Protocol.Debugger.BreakpointId} breakpointId
@@ -240,8 +239,6 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    * @param {function(?Protocol.Debugger.BreakpointId, !Array.<!SDK.DebuggerModel.Location>)=} callback
    */
   setBreakpointBySourceId(rawLocation, condition, callback) {
-    var target = this.target();
-
     /**
      * @this {SDK.DebuggerModel}
      * @param {?Protocol.Error} error

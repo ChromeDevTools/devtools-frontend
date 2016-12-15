@@ -36,7 +36,6 @@ Sass.SASSSupport.parseSCSS = function(url, content) {
    */
   function createTextNode(payload) {
     var range = Common.TextRange.fromObject(payload);
-    var value = text.extract(range);
     return new Sass.SASSSupport.TextNode(document, text.extract(range), range);
   }
 

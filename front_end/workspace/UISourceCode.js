@@ -173,7 +173,6 @@ Workspace.UISourceCode = class extends Common.Object {
    * @param {!Common.ResourceType=} contentType
    */
   _updateName(name, url, contentType) {
-    var oldURL = this.url();
     this._url = this._url.substring(0, this._url.length - this._name.length) + name;
     this._name = name;
     if (url)

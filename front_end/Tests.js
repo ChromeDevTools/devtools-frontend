@@ -302,12 +302,6 @@
   TestSuite.prototype.testNoScriptDuplicatesOnPanelSwitch = function() {
     var test = this;
 
-    // There should be two scripts: one for the main page and another
-    // one which is source of console API(see
-    // InjectedScript._ensureCommandLineAPIInstalled).
-    var expectedScriptsCount = 2;
-    var parsedScripts = [];
-
     function switchToElementsTab() {
       test.showPanel('elements').then(function() {
         setTimeout(switchToScriptsTab, 0);
@@ -573,7 +567,6 @@
     this._waitForTargets(2, callback.bind(this));
 
     function callback() {
-      var target = SDK.targetManager.targets(SDK.Target.Capability.JS)[0];
       InspectorBackendClass.deprecatedRunAfterPendingDispatches(this.releaseControl.bind(this));
     }
   };

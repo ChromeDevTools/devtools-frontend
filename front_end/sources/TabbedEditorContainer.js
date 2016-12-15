@@ -298,7 +298,6 @@ Sources.TabbedEditorContainer = class extends Common.Object {
     if (!shouldPrompt ||
         confirm(Common.UIString('Are you sure you want to close unsaved file: %s?', uiSourceCode.name()))) {
       uiSourceCode.resetWorkingCopy();
-      var previousView = this._currentView;
       if (nextTabId)
         this._tabbedPane.selectTab(nextTabId, true);
       this._tabbedPane.closeTab(id, true);

@@ -796,7 +796,6 @@ Network.NetworkLogView = class extends UI.VBox {
 
     this.removeAllNodeHighlights();
 
-    var oldBoundary = this.calculator().boundary();
     this._timeCalculator.updateBoundariesForEventTime(this._mainRequestLoadTime);
     this._durationCalculator.updateBoundariesForEventTime(this._mainRequestLoadTime);
     this._timeCalculator.updateBoundariesForEventTime(this._mainRequestDOMContentLoadedTime);

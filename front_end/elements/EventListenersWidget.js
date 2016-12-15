@@ -100,7 +100,6 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
     this._lastRequestedNode = node;
     var selectedNodeOnly = !this._showForAncestorsSetting.get();
     var promises = [];
-    var listenersView = this._eventListenersView;
     promises.push(node.resolveToObjectPromise(Elements.EventListenersWidget._objectGroupName));
     if (!selectedNodeOnly) {
       var currentNode = node.parentNode;

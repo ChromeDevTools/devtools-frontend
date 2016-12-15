@@ -84,8 +84,6 @@ Audits.AuditRules.GzipRule = class extends Audits.AuditRule {
    */
   doRun(target, requests, result, callback, progress) {
     var totalSavings = 0;
-    var compressedSize = 0;
-    var candidateSize = 0;
     var summary = result.addChild('', true);
     for (var i = 0, length = requests.length; i < length; ++i) {
       var request = requests[i];
@@ -93,11 +91,8 @@ Audits.AuditRules.GzipRule = class extends Audits.AuditRule {
         continue;  // Do not test cached resources.
       if (this._shouldCompress(request)) {
         var size = request.resourceSize;
-        candidateSize += size;
-        if (this._isCompressed(request)) {
-          compressedSize += size;
+        if (this._isCompressed(request))
           continue;
-        }
         var savings = 2 * size / 3;
         totalSavings += savings;
         summary.addFormatted('%r could save ~%s', request.url, Number.bytesToString(savings));

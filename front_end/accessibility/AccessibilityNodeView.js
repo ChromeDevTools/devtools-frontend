@@ -347,8 +347,6 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
    */
   appendIDRefValueElement(value) {
     var relatedNodes = value.relatedNodes;
-    var numNodes = relatedNodes.length;
-    var valueElement;
 
     var idrefs = value.value.trim().split(/\s+/);
     if (idrefs.length === 1) {
@@ -400,7 +398,6 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
     var nameElement = createElement('span');
     var AXValueSourceType = Protocol.Accessibility.AXValueSourceType;
     var type = source.type;
-    var name;
     switch (type) {
       case AXValueSourceType.Attribute:
       case AXValueSourceType.Placeholder:

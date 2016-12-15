@@ -11,12 +11,6 @@ Network.NetworkOverview = class extends UI.TimelineOverviewBase {
 
     /** @type {number} */
     this._numBands = 1;
-    /** @type {number} */
-    this._windowStart = 0;
-    /** @type {number} */
-    this._windowEnd = 0;
-    /** @type {boolean} */
-    this._restoringWindow = false;
     /** @type {boolean} */
     this._updateScheduled = false;
 
@@ -118,8 +112,6 @@ Network.NetworkOverview = class extends UI.TimelineOverviewBase {
    * @override
    */
   reset() {
-    this._windowStart = 0;
-    this._windowEnd = 0;
     /** @type {?Components.FilmStripModel} */
     this._filmStripModel = null;
 
@@ -167,16 +159,9 @@ Network.NetworkOverview = class extends UI.TimelineOverviewBase {
       var span = calculator.boundarySpan();
       while (this._span < span)
         this._span *= 1.25;
+
       calculator.setBounds(calculator.minimumBoundary(), calculator.minimumBoundary() + this._span);
       this._lastBoundary = new Network.NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
-      if (this._windowStart || this._windowEnd) {
-        this._restoringWindow = true;
-        var startTime = calculator.minimumBoundary();
-        var totalTime = calculator.boundarySpan();
-        var left = (this._windowStart - startTime) / totalTime;
-        var right = (this._windowEnd - startTime) / totalTime;
-        this._restoringWindow = false;
-      }
     }
 
     var context = this.context();

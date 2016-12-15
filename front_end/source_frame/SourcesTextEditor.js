@@ -541,7 +541,6 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
 
     function modeConstructor(config, parserConfig) {
       function nextToken(stream) {
-        var pos = stream.pos;
         if (stream.match(/^\s+$/, true))
           return true ? 'trailing-whitespace' : null;
         do

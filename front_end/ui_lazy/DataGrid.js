@@ -602,7 +602,6 @@ UI.DataGrid = class extends Common.Object {
       // when the two columns that get resized get a percent value for
       // their widths, all the other columns already have percent values
       // for their widths.
-      var headerTableColumns = this._headerTableColumnGroup.children;
 
       // Use container size to avoid changes of table width caused by change of column widths.
       var tableWidth = this.element.offsetWidth - this._cornerWidth;

@@ -384,7 +384,6 @@ UI.Widget = class extends Common.Object {
       if (this._parentWidget._defaultFocusedChild === this)
         this._parentWidget._defaultFocusedChild = null;
       this._parentWidget.childWasDetached(this);
-      var parent = this._parentWidget;
       this._parentWidget = null;
       this._processWasDetachedFromHierarchy();
     } else {

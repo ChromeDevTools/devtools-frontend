@@ -114,7 +114,7 @@ UI.ListWidget = class extends UI.VBox {
    */
   _createControls(item, element) {
     var controls = createElementWithClass('div', 'controls-container fill');
-    var gradient = controls.createChild('div', 'controls-gradient');
+    controls.createChild('div', 'controls-gradient');
     var buttons = controls.createChild('div', 'controls-buttons');
 
     var editButton = buttons.createChild('div', 'edit-button');

@@ -511,7 +511,6 @@ Sources.SourcesPanel = class extends UI.Panel {
     delete this._switchToPausedTargetTimeout;
     if (this._paused)
       return;
-    var target = UI.context.flavor(SDK.Target);
     if (debuggerModel.isPaused())
       return;
     var debuggerModels = SDK.DebuggerModel.instances();
@@ -855,7 +854,6 @@ Sources.SourcesPanel = class extends UI.Panel {
       return;
     var uiLocation = /** @type {!Workspace.UILocation} */ (object);
     var uiSourceCode = uiLocation.uiSourceCode;
-    var projectType = uiSourceCode.project().type();
 
     var contentType = uiSourceCode.contentType();
     if (contentType.hasScripts()) {

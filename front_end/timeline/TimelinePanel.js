@@ -1150,7 +1150,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
    */
   _showSnapshotInPaintProfiler(snapshot) {
     var paintProfilerView = this._paintProfilerView();
-    var hasProfileData = paintProfilerView.setSnapshot(snapshot);
+    paintProfilerView.setSnapshot(snapshot);
     if (!this._detailsView.hasTab(Timeline.TimelinePanel.DetailsTab.PaintProfiler)) {
       this._detailsView.appendTab(
           Timeline.TimelinePanel.DetailsTab.PaintProfiler, Common.UIString('Paint Profiler'), paintProfilerView,

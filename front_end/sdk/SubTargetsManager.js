@@ -185,7 +185,6 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
    * @param {string} targetId
    */
   _detachedFromTarget(targetId) {
-    var target = this._attachedTargets.get(targetId);
     this._attachedTargets.delete(targetId);
     var connection = this._connections.get(targetId);
     connection._onDisconnect.call(null, 'target terminated');

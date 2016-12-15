@@ -417,7 +417,6 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
   }
 
   _resolveObjectForPopover(anchorBox, showCallback, objectGroupName) {
-    var target = UI.context.flavor(SDK.Target);
     var selectedCallFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
     if (!selectedCallFrame) {
       this._popoverHelper.hidePopover();

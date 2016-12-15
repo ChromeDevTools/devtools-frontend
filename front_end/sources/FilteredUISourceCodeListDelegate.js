@@ -123,7 +123,7 @@ Sources.FilteredUISourceCodeListDelegate = class extends UI.FilteredListWidget.D
     var uiSourceCode = this._uiSourceCodes[itemIndex];
     var fullDisplayName = uiSourceCode.fullDisplayName();
     var indexes = [];
-    var score = new Sources.FilePathScoreFunction(query).score(fullDisplayName, indexes);
+    new Sources.FilePathScoreFunction(query).score(fullDisplayName, indexes);
     var fileNameIndex = fullDisplayName.lastIndexOf('/');
 
     titleElement.textContent = uiSourceCode.displayName() + (this._queryLineNumberAndColumnNumber || '');

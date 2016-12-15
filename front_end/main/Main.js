@@ -182,8 +182,7 @@ Main.Main = class {
         new Bindings.BreakpointManager(null, Workspace.workspace, SDK.targetManager, Bindings.debuggerWorkspaceBinding);
     Extensions.extensionServer = new Extensions.ExtensionServer();
 
-    var fileSystemWorkspaceBinding =
-        new Persistence.FileSystemWorkspaceBinding(Workspace.isolatedFileSystemManager, Workspace.workspace);
+    new Persistence.FileSystemWorkspaceBinding(Workspace.isolatedFileSystemManager, Workspace.workspace);
     Persistence.persistence =
         new Persistence.Persistence(Workspace.workspace, Bindings.breakpointManager, Workspace.fileSystemMapping);
 

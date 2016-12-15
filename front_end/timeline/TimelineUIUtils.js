@@ -993,8 +993,6 @@ Timeline.TimelineUIUtils = class {
    * @param {!Object} aggregatedStats
    */
   static _collectAggregatedStatsForRecord(record, startTime, endTime, aggregatedStats) {
-    var records = [];
-
     if (!record.endTime() || record.endTime() < startTime || record.startTime() > endTime)
       return;
 
@@ -1023,7 +1021,6 @@ Timeline.TimelineUIUtils = class {
     var contentHelper = new Timeline.TimelineDetailsContentHelper(target, linkifier);
 
     var duration = request.endTime - (request.startTime || -Infinity);
-    var items = [];
     if (request.url)
       contentHelper.appendElementRow(Common.UIString('URL'), Components.Linkifier.linkifyURL(request.url));
     if (isFinite(duration))
@@ -1511,7 +1508,6 @@ Timeline.TimelineUIUtils = class {
    * @return {!Element}
    */
   static generateDetailsContentForFrame(frameModel, frame, filmStripFrame) {
-    var pieChart = Timeline.TimelineUIUtils.generatePieChart(frame.timeByCategory);
     var contentHelper = new Timeline.TimelineDetailsContentHelper(null, null);
     contentHelper.addSection(Common.UIString('Frame'));
 

@@ -100,13 +100,6 @@ UI.InplaceEditor = class {
     var moveDirection = '';
     var self = this;
 
-    /**
-     * @param {!Event} e
-     */
-    function consumeCopy(e) {
-      e.consume();
-    }
-
     this.setUpEditor(editingContext);
 
     editingContext.oldText = isMultiline ? config.initialValue : this.editorContent(editingContext);

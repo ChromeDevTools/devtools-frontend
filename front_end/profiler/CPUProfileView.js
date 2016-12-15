@@ -229,7 +229,8 @@ Profiler.CPUProfileType = class extends Profiler.ProfileType {
       this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, recordedProfile);
     }
 
-    this.profileBeingRecorded().target()
+    this.profileBeingRecorded()
+        .target()
         .cpuProfilerModel.stopRecording()
         .then(didStopProfiling.bind(this))
         .then(SDK.targetManager.resumeAllTargets.bind(SDK.targetManager))
@@ -374,7 +375,6 @@ Profiler.CPUFlameChartDataProvider = class extends Profiler.ProfileFlameChartDat
     var entryTotalTimes = new Float32Array(entries.length);
     var entrySelfTimes = new Float32Array(entries.length);
     var entryStartTimes = new Float64Array(entries.length);
-    var minimumBoundary = this.minimumBoundary();
 
     for (var i = 0; i < entries.length; ++i) {
       var entry = entries[i];

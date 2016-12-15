@@ -470,7 +470,7 @@ Network.NetworkLogViewColumns = class {
     var index = this._columns.findIndex(columnConfig => columnConfig.id === headerId);
     if (index === -1)
       return false;
-    var columnConfig = this._columns.splice(index, 1);
+    this._columns.splice(index, 1);
     this._dataGrid.removeColumn(headerId);
     this._saveColumns();
     this._updateColumns();

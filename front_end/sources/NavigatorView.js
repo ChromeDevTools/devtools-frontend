@@ -157,7 +157,6 @@ Sources.NavigatorView = class extends UI.VBox {
     var typeWeight1 = Sources.NavigatorView._treeElementOrder(treeElement1);
     var typeWeight2 = Sources.NavigatorView._treeElementOrder(treeElement2);
 
-    var result;
     if (typeWeight1 > typeWeight2)
       return 1;
     if (typeWeight1 < typeWeight2)
@@ -705,9 +704,6 @@ Sources.NavigatorView = class extends UI.VBox {
    * @param {!Workspace.UISourceCode=} uiSourceCodeToCopy
    */
   create(project, path, uiSourceCodeToCopy) {
-    var filePath;
-    var uiSourceCode;
-
     /**
      * @this {Sources.NavigatorView}
      * @param {?string} content

@@ -323,8 +323,6 @@ TimelineModel.TimelineFrameModel = class {
    */
   _addMainThreadTraceEvent(event) {
     var eventNames = TimelineModel.TimelineModel.RecordType;
-    var timestamp = event.startTime;
-    var selfTime = event.selfTime || 0;
 
     if (SDK.TracingModel.isTopLevelEvent(event)) {
       this._currentTaskTimeByCategory = {};

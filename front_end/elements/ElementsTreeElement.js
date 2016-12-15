@@ -478,7 +478,6 @@ Elements.ElementsTreeElement = class extends TreeElement {
 
   populateNodeContextMenu(contextMenu) {
     // Add free-form node-related actions.
-    var openTagElement = this._node[this.treeOutline.treeElementSymbol()] || this;
     var isEditable = this.hasEditableNode();
     if (isEditable && !this._editing)
       contextMenu.appendItem(Common.UIString('Edit as HTML'), this._editAsHTML.bind(this));

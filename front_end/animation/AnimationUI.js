@@ -203,8 +203,6 @@ Animation.AnimationUI = class {
   }
 
   redraw() {
-    var durationWithDelay =
-        this._delay() + this._duration() * this._animation.source().iterations() + this._animation.source().endDelay();
     var maxWidth = this._timeline.width() - Animation.AnimationUI.Options.AnimationMargin;
 
     this._svg.setAttribute('width', (maxWidth + 2 * Animation.AnimationUI.Options.AnimationMargin).toFixed(2));

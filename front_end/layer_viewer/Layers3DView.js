@@ -231,7 +231,6 @@ LayerViewer.Layers3DView = class extends UI.VBox {
   _updateTransformAndConstraints() {
     var paddingFraction = 0.1;
     var viewport = this._layerTree.viewportSize();
-    var root = this._layerTree.root();
     var baseWidth = viewport ? viewport.width : this._dimensionsForAutoscale.width;
     var baseHeight = viewport ? viewport.height : this._dimensionsForAutoscale.height;
     var canvasWidth = this._canvasElement.width;

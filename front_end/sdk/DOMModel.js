@@ -1807,16 +1807,6 @@ SDK.DOMModel = class extends SDK.SDKModel {
    * @param {function(?Protocol.Error)=} callback
    */
   undo(callback) {
-    /**
-     * @param {?Protocol.Error} error
-     * @this {SDK.DOMModel}
-     */
-    function mycallback(error) {
-      this.dispatchEventToListeners(SDK.DOMModel.Events.UndoRedoCompleted);
-      callback(error);
-    }
-
-    this.dispatchEventToListeners(SDK.DOMModel.Events.UndoRedoRequested);
     this._agent.undo(callback);
   }
 
@@ -1824,16 +1814,6 @@ SDK.DOMModel = class extends SDK.SDKModel {
    * @param {function(?Protocol.Error)=} callback
    */
   redo(callback) {
-    /**
-     * @param {?Protocol.Error} error
-     * @this {SDK.DOMModel}
-     */
-    function mycallback(error) {
-      this.dispatchEventToListeners(SDK.DOMModel.Events.UndoRedoCompleted);
-      callback(error);
-    }
-
-    this.dispatchEventToListeners(SDK.DOMModel.Events.UndoRedoRequested);
     this._agent.redo(callback);
   }
 
@@ -1941,10 +1921,7 @@ SDK.DOMModel.Events = {
   NodeRemoved: Symbol('NodeRemoved'),
   DocumentUpdated: Symbol('DocumentUpdated'),
   ChildNodeCountUpdated: Symbol('ChildNodeCountUpdated'),
-  UndoRedoRequested: Symbol('UndoRedoRequested'),
-  UndoRedoCompleted: Symbol('UndoRedoCompleted'),
   DistributedNodesChanged: Symbol('DistributedNodesChanged'),
-  ModelSuspended: Symbol('ModelSuspended'),
   InspectModeWillBeToggled: Symbol('InspectModeWillBeToggled'),
   MarkersChanged: Symbol('MarkersChanged')
 };

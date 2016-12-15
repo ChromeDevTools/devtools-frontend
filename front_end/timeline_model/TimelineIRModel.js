@@ -22,9 +22,6 @@ TimelineModel.TimelineIRModel = class {
    * @param {?Array<!SDK.TracingModel.AsyncEvent>} animations
    */
   populate(inputLatencies, animations) {
-    var eventTypes = TimelineModel.TimelineIRModel.InputEvents;
-    var phases = TimelineModel.TimelineIRModel.Phases;
-
     this.reset();
     if (!inputLatencies)
       return;

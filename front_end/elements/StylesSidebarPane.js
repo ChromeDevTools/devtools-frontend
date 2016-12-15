@@ -1513,7 +1513,6 @@ Elements.StylePropertiesSection = class {
     var oldSelectorRange = rule.selectorRange();
     if (!oldSelectorRange)
       return Promise.resolve();
-    var selectedNode = this._parentPane.node();
     return rule.setSelectorText(newContent)
         .then(onSelectorsUpdated.bind(this, /** @type {!SDK.CSSStyleRule} */ (rule), oldSelectorRange));
   }
@@ -1719,7 +1718,6 @@ Elements.KeyframePropertiesSection = class extends Elements.StylePropertiesSecti
     var oldRange = rule.key().range;
     if (!oldRange)
       return Promise.resolve();
-    var selectedNode = this._parentPane.node();
     return rule.setKeyText(newContent).then(updateSourceRanges.bind(this));
   }
 
@@ -2535,7 +2533,7 @@ Elements.StylePropertyTreeElement = class extends TreeElement {
     var isEditingName = context.isEditingName;
 
     // Determine where to move to before making changes
-    var createNewProperty, moveToPropertyName, moveToSelector;
+    var createNewProperty, moveToSelector;
     var isDataPasted = 'originalName' in context;
     var isDirtyViaPaste = isDataPasted && (this.nameElement.textContent !== context.originalName ||
                                            this.valueElement.textContent !== context.originalValue);
@@ -2546,12 +2544,12 @@ Elements.StylePropertyTreeElement = class extends TreeElement {
     if (moveDirection === 'forward' && (!isEditingName || isPropertySplitPaste) ||
         moveDirection === 'backward' && isEditingName) {
       moveTo = moveTo._findSibling(moveDirection);
-      if (moveTo)
-        moveToPropertyName = moveTo.name;
-      else if (moveDirection === 'forward' && (!this._newProperty || userInput))
-        createNewProperty = true;
-      else if (moveDirection === 'backward')
-        moveToSelector = true;
+      if (!moveTo) {
+        if (moveDirection === 'forward' && (!this._newProperty || userInput))
+          createNewProperty = true;
+        else if (moveDirection === 'backward')
+          moveToSelector = true;
+      }
     }
 
     // Make the Changes and trigger the moveToNextCallback after updating.

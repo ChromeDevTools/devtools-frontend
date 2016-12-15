@@ -277,9 +277,6 @@ Components.Spectrum = class extends UI.VBox {
     }
     this._paletteContainerMutable = palette.mutable;
 
-    var numItems = palette.colors.length;
-    if (palette.mutable)
-      numItems++;
     if (palette.mutable) {
       this._paletteContainer.appendChild(this._addColorToolbar.element);
       this._paletteContainer.appendChild(this._deleteIconToolbar.element);

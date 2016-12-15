@@ -696,8 +696,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
     if (selection && selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot) {
       contextMenu.appendItem(
           Common.UIString('Show Paint Profiler'),
-          this.dispatchEventToListeners.bind(
-              this, LayerViewer.Layers3DView.Events.PaintProfilerRequested, selection.snapshot()),
+          this.dispatchEventToListeners.bind(this, LayerViewer.Layers3DView.Events.PaintProfilerRequested, selection),
           false);
     }
     this._layerViewHost.showContextMenu(contextMenu, selection);

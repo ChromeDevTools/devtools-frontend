@@ -67,6 +67,7 @@ function defineCommonExtensionSymbols(apiPrivate) {
     AddRequestHeaders: 'addRequestHeaders',
     AddTraceProvider: 'addTraceProvider',
     ApplyStyleSheet: 'applyStyleSheet',
+    CompleteTraceSession: 'completeTraceSession',
     CreatePanel: 'createPanel',
     CreateSidebarPane: 'createSidebarPane',
     CreateToolbarButton: 'createToolbarButton',
@@ -368,6 +369,7 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, testHook
   var PanelWithSidebar = declareInterfaceClass(PanelWithSidebarImpl);
   var Request = declareInterfaceClass(RequestImpl);
   var Resource = declareInterfaceClass(ResourceImpl);
+  var TraceSession = declareInterfaceClass(TraceSessionImpl);
 
   /**
    * @constructor
@@ -505,16 +507,43 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, testHook
    * @constructor
    * @param {string} id
    */
+  function TraceSessionImpl(id) {
+    this._id = id;
+  }
+
+  TraceSessionImpl.prototype =
+  {
+    /**
+     * @param {string=} url
+     * @param {number=} timeOffset
+     */
+    complete: function(url, timeOffset) {
+      var request = {command: commands.CompleteTraceSession, id: this._id, url: url || '', timeOffset: timeOffset || 0};
+      extensionServer.sendRequest(request);
+    }
+  };
+
+  /**
+   * @constructor
+   * @param {string} id
+   */
   function TraceProvider(id) {
-    this.onRecordingStarted = new EventSink(events.RecordingStarted + id);
+    /**
+     * @this {EventSinkImpl}
+     */
+    function dispatchRecordingStarted(message) {
+      var sessionId = message.arguments[0];
+      this._fire(new TraceSession(sessionId));
+    }
+
+    this.onRecordingStarted = new EventSink(events.RecordingStarted + id, dispatchRecordingStarted);
     this.onRecordingStopped = new EventSink(events.RecordingStopped + id);
   }
 
   /**
    * @constructor
    */
-  function Audits() {
-  }
+  function Audits() {}
 
   Audits.prototype = {
     /**

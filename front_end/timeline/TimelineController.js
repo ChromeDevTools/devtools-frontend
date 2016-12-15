@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/** @typedef {!{range: !Protocol.CSS.SourceRange, styleSheetId: !Protocol.CSS.StyleSheetId, wasUsed: boolean}} */
-SDK.CSSModel.RuleUsage;
-
 /**
  * @implements {SDK.TargetManager.Observer}
  * @implements {SDK.TracingManagerClient}
@@ -21,6 +18,8 @@ Timeline.TimelineController = class {
     this._target = target;
     this._tracingModel = tracingModel;
     this._targets = [];
+    /** @type {!Array<!Timeline.ExtensionTracingSession>} */
+    this._extensionSessions = [];
     SDK.targetManager.observeTargets(this);
 
     if (Runtime.experiments.isEnabled('timelineRuleUsageRecording'))
@@ -28,13 +27,10 @@ Timeline.TimelineController = class {
   }
 
   /**
-   * @param {boolean} captureCauses
-   * @param {boolean} enableJSSampling
-   * @param {boolean} captureMemory
-   * @param {boolean} capturePictures
-   * @param {boolean} captureFilmStrip
+   * @param {!Timeline.TimelineController.CaptureOptions} options
+   * @param {!Array<!Extensions.ExtensionTraceProvider>} providers
    */
-  startRecording(captureCauses, enableJSSampling, captureMemory, capturePictures, captureFilmStrip) {
+  startRecording(options, providers) {
     this._extensionTraceProviders = Extensions.extensionServer.traceProviders().slice();
 
     function disabledByDefault(category) {
@@ -47,30 +43,29 @@ Timeline.TimelineController = class {
     ];
     categoriesArray.push(TimelineModel.TimelineModel.Category.LatencyInfo);
 
-    if (Runtime.experiments.isEnabled('timelineV8RuntimeCallStats') && enableJSSampling)
+    if (Runtime.experiments.isEnabled('timelineV8RuntimeCallStats') && options.enableJSSampling)
       categoriesArray.push(disabledByDefault('v8.runtime_stats_sampling'));
-    if (Runtime.experiments.isEnabled('timelineTracingJSProfile') && enableJSSampling) {
+    if (Runtime.experiments.isEnabled('timelineTracingJSProfile') && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
       if (Common.moduleSetting('highResolutionCpuProfiling').get())
         categoriesArray.push(disabledByDefault('v8.cpu_profiler.hires'));
     }
-    if (captureCauses || enableJSSampling)
+    if (options.captureCauses || options.enableJSSampling)
       categoriesArray.push(disabledByDefault('devtools.timeline.stack'));
-    if (captureCauses && Runtime.experiments.isEnabled('timelineInvalidationTracking'))
+    if (options.captureCauses && Runtime.experiments.isEnabled('timelineInvalidationTracking'))
       categoriesArray.push(disabledByDefault('devtools.timeline.invalidationTracking'));
-    if (capturePictures) {
+    if (options.capturePictures) {
       categoriesArray.push(
           disabledByDefault('devtools.timeline.layers'), disabledByDefault('devtools.timeline.picture'),
           disabledByDefault('blink.graphics_context_annotations'));
     }
-    if (captureFilmStrip)
+    if (options.captureFilmStrip)
       categoriesArray.push(disabledByDefault('devtools.screenshot'));
 
-    for (var traceProvider of this._extensionTraceProviders)
-      traceProvider.start();
-
+    this._extensionSessions = providers.map(provider => new Timeline.ExtensionTracingSession(provider, this._delegate));
+    this._extensionSessions.forEach(session => session.start());
     var categories = categoriesArray.join(',');
-    this._startRecordingWithCategories(categories, enableJSSampling);
+    this._startRecordingWithCategories(categories, options.enableJSSampling);
   }
 
   stopRecording() {
@@ -84,12 +79,16 @@ Timeline.TimelineController = class {
     else
       this._addUnusedRulesToCoverage();
 
-    Promise.all(tracingStoppedPromises).then(() => this._allSourcesFinished());
-
     this._delegate.loadingStarted();
 
-    for (var traceProvider of this._extensionTraceProviders)
-      traceProvider.stop();
+    var extensionCompletionPromises = this._extensionSessions.map(session => session.stop());
+    if (extensionCompletionPromises.length) {
+      var timerId;
+      var timeoutPromise = new Promise(fulfill => timerId = setTimeout(fulfill, 5000));
+      tracingStoppedPromises.push(
+          Promise.race([Promise.all(extensionCompletionPromises).then(() => clearTimeout(timerId)), timeoutPromise]));
+    }
+    Promise.all(tracingStoppedPromises).then(() => this._allSourcesFinished());
   }
 
   /**
@@ -308,3 +307,13 @@ Timeline.TimelineController = class {
     this._delegate.loadingProgress(progress);
   }
 };
+
+/** @typedef {!{
+ *    captureCauses: (boolean|undefined),
+ *    enableJSSampling: (boolean|undefined),
+ *    captureMemory: (boolean|undefined),
+ *    capturePictures: (boolean|undefined),
+ *    captureFilmStrip: (boolean|undefined)
+ *  }}
+ */
+Timeline.TimelineController.CaptureOptions;

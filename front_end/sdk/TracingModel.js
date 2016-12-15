@@ -169,6 +169,28 @@ SDK.TracingModel = class {
   }
 
   /**
+   * @param {number} offset
+   */
+  adjustTime(offset) {
+    this._minimumRecordTime += offset;
+    this._maximumRecordTime += offset;
+    for (const process of this._processById.values()) {
+      for (const thread of process._threads.values()) {
+        for (const event of thread.events()) {
+          event.startTime += offset;
+          if (typeof event.endTime === 'number')
+            event.endTime += offset;
+        }
+        for (const event of thread.asyncEvents()) {
+          event.startTime += offset;
+          if (typeof event.endTime === 'number')
+            event.endTime += offset;
+        }
+      }
+    }
+  }
+
+  /**
    * @param {!SDK.TracingManager.EventPayload} payload
    */
   _addEvent(payload) {
@@ -474,7 +496,7 @@ SDK.BackingStorage.prototype = {
 
   finishWriting() {},
 
-  reset() {},
+  reset() {}
 };
 
 /**
@@ -612,10 +634,6 @@ SDK.TracingModel.Event = class {
   }
 };
 
-
-/**
- * @unrestricted
- */
 SDK.TracingModel.ObjectSnapshot = class extends SDK.TracingModel.Event {
   /**
    * @param {string} category
@@ -625,6 +643,12 @@ SDK.TracingModel.ObjectSnapshot = class extends SDK.TracingModel.Event {
    */
   constructor(category, name, startTime, thread) {
     super(category, name, SDK.TracingModel.Phase.SnapshotObject, startTime, thread);
+    /** @type {?function():!Promise<?string>} */
+    this._backingStorage = null;
+    /** @type {string} */
+    this.id;
+    /** @type {?Promise<?>} */
+    this._objectPromise = null;
   }
 
   /**
@@ -743,10 +767,18 @@ SDK.TracingModel.ProfileEventsGroup = class {
   }
 };
 
-/**
- * @unrestricted
- */
 SDK.TracingModel.NamedObject = class {
+  /**
+   * @param {!SDK.TracingModel} model
+   * @param {number} id
+   */
+  constructor(model, id) {
+    this._model = model;
+    this._id = id;
+    this._name = '';
+    this._sortIndex = 0;
+  }
+
   /**
    * @param {!Array.<!SDK.TracingModel.NamedObject>} array
    */
@@ -783,23 +815,16 @@ SDK.TracingModel.NamedObject = class {
   }
 };
 
-
-/**
- * @unrestricted
- */
 SDK.TracingModel.Process = class extends SDK.TracingModel.NamedObject {
   /**
    * @param {!SDK.TracingModel} model
    * @param {number} id
    */
   constructor(model, id) {
-    super();
-    this._setName('Process ' + id);
-    this._id = id;
+    super(model, id);
     /** @type {!Map<number, !SDK.TracingModel.Thread>} */
     this._threads = new Map();
     this._threadByName = new Map();
-    this._model = model;
   }
 
   /**
@@ -854,22 +879,17 @@ SDK.TracingModel.Process = class extends SDK.TracingModel.NamedObject {
   }
 };
 
-/**
- * @unrestricted
- */
 SDK.TracingModel.Thread = class extends SDK.TracingModel.NamedObject {
   /**
    * @param {!SDK.TracingModel.Process} process
    * @param {number} id
    */
   constructor(process, id) {
-    super();
+    super(process._model, id);
     this._process = process;
-    this._setName('Thread ' + id);
     this._events = [];
     this._asyncEvents = [];
-    this._id = id;
-    this._model = process._model;
+    this._lastTopLevelEvent = null;
   }
 
   tracingComplete() {

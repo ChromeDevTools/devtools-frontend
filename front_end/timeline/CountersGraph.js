@@ -232,6 +232,12 @@ Timeline.CountersGraph = class extends UI.VBox {
   refreshRecords() {
   }
 
+  /**
+   * @override
+   */
+  extensionDataAdded() {
+  }
+
   _clear() {
     var ctx = this._canvas.getContext('2d');
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);

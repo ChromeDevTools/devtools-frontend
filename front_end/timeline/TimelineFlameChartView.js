@@ -192,6 +192,7 @@ Timeline.TimelineFlameChartEntryType = {
   Frame: Symbol('Frame'),
   Event: Symbol('Event'),
   InteractionRecord: Symbol('InteractionRecord'),
+  ExtensionEvent: Symbol('ExtensionEvent')
 };
 
 /**
@@ -283,14 +284,15 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @param {!TimelineModel.TimelineModel} timelineModel
    * @param {!TimelineModel.TimelineFrameModel} frameModel
    * @param {!TimelineModel.TimelineIRModel} irModel
+   * @param {!Array<!{title: string, model: !SDK.TracingModel}>} extensionModels
    * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
    */
-  constructor(delegate, timelineModel, frameModel, irModel, filters) {
+  constructor(delegate, timelineModel, frameModel, irModel, extensionModels, filters) {
     super();
     this.element.classList.add('timeline-flamechart');
     this._delegate = delegate;
     this._model = timelineModel;
-
+    this._extensionModels = extensionModels;
     this._splitWidget = new UI.SplitWidget(false, false, 'timelineFlamechartMainView', 150);
 
     this._dataProvider = new Timeline.TimelineFlameChartDataProvider(this._model, frameModel, irModel, filters);
@@ -311,6 +313,8 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._onNetworkEntrySelected = this._onEntrySelected.bind(this, this._networkDataProvider);
     this._mainView.addEventListener(UI.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
     this._networkView.addEventListener(UI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
+    this._nextExtensionIndex = 0;
+
     Bindings.blackboxManager.addChangeListener(this.refreshRecords, this);
   }
 
@@ -354,9 +358,21 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    */
   refreshRecords() {
     this._dataProvider.reset();
+    this._nextExtensionIndex = 0;
+    this.extensionDataAdded();
     this._mainView.scheduleUpdate();
+
     this._networkDataProvider.reset();
     this._networkView.scheduleUpdate();
+  }
+
+  /**
+   * @override
+   */
+  extensionDataAdded() {
+    while (this._nextExtensionIndex < this._extensionModels.length)
+      this._dataProvider.appendExtensionEvents(this._extensionModels[this._nextExtensionIndex++]);
+    this._mainView.scheduleUpdate();
   }
 
   /**

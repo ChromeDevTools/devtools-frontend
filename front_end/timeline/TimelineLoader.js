@@ -9,7 +9,7 @@
 Timeline.TimelineLoader = class {
   /**
    * @param {!SDK.TracingModel} model
-   * @param {!Timeline.TimelineLifecycleDelegate} delegate
+   * @param {!Timeline.LoaderClient} delegate
    */
   constructor(model, delegate) {
     this._model = model;
@@ -46,7 +46,7 @@ Timeline.TimelineLoader = class {
   /**
    * @param {!SDK.TracingModel} model
    * @param {string} url
-   * @param {!Timeline.TimelineLifecycleDelegate} delegate
+   * @param {!Timeline.LoaderClient} delegate
    * @return {!Timeline.TimelineLoader}
    */
   static loadFromURL(model, url, delegate) {

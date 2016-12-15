@@ -463,6 +463,8 @@ Bindings.TempFileBackingStorage = class {
       this._fileSize = fileSize;
     }
 
+    if (!this._file)
+      this._file = new Bindings.DeferredTempFile(this._dirName, String(Date.now()));
     this._file.write(this._strings, didWrite.bind(this, chunk));
     this._strings = [];
     this._stringsLength = 0;
@@ -483,7 +485,7 @@ Bindings.TempFileBackingStorage = class {
   reset() {
     if (this._file)
       this._file.remove();
-    this._file = new Bindings.DeferredTempFile(this._dirName, String(Date.now()));
+    this._file = null;
     /**
      * @type {!Array.<string>}
      */
@@ -497,7 +499,8 @@ Bindings.TempFileBackingStorage = class {
    * @param {!Bindings.OutputStreamDelegate} delegate
    */
   writeToStream(outputStream, delegate) {
-    this._file.copyToOutputStream(outputStream, delegate);
+    if (this._file)
+      this._file.copyToOutputStream(outputStream, delegate);
   }
 };
 

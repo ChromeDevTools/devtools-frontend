@@ -47,12 +47,14 @@ Extensions.ExtensionServer = class extends Common.Object {
     this._lastRequestId = 0;
     this._registeredExtensions = {};
     this._status = new Extensions.ExtensionStatus();
-    /** @type {!Array.<!Extensions.ExtensionSidebarPane>} */
+    /** @type {!Array<!Extensions.ExtensionSidebarPane>} */
     this._sidebarPanes = [];
-    /** @type {!Array.<!Extensions.ExtensionAuditCategory>} */
+    /** @type {!Array<!Extensions.ExtensionAuditCategory>} */
     this._auditCategories = [];
-    /** @type {!Array.<!Extensions.ExtensionTraceProvider>} */
+    /** @type {!Array<!Extensions.ExtensionTraceProvider>} */
     this._traceProviders = [];
+    /** @type {!Map<string, !Extensions.TracingSession>} */
+    this._traceSessions = new Map();
 
     var commands = Extensions.extensionAPI.Commands;
 
@@ -61,6 +63,7 @@ Extensions.ExtensionServer = class extends Common.Object {
     this._registerHandler(commands.AddRequestHeaders, this._onAddRequestHeaders.bind(this));
     this._registerHandler(commands.AddTraceProvider, this._onAddTraceProvider.bind(this));
     this._registerHandler(commands.ApplyStyleSheet, this._onApplyStyleSheet.bind(this));
+    this._registerHandler(commands.CompleteTraceSession, this._onCompleteTraceSession.bind(this));
     this._registerHandler(commands.CreatePanel, this._onCreatePanel.bind(this));
     this._registerHandler(commands.CreateSidebarPane, this._onCreateSidebarPane.bind(this));
     this._registerHandler(commands.CreateToolbarButton, this._onCreateToolbarButton.bind(this));
@@ -164,17 +167,20 @@ Extensions.ExtensionServer = class extends Common.Object {
   }
 
   /**
-   * @param {string} traceProviderId
+   * @param {string} providerId
+   * @param {string} sessionId
+   * @param {!Extensions.TracingSession} session
    */
-  startTraceRecording(traceProviderId) {
-    this._postNotification('trace-recording-started-' + traceProviderId);
+  startTraceRecording(providerId, sessionId, session) {
+    this._traceSessions.set(sessionId, session);
+    this._postNotification('trace-recording-started-' + providerId, sessionId);
   }
 
   /**
-   * @param {string} traceProviderId
+   * @param {string} providerId
    */
-  stopTraceRecording(traceProviderId) {
-    this._postNotification('trace-recording-stopped-' + traceProviderId);
+  stopTraceRecording(providerId) {
+    this._postNotification('trace-recording-stopped-' + providerId);
   }
 
   /**
@@ -308,6 +314,17 @@ Extensions.ExtensionServer = class extends Common.Object {
       return this._status.E_NOTFOUND(message.id);
     button.update(this._expandResourcePath(port._extensionOrigin, message.icon), message.tooltip, message.disabled);
     return this._status.OK();
+  }
+
+  /**
+   * @param {!Object} message
+   */
+  _onCompleteTraceSession(message) {
+    var session = this._traceSessions.get(message.id);
+    if (!session)
+      return this._status.E_NOTFOUND(message.id);
+    this._traceSessions.delete(message.id);
+    session.complete(message.url, message.timeOffset);
   }
 
   _onCreateSidebarPane(message) {
@@ -560,6 +577,7 @@ Extensions.ExtensionServer = class extends Common.Object {
         port._extensionOrigin, message.id, message.categoryName, message.categoryTooltip);
     this._clientObjects[message.id] = provider;
     this._traceProviders.push(provider);
+    this.dispatchEventToListeners(Extensions.ExtensionServer.Events.TraceProviderAdded);
   }
 
   /**
@@ -964,7 +982,8 @@ Extensions.ExtensionServer = class extends Common.Object {
 /** @enum {symbol} */
 Extensions.ExtensionServer.Events = {
   SidebarPaneAdded: Symbol('SidebarPaneAdded'),
-  AuditCategoryAdded: Symbol('AuditCategoryAdded')
+  AuditCategoryAdded: Symbol('AuditCategoryAdded'),
+  TraceProviderAdded: Symbol('TraceProviderAdded')
 };
 
 /**

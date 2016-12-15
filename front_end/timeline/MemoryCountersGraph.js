@@ -80,4 +80,10 @@ Timeline.MemoryCountersGraph = class extends Timeline.CountersGraph {
     }
     this.scheduleRefresh();
   }
+
+  /**
+   * @override
+   */
+  extensionDataAdded() {
+  }
 };

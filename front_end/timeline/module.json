@@ -123,6 +123,7 @@
     ],
     "scripts": [
         "CountersGraph.js",
+        "ExtensionTracingSession.js",
         "MemoryCountersGraph.js",
         "TimelineController.js",
         "TimelineLoader.js",

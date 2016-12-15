@@ -515,6 +515,7 @@ UI.ToolbarButton = class extends UI.ToolbarItem {
    */
   _clicked(event) {
     this.dispatchEventToListeners(UI.ToolbarButton.Events.Click, event);
+    event.consume();
   }
 
   /**

@@ -135,6 +135,14 @@ Persistence.Persistence = class extends Common.Object {
     if (!binding || binding[Persistence.Persistence._muteWorkingCopy])
       return;
     var other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
+    if (!uiSourceCode.isDirty()) {
+      binding[Persistence.Persistence._muteWorkingCopy] = true;
+      other.resetWorkingCopy();
+      binding[Persistence.Persistence._muteWorkingCopy] = false;
+      this._contentSyncedForTest();
+      return;
+    }
+
     var target = Bindings.NetworkProject.targetForUISourceCode(binding.network);
     if (target.isNodeJS()) {
       var newContent = uiSourceCode.workingCopy();

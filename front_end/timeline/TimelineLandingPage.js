@@ -21,8 +21,7 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
     tab.appendDescription(createElement('p'));
     tab.appendDescription(Common.UIString(
         'The basic profile collects network, JavaScript and browser activity as you interact with the page.'));
-    tab.appendOption(config.network, false, true);
-    tab.appendOption(config.screenshots, true, true);
+    tab.appendOption(config.screenshots, true);
     this._tabbedPane.appendTab(perspectives.Responsiveness, Common.UIString('Basic'), tab);
 
     tab = new Timeline.TimelineLandingPage.PerspectiveTabWidget();
@@ -30,11 +29,9 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
         'Select what additional details you’d like to record. ' +
         'By default, the advanced profile will collect all data of the basic profile.\u2002'));
     tab.appendDescription(learnMore());
-    tab.appendOption(config.network, true, true);
-    tab.appendOption(config.javascript, true, true);
-    tab.appendOption(config.screenshots, true, true);
-    tab.appendOption(config.memory, true, false);
-    tab.appendOption(config.paints, true, false);
+    tab.appendOption(config.screenshots, true);
+    tab.appendOption(config.javascript, true);
+    tab.appendOption(config.paints, false);
     this._tabbedPane.appendTab(perspectives.Custom, Common.UIString('Advanced'), tab);
 
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
@@ -73,12 +70,6 @@ Timeline.TimelineLandingPage.RecordingOption;
 
 /** @type {!Object<string, !Timeline.TimelineLandingPage.RecordingOption>} */
 Timeline.TimelineLandingPage.RecordingConfig = {
-  network: {
-    id: 'network',
-    title: Common.UIString('Network'),
-    description: Common.UIString('Capture network requests information.'),
-    setting: 'timelineCaptureNetwork'
-  },
   javascript: {
     id: 'javascript',
     title: Common.UIString('JavaScript'),
@@ -98,12 +89,6 @@ Timeline.TimelineLandingPage.RecordingConfig = {
     description: Common.UIString(
         'Capture graphics layer positions and rasterization draw calls (moderate performance overhead).'),
     setting: 'timelineCaptureLayersAndPictures'
-  },
-  memory: {
-    id: 'memory',
-    title: Common.UIString('Memory'),
-    description: Common.UIString('Capture memory statistics on every timeline event.'),
-    setting: 'timelineCaptureMemory'
   }
 };
 
@@ -131,14 +116,11 @@ Timeline.TimelineLandingPage.PerspectiveTabWidget = class extends UI.VBox {
 
   /**
    * @param {!Timeline.TimelineLandingPage.RecordingOption} option
-   * @param {boolean} visible
    * @param {boolean} enabled
    */
-  appendOption(option, visible, enabled) {
+  appendOption(option, enabled) {
     if (enabled)
       this._enabledOptions.add(option.id);
-    if (!visible)
-      return;
     const div = createElementWithClass('div', 'recording-setting');
     const value = this._enabledOptions.has(option.id);
     const setting = Common.settings.createSetting(option.setting, value);

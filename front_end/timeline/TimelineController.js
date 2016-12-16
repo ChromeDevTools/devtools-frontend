@@ -33,10 +33,14 @@ Timeline.TimelineController = class {
   startRecording(options, providers) {
     this._extensionTraceProviders = Extensions.extensionServer.traceProviders().slice();
 
+    /**
+     * @param {string} category
+     * @return {string}
+     */
     function disabledByDefault(category) {
       return 'disabled-by-default-' + category;
     }
-    var categoriesArray = [
+    const categoriesArray = [
       '-*', 'devtools.timeline', 'v8.execute', disabledByDefault('devtools.timeline'),
       disabledByDefault('devtools.timeline.frame'), SDK.TracingModel.TopLevelEventCategory,
       TimelineModel.TimelineModel.Category.Console, TimelineModel.TimelineModel.Category.UserTiming
@@ -64,8 +68,7 @@ Timeline.TimelineController = class {
 
     this._extensionSessions = providers.map(provider => new Timeline.ExtensionTracingSession(provider, this._delegate));
     this._extensionSessions.forEach(session => session.start());
-    var categories = categoriesArray.join(',');
-    this._startRecordingWithCategories(categories, options.enableJSSampling);
+    this._startRecordingWithCategories(categoriesArray.join(','), options.enableJSSampling);
   }
 
   stopRecording() {

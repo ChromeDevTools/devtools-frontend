@@ -150,6 +150,7 @@ UI.FilteredListWidget = class extends UI.VBox {
     var completion = this._delegate.autocomplete(userEnteredText);
     this._prompt.setText(completion);
     this._prompt.setDOMSelection(userEnteredText.length, completion.length);
+    this._scheduleFilter();
   }
 
   _itemsFilteredForTest() {

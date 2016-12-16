@@ -73,15 +73,17 @@ Security.SecurityModel.Events = {
 Security.PageSecurityState = class {
   /**
    * @param {!Protocol.Security.SecurityState} securityState
+   * @param {boolean} schemeIsCryptographic
    * @param {!Array<!Protocol.Security.SecurityStateExplanation>} explanations
    * @param {?Protocol.Security.InsecureContentStatus} insecureContentStatus
-   * @param {boolean} schemeIsCryptographic
+   * @param {?string} summary
    */
-  constructor(securityState, explanations, insecureContentStatus, schemeIsCryptographic) {
+  constructor(securityState, schemeIsCryptographic, explanations, insecureContentStatus, summary) {
     this.securityState = securityState;
+    this.schemeIsCryptographic = schemeIsCryptographic;
     this.explanations = explanations;
     this.insecureContentStatus = insecureContentStatus;
-    this.schemeIsCryptographic = schemeIsCryptographic;
+    this.summary = summary;
   }
 };
 
@@ -97,13 +99,14 @@ Security.SecurityDispatcher = class {
   /**
    * @override
    * @param {!Protocol.Security.SecurityState} securityState
-   * @param {!Array<!Protocol.Security.SecurityStateExplanation>=} explanations
-   * @param {!Protocol.Security.InsecureContentStatus=} insecureContentStatus
-   * @param {boolean=} schemeIsCryptographic
+   * @param {boolean} schemeIsCryptographic
+   * @param {!Array<!Protocol.Security.SecurityStateExplanation>} explanations
+   * @param {!Protocol.Security.InsecureContentStatus} insecureContentStatus
+   * @param {?string=} summary
    */
-  securityStateChanged(securityState, explanations, insecureContentStatus, schemeIsCryptographic) {
+  securityStateChanged(securityState, schemeIsCryptographic, explanations, insecureContentStatus, summary) {
     var pageSecurityState = new Security.PageSecurityState(
-        securityState, explanations || [], insecureContentStatus || null, schemeIsCryptographic || false);
+        securityState, schemeIsCryptographic, explanations, insecureContentStatus, summary || null);
     this._model.dispatchEventToListeners(Security.SecurityModel.Events.SecurityStateChanged, pageSecurityState);
   }
 };

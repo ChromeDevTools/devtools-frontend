@@ -92,13 +92,15 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
 
   /**
    * @param {!Protocol.Security.SecurityState} newSecurityState
+   * @param {boolean} schemeIsCryptographic
    * @param {!Array<!Protocol.Security.SecurityStateExplanation>} explanations
    * @param {?Protocol.Security.InsecureContentStatus} insecureContentStatus
-   * @param {boolean} schemeIsCryptographic
+   * @param {?string} summary
    */
-  _updateSecurityState(newSecurityState, explanations, insecureContentStatus, schemeIsCryptographic) {
+  _updateSecurityState(newSecurityState, schemeIsCryptographic, explanations, insecureContentStatus, summary) {
     this._sidebarMainViewElement.setSecurityState(newSecurityState);
-    this._mainView.updateSecurityState(newSecurityState, explanations, insecureContentStatus, schemeIsCryptographic);
+    this._mainView.updateSecurityState(
+        newSecurityState, schemeIsCryptographic, explanations, insecureContentStatus, summary);
   }
 
   /**
@@ -107,10 +109,11 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
   _onSecurityStateChanged(event) {
     var data = /** @type {!Security.PageSecurityState} */ (event.data);
     var securityState = /** @type {!Protocol.Security.SecurityState} */ (data.securityState);
+    var schemeIsCryptographic = /** @type {boolean} */ (data.schemeIsCryptographic);
     var explanations = /** @type {!Array<!Protocol.Security.SecurityStateExplanation>} */ (data.explanations);
     var insecureContentStatus = /** @type {?Protocol.Security.InsecureContentStatus} */ (data.insecureContentStatus);
-    var schemeIsCryptographic = /** @type {boolean} */ (data.schemeIsCryptographic);
-    this._updateSecurityState(securityState, explanations, insecureContentStatus, schemeIsCryptographic);
+    var summary = /** @type {?string} */ (data.summary);
+    this._updateSecurityState(securityState, schemeIsCryptographic, explanations, insecureContentStatus, summary);
   }
 
   selectAndSwitchToMainView() {
@@ -638,11 +641,12 @@ Security.SecurityMainView = class extends UI.VBox {
 
   /**
    * @param {!Protocol.Security.SecurityState} newSecurityState
+   * @param {boolean} schemeIsCryptographic
    * @param {!Array<!Protocol.Security.SecurityStateExplanation>} explanations
    * @param {?Protocol.Security.InsecureContentStatus} insecureContentStatus
-   * @param {boolean} schemeIsCryptographic
+   * @param {?string} summary
    */
-  updateSecurityState(newSecurityState, explanations, insecureContentStatus, schemeIsCryptographic) {
+  updateSecurityState(newSecurityState, schemeIsCryptographic, explanations, insecureContentStatus, summary) {
     // Remove old state.
     // It's safe to call this even when this._securityState is undefined.
     this._summarySection.classList.remove('security-summary-' + this._securityState);
@@ -656,7 +660,9 @@ Security.SecurityMainView = class extends UI.VBox {
       'neutral': Common.UIString('This page is not secure.'),
       'secure': Common.UIString('This page is secure (valid HTTPS).')
     };
-    this._summaryText.textContent = summaryExplanationStrings[this._securityState];
+
+    // Use override summary if present, otherwise use base explanation
+    this._summaryText.textContent = summary || summaryExplanationStrings[this._securityState];
 
     this._explanations = explanations, this._insecureContentStatus = insecureContentStatus;
     this._schemeIsCryptographic = schemeIsCryptographic;

@@ -375,10 +375,12 @@ UI.ViewManager = class {
    * @param {string=} location
    * @param {boolean=} restoreSelection
    * @param {boolean=} allowReorder
+   * @param {?string=} defaultTab
    * @return {!UI.TabbedViewLocation}
    */
-  createTabbedLocation(revealCallback, location, restoreSelection, allowReorder) {
-    return new UI.ViewManager._TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder);
+  createTabbedLocation(revealCallback, location, restoreSelection, allowReorder, defaultTab) {
+    return new UI.ViewManager._TabbedLocation(
+        this, revealCallback, location, restoreSelection, allowReorder, defaultTab);
   }
 
   /**
@@ -560,8 +562,9 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
    * @param {string=} location
    * @param {boolean=} restoreSelection
    * @param {boolean=} allowReorder
+   * @param {?string=} defaultTab
    */
-  constructor(manager, revealCallback, location, restoreSelection, allowReorder) {
+  constructor(manager, revealCallback, location, restoreSelection, allowReorder, defaultTab) {
     var tabbedPane = new UI.TabbedPane();
     if (allowReorder)
       tabbedPane.setAllowTabReorder(true);
@@ -577,6 +580,7 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabOrderChanged, this._persistTabOrder, this);
     if (restoreSelection)
       this._lastSelectedTabSetting = Common.settings.createSetting(location + '-selectedTab', '');
+    this._defaultTab = defaultTab;
 
     /** @type {!Map.<string, !UI.View>} */
     this._views = new Map();
@@ -635,7 +639,9 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
       else if (this._closeableTabSetting.get()[id])
         this._appendTab(view);
     }
-    if (this._lastSelectedTabSetting && this._tabbedPane.hasTab(this._lastSelectedTabSetting.get()))
+    if (this._defaultTab && this._tabbedPane.hasTab(this._defaultTab))
+      this._tabbedPane.selectTab(this._defaultTab);
+    else if (this._lastSelectedTabSetting && this._tabbedPane.hasTab(this._lastSelectedTabSetting.get()))
       this._tabbedPane.selectTab(this._lastSelectedTabSetting.get());
   }
 

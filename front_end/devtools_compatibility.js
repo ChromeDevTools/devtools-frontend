@@ -337,6 +337,12 @@
      */
     loadCompleted() {
       DevToolsAPI.sendMessageToEmbedder('loadCompleted', [], null);
+      // Support for legacy (<57) frontends.
+      if (window.Runtime && window.Runtime.queryParam) {
+        var panelToOpen = window.Runtime.queryParam('panel');
+        if (panelToOpen)
+          window.DevToolsAPI.showPanel(panelToOpen);
+      }
     }
 
     /**

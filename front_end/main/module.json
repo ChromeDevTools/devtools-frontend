@@ -25,6 +25,7 @@
             "category": "Navigation",
             "actionId": "main.reload",
             "className": "Main.Main.ReloadActionDelegate",
+            "iconClass": "largeicon-refresh",
             "title": "Reload page",
             "bindings": [
                 {

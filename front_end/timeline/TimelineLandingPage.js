@@ -36,30 +36,18 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
 
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
     this._tabbedPane.show(this.contentElement);
-    this._perspectiveSetting =
-        Common.settings.createSetting('timelinePerspective', Timeline.TimelinePanel.Perspectives.Load);
-    this._perspectiveSetting.addChangeListener(this._perspectiveChanged, this);
 
     /**
      * @return {!Element}
      */
     function learnMore() {
       return UI.createExternalLink(
-        'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/timeline-tool',
+        'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/',
         Common.UIString('Learn more'));
     }
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _tabSelected(event) {
-    if (this._perspectiveSetting.get() !== event.data.tabId)
-      this._perspectiveSetting.set(event.data.tabId);
-  }
-
-  _perspectiveChanged() {
-    this._tabbedPane.selectTab(this._perspectiveSetting.get());
+  _tabSelected() {
     const tabWidget = /** @type {!Timeline.TimelineLandingPage.PerspectiveTabWidget} */ (this._tabbedPane.visibleView);
     tabWidget.activate();
   }

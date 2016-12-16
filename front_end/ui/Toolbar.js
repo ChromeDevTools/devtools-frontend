@@ -52,7 +52,7 @@ UI.Toolbar = class {
    * @param {!UI.Action} action
    * @param {!Array<!UI.ToolbarButton>=} toggledOptions
    * @param {!Array<!UI.ToolbarButton>=} untoggledOptions
-   * @return {!UI.ToolbarItem}
+   * @return {!UI.ToolbarToggle}
    */
   static createActionButton(action, toggledOptions, untoggledOptions) {
     var button = new UI.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
@@ -182,7 +182,7 @@ UI.Toolbar = class {
 
   /**
    * @param {string} actionId
-   * @return {!UI.ToolbarItem}
+   * @return {!UI.ToolbarToggle}
    */
   static createActionButtonForId(actionId) {
     const action = UI.actionRegistry.action(actionId);

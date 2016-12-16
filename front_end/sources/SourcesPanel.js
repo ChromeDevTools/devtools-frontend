@@ -538,6 +538,9 @@ Sources.SourcesPanel = class extends UI.Panel {
     if (!currentExecutionContext)
       return false;
 
+    if (uiSourceCode.project().type() !== Workspace.projectTypes.Snippets)
+      return false;
+
     Snippets.scriptSnippetModel.evaluateScriptSnippet(currentExecutionContext, uiSourceCode);
     return true;
   }

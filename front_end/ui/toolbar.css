@@ -87,7 +87,7 @@
 }
 
 .toolbar-has-glyph .toolbar-text {
-    margin-left: 0;
+    margin-left: -4px;
 }
 
 .toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.largeicon-menu) {

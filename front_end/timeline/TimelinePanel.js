@@ -293,6 +293,10 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     // Record
     if (Runtime.experiments.isEnabled('timelineLandingPage')) {
+      const newButton = new UI.ToolbarButton(
+          Common.UIString('New recording'), 'largeicon-add', Common.UIString('New'));
+      newButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear, this);
+      this._panelToolbar.appendToolbarItem(newButton);
       this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
       this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('main.reload'));
     } else if (Runtime.experiments.isEnabled('timelineRecordingPerspectives') &&
@@ -305,9 +309,11 @@ Timeline.TimelinePanel = class extends UI.Panel {
     }
 
     // Clear
-    var clearButton = new UI.ToolbarButton(Common.UIString('Clear recording'), 'largeicon-clear');
-    clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear, this);
-    this._panelToolbar.appendToolbarItem(clearButton);
+    if (!Runtime.experiments.isEnabled('timelineLandingPage')) {
+      const clearButton = new UI.ToolbarButton(Common.UIString('Clear recording'), 'largeicon-clear');
+      clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear, this);
+      this._panelToolbar.appendToolbarItem(clearButton);
+    }
 
     this._panelToolbar.appendSeparator();
 
@@ -371,6 +377,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._onModeChanged();
     }
 
+    // Checkboxes
     if (Runtime.experiments.isEnabled('timelineLandingPage')) {
       if (!this._model.isEmpty()) {
         this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(Common.UIString('Memory'),
@@ -421,14 +428,16 @@ Timeline.TimelinePanel = class extends UI.Panel {
         this._panelToolbar.appendToolbarItem(checkbox);
       }
     }
-    this._panelToolbar.appendSeparator();
-    this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('components.collect-garbage'));
 
     this._panelToolbar.appendSeparator();
     this._cpuThrottlingCombobox = new UI.ToolbarComboBox(this._onCPUThrottlingChanged.bind(this));
     this._panelToolbar.appendToolbarItem(this._createNetworkConditionsSelect());
     this._panelToolbar.appendToolbarItem(this._cpuThrottlingCombobox);
     this._populateCPUThrottingCombobox();
+
+    this._panelToolbar.appendSeparator();
+    this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('components.collect-garbage'));
+
     this._updateTimelineControls();
   }
 

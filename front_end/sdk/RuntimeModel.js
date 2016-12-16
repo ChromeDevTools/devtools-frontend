@@ -96,11 +96,6 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {!Protocol.Runtime.ExecutionContextDescription} context
    */
   _executionContextCreated(context) {
-    // The private script context should be hidden behind an experiment.
-    if (context.name === SDK.RuntimeModel._privateScript && !context.origin &&
-        !Runtime.experiments.isEnabled('privateScriptInspection'))
-      return;
-
     var data = context.auxData || {isDefault: true};
     var executionContext = new SDK.ExecutionContext(
         this.target(), context.id, context.name, context.origin, data['isDefault'], data['frameId']);
@@ -335,8 +330,6 @@ SDK.RuntimeModel.Events = {
   ExecutionContextChanged: Symbol('ExecutionContextChanged'),
   ExecutionContextOrderChanged: Symbol('ExecutionContextOrderChanged')
 };
-
-SDK.RuntimeModel._privateScript = 'private script';
 
 /**
  * @implements {Protocol.RuntimeDispatcher}

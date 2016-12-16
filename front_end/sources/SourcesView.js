@@ -15,7 +15,7 @@ Sources.SourcesView = class extends UI.VBox {
     super();
     this.registerRequiredCSS('sources/sourcesView.css');
     this.element.id = 'sources-panel-sources-view';
-    this.setMinimumAndPreferredSizes(50, 52, 150, 100);
+    this.setMinimumAndPreferredSizes(80, 52, 150, 100);
 
     var workspace = Workspace.workspace;
 

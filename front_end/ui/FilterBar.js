@@ -491,16 +491,18 @@ UI.ComboBoxFilterUI = class extends Common.Object {
     this._filterElement.className = 'filter-combobox-filter';
 
     this._options = options;
-    this._filterComboBox = new UI.ToolbarComboBox(this._filterChanged.bind(this));
+    this._filterComboBox = createElementWithClass('select', 'chrome-select');
+    this._filterComboBox.addEventListener('input', this._filterChanged.bind(this), false);
     for (var i = 0; i < options.length; ++i) {
       var filterOption = options[i];
       var option = createElement('option');
       option.text = filterOption.label;
       option.title = filterOption.title;
-      this._filterComboBox.addOption(option);
-      this._filterComboBox.element.title = this._filterComboBox.selectedOption().title;
+      this._filterComboBox.appendChild(option);
     }
-    this._filterElement.appendChild(this._filterComboBox.element);
+    if (options.length)
+      this._filterComboBox.title = options[0].title;
+    this._filterElement.appendChild(this._filterComboBox);
   }
 
   /**
@@ -508,7 +510,7 @@ UI.ComboBoxFilterUI = class extends Common.Object {
    * @return {boolean}
    */
   isActive() {
-    return this._filterComboBox.selectedIndex() !== 0;
+    return this._filterComboBox.selectedIndex !== 0;
   }
 
   /**
@@ -523,7 +525,7 @@ UI.ComboBoxFilterUI = class extends Common.Object {
    * @return {*}
    */
   value() {
-    var option = this._options[this._filterComboBox.selectedIndex()];
+    var option = this._options[this._filterComboBox.selectedIndex];
     return option.value;
   }
 
@@ -531,22 +533,22 @@ UI.ComboBoxFilterUI = class extends Common.Object {
    * @param {number} index
    */
   setSelectedIndex(index) {
-    this._filterComboBox.setSelectedIndex(index);
+    this._filterComboBox.selectedIndex = index;
   }
 
   /**
    * @return {number}
    */
   selectedIndex(index) {
-    return this._filterComboBox.selectedIndex();
+    return this._filterComboBox.selectedIndex;
   }
 
   /**
    * @param {!Event} event
    */
   _filterChanged(event) {
-    var option = this._options[this._filterComboBox.selectedIndex()];
-    this._filterComboBox.element.title = option.title;
+    var option = this._options[this._filterComboBox.selectedIndex];
+    this._filterComboBox.title = option.title;
     this.dispatchEventToListeners(UI.FilterUI.Events.FilterChanged, null);
   }
 };

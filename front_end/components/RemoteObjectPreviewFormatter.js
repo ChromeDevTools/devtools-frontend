@@ -28,10 +28,8 @@ Components.RemoteObjectPreviewFormatter = class {
       parentElement.appendChild(this.renderPropertyPreview(preview.type, preview.subtype, description));
       return;
     }
-    if (description && preview.subtype !== 'array') {
-      var text = preview.subtype ? description : this._abbreviateFullQualifiedClassName(description);
-      parentElement.createTextChildren(text, ' ');
-    }
+    if (description && preview.subtype !== 'array')
+      parentElement.createTextChildren(description, ' ');
 
     var isArray = preview.subtype === 'array' || preview.subtype === 'typedarray';
     parentElement.createTextChild(isArray ? '[' : '{');
@@ -218,6 +216,7 @@ Components.RemoteObjectPreviewFormatter = class {
 
     if (type === 'object' && !subtype) {
       span.textContent = this._abbreviateFullQualifiedClassName(description);
+      span.title = description;
       return span;
     }
 

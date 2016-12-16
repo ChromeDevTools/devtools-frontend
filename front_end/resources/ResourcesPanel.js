@@ -134,8 +134,8 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     this._target = target;
     this._databaseModel = Resources.DatabaseModel.fromTarget(target);
 
-    this._databaseModel.addEventListener(Resources.DatabaseModel.Events.DatabaseAdded, this._databaseAdded, this);
-    this._databaseModel.addEventListener(Resources.DatabaseModel.Events.DatabasesRemoved, this._resetWebSQL, this);
+    this._databaseModel.on(Resources.DatabaseModel.DatabaseAddedEvent, this._databaseAdded, this);
+    this._databaseModel.on(Resources.DatabaseModel.DatabasesRemovedEvent, this._resetWebSQL, this);
 
     var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
     if (!resourceTreeModel)
@@ -164,8 +164,8 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
       resourceTreeModel.removeEventListener(
           SDK.ResourceTreeModel.Events.WillLoadCachedResources, this._resetWithFrames, this);
     }
-    this._databaseModel.removeEventListener(Resources.DatabaseModel.Events.DatabaseAdded, this._databaseAdded, this);
-    this._databaseModel.removeEventListener(Resources.DatabaseModel.Events.DatabasesRemoved, this._resetWebSQL, this);
+    this._databaseModel.off(Resources.DatabaseModel.DatabaseAddedEvent, this._databaseAdded, this);
+    this._databaseModel.off(Resources.DatabaseModel.DatabasesRemovedEvent, this._resetWebSQL, this);
 
     this._resetWithFrames();
   }
@@ -382,19 +382,11 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Resources.DatabaseModel.DatabaseAddedEvent} event
    */
   _databaseAdded(event) {
-    var database = /** @type {!Resources.Database} */ (event.data);
-    this._addDatabase(database);
-  }
-
-  /**
-   * @param {!Resources.Database} database
-   */
-  _addDatabase(database) {
-    var databaseTreeElement = new Resources.DatabaseTreeElement(this, database);
-    this._databaseTreeElements.set(database, databaseTreeElement);
+    var databaseTreeElement = new Resources.DatabaseTreeElement(this, event.database);
+    this._databaseTreeElements.set(event.database, databaseTreeElement);
     this.databasesListTreeElement.appendChild(databaseTreeElement);
   }
 

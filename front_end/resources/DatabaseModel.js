@@ -164,7 +164,7 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
     this._enabled = false;
     this._databases = [];
     this._agent.disable();
-    this.dispatchEventToListeners(Resources.DatabaseModel.Events.DatabasesRemoved);
+    this.emit(new Resources.DatabaseModel.DatabasesRemovedEvent());
   }
 
   /**
@@ -182,15 +182,20 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
    */
   _addDatabase(database) {
     this._databases.push(database);
-    this.dispatchEventToListeners(Resources.DatabaseModel.Events.DatabaseAdded, database);
+    this.emit(new Resources.DatabaseModel.DatabaseAddedEvent(database));
   }
 };
 
-/** @enum {symbol} */
-Resources.DatabaseModel.Events = {
-  DatabaseAdded: Symbol('DatabaseAdded'),
-  DatabasesRemoved: Symbol('DatabasesRemoved')
+Resources.DatabaseModel.DatabaseAddedEvent = class {
+  /**
+   * @param {!Resources.Database} database
+   */
+  constructor(database) {
+    this.database = database;
+  }
 };
+
+Resources.DatabaseModel.DatabasesRemovedEvent = class {};
 
 /**
  * @implements {Protocol.DatabaseDispatcher}

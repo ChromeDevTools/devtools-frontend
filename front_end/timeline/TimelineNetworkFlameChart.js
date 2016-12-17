@@ -198,13 +198,18 @@ Timeline.TimelineFlameChartNetworkDataProvider = class extends Timeline.Timeline
     const textWidth = finish - textStart;
     const minTextWidthPx = 20;
     const textPadding = 6;
+    var gearPadding = 0;
     if (textWidth >= minTextWidthPx) {
       const text = this.entryTitle(index);
       if (text && text.length) {
         context.fillStyle = '#333';
-        const trimmedText = UI.trimTextMiddle(context, text, textWidth - 2 * textPadding);
         const textBaseHeight = barHeight - this.textBaseline();
-        context.fillText(trimmedText, textStart + textPadding, barY + textBaseHeight);
+        if (request.fromServiceWorker) {
+          context.fillText('⚙', textStart + textPadding, barY + textBaseHeight);
+          gearPadding = UI.measureTextWidth(context, '⚙ ');
+        }
+        const trimmedText = UI.trimTextMiddle(context, text, textWidth - 2 * textPadding - gearPadding);
+        context.fillText(trimmedText, textStart + textPadding + gearPadding, barY + textBaseHeight);
       }
     }
 

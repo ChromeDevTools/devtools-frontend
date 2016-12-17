@@ -735,13 +735,13 @@ TimelineModel.TimelineModel = class {
 
       case recordTypes.EventDispatch:
         if (event.duration > TimelineModel.TimelineModel.Thresholds.RecurringHandler)
-            timelineData.warning = TimelineModel.TimelineModel.WarningType.LongHandler;
+          timelineData.warning = TimelineModel.TimelineModel.WarningType.LongHandler;
         break;
 
       case recordTypes.TimerFire:
       case recordTypes.FireAnimationFrame:
         if (event.duration > TimelineModel.TimelineModel.Thresholds.RecurringHandler)
-            timelineData.warning = TimelineModel.TimelineModel.WarningType.LongRecurringHandler;
+          timelineData.warning = TimelineModel.TimelineModel.WarningType.LongRecurringHandler;
         break;
 
       case recordTypes.FunctionCall:
@@ -1513,6 +1513,8 @@ TimelineModel.TimelineModel.NetworkRequest = class {
       this.requestMethod = eventData['requestMethod'];
     if (!this.timing)
       this.timing = eventData['timing'];
+    if (eventData['fromServiceWorker'])
+      this.fromServiceWorker = true;
   }
 };
 

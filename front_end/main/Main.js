@@ -99,6 +99,7 @@ Main.Main = class {
     Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
     Runtime.experiments.register('colorContrastRatio', 'Contrast ratio line in color picker', true);
     Runtime.experiments.register('continueToFirstInvocation', 'Continue to first invocation', true);
+    Runtime.experiments.register('cssTrackerPanel', 'Panel that tracks the usage of CSS rules.');
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Runtime.experiments.register('liveSASS', 'Live SASS');
@@ -115,7 +116,6 @@ Main.Main = class {
     Runtime.experiments.register('timelineRecordingPerspectives', 'Timeline recording perspectives UI');
     Runtime.experiments.register('timelineTracingJSProfile', 'Timeline tracing based JS profiler', true);
     Runtime.experiments.register('timelineV8RuntimeCallStats', 'V8 Runtime Call Stats on Timeline', true);
-    Runtime.experiments.register('timelineRuleUsageRecording', 'Track CSS rules usage while recording Timeline.');
     Runtime.experiments.register('timelinePerFrameTrack', 'Show track per frame on Timeline', true);
 
     Runtime.experiments.cleanUpStaleExperiments();
@@ -125,6 +125,8 @@ Main.Main = class {
       // Enable experiments for testing.
       if (testPath.indexOf('accessibility/') !== -1)
         Runtime.experiments.enableForTest('accessibilityInspection');
+      if (testPath.indexOf('css_tracker') !== -1)
+        Runtime.experiments.enableForTest('cssTrackerPanel');
     }
 
     Runtime.experiments.setDefaultExperiments(

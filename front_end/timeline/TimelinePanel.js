@@ -87,8 +87,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._showMemorySetting = Common.settings.createLocalSetting('timelineShowMemory', false);
     this._showMemorySetting.addChangeListener(this._onModeChanged, this);
 
-    this._markUnusedCSS = Common.settings.createSetting('timelineMarkUnusedCSS', false);
-
     this._panelToolbar = new UI.Toolbar('', this.element);
 
     this._timelinePane = new UI.VBox();
@@ -414,11 +412,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
       }
     }
 
-    if (Runtime.experiments.isEnabled('timelineRuleUsageRecording')) {
-      this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(
-          Common.UIString('CSS coverage'), this._markUnusedCSS, Common.UIString('Mark unused CSS in souces.')));
-    }
-
     const traceProviders = Extensions.extensionServer.traceProviders();
     if (traceProviders.length) {
       this._panelToolbar.appendSeparator();
@@ -639,9 +632,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._setState(Timeline.TimelinePanel.State.StartPending);
     this._showRecordingStarted();
 
-    if (Runtime.experiments.isEnabled('timelineRuleUsageRecording') && this._markUnusedCSS.get())
-      SDK.CSSModel.fromTarget(mainTarget).startRuleUsageTracking();
-
     this._sessionGeneration = Symbol('timelineSessionGeneration');
     this._autoRecordGeneration = userInitiated ? null : Symbol('Generation');
     var enabledTraceProviders = Extensions.extensionServer.traceProviders().filter(
@@ -710,9 +700,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   _reset() {
-    if (Runtime.experiments.isEnabled('timelineRuleUsageRecording') && this._markUnusedCSS.get())
-      Components.CoverageProfile.instance().reset();
-
     Components.LineLevelProfile.instance().reset();
     this._tracingModel.reset();
     this._model.reset();

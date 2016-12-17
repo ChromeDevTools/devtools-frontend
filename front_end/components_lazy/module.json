@@ -13,11 +13,6 @@
             "decoratorType": "performance"
         },
         {
-           "type": "@Sources.UISourceCodeFrame.LineDecorator",
-           "className": "Components.CoverageProfile.LineDecorator",
-           "decoratorType": "coverage"
-        },
-        {
             "type": "@UI.ActionDelegate",
             "actionId": "components.collect-garbage",
             "title": "Collect garbage",
@@ -30,8 +25,7 @@
         "FilmStripModel.js",
         "FilmStripView.js",
         "GCActionDelegate.js",
-        "LineLevelProfile.js",
-        "CoverageProfile.js"
+        "LineLevelProfile.js"
     ],
     "resources": [
         "filmStripDialog.css",

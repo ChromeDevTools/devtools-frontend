@@ -39,6 +39,7 @@
         { "name": "sass", "condition": "!v8only" },
         { "name": "accessibility", "condition": "!v8only", "type": "remote" },
         { "name": "animation", "condition": "!v8only" },
+        { "name": "css_tracker", "condition": "!v8only" },
         { "name": "screencast", "condition": "remoteFrontend", "type": "remote" },
         { "name": "emulated_devices", "condition": "!v8only" , "type": "remote" }
     ],

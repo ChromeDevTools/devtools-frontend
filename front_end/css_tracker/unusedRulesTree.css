@@ -1,0 +1,87 @@
+/*
+ * Copyright 2016 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+    padding: 0;
+    margin: 0;
+}
+
+.tree-outline {
+    padding: 0;
+}
+
+.tree-outline ol {
+    padding: 0;
+}
+
+.rule-result {
+    font-size: 11px;
+    padding: 2px 0 2px 4px;
+    word-wrap: normal;
+    white-space: pre;
+    cursor: pointer;
+}
+
+.rule-result:hover {
+    background-color: rgba(121, 121, 121, 0.1);
+}
+
+.rule-result .rule-result-file-name {
+    font-weight: bold;
+    color: #222;
+}
+
+.rule-result .rule-result-matches-count {
+    margin-left: 5px;
+    color: #222;
+}
+
+li.show-more-matches {
+    padding: 4px 0;
+    color: #222;
+    cursor: pointer;
+    font-size: 11px;
+    margin-left: 20px;
+}
+
+li.show-more-matches:hover {
+    text-decoration: underline;
+}
+
+li.rule-match {
+    word-wrap: normal;
+    white-space: pre;
+    min-height: 12px;
+}
+
+li.rule-match::before {
+    display: none;
+}
+
+li.rule-match .rule-match-line-number {
+    color: rgb(128, 128, 128);
+    text-align: right;
+    vertical-align: top;
+    word-break: normal;
+    padding-right: 4px;
+    padding-left: 6px;
+    margin-right: 5px;
+    border-right: 1px solid #BBB;
+}
+
+li.rule-match:not(:hover) .rule-match-line-number {
+    background-color: #F0F0F0;
+}
+
+.tree-outline .devtools-link {
+    text-decoration: none;
+    display: block;
+    flex: auto;
+}
+
+li.rule-match .rule-match-content {
+    color: #000;
+}

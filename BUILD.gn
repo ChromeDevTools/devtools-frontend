@@ -313,6 +313,7 @@ devtools_module_json_files = [
   "front_end/components/module.json",
   "front_end/components_lazy/module.json",
   "front_end/console/module.json",
+  "front_end/css_tracker/module.json",
   "front_end/devices/module.json",
   "front_end/diff/module.json",
   "front_end/elements/module.json",
@@ -408,7 +409,6 @@ devtools_components_lazy_js_files = [
   "front_end/components_lazy/FilmStripView.js",
   "front_end/components_lazy/GCActionDelegate.js",
   "front_end/components_lazy/LineLevelProfile.js",
-  "front_end/components_lazy/CoverageProfile.js",
 ]
 devtools_console_js_files = [
   "front_end/console/consoleView.css",
@@ -417,6 +417,11 @@ devtools_console_js_files = [
   "front_end/console/ConsolePrompt.js",
   "front_end/console/ConsoleView.js",
   "front_end/console/ConsoleViewMessage.js",
+]
+devtools_css_tracker_js_files = [
+  "front_end/css_tracker/cssTrackerView.css",
+  "front_end/css_tracker/unusedRulesTree.css",
+  "front_end/css_tracker/CSSTrackerView.js",
 ]
 devtools_devices_js_files = [
   "front_end/devices/devicesView.css",
@@ -901,7 +906,8 @@ devtools_modules_js_files =
     devtools_text_editor_js_files + devtools_test_runner_js_files +
     devtools_terminal_js_files + devtools_timeline_model_js_files +
     devtools_timeline_js_files + devtools_ui_lazy_js_files +
-    devtools_layer_viewer_js_files + devtools_worker_service_js_files
+    devtools_layer_viewer_js_files + devtools_worker_service_js_files +
+    devtools_css_tracker_js_files
 
 all_devtools_files = devtools_cm_css_files + devtools_cm_js_files +
                      devtools_core_files + devtools_module_json_files +
@@ -933,6 +939,7 @@ generated_bundled_modules = [
   "$resources_out_dir/audits2/audits2_module.js",
   "$resources_out_dir/components_lazy/components_lazy_module.js",
   "$resources_out_dir/console/console_module.js",
+  "$resources_out_dir/css_tracker/css_tracker_module.js",
   "$resources_out_dir/devices/devices_module.js",
   "$resources_out_dir/diff/diff_module.js",
   "$resources_out_dir/elements/elements_module.js",

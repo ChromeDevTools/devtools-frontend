@@ -21,9 +21,6 @@ Timeline.TimelineController = class {
     /** @type {!Array<!Timeline.ExtensionTracingSession>} */
     this._extensionSessions = [];
     SDK.targetManager.observeTargets(this);
-
-    if (Runtime.experiments.isEnabled('timelineRuleUsageRecording'))
-      this._markUnusedCSS = Common.settings.createSetting('timelineMarkUnusedCSS', false);
   }
 
   /**
@@ -77,10 +74,7 @@ Timeline.TimelineController = class {
     tracingStoppedPromises.push(this._stopProfilingOnAllTargets());
     this._target.tracingManager.stop();
 
-    if (!Runtime.experiments.isEnabled('timelineRuleUsageRecording') || !this._markUnusedCSS.get())
-      tracingStoppedPromises.push(SDK.targetManager.resumeAllTargets());
-    else
-      this._addUnusedRulesToCoverage();
+    tracingStoppedPromises.push(SDK.targetManager.resumeAllTargets());
 
     this._delegate.loadingStarted();
 
@@ -112,30 +106,6 @@ Timeline.TimelineController = class {
     this._targets.remove(target, true);
     // FIXME: We'd like to stop profiling on the target and retrieve a profile
     // but it's too late. Backend connection is closed.
-  }
-
-  _addUnusedRulesToCoverage() {
-    var mainTarget = SDK.targetManager.mainTarget();
-    if (!mainTarget)
-      return;
-    var cssModel = SDK.CSSModel.fromTarget(mainTarget);
-
-    /**
-     * @param {!Array<!SDK.CSSModel.RuleUsage>} ruleUsageList
-     */
-    function ruleListReceived(ruleUsageList) {
-      for (var rule of ruleUsageList) {
-        if (rule.wasUsed)
-          continue;
-
-        var styleSheetHeader = cssModel.styleSheetHeaderForId(rule.styleSheetId);
-        var url = styleSheetHeader.sourceURL;
-
-        Components.CoverageProfile.instance().appendUnusedRule(url, Common.TextRange.fromObject(rule.range));
-      }
-    }
-
-    cssModel.ruleListPromise().then(ruleListReceived);
   }
 
   /**
@@ -195,9 +165,7 @@ Timeline.TimelineController = class {
    * @param {function(?string)=} callback
    */
   _startRecordingWithCategories(categories, enableJSSampling, callback) {
-    if (!Runtime.experiments.isEnabled('timelineRuleUsageRecording') || !this._markUnusedCSS.get())
-      SDK.targetManager.suspendAllTargets();
-
+    SDK.targetManager.suspendAllTargets();
     var profilingStartedPromise = enableJSSampling && !Runtime.experiments.isEnabled('timelineTracingJSProfile') ?
         this._startProfilingOnAllTargets() :
         Promise.resolve();

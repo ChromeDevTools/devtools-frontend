@@ -778,6 +778,8 @@ Runtime.Module = class {
     // clang-format off
     if (namespace === 'sdk' || namespace === 'ui')
       namespace = namespace.toUpperCase();
+    if (namespace === 'css_tracker')
+      namespace = 'CSSTracker';
     // clang-format on
     namespace = namespace.split('_').map(a => a.substring(0, 1).toUpperCase() + a.substring(1)).join('');
     self[namespace] = self[namespace] || {};

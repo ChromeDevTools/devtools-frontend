@@ -372,6 +372,13 @@ SDK.NetworkDispatcher = class {
     networkRequest.responseReceivedTime = time;
     networkRequest.setResourceType(Common.resourceTypes[resourceType]);
 
+    // net::ParsedCookie::kMaxCookieSize = 4096 (net/cookies/parsed_cookie.h)
+    if ('Set-Cookie' in response.headers && response.headers['Set-Cookie'].length > 4096) {
+      Common.console.warn(Common.UIString(
+          'Set-Cookie header is ignored in response from url: %s. Cookie length should be less then or equal to 4096 characters.',
+          response.url));
+    }
+
     this._updateNetworkRequestWithResponse(networkRequest, response);
 
     this._updateNetworkRequest(networkRequest);

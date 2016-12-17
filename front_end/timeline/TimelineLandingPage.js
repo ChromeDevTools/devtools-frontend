@@ -87,9 +87,9 @@ Timeline.TimelineLandingPage.PerspectiveTabWidget = class extends UI.VBox {
     this._enabledOptions = new Set([Timeline.TimelineLandingPage.RecordingConfig.javascript.id]);
     this._descriptionDiv = this.contentElement.createChild('div', 'timeline-perspective-description');
     this._actionButtonDiv = this.contentElement.createChild('div');
-    this._actionButtonDiv.appendChild(createTextButton(Common.UIString('Record'), this._record.bind(this)));
     this._actionButtonDiv.appendChild(createTextButton(Common.UIString('Record Page Load'),
         this._recordPageLoad.bind(this)));
+    this._actionButtonDiv.appendChild(createTextButton(Common.UIString('Record'), this._record.bind(this)));
   }
 
   /**

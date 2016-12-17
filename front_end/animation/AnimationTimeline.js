@@ -322,12 +322,11 @@ Animation.AnimationTimeline = class extends UI.VBox {
 
   _reset() {
     this._clearTimeline();
-    if (this._allPaused) {
-      this._playbackRate = 1;
+    if (this._allPaused)
       this._togglePauseAll();
-    } else {
-      this._setPlaybackRate(1);
-    }
+    else
+      this._setPlaybackRate(this._playbackRate);
+
     for (var group of this._groupBuffer)
       group.release();
     this._groupBuffer = [];

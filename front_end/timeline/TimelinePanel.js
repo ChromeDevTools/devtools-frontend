@@ -297,8 +297,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
           Common.UIString('New recording'), 'largeicon-add', Common.UIString('New'));
       newButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear, this);
       this._panelToolbar.appendToolbarItem(newButton);
-      this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
       this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('main.reload'));
+      this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
     } else if (Runtime.experiments.isEnabled('timelineRecordingPerspectives') &&
         perspectiveSetting.get() === Timeline.TimelinePanel.Perspectives.Load) {
       const reloadButton = new UI.ToolbarButton(Common.UIString('Record & Reload'), 'largeicon-refresh');

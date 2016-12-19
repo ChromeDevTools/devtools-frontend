@@ -39,7 +39,7 @@
     display: flex;
     position: relative;
     flex-direction: column;
-    contain: strict;
+    contain: layout size style;
 }
 
 .shadow-split-widget-sidebar {

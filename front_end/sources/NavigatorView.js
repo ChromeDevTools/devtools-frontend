@@ -91,7 +91,6 @@ Sources.NavigatorView = class extends UI.VBox {
       var weights = {};
       var types = Sources.NavigatorView.Types;
       weights[types.Root] = 1;
-      weights[types.Category] = 1;
       weights[types.Domain] = 10;
       weights[types.FileSystemFolder] = 1;
       weights[types.NetworkFolder] = 1;
@@ -822,7 +821,6 @@ Sources.NavigatorView = class extends UI.VBox {
 };
 
 Sources.NavigatorView.Types = {
-  Category: 'category',
   Domain: 'domain',
   File: 'file',
   FileSystem: 'fs',
@@ -833,7 +831,6 @@ Sources.NavigatorView.Types = {
   SourceMapFolder: 'sm-folder',
   Worker: 'worker'
 };
-
 
 /**
  * @unrestricted
@@ -851,9 +848,16 @@ Sources.NavigatorFolderTreeElement = class extends TreeElement {
     this._nodeType = type;
     this.title = title;
     this.tooltip = title;
-    this.createIcon();
     this._navigatorView = navigatorView;
     this._hoverCallback = hoverCallback;
+    var iconType = 'largeicon-navigator-folder';
+    if (type === Sources.NavigatorView.Types.Domain)
+      iconType = 'largeicon-navigator-domain';
+    else if (type === Sources.NavigatorView.Types.Frame)
+      iconType = 'largeicon-navigator-frame';
+    else if (type === Sources.NavigatorView.Types.Worker)
+      iconType = 'largeicon-navigator-worker';
+    this.setLeadingIcons([UI.Icon.create(iconType, 'icon')]);
   }
 
   /**
@@ -937,7 +941,10 @@ Sources.NavigatorSourceTreeElement = class extends TreeElement {
     this.listItemElement.classList.add(
         'navigator-' + uiSourceCode.contentType().name() + '-tree-item', 'navigator-file-tree-item');
     this.tooltip = uiSourceCode.url();
-    this.createIcon();
+    var iconType = 'largeicon-navigator-file';
+    if (uiSourceCode.contentType() === Common.resourceTypes.Snippet)
+      iconType = 'largeicon-navigator-snippet';
+    this.setLeadingIcons([UI.Icon.create(iconType, 'icon')]);
 
     this._navigatorView = navigatorView;
     this._uiSourceCode = uiSourceCode;

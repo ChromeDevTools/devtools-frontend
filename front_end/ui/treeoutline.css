@@ -89,8 +89,17 @@ ol.tree-outline:focus li.selected * {
 }
 
 .tree-outline li .icons-container {
-    margin-left: 4px;
     align-self: center;
+    display: flex;
+    align-items: center;
+}
+
+.tree-outline li .leading-icons {
+    margin-right: 4px;
+}
+
+.tree-outline li .trailing-icons {
+    margin-left: 4px;
 }
 
 .tree-outline li::before {

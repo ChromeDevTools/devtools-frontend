@@ -602,7 +602,8 @@ var TreeElement = class {
     this._listItemNode.removeChildren();
     if (this._iconElement)
       this._listItemNode.appendChild(this._iconElement);
-
+    if (this._leadingIconsElement)
+      this._listItemNode.appendChild(this._leadingIconsElement);
     this._listItemNode.appendChild(this._titleElement);
     if (this._trailingIconsElement)
       this._listItemNode.appendChild(this._trailingIconsElement);
@@ -639,11 +640,29 @@ var TreeElement = class {
   /**
    * @param {!Array<!UI.Icon>} icons
    */
+  setLeadingIcons(icons) {
+    if (!this._leadingIconsElement && !icons.length)
+      return;
+    if (!this._leadingIconsElement) {
+      this._leadingIconsElement = createElementWithClass('div', 'leading-icons');
+      this._leadingIconsElement.classList.add('icons-container');
+      this._listItemNode.insertBefore(this._leadingIconsElement, this._titleElement);
+      this._ensureSelection();
+    }
+    this._leadingIconsElement.removeChildren();
+    for (var icon of icons)
+      this._leadingIconsElement.appendChild(icon);
+  }
+
+  /**
+   * @param {!Array<!UI.Icon>} icons
+   */
   setTrailingIcons(icons) {
     if (!this._trailingIconsElement && !icons.length)
       return;
     if (!this._trailingIconsElement) {
-      this._trailingIconsElement = createElementWithClass('div', 'icons-container');
+      this._trailingIconsElement = createElementWithClass('div', 'trailing-icons');
+      this._trailingIconsElement.classList.add('icons-container');
       this._listItemNode.appendChild(this._trailingIconsElement);
       this._ensureSelection();
     }

@@ -28,21 +28,10 @@
  */
 
 .icon {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
-    width: 32px;
-    height: 24px;
-    margin: -3px -3px -3px -7px;
+    margin: -3px -7px -3px -7px;
 }
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.icon {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
 
 .navigator-file-tree-item .icon {
-    -webkit-mask-position: -224px -72px;
     background: linear-gradient(45deg, hsl(0, 0%, 50%), hsl(0, 0%, 70%));
 }
 
@@ -50,14 +39,6 @@
 .navigator-fs-folder-tree-item:not(.has-mapped-files) {
     filter: grayscale(50%);
     opacity: 0.5;
-}
-
-:focus .navigator-file-tree-item.selected .icon {
-    background: white !important;
-}
-
-:focus .navigator-folder-tree-item.selected .icon {
-    background: white !important;
 }
 
 .tree-outline li {
@@ -70,16 +51,7 @@
 }
 
 .navigator-folder-tree-item .icon {
-    -webkit-mask-position: -64px -120px;
     background-color: #555;
-}
-
-.navigator-domain-tree-item .icon  {
-    -webkit-mask-position: -160px -144px;
-}
-
-.navigator-frame-tree-item .icon {
-    -webkit-mask-position: -256px -144px;
 }
 
 .navigator-sm-folder-tree-item .icon,
@@ -92,18 +64,10 @@
     background: linear-gradient(45deg, hsl(210, 82%, 65%), hsl(210, 82%, 80%));
 }
 
-.navigator-worker-tree-item .icon {
-    -webkit-mask-position: -320px -144px;
-}
-
 .navigator-sm-script-tree-item .icon,
 .navigator-script-tree-item .icon,
 .navigator-snippet-tree-item .icon {
     background: linear-gradient(45deg, hsl(48, 70%, 50%), hsl(48, 70%, 70%));
-}
-
-.navigator-snippet-tree-item .icon {
-    -webkit-mask-position: -224px -96px;
 }
 
 .navigator-sm-stylesheet-tree-item .icon,

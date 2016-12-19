@@ -207,4 +207,10 @@ UI.Icon.Descriptors = {
     isMask: true,
     transform: 'translate(4px, 1px) rotate(-90deg)'
   },
+  'largeicon-navigator-file': {x: -224, y: -72, width: 32, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-navigator-folder': {x: -64, y: -120, width: 32, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-navigator-domain': {x: -160, y: -144, width: 32, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-navigator-frame': {x: -256, y: -144, width: 32, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-navigator-worker': {x: -320, y: -144, width: 32, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-navigator-snippet': {x: -224, y: -96, width: 32, height: 24, spritesheet: 'largeicons', isMask: true},
 };

@@ -29,7 +29,7 @@
 /**
  * @implements {UI.Searchable}
  * @implements {SDK.TargetManager.Observer}
- * @implements {UI.ViewportControl.Provider}
+ * @implements {Console.ConsoleViewportProvider}
  * @unrestricted
  */
 Console.ConsoleView = class extends UI.VBox {
@@ -80,7 +80,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._filterBar.show(this._contentsElement);
     this._filter.addFilters(this._filterBar);
 
-    this._viewport = new UI.ViewportControl(this);
+    this._viewport = new Console.ConsoleViewport(this);
     this._viewport.setStickToBottom(true);
     this._viewport.contentElement().classList.add('console-group', 'console-group-messages');
     this._contentsElement.appendChild(this._viewport.element);
@@ -241,7 +241,7 @@ Console.ConsoleView = class extends UI.VBox {
   /**
    * @override
    * @param {number} index
-   * @return {?UI.ViewportElement}
+   * @return {?Console.ConsoleViewportElement}
    */
   itemElement(index) {
     return this._visibleViewMessages[index];

@@ -46,7 +46,7 @@ UI.SuggestBoxDelegate.prototype = {
 };
 
 /**
- * @implements {UI.StaticViewportControl.Provider}
+ * @implements {UI.ViewportControl.Provider}
  * @unrestricted
  */
 UI.SuggestBox = class {
@@ -63,7 +63,7 @@ UI.SuggestBox = class {
     this._maxItemsHeight = maxItemsHeight;
     this._maybeHideBound = this._maybeHide.bind(this);
     this._container = createElementWithClass('div', 'suggest-box-container');
-    this._viewport = new UI.StaticViewportControl(this);
+    this._viewport = new UI.ViewportControl(this);
     this._element = this._viewport.element;
     this._element.classList.add('suggest-box');
     this._container.appendChild(this._element);

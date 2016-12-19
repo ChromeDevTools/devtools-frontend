@@ -286,7 +286,6 @@ devtools_ui_js_files = [
   "front_end/ui/UIUtils.js",
   "front_end/ui/View.js",
   "front_end/ui/ViewportControl.js",
-  "front_end/ui/StaticViewportControl.js",
   "front_end/ui/Widget.js",
   "front_end/ui/ZoomManager.js",
   "front_end/ui/treeoutline.js",
@@ -417,6 +416,7 @@ devtools_console_js_files = [
   "front_end/console/ConsolePrompt.js",
   "front_end/console/ConsoleView.js",
   "front_end/console/ConsoleViewMessage.js",
+  "front_end/console/ConsoleViewport.js",
 ]
 devtools_css_tracker_js_files = [
   "front_end/css_tracker/cssTrackerView.css",

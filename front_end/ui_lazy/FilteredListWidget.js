@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 /**
- * @implements {UI.StaticViewportControl.Provider}
+ * @implements {UI.ViewportControl.Provider}
  * @unrestricted
  */
 UI.FilteredListWidget = class extends UI.VBox {
@@ -33,7 +33,7 @@ UI.FilteredListWidget = class extends UI.VBox {
     promptProxy.classList.add('filtered-list-widget-prompt-element');
 
     this._filteredItems = [];
-    this._viewportControl = new UI.StaticViewportControl(this);
+    this._viewportControl = new UI.ViewportControl(this);
     this._itemElementsContainer = this._viewportControl.element;
     this._itemElementsContainer.classList.add('container');
     this._itemElementsContainer.addEventListener('click', this._onClick.bind(this), false);

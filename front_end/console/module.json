@@ -119,6 +119,7 @@
     ],
     "scripts": [
         "ConsoleContextSelector.js",
+        "ConsoleViewport.js",
         "ConsoleViewMessage.js",
         "ConsolePrompt.js",
         "ConsoleView.js",

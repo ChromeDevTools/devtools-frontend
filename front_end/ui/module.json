@@ -51,7 +51,6 @@
         "TabbedPane.js",
         "UIUtils.js",
         "ViewportControl.js",
-        "StaticViewportControl.js",
         "ZoomManager.js"
     ],
     "resources": [

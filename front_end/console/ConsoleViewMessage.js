@@ -28,7 +28,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {UI.ViewportElement}
+ * @implements {Console.ConsoleViewportElement}
  * @unrestricted
  */
 Console.ConsoleViewMessage = class {

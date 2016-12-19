@@ -610,7 +610,7 @@ UI.DataGrid = class extends Common.Object {
       for (var i = 0; i < numColumns; i++) {
         var column = this._visibleColumnsArray[i];
         if (!column.weight)
-          column.weight = 100 * cells[i].offsetWidth / tableWidth;
+          column.weight = 100 * cells[i].offsetWidth / tableWidth || 10;
       }
       this._columnWidthsInitialized = true;
     }

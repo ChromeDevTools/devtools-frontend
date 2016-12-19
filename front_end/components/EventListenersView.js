@@ -326,10 +326,8 @@ Components.ObjectEventListenerBar = class extends TreeElement {
   _removeListenerBar() {
     var parent = this.parent;
     parent.removeChild(this);
-    if (!parent.childCount()) {
-      parent.parent.removeChild(parent);
-      return;
-    }
+    if (!parent.childCount())
+      parent.collapse();
     var allHidden = true;
     for (var i = 0; i < parent.childCount(); ++i) {
       if (!parent.childAt(i).hidden)

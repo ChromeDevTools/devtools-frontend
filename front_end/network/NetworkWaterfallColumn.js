@@ -34,10 +34,10 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
     this._popoverHelper.setTimeout(300, 300);
 
-    /** @type {!Array<!Network.NetworkDataGridNode>} */
+    /** @type {!Array<!Network.NetworkNode>} */
     this._nodes = [];
 
-    /** @type {?Network.NetworkDataGridNode} */
+    /** @type {?Network.NetworkNode} */
     this._hoveredNode = null;
     /** @type {?SDK.NetworkRequest.InitiatorGraph} */
     this._initiatorGraph = null;
@@ -83,12 +83,15 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       return;
     var useTimingBars = !Common.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
     if (useTimingBars) {
-      var range = Network.RequestTimingView.calculateRequestTimeRanges(this._hoveredNode.request(), 0)
+      var request = this._hoveredNode.request();
+      if (!request)
+        return;
+      var range = Network.RequestTimingView.calculateRequestTimeRanges(request, 0)
                       .find(data => data.name === Network.RequestTimeRangeNames.Total);
       var start = this._timeToPosition(range.start);
       var end = this._timeToPosition(range.end);
     } else {
-      var range = this._getSimplifiedBarRange(this._hoveredNode, 0);
+      var range = this._getSimplifiedBarRange(this.request(), 0);
       var start = range.start;
       var end = range.end;
     }
@@ -124,18 +127,20 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
   _showPopover(anchor, popover) {
     if (!this._hoveredNode)
       return;
-    var content =
-        Network.RequestTimingView.createTimingTable(this._hoveredNode.request(), this._calculator.minimumBoundary());
+    var request = this._hoveredNode.request();
+    if (!request)
+      return;
+    var content = Network.RequestTimingView.createTimingTable(request, this._calculator.minimumBoundary());
     popover.showForAnchor(content, anchor);
   }
 
   /**
-   * @param {?Network.NetworkDataGridNode} node
+   * @param {?Network.NetworkNode} node
    * @param {boolean} highlightInitiatorChain
    */
   setHoveredNode(node, highlightInitiatorChain) {
     this._hoveredNode = node;
-    this._initiatorGraph = (highlightInitiatorChain && node) ? node.request().initiatorGraph() : null;
+    this._initiatorGraph = (highlightInitiatorChain && node && node.request()) ? node.request().initiatorGraph() : null;
     this.update();
   }
 
@@ -171,7 +176,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
   /**
    * @param {number} x
    * @param {number} y
-   * @return {?Network.NetworkDataGridNode}
+   * @return {?Network.NetworkNode}
    */
   getNodeFromPoint(x, y) {
     return this._nodes[Math.floor((this._scrollTop + y - this._headerHeight) / this._rowHeight)];
@@ -186,7 +191,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
   /**
    * @param {number=} scrollTop
    * @param {!Map<string, !Array<number>>=} eventDividers
-   * @param {!Array<!Network.NetworkDataGridNode>=} nodes
+   * @param {!Array<!Network.NetworkNode>=} nodes
    */
   update(scrollTop, eventDividers, nodes) {
     if (scrollTop !== undefined)
@@ -353,11 +358,11 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
   }
 
   /**
-   * @param {!Network.NetworkDataGridNode} node
+   * @param {!SDK.NetworkRequest} request
    * @return {string}
    */
-  _borderColorForResourceType(node) {
-    var resourceType = node.request().resourceType();
+  _borderColorForResourceType(request) {
+    var resourceType = request.resourceType();
     if (this._borderColorsForResourceTypeCache.has(resourceType))
       return this._borderColorsForResourceTypeCache.get(resourceType);
     var colorsForResourceType = Network.NetworkWaterfallColumn._colorsForResourceType;
@@ -373,11 +378,10 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!Network.NetworkDataGridNode} node
+   * @param {!SDK.NetworkRequest} request
    * @return {string|!CanvasGradient}
    */
-  _colorForResourceType(context, node) {
-    var request = node.request();
+  _colorForResourceType(context, request) {
     var colorsForResourceType = Network.NetworkWaterfallColumn._colorsForResourceType;
     var resourceType = request.resourceType();
     var color = colorsForResourceType[resourceType] || colorsForResourceType.Other;
@@ -398,13 +402,13 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
   }
 
   /**
-   * @param {!Network.NetworkDataGridNode} node
+   * @param {!SDK.NetworkRequest} request
    * @param {number} borderOffset
    * @return {!{start: number, mid: number, end: number}}
    */
-  _getSimplifiedBarRange(node, borderOffset) {
+  _getSimplifiedBarRange(request, borderOffset) {
     var drawWidth = this._offsetWidth - this._leftPadding;
-    var percentages = this._calculator.computeBarGraphPercentages(node.request());
+    var percentages = this._calculator.computeBarGraphPercentages(request);
     return {
       start: this._leftPadding + Math.floor((percentages.start / 100) * drawWidth) + borderOffset,
       mid: this._leftPadding + Math.floor((percentages.middle / 100) * drawWidth) + borderOffset,
@@ -414,21 +418,25 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!Network.NetworkDataGridNode} node
+   * @param {!Network.NetworkNode} node
    * @param {number} y
    */
   _drawSimplifiedBars(context, node, y) {
+    // TODO(allada) This should draw bars for groupped requests.
+    var request = node.request();
+    if (!request)
+      return;
     const borderWidth = 1;
     var borderOffset = borderWidth % 2 === 0 ? 0 : 0.5;
 
     context.save();
-    var ranges = this._getSimplifiedBarRange(node, borderOffset);
+    var ranges = this._getSimplifiedBarRange(request, borderOffset);
     var height = this._getBarHeight();
     y += Math.floor(this._rowHeight / 2 - height / 2 + borderWidth) - borderWidth / 2;
 
     context.translate(0, y);
-    context.fillStyle = this._colorForResourceType(context, node);
-    context.strokeStyle = this._borderColorForResourceType(node);
+    context.fillStyle = this._colorForResourceType(context, request);
+    context.strokeStyle = this._borderColorForResourceType(request);
     context.lineWidth = borderWidth;
 
     context.beginPath();
@@ -447,13 +455,13 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     /** @type {?{left: string, right: string, tooltip: (string|undefined)}} */
     var labels = null;
     if (node === this._hoveredNode) {
-      labels = this._calculator.computeBarGraphLabels(node.request());
+      labels = this._calculator.computeBarGraphLabels(request);
       this._drawSimplifiedBarDetails(
           context, labels.left, labels.right, ranges.start, ranges.mid, ranges.mid + barWidth + borderOffset);
     }
 
     if (!this._calculator.startAtZero) {
-      var queueingRange = Network.RequestTimingView.calculateRequestTimeRanges(node.request(), 0)
+      var queueingRange = Network.RequestTimingView.calculateRequestTimeRanges(request, 0)
                               .find(data => data.name === Network.RequestTimeRangeNames.Total);
       var leftLabelWidth = labels ? context.measureText(labels.left).width : 0;
       var leftTextPlacedInBar = leftLabelWidth < ranges.mid - ranges.start;
@@ -529,12 +537,16 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!Network.NetworkDataGridNode} node
+   * @param {!Network.NetworkNode} node
    * @param {number} y
    */
   _drawTimingBars(context, node, y) {
+    // TODO(allada) This should draw bars for groupped requests.
+    var request = node.request();
+    if (!request)
+      return;
     context.save();
-    var ranges = Network.RequestTimingView.calculateRequestTimeRanges(node.request(), 0);
+    var ranges = Network.RequestTimingView.calculateRequestTimeRanges(request, 0);
     for (var range of ranges) {
       if (range.name === Network.RequestTimeRangeNames.Total || range.name === Network.RequestTimeRangeNames.Sending ||
           range.end - range.start === 0)
@@ -567,7 +579,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!Network.NetworkDataGridNode} node
+   * @param {!Network.NetworkNode} node
    * @param {number} rowNumber
    * @param {number} y
    */
@@ -594,7 +606,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       var request = node.request();
       if (this._hoveredNode === node)
         return this._rowHoverColor;
-      if (this._initiatorGraph) {
+      if (request && this._initiatorGraph) {
         if (this._initiatorGraph.initiators.has(request))
           return this._parentInitiatorColor;
         if (this._initiatorGraph.initiated.has(request))

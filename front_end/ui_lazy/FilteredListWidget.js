@@ -162,16 +162,19 @@ UI.FilteredListWidget = class extends UI.VBox {
     if (this._scoringTimer) {
       clearTimeout(this._scoringTimer);
       delete this._scoringTimer;
+
+      if (this._refreshViewportWithCurrentResult)
+        this._refreshViewportWithCurrentResult();
     }
 
     var query = this._delegate.rewriteQuery(this._value());
     this._query = query;
+
     var filterRegex = query ? UI.FilteredListWidget.filterRegex(query) : null;
 
     var oldSelectedAbsoluteIndex =
-        this._selectedIndexInFiltered ? this._filteredItems[this._selectedIndexInFiltered] : null;
+        this._selectedIndexInFiltered && query ? this._filteredItems[this._selectedIndexInFiltered] : undefined;
     var filteredItems = [];
-    this._selectedIndexInFiltered = 0;
 
     var bestScores = [];
     var bestItems = [];
@@ -195,8 +198,10 @@ UI.FilteredListWidget = class extends UI.VBox {
      * @this {UI.FilteredListWidget}
      */
     function scoreItems(fromIndex) {
+      delete this._scoringTimer;
       var maxWorkItems = 1000;
       var workDone = 0;
+
       for (var i = fromIndex; i < this._delegate.itemCount() && workDone < maxWorkItems; ++i) {
         // Filter out non-matching items quickly.
         if (filterRegex && !filterRegex.test(this._delegate.itemKeyAt(i)))
@@ -224,27 +229,40 @@ UI.FilteredListWidget = class extends UI.VBox {
         }
       }
 
+      this._refreshViewportWithCurrentResult =
+          this._refreshViewport.bind(this, bestItems, overflowItems, filteredItems, oldSelectedAbsoluteIndex);
+
       // Process everything in chunks.
       if (i < this._delegate.itemCount()) {
         this._scoringTimer = setTimeout(scoreItems.bind(this, i), 0);
         return;
       }
-      delete this._scoringTimer;
 
-      this._filteredItems = bestItems.concat(overflowItems).concat(filteredItems);
-      for (var i = 0; i < this._filteredItems.length; ++i) {
-        if (this._filteredItems[i] === oldSelectedAbsoluteIndex) {
-          this._selectedIndexInFiltered = i;
-          break;
-        }
-      }
-      this._elements = [];
-      this._viewportControl.refresh();
-      if (!query)
-        this._selectedIndexInFiltered = 0;
-      this._updateSelection(this._selectedIndexInFiltered, false);
-      this._itemsFilteredForTest();
+      this._refreshViewportWithCurrentResult();
     }
+  }
+
+  /**
+   * @param {!Array<number>} bestItems
+   * @param {!Array<number>} overflowItems
+   * @param {!Array<number>} filteredItems
+   * @param {number|undefined} selectedAbsoluteIndex
+   */
+  _refreshViewport(bestItems, overflowItems, filteredItems, selectedAbsoluteIndex) {
+    delete this._refreshViewportWithCurrentResult;
+    this._filteredItems = bestItems.concat(overflowItems).concat(filteredItems);
+
+    this._selectedIndexInFiltered = 0;
+    for (var i = 0; selectedAbsoluteIndex !== undefined && i < this._filteredItems.length; ++i) {
+      if (this._filteredItems[i] === selectedAbsoluteIndex) {
+        this._selectedIndexInFiltered = i;
+        break;
+      }
+    }
+    this._elements = [];
+    this._viewportControl.refresh();
+    this._updateSelection(this._selectedIndexInFiltered, false);
+    this._itemsFilteredForTest();
   }
 
   /**

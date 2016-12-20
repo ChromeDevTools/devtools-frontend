@@ -768,12 +768,15 @@ Main.NetworkPanelIndicator = class {
     updateVisibility();
 
     function updateVisibility() {
-      if (manager.isThrottling())
-        UI.inspectorView.setPanelIcon('network', 'smallicon-warning', Common.UIString('Network throttling is enabled'));
-      else if (blockedURLsSetting.get().length)
-        UI.inspectorView.setPanelIcon('network', 'smallicon-warning', Common.UIString('Requests may be blocked'));
-      else
-        UI.inspectorView.setPanelIcon('network', '', '');
+      var icon = null;
+      if (manager.isThrottling()) {
+        icon = UI.Icon.create('smallicon-warning');
+        icon.title = Common.UIString('Network throttling is enabled');
+      } else if (blockedURLsSetting.get().length) {
+        icon = UI.Icon.create('smallicon-warning');
+        icon.title = Common.UIString('Requests may be blocked');
+      }
+      UI.inspectorView.setPanelIcon('network', icon);
     }
   }
 };
@@ -787,11 +790,13 @@ Main.SourcesPanelIndicator = class {
     javaScriptDisabledChanged();
 
     function javaScriptDisabledChanged() {
+      var icon = null;
       var javaScriptDisabled = Common.moduleSetting('javaScriptDisabled').get();
-      if (javaScriptDisabled)
-        UI.inspectorView.setPanelIcon('sources', 'smallicon-warning', Common.UIString('JavaScript is disabled'));
-      else
-        UI.inspectorView.setPanelIcon('sources', '', '');
+      if (javaScriptDisabled) {
+        icon = UI.Icon.create('smallicon-warning');
+        icon.title = Common.UIString('JavaScript is disabled');
+      }
+      UI.inspectorView.setPanelIcon('sources', icon);
     }
   }
 };

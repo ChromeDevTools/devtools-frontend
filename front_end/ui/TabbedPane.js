@@ -349,13 +349,12 @@ UI.TabbedPane = class extends UI.VBox {
 
   /**
    * @param {string} id
-   * @param {string} iconType
-   * @param {string=} iconTooltip
+   * @param {?UI.Icon} icon
    */
-  setTabIcon(id, iconType, iconTooltip) {
+  setTabIcon(id, icon) {
     var tab = this._tabsById.get(id);
-    if (tab._setIconType(iconType, iconTooltip))
-      this._updateTabElements();
+    tab._setIcon(icon);
+    this._updateTabElements();
   }
 
   /**
@@ -862,8 +861,12 @@ UI.TabbedPaneTab = class {
     this._tooltip = tooltip;
     this._view = view;
     this._shown = false;
-    /** @type {number} */ this._measuredWidth;
-    /** @type {!Element|undefined} */ this._tabElement;
+    /** @type {number} */
+    this._measuredWidth;
+    /** @type {!Element|undefined} */
+    this._tabElement;
+    /** @type {?Element} */
+    this._iconContainer = null;
   }
 
   /**
@@ -900,19 +903,13 @@ UI.TabbedPaneTab = class {
   }
 
   /**
-   * @param {string} iconType
-   * @param {string=} iconTooltip
-   * @return {boolean}
+   * @param {?UI.Icon} icon
    */
-  _setIconType(iconType, iconTooltip) {
-    if (iconType === this._iconType && iconTooltip === this._iconTooltip)
-      return false;
-    this._iconType = iconType;
-    this._iconTooltip = iconTooltip;
+  _setIcon(icon) {
+    this._icon = icon;
     if (this._tabElement)
-      this._createIconElement(this._tabElement, this._titleElement);
+      this._createIconElement(this._tabElement, this._titleElement, false);
     delete this._measuredWidth;
-    return true;
   }
 
   /**
@@ -995,19 +992,21 @@ UI.TabbedPaneTab = class {
   /**
    * @param {!Element} tabElement
    * @param {!Element} titleElement
+   * @param {boolean} measuring
    */
-  _createIconElement(tabElement, titleElement) {
-    if (tabElement.__iconElement)
+  _createIconElement(tabElement, titleElement, measuring) {
+    if (tabElement.__iconElement) {
       tabElement.__iconElement.remove();
-    if (!this._iconType)
+      tabElement.__iconElement = null;
+    }
+    if (!this._icon)
       return;
 
-    var iconElement = createElementWithClass('label', 'tabbed-pane-header-tab-icon', 'dt-icon-label');
-    iconElement.type = this._iconType;
-    if (this._iconTooltip)
-      iconElement.title = this._iconTooltip;
-    tabElement.insertBefore(iconElement, titleElement);
-    tabElement.__iconElement = iconElement;
+    var iconContainer = createElementWithClass('span', 'tabbed-pane-header-tab-icon');
+    var iconNode = measuring ? this._icon.cloneNode(true) : this._icon;
+    iconContainer.appendChild(iconNode);
+    tabElement.insertBefore(iconContainer, titleElement);
+    tabElement.__iconElement = iconContainer;
   }
 
   /**
@@ -1025,7 +1024,7 @@ UI.TabbedPaneTab = class {
     var titleElement = tabElement.createChild('span', 'tabbed-pane-header-tab-title');
     titleElement.textContent = this.title;
     titleElement.title = this.tooltip || '';
-    this._createIconElement(tabElement, titleElement);
+    this._createIconElement(tabElement, titleElement, measuring);
     if (!measuring)
       this._titleElement = titleElement;
 

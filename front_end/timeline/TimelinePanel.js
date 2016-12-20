@@ -291,13 +291,13 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     // Record
     if (Runtime.experiments.isEnabled('timelineLandingPage')) {
-      const newButton = new UI.ToolbarButton(
-          Common.UIString('New recording'), 'largeicon-add', Common.UIString('New'));
+      const newButton = new UI.ToolbarButton(Common.UIString('New recording'), 'largeicon-add', Common.UIString('New'));
       newButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear, this);
       this._panelToolbar.appendToolbarItem(newButton);
       this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('main.reload'));
       this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
-    } else if (Runtime.experiments.isEnabled('timelineRecordingPerspectives') &&
+    } else if (
+        Runtime.experiments.isEnabled('timelineRecordingPerspectives') &&
         perspectiveSetting.get() === Timeline.TimelinePanel.Perspectives.Load) {
       const reloadButton = new UI.ToolbarButton(Common.UIString('Record & Reload'), 'largeicon-refresh');
       reloadButton.addEventListener(UI.ToolbarButton.Events.Click, () => SDK.targetManager.reloadPage());
@@ -378,12 +378,13 @@ Timeline.TimelinePanel = class extends UI.Panel {
     // Checkboxes
     if (Runtime.experiments.isEnabled('timelineLandingPage')) {
       if (!this._model.isEmpty()) {
-        this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(Common.UIString('Memory'),
-            this._showMemorySetting, Common.UIString('Show memory timeline.')));
+        this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(
+            Common.UIString('Memory'), this._showMemorySetting, Common.UIString('Show memory timeline.')));
         if (this._filmStripModel.frames().length) {
           this._showScreenshotsSetting.set(true);
-          this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(Common.UIString('Screenshots'),
-              this._showScreenshotsSetting, Common.UIString('Show captured screenshots.')));
+          this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(
+              Common.UIString('Screenshots'), this._showScreenshotsSetting,
+              Common.UIString('Show captured screenshots.')));
         }
       }
     } else {
@@ -565,11 +566,11 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _onModeChanged() {
     if (this._bulkUpdate)
       return;
-    const showMemory = Runtime.experiments.isEnabled('timelineLandingPage')
-        ? this._showMemorySetting.get() : this._captureMemorySetting.get();
-    const showScreenshots = Runtime.experiments.isEnabled('timelineLandingPage')
-        ? this._showScreenshotsSetting.get() && this._filmStripModel.frames().length
-        : this._captureFilmStripSetting.get();
+    const showMemory = Runtime.experiments.isEnabled('timelineLandingPage') ? this._showMemorySetting.get() :
+                                                                              this._captureMemorySetting.get();
+    const showScreenshots = Runtime.experiments.isEnabled('timelineLandingPage') ?
+        this._showScreenshotsSetting.get() && this._filmStripModel.frames().length :
+        this._captureFilmStripSetting.get();
     // Set up overview controls.
     this._overviewControls = [];
     this._overviewControls.push(new Timeline.TimelineEventOverviewResponsiveness(this._model, this._frameModel));
@@ -592,8 +593,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._addModeView(this._flameChart);
 
     if (showMemory) {
-      this._addModeView(new Timeline.MemoryCountersGraph(
-          this, this._model, [Timeline.TimelineUIUtils.visibleEventsFilter()]));
+      this._addModeView(
+          new Timeline.MemoryCountersGraph(this, this._model, [Timeline.TimelineUIUtils.visibleEventsFilter()]));
     }
     if (Runtime.experiments.isEnabled('timelineLandingPage'))
       this._flameChart.enableNetworkPane(true);
@@ -2059,10 +2060,12 @@ Timeline.CPUThrottlingManager = class extends Common.Object {
   setRate(value) {
     this._throttlingRate = value;
     this._targets.forEach(target => target.emulationAgent().setCPUThrottlingRate(value));
-    if (value !== 1)
-      UI.inspectorView.setPanelIcon('timeline', 'smallicon-warning', Common.UIString('CPU throttling is enabled'));
-    else
-      UI.inspectorView.setPanelIcon('timeline', '', '');
+    var icon = null;
+    if (value !== 1) {
+      icon = UI.Icon.create('smallicon-warning');
+      icon.title = Common.UIString('CPU throttling is enabled');
+    }
+    UI.inspectorView.setPanelIcon('timeline', icon);
   }
 
   /**

@@ -169,11 +169,10 @@ UI.InspectorView = class extends UI.VBox {
 
   /**
    * @param {string} panelName
-   * @param {string} iconType
-   * @param {string=} iconTooltip
+   * @param {?UI.Icon} icon
    */
-  setPanelIcon(panelName, iconType, iconTooltip) {
-    this._tabbedPane.setTabIcon(panelName, iconType, iconTooltip);
+  setPanelIcon(panelName, icon) {
+    this._tabbedPane.setTabIcon(panelName, icon);
   }
 
   /**

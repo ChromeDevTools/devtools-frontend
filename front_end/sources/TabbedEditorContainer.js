@@ -533,17 +533,16 @@ Sources.TabbedEditorContainer = class extends Common.Object {
     if (tabId) {
       var title = this._titleForFile(uiSourceCode);
       this._tabbedPane.changeTabTitle(tabId, title);
+      var icon = null;
       if (Persistence.persistence.hasUnsavedCommittedChanges(uiSourceCode)) {
-        this._tabbedPane.setTabIcon(
-            tabId, 'smallicon-warning', Common.UIString('Changes to this file were not saved to file system.'));
+        icon = UI.Icon.create('smallicon-warning');
+        icon.title = Common.UIString('Changes to this file were not saved to file system.');
       } else if (Runtime.experiments.isEnabled('persistence2') && Persistence.persistence.binding(uiSourceCode)) {
         var binding = Persistence.persistence.binding(uiSourceCode);
-        this._tabbedPane.setTabIcon(
-            tabId, 'smallicon-green-checkmark',
-            Persistence.PersistenceUtils.tooltipForUISourceCode(binding.fileSystem));
-      } else {
-        this._tabbedPane.setTabIcon(tabId, '');
+        icon = UI.Icon.create('smallicon-green-checkmark');
+        icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(binding.fileSystem);
       }
+      this._tabbedPane.setTabIcon(tabId, icon);
     }
   }
 

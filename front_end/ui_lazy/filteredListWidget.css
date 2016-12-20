@@ -11,9 +11,8 @@
 }
 
 .filtered-list-widget-prompt-element {
-    flex: 0 0 36px;
+    flex: 0 0 34px;
     border: 0;
-    border-bottom:1px solid rgba(0, 0, 0, 0.2);
     margin: 0;
     padding: 0 6px;
     z-index: 1;
@@ -23,8 +22,29 @@
 .filtered-list-widget-input {
     white-space: pre;
     height: 18px;
-    margin-top: 10px;
+    margin-top: 12px;
     overflow: hidden;
+}
+
+.filtered-list-widget-progress {
+    flex: none;
+    background: rgba(0, 0, 0, 0.2);
+    height: 2px;
+}
+
+.filtered-list-widget-progress-bar {
+    background-color: #2196F3;
+    height: 2px;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: top left;
+    opacity: 1;
+    transition: none;
+}
+
+.filtered-widget-progress-fade {
+    opacity: 0;
+    transition: opacity 500ms;
 }
 
 .filtered-list-widget > div.container {

@@ -32,6 +32,9 @@ UI.FilteredListWidget = class extends UI.VBox {
     promptProxy.addEventListener('input', this._onInput.bind(this), false);
     promptProxy.classList.add('filtered-list-widget-prompt-element');
 
+    this._progressElement = this.contentElement.createChild('div', 'filtered-list-widget-progress');
+    this._progressBarElement = this._progressElement.createChild('div', 'filtered-list-widget-progress-bar');
+
     this._filteredItems = [];
     this._viewportControl = new UI.ViewportControl(this);
     this._itemElementsContainer = this._viewportControl.element;
@@ -75,6 +78,7 @@ UI.FilteredListWidget = class extends UI.VBox {
     this._dialog.setPosition(undefined, 22);
     this.show(this._dialog.element);
     this._dialog.show();
+    this._progressElementWidth = this._progressElement.offsetWidth;
   }
 
   /**
@@ -167,6 +171,9 @@ UI.FilteredListWidget = class extends UI.VBox {
         this._refreshViewportWithCurrentResult();
     }
 
+    this._progressBarElement.style.transform = 'scaleX(0)';
+    this._progressBarElement.classList.remove('filtered-widget-progress-fade');
+
     var query = this._delegate.rewriteQuery(this._value());
     this._query = query;
 
@@ -181,6 +188,8 @@ UI.FilteredListWidget = class extends UI.VBox {
     var bestItemsToCollect = 100;
     var minBestScore = 0;
     var overflowItems = [];
+
+    var maxWorkItems = Number.constrain(10, 500, (this._delegate.itemCount() / 10) | 0);
 
     scoreItems.call(this, 0);
 
@@ -199,7 +208,6 @@ UI.FilteredListWidget = class extends UI.VBox {
      */
     function scoreItems(fromIndex) {
       delete this._scoringTimer;
-      var maxWorkItems = 1000;
       var workDone = 0;
 
       for (var i = fromIndex; i < this._delegate.itemCount() && workDone < maxWorkItems; ++i) {
@@ -235,9 +243,11 @@ UI.FilteredListWidget = class extends UI.VBox {
       // Process everything in chunks.
       if (i < this._delegate.itemCount()) {
         this._scoringTimer = setTimeout(scoreItems.bind(this, i), 0);
+        this._progressBarElement.style.transform = 'scaleX(' + i / this._delegate.itemCount() + ')';
         return;
       }
-
+      this._progressBarElement.style.transform = 'scaleX(1)';
+      this._progressBarElement.classList.add('filtered-widget-progress-fade');
       this._refreshViewportWithCurrentResult();
     }
   }

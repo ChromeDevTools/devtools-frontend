@@ -38,8 +38,8 @@ Sources.FilePathScoreFunction = class {
   constructor(query) {
     this._query = query;
     this._queryUpperCase = query.toUpperCase();
-    this._score = null;
-    this._sequence = null;
+    this._score = new Int32Array(20 * 100);
+    this._sequence = new Int32Array(20 * 100);
     this._dataUpperCase = '';
     this._fileNameIndex = 0;
   }
@@ -79,7 +79,8 @@ Sources.FilePathScoreFunction = class {
     }
     if (matchIndexes)
       this._restoreMatchIndexes(sequence, n, m, matchIndexes);
-    return score[n * m - 1];
+    const maxDataLength = 256;
+    return score[n * m - 1] * maxDataLength + (maxDataLength - data.length);
   }
 
   /**

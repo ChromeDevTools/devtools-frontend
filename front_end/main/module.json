@@ -265,9 +265,10 @@
             "settingType": "enum",
             "defaultValue": "default",
             "options": [
-                { "title": "Switch to default theme", "text": "Default", "value": "default" },
+                { "title": "Switch to light theme", "text": "Light", "value": "default" },
                 { "title": "Switch to dark theme", "text": "Dark", "value": "dark" }
-            ]
+            ],
+            "tags": "dark, light"
         },
         {
             "type": "setting",

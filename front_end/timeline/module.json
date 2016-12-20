@@ -60,7 +60,7 @@
             "actionId": "timeline.save-to-file",
             "contextTypes": ["Timeline.TimelinePanel"],
             "className": "Timeline.TimelinePanel.ActionDelegate",
-            "title": "Save Timeline data\u2026",
+            "title": "Save profile\u2026",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -79,7 +79,7 @@
             "contextTypes": ["Timeline.TimelinePanel"],
             "order": "10",
             "className": "Timeline.TimelinePanel.ActionDelegate",
-            "title": "Load Timeline data\u2026",
+            "title": "Load profile\u2026",
             "bindings": [
                 {
                     "platform": "windows,linux",

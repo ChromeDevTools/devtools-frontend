@@ -158,11 +158,9 @@ Components.ShortcutsScreen = class {
     section.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('main.reload'), Common.UIString('Record page reload'));
     section.addAlternateKeys(
-        UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.save-to-file'),
-        Common.UIString('Save timeline data'));
+        UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.save-to-file'), Common.UIString('Save profile'));
     section.addAlternateKeys(
-        UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.load-from-file'),
-        Common.UIString('Load timeline data'));
+        UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.load-from-file'), Common.UIString('Load profile'));
     section.addRelatedKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.jump-to-previous-frame')
             .concat(UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.jump-to-next-frame')),

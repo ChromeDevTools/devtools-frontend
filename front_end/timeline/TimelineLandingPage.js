@@ -7,7 +7,6 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('timeline/timelineLandingPage.css');
     this.contentElement.classList.add('timeline-landing-page', 'fill');
-    const perspectives = Timeline.TimelinePanel.Perspectives;
     const config = Timeline.TimelineLandingPage.RecordingConfig;
     this._tabbedPane = new UI.TabbedPane();
     this._tabbedPane.setTabSlider(true);
@@ -22,7 +21,7 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
     tab.appendDescription(Common.UIString(
         'The basic profile collects network, JavaScript and browser activity as you interact with the page.'));
     tab.appendOption(config.screenshots, true);
-    this._tabbedPane.appendTab(perspectives.Responsiveness, Common.UIString('Basic'), tab);
+    this._tabbedPane.appendTab('basic', Common.UIString('Basic'), tab);
 
     tab = new Timeline.TimelineLandingPage.PerspectiveTabWidget();
     tab.appendDescription(Common.UIString(
@@ -32,7 +31,7 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
     tab.appendOption(config.screenshots, true);
     tab.appendOption(config.javascript, true);
     tab.appendOption(config.paints, false);
-    this._tabbedPane.appendTab(perspectives.Custom, Common.UIString('Advanced'), tab);
+    this._tabbedPane.appendTab('advanced', Common.UIString('Advanced'), tab);
 
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
     this._tabbedPane.show(this.contentElement);
@@ -42,8 +41,8 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
      */
     function learnMore() {
       return UI.createExternalLink(
-        'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/',
-        Common.UIString('Learn more'));
+          'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/',
+          Common.UIString('Learn more'));
     }
   }
 
@@ -67,15 +66,15 @@ Timeline.TimelineLandingPage.RecordingConfig = {
   screenshots: {
     id: 'screenshots',
     title: Common.UIString('Screenshots'),
-    description:
-        Common.UIString('Collect page screenshots, so you can observe how the page was evolving during recording.'),
+    description: Common.UIString(
+        'Collect page screenshots, so you can observe how the page was evolving during recording (moderate performance overhead).'),
     setting: 'timelineCaptureFilmStrip'
   },
   paints: {
     id: 'paints',
     title: Common.UIString('Paints'),
     description: Common.UIString(
-        'Capture graphics layer positions and rasterization draw calls (moderate performance overhead).'),
+        'Capture graphics layer positions and rasterization draw calls (significant performance overhead).'),
     setting: 'timelineCaptureLayersAndPictures'
   }
 };
@@ -87,9 +86,9 @@ Timeline.TimelineLandingPage.PerspectiveTabWidget = class extends UI.VBox {
     this._enabledOptions = new Set([Timeline.TimelineLandingPage.RecordingConfig.javascript.id]);
     this._descriptionDiv = this.contentElement.createChild('div', 'timeline-perspective-description');
     this._actionButtonDiv = this.contentElement.createChild('div');
-    this._actionButtonDiv.appendChild(createTextButton(Common.UIString('Record Page Load'),
-        this._recordPageLoad.bind(this)));
-    this._actionButtonDiv.appendChild(createTextButton(Common.UIString('Record'), this._record.bind(this)));
+    this._actionButtonDiv.appendChild(createTextButton(Common.UIString('Start profiling'), this._record.bind(this)));
+    this._actionButtonDiv.appendChild(
+        createTextButton(Common.UIString('Profile page load'), this._recordPageLoad.bind(this)));
   }
 
   /**

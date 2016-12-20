@@ -113,8 +113,6 @@ Main.Main = class {
     Runtime.experiments.register('sourceDiff', 'Source diff');
     Runtime.experiments.register('terminalInDrawer', 'Terminal in drawer', true);
     Runtime.experiments.register('timelineInvalidationTracking', 'Timeline invalidation tracking', true);
-    Runtime.experiments.register('timelineLandingPage', 'Timeline landing page');
-    Runtime.experiments.register('timelineRecordingPerspectives', 'Timeline recording perspectives UI');
     Runtime.experiments.register('timelineTracingJSProfile', 'Timeline tracing based JS profiler', true);
     Runtime.experiments.register('timelineV8RuntimeCallStats', 'V8 Runtime Call Stats on Timeline', true);
     Runtime.experiments.register('timelinePerFrameTrack', 'Show track per frame on Timeline', true);
@@ -130,8 +128,7 @@ Main.Main = class {
         Runtime.experiments.enableForTest('cssTrackerPanel');
     }
 
-    Runtime.experiments.setDefaultExperiments(
-        ['timelineLandingPage', 'timelineRecordingPerspectives', 'persistenceValidation']);
+    Runtime.experiments.setDefaultExperiments(['persistenceValidation']);
   }
 
   /**

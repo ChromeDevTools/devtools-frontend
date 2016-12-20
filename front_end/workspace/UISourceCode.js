@@ -109,12 +109,7 @@ Workspace.UISourceCode = class extends Common.Object {
    * @return {string}
    */
   fullDisplayName() {
-    var parentPath = this._parentURL.replace(/^(?:https?|file)\:\/\//, '');
-    try {
-      parentPath = decodeURI(parentPath);
-    } catch (e) {
-    }
-    return parentPath + '/' + this.displayName(true);
+    return this._project.fullDisplayName(this);
   }
 
   /**

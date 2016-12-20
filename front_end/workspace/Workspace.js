@@ -116,6 +116,12 @@ Workspace.Project.prototype = {
   setFileContent(uiSourceCode, newContent, callback) {},
 
   /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {string}
+   */
+  fullDisplayName(uiSourceCode) {},
+
+  /**
    * @return {boolean}
    */
   canRename() {},

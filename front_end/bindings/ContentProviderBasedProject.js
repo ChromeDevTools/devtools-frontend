@@ -95,6 +95,20 @@ Bindings.ContentProviderBasedProject = class extends Workspace.ProjectStore {
 
   /**
    * @override
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {string}
+   */
+  fullDisplayName(uiSourceCode) {
+    var parentPath = uiSourceCode.parentURL().replace(/^(?:https?|file)\:\/\//, '');
+    try {
+      parentPath = decodeURI(parentPath);
+    } catch (e) {
+    }
+    return parentPath + '/' + uiSourceCode.displayName(true);
+  }
+
+  /**
+   * @override
    * @return {boolean}
    */
   canRename() {

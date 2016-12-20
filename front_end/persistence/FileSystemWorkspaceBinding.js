@@ -198,6 +198,7 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
 
     this._fileSystem = isolatedFileSystem;
     this._fileSystemBaseURL = this._fileSystem.path() + '/';
+    this._fileSystemParentURL = this._fileSystemBaseURL.substr(0, fileSystemPath.lastIndexOf('/') + 1);
     this._fileSystemWorkspaceBinding = fileSystemWorkspaceBinding;
     this._fileSystemPath = fileSystemPath;
 
@@ -301,6 +302,17 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
   setFileContent(uiSourceCode, newContent, callback) {
     var filePath = this._filePathForUISourceCode(uiSourceCode);
     this._fileSystem.setFileContent(filePath, newContent, callback.bind(this, ''));
+  }
+
+  /**
+   * @override
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {string}
+   */
+  fullDisplayName(uiSourceCode) {
+    var baseURL =
+        /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (uiSourceCode.project())._fileSystemParentURL;
+    return uiSourceCode.url().substring(baseURL.length);
   }
 
   /**

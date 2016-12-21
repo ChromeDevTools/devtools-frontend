@@ -17,6 +17,26 @@ Persistence.PersistenceUtils = class {
       return Common.UIString('Linked to source map: %s', binding.network.url().trimMiddle(150));
     return Common.UIString('Linked to %s', binding.network.url().trimMiddle(150));
   }
+
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {?UI.Icon}
+   */
+  static iconForUISourceCode(uiSourceCode) {
+    if (!Runtime.experiments.isEnabled('persistence2'))
+      return null;
+    var binding = Persistence.persistence.binding(uiSourceCode);
+    if (binding) {
+      var icon = UI.Icon.create('smallicon-file-sync');
+      icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(binding.fileSystem);
+      return icon;
+    }
+    if (uiSourceCode.project().type() !== Workspace.projectTypes.FileSystem)
+      return null;
+    var icon = UI.Icon.create('smallicon-file');
+    icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(uiSourceCode);
+    return icon;
+  }
 };
 
 /**
@@ -47,11 +67,6 @@ Persistence.PersistenceUtils.LinkDecorator = class extends Common.Object {
    * @return {?UI.Icon}
    */
   linkIcon(uiSourceCode) {
-    var binding = Persistence.persistence.binding(uiSourceCode);
-    if (!binding)
-      return null;
-    var icon = UI.Icon.create('smallicon-green-checkmark');
-    icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(uiSourceCode);
-    return icon;
+    return Persistence.PersistenceUtils.iconForUISourceCode(uiSourceCode);
   }
 };

@@ -27,8 +27,19 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.icon {
+.icon, .icon-badge {
     margin: -3px -7px -3px -7px;
+}
+
+.icon-stack {
+    position: relative;
+    display: inline-flex;
+}
+
+.icon-stack > [is=ui-icon]:not(:first-child) {
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 .navigator-file-tree-item .icon {

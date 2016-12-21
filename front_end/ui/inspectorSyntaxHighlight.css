@@ -108,6 +108,10 @@
     text-decoration: underline;
 }
 
+.devtools-link [is=ui-icon] {
+    vertical-align: middle;
+}
+
 .devtools-link:not(.devtools-link-prevent-click) {
     cursor: pointer;
 }

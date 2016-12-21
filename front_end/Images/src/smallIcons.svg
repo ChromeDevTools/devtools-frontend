@@ -297,9 +297,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.8890873"
-     inkscape:cx="149.25419"
-     inkscape:cy="20.224368"
+     inkscape:zoom="5.5"
+     inkscape:cx="140.93508"
+     inkscape:cy="10.610521"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -540,15 +540,6 @@
         </g>
       </g>
     </g>
-    <polygon
-       transform="translate(98.275,1041.1522)"
-       id="check"
-       points="2.7855556,5.967143 1.725,7.0278573 4.9066667,10.21 11.27,3.8457144 10.209445,2.7850001 4.9066667,8.0885717 " />
-    <polygon
-       transform="translate(118.275,1041.1522)"
-       id="check-3"
-       points="4.9066667,8.0885717 2.7855556,5.967143 1.725,7.0278573 4.9066667,10.21 11.27,3.8457144 10.209445,2.7850001 "
-       style="stroke:none;stroke-opacity:1;fill:#009802;fill-opacity:1" />
     <path
        style="fill:#ef9d0d;fill-opacity:1;stroke:#a36c01;stroke-width:0.90793478px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 140.454,1042.8291 0,9.0791 5.37181,0 3.58126,-4.54 -3.58126,-4.5391 z"

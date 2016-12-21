@@ -941,13 +941,28 @@ Sources.NavigatorSourceTreeElement = class extends TreeElement {
     this.listItemElement.classList.add(
         'navigator-' + uiSourceCode.contentType().name() + '-tree-item', 'navigator-file-tree-item');
     this.tooltip = uiSourceCode.url();
-    var iconType = 'largeicon-navigator-file';
-    if (uiSourceCode.contentType() === Common.resourceTypes.Snippet)
-      iconType = 'largeicon-navigator-snippet';
-    this.setLeadingIcons([UI.Icon.create(iconType, 'icon')]);
-
     this._navigatorView = navigatorView;
     this._uiSourceCode = uiSourceCode;
+    this.updateIcon();
+  }
+
+  updateIcon() {
+    var binding = Persistence.persistence.binding(this._uiSourceCode);
+    if (binding && Runtime.experiments.isEnabled('persistence2')) {
+      var container = createElementWithClass('span', 'icon-stack');
+      var icon = UI.Icon.create('largeicon-navigator-file-sync', 'icon');
+      var badge = UI.Icon.create('badge-navigator-file-sync', 'icon-badge');
+      container.appendChild(icon);
+      container.appendChild(badge);
+      container.title = Persistence.PersistenceUtils.tooltipForUISourceCode(this._uiSourceCode);
+      this.setLeadingIcons([container]);
+    } else {
+      var iconType = 'largeicon-navigator-file';
+      if (this._uiSourceCode.contentType() === Common.resourceTypes.Snippet)
+        iconType = 'largeicon-navigator-snippet';
+      var defaultIcon = UI.Icon.create(iconType, 'icon');
+      this.setLeadingIcons([defaultIcon]);
+    }
   }
 
   /**
@@ -1272,15 +1287,7 @@ Sources.NavigatorUISourceCodeTreeNode = class extends Sources.NavigatorTreeNode 
       titleText = '*' + titleText;
 
     this._treeElement.title = titleText;
-
-    var binding = Persistence.persistence.binding(this._uiSourceCode);
-    if (binding && Runtime.experiments.isEnabled('persistence2')) {
-      var icon = UI.Icon.create('smallicon-green-checkmark');
-      icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(this._uiSourceCode);
-      this._treeElement.setTrailingIcons([icon]);
-    } else {
-      this._treeElement.setTrailingIcons([]);
-    }
+    this._treeElement.updateIcon();
 
     var tooltip = this._uiSourceCode.url();
     if (this._uiSourceCode.contentType().isFromSourceMap())

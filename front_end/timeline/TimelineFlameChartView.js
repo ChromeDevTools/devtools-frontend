@@ -463,17 +463,6 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._delegate.select(dataProvider.createSelection(entryIndex));
   }
 
-  /**
-   * @param {boolean} enable
-   * @param {boolean=} animate
-   */
-  enableNetworkPane(enable, animate) {
-    if (enable)
-      this._splitWidget.showBoth(animate);
-    else
-      this._splitWidget.hideSidebar(animate);
-  }
-
   resizeToPreferredHeights() {
     this._splitWidget.setSidebarSize(this._networkDataProvider.preferredHeight());
   }

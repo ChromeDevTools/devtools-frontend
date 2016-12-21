@@ -76,9 +76,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     /** @type {!Array<!Timeline.TimelineModeView>} */
     this._currentViews = [];
 
-    this._captureNetworkSetting = Common.settings.createSetting('timelineCaptureNetwork', false);
     this._captureJSProfileSetting = Common.settings.createSetting('timelineEnableJSSampling', true);
-    this._captureMemorySetting = Common.settings.createSetting('timelineCaptureMemory', false);
     this._captureLayersAndPicturesSetting = Common.settings.createSetting('timelineCaptureLayersAndPictures', false);
     this._captureFilmStripSetting = Common.settings.createSetting('timelineCaptureFilmStrip', false);
 
@@ -127,8 +125,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     Extensions.extensionServer.addEventListener(
         Extensions.ExtensionServer.Events.TraceProviderAdded, this._recreateToolbarItems, this);
 
-    this._captureNetworkSetting.addChangeListener(this._onNetworkChanged, this);
-    this._captureMemorySetting.addChangeListener(this._onModeChanged, this);
     this._captureFilmStripSetting.addChangeListener(this._onModeChanged, this);
 
     this._detailsSplitWidget.show(this._timelinePane.element);
@@ -478,22 +474,15 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._removeAllModeViews();
     this._flameChart = new Timeline.TimelineFlameChartView(
         this, this._model, this._frameModel, this._irModel, this._extensionTracingModels, this._filters);
-    this._flameChart.enableNetworkPane(this._captureNetworkSetting.get());
     this._addModeView(this._flameChart);
 
     if (showMemory) {
       this._addModeView(
           new Timeline.MemoryCountersGraph(this, this._model, [Timeline.TimelineUIUtils.visibleEventsFilter()]));
     }
-    this._flameChart.enableNetworkPane(true);
 
     this.doResize();
     this.select(null);
-  }
-
-  _onNetworkChanged() {
-    if (this._flameChart)
-      this._flameChart.enableNetworkPane(this._captureNetworkSetting.get(), true);
   }
 
   _onCPUThrottlingChanged() {
@@ -527,9 +516,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
         provider => Timeline.TimelinePanel._settingForTraceProvider(provider).get());
 
     var captureOptions = {
-      captureCauses: true,
       enableJSSampling: this._captureJSProfileSetting.get(),
-      captureMemory: this._captureMemorySetting.get(),
       capturePictures: this._captureLayersAndPicturesSetting.get(),
       captureFilmStrip: this._captureFilmStripSetting.get()
     };

@@ -51,9 +51,8 @@ Timeline.TimelineController = class {
       if (Common.moduleSetting('highResolutionCpuProfiling').get())
         categoriesArray.push(disabledByDefault('v8.cpu_profiler.hires'));
     }
-    if (options.captureCauses || options.enableJSSampling)
-      categoriesArray.push(disabledByDefault('devtools.timeline.stack'));
-    if (options.captureCauses && Runtime.experiments.isEnabled('timelineInvalidationTracking'))
+    categoriesArray.push(disabledByDefault('devtools.timeline.stack'));
+    if (Runtime.experiments.isEnabled('timelineInvalidationTracking'))
       categoriesArray.push(disabledByDefault('devtools.timeline.invalidationTracking'));
     if (options.capturePictures) {
       categoriesArray.push(
@@ -280,9 +279,7 @@ Timeline.TimelineController = class {
 };
 
 /** @typedef {!{
- *    captureCauses: (boolean|undefined),
  *    enableJSSampling: (boolean|undefined),
- *    captureMemory: (boolean|undefined),
  *    capturePictures: (boolean|undefined),
  *    captureFilmStrip: (boolean|undefined)
  *  }}

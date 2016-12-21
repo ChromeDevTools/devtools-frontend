@@ -122,13 +122,6 @@ Network.NetworkLogViewColumns = class {
     this._waterfallColumn.element.addEventListener('mousewheel', this._onMouseWheel.bind(this, false), {passive: true});
     this._dataGridScroller.addEventListener('mousewheel', this._onMouseWheel.bind(this, true), true);
 
-    this._waterfallColumn.element.addEventListener('mousemove', event => {
-      var hoveredNode = this._waterfallColumn.getNodeFromPoint(event.offsetX, event.offsetY + event.target.offsetTop);
-      this._networkLogView.setHoveredNode(hoveredNode, event.shiftKey);
-    }, true);
-    this._waterfallColumn.element.addEventListener(
-        'mouseleave', this._networkLogView.setHoveredNode.bind(this._networkLogView, null, false), true);
-
     this._waterfallScroller = this._waterfallColumn.contentElement.createChild('div', 'network-waterfall-v-scroll');
     this._waterfallScroller.addEventListener('scroll', this._syncScrollers.bind(this), {passive: true});
     this._waterfallScrollerContent = this._waterfallScroller.createChild('div', 'network-waterfall-v-scroll-content');
@@ -171,8 +164,6 @@ Network.NetworkLogViewColumns = class {
       event.consume(true);
     this._activeScroller.scrollTop -= event.wheelDeltaY;
     this._syncScrollers();
-    var node = this._waterfallColumn.getNodeFromPoint(event.offsetX, event.offsetY);
-    this._networkLogView.setHoveredNode(node, event.shiftKey);
   }
 
   _syncScrollers() {
@@ -200,14 +191,6 @@ Network.NetworkLogViewColumns = class {
     }
     var nodes = this._networkLogView.flatNodesList();
     this._waterfallColumn.update(this._activeScroller.scrollTop, this._eventDividers, nodes);
-  }
-
-  /**
-   * @param {?Network.NetworkNode} node
-   * @param {boolean} highlightInitiatorChain
-   */
-  setHoveredNode(node, highlightInitiatorChain) {
-    this._waterfallColumn.setHoveredNode(node, highlightInitiatorChain);
   }
 
   _createWaterfallHeader() {
@@ -241,6 +224,10 @@ Network.NetworkLogViewColumns = class {
 
   dataChanged() {
     this._waterfallRequestsAreStale = true;
+  }
+
+  scheduleRefresh() {
+    this._waterfallColumn.scheduleDraw();
   }
 
   _updateRowsSize() {

@@ -33,6 +33,84 @@
  */
 Network.NetworkNode = class extends UI.SortableDataGridNode {
   /**
+   * @param {!Network.NetworkLogView} parentView
+   */
+  constructor(parentView) {
+    super({});
+    this._parentView = parentView;
+    this._isHovered = false;
+    this._showingInitiatorChain = false;
+  }
+
+  /**
+   * @return {!Network.NetworkLogView}
+   */
+  parentView() {
+    return this._parentView;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hovered() {
+    return this._isHovered;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  showingInitiatorChain() {
+    return this._showingInitiatorChain;
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  nodeSelfHeight() {
+    return this._parentView.rowHeight();
+  }
+
+  /**
+   * @param {boolean} hovered
+   * @param {boolean} showInitiatorChain
+   */
+  setHovered(hovered, showInitiatorChain) {
+    if (this._isHovered === hovered && this._showingInitiatorChain === showInitiatorChain)
+      return;
+    if (this._isHovered !== hovered) {
+      this._isHovered = hovered;
+      if (this.attached())
+        this.element().classList.toggle('hover', hovered);
+    }
+    if (this._showingInitiatorChain !== showInitiatorChain) {
+      this._showingInitiatorChain = showInitiatorChain;
+      this.showingInitiatorChainChanged();
+    }
+    this._parentView.stylesChanged();
+  }
+
+  /**
+   * @protected
+   */
+  showingInitiatorChainChanged() {
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isOnInitiatorPath() {
+    return false;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isOnInitiatedPath() {
+    return false;
+  }
+
+  /**
    * @return {?SDK.NetworkRequest}
    */
   request() {
@@ -63,11 +141,12 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    * @param {!SDK.NetworkRequest} request
    */
   constructor(parentView, request) {
-    super({});
-    this._parentView = parentView;
+    super(parentView);
     this._request = request;
     this._isNavigationRequest = false;
     this.selectable = true;
+    this._isOnInitiatorPath = false;
+    this._isOnInitiatedPath = false;
   }
 
   /**
@@ -332,6 +411,67 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   }
 
   /**
+   * @override
+   */
+  showingInitiatorChainChanged() {
+    var showInitiatorChain = this.showingInitiatorChain();
+
+    var initiatorGraph = this._request.initiatorGraph();
+    for (var request of initiatorGraph.initiators) {
+      if (request === this._request)
+        continue;
+      var node = this.parentView().nodeForRequest(request);
+      if (!node)
+        continue;
+      node._setIsOnInitiatorPath(showInitiatorChain);
+    }
+    for (var request of initiatorGraph.initiated) {
+      if (request === this._request)
+        continue;
+      var node = this.parentView().nodeForRequest(request);
+      if (!node)
+        continue;
+      node._setIsOnInitiatedPath(showInitiatorChain);
+    }
+  }
+
+  /**
+   * @param {boolean} isOnInitiatorPath
+   */
+  _setIsOnInitiatorPath(isOnInitiatorPath) {
+    if (this._isOnInitiatorPath === isOnInitiatorPath || !this.attached())
+      return;
+    this._isOnInitiatorPath = isOnInitiatorPath;
+    this.element().classList.toggle('network-node-on-initiator-path', isOnInitiatorPath);
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  isOnInitiatorPath() {
+    return this._isOnInitiatorPath;
+  }
+
+  /**
+   * @param {boolean} isOnInitiatedPath
+   */
+  _setIsOnInitiatedPath(isOnInitiatedPath) {
+    if (this._isOnInitiatedPath === isOnInitiatedPath || !this.attached())
+      return;
+    this._isOnInitiatedPath = isOnInitiatedPath;
+    this.element().classList.toggle('network-node-on-initiated-path', isOnInitiatedPath);
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  isOnInitiatedPath() {
+    return this._isOnInitiatedPath;
+  }
+
+  /**
    * @return {string}
    */
   displayType() {
@@ -379,7 +519,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    * @return {number}
    */
   nodeSelfHeight() {
-    return this._parentView.rowHeight();
+    return this.parentView().rowHeight();
   }
 
   /**
@@ -495,7 +635,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
 
   dispose() {
     if (this._linkifiedInitiatorAnchor)
-      this._parentView.linkifier.disposeAnchor(this._request.target(), this._linkifiedInitiatorAnchor);
+      this.parentView().linkifier.disposeAnchor(this._request.target(), this._linkifiedInitiatorAnchor);
   }
 
   /**
@@ -504,7 +644,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   select(supressSelectedEvent) {
     super.select(supressSelectedEvent);
-    this._parentView.dispatchEventToListeners(Network.NetworkLogView.Events.RequestSelected, this._request);
+    this.parentView().dispatchEventToListeners(Network.NetworkLogView.Events.RequestSelected, this._request);
   }
 
   /**
@@ -637,7 +777,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
 
       case SDK.NetworkRequest.InitiatorType.Script:
         if (!this._linkifiedInitiatorAnchor) {
-          this._linkifiedInitiatorAnchor = this._parentView.linkifier.linkifyScriptLocation(
+          this._linkifiedInitiatorAnchor = this.parentView().linkifier.linkifyScriptLocation(
               request.target(), initiator.scriptId, initiator.url, initiator.lineNumber, initiator.columnNumber);
           this._linkifiedInitiatorAnchor.title = '';
         }
@@ -709,17 +849,8 @@ Network.NetworkGroupNode = class extends Network.NetworkNode {
    * @param {string} name
    */
   constructor(parentView, name) {
-    super({});
-    this._parentView = parentView;
+    super(parentView);
     this._name = name;
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  nodeSelfHeight() {
-    return this._parentView.rowHeight();
   }
 
   /**
@@ -743,30 +874,6 @@ Network.NetworkGroupNode = class extends Network.NetworkNode {
       this._setTextAndTitle(cell, this._name);
     }
     return cell;
-  }
-
-  /**
-   * @override
-   * @return {null}
-   */
-  request() {
-    return null;
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isNavigationRequest() {
-    return false;
-  }
-
-  /**
-   * @override
-   * @return {null}
-   */
-  asRequestNode() {
-    return null;
   }
 
   /**

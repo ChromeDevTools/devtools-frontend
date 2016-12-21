@@ -39,8 +39,6 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
     /** @type {?Network.NetworkNode} */
     this._hoveredNode = null;
-    /** @type {?SDK.NetworkRequest.InitiatorGraph} */
-    this._initiatorGraph = null;
 
     /** @type {!Map<string, !Array<number>>} */
     this._eventDividers = new Map();
@@ -57,6 +55,9 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._borderColorsForResourceTypeCache = new Map();
     /** @type {!Map<string, !CanvasGradient>} */
     this._colorsForResourceTypeCache = new Map();
+
+    this.element.addEventListener('mousemove', this._onMouseMove.bind(this), true);
+    this.element.addEventListener('mouseleave', event => this._setHoveredNode(null, false), true);
   }
 
   /**
@@ -71,6 +72,13 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    */
   wasShown() {
     this.update();
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onMouseMove(event) {
+    this._setHoveredNode(this.getNodeFromPoint(event.offsetX, event.offsetY), event.shiftKey);
   }
 
   /**
@@ -105,7 +113,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     if (event.clientX < this._canvasPosition.left + start || event.clientX > this._canvasPosition.left + end)
       return;
 
-    var rowIndex = this._nodes.findIndex(node => this._hoveredNode === node);
+    var rowIndex = this._nodes.findIndex(node => node.hovered());
     var barHeight = this._getBarHeight(range.name);
     var y = this._headerHeight + (this._rowHeight * rowIndex - this._scrollTop) + ((this._rowHeight - barHeight) / 2);
 
@@ -138,10 +146,12 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    * @param {?Network.NetworkNode} node
    * @param {boolean} highlightInitiatorChain
    */
-  setHoveredNode(node, highlightInitiatorChain) {
+  _setHoveredNode(node, highlightInitiatorChain) {
+    if (this._hoveredNode)
+      this._hoveredNode.setHovered(false, false);
     this._hoveredNode = node;
-    this._initiatorGraph = (highlightInitiatorChain && node && node.request()) ? node.request().initiatorGraph() : null;
-    this.update();
+    if (this._hoveredNode)
+      this._hoveredNode.setHovered(true, highlightInitiatorChain);
   }
 
   /**
@@ -194,8 +204,10 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    * @param {!Array<!Network.NetworkNode>=} nodes
    */
   update(scrollTop, eventDividers, nodes) {
-    if (scrollTop !== undefined)
+    if (scrollTop !== undefined && this._scrollTop !== scrollTop) {
+      this._popoverHelper.hidePopover();
       this._scrollTop = scrollTop;
+    }
     if (nodes) {
       this._nodes = nodes;
       this._calculateCanvasSize();
@@ -454,7 +466,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
     /** @type {?{left: string, right: string, tooltip: (string|undefined)}} */
     var labels = null;
-    if (node === this._hoveredNode) {
+    if (node.hovered()) {
       labels = this._calculator.computeBarGraphLabels(request);
       this._drawSimplifiedBarDetails(
           context, labels.left, labels.right, ranges.start, ranges.mid, ranges.mid + barWidth + borderOffset);
@@ -585,7 +597,8 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    */
   _decorateRow(context, node, rowNumber, y) {
     var isOddRow = rowNumber % 2 === 1;
-    if (isOddRow && this._hoveredNode !== node && !node.isNavigationRequest() && !this._initiatorGraph)
+    if (isOddRow && !node.hovered() && !node.isNavigationRequest() && !node.isOnInitiatorPath() &&
+        !node.isOnInitiatedPath())
       return;
 
     var color = getRowColor.call(this);
@@ -603,15 +616,12 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
      * @this {Network.NetworkWaterfallColumn}
      */
     function getRowColor() {
-      var request = node.request();
-      if (this._hoveredNode === node)
+      if (node.hovered())
         return this._rowHoverColor;
-      if (request && this._initiatorGraph) {
-        if (this._initiatorGraph.initiators.has(request))
-          return this._parentInitiatorColor;
-        if (this._initiatorGraph.initiated.has(request))
-          return this._initiatedColor;
-      }
+      if (node.isOnInitiatorPath())
+        return this._parentInitiatorColor;
+      if (node.isOnInitiatedPath())
+        return this._initiatedColor;
       if (node.isNavigationRequest())
         return this._rowNavigationRequestColor;
       if (rowNumber % 2 === 1)

@@ -336,6 +336,14 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   /**
+   * @param {!SDK.NetworkRequest} request
+   * @return {?Network.NetworkNode}
+   */
+  nodeForRequest(request) {
+    return this._nodesByRequestId.get(request.requestId);
+  }
+
+  /**
    * @return {number}
    */
   headerHeight() {
@@ -515,7 +523,7 @@ Network.NetworkLogView = class extends UI.VBox {
     this._dataGrid.element.classList.add('network-log-grid');
     this._dataGrid.element.addEventListener('mousedown', this._dataGridMouseDown.bind(this), true);
     this._dataGrid.element.addEventListener('mousemove', this._dataGridMouseMove.bind(this), true);
-    this._dataGrid.element.addEventListener('mouseleave', this._dataGridMouseLeave.bind(this), true);
+    this._dataGrid.element.addEventListener('mouseleave', () => this._setHoveredNode(null), true);
   }
 
   /**
@@ -526,21 +534,6 @@ Network.NetworkLogView = class extends UI.VBox {
         /** @type {?Network.NetworkNode} */ (this._dataGrid.dataGridNodeFromNode(/** @type {!Node} */ (event.target)));
     var highlightInitiatorChain = event.shiftKey;
     this._setHoveredNode(node, highlightInitiatorChain);
-    this._highlightInitiatorChain((highlightInitiatorChain && node) ? node.request() : null);
-  }
-
-  _dataGridMouseLeave() {
-    this._setHoveredNode(null);
-    this._highlightInitiatorChain(null);
-  }
-
-  /**
-   * @param {?Network.NetworkNode} node
-   * @param {boolean} highlightInitiatorChain
-   */
-  setHoveredNode(node, highlightInitiatorChain) {
-    this._setHoveredNode(node, highlightInitiatorChain);
-    this._highlightInitiatorChain((node && highlightInitiatorChain) ? node.request() : null);
   }
 
   /**
@@ -549,11 +542,10 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   _setHoveredNode(node, highlightInitiatorChain) {
     if (this._hoveredNode)
-      this._hoveredNode.element().classList.remove('hover');
+      this._hoveredNode.setHovered(false, false);
     this._hoveredNode = node;
     if (this._hoveredNode)
-      this._hoveredNode.element().classList.add('hover');
-    this._columns.setHoveredNode(this._hoveredNode, !!highlightInitiatorChain);
+      this._hoveredNode.setHovered(true, !!highlightInitiatorChain);
   }
 
   /**
@@ -562,35 +554,6 @@ Network.NetworkLogView = class extends UI.VBox {
   _dataGridMouseDown(event) {
     if (!this._dataGrid.selectedNode && event.button)
       event.consume();
-  }
-
-  /**
-   * @param {?SDK.NetworkRequest} request
-   */
-  _highlightInitiatorChain(request) {
-    if (this._requestWithHighlightedInitiators === request)
-      return;
-    this._requestWithHighlightedInitiators = request;
-
-    if (!request) {
-      for (var node of this._nodesByRequestId.values()) {
-        if (!node.dataGrid)
-          continue;
-        node.element().classList.remove('network-node-on-initiator-path', 'network-node-on-initiated-path');
-      }
-      return;
-    }
-
-    var initiatorGraph = request.initiatorGraph();
-    for (var node of this._nodesByRequestId.values()) {
-      if (!node.dataGrid)
-        continue;
-      node.element().classList.toggle(
-          'network-node-on-initiator-path',
-          node.request() !== request && initiatorGraph.initiators.has(node.request()));
-      node.element().classList.toggle(
-          'network-node-on-initiated-path', node.request() !== request && initiatorGraph.initiated.has(node.request()));
-    }
   }
 
   _updateSummaryBar() {
@@ -787,6 +750,10 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   flatNodesList() {
     return this._dataGrid.rootNode().flatChildren();
+  }
+
+  stylesChanged() {
+    this._columns.scheduleRefresh();
   }
 
   _refresh() {

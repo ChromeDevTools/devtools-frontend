@@ -89,17 +89,17 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
   _getPopoverAnchor(element, event) {
     if (!this._hoveredNode)
       return;
+    var request = this._hoveredNode.request();
+    if (!request)
+      return;
     var useTimingBars = !Common.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
     if (useTimingBars) {
-      var request = this._hoveredNode.request();
-      if (!request)
-        return;
       var range = Network.RequestTimingView.calculateRequestTimeRanges(request, 0)
                       .find(data => data.name === Network.RequestTimeRangeNames.Total);
       var start = this._timeToPosition(range.start);
       var end = this._timeToPosition(range.end);
     } else {
-      var range = this._getSimplifiedBarRange(this.request(), 0);
+      var range = this._getSimplifiedBarRange(request, 0);
       var start = range.start;
       var end = range.end;
     }

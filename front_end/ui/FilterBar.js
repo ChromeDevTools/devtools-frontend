@@ -39,17 +39,16 @@ UI.FilterBar = class extends UI.HBox {
   constructor(name, visibleByDefault) {
     super();
     this.registerRequiredCSS('ui/filter.css');
-    this._filtersShown = false;
     this._enabled = true;
     this.element.classList.add('filter-bar');
 
-    this._filterButton = new UI.ToolbarToggle(Common.UIString('Filter'), 'largeicon-filter');
-    this._filterButton.addEventListener(UI.ToolbarButton.Events.Click, this._handleFilterButtonClick, this);
+    this._stateSetting = Common.settings.createSetting('filterBar-' + name + '-toggled', !!visibleByDefault);
+    this._filterButton = new UI.ToolbarSettingToggle(this._stateSetting, 'largeicon-filter', Common.UIString('Filter'));
 
     this._filters = [];
 
-    this._stateSetting = Common.settings.createSetting('filterBar-' + name + '-toggled', !!visibleByDefault);
-    this._setState(this._stateSetting.get());
+    this._updateFilterBar();
+    this._stateSetting.addChangeListener(this._updateFilterBar.bind(this));
   }
 
   /**
@@ -81,27 +80,30 @@ UI.FilterBar = class extends UI.HBox {
   }
 
   /**
-   * @override
-   */
-  wasShown() {
-    this._updateFilterBar();
-  }
-
-  /**
    * @param {!Common.Event} event
    */
   _filterChanged(event) {
     this._updateFilterButton();
   }
 
+  /**
+   * @override
+   */
+  wasShown() {
+    super.wasShown();
+    this._updateFilterBar();
+  }
+
   _updateFilterBar() {
     if (!this.parentWidget())
       return;
-    var visible = this._alwaysShowFilters || (this._filtersShown && this._enabled);
-    if (visible)
+    var visible = this._alwaysShowFilters || (this._stateSetting.get() && this._enabled);
+    if (visible) {
       this.showWidget();
-    else
+      this._focusTextField();
+    } else {
       this.hideWidget();
+    }
   }
 
   _focusTextField() {
@@ -115,41 +117,11 @@ UI.FilterBar = class extends UI.HBox {
   }
 
   _updateFilterButton() {
-    if (this._filtersShown) {
-      this._filterButton.setToggled(true);
-      this._filterButton.setToggleWithRedColor(false);
-      return;
-    }
-    this._filterButton.setToggleWithRedColor(true);
     var isActive = false;
     for (var filter of this._filters)
       isActive = isActive || filter.isActive();
-    this._filterButton.setToggled(isActive);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _handleFilterButtonClick(event) {
-    this._setState(!this._filtersShown);
-  }
-
-  /**
-   * @param {boolean} filtersShown
-   */
-  _setState(filtersShown) {
-    if (this._filtersShown === filtersShown)
-      return;
-
-    this._filtersShown = filtersShown;
-    if (this._stateSetting)
-      this._stateSetting.set(filtersShown);
-
-    this._updateFilterButton();
-    this._updateFilterBar();
-    if (this._filtersShown)
-      this._focusTextField();
-    this.dispatchEventToListeners(UI.FilterBar.Events.Toggled);
+    this._filterButton.setDefaultWithRedColor(isActive);
+    this._filterButton.setToggleWithRedColor(isActive);
   }
 
   clear() {
@@ -163,11 +135,6 @@ UI.FilterBar.FilterBarState = {
   Inactive: 'inactive',
   Active: 'active',
   Shown: 'on'
-};
-
-/** @enum {symbol} */
-UI.FilterBar.Events = {
-  Toggled: Symbol('Toggled')
 };
 
 /**

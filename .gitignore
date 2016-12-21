@@ -1,5 +1,6 @@
 *.Makefile
 *.mk
+*.pyc
 *.rules
 *.sln
 *.tmp

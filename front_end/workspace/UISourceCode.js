@@ -620,6 +620,7 @@ Workspace.UISourceCode.Events = {
   WorkingCopyChanged: Symbol('WorkingCopyChanged'),
   WorkingCopyCommitted: Symbol('WorkingCopyCommitted'),
   TitleChanged: Symbol('TitleChanged'),
+  SourceMappingChanged: Symbol('SourceMappingChanged'),
   MessageAdded: Symbol('MessageAdded'),
   MessageRemoved: Symbol('MessageRemoved'),
   LineDecorationAdded: Symbol('LineDecorationAdded'),

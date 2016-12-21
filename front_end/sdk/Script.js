@@ -22,7 +22,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @implements {Common.ContentProvider}
  * @unrestricted
@@ -290,7 +289,7 @@ SDK.Script = class extends SDK.SDKObject {
     if (this.sourceMapURL)
       return;
     this.sourceMapURL = sourceMapURL;
-    this.debuggerModel.dispatchEventToListeners(SDK.DebuggerModel.Events.SourceMapURLAdded, this);
+    this.dispatchEventToListeners(SDK.Script.Events.SourceMapURLAdded, this);
   }
 
   /**

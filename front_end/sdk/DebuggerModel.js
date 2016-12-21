@@ -59,9 +59,6 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     /** @type {!Map<string, string>} */
     this._fileURLToNodeJSPath = new Map();
     this.enableDebugger();
-
-    /** @type {!Map<string, string>} */
-    this._stringMap = new Map();
   }
 
   /**
@@ -322,7 +319,6 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
   _reset() {
     this._scripts = {};
     this._scriptsBySourceURL.clear();
-    this._stringMap.clear();
   }
 
   /**
@@ -488,13 +484,10 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     if (this.target().isNodeJS() && sourceURL && sourceURL.startsWith('/')) {
       var nodeJSPath = sourceURL;
       sourceURL = Common.ParsedURL.platformPathToURL(nodeJSPath);
-      sourceURL = this._internString(sourceURL);
       this._fileURLToNodeJSPath.set(sourceURL, nodeJSPath);
-    } else {
-      sourceURL = this._internString(sourceURL);
     }
     var script = new SDK.Script(
-        this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, this._internString(hash),
+        this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
         isContentScript, isLiveEdit, sourceMapURL, hasSourceURL);
     this._registerScript(script);
     if (!hasSyntaxError)
@@ -798,16 +791,6 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
       this.enableDebugger(fulfill);
     }
   }
-
-  /**
-   * @param {string} string
-   * @return {string} string
-   */
-  _internString(string) {
-     if (!this._stringMap.has(string))
-       this._stringMap.set(string, string);
-     return this._stringMap.get(string);
-  }
 };
 
 /** @typedef {{location: ?SDK.DebuggerModel.Location, functionName: string}} */
@@ -834,8 +817,7 @@ SDK.DebuggerModel.Events = {
   FailedToParseScriptSource: Symbol('FailedToParseScriptSource'),
   GlobalObjectCleared: Symbol('GlobalObjectCleared'),
   CallFrameSelected: Symbol('CallFrameSelected'),
-  ConsoleCommandEvaluatedInSelectedCallFrame: Symbol('ConsoleCommandEvaluatedInSelectedCallFrame'),
-  SourceMapURLAdded: Symbol('SourceMapURLAdded')
+  ConsoleCommandEvaluatedInSelectedCallFrame: Symbol('ConsoleCommandEvaluatedInSelectedCallFrame')
 };
 
 /** @enum {string} */

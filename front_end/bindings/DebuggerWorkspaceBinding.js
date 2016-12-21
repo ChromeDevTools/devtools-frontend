@@ -5,13 +5,12 @@
  * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
+Bindings.DebuggerWorkspaceBinding = class {
   /**
    * @param {!SDK.TargetManager} targetManager
    * @param {!Workspace.Workspace} workspace
    */
   constructor(targetManager, workspace) {
-    super();
     this._workspace = workspace;
 
     // FIXME: Migrate from _targetToData to _debuggerModelToData.
@@ -338,7 +337,6 @@ Bindings.DebuggerWorkspaceBinding.TargetData = class {
    */
   constructor(debuggerModel, debuggerWorkspaceBinding) {
     this._debuggerModel = debuggerModel;
-    this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
     /** @type {!Map.<string, !Bindings.DebuggerWorkspaceBinding.ScriptInfo>} */
     this.scriptDataMap = new Map();
@@ -397,7 +395,7 @@ Bindings.DebuggerWorkspaceBinding.TargetData = class {
     else
       this._uiSourceCodeToSourceMapping.remove(uiSourceCode);
 
-    this._debuggerWorkspaceBinding.dispatchEventToListeners(Bindings.DebuggerWorkspaceBinding.Events.SourceMappingChanged, {
+    uiSourceCode.dispatchEventToListeners(Workspace.UISourceCode.Events.SourceMappingChanged, {
       uiSourceCode: uiSourceCode,
       target: this._debuggerModel.target(),
       isIdentity: sourceMapping ? sourceMapping.isIdentity() : false
@@ -441,12 +439,6 @@ Bindings.DebuggerWorkspaceBinding.TargetData = class {
     this._uiSourceCodeToSourceMapping.clear();
   }
 };
-
-/** @enum {symbol} */
-Bindings.DebuggerWorkspaceBinding.Events = {
-  SourceMappingChanged: Symbol('SourceMappingChanged'),
-};
-
 
 /**
  * @unrestricted

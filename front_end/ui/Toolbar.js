@@ -623,6 +623,13 @@ UI.ToolbarToggle = class extends UI.ToolbarButton {
   }
 
   /**
+   * @param {boolean} withRedColor
+   */
+  setDefaultWithRedColor(withRedColor) {
+    this.element.classList.toggle('toolbar-default-with-red-color', withRedColor);
+  }
+
+  /**
    * @param {boolean} toggleWithRedColor
    */
   setToggleWithRedColor(toggleWithRedColor) {

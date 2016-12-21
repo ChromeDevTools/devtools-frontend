@@ -120,6 +120,28 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     this._stackView.show(this._searchableView.element);
     this._onModeChanged();
+
+    this._configureThrottlingSetting = Common.settings.createSetting('timelineConfigureThrottling', false);
+    this._configureThrottlingButton = new UI.ToolbarSettingToggle(
+        this._configureThrottlingSetting, 'largeicon-settings-gear', Common.UIString('Configure throttling'));
+    SDK.multitargetNetworkManager.addEventListener(
+        SDK.MultitargetNetworkManager.Events.ConditionsChanged, this._updateConfigureThrottlingButton.bind(this));
+    this._throttlingToolbar = new UI.Toolbar('', this.element);
+    this._cpuThrottlingCombobox = new UI.ToolbarComboBox(this._onCPUThrottlingChanged.bind(this));
+    this._throttlingToolbar.appendText(Common.UIString('Network:'));
+    this._throttlingToolbar.appendToolbarItem(this._createNetworkConditionsSelect());
+    this._throttlingToolbar.appendSeparator();
+    this._throttlingToolbar.appendText(Common.UIString('CPU:'));
+    this._throttlingToolbar.appendToolbarItem(this._cpuThrottlingCombobox);
+    this._throttlingToolbar.appendToolbarItem(new UI.ToolbarSeparator(true));
+    var hideToolbarItem = new UI.ToolbarButton(Common.UIString('Close'), 'largeicon-delete');
+    hideToolbarItem.addEventListener(UI.ToolbarButton.Events.Click, () => this._configureThrottlingSetting.set(false));
+    this._throttlingToolbar.appendToolbarItem(hideToolbarItem);
+    this._populateCPUThrottingCombobox();
+    this._configureThrottlingSetting.addChangeListener(this._updateThrottlingToolbarVisibility.bind(this));
+    this._updateThrottlingToolbarVisibility();
+
+    this._showLandingPage();
     this._recreateToolbarItems();
 
     Extensions.extensionServer.addEventListener(
@@ -130,7 +152,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._detailsSplitWidget.show(this._timelinePane.element);
     this._detailsSplitWidget.hideSidebar();
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
-    this._showLandingPage();
 
     /** @type {!SDK.TracingModel.Event}|undefined */
     this._selectedSearchResult;
@@ -284,15 +305,20 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     // Record
     const newButton = new UI.ToolbarButton(Common.UIString('New recording'), 'largeicon-add', Common.UIString('New'));
+    newButton.setEnabled(!this._landingPage);
     newButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear, this);
     this._panelToolbar.appendToolbarItem(newButton);
+    this._panelToolbar.appendSeparator();
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('main.reload'));
-
     this._panelToolbar.appendSeparator();
+    this._panelToolbar.appendToolbarItem(this._configureThrottlingButton);
+    this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('components.collect-garbage'));
 
     // Checkboxes
     if (!this._model.isEmpty()) {
+      this._panelToolbar.appendSeparator();
+      this._panelToolbar.appendText(Common.UIString('View:'));
       this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(
           Common.UIString('Memory'), this._showMemorySetting, Common.UIString('Show memory timeline.')));
       if (this._filmStripModel.frames().length) {
@@ -312,15 +338,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
         this._panelToolbar.appendToolbarItem(checkbox);
       }
     }
-
-    this._panelToolbar.appendSeparator();
-    this._cpuThrottlingCombobox = new UI.ToolbarComboBox(this._onCPUThrottlingChanged.bind(this));
-    this._panelToolbar.appendToolbarItem(this._createNetworkConditionsSelect());
-    this._panelToolbar.appendToolbarItem(this._cpuThrottlingCombobox);
-    this._populateCPUThrottingCombobox();
-
-    this._panelToolbar.appendSeparator();
-    this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('components.collect-garbage'));
 
     this._updateTimelineControls();
   }
@@ -366,7 +383,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
       cpuThrottlingCombobox.select(option);
       hasSelection = true;
     }
-    addOption(Common.UIString('No CPU throttling'), 1);
+    addOption(Common.UIString('No throttling'), 1);
     for (const rate of [2, 5, 10, 20])
       addOption(Common.UIString('%d\xD7 slowdown', rate), rate);
   }
@@ -490,6 +507,17 @@ Timeline.TimelinePanel = class extends UI.Panel {
       return;
     var text = this._cpuThrottlingCombobox.selectedOption().value;
     this._cpuThrottlingManager.setRate(Number.parseFloat(text));
+    this._updateConfigureThrottlingButton();
+  }
+
+  _updateThrottlingToolbarVisibility() {
+    this._throttlingToolbar.element.classList.toggle('hidden', !this._configureThrottlingSetting.get());
+  }
+
+  _updateConfigureThrottlingButton() {
+    var makeRed = this._cpuThrottlingManager.rate() !== 1 || SDK.multitargetNetworkManager.isThrottling();
+    this._configureThrottlingButton.setDefaultWithRedColor(makeRed);
+    this._configureThrottlingButton.setToggleWithRedColor(makeRed);
   }
 
   /**

@@ -81,10 +81,6 @@ Components.NetworkConditionsSelector = class {
         var group = groups[i];
         var groupElement = selectElement.createChild('optgroup');
         groupElement.label = group.title;
-        if (!i) {
-          groupElement.appendChild(new Option(Common.UIString('Add\u2026'), Common.UIString('Add\u2026')));
-          options.push(null);
-        }
         for (var conditions of group.items) {
           var title = Components.NetworkConditionsSelector._conditionsTitle(conditions, true);
           var option = new Option(title.text, title.text);
@@ -92,12 +88,16 @@ Components.NetworkConditionsSelector = class {
           groupElement.appendChild(option);
           options.push(conditions);
         }
+        if (i === groups.length - 1) {
+          groupElement.appendChild(new Option(Common.UIString('Add\u2026'), Common.UIString('Add\u2026')));
+          options.push(null);
+        }
       }
       return options;
     }
 
     function optionSelected() {
-      if (selectElement.selectedIndex === 0)
+      if (selectElement.selectedIndex === selectElement.options.length - 1)
         selector.revealAndUpdate();
       else
         selector.optionSelected(options[selectElement.selectedIndex]);
@@ -200,7 +200,7 @@ Components.NetworkConditionsSelector = class {
     var customGroup = {title: Common.UIString('Custom'), items: this._customSetting.get()};
     var presetsGroup = {title: Common.UIString('Presets'), items: Components.NetworkConditionsSelector._presets};
     var disabledGroup = {title: Common.UIString('Disabled'), items: [SDK.NetworkManager.NoThrottlingConditions]};
-    this._options = this._populateCallback([customGroup, presetsGroup, disabledGroup]);
+    this._options = this._populateCallback([disabledGroup, presetsGroup, customGroup]);
     if (!this._conditionsChanged()) {
       for (var i = this._options.length - 1; i >= 0; i--) {
         if (this._options[i]) {

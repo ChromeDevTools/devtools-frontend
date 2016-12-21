@@ -43,6 +43,7 @@ UI.Toolbar = class {
     this.element = parentElement ? parentElement.createChild('div') : createElement('div');
     this.element.className = className;
     this.element.classList.add('toolbar');
+    this._enabled = true;
     this._shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'ui/toolbar.css');
     this._contentElement = this._shadowRoot.createChild('div', 'toolbar-shadow');
     this._insertionPoint = this._contentElement.createChild('content');
@@ -219,8 +220,9 @@ UI.Toolbar = class {
    * @param {boolean} enabled
    */
   setEnabled(enabled) {
+    this._enabled = enabled;
     for (var item of this._items)
-      item.setEnabled(enabled);
+      item._applyEnabledState();
   }
 
   /**
@@ -229,6 +231,8 @@ UI.Toolbar = class {
   appendToolbarItem(item) {
     this._items.push(item);
     item._toolbar = this;
+    if (!this._enabled)
+      item._applyEnabledState();
     if (this._reverse)
       this._contentElement.insertBefore(item.element, this._insertionPoint.nextSibling);
     else
@@ -399,7 +403,7 @@ UI.ToolbarItem = class extends Common.Object {
   }
 
   _applyEnabledState() {
-    this.element.disabled = !this._enabled;
+    this.element.disabled = !this._enabled || (this._toolbar && !this._toolbar._enabled);
   }
 
   /**
@@ -824,7 +828,7 @@ UI.ToolbarComboBox = class extends UI.ToolbarItem {
    * @override
    */
   _applyEnabledState() {
-    this._selectElement.disabled = !this._enabled;
+    this._selectElement.disabled = !this._enabled || (this._toolbar && !this._toolbar._enabled);
   }
 
   /**

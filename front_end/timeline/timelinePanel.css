@@ -481,7 +481,8 @@
 }
 
 .timeline-overview-popover .frame .thumbnail img {
-    max-width: 200px;
+    max-width: 300px;
+    max-height: 500px;
 }
 
 .timeline-tree-view {

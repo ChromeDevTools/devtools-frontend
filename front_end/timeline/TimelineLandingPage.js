@@ -11,6 +11,8 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
     this._tabbedPane = new UI.TabbedPane();
     this._tabbedPane.setTabSlider(true);
     this._tabbedPane.renderWithNoHeaderBackground();
+    this._currentTabSetting = Common.settings.createSetting(
+        'performanceLandingPageTab', Timeline.TimelineLandingPage.PageId.Basic);
 
     var tab = new Timeline.TimelineLandingPage.PerspectiveTabWidget();
     tab.appendDescription(Common.UIString(
@@ -21,7 +23,7 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
     tab.appendDescription(Common.UIString(
         'The basic profile collects network, JavaScript and browser activity as you interact with the page.'));
     tab.appendOption(config.screenshots, true);
-    this._tabbedPane.appendTab('basic', Common.UIString('Basic'), tab);
+    this._tabbedPane.appendTab(Timeline.TimelineLandingPage.PageId.Basic, Common.UIString('Basic'), tab);
 
     tab = new Timeline.TimelineLandingPage.PerspectiveTabWidget();
     tab.appendDescription(Common.UIString(
@@ -31,9 +33,10 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
     tab.appendOption(config.screenshots, true);
     tab.appendOption(config.javascript, true);
     tab.appendOption(config.paints, false);
-    this._tabbedPane.appendTab('advanced', Common.UIString('Advanced'), tab);
+    this._tabbedPane.appendTab(Timeline.TimelineLandingPage.PageId.Advanced, Common.UIString('Advanced'), tab);
 
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
+    this._tabbedPane.selectTab(this._currentTabSetting.get());
     this._tabbedPane.show(this.contentElement);
 
     /**
@@ -48,6 +51,7 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
 
   _tabSelected() {
     const tabWidget = /** @type {!Timeline.TimelineLandingPage.PerspectiveTabWidget} */ (this._tabbedPane.visibleView);
+    this._currentTabSetting.set(this._tabbedPane.selectedTabId);
     tabWidget.activate();
   }
 };
@@ -77,6 +81,12 @@ Timeline.TimelineLandingPage.RecordingConfig = {
         'Capture graphics layer positions and rasterization draw calls (significant performance overhead).'),
     setting: 'timelineCaptureLayersAndPictures'
   }
+};
+
+/** @enum {string} */
+Timeline.TimelineLandingPage.PageId = {
+  Basic: 'Basic',
+  Advanced: 'Advanced'
 };
 
 Timeline.TimelineLandingPage.PerspectiveTabWidget = class extends UI.VBox {

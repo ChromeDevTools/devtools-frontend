@@ -80,6 +80,8 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     /** @type {!Map.<number, !Element>} */
     this._valueWidgets = new Map();
     this.onBindingChanged();
+    Bindings.debuggerWorkspaceBinding.addEventListener(
+          Bindings.DebuggerWorkspaceBinding.Events.SourceMappingChanged, this._onSourceMappingChanged, this);
   }
 
   /**
@@ -1031,22 +1033,17 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
   }
 
   _updateDebuggerSourceCode() {
-    if (this._debuggerSourceCode) {
-      this._debuggerSourceCode.removeEventListener(
-          Workspace.UISourceCode.Events.SourceMappingChanged, this._onSourceMappingChanged, this);
-    }
-
     var binding = Persistence.persistence.binding(this.uiSourceCode());
     this._debuggerSourceCode = binding ? binding.network : this.uiSourceCode();
-    this._debuggerSourceCode.addEventListener(
-        Workspace.UISourceCode.Events.SourceMappingChanged, this._onSourceMappingChanged, this);
   }
 
   /**
    * @param {!Common.Event} event
    */
   _onSourceMappingChanged(event) {
-    var data = /** @type {{target: !SDK.Target}} */ (event.data);
+    var data = /** @type {{target: !SDK.Target, uiSourceCode: !Workspace.UISourceCode}} */ (event.data);
+    if (this._debuggerSourceCode !== data.uiSourceCode)
+      return;
     this._updateScriptFile(data.target);
     this._updateLinesWithoutMappingHighlight();
   }
@@ -1296,6 +1293,8 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
    * @override
    */
   dispose() {
+    Bindings.debuggerWorkspaceBinding.addEventListener(
+          Bindings.DebuggerWorkspaceBinding.Events.SourceMappingChanged, this._onSourceMappingChanged, this);
     this._breakpointManager.removeEventListener(
         Bindings.BreakpointManager.Events.BreakpointAdded, this._breakpointAdded, this);
     this._breakpointManager.removeEventListener(
@@ -1306,10 +1305,6 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
         Workspace.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
     this.uiSourceCode().removeEventListener(
         Workspace.UISourceCode.Events.TitleChanged, this._showBlackboxInfobarIfNeeded, this);
-    if (this._debuggerSourceCode) {
-      this._debuggerSourceCode.removeEventListener(
-          Workspace.UISourceCode.Events.SourceMappingChanged, this._onSourceMappingChanged, this);
-    }
 
     Common.moduleSetting('skipStackFramesPattern').removeChangeListener(this._showBlackboxInfobarIfNeeded, this);
     Common.moduleSetting('skipContentScripts').removeChangeListener(this._showBlackboxInfobarIfNeeded, this);

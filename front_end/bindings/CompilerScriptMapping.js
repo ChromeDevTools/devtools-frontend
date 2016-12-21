@@ -62,7 +62,8 @@ Bindings.CompilerScriptMapping = class {
     this._eventListeners = [
       workspace.addEventListener(
           Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAddedToWorkspace, this),
-      debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this)
+      debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this),
+      debuggerModel.addEventListener(SDK.DebuggerModel.Events.SourceMapURLAdded, this._sourceMapURLAdded.bind(this))
     ];
   }
 
@@ -150,12 +151,8 @@ Bindings.CompilerScriptMapping = class {
    * @param {!SDK.Script} script
    */
   addScript(script) {
-    if (!script.sourceMapURL) {
-      script.addEventListener(SDK.Script.Events.SourceMapURLAdded, this._sourceMapURLAdded.bind(this));
-      return;
-    }
-
-    this._processScript(script);
+    if (script.sourceMapURL)
+      this._processScript(script);
   }
 
   /**

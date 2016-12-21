@@ -660,10 +660,10 @@ UI.FlameChart = class extends UI.ChartViewport {
 
     context.restore();
 
+    this._drawGroupHeaders(width, height);
+    this._drawMarkers();
     const headerHeight = 15;
     UI.TimelineGrid.drawCanvasGrid(context, this._calculator, 3, headerHeight);
-    this._drawMarkers();
-    this._drawGroupHeaders(width, height);
 
     this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
     this._updateElementPosition(this._selectedElement, this._selectedEntryIndex);
@@ -692,7 +692,7 @@ UI.FlameChart = class extends UI.ChartViewport {
     context.scale(ratio, ratio);
     context.translate(0, -top);
 
-    context.fillStyle = UI.themeSupport.patchColor('#eee', colorUsage.Background);
+    context.fillStyle = UI.themeSupport.patchColor('#fff', colorUsage.Background);
     forEachGroup.call(this, (offset, index, group) => {
       var paddingHeight = group.style.padding;
       if (paddingHeight < 5)
@@ -702,14 +702,14 @@ UI.FlameChart = class extends UI.ChartViewport {
     if (groups.length && lastGroupOffset < top + height)
       context.fillRect(0, lastGroupOffset + 2, width, top + height - lastGroupOffset);
 
-    context.strokeStyle = UI.themeSupport.patchColor('#bbb', colorUsage.Background);
+    context.strokeStyle = UI.themeSupport.patchColor('#eee', colorUsage.Background);
     context.beginPath();
     forEachGroup.call(this, (offset, index, group, isFirst) => {
       if (isFirst || group.style.padding < 4)
         return;
       hLine(offset - 2.5);
     });
-    hLine(lastGroupOffset + 0.5);
+    hLine(lastGroupOffset + 1.5);
     context.stroke();
 
     forEachGroup.call(this, (offset, index, group) => {
@@ -733,8 +733,8 @@ UI.FlameChart = class extends UI.ChartViewport {
     forEachGroup.call(this, (offset, index, group) => {
       context.font = group.style.font;
       if (this._isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
-        var width = this._labelWidthForGroup(context, group);
-        context.fillStyle = Common.Color.parse(group.style.backgroundColor).setAlpha(0.7).asString(null);
+        const width = this._labelWidthForGroup(context, group) + 2;
+        context.fillStyle = Common.Color.parse(group.style.backgroundColor).setAlpha(0.8).asString(null);
         context.fillRect(
             this._headerLeftPadding - this._headerLabelXPadding, offset + this._headerLabelYPadding, width,
             barHeight - 2 * this._headerLabelYPadding);

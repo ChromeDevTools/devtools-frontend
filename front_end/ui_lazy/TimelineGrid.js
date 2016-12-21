@@ -121,14 +121,13 @@ UI.TimelineGrid = class {
 
     context.translate(0.5, 0.5);
     const paddingRight = 4;
-    freeZoneAtLeft = freeZoneAtLeft || 0;
     for (var i = 0; i < dividerOffsets.length; ++i) {
       var time = dividerOffsets[i];
       var position = calculator.computePosition(time);
       var text = calculator.formatValue(time, precision);
       var textWidth = context.measureText(text).width;
       var textPosition = position - textWidth - paddingRight;
-      if (freeZoneAtLeft < textPosition)
+      if (!freeZoneAtLeft || freeZoneAtLeft < textPosition)
         context.fillText(text, textPosition, paddingTop);
       context.moveTo(position, 0);
       context.lineTo(position, height);

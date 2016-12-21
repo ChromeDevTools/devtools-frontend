@@ -27,6 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @unrestricted
  */
@@ -43,6 +44,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
     this._filters = filters;
     /** @type {?UI.FlameChart.TimelineData} */
     this._timelineData = null;
+    this._currentLevel = 0;
     this._frameModel = frameModel;
     this._irModel = irModel;
     this._consoleColorGenerator =
@@ -51,49 +53,40 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
         new UI.FlameChart.ColorGenerator({min: 210, max: 300}, {min: 70, max: 100, count: 6}, 70, 0.7);
     const font = this.font();
 
-    this._headerLevel1 = {
+    const defaultGroupStyle = {
       padding: 4,
       height: 17,
       collapsible: true,
       color: UI.themeSupport.patchColor('#222', UI.ThemeSupport.ColorUsage.Foreground),
-      font: font,
       backgroundColor: UI.themeSupport.patchColor('white', UI.ThemeSupport.ColorUsage.Background),
-      nestingLevel: 0
-    };
-
-    this._headerLevel2 = {
-      padding: 2,
-      height: 17,
-      collapsible: false,
       font: font,
-      color: UI.themeSupport.patchColor('#222', UI.ThemeSupport.ColorUsage.Foreground),
-      backgroundColor: UI.themeSupport.patchColor('white', UI.ThemeSupport.ColorUsage.Background),
-      nestingLevel: 1,
-      shareHeaderLine: true
-    };
-
-    this._interactionsHeaderLevel1 = {
-      padding: 4,
-      height: 17,
-      collapsible: true,
-      color: UI.themeSupport.patchColor('#222', UI.ThemeSupport.ColorUsage.Foreground),
-      font: font,
-      backgroundColor: UI.themeSupport.patchColor('white', UI.ThemeSupport.ColorUsage.Background),
       nestingLevel: 0,
-      useFirstLineForOverview: true,
       shareHeaderLine: true
     };
 
-    this._interactionsHeaderLevel2 = {
-      padding: 2,
-      height: 17,
-      collapsible: true,
-      color: UI.themeSupport.patchColor('#222', UI.ThemeSupport.ColorUsage.Foreground),
-      font: font,
-      backgroundColor: UI.themeSupport.patchColor('white', UI.ThemeSupport.ColorUsage.Background),
-      nestingLevel: 1,
-      shareHeaderLine: true
-    };
+    this._headerLevel1 = /** @type {!UI.FlameChart.GroupStyle} */
+        (Object.assign({}, defaultGroupStyle, {
+          shareHeaderLine: false
+    }));
+    this._headerLevel2 = /** @type {!UI.FlameChart.GroupStyle} */
+        (Object.assign({}, defaultGroupStyle, {
+          padding: 2,
+          nestingLevel: 1,
+          collapsible: false
+    }));
+    this._staticHeader = /** @type {!UI.FlameChart.GroupStyle} */
+        (Object.assign({}, defaultGroupStyle, {
+          collapsible: false
+    }));
+    this._interactionsHeaderLevel1 = /** @type {!UI.FlameChart.GroupStyle} */
+        (Object.assign({
+          useFirstLineForOverview: true
+        }, defaultGroupStyle));
+    this._interactionsHeaderLevel2 = /** @type {!UI.FlameChart.GroupStyle} */
+        (Object.assign({}, defaultGroupStyle, {
+          padding: 2,
+          nestingLevel: 1
+    }));
   }
 
   /**
@@ -176,6 +169,8 @@ Timeline.TimelineFlameChartDataProvider = class extends Timeline.TimelineFlameCh
     this._minimumBoundary = this._model.minimumRecordTime();
     this._timeSpan = this._model.isEmpty() ? 1000 : this._model.maximumRecordTime() - this._minimumBoundary;
     this._currentLevel = 0;
+
+    this._appendHeader(Common.UIString('Frames'), this._staticHeader);
     this._appendFrameBars(this._frameModel.frames());
 
     this._appendHeader(Common.UIString('Interactions'), this._interactionsHeaderLevel1);

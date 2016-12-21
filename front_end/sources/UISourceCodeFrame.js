@@ -61,10 +61,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this._messageAndDecorationListeners = [];
     this._installMessageAndDecorationListeners();
 
-    Persistence.persistence.addEventListener(
-        Persistence.Persistence.Events.BindingCreated, this._onBindingChanged, this);
-    Persistence.persistence.addEventListener(
-        Persistence.Persistence.Events.BindingRemoved, this._onBindingChanged, this);
+    Persistence.persistence.subscribeForBindingEvent(this._uiSourceCode, this._onBindingChanged.bind(this));
 
     this.textEditor.addEventListener(
         SourceFrame.SourcesTextEditor.Events.EditorBlurred,

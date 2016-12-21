@@ -52,6 +52,7 @@ Sources.SourcesView = class extends UI.VBox {
     this._scriptViewToolbar = new UI.Toolbar('', this._toolbarContainerElement);
     this._scriptViewToolbar.element.style.flex = 'auto';
     this._bottomToolbar = new UI.Toolbar('', this._toolbarContainerElement);
+    this._bindingChangeBound = this._onBindingChanged.bind(this);
 
     UI.startBatchUpdate();
     workspace.uiSourceCodes().forEach(this._addUISourceCode.bind(this));
@@ -89,11 +90,6 @@ Sources.SourcesView = class extends UI.VBox {
 
     this._shortcuts = {};
     this.element.addEventListener('keydown', this._handleKeyDown.bind(this), false);
-
-    Persistence.persistence.addEventListener(
-        Persistence.Persistence.Events.BindingCreated, this._onBindingChanged, this);
-    Persistence.persistence.addEventListener(
-        Persistence.Persistence.Events.BindingRemoved, this._onBindingChanged, this);
   }
 
   /**
@@ -399,24 +395,17 @@ Sources.SourcesView = class extends UI.VBox {
       /** @type {!Sources.UISourceCodeFrame} */ (sourceView).dispose();
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _onBindingChanged(event) {
-    if (!this._executionLocation)
-      return;
-    var binding = /** @type {!Persistence.PersistenceBinding} */ (event.data);
-    var uiSourceCode = this._executionLocation.uiSourceCode;
-    if (binding.network !== uiSourceCode)
-      return;
+  _onBindingChanged() {
     this.setExecutionLocation(this._executionLocation);
     this.showSourceLocation(
         this._executionLocation.uiSourceCode, this._executionLocation.lineNumber, this._executionLocation.columnNumber);
   }
 
   clearCurrentExecutionLine() {
-    if (this._executionSourceFrame)
-      this._executionSourceFrame.clearExecutionLine();
+    if (!this._executionLocation)
+      return;
+    Persistence.persistence.unsubscribeFromBindingEvent(this._executionLocation.uiSourceCode, this._bindingChangeBound);
+    this._executionSourceFrame.clearExecutionLine();
     this._executionSourceFrame = null;
     this._executionLocation = null;
   }
@@ -429,13 +418,14 @@ Sources.SourcesView = class extends UI.VBox {
     var binding = Persistence.persistence.binding(uiLocation.uiSourceCode);
     var uiSourceCode = binding ? binding.fileSystem : uiLocation.uiSourceCode;
     var sourceView = this._getOrCreateSourceView(uiSourceCode);
-    if (sourceView instanceof Sources.UISourceCodeFrame) {
-      var sourceFrame = /** @type {!Sources.UISourceCodeFrame} */ (sourceView);
-      sourceFrame.setExecutionLocation(
-          new Workspace.UILocation(uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber));
-      this._executionSourceFrame = sourceFrame;
-      this._executionLocation = uiLocation;
-    }
+    if (!(sourceView instanceof Sources.UISourceCodeFrame))
+      return;
+    Persistence.persistence.subscribeForBindingEvent(uiLocation.uiSourceCode, this._bindingChangeBound);
+    var sourceFrame = /** @type {!Sources.UISourceCodeFrame} */ (sourceView);
+    sourceFrame.setExecutionLocation(
+        new Workspace.UILocation(uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber));
+    this._executionSourceFrame = sourceFrame;
+    this._executionLocation = uiLocation;
   }
 
   /**

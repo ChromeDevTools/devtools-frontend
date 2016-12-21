@@ -17,6 +17,9 @@ Persistence.Persistence = class extends Common.Object {
     /** @type {!Map<string, number>} */
     this._filePathPrefixesToBindingCount = new Map();
 
+    /** @type {!Multimap<!Workspace.UISourceCode, function()>} */
+    this._subscribedBindingEventListeners = new Multimap();
+
     if (Runtime.experiments.isEnabled('persistence2')) {
       var linkDecorator = new Persistence.PersistenceUtils.LinkDecorator(this);
       Components.Linkifier.setLinkDecorator(linkDecorator);
@@ -94,6 +97,9 @@ Persistence.Persistence = class extends Common.Object {
     this._addFilePathBindingPrefixes(binding.fileSystem.url());
 
     this._moveBreakpoints(binding.fileSystem, binding.network);
+
+    this._notifyBindingEvent(binding.network);
+    this._notifyBindingEvent(binding.fileSystem);
     this.dispatchEventToListeners(Persistence.Persistence.Events.BindingCreated, binding);
   }
 
@@ -121,8 +127,10 @@ Persistence.Persistence = class extends Common.Object {
         Workspace.UISourceCode.Events.WorkingCopyChanged, this._onWorkingCopyChanged, this);
 
     this._removeFilePathBindingPrefixes(binding.fileSystem.url());
-
     this._breakpointManager.copyBreakpoints(binding.network.url(), binding.fileSystem);
+
+    this._notifyBindingEvent(binding.network);
+    this._notifyBindingEvent(binding.fileSystem);
     this.dispatchEventToListeners(Persistence.Persistence.Events.BindingRemoved, binding);
   }
 
@@ -264,6 +272,33 @@ Persistence.Persistence = class extends Common.Object {
    */
   binding(uiSourceCode) {
     return uiSourceCode[Persistence.Persistence._binding] || null;
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {function()} listener
+   */
+  subscribeForBindingEvent(uiSourceCode, listener) {
+    this._subscribedBindingEventListeners.set(uiSourceCode, listener);
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {function()} listener
+   */
+  unsubscribeFromBindingEvent(uiSourceCode, listener) {
+    this._subscribedBindingEventListeners.remove(uiSourceCode, listener);
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   */
+  _notifyBindingEvent(uiSourceCode) {
+    if (!this._subscribedBindingEventListeners.has(uiSourceCode))
+      return;
+    var listeners = Array.from(this._subscribedBindingEventListeners.get(uiSourceCode));
+    for (var listener of listeners)
+      listener.call(null);
   }
 
   /**

@@ -56,6 +56,7 @@ Bindings.BreakpointManager = class extends Common.Object {
     this._workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
     this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
     this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
+    this._debuggerWorkspaceBinding.addEventListener(Bindings.DebuggerWorkspaceBinding.Events.SourceMappingChanged, this._uiSourceCodeMappingChanged, this);
 
     targetManager.observeTargets(this, SDK.Target.Capability.JS);
   }
@@ -155,10 +156,6 @@ Bindings.BreakpointManager = class extends Common.Object {
   _uiSourceCodeAdded(event) {
     var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     this._restoreBreakpoints(uiSourceCode);
-    if (uiSourceCode.contentType().hasScripts()) {
-      uiSourceCode.addEventListener(
-          Workspace.UISourceCode.Events.SourceMappingChanged, this._uiSourceCodeMappingChanged, this);
-    }
   }
 
   /**
@@ -193,8 +190,6 @@ Bindings.BreakpointManager = class extends Common.Object {
       if (breakpoints[i].enabled())
         this._provisionalBreakpoints.set(uiSourceCode.url(), breakpoints[i]);
     }
-    uiSourceCode.removeEventListener(
-        Workspace.UISourceCode.Events.SourceMappingChanged, this._uiSourceCodeMappingChanged, this);
     this._breakpointsForPrimaryUISourceCode.remove(uiSourceCode);
   }
 

@@ -22,6 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @implements {Common.ContentProvider}
  * @unrestricted
@@ -289,7 +290,7 @@ SDK.Script = class extends SDK.SDKObject {
     if (this.sourceMapURL)
       return;
     this.sourceMapURL = sourceMapURL;
-    this.dispatchEventToListeners(SDK.Script.Events.SourceMapURLAdded, this);
+    this.debuggerModel.dispatchEventToListeners(SDK.DebuggerModel.Events.SourceMapURLAdded, this);
   }
 
   /**
@@ -330,12 +331,6 @@ SDK.Script = class extends SDK.SDKObject {
       }
     }
   }
-};
-
-/** @enum {symbol} */
-SDK.Script.Events = {
-  ScriptEdited: Symbol('ScriptEdited'),
-  SourceMapURLAdded: Symbol('SourceMapURLAdded')
 };
 
 SDK.Script.sourceURLRegex = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;

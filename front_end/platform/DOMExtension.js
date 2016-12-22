@@ -277,6 +277,12 @@ Node.prototype.isComponentSelectionCollapsed = function() {
  * @return {boolean}
  */
 Node.prototype.hasSelection = function() {
+  // TODO(luoe): use contains(node, {includeShadow: true}) when it is fixed for shadow dom.
+  var contents = this.querySelectorAll('content');
+  for (var content of contents) {
+    if (Array.prototype.some.call(content.getDistributedNodes(), node => node.hasSelection()))
+      return true;
+  }
   if (this.isComponentSelectionCollapsed())
     return false;
   return this.getComponentSelection().containsNode(this, true);

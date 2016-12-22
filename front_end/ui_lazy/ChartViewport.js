@@ -19,6 +19,7 @@ UI.ChartViewport = class extends UI.VBox {
         this.viewportElement, this._startRangeSelection.bind(this), this._rangeSelectionDragging.bind(this),
         this._endRangeSelection.bind(this), 'text', null);
 
+    this._alwaysShowVerticalScroll = false;
     this._vScrollElement = this.contentElement.createChild('div', 'flame-chart-v-scroll');
     this._vScrollContent = this._vScrollElement.createChild('div');
     this._vScrollElement.addEventListener('scroll', this._onScroll.bind(this), false);
@@ -27,6 +28,11 @@ UI.ChartViewport = class extends UI.VBox {
     this._selectedTimeSpanLabel = this._selectionOverlay.createChild('div', 'time-span');
 
     this.reset();
+  }
+
+  alwaysShowVerticalScroll() {
+    this._alwaysShowVerticalScroll = true;
+    this._vScrollElement.classList.add('always-show-scrollbar');
   }
 
   /**
@@ -48,7 +54,7 @@ UI.ChartViewport = class extends UI.VBox {
    * @private
    */
   _updateScrollBar() {
-    var showScroll = this._totalHeight > this._offsetHeight;
+    const showScroll = this._alwaysShowVerticalScroll || this._totalHeight > this._offsetHeight;
     if (this._vScrollElement.classList.contains('hidden') !== showScroll)
       return;
     this._vScrollElement.classList.toggle('hidden', !showScroll);

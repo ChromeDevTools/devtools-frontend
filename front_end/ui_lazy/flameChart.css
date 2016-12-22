@@ -38,6 +38,10 @@
     padding-left: 1px;
 }
 
+.flame-chart-v-scroll.always-show-scrollbar {
+    overflow-y: scroll;
+}
+
 :host-context(.platform-mac) .flame-chart-v-scroll {
     right: 2px;
     top: 3px;

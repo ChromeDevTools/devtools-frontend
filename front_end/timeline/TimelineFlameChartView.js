@@ -298,11 +298,13 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._dataProvider = new Timeline.TimelineFlameChartDataProvider(this._model, frameModel, irModel, filters);
     var mainViewGroupExpansionSetting = Common.settings.createSetting('timelineFlamechartMainViewGroupExpansion', {});
     this._mainView = new UI.FlameChart(this._dataProvider, this, mainViewGroupExpansionSetting);
+    this._mainView.alwaysShowVerticalScroll();
 
     var networkViewGroupExpansionSetting =
         Common.settings.createSetting('timelineFlamechartNetworkViewGroupExpansion', {});
     this._networkDataProvider = new Timeline.TimelineFlameChartNetworkDataProvider(this._model);
     this._networkView = new UI.FlameChart(this._networkDataProvider, this, networkViewGroupExpansionSetting);
+    this._networkView.alwaysShowVerticalScroll();
     networkViewGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights.bind(this));
 
     this._splitWidget.setMainWidget(this._mainView);

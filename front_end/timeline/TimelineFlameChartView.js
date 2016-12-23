@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Timeline.FlameChartStyle = {};
-Timeline.FlameChartStyle.barHeight = 17;
-Timeline.FlameChartStyle.textBaseline = 5;
-Timeline.FlameChartStyle.textPadding = 5;
-Timeline.FlameChartStyle.textColor = '#333';
+Timeline.FlameChartStyle = {
+  textColor: '#333'
+};
+
 /**
  * @enum {symbol}
  */

@@ -58,30 +58,6 @@ Profiler.ProfileFlameChartDataProvider = class {
    * @override
    * @return {number}
    */
-  barHeight() {
-    return 15;
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  textBaseline() {
-    return 4;
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  textPadding() {
-    return 2;
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
   minimumBoundary() {
     return this._cpuProfile.profileStartTime;
   }
@@ -162,10 +138,10 @@ Profiler.ProfileFlameChartDataProvider = class {
    */
   entryFont(entryIndex) {
     if (!this._font) {
-      this._font = (this.barHeight() - 4) + 'px ' + Host.fontFamily();
+      this._font = '11px ' + Host.fontFamily();
       this._boldFont = 'bold ' + this._font;
     }
-    var node = this._entryNodes[entryIndex];
+    const node = this._entryNodes[entryIndex];
     return node.deoptReason ? this._boldFont : this._font;
   }
 
@@ -207,14 +183,6 @@ Profiler.ProfileFlameChartDataProvider = class {
 
   /**
    * @override
-   * @return {number}
-   */
-  paddingLeft() {
-    return 0;
-  }
-
-  /**
-   * @override
    * @param {number} entryIndex
    * @return {string}
    */
@@ -242,6 +210,9 @@ Profiler.CPUProfileFlameChart = class extends UI.VBox {
     this._overviewPane.show(this.element);
 
     this._mainPane = new UI.FlameChart(dataProvider, this._overviewPane);
+    this._mainPane.setBarHeight(15);
+    this._mainPane.setTextBaseline(4);
+    this._mainPane.setTextPadding(2);
     this._mainPane.show(this.element);
     this._mainPane.addEventListener(UI.FlameChart.Events.EntrySelected, this._onEntrySelected, this);
     this._overviewPane.addEventListener(UI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);

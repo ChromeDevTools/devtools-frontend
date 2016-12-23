@@ -223,13 +223,14 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
     const textStart = Math.max(sendStart, 0);
     const textWidth = finish - textStart;
     const minTextWidthPx = 20;
-    const textPadding = 4;
     if (textWidth >= minTextWidthPx) {
       text = this.entryTitle(index) || '';
       if (request.fromServiceWorker)
         text = '⚙ ' + text;
       if (text) {
-        const textBaseHeight = barHeight - this.textBaseline();
+        const textPadding = 4;
+        const textBaseline = 5;
+        const textBaseHeight = barHeight - textBaseline;
         const trimmedText = UI.trimTextEnd(context, text, textWidth - 2 * textPadding);
         context.fillStyle = '#333';
         context.fillText(trimmedText, textStart + textPadding, barY + textBaseHeight);
@@ -368,37 +369,5 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    */
   canJumpToEntry(entryIndex) {
     return false;
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  paddingLeft() {
-    return 0;
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  barHeight() {
-    return Timeline.FlameChartStyle.barHeight;
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  textBaseline() {
-    return Timeline.FlameChartStyle.textBaseline;
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  textPadding() {
-    return Timeline.FlameChartStyle.textPadding;
   }
 };

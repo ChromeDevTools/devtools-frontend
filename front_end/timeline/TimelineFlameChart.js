@@ -754,14 +754,6 @@ Timeline.TimelineFlameChartDataProvider = class {
   }
 
   /**
-   * @override
-   * @return {number}
-   */
-  paddingLeft() {
-    return 0;
-  }
-
-  /**
    * @param {?Timeline.TimelineSelection} selection
    * @return {number}
    */
@@ -786,30 +778,6 @@ Timeline.TimelineFlameChartDataProvider = class {
   selectionForEvent(event) {
     var entryIndex = this._entryData.indexOf(event);
     return this.createSelection(entryIndex);
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  barHeight() {
-    return Timeline.FlameChartStyle.barHeight;
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  textBaseline() {
-    return Timeline.FlameChartStyle.textBaseline;
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  textPadding() {
-    return Timeline.FlameChartStyle.textPadding;
   }
 
   /**

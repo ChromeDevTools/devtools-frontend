@@ -24,7 +24,7 @@ Timeline.TimelineController = class {
   }
 
   /**
-   * @param {!Timeline.TimelineController.CaptureOptions} options
+   * @param {!Timeline.TimelineController.RecordingOptions} options
    * @param {!Array<!Extensions.ExtensionTraceProvider>} providers
    */
   startRecording(options, providers) {
@@ -278,10 +278,11 @@ Timeline.TimelineController = class {
   }
 };
 
-/** @typedef {!{
- *    enableJSSampling: (boolean|undefined),
- *    capturePictures: (boolean|undefined),
- *    captureFilmStrip: (boolean|undefined)
- *  }}
+/**
+ * @typedef {!{
+ *   enableJSSampling: (boolean|undefined),
+ *   capturePictures: (boolean|undefined),
+ *   captureFilmStrip: (boolean|undefined)
+ * }}
  */
-Timeline.TimelineController.CaptureOptions;
+Timeline.TimelineController.RecordingOptions;

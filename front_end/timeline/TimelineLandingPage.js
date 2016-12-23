@@ -22,7 +22,9 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
     tab.appendDescription(createElement('p'));
     tab.appendDescription(Common.UIString(
         'The basic profile collects network, JavaScript and browser activity as you interact with the page.'));
-    tab.appendOption(config.screenshots, true);
+    tab.appendOption(config.screenshots);
+    tab.appendOption(config.javascript, true);
+    tab.appendOption(config.paints, false);
     this._tabbedPane.appendTab(Timeline.TimelineLandingPage.PageId.Basic, Common.UIString('Basic'), tab);
 
     tab = new Timeline.TimelineLandingPage.PerspectiveTabWidget();
@@ -30,9 +32,9 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
         'Select what additional details you’d like to record. ' +
         'By default, the advanced profile will collect all data of the basic profile.\u2002'));
     tab.appendDescription(learnMore());
-    tab.appendOption(config.screenshots, true);
-    tab.appendOption(config.javascript, true);
-    tab.appendOption(config.paints, false);
+    tab.appendOption(config.screenshots);
+    tab.appendOption(config.javascript);
+    tab.appendOption(config.paints);
     this._tabbedPane.appendTab(Timeline.TimelineLandingPage.PageId.Advanced, Common.UIString('Advanced'), tab);
 
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
@@ -49,14 +51,29 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
     }
   }
 
-  _tabSelected() {
+  /**
+   * @return {!Timeline.TimelineController.RecordingOptions}
+   */
+  recordingOptions() {
     const tabWidget = /** @type {!Timeline.TimelineLandingPage.PerspectiveTabWidget} */ (this._tabbedPane.visibleView);
+    return tabWidget.recordingOptions();
+  }
+
+  _tabSelected() {
     this._currentTabSetting.set(this._tabbedPane.selectedTabId);
-    tabWidget.activate();
   }
 };
 
-/** @typedef {!{id: string, title: string, description: string, setting: string}} */
+/**
+ * @typedef {!{
+ *   id: string,
+ *   title: string,
+ *   description: string,
+ *   settingName: string,
+ *   captureOptionName: string,
+ *   value: boolean
+ * }}
+ */
 Timeline.TimelineLandingPage.RecordingOption;
 
 /** @type {!Object<string, !Timeline.TimelineLandingPage.RecordingOption>} */
@@ -65,21 +82,27 @@ Timeline.TimelineLandingPage.RecordingConfig = {
     id: 'javascript',
     title: Common.UIString('JavaScript'),
     description: Common.UIString('Use sampling CPU profiler to collect JavaScript stacks.'),
-    setting: 'timelineEnableJSSampling'
+    settingName: 'timelineEnableJSSampling',
+    captureOptionName: 'enableJSSampling',
+    value: true
   },
   screenshots: {
     id: 'screenshots',
     title: Common.UIString('Screenshots'),
     description: Common.UIString(
         'Collect page screenshots, so you can observe how the page was evolving during recording (moderate performance overhead).'),
-    setting: 'timelineCaptureFilmStrip'
+    settingName: 'timelineCaptureFilmStrip',
+    captureOptionName: 'captureFilmStrip',
+    value: true
   },
   paints: {
     id: 'paints',
     title: Common.UIString('Paints'),
     description: Common.UIString(
         'Capture graphics layer positions and rasterization draw calls (significant performance overhead).'),
-    setting: 'timelineCaptureLayersAndPictures'
+    settingName: 'timelineCaptureLayersAndPictures',
+    captureOptionName: 'capturePictures',
+    value: false
   }
 };
 
@@ -93,12 +116,12 @@ Timeline.TimelineLandingPage.PerspectiveTabWidget = class extends UI.VBox {
   constructor() {
     super(false);
     this.contentElement.classList.add('timeline-perspective-body');
-    this._enabledOptions = new Set([Timeline.TimelineLandingPage.RecordingConfig.javascript.id]);
+    /** @type {!Map<string, boolean>} */
+    this._forceEnable = new Map();
     this._descriptionDiv = this.contentElement.createChild('div', 'timeline-perspective-description');
     this._actionButtonDiv = this.contentElement.createChild('div');
-    this._actionButtonDiv.appendChild(createTextButton(Common.UIString('Start profiling'), this._record.bind(this)));
-    this._actionButtonDiv.appendChild(
-        createTextButton(Common.UIString('Profile page load'), this._recordPageLoad.bind(this)));
+    this._actionButtonDiv.appendChild(createTextButton(Common.UIString('Start profiling'), this._record));
+    this._actionButtonDiv.appendChild(createTextButton(Common.UIString('Profile page load'), this._recordPageLoad));
   }
 
   /**
@@ -113,26 +136,32 @@ Timeline.TimelineLandingPage.PerspectiveTabWidget = class extends UI.VBox {
 
   /**
    * @param {!Timeline.TimelineLandingPage.RecordingOption} option
-   * @param {boolean} enabled
+   * @param {boolean=} forceEnable
    */
-  appendOption(option, enabled) {
-    if (enabled)
-      this._enabledOptions.add(option.id);
+  appendOption(option, forceEnable) {
+    if (typeof forceEnable === 'boolean') {
+      this._forceEnable.set(option.id, forceEnable);
+      return;
+    }
     const div = createElementWithClass('div', 'recording-setting');
-    const value = this._enabledOptions.has(option.id);
-    const setting = Common.settings.createSetting(option.setting, value);
+    const setting = Common.settings.createSetting(option.settingName, option.value);
     div.appendChild(UI.SettingsUI.createSettingCheckbox(option.title, setting, true));
     if (option.description)
       div.createChild('div', 'recording-setting-description').textContent = option.description;
     this.contentElement.insertBefore(div, this._actionButtonDiv);
   }
 
-  activate() {
+  /**
+   * @return {!Timeline.TimelineController.RecordingOptions}
+   */
+  recordingOptions() {
+    const options = {};
     for (const id in Timeline.TimelineLandingPage.RecordingConfig) {
       const config = Timeline.TimelineLandingPage.RecordingConfig[id];
-      const setting = Common.settings.createSetting(config.setting, false);
-      setting.set(this._enabledOptions.has(id));
+      const setting = Common.settings.createSetting(config.settingName, config.value);
+      options[config.captureOptionName] = this._forceEnable.has(id) ? this._forceEnable.get(id) : setting.get();
     }
+    return options;
   }
 
   _record() {

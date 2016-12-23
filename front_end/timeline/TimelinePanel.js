@@ -103,6 +103,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.PageReloadRequested, this._pageReloadRequested, this);
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.Load, this._loadEventFired, this);
 
+    this._landingPage = new Timeline.TimelineLandingPage();
+
     // Create top level properties splitter.
     this._detailsSplitWidget = new UI.SplitWidget(false, true, 'timelinePanelDetailsSplitViewState');
     this._detailsSplitWidget.element.classList.add('timeline-details-split');
@@ -305,7 +307,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     // Record
     const newButton = new UI.ToolbarButton(Common.UIString('New recording'), 'largeicon-add', Common.UIString('New'));
-    newButton.setEnabled(!this._landingPage);
+    newButton.setEnabled(!this._model.isEmpty());
     newButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear, this);
     this._panelToolbar.appendToolbarItem(newButton);
     this._panelToolbar.appendSeparator();
@@ -543,14 +545,9 @@ Timeline.TimelinePanel = class extends UI.Panel {
     var enabledTraceProviders = Extensions.extensionServer.traceProviders().filter(
         provider => Timeline.TimelinePanel._settingForTraceProvider(provider).get());
 
-    var captureOptions = {
-      enableJSSampling: this._captureJSProfileSetting.get(),
-      capturePictures: this._captureLayersAndPicturesSetting.get(),
-      captureFilmStrip: this._captureFilmStripSetting.get()
-    };
-
+    const recordingOptions = this._landingPage.recordingOptions();
     this._controller = new Timeline.TimelineController(mainTarget, this, this._tracingModel);
-    this._controller.startRecording(captureOptions, enabledTraceProviders);
+    this._controller.startRecording(recordingOptions, enabledTraceProviders);
     this._recordingStartTime = Date.now();
 
     for (var i = 0; i < this._overviewControls.length; ++i)
@@ -665,18 +662,12 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   _showLandingPage() {
-    if (this._landingPage)
-      return;
     this._timelinePane.detach();
-    this._landingPage = new Timeline.TimelineLandingPage();
     this._landingPage.show(this.element);
   }
 
   _hideLandingPage() {
-    if (!this._landingPage)
-      return;
     this._landingPage.detach();
-    this._landingPage = null;
     this._timelinePane.show(this.element);
   }
 

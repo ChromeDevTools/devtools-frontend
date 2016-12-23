@@ -982,7 +982,8 @@ UI.FlameChart = class extends UI.ChartViewport {
     var visible = true;
     /** @type !Array<{nestingLevel: number, visible: boolean}> */
     var groupStack = [{nestingLevel: -1, visible: true}];
-    for (var level = 0; level < levelCount; ++level) {
+    var lastGroupLevel = Math.max(levelCount, groups.peekLast().startLevel + 1);
+    for (var level = 0; level < lastGroupLevel; ++level) {
       while (groupIndex < groups.length - 1 && level === groups[groupIndex + 1].startLevel) {
         ++groupIndex;
         var style = groups[groupIndex].style;
@@ -1004,8 +1005,10 @@ UI.FlameChart = class extends UI.ChartViewport {
       }
       var isFirstOnLevel = groupIndex >= 0 && level === groups[groupIndex].startLevel;
       var thisLevelIsVisible = visible || isFirstOnLevel && groups[groupIndex].style.useFirstLineForOverview;
-      this._visibleLevels[level] = thisLevelIsVisible;
-      this._visibleLevelOffsets[level] = currentOffset;
+      if (level < levelCount) {
+        this._visibleLevels[level] = thisLevelIsVisible;
+        this._visibleLevelOffsets[level] = currentOffset;
+      }
       if (thisLevelIsVisible || (parentGroupIsVisible && style.shareHeaderLine && isFirstOnLevel))
         currentOffset += this._barHeight;
     }

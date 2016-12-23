@@ -97,7 +97,7 @@ UI.TimelineGrid = class {
    * @param {!CanvasRenderingContext2D} context
    * @param {!UI.TimelineGrid.Calculator} calculator
    * @param {number} paddingTop
-   * @param {number} headerHeight
+   * @param {number=} headerHeight
    * @param {number=} freeZoneAtLeft
    */
   static drawCanvasGrid(context, calculator, paddingTop, headerHeight, freeZoneAtLeft) {
@@ -110,8 +110,10 @@ UI.TimelineGrid = class {
     var dividerOffsets = dividersData.offsets;
     var precision = dividersData.precision;
 
-    context.fillStyle = UI.themeSupport.patchColor('rgba(255, 255, 255, 0.5)', UI.ThemeSupport.ColorUsage.Background);
-    context.fillRect(0, 0, width, headerHeight);
+    if (headerHeight) {
+      context.fillStyle = UI.themeSupport.patchColor('rgba(255, 255, 255, 0.5)', UI.ThemeSupport.ColorUsage.Background);
+      context.fillRect(0, 0, width, headerHeight);
+    }
 
     context.fillStyle = UI.themeSupport.patchColor('#333', UI.ThemeSupport.ColorUsage.Foreground);
     context.strokeStyle = UI.themeSupport.patchColor('rgba(0, 0, 0, 0.1)', UI.ThemeSupport.ColorUsage.Foreground);
@@ -124,13 +126,15 @@ UI.TimelineGrid = class {
     for (var i = 0; i < dividerOffsets.length; ++i) {
       var time = dividerOffsets[i];
       var position = calculator.computePosition(time);
+      context.moveTo(position, 0);
+      context.lineTo(position, height);
+      if (!headerHeight)
+        continue;
       var text = calculator.formatValue(time, precision);
       var textWidth = context.measureText(text).width;
       var textPosition = position - textWidth - paddingRight;
       if (!freeZoneAtLeft || freeZoneAtLeft < textPosition)
         context.fillText(text, textPosition, paddingTop);
-      context.moveTo(position, 0);
-      context.lineTo(position, height);
     }
     context.stroke();
     context.restore();

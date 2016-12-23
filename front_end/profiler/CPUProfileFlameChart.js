@@ -524,7 +524,7 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
     if (!timelineData)
       return;
     this._resetCanvas(
-        this._overviewContainer.clientWidth, this._overviewContainer.clientHeight - UI.FlameChart.DividersBarHeight);
+        this._overviewContainer.clientWidth, this._overviewContainer.clientHeight - UI.FlameChart.HeaderHeight);
     this._overviewCalculator._updateBoundaries(this);
     this._overviewGrid.updateDividers(this._overviewCalculator);
     this._drawOverviewCanvas();

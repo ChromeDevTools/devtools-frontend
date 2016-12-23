@@ -121,6 +121,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     var mainViewGroupExpansionSetting = Common.settings.createSetting('timelineFlamechartMainViewGroupExpansion', {});
     this._mainView = new UI.FlameChart(this._dataProvider, this, mainViewGroupExpansionSetting);
     this._mainView.alwaysShowVerticalScroll();
+    this._mainView.enableRuler(false);
 
     var networkViewGroupExpansionSetting =
         Common.settings.createSetting('timelineFlamechartNetworkViewGroupExpansion', {});

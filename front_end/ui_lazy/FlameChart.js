@@ -79,6 +79,7 @@ UI.FlameChart = class extends UI.ChartViewport {
     this._highlightElement = this.viewportElement.createChild('div', 'flame-chart-highlight-element');
     this._selectedElement = this.viewportElement.createChild('div', 'flame-chart-selected-element');
 
+    this._rulerEnabled = true;
     this._windowLeft = 0.0;
     this._windowRight = 1.0;
     this._timeWindowLeft = 0;
@@ -116,6 +117,13 @@ UI.FlameChart = class extends UI.ChartViewport {
    */
   willHide() {
     this.hideHighlight();
+  }
+
+  /**
+   * @param {boolean} enable
+   */
+  enableRuler(enable) {
+    this._rulerEnabled = enable;
   }
 
   /**
@@ -210,7 +218,7 @@ UI.FlameChart = class extends UI.ChartViewport {
   }
 
   _updateHighlight() {
-    var inDividersBar = this._lastMouseOffsetY < UI.FlameChart.DividersBarHeight;
+    var inDividersBar = this._lastMouseOffsetY < UI.FlameChart.HeaderHeight;
     this._highlightedMarkerIndex = inDividersBar ? this._markerIndexAtPosition(this._lastMouseOffsetX) : -1;
     this._updateMarkerHighlight();
 
@@ -662,7 +670,7 @@ UI.FlameChart = class extends UI.ChartViewport {
 
     this._drawGroupHeaders(width, height);
     this._drawMarkers();
-    const headerHeight = 15;
+    const headerHeight = this._rulerEnabled ? UI.FlameChart.HeaderHeight : 0;
     UI.TimelineGrid.drawCanvasGrid(context, this._calculator, 3, headerHeight);
 
     this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
@@ -895,7 +903,8 @@ UI.FlameChart = class extends UI.ChartViewport {
     context.save();
     var ratio = window.devicePixelRatio;
     context.scale(ratio, ratio);
-    var height = UI.FlameChart.DividersBarHeight - 1;
+    context.translate(0, 3);
+    var height = UI.FlameChart.HeaderHeight - 1;
     for (var i = left; i < markers.length; i++) {
       var timestamp = markers[i].startTime();
       if (timestamp > rightBoundary)
@@ -969,7 +978,7 @@ UI.FlameChart = class extends UI.ChartViewport {
     this._groupOffsets = new Uint32Array(groups.length + 1);
 
     var groupIndex = -1;
-    var currentOffset = UI.FlameChart.DividersBarHeight;
+    var currentOffset = this._rulerEnabled ? UI.FlameChart.HeaderHeight : 2;
     var visible = true;
     /** @type !Array<{nestingLevel: number, visible: boolean}> */
     var groupStack = [{nestingLevel: -1, visible: true}];
@@ -1158,7 +1167,7 @@ UI.FlameChart = class extends UI.ChartViewport {
   }
 };
 
-UI.FlameChart.DividersBarHeight = 18;
+UI.FlameChart.HeaderHeight = 15;
 
 UI.FlameChart.MinimalTimeWindowMs = 0.5;
 

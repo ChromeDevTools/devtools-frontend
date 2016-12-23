@@ -1611,17 +1611,18 @@ UI.bindInput = function(input, apply, validate, numeric) {
 };
 
 /**
-   * @param {!CanvasRenderingContext2D} context
-   * @param {string} text
-   * @param {number} maxWidth
-   * @return {string}
-   */
-UI.trimTextMiddle = function(context, text, maxWidth) {
+ * @param {!CanvasRenderingContext2D} context
+ * @param {string} text
+ * @param {number} maxWidth
+ * @param {function(string, number):string} trimFunction
+ * @return {string}
+ */
+UI.trimText = function(context, text, maxWidth, trimFunction) {
   const maxLength = 200;
   if (maxWidth <= 10)
     return '';
   if (text.length > maxLength)
-    text = text.trimMiddle(maxLength);
+    text = trimFunction(text, maxLength);
   const textWidth = UI.measureTextWidth(context, text);
   if (textWidth <= maxWidth)
     return text;
@@ -1632,7 +1633,7 @@ UI.trimTextMiddle = function(context, text, maxWidth) {
   var rv = textWidth;
   while (l < r && lv !== rv && lv !== maxWidth) {
     const m = Math.ceil(l + (r - l) * (maxWidth - lv) / (rv - lv));
-    const mv = UI.measureTextWidth(context, text.trimMiddle(m));
+    const mv = UI.measureTextWidth(context, trimFunction(text, m));
     if (mv <= maxWidth) {
       l = m;
       lv = mv;
@@ -1641,8 +1642,28 @@ UI.trimTextMiddle = function(context, text, maxWidth) {
       rv = mv;
     }
   }
-  text = text.trimMiddle(l);
+  text = trimFunction(text, l);
   return text !== '\u2026' ? text : '';
+};
+
+/**
+ * @param {!CanvasRenderingContext2D} context
+ * @param {string} text
+ * @param {number} maxWidth
+ * @return {string}
+ */
+UI.trimTextMiddle = function(context, text, maxWidth) {
+  return UI.trimText(context, text, maxWidth, (text, width) => text.trimMiddle(width));
+};
+
+/**
+ * @param {!CanvasRenderingContext2D} context
+ * @param {string} text
+ * @param {number} maxWidth
+ * @return {string}
+ */
+UI.trimTextEnd = function(context, text, maxWidth) {
+  return UI.trimText(context, text, maxWidth, (text, width) => text.trimEnd(width));
 };
 
 /**

@@ -135,8 +135,9 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    * @return {?string}
    */
   entryTitle(index) {
-    var request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
-    return request.url || null;
+    const request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
+    const parsedURL = new Common.ParsedURL(request.url || '');
+    return parsedURL.isValid ? `${parsedURL.displayName} (${parsedURL.host})` : request.url || null;
   }
 
   /**
@@ -222,19 +223,16 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
     const textStart = Math.max(sendStart, 0);
     const textWidth = finish - textStart;
     const minTextWidthPx = 20;
-    const textPadding = 6;
-    var gearPadding = 0;
+    const textPadding = 4;
     if (textWidth >= minTextWidthPx) {
-      const text = this.entryTitle(index);
-      if (text && text.length) {
-        context.fillStyle = '#333';
+      text = this.entryTitle(index) || '';
+      if (request.fromServiceWorker)
+        text = '⚙ ' + text;
+      if (text) {
         const textBaseHeight = barHeight - this.textBaseline();
-        if (request.fromServiceWorker) {
-          context.fillText('⚙', textStart + textPadding, barY + textBaseHeight);
-          gearPadding = UI.measureTextWidth(context, '⚙ ');
-        }
-        const trimmedText = UI.trimTextMiddle(context, text, textWidth - 2 * textPadding - gearPadding);
-        context.fillText(trimmedText, textStart + textPadding + gearPadding, barY + textBaseHeight);
+        const trimmedText = UI.trimTextEnd(context, text, textWidth - 2 * textPadding);
+        context.fillStyle = '#333';
+        context.fillText(trimmedText, textStart + textPadding, barY + textBaseHeight);
       }
     }
 

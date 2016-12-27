@@ -308,10 +308,16 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       var rowOffset = this._rowHeight * i;
       var node = nodes[i];
       this._decorateRow(context, node, i, rowOffset - this._scrollTop);
-      if (useTimingBars)
-        this._drawTimingBars(context, node, rowOffset - this._scrollTop);
-      else
-        this._drawSimplifiedBars(context, node, rowOffset - this._scrollTop);
+      var drawNodes = [];
+      if (node.hasChildren() && !node.expanded)
+        drawNodes = /** @type {!Array<!Network.NetworkNode>} */ (node.flatChildren());
+      drawNodes.push(node);
+      for (var drawNode of drawNodes) {
+        if (useTimingBars)
+          this._drawTimingBars(context, drawNode, rowOffset - this._scrollTop);
+        else
+          this._drawSimplifiedBars(context, drawNode, rowOffset - this._scrollTop);
+      }
     }
     this._drawEventDividers(context);
     context.restore();
@@ -434,7 +440,6 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    * @param {number} y
    */
   _drawSimplifiedBars(context, node, y) {
-    // TODO(allada) This should draw bars for groupped requests.
     var request = node.request();
     if (!request)
       return;
@@ -553,7 +558,6 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    * @param {number} y
    */
   _drawTimingBars(context, node, y) {
-    // TODO(allada) This should draw bars for groupped requests.
     var request = node.request();
     if (!request)
       return;

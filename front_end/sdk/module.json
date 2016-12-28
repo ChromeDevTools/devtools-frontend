@@ -2,7 +2,8 @@
     "dependencies": [
         "common",
         "host",
-        "platform"
+        "platform",
+        "protocol"
     ],
     "extensions": [
         {
@@ -71,8 +72,6 @@
         }
     ],
     "scripts": [
-        "InspectorBackend.js",
-        "../InspectorBackendCommands.js",
         "Target.js",
         "TargetManager.js",
         "ApplicationCacheModel.js",
@@ -116,7 +115,6 @@
         "../SupportedCSSProperties.js"
     ],
     "skip_compilation": [
-        "../InspectorBackendCommands.js",
         "../SupportedCSSProperties.js"
     ]
 }

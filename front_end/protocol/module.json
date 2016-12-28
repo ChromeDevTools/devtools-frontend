@@ -1,0 +1,9 @@
+{
+  "scripts": [
+    "InspectorBackend.js",
+    "../InspectorBackendCommands.js"
+  ],
+  "skip_compilation": [
+    "../InspectorBackendCommands.js"
+  ]
+}

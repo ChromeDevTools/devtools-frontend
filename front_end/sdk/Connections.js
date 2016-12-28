@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {InspectorBackendClass.Connection}
+ * @implements {Protocol.InspectorBackend.Connection}
  * @unrestricted
  */
 SDK.MainConnection = class {
   /**
-   * @param {!InspectorBackendClass.Connection.Params} params
+   * @param {!Protocol.InspectorBackend.Connection.Params} params
    */
   constructor(params) {
     this._onMessage = params.onMessage;
@@ -79,7 +79,7 @@ SDK.MainConnection = class {
       }
     }
 
-    InspectorBackendClass.deprecatedRunAfterPendingDispatches(invokeMethod);
+    Protocol.InspectorBackend.deprecatedRunAfterPendingDispatches(invokeMethod);
   }
 
   /**
@@ -104,14 +104,14 @@ SDK.MainConnection = class {
 };
 
 /**
- * @implements {InspectorBackendClass.Connection}
+ * @implements {Protocol.InspectorBackend.Connection}
  * @unrestricted
  */
 SDK.WebSocketConnection = class {
   /**
    * @param {string} url
    * @param {function()} onWebSocketDisconnect
-   * @param {!InspectorBackendClass.Connection.Params} params
+   * @param {!Protocol.InspectorBackend.Connection.Params} params
    */
   constructor(url, onWebSocketDisconnect, params) {
     this._socket = new WebSocket(url);
@@ -187,12 +187,12 @@ SDK.WebSocketConnection = class {
 };
 
 /**
- * @implements {InspectorBackendClass.Connection}
+ * @implements {Protocol.InspectorBackend.Connection}
  * @unrestricted
  */
 SDK.StubConnection = class {
   /**
-   * @param {!InspectorBackendClass.Connection.Params} params
+   * @param {!Protocol.InspectorBackend.Connection.Params} params
    */
   constructor(params) {
     this._onMessage = params.onMessage;
@@ -214,7 +214,7 @@ SDK.StubConnection = class {
     var messageObject = JSON.parse(message);
     var error = {
       message: 'This is a stub connection, can\'t dispatch message.',
-      code: InspectorBackendClass.DevToolsStubErrorCode,
+      code: Protocol.InspectorBackend.DevToolsStubErrorCode,
       data: messageObject
     };
     this._onMessage.call(null, {id: messageObject.id, error: error});

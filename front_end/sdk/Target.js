@@ -12,7 +12,7 @@ SDK.Target = class extends Protocol.TargetBase {
    * @param {!SDK.TargetManager} targetManager
    * @param {string} name
    * @param {number} capabilitiesMask
-   * @param {!InspectorBackendClass.Connection.Factory} connectionFactory
+   * @param {!Protocol.InspectorBackend.Connection.Factory} connectionFactory
    * @param {?SDK.Target} parentTarget
    */
   constructor(targetManager, name, capabilitiesMask, connectionFactory, parentTarget) {

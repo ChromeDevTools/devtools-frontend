@@ -414,7 +414,7 @@ Layers.AgentLayer = class {
       return;
     }
 
-    var wrappedCallback = InspectorBackend.wrapClientCallback(
+    var wrappedCallback = Protocol.inspectorBackend.wrapClientCallback(
         callback, 'Protocol.LayerTree.reasonsForCompositingLayer(): ', undefined, []);
     this._target.layerTreeAgent().compositingReasons(this.id(), wrappedCallback);
   }

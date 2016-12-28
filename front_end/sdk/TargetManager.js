@@ -157,7 +157,7 @@ SDK.TargetManager = class extends Common.Object {
   /**
    * @param {string} name
    * @param {number} capabilitiesMask
-   * @param {!InspectorBackendClass.Connection.Factory} connectionFactory
+   * @param {!Protocol.InspectorBackend.Connection.Factory} connectionFactory
    * @param {?SDK.Target} parentTarget
    * @return {!SDK.Target}
    */
@@ -354,8 +354,8 @@ SDK.TargetManager = class extends Common.Object {
   }
 
   /**
-   * @param {!InspectorBackendClass.Connection.Params} params
-   * @return {!InspectorBackendClass.Connection}
+   * @param {!Protocol.InspectorBackend.Connection.Params} params
+   * @return {!Protocol.InspectorBackend.Connection}
    */
   _createMainConnection(params) {
     if (Runtime.queryParam('ws')) {
@@ -371,7 +371,7 @@ SDK.TargetManager = class extends Common.Object {
 
   /**
    * @param {function(string)} onMessage
-   * @return {!Promise<!InspectorBackendClass.Connection>}
+   * @return {!Promise<!Protocol.InspectorBackend.Connection>}
    */
   interceptMainConnection(onMessage) {
     var params = {onMessage: onMessage, onDisconnect: this._connectAndCreateMainTarget.bind(this)};

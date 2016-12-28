@@ -223,7 +223,7 @@ class Generator:
         for member in json_enum["enum"]:
             enum_members.append("%s: \"%s\"" % (fix_camel_case(member), member))
 
-        Generator.backend_js_domain_initializer_list.append("InspectorBackend.registerEnum(\"%s\", {%s});\n" % (
+        Generator.backend_js_domain_initializer_list.append("Protocol.inspectorBackend.registerEnum(\"%s\", {%s});\n" % (
             enum_name, ", ".join(enum_members)))
 
     @staticmethod
@@ -238,7 +238,7 @@ class Generator:
                 parameter_name = parameter["name"]
                 backend_js_event_param_list.append("\"%s\"" % parameter_name)
 
-        Generator.backend_js_domain_initializer_list.append("InspectorBackend.registerEvent(\"%s.%s\", [%s]);\n" % (
+        Generator.backend_js_domain_initializer_list.append("Protocol.inspectorBackend.registerEvent(\"%s.%s\", [%s]);\n" % (
             domain_name, event_name, ", ".join(backend_js_event_param_list)))
 
     @staticmethod
@@ -279,7 +279,7 @@ class Generator:
         else:
             has_error_data_param = "false"
 
-        Generator.backend_js_domain_initializer_list.append("InspectorBackend.registerCommand(\"%s.%s\", [%s], %s, %s);\n" % (domain_name, json_command_name, js_parameters_text, js_reply_list, has_error_data_param))
+        Generator.backend_js_domain_initializer_list.append("Protocol.inspectorBackend.registerCommand(\"%s.%s\", [%s], %s, %s);\n" % (domain_name, json_command_name, js_parameters_text, js_reply_list, has_error_data_param))
 
 Generator.go()
 

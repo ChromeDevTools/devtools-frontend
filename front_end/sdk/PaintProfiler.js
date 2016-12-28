@@ -100,7 +100,8 @@ SDK.PaintProfilerSnapshot = class {
    * @param {function(!Array.<!Protocol.LayerTree.PaintProfile>=)} callback
    */
   profile(clipRect, callback) {
-    var wrappedCallback = InspectorBackend.wrapClientCallback(callback, 'Protocol.LayerTree.profileSnapshot(): ');
+    var wrappedCallback =
+        Protocol.inspectorBackend.wrapClientCallback(callback, 'Protocol.LayerTree.profileSnapshot(): ');
     this._target.layerTreeAgent().profileSnapshot(this._id, 5, 1, clipRect || undefined, wrappedCallback);
   }
 

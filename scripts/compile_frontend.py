@@ -327,8 +327,7 @@ def dump_module(name, recursively, processed_modules):
     command += module_arg(name) + ':'
     filtered_scripts = descriptors.module_compiled_files(name)
     filtered_scripts = [path.join(devtools_frontend_path, name, script) for script in filtered_scripts]
-    # TODO(dgozman): move to separate module
-    if name == 'sdk':
+    if name == 'protocol':
         filtered_scripts.append(protocol_externs_file)
     command += str(len(filtered_scripts))
     first_dependency = True

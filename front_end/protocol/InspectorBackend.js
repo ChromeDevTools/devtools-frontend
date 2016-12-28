@@ -28,15 +28,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-var Protocol = {};
-
 /** @typedef {string} */
 Protocol.Error;
 
 /**
  * @unrestricted
  */
-var InspectorBackendClass = class {
+Protocol.InspectorBackend = class {
   constructor() {
     this._agentPrototypes = {};
     this._dispatcherPrototypes = {};
@@ -89,11 +87,11 @@ var InspectorBackendClass = class {
 
   /**
    * @param {string} domain
-   * @return {!InspectorBackendClass._AgentPrototype}
+   * @return {!Protocol.InspectorBackend._AgentPrototype}
    */
   _agentPrototype(domain) {
     if (!this._agentPrototypes[domain]) {
-      this._agentPrototypes[domain] = new InspectorBackendClass._AgentPrototype(domain);
+      this._agentPrototypes[domain] = new Protocol.InspectorBackend._AgentPrototype(domain);
       this._addAgentGetterMethodToProtocolTargetPrototype(domain);
     }
 
@@ -102,11 +100,11 @@ var InspectorBackendClass = class {
 
   /**
    * @param {string} domain
-   * @return {!InspectorBackendClass._DispatcherPrototype}
+   * @return {!Protocol.InspectorBackend._DispatcherPrototype}
    */
   _dispatcherPrototype(domain) {
     if (!this._dispatcherPrototypes[domain])
-      this._dispatcherPrototypes[domain] = new InspectorBackendClass._DispatcherPrototype();
+      this._dispatcherPrototypes[domain] = new Protocol.InspectorBackend._DispatcherPrototype();
     return this._dispatcherPrototypes[domain];
   }
 
@@ -175,18 +173,18 @@ var InspectorBackendClass = class {
   }
 };
 
-InspectorBackendClass._ConnectionClosedErrorCode = -32000;
-InspectorBackendClass.DevToolsStubErrorCode = -32015;
+Protocol.InspectorBackend._ConnectionClosedErrorCode = -32000;
+Protocol.InspectorBackend.DevToolsStubErrorCode = -32015;
 
 
-var InspectorBackend = new InspectorBackendClass();
+Protocol.inspectorBackend = new Protocol.InspectorBackend();
 
 /**
  * @interface
  */
-InspectorBackendClass.Connection = function() {};
+Protocol.InspectorBackend.Connection = function() {};
 
-InspectorBackendClass.Connection.prototype = {
+Protocol.InspectorBackend.Connection.prototype = {
   /**
    * @param {string} message
    */
@@ -204,19 +202,19 @@ InspectorBackendClass.Connection.prototype = {
  *   onDisconnect: function(string)
  * }}
  */
-InspectorBackendClass.Connection.Params;
+Protocol.InspectorBackend.Connection.Params;
 
 /**
- * @typedef {function(!InspectorBackendClass.Connection.Params):!InspectorBackendClass.Connection}
+ * @typedef {function(!Protocol.InspectorBackend.Connection.Params):!Protocol.InspectorBackend.Connection}
  */
-InspectorBackendClass.Connection.Factory;
+Protocol.InspectorBackend.Connection.Factory;
 
 /**
  * @unrestricted
  */
 Protocol.TargetBase = class {
   /**
-   *  @param {!InspectorBackendClass.Connection.Factory} connectionFactory
+   *  @param {!Protocol.InspectorBackend.Connection.Factory} connectionFactory
    */
   constructor(connectionFactory) {
     this._connection =
@@ -226,16 +224,18 @@ Protocol.TargetBase = class {
     this._agents = {};
     this._dispatchers = {};
     this._callbacks = {};
-    this._initialize(InspectorBackend._agentPrototypes, InspectorBackend._dispatcherPrototypes);
-    if (!InspectorBackendClass.deprecatedRunAfterPendingDispatches)
-      InspectorBackendClass.deprecatedRunAfterPendingDispatches = this._deprecatedRunAfterPendingDispatches.bind(this);
-    if (!InspectorBackendClass.sendRawMessageForTesting)
-      InspectorBackendClass.sendRawMessageForTesting = this._sendRawMessageForTesting.bind(this);
+    this._initialize(Protocol.inspectorBackend._agentPrototypes, Protocol.inspectorBackend._dispatcherPrototypes);
+    if (!Protocol.InspectorBackend.deprecatedRunAfterPendingDispatches) {
+      Protocol.InspectorBackend.deprecatedRunAfterPendingDispatches =
+          this._deprecatedRunAfterPendingDispatches.bind(this);
+    }
+    if (!Protocol.InspectorBackend.sendRawMessageForTesting)
+      Protocol.InspectorBackend.sendRawMessageForTesting = this._sendRawMessageForTesting.bind(this);
   }
 
   /**
-   * @param {!Object.<string, !InspectorBackendClass._AgentPrototype>} agentPrototypes
-   * @param {!Object.<string, !InspectorBackendClass._DispatcherPrototype>} dispatcherPrototypes
+   * @param {!Object.<string, !Protocol.InspectorBackend._AgentPrototype>} agentPrototypes
+   * @param {!Object.<string, !Protocol.InspectorBackend._DispatcherPrototype>} dispatcherPrototypes
    */
   _initialize(agentPrototypes, dispatcherPrototypes) {
     for (var domain in agentPrototypes) {
@@ -256,7 +256,7 @@ Protocol.TargetBase = class {
 
   /**
    * @param {string} domain
-   * @return {!InspectorBackendClass._AgentPrototype}
+   * @return {!Protocol.InspectorBackend._AgentPrototype}
    */
   _agent(domain) {
     return this._agents[domain];
@@ -285,7 +285,7 @@ Protocol.TargetBase = class {
     var wrappedCallback = this._wrap(callback, domain, method);
     var message = JSON.stringify(messageObject);
 
-    if (InspectorBackendClass.Options.dumpInspectorProtocolMessages)
+    if (Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages)
       this._dumpProtocolMessage('frontend: ' + message);
 
     this._connection.sendMessage(message);
@@ -305,7 +305,7 @@ Protocol.TargetBase = class {
 
     callback.methodName = method;
     callback.domain = domain;
-    if (InspectorBackendClass.Options.dumpInspectorTimeStats)
+    if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
       callback.sendRequestTime = Date.now();
 
     return callback;
@@ -325,7 +325,7 @@ Protocol.TargetBase = class {
    * @param {!Object|string} message
    */
   _onMessage(message) {
-    if (InspectorBackendClass.Options.dumpInspectorProtocolMessages)
+    if (Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages)
       this._dumpProtocolMessage('backend: ' + ((typeof message === 'string') ? message : JSON.stringify(message)));
 
     var messageObject = /** @type {!Object} */ ((typeof message === 'string') ? JSON.parse(message) : message);
@@ -333,33 +333,33 @@ Protocol.TargetBase = class {
     if ('id' in messageObject) {  // just a response for some request
       var callback = this._callbacks[messageObject.id];
       if (!callback) {
-        InspectorBackendClass.reportProtocolError('Protocol Error: the message with wrong id', messageObject);
+        Protocol.InspectorBackend.reportProtocolError('Protocol Error: the message with wrong id', messageObject);
         return;
       }
 
       var timingLabel = 'time-stats: ' + callback.methodName;
-      if (InspectorBackendClass.Options.dumpInspectorTimeStats)
+      if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
         console.time(timingLabel);
 
       this._agent(callback.domain).dispatchResponse(messageObject, callback.methodName, callback);
       --this._pendingResponsesCount;
       delete this._callbacks[messageObject.id];
 
-      if (InspectorBackendClass.Options.dumpInspectorTimeStats)
+      if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
         console.timeEnd(timingLabel);
 
       if (this._scripts && !this._pendingResponsesCount)
         this._deprecatedRunAfterPendingDispatches();
     } else {
       if (!('method' in messageObject)) {
-        InspectorBackendClass.reportProtocolError('Protocol Error: the message without method', messageObject);
+        Protocol.InspectorBackend.reportProtocolError('Protocol Error: the message without method', messageObject);
         return;
       }
 
       var method = messageObject.method.split('.');
       var domainName = method[0];
       if (!(domainName in this._dispatchers)) {
-        InspectorBackendClass.reportProtocolError(
+        Protocol.InspectorBackend.reportProtocolError(
             'Protocol Error: the message ' + messageObject.method + ' is for non-existing domain \'' + domainName +
                 '\'',
             messageObject);
@@ -457,12 +457,12 @@ Protocol.TargetBase = class {
   _dispatchConnectionErrorResponse(domain, methodName, callback) {
     var error = {
       message: 'Connection is closed, can\'t dispatch pending ' + methodName,
-      code: InspectorBackendClass._ConnectionClosedErrorCode,
+      code: Protocol.InspectorBackend._ConnectionClosedErrorCode,
       data: null
     };
     var messageObject = {error: error};
     setTimeout(
-        InspectorBackendClass._AgentPrototype.prototype.dispatchResponse.bind(
+        Protocol.InspectorBackend._AgentPrototype.prototype.dispatchResponse.bind(
             this._agent(domain), messageObject, methodName, callback),
         0);
   }
@@ -471,7 +471,7 @@ Protocol.TargetBase = class {
 /**
  * @unrestricted
  */
-InspectorBackendClass._AgentPrototype = class {
+Protocol.InspectorBackend._AgentPrototype = class {
   /**
    * @param {string} domain
    */
@@ -499,12 +499,12 @@ InspectorBackendClass._AgentPrototype = class {
 
     /**
      * @param {...*} vararg
-     * @this {InspectorBackendClass._AgentPrototype}
+     * @this {Protocol.InspectorBackend._AgentPrototype}
      * @return {!Promise.<*>}
      */
     function sendMessagePromise(vararg) {
       var params = Array.prototype.slice.call(arguments);
-      return InspectorBackendClass._AgentPrototype.prototype._sendMessageToBackendPromise.call(
+      return Protocol.InspectorBackend._AgentPrototype.prototype._sendMessageToBackendPromise.call(
           this, domainAndMethod, signature, params);
     }
 
@@ -512,11 +512,11 @@ InspectorBackendClass._AgentPrototype = class {
 
     /**
      * @param {...*} vararg
-     * @this {InspectorBackendClass._AgentPrototype}
+     * @this {Protocol.InspectorBackend._AgentPrototype}
      */
     function invoke(vararg) {
       var params = [domainAndMethod].concat(Array.prototype.slice.call(arguments));
-      InspectorBackendClass._AgentPrototype.prototype._invoke.apply(this, params);
+      Protocol.InspectorBackend._AgentPrototype.prototype._invoke.apply(this, params);
     }
 
     this['invoke_' + methodName] = invoke;
@@ -605,7 +605,7 @@ InspectorBackendClass._AgentPrototype = class {
     /**
      * @param {function(?)} resolve
      * @param {function(!Error)} reject
-     * @this {InspectorBackendClass._AgentPrototype}
+     * @this {Protocol.InspectorBackend._AgentPrototype}
      */
     function promiseAction(resolve, reject) {
       /**
@@ -634,10 +634,10 @@ InspectorBackendClass._AgentPrototype = class {
    * @param {function(*)|function(?Protocol.Error, ?Object)} callback
    */
   dispatchResponse(messageObject, methodName, callback) {
-    if (messageObject.error && messageObject.error.code !== InspectorBackendClass._ConnectionClosedErrorCode &&
-        messageObject.error.code !== InspectorBackendClass.DevToolsStubErrorCode &&
-        !InspectorBackendClass.Options.suppressRequestErrors) {
-      var id = InspectorBackendClass.Options.dumpInspectorProtocolMessages ? ' with id = ' + messageObject.id : '';
+    if (messageObject.error && messageObject.error.code !== Protocol.InspectorBackend._ConnectionClosedErrorCode &&
+        messageObject.error.code !== Protocol.InspectorBackend.DevToolsStubErrorCode &&
+        !Protocol.InspectorBackend.Options.suppressRequestErrors) {
+      var id = Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages ? ' with id = ' + messageObject.id : '';
       console.error('Request ' + methodName + id + ' failed. ' + JSON.stringify(messageObject.error));
     }
 
@@ -660,7 +660,7 @@ InspectorBackendClass._AgentPrototype = class {
 /**
  * @unrestricted
  */
-InspectorBackendClass._DispatcherPrototype = class {
+Protocol.InspectorBackend._DispatcherPrototype = class {
   constructor() {
     this._eventArgs = {};
     this._dispatcher = null;
@@ -690,14 +690,14 @@ InspectorBackendClass._DispatcherPrototype = class {
       return;
 
     if (!(functionName in this._dispatcher)) {
-      InspectorBackendClass.reportProtocolError(
+      Protocol.InspectorBackend.reportProtocolError(
           'Protocol Error: Attempted to dispatch an unimplemented method \'' + messageObject.method + '\'',
           messageObject);
       return;
     }
 
     if (!this._eventArgs[messageObject.method]) {
-      InspectorBackendClass.reportProtocolError(
+      Protocol.InspectorBackend.reportProtocolError(
           'Protocol Error: Attempted to dispatch an unspecified method \'' + messageObject.method + '\'',
           messageObject);
       return;
@@ -711,17 +711,17 @@ InspectorBackendClass._DispatcherPrototype = class {
     }
 
     var timingLabel = 'time-stats: ' + messageObject.method;
-    if (InspectorBackendClass.Options.dumpInspectorTimeStats)
+    if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
       console.time(timingLabel);
 
     this._dispatcher[functionName].apply(this._dispatcher, params);
 
-    if (InspectorBackendClass.Options.dumpInspectorTimeStats)
+    if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
       console.timeEnd(timingLabel);
   }
 };
 
-InspectorBackendClass.Options = {
+Protocol.InspectorBackend.Options = {
   dumpInspectorTimeStats: false,
   dumpInspectorProtocolMessages: false,
   suppressRequestErrors: false

@@ -5,6 +5,7 @@
         { "name": "components", "type": "autostart"},
         { "name": "ui", "type": "autostart" },
         { "name": "sdk", "type": "autostart" },
+        { "name": "protocol", "type": "autostart" },
         { "name": "host", "type": "autostart" },
         { "name": "common", "type": "autostart" },
         { "name": "emulation", "type": "autostart" },

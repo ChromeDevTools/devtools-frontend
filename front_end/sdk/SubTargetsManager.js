@@ -172,8 +172,8 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
 
   /**
    * @param {string} targetId
-   * @param {!InspectorBackendClass.Connection.Params} params
-   * @return {!InspectorBackendClass.Connection}
+   * @param {!Protocol.InspectorBackend.Connection.Params} params
+   * @return {!Protocol.InspectorBackend.Connection}
    */
   _createConnection(targetId, params) {
     var connection = new SDK.SubTargetConnection(this._agent, targetId, params);
@@ -317,14 +317,14 @@ SDK.SubTargetsDispatcher = class {
 };
 
 /**
- * @implements {InspectorBackendClass.Connection}
+ * @implements {Protocol.InspectorBackend.Connection}
  * @unrestricted
  */
 SDK.SubTargetConnection = class {
   /**
    * @param {!Protocol.TargetAgent} agent
    * @param {string} targetId
-   * @param {!InspectorBackendClass.Connection.Params} params
+   * @param {!Protocol.InspectorBackend.Connection.Params} params
    */
   constructor(agent, targetId, params) {
     this._agent = agent;

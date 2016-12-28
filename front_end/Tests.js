@@ -567,7 +567,7 @@
     this._waitForTargets(2, callback.bind(this));
 
     function callback() {
-      InspectorBackendClass.deprecatedRunAfterPendingDispatches(this.releaseControl.bind(this));
+      Protocol.InspectorBackend.deprecatedRunAfterPendingDispatches(this.releaseControl.bind(this));
     }
   };
 

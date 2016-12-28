@@ -828,6 +828,7 @@ var Network = {};
 var Persistence = {};
 var Platform = {};
 var Profiler = {};
+var Protocol = {};
 var Resources = {};
 var Sass = {};
 var Screencast = {};

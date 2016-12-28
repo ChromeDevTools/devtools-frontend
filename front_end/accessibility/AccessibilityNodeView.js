@@ -115,7 +115,7 @@ Accessibility.AXNodeSubPane = class extends Accessibility.AccessibilitySubPane {
 /**
  * @unrestricted
  */
-Accessibility.AXNodePropertyTreeElement = class extends TreeElement {
+Accessibility.AXNodePropertyTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Accessibility.AccessibilityNode} axNode
    */
@@ -481,7 +481,7 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
 /**
  * @unrestricted
  */
-Accessibility.AXRelatedNodeSourceTreeElement = class extends TreeElement {
+Accessibility.AXRelatedNodeSourceTreeElement = class extends UI.TreeElement {
   /**
    * @param {{deferredNode: (!SDK.DeferredDOMNode|undefined), idref: (string|undefined)}} node
    * @param {!Protocol.Accessibility.AXRelatedNode=} value

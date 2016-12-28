@@ -27,7 +27,7 @@
 /**
  * @unrestricted
  */
-Components.ObjectPropertiesSection = class extends TreeOutlineInShadow {
+Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
   /**
    * @param {!SDK.RemoteObject} object
    * @param {?string|!Element=} title
@@ -371,7 +371,7 @@ Components.ObjectPropertiesSection = class extends TreeOutlineInShadow {
   }
 
   /**
-   * @return {!TreeElement}
+   * @return {!UI.TreeElement}
    */
   objectTreeElement() {
     return this._objectTreeElement;
@@ -401,7 +401,7 @@ Components.ObjectPropertiesSection._arrayLoadThreshold = 100;
 /**
  * @unrestricted
  */
-Components.ObjectPropertiesSection.RootElement = class extends TreeElement {
+Components.ObjectPropertiesSection.RootElement = class extends UI.TreeElement {
   /**
    * @param {!SDK.RemoteObject} object
    * @param {!Components.Linkifier=} linkifier
@@ -479,7 +479,7 @@ Components.ObjectPropertiesSection.RootElement = class extends TreeElement {
 /**
  * @unrestricted
  */
-Components.ObjectPropertyTreeElement = class extends TreeElement {
+Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
   /**
    * @param {!SDK.RemoteObjectProperty} property
    * @param {!Components.Linkifier=} linkifier
@@ -497,7 +497,7 @@ Components.ObjectPropertyTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!TreeElement} treeElement
+   * @param {!UI.TreeElement} treeElement
    * @param {!SDK.RemoteObject} value
    * @param {boolean} skipProto
    * @param {!Components.Linkifier=} linkifier
@@ -545,7 +545,7 @@ Components.ObjectPropertyTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!TreeElement} treeNode
+   * @param {!UI.TreeElement} treeNode
    * @param {!Array.<!SDK.RemoteObjectProperty>} properties
    * @param {?Array.<!SDK.RemoteObjectProperty>} internalProperties
    * @param {boolean} skipProto
@@ -608,7 +608,7 @@ Components.ObjectPropertyTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!TreeElement} treeNode
+   * @param {!UI.TreeElement} treeNode
    * @param {?string=} emptyPlaceholder
    */
   static _appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder) {
@@ -616,7 +616,7 @@ Components.ObjectPropertyTreeElement = class extends TreeElement {
       return;
     var title = createElementWithClass('div', 'gray-info-message');
     title.textContent = emptyPlaceholder || Common.UIString('No Properties');
-    var infoElement = new TreeElement(title);
+    var infoElement = new UI.TreeElement(title);
     treeNode.appendChild(infoElement);
   }
 
@@ -959,7 +959,7 @@ Components.ObjectPropertyTreeElement = class extends TreeElement {
 /**
  * @unrestricted
  */
-Components.ArrayGroupingTreeElement = class extends TreeElement {
+Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
   /**
    * @param {!SDK.RemoteObject} object
    * @param {number} fromIndex
@@ -980,7 +980,7 @@ Components.ArrayGroupingTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!TreeElement} treeNode
+   * @param {!UI.TreeElement} treeNode
    * @param {!SDK.RemoteObject} object
    * @param {number} fromIndex
    * @param {number} toIndex
@@ -991,7 +991,7 @@ Components.ArrayGroupingTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!TreeElement} treeNode
+   * @param {!UI.TreeElement} treeNode
    * @param {!SDK.RemoteObject} object
    * @param {number} fromIndex
    * @param {number} toIndex
@@ -1111,7 +1111,7 @@ Components.ArrayGroupingTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!TreeElement} treeNode
+   * @param {!UI.TreeElement} treeNode
    * @param {!SDK.RemoteObject} object
    * @param {number} fromIndex
    * @param {number} toIndex
@@ -1177,7 +1177,7 @@ Components.ArrayGroupingTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!TreeElement} treeNode
+   * @param {!UI.TreeElement} treeNode
    * @param {!SDK.RemoteObject} object
    * @param {boolean} skipGetOwnPropertyNames
    * @param {!Components.Linkifier=} linkifier
@@ -1287,9 +1287,9 @@ Components.ObjectPropertiesSectionExpandController = class {
    * @param {!Components.ObjectPropertiesSection} section
    */
   watchSection(id, section) {
-    section.addEventListener(TreeOutline.Events.ElementAttached, this._elementAttached, this);
-    section.addEventListener(TreeOutline.Events.ElementExpanded, this._elementExpanded, this);
-    section.addEventListener(TreeOutline.Events.ElementCollapsed, this._elementCollapsed, this);
+    section.addEventListener(UI.TreeOutline.Events.ElementAttached, this._elementAttached, this);
+    section.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._elementExpanded, this);
+    section.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._elementCollapsed, this);
     section[Components.ObjectPropertiesSectionExpandController._treeOutlineId] = id;
 
     if (this._expandedProperties.has(id))
@@ -1310,7 +1310,7 @@ Components.ObjectPropertiesSectionExpandController = class {
    * @param {!Common.Event} event
    */
   _elementAttached(event) {
-    var element = /** @type {!TreeElement} */ (event.data);
+    var element = /** @type {!UI.TreeElement} */ (event.data);
     if (element.isExpandable() && this._expandedProperties.has(this._propertyPath(element)))
       element.expand();
   }
@@ -1319,7 +1319,7 @@ Components.ObjectPropertiesSectionExpandController = class {
    * @param {!Common.Event} event
    */
   _elementExpanded(event) {
-    var element = /** @type {!TreeElement} */ (event.data);
+    var element = /** @type {!UI.TreeElement} */ (event.data);
     this._expandedProperties.add(this._propertyPath(element));
   }
 
@@ -1327,12 +1327,12 @@ Components.ObjectPropertiesSectionExpandController = class {
    * @param {!Common.Event} event
    */
   _elementCollapsed(event) {
-    var element = /** @type {!TreeElement} */ (event.data);
+    var element = /** @type {!UI.TreeElement} */ (event.data);
     this._expandedProperties.delete(this._propertyPath(element));
   }
 
   /**
-   * @param {!TreeElement} treeElement
+   * @param {!UI.TreeElement} treeElement
    * @return {string}
    */
   _propertyPath(treeElement) {

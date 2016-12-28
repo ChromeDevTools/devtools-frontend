@@ -45,7 +45,7 @@ Network.RequestHeadersView = class extends UI.VBox {
     this._showRequestHeadersText = false;
     this._showResponseHeadersText = false;
 
-    var root = new TreeOutlineInShadow();
+    var root = new UI.TreeOutlineInShadow();
     root.registerRequiredCSS('network/requestHeadersTree.css');
     root.element.classList.add('request-headers-tree');
     root.setFocusable(false);
@@ -179,14 +179,14 @@ Network.RequestHeadersView = class extends UI.VBox {
   }
 
   /**
-   * @param {!TreeElement} treeElement
+   * @param {!UI.TreeElement} treeElement
    * @param {?string} sourceText
    */
   _populateTreeElementWithSourceText(treeElement, sourceText) {
     var sourceTextElement = createElementWithClass('span', 'header-value source-code');
     sourceTextElement.textContent = String(sourceText || '').trim();
 
-    var sourceTreeElement = new TreeElement(sourceTextElement);
+    var sourceTreeElement = new UI.TreeElement(sourceTextElement);
     sourceTreeElement.selectable = false;
     treeElement.removeChildren();
     treeElement.appendChild(sourceTreeElement);
@@ -196,7 +196,7 @@ Network.RequestHeadersView = class extends UI.VBox {
    * @param {string} title
    * @param {?Array.<!SDK.NetworkRequest.NameValue>} params
    * @param {?string} sourceText
-   * @param {!TreeElement} paramsTreeElement
+   * @param {!UI.TreeElement} paramsTreeElement
    */
   _refreshParams(title, params, sourceText, paramsTreeElement) {
     paramsTreeElement.removeChildren();
@@ -244,7 +244,7 @@ Network.RequestHeadersView = class extends UI.VBox {
             this._formatParameter(Common.UIString('(empty)'), 'empty-request-header', this._decodeRequestParameters));
       }
 
-      var paramTreeElement = new TreeElement(paramNameValue);
+      var paramTreeElement = new UI.TreeElement(paramNameValue);
       paramTreeElement.selectable = false;
       paramsTreeElement.appendChild(paramTreeElement);
     }
@@ -280,7 +280,7 @@ Network.RequestHeadersView = class extends UI.VBox {
       var section = new Components.ObjectPropertiesSection(object, object.description);
       section.expand();
       section.editable = false;
-      treeElement.appendChild(new TreeElement(section.element));
+      treeElement.appendChild(new UI.TreeElement(section.element));
     }
   }
 
@@ -387,7 +387,7 @@ Network.RequestHeadersView = class extends UI.VBox {
 
   /**
    * @param {string} title
-   * @param {!TreeElement} headersTreeElement
+   * @param {!UI.TreeElement} headersTreeElement
    * @param {number} headersLength
    */
   _refreshHeadersTitle(title, headersTreeElement, headersLength) {
@@ -401,7 +401,7 @@ Network.RequestHeadersView = class extends UI.VBox {
   /**
    * @param {string} title
    * @param {!Array.<!SDK.NetworkRequest.NameValue>} headers
-   * @param {!TreeElement} headersTreeElement
+   * @param {!UI.TreeElement} headersTreeElement
    * @param {boolean=} provisionalHeaders
    */
   _refreshHeaders(title, headers, headersTreeElement, provisionalHeaders) {
@@ -415,14 +415,14 @@ Network.RequestHeadersView = class extends UI.VBox {
       var cautionFragment = createDocumentFragment();
       cautionFragment.createChild('label', '', 'dt-icon-label').type = 'smallicon-warning';
       cautionFragment.createChild('div', 'caution').textContent = cautionText;
-      var cautionTreeElement = new TreeElement(cautionFragment);
+      var cautionTreeElement = new UI.TreeElement(cautionFragment);
       cautionTreeElement.selectable = false;
       headersTreeElement.appendChild(cautionTreeElement);
     }
 
     headersTreeElement.hidden = !length && !provisionalHeaders;
     for (var i = 0; i < length; ++i) {
-      var headerTreeElement = new TreeElement(this._formatHeader(headers[i].name, headers[i].value));
+      var headerTreeElement = new UI.TreeElement(this._formatHeader(headers[i].name, headers[i].value));
       headerTreeElement.selectable = false;
       headersTreeElement.appendChild(headerTreeElement);
     }
@@ -432,7 +432,7 @@ Network.RequestHeadersView = class extends UI.VBox {
    * @param {string} title
    * @param {number} count
    * @param {string} headersText
-   * @param {!TreeElement} headersTreeElement
+   * @param {!UI.TreeElement} headersTreeElement
    */
   _refreshHeadersText(title, count, headersText, headersTreeElement) {
     this._populateTreeElementWithSourceText(headersTreeElement, headersText);
@@ -488,9 +488,9 @@ Network.RequestHeadersView = class extends UI.VBox {
 /**
  * @unrestricted
  */
-Network.RequestHeadersView.Category = class extends TreeElement {
+Network.RequestHeadersView.Category = class extends UI.TreeElement {
   /**
-   * @param {!TreeOutline} root
+   * @param {!UI.TreeOutline} root
    * @param {string} name
    * @param {string=} title
    */
@@ -505,10 +505,10 @@ Network.RequestHeadersView.Category = class extends TreeElement {
   }
 
   /**
-   * @return {!TreeElement}
+   * @return {!UI.TreeElement}
    */
   createLeaf() {
-    var leaf = new TreeElement();
+    var leaf = new UI.TreeElement();
     leaf.selectable = false;
     this.appendChild(leaf);
     return leaf;

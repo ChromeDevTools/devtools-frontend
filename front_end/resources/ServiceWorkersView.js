@@ -313,7 +313,7 @@ Resources.ServiceWorkersView.Section = class {
 
     this._section.setFieldVisible(Common.UIString('Errors'), !!this._registration.errors.length);
     var errorsValue = this._wrapWidget(this._section.appendField(Common.UIString('Errors')));
-    var errorsLabel = createLabel(String(this._registration.errors.length), 'smallicon-error');
+    var errorsLabel = UI.createLabel(String(this._registration.errors.length), 'smallicon-error');
     errorsLabel.classList.add('service-worker-errors-label');
     errorsValue.appendChild(errorsLabel);
     this._moreButton = createLink(
@@ -346,7 +346,7 @@ Resources.ServiceWorkersView.Section = class {
     if (this._errorsList.childElementCount > 100)
       this._errorsList.firstElementChild.remove();
     message.appendChild(this._linkifier.linkifyScriptLocation(target, null, error.sourceURL, error.lineNumber));
-    message.appendChild(createLabel('#' + error.versionId + ': ' + error.errorMessage, 'smallicon-error'));
+    message.appendChild(UI.createLabel('#' + error.versionId + ': ' + error.errorMessage, 'smallicon-error'));
   }
 
   /**

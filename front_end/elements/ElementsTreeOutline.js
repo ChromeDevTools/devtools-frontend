@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Elements.ElementsTreeOutline = class extends TreeOutline {
+Elements.ElementsTreeOutline = class extends UI.TreeOutline {
   /**
    * @param {!SDK.DOMModel} domModel
    * @param {boolean=} omitRootDOMNode
@@ -426,7 +426,7 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
 
   /**
    * @param {?SDK.DOMNode} node
-   * @return {?TreeElement}
+   * @return {?UI.TreeElement}
    */
   _lookUpTreeElement(node) {
     if (!node)
@@ -498,7 +498,7 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @return {?TreeElement}
+   * @return {?UI.TreeElement}
    */
   _treeElementFromEvent(event) {
     var scrollContainer = this.element.parentElement;
@@ -608,7 +608,7 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {?TreeElement} treeElement
+   * @param {?UI.TreeElement} treeElement
    */
   setHoverEffect(treeElement) {
     if (this._previousHoveredElement === treeElement)
@@ -700,7 +700,7 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {?TreeElement} treeElement
+   * @param {?UI.TreeElement} treeElement
    * @return {boolean}
    */
   _isValidDragSourceOrTarget(treeElement) {
@@ -726,7 +726,7 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
   }
 
   /**
-   * @param {!TreeElement} treeElement
+   * @param {!UI.TreeElement} treeElement
    */
   _doMove(treeElement) {
     if (!this._treeElementBeingDragged)
@@ -1278,9 +1278,9 @@ Elements.ElementsTreeOutline = class extends TreeOutline {
    * @param {!Elements.ElementsTreeElement} treeElement
    */
   _createExpandAllButtonTreeElement(treeElement) {
-    var button = createTextButton('', handleLoadAllChildren.bind(this));
+    var button = UI.createTextButton('', handleLoadAllChildren.bind(this));
     button.value = '';
-    var expandAllButtonElement = new TreeElement(button);
+    var expandAllButtonElement = new UI.TreeElement(button);
     expandAllButtonElement.selectable = false;
     expandAllButtonElement.expandAllButton = true;
     expandAllButtonElement.button = button;
@@ -1633,7 +1633,7 @@ Elements.ElementsTreeOutline.Renderer = class {
 /**
  * @unrestricted
  */
-Elements.ElementsTreeOutline.ShortcutTreeElement = class extends TreeElement {
+Elements.ElementsTreeOutline.ShortcutTreeElement = class extends UI.TreeElement {
   /**
    * @param {!SDK.DOMNodeShortcut} nodeShortcut
    */

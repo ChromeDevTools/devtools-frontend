@@ -18,7 +18,8 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
                                 .createChild('div', 'settings-tab help-content help-container');
 
     var buttonsRow = this.containerElement.createChild('div', 'devices-button-row');
-    this._addCustomButton = createTextButton(Common.UIString('Add custom device...'), this._addCustomDevice.bind(this));
+    this._addCustomButton =
+        UI.createTextButton(Common.UIString('Add custom device...'), this._addCustomDevice.bind(this));
     buttonsRow.appendChild(this._addCustomButton);
 
     this._list = new UI.ListWidget(this);

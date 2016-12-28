@@ -37,14 +37,14 @@ Audits.AuditsPanel = class extends UI.PanelWithSidebar {
     this.registerRequiredCSS('ui/panelEnablerView.css');
     this.registerRequiredCSS('audits/auditsPanel.css');
 
-    this._sidebarTree = new TreeOutlineInShadow();
+    this._sidebarTree = new UI.TreeOutlineInShadow();
     this._sidebarTree.registerRequiredCSS('audits/auditsSidebarTree.css');
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
 
     this._auditsItemTreeElement = new Audits.AuditsSidebarTreeElement(this);
     this._sidebarTree.appendChild(this._auditsItemTreeElement);
 
-    this._auditResultsTreeElement = new TreeElement(Common.UIString('RESULTS'), true);
+    this._auditResultsTreeElement = new UI.TreeElement(Common.UIString('RESULTS'), true);
     this._auditResultsTreeElement.selectable = false;
     this._auditResultsTreeElement.listItemElement.classList.add('audits-sidebar-results');
     this._auditResultsTreeElement.expand();
@@ -451,7 +451,7 @@ Audits.AuditRuleResult = class {
 /**
  * @unrestricted
  */
-Audits.AuditsSidebarTreeElement = class extends TreeElement {
+Audits.AuditsSidebarTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Audits.AuditsPanel} panel
    */
@@ -476,7 +476,7 @@ Audits.AuditsSidebarTreeElement = class extends TreeElement {
 /**
  * @unrestricted
  */
-Audits.AuditResultSidebarTreeElement = class extends TreeElement {
+Audits.AuditResultSidebarTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Audits.AuditsPanel} panel
    * @param {!Array.<!Audits.AuditCategoryResult>} results

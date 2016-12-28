@@ -867,7 +867,7 @@ Main.RemoteDebuggingTerminatedScreen = class extends UI.VBox {
     message.createChild('span', 'reason').textContent = reason;
     this.contentElement.createChild('div', 'message').textContent =
         Common.UIString('Reconnect when ready by reopening DevTools.');
-    var button = createTextButton(Common.UIString('Reconnect DevTools'), () => window.location.reload());
+    var button = UI.createTextButton(Common.UIString('Reconnect DevTools'), () => window.location.reload());
     this.contentElement.createChild('div', 'button').appendChild(button);
   }
 

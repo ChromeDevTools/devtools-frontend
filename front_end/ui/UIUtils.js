@@ -1230,9 +1230,9 @@ UI.beautifyFunctionName = function(name) {
  * @suppressGlobalPropertiesCheck
  * @template T
  */
-function registerCustomElement(localName, typeExtension, prototype) {
+UI.registerCustomElement = function(localName, typeExtension, prototype) {
   return document.registerElement(typeExtension, {prototype: Object.create(prototype), extends: localName});
-}
+};
 
 /**
  * @param {string} text
@@ -1241,7 +1241,7 @@ function registerCustomElement(localName, typeExtension, prototype) {
  * @param {string=} title
  * @return {!Element}
  */
-function createTextButton(text, clickHandler, className, title) {
+UI.createTextButton = function(text, clickHandler, className, title) {
   var element = createElementWithClass('button', className || '', 'text-button');
   element.textContent = text;
   if (clickHandler)
@@ -1249,7 +1249,7 @@ function createTextButton(text, clickHandler, className, title) {
   if (title)
     element.title = title;
   return element;
-}
+};
 
 /**
  * @param {string} name
@@ -1257,25 +1257,25 @@ function createTextButton(text, clickHandler, className, title) {
  * @param {boolean=} checked
  * @return {!Element}
  */
-function createRadioLabel(name, title, checked) {
+UI.createRadioLabel = function(name, title, checked) {
   var element = createElement('label', 'dt-radio');
   element.radioElement.name = name;
   element.radioElement.checked = !!checked;
   element.createTextChild(title);
   return element;
-}
+};
 
 /**
  * @param {string} title
  * @param {string} iconClass
  * @return {!Element}
  */
-function createLabel(title, iconClass) {
+UI.createLabel = function(title, iconClass) {
   var element = createElement('label', 'dt-icon-label');
   element.createChild('span').textContent = title;
   element.type = iconClass;
   return element;
-}
+};
 
 /**
  * @param {string=} title
@@ -1283,7 +1283,7 @@ function createLabel(title, iconClass) {
  * @param {string=} subtitle
  * @return {!Element}
  */
-function createCheckboxLabel(title, checked, subtitle) {
+UI.createCheckboxLabel = function(title, checked, subtitle) {
   var element = createElement('label', 'dt-checkbox');
   element.checkboxElement.checked = !!checked;
   if (title !== undefined) {
@@ -1295,7 +1295,7 @@ function createCheckboxLabel(title, checked, subtitle) {
     }
   }
   return element;
-}
+};
 
 /**
  * @return {!Element}
@@ -1303,14 +1303,14 @@ function createCheckboxLabel(title, checked, subtitle) {
  * @param {number} max
  * @param {number} tabIndex
  */
-function createSliderLabel(min, max, tabIndex) {
+UI.createSliderLabel = function(min, max, tabIndex) {
   var element = createElement('label', 'dt-slider');
   element.sliderElement.min = min;
   element.sliderElement.max = max;
   element.sliderElement.step = 1;
   element.sliderElement.tabIndex = tabIndex;
   return element;
-}
+};
 
 /**
  * @param {!Node} node
@@ -1336,7 +1336,7 @@ UI.appendStyle = function(node, cssFile) {
 };
 
 (function() {
-  registerCustomElement('button', 'text-button', {
+  UI.registerCustomElement('button', 'text-button', {
     /**
      * @this {Element}
      */
@@ -1349,7 +1349,7 @@ UI.appendStyle = function(node, cssFile) {
     __proto__: HTMLButtonElement.prototype
   });
 
-  registerCustomElement('label', 'dt-radio', {
+  UI.registerCustomElement('label', 'dt-radio', {
     /**
      * @this {Element}
      */
@@ -1377,7 +1377,7 @@ UI.appendStyle = function(node, cssFile) {
     this.radioElement.dispatchEvent(new Event('change'));
   }
 
-  registerCustomElement('label', 'dt-checkbox', {
+  UI.registerCustomElement('label', 'dt-checkbox', {
     /**
      * @this {Element}
      */
@@ -1444,7 +1444,7 @@ UI.appendStyle = function(node, cssFile) {
     __proto__: HTMLLabelElement.prototype
   });
 
-  registerCustomElement('label', 'dt-icon-label', {
+  UI.registerCustomElement('label', 'dt-icon-label', {
     /**
      * @this {Element}
      */
@@ -1467,7 +1467,7 @@ UI.appendStyle = function(node, cssFile) {
     __proto__: HTMLLabelElement.prototype
   });
 
-  registerCustomElement('label', 'dt-slider', {
+  UI.registerCustomElement('label', 'dt-slider', {
     /**
      * @this {Element}
      */
@@ -1496,7 +1496,7 @@ UI.appendStyle = function(node, cssFile) {
     __proto__: HTMLLabelElement.prototype
   });
 
-  registerCustomElement('label', 'dt-small-bubble', {
+  UI.registerCustomElement('label', 'dt-small-bubble', {
     /**
      * @this {Element}
      */
@@ -1518,7 +1518,7 @@ UI.appendStyle = function(node, cssFile) {
     __proto__: HTMLLabelElement.prototype
   });
 
-  registerCustomElement('div', 'dt-close-button', {
+  UI.registerCustomElement('div', 'dt-close-button', {
     /**
      * @this {Element}
      */

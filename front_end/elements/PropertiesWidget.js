@@ -143,7 +143,7 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
         this.element.appendChild(section.element);
         if (expanded[this.sections.length - 1])
           section.expand();
-        section.addEventListener(TreeOutline.Events.ElementExpanded, this._propertyExpanded, this);
+        section.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._propertyExpanded, this);
       }
     }
   }
@@ -154,7 +154,7 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
   _propertyExpanded(event) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
     for (var section of this.sections)
-      section.removeEventListener(TreeOutline.Events.ElementExpanded, this._propertyExpanded, this);
+      section.removeEventListener(UI.TreeOutline.Events.ElementExpanded, this._propertyExpanded, this);
   }
 
   /**

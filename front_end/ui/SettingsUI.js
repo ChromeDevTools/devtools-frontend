@@ -37,7 +37,7 @@ UI.SettingsUI = {};
  * @return {!Element}
  */
 UI.SettingsUI.createSettingCheckbox = function(name, setting, omitParagraphElement, tooltip) {
-  var label = createCheckboxLabel(name);
+  var label = UI.createCheckboxLabel(name);
   if (tooltip)
     label.title = tooltip;
 

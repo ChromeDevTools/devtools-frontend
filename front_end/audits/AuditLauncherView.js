@@ -209,7 +209,7 @@ Audits.AuditLauncherView = class extends UI.VBox {
    * @param {string=} id
    */
   _createCategoryElement(title, id) {
-    var labelElement = createCheckboxLabel(title);
+    var labelElement = UI.createCheckboxLabel(title);
     if (id) {
       labelElement.id = this._categoryIdPrefix + id;
       labelElement.checkboxElement.addEventListener('click', this._boundCategoryClickListener, false);
@@ -248,18 +248,18 @@ Audits.AuditLauncherView = class extends UI.VBox {
 
     this._buttonContainerElement = this._contentElement.createChild('div', 'button-container');
 
-    var radio = createRadioLabel('audit-mode', Common.UIString('Audit Present State'), true);
+    var radio = UI.createRadioLabel('audit-mode', Common.UIString('Audit Present State'), true);
     this._buttonContainerElement.appendChild(radio);
     this._auditPresentStateElement = radio.radioElement;
 
-    radio = createRadioLabel('audit-mode', Common.UIString('Reload Page and Audit on Load'));
+    radio = UI.createRadioLabel('audit-mode', Common.UIString('Reload Page and Audit on Load'));
     this._buttonContainerElement.appendChild(radio);
     this._auditReloadedStateElement = radio.radioElement;
 
-    this._launchButton = createTextButton(Common.UIString('Run'), this._launchButtonClicked.bind(this));
+    this._launchButton = UI.createTextButton(Common.UIString('Run'), this._launchButtonClicked.bind(this));
     this._buttonContainerElement.appendChild(this._launchButton);
 
-    this._clearButton = createTextButton(Common.UIString('Clear'), this._clearButtonClicked.bind(this));
+    this._clearButton = UI.createTextButton(Common.UIString('Clear'), this._clearButtonClicked.bind(this));
     this._buttonContainerElement.appendChild(this._clearButton);
 
     this._selectAllClicked(this._selectAllCheckboxElement.checked);

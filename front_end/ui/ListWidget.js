@@ -260,9 +260,9 @@ UI.ListWidget.Editor = class {
     this._contentElement = this.element.createChild('div', 'editor-content');
 
     var buttonsRow = this.element.createChild('div', 'editor-buttons');
-    this._commitButton = createTextButton('', this._commitClicked.bind(this));
+    this._commitButton = UI.createTextButton('', this._commitClicked.bind(this));
     buttonsRow.appendChild(this._commitButton);
-    this._cancelButton = createTextButton(Common.UIString('Cancel'), this._cancelClicked.bind(this));
+    this._cancelButton = UI.createTextButton(Common.UIString('Cancel'), this._cancelClicked.bind(this));
     this._cancelButton.addEventListener(
         'keydown', onKeyDown.bind(null, isEnterKey, this._cancelClicked.bind(this)), false);
     buttonsRow.appendChild(this._cancelButton);

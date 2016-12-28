@@ -29,7 +29,7 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.contentElement);
     var addPatternButton =
-        createTextButton(Common.UIString('Add pattern...'), this._addButtonClicked.bind(this), 'add-button');
+        UI.createTextButton(Common.UIString('Add pattern...'), this._addButtonClicked.bind(this), 'add-button');
     this.contentElement.appendChild(addPatternButton);
 
     this._setting = Common.moduleSetting('skipStackFramesPattern');

@@ -68,7 +68,7 @@ Settings.EditFileSystemView = class extends UI.VBox {
     } else {
       mappingsPlaceholder.textContent = Common.UIString('No mappings');
       mappingsHeader.appendChild(
-          createTextButton(Common.UIString('Add'), this._addMappingButtonClicked.bind(this), 'add-button'));
+          UI.createTextButton(Common.UIString('Add'), this._addMappingButtonClicked.bind(this), 'add-button'));
     }
     this._mappingsList.setEmptyPlaceholder(mappingsPlaceholder);
     this._mappingsList.show(this.contentElement);
@@ -77,7 +77,7 @@ Settings.EditFileSystemView = class extends UI.VBox {
     excludedFoldersHeader.createChild('div', 'file-system-header-text').textContent =
         Common.UIString('Excluded folders');
     excludedFoldersHeader.appendChild(
-        createTextButton(Common.UIString('Add'), this._addExcludedFolderButtonClicked.bind(this), 'add-button'));
+        UI.createTextButton(Common.UIString('Add'), this._addExcludedFolderButtonClicked.bind(this), 'add-button'));
     this._excludedFoldersList = new UI.ListWidget(this);
     this._excludedFoldersList.element.classList.add('file-system-list');
     this._excludedFoldersList.registerRequiredCSS('settings/editFileSystemView.css');

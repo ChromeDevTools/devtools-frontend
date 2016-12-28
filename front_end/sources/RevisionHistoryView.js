@@ -36,7 +36,7 @@ Sources.RevisionHistoryView = class extends UI.VBox {
     super();
     this._uiSourceCodeItems = new Map();
 
-    this._treeOutline = new TreeOutlineInShadow();
+    this._treeOutline = new UI.TreeOutlineInShadow();
     this._treeOutline.registerRequiredCSS('sources/revisionHistory.css');
     this._treeOutline.makeDense();
     this.element.appendChild(this._treeOutline.element);
@@ -72,7 +72,7 @@ Sources.RevisionHistoryView = class extends UI.VBox {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _createUISourceCodeItem(uiSourceCode) {
-    var uiSourceCodeItem = new TreeElement(uiSourceCode.displayName(), true);
+    var uiSourceCodeItem = new UI.TreeElement(uiSourceCode.displayName(), true);
     uiSourceCodeItem.selectable = false;
 
     // Insert in sorted order
@@ -96,7 +96,7 @@ Sources.RevisionHistoryView = class extends UI.VBox {
       uiSourceCodeItem.appendChild(historyItem);
     }
 
-    var linkItem = new TreeElement();
+    var linkItem = new UI.TreeElement();
     linkItem.selectable = false;
     uiSourceCodeItem.appendChild(linkItem);
 
@@ -178,7 +178,7 @@ Sources.RevisionHistoryView = class extends UI.VBox {
 /**
  * @unrestricted
  */
-Sources.RevisionHistoryTreeElement = class extends TreeElement {
+Sources.RevisionHistoryTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Workspace.Revision} revision
    * @param {!Workspace.Revision} baseRevision
@@ -274,7 +274,7 @@ Sources.RevisionHistoryTreeElement = class extends TreeElement {
    * @param {string} changeType
    */
   _createLine(baseLineNumber, newLineNumber, lineContent, changeType) {
-    var child = new TreeElement();
+    var child = new UI.TreeElement();
     child.selectable = false;
     this.appendChild(child);
 

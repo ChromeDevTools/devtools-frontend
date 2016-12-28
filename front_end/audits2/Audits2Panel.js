@@ -8,8 +8,8 @@ Audits2.Audits2Panel = class extends UI.Panel {
   constructor() {
     super('audits2');
     this.contentElement.classList.add('vbox');
-    this.contentElement.appendChild(createTextButton(Common.UIString('Start'), this._start.bind(this)));
-    this.contentElement.appendChild(createTextButton(Common.UIString('Stop'), this._stop.bind(this)));
+    this.contentElement.appendChild(UI.createTextButton(Common.UIString('Start'), this._start.bind(this)));
+    this.contentElement.appendChild(UI.createTextButton(Common.UIString('Stop'), this._stop.bind(this)));
     this._resultElement = this.contentElement.createChild('div', 'overflow-auto');
   }
 

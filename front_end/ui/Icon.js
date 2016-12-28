@@ -19,7 +19,7 @@ UI.Icon = class extends HTMLSpanElement {
    */
   static create(iconType, className) {
     if (!UI.Icon._constructor)
-      UI.Icon._constructor = registerCustomElement('span', 'ui-icon', UI.Icon.prototype);
+      UI.Icon._constructor = UI.registerCustomElement('span', 'ui-icon', UI.Icon.prototype);
 
     var icon = /** @type {!UI.Icon} */ (new UI.Icon._constructor());
     if (className)

@@ -210,7 +210,7 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
     this.contentElement.createChild('div', 'hbox device-text-row').createChild('div', 'view-title').textContent =
         Common.UIString('Settings');
 
-    var discoverUsbDevicesCheckbox = createCheckboxLabel(Common.UIString('Discover USB devices'));
+    var discoverUsbDevicesCheckbox = UI.createCheckboxLabel(Common.UIString('Discover USB devices'));
     discoverUsbDevicesCheckbox.classList.add('usb-checkbox');
     this.element.appendChild(discoverUsbDevicesCheckbox);
     this._discoverUsbDevicesCheckbox = discoverUsbDevicesCheckbox.checkboxElement;
@@ -223,7 +223,7 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
         Common.UIString('remote debugging documentation.')));
 
     var portForwardingHeader = this.element.createChild('div', 'port-forwarding-header');
-    var portForwardingEnabledCheckbox = createCheckboxLabel(Common.UIString('Port forwarding'));
+    var portForwardingEnabledCheckbox = UI.createCheckboxLabel(Common.UIString('Port forwarding'));
     portForwardingEnabledCheckbox.classList.add('port-forwarding-checkbox');
     portForwardingHeader.appendChild(portForwardingEnabledCheckbox);
     this._portForwardingEnabledCheckbox = portForwardingEnabledCheckbox.checkboxElement;
@@ -244,7 +244,7 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
     this._list.show(this.element);
 
     this.element.appendChild(
-        createTextButton(Common.UIString('Add rule'), this._addRuleButtonClicked.bind(this), 'add-rule-button'));
+        UI.createTextButton(Common.UIString('Add rule'), this._addRuleButtonClicked.bind(this), 'add-rule-button'));
 
     /** @type {!Array<!Adb.PortForwardingRule>} */
     this._portForwardingConfig = [];
@@ -473,7 +473,7 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
     newTabInput.type = 'text';
     newTabInput.placeholder = Common.UIString('Enter URL');
     newTabInput.addEventListener('keydown', newTabKeyDown, false);
-    var newTabButton = createTextButton(Common.UIString('Open'), openNewTab);
+    var newTabButton = UI.createTextButton(Common.UIString('Open'), openNewTab);
     newTabRow.appendChild(newTabButton);
 
     var pages = element.createChild('div', 'device-page-list vbox');
@@ -575,7 +575,8 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
 
     var titleRow = element.createChild('div', 'device-page-title-row');
     var title = titleRow.createChild('div', 'device-page-title');
-    var inspect = createTextButton(Common.UIString('Inspect'), doAction.bind(null, 'inspect'), 'device-inspect-button');
+    var inspect =
+        UI.createTextButton(Common.UIString('Inspect'), doAction.bind(null, 'inspect'), 'device-inspect-button');
     titleRow.appendChild(inspect);
 
     var toolbar = new UI.Toolbar('');

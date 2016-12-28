@@ -11,9 +11,8 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
     var toolbarContainer = this.contentElement.createChild('div', 'css-tracker-toolbar-container');
     var topToolbar = new UI.Toolbar('css-tracker-toolbar', toolbarContainer);
 
-    this._recordButton = new UI.ToolbarToggle(Common.UIString('Start recording'),
-                                              'largeicon-resume',
-                                              'largeicon-pause');
+    this._recordButton =
+        new UI.ToolbarToggle(Common.UIString('Start recording'), 'largeicon-resume', 'largeicon-pause');
     this._recordButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._toggleRecording(!this._isRecording));
     topToolbar.appendToolbarItem(this._recordButton);
 
@@ -23,7 +22,7 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
 
     this._cssResultsElement = this.contentElement.createChild('div', 'css-results');
     this._progressElement = this._cssResultsElement.createChild('div', 'progress-view');
-    this._treeOutline = new TreeOutlineInShadow();
+    this._treeOutline = new UI.TreeOutlineInShadow();
     this._treeOutline.registerRequiredCSS('css_tracker/unusedRulesTree.css');
 
     this._statusToolbarElement = this.contentElement.createChild('div', 'css-toolbar-summary');
@@ -105,17 +104,16 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
         var gutterRange = Common.TextRange.fromObject(rule.range);
         if (gutterRange.startColumn)
           gutterRange.startColumn--;
-        uiSourceCode.addDecoration(gutterRange,
-            CSSTracker.CSSTrackerView.LineDecorator.type, rule.wasUsed);
+        uiSourceCode.addDecoration(gutterRange, CSSTracker.CSSTrackerView.LineDecorator.type, rule.wasUsed);
       }
       var percentUnused = Math.round(100 * unusedRulesCount / ruleUsageList.length);
       if (unusedRulesCount === 1) {
         this._statusMessageElement.textContent =
-             Common.UIString('%d CSS rule is not used. (%d%%)', unusedRulesCount, percentUnused);
+            Common.UIString('%d CSS rule is not used. (%d%%)', unusedRulesCount, percentUnused);
       } else {
         this._statusMessageElement.textContent =
             Common.UIString('%d CSS rules are not used. (%d%%)', unusedRulesCount, percentUnused);
-     }
+      }
 
       this._renderRuleUsage(cssModel, ruleUsageList);
     }
@@ -203,16 +201,15 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
     if (unattributedRulesCount) {
       if (unattributedRulesCount === 1) {
         var removedStyleSheetStats = Common.UIString('1 unused rule in a removed style sheet.');
-      }
-      else {
+      } else {
         var removedStyleSheetStats =
             Common.UIString('%d unused rules in removed style sheets.', unattributedRulesCount);
       }
-      var treeElement = new TreeElement(Common.UIString('Unknown style sheets'), true);
+      var treeElement = new UI.TreeElement(Common.UIString('Unknown style sheets'), true);
       treeElement.toggleOnClick = true;
       treeElement.selectable = false;
 
-      var stats = new TreeElement(removedStyleSheetStats, false);
+      var stats = new UI.TreeElement(removedStyleSheetStats, false);
       stats.selectable = false;
       treeElement.appendChild(stats);
       this._treeOutline.appendChild(treeElement);
@@ -236,8 +233,7 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
       startPosition = i;
     }
     var url = this._urlForStyleSheetId(cssModel, ruleList[startPosition].styleSheetId);
-    var styleSheetTreeElement =
-        new CSSTracker.CSSTrackerView.StyleSheetTreeElement(url, ruleList.slice(startPosition));
+    var styleSheetTreeElement = new CSSTracker.CSSTrackerView.StyleSheetTreeElement(url, ruleList.slice(startPosition));
     this._treeOutline.appendChild(styleSheetTreeElement);
   }
 
@@ -266,7 +262,7 @@ CSSTracker.ParsedStyleSheet;
 
 CSSTracker.CSSTrackerView._rulesShownAtOnce = 20;
 
-CSSTracker.CSSTrackerView.StyleSheetTreeElement = class extends TreeElement {
+CSSTracker.CSSTrackerView.StyleSheetTreeElement = class extends UI.TreeElement {
   /**
    * @param {string} url
    * @param {!Array<!CSSTracker.RuleUsage>} ruleList
@@ -293,7 +289,7 @@ CSSTracker.CSSTrackerView.StyleSheetTreeElement = class extends TreeElement {
     this.toggleOnClick = true;
     this.selectable = false;
 
-    /** @type {?TreeElement} */
+    /** @type {?UI.TreeElement} */
     this._showAllRulesTreeElement = null;
 
     var title = createElementWithClass('div', 'rule-result');
@@ -354,7 +350,7 @@ CSSTracker.CSSTrackerView.StyleSheetTreeElement = class extends TreeElement {
       var contentSpan = anchor.createChild('span', 'rule-match-content');
       contentSpan.textContent = rule.selector;
 
-      var ruleElement = new TreeElement();
+      var ruleElement = new UI.TreeElement();
       ruleElement.selectable = true;
       this.appendChild(ruleElement);
       ruleElement.listItemElement.className = 'rule-match source-code';
@@ -367,9 +363,9 @@ CSSTracker.CSSTrackerView.StyleSheetTreeElement = class extends TreeElement {
    */
   _appendShowAllRulesButton(startMatchIndex) {
     var rulesLeftCount = this._unusedRules.length - startMatchIndex;
-    var button = createTextButton('', this._showMoreRulesElementSelected.bind(this, startMatchIndex));
+    var button = UI.createTextButton('', this._showMoreRulesElementSelected.bind(this, startMatchIndex));
     button.textContent = Common.UIString('Show all rules (%d more).', rulesLeftCount);
-    this._showAllRulesTreeElement = new TreeElement(button);
+    this._showAllRulesTreeElement = new UI.TreeElement(button);
     this._showAllRulesTreeElement.selectable = false;
     this.appendChild(this._showAllRulesTreeElement);
   }

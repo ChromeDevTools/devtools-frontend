@@ -268,7 +268,7 @@ Components.NetworkConditionsSettingsTab = class extends UI.VBox {
 
     this.contentElement.createChild('div', 'header').textContent = Common.UIString('Network Throttling Profiles');
 
-    var addButton = createTextButton(
+    var addButton = UI.createTextButton(
         Common.UIString('Add custom profile...'), this._addButtonClicked.bind(this), 'add-conditions-button');
     this.contentElement.appendChild(addButton);
 

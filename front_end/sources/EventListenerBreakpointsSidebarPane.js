@@ -12,7 +12,7 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
 
     this._eventListenerBreakpointsSetting = Common.settings.createLocalSetting('eventListenerBreakpoints', []);
 
-    this._categoriesTreeOutline = new TreeOutlineInShadow();
+    this._categoriesTreeOutline = new UI.TreeOutlineInShadow();
     this._categoriesTreeOutline.element.tabIndex = 0;
     this._categoriesTreeOutline.element.classList.add('event-listener-breakpoints');
     this._categoriesTreeOutline.registerRequiredCSS('sources/eventListenerBreakpoints.css');
@@ -130,10 +130,10 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
    * @param {!Array.<string>=} targetNames
    */
   _createCategory(name, eventNames, isInstrumentationEvent, targetNames) {
-    var labelNode = createCheckboxLabel(name);
+    var labelNode = UI.createCheckboxLabel(name);
 
     var categoryItem = {};
-    categoryItem.element = new TreeElement(labelNode);
+    categoryItem.element = new UI.TreeElement(labelNode);
     this._categoriesTreeOutline.appendChild(categoryItem.element);
     categoryItem.element.selectable = false;
 
@@ -152,10 +152,10 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
       var breakpointItem = {};
       var title = Sources.EventListenerBreakpointsSidebarPane.eventNameForUI(eventName);
 
-      labelNode = createCheckboxLabel(title);
+      labelNode = UI.createCheckboxLabel(title);
       labelNode.classList.add('source-code');
 
-      breakpointItem.element = new TreeElement(labelNode);
+      breakpointItem.element = new UI.TreeElement(labelNode);
       categoryItem.element.appendChild(breakpointItem.element);
 
       breakpointItem.element.listItemElement.createChild('div', 'breakpoint-hit-marker');

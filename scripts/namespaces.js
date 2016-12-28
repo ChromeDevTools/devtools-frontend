@@ -23,10 +23,8 @@ var moduleNames = new Set();
 String.prototype.replaceAll = function(a, b)
 {
     var result = this;
-    while (result.includes(a))
-        result = result.replace(a, b);
-    return result;
-}
+    return result.split(a).join(b);
+};
 
 function read(filePath)
 {
@@ -38,24 +36,8 @@ function read(filePath)
 
     var moduleName = oldModuleName;
 
-    // if (oldModuleName === "accessibility")
-    //     moduleName = "a11y";
-    // if (oldModuleName === "resources")
-    //     moduleName = "storage";
-    // if (oldModuleName === "console")
-    //     moduleName = "consoleUI";
-
-
-    // if (oldModuleName === "timeline")
-    //     moduleName = "timelineUI";
-    // if (oldModuleName === "timeline_model")
-    //     moduleName = "timeline";
-
-    // moduleName = "com.google.chrome.devtools." + moduleName;
-    // moduleName = "dt";// + moduleName;
     if (moduleName === "sdk" || moduleName == "ui")
         moduleName = moduleName.toUpperCase();
-    // moduleName = "dt" + moduleName.substring(0, 1).toUpperCase() + moduleName.substring(1);
     moduleName = moduleName.split("_").map(a => a.substring(0, 1).toUpperCase() + a.substring(1)).join("");
     if (moduleName.includes("/"))
         return;
@@ -63,22 +45,20 @@ function read(filePath)
 
     var lines = content.split("\n");
     for (var line of lines) {
-        var line = line.trim();
-        if (!line.startsWith("WebInspector."))
+        // Replace with your own logic
+        if (!line.startsWith("var "))
             continue;
-        var match = line.match(/^(WebInspector.[a-z_A-Z0-9]+)\s*(\=[^,}]|[;])/) || line.match(/^(WebInspector.[a-z_A-Z0-9]+)\s*\=$/);
+        var globalVariableMatch = line.match(/^var ([a-z_A-Z0-9]+)\s*(\=)/);
+        var match = globalVariableMatch;
+
         if (!match)
             continue;
         var name = match[1];
-        if (name.split(".").length !== 2)
-            continue;
         var weight = line.endsWith(name + ";") ? 2 : 1;
 
         var newName;
-        var shortName = newName;
 
-        newName = name.replace("WebInspector.", moduleName + ".");
-        shortName = newName.replace(moduleName + ".", "");
+        newName = moduleName + "." + name;
         var existing = map.get(name);
         if (existing && existing.weight > weight)
             continue;
@@ -88,29 +68,29 @@ function read(filePath)
     }
 }
 
-
 function write(filePath)
 {
     var content = fs.readFileSync(filePath).toString();
     var newContent = content;
-    for (var key of sortedKeys)
-        newContent = newContent.replaceAll(key, map.get(key).name);
-    newContent = newContent.replaceAll("UI._focusChanged.bind(WebInspector", "UI._focusChanged.bind(UI");
-    newContent = newContent.replaceAll("UI._windowFocused.bind(WebInspector", "UI._windowFocused.bind(UI");
-    newContent = newContent.replaceAll("UI._windowBlurred.bind(WebInspector", "UI._windowBlurred.bind(UI");
-    newContent = newContent.replaceAll("UI._focusChanged.bind(WebInspector", "UI._focusChanged.bind(UI");
-    newContent = newContent.replaceAll("UI._focusChanged.bind(WebInspector", "UI._focusChanged.bind(UI");
-    newContent = newContent.replaceAll("Components.reload.bind(WebInspector", "Components.reload.bind(Components");
-    newContent = newContent.replaceAll("window.opener.WebInspector['AdvancedApp']['_instance']()", "window.opener['Emulation']['AdvancedApp']['_instance']()");
-    newContent = newContent.replaceAll("if (window['WebInspector'][", "if (window['WebInspector'] && window['WebInspector'][");
+    for (var key of sortedKeys) {
+        var originalIdentifier = key;
+        var newIdentifier = map.get(key).name;
+        newContent = newContent.split("\n").map(function (line) {
+            return processLine(line);
+        }).join("\n");
+    }
 
     if (content !== newContent)
         fs.writeFileSync(filePath, newContent);
 }
 
+function processLine(line) {
+    // Add transformation logic
+    return line;
+}
+
 function walkSync(currentDirPath, process, json) {
-    var fs = require('fs'),
-        path = require('path');
+    var path = require('path');
     fs.readdirSync(currentDirPath).forEach(function (name) {
         var filePath = path.join(currentDirPath, name);
         var stat = fs.statSync(filePath);
@@ -118,7 +98,7 @@ function walkSync(currentDirPath, process, json) {
             if (filePath.includes("ExtensionAPI.js"))
                 return;
             if (filePath.includes("externs.js"))
-                return;            
+                return;
             if (filePath.includes("eslint") || filePath.includes("lighthouse-background.js") || filePath.includes("/cm/") || filePath.includes("/xterm.js/") || filePath.includes("/acorn/") || filePath.includes("/gonzales-scss"))
                 return;
             if (filePath.includes("/cm_modes/") && !filePath.includes("DefaultCodeMirror") && !filePath.includes("module.json"))
@@ -131,10 +111,13 @@ function walkSync(currentDirPath, process, json) {
 }
 
 walkSync('front_end', read);
+
 sortedKeys = Array.from(map.keys());
-sortedKeys.sort((a, b) => (b.length - a.length) || a.localeCompare(b));
+sortedKeys.sort((a, b) => a.localeCompare(b));
+
 for (var key of sortedKeys)
     console.log(key + " => " + map.get(key).name);
+
 walkSync('front_end', write, true);
 
 walkSync('../../LayoutTests/http/tests/inspector', write, false);

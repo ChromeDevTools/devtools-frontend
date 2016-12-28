@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Elements.ElementsTreeElement = class extends TreeElement {
+Elements.ElementsTreeElement = class extends UI.TreeElement {
   /**
    * @param {!SDK.DOMNode} node
    * @param {boolean=} elementCloseTag
@@ -278,7 +278,7 @@ Elements.ElementsTreeElement = class extends TreeElement {
    * @override
    */
   expandRecursively() {
-    this._node.getSubtree(-1, TreeElement.prototype.expandRecursively.bind(this, Number.MAX_VALUE));
+    this._node.getSubtree(-1, UI.TreeElement.prototype.expandRecursively.bind(this, Number.MAX_VALUE));
   }
 
   /**

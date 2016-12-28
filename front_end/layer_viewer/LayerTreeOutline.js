@@ -40,7 +40,7 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
     this._layerViewHost = layerViewHost;
     this._layerViewHost.registerView(this);
 
-    this._treeOutline = new TreeOutlineInShadow();
+    this._treeOutline = new UI.TreeOutlineInShadow();
     this._treeOutline.element.classList.add('layer-tree', 'overflow-auto');
     this._treeOutline.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     this._treeOutline.element.addEventListener('mouseout', this._onMouseMove.bind(this), false);
@@ -192,7 +192,7 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
   }
 
   /**
-   * @param {?TreeElement} node
+   * @param {?UI.TreeElement} node
    * @return {?LayerViewer.LayerView.Selection}
    */
   _selectionForNode(node) {
@@ -203,7 +203,7 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
 /**
  * @unrestricted
  */
-LayerViewer.LayerTreeElement = class extends TreeElement {
+LayerViewer.LayerTreeElement = class extends UI.TreeElement {
   /**
    * @param {!LayerViewer.LayerTreeOutline} tree
    * @param {!SDK.Layer} layer

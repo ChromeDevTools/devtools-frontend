@@ -401,7 +401,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
 
     this.profilesItemTreeElement = new Profiler.ProfilesSidebarTreeElement(this);
 
-    this._sidebarTree = new TreeOutlineInShadow();
+    this._sidebarTree = new UI.TreeOutlineInShadow();
     this._sidebarTree.registerRequiredCSS('profiler/profilesSidebarTree.css');
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
 
@@ -870,7 +870,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
 /**
  * @unrestricted
  */
-Profiler.ProfileTypeSidebarSection = class extends TreeElement {
+Profiler.ProfileTypeSidebarSection = class extends UI.TreeElement {
   /**
    * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
    * @param {!Profiler.ProfileType} profileType
@@ -908,7 +908,7 @@ Profiler.ProfileTypeSidebarSection = class extends TreeElement {
 
       var groupSize = group.profileSidebarTreeElements.length;
       if (groupSize === 2) {
-        // Make a group TreeElement now that there are 2 profiles.
+        // Make a group UI.TreeElement now that there are 2 profiles.
         group.sidebarTreeElement =
             new Profiler.ProfileGroupSidebarTreeElement(this._dataDisplayDelegate, profile.title);
 
@@ -1039,7 +1039,7 @@ Profiler.ProfilesPanel.ContextMenuProvider = class {
 /**
  * @unrestricted
  */
-Profiler.ProfileSidebarTreeElement = class extends TreeElement {
+Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
    * @param {!Profiler.ProfileHeader} profile
@@ -1163,7 +1163,7 @@ Profiler.ProfileSidebarTreeElement = class extends TreeElement {
 /**
  * @unrestricted
  */
-Profiler.ProfileGroupSidebarTreeElement = class extends TreeElement {
+Profiler.ProfileGroupSidebarTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Profiler.ProfileType.DataDisplayDelegate} dataDisplayDelegate
    * @param {string} title
@@ -1201,7 +1201,7 @@ Profiler.ProfileGroupSidebarTreeElement = class extends TreeElement {
   }
 };
 
-Profiler.ProfilesSidebarTreeElement = class extends TreeElement {
+Profiler.ProfilesSidebarTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Profiler.ProfilesPanel} panel
    */

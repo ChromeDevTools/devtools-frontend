@@ -144,7 +144,7 @@ Accessibility.InspectNodeButton = class {
 /**
  * @unrestricted
  */
-Accessibility.AXNodeTreeElement = class extends TreeElement {
+Accessibility.AXNodeTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Accessibility.AccessibilityNode} axNode
    * @param {!Accessibility.AXTreePane} treePane

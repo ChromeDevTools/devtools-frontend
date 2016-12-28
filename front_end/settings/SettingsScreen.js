@@ -177,7 +177,7 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
     self.runtime.extensions(UI.SettingUI).forEach(this._addSettingUI.bind(this));
 
     this._appendSection().appendChild(
-        createTextButton(Common.UIString('Restore defaults and reload'), restoreAndReload));
+        UI.createTextButton(Common.UIString('Restore defaults and reload'), restoreAndReload));
 
     function restoreAndReload() {
       Common.settings.clearAll();
@@ -290,7 +290,7 @@ Settings.WorkspaceSettingsTab = class extends Settings.SettingsTab {
     this._fileSystemsListContainer = this.containerElement.createChild('div', '');
 
     this.containerElement.appendChild(
-        createTextButton(Common.UIString('Add folder\u2026'), this._addFileSystemClicked.bind(this)));
+        UI.createTextButton(Common.UIString('Add folder\u2026'), this._addFileSystemClicked.bind(this)));
 
     /** @type {!Map<string, !Element>} */
     this._elementByPath = new Map();
@@ -438,7 +438,7 @@ Settings.ExperimentsSettingsTab = class extends Settings.SettingsTab {
   }
 
   _createExperimentCheckbox(experiment) {
-    var label = createCheckboxLabel(Common.UIString(experiment.title), experiment.isEnabled());
+    var label = UI.createCheckboxLabel(Common.UIString(experiment.title), experiment.isEnabled());
     var input = label.checkboxElement;
     input.name = experiment.name;
     function listener() {

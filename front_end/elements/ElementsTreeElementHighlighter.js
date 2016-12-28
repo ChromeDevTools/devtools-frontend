@@ -11,8 +11,8 @@ Elements.ElementsTreeElementHighlighter = class {
   constructor(treeOutline) {
     this._throttler = new Common.Throttler(100);
     this._treeOutline = treeOutline;
-    this._treeOutline.addEventListener(TreeOutline.Events.ElementExpanded, this._clearState, this);
-    this._treeOutline.addEventListener(TreeOutline.Events.ElementCollapsed, this._clearState, this);
+    this._treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._clearState, this);
+    this._treeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._clearState, this);
     this._treeOutline.addEventListener(Elements.ElementsTreeOutline.Events.SelectedNodeChanged, this._clearState, this);
     SDK.targetManager.addModelListener(
         SDK.DOMModel, SDK.DOMModel.Events.NodeHighlightedInOverlay, this._highlightNode, this);

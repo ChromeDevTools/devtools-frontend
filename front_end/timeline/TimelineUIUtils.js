@@ -1193,7 +1193,7 @@ Timeline.TimelineUIUtils = class {
         break;
     }
 
-    var invalidationsTreeOutline = new TreeOutlineInShadow();
+    var invalidationsTreeOutline = new UI.TreeOutlineInShadow();
     invalidationsTreeOutline.registerRequiredCSS('timeline/invalidationsTree.css');
     invalidationsTreeOutline.element.classList.add('invalidations-tree');
 
@@ -1798,7 +1798,7 @@ Timeline.TimelineUIUtils._aggregatedStatsKey = Symbol('aggregatedStats');
 /**
  * @unrestricted
  */
-Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends TreeElement {
+Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends UI.TreeElement {
   /**
    * @param {!SDK.Target} target
    * @param {?Map<number, ?SDK.DOMNode>} relatedNodesMap
@@ -1893,7 +1893,7 @@ Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends TreeElement {
       }
     }
 
-    var contentTreeElement = new TreeElement(content, false);
+    var contentTreeElement = new UI.TreeElement(content, false);
     contentTreeElement.selectable = false;
     this.appendChild(contentTreeElement);
   }

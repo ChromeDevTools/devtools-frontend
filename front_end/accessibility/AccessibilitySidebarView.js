@@ -175,10 +175,10 @@ Accessibility.AccessibilitySubPane = class extends UI.SimpleView {
   }
 
   /**
-   * @return {!TreeOutline}
+   * @return {!UI.TreeOutline}
    */
   createTreeOutline() {
-    var treeOutline = new TreeOutlineInShadow();
+    var treeOutline = new UI.TreeOutlineInShadow();
     treeOutline.registerRequiredCSS('accessibility/accessibilityNode.css');
     treeOutline.registerRequiredCSS('components/objectValue.css');
 

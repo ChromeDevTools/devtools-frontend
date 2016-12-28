@@ -12,7 +12,7 @@ Sources.FileBasedSearchResultsPane = class extends Sources.SearchResultsPane {
     super(searchConfig);
 
     this._searchResults = [];
-    this._treeOutline = new TreeOutlineInShadow();
+    this._treeOutline = new UI.TreeOutlineInShadow();
     this._treeOutline.registerRequiredCSS('sources/fileBasedSearchResultsPane.css');
     this.element.appendChild(this._treeOutline.element);
 
@@ -50,7 +50,7 @@ Sources.FileBasedSearchResultsPane.fileMatchesShownAtOnce = 20;
 /**
  * @unrestricted
  */
-Sources.FileBasedSearchResultsPane.FileTreeElement = class extends TreeElement {
+Sources.FileBasedSearchResultsPane.FileTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Workspace.ProjectSearchConfig} searchConfig
    * @param {!Sources.FileBasedSearchResult} searchResult
@@ -148,7 +148,7 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends TreeElement {
       var contentSpan = this._createContentSpan(lineContent, matchRanges);
       anchor.appendChild(contentSpan);
 
-      var searchMatchElement = new TreeElement();
+      var searchMatchElement = new UI.TreeElement();
       searchMatchElement.selectable = false;
       this.appendChild(searchMatchElement);
       searchMatchElement.listItemElement.className = 'search-match source-code';
@@ -162,7 +162,7 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends TreeElement {
   _appendShowMoreMatchesElement(startMatchIndex) {
     var matchesLeftCount = this._searchResult.searchMatches.length - startMatchIndex;
     var showMoreMatchesText = Common.UIString('Show all matches (%d more).', matchesLeftCount);
-    this._showMoreMatchesTreeElement = new TreeElement(showMoreMatchesText);
+    this._showMoreMatchesTreeElement = new UI.TreeElement(showMoreMatchesText);
     this.appendChild(this._showMoreMatchesTreeElement);
     this._showMoreMatchesTreeElement.listItemElement.classList.add('show-more-matches');
     this._showMoreMatchesTreeElement.onselect = this._showMoreMatchesElementSelected.bind(this, startMatchIndex);

@@ -50,10 +50,10 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
     selectTargetText.textContent = Common.UIString('Target:');
     var targetsSelect = targetSpan.createChild('select', 'chrome-select');
     new Profiler.TargetsComboBoxController(targetsSelect, targetSpan);
-    this._controlButton = createTextButton('', this._controlButtonClicked.bind(this), 'control-profiling');
+    this._controlButton = UI.createTextButton('', this._controlButtonClicked.bind(this), 'control-profiling');
     this._contentElement.appendChild(this._controlButton);
     this._recordButtonEnabled = true;
-    this._loadButton = createTextButton(Common.UIString('Load'), this._loadButtonClicked.bind(this), 'load-profile');
+    this._loadButton = UI.createTextButton(Common.UIString('Load'), this._loadButtonClicked.bind(this), 'load-profile');
     this._contentElement.appendChild(this._loadButton);
     SDK.targetManager.observeTargets(this);
   }
@@ -173,7 +173,7 @@ Profiler.MultiProfileLauncherView = class extends Profiler.ProfileLauncherView {
    * @param {!Profiler.ProfileType} profileType
    */
   addProfileType(profileType) {
-    var labelElement = createRadioLabel('profile-type', profileType.name);
+    var labelElement = UI.createRadioLabel('profile-type', profileType.name);
     this._profileTypeSelectorForm.appendChild(labelElement);
     var optionElement = labelElement.radioElement;
     this._typeIdToOptionElement[profileType.id] = optionElement;

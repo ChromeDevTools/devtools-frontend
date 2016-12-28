@@ -39,7 +39,7 @@ Accessibility.ARIAAttributesPane = class extends Accessibility.AccessibilitySubP
 /**
  * @unrestricted
  */
-Accessibility.ARIAAttributesTreeElement = class extends TreeElement {
+Accessibility.ARIAAttributesTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Accessibility.ARIAAttributesPane} parentPane
    * @param {!SDK.DOMNode.Attribute} attribute

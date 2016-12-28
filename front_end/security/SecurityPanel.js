@@ -52,7 +52,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       panel.showCertificateViewer();
     }
 
-    return createTextButton(text, showCertificateViewer, 'security-certificate-button');
+    return UI.createTextButton(text, showCertificateViewer, 'security-certificate-button');
   }
 
   /**
@@ -73,7 +73,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       SDK.multitargetNetworkManager.getCertificate(origin, certificateCallback);
     }
 
-    return createTextButton(text, showCertificateViewer, 'security-certificate-button');
+    return UI.createTextButton(text, showCertificateViewer, 'security-certificate-button');
   }
 
   /**
@@ -383,7 +383,7 @@ Security.SecurityPanel.OriginState;
 /**
  * @unrestricted
  */
-Security.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
+Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
   /**
    * @param {!Security.SecurityPanelSidebarTreeElement} mainViewElement
    * @param {function(!Security.SecurityPanel.Origin)} showOriginInPanel
@@ -397,12 +397,12 @@ Security.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
     this._showOriginInPanel = showOriginInPanel;
     this._mainOrigin = null;
 
-    /** @type {!Map<!Security.SecurityPanelSidebarTree.OriginGroupName, !TreeElement>} */
+    /** @type {!Map<!Security.SecurityPanelSidebarTree.OriginGroupName, !UI.TreeElement>} */
     this._originGroups = new Map();
 
     for (var key in Security.SecurityPanelSidebarTree.OriginGroupName) {
       var originGroupName = Security.SecurityPanelSidebarTree.OriginGroupName[key];
-      var originGroup = new TreeElement(originGroupName, true);
+      var originGroup = new UI.TreeElement(originGroupName, true);
       originGroup.selectable = false;
       originGroup.expand();
       originGroup.listItemElement.classList.add('security-sidebar-origins');
@@ -412,7 +412,7 @@ Security.SecurityPanelSidebarTree = class extends TreeOutlineInShadow {
     this._clearOriginGroups();
 
     // This message will be removed by clearOrigins() during the first new page load after the panel was opened.
-    var mainViewReloadMessage = new TreeElement(Common.UIString('Reload to view details'));
+    var mainViewReloadMessage = new UI.TreeElement(Common.UIString('Reload to view details'));
     mainViewReloadMessage.selectable = false;
     mainViewReloadMessage.listItemElement.classList.add('security-main-view-reload-message');
     this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.MainOrigin)
@@ -520,7 +520,7 @@ Security.SecurityPanelSidebarTree.OriginGroupName = {
 /**
  * @unrestricted
  */
-Security.SecurityPanelSidebarTreeElement = class extends TreeElement {
+Security.SecurityPanelSidebarTreeElement = class extends UI.TreeElement {
   /**
    * @param {string} text
    * @param {function()} selectCallback

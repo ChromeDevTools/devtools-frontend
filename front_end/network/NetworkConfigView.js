@@ -115,7 +115,7 @@ Network.NetworkConfigView = class extends UI.VBox {
 
   _createUserAgentSection() {
     var section = this._createSection(Common.UIString('User agent'), 'network-config-ua');
-    var checkboxLabel = createCheckboxLabel(Common.UIString('Select automatically'), true);
+    var checkboxLabel = UI.createCheckboxLabel(Common.UIString('Select automatically'), true);
     section.appendChild(checkboxLabel);
     this._autoCheckbox = checkboxLabel.checkboxElement;
     this._autoCheckbox.addEventListener('change', this._userAgentTypeChanged.bind(this));

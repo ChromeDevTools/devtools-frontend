@@ -363,7 +363,7 @@ LayerViewer.PaintProfilerCommandLogView = class extends UI.ThrottledWidget {
     this.setMinimumSize(100, 25);
     this.element.classList.add('overflow-auto');
 
-    this._treeOutline = new TreeOutlineInShadow();
+    this._treeOutline = new UI.TreeOutlineInShadow();
     this.element.appendChild(this._treeOutline.element);
 
     this._log = [];
@@ -434,7 +434,7 @@ LayerViewer.PaintProfilerCommandLogView = class extends UI.ThrottledWidget {
 /**
  * @unrestricted
  */
-LayerViewer.LogTreeElement = class extends TreeElement {
+LayerViewer.LogTreeElement = class extends UI.TreeElement {
   /**
    * @param {!LayerViewer.PaintProfilerCommandLogView} ownerView
    * @param {!SDK.PaintProfilerLogItem} logItem
@@ -506,7 +506,7 @@ LayerViewer.LogTreeElement = class extends TreeElement {
 /**
  * @unrestricted
  */
-LayerViewer.LogPropertyTreeElement = class extends TreeElement {
+LayerViewer.LogPropertyTreeElement = class extends UI.TreeElement {
   /**
    * @param {!{name: string, value}} property
    */
@@ -516,7 +516,7 @@ LayerViewer.LogPropertyTreeElement = class extends TreeElement {
   }
 
   /**
-   * @param {!TreeElement} element
+   * @param {!UI.TreeElement} element
    * @param {string} name
    * @param {*} value
    */

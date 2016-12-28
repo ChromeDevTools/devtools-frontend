@@ -13,7 +13,7 @@ Network.XMLView = class extends UI.Widget {
     super(true);
     this.registerRequiredCSS('network/xmlView.css');
     this.contentElement.classList.add('shadow-xml-view', 'source-code');
-    this._treeOutline = new TreeOutlineInShadow();
+    this._treeOutline = new UI.TreeOutlineInShadow();
     this._treeOutline.registerRequiredCSS('network/xmlTree.css');
     this.contentElement.appendChild(this._treeOutline.element);
 
@@ -21,7 +21,7 @@ Network.XMLView = class extends UI.Widget {
     this._searchableView;
     /** @type {number} */
     this._currentSearchFocusIndex = 0;
-    /** @type {!Array.<!TreeElement>} */
+    /** @type {!Array.<!UI.TreeElement>} */
     this._currentSearchTreeElements = [];
     /** @type {?UI.SearchableView.SearchConfig} */
     this._searchConfig;
@@ -213,7 +213,7 @@ Network.XMLView = class extends UI.Widget {
 /**
  * @unrestricted
  */
-Network.XMLView.Node = class extends TreeElement {
+Network.XMLView.Node = class extends UI.TreeElement {
   /**
    * @param {!Node} node
    * @param {boolean} closeTag
@@ -231,7 +231,7 @@ Network.XMLView.Node = class extends TreeElement {
   }
 
   /**
-   * @param {!TreeOutline|!TreeElement} root
+   * @param {!UI.TreeOutline|!UI.TreeElement} root
    * @param {!Node} xmlNode
    * @param {!Network.XMLView} xmlView
    */

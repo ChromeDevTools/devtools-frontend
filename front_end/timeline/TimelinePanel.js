@@ -1635,7 +1635,7 @@ Timeline.TimelinePanel.StatusPane = class extends UI.VBox {
     this._progressLabel = progressLine.createChild('div', 'label');
     this._progressBar = progressLine.createChild('div', 'indicator-container').createChild('div', 'indicator');
 
-    this._stopButton = createTextButton(Common.UIString('Stop'), stopCallback);
+    this._stopButton = UI.createTextButton(Common.UIString('Stop'), stopCallback);
     this.contentElement.createChild('div', 'stop-button').appendChild(this._stopButton);
   }
 

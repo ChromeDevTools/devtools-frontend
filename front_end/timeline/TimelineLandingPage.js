@@ -11,8 +11,8 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
     this._tabbedPane = new UI.TabbedPane();
     this._tabbedPane.setTabSlider(true);
     this._tabbedPane.renderWithNoHeaderBackground();
-    this._currentTabSetting = Common.settings.createSetting(
-        'performanceLandingPageTab', Timeline.TimelineLandingPage.PageId.Basic);
+    this._currentTabSetting =
+        Common.settings.createSetting('performanceLandingPageTab', Timeline.TimelineLandingPage.PageId.Basic);
 
     var tab = new Timeline.TimelineLandingPage.PerspectiveTabWidget();
     tab.appendDescription(Common.UIString(
@@ -120,8 +120,8 @@ Timeline.TimelineLandingPage.PerspectiveTabWidget = class extends UI.VBox {
     this._forceEnable = new Map();
     this._descriptionDiv = this.contentElement.createChild('div', 'timeline-perspective-description');
     this._actionButtonDiv = this.contentElement.createChild('div');
-    this._actionButtonDiv.appendChild(createTextButton(Common.UIString('Start profiling'), this._record));
-    this._actionButtonDiv.appendChild(createTextButton(Common.UIString('Profile page load'), this._recordPageLoad));
+    this._actionButtonDiv.appendChild(UI.createTextButton(Common.UIString('Start profiling'), this._record));
+    this._actionButtonDiv.appendChild(UI.createTextButton(Common.UIString('Profile page load'), this._recordPageLoad));
   }
 
   /**

@@ -186,7 +186,7 @@ Components.DOMBreakpointsSidebarPane = class extends Components.BreakpointsSideb
     element._type = type;
     element.addEventListener('contextmenu', this._contextMenu.bind(this, node, type), true);
 
-    var checkboxLabel = createCheckboxLabel('', enabled);
+    var checkboxLabel = UI.createCheckboxLabel('', enabled);
     var checkboxElement = checkboxLabel.checkboxElement;
     checkboxElement.addEventListener('click', this._checkboxClicked.bind(this, node, type), false);
     element._checkboxElement = checkboxElement;

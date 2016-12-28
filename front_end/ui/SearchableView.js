@@ -133,7 +133,7 @@ UI.SearchableView = class extends UI.VBox {
     // Column 4
     this._replaceElement = this._firstRowElement.createChild('td').createChild('span');
 
-    this._replaceLabelElement = createCheckboxLabel(Common.UIString('Replace'));
+    this._replaceLabelElement = UI.createCheckboxLabel(Common.UIString('Replace'));
     this._replaceCheckboxElement = this._replaceLabelElement.checkboxElement;
     this._uniqueId = ++UI.SearchableView._lastUniqueId;
     var replaceCheckboxId = 'search-replace-trigger' + this._uniqueId;

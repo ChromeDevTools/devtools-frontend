@@ -66,7 +66,7 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
         entry = this._listElement.createChild('div', 'breakpoint-entry');
         entry.addEventListener('contextmenu', this._breakpointContextMenu.bind(this), true);
         entry.addEventListener('click', this._revealLocation.bind(this), false);
-        var checkboxLabel = createCheckboxLabel('');
+        var checkboxLabel = UI.createCheckboxLabel('');
         checkboxLabel.addEventListener('click', this._breakpointCheckboxClicked.bind(this), false);
         entry.appendChild(checkboxLabel);
         entry[Sources.JavaScriptBreakpointsSidebarPane._checkboxLabelSymbol] = checkboxLabel;

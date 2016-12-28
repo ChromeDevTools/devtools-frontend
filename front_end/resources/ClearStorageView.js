@@ -42,7 +42,7 @@ Resources.ClearStorageView = class extends UI.VBox {
 
     SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
     var footer = this._reportView.appendSection('', 'clear-storage-button').appendRow();
-    this._clearButton = createTextButton(
+    this._clearButton = UI.createTextButton(
         Common.UIString('Clear site data'), this._clear.bind(this), Common.UIString('Clear site data'));
     footer.appendChild(this._clearButton);
   }

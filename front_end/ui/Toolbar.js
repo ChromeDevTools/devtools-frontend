@@ -898,7 +898,7 @@ UI.ToolbarCheckbox = class extends UI.ToolbarItem {
    * @param {function()=} listener
    */
   constructor(text, title, setting, listener) {
-    super(createCheckboxLabel(text));
+    super(UI.createCheckboxLabel(text));
     this.element.classList.add('checkbox');
     this.inputElement = this.element.checkboxElement;
     if (title)

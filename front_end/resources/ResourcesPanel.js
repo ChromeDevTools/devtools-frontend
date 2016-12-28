@@ -38,7 +38,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
 
     this._resourcesLastSelectedItemSetting = Common.settings.createSetting('resourcesLastSelectedItem', {});
 
-    this._sidebarTree = new TreeOutlineInShadow();
+    this._sidebarTree = new UI.TreeOutlineInShadow();
     this._sidebarTree.element.classList.add('resources-sidebar');
     this._sidebarTree.registerRequiredCSS('resources/resourcesSidebar.css');
     this._sidebarTree.element.classList.add('filter-all');
@@ -113,10 +113,10 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
 
   /**
    * @param {string} title
-   * @return {!TreeElement}
+   * @return {!UI.TreeElement}
    */
   _addSidebarSection(title) {
-    var treeElement = new TreeElement(title, true);
+    var treeElement = new UI.TreeElement(title, true);
     treeElement.listItemElement.classList.add('storage-group-list-item');
     treeElement.setCollapsible(false);
     treeElement.selectable = false;
@@ -828,7 +828,7 @@ Resources.ResourcesPanel.ResourceRevealer = class {
 /**
  * @unrestricted
  */
-Resources.BaseStorageTreeElement = class extends TreeElement {
+Resources.BaseStorageTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Resources.ResourcesPanel} storagePanel
    * @param {string} title

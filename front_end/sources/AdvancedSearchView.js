@@ -34,13 +34,13 @@ Sources.AdvancedSearchView = class extends UI.VBox {
     this._searchInputClearElement.hidden = true;
     this._searchInputClearElement.addEventListener('click', this._onSearchInputClear.bind(this), false);
 
-    this._ignoreCaseLabel = createCheckboxLabel(Common.UIString('Ignore case'));
+    this._ignoreCaseLabel = UI.createCheckboxLabel(Common.UIString('Ignore case'));
     this._ignoreCaseLabel.classList.add('search-config-label');
     this._searchPanelElement.appendChild(this._ignoreCaseLabel);
     this._ignoreCaseCheckbox = this._ignoreCaseLabel.checkboxElement;
     this._ignoreCaseCheckbox.classList.add('search-config-checkbox');
 
-    this._regexLabel = createCheckboxLabel(Common.UIString('Regular expression'));
+    this._regexLabel = UI.createCheckboxLabel(Common.UIString('Regular expression'));
     this._regexLabel.classList.add('search-config-label');
     this._searchPanelElement.appendChild(this._regexLabel);
     this._regexCheckbox = this._regexLabel.checkboxElement;

@@ -37,7 +37,7 @@ Audits.AuditCategoryResultPane = class extends UI.SimpleView {
    */
   constructor(categoryResult) {
     super(categoryResult.title);
-    this._treeOutline = new TreeOutlineInShadow();
+    this._treeOutline = new UI.TreeOutlineInShadow();
     this._treeOutline.registerRequiredCSS('audits/auditResultTree.css');
     this._treeOutline.element.classList.add('audit-result-tree');
     this.element.appendChild(this._treeOutline.element);
@@ -61,7 +61,7 @@ Audits.AuditCategoryResultPane = class extends UI.SimpleView {
   }
 
   /**
-   * @param {!TreeElement} parentTreeNode
+   * @param {!UI.TreeElement} parentTreeNode
    * @param {!Audits.AuditRuleResult} result
    * @param {?Audits.AuditRule.Severity=} severity
    */
@@ -88,7 +88,7 @@ Audits.AuditCategoryResultPane = class extends UI.SimpleView {
     }
     titleFragment.createTextChild(title);
 
-    var treeElement = new TreeElement(titleFragment, !!result.children);
+    var treeElement = new UI.TreeElement(titleFragment, !!result.children);
     treeElement.selectable = false;
     parentTreeNode.appendChild(treeElement);
 

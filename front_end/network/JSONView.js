@@ -46,7 +46,7 @@ Network.JSONView = class extends UI.VBox {
     this._treeOutline;
     /** @type {number} */
     this._currentSearchFocusIndex = 0;
-    /** @type {!Array.<!TreeElement>} */
+    /** @type {!Array.<!UI.TreeElement>} */
     this._currentSearchTreeElements = [];
     /** @type {?RegExp} */
     this._searchRegex = null;

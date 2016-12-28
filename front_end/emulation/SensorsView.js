@@ -324,7 +324,7 @@ Emulation.SensorsView = class extends UI.VBox {
     this._gammaSetter = this._createAxisInput(cellElement, this._gammaElement, Common.UIString('\u03B3 (gamma)'));
     this._gammaSetter(String(deviceOrientation.gamma));
 
-    cellElement.appendChild(createTextButton(
+    cellElement.appendChild(UI.createTextButton(
         Common.UIString('Reset'), this._resetDeviceOrientation.bind(this), 'orientation-reset-button'));
     return fieldsetElement;
   }

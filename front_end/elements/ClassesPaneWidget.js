@@ -96,7 +96,7 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
     keys.sort(String.caseInsensetiveComparator);
     for (var i = 0; i < keys.length; ++i) {
       var className = keys[i];
-      var label = createCheckboxLabel(className, classes.get(className));
+      var label = UI.createCheckboxLabel(className, classes.get(className));
       label.visualizeFocus = true;
       label.classList.add('monospace');
       label.checkboxElement.addEventListener('click', this._onClick.bind(this, className), false);

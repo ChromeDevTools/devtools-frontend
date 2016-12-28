@@ -86,7 +86,7 @@ Resources.AppManifestView = class extends UI.VBox {
     this._errorsSection.element.classList.toggle('hidden', !errors.length);
     for (var error of errors) {
       this._errorsSection.appendRow().appendChild(
-          createLabel(error.message, error.critical ? 'smallicon-error' : 'smallicon-warning'));
+          UI.createLabel(error.message, error.critical ? 'smallicon-error' : 'smallicon-warning'));
     }
 
     if (!data)

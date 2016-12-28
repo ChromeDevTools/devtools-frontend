@@ -79,11 +79,31 @@ Network.FilterSuggestionBuilder = class {
    * @return {!Array.<string>}
    */
   _values(key) {
-    var result = this._valueLists[key];
+    var result = /** @type {!Array<string>} */ (this._valueLists[key]);
+
     if (!result)
       return [];
 
-    result.sort();
+    if (key === Network.NetworkLogView.FilterType.Priority) {
+      var resultSet = new Set(result);
+      result = [];
+      /** @type {!Map<number, !Protocol.Network.ResourcePriority>} */
+      var numericToPriorityMap = new Map();
+      Components.prioritySymbolToNumericMap().forEach((value, key) => numericToPriorityMap.set(value, key));
+      var sortedNumericPriorities = numericToPriorityMap.keysArray();
+      sortedNumericPriorities.sortNumbers();
+      var sortedPriorities = sortedNumericPriorities.map(value => numericToPriorityMap.get(value));
+      var sortedPriorityLabels = sortedPriorities.map(value => Components.uiLabelForPriority(value));
+
+      for (var value of sortedPriorityLabels) {
+        if (!resultSet.has(value))
+          continue;
+        result.push(value);
+      }
+    } else {
+      result.sort();
+    }
+
     return result;
   }
 

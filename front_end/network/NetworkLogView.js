@@ -214,6 +214,15 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {!SDK.NetworkRequest} request
    * @return {boolean}
    */
+  static _requestPriorityFilter(value, request) {
+    return request.initialPriority() === value;
+  }
+
+  /**
+   * @param {string} value
+   * @param {!SDK.NetworkRequest} request
+   * @return {boolean}
+   */
   static _requestMimeTypeFilter(value, request) {
     return request.mimeType === value;
   }
@@ -937,6 +946,12 @@ Network.NetworkLogView = class extends UI.VBox {
     this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.Scheme, '' + request.scheme);
     this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.StatusCode, '' + request.statusCode);
 
+    var priority = request.initialPriority();
+    if (priority) {
+      this._suggestionBuilder.addItem(
+          Network.NetworkLogView.FilterType.Priority, Components.uiLabelForPriority(priority));
+    }
+
     if (request.mixedContentType !== 'none') {
       this._suggestionBuilder.addItem(
           Network.NetworkLogView.FilterType.MixedContent, Network.NetworkLogView.MixedContentFilterValues.All);
@@ -1446,6 +1461,9 @@ Network.NetworkLogView = class extends UI.VBox {
       case Network.NetworkLogView.FilterType.SetCookieValue:
         return Network.NetworkLogView._requestSetCookieValueFilter.bind(null, value);
 
+      case Network.NetworkLogView.FilterType.Priority:
+        return Network.NetworkLogView._requestPriorityFilter.bind(null, Components.uiLabelToPriority(value));
+
       case Network.NetworkLogView.FilterType.StatusCode:
         return Network.NetworkLogView._statusCodeFilter.bind(null, value);
     }
@@ -1679,6 +1697,7 @@ Network.NetworkLogView.FilterType = {
   Method: 'method',
   MimeType: 'mime-type',
   MixedContent: 'mixed-content',
+  Priority: 'priority',
   Scheme: 'scheme',
   SetCookieDomain: 'set-cookie-domain',
   SetCookieName: 'set-cookie-name',

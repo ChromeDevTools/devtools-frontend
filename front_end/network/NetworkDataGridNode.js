@@ -287,6 +287,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     return (aScore - bScore) || aRequest.indentityCompare(bRequest);
   }
 
+  // TODO(allada) This function deserves to be in a network-common of some sort.
   /**
    * @param {!Network.NetworkNode} a
    * @param {!Network.NetworkNode} b
@@ -314,18 +315,13 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     var bRequest = b.request();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
-    var priorityMap = Network.NetworkRequestNode._symbolicToNumericPriority;
-    if (!priorityMap) {
-      Network.NetworkRequestNode._symbolicToNumericPriority = new Map();
-      priorityMap = Network.NetworkRequestNode._symbolicToNumericPriority;
-      priorityMap.set(Protocol.Network.ResourcePriority.VeryLow, 1);
-      priorityMap.set(Protocol.Network.ResourcePriority.Low, 2);
-      priorityMap.set(Protocol.Network.ResourcePriority.Medium, 3);
-      priorityMap.set(Protocol.Network.ResourcePriority.High, 4);
-      priorityMap.set(Protocol.Network.ResourcePriority.VeryHigh, 5);
-    }
-    var aScore = priorityMap.get(aRequest.initialPriority()) || 0;
-    var bScore = priorityMap.get(bRequest.initialPriority()) || 0;
+    var priorityMap = Components.prioritySymbolToNumericMap();
+    var aPriority = aRequest.initialPriority();
+    var aScore = aPriority ? priorityMap.get(aPriority) : 0;
+    aScore = aScore || 0;
+    var bPriority = aRequest.initialPriority();
+    var bScore = bPriority ? priorityMap.get(bPriority) : 0;
+    bScore = bScore || 0;
 
     return aScore - bScore || aRequest.indentityCompare(bRequest);
   }
@@ -580,7 +576,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
         this._setTextAndTitle(cell, this._arrayLength(this._request.responseCookies));
         break;
       case 'priority':
-        this._setTextAndTitle(cell, Components.uiLabelForPriority(this._request.initialPriority()));
+        var priority = this._request.initialPriority();
+        this._setTextAndTitle(cell, priority ? Components.uiLabelForPriority(priority) : '');
         break;
       case 'connectionid':
         this._setTextAndTitle(cell, this._request.connectionId);

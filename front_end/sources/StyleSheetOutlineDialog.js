@@ -100,10 +100,12 @@ Sources.StyleSheetOutlineDialog = class extends UI.FilteredListWidget.Delegate {
 
   /**
    * @override
-   * @param {number} itemIndex
+   * @param {?number} itemIndex
    * @param {string} promptValue
    */
   selectItem(itemIndex, promptValue) {
+    if (itemIndex === null)
+      return;
     var rule = this._rules[itemIndex];
     var lineNumber = rule.lineNumber;
     if (!isNaN(lineNumber) && lineNumber >= 0)

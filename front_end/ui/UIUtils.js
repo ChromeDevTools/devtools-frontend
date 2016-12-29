@@ -998,14 +998,14 @@ UI.measurePreferredSize = function(element, containerElement) {
   containerElement = containerElement || element.ownerDocument.body;
   containerElement.appendChild(element);
   element.positionAt(0, 0);
-  var result = new Size(element.offsetWidth, element.offsetHeight);
+  var result = element.getBoundingClientRect();
 
   element.positionAt(undefined, undefined);
   if (oldParent)
     oldParent.insertBefore(element, oldNextSibling);
   else
     element.remove();
-  return result;
+  return new Size(result.width, result.height);
 };
 
 /**

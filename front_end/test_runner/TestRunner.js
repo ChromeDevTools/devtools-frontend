@@ -118,10 +118,10 @@ TestRunner.loadLazyModules = function(lazyModules) {
 
 /**
  * @param {string} key
- * @param {boolean} ctrlKey
- * @param {boolean} altKey
- * @param {boolean} shiftKey
- * @param {boolean} metaKey
+ * @param {boolean=} ctrlKey
+ * @param {boolean=} altKey
+ * @param {boolean=} shiftKey
+ * @param {boolean=} metaKey
  * @return {!KeyboardEvent}
  */
 TestRunner.createKeyEvent = function(key, ctrlKey, altKey, shiftKey, metaKey) {
@@ -129,10 +129,10 @@ TestRunner.createKeyEvent = function(key, ctrlKey, altKey, shiftKey, metaKey) {
     key: key,
     bubbles: true,
     cancelable: true,
-    ctrlKey: ctrlKey,
-    altKey: altKey,
-    shiftKey: shiftKey,
-    metaKey: metaKey
+    ctrlKey: !!ctrlKey,
+    altKey: !!altKey,
+    shiftKey: !!shiftKey,
+    metaKey: !!metaKey
   });
 };
 

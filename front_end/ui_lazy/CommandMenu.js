@@ -225,10 +225,12 @@ UI.CommandMenuDelegate = class extends UI.FilteredListWidget.Delegate {
 
   /**
    * @override
-   * @param {number} itemIndex
+   * @param {?number} itemIndex
    * @param {string} promptValue
    */
   selectItem(itemIndex, promptValue) {
+    if (itemIndex === null)
+      return;
     this._commands[itemIndex].execute();
   }
 

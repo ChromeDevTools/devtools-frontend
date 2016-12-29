@@ -4,8 +4,8 @@
  * found in the LICENSE file.
  */
 /**
- * @implements {UI.ViewportControl.Provider}
  * @unrestricted
+ * @implements {UI.ListDelegate}
  */
 UI.FilteredListWidget = class extends UI.VBox {
   /**
@@ -35,9 +35,9 @@ UI.FilteredListWidget = class extends UI.VBox {
     this._progressElement = this.contentElement.createChild('div', 'filtered-list-widget-progress');
     this._progressBarElement = this._progressElement.createChild('div', 'filtered-list-widget-progress-bar');
 
-    this._filteredItems = [];
-    this._viewportControl = new UI.ViewportControl(this);
-    this._itemElementsContainer = this._viewportControl.element;
+    /** @type {!UI.ListControl<number>} */
+    this._list = new UI.ListControl(this);
+    this._itemElementsContainer = this._list.element;
     this._itemElementsContainer.classList.add('container');
     this._itemElementsContainer.addEventListener('click', this._onClick.bind(this), false);
     this.contentElement.appendChild(this._itemElementsContainer);
@@ -48,10 +48,6 @@ UI.FilteredListWidget = class extends UI.VBox {
     this._delegate.setRefreshCallback(this._itemsLoaded.bind(this));
     this._itemsLoaded();
     this._updateShowMatchingItems();
-    this._viewportControl.refresh();
-
-    /** @typedef {!Array.<!Element>} */
-    this._elements = [];
   }
 
   /**
@@ -78,7 +74,6 @@ UI.FilteredListWidget = class extends UI.VBox {
     this._dialog.setPosition(undefined, 22);
     this.show(this._dialog.element);
     this._dialog.show();
-    this._progressElementWidth = this._progressElement.offsetWidth;
   }
 
   /**
@@ -92,6 +87,7 @@ UI.FilteredListWidget = class extends UI.VBox {
    * @override
    */
   willHide() {
+    this._list.setHeightMode(UI.ListHeightMode.Measured);
     this._delegate.dispose();
     if (this._filterTimer)
       clearTimeout(this._filterTimer);
@@ -104,14 +100,12 @@ UI.FilteredListWidget = class extends UI.VBox {
     event.preventDefault();
     if (!this._delegate.itemCount())
       return;
-    var selectedIndex = this._shouldShowMatchingItems() && this._selectedIndexInFiltered < this._filteredItems.length ?
-        this._filteredItems[this._selectedIndexInFiltered] :
-        null;
+    var selectedIndexInDelegate = this._shouldShowMatchingItems() ? this._list.selectedItem() : null;
 
     // Detach dialog before allowing delegate to override focus.
     if (this._dialog)
       this._dialog.detach();
-    this._delegate.selectItemWithQuery(selectedIndex, this._value());
+    this._delegate.selectItemWithQuery(selectedIndexInDelegate, this._value());
   }
 
   _itemsLoaded() {
@@ -126,18 +120,50 @@ UI.FilteredListWidget = class extends UI.VBox {
   }
 
   /**
-   * @param {number} index
+   * @override
+   * @param {number} item
    * @return {!Element}
    */
-  _createItemElement(index) {
+  createElementForItem(item) {
     var itemElement = createElement('div');
     itemElement.className = 'filtered-list-widget-item ' + (this._renderAsTwoRows ? 'two-rows' : 'one-row');
-    itemElement._titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
-    itemElement._subtitleElement = itemElement.createChild('div', 'filtered-list-widget-subtitle');
-    itemElement._subtitleElement.textContent = '\u200B';
-    itemElement._index = index;
-    this._delegate.renderItem(index, this._value(), itemElement._titleElement, itemElement._subtitleElement);
+    var titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
+    var subtitleElement = itemElement.createChild('div', 'filtered-list-widget-subtitle');
+    subtitleElement.textContent = '\u200B';
+    this._delegate.renderItem(item, this._value(), titleElement, subtitleElement);
     return itemElement;
+  }
+
+  /**
+   * @override
+   * @param {number} item
+   * @return {number}
+   */
+  heightForItem(item) {
+    return 0;
+  }
+
+  /**
+   * @override
+   * @param {number} item
+   * @return {boolean}
+   */
+  isItemSelectable(item) {
+    return true;
+  }
+
+  /**
+   * @override
+   * @param {?number} from
+   * @param {?number} to
+   * @param {?Element} fromElement
+   * @param {?Element} toElement
+   */
+  selectedItemChanged(from, to, fromElement, toElement) {
+    if (fromElement)
+      fromElement.classList.remove('selected');
+    if (toElement)
+      toElement.classList.add('selected');
   }
 
   /**
@@ -167,8 +193,8 @@ UI.FilteredListWidget = class extends UI.VBox {
       clearTimeout(this._scoringTimer);
       delete this._scoringTimer;
 
-      if (this._refreshViewportWithCurrentResult)
-        this._refreshViewportWithCurrentResult();
+      if (this._refreshListWithCurrentResult)
+        this._refreshListWithCurrentResult();
     }
 
     this._progressBarElement.style.transform = 'scaleX(0)';
@@ -179,8 +205,6 @@ UI.FilteredListWidget = class extends UI.VBox {
 
     var filterRegex = query ? UI.FilteredListWidget.filterRegex(query) : null;
 
-    var oldSelectedAbsoluteIndex =
-        this._selectedIndexInFiltered && query ? this._filteredItems[this._selectedIndexInFiltered] : undefined;
     var filteredItems = [];
 
     var bestScores = [];
@@ -237,8 +261,7 @@ UI.FilteredListWidget = class extends UI.VBox {
         }
       }
 
-      this._refreshViewportWithCurrentResult =
-          this._refreshViewport.bind(this, bestItems, overflowItems, filteredItems, oldSelectedAbsoluteIndex);
+      this._refreshListWithCurrentResult = this._refreshList.bind(this, bestItems, overflowItems, filteredItems);
 
       // Process everything in chunks.
       if (i < this._delegate.itemCount()) {
@@ -248,7 +271,7 @@ UI.FilteredListWidget = class extends UI.VBox {
       }
       this._progressBarElement.style.transform = 'scaleX(1)';
       this._progressBarElement.classList.add('filtered-widget-progress-fade');
-      this._refreshViewportWithCurrentResult();
+      this._refreshListWithCurrentResult();
     }
   }
 
@@ -256,22 +279,13 @@ UI.FilteredListWidget = class extends UI.VBox {
    * @param {!Array<number>} bestItems
    * @param {!Array<number>} overflowItems
    * @param {!Array<number>} filteredItems
-   * @param {number|undefined} selectedAbsoluteIndex
    */
-  _refreshViewport(bestItems, overflowItems, filteredItems, selectedAbsoluteIndex) {
-    delete this._refreshViewportWithCurrentResult;
-    this._filteredItems = bestItems.concat(overflowItems).concat(filteredItems);
-
-    this._selectedIndexInFiltered = 0;
-    for (var i = 0; selectedAbsoluteIndex !== undefined && i < this._filteredItems.length; ++i) {
-      if (this._filteredItems[i] === selectedAbsoluteIndex) {
-        this._selectedIndexInFiltered = i;
-        break;
-      }
-    }
-    this._elements = [];
-    this._viewportControl.refresh();
-    this._updateSelection(this._selectedIndexInFiltered, false);
+  _refreshList(bestItems, overflowItems, filteredItems) {
+    delete this._refreshListWithCurrentResult;
+    filteredItems = [].concat(bestItems, overflowItems, filteredItems);
+    this._list.replaceAllItems(filteredItems);
+    if (filteredItems.length)
+      this._list.selectItemAtIndex(0, true);
     this._itemsFilteredForTest();
   }
 
@@ -293,38 +307,15 @@ UI.FilteredListWidget = class extends UI.VBox {
   }
 
   /**
-   * @return {number}
+   * @param {!Event} event
    */
-  _rowsPerViewport() {
-    return Math.floor(this._viewportControl.element.clientHeight / this._rowHeight);
-  }
-
   _onKeyDown(event) {
-    var newSelectedIndex = this._selectedIndexInFiltered;
+    if (this._list.onKeyDown(event)) {
+      event.consume(true);
+      return;
+    }
 
     switch (event.keyCode) {
-      case UI.KeyboardShortcut.Keys.Down.code:
-        if (++newSelectedIndex >= this._filteredItems.length)
-          newSelectedIndex = 0;
-        this._updateSelection(newSelectedIndex, true);
-        event.consume(true);
-        break;
-      case UI.KeyboardShortcut.Keys.Up.code:
-        if (--newSelectedIndex < 0)
-          newSelectedIndex = this._filteredItems.length - 1;
-        this._updateSelection(newSelectedIndex, false);
-        event.consume(true);
-        break;
-      case UI.KeyboardShortcut.Keys.PageDown.code:
-        newSelectedIndex = Math.min(newSelectedIndex + this._rowsPerViewport(), this._filteredItems.length - 1);
-        this._updateSelection(newSelectedIndex, true);
-        event.consume(true);
-        break;
-      case UI.KeyboardShortcut.Keys.PageUp.code:
-        newSelectedIndex = Math.max(newSelectedIndex - this._rowsPerViewport(), 0);
-        this._updateSelection(newSelectedIndex, false);
-        event.consume(true);
-        break;
       case UI.KeyboardShortcut.Keys.Enter.code:
         this._onEnter(event);
         break;
@@ -342,63 +333,17 @@ UI.FilteredListWidget = class extends UI.VBox {
   }
 
   /**
-   * @param {number} index
-   * @param {boolean} makeLast
+   * @param {!Event} event
    */
-  _updateSelection(index, makeLast) {
-    if (!this._filteredItems.length)
-      return;
-    if (this._selectedElement)
-      this._selectedElement.classList.remove('selected');
-    this._viewportControl.scrollItemIntoView(index, makeLast);
-    this._selectedIndexInFiltered = index;
-    this._selectedElement = this._elements[index];
-    if (this._selectedElement)
-      this._selectedElement.classList.add('selected');
-  }
-
   _onClick(event) {
-    var itemElement = event.target.enclosingNodeOrSelfWithClass('filtered-list-widget-item');
-    if (!itemElement)
+    if (!this._list.onClick(event))
       return;
 
+    event.consume(true);
     // Detach dialog before allowing delegate to override focus.
     if (this._dialog)
       this._dialog.detach();
-    this._delegate.selectItemWithQuery(itemElement._index, this._value());
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  itemCount() {
-    return this._filteredItems.length;
-  }
-
-  /**
-   * @override
-   * @param {number} index
-   * @return {number}
-   */
-  fastItemHeight(index) {
-    if (!this._rowHeight) {
-      var delegateIndex = this._filteredItems[index];
-      var element = this._createItemElement(delegateIndex);
-      this._rowHeight = UI.measurePreferredSize(element, this._itemElementsContainer).height;
-    }
-    return this._rowHeight;
-  }
-
-  /**
-   * @override
-   * @param {number} index
-   * @return {!Element}
-   */
-  itemElement(index) {
-    if (!this._elements[index])
-      this._elements[index] = this._createItemElement(this._filteredItems[index]);
-    return this._elements[index];
+    this._delegate.selectItemWithQuery(this._list.selectedItem(), this._value());
   }
 };
 
@@ -524,7 +469,7 @@ UI.FilteredListWidget.Delegate = class {
   }
 
   /**
-   * @param {number} itemIndex
+   * @param {?number} itemIndex
    * @param {string} promptValue
    */
   selectItemWithQuery(itemIndex, promptValue) {
@@ -535,7 +480,7 @@ UI.FilteredListWidget.Delegate = class {
   }
 
   /**
-   * @param {number} itemIndex
+   * @param {?number} itemIndex
    * @param {string} promptValue
    */
   selectItem(itemIndex, promptValue) {

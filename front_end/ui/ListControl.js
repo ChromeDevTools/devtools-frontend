@@ -37,10 +37,11 @@ UI.ListDelegate.prototype = {
 };
 
 /** @enum {symbol} */
-UI.ListHeightMode = {
-  Fixed: Symbol('UI.ListHeightMode.Fixed'),
-  Measured: Symbol('UI.ListHeightMode.Measured'),
-  Variable: Symbol('UI.ListHeightMode.Variable')
+UI.ListMode = {
+  Grow: Symbol('UI.ListMode.Grow'),
+  ViewportFixedItems: Symbol('UI.ListMode.ViewportFixedItems'),
+  ViewportFixedItemsMeasured: Symbol('UI.ListMode.ViewportFixedItemsMeasured'),
+  ViewportVariableItems: Symbol('UI.ListMode.ViewportVariableItems')
 };
 
 /**
@@ -49,8 +50,9 @@ UI.ListHeightMode = {
 UI.ListControl = class {
   /**
    * @param {!UI.ListDelegate<T>} delegate
+   * @param {!UI.ListMode=} mode
    */
-  constructor(delegate) {
+  constructor(delegate, mode) {
     this.element = createElement('div');
     this.element.style.overflow = 'auto';
     this._topElement = this.element.createChild('div');
@@ -60,7 +62,6 @@ UI.ListControl = class {
     this._renderedHeight = 0;
     this._topHeight = 0;
     this._bottomHeight = 0;
-    this._clearViewport();
 
     /** @type {!Array<T>} */
     this._items = [];
@@ -76,25 +77,17 @@ UI.ListControl = class {
       if (this.onClick(event))
         event.consume(true);
     };
+    this._boundScroll = event => {
+      this._updateViewport(this.element.scrollTop, this.element.offsetHeight);
+    };
 
     this._delegate = delegate;
-    this._heightMode = UI.ListHeightMode.Measured;
+    this._mode = mode || UI.ListMode.ViewportFixedItemsMeasured;
     this._fixedHeight = 0;
     this._variableOffsets = new Int32Array(0);
-
-    this.element.addEventListener('scroll', this._onScroll.bind(this), false);
-  }
-
-  /**
-   * @param {!UI.ListHeightMode} mode
-   */
-  setHeightMode(mode) {
-    this._heightMode = mode;
-    this._fixedHeight = 0;
-    if (this._items.length) {
-      this._itemToElement.clear();
-      this._invalidate(0, this._items.length, this._items.length);
-    }
+    this._clearContents();
+    if (this._mode !== UI.ListMode.Grow)
+      this.element.addEventListener('scroll', this._boundScroll, false);
   }
 
   /**
@@ -181,9 +174,9 @@ UI.ListControl = class {
     if (this._selectedIndex >= to) {
       this._selectedIndex += items.length - (to - from);
     } else if (this._selectedIndex >= from) {
-      var index = this._findClosestSelectable(from + items.length, +1, 0, false);
+      var index = this._findFirstSelectable(from + items.length, +1, false);
       if (index === -1)
-        index = this._findClosestSelectable(from - 1, -1, 0, false);
+        index = this._findFirstSelectable(from - 1, -1, false);
       this._select(index, oldSelectedItem, oldSelectedElement);
     }
   }
@@ -204,18 +197,33 @@ UI.ListControl = class {
   }
 
   viewportResized() {
-    // TODO(dgozman): try to keep the visible scrollTop the same
-    // when invalidating after firstIndex but before first visible element.
+    if (this._mode === UI.ListMode.Grow)
+      return;
+    // TODO(dgozman): try to keep visible scrollTop the same.
     var scrollTop = this.element.scrollTop;
     var viewportHeight = this.element.offsetHeight;
     this._clearViewport();
     this._updateViewport(Number.constrain(scrollTop, 0, this._totalHeight() - viewportHeight), viewportHeight);
   }
 
+  fixedHeightChanged() {
+    if (this._mode !== UI.ListMode.ViewportFixedItemsMeasured && this._mode !== UI.ListMode.ViewportFixedItems)
+      throw 'Only supported in fixed height items modes';
+    this._fixedHeight = 0;
+    if (this._items.length) {
+      this._itemToElement.clear();
+      this._invalidate(0, this._items.length, this._items.length);
+    }
+  }
+
   /**
    * @param {number} index
    */
   scrollItemAtIndexIntoView(index) {
+    if (this._mode === UI.ListMode.Grow) {
+      this._elementAtIndex(index).scrollIntoViewIfNeeded(false);
+      return;
+    }
     var top = this._offsetAtIndex(index);
     var bottom = this._offsetAtIndex(index + 1);
     var scrollTop = this.element.scrollTop;
@@ -260,22 +268,24 @@ UI.ListControl = class {
     var index = -1;
     switch (event.key) {
       case 'ArrowUp':
-        index = this._selectedIndex === -1 ? this._findClosestSelectable(this._items.length - 1, -1, 0, true) :
-                                             this._findClosestSelectable(this._selectedIndex, -1, 1, true);
+        index = this._selectedIndex === -1 ? this._items.length - 1 : this._selectedIndex - 1;
+        index = this._findFirstSelectable(index, -1, true);
         break;
       case 'ArrowDown':
-        index = this._selectedIndex === -1 ? this._findClosestSelectable(0, +1, 0, true) :
-                                             this._findClosestSelectable(this._selectedIndex, +1, 1, true);
+        index = this._selectedIndex === -1 ? 0 : this._selectedIndex + 1;
+        index = this._findFirstSelectable(index, +1, true);
         break;
       case 'PageUp':
+        if (this._mode === UI.ListMode.Grow)
+          return false;
         index = this._selectedIndex === -1 ? this._items.length - 1 : this._selectedIndex;
-        // Compensate for zoom rounding errors with -1.
-        index = this._findClosestSelectable(index, -1, this.element.offsetHeight - 1, false);
+        index = this._findPageSelectable(index, -1);
         break;
       case 'PageDown':
+        if (this._mode === UI.ListMode.Grow)
+          return false;
         index = this._selectedIndex === -1 ? 0 : this._selectedIndex;
-        // Compensate for zoom rounding errors with -1.
-        index = this._findClosestSelectable(index, +1, this.element.offsetHeight - 1, false);
+        index = this._findPageSelectable(index, +1);
         break;
       default:
         return false;
@@ -296,11 +306,9 @@ UI.ListControl = class {
     var node = event.target;
     while (node && node.parentNodeOrShadowHost() !== this.element)
       node = node.parentNodeOrShadowHost();
-    if (!node || node.nodeType !== Node.ELEMENT_NODE)
+    if (!node)
       return false;
-    var offset = /** @type {!Element} */ (node).getBoundingClientRect().top;
-    offset -= this.element.getBoundingClientRect().top;
-    var index = this._indexAtOffset(offset + this.element.scrollTop);
+    var index = this._items.findIndex(item => this._itemToElement.get(item) === node);
     if (index === -1 || !this._delegate.isItemSelectable(this._items[index]))
       return false;
     this._select(index);
@@ -319,9 +327,11 @@ UI.ListControl = class {
    * @return {number}
    */
   _indexAtOffset(offset) {
+    if (this._mode === UI.ListMode.Grow)
+      throw 'There should be no offset conversions in grow mode';
     if (!this._items.length || offset < 0)
       return 0;
-    if (this._heightMode === UI.ListHeightMode.Variable) {
+    if (this._mode === UI.ListMode.ViewportVariableItems) {
       return Math.min(
           this._items.length - 1, this._variableOffsets.lowerBound(offset, undefined, 0, this._items.length));
     }
@@ -349,9 +359,11 @@ UI.ListControl = class {
    * @return {number}
    */
   _offsetAtIndex(index) {
+    if (this._mode === UI.ListMode.Grow)
+      throw 'There should be no offset conversions in grow mode';
     if (!this._items.length)
       return 0;
-    if (this._heightMode === UI.ListHeightMode.Variable)
+    if (this._mode === UI.ListMode.ViewportVariableItems)
       return this._variableOffsets[index];
     if (!this._fixedHeight)
       this._measureHeight();
@@ -359,7 +371,7 @@ UI.ListControl = class {
   }
 
   _measureHeight() {
-    if (this._heightMode === UI.ListHeightMode.Measured)
+    if (this._mode === UI.ListMode.ViewportFixedItemsMeasured)
       this._fixedHeight = UI.measurePreferredSize(this._elementAtIndex(0), this.element).height;
     else
       this._fixedHeight = this._delegate.heightForItem(this._items[0]);
@@ -384,41 +396,45 @@ UI.ListControl = class {
   /**
    * @param {number} index
    * @param {number} direction
-   * @param {number} minSkippedHeight
    * @param {boolean} canWrap
    * @return {number}
    */
-  _findClosestSelectable(index, direction, minSkippedHeight, canWrap) {
+  _findFirstSelectable(index, direction, canWrap) {
     var length = this._items.length;
     if (!length)
       return -1;
-
-    var lastSelectable = -1;
-    var start = -1;
-    var startOffset = this._offsetAtIndex(index);
-    while (true) {
+    for (var step = 0; step <= length; step++) {
       if (index < 0 || index >= length) {
         if (!canWrap)
-          return lastSelectable;
+          return -1;
         index = (index + length) % length;
       }
+      if (this._delegate.isItemSelectable(this._items[index]))
+        return index;
+      index += direction;
+    }
+    return -1;
+  }
 
-      // Handle full wrap-around.
-      if (index === start)
-        return lastSelectable;
-      if (start === -1) {
-        start = index;
-        startOffset = this._offsetAtIndex(index);
-      }
-
+  /**
+   * @param {number} index
+   * @param {number} direction
+   * @return {number}
+   */
+  _findPageSelectable(index, direction) {
+    var lastSelectable = -1;
+    var startOffset = this._offsetAtIndex(index);
+    // Compensate for zoom rounding errors with -1.
+    var viewportHeight = this.element.offsetHeight - 1;
+    while (index >= 0 && index < this._items.length) {
       if (this._delegate.isItemSelectable(this._items[index])) {
-        if (Math.abs(this._offsetAtIndex(index) - startOffset) >= minSkippedHeight)
+        if (Math.abs(this._offsetAtIndex(index) - startOffset) >= viewportHeight)
           return index;
         lastSelectable = index;
       }
-
       index += direction;
     }
+    return lastSelectable;
   }
 
   /**
@@ -443,7 +459,12 @@ UI.ListControl = class {
    * @param {number} inserted
    */
   _invalidate(from, to, inserted) {
-    if (this._heightMode === UI.ListHeightMode.Variable) {
+    if (this._mode === UI.ListMode.Grow) {
+      this._invalidateGrowMode(from, to - from, inserted);
+      return;
+    }
+
+    if (this._mode === UI.ListMode.ViewportVariableItems) {
       this._reallocateVariableOffsets(this._items.length + 1, from + 1);
       for (var i = from + 1; i <= this._items.length; i++)
         this._variableOffsets[i] = this._variableOffsets[i - 1] + this._delegate.heightForItem(this._items[i - 1]);
@@ -480,27 +501,45 @@ UI.ListControl = class {
       return;
     }
 
-    // TODO(dgozman): try to keep the visible scrollTop the same
+    // TODO(dgozman): try to keep visible scrollTop the same
     // when invalidating after firstIndex but before first visible element.
     this._clearViewport();
     this._updateViewport(Number.constrain(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
   }
 
+  /**
+   * @param {number} start
+   * @param {number} remove
+   * @param {number} add
+   */
+  _invalidateGrowMode(start, remove, add) {
+    var startElement = this._topElement;
+    for (var index = 0; index < start; index++)
+      startElement = startElement.nextElementSibling;
+    while (remove--)
+      startElement.nextElementSibling.remove();
+    while (add--)
+      this.element.insertBefore(this._elementAtIndex(start + add), startElement.nextElementSibling);
+  }
+
   _clearViewport() {
+    if (this._mode === UI.ListMode.Grow)
+      throw 'There should be no viewport updates in grow mode';
     this._firstIndex = 0;
     this._lastIndex = 0;
     this._renderedHeight = 0;
     this._topHeight = 0;
     this._bottomHeight = 0;
+    this._clearContents();
+  }
+
+  _clearContents() {
+    // Note: this method should not force layout. Be careful.
     this._topElement.style.height = '0';
     this._bottomElement.style.height = '0';
     this.element.removeChildren();
     this.element.appendChild(this._topElement);
     this.element.appendChild(this._bottomElement);
-  }
-
-  _onScroll() {
-    this._updateViewport(this.element.scrollTop, this.element.offsetHeight);
   }
 
   /**
@@ -509,6 +548,8 @@ UI.ListControl = class {
    */
   _updateViewport(scrollTop, viewportHeight) {
     // Note: this method should not force layout. Be careful.
+    if (this._mode === UI.ListMode.Grow)
+      throw 'There should be no viewport updates in grow mode';
 
     var totalHeight = this._totalHeight();
     if (!totalHeight) {

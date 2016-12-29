@@ -36,7 +36,7 @@ UI.FilteredListWidget = class extends UI.VBox {
     this._progressBarElement = this._progressElement.createChild('div', 'filtered-list-widget-progress-bar');
 
     /** @type {!UI.ListControl<number>} */
-    this._list = new UI.ListControl(this);
+    this._list = new UI.ListControl(this, UI.ListMode.ViewportFixedItemsMeasured);
     this._itemElementsContainer = this._list.element;
     this._itemElementsContainer.classList.add('container');
     this._itemElementsContainer.addEventListener('click', this._onClick.bind(this), false);
@@ -86,8 +86,14 @@ UI.FilteredListWidget = class extends UI.VBox {
   /**
    * @override
    */
+  wasShown() {
+    this._list.fixedHeightChanged();
+  }
+
+  /**
+   * @override
+   */
   willHide() {
-    this._list.setHeightMode(UI.ListHeightMode.Measured);
     this._delegate.dispose();
     if (this._filterTimer)
       clearTimeout(this._filterTimer);

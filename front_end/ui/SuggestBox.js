@@ -62,7 +62,7 @@ UI.SuggestBox = class {
     this._container = createElementWithClass('div', 'suggest-box-container');
     this._rowHeight = 17;
     /** @type {!UI.ListControl<!UI.SuggestBox.Suggestion>} */
-    this._list = new UI.ListControl(this);
+    this._list = new UI.ListControl(this, UI.ListMode.ViewportFixedItems);
     this._element = this._list.element;
     this._element.classList.add('suggest-box');
     this._container.appendChild(this._element);
@@ -385,8 +385,7 @@ UI.SuggestBox = class {
       this._show();
       this._updateBoxPosition(anchorBox, completions.length);
       this._updateWidth(completions);
-
-      this._list.setHeightMode(UI.ListHeightMode.Fixed);
+      this._list.fixedHeightChanged();
       this._list.replaceAllItems(completions);
 
       var highestPriorityItem = -1;

@@ -59,9 +59,8 @@ UI.ListControl = class {
     this._lastIndex = 0;
     this._renderedHeight = 0;
     this._topHeight = 0;
-    this._topElement.style.height = '0';
     this._bottomHeight = 0;
-    this._bottomElement.style.height = '0';
+    this._clearViewport();
 
     /** @type {!Array<T>} */
     this._items = [];
@@ -81,6 +80,7 @@ UI.ListControl = class {
     this._delegate = delegate;
     this._heightMode = UI.ListHeightMode.Measured;
     this._fixedHeight = 0;
+    this._variableOffsets = new Int32Array(0);
 
     this.element.addEventListener('scroll', this._onScroll.bind(this), false);
   }
@@ -89,13 +89,11 @@ UI.ListControl = class {
    * @param {!UI.ListHeightMode} mode
    */
   setHeightMode(mode) {
-    if (mode === UI.ListHeightMode.Variable)
-      throw 'Variable height is not supported (yet)';
     this._heightMode = mode;
     this._fixedHeight = 0;
     if (this._items.length) {
       this._itemToElement.clear();
-      this._refresh();
+      this._invalidate(0, this._items.length, this._items.length);
     }
   }
 
@@ -206,7 +204,12 @@ UI.ListControl = class {
   }
 
   viewportResized() {
-    this._refresh();
+    // TODO(dgozman): try to keep the visible scrollTop the same
+    // when invalidating after firstIndex but before first visible element.
+    var scrollTop = this.element.scrollTop;
+    var viewportHeight = this.element.offsetHeight;
+    this._clearViewport();
+    this._updateViewport(Number.constrain(scrollTop, 0, this._totalHeight() - viewportHeight), viewportHeight);
   }
 
   /**
@@ -216,11 +219,11 @@ UI.ListControl = class {
     var top = this._offsetAtIndex(index);
     var bottom = this._offsetAtIndex(index + 1);
     var scrollTop = this.element.scrollTop;
-    var height = this.element.offsetHeight;
+    var viewportHeight = this.element.offsetHeight;
     if (top < scrollTop)
-      this._update(top, height);
-    else if (bottom > scrollTop + height)
-      this._update(bottom - height, height);
+      this._updateViewport(top, viewportHeight);
+    else if (bottom > scrollTop + viewportHeight)
+      this._updateViewport(bottom - viewportHeight, viewportHeight);
   }
 
   /**
@@ -318,8 +321,10 @@ UI.ListControl = class {
   _indexAtOffset(offset) {
     if (!this._items.length || offset < 0)
       return 0;
-    if (this._heightMode === UI.ListHeightMode.Variable)
-      throw 'Variable height is not supported (yet)';
+    if (this._heightMode === UI.ListHeightMode.Variable) {
+      return Math.min(
+          this._items.length - 1, this._variableOffsets.lowerBound(offset, undefined, 0, this._items.length));
+    }
     if (!this._fixedHeight)
       this._measureHeight();
     return Math.min(this._items.length - 1, Math.floor(offset / this._fixedHeight));
@@ -347,7 +352,7 @@ UI.ListControl = class {
     if (!this._items.length)
       return 0;
     if (this._heightMode === UI.ListHeightMode.Variable)
-      throw 'Variable height is not supported (yet)';
+      return this._variableOffsets[index];
     if (!this._fixedHeight)
       this._measureHeight();
     return index * this._fixedHeight;
@@ -417,19 +422,43 @@ UI.ListControl = class {
   }
 
   /**
+   * @param {number} length
+   * @param {number} copyTo
+   */
+  _reallocateVariableOffsets(length, copyTo) {
+    if (this._variableOffsets.length < length) {
+      var variableOffsets = new Int32Array(Math.max(length, this._variableOffsets.length * 2));
+      variableOffsets.set(this._variableOffsets.slice(0, copyTo), 0);
+      this._variableOffsets = variableOffsets;
+    } else if (this._variableOffsets.length >= 2 * length) {
+      var variableOffsets = new Int32Array(length);
+      variableOffsets.set(this._variableOffsets.slice(0, copyTo), 0);
+      this._variableOffsets = variableOffsets;
+    }
+  }
+
+  /**
    * @param {number} from
    * @param {number} to
    * @param {number} inserted
    */
   _invalidate(from, to, inserted) {
+    if (this._heightMode === UI.ListHeightMode.Variable) {
+      this._reallocateVariableOffsets(this._items.length + 1, from + 1);
+      for (var i = from + 1; i <= this._items.length; i++)
+        this._variableOffsets[i] = this._variableOffsets[i - 1] + this._delegate.heightForItem(this._items[i - 1]);
+    }
+
     var viewportHeight = this.element.offsetHeight;
     var totalHeight = this._totalHeight();
+    var scrollTop = this.element.scrollTop;
+
     if (this._renderedHeight < viewportHeight || totalHeight < viewportHeight) {
-      this._refresh();
+      this._clearViewport();
+      this._updateViewport(Number.constrain(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
       return;
     }
 
-    var scrollTop = this.element.scrollTop;
     var heightDelta = totalHeight - this._renderedHeight;
     if (to <= this._firstIndex) {
       var topHeight = this._topHeight + heightDelta;
@@ -453,32 +482,32 @@ UI.ListControl = class {
 
     // TODO(dgozman): try to keep the visible scrollTop the same
     // when invalidating after firstIndex but before first visible element.
-    this._refresh();
+    this._clearViewport();
+    this._updateViewport(Number.constrain(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
   }
 
-  _refresh() {
-    var viewportHeight = this.element.offsetHeight;
-    var scrollTop = Number.constrain(this.element.scrollTop, 0, this._totalHeight() - viewportHeight);
+  _clearViewport() {
     this._firstIndex = 0;
     this._lastIndex = 0;
     this._renderedHeight = 0;
     this._topHeight = 0;
     this._bottomHeight = 0;
+    this._topElement.style.height = '0';
+    this._bottomElement.style.height = '0';
     this.element.removeChildren();
     this.element.appendChild(this._topElement);
     this.element.appendChild(this._bottomElement);
-    this._update(scrollTop, viewportHeight);
   }
 
   _onScroll() {
-    this._update(this.element.scrollTop, this.element.offsetHeight);
+    this._updateViewport(this.element.scrollTop, this.element.offsetHeight);
   }
 
   /**
    * @param {number} scrollTop
    * @param {number} viewportHeight
    */
-  _update(scrollTop, viewportHeight) {
+  _updateViewport(scrollTop, viewportHeight) {
     // Note: this method should not force layout. Be careful.
 
     var totalHeight = this._totalHeight();

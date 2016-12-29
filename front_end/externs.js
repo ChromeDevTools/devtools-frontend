@@ -91,19 +91,23 @@ Array.prototype.sortNumbers = function() {};
 /**
  * @param {!S} object
  * @param {function(!S,!T):number=} comparator
+ * @param {number=} left
+ * @param {number=} right
  * @return {number}
  * @this {Array.<T>}
  * @template S
  */
-Array.prototype.lowerBound = function(object, comparator) {};
+Array.prototype.lowerBound = function(object, comparator, left, right) {};
 /**
  * @param {!S} object
  * @param {function(!S,!T):number=} comparator
+ * @param {number=} left
+ * @param {number=} right
  * @return {number}
  * @this {Array.<T>}
  * @template S
  */
-Array.prototype.upperBound = function(object, comparator) {};
+Array.prototype.upperBound = function(object, comparator, left, right) {};
 /**
  * @param {!S} value
  * @param {function(!S,!T):number} comparator
@@ -181,6 +185,15 @@ Array.prototype.intersectOrdered = function(array, comparator) {};
  * @template T
  */
 Array.prototype.mergeOrdered = function(array, comparator) {};
+
+/**
+ * @param {number} object
+ * @param {function(number, number):number=} comparator
+ * @param {number=} left
+ * @param {number=} right
+ * @return {number}
+ */
+Int32Array.prototype.lowerBound = function(object, comparator, left, right) {};
 
 // File System API
 /**

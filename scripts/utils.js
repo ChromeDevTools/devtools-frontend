@@ -78,6 +78,10 @@ function copy(src, dest)
 function copyRecursive(src, dest)
 {
     try {
+        if (isFile(src)) {
+            copy(src, dest);
+            return;
+        }
         var targetDirPath = path.resolve(dest, path.basename(src));
         if (!fs.existsSync(targetDirPath))
             fs.mkdirSync(targetDirPath);
@@ -102,6 +106,10 @@ function removeRecursive(filePath)
 {
     try {
         if (fs.existsSync(filePath)) {
+            if (isFile(filePath)) {
+                fs.unlinkSync(filePath);
+                return;
+            }
             var files = fs.readdirSync(filePath);
             for (var i = 0; i < files.length; i++) {
                 var childPath = path.resolve(filePath, files[i]);

@@ -30,8 +30,6 @@ var BLINK_TEST_PATH = path.resolve(CHROMIUM_SRC_PATH, "blink", "tools", "run_lay
 var CACHE_PATH = path.resolve(__dirname, "..", ".test_cache");
 var SOURCE_PATH = path.resolve(__dirname, "..", "front_end");
 
-var useDebugDevtools = true;
-
 function main(){
     var hasUserCompiledContentShell = utils.isFile(getContentShellBinaryPath(RELEASE_PATH));
     if (!IS_FETCH_CONTENT_SHELL && hasUserCompiledContentShell) {
@@ -40,9 +38,7 @@ function main(){
             console.log("Compiling devtools frontend");
             shell(`ninja -C ${RELEASE_PATH} devtools_frontend_resources`);
         }
-        if (!IS_DEBUG_ENABLED)
-            useDebugDevtools = false;
-        setupAndTest(outDir);
+        runTests(outDir, false);
         return;
     }
     if (!utils.isDir(CACHE_PATH))
@@ -62,16 +58,35 @@ main();
 function onUploadedCommitPosition(commitPosition)
 {
     var contentShellDirPath = path.resolve(CACHE_PATH, commitPosition, "out", "Release");
+    var contentShellResourcesPath = path.resolve(contentShellDirPath, "resources");
+    var contentShellPath = path.resolve(CACHE_PATH, commitPosition, "out");
+
     var hasCachedContentShell = utils.isFile(getContentShellBinaryPath(contentShellDirPath));
     if (hasCachedContentShell) {
-        var contentShellPath = path.resolve(CACHE_PATH, commitPosition, "out");
         console.log(`Using cached content shell at: ${contentShellPath}`);
-        return setupAndTest(contentShellPath);
+        copyFrontend(contentShellResourcesPath);
+        return runTests(contentShellPath, true);
     }
     return prepareContentShellDirectory(commitPosition)
         .then(downloadContentShell)
         .then(extractContentShell)
-        .then(setupAndTest);
+        .then(() => copyFrontend(contentShellResourcesPath))
+        .then(() => runTests(contentShellPath, true));
+}
+
+function copyFrontend(contentShellResourcesPath)
+{
+    var devtoolsResourcesPath = path.resolve(contentShellResourcesPath, "inspector");
+    var copiedFrontendPath = path.resolve(devtoolsResourcesPath, "front_end");
+    var debugFrontendPath = path.resolve(devtoolsResourcesPath, "debug");
+    var inspectorBackendCommandsPath = path.resolve(devtoolsResourcesPath, "InspectorBackendCommands.js");
+    var supportedCSSPropertiesPath = path.resolve(devtoolsResourcesPath, "SupportedCSSProperties.js");
+    utils.removeRecursive(copiedFrontendPath);
+    utils.removeRecursive(debugFrontendPath);
+    utils.copyRecursive(SOURCE_PATH, devtoolsResourcesPath);
+    fs.renameSync(copiedFrontendPath, debugFrontendPath);
+    utils.copy(inspectorBackendCommandsPath, debugFrontendPath);
+    utils.copy(supportedCSSPropertiesPath, debugFrontendPath);
 }
 
 function getPlatform()
@@ -209,23 +224,7 @@ function getContentShellBinaryPath(dirPath)
     }
 }
 
-function setupAndTest(buildDirectoryPath)
-{
-    var contentShellResourcesPath = path.resolve(buildDirectoryPath, "Release", "resources");
-    copyMetadata(contentShellResourcesPath);
-    runTests(buildDirectoryPath);
-}
-
-function copyMetadata(contentShellResourcesPath)
-{
-    var devtoolsResourcesPath = path.resolve(contentShellResourcesPath, "inspector");
-    var inspectorBackendCommandsPath = path.resolve(devtoolsResourcesPath, "InspectorBackendCommands.js");
-    var supportedCSSPropertiesPath = path.resolve(devtoolsResourcesPath, "SupportedCSSProperties.js");
-    utils.copy(inspectorBackendCommandsPath, SOURCE_PATH);
-    utils.copy(supportedCSSPropertiesPath, SOURCE_PATH);
-}
-
-function runTests(buildDirectoryPath)
+function runTests(buildDirectoryPath, useDebugDevtools)
 {
     var testArgs = getInspectorTests().concat([
         "--no-pixel-tests",
@@ -234,7 +233,6 @@ function runTests(buildDirectoryPath)
     ]);
     if (useDebugDevtools) {
         testArgs.push("--additional-driver-flag=--debug-devtools");
-        testArgs.push(`--additional-driver-flag=--custom-devtools-frontend=${SOURCE_PATH}`);
     }
     if (IS_DEBUG_ENABLED) {
         testArgs.push("--additional-driver-flag=--remote-debugging-port=9222");

@@ -1240,6 +1240,10 @@ Elements.StylePropertiesSection = class {
     if (!event.target.isComponentSelectionCollapsed())
       return;
 
+    if (this.propertiesTreeOutline.element.shadowRoot.firstChild &&
+        this.propertiesTreeOutline.element.shadowRoot.firstChild.isComponentSelectionCollapsed())
+      return;
+
     if (this._checkWillCancelEditing())
       return;
 

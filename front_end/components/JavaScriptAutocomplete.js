@@ -76,8 +76,9 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
 
   var fufill;
   var promise = new Promise(x => fufill = x);
-  if (!expressionString && executionContext.debuggerModel.selectedCallFrame())
-    variableNamesInScopes(executionContext.debuggerModel.selectedCallFrame(), receivedPropertyNames);
+  var selectedFrame = executionContext.debuggerModel.selectedCallFrame();
+  if (!expressionString && selectedFrame)
+    variableNamesInScopes(selectedFrame, receivedPropertyNames);
   else
     executionContext.evaluate(expressionString, 'completion', true, true, false, false, false, evaluated);
 

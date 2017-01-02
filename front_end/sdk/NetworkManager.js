@@ -196,6 +196,7 @@ SDK.NetworkDispatcher = class {
     networkRequest.requestFormData = request.postData;
     networkRequest.setInitialPriority(request.initialPriority);
     networkRequest.mixedContentType = request.mixedContentType || Protocol.Network.RequestMixedContentType.None;
+    networkRequest.setReferrerPolicy(request.referrerPolicy);
   }
 
   /**

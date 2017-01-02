@@ -85,6 +85,9 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
 
     this._remoteAddress = '';
 
+    /** @type {?Protocol.Network.RequestReferrerPolicy} */
+    this._referrerPolicy = null;
+
     /** @type {!Protocol.Security.SecurityState} */
     this._securityState = Protocol.Security.SecurityState.Unknown;
     /** @type {?Protocol.Network.SecurityDetails} */
@@ -181,6 +184,20 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
    */
   remoteAddress() {
     return this._remoteAddress;
+  }
+
+  /**
+   * @param {!Protocol.Network.RequestReferrerPolicy} referrerPolicy
+   */
+  setReferrerPolicy(referrerPolicy) {
+    this._referrerPolicy = referrerPolicy;
+  }
+
+  /**
+   * @return {?Protocol.Network.RequestReferrerPolicy}
+   */
+  referrerPolicy() {
+    return this._referrerPolicy;
   }
 
   /**

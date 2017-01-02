@@ -60,6 +60,8 @@ Network.RequestHeadersView = class extends UI.VBox {
     this._statusCodeItem = generalCategory.createLeaf();
     this._remoteAddressItem = generalCategory.createLeaf();
     this._remoteAddressItem.hidden = true;
+    this._referrerPolicyItem = generalCategory.createLeaf();
+    this._referrerPolicyItem.hidden = true;
 
     this._responseHeadersCategory = new Network.RequestHeadersView.Category(root, 'responseHeaders', '');
     this._requestHeadersCategory = new Network.RequestHeadersView.Category(root, 'requestHeaders', '');
@@ -85,6 +87,7 @@ Network.RequestHeadersView = class extends UI.VBox {
     this._refreshResponseHeaders();
     this._refreshHTTPInformation();
     this._refreshRemoteAddress();
+    this._refreshReferrerPolicy();
   }
 
   /**
@@ -445,6 +448,14 @@ Network.RequestHeadersView = class extends UI.VBox {
     treeElement.hidden = !remoteAddress;
     if (remoteAddress)
       treeElement.title = this._formatHeader(Common.UIString('Remote Address'), remoteAddress);
+  }
+
+  _refreshReferrerPolicy() {
+    var referrerPolicy = this._request.referrerPolicy();
+    var treeElement = this._referrerPolicyItem;
+    treeElement.hidden = !referrerPolicy;
+    if (referrerPolicy)
+      treeElement.title = this._formatHeader(Common.UIString('Referrer Policy'), referrerPolicy);
   }
 
   /**

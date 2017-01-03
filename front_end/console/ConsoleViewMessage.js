@@ -463,7 +463,7 @@ Console.ConsoleViewMessage = class {
     switch (type) {
       case 'array':
       case 'typedarray':
-        element = this._formatParameterAsArray(output);
+        element = this._formatParameterAsObject(output, includePreview);
         break;
       case 'error':
         element = this._formatParameterAsError(output);
@@ -615,82 +615,6 @@ Console.ConsoleViewMessage = class {
   }
 
   _formattedParameterAsNodeForTest() {
-  }
-
-  /**
-   * @param {!SDK.RemoteObject} array
-   * @return {!Element}
-   */
-  _formatParameterAsArray(array) {
-    var usePrintedArrayFormat = this._message.type !== SDK.ConsoleMessage.MessageType.DirXML &&
-        this._message.type !== SDK.ConsoleMessage.MessageType.Result;
-    var isLongArray = array.arrayLength() > 100;
-    if (usePrintedArrayFormat || isLongArray)
-      return this._formatParameterAsObject(array, usePrintedArrayFormat || !isLongArray);
-    var result = createElement('span');
-    array.getAllProperties(false, printArrayResult.bind(this));
-    return result;
-
-    /**
-     * @param {?Array.<!SDK.RemoteObjectProperty>} properties
-     * @this {!Console.ConsoleViewMessage}
-     */
-    function printArrayResult(properties) {
-      if (!properties) {
-        result.appendChild(this._formatParameterAsObject(array, false));
-        return;
-      }
-
-      var titleElement = createElementWithClass('span', 'console-object-preview');
-      if (array.subtype === 'typedarray')
-        titleElement.createTextChild(array.description + ' ');
-      var elements = {};
-      for (var i = 0; i < properties.length; ++i) {
-        var property = properties[i];
-        var name = property.name;
-        if (isNaN(name))
-          continue;
-        if (property.getter)
-          elements[name] = this._formatAsAccessorProperty(array, [name], true);
-        else if (property.value)
-          elements[name] = this._formatAsArrayEntry(property.value);
-      }
-
-      titleElement.createTextChild('[');
-      var lastNonEmptyIndex = -1;
-
-      function appendUndefined(titleElement, index) {
-        if (index - lastNonEmptyIndex <= 1)
-          return;
-        var span = titleElement.createChild('span', 'object-value-undefined');
-        span.textContent = Common.UIString('undefined × %d', index - lastNonEmptyIndex - 1);
-      }
-
-      var length = array.arrayLength();
-      for (var i = 0; i < length; ++i) {
-        var element = elements[i];
-        if (!element)
-          continue;
-
-        if (i - lastNonEmptyIndex > 1) {
-          appendUndefined(titleElement, i);
-          titleElement.createTextChild(', ');
-        }
-
-        titleElement.appendChild(element);
-        lastNonEmptyIndex = i;
-        if (i < length - 1)
-          titleElement.createTextChild(', ');
-      }
-      appendUndefined(titleElement, length);
-
-      titleElement.createTextChild(']');
-
-      var section = new Components.ObjectPropertiesSection(array, titleElement, this._linkifier);
-      section.element.classList.add('console-view-object-properties-section');
-      section.enableContextMenu();
-      result.appendChild(section.element);
-    }
   }
 
   /**

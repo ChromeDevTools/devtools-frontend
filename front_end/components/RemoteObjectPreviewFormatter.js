@@ -6,6 +6,19 @@
  */
 Components.RemoteObjectPreviewFormatter = class {
   /**
+   * @param {!Protocol.Runtime.PropertyPreview} a
+   * @param {!Protocol.Runtime.PropertyPreview} b
+   * @return {number}
+   */
+  static _objectPropertyComparator(a, b) {
+    if (a.type !== 'function' && b.type === 'function')
+      return -1;
+    if (a.type === 'function' && b.type !== 'function')
+      return 1;
+    return 0;
+  }
+
+  /**
    * @param {!Element} parentElement
    * @param {!Protocol.Runtime.ObjectPreview} preview
    */
@@ -47,20 +60,8 @@ Components.RemoteObjectPreviewFormatter = class {
    * @param {!Protocol.Runtime.ObjectPreview} preview
    */
   _appendObjectPropertiesPreview(parentElement, preview) {
-    var properties = preview.properties.filter(p => p.type !== 'accessor').stableSort(compareFunctionsLast);
-
-    /**
-     * @param {!Protocol.Runtime.PropertyPreview} a
-     * @param {!Protocol.Runtime.PropertyPreview} b
-     */
-    function compareFunctionsLast(a, b) {
-      if (a.type !== 'function' && b.type === 'function')
-        return -1;
-      if (a.type === 'function' && b.type !== 'function')
-        return 1;
-      return 0;
-    }
-
+    var properties = preview.properties.filter(p => p.type !== 'accessor')
+                         .stableSort(Components.RemoteObjectPreviewFormatter._objectPropertyComparator);
     for (var i = 0; i < properties.length; ++i) {
       if (i > 0)
         parentElement.createTextChild(', ');
@@ -78,19 +79,17 @@ Components.RemoteObjectPreviewFormatter = class {
    */
   _appendArrayPropertiesPreview(parentElement, preview) {
     var arrayLength = SDK.RemoteObject.arrayLength(preview);
-    var properties = preview.properties;
-    properties = properties.slice().stableSort(compareIndexesFirst);
+    var indexProperties = preview.properties.filter(p => toArrayIndex(p.name) !== -1).stableSort(arrayEntryComparator);
+    var otherProperties = preview.properties.filter(p => toArrayIndex(p.name) === -1)
+                              .stableSort(Components.RemoteObjectPreviewFormatter._objectPropertyComparator);
 
     /**
      * @param {!Protocol.Runtime.PropertyPreview} a
      * @param {!Protocol.Runtime.PropertyPreview} b
+     * @return {number}
      */
-    function compareIndexesFirst(a, b) {
-      var index1 = toArrayIndex(a.name);
-      var index2 = toArrayIndex(b.name);
-      if (index1 < 0)
-        return index2 < 0 ? 0 : 1;
-      return index2 < 0 ? -1 : index1 - index2;
+    function arrayEntryComparator(a, b) {
+      return toArrayIndex(a.name) - toArrayIndex(b.name);
     }
 
     /**
@@ -104,16 +103,53 @@ Components.RemoteObjectPreviewFormatter = class {
       return -1;
     }
 
-    for (var i = 0; i < properties.length; ++i) {
-      if (i > 0)
+    // Gaps can be shown when all properties are guaranteed to be in the preview.
+    var canShowGaps = !preview.overflow;
+    var lastNonEmptyArrayIndex = -1;
+    var elementsAdded = false;
+    for (var i = 0; i < indexProperties.length; ++i) {
+      if (elementsAdded)
         parentElement.createTextChild(', ');
 
-      var property = properties[i];
-      if (property.name !== String(i) || i >= arrayLength) {
+      var property = indexProperties[i];
+      var index = toArrayIndex(property.name);
+      if (canShowGaps && index - lastNonEmptyArrayIndex > 1) {
+        appendUndefined(index);
+        parentElement.createTextChild(', ');
+      }
+      if (!canShowGaps && i !== index) {
         parentElement.appendChild(this._renderDisplayName(property.name));
         parentElement.createTextChild(': ');
       }
       parentElement.appendChild(this._renderPropertyPreviewOrAccessor([property]));
+      lastNonEmptyArrayIndex = index;
+      elementsAdded = true;
+    }
+
+    if (canShowGaps && arrayLength - lastNonEmptyArrayIndex > 1) {
+      if (elementsAdded)
+        parentElement.createTextChild(', ');
+      appendUndefined(arrayLength);
+    }
+
+    for (var i = 0; i < otherProperties.length; ++i) {
+      if (elementsAdded)
+        parentElement.createTextChild(', ');
+
+      var property = otherProperties[i];
+      parentElement.appendChild(this._renderDisplayName(property.name));
+      parentElement.createTextChild(': ');
+      parentElement.appendChild(this._renderPropertyPreviewOrAccessor([property]));
+      elementsAdded = true;
+    }
+
+    /**
+     * @param {number} index
+     */
+    function appendUndefined(index) {
+      var span = parentElement.createChild('span', 'object-value-undefined');
+      span.textContent = Common.UIString('undefined × %d', index - lastNonEmptyArrayIndex - 1);
+      elementsAdded = true;
     }
   }
 

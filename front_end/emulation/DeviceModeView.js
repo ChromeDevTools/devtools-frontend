@@ -453,18 +453,20 @@ Emulation.DeviceModeView = class extends UI.VBox {
       function paintScreenshot() {
         var pageImage = new Image();
         pageImage.src = 'data:image/png;base64,' + content;
-        ctx.drawImage(
-            pageImage, visiblePageRect.left, visiblePageRect.top, Math.min(pageImage.naturalWidth, screenRect.width),
-            Math.min(pageImage.naturalHeight, screenRect.height));
-        var url = mainTarget && mainTarget.inspectedURL();
-        var fileName = url ? url.trimURL().removeURLFragment() : '';
-        if (this._model.type() === Emulation.DeviceModeModel.Type.Device)
-          fileName += Common.UIString('(%s)', this._model.device().title);
-        // Trigger download.
-        var link = createElement('a');
-        link.download = fileName + '.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+        pageImage.onload = () => {
+          ctx.drawImage(
+              pageImage, visiblePageRect.left, visiblePageRect.top, Math.min(pageImage.naturalWidth, screenRect.width),
+              Math.min(pageImage.naturalHeight, screenRect.height));
+          var url = mainTarget && mainTarget.inspectedURL();
+          var fileName = url ? url.trimURL().removeURLFragment() : '';
+          if (this._model.type() === Emulation.DeviceModeModel.Type.Device)
+            fileName += Common.UIString('(%s)', this._model.device().title);
+          // Trigger download.
+          var link = createElement('a');
+          link.download = fileName + '.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        };
       }
     }
   }

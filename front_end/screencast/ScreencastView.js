@@ -148,27 +148,29 @@ Screencast.ScreencastView = class extends UI.VBox {
   _screencastFrame(event) {
     var metadata = /** type {Protocol.Page.ScreencastFrameMetadata} */ (event.data.metadata);
     var base64Data = /** type {string} */ (event.data.data);
+    this._imageElement.onload = () => {
+      this._pageScaleFactor = metadata.pageScaleFactor;
+      this._screenOffsetTop = metadata.offsetTop;
+      this._scrollOffsetX = metadata.scrollOffsetX;
+      this._scrollOffsetY = metadata.scrollOffsetY;
+
+      var deviceSizeRatio = metadata.deviceHeight / metadata.deviceWidth;
+      var dimensionsCSS = this._viewportDimensions();
+
+      this._imageZoom = Math.min(
+          dimensionsCSS.width / this._imageElement.naturalWidth,
+          dimensionsCSS.height / (this._imageElement.naturalWidth * deviceSizeRatio));
+      this._viewportElement.classList.remove('hidden');
+      var bordersSize = Screencast.ScreencastView._bordersSize;
+      if (this._imageZoom < 1.01 / window.devicePixelRatio)
+        this._imageZoom = 1 / window.devicePixelRatio;
+      this._screenZoom = this._imageElement.naturalWidth * this._imageZoom / metadata.deviceWidth;
+      this._viewportElement.style.width = metadata.deviceWidth * this._screenZoom + bordersSize + 'px';
+      this._viewportElement.style.height = metadata.deviceHeight * this._screenZoom + bordersSize + 'px';
+
+      this.highlightDOMNode(this._highlightNode, this._highlightConfig);
+    };
     this._imageElement.src = 'data:image/jpg;base64,' + base64Data;
-    this._pageScaleFactor = metadata.pageScaleFactor;
-    this._screenOffsetTop = metadata.offsetTop;
-    this._scrollOffsetX = metadata.scrollOffsetX;
-    this._scrollOffsetY = metadata.scrollOffsetY;
-
-    var deviceSizeRatio = metadata.deviceHeight / metadata.deviceWidth;
-    var dimensionsCSS = this._viewportDimensions();
-
-    this._imageZoom = Math.min(
-        dimensionsCSS.width / this._imageElement.naturalWidth,
-        dimensionsCSS.height / (this._imageElement.naturalWidth * deviceSizeRatio));
-    this._viewportElement.classList.remove('hidden');
-    var bordersSize = Screencast.ScreencastView._bordersSize;
-    if (this._imageZoom < 1.01 / window.devicePixelRatio)
-      this._imageZoom = 1 / window.devicePixelRatio;
-    this._screenZoom = this._imageElement.naturalWidth * this._imageZoom / metadata.deviceWidth;
-    this._viewportElement.style.width = metadata.deviceWidth * this._screenZoom + bordersSize + 'px';
-    this._viewportElement.style.height = metadata.deviceHeight * this._screenZoom + bordersSize + 'px';
-
-    this.highlightDOMNode(this._highlightNode, this._highlightConfig);
   }
 
   _isGlassPaneActive() {

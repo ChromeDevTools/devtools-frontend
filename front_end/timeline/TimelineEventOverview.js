@@ -465,13 +465,12 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
       var promise = new Promise(f => fulfill = f);
 
       var image = /** @type {!HTMLImageElement} */ (createElement('img'));
-      if (data)
+      if (data) {
         image.src = 'data:image/jpg;base64,' + data;
-      if (image.complete) {
-        fulfill(image);
-      } else {
         image.addEventListener('load', () => fulfill(image));
         image.addEventListener('error', () => fulfill(image));
+      } else {
+        fulfill(image);
       }
       return promise;
     }

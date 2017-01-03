@@ -1241,7 +1241,7 @@ Elements.StylePropertiesSection = class {
       return;
 
     if (this.propertiesTreeOutline.element.shadowRoot.firstChild &&
-        this.propertiesTreeOutline.element.shadowRoot.firstChild.isComponentSelectionCollapsed())
+        !this.propertiesTreeOutline.element.shadowRoot.firstChild.isComponentSelectionCollapsed())
       return;
 
     if (this._checkWillCancelEditing())

@@ -349,7 +349,7 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    * @return {number}
    */
   preferredHeight() {
-    return this._style.height * (this._group.expanded ? Number.constrain(this._maxLevel + 1, 4, 8) : 2) + 2;
+    return this._style.height * (this._group.expanded ? Number.constrain(this._maxLevel + 1, 4, 8) : 2);
   }
 
   /**

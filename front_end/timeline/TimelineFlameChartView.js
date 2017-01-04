@@ -129,8 +129,15 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._networkView.alwaysShowVerticalScroll();
     networkViewGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights.bind(this));
 
+    const networkPane = new UI.VBox();
+    networkPane.setMinimumSize(23, 23);
+    this._networkView.show(networkPane.element);
+    this._splitResizer = networkPane.element.createChild('div', 'timeline-flamechart-resizer');
+    this._splitWidget.hideDefaultResizer();
+    this._splitWidget.installResizer(this._splitResizer);
+
     this._splitWidget.setMainWidget(this._mainView);
-    this._splitWidget.setSidebarWidget(this._networkView);
+    this._splitWidget.setSidebarWidget(networkPane);
     this._splitWidget.show(this.element);
 
     this._onMainEntrySelected = this._onEntrySelected.bind(this, this._dataProvider);
@@ -288,7 +295,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   }
 
   resizeToPreferredHeights() {
-    this._splitWidget.setSidebarSize(this._networkDataProvider.preferredHeight());
+    this._splitWidget.setSidebarSize(this._networkDataProvider.preferredHeight() + this._splitResizer.clientHeight);
   }
 };
 

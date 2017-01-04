@@ -395,7 +395,7 @@ CSSTracker.CSSTrackerView.LineDecorator = class {
 
     var decorations = uiSourceCode.decorationsForType(CSSTracker.CSSTrackerView.LineDecorator.type);
     textEditor.uninstallGutter(gutterType);
-    if (!decorations.size)
+    if (!decorations || !decorations.size)
       return;
 
     textEditor.installGutter(gutterType, false);

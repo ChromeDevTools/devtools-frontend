@@ -322,6 +322,8 @@ Bindings.BlackboxManager = class {
    * @return {!Promise<undefined>}
    */
   _addScript(script) {
+    if (!script.sourceURL && !script.sourceMapURL)
+      return Promise.resolve();
     var blackboxed = this._isBlackboxedScript(script);
     return this._setScriptState(script, blackboxed ? [{lineNumber: 0, columnNumber: 0}] : []);
   }

@@ -43,10 +43,6 @@ Bindings.DefaultScriptMapping = class {
     var projectId = Bindings.DefaultScriptMapping.projectIdForTarget(debuggerModel.target());
     this._project = new Bindings.ContentProviderBasedProject(
         workspace, projectId, Workspace.projectTypes.Debugger, '', true /* isServiceProject */);
-    /** @type {!Map.<string, !Workspace.UISourceCode>} */
-    this._uiSourceCodeForScriptId = new Map();
-    /** @type {!Map.<!Workspace.UISourceCode, string>} */
-    this._scriptIdForUISourceCode = new Map();
     this._eventListeners =
         [debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this)];
   }
@@ -75,7 +71,7 @@ Bindings.DefaultScriptMapping = class {
   rawLocationToUILocation(rawLocation) {
     var debuggerModelLocation = /** @type {!SDK.DebuggerModel.Location} */ (rawLocation);
     var script = debuggerModelLocation.script();
-    var uiSourceCode = this._uiSourceCodeForScriptId.get(script.scriptId);
+    var uiSourceCode = script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol];
     var lineNumber = debuggerModelLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
     var columnNumber = debuggerModelLocation.columnNumber || 0;
     if (script.isInlineScriptWithSourceURL() && !lineNumber && columnNumber)
@@ -91,8 +87,7 @@ Bindings.DefaultScriptMapping = class {
    * @return {?SDK.DebuggerModel.Location}
    */
   uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
-    var scriptId = this._scriptIdForUISourceCode.get(uiSourceCode);
-    var script = this._debuggerModel.scriptForId(scriptId);
+    var script = uiSourceCode[Bindings.DefaultScriptMapping._scriptSymbol];
     if (script.isInlineScriptWithSourceURL()) {
       return this._debuggerModel.createRawLocation(
           script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset);
@@ -109,8 +104,7 @@ Bindings.DefaultScriptMapping = class {
 
     var uiSourceCode = this._project.createUISourceCode(url, Common.resourceTypes.Script);
     uiSourceCode[Bindings.DefaultScriptMapping._scriptSymbol] = script;
-    this._uiSourceCodeForScriptId.set(script.scriptId, uiSourceCode);
-    this._scriptIdForUISourceCode.set(uiSourceCode, script.scriptId);
+    script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol] = uiSourceCode;
     this._project.addUISourceCodeWithProvider(uiSourceCode, script, null);
 
     this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel.target(), uiSourceCode, this);
@@ -136,8 +130,6 @@ Bindings.DefaultScriptMapping = class {
   }
 
   _debuggerReset() {
-    this._uiSourceCodeForScriptId.clear();
-    this._scriptIdForUISourceCode.clear();
     this._project.reset();
   }
 
@@ -149,3 +141,4 @@ Bindings.DefaultScriptMapping = class {
 };
 
 Bindings.DefaultScriptMapping._scriptSymbol = Symbol('symbol');
+Bindings.DefaultScriptMapping._uiSourceCodeSymbol = Symbol('uiSourceCodeSymbol');

@@ -27,7 +27,7 @@
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-SDK.Script = class extends SDK.SDKObject {
+SDK.Script = class {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {string} scriptId
@@ -57,7 +57,6 @@ SDK.Script = class extends SDK.SDKObject {
       isLiveEdit,
       sourceMapURL,
       hasSourceURL) {
-    super(debuggerModel.target());
     this.debuggerModel = debuggerModel;
     this.scriptId = scriptId;
     this.sourceURL = sourceURL;
@@ -65,6 +64,7 @@ SDK.Script = class extends SDK.SDKObject {
     this.columnOffset = startColumn;
     this.endLine = endLine;
     this.endColumn = endColumn;
+
     this._executionContextId = executionContextId;
     this.hash = hash;
     this._isContentScript = isContentScript;
@@ -119,6 +119,13 @@ SDK.Script = class extends SDK.SDKObject {
         script.target(), SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Warning, text, undefined,
         undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, script.scriptId);
     consoleModel.addMessage(msg);
+  }
+
+  /**
+   * @return {!SDK.Target}
+   */
+  target() {
+    return this.debuggerModel.target();
   }
 
   /**

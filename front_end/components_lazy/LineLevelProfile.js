@@ -133,7 +133,7 @@ Components.LineLevelProfile.LineDecorator = class {
     var gutterType = 'CodeMirror-gutter-performance';
     var decorations = uiSourceCode.decorationsForType(Components.LineLevelProfile.LineDecorator.type);
     textEditor.uninstallGutter(gutterType);
-    if (!decorations.size)
+    if (!decorations || !decorations.size)
       return;
     textEditor.installGutter(gutterType, false);
     for (var decoration of decorations) {

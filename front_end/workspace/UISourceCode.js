@@ -58,15 +58,12 @@ Workspace.UISourceCode = class extends Common.Object {
     this._contentType = contentType;
     /** @type {?Promise<?string>} */
     this._requestContentPromise = null;
-    /** @type {!Multimap<string, !Workspace.UISourceCode.LineMarker>} */
-    this._decorations = new Multimap();
-
-    /** @type {!Array.<!Workspace.Revision>} */
-    this.history = [];
-
-    /** @type {!Array<!Workspace.UISourceCode.Message>} */
-    this._messages = [];
-
+    /** @type {?Multimap<string, !Workspace.UISourceCode.LineMarker>} */
+    this._decorations = null;
+    /** @type {?Array.<!Workspace.Revision>} */
+    this._history = null;
+    /** @type {?Array<!Workspace.UISourceCode.Message>} */
+    this._messages = null;
     this._contentLoaded = false;
     /** @type {?string} */
     this._content = null;
@@ -313,10 +310,14 @@ Workspace.UISourceCode = class extends Common.Object {
     this._contentLoaded = true;
     this._requestContentPromise = null;
 
-    var lastRevision = this.history.length ? this.history[this.history.length - 1] : null;
+
+    if (!this._history)
+      this._history = [];
+
+    var lastRevision = this._history.length ? this._history[this._history.length - 1] : null;
     if (!lastRevision || lastRevision._content !== this._content) {
       var revision = new Workspace.Revision(this, this._content, new Date());
-      this.history.push(revision);
+      this._history.push(revision);
     }
 
     this._innerResetWorkingCopy();
@@ -383,12 +384,21 @@ Workspace.UISourceCode = class extends Common.Object {
         return;
 
       this.addRevision(content);
-      this.history = [];
+      this._history = null;
       callback(this);
     }
 
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.RevisionApplied);
     this.requestOriginalContent().then(revert.bind(this));
+  }
+
+  /**
+   * @return {!Array<!Workspace.Revision>}
+   */
+  history() {
+    if (!this._history)
+      this._history = [];
+    return this._history;
   }
 
   /**
@@ -518,7 +528,7 @@ Workspace.UISourceCode = class extends Common.Object {
    * @return {!Array<!Workspace.UISourceCode.Message>}
    */
   messages() {
-    return this._messages.slice();
+    return this._messages ? this._messages.slice() : [];
   }
 
   /**
@@ -541,6 +551,8 @@ Workspace.UISourceCode = class extends Common.Object {
    */
   addMessage(level, text, range) {
     var message = new Workspace.UISourceCode.Message(this, level, text, range);
+    if (!this._messages)
+      this._messages = [];
     this._messages.push(message);
     this.dispatchEventToListeners(Workspace.UISourceCode.Events.MessageAdded, message);
     return message;
@@ -550,15 +562,16 @@ Workspace.UISourceCode = class extends Common.Object {
    * @param {!Workspace.UISourceCode.Message} message
    */
   removeMessage(message) {
-    if (this._messages.remove(message))
+    if (this._messages && this._messages.remove(message))
       this.dispatchEventToListeners(Workspace.UISourceCode.Events.MessageRemoved, message);
   }
 
   _removeAllMessages() {
-    var messages = this._messages;
-    this._messages = [];
-    for (var message of messages)
+    if (!this._messages)
+      return;
+    for (var message of this._messages)
       this.dispatchEventToListeners(Workspace.UISourceCode.Events.MessageRemoved, message);
+    this._messages = null;
   }
 
   /**
@@ -577,6 +590,8 @@ Workspace.UISourceCode = class extends Common.Object {
    */
   addDecoration(range, type, data) {
     var marker = new Workspace.UISourceCode.LineMarker(range, type, data);
+    if (!this._decorations)
+      this._decorations = new Multimap();
     this._decorations.set(type, marker);
     this.dispatchEventToListeners(Workspace.UISourceCode.Events.LineDecorationAdded, marker);
   }
@@ -585,6 +600,8 @@ Workspace.UISourceCode = class extends Common.Object {
    * @param {string} type
    */
   removeDecorationsForType(type) {
+    if (!this._decorations)
+      return;
     var markers = this._decorations.get(type);
     this._decorations.removeAll(type);
     markers.forEach(marker => {
@@ -596,10 +613,12 @@ Workspace.UISourceCode = class extends Common.Object {
    * @return {!Array<!Workspace.UISourceCode.LineMarker>}
    */
   allDecorations() {
-    return this._decorations.valuesArray();
+    return this._decorations ? this._decorations.valuesArray() : [];
   }
 
   removeAllDecorations() {
+    if (!this._decorations)
+      return;
     var decorationList = this._decorations.valuesArray();
     this._decorations.clear();
     decorationList.forEach(
@@ -608,10 +627,10 @@ Workspace.UISourceCode = class extends Common.Object {
 
   /**
    * @param {string} type
-   * @return {!Set<!Workspace.UISourceCode.LineMarker>}
+   * @return {?Set<!Workspace.UISourceCode.LineMarker>}
    */
   decorationsForType(type) {
-    return this._decorations.get(type);
+    return this._decorations ? this._decorations.get(type) : null;
   }
 };
 

@@ -46,7 +46,7 @@ Sources.RevisionHistoryView = class extends UI.VBox {
      * @this {Sources.RevisionHistoryView}
      */
     function populateRevisions(uiSourceCode) {
-      if (uiSourceCode.history.length)
+      if (uiSourceCode.history().length)
         this._createUISourceCodeItem(uiSourceCode);
     }
 
@@ -88,11 +88,11 @@ Sources.RevisionHistoryView = class extends UI.VBox {
 
     this._uiSourceCodeItems.set(uiSourceCode, uiSourceCodeItem);
 
-    var revisionCount = uiSourceCode.history.length;
+    var history = uiSourceCode.history();
+    var revisionCount = history.length;
     for (var i = revisionCount - 1; i >= 0; --i) {
-      var revision = uiSourceCode.history[i];
-      var historyItem =
-          new Sources.RevisionHistoryTreeElement(revision, uiSourceCode.history[i - 1], i !== revisionCount - 1);
+      var revision = history[i];
+      var historyItem = new Sources.RevisionHistoryTreeElement(revision, history[i - 1], i !== revisionCount - 1);
       uiSourceCodeItem.appendChild(historyItem);
     }
 
@@ -133,9 +133,9 @@ Sources.RevisionHistoryView = class extends UI.VBox {
       return;
     }
 
-    var historyLength = uiSourceCode.history.length;
-    var historyItem = new Sources.RevisionHistoryTreeElement(
-        uiSourceCode.history[historyLength - 1], uiSourceCode.history[historyLength - 2], false);
+    var history = uiSourceCode.history();
+    var historyItem =
+        new Sources.RevisionHistoryTreeElement(history[history.length - 1], history[history.length - 2], false);
     if (uiSourceCodeItem.firstChild())
       uiSourceCodeItem.firstChild().allowRevert();
     uiSourceCodeItem.insertChild(historyItem, 0);

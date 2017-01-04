@@ -67,11 +67,6 @@ UI.SuggestBox = class {
     this._element.classList.add('suggest-box');
     this._container.appendChild(this._element);
     this._element.addEventListener('mousedown', this._onBoxMouseDown.bind(this), true);
-    this._detailsPopup = this._container.createChild('div', 'suggest-box details-popup monospace');
-    this._detailsPopup.classList.add('hidden');
-    this._asyncDetailsCallback = null;
-    /** @type {!Map<!UI.SuggestBox.Suggestion, !Promise<{detail: string, description: string}>>} */
-    this._asyncDetailsPromises = new Map();
     this._userInteracted = false;
     this._captureEnter = captureEnter;
     this._viewportWidth = '100vw';
@@ -295,11 +290,6 @@ UI.SuggestBox = class {
       toElement.classList.add('selected', 'force-white-icons');
     if (!to)
       return;
-    this._detailsPopup.classList.add('hidden');
-    this._asyncDetails(to).then(details => {
-      if (this._list.selectedItem() === to)
-        this._showDetailsPopup(details);
-    });
     this._applySuggestion(true);
   }
 
@@ -312,30 +302,6 @@ UI.SuggestBox = class {
     this._userInteracted = true;
     this.acceptSuggestion();
     event.consume(true);
-  }
-
-  /**
-   * @param {!UI.SuggestBox.Suggestion} item
-   * @return {!Promise<?{detail: string, description: string}>}
-   */
-  _asyncDetails(item) {
-    if (!this._asyncDetailsCallback)
-      return Promise.resolve(/** @type {?{description: string, detail: string}} */ (null));
-    if (!this._asyncDetailsPromises.has(item))
-      this._asyncDetailsPromises.set(item, this._asyncDetailsCallback(item));
-    return /** @type {!Promise<?{detail: string, description: string}>} */ (this._asyncDetailsPromises.get(item));
-  }
-
-  /**
-   * @param {?{detail: string, description: string}} details
-   */
-  _showDetailsPopup(details) {
-    this._detailsPopup.removeChildren();
-    if (!details)
-      return;
-    this._detailsPopup.createChild('section', 'detail').createTextChild(details.detail);
-    this._detailsPopup.createChild('section', 'description').createTextChild(details.description);
-    this._detailsPopup.classList.remove('hidden');
   }
 
   /**
@@ -364,22 +330,10 @@ UI.SuggestBox = class {
    * @param {boolean} selectHighestPriority
    * @param {boolean} canShowForSingleItem
    * @param {string} userEnteredText
-   * @param {function(number): !Promise<{detail:string, description:string}>=} asyncDetails
    */
-  updateSuggestions(
-      anchorBox,
-      completions,
-      selectHighestPriority,
-      canShowForSingleItem,
-      userEnteredText,
-      asyncDetails) {
+  updateSuggestions(anchorBox, completions, selectHighestPriority, canShowForSingleItem, userEnteredText) {
     delete this._onlyCompletion;
     if (this._canShowBox(completions, canShowForSingleItem, userEnteredText)) {
-      this._asyncDetailsPromises.clear();
-      if (asyncDetails)
-        this._asyncDetailsCallback = item => asyncDetails(completions.indexOf(item));
-      else
-        this._asyncDetailsCallback = null;
       this._userEnteredText = userEnteredText;
 
       this._show();

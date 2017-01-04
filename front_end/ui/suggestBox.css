@@ -123,16 +123,3 @@
 .suggest-box .suggest-box-content-item:hover:not(.selected) {
     background-color: rgba(56, 121, 217, 0.1);
 }
-
-.suggest-box .details-popup {
-    padding: 17px;
-    pointer-events: auto;
-    margin-left: 3px;
-    max-width: 750px;
-    word-wrap: normal;
-}
-
-.suggest-box .details-popup .description {
-    margin-top: 22px;
-    color: #808080;
-}

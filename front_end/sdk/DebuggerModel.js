@@ -47,6 +47,8 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     this._scripts = {};
     /** @type {!Map.<string, !Array.<!SDK.Script>>} */
     this._scriptsBySourceURL = new Map();
+    /** @type {!Array.<!SDK.Script>} */
+    this._discardableScripts = [];
 
     /** @type {!Common.Object} */
     this._breakpointResolvedEventTarget = new Common.Object();
@@ -323,6 +325,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     this._scripts = {};
     this._scriptsBySourceURL.clear();
     this._stringMap.clear();
+    this._discardableScripts = [];
   }
 
   /**
@@ -494,13 +497,18 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
       sourceURL = this._internString(sourceURL);
     }
     var script = new SDK.Script(
-        this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, this._internString(hash),
-        isContentScript, isLiveEdit, sourceMapURL, hasSourceURL);
+        this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId,
+        this._internString(hash), isContentScript, isLiveEdit, sourceMapURL, hasSourceURL);
     this._registerScript(script);
     if (!hasSyntaxError)
       this.dispatchEventToListeners(SDK.DebuggerModel.Events.ParsedScriptSource, script);
     else
       this.dispatchEventToListeners(SDK.DebuggerModel.Events.FailedToParseScriptSource, script);
+    var isDiscardable = hasSyntaxError && script.isAnonymousScript();
+    if (isDiscardable) {
+      this._discardableScripts.push(script);
+      this._collectDiscardedScripts();
+    }
     return script;
   }
 
@@ -518,6 +526,24 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
       this._scriptsBySourceURL.set(script.sourceURL, scripts);
     }
     scripts.push(script);
+  }
+
+  /**
+   * @param {!SDK.Script} script
+   */
+  _unregisterScript(script) {
+    console.assert(script.isAnonymousScript());
+    delete this._scripts[script.scriptId];
+  }
+
+  _collectDiscardedScripts() {
+    if (this._discardableScripts.length < 1000)
+      return;
+    var scriptsToDiscard = this._discardableScripts.splice(0, 100);
+    for (var script of scriptsToDiscard) {
+      this._unregisterScript(script);
+      this.dispatchEventToListeners(SDK.DebuggerModel.Events.DiscardedAnonymousScriptSource, script);
+    }
   }
 
   /**
@@ -804,9 +830,9 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    * @return {string} string
    */
   _internString(string) {
-     if (!this._stringMap.has(string))
-       this._stringMap.set(string, string);
-     return this._stringMap.get(string);
+    if (!this._stringMap.has(string))
+      this._stringMap.set(string, string);
+    return this._stringMap.get(string);
   }
 };
 
@@ -832,6 +858,7 @@ SDK.DebuggerModel.Events = {
   DebuggerResumed: Symbol('DebuggerResumed'),
   ParsedScriptSource: Symbol('ParsedScriptSource'),
   FailedToParseScriptSource: Symbol('FailedToParseScriptSource'),
+  DiscardedAnonymousScriptSource: Symbol('DiscardedAnonymousScriptSource'),
   GlobalObjectCleared: Symbol('GlobalObjectCleared'),
   CallFrameSelected: Symbol('CallFrameSelected'),
   ConsoleCommandEvaluatedInSelectedCallFrame: Symbol('ConsoleCommandEvaluatedInSelectedCallFrame'),

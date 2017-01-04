@@ -112,6 +112,18 @@ Bindings.DefaultScriptMapping = class {
   }
 
   /**
+   * @param {!SDK.Script} script
+   */
+  removeScript(script) {
+    var uiSourceCode = script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol];
+    if (!uiSourceCode)
+      return;
+    delete script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol];
+    delete uiSourceCode[Bindings.DefaultScriptMapping._scriptSymbol];
+    this._project.removeUISourceCode(uiSourceCode.url());
+  }
+
+  /**
    * @override
    * @return {boolean}
    */

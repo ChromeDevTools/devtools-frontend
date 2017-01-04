@@ -38,7 +38,7 @@ function main(){
             console.log("Compiling devtools frontend");
             shell(`ninja -C ${RELEASE_PATH} devtools_frontend_resources`);
         }
-        runTests(outDir, false);
+        runTests(outDir, IS_DEBUG_ENABLED);
         return;
     }
     if (!utils.isDir(CACHE_PATH))

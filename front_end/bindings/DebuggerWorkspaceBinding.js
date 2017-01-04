@@ -356,6 +356,8 @@ Bindings.DebuggerWorkspaceBinding.TargetData = class {
       debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
       debuggerModel.addEventListener(
           SDK.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this),
+      debuggerModel.addEventListener(
+          SDK.DebuggerModel.Events.DiscardedAnonymousScriptSource, this._discardedScriptSource, this)
     ];
   }
 
@@ -377,6 +379,14 @@ Bindings.DebuggerWorkspaceBinding.TargetData = class {
 
     if (Common.moduleSetting('jsSourceMapsEnabled').get())
       this._compilerMapping.addScript(script);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _discardedScriptSource(event) {
+    var script = /** @type {!SDK.Script} */ (event.data);
+    this._defaultMapping.removeScript(script);
   }
 
   /**

@@ -5,9 +5,13 @@
  * @unrestricted
  */
 Accessibility.AXTreePane = class extends Accessibility.AccessibilitySubPane {
-  constructor() {
+  /**
+   * @param {!Accessibility.AccessibilitySidebarView} axSidebarView
+   */
+  constructor(axSidebarView) {
     super(Common.UIString('Accessibility Tree'));
 
+    this._axSidebarView = axSidebarView;
     this._treeOutline = this.createTreeOutline();
 
     this.element.classList.add('accessibility-computed');
@@ -77,6 +81,21 @@ Accessibility.AXTreePane = class extends Accessibility.AccessibilitySubPane {
   }
 
   /**
+   * @param {!Accessibility.AccessibilityNode} axNode
+   */
+  setSelectedNode(axNode) {
+    if (axNode.parentNode()) {
+      Common.Revealer.reveal(axNode.deferredDOMNode());
+    } else {
+      // Only set the node for the accessibility panel, not the Elements tree.
+      var axSidebarView = this._axSidebarView;
+      axNode.deferredDOMNode().resolve((node) => {
+        axSidebarView.setNode(node);
+      });
+    }
+  }
+
+  /**
    * @param {boolean} selectedByUser
    */
   setSelectedByUser(selectedByUser) {
@@ -137,7 +156,7 @@ Accessibility.InspectNodeButton = class {
    */
   _handleMouseDown(event) {
     this._treePane.setSelectedByUser(true);
-    Common.Revealer.reveal(this._axNode.deferredDOMNode());
+    this._treePane.setSelectedNode(this._axNode);
   }
 };
 
@@ -205,7 +224,7 @@ Accessibility.AXNodeTreeElement = class extends UI.TreeElement {
 
   inspectDOMNode() {
     this._treePane.setSelectedByUser(true);
-    Common.Revealer.reveal(this._axNode.deferredDOMNode());
+    this._treePane.setSelectedNode(this._axNode);
   }
 
   /**

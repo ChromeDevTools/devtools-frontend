@@ -15,11 +15,7 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
         Common.settings.createSetting('performanceLandingPageTab', Timeline.TimelineLandingPage.PageId.Basic);
 
     var tab = new Timeline.TimelineLandingPage.PerspectiveTabWidget();
-    tab.appendDescription(Common.UIString(
-        'The Performance panel lets you record what the browser does during page load and user interaction. ' +
-        'The timeline it generates can help you determine why certain parts of your page are slow.\u2002'));
-    tab.appendDescription(learnMore());
-    tab.appendDescription(createElement('p'));
+    appendCommonPart(tab);
     tab.appendDescription(Common.UIString(
         'The basic profile collects network, JavaScript and browser activity as you interact with the page.'));
     tab.appendOption(config.screenshots);
@@ -28,10 +24,10 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
     this._tabbedPane.appendTab(Timeline.TimelineLandingPage.PageId.Basic, Common.UIString('Basic'), tab);
 
     tab = new Timeline.TimelineLandingPage.PerspectiveTabWidget();
+    appendCommonPart(tab);
     tab.appendDescription(Common.UIString(
         'Select what additional details you’d like to record. ' +
-        'By default, the advanced profile will collect all data of the basic profile.\u2002'));
-    tab.appendDescription(learnMore());
+        'By default, the advanced profile will collect all data of the basic profile.'));
     tab.appendOption(config.screenshots);
     tab.appendOption(config.javascript);
     tab.appendOption(config.paints);
@@ -42,12 +38,16 @@ Timeline.TimelineLandingPage = class extends UI.VBox {
     this._tabbedPane.show(this.contentElement);
 
     /**
-     * @return {!Element}
+     * @param {!Timeline.TimelineLandingPage.PerspectiveTabWidget} tab
      */
-    function learnMore() {
-      return UI.createExternalLink(
+    function appendCommonPart(tab) {
+      tab.appendDescription(Common.UIString(
+          'The Performance panel lets you record what the browser does during page load and user interaction. ' +
+          'The timeline it generates can help you determine why certain parts of your page are slow.\u2002'));
+      tab.appendDescription(UI.createExternalLink(
           'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/',
-          Common.UIString('Learn more'));
+          Common.UIString('Learn more')));
+      tab.appendDescription(createElement('p'));
     }
   }
 

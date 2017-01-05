@@ -910,7 +910,7 @@ Main.TargetCrashedScreen = class extends UI.VBox {
     dialog.setWrapsContent(true);
     dialog.addCloseButton();
     dialog.setDimmed(true);
-    var hideBound = dialog.detach.bind(dialog);
+    var hideBound = dialog.detach.bind(dialog, false);
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, hideBound);
 
     new Main.TargetCrashedScreen(onHide).show(dialog.element);

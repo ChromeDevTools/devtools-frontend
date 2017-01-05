@@ -198,7 +198,6 @@ UI.TabbedPane = class extends UI.VBox {
     else
       this._tabs.push(tab);
     this._tabsHistory.push(tab);
-    view.attach(this);
     if (this._tabsHistory[0] === tab && this.isShowing())
       this.selectTab(tab.id, userGesture);
     this._updateTabElements();
@@ -246,7 +245,6 @@ UI.TabbedPane = class extends UI.VBox {
     this._tabs.splice(this._tabs.indexOf(tab), 1);
     if (tab._shown)
       this._hideTabElement(tab);
-    tab.view.detach();
 
     var eventData = {tabId: id, view: tab.view, isUserGesture: userGesture};
     this.dispatchEventToListeners(UI.TabbedPane.Events.TabClosed, eventData);
@@ -411,21 +409,16 @@ UI.TabbedPane = class extends UI.VBox {
     if (tab.view === view)
       return;
 
-    var shouldFocus = tab.view.hasFocus();
-
     this.suspendInvalidations();
-
     var isSelected = this._currentTab && this._currentTab.id === id;
+    var shouldFocus = tab.view.hasFocus();
     if (isSelected)
       this._hideTab(tab);
-    tab.view.detach();
     tab.view = view;
-    tab.view.attach(this);
     if (isSelected)
       this._showTab(tab);
     if (shouldFocus)
       tab.view.focus();
-
     this.resumeInvalidations();
   }
 
@@ -748,7 +741,7 @@ UI.TabbedPane = class extends UI.VBox {
   _showTab(tab) {
     tab.tabElement.classList.add('selected');
     tab.tabElement.setAttribute('aria-selected', 'true');
-    tab.view.showWidget(this.element);
+    tab.view.show(this.element);
     this._updateTabSlider();
   }
 
@@ -773,7 +766,7 @@ UI.TabbedPane = class extends UI.VBox {
   _hideTab(tab) {
     tab.tabElement.classList.remove('selected');
     tab.tabElement.setAttribute('aria-selected', 'false');
-    tab.view.hideWidget();
+    tab.view.detach();
   }
 
   /**

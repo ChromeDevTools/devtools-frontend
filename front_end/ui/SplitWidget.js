@@ -140,9 +140,8 @@ UI.SplitWidget = class extends UI.Widget {
     if (widget) {
       widget.element.classList.add('insertion-point-main');
       widget.element.classList.remove('insertion-point-sidebar');
-      widget.attach(this);
       if (this._showMode === UI.SplitWidget.ShowMode.OnlyMain || this._showMode === UI.SplitWidget.ShowMode.Both)
-        widget.showWidget(this.element);
+        widget.show(this.element);
     }
     this.resumeInvalidations();
   }
@@ -160,9 +159,8 @@ UI.SplitWidget = class extends UI.Widget {
     if (widget) {
       widget.element.classList.add('insertion-point-sidebar');
       widget.element.classList.remove('insertion-point-main');
-      widget.attach(this);
       if (this._showMode === UI.SplitWidget.ShowMode.OnlySidebar || this._showMode === UI.SplitWidget.ShowMode.Both)
-        widget.showWidget(this.element);
+        widget.show(this.element);
     }
     this.resumeInvalidations();
   }
@@ -186,6 +184,8 @@ UI.SplitWidget = class extends UI.Widget {
    * @param {!UI.Widget} widget
    */
   childWasDetached(widget) {
+    if (this._detaching)
+      return;
     if (this._mainWidget === widget)
       delete this._mainWidget;
     if (this._sidebarWidget === widget)
@@ -283,12 +283,15 @@ UI.SplitWidget = class extends UI.Widget {
       if (sideToShow) {
         // Make sure main is first in the children list.
         if (sideToShow === this._mainWidget)
-          this._mainWidget.showWidget(this.element);
+          this._mainWidget.show(this.element, this._sidebarWidget ? this._sidebarWidget.element : null);
         else
-          this._sidebarWidget.showWidget(this.element);
+          this._sidebarWidget.show(this.element);
       }
-      if (sideToHide)
-        sideToHide.hideWidget();
+      if (sideToHide) {
+        this._detaching = true;
+        sideToHide.detach();
+        delete this._detaching;
+      }
 
       this._resizerElement.classList.add('hidden');
       shadowToShow.classList.remove('hidden');
@@ -343,9 +346,9 @@ UI.SplitWidget = class extends UI.Widget {
     // Make sure main is the first in the children list.
     this.suspendInvalidations();
     if (this._sidebarWidget)
-      this._sidebarWidget.showWidget(this.element);
+      this._sidebarWidget.show(this.element);
     if (this._mainWidget)
-      this._mainWidget.showWidget(this.element);
+      this._mainWidget.show(this.element, this._sidebarWidget ? this._sidebarWidget.element : null);
     this.resumeInvalidations();
     // Order widgets in DOM properly.
     this.setSecondIsSidebar(this._secondIsSidebar);

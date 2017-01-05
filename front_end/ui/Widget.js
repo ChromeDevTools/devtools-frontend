@@ -247,7 +247,7 @@ UI.Widget = class extends Common.Object {
 
   /**
    * @param {!Element} parentElement
-   * @param {?Element=} insertBefore
+   * @param {?Node=} insertBefore
    */
   show(parentElement, insertBefore) {
     UI.Widget.__assert(parentElement, 'Attempt to attach widget with no parent element');
@@ -258,16 +258,16 @@ UI.Widget = class extends Common.Object {
       while (currentParent && !currentParent.__widget)
         currentParent = currentParent.parentElementOrShadowHost();
       UI.Widget.__assert(currentParent, 'Attempt to attach widget to orphan node');
-      this.attach(currentParent.__widget);
+      this._attach(currentParent.__widget);
     }
 
-    this.showWidget(parentElement, insertBefore);
+    this._showWidget(parentElement, insertBefore);
   }
 
   /**
    * @param {!UI.Widget} parentWidget
    */
-  attach(parentWidget) {
+  _attach(parentWidget) {
     if (parentWidget === this._parentWidget)
       return;
     if (this._parentWidget)
@@ -277,11 +277,18 @@ UI.Widget = class extends Common.Object {
     this._isRoot = false;
   }
 
+  showWidget() {
+    if (this._visible)
+      return;
+    UI.Widget.__assert(this.element.parentElement, 'Attempt to show widget that is not hidden using hideWidget().');
+    this._showWidget(/** @type {!Element} */ (this.element.parentElement), this.element.nextSibling);
+  }
+
   /**
    * @param {!Element} parentElement
-   * @param {?Element=} insertBefore
+   * @param {?Node=} insertBefore
    */
-  showWidget(parentElement, insertBefore) {
+  _showWidget(parentElement, insertBefore) {
     var currentParent = parentElement;
     while (currentParent && !currentParent.__widget)
       currentParent = currentParent.parentElementOrShadowHost();
@@ -324,29 +331,27 @@ UI.Widget = class extends Common.Object {
   }
 
   hideWidget() {
-    if (!this._parentWidget)
+    if (!this._visible)
       return;
-    this._hideWidget();
+    this._hideWidget(false);
   }
 
   /**
-   * @param {boolean=} overrideHideOnDetach
+   * @param {boolean} removeFromDOM
    */
-  _hideWidget(overrideHideOnDetach) {
-    if (!this._visible)
-      return;
+  _hideWidget(removeFromDOM) {
     this._visible = false;
     var parentElement = this.element.parentElement;
 
     if (this._parentIsShowing())
       this._processWillHide();
 
-    if (!overrideHideOnDetach && this.shouldHideOnDetach()) {
-      this.element.classList.add('hidden');
-    } else {
+    if (removeFromDOM) {
       // Force legal removal
       UI.Widget._decrementWidgetCounter(parentElement, this.element);
       UI.Widget._originalRemoveChild.call(parentElement, this.element);
+    } else {
+      this.element.classList.add('hidden');
     }
 
     if (this._parentIsShowing())
@@ -355,12 +360,15 @@ UI.Widget = class extends Common.Object {
       this._parentWidget.invalidateConstraints();
   }
 
-  detach() {
+  /**
+   * @param {boolean=} overrideHideOnDetach
+   */
+  detach(overrideHideOnDetach) {
     if (!this._parentWidget && !this._isRoot)
       return;
 
     if (this._visible)
-      this._hideWidget(true);
+      this._hideWidget(overrideHideOnDetach || !this.shouldHideOnDetach());
 
     // Update widget hierarchy.
     if (this._parentWidget) {
@@ -584,11 +592,6 @@ UI.Widget = class extends Common.Object {
       this._parentWidget.invalidateConstraints();
     else
       this.doLayout();
-  }
-
-  invalidateSize() {
-    if (this._parentWidget)
-      this._parentWidget.doLayout();
   }
 };
 

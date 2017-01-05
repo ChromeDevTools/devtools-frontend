@@ -224,7 +224,7 @@ Extensions.ExtensionSidebarPane = class extends UI.SimpleView {
       delete this._objectPropertiesView;
     }
     if (this._extensionView)
-      this._extensionView.detach();
+      this._extensionView.detach(true);
 
     this._extensionView = new Extensions.ExtensionView(this._server, this._id, url, 'extension fill');
     this._extensionView.show(this.element);
@@ -258,7 +258,7 @@ Extensions.ExtensionSidebarPane = class extends UI.SimpleView {
     if (this._objectPropertiesView)
       return;
     if (this._extensionView) {
-      this._extensionView.detach();
+      this._extensionView.detach(true);
       delete this._extensionView;
     }
     this._objectPropertiesView = new Extensions.ExtensionNotifierView(this._server, this._id);

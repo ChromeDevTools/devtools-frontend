@@ -100,7 +100,7 @@ Network.EventSourceMessageNodeComparator = function(field, a, b) {
   return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
 };
 
-/** @type {!Object.<string, !UI.SortableDataGrid.NodeComparator>} */
+/** @type {!Object.<string, function(!Network.EventSourceMessageNode, !Network.EventSourceMessageNode):number>} */
 Network.EventSourceMessageNode.Comparators = {
   'id': Network.EventSourceMessageNodeComparator.bind(null, 'eventId'),
   'type': Network.EventSourceMessageNodeComparator.bind(null, 'eventName'),

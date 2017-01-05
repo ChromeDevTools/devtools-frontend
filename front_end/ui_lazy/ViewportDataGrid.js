@@ -3,12 +3,14 @@
 // found in the LICENSE file.
 /**
  * @unrestricted
+ * @extends {UI.DataGrid<!NODE_TYPE>}
+ * @template NODE_TYPE
  */
 UI.ViewportDataGrid = class extends UI.DataGrid {
   /**
    * @param {!Array.<!UI.DataGrid.ColumnDescriptor>} columnsArray
-   * @param {function(!UI.DataGridNode, string, string, string)=} editCallback
-   * @param {function(!UI.DataGridNode)=} deleteCallback
+   * @param {function(!NODE_TYPE, string, string, string)=} editCallback
+   * @param {function(!NODE_TYPE)=} deleteCallback
    * @param {function()=} refreshCallback
    */
   constructor(columnsArray, editCallback, deleteCallback, refreshCallback) {
@@ -91,9 +93,6 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
     this.scheduleUpdate();
   }
 
-  /**
-   * @protected
-   */
   scheduleUpdate() {
     if (this._updateAnimationFrameId)
       return;
@@ -258,6 +257,9 @@ UI.ViewportDataGrid.Events = {
 
 /**
  * @unrestricted
+ * @this {NODE_TYPE}
+ * @extends {UI.DataGridNode<!NODE_TYPE>}
+ * @template NODE_TYPE
  */
 UI.ViewportDataGridNode = class extends UI.DataGridNode {
   /**
@@ -326,7 +328,7 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
 
   /**
    * @override
-   * @param {!UI.DataGridNode} child
+   * @param {!NODE_TYPE} child
    * @param {number} index
    */
   insertChild(child, index) {
@@ -353,7 +355,7 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
 
   /**
    * @override
-   * @param {!UI.DataGridNode} child
+   * @param {!NODE_TYPE} child
    */
   removeChild(child) {
     this._clearFlatNodes();

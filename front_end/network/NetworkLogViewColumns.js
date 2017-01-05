@@ -92,6 +92,7 @@ Network.NetworkLogViewColumns = class {
     this._popoverHelper.initializeCallbacks(
         this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
 
+    /** @type {!UI.SortableDataGrid<!Network.NetworkNode>} */
     this._dataGrid =
         new UI.SortableDataGrid(this._columns.map(Network.NetworkLogViewColumns._convertToDataGridDescriptor));
     this._dataGrid.element.addEventListener('mousedown', event => {
@@ -250,7 +251,7 @@ Network.NetworkLogViewColumns = class {
   }
 
   /**
-   * @return {!UI.SortableDataGrid} dataGrid
+   * @return {!UI.SortableDataGrid<!Network.NetworkNode>} dataGrid
    */
   dataGrid() {
     return this._dataGrid;
@@ -613,7 +614,7 @@ Network.NetworkLogViewColumns._initialSortColumn = 'waterfall';
  *     sortable: boolean,
  *     align: (?UI.DataGrid.Align|undefined),
  *     isResponseHeader: boolean,
- *     sortingFunction: (!function(!Network.NetworkRequestNode, !Network.NetworkRequestNode):number|undefined),
+ *     sortingFunction: (!function(!Network.NetworkNode, !Network.NetworkNode):number|undefined),
  *     isCustomHeader: boolean
  * }}
  */

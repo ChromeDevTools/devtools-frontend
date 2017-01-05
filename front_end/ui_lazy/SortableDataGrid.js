@@ -3,24 +3,26 @@
 // found in the LICENSE file.
 /**
  * @unrestricted
+ * @extends {UI.ViewportDataGrid<!NODE_TYPE>}
+ * @template NODE_TYPE
  */
 UI.SortableDataGrid = class extends UI.ViewportDataGrid {
   /**
    * @param {!Array<!UI.DataGrid.ColumnDescriptor>} columnsArray
-   * @param {function(!UI.DataGridNode, string, string, string)=} editCallback
-   * @param {function(!UI.DataGridNode)=} deleteCallback
+   * @param {function(!NODE_TYPE, string, string, string)=} editCallback
+   * @param {function(!NODE_TYPE)=} deleteCallback
    * @param {function()=} refreshCallback
    */
   constructor(columnsArray, editCallback, deleteCallback, refreshCallback) {
     super(columnsArray, editCallback, deleteCallback, refreshCallback);
-    /** @type {!UI.SortableDataGrid.NodeComparator} */
+    /** @type {function(!NODE_TYPE, !NODE_TYPE):number} */
     this._sortingFunction = UI.SortableDataGrid.TrivialComparator;
-    this.setRootNode(new UI.SortableDataGridNode());
+    this.setRootNode(/** @type {!UI.SortableDataGridNode<!NODE_TYPE>} */ (new UI.SortableDataGridNode()));
   }
 
   /**
-   * @param {!UI.DataGridNode} a
-   * @param {!UI.DataGridNode} b
+   * @param {!UI.SortableDataGridNode} a
+   * @param {!UI.SortableDataGridNode} b
    * @return {number}
    */
   static TrivialComparator(a, b) {
@@ -29,8 +31,8 @@ UI.SortableDataGrid = class extends UI.ViewportDataGrid {
 
   /**
    * @param {string} columnId
-   * @param {!UI.DataGridNode} a
-   * @param {!UI.DataGridNode} b
+   * @param {!UI.SortableDataGridNode} a
+   * @param {!UI.SortableDataGridNode} b
    * @return {number}
    */
   static NumericComparator(columnId, a, b) {
@@ -43,8 +45,8 @@ UI.SortableDataGrid = class extends UI.ViewportDataGrid {
 
   /**
    * @param {string} columnId
-   * @param {!UI.DataGridNode} a
-   * @param {!UI.DataGridNode} b
+   * @param {!UI.SortableDataGridNode} a
+   * @param {!UI.SortableDataGridNode} b
    * @return {number}
    */
   static StringComparator(columnId, a, b) {
@@ -56,11 +58,12 @@ UI.SortableDataGrid = class extends UI.ViewportDataGrid {
   }
 
   /**
-   * @param {!UI.SortableDataGrid.NodeComparator} comparator
+   * @param {function(!NODE_TYPE, !NODE_TYPE):number} comparator
    * @param {boolean} reverseMode
-   * @param {!UI.DataGridNode} a
-   * @param {!UI.DataGridNode} b
+   * @param {!NODE_TYPE} a
+   * @param {!NODE_TYPE} b
    * @return {number}
+   * @template NODE_TYPE
    */
   static Comparator(comparator, reverseMode, a, b) {
     return reverseMode ? comparator(b, a) : comparator(a, b);
@@ -69,7 +72,7 @@ UI.SortableDataGrid = class extends UI.ViewportDataGrid {
   /**
    * @param {!Array.<string>} columnNames
    * @param {!Array.<string>} values
-   * @return {?UI.SortableDataGrid}
+   * @return {?UI.SortableDataGrid<!UI.SortableDataGridNode>}
    */
   static create(columnNames, values) {
     var numColumns = columnNames.length;
@@ -121,15 +124,15 @@ UI.SortableDataGrid = class extends UI.ViewportDataGrid {
   }
 
   /**
-   * @param {!UI.DataGridNode} node
+   * @param {!NODE_TYPE} node
    */
   insertChild(node) {
-    var root = /** @type {!UI.SortableDataGridNode} */ (this.rootNode());
+    var root = /** @type {!UI.SortableDataGridNode<!NODE_TYPE>} */ (this.rootNode());
     root.insertChildOrdered(node);
   }
 
   /**
-   * @param {!UI.SortableDataGrid.NodeComparator} comparator
+   * @param {function(!NODE_TYPE, !NODE_TYPE):number} comparator
    * @param {boolean} reverseMode
    */
   sortNodes(comparator, reverseMode) {
@@ -140,12 +143,10 @@ UI.SortableDataGrid = class extends UI.ViewportDataGrid {
   }
 };
 
-/** @typedef {function(!UI.DataGridNode, !UI.DataGridNode):number} */
-UI.SortableDataGrid.NodeComparator;
-
-
 /**
  * @unrestricted
+ * @extends {UI.ViewportDataGridNode<!NODE_TYPE>}
+ * @template NODE_TYPE
  */
 UI.SortableDataGridNode = class extends UI.ViewportDataGridNode {
   /**
@@ -157,7 +158,7 @@ UI.SortableDataGridNode = class extends UI.ViewportDataGridNode {
   }
 
   /**
-   * @param {!UI.DataGridNode} node
+   * @param {!NODE_TYPE} node
    */
   insertChildOrdered(node) {
     this.insertChild(node, this.children.upperBound(node, this.dataGrid._sortingFunction));

@@ -25,12 +25,13 @@
 
 /**
  * @unrestricted
+ * @template NODE_TYPE
  */
 UI.DataGrid = class extends Common.Object {
   /**
    * @param {!Array.<!UI.DataGrid.ColumnDescriptor>} columnsArray
-   * @param {function(!UI.DataGridNode, string, string, string)=} editCallback
-   * @param {function(!UI.DataGridNode)=} deleteCallback
+   * @param {function(!NODE_TYPE, string, string, string)=} editCallback
+   * @param {function(!NODE_TYPE)=} deleteCallback
    * @param {function()=} refreshCallback
    */
   constructor(columnsArray, editCallback, deleteCallback, refreshCallback) {
@@ -41,11 +42,8 @@ UI.DataGrid = class extends Common.Object {
     this.element.addEventListener('keydown', this._keyDown.bind(this), false);
     this.element.addEventListener('contextmenu', this._contextMenu.bind(this), true);
 
-    /** @type {function(!UI.DataGridNode, string, string, string)|undefined} */
     this._editCallback = editCallback;
-    /** @type {function(!UI.DataGridNode)|undefined} */
     this._deleteCallback = deleteCallback;
-    /** @type {function()|undefined} */
     this._refreshCallback = refreshCallback;
 
     var headerContainer = this.element.createChild('div', 'header-container');
@@ -104,11 +102,11 @@ UI.DataGrid = class extends Common.Object {
 
     /** @type {boolean} */
     this._editing = false;
-    /** @type {?UI.DataGridNode} */
+    /** @type {?NODE_TYPE} */
     this.selectedNode = null;
     /** @type {boolean} */
     this.expandNodesWhenArrowing = false;
-    this.setRootNode(new UI.DataGridNode());
+    this.setRootNode(/** @type {!NODE_TYPE} */ (new UI.DataGridNode()));
     /** @type {number} */
     this.indentWidth = 15;
     /** @type {!Array.<!Element|{__index: number, __position: number}>} */
@@ -122,7 +120,7 @@ UI.DataGrid = class extends Common.Object {
 
     /** @type {?function(!UI.ContextMenu)} */
     this._headerContextMenuCallback = null;
-    /** @type {?function(!UI.ContextMenu, !UI.DataGridNode)} */
+    /** @type {?function(!UI.ContextMenu, !NODE_TYPE)} */
     this._rowContextMenuCallback = null;
   }
 
@@ -255,7 +253,7 @@ UI.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @param {!UI.DataGridNode} rootNode
+   * @param {!NODE_TYPE} rootNode
    * @protected
    */
   setRootNode(rootNode) {
@@ -264,7 +262,7 @@ UI.DataGrid = class extends Common.Object {
       this._rootNode.dataGrid = null;
       this._rootNode._isRoot = false;
     }
-    /** @type {!UI.DataGridNode} */
+    /** @type {!NODE_TYPE} */
     this._rootNode = rootNode;
     rootNode._isRoot = true;
     rootNode.setHasChildren(false);
@@ -275,7 +273,7 @@ UI.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @return {!UI.DataGridNode}
+   * @return {!NODE_TYPE}
    */
   rootNode() {
     return this._rootNode;
@@ -569,7 +567,7 @@ UI.DataGrid = class extends Common.Object {
    * @param {!UI.DataGridNode} rootNode
    * @param {!Array<!UI.DataGridNode>} result
    * @param {number} maxLevel
-   * @return {!Array<!UI.DataGridNode>}
+   * @return {!Array<!NODE_TYPE>}
    */
   _enumerateChildren(rootNode, result, maxLevel) {
     if (!rootNode._isRoot)
@@ -837,7 +835,7 @@ UI.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @param {?UI.DataGridNode} root
+   * @param {?NODE_TYPE} root
    * @param {boolean} onlyAffectsSubtree
    */
   updateSelectionBeforeRemoval(root, onlyAffectsSubtree) {
@@ -872,7 +870,7 @@ UI.DataGrid = class extends Common.Object {
 
   /**
    * @param {!Node} target
-   * @return {?UI.DataGridNode}
+   * @return {?NODE_TYPE}
    */
   dataGridNodeFromNode(target) {
     var rowElement = target.enclosingNodeOrSelfWithNodeName('tr');
@@ -959,7 +957,7 @@ UI.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @param {?function(!UI.ContextMenu, !UI.DataGridNode)} callback
+   * @param {?function(!UI.ContextMenu, !NODE_TYPE)} callback
    */
   setRowContextMenuCallback(callback) {
     this._rowContextMenuCallback = callback;
@@ -1201,6 +1199,8 @@ UI.DataGrid.ResizeMethod = {
 
 /**
  * @unrestricted
+ * @this {NODE_TYPE}
+ * @template NODE_TYPE
  */
 UI.DataGridNode = class extends Common.Object {
   /**
@@ -1221,7 +1221,7 @@ UI.DataGridNode = class extends Common.Object {
     this._revealed;
     /** @type {boolean} */
     this._attached = false;
-    /** @type {?{parent: !UI.DataGridNode, index: number}} */
+    /** @type {?{parent: !NODE_TYPE, index: number}} */
     this._savedPosition = null;
     /** @type {boolean} */
     this._shouldRefreshChildren = true;
@@ -1229,15 +1229,15 @@ UI.DataGridNode = class extends Common.Object {
     this._data = data || {};
     /** @type {boolean} */
     this._hasChildren = hasChildren || false;
-    /** @type {!Array.<!UI.DataGridNode>} */
+    /** @type {!Array.<!NODE_TYPE>} */
     this.children = [];
     /** @type {?UI.DataGrid} */
     this.dataGrid = null;
-    /** @type {?UI.DataGridNode} */
+    /** @type {?NODE_TYPE} */
     this.parent = null;
-    /** @type {?UI.DataGridNode} */
+    /** @type {?NODE_TYPE} */
     this.previousSibling = null;
-    /** @type {?UI.DataGridNode} */
+    /** @type {?NODE_TYPE} */
     this.nextSibling = null;
     /** @type {number} */
     this.disclosureToggleWidth = 10;
@@ -1518,14 +1518,14 @@ UI.DataGridNode = class extends Common.Object {
   }
 
   /**
-   * @param {!UI.DataGridNode} child
+   * @param {!NODE_TYPE} child
    */
   appendChild(child) {
     this.insertChild(child, this.children.length);
   }
 
   /**
-   * @param {!UI.DataGridNode} child
+   * @param {!NODE_TYPE} child
    * @param {number} index
    */
   insertChild(child, index) {
@@ -1577,7 +1577,7 @@ UI.DataGridNode = class extends Common.Object {
   }
 
   /**
-   * @param {!UI.DataGridNode} child
+   * @param {!NODE_TYPE} child
    */
   removeChild(child) {
     if (!child)
@@ -1765,10 +1765,10 @@ UI.DataGridNode = class extends Common.Object {
 
   /**
    * @param {boolean} skipHidden
-   * @param {?UI.DataGridNode=} stayWithin
+   * @param {?NODE_TYPE=} stayWithin
    * @param {boolean=} dontPopulate
    * @param {!Object=} info
-   * @return {?UI.DataGridNode}
+   * @return {?NODE_TYPE}
    */
   traverseNextNode(skipHidden, stayWithin, dontPopulate, info) {
     if (!dontPopulate && this._hasChildren)
@@ -1808,7 +1808,7 @@ UI.DataGridNode = class extends Common.Object {
   /**
    * @param {boolean} skipHidden
    * @param {boolean=} dontPopulate
-   * @return {?UI.DataGridNode}
+   * @return {?NODE_TYPE}
    */
   traversePreviousNode(skipHidden, dontPopulate) {
     var node = (!skipHidden || this.revealed) ? this.previousSibling : null;
@@ -1902,6 +1902,8 @@ UI.DataGridNode = class extends Common.Object {
 
 /**
  * @unrestricted
+ * @extends {UI.DataGridNode<!NODE_TYPE>}
+ * @template NODE_TYPE
  */
 UI.CreationDataGridNode = class extends UI.DataGridNode {
   constructor(data, hasChildren) {

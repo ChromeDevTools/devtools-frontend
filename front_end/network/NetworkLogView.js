@@ -522,10 +522,13 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _setupDataGrid() {
-    /** @type {!UI.SortableDataGrid} */
+    /** @type {!UI.SortableDataGrid<!Network.NetworkNode>} */
     this._dataGrid = this._columns.dataGrid();
-    this._dataGrid.setRowContextMenuCallback(
-        (contextMenu, node) => this.handleContextMenuForRequest(contextMenu, node.request()));
+    this._dataGrid.setRowContextMenuCallback((contextMenu, node) => {
+      var request = node.request();
+      if (request)
+        this.handleContextMenuForRequest(contextMenu, request);
+    });
     this._dataGrid.setStickToBottom(true);
     this._dataGrid.setName('networkLog');
     this._dataGrid.setResizeMethod(UI.DataGrid.ResizeMethod.Last);
@@ -539,8 +542,7 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {!Event} event
    */
   _dataGridMouseMove(event) {
-    var node =
-        /** @type {?Network.NetworkNode} */ (this._dataGrid.dataGridNodeFromNode(/** @type {!Node} */ (event.target)));
+    var node = (this._dataGrid.dataGridNodeFromNode(/** @type {!Node} */ (event.target)));
     var highlightInitiatorChain = event.shiftKey;
     this._setHoveredNode(node, highlightInitiatorChain);
   }
@@ -1311,7 +1313,6 @@ Network.NetworkLogView = class extends UI.VBox {
    * @return {number}
    */
   _updateMatchCountAndFindMatchIndex(node) {
-    /** @type {!Array.<!Network.NetworkRequestNode>} */
     var nodes = this._dataGrid.rootNode().children;
     var matchCount = 0;
     var matchIndex = 0;

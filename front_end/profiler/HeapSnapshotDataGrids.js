@@ -37,6 +37,7 @@ Profiler.HeapSnapshotSortableDataGrid = class extends UI.DataGrid {
    * @param {!Array.<!UI.DataGrid.ColumnDescriptor>} columns
    */
   constructor(dataDisplayDelegate, columns) {
+    // TODO(allada) This entire class needs to be converted to use the templates in DataGridNode.
     super(columns);
     this._dataDisplayDelegate = dataDisplayDelegate;
 

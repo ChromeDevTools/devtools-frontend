@@ -58,7 +58,7 @@ Advanced testing:
 * `npm test -- --fetch-content-shell` - even if you're using a full chromium checkout and have a compiled content shell, this will fetch a pre-compiled content shell. This is useful if you haven't compiled your content shell recently.
 * `npm test -- -f --child-processes=16` - pass in additional flags to the test harness
 * `npm test -- inspector/sources inspector/console` - run specific tests
-* `npm test -- inspector/cookie-resource-match.html --debug-devtools` - debug a specific test (non-bundled & minified). You can use "-d" as a shorthand for "--debug-devtools".
+* `npm test -- inspector/cookie-resource-match.html --debug-devtools` OR `npm run debug-test inspector/cookie-resource-match.html` - debug a specific test (non-bundled & minified). You can use "-d" as a shorthand for "--debug-devtools".
 
 #### Development
 * All devtools commits: [View the log], [RSS feed] or [@DevToolsCommits] on Twitter

@@ -194,6 +194,14 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._mainView.scheduleUpdate();
 
     this._networkDataProvider.reset();
+    if (this._networkDataProvider.isEmpty()) {
+        this._mainView.enableRuler(true);
+        this._splitWidget.hideSidebar();
+    } else {
+        this._mainView.enableRuler(false);
+        this._splitWidget.showBoth();
+        this.resizeToPreferredHeights();
+    }
     this._networkView.scheduleUpdate();
   }
 
@@ -295,7 +303,8 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   }
 
   resizeToPreferredHeights() {
-    this._splitWidget.setSidebarSize(this._networkDataProvider.preferredHeight() + this._splitResizer.clientHeight);
+    this._splitWidget.setSidebarSize(
+        this._networkDataProvider.preferredHeight() + this._splitResizer.clientHeight + UI.FlameChart.HeaderHeight + 2);
   }
 };
 

@@ -88,6 +88,19 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
   }
 
   /**
+   * @param {number} index
+   * @return {?Timeline.TimelineSelection}
+   */
+  createSelection(index) {
+    if (index === -1)
+      return null;
+    var request = this._requests[index];
+    this._lastSelection =
+        new Timeline.TimelineFlameChartView.Selection(Timeline.TimelineSelection.fromNetworkRequest(request), index);
+    return this._lastSelection.timelineSelection;
+  }
+
+  /**
    * @param {?Timeline.TimelineSelection} selection
    * @return {number}
    */

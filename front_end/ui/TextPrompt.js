@@ -199,7 +199,10 @@ UI.TextPrompt = class extends Common.Object {
    * @param {string} placeholder
    */
   setPlaceholder(placeholder) {
-    this._element.setAttribute('data-placeholder', placeholder);
+    if (placeholder)
+      this._element.setAttribute('data-placeholder', placeholder);
+    else
+      this._element.removeAttribute('data-placeholder');
   }
 
   _removeFromElement() {

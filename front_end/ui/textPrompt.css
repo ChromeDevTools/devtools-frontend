@@ -35,7 +35,7 @@
     -webkit-user-modify: read-only;
 }
 
-::content .text-prompt:empty::before {
+::content .text-prompt[data-placeholder]:empty::before {
     content: attr(data-placeholder);
     color: rgb(128, 128, 128);
 }

@@ -36,16 +36,22 @@ Resources.CookieItemsView = class extends UI.SimpleView {
 
     this.element.classList.add('storage-view');
 
-    this._deleteButton = new UI.ToolbarButton(Common.UIString('Delete'), 'largeicon-delete');
-    this._deleteButton.setVisible(false);
+    this._deleteButton = new UI.ToolbarButton(Common.UIString('Delete Selected'), 'largeicon-delete');
     this._deleteButton.addEventListener(UI.ToolbarButton.Events.Click, this._deleteButtonClicked, this);
 
-    this._clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
-    this._clearButton.setVisible(false);
+    this._clearButton = new UI.ToolbarButton(Common.UIString('Clear All'), 'largeicon-clear');
     this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearButtonClicked, this);
 
     this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     this._refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
+
+    this._filterBar = new UI.FilterBar('cookiesPanel', true);
+    this._textFilterUI = new UI.TextFilterUI(true);
+    this._textFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, this._filterChanged, this);
+    this._filterBar.addFilter(this._textFilterUI);
+
+    this._filterSeparator = new UI.ToolbarSeparator();
+    this._filterButton = this._filterBar.filterButton();
 
     this._treeElement = treeElement;
     this._cookieDomain = cookieDomain;
@@ -65,7 +71,10 @@ Resources.CookieItemsView = class extends UI.SimpleView {
    * @return {!Array.<!UI.ToolbarItem>}
    */
   syncToolbarItems() {
-    return [this._refreshButton, this._clearButton, this._deleteButton];
+    return [
+      this._refreshButton, this._clearButton, this._deleteButton,
+      this._filterSeparator, this._filterButton
+    ];
   }
 
   /**
@@ -79,7 +88,16 @@ Resources.CookieItemsView = class extends UI.SimpleView {
    * @override
    */
   willHide() {
-    this._deleteButton.setVisible(false);
+    this._deleteButton.setEnabled(false);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _filterChanged(event) {
+    var text = this._textFilterUI.value();
+    this._filterRegex = text && new RegExp(text.escapeForRegExp(), 'i');
+    this._update();
   }
 
   _update() {
@@ -95,8 +113,9 @@ Resources.CookieItemsView = class extends UI.SimpleView {
     if (!this._cookies.length) {
       // Nothing to show.
       this._emptyWidget.show(this.element);
-      this._clearButton.setVisible(false);
-      this._deleteButton.setVisible(false);
+      this._filterButton.setEnabled(false);
+      this._clearButton.setEnabled(false);
+      this._deleteButton.setEnabled(false);
       if (this._cookiesTable)
         this._cookiesTable.detach();
       return;
@@ -104,17 +123,33 @@ Resources.CookieItemsView = class extends UI.SimpleView {
 
     if (!this._cookiesTable) {
       this._cookiesTable =
-          new Components.CookiesTable(false, this._update.bind(this), this._showDeleteButton.bind(this));
+          new Components.CookiesTable(false, this._update.bind(this), this._enableDeleteButton.bind(this));
     }
 
-    this._cookiesTable.setCookies(this._cookies);
+    var shownCookies = this._filterCookiesForFilters(this._cookies);
+    this._cookiesTable.setCookies(shownCookies);
     this._emptyWidget.detach();
     this._cookiesTable.show(this.element);
+    this._filterBar.show(this.element);
     this._treeElement.subtitle =
         String.sprintf(Common.UIString('%d cookies (%s)'), this._cookies.length, Number.bytesToString(this._totalSize));
-    this._clearButton.setVisible(true);
-    this._deleteButton.setVisible(!!this._cookiesTable.selectedCookie());
+    this._filterButton.setEnabled(true);
+    this._clearButton.setEnabled(true);
+    this._deleteButton.setEnabled(!!this._cookiesTable.selectedCookie());
   }
+
+  /**
+   * @param {!Array.<!SDK.Cookie>} cookies
+   */
+  _filterCookiesForFilters(cookies) {
+    if (!this._filterRegex)
+      return cookies;
+
+    return cookies.filter(cookie => {
+      const candidate = `${cookie.name()} ${cookie.value()} ${cookie.domain()}`;
+      return this._filterRegex.test(candidate);
+    });
+   }
 
   /**
    * @param {!Array.<!SDK.Cookie>} allCookies
@@ -163,8 +198,8 @@ Resources.CookieItemsView = class extends UI.SimpleView {
     this.clear();
   }
 
-  _showDeleteButton() {
-    this._deleteButton.setVisible(true);
+  _enableDeleteButton() {
+    this._deleteButton.setEnabled(true);
   }
 
   /**

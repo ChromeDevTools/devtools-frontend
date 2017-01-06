@@ -80,6 +80,11 @@ li.selected .base-storage-tree-element-subtitle {
     overflow-x: hidden;
 }
 
+.storage-view .filter-bar {
+    border-bottom: none;
+    border-top: 1px solid #dadada;
+}
+
 .database-query-prompt {
     position: relative;
     padding: 1px 22px 1px 24px;

@@ -134,12 +134,20 @@ UI.SuggestBox = class {
     if (!items.length)
       return;
     // If there are no scrollbars, set the width to the width of the largest row.
-    var maxItem = items[0];
-    for (var i = 1; i < items.length; i++) {
-      if (items[i].title.length > maxItem.title.length)
+    var maxItem;
+    var maxLength = -Infinity;
+    for (var i = 0; i < items.length; i++) {
+      var length = items[i].title.length + (items[i].subtitle || '').length;
+      if (length > maxLength) {
+        maxLength = length;
         maxItem = items[i];
+      }
     }
-    this._element.style.width = UI.measurePreferredSize(this.createElementForItem(maxItem), this._element).width + 'px';
+    this._element.style.width =
+        UI.measurePreferredSize(
+              this.createElementForItem(/** @type {!UI.SuggestBox.Suggestion} */ (maxItem)), this._element)
+            .width +
+        'px';
   }
 
   /**

@@ -54,7 +54,7 @@ UI.ListControl = class {
    */
   constructor(delegate, mode) {
     this.element = createElement('div');
-    this.element.style.overflow = 'auto';
+    this.element.style.overflowY = 'auto';
     this._topElement = this.element.createChild('div');
     this._bottomElement = this.element.createChild('div');
     this._firstIndex = 0;

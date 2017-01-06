@@ -1189,9 +1189,9 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    */
   text(textRange) {
     if (!textRange)
-      return this._codeMirror.getValue().replace(/\n/g, this._lineSeparator);
+      return this._codeMirror.getValue(this._lineSeparator);
     var pos = TextEditor.CodeMirrorUtils.toPos(textRange.normalize());
-    return this._codeMirror.getRange(pos.start, pos.end).replace(/\n/g, this._lineSeparator);
+    return this._codeMirror.getRange(pos.start, pos.end, this._lineSeparator);
   }
 
   /**

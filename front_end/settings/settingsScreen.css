@@ -233,6 +233,7 @@ fieldset {
 #workspace-tab-content .settings-tab.help-content.help-container {
     -webkit-column-width: initial;
     overflow: hidden;
+    padding-right: 10px;
 }
 
 
@@ -246,23 +247,21 @@ fieldset {
 }
 
 p.folder-exclude-pattern {
-    margin-top: 0 !important;
+    display: flex;
+    align-items: center;
 }
 
-.folder-exclude-pattern input {
-    margin-top: 10px;
+p.folder-exclude-pattern > input {
+    flex: auto;
 }
 
 .file-system-mapping-view {
-    margin-left: 30px;
-    margin-right: 10px;
 }
 
 .settings-tab .file-system-container {
-    margin-bottom: 18px;
-    padding: 0 8px;
-    border-left: 1px solid hsl(0, 0%, 90%);
-    max-width: 800px;
+    border-top: 1px solid #aaa;
+    padding: 19px 0 10px;
+    margin: 20px 0;
 }
 
 .settings-tab .file-system-header {
@@ -307,4 +306,10 @@ p.folder-exclude-pattern {
 
 .settings-developer-mode .settings-experiment-hidden {
     display: block;
+}
+
+.settings-info-message {
+    background-color: #eee;
+    padding: 10px;
+    margin: 20px 0;
 }

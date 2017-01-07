@@ -104,10 +104,15 @@ TimelineModel.TimelineModel = class {
    * @return {boolean}
    */
   static isMarkerEvent(event) {
-    var recordTypes = TimelineModel.TimelineModel.RecordType;
+    const recordTypes = TimelineModel.TimelineModel.RecordType;
     switch (event.name) {
       case recordTypes.TimeStamp:
       case recordTypes.MarkFirstPaint:
+      case recordTypes.FirstTextPaint:
+      case recordTypes.FirstImagePaint:
+      case recordTypes.FirstMeaningfulPaint:
+      case recordTypes.FirstPaint:
+      case recordTypes.FirstContentfulPaint:
         return true;
       case recordTypes.MarkDOMContent:
       case recordTypes.MarkLoad:
@@ -1201,6 +1206,12 @@ TimelineModel.TimelineModel.RecordType = {
   TimeStamp: 'TimeStamp',
   ConsoleTime: 'ConsoleTime',
   UserTiming: 'UserTiming',
+
+  FirstTextPaint: 'firstTextPaint',
+  FirstImagePaint: 'firstImagePaint',
+  FirstMeaningfulPaint: 'firstMeaningfulPaint',
+  FirstPaint: 'firstPaint',
+  FirstContentfulPaint: 'firstContentfulPaint',
 
   ResourceSendRequest: 'ResourceSendRequest',
   ResourceReceiveResponse: 'ResourceReceiveResponse',

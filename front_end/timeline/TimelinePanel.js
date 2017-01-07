@@ -553,7 +553,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     for (var i = 0; i < this._overviewControls.length; ++i)
       this._overviewControls[i].timelineStarted();
 
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.TimelineStarted);
+    Host.userMetrics.actionTaken(userInitiated ? Host.UserMetrics.Action.TimelineStarted : Host.UserMetrics.Action.TimelinePageReloadStarted);
     this._setUIControlsEnabled(false);
     this._hideLandingPage();
   }

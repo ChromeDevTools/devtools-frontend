@@ -79,7 +79,8 @@ Host.UserMetrics.Action = {
   StyleRuleEdited: 14,
   CommandEvaluatedInConsolePanel: 15,
   DOMPropertiesExpanded: 16,
-  ResizedViewInResponsiveMode: 17
+  ResizedViewInResponsiveMode: 17,
+  TimelinePageReloadStarted: 18
 };
 
 Host.UserMetrics._PanelCodes = {

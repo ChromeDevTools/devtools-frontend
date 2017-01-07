@@ -248,7 +248,8 @@ UI.SuggestBox = class {
     if (item.isSecondary)
       element.classList.add('secondary');
     element.tabIndex = -1;
-    var displayText = item.title.trimEnd(50 + query.length);
+    var maxTextLength = 50 + query.length;
+    var displayText = item.title.trimEnd(maxTextLength);
 
     var titleElement = element.createChild('span', 'suggestion-title');
     var index = displayText.toLowerCase().indexOf(query.toLowerCase());
@@ -260,7 +261,7 @@ UI.SuggestBox = class {
     titleElement.createChild('span', 'spacer');
     if (item.subtitle) {
       var subtitleElement = element.createChild('span', 'suggestion-subtitle');
-      subtitleElement.textContent = item.subtitle.trimEnd(15);
+      subtitleElement.textContent = item.subtitle.trimEnd(maxTextLength - displayText.length);
     }
     element.addEventListener('mousedown', this._onItemMouseDown.bind(this), false);
     return element;

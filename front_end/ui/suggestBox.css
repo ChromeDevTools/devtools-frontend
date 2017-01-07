@@ -96,6 +96,8 @@
     text-align: right;
     color: #999;
     margin-right: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .suggestion-icon {

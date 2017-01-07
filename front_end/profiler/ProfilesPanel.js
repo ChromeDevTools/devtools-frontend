@@ -487,7 +487,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
   _createFileSelectorElement() {
     if (this._fileSelectorElement)
       this.element.removeChild(this._fileSelectorElement);
-    this._fileSelectorElement = Bindings.createFileSelectorElement(this._loadFromFile.bind(this));
+    this._fileSelectorElement = UI.createFileSelectorElement(this._loadFromFile.bind(this));
     Profiler.ProfilesPanel._fileSelectorElement = this._fileSelectorElement;
     this.element.appendChild(this._fileSelectorElement);
   }

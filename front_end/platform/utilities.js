@@ -1441,3 +1441,23 @@ Map.prototype.diff = function(other, isEqual) {
   }
   return {added: added, removed: removed, equal: equal};
 };
+
+/**
+ * TODO: move into its own module
+ * @param {function()} callback
+ * @suppressGlobalPropertiesCheck
+ */
+function runOnWindowLoad(callback) {
+  /**
+   * @suppressGlobalPropertiesCheck
+   */
+  function windowLoaded() {
+    self.removeEventListener('DOMContentLoaded', windowLoaded, false);
+    callback();
+  }
+
+  if (document.readyState === 'complete' || document.readyState === 'interactive')
+    callback();
+  else
+    self.addEventListener('DOMContentLoaded', windowLoaded, false);
+}

@@ -398,7 +398,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _createFileSelector() {
     if (this._fileSelectorElement)
       this._fileSelectorElement.remove();
-    this._fileSelectorElement = Bindings.createFileSelectorElement(this._loadFromFile.bind(this));
+    this._fileSelectorElement = UI.createFileSelectorElement(this._loadFromFile.bind(this));
     this.element.appendChild(this._fileSelectorElement);
   }
 

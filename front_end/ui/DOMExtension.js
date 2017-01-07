@@ -812,22 +812,3 @@ function isEnterKey(event) {
 function isEscKey(event) {
   return event.keyCode === 27;
 }
-
-/**
- * @param {function()} callback
- * @suppressGlobalPropertiesCheck
- */
-function runOnWindowLoad(callback) {
-  /**
-   * @suppressGlobalPropertiesCheck
-   */
-  function windowLoaded() {
-    window.removeEventListener('DOMContentLoaded', windowLoaded, false);
-    callback();
-  }
-
-  if (document.readyState === 'complete' || document.readyState === 'interactive')
-    callback();
-  else
-    window.addEventListener('DOMContentLoaded', windowLoaded, false);
-}

@@ -2016,3 +2016,19 @@ UI.loadImage = function(url) {
 
 /** @type {!UI.ThemeSupport} */
 UI.themeSupport;
+
+/**
+ * @param {function(!File)} callback
+ * @return {!Node}
+ */
+UI.createFileSelectorElement = function(callback) {
+  var fileSelectorElement = createElement('input');
+  fileSelectorElement.type = 'file';
+  fileSelectorElement.style.display = 'none';
+  fileSelectorElement.setAttribute('tabindex', -1);
+  fileSelectorElement.onchange = onChange;
+  function onChange(event) {
+    callback(fileSelectorElement.files[0]);
+  }
+  return fileSelectorElement;
+};

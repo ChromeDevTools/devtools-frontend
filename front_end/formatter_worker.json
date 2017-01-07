@@ -1,5 +1,6 @@
 {
     "modules": [
+        { "name": "platform", "type": "autostart" },
         { "name": "formatter_worker", "type": "autostart" },
         { "name": "gonzales", "type": "remote" }
     ],

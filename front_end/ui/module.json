@@ -5,6 +5,7 @@
         "host"
     ],
     "scripts": [
+        "DOMExtension.js",
         "Widget.js",
         "View.js",
         "treeoutline.js",

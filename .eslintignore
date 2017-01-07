@@ -2,6 +2,7 @@ front_end/.eslintrc.js
 front_end/acorn/*
 front_end/audits2_worker/lighthouse/lighthouse-background.js
 front_end/cm/*
+front_end/cm_headless/*
 front_end/cm_modes/*
 front_end/diff/diff_match_patch.js
 front_end/formatter_worker/acorn/acorn.js

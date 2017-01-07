@@ -1,9 +1,9 @@
 {
     "dependencies": [
-        "platform"
+        "platform",
+        "cm_headless"
     ],
     "scripts": [
-        "../cm/headlesscodemirror.js",
         "../cm/css.js",
         "../cm/xml.js",
         "../common/Text.js",
@@ -23,7 +23,6 @@
     ],
     "skip_compilation": [
         "acorn/acorn.js",
-        "../cm/headlesscodemirror.js",
         "../cm/css.js",
         "../cm/xml.js"
     ]

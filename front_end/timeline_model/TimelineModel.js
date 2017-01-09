@@ -1486,6 +1486,7 @@ TimelineModel.TimelineModel.NetworkRequest = class {
   constructor(event) {
     this.startTime = event.name === TimelineModel.TimelineModel.RecordType.ResourceSendRequest ? event.startTime : 0;
     this.endTime = Infinity;
+    this.encodedDataLength = 0;
     /** @type {!Array<!SDK.TracingModel.Event>} */
     this.children = [];
     /** @type {?Object} */
@@ -1518,6 +1519,18 @@ TimelineModel.TimelineModel.NetworkRequest = class {
     if (!this.responseTime &&
         (event.name === recordType.ResourceReceiveResponse || event.name === recordType.ResourceReceivedData))
       this.responseTime = event.startTime;
+    const encodedDataLength = eventData['encodedDataLength'] || 0;
+    if (event.name === recordType.ResourceReceiveResponse) {
+      if (eventData['fromCache'])
+        this.fromCache = true;
+      if (eventData['fromServiceWorker'])
+        this.fromServiceWorker = true;
+      this.encodedDataLength = encodedDataLength;
+    }
+    if (event.name === recordType.ResourceReceivedData)
+      this.encodedDataLength += encodedDataLength;
+    if (event.name === recordType.ResourceFinish && encodedDataLength)
+      this.encodedDataLength = encodedDataLength;
     if (!this.url)
       this.url = eventData['url'];
     if (!this.requestMethod)

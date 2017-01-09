@@ -275,6 +275,7 @@
     background: transparent;
     text-align: left;
     border-spacing: 0;
+    margin: 4px;
 }
 
 .image-preview-container img {

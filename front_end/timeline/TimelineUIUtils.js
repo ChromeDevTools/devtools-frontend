@@ -1031,26 +1031,33 @@ Timeline.TimelineUIUtils = class {
     if (request.requestMethod)
       contentHelper.appendTextRow(Common.UIString('Request Method'), request.requestMethod);
     if (typeof request.priority === 'string') {
-      var priority =
+      const priority =
           Components.uiLabelForPriority(/** @type {!Protocol.Network.ResourcePriority} */ (request.priority));
       contentHelper.appendTextRow(Common.UIString('Priority'), priority);
     }
     if (request.mimeType)
       contentHelper.appendTextRow(Common.UIString('Mime Type'), request.mimeType);
-
-    var title = Common.UIString('Initiator');
-    var sendRequest = request.children[0];
-    var topFrame = TimelineModel.TimelineData.forEvent(sendRequest).topFrame();
+    var lengthText = '';
+    if (request.fromCache)
+      lengthText += Common.UIString('(from cache) ');
+    if (request.fromServiceWorker)
+      lengthText += Common.UIString('(from service worker)');
+    if (request.encodedDataLength || !lengthText)
+      lengthText = `${Number.bytesToString(request.encodedDataLength)} ${lengthText}`;
+    contentHelper.appendTextRow(Common.UIString('Encoded Length'), lengthText);
+    const title = Common.UIString('Initiator');
+    const sendRequest = request.children[0];
+    const topFrame = TimelineModel.TimelineData.forEvent(sendRequest).topFrame();
     if (topFrame) {
-      var link = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame);
+      const link = linkifier.maybeLinkifyConsoleCallFrame(target, topFrame);
       if (link)
         contentHelper.appendElementRow(title, link);
     } else {
-      var initiator = TimelineModel.TimelineData.forEvent(sendRequest).initiator();
+      const initiator = TimelineModel.TimelineData.forEvent(sendRequest).initiator();
       if (initiator) {
-        var initiatorURL = TimelineModel.TimelineData.forEvent(initiator).url;
+        const initiatorURL = TimelineModel.TimelineData.forEvent(initiator).url;
         if (initiatorURL) {
-          var link = linkifier.maybeLinkifyScriptLocation(target, null, initiatorURL, 0);
+          const link = linkifier.maybeLinkifyScriptLocation(target, null, initiatorURL, 0);
           if (link)
             contentHelper.appendElementRow(title, link);
         }

@@ -1,0 +1,25 @@
+{
+    "scripts": [
+        "codemirror.js",
+        "multiplex.js",
+        "matchbrackets.js",
+        "closebrackets.js",
+        "markselection.js",
+        "comment.js",
+        "overlay.js",
+        "activeline.js"
+    ],
+    "skip_compilation": [
+        "codemirror.js",
+        "multiplex.js",
+        "matchbrackets.js",
+        "closebrackets.js",
+        "markselection.js",
+        "comment.js",
+        "overlay.js",
+        "activeline.js"
+    ],
+    "resources": [
+        "codemirror.css"
+    ]
+}

@@ -4,8 +4,8 @@
         "cm_headless"
     ],
     "scripts": [
-        "../cm/css.js",
-        "../cm/xml.js",
+        "../cm_web_modes/css.js",
+        "../cm_web_modes/xml.js",
         "../common/Text.js",
         "../common/TextRange.js",
         "ESTreeWalker.js",
@@ -23,7 +23,7 @@
     ],
     "skip_compilation": [
         "acorn/acorn.js",
-        "../cm/css.js",
-        "../cm/xml.js"
+        "../cm_web_modes/css.js",
+        "../cm_web_modes/xml.js"
     ]
 }

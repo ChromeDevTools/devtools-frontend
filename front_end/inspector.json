@@ -30,6 +30,7 @@
         { "name": "console" },
         { "name": "source_frame" },
         { "name": "text_editor" },
+        { "name": "cm" },
         { "name": "cm_modes", "type": "remote" },
         { "name": "settings" },
         { "name": "layers", "condition": "!v8only" },

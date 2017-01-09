@@ -290,7 +290,7 @@ Components.JavaScriptAutocomplete._completionsForQuery = function(
   var result = [];
   var lastGroupTitle;
   for (var group of propertyGroups) {
-    group.items.sort();
+    group.items.sort(itemComparator);
     var caseSensitivePrefix = [];
     var caseInsensitivePrefix = [];
     var caseSensitiveAnywhere = [];
@@ -332,4 +332,19 @@ Components.JavaScriptAutocomplete._completionsForQuery = function(
     result = result.concat(structuredGroup);
   }
   return result;
+
+  /**
+   * @param {string} a
+   * @param {string} b
+   * @return {number}
+   */
+  function itemComparator(a, b) {
+    var aStartsWithUnderscore = a.startsWith('_');
+    var bStartsWithUnderscore = b.startsWith('_');
+    if (aStartsWithUnderscore && !bStartsWithUnderscore)
+      return 1;
+    if (bStartsWithUnderscore && !aStartsWithUnderscore)
+      return -1;
+    return String.naturalOrderComparator(a, b);
+  }
 };

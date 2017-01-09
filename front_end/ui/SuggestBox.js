@@ -59,6 +59,7 @@ UI.SuggestBox = class {
     this._suggestBoxDelegate = suggestBoxDelegate;
     this._maxItemsHeight = maxItemsHeight;
     this._maybeHideBound = this._maybeHide.bind(this);
+    this._hideBound = this.hide.bind(this);
     this._container = createElementWithClass('div', 'suggest-box-container');
     this._rowHeight = 17;
     /** @type {!UI.ListControl<!UI.SuggestBox.Suggestion>} */
@@ -163,7 +164,7 @@ UI.SuggestBox = class {
 
   _maybeHide() {
     if (!this._hideTimeoutId)
-      this._hideTimeoutId = window.setTimeout(this.hide.bind(this), 0);
+      this._hideTimeoutId = window.setTimeout(this._hideBound, 0);
   }
 
   /**
@@ -175,6 +176,7 @@ UI.SuggestBox = class {
       return;
     this._bodyElement = document.body;
     this._bodyElement.addEventListener('mousedown', this._maybeHideBound, true);
+    this._element.ownerDocument.defaultView.addEventListener('resize', this._hideBound, false);
     this._overlay = new UI.SuggestBox.Overlay();
     this._overlay.setContentElement(this._container);
     this._rowHeight =
@@ -187,6 +189,7 @@ UI.SuggestBox = class {
 
     this._userInteracted = false;
     this._bodyElement.removeEventListener('mousedown', this._maybeHideBound, true);
+    this._element.ownerDocument.defaultView.removeEventListener('resize', this._hideBound, false);
     delete this._bodyElement;
     this._container.remove();
     this._overlay.dispose();

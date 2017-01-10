@@ -249,11 +249,12 @@ UI.FlameChart = class extends UI.ChartViewport {
   }
 
   _updateHighlight() {
-    var inDividersBar = this._lastMouseOffsetY < UI.FlameChart.HeaderHeight;
+    const inDividersBar = this._lastMouseOffsetY < UI.FlameChart.HeaderHeight;
     this._highlightedMarkerIndex = inDividersBar ? this._markerIndexAtPosition(this._lastMouseOffsetX) : -1;
     this._updateMarkerHighlight();
 
-    var entryIndex = this._coordinatesToEntryIndex(this._lastMouseOffsetX, this._lastMouseOffsetY);
+    const entryIndex = this._highlightedMarkerIndex === -1 ?
+        this._coordinatesToEntryIndex(this._lastMouseOffsetX, this._lastMouseOffsetY) : -1;
     if (entryIndex === -1) {
       this.hideHighlight();
       return;
@@ -532,19 +533,18 @@ UI.FlameChart = class extends UI.ChartViewport {
    * @return {number}
    */
   _markerIndexAtPosition(x) {
-    var markers = this._timelineData().markers;
+    const markers = this._timelineData().markers;
     if (!markers)
       return -1;
-    var accurracyOffsetPx = 1;
-    var time = this._cursorTime(x);
-    var leftTime = this._cursorTime(x - accurracyOffsetPx);
-    var rightTime = this._cursorTime(x + accurracyOffsetPx);
-
-    var left = this._markerIndexBeforeTime(leftTime);
+    const accurracyOffsetPx = 4;
+    const time = this._cursorTime(x);
+    const leftTime = this._cursorTime(x - accurracyOffsetPx);
+    const rightTime = this._cursorTime(x + accurracyOffsetPx);
+    const left = this._markerIndexBeforeTime(leftTime);
     var markerIndex = -1;
     var distance = Infinity;
     for (var i = left; i < markers.length && markers[i].startTime() < rightTime; i++) {
-      var nextDistance = Math.abs(markers[i].startTime() - time);
+      const nextDistance = Math.abs(markers[i].startTime() - time);
       if (nextDistance < distance) {
         markerIndex = i;
         distance = nextDistance;

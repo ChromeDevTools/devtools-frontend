@@ -4,10 +4,10 @@
 
 .flame-chart-marker-highlight-element {
     position: absolute;
-    top: 0;
-    height: 20px;
-    width: 4px;
-    margin: 0 -2px;
+    top: 1px;
+    height: 18px;
+    width: 6px;
+    margin: 0 -3px;
     content: "";
     display: block;
 }

@@ -186,6 +186,7 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
   }
 };
 
+/** @implements {Common.Emittable} */
 Resources.DatabaseModel.DatabaseAddedEvent = class {
   /**
    * @param {!Resources.Database} database
@@ -195,6 +196,7 @@ Resources.DatabaseModel.DatabaseAddedEvent = class {
   }
 };
 
+/** @implements {Common.Emittable} */
 Resources.DatabaseModel.DatabasesRemovedEvent = class {};
 
 /**

@@ -1037,7 +1037,6 @@ SDK.DOMDocument = class extends SDK.DOMNode {
     this._init(this, false, payload);
     this.documentURL = payload.documentURL || '';
     this.baseURL = payload.baseURL || '';
-    this._listeners = {};
   }
 };
 

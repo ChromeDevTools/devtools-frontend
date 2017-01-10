@@ -112,14 +112,14 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
   /**
    * @return {!Protocol.Network.RequestId}
    */
-  get requestId() {
+  requestId() {
     return this._requestId;
   }
 
   /**
    * @param {!Protocol.Network.RequestId} requestId
    */
-  set requestId(requestId) {
+  setRequestId(requestId) {
     this._requestId = requestId;
   }
 
@@ -1191,7 +1191,7 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
   }
 
   replayXHR() {
-    this.target().networkAgent().replayXHR(this.requestId);
+    this.target().networkAgent().replayXHR(this._requestId);
   }
 
   /**

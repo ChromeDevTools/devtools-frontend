@@ -126,7 +126,7 @@ SDK.NetworkLog = class extends SDK.SDKModel {
         if (!this._currentPageLoad)
           this._currentPageLoad = new SDK.PageLoad(request);
         this._requests.push(request);
-        this._requestForId[request.requestId] = request;
+        this._requestForId[request.requestId()] = request;
         request.__page = this._currentPageLoad;
       }
     }
@@ -138,7 +138,7 @@ SDK.NetworkLog = class extends SDK.SDKModel {
   _onRequestStarted(event) {
     var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     this._requests.push(request);
-    this._requestForId[request.requestId] = request;
+    this._requestForId[request.requestId()] = request;
     request.__page = this._currentPageLoad;
   }
 

@@ -349,7 +349,7 @@ Network.NetworkLogView = class extends UI.VBox {
    * @return {?Network.NetworkNode}
    */
   nodeForRequest(request) {
-    return this._nodesByRequestId.get(request.requestId);
+    return this._nodesByRequestId.get(request.requestId());
   }
 
   /**
@@ -911,10 +911,10 @@ Network.NetworkLogView = class extends UI.VBox {
 
     // In case of redirect request id is reassigned to a redirected
     // request and we need to update _nodesByRequestId and search results.
-    var originalRequestNode = this._nodesByRequestId.get(request.requestId);
+    var originalRequestNode = this._nodesByRequestId.get(request.requestId());
     if (originalRequestNode)
-      this._nodesByRequestId.set(originalRequestNode.request().requestId, originalRequestNode);
-    this._nodesByRequestId.set(request.requestId, node);
+      this._nodesByRequestId.set(originalRequestNode.request().requestId(), originalRequestNode);
+    this._nodesByRequestId.set(request.requestId(), node);
 
     // Pull all the redirects of the main request upon commit load.
     if (request.redirects) {
@@ -937,7 +937,7 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {!SDK.NetworkRequest} request
    */
   _refreshRequest(request) {
-    if (!this._nodesByRequestId.get(request.requestId))
+    if (!this._nodesByRequestId.get(request.requestId()))
       return;
 
     Network.NetworkLogView._subdomains(request.domain)
@@ -981,7 +981,7 @@ Network.NetworkLogView = class extends UI.VBox {
       this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.SetCookieValue, cookie.value());
     }
 
-    this._staleRequestIds[request.requestId] = true;
+    this._staleRequestIds[request.requestId()] = true;
     this.dispatchEventToListeners(Network.NetworkLogView.Events.UpdateRequest, request);
     this.scheduleRefresh();
   }
@@ -1013,7 +1013,7 @@ Network.NetworkLogView = class extends UI.VBox {
     }
     for (var i = 0; i < requestsToPick.length; ++i) {
       var request = requestsToPick[i];
-      var node = this._nodesByRequestId.get(request.requestId);
+      var node = this._nodesByRequestId.get(request.requestId());
       if (node) {
         node.markAsNavigationRequest();
         break;
@@ -1530,7 +1530,7 @@ Network.NetworkLogView = class extends UI.VBox {
   revealAndHighlightRequest(request) {
     this.removeAllNodeHighlights();
 
-    var node = this._nodesByRequestId.get(request.requestId);
+    var node = this._nodesByRequestId.get(request.requestId());
     if (node) {
       node.reveal();
       this._highlightNode(node);

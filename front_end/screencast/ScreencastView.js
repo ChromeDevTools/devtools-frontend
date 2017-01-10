@@ -840,7 +840,7 @@ Screencast.ScreencastView.ProgressTracker = class {
     // Ignore long-living WebSockets for the sake of progress indicator, as we won't be waiting them anyway.
     if (request.type === Common.resourceTypes.WebSocket)
       return;
-    this._requestIds[request.requestId] = request;
+    this._requestIds[request.requestId()] = request;
     ++this._startedRequests;
   }
 
@@ -848,7 +848,7 @@ Screencast.ScreencastView.ProgressTracker = class {
     if (!this._navigationProgressVisible())
       return;
     var request = /** @type {!SDK.NetworkRequest} */ (event.data);
-    if (!(request.requestId in this._requestIds))
+    if (!(request.requestId() in this._requestIds))
       return;
     ++this._finishedRequests;
     setTimeout(function() {

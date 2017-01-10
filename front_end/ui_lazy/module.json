@@ -21,7 +21,6 @@
     ],
     "resources": [
         "dataGrid.css",
-        "dialog.css",
         "flameChart.css",
         "overviewGrid.css",
         "pieChart.css",

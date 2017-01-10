@@ -10,7 +10,7 @@ Sources.AddSourceMapURLDialog = class extends UI.HBox {
    */
   constructor(callback) {
     super(true);
-    this.registerRequiredCSS('ui_lazy/dialog.css');
+    this.registerRequiredCSS('sources/dialog.css');
     this.contentElement.createChild('label').textContent = Common.UIString('Source map URL: ');
 
     this._input = this.contentElement.createChild('input');

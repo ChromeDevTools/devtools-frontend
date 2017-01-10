@@ -1,9 +1,7 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/**
- * @unrestricted
- */
+
 Layers.LayerPaintProfilerView = class extends UI.SplitWidget {
   /**
    * @param {function(string=)} showImageCallback
@@ -28,7 +26,6 @@ Layers.LayerPaintProfilerView = class extends UI.SplitWidget {
    * @param {!SDK.PaintProfilerSnapshot} snapshot
    */
   profile(snapshot) {
-    this._showImageCallback = null;
     snapshot.commandLog().then(log => setSnapshotAndLog.call(this, snapshot, log));
 
     /**

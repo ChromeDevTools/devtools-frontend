@@ -611,10 +611,11 @@
         "components",
         "source_frame",
         "snippets",
-        "ui_lazy",
         "extensions",
         "persistence",
-        "quick_open"
+        "quick_open",
+        "inline_editor",
+        "color_picker"
     ],
     "scripts": [
         "UIList.js",

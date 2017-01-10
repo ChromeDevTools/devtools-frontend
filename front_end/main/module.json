@@ -435,7 +435,8 @@
         "OverlayController.js",
         "Main.js",
         "GCActionDelegate.js",
-        "RequestAppBannerActionDelegate.js"
+        "RequestAppBannerActionDelegate.js",
+        "ExecutionContextSelector.js"
     ],
     "resources": [
         "errorWarningCounter.css",

@@ -66,7 +66,7 @@ Profiler.CPUProfileView = class extends Profiler.ProfileView {
 
   /**
    * @override
-   * @return {!UI.FlameChartDataProvider}
+   * @return {!PerfUI.FlameChartDataProvider}
    */
   createFlameChartDataProvider() {
     return new Profiler.CPUFlameChartDataProvider(this.profile, this._profileHeader.target());
@@ -340,7 +340,7 @@ Profiler.CPUFlameChartDataProvider = class extends Profiler.ProfileFlameChartDat
 
   /**
    * @override
-   * @return {!UI.FlameChart.TimelineData}
+   * @return {!PerfUI.FlameChart.TimelineData}
    */
   _calculateTimelineData() {
     /** @type {!Array.<?Profiler.CPUFlameChartDataProvider.ChartEntry>} */
@@ -387,7 +387,7 @@ Profiler.CPUFlameChartDataProvider = class extends Profiler.ProfileFlameChartDat
 
     this._maxStackDepth = maxDepth;
 
-    this._timelineData = new UI.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
+    this._timelineData = new PerfUI.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
 
     /** @type {!Array<!SDK.CPUProfileNode>} */
     this._entryNodes = entryNodes;

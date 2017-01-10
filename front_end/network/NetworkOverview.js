@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-Network.NetworkOverview = class extends UI.TimelineOverviewBase {
+Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
   constructor() {
     super();
     this.element.classList.add('network-overview');
@@ -23,7 +23,7 @@ Network.NetworkOverview = class extends UI.TimelineOverviewBase {
   }
 
   /**
-   * @param {?Components.FilmStripModel} filmStripModel
+   * @param {?SDK.FilmStripModel} filmStripModel
    */
   setFilmStripModel(filmStripModel) {
     this._filmStripModel = filmStripModel;
@@ -112,7 +112,7 @@ Network.NetworkOverview = class extends UI.TimelineOverviewBase {
    * @override
    */
   reset() {
-    /** @type {?Components.FilmStripModel} */
+    /** @type {?SDK.FilmStripModel} */
     this._filmStripModel = null;
 
     /** @type {number} */

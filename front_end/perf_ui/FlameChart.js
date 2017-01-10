@@ -31,9 +31,9 @@
 /**
  * @interface
  */
-UI.FlameChartDelegate = function() {};
+PerfUI.FlameChartDelegate = function() {};
 
-UI.FlameChartDelegate.prototype = {
+PerfUI.FlameChartDelegate.prototype = {
   /**
    * @param {number} startTime
    * @param {number} endTime
@@ -50,22 +50,22 @@ UI.FlameChartDelegate.prototype = {
 /**
  * @unrestricted
  */
-UI.FlameChart = class extends UI.ChartViewport {
+PerfUI.FlameChart = class extends PerfUI.ChartViewport {
   /**
-   * @param {!UI.FlameChartDataProvider} dataProvider
-   * @param {!UI.FlameChartDelegate} flameChartDelegate
+   * @param {!PerfUI.FlameChartDataProvider} dataProvider
+   * @param {!PerfUI.FlameChartDelegate} flameChartDelegate
    * @param {!Common.Setting=} groupExpansionSetting
    */
   constructor(dataProvider, flameChartDelegate, groupExpansionSetting) {
     super();
-    this.registerRequiredCSS('ui_lazy/flameChart.css');
+    this.registerRequiredCSS('perf_ui/flameChart.css');
     this.contentElement.classList.add('flame-chart-main-pane');
     this._flameChartDelegate = flameChartDelegate;
     this._groupExpansionSetting = groupExpansionSetting;
     this._groupExpansionState = groupExpansionSetting && groupExpansionSetting.get() || {};
 
     this._dataProvider = dataProvider;
-    this._calculator = new UI.FlameChart.Calculator(dataProvider);
+    this._calculator = new PerfUI.FlameChart.Calculator(dataProvider);
 
     this._canvas = /** @type {!HTMLCanvasElement} */ (this.viewportElement.createChild('canvas'));
     this._canvas.tabIndex = 1;
@@ -182,7 +182,7 @@ UI.FlameChart = class extends UI.ChartViewport {
   }
 
   /**
-   * @return {?UI.FlameChart.TimelineData}
+   * @return {?PerfUI.FlameChart.TimelineData}
    */
   _timelineData() {
     if (!this._dataProvider)
@@ -249,12 +249,13 @@ UI.FlameChart = class extends UI.ChartViewport {
   }
 
   _updateHighlight() {
-    const inDividersBar = this._lastMouseOffsetY < UI.FlameChart.HeaderHeight;
+    const inDividersBar = this._lastMouseOffsetY < PerfUI.FlameChart.HeaderHeight;
     this._highlightedMarkerIndex = inDividersBar ? this._markerIndexAtPosition(this._lastMouseOffsetX) : -1;
     this._updateMarkerHighlight();
 
     const entryIndex = this._highlightedMarkerIndex === -1 ?
-        this._coordinatesToEntryIndex(this._lastMouseOffsetX, this._lastMouseOffsetY) : -1;
+        this._coordinatesToEntryIndex(this._lastMouseOffsetX, this._lastMouseOffsetY) :
+        -1;
     if (entryIndex === -1) {
       this.hideHighlight();
       return;
@@ -328,7 +329,7 @@ UI.FlameChart = class extends UI.ChartViewport {
       return;
     }
     this.hideRangeSelection();
-    this.dispatchEventToListeners(UI.FlameChart.Events.EntrySelected, this._highlightedEntryIndex);
+    this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntrySelected, this._highlightedEntryIndex);
   }
 
   /**
@@ -408,7 +409,7 @@ UI.FlameChart = class extends UI.ChartViewport {
       indexOnLevel += e.keyCode === keys.Left.code ? -1 : 1;
       e.consume(true);
       if (indexOnLevel >= 0 && indexOnLevel < levelIndexes.length)
-        this.dispatchEventToListeners(UI.FlameChart.Events.EntrySelected, levelIndexes[indexOnLevel]);
+        this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntrySelected, levelIndexes[indexOnLevel]);
       return;
     }
     if (e.keyCode === keys.Up.code || e.keyCode === keys.Down.code) {
@@ -427,7 +428,7 @@ UI.FlameChart = class extends UI.ChartViewport {
             !entriesIntersect(this._selectedEntryIndex, levelIndexes[indexOnLevel]))
           return;
       }
-      this.dispatchEventToListeners(UI.FlameChart.Events.EntrySelected, levelIndexes[indexOnLevel]);
+      this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntrySelected, levelIndexes[indexOnLevel]);
     }
   }
 
@@ -475,7 +476,7 @@ UI.FlameChart = class extends UI.ChartViewport {
     var indexOnLevel = Math.max(entryIndexes.upperBound(cursorTime, comparator) - 1, 0);
 
     /**
-     * @this {UI.FlameChart}
+     * @this {PerfUI.FlameChart}
      * @param {number} entryIndex
      * @return {boolean}
      */
@@ -701,8 +702,8 @@ UI.FlameChart = class extends UI.ChartViewport {
 
     this._drawGroupHeaders(width, height);
     this._drawMarkers();
-    const headerHeight = this._rulerEnabled ? UI.FlameChart.HeaderHeight : 0;
-    UI.TimelineGrid.drawCanvasGrid(context, this._calculator, 3, headerHeight);
+    const headerHeight = this._rulerEnabled ? PerfUI.FlameChart.HeaderHeight : 0;
+    PerfUI.TimelineGrid.drawCanvasGrid(context, this._calculator, 3, headerHeight);
 
     this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
     this._updateElementPosition(this._selectedElement, this._selectedEntryIndex);
@@ -814,7 +815,7 @@ UI.FlameChart = class extends UI.ChartViewport {
      * @param {number} x
      * @param {number} y
      * @param {boolean} expanded
-     * @this {UI.FlameChart}
+     * @this {PerfUI.FlameChart}
      */
     function drawExpansionArrow(x, y, expanded) {
       var arrowHeight = this._arrowSide * Math.sqrt(3) / 2;
@@ -829,8 +830,8 @@ UI.FlameChart = class extends UI.ChartViewport {
     }
 
     /**
-     * @param {function(number, number, !UI.FlameChart.Group, boolean)} callback
-     * @this {UI.FlameChart}
+     * @param {function(number, number, !PerfUI.FlameChart.Group, boolean)} callback
+     * @this {PerfUI.FlameChart}
      */
     function forEachGroup(callback) {
       /** @type !Array<{nestingLevel: number, visible: boolean}> */
@@ -857,7 +858,7 @@ UI.FlameChart = class extends UI.ChartViewport {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!UI.FlameChart.Group} group
+   * @param {!PerfUI.FlameChart.Group} group
    * @return {number}
    */
   _labelWidthForGroup(context, group) {
@@ -935,7 +936,7 @@ UI.FlameChart = class extends UI.ChartViewport {
     var ratio = window.devicePixelRatio;
     context.scale(ratio, ratio);
     context.translate(0, 3);
-    var height = UI.FlameChart.HeaderHeight - 1;
+    var height = PerfUI.FlameChart.HeaderHeight - 1;
     for (var i = left; i < markers.length; i++) {
       var timestamp = markers[i].startTime();
       if (timestamp > rightBoundary)
@@ -962,7 +963,7 @@ UI.FlameChart = class extends UI.ChartViewport {
   }
 
   /**
-   * @param {?UI.FlameChart.TimelineData} timelineData
+   * @param {?PerfUI.FlameChart.TimelineData} timelineData
    */
   _processTimelineData(timelineData) {
     if (!timelineData) {
@@ -1009,7 +1010,7 @@ UI.FlameChart = class extends UI.ChartViewport {
     this._groupOffsets = new Uint32Array(groups.length + 1);
 
     var groupIndex = -1;
-    var currentOffset = this._rulerEnabled ? UI.FlameChart.HeaderHeight : 2;
+    var currentOffset = this._rulerEnabled ? PerfUI.FlameChart.HeaderHeight : 2;
     var visible = true;
     /** @type !Array<{nestingLevel: number, visible: boolean}> */
     var groupStack = [{nestingLevel: -1, visible: true}];
@@ -1201,19 +1202,19 @@ UI.FlameChart = class extends UI.ChartViewport {
   }
 };
 
-UI.FlameChart.HeaderHeight = 15;
+PerfUI.FlameChart.HeaderHeight = 15;
 
-UI.FlameChart.MinimalTimeWindowMs = 0.5;
+PerfUI.FlameChart.MinimalTimeWindowMs = 0.5;
 
 /**
  * @interface
  */
-UI.FlameChartDataProvider = function() {};
+PerfUI.FlameChartDataProvider = function() {};
 
 /**
- * @typedef {!{name: string, startLevel: number, expanded: (boolean|undefined), style: !UI.FlameChart.GroupStyle}}
+ * @typedef {!{name: string, startLevel: number, expanded: (boolean|undefined), style: !PerfUI.FlameChart.GroupStyle}}
  */
-UI.FlameChart.Group;
+PerfUI.FlameChart.Group;
 
 /**
  * @typedef {!{
@@ -1228,29 +1229,29 @@ UI.FlameChart.Group;
  *     useFirstLineForOverview: (boolean|undefined)
  * }}
  */
-UI.FlameChart.GroupStyle;
+PerfUI.FlameChart.GroupStyle;
 
 /**
  * @unrestricted
  */
-UI.FlameChart.TimelineData = class {
+PerfUI.FlameChart.TimelineData = class {
   /**
    * @param {!Array<number>|!Uint16Array} entryLevels
    * @param {!Array<number>|!Float32Array} entryTotalTimes
    * @param {!Array<number>|!Float64Array} entryStartTimes
-   * @param {?Array<!UI.FlameChart.Group>} groups
+   * @param {?Array<!PerfUI.FlameChart.Group>} groups
    */
   constructor(entryLevels, entryTotalTimes, entryStartTimes, groups) {
     this.entryLevels = entryLevels;
     this.entryTotalTimes = entryTotalTimes;
     this.entryStartTimes = entryStartTimes;
     this.groups = groups;
-    /** @type {!Array.<!UI.FlameChartMarker>} */
+    /** @type {!Array.<!PerfUI.FlameChartMarker>} */
     this.markers = [];
   }
 };
 
-UI.FlameChartDataProvider.prototype = {
+PerfUI.FlameChartDataProvider.prototype = {
   /**
    * @return {number}
    */
@@ -1274,7 +1275,7 @@ UI.FlameChartDataProvider.prototype = {
   maxStackDepth() {},
 
   /**
-   * @return {?UI.FlameChart.TimelineData}
+   * @return {?PerfUI.FlameChart.TimelineData}
    */
   timelineData() {},
 
@@ -1338,9 +1339,9 @@ UI.FlameChartDataProvider.prototype = {
 /**
  * @interface
  */
-UI.FlameChartMarker = function() {};
+PerfUI.FlameChartMarker = function() {};
 
-UI.FlameChartMarker.prototype = {
+PerfUI.FlameChartMarker.prototype = {
   /**
    * @return {number}
    */
@@ -1366,14 +1367,14 @@ UI.FlameChartMarker.prototype = {
 };
 
 /** @enum {symbol} */
-UI.FlameChart.Events = {
+PerfUI.FlameChart.Events = {
   EntrySelected: Symbol('EntrySelected')
 };
 
 /**
  * @unrestricted
  */
-UI.FlameChart.ColorGenerator = class {
+PerfUI.FlameChart.ColorGenerator = class {
   /**
    * @param {!{min: number, max: number}|number=} hueSpace
    * @param {!{min: number, max: number, count: (number|undefined)}|number=} satSpace
@@ -1438,12 +1439,12 @@ UI.FlameChart.ColorGenerator = class {
 };
 
 /**
- * @implements {UI.TimelineGrid.Calculator}
+ * @implements {PerfUI.TimelineGrid.Calculator}
  * @unrestricted
  */
-UI.FlameChart.Calculator = class {
+PerfUI.FlameChart.Calculator = class {
   /**
-   * @param {!UI.FlameChartDataProvider} dataProvider
+   * @param {!PerfUI.FlameChartDataProvider} dataProvider
    */
   constructor(dataProvider) {
     this._dataProvider = dataProvider;
@@ -1459,7 +1460,7 @@ UI.FlameChart.Calculator = class {
   }
 
   /**
-   * @param {!UI.FlameChart} mainPane
+   * @param {!PerfUI.FlameChart} mainPane
    */
   _updateBoundaries(mainPane) {
     this._totalTime = mainPane._dataProvider.totalTime();

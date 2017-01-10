@@ -17,7 +17,7 @@ Timeline.TimelineFlameChartEntryType = {
 };
 
 /**
- * @implements {UI.FlameChartMarker}
+ * @implements {PerfUI.FlameChartMarker}
  * @unrestricted
  */
 Timeline.TimelineFlameChartMarker = class {
@@ -96,7 +96,7 @@ Timeline.TimelineFlameChartMarker = class {
 
 /**
  * @implements {Timeline.TimelineModeView}
- * @implements {UI.FlameChartDelegate}
+ * @implements {PerfUI.FlameChartDelegate}
  * @unrestricted
  */
 Timeline.TimelineFlameChartView = class extends UI.VBox {
@@ -118,14 +118,14 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
 
     this._dataProvider = new Timeline.TimelineFlameChartDataProvider(this._model, frameModel, irModel, filters);
     var mainViewGroupExpansionSetting = Common.settings.createSetting('timelineFlamechartMainViewGroupExpansion', {});
-    this._mainView = new UI.FlameChart(this._dataProvider, this, mainViewGroupExpansionSetting);
+    this._mainView = new PerfUI.FlameChart(this._dataProvider, this, mainViewGroupExpansionSetting);
     this._mainView.alwaysShowVerticalScroll();
     this._mainView.enableRuler(false);
 
     var networkViewGroupExpansionSetting =
         Common.settings.createSetting('timelineFlamechartNetworkViewGroupExpansion', {});
     this._networkDataProvider = new Timeline.TimelineFlameChartNetworkDataProvider(this._model);
-    this._networkView = new UI.FlameChart(this._networkDataProvider, this, networkViewGroupExpansionSetting);
+    this._networkView = new PerfUI.FlameChart(this._networkDataProvider, this, networkViewGroupExpansionSetting);
     this._networkView.alwaysShowVerticalScroll();
     networkViewGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights.bind(this));
 
@@ -142,8 +142,8 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
 
     this._onMainEntrySelected = this._onEntrySelected.bind(this, this._dataProvider);
     this._onNetworkEntrySelected = this._onEntrySelected.bind(this, this._networkDataProvider);
-    this._mainView.addEventListener(UI.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
-    this._networkView.addEventListener(UI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
+    this._mainView.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
+    this._networkView.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
     this._nextExtensionIndex = 0;
 
     Bindings.blackboxManager.addChangeListener(this.refreshRecords, this);
@@ -153,8 +153,8 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @override
    */
   dispose() {
-    this._mainView.removeEventListener(UI.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
-    this._networkView.removeEventListener(UI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
+    this._mainView.removeEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
+    this._networkView.removeEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
     Bindings.blackboxManager.removeChangeListener(this.refreshRecords, this);
   }
 
@@ -195,12 +195,12 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
 
     this._networkDataProvider.reset();
     if (this._networkDataProvider.isEmpty()) {
-        this._mainView.enableRuler(true);
-        this._splitWidget.hideSidebar();
+      this._mainView.enableRuler(true);
+      this._splitWidget.hideSidebar();
     } else {
-        this._mainView.enableRuler(false);
-        this._splitWidget.showBoth();
-        this.resizeToPreferredHeights();
+      this._mainView.enableRuler(false);
+      this._splitWidget.showBoth();
+      this.resizeToPreferredHeights();
     }
     this._networkView.scheduleUpdate();
   }
@@ -294,7 +294,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   }
 
   /**
-   * @param {!UI.FlameChartDataProvider} dataProvider
+   * @param {!PerfUI.FlameChartDataProvider} dataProvider
    * @param {!Common.Event} event
    */
   _onEntrySelected(dataProvider, event) {
@@ -304,7 +304,8 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
 
   resizeToPreferredHeights() {
     this._splitWidget.setSidebarSize(
-        this._networkDataProvider.preferredHeight() + this._splitResizer.clientHeight + UI.FlameChart.HeaderHeight + 2);
+        this._networkDataProvider.preferredHeight() + this._splitResizer.clientHeight + PerfUI.FlameChart.HeaderHeight +
+        2);
   }
 };
 

@@ -64,25 +64,26 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._splitWidget.show(this._searchableView.element);
 
     this._containmentDataGrid = new Profiler.HeapSnapshotContainmentDataGrid(this);
-    this._containmentDataGrid.addEventListener(UI.DataGrid.Events.SelectedNode, this._selectionChanged, this);
+    this._containmentDataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._selectionChanged, this);
     this._containmentWidget = this._containmentDataGrid.asWidget();
     this._containmentWidget.setMinimumSize(50, 25);
 
     this._statisticsView = new Profiler.HeapSnapshotStatisticsView();
 
     this._constructorsDataGrid = new Profiler.HeapSnapshotConstructorsDataGrid(this);
-    this._constructorsDataGrid.addEventListener(UI.DataGrid.Events.SelectedNode, this._selectionChanged, this);
+    this._constructorsDataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._selectionChanged, this);
     this._constructorsWidget = this._constructorsDataGrid.asWidget();
     this._constructorsWidget.setMinimumSize(50, 25);
 
     this._diffDataGrid = new Profiler.HeapSnapshotDiffDataGrid(this);
-    this._diffDataGrid.addEventListener(UI.DataGrid.Events.SelectedNode, this._selectionChanged, this);
+    this._diffDataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._selectionChanged, this);
     this._diffWidget = this._diffDataGrid.asWidget();
     this._diffWidget.setMinimumSize(50, 25);
 
     if (isHeapTimeline && Common.moduleSetting('recordAllocationStacks').get()) {
       this._allocationDataGrid = new Profiler.AllocationDataGrid(profile.target(), this);
-      this._allocationDataGrid.addEventListener(UI.DataGrid.Events.SelectedNode, this._onSelectAllocationNode, this);
+      this._allocationDataGrid.addEventListener(
+          DataGrid.DataGrid.Events.SelectedNode, this._onSelectAllocationNode, this);
       this._allocationWidget = this._allocationDataGrid.asWidget();
       this._allocationWidget.setMinimumSize(50, 25);
 
@@ -120,7 +121,8 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._splitWidget.hideDefaultResizer();
     this._splitWidget.installResizer(splitWidgetResizer);
 
-    this._retainmentDataGrid.addEventListener(UI.DataGrid.Events.SelectedNode, this._inspectedObjectChanged, this);
+    this._retainmentDataGrid.addEventListener(
+        DataGrid.DataGrid.Events.SelectedNode, this._inspectedObjectChanged, this);
     this._retainmentDataGrid.reset();
 
     this._perspectives = [];
@@ -452,7 +454,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
    * @param {!Common.Event} event
    */
   _onSelectAllocationNode(event) {
-    var selectedNode = /** @type {!UI.DataGridNode} */ (event.data);
+    var selectedNode = /** @type {!DataGrid.DataGridNode} */ (event.data);
     this._constructorsDataGrid.setAllocationNodeId(selectedNode.allocationNodeId());
     this._setSelectedNodeForDetailsView(null);
   }
@@ -461,7 +463,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
    * @param {!Common.Event} event
    */
   _inspectedObjectChanged(event) {
-    var selectedNode = /** @type {!UI.DataGridNode} */ (event.data);
+    var selectedNode = /** @type {!DataGrid.DataGridNode} */ (event.data);
     var target = this._profile.target();
     if (target && selectedNode instanceof Profiler.HeapSnapshotGenericObjectNode)
       target.heapProfilerAgent().addInspectedHeapObject(String(selectedNode.snapshotNodeId));
@@ -739,7 +741,7 @@ Profiler.HeapSnapshotView.Perspective = class {
 
   /**
    * @param {!Profiler.HeapSnapshotView} heapSnapshotView
-   * @return {?UI.DataGrid}
+   * @return {?DataGrid.DataGrid}
    */
   masterGrid(heapSnapshotView) {
     return null;
@@ -789,7 +791,7 @@ Profiler.HeapSnapshotView.SummaryPerspective = class extends Profiler.HeapSnapsh
   /**
    * @override
    * @param {!Profiler.HeapSnapshotView} heapSnapshotView
-   * @return {?UI.DataGrid}
+   * @return {?DataGrid.DataGrid}
    */
   masterGrid(heapSnapshotView) {
     return heapSnapshotView._constructorsDataGrid;
@@ -827,7 +829,7 @@ Profiler.HeapSnapshotView.ComparisonPerspective = class extends Profiler.HeapSna
   /**
    * @override
    * @param {!Profiler.HeapSnapshotView} heapSnapshotView
-   * @return {?UI.DataGrid}
+   * @return {?DataGrid.DataGrid}
    */
   masterGrid(heapSnapshotView) {
     return heapSnapshotView._diffDataGrid;
@@ -863,7 +865,7 @@ Profiler.HeapSnapshotView.ContainmentPerspective = class extends Profiler.HeapSn
   /**
    * @override
    * @param {!Profiler.HeapSnapshotView} heapSnapshotView
-   * @return {?UI.DataGrid}
+   * @return {?DataGrid.DataGrid}
    */
   masterGrid(heapSnapshotView) {
     return heapSnapshotView._containmentDataGrid;
@@ -919,7 +921,7 @@ Profiler.HeapSnapshotView.AllocationPerspective = class extends Profiler.HeapSna
   /**
    * @override
    * @param {!Profiler.HeapSnapshotView} heapSnapshotView
-   * @return {?UI.DataGrid}
+   * @return {?DataGrid.DataGrid}
    */
   masterGrid(heapSnapshotView) {
     return heapSnapshotView._allocationDataGrid;
@@ -945,7 +947,7 @@ Profiler.HeapSnapshotView.StatisticsPerspective = class extends Profiler.HeapSna
   /**
    * @override
    * @param {!Profiler.HeapSnapshotView} heapSnapshotView
-   * @return {?UI.DataGrid}
+   * @return {?DataGrid.DataGrid}
    */
   masterGrid(heapSnapshotView) {
     return null;
@@ -1643,13 +1645,13 @@ Profiler.HeapTrackingOverviewGrid = class extends UI.VBox {
     this.element.classList.add('heap-tracking-overview');
 
     this._overviewContainer = this.element.createChild('div', 'heap-overview-container');
-    this._overviewGrid = new UI.OverviewGrid('heap-recording');
+    this._overviewGrid = new PerfUI.OverviewGrid('heap-recording');
     this._overviewGrid.element.classList.add('fill');
 
     this._overviewCanvas = this._overviewContainer.createChild('canvas', 'heap-recording-overview-canvas');
     this._overviewContainer.appendChild(this._overviewGrid.element);
     this._overviewCalculator = new Profiler.HeapTrackingOverviewGrid.OverviewCalculator();
-    this._overviewGrid.addEventListener(UI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
+    this._overviewGrid.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
 
     this._profileSamples = heapProfileHeader.fromFile() ? new Profiler.TrackingHeapSnapshotProfileType.Samples() :
                                                           heapProfileHeader._profileSamples;
@@ -1927,7 +1929,7 @@ Profiler.HeapTrackingOverviewGrid.SmoothScale = class {
 };
 
 /**
- * @implements {UI.TimelineGrid.Calculator}
+ * @implements {PerfUI.TimelineGrid.Calculator}
  * @unrestricted
  */
 Profiler.HeapTrackingOverviewGrid.OverviewCalculator = class {
@@ -2007,7 +2009,7 @@ Profiler.HeapSnapshotStatisticsView = class extends UI.VBox {
   constructor() {
     super();
     this.setMinimumSize(50, 25);
-    this._pieChart = new UI.PieChart(150, Profiler.HeapSnapshotStatisticsView._valueFormatter, true);
+    this._pieChart = new PerfUI.PieChart(150, Profiler.HeapSnapshotStatisticsView._valueFormatter, true);
     this._pieChart.element.classList.add('heap-snapshot-stats-pie-chart');
     this.element.appendChild(this._pieChart.element);
     this._labels = this.element.createChild('div', 'heap-snapshot-stats-legend');

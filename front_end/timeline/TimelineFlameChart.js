@@ -29,7 +29,7 @@
  */
 
 /**
- * @implements {UI.FlameChartDataProvider}
+ * @implements {PerfUI.FlameChartDataProvider}
  * @unrestricted
  */
 Timeline.TimelineFlameChartDataProvider = class {
@@ -44,15 +44,15 @@ Timeline.TimelineFlameChartDataProvider = class {
     this._font = '11px ' + Host.fontFamily();
     this._model = model;
     this._filters = filters;
-    /** @type {?UI.FlameChart.TimelineData} */
+    /** @type {?PerfUI.FlameChart.TimelineData} */
     this._timelineData = null;
     this._currentLevel = 0;
     this._frameModel = frameModel;
     this._irModel = irModel;
     this._consoleColorGenerator =
-        new UI.FlameChart.ColorGenerator({min: 30, max: 55}, {min: 70, max: 100, count: 6}, 50, 0.7);
+        new PerfUI.FlameChart.ColorGenerator({min: 30, max: 55}, {min: 70, max: 100, count: 6}, 50, 0.7);
     this._extensionColorGenerator =
-        new UI.FlameChart.ColorGenerator({min: 210, max: 300}, {min: 70, max: 100, count: 6}, 70, 0.7);
+        new PerfUI.FlameChart.ColorGenerator({min: 210, max: 300}, {min: 70, max: 100, count: 6}, 70, 0.7);
 
     const defaultGroupStyle = {
       padding: 4,
@@ -65,15 +65,15 @@ Timeline.TimelineFlameChartDataProvider = class {
       shareHeaderLine: true
     };
 
-    this._headerLevel1 = /** @type {!UI.FlameChart.GroupStyle} */
+    this._headerLevel1 = /** @type {!PerfUI.FlameChart.GroupStyle} */
         (Object.assign({}, defaultGroupStyle, {shareHeaderLine: false}));
-    this._headerLevel2 = /** @type {!UI.FlameChart.GroupStyle} */
+    this._headerLevel2 = /** @type {!PerfUI.FlameChart.GroupStyle} */
         (Object.assign({}, defaultGroupStyle, {padding: 2, nestingLevel: 1, collapsible: false}));
-    this._staticHeader = /** @type {!UI.FlameChart.GroupStyle} */
+    this._staticHeader = /** @type {!PerfUI.FlameChart.GroupStyle} */
         (Object.assign({}, defaultGroupStyle, {collapsible: false}));
-    this._interactionsHeaderLevel1 = /** @type {!UI.FlameChart.GroupStyle} */
+    this._interactionsHeaderLevel1 = /** @type {!PerfUI.FlameChart.GroupStyle} */
         (Object.assign({useFirstLineForOverview: true}, defaultGroupStyle));
-    this._interactionsHeaderLevel2 = /** @type {!UI.FlameChart.GroupStyle} */
+    this._interactionsHeaderLevel2 = /** @type {!PerfUI.FlameChart.GroupStyle} */
         (Object.assign({}, defaultGroupStyle, {padding: 2, nestingLevel: 1}));
   }
 
@@ -157,13 +157,13 @@ Timeline.TimelineFlameChartDataProvider = class {
 
   /**
    * @override
-   * @return {!UI.FlameChart.TimelineData}
+   * @return {!PerfUI.FlameChart.TimelineData}
    */
   timelineData() {
     if (this._timelineData)
       return this._timelineData;
 
-    this._timelineData = new UI.FlameChart.TimelineData([], [], [], []);
+    this._timelineData = new PerfUI.FlameChart.TimelineData([], [], [], []);
 
     this._minimumBoundary = this._model.minimumRecordTime();
     this._timeSpan = this._model.isEmpty() ? 1000 : this._model.maximumRecordTime() - this._minimumBoundary;
@@ -260,7 +260,7 @@ Timeline.TimelineFlameChartDataProvider = class {
     clonedHeader.nestingLevel = level;
     this._appendSyncEvents(
         events, Timeline.TimelineUIUtils.displayNameForFrame(frame),
-        /** @type {!UI.FlameChart.GroupStyle} */ (clonedHeader), Timeline.TimelineFlameChartEntryType.Event);
+        /** @type {!PerfUI.FlameChart.GroupStyle} */ (clonedHeader), Timeline.TimelineFlameChartEntryType.Event);
     frame.children.forEach(this._appendFrameEvents.bind(this, level + 1));
   }
 
@@ -279,7 +279,7 @@ Timeline.TimelineFlameChartDataProvider = class {
   /**
    * @param {!Array<!SDK.TracingModel.Event>} events
    * @param {string} title
-   * @param {!UI.FlameChart.GroupStyle} style
+   * @param {!PerfUI.FlameChart.GroupStyle} style
    * @param {!Timeline.TimelineFlameChartEntryType} entryType
    * @param {boolean=} forceExpanded
    */
@@ -374,7 +374,7 @@ Timeline.TimelineFlameChartDataProvider = class {
   /**
    * @param {string} header
    * @param {!Array<!SDK.TracingModel.AsyncEvent>} events
-   * @param {!UI.FlameChart.GroupStyle} style
+   * @param {!PerfUI.FlameChart.GroupStyle} style
    * @param {!Timeline.TimelineFlameChartEntryType} entryType
    */
   _appendAsyncEventsGroup(header, events, style, entryType) {
@@ -648,7 +648,7 @@ Timeline.TimelineFlameChartDataProvider = class {
 
   /**
    * @param {string} title
-   * @param {!UI.FlameChart.GroupStyle} style
+   * @param {!PerfUI.FlameChart.GroupStyle} style
    * @param {boolean=} expanded
    */
   _appendHeader(title, style, expanded) {

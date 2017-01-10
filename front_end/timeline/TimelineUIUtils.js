@@ -1460,7 +1460,7 @@ Timeline.TimelineUIUtils = class {
       total += aggregatedStats[categoryName];
 
     var element = createElementWithClass('div', 'timeline-details-view-pie-chart-wrapper hbox');
-    var pieChart = new UI.PieChart(100);
+    var pieChart = new PerfUI.PieChart(100);
     pieChart.element.classList.add('timeline-details-view-pie-chart');
     pieChart.setTotal(total);
     var pieChartContainer = element.createChild('div', 'vbox');
@@ -1514,7 +1514,7 @@ Timeline.TimelineUIUtils = class {
   /**
    * @param {!TimelineModel.TimelineFrameModel} frameModel
    * @param {!TimelineModel.TimelineFrame} frame
-   * @param {?Components.FilmStripModel.Frame} filmStripFrame
+   * @param {?SDK.FilmStripModel.Frame} filmStripFrame
    * @return {!Element}
    */
   static generateDetailsContentForFrame(frameModel, frame, filmStripFrame) {
@@ -1549,10 +1549,10 @@ Timeline.TimelineUIUtils = class {
     }
 
     /**
-     * @param {!Components.FilmStripModel.Frame} filmStripFrame
+     * @param {!SDK.FilmStripModel.Frame} filmStripFrame
      */
     function frameClicked(filmStripFrame) {
-      new Components.FilmStripView.Dialog(filmStripFrame, 0);
+      new PerfUI.FilmStripView.Dialog(filmStripFrame, 0);
     }
 
     return contentHelper.fragment;
@@ -1712,7 +1712,7 @@ Timeline.TimelineUIUtils = class {
   static colorForURL(url) {
     if (!Timeline.TimelineUIUtils.colorForURL._colorGenerator) {
       Timeline.TimelineUIUtils.colorForURL._colorGenerator =
-          new UI.FlameChart.ColorGenerator({min: 30, max: 330}, {min: 50, max: 80, count: 3}, 85);
+          new PerfUI.FlameChart.ColorGenerator({min: 30, max: 330}, {min: 50, max: 80, count: 3}, 85);
     }
     return Timeline.TimelineUIUtils.colorForURL._colorGenerator.colorForID(url);
   }

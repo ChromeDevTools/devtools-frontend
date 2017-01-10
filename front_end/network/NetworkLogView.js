@@ -522,7 +522,7 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _setupDataGrid() {
-    /** @type {!UI.SortableDataGrid<!Network.NetworkNode>} */
+    /** @type {!DataGrid.SortableDataGrid<!Network.NetworkNode>} */
     this._dataGrid = this._columns.dataGrid();
     this._dataGrid.setRowContextMenuCallback((contextMenu, node) => {
       var request = node.request();
@@ -531,7 +531,7 @@ Network.NetworkLogView = class extends UI.VBox {
     });
     this._dataGrid.setStickToBottom(true);
     this._dataGrid.setName('networkLog');
-    this._dataGrid.setResizeMethod(UI.DataGrid.ResizeMethod.Last);
+    this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
     this._dataGrid.element.classList.add('network-log-grid');
     this._dataGrid.element.addEventListener('mousedown', this._dataGridMouseDown.bind(this), true);
     this._dataGrid.element.addEventListener('mousemove', this._dataGridMouseMove.bind(this), true);

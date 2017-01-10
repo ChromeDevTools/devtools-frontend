@@ -112,12 +112,12 @@ Resources.IDBDataView = class extends UI.SimpleView {
   }
 
   /**
-   * @return {!UI.DataGrid}
+   * @return {!DataGrid.DataGrid}
    */
   _createDataGrid() {
     var keyPath = this._isIndex ? this._index.keyPath : this._objectStore.keyPath;
 
-    var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([]);
+    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([]);
     columns.push({id: 'number', title: Common.UIString('#'), sortable: false, width: '50px'});
     columns.push(
         {id: 'key', titleDOMFragment: this._keyColumnHeaderFragment(Common.UIString('Key'), keyPath), sortable: false});
@@ -130,7 +130,7 @@ Resources.IDBDataView = class extends UI.SimpleView {
     }
     columns.push({id: 'value', title: Common.UIString('Value'), sortable: false});
 
-    var dataGrid = new UI.DataGrid(columns);
+    var dataGrid = new DataGrid.DataGrid(columns);
     return dataGrid;
   }
 
@@ -340,7 +340,7 @@ Resources.IDBDataView = class extends UI.SimpleView {
 /**
  * @unrestricted
  */
-Resources.IDBDataGridNode = class extends UI.DataGridNode {
+Resources.IDBDataGridNode = class extends DataGrid.DataGridNode {
   /**
    * @param {!Object.<string, *>} data
    */

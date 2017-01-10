@@ -739,7 +739,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._shortcuts = {};
 
     var shortcut = UI.KeyboardShortcut;
-    var section = Components.shortcutsScreen.section(Common.UIString('Console'));
+    var section = UI.shortcutsScreen.section(Common.UIString('Console'));
 
     var shortcutL = shortcut.makeDescriptor('l', UI.KeyboardShortcut.Modifiers.Ctrl);
     var keys = [shortcutL];

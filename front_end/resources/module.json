@@ -10,11 +10,19 @@
         },
         {
             "type": "@Common.Revealer",
-            "contextTypes": ["SDK.Resource"],
+            "contextTypes": [
+                "SDK.Resource"
+            ],
             "className": "Resources.ResourcesPanel.ResourceRevealer"
         }
     ],
-    "dependencies": ["source_frame", "ui_lazy", "components_lazy"],
+    "dependencies": [
+        "source_frame",
+        "cookie_table",
+        "inline_editor",
+        "data_grid",
+        "components"
+    ],
     "scripts": [
         "AppManifestView.js",
         "ApplicationCacheItemsView.js",

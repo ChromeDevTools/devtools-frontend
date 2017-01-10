@@ -27,9 +27,9 @@
  * @unrestricted
  * @template NODE_TYPE
  */
-UI.DataGrid = class extends Common.Object {
+DataGrid.DataGrid = class extends Common.Object {
   /**
-   * @param {!Array.<!UI.DataGrid.ColumnDescriptor>} columnsArray
+   * @param {!Array.<!DataGrid.DataGrid.ColumnDescriptor>} columnsArray
    * @param {function(!NODE_TYPE, string, string, string)=} editCallback
    * @param {function(!NODE_TYPE)=} deleteCallback
    * @param {function()=} refreshCallback
@@ -37,7 +37,7 @@ UI.DataGrid = class extends Common.Object {
   constructor(columnsArray, editCallback, deleteCallback, refreshCallback) {
     super();
     this.element = createElementWithClass('div', 'data-grid');
-    UI.appendStyle(this.element, 'ui_lazy/dataGrid.css');
+    UI.appendStyle(this.element, 'data_grid/dataGrid.css');
     this.element.tabIndex = 0;
     this.element.addEventListener('keydown', this._keyDown.bind(this), false);
     this.element.addEventListener('contextmenu', this._contextMenu.bind(this), true);
@@ -66,11 +66,11 @@ UI.DataGrid = class extends Common.Object {
     /** @type {boolean} */
     this._inline = false;
 
-    /** @type {!Array.<!UI.DataGrid.ColumnDescriptor>} */
+    /** @type {!Array.<!DataGrid.DataGrid.ColumnDescriptor>} */
     this._columnsArray = [];
-    /** @type {!Object.<string, !UI.DataGrid.ColumnDescriptor>} */
+    /** @type {!Object.<string, !DataGrid.DataGrid.ColumnDescriptor>} */
     this._columns = {};
-    /** @type {!Array.<!UI.DataGrid.ColumnDescriptor>} */
+    /** @type {!Array.<!DataGrid.DataGrid.ColumnDescriptor>} */
     this._visibleColumnsArray = columnsArray;
 
     columnsArray.forEach(column => this._innerAddColumn(column));
@@ -106,7 +106,7 @@ UI.DataGrid = class extends Common.Object {
     this.selectedNode = null;
     /** @type {boolean} */
     this.expandNodesWhenArrowing = false;
-    this.setRootNode(/** @type {!NODE_TYPE} */ (new UI.DataGridNode()));
+    this.setRootNode(/** @type {!NODE_TYPE} */ (new DataGrid.DataGridNode()));
     /** @type {number} */
     this.indentWidth = 15;
     /** @type {!Array.<!Element|{__index: number, __position: number}>} */
@@ -114,9 +114,9 @@ UI.DataGrid = class extends Common.Object {
     /** @type {boolean} */
     this._columnWidthsInitialized = false;
     /** @type {number} */
-    this._cornerWidth = UI.DataGrid.CornerWidth;
-    /** @type {!UI.DataGrid.ResizeMethod} */
-    this._resizeMethod = UI.DataGrid.ResizeMethod.Nearest;
+    this._cornerWidth = DataGrid.DataGrid.CornerWidth;
+    /** @type {!DataGrid.DataGrid.ResizeMethod} */
+    this._resizeMethod = DataGrid.DataGrid.ResizeMethod.Nearest;
 
     /** @type {?function(!UI.ContextMenu)} */
     this._headerContextMenuCallback = null;
@@ -132,7 +132,7 @@ UI.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @param {!UI.DataGrid.ColumnDescriptor} column
+   * @param {!DataGrid.DataGrid.ColumnDescriptor} column
    * @param {number=} position
    */
   _innerAddColumn(column, position) {
@@ -150,7 +150,7 @@ UI.DataGrid = class extends Common.Object {
 
     var cell = createElement('th');
     cell.className = columnId + '-column';
-    cell[UI.DataGrid._columnIdSymbol] = columnId;
+    cell[DataGrid.DataGrid._columnIdSymbol] = columnId;
     this._headerTableHeaders[columnId] = cell;
 
     var div = createElement('div');
@@ -173,7 +173,7 @@ UI.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @param {!UI.DataGrid.ColumnDescriptor} column
+   * @param {!DataGrid.DataGrid.ColumnDescriptor} column
    * @param {number=} position
    */
   addColumn(column, position) {
@@ -228,7 +228,7 @@ UI.DataGrid = class extends Common.Object {
       }
       this._headerRow.appendChild(this._headerTableHeaders[columnId]);
       this._topFillerRow.createChild('td', 'top-filler-td');
-      this._bottomFillerRow.createChild('td', 'bottom-filler-td')[UI.DataGrid._columnIdSymbol] = columnId;
+      this._bottomFillerRow.createChild('td', 'bottom-filler-td')[DataGrid.DataGrid._columnIdSymbol] = columnId;
     }
 
     this._headerRow.createChild('th', 'corner');
@@ -249,7 +249,7 @@ UI.DataGrid = class extends Common.Object {
       this._bottomFillerRow.style.height = bottom + 'px';
     else
       this._bottomFillerRow.style.height = 'auto';
-    this.dispatchEventToListeners(UI.DataGrid.Events.PaddingChanged);
+    this.dispatchEventToListeners(DataGrid.DataGrid.Events.PaddingChanged);
   }
 
   /**
@@ -293,12 +293,12 @@ UI.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @param {!UI.DataGridNode} node
+   * @param {!DataGrid.DataGridNode} node
    * @param {number} cellIndex
    */
   _startEditingColumnOfDataGridNode(node, cellIndex) {
     this._editing = true;
-    /** @type {?UI.DataGridNode} */
+    /** @type {?DataGrid.DataGridNode} */
     this._editingNode = node;
     this._editingNode.select();
 
@@ -370,7 +370,7 @@ UI.DataGrid = class extends Common.Object {
 
     /**
      * @param {boolean} wasChange
-     * @this {UI.DataGrid}
+     * @this {DataGrid.DataGrid}
      */
     function moveToNextIfNeeded(wasChange) {
       if (!moveDirection)
@@ -464,17 +464,17 @@ UI.DataGrid = class extends Common.Object {
   sortColumnId() {
     if (!this._sortColumnCell)
       return null;
-    return this._sortColumnCell[UI.DataGrid._columnIdSymbol];
+    return this._sortColumnCell[DataGrid.DataGrid._columnIdSymbol];
   }
 
   /**
    * @return {?string}
    */
   sortOrder() {
-    if (!this._sortColumnCell || this._sortColumnCell.classList.contains(UI.DataGrid.Order.Ascending))
-      return UI.DataGrid.Order.Ascending;
-    if (this._sortColumnCell.classList.contains(UI.DataGrid.Order.Descending))
-      return UI.DataGrid.Order.Descending;
+    if (!this._sortColumnCell || this._sortColumnCell.classList.contains(DataGrid.DataGrid.Order.Ascending))
+      return DataGrid.DataGrid.Order.Ascending;
+    if (this._sortColumnCell.classList.contains(DataGrid.DataGrid.Order.Descending))
+      return DataGrid.DataGrid.Order.Descending;
     return null;
   }
 
@@ -482,7 +482,7 @@ UI.DataGrid = class extends Common.Object {
    * @return {boolean}
    */
   isSortOrderAscending() {
-    return !this._sortColumnCell || this._sortColumnCell.classList.contains(UI.DataGrid.Order.Ascending);
+    return !this._sortColumnCell || this._sortColumnCell.classList.contains(DataGrid.DataGrid.Order.Ascending);
   }
 
   /**
@@ -564,8 +564,8 @@ UI.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @param {!UI.DataGridNode} rootNode
-   * @param {!Array<!UI.DataGridNode>} result
+   * @param {!DataGrid.DataGridNode} rootNode
+   * @param {!Array<!DataGrid.DataGridNode>} result
    * @param {number} maxLevel
    * @return {!Array<!NODE_TYPE>}
    */
@@ -664,7 +664,7 @@ UI.DataGrid = class extends Common.Object {
     for (var i = 0; i < this._visibleColumnsArray.length; ++i) {
       var column = this._visibleColumnsArray[i];
       if (column.fixedWidth) {
-        var width = this._headerTableColumnGroup.children[i][UI.DataGrid._preferredWidthSymbol] ||
+        var width = this._headerTableColumnGroup.children[i][DataGrid.DataGrid._preferredWidthSymbol] ||
             this._headerTableBody.rows[0].cells[i].offsetWidth;
         fixedColumnWidths[i] = width;
         tableWidth -= width;
@@ -759,7 +759,7 @@ UI.DataGrid = class extends Common.Object {
     var emptyData = {};
     for (var column in this._columns)
       emptyData[column] = null;
-    this.creationNode = new UI.CreationDataGridNode(emptyData, hasChildren);
+    this.creationNode = new DataGrid.CreationDataGridNode(emptyData, hasChildren);
     this.rootNode().appendChild(this.creationNode);
   }
 
@@ -883,7 +883,7 @@ UI.DataGrid = class extends Common.Object {
    */
   columnIdFromNode(target) {
     var cellElement = target.enclosingNodeOrSelfWithNodeName('td');
-    return cellElement && cellElement[UI.DataGrid._columnIdSymbol];
+    return cellElement && cellElement[DataGrid.DataGrid._columnIdSymbol];
   }
 
   /**
@@ -891,29 +891,29 @@ UI.DataGrid = class extends Common.Object {
    */
   _clickInHeaderCell(event) {
     var cell = event.target.enclosingNodeOrSelfWithNodeName('th');
-    if (!cell || (cell[UI.DataGrid._columnIdSymbol] === undefined) || !cell.classList.contains('sortable'))
+    if (!cell || (cell[DataGrid.DataGrid._columnIdSymbol] === undefined) || !cell.classList.contains('sortable'))
       return;
 
-    var sortOrder = UI.DataGrid.Order.Ascending;
+    var sortOrder = DataGrid.DataGrid.Order.Ascending;
     if ((cell === this._sortColumnCell) && this.isSortOrderAscending())
-      sortOrder = UI.DataGrid.Order.Descending;
+      sortOrder = DataGrid.DataGrid.Order.Descending;
 
     if (this._sortColumnCell)
-      this._sortColumnCell.classList.remove(UI.DataGrid.Order.Ascending, UI.DataGrid.Order.Descending);
+      this._sortColumnCell.classList.remove(DataGrid.DataGrid.Order.Ascending, DataGrid.DataGrid.Order.Descending);
     this._sortColumnCell = cell;
 
     cell.classList.add(sortOrder);
 
-    this.dispatchEventToListeners(UI.DataGrid.Events.SortingChanged);
+    this.dispatchEventToListeners(DataGrid.DataGrid.Events.SortingChanged);
   }
 
   /**
    * @param {string} columnId
-   * @param {!UI.DataGrid.Order} sortOrder
+   * @param {!DataGrid.DataGrid.Order} sortOrder
    */
   markColumnAsSortedBy(columnId, sortOrder) {
     if (this._sortColumnCell)
-      this._sortColumnCell.classList.remove(UI.DataGrid.Order.Ascending, UI.DataGrid.Order.Descending);
+      this._sortColumnCell.classList.remove(DataGrid.DataGrid.Order.Ascending, DataGrid.DataGrid.Order.Descending);
     this._sortColumnCell = this._headerTableHeaders[columnId];
     this._sortColumnCell.classList.add(sortOrder);
   }
@@ -1023,7 +1023,7 @@ UI.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @param {!UI.DataGrid.ResizeMethod} method
+   * @param {!DataGrid.DataGrid.ResizeMethod} method
    */
   setResizeMethod(method) {
     this._resizeMethod = method;
@@ -1064,9 +1064,9 @@ UI.DataGrid = class extends Common.Object {
       leftEdgeOfPreviousColumn += firstRowCells[i].offsetWidth;
 
     // Differences for other resize methods
-    if (this._resizeMethod === UI.DataGrid.ResizeMethod.Last) {
+    if (this._resizeMethod === DataGrid.DataGrid.ResizeMethod.Last) {
       rightCellIndex = this._resizers.length;
-    } else if (this._resizeMethod === UI.DataGrid.ResizeMethod.First) {
+    } else if (this._resizeMethod === DataGrid.DataGrid.ResizeMethod.First) {
       leftEdgeOfPreviousColumn += firstRowCells[leftCellIndex].offsetWidth - firstRowCells[0].offsetWidth;
       leftCellIndex = 0;
     }
@@ -1075,14 +1075,14 @@ UI.DataGrid = class extends Common.Object {
         leftEdgeOfPreviousColumn + firstRowCells[leftCellIndex].offsetWidth + firstRowCells[rightCellIndex].offsetWidth;
 
     // Give each column some padding so that they don't disappear.
-    var leftMinimum = leftEdgeOfPreviousColumn + UI.DataGrid.ColumnResizePadding;
-    var rightMaximum = rightEdgeOfNextColumn - UI.DataGrid.ColumnResizePadding;
+    var leftMinimum = leftEdgeOfPreviousColumn + DataGrid.DataGrid.ColumnResizePadding;
+    var rightMaximum = rightEdgeOfNextColumn - DataGrid.DataGrid.ColumnResizePadding;
     if (leftMinimum > rightMaximum)
       return;
 
     dragPoint = Number.constrain(dragPoint, leftMinimum, rightMaximum);
 
-    var position = (dragPoint - UI.DataGrid.CenterResizerOverBorderAdjustment);
+    var position = (dragPoint - DataGrid.DataGrid.CenterResizerOverBorderAdjustment);
     resizer.__position = position;
     resizer.style.left = position + 'px';
 
@@ -1108,7 +1108,7 @@ UI.DataGrid = class extends Common.Object {
    */
   _setPreferredWidth(columnIndex, width) {
     var pxWidth = width + 'px';
-    this._headerTableColumnGroup.children[columnIndex][UI.DataGrid._preferredWidthSymbol] = width;
+    this._headerTableColumnGroup.children[columnIndex][DataGrid.DataGrid._preferredWidthSymbol] = width;
     this._headerTableColumnGroup.children[columnIndex].style.width = pxWidth;
     this._dataTableColumnGroup.children[columnIndex].style.width = pxWidth;
   }
@@ -1130,11 +1130,11 @@ UI.DataGrid = class extends Common.Object {
   }
 
   /**
-   * @return {!UI.DataGridWidget}
+   * @return {!DataGrid.DataGridWidget}
    */
   asWidget() {
     if (!this._dataGridWidget)
-      this._dataGridWidget = new UI.DataGridWidget(this);
+      this._dataGridWidget = new DataGrid.DataGridWidget(this);
     return this._dataGridWidget;
   }
 
@@ -1144,7 +1144,7 @@ UI.DataGrid = class extends Common.Object {
 };
 
 // Keep in sync with .data-grid col.corner style rule.
-UI.DataGrid.CornerWidth = 14;
+DataGrid.DataGrid.CornerWidth = 14;
 
 /**
  * @typedef {{
@@ -1152,8 +1152,8 @@ UI.DataGrid.CornerWidth = 14;
  *   title: (string|undefined),
  *   titleDOMFragment: (?DocumentFragment|undefined),
  *   sortable: boolean,
- *   sort: (?UI.DataGrid.Order|undefined),
- *   align: (?UI.DataGrid.Align|undefined),
+ *   sort: (?DataGrid.DataGrid.Order|undefined),
+ *   align: (?DataGrid.DataGrid.Align|undefined),
  *   fixedWidth: (boolean|undefined),
  *   editable: (boolean|undefined),
  *   nonSelectable: (boolean|undefined),
@@ -1162,10 +1162,10 @@ UI.DataGrid.CornerWidth = 14;
  *   weight: (number|undefined)
  * }}
  */
-UI.DataGrid.ColumnDescriptor;
+DataGrid.DataGrid.ColumnDescriptor;
 
 /** @enum {symbol} */
-UI.DataGrid.Events = {
+DataGrid.DataGrid.Events = {
   SelectedNode: Symbol('SelectedNode'),
   DeselectedNode: Symbol('DeselectedNode'),
   SortingChanged: Symbol('SortingChanged'),
@@ -1173,25 +1173,25 @@ UI.DataGrid.Events = {
 };
 
 /** @enum {string} */
-UI.DataGrid.Order = {
+DataGrid.DataGrid.Order = {
   Ascending: 'sort-ascending',
   Descending: 'sort-descending'
 };
 
 /** @enum {string} */
-UI.DataGrid.Align = {
+DataGrid.DataGrid.Align = {
   Center: 'center',
   Right: 'right'
 };
 
-UI.DataGrid._preferredWidthSymbol = Symbol('preferredWidth');
-UI.DataGrid._columnIdSymbol = Symbol('columnId');
+DataGrid.DataGrid._preferredWidthSymbol = Symbol('preferredWidth');
+DataGrid.DataGrid._columnIdSymbol = Symbol('columnId');
 
-UI.DataGrid.ColumnResizePadding = 24;
-UI.DataGrid.CenterResizerOverBorderAdjustment = 3;
+DataGrid.DataGrid.ColumnResizePadding = 24;
+DataGrid.DataGrid.CenterResizerOverBorderAdjustment = 3;
 
 /** @enum {string} */
-UI.DataGrid.ResizeMethod = {
+DataGrid.DataGrid.ResizeMethod = {
   Nearest: 'nearest',
   First: 'first',
   Last: 'last'
@@ -1202,7 +1202,7 @@ UI.DataGrid.ResizeMethod = {
  * @this {NODE_TYPE}
  * @template NODE_TYPE
  */
-UI.DataGridNode = class extends Common.Object {
+DataGrid.DataGridNode = class extends Common.Object {
   /**
    * @param {?Object.<string, *>=} data
    * @param {boolean=} hasChildren
@@ -1231,7 +1231,7 @@ UI.DataGridNode = class extends Common.Object {
     this._hasChildren = hasChildren || false;
     /** @type {!Array.<!NODE_TYPE>} */
     this.children = [];
-    /** @type {?UI.DataGrid} */
+    /** @type {?DataGrid.DataGrid} */
     this.dataGrid = null;
     /** @type {?NODE_TYPE} */
     this.parent = null;
@@ -1476,7 +1476,7 @@ UI.DataGridNode = class extends Common.Object {
    */
   createTD(columnId) {
     var cell = this._createTDWithClass(columnId + '-column');
-    cell[UI.DataGrid._columnIdSymbol] = columnId;
+    cell[DataGrid.DataGrid._columnIdSymbol] = columnId;
 
     var alignment = this.dataGrid._columns[columnId].align;
     if (alignment)
@@ -1736,7 +1736,7 @@ UI.DataGridNode = class extends Common.Object {
       this._element.classList.add('selected');
 
     if (!supressSelectedEvent)
-      this.dataGrid.dispatchEventToListeners(UI.DataGrid.Events.SelectedNode, this);
+      this.dataGrid.dispatchEventToListeners(DataGrid.DataGrid.Events.SelectedNode, this);
   }
 
   revealAndSelect() {
@@ -1760,7 +1760,7 @@ UI.DataGridNode = class extends Common.Object {
       this._element.classList.remove('selected');
 
     if (!supressDeselectedEvent)
-      this.dataGrid.dispatchEventToListeners(UI.DataGrid.Events.DeselectedNode);
+      this.dataGrid.dispatchEventToListeners(DataGrid.DataGrid.Events.DeselectedNode);
   }
 
   /**
@@ -1902,10 +1902,10 @@ UI.DataGridNode = class extends Common.Object {
 
 /**
  * @unrestricted
- * @extends {UI.DataGridNode<!NODE_TYPE>}
+ * @extends {DataGrid.DataGridNode<!NODE_TYPE>}
  * @template NODE_TYPE
  */
-UI.CreationDataGridNode = class extends UI.DataGridNode {
+DataGrid.CreationDataGridNode = class extends DataGrid.DataGridNode {
   constructor(data, hasChildren) {
     super(data, hasChildren);
     /** @type {boolean} */
@@ -1920,9 +1920,9 @@ UI.CreationDataGridNode = class extends UI.DataGridNode {
 /**
  * @unrestricted
  */
-UI.DataGridWidget = class extends UI.VBox {
+DataGrid.DataGridWidget = class extends UI.VBox {
   /**
-   * @param {!UI.DataGrid} dataGrid
+   * @param {!DataGrid.DataGrid} dataGrid
    */
   constructor(dataGrid) {
     super();

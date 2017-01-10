@@ -26,7 +26,7 @@
 /**
  * @unrestricted
  */
-Profiler.ProfileDataGridNode = class extends UI.DataGridNode {
+Profiler.ProfileDataGridNode = class extends DataGrid.DataGridNode {
   /**
    * @param {!SDK.ProfileNode} profileNode
    * @param {!Profiler.ProfileDataGridTree} owningTree
@@ -208,7 +208,7 @@ Profiler.ProfileDataGridNode = class extends UI.DataGridNode {
 
   /**
    * @override
-   * @param {!UI.DataGridNode} profileDataGridNode
+   * @param {!DataGrid.DataGridNode} profileDataGridNode
    * @param {number} index
    */
   insertChild(profileDataGridNode, index) {
@@ -220,7 +220,7 @@ Profiler.ProfileDataGridNode = class extends UI.DataGridNode {
 
   /**
    * @override
-   * @param {!UI.DataGridNode} profileDataGridNode
+   * @param {!DataGrid.DataGridNode} profileDataGridNode
    */
   removeChild(profileDataGridNode) {
     super.removeChild(profileDataGridNode);

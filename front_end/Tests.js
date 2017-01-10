@@ -744,7 +744,7 @@
 
     function onTimelineDone() {
       captureFilmStripSetting.set(false);
-      var filmStripModel = new Components.FilmStripModel(UI.panels.timeline._tracingModel);
+      var filmStripModel = new SDK.FilmStripModel(UI.panels.timeline._tracingModel);
       var frames = filmStripModel.frames();
       test.assertTrue(frames.length > 4 && typeof frames.length === 'number');
       loadFrameImages(frames);

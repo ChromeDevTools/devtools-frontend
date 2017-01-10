@@ -7,8 +7,8 @@
 Elements.BezierPopoverIcon = class {
   /**
    * @param {!Elements.StylePropertyTreeElement} treeElement
-   * @param {!UI.SwatchPopoverHelper} swatchPopoverHelper
-   * @param {!UI.BezierSwatch} swatch
+   * @param {!InlineEditor.SwatchPopoverHelper} swatchPopoverHelper
+   * @param {!InlineEditor.BezierSwatch} swatch
    */
   constructor(treeElement, swatchPopoverHelper, swatch) {
     this._treeElement = treeElement;
@@ -32,14 +32,14 @@ Elements.BezierPopoverIcon = class {
       return;
     }
 
-    this._bezierEditor = new UI.BezierEditor();
+    this._bezierEditor = new InlineEditor.BezierEditor();
     var cubicBezier = Common.Geometry.CubicBezier.parse(this._swatch.bezierText());
     if (!cubicBezier) {
       cubicBezier =
           /** @type {!Common.Geometry.CubicBezier} */ (Common.Geometry.CubicBezier.parse('linear'));
     }
     this._bezierEditor.setBezier(cubicBezier);
-    this._bezierEditor.addEventListener(UI.BezierEditor.Events.BezierChanged, this._boundBezierChanged);
+    this._bezierEditor.addEventListener(InlineEditor.BezierEditor.Events.BezierChanged, this._boundBezierChanged);
     this._swatchPopoverHelper.show(this._bezierEditor, this._swatch.iconElement(), this._onPopoverHidden.bind(this));
     this._scrollerElement = this._swatch.enclosingNodeOrSelfWithClass('style-panes-wrapper');
     if (this._scrollerElement)
@@ -74,7 +74,7 @@ Elements.BezierPopoverIcon = class {
     if (this._scrollerElement)
       this._scrollerElement.removeEventListener('scroll', this._boundOnScroll, false);
 
-    this._bezierEditor.removeEventListener(UI.BezierEditor.Events.BezierChanged, this._boundBezierChanged);
+    this._bezierEditor.removeEventListener(InlineEditor.BezierEditor.Events.BezierChanged, this._boundBezierChanged);
     delete this._bezierEditor;
 
     var propertyText = commitEdit ? this._treeElement.renderedPropertyText() : this._originalPropertyText;
@@ -90,8 +90,8 @@ Elements.BezierPopoverIcon = class {
 Elements.ColorSwatchPopoverIcon = class {
   /**
    * @param {!Elements.StylePropertyTreeElement} treeElement
-   * @param {!UI.SwatchPopoverHelper} swatchPopoverHelper
-   * @param {!UI.ColorSwatch} swatch
+   * @param {!InlineEditor.SwatchPopoverHelper} swatchPopoverHelper
+   * @param {!InlineEditor.ColorSwatch} swatch
    */
   constructor(treeElement, swatchPopoverHelper, swatch) {
     this._treeElement = treeElement;
@@ -143,13 +143,13 @@ Elements.ColorSwatchPopoverIcon = class {
     var format = this._swatch.format();
     if (format === Common.Color.Format.Original)
       format = color.format();
-    this._spectrum = new Components.Spectrum();
+    this._spectrum = new ColorPicker.Spectrum();
     this._spectrum.setColor(color, format);
     if (this._contrastColor)
       this._spectrum.setContrastColor(this._contrastColor);
 
-    this._spectrum.addEventListener(Components.Spectrum.Events.SizeChanged, this._spectrumResized, this);
-    this._spectrum.addEventListener(Components.Spectrum.Events.ColorChanged, this._boundSpectrumChanged);
+    this._spectrum.addEventListener(ColorPicker.Spectrum.Events.SizeChanged, this._spectrumResized, this);
+    this._spectrum.addEventListener(ColorPicker.Spectrum.Events.ColorChanged, this._boundSpectrumChanged);
     this._swatchPopoverHelper.show(this._spectrum, this._swatch.iconElement(), this._onPopoverHidden.bind(this));
     this._scrollerElement = this._swatch.enclosingNodeOrSelfWithClass('style-panes-wrapper');
     if (this._scrollerElement)
@@ -194,7 +194,7 @@ Elements.ColorSwatchPopoverIcon = class {
     if (this._scrollerElement)
       this._scrollerElement.removeEventListener('scroll', this._boundOnScroll, false);
 
-    this._spectrum.removeEventListener(Components.Spectrum.Events.ColorChanged, this._boundSpectrumChanged);
+    this._spectrum.removeEventListener(ColorPicker.Spectrum.Events.ColorChanged, this._boundSpectrumChanged);
     delete this._spectrum;
 
     var propertyText = commitEdit ? this._treeElement.renderedPropertyText() : this._originalPropertyText;
@@ -213,8 +213,8 @@ Elements.ColorSwatchPopoverIcon._treeElementSymbol = Symbol('Elements.ColorSwatc
 Elements.ShadowSwatchPopoverHelper = class {
   /**
    * @param {!Elements.StylePropertyTreeElement} treeElement
-   * @param {!UI.SwatchPopoverHelper} swatchPopoverHelper
-   * @param {!UI.CSSShadowSwatch} shadowSwatch
+   * @param {!InlineEditor.SwatchPopoverHelper} swatchPopoverHelper
+   * @param {!InlineEditor.CSSShadowSwatch} shadowSwatch
    */
   constructor(treeElement, swatchPopoverHelper, shadowSwatch) {
     this._treeElement = treeElement;
@@ -252,9 +252,9 @@ Elements.ShadowSwatchPopoverHelper = class {
       return;
     }
 
-    this._cssShadowEditor = new UI.CSSShadowEditor();
+    this._cssShadowEditor = new InlineEditor.CSSShadowEditor();
     this._cssShadowEditor.setModel(this._shadowSwatch.model());
-    this._cssShadowEditor.addEventListener(UI.CSSShadowEditor.Events.ShadowChanged, this._boundShadowChanged);
+    this._cssShadowEditor.addEventListener(InlineEditor.CSSShadowEditor.Events.ShadowChanged, this._boundShadowChanged);
     this._swatchPopoverHelper.show(this._cssShadowEditor, this._iconElement, this._onPopoverHidden.bind(this));
     this._scrollerElement = this._iconElement.enclosingNodeOrSelfWithClass('style-panes-wrapper');
     if (this._scrollerElement)
@@ -289,7 +289,8 @@ Elements.ShadowSwatchPopoverHelper = class {
     if (this._scrollerElement)
       this._scrollerElement.removeEventListener('scroll', this._boundOnScroll, false);
 
-    this._cssShadowEditor.removeEventListener(UI.CSSShadowEditor.Events.ShadowChanged, this._boundShadowChanged);
+    this._cssShadowEditor.removeEventListener(
+        InlineEditor.CSSShadowEditor.Events.ShadowChanged, this._boundShadowChanged);
     delete this._cssShadowEditor;
 
     var propertyText = commitEdit ? this._treeElement.renderedPropertyText() : this._originalPropertyText;

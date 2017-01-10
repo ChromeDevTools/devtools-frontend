@@ -15,8 +15,6 @@
         { "name": "persistence", "type": "autostart" },
         { "name": "extensions", "type": "autostart" },
         { "name": "services", "type": "autostart" },
-        { "name": "ui_lazy" },
-        { "name": "components_lazy" },
         { "name": "elements", "condition": "!v8only" },
         { "name": "network", "condition": "!v8only" },
         { "name": "sources" },
@@ -46,7 +44,11 @@
         { "name": "screencast", "condition": "remoteFrontend", "type": "remote" },
         { "name": "emulated_devices", "condition": "!v8only" , "type": "remote" },
         { "name": "perf_ui" },
-        { "name": "quick_open" }
+        { "name": "quick_open" },
+        { "name": "cookie_table" },
+        { "name": "inline_editor" },
+        { "name": "color_picker" },
+        { "name": "data_grid" }
     ],
 
     "has_html": true

@@ -132,12 +132,11 @@
     ],
     "dependencies": [
         "components",
-        "components_lazy",
         "layer_viewer",
         "timeline_model",
-        "ui_lazy",
         "perf_ui",
-        "extensions"
+        "extensions",
+        "data_grid"
     ],
     "scripts": [
         "CountersGraph.js",

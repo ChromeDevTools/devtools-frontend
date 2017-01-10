@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-UI.TimelineOverviewPane = class extends UI.VBox {
+PerfUI.TimelineOverviewPane = class extends UI.VBox {
   /**
    * @param {string} prefix
    */
@@ -39,8 +39,8 @@ UI.TimelineOverviewPane = class extends UI.VBox {
     super();
     this.element.id = prefix + '-overview-pane';
 
-    this._overviewCalculator = new UI.TimelineOverviewCalculator();
-    this._overviewGrid = new UI.OverviewGrid(prefix);
+    this._overviewCalculator = new PerfUI.TimelineOverviewCalculator();
+    this._overviewGrid = new PerfUI.OverviewGrid(prefix);
     this.element.appendChild(this._overviewGrid.element);
     this._cursorArea = this._overviewGrid.element.createChild('div', 'overview-grid-cursor-area');
     this._cursorElement = this._overviewGrid.element.createChild('div', 'overview-grid-cursor-position');
@@ -48,7 +48,7 @@ UI.TimelineOverviewPane = class extends UI.VBox {
     this._cursorArea.addEventListener('mouseleave', this._hideCursor.bind(this), true);
 
     this._overviewGrid.setResizeEnabled(false);
-    this._overviewGrid.addEventListener(UI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
+    this._overviewGrid.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
     this._overviewGrid.setClickHandler(this._onClick.bind(this));
     this._overviewControls = [];
     this._markers = new Map();
@@ -81,13 +81,13 @@ UI.TimelineOverviewPane = class extends UI.VBox {
   _showPopover(anchor, popover) {
     this._buildPopoverContents().then(maybeShowPopover.bind(this));
     /**
-     * @this {UI.TimelineOverviewPane}
+     * @this {PerfUI.TimelineOverviewPane}
      * @param {!DocumentFragment} fragment
      */
     function maybeShowPopover(fragment) {
       if (!fragment.firstChild)
         return;
-      var content = new UI.TimelineOverviewPane.PopoverContents();
+      var content = new PerfUI.TimelineOverviewPane.PopoverContents();
       this._popoverContents = content.contentElement.createChild('div');
       this._popoverContents.appendChild(fragment);
       this._popover = popover;
@@ -116,7 +116,7 @@ UI.TimelineOverviewPane = class extends UI.VBox {
 
     /**
      * @param {!DocumentFragment} fragment
-     * @this {UI.TimelineOverviewPane}
+     * @this {PerfUI.TimelineOverviewPane}
      */
     function updatePopover(fragment) {
       if (!this._popoverContents)
@@ -177,7 +177,7 @@ UI.TimelineOverviewPane = class extends UI.VBox {
   }
 
   /**
-   * @param {!Array.<!UI.TimelineOverview>} overviewControls
+   * @param {!Array.<!PerfUI.TimelineOverview>} overviewControls
    */
   setOverviewControls(overviewControls) {
     for (var i = 0; i < this._overviewControls.length; ++i)
@@ -204,7 +204,7 @@ UI.TimelineOverviewPane = class extends UI.VBox {
   scheduleUpdate() {
     this._updateThrottler.schedule(process.bind(this));
     /**
-     * @this {UI.TimelineOverviewPane}
+     * @this {PerfUI.TimelineOverviewPane}
      * @return {!Promise.<undefined>}
      */
     function process() {
@@ -288,7 +288,7 @@ UI.TimelineOverviewPane = class extends UI.VBox {
         this._overviewControls[0].windowTimes(this._overviewGrid.windowLeft(), this._overviewGrid.windowRight());
     this._windowStartTime = windowTimes.startTime;
     this._windowEndTime = windowTimes.endTime;
-    this.dispatchEventToListeners(UI.TimelineOverviewPane.Events.WindowChanged, windowTimes);
+    this.dispatchEventToListeners(PerfUI.TimelineOverviewPane.Events.WindowChanged, windowTimes);
   }
 
   /**
@@ -302,7 +302,7 @@ UI.TimelineOverviewPane = class extends UI.VBox {
     this._windowEndTime = endTime;
     this._updateWindow();
     this.dispatchEventToListeners(
-        UI.TimelineOverviewPane.Events.WindowChanged, {startTime: startTime, endTime: endTime});
+        PerfUI.TimelineOverviewPane.Events.WindowChanged, {startTime: startTime, endTime: endTime});
   }
 
   _updateWindow() {
@@ -316,14 +316,14 @@ UI.TimelineOverviewPane = class extends UI.VBox {
 };
 
 /** @enum {symbol} */
-UI.TimelineOverviewPane.Events = {
+PerfUI.TimelineOverviewPane.Events = {
   WindowChanged: Symbol('WindowChanged')
 };
 
 /**
  * @unrestricted
  */
-UI.TimelineOverviewPane.PopoverContents = class extends UI.VBox {
+PerfUI.TimelineOverviewPane.PopoverContents = class extends UI.VBox {
   constructor() {
     super(true);
     this.contentElement.classList.add('timeline-overview-popover');
@@ -331,10 +331,10 @@ UI.TimelineOverviewPane.PopoverContents = class extends UI.VBox {
 };
 
 /**
- * @implements {UI.TimelineGrid.Calculator}
+ * @implements {PerfUI.TimelineGrid.Calculator}
  * @unrestricted
  */
-UI.TimelineOverviewCalculator = class {
+PerfUI.TimelineOverviewCalculator = class {
   constructor() {
     this.reset();
   }
@@ -432,9 +432,9 @@ UI.TimelineOverviewCalculator = class {
 /**
  * @interface
  */
-UI.TimelineOverview = function() {};
+PerfUI.TimelineOverview = function() {};
 
-UI.TimelineOverview.prototype = {
+PerfUI.TimelineOverview.prototype = {
   /**
    * @param {!Element} parentElement
    * @param {?Element=} insertBefore
@@ -479,13 +479,13 @@ UI.TimelineOverview.prototype = {
 };
 
 /**
- * @implements {UI.TimelineOverview}
+ * @implements {PerfUI.TimelineOverview}
  * @unrestricted
  */
-UI.TimelineOverviewBase = class extends UI.VBox {
+PerfUI.TimelineOverviewBase = class extends UI.VBox {
   constructor() {
     super();
-    /** @type {?UI.TimelineOverviewCalculator} */
+    /** @type {?PerfUI.TimelineOverviewCalculator} */
     this._calculator = null;
     this._canvas = this.element.createChild('canvas', 'fill');
     this._context = this._canvas.getContext('2d');
@@ -508,7 +508,7 @@ UI.TimelineOverviewBase = class extends UI.VBox {
 
   /**
    * @protected
-   * @return {?UI.TimelineOverviewCalculator}
+   * @return {?PerfUI.TimelineOverviewCalculator}
    */
   calculator() {
     return this._calculator;
@@ -556,7 +556,7 @@ UI.TimelineOverviewBase = class extends UI.VBox {
   }
 
   /**
-   * @param {!UI.TimelineOverviewCalculator} calculator
+   * @param {!PerfUI.TimelineOverviewCalculator} calculator
    */
   setCalculator(calculator) {
     this._calculator = calculator;

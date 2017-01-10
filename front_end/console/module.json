@@ -19,7 +19,9 @@
         },
         {
             "type": "@Common.Revealer",
-            "contextTypes": ["Common.Console"],
+            "contextTypes": [
+                "Common.Console"
+            ],
             "className": "Console.ConsolePanel.ConsoleRevealer"
         },
         {
@@ -65,8 +67,14 @@
             "settingType": "boolean",
             "defaultValue": false,
             "options": [
-                { "value": true, "title": "Hide network messages" },
-                { "value": false, "title": "Show network messages" }
+                {
+                    "value": true,
+                    "title": "Hide network messages"
+                },
+                {
+                    "value": false,
+                    "title": "Show network messages"
+                }
             ]
         },
         {
@@ -77,8 +85,14 @@
             "settingType": "boolean",
             "defaultValue": true,
             "options": [
-                { "value": true, "title": "Hide violations" },
-                { "value": false, "title": "Show violations" }
+                {
+                    "value": true,
+                    "title": "Hide violations"
+                },
+                {
+                    "value": false,
+                    "title": "Show violations"
+                }
             ]
         },
         {
@@ -97,8 +111,14 @@
             "settingType": "boolean",
             "defaultValue": false,
             "options": [
-                { "value": true, "title": "Show timestamps" },
-                { "value": false, "title": "Hide timestamps" }
+                {
+                    "value": true,
+                    "title": "Show timestamps"
+                },
+                {
+                    "value": false,
+                    "title": "Hide timestamps"
+                }
             ]
         },
         {
@@ -109,13 +129,20 @@
             "settingType": "boolean",
             "defaultValue": true,
             "options": [
-                { "value": true, "title": "Autocomplete from history" },
-                { "value": false, "title": "Do not autocomplete from history" }
+                {
+                    "value": true,
+                    "title": "Autocomplete from history"
+                },
+                {
+                    "value": false,
+                    "title": "Do not autocomplete from history"
+                }
             ]
         }
     ],
     "dependencies": [
-        "components", "ui_lazy"
+        "components",
+        "data_grid"
     ],
     "scripts": [
         "ConsoleContextSelector.js",

@@ -107,21 +107,19 @@ Sources.SourcesView = class extends UI.VBox {
     }
 
     registerShortcut.call(
-        this, Components.ShortcutsScreen.SourcesPanelShortcuts.JumpToPreviousLocation,
+        this, UI.ShortcutsScreen.SourcesPanelShortcuts.JumpToPreviousLocation,
         this._onJumpToPreviousLocation.bind(this));
     registerShortcut.call(
-        this, Components.ShortcutsScreen.SourcesPanelShortcuts.JumpToNextLocation,
-        this._onJumpToNextLocation.bind(this));
+        this, UI.ShortcutsScreen.SourcesPanelShortcuts.JumpToNextLocation, this._onJumpToNextLocation.bind(this));
     registerShortcut.call(
-        this, Components.ShortcutsScreen.SourcesPanelShortcuts.CloseEditorTab, this._onCloseEditorTab.bind(this));
+        this, UI.ShortcutsScreen.SourcesPanelShortcuts.CloseEditorTab, this._onCloseEditorTab.bind(this));
+    registerShortcut.call(this, UI.ShortcutsScreen.SourcesPanelShortcuts.GoToLine, this._showGoToLineDialog.bind(this));
     registerShortcut.call(
-        this, Components.ShortcutsScreen.SourcesPanelShortcuts.GoToLine, this._showGoToLineDialog.bind(this));
+        this, UI.ShortcutsScreen.SourcesPanelShortcuts.GoToMember, this._showOutlineDialog.bind(this));
     registerShortcut.call(
-        this, Components.ShortcutsScreen.SourcesPanelShortcuts.GoToMember, this._showOutlineDialog.bind(this));
-    registerShortcut.call(
-        this, Components.ShortcutsScreen.SourcesPanelShortcuts.ToggleBreakpoint, this._toggleBreakpoint.bind(this));
-    registerShortcut.call(this, Components.ShortcutsScreen.SourcesPanelShortcuts.Save, this._save.bind(this));
-    registerShortcut.call(this, Components.ShortcutsScreen.SourcesPanelShortcuts.SaveAll, this._saveAll.bind(this));
+        this, UI.ShortcutsScreen.SourcesPanelShortcuts.ToggleBreakpoint, this._toggleBreakpoint.bind(this));
+    registerShortcut.call(this, UI.ShortcutsScreen.SourcesPanelShortcuts.Save, this._save.bind(this));
+    registerShortcut.call(this, UI.ShortcutsScreen.SourcesPanelShortcuts.SaveAll, this._saveAll.bind(this));
   }
 
   /**

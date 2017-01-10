@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotGridNode = class extends UI.DataGridNode {
+Profiler.HeapSnapshotGridNode = class extends DataGrid.DataGridNode {
   /**
    * @param {!Profiler.HeapSnapshotSortableDataGrid} tree
    * @param {boolean} hasChildren
@@ -164,7 +164,7 @@ Profiler.HeapSnapshotGridNode = class extends UI.DataGridNode {
   }
 
   /**
-   * @return {!Array.<!UI.DataGridNode>}
+   * @return {!Array.<!DataGrid.DataGridNode>}
    */
   allChildren() {
     return this._dataGrid.allChildren(this);
@@ -179,7 +179,7 @@ Profiler.HeapSnapshotGridNode = class extends UI.DataGridNode {
 
   /**
    * @param {number} nodePosition
-   * @return {?UI.DataGridNode}
+   * @return {?DataGrid.DataGridNode}
    */
   childForPosition(nodePosition) {
     var indexOfFirstChildInRange = 0;
@@ -278,7 +278,7 @@ Profiler.HeapSnapshotGridNode = class extends UI.DataGridNode {
      * @this {Profiler.HeapSnapshotGridNode}
      */
     function insertShowMoreButton(from, to, insertionIndex) {
-      var button = new UI.ShowMoreDataGridNode(
+      var button = new DataGrid.ShowMoreDataGridNode(
           this._populateChildren.bind(this), from, to, this._dataGrid.defaultPopulateCount());
       this._dataGrid.insertChild(this, button, insertionIndex);
     }

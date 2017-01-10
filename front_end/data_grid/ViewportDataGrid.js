@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 /**
  * @unrestricted
- * @extends {UI.DataGrid<!NODE_TYPE>}
+ * @extends {DataGrid.DataGrid<!NODE_TYPE>}
  * @template NODE_TYPE
  */
-UI.ViewportDataGrid = class extends UI.DataGrid {
+DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
   /**
-   * @param {!Array.<!UI.DataGrid.ColumnDescriptor>} columnsArray
+   * @param {!Array.<!DataGrid.DataGrid.ColumnDescriptor>} columnsArray
    * @param {function(!NODE_TYPE, string, string, string)=} editCallback
    * @param {function(!NODE_TYPE)=} deleteCallback
    * @param {function()=} refreshCallback
@@ -21,7 +21,7 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
 
     // This is not in setScrollContainer because mouse wheel needs to detect events on the content not the scrollbar itself.
     this._scrollContainer.addEventListener('mousewheel', this._onWheel.bind(this), true);
-    /** @type {!Array.<!UI.ViewportDataGridNode>} */
+    /** @type {!Array.<!DataGrid.ViewportDataGridNode>} */
     this._visibleNodes = [];
     /** @type {boolean} */
     this._inline = false;
@@ -41,7 +41,7 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
     /** @type {number} */
     this._lastScrollTop = 0;
 
-    this.setRootNode(new UI.ViewportDataGridNode());
+    this.setRootNode(new DataGrid.ViewportDataGridNode());
   }
 
   /**
@@ -118,7 +118,7 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
   /**
    * @param {number} clientHeight
    * @param {number} scrollTop
-   * @return {{topPadding: number, bottomPadding: number, contentHeight: number, visibleNodes: !Array.<!UI.ViewportDataGridNode>, offset: number}}
+   * @return {{topPadding: number, bottomPadding: number, contentHeight: number, visibleNodes: !Array.<!DataGrid.ViewportDataGridNode>, offset: number}}
    */
   _calculateVisibleNodes(clientHeight, scrollTop) {
     var nodes = this.rootNode().flatChildren();
@@ -224,11 +224,11 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
       this.updateWidths();
     }
     this._visibleNodes = visibleNodes;
-    this.dispatchEventToListeners(UI.ViewportDataGrid.Events.ViewportCalculated);
+    this.dispatchEventToListeners(DataGrid.ViewportDataGrid.Events.ViewportCalculated);
   }
 
   /**
-   * @param {!UI.ViewportDataGridNode} node
+   * @param {!DataGrid.ViewportDataGridNode} node
    */
   _revealViewportNode(node) {
     var nodes = this.rootNode().flatChildren();
@@ -251,17 +251,17 @@ UI.ViewportDataGrid = class extends UI.DataGrid {
   }
 };
 
-UI.ViewportDataGrid.Events = {
+DataGrid.ViewportDataGrid.Events = {
   ViewportCalculated: Symbol('ViewportCalculated')
 };
 
 /**
  * @unrestricted
  * @this {NODE_TYPE}
- * @extends {UI.DataGridNode<!NODE_TYPE>}
+ * @extends {DataGrid.DataGridNode<!NODE_TYPE>}
  * @template NODE_TYPE
  */
-UI.ViewportDataGridNode = class extends UI.DataGridNode {
+DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
   /**
    * @param {?Object.<string, *>=} data
    * @param {boolean=} hasChildren
@@ -270,7 +270,7 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
     super(data, hasChildren);
     /** @type {boolean} */
     this._stale = false;
-    /** @type {?Array<!UI.ViewportDataGridNode>} */
+    /** @type {?Array<!DataGrid.ViewportDataGridNode>} */
     this._flatNodes = null;
   }
 
@@ -290,20 +290,20 @@ UI.ViewportDataGridNode = class extends UI.DataGridNode {
 
   _clearFlatNodes() {
     this._flatNodes = null;
-    var parent = /** @type {!UI.ViewportDataGridNode} */ (this.parent);
+    var parent = /** @type {!DataGrid.ViewportDataGridNode} */ (this.parent);
     if (parent)
       parent._clearFlatNodes();
   }
 
   /**
-   * @return {!Array<!UI.ViewportDataGridNode>}
+   * @return {!Array<!DataGrid.ViewportDataGridNode>}
    */
   flatChildren() {
     if (this._flatNodes)
       return this._flatNodes;
-    /** @type {!Array<!UI.ViewportDataGridNode>} */
+    /** @type {!Array<!DataGrid.ViewportDataGridNode>} */
     var flatNodes = [];
-    /** @type {!Array<!Array<!UI.ViewportDataGridNode>>} */
+    /** @type {!Array<!Array<!DataGrid.ViewportDataGridNode>>} */
     var children = [this.children];
     /** @type {!Array<number>} */
     var counters = [0];

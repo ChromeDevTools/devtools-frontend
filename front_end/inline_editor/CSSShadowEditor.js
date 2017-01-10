@@ -4,10 +4,10 @@
 /**
  * @unrestricted
  */
-UI.CSSShadowEditor = class extends UI.VBox {
+InlineEditor.CSSShadowEditor = class extends UI.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('ui/cssShadowEditor.css');
+    this.registerRequiredCSS('inline_editor/cssShadowEditor.css');
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
 
@@ -25,11 +25,11 @@ UI.CSSShadowEditor = class extends UI.VBox {
     var yField = this.contentElement.createChild('div', 'shadow-editor-field');
     this._yInput = this._createTextInput(yField, Common.UIString('Y offset'));
     this._xySlider = xField.createChild('canvas', 'shadow-editor-2D-slider');
-    this._xySlider.width = UI.CSSShadowEditor.canvasSize;
-    this._xySlider.height = UI.CSSShadowEditor.canvasSize;
+    this._xySlider.width = InlineEditor.CSSShadowEditor.canvasSize;
+    this._xySlider.height = InlineEditor.CSSShadowEditor.canvasSize;
     this._xySlider.tabIndex = -1;
-    this._halfCanvasSize = UI.CSSShadowEditor.canvasSize / 2;
-    this._innerCanvasSize = this._halfCanvasSize - UI.CSSShadowEditor.sliderThumbRadius;
+    this._halfCanvasSize = InlineEditor.CSSShadowEditor.canvasSize / 2;
+    this._innerCanvasSize = this._halfCanvasSize - InlineEditor.CSSShadowEditor.sliderThumbRadius;
     UI.installDragHandle(this._xySlider, this._dragStart.bind(this), this._dragMove.bind(this), null, 'default');
     this._xySlider.addEventListener('keydown', this._onCanvasArrowKey.bind(this), false);
     this._xySlider.addEventListener('blur', this._onCanvasBlur.bind(this), false);
@@ -67,7 +67,7 @@ UI.CSSShadowEditor = class extends UI.VBox {
    * @return {!Element}
    */
   _createSlider(field) {
-    var slider = UI.createSliderLabel(0, UI.CSSShadowEditor.maxRange, -1);
+    var slider = UI.createSliderLabel(0, InlineEditor.CSSShadowEditor.maxRange, -1);
     slider.addEventListener('input', this._onSliderInput.bind(this), false);
     field.appendChild(slider);
     return slider;
@@ -119,9 +119,9 @@ UI.CSSShadowEditor = class extends UI.VBox {
     context.strokeStyle = 'rgba(210, 210, 210, 0.8)';
     context.beginPath();
     context.moveTo(this._halfCanvasSize, 0);
-    context.lineTo(this._halfCanvasSize, UI.CSSShadowEditor.canvasSize);
+    context.lineTo(this._halfCanvasSize, InlineEditor.CSSShadowEditor.canvasSize);
     context.moveTo(0, this._halfCanvasSize);
-    context.lineTo(UI.CSSShadowEditor.canvasSize, this._halfCanvasSize);
+    context.lineTo(InlineEditor.CSSShadowEditor.canvasSize, this._halfCanvasSize);
     context.stroke();
     context.restore();
 
@@ -139,12 +139,12 @@ UI.CSSShadowEditor = class extends UI.VBox {
     if (drawFocus) {
       context.beginPath();
       context.fillStyle = 'rgba(66, 133, 244, 0.4)';
-      context.arc(thumbPoint.x, thumbPoint.y, UI.CSSShadowEditor.sliderThumbRadius + 2, 0, 2 * Math.PI);
+      context.arc(thumbPoint.x, thumbPoint.y, InlineEditor.CSSShadowEditor.sliderThumbRadius + 2, 0, 2 * Math.PI);
       context.fill();
     }
     context.beginPath();
     context.fillStyle = '#4285F4';
-    context.arc(thumbPoint.x, thumbPoint.y, UI.CSSShadowEditor.sliderThumbRadius, 0, 2 * Math.PI);
+    context.arc(thumbPoint.x, thumbPoint.y, InlineEditor.CSSShadowEditor.sliderThumbRadius, 0, 2 * Math.PI);
     context.fill();
     context.restore();
   }
@@ -158,7 +158,7 @@ UI.CSSShadowEditor = class extends UI.VBox {
       return;
     this._model.setInset(insetClicked);
     this._updateButtons();
-    this.dispatchEventToListeners(UI.CSSShadowEditor.Events.ShadowChanged, this._model);
+    this.dispatchEventToListeners(InlineEditor.CSSShadowEditor.Events.ShadowChanged, this._model);
   }
 
   /**
@@ -187,7 +187,7 @@ UI.CSSShadowEditor = class extends UI.VBox {
      */
     function customNumberHandler(prefix, number, suffix) {
       if (!suffix.length)
-        suffix = UI.CSSShadowEditor.defaultUnit;
+        suffix = InlineEditor.CSSShadowEditor.defaultUnit;
       return prefix + number + suffix;
     }
   }
@@ -214,7 +214,7 @@ UI.CSSShadowEditor = class extends UI.VBox {
       this._model.setSpreadRadius(length);
       this._spreadSlider.value = length.amount;
     }
-    this.dispatchEventToListeners(UI.CSSShadowEditor.Events.ShadowChanged, this._model);
+    this.dispatchEventToListeners(InlineEditor.CSSShadowEditor.Events.ShadowChanged, this._model);
   }
 
   _onTextBlur() {
@@ -223,7 +223,7 @@ UI.CSSShadowEditor = class extends UI.VBox {
     var length = !this._changedElement.value.trim() ? Common.CSSLength.zero() :
                                                       Common.CSSLength.parse(this._changedElement.value);
     if (!length)
-      length = Common.CSSLength.parse(this._changedElement.value + UI.CSSShadowEditor.defaultUnit);
+      length = Common.CSSLength.parse(this._changedElement.value + InlineEditor.CSSShadowEditor.defaultUnit);
     if (!length) {
       this._changedElement.classList.add('invalid');
       this._changedElement = null;
@@ -249,7 +249,7 @@ UI.CSSShadowEditor = class extends UI.VBox {
       this._spreadSlider.value = length.amount;
     }
     this._changedElement = null;
-    this.dispatchEventToListeners(UI.CSSShadowEditor.Events.ShadowChanged, this._model);
+    this.dispatchEventToListeners(InlineEditor.CSSShadowEditor.Events.ShadowChanged, this._model);
   }
 
   /**
@@ -258,16 +258,16 @@ UI.CSSShadowEditor = class extends UI.VBox {
   _onSliderInput(event) {
     if (event.currentTarget === this._blurSlider) {
       this._model.setBlurRadius(new Common.CSSLength(
-          this._blurSlider.value, this._model.blurRadius().unit || UI.CSSShadowEditor.defaultUnit));
+          this._blurSlider.value, this._model.blurRadius().unit || InlineEditor.CSSShadowEditor.defaultUnit));
       this._blurInput.value = this._model.blurRadius().asCSSText();
       this._blurInput.classList.remove('invalid');
     } else if (event.currentTarget === this._spreadSlider) {
       this._model.setSpreadRadius(new Common.CSSLength(
-          this._spreadSlider.value, this._model.spreadRadius().unit || UI.CSSShadowEditor.defaultUnit));
+          this._spreadSlider.value, this._model.spreadRadius().unit || InlineEditor.CSSShadowEditor.defaultUnit));
       this._spreadInput.value = this._model.spreadRadius().asCSSText();
       this._spreadInput.classList.remove('invalid');
     }
-    this.dispatchEventToListeners(UI.CSSShadowEditor.Events.ShadowChanged, this._model);
+    this.dispatchEventToListeners(InlineEditor.CSSShadowEditor.Events.ShadowChanged, this._model);
   }
 
   /**
@@ -282,7 +282,7 @@ UI.CSSShadowEditor = class extends UI.VBox {
         this._xySlider.totalOffsetTop() + this._halfCanvasSize);
     var clickedPoint = new Common.Geometry.Point(event.x - this._canvasOrigin.x, event.y - this._canvasOrigin.y);
     var thumbPoint = this._sliderThumbPosition();
-    if (clickedPoint.distanceTo(thumbPoint) >= UI.CSSShadowEditor.sliderThumbRadius)
+    if (clickedPoint.distanceTo(thumbPoint) >= InlineEditor.CSSShadowEditor.sliderThumbRadius)
       this._dragMove(event);
     return true;
   }
@@ -295,20 +295,22 @@ UI.CSSShadowEditor = class extends UI.VBox {
     if (event.shiftKey)
       point = this._snapToClosestDirection(point);
     var constrainedPoint = this._constrainPoint(point, this._innerCanvasSize);
-    var newX = Math.round((constrainedPoint.x / this._innerCanvasSize) * UI.CSSShadowEditor.maxRange);
-    var newY = Math.round((constrainedPoint.y / this._innerCanvasSize) * UI.CSSShadowEditor.maxRange);
+    var newX = Math.round((constrainedPoint.x / this._innerCanvasSize) * InlineEditor.CSSShadowEditor.maxRange);
+    var newY = Math.round((constrainedPoint.y / this._innerCanvasSize) * InlineEditor.CSSShadowEditor.maxRange);
 
     if (event.shiftKey) {
-      this._model.setOffsetX(new Common.CSSLength(newX, this._model.offsetX().unit || UI.CSSShadowEditor.defaultUnit));
-      this._model.setOffsetY(new Common.CSSLength(newY, this._model.offsetY().unit || UI.CSSShadowEditor.defaultUnit));
+      this._model.setOffsetX(
+          new Common.CSSLength(newX, this._model.offsetX().unit || InlineEditor.CSSShadowEditor.defaultUnit));
+      this._model.setOffsetY(
+          new Common.CSSLength(newY, this._model.offsetY().unit || InlineEditor.CSSShadowEditor.defaultUnit));
     } else {
       if (!event.altKey) {
         this._model.setOffsetX(
-            new Common.CSSLength(newX, this._model.offsetX().unit || UI.CSSShadowEditor.defaultUnit));
+            new Common.CSSLength(newX, this._model.offsetX().unit || InlineEditor.CSSShadowEditor.defaultUnit));
       }
       if (!UI.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
         this._model.setOffsetY(
-            new Common.CSSLength(newY, this._model.offsetY().unit || UI.CSSShadowEditor.defaultUnit));
+            new Common.CSSLength(newY, this._model.offsetY().unit || InlineEditor.CSSShadowEditor.defaultUnit));
       }
     }
     this._xInput.value = this._model.offsetX().asCSSText();
@@ -316,7 +318,7 @@ UI.CSSShadowEditor = class extends UI.VBox {
     this._xInput.classList.remove('invalid');
     this._yInput.classList.remove('invalid');
     this._updateCanvas(true);
-    this.dispatchEventToListeners(UI.CSSShadowEditor.Events.ShadowChanged, this._model);
+    this.dispatchEventToListeners(InlineEditor.CSSShadowEditor.Events.ShadowChanged, this._model);
   }
 
   _onCanvasBlur() {
@@ -344,26 +346,26 @@ UI.CSSShadowEditor = class extends UI.VBox {
 
     if (shiftX) {
       var offsetX = this._model.offsetX();
-      var newAmount =
-          Number.constrain(offsetX.amount + shiftX, -UI.CSSShadowEditor.maxRange, UI.CSSShadowEditor.maxRange);
+      var newAmount = Number.constrain(
+          offsetX.amount + shiftX, -InlineEditor.CSSShadowEditor.maxRange, InlineEditor.CSSShadowEditor.maxRange);
       if (newAmount === offsetX.amount)
         return;
-      this._model.setOffsetX(new Common.CSSLength(newAmount, offsetX.unit || UI.CSSShadowEditor.defaultUnit));
+      this._model.setOffsetX(new Common.CSSLength(newAmount, offsetX.unit || InlineEditor.CSSShadowEditor.defaultUnit));
       this._xInput.value = this._model.offsetX().asCSSText();
       this._xInput.classList.remove('invalid');
     }
     if (shiftY) {
       var offsetY = this._model.offsetY();
-      var newAmount =
-          Number.constrain(offsetY.amount + shiftY, -UI.CSSShadowEditor.maxRange, UI.CSSShadowEditor.maxRange);
+      var newAmount = Number.constrain(
+          offsetY.amount + shiftY, -InlineEditor.CSSShadowEditor.maxRange, InlineEditor.CSSShadowEditor.maxRange);
       if (newAmount === offsetY.amount)
         return;
-      this._model.setOffsetY(new Common.CSSLength(newAmount, offsetY.unit || UI.CSSShadowEditor.defaultUnit));
+      this._model.setOffsetY(new Common.CSSLength(newAmount, offsetY.unit || InlineEditor.CSSShadowEditor.defaultUnit));
       this._yInput.value = this._model.offsetY().asCSSText();
       this._yInput.classList.remove('invalid');
     }
     this._updateCanvas(true);
-    this.dispatchEventToListeners(UI.CSSShadowEditor.Events.ShadowChanged, this._model);
+    this.dispatchEventToListeners(InlineEditor.CSSShadowEditor.Events.ShadowChanged, this._model);
   }
 
   /**
@@ -408,22 +410,22 @@ UI.CSSShadowEditor = class extends UI.VBox {
    * @return {!Common.Geometry.Point}
    */
   _sliderThumbPosition() {
-    var x = (this._model.offsetX().amount / UI.CSSShadowEditor.maxRange) * this._innerCanvasSize;
-    var y = (this._model.offsetY().amount / UI.CSSShadowEditor.maxRange) * this._innerCanvasSize;
+    var x = (this._model.offsetX().amount / InlineEditor.CSSShadowEditor.maxRange) * this._innerCanvasSize;
+    var y = (this._model.offsetY().amount / InlineEditor.CSSShadowEditor.maxRange) * this._innerCanvasSize;
     return this._constrainPoint(new Common.Geometry.Point(x, y), this._innerCanvasSize);
   }
 };
 
 /** @enum {symbol} */
-UI.CSSShadowEditor.Events = {
+InlineEditor.CSSShadowEditor.Events = {
   ShadowChanged: Symbol('ShadowChanged')
 };
 
 /** @type {number} */
-UI.CSSShadowEditor.maxRange = 20;
+InlineEditor.CSSShadowEditor.maxRange = 20;
 /** @type {string} */
-UI.CSSShadowEditor.defaultUnit = 'px';
+InlineEditor.CSSShadowEditor.defaultUnit = 'px';
 /** @type {number} */
-UI.CSSShadowEditor.sliderThumbRadius = 6;
+InlineEditor.CSSShadowEditor.sliderThumbRadius = 6;
 /** @type {number} */
-UI.CSSShadowEditor.canvasSize = 88;
+InlineEditor.CSSShadowEditor.canvasSize = 88;

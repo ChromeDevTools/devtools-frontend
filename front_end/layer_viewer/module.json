@@ -4,7 +4,6 @@
         "sdk",
         "timeline_model",
         "ui",
-        "ui_lazy",
         "perf_ui"
     ],
     "scripts": [

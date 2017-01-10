@@ -32,15 +32,15 @@ Timeline.TimelineTreeView = class extends UI.VBox {
 
     this._filters = filters.slice();
 
-    var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([]);
+    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([]);
     this._populateColumns(columns);
 
     var mainView = new UI.VBox();
     this._populateToolbar(mainView.element);
-    this._dataGrid = new UI.SortableDataGrid(columns);
-    this._dataGrid.addEventListener(UI.DataGrid.Events.SortingChanged, this._sortingChanged, this);
+    this._dataGrid = new DataGrid.SortableDataGrid(columns);
+    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
     this._dataGrid.element.addEventListener('mousemove', this._onMouseMove.bind(this), true);
-    this._dataGrid.setResizeMethod(UI.DataGrid.ResizeMethod.Last);
+    this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
     this._dataGrid.setRowContextMenuCallback(this._onContextMenu.bind(this));
     this._dataGrid.asWidget().show(mainView.element);
 
@@ -51,7 +51,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     this._detailsView = new UI.VBox();
     this._detailsView.element.classList.add('timeline-details-view', 'timeline-details-view-body');
     this._splitWidget.setSidebarWidget(this._detailsView);
-    this._dataGrid.addEventListener(UI.DataGrid.Events.SelectedNode, this._updateDetailsForSelection, this);
+    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._updateDetailsForSelection, this);
 
     /** @type {?TimelineModel.TimelineProfileTree.Node|undefined} */
     this._lastSelectedNode;
@@ -172,7 +172,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Array<!UI.DataGrid.ColumnDescriptor>} columns
+   * @param {!Array<!DataGrid.DataGrid.ColumnDescriptor>} columns
    */
   _populateColumns(columns) {
     columns.push({id: 'self', title: Common.UIString('Self Time'), width: '110px', fixedWidth: true, sortable: true});
@@ -206,8 +206,8 @@ Timeline.TimelineTreeView = class extends UI.VBox {
 
     /**
      * @param {string} field
-     * @param {!UI.DataGridNode} a
-     * @param {!UI.DataGridNode} b
+     * @param {!DataGrid.DataGridNode} a
+     * @param {!DataGrid.DataGridNode} b
      * @return {number}
      */
     function compareNumericField(field, a, b) {
@@ -217,8 +217,8 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     }
 
     /**
-     * @param {!UI.DataGridNode} a
-     * @param {!UI.DataGridNode} b
+     * @param {!DataGrid.DataGridNode} a
+     * @param {!DataGrid.DataGridNode} b
      * @return {number}
      */
     function compareStartTime(a, b) {
@@ -228,8 +228,8 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     }
 
     /**
-     * @param {!UI.DataGridNode} a
-     * @param {!UI.DataGridNode} b
+     * @param {!DataGrid.DataGridNode} a
+     * @param {!DataGrid.DataGridNode} b
      * @return {number}
      */
     function compareName(a, b) {
@@ -281,7 +281,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
 
   /**
    * @param {!UI.ContextMenu} contextMenu
-   * @param {!UI.DataGridNode} gridNode
+   * @param {!DataGrid.DataGridNode} gridNode
    */
   _onContextMenu(contextMenu, gridNode) {
     var profileNode = gridNode._profileNode;
@@ -303,7 +303,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
 /**
  * @unrestricted
  */
-Timeline.TimelineTreeView.GridNode = class extends UI.SortableDataGridNode {
+Timeline.TimelineTreeView.GridNode = class extends DataGrid.SortableDataGridNode {
   /**
    * @param {!TimelineModel.TimelineProfileTree.Node} profileNode
    * @param {number} grandTotalTime
@@ -731,7 +731,7 @@ Timeline.CallTreeTimelineTreeView = class extends Timeline.AggregatedTimelineTre
    */
   constructor(model, filters) {
     super(model, filters);
-    this._dataGrid.markColumnAsSortedBy('total', UI.DataGrid.Order.Descending);
+    this._dataGrid.markColumnAsSortedBy('total', DataGrid.DataGrid.Order.Descending);
   }
 
   /**
@@ -757,7 +757,7 @@ Timeline.BottomUpTimelineTreeView = class extends Timeline.AggregatedTimelineTre
    */
   constructor(model, filters) {
     super(model, filters);
-    this._dataGrid.markColumnAsSortedBy('self', UI.DataGrid.Order.Descending);
+    this._dataGrid.markColumnAsSortedBy('self', DataGrid.DataGrid.Order.Descending);
   }
 
   /**
@@ -786,7 +786,7 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
     this._init(model, filters);
     this._delegate = delegate;
     this._filters.push.apply(this._filters, this._filtersControl.filters());
-    this._dataGrid.markColumnAsSortedBy('startTime', UI.DataGrid.Order.Ascending);
+    this._dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
   }
 
   /**
@@ -854,7 +854,7 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
 
   /**
    * @override
-   * @param {!Array<!UI.DataGrid.ColumnDescriptor>} columns
+   * @param {!Array<!DataGrid.DataGrid.ColumnDescriptor>} columns
    */
   _populateColumns(columns) {
     columns.push(
@@ -912,13 +912,13 @@ Timeline.TimelineStackView = class extends UI.VBox {
     var header = this.element.createChild('div', 'timeline-stack-view-header');
     header.textContent = Common.UIString('Heaviest stack');
     this._treeView = treeView;
-    var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
+    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'total', title: Common.UIString('Total Time'), fixedWidth: true, width: '110px'},
       {id: 'activity', title: Common.UIString('Activity')}
     ]);
-    this._dataGrid = new UI.ViewportDataGrid(columns);
-    this._dataGrid.setResizeMethod(UI.DataGrid.ResizeMethod.Last);
-    this._dataGrid.addEventListener(UI.DataGrid.Events.SelectedNode, this._onSelectionChanged, this);
+    this._dataGrid = new DataGrid.ViewportDataGrid(columns);
+    this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
+    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._onSelectionChanged, this);
     this._dataGrid.asWidget().show(this.element);
   }
 

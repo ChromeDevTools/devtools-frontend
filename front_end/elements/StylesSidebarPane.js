@@ -39,7 +39,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     Common.moduleSetting('textEditorIndent').addChangeListener(this.update.bind(this));
 
     this._sectionsContainer = this.element.createChild('div');
-    this._swatchPopoverHelper = new UI.SwatchPopoverHelper();
+    this._swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper();
     this._linkifier = new Components.Linkifier(Elements.StylesSidebarPane._maxLinkLength, /* useLinkDecorator */ true);
 
     this.element.classList.add('styles-pane');
@@ -1866,13 +1866,13 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       return createTextNode(text);
 
     if (!this._editable()) {
-      var swatch = UI.ColorSwatch.create();
+      var swatch = InlineEditor.ColorSwatch.create();
       swatch.setColor(color);
       return swatch;
     }
 
     var swatchPopoverHelper = this._parentPane._swatchPopoverHelper;
-    var swatch = UI.ColorSwatch.create();
+    var swatch = InlineEditor.ColorSwatch.create();
     swatch.setColor(color);
     swatch.setFormat(Common.Color.detectColorFormat(swatch.color()));
     var swatchIcon = new Elements.ColorSwatchPopoverIcon(this, swatchPopoverHelper, swatch);
@@ -1927,7 +1927,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (!this._editable() || !Common.Geometry.CubicBezier.parse(text))
       return createTextNode(text);
     var swatchPopoverHelper = this._parentPane._swatchPopoverHelper;
-    var swatch = UI.BezierSwatch.create();
+    var swatch = InlineEditor.BezierSwatch.create();
     swatch.setBezierText(text);
     new Elements.BezierPopoverIcon(this, swatchPopoverHelper, swatch);
     return swatch;
@@ -1954,7 +1954,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       if (i !== 0)
         container.appendChild(createTextNode(', '));  // Add back commas and spaces between each shadow.
       // TODO(flandy): editing the property value should use the original value with all spaces.
-      var cssShadowSwatch = UI.CSSShadowSwatch.create();
+      var cssShadowSwatch = InlineEditor.CSSShadowSwatch.create();
       cssShadowSwatch.setCSSShadow(shadows[i]);
       new Elements.ShadowSwatchPopoverHelper(this, swatchPopoverHelper, cssShadowSwatch);
       var colorSwatch = cssShadowSwatch.colorSwatch();

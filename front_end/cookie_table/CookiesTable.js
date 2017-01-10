@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Components.CookiesTable = class extends UI.VBox {
+CookieTable.CookiesTable = class extends UI.VBox {
   /**
    * @param {boolean} expandable
    * @param {function()=} refreshCallback
@@ -43,13 +43,13 @@ Components.CookiesTable = class extends UI.VBox {
     var readOnly = expandable;
     this._refreshCallback = refreshCallback;
 
-    var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
+    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {
         id: 'name',
         title: Common.UIString('Name'),
         sortable: true,
         disclosure: expandable,
-        sort: UI.DataGrid.Order.Ascending,
+        sort: DataGrid.DataGrid.Order.Ascending,
         longText: true,
         weight: 24
       },
@@ -57,29 +57,41 @@ Components.CookiesTable = class extends UI.VBox {
       {id: 'domain', title: Common.UIString('Domain'), sortable: true, weight: 7},
       {id: 'path', title: Common.UIString('Path'), sortable: true, weight: 7},
       {id: 'expires', title: Common.UIString('Expires / Max-Age'), sortable: true, weight: 7},
-      {id: 'size', title: Common.UIString('Size'), sortable: true, align: UI.DataGrid.Align.Right, weight: 7},
-      {id: 'httpOnly', title: Common.UIString('HTTP'), sortable: true, align: UI.DataGrid.Align.Center, weight: 7},
-      {id: 'secure', title: Common.UIString('Secure'), sortable: true, align: UI.DataGrid.Align.Center, weight: 7}, {
+      {id: 'size', title: Common.UIString('Size'), sortable: true, align: DataGrid.DataGrid.Align.Right, weight: 7}, {
+        id: 'httpOnly',
+        title: Common.UIString('HTTP'),
+        sortable: true,
+        align: DataGrid.DataGrid.Align.Center,
+        weight: 7
+      },
+      {
+        id: 'secure',
+        title: Common.UIString('Secure'),
+        sortable: true,
+        align: DataGrid.DataGrid.Align.Center,
+        weight: 7
+      },
+      {
         id: 'sameSite',
         title: Common.UIString('SameSite'),
         sortable: true,
-        align: UI.DataGrid.Align.Center,
+        align: DataGrid.DataGrid.Align.Center,
         weight: 7
       }
     ]);
 
     if (readOnly) {
-      this._dataGrid = new UI.DataGrid(columns);
+      this._dataGrid = new DataGrid.DataGrid(columns);
     } else {
-      this._dataGrid = new UI.DataGrid(columns, undefined, this._onDeleteCookie.bind(this), refreshCallback);
+      this._dataGrid = new DataGrid.DataGrid(columns, undefined, this._onDeleteCookie.bind(this), refreshCallback);
       this._dataGrid.setRowContextMenuCallback(this._onRowContextMenu.bind(this));
     }
 
     this._dataGrid.setName('cookiesTable');
-    this._dataGrid.addEventListener(UI.DataGrid.Events.SortingChanged, this._rebuildTable, this);
+    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._rebuildTable, this);
 
     if (selectedCallback)
-      this._dataGrid.addEventListener(UI.DataGrid.Events.SelectedNode, selectedCallback, this);
+      this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, selectedCallback, this);
 
     this._nextSelectedCookie = /** @type {?SDK.Cookie} */ (null);
 
@@ -97,7 +109,7 @@ Components.CookiesTable = class extends UI.VBox {
 
   /**
    * @param {!UI.ContextMenu} contextMenu
-   * @param {!UI.DataGridNode} node
+   * @param {!DataGrid.DataGridNode} node
    */
   _onRowContextMenu(contextMenu, node) {
     if (node === this._dataGrid.creationNode)
@@ -164,7 +176,7 @@ Components.CookiesTable = class extends UI.VBox {
           secure: '',
           sameSite: ''
         };
-        var groupNode = new UI.DataGridNode(groupData);
+        var groupNode = new DataGrid.DataGridNode(groupData);
         groupNode.selectable = true;
         this._dataGrid.rootNode().appendChild(groupNode);
         groupNode.element().classList.add('row-group');
@@ -177,7 +189,7 @@ Components.CookiesTable = class extends UI.VBox {
   }
 
   /**
-   * @param {!UI.DataGridNode} parentNode
+   * @param {!DataGrid.DataGridNode} parentNode
    * @param {?Array.<!SDK.Cookie>} cookies
    * @param {?SDK.Cookie} selectedCookie
    */
@@ -267,7 +279,7 @@ Components.CookiesTable = class extends UI.VBox {
 
   /**
    * @param {!SDK.Cookie} cookie
-   * @return {!UI.DataGridNode}
+   * @return {!DataGrid.DataGridNode}
    */
   _createGridNode(cookie) {
     var data = {};
@@ -293,7 +305,7 @@ Components.CookiesTable = class extends UI.VBox {
     data.secure = (cookie.secure() ? checkmark : '');
     data.sameSite = cookie.sameSite() || '';
 
-    var node = new UI.DataGridNode(data);
+    var node = new DataGrid.DataGridNode(data);
     node.cookie = cookie;
     node.selectable = true;
     return node;

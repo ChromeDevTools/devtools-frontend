@@ -31,14 +31,15 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
   }
 
   /**
-   * @return {!UI.DataGrid}
+   * @return {!DataGrid.DataGrid}
    */
   _createDataGrid() {
-    var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
+    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'number', title: Common.UIString('#'), width: '50px'}, {id: 'request', title: Common.UIString('Request')},
       {id: 'response', title: Common.UIString('Response')}
     ]);
-    return new UI.DataGrid(columns, undefined, this._deleteButtonClicked.bind(this), this._updateData.bind(this, true));
+    return new DataGrid.DataGrid(
+        columns, undefined, this._deleteButtonClicked.bind(this), this._updateData.bind(this, true));
   }
 
   _createEditorToolbar() {
@@ -71,7 +72,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
   }
 
   /**
-   * @param {!UI.DataGridNode} node
+   * @param {!DataGrid.DataGridNode} node
    */
   _deleteButtonClicked(node) {
     this._model.deleteCacheEntry(this._cache, /** @type {string} */ (node.data['request']), node.remove.bind(node));
@@ -106,7 +107,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
       data['number'] = i + skipCount;
       data['request'] = entries[i].request;
       data['response'] = entries[i].response;
-      var node = new UI.DataGridNode(data);
+      var node = new DataGrid.DataGridNode(data);
       node.selectable = true;
       this._dataGrid.rootNode().appendChild(node);
     }

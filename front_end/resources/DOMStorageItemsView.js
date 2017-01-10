@@ -124,7 +124,7 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
         return;
     }
 
-    var childNode = new UI.DataGridNode({key: storageData.key, value: storageData.value}, false);
+    var childNode = new DataGrid.DataGridNode({key: storageData.key, value: storageData.value}, false);
     rootNode.insertChild(childNode, children.length - 1);
   }
 
@@ -174,7 +174,7 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
   }
 
   _dataGridForDOMStorageItems(items) {
-    var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
+    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'key', title: Common.UIString('Key'), sortable: false, editable: true, weight: 50},
       {id: 'value', title: Common.UIString('Value'), sortable: false, editable: true, weight: 50}
     ]);
@@ -186,13 +186,13 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
     for (var i = 0; i < items.length; i++) {
       var key = items[i][0];
       var value = items[i][1];
-      var node = new UI.DataGridNode({key: key, value: value}, false);
+      var node = new DataGrid.DataGridNode({key: key, value: value}, false);
       node.selectable = true;
       nodes.push(node);
       keys.push(key);
     }
 
-    var dataGrid = new UI.DataGrid(columns, this._editingCallback.bind(this), this._deleteCallback.bind(this));
+    var dataGrid = new DataGrid.DataGrid(columns, this._editingCallback.bind(this), this._deleteCallback.bind(this));
     dataGrid.setName('DOMStorageItemsView');
     length = nodes.length;
     for (var i = 0; i < length; ++i)
@@ -233,7 +233,7 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
   }
 
   /**
-   * @param {!UI.DataGridNode} masterNode
+   * @param {!DataGrid.DataGridNode} masterNode
    */
   _removeDupes(masterNode) {
     var rootNode = this._dataGrid.rootNode();

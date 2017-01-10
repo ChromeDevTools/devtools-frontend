@@ -137,7 +137,7 @@ Resources.DatabaseQueryView = class extends UI.VBox {
   }
 
   _queryFinished(query, columnNames, values) {
-    var dataGrid = UI.SortableDataGrid.create(columnNames, values);
+    var dataGrid = DataGrid.SortableDataGrid.create(columnNames, values);
     var trimmedQuery = query.trim();
 
     if (dataGrid) {

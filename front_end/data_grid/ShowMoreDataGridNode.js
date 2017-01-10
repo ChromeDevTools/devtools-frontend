@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-UI.ShowMoreDataGridNode = class extends UI.DataGridNode {
+DataGrid.ShowMoreDataGridNode = class extends DataGrid.DataGridNode {
   /**
    * @param {function(number, number)} callback
    * @param {number} startPosition

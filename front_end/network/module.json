@@ -105,9 +105,9 @@
     "dependencies": [
         "source_frame",
         "components",
-        "components_lazy",
-        "ui_lazy",
-        "perf_ui"
+        "perf_ui",
+        "cookie_table",
+        "data_grid"
     ],
     "scripts": [
         "BlockedURLsPane.js",

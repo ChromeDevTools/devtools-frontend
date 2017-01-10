@@ -38,7 +38,7 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
   constructor(uiSourceCode) {
     super(uiSourceCode);
     this._registerShortcuts();
-    this._swatchPopoverHelper = new UI.SwatchPopoverHelper();
+    this._swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper();
     this._muteSwatchProcessing = false;
     this.configureAutocomplete(
         {suggestionsCallback: this._cssSuggestions.bind(this), isWordChar: this._isWordChar.bind(this)});
@@ -49,7 +49,7 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
   }
 
   _registerShortcuts() {
-    var shortcutKeys = Components.ShortcutsScreen.SourcesPanelShortcuts;
+    var shortcutKeys = UI.ShortcutsScreen.SourcesPanelShortcuts;
     for (var i = 0; i < shortcutKeys.IncreaseCSSUnitByOne.length; ++i)
       this.addShortcut(shortcutKeys.IncreaseCSSUnitByOne[i].key, this._handleUnitModification.bind(this, 1));
     for (var i = 0; i < shortcutKeys.DecreaseCSSUnitByOne.length; ++i)
@@ -158,13 +158,13 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
 
   /**
    * @param {string} text
-   * @return {?UI.ColorSwatch}
+   * @return {?InlineEditor.ColorSwatch}
    */
   _createColorSwatch(text) {
     var color = Common.Color.parse(text);
     if (!color)
       return null;
-    var swatch = UI.ColorSwatch.create();
+    var swatch = InlineEditor.ColorSwatch.create();
     swatch.setColor(color);
     swatch.iconElement().title = Common.UIString('Open color picker.');
     swatch.iconElement().addEventListener('click', this._swatchIconClicked.bind(this, swatch), false);
@@ -174,12 +174,12 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
 
   /**
    * @param {string} text
-   * @return {?UI.BezierSwatch}
+   * @return {?InlineEditor.BezierSwatch}
    */
   _createBezierSwatch(text) {
     if (!Common.Geometry.CubicBezier.parse(text))
       return null;
-    var swatch = UI.BezierSwatch.create();
+    var swatch = InlineEditor.BezierSwatch.create();
     swatch.setBezierText(text);
     swatch.iconElement().title = Common.UIString('Open cubic bezier editor.');
     swatch.iconElement().addEventListener('click', this._swatchIconClicked.bind(this, swatch), false);
@@ -201,20 +201,20 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     this._editedSwatchTextRange.endColumn += swatch.textContent.length;
     this._currentSwatch = swatch;
 
-    if (swatch instanceof UI.ColorSwatch)
+    if (swatch instanceof InlineEditor.ColorSwatch)
       this._showSpectrum(swatch);
-    else if (swatch instanceof UI.BezierSwatch)
+    else if (swatch instanceof InlineEditor.BezierSwatch)
       this._showBezierEditor(swatch);
   }
 
   /**
-   * @param {!UI.ColorSwatch} swatch
+   * @param {!InlineEditor.ColorSwatch} swatch
    */
   _showSpectrum(swatch) {
     if (!this._spectrum) {
-      this._spectrum = new Components.Spectrum();
-      this._spectrum.addEventListener(Components.Spectrum.Events.SizeChanged, this._spectrumResized, this);
-      this._spectrum.addEventListener(Components.Spectrum.Events.ColorChanged, this._spectrumChanged, this);
+      this._spectrum = new ColorPicker.Spectrum();
+      this._spectrum.addEventListener(ColorPicker.Spectrum.Events.SizeChanged, this._spectrumResized, this);
+      this._spectrum.addEventListener(ColorPicker.Spectrum.Events.ColorChanged, this._spectrumChanged, this);
     }
     this._spectrum.setColor(swatch.color(), swatch.format());
     this._swatchPopoverHelper.show(this._spectrum, swatch.iconElement(), this._swatchPopoverHidden.bind(this));
@@ -240,12 +240,12 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
   }
 
   /**
-   * @param {!UI.BezierSwatch} swatch
+   * @param {!InlineEditor.BezierSwatch} swatch
    */
   _showBezierEditor(swatch) {
     if (!this._bezierEditor) {
-      this._bezierEditor = new UI.BezierEditor();
-      this._bezierEditor.addEventListener(UI.BezierEditor.Events.BezierChanged, this._bezierChanged, this);
+      this._bezierEditor = new InlineEditor.BezierEditor();
+      this._bezierEditor.addEventListener(InlineEditor.BezierEditor.Events.BezierChanged, this._bezierChanged, this);
     }
     var cubicBezier = Common.Geometry.CubicBezier.parse(swatch.bezierText());
     if (!cubicBezier) {

@@ -44,7 +44,7 @@ Console.ConsoleViewMessage = class {
     this._closeGroupDecorationCount = 0;
     this._nestingLevel = nestingLevel;
 
-    /** @type {?UI.DataGrid} */
+    /** @type {?DataGrid.DataGrid} */
     this._dataGrid = null;
     this._previewFormatter = new Components.RemoteObjectPreviewFormatter();
     this._searchRegex = null;
@@ -174,7 +174,7 @@ Console.ConsoleViewMessage = class {
     columnNames.unshift(Common.UIString('(index)'));
 
     if (flatValues.length) {
-      this._dataGrid = UI.SortableDataGrid.create(columnNames, flatValues);
+      this._dataGrid = DataGrid.SortableDataGrid.create(columnNames, flatValues);
 
       var formattedResult = createElementWithClass('span', 'console-message-text');
       var tableElement = formattedResult.createChild('div', 'console-message-formatted-table');

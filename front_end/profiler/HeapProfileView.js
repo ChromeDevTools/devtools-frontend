@@ -37,7 +37,7 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
 
   /**
    * @override
-   * @return {!UI.FlameChartDataProvider}
+   * @return {!PerfUI.FlameChartDataProvider}
    */
   createFlameChartDataProvider() {
     return new Profiler.HeapFlameChartDataProvider(this.profile, this._profileHeader.target());
@@ -136,7 +136,8 @@ Profiler.SamplingHeapProfileType = class extends Profiler.ProfileType {
       this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, recordedProfile);
     }
 
-    this.profileBeingRecorded().target()
+    this.profileBeingRecorded()
+        .target()
         .heapProfilerModel.stopSampling()
         .then(didStopProfiling.bind(this))
         .then(SDK.targetManager.resumeAllTargets.bind(SDK.targetManager))
@@ -327,7 +328,7 @@ Profiler.HeapFlameChartDataProvider = class extends Profiler.ProfileFlameChartDa
 
   /**
    * @override
-   * @return {!UI.FlameChart.TimelineData}
+   * @return {!PerfUI.FlameChart.TimelineData}
    */
   _calculateTimelineData() {
     /**
@@ -368,7 +369,7 @@ Profiler.HeapFlameChartDataProvider = class extends Profiler.ProfileFlameChartDa
 
     this._maxStackDepth = maxDepth + 1;
     this._entryNodes = entryNodes;
-    this._timelineData = new UI.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
+    this._timelineData = new PerfUI.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
 
     return this._timelineData;
   }

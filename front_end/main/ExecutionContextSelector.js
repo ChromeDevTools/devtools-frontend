@@ -5,7 +5,7 @@
  * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-Components.ExecutionContextSelector = class {
+Main.ExecutionContextSelector = class {
   /**
    * @param {!SDK.TargetManager} targetManager
    * @param {!UI.Context} context
@@ -36,7 +36,7 @@ Components.ExecutionContextSelector = class {
     setImmediate(deferred.bind(this));
 
     /**
-     * @this {Components.ExecutionContextSelector}
+     * @this {Main.ExecutionContextSelector}
      */
     function deferred() {
       // We always want the second context for the service worker targets.

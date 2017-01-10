@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-UI.SwatchPopoverHelper = class extends Common.Object {
+InlineEditor.SwatchPopoverHelper = class extends Common.Object {
   constructor() {
     super();
     this._popover = new UI.Popover();

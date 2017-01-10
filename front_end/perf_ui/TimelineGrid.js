@@ -31,10 +31,10 @@
 /**
  * @unrestricted
  */
-UI.TimelineGrid = class {
+PerfUI.TimelineGrid = class {
   constructor() {
     this.element = createElement('div');
-    UI.appendStyle(this.element, 'ui_lazy/timelineGrid.css');
+    UI.appendStyle(this.element, 'perf_ui/timelineGrid.css');
 
     this._dividersElement = this.element.createChild('div', 'resources-dividers');
 
@@ -46,7 +46,7 @@ UI.TimelineGrid = class {
   }
 
   /**
-   * @param {!UI.TimelineGrid.Calculator} calculator
+   * @param {!PerfUI.TimelineGrid.Calculator} calculator
    * @param {number=} freeZoneAtLeft
    * @return {!{offsets: !Array.<number>, precision: number}}
    */
@@ -95,7 +95,7 @@ UI.TimelineGrid = class {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!UI.TimelineGrid.Calculator} calculator
+   * @param {!PerfUI.TimelineGrid.Calculator} calculator
    * @param {number} paddingTop
    * @param {number=} headerHeight
    * @param {number=} freeZoneAtLeft
@@ -106,7 +106,7 @@ UI.TimelineGrid = class {
     context.scale(ratio, ratio);
     var width = context.canvas.width / window.devicePixelRatio;
     var height = context.canvas.height / window.devicePixelRatio;
-    var dividersData = UI.TimelineGrid.calculateDividerOffsets(calculator);
+    var dividersData = PerfUI.TimelineGrid.calculateDividerOffsets(calculator);
     var dividerOffsets = dividersData.offsets;
     var precision = dividersData.precision;
 
@@ -154,12 +154,12 @@ UI.TimelineGrid = class {
   }
 
   /**
-   * @param {!UI.TimelineGrid.Calculator} calculator
+   * @param {!PerfUI.TimelineGrid.Calculator} calculator
    * @param {number=} freeZoneAtLeft
    * @return {boolean}
    */
   updateDividers(calculator, freeZoneAtLeft) {
-    var dividersData = UI.TimelineGrid.calculateDividerOffsets(calculator, freeZoneAtLeft);
+    var dividersData = PerfUI.TimelineGrid.calculateDividerOffsets(calculator, freeZoneAtLeft);
     var dividerOffsets = dividersData.offsets;
     var precision = dividersData.precision;
 
@@ -260,9 +260,9 @@ UI.TimelineGrid = class {
 /**
  * @interface
  */
-UI.TimelineGrid.Calculator = function() {};
+PerfUI.TimelineGrid.Calculator = function() {};
 
-UI.TimelineGrid.Calculator.prototype = {
+PerfUI.TimelineGrid.Calculator.prototype = {
   /**
    * @return {number}
    */

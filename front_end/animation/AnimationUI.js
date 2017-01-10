@@ -186,12 +186,12 @@ Animation.AnimationUI = class {
 
     if (easing === 'linear') {
       group.style.fill = this._color;
-      var height = UI.BezierUI.Height;
+      var height = InlineEditor.BezierUI.Height;
       group.setAttribute(
           'd', ['M', 0, height, 'L', 0, 5, 'L', width.toFixed(2), 5, 'L', width.toFixed(2), height, 'Z'].join(' '));
     } else if (bezier) {
       group.style.fill = this._color;
-      UI.BezierUI.drawVelocityChart(bezier, group, width);
+      InlineEditor.BezierUI.drawVelocityChart(bezier, group, width);
     } else {
       var stepFunction = Animation.AnimationTimeline.StepTimingFunction.parse(easing);
       group.removeChildren();

@@ -14,18 +14,18 @@ Network.EventSourceMessagesView = class extends UI.VBox {
     this.element.classList.add('event-source-messages-view');
     this._request = request;
 
-    var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
+    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'id', title: Common.UIString('Id'), sortable: true, weight: 8},
       {id: 'type', title: Common.UIString('Type'), sortable: true, weight: 8},
       {id: 'data', title: Common.UIString('Data'), sortable: false, weight: 88},
       {id: 'time', title: Common.UIString('Time'), sortable: true, weight: 8}
     ]);
 
-    this._dataGrid = new UI.SortableDataGrid(columns);
+    this._dataGrid = new DataGrid.SortableDataGrid(columns);
     this._dataGrid.setStickToBottom(true);
-    this._dataGrid.markColumnAsSortedBy('time', UI.DataGrid.Order.Ascending);
+    this._dataGrid.markColumnAsSortedBy('time', DataGrid.DataGrid.Order.Ascending);
     this._sortItems();
-    this._dataGrid.addEventListener(UI.DataGrid.Events.SortingChanged, this._sortItems, this);
+    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortItems, this);
 
     this._dataGrid.setName('EventSourceMessagesView');
     this._dataGrid.asWidget().show(this.element);
@@ -72,7 +72,7 @@ Network.EventSourceMessagesView = class extends UI.VBox {
 /**
  * @unrestricted
  */
-Network.EventSourceMessageNode = class extends UI.SortableDataGridNode {
+Network.EventSourceMessageNode = class extends DataGrid.SortableDataGridNode {
   /**
    * @param {!SDK.NetworkRequest.EventSourceMessage} message
    */

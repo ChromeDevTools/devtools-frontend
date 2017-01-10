@@ -71,10 +71,7 @@ Resources.CookieItemsView = class extends UI.SimpleView {
    * @return {!Array.<!UI.ToolbarItem>}
    */
   syncToolbarItems() {
-    return [
-      this._refreshButton, this._clearButton, this._deleteButton,
-      this._filterSeparator, this._filterButton
-    ];
+    return [this._refreshButton, this._clearButton, this._deleteButton, this._filterSeparator, this._filterButton];
   }
 
   /**
@@ -123,7 +120,7 @@ Resources.CookieItemsView = class extends UI.SimpleView {
 
     if (!this._cookiesTable) {
       this._cookiesTable =
-          new Components.CookiesTable(false, this._update.bind(this), this._enableDeleteButton.bind(this));
+          new CookieTable.CookiesTable(false, this._update.bind(this), this._enableDeleteButton.bind(this));
     }
 
     var shownCookies = this._filterCookiesForFilters(this._cookies);
@@ -149,7 +146,7 @@ Resources.CookieItemsView = class extends UI.SimpleView {
       const candidate = `${cookie.name()} ${cookie.value()} ${cookie.domain()}`;
       return this._filterRegex.test(candidate);
     });
-   }
+  }
 
   /**
    * @param {!Array.<!SDK.Cookie>} allCookies

@@ -78,7 +78,7 @@ Network.RequestCookiesView = class extends UI.VBox {
   _buildCookiesTable() {
     this.detachChildWidgets();
 
-    this._cookiesTable = new Components.CookiesTable(true);
+    this._cookiesTable = new CookieTable.CookiesTable(true);
     this._cookiesTable.setCookieFolders([
       {folderName: Common.UIString('Request Cookies'), cookies: this._request.requestCookies},
       {folderName: Common.UIString('Response Cookies'), cookies: this._request.responseCookies}

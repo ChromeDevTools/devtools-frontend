@@ -73,9 +73,8 @@
     ],
     "dependencies": [
         "components",
-        "components_lazy",
-        "ui_lazy",
-        "perf_ui"
+        "perf_ui",
+        "data_grid"
     ],
     "scripts": [
         "ProfilesPanel.js",

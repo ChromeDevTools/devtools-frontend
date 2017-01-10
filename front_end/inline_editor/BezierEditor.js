@@ -4,10 +4,10 @@
 /**
  * @unrestricted
  */
-UI.BezierEditor = class extends UI.VBox {
+InlineEditor.BezierEditor = class extends UI.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('ui/bezierEditor.css');
+    this.registerRequiredCSS('inline_editor/bezierEditor.css');
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
 
@@ -22,15 +22,15 @@ UI.BezierEditor = class extends UI.VBox {
 
     // Presets UI
     this._presetsContainer = this._outerContainer.createChild('div', 'bezier-presets');
-    this._presetUI = new UI.BezierUI(40, 40, 0, 2, false);
+    this._presetUI = new InlineEditor.BezierUI(40, 40, 0, 2, false);
     this._presetCategories = [];
-    for (var i = 0; i < UI.BezierEditor.Presets.length; i++) {
-      this._presetCategories[i] = this._createCategory(UI.BezierEditor.Presets[i]);
+    for (var i = 0; i < InlineEditor.BezierEditor.Presets.length; i++) {
+      this._presetCategories[i] = this._createCategory(InlineEditor.BezierEditor.Presets[i]);
       this._presetsContainer.appendChild(this._presetCategories[i].icon);
     }
 
     // Curve UI
-    this._curveUI = new UI.BezierUI(150, 250, 50, 7, true);
+    this._curveUI = new InlineEditor.BezierUI(150, 250, 50, 7, true);
     this._curve = this._outerContainer.createSVGChild('svg', 'bezier-curve');
     UI.installDragHandle(
         this._curve, this._dragStart.bind(this), this._dragMove.bind(this), this._dragEnd.bind(this), 'default');
@@ -81,7 +81,7 @@ UI.BezierEditor = class extends UI.VBox {
 
   _onchange() {
     this._updateUI();
-    this.dispatchEventToListeners(UI.BezierEditor.Events.BezierChanged, this._bezier.asCSSText());
+    this.dispatchEventToListeners(InlineEditor.BezierEditor.Events.BezierChanged, this._bezier.asCSSText());
   }
 
   _updateUI() {
@@ -146,7 +146,7 @@ UI.BezierEditor = class extends UI.VBox {
 
   /**
    * @param {!Array<{name: string, value: string}>} presetGroup
-   * @return {!UI.BezierEditor.PresetCategory}
+   * @return {!InlineEditor.BezierEditor.PresetCategory}
    */
   _createCategory(presetGroup) {
     var presetElement = createElementWithClass('div', 'bezier-preset-category');
@@ -180,7 +180,7 @@ UI.BezierEditor = class extends UI.VBox {
   }
 
   /**
-   * @param {!UI.BezierEditor.PresetCategory} category
+   * @param {!InlineEditor.BezierEditor.PresetCategory} category
    * @param {!Event=} event
    */
   _presetCategorySelected(category, event) {
@@ -239,11 +239,11 @@ UI.BezierEditor = class extends UI.VBox {
 };
 
 /** @enum {symbol} */
-UI.BezierEditor.Events = {
+InlineEditor.BezierEditor.Events = {
   BezierChanged: Symbol('BezierChanged')
 };
 
-UI.BezierEditor.Presets = [
+InlineEditor.BezierEditor.Presets = [
   [
     {name: 'ease-in-out', value: 'ease-in-out'}, {name: 'In Out · Sine', value: 'cubic-bezier(0.45, 0.05, 0.55, 0.95)'},
     {name: 'In Out · Quadratic', value: 'cubic-bezier(0.46, 0.03, 0.52, 0.96)'},
@@ -268,4 +268,4 @@ UI.BezierEditor.Presets = [
 ];
 
 /** @typedef {{presets: !Array.<{name: string, value: string}>, icon: !Element, presetIndex: number}} */
-UI.BezierEditor.PresetCategory;
+InlineEditor.BezierEditor.PresetCategory;

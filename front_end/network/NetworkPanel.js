@@ -43,7 +43,7 @@ Network.NetworkPanel = class extends UI.Panel {
     this._toggleRecordAction =
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('network.toggle-recording'));
 
-    /** @type {?Components.FilmStripView} */
+    /** @type {?PerfUI.FilmStripView} */
     this._filmStripView = null;
     /** @type {?Network.NetworkPanel.FilmStripRecorder} */
     this._filmStripRecorder = null;
@@ -53,8 +53,9 @@ Network.NetworkPanel = class extends UI.Panel {
     this._filterBar.show(this.element);
 
     // Create top overview component.
-    this._overviewPane = new UI.TimelineOverviewPane('network');
-    this._overviewPane.addEventListener(UI.TimelineOverviewPane.Events.WindowChanged, this._onWindowChanged.bind(this));
+    this._overviewPane = new PerfUI.TimelineOverviewPane('network');
+    this._overviewPane.addEventListener(
+        PerfUI.TimelineOverviewPane.Events.WindowChanged, this._onWindowChanged.bind(this));
     this._overviewPane.element.id = 'network-overview-panel';
     this._networkOverview = new Network.NetworkOverview();
     this._overviewPane.setOverviewControls([this._networkOverview]);
@@ -225,7 +226,7 @@ Network.NetworkPanel = class extends UI.Panel {
   }
 
   /**
-   * @param {?Components.FilmStripModel} filmStripModel
+   * @param {?SDK.FilmStripModel} filmStripModel
    */
   _filmStripAvailable(filmStripModel) {
     if (!filmStripModel)
@@ -236,7 +237,7 @@ Network.NetworkPanel = class extends UI.Panel {
     var timestamps = filmStripModel.frames().map(mapTimestamp);
 
     /**
-     * @param {!Components.FilmStripModel.Frame} frame
+     * @param {!SDK.FilmStripModel.Frame} frame
      * @return {number}
      */
     function mapTimestamp(frame) {
@@ -315,16 +316,15 @@ Network.NetworkPanel = class extends UI.Panel {
   _toggleRecordFilmStrip() {
     var toggled = this._networkRecordFilmStripSetting.get();
     if (toggled && !this._filmStripRecorder) {
-      this._filmStripView = new Components.FilmStripView();
-      this._filmStripView.setMode(Components.FilmStripView.Modes.FrameBased);
+      this._filmStripView = new PerfUI.FilmStripView();
+      this._filmStripView.setMode(PerfUI.FilmStripView.Modes.FrameBased);
       this._filmStripView.element.classList.add('network-film-strip');
       this._filmStripRecorder =
           new Network.NetworkPanel.FilmStripRecorder(this._networkLogView.timeCalculator(), this._filmStripView);
       this._filmStripView.show(this.element, this.element.firstElementChild);
-      this._filmStripView.addEventListener(
-          Components.FilmStripView.Events.FrameSelected, this._onFilmFrameSelected, this);
-      this._filmStripView.addEventListener(Components.FilmStripView.Events.FrameEnter, this._onFilmFrameEnter, this);
-      this._filmStripView.addEventListener(Components.FilmStripView.Events.FrameExit, this._onFilmFrameExit, this);
+      this._filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameSelected, this._onFilmFrameSelected, this);
+      this._filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameEnter, this._onFilmFrameEnter, this);
+      this._filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameExit, this._onFilmFrameExit, this);
       this._resetFilmStripView();
     }
 
@@ -630,7 +630,7 @@ Network.NetworkPanel.RequestRevealer = class {
 Network.NetworkPanel.FilmStripRecorder = class {
   /**
    * @param {!Network.NetworkTimeCalculator} timeCalculator
-   * @param {!Components.FilmStripView} filmStripView
+   * @param {!PerfUI.FilmStripView} filmStripView
    */
   constructor(timeCalculator, filmStripView) {
     this._timeCalculator = timeCalculator;
@@ -661,7 +661,7 @@ Network.NetworkPanel.FilmStripRecorder = class {
     this._tracingModel.tracingComplete();
     SDK.targetManager.resumeReload(this._target);
     this._target = null;
-    this._callback(new Components.FilmStripModel(this._tracingModel, this._timeCalculator.minimumBoundary() * 1000));
+    this._callback(new SDK.FilmStripModel(this._tracingModel, this._timeCalculator.minimumBoundary() * 1000));
     delete this._callback;
   }
 
@@ -700,7 +700,7 @@ Network.NetworkPanel.FilmStripRecorder = class {
   }
 
   /**
-   * @param {function(?Components.FilmStripModel)} callback
+   * @param {function(?SDK.FilmStripModel)} callback
    */
   stopRecording(callback) {
     if (!this._target)

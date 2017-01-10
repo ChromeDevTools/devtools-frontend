@@ -4,14 +4,14 @@
 /**
  * @unrestricted
  */
-Components.FilmStripView = class extends UI.HBox {
+PerfUI.FilmStripView = class extends UI.HBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('components_lazy/filmStripView.css');
+    this.registerRequiredCSS('perf_ui/filmStripView.css');
     this.contentElement.classList.add('film-strip-view');
     this._statusLabel = this.contentElement.createChild('div', 'label');
     this.reset();
-    this.setMode(Components.FilmStripView.Modes.TimeBased);
+    this.setMode(PerfUI.FilmStripView.Modes.TimeBased);
   }
 
   /**
@@ -28,12 +28,12 @@ Components.FilmStripView = class extends UI.HBox {
    */
   setMode(mode) {
     this._mode = mode;
-    this.contentElement.classList.toggle('time-based', mode === Components.FilmStripView.Modes.TimeBased);
+    this.contentElement.classList.toggle('time-based', mode === PerfUI.FilmStripView.Modes.TimeBased);
     this.update();
   }
 
   /**
-   * @param {!Components.FilmStripModel} filmStripModel
+   * @param {!SDK.FilmStripModel} filmStripModel
    * @param {number} zeroTime
    * @param {number} spanTime
    */
@@ -50,7 +50,7 @@ Components.FilmStripView = class extends UI.HBox {
   }
 
   /**
-   * @param {!Components.FilmStripModel.Frame} frame
+   * @param {!SDK.FilmStripModel.Frame} frame
    * @return {!Promise<!Element>}
    */
   createFrameElement(frame) {
@@ -60,15 +60,15 @@ Components.FilmStripView = class extends UI.HBox {
     element.createChild('div', 'time').textContent = Number.millisToString(time - this._zeroTime);
     var imageElement = element.createChild('div', 'thumbnail').createChild('img');
     element.addEventListener(
-        'mousedown', this._onMouseEvent.bind(this, Components.FilmStripView.Events.FrameSelected, time), false);
+        'mousedown', this._onMouseEvent.bind(this, PerfUI.FilmStripView.Events.FrameSelected, time), false);
     element.addEventListener(
-        'mouseenter', this._onMouseEvent.bind(this, Components.FilmStripView.Events.FrameEnter, time), false);
+        'mouseenter', this._onMouseEvent.bind(this, PerfUI.FilmStripView.Events.FrameEnter, time), false);
     element.addEventListener(
-        'mouseout', this._onMouseEvent.bind(this, Components.FilmStripView.Events.FrameExit, time), false);
+        'mouseout', this._onMouseEvent.bind(this, PerfUI.FilmStripView.Events.FrameExit, time), false);
     element.addEventListener('dblclick', this._onDoubleClick.bind(this, frame), false);
 
     return frame.imageDataPromise()
-        .then(Components.FilmStripView._setImageData.bind(null, imageElement))
+        .then(PerfUI.FilmStripView._setImageData.bind(null, imageElement))
         .then(returnElement);
     /**
      * @return {!Element}
@@ -80,12 +80,12 @@ Components.FilmStripView = class extends UI.HBox {
 
   /**
    * @param {number} time
-   * @return {!Components.FilmStripModel.Frame}
+   * @return {!SDK.FilmStripModel.Frame}
    */
   frameByTime(time) {
     /**
      * @param {number} time
-     * @param {!Components.FilmStripModel.Frame} frame
+     * @param {!SDK.FilmStripModel.Frame} frame
      * @return {number}
      */
     function comparator(time, frame) {
@@ -105,7 +105,7 @@ Components.FilmStripView = class extends UI.HBox {
     if (!frames.length)
       return;
 
-    if (this._mode === Components.FilmStripView.Modes.FrameBased) {
+    if (this._mode === PerfUI.FilmStripView.Modes.FrameBased) {
       Promise.all(frames.map(this.createFrameElement.bind(this))).then(appendElements.bind(this));
       return;
     }
@@ -116,7 +116,7 @@ Components.FilmStripView = class extends UI.HBox {
         continueWhenFrameImageLoaded.bind(this));  // Calculate frame width basing on the first frame.
 
     /**
-     * @this {Components.FilmStripView}
+     * @this {PerfUI.FilmStripView}
      * @param {!Element} element0
      */
     function continueWhenFrameImageLoaded(element0) {
@@ -142,7 +142,7 @@ Components.FilmStripView = class extends UI.HBox {
 
     /**
      * @param {!Array.<!Element>} elements
-     * @this {Components.FilmStripView}
+     * @this {PerfUI.FilmStripView}
      */
     function appendElements(elements) {
       this.contentElement.removeChildren();
@@ -155,7 +155,7 @@ Components.FilmStripView = class extends UI.HBox {
    * @override
    */
   onResize() {
-    if (this._mode === Components.FilmStripView.Modes.FrameBased)
+    if (this._mode === PerfUI.FilmStripView.Modes.FrameBased)
       return;
     this.update();
   }
@@ -169,10 +169,10 @@ Components.FilmStripView = class extends UI.HBox {
   }
 
   /**
-   * @param {!Components.FilmStripModel.Frame} filmStripFrame
+   * @param {!SDK.FilmStripModel.Frame} filmStripFrame
    */
   _onDoubleClick(filmStripFrame) {
-    new Components.FilmStripView.Dialog(filmStripFrame, this._zeroTime);
+    new PerfUI.FilmStripView.Dialog(filmStripFrame, this._zeroTime);
   }
 
   reset() {
@@ -190,13 +190,13 @@ Components.FilmStripView = class extends UI.HBox {
 };
 
 /** @enum {symbol} */
-Components.FilmStripView.Events = {
+PerfUI.FilmStripView.Events = {
   FrameSelected: Symbol('FrameSelected'),
   FrameEnter: Symbol('FrameEnter'),
   FrameExit: Symbol('FrameExit'),
 };
 
-Components.FilmStripView.Modes = {
+PerfUI.FilmStripView.Modes = {
   TimeBased: 'TimeBased',
   FrameBased: 'FrameBased'
 };
@@ -205,14 +205,14 @@ Components.FilmStripView.Modes = {
 /**
  * @unrestricted
  */
-Components.FilmStripView.Dialog = class extends UI.VBox {
+PerfUI.FilmStripView.Dialog = class extends UI.VBox {
   /**
-   * @param {!Components.FilmStripModel.Frame} filmStripFrame
+   * @param {!SDK.FilmStripModel.Frame} filmStripFrame
    * @param {number=} zeroTime
    */
   constructor(filmStripFrame, zeroTime) {
     super(true);
-    this.registerRequiredCSS('components_lazy/filmStripDialog.css');
+    this.registerRequiredCSS('perf_ui/filmStripDialog.css');
     this.contentElement.classList.add('filmstrip-dialog');
     this.contentElement.tabIndex = 0;
 
@@ -305,7 +305,7 @@ Components.FilmStripView.Dialog = class extends UI.VBox {
     var frame = this._frames[this._index];
     this._timeLabel.textContent = Number.millisToString(frame.timestamp - this._zeroTime);
     return frame.imageDataPromise()
-        .then(Components.FilmStripView._setImageData.bind(null, this._imageElement))
+        .then(PerfUI.FilmStripView._setImageData.bind(null, this._imageElement))
         .then(this._resize.bind(this));
   }
 };

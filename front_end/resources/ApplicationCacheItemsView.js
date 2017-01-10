@@ -179,14 +179,14 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
   }
 
   _createDataGrid() {
-    var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'resource', title: Common.UIString('Resource'), sort: UI.DataGrid.Order.Ascending, sortable: true},
+    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+      {id: 'resource', title: Common.UIString('Resource'), sort: DataGrid.DataGrid.Order.Ascending, sortable: true},
       {id: 'type', title: Common.UIString('Type'), sortable: true},
-      {id: 'size', title: Common.UIString('Size'), align: UI.DataGrid.Align.Right, sortable: true}
+      {id: 'size', title: Common.UIString('Size'), align: DataGrid.DataGrid.Align.Right, sortable: true}
     ]);
-    this._dataGrid = new UI.DataGrid(columns);
+    this._dataGrid = new DataGrid.DataGrid(columns);
     this._dataGrid.asWidget().show(this.element);
-    this._dataGrid.addEventListener(UI.DataGrid.Events.SortingChanged, this._populateDataGrid, this);
+    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._populateDataGrid, this);
   }
 
   _populateDataGrid() {
@@ -225,7 +225,7 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
       data.resource = resource.url;
       data.type = resource.type;
       data.size = Number.bytesToString(resource.size);
-      var node = new UI.DataGridNode(data);
+      var node = new DataGrid.DataGridNode(data);
       node.resource = resource;
       node.selectable = true;
       this._dataGrid.rootNode().appendChild(node);

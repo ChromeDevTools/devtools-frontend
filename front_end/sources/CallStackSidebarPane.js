@@ -402,10 +402,9 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
    */
   registerShortcuts(registerShortcutDelegate) {
     registerShortcutDelegate(
-        Components.ShortcutsScreen.SourcesPanelShortcuts.NextCallFrame, this._selectNextCallFrameOnStack.bind(this));
+        UI.ShortcutsScreen.SourcesPanelShortcuts.NextCallFrame, this._selectNextCallFrameOnStack.bind(this));
     registerShortcutDelegate(
-        Components.ShortcutsScreen.SourcesPanelShortcuts.PrevCallFrame,
-        this._selectPreviousCallFrameOnStack.bind(this));
+        UI.ShortcutsScreen.SourcesPanelShortcuts.PrevCallFrame, this._selectPreviousCallFrameOnStack.bind(this));
   }
 };
 

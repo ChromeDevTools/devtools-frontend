@@ -31,11 +31,11 @@ Resources.AppManifestView = class extends UI.VBox {
     this._startURLField = this._presentationSection.appendField(Common.UIString('Start URL'));
 
     var themeColorField = this._presentationSection.appendField(Common.UIString('Theme color'));
-    this._themeColorSwatch = UI.ColorSwatch.create();
+    this._themeColorSwatch = InlineEditor.ColorSwatch.create();
     themeColorField.appendChild(this._themeColorSwatch);
 
     var backgroundColorField = this._presentationSection.appendField(Common.UIString('Background color'));
-    this._backgroundColorSwatch = UI.ColorSwatch.create();
+    this._backgroundColorSwatch = InlineEditor.ColorSwatch.create();
     backgroundColorField.appendChild(this._backgroundColorSwatch);
 
     this._orientationField = this._presentationSection.appendField(Common.UIString('Orientation'));

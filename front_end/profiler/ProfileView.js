@@ -13,22 +13,22 @@ Profiler.ProfileView = class extends UI.SimpleView {
     this._searchableView.setPlaceholder(Common.UIString('Find by cost (>50ms), name or file'));
     this._searchableView.show(this.element);
 
-    var columns = /** @type {!Array<!UI.DataGrid.ColumnDescriptor>} */ ([]);
+    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([]);
     columns.push({
       id: 'self',
       title: this.columnHeader('self'),
       width: '120px',
       fixedWidth: true,
       sortable: true,
-      sort: UI.DataGrid.Order.Descending
+      sort: DataGrid.DataGrid.Order.Descending
     });
     columns.push({id: 'total', title: this.columnHeader('total'), width: '120px', fixedWidth: true, sortable: true});
     columns.push({id: 'function', title: Common.UIString('Function'), disclosure: true, sortable: true});
 
-    this.dataGrid = new UI.DataGrid(columns);
-    this.dataGrid.addEventListener(UI.DataGrid.Events.SortingChanged, this._sortProfile, this);
-    this.dataGrid.addEventListener(UI.DataGrid.Events.SelectedNode, this._nodeSelected.bind(this, true));
-    this.dataGrid.addEventListener(UI.DataGrid.Events.DeselectedNode, this._nodeSelected.bind(this, false));
+    this.dataGrid = new DataGrid.DataGrid(columns);
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortProfile, this);
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._nodeSelected.bind(this, true));
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, this._nodeSelected.bind(this, false));
 
     this.viewSelectComboBox = new UI.ToolbarComboBox(this._changeView.bind(this));
 
@@ -248,7 +248,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
   }
 
   /**
-   * @return {!UI.FlameChartDataProvider}
+   * @return {!PerfUI.FlameChartDataProvider}
    */
   createFlameChartDataProvider() {
     throw 'Not implemented';
@@ -259,7 +259,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
       return;
     this._dataProvider = this.createFlameChartDataProvider();
     this._flameChart = new Profiler.CPUProfileFlameChart(this._searchableView, this._dataProvider);
-    this._flameChart.addEventListener(UI.FlameChart.Events.EntrySelected, this._onEntrySelected.bind(this));
+    this._flameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onEntrySelected.bind(this));
   }
 
   /**

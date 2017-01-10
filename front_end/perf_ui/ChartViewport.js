@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-UI.ChartViewport = class extends UI.VBox {
+PerfUI.ChartViewport = class extends UI.VBox {
   constructor() {
     super(true);
 
@@ -371,7 +371,7 @@ UI.ChartViewport = class extends UI.VBox {
   _requestWindowTimes(bounds) {
     bounds.left = Number.constrain(bounds.left, this._minimumBoundary, this._totalTime + this._minimumBoundary);
     bounds.right = Number.constrain(bounds.right, this._minimumBoundary, this._totalTime + this._minimumBoundary);
-    if (bounds.right - bounds.left < UI.FlameChart.MinimalTimeWindowMs)
+    if (bounds.right - bounds.left < PerfUI.FlameChart.MinimalTimeWindowMs)
       return;
     this._flameChartDelegate.requestWindowTimes(bounds.left, bounds.right);
   }

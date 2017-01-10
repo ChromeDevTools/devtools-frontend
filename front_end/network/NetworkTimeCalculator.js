@@ -51,7 +51,7 @@ Network.NetworkTimeBoundary = class {
 };
 
 /**
- * @implements {UI.TimelineGrid.Calculator}
+ * @implements {PerfUI.TimelineGrid.Calculator}
  * @unrestricted
  */
 Network.NetworkTimeCalculator = class extends Common.Object {

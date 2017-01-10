@@ -46,10 +46,10 @@ Network.NetworkLogViewColumns = class {
 
   /**
    * @param {!Network.NetworkLogViewColumns.Descriptor} columnConfig
-   * @return {!UI.DataGrid.ColumnDescriptor}
+   * @return {!DataGrid.DataGrid.ColumnDescriptor}
    */
   static _convertToDataGridDescriptor(columnConfig) {
-    return /** @type {!UI.DataGrid.ColumnDescriptor} */ ({
+    return /** @type {!DataGrid.DataGrid.ColumnDescriptor} */ ({
       id: columnConfig.id,
       title: columnConfig.title,
       sortable: columnConfig.sortable,
@@ -92,9 +92,9 @@ Network.NetworkLogViewColumns = class {
     this._popoverHelper.initializeCallbacks(
         this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
 
-    /** @type {!UI.SortableDataGrid<!Network.NetworkNode>} */
+    /** @type {!DataGrid.SortableDataGrid<!Network.NetworkNode>} */
     this._dataGrid =
-        new UI.SortableDataGrid(this._columns.map(Network.NetworkLogViewColumns._convertToDataGridDescriptor));
+        new DataGrid.SortableDataGrid(this._columns.map(Network.NetworkLogViewColumns._convertToDataGridDescriptor));
     this._dataGrid.element.addEventListener('mousedown', event => {
       if (!this._dataGrid.selectedNode && event.button)
         event.consume();
@@ -103,11 +103,12 @@ Network.NetworkLogViewColumns = class {
     this._dataGridScroller = this._dataGrid.scrollContainer;
 
     this._updateColumns();
-    this._dataGrid.addEventListener(UI.DataGrid.Events.SortingChanged, this._sortHandler, this);
+    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortHandler, this);
     this._dataGrid.setHeaderContextMenuCallback(this._innerHeaderContextMenu.bind(this));
 
     this._activeWaterfallSortId = Network.NetworkLogViewColumns.WaterfallSortIds.StartTime;
-    this._dataGrid.markColumnAsSortedBy(Network.NetworkLogViewColumns._initialSortColumn, UI.DataGrid.Order.Ascending);
+    this._dataGrid.markColumnAsSortedBy(
+        Network.NetworkLogViewColumns._initialSortColumn, DataGrid.DataGrid.Order.Ascending);
 
     this._splitWidget = new UI.SplitWidget(true, true, 'networkPanelSplitViewWaterfall', 200);
     var widget = this._dataGrid.asWidget();
@@ -127,12 +128,12 @@ Network.NetworkLogViewColumns = class {
     this._waterfallScroller.addEventListener('scroll', this._syncScrollers.bind(this), {passive: true});
     this._waterfallScrollerContent = this._waterfallScroller.createChild('div', 'network-waterfall-v-scroll-content');
 
-    this._dataGrid.addEventListener(UI.DataGrid.Events.PaddingChanged, () => {
+    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.PaddingChanged, () => {
       this._waterfallScrollerWidthIsStale = true;
       this._syncScrollers();
     });
     this._dataGrid.addEventListener(
-        UI.ViewportDataGrid.Events.ViewportCalculated, this._redrawWaterfallColumn.bind(this));
+        DataGrid.ViewportDataGrid.Events.ViewportCalculated, this._redrawWaterfallColumn.bind(this));
 
     this._createWaterfallHeader();
     this._waterfallColumn.contentElement.classList.add('network-waterfall-view');
@@ -208,7 +209,7 @@ Network.NetworkLogViewColumns = class {
      * @this {Network.NetworkLogViewColumns}
      */
     function waterfallHeaderClicked() {
-      var sortOrders = UI.DataGrid.Order;
+      var sortOrders = DataGrid.DataGrid.Order;
       var sortOrder =
           this._dataGrid.sortOrder() === sortOrders.Ascending ? sortOrders.Descending : sortOrders.Ascending;
       this._dataGrid.markColumnAsSortedBy('waterfall', sortOrder);
@@ -251,7 +252,7 @@ Network.NetworkLogViewColumns = class {
   }
 
   /**
-   * @return {!UI.SortableDataGrid<!Network.NetworkNode>} dataGrid
+   * @return {!DataGrid.SortableDataGrid<!Network.NetworkNode>} dataGrid
    */
   dataGrid() {
     return this._dataGrid;
@@ -267,7 +268,7 @@ Network.NetworkLogViewColumns = class {
     if (columnId === 'waterfall') {
       this._waterfallColumnSortIcon.classList.remove('sort-ascending', 'sort-descending');
 
-      if (this._dataGrid.sortOrder() === UI.DataGrid.Order.Ascending)
+      if (this._dataGrid.sortOrder() === DataGrid.DataGrid.Order.Ascending)
         this._waterfallColumnSortIcon.classList.add('sort-ascending');
       else
         this._waterfallColumnSortIcon.classList.add('sort-descending');
@@ -429,7 +430,7 @@ Network.NetworkLogViewColumns = class {
       this._networkLogView.setCalculator(calculator);
 
       this._activeWaterfallSortId = sortId;
-      this._dataGrid.markColumnAsSortedBy('waterfall', UI.DataGrid.Order.Ascending);
+      this._dataGrid.markColumnAsSortedBy('waterfall', DataGrid.DataGrid.Order.Ascending);
       this._sortHandler();
     }
   }
@@ -612,7 +613,7 @@ Network.NetworkLogViewColumns._initialSortColumn = 'waterfall';
  *     hideable: boolean,
  *     nonSelectable: boolean,
  *     sortable: boolean,
- *     align: (?UI.DataGrid.Align|undefined),
+ *     align: (?DataGrid.DataGrid.Align|undefined),
  *     isResponseHeader: boolean,
  *     sortingFunction: (!function(!Network.NetworkNode, !Network.NetworkNode):number|undefined),
  *     isCustomHeader: boolean
@@ -687,7 +688,7 @@ Network.NetworkLogViewColumns._defaultColumns = [
     id: 'remoteaddress',
     title: Common.UIString('Remote Address'),
     weight: 10,
-    align: UI.DataGrid.Align.Right,
+    align: DataGrid.DataGrid.Align.Right,
     sortingFunction: Network.NetworkRequestNode.RemoteAddressComparator
   },
   {
@@ -706,13 +707,13 @@ Network.NetworkLogViewColumns._defaultColumns = [
   {
     id: 'cookies',
     title: Common.UIString('Cookies'),
-    align: UI.DataGrid.Align.Right,
+    align: DataGrid.DataGrid.Align.Right,
     sortingFunction: Network.NetworkRequestNode.RequestCookiesCountComparator
   },
   {
     id: 'setcookies',
     title: Common.UIString('Set Cookies'),
-    align: UI.DataGrid.Align.Right,
+    align: DataGrid.DataGrid.Align.Right,
     sortingFunction: Network.NetworkRequestNode.ResponseCookiesCountComparator
   },
   {
@@ -720,7 +721,7 @@ Network.NetworkLogViewColumns._defaultColumns = [
     title: Common.UIString('Size'),
     visible: true,
     subtitle: Common.UIString('Content'),
-    align: UI.DataGrid.Align.Right,
+    align: DataGrid.DataGrid.Align.Right,
     sortingFunction: Network.NetworkRequestNode.SizeComparator
   },
   {
@@ -728,7 +729,7 @@ Network.NetworkLogViewColumns._defaultColumns = [
     title: Common.UIString('Time'),
     visible: true,
     subtitle: Common.UIString('Latency'),
-    align: UI.DataGrid.Align.Right,
+    align: DataGrid.DataGrid.Align.Right,
     sortingFunction: Network.NetworkRequestNode.RequestPropertyComparator.bind(null, 'duration')
   },
   {
@@ -763,7 +764,7 @@ Network.NetworkLogViewColumns._defaultColumns = [
     id: 'content-length',
     isResponseHeader: true,
     title: Common.UIString('Content-Length'),
-    align: UI.DataGrid.Align.Right,
+    align: DataGrid.DataGrid.Align.Right,
     sortingFunction: Network.NetworkRequestNode.ResponseHeaderNumberComparator.bind(null, 'content-length')
   },
   {

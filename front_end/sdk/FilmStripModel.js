@@ -7,7 +7,7 @@
 /**
  * @unrestricted
  */
-Components.FilmStripModel = class {
+SDK.FilmStripModel = class {
   /**
    * @param {!SDK.TracingModel} tracingModel
    * @param {number=} zeroTime
@@ -24,7 +24,7 @@ Components.FilmStripModel = class {
     this._zeroTime = zeroTime || tracingModel.minimumRecordTime();
     this._spanTime = tracingModel.maximumRecordTime() - this._zeroTime;
 
-    /** @type {!Array<!Components.FilmStripModel.Frame>} */
+    /** @type {!Array<!SDK.FilmStripModel.Frame>} */
     this._frames = [];
     var browserMain = SDK.TracingModel.browserMainThread(tracingModel);
     if (!browserMain)
@@ -35,21 +35,21 @@ Components.FilmStripModel = class {
       var event = events[i];
       if (event.startTime < this._zeroTime)
         continue;
-      if (!event.hasCategory(Components.FilmStripModel._category))
+      if (!event.hasCategory(SDK.FilmStripModel._category))
         continue;
-      if (event.name === Components.FilmStripModel.TraceEvents.CaptureFrame) {
+      if (event.name === SDK.FilmStripModel.TraceEvents.CaptureFrame) {
         var data = event.args['data'];
         if (data)
-          this._frames.push(Components.FilmStripModel.Frame._fromEvent(this, event, this._frames.length));
-      } else if (event.name === Components.FilmStripModel.TraceEvents.Screenshot) {
-        this._frames.push(Components.FilmStripModel.Frame._fromSnapshot(
+          this._frames.push(SDK.FilmStripModel.Frame._fromEvent(this, event, this._frames.length));
+      } else if (event.name === SDK.FilmStripModel.TraceEvents.Screenshot) {
+        this._frames.push(SDK.FilmStripModel.Frame._fromSnapshot(
             this, /** @type {!SDK.TracingModel.ObjectSnapshot} */ (event), this._frames.length));
       }
     }
   }
 
   /**
-   * @return {!Array<!Components.FilmStripModel.Frame>}
+   * @return {!Array<!SDK.FilmStripModel.Frame>}
    */
   frames() {
     return this._frames;
@@ -71,7 +71,7 @@ Components.FilmStripModel = class {
 
   /**
    * @param {number} timestamp
-   * @return {?Components.FilmStripModel.Frame}
+   * @return {?SDK.FilmStripModel.Frame}
    */
   frameByTimestamp(timestamp) {
     var index = this._frames.upperBound(timestamp, (timestamp, frame) => timestamp - frame.timestamp) - 1;
@@ -79,9 +79,9 @@ Components.FilmStripModel = class {
   }
 };
 
-Components.FilmStripModel._category = 'disabled-by-default-devtools.screenshot';
+SDK.FilmStripModel._category = 'disabled-by-default-devtools.screenshot';
 
-Components.FilmStripModel.TraceEvents = {
+SDK.FilmStripModel.TraceEvents = {
   CaptureFrame: 'CaptureFrame',
   Screenshot: 'Screenshot'
 };
@@ -89,9 +89,9 @@ Components.FilmStripModel.TraceEvents = {
 /**
  * @unrestricted
  */
-Components.FilmStripModel.Frame = class {
+SDK.FilmStripModel.Frame = class {
   /**
-   * @param {!Components.FilmStripModel} model
+   * @param {!SDK.FilmStripModel} model
    * @param {number} timestamp
    * @param {number} index
    */
@@ -106,31 +106,31 @@ Components.FilmStripModel.Frame = class {
   }
 
   /**
-   * @param {!Components.FilmStripModel} model
+   * @param {!SDK.FilmStripModel} model
    * @param {!SDK.TracingModel.Event} event
    * @param {number} index
-   * @return {!Components.FilmStripModel.Frame}
+   * @return {!SDK.FilmStripModel.Frame}
    */
   static _fromEvent(model, event, index) {
-    var frame = new Components.FilmStripModel.Frame(model, event.startTime, index);
+    var frame = new SDK.FilmStripModel.Frame(model, event.startTime, index);
     frame._imageData = event.args['data'];
     return frame;
   }
 
   /**
-   * @param {!Components.FilmStripModel} model
+   * @param {!SDK.FilmStripModel} model
    * @param {!SDK.TracingModel.ObjectSnapshot} snapshot
    * @param {number} index
-   * @return {!Components.FilmStripModel.Frame}
+   * @return {!SDK.FilmStripModel.Frame}
    */
   static _fromSnapshot(model, snapshot, index) {
-    var frame = new Components.FilmStripModel.Frame(model, snapshot.startTime, index);
+    var frame = new SDK.FilmStripModel.Frame(model, snapshot.startTime, index);
     frame._snapshot = snapshot;
     return frame;
   }
 
   /**
-   * @return {!Components.FilmStripModel}
+   * @return {!SDK.FilmStripModel}
    */
   model() {
     return this._model;

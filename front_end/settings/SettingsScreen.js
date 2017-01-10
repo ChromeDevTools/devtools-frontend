@@ -52,7 +52,7 @@ Settings.SettingsScreen = class extends UI.VBox {
     tabbedPane.setShrinkableTabs(false);
     tabbedPane.setVerticalTabLayout(true);
     var shortcutsView = new UI.SimpleView(Common.UIString('Shortcuts'));
-    Components.shortcutsScreen.createShortcutsTabView().show(shortcutsView.element);
+    UI.shortcutsScreen.createShortcutsTabView().show(shortcutsView.element);
     this._tabbedLocation.appendView(shortcutsView);
     tabbedPane.show(this.contentElement);
 

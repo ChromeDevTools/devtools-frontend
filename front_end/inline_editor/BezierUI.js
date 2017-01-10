@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-UI.BezierUI = class {
+InlineEditor.BezierUI = class {
   /**
    * @param {number} width
    * @param {number} height
@@ -26,7 +26,7 @@ UI.BezierUI = class {
    * @param {number} width
    */
   static drawVelocityChart(bezier, path, width) {
-    var height = UI.BezierUI.Height;
+    var height = InlineEditor.BezierUI.Height;
     var pathBuilder = ['M', 0, height];
     /** @const */ var sampleSize = 1 / 40;
 
@@ -125,4 +125,4 @@ UI.BezierUI = class {
   }
 };
 
-UI.BezierUI.Height = 26;
+InlineEditor.BezierUI.Height = 26;

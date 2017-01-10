@@ -119,7 +119,7 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
     var color = Common.Color.parse(text);
     if (!color)
       return createTextNode(text);
-    var swatch = UI.ColorSwatch.create();
+    var swatch = InlineEditor.ColorSwatch.create();
     swatch.setColor(color);
     swatch.setFormat(Common.Color.detectColorFormat(color));
     return swatch;

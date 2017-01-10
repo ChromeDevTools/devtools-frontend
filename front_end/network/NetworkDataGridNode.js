@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Network.NetworkNode = class extends UI.SortableDataGridNode {
+Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
   /**
    * @param {!Network.NetworkLogView} parentView
    */

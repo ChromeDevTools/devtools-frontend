@@ -67,7 +67,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._model = new TimelineModel.TimelineModel(Timeline.TimelineUIUtils.visibleEventsFilter());
     this._frameModel =
         new TimelineModel.TimelineFrameModel(event => Timeline.TimelineUIUtils.eventStyle(event).category.name);
-    this._filmStripModel = new Components.FilmStripModel(this._tracingModel);
+    this._filmStripModel = new SDK.FilmStripModel(this._tracingModel);
     this._irModel = new TimelineModel.TimelineIRModel();
     /** @type {!Array<!{title: string, model: !SDK.TracingModel}>} */
     this._extensionTracingModels = [];
@@ -93,8 +93,9 @@ Timeline.TimelinePanel = class extends UI.Panel {
     topPaneElement.id = 'timeline-overview-panel';
 
     // Create top overview component.
-    this._overviewPane = new UI.TimelineOverviewPane('timeline');
-    this._overviewPane.addEventListener(UI.TimelineOverviewPane.Events.WindowChanged, this._onWindowChanged.bind(this));
+    this._overviewPane = new PerfUI.TimelineOverviewPane('timeline');
+    this._overviewPane.addEventListener(
+        PerfUI.TimelineOverviewPane.Events.WindowChanged, this._onWindowChanged.bind(this));
     this._overviewPane.show(topPaneElement);
     this._statusPaneContainer = this._timelinePane.element.createChild('div', 'status-pane-container fill');
 

@@ -82,26 +82,21 @@ LayerViewer.TransformController = class extends Common.Object {
   }
 
   _registerShortcuts() {
-    this._addShortcuts(Components.ShortcutsScreen.LayersPanelShortcuts.ResetView, this.resetAndNotify.bind(this));
+    this._addShortcuts(UI.ShortcutsScreen.LayersPanelShortcuts.ResetView, this.resetAndNotify.bind(this));
     this._addShortcuts(
-        Components.ShortcutsScreen.LayersPanelShortcuts.PanMode,
+        UI.ShortcutsScreen.LayersPanelShortcuts.PanMode,
         this._setMode.bind(this, LayerViewer.TransformController.Modes.Pan));
     this._addShortcuts(
-        Components.ShortcutsScreen.LayersPanelShortcuts.RotateMode,
+        UI.ShortcutsScreen.LayersPanelShortcuts.RotateMode,
         this._setMode.bind(this, LayerViewer.TransformController.Modes.Rotate));
     var zoomFactor = 1.1;
+    this._addShortcuts(UI.ShortcutsScreen.LayersPanelShortcuts.ZoomIn, this._onKeyboardZoom.bind(this, zoomFactor));
     this._addShortcuts(
-        Components.ShortcutsScreen.LayersPanelShortcuts.ZoomIn, this._onKeyboardZoom.bind(this, zoomFactor));
-    this._addShortcuts(
-        Components.ShortcutsScreen.LayersPanelShortcuts.ZoomOut, this._onKeyboardZoom.bind(this, 1 / zoomFactor));
-    this._addShortcuts(
-        Components.ShortcutsScreen.LayersPanelShortcuts.Up, this._onKeyboardPanOrRotate.bind(this, 0, -1));
-    this._addShortcuts(
-        Components.ShortcutsScreen.LayersPanelShortcuts.Down, this._onKeyboardPanOrRotate.bind(this, 0, 1));
-    this._addShortcuts(
-        Components.ShortcutsScreen.LayersPanelShortcuts.Left, this._onKeyboardPanOrRotate.bind(this, -1, 0));
-    this._addShortcuts(
-        Components.ShortcutsScreen.LayersPanelShortcuts.Right, this._onKeyboardPanOrRotate.bind(this, 1, 0));
+        UI.ShortcutsScreen.LayersPanelShortcuts.ZoomOut, this._onKeyboardZoom.bind(this, 1 / zoomFactor));
+    this._addShortcuts(UI.ShortcutsScreen.LayersPanelShortcuts.Up, this._onKeyboardPanOrRotate.bind(this, 0, -1));
+    this._addShortcuts(UI.ShortcutsScreen.LayersPanelShortcuts.Down, this._onKeyboardPanOrRotate.bind(this, 0, 1));
+    this._addShortcuts(UI.ShortcutsScreen.LayersPanelShortcuts.Left, this._onKeyboardPanOrRotate.bind(this, -1, 0));
+    this._addShortcuts(UI.ShortcutsScreen.LayersPanelShortcuts.Right, this._onKeyboardPanOrRotate.bind(this, 1, 0));
   }
 
   _postChangeEvent() {

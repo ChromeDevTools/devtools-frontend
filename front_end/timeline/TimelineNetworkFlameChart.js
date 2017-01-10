@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @implements {UI.FlameChartDataProvider}
+ * @implements {PerfUI.FlameChartDataProvider}
  * @unrestricted
  */
 Timeline.TimelineFlameChartNetworkDataProvider = class {
@@ -46,14 +46,14 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
 
   /**
    * @override
-   * @return {!UI.FlameChart.TimelineData}
+   * @return {!PerfUI.FlameChart.TimelineData}
    */
   timelineData() {
     if (this._timelineData)
       return this._timelineData;
     /** @type {!Array<!TimelineModel.TimelineModel.NetworkRequest>} */
     this._requests = [];
-    this._timelineData = new UI.FlameChart.TimelineData([], [], [], []);
+    this._timelineData = new PerfUI.FlameChart.TimelineData([], [], [], []);
     this._appendTimelineData(this._model.mainThreadEvents());
     return this._timelineData;
   }
@@ -345,7 +345,7 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
       if (this._timelineData.entryLevels[i] === -1)
         this._timelineData.entryLevels[i] = maxLevel;
     }
-    this._timelineData = new UI.FlameChart.TimelineData(
+    this._timelineData = new PerfUI.FlameChart.TimelineData(
         this._timelineData.entryLevels, this._timelineData.entryTotalTimes, this._timelineData.entryStartTimes,
         [this._group]);
     this._maxLevel = maxLevel;

@@ -61,15 +61,12 @@
         "DOMBreakpointsSidebarPane.js",
         "DOMPresentationUtils.js",
         "DockController.js",
-        "ExecutionContextSelector.js",
         "JavaScriptAutocomplete.js",
         "Linkifier.js",
         "NetworkConditionsSelector.js",
         "ObjectPopoverHelper.js",
         "ObjectPropertiesSection.js",
         "RemoteObjectPreviewFormatter.js",
-        "ShortcutsScreen.js",
-        "Spectrum.js",
         "EventListenersUtils.js",
         "EventListenersView.js",
         "Reload.js"
@@ -81,7 +78,6 @@
         "domUtils.css",
         "networkConditionsSettingsTab.css",
         "objectPropertiesSection.css",
-        "objectValue.css",
-        "spectrum.css"
+        "objectValue.css"
     ]
 }

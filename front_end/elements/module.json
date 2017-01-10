@@ -10,22 +10,35 @@
         },
         {
             "type": "@UI.ContextMenu.Provider",
-            "contextTypes": ["SDK.RemoteObject", "SDK.DOMNode", "SDK.DeferredDOMNode"],
+            "contextTypes": [
+                "SDK.RemoteObject",
+                "SDK.DOMNode",
+                "SDK.DeferredDOMNode"
+            ],
             "className": "Elements.ElementsPanel.ContextMenuProvider"
         },
         {
             "type": "@Common.Renderer",
-            "contextTypes": ["SDK.DOMNode", "SDK.RemoteObject"],
+            "contextTypes": [
+                "SDK.DOMNode",
+                "SDK.RemoteObject"
+            ],
             "className": "Elements.ElementsTreeOutline.Renderer"
         },
         {
             "type": "@Common.Revealer",
-            "contextTypes": ["SDK.DOMNode", "SDK.DeferredDOMNode", "SDK.RemoteObject" ],
+            "contextTypes": [
+                "SDK.DOMNode",
+                "SDK.DeferredDOMNode",
+                "SDK.RemoteObject"
+            ],
             "className": "Elements.ElementsPanel.DOMNodeRevealer"
         },
         {
             "type": "@Common.Revealer",
-            "contextTypes": ["SDK.CSSProperty" ],
+            "contextTypes": [
+                "SDK.CSSProperty"
+            ],
             "className": "Elements.ElementsPanel.CSSPropertyRevealer"
         },
         {
@@ -37,16 +50,35 @@
             "settingType": "enum",
             "defaultValue": "original",
             "options": [
-                { "title": "Set color format as authored", "text": "As authored", "value": "original" },
-                { "title": "Set color format to HEX", "text": "HEX: #dac0de", "value": "hex", "raw": true },
-                { "title": "Set color format to RGB", "text": "RGB: rgb(128, 255, 255)", "value": "rgb", "raw": true },
-                { "title": "Set color format to HSL", "text": "HSL: hsl(300, 80%, 90%)", "value": "hsl", "raw": true }
+                {
+                    "title": "Set color format as authored",
+                    "text": "As authored",
+                    "value": "original"
+                },
+                {
+                    "title": "Set color format to HEX",
+                    "text": "HEX: #dac0de",
+                    "value": "hex",
+                    "raw": true
+                },
+                {
+                    "title": "Set color format to RGB",
+                    "text": "RGB: rgb(128, 255, 255)",
+                    "value": "rgb",
+                    "raw": true
+                },
+                {
+                    "title": "Set color format to HSL",
+                    "text": "HSL: hsl(300, 80%, 90%)",
+                    "value": "hsl",
+                    "raw": true
+                }
             ]
         },
         {
             "type": "setting",
             "category": "Elements",
-            "order":1,
+            "order": 1,
             "title": "Show user agent shadow DOM",
             "settingName": "showUAShadowDOM",
             "settingType": "boolean",
@@ -61,8 +93,14 @@
             "settingType": "boolean",
             "defaultValue": true,
             "options": [
-                { "value": true, "title": "Enable DOM word wrap" },
-                { "value": false, "title": "Disable DOM word wrap" }
+                {
+                    "value": true,
+                    "title": "Enable DOM word wrap"
+                },
+                {
+                    "value": false,
+                    "title": "Disable DOM word wrap"
+                }
             ]
         },
         {
@@ -74,8 +112,14 @@
             "settingType": "boolean",
             "defaultValue": true,
             "options": [
-                { "value": true, "title": "Show HTML comments" },
-                { "value": false, "title": "Hide HTML comments" }
+                {
+                    "value": true,
+                    "title": "Show HTML comments"
+                },
+                {
+                    "value": false,
+                    "title": "Hide HTML comments"
+                }
             ]
         },
         {
@@ -114,7 +158,9 @@
         {
             "type": "@UI.ActionDelegate",
             "actionId": "elements.hide-element",
-            "contextTypes": ["Elements.ElementsPanel"],
+            "contextTypes": [
+                "Elements.ElementsPanel"
+            ],
             "className": "Elements.ElementsActionDelegate",
             "bindings": [
                 {
@@ -125,7 +171,9 @@
         {
             "type": "@UI.ActionDelegate",
             "actionId": "elements.edit-as-html",
-            "contextTypes": ["Elements.ElementsPanel"],
+            "contextTypes": [
+                "Elements.ElementsPanel"
+            ],
             "className": "Elements.ElementsActionDelegate",
             "bindings": [
                 {
@@ -204,7 +252,9 @@
     ],
     "dependencies": [
         "components",
-        "extensions"
+        "extensions",
+        "inline_editor",
+        "color_picker"
     ],
     "scripts": [
         "InspectElementModeController.js",

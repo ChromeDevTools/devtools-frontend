@@ -49,12 +49,12 @@ Emulation.DeviceModeWrapper = class extends UI.VBox {
       if (!this._deviceModeView)
         this._deviceModeView = new Emulation.DeviceModeView();
       this._deviceModeView.show(this.element);
-      this._inspectedPagePlaceholder.clearMinimumSizeAndMargins();
+      this._inspectedPagePlaceholder.clearMinimumSize();
       this._inspectedPagePlaceholder.show(this._deviceModeView.element);
     } else {
       if (this._deviceModeView)
         this._deviceModeView.detach();
-      this._inspectedPagePlaceholder.restoreMinimumSizeAndMargins();
+      this._inspectedPagePlaceholder.restoreMinimumSize();
       this._inspectedPagePlaceholder.show(this.element);
     }
   }

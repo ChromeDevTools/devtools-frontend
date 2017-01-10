@@ -97,3 +97,8 @@
     border: 0;
     border-right: 1px solid rgb(64%, 64%, 64%);
 }
+
+
+:host(.root-split-widget) .shadow-split-widget.hbox > .shadow-split-widget-resizer {
+    margin-right: -5px !important;
+}

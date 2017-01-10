@@ -8,62 +8,25 @@ Emulation.InspectedPagePlaceholder = class extends UI.Widget {
   constructor() {
     super(true);
     this.registerRequiredCSS('emulation/inspectedPagePlaceholder.css');
-    UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._scheduleUpdate, this);
-    this._margins = {top: 0, right: 0, bottom: 0, left: 0};
-    this.restoreMinimumSizeAndMargins();
-  }
-
-  _findMargins() {
-    var margins = {top: 0, right: 0, bottom: 0, left: 0};
-
-    if (this._useMargins) {
-      var adjacent = {top: true, right: true, bottom: true, left: true};
-      var widget = this;
-      while (widget.parentWidget()) {
-        var parent = widget.parentWidget();
-        // This view assumes it's always inside the main split widget element, not a sidebar.
-        // Every parent which is not a split widget, must be of the same size as this widget.
-        if (parent instanceof UI.SplitWidget) {
-          var side = parent.sidebarSide();
-          if (adjacent[side] && !parent.hasCustomResizer() && parent.isResizable())
-            margins[side] = Emulation.InspectedPagePlaceholder.MarginValue;
-          adjacent[side] = false;
-        }
-        widget = parent;
-      }
-    }
-
-    if (this._margins.top !== margins.top || this._margins.left !== margins.left ||
-        this._margins.right !== margins.right || this._margins.bottom !== margins.bottom) {
-      this._margins = margins;
-      this._scheduleUpdate();
-    }
+    UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this.onResize, this);
+    this.restoreMinimumSize();
   }
 
   /**
    * @override
    */
   onResize() {
-    this._findMargins();
-    this._scheduleUpdate();
-  }
-
-  _scheduleUpdate() {
     if (this._updateId)
       this.element.window().cancelAnimationFrame(this._updateId);
     this._updateId = this.element.window().requestAnimationFrame(this.update.bind(this));
   }
 
-  restoreMinimumSizeAndMargins() {
-    this._useMargins = true;
+  restoreMinimumSize() {
     this.setMinimumSize(150, 150);
-    this._findMargins();
   }
 
-  clearMinimumSizeAndMargins() {
-    this._useMargins = false;
+  clearMinimumSize() {
     this.setMinimumSize(1, 1);
-    this._findMargins();
   }
 
   _dipPageRect() {
@@ -71,10 +34,10 @@ Emulation.InspectedPagePlaceholder = class extends UI.Widget {
     var rect = this.element.getBoundingClientRect();
     var bodyRect = this.element.ownerDocument.body.getBoundingClientRect();
 
-    var left = Math.max(rect.left * zoomFactor + this._margins.left, bodyRect.left * zoomFactor);
-    var top = Math.max(rect.top * zoomFactor + this._margins.top, bodyRect.top * zoomFactor);
-    var bottom = Math.min(rect.bottom * zoomFactor - this._margins.bottom, bodyRect.bottom * zoomFactor);
-    var right = Math.min(rect.right * zoomFactor - this._margins.right, bodyRect.right * zoomFactor);
+    var left = Math.max(rect.left * zoomFactor, bodyRect.left * zoomFactor);
+    var top = Math.max(rect.top * zoomFactor, bodyRect.top * zoomFactor);
+    var bottom = Math.min(rect.bottom * zoomFactor, bodyRect.bottom * zoomFactor);
+    var right = Math.min(rect.right * zoomFactor, bodyRect.right * zoomFactor);
 
     return {x: left, y: top, width: right - left, height: bottom - top};
   }
@@ -96,5 +59,3 @@ Emulation.InspectedPagePlaceholder = class extends UI.Widget {
 Emulation.InspectedPagePlaceholder.Events = {
   Update: Symbol('Update')
 };
-
-Emulation.InspectedPagePlaceholder.MarginValue = 3;

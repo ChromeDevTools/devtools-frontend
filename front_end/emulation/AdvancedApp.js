@@ -28,6 +28,7 @@ Emulation.AdvancedApp = class {
     var rootView = new UI.RootView();
 
     this._rootSplitWidget = new UI.SplitWidget(false, true, 'InspectorView.splitViewState', 555, 300, true);
+    this._rootSplitWidget.element.classList.add('root-split-widget');
     this._rootSplitWidget.show(rootView.element);
     this._rootSplitWidget.setSidebarWidget(UI.inspectorView);
     this._rootSplitWidget.setDefaultFocusedChild(UI.inspectorView);

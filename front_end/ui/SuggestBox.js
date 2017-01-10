@@ -197,10 +197,6 @@ UI.SuggestBox = class {
     delete this._lastAnchorBox;
   }
 
-  removeFromElement() {
-    this.hide();
-  }
-
   /**
    * @param {boolean=} isIntermediateSuggestion
    * @return {boolean}

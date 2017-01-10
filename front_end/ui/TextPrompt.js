@@ -214,7 +214,7 @@ UI.TextPrompt = class extends Common.Object {
     if (this._isEditing)
       this._stopEditing();
     if (this._suggestBox)
-      this._suggestBox.removeFromElement();
+      this._suggestBox.hide();
   }
 
   /**

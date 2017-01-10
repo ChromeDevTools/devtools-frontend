@@ -1,6 +1,7 @@
 {
     "modules" : [
         { "name": "platform", "type": "autostart" },
+        { "name": "dom_extension", "type": "autostart" },
         { "name": "main", "type": "autostart" },
         { "name": "components", "type": "autostart"},
         { "name": "ui", "type": "autostart" },

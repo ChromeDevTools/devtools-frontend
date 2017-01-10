@@ -1,11 +1,11 @@
 {
     "dependencies": [
         "platform",
+        "dom_extension",
         "common",
         "host"
     ],
     "scripts": [
-        "DOMExtension.js",
         "Widget.js",
         "View.js",
         "treeoutline.js",

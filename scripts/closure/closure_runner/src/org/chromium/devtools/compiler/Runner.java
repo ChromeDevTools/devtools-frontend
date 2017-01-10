@@ -3,6 +3,7 @@ package org.chromium.devtools.compiler;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.google.javascript.jscomp.*;
+import com.google.javascript.jscomp.Compiler;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -190,6 +191,21 @@ public class Runner {
                 throws FlagUsageException, IOException {
             super.setRunOptions(options);
             options.setCodingConvention(new DevToolsCodingConvention());
+        }
+
+        @Override
+        protected Compiler createCompiler() {
+            Compiler compiler = new Compiler();
+            final LightweightMessageFormatter formatter = new LightweightMessageFormatter(compiler);
+            compiler.setErrorManager(new PrintStreamErrorManager(formatter, getErrorPrintStream()) {
+                @Override
+                public void report(CheckLevel level, JSError error) {
+                    String text = formatter.formatError(error);
+                    if (text.indexOf("access on a struct") == -1 || text.indexOf("Symbol") == -1)
+                        super.report(level, error);
+                }
+            });
+            return compiler;
         }
 
         int execute() {

@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-UI.CommandMenu = class {
+QuickOpen.CommandMenu = class {
   constructor() {
     this._commands = [];
     this._loadCommands();
@@ -17,26 +17,27 @@ UI.CommandMenu = class {
    * @param {string} shortcut
    * @param {function()} executeHandler
    * @param {function()=} availableHandler
-   * @return {!UI.CommandMenu.Command}
+   * @return {!QuickOpen.CommandMenu.Command}
    */
   static createCommand(category, keys, title, shortcut, executeHandler, availableHandler) {
     // Separate keys by null character, to prevent fuzzy matching from matching across them.
     var key = keys.replace(/,/g, '\0');
-    return new UI.CommandMenu.Command(category, title, key, shortcut, executeHandler, availableHandler);
+    return new QuickOpen.CommandMenu.Command(category, title, key, shortcut, executeHandler, availableHandler);
   }
 
   /**
    * @param {!Runtime.Extension} extension
    * @param {string} title
    * @param {V} value
-   * @return {!UI.CommandMenu.Command}
+   * @return {!QuickOpen.CommandMenu.Command}
    * @template V
    */
   static createSettingCommand(extension, title, value) {
     var category = extension.descriptor()['category'] || '';
     var tags = extension.descriptor()['tags'] || '';
     var setting = Common.settings.moduleSetting(extension.descriptor()['settingName']);
-    return UI.CommandMenu.createCommand(category, tags, title, '', setting.set.bind(setting, value), availableHandler);
+    return QuickOpen.CommandMenu.createCommand(
+        category, tags, title, '', setting.set.bind(setting, value), availableHandler);
 
     /**
      * @return {boolean}
@@ -48,22 +49,22 @@ UI.CommandMenu = class {
 
   /**
    * @param {!UI.Action} action
-   * @return {!UI.CommandMenu.Command}
+   * @return {!QuickOpen.CommandMenu.Command}
    */
   static createActionCommand(action) {
     var shortcut = UI.shortcutRegistry.shortcutTitleForAction(action.id()) || '';
-    return UI.CommandMenu.createCommand(
+    return QuickOpen.CommandMenu.createCommand(
         action.category(), action.tags(), action.title(), shortcut, action.execute.bind(action));
   }
 
   /**
    * @param {!Runtime.Extension} extension
-   * @return {!UI.CommandMenu.Command}
+   * @return {!QuickOpen.CommandMenu.Command}
    */
   static createRevealPanelCommand(extension) {
     var panelName = extension.descriptor()['name'];
     var tags = extension.descriptor()['tags'] || '';
-    return UI.CommandMenu.createCommand(
+    return QuickOpen.CommandMenu.createCommand(
         Common.UIString('Panel'), tags, Common.UIString('Show %s', extension.title()), '', executeHandler,
         availableHandler);
 
@@ -81,13 +82,13 @@ UI.CommandMenu = class {
 
   /**
    * @param {!Runtime.Extension} extension
-   * @return {!UI.CommandMenu.Command}
+   * @return {!QuickOpen.CommandMenu.Command}
    */
   static createRevealDrawerCommand(extension) {
     var drawerId = extension.descriptor()['id'];
     var executeHandler = UI.viewManager.showView.bind(UI.viewManager, drawerId);
     var tags = extension.descriptor()['tags'] || '';
-    return UI.CommandMenu.createCommand(
+    return QuickOpen.CommandMenu.createCommand(
         Common.UIString('Drawer'), tags, Common.UIString('Show %s', extension.title()), '', executeHandler);
   }
 
@@ -95,14 +96,14 @@ UI.CommandMenu = class {
     // Populate panels.
     var panelExtensions = self.runtime.extensions(UI.Panel);
     for (var extension of panelExtensions)
-      this._commands.push(UI.CommandMenu.createRevealPanelCommand(extension));
+      this._commands.push(QuickOpen.CommandMenu.createRevealPanelCommand(extension));
 
     // Populate drawers.
     var drawerExtensions = self.runtime.extensions('view');
     for (var extension of drawerExtensions) {
       if (extension.descriptor()['location'] !== 'drawer-view')
         continue;
-      this._commands.push(UI.CommandMenu.createRevealDrawerCommand(extension));
+      this._commands.push(QuickOpen.CommandMenu.createRevealDrawerCommand(extension));
     }
 
     // Populate whitelisted settings.
@@ -112,12 +113,12 @@ UI.CommandMenu = class {
       if (!options || !extension.descriptor()['category'])
         continue;
       for (var pair of options)
-        this._commands.push(UI.CommandMenu.createSettingCommand(extension, pair['title'], pair['value']));
+        this._commands.push(QuickOpen.CommandMenu.createSettingCommand(extension, pair['title'], pair['value']));
     }
   }
 
   /**
-   * @return {!Array.<!UI.CommandMenu.Command>}
+   * @return {!Array.<!QuickOpen.CommandMenu.Command>}
    */
   commands() {
     return this._commands;
@@ -127,7 +128,7 @@ UI.CommandMenu = class {
 /**
  * @unrestricted
  */
-UI.CommandMenuDelegate = class extends UI.FilteredListWidget.Delegate {
+QuickOpen.CommandMenuDelegate = class extends QuickOpen.FilteredListWidget.Delegate {
   constructor() {
     super([]);
     this._commands = [];
@@ -135,13 +136,13 @@ UI.CommandMenuDelegate = class extends UI.FilteredListWidget.Delegate {
   }
 
   _appendAvailableCommands() {
-    var allCommands = UI.commandMenu.commands();
+    var allCommands = QuickOpen.commandMenu.commands();
 
     // Populate whitelisted actions.
     var actions = UI.actionRegistry.availableActions();
     for (var action of actions) {
       if (action.category())
-        this._commands.push(UI.CommandMenu.createActionCommand(action));
+        this._commands.push(QuickOpen.CommandMenu.createActionCommand(action));
     }
 
     for (var command of allCommands) {
@@ -152,8 +153,8 @@ UI.CommandMenuDelegate = class extends UI.FilteredListWidget.Delegate {
     this._commands = this._commands.sort(commandComparator);
 
     /**
-     * @param {!UI.CommandMenu.Command} left
-     * @param {!UI.CommandMenu.Command} right
+     * @param {!QuickOpen.CommandMenu.Command} left
+     * @param {!QuickOpen.CommandMenu.Command} right
      * @return {number}
      */
     function commandComparator(left, right) {
@@ -215,8 +216,8 @@ UI.CommandMenuDelegate = class extends UI.FilteredListWidget.Delegate {
     var command = this._commands[itemIndex];
     titleElement.removeChildren();
     var tagElement = titleElement.createChild('span', 'tag');
-    var index = String.hashCode(command.category()) % UI.CommandMenuDelegate.MaterialPaletteColors.length;
-    tagElement.style.backgroundColor = UI.CommandMenuDelegate.MaterialPaletteColors[index];
+    var index = String.hashCode(command.category()) % QuickOpen.CommandMenuDelegate.MaterialPaletteColors.length;
+    tagElement.style.backgroundColor = QuickOpen.CommandMenuDelegate.MaterialPaletteColors[index];
     tagElement.textContent = command.category();
     titleElement.createTextChild(command.title());
     this.highlightRanges(titleElement, query);
@@ -251,7 +252,7 @@ UI.CommandMenuDelegate = class extends UI.FilteredListWidget.Delegate {
   }
 };
 
-UI.CommandMenuDelegate.MaterialPaletteColors = [
+QuickOpen.CommandMenuDelegate.MaterialPaletteColors = [
   '#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A',
   '#CDDC39', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'
 ];
@@ -259,7 +260,7 @@ UI.CommandMenuDelegate.MaterialPaletteColors = [
 /**
  * @unrestricted
  */
-UI.CommandMenu.Command = class {
+QuickOpen.CommandMenu.Command = class {
   /**
    * @param {string} category
    * @param {string} title
@@ -318,14 +319,14 @@ UI.CommandMenu.Command = class {
 };
 
 
-/** @type {!UI.CommandMenu} */
-UI.commandMenu = new UI.CommandMenu();
+/** @type {!QuickOpen.CommandMenu} */
+QuickOpen.commandMenu = new QuickOpen.CommandMenu();
 
 /**
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-UI.CommandMenu.ShowActionDelegate = class {
+QuickOpen.CommandMenu.ShowActionDelegate = class {
   /**
    * @override
    * @param {!UI.Context} context
@@ -333,7 +334,7 @@ UI.CommandMenu.ShowActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    new UI.FilteredListWidget(new UI.CommandMenuDelegate()).showAsDialog();
+    new QuickOpen.FilteredListWidget(new QuickOpen.CommandMenuDelegate()).showAsDialog();
     InspectorFrontendHost.bringToFront();
     return true;
   }

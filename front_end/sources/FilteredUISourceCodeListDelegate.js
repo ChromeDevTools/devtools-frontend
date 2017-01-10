@@ -7,7 +7,7 @@
 /**
  * @unrestricted
  */
-Sources.FilteredUISourceCodeListDelegate = class extends UI.FilteredListWidget.Delegate {
+Sources.FilteredUISourceCodeListDelegate = class extends QuickOpen.FilteredListWidget.Delegate {
   /**
    * @param {!Map.<!Workspace.UISourceCode, number>=} defaultScores
    * @param {!Array<string>=} history

@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
+Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
@@ -81,7 +81,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     this._valueWidgets = new Map();
     this.onBindingChanged();
     Bindings.debuggerWorkspaceBinding.addEventListener(
-          Bindings.DebuggerWorkspaceBinding.Events.SourceMappingChanged, this._onSourceMappingChanged, this);
+        Bindings.DebuggerWorkspaceBinding.Events.SourceMappingChanged, this._onSourceMappingChanged, this);
   }
 
   /**
@@ -1294,7 +1294,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
    */
   dispose() {
     Bindings.debuggerWorkspaceBinding.removeEventListener(
-          Bindings.DebuggerWorkspaceBinding.Events.SourceMappingChanged, this._onSourceMappingChanged, this);
+        Bindings.DebuggerWorkspaceBinding.Events.SourceMappingChanged, this._onSourceMappingChanged, this);
     this._breakpointManager.removeEventListener(
         Bindings.BreakpointManager.Events.BreakpointAdded, this._breakpointAdded, this);
     this._breakpointManager.removeEventListener(

@@ -8,24 +8,44 @@
             "settingType": "enum",
             "defaultValue": "    ",
             "options": [
-                { "title": "Set indentation to 2 spaces", "text": "2 spaces", "value": "  " },
-                { "title": "Set indentation to 4 spaces", "text": "4 spaces", "value": "    " },
-                { "title": "Set indentation to 8 spaces", "text": "8 spaces", "value": "        " },
-                { "title": "Set indentation to tab character", "text": "Tab character", "value": "\t" }
+                {
+                    "title": "Set indentation to 2 spaces",
+                    "text": "2 spaces",
+                    "value": "  "
+                },
+                {
+                    "title": "Set indentation to 4 spaces",
+                    "text": "4 spaces",
+                    "value": "    "
+                },
+                {
+                    "title": "Set indentation to 8 spaces",
+                    "text": "8 spaces",
+                    "value": "        "
+                },
+                {
+                    "title": "Set indentation to tab character",
+                    "text": "Tab character",
+                    "value": "\t"
+                }
             ]
         }
     ],
     "dependencies": [
         "text_editor",
         "ui",
-        "platform"
+        "platform",
+        "persistence",
+        "diff"
     ],
     "scripts": [
         "SourcesTextEditor.js",
         "FontView.js",
         "ImageView.js",
         "SourceFrame.js",
-        "ResourceSourceFrame.js"
+        "ResourceSourceFrame.js",
+        "UISourceCodeFrame.js",
+        "SourceCodeDiff.js"
     ],
     "resources": [
         "fontView.css",

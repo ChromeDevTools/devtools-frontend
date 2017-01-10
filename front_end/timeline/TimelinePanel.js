@@ -553,7 +553,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     for (var i = 0; i < this._overviewControls.length; ++i)
       this._overviewControls[i].timelineStarted();
 
-    Host.userMetrics.actionTaken(userInitiated ? Host.UserMetrics.Action.TimelineStarted : Host.UserMetrics.Action.TimelinePageReloadStarted);
+    Host.userMetrics.actionTaken(
+        userInitiated ? Host.UserMetrics.Action.TimelineStarted : Host.UserMetrics.Action.TimelinePageReloadStarted);
     this._setUIControlsEnabled(false);
     this._hideLandingPage();
   }
@@ -600,7 +601,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   _reset() {
-    Components.LineLevelProfile.instance().reset();
+    PerfUI.LineLevelProfile.instance().reset();
     this._tracingModel.reset();
     this._model.reset();
     for (let extensionEntry of this._extensionTracingModels)
@@ -723,7 +724,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     var groups = TimelineModel.TimelineModel.AsyncEventGroup;
     var asyncEventsByGroup = this._model.mainThreadAsyncEvents();
     this._irModel.populate(asyncEventsByGroup.get(groups.input), asyncEventsByGroup.get(groups.animation));
-    this._model.cpuProfiles().forEach(profile => Components.LineLevelProfile.instance().appendCPUProfile(profile));
+    this._model.cpuProfiles().forEach(profile => PerfUI.LineLevelProfile.instance().appendCPUProfile(profile));
     if (this._statusPane)
       this._statusPane.hide();
     delete this._statusPane;

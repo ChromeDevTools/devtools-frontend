@@ -29,7 +29,7 @@
 /**
  * @unrestricted
  */
-Sources.StyleSheetOutlineDialog = class extends UI.FilteredListWidget.Delegate {
+Sources.StyleSheetOutlineDialog = class extends QuickOpen.FilteredListWidget.Delegate {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {function(number, number)} selectItemCallback
@@ -52,7 +52,7 @@ Sources.StyleSheetOutlineDialog = class extends UI.FilteredListWidget.Delegate {
   static show(uiSourceCode, selectItemCallback) {
     Sources.StyleSheetOutlineDialog._instanceForTests =
         new Sources.StyleSheetOutlineDialog(uiSourceCode, selectItemCallback);
-    new UI.FilteredListWidget(Sources.StyleSheetOutlineDialog._instanceForTests).showAsDialog();
+    new QuickOpen.FilteredListWidget(Sources.StyleSheetOutlineDialog._instanceForTests).showAsDialog();
   }
 
   /**

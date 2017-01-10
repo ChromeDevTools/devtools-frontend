@@ -7,9 +7,9 @@
  * @unrestricted
  * @implements {UI.ListDelegate}
  */
-UI.FilteredListWidget = class extends UI.VBox {
+QuickOpen.FilteredListWidget = class extends UI.VBox {
   /**
-   * @param {!UI.FilteredListWidget.Delegate} delegate
+   * @param {!QuickOpen.FilteredListWidget.Delegate} delegate
    */
   constructor(delegate) {
     super(true);
@@ -20,7 +20,7 @@ UI.FilteredListWidget = class extends UI.VBox {
     this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), true);
     if (delegate.renderMonospace())
       this.contentElement.classList.add('monospace');
-    this.registerRequiredCSS('ui_lazy/filteredListWidget.css');
+    this.registerRequiredCSS('quick_open/filteredListWidget.css');
 
     this._promptElement = this.contentElement.createChild('div', 'filtered-list-widget-input');
     this._promptElement.setAttribute('spellcheck', 'false');
@@ -209,7 +209,7 @@ UI.FilteredListWidget = class extends UI.VBox {
     var query = this._delegate.rewriteQuery(this._value());
     this._query = query;
 
-    var filterRegex = query ? UI.FilteredListWidget.filterRegex(query) : null;
+    var filterRegex = query ? QuickOpen.FilteredListWidget.filterRegex(query) : null;
 
     var filteredItems = [];
 
@@ -234,7 +234,7 @@ UI.FilteredListWidget = class extends UI.VBox {
 
     /**
      * @param {number} fromIndex
-     * @this {UI.FilteredListWidget}
+     * @this {QuickOpen.FilteredListWidget}
      */
     function scoreItems(fromIndex) {
       delete this._scoringTimer;
@@ -357,7 +357,7 @@ UI.FilteredListWidget = class extends UI.VBox {
 /**
  * @unrestricted
  */
-UI.FilteredListWidget.Delegate = class {
+QuickOpen.FilteredListWidget.Delegate = class {
   /**
    * @param {!Array<string>} promptHistory
    */

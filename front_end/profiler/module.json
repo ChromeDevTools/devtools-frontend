@@ -20,7 +20,9 @@
         },
         {
             "type": "@UI.ContextMenu.Provider",
-            "contextTypes": ["SDK.RemoteObject"],
+            "contextTypes": [
+                "SDK.RemoteObject"
+            ],
             "className": "Profiler.ProfilesPanel.ContextMenuProvider"
         },
         {
@@ -53,7 +55,9 @@
             "iconClass": "largeicon-start-recording",
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
-            "contextTypes": ["Profiler.ProfilesPanel"],
+            "contextTypes": [
+                "Profiler.ProfilesPanel"
+            ],
             "className": "Profiler.ProfilesPanel.RecordActionDelegate",
             "bindings": [
                 {
@@ -70,7 +74,8 @@
     "dependencies": [
         "components",
         "components_lazy",
-        "ui_lazy"
+        "ui_lazy",
+        "perf_ui"
     ],
     "scripts": [
         "ProfilesPanel.js",

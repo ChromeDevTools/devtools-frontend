@@ -382,7 +382,7 @@ CSSTracker.CSSTrackerView.StyleSheetTreeElement = class extends UI.TreeElement {
 };
 
 /**
- * @implements {Sources.UISourceCodeFrame.LineDecorator}
+ * @implements {SourceFrame.UISourceCodeFrame.LineDecorator}
  */
 CSSTracker.CSSTrackerView.LineDecorator = class {
   /**

@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-Sources.SourceCodeDiff = class {
+SourceFrame.SourceCodeDiff = class {
   /**
    * @param {!Promise<?string>} diffBaseline
    * @param {!TextEditor.CodeMirrorTextEditor} textEditor
@@ -12,7 +12,7 @@ Sources.SourceCodeDiff = class {
   constructor(diffBaseline, textEditor) {
     this._textEditor = textEditor;
     this._decorations = [];
-    this._textEditor.installGutter(Sources.SourceCodeDiff.DiffGutterType, true);
+    this._textEditor.installGutter(SourceFrame.SourceCodeDiff.DiffGutterType, true);
     this._diffBaseline = diffBaseline;
     /** @type {!Array<!TextEditor.TextEditorPositionHandle>}*/
     this._animatedLines = [];
@@ -22,7 +22,7 @@ Sources.SourceCodeDiff = class {
     if (this._updateTimeout)
       clearTimeout(this._updateTimeout);
     this._updateTimeout =
-        setTimeout(this.updateDiffMarkersImmediately.bind(this), Sources.SourceCodeDiff.UpdateTimeout);
+        setTimeout(this.updateDiffMarkersImmediately.bind(this), SourceFrame.SourceCodeDiff.UpdateTimeout);
   }
 
   updateDiffMarkersImmediately() {
@@ -44,7 +44,7 @@ Sources.SourceCodeDiff = class {
     var changedLines = [];
     for (var i = 0; i < diff.length; ++i) {
       var diffEntry = diff[i];
-      if (diffEntry.type === Sources.SourceCodeDiff.GutterDecorationType.Delete)
+      if (diffEntry.type === SourceFrame.SourceCodeDiff.GutterDecorationType.Delete)
         continue;
       for (var lineNumber = diffEntry.from; lineNumber < diffEntry.to; ++lineNumber) {
         var position = this._textEditor.textEditorPositionHandle(lineNumber, 0);
@@ -67,7 +67,7 @@ Sources.SourceCodeDiff = class {
     this._textEditor.operation(operation.bind(this));
 
     /**
-     * @this {Sources.SourceCodeDiff}
+     * @this {SourceFrame.SourceCodeDiff}
      */
     function operation() {
       toggleLines.call(this, false);
@@ -77,7 +77,7 @@ Sources.SourceCodeDiff = class {
 
     /**
      * @param {boolean} value
-     * @this {Sources.SourceCodeDiff}
+     * @this {SourceFrame.SourceCodeDiff}
      */
     function toggleLines(value) {
       for (var i = 0; i < this._animatedLines.length; ++i) {
@@ -89,8 +89,8 @@ Sources.SourceCodeDiff = class {
   }
 
   /**
-   * @param {!Array<!Sources.SourceCodeDiff.GutterDecoration>} removed
-   * @param {!Array<!Sources.SourceCodeDiff.GutterDecoration>} added
+   * @param {!Array<!SourceFrame.SourceCodeDiff.GutterDecoration>} removed
+   * @param {!Array<!SourceFrame.SourceCodeDiff.GutterDecoration>} added
    */
   _updateDecorations(removed, added) {
     this._textEditor.operation(operation);
@@ -106,7 +106,7 @@ Sources.SourceCodeDiff = class {
   /**
    * @param {string} baseline
    * @param {string} current
-   * @return {!Array<!{type: !Sources.SourceCodeDiff.GutterDecorationType, from: number, to: number}>}
+   * @return {!Array<!{type: !SourceFrame.SourceCodeDiff.GutterDecorationType, from: number, to: number}>}
    */
   _computeDiff(baseline, current) {
     var diff = Diff.Diff.lineDiff(baseline.split('\n'), current.split('\n'));
@@ -140,22 +140,22 @@ Sources.SourceCodeDiff = class {
     if (isInsideBlock)
       flush();
     if (result.length > 1 && result[0].from === 0 && result[1].from === 0) {
-      var merged = {type: Sources.SourceCodeDiff.GutterDecorationType.Modify, from: 0, to: result[1].to};
+      var merged = {type: SourceFrame.SourceCodeDiff.GutterDecorationType.Modify, from: 0, to: result[1].to};
       result.splice(0, 2, merged);
     }
     return result;
 
     function flush() {
-      var type = Sources.SourceCodeDiff.GutterDecorationType.Insert;
+      var type = SourceFrame.SourceCodeDiff.GutterDecorationType.Insert;
       var from = blockStartLineNumber;
       var to = currentLineNumber;
       if (hasAdded && hasRemoved) {
-        type = Sources.SourceCodeDiff.GutterDecorationType.Modify;
+        type = SourceFrame.SourceCodeDiff.GutterDecorationType.Modify;
       } else if (!hasAdded && hasRemoved && from === 0 && to === 0) {
-        type = Sources.SourceCodeDiff.GutterDecorationType.Modify;
+        type = SourceFrame.SourceCodeDiff.GutterDecorationType.Modify;
         to = 1;
       } else if (!hasAdded && hasRemoved) {
-        type = Sources.SourceCodeDiff.GutterDecorationType.Delete;
+        type = SourceFrame.SourceCodeDiff.GutterDecorationType.Delete;
         from -= 1;
       }
       result.push({type: type, from: from, to: to});
@@ -178,7 +178,7 @@ Sources.SourceCodeDiff = class {
 
     var diff = this._computeDiff(baseline, current);
 
-    /** @type {!Map<number, !Sources.SourceCodeDiff.GutterDecoration>} */
+    /** @type {!Map<number, !SourceFrame.SourceCodeDiff.GutterDecoration>} */
     var oldDecorations = new Map();
     for (var i = 0; i < this._decorations.length; ++i) {
       var decoration = this._decorations[i];
@@ -188,7 +188,7 @@ Sources.SourceCodeDiff = class {
       oldDecorations.set(lineNumber, decoration);
     }
 
-    /** @type {!Map<number, !{lineNumber: number, type: !Sources.SourceCodeDiff.GutterDecorationType}>} */
+    /** @type {!Map<number, !{lineNumber: number, type: !SourceFrame.SourceCodeDiff.GutterDecorationType}>} */
     var newDecorations = new Map();
     for (var i = 0; i < diff.length; ++i) {
       var diffEntry = diff[i];
@@ -198,7 +198,7 @@ Sources.SourceCodeDiff = class {
 
     var decorationDiff = oldDecorations.diff(newDecorations, (e1, e2) => e1.type === e2.type);
     var addedDecorations = decorationDiff.added.map(
-        entry => new Sources.SourceCodeDiff.GutterDecoration(this._textEditor, entry.lineNumber, entry.type));
+        entry => new SourceFrame.SourceCodeDiff.GutterDecoration(this._textEditor, entry.lineNumber, entry.type));
 
     this._decorations = decorationDiff.equal.concat(addedDecorations);
     this._updateDecorations(decorationDiff.removed, addedDecorations);
@@ -206,20 +206,20 @@ Sources.SourceCodeDiff = class {
   }
 
   /**
-   * @param {!Map<number, !{lineNumber: number, type: !Sources.SourceCodeDiff.GutterDecorationType}>} decorations
+   * @param {!Map<number, !{lineNumber: number, type: !SourceFrame.SourceCodeDiff.GutterDecorationType}>} decorations
    */
   _decorationsSetForTest(decorations) {
   }
 };
 
 /** @type {number} */
-Sources.SourceCodeDiff.UpdateTimeout = 200;
+SourceFrame.SourceCodeDiff.UpdateTimeout = 200;
 
 /** @type {string} */
-Sources.SourceCodeDiff.DiffGutterType = 'CodeMirror-gutter-diff';
+SourceFrame.SourceCodeDiff.DiffGutterType = 'CodeMirror-gutter-diff';
 
 /** @enum {symbol} */
-Sources.SourceCodeDiff.GutterDecorationType = {
+SourceFrame.SourceCodeDiff.GutterDecorationType = {
   Insert: Symbol('Insert'),
   Delete: Symbol('Delete'),
   Modify: Symbol('Modify'),
@@ -228,21 +228,21 @@ Sources.SourceCodeDiff.GutterDecorationType = {
 /**
  * @unrestricted
  */
-Sources.SourceCodeDiff.GutterDecoration = class {
+SourceFrame.SourceCodeDiff.GutterDecoration = class {
   /**
    * @param {!TextEditor.CodeMirrorTextEditor} textEditor
    * @param {number} lineNumber
-   * @param {!Sources.SourceCodeDiff.GutterDecorationType} type
+   * @param {!SourceFrame.SourceCodeDiff.GutterDecorationType} type
    */
   constructor(textEditor, lineNumber, type) {
     this._textEditor = textEditor;
     this._position = this._textEditor.textEditorPositionHandle(lineNumber, 0);
     this._className = '';
-    if (type === Sources.SourceCodeDiff.GutterDecorationType.Insert)
+    if (type === SourceFrame.SourceCodeDiff.GutterDecorationType.Insert)
       this._className = 'diff-entry-insert';
-    else if (type === Sources.SourceCodeDiff.GutterDecorationType.Delete)
+    else if (type === SourceFrame.SourceCodeDiff.GutterDecorationType.Delete)
       this._className = 'diff-entry-delete';
-    else if (type === Sources.SourceCodeDiff.GutterDecorationType.Modify)
+    else if (type === SourceFrame.SourceCodeDiff.GutterDecorationType.Modify)
       this._className = 'diff-entry-modify';
     this.type = type;
   }
@@ -263,7 +263,7 @@ Sources.SourceCodeDiff.GutterDecoration = class {
       return;
     var element = createElementWithClass('div', 'diff-marker');
     element.textContent = '\u00A0';
-    this._textEditor.setGutterDecoration(location.lineNumber, Sources.SourceCodeDiff.DiffGutterType, element);
+    this._textEditor.setGutterDecoration(location.lineNumber, SourceFrame.SourceCodeDiff.DiffGutterType, element);
     this._textEditor.toggleLineClass(location.lineNumber, this._className, true);
   }
 
@@ -271,7 +271,7 @@ Sources.SourceCodeDiff.GutterDecoration = class {
     var location = this._position.resolve();
     if (!location)
       return;
-    this._textEditor.setGutterDecoration(location.lineNumber, Sources.SourceCodeDiff.DiffGutterType, null);
+    this._textEditor.setGutterDecoration(location.lineNumber, SourceFrame.SourceCodeDiff.DiffGutterType, null);
     this._textEditor.toggleLineClass(location.lineNumber, this._className, false);
   }
 };

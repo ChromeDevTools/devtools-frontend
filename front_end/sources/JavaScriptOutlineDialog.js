@@ -7,7 +7,7 @@
 /**
  * @unrestricted
  */
-Sources.JavaScriptOutlineDialog = class extends UI.FilteredListWidget.Delegate {
+Sources.JavaScriptOutlineDialog = class extends QuickOpen.FilteredListWidget.Delegate {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {function(number, number)} selectItemCallback
@@ -27,7 +27,7 @@ Sources.JavaScriptOutlineDialog = class extends UI.FilteredListWidget.Delegate {
   static show(uiSourceCode, selectItemCallback) {
     Sources.JavaScriptOutlineDialog._instanceForTests =
         new Sources.JavaScriptOutlineDialog(uiSourceCode, selectItemCallback);
-    new UI.FilteredListWidget(Sources.JavaScriptOutlineDialog._instanceForTests).showAsDialog();
+    new QuickOpen.FilteredListWidget(Sources.JavaScriptOutlineDialog._instanceForTests).showAsDialog();
   }
 
   /**

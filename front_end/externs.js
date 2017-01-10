@@ -861,6 +861,8 @@ var Main = {};
 /** @type {!Object} */
 var Network = {};
 /** @type {!Object} */
+var PerfUI = {};
+/** @type {!Object} */
 var Persistence = {};
 /** @type {!Object} */
 var Platform = {};
@@ -868,6 +870,8 @@ var Platform = {};
 var Profiler = {};
 /** @type {!Object} */
 var Protocol = {};
+/** @type {!Object} */
+var QuickOpen = {};
 /** @type {!Object} */
 var Resources = {};
 /** @type {!Object} */

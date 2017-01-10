@@ -772,18 +772,20 @@ Runtime.Module = class {
     if (!this._descriptor.scripts || !this._descriptor.scripts.length)
       return Promise.resolve();
 
-    // Module namespaces.
-    var namespace = this._name.replace('_lazy', '');
     // the namespace keyword confuses clang-format
     // clang-format off
-    if (namespace === 'sdk' || namespace === 'ui')
-      namespace = namespace.toUpperCase();
-    if (namespace === 'css_tracker')
-      namespace = 'CSSTracker';
-    // clang-format on
-    namespace = namespace.split('_').map(a => a.substring(0, 1).toUpperCase() + a.substring(1)).join('');
+    // Module namespaces.
+    const specialCases = {
+      'sdk': 'SDK',
+      'ui': 'UI',
+      'perf_ui': 'PerfUI',
+      'css_tracker': 'CSSTracker',
+      'ui_lazy': 'UI',
+      'components_lazy': 'Components'
+    };
+    var namespace = specialCases[this._name] || this._name.split('_').map(a => a.substring(0, 1).toUpperCase() + a.substring(1)).join('');
     self[namespace] = self[namespace] || {};
-
+    // clang-format on
     return Runtime._loadScriptsPromise(this._descriptor.scripts.map(this._modularizeURL, this), this._remoteBase());
   }
 

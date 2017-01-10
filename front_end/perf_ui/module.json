@@ -1,0 +1,19 @@
+{
+    "extensions": [
+        {
+            "type": "@SourceFrame.UISourceCodeFrame.LineDecorator",
+            "className": "PerfUI.LineLevelProfile.LineDecorator",
+            "decoratorType": "performance"
+        }
+    ],
+    "dependencies": [
+        "ui",
+        "sdk",
+        "bindings",
+        "source_frame",
+        "text_editor"
+    ],
+    "scripts": [
+        "LineLevelProfile.js"
+    ]
+}

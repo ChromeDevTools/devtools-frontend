@@ -6,26 +6,11 @@
         "ui",
         "ui_lazy"
     ],
-    "extensions": [
-        {
-            "type": "@Sources.UISourceCodeFrame.LineDecorator",
-            "className": "Components.LineLevelProfile.LineDecorator",
-            "decoratorType": "performance"
-        },
-        {
-            "type": "@UI.ActionDelegate",
-            "actionId": "components.collect-garbage",
-            "title": "Collect garbage",
-            "iconClass": "largeicon-trash-bin",
-            "className": "Components.GCActionDelegate"
-        }
-    ],
+    "extensions": [],
     "scripts": [
         "CookiesTable.js",
         "FilmStripModel.js",
-        "FilmStripView.js",
-        "GCActionDelegate.js",
-        "LineLevelProfile.js"
+        "FilmStripView.js"
     ],
     "resources": [
         "filmStripDialog.css",

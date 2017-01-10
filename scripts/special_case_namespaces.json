@@ -1,0 +1,8 @@
+{
+  "sdk": "SDK",
+  "ui": "UI",
+  "perf_ui": "PerfUI",
+  "css_tracker": "CSSTracker",
+  "ui_lazy": "UI",
+  "components_lazy": "Components"
+}

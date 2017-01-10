@@ -11,15 +11,15 @@
             "experiment": "cssTrackerPanel"
         },
         {
-           "type": "@Sources.UISourceCodeFrame.LineDecorator",
-           "className": "CSSTracker.CSSTrackerView.LineDecorator",
-           "decoratorType": "coverage"
+            "type": "@SourceFrame.UISourceCodeFrame.LineDecorator",
+            "className": "CSSTracker.CSSTrackerView.LineDecorator",
+            "decoratorType": "coverage"
         }
     ],
     "dependencies": [
         "sdk",
-        "sources",
-        "ui"
+        "ui",
+        "source_frame"
     ],
     "scripts": [
         "CSSTrackerView.js"

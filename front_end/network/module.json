@@ -10,12 +10,18 @@
         },
         {
             "type": "@UI.ContextMenu.Provider",
-            "contextTypes": ["SDK.NetworkRequest", "SDK.Resource", "Workspace.UISourceCode"],
+            "contextTypes": [
+                "SDK.NetworkRequest",
+                "SDK.Resource",
+                "Workspace.UISourceCode"
+            ],
             "className": "Network.NetworkPanel.ContextMenuProvider"
         },
         {
             "type": "@Common.Revealer",
-            "contextTypes": ["SDK.NetworkRequest"],
+            "contextTypes": [
+                "SDK.NetworkRequest"
+            ],
             "className": "Network.NetworkPanel.RequestRevealer"
         },
         {
@@ -27,8 +33,14 @@
             "defaultValue": false,
             "tags": "color code, resource type",
             "options": [
-                { "value": true, "title": "Color code by resource type" },
-                { "value": false, "title": "Use default colors" }
+                {
+                    "value": true,
+                    "title": "Color code by resource type"
+                },
+                {
+                    "value": false,
+                    "title": "Use default colors"
+                }
             ]
         },
         {
@@ -44,11 +56,19 @@
             "iconClass": "largeicon-start-recording",
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
-            "contextTypes": ["Network.NetworkPanel"],
+            "contextTypes": [
+                "Network.NetworkPanel"
+            ],
             "className": "Network.NetworkPanel.RecordActionDelegate",
             "options": [
-                { "value": true, "title": "Record network log" },
-                { "value": false, "title": "Stop recording network log" }
+                {
+                    "value": true,
+                    "title": "Record network log"
+                },
+                {
+                    "value": false,
+                    "title": "Stop recording network log"
+                }
             ],
             "bindings": [
                 {
@@ -86,7 +106,8 @@
         "source_frame",
         "components",
         "components_lazy",
-        "ui_lazy"
+        "ui_lazy",
+        "perf_ui"
     ],
     "scripts": [
         "BlockedURLsPane.js",

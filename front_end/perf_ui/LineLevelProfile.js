@@ -4,19 +4,19 @@
 /**
  * @unrestricted
  */
-Components.LineLevelProfile = class {
+PerfUI.LineLevelProfile = class {
   constructor() {
     this._locationPool = new Bindings.LiveLocationPool();
     this.reset();
   }
 
   /**
-   * @return {!Components.LineLevelProfile}
+   * @return {!PerfUI.LineLevelProfile}
    */
   static instance() {
-    if (!Components.LineLevelProfile._instance)
-      Components.LineLevelProfile._instance = new Components.LineLevelProfile();
-    return Components.LineLevelProfile._instance;
+    if (!PerfUI.LineLevelProfile._instance)
+      PerfUI.LineLevelProfile._instance = new PerfUI.LineLevelProfile();
+    return PerfUI.LineLevelProfile._instance;
   }
 
   /**
@@ -67,7 +67,7 @@ Components.LineLevelProfile = class {
     // TODO(alph): use scriptId instead of urls for the target.
     this._locationPool.disposeAll();
     Workspace.workspace.uiSourceCodes().forEach(
-        uiSourceCode => uiSourceCode.removeDecorationsForType(Components.LineLevelProfile.LineDecorator.type));
+        uiSourceCode => uiSourceCode.removeDecorationsForType(PerfUI.LineLevelProfile.LineDecorator.type));
     for (var fileInfo of this._files) {
       var url = /** @type {string} */ (fileInfo[0]);
       var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
@@ -82,9 +82,9 @@ Components.LineLevelProfile = class {
         var time = lineInfo[1];
         var rawLocation = debuggerModel.createRawLocationByURL(url, line, 0);
         if (rawLocation)
-          new Components.LineLevelProfile.Presentation(rawLocation, time, this._locationPool);
+          new PerfUI.LineLevelProfile.Presentation(rawLocation, time, this._locationPool);
         else if (uiSourceCode)
-          uiSourceCode.addLineDecoration(line, Components.LineLevelProfile.LineDecorator.type, time);
+          uiSourceCode.addLineDecoration(line, PerfUI.LineLevelProfile.LineDecorator.type, time);
       }
     }
   }
@@ -94,7 +94,7 @@ Components.LineLevelProfile = class {
 /**
  * @unrestricted
  */
-Components.LineLevelProfile.Presentation = class {
+PerfUI.LineLevelProfile.Presentation = class {
   /**
    * @param {!SDK.DebuggerModel.Location} rawLocation
    * @param {number} time
@@ -110,20 +110,20 @@ Components.LineLevelProfile.Presentation = class {
    */
   updateLocation(liveLocation) {
     if (this._uiLocation)
-      this._uiLocation.uiSourceCode.removeDecorationsForType(Components.LineLevelProfile.LineDecorator.type);
+      this._uiLocation.uiSourceCode.removeDecorationsForType(PerfUI.LineLevelProfile.LineDecorator.type);
     this._uiLocation = liveLocation.uiLocation();
     if (this._uiLocation) {
       this._uiLocation.uiSourceCode.addLineDecoration(
-          this._uiLocation.lineNumber, Components.LineLevelProfile.LineDecorator.type, this._time);
+          this._uiLocation.lineNumber, PerfUI.LineLevelProfile.LineDecorator.type, this._time);
     }
   }
 };
 
 /**
- * @implements {Sources.UISourceCodeFrame.LineDecorator}
+ * @implements {SourceFrame.UISourceCodeFrame.LineDecorator}
  * @unrestricted
  */
-Components.LineLevelProfile.LineDecorator = class {
+PerfUI.LineLevelProfile.LineDecorator = class {
   /**
    * @override
    * @param {!Workspace.UISourceCode} uiSourceCode
@@ -131,7 +131,7 @@ Components.LineLevelProfile.LineDecorator = class {
    */
   decorate(uiSourceCode, textEditor) {
     var gutterType = 'CodeMirror-gutter-performance';
-    var decorations = uiSourceCode.decorationsForType(Components.LineLevelProfile.LineDecorator.type);
+    var decorations = uiSourceCode.decorationsForType(PerfUI.LineLevelProfile.LineDecorator.type);
     textEditor.uninstallGutter(gutterType);
     if (!decorations || !decorations.size)
       return;
@@ -148,4 +148,4 @@ Components.LineLevelProfile.LineDecorator = class {
   }
 };
 
-Components.LineLevelProfile.LineDecorator.type = 'performance';
+PerfUI.LineLevelProfile.LineDecorator.type = 'performance';

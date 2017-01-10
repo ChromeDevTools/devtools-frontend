@@ -184,7 +184,7 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    var frame = UI.context.flavor(Sources.UISourceCodeFrame);
+    var frame = UI.context.flavor(SourceFrame.UISourceCodeFrame);
     if (!frame)
       return false;
     var text = frame.textEditor.text(frame.textEditor.selection());

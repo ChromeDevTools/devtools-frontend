@@ -10,7 +10,13 @@
         },
         {
             "type": "@UI.ContextMenu.Provider",
-            "contextTypes": ["Workspace.UISourceCode", "Workspace.UILocation", "SDK.RemoteObject", "SDK.NetworkRequest", "Sources.UISourceCodeFrame"],
+            "contextTypes": [
+                "Workspace.UISourceCode",
+                "Workspace.UILocation",
+                "SDK.RemoteObject",
+                "SDK.NetworkRequest",
+                "SourceFrame.UISourceCodeFrame"
+            ],
             "className": "Sources.SourcesPanel"
         },
         {
@@ -20,10 +26,19 @@
             "iconClass": "largeicon-pause",
             "toggledIconClass": "largeicon-resume",
             "className": "Sources.SourcesPanel.RevealingActionDelegate",
-            "contextTypes": ["Sources.SourcesPanel", "UI.ShortcutRegistry.ForwardedShortcut"],
+            "contextTypes": [
+                "Sources.SourcesPanel",
+                "UI.ShortcutRegistry.ForwardedShortcut"
+            ],
             "options": [
-                { "value": true, "title": "Pause script execution" },
-                { "value": false, "title": "Resume script execution" }
+                {
+                    "value": true,
+                    "title": "Pause script execution"
+                },
+                {
+                    "value": false,
+                    "title": "Resume script execution"
+                }
             ],
             "bindings": [
                 {
@@ -42,7 +57,9 @@
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step over next function call",
             "iconClass": "largeicon-step-over",
-            "contextTypes": ["Sources.SourcesPanel"],
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -60,7 +77,9 @@
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step into next function call",
             "iconClass": "largeicon-step-in",
-            "contextTypes": ["Sources.SourcesPanel"],
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -78,7 +97,9 @@
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step out of current function",
             "iconClass": "largeicon-step-out",
-            "contextTypes": ["Sources.SourcesPanel"],
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -96,7 +117,9 @@
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Run snippet",
             "iconClass": "largeicon-play",
-            "contextTypes": ["Sources.SourcesPanel"],
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -132,10 +155,18 @@
             "iconClass": "largeicon-deactivate-breakpoints",
             "toggledIconClass": "largeicon-activate-breakpoints",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
-            "contextTypes": ["Sources.SourcesPanel"],
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
             "options": [
-                { "value": true, "title": "Deactivate breakpoints" },
-                { "value": false, "title": "Activate breakpoints" }
+                {
+                    "value": true,
+                    "title": "Deactivate breakpoints"
+                },
+                {
+                    "value": false,
+                    "title": "Activate breakpoints"
+                }
             ],
             "bindings": [
                 {
@@ -153,7 +184,9 @@
             "actionId": "sources.add-to-watch",
             "className": "Sources.WatchExpressionsSidebarPane",
             "title": "Add selected text to watches",
-            "contextTypes": ["Sources.UISourceCodeFrame"],
+            "contextTypes": [
+                "SourceFrame.UISourceCodeFrame"
+            ],
             "bindings": [
                 {
                     "shortcut": "Ctrl+Shift+A"
@@ -162,7 +195,9 @@
         },
         {
             "type": "@UI.ContextMenu.Provider",
-            "contextTypes": ["TextEditor.CodeMirrorTextEditor"],
+            "contextTypes": [
+                "TextEditor.CodeMirrorTextEditor"
+            ],
             "className": "Sources.WatchExpressionsSidebarPane"
         },
         {
@@ -170,7 +205,9 @@
             "actionId": "debugger.evaluate-selection",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Evaluate in console",
-            "contextTypes": ["Sources.UISourceCodeFrame"],
+            "contextTypes": [
+                "SourceFrame.UISourceCodeFrame"
+            ],
             "bindings": [
                 {
                     "shortcut": "Ctrl+Shift+E"
@@ -189,22 +226,30 @@
         },
         {
             "type": "@Common.Revealer",
-            "contextTypes": ["Workspace.UILocation"],
+            "contextTypes": [
+                "Workspace.UILocation"
+            ],
             "className": "Sources.SourcesPanel.UILocationRevealer"
         },
         {
             "type": "@Common.Revealer",
-            "contextTypes": ["SDK.DebuggerModel.Location"],
+            "contextTypes": [
+                "SDK.DebuggerModel.Location"
+            ],
             "className": "Sources.SourcesPanel.DebuggerLocationRevealer"
         },
         {
             "type": "@Common.Revealer",
-            "contextTypes": ["Workspace.UISourceCode"],
+            "contextTypes": [
+                "Workspace.UISourceCode"
+            ],
             "className": "Sources.SourcesPanel.UISourceCodeRevealer"
         },
         {
             "type": "@Common.Revealer",
-            "contextTypes": ["SDK.DebuggerPausedDetails"],
+            "contextTypes": [
+                "SDK.DebuggerPausedDetails"
+            ],
             "className": "Sources.SourcesPanel.DebuggerPausedDetailsRevealer"
         },
         {
@@ -312,7 +357,9 @@
             "type": "@UI.ActionDelegate",
             "actionId": "sources.switch-file",
             "className": "Sources.SourcesView.SwitchFileActionDelegate",
-            "contextTypes": ["Sources.SourcesView"],
+            "contextTypes": [
+                "Sources.SourcesView"
+            ],
             "bindings": [
                 {
                     "shortcut": "Alt+O"
@@ -381,9 +428,21 @@
             "settingType": "enum",
             "defaultValue": "original",
             "options": [
-                { "title": "Do not show whitespace characters", "text": "None", "value": "none" },
-                { "title": "Show all whitespace characters", "text": "All", "value": "all" },
-                { "title": "Show trailing whitespace characters", "text": "Trailing", "value": "trailing" }
+                {
+                    "title": "Do not show whitespace characters",
+                    "text": "None",
+                    "value": "none"
+                },
+                {
+                    "title": "Show all whitespace characters",
+                    "text": "All",
+                    "value": "all"
+                },
+                {
+                    "title": "Show trailing whitespace characters",
+                    "text": "Trailing",
+                    "value": "trailing"
+                }
             ]
         },
         {
@@ -514,27 +573,37 @@
         },
         {
             "type": "@UI.ContextFlavorListener",
-            "contextTypes": ["SDK.DebuggerPausedDetails"],
+            "contextTypes": [
+                "SDK.DebuggerPausedDetails"
+            ],
             "className": "Sources.JavaScriptBreakpointsSidebarPane"
         },
         {
             "type": "@UI.ContextFlavorListener",
-            "contextTypes": ["SDK.DebuggerPausedDetails"],
+            "contextTypes": [
+                "SDK.DebuggerPausedDetails"
+            ],
             "className": "Sources.XHRBreakpointsSidebarPane"
         },
         {
             "type": "@UI.ContextFlavorListener",
-            "contextTypes": ["SDK.DebuggerPausedDetails"],
+            "contextTypes": [
+                "SDK.DebuggerPausedDetails"
+            ],
             "className": "Components.DOMBreakpointsSidebarPane"
         },
         {
             "type": "@UI.ContextFlavorListener",
-            "contextTypes": ["SDK.DebuggerPausedDetails"],
+            "contextTypes": [
+                "SDK.DebuggerPausedDetails"
+            ],
             "className": "Sources.CallStackSidebarPane"
         },
         {
             "type": "@UI.ContextFlavorListener",
-            "contextTypes": ["SDK.DebuggerModel.CallFrame"],
+            "contextTypes": [
+                "SDK.DebuggerModel.CallFrame"
+            ],
             "className": "Sources.ScopeChainSidebarPane"
         }
     ],
@@ -544,7 +613,8 @@
         "snippets",
         "ui_lazy",
         "extensions",
-        "persistence"
+        "persistence",
+        "quick_open"
     ],
     "scripts": [
         "UIList.js",
@@ -556,11 +626,9 @@
         "EventListenerBreakpointsSidebarPane.js",
         "FilePathScoreFunction.js",
         "FilteredUISourceCodeListDelegate.js",
-        "UISourceCodeFrame.js",
         "SourceMapNamesResolver.js",
         "JavaScriptBreakpointsSidebarPane.js",
         "JavaScriptOutlineDialog.js",
-        "SourceCodeDiff.js",
         "JavaScriptSourceFrame.js",
         "CSSSourceFrame.js",
         "NavigatorView.js",

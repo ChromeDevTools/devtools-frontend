@@ -30,6 +30,8 @@ try:
 except ImportError:
     import json
 
+special_case_namespaces_path = path.join(path.dirname(path.dirname(path.abspath(__file__))), 'special_case_namespaces.json')
+
 
 def main(argv):
     try:
@@ -93,6 +95,8 @@ class ReleaseBuilder(object):
         self.descriptors = descriptors
         self.application_dir = application_dir
         self.output_dir = output_dir
+        with open(special_case_namespaces_path) as json_file:
+            self._special_case_namespaces = json.load(json_file)
 
     def app_file(self, extension):
         return self.application_name + '.' + extension
@@ -189,16 +193,16 @@ class ReleaseBuilder(object):
                 non_autostart_deps = deps & non_autostart
                 if len(non_autostart_deps):
                     bail_error('Non-autostart dependencies specified for the autostarted module "%s": %s' % (name, non_autostart_deps))
-
-                namespace = name.replace('_lazy', '')
-                if namespace == 'sdk' or namespace == 'ui':
-                    namespace = namespace.upper();
-                namespace = "".join(map(lambda x: x[0].upper() + x[1:], namespace.split('_')))
+                namespace = self._map_module_to_namespace(name)
                 output.write('\n/* Module %s */\n' % name)
                 output.write('\nself[\'%s\'] = self[\'%s\'] || {};\n' % (namespace, namespace))
                 modular_build.concatenate_scripts(desc.get('scripts'), join(self.application_dir, name), self.output_dir, output)
             else:
                 non_autostart.add(name)
+
+    def _map_module_to_namespace(self, module):
+        camel_case_namespace = "".join(map(lambda x: x[0].upper() + x[1:], module.split('_')))
+        return self._special_case_namespaces.get(module, camel_case_namespace)
 
     def _concatenate_application_script(self, output):
         runtime_contents = read_file(join(self.application_dir, 'Runtime.js'))

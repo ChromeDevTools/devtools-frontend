@@ -1,11 +1,11 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 /**
  * @implements {UI.ActionDelegate}
+ * @unrestricted
  */
-Components.GCActionDelegate = class {
+Main.RequestAppBannerActionDelegate = class {
   /**
    * @override
    * @param {!UI.Context} context
@@ -13,7 +13,11 @@ Components.GCActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    SDK.targetManager.targets().forEach(target => target.heapProfilerAgent().collectGarbage());
+    var target = SDK.targetManager.mainTarget();
+    if (target && target.hasBrowserCapability()) {
+      target.pageAgent().requestAppBanner();
+      Common.console.show();
+    }
     return true;
   }
 };

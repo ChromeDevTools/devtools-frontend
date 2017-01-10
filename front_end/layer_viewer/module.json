@@ -4,7 +4,8 @@
         "sdk",
         "timeline_model",
         "ui",
-        "ui_lazy"
+        "ui_lazy",
+        "perf_ui"
     ],
     "scripts": [
         "LayerDetailsView.js",

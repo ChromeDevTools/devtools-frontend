@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Sources.CSSSourceFrame = class extends Sources.UISourceCodeFrame {
+Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    */

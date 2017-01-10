@@ -43,7 +43,9 @@
         { "name": "animation", "condition": "!v8only" },
         { "name": "css_tracker", "condition": "!v8only" },
         { "name": "screencast", "condition": "remoteFrontend", "type": "remote" },
-        { "name": "emulated_devices", "condition": "!v8only" , "type": "remote" }
+        { "name": "emulated_devices", "condition": "!v8only" , "type": "remote" },
+        { "name": "perf_ui" },
+        { "name": "quick_open" }
     ],
 
     "has_html": true

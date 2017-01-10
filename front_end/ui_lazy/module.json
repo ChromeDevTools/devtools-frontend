@@ -1,21 +1,5 @@
 {
-    "extensions": [
-        {
-            "type": "@UI.ActionDelegate",
-            "actionId": "commandMenu.show",
-            "className": "UI.CommandMenu.ShowActionDelegate",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+Shift+P"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+Shift+P"
-                }
-            ]
-        }
-    ],
+    "extensions": [],
     "dependencies": [
         "platform",
         "common",
@@ -29,8 +13,6 @@
         "ViewportDataGrid.js",
         "SortableDataGrid.js",
         "ShowMoreDataGridNode.js",
-        "FilteredListWidget.js",
-        "CommandMenu.js",
         "FlameChart.js",
         "OverviewGrid.js",
         "PieChart.js",
@@ -40,7 +22,6 @@
     "resources": [
         "dataGrid.css",
         "dialog.css",
-        "filteredListWidget.css",
         "flameChart.css",
         "overviewGrid.css",
         "pieChart.css",

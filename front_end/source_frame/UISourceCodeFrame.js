@@ -29,7 +29,7 @@
 /**
  * @unrestricted
  */
-Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
+SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
@@ -39,7 +39,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this.setEditable(this._canEditSource());
 
     if (Runtime.experiments.isEnabled('sourceDiff'))
-      this._diff = new Sources.SourceCodeDiff(uiSourceCode.requestOriginalContent(), this.textEditor);
+      this._diff = new SourceFrame.SourceCodeDiff(uiSourceCode.requestOriginalContent(), this.textEditor);
 
     /** @type {?UI.AutocompleteConfig} */
     this._autocompleteConfig = {isWordChar: Common.TextUtils.isWordChar};
@@ -49,7 +49,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     /** @type {?Persistence.PersistenceBinding} */
     this._persistenceBinding = Persistence.persistence.binding(uiSourceCode);
 
-    /** @type {!Map<number, !Sources.UISourceCodeFrame.RowMessageBucket>} */
+    /** @type {!Map<number, !SourceFrame.UISourceCodeFrame.RowMessageBucket>} */
     this._rowMessageBuckets = new Map();
     /** @type {!Set<string>} */
     this._typeDecorationsPending = new Set();
@@ -65,10 +65,10 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
 
     this.textEditor.addEventListener(
         SourceFrame.SourcesTextEditor.Events.EditorBlurred,
-        () => UI.context.setFlavor(Sources.UISourceCodeFrame, null));
+        () => UI.context.setFlavor(SourceFrame.UISourceCodeFrame, null));
     this.textEditor.addEventListener(
         SourceFrame.SourcesTextEditor.Events.EditorFocused,
-        () => UI.context.setFlavor(Sources.UISourceCodeFrame, this));
+        () => UI.context.setFlavor(SourceFrame.UISourceCodeFrame, this));
 
     this._updateStyle();
 
@@ -136,7 +136,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    */
   willHide() {
     super.willHide();
-    UI.context.setFlavor(Sources.UISourceCodeFrame, null);
+    UI.context.setFlavor(SourceFrame.UISourceCodeFrame, null);
     this._uiSourceCode.removeWorkingCopyGetter();
   }
 
@@ -294,7 +294,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    */
   populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber) {
     /**
-     * @this {Sources.UISourceCodeFrame}
+     * @this {SourceFrame.UISourceCodeFrame}
      */
     function appendItems() {
       contextMenu.appendApplicableItems(this._uiSourceCode);
@@ -347,7 +347,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
 
     var messageBucket = this._rowMessageBuckets.get(lineNumber);
     if (!messageBucket) {
-      messageBucket = new Sources.UISourceCodeFrame.RowMessageBucket(this, this.textEditor, lineNumber);
+      messageBucket = new SourceFrame.UISourceCodeFrame.RowMessageBucket(this, this.textEditor, lineNumber);
       this._rowMessageBuckets.set(lineNumber, messageBucket);
     }
     messageBucket.addMessage(message);
@@ -438,7 +438,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     if (this._typeDecorationsPending.has(type))
       return;
     this._typeDecorationsPending.add(type);
-    self.runtime.extensions(Sources.UISourceCodeFrame.LineDecorator)
+    self.runtime.extensions(SourceFrame.UISourceCodeFrame.LineDecorator)
         .find(extension => extension.descriptor()['decoratorType'] === type)
         .instance()
         .then(decorator => {
@@ -449,31 +449,31 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   }
 
   _decorateAllTypes() {
-    var extensions = self.runtime.extensions(Sources.UISourceCodeFrame.LineDecorator);
+    var extensions = self.runtime.extensions(SourceFrame.UISourceCodeFrame.LineDecorator);
     extensions.forEach(extension => this._decorateTypeThrottled(extension.descriptor()['decoratorType']));
   }
 };
 
-Sources.UISourceCodeFrame._iconClassPerLevel = {};
-Sources.UISourceCodeFrame._iconClassPerLevel[Workspace.UISourceCode.Message.Level.Error] = 'smallicon-error';
-Sources.UISourceCodeFrame._iconClassPerLevel[Workspace.UISourceCode.Message.Level.Warning] = 'smallicon-warning';
+SourceFrame.UISourceCodeFrame._iconClassPerLevel = {};
+SourceFrame.UISourceCodeFrame._iconClassPerLevel[Workspace.UISourceCode.Message.Level.Error] = 'smallicon-error';
+SourceFrame.UISourceCodeFrame._iconClassPerLevel[Workspace.UISourceCode.Message.Level.Warning] = 'smallicon-warning';
 
-Sources.UISourceCodeFrame._bubbleTypePerLevel = {};
-Sources.UISourceCodeFrame._bubbleTypePerLevel[Workspace.UISourceCode.Message.Level.Error] = 'error';
-Sources.UISourceCodeFrame._bubbleTypePerLevel[Workspace.UISourceCode.Message.Level.Warning] = 'warning';
+SourceFrame.UISourceCodeFrame._bubbleTypePerLevel = {};
+SourceFrame.UISourceCodeFrame._bubbleTypePerLevel[Workspace.UISourceCode.Message.Level.Error] = 'error';
+SourceFrame.UISourceCodeFrame._bubbleTypePerLevel[Workspace.UISourceCode.Message.Level.Warning] = 'warning';
 
-Sources.UISourceCodeFrame._lineClassPerLevel = {};
-Sources.UISourceCodeFrame._lineClassPerLevel[Workspace.UISourceCode.Message.Level.Error] =
+SourceFrame.UISourceCodeFrame._lineClassPerLevel = {};
+SourceFrame.UISourceCodeFrame._lineClassPerLevel[Workspace.UISourceCode.Message.Level.Error] =
     'text-editor-line-with-error';
-Sources.UISourceCodeFrame._lineClassPerLevel[Workspace.UISourceCode.Message.Level.Warning] =
+SourceFrame.UISourceCodeFrame._lineClassPerLevel[Workspace.UISourceCode.Message.Level.Warning] =
     'text-editor-line-with-warning';
 
 /**
  * @interface
  */
-Sources.UISourceCodeFrame.LineDecorator = function() {};
+SourceFrame.UISourceCodeFrame.LineDecorator = function() {};
 
-Sources.UISourceCodeFrame.LineDecorator.prototype = {
+SourceFrame.UISourceCodeFrame.LineDecorator.prototype = {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {!TextEditor.CodeMirrorTextEditor} textEditor
@@ -484,7 +484,7 @@ Sources.UISourceCodeFrame.LineDecorator.prototype = {
 /**
  * @unrestricted
  */
-Sources.UISourceCodeFrame.RowMessage = class {
+SourceFrame.UISourceCodeFrame.RowMessage = class {
   /**
    * @param {!Workspace.UISourceCode.Message} message
    */
@@ -493,9 +493,9 @@ Sources.UISourceCodeFrame.RowMessage = class {
     this._repeatCount = 1;
     this.element = createElementWithClass('div', 'text-editor-row-message');
     this._icon = this.element.createChild('label', '', 'dt-icon-label');
-    this._icon.type = Sources.UISourceCodeFrame._iconClassPerLevel[message.level()];
+    this._icon.type = SourceFrame.UISourceCodeFrame._iconClassPerLevel[message.level()];
     this._repeatCountElement = this.element.createChild('label', 'message-repeat-count hidden', 'dt-small-bubble');
-    this._repeatCountElement.type = Sources.UISourceCodeFrame._bubbleTypePerLevel[message.level()];
+    this._repeatCountElement.type = SourceFrame.UISourceCodeFrame._bubbleTypePerLevel[message.level()];
     var linesContainer = this.element.createChild('div', 'text-editor-row-message-lines');
     var lines = this._message.text().split('\n');
     for (var i = 0; i < lines.length; ++i) {
@@ -536,9 +536,9 @@ Sources.UISourceCodeFrame.RowMessage = class {
 /**
  * @unrestricted
  */
-Sources.UISourceCodeFrame.RowMessageBucket = class {
+SourceFrame.UISourceCodeFrame.RowMessageBucket = class {
   /**
-   * @param {!Sources.UISourceCodeFrame} sourceFrame
+   * @param {!SourceFrame.UISourceCodeFrame} sourceFrame
    * @param {!TextEditor.CodeMirrorTextEditor} textEditor
    * @param {number} lineNumber
    */
@@ -553,7 +553,7 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
     this._hasDecoration = false;
 
     this._messagesDescriptionElement = createElementWithClass('div', 'text-editor-messages-description-container');
-    /** @type {!Array.<!Sources.UISourceCodeFrame.RowMessage>} */
+    /** @type {!Array.<!SourceFrame.UISourceCodeFrame.RowMessage>} */
     this._messages = [];
 
     this._level = null;
@@ -591,7 +591,7 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
       return;
     var lineNumber = position.lineNumber;
     if (this._level)
-      this.textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
+      this.textEditor.toggleLineClass(lineNumber, SourceFrame.UISourceCodeFrame._lineClassPerLevel[this._level], false);
     if (this._hasDecoration)
       this.textEditor.removeDecoration(this._decoration, lineNumber);
     this._hasDecoration = false;
@@ -616,7 +616,7 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
       }
     }
 
-    var rowMessage = new Sources.UISourceCodeFrame.RowMessage(message);
+    var rowMessage = new SourceFrame.UISourceCodeFrame.RowMessage(message);
     this._messages.push(rowMessage);
     this._updateDecoration();
   }
@@ -658,14 +658,14 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
     this._updateWavePosition(lineNumber, columnNumber);
 
     if (this._level) {
-      this.textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
+      this.textEditor.toggleLineClass(lineNumber, SourceFrame.UISourceCodeFrame._lineClassPerLevel[this._level], false);
       this._icon.type = '';
     }
     this._level = maxMessage.level();
     if (!this._level)
       return;
-    this.textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], true);
-    this._icon.type = Sources.UISourceCodeFrame._iconClassPerLevel[this._level];
+    this.textEditor.toggleLineClass(lineNumber, SourceFrame.UISourceCodeFrame._lineClassPerLevel[this._level], true);
+    this._icon.type = SourceFrame.UISourceCodeFrame._iconClassPerLevel[this._level];
   }
 };
 

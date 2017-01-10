@@ -29,7 +29,7 @@ Sources.OpenResourceDialog = class extends Sources.FilteredUISourceCodeListDeleg
     var dialog = new Sources.OpenResourceDialog(sourcesView, defaultScores, history);
     if (InspectorFrontendHost.isUnderTest())
       Sources.OpenResourceDialog._instanceForTest = dialog;
-    var filteredItemSelectionDialog = new UI.FilteredListWidget(dialog);
+    var filteredItemSelectionDialog = new QuickOpen.FilteredListWidget(dialog);
     filteredItemSelectionDialog.showAsDialog();
     filteredItemSelectionDialog.setQuery(query);
   }
@@ -98,7 +98,7 @@ Sources.SelectUISourceCodeForProjectTypesDialog = class extends Sources.Filtered
    */
   static show(name, types, callback) {
     var filteredItemSelectionDialog =
-        new UI.FilteredListWidget(new Sources.SelectUISourceCodeForProjectTypesDialog(types, callback));
+        new QuickOpen.FilteredListWidget(new Sources.SelectUISourceCodeForProjectTypesDialog(types, callback));
     filteredItemSelectionDialog.showAsDialog();
     filteredItemSelectionDialog.setQuery(name);
   }

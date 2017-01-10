@@ -1,0 +1,30 @@
+{
+    "extensions": [
+        {
+            "type": "@UI.ActionDelegate",
+            "actionId": "commandMenu.show",
+            "className": "QuickOpen.CommandMenu.ShowActionDelegate",
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+Shift+P"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+Shift+P"
+                }
+            ]
+        }
+    ],
+    "dependencies": [
+        "ui",
+        "diff"
+    ],
+    "scripts": [
+        "FilteredListWidget.js",
+        "CommandMenu.js"
+    ],
+    "resources": [
+        "filteredListWidget.css"
+    ]
+}

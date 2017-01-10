@@ -43,7 +43,7 @@ Sources.EditingLocationHistoryManager = class {
   }
 
   /**
-   * @param {!Sources.UISourceCodeFrame} sourceFrame
+   * @param {!SourceFrame.UISourceCodeFrame} sourceFrame
    */
   trackSourceFrameCursorJumps(sourceFrame) {
     sourceFrame.textEditor.addEventListener(

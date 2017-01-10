@@ -506,6 +506,8 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
         var name = node.id;
         if (Timeline.AggregatedTimelineTreeView._isExtensionInternalURL(name))
           name = Common.UIString('[Chrome extensions overhead]');
+        else if (Timeline.AggregatedTimelineTreeView._isV8NativeURL(name))
+          name = Common.UIString('[V8 Runtime]');
         else if (name.startsWith('chrome-extension'))
           name = this._executionContextNamesByOrigin.get(name) || name;
         return {name: name || Common.UIString('unattributed'), color: color};
@@ -635,6 +637,8 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
       var url = TimelineModel.TimelineProfileTree.eventURL(event) || '';
       if (Timeline.AggregatedTimelineTreeView._isExtensionInternalURL(url))
         return Timeline.AggregatedTimelineTreeView._extensionInternalPrefix;
+      if (Timeline.AggregatedTimelineTreeView._isV8NativeURL(url))
+        return Timeline.AggregatedTimelineTreeView._v8NativePrefix;
       var parsedURL = url.asParsedURL();
       if (!parsedURL)
         return '';
@@ -691,9 +695,18 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
   static _isExtensionInternalURL(url) {
     return url.startsWith(Timeline.AggregatedTimelineTreeView._extensionInternalPrefix);
   }
+
+  /**
+   * @param {string} url
+   * @return {boolean}
+   */
+  static _isV8NativeURL(url) {
+    return url.startsWith(Timeline.AggregatedTimelineTreeView._v8NativePrefix);
+  }
 };
 
 Timeline.AggregatedTimelineTreeView._extensionInternalPrefix = 'extensions::';
+Timeline.AggregatedTimelineTreeView._v8NativePrefix = 'native ';
 
 /**
  * @enum {string}

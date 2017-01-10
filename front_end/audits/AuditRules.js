@@ -47,21 +47,22 @@ Audits.AuditRules.CacheableResponseCodes = {
  * @return {!Object.<string, !Array.<!SDK.NetworkRequest|string>>}
  */
 Audits.AuditRules.getDomainToResourcesMap = function(requests, types, needFullResources) {
+  /** @type {!Object<string, !Array<!SDK.NetworkRequest|string>>} */
   var domainToResourcesMap = {};
   for (var i = 0, size = requests.length; i < size; ++i) {
     var request = requests[i];
     if (types && types.indexOf(request.resourceType()) === -1)
       continue;
-    var parsedURL = request.url.asParsedURL();
+    var parsedURL = request.url().asParsedURL();
     if (!parsedURL)
       continue;
     var domain = parsedURL.host;
     var domainResources = domainToResourcesMap[domain];
     if (domainResources === undefined) {
-      domainResources = [];
+      domainResources = /** @type {!Array<!SDK.NetworkRequest|string>} */ ([]);
       domainToResourcesMap[domain] = domainResources;
     }
-    domainResources.push(needFullResources ? request : request.url);
+    domainResources.push(needFullResources ? request : request.url());
   }
   return domainToResourcesMap;
 };
@@ -95,7 +96,7 @@ Audits.AuditRules.GzipRule = class extends Audits.AuditRule {
           continue;
         var savings = 2 * size / 3;
         totalSavings += savings;
-        summary.addFormatted('%r could save ~%s', request.url, Number.bytesToString(savings));
+        summary.addFormatted('%r could save ~%s', request.url(), Number.bytesToString(savings));
         result.violationCount++;
       }
     }
@@ -323,7 +324,7 @@ Audits.AuditRules.ParallelizeDownloadRule = class extends Audits.AuditRule {
             busiestHostResourceCount, hosts[0]),
         true);
     for (var i = 0; i < requestsOnBusiestHost.length; ++i)
-      entry.addURL(requestsOnBusiestHost[i].url);
+      entry.addURL(requestsOnBusiestHost[i].url());
 
     result.violationCount = requestsOnBusiestHost.length;
     callback(result);
@@ -675,7 +676,7 @@ Audits.AuditRules.CacheControlRule = class extends Audits.AuditRule {
     if (this.responseHeaderMatch(request, 'Cache-Control', 'public'))
       return true;
 
-    return request.url.indexOf('?') === -1 && !this.responseHeaderMatch(request, 'Cache-Control', 'private');
+    return request.url().indexOf('?') === -1 && !this.responseHeaderMatch(request, 'Cache-Control', 'private');
   }
 
   /**
@@ -704,11 +705,12 @@ Audits.AuditRules.CacheControlRule = class extends Audits.AuditRule {
    */
   _isExplicitlyNonCacheable(request) {
     var hasExplicitExp = this.hasExplicitExpiration(request);
-    return !!this.responseHeaderMatch(request, 'Cache-Control', '(no-cache|no-store)') ||
+    return !!(
+        !!this.responseHeaderMatch(request, 'Cache-Control', '(no-cache|no-store)') ||
         !!this.responseHeaderMatch(request, 'Pragma', 'no-cache') ||
         (hasExplicitExp && !this.freshnessLifetimeGreaterThan(request, 0)) ||
-        (!hasExplicitExp && !!request.url && request.url.indexOf('?') >= 0) ||
-        (!hasExplicitExp && !this.isCacheableResource(request));
+        (!hasExplicitExp && request.url() && request.url().indexOf('?') >= 0) ||
+        (!hasExplicitExp && !this.isCacheableResource(request)));
   }
 
   /**
@@ -1456,6 +1458,7 @@ Audits.AuditRules.StaticCookielessRule = class extends Audits.AuditRules.CookieR
       totalStaticResources += domainToResourcesMap[domain].length;
     if (totalStaticResources < this._minResources)
       return;
+    /** @type {!Object<string, number>} */
     var matchingResourceData = {};
     this.mapResourceCookies(domainToResourcesMap, allCookies, this._collectorCallback.bind(this, matchingResourceData));
 
@@ -1477,7 +1480,12 @@ Audits.AuditRules.StaticCookielessRule = class extends Audits.AuditRules.CookieR
     result.violationCount = badUrls.length;
   }
 
+  /**
+   * @param {!Object<string, number>} matchingResourceData
+   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.Cookie} cookie
+   */
   _collectorCallback(matchingResourceData, request, cookie) {
-    matchingResourceData[request.url] = (matchingResourceData[request.url] || 0) + cookie.size();
+    matchingResourceData[request.url()] = (matchingResourceData[request.url()] || 0) + cookie.size();
   }
 };

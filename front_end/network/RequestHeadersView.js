@@ -145,7 +145,7 @@ Network.RequestHeadersView = class extends UI.VBox {
   }
 
   _refreshURL() {
-    this._urlItem.title = this._formatHeader(Common.UIString('Request URL'), this._request.url);
+    this._urlItem.title = this._formatHeader(Common.UIString('Request URL'), this._request.url());
   }
 
   _refreshQueryString() {

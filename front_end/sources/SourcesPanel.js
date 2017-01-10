@@ -903,7 +903,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     if (!(target instanceof SDK.NetworkRequest))
       return;
     var request = /** @type {!SDK.NetworkRequest} */ (target);
-    var uiSourceCode = this._workspace.uiSourceCodeForURL(request.url);
+    var uiSourceCode = this._workspace.uiSourceCodeForURL(request.url());
     if (!uiSourceCode)
       return;
     var openText = Common.UIString.capitalize('Open in Sources ^panel');

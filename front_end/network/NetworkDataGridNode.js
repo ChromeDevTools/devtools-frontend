@@ -659,7 +659,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   }
 
   _openInNewTab() {
-    InspectorFrontendHost.openInNewTab(this._request.url);
+    InspectorFrontendHost.openInNewTab(this._request.url());
   }
 
   /**
@@ -690,7 +690,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     cell.appendChild(iconElement);
     cell.createTextChild(this._request.target().decorateLabel(this._request.name()));
     this._appendSubtitle(cell, this._request.path());
-    cell.title = this._request.url;
+    cell.title = this._request.url();
   }
 
   /**
@@ -768,7 +768,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
         cell.title = initiator.url;
         console.assert(request.redirectSource);
         var redirectSource = /** @type {!SDK.NetworkRequest} */ (request.redirectSource);
-        cell.appendChild(Components.Linkifier.linkifyURL(redirectSource.url));
+        cell.appendChild(Components.Linkifier.linkifyURL(redirectSource.url()));
         this._appendSubtitle(cell, Common.UIString('Redirect'));
         break;
 

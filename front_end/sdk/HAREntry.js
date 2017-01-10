@@ -86,7 +86,7 @@ SDK.HAREntry = class {
     var headersText = this._request.requestHeadersText();
     var res = {
       method: this._request.requestMethod,
-      url: this._buildRequestURL(this._request.url),
+      url: this._buildRequestURL(this._request.url()),
       httpVersion: this._request.requestHttpVersion(),
       headers: this._request.requestHeaders(),
       queryString: this._buildParameters(this._request.queryParameters || []),

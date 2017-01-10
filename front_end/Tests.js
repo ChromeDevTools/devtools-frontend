@@ -389,12 +389,12 @@
   TestSuite.prototype.testNetworkSize = function() {
     var test = this;
 
-    function finishResource(resource, finishTime) {
-      test.assertEquals(25, resource.resourceSize, 'Incorrect total data length');
+    function finishRequest(request, finishTime) {
+      test.assertEquals(25, request.resourceSize, 'Incorrect total data length');
       test.releaseControl();
     }
 
-    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishRequest);
 
     // Reload inspected page to sniff network events
     test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
@@ -408,12 +408,12 @@
   TestSuite.prototype.testNetworkSyncSize = function() {
     var test = this;
 
-    function finishResource(resource, finishTime) {
-      test.assertEquals(25, resource.resourceSize, 'Incorrect total data length');
+    function finishRequest(request, finishTime) {
+      test.assertEquals(25, request.resourceSize, 'Incorrect total data length');
       test.releaseControl();
     }
 
-    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishRequest);
 
     // Send synchronous XHR to sniff network events
     test.evaluateInConsole_(
@@ -428,16 +428,16 @@
   TestSuite.prototype.testNetworkRawHeadersText = function() {
     var test = this;
 
-    function finishResource(resource, finishTime) {
-      if (!resource.responseHeadersText)
+    function finishRequest(request, finishTime) {
+      if (!request.responseHeadersText)
         test.fail('Failure: resource does not have response headers text');
-      var index = resource.responseHeadersText.indexOf('Date:');
+      var index = request.responseHeadersText.indexOf('Date:');
       test.assertEquals(
-          112, resource.responseHeadersText.substring(index).length, 'Incorrect response headers text length');
+          112, request.responseHeadersText.substring(index).length, 'Incorrect response headers text length');
       test.releaseControl();
     }
 
-    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishRequest);
 
     // Reload inspected page to sniff network events
     test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
@@ -451,28 +451,28 @@
   TestSuite.prototype.testNetworkTiming = function() {
     var test = this;
 
-    function finishResource(resource, finishTime) {
+    function finishRequest(request, finishTime) {
       // Setting relaxed expectations to reduce flakiness.
       // Server sends headers after 100ms, then sends data during another 100ms.
       // We expect these times to be measured at least as 70ms.
       test.assertTrue(
-          resource.timing.receiveHeadersEnd - resource.timing.connectStart >= 70,
+          request.timing.receiveHeadersEnd - request.timing.connectStart >= 70,
           'Time between receiveHeadersEnd and connectStart should be >=70ms, but was ' +
-              'receiveHeadersEnd=' + resource.timing.receiveHeadersEnd + ', connectStart=' +
-              resource.timing.connectStart + '.');
+              'receiveHeadersEnd=' + request.timing.receiveHeadersEnd + ', connectStart=' +
+              request.timing.connectStart + '.');
       test.assertTrue(
-          resource.responseReceivedTime - resource.startTime >= 0.07,
+          request.responseReceivedTime - request.startTime >= 0.07,
           'Time between responseReceivedTime and startTime should be >=0.07s, but was ' +
-              'responseReceivedTime=' + resource.responseReceivedTime + ', startTime=' + resource.startTime + '.');
+              'responseReceivedTime=' + request.responseReceivedTime + ', startTime=' + request.startTime + '.');
       test.assertTrue(
-          resource.endTime - resource.startTime >= 0.14,
+          request.endTime - request.startTime >= 0.14,
           'Time between endTime and startTime should be >=0.14s, but was ' +
-              'endtime=' + resource.endTime + ', startTime=' + resource.startTime + '.');
+              'endtime=' + request.endTime + ', startTime=' + request.startTime + '.');
 
       test.releaseControl();
     }
 
-    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishRequest);
 
     // Reload inspected page to sniff network events
     test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
@@ -482,29 +482,29 @@
 
   TestSuite.prototype.testPushTimes = function(url) {
     var test = this;
-    var pendingResourceCount = 2;
+    var pendingRequestCount = 2;
 
-    function finishResource(resource, finishTime) {
+    function finishRequest(request, finishTime) {
       test.assertTrue(
-          typeof resource.timing.pushStart === 'number' && resource.timing.pushStart > 0,
-          `pushStart is invalid: ${resource.timing.pushStart}`);
-      test.assertTrue(typeof resource.timing.pushEnd === 'number', `pushEnd is invalid: ${resource.timing.pushEnd}`);
-      test.assertTrue(resource.timing.pushStart < resource.startTime, 'pushStart should be before startTime');
-      if (resource.url.endsWith('?pushUseNullEndTime')) {
-        test.assertTrue(resource.timing.pushEnd === 0, `pushEnd should be 0 but is ${resource.timing.pushEnd}`);
+          typeof request.timing.pushStart === 'number' && request.timing.pushStart > 0,
+          `pushStart is invalid: ${request.timing.pushStart}`);
+      test.assertTrue(typeof request.timing.pushEnd === 'number', `pushEnd is invalid: ${request.timing.pushEnd}`);
+      test.assertTrue(request.timing.pushStart < request.startTime, 'pushStart should be before startTime');
+      if (request.url().endsWith('?pushUseNullEndTime')) {
+        test.assertTrue(request.timing.pushEnd === 0, `pushEnd should be 0 but is ${request.timing.pushEnd}`);
       } else {
         test.assertTrue(
-            resource.timing.pushStart < resource.timing.pushEnd,
-            `pushStart should be before pushEnd (${resource.timing.pushStart} >= ${resource.timing.pushEnd})`);
+            request.timing.pushStart < request.timing.pushEnd,
+            `pushStart should be before pushEnd (${request.timing.pushStart} >= ${request.timing.pushEnd})`);
         // The below assertion is just due to the way we generate times in the moch URLRequestJob and is not generally an invariant.
-        test.assertTrue(resource.timing.pushEnd < resource.endTime, 'pushEnd should be before endTime');
-        test.assertTrue(resource.startTime < resource.timing.pushEnd, 'pushEnd should be after startTime');
+        test.assertTrue(request.timing.pushEnd < request.endTime, 'pushEnd should be before endTime');
+        test.assertTrue(request.startTime < request.timing.pushEnd, 'pushEnd should be after startTime');
       }
-      if (!--pendingResourceCount)
+      if (!--pendingRequestCount)
         test.releaseControl();
     }
 
-    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishResource, true);
+    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishRequest, true);
 
     test.evaluateInConsole_('addImage(\'' + url + '\')', function(resultText) {});
     test.evaluateInConsole_('addImage(\'' + url + '?pushUseNullEndTime\')', function(resultText) {});

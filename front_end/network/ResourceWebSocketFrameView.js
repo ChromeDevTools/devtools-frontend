@@ -107,7 +107,7 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
    */
   _frameAdded(event) {
     var frame = /** @type {!SDK.NetworkRequest.WebSocketFrame} */ (event.data);
-    this._dataGrid.insertChild(new Network.ResourceWebSocketFrameNode(this._request.url, frame));
+    this._dataGrid.insertChild(new Network.ResourceWebSocketFrameNode(this._request.url(), frame));
   }
 
   /**
@@ -154,7 +154,7 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     this._dataGrid.rootNode().removeChildren();
     var frames = this._request.frames();
     for (var i = 0; i < frames.length; ++i)
-      this._dataGrid.insertChild(new Network.ResourceWebSocketFrameNode(this._request.url, frames[i]));
+      this._dataGrid.insertChild(new Network.ResourceWebSocketFrameNode(this._request.url(), frames[i]));
   }
 
   _sortItems() {

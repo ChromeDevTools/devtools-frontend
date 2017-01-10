@@ -176,7 +176,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @param {!SDK.NetworkRequest} request
    */
   _processRequest(request) {
-    var origin = Common.ParsedURL.extractOrigin(request.url);
+    var origin = Common.ParsedURL.extractOrigin(request.url());
 
     if (!origin) {
       // We don't handle resources like data: URIs. Most of them don't affect the lock icon.
@@ -348,7 +348,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     this._mainView.refreshExplanations();
 
     if (request) {
-      var origin = Common.ParsedURL.extractOrigin(request.url);
+      var origin = Common.ParsedURL.extractOrigin(request.url());
       this._sidebarTree.setMainOrigin(origin);
       this._processRequest(request);
     }

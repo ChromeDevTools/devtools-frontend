@@ -40,7 +40,9 @@ SDK.NetworkLog = class extends SDK.SDKModel {
   constructor(target, resourceTreeModel, networkManager) {
     super(SDK.NetworkLog, target);
 
+    /** @type {!Array<!SDK.NetworkRequest>} */
     this._requests = [];
+    /** @type {!Object<string, !SDK.NetworkRequest>} */
     this._requestForId = {};
     networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
     resourceTreeModel.addEventListener(
@@ -97,7 +99,7 @@ SDK.NetworkLog = class extends SDK.SDKModel {
    */
   requestForURL(url) {
     for (var i = 0; i < this._requests.length; ++i) {
-      if (this._requests[i].url === url)
+      if (this._requests[i].url() === url)
         return this._requests[i];
     }
     return null;
@@ -177,7 +179,7 @@ SDK.PageLoad = class {
    */
   constructor(mainRequest) {
     this.id = ++SDK.PageLoad._lastIdentifier;
-    this.url = mainRequest.url;
+    this.url = mainRequest.url();
     this.startTime = mainRequest.startTime;
   }
 };

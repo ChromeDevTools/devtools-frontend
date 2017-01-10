@@ -590,7 +590,7 @@ Network.NetworkLogView = class extends UI.VBox {
         selectedRequestsNumber++;
         selectedTransferSize += requestTransferSize;
       }
-      if (request.url === request.target().inspectedURL() && request.resourceType() === Common.resourceTypes.Document)
+      if (request.url() === request.target().inspectedURL() && request.resourceType() === Common.resourceTypes.Document)
         baseTime = request.startTime;
       if (request.endTime > maxTime)
         maxTime = request.endTime;
@@ -1600,7 +1600,15 @@ Network.NetworkLogView = class extends UI.VBox {
           encapsChars;
     }
 
+    /**
+     * @param {string} str
+     * @return {string}
+     */
     function escapeStringPosix(str) {
+      /**
+       * @param {string} x
+       * @return {string}
+       */
       function escapeCharacter(x) {
         var code = x.charCodeAt(0);
         if (code < 256) {
@@ -1630,7 +1638,7 @@ Network.NetworkLogView = class extends UI.VBox {
     // (it may be different from the inspected page platform).
     var escapeString = platform === 'win' ? escapeStringWin : escapeStringPosix;
 
-    command.push(escapeString(request.url).replace(/[[{}\]]/g, '\\$&'));
+    command.push(escapeString(request.url()).replace(/[[{}\]]/g, '\\$&'));
 
     var inferredMethod = 'GET';
     var data = [];

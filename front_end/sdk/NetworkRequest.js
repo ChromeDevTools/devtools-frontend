@@ -47,7 +47,7 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
     this._networkLog = /** @type {!SDK.NetworkLog} */ (SDK.NetworkLog.fromTarget(target));
     this._networkManager = /** @type {!SDK.NetworkManager} */ (SDK.NetworkManager.fromTarget(target));
     this._requestId = requestId;
-    this.url = url;
+    this.setUrl(url);
     this._documentURL = documentURL;
     this._frameId = frameId;
     this._loaderId = loaderId;
@@ -126,14 +126,14 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
   /**
    * @return {string}
    */
-  get url() {
+  url() {
     return this._url;
   }
 
   /**
    * @param {string} x
    */
-  set url(x) {
+  setUrl(x) {
     if (this._url === x)
       return;
 
@@ -779,7 +779,7 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
       return this._queryString;
 
     var queryString = null;
-    var url = this.url;
+    var url = this.url();
     var questionMarkPosition = url.indexOf('?');
     if (questionMarkPosition !== -1) {
       queryString = url.substring(questionMarkPosition + 1);
@@ -939,7 +939,7 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
    * @return {boolean}
    */
   isHttpFamily() {
-    return !!this.url.match(/^https?:/i);
+    return !!this.url().match(/^https?:/i);
   }
 
   /**
@@ -1062,7 +1062,7 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
 
     if (this.redirectSource) {
       type = SDK.NetworkRequest.InitiatorType.Redirect;
-      url = this.redirectSource.url;
+      url = this.redirectSource.url();
     } else if (initiator) {
       if (initiator.type === Protocol.Network.InitiatorType.Parser) {
         type = SDK.NetworkRequest.InitiatorType.Parser;

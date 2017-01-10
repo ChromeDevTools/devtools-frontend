@@ -206,8 +206,8 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.Response=} response
    */
   _updateNetworkRequestWithResponse(networkRequest, response) {
-    if (response.url && networkRequest.url !== response.url)
-      networkRequest.url = response.url;
+    if (response.url && networkRequest.url() !== response.url)
+      networkRequest.setUrl(response.url);
     networkRequest.mimeType = response.mimeType;
     networkRequest.statusCode = response.status;
     networkRequest.statusText = response.statusText;
@@ -243,7 +243,7 @@ SDK.NetworkDispatcher = class {
           consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network, SDK.ConsoleMessage.MessageLevel.Log,
           Common.UIString(
               'Resource interpreted as %s but transferred with MIME type %s: "%s".',
-              networkRequest.resourceType().title(), networkRequest.mimeType, networkRequest.url),
+              networkRequest.resourceType().title(), networkRequest.mimeType, networkRequest.url()),
           SDK.ConsoleMessage.MessageType.Log, '', 0, 0, networkRequest.requestId()));
     }
 
@@ -613,7 +613,7 @@ SDK.NetworkDispatcher = class {
    */
   _startNetworkRequest(networkRequest) {
     this._inflightRequestsById[networkRequest.requestId()] = networkRequest;
-    this._inflightRequestsByURL[networkRequest.url] = networkRequest;
+    this._inflightRequestsByURL[networkRequest.url()] = networkRequest;
     this._dispatchEventToListeners(SDK.NetworkManager.Events.RequestStarted, networkRequest);
   }
 
@@ -636,7 +636,7 @@ SDK.NetworkDispatcher = class {
       networkRequest.setTransferSize(encodedDataLength);
     this._dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, networkRequest);
     delete this._inflightRequestsById[networkRequest.requestId()];
-    delete this._inflightRequestsByURL[networkRequest.url];
+    delete this._inflightRequestsByURL[networkRequest.url()];
   }
 
   /**

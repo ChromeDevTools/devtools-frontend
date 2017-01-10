@@ -232,7 +232,7 @@ Console.ConsoleViewMessage = class {
             consoleMessage.level === SDK.ConsoleMessage.MessageLevel.RevokedError) {
           messageElement.createTextChild(consoleMessage.request.requestMethod + ' ');
           messageElement.appendChild(Components.Linkifier.linkifyRevealable(
-              consoleMessage.request, consoleMessage.request.url, consoleMessage.request.url));
+              consoleMessage.request, consoleMessage.request.url(), consoleMessage.request.url()));
           if (consoleMessage.request.failed) {
             messageElement.createTextChildren(' ', consoleMessage.request.localizedFailDescription);
           } else {
@@ -272,7 +272,7 @@ Console.ConsoleViewMessage = class {
      */
     function linkifyRequest(title) {
       return Components.Linkifier.linkifyRevealable(
-          /** @type {!SDK.NetworkRequest} */ (this.request), title, this.request.url);
+          /** @type {!SDK.NetworkRequest} */ (this.request), title, this.request.url());
     }
   }
 

@@ -667,13 +667,13 @@ SDK.ResourceTreeFrame = class {
    * @param {!SDK.NetworkRequest} request
    */
   _addRequest(request) {
-    var resource = this._resourcesMap[request.url];
+    var resource = this._resourcesMap[request.url()];
     if (resource && resource.request === request) {
       // Already in the tree, we just got an extra update.
       return;
     }
     resource = new SDK.Resource(
-        this.target(), request, request.url, request.documentURL, request.frameId, request.loaderId,
+        this.target(), request, request.url(), request.documentURL, request.frameId, request.loaderId,
         request.resourceType(), request.mimeType, null, null);
     this._resourcesMap[resource.url] = resource;
     this._model.dispatchEventToListeners(SDK.ResourceTreeModel.Events.ResourceAdded, resource);

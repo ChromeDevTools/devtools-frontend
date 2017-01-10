@@ -257,8 +257,8 @@ Network.BlockedURLsPane = class extends UI.VBox {
   _onRequestFinished(event) {
     var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     if (request.wasBlocked()) {
-      var count = this._blockedCountForUrl.get(request.url) || 0;
-      this._blockedCountForUrl.set(request.url, count + 1);
+      var count = this._blockedCountForUrl.get(request.url()) || 0;
+      this._blockedCountForUrl.set(request.url(), count + 1);
       this._updateThrottler.schedule(this._update.bind(this));
     }
   }

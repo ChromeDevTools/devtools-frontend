@@ -129,30 +129,10 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    */
   _addFrame(frame, aboutToNavigate) {
     this._frames.set(frame.id, frame);
-    if (frame.isMainFrame()) {
+    if (frame.isMainFrame())
       this.mainFrame = frame;
-      this._securityOriginManager.setMainSecurityOrigin(frame.url);
-    }
     this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameAdded, frame);
-    if (!aboutToNavigate)
-      this._securityOriginManager.addSecurityOrigin(frame.securityOrigin);
-  }
-
-  /**
-   * @param {!SDK.ResourceTreeFrame} mainFrame
-   */
-  _handleMainFrameDetached(mainFrame) {
-    /**
-     * @param {!SDK.ResourceTreeFrame} frame
-     * @this {SDK.ResourceTreeModel}
-     */
-    function removeOriginForFrame(frame) {
-      for (var i = 0; i < frame.childFrames.length; ++i)
-        removeOriginForFrame.call(this, frame.childFrames[i]);
-      if (!frame.isMainFrame())
-        this._securityOriginManager.removeSecurityOrigin(frame.securityOrigin);
-    }
-    removeOriginForFrame.call(this, mainFrame);
+    this._updateSecurityOrigins();
   }
 
   /**
@@ -170,7 +150,6 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     var parentFrame = parentFrameId ? (this._frames.get(parentFrameId) || null) : null;
     var frame = new SDK.ResourceTreeFrame(this, parentFrame, frameId);
     if (frame.isMainFrame() && this.mainFrame) {
-      this._handleMainFrameDetached(this.mainFrame);
       // Navigation to the new backend process.
       this._frameDetached(this.mainFrame.id);
     }
@@ -194,19 +173,14 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     }
 
     this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameWillNavigate, frame);
-
-    this._securityOriginManager.removeSecurityOrigin(frame.securityOrigin);
     frame._navigate(framePayload);
-    var addedOrigin = frame.securityOrigin;
-
     this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameNavigated, frame);
+
     if (frame.isMainFrame()) {
       this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.MainFrameNavigated, frame);
       if (Common.moduleSetting('preserveConsoleLog').get())
         Common.console.log(Common.UIString('Navigated to %s', frame.url));
     }
-    if (addedOrigin)
-      this._securityOriginManager.addSecurityOrigin(addedOrigin);
 
     // Fill frame with retained resources (the ones loaded using new loader).
     var resources = frame.resources();
@@ -215,6 +189,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
 
     if (frame.isMainFrame())
       this.target().setInspectedURL(frame.url);
+    this._updateSecurityOrigins();
   }
 
   /**
@@ -229,11 +204,11 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     if (!frame)
       return;
 
-    this._securityOriginManager.removeSecurityOrigin(frame.securityOrigin);
     if (frame.parentFrame)
       frame.parentFrame._removeChildFrame(frame);
     else
       frame._remove();
+    this._updateSecurityOrigins();
   }
 
   /**
@@ -450,6 +425,21 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
       return frameA.id.localeCompare(frameB.id);
 
     return SDK.ExecutionContext.comparator(a, b);
+  }
+
+  _updateSecurityOrigins() {
+    var securityOrigins = new Set();
+    var mainSecurityOrigin = null;
+    for (var frame of this._frames.values()) {
+      var origin = frame.securityOrigin;
+      if (!origin)
+        continue;
+      securityOrigins.add(origin);
+      if (frame.isMainFrame())
+        mainSecurityOrigin = origin;
+    }
+    this._securityOriginManager.updateSecurityOrigins(securityOrigins);
+    this._securityOriginManager.setMainSecurityOrigin(mainSecurityOrigin || '');
   }
 };
 

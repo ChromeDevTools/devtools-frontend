@@ -11,7 +11,8 @@ SDK.SecurityOriginManager = class extends SDK.SDKModel {
   constructor(target) {
     super(SDK.SecurityOriginManager, target);
 
-    this._securityOriginCounter = new Map();
+    /** @type {!Set<string>} */
+    this._securityOrigins = new Set();
     this._mainSecurityOrigin = '';
   }
 
@@ -27,36 +28,28 @@ SDK.SecurityOriginManager = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {string} securityOrigin
+   * @param {!Set<string>} securityOrigins
    */
-  addSecurityOrigin(securityOrigin) {
-    var currentCount = this._securityOriginCounter.get(securityOrigin);
-    if (!currentCount) {
-      this._securityOriginCounter.set(securityOrigin, 1);
-      this.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginAdded, securityOrigin);
-      return;
-    }
-    this._securityOriginCounter.set(securityOrigin, currentCount + 1);
-  }
+  updateSecurityOrigins(securityOrigins) {
+    var oldOrigins = this._securityOrigins;
+    this._securityOrigins = securityOrigins;
 
-  /**
-   * @param {string} securityOrigin
-   */
-  removeSecurityOrigin(securityOrigin) {
-    var currentCount = this._securityOriginCounter.get(securityOrigin);
-    if (currentCount === 1) {
-      this._securityOriginCounter.delete(securityOrigin);
-      this.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginRemoved, securityOrigin);
-      return;
+    for (var origin of oldOrigins) {
+      if (!this._securityOrigins.has(origin))
+        this.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginRemoved, origin);
     }
-    this._securityOriginCounter.set(securityOrigin, currentCount - 1);
+
+    for (var origin of this._securityOrigins) {
+      if (!oldOrigins.has(origin))
+        this.dispatchEventToListeners(SDK.SecurityOriginManager.Events.SecurityOriginAdded, origin);
+    }
   }
 
   /**
    * @return {!Array<string>}
    */
   securityOrigins() {
-    return this._securityOriginCounter.keysArray();
+    return this._securityOrigins.valuesArray();
   }
 
   /**

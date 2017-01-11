@@ -127,8 +127,10 @@ Screencast.ScreencastView = class extends UI.VBox {
     }
     dimensions.width *= window.devicePixelRatio;
     dimensions.height *= window.devicePixelRatio;
+    // Note: startScreencast with and height expect to be integers so must be floored.
     this._target.pageAgent().startScreencast(
-        'jpeg', 80, Math.min(maxImageDimension, dimensions.width), Math.min(maxImageDimension, dimensions.height));
+        'jpeg', 80, Math.floor(Math.min(maxImageDimension, dimensions.width)),
+        Math.floor(Math.min(maxImageDimension, dimensions.height)));
     this._target.emulationAgent().setTouchEmulationEnabled(true);
     this._domModel.setHighlighter(this);
   }

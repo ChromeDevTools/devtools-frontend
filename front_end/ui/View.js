@@ -442,6 +442,13 @@ UI.ViewManager._ContainerWidget = class extends UI.VBox {
     this._materializePromise = Promise.all(promises);
     return this._materializePromise;
   }
+
+  /**
+   * @override
+   */
+  wasShown() {
+    this._materialize();
+  }
 };
 
 /**
@@ -709,7 +716,8 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
     this.appendView(view, insertBefore);
     this._tabbedPane.selectTab(view.viewId());
     this._tabbedPane.focus();
-    return this._materializeWidget(view);
+    var widget = /** @type {!UI.ViewManager._ContainerWidget} */ (this._tabbedPane.tabView(view.viewId()));
+    return widget._materialize();
   }
 
   /**
@@ -737,8 +745,6 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
     if (!view)
       return;
 
-    this._materializeWidget(view);
-
     if (view.isCloseable()) {
       var tabs = this._closeableTabSetting.get();
       if (!tabs[tabId]) {
@@ -758,15 +764,6 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
       delete tabs[id];
       this._closeableTabSetting.set(tabs);
     }
-  }
-
-  /**
-   * @param {!UI.View} view
-   * @return {!Promise}
-   */
-  _materializeWidget(view) {
-    var widget = /** @type {!UI.ViewManager._ContainerWidget} */ (this._tabbedPane.tabView(view.viewId()));
-    return widget._materialize();
   }
 
   /**

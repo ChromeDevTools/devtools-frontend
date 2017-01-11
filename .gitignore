@@ -15,4 +15,5 @@ npm-debug.log
 /devtools-node-modules
 /release
 /scripts/local_node/runtimes
+/scripts/visualize_deps/out
 /front_end/protocol_externs.js

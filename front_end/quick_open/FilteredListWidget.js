@@ -68,6 +68,47 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     return new RegExp(regexString, 'i');
   }
 
+  /**
+   * @param {!Element} element
+   * @param {string} query
+   * @param {boolean=} caseInsensitive
+   * @return {boolean}
+   */
+  static highlightRanges(element, query, caseInsensitive) {
+    if (!query)
+      return false;
+
+    /**
+     * @param {string} text
+     * @param {string} query
+     * @return {?Array.<!Common.SourceRange>}
+     */
+    function rangesForMatch(text, query) {
+      var opcodes = Diff.Diff.charDiff(query, text);
+      var offset = 0;
+      var ranges = [];
+      for (var i = 0; i < opcodes.length; ++i) {
+        var opcode = opcodes[i];
+        if (opcode[0] === Diff.Diff.Operation.Equal)
+          ranges.push(new Common.SourceRange(offset, opcode[1].length));
+        else if (opcode[0] !== Diff.Diff.Operation.Insert)
+          return null;
+        offset += opcode[1].length;
+      }
+      return ranges;
+    }
+
+    var text = element.textContent;
+    var ranges = rangesForMatch(text, query);
+    if (!ranges || caseInsensitive)
+      ranges = rangesForMatch(text.toUpperCase(), query.toUpperCase());
+    if (ranges) {
+      UI.highlightRangesWithStyleClass(element, ranges, 'highlight');
+      return true;
+    }
+    return false;
+  }
+
   showAsDialog() {
     this._dialog = new UI.Dialog();
     this._dialog.setMaxSize(new Size(504, 340));
@@ -411,53 +452,6 @@ QuickOpen.FilteredListWidget.Delegate = class {
    * @param {!Element} subtitleElement
    */
   renderItem(itemIndex, query, titleElement, subtitleElement) {
-  }
-
-  /**
-   * @param {!Element} element
-   * @param {string} query
-   * @return {boolean}
-   */
-  highlightRanges(element, query) {
-    if (!query)
-      return false;
-
-    /**
-     * @param {string} text
-     * @param {string} query
-     * @return {?Array.<!Common.SourceRange>}
-     */
-    function rangesForMatch(text, query) {
-      var opcodes = Diff.Diff.charDiff(query, text);
-      var offset = 0;
-      var ranges = [];
-      for (var i = 0; i < opcodes.length; ++i) {
-        var opcode = opcodes[i];
-        if (opcode[0] === Diff.Diff.Operation.Equal)
-          ranges.push(new Common.SourceRange(offset, opcode[1].length));
-        else if (opcode[0] !== Diff.Diff.Operation.Insert)
-          return null;
-        offset += opcode[1].length;
-      }
-      return ranges;
-    }
-
-    var text = element.textContent;
-    var ranges = rangesForMatch(text, query);
-    if (!ranges || !this.caseSensitive())
-      ranges = rangesForMatch(text.toUpperCase(), query.toUpperCase());
-    if (ranges) {
-      UI.highlightRangesWithStyleClass(element, ranges, 'highlight');
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  caseSensitive() {
-    return true;
   }
 
   /**

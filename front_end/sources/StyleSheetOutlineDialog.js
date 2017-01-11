@@ -94,7 +94,7 @@ Sources.StyleSheetOutlineDialog = class extends QuickOpen.FilteredListWidget.Del
   renderItem(itemIndex, query, titleElement, subtitleElement) {
     var rule = this._rules[itemIndex];
     titleElement.textContent = rule.selectorText || rule.atRule;
-    this.highlightRanges(titleElement, query);
+    QuickOpen.FilteredListWidget.highlightRanges(titleElement, query);
     subtitleElement.textContent = ':' + (rule.lineNumber + 1);
   }
 

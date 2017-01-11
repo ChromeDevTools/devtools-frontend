@@ -81,7 +81,7 @@ Sources.JavaScriptOutlineDialog = class extends QuickOpen.FilteredListWidget.Del
   renderItem(itemIndex, query, titleElement, subtitleElement) {
     var item = this._functionItems[itemIndex];
     titleElement.textContent = item.name + (item.arguments ? item.arguments : '');
-    this.highlightRanges(titleElement, query);
+    QuickOpen.FilteredListWidget.highlightRanges(titleElement, query);
     subtitleElement.textContent = ':' + (item.line + 1);
   }
 

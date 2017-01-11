@@ -38,19 +38,13 @@ import tempfile
 from build import modular_build
 from build import generate_protocol_externs
 
+import dependency_preprocessor
 import utils
 
 try:
     import simplejson as json
 except ImportError:
     import json
-
-
-if len(sys.argv) == 2 and sys.argv[1] == '--help':
-    print("Usage: %s [module_names]" % path.basename(sys.argv[0]))
-    print("  module_names    list of modules for which the Closure compilation should run.")
-    print("                  If absent, the entire frontend will be compiled.")
-    sys.exit(0)
 
 is_cygwin = sys.platform == 'cygwin'
 
@@ -79,9 +73,7 @@ v8_inspector_path = path.normpath(path.join(path.dirname(devtools_path), os.pard
 devtools_frontend_path = path.join(devtools_path, 'front_end')
 global_externs_file = to_platform_path(path.join(devtools_frontend_path, 'externs.js'))
 protocol_externs_file = path.join(devtools_frontend_path, 'protocol_externs.js')
-
-jsmodule_name_prefix = 'jsmodule_'
-runtime_module_name = '_runtime'
+runtime_file = to_platform_path(path.join(devtools_frontend_path, 'Runtime.js'))
 
 type_checked_jsdoc_tags_list = ['param', 'return', 'type', 'enum']
 type_checked_jsdoc_tags_or = '|'.join(type_checked_jsdoc_tags_list)
@@ -226,7 +218,6 @@ closure_compiler_jar = to_platform_path(path.join(scripts_path, 'closure', 'comp
 closure_runner_jar = to_platform_path(path.join(scripts_path, 'closure', 'closure_runner', 'closure_runner.jar'))
 jsdoc_validator_jar = to_platform_path(path.join(scripts_path, 'jsdoc_validator', 'jsdoc_validator.jar'))
 
-modules_dir = tempfile.mkdtemp()
 common_closure_args = [
     '--summary_detail_level', '3',
     '--jscomp_error', 'visibility',
@@ -238,7 +229,6 @@ common_closure_args = [
     '--extra_annotation_name', 'suppressReceiverCheck',
     '--extra_annotation_name', 'suppressGlobalPropertiesCheck',
     '--checks-only',
-    '--module_output_path_prefix', to_platform_path_exact(modules_dir + path.sep)
 ]
 
 worker_modules_by_name = {}
@@ -301,79 +291,53 @@ def check_duplicate_files():
 print 'Checking duplicate files across modules...'
 check_duplicate_files()
 
-
-def module_arg(module_name):
-    return ' --module ' + jsmodule_name_prefix + module_name
-
-
-def modules_to_check():
-    if len(sys.argv) == 1:
-        return descriptors.sorted_modules()
-    print 'Compiling only these modules: %s' % sys.argv[1:]
-    return [module for module in descriptors.sorted_modules() if module in set(sys.argv[1:])]
-
-
-def dump_module(name, recursively, processed_modules):
-    if name in processed_modules:
-        return ''
-    processed_modules[name] = True
-    module = modules_by_name[name]
-
-    command = ''
-    dependencies = module.get('dependencies', [])
-    if recursively:
-        for dependency in dependencies:
-            command += dump_module(dependency, recursively, processed_modules)
-    command += module_arg(name) + ':'
-    filtered_scripts = descriptors.module_compiled_files(name)
-    filtered_scripts = [path.join(devtools_frontend_path, name, script) for script in filtered_scripts]
-    if name == 'protocol':
-        filtered_scripts.append(protocol_externs_file)
-    command += str(len(filtered_scripts))
-    first_dependency = True
-    for dependency in dependencies + [runtime_module_name]:
-        if first_dependency:
-            command += ':'
-        else:
-            command += ','
-        first_dependency = False
-        command += jsmodule_name_prefix + dependency
-    for script in filtered_scripts:
-        command += ' --js ' + to_platform_path(script)
-    return command
-
 print 'Compiling frontend...'
 
-compiler_args_file = tempfile.NamedTemporaryFile(mode='wt', delete=False)
-try:
-    runtime_js_path = to_platform_path(path.join(devtools_frontend_path, 'Runtime.js'))
-    checked_modules = modules_to_check()
-    for name in checked_modules:
-        closure_args = ' '.join(common_closure_args)
-        closure_args += ' --externs ' + to_platform_path(global_externs_file)
-        runtime_module = module_arg(runtime_module_name) + ':1 --js ' + runtime_js_path
-        closure_args += runtime_module + dump_module(name, True, {})
-        compiler_args_file.write('%s %s%s' % (name, closure_args, os.linesep))
-finally:
-    compiler_args_file.close()
+temp_devtools_path = tempfile.mkdtemp()
 
-modular_compiler_proc = popen(java_exec + ['-jar', closure_runner_jar, '--compiler-args-file', to_platform_path_exact(compiler_args_file.name)])
 
-spawned_compiler_command = java_exec + [
+def prepare_closure_frontend_compile():
+    temp_frontend_path = path.join(temp_devtools_path, 'front_end')
+    checker = dependency_preprocessor.DependencyPreprocessor(descriptors, temp_frontend_path, devtools_frontend_path)
+    checker.enforce_dependencies()
+
+    command = common_closure_args + [
+        '--externs', to_platform_path(global_externs_file),
+        '--js', runtime_file,
+    ]
+
+    all_files = descriptors.all_compiled_files()
+    args = []
+    for file in all_files:
+        args.extend(['--js', file])
+        if "InspectorBackend.js" in file:
+            args.extend(['--js', protocol_externs_file])
+    command += args
+    command = [arg.replace(devtools_frontend_path, temp_frontend_path) for arg in command]
+    compiler_args_file = tempfile.NamedTemporaryFile(mode='wt', delete=False)
+    try:
+        compiler_args_file.write('devtools_frontend %s' % (' '.join(command)))
+    finally:
+        compiler_args_file.close()
+    return compiler_args_file.name
+
+compiler_args_file_path = prepare_closure_frontend_compile()
+frontend_compile_proc = popen(java_exec + ['-jar', closure_runner_jar, '--compiler-args-file', to_platform_path_exact(compiler_args_file_path)])
+
+print 'Compiling devtools_compatibility.js...'
+
+closure_compiler_command = java_exec + [
     '-jar',
     closure_compiler_jar
 ] + common_closure_args
 
-print 'Compiling devtools_compatibility.js...'
-
-command = spawned_compiler_command + [
+devtools_js_compile_command = closure_compiler_command + [
     '--externs', to_platform_path(global_externs_file),
     '--externs', to_platform_path(path.join(devtools_frontend_path, 'host', 'InspectorFrontendHostAPI.js')),
     '--jscomp_off=externsValidation',
-    '--module', jsmodule_name_prefix + 'devtools__compatibility_js' + ':1',
     '--js', to_platform_path(path.join(devtools_frontend_path, 'devtools_compatibility.js'))
 ]
-devtools_js_compile_proc = popen(command)
+devtools_js_compile_proc = popen(devtools_js_compile_command)
 
 print 'Verifying JSDoc comments...'
 errors_found |= verify_jsdoc()
@@ -388,71 +352,23 @@ if jsdoc_validator_out:
 
 os.remove(jsdoc_validator_file_list.name)
 
-(module_compile_out, _) = modular_compiler_proc.communicate()
-print 'Modular compilation output:'
-
-start_module_regex = re.compile(r'^@@ START_MODULE:(.+) @@$')
-end_module_regex = re.compile(r'^@@ END_MODULE @@$')
-
-in_module = False
-skipped_modules = {}
-error_count = 0
-
-def skip_dependents(module_name):
-    for skipped_module in dependents_by_module_name.get(module_name, []):
-        skipped_modules[skipped_module] = True
-
-has_module_output = False
-
-# pylint: disable=E1103
-for line in module_compile_out.splitlines():
-    if not in_module:
-        match = re.search(start_module_regex, line)
-        if not match:
-            continue
-        in_module = True
-        has_module_output = True
-        module_error_count = 0
-        module_output = []
-        module_name = match.group(1)
-        skip_module = skipped_modules.get(module_name)
-        if skip_module:
-            skip_dependents(module_name)
-    else:
-        match = re.search(end_module_regex, line)
-        if not match:
-            if not skip_module:
-                module_output.append(line)
-                if has_errors(line):
-                    error_count += 1
-                    module_error_count += 1
-                    skip_dependents(module_name)
-            continue
-
-        in_module = False
-        if skip_module:
-            print 'Skipping module %s...' % module_name
-        elif not module_error_count:
-            print 'Module %s compiled successfully: %s' % (module_name, module_output[0])
-        else:
-            print 'Module %s compile failed: %s errors%s' % (module_name, module_error_count, os.linesep)
-            print os.linesep.join(module_output)
-
-if not has_module_output:
-    print module_compile_out
-
-if error_count:
-    print 'Total Closure errors: %d%s' % (error_count, os.linesep)
-    errors_found = True
-
 (devtools_js_compile_out, _) = devtools_js_compile_proc.communicate()
 print 'devtools_compatibility.js compilation output:%s' % os.linesep, devtools_js_compile_out
 errors_found |= has_errors(devtools_js_compile_out)
 
-os.remove(compiler_args_file.name)
+(frontend_compile_out, _) = frontend_compile_proc.communicate()
+print 'devtools frontend compilation output:'
+for line in frontend_compile_out.splitlines():
+    if "@@ START_MODULE" in line or "@@ END_MODULE" in line:
+        continue
+    print line
+errors_found |= has_errors(frontend_compile_out)
+
 os.remove(protocol_externs_file)
-shutil.rmtree(modules_dir, True)
+os.remove(compiler_args_file_path)
+shutil.rmtree(temp_devtools_path, True)
 
 if errors_found:
     print 'ERRORS DETECTED'
     sys.exit(1)
+print 'DONE - compiled without errors'

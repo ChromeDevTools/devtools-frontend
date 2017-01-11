@@ -32,4 +32,4 @@ The easiest way to run the node.js scripts is to use `npm run` which displays al
 
 ## Closure
 
-DevTools manually rolls the closure compiler to ./closure. If you manually roll closure compiler, you will need to re-generate the closure_runner (in ./closure) and jsdoc_validator custom jars using the python scripts in their respective directory. Make sure you use JDK 7 to compile these jars, otherwise they won't run on buildbot. If you compile with JDK 7, anyone with Java 7 or Java 8 should be able to run the jar.
+DevTools manually rolls the closure compiler to ./closure. If you manually roll closure compiler, you will need to re-generate the closure_runner (in ./closure) and jsdoc_validator custom jars using the python scripts in their respective directory.

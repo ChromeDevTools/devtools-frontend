@@ -8,6 +8,7 @@
 Utilities for the modular DevTools build.
 """
 
+import collections
 from os import path
 import os
 
@@ -69,8 +70,8 @@ class Descriptors:
         return json.dumps(result)
 
     def all_compiled_files(self):
-        files = {}
-        for name in self.modules:
+        files = collections.OrderedDict()
+        for name in self.sorted_modules():
             module = self.modules[name]
             skipped_files = set(module.get('skip_compilation', []))
             for script in module.get('scripts', []):

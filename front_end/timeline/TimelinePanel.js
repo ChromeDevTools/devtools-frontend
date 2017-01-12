@@ -306,12 +306,15 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _recreateToolbarItems() {
     this._panelToolbar.removeToolbarItems();
 
+    // Close
+    if (!this._model.isEmpty()) {
+      const clearButton = new UI.ToolbarButton(Common.UIString('Close profile'), 'largeicon-delete');
+      clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear, this);
+      this._panelToolbar.appendToolbarItem(clearButton);
+      this._panelToolbar.appendSeparator();
+    }
+
     // Record
-    const newButton = new UI.ToolbarButton(Common.UIString('New recording'), 'largeicon-add', Common.UIString('New'));
-    newButton.setEnabled(!this._model.isEmpty());
-    newButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear, this);
-    this._panelToolbar.appendToolbarItem(newButton);
-    this._panelToolbar.appendSeparator();
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('main.reload'));
     this._panelToolbar.appendSeparator();

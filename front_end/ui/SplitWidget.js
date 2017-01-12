@@ -51,6 +51,7 @@ UI.SplitWidget = class extends UI.Widget {
         this.contentElement.createChild('div', 'shadow-split-widget-contents shadow-split-widget-sidebar vbox');
     this._sidebarElement.createChild('content').select = '.insertion-point-sidebar';
     this._resizerElement = this.contentElement.createChild('div', 'shadow-split-widget-resizer');
+    this._resizerElementSize = null;
 
     this._resizerWidget = new UI.SimpleResizerWidget();
     this._resizerWidget.setEnabled(true);
@@ -61,12 +62,38 @@ UI.SplitWidget = class extends UI.Widget {
     this._defaultSidebarWidth = defaultSidebarWidth || 200;
     this._defaultSidebarHeight = defaultSidebarHeight || this._defaultSidebarWidth;
     this._constraintsInDip = !!constraintsInDip;
+    this._resizeStartSizeDIP = 0;
     this._setting = settingName ? Common.settings.createSetting(settingName, {}) : null;
+
+    this._totalSizeCSS = 0;
+    this._totalSizeOtherDimensionCSS = 0;
+    /** @type {?UI.Widget} */
+    this._mainWidget = null;
+    /** @type {?UI.Widget} */
+    this._sidebarWidget = null;
+    this._animationFrameHandle = 0;
+    /** @type {?function()} */
+    this._animationCallback = null;
+    this._showHideSidebarButtonTitle = '';
+    /** @type {?UI.ToolbarButton} */
+    this._showHideSidebarButton = null;
+    this._isVertical = false;
+    this._sidebarMinimized = false;
+    this._detaching = false;
+    this._sidebarSizeDIP = -1;
+    this._savedSidebarSizeDIP = this._sidebarSizeDIP;
+    this._secondIsSidebar = false;
+    this._shouldSaveShowMode = false;
+    /** @type {?number} */
+    this._savedVerticalMainSize = null;
+    /** @type {?number} */
+    this._savedHorizontalMainSize = null;
 
     this.setSecondIsSidebar(secondIsSidebar);
 
     this._innerSetVertical(isVertical);
     this._showMode = UI.SplitWidget.ShowMode.Both;
+    this._savedShowMode = this._showMode;
 
     // Should be called after isVertical has the right value.
     this.installResizer(this._resizerElement);
@@ -100,7 +127,7 @@ UI.SplitWidget = class extends UI.Widget {
     this.contentElement.classList.toggle('hbox', isVertical);
     this._isVertical = isVertical;
 
-    delete this._resizerElementSize;
+    this._resizerElementSize = null;
     this._sidebarSizeDIP = -1;
     this._restoreSidebarSizeFromSettings();
     if (this._shouldSaveShowMode)
@@ -115,8 +142,8 @@ UI.SplitWidget = class extends UI.Widget {
    * @param {boolean=} animate
    */
   _updateLayout(animate) {
-    delete this._totalSizeCSS;  // Lazy update.
-    delete this._totalSizeOtherDimensionCSS;
+    this._totalSizeCSS = 0;  // Lazy update.
+    this._totalSizeOtherDimensionCSS = 0;
 
     // Remove properties that might affect total size calculation.
     this._mainElement.style.removeProperty('width');
@@ -187,9 +214,10 @@ UI.SplitWidget = class extends UI.Widget {
     if (this._detaching)
       return;
     if (this._mainWidget === widget)
-      delete this._mainWidget;
+      this._mainWidget = null;
     if (this._sidebarWidget === widget)
-      delete this._sidebarWidget;
+      this._sidebarWidget = null;
+    this.invalidateConstraints();
   }
 
   /**
@@ -267,8 +295,8 @@ UI.SplitWidget = class extends UI.Widget {
   }
 
   /**
-   * @param {!UI.Widget} sideToShow
-   * @param {!UI.Widget} sideToHide
+   * @param {?UI.Widget} sideToShow
+   * @param {?UI.Widget} sideToHide
    * @param {!Element} shadowToShow
    * @param {!Element} shadowToHide
    * @param {boolean=} animate
@@ -290,7 +318,7 @@ UI.SplitWidget = class extends UI.Widget {
       if (sideToHide) {
         this._detaching = true;
         sideToHide.detach();
-        delete this._detaching;
+        this._detaching = false;
       }
 
       this._resizerElement.classList.add('hidden');
@@ -493,7 +521,7 @@ UI.SplitWidget = class extends UI.Widget {
    */
   _animate(reverse, callback) {
     var animationTime = 50;
-    this._animationCallback = callback;
+    this._animationCallback = callback || null;
 
     var animatedMarginPropertyName;
     if (this._isVertical)
@@ -525,7 +553,7 @@ UI.SplitWidget = class extends UI.Widget {
      * @this {UI.SplitWidget}
      */
     function animationFrame() {
-      delete this._animationFrameHandle;
+      this._animationFrameHandle = 0;
 
       if (!startTime) {
         // Kick animation on first frame.
@@ -558,11 +586,11 @@ UI.SplitWidget = class extends UI.Widget {
 
     if (this._animationFrameHandle) {
       this.contentElement.window().cancelAnimationFrame(this._animationFrameHandle);
-      delete this._animationFrameHandle;
+      this._animationFrameHandle = 0;
     }
     if (this._animationCallback) {
       this._animationCallback();
-      delete this._animationCallback;
+      this._animationCallback = null;
     }
   }
 
@@ -603,7 +631,7 @@ UI.SplitWidget = class extends UI.Widget {
       preferredMainSize = UI.SplitWidget.MinPadding;
     preferredMainSize *= zoomFactor;
     var savedMainSize = this.isVertical() ? this._savedVerticalMainSize : this._savedHorizontalMainSize;
-    if (typeof savedMainSize !== 'undefined')
+    if (savedMainSize !== null)
       preferredMainSize = Math.min(preferredMainSize, savedMainSize * zoomFactor);
     if (userAction)
       preferredMainSize = minMainSize;
@@ -707,7 +735,7 @@ UI.SplitWidget = class extends UI.Widget {
    * @param {!Common.Event} event
    */
   _onResizeEnd(event) {
-    delete this._resizeStartSizeDIP;
+    this._resizeStartSizeDIP = 0;
   }
 
   hideDefaultResizer() {

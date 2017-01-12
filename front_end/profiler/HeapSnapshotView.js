@@ -212,7 +212,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
   }
 
   /**
-   * @param {!Profiler.HeapSnapshotCommon.Statistics} statistics
+   * @param {!HeapSnapshotModel.Statistics} statistics
    */
   _gotStatistics(statistics) {
     this._statisticsView.setTotal(statistics.total);
@@ -303,7 +303,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
    * @param {boolean=} jumpBackwards
    */
   performSearch(searchConfig, shouldJump, jumpBackwards) {
-    var nextQuery = new Profiler.HeapSnapshotCommon.SearchConfig(
+    var nextQuery = new HeapSnapshotModel.SearchConfig(
         searchConfig.query.trim(), searchConfig.caseSensitive, searchConfig.isRegex, shouldJump,
         jumpBackwards || false);
 
@@ -311,7 +311,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
   }
 
   /**
-   * @param {!Profiler.HeapSnapshotCommon.SearchConfig} nextQuery
+   * @param {!HeapSnapshotModel.SearchConfig} nextQuery
    * @return {!Promise<?>}
    */
   _performSearch(nextQuery) {
@@ -1416,13 +1416,13 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
    * @param {*} data
    */
   _handleWorkerEvent(eventName, data) {
-    if (Profiler.HeapSnapshotProgressEvent.BrokenSnapshot === eventName) {
+    if (HeapSnapshotModel.HeapSnapshotProgressEvent.BrokenSnapshot === eventName) {
       var error = /** @type {string} */ (data);
       Common.console.error(error);
       return;
     }
 
-    if (Profiler.HeapSnapshotProgressEvent.Update !== eventName)
+    if (HeapSnapshotModel.HeapSnapshotProgressEvent.Update !== eventName)
       return;
     var subtitle = /** @type {string} */ (data);
     this.updateStatus(subtitle);
@@ -1686,7 +1686,7 @@ Profiler.HeapTrackingOverviewGrid = class extends UI.VBox {
   }
 
   /**
-   * @param {?Profiler.HeapSnapshotCommon.Samples} samples
+   * @param {?HeapSnapshotModel.Samples} samples
    */
   _setSamples(samples) {
     if (!samples)
@@ -2081,7 +2081,7 @@ Profiler.HeapAllocationStackView = class extends UI.Widget {
   }
 
   /**
-   * @param {?Array.<!Profiler.HeapSnapshotCommon.AllocationStackFrame>} frames
+   * @param {?Array.<!HeapSnapshotModel.AllocationStackFrame>} frames
    */
   _didReceiveAllocationStack(frames) {
     if (!frames) {

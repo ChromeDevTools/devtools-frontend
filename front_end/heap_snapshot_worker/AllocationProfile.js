@@ -106,7 +106,7 @@ HeapSnapshotWorker.AllocationProfile = class {
   }
 
   /**
-   * @return {!Array.<!Profiler.HeapSnapshotCommon.SerializedAllocationNode>}
+   * @return {!Array.<!HeapSnapshotModel.SerializedAllocationNode>}
    */
   serializeTraceTops() {
     if (this._traceTops)
@@ -131,7 +131,7 @@ HeapSnapshotWorker.AllocationProfile = class {
 
   /**
    * @param {number} nodeId
-   * @return {!Profiler.HeapSnapshotCommon.AllocationNodeCallers}
+   * @return {!HeapSnapshotModel.AllocationNodeCallers}
    */
   serializeCallers(nodeId) {
     var node = this._ensureBottomUpNode(nodeId);
@@ -146,19 +146,19 @@ HeapSnapshotWorker.AllocationProfile = class {
     for (var i = 0; i < callers.length; i++)
       branchingCallers.push(this._serializeCaller(callers[i]));
 
-    return new Profiler.HeapSnapshotCommon.AllocationNodeCallers(nodesWithSingleCaller, branchingCallers);
+    return new HeapSnapshotModel.AllocationNodeCallers(nodesWithSingleCaller, branchingCallers);
   }
 
   /**
    * @param {number} traceNodeId
-   * @return {!Array.<!Profiler.HeapSnapshotCommon.AllocationStackFrame>}
+   * @return {!Array.<!HeapSnapshotModel.AllocationStackFrame>}
    */
   serializeAllocationStack(traceNodeId) {
     var node = this._idToTopDownNode[traceNodeId];
     var result = [];
     while (node) {
       var functionInfo = node.functionInfo;
-      result.push(new Profiler.HeapSnapshotCommon.AllocationStackFrame(
+      result.push(new HeapSnapshotModel.AllocationStackFrame(
           functionInfo.functionName, functionInfo.scriptName, functionInfo.scriptId, functionInfo.line,
           functionInfo.column));
       node = node.parent;
@@ -191,7 +191,7 @@ HeapSnapshotWorker.AllocationProfile = class {
 
   /**
    * @param {!HeapSnapshotWorker.BottomUpAllocationNode} node
-   * @return {!Profiler.HeapSnapshotCommon.SerializedAllocationNode}
+   * @return {!HeapSnapshotModel.SerializedAllocationNode}
    */
   _serializeCaller(node) {
     var callerId = this._nextNodeId++;
@@ -209,10 +209,10 @@ HeapSnapshotWorker.AllocationProfile = class {
    * @param {number} liveCount
    * @param {number} liveSize
    * @param {boolean} hasChildren
-   * @return {!Profiler.HeapSnapshotCommon.SerializedAllocationNode}
+   * @return {!HeapSnapshotModel.SerializedAllocationNode}
    */
   _serializeNode(nodeId, functionInfo, count, size, liveCount, liveSize, hasChildren) {
-    return new Profiler.HeapSnapshotCommon.SerializedAllocationNode(
+    return new HeapSnapshotModel.SerializedAllocationNode(
         nodeId, functionInfo.functionName, functionInfo.scriptName, functionInfo.scriptId, functionInfo.line,
         functionInfo.column, count, size, liveCount, liveSize, hasChildren);
   }

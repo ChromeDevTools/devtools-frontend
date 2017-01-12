@@ -57,13 +57,13 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
      * @type {?UI.ToolbarInput}
      */
     this._nameFilter = null;
-    this._nodeFilter = new Profiler.HeapSnapshotCommon.NodeFilter();
+    this._nodeFilter = new HeapSnapshotModel.NodeFilter();
     this.addEventListener(Profiler.HeapSnapshotSortableDataGrid.Events.SortingComplete, this._sortingComplete, this);
     this.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortingChanged, this);
   }
 
   /**
-   * @return {!Profiler.HeapSnapshotCommon.NodeFilter}
+   * @return {!HeapSnapshotModel.NodeFilter}
    */
   nodeFilter() {
     return this._nodeFilter;
@@ -771,7 +771,7 @@ Profiler.HeapSnapshotConstructorsDataGrid = class extends Profiler.HeapSnapshotV
    * @param {number} maxNodeId
    */
   setSelectionRange(minNodeId, maxNodeId) {
-    this._nodeFilter = new Profiler.HeapSnapshotCommon.NodeFilter(minNodeId, maxNodeId);
+    this._nodeFilter = new HeapSnapshotModel.NodeFilter(minNodeId, maxNodeId);
     this._populateChildren(this._nodeFilter);
   }
 
@@ -779,14 +779,14 @@ Profiler.HeapSnapshotConstructorsDataGrid = class extends Profiler.HeapSnapshotV
    * @param {number} allocationNodeId
    */
   setAllocationNodeId(allocationNodeId) {
-    this._nodeFilter = new Profiler.HeapSnapshotCommon.NodeFilter();
+    this._nodeFilter = new HeapSnapshotModel.NodeFilter();
     this._nodeFilter.allocationNodeId = allocationNodeId;
     this._populateChildren(this._nodeFilter);
   }
 
   /**
-   * @param {!Profiler.HeapSnapshotCommon.NodeFilter} nodeFilter
-   * @param {!Object.<string, !Profiler.HeapSnapshotCommon.Aggregate>} aggregates
+   * @param {!HeapSnapshotModel.NodeFilter} nodeFilter
+   * @param {!Object.<string, !HeapSnapshotModel.Aggregate>} aggregates
    */
   _aggregatesReceived(nodeFilter, aggregates) {
     this._filterInProgress = null;
@@ -808,10 +808,10 @@ Profiler.HeapSnapshotConstructorsDataGrid = class extends Profiler.HeapSnapshotV
   }
 
   /**
-   * @param {!Profiler.HeapSnapshotCommon.NodeFilter=} nodeFilter
+   * @param {!HeapSnapshotModel.NodeFilter=} nodeFilter
    */
   _populateChildren(nodeFilter) {
-    nodeFilter = nodeFilter || new Profiler.HeapSnapshotCommon.NodeFilter();
+    nodeFilter = nodeFilter || new HeapSnapshotModel.NodeFilter();
 
     if (this._filterInProgress) {
       this._nextRequestedFilter = this._filterInProgress.equals(nodeFilter) ? null : nodeFilter;
@@ -829,7 +829,7 @@ Profiler.HeapSnapshotConstructorsDataGrid = class extends Profiler.HeapSnapshotV
     if (profileIndex !== -1) {
       var minNodeId = profileIndex > 0 ? profiles[profileIndex - 1].maxJSObjectId : 0;
       var maxNodeId = profiles[profileIndex].maxJSObjectId;
-      this._nodeFilter = new Profiler.HeapSnapshotCommon.NodeFilter(minNodeId, maxNodeId);
+      this._nodeFilter = new HeapSnapshotModel.NodeFilter(minNodeId, maxNodeId);
     }
 
     this._populateChildren(this._nodeFilter);
@@ -970,7 +970,7 @@ Profiler.AllocationDataGrid = class extends Profiler.HeapSnapshotViewportDataGri
     this.snapshot.allocationTracesTops(didReceiveAllocationTracesTops.bind(this));
 
     /**
-     * @param {!Array.<!Profiler.HeapSnapshotCommon.SerializedAllocationNode>} tops
+     * @param {!Array.<!HeapSnapshotModel.SerializedAllocationNode>} tops
      * @this {Profiler.AllocationDataGrid}
      */
     function didReceiveAllocationTracesTops(tops) {

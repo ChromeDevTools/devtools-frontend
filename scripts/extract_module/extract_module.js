@@ -13,68 +13,32 @@ const SPECIAL_CASE_NAMESPACES_PATH = path.resolve(__dirname, '..', 'special_case
 
 const APPLICATION_DESCRIPTORS = [
   'inspector.json',
+  'toolbox.json',
   'unit_test_runner.json',
+  'formatter_worker.json',
+  'heap_snapshot_worker.json',
+  'utility_shared_worker.json',
 ];
 
 // Replace based on specified transformation
-const MODULES_TO_REMOVE = ['components_lazy', 'ui_lazy'];
+const MODULES_TO_REMOVE = [];
 
 const JS_FILES_MAPPING = [
-  {file: 'components_lazy/CookiesTable.js', new: 'cookie_table'},
-  {file: 'ui/BezierEditor.js', new: 'inline_editor'},
-  {file: 'ui/BezierUI.js', new: 'inline_editor'},
-  {file: 'ui/ColorSwatch.js', new: 'inline_editor'},
-  {file: 'ui/CSSShadowEditor.js', new: 'inline_editor'},
-  {file: 'ui/SwatchPopoverHelper.js', new: 'inline_editor'},
-  {file: 'components/Spectrum.js', new: 'color_picker'},
-
-  // Cannot extract dom_ui because of cyclic dependency with components
-  // {file: 'components/DOMPresentationUtils.js', new: 'dom_ui'},
-  {file: 'components/ExecutionContextSelector.js', existing: 'main'},
-  {file: 'components_lazy/FilmStripModel.js', existing: 'sdk'},
-  {file: 'components_lazy/FilmStripView.js', existing: 'perf_ui'},
-  {file: 'components/ShortcutsScreen.js', existing: 'ui'},
-  {file: 'ui_lazy/DataGrid.js', new: 'data_grid'},
-  {file: 'ui_lazy/ViewportDataGrid.js', new: 'data_grid'},
-  {file: 'ui_lazy/SortableDataGrid.js', new: 'data_grid'},
-  {file: 'ui_lazy/ShowMoreDataGridNode.js', new: 'data_grid'},
-  {file: 'ui_lazy/ChartViewport.js', existing: 'perf_ui'},
-  {file: 'ui_lazy/FlameChart.js', existing: 'perf_ui'},
-  {file: 'ui_lazy/OverviewGrid.js', existing: 'perf_ui'},
-  {file: 'ui_lazy/PieChart.js', existing: 'perf_ui'},
-  {file: 'ui_lazy/TimelineGrid.js', existing: 'perf_ui'},
-  {file: 'ui_lazy/TimelineOverviewPane.js', existing: 'perf_ui'},
+  {file: 'profiler/HeapSnapshotModel.js', new: 'heap_snapshot_model'},
+  // {file: 'module/file.js', existing: 'module'}
 ];
 
 const MODULE_MAPPING = {
-  cookie_table: {
-    dependencies: ['ui', 'sdk', 'data_grid'],
-    dependents: ['resources', 'network'],
-    applications: ['inspector.json'],
-    autostart: false,
-  },
-  inline_editor: {
-    dependencies: ['ui'],
-    dependents: ['sources', 'elements', 'resources'],
-    applications: ['inspector.json', 'unit_test_runner.json'],
-    autostart: false,
-  },
-  color_picker: {
-    dependencies: ['ui', 'sdk'],
-    dependents: ['sources', 'elements'],
-    applications: ['inspector.json'],
-    autostart: false,
-  },
-  data_grid: {
-    dependencies: ['ui'],
-    dependents: ['network', 'profiler', 'resources', 'console', 'timeline'],
-    applications: ['inspector.json', 'unit_test_runner.json'],
+  heap_snapshot_model: {
+    dependencies: [],
+    dependents: ['heap_snapshot_worker', 'profiler'],
+    applications: ['inspector.json'], // need to manually add to heap snapshot worker b/c it's autostart
     autostart: false,
   },
 };
 
 const NEW_DEPENDENCIES_BY_EXISTING_MODULES = {
-  resources: ['components'],
+  // resources: ['components'],
 };
 
 const REMOVE_DEPENDENCIES_BY_EXISTING_MODULES = {
@@ -112,6 +76,7 @@ function extractModule() {
   const cssFilesMapping = findCSSFiles();
   const identifiersByFile = calculateIdentifiers();
   const identifierMap = mapIdentifiers(identifiersByFile, cssFilesMapping);
+  console.log('identifierMap', identifierMap);
   const extensionMap = removeFromExistingModuleDescriptors(modules, identifierMap, cssFilesMapping);
 
   // Find out which files are moving extensions
@@ -269,7 +234,7 @@ function updateBuildGNFile(cssFilesMapping, newModuleSet) {
     content: newContent,
     startLine: 'all_devtools_files = [',
     endLine: ']',
-    linesToInsert: newSourcesToAdd,
+    linesToInsert: newSourcesToAdd.concat([...newModuleSet].map(module => `"front_end/${module}/module.json",`)),
   });
 
   fs.writeFileSync(BUILD_GN_PATH, newContent);
@@ -337,6 +302,14 @@ function mapIdentifiers(identifiersByFile, cssFilesMapping) {
       let components = identifier.split('.');
       components[0] = mapModuleToNamespace(targetModule);
       let newIdentifier = components.join('.');
+      // one-off
+      if (targetModule === 'heap_snapshot_model' && components[1] === 'HeapSnapshotCommon') {
+        newIdentifier = [components[0]].concat(components.slice(2)).join('.');
+        if (newIdentifier === 'HeapSnapshotModel') {
+          identifier = 'Profiler.HeapSnapshotCommon = {};\n\n';
+          newIdentifier = '';
+        }
+      }
       map.set(identifier, newIdentifier);
     }
   }
@@ -395,15 +368,6 @@ function renameIdentifiers(identifierMap) {
       let newIdentifier = identifierMap.get(key);
       newContent = newContent.replaceAll(originalIdentifier, newIdentifier);
     }
-    // one-off
-    if (filePath.includes('LayoutTests/http/tests/inspector-unit/filtered-item-selection-dialog-filtering.js'))
-      newContent = newContent.replaceAll('ui_lazy', 'quick_open');
-    if (filePath.includes('LayoutTests/inspector/components/cookies-table.html'))
-      newContent = newContent.replaceAll('components_lazy', 'cookie_table');
-    if (filePath.includes('LayoutTests/inspector/components/datagrid-autosize.html'))
-      newContent = newContent.replaceAll('ui_lazy', 'data_grid');
-    if (filePath.includes('LayoutTests/inspector/components/datagrid-test.js'))
-      newContent = newContent.replaceAll('ui_lazy', 'data_grid');
 
     if (content !== newContent)
       fs.writeFileSync(filePath, newContent);
@@ -655,6 +619,8 @@ function addDependenciesToDescriptors() {
 function updateApplicationDescriptor(descriptorFileName, newModuleSet) {
   let descriptorPath = path.join(FRONTEND_PATH, descriptorFileName);
   let newModules = [...newModuleSet].filter(m => APPLICATIONS_BY_MODULE[m].includes(descriptorFileName));
+  if (newModules.length === 0)
+      return;
   let includeNewModules = (acc, line) => {
     if (line.includes('{') && line.endsWith('}')) {
       line += ',';

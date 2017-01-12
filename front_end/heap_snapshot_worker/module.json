@@ -3,11 +3,13 @@
         "../platform/utilities.js",
         "../common/UIString.js",
         "../common/TextUtils.js",
-        "../profiler/HeapSnapshotCommon.js",
         "AllocationProfile.js",
         "HeapSnapshot.js",
         "HeapSnapshotLoader.js",
         "HeapSnapshotWorkerDispatcher.js",
         "HeapSnapshotWorker.js"
+    ],
+    "dependencies": [
+        "heap_snapshot_model"
     ]
 }

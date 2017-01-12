@@ -855,6 +855,8 @@ var Extensions = {};
 /** @type {!Object} */
 var FormatterWorker = {};
 /** @type {!Object} */
+var HeapSnapshotModel = {};
+/** @type {!Object} */
 var HeapSnapshotWorker = {};
 /** @type {!Object} */
 var Host = {};

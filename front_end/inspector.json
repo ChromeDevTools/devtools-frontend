@@ -48,7 +48,8 @@
         { "name": "cookie_table" },
         { "name": "inline_editor" },
         { "name": "color_picker" },
-        { "name": "data_grid" }
+        { "name": "data_grid" },
+        { "name": "heap_snapshot_model" }
     ],
 
     "has_html": true

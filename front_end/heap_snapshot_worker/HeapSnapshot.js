@@ -119,10 +119,10 @@ HeapSnapshotWorker.HeapSnapshotEdge = class {
 
   /**
    * @override
-   * @return {!Profiler.HeapSnapshotCommon.Edge}
+   * @return {!HeapSnapshotModel.Edge}
    */
   serialize() {
-    return new Profiler.HeapSnapshotCommon.Edge(this.name(), this.node().serialize(), this.type(), this.edgeIndex);
+    return new HeapSnapshotModel.Edge(this.name(), this.node().serialize(), this.type(), this.edgeIndex);
   }
 
   /**
@@ -378,11 +378,10 @@ HeapSnapshotWorker.HeapSnapshotRetainerEdge = class {
 
   /**
    * @override
-   * @return {!Profiler.HeapSnapshotCommon.Edge}
+   * @return {!HeapSnapshotModel.Edge}
    */
   serialize() {
-    return new Profiler.HeapSnapshotCommon.Edge(
-        this.name(), this.node().serialize(), this.type(), this._globalEdgeIndex);
+    return new HeapSnapshotModel.Edge(this.name(), this.node().serialize(), this.type(), this._globalEdgeIndex);
   }
 
   /**
@@ -567,10 +566,10 @@ HeapSnapshotWorker.HeapSnapshotNode = class {
 
   /**
    * @override
-   * @return {!Profiler.HeapSnapshotCommon.Node}
+   * @return {!HeapSnapshotModel.Node}
    */
   serialize() {
-    return new Profiler.HeapSnapshotCommon.Node(
+    return new HeapSnapshotModel.Node(
         this.id(), this.name(), this.distance(), this.nodeIndex, this.retainedSize(), this.selfSize(), this.type());
   }
 
@@ -776,7 +775,7 @@ HeapSnapshotWorker.HeapSnapshotProgress = class {
   reportProblem(error) {
     // May be undefined in tests.
     if (this._dispatcher)
-      this._dispatcher.sendEvent(Profiler.HeapSnapshotProgressEvent.BrokenSnapshot, error);
+      this._dispatcher.sendEvent(HeapSnapshotModel.HeapSnapshotProgressEvent.BrokenSnapshot, error);
   }
 
   /**
@@ -785,7 +784,7 @@ HeapSnapshotWorker.HeapSnapshotProgress = class {
   _sendUpdateEvent(text) {
     // May be undefined in tests.
     if (this._dispatcher)
-      this._dispatcher.sendEvent(Profiler.HeapSnapshotProgressEvent.Update, text);
+      this._dispatcher.sendEvent(HeapSnapshotModel.HeapSnapshotProgressEvent.Update, text);
   }
 };
 
@@ -835,7 +834,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
     this._metaNode = profile.snapshot.meta;
     /** @type {!Array.<number>} */
     this._rawSamples = profile.samples;
-    /** @type {?Profiler.HeapSnapshotCommon.Samples} */
+    /** @type {?HeapSnapshotModel.Samples} */
     this._samples = null;
     /** @type {!Array.<string>} */
     this.strings = profile.strings;
@@ -1058,7 +1057,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
   }
 
   /**
-   * @param {!Profiler.HeapSnapshotCommon.NodeFilter} nodeFilter
+   * @param {!HeapSnapshotModel.NodeFilter} nodeFilter
    * @return {undefined|function(!HeapSnapshotWorker.HeapSnapshotNode):boolean}
    */
   _createFilter(nodeFilter) {
@@ -1077,8 +1076,8 @@ HeapSnapshotWorker.HeapSnapshot = class {
   }
 
   /**
-   * @param {!Profiler.HeapSnapshotCommon.SearchConfig} searchConfig
-   * @param {!Profiler.HeapSnapshotCommon.NodeFilter} nodeFilter
+   * @param {!HeapSnapshotModel.SearchConfig} searchConfig
+   * @param {!HeapSnapshotModel.NodeFilter} nodeFilter
    * @return {!Array.<number>}
    */
   search(searchConfig, nodeFilter) {
@@ -1123,8 +1122,8 @@ HeapSnapshotWorker.HeapSnapshot = class {
   }
 
   /**
-   * @param {!Profiler.HeapSnapshotCommon.NodeFilter} nodeFilter
-   * @return {!Object.<string, !Profiler.HeapSnapshotCommon.Aggregate>}
+   * @param {!HeapSnapshotModel.NodeFilter} nodeFilter
+   * @return {!Object.<string, !HeapSnapshotModel.Aggregate>}
    */
   aggregatesWithFilter(nodeFilter) {
     var filter = this._createFilter(nodeFilter);
@@ -1174,7 +1173,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
    * @param {boolean} sortedIndexes
    * @param {string=} key
    * @param {function(!HeapSnapshotWorker.HeapSnapshotNode):boolean=} filter
-   * @return {!Object.<string, !Profiler.HeapSnapshotCommon.Aggregate>}
+   * @return {!Object.<string, !HeapSnapshotModel.Aggregate>}
    */
   aggregates(sortedIndexes, key, filter) {
     var aggregatesByClassName = key && this._aggregates[key];
@@ -1195,7 +1194,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
   }
 
   /**
-   * @return {!Array.<!Profiler.HeapSnapshotCommon.SerializedAllocationNode>}
+   * @return {!Array.<!HeapSnapshotModel.SerializedAllocationNode>}
    */
   allocationTracesTops() {
     return this._allocationProfile.serializeTraceTops();
@@ -1203,7 +1202,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
   /**
    * @param {number} nodeId
-   * @return {!Profiler.HeapSnapshotCommon.AllocationNodeCallers}
+   * @return {!HeapSnapshotModel.AllocationNodeCallers}
    */
   allocationNodeCallers(nodeId) {
     return this._allocationProfile.serializeCallers(nodeId);
@@ -1211,7 +1210,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
   /**
    * @param {number} nodeIndex
-   * @return {?Array.<!Profiler.HeapSnapshotCommon.AllocationStackFrame>}
+   * @return {?Array.<!HeapSnapshotModel.AllocationStackFrame>}
    */
   allocationStack(nodeIndex) {
     var node = this.createNode(nodeIndex);
@@ -1222,7 +1221,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
   }
 
   /**
-   * @return {!Object.<string, !Profiler.HeapSnapshotCommon.AggregateForDiff>}
+   * @return {!Object.<string, !HeapSnapshotModel.AggregateForDiff>}
    */
   aggregatesForDiff() {
     if (this._aggregatesForDiff)
@@ -1299,7 +1298,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
     // bfs for the rest of objects
     nodesToVisitLength = 0;
-    this.forEachRoot(enqueueNode.bind(null, Profiler.HeapSnapshotCommon.baseSystemDistance), false);
+    this.forEachRoot(enqueueNode.bind(null, HeapSnapshotModel.baseSystemDistance), false);
     this._bfs(nodesToVisit, nodesToVisitLength, distances, filter);
   }
 
@@ -1846,11 +1845,11 @@ HeapSnapshotWorker.HeapSnapshot = class {
       }
       sizeForRange[rangeIndex] += node.selfSize();
     }
-    this._samples = new Profiler.HeapSnapshotCommon.Samples(timestamps, lastAssignedIds, sizeForRange);
+    this._samples = new HeapSnapshotModel.Samples(timestamps, lastAssignedIds, sizeForRange);
   }
 
   /**
-   * @return {?Profiler.HeapSnapshotCommon.Samples}
+   * @return {?HeapSnapshotModel.Samples}
    */
   getSamples() {
     return this._samples;
@@ -1876,8 +1875,8 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
   /**
    * @param {string} baseSnapshotId
-   * @param {!Object.<string, !Profiler.HeapSnapshotCommon.AggregateForDiff>} baseSnapshotAggregates
-   * @return {!Object.<string, !Profiler.HeapSnapshotCommon.Diff>}
+   * @param {!Object.<string, !HeapSnapshotModel.AggregateForDiff>} baseSnapshotAggregates
+   * @return {!Object.<string, !HeapSnapshotModel.Diff>}
    */
   calculateSnapshotDiff(baseSnapshotId, baseSnapshotAggregates) {
     var snapshotDiff = this._snapshotDiffs[baseSnapshotId];
@@ -1892,7 +1891,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
       if (diff)
         snapshotDiff[className] = diff;
     }
-    var emptyBaseAggregate = new Profiler.HeapSnapshotCommon.AggregateForDiff();
+    var emptyBaseAggregate = new HeapSnapshotModel.AggregateForDiff();
     for (var className in aggregates) {
       if (className in baseSnapshotAggregates)
         continue;
@@ -1904,9 +1903,9 @@ HeapSnapshotWorker.HeapSnapshot = class {
   }
 
   /**
-   * @param {!Profiler.HeapSnapshotCommon.AggregateForDiff} baseAggregate
-   * @param {!Profiler.HeapSnapshotCommon.Aggregate} aggregate
-   * @return {?Profiler.HeapSnapshotCommon.Diff}
+   * @param {!HeapSnapshotModel.AggregateForDiff} baseAggregate
+   * @param {!HeapSnapshotModel.Aggregate} aggregate
+   * @return {?HeapSnapshotModel.Diff}
    */
   _calculateDiffForClass(baseAggregate, aggregate) {
     var baseIds = baseAggregate.ids;
@@ -1917,7 +1916,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
     var i = 0, l = baseIds.length;
     var j = 0, m = indexes.length;
-    var diff = new Profiler.HeapSnapshotCommon.Diff();
+    var diff = new HeapSnapshotModel.Diff();
 
     var nodeB = this.createNode(indexes[j]);
     while (i < l && j < m) {
@@ -2065,7 +2064,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
 
   /**
    * @param {string} className
-   * @param {!Profiler.HeapSnapshotCommon.NodeFilter} nodeFilter
+   * @param {!HeapSnapshotModel.NodeFilter} nodeFilter
    * @return {!HeapSnapshotWorker.HeapSnapshotNodesProvider}
    */
   createNodesProviderForClass(className, nodeFilter) {
@@ -2093,11 +2092,10 @@ HeapSnapshotWorker.HeapSnapshot = class {
   }
 
   /**
-   * @return {!Profiler.HeapSnapshotCommon.StaticData}
+   * @return {!HeapSnapshotModel.StaticData}
    */
   updateStaticData() {
-    return new Profiler.HeapSnapshotCommon.StaticData(
-        this.nodeCount, this._rootNodeIndex, this.totalSize, this._maxJsNodeId());
+    return new HeapSnapshotModel.StaticData(this.nodeCount, this._rootNodeIndex, this.totalSize, this._maxJsNodeId());
   }
 };
 
@@ -2169,7 +2167,7 @@ HeapSnapshotWorker.HeapSnapshotItemProvider = class {
   /**
    * @param {number} begin
    * @param {number} end
-   * @return {!Profiler.HeapSnapshotCommon.ItemsRange}
+   * @return {!HeapSnapshotModel.ItemsRange}
    */
   serializeItemsRange(begin, end) {
     this._createIterationOrder();
@@ -2194,7 +2192,7 @@ HeapSnapshotWorker.HeapSnapshotItemProvider = class {
       var item = this._indexProvider.itemForIndex(itemIndex);
       result[i] = item.serialize();
     }
-    return new Profiler.HeapSnapshotCommon.ItemsRange(begin, end, this._iterationOrder.length, result);
+    return new HeapSnapshotModel.ItemsRange(begin, end, this._iterationOrder.length, result);
   }
 
   sortAndRewind(comparator) {
@@ -2224,7 +2222,7 @@ HeapSnapshotWorker.HeapSnapshotEdgesProvider = class extends HeapSnapshotWorker.
   }
 
   /**
-   * @param {!Profiler.HeapSnapshotCommon.ComparatorConfig} comparator
+   * @param {!HeapSnapshotModel.ComparatorConfig} comparator
    * @param {number} leftBound
    * @param {number} rightBound
    * @param {number} windowLeft
@@ -2388,7 +2386,7 @@ HeapSnapshotWorker.HeapSnapshotNodesProvider = class extends HeapSnapshotWorker.
   }
 
   /**
-   * @param {!Profiler.HeapSnapshotCommon.ComparatorConfig} comparator
+   * @param {!HeapSnapshotModel.ComparatorConfig} comparator
    * @param {number} leftBound
    * @param {number} rightBound
    * @param {number} windowLeft
@@ -2761,7 +2759,7 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
     for (var nodeIndex = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount) {
       var nodeSize = nodes[nodeIndex + nodeSizeOffset];
       var ordinal = nodeIndex / nodeFieldCount;
-      if (distances[ordinal] >= Profiler.HeapSnapshotCommon.baseSystemDistance) {
+      if (distances[ordinal] >= HeapSnapshotModel.baseSystemDistance) {
         sizeSystem += nodeSize;
         continue;
       }
@@ -2776,7 +2774,7 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
       else if (node.name() === 'Array')
         sizeJSArrays += this._calculateArraySize(node);
     }
-    this._statistics = new Profiler.HeapSnapshotCommon.Statistics();
+    this._statistics = new HeapSnapshotModel.Statistics();
     this._statistics.total = this.totalSize;
     this._statistics.v8heap = this.totalSize - sizeNative;
     this._statistics.native = sizeNative;
@@ -2818,7 +2816,7 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
   }
 
   /**
-   * @return {!Profiler.HeapSnapshotCommon.Statistics}
+   * @return {!HeapSnapshotModel.Statistics}
    */
   getStatistics() {
     return this._statistics;
@@ -2997,7 +2995,7 @@ HeapSnapshotWorker.JSHeapSnapshotNode = class extends HeapSnapshotWorker.HeapSna
 
   /**
    * @override
-   * @return {!Profiler.HeapSnapshotCommon.Node}
+   * @return {!HeapSnapshotModel.Node}
    */
   serialize() {
     var result = super.serialize();

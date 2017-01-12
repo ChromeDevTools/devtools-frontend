@@ -74,7 +74,8 @@
     "dependencies": [
         "components",
         "perf_ui",
-        "data_grid"
+        "data_grid",
+        "heap_snapshot_model"
     ],
     "scripts": [
         "ProfilesPanel.js",
@@ -85,7 +86,6 @@
         "CPUProfileFlameChart.js",
         "CPUProfileView.js",
         "HeapProfileView.js",
-        "HeapSnapshotCommon.js",
         "HeapSnapshotProxy.js",
         "HeapSnapshotDataGrids.js",
         "HeapSnapshotGridNodes.js",

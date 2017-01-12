@@ -55,7 +55,7 @@ HeapSnapshotWorker.HeapSnapshotWorkerDispatcher = class {
   }
 
   dispatchMessage(event) {
-    var data = /** @type {!Profiler.HeapSnapshotCommon.WorkerCommand } */ (event.data);
+    var data = /** @type {!HeapSnapshotModel.WorkerCommand } */ (event.data);
     var response = {callId: data.callId};
     try {
       switch (data.disposition) {

@@ -28,29 +28,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-self['Profiler'] = self['Profiler'] || {};
-
-Profiler.HeapSnapshotProgressEvent = {
+HeapSnapshotModel.HeapSnapshotProgressEvent = {
   Update: 'ProgressUpdate',
   BrokenSnapshot: 'BrokenSnapshot'
 };
 
-Profiler.HeapSnapshotCommon = {};
-
-Profiler.HeapSnapshotCommon.baseSystemDistance = 100000000;
+HeapSnapshotModel.baseSystemDistance = 100000000;
 
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.AllocationNodeCallers = class {
+HeapSnapshotModel.AllocationNodeCallers = class {
   /**
-   * @param {!Array.<!Profiler.HeapSnapshotCommon.SerializedAllocationNode>} nodesWithSingleCaller
-   * @param {!Array.<!Profiler.HeapSnapshotCommon.SerializedAllocationNode>} branchingCallers
+   * @param {!Array.<!HeapSnapshotModel.SerializedAllocationNode>} nodesWithSingleCaller
+   * @param {!Array.<!HeapSnapshotModel.SerializedAllocationNode>} branchingCallers
    */
   constructor(nodesWithSingleCaller, branchingCallers) {
-    /** @type {!Array.<!Profiler.HeapSnapshotCommon.SerializedAllocationNode>} */
+    /** @type {!Array.<!HeapSnapshotModel.SerializedAllocationNode>} */
     this.nodesWithSingleCaller = nodesWithSingleCaller;
-    /** @type {!Array.<!Profiler.HeapSnapshotCommon.SerializedAllocationNode>} */
+    /** @type {!Array.<!HeapSnapshotModel.SerializedAllocationNode>} */
     this.branchingCallers = branchingCallers;
   }
 };
@@ -58,7 +54,7 @@ Profiler.HeapSnapshotCommon.AllocationNodeCallers = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.SerializedAllocationNode = class {
+HeapSnapshotModel.SerializedAllocationNode = class {
   /**
    * @param {number} nodeId
    * @param {string} functionName
@@ -101,7 +97,7 @@ Profiler.HeapSnapshotCommon.SerializedAllocationNode = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.AllocationStackFrame = class {
+HeapSnapshotModel.AllocationStackFrame = class {
   /**
    * @param {string} functionName
    * @param {string} scriptName
@@ -126,7 +122,7 @@ Profiler.HeapSnapshotCommon.AllocationStackFrame = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.Node = class {
+HeapSnapshotModel.Node = class {
   /**
    * @param {number} id
    * @param {string} name
@@ -153,10 +149,10 @@ Profiler.HeapSnapshotCommon.Node = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.Edge = class {
+HeapSnapshotModel.Edge = class {
   /**
    * @param {string} name
-   * @param {!Profiler.HeapSnapshotCommon.Node} node
+   * @param {!HeapSnapshotModel.Node} node
    * @param {string} type
    * @param {number} edgeIndex
    */
@@ -171,7 +167,7 @@ Profiler.HeapSnapshotCommon.Edge = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.Aggregate = class {
+HeapSnapshotModel.Aggregate = class {
   constructor() {
     /** @type {number} */
     this.count;
@@ -193,7 +189,7 @@ Profiler.HeapSnapshotCommon.Aggregate = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.AggregateForDiff = class {
+HeapSnapshotModel.AggregateForDiff = class {
   constructor() {
     /** @type {!Array.<number>} */
     this.indexes = [];
@@ -207,7 +203,7 @@ Profiler.HeapSnapshotCommon.AggregateForDiff = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.Diff = class {
+HeapSnapshotModel.Diff = class {
   constructor() {
     /** @type {number} */
     this.addedCount = 0;
@@ -227,7 +223,7 @@ Profiler.HeapSnapshotCommon.Diff = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.DiffForClass = class {
+HeapSnapshotModel.DiffForClass = class {
   constructor() {
     /** @type {number} */
     this.addedCount;
@@ -252,7 +248,7 @@ Profiler.HeapSnapshotCommon.DiffForClass = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.ComparatorConfig = class {
+HeapSnapshotModel.ComparatorConfig = class {
   constructor() {
     /** @type {string} */
     this.fieldName1;
@@ -268,7 +264,7 @@ Profiler.HeapSnapshotCommon.ComparatorConfig = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.WorkerCommand = class {
+HeapSnapshotModel.WorkerCommand = class {
   constructor() {
     /** @type {number} */
     this.callId;
@@ -290,7 +286,7 @@ Profiler.HeapSnapshotCommon.WorkerCommand = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.ItemsRange = class {
+HeapSnapshotModel.ItemsRange = class {
   /**
    * @param {number} startPosition
    * @param {number} endPosition
@@ -312,7 +308,7 @@ Profiler.HeapSnapshotCommon.ItemsRange = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.StaticData = class {
+HeapSnapshotModel.StaticData = class {
   /**
    * @param {number} nodeCount
    * @param {number} rootNodeIndex
@@ -334,7 +330,7 @@ Profiler.HeapSnapshotCommon.StaticData = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.Statistics = class {
+HeapSnapshotModel.Statistics = class {
   constructor() {
     /** @type {number} */
     this.total;
@@ -356,7 +352,7 @@ Profiler.HeapSnapshotCommon.Statistics = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.NodeFilter = class {
+HeapSnapshotModel.NodeFilter = class {
   /**
    * @param {number=} minNodeId
    * @param {number=} maxNodeId
@@ -371,7 +367,7 @@ Profiler.HeapSnapshotCommon.NodeFilter = class {
   }
 
   /**
-   * @param {!Profiler.HeapSnapshotCommon.NodeFilter} o
+   * @param {!HeapSnapshotModel.NodeFilter} o
    * @return {boolean}
    */
   equals(o) {
@@ -383,7 +379,7 @@ Profiler.HeapSnapshotCommon.NodeFilter = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.SearchConfig = class {
+HeapSnapshotModel.SearchConfig = class {
   /**
    * @param {string} query
    * @param {boolean} caseSensitive
@@ -403,7 +399,7 @@ Profiler.HeapSnapshotCommon.SearchConfig = class {
 /**
  * @unrestricted
  */
-Profiler.HeapSnapshotCommon.Samples = class {
+HeapSnapshotModel.Samples = class {
   /**
    * @param {!Array.<number>} timestamps
    * @param {!Array.<number>} lastAssignedIds

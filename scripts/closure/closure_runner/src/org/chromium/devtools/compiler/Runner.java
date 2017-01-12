@@ -197,14 +197,17 @@ public class Runner {
         protected Compiler createCompiler() {
             Compiler compiler = new Compiler();
             final LightweightMessageFormatter formatter = new LightweightMessageFormatter(compiler);
-            compiler.setErrorManager(new PrintStreamErrorManager(formatter, getErrorPrintStream()) {
+            PrintStreamErrorManager errorManager =
+                    new PrintStreamErrorManager(formatter, getErrorPrintStream()) {
                 @Override
                 public void report(CheckLevel level, JSError error) {
                     String text = formatter.formatError(error);
                     if (text.indexOf("access on a struct") == -1 || text.indexOf("Symbol") == -1)
                         super.report(level, error);
                 }
-            });
+            };
+            errorManager.setSummaryDetailLevel(3);
+            compiler.setErrorManager(errorManager);
             return compiler;
         }
 

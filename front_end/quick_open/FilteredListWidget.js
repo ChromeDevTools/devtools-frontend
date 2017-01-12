@@ -18,8 +18,6 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
 
     this.contentElement.classList.add('filtered-list-widget');
     this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), true);
-    if (delegate.renderMonospace())
-      this.contentElement.classList.add('monospace');
     this.registerRequiredCSS('quick_open/filteredListWidget.css');
 
     this._promptElement = this.contentElement.createChild('div', 'filtered-list-widget-input');
@@ -32,7 +30,8 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     promptProxy.addEventListener('input', this._onInput.bind(this), false);
     promptProxy.classList.add('filtered-list-widget-prompt-element');
 
-    this._progressElement = this.contentElement.createChild('div', 'filtered-list-widget-progress');
+    this._bottomElementsContainer = this.contentElement.createChild('div', 'vbox');
+    this._progressElement = this._bottomElementsContainer.createChild('div', 'filtered-list-widget-progress');
     this._progressBarElement = this._progressElement.createChild('div', 'filtered-list-widget-progress-bar');
 
     /** @type {!UI.ListControl<number>} */
@@ -40,7 +39,15 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._itemElementsContainer = this._list.element;
     this._itemElementsContainer.classList.add('container');
     this._itemElementsContainer.addEventListener('click', this._onClick.bind(this), false);
-    this.contentElement.appendChild(this._itemElementsContainer);
+    this._bottomElementsContainer.appendChild(this._itemElementsContainer);
+
+    if (delegate.renderMonospace()) {
+      this._list.element.classList.add('monospace');
+      this._promptElement.classList.add('monospace');
+    }
+
+    this._notFoundElement = this._bottomElementsContainer.createChild('div', 'not-found-text');
+    this._notFoundElement.classList.add('hidden');
 
     this.setDefaultFocusedElement(this._promptElement);
 
@@ -111,10 +118,11 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
 
   showAsDialog() {
     this._dialog = new UI.Dialog();
-    this._dialog.setMaxSize(new Size(504, 340));
+    this._dialog.setWrapsContent(true);
     this._dialog.setPosition(undefined, 22);
     this.show(this._dialog.element);
     this._dialog.show();
+    this._updateShowMatchingItems();
   }
 
   /**
@@ -178,6 +186,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     var subtitleElement = itemElement.createChild('div', 'filtered-list-widget-subtitle');
     subtitleElement.textContent = '\u200B';
     this._delegate.renderItem(item, this._value(), titleElement, subtitleElement);
+
     return itemElement;
   }
 
@@ -220,6 +229,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._prompt.setText(query);
     this._prompt.autoCompleteSoon(true);
     this._scheduleFilter();
+    this._updateShowMatchingItems();
   }
 
   _tabKeyPressed() {
@@ -330,10 +340,28 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
   _refreshList(bestItems, overflowItems, filteredItems) {
     delete this._refreshListWithCurrentResult;
     filteredItems = [].concat(bestItems, overflowItems, filteredItems);
+    this._updateNotFoundMessage(!!filteredItems.length);
     this._list.replaceAllItems(filteredItems);
     if (filteredItems.length)
       this._list.selectItemAtIndex(0, true);
+
+    var beforeDialogHeight = this._dialog.element.style.height;
+    this._dialog.contentResized();
+    // If the dialog height changed, the viewport might need to be resized.
+    // We use the CSS on the dialog to avoid measuring it directly.
+    if (beforeDialogHeight !== this._dialog.element.style.height)
+      this._list.viewportResized();
     this._itemsFilteredForTest();
+  }
+
+  /**
+   * @param {boolean} hasItems
+   */
+  _updateNotFoundMessage(hasItems) {
+    this._list.element.classList.toggle('hidden', !hasItems);
+    this._notFoundElement.classList.toggle('hidden', hasItems);
+    if (!hasItems)
+      this._notFoundElement.textContent = this._delegate.notFoundText();
   }
 
   /**
@@ -350,7 +378,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
 
   _updateShowMatchingItems() {
     var shouldShowMatchingItems = this._shouldShowMatchingItems();
-    this._itemElementsContainer.classList.toggle('hidden', !shouldShowMatchingItems);
+    this._bottomElementsContainer.classList.toggle('hidden', !shouldShowMatchingItems);
   }
 
   /**
@@ -508,6 +536,13 @@ QuickOpen.FilteredListWidget.Delegate = class {
         return this._promptHistory[i];
     }
     return query;
+  }
+
+  /**
+   * @return {string}
+   */
+  notFoundText() {
+    return Common.UIString('No results found');
   }
 
   dispose() {

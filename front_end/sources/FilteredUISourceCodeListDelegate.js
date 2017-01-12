@@ -205,6 +205,14 @@ Sources.FilteredUISourceCodeListDelegate = class extends QuickOpen.FilteredListW
 
   /**
    * @override
+   * @return {string}
+   */
+  notFoundText() {
+    return Common.UIString('No files found');
+  }
+
+  /**
+   * @override
    */
   dispose() {
     Workspace.workspace.removeEventListener(

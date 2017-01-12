@@ -242,6 +242,14 @@ QuickOpen.CommandMenuDelegate = class extends QuickOpen.FilteredListWidget.Deleg
   renderMonospace() {
     return false;
   }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  notFoundText() {
+    return Common.UIString('No commands found');
+  }
 };
 
 QuickOpen.CommandMenuDelegate.MaterialPaletteColors = [

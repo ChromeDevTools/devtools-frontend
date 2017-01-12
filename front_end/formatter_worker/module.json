@@ -6,8 +6,6 @@
     "scripts": [
         "../cm_web_modes/css.js",
         "../cm_web_modes/xml.js",
-        "../common/Text.js",
-        "../common/TextRange.js",
         "ESTreeWalker.js",
         "FormatterWorker.js",
         "acorn/acorn.js",

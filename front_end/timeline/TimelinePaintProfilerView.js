@@ -1,9 +1,7 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/**
- * @unrestricted
- */
+
 Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
   /**
    * @param {!TimelineModel.TimelineFrameModel} frameModel
@@ -28,6 +26,16 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
 
     this._logTreeView = new LayerViewer.PaintProfilerCommandLogView();
     this._logAndImageSplitWidget.setSidebarWidget(this._logTreeView);
+
+    this._needsUpdateWhenVisible = false;
+    /** @type {?SDK.PaintProfilerSnapshot} */
+    this._pendingSnapshot = null;
+    /** @type {?SDK.TracingModel.Event} */
+    this._event = null;
+    /** @type {?SDK.Target} */
+    this._target = null;
+    /** @type {?SDK.PaintProfilerSnapshot} */
+    this._lastLoadedSnapshot = null;
   }
 
   /**
@@ -85,9 +93,10 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
       snapshotPromise = Promise.resolve({rect: null, snapshot: this._pendingSnapshot});
     } else if (this._event.name === TimelineModel.TimelineModel.RecordType.Paint) {
       var picture = TimelineModel.TimelineData.forEvent(this._event).picture;
-      snapshotPromise = picture.objectPromise()
-                            .then(data => SDK.PaintProfilerSnapshot.load(this._target, data['skp64']))
-                            .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
+      snapshotPromise =
+          picture.objectPromise()
+              .then(data => SDK.PaintProfilerSnapshot.load(/** @type {!SDK.Target} */ (this._target), data['skp64']))
+              .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
     } else if (this._event.name === TimelineModel.TimelineModel.RecordType.RasterTask) {
       snapshotPromise = this._frameModel.rasterTilePromise(this._event);
     } else {

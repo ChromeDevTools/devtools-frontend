@@ -137,7 +137,7 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
    */
   static valueElementForFunctionDescription(description, includePreview, defaultName) {
     var valueElement = createElementWithClass('span', 'object-value-function');
-    var text = description.replace(/^function [gs]et /, 'function ');
+    var text = description ? description.replace(/^function [gs]et /, 'function ') : '';
     defaultName = defaultName || '';
 
     // This set of best-effort regular expressions captures common function descriptions.
@@ -181,6 +181,7 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
     } else {
       addElements('function', text, nameAndArguments(text));
     }
+    valueElement.title = description || '';
     return valueElement;
 
     /**
@@ -238,84 +239,91 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
    * @return {!Element}
    */
   static createValueElement(value, wasThrown, parentElement, linkifier) {
-    var valueElement = createElementWithClass('span', 'value');
+    var valueElement;
     var type = value.type;
     var subtype = value.subtype;
     var description = value.description;
-    var prefix;
-    var valueText;
-    var suffix;
-    if (wasThrown) {
-      prefix = '[Exception: ';
-      valueText = description;
-      suffix = ']';
-    } else if (type === 'string' && typeof description === 'string') {
-      // Render \n as a nice unicode cr symbol.
-      prefix = '"';
-      valueText = description.replace(/\n/g, '\u21B5');
-      suffix = '"';
-    } else if (type !== 'object' || subtype !== 'node') {
-      valueText = description;
-    }
-
-    if (type === 'function') {
-      valueElement = Components.ObjectPropertiesSection.valueElementForFunctionDescription(description);
-    } else if (type !== 'number' || valueText.indexOf('e') === -1) {
-      valueElement.setTextContentTruncatedIfNeeded(valueText || '');
-      if (prefix)
-        valueElement.insertBefore(createTextNode(prefix), valueElement.firstChild);
-      if (suffix)
-        valueElement.createTextChild(suffix);
-    } else {
-      var numberParts = valueText.split('e');
-      var mantissa = valueElement.createChild('span', 'object-value-scientific-notation-mantissa');
-      mantissa.textContent = numberParts[0];
-      var exponent = valueElement.createChild('span', 'object-value-scientific-notation-exponent');
-      exponent.textContent = 'e' + numberParts[1];
-      valueElement.classList.add('object-value-scientific-notation-number');
-      if (parentElement)  // FIXME: do it in the caller.
-        parentElement.classList.add('hbox');
-    }
-
-    if (wasThrown)
-      valueElement.classList.add('error');
-    if (subtype || type)
-      valueElement.classList.add('object-value-' + (subtype || type));
-
-    if (type === 'object' && subtype === 'node' && description) {
-      Components.DOMPresentationUtils.createSpansForNodeTitle(valueElement, description);
-      valueElement.addEventListener('click', mouseClick, false);
-      valueElement.addEventListener('mousemove', mouseMove, false);
-      valueElement.addEventListener('mouseleave', mouseLeave, false);
-    } else {
-      valueElement.title = description || '';
-    }
-
     if (type === 'object' && subtype === 'internal#location') {
       var rawLocation = value.debuggerModel().createRawLocationByScriptId(
           value.value.scriptId, value.value.lineNumber, value.value.columnNumber);
       if (rawLocation && linkifier)
         return linkifier.linkifyRawLocation(rawLocation, '');
-      valueElement.textContent = '<unknown>';
+      valueElement = createUnknownInternalLocationElement();
+    } else if (type === 'string' && typeof description === 'string') {
+      valueElement = createStringElement();
+    } else if (type === 'function') {
+      valueElement = Components.ObjectPropertiesSection.valueElementForFunctionDescription(description);
+    } else if (type === 'object' && subtype === 'node' && description) {
+      valueElement = createNodeElement();
+    } else if (type === 'number' && description && description.indexOf('e') !== -1) {
+      valueElement = createNumberWithExponentElement();
+      if (parentElement)  // FIXME: do it in the caller.
+        parentElement.classList.add('hbox');
+    } else {
+      valueElement = createElementWithClass('span', 'object-value-' + (subtype || type));
+      valueElement.setTextContentTruncatedIfNeeded(description);
+      valueElement.title = description || '';
     }
 
-    function mouseMove() {
-      SDK.DOMModel.highlightObjectAsDOMNode(value);
+    if (wasThrown) {
+      var wrapperElement = createElementWithClass('span', 'error value');
+      wrapperElement.createTextChild('[' + Common.UIString('Exception') + ': ');
+      wrapperElement.appendChild(valueElement);
+      wrapperElement.createTextChild(']');
+      return wrapperElement;
     }
+    valueElement.classList.add('value');
+    return valueElement;
 
-    function mouseLeave() {
-      SDK.DOMModel.hideDOMNodeHighlight();
+    /**
+     * @return {!Element}
+     */
+    function createUnknownInternalLocationElement() {
+      var valueElement = createElementWithClass('span');
+      valueElement.textContent = '<' + Common.UIString('unknown') + '>';
+      valueElement.title = description || '';
+      return valueElement;
     }
 
     /**
-     * @param {!Event} event
+     * @return {!Element}
      */
-    function mouseClick(event) {
-      Common.Revealer.reveal(value);
-      event.consume(true);
+    function createStringElement() {
+      var valueElement = createElementWithClass('span', 'object-value-string');
+      valueElement.createChild('span', 'object-value-string-quote').textContent = '"';
+      valueElement.createTextChild('').setTextContentTruncatedIfNeeded(description.replace(/\n/g, '\u21B5'));
+      valueElement.createChild('span', 'object-value-string-quote').textContent = '"';
+      valueElement.title = description || '';
+      return valueElement;
     }
 
-    return valueElement;
+    /**
+     * @return {!Element}
+     */
+    function createNodeElement() {
+      var valueElement = createElementWithClass('span', 'object-value-node');
+      Components.DOMPresentationUtils.createSpansForNodeTitle(valueElement, /** @type {string} */ (description));
+      valueElement.addEventListener('click', event => {
+        Common.Revealer.reveal(value);
+        event.consume(true);
+      }, false);
+      valueElement.addEventListener('mousemove', () => SDK.DOMModel.highlightObjectAsDOMNode(value), false);
+      valueElement.addEventListener('mouseleave', () => SDK.DOMModel.hideDOMNodeHighlight(), false);
+      return valueElement;
+    }
+
+    /**
+     * @return {!Element}
+     */
+    function createNumberWithExponentElement() {
+      var valueElement = createElementWithClass('span', 'object-value-number');
+      var numberParts = description.split('e');
+      valueElement.createChild('span', 'object-value-scientific-notation-mantissa').textContent = numberParts[0];
+      valueElement.createChild('span', 'object-value-scientific-notation-exponent').textContent = 'e' + numberParts[1];
+      valueElement.classList.add('object-value-scientific-notation-number');
+      valueElement.title = description || '';
+      return valueElement;
+    }
   }
 
   /**

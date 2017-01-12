@@ -10,10 +10,9 @@
 Sources.FilteredUISourceCodeListDelegate = class extends QuickOpen.FilteredListWidget.Delegate {
   /**
    * @param {!Map.<!Workspace.UISourceCode, number>=} defaultScores
-   * @param {!Array<string>=} history
    */
-  constructor(defaultScores, history) {
-    super(history || []);
+  constructor(defaultScores) {
+    super();
 
     this._defaultScores = defaultScores;
     this._scorer = new Sources.FilePathScoreFunction('');

@@ -11,10 +11,9 @@ Sources.OpenResourceDialog = class extends Sources.FilteredUISourceCodeListDeleg
   /**
    * @param {!Sources.SourcesView} sourcesView
    * @param {!Map.<!Workspace.UISourceCode, number>} defaultScores
-   * @param {!Array<string>} history
    */
-  constructor(sourcesView, defaultScores, history) {
-    super(defaultScores, history);
+  constructor(sourcesView, defaultScores) {
+    super(defaultScores);
     this._sourcesView = sourcesView;
     this.populate();
   }
@@ -26,10 +25,10 @@ Sources.OpenResourceDialog = class extends Sources.FilteredUISourceCodeListDeleg
    * @param {!Array<string>} history
    */
   static show(sourcesView, query, defaultScores, history) {
-    var dialog = new Sources.OpenResourceDialog(sourcesView, defaultScores, history);
+    var dialog = new Sources.OpenResourceDialog(sourcesView, defaultScores);
     if (InspectorFrontendHost.isUnderTest())
       Sources.OpenResourceDialog._instanceForTest = dialog;
-    var filteredItemSelectionDialog = new QuickOpen.FilteredListWidget(dialog);
+    var filteredItemSelectionDialog = new QuickOpen.FilteredListWidget(dialog, history);
     filteredItemSelectionDialog.showAsDialog();
     filteredItemSelectionDialog.setQuery(query);
   }

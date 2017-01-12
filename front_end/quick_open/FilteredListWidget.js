@@ -10,10 +10,11 @@
 QuickOpen.FilteredListWidget = class extends UI.VBox {
   /**
    * @param {!QuickOpen.FilteredListWidget.Delegate} delegate
+   * @param {!Array<string>=} promptHistory
    */
-  constructor(delegate) {
+  constructor(delegate, promptHistory) {
     super(true);
-
+    this._promptHistory = promptHistory || [];
     this._renderAsTwoRows = delegate.renderAsTwoRows();
 
     this.contentElement.classList.add('filtered-list-widget');
@@ -160,7 +161,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     // Detach dialog before allowing delegate to override focus.
     if (this._dialog)
       this._dialog.detach();
-    this._delegate.selectItemWithQuery(selectedIndexInDelegate, this._value());
+    this._selectItemWithQuery(selectedIndexInDelegate, this._value());
   }
 
   _itemsLoaded() {
@@ -234,7 +235,15 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
 
   _tabKeyPressed() {
     var userEnteredText = this._prompt.text();
-    var completion = this._delegate.autocomplete(userEnteredText);
+    var completion;
+    for (var i = this._promptHistory.length - 1; i >= 0; i--) {
+      if (this._promptHistory[i] !== userEnteredText && this._promptHistory[i].startsWith(userEnteredText)) {
+        completion = this._promptHistory[i];
+        break;
+      }
+    }
+    if (!completion)
+      return;
     this._prompt.setText(completion);
     this._prompt.setDOMSelection(userEnteredText.length, completion.length);
     this._scheduleFilter();
@@ -418,7 +427,18 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     // Detach dialog before allowing delegate to override focus.
     if (this._dialog)
       this._dialog.detach();
-    this._delegate.selectItemWithQuery(this._list.selectedItem(), this._value());
+    this._selectItemWithQuery(this._list.selectedItem(), this._value());
+  }
+
+  /**
+   * @param {?number} itemIndex
+   * @param {string} promptValue
+   */
+  _selectItemWithQuery(itemIndex, promptValue) {
+    this._promptHistory.push(promptValue);
+    if (this._promptHistory.length > 100)
+      this._promptHistory.shift();
+    this._delegate.selectItem(itemIndex, promptValue);
   }
 };
 
@@ -427,13 +447,6 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
  * @unrestricted
  */
 QuickOpen.FilteredListWidget.Delegate = class {
-  /**
-   * @param {!Array<string>} promptHistory
-   */
-  constructor(promptHistory) {
-    this._promptHistory = promptHistory;
-  }
-
   /**
    * @param {function():void} refreshCallback
    */
@@ -500,17 +513,6 @@ QuickOpen.FilteredListWidget.Delegate = class {
    * @param {?number} itemIndex
    * @param {string} promptValue
    */
-  selectItemWithQuery(itemIndex, promptValue) {
-    this._promptHistory.push(promptValue);
-    if (this._promptHistory.length > 100)
-      this._promptHistory.shift();
-    this.selectItem(itemIndex, promptValue);
-  }
-
-  /**
-   * @param {?number} itemIndex
-   * @param {string} promptValue
-   */
   selectItem(itemIndex, promptValue) {
   }
 
@@ -523,18 +525,6 @@ QuickOpen.FilteredListWidget.Delegate = class {
    * @return {string}
    */
   rewriteQuery(query) {
-    return query;
-  }
-
-  /**
-   * @param {string} query
-   * @return {string}
-   */
-  autocomplete(query) {
-    for (var i = this._promptHistory.length - 1; i >= 0; i--) {
-      if (this._promptHistory[i] !== query && this._promptHistory[i].startsWith(query))
-        return this._promptHistory[i];
-    }
     return query;
   }
 

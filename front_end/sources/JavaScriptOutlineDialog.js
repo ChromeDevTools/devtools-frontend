@@ -13,7 +13,7 @@ Sources.JavaScriptOutlineDialog = class extends QuickOpen.FilteredListWidget.Del
    * @param {function(number, number)} selectItemCallback
    */
   constructor(uiSourceCode, selectItemCallback) {
-    super([]);
+    super();
 
     this._functionItems = [];
     this._selectItemCallback = selectItemCallback;

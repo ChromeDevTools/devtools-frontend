@@ -130,7 +130,7 @@ QuickOpen.CommandMenu = class {
  */
 QuickOpen.CommandMenuDelegate = class extends QuickOpen.FilteredListWidget.Delegate {
   constructor() {
-    super([]);
+    super();
     this._commands = [];
     this._appendAvailableCommands();
   }

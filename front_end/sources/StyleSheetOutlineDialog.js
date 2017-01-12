@@ -35,7 +35,7 @@ Sources.StyleSheetOutlineDialog = class extends QuickOpen.FilteredListWidget.Del
    * @param {function(number, number)} selectItemCallback
    */
   constructor(uiSourceCode, selectItemCallback) {
-    super([]);
+    super();
     this._selectItemCallback = selectItemCallback;
     /** @type {!Array<!Common.FormatterWorkerPool.CSSRule>} */
     this._rules = [];

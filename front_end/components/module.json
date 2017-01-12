@@ -57,6 +57,7 @@
     "scripts": [
         "BreakpointsSidebarPaneBase.js",
         "CustomPreviewSection.js",
+        "CPUThrottlingManager.js",
         "DataSaverInfobar.js",
         "DOMBreakpointsSidebarPane.js",
         "DOMPresentationUtils.js",

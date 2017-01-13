@@ -664,15 +664,13 @@ Console.ConsoleView = class extends UI.VBox {
         progressIndicator.done();
         return;
       }
-      var lines = [];
+      var messageContents = [];
       for (var i = 0; i < chunkSize && i + messageIndex < this.itemCount(); ++i) {
         var message = this.itemElement(messageIndex + i);
-        var messageContent = message.contentElement().deepTextContent();
-        for (var j = 0; j < message.repeatCount(); ++j)
-          lines.push(messageContent);
+        messageContents.push(message.toExportString());
       }
       messageIndex += i;
-      stream.write(lines.join('\n') + '\n', writeNextChunk.bind(this));
+      stream.write(messageContents.join('\n') + '\n', writeNextChunk.bind(this));
       progressIndicator.setWorked(messageIndex);
     }
   }

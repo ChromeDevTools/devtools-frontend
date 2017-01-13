@@ -38,7 +38,7 @@ Components.Linkifier = class {
    * @param {boolean=} useLinkDecorator
    */
   constructor(maxLengthForDisplayedURLs, useLinkDecorator) {
-    this._maxLength = maxLengthForDisplayedURLs || Components.Linkifier.MaxLengthForDisplayedURLs;
+    this._maxLength = maxLengthForDisplayedURLs || UI.MaxLengthForDisplayedURLs;
     /** @type {!Map<!SDK.Target, !Array<!Element>>} */
     this._anchorsByTarget = new Map();
     /** @type {!Map<!SDK.Target, !Bindings.LiveLocationPool>} */
@@ -304,6 +304,8 @@ Components.Linkifier = class {
 
     Components.Linkifier._bindUILocation(anchor, uiLocation);
     var text = uiLocation.linkText();
+    var info = Components.Linkifier._linkInfo(anchor);
+    info.originalLinkText = text;
     text = text.replace(/([a-f0-9]{7})[a-f0-9]{13}[a-f0-9]*/g, '$1\u2026');
     if (this._maxLength)
       text = text.trimMiddle(this._maxLength);
@@ -356,7 +358,8 @@ Components.Linkifier = class {
     if (typeof lineNumber === 'number' && !text)
       linkText += ':' + (lineNumber + 1);
     var title = linkText !== url ? url : '';
-    var link = Components.Linkifier._createLink(linkText.trimMiddle(150), className || '', title, url, preventClick);
+    var link = Components.Linkifier._createLink(
+        linkText, className || '', UI.MaxLengthForDisplayedURLs, title, url, preventClick);
     var info = Components.Linkifier._linkInfo(link);
     if (typeof lineNumber === 'number')
       info.lineNumber = lineNumber;
@@ -372,8 +375,7 @@ Components.Linkifier = class {
    * @return {!Element}
    */
   static linkifyRevealable(revealable, text, fallbackHref) {
-    var link = Components.Linkifier._createLink(
-        text.trimMiddle(Components.Linkifier.MaxLengthForDisplayedURLs), '', undefined, fallbackHref);
+    var link = Components.Linkifier._createLink(text, '', UI.MaxLengthForDisplayedURLs, undefined, fallbackHref);
     Components.Linkifier._linkInfo(link).revealable = revealable;
     return link;
   }
@@ -381,12 +383,13 @@ Components.Linkifier = class {
   /**
    * @param {string} text
    * @param {string} className
+   * @param {number=} maxLength
    * @param {string=} title
    * @param {string=} href
    * @param {boolean=} preventClick
    * @returns{!Element}
    */
-  static _createLink(text, className, title, href, preventClick) {
+  static _createLink(text, className, maxLength, title, href, preventClick) {
     var link = createElementWithClass('span', className);
     link.classList.add('devtools-link');
     if (title)
@@ -394,6 +397,8 @@ Components.Linkifier = class {
     if (href)
       link.href = href;
     link.textContent = text;
+    if (maxLength)
+      link.textContent = link.textContent.trimMiddle(maxLength);
     link[Components.Linkifier._infoSymbol] = {
       icon: null,
       enableDecorator: false,
@@ -403,13 +408,23 @@ Components.Linkifier = class {
       lineNumber: null,
       columnNumber: null,
       revealable: null,
-      fallback: null
+      fallback: null,
+      originalLinkText: text
     };
     if (!preventClick)
       link.addEventListener('click', Components.Linkifier._handleClick, false);
     else
       link.classList.add('devtools-link-prevent-click');
     return link;
+  }
+
+  /**
+   * @param {?Element} link
+   * @return {?string}
+   */
+  static originalLinkText(link) {
+    var info = this._linkInfo(link);
+    return info ? info.originalLinkText : null;
   }
 
   /**
@@ -545,17 +560,11 @@ Components.Linkifier._infoSymbol = Symbol('Linkifier.info');
  *     lineNumber: ?number,
  *     columnNumber: ?number,
  *     revealable: ?Object,
- *     fallback: ?Element
+ *     fallback: ?Element,
+ *     originalLinkText: string
  * }}
  */
 Components._LinkInfo;
-
-/**
- * The maximum number of characters to display in a URL.
- * @const
- * @type {number}
- */
-Components.Linkifier.MaxLengthForDisplayedURLs = 150;
 
 /**
  * The maximum length before strings are considered too long for finding URLs.

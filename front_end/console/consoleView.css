@@ -309,7 +309,7 @@
     clear: both;
 }
 
-.console-message-url {
+.console-message-anchor {
     float: right;
     text-align: right;
     max-width: 100%;

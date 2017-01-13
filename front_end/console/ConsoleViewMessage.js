@@ -292,13 +292,17 @@ Console.ConsoleViewMessage = class {
         anchorElement = this._linkifyLocation(consoleMessage.url, consoleMessage.line, consoleMessage.column);
       }
     } else if (consoleMessage.url) {
-      anchorElement = Components.Linkifier.linkifyURL(consoleMessage.url, undefined, 'console-message-url');
+      anchorElement = Components.Linkifier.linkifyURL(consoleMessage.url, undefined);
     }
 
     // Append a space to prevent the anchor text from being glued to the console message when the user selects and copies the console messages.
-    if (anchorElement)
-      anchorElement.appendChild(createTextNode(' '));
-    return anchorElement;
+    if (anchorElement) {
+      var anchorWrapperElement = createElementWithClass('span', 'console-message-anchor');
+      anchorWrapperElement.appendChild(anchorElement);
+      anchorWrapperElement.createTextChild(' ');
+      return anchorWrapperElement;
+    }
+    return null;
   }
 
   /**
@@ -359,7 +363,7 @@ Console.ConsoleViewMessage = class {
     var target = this._target();
     if (!target)
       return null;
-    return this._linkifier.linkifyScriptLocation(target, null, url, lineNumber, columnNumber, 'console-message-url');
+    return this._linkifier.linkifyScriptLocation(target, null, url, lineNumber, columnNumber);
   }
 
   /**
@@ -370,7 +374,7 @@ Console.ConsoleViewMessage = class {
     var target = this._target();
     if (!target)
       return null;
-    return this._linkifier.linkifyStackTraceTopFrame(target, stackTrace, 'console-message-url');
+    return this._linkifier.linkifyStackTraceTopFrame(target, stackTrace);
   }
 
   /**
@@ -384,8 +388,7 @@ Console.ConsoleViewMessage = class {
     var target = this._target();
     if (!target)
       return null;
-    return this._linkifier.linkifyScriptLocation(
-        target, scriptId, url, lineNumber, columnNumber, 'console-message-url');
+    return this._linkifier.linkifyScriptLocation(target, scriptId, url, lineNumber, columnNumber);
   }
 
   /**
@@ -1015,6 +1018,22 @@ Console.ConsoleViewMessage = class {
 
   get text() {
     return this._message.messageText;
+  }
+
+  /**
+   * @return {string}
+   */
+  toExportString() {
+    var lines = [];
+    var nodes = this.contentElement().childTextNodes();
+    var messageContent = '';
+    for (var i = 0; i < nodes.length; ++i) {
+      var originalLinkText = Components.Linkifier.originalLinkText(nodes[i].parentElement);
+      messageContent += typeof originalLinkText === 'string' ? originalLinkText : nodes[i].textContent;
+    }
+    for (var i = 0; i < this.repeatCount(); ++i)
+      lines.push(messageContent);
+    return lines.join('\n');
   }
 
   /**

@@ -1961,7 +1961,7 @@ UI.createExternalLink = function(url, linkText, className, preventClick) {
   }
   if (linkText !== url)
     a.title = url;
-  a.textContent = linkText.trimMiddle(150);
+  a.textContent = linkText.trimMiddle(UI.MaxLengthForDisplayedURLs);
   a.setAttribute('target', '_blank');
 
   return a;
@@ -2032,3 +2032,9 @@ UI.createFileSelectorElement = function(callback) {
   }
   return fileSelectorElement;
 };
+
+/**
+ * @const
+ * @type {number}
+ */
+UI.MaxLengthForDisplayedURLs = 150;

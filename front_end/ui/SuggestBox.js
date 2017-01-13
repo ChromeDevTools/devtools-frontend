@@ -63,7 +63,7 @@ UI.SuggestBox = class {
     this._container = createElementWithClass('div', 'suggest-box-container');
     this._rowHeight = 17;
     /** @type {!UI.ListControl<!UI.SuggestBox.Suggestion>} */
-    this._list = new UI.ListControl(this, UI.ListMode.ViewportFixedItems);
+    this._list = new UI.ListControl(this, UI.ListMode.EqualHeightItems);
     this._element = this._list.element;
     this._element.classList.add('suggest-box');
     this._container.appendChild(this._element);
@@ -262,7 +262,13 @@ UI.SuggestBox = class {
       var subtitleElement = element.createChild('span', 'suggestion-subtitle');
       subtitleElement.textContent = item.subtitle.trimEnd(maxTextLength - displayText.length);
     }
-    element.addEventListener('mousedown', this._onItemMouseDown.bind(this), false);
+
+    element.addEventListener('click', event => {
+      this._list.selectItem(item);
+      this._userInteracted = true;
+      event.consume(true);
+      this.acceptSuggestion();
+    });
     return element;
   }
 
@@ -302,17 +308,6 @@ UI.SuggestBox = class {
   }
 
   /**
-   * @param {!Event} event
-   */
-  _onItemMouseDown(event) {
-    if (!this._list.onClick(event))
-      return;
-    this._userInteracted = true;
-    this.acceptSuggestion();
-    event.consume(true);
-  }
-
-  /**
    * @param {!UI.SuggestBox.Suggestions} completions
    * @param {boolean} canShowForSingleItem
    * @param {string} userEnteredText
@@ -347,21 +342,21 @@ UI.SuggestBox = class {
       this._show();
       this._updateBoxPosition(anchorBox, completions.length);
       this._updateWidth(completions);
-      this._list.fixedHeightChanged();
+      this._list.invalidateItemHeight();
       this._list.replaceAllItems(completions);
 
-      var highestPriorityItem = -1;
       if (selectHighestPriority) {
-        var highestPriority = -Infinity;
+        var highestPriorityItem = completions[0];
+        var highestPriority = completions[0].priority || 0;
         for (var i = 0; i < completions.length; i++) {
           var priority = completions[i].priority || 0;
           if (highestPriority < priority) {
             highestPriority = priority;
-            highestPriorityItem = i;
+            highestPriorityItem = completions[i];
           }
         }
+        this._list.selectItem(highestPriorityItem, true);
       }
-      this._list.selectItemAtIndex(highestPriorityItem, true);
     } else {
       if (completions.length === 1) {
         this._onlyCompletion = completions[0].title;
@@ -376,12 +371,29 @@ UI.SuggestBox = class {
    * @return {boolean}
    */
   keyPressed(event) {
-    if (this._list.onKeyDown(event)) {
+    var selected = false;
+    switch (event.key) {
+      case 'Enter':
+        return this.enterKeyPressed();
+      case 'ArrowUp':
+        selected = this._list.selectPreviousItem(true, false);
+        break;
+      case 'ArrowDown':
+        selected = this._list.selectNextItem(true, false);
+        break;
+      case 'PageUp':
+        selected = this._list.selectItemPreviousPage(false);
+        break;
+      case 'PageDown':
+        selected = this._list.selectItemNextPage(false);
+        break;
+      default:
+        return false;
+    }
+    if (selected) {
       this._userInteracted = true;
       return true;
     }
-    if (event.key === 'Enter')
-      return this.enterKeyPressed();
     return false;
   }
 

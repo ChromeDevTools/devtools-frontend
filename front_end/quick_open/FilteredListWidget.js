@@ -36,10 +36,9 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._progressBarElement = this._progressElement.createChild('div', 'filtered-list-widget-progress-bar');
 
     /** @type {!UI.ListControl<number>} */
-    this._list = new UI.ListControl(this, UI.ListMode.ViewportFixedItemsMeasured);
+    this._list = new UI.ListControl(this, UI.ListMode.EqualHeightItems);
     this._itemElementsContainer = this._list.element;
     this._itemElementsContainer.classList.add('container');
-    this._itemElementsContainer.addEventListener('click', this._onClick.bind(this), false);
     this._bottomElementsContainer.appendChild(this._itemElementsContainer);
 
     if (delegate.renderMonospace()) {
@@ -137,7 +136,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    * @override
    */
   wasShown() {
-    this._list.fixedHeightChanged();
+    this._list.invalidateItemHeight();
   }
 
   /**
@@ -187,7 +186,13 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     var subtitleElement = itemElement.createChild('div', 'filtered-list-widget-subtitle');
     subtitleElement.textContent = '\u200B';
     this._delegate.renderItem(item, this._value(), titleElement, subtitleElement);
-
+    itemElement.addEventListener('click', event => {
+      event.consume(true);
+      // Detach dialog before allowing delegate to override focus.
+      if (this._dialog)
+        this._dialog.detach();
+      this._selectItemWithQuery(item, this._value());
+    }, false);
     return itemElement;
   }
 
@@ -197,6 +202,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    * @return {number}
    */
   heightForItem(item) {
+    // Let the list measure items for us.
     return 0;
   }
 
@@ -352,7 +358,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._updateNotFoundMessage(!!filteredItems.length);
     this._list.replaceAllItems(filteredItems);
     if (filteredItems.length)
-      this._list.selectItemAtIndex(0, true);
+      this._list.selectItem(filteredItems[0]);
 
     var beforeDialogHeight = this._dialog.element.style.height;
     this._dialog.contentResized();
@@ -394,40 +400,35 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    * @param {!Event} event
    */
   _onKeyDown(event) {
-    if (this._list.onKeyDown(event)) {
-      event.consume(true);
-      return;
-    }
-
-    switch (event.keyCode) {
-      case UI.KeyboardShortcut.Keys.Enter.code:
+    var handled = false;
+    switch (event.key) {
+      case 'Enter':
         this._onEnter(event);
-        break;
-      case UI.KeyboardShortcut.Keys.Tab.code:
+        return;
+      case 'Tab':
         this._tabKeyPressed();
+        return;
+      case 'ArrowUp':
+        handled = this._list.selectPreviousItem(true, false);
         break;
-      default:
+      case 'ArrowDown':
+        handled = this._list.selectNextItem(true, false);
+        break;
+      case 'PageUp':
+        handled = this._list.selectItemPreviousPage(false);
+        break;
+      case 'PageDown':
+        handled = this._list.selectItemNextPage(false);
+        break;
     }
+    if (handled)
+      event.consume(true);
   }
 
   _scheduleFilter() {
     if (this._filterTimer)
       return;
     this._filterTimer = setTimeout(this._filterItems.bind(this), 0);
-  }
-
-  /**
-   * @param {!Event} event
-   */
-  _onClick(event) {
-    if (!this._list.onClick(event))
-      return;
-
-    event.consume(true);
-    // Detach dialog before allowing delegate to override focus.
-    if (this._dialog)
-      this._dialog.detach();
-    this._selectItemWithQuery(this._list.selectedItem(), this._value());
   }
 
   /**

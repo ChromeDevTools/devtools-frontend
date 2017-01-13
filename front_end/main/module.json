@@ -433,10 +433,10 @@
         "RenderingOptions.js",
         "SimpleApp.js",
         "OverlayController.js",
-        "Main.js",
         "GCActionDelegate.js",
         "RequestAppBannerActionDelegate.js",
-        "ExecutionContextSelector.js"
+        "ExecutionContextSelector.js",
+        "Main.js"
     ],
     "resources": [
         "errorWarningCounter.css",

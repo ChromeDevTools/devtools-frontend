@@ -15,7 +15,7 @@
             "id": "profiles",
             "title": "Memory",
             "order": 60,
-            "className": "Profiler.ProfilesPanel",
+            "className": "Profiler.MemoryProfilerPanel",
             "condition": "!v8only"
         },
         {
@@ -23,7 +23,7 @@
             "contextTypes": [
                 "SDK.RemoteObject"
             ],
-            "className": "Profiler.ProfilesPanel.ContextMenuProvider"
+            "className": "Profiler.MemoryProfilerPanel"
         },
         {
             "type": "setting",
@@ -56,9 +56,9 @@
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
             "contextTypes": [
-                "Profiler.ProfilesPanel"
+                "Profiler.MemoryProfilerPanel"
             ],
-            "className": "Profiler.ProfilesPanel.RecordActionDelegate",
+            "className": "Profiler.MemoryProfilerPanel",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -78,6 +78,8 @@
         "heap_snapshot_model"
     ],
     "scripts": [
+        "ProfileType.js",
+        "ProfileHeader.js",
         "ProfilesPanel.js",
         "ProfileView.js",
         "ProfileDataGrid.js",
@@ -90,6 +92,7 @@
         "HeapSnapshotDataGrids.js",
         "HeapSnapshotGridNodes.js",
         "HeapSnapshotView.js",
+        "MemoryProfilerPanel.js",
         "ProfileLauncherView.js",
         "ProfileTypeRegistry.js",
         "TargetsComboBoxController.js"

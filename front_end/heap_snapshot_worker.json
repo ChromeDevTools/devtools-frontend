@@ -1,7 +1,9 @@
 {
     "modules": [
         { "name": "heap_snapshot_worker", "type": "autostart" },
-        { "name": "heap_snapshot_model", "type": "autostart" }
+        { "name": "heap_snapshot_model", "type": "autostart" },
+        { "name": "platform", "type": "autostart" },
+        { "name": "common", "type": "autostart" }
     ],
 
     "has_html": false

@@ -1,8 +1,5 @@
 {
     "scripts": [
-        "../platform/utilities.js",
-        "../common/UIString.js",
-        "../common/TextUtils.js",
         "AllocationProfile.js",
         "HeapSnapshot.js",
         "HeapSnapshotLoader.js",
@@ -10,6 +7,8 @@
         "HeapSnapshotWorker.js"
     ],
     "dependencies": [
-        "heap_snapshot_model"
+        "heap_snapshot_model",
+        "platform",
+        "common"
     ]
 }

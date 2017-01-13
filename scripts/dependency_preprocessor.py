@@ -31,7 +31,7 @@ class DependencyPreprocessor(object):
         arg_list = []
         for module in self.modules:
             dependencies = set(self.descriptors.sorted_dependencies_closure(module))
-            excluded_modules = self.modules - {module} - dependencies - self._transitive_implicit_dependencies(module)
+            excluded_modules = self.modules - {module} - dependencies
             excluded_namespaces = [self._map_module_to_namespace(m) for m in excluded_modules]
             file_paths = [path.join(self.temp_frontend_path, module, file_name)
                           for file_name in self.descriptors.module_compiled_files(module)]
@@ -41,22 +41,6 @@ class DependencyPreprocessor(object):
             }
             arg_list.append(arg)
         parallelize(poison_module, arg_list)
-
-    def _transitive_implicit_dependencies(self, module):
-        """Finds implicit dependencies for workers (which cherry-pick files from other modules)"""
-        explicit_dependencies = self.descriptors.sorted_dependencies_closure(module)
-        implicit_dependencies = set()
-        for explicit_dependency in explicit_dependencies:
-            implicit_dependencies |= self._implicit_dependencies_for_module(explicit_dependency)
-        return implicit_dependencies
-
-    def _implicit_dependencies_for_module(self, module):
-        implicit_dependencies = set()
-        for module_file in self.descriptors.module_compiled_files(module):
-            if "../" in module_file:
-                components = module_file.split('/')
-                implicit_dependencies.add(components[1])
-        return implicit_dependencies
 
     def _map_module_to_namespace(self, module):
         return self._special_case_namespaces.get(module, self._to_camel_case(module))

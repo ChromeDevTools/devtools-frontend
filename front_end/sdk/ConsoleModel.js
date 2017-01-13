@@ -498,10 +498,11 @@ SDK.ConsoleMessage.MessageSource = {
   Rendering: 'rendering',
   CSS: 'css',
   Security: 'security',
-  Violation: 'violation',
-  Other: 'other',
   Deprecation: 'deprecation',
-  Worker: 'worker'
+  Worker: 'worker',
+  Violation: 'violation',
+  Intervention: 'intervention',
+  Other: 'other'
 };
 
 /**

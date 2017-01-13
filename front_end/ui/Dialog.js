@@ -130,7 +130,7 @@ UI.Dialog = class extends UI.Widget {
   }
 
   /**
-   * @param {!Size} size
+   * @param {!UI.Size} size
    */
   setMaxSize(size) {
     this._maxSize = size;

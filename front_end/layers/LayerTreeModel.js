@@ -496,10 +496,10 @@ Layers.AgentLayer = class {
 
     if (this._layerPayload.transform) {
       var transformMatrix = this._matrixFromArray(this._layerPayload.transform);
-      var anchorVector = new Common.Geometry.Vector(
+      var anchorVector = new UI.Geometry.Vector(
           this._layerPayload.width * this.anchorPoint()[0], this._layerPayload.height * this.anchorPoint()[1],
           this.anchorPoint()[2]);
-      var anchorPoint = Common.Geometry.multiplyVectorByMatrixAndNormalize(anchorVector, matrix);
+      var anchorPoint = UI.Geometry.multiplyVectorByMatrixAndNormalize(anchorVector, matrix);
       var anchorMatrix = new WebKitCSSMatrix().translate(-anchorPoint.x, -anchorPoint.y, -anchorPoint.z);
       matrix = anchorMatrix.inverse().multiply(transformMatrix.multiply(anchorMatrix.multiply(matrix)));
     }
@@ -525,8 +525,8 @@ Layers.AgentLayer = class {
     this._quad = [];
     var vertices = this._createVertexArrayForRect(this._layerPayload.width, this._layerPayload.height);
     for (var i = 0; i < 4; ++i) {
-      var point = Common.Geometry.multiplyVectorByMatrixAndNormalize(
-          new Common.Geometry.Vector(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]), matrix);
+      var point = UI.Geometry.multiplyVectorByMatrixAndNormalize(
+          new UI.Geometry.Vector(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]), matrix);
       this._quad.push(point.x, point.y);
     }
 

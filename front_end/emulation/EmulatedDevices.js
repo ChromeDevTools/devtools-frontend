@@ -71,10 +71,10 @@ Emulation.EmulatedDevice = class {
 
       /**
        * @param {*} json
-       * @return {!Insets}
+       * @return {!UI.Insets}
        */
       function parseInsets(json) {
-        return new Insets(
+        return new UI.Insets(
             parseIntValue(json, 'left'), parseIntValue(json, 'top'), parseIntValue(json, 'right'),
             parseIntValue(json, 'bottom'));
       }
@@ -330,10 +330,10 @@ Emulation.EmulatedDevice = class {
   }
 };
 
-/** @typedef {!{title: string, orientation: string, insets: !Insets, image: ?string}} */
+/** @typedef {!{title: string, orientation: string, insets: !UI.Insets, image: ?string}} */
 Emulation.EmulatedDevice.Mode;
 
-/** @typedef {!{width: number, height: number, outlineInsets: ?Insets, outlineImage: ?string}} */
+/** @typedef {!{width: number, height: number, outlineInsets: ?UI.Insets, outlineImage: ?string}} */
 Emulation.EmulatedDevice.Orientation;
 
 Emulation.EmulatedDevice.Horizontal = 'horizontal';
@@ -420,11 +420,15 @@ Emulation.EmulatedDevicesList = class extends Common.Object {
           device.modes.push({
             title: '',
             orientation: Emulation.EmulatedDevice.Horizontal,
-            insets: new Insets(0, 0, 0, 0),
+            insets: new UI.Insets(0, 0, 0, 0),
             image: null
           });
-          device.modes.push(
-              {title: '', orientation: Emulation.EmulatedDevice.Vertical, insets: new Insets(0, 0, 0, 0), image: null});
+          device.modes.push({
+            title: '',
+            orientation: Emulation.EmulatedDevice.Vertical,
+            insets: new UI.Insets(0, 0, 0, 0),
+            image: null
+          });
         }
       } else {
         success = false;

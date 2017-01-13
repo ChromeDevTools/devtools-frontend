@@ -193,7 +193,7 @@ Timeline.TimelinePaintImageView = class extends UI.Widget {
                      .translate(clientWidth / 2, clientHeight / 2)
                      .scale(scale, scale)
                      .translate(-width / 2, -height / 2);
-    var bounds = Common.Geometry.boundsForTransformedPoints(matrix, [0, 0, 0, width, height, 0]);
+    var bounds = UI.Geometry.boundsForTransformedPoints(matrix, [0, 0, 0, width, height, 0]);
     this._transformController.clampOffsets(
         paddingX - bounds.maxX, clientWidth - paddingX - bounds.minX, paddingY - bounds.maxY,
         clientHeight - paddingY - bounds.minY);

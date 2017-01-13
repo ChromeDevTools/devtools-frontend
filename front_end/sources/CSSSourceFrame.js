@@ -110,12 +110,11 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     var swatches = [];
     var swatchPositions = [];
 
-    var regexes = [
-      SDK.CSSMetadata.VariableRegex, SDK.CSSMetadata.URLRegex, Common.Geometry.CubicBezier.Regex, Common.Color.Regex
-    ];
+    var regexes =
+        [SDK.CSSMetadata.VariableRegex, SDK.CSSMetadata.URLRegex, UI.Geometry.CubicBezier.Regex, Common.Color.Regex];
     var handlers = new Map();
     handlers.set(Common.Color.Regex, this._createColorSwatch.bind(this));
-    handlers.set(Common.Geometry.CubicBezier.Regex, this._createBezierSwatch.bind(this));
+    handlers.set(UI.Geometry.CubicBezier.Regex, this._createBezierSwatch.bind(this));
 
     for (var lineNumber = startLine; lineNumber <= endLine; lineNumber++) {
       var line = this.textEditor.line(lineNumber).substring(0, Sources.CSSSourceFrame.maxSwatchProcessingLength);
@@ -177,7 +176,7 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
    * @return {?InlineEditor.BezierSwatch}
    */
   _createBezierSwatch(text) {
-    if (!Common.Geometry.CubicBezier.parse(text))
+    if (!UI.Geometry.CubicBezier.parse(text))
       return null;
     var swatch = InlineEditor.BezierSwatch.create();
     swatch.setBezierText(text);
@@ -247,10 +246,10 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       this._bezierEditor = new InlineEditor.BezierEditor();
       this._bezierEditor.addEventListener(InlineEditor.BezierEditor.Events.BezierChanged, this._bezierChanged, this);
     }
-    var cubicBezier = Common.Geometry.CubicBezier.parse(swatch.bezierText());
+    var cubicBezier = UI.Geometry.CubicBezier.parse(swatch.bezierText());
     if (!cubicBezier) {
       cubicBezier =
-          /** @type {!Common.Geometry.CubicBezier} */ (Common.Geometry.CubicBezier.parse('linear'));
+          /** @type {!UI.Geometry.CubicBezier} */ (UI.Geometry.CubicBezier.parse('linear'));
     }
     this._bezierEditor.setBezier(cubicBezier);
     this._swatchPopoverHelper.show(this._bezierEditor, swatch.iconElement(), this._swatchPopoverHidden.bind(this));

@@ -1924,7 +1924,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    * @return {!Node}
    */
   _processBezier(text) {
-    if (!this._editable() || !Common.Geometry.CubicBezier.parse(text))
+    if (!this._editable() || !UI.Geometry.CubicBezier.parse(text))
       return createTextNode(text);
     var swatchPopoverHelper = this._parentPane._swatchPopoverHelper;
     var swatch = InlineEditor.BezierSwatch.create();
@@ -1943,9 +1943,9 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       return createTextNode(propertyValue);
     var shadows;
     if (propertyName === 'text-shadow')
-      shadows = Common.CSSShadowModel.parseTextShadow(propertyValue);
+      shadows = InlineEditor.CSSShadowModel.parseTextShadow(propertyValue);
     else
-      shadows = Common.CSSShadowModel.parseBoxShadow(propertyValue);
+      shadows = InlineEditor.CSSShadowModel.parseBoxShadow(propertyValue);
     if (!shadows.length)
       return createTextNode(propertyValue);
     var container = createDocumentFragment();
@@ -3000,7 +3000,7 @@ Elements.StylesSidebarPropertyRenderer = class {
     var regexes = [SDK.CSSMetadata.VariableRegex, SDK.CSSMetadata.URLRegex];
     var processors = [createTextNode, this._processURL.bind(this)];
     if (this._bezierHandler && SDK.cssMetadata().isBezierAwareProperty(this._propertyName)) {
-      regexes.push(Common.Geometry.CubicBezier.Regex);
+      regexes.push(UI.Geometry.CubicBezier.Regex);
       processors.push(this._bezierHandler);
     }
     if (this._colorHandler && SDK.cssMetadata().isColorAwareProperty(this._propertyName)) {

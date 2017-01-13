@@ -343,7 +343,7 @@ Emulation.SensorsView = class extends UI.VBox {
     var matrix = new WebKitCSSMatrix();
     this._boxMatrix = matrix.rotate(-deviceOrientation.beta, deviceOrientation.gamma, -deviceOrientation.alpha);
     var eulerAngles =
-        new Common.Geometry.EulerAngles(deviceOrientation.alpha, deviceOrientation.beta, deviceOrientation.gamma);
+        new UI.Geometry.EulerAngles(deviceOrientation.alpha, deviceOrientation.beta, deviceOrientation.gamma);
     this._orientationLayer.style.transform = eulerAngles.toRotate3DString();
   }
 
@@ -359,11 +359,11 @@ Emulation.SensorsView = class extends UI.VBox {
     event.consume(true);
     var axis, angle;
     if (event.shiftKey) {
-      axis = new Common.Geometry.Vector(0, 0, -1);
+      axis = new UI.Geometry.Vector(0, 0, -1);
       angle = (this._mouseDownVector.x - mouseMoveVector.x) * Emulation.SensorsView.ShiftDragOrientationSpeed;
     } else {
-      axis = Common.Geometry.crossProduct(this._mouseDownVector, mouseMoveVector);
-      angle = Common.Geometry.calculateAngle(this._mouseDownVector, mouseMoveVector);
+      axis = UI.Geometry.crossProduct(this._mouseDownVector, mouseMoveVector);
+      angle = UI.Geometry.calculateAngle(this._mouseDownVector, mouseMoveVector);
     }
 
     // The mouse movement vectors occur in the screen space, which is offset by 90 degrees from
@@ -374,7 +374,7 @@ Emulation.SensorsView = class extends UI.VBox {
                         .rotate(90, 0, 0)
                         .multiply(this._originalBoxMatrix);
 
-    var eulerAngles = Common.Geometry.EulerAngles.fromRotationMatrix(currentMatrix);
+    var eulerAngles = UI.Geometry.EulerAngles.fromRotationMatrix(currentMatrix);
     var newOrientation = new Emulation.DeviceOrientation(-eulerAngles.alpha, -eulerAngles.beta, eulerAngles.gamma);
     this._setDeviceOrientation(newOrientation, Emulation.SensorsView.DeviceOrientationModificationSource.UserDrag);
     this._setSelectElementLabel(this._orientationSelectElement, Emulation.SensorsView.NonPresetOptions.Custom);
@@ -402,7 +402,7 @@ Emulation.SensorsView = class extends UI.VBox {
   /**
    * @param {number} x
    * @param {number} y
-   * @return {?Common.Geometry.Vector}
+   * @return {?UI.Geometry.Vector}
    */
   _calculateRadiusVector(x, y) {
     var rect = this._stageElement.getBoundingClientRect();
@@ -411,9 +411,9 @@ Emulation.SensorsView = class extends UI.VBox {
     var sphereY = (y - rect.top - rect.height / 2) / radius;
     var sqrSum = sphereX * sphereX + sphereY * sphereY;
     if (sqrSum > 0.5)
-      return new Common.Geometry.Vector(sphereX, sphereY, 0.5 / Math.sqrt(sqrSum));
+      return new UI.Geometry.Vector(sphereX, sphereY, 0.5 / Math.sqrt(sqrSum));
 
-    return new Common.Geometry.Vector(sphereX, sphereY, Math.sqrt(1 - sqrSum));
+    return new UI.Geometry.Vector(sphereX, sphereY, Math.sqrt(1 - sqrSum));
   }
 
   _appendTouchControl() {

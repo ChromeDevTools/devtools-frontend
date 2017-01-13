@@ -502,7 +502,7 @@ UI.Widget = class extends Common.Object {
   }
 
   /**
-   * @return {!Size}
+   * @return {!UI.Size}
    */
   measurePreferredSize() {
     var document = this.element.ownerDocument;
@@ -511,7 +511,7 @@ UI.Widget = class extends Common.Object {
 
     UI.Widget._originalAppendChild.call(document.body, this.element);
     this.element.positionAt(0, 0);
-    var result = new Size(this.element.offsetWidth, this.element.offsetHeight);
+    var result = new UI.Size(this.element.offsetWidth, this.element.offsetHeight);
 
     this.element.positionAt(undefined, undefined);
     if (oldParent)
@@ -522,14 +522,14 @@ UI.Widget = class extends Common.Object {
   }
 
   /**
-   * @return {!Constraints}
+   * @return {!UI.Constraints}
    */
   calculateConstraints() {
-    return new Constraints();
+    return new UI.Constraints();
   }
 
   /**
-   * @return {!Constraints}
+   * @return {!UI.Constraints}
    */
   constraints() {
     if (typeof this._constraints !== 'undefined')
@@ -546,7 +546,7 @@ UI.Widget = class extends Common.Object {
    * @param {number} preferredHeight
    */
   setMinimumAndPreferredSizes(width, height, preferredWidth, preferredHeight) {
-    this._constraints = new Constraints(new Size(width, height), new Size(preferredWidth, preferredHeight));
+    this._constraints = new UI.Constraints(new UI.Size(width, height), new UI.Size(preferredWidth, preferredHeight));
     this.invalidateConstraints();
   }
 
@@ -555,7 +555,7 @@ UI.Widget = class extends Common.Object {
    * @param {number} height
    */
   setMinimumSize(width, height) {
-    this._constraints = new Constraints(new Size(width, height));
+    this._constraints = new UI.Constraints(new UI.Size(width, height));
     this.invalidateConstraints();
   }
 
@@ -615,10 +615,10 @@ UI.VBox = class extends UI.Widget {
 
   /**
    * @override
-   * @return {!Constraints}
+   * @return {!UI.Constraints}
    */
   calculateConstraints() {
-    var constraints = new Constraints();
+    var constraints = new UI.Constraints();
 
     /**
      * @this {!UI.Widget}
@@ -649,10 +649,10 @@ UI.HBox = class extends UI.Widget {
 
   /**
    * @override
-   * @return {!Constraints}
+   * @return {!UI.Constraints}
    */
   calculateConstraints() {
-    var constraints = new Constraints();
+    var constraints = new UI.Constraints();
 
     /**
      * @this {!UI.Widget}

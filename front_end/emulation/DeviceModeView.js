@@ -132,7 +132,7 @@ Emulation.DeviceModeView = class extends UI.VBox {
    */
   _onResizeStart(event) {
     this._slowPositionStart = null;
-    /** @type {!Size} */
+    /** @type {!UI.Size} */
     this._resizeStart = this._model.screenRect().size();
   }
 
@@ -182,7 +182,7 @@ Emulation.DeviceModeView = class extends UI.VBox {
   _updateUI() {
     /**
      * @param {!Element} element
-     * @param {!Common.Rect} rect
+     * @param {!UI.Rect} rect
      */
     function applyRect(element, rect) {
       element.style.left = rect.left + 'px';
@@ -310,8 +310,8 @@ Emulation.DeviceModeView = class extends UI.VBox {
   _contentAreaResized() {
     var zoomFactor = UI.zoomManager.zoomFactor();
     var rect = this._contentArea.getBoundingClientRect();
-    var availableSize = new Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
-    var preferredSize = new Size(
+    var availableSize = new UI.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
+    var preferredSize = new UI.Size(
         Math.max((rect.width - 2 * this._handleWidth) * zoomFactor, 1),
         Math.max((rect.height - this._handleHeight) * zoomFactor, 1));
     this._model.setAvailableSize(availableSize, preferredSize);
@@ -367,7 +367,7 @@ Emulation.DeviceModeView = class extends UI.VBox {
 
     var zoomFactor = UI.zoomManager.zoomFactor();
     var rect = this._contentArea.getBoundingClientRect();
-    var availableSize = new Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
+    var availableSize = new UI.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
     var outlineVisible = this._model.deviceOutlineSetting().get();
 
     if (availableSize.width < this._model.screenRect().width ||
@@ -421,7 +421,7 @@ Emulation.DeviceModeView = class extends UI.VBox {
 
       /**
        * @param {string} src
-       * @param {!Common.Rect} rect
+       * @param {!UI.Rect} rect
        * @return {!Promise<undefined>}
        */
       function paintImage(src, rect) {

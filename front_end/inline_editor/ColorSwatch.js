@@ -235,14 +235,14 @@ InlineEditor.CSSShadowSwatch = class extends HTMLSpanElement {
   }
 
   /**
-   * @return {!Common.CSSShadowModel} cssShadowModel
+   * @return {!InlineEditor.CSSShadowModel} cssShadowModel
    */
   model() {
     return this._model;
   }
 
   /**
-   * @param {!Common.CSSShadowModel} model
+   * @param {!InlineEditor.CSSShadowModel} model
    */
   setCSSShadow(model) {
     this._model = model;

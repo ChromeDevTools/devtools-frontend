@@ -603,7 +603,7 @@ UI.SplitWidget = class extends UI.Widget {
     var totalSize = this._totalSizeDIP();
     var zoomFactor = this._constraintsInDip ? 1 : UI.zoomManager.zoomFactor();
 
-    var constraints = this._sidebarWidget ? this._sidebarWidget.constraints() : new Constraints();
+    var constraints = this._sidebarWidget ? this._sidebarWidget.constraints() : new UI.Constraints();
     var minSidebarSize = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
     if (!minSidebarSize)
       minSidebarSize = UI.SplitWidget.MinPadding;
@@ -620,7 +620,7 @@ UI.SplitWidget = class extends UI.Widget {
       preferredSidebarSize = Math.max(sidebarSize, minSidebarSize);
     preferredSidebarSize += zoomFactor;  // 1 css pixel for splitter border.
 
-    constraints = this._mainWidget ? this._mainWidget.constraints() : new Constraints();
+    constraints = this._mainWidget ? this._mainWidget.constraints() : new UI.Constraints();
     var minMainSize = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
     if (!minMainSize)
       minMainSize = UI.SplitWidget.MinPadding;
@@ -684,16 +684,16 @@ UI.SplitWidget = class extends UI.Widget {
 
   /**
    * @override
-   * @return {!Constraints}
+   * @return {!UI.Constraints}
    */
   calculateConstraints() {
     if (this._showMode === UI.SplitWidget.ShowMode.OnlyMain)
-      return this._mainWidget ? this._mainWidget.constraints() : new Constraints();
+      return this._mainWidget ? this._mainWidget.constraints() : new UI.Constraints();
     if (this._showMode === UI.SplitWidget.ShowMode.OnlySidebar)
-      return this._sidebarWidget ? this._sidebarWidget.constraints() : new Constraints();
+      return this._sidebarWidget ? this._sidebarWidget.constraints() : new UI.Constraints();
 
-    var mainConstraints = this._mainWidget ? this._mainWidget.constraints() : new Constraints();
-    var sidebarConstraints = this._sidebarWidget ? this._sidebarWidget.constraints() : new Constraints();
+    var mainConstraints = this._mainWidget ? this._mainWidget.constraints() : new UI.Constraints();
+    var sidebarConstraints = this._sidebarWidget ? this._sidebarWidget.constraints() : new UI.Constraints();
     var min = UI.SplitWidget.MinPadding;
     if (this._isVertical) {
       mainConstraints = mainConstraints.widthToMax(min).addWidth(1);  // 1 for splitter

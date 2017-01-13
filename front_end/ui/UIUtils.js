@@ -990,7 +990,7 @@ UI.revertDomChanges = function(domChanges) {
 /**
  * @param {!Element} element
  * @param {?Element=} containerElement
- * @return {!Size}
+ * @return {!UI.Size}
  */
 UI.measurePreferredSize = function(element, containerElement) {
   var oldParent = element.parentElement;
@@ -1005,7 +1005,7 @@ UI.measurePreferredSize = function(element, containerElement) {
     oldParent.insertBefore(element, oldNextSibling);
   else
     element.remove();
-  return new Size(result.width, result.height);
+  return new UI.Size(result.width, result.height);
 };
 
 /**

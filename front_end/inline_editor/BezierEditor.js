@@ -44,7 +44,7 @@ InlineEditor.BezierEditor = class extends UI.VBox {
   }
 
   /**
-   * @param {?Common.Geometry.CubicBezier} bezier
+   * @param {?UI.Geometry.CubicBezier} bezier
    */
   setBezier(bezier) {
     if (!bezier)
@@ -54,7 +54,7 @@ InlineEditor.BezierEditor = class extends UI.VBox {
   }
 
   /**
-   * @return {!Common.Geometry.CubicBezier}
+   * @return {!UI.Geometry.CubicBezier}
    */
   bezier() {
     return this._bezier;
@@ -97,9 +97,9 @@ InlineEditor.BezierEditor = class extends UI.VBox {
    * @return {boolean}
    */
   _dragStart(event) {
-    this._mouseDownPosition = new Common.Geometry.Point(event.x, event.y);
+    this._mouseDownPosition = new UI.Geometry.Point(event.x, event.y);
     var ui = this._curveUI;
-    this._controlPosition = new Common.Geometry.Point(
+    this._controlPosition = new UI.Geometry.Point(
         Number.constrain((event.offsetX - ui.radius) / ui.curveWidth(), 0, 1),
         (ui.curveHeight() + ui.marginTop + ui.radius - event.offsetY) / ui.curveHeight());
 
@@ -122,7 +122,7 @@ InlineEditor.BezierEditor = class extends UI.VBox {
   _updateControlPosition(mouseX, mouseY) {
     var deltaX = (mouseX - this._mouseDownPosition.x) / this._curveUI.curveWidth();
     var deltaY = (mouseY - this._mouseDownPosition.y) / this._curveUI.curveHeight();
-    var newPosition = new Common.Geometry.Point(
+    var newPosition = new UI.Geometry.Point(
         Number.constrain(this._controlPosition.x + deltaX, 0, 1), this._controlPosition.y - deltaY);
     this._bezier.controlPoints[this._selectedPoint] = newPosition;
   }
@@ -152,7 +152,7 @@ InlineEditor.BezierEditor = class extends UI.VBox {
     var presetElement = createElementWithClass('div', 'bezier-preset-category');
     var iconElement = presetElement.createSVGChild('svg', 'bezier-preset monospace');
     var category = {presets: presetGroup, presetIndex: 0, icon: presetElement};
-    this._presetUI.drawCurve(Common.Geometry.CubicBezier.parse(category.presets[0].value), iconElement);
+    this._presetUI.drawCurve(UI.Geometry.CubicBezier.parse(category.presets[0].value), iconElement);
     iconElement.addEventListener('click', this._presetCategorySelected.bind(this, category));
     return category;
   }
@@ -190,7 +190,7 @@ InlineEditor.BezierEditor = class extends UI.VBox {
     this._header.classList.add('bezier-header-active');
     this._selectedCategory = category;
     this._selectedCategory.icon.classList.add('bezier-preset-selected');
-    this.setBezier(Common.Geometry.CubicBezier.parse(category.presets[category.presetIndex].value));
+    this.setBezier(UI.Geometry.CubicBezier.parse(category.presets[category.presetIndex].value));
     this._onchange();
     this._startPreviewAnimation();
     if (event)
@@ -208,7 +208,7 @@ InlineEditor.BezierEditor = class extends UI.VBox {
     var length = this._selectedCategory.presets.length;
     this._selectedCategory.presetIndex = (this._selectedCategory.presetIndex + (intensify ? 1 : -1) + length) % length;
     this.setBezier(
-        Common.Geometry.CubicBezier.parse(this._selectedCategory.presets[this._selectedCategory.presetIndex].value));
+        UI.Geometry.CubicBezier.parse(this._selectedCategory.presets[this._selectedCategory.presetIndex].value));
     this._onchange();
     this._startPreviewAnimation();
   }

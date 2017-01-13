@@ -453,16 +453,16 @@ UI.TabbedPane = class extends UI.VBox {
 
   /**
    * @override
-   * @return {!Constraints}
+   * @return {!UI.Constraints}
    */
   calculateConstraints() {
     var constraints = super.calculateConstraints();
-    var minContentConstraints = new Constraints(new Size(0, 0), new Size(50, 50));
+    var minContentConstraints = new UI.Constraints(new UI.Size(0, 0), new UI.Size(50, 50));
     constraints = constraints.widthToMax(minContentConstraints).heightToMax(minContentConstraints);
     if (this._verticalTabLayout)
-      constraints = constraints.addWidth(new Constraints(new Size(120, 0)));
+      constraints = constraints.addWidth(new UI.Constraints(new UI.Size(120, 0)));
     else
-      constraints = constraints.addHeight(new Constraints(new Size(0, 30)));
+      constraints = constraints.addHeight(new UI.Constraints(new UI.Size(0, 30)));
     return constraints;
   }
 

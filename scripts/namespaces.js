@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+const TARGET_MODULE = 'UI';
+
 function depends(module, from)
 {
     if (module === from)
@@ -58,7 +60,7 @@ function read(filePath)
 
         var newName;
 
-        newName = moduleName + "." + name;
+        newName = TARGET_MODULE + "." + name;
         var existing = map.get(name);
         if (existing && existing.weight > weight)
             continue;
@@ -75,18 +77,22 @@ function write(filePath)
     for (var key of sortedKeys) {
         var originalIdentifier = key;
         var newIdentifier = map.get(key).name;
-        newContent = newContent.split("\n").map(function (line) {
-            return processLine(line);
-        }).join("\n");
+        newContent = newContent.split("\n").map(line => processLine(line, originalIdentifier, newIdentifier)).join("\n");
     }
 
     if (content !== newContent)
         fs.writeFileSync(filePath, newContent);
 }
 
-function processLine(line) {
-    // Add transformation logic
-    return line;
+function processLine(line, originalIdentifier, newIdentifier) {
+    return line.replace(new RegExp(`^var ${originalIdentifier}`, "g"), `${newIdentifier}`)
+      .replace(new RegExp(`^function ${originalIdentifier}`, "g"), `${newIdentifier} = function`)
+      .replace(new RegExp(`^${originalIdentifier}\\.`, "g"), `${newIdentifier}.`)
+      .replace(new RegExp(`([^."'])(\\b${originalIdentifier}\\b)(?!(\.js|[ ]|[']))`, "g"), usageReplacer);
+
+    function usageReplacer(match, p1) {
+        return [p1, newIdentifier].join("");
+    }
 }
 
 function walkSync(currentDirPath, process, json) {
@@ -114,7 +120,7 @@ walkSync('front_end', read);
 
 sortedKeys = Array.from(map.keys());
 sortedKeys.sort((a, b) => a.localeCompare(b));
-
+sortedKeys = ['Size', 'Insets', 'Constraints'];
 for (var key of sortedKeys)
     console.log(key + " => " + map.get(key).name);
 

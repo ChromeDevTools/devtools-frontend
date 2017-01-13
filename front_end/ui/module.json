@@ -48,7 +48,8 @@
         "TabbedPane.js",
         "UIUtils.js",
         "ZoomManager.js",
-        "ShortcutsScreen.js"
+        "ShortcutsScreen.js",
+        "Geometry.js"
     ],
     "resources": [
         "checkboxTextLabel.css",

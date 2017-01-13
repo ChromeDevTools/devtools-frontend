@@ -148,9 +148,9 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
     device.userAgent = editor.control('user-agent').value;
     device.modes = [];
     device.modes.push(
-        {title: '', orientation: Emulation.EmulatedDevice.Vertical, insets: new Insets(0, 0, 0, 0), image: null});
+        {title: '', orientation: Emulation.EmulatedDevice.Vertical, insets: new UI.Insets(0, 0, 0, 0), image: null});
     device.modes.push(
-        {title: '', orientation: Emulation.EmulatedDevice.Horizontal, insets: new Insets(0, 0, 0, 0), image: null});
+        {title: '', orientation: Emulation.EmulatedDevice.Horizontal, insets: new UI.Insets(0, 0, 0, 0), image: null});
     device.capabilities = [];
     var uaType = editor.control('ua-type').value;
     if (uaType === Emulation.DeviceModeModel.UA.Mobile || uaType === Emulation.DeviceModeModel.UA.MobileNoTouch)

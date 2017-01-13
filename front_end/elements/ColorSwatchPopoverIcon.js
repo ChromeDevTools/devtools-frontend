@@ -33,10 +33,10 @@ Elements.BezierPopoverIcon = class {
     }
 
     this._bezierEditor = new InlineEditor.BezierEditor();
-    var cubicBezier = Common.Geometry.CubicBezier.parse(this._swatch.bezierText());
+    var cubicBezier = UI.Geometry.CubicBezier.parse(this._swatch.bezierText());
     if (!cubicBezier) {
       cubicBezier =
-          /** @type {!Common.Geometry.CubicBezier} */ (Common.Geometry.CubicBezier.parse('linear'));
+          /** @type {!UI.Geometry.CubicBezier} */ (UI.Geometry.CubicBezier.parse('linear'));
     }
     this._bezierEditor.setBezier(cubicBezier);
     this._bezierEditor.addEventListener(InlineEditor.BezierEditor.Events.BezierChanged, this._boundBezierChanged);
@@ -271,7 +271,7 @@ Elements.ShadowSwatchPopoverHelper = class {
    * @param {!Common.Event} event
    */
   _shadowChanged(event) {
-    this._shadowSwatch.setCSSShadow(/** @type {!Common.CSSShadowModel} */ (event.data));
+    this._shadowSwatch.setCSSShadow(/** @type {!InlineEditor.CSSShadowModel} */ (event.data));
     this._treeElement.applyStyleText(this._treeElement.renderedPropertyText(), false);
   }
 

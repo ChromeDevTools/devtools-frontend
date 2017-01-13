@@ -24,17 +24,18 @@ const APPLICATION_DESCRIPTORS = [
 const MODULES_TO_REMOVE = [];
 
 const JS_FILES_MAPPING = [
-  {file: 'profiler/HeapSnapshotModel.js', new: 'heap_snapshot_model'},
+  {file: 'common/CSSShadowModel.js', existing: 'inline_editor'},
+  {file: 'common/Geometry.js', existing: 'ui'},
   // {file: 'module/file.js', existing: 'module'}
 ];
 
 const MODULE_MAPPING = {
-  heap_snapshot_model: {
-    dependencies: [],
-    dependents: ['heap_snapshot_worker', 'profiler'],
-    applications: ['inspector.json'], // need to manually add to heap snapshot worker b/c it's autostart
-    autostart: false,
-  },
+  // heap_snapshot_model: {
+  //   dependencies: [],
+  //   dependents: ['heap_snapshot_worker', 'profiler'],
+  //   applications: ['inspector.json'], // need to manually add to heap snapshot worker b/c it's autostart
+  //   autostart: false,
+  // },
 };
 
 const NEW_DEPENDENCIES_BY_EXISTING_MODULES = {
@@ -166,10 +167,16 @@ function calculateIdentifiers() {
       let name = match[1];
 
       var currentModule = fileObj.file.split('/')[0];
-      if (name.split('.')[0] !== mapModuleToNamespace(currentModule))
+      if (name.split('.')[0] !== mapModuleToNamespace(currentModule)) {
         console.log(`POSSIBLE ISSUE: identifier: ${name} found in ${currentModule}`);
-      else
+        // one-off
+        if (name.includes('UI.')) {
+          console.log(`including ${name} anyways`);
+          identifiers.push(name)
+        }
+      } else {
         identifiers.push(name);
+      }
     }
     return identifiers;
   }
@@ -263,6 +270,8 @@ function updateBuildGNFile(cssFilesMapping, newModuleSet) {
   }
 
   function addContentToLinesInSortedOrder({content, startLine, endLine, linesToInsert}) {
+    if (linesToInsert.length === 0)
+      return content;
     let lines = content.split('\n');
     let seenStartLine = false;
     let contentStack = linesToInsert.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reverse();
@@ -302,14 +311,6 @@ function mapIdentifiers(identifiersByFile, cssFilesMapping) {
       let components = identifier.split('.');
       components[0] = mapModuleToNamespace(targetModule);
       let newIdentifier = components.join('.');
-      // one-off
-      if (targetModule === 'heap_snapshot_model' && components[1] === 'HeapSnapshotCommon') {
-        newIdentifier = [components[0]].concat(components.slice(2)).join('.');
-        if (newIdentifier === 'HeapSnapshotModel') {
-          identifier = 'Profiler.HeapSnapshotCommon = {};\n\n';
-          newIdentifier = '';
-        }
-      }
       map.set(identifier, newIdentifier);
     }
   }

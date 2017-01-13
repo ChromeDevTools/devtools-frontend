@@ -27,17 +27,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-Common.Geometry = {};
+UI.Geometry = {};
 
 /**
  * @type {number}
  */
-Common.Geometry._Eps = 1e-5;
+UI.Geometry._Eps = 1e-5;
 
 /**
  * @unrestricted
  */
-Common.Geometry.Vector = class {
+UI.Geometry.Vector = class {
   /**
    * @param {number} x
    * @param {number} y
@@ -58,7 +58,7 @@ Common.Geometry.Vector = class {
 
   normalize() {
     var length = this.length();
-    if (length <= Common.Geometry._Eps)
+    if (length <= UI.Geometry._Eps)
       return;
 
     this.x /= length;
@@ -70,7 +70,7 @@ Common.Geometry.Vector = class {
 /**
  * @unrestricted
  */
-Common.Geometry.Point = class {
+UI.Geometry.Point = class {
   /**
    * @param {number} x
    * @param {number} y
@@ -81,7 +81,7 @@ Common.Geometry.Point = class {
   }
 
   /**
-   * @param {!Common.Geometry.Point} p
+   * @param {!UI.Geometry.Point} p
    * @return {number}
    */
   distanceTo(p) {
@@ -89,21 +89,21 @@ Common.Geometry.Point = class {
   }
 
   /**
-   * @param {!Common.Geometry.Point} line
-   * @return {!Common.Geometry.Point}
+   * @param {!UI.Geometry.Point} line
+   * @return {!UI.Geometry.Point}
    */
   projectOn(line) {
     if (line.x === 0 && line.y === 0)
-      return new Common.Geometry.Point(0, 0);
+      return new UI.Geometry.Point(0, 0);
     return line.scale((this.x * line.x + this.y * line.y) / (Math.pow(line.x, 2) + Math.pow(line.y, 2)));
   }
 
   /**
    * @param {number} scalar
-   * @return {!Common.Geometry.Point}
+   * @return {!UI.Geometry.Point}
    */
   scale(scalar) {
-    return new Common.Geometry.Point(this.x * scalar, this.y * scalar);
+    return new UI.Geometry.Point(this.x * scalar, this.y * scalar);
   }
 
   /**
@@ -118,10 +118,10 @@ Common.Geometry.Point = class {
 /**
  * @unrestricted
  */
-Common.Geometry.CubicBezier = class {
+UI.Geometry.CubicBezier = class {
   /**
-   * @param {!Common.Geometry.Point} point1
-   * @param {!Common.Geometry.Point} point2
+   * @param {!UI.Geometry.Point} point1
+   * @param {!UI.Geometry.Point} point2
    */
   constructor(point1, point2) {
     this.controlPoints = [point1, point2];
@@ -129,26 +129,26 @@ Common.Geometry.CubicBezier = class {
 
   /**
    * @param {string} text
-   * @return {?Common.Geometry.CubicBezier}
+   * @return {?UI.Geometry.CubicBezier}
    */
   static parse(text) {
-    var keywordValues = Common.Geometry.CubicBezier.KeywordValues;
+    var keywordValues = UI.Geometry.CubicBezier.KeywordValues;
     var value = text.toLowerCase().replace(/\s+/g, '');
     if (Object.keys(keywordValues).indexOf(value) !== -1)
-      return Common.Geometry.CubicBezier.parse(keywordValues[value]);
+      return UI.Geometry.CubicBezier.parse(keywordValues[value]);
     var bezierRegex = /^cubic-bezier\(([^,]+),([^,]+),([^,]+),([^,]+)\)$/;
     var match = value.match(bezierRegex);
     if (match) {
-      var control1 = new Common.Geometry.Point(parseFloat(match[1]), parseFloat(match[2]));
-      var control2 = new Common.Geometry.Point(parseFloat(match[3]), parseFloat(match[4]));
-      return new Common.Geometry.CubicBezier(control1, control2);
+      var control1 = new UI.Geometry.Point(parseFloat(match[1]), parseFloat(match[2]));
+      var control2 = new UI.Geometry.Point(parseFloat(match[3]), parseFloat(match[4]));
+      return new UI.Geometry.CubicBezier(control1, control2);
     }
     return null;
   }
 
   /**
    * @param {number} t
-   * @return {!Common.Geometry.Point}
+   * @return {!UI.Geometry.Point}
    */
   evaluateAt(t) {
     /**
@@ -162,7 +162,7 @@ Common.Geometry.CubicBezier = class {
 
     var x = evaluate(this.controlPoints[0].x, this.controlPoints[1].x, t);
     var y = evaluate(this.controlPoints[0].y, this.controlPoints[1].y, t);
-    return new Common.Geometry.Point(x, y);
+    return new UI.Geometry.Point(x, y);
   }
 
   /**
@@ -170,7 +170,7 @@ Common.Geometry.CubicBezier = class {
    */
   asCSSText() {
     var raw = 'cubic-bezier(' + this.controlPoints.join(', ') + ')';
-    var keywordValues = Common.Geometry.CubicBezier.KeywordValues;
+    var keywordValues = UI.Geometry.CubicBezier.KeywordValues;
     for (var keyword in keywordValues) {
       if (raw === keywordValues[keyword])
         return keyword;
@@ -180,9 +180,9 @@ Common.Geometry.CubicBezier = class {
 };
 
 /** @type {!RegExp} */
-Common.Geometry.CubicBezier.Regex = /((cubic-bezier\([^)]+\))|\b(linear|ease-in-out|ease-in|ease-out|ease)\b)/g;
+UI.Geometry.CubicBezier.Regex = /((cubic-bezier\([^)]+\))|\b(linear|ease-in-out|ease-in|ease-out|ease)\b)/g;
 
-Common.Geometry.CubicBezier.KeywordValues = {
+UI.Geometry.CubicBezier.KeywordValues = {
   'linear': 'cubic-bezier(0, 0, 1, 1)',
   'ease': 'cubic-bezier(0.25, 0.1, 0.25, 1)',
   'ease-in': 'cubic-bezier(0.42, 0, 1, 1)',
@@ -194,7 +194,7 @@ Common.Geometry.CubicBezier.KeywordValues = {
 /**
  * @unrestricted
  */
-Common.Geometry.EulerAngles = class {
+UI.Geometry.EulerAngles = class {
   /**
    * @param {number} alpha
    * @param {number} beta
@@ -208,7 +208,7 @@ Common.Geometry.EulerAngles = class {
 
   /**
    * @param {!CSSMatrix} rotationMatrix
-   * @return {!Common.Geometry.EulerAngles}
+   * @return {!UI.Geometry.EulerAngles}
    */
   static fromRotationMatrix(rotationMatrix) {
     var beta = Math.atan2(rotationMatrix.m23, rotationMatrix.m33);
@@ -216,17 +216,16 @@ Common.Geometry.EulerAngles = class {
         -rotationMatrix.m13,
         Math.sqrt(rotationMatrix.m11 * rotationMatrix.m11 + rotationMatrix.m12 * rotationMatrix.m12));
     var alpha = Math.atan2(rotationMatrix.m12, rotationMatrix.m11);
-    return new Common.Geometry.EulerAngles(
-        Common.Geometry.radiansToDegrees(alpha), Common.Geometry.radiansToDegrees(beta),
-        Common.Geometry.radiansToDegrees(gamma));
+    return new UI.Geometry.EulerAngles(
+        UI.Geometry.radiansToDegrees(alpha), UI.Geometry.radiansToDegrees(beta), UI.Geometry.radiansToDegrees(gamma));
   }
 
   /**
    * @return {string}
    */
   toRotate3DString() {
-    var gammaAxisY = -Math.sin(Common.Geometry.degreesToRadians(this.beta));
-    var gammaAxisZ = Math.cos(Common.Geometry.degreesToRadians(this.beta));
+    var gammaAxisY = -Math.sin(UI.Geometry.degreesToRadians(this.beta));
+    var gammaAxisZ = Math.cos(UI.Geometry.degreesToRadians(this.beta));
     var axis = {alpha: [0, 1, 0], beta: [-1, 0, 0], gamma: [0, gammaAxisY, gammaAxisZ]};
     return 'rotate3d(' + axis.alpha.join(',') + ',' + this.alpha + 'deg) ' +
         'rotate3d(' + axis.beta.join(',') + ',' + this.beta + 'deg) ' +
@@ -236,72 +235,72 @@ Common.Geometry.EulerAngles = class {
 
 
 /**
- * @param {!Common.Geometry.Vector} u
- * @param {!Common.Geometry.Vector} v
+ * @param {!UI.Geometry.Vector} u
+ * @param {!UI.Geometry.Vector} v
  * @return {number}
  */
-Common.Geometry.scalarProduct = function(u, v) {
+UI.Geometry.scalarProduct = function(u, v) {
   return u.x * v.x + u.y * v.y + u.z * v.z;
 };
 
 /**
- * @param {!Common.Geometry.Vector} u
- * @param {!Common.Geometry.Vector} v
- * @return {!Common.Geometry.Vector}
+ * @param {!UI.Geometry.Vector} u
+ * @param {!UI.Geometry.Vector} v
+ * @return {!UI.Geometry.Vector}
  */
-Common.Geometry.crossProduct = function(u, v) {
+UI.Geometry.crossProduct = function(u, v) {
   var x = u.y * v.z - u.z * v.y;
   var y = u.z * v.x - u.x * v.z;
   var z = u.x * v.y - u.y * v.x;
-  return new Common.Geometry.Vector(x, y, z);
+  return new UI.Geometry.Vector(x, y, z);
 };
 
 /**
- * @param {!Common.Geometry.Vector} u
- * @param {!Common.Geometry.Vector} v
- * @return {!Common.Geometry.Vector}
+ * @param {!UI.Geometry.Vector} u
+ * @param {!UI.Geometry.Vector} v
+ * @return {!UI.Geometry.Vector}
  */
-Common.Geometry.subtract = function(u, v) {
+UI.Geometry.subtract = function(u, v) {
   var x = u.x - v.x;
   var y = u.y - v.y;
   var z = u.z - v.z;
-  return new Common.Geometry.Vector(x, y, z);
+  return new UI.Geometry.Vector(x, y, z);
 };
 
 /**
- * @param {!Common.Geometry.Vector} v
+ * @param {!UI.Geometry.Vector} v
  * @param {!CSSMatrix} m
- * @return {!Common.Geometry.Vector}
+ * @return {!UI.Geometry.Vector}
  */
-Common.Geometry.multiplyVectorByMatrixAndNormalize = function(v, m) {
+UI.Geometry.multiplyVectorByMatrixAndNormalize = function(v, m) {
   var t = v.x * m.m14 + v.y * m.m24 + v.z * m.m34 + m.m44;
   var x = (v.x * m.m11 + v.y * m.m21 + v.z * m.m31 + m.m41) / t;
   var y = (v.x * m.m12 + v.y * m.m22 + v.z * m.m32 + m.m42) / t;
   var z = (v.x * m.m13 + v.y * m.m23 + v.z * m.m33 + m.m43) / t;
-  return new Common.Geometry.Vector(x, y, z);
+  return new UI.Geometry.Vector(x, y, z);
 };
 
 /**
- * @param {!Common.Geometry.Vector} u
- * @param {!Common.Geometry.Vector} v
+ * @param {!UI.Geometry.Vector} u
+ * @param {!UI.Geometry.Vector} v
  * @return {number}
  */
-Common.Geometry.calculateAngle = function(u, v) {
+UI.Geometry.calculateAngle = function(u, v) {
   var uLength = u.length();
   var vLength = v.length();
-  if (uLength <= Common.Geometry._Eps || vLength <= Common.Geometry._Eps)
+  if (uLength <= UI.Geometry._Eps || vLength <= UI.Geometry._Eps)
     return 0;
-  var cos = Common.Geometry.scalarProduct(u, v) / uLength / vLength;
+  var cos = UI.Geometry.scalarProduct(u, v) / uLength / vLength;
   if (Math.abs(cos) > 1)
     return 0;
-  return Common.Geometry.radiansToDegrees(Math.acos(cos));
+  return UI.Geometry.radiansToDegrees(Math.acos(cos));
 };
 
 /**
  * @param {number} deg
  * @return {number}
  */
-Common.Geometry.degreesToRadians = function(deg) {
+UI.Geometry.degreesToRadians = function(deg) {
   return deg * Math.PI / 180;
 };
 
@@ -309,7 +308,7 @@ Common.Geometry.degreesToRadians = function(deg) {
  * @param {number} rad
  * @return {number}
  */
-Common.Geometry.radiansToDegrees = function(rad) {
+UI.Geometry.radiansToDegrees = function(rad) {
   return rad * 180 / Math.PI;
 };
 
@@ -319,14 +318,14 @@ Common.Geometry.radiansToDegrees = function(rad) {
  * @param {{minX: number, maxX: number, minY: number, maxY: number}=} aggregateBounds
  * @return {!{minX: number, maxX: number, minY: number, maxY: number}}
  */
-Common.Geometry.boundsForTransformedPoints = function(matrix, points, aggregateBounds) {
+UI.Geometry.boundsForTransformedPoints = function(matrix, points, aggregateBounds) {
   if (!aggregateBounds)
     aggregateBounds = {minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity};
   if (points.length % 3)
     console.assert('Invalid size of points array');
   for (var p = 0; p < points.length; p += 3) {
-    var vector = new Common.Geometry.Vector(points[p], points[p + 1], points[p + 2]);
-    vector = Common.Geometry.multiplyVectorByMatrixAndNormalize(vector, matrix);
+    var vector = new UI.Geometry.Vector(points[p], points[p + 1], points[p + 2]);
+    vector = UI.Geometry.multiplyVectorByMatrixAndNormalize(vector, matrix);
     aggregateBounds.minX = Math.min(aggregateBounds.minX, vector.x);
     aggregateBounds.maxX = Math.max(aggregateBounds.maxX, vector.x);
     aggregateBounds.minY = Math.min(aggregateBounds.minY, vector.y);
@@ -338,7 +337,7 @@ Common.Geometry.boundsForTransformedPoints = function(matrix, points, aggregateB
 /**
  * @unrestricted
  */
-var Size = class {
+UI.Size = class {
   /**
    * @param {number} width
    * @param {number} height
@@ -350,49 +349,49 @@ var Size = class {
 };
 
 /**
- * @param {?Size} size
+ * @param {?UI.Size} size
  * @return {boolean}
  */
-Size.prototype.isEqual = function(size) {
+UI.Size.prototype.isEqual = function(size) {
   return !!size && this.width === size.width && this.height === size.height;
 };
 
 /**
- * @param {!Size|number} size
- * @return {!Size}
+ * @param {!UI.Size|number} size
+ * @return {!UI.Size}
  */
-Size.prototype.widthToMax = function(size) {
-  return new Size(Math.max(this.width, (typeof size === 'number' ? size : size.width)), this.height);
+UI.Size.prototype.widthToMax = function(size) {
+  return new UI.Size(Math.max(this.width, (typeof size === 'number' ? size : size.width)), this.height);
 };
 
 /**
- * @param {!Size|number} size
- * @return {!Size}
+ * @param {!UI.Size|number} size
+ * @return {!UI.Size}
  */
-Size.prototype.addWidth = function(size) {
-  return new Size(this.width + (typeof size === 'number' ? size : size.width), this.height);
+UI.Size.prototype.addWidth = function(size) {
+  return new UI.Size(this.width + (typeof size === 'number' ? size : size.width), this.height);
 };
 
 /**
- * @param {!Size|number} size
- * @return {!Size}
+ * @param {!UI.Size|number} size
+ * @return {!UI.Size}
  */
-Size.prototype.heightToMax = function(size) {
-  return new Size(this.width, Math.max(this.height, (typeof size === 'number' ? size : size.height)));
+UI.Size.prototype.heightToMax = function(size) {
+  return new UI.Size(this.width, Math.max(this.height, (typeof size === 'number' ? size : size.height)));
 };
 
 /**
- * @param {!Size|number} size
- * @return {!Size}
+ * @param {!UI.Size|number} size
+ * @return {!UI.Size}
  */
-Size.prototype.addHeight = function(size) {
-  return new Size(this.width, this.height + (typeof size === 'number' ? size : size.height));
+UI.Size.prototype.addHeight = function(size) {
+  return new UI.Size(this.width, this.height + (typeof size === 'number' ? size : size.height));
 };
 
 /**
  * @unrestricted
  */
-var Insets = class {
+UI.Insets = class {
   /**
    * @param {number} left
    * @param {number} top
@@ -407,7 +406,7 @@ var Insets = class {
   }
 
   /**
-   * @param {?Insets} insets
+   * @param {?UI.Insets} insets
    * @return {boolean}
    */
   isEqual(insets) {
@@ -419,7 +418,7 @@ var Insets = class {
 /**
  * @unrestricted
  */
-Common.Rect = class {
+UI.Rect = class {
   /**
    * @param {number} left
    * @param {number} top
@@ -434,7 +433,7 @@ Common.Rect = class {
   }
 
   /**
-   * @param {?Common.Rect} rect
+   * @param {?UI.Rect} rect
    * @return {boolean}
    */
   isEqual(rect) {
@@ -444,36 +443,36 @@ Common.Rect = class {
 
   /**
    * @param {number} scale
-   * @return {!Common.Rect}
+   * @return {!UI.Rect}
    */
   scale(scale) {
-    return new Common.Rect(this.left * scale, this.top * scale, this.width * scale, this.height * scale);
+    return new UI.Rect(this.left * scale, this.top * scale, this.width * scale, this.height * scale);
   }
 
   /**
-   * @return {!Size}
+   * @return {!UI.Size}
    */
   size() {
-    return new Size(this.width, this.height);
+    return new UI.Size(this.width, this.height);
   }
 };
 
 /**
  * @unrestricted
  */
-var Constraints = class {
+UI.Constraints = class {
   /**
-   * @param {!Size=} minimum
-   * @param {?Size=} preferred
+   * @param {!UI.Size=} minimum
+   * @param {?UI.Size=} preferred
    */
   constructor(minimum, preferred) {
     /**
-     * @type {!Size}
+     * @type {!UI.Size}
      */
-    this.minimum = minimum || new Size(0, 0);
+    this.minimum = minimum || new UI.Size(0, 0);
 
     /**
-     * @type {!Size}
+     * @type {!UI.Size}
      */
     this.preferred = preferred || this.minimum;
 
@@ -483,49 +482,49 @@ var Constraints = class {
 };
 
 /**
- * @param {?Constraints} constraints
+ * @param {?UI.Constraints} constraints
  * @return {boolean}
  */
-Constraints.prototype.isEqual = function(constraints) {
+UI.Constraints.prototype.isEqual = function(constraints) {
   return !!constraints && this.minimum.isEqual(constraints.minimum) && this.preferred.isEqual(constraints.preferred);
 };
 
 /**
- * @param {!Constraints|number} value
- * @return {!Constraints}
+ * @param {!UI.Constraints|number} value
+ * @return {!UI.Constraints}
  */
-Constraints.prototype.widthToMax = function(value) {
+UI.Constraints.prototype.widthToMax = function(value) {
   if (typeof value === 'number')
-    return new Constraints(this.minimum.widthToMax(value), this.preferred.widthToMax(value));
-  return new Constraints(this.minimum.widthToMax(value.minimum), this.preferred.widthToMax(value.preferred));
+    return new UI.Constraints(this.minimum.widthToMax(value), this.preferred.widthToMax(value));
+  return new UI.Constraints(this.minimum.widthToMax(value.minimum), this.preferred.widthToMax(value.preferred));
 };
 
 /**
- * @param {!Constraints|number} value
- * @return {!Constraints}
+ * @param {!UI.Constraints|number} value
+ * @return {!UI.Constraints}
  */
-Constraints.prototype.addWidth = function(value) {
+UI.Constraints.prototype.addWidth = function(value) {
   if (typeof value === 'number')
-    return new Constraints(this.minimum.addWidth(value), this.preferred.addWidth(value));
-  return new Constraints(this.minimum.addWidth(value.minimum), this.preferred.addWidth(value.preferred));
+    return new UI.Constraints(this.minimum.addWidth(value), this.preferred.addWidth(value));
+  return new UI.Constraints(this.minimum.addWidth(value.minimum), this.preferred.addWidth(value.preferred));
 };
 
 /**
- * @param {!Constraints|number} value
- * @return {!Constraints}
+ * @param {!UI.Constraints|number} value
+ * @return {!UI.Constraints}
  */
-Constraints.prototype.heightToMax = function(value) {
+UI.Constraints.prototype.heightToMax = function(value) {
   if (typeof value === 'number')
-    return new Constraints(this.minimum.heightToMax(value), this.preferred.heightToMax(value));
-  return new Constraints(this.minimum.heightToMax(value.minimum), this.preferred.heightToMax(value.preferred));
+    return new UI.Constraints(this.minimum.heightToMax(value), this.preferred.heightToMax(value));
+  return new UI.Constraints(this.minimum.heightToMax(value.minimum), this.preferred.heightToMax(value.preferred));
 };
 
 /**
- * @param {!Constraints|number} value
- * @return {!Constraints}
+ * @param {!UI.Constraints|number} value
+ * @return {!UI.Constraints}
  */
-Constraints.prototype.addHeight = function(value) {
+UI.Constraints.prototype.addHeight = function(value) {
   if (typeof value === 'number')
-    return new Constraints(this.minimum.addHeight(value), this.preferred.addHeight(value));
-  return new Constraints(this.minimum.addHeight(value.minimum), this.preferred.addHeight(value.preferred));
+    return new UI.Constraints(this.minimum.addHeight(value), this.preferred.addHeight(value));
+  return new UI.Constraints(this.minimum.addHeight(value.minimum), this.preferred.addHeight(value.preferred));
 };

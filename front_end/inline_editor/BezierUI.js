@@ -21,7 +21,7 @@ InlineEditor.BezierUI = class {
   }
 
   /**
-   * @param {!Common.Geometry.CubicBezier} bezier
+   * @param {!UI.Geometry.CubicBezier} bezier
    * @param {!Element} path
    * @param {number} width
    */
@@ -89,7 +89,7 @@ InlineEditor.BezierUI = class {
   }
 
   /**
-   * @param {?Common.Geometry.CubicBezier} bezier
+   * @param {?UI.Geometry.CubicBezier} bezier
    * @param {!Element} svg
    */
   drawCurve(bezier, svg) {
@@ -107,13 +107,13 @@ InlineEditor.BezierUI = class {
 
     var curve = group.createSVGChild('path', 'bezier-path');
     var curvePoints = [
-      new Common.Geometry.Point(
+      new UI.Geometry.Point(
           bezier.controlPoints[0].x * width + this.radius,
           (1 - bezier.controlPoints[0].y) * height + this.radius + this.marginTop),
-      new Common.Geometry.Point(
+      new UI.Geometry.Point(
           bezier.controlPoints[1].x * width + this.radius,
           (1 - bezier.controlPoints[1].y) * height + this.radius + this.marginTop),
-      new Common.Geometry.Point(width + this.radius, this.marginTop + this.radius)
+      new UI.Geometry.Point(width + this.radius, this.marginTop + this.radius)
     ];
     curve.setAttribute(
         'd', 'M' + this.radius + ',' + (height + this.radius + this.marginTop) + ' C' + curvePoints.join(' '));

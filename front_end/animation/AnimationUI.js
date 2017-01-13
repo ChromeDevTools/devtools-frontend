@@ -175,7 +175,7 @@ Animation.AnimationUI = class {
       line.style.stroke = strokeColor;
     }
 
-    var bezier = Common.Geometry.CubicBezier.parse(easing);
+    var bezier = UI.Geometry.CubicBezier.parse(easing);
     var cache = this._cachedElements[iteration].keyframeRender;
     if (!cache[keyframeIndex]) {
       cache[keyframeIndex] = bezier ? parentElement.createSVGChild('path', 'animation-keyframe') :

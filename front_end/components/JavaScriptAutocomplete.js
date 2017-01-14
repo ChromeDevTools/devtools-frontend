@@ -15,13 +15,18 @@ Components.JavaScriptAutocomplete.CompletionGroup;
  */
 Components.JavaScriptAutocomplete.completionsForTextInCurrentContext = function(text, query, force) {
   var index;
-  var stopChars = new Set(' =:({;,!+-*/&|^<>`'.split(''));
+  var stopChars = new Set('=:({;,!+-*/&|^<>`'.split(''));
+  var whiteSpaceChars = new Set(' \r\n\t'.split(''));
+  var continueChars = new Set('[. \r\n\t'.split(''));
+
   for (index = text.length - 1; index >= 0; index--) {
     // Pass less stop characters to rangeOfWord so the range will be a more complete expression.
     if (stopChars.has(text.charAt(index)))
       break;
+    if (whiteSpaceChars.has(text.charAt(index)) && !continueChars.has(text.charAt(index - 1)))
+      break;
   }
-  var clippedExpression = text.substring(index + 1);
+  var clippedExpression = text.substring(index + 1).trim();
   var bracketCount = 0;
 
   index = clippedExpression.length - 1;
@@ -37,7 +42,7 @@ Components.JavaScriptAutocomplete.completionsForTextInCurrentContext = function(
     }
     index--;
   }
-  clippedExpression = clippedExpression.substring(index + 1);
+  clippedExpression = clippedExpression.substring(index + 1).trim();
 
   return Components.JavaScriptAutocomplete.completionsForExpression(clippedExpression, query, force);
 };
@@ -56,7 +61,7 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
   var lastIndex = expressionString.length - 1;
 
   var dotNotation = (expressionString[lastIndex] === '.');
-  var bracketNotation = (expressionString[lastIndex] === '[');
+  var bracketNotation = (expressionString.length > 1 && expressionString[lastIndex] === '[');
 
   if (dotNotation || bracketNotation)
     expressionString = expressionString.substr(0, lastIndex);
@@ -67,9 +72,6 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
   if ((expressionString && !isNaN(expressionString)) || (!expressionString && query && !isNaN(query)))
     return Promise.resolve([]);
 
-  // User is creating an array, do not suggest anything.
-  if (bracketNotation && !expressionString)
-    return Promise.resolve([]);
 
   if (!query && !expressionString && !force)
     return Promise.resolve([]);

@@ -244,7 +244,7 @@ Console.ConsolePrompt = class extends UI.Widget {
     var lineText = this._editor.line(lineNumber);
     var index;
     for (index = lineText.length - 1; index >= 0; index--) {
-      if (' =:[({;,!+-*/&|^<>.'.indexOf(lineText.charAt(index)) !== -1)
+      if (' =:[({;,!+-*/&|^<>.\t\r\n'.indexOf(lineText.charAt(index)) !== -1)
         break;
     }
     return new Common.TextRange(lineNumber, index + 1, lineNumber, columnNumber);
@@ -262,9 +262,12 @@ Console.ConsolePrompt = class extends UI.Widget {
     var before = this._editor.text(new Common.TextRange(0, 0, queryRange.startLine, queryRange.startColumn));
     var historyWords = this._historyCompletions(query, force);
 
-    var excludedTokens = new Set(['js-comment', 'js-string-2']);
-    if (!before.endsWith('['))
+    var excludedTokens = new Set(['js-comment', 'js-string-2', 'js-def']);
+    var trimmedBefore = before.trim();
+    if (!trimmedBefore.endsWith('['))
       excludedTokens.add('js-string');
+    if (!trimmedBefore.endsWith('.'))
+      excludedTokens.add('js-property');
     if (excludedTokens.has(currentTokenType))
       return Promise.resolve(historyWords);
 

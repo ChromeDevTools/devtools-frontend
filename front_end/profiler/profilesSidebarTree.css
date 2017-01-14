@@ -61,6 +61,7 @@ ol.tree-outline {
 
 li.selected .title-container > .save-link {
     display: block;
+    cursor: pointer;
 }
 
 .tree-outline > .icon {

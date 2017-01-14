@@ -28,8 +28,13 @@
  * @unrestricted
  */
 Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
-  constructor() {
-    super('profiles');
+  /**
+   * @param {string} name
+   * @param {!Array.<!Profiler.ProfileType>} profileTypes
+   */
+  constructor(name, profileTypes) {
+    super(name);
+    this._profileTypes = profileTypes;
     this.registerRequiredCSS('ui/panelEnablerView.css');
     this.registerRequiredCSS('profiler/heapProfiler.css');
     this.registerRequiredCSS('profiler/profilesPanel.css');
@@ -79,7 +84,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
 
     this._profileToView = [];
     this._typeIdToSidebarSection = {};
-    var types = Profiler.ProfileTypeRegistry.instance.profileTypes();
+    var types = this._profileTypes;
     for (var i = 0; i < types.length; i++)
       this._registerProfileType(types[i]);
     this._launcherView.restoreSelectedProfileType();
@@ -92,13 +97,6 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
 
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
-  }
-
-  /**
-   * @return {!Profiler.ProfilesPanel}
-   */
-  static _instance() {
-    return /** @type {!Profiler.ProfilesPanel} */ (self.runtime.sharedInstance(Profiler.ProfilesPanel));
   }
 
   /**
@@ -131,7 +129,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
   }
 
   _findProfileTypeByExtension(fileName) {
-    var types = Profiler.ProfileTypeRegistry.instance.profileTypes();
+    var types = this._profileTypes;
     for (var i = 0; i < types.length; i++) {
       var type = types[i];
       var extension = type.fileExtension();
@@ -152,7 +150,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     var profileType = this._findProfileTypeByExtension(file.name);
     if (!profileType) {
       var extensions = [];
-      var types = Profiler.ProfileTypeRegistry.instance.profileTypes();
+      var types = this._profileTypes;
       for (var i = 0; i < types.length; i++) {
         var extension = types[i].fileExtension();
         if (!extension || extensions.indexOf(extension) !== -1)
@@ -228,7 +226,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
   }
 
   _reset() {
-    Profiler.ProfileTypeRegistry.instance.profileTypes().forEach(type => type.reset());
+    this._profileTypes.forEach(type => type.reset());
 
     delete this.visibleView;
 
@@ -242,7 +240,6 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     this.profileViews.removeChildren();
     this._profileViewToolbar.removeToolbarItems();
 
-    this._profileViewToolbar.element.classList.remove('hidden');
     this.clearResultsButton.element.classList.remove('hidden');
     this.profilesItemTreeElement.select();
     this._showLauncherView();
@@ -253,6 +250,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     this._profileViewToolbar.removeToolbarItems();
     this._launcherView.show(this.profileViews);
     this.visibleView = this._launcherView;
+    this._toolbarElement.classList.add('hidden');
   }
 
   /**
@@ -363,7 +361,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
         (profile.profileType().profileBeingRecorded() === profile) && !profile.profileType().hasTemporaryView())
       return null;
 
-    var view = this._viewForProfile(profile);
+    var view = this.viewForProfile(profile);
     if (view === this.visibleView)
       return view;
 
@@ -371,7 +369,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
 
     view.show(this.profileViews);
     view.focus();
-
+    this._toolbarElement.classList.remove('hidden');
     this.visibleView = view;
 
     var profileTypeSection = this._typeIdToSidebarSection[profile.profileType().id];
@@ -393,24 +391,13 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
    * @param {string} perspectiveName
    */
   showObject(snapshotObjectId, perspectiveName) {
-    var heapProfiles = Profiler.ProfileTypeRegistry.instance.heapSnapshotProfileType.getProfiles();
-    for (var i = 0; i < heapProfiles.length; i++) {
-      var profile = heapProfiles[i];
-      // FIXME: allow to choose snapshot if there are several options.
-      if (profile.maxJSObjectId >= snapshotObjectId) {
-        this.showProfile(profile);
-        var view = this._viewForProfile(profile);
-        view.selectLiveObject(perspectiveName, snapshotObjectId);
-        break;
-      }
-    }
   }
 
   /**
    * @param {!Profiler.ProfileHeader} profile
    * @return {!UI.Widget}
    */
-  _viewForProfile(profile) {
+  viewForProfile(profile) {
     var index = this._indexOfViewForProfile(profile);
     if (index !== -1)
       return this._profileToView[index].view;
@@ -793,5 +780,12 @@ Profiler.ProfilesSidebarTreeElement = class extends UI.TreeElement {
         .createChild('span', 'title-container')
         .createChild('span', 'title')
         .textContent = Common.UIString('Profiles');
+  }
+};
+
+Profiler.JSProfilerPanel = class extends Profiler.ProfilesPanel {
+  constructor() {
+    var registry = Profiler.ProfileTypeRegistry.instance;
+    super('js_profiler', [registry.cpuProfileType]);
   }
 };

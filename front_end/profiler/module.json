@@ -3,19 +3,28 @@
         {
             "type": "view",
             "location": "panel",
-            "id": "profiles",
-            "title": "Profiles",
+            "id": "heap_profiler",
+            "title": "Memory",
             "order": 60,
-            "className": "Profiler.ProfilesPanel",
+            "className": "Profiler.HeapProfilerPanel"
+        },
+        {
+            "type": "view",
+            "location": "panel",
+            "id": "js_profiler",
+            "title": "Profiler",
+            "order": 65,
+            "className": "Profiler.JSProfilerPanel",
             "condition": "v8only"
         },
         {
             "type": "view",
             "location": "panel",
-            "id": "profiles",
-            "title": "Memory",
-            "order": 60,
-            "className": "Profiler.MemoryProfilerPanel",
+            "id": "js_profiler",
+            "title": "JavaScript Profiler",
+            "persistence": "closeable",
+            "order": 65,
+            "className": "Profiler.JSProfilerPanel",
             "condition": "!v8only"
         },
         {
@@ -23,7 +32,7 @@
             "contextTypes": [
                 "SDK.RemoteObject"
             ],
-            "className": "Profiler.MemoryProfilerPanel"
+            "className": "Profiler.HeapProfilerPanel"
         },
         {
             "type": "setting",
@@ -56,9 +65,9 @@
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
             "contextTypes": [
-                "Profiler.MemoryProfilerPanel"
+                "Profiler.HeapProfilerPanel"
             ],
-            "className": "Profiler.MemoryProfilerPanel",
+            "className": "Profiler.HeapProfilerPanel",
             "bindings": [
                 {
                     "platform": "windows,linux",
@@ -92,7 +101,7 @@
         "HeapSnapshotDataGrids.js",
         "HeapSnapshotGridNodes.js",
         "HeapSnapshotView.js",
-        "MemoryProfilerPanel.js",
+        "HeapProfilerPanel.js",
         "ProfileLauncherView.js",
         "ProfileTypeRegistry.js",
         "TargetsComboBoxController.js"

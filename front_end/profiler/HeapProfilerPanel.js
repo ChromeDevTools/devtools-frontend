@@ -6,7 +6,14 @@
  * @implements {UI.ContextMenu.Provider}
  * @implements {UI.ActionDelegate}
  */
-Profiler.MemoryProfilerPanel = class extends Profiler.ProfilesPanel {
+Profiler.HeapProfilerPanel = class extends Profiler.ProfilesPanel {
+  constructor() {
+    var registry = Profiler.ProfileTypeRegistry.instance;
+    super(
+        'heap_profiler',
+        [registry.heapSnapshotProfileType, registry.samplingHeapProfileType, registry.trackingHeapSnapshotProfileType]);
+  }
+
   /**
    * @override
    * @param {!Event} event
@@ -56,8 +63,8 @@ Profiler.MemoryProfilerPanel = class extends Profiler.ProfilesPanel {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    var panel = UI.context.flavor(Profiler.MemoryProfilerPanel);
-    console.assert(panel && panel instanceof Profiler.MemoryProfilerPanel);
+    var panel = UI.context.flavor(Profiler.HeapProfilerPanel);
+    console.assert(panel && panel instanceof Profiler.HeapProfilerPanel);
     panel.toggleRecord();
     return true;
   }
@@ -66,13 +73,33 @@ Profiler.MemoryProfilerPanel = class extends Profiler.ProfilesPanel {
    * @override
    */
   wasShown() {
-    UI.context.setFlavor(Profiler.MemoryProfilerPanel, this);
+    UI.context.setFlavor(Profiler.HeapProfilerPanel, this);
   }
 
   /**
    * @override
    */
   willHide() {
-    UI.context.setFlavor(Profiler.MemoryProfilerPanel, null);
+    UI.context.setFlavor(Profiler.HeapProfilerPanel, null);
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} snapshotObjectId
+   * @param {string} perspectiveName
+   */
+  showObject(snapshotObjectId, perspectiveName) {
+    var registry = Profiler.ProfileTypeRegistry.instance;
+    var heapProfiles = registry.heapSnapshotProfileType.getProfiles();
+    for (var i = 0; i < heapProfiles.length; i++) {
+      var profile = heapProfiles[i];
+      // FIXME: allow to choose snapshot if there are several options.
+      if (profile.maxJSObjectId >= snapshotObjectId) {
+        this.showProfile(profile);
+        var view = this.viewForProfile(profile);
+        view.selectLiveObject(perspectiveName, snapshotObjectId);
+        break;
+      }
+    }
   }
 };

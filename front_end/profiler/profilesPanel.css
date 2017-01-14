@@ -65,8 +65,8 @@
 }
 
 .profiles-toolbar {
-    background-color: white;
-    border-bottom: 1px solid #ddd;
+    background-color: #f3f3f3;
+    border-bottom: 1px solid #ccc;
 }
 
 .profiles-sidebar-tree-box {
@@ -171,7 +171,9 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
     margin: 0 0 0 10px !important;
 }
 
-.profiles.panel select.chrome-select {
+.js_profiler.panel select.chrome-select,
+.heap_profiler.panel select.chrome-select,
+ {
     font-size: 12px;
     width: 150px;
     margin-left: 10px;

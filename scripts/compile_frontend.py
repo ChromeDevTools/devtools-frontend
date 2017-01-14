@@ -75,6 +75,10 @@ global_externs_file = to_platform_path(path.join(devtools_frontend_path, 'extern
 protocol_externs_file = path.join(devtools_frontend_path, 'protocol_externs.js')
 runtime_file = to_platform_path(path.join(devtools_frontend_path, 'Runtime.js'))
 
+closure_compiler_jar = to_platform_path(path.join(scripts_path, 'closure', 'compiler.jar'))
+closure_runner_jar = to_platform_path(path.join(scripts_path, 'closure', 'closure_runner', 'closure_runner.jar'))
+jsdoc_validator_jar = to_platform_path(path.join(scripts_path, 'jsdoc_validator', 'jsdoc_validator.jar'))
+
 type_checked_jsdoc_tags_list = ['param', 'return', 'type', 'enum']
 type_checked_jsdoc_tags_or = '|'.join(type_checked_jsdoc_tags_list)
 
@@ -116,66 +120,70 @@ def has_errors(output):
     return re.search(error_warning_regex, output) != None
 
 
-def verify_jsdoc_extra():
-    files = [to_platform_path(compiled_file) for compiled_file in descriptors.all_compiled_files()]
-    file_list = tempfile.NamedTemporaryFile(mode='wt', delete=False)
-    try:
-        file_list.write('\n'.join(files))
-    finally:
-        file_list.close()
-    return popen(java_exec + ['-jar', jsdoc_validator_jar, '--files-list-name', to_platform_path_exact(file_list.name)]), file_list
+class JSDocChecker:
+    def __init__(self):
+        self._error_found = False
+        self._all_files = descriptors.all_compiled_files()
 
+    def check(self):
+        print 'Verifying JSDoc comments...'
+        self._verify_jsdoc()
+        self._run_jsdoc_validator()
+        return self._error_found
 
-def verify_jsdoc():
-    def file_list():
-        return descriptors.all_compiled_files()
+    def _run_jsdoc_validator(self):
+        files = [to_platform_path(f) for f in self._all_files]
+        file_list = tempfile.NamedTemporaryFile(mode='wt', delete=False)
+        try:
+            file_list.write('\n'.join(files))
+        finally:
+            file_list.close()
+        proc = popen(java_exec + ['-jar', jsdoc_validator_jar, '--files-list-name', to_platform_path_exact(file_list.name)])
+        (out, _) = proc.communicate()
+        if out:
+            print ('JSDoc validator output:%s%s' % (os.linesep, out))
+            self._error_found = True
+        os.remove(file_list.name)
 
-    errors_found = False
-    for full_file_name in file_list():
-        line_index = 0
-        with open(full_file_name, 'r') as sourceFile:
-            for line in sourceFile:
-                line = line.rstrip()
-                line_index += 1
-                if not line:
-                    continue
-                if verify_jsdoc_line(full_file_name, line_index, line):
-                    errors_found = True
-    return errors_found
+    def _verify_jsdoc(self):
+        for full_file_name in self._all_files:
+            line_index = 0
+            with open(full_file_name, 'r') as sourceFile:
+                for line in sourceFile:
+                    line_index += 1
+                    if line.rstrip():
+                        self._verify_jsdoc_line(full_file_name, line_index, line)
 
+    def _verify_jsdoc_line(self, file_name, line_index, line):
+        def print_error(message, error_position):
+            print '%s:%s: ERROR - %s%s%s%s%s%s' % (file_name, line_index, message, os.linesep, line, os.linesep, ' ' * error_position + '^', os.linesep)
 
-def verify_jsdoc_line(file_name, line_index, line):
-    def print_error(message, error_position):
-        print '%s:%s: ERROR - %s%s%s%s%s%s' % (file_name, line_index, message, os.linesep, line, os.linesep, ' ' * error_position + '^', os.linesep)
+        known_css = {}
+        match = re.search(invalid_type_regex, line)
+        if match:
+            print_error('Type "%s" nullability not marked explicitly with "?" (nullable) or "!" (non-nullable)' % match.group(1), match.start(1))
+            self._error_found = True
 
-    known_css = {}
-    errors_found = False
-    match = re.search(invalid_type_regex, line)
-    if match:
-        print_error('Type "%s" nullability not marked explicitly with "?" (nullable) or "!" (non-nullable)' % match.group(1), match.start(1))
-        errors_found = True
+        match = re.search(invalid_non_object_type_regex, line)
+        if match:
+            print_error('Non-object type explicitly marked with "!" (non-nullable), which is the default and should be omitted', match.start(1))
+            self._error_found = True
 
-    match = re.search(invalid_non_object_type_regex, line)
-    if match:
-        print_error('Non-object type explicitly marked with "!" (non-nullable), which is the default and should be omitted', match.start(1))
-        errors_found = True
+        match = re.search(invalid_type_designator_regex, line)
+        if match:
+            print_error('Type nullability indicator misplaced, should precede type', match.start(1))
+            self._error_found = True
 
-    match = re.search(invalid_type_designator_regex, line)
-    if match:
-        print_error('Type nullability indicator misplaced, should precede type', match.start(1))
-        errors_found = True
-
-    match = re.search(loaded_css_regex, line)
-    if match:
-        file = path.join(devtools_frontend_path, match.group(1))
-        exists = known_css.get(file)
-        if exists is None:
-            exists = path.isfile(file)
-            known_css[file] = exists
-        if not exists:
-            print_error('Dynamically loaded CSS stylesheet is missing in the source tree', match.start(1))
-            errors_found = True
-    return errors_found
+        match = re.search(loaded_css_regex, line)
+        if match:
+            file = path.join(devtools_frontend_path, match.group(1))
+            exists = known_css.get(file)
+            if exists is None:
+                exists = path.isfile(file)
+                known_css[file] = exists
+            if not exists:
+                print_error('Dynamically loaded CSS stylesheet is missing in the source tree', match.start(1))
+                self._error_found = True
 
 
 def find_java():
@@ -214,10 +222,6 @@ def find_java():
 
 java_exec = find_java()
 
-closure_compiler_jar = to_platform_path(path.join(scripts_path, 'closure', 'compiler.jar'))
-closure_runner_jar = to_platform_path(path.join(scripts_path, 'closure', 'closure_runner', 'closure_runner.jar'))
-jsdoc_validator_jar = to_platform_path(path.join(scripts_path, 'jsdoc_validator', 'jsdoc_validator.jar'))
-
 common_closure_args = [
     '--summary_detail_level', '3',
     '--jscomp_error', 'visibility',
@@ -231,20 +235,6 @@ common_closure_args = [
     '--checks-only',
 ]
 
-worker_modules_by_name = {}
-dependents_by_module_name = {}
-
-for module_name in descriptors.application:
-    module = descriptors.modules[module_name]
-    if descriptors.application[module_name].get('type', None) == 'worker':
-        worker_modules_by_name[module_name] = module
-    for dep in module.get('dependencies', []):
-        list = dependents_by_module_name.get(dep)
-        if not list:
-            list = []
-            dependents_by_module_name[dep] = list
-        list.append(module_name)
-
 
 def check_conditional_dependencies():
     errors_found = False
@@ -257,39 +247,6 @@ def check_conditional_dependencies():
     return errors_found
 
 errors_found |= check_conditional_dependencies()
-
-
-def verify_worker_modules():
-    errors_found = False
-    for name in modules_by_name:
-        for dependency in modules_by_name[name].get('dependencies', []):
-            if dependency in worker_modules_by_name:
-                log_error('Module "%s" may not depend on the worker module "%s"' % (name, dependency))
-                errors_found = True
-    return errors_found
-
-errors_found |= verify_worker_modules()
-
-
-def check_duplicate_files():
-
-    def check_module(module, seen_files, seen_modules):
-        name = module['name']
-        seen_modules[name] = True
-        for dep_name in module.get('dependencies', []):
-            if not dep_name in seen_modules:
-                check_module(modules_by_name[dep_name], seen_files, seen_modules)
-        for source in module.get('scripts', []):
-            referencing_module = seen_files.get(source)
-            if referencing_module:
-                log_error('Duplicate use of %s in "%s" (previously seen in "%s")' % (source, name, referencing_module))
-            seen_files[source] = name
-
-    for module_name in worker_modules_by_name:
-        check_module(worker_modules_by_name[module_name], {}, {})
-
-print 'Checking duplicate files across modules...'
-check_duplicate_files()
 
 print 'Compiling frontend...'
 
@@ -339,18 +296,7 @@ devtools_js_compile_command = closure_compiler_command + [
 ]
 devtools_js_compile_proc = popen(devtools_js_compile_command)
 
-print 'Verifying JSDoc comments...'
-errors_found |= verify_jsdoc()
-(jsdoc_validator_proc, jsdoc_validator_file_list) = verify_jsdoc_extra()
-
-print
-
-(jsdoc_validator_out, _) = jsdoc_validator_proc.communicate()
-if jsdoc_validator_out:
-    print ('JSDoc validator output:%s%s' % (os.linesep, jsdoc_validator_out))
-    errors_found = True
-
-os.remove(jsdoc_validator_file_list.name)
+errors_found |= JSDocChecker().check()
 
 (devtools_js_compile_out, _) = devtools_js_compile_proc.communicate()
 print 'devtools_compatibility.js compilation output:%s' % os.linesep, devtools_js_compile_out

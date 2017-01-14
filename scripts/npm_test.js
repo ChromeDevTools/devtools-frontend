@@ -35,8 +35,7 @@ function main(){
     if (!IS_FETCH_CONTENT_SHELL && hasUserCompiledContentShell) {
         var outDir = path.resolve(RELEASE_PATH, "..");
         if (!IS_DEBUG_ENABLED) {
-            console.log("Compiling devtools frontend");
-            shell(`ninja -C ${RELEASE_PATH} devtools_frontend_resources`);
+            compileFrontend();
         }
         runTests(outDir, IS_DEBUG_ENABLED);
         return;
@@ -54,6 +53,18 @@ function main(){
     }
 }
 main();
+
+function compileFrontend()
+{
+    console.log("Compiling devtools frontend");
+    try {
+        shell(`ninja -C ${RELEASE_PATH} devtools_frontend_resources`);
+    } catch (err) {
+        console.log(err.stdout.toString());
+        console.log('ERROR: Cannot compile frontend\n' + err);
+        process.exit(1);
+    }
+}
 
 function onUploadedCommitPosition(commitPosition)
 {

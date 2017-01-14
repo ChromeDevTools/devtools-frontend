@@ -100,7 +100,7 @@ function launchChrome(filePath, chromeArgs)
     var child;
     try {
         child = childProcess.spawn(filePath, chromeArgs, {
-            stdio: "ignore",
+            stdio: "inherit",
         });
     } catch (error) {
         onLaunchChromeError();

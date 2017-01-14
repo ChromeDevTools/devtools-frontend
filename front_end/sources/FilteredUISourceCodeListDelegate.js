@@ -183,9 +183,9 @@ Sources.FilteredUISourceCodeListDelegate = class extends QuickOpen.FilteredListW
    * @return {string}
    */
   rewriteQuery(query) {
-    if (!query)
-      return query;
-    query = query.trim();
+    query = query ? query.trim() : '';
+    if (!query || query === ':')
+      return '';
     var lineNumberMatch = query.match(/^([^:]+)((?::[^:]*){0,2})$/);
     this._queryLineNumberAndColumnNumber = lineNumberMatch ? lineNumberMatch[2] : '';
     return lineNumberMatch ? lineNumberMatch[1] : query;

@@ -271,6 +271,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
 
     this._progressBarElement.style.transform = 'scaleX(0)';
     this._progressBarElement.classList.remove('filtered-widget-progress-fade');
+    this._progressBarElement.classList.remove('hidden');
 
     var query = this._delegate.rewriteQuery(this._value());
     this._query = query;
@@ -284,6 +285,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     var bestItemsToCollect = 100;
     var minBestScore = 0;
     var overflowItems = [];
+    var scoreStartTime = window.performance.now();
 
     var maxWorkItems = Number.constrain(10, 500, (this._delegate.itemCount() / 10) | 0);
 
@@ -338,11 +340,16 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
       // Process everything in chunks.
       if (i < this._delegate.itemCount()) {
         this._scoringTimer = setTimeout(scoreItems.bind(this, i), 0);
-        this._progressBarElement.style.transform = 'scaleX(' + i / this._delegate.itemCount() + ')';
+        if (window.performance.now() - scoreStartTime > 50)
+          this._progressBarElement.style.transform = 'scaleX(' + i / this._delegate.itemCount() + ')';
         return;
       }
-      this._progressBarElement.style.transform = 'scaleX(1)';
-      this._progressBarElement.classList.add('filtered-widget-progress-fade');
+      if (window.performance.now() - scoreStartTime > 100) {
+        this._progressBarElement.style.transform = 'scaleX(1)';
+        this._progressBarElement.classList.add('filtered-widget-progress-fade');
+      } else {
+        this._progressBarElement.classList.add('hidden');
+      }
       this._refreshListWithCurrentResult();
     }
   }

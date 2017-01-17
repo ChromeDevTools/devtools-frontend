@@ -243,7 +243,7 @@ Console.ConsolePrompt = class extends UI.Widget {
   _substituteRange(lineNumber, columnNumber) {
     var lineText = this._editor.line(lineNumber);
     var index;
-    for (index = lineText.length - 1; index >= 0; index--) {
+    for (index = columnNumber - 1; index >= 0; index--) {
       if (' =:[({;,!+-*/&|^<>.\t\r\n'.indexOf(lineText.charAt(index)) !== -1)
         break;
     }

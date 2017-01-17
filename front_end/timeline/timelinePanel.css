@@ -84,6 +84,7 @@
     z-index: 1000;
     display: flex;
     align-items: center;
+    pointer-events: none;
 }
 
 .timeline.panel .status-pane-container.tinted {

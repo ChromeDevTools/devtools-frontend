@@ -444,7 +444,7 @@ SDK.NetworkDispatcher = class {
         var consoleModel = this._manager._target.consoleModel;
         consoleModel.addMessage(new SDK.ConsoleMessage(
             consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network, SDK.ConsoleMessage.MessageLevel.Warning,
-            Common.UIString('Request was blocked by DevTools: "%s".', networkRequest.url),
+            Common.UIString('Request was blocked by DevTools: "%s".', networkRequest.url()),
             SDK.ConsoleMessage.MessageType.Log, '', 0, 0, networkRequest.requestId()));
       }
     }

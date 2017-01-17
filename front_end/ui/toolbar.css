@@ -31,7 +31,7 @@
 .toolbar-shadow.vertical {
     flex-direction: column;
     height: auto;
-    width: 26px;
+    align-items: flex-start;
 }
 
 .toolbar-item {

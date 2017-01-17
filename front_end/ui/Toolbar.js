@@ -222,7 +222,7 @@ UI.Toolbar = class {
   setEnabled(enabled) {
     this._enabled = enabled;
     for (var item of this._items)
-      item._applyEnabledState();
+      item._applyEnabledState(this._enabled && item._enabled);
   }
 
   /**
@@ -232,7 +232,7 @@ UI.Toolbar = class {
     this._items.push(item);
     item._toolbar = this;
     if (!this._enabled)
-      item._applyEnabledState();
+      item._applyEnabledState(false);
     if (this._reverse)
       this._contentElement.insertBefore(item.element, this._insertionPoint.nextSibling);
     else
@@ -375,7 +375,7 @@ UI.ToolbarItem = class extends Common.Object {
   }
 
   /**
-   * @param {string} title
+   * @param {!Element|string} title
    */
   setTitle(title) {
     if (this._title === title)
@@ -399,11 +399,14 @@ UI.ToolbarItem = class extends Common.Object {
     if (this._enabled === value)
       return;
     this._enabled = value;
-    this._applyEnabledState();
+    this._applyEnabledState(this._enabled && (!this._toolbar || this._toolbar._enabled));
   }
 
-  _applyEnabledState() {
-    this.element.disabled = !this._enabled || (this._toolbar && !this._toolbar._enabled);
+  /**
+   * @param {boolean} enabled
+   */
+  _applyEnabledState(enabled) {
+    this.element.disabled = !enabled;
   }
 
   /**
@@ -833,9 +836,11 @@ UI.ToolbarComboBox = class extends UI.ToolbarItem {
 
   /**
    * @override
+   * @param {boolean} enabled
    */
-  _applyEnabledState() {
-    this._selectElement.disabled = !this._enabled || (this._toolbar && !this._toolbar._enabled);
+  _applyEnabledState(enabled) {
+    super._applyEnabledState(enabled);
+    this._selectElement.disabled = !enabled;
   }
 
   /**
@@ -921,5 +926,14 @@ UI.ToolbarCheckbox = class extends UI.ToolbarItem {
    */
   setChecked(value) {
     this.inputElement.checked = value;
+  }
+
+  /**
+   * @override
+   * @param {boolean} enabled
+   */
+  _applyEnabledState(enabled) {
+    super._applyEnabledState(enabled);
+    this.inputElement.disabled = !enabled;
   }
 };

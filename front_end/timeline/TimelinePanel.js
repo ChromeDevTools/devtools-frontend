@@ -76,16 +76,17 @@ Timeline.TimelinePanel = class extends UI.Panel {
     /** @type {!Array<!Timeline.TimelineModeView>} */
     this._currentViews = [];
 
-    this._captureJSProfileSetting = Common.settings.createSetting('timelineEnableJSSampling', true);
+    this._disableCaptureJSProfileSetting = Common.settings.createSetting('timelineDisableJSSampling', false);
     this._captureLayersAndPicturesSetting = Common.settings.createSetting('timelineCaptureLayersAndPictures', false);
-    this._captureFilmStripSetting = Common.settings.createSetting('timelineCaptureFilmStrip', false);
 
-    this._showScreenshotsSetting = Common.settings.createLocalSetting('timelineShowScreenshots', false);
+    this._showScreenshotsSetting = Common.settings.createLocalSetting('timelineShowScreenshots', true);
     this._showScreenshotsSetting.addChangeListener(this._onModeChanged, this);
     this._showMemorySetting = Common.settings.createLocalSetting('timelineShowMemory', false);
     this._showMemorySetting.addChangeListener(this._onModeChanged, this);
 
     this._panelToolbar = new UI.Toolbar('', this.element);
+    this._createSettingsPane();
+    this._updateShowSettingsToolbarButton();
 
     this._timelinePane = new UI.VBox();
     this._timelinePane.show(this.element);
@@ -103,8 +104,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.PageReloadRequested, this._pageReloadRequested, this);
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.Load, this._loadEventFired, this);
-
-    this._landingPage = new Timeline.TimelineLandingPage();
 
     // Create top level properties splitter.
     this._detailsSplitWidget = new UI.SplitWidget(false, true, 'timelinePanelDetailsSplitViewState');
@@ -124,33 +123,11 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._stackView.show(this._searchableView.element);
     this._onModeChanged();
 
-    this._configureThrottlingSetting = Common.settings.createSetting('timelineConfigureThrottling', false);
-    this._configureThrottlingButton = new UI.ToolbarSettingToggle(
-        this._configureThrottlingSetting, 'largeicon-settings-gear', Common.UIString('Configure throttling'));
-    SDK.multitargetNetworkManager.addEventListener(
-        SDK.MultitargetNetworkManager.Events.ConditionsChanged, this._updateConfigureThrottlingButton.bind(this));
-    this._cpuThrottlingManager.addEventListener(
-        Components.CPUThrottlingManager.Events.RateChanged, this._updateConfigureThrottlingButton.bind(this));
-    this._throttlingToolbar = new UI.Toolbar('', this.element);
-    this._throttlingToolbar.appendText(Common.UIString('Network:'));
-    this._throttlingToolbar.appendToolbarItem(this._createNetworkConditionsSelect());
-    this._throttlingToolbar.appendSeparator();
-    this._throttlingToolbar.appendText(Common.UIString('CPU:'));
-    this._throttlingToolbar.appendToolbarItem(this._cpuThrottlingManager.createControl());
-    this._throttlingToolbar.appendToolbarItem(new UI.ToolbarSeparator(true));
-    var hideToolbarItem = new UI.ToolbarButton(Common.UIString('Close'), 'largeicon-delete');
-    hideToolbarItem.addEventListener(UI.ToolbarButton.Events.Click, () => this._configureThrottlingSetting.set(false));
-    this._throttlingToolbar.appendToolbarItem(hideToolbarItem);
-    this._configureThrottlingSetting.addChangeListener(this._updateThrottlingToolbarVisibility.bind(this));
-    this._updateThrottlingToolbarVisibility();
-
+    this._populateToolbar();
     this._showLandingPage();
-    this._recreateToolbarItems();
 
     Extensions.extensionServer.addEventListener(
-        Extensions.ExtensionServer.Events.TraceProviderAdded, this._recreateToolbarItems, this);
-
-    this._captureFilmStripSetting.addChangeListener(this._onModeChanged, this);
+        Extensions.ExtensionServer.Events.TraceProviderAdded, this._appendExtensionsToToolbar, this);
 
     this._detailsSplitWidget.show(this._timelinePane.element);
     this._detailsSplitWidget.hideSidebar();
@@ -303,49 +280,80 @@ Timeline.TimelinePanel = class extends UI.Panel {
     return checkboxItem;
   }
 
-  _recreateToolbarItems() {
-    this._panelToolbar.removeToolbarItems();
-
-    // Close
-    if (!this._model.isEmpty()) {
-      const clearButton = new UI.ToolbarButton(Common.UIString('Close profile'), 'largeicon-delete');
-      clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear, this);
-      this._panelToolbar.appendToolbarItem(clearButton);
-      this._panelToolbar.appendSeparator();
-    }
-
+  _populateToolbar() {
     // Record
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('main.reload'));
+    var clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
+    clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._clear());
+    this._panelToolbar.appendToolbarItem(clearButton);
     this._panelToolbar.appendSeparator();
-    this._panelToolbar.appendToolbarItem(this._configureThrottlingButton);
+
+    // View
+    this._panelToolbar.appendSeparator();
+    this._showScreenshotsToolbarCheckbox = this._createSettingCheckbox(
+        Common.UIString('Screenshots'), this._showScreenshotsSetting, Common.UIString('Capture screenshots'));
+    this._panelToolbar.appendToolbarItem(this._showScreenshotsToolbarCheckbox);
+
+    this._showMemoryToolbarCheckbox = this._createSettingCheckbox(
+        Common.UIString('Memory'), this._showMemorySetting, Common.UIString('Show memory timeline.'));
+    this._panelToolbar.appendToolbarItem(this._showMemoryToolbarCheckbox);
+
+    // Settings
+    this._panelToolbar.appendToolbarItem(this._showSettingsPaneButton);
+
+    // GC
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('components.collect-garbage'));
+  }
 
-    // Checkboxes
-    if (!this._model.isEmpty()) {
-      this._panelToolbar.appendSeparator();
-      this._panelToolbar.appendText(Common.UIString('View:'));
-      this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(
-          Common.UIString('Memory'), this._showMemorySetting, Common.UIString('Show memory timeline.')));
-      if (this._filmStripModel.frames().length) {
-        this._showScreenshotsSetting.set(true);
-        this._panelToolbar.appendToolbarItem(this._createSettingCheckbox(
-            Common.UIString('Screenshots'), this._showScreenshotsSetting,
-            Common.UIString('Show captured screenshots.')));
-      }
-    }
+  _createSettingsPane() {
+    this._showSettingsPaneSetting = Common.settings.createSetting('timelineShowSettingsToolbar', false);
+    this._showSettingsPaneButton = new UI.ToolbarSettingToggle(
+        this._showSettingsPaneSetting, 'largeicon-settings-gear', Common.UIString('Capture settings'));
+    SDK.multitargetNetworkManager.addEventListener(
+        SDK.MultitargetNetworkManager.Events.ConditionsChanged, this._updateShowSettingsToolbarButton, this);
+    this._cpuThrottlingManager.addEventListener(
+        Components.CPUThrottlingManager.Events.RateChanged, this._updateShowSettingsToolbarButton, this);
+    this._disableCaptureJSProfileSetting.addChangeListener(this._updateShowSettingsToolbarButton, this);
+    this._captureLayersAndPicturesSetting.addChangeListener(this._updateShowSettingsToolbarButton, this);
 
-    const traceProviders = Extensions.extensionServer.traceProviders();
-    if (traceProviders.length) {
-      this._panelToolbar.appendSeparator();
-      for (let provider of traceProviders) {
-        const setting = Timeline.TimelinePanel._settingForTraceProvider(provider);
-        const checkbox = this._createSettingCheckbox(provider.shortDisplayName(), setting, provider.longDisplayName());
-        this._panelToolbar.appendToolbarItem(checkbox);
-      }
-    }
+    this._settingsPane = new UI.HBox();
+    this._settingsPane.element.classList.add('timeline-settings-pane');
+    this._settingsPane.show(this.element);
 
-    this._updateTimelineControls();
+    var captureToolbar = new UI.Toolbar('', this._settingsPane.element);
+    captureToolbar.element.classList.add('flex-auto');
+    captureToolbar.makeVertical();
+    captureToolbar.appendToolbarItem(this._createSettingCheckbox(
+        Common.UIString('Disable JavaScript Samples'), this._disableCaptureJSProfileSetting,
+        Common.UIString('Disables JavaScript sampling, reduces overhead when running against mobile devices')));
+    captureToolbar.appendToolbarItem(this._createSettingCheckbox(
+        Common.UIString('Enable advanced paint instrumentation (slow)'), this._captureLayersAndPicturesSetting,
+        Common.UIString('Captures advanced paint instrumentation, introduces significant performance overhead')));
+
+    var throttlingPane = new UI.VBox();
+    throttlingPane.element.classList.add('flex-auto');
+    throttlingPane.show(this._settingsPane.element);
+
+    var throttlingToolbar1 = new UI.Toolbar('', throttlingPane.element);
+    throttlingToolbar1.appendText(Common.UIString('Network:'));
+    throttlingToolbar1.appendToolbarItem(this._createNetworkConditionsSelect());
+    var throttlingToolbar2 = new UI.Toolbar('', throttlingPane.element);
+    throttlingToolbar2.appendText(Common.UIString('CPU:'));
+    throttlingToolbar2.appendToolbarItem(this._cpuThrottlingManager.createControl());
+
+    this._showSettingsPaneSetting.addChangeListener(this._updateSettingsPaneVisibility.bind(this));
+    this._updateSettingsPaneVisibility();
+  }
+
+  /**
+    * @param {!Common.Event} event
+    */
+  _appendExtensionsToToolbar(event) {
+    var provider = /** @type {!Extensions.ExtensionTraceProvider} */ (event.data);
+    const setting = Timeline.TimelinePanel._settingForTraceProvider(provider);
+    const checkbox = this._createSettingCheckbox(provider.shortDisplayName(), setting, provider.longDisplayName());
+    this._panelToolbar.appendToolbarItem(checkbox);
   }
 
   /**
@@ -381,7 +389,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     if (this._fileSelectorElement)
       this._fileSelectorElement.remove();
     this._fileSelectorElement = UI.createFileSelectorElement(this._loadFromFile.bind(this));
-    this.element.appendChild(this._fileSelectorElement);
+    this._timelinePane.element.appendChild(this._fileSelectorElement);
   }
 
   /**
@@ -456,7 +464,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
   _onModeChanged() {
     const showMemory = this._showMemorySetting.get();
-    const showScreenshots = this._showScreenshotsSetting.get() && this._filmStripModel.frames().length;
+    const showScreenshots = this._showScreenshotsSetting.get();
     // Set up overview controls.
     this._overviewControls = [];
     this._overviewControls.push(new Timeline.TimelineEventOverviewResponsiveness(this._model, this._frameModel));
@@ -486,14 +494,36 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this.select(null);
   }
 
-  _updateThrottlingToolbarVisibility() {
-    this._throttlingToolbar.element.classList.toggle('hidden', !this._configureThrottlingSetting.get());
+  _updateSettingsPaneVisibility() {
+    if (this._showSettingsPaneSetting.get())
+      this._settingsPane.showWidget();
+    else
+      this._settingsPane.hideWidget();
   }
 
-  _updateConfigureThrottlingButton() {
-    var makeRed = this._cpuThrottlingManager.rate() !== 1 || SDK.multitargetNetworkManager.isThrottling();
-    this._configureThrottlingButton.setDefaultWithRedColor(makeRed);
-    this._configureThrottlingButton.setToggleWithRedColor(makeRed);
+  _updateShowSettingsToolbarButton() {
+    var messages = [];
+    if (this._cpuThrottlingManager.rate() !== 1)
+      messages.push(Common.UIString('- CPU throttling is enabled'));
+    if (SDK.multitargetNetworkManager.isThrottling())
+      messages.push(Common.UIString('- Network throttling is enabled'));
+    if (this._captureLayersAndPicturesSetting.get())
+      messages.push(Common.UIString('- Significant overhead due to paint instrumentation'));
+    if (this._disableCaptureJSProfileSetting.get())
+      messages.push(Common.UIString('- JavaScript sampling is disabled'));
+
+    this._showSettingsPaneButton.setDefaultWithRedColor(messages.length);
+    this._showSettingsPaneButton.setToggleWithRedColor(messages.length);
+
+    if (messages.length) {
+      var tooltipElement = createElement('div');
+      messages.forEach(message => {
+        tooltipElement.createChild('div').textContent = message;
+      });
+      this._showSettingsPaneButton.setTitle(tooltipElement);
+    } else {
+      this._showSettingsPaneButton.setTitle(Common.UIString('Capture settings'));
+    }
   }
 
   /**
@@ -519,7 +549,12 @@ Timeline.TimelinePanel = class extends UI.Panel {
     var enabledTraceProviders = Extensions.extensionServer.traceProviders().filter(
         provider => Timeline.TimelinePanel._settingForTraceProvider(provider).get());
 
-    const recordingOptions = this._landingPage.recordingOptions();
+    const recordingOptions = {
+      enableJSSampling: !this._disableCaptureJSProfileSetting.get(),
+      capturePictures: this._captureLayersAndPicturesSetting.get(),
+      captureFilmStrip: this._showScreenshotsSetting.get()
+    };
+
     this._controller = new Timeline.TimelineController(mainTarget, this, this._tracingModel);
     this._controller.startRecording(recordingOptions, enabledTraceProviders);
     this._recordingStartTime = Date.now();
@@ -571,7 +606,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._sessionGeneration = null;
     this._recordingStartTime = 0;
     this._reset();
-    this._recreateToolbarItems();
   }
 
   _reset() {
@@ -637,13 +671,54 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   _showLandingPage() {
-    this._timelinePane.detach();
-    this._landingPage.show(this.element);
+    if (this._landingPage) {
+      this._landingPage.show(this._statusPaneContainer);
+      return;
+    }
+
+    /**
+     * @param {string} tagName
+     * @param {string} contents
+     */
+    function encloseWithTag(tagName, contents) {
+      var e = createElement(tagName);
+      e.textContent = contents;
+      return e;
+    }
+
+    var learnMoreNode = UI.createExternalLink(
+        'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/', Common.UIString('Learn more'));
+    var recordNode =
+        encloseWithTag('b', UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.toggle-recording')[0].name);
+    var reloadNode = encloseWithTag('b', UI.shortcutRegistry.shortcutDescriptorsForAction('main.reload')[0].name);
+    var navigateNode = encloseWithTag('b', Common.UIString('WASD'));
+
+    this._landingPage = new UI.VBox();
+    this._landingPage.contentElement.classList.add('timeline-landing-page', 'fill');
+    var centered = this._landingPage.contentElement.createChild('div');
+
+    var p = centered.createChild('p');
+    p.createTextChild(Common.UIString(
+        'The Performance panel lets you record what the browser does during page load and user interaction. The timeline it generates can help you determine why certain parts of your page are slow.'));
+
+    p = centered.createChild('p');
+    p.appendChild(UI.formatLocalized(
+        'To capture a new recording, click the record toolbar button or hit %s. To evaluate page load performance, hit %s to record the reload.',
+        [recordNode, reloadNode]));
+
+    p = centered.createChild('p');
+    p.appendChild(UI.formatLocalized(
+        'After recording, select an area of interest in the overview by dragging. Then, zoom and pan the timeline with the mousewheel or %s keys.',
+        [navigateNode]));
+
+    p = centered.createChild('p');
+    p.appendChild(learnMoreNode);
+
+    this._landingPage.show(this._statusPaneContainer);
   }
 
   _hideLandingPage() {
     this._landingPage.detach();
-    this._timelinePane.show(this.element);
   }
 
   /**
@@ -706,7 +781,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     for (let entry of this._extensionTracingModels)
       entry.model.adjustTime(this._model.minimumRecordTime() + (entry.timeOffset / 1000) - this._recordingStartTime);
 
-    this._recreateToolbarItems();
     this._flameChart.resizeToPreferredHeights();
     this._overviewPane.reset();
     this._overviewPane.setBounds(this._model.minimumRecordTime(), this._model.maximumRecordTime());

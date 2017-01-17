@@ -577,7 +577,7 @@ Extensions.ExtensionServer = class extends Common.Object {
         port._extensionOrigin, message.id, message.categoryName, message.categoryTooltip);
     this._clientObjects[message.id] = provider;
     this._traceProviders.push(provider);
-    this.dispatchEventToListeners(Extensions.ExtensionServer.Events.TraceProviderAdded);
+    this.dispatchEventToListeners(Extensions.ExtensionServer.Events.TraceProviderAdded, provider);
   }
 
   /**

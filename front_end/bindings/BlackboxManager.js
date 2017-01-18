@@ -276,9 +276,10 @@ Bindings.BlackboxManager = class {
   _patternChanged() {
     this._isBlackboxedURLCache.clear();
 
+    /** @type {!Array<!Promise>} */
     var promises = [];
     for (var debuggerModel of SDK.DebuggerModel.instances()) {
-      promises.push(this._setBlackboxPatterns.bind(this, debuggerModel));
+      promises.push(this._setBlackboxPatterns(debuggerModel));
       for (var scriptId in debuggerModel.scripts) {
         var script = debuggerModel.scripts[scriptId];
         promises.push(this._addScript(script).then(loadSourceMap.bind(this, script)));

@@ -586,7 +586,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
    * @param {?Array.<!SDK.RemoteObjectProperty>} internalProperties
    */
   _prepareScopeVariables(callFrame, properties, internalProperties) {
-    if (!properties || !properties.length || properties.length > 500) {
+    if (!properties || !properties.length || properties.length > 500 || !this.isShowing()) {
       this._clearValueWidgets();
       return;
     }

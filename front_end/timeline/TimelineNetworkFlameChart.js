@@ -23,6 +23,7 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
       backgroundColor: UI.themeSupport.patchColor('white', UI.ThemeSupport.ColorUsage.Background),
       nestingLevel: 0,
       useFirstLineForOverview: false,
+      useDecoratorsForOverview: true,
       shareHeaderLine: false
     };
     this._group = {startLevel: 0, name: Common.UIString('Network'), expanded: true, style: this._style};

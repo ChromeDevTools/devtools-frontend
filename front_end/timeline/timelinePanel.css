@@ -92,6 +92,10 @@
     pointer-events: auto;
 }
 
+.timeline.panel .status-pane-container > div {
+    pointer-events: auto;
+}
+
 #timeline-overview-panel .overview-strip {
     margin-top: 2px;
     justify-content: center;

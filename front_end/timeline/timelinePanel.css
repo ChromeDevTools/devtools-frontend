@@ -660,3 +660,14 @@
 .timeline-landing-page > div > p {
     flex: none;
 }
+
+.timeline-landing-warning {
+    border: 1px solid #fdd835;
+    background-color: #fffde7;
+    padding: 5px;
+}
+
+.timeline-landing-warning span[is=ui-icon] {
+    position: relative;
+    top:7px;
+}

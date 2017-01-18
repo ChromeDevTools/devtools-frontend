@@ -714,6 +714,14 @@ Timeline.TimelinePanel = class extends UI.Panel {
     p = centered.createChild('p');
     p.appendChild(learnMoreNode);
 
+    var timelineSpan = encloseWithTag('b', Common.UIString('Timeline'));
+    var performanceSpan = encloseWithTag('b', Common.UIString('Performance'));
+
+    p = centered.createChild('p', 'timeline-landing-warning');
+    p.appendChild(UI.formatLocalized(
+        'The %s panel has been enriched with the JavaScript profiler capabilities and is now called %s.%sYou can find the legacy JavaScript CPU profiler under %s\u2192 More Tools \u2192 JavaScript Profiler.',
+        [timelineSpan, performanceSpan, createElement('br'), UI.Icon.create('largeicon-menu')]));
+
     this._landingPage.show(this._statusPaneContainer);
   }
 

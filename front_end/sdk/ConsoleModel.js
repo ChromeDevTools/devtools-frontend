@@ -63,7 +63,7 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
   /**
    * @param {!SDK.ExecutionContext} executionContext
    * @param {string} text
-   * @param {boolean=} useCommandLineAPI
+   * @param {boolean} useCommandLineAPI
    */
   static evaluateCommandInConsole(executionContext, text, useCommandLineAPI) {
     var target = executionContext.target();
@@ -116,7 +116,7 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
     if (looksLikeAnObjectLiteral(text))
       text = '(' + text + ')';
 
-    executionContext.evaluate(text, 'console', !!useCommandLineAPI, false, false, true, true, printResult);
+    executionContext.evaluate(text, 'console', useCommandLineAPI, false, false, true, true, printResult);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
   }
 

@@ -957,7 +957,8 @@ Sources.SourcesPanel = class extends UI.Panel {
         failedToSave(result);
       } else {
         SDK.ConsoleModel.evaluateCommandInConsole(
-            /** @type {!SDK.ExecutionContext} */ (currentExecutionContext), result.value);
+            /** @type {!SDK.ExecutionContext} */ (currentExecutionContext), result.value,
+            /* useCommandLineAPI */ false);
       }
     }
 
@@ -1267,7 +1268,7 @@ Sources.SourcesPanel.DebuggingActionDelegate = class {
           var text = frame.textEditor.text(frame.textEditor.selection());
           var executionContext = UI.context.flavor(SDK.ExecutionContext);
           if (executionContext)
-            SDK.ConsoleModel.evaluateCommandInConsole(executionContext, text);
+            SDK.ConsoleModel.evaluateCommandInConsole(executionContext, text, /* useCommandLineAPI */ true);
         }
         return true;
     }

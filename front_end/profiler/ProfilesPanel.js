@@ -31,8 +31,9 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
   /**
    * @param {string} name
    * @param {!Array.<!Profiler.ProfileType>} profileTypes
+   * @param {string} recordingActionId
    */
-  constructor(name, profileTypes) {
+  constructor(name, profileTypes, recordingActionId) {
     super(name);
     this._profileTypes = profileTypes;
     this.registerRequiredCSS('ui/panelEnablerView.css');
@@ -65,7 +66,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     var toolbar = new UI.Toolbar('', toolbarContainerLeft);
 
     this._toggleRecordAction =
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('profiler.toggle-recording'));
+        /** @type {!UI.Action }*/ (UI.actionRegistry.action(recordingActionId));
     this._toggleRecordButton = UI.Toolbar.createActionButton(this._toggleRecordAction);
     toolbar.appendToolbarItem(this._toggleRecordButton);
 
@@ -783,9 +784,39 @@ Profiler.ProfilesSidebarTreeElement = class extends UI.TreeElement {
   }
 };
 
+/**
+ * @implements {UI.ActionDelegate}
+ */
 Profiler.JSProfilerPanel = class extends Profiler.ProfilesPanel {
   constructor() {
     var registry = Profiler.ProfileTypeRegistry.instance;
-    super('js_profiler', [registry.cpuProfileType]);
+    super('js_profiler', [registry.cpuProfileType], 'profiler.js-toggle-recording');
+  }
+
+  /**
+   * @override
+   */
+  wasShown() {
+    UI.context.setFlavor(Profiler.JSProfilerPanel, this);
+  }
+
+  /**
+   * @override
+   */
+  willHide() {
+    UI.context.setFlavor(Profiler.JSProfilerPanel, null);
+  }
+
+  /**
+   * @override
+   * @param {!UI.Context} context
+   * @param {string} actionId
+   * @return {boolean}
+   */
+  handleAction(context, actionId) {
+    var panel = UI.context.flavor(Profiler.JSProfilerPanel);
+    console.assert(panel && panel instanceof Profiler.JSProfilerPanel);
+    panel.toggleRecord();
+    return true;
   }
 };

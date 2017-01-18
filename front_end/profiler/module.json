@@ -60,7 +60,7 @@
         },
         {
             "type": "@UI.ActionDelegate",
-            "actionId": "profiler.toggle-recording",
+            "actionId": "profiler.heap-toggle-recording",
             "iconClass": "largeicon-start-recording",
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
@@ -68,6 +68,27 @@
                 "Profiler.HeapProfilerPanel"
             ],
             "className": "Profiler.HeapProfilerPanel",
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+E"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+E"
+                }
+            ]
+        },
+        {
+            "type": "@UI.ActionDelegate",
+            "actionId": "profiler.js-toggle-recording",
+            "iconClass": "largeicon-start-recording",
+            "toggledIconClass": "largeicon-stop-recording",
+            "toggleWithRedColor": true,
+            "contextTypes": [
+                "Profiler.JSProfilerPanel"
+            ],
+            "className": "Profiler.JSProfilerPanel",
             "bindings": [
                 {
                     "platform": "windows,linux",

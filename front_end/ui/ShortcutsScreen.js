@@ -159,7 +159,7 @@ UI.ShortcutsScreen = class {
     // Profiles panel
     section = UI.shortcutsScreen.section(Common.UIString('Profiles Panel'));
     section.addAlternateKeys(
-        UI.shortcutRegistry.shortcutDescriptorsForAction('profiler.toggle-recording'),
+        UI.shortcutRegistry.shortcutDescriptorsForAction('profiler.heap-toggle-recording'),
         Common.UIString('Start/stop recording'));
 
     // Layers panel

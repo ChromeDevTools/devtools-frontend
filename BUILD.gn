@@ -554,6 +554,7 @@ all_devtools_files = [
   "front_end/timeline/MemoryCountersGraph.js",
   "front_end/timeline/module.json",
   "front_end/timeline/TimelineController.js",
+  "front_end/timeline/TimelineDetailsView.js",
   "front_end/timeline/TimelineEventOverview.js",
   "front_end/timeline/TimelineFlameChart.js",
   "front_end/timeline/timelineFlamechartPopover.css",

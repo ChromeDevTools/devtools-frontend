@@ -143,6 +143,7 @@
         "ExtensionTracingSession.js",
         "MemoryCountersGraph.js",
         "TimelineController.js",
+        "TimelineDetailsView.js",
         "TimelineLoader.js",
         "TimelineEventOverview.js",
         "TimelineFlameChartView.js",

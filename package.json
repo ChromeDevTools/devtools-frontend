@@ -9,7 +9,8 @@
     "debug-test": "node scripts/npm_test.js --debug-devtools",
     "lint": "eslint front_end",
     "format": "node scripts/format.js",
-    "closure": "python scripts/compile_frontend.py"
+    "closure": "python scripts/compile_frontend.py",
+    "setup-dtrun": "cd scripts/devtools_run && npm link"
   },
   "repository": {
     "type": "git",

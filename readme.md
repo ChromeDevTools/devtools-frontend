@@ -48,19 +48,54 @@ The frontend is available through a git subtree mirror on [chromium.googlesource
 
 ### Useful Commands
 
-Basic:
-* `npm run format` - formats your code using clang-format
-* `npm test` - builds devtools and runs all inspector layout tests
+#### Simpler npm commands w/ `dtrun`
+If you want to run these npm commands anywhere in the chromium repo (e.g. in chromium/src), you'll want to setup our `dtrun` CLI helper.
+
+One-time setup:
+```
+npm run setup-dtrun
+```
+
+Now, you can use any of the following commands by simply doing: `dtrun test`. 
+
+In addition, you no longer need to pass double dashes (e.g. `--`) before you pass in the flags. So you can do: `dtrun test -d inspector/test.html`.
+
+#### `npm run format` 
+Formats your code using clang-format
+
+#### `npm test`
+Builds devtools and runs all inspector/devtools layout tests.
 
 > Note: If you're using a full chromium checkout and compiled content shell in out/Release, then `npm test` uses that. Otherwise, with only a front-end checkout (i.e. cloning from GitHub), then `npm test` will fetch a previously compiled content shell from the cloud (and cache it for future test runs).
 
-Advanced testing:
-* `npm test -- --fetch-content-shell` - even if you're using a full chromium checkout and have a compiled content shell, this will fetch a pre-compiled content shell. This is useful if you haven't compiled your content shell recently.
-* `npm test -- -f --child-processes=16` - pass in additional flags to the test harness
-* `npm test -- inspector/sources inspector/console` - run specific tests
-* `npm test -- inspector/cookie-resource-match.html --debug-devtools` OR `npm run debug-test inspector/cookie-resource-match.html` - debug a specific test (non-bundled & minified). You can use "-d" as a shorthand for "--debug-devtools".
+#### `npm test` basics
+```
+# run specific tests
+npm test -- inspector/sources inspector/console
 
-#### Development
+# debug a specific test. Any one of:
+npm run debug-test inspector/cookie-resource-match.html
+npm test -- --debug-devtools inspector/cookie-resource-match.html 
+npm test -- -d inspector/cookie-resource-match.html 
+
+# pass in additional flags to the test harness
+npm test -- -f --child-processes=16
+
+# ...for example, use a higher test timeout
+npm test -- --time-out-ms=6000000 <test_path>
+```
+
+> **Tip**: [Learn about the test harness flags](https://chromium.googlesource.com/chromium/src/+/master/docs/testing/layout_tests.md#Test-Harness-Options)
+
+#### `--fetch-content-shell`
+```
+# If you're using a full chromium checkout and have a compiled content shell, 
+# this will fetch a pre-compiled content shell. This is useful if you 
+# haven't compiled your content shell recently
+npm test -- --fetch-content-shell
+```
+
+### Development
 * All devtools commits: [View the log], [RSS feed] or [@DevToolsCommits] on Twitter
 * [All open DevTools tickets] on crbug.com
 * File a new DevTools ticket: [new.crbug.com](https://bugs.chromium.org/p/chromium/issues/entry?labels=OS-All,Type-Bug,Pri-2&components=Platform%3EDevTools)

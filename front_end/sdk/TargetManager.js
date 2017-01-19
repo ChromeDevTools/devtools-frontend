@@ -340,6 +340,14 @@ SDK.TargetManager = class extends Common.Object {
   }
 
   _connectAndCreateMainTarget() {
+    if (Runtime.queryParam('nodeFrontend')) {
+      var target = new SDK.Target(
+          this, Common.UIString('Node'), SDK.Target.Capability.Target, this._createMainConnection.bind(this), null);
+      target.subTargetsManager = new SDK.SubTargetsManager(target);
+      target.setInspectedURL('Node');
+      return;
+    }
+
     var capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.JS |
         SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target;
     if (Runtime.queryParam('isSharedWorker')) {

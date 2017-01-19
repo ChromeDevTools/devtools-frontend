@@ -263,6 +263,8 @@ InspectorFrontendHostAPI.prototype = {
    */
   openRemotePage(browserId, url) {},
 
+  openNodeFrontend() {},
+
   /**
    * @param {string} origin
    * @param {string} script

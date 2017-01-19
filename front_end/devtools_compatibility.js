@@ -677,6 +677,13 @@
 
     /**
      * @override
+     */
+    openNodeFrontend() {
+      DevToolsAPI.sendMessageToEmbedder('openNodeFrontend', [], null);
+    }
+
+    /**
+     * @override
      * @param {number} x
      * @param {number} y
      * @param {!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>} items

@@ -18,13 +18,15 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
     this._attachedTargets = new Map();
     /** @type {!Map<string, !SDK.SubTargetConnection>} */
     this._connections = new Map();
-    /** @type {!Map<string, !SDK.PendingTarget>} */
-    this._pendingTargets = new Map();
+
+    /** @type {!Set<string>} */
+    this._nodeTargetIds = new Set();
+
     this._agent.setAutoAttach(true /* autoAttach */, true /* waitForDebuggerOnStart */);
     if (Runtime.experiments.isEnabled('autoAttachToCrossProcessSubframes'))
       this._agent.setAttachToFrames(true);
 
-    if (Runtime.experiments.isEnabled('nodeDebugging') && !target.parentTarget()) {
+    if (!target.parentTarget()) {
       var defaultLocations = [{host: 'localhost', port: 9229}];
       this._agent.setRemoteLocations(defaultLocations);
       this._agent.setDiscoverTargets(true);
@@ -38,6 +40,13 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
    */
   static fromTarget(target) {
     return target.model(SDK.SubTargetsManager);
+  }
+
+  /**
+   * @return {number}
+   */
+  availableNodeTargetsCount() {
+    return this._nodeTargetIds.size;
   }
 
   /**
@@ -68,8 +77,6 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
   dispose() {
     for (var attachedTargetId of this._attachedTargets.keys())
       this._detachedFromTarget(attachedTargetId);
-    for (var pendingConnectionId of this._pendingTargets.keys())
-      this._targetDestroyed(pendingConnectionId);
   }
 
   /**
@@ -160,14 +167,6 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
     if (mainIsServiceWorker && waitingForDebugger)
       target.debuggerAgent().pause();
     target.runtimeAgent().runIfWaitingForDebugger();
-
-    var pendingTarget = this._pendingTargets.get(targetInfo.id);
-    if (!pendingTarget) {
-      this._targetCreated(targetInfo);
-      pendingTarget = this._pendingTargets.get(targetInfo.id);
-    }
-    pendingTarget.notifyAttached(target);
-    this.dispatchEventToListeners(SDK.SubTargetsManager.Events.PendingTargetAttached, pendingTarget);
   }
 
   /**
@@ -189,8 +188,6 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
     var connection = this._connections.get(targetId);
     connection._onDisconnect.call(null, 'target terminated');
     this._connections.delete(targetId);
-    this.dispatchEventToListeners(
-        SDK.SubTargetsManager.Events.PendingTargetDetached, this._pendingTargets.get(targetId));
   }
 
   /**
@@ -207,30 +204,24 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
    * @param {!SDK.TargetInfo} targetInfo
    */
   _targetCreated(targetInfo) {
-    var pendingTarget = this._pendingTargets.get(targetInfo.id);
-    if (pendingTarget)
+    if (targetInfo.type !== 'node')
       return;
-    pendingTarget = new SDK.PendingTarget(targetInfo.id, targetInfo.title, targetInfo.type === 'node', this);
-    this._pendingTargets.set(targetInfo.id, pendingTarget);
-    this.dispatchEventToListeners(SDK.SubTargetsManager.Events.PendingTargetAdded, pendingTarget);
+    if (Runtime.queryParam('nodeFrontend')) {
+      this._agent.attachToTarget(targetInfo.id);
+    } else {
+      this._nodeTargetIds.add(targetInfo.id);
+      this.dispatchEventToListeners(SDK.SubTargetsManager.Events.AvailableNodeTargetsChanged);
+    }
   }
 
   /**
    * @param {string} targetId
    */
   _targetDestroyed(targetId) {
-    var pendingTarget = this._pendingTargets.get(targetId);
-    if (!pendingTarget)
+    if (Runtime.queryParam('nodeFrontend') || !this._nodeTargetIds.has(targetId))
       return;
-    this._pendingTargets.delete(targetId);
-    this.dispatchEventToListeners(SDK.SubTargetsManager.Events.PendingTargetRemoved, pendingTarget);
-  }
-
-  /**
-   * @return {!Array<!SDK.PendingTarget>}
-   */
-  pendingTargets() {
-    return this._pendingTargets.valuesArray();
+    this._nodeTargetIds.delete(targetId);
+    this.dispatchEventToListeners(SDK.SubTargetsManager.Events.AvailableNodeTargetsChanged);
   }
 
   /**
@@ -253,10 +244,7 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
 
 /** @enum {symbol} */
 SDK.SubTargetsManager.Events = {
-  PendingTargetAdded: Symbol('PendingTargetAdded'),
-  PendingTargetRemoved: Symbol('PendingTargetRemoved'),
-  PendingTargetAttached: Symbol('PendingTargetAttached'),
-  PendingTargetDetached: Symbol('PendingTargetDetached'),
+  AvailableNodeTargetsChanged: Symbol('AvailableNodeTargetsChanged'),
 };
 
 SDK.SubTargetsManager._InfoSymbol = Symbol('SubTargetInfo');
@@ -368,93 +356,5 @@ SDK.TargetInfo = class {
       this.title = payload.title;
     else
       this.title = Common.UIString('Worker: %s', this.url);
-  }
-};
-
-/**
- * @unrestricted
- */
-SDK.PendingTarget = class {
-  /**
-   * @param {string} id
-   * @param {string} title
-   * @param {boolean} canConnect
-   * @param {?SDK.SubTargetsManager} manager
-   */
-  constructor(id, title, canConnect, manager) {
-    this._id = id;
-    this._title = title;
-    this._isRemote = canConnect;
-    this._manager = manager;
-    /** @type {?Promise} */
-    this._connectPromise = null;
-    /** @type {?Function} */
-    this._attachedCallback = null;
-  }
-
-  /**
-   * @return {string}
-   */
-  id() {
-    return this._id;
-  }
-
-  /**
-   * @return {?SDK.Target}
-   */
-  target() {
-    if (!this._manager)
-      return null;
-    return this._manager.targetForId(this.id());
-  }
-
-  /**
-   * @return {string}
-   */
-  name() {
-    return this._title;
-  }
-
-  /**
-   * @return {!Promise}
-   */
-  attach() {
-    if (!this._manager)
-      return Promise.reject();
-    if (this._connectPromise)
-      return this._connectPromise;
-    if (this.target())
-      return Promise.resolve(this.target());
-    this._connectPromise = new Promise(resolve => {
-      this._attachedCallback = resolve;
-      this._manager._agent.attachToTarget(this.id());
-    });
-    return this._connectPromise;
-  }
-
-  /**
-   * @return {!Promise}
-   */
-  detach() {
-    if (this._manager)
-      this._manager._agent.detachFromTarget(this.id());
-    return Promise.resolve();
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   */
-  notifyAttached(target) {
-    if (this._attachedCallback)
-      this._attachedCallback(target);
-    this._connectPromise = null;
-    this._attachedCallback = null;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  canConnect() {
-    return this._isRemote;
   }
 };

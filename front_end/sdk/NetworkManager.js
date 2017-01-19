@@ -131,6 +131,16 @@ SDK.NetworkManager.Events = {
   ResponseReceived: Symbol('ResponseReceived')
 };
 
+/** @implements {Common.Emittable} */
+SDK.NetworkManager.RequestRedirectEvent = class {
+  /**
+   * @param {!SDK.NetworkRequest} request
+   */
+  constructor(request) {
+    this.request = request;
+  }
+};
+
 SDK.NetworkManager._MIMETypes = {
   'text/html': {'document': true},
   'text/xml': {'document': true},
@@ -323,6 +333,7 @@ SDK.NetworkDispatcher = class {
         return;
       this.responseReceived(requestId, frameId, loaderId, time, Protocol.Page.ResourceType.Other, redirectResponse);
       networkRequest = this._appendRedirect(requestId, time, request.url);
+      this._manager.emit(new SDK.NetworkManager.RequestRedirectEvent(networkRequest));
     } else {
       networkRequest = this._createNetworkRequest(requestId, frameId, loaderId, request.url, documentURL, initiator);
     }

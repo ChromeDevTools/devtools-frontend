@@ -699,16 +699,19 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     var p = centered.createChild('p');
     p.createTextChild(Common.UIString(
-        'The Performance panel lets you record what the browser does during page load and user interaction. The timeline it generates can help you determine why certain parts of your page are slow.'));
+        'The Performance panel lets you record what the browser does during page load and user interaction. ' +
+        'The timeline it generates can help you determine why certain parts of your page are slow.'));
 
     p = centered.createChild('p');
     p.appendChild(UI.formatLocalized(
-        'To capture a new recording, click the record toolbar button or hit %s. To evaluate page load performance, hit %s to record the reload.',
+        'To capture a new recording, click the record toolbar button or hit %s. ' +
+        'To evaluate page load performance, hit %s to record the reload.',
         [recordNode, reloadNode]));
 
     p = centered.createChild('p');
     p.appendChild(UI.formatLocalized(
-        'After recording, select an area of interest in the overview by dragging. Then, zoom and pan the timeline with the mousewheel or %s keys.',
+        'After recording, select an area of interest in the overview by dragging. ' +
+        'Then, zoom and pan the timeline with the mousewheel or %s keys.',
         [navigateNode]));
 
     p = centered.createChild('p');
@@ -719,8 +722,9 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     p = centered.createChild('p', 'timeline-landing-warning');
     p.appendChild(UI.formatLocalized(
-        'The %s panel has been enriched with the JavaScript profiler capabilities and is now called %s.%sYou can find the legacy JavaScript CPU profiler under %s\u2192 More Tools \u2192 JavaScript Profiler.',
-        [timelineSpan, performanceSpan, createElement('br'), UI.Icon.create('largeicon-menu')]));
+        'The %s panel has been enriched with the JavaScript profiler capabilities and is now called %s.%s' +
+        'You can find the legacy JavaScript CPU profiler under %s%s \u2192 More Tools \u2192 JavaScript Profiler.',
+        [timelineSpan, performanceSpan, createElement('p'), createElement('br'), UI.Icon.create('largeicon-menu')]));
 
     this._landingPage.show(this._statusPaneContainer);
   }

@@ -1071,8 +1071,7 @@ Console.ConsoleViewFilter = class extends Common.Object {
       {name: SDK.ConsoleMessage.MessageLevel.Warning, label: Common.UIString('Warnings')},
       {name: SDK.ConsoleMessage.MessageLevel.Info, label: Common.UIString('Info')},
       {name: SDK.ConsoleMessage.MessageLevel.Log, label: Common.UIString('Logs')},
-      {name: SDK.ConsoleMessage.MessageLevel.Debug, label: Common.UIString('Debug')},
-      {name: SDK.ConsoleMessage.MessageLevel.RevokedError, label: Common.UIString('Handled')}
+      {name: SDK.ConsoleMessage.MessageLevel.Debug, label: Common.UIString('Debug')}
     ];
     this._levelFilterUI = new UI.NamedBitSetFilterUI(levels, this._messageLevelFiltersSetting);
     this._levelFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, this._filterChanged, this);

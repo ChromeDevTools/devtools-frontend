@@ -596,7 +596,6 @@ Main.Main.WarningErrorCounter = class {
     var shadowRoot = UI.createShadowRootWithCoreStyles(this._counter, 'main/errorWarningCounter.css');
 
     this._errors = this._createItem(shadowRoot, 'smallicon-error');
-    this._revokedErrors = this._createItem(shadowRoot, 'smallicon-revoked-error');
     this._warnings = this._createItem(shadowRoot, 'smallicon-warning');
     this._titles = [];
 
@@ -636,25 +635,18 @@ Main.Main.WarningErrorCounter = class {
 
   _update() {
     var errors = 0;
-    var revokedErrors = 0;
     var warnings = 0;
     var targets = SDK.targetManager.targets();
     for (var i = 0; i < targets.length; ++i) {
       errors += targets[i].consoleModel.errors();
-      revokedErrors += targets[i].consoleModel.revokedErrors();
       warnings += targets[i].consoleModel.warnings();
     }
 
     this._titles = [];
-    this._toolbarItem.setVisible(!!(errors || revokedErrors || warnings));
+    this._toolbarItem.setVisible(!!(errors || warnings));
     this._updateItem(this._errors, errors, false, Common.UIString(errors === 1 ? '%d error' : '%d errors', errors));
     this._updateItem(
-        this._revokedErrors, revokedErrors, !errors,
-        Common.UIString(
-            revokedErrors === 1 ? '%d handled promise rejection' : '%d handled promise rejections', revokedErrors));
-    this._updateItem(
-        this._warnings, warnings, !errors && !revokedErrors,
-        Common.UIString(warnings === 1 ? '%d warning' : '%d warnings', warnings));
+        this._warnings, warnings, !errors, Common.UIString(warnings === 1 ? '%d warning' : '%d warnings', warnings));
     this._counter.title = this._titles.join(', ');
     UI.inspectorView.toolbarItemResized();
   }

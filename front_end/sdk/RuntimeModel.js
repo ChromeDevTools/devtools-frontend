@@ -384,12 +384,7 @@ SDK.RuntimeDispatcher = class {
    * @param {number} exceptionId
    */
   exceptionRevoked(reason, exceptionId) {
-    var consoleMessage = new SDK.ConsoleMessage(
-        this._runtimeModel.target(), SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.RevokedError,
-        reason, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
-        undefined);
-    consoleMessage.setRevokedExceptionId(exceptionId);
-    this._runtimeModel.target().consoleModel.addMessage(consoleMessage);
+    this._runtimeModel.target().consoleModel.revokeException(exceptionId);
   }
 
   /**

@@ -45,7 +45,6 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
     this._messageByExceptionId = new Map();
     this._warnings = 0;
     this._errors = 0;
-    this._revokedErrors = 0;
     this._logAgent = logAgent;
     if (this._logAgent) {
       target.registerLogDispatcher(new SDK.LogDispatcher(this));
@@ -134,22 +133,23 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
     if (msg.source === SDK.ConsoleMessage.MessageSource.ConsoleAPI && msg.type === SDK.ConsoleMessage.MessageType.Clear)
       this.clear();
 
-    if (msg.level === SDK.ConsoleMessage.MessageLevel.RevokedError && msg._revokedExceptionId) {
-      var exceptionMessage = this._messageByExceptionId.get(msg._revokedExceptionId);
-      if (!exceptionMessage)
-        return;
-      this._errors--;
-      this._revokedErrors++;
-      exceptionMessage.level = SDK.ConsoleMessage.MessageLevel.RevokedError;
-      this.dispatchEventToListeners(SDK.ConsoleModel.Events.MessageUpdated, exceptionMessage);
-      return;
-    }
-
     this._messages.push(msg);
     if (msg._exceptionId)
       this._messageByExceptionId.set(msg._exceptionId, msg);
     this._incrementErrorWarningCount(msg);
     this.dispatchEventToListeners(SDK.ConsoleModel.Events.MessageAdded, msg);
+  }
+
+  /**
+   * @param {number} exceptionId
+   */
+  revokeException(exceptionId) {
+    var exceptionMessage = this._messageByExceptionId.get(exceptionId);
+    if (!exceptionMessage)
+      return;
+    this._errors--;
+    exceptionMessage.level = SDK.ConsoleMessage.MessageLevel.Info;
+    this.dispatchEventToListeners(SDK.ConsoleModel.Events.MessageUpdated, exceptionMessage);
   }
 
   /**
@@ -164,9 +164,6 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
         break;
       case SDK.ConsoleMessage.MessageLevel.Error:
         this._errors++;
-        break;
-      case SDK.ConsoleMessage.MessageLevel.RevokedError:
-        this._revokedErrors++;
         break;
     }
   }
@@ -209,7 +206,6 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
     this._messages = [];
     this._messageByExceptionId.clear();
     this._errors = 0;
-    this._revokedErrors = 0;
     this._warnings = 0;
     this.dispatchEventToListeners(SDK.ConsoleModel.Events.ConsoleCleared);
   }
@@ -219,13 +215,6 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
    */
   errors() {
     return this._errors;
-  }
-
-  /**
-   * @return {number}
-   */
-  revokedErrors() {
-    return this._revokedErrors;
   }
 
   /**
@@ -388,13 +377,6 @@ SDK.ConsoleMessage = class {
   }
 
   /**
-   * @param {number} revokedExceptionId
-   */
-  setRevokedExceptionId(revokedExceptionId) {
-    this._revokedExceptionId = revokedExceptionId;
-  }
-
-  /**
    * @return {?SDK.ConsoleMessage}
    */
   originatingMessage() {
@@ -435,8 +417,6 @@ SDK.ConsoleMessage = class {
       return false;
 
     if (this._exceptionId || msg._exceptionId)
-      return false;
-    if (this._revokedExceptionId || msg._revokedExceptionId)
       return false;
 
     if (!this._isEqualStackTraces(this.stackTrace, msg.stackTrace))
@@ -537,8 +517,7 @@ SDK.ConsoleMessage.MessageLevel = {
   Info: 'info',
   Warning: 'warning',
   Error: 'error',
-  Debug: 'debug',
-  RevokedError: 'revokedError'  // This is frontend-only level, used to put exceptions to console.
+  Debug: 'debug'
 };
 
 

@@ -228,8 +228,7 @@ Console.ConsoleViewMessage = class {
     } else if (consoleMessage.source === SDK.ConsoleMessage.MessageSource.Network) {
       if (consoleMessage.request) {
         messageElement = createElement('span');
-        if (consoleMessage.level === SDK.ConsoleMessage.MessageLevel.Error ||
-            consoleMessage.level === SDK.ConsoleMessage.MessageLevel.RevokedError) {
+        if (consoleMessage.level === SDK.ConsoleMessage.MessageLevel.Error) {
           messageElement.createTextChild(consoleMessage.request.requestMethod + ' ');
           messageElement.appendChild(Components.Linkifier.linkifyRevealable(
               consoleMessage.request, consoleMessage.request.url(), consoleMessage.request.url()));
@@ -426,8 +425,7 @@ Console.ConsoleViewMessage = class {
     var shouldFormatMessage =
         SDK.RemoteObject.type((/** @type {!Array.<!SDK.RemoteObject>} **/ (parameters))[0]) === 'string' &&
         (this._message.type !== SDK.ConsoleMessage.MessageType.Result ||
-         this._message.level === SDK.ConsoleMessage.MessageLevel.Error ||
-         this._message.level === SDK.ConsoleMessage.MessageLevel.RevokedError);
+         this._message.level === SDK.ConsoleMessage.MessageLevel.Error);
 
     // Multiple parameters with the first being a format string. Save unused substitutions.
     if (shouldFormatMessage) {
@@ -884,7 +882,6 @@ Console.ConsoleViewMessage = class {
     var shouldIncludeTrace =
         !!consoleMessage.stackTrace && (consoleMessage.source === SDK.ConsoleMessage.MessageSource.Network ||
                                         consoleMessage.level === SDK.ConsoleMessage.MessageLevel.Error ||
-                                        consoleMessage.level === SDK.ConsoleMessage.MessageLevel.RevokedError ||
                                         consoleMessage.type === SDK.ConsoleMessage.MessageType.Trace ||
                                         consoleMessage.level === SDK.ConsoleMessage.MessageLevel.Warning);
     if (target && shouldIncludeTrace)
@@ -940,10 +937,6 @@ Console.ConsoleViewMessage = class {
       case SDK.ConsoleMessage.MessageLevel.Error:
         this._element.classList.add('console-error-level');
         this._updateMessageLevelIcon('smallicon-error');
-        break;
-      case SDK.ConsoleMessage.MessageLevel.RevokedError:
-        this._element.classList.add('console-revokedError-level');
-        this._updateMessageLevelIcon('smallicon-revoked-error');
         break;
       case SDK.ConsoleMessage.MessageLevel.Info:
         this._element.classList.add('console-info-level');

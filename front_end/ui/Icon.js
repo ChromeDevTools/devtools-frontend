@@ -92,7 +92,6 @@ UI.Icon.Descriptor;
 /** @enum {!UI.Icon.Descriptor} */
 UI.Icon.Descriptors = {
   'smallicon-error': {x: -20, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-revoked-error': {x: -40, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-warning': {x: -60, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-info': {x: -80, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-device': {x: -100, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},

@@ -140,8 +140,8 @@ UI.ShortcutsScreen = class {
         UI.shortcutRegistry.shortcutDescriptorsForAction('sources.switch-file'),
         Common.UIString('Switch between files with the same name and different extensions.'));
 
-    // Timeline panel
-    section = UI.shortcutsScreen.section(Common.UIString('Timeline Panel'));
+    // Performance panel
+    section = UI.shortcutsScreen.section(Common.UIString('Performance Panel'));
     section.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.toggle-recording'),
         Common.UIString('Start/stop recording'));
@@ -156,8 +156,8 @@ UI.ShortcutsScreen = class {
             .concat(UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.jump-to-next-frame')),
         Common.UIString('Jump to previous/next frame'));
 
-    // Profiles panel
-    section = UI.shortcutsScreen.section(Common.UIString('Profiles Panel'));
+    // Memory panel
+    section = UI.shortcutsScreen.section(Common.UIString('Memory Panel'));
     section.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('profiler.heap-toggle-recording'),
         Common.UIString('Start/stop recording'));

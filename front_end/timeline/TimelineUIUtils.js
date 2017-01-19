@@ -1342,7 +1342,7 @@ Timeline.TimelineUIUtils = class {
 
     function showPaintProfiler() {
       Timeline.TimelinePanel.instance().select(
-          Timeline.TimelineSelection.fromTraceEvent(event), Timeline.TimelinePanel.DetailsTab.PaintProfiler);
+          Timeline.TimelineSelection.fromTraceEvent(event), Timeline.TimelineDetailsView.Tab.PaintProfiler);
     }
   }
 

@@ -24,26 +24,24 @@ const APPLICATION_DESCRIPTORS = [
 const MODULES_TO_REMOVE = [];
 
 const JS_FILES_MAPPING = [
-  {file: 'common/CSSShadowModel.js', existing: 'inline_editor'},
-  {file: 'common/Geometry.js', existing: 'ui'},
+  {file: 'common/CSSShadowModel.js', existing: 'inline_editor'}, {file: 'common/Geometry.js', existing: 'ui'},
   // {file: 'module/file.js', existing: 'module'}
 ];
 
 const MODULE_MAPPING = {
-  // heap_snapshot_model: {
-  //   dependencies: [],
-  //   dependents: ['heap_snapshot_worker', 'profiler'],
-  //   applications: ['inspector.json'], // need to manually add to heap snapshot worker b/c it's autostart
-  //   autostart: false,
-  // },
+    // heap_snapshot_model: {
+    //   dependencies: [],
+    //   dependents: ['heap_snapshot_worker', 'profiler'],
+    //   applications: ['inspector.json'], // need to manually add to heap snapshot worker b/c it's autostart
+    //   autostart: false,
+    // },
 };
 
 const NEW_DEPENDENCIES_BY_EXISTING_MODULES = {
-  // resources: ['components'],
+    // resources: ['components'],
 };
 
-const REMOVE_DEPENDENCIES_BY_EXISTING_MODULES = {
-};
+const REMOVE_DEPENDENCIES_BY_EXISTING_MODULES = {};
 
 const DEPENDENCIES_BY_MODULE = Object.keys(MODULE_MAPPING).reduce((acc, module) => {
   acc[module] = MODULE_MAPPING[module].dependencies;
@@ -97,9 +95,8 @@ function extractModule() {
   for (let descriptor of APPLICATION_DESCRIPTORS)
     updateApplicationDescriptor(descriptor, newModuleSet);
 
-  for (let m of MODULES_TO_REMOVE) {
+  for (let m of MODULES_TO_REMOVE)
     utils.removeRecursive(path.resolve(FRONTEND_PATH, m));
-  }
 }
 
 String.prototype.replaceAll = function(search, replacement) {
@@ -172,7 +169,7 @@ function calculateIdentifiers() {
         // one-off
         if (name.includes('UI.')) {
           console.log(`including ${name} anyways`);
-          identifiers.push(name)
+          identifiers.push(name);
         }
       } else {
         identifiers.push(name);
@@ -593,9 +590,10 @@ function addDependenciesToDescriptors() {
     let moduleObj = parseJSON(content);
 
     let existingDependencies = moduleObj.dependencies || [];
-    let dependencies = existingDependencies.concat(getModuleDependencies(module))
-                           .filter((depModule) => !MODULES_TO_REMOVE.includes(depModule))
-                           .filter((depModule) => !(REMOVE_DEPENDENCIES_BY_EXISTING_MODULES[module] || []).includes(depModule));
+    let dependencies =
+        existingDependencies.concat(getModuleDependencies(module))
+            .filter((depModule) => !MODULES_TO_REMOVE.includes(depModule))
+            .filter((depModule) => !(REMOVE_DEPENDENCIES_BY_EXISTING_MODULES[module] || []).includes(depModule));
     let newDependenciesForExistingModule = NEW_DEPENDENCIES_BY_EXISTING_MODULES[module];
     if (newDependenciesForExistingModule)
       dependencies = dependencies.concat(newDependenciesForExistingModule);
@@ -621,7 +619,7 @@ function updateApplicationDescriptor(descriptorFileName, newModuleSet) {
   let descriptorPath = path.join(FRONTEND_PATH, descriptorFileName);
   let newModules = [...newModuleSet].filter(m => APPLICATIONS_BY_MODULE[m].includes(descriptorFileName));
   if (newModules.length === 0)
-      return;
+    return;
   let includeNewModules = (acc, line) => {
     if (line.includes('{') && line.endsWith('}')) {
       line += ',';
@@ -664,19 +662,19 @@ function stringifyJSON(obj) {
 // http://stackoverflow.com/questions/7499473/need-to-escape-non-ascii-characters-in-javascript
 function unicodeEscape(string) {
   function padWithLeadingZeros(string) {
-    return new Array(5 - string.length).join("0") + string;
+    return new Array(5 - string.length).join('0') + string;
   }
 
   function unicodeCharEscape(charCode) {
-    return "\\u" + padWithLeadingZeros(charCode.toString(16));
+    return '\\u' + padWithLeadingZeros(charCode.toString(16));
   }
 
-  return string.split("")
-    .map(function (char) {
-      var charCode = char.charCodeAt(0);
-      return charCode > 127 ? unicodeCharEscape(charCode) : char;
-    })
-    .join("");
+  return string.split('')
+      .map(function(char) {
+        var charCode = char.charCodeAt(0);
+        return charCode > 127 ? unicodeCharEscape(charCode) : char;
+      })
+      .join('');
 }
 
 if (require.main === module)

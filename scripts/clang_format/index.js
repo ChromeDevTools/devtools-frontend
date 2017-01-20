@@ -5,12 +5,12 @@ var fs = require('fs');
 var os = require('os');
 var path = require('path');
 var spawn = require('child_process').spawn;
-var globby = require("globby");
-var async = require("async");
+var globby = require('globby');
+var async = require('async');
 
 var VERSION = '1.0.45';
 var LOCATION = __filename;
-var CLANG_FORMAT_NODE_MODULES_PATH = path.resolve(__dirname, "..", "..", "node_modules", "clang-format");
+var CLANG_FORMAT_NODE_MODULES_PATH = path.resolve(__dirname, '..', '..', 'node_modules', 'clang-format');
 
 /**
  * Start a child process running the native clang-format binary.
@@ -39,72 +39,84 @@ function spawnClangFormat(args, done, stdio) {
     process.exit(0);
   }
   var nativeBinary;
-  if (os.platform() === 'win32') {
+  if (os.platform() === 'win32')
     nativeBinary = CLANG_FORMAT_NODE_MODULES_PATH + '/bin/win32/clang-format.exe';
-  } else {
-    nativeBinary = CLANG_FORMAT_NODE_MODULES_PATH + '/bin/' + os.platform() + "_" + os.arch() + '/clang-format';
-  }
+  else
+    nativeBinary = CLANG_FORMAT_NODE_MODULES_PATH + '/bin/' + os.platform() + '_' + os.arch() + '/clang-format';
+
   if (!fs.existsSync(nativeBinary)) {
-    message = "FATAL: This module doesn't bundle the clang-format executable for your platform. " +
-              "(" + os.platform() + "_" + os.arch() + ")\n" +
-              "Consider installing it with your native package manager instead.\n";
+    message = 'FATAL: This module doesn\'t bundle the clang-format executable for your platform. ' +
+        '(' + os.platform() + '_' + os.arch() + ')\n' +
+        'Consider installing it with your native package manager instead.\n';
     throw new Error(message);
   }
 
   // extract glob, if present
-  var globString = args.filter(function(arg){return arg.indexOf('--glob=') === 0;})
-                    .map(function(arg){return arg.replace('--glob=', '');})
-                    .shift();
+  var globString = args.filter(function(arg) {
+                         return arg.indexOf('--glob=') === 0;
+                       })
+                       .map(function(arg) {
+                         return arg.replace('--glob=', '');
+                       })
+                       .shift();
 
   // extract ignore, if present
-  var ignore = args.filter(function(arg){return arg.indexOf('--ignore=') === 0;})
-                    .map(function(arg){return arg.replace('--ignore=', '');})
-                    .shift();
+  var ignore = args.filter(function(arg) {
+                     return arg.indexOf('--ignore=') === 0;
+                   })
+                   .map(function(arg) {
+                     return arg.replace('--ignore=', '');
+                   })
+                   .shift();
 
   if (globString) {
     var globs = globString.split(',');
     // remove glob and ignore from arg list
-    args = args.filter(function(arg){return arg.indexOf('--glob=') === -1;})
-      .filter(function(arg){return arg.indexOf('--ignore=') === -1;});
+    args = args.filter(function(arg) {
+                 return arg.indexOf('--glob=') === -1;
+               })
+               .filter(function(arg) {
+                 return arg.indexOf('--ignore=') === -1;
+               });
 
     var options = {};
-    if (ignore) {
+    if (ignore)
       options.ignore = ignore.split(',');
-    }
+
 
     return globby(globs, options).then(function(files) {
       // split file array into chunks of 30
-      var i,j, chunks = [], chunkSize = 30;
-      for (i=0,j=files.length; i<j; i+=chunkSize) {
-          chunks.push( files.slice(i,i+chunkSize));
-      }
+      var i, j, chunks = [], chunkSize = 30;
+      for (i = 0, j = files.length; i < j; i += chunkSize)
+        chunks.push(files.slice(i, i + chunkSize));
+
 
       // launch a new process for each chunk
       async.series(
-        chunks.map(function(chunk) {
-          return function(callback) {
-            var clangFormatProcess = spawn(nativeBinary,
-                                          args.concat(chunk),
-                                          {stdio: stdio});
-            clangFormatProcess.on('close', function(exit) {
-              if (exit !== 0) callback(exit);
-              else callback(null, exit);
-            });
-          };
-        }),
-        function(err, results) {
-          if (err) done(err);
-          console.log('\n');
-          console.log('ran clang-format on',
-                      files.length,
-                      files.length === 1 ? 'file' : 'files');
-          done(results.shift() || 0);
-        });
+          chunks.map(function(chunk) {
+            return function(callback) {
+              var clangFormatProcess = spawn(nativeBinary, args.concat(chunk), {stdio: stdio});
+              clangFormatProcess.on('close', function(exit) {
+                if (exit !== 0)
+                  callback(exit);
+                else
+                  callback(null, exit);
+              });
+            };
+          }),
+          function(err, results) {
+            if (err)
+              done(err);
+            console.log('\n');
+            console.log('ran clang-format on', files.length, files.length === 1 ? 'file' : 'files');
+            done(results.shift() || 0);
+          });
     });
   } else {
     var clangFormatProcess = spawn(nativeBinary, args, {stdio: stdio});
     clangFormatProcess.on('close', function(exit) {
-      if (exit) done(exit);
+      if (exit)
+        done(exit);
     });
     return clangFormatProcess;
   }
@@ -125,4 +137,5 @@ module.exports.version = VERSION;
 module.exports.location = LOCATION;
 module.exports.spawnClangFormat = spawnClangFormat;
 
-if (require.main === module) main();
+if (require.main === module)
+  main();

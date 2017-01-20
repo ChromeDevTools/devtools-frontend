@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-"use strict";
+'use strict';
 
-var childProcess = require("child_process");
+var childProcess = require('child_process');
 const fs = require('fs');
-var http = require("http");
+var http = require('http');
 const path = require('path');
-var parseURL = require("url").parse;
+var parseURL = require('url').parse;
 
 const utils = require('../utils');
 
@@ -40,8 +40,7 @@ function generateDot() {
   moduleToDependencyList.push('fixedsize = true;');
   fs.readdirSync(FRONTEND_PATH).forEach(function(file) {
     const moduleJSONPath = path.join(FRONTEND_PATH, file, 'module.json');
-    if (fs.statSync(path.join(FRONTEND_PATH, file)).isDirectory() &&
-      utils.isFile(moduleJSONPath)) {
+    if (fs.statSync(path.join(FRONTEND_PATH, file)).isDirectory() && utils.isFile(moduleJSONPath)) {
       const module = file;
       if (module === 'audits2_worker')
         return;
@@ -51,9 +50,8 @@ function generateDot() {
 
       let resources = (moduleJSON.scripts || []).concat((moduleJSON.resources || []));
       for (let script of resources) {
-        if (fs.existsSync(path.join(FRONTEND_PATH, module, script))) {
+        if (fs.existsSync(path.join(FRONTEND_PATH, module, script)))
           moduleSize += fs.statSync(path.join(FRONTEND_PATH, module, script)).size;
-        }
       }
       moduleSize /= 200000;
       moduleSize = Math.max(0.5, moduleSize);
@@ -62,9 +60,8 @@ function generateDot() {
       moduleToDependencyList.push(`${module} [width=${moduleSize}, height=${moduleSize} fontsize=${fontSize}];`);
 
       if (moduleJSON.dependencies) {
-        for (let d of moduleJSON.dependencies) {
+        for (let d of moduleJSON.dependencies)
           moduleToDependencyList.push(`  ${module} -> ${d}`);
-        }
       }
     }
   });
@@ -90,16 +87,16 @@ function startServer() {
     function fsExistsCallback(fileExists) {
       if (!fileExists) {
         console.log(`Cannot find file ${absoluteFilePath}`);
-        sendResponse(404, "404 - File not found");
+        sendResponse(404, '404 - File not found');
         return;
       }
-      fs.readFile(absoluteFilePath, "binary", readFileCallback);
+      fs.readFile(absoluteFilePath, 'binary', readFileCallback);
     }
 
     function readFileCallback(err, file) {
       if (err) {
         console.log(`Unable to read local file ${absoluteFilePath}:`, err);
-        sendResponse(500, "500 - Internal Server Error");
+        sendResponse(500, '500 - Internal Server Error');
         return;
       }
       sendResponse(200, file);
@@ -107,7 +104,7 @@ function startServer() {
 
     function sendResponse(statusCode, data) {
       response.writeHead(statusCode);
-      response.write(data, "binary");
+      response.write(data, 'binary');
       response.end();
     }
   }

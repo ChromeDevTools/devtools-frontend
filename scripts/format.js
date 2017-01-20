@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-var childProcess = require("child_process");
+var childProcess = require('child_process');
 var fs = require('fs');
 var path = require('path');
 
@@ -15,16 +15,14 @@ var ignoreFile = fs.readFileSync(IGNORE_FILE_PATH, 'utf-8');
 var ignores = ignoreFile.split('\n').filter(str => str.length);
 var ignoreArg = '--ignore=' + ignores.join(',');
 
-console.log("Running clang-format");
+console.log('Running clang-format');
 var clangArgs = ['-i', ignoreArg];
 if (args.length)
-    clangArgs = clangArgs.concat(args);
+  clangArgs = clangArgs.concat(args);
 else
-    clangArgs.push('--glob=front_end/**/*.js');
+  clangArgs.push('--glob=+(scripts|front_end)/**/*.js');
 
 
-var options = {
-    cwd: path.resolve(__dirname, "..")
-};
+var options = {cwd: path.resolve(__dirname, '..')};
 
 childProcess.fork(CLANG_FORMAT_PATH, clangArgs, options);

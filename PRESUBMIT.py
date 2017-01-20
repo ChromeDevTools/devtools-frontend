@@ -53,8 +53,8 @@ def _CheckNodeAndNPMModules(input_api, output_api):
 
 
 def _FormatDevtools(input_api, output_api):
-    affected_front_end_files = _getAffectedFrontEndFiles(input_api)
-    if len(affected_front_end_files) == 0:
+    affected_files = _getAffectedJSFiles(input_api)
+    if len(affected_files) == 0:
         return CheckOutput([], has_errors=False)
     original_sys_path = sys.path
     try:
@@ -65,7 +65,7 @@ def _FormatDevtools(input_api, output_api):
 
     node_path, _ = install_node_deps.resolve_node_paths()
     format_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "format.js")
-    glob_arg = "--glob=" + ",".join(affected_front_end_files)
+    glob_arg = "--glob=" + ",".join(affected_files)
     check_formatting_process = _inputPopen(input_api,
         args=[node_path, format_path] + [glob_arg, "--output-replacements-xml"])
     check_formatting_out, _ = check_formatting_process.communicate()
@@ -83,7 +83,7 @@ def _FormatDevtools(input_api, output_api):
     eslint_process = _inputPopen(input_api,
         [node_path, eslint_path, '--no-eslintrc', '--fix', '--env=es6',
          '--rule={"curly": [2, "multi-or-nest", "consistent"]}']
-                                 + affected_front_end_files)
+                                 + affected_files)
     eslint_process.communicate()
 
     # Need to run clang-format again to align the braces
@@ -237,6 +237,16 @@ def _getAffectedFrontEndFiles(input_api):
     devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
     affected_front_end_files = [file_name for file_name in local_paths if devtools_front_end in file_name and file_name.endswith(".js")]
     return [input_api.os_path.relpath(file_name, devtools_root) for file_name in affected_front_end_files]
+
+
+def _getAffectedJSFiles(input_api):
+    local_paths = [f.AbsoluteLocalPath() for f in input_api.AffectedFiles() if f.Action() != "D"]
+    devtools_root = input_api.PresubmitLocalPath()
+    devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
+    devtools_scripts = input_api.os_path.join(devtools_root, "scripts")
+    affected_js_files = [file_name for file_name in local_paths
+            if (devtools_front_end in file_name or devtools_scripts in file_name) and file_name.endswith(".js")]
+    return [input_api.os_path.relpath(file_name, devtools_root) for file_name in affected_js_files]
 
 
 def _inputPopen(input_api, args):

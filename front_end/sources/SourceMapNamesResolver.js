@@ -31,7 +31,8 @@ Sources.SourceMapNamesResolver._scopeIdentifiers = function(scope) {
   var endLocation = scope.endLocation();
 
   if (scope.type() === Protocol.Debugger.ScopeType.Global || !startLocation || !endLocation ||
-      !startLocation.script().sourceMapURL || (startLocation.script() !== endLocation.script()))
+      !startLocation.script() || !startLocation.script().sourceMapURL ||
+      (startLocation.script() !== endLocation.script()))
     return Promise.resolve(/** @type {!Array<!Sources.SourceMapNamesResolver.Identifier>}*/ ([]));
 
   var script = startLocation.script();
@@ -332,7 +333,8 @@ Sources.SourceMapNamesResolver.resolveScopeInObject = function(scope) {
   var endLocation = scope.endLocation();
 
   if (scope.type() === Protocol.Debugger.ScopeType.Global || !startLocation || !endLocation ||
-      !startLocation.script().sourceMapURL || startLocation.script() !== endLocation.script())
+      !startLocation.script() || !startLocation.script().sourceMapURL ||
+      startLocation.script() !== endLocation.script())
     return scope.object();
 
   return new Sources.SourceMapNamesResolver.RemoteObject(scope);

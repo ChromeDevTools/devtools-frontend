@@ -214,6 +214,8 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
      * @return {number}
      */
     function propertySorter(a, b) {
+      if (a.startsWith('--') ^ b.startsWith('--'))
+        return a.startsWith('--') ? 1 : -1;
       if (a.startsWith('-webkit') ^ b.startsWith('-webkit'))
         return a.startsWith('-webkit') ? 1 : -1;
       var canonical1 = SDK.cssMetadata().canonicalPropertyName(a);

@@ -45,13 +45,13 @@ Components.DockController = class extends Common.Object {
 
     if (!canDock) {
       this._dockSide = Components.DockController.State.Undocked;
-      this._updateUI();
+      this._closeButton.setVisible(false);
       return;
     }
 
     this._states = [
       Components.DockController.State.DockedToRight, Components.DockController.State.DockedToBottom,
-      Components.DockController.State.Undocked
+      Components.DockController.State.DockedToLeft, Components.DockController.State.Undocked
     ];
     this._currentDockStateSetting = Common.settings.moduleSetting('currentDockState');
     this._currentDockStateSetting.addChangeListener(this._dockSideChanged, this);
@@ -67,7 +67,7 @@ Components.DockController = class extends Common.Object {
       return;
 
     this._titles = [
-      Common.UIString('Dock to right'), Common.UIString('Dock to bottom'),
+      Common.UIString('Dock to right'), Common.UIString('Dock to bottom'), Common.UIString('Dock to left'),
       Common.UIString('Undock into separate window')
     ];
     this._dockSideChanged();
@@ -95,7 +95,8 @@ Components.DockController = class extends Common.Object {
    * @return {boolean}
    */
   isVertical() {
-    return this._dockSide === Components.DockController.State.DockedToRight;
+    return this._dockSide === Components.DockController.State.DockedToRight ||
+        this._dockSide === Components.DockController.State.DockedToLeft;
   }
 
   /**
@@ -120,7 +121,7 @@ Components.DockController = class extends Common.Object {
     this._currentDockStateSetting.set(dockSide);
     InspectorFrontendHost.setIsDocked(
         dockSide !== Components.DockController.State.Undocked, this._setIsDockedResponse.bind(this, eventData));
-    this._updateUI();
+    this._closeButton.setVisible(this._dockSide !== Components.DockController.State.Undocked);
     this.dispatchEventToListeners(Components.DockController.Events.DockSideChanged, eventData);
   }
 
@@ -135,31 +136,6 @@ Components.DockController = class extends Common.Object {
     }
   }
 
-  /**
-   * @suppressGlobalPropertiesCheck
-   */
-  _updateUI() {
-    var body = document.body;  // Only for main window.
-    switch (this._dockSide) {
-      case Components.DockController.State.DockedToBottom:
-        body.classList.remove('undocked');
-        body.classList.remove('dock-to-right');
-        body.classList.add('dock-to-bottom');
-        break;
-      case Components.DockController.State.DockedToRight:
-        body.classList.remove('undocked');
-        body.classList.add('dock-to-right');
-        body.classList.remove('dock-to-bottom');
-        break;
-      case Components.DockController.State.Undocked:
-        body.classList.add('undocked');
-        body.classList.remove('dock-to-right');
-        body.classList.remove('dock-to-bottom');
-        break;
-    }
-    this._closeButton.setVisible(this._dockSide !== Components.DockController.State.Undocked);
-  }
-
   _toggleDockSide() {
     if (this._lastDockStateSetting.get() === this._currentDockStateSetting.get()) {
       var index = this._states.indexOf(this._currentDockStateSetting.get()) || 0;
@@ -172,6 +148,7 @@ Components.DockController = class extends Common.Object {
 Components.DockController.State = {
   DockedToBottom: 'bottom',
   DockedToRight: 'right',
+  DockedToLeft: 'left',
   Undocked: 'undocked'
 };
 

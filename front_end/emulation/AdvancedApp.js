@@ -28,7 +28,6 @@ Emulation.AdvancedApp = class {
     var rootView = new UI.RootView();
 
     this._rootSplitWidget = new UI.SplitWidget(false, true, 'InspectorView.splitViewState', 555, 300, true);
-    this._rootSplitWidget.element.classList.add('root-split-widget');
     this._rootSplitWidget.show(rootView.element);
     this._rootSplitWidget.setSidebarWidget(UI.inspectorView);
     this._rootSplitWidget.setDefaultFocusedChild(UI.inspectorView);
@@ -140,7 +139,13 @@ Emulation.AdvancedApp = class {
    * @param {string} dockSide
    */
   _updateForDocked(dockSide) {
-    this._rootSplitWidget.setVertical(dockSide === Components.DockController.State.DockedToRight);
+    this._rootSplitWidget.resizerElement().style.transform =
+        dockSide === Components.DockController.State.DockedToRight ?
+        'translateX(2px)' :
+        dockSide === Components.DockController.State.DockedToLeft ? 'translateX(-2px)' : '';
+    this._rootSplitWidget.setVertical(
+        dockSide === Components.DockController.State.DockedToRight ||
+        dockSide === Components.DockController.State.DockedToLeft);
     this._rootSplitWidget.setSecondIsSidebar(
         dockSide === Components.DockController.State.DockedToRight ||
         dockSide === Components.DockController.State.DockedToBottom);

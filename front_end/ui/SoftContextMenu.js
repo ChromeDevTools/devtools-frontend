@@ -82,13 +82,12 @@ UI.SoftContextMenu = class {
     }
 
     // Re-position menu in case it does not fit.
-    if (document.body.offsetWidth < this.element.offsetLeft + this.element.offsetWidth) {
-      this.element.style.left =
-          Math.max(
-              UI.Dialog.modalHostView().element.totalOffsetLeft(), this._parentMenu ?
-                  this._parentMenu.element.offsetLeft - this.element.offsetWidth + subMenuOverlap :
-                  document.body.offsetWidth - this.element.offsetWidth) +
-          'px';
+    var hostLeft = UI.Dialog.modalHostView().element.totalOffsetLeft();
+    var hostRight = hostLeft + UI.Dialog.modalHostView().element.offsetWidth;
+    if (hostRight < this.element.offsetLeft + this.element.offsetWidth) {
+      var left = this._parentMenu ? this._parentMenu.element.offsetLeft - this.element.offsetWidth + subMenuOverlap :
+                                    hostRight - this.element.offsetWidth;
+      this.element.style.left = Math.max(hostLeft, left) + 'px';
     }
 
     // Move submenus upwards if it does not fit.

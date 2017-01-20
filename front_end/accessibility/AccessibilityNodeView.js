@@ -188,15 +188,13 @@ Accessibility.AXNodePropertyTreeElement = class extends UI.TreeElement {
 
   /**
    * @param {!Protocol.Accessibility.AXValue} value
-   * @return {?Element}
    */
   appendValueElement(value) {
     var AXValueType = Protocol.Accessibility.AXValueType;
     if (value.type === AXValueType.Idref || value.type === AXValueType.Node || value.type === AXValueType.IdrefList ||
         value.type === AXValueType.NodeList) {
       this.appendRelatedNodeListValueElement(value);
-      if (!value.value)
-        return null;
+      return;
     } else if (value.sources) {
       var sources = value.sources;
       for (var i = 0; i < sources.length; i++) {
@@ -208,7 +206,6 @@ Accessibility.AXNodePropertyTreeElement = class extends UI.TreeElement {
     }
     var element = Accessibility.AXNodePropertyTreeElement.createSimpleValueElement(value.type, String(value.value));
     this.listItemElement.appendChild(element);
-    return element;
   }
 
   /**
@@ -303,9 +300,7 @@ Accessibility.AXNodePropertyTreePropertyElement = class extends Accessibility.AX
 
     this.listItemElement.createChild('span', 'separator').textContent = ':\u00A0';
 
-    var valueElement = this.appendValueElement(this._property.value);
-    if (this._property.name === 'name')
-      valueElement.classList.add('ax-computed-text');
+    this.appendValueElement(this._property.value);
   }
 };
 
@@ -450,6 +445,8 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
     } else if (this._source.nativeSourceValue) {
       this.appendValueElement(this._source.nativeSourceValue);
       this.listItemElement.createTextChild('\u00a0');
+      if (this._source.value)
+        this.appendValueElement(this._source.value);
     } else if (this._source.value) {
       this.appendValueElement(this._source.value);
     } else {
@@ -461,20 +458,6 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
 
     if (this._source.value && this._source.superseded)
       this.listItemElement.classList.add('ax-value-source-superseded');
-  }
-
-  /**
-   * @param {!Protocol.Accessibility.AXValue} value
-   * @return {!Element}
-   * @override
-   */
-  appendValueElement(value) {
-    var element = super.appendValueElement(value);
-    if (!element) {
-      element = Accessibility.AXNodePropertyTreeElement.createSimpleValueElement(value.type, String(value.value));
-      this.listItemElement.appendChild(element);
-    }
-    return element;
   }
 };
 

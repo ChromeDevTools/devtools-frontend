@@ -32,26 +32,27 @@ Timeline.TimelineTreeView = class extends UI.VBox {
 
     this._filters = filters.slice();
 
-    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([]);
+    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([]);
     this._populateColumns(columns);
 
-    var mainView = new UI.VBox();
+    this._splitWidget = new UI.SplitWidget(true, true, 'timelineTreeViewDetailsSplitWidget');
+    const mainView = new UI.VBox();
     this._populateToolbar(mainView.element);
+
     this._dataGrid = new DataGrid.SortableDataGrid(columns);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
     this._dataGrid.element.addEventListener('mousemove', this._onMouseMove.bind(this), true);
     this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
     this._dataGrid.setRowContextMenuCallback(this._onContextMenu.bind(this));
     this._dataGrid.asWidget().show(mainView.element);
-
-    this._splitWidget = new UI.SplitWidget(true, true, 'timelineTreeViewDetailsSplitWidget');
-    this._splitWidget.show(this.element);
-    this._splitWidget.setMainWidget(mainView);
+    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._updateDetailsForSelection, this);
 
     this._detailsView = new UI.VBox();
     this._detailsView.element.classList.add('timeline-details-view', 'timeline-details-view-body');
+    this._splitWidget.setMainWidget(mainView);
     this._splitWidget.setSidebarWidget(this._detailsView);
-    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._updateDetailsForSelection, this);
+    this._splitWidget.hideSidebar();
+    this._splitWidget.show(this.element);
 
     /** @type {?TimelineModel.TimelineProfileTree.Node|undefined} */
     this._lastSelectedNode;
@@ -563,6 +564,8 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
     addGroupingOption.call(this, Common.UIString('Group by URL'), groupBy.URL);
     addGroupingOption.call(this, Common.UIString('Group by Frame'), groupBy.Frame);
     panelToolbar.appendToolbarItem(this._groupByCombobox);
+    panelToolbar.appendSpacer();
+    panelToolbar.appendToolbarItem(this._splitWidget.createShowHideSidebarButton(Common.UIString('heaviest stack')));
   }
 
   /**

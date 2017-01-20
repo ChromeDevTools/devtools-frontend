@@ -844,11 +844,14 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
 Network.NetworkGroupNode = class extends Network.NetworkNode {
   /**
    * @param {!Network.NetworkLogView} parentView
-   * @param {string} name
+   * @param {string} displayName
+   * @param {string=} sortKey
    */
-  constructor(parentView, name) {
+  constructor(parentView, displayName, sortKey) {
     super(parentView);
-    this._name = name;
+    this._displayName = displayName;
+    // TODO(allada) This is here because you can always sort by _name. This class deserves it's own sorting functions.
+    this._name = sortKey;
   }
 
   /**
@@ -869,7 +872,7 @@ Network.NetworkGroupNode = class extends Network.NetworkNode {
     var cell = this.createTD(columnIdentifier);
     if (columnIdentifier === 'name') {
       cell.classList.add('disclosure');
-      this._setTextAndTitle(cell, this._name);
+      this._setTextAndTitle(cell, this._displayName);
     }
     return cell;
   }

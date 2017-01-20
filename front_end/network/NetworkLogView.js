@@ -782,9 +782,9 @@ Network.NetworkLogView = class extends UI.VBox {
     this._timeCalculator.updateBoundariesForEventTime(this._mainRequestDOMContentLoadedTime);
     this._durationCalculator.updateBoundariesForEventTime(this._mainRequestDOMContentLoadedTime);
 
-    /** @type {!Array<!Network.NetworkRequestNode> } */
-    var nodesToInsert = [];
-    /** @type {!Array<!Network.NetworkRequestNode> } */
+    /** @type {!Map<!Network.NetworkNode, !Network.NetworkNode>} */
+    var nodesToInsert = new Map();
+    /** @type {!Array<!Network.NetworkNode>} */
     var nodesToRefresh = [];
     for (var requestId in this._staleRequestIds) {
       var node = this._nodesByRequestId.get(requestId);
@@ -793,27 +793,44 @@ Network.NetworkLogView = class extends UI.VBox {
       var isFilteredOut = !this._applyFilter(node);
       if (isFilteredOut && node === this._hoveredNode)
         this._setHoveredNode(null);
-      if (node[Network.NetworkLogView._isFilteredOutSymbol] !== isFilteredOut) {
-        if (!node[Network.NetworkLogView._isFilteredOutSymbol])
-          node.parent.removeChild(node);
 
-        node[Network.NetworkLogView._isFilteredOutSymbol] = isFilteredOut;
-
-        if (!node[Network.NetworkLogView._isFilteredOutSymbol])
-          nodesToInsert.push(node);
-      }
       if (!isFilteredOut)
         nodesToRefresh.push(node);
       var request = node.request();
       this._timeCalculator.updateBoundaries(request);
       this._durationCalculator.updateBoundaries(request);
+
+      if (node[Network.NetworkLogView._isFilteredOutSymbol] === isFilteredOut)
+        continue;
+
+      node[Network.NetworkLogView._isFilteredOutSymbol] = isFilteredOut;
+      var newParent = this._parentNodeForInsert(node);
+      var removeFromParent = node.parent && (isFilteredOut || node.parent !== newParent);
+      if (removeFromParent) {
+        var parent = node.parent;
+        parent.removeChild(node);
+        while (parent && !parent.hasChildren() && parent.dataGrid && parent.dataGrid.rootNode() !== parent) {
+          var grandparent = parent.parent;
+          grandparent.removeChild(parent);
+          parent = grandparent;
+        }
+      }
+
+      if (isFilteredOut)
+        continue;
+
+      if (!newParent.dataGrid && !nodesToInsert.has(newParent)) {
+        nodesToInsert.set(newParent, this._dataGrid.rootNode());
+        nodesToRefresh.push(newParent);
+      }
+      nodesToInsert.set(node, newParent);
     }
 
-    for (var i = 0; i < nodesToInsert.length; ++i) {
-      var node = nodesToInsert[i];
+    for (var node of nodesToInsert.keys()) {
+      var parent = nodesToInsert.get(node);
       var request = node.request();
-      node[Network.NetworkLogView._isMatchingSearchQuerySymbol] = this._matchRequest(request);
-      var parent = this._parentNodeForInsert(node);
+      if (request)
+        node[Network.NetworkLogView._isMatchingSearchQuerySymbol] = this._matchRequest(request);
       parent.appendChild(node);
     }
 
@@ -839,13 +856,17 @@ Network.NetworkLogView = class extends UI.VBox {
 
     var request = node.request();
     // TODO(allada) Make this dynamic and allow multiple grouping types.
-    var groupKey = request.domain;
+    var groupKey = request.connectionId;
     var group = this._nodeGroups.get(groupKey);
     if (group)
       return group;
-    group = new Network.NetworkGroupNode(this, groupKey);
+
+    var parsedURL = request.url().asParsedURL();
+    var host = '';
+    if (parsedURL)
+      host = parsedURL.host;
+    group = new Network.NetworkGroupNode(this, host + ' - ' + groupKey);
     this._nodeGroups.set(groupKey, group);
-    this._dataGrid.rootNode().appendChild(group);
     return group;
   }
 

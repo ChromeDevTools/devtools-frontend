@@ -306,7 +306,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   resizeToPreferredHeights() {
     this._splitWidget.setSidebarSize(
         this._networkDataProvider.preferredHeight() + this._splitResizer.clientHeight + PerfUI.FlameChart.HeaderHeight +
-        3);
+        2);
   }
 };
 

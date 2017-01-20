@@ -13,6 +13,7 @@ Accessibility.AXTreePane = class extends Accessibility.AccessibilitySubPane {
 
     this._axSidebarView = axSidebarView;
     this._treeOutline = this.createTreeOutline();
+    this._treeOutline.setPaddingSize(12);
 
     this.element.classList.add('accessibility-computed');
 

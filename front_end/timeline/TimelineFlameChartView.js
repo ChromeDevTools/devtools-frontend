@@ -146,7 +146,8 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._networkView.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
     this._nextExtensionIndex = 0;
 
-    Bindings.blackboxManager.addChangeListener(this.refreshRecords, this);
+    this._boundRefresh = this.refreshRecords.bind(this);
+    Bindings.blackboxManager.addChangeListener(this._boundRefresh);
   }
 
   /**
@@ -155,7 +156,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   dispose() {
     this._mainView.removeEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
     this._networkView.removeEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
-    Bindings.blackboxManager.removeChangeListener(this.refreshRecords, this);
+    Bindings.blackboxManager.removeChangeListener(this._boundRefresh);
   }
 
   /**

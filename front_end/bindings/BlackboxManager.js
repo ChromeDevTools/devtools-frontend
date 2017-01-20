@@ -19,6 +19,9 @@ Bindings.BlackboxManager = class {
     Common.moduleSetting('skipStackFramesPattern').addChangeListener(this._patternChanged.bind(this));
     Common.moduleSetting('skipContentScripts').addChangeListener(this._patternChanged.bind(this));
 
+    /** @type {!Set<function()>} */
+    this._listeners = new Set();
+
     /** @type {!Map<!SDK.DebuggerModel, !Map<string, !Array<!Protocol.Debugger.ScriptPosition>>>} */
     this._debuggerModelData = new Map();
     /** @type {!Map<string, boolean>} */
@@ -28,19 +31,17 @@ Bindings.BlackboxManager = class {
   }
 
   /**
-   * @param {function(!Common.Event)} listener
-   * @param {!Object=} thisObject
+   * @param {function()} listener
    */
-  addChangeListener(listener, thisObject) {
-    Common.moduleSetting('skipStackFramesPattern').addChangeListener(listener, thisObject);
+  addChangeListener(listener) {
+    this._listeners.add(listener);
   }
 
   /**
-   * @param {function(!Common.Event)} listener
-   * @param {!Object=} thisObject
+   * @param {function()} listener
    */
-  removeChangeListener(listener, thisObject) {
-    Common.moduleSetting('skipStackFramesPattern').removeChangeListener(listener, thisObject);
+  removeChangeListener(listener) {
+    this._listeners.delete(listener);
   }
 
   /**
@@ -285,7 +286,12 @@ Bindings.BlackboxManager = class {
         promises.push(this._addScript(script).then(loadSourceMap.bind(this, script)));
       }
     }
-    Promise.all(promises).then(this._patternChangeFinishedForTests.bind(this));
+    Promise.all(promises).then(() => {
+      var listeners = Array.from(this._listeners);
+      for (var listener of listeners)
+        listener();
+      this._patternChangeFinishedForTests();
+    });
 
     /**
      * @param {!SDK.Script} script

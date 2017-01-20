@@ -655,6 +655,7 @@
         "ObjectEventListenersSidebarPane.js"
     ],
     "resources": [
+        "callStackSidebarPane.css",
         "uiList.css",
         "debuggerPausedMessage.css",
         "eventListenerBreakpoints.css",

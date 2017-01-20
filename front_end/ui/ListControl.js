@@ -200,10 +200,15 @@ UI.ListControl = class {
   }
 
   /**
-   * @param {!Element} element
+   * @param {?Node} node
    * @return {?T}
    */
-  itemForElement(element) {
+  itemForNode(node) {
+    while (node && node.parentNodeOrShadowHost() !== this.element)
+      node = node.parentNodeOrShadowHost();
+    if (!node)
+      return null;
+    var element = /** @type {!Element} */ (node);
     var index = this._items.findIndex(item => this._itemToElement.get(item) === element);
     return index !== -1 ? this._items[index] : null;
   }
@@ -344,14 +349,8 @@ UI.ListControl = class {
    * @param {!Event} event
    */
   _onClick(event) {
-    var node = event.target;
-    while (node && node.parentNodeOrShadowHost() !== this.element)
-      node = node.parentNodeOrShadowHost();
-    if (!node)
-      return;
-    var element = /** @type {!Element} */ (node);
-    var item = this.itemForElement(element);
-    if (item)
+    var item = this.itemForNode(/** @type {?Node} */ (event.target));
+    if (item && this._delegate.isItemSelectable(item))
       this.selectItem(item);
   }
 

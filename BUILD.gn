@@ -486,6 +486,7 @@ all_devtools_files = [
   "front_end/source_frame/UISourceCodeFrame.js",
   "front_end/sources/AddSourceMapURLDialog.js",
   "front_end/sources/AdvancedSearchView.js",
+  "front_end/sources/callStackSidebarPane.css",
   "front_end/sources/CallStackSidebarPane.js",
   "front_end/sources/CSSSourceFrame.js",
   "front_end/sources/dialog.css",

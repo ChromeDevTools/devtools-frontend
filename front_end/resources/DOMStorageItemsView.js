@@ -35,12 +35,15 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
 
     this.element.classList.add('storage-view', 'table');
 
-    this.deleteButton = new UI.ToolbarButton(Common.UIString('Delete'), 'largeicon-delete');
-    this.deleteButton.setVisible(false);
-    this.deleteButton.addEventListener(UI.ToolbarButton.Events.Click, this._deleteButtonClicked, this);
+    this._deleteButton = new UI.ToolbarButton(Common.UIString('Delete'), 'largeicon-delete');
+    this._deleteButton.setEnabled(false);
+    this._deleteButton.addEventListener(UI.ToolbarButton.Events.Click, this._deleteButtonClicked, this);
 
-    this.refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
-    this.refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
+    this._clearButton = new UI.ToolbarButton(Common.UIString('Clear All'), 'largeicon-clear');
+    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => this.domStorage.clear(), this);
+
+    this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
+    this._refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
 
     this.domStorage.addEventListener(
         Resources.DOMStorage.Events.DOMStorageItemsCleared, this._domStorageItemsCleared, this);
@@ -56,7 +59,7 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
    * @return {!Array.<!UI.ToolbarItem>}
    */
   syncToolbarItems() {
-    return [this.refreshButton, this.deleteButton];
+    return [this._refreshButton, this._clearButton, this._deleteButton];
   }
 
   /**
@@ -70,7 +73,7 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
    * @override
    */
   willHide() {
-    this.deleteButton.setVisible(false);
+    this._deleteButton.setEnabled(false);
   }
 
   /**
@@ -82,7 +85,7 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
 
     this._dataGrid.rootNode().removeChildren();
     this._dataGrid.addCreationNode(false);
-    this.deleteButton.setVisible(false);
+    this._deleteButton.setEnabled(false);
   }
 
   /**
@@ -100,7 +103,7 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
       var childNode = children[i];
       if (childNode.data.key === storageData.key) {
         rootNode.removeChild(childNode);
-        this.deleteButton.setVisible(children.length > 1);
+        this._deleteButton.setEnabled(children.length > 1);
         return;
       }
     }
@@ -117,7 +120,7 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
     var rootNode = this._dataGrid.rootNode();
     var children = rootNode.children;
 
-    this.deleteButton.setVisible(true);
+    this._deleteButton.setEnabled(true);
 
     for (var i = 0; i < children.length; ++i) {
       if (children[i].data.key === storageData.key)
@@ -154,7 +157,7 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
           childNode.select();
           childNode.reveal();
         }
-        this.deleteButton.setVisible(true);
+        this._deleteButton.setEnabled(true);
       }
     }
   }
@@ -170,7 +173,7 @@ Resources.DOMStorageItemsView = class extends UI.SimpleView {
 
     this._dataGrid = this._dataGridForDOMStorageItems(items);
     this._dataGrid.asWidget().show(this.element);
-    this.deleteButton.setVisible(this._dataGrid.rootNode().children.length > 1);
+    this._deleteButton.setEnabled(this._dataGrid.rootNode().children.length > 1);
   }
 
   _dataGridForDOMStorageItems(items) {

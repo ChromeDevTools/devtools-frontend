@@ -79,8 +79,8 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     this.resourcesListTreeElement = this._addSidebarSection(Common.UIString('Frames'));
 
     var mainContainer = new UI.VBox();
-    this.storageViews = mainContainer.element.createChild('div', 'vbox flex-auto');
     this._storageViewToolbar = new UI.Toolbar('resources-toolbar', mainContainer.element);
+    this.storageViews = mainContainer.element.createChild('div', 'vbox flex-auto');
     this.splitWidget().setMainWidget(mainContainer);
 
     /** @type {!Map.<!Resources.Database, !Object.<string, !Resources.DatabaseTableView>>} */
@@ -1901,6 +1901,20 @@ Resources.DOMStorageTreeElement = class extends Resources.BaseStorageTreeElement
     super.onselect(selectedByUser);
     this._storagePanel._showDOMStorage(this._domStorage);
     return false;
+  }
+
+  /**
+   * @override
+   */
+  onattach() {
+    super.onattach();
+    this.listItemElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), true);
+  }
+
+  _handleContextMenuEvent(event) {
+    var contextMenu = new UI.ContextMenu(event);
+    contextMenu.appendItem(Common.UIString('Clear'), () => this._domStorage.clear());
+    contextMenu.show();
   }
 };
 

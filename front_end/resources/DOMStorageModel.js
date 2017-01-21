@@ -88,6 +88,10 @@ Resources.DOMStorage = class extends Common.Object {
   removeItem(key) {
     this._model._agent.removeDOMStorageItem(this.id, key);
   }
+
+  clear() {
+    this._model._agent.clear(this.id);
+  }
 };
 
 

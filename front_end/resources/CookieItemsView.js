@@ -126,8 +126,8 @@ Resources.CookieItemsView = class extends UI.SimpleView {
     var shownCookies = this._filterCookiesForFilters(this._cookies);
     this._cookiesTable.setCookies(shownCookies);
     this._emptyWidget.detach();
-    this._cookiesTable.show(this.element);
     this._filterBar.show(this.element);
+    this._cookiesTable.show(this.element);
     this._treeElement.subtitle =
         String.sprintf(Common.UIString('%d cookies (%s)'), this._cookies.length, Number.bytesToString(this._totalSize));
     this._filterButton.setEnabled(true);

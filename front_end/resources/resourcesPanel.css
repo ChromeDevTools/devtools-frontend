@@ -28,7 +28,7 @@
  */
 
 .resources-toolbar {
-    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
     background-color: #eee;
 }
 
@@ -81,8 +81,8 @@ li.selected .base-storage-tree-element-subtitle {
 }
 
 .storage-view .filter-bar {
-    border-bottom: none;
-    border-top: 1px solid #dadada;
+    border-top: none;
+    border-bottom: 1px solid #dadada;
 }
 
 .database-query-prompt {

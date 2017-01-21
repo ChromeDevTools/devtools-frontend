@@ -157,25 +157,38 @@ Timeline.TimelineEventOverviewNetwork = class extends Timeline.TimelineEventOver
    */
   update() {
     super.update();
-    var height = this.height();
-    var numBands = categoryBand(Timeline.TimelineUIUtils.NetworkCategory.Other) + 1;
-    var bandHeight = Math.floor(height / numBands);
-    var devicePixelRatio = window.devicePixelRatio;
-    var timeOffset = this._model.minimumRecordTime();
-    var timeSpan = this._model.maximumRecordTime() - timeOffset;
-    var canvasWidth = this.width();
-    var scale = canvasWidth / timeSpan;
-    var ctx = this.context();
-    var requests = this._model.networkRequests();
-    /** @type {!Map<string,!{waiting:!Path2D,transfer:!Path2D}>} */
-    var paths = new Map();
-    requests.forEach(drawRequest);
-    for (var path of paths) {
-      ctx.fillStyle = path[0];
-      ctx.globalAlpha = 0.3;
-      ctx.fill(path[1]['waiting']);
+    const height = this.height();
+    const numBands = categoryBand(Timeline.TimelineUIUtils.NetworkCategory.Other) + 1;
+    const devicePixelRatio = window.devicePixelRatio;
+    const bandHeight = height - (numBands + 1) * devicePixelRatio;
+    const timeOffset = this._model.minimumRecordTime();
+    const timeSpan = this._model.maximumRecordTime() - timeOffset;
+    const canvasWidth = this.width();
+    const scale = canvasWidth / timeSpan;
+    const ctx = this.context();
+    const paths = [];
+    for (const categoryName in Timeline.TimelineUIUtils.NetworkCategory) {
+      const category = Timeline.TimelineUIUtils.NetworkCategory[categoryName];
+      paths[categoryBand(category)] = {
+        style: Timeline.TimelineUIUtils.networkCategoryColor(category),
+        path: new Path2D()
+      };
+    }
+    for (const request of this._model.networkRequests()) {
+      const category = Timeline.TimelineUIUtils.networkRequestCategory(request);
+      const band = categoryBand(category);
+      const y = (numBands - band - 1) * devicePixelRatio;
+      const s = Math.max(Math.floor((request.startTime - timeOffset) * scale), 0);
+      const e = Math.min(Math.ceil((request.endTime - timeOffset) * scale + 1), canvasWidth);
+      paths[band].path.rect(s, y, e - s, bandHeight);
+    }
+    for (const path of paths.reverse()) {
       ctx.globalAlpha = 1;
-      ctx.fill(path[1]['transfer']);
+      ctx.fillStyle = path.style;
+      ctx.fill(path.path);
+      ctx.globalAlpha = 0.4;
+      ctx.fillStyle = 'white';
+      ctx.fill(path.path);
     }
 
     /**
@@ -183,7 +196,7 @@ Timeline.TimelineEventOverviewNetwork = class extends Timeline.TimelineEventOver
      * @return {number}
      */
     function categoryBand(category) {
-      var categories = Timeline.TimelineUIUtils.NetworkCategory;
+      const categories = Timeline.TimelineUIUtils.NetworkCategory;
       switch (category) {
         case categories.HTML:
           return 0;
@@ -196,30 +209,6 @@ Timeline.TimelineEventOverviewNetwork = class extends Timeline.TimelineEventOver
         default:
           return 4;
       }
-    }
-
-    /**
-     * @param {!TimelineModel.TimelineModel.NetworkRequest} request
-     */
-    function drawRequest(request) {
-      var tickWidth = 2 * devicePixelRatio;
-      var category = Timeline.TimelineUIUtils.networkRequestCategory(request);
-      var style = Timeline.TimelineUIUtils.networkCategoryColor(category);
-      var band = categoryBand(category);
-      var y = band * bandHeight;
-      var path = paths.get(style);
-      if (!path) {
-        path = {waiting: new Path2D(), transfer: new Path2D()};
-        paths.set(style, path);
-      }
-      var s = Math.max(Math.floor((request.startTime - timeOffset) * scale), 0);
-      var e = Math.min(Math.ceil((request.endTime - timeOffset) * scale), canvasWidth);
-      path['waiting'].rect(s, y, e - s, bandHeight - 1);
-      path['transfer'].rect(e - tickWidth / 2, y, tickWidth, bandHeight - 1);
-      if (!request.responseTime)
-        return;
-      var r = Math.ceil((request.responseTime - timeOffset) * scale);
-      path['transfer'].rect(r - tickWidth / 2, y, tickWidth, bandHeight - 1);
     }
   }
 };

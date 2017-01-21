@@ -114,20 +114,24 @@
 }
 
 #timeline-overview-cpu-activity {
-    flex-basis: 25px;
-}
-
-#timeline-overview-network,
-#timeline-overview-framerate {
     flex-basis: 20px;
 }
 
+#timeline-overview-network {
+    flex-basis: 12px;
+}
+
+#timeline-overview-framerate {
+    flex-basis: 16px;
+    margin-top: 0 !important;
+}
+
 #timeline-overview-filmstrip {
-    flex-basis: 40px;
+    flex-basis: 30px;
 }
 
 #timeline-overview-memory {
-    flex-basis: 22px;
+    flex-basis: 20px;
 }
 
 #timeline-overview-framerate::before,
@@ -147,8 +151,8 @@
 }
 
 #timeline-overview-responsiveness {
-    flex-basis: 6px;
-    margin-top: 1px !important;
+    flex-basis: 5px;
+    margin-top: 0 !important;
 }
 
 #timeline-overview-input {

@@ -843,7 +843,8 @@ Network.NetworkLogView = class extends UI.VBox {
     this._staleRequestIds = {};
     this._updateSummaryBar();
 
-    this._columns.dataChanged();
+    if (nodesToInsert.size)
+      this._columns.sortByCurrentColumn();
   }
 
   /**

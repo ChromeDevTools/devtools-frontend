@@ -191,6 +191,7 @@ Network.NetworkLogViewColumns = class {
           this._activeScroller.scrollTop, this._eventDividersShown ? this._eventDividers : undefined);
       return;
     }
+    this._syncScrollers();
     var nodes = this._networkLogView.flatNodesList();
     this._waterfallColumn.update(this._activeScroller.scrollTop, this._eventDividers, nodes);
   }
@@ -222,10 +223,6 @@ Network.NetworkLogViewColumns = class {
    */
   setCalculator(x) {
     this._waterfallColumn.setCalculator(x);
-  }
-
-  dataChanged() {
-    this._waterfallRequestsAreStale = true;
   }
 
   scheduleRefresh() {
@@ -265,6 +262,7 @@ Network.NetworkLogViewColumns = class {
   _sortHandler() {
     var columnId = this._dataGrid.sortColumnId();
     this._networkLogView.removeAllNodeHighlights();
+    this._waterfallRequestsAreStale = true;
     if (columnId === 'waterfall') {
       this._waterfallColumnSortIcon.classList.remove('sort-ascending', 'sort-descending');
 
@@ -273,7 +271,6 @@ Network.NetworkLogViewColumns = class {
       else
         this._waterfallColumnSortIcon.classList.add('sort-descending');
 
-      this._waterfallRequestsAreStale = true;
       var sortFunction = Network.NetworkRequestNode.RequestPropertyComparator.bind(null, this._activeWaterfallSortId);
       this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
       this._networkLogView.dataGridSorted();

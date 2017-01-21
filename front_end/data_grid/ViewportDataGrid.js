@@ -40,6 +40,7 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
     this._atBottom = true;
     /** @type {number} */
     this._lastScrollTop = 0;
+    this._firstVisibleIsStriped = false;
 
     this.setRootNode(new DataGrid.ViewportDataGridNode());
   }
@@ -203,11 +204,21 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
       previousElement = this._hiddenWheelTarget;
     var tBody = this.dataTableBody;
     var offset = viewportState.offset;
+
+    if (visibleNodes.length) {
+      var nodes = this.rootNode().flatChildren();
+      var index = nodes.indexOf(visibleNodes[0]);
+      if (index !== -1 && !!(index % 2) !== this._firstVisibleIsStriped)
+        offset += 1;
+    }
+
+    this._firstVisibleIsStriped = !!(offset % 2);
+
     for (var i = 0; i < visibleNodes.length; ++i) {
       var node = visibleNodes[i];
       var element = node.element();
       node.willAttach();
-      element.classList.toggle('odd', (offset + i) % 2 === 0);
+      node.setStriped((offset + i) % 2 === 0);
       tBody.insertBefore(element, previousElement.nextSibling);
       node.revealed = true;
       previousElement = element;
@@ -272,6 +283,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
     this._stale = false;
     /** @type {?Array<!DataGrid.ViewportDataGridNode>} */
     this._flatNodes = null;
+    this._isStriped = false;
   }
 
   /**
@@ -286,6 +298,21 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
       this._stale = false;
     }
     return element;
+  }
+
+  /**
+   * @param {boolean} isStriped
+   */
+  setStriped(isStriped) {
+    this._isStriped = isStriped;
+    this.element().classList.toggle('odd', isStriped);
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isStriped() {
+    return this._isStriped;
   }
 
   _clearFlatNodes() {

@@ -922,13 +922,12 @@ Console.ConsoleViewMessage = class {
     this._element.message = this;
 
     switch (this._message.level) {
-      case SDK.ConsoleMessage.MessageLevel.Log:
-        this._element.classList.add('console-log-level');
+      case SDK.ConsoleMessage.MessageLevel.Verbose:
+        this._element.classList.add('console-verbose-level');
         this._updateMessageLevelIcon('');
         break;
-      case SDK.ConsoleMessage.MessageLevel.Debug:
-        this._element.classList.add('console-debug-level');
-        this._updateMessageLevelIcon('');
+      case SDK.ConsoleMessage.MessageLevel.Info:
+        this._element.classList.add('console-info-level');
         break;
       case SDK.ConsoleMessage.MessageLevel.Warning:
         this._element.classList.add('console-warning-level');
@@ -937,10 +936,6 @@ Console.ConsoleViewMessage = class {
       case SDK.ConsoleMessage.MessageLevel.Error:
         this._element.classList.add('console-error-level');
         this._updateMessageLevelIcon('smallicon-error');
-        break;
-      case SDK.ConsoleMessage.MessageLevel.Info:
-        this._element.classList.add('console-info-level');
-        this._updateMessageLevelIcon('smallicon-info');
         break;
     }
 
@@ -997,8 +992,8 @@ Console.ConsoleViewMessage = class {
         case SDK.ConsoleMessage.MessageLevel.Error:
           this._repeatCountElement.type = 'error';
           break;
-        case SDK.ConsoleMessage.MessageLevel.Debug:
-          this._repeatCountElement.type = 'debug';
+        case SDK.ConsoleMessage.MessageLevel.Verbose:
+          this._repeatCountElement.type = 'verbose';
           break;
         default:
           this._repeatCountElement.type = 'info';

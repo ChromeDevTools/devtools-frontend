@@ -17,7 +17,8 @@ Common.Console = class extends Common.Object {
    * @param {boolean=} show
    */
   addMessage(text, level, show) {
-    var message = new Common.Console.Message(text, level || Common.Console.MessageLevel.Log, Date.now(), show || false);
+    var message =
+        new Common.Console.Message(text, level || Common.Console.MessageLevel.Info, Date.now(), show || false);
     this._messages.push(message);
     this.dispatchEventToListeners(Common.Console.Events.MessageAdded, message);
   }
@@ -26,7 +27,7 @@ Common.Console = class extends Common.Object {
    * @param {string} text
    */
   log(text) {
-    this.addMessage(text, Common.Console.MessageLevel.Log);
+    this.addMessage(text, Common.Console.MessageLevel.Info);
   }
 
   /**
@@ -71,7 +72,7 @@ Common.Console.Events = {
  * @enum {string}
  */
 Common.Console.MessageLevel = {
-  Log: 'log',
+  Info: 'info',
   Warning: 'warning',
   Error: 'error'
 };

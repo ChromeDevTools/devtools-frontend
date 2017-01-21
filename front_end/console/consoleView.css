@@ -128,9 +128,8 @@
 }
 
 .console-error-level .repeated-message,
-.console-log-level .repeated-message,
 .console-warning-level .repeated-message,
-.console-debug-level .repeated-message,
+.console-verbose-level .repeated-message,
 .console-info-level .repeated-message {
     display: flex;
 }
@@ -234,11 +233,11 @@
     color: hsl(0, 100%, 75%) !important;
 }
 
-.console-debug-level .console-message-text {
+.console-verbose-level .console-message-text {
     color: blue;
 }
 
-.-theme-with-dark-background .console-debug-level .console-message-text {
+.-theme-with-dark-background .console-verbose-level .console-message-text {
     color: hsl(220, 100%, 65%) !important;
 }
 

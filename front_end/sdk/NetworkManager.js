@@ -250,7 +250,7 @@ SDK.NetworkDispatcher = class {
     if (!this._mimeTypeIsConsistentWithType(networkRequest)) {
       var consoleModel = this._manager._target.consoleModel;
       consoleModel.addMessage(new SDK.ConsoleMessage(
-          consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network, SDK.ConsoleMessage.MessageLevel.Log,
+          consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network, SDK.ConsoleMessage.MessageLevel.Info,
           Common.UIString(
               'Resource interpreted as %s but transferred with MIME type %s: "%s".',
               networkRequest.resourceType().title(), networkRequest.mimeType, networkRequest.url()),

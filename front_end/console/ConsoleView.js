@@ -303,8 +303,11 @@ Console.ConsoleView = class extends UI.VBox {
    * @param {!Common.Console.Message} message
    */
   _addSinkMessage(message) {
-    var level = SDK.ConsoleMessage.MessageLevel.Debug;
+    var level = SDK.ConsoleMessage.MessageLevel.Verbose;
     switch (message.level) {
+      case Common.Console.MessageLevel.Info:
+        level = SDK.ConsoleMessage.MessageLevel.Info;
+        break;
       case Common.Console.MessageLevel.Error:
         level = SDK.ConsoleMessage.MessageLevel.Error;
         break;
@@ -797,7 +800,7 @@ Console.ConsoleView = class extends UI.VBox {
     if (!result)
       return;
 
-    var level = !!exceptionDetails ? SDK.ConsoleMessage.MessageLevel.Error : SDK.ConsoleMessage.MessageLevel.Log;
+    var level = !!exceptionDetails ? SDK.ConsoleMessage.MessageLevel.Error : SDK.ConsoleMessage.MessageLevel.Info;
     var message;
     if (!exceptionDetails) {
       message = new SDK.ConsoleMessage(
@@ -1070,8 +1073,7 @@ Console.ConsoleViewFilter = class extends Common.Object {
       {name: SDK.ConsoleMessage.MessageLevel.Error, label: Common.UIString('Errors')},
       {name: SDK.ConsoleMessage.MessageLevel.Warning, label: Common.UIString('Warnings')},
       {name: SDK.ConsoleMessage.MessageLevel.Info, label: Common.UIString('Info')},
-      {name: SDK.ConsoleMessage.MessageLevel.Log, label: Common.UIString('Logs')},
-      {name: SDK.ConsoleMessage.MessageLevel.Debug, label: Common.UIString('Debug')}
+      {name: SDK.ConsoleMessage.MessageLevel.Verbose, label: Common.UIString('Verbose')}
     ];
     this._levelFilterUI = new UI.NamedBitSetFilterUI(levels, this._messageLevelFiltersSetting);
     this._levelFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, this._filterChanged, this);
@@ -1255,7 +1257,7 @@ Console.ConsoleCommandResult = class extends Console.ConsoleViewMessage {
   contentElement() {
     var element = super.contentElement();
     element.classList.add('console-user-command-result');
-    if (this.consoleMessage().level === SDK.ConsoleMessage.MessageLevel.Log) {
+    if (this.consoleMessage().level === SDK.ConsoleMessage.MessageLevel.Info) {
       var icon = UI.Icon.create('smallicon-command-result', 'command-result-icon');
       element.insertBefore(icon, element.firstChild);
     }

@@ -176,7 +176,7 @@ Profiler.CPUProfileType = class extends Profiler.ProfileType {
     var script = scriptLocation.script();
     var target = scriptLocation.target();
     var message = new SDK.ConsoleMessage(
-        target, SDK.ConsoleMessage.MessageSource.ConsoleAPI, SDK.ConsoleMessage.MessageLevel.Debug, messageText, type,
+        target, SDK.ConsoleMessage.MessageSource.ConsoleAPI, SDK.ConsoleMessage.MessageLevel.Verbose, messageText, type,
         undefined, undefined, undefined, undefined, [{
           functionName: '',
           scriptId: scriptLocation.scriptId,

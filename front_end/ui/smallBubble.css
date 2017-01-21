@@ -20,12 +20,12 @@ div {
     border-radius: 7px;
 }
 
-div.info {
-    background-color: rgb(128, 151, 189);
+div.verbose {
+    background-color: rgb(0, 0, 255);
 }
 
-div.debug {
-    background-color: rgb(0, 0, 255);
+div.info {
+    background-color: rgb(128, 151, 189);
 }
 
 div.warning {

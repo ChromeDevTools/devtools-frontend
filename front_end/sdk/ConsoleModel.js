@@ -513,11 +513,10 @@ SDK.ConsoleMessage.MessageType = {
  * @enum {string}
  */
 SDK.ConsoleMessage.MessageLevel = {
-  Log: 'log',
+  Verbose: 'verbose',
   Info: 'info',
   Warning: 'warning',
-  Error: 'error',
-  Debug: 'debug'
+  Error: 'error'
 };
 
 

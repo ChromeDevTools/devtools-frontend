@@ -396,14 +396,14 @@ SDK.RuntimeDispatcher = class {
    * @param {!Protocol.Runtime.StackTrace=} stackTrace
    */
   consoleAPICalled(type, args, executionContextId, timestamp, stackTrace) {
-    var level = SDK.ConsoleMessage.MessageLevel.Log;
+    var level = SDK.ConsoleMessage.MessageLevel.Info;
     if (type === SDK.ConsoleMessage.MessageType.Debug)
-      level = SDK.ConsoleMessage.MessageLevel.Debug;
+      level = SDK.ConsoleMessage.MessageLevel.Verbose;
     if (type === SDK.ConsoleMessage.MessageType.Error || type === SDK.ConsoleMessage.MessageType.Assert)
       level = SDK.ConsoleMessage.MessageLevel.Error;
     if (type === SDK.ConsoleMessage.MessageType.Warning)
       level = SDK.ConsoleMessage.MessageLevel.Warning;
-    if (type === SDK.ConsoleMessage.MessageType.Info)
+    if (type === SDK.ConsoleMessage.MessageType.Info || type === SDK.ConsoleMessage.MessageType.Log)
       level = SDK.ConsoleMessage.MessageLevel.Info;
     var message = '';
     if (args.length && typeof args[0].value === 'string')

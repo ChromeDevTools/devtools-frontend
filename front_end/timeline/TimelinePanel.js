@@ -105,7 +105,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.Load, this._loadEventFired, this);
 
     // Create top level properties splitter.
-    this._detailsSplitWidget = new UI.SplitWidget(false, true, 'timelinePanelDetailsSplitViewState');
+    this._detailsSplitWidget = new UI.SplitWidget(false, true, 'timelinePanelDetailsSplitViewState', 400);
     this._detailsSplitWidget.element.classList.add('timeline-details-split');
     this._detailsView =
         new Timeline.TimelineDetailsView(this._model, this._frameModel, this._filmStripModel, this._filters, this);

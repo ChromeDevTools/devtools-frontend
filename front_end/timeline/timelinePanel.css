@@ -39,7 +39,7 @@
 #timeline-overview-panel {
     flex: none;
     position: relative;
-    border-bottom: 1px solid rgb(140, 140, 140);
+    border-bottom: 1px solid #bbb;
 }
 
 #timeline-overview-panel .timeline-graph-bar {

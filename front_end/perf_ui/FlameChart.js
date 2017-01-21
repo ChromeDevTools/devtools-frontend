@@ -697,7 +697,6 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
       context.fillStyle = this._dataProvider.textColor(entryIndex);
       context.fillText(text, barX + textPadding, barY + textBaseHeight);
     }
-
     context.restore();
 
     this._drawGroupHeaders(width, height);
@@ -731,6 +730,8 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
     context.save();
     context.scale(ratio, ratio);
     context.translate(0, -top);
+    var defaultFont = '11px ' + Host.fontFamily();
+    context.font = defaultFont;
 
     context.fillStyle = UI.themeSupport.patchColor('#fff', colorUsage.Background);
     forEachGroup.call(this, (offset, index, group) => {
@@ -876,7 +877,7 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
     var timeWindowRight = this._timeWindowRight;
     var timeWindowLeft = this._timeWindowLeft - this._paddingLeft / this._timeToPixel;
     var context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
-    var barHeight = this._barHeight - 2;
+    var barHeight = this._barHeight - 1;
     var entryStartTimes = this._rawTimelineData.entryStartTimes;
     var entryTotalTimes = this._rawTimelineData.entryTotalTimes;
 
@@ -903,9 +904,9 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
           const barWidth = endBarX - barX;
           context.beginPath();
           context.fillStyle = color;
-          context.fillRect(barX, y, barWidth, barHeight - 1);
+          context.fillRect(barX, y, barWidth, barHeight);
           this._dataProvider.decorateEntry(
-              entryIndex, context, '', barX, y, barWidth, barHeight, unclippedBarX, this._timeToPixel);
+              entryIndex, context, '', barX, y, barWidth, this._barHeight, unclippedBarX, this._timeToPixel);
           continue;
         }
         range.append(new Common.Segment(barX, endBarX, color));

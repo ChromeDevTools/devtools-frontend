@@ -26,7 +26,7 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
       useDecoratorsForOverview: true,
       shareHeaderLine: false
     };
-    this._group = {startLevel: 0, name: Common.UIString('Network'), expanded: true, style: this._style};
+    this._group = {startLevel: 0, name: Common.UIString('Network'), expanded: false, style: this._style};
   }
 
   /**

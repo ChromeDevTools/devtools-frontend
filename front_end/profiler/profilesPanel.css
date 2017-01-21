@@ -172,7 +172,7 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
 }
 
 .js_profiler.panel select.chrome-select,
-.heap_profiler.panel select.chrome-select,
+.heap_profiler.panel select.chrome-select
  {
     font-size: 12px;
     width: 150px;

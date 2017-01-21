@@ -545,6 +545,7 @@ SDK.CSSMetadata._propertyDataMap = {
       'none',
       'inline',
       'block',
+      'flow-root',
       'list-item',
       'run-in',
       'inline-block',

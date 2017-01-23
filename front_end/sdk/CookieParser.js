@@ -365,28 +365,19 @@ SDK.Cookie.Type = {
 SDK.Cookies = {};
 
 /**
+ * @param {!SDK.Target} target
+ * @param {!Array.<string>} urls
  * @param {function(!Array.<!SDK.Cookie>)} callback
  */
-SDK.Cookies.getCookiesAsync = function(callback) {
-  var allCookies = [];
-  /**
-   * @param {!SDK.Target} target
-   * @param {?Protocol.Error} error
-   * @param {!Array.<!Protocol.Network.Cookie>} cookies
-   */
-  function mycallback(target, error, cookies) {
-    if (error) {
-      console.error(error);
-      return;
+SDK.Cookies.getCookiesAsync = function(target, urls, callback) {
+  target.networkAgent().getCookies(urls, (err, cookies) => {
+    if (err) {
+      console.error(err);
+      return callback([]);
     }
-    for (var i = 0; i < cookies.length; ++i)
-      allCookies.push(SDK.Cookies._parseProtocolCookie(target, cookies[i]));
-  }
 
-  var barrier = new CallbackBarrier();
-  for (var target of SDK.targetManager.targets(SDK.Target.Capability.Network))
-    target.networkAgent().getCookies(barrier.createCallback(mycallback.bind(null, target)));
-  barrier.callWhenDone(callback.bind(null, allCookies));
+    callback(cookies.map(cookie => SDK.Cookies._parseProtocolCookie(target, cookie)));
+  });
 };
 
 /**

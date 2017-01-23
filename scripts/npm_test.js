@@ -13,10 +13,16 @@ var Flags = {
   DEBUG_DEVTOOLS: '--debug-devtools',
   DEBUG_DEVTOOLS_SHORTHAND: '-d',
   FETCH_CONTENT_SHELL: '--fetch-content-shell',
+  COMPAT_PROTOCOL: '--compat-protocol',
+};
+
+var COMPAT_URL_MAPPING = {
+  '1.2': 'https://storage.googleapis.com/content-shell-devtools-compat/content_shell_417361.zip',
 };
 
 var IS_DEBUG_ENABLED =
     utils.includes(process.argv, Flags.DEBUG_DEVTOOLS) || utils.includes(process.argv, Flags.DEBUG_DEVTOOLS_SHORTHAND);
+var COMPAT_PROTOCOL = utils.parseArgs(process.argv)[Flags.COMPAT_PROTOCOL];
 var IS_FETCH_CONTENT_SHELL = utils.includes(process.argv, Flags.FETCH_CONTENT_SHELL);
 
 var CONTENT_SHELL_ZIP = 'content-shell.zip';
@@ -27,10 +33,19 @@ var PYTHON = process.platform === 'win32' ? 'python.bat' : 'python';
 var CHROMIUM_SRC_PATH = path.resolve(__dirname, '..', '..', '..', '..', '..');
 var RELEASE_PATH = path.resolve(CHROMIUM_SRC_PATH, 'out', 'Release');
 var BLINK_TEST_PATH = path.resolve(CHROMIUM_SRC_PATH, 'blink', 'tools', 'run_layout_tests.py');
-var CACHE_PATH = path.resolve(__dirname, '..', '.test_cache');
-var SOURCE_PATH = path.resolve(__dirname, '..', 'front_end');
+var DEVTOOLS_PATH = path.resolve(__dirname, '..');
+var CACHE_PATH = path.resolve(DEVTOOLS_PATH, '.test_cache');
+var SOURCE_PATH = path.resolve(DEVTOOLS_PATH, 'front_end');
 
 function main() {
+  if (!utils.isDir(CACHE_PATH))
+    fs.mkdirSync(CACHE_PATH);
+  deleteOldContentShells();
+
+  if (COMPAT_PROTOCOL) {
+    runCompatibilityTests();
+    return;
+  }
   var hasUserCompiledContentShell = utils.isFile(getContentShellBinaryPath(RELEASE_PATH));
   if (!IS_FETCH_CONTENT_SHELL && hasUserCompiledContentShell) {
     var outDir = path.resolve(RELEASE_PATH, '..');
@@ -40,9 +55,7 @@ function main() {
     runTests(outDir, IS_DEBUG_ENABLED);
     return;
   }
-  if (!utils.isDir(CACHE_PATH))
-    fs.mkdirSync(CACHE_PATH);
-  deleteOldContentShells();
+
   findPreviousUploadedPosition(findMostRecentChromiumCommit()).then(onUploadedCommitPosition).catch(onError);
 
   function onError(error) {
@@ -51,6 +64,25 @@ function main() {
   }
 }
 main();
+
+function runCompatibilityTests() {
+  const folder = `compat-protocol-${COMPAT_PROTOCOL}`;
+  compileFrontend();
+  var outPath = path.resolve(CACHE_PATH, folder, 'out');
+  var contentShellDirPath = path.resolve(outPath, 'Release');
+  var hasCachedContentShell = utils.isFile(getContentShellBinaryPath(contentShellDirPath));
+  if (hasCachedContentShell) {
+    console.log(`Using cached content shell at: ${outPath}`);
+    copyFrontendToCompatBuildPath(contentShellDirPath, RELEASE_PATH);
+    runTests(outPath, IS_DEBUG_ENABLED);
+    return;
+  }
+  prepareContentShellDirectory(folder)
+      .then(() => downloadContentShell(COMPAT_URL_MAPPING[COMPAT_PROTOCOL], folder))
+      .then(extractContentShell)
+      .then(() => copyFrontendToCompatBuildPath(contentShellDirPath, RELEASE_PATH))
+      .then(() => runTests(outPath, IS_DEBUG_ENABLED));
+}
 
 function compileFrontend() {
   console.log('Compiling devtools frontend');
@@ -74,11 +106,22 @@ function onUploadedCommitPosition(commitPosition) {
     copyFrontend(contentShellResourcesPath);
     return runTests(contentShellPath, true);
   }
+  var url = `http://commondatastorage.googleapis.com/chromium-browser-snapshots/${PLATFORM}/${commitPosition
+  }/${CONTENT_SHELL_ZIP}`;
   return prepareContentShellDirectory(commitPosition)
-      .then(downloadContentShell)
+      .then(() => downloadContentShell(url, commitPosition))
       .then(extractContentShell)
       .then(() => copyFrontend(contentShellResourcesPath))
       .then(() => runTests(contentShellPath, true));
+}
+
+function copyFrontendToCompatBuildPath(compatBuildPath, latestBuildPath) {
+  var customDevtoolsResourcesPath = path.resolve(compatBuildPath, 'resources');
+  var latestDevtoolsInspectorPath = path.resolve(latestBuildPath, 'resources', 'inspector');
+  var copiedFrontendPath = path.resolve(customDevtoolsResourcesPath, 'inspector');
+  if (utils.isDir(copiedFrontendPath))
+    utils.removeRecursive(copiedFrontendPath);
+  utils.copyRecursive(latestDevtoolsInspectorPath, customDevtoolsResourcesPath);
 }
 
 function copyFrontend(contentShellResourcesPath) {
@@ -159,24 +202,22 @@ function findPreviousUploadedPosition(commitPosition) {
   }
 }
 
-function prepareContentShellDirectory(contentShellCommitPosition) {
-  var contentShellPath = path.join(CACHE_PATH, contentShellCommitPosition);
+function prepareContentShellDirectory(folder) {
+  var contentShellPath = path.join(CACHE_PATH, folder);
   if (utils.isDir(contentShellPath))
     utils.removeRecursive(contentShellPath);
   fs.mkdirSync(contentShellPath);
-  return Promise.resolve(contentShellCommitPosition);
+  return Promise.resolve(folder);
 }
 
-function downloadContentShell(commitPosition) {
-  var url = `http://commondatastorage.googleapis.com/chromium-browser-snapshots/${PLATFORM}/${commitPosition
-  }/${CONTENT_SHELL_ZIP}`;
+function downloadContentShell(url, folder) {
   console.log('Downloading content shell from:', url);
   console.log('NOTE: Download is ~35-65 MB depending on OS');
   return utils.fetch(url).then(writeZip).catch(onError);
 
   function writeZip(buffer) {
     console.log('Completed download of content shell');
-    var contentShellZipPath = path.join(CACHE_PATH, commitPosition, CONTENT_SHELL_ZIP);
+    var contentShellZipPath = path.join(CACHE_PATH, folder, CONTENT_SHELL_ZIP);
     fs.writeFileSync(contentShellZipPath, buffer);
     return contentShellZipPath;
   }
@@ -229,6 +270,11 @@ function runTests(buildDirectoryPath, useDebugDevtools) {
   else
     console.log('TIP: You can debug a test using: npm run debug-test inspector/test-name.html');
 
+  if (COMPAT_PROTOCOL) {
+    let platform = `protocol-${COMPAT_PROTOCOL}`;
+    let compatBaselinePath = path.resolve(DEVTOOLS_PATH, 'tests', 'baseline', platform);
+    testArgs.push(`--additional-platform-directory=${compatBaselinePath}`);
+  }
   if (IS_DEBUG_ENABLED) {
     testArgs.push('--additional-driver-flag=--remote-debugging-port=9222');
     testArgs.push('--time-out-ms=6000000');
@@ -244,7 +290,10 @@ function runTests(buildDirectoryPath, useDebugDevtools) {
 
 function getTestFlags() {
   var flagValues = Object.keys(Flags).map(key => Flags[key]);
-  return process.argv.slice(2).filter(arg => !utils.includes(flagValues, arg) && !utils.includes(arg, 'inspector'));
+  return process.argv.slice(2).filter(arg => {
+    var flagName = utils.includes(arg, '=') ? arg.slice(0, arg.indexOf('=')) : arg;
+    return !utils.includes(flagValues, flagName) && !utils.includes(arg, 'inspector');
+  });
 }
 
 function getInspectorTests() {

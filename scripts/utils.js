@@ -124,6 +124,17 @@ function shellOutput(command) {
   return shell(command).toString().trim();
 }
 
+function parseArgs(args) {
+  var argObject = {};
+  for (var i = 0; i < args.length; i++) {
+    var arg = args[i];
+    var components = arg.split('=');
+    var key = components[0];
+    argObject[key] = components[1] || true;
+  }
+  return argObject;
+}
+
 module.exports = {
-    fetch, atob, isFile, isDir, copy, copyRecursive, removeRecursive, includes, shellOutput,
+    fetch, atob, isFile, isDir, copy, copyRecursive, removeRecursive, includes, shellOutput, parseArgs,
 };

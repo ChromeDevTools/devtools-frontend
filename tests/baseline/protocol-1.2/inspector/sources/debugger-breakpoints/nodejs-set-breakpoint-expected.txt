@@ -1,0 +1,10 @@
+CONSOLE MESSAGE: line 2: foobar execute!
+Verify that front-end is able to set breakpoint for node.js scripts.
+
+Setting breakpoint:
+error: Request Debugger.getPossibleBreakpoints failed. {"code":-32601,"message":"'Debugger.getPossibleBreakpoints' wasn't found"}
+error: Request Debugger.getPossibleBreakpoints failed. {"code":-32601,"message":"'Debugger.getPossibleBreakpoints' wasn't found"}
+Script execution paused.
+Successfully paused on breakpoint
+Script execution resumed.
+

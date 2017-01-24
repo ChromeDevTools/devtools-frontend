@@ -145,6 +145,8 @@ SDK.NetworkLog = class extends SDK.SDKModel {
           scriptId = topFrame.scriptId;
           break;
         }
+      } else if (initiator.type === Protocol.Network.InitiatorType.Preload) {
+        type = SDK.NetworkRequest.InitiatorType.Preload;
       }
     }
 

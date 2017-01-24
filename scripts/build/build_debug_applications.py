@@ -4,7 +4,6 @@
 # Copyright 2016 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
-
 """
 Builds applications in debug mode:
 - Copies the module directories into their destinations.
@@ -65,6 +64,7 @@ def symlink_or_copy_dir(src, dest):
 #   <app_name>.js as-is
 #   <module_name>/<all_files>
 class DebugBuilder(object):
+
     def __init__(self, application_name, descriptors, application_dir, output_dir):
         self.application_name = application_name
         self.descriptors = descriptors

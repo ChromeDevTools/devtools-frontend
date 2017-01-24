@@ -25,7 +25,6 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """DevTools JSDoc validator presubmit script
 
 See http://dev.chromium.org/developers/how-tos/depottools/presubmit-scripts
@@ -43,9 +42,7 @@ CheckOutput = namedtuple('CheckOutput', ['results', 'has_errors'])
 def _CheckNodeAndNPMModules(input_api, output_api):
     node_script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "install_node_deps.py")
     process = input_api.subprocess.Popen(
-        [input_api.python_executable, node_script_path],
-        stdout=input_api.subprocess.PIPE,
-        stderr=input_api.subprocess.STDOUT)
+        [input_api.python_executable, node_script_path], stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)
     out, _ = process.communicate()
     if process.returncode != 0:
         return CheckOutput([output_api.PresubmitError(out)], has_errors=True)
@@ -66,8 +63,7 @@ def _FormatDevtools(input_api, output_api):
     node_path, _ = install_node_deps.resolve_node_paths()
     format_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "format.js")
     glob_arg = "--glob=" + ",".join(affected_files)
-    check_formatting_process = _inputPopen(input_api,
-        args=[node_path, format_path] + [glob_arg, "--output-replacements-xml"])
+    check_formatting_process = _inputPopen(input_api, args=[node_path, format_path] + [glob_arg, "--output-replacements-xml"])
     check_formatting_out, _ = check_formatting_process.communicate()
     if check_formatting_process.returncode != 0:
         return CheckOutput([output_api.PresubmitError(check_formatting_out)], has_errors=True)
@@ -80,27 +76,30 @@ def _FormatDevtools(input_api, output_api):
 
     # Use eslint to autofix the braces
     eslint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "node_modules", ".bin", "eslint")
-    eslint_process = _inputPopen(input_api,
-        [node_path, eslint_path, '--no-eslintrc', '--fix', '--env=es6',
-         '--rule={"curly": [2, "multi-or-nest", "consistent"]}']
-                                 + affected_files)
+    eslint_process = _inputPopen(
+        input_api,
+        [node_path, eslint_path, '--no-eslintrc', '--fix', '--env=es6', '--rule={"curly": [2, "multi-or-nest", "consistent"]}'] +
+        affected_files)
     eslint_process.communicate()
 
     # Need to run clang-format again to align the braces
     reformat_process = _inputPopen(input_api, format_args)
     reformat_process.communicate()
 
-    return CheckOutput([output_api.PresubmitError("ERROR: Found formatting violations.\n"
+    return CheckOutput(
+        [
+            output_api.PresubmitError("ERROR: Found formatting violations.\n"
                                       "Ran clang-format on files changed in CL\n"
                                       "Use git status to check the formatting changes"),
-            output_api.PresubmitError(format_process_out)], has_errors=True)
+            output_api.PresubmitError(format_process_out)
+        ],
+        has_errors=True)
 
 
 def _CheckDevtoolsStyle(input_api, output_api):
     affected_front_end_files = _getAffectedFrontEndFiles(input_api)
     if len(affected_front_end_files) > 0:
-        lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                           "scripts", "lint_javascript.py")
+        lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "lint_javascript.py")
         process = input_api.subprocess.Popen(
             [input_api.python_executable, lint_path] + affected_front_end_files,
             stdout=input_api.subprocess.PIPE,
@@ -121,16 +120,13 @@ def _CompileDevtoolsFrontend(input_api, output_api):
     # Once this is fixed, injected_script_externs.js
     # should be added to the list of triggers.
     devtools_front_end = input_api.os_path.join("devtools", "front_end")
-    if (any(devtools_front_end in path for path in local_paths) or
-            any("_protocol.json" in path for path in local_paths) or
-            any("compile_frontend.py" in path for path in local_paths) or
-            any("InjectedScriptSource.js" in path for path in local_paths) or
+    if (any(devtools_front_end in path for path in local_paths) or any("_protocol.json" in path for path in local_paths) or
+            any("compile_frontend.py" in path for path in local_paths) or any("InjectedScriptSource.js" in path
+                                                                              for path in local_paths) or
             any("DebuggerScript.js" in path for path in local_paths)):
-        lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-            "scripts", "compile_frontend.py")
+        lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "compile_frontend.py")
         out, _ = input_api.subprocess.Popen(
-            [input_api.python_executable, lint_path],
-            stdout=input_api.subprocess.PIPE,
+            [input_api.python_executable, lint_path], stdout=input_api.subprocess.PIPE,
             stderr=input_api.subprocess.STDOUT).communicate()
         if "ERROR" in out or "WARNING" in out:
             return [output_api.PresubmitError(out)]
@@ -235,7 +231,9 @@ def _getAffectedFrontEndFiles(input_api):
     local_paths = [f.AbsoluteLocalPath() for f in input_api.AffectedFiles() if f.Action() != "D"]
     devtools_root = input_api.PresubmitLocalPath()
     devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
-    affected_front_end_files = [file_name for file_name in local_paths if devtools_front_end in file_name and file_name.endswith(".js")]
+    affected_front_end_files = [
+        file_name for file_name in local_paths if devtools_front_end in file_name and file_name.endswith(".js")
+    ]
     return [input_api.os_path.relpath(file_name, devtools_root) for file_name in affected_front_end_files]
 
 
@@ -244,13 +242,12 @@ def _getAffectedJSFiles(input_api):
     devtools_root = input_api.PresubmitLocalPath()
     devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
     devtools_scripts = input_api.os_path.join(devtools_root, "scripts")
-    affected_js_files = [file_name for file_name in local_paths
-            if (devtools_front_end in file_name or devtools_scripts in file_name) and file_name.endswith(".js")]
+    affected_js_files = [
+        file_name for file_name in local_paths
+        if (devtools_front_end in file_name or devtools_scripts in file_name) and file_name.endswith(".js")
+    ]
     return [input_api.os_path.relpath(file_name, devtools_root) for file_name in affected_js_files]
 
 
 def _inputPopen(input_api, args):
-    return input_api.subprocess.Popen(
-        args,
-        stdout=input_api.subprocess.PIPE,
-        stderr=input_api.subprocess.STDOUT)
+    return input_api.subprocess.Popen(args, stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)

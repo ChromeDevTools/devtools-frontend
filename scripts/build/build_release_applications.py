@@ -4,7 +4,6 @@
 # Copyright 2016 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
-
 """
 Builds applications in release mode:
 - Concatenates autostart modules, application modules' module.json descriptors,
@@ -90,6 +89,7 @@ def symlink_or_copy_dir(src, dest):
 #   <app_name>.js
 #   <module_name>_module.js
 class ReleaseBuilder(object):
+
     def __init__(self, application_name, descriptors, application_dir, output_dir):
         self.application_name = application_name
         self.descriptors = descriptors
@@ -118,7 +118,8 @@ class ReleaseBuilder(object):
         if self.descriptors.has_html:
             self._build_html()
         self._build_app_script()
-        for module in filter(lambda desc: (not desc.get('type') or desc.get('type') == 'remote'), self.descriptors.application.values()):
+        for module in filter(lambda desc: (not desc.get('type') or desc.get('type') == 'remote'),
+                             self.descriptors.application.values()):
             self._concatenate_dynamic_module(module['name'])
 
     def _build_html(self):
@@ -192,7 +193,8 @@ class ReleaseBuilder(object):
                 deps = set(desc.get('dependencies', []))
                 non_autostart_deps = deps & non_autostart
                 if len(non_autostart_deps):
-                    bail_error('Non-autostart dependencies specified for the autostarted module "%s": %s' % (name, non_autostart_deps))
+                    bail_error('Non-autostart dependencies specified for the autostarted module "%s": %s' %
+                               (name, non_autostart_deps))
                 namespace = self._map_module_to_namespace(name)
                 output.write('\n/* Module %s */\n' % name)
                 output.write('\nself[\'%s\'] = self[\'%s\'] || {};\n' % (namespace, namespace))
@@ -206,7 +208,9 @@ class ReleaseBuilder(object):
 
     def _concatenate_application_script(self, output):
         runtime_contents = read_file(join(self.application_dir, 'Runtime.js'))
-        runtime_contents = re.sub('var allDescriptors = \[\];', 'var allDescriptors = %s;' % self._release_module_descriptors().replace('\\', '\\\\'), runtime_contents, 1)
+        runtime_contents = re.sub('var allDescriptors = \[\];',
+                                  'var allDescriptors = %s;' % self._release_module_descriptors().replace('\\', '\\\\'),
+                                  runtime_contents, 1)
         output.write('/* Runtime.js */\n')
         output.write(runtime_contents)
         output.write('\n/* Autostart modules */\n')

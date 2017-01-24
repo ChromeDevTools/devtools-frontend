@@ -25,7 +25,6 @@ if len(sys.argv) >= 2:
         print("Linting only these files:\n %s" % sys.argv[1:])
         files_to_lint = sys.argv[1:]
 
-
 is_cygwin = sys.platform == "cygwin"
 
 
@@ -45,6 +44,7 @@ def to_platform_path_exact(filepath):
     output, _ = popen(["cygpath", "-w", filepath]).communicate()
     # pylint: disable=E1103
     return output.strip().replace("\\", "\\\\")
+
 
 scripts_path = path.dirname(path.abspath(__file__))
 devtools_path = path.dirname(scripts_path)
@@ -71,8 +71,10 @@ def js_lint(files_list=None):
     exec_command = [
         node_path,
         eslint_path,
-        "--config", to_platform_path_exact(eslintconfig_path),
-        "--ignore-path", to_platform_path_exact(eslintignore_path),
+        "--config",
+        to_platform_path_exact(eslintconfig_path),
+        "--ignore-path",
+        to_platform_path_exact(eslintignore_path),
     ] + files_list
 
     eslint_proc = popen(exec_command, cwd=devtools_path)

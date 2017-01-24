@@ -64,13 +64,16 @@ def check_installed(app_name):
         print "Run sudo gem install image_optim image_optim_pack"
         sys.exit(1)
 
+
 check_installed("image_optim")
+
 
 def optimize_png(file_name):
     png_full_path = os.path.join(images_path, file_name + ".png")
     optimize_command = "image_optim %s" % png_full_path
     proc = subprocess.Popen(optimize_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True, cwd=chromium_src_path)
     return proc
+
 
 if len(svg_file_names):
     print "%d unoptimized png files found." % len(svg_file_names)

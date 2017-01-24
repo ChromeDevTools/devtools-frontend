@@ -9,6 +9,7 @@ import sys
 
 # Based on http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python.
 def which(program):
+
     def is_executable(fpath):
         return path.isfile(fpath) and os.access(fpath, os.X_OK)
 

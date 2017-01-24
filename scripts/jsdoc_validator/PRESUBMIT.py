@@ -25,7 +25,6 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """DevTools JSDoc validator presubmit script
 
 See http://dev.chromium.org/developers/how-tos/depottools/presubmit-scripts
@@ -43,8 +42,11 @@ def _ValidateHashes(input_api, output_api):
         return []
 
     results = '\n'.join(['%s (%s != %s)' % (name, expected, actual) for (name, expected, actual) in hashes_modified])
-    return [output_api.PresubmitError('DevTools frontend JSDoc validator Java code, "%s" and "%s" must always be updated together. Please rebuild.\nModifications found:\n%s' %
-            (build_jsdoc_validator_jar.jar_name, build_jsdoc_validator_jar.hashes_name, results))]
+    return [
+        output_api.PresubmitError(
+            'DevTools frontend JSDoc validator Java code, "%s" and "%s" must always be updated together. Please rebuild.\nModifications found:\n%s'
+            % (build_jsdoc_validator_jar.jar_name, build_jsdoc_validator_jar.hashes_name, results))
+    ]
 
 
 def CheckChangeOnUpload(input_api, output_api):

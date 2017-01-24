@@ -35,6 +35,7 @@ except ImportError:
 import sys
 import re
 
+
 def properties_from_file(file_name):
     properties = []
     propertyNames = set()
@@ -68,6 +69,7 @@ def properties_from_file(file_name):
         else:
             property["longhands"] = longhands
     return properties
+
 
 properties = properties_from_file(sys.argv[1])
 with open(sys.argv[2], "w") as f:

@@ -12,10 +12,7 @@ eslint_path = path.join(devtools_path, "devtools-node-modules", "third_party", "
 node_path = path.join(scripts_path, "local_node", "runtimes", "4.5.0", "bin", "node")
 
 eslint_proc = subprocess.Popen(
-    args=[node_path, eslint_path, "front_end"],
-    cwd=devtools_path,
-    stdout=subprocess.PIPE,
-    stderr=subprocess.STDOUT)
+    args=[node_path, eslint_path, "front_end"], cwd=devtools_path, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 (eslint_proc_out, _) = eslint_proc.communicate()
 print(eslint_proc_out)
 

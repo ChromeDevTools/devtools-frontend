@@ -10,7 +10,8 @@
     "lint": "eslint front_end",
     "format": "node scripts/format.js",
     "closure": "python scripts/compile_frontend.py",
-    "setup-dtrun": "cd scripts/devtools_run && npm link"
+    "setup-dtrun": "cd scripts/devtools_run && npm link",
+    "format-py": "yapf --exclude scripts/build/rjsmin.py -i --recursive scripts PRESUBMIT.py"
   },
   "repository": {
     "type": "git",

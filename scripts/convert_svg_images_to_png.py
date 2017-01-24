@@ -72,6 +72,7 @@ def convert_svg_to_png(svg_file_name, png_file_name, dpi):
     proc = subprocess.Popen(convert_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
     return proc
 
+
 processes = {}
 for file_name in svg_file_names:
     name = re.sub(".svg$", "", file_name)

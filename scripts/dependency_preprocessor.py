@@ -33,8 +33,10 @@ class DependencyPreprocessor(object):
             dependencies = set(self.descriptors.sorted_dependencies_closure(module))
             excluded_modules = self.modules - {module} - dependencies
             excluded_namespaces = [self._map_module_to_namespace(m) for m in excluded_modules]
-            file_paths = [path.join(self.temp_frontend_path, module, file_name)
-                          for file_name in self.descriptors.module_compiled_files(module)]
+            file_paths = [
+                path.join(self.temp_frontend_path, module, file_name)
+                for file_name in self.descriptors.module_compiled_files(module)
+            ]
             arg = {
                 'excluded_namespaces': excluded_namespaces,
                 'file_paths': file_paths,

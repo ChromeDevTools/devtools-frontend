@@ -13,6 +13,7 @@ import tempfile
 def rel_to_abs(rel_path):
     return os.path.join(script_path, rel_path)
 
+
 java_exec = 'java -Xms1024m -server -XX:+TieredCompilation'
 tests_dir = 'tests'
 jar_name = 'jsdoc_validator.jar'
@@ -21,7 +22,10 @@ tests_path = rel_to_abs(tests_dir)
 validator_jar_file = rel_to_abs(jar_name)
 golden_file = os.path.join(tests_path, 'golden.dat')
 
-test_files = [os.path.join(tests_path, f) for f in os.listdir(tests_path) if f.endswith('.js') and os.path.isfile(os.path.join(tests_path, f))]
+test_files = [
+    os.path.join(tests_path, f) for f in os.listdir(tests_path)
+    if f.endswith('.js') and os.path.isfile(os.path.join(tests_path, f))
+]
 
 validator_command = "%s -jar %s %s" % (java_exec, validator_jar_file, " ".join(sorted(test_files)))
 
@@ -70,6 +74,7 @@ def main():
                 print 'OK'
             else:
                 print 'ERROR: Golden output mismatch'
+
 
 if __name__ == '__main__':
     main()

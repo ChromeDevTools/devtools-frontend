@@ -47,13 +47,12 @@ def install_latest_node_js(version, tmp_dir):
         raise Exception('Unrecognized platform %s' % sys.platform)
 
     dest = os.path.join(tmp_dir, 'node_download')
-    url = 'https://storage.googleapis.com/%s/%s/%s' % (
-        BUCKET, version, target)
+    url = 'https://storage.googleapis.com/%s/%s/%s' % (BUCKET, version, target)
     print('Fetching %s' % url)
     u = urllib2.urlopen(url)
     with open(dest, 'wb') as f:
         while True:
-            chunk = u.read(2 ** 20)
+            chunk = u.read(2**20)
             if not chunk:
                 break
             f.write(chunk)
@@ -78,8 +77,7 @@ def install_latest_node_js(version, tmp_dir):
             f.extractall(path=tmp_dir)
         try:
             os.mkdir(os.path.join(THIS_DIR, 'runtimes'))
-            os.rename(os.path.join(tmp_dir, target[:-len('.tar.gz')]),
-                      target_dir)
+            os.rename(os.path.join(tmp_dir, target[:-len('.tar.gz')]), target_dir)
         except OSError:
             write_version = False
         os.remove(dest)
@@ -107,9 +105,8 @@ def main(mode=None):
 
     # Exit early if this is being invoked from `gclient runhooks`
     # and not on a bot (CHROME_HEADLESS is set on all build bots).
-    if (args.running_as_hook and
-           os.environ.get('CHROME_HEADLESS', '0') != '1'):
-       return 0
+    if (args.running_as_hook and os.environ.get('CHROME_HEADLESS', '0') != '1'):
+        return 0
 
     version = os.environ.get('NODE_VERSION', DEFAULT_VERSION)
     try:
@@ -123,7 +120,7 @@ def main(mode=None):
         # TODO(hinoka): How about Windows...?
         bin_location = os.path.join(os.path.dirname(bin_location), 'npm')
 
-    return subprocess.call([bin_location, ] + rest_args)
+    return subprocess.call([bin_location,] + rest_args)
 
 
 if __name__ == '__main__':

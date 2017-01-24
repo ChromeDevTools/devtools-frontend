@@ -52,6 +52,7 @@ is_cygwin = sys.platform == 'cygwin'
 def popen(arguments):
     return subprocess.Popen(arguments, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
+
 def to_platform_path(filepath):
     if not is_cygwin:
         return filepath
@@ -64,6 +65,7 @@ def to_platform_path_exact(filepath):
     output, _ = popen(['cygpath', '-w', filepath]).communicate()
     # pylint: disable=E1103
     return output.strip().replace('\\', '\\\\')
+
 
 scripts_path = path.dirname(path.abspath(__file__))
 devtools_path = path.dirname(scripts_path)
@@ -83,7 +85,8 @@ type_checked_jsdoc_tags_list = ['param', 'return', 'type', 'enum']
 type_checked_jsdoc_tags_or = '|'.join(type_checked_jsdoc_tags_list)
 
 # Basic regex for invalid JsDoc types: an object type name ([A-Z][_A-Za-z0-9.]+[A-Za-z0-9]) not preceded by '!', '?', ':' (this, new), or '.' (object property).
-invalid_type_regex = re.compile(r'@(?:' + type_checked_jsdoc_tags_or + r')\s*\{.*(?<![!?:._A-Za-z0-9])([A-Z][_A-Za-z0-9.]+[A-Za-z0-9])[^/]*\}')
+invalid_type_regex = re.compile(r'@(?:' + type_checked_jsdoc_tags_or +
+                                r')\s*\{.*(?<![!?:._A-Za-z0-9])([A-Z][_A-Za-z0-9.]+[A-Za-z0-9])[^/]*\}')
 invalid_type_designator_regex = re.compile(r'@(?:' + type_checked_jsdoc_tags_or + r')\s*.*(?<![{: ])([?!])=?\}')
 invalid_non_object_type_regex = re.compile(r'@(?:' + type_checked_jsdoc_tags_or + r')\s*\{.*(![a-z]+)[^/]*\}')
 error_warning_regex = re.compile(r'WARNING|ERROR')
@@ -92,15 +95,20 @@ loaded_css_regex = re.compile(r'(?:registerRequiredCSS|WebInspector\.View\.creat
 java_build_regex = re.compile(r'^\w+ version "(\d+)\.(\d+)')
 errors_found = False
 
-generate_protocol_externs.generate_protocol_externs(protocol_externs_file, path.join(inspector_path, 'browser_protocol.json'), path.join(v8_inspector_path, 'js_protocol.json'))
+generate_protocol_externs.generate_protocol_externs(protocol_externs_file,
+                                                    path.join(inspector_path, 'browser_protocol.json'),
+                                                    path.join(v8_inspector_path, 'js_protocol.json'))
 
 
 def log_error(message):
     print 'ERROR: ' + message
 
+
 def error_excepthook(exctype, value, traceback):
     print 'ERROR:'
     sys.__excepthook__(exctype, value, traceback)
+
+
 sys.excepthook = error_excepthook
 
 application_descriptors = [
@@ -121,6 +129,7 @@ def has_errors(output):
 
 
 class JSDocChecker:
+
     def __init__(self):
         self._error_found = False
         self._all_files = descriptors.all_compiled_files()
@@ -141,7 +150,7 @@ class JSDocChecker:
         proc = popen(java_exec + ['-jar', jsdoc_validator_jar, '--files-list-name', to_platform_path_exact(file_list.name)])
         (out, _) = proc.communicate()
         if out:
-            print ('JSDoc validator output:%s%s' % (os.linesep, out))
+            print('JSDoc validator output:%s%s' % (os.linesep, out))
             self._error_found = True
         os.remove(file_list.name)
 
@@ -155,18 +164,22 @@ class JSDocChecker:
                         self._verify_jsdoc_line(full_file_name, line_index, line)
 
     def _verify_jsdoc_line(self, file_name, line_index, line):
+
         def print_error(message, error_position):
-            print '%s:%s: ERROR - %s%s%s%s%s%s' % (file_name, line_index, message, os.linesep, line, os.linesep, ' ' * error_position + '^', os.linesep)
+            print '%s:%s: ERROR - %s%s%s%s%s%s' % (file_name, line_index, message, os.linesep, line, os.linesep,
+                                                   ' ' * error_position + '^', os.linesep)
 
         known_css = {}
         match = re.search(invalid_type_regex, line)
         if match:
-            print_error('Type "%s" nullability not marked explicitly with "?" (nullable) or "!" (non-nullable)' % match.group(1), match.start(1))
+            print_error('Type "%s" nullability not marked explicitly with "?" (nullable) or "!" (non-nullable)' % match.group(1),
+                        match.start(1))
             self._error_found = True
 
         match = re.search(invalid_non_object_type_regex, line)
         if match:
-            print_error('Non-object type explicitly marked with "!" (non-nullable), which is the default and should be omitted', match.start(1))
+            print_error('Non-object type explicitly marked with "!" (non-nullable), which is the default and should be omitted',
+                        match.start(1))
             self._error_found = True
 
         match = re.search(invalid_type_designator_regex, line)
@@ -220,18 +233,26 @@ def find_java():
     print 'Java executable: %s%s' % (java_path, '' if has_server_jvm else ' (no server JVM)')
     return exec_command
 
+
 java_exec = find_java()
 
 common_closure_args = [
-    '--summary_detail_level', '3',
-    '--jscomp_error', 'visibility',
-    '--jscomp_warning', 'missingOverride',
-    '--compilation_level', 'SIMPLE_OPTIMIZATIONS',
-    '--warning_level', 'VERBOSE',
+    '--summary_detail_level',
+    '3',
+    '--jscomp_error',
+    'visibility',
+    '--jscomp_warning',
+    'missingOverride',
+    '--compilation_level',
+    'SIMPLE_OPTIMIZATIONS',
+    '--warning_level',
+    'VERBOSE',
     '--language_in=ES6_STRICT',
     '--language_out=ES5_STRICT',
-    '--extra_annotation_name', 'suppressReceiverCheck',
-    '--extra_annotation_name', 'suppressGlobalPropertiesCheck',
+    '--extra_annotation_name',
+    'suppressReceiverCheck',
+    '--extra_annotation_name',
+    'suppressGlobalPropertiesCheck',
     '--checks-only',
 ]
 
@@ -246,6 +267,7 @@ def check_conditional_dependencies():
                 errors_found = True
     return errors_found
 
+
 errors_found |= check_conditional_dependencies()
 
 print 'Compiling frontend...'
@@ -259,8 +281,10 @@ def prepare_closure_frontend_compile():
     checker.enforce_dependencies()
 
     command = common_closure_args + [
-        '--externs', to_platform_path(global_externs_file),
-        '--js', runtime_file,
+        '--externs',
+        to_platform_path(global_externs_file),
+        '--js',
+        runtime_file,
     ]
 
     all_files = descriptors.all_compiled_files()
@@ -278,20 +302,18 @@ def prepare_closure_frontend_compile():
         compiler_args_file.close()
     return compiler_args_file.name
 
+
 compiler_args_file_path = prepare_closure_frontend_compile()
-frontend_compile_proc = popen(java_exec + ['-jar', closure_runner_jar, '--compiler-args-file', to_platform_path_exact(compiler_args_file_path)])
+frontend_compile_proc = popen(java_exec +
+                              ['-jar', closure_runner_jar, '--compiler-args-file', to_platform_path_exact(compiler_args_file_path)])
 
 print 'Compiling devtools_compatibility.js...'
 
-closure_compiler_command = java_exec + [
-    '-jar',
-    closure_compiler_jar
-] + common_closure_args
+closure_compiler_command = java_exec + ['-jar', closure_compiler_jar] + common_closure_args
 
 devtools_js_compile_command = closure_compiler_command + [
-    '--externs', to_platform_path(global_externs_file),
-    '--externs', to_platform_path(path.join(devtools_frontend_path, 'host', 'InspectorFrontendHostAPI.js')),
-    '--jscomp_off=externsValidation',
+    '--externs', to_platform_path(global_externs_file), '--externs',
+    to_platform_path(path.join(devtools_frontend_path, 'host', 'InspectorFrontendHostAPI.js')), '--jscomp_off=externsValidation',
     '--js', to_platform_path(path.join(devtools_frontend_path, 'devtools_compatibility.js'))
 ]
 devtools_js_compile_proc = popen(devtools_js_compile_command)

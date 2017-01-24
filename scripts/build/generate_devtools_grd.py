@@ -27,7 +27,6 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """Creates a grd file for packaging the inspector files."""
 
 from __future__ import with_statement
@@ -61,6 +60,7 @@ kGrdTemplate = '''<?xml version="1.0" encoding="UTF-8"?>
 
 
 class ParsedArgs:
+
     def __init__(self, source_files, relative_path_dirs, image_dirs, output_filename):
         self.source_files = source_files
         self.relative_path_dirs = relative_path_dirs
@@ -105,10 +105,7 @@ def parse_args(argv):
 
 
 def make_name_from_filename(filename):
-    return (filename.replace('/', '_')
-                    .replace('\\', '_')
-                    .replace('-', '_')
-                    .replace('.', '_')).upper()
+    return (filename.replace('/', '_').replace('\\', '_').replace('-', '_').replace('.', '_')).upper()
 
 
 def add_file_to_grd(grd_doc, relative_filename):
@@ -159,8 +156,7 @@ def main(argv):
         for filename in os.listdir(dirname):
             if not filename.endswith('.png') and not filename.endswith('.gif') and not filename.endswith('.svg'):
                 continue
-            shutil.copy(path.join(dirname, filename),
-                        path.join(output_directory, 'Images'))
+            shutil.copy(path.join(dirname, filename), path.join(output_directory, 'Images'))
             add_file_to_grd(doc, path.join('Images', filename))
 
     with open(parsed_args.output_filename, 'w') as output_file:

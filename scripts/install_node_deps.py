@@ -3,7 +3,6 @@
 # Copyright 2016 The Chromium Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
-
 """
 Ensure node.js and npm modules are installed
 """
@@ -84,8 +83,7 @@ def npm_install(npm_path):
 
 
 def popen(arguments, env=None):
-    return subprocess.Popen(
-        arguments, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env)
+    return subprocess.Popen(arguments, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env)
 
 
 if __name__ == '__main__':

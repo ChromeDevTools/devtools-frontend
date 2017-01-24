@@ -126,12 +126,7 @@
 }
 
 .tabbed-pane-header-tab .tabbed-pane-close-button {
-    display: inline-block;
-    position: relative;
-    top: 2px;
-    left: 1px;
-    margin-left: 2px;
-    margin-top: -3px;
+    margin: 0 -3px 0 4px;
     visibility: hidden;
 }
 

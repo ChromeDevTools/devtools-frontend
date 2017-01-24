@@ -1256,10 +1256,12 @@ Console.ConsoleCommandResult = class extends Console.ConsoleViewMessage {
    */
   contentElement() {
     var element = super.contentElement();
-    element.classList.add('console-user-command-result');
-    if (this.consoleMessage().level === SDK.ConsoleMessage.MessageLevel.Info) {
-      var icon = UI.Icon.create('smallicon-command-result', 'command-result-icon');
-      element.insertBefore(icon, element.firstChild);
+    if (!element.classList.contains('console-user-command-result')) {
+      element.classList.add('console-user-command-result');
+      if (this.consoleMessage().level === SDK.ConsoleMessage.MessageLevel.Info) {
+        var icon = UI.Icon.create('smallicon-command-result', 'command-result-icon');
+        element.insertBefore(icon, element.firstChild);
+      }
     }
     this.updateTimestamp(false);
     return element;

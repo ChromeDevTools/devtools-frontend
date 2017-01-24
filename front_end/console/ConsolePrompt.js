@@ -264,7 +264,7 @@ Console.ConsolePrompt = class extends UI.Widget {
 
     var excludedTokens = new Set(['js-comment', 'js-string-2', 'js-def']);
     var trimmedBefore = before.trim();
-    if (!trimmedBefore.endsWith('['))
+    if (!trimmedBefore.endsWith('[') && !trimmedBefore.match(/\.\s*(get|set|delete)\s*\(\s*$/))
       excludedTokens.add('js-string');
     if (!trimmedBefore.endsWith('.'))
       excludedTokens.add('js-property');

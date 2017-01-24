@@ -639,9 +639,10 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     this.visibleView = view;
 
     this._storageViewToolbar.removeToolbarItems();
-    var toolbarItems = view instanceof UI.SimpleView ? view.syncToolbarItems() : null;
-    for (var i = 0; toolbarItems && i < toolbarItems.length; ++i)
+    var toolbarItems = (view instanceof UI.SimpleView && view.syncToolbarItems()) || [];
+    for (var i = 0; i < toolbarItems.length; ++i)
       this._storageViewToolbar.appendToolbarItem(toolbarItems[i]);
+    this._storageViewToolbar.element.classList.toggle('hidden', !toolbarItems.length);
   }
 
   closeVisibleView() {

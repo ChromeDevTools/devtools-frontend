@@ -1136,8 +1136,7 @@ SDK.NetworkRequest.InitiatorType = {
   Other: 'other',
   Parser: 'parser',
   Redirect: 'redirect',
-  Script: 'script',
-  Preload: 'preload'
+  Script: 'script'
 };
 
 /** @typedef {!{name: string, value: string}} */

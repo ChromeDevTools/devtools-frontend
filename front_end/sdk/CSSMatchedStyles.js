@@ -287,7 +287,7 @@ SDK.CSSMatchedStyles = class {
    * @return {boolean}
    */
   _containsInherited(style) {
-    var properties = style.allProperties;
+    var properties = style.allProperties();
     for (var i = 0; i < properties.length; ++i) {
       var property = properties[i];
       // Does this style contain non-overridden inherited property?
@@ -355,7 +355,7 @@ SDK.CSSMatchedStyles = class {
 
       /** @type {!Map<string, !SDK.CSSProperty>} */
       var styleActiveProperties = new Map();
-      var allProperties = style.allProperties;
+      var allProperties = style.allProperties();
       for (var j = 0; j < allProperties.length; ++j) {
         var property = allProperties[j];
 

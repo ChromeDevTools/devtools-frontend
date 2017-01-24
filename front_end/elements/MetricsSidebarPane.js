@@ -32,6 +32,9 @@
 Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
   constructor() {
     super();
+
+    /** @type {?SDK.CSSStyleDeclaration} */
+    this._inlineStyle = null;
   }
 
   /**
@@ -68,7 +71,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
      */
     function inlineStyleCallback(inlineStyleResult) {
       if (inlineStyleResult && this.node() === node)
-        this.inlineStyle = inlineStyleResult.inlineStyle;
+        this._inlineStyle = inlineStyleResult.inlineStyle;
     }
 
     var promises = [
@@ -354,14 +357,14 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
   }
 
   editingCancelled(element, context) {
-    if ('originalPropertyData' in this && this.inlineStyle) {
+    if ('originalPropertyData' in this && this._inlineStyle) {
       if (!this.originalPropertyData) {
         // An added property, remove the last property in the style.
-        var pastLastSourcePropertyIndex = this.inlineStyle.pastLastSourcePropertyIndex();
+        var pastLastSourcePropertyIndex = this._inlineStyle.pastLastSourcePropertyIndex();
         if (pastLastSourcePropertyIndex)
-          this.inlineStyle.allProperties[pastLastSourcePropertyIndex - 1].setText('', false);
+          this._inlineStyle.allProperties()[pastLastSourcePropertyIndex - 1].setText('', false);
       } else {
-        this.inlineStyle.allProperties[this.originalPropertyData.index].setText(
+        this._inlineStyle.allProperties()[this.originalPropertyData.index].setText(
             this.originalPropertyData.propertyText, false);
       }
     }
@@ -370,7 +373,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
   }
 
   _applyUserInput(element, userInput, previousContent, context, commitEditor) {
-    if (!this.inlineStyle) {
+    if (!this._inlineStyle) {
       // Element has no renderer.
       return this.editingCancelled(element, context);  // nothing changed, so cancel
     }
@@ -413,7 +416,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
 
     this.previousPropertyDataCandidate = null;
 
-    var allProperties = this.inlineStyle.allProperties;
+    var allProperties = this._inlineStyle.allProperties();
     for (var i = 0; i < allProperties.length; ++i) {
       var property = allProperties[i];
       if (property.name !== context.styleProperty || !property.activeInStyle())
@@ -424,7 +427,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
       return;
     }
 
-    this.inlineStyle.appendProperty(context.styleProperty, userInput, callback.bind(this));
+    this._inlineStyle.appendProperty(context.styleProperty, userInput, callback.bind(this));
 
     /**
      * @param {boolean} success

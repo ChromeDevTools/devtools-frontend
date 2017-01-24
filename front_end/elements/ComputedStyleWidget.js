@@ -301,7 +301,7 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
   _computePropertyTraces(matchedStyles) {
     var result = new Map();
     for (var style of matchedStyles.nodeStyles()) {
-      var allProperties = style.allProperties;
+      var allProperties = style.allProperties();
       for (var property of allProperties) {
         if (!property.activeInStyle() || !matchedStyles.propertyState(property))
           continue;
@@ -320,7 +320,7 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
   _computeInheritedProperties(matchedStyles) {
     var result = new Set();
     for (var style of matchedStyles.nodeStyles()) {
-      for (var property of style.allProperties) {
+      for (var property of style.allProperties()) {
         if (!matchedStyles.propertyState(property))
           continue;
         result.add(SDK.cssMetadata().canonicalPropertyName(property.name));

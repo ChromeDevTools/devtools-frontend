@@ -1793,7 +1793,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    * @return {boolean}
    */
   _editable() {
-    return this._style.styleSheetId && this._style.range;
+    return !!(this._style.styleSheetId && this._style.range);
   }
 
   /**

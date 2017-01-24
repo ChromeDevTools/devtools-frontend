@@ -116,7 +116,7 @@ SDK.CSSProperty = class {
   /**
    * @param {boolean} active
    */
-  _setActive(active) {
+  setActive(active) {
     this._active = active;
   }
 
@@ -139,7 +139,7 @@ SDK.CSSProperty = class {
   /**
    * @param {string} propertyText
    * @param {boolean} majorChange
-   * @param {boolean} overwrite
+   * @param {boolean=} overwrite
    * @return {!Promise.<boolean>}
    */
   setText(propertyText, majorChange, overwrite) {

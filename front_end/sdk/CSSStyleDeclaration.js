@@ -1,9 +1,6 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/**
- * @unrestricted
- */
 SDK.CSSStyleDeclaration = class {
   /**
    * @param {!SDK.CSSModel} cssModel
@@ -14,6 +11,22 @@ SDK.CSSStyleDeclaration = class {
   constructor(cssModel, parentRule, payload, type) {
     this._cssModel = cssModel;
     this.parentRule = parentRule;
+    /** @type {!Array<!SDK.CSSProperty>} */
+    this._allProperties;
+    /** @type {string|undefined} */
+    this.styleSheetId;
+    /** @type {?Common.TextRange} */
+    this.range;
+    /** @type {string|undefined} */
+    this.cssText;
+    /** @type {!Map<string, string>} */
+    this._shorthandValues;
+    /** @type {!Set<string>} */
+    this._shorthandIsImportant;
+    /** @type {!Map<string, !SDK.CSSProperty>} */
+    this._activePropertyMap;
+    /** @type {?Array<!SDK.CSSProperty>} */
+    this._leadingProperties;
     this._reinitialize(payload);
     this.type = type;
   }
@@ -41,9 +54,7 @@ SDK.CSSStyleDeclaration = class {
     this.range = payload.range ? Common.TextRange.fromObject(payload.range) : null;
 
     var shorthandEntries = payload.shorthandEntries;
-    /** @type {!Map.<string, string>} */
     this._shorthandValues = new Map();
-    /** @type {!Set.<string>} */
     this._shorthandIsImportant = new Set();
     for (var i = 0; i < shorthandEntries.length; ++i) {
       this._shorthandValues.set(shorthandEntries[i].name, shorthandEntries[i].value);
@@ -97,7 +108,7 @@ SDK.CSSStyleDeclaration = class {
         // Generate synthetic shorthand we have a value for.
         var shorthandImportance = !!this._shorthandIsImportant.has(shorthand);
         var shorthandProperty = new SDK.CSSProperty(
-            this, this.allProperties.length, shorthand, shorthandValue, shorthandImportance, false, true, false);
+            this, this.allProperties().length, shorthand, shorthandValue, shorthandImportance, false, true, false);
         generatedProperties.push(shorthandProperty);
         propertiesSet.add(shorthand);
       }
@@ -165,7 +176,7 @@ SDK.CSSStyleDeclaration = class {
     for (var i = 0; i < this._allProperties.length; ++i) {
       var property = this._allProperties[i];
       if (property.disabled || !property.parsedOk) {
-        property._setActive(false);
+        property.setActive(false);
         continue;
       }
       var canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
@@ -173,15 +184,18 @@ SDK.CSSStyleDeclaration = class {
       if (!activeProperty) {
         activeProperties[canonicalName] = property;
       } else if (!activeProperty.important || property.important) {
-        activeProperty._setActive(false);
+        activeProperty.setActive(false);
         activeProperties[canonicalName] = property;
       } else {
-        property._setActive(false);
+        property.setActive(false);
       }
     }
   }
 
-  get allProperties() {
+  /**
+   * @return {!Array<!SDK.CSSProperty>}
+   */
+  allProperties() {
     return this._allProperties;
   }
 
@@ -200,7 +214,7 @@ SDK.CSSStyleDeclaration = class {
    */
   isPropertyImplicit(name) {
     var property = this._activePropertyMap.get(name);
-    return property ? property.implicit : '';
+    return property ? property.implicit : false;
   }
 
   /**
@@ -223,15 +237,15 @@ SDK.CSSStyleDeclaration = class {
    * @return {?SDK.CSSProperty}
    */
   propertyAt(index) {
-    return (index < this.allProperties.length) ? this.allProperties[index] : null;
+    return (index < this.allProperties().length) ? this.allProperties()[index] : null;
   }
 
   /**
    * @return {number}
    */
   pastLastSourcePropertyIndex() {
-    for (var i = this.allProperties.length - 1; i >= 0; --i) {
-      if (this.allProperties[i].range)
+    for (var i = this.allProperties().length - 1; i >= 0; --i) {
+      if (this.allProperties()[i].range)
         return i + 1;
     }
     return 0;
@@ -262,6 +276,8 @@ SDK.CSSStyleDeclaration = class {
    * @return {!Promise.<boolean>}
    */
   setText(text, majorChange) {
+    if (!this.range || !this.styleSheetId)
+      return Promise.resolve(false);
     return this._cssModel.setStyleText(this.styleSheetId, this.range, text, majorChange);
   }
 
@@ -281,7 +297,7 @@ SDK.CSSStyleDeclaration = class {
    * @param {function(boolean)=} userCallback
    */
   appendProperty(name, value, userCallback) {
-    this.insertPropertyAt(this.allProperties.length, name, value, userCallback);
+    this.insertPropertyAt(this.allProperties().length, name, value, userCallback);
   }
 };
 

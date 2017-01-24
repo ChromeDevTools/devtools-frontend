@@ -165,3 +165,11 @@ li .inspect-dom-node {
 .tree-outline:focus li.selected .inspect-dom-node {
     background-color: white;
 }
+
+.tree-outline li.hovered:not(.selected) .selection {
+    display: block;
+    left: 3px;
+    right: 3px;
+    background-color: rgba(56, 121, 217, 0.1);
+    border-radius: 5px;
+}

@@ -180,8 +180,32 @@ Accessibility.AXNodeTreeElement = class extends UI.TreeElement {
     this._treePane = treePane;
 
     this.selectable = true;
+    this.paddingSize = 12;
+    this._hovered = false;
 
     this._inspectNodeButton = new Accessibility.InspectNodeButton(axNode, treePane);
+    this.listItemElement.addEventListener('mousemove', this._onmousemove.bind(this), false);
+    this.listItemElement.addEventListener('mouseleave', this._onmouseleave.bind(this), false);
+  }
+
+  /**
+   * @param {boolean} x
+   */
+  setHovered(x) {
+    if (this._hovered === x)
+      return;
+    this._hovered = x;
+    this.listItemElement.classList.toggle('hovered', x);
+    if (this._hovered)
+      this._axNode.highlightDOMNode();
+  }
+
+  _onmousemove(event) {
+    this.setHovered(true);
+  }
+
+  _onmouseleave(event) {
+    this.setHovered(false);
   }
 
   /**

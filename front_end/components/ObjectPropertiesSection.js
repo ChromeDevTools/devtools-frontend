@@ -77,7 +77,8 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
   static defaultObjectPresentation(object, linkifier, skipProto) {
     var componentRoot = createElementWithClass('span', 'source-code');
     var shadowRoot = UI.createShadowRootWithCoreStyles(componentRoot, 'components/objectValue.css');
-    shadowRoot.appendChild(Components.ObjectPropertiesSection.createValueElement(object, false));
+    shadowRoot.appendChild(
+        Components.ObjectPropertiesSection.createValueElement(object, false /* wasThrown */, true /* showPreview */));
     if (!object.hasChildren)
       return componentRoot;
 
@@ -218,27 +219,30 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
   /**
    * @param {!SDK.RemoteObject} value
    * @param {boolean} wasThrown
+   * @param {boolean} showPreview
    * @param {!Element=} parentElement
    * @param {!Components.Linkifier=} linkifier
    * @return {!Element}
    */
-  static createValueElementWithCustomSupport(value, wasThrown, parentElement, linkifier) {
+  static createValueElementWithCustomSupport(value, wasThrown, showPreview, parentElement, linkifier) {
     if (value.customPreview()) {
       var result = (new Components.CustomPreviewComponent(value)).element;
       result.classList.add('object-properties-section-custom-section');
       return result;
     }
-    return Components.ObjectPropertiesSection.createValueElement(value, wasThrown, parentElement, linkifier);
+    return Components.ObjectPropertiesSection.createValueElement(
+        value, wasThrown, showPreview, parentElement, linkifier);
   }
 
   /**
    * @param {!SDK.RemoteObject} value
    * @param {boolean} wasThrown
+   * @param {boolean} showPreview
    * @param {!Element=} parentElement
    * @param {!Components.Linkifier=} linkifier
    * @return {!Element}
    */
-  static createValueElement(value, wasThrown, parentElement, linkifier) {
+  static createValueElement(value, wasThrown, showPreview, parentElement, linkifier) {
     var valueElement;
     var type = value.type;
     var subtype = value.subtype;
@@ -261,8 +265,13 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
         parentElement.classList.add('hbox');
     } else {
       valueElement = createElementWithClass('span', 'object-value-' + (subtype || type));
-      valueElement.setTextContentTruncatedIfNeeded(description);
       valueElement.title = description || '';
+      if (Runtime.experiments.isEnabled('objectPreviews') && value.preview && showPreview) {
+        var previewFormatter = new Components.RemoteObjectPreviewFormatter();
+        previewFormatter.appendObjectPreview(valueElement, value.preview, false /* isEntry */);
+      } else {
+        valueElement.setTextContentTruncatedIfNeeded(description);
+      }
     }
 
     if (wasThrown) {
@@ -546,10 +555,11 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
           treeElement, properties, internalProperties, skipProto, targetValue || value, linkifier, emptyPlaceholder);
     }
 
+    var generatePreview = Runtime.experiments.isEnabled('objectPreviews');
     if (flattenProtoChain)
-      value.getAllProperties(false, callback);
+      value.getAllProperties(false, generatePreview, callback);
     else
-      SDK.RemoteObject.loadFromObjectPerProto(value, callback);
+      SDK.RemoteObject.loadFromObjectPerProto(value, generatePreview, callback);
   }
 
   /**
@@ -781,8 +791,9 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
     separatorElement.textContent = ': ';
 
     if (this.property.value) {
+      var showPreview = this.property.name !== '__proto__';
       this.valueElement = Components.ObjectPropertiesSection.createValueElementWithCustomSupport(
-          this.property.value, this.property.wasThrown, this.listItemElement, this._linkifier);
+          this.property.value, this.property.wasThrown, showPreview, this.listItemElement, this._linkifier);
       this.valueElement.addEventListener('contextmenu', this._contextMenuFired.bind(this, this.property), false);
     } else if (this.property.getter) {
       this.valueElement = Components.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(
@@ -1166,7 +1177,8 @@ Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
     function processArrayFragment(arrayFragment, wasThrown) {
       if (!arrayFragment || wasThrown)
         return;
-      arrayFragment.getAllProperties(false, processProperties.bind(this));
+      arrayFragment.getAllProperties(
+          false, Runtime.experiments.isEnabled('objectPreviews'), processProperties.bind(this));
     }
 
     /** @this {Components.ArrayGroupingTreeElement} */
@@ -1224,7 +1236,7 @@ Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
     function processObjectFragment(arrayFragment, wasThrown) {
       if (!arrayFragment || wasThrown)
         return;
-      arrayFragment.getOwnProperties(processProperties.bind(this));
+      arrayFragment.getOwnProperties(Runtime.experiments.isEnabled('objectPreviews'), processProperties.bind(this));
     }
 
     /**

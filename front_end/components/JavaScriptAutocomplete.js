@@ -211,7 +211,9 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
         return Promise.resolve(/** @type {?SDK.RemoteObject} */ (null));
       if (object.type !== 'object' || object.subtype !== 'proxy')
         return Promise.resolve(/** @type {?SDK.RemoteObject} */ (object));
-      return object.getOwnPropertiesPromise().then(extractTargetFromProperties).then(extractTarget);
+      return object.getOwnPropertiesPromise(false /* generatePreview */)
+          .then(extractTargetFromProperties)
+          .then(extractTarget);
     }
 
     /**
@@ -313,7 +315,9 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
     for (var i = 0; i < scopeChain.length; ++i) {
       var scope = scopeChain[i];
       var object = scope.object();
-      object.getAllProperties(false, propertiesCollected.bind(null, scope.typeName()));
+      object.getAllProperties(
+          false /* accessorPropertiesOnly */, false /* generatePreview */,
+          propertiesCollected.bind(null, scope.typeName()));
     }
   }
 

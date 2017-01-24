@@ -335,7 +335,7 @@ Sources.WatchExpression = class extends Common.Object {
       this._valueElement.textContent = Common.UIString('<not available>');
     } else {
       this._valueElement = Components.ObjectPropertiesSection.createValueElementWithCustomSupport(
-          result, !!exceptionDetails, titleElement, this._linkifier);
+          result, !!exceptionDetails, false /* showPreview */, titleElement, this._linkifier);
     }
     var separatorElement = createElementWithClass('span', 'watch-expressions-separator');
     separatorElement.textContent = ': ';

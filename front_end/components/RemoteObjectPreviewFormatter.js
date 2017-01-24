@@ -21,27 +21,43 @@ Components.RemoteObjectPreviewFormatter = class {
   /**
    * @param {!Element} parentElement
    * @param {!Protocol.Runtime.ObjectPreview} preview
+   * @param {boolean} isEntry
    */
-  appendObjectPreview(parentElement, preview) {
+  appendObjectPreview(parentElement, preview, isEntry) {
+    const previewExperimentEnabled = Runtime.experiments.isEnabled('objectPreviews');
     var description = preview.description;
-    if (preview.type !== 'object' || preview.subtype === 'null') {
+    if (preview.type !== 'object' || preview.subtype === 'null' || (previewExperimentEnabled && isEntry)) {
       parentElement.appendChild(this.renderPropertyPreview(preview.type, preview.subtype, description));
       return;
     }
-    if (description && preview.subtype !== 'array')
-      parentElement.createTextChildren(description, ' ');
+    const isArrayOrTypedArray = preview.subtype === 'array' || preview.subtype === 'typedarray';
+    if (description) {
+      if (previewExperimentEnabled) {
+        // Hide the description for plain objects and plain arrays.
+        const plainObjectDescription = 'Object';
+        const size = SDK.RemoteObject.arrayLength(preview) || SDK.RemoteObject.mapOrSetEntriesCount(preview);
+        var text = preview.subtype === 'typedarray' ? SDK.RemoteObject.arrayNameFromDescription(description) : '';
+        if (isArrayOrTypedArray)
+          text += size > 1 ? ('(' + size + ')') : '';
+        else
+          text = description === plainObjectDescription ? '' : description;
+        if (text.length > 0)
+          parentElement.createChild('span', 'object-description').textContent = text + ' ';
+      } else if (preview.subtype !== 'array') {
+        parentElement.createTextChildren(description, ' ');
+      }
+    }
 
-    var isArray = preview.subtype === 'array' || preview.subtype === 'typedarray';
-    parentElement.createTextChild(isArray ? '[' : '{');
+    parentElement.createTextChild(isArrayOrTypedArray ? '[' : '{');
     if (preview.entries)
       this._appendEntriesPreview(parentElement, preview);
-    else if (isArray)
+    else if (isArrayOrTypedArray)
       this._appendArrayPropertiesPreview(parentElement, preview);
     else
       this._appendObjectPropertiesPreview(parentElement, preview);
     if (preview.overflow)
       parentElement.createChild('span').textContent = '\u2026';
-    parentElement.createTextChild(isArray ? ']' : '}');
+    parentElement.createTextChild(isArrayOrTypedArray ? ']' : '}');
   }
 
   /**
@@ -164,10 +180,10 @@ Components.RemoteObjectPreviewFormatter = class {
 
       var entry = preview.entries[i];
       if (entry.key) {
-        this.appendObjectPreview(parentElement, entry.key);
+        this.appendObjectPreview(parentElement, entry.key, true /* isEntry */);
         parentElement.createTextChild(' => ');
       }
-      this.appendObjectPreview(parentElement, entry.value);
+      this.appendObjectPreview(parentElement, entry.value, true /* isEntry */);
     }
   }
 

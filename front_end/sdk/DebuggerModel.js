@@ -684,7 +684,8 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    * @return {!Promise<?SDK.DebuggerModel.FunctionDetails>}
    */
   functionDetailsPromise(remoteObject) {
-    return remoteObject.getAllPropertiesPromise(/* accessorPropertiesOnly */ false).then(buildDetails.bind(this));
+    return remoteObject.getAllPropertiesPromise(false /* accessorPropertiesOnly */, false /* generatePreview */)
+        .then(buildDetails.bind(this));
 
     /**
      * @param {!{properties: ?Array.<!SDK.RemoteObjectProperty>, internalProperties: ?Array.<!SDK.RemoteObjectProperty>}} response

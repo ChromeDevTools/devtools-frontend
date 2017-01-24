@@ -376,7 +376,7 @@ Emulation.DeviceModeView = class extends UI.VBox {
       this._model.deviceOutlineSetting().set(false);
     }
 
-    mainTarget.pageAgent().captureScreenshot('png', 100, screenshotCaptured.bind(this));
+    mainTarget.pageAgent().captureScreenshot(screenshotCaptured.bind(this));
 
     /**
      * @param {?Protocol.Error} error

@@ -333,6 +333,18 @@ UI.TabbedPane = class extends UI.VBox {
     return true;
   }
 
+  selectNextTab() {
+    var index = this._tabs.indexOf(this._currentTab);
+    var nextIndex = mod(index + 1, this._tabs.length);
+    this.selectTab(this._tabs[nextIndex].id, true);
+  }
+
+  selectPrevTab() {
+    var index = this._tabs.indexOf(this._currentTab);
+    var nextIndex = mod(index - 1, this._tabs.length);
+    this.selectTab(this._tabs[nextIndex].id, true);
+  }
+
   /**
    * @param {number} tabsCount
    * @return {!Array.<string>}

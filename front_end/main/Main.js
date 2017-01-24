@@ -334,12 +334,6 @@ Main.Main = class {
     ];
     section.addRelatedKeys(keys, Common.UIString('Go to the panel to the left/right'));
 
-    keys = [
-      shortcut.makeDescriptor('[', shortcut.Modifiers.CtrlOrMeta | shortcut.Modifiers.Alt),
-      shortcut.makeDescriptor(']', shortcut.Modifiers.CtrlOrMeta | shortcut.Modifiers.Alt)
-    ];
-    section.addRelatedKeys(keys, Common.UIString('Go back/forward in panel history'));
-
     var toggleConsoleLabel = Common.UIString('Show console');
     section.addKey(shortcut.makeDescriptor(shortcut.Keys.Tilde, shortcut.Modifiers.Ctrl), toggleConsoleLabel);
     section.addKey(shortcut.makeDescriptor(shortcut.Keys.Esc), Common.UIString('Toggle drawer'));

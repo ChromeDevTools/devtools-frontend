@@ -225,11 +225,14 @@ UI.InspectorView = class extends UI.VBox {
     return this._drawerSplitWidget.isSidebarMinimized();
   }
 
+  /**
+   * @param {!Event} event
+   */
   _keyDown(event) {
-    if (!UI.KeyboardShortcut.eventHasCtrlOrMeta(event))
+    var keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    if (!UI.KeyboardShortcut.eventHasCtrlOrMeta(keyboardEvent))
       return;
 
-    var keyboardEvent = /** @type {!KeyboardEvent} */ (event);
     // Ctrl/Cmd + 1-9 should show corresponding panel.
     var panelShortcutEnabled = Common.moduleSetting('shortcutPanelSwitch').get();
     if (panelShortcutEnabled && !event.shiftKey && !event.altKey) {
@@ -248,6 +251,16 @@ UI.InspectorView = class extends UI.VBox {
           event.consume(true);
         }
       }
+    }
+
+    if (event.key === '[') {
+      this._tabbedPane.selectPrevTab();
+      event.consume(true);
+    }
+
+    if (event.key === ']') {
+      this._tabbedPane.selectNextTab();
+      event.consume(true);
     }
   }
 

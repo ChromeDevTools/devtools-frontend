@@ -319,6 +319,8 @@
 
 .styles-element-classes-pane .new-class-input {
     padding-left: 3px;
+    padding-right: 3px;
+    overflow: hidden;
     border: 1px solid #ddd;
     line-height: 15px;
     margin-left: 3px;

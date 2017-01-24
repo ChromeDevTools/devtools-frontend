@@ -14,24 +14,13 @@ Components.JavaScriptAutocomplete.CompletionGroup;
  * @return {!Promise<!UI.SuggestBox.Suggestions>}
  */
 Components.JavaScriptAutocomplete.completionsForTextInCurrentContext = function(text, query, force) {
-  var clippedExpression = Components.JavaScriptAutocomplete._clipExpression(text, true);
-  var mapCompletionsPromise = Components.JavaScriptAutocomplete._mapCompletions(text, query);
-  return Components.JavaScriptAutocomplete.completionsForExpression(clippedExpression, query, force)
-      .then(completions => mapCompletionsPromise.then(mapCompletions => mapCompletions.concat(completions)));
-};
-
-/**
- * @param {string} text
- * @param {boolean=} allowEndingBracket
- * @return {string}
- */
-Components.JavaScriptAutocomplete._clipExpression = function(text, allowEndingBracket) {
   var index;
   var stopChars = new Set('=:({;,!+-*/&|^<>`'.split(''));
   var whiteSpaceChars = new Set(' \r\n\t'.split(''));
   var continueChars = new Set('[. \r\n\t'.split(''));
 
   for (index = text.length - 1; index >= 0; index--) {
+    // Pass less stop characters to rangeOfWord so the range will be a more complete expression.
     if (stopChars.has(text.charAt(index)))
       break;
     if (whiteSpaceChars.has(text.charAt(index)) && !continueChars.has(text.charAt(index - 1)))
@@ -46,112 +35,16 @@ Components.JavaScriptAutocomplete._clipExpression = function(text, allowEndingBr
     if (character === ']')
       bracketCount++;
     // Allow an open bracket at the end for property completion.
-    if (character === '[' && (index < clippedExpression.length - 1 || !allowEndingBracket)) {
+    if (character === '[' && index < clippedExpression.length - 1) {
       bracketCount--;
       if (bracketCount < 0)
         break;
     }
     index--;
   }
-  return clippedExpression.substring(index + 1).trim();
-};
+  clippedExpression = clippedExpression.substring(index + 1).trim();
 
-/**
- * @param {string} text
- * @param {string} query
- * @return {!Promise<!UI.SuggestBox.Suggestions>}
- */
-Components.JavaScriptAutocomplete._mapCompletions = function(text, query) {
-  var mapMatch = text.match(/\.\s*(get|set|delete)\s*\(\s*$/);
-  var executionContext = UI.context.flavor(SDK.ExecutionContext);
-  if (!executionContext || !mapMatch)
-    return Promise.resolve([]);
-
-  var clippedExpression = Components.JavaScriptAutocomplete._clipExpression(text.substring(0, mapMatch.index));
-  var fulfill;
-  var promise = new Promise(x => fulfill = x);
-  executionContext.evaluate(clippedExpression, 'completion', true, true, false, false, false, evaluated);
-  return promise;
-
-  /**
-   * @param {?SDK.RemoteObject} result
-   * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
-   */
-  function evaluated(result, exceptionDetails) {
-    if (!result || !!exceptionDetails || result.subtype !== 'map') {
-      fulfill([]);
-      return;
-    }
-    result.getOwnPropertiesPromise().then(extractEntriesProperty);
-  }
-
-  /**
-   * @param {!{properties: ?Array<!SDK.RemoteObjectProperty>, internalProperties: ?Array<!SDK.RemoteObjectProperty>}} properties
-   */
-  function extractEntriesProperty(properties) {
-    var internalProperties = properties.internalProperties || [];
-    var entriesProperty = internalProperties.find(property => property.name === '[[Entries]]');
-    if (!entriesProperty) {
-      fulfill([]);
-      return;
-    }
-    entriesProperty.value.callFunctionJSONPromise(getEntries).then(keysObj => gotKeys(Object.keys(keysObj)));
-  }
-
-  /**
-   * @suppressReceiverCheck
-   * @this {!Array<{key:?, value:?}>}
-   * @return {!Object}
-   */
-  function getEntries() {
-    var result = {__proto__: null};
-    for (var i = 0; i < this.length; i++) {
-      if (typeof this[i].key === 'string')
-        result[this[i].key] = true;
-    }
-    return result;
-  }
-
-  /**
-   * @param {!Array<string>} rawKeys
-   */
-  function gotKeys(rawKeys) {
-    var caseSensitivePrefix = [];
-    var caseInsensitivePrefix = [];
-    var caseSensitiveAnywhere = [];
-    var caseInsensitiveAnywhere = [];
-    var quoteChar = '"';
-    if (query.startsWith('\''))
-      quoteChar = '\'';
-    var endChar = ')';
-    if (mapMatch[0].indexOf('set') !== -1)
-      endChar = ', ';
-
-    var sorter = rawKeys.length < 1000 ? String.naturalOrderComparator : undefined;
-    var keys = rawKeys.sort(sorter).map(key => quoteChar + key + quoteChar + endChar);
-
-    for (var key of keys) {
-      if (key.length < query.length)
-        continue;
-      if (query.length && key.toLowerCase().indexOf(query.toLowerCase()) === -1)
-        continue;
-      // Substitute actual newlines with newline characters. @see crbug.com/498421
-      var title = key.split('\n').join('\\n');
-
-      if (key.startsWith(query))
-        caseSensitivePrefix.push({title: title, priority: 4});
-      else if (key.toLowerCase().startsWith(query.toLowerCase()))
-        caseInsensitivePrefix.push({title: title, priority: 3});
-      else if (key.indexOf(query) !== -1)
-        caseSensitiveAnywhere.push({title: title, priority: 2});
-      else
-        caseInsensitiveAnywhere.push({title: title, priority: 1});
-    }
-    var suggestions = caseSensitivePrefix.concat(caseInsensitivePrefix, caseSensitiveAnywhere, caseInsensitiveAnywhere);
-    if (suggestions.length)
-      suggestions[0].subtitle = Common.UIString('Keys');
-    fulfill(suggestions);
-  }
+  return Components.JavaScriptAutocomplete.completionsForExpression(clippedExpression, query, force);
 };
 
 /**
@@ -183,8 +76,8 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
   if (!query && !expressionString && !force)
     return Promise.resolve([]);
 
-  var fulfill;
-  var promise = new Promise(x => fulfill = x);
+  var fufill;
+  var promise = new Promise(x => fufill = x);
   var selectedFrame = executionContext.debuggerModel.selectedCallFrame();
   if (!expressionString && selectedFrame)
     variableNamesInScopes(selectedFrame, receivedPropertyNames);
@@ -198,7 +91,7 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
    */
   function evaluated(result, exceptionDetails) {
     if (!result || !!exceptionDetails) {
-      fulfill([]);
+      fufill([]);
       return;
     }
 
@@ -330,7 +223,7 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
     if (result && !exceptionDetails)
       receivedPropertyNames(/** @type {!Object} */ (result.value));
     else
-      fulfill([]);
+      fufill([]);
   }
 
   /**
@@ -339,7 +232,7 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
   function receivedPropertyNames(object) {
     executionContext.target().runtimeAgent().releaseObjectGroup('completion');
     if (!object) {
-      fulfill([]);
+      fufill([]);
       return;
     }
     var propertyGroups = /** @type {!Array<!Components.JavaScriptAutocomplete.CompletionGroup>} */ (object);
@@ -369,7 +262,7 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
       ];
       propertyGroups.push({items: commandLineAPI});
     }
-    fulfill(Components.JavaScriptAutocomplete._completionsForQuery(
+    fufill(Components.JavaScriptAutocomplete._completionsForQuery(
         dotNotation, bracketNotation, expressionString, query, propertyGroups));
   }
 };
@@ -403,7 +296,7 @@ Components.JavaScriptAutocomplete._completionsForQuery = function(
   var result = [];
   var lastGroupTitle;
   for (var group of propertyGroups) {
-    group.items.sort(itemComparator.bind(null, group.items.length > 1000));
+    group.items.sort(itemComparator);
     var caseSensitivePrefix = [];
     var caseInsensitivePrefix = [];
     var caseSensitiveAnywhere = [];
@@ -447,18 +340,17 @@ Components.JavaScriptAutocomplete._completionsForQuery = function(
   return result;
 
   /**
-   * @param {boolean} naturalOrder
    * @param {string} a
    * @param {string} b
    * @return {number}
    */
-  function itemComparator(naturalOrder, a, b) {
+  function itemComparator(a, b) {
     var aStartsWithUnderscore = a.startsWith('_');
     var bStartsWithUnderscore = b.startsWith('_');
     if (aStartsWithUnderscore && !bStartsWithUnderscore)
       return 1;
     if (bStartsWithUnderscore && !aStartsWithUnderscore)
       return -1;
-    return naturalOrder ? String.naturalOrderComparator(a, b) : a.localeCompare(b);
+    return String.naturalOrderComparator(a, b);
   }
 };

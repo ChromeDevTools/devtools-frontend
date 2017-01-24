@@ -136,67 +136,6 @@ TimelineModel.TimelineModel = class {
   }
 
   /**
-   * @deprecated Test use only!
-   * @param {?function(!TimelineModel.TimelineModel.Record)|?function(!TimelineModel.TimelineModel.Record,number)} preOrderCallback
-   * @param {function(!TimelineModel.TimelineModel.Record)|function(!TimelineModel.TimelineModel.Record,number)=} postOrderCallback
-   * @return {boolean}
-   */
-  forAllRecords(preOrderCallback, postOrderCallback) {
-    /**
-     * @param {!Array.<!TimelineModel.TimelineModel.Record>} records
-     * @param {number} depth
-     * @return {boolean}
-     */
-    function processRecords(records, depth) {
-      for (var i = 0; i < records.length; ++i) {
-        var record = records[i];
-        if (preOrderCallback && preOrderCallback(record, depth))
-          return true;
-        if (processRecords(record.children(), depth + 1))
-          return true;
-        if (postOrderCallback && postOrderCallback(record, depth))
-          return true;
-      }
-      return false;
-    }
-    return processRecords(this._records, 0);
-  }
-
-  /**
-   * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
-   * @param {function(!TimelineModel.TimelineModel.Record)|function(!TimelineModel.TimelineModel.Record,number)} callback
-   */
-  forAllFilteredRecords(filters, callback) {
-    /**
-     * @param {!TimelineModel.TimelineModel.Record} record
-     * @param {number} depth
-     * @this {TimelineModel.TimelineModel}
-     * @return {boolean}
-     */
-    function processRecord(record, depth) {
-      var visible = TimelineModel.TimelineModel.isVisible(filters, record.traceEvent());
-      if (visible && callback(record, depth))
-        return true;
-
-      for (var i = 0; i < record.children().length; ++i) {
-        if (processRecord.call(this, record.children()[i], visible ? depth + 1 : depth))
-          return true;
-      }
-      return false;
-    }
-
-    for (var i = 0; i < this._records.length; ++i)
-      processRecord.call(this, this._records[i], 0);
-  }
-
-  /**
-   * @return {!Array.<!TimelineModel.TimelineModel.Record>}
-   */
-  records() {
-    return this._records;
-  }
-
-  /**
    * @return {!Array<!SDK.CPUProfileDataModel>}
    */
   cpuProfiles() {
@@ -412,7 +351,6 @@ TimelineModel.TimelineModel = class {
           topLevelRecords.mergeOrdered(threadRecords, TimelineModel.TimelineModel.Record._compareStartTime);
     }
     this.virtualThreads().forEach(processVirtualThreadEvents.bind(this));
-    this._records = topLevelRecords;
   }
 
   /**
@@ -985,8 +923,6 @@ TimelineModel.TimelineModel = class {
     this._mainThreadAsyncEventsByGroup = new Map();
     /** @type {!Array<!SDK.TracingModel.Event>} */
     this._inspectedTargetEvents = [];
-    /** @type {!Array<!TimelineModel.TimelineModel.Record>} */
-    this._records = [];
     /** @type {!Array<!TimelineModel.TimelineModel.Record>} */
     this._mainThreadTasks = [];
     /** @type {!Array<!SDK.TracingModel.Event>} */

@@ -138,6 +138,7 @@ Components.ObjectPopoverHelper = class extends UI.PopoverHelper {
 
         if (result.type === 'function') {
           result.getOwnProperties(
+              false /* generatePreview */,
               didGetFunctionProperties.bind(this, result, popoverContentElement, valueElement, anchorElement));
           return;
         }

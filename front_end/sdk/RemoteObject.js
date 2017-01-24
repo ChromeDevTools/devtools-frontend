@@ -64,6 +64,15 @@ SDK.RemoteObject = class {
   }
 
   /**
+   * @param {string} description
+   * @return {string}
+   */
+  static arrayNameFromDescription(description) {
+    return description.replace(SDK.RemoteObject._descriptionLengthParenRegex, '')
+        .replace(SDK.RemoteObject._descriptionLengthSquareRegex, '');
+  }
+
+  /**
    * @param {!SDK.RemoteObject|!Protocol.Runtime.RemoteObject|!Protocol.Runtime.ObjectPreview} object
    * @return {number}
    */
@@ -72,7 +81,19 @@ SDK.RemoteObject = class {
       return 0;
     // Array lengths in V8-generated descriptions switched from square brackets to parentheses.
     // Both formats are checked in case the front end is dealing with an old version of V8.
-    var matches = object.description.match(/\[([0-9]+)\]/) || object.description.match(/\(([0-9]+)\)/);
+    var parenMatches = object.description.match(SDK.RemoteObject._descriptionLengthParenRegex);
+    var squareMatches = object.description.match(SDK.RemoteObject._descriptionLengthSquareRegex);
+    return parenMatches ? parseInt(parenMatches[1], 10) : (squareMatches ? parseInt(squareMatches[1], 10) : 0);
+  }
+
+  /**
+   * @param {!Protocol.Runtime.ObjectPreview} preview
+   * @return {number}
+   */
+  static mapOrSetEntriesCount(preview) {
+    if (preview.subtype !== 'map' && preview.subtype !== 'set')
+      return 0;
+    var matches = preview.description.match(SDK.RemoteObject._descriptionLengthParenRegex);
     if (!matches)
       return 0;
     return parseInt(matches[1], 10);
@@ -119,9 +140,10 @@ SDK.RemoteObject = class {
 
   /**
    * @param {!SDK.RemoteObject} object
+   * @param {boolean} generatePreview
    * @param {function(?Array.<!SDK.RemoteObjectProperty>, ?Array.<!SDK.RemoteObjectProperty>)} callback
    */
-  static loadFromObjectPerProto(object, callback) {
+  static loadFromObjectPerProto(object, generatePreview, callback) {
     // Combines 2 asynch calls. Doesn't rely on call-back orders (some calls may be loop-back).
     var savedOwnProperties;
     var savedAccessorProperties;
@@ -177,8 +199,8 @@ SDK.RemoteObject = class {
       processCallback();
     }
 
-    object.getAllProperties(true, allAccessorPropertiesCallback);
-    object.getOwnProperties(ownPropertiesCallback);
+    object.getAllProperties(true /* accessorPropertiesOnly */, generatePreview, allAccessorPropertiesCallback);
+    object.getOwnProperties(generatePreview, ownPropertiesCallback);
   }
 
   /**
@@ -216,16 +238,18 @@ SDK.RemoteObject = class {
   }
 
   /**
+   * @param {boolean} generatePreview
    * @param {function(?Array.<!SDK.RemoteObjectProperty>, ?Array.<!SDK.RemoteObjectProperty>)} callback
    */
-  getOwnProperties(callback) {
+  getOwnProperties(generatePreview, callback) {
     throw 'Not implemented';
   }
 
   /**
+   * @param {boolean} generatePreview
    * @return {!Promise<!{properties: ?Array.<!SDK.RemoteObjectProperty>, internalProperties: ?Array.<!SDK.RemoteObjectProperty>}>}
    */
-  getOwnPropertiesPromise() {
+  getOwnPropertiesPromise(generatePreview) {
     return new Promise(promiseConstructor.bind(this));
 
     /**
@@ -233,7 +257,7 @@ SDK.RemoteObject = class {
      * @this {SDK.RemoteObject}
      */
     function promiseConstructor(success) {
-      this.getOwnProperties(getOwnPropertiesCallback.bind(null, success));
+      this.getOwnProperties(!!generatePreview, getOwnPropertiesCallback.bind(null, success));
     }
 
     /**
@@ -248,17 +272,19 @@ SDK.RemoteObject = class {
 
   /**
    * @param {boolean} accessorPropertiesOnly
+   * @param {boolean} generatePreview
    * @param {function(?Array<!SDK.RemoteObjectProperty>, ?Array<!SDK.RemoteObjectProperty>)} callback
    */
-  getAllProperties(accessorPropertiesOnly, callback) {
+  getAllProperties(accessorPropertiesOnly, generatePreview, callback) {
     throw 'Not implemented';
   }
 
   /**
    * @param {boolean} accessorPropertiesOnly
+   * @param {boolean} generatePreview
    * @return {!Promise<!{properties: ?Array<!SDK.RemoteObjectProperty>, internalProperties: ?Array<!SDK.RemoteObjectProperty>}>}
    */
-  getAllPropertiesPromise(accessorPropertiesOnly) {
+  getAllPropertiesPromise(accessorPropertiesOnly, generatePreview) {
     return new Promise(promiseConstructor.bind(this));
 
     /**
@@ -266,7 +292,7 @@ SDK.RemoteObject = class {
      * @this {SDK.RemoteObject}
      */
     function promiseConstructor(success) {
-      this.getAllProperties(accessorPropertiesOnly, getAllPropertiesCallback.bind(null, success));
+      this.getAllProperties(accessorPropertiesOnly, generatePreview, getAllPropertiesCallback.bind(null, success));
     }
 
     /**
@@ -494,19 +520,21 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
 
   /**
    * @override
+   * @param {boolean} generatePreview
    * @param {function(?Array.<!SDK.RemoteObjectProperty>, ?Array.<!SDK.RemoteObjectProperty>)} callback
    */
-  getOwnProperties(callback) {
-    this.doGetProperties(true, false, false, callback);
+  getOwnProperties(generatePreview, callback) {
+    this.doGetProperties(true, false, generatePreview, callback);
   }
 
   /**
    * @override
    * @param {boolean} accessorPropertiesOnly
+   * @param {boolean} generatePreview
    * @param {function(?Array.<!SDK.RemoteObjectProperty>, ?Array.<!SDK.RemoteObjectProperty>)} callback
    */
-  getAllProperties(accessorPropertiesOnly, callback) {
-    this.doGetProperties(false, accessorPropertiesOnly, false, callback);
+  getAllProperties(accessorPropertiesOnly, generatePreview, callback) {
+    this.doGetProperties(false, accessorPropertiesOnly, generatePreview, callback);
   }
 
   /**
@@ -1125,18 +1153,20 @@ SDK.LocalJSONObject = class extends SDK.RemoteObject {
 
   /**
    * @override
+   * @param {boolean} generatePreview
    * @param {function(?Array.<!SDK.RemoteObjectProperty>, ?Array.<!SDK.RemoteObjectProperty>)} callback
    */
-  getOwnProperties(callback) {
+  getOwnProperties(generatePreview, callback) {
     callback(this._children(), null);
   }
 
   /**
    * @override
    * @param {boolean} accessorPropertiesOnly
+   * @param {boolean} generatePreview
    * @param {function(?Array.<!SDK.RemoteObjectProperty>, ?Array.<!SDK.RemoteObjectProperty>)} callback
    */
-  getAllProperties(accessorPropertiesOnly, callback) {
+  getAllProperties(accessorPropertiesOnly, generatePreview, callback) {
     if (accessorPropertiesOnly)
       callback([], null);
     else
@@ -1368,7 +1398,7 @@ SDK.RemoteFunction = class {
    * @return {!Promise<!SDK.RemoteObject>}
    */
   targetFunction() {
-    return this._object.getOwnPropertiesPromise().then(targetFunction.bind(this));
+    return this._object.getOwnPropertiesPromise(false /* generatePreview */).then(targetFunction.bind(this));
 
     /**
      * @param {!{properties: ?Array<!SDK.RemoteObjectProperty>, internalProperties: ?Array<!SDK.RemoteObjectProperty>}} ownProperties
@@ -1423,3 +1453,15 @@ SDK.RemoteFunction = class {
     return this._object;
   }
 };
+
+/**
+ * @const
+ * @type {!RegExp}
+ */
+SDK.RemoteObject._descriptionLengthParenRegex = /\(([0-9]+)\)/;
+
+/**
+ * @const
+ * @type {!RegExp}
+ */
+SDK.RemoteObject._descriptionLengthSquareRegex = /\[([0-9]+)\]/;

@@ -285,7 +285,8 @@ Components.ObjectEventListenerBar = class extends UI.TreeElement {
     var subtitle = this.listItemElement.createChild('span', 'event-listener-tree-subtitle');
     subtitle.appendChild(linkifier.linkifyRawLocation(this._eventListener.location(), this._eventListener.sourceURL()));
 
-    title.appendChild(Components.ObjectPropertiesSection.createValueElement(object, false));
+    title.appendChild(
+        Components.ObjectPropertiesSection.createValueElement(object, false /* wasThrown */, false /* showPreview */));
 
     if (this._eventListener.removeFunction()) {
       var deleteButton = title.createChild('span', 'event-listener-button');

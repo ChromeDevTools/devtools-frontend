@@ -98,3 +98,7 @@
 :host-context(.-theme-with-dark-background) .object-value-boolean {
     color: hsl(252, 100%, 75%);
 }
+
+.object-description {
+    color: gray;
+}

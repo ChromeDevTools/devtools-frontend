@@ -571,7 +571,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     var functionLocation = callFrame.functionLocation();
     if (localScope && functionLocation) {
       Sources.SourceMapNamesResolver.resolveScopeInObject(localScope)
-          .getAllProperties(false, this._prepareScopeVariables.bind(this, callFrame));
+          .getAllProperties(false, false, this._prepareScopeVariables.bind(this, callFrame));
     }
 
     if (this._clearValueWidgetsTimer) {
@@ -689,10 +689,12 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
         var value = valuesMap.get(name);
         var propertyCount = value.preview ? value.preview.properties.length : 0;
         var entryCount = value.preview && value.preview.entries ? value.preview.entries.length : 0;
-        if (value.preview && propertyCount + entryCount < 10)
-          formatter.appendObjectPreview(nameValuePair, value.preview);
-        else
-          nameValuePair.appendChild(Components.ObjectPropertiesSection.createValueElement(value, false));
+        if (value.preview && propertyCount + entryCount < 10) {
+          formatter.appendObjectPreview(nameValuePair, value.preview, false /* isEntry */);
+        } else {
+          nameValuePair.appendChild(Components.ObjectPropertiesSection.createValueElement(
+              value, false /* wasThrown */, false /* showPreview */));
+        }
         ++renderedNameCount;
       }
 

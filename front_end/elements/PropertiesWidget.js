@@ -108,7 +108,7 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
       if (!result.object || result.wasThrown)
         return;
 
-      var promise = result.object.getOwnPropertiesPromise().then(fillSection.bind(this));
+      var promise = result.object.getOwnPropertiesPromise(false /* generatePreview */).then(fillSection.bind(this));
       result.object.release();
       return promise;
     }

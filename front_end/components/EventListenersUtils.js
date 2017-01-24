@@ -31,7 +31,7 @@ SDK.EventListener.frameworkEventListeners = function(object) {
    * @return {!Promise<!{properties: ?Array.<!SDK.RemoteObjectProperty>, internalProperties: ?Array.<!SDK.RemoteObjectProperty>}>}
    */
   function getOwnProperties(object) {
-    return object.getOwnPropertiesPromise();
+    return object.getOwnPropertiesPromise(false /* generatePreview */);
   }
 
   /**

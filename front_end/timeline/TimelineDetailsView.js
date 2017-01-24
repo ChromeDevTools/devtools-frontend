@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-Timeline.TimelineDetailsView = class extends UI.TabbedPane {
+Timeline.TimelineDetailsView = class extends UI.VBox {
   /**
    * @param {!TimelineModel.TimelineModel} timelineModel
    * @param {!TimelineModel.TimelineFrameModel} frameModel
@@ -22,65 +22,72 @@ Timeline.TimelineDetailsView = class extends UI.TabbedPane {
     this._filmStripModel = filmStripModel;
     this._detailsLinkifier = new Components.Linkifier();
 
+    this._tabbedPane = new UI.TabbedPane();
+    this._tabbedPane.show(this.element);
+
     const tabIds = Timeline.TimelineDetailsView.Tab;
     this._defaultDetailsWidget = new UI.VBox();
     this._defaultDetailsWidget.element.classList.add('timeline-details-view');
     this._defaultDetailsContentElement =
         this._defaultDetailsWidget.element.createChild('div', 'timeline-details-view-body vbox');
     this._defaultDetailsContentElement.tabIndex = 0;
-    this.appendTab(tabIds.Details, Common.UIString('Summary'), this._defaultDetailsWidget);
+    this._appendTab(tabIds.Details, Common.UIString('Summary'), this._defaultDetailsWidget);
     this.setPreferredTab(tabIds.Details);
 
     /** @type Map<string, Timeline.TimelineTreeView> */
     this._rangeDetailViews = new Map();
 
     const bottomUpView = new Timeline.BottomUpTimelineTreeView(timelineModel, filters);
-    this.appendTab(tabIds.BottomUp, Common.UIString('Bottom-Up'), bottomUpView);
+    this._appendTab(tabIds.BottomUp, Common.UIString('Bottom-Up'), bottomUpView);
     this._rangeDetailViews.set(tabIds.BottomUp, bottomUpView);
 
     const callTreeView = new Timeline.CallTreeTimelineTreeView(timelineModel, filters);
-    this.appendTab(tabIds.CallTree, Common.UIString('Call Tree'), callTreeView);
+    this._appendTab(tabIds.CallTree, Common.UIString('Call Tree'), callTreeView);
     this._rangeDetailViews.set(tabIds.CallTree, callTreeView);
 
     const eventsView = new Timeline.EventsTimelineTreeView(timelineModel, filters, delegate);
-    this.appendTab(tabIds.Events, Common.UIString('Event Log'), eventsView);
+    this._appendTab(tabIds.Events, Common.UIString('Event Log'), eventsView);
     this._rangeDetailViews.set(tabIds.Events, eventsView);
 
-    this.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
+    this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
   }
 
   /**
    * @param {!Node} node
    */
   _setContent(node) {
-    const allTabs = this.otherTabs(Timeline.TimelineDetailsView.Tab.Details);
+    const allTabs = this._tabbedPane.otherTabs(Timeline.TimelineDetailsView.Tab.Details);
     for (var i = 0; i < allTabs.length; ++i) {
       if (!this._rangeDetailViews.has(allTabs[i]))
-        this.closeTab(allTabs[i]);
+        this._tabbedPane.closeTab(allTabs[i]);
     }
     this._defaultDetailsContentElement.removeChildren();
     this._defaultDetailsContentElement.appendChild(node);
   }
 
   _updateContents() {
-    var view = this.selectedTabId ? this._rangeDetailViews.get(this.selectedTabId) : null;
+    const view = this._rangeDetailViews.get(this._tabbedPane.selectedTabId || '');
     if (view)
       view.updateContents(this._selection);
   }
 
   /**
-   * @override
    * @param {string} id
    * @param {string} tabTitle
    * @param {!UI.Widget} view
-   * @param {string=} tabTooltip
-   * @param {boolean=} userGesture
    * @param {boolean=} isCloseable
    */
-  appendTab(id, tabTitle, view, tabTooltip, userGesture, isCloseable) {
-    super.appendTab(id, tabTitle, view, tabTooltip, userGesture, isCloseable);
-    if (this._preferredTabId !== this.selectedTabId)
-      this.selectTab(id);
+  _appendTab(id, tabTitle, view, isCloseable) {
+    this._tabbedPane.appendTab(id, tabTitle, view, undefined, undefined, isCloseable);
+    if (this._preferredTabId !== this._tabbedPane.selectedTabId)
+      this._tabbedPane.selectTab(id);
+  }
+
+  /**
+   * @return {!Element}
+   */
+  headerElement() {
+    return this._tabbedPane.headerElement();
   }
 
   /**
@@ -116,8 +123,8 @@ Timeline.TimelineDetailsView = class extends UI.TabbedPane {
         if (frame.layerTree) {
           var layersView = this._layersView();
           layersView.showLayerTree(frame.layerTree);
-          if (!this.hasTab(Timeline.TimelineDetailsView.Tab.LayerViewer))
-            this.appendTab(Timeline.TimelineDetailsView.Tab.LayerViewer, Common.UIString('Layers'), layersView);
+          if (!this._tabbedPane.hasTab(Timeline.TimelineDetailsView.Tab.LayerViewer))
+            this._appendTab(Timeline.TimelineDetailsView.Tab.LayerViewer, Common.UIString('Layers'), layersView);
         }
         break;
       case Timeline.TimelineSelection.Type.NetworkRequest:
@@ -169,12 +176,11 @@ Timeline.TimelineDetailsView = class extends UI.TabbedPane {
   _showSnapshotInPaintProfiler(snapshot) {
     var paintProfilerView = this._paintProfilerView();
     paintProfilerView.setSnapshot(snapshot);
-    if (!this.hasTab(Timeline.TimelineDetailsView.Tab.PaintProfiler)) {
-      this.appendTab(
-          Timeline.TimelineDetailsView.Tab.PaintProfiler, Common.UIString('Paint Profiler'), paintProfilerView,
-          undefined, undefined, true);
+    if (!this._tabbedPane.hasTab(Timeline.TimelineDetailsView.Tab.PaintProfiler)) {
+      this._appendTab(
+          Timeline.TimelineDetailsView.Tab.PaintProfiler, Common.UIString('Paint Profiler'), paintProfilerView, true);
     }
-    this.selectTab(Timeline.TimelineDetailsView.Tab.PaintProfiler, true);
+    this._tabbedPane.selectTab(Timeline.TimelineDetailsView.Tab.PaintProfiler, true);
   }
 
   /**
@@ -199,11 +205,10 @@ Timeline.TimelineDetailsView = class extends UI.TabbedPane {
     const hasProfileData = paintProfilerView.setEvent(target, event);
     if (!hasProfileData)
       return;
-    if (this.hasTab(Timeline.TimelineDetailsView.Tab.PaintProfiler))
+    if (this._tabbedPane.hasTab(Timeline.TimelineDetailsView.Tab.PaintProfiler))
       return;
-    this.appendTab(
-        Timeline.TimelineDetailsView.Tab.PaintProfiler, Common.UIString('Paint Profiler'), paintProfilerView,
-        undefined, undefined, false);
+    this._appendTab(
+        Timeline.TimelineDetailsView.Tab.PaintProfiler, Common.UIString('Paint Profiler'), paintProfilerView);
   }
 
   /**

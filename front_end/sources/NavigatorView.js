@@ -424,6 +424,9 @@ Sources.NavigatorView = class extends UI.VBox {
     if (!this._groupByFrame || !frame)
       return this._targetNode(project, target);
 
+    if (!frame.parentFrame && target.parentTarget())
+      return this._targetNode(project, target);
+
     var frameNode = this._frameNodes.get(frame);
     if (frameNode)
       return frameNode;
@@ -464,8 +467,7 @@ Sources.NavigatorView = class extends UI.VBox {
     if (!targetNode) {
       targetNode = new Sources.NavigatorGroupTreeNode(
           this, project, 'target:' + target.id(),
-          !target.hasBrowserCapability() ? Sources.NavigatorView.Types.Worker :
-                                           Sources.NavigatorView.Types.NetworkFolder,
+          !target.hasBrowserCapability() ? Sources.NavigatorView.Types.Worker : Sources.NavigatorView.Types.Frame,
           target.name());
       this._rootNode.appendChild(targetNode);
     }

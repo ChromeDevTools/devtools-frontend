@@ -404,6 +404,9 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
       return parents.reverse();
     }
 
+    if (a.target() !== b.target())
+      return SDK.ExecutionContext.comparator(a, b);
+
     var framesA = a.frameId ? framePath(this.frameForId(a.frameId)) : [];
     var framesB = b.frameId ? framePath(this.frameForId(b.frameId)) : [];
     var frameA;
@@ -723,7 +726,7 @@ SDK.ResourceTreeFrame = class {
    * @return {string}
    */
   displayName() {
-    if (!this._parentFrame)
+    if (!this._parentFrame && !this._model.target().parentTarget())
       return Common.UIString('top');
     var subtitle = new Common.ParsedURL(this._url).displayName;
     if (subtitle) {

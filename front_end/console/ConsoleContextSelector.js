@@ -33,21 +33,39 @@ Console.ConsoleContextSelector = class {
    * @return {string}
    */
   _titleFor(executionContext) {
-    var result;
-    if (executionContext.isDefault) {
-      if (executionContext.frameId) {
-        var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(executionContext.target());
-        var frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
-        result = frame ? frame.displayName() : executionContext.label();
-      } else {
-        result = executionContext.target().decorateLabel(executionContext.label());
+    var target = executionContext.target();
+    var depth = 0;
+    var label = executionContext.label() ? target.decorateLabel(executionContext.label()) : '';
+    if (!executionContext.isDefault)
+      depth++;
+    if (executionContext.frameId) {
+      var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
+      var frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
+      if (frame) {
+        label = label || frame.displayName();
+        while (frame.parentFrame) {
+          depth++;
+          frame = frame.parentFrame;
+        }
       }
-    } else {
-      result = '\u00a0\u00a0\u00a0\u00a0' + (executionContext.label() || executionContext.origin);
+    }
+    label = label || executionContext.origin;
+    var targetDepth = 0;
+    while (target.parentTarget()) {
+      if (target.parentTarget().hasJSCapability()) {
+        targetDepth++;
+      } else {
+        // Special casing service workers to be top-level.
+        targetDepth = 0;
+        break;
+      }
+      target = target.parentTarget();
     }
 
+    depth += targetDepth;
+    var prefix = new Array(4 * depth + 1).join('\u00a0');
     var maxLength = 50;
-    return result.trimMiddle(maxLength);
+    return (prefix + label).trimMiddle(maxLength);
   }
 
   /**

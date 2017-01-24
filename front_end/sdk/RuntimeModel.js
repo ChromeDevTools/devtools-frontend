@@ -468,6 +468,8 @@ SDK.ExecutionContext = class extends SDK.SDKObject {
      * @return {number}
      */
     function targetWeight(target) {
+      if (!target.parentTarget())
+        return 4;
       if (target.hasBrowserCapability())
         return 3;
       if (target.hasJSCapability())

@@ -805,10 +805,10 @@ Timeline.TimelinePanel = class extends UI.Panel {
     var markers = new Map();
     var recordTypes = TimelineModel.TimelineModel.RecordType;
     var zeroTime = this._model.minimumRecordTime();
-    for (var record of this._model.eventDividerRecords()) {
-      if (record.type() === recordTypes.TimeStamp || record.type() === recordTypes.ConsoleTime)
+    for (var event of this._model.eventDividers()) {
+      if (event.name === recordTypes.TimeStamp || event.name === recordTypes.ConsoleTime)
         continue;
-      markers.set(record.startTime(), Timeline.TimelineUIUtils.createDividerForRecord(record, zeroTime, 0));
+      markers.set(event.startTime, Timeline.TimelineUIUtils.createEventDivider(event, zeroTime));
     }
     this._overviewPane.setMarkers(markers);
   }
@@ -1103,26 +1103,26 @@ Timeline.TimelinePanel = class extends UI.Panel {
     function findLowUtilizationRegion(startIndex, stopIndex) {
       var /** @const */ threshold = 0.1;
       var cutIndex = startIndex;
-      var cutTime = (tasks[cutIndex].startTime() + tasks[cutIndex].endTime()) / 2;
+      var cutTime = (tasks[cutIndex].startTime + tasks[cutIndex].endTime) / 2;
       var usedTime = 0;
       var step = Math.sign(stopIndex - startIndex);
       for (var i = startIndex; i !== stopIndex; i += step) {
         var task = tasks[i];
-        var taskTime = (task.startTime() + task.endTime()) / 2;
+        var taskTime = (task.startTime + task.endTime) / 2;
         var interval = Math.abs(cutTime - taskTime);
         if (usedTime < threshold * interval) {
           cutIndex = i;
           cutTime = taskTime;
           usedTime = 0;
         }
-        usedTime += task.endTime() - task.startTime();
+        usedTime += task.duration;
       }
       return cutIndex;
     }
     var rightIndex = findLowUtilizationRegion(tasks.length - 1, 0);
     var leftIndex = findLowUtilizationRegion(0, rightIndex);
-    var leftTime = tasks[leftIndex].startTime();
-    var rightTime = tasks[rightIndex].endTime();
+    var leftTime = tasks[leftIndex].startTime;
+    var rightTime = tasks[rightIndex].endTime;
     var span = rightTime - leftTime;
     var totalSpan = this._tracingModel.maximumRecordTime() - this._tracingModel.minimumRecordTime();
     if (span < totalSpan * 0.1) {

@@ -237,24 +237,6 @@ TimelineModel.TimelineFrameModel = class {
   }
 
   /**
-   * @param {!Array.<string>} types
-   * @param {!TimelineModel.TimelineModel.Record} record
-   * @return {?TimelineModel.TimelineModel.Record} record
-   */
-  _findRecordRecursively(types, record) {
-    if (types.indexOf(record.type()) >= 0)
-      return record;
-    if (!record.children())
-      return null;
-    for (var i = 0; i < record.children().length; ++i) {
-      var result = this._findRecordRecursively(types, record.children()[i]);
-      if (result)
-        return result;
-    }
-    return null;
-  }
-
-  /**
    * @param {?SDK.Target} target
    * @param {!Array.<!SDK.TracingModel.Event>} events
    * @param {string} sessionId

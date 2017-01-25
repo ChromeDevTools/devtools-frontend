@@ -951,7 +951,7 @@ Timeline.TimelineUIUtils = class {
    */
   static statsForTimeRange(model, startTime, endTime) {
     Timeline.TimelineUIUtils._buildRangeStatsCacheIfNeeded(model);
-    var tasks = model.mainThreadTasks().map(record => record.traceEvent());
+    var tasks = model.mainThreadTasks();
     if (!tasks.length)
       return {};
     var statsBeforeIndex = Math.min(tasks.lowerBound(startTime, (time, task) => time - task.endTime), tasks.length - 1);
@@ -1027,7 +1027,7 @@ Timeline.TimelineUIUtils = class {
    * @param {!TimelineModel.TimelineModel} model
    */
   static _buildRangeStatsCacheIfNeeded(model) {
-    var tasks = model.mainThreadTasks().map(record => record.traceEvent());
+    var tasks = model.mainThreadTasks();
     if (tasks.length && tasks[0][Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol])
       return;
     var aggregatedStats = {};
@@ -1393,45 +1393,25 @@ Timeline.TimelineUIUtils = class {
   }
 
   /**
-   * @param {!TimelineModel.TimelineModel.RecordType} recordType
-   * @param {?string} title
-   * @param {number} position
-   * @return {!Element}
-   */
-  static createEventDivider(recordType, title, position) {
-    var eventDivider = createElement('div');
-    eventDivider.className = 'resources-event-divider';
-    var recordTypes = TimelineModel.TimelineModel.RecordType;
-
-    if (recordType === recordTypes.MarkDOMContent)
-      eventDivider.className += ' resources-blue-divider';
-    else if (recordType === recordTypes.MarkLoad)
-      eventDivider.className += ' resources-red-divider';
-    else if (recordType === recordTypes.MarkFirstPaint)
-      eventDivider.className += ' resources-green-divider';
-    else if (
-        recordType === recordTypes.TimeStamp || recordType === recordTypes.ConsoleTime ||
-        recordType === recordTypes.UserTiming)
-      eventDivider.className += ' resources-orange-divider';
-    else if (recordType === recordTypes.BeginFrame)
-      eventDivider.className += ' timeline-frame-divider';
-
-    if (title)
-      eventDivider.title = title;
-    eventDivider.style.left = position + 'px';
-    return eventDivider;
-  }
-
-  /**
-   * @param {!TimelineModel.TimelineModel.Record} record
+   * @param {!SDK.TracingModel.Event} event
    * @param {number} zeroTime
-   * @param {number} position
    * @return {!Element}
    */
-  static createDividerForRecord(record, zeroTime, position) {
-    var startTime = Number.millisToString(record.startTime() - zeroTime);
-    var title = Common.UIString('%s at %s', Timeline.TimelineUIUtils.eventTitle(record.traceEvent()), startTime);
-    return Timeline.TimelineUIUtils.createEventDivider(record.type(), title, position);
+  static createEventDivider(event, zeroTime) {
+    var eventDivider = createElementWithClass('div', 'resources-event-divider');
+    var startTime = Number.millisToString(event.startTime - zeroTime);
+    eventDivider.title = Common.UIString('%s at %s', Timeline.TimelineUIUtils.eventTitle(event), startTime);
+
+    var recordTypes = TimelineModel.TimelineModel.RecordType;
+    var name = event.name;
+    if (name === recordTypes.MarkDOMContent)
+      eventDivider.classList.add('resources-blue-divider');
+    else if (name === recordTypes.MarkLoad)
+      eventDivider.classList.add('resources-red-divider');
+    else if (name === recordTypes.MarkFirstPaint)
+      eventDivider.classList.add('resources-green-divider');
+
+    return eventDivider;
   }
 
   /**

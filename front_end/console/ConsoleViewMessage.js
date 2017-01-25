@@ -334,7 +334,7 @@ Console.ConsoleViewMessage = class {
      * @param {boolean} expand
      */
     function expandStackTrace(expand) {
-      icon.setIconType(expand ? 'smallicon-triangle-bottom' : 'smallicon-triangle-right');
+      icon.setIconType(expand ? 'smallicon-triangle-down' : 'smallicon-triangle-right');
       stackTraceElement.classList.toggle('hidden', !expand);
     }
 
@@ -1195,7 +1195,7 @@ Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
   setCollapsed(collapsed) {
     this._collapsed = collapsed;
     if (this._expandGroupIcon)
-      this._expandGroupIcon.setIconType(this._collapsed ? 'smallicon-triangle-right' : 'smallicon-triangle-bottom');
+      this._expandGroupIcon.setIconType(this._collapsed ? 'smallicon-triangle-right' : 'smallicon-triangle-down');
   }
 
   /**

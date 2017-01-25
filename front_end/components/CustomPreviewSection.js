@@ -125,7 +125,7 @@ Components.CustomPreviewSection = class {
     this._header.classList.toggle('expanded', this._expanded);
     this._cachedContent.classList.toggle('hidden', !this._expanded);
     if (this._expanded)
-      this._expandIcon.setIconType('smallicon-triangle-bottom');
+      this._expandIcon.setIconType('smallicon-triangle-down');
     else
       this._expandIcon.setIconType('smallicon-triangle-right');
   }

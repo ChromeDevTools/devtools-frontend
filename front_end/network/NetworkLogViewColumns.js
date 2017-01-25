@@ -203,8 +203,9 @@ Network.NetworkLogViewColumns = class {
         'contextmenu', event => this._innerHeaderContextMenu(new UI.ContextMenu(event)));
     var innerElement = this._waterfallHeaderElement.createChild('div');
     innerElement.textContent = Common.UIString('Waterfall');
-    this._waterfallColumnSortIcon = this._waterfallHeaderElement.createChild('div', 'sort-order-icon-container')
-                                        .createChild('div', 'sort-order-icon');
+    this._waterfallColumnSortIcon = UI.Icon.create('', 'sort-order-icon');
+    this._waterfallHeaderElement.createChild('div', 'sort-order-icon-container')
+        .appendChild(this._waterfallColumnSortIcon);
 
     /**
      * @this {Network.NetworkLogViewColumns}
@@ -263,19 +264,18 @@ Network.NetworkLogViewColumns = class {
     var columnId = this._dataGrid.sortColumnId();
     this._networkLogView.removeAllNodeHighlights();
     this._waterfallRequestsAreStale = true;
-    this._waterfallColumnSortIcon.classList.remove('sort-ascending', 'sort-descending');
-
     if (columnId === 'waterfall') {
       if (this._dataGrid.sortOrder() === DataGrid.DataGrid.Order.Ascending)
-        this._waterfallColumnSortIcon.classList.add('sort-ascending');
+        this._waterfallColumnSortIcon.setIconType('smallicon-triangle-up');
       else
-        this._waterfallColumnSortIcon.classList.add('sort-descending');
+        this._waterfallColumnSortIcon.setIconType('smallicon-triangle-down');
 
       var sortFunction = Network.NetworkRequestNode.RequestPropertyComparator.bind(null, this._activeWaterfallSortId);
       this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
       this._networkLogView.dataGridSorted();
       return;
     }
+    this._waterfallColumnSortIcon.setIconType('');
 
     var columnConfig = this._columns.find(columnConfig => columnConfig.id === columnId);
     if (!columnConfig || !columnConfig.sortingFunction)

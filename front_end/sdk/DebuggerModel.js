@@ -875,6 +875,7 @@ SDK.DebuggerModel.BreakReason = {
   PromiseRejection: 'promiseRejection',
   Assert: 'assert',
   DebugCommand: 'debugCommand',
+  OOM: 'OOM',
   Other: 'other'
 };
 

@@ -51,6 +51,8 @@ Sources.DebuggerPausedMessage = class {
       messageWrapper = buildWrapper(Common.UIString('Paused on assertion'));
     } else if (details.reason === SDK.DebuggerModel.BreakReason.DebugCommand) {
       messageWrapper = buildWrapper(Common.UIString('Paused on debugged function'));
+    } else if (details.reason === SDK.DebuggerModel.BreakReason.OOM) {
+      messageWrapper = buildWrapper(Common.UIString('Paused before potential out-of-memory crash'));
     } else if (details.callFrames.length) {
       var uiLocation = debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location());
       var breakpoint = uiLocation ?
@@ -65,7 +67,7 @@ Sources.DebuggerPausedMessage = class {
 
     var errorLike = details.reason === SDK.DebuggerModel.BreakReason.Exception ||
         details.reason === SDK.DebuggerModel.BreakReason.PromiseRejection ||
-        details.reason === SDK.DebuggerModel.BreakReason.Assert;
+        details.reason === SDK.DebuggerModel.BreakReason.Assert || details.reason === SDK.DebuggerModel.BreakReason.OOM;
     status.classList.toggle('error-reason', errorLike);
     if (messageWrapper)
       status.appendChild(messageWrapper);

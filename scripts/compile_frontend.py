@@ -93,11 +93,6 @@ error_warning_regex = re.compile(r'WARNING|ERROR')
 loaded_css_regex = re.compile(r'(?:registerRequiredCSS|WebInspector\.View\.createStyleElement)\s*\(\s*"(.+)"\s*\)')
 
 java_build_regex = re.compile(r'^\w+ version "(\d+)\.(\d+)')
-errors_found = False
-
-generate_protocol_externs.generate_protocol_externs(protocol_externs_file,
-                                                    path.join(inspector_path, 'browser_protocol.json'),
-                                                    path.join(v8_inspector_path, 'js_protocol.json'))
 
 
 def log_error(message):
@@ -119,9 +114,6 @@ application_descriptors = [
     'heap_snapshot_worker.json',
     'utility_shared_worker.json',
 ]
-loader = modular_build.DescriptorLoader(devtools_frontend_path)
-descriptors = loader.load_applications(application_descriptors)
-modules_by_name = descriptors.modules
 
 
 def has_errors(output):
@@ -130,9 +122,10 @@ def has_errors(output):
 
 class JSDocChecker:
 
-    def __init__(self):
+    def __init__(self, descriptors, java_exec):
         self._error_found = False
         self._all_files = descriptors.all_compiled_files()
+        self._java_exec = java_exec
 
     def check(self):
         print 'Verifying JSDoc comments...'
@@ -147,7 +140,7 @@ class JSDocChecker:
             file_list.write('\n'.join(files))
         finally:
             file_list.close()
-        proc = popen(java_exec + ['-jar', jsdoc_validator_jar, '--files-list-name', to_platform_path_exact(file_list.name)])
+        proc = popen(self._java_exec + ['-jar', jsdoc_validator_jar, '--files-list-name', to_platform_path_exact(file_list.name)])
         (out, _) = proc.communicate()
         if out:
             print('JSDoc validator output:%s%s' % (os.linesep, out))
@@ -234,8 +227,6 @@ def find_java():
     return exec_command
 
 
-java_exec = find_java()
-
 common_closure_args = [
     '--summary_detail_level',
     '3',
@@ -257,7 +248,7 @@ common_closure_args = [
 ]
 
 
-def check_conditional_dependencies():
+def check_conditional_dependencies(modules_by_name):
     errors_found = False
     for name in modules_by_name:
         for dep_name in modules_by_name[name].get('dependencies', []):
@@ -268,14 +259,7 @@ def check_conditional_dependencies():
     return errors_found
 
 
-errors_found |= check_conditional_dependencies()
-
-print 'Compiling frontend...'
-
-temp_devtools_path = tempfile.mkdtemp()
-
-
-def prepare_closure_frontend_compile():
+def prepare_closure_frontend_compile(temp_devtools_path, descriptors):
     temp_frontend_path = path.join(temp_devtools_path, 'front_end')
     checker = dependency_preprocessor.DependencyPreprocessor(descriptors, temp_frontend_path, devtools_frontend_path)
     checker.enforce_dependencies()
@@ -303,40 +287,58 @@ def prepare_closure_frontend_compile():
     return compiler_args_file.name
 
 
-compiler_args_file_path = prepare_closure_frontend_compile()
-frontend_compile_proc = popen(java_exec +
-                              ['-jar', closure_runner_jar, '--compiler-args-file', to_platform_path_exact(compiler_args_file_path)])
+def main():
+    errors_found = False
+    generate_protocol_externs.generate_protocol_externs(protocol_externs_file,
+                                                        path.join(inspector_path, 'browser_protocol.json'),
+                                                        path.join(v8_inspector_path, 'js_protocol.json'))
+    loader = modular_build.DescriptorLoader(devtools_frontend_path)
+    descriptors = loader.load_applications(application_descriptors)
+    modules_by_name = descriptors.modules
 
-print 'Compiling devtools_compatibility.js...'
+    java_exec = find_java()
+    errors_found |= check_conditional_dependencies(modules_by_name)
 
-closure_compiler_command = java_exec + ['-jar', closure_compiler_jar] + common_closure_args
+    print 'Compiling frontend...'
+    temp_devtools_path = tempfile.mkdtemp()
+    compiler_args_file_path = prepare_closure_frontend_compile(temp_devtools_path, descriptors)
+    frontend_compile_proc = popen(
+        java_exec + ['-jar', closure_runner_jar, '--compiler-args-file', to_platform_path_exact(compiler_args_file_path)])
 
-devtools_js_compile_command = closure_compiler_command + [
-    '--externs', to_platform_path(global_externs_file), '--externs',
-    to_platform_path(path.join(devtools_frontend_path, 'host', 'InspectorFrontendHostAPI.js')), '--jscomp_off=externsValidation',
-    '--js', to_platform_path(path.join(devtools_frontend_path, 'devtools_compatibility.js'))
-]
-devtools_js_compile_proc = popen(devtools_js_compile_command)
+    print 'Compiling devtools_compatibility.js...'
 
-errors_found |= JSDocChecker().check()
+    closure_compiler_command = java_exec + ['-jar', closure_compiler_jar] + common_closure_args
 
-(devtools_js_compile_out, _) = devtools_js_compile_proc.communicate()
-print 'devtools_compatibility.js compilation output:%s' % os.linesep, devtools_js_compile_out
-errors_found |= has_errors(devtools_js_compile_out)
+    devtools_js_compile_command = closure_compiler_command + [
+        '--externs', to_platform_path(global_externs_file), '--externs',
+        to_platform_path(path.join(devtools_frontend_path, 'host', 'InspectorFrontendHostAPI.js')),
+        '--jscomp_off=externsValidation', '--js', to_platform_path(path.join(devtools_frontend_path, 'devtools_compatibility.js'))
+    ]
+    devtools_js_compile_proc = popen(devtools_js_compile_command)
 
-(frontend_compile_out, _) = frontend_compile_proc.communicate()
-print 'devtools frontend compilation output:'
-for line in frontend_compile_out.splitlines():
-    if "@@ START_MODULE" in line or "@@ END_MODULE" in line:
-        continue
-    print line
-errors_found |= has_errors(frontend_compile_out)
+    errors_found |= JSDocChecker(descriptors, java_exec).check()
 
-os.remove(protocol_externs_file)
-os.remove(compiler_args_file_path)
-shutil.rmtree(temp_devtools_path, True)
+    (devtools_js_compile_out, _) = devtools_js_compile_proc.communicate()
+    print 'devtools_compatibility.js compilation output:%s' % os.linesep, devtools_js_compile_out
+    errors_found |= has_errors(devtools_js_compile_out)
 
-if errors_found:
-    print 'ERRORS DETECTED'
-    sys.exit(1)
-print 'DONE - compiled without errors'
+    (frontend_compile_out, _) = frontend_compile_proc.communicate()
+    print 'devtools frontend compilation output:'
+    for line in frontend_compile_out.splitlines():
+        if "@@ START_MODULE" in line or "@@ END_MODULE" in line:
+            continue
+        print line
+    errors_found |= has_errors(frontend_compile_out)
+
+    os.remove(protocol_externs_file)
+    os.remove(compiler_args_file_path)
+    shutil.rmtree(temp_devtools_path, True)
+
+    if errors_found:
+        print 'ERRORS DETECTED'
+        sys.exit(1)
+    print 'DONE - compiled without errors'
+
+
+if __name__ == "__main__":
+    main()

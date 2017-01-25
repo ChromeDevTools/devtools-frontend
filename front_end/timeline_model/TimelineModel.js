@@ -217,7 +217,6 @@ TimelineModel.TimelineModel = class {
     this._inspectedTargetEvents.sort(SDK.TracingModel.Event.compareStartTime);
 
     this._processBrowserEvents(tracingModel);
-    this._buildTimelineRecords();
     this._buildGPUEvents(tracingModel);
     this._insertFirstPaintEvent();
     this._resetProcessingState();
@@ -326,10 +325,8 @@ TimelineModel.TimelineModel = class {
     this._mainThreadEvents.splice(
         this._mainThreadEvents.lowerBound(firstPaintEvent, SDK.TracingModel.Event.compareStartTime), 0,
         firstPaintEvent);
-    var firstPaintRecord = new TimelineModel.TimelineModel.Record(firstPaintEvent);
-    this._eventDividerRecords.splice(
-        this._eventDividerRecords.lowerBound(firstPaintRecord, TimelineModel.TimelineModel.Record._compareStartTime), 0,
-        firstPaintRecord);
+    this._eventDividers.splice(
+        this._eventDividers.lowerBound(firstPaintEvent, SDK.TracingModel.Event.compareStartTime), 0, firstPaintEvent);
   }
 
   /**
@@ -348,27 +345,6 @@ TimelineModel.TimelineModel = class {
     this._mergeAsyncEvents(this._mainThreadAsyncEventsByGroup, asyncEventsByGroup);
   }
 
-  _buildTimelineRecords() {
-    var topLevelRecords = this._buildTimelineRecordsForThread(this.mainThreadEvents());
-    for (var i = 0; i < topLevelRecords.length; i++) {
-      var record = topLevelRecords[i];
-      var event = record.traceEvent();
-      if (SDK.TracingModel.isTopLevelEvent(event) && event.duration)
-        this._mainThreadTasks.push(record);
-    }
-
-    /**
-     * @param {!TimelineModel.TimelineModel.VirtualThread} virtualThread
-     * @this {!TimelineModel.TimelineModel}
-     */
-    function processVirtualThreadEvents(virtualThread) {
-      var threadRecords = this._buildTimelineRecordsForThread(virtualThread.events);
-      topLevelRecords =
-          topLevelRecords.mergeOrdered(threadRecords, TimelineModel.TimelineModel.Record._compareStartTime);
-    }
-    this.virtualThreads().forEach(processVirtualThreadEvents.bind(this));
-  }
-
   /**
    * @param {!SDK.TracingModel} tracingModel
    */
@@ -378,41 +354,6 @@ TimelineModel.TimelineModel = class {
       return;
     var gpuEventName = TimelineModel.TimelineModel.RecordType.GPUTask;
     this._gpuEvents = thread.events().filter(event => event.name === gpuEventName);
-  }
-
-  /**
-   * @param {!Array.<!SDK.TracingModel.Event>} threadEvents
-   * @return {!Array.<!TimelineModel.TimelineModel.Record>}
-   */
-  _buildTimelineRecordsForThread(threadEvents) {
-    var recordStack = [];
-    var topLevelRecords = [];
-
-    for (var i = 0, size = threadEvents.length; i < size; ++i) {
-      var event = threadEvents[i];
-      for (var top = recordStack.peekLast(); top && top._event.endTime <= event.startTime; top = recordStack.peekLast())
-        recordStack.pop();
-      if (event.phase === SDK.TracingModel.Phase.AsyncEnd || event.phase === SDK.TracingModel.Phase.NestableAsyncEnd)
-        continue;
-      var parentRecord = recordStack.peekLast();
-      // Maintain the back-end logic of old timeline, skip console.time() / console.timeEnd() that are not properly nested.
-      if (SDK.TracingModel.isAsyncBeginPhase(event.phase) && parentRecord &&
-          event.endTime > parentRecord._event.endTime)
-        continue;
-      var record = new TimelineModel.TimelineModel.Record(event);
-      if (TimelineModel.TimelineModel.isMarkerEvent(event))
-        this._eventDividerRecords.push(record);
-      if (!this._eventFilter.accept(event) && !SDK.TracingModel.isTopLevelEvent(event))
-        continue;
-      if (parentRecord)
-        parentRecord._addChild(record);
-      else
-        topLevelRecords.push(record);
-      if (event.endTime)
-        recordStack.push(record);
-    }
-
-    return topLevelRecords;
   }
 
   _resetProcessingState() {
@@ -534,14 +475,34 @@ TimelineModel.TimelineModel = class {
     }
 
     this._eventStack = [];
+    var eventStack = this._eventStack;
     var i = events.lowerBound(startTime, (time, event) => time - event.startTime);
     var length = events.length;
     for (; i < length; i++) {
       var event = events[i];
       if (endTime && event.startTime >= endTime)
         break;
+      while (eventStack.length && eventStack.peekLast().endTime <= event.startTime)
+        eventStack.pop();
       if (!this._processEvent(event))
         continue;
+      if (!SDK.TracingModel.isAsyncPhase(event.phase) && event.duration) {
+        if (eventStack.length) {
+          var parent = eventStack.peekLast();
+          parent.selfTime -= event.duration;
+          if (parent.selfTime < 0)
+            this._fixNegativeDuration(parent, event);
+        }
+        event.selfTime = event.duration;
+        if (isMainThread) {
+          if (!eventStack.length)
+            this._mainThreadTasks.push(event);
+        }
+        eventStack.push(event);
+      }
+      if (isMainThread && TimelineModel.TimelineModel.isMarkerEvent(event))
+        this._eventDividers.push(event);
+
       if (groupByFrame) {
         var frameId = TimelineModel.TimelineData.forEvent(event).frameId;
         var pageFrame = frameId && this._pageFrames.get(frameId);
@@ -564,6 +525,20 @@ TimelineModel.TimelineModel = class {
       this._mergeAsyncEvents(this._mainThreadAsyncEventsByGroup, threadAsyncEventsByGroup);
       threadAsyncEventsByGroup.clear();
     }
+  }
+
+  /**
+   * @param {!SDK.TracingModel.Event} event
+   * @param {!SDK.TracingModel.Event} child
+   */
+  _fixNegativeDuration(event, child) {
+    var epsilon = 1e-3;
+    if (event.selfTime < -epsilon) {
+      console.error(
+          `Children are longer than parent at ${event.startTime} ` +
+          `(${(child.startTime - this.minimumRecordTime()).toFixed(3)} by ${(-event.selfTime).toFixed(3)}`);
+    }
+    event.selfTime = 0;
   }
 
   /**
@@ -597,11 +572,8 @@ TimelineModel.TimelineModel = class {
    * @return {boolean}
    */
   _processEvent(event) {
-    var eventStack = this._eventStack;
-    while (eventStack.length && eventStack.peekLast().endTime <= event.startTime)
-      eventStack.pop();
-
     var recordTypes = TimelineModel.TimelineModel.RecordType;
+    var eventStack = this._eventStack;
 
     if (!eventStack.length) {
       if (this._currentTaskLayoutAndRecalcEvents && this._currentTaskLayoutAndRecalcEvents.length) {
@@ -822,26 +794,6 @@ TimelineModel.TimelineModel = class {
           timelineData.warning = TimelineModel.TimelineModel.WarningType.IdleDeadlineExceeded;
         break;
     }
-    if (SDK.TracingModel.isAsyncPhase(event.phase))
-      return true;
-    var duration = event.duration;
-    if (!duration)
-      return true;
-    if (eventStack.length) {
-      var parent = eventStack.peekLast();
-      parent.selfTime -= duration;
-      if (parent.selfTime < 0) {
-        var epsilon = 1e-3;
-        if (parent.selfTime < -epsilon) {
-          console.error(
-              'Children are longer than parent at ' + event.startTime + ' (' +
-              (event.startTime - this.minimumRecordTime()).toFixed(3) + ') by ' + parent.selfTime.toFixed(3));
-        }
-        parent.selfTime = 0;
-      }
-    }
-    event.selfTime = duration;
-    eventStack.push(event);
     return true;
   }
 
@@ -939,12 +891,12 @@ TimelineModel.TimelineModel = class {
     this._mainThreadAsyncEventsByGroup = new Map();
     /** @type {!Array<!SDK.TracingModel.Event>} */
     this._inspectedTargetEvents = [];
-    /** @type {!Array<!TimelineModel.TimelineModel.Record>} */
+    /** @type {!Array<!SDK.TracingModel.Event>} */
     this._mainThreadTasks = [];
     /** @type {!Array<!SDK.TracingModel.Event>} */
     this._gpuEvents = [];
-    /** @type {!Array<!TimelineModel.TimelineModel.Record>} */
-    this._eventDividerRecords = [];
+    /** @type {!Array<!SDK.TracingModel.Event>} */
+    this._eventDividers = [];
     /** @type {?string} */
     this._sessionId = null;
     /** @type {?number} */
@@ -991,13 +943,6 @@ TimelineModel.TimelineModel = class {
   }
 
   /**
-   * @param {!Array<!SDK.TracingModel.Event>} events
-   */
-  _setMainThreadEvents(events) {
-    this._mainThreadEvents = events;
-  }
-
-  /**
    * @return {!Map<!TimelineModel.TimelineModel.AsyncEventGroup, !Array.<!SDK.TracingModel.AsyncEvent>>}
    */
   mainThreadAsyncEvents() {
@@ -1019,7 +964,7 @@ TimelineModel.TimelineModel = class {
   }
 
   /**
-   * @return {!Array.<!TimelineModel.TimelineModel.Record>}
+   * @return {!Array<!SDK.TracingModel.Event>}
    */
   mainThreadTasks() {
     return this._mainThreadTasks;
@@ -1033,10 +978,10 @@ TimelineModel.TimelineModel = class {
   }
 
   /**
-   * @return {!Array.<!TimelineModel.TimelineModel.Record>}
+   * @return {!Array<!SDK.TracingModel.Event>}
    */
-  eventDividerRecords() {
-    return this._eventDividerRecords;
+  eventDividers() {
+    return this._eventDividers;
   }
 
   /**
@@ -1298,92 +1243,6 @@ TimelineModel.TimelineModel.VirtualThread = class {
     return this.name === TimelineModel.TimelineModel.WorkerThreadName;
   }
 };
-
-/**
- * @unrestricted
- */
-TimelineModel.TimelineModel.Record = class {
-  /**
-   * @param {!SDK.TracingModel.Event} traceEvent
-   */
-  constructor(traceEvent) {
-    this._event = traceEvent;
-    this._children = [];
-  }
-
-  /**
-   * @param {!TimelineModel.TimelineModel.Record} a
-   * @param {!TimelineModel.TimelineModel.Record} b
-   * @return {number}
-   */
-  static _compareStartTime(a, b) {
-    // Never return 0 as otherwise equal records would be merged.
-    return a.startTime() <= b.startTime() ? -1 : 1;
-  }
-
-  /**
-   * @return {?SDK.Target}
-   */
-  target() {
-    var threadName = this._event.thread.name();
-    // FIXME: correctly specify target
-    return threadName === TimelineModel.TimelineModel.RendererMainThreadName ? SDK.targetManager.targets()[0] || null :
-                                                                               null;
-  }
-
-  /**
-   * @return {!Array.<!TimelineModel.TimelineModel.Record>}
-   */
-  children() {
-    return this._children;
-  }
-
-  /**
-   * @return {number}
-   */
-  startTime() {
-    return this._event.startTime;
-  }
-
-  /**
-   * @return {number}
-   */
-  endTime() {
-    return this._event.endTime || this._event.startTime;
-  }
-
-  /**
-   * @return {string}
-   */
-  thread() {
-    if (this._event.thread.name() === TimelineModel.TimelineModel.RendererMainThreadName)
-      return TimelineModel.TimelineModel.MainThreadName;
-    return this._event.thread.name();
-  }
-
-  /**
-   * @return {!TimelineModel.TimelineModel.RecordType}
-   */
-  type() {
-    return TimelineModel.TimelineModel._eventType(this._event);
-  }
-
-  /**
-   * @return {!SDK.TracingModel.Event}
-   */
-  traceEvent() {
-    return this._event;
-  }
-
-  /**
-   * @param {!TimelineModel.TimelineModel.Record} child
-   */
-  _addChild(child) {
-    this._children.push(child);
-    child.parent = this;
-  }
-};
-
 
 /** @typedef {!{page: !Array<!SDK.TracingModel.Event>, workers: !Array<!SDK.TracingModel.Event>}} */
 TimelineModel.TimelineModel.MetadataEvents;

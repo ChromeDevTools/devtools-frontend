@@ -54,6 +54,7 @@
     "resources": [
         "checkboxTextLabel.css",
         "closeButton.css",
+        "confirmDialog.css",
         "dialog.css",
         "dropTarget.css",
         "emptyWidget.css",

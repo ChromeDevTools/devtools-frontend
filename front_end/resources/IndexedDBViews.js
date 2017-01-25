@@ -33,38 +33,32 @@
  */
 Resources.IDBDatabaseView = class extends UI.VBox {
   /**
+   * @param {!Resources.IndexedDBModel} model
    * @param {!Resources.IndexedDBModel.Database} database
    */
-  constructor(database) {
+  constructor(model, database) {
     super();
-    this.registerRequiredCSS('resources/indexedDBViews.css');
 
-    this.element.classList.add('indexed-db-database-view');
-    this.element.classList.add('storage-view');
+    this._model = model;
 
-    this._securityOriginElement = this.element.createChild('div', 'header-row');
-    this._nameElement = this.element.createChild('div', 'header-row');
-    this._versionElement = this.element.createChild('div', 'header-row');
+    this._reportView = new UI.ReportView(database.databaseId.name);
+    this._reportView.show(this.contentElement);
+
+    var bodySection = this._reportView.appendSection('');
+    this._securityOriginElement = bodySection.appendField(Common.UIString('Security origin'));
+    this._versionElement = bodySection.appendField(Common.UIString('Version'));
+
+    var footer = this._reportView.appendSection('').appendRow();
+    this._clearButton = UI.createTextButton(
+        Common.UIString('Delete database'), () => this._deleteDatabase(), Common.UIString('Delete database'));
+    footer.appendChild(this._clearButton);
 
     this.update(database);
   }
 
-  /**
-   * @param {!Element} element
-   * @param {string} name
-   * @param {string} value
-   */
-  _formatHeader(element, name, value) {
-    element.removeChildren();
-    element.createChild('div', 'attribute-name').textContent = name + ':';
-    element.createChild('div', 'attribute-value source-code').textContent = value;
-  }
-
   _refreshDatabase() {
-    this._formatHeader(
-        this._securityOriginElement, Common.UIString('Security origin'), this._database.databaseId.securityOrigin);
-    this._formatHeader(this._nameElement, Common.UIString('Name'), this._database.databaseId.name);
-    this._formatHeader(this._versionElement, Common.UIString('Version'), this._database.version);
+    this._securityOriginElement.textContent = this._database.databaseId.securityOrigin;
+    this._versionElement.textContent = this._database.version;
   }
 
   /**
@@ -73,6 +67,12 @@ Resources.IDBDatabaseView = class extends UI.VBox {
   update(database) {
     this._database = database;
     this._refreshDatabase();
+  }
+
+  _deleteDatabase() {
+    UI.ConfirmDialog.show(
+        Common.UIString('Are you sure you want to delete "%s"?', this._database.databaseId.name),
+        () => this._model.deleteDatabase(this._database.databaseId));
   }
 };
 

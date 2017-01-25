@@ -33,24 +33,6 @@
     margin-top: 5px;
 }
 
-.indexed-db-database-view .header-row {
-    white-space: nowrap;
-    margin: 0 0 2px 10px;
-}
-
-.indexed-db-database-view .header-row .attribute-name {
-    color: rgb(33%, 33%, 33%);
-    display: inline-block;
-    margin-right: 0.5em;
-    font-weight: bold;
-    vertical-align: top;
-}
-
-.indexed-db-database-view .header-row .attribute-value {
-    display: inline;
-    margin-top: 1px;
-}
-
 .indexed-db-data-view .data-view-toolbar {
     position: relative;
     background-color: #eee;

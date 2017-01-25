@@ -2038,3 +2038,43 @@ UI.createFileSelectorElement = function(callback) {
  * @type {number}
  */
 UI.MaxLengthForDisplayedURLs = 150;
+
+/**
+ * @unrestricted
+ */
+UI.ConfirmDialog = class extends UI.VBox {
+  /**
+   * @param {string} message
+   * @param {!Function} callback
+   */
+  static show(message, callback) {
+    var dialog = new UI.Dialog();
+    dialog.setWrapsContent(true);
+    dialog.addCloseButton();
+    dialog.setDimmed(true);
+    new UI
+        .ConfirmDialog(
+            message,
+            () => {
+              dialog.detach();
+              callback();
+            },
+            () => dialog.detach())
+        .show(dialog.element);
+    dialog.show();
+  }
+
+  /**
+   * @param {string} message
+   * @param {!Function} okCallback
+   * @param {!Function} cancelCallback
+   */
+  constructor(message, okCallback, cancelCallback) {
+    super(true);
+    this.registerRequiredCSS('ui/confirmDialog.css');
+    this.contentElement.createChild('div', 'message').createChild('span').textContent = message;
+    var buttonsBar = this.contentElement.createChild('div', 'button');
+    buttonsBar.appendChild(UI.createTextButton(Common.UIString('Ok'), okCallback));
+    buttonsBar.appendChild(UI.createTextButton(Common.UIString('Cancel'), cancelCallback));
+  }
+};

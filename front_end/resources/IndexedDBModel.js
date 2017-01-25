@@ -177,6 +177,19 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
     this._addOrigin(origin);
   }
 
+  /**
+   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
+   */
+  deleteDatabase(databaseId) {
+    if (!this._enabled)
+      return;
+    this._agent.deleteDatabase(databaseId.securityOrigin, databaseId.name, error => {
+      if (error)
+        console.error('Unable to delete ' + databaseId.name, error);
+      this._loadDatabaseNames(databaseId.securityOrigin);
+    });
+  }
+
   refreshDatabaseNames() {
     for (var securityOrigin in this._databaseNamesBySecurityOrigin)
       this._loadDatabaseNames(securityOrigin);

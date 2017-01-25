@@ -170,8 +170,10 @@ UI.Icon.Descriptors = {
 
   'largeicon-show-left-sidebar': {x: -160, y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
   'largeicon-hide-left-sidebar': {x: -192, y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-show-right-sidebar': {x: -192, y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-hide-right-sidebar': {x: -160, y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-show-right-sidebar':
+      {x: -160, y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true, transform: 'rotate(180deg)'},
+  'largeicon-hide-right-sidebar':
+      {x: -192, y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true, transform: 'rotate(180deg)'},
   'largeicon-show-top-sidebar': {
     x: -160,
     y: -72,

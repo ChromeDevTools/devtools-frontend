@@ -41,18 +41,20 @@ TimelineModel.TimelineModel = class {
   }
 
   /**
-   * @param {!Array.<!SDK.TracingModel.Event>} events
+   * @param {!Array<!SDK.TracingModel.Event>} events
    * @param {function(!SDK.TracingModel.Event)} onStartEvent
    * @param {function(!SDK.TracingModel.Event)} onEndEvent
    * @param {function(!SDK.TracingModel.Event,?SDK.TracingModel.Event)|undefined=} onInstantEvent
    * @param {number=} startTime
    * @param {number=} endTime
+   * @param {function(!SDK.TracingModel.Event):boolean=} filter
    */
-  static forEachEvent(events, onStartEvent, onEndEvent, onInstantEvent, startTime, endTime) {
+  static forEachEvent(events, onStartEvent, onEndEvent, onInstantEvent, startTime, endTime, filter) {
     startTime = startTime || 0;
     endTime = endTime || Infinity;
     var stack = [];
-    for (var i = 0; i < events.length; ++i) {
+    var startEvent = TimelineModel.TimelineModel._topLevelEventEndingAfter(events, startTime);
+    for (var i = startEvent; i < events.length; ++i) {
       var e = events[i];
       if ((e.endTime || e.startTime) < startTime)
         continue;
@@ -62,6 +64,8 @@ TimelineModel.TimelineModel = class {
         continue;
       while (stack.length && stack.peekLast().endTime <= e.startTime)
         onEndEvent(stack.pop());
+      if (filter && !filter(e))
+        continue;
       if (e.duration) {
         onStartEvent(e);
         stack.push(e);
@@ -71,6 +75,17 @@ TimelineModel.TimelineModel = class {
     }
     while (stack.length)
       onEndEvent(stack.pop());
+  }
+
+  /**
+   * @param {!Array<!SDK.TracingModel.Event>} events
+   * @param {number} time
+   */
+  static _topLevelEventEndingAfter(events, time) {
+    var index = events.upperBound(time, (time, event) => time - event.startTime) - 1;
+    while (index > 0 && !SDK.TracingModel.isTopLevelEvent(events[index]))
+      index--;
+    return Math.max(index, 0);
   }
 
   /**
@@ -337,7 +352,8 @@ TimelineModel.TimelineModel = class {
     var topLevelRecords = this._buildTimelineRecordsForThread(this.mainThreadEvents());
     for (var i = 0; i < topLevelRecords.length; i++) {
       var record = topLevelRecords[i];
-      if (SDK.TracingModel.isTopLevelEvent(record.traceEvent()))
+      var event = record.traceEvent();
+      if (SDK.TracingModel.isTopLevelEvent(event) && event.duration)
         this._mainThreadTasks.push(record);
     }
 

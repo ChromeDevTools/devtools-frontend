@@ -257,14 +257,6 @@ Timeline.TimelineUIUtils = class {
   }
 
   /**
-   * @param {!TimelineModel.TimelineModel.Record} record
-   * @return {!Timeline.TimelineCategory}
-   */
-  static categoryForRecord(record) {
-    return Timeline.TimelineUIUtils.eventStyle(record.traceEvent()).category;
-  }
-
-  /**
    * @param {!SDK.TracingModel.Event} event
    * @return {!{title: string, category: !Timeline.TimelineCategory}}
    */
@@ -939,42 +931,7 @@ Timeline.TimelineUIUtils = class {
    * @return {!DocumentFragment}
    */
   static buildRangeStats(model, startTime, endTime) {
-    var aggregatedStats = {};
-
-    /**
-     * @param {number} value
-     * @param {!TimelineModel.TimelineModel.Record} task
-     * @return {number}
-     */
-    function compareEndTime(value, task) {
-      return value < task.endTime() ? -1 : 1;
-    }
-    var mainThreadTasks = model.mainThreadTasks();
-    var taskIndex = mainThreadTasks.lowerBound(startTime, compareEndTime);
-    for (; taskIndex < mainThreadTasks.length; ++taskIndex) {
-      var task = mainThreadTasks[taskIndex];
-      if (task.startTime() > endTime)
-        break;
-      if (task.startTime() > startTime && task.endTime() < endTime) {
-        // cache stats for top-level entries that fit the range entirely.
-        var taskStats = task[Timeline.TimelineUIUtils._aggregatedStatsKey];
-        if (!taskStats) {
-          taskStats = {};
-          Timeline.TimelineUIUtils._collectAggregatedStatsForRecord(task, startTime, endTime, taskStats);
-          task[Timeline.TimelineUIUtils._aggregatedStatsKey] = taskStats;
-        }
-        for (var key in taskStats)
-          aggregatedStats[key] = (aggregatedStats[key] || 0) + taskStats[key];
-        continue;
-      }
-      Timeline.TimelineUIUtils._collectAggregatedStatsForRecord(task, startTime, endTime, aggregatedStats);
-    }
-
-    var aggregatedTotal = 0;
-    for (var categoryName in aggregatedStats)
-      aggregatedTotal += aggregatedStats[categoryName];
-    aggregatedStats['idle'] = Math.max(0, endTime - startTime - aggregatedTotal);
-
+    var aggregatedStats = Timeline.TimelineUIUtils.statsForTimeRange(model, startTime, endTime);
     var startOffset = startTime - model.minimumRecordTime();
     var endOffset = endTime - model.minimumRecordTime();
 
@@ -987,27 +944,116 @@ Timeline.TimelineUIUtils = class {
   }
 
   /**
-   * @param {!TimelineModel.TimelineModel.Record} record
+   * @param {!TimelineModel.TimelineModel} model
    * @param {number} startTime
    * @param {number} endTime
-   * @param {!Object} aggregatedStats
+   * @return {!Object<string, number>}
    */
-  static _collectAggregatedStatsForRecord(record, startTime, endTime, aggregatedStats) {
-    if (!record.endTime() || record.endTime() < startTime || record.startTime() > endTime)
-      return;
+  static statsForTimeRange(model, startTime, endTime) {
+    Timeline.TimelineUIUtils._buildRangeStatsCacheIfNeeded(model);
+    var tasks = model.mainThreadTasks().map(record => record.traceEvent());
+    if (!tasks.length)
+      return {};
+    var statsBeforeIndex = Math.min(tasks.lowerBound(startTime, (time, task) => time - task.endTime), tasks.length - 1);
+    var statsAfterIndex = Math.min(tasks.lowerBound(endTime, (time, task) => time - task.endTime), tasks.length - 1);
+    var events = model.mainThreadEvents();
 
-    var childrenTime = 0;
-    var children = record.children() || [];
-    for (var i = 0; i < children.length; ++i) {
-      var child = children[i];
-      if (!child.endTime() || child.endTime() < startTime || child.startTime() > endTime)
-        continue;
-      childrenTime += Math.min(endTime, child.endTime()) - Math.max(startTime, child.startTime());
-      Timeline.TimelineUIUtils._collectAggregatedStatsForRecord(child, startTime, endTime, aggregatedStats);
+    var statsAfter = subtractStats(
+        tasks[statsAfterIndex][Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol],
+        Timeline.TimelineUIUtils._slowStatsForTimeRange(events, endTime, tasks[statsAfterIndex].endTime));
+    var statsBefore = subtractStats(
+        tasks[statsBeforeIndex][Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol],
+        Timeline.TimelineUIUtils._slowStatsForTimeRange(events, startTime, tasks[statsBeforeIndex].endTime));
+    var aggregatedStats = subtractStats(statsAfter, statsBefore);
+
+    /**
+      * @param {!Object<string, number>} a
+      * @param {!Object<string, number>} b
+      * @return {!Object<string, number>}
+      */
+    function subtractStats(a, b) {
+      var result = Object.assign({}, a);
+      for (var key in b)
+        result[key] -= b[key];
+      return result;
     }
-    var categoryName = Timeline.TimelineUIUtils.categoryForRecord(record).name;
-    var ownTime = Math.min(endTime, record.endTime()) - Math.max(startTime, record.startTime()) - childrenTime;
-    aggregatedStats[categoryName] = (aggregatedStats[categoryName] || 0) + ownTime;
+
+    var aggregatedTotal = Object.values(aggregatedStats).reduce((a, b) => a + b, 0);
+    aggregatedStats['idle'] = Math.max(0, endTime - startTime - aggregatedTotal);
+    return aggregatedStats;
+  }
+
+  /**
+   * @param {!Array<!SDK.TracingModel.Event>} events
+   * @param {number} startTime
+   * @param {number} endTime
+   */
+  static _slowStatsForTimeRange(events, startTime, endTime) {
+    /** @type {!Object<string, number>} */
+    var stats = {};
+    var ownTimes = [];
+
+    TimelineModel.TimelineModel.forEachEvent(
+        events, onStartEvent, onEndEvent, undefined, startTime, endTime, Timeline.TimelineUIUtils._filterForStats());
+
+    /**
+     * @param {!SDK.TracingModel.Event} e
+     */
+    function onStartEvent(e) {
+      var duration = Math.min(e.endTime, endTime) - Math.max(e.startTime, startTime);
+      if (ownTimes.length)
+        ownTimes[ownTimes.length - 1] -= duration;
+      ownTimes.push(duration);
+    }
+
+    /**
+     * @param {!SDK.TracingModel.Event} e
+     */
+    function onEndEvent(e) {
+      var category = Timeline.TimelineUIUtils.eventStyle(e).category.name;
+      stats[category] = (stats[category] || 0) + ownTimes.pop();
+    }
+    return stats;
+  }
+
+  /**
+   * @return {function(!SDK.TracingModel.Event):boolean}
+   */
+  static _filterForStats() {
+    var visibleEventsFilter = Timeline.TimelineUIUtils.visibleEventsFilter();
+    return event => visibleEventsFilter.accept(event) || SDK.TracingModel.isTopLevelEvent(event);
+  }
+  /**
+   * @param {!TimelineModel.TimelineModel} model
+   */
+  static _buildRangeStatsCacheIfNeeded(model) {
+    var tasks = model.mainThreadTasks().map(record => record.traceEvent());
+    if (tasks.length && tasks[0][Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol])
+      return;
+    var aggregatedStats = {};
+    var ownTimes = [];
+    TimelineModel.TimelineModel.forEachEvent(
+        model.mainThreadEvents(), onStartEvent, onEndEvent, undefined, undefined, undefined,
+        Timeline.TimelineUIUtils._filterForStats());
+
+    /**
+     * @param {!SDK.TracingModel.Event} e
+     */
+    function onStartEvent(e) {
+      if (ownTimes.length)
+        ownTimes[ownTimes.length - 1] -= e.duration;
+      ownTimes.push(e.duration);
+    }
+
+    /**
+     * @param {!SDK.TracingModel.Event} e
+     */
+    function onEndEvent(e) {
+      var category = Timeline.TimelineUIUtils.eventStyle(e).category.name;
+      aggregatedStats[category] = (aggregatedStats[category] || 0) + ownTimes.pop();
+      if (!ownTimes.length)
+        e[Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol] = Object.assign({}, aggregatedStats);
+    }
   }
 
   /**
@@ -2252,3 +2298,5 @@ Timeline.TimelineDetailsContentHelper = class {
       this.appendElementRow(Common.UIString('Warning'), warning, true);
   }
 };
+
+Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol = Symbol('categoryBreakdownCache');

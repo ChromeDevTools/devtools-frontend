@@ -159,28 +159,12 @@
 
 .data-grid th .sort-order-icon {
     margin-right: 4px;
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
-    opacity: 0.5;
-    width: 8px;
-    height: 7px;
     display: none;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.data-grid th .sort-order-icon {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-.data-grid th.sort-ascending .sort-order-icon {
-    display: block;
-    background-position: -4px -111px;
-}
-
+.data-grid th.sort-ascending .sort-order-icon,
 .data-grid th.sort-descending .sort-order-icon {
     display: block;
-    background-position: -20px -99px;
 }
 
 .data-grid th:hover {

@@ -376,31 +376,9 @@
     bottom: 1px;
     display: flex;
     align-items: center;
-    padding-left: 0px;
 }
 
 .network-waterfall-header .sort-order-icon {
+    align-items: center;
     margin-right: 4px;
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
-    opacity: 0.5;
-    width: 8px;
-    height: 7px;
-    display: none;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.network-waterfall-header .sort-order-icon {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-.network-waterfall-header .sort-ascending.sort-order-icon {
-    display: block;
-    background-position: -4px -111px;
-}
-
-.network-waterfall-header .sort-descending.sort-order-icon {
-    display: block;
-    background-position: -20px -99px;
 }

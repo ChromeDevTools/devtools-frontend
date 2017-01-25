@@ -168,7 +168,9 @@ DataGrid.DataGrid = class extends Common.Object {
     if (column.sortable) {
       cell.addEventListener('click', this._clickInHeaderCell.bind(this), false);
       cell.classList.add('sortable');
-      cell.createChild('div', 'sort-order-icon-container').createChild('div', 'sort-order-icon');
+      var icon = UI.Icon.create('', 'sort-order-icon');
+      cell.createChild('div', 'sort-order-icon-container').appendChild(icon);
+      cell[DataGrid.DataGrid._sortIconSymbol] = icon;
     }
   }
 
@@ -903,6 +905,9 @@ DataGrid.DataGrid = class extends Common.Object {
     this._sortColumnCell = cell;
 
     cell.classList.add(sortOrder);
+    var icon = cell[DataGrid.DataGrid._sortIconSymbol];
+    icon.setIconType(
+        sortOrder === DataGrid.DataGrid.Order.Ascending ? 'smallicon-triangle-up' : 'smallicon-triangle-down');
 
     this.dispatchEventToListeners(DataGrid.DataGrid.Events.SortingChanged);
   }
@@ -1186,6 +1191,7 @@ DataGrid.DataGrid.Align = {
 
 DataGrid.DataGrid._preferredWidthSymbol = Symbol('preferredWidth');
 DataGrid.DataGrid._columnIdSymbol = Symbol('columnId');
+DataGrid.DataGrid._sortIconSymbol = Symbol('sortIcon');
 
 DataGrid.DataGrid.ColumnResizePadding = 24;
 DataGrid.DataGrid.CenterResizerOverBorderAdjustment = 3;

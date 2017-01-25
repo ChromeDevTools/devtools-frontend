@@ -4,7 +4,7 @@
             "type": "view",
             "location": "panel",
             "id": "timeline",
-            "title": "Performance",
+            "title": "Timeline",
             "order": 50,
             "className": "Timeline.TimelinePanel"
         },

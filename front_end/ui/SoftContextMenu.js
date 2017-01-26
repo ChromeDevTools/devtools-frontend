@@ -124,7 +124,8 @@ UI.SoftContextMenu = class {
       return this._createSubMenu(item);
 
     var menuItemElement = createElementWithClass('div', 'soft-context-menu-item');
-    var checkMarkElement = menuItemElement.createChild('div', 'checkmark');
+    var checkMarkElement = UI.Icon.create('smallicon-checkmark', 'checkmark');
+    menuItemElement.appendChild(checkMarkElement);
     if (!item.checked)
       checkMarkElement.style.opacity = '0';
 
@@ -156,8 +157,9 @@ UI.SoftContextMenu = class {
     menuItemElement._subItems = item.subItems;
 
     // Occupy the same space on the left in all items.
-    var checkMarkElement = menuItemElement.createChild('span', 'soft-context-menu-item-checkmark checkmark');
-    checkMarkElement.textContent = '\u2713 ';  // Checkmark Unicode symbol
+    var checkMarkElement = UI.Icon.create('smallicon-checkmark', 'soft-context-menu-item-checkmark');
+    checkMarkElement.classList.add('checkmark');
+    menuItemElement.appendChild(checkMarkElement);
     checkMarkElement.style.opacity = '0';
 
     menuItemElement.createTextChild(item.label);
@@ -257,6 +259,7 @@ UI.SoftContextMenu = class {
 
     this._hideSubMenu();
     if (this._highlightedMenuItemElement) {
+      this._highlightedMenuItemElement.classList.remove('force-white-icons');
       this._highlightedMenuItemElement.classList.remove('soft-context-menu-item-mouse-over');
       if (this._highlightedMenuItemElement._subItems && this._highlightedMenuItemElement._subMenuTimer) {
         clearTimeout(this._highlightedMenuItemElement._subMenuTimer);
@@ -265,6 +268,7 @@ UI.SoftContextMenu = class {
     }
     this._highlightedMenuItemElement = menuItemElement;
     if (this._highlightedMenuItemElement) {
+      this._highlightedMenuItemElement.classList.add('force-white-icons');
       this._highlightedMenuItemElement.classList.add('soft-context-menu-item-mouse-over');
       this._contextMenuElement.focus();
       if (scheduleSubMenu && this._highlightedMenuItemElement._subItems &&

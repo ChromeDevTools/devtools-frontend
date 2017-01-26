@@ -118,6 +118,7 @@ UI.Icon.Descriptors = {
   'smallicon-file-sync': {x: -76, y: -24, width: 12, height: 14, spritesheet: 'largeicons'},
   'smallicon-search': {x: -234, y: -30, width: 12, height: 12, spritesheet: 'largeicons'},
   'smallicon-clear-input': {x: -143, y: -96, width: 13, height: 13, spritesheet: 'largeicons'},
+  'smallicon-checkmark': {x: -128, y: -109, width: 10, height: 10, spritesheet: 'largeicons'},
 
   'largeicon-longclick-triangle': {x: -290, y: -46, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
   'largeicon-menu': {x: -192, y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},

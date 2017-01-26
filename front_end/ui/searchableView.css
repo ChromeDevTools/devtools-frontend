@@ -129,7 +129,6 @@
 .search-results-matches {
     display: inline-block;
     text-align: right;
-    font-size: 11px;
     padding: 0 4px;
     color: rgb(165, 165, 165);
 }

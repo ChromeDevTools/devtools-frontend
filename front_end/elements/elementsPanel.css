@@ -224,6 +224,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    height: 14px;
 }
 
 .styles-section .styles-section-subtitle .devtools-link {

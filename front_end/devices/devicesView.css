@@ -39,10 +39,6 @@
     padding-left: 10px;
 }
 
-.devices-sidebar-item-status {
-    font-size: 11px;
-}
-
 .devices-sidebar-item-status:before {
     content: "\25cf";
     font-size: 16px;

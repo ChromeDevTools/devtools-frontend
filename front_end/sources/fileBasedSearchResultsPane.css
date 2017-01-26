@@ -17,8 +17,11 @@
     padding: 0;
 }
 
+.tree-outline li {
+    height: 16px;
+}
+
 li.search-result {
-    font-size: 11px;
     padding: 2px 0 2px 4px;
     word-wrap: normal;
     white-space: pre;
@@ -44,7 +47,6 @@ li.show-more-matches {
     padding: 4px 0;
     color: #222;
     cursor: pointer;
-    font-size: 11px;
     margin-left: 20px;
 }
 
@@ -55,7 +57,6 @@ li.show-more-matches:hover {
 li.search-match {
     word-wrap: normal;
     white-space: pre;
-    min-height: 12px;
 }
 
 li.search-match::before {
@@ -67,8 +68,7 @@ li.search-match .search-match-line-number {
     text-align: right;
     vertical-align: top;
     word-break: normal;
-    padding-right: 4px;
-    padding-left: 6px;
+    padding: 2px 4px 2px 6px;
     margin-right: 5px;
     border-right: 1px solid #BBB;
 }

@@ -136,7 +136,6 @@ button.expand-siblings {
     border: 1px solid #ddd;
     margin-left: 5px;
     margin-bottom: 1px;
-    font-size: 11px;
 }
 
 li.siblings-expanded button.expand-siblings {

@@ -365,7 +365,6 @@
 }
 
 .device-mode-ruler-text {
-    font-size: 11px;
     color: hsl(0, 0%, 50%);
     position: relative;
     pointer-events: auto;

@@ -66,7 +66,6 @@
 }
 
 .network-log-grid.data-grid td {
-    line-height: 17px;
     height: 41px;
     border-left: 1px solid #e1e1e1;
     vertical-align: middle;
@@ -366,7 +365,6 @@
     text-align: left;
     font-weight: normal;
     padding: 0px 4px;
-    font-size: 11px;
 }
 
 .network-waterfall-header .sort-order-icon-container {

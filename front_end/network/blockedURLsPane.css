@@ -13,7 +13,6 @@
 }
 
 .no-blocked-urls, .blocked-urls-list {
-    font-size: 11px;
     overflow-x: hidden;
     overflow-y: auto;
 }

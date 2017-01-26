@@ -18,7 +18,6 @@
 }
 
 .rule-result {
-    font-size: 11px;
     padding: 2px 0 2px 4px;
     word-wrap: normal;
     white-space: pre;
@@ -43,7 +42,6 @@ li.show-more-matches {
     padding: 4px 0;
     color: #222;
     cursor: pointer;
-    font-size: 11px;
     margin-left: 20px;
 }
 

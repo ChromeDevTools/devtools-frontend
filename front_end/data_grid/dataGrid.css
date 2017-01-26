@@ -1,7 +1,6 @@
 .data-grid {
     position: relative;
     border: 1px solid #aaa;
-    font-size: 11px;
     line-height: 120%;
 }
 
@@ -23,11 +22,11 @@
 
 .data-grid .header-container {
     top: 0;
-    height: 17px;
+    height: 21px;
  }
 
 .data-grid .data-container {
-    top: 17px;
+    top: 21px;
     bottom: 0;
     overflow-y: overlay;
     transform: translateZ(0);
@@ -67,8 +66,8 @@
     right: 0;
     bottom: 0;
     border-top: 0 none transparent;
-    background-image: linear-gradient(to bottom, transparent, transparent 50%, hsla(214, 100%, 40%, 0.1) 50%, hsla(214, 100%, 40%, 0.1));
-    background-size: 128px 32px;
+    background-image: linear-gradient(to bottom, transparent, transparent 50%, hsla(214, 100%, 40%, 0.05) 50%, hsla(214, 100%, 40%, 0.05));
+    background-size: 128px 42px;
     table-layout: fixed;
 }
 
@@ -89,7 +88,8 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    line-height: 14px;
+    line-height: 19px;
+    height: 19px;
     border-left: 1px solid #aaa;
 }
 
@@ -99,16 +99,14 @@
 }
 
 .data-grid td {
-    height: 16px; /* Keep in sync with .data-grid table.data @ background-size */
     vertical-align: top;
     padding: 1px 4px;
     -webkit-user-select: text;
 }
 
 .data-grid th {
-    height: auto;
     text-align: left;
-    background-color: #eee;
+    background-color: #f3f3f3;
     border-bottom: 1px solid #aaa;
     font-weight: normal;
     vertical-align: middle;
@@ -188,7 +186,7 @@
     content: "a";
     color: transparent;
     position: relative;
-    top: 1px;
+    top: 3px;
     background-color: rgb(110, 110, 110);
 }
 

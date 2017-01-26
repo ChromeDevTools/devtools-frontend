@@ -249,11 +249,11 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
   }
 
   _updateHighlight() {
-    const inDividersBar = this._lastMouseOffsetY < PerfUI.FlameChart.HeaderHeight;
+    var inDividersBar = this._lastMouseOffsetY < PerfUI.FlameChart.HeaderHeight;
     this._highlightedMarkerIndex = inDividersBar ? this._markerIndexAtPosition(this._lastMouseOffsetX) : -1;
     this._updateMarkerHighlight();
 
-    const entryIndex = this._highlightedMarkerIndex === -1 ?
+    var entryIndex = this._highlightedMarkerIndex === -1 ?
         this._coordinatesToEntryIndex(this._lastMouseOffsetX, this._lastMouseOffsetY) :
         -1;
     if (entryIndex === -1) {
@@ -320,7 +320,7 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
     // onClick comes after dragStart and dragEnd events.
     // So if there was drag (mouse move) in the middle of that events
     // we skip the click. Otherwise we jump to the sources.
-    const clickThreshold = 5;
+    var /** @const */ clickThreshold = 5;
     if (this.maxDragOffset() > clickThreshold)
       return;
     var groupIndex = this._coordinatesToGroupIndex(event.offsetX, event.offsetY);
@@ -534,18 +534,18 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
    * @return {number}
    */
   _markerIndexAtPosition(x) {
-    const markers = this._timelineData().markers;
+    var markers = this._timelineData().markers;
     if (!markers)
       return -1;
-    const accurracyOffsetPx = 4;
-    const time = this._cursorTime(x);
-    const leftTime = this._cursorTime(x - accurracyOffsetPx);
-    const rightTime = this._cursorTime(x + accurracyOffsetPx);
-    const left = this._markerIndexBeforeTime(leftTime);
+    var /** @const */ accurracyOffsetPx = 4;
+    var time = this._cursorTime(x);
+    var leftTime = this._cursorTime(x - accurracyOffsetPx);
+    var rightTime = this._cursorTime(x + accurracyOffsetPx);
+    var left = this._markerIndexBeforeTime(leftTime);
     var markerIndex = -1;
     var distance = Infinity;
     for (var i = left; i < markers.length && markers[i].startTime() < rightTime; i++) {
-      const nextDistance = Math.abs(markers[i].startTime() - time);
+      var nextDistance = Math.abs(markers[i].startTime() - time);
       if (nextDistance < distance) {
         markerIndex = i;
         distance = nextDistance;
@@ -701,7 +701,7 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
 
     this._drawGroupHeaders(width, height);
     this._drawMarkers();
-    const headerHeight = this._rulerEnabled ? PerfUI.FlameChart.HeaderHeight : 0;
+    var headerHeight = this._rulerEnabled ? PerfUI.FlameChart.HeaderHeight : 0;
     PerfUI.TimelineGrid.drawCanvasGrid(context, this._calculator, 3, headerHeight);
 
     this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
@@ -774,7 +774,7 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
     forEachGroup.call(this, (offset, index, group) => {
       context.font = group.style.font;
       if (this._isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
-        const width = this._labelWidthForGroup(context, group) + 2;
+        var width = this._labelWidthForGroup(context, group) + 2;
         context.fillStyle = Common.Color.parse(group.style.backgroundColor).setAlpha(0.8).asString(null);
         context.fillRect(
             this._headerLeftPadding - this._headerLabelXPadding, offset + this._headerLabelYPadding, width,
@@ -888,20 +888,20 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
       var lastDrawOffset = Infinity;
 
       for (var entryIndexOnLevel = rightIndexOnLevel; entryIndexOnLevel >= 0; --entryIndexOnLevel) {
-        const entryIndex = levelIndexes[entryIndexOnLevel];
-        const entryStartTime = entryStartTimes[entryIndex];
-        const barX = this._timeToPositionClipped(entryStartTime);
-        const entryEndTime = entryStartTime + entryTotalTimes[entryIndex];
+        var entryIndex = levelIndexes[entryIndexOnLevel];
+        var entryStartTime = entryStartTimes[entryIndex];
+        var barX = this._timeToPositionClipped(entryStartTime);
+        var entryEndTime = entryStartTime + entryTotalTimes[entryIndex];
         if (isNaN(entryEndTime) || barX >= lastDrawOffset)
           continue;
         if (entryEndTime <= timeWindowLeft)
           break;
         lastDrawOffset = barX;
-        const color = this._dataProvider.entryColor(entryIndex);
-        const endBarX = this._timeToPositionClipped(entryEndTime);
+        var color = this._dataProvider.entryColor(entryIndex);
+        var endBarX = this._timeToPositionClipped(entryEndTime);
         if (group.style.useDecoratorsForOverview && this._dataProvider.forceDecoration(entryIndex)) {
-          const unclippedBarX = this._timeToPosition(entryStartTime);
-          const barWidth = endBarX - barX;
+          var unclippedBarX = this._timeToPosition(entryStartTime);
+          var barWidth = endBarX - barX;
           context.beginPath();
           context.fillStyle = color;
           context.fillRect(barX, y, barWidth, barHeight);
@@ -1095,7 +1095,7 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
    * @param {number} entryIndex
    */
   _updateElementPosition(element, entryIndex) {
-    const elementMinWidthPx = 2;
+    var /** @const */ elementMinWidthPx = 2;
     if (element.parentElement)
       element.remove();
     if (entryIndex === -1)

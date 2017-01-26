@@ -54,7 +54,7 @@ Timeline.TimelineFlameChartDataProvider = class {
     this._extensionColorGenerator =
         new PerfUI.FlameChart.ColorGenerator({min: 210, max: 300}, {min: 70, max: 100, count: 6}, 70, 0.7);
 
-    const defaultGroupStyle = {
+    var defaultGroupStyle = {
       padding: 4,
       height: 17,
       collapsible: true,
@@ -85,7 +85,7 @@ Timeline.TimelineFlameChartDataProvider = class {
   entryTitle(entryIndex) {
     var entryType = this._entryType(entryIndex);
     if (entryType === Timeline.TimelineFlameChartEntryType.Event) {
-      const event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
+      var event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
       if (event.phase === SDK.TracingModel.Phase.AsyncStepInto || event.phase === SDK.TracingModel.Phase.AsyncStepPast)
         return event.name + ':' + event.args['step'];
       if (event._blackboxRoot)
@@ -98,7 +98,7 @@ Timeline.TimelineFlameChartDataProvider = class {
       return detailsText ? Common.UIString('%s (%s)', name, detailsText) : name;
     }
     if (entryType === Timeline.TimelineFlameChartEntryType.ExtensionEvent) {
-      const event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
+      var event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
       return event.name;
     }
     var title = this._entryIndexToTitle[entryIndex];
@@ -401,8 +401,8 @@ Timeline.TimelineFlameChartDataProvider = class {
   }
 
   _appendGPUEvents() {
-    const eventType = Timeline.TimelineFlameChartEntryType.Event;
-    const gpuEvents = this._model.gpuEvents();
+    var eventType = Timeline.TimelineFlameChartEntryType.Event;
+    var gpuEvents = this._model.gpuEvents();
     if (this._appendSyncEvents(gpuEvents, Common.UIString('GPU'), this._headerLevel1, eventType, false))
       ++this._currentLevel;
   }

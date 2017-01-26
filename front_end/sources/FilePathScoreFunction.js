@@ -79,7 +79,7 @@ Sources.FilePathScoreFunction = class {
     }
     if (matchIndexes)
       this._restoreMatchIndexes(sequence, n, m, matchIndexes);
-    const maxDataLength = 256;
+    var maxDataLength = 256;
     return score[n * m - 1] * maxDataLength + (maxDataLength - data.length);
   }
 
@@ -89,8 +89,11 @@ Sources.FilePathScoreFunction = class {
    * @return {boolean}
    */
   _testWordStart(data, j) {
+    if (j === 0)
+      return true;
+
     var prevChar = data.charAt(j - 1);
-    return j === 0 || prevChar === '_' || prevChar === '-' || prevChar === '/' ||
+    return prevChar === '_' || prevChar === '-' || prevChar === '/' ||
         (data[j - 1] !== this._dataUpperCase[j - 1] && data[j] === this._dataUpperCase[j]);
   }
 

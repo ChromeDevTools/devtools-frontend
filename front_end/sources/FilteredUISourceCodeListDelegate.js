@@ -106,8 +106,8 @@ Sources.FilteredUISourceCodeListDelegate = class extends QuickOpen.FilteredListW
       this._scorer = new Sources.FilePathScoreFunction(query);
     }
 
-    var url = uiSourceCode.url();
-    return score + 10 * this._scorer.score(url, null);
+    var fullDisplayName = uiSourceCode.fullDisplayName();
+    return score + 10 * this._scorer.score(fullDisplayName, null);
   }
 
   /**

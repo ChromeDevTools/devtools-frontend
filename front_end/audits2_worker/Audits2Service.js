@@ -37,50 +37,27 @@ var Audits2Service = class {
   }
 
   /**
-   * @return {!Promise}
+   * @return {!Promise<!Audits2.WorkerResult>}
    */
-  start() {
-    return window.runLighthouseInWorker(this, 'https://www.webkit.org', {flags: {mobile: true}}, [
-      'is-on-https',
-      'redirects-http',
-      'service-worker',
-      'works-offline',
-      'viewport',
-      'manifest-display',
-      'without-javascript',
-      'first-meaningful-paint',
-      'speed-index-metric',
-      'estimated-input-latency',
-      'time-to-interactive',
-      'user-timings',
-      'screenshots',
-      'critical-request-chains',
-      'manifest-exists',
-      'manifest-background-color',
-      'manifest-theme-color',
-      'manifest-icons-min-192',
-      'manifest-icons-min-144',
-      'manifest-name',
-      'manifest-short-name',
-      'manifest-short-name-length',
-      'manifest-start-url',
-      'meta-theme-color',
-      'aria-valid-attr',
-      'aria-allowed-attr',
-      'color-contrast',
-      'image-alt',
-      'label',
-      'tabindex',
-      'content-width',
-      'geolocation-on-start'
-    ]);
+  start(params) {
+    const connection = this;
+    const options = undefined;
+
+    self.listenForStatus(message => {
+      this.statusUpdate(message[1]);
+    });
+    return self.runLighthouseInWorker(connection, params.url, options, params.aggregationTags)
+        .then(
+            /** @type {!Audits2.LighthouseResult} */ result =>
+                ({blobUrl: /** @type {?string} */ self.createReportPageAsBlob(result, 'devtools'), result}))
+        .catchException(null);
   }
 
   /**
    * @return {!Promise}
    */
   stop() {
-    this._onClose();
+    this.close();
     return Promise.resolve();
   }
 
@@ -99,6 +76,13 @@ var Audits2Service = class {
    */
   dispose() {
     return Promise.resolve();
+  }
+
+  /**
+   * @param {string} message
+   */
+  statusUpdate(message) {
+    this._notify('statusUpdate', {message: message});
   }
 
   /**

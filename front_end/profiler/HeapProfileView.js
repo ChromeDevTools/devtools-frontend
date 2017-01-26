@@ -136,8 +136,7 @@ Profiler.SamplingHeapProfileType = class extends Profiler.ProfileType {
       this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, recordedProfile);
     }
 
-    this.profileBeingRecorded()
-        .target()
+    this.profileBeingRecorded().target()
         .heapProfilerModel.stopSampling()
         .then(didStopProfiling.bind(this))
         .then(SDK.targetManager.resumeAllTargets.bind(SDK.targetManager))

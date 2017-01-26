@@ -187,7 +187,7 @@ var WorkerServicePort = class {
 
 var dispatchers = [];
 
-if (self instanceof SharedWorkerGlobalScope) {
+if (self.SharedWorkerGlobalScope) {
   function onNewPort(port) {
     var dispatcher = new ServiceDispatcher(new WorkerServicePort(port));
     dispatchers.push(dispatcher);

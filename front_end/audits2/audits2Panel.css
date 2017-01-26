@@ -1,0 +1,195 @@
+/*
+ * Copyright (C) 2008 Apple Inc.  All rights reserved.
+ * Copyright (C) 2009 Google Inc. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+iframe {
+    width: 100%;
+    height: 100%;
+    flex-direction: column !important;
+    position: relative;
+    flex: auto;
+}
+
+.audits-view {
+    max-width: 550px;
+    min-width: 334px;
+    align-self: center;
+    margin-top: 30px;
+    margin: 30px 20px;
+}
+
+.results-view {
+    display: none;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-content: stretch;
+    align-items: stretch;
+}
+
+.show-results .audits-view {
+    display: none;
+}
+
+.show-results .results-view {
+    display: flex;
+    flex: 1;
+}
+
+.results-bar {
+    flex: 0 0;
+    align-self: auto;
+    border-bottom: 1px solid #cccccc;
+}
+
+.audits2-summary {display: flex;flex-direction: column;flex-grow: 1;padding: 6px;line-height: 1.7;align-self: center;}
+
+.audits2-summary span {
+    color: #b7b7b7;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.audits2-summary span b {
+    font-weight: normal;
+    color: #636382;
+}
+
+.audits2-summary span:first-child {
+    color: inherit;
+    font-size: 110%;
+}
+
+.audits2-logo {
+    width: 100px;
+    height: 110px;
+    flex-shrink: 0;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-top: 10px;
+    background-image: -webkit-image-set(
+        url(Images/audits_logo.png) 1x,
+        url(Images/audits_logo_2x.png) 2x);
+}
+
+.audits2-logo-small {
+    background-image: -webkit-image-set(
+        url(Images/audits_logo_bw.png) 1x,
+        url(Images/audits_logo_bw_2x.png) 2x);
+    height: 41px;
+    width: 42px;
+    align-self: center;
+    margin: 0 0 0 20px;
+    flex-shrink: 0;
+}
+
+.iframe-container {
+    flex: 1 1 auto;
+    align-self: auto;
+    position: relative;
+}
+
+.audits2-form label {
+    display: block;
+}
+
+.audits2-form label div {
+    display: inline;
+}
+
+button.audit-btn {
+    display: inline-block;
+    font-family: BlinkMacSystemFont, '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
+    color: white;
+    text-shadow: none;
+    padding: 6px 10px;
+    background-color: #4285f4 !important;
+    background-image: unset !important;
+    font-size: 11px;
+    box-shadow: none !important;
+}
+
+button.audit-btn:hover {
+    background-color: hsla(217, 89%, 58%, 1) !important;
+    color: white !important;
+}
+
+button.run-audit {
+    margin-top: 12px;
+}
+button.run-audit.started {
+    background-color: #ffffff !important;
+    color: gray;
+}
+
+button.run-audit.started:hover {
+    background-color: #eee !important;
+    color: gray !important;
+}
+
+button.new-audit {
+    align-self: center;
+    margin-right: 20px;
+}
+
+.audits2-status .icon {
+    width: 16px;
+    height: 16px;
+    margin-top: 10px;
+    margin-right: 4px;
+    animation: spinner-animation 1200ms linear infinite;
+    transform-origin: 50% 50%;
+    padding: 1px;
+}
+
+.audits2-status .icon::before {
+    display: inline-block;
+    border: 1px solid #1565C0;
+    border-radius: 7px;
+    width: 14px;
+    height: 14px;
+    content: "";
+    position: absolute;
+    box-sizing: border-box;
+}
+
+.audits2-status .icon::after {
+    display: inline-block;
+    width: 6px;
+    height: 7px;
+    background: white;
+    position: absolute;
+    content: "";
+}
+
+@keyframes spinner-animation {
+    from { transform: rotate(0); }
+    to { transform: rotate(360deg); }

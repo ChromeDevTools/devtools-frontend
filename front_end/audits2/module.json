@@ -19,5 +19,8 @@
     "experiment": "audits2",
     "scripts": [
         "Audits2Panel.js"
+    ],
+    "resources": [
+        "audits2Panel.css"
     ]
 }

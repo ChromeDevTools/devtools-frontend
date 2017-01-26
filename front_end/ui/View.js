@@ -464,7 +464,9 @@ UI.ViewManager._ExpandableContainerWidget = class extends UI.VBox {
     this.registerRequiredCSS('ui/viewContainers.css');
 
     this._titleElement = createElementWithClass('div', 'expandable-view-title');
-    this._titleElement.textContent = view.title();
+    this._titleExpandIcon = UI.Icon.create('smallicon-triangle-right', 'title-expand-icon');
+    this._titleElement.appendChild(this._titleExpandIcon);
+    this._titleElement.createTextChild(view.title());
     this._titleElement.tabIndex = 0;
     this._titleElement.addEventListener('click', this._toggleExpanded.bind(this), false);
     this._titleElement.addEventListener('keydown', this._onTitleKeyDown.bind(this), false);
@@ -500,6 +502,7 @@ UI.ViewManager._ExpandableContainerWidget = class extends UI.VBox {
     if (this._titleElement.classList.contains('expanded'))
       return this._materialize();
     this._titleElement.classList.add('expanded');
+    this._titleExpandIcon.setIconType('smallicon-triangle-down');
     return this._materialize().then(() => this._widget.show(this.element));
   }
 
@@ -507,6 +510,7 @@ UI.ViewManager._ExpandableContainerWidget = class extends UI.VBox {
     if (!this._titleElement.classList.contains('expanded'))
       return;
     this._titleElement.classList.remove('expanded');
+    this._titleExpandIcon.setIconType('smallicon-triangle-right');
     this._materialize().then(() => this._widget.detach());
   }
 

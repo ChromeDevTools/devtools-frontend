@@ -57,31 +57,8 @@
     display: none;
 }
 
-.expandable-view-title::before {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
-    background-color: #888;
-    float: left;
-    width: 11px;
-    height: 11px;
+.title-expand-icon {
     margin-right: 2px;
-    content: "a";
-    color: transparent;
-    flex-shrink: 0;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.expandable-view-title::before {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-.expandable-view-title::before {
-    -webkit-mask-position: -4px -96px;
-}
-
-.expandable-view-title.expanded::before {
-    -webkit-mask-position: -20px -96px;
 }
 
 .expandable-view-title > .toolbar {

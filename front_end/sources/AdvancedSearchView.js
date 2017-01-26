@@ -29,10 +29,14 @@ Sources.AdvancedSearchView = class extends UI.VBox {
     this._search.setAttribute('results', '0');
     this._search.setAttribute('size', 42);
 
-    this._searchPanelElement.createChild('div', 'search-icon');
-    this._searchInputClearElement = this._searchPanelElement.createChild('div', 'search-cancel-button');
-    this._searchInputClearElement.hidden = true;
+    var searchIcon = UI.Icon.create('smallicon-search', 'search-icon');
+    this._searchPanelElement.appendChild(searchIcon);
+
+    this._searchInputClearElement = UI.Icon.create('smallicon-clear-input', 'search-cancel-button');
+    this._searchInputClearElement.classList.add('hidden');
     this._searchInputClearElement.addEventListener('click', this._onSearchInputClear.bind(this), false);
+    var cancelButtonContainer = this._searchPanelElement.createChild('div', 'search-cancel-button-container');
+    cancelButtonContainer.appendChild(this._searchInputClearElement);
 
     this._ignoreCaseLabel = UI.createCheckboxLabel(Common.UIString('Ignore case'));
     this._ignoreCaseLabel.classList.add('search-config-label');
@@ -132,7 +136,7 @@ Sources.AdvancedSearchView = class extends UI.VBox {
   _onSearchInputClear() {
     this._search.value = '';
     this.focus();
-    this._searchInputClearElement.hidden = true;
+    this._searchInputClearElement.classList.add('hidden');
   }
 
   /**
@@ -319,10 +323,8 @@ Sources.AdvancedSearchView = class extends UI.VBox {
   }
 
   _onInput() {
-    if (this._search.value && this._search.value.length)
-      this._searchInputClearElement.hidden = false;
-    else
-      this._searchInputClearElement.hidden = true;
+    var hasText = this._search.value && this._search.value.length;
+    this._searchInputClearElement.classList.toggle('hidden', !hasText);
   }
 
   _save() {
@@ -335,7 +337,7 @@ Sources.AdvancedSearchView = class extends UI.VBox {
     this._ignoreCaseCheckbox.checked = searchConfig.ignoreCase();
     this._regexCheckbox.checked = searchConfig.isRegex();
     if (this._search.value && this._search.value.length)
-      this._searchInputClearElement.hidden = false;
+      this._searchInputClearElement.classList.remove('hidden');
   }
 
   _onAction() {

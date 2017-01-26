@@ -23,13 +23,8 @@
 }
 
 .search-drawer-header .search-icon {
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
-    background-position: -234px 138px;
     left: 10px;
     top: 10px;
-    width: 12px;
-    height: 12px;
     position: absolute;
 }
 
@@ -37,22 +32,14 @@
     -webkit-appearance: none;
 }
 
-.search-drawer-header .search-cancel-button {
+.search-drawer-header .search-cancel-button-container {
     position: relative;
-    left: -22px;
-    top: 9px;
 }
 
-.search-drawer-header .search-cancel-button::before {
-    content: '';
-    background-image: url(Images/toolbarButtonGlyphs.png);
-    background-size: 352px 168px;
-    left: 0;
-    top: 0;
-    width: 13px;
-    height: 13px;
-    background-position: -143px -96px;
+.search-drawer-header .search-cancel-button {
     position: absolute;
+    right: 9px;
+    top: 9px;
 }
 
 :host-context(.platform-mac) .search-drawer-header input.search-config-search {
@@ -88,16 +75,6 @@
     white-space: nowrap;
     overflow: hidden;
 }
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.search-drawer-header .search-icon {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-
-.search-drawer-header .search-cancel-button::before {
-    background-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
 
 .search-view .search-results {
     overflow-y: auto;

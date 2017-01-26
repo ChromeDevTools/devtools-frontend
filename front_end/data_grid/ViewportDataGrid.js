@@ -315,11 +315,14 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
     return this._isStriped;
   }
 
-  _clearFlatNodes() {
+  /**
+   * @protected
+   */
+  clearFlatNodes() {
     this._flatNodes = null;
     var parent = /** @type {!DataGrid.ViewportDataGridNode} */ (this.parent);
     if (parent)
-      parent._clearFlatNodes();
+      parent.clearFlatNodes();
   }
 
   /**
@@ -359,7 +362,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
    * @param {number} index
    */
   insertChild(child, index) {
-    this._clearFlatNodes();
+    this.clearFlatNodes();
     if (child.parent === this) {
       var currentIndex = this.children.indexOf(child);
       if (currentIndex < 0)
@@ -385,7 +388,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
    * @param {!NODE_TYPE} child
    */
   removeChild(child) {
-    this._clearFlatNodes();
+    this.clearFlatNodes();
     if (this.dataGrid)
       this.dataGrid.updateSelectionBeforeRemoval(child, false);
     if (child.previousSibling)
@@ -407,7 +410,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
    * @override
    */
   removeChildren() {
-    this._clearFlatNodes();
+    this.clearFlatNodes();
     if (this.dataGrid)
       this.dataGrid.updateSelectionBeforeRemoval(this, true);
     for (var i = 0; i < this.children.length; ++i)
@@ -435,7 +438,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
   collapse() {
     if (!this._expanded)
       return;
-    this._clearFlatNodes();
+    this.clearFlatNodes();
     this._expanded = false;
     if (this.existingElement())
       this.existingElement().classList.remove('expanded');
@@ -448,7 +451,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
   expand() {
     if (this._expanded)
       return;
-    this._clearFlatNodes();
+    this.clearFlatNodes();
     super.expand();
     this.dataGrid.scheduleUpdateStructure();
   }
@@ -502,7 +505,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
    * @param {number} index
    */
   recalculateSiblings(index) {
-    this._clearFlatNodes();
+    this.clearFlatNodes();
     super.recalculateSiblings(index);
   }
 };

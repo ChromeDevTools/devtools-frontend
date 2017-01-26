@@ -40,6 +40,8 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
     this._parentView = parentView;
     this._isHovered = false;
     this._showingInitiatorChain = false;
+    /** @type {?SDK.NetworkRequest} */
+    this._requestOrFirstKnownChildRequest = null;
   }
 
   /**
@@ -130,6 +132,45 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
   asRequestNode() {
     return null;
   }
+
+  /**
+   * @return {?Network.NetworkGroupNode}
+   */
+  asGroupNode() {
+    return null;
+  }
+
+  /**
+   * @override
+   */
+  clearFlatNodes() {
+    super.clearFlatNodes();
+    this._requestOrFirstKnownChildRequest = null;
+  }
+
+  /**
+   * @protected
+   * @return {?SDK.NetworkRequest}
+   */
+  requestOrFirstKnownChildRequest() {
+    if (this._requestOrFirstKnownChildRequest)
+      return this._requestOrFirstKnownChildRequest;
+    var request = this.request();
+    if (request || !this.hasChildren()) {
+      this._requestOrFirstKnownChildRequest = request;
+      return this._requestOrFirstKnownChildRequest;
+    }
+
+    var firstChildRequest = null;
+    var flatChildren = this.flatChildren();
+    for (var i = 0; i < flatChildren.length; i++) {
+      request = flatChildren[i].request();
+      if (!firstChildRequest || (request && request.issueTime() < firstChildRequest.issueTime()))
+        firstChildRequest = request;
+    }
+    this._requestOrFirstKnownChildRequest = firstChildRequest;
+    return this._requestOrFirstKnownChildRequest;
+  }
 };
 
 /**
@@ -155,19 +196,30 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    * @return {number}
    */
   static NameComparator(a, b) {
-    // TODO(allada) Handle this properly for group nodes.
-    var aRequest = a.request();
-    var bRequest = b.request();
-    if (!aRequest || !bRequest)
-      return !aRequest ? -1 : 1;
+    var aGroupNode = a.asGroupNode();
+    var bGroupNode = b.asGroupNode();
 
-    var aFileName = aRequest.name();
-    var bFileName = bRequest.name();
-    if (aFileName > bFileName)
-      return 1;
-    if (bFileName > aFileName)
-      return -1;
-    return aRequest.indentityCompare(bRequest);
+    if ((!aGroupNode && bGroupNode) || (aGroupNode && !bGroupNode))
+      return aGroupNode ? 1 : -1;
+
+    var aName;
+    var bName;
+    if (aGroupNode && bGroupNode) {
+      aName = aGroupNode.displayName();
+      bName = bGroupNode.displayName();
+      if (aName === bName)
+        return Network.NetworkRequestNode.RequestPropertyComparator('startTime', a, b);
+    } else {
+      var aRequest = a.requestOrFirstKnownChildRequest();
+      var bRequest = b.requestOrFirstKnownChildRequest();
+      if (!aRequest || !bRequest)
+        return aRequest ? 1 : -1;
+      aName = aRequest.name();
+      bName = bRequest.name();
+      if (aName === bName)
+        return aRequest.indentityCompare(bRequest);
+    }
+    return aName < bName ? -1 : 1;
   }
 
   /**
@@ -177,8 +229,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   static RemoteAddressComparator(a, b) {
     // TODO(allada) Handle this properly for group nodes.
-    var aRequest = a.request();
-    var bRequest = b.request();
+    var aRequest = a.requestOrFirstKnownChildRequest();
+    var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
     var aRemoteAddress = aRequest.remoteAddress();
@@ -197,8 +249,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   static SizeComparator(a, b) {
     // TODO(allada) Handle this properly for group nodes.
-    var aRequest = a.request();
-    var bRequest = b.request();
+    var aRequest = a.requestOrFirstKnownChildRequest();
+    var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
     if (bRequest.cached() && !aRequest.cached())
@@ -215,8 +267,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   static TypeComparator(a, b) {
     // TODO(allada) Handle this properly for group nodes.
-    var aRequest = a.request();
-    var bRequest = b.request();
+    var aRequest = a.requestOrFirstKnownChildRequest();
+    var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
     var aSimpleType = a.asRequestNode().displayType();
@@ -236,8 +288,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   static InitiatorComparator(a, b) {
     // TODO(allada) Handle this properly for group nodes.
-    var aRequest = a.request();
-    var bRequest = b.request();
+    var aRequest = a.requestOrFirstKnownChildRequest();
+    var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
     var aInitiator = SDK.NetworkLog.initiatorInfoForRequest(aRequest);
@@ -278,8 +330,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   static RequestCookiesCountComparator(a, b) {
     // TODO(allada) Handle this properly for group nodes.
-    var aRequest = a.request();
-    var bRequest = b.request();
+    var aRequest = a.requestOrFirstKnownChildRequest();
+    var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
     var aScore = aRequest.requestCookies ? aRequest.requestCookies.length : 0;
@@ -295,8 +347,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   static ResponseCookiesCountComparator(a, b) {
     // TODO(allada) Handle this properly for group nodes.
-    var aRequest = a.request();
-    var bRequest = b.request();
+    var aRequest = a.requestOrFirstKnownChildRequest();
+    var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
     var aScore = aRequest.responseCookies ? aRequest.responseCookies.length : 0;
@@ -311,8 +363,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   static InitialPriorityComparator(a, b) {
     // TODO(allada) Handle this properly for group nodes.
-    var aRequest = a.request();
-    var bRequest = b.request();
+    var aRequest = a.requestOrFirstKnownChildRequest();
+    var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
     var priorityMap = Components.prioritySymbolToNumericMap();
@@ -333,9 +385,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    * @return {number}
    */
   static RequestPropertyComparator(propertyName, a, b) {
-    // TODO(allada) Handle this properly for group nodes.
-    var aRequest = a.request();
-    var bRequest = b.request();
+    var aRequest = a.requestOrFirstKnownChildRequest();
+    var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
     var aValue = aRequest[propertyName];
@@ -353,8 +404,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   static ResponseHeaderStringComparator(propertyName, a, b) {
     // TODO(allada) Handle this properly for group nodes.
-    var aRequest = a.request();
-    var bRequest = b.request();
+    var aRequest = a.requestOrFirstKnownChildRequest();
+    var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
     var aValue = String(aRequest.responseHeaderValue(propertyName) || '');
@@ -370,8 +421,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   static ResponseHeaderNumberComparator(propertyName, a, b) {
     // TODO(allada) Handle this properly for group nodes.
-    var aRequest = a.request();
-    var bRequest = b.request();
+    var aRequest = a.requestOrFirstKnownChildRequest();
+    var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
     var aValue = (aRequest.responseHeaderValue(propertyName) !== undefined) ?
@@ -393,8 +444,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   static ResponseHeaderDateComparator(propertyName, a, b) {
     // TODO(allada) Handle this properly for group nodes.
-    var aRequest = a.request();
-    var bRequest = b.request();
+    var aRequest = a.requestOrFirstKnownChildRequest();
+    var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
     var aHeader = aRequest.responseHeaderValue(propertyName);
@@ -856,8 +907,22 @@ Network.NetworkGroupNode = class extends Network.NetworkNode {
   constructor(parentView, displayName, sortKey) {
     super(parentView);
     this._displayName = displayName;
-    // TODO(allada) This is here because you can always sort by _name. This class deserves it's own sorting functions.
     this._name = sortKey;
+  }
+
+  /**
+   * @override
+   * @return {?Network.NetworkGroupNode}
+   */
+  asGroupNode() {
+    return this;
+  }
+
+  /**
+   * @return {string}
+   */
+  displayName() {
+    return this._displayName;
   }
 
   /**

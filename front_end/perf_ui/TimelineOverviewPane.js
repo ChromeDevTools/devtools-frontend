@@ -472,10 +472,6 @@ PerfUI.TimelineOverview.prototype = {
    * @return {!{left: number, right: number}}
    */
   windowBoundaries(startTime, endTime) {},
-
-  timelineStarted() {},
-
-  timelineStopped() {},
 };
 
 /**
@@ -541,18 +537,6 @@ PerfUI.TimelineOverviewBase = class extends UI.VBox {
    */
   popoverElementPromise(x) {
     return Promise.resolve(/** @type {?Element} */ (null));
-  }
-
-  /**
-   * @override
-   */
-  timelineStarted() {
-  }
-
-  /**
-   * @override
-   */
-  timelineStopped() {
   }
 
   /**

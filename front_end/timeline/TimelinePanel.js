@@ -467,18 +467,18 @@ Timeline.TimelinePanel = class extends UI.Panel {
     const showMemory = this._showMemorySetting.get();
     const showScreenshots = this._showScreenshotsSetting.get();
     // Set up overview controls.
-    this._overviewControls = [];
-    this._overviewControls.push(new Timeline.TimelineEventOverviewResponsiveness(this._model, this._frameModel));
+    var overviewControls = [];
+    overviewControls.push(new Timeline.TimelineEventOverviewResponsiveness(this._model, this._frameModel));
     if (Runtime.experiments.isEnabled('inputEventsOnTimelineOverview'))
-      this._overviewControls.push(new Timeline.TimelineEventOverviewInput(this._model));
-    this._overviewControls.push(new Timeline.TimelineEventOverviewFrames(this._model, this._frameModel));
-    this._overviewControls.push(new Timeline.TimelineEventOverviewCPUActivity(this._model));
-    this._overviewControls.push(new Timeline.TimelineEventOverviewNetwork(this._model));
+      overviewControls.push(new Timeline.TimelineEventOverviewInput(this._model));
+    overviewControls.push(new Timeline.TimelineEventOverviewFrames(this._model, this._frameModel));
+    overviewControls.push(new Timeline.TimelineEventOverviewCPUActivity(this._model));
+    overviewControls.push(new Timeline.TimelineEventOverviewNetwork(this._model));
     if (showScreenshots)
-      this._overviewControls.push(new Timeline.TimelineFilmStripOverview(this._model, this._filmStripModel));
+      overviewControls.push(new Timeline.TimelineFilmStripOverview(this._model, this._filmStripModel));
     if (showMemory)
-      this._overviewControls.push(new Timeline.TimelineEventOverviewMemory(this._model));
-    this._overviewPane.setOverviewControls(this._overviewControls);
+      overviewControls.push(new Timeline.TimelineEventOverviewMemory(this._model));
+    this._overviewPane.setOverviewControls(overviewControls);
 
     // Set up the main view.
     this._removeAllModeViews();
@@ -585,9 +585,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._controller.startRecording(recordingOptions, enabledTraceProviders);
     this._recordingStartTime = Date.now();
 
-    for (var i = 0; i < this._overviewControls.length; ++i)
-      this._overviewControls[i].timelineStarted();
-
     Host.userMetrics.actionTaken(
         userInitiated ? Host.UserMetrics.Action.TimelineStarted : Host.UserMetrics.Action.TimelinePageReloadStarted);
     this._setUIControlsEnabled(false);
@@ -648,7 +645,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._filmStripModel.reset(this._tracingModel);
     this._overviewPane.reset();
     this._currentViews.forEach(view => view.reset());
-    this._overviewControls.forEach(overview => overview.reset());
+    this._overviewPane.reset();
     this.select(null);
   }
 
@@ -811,8 +808,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._overviewPane.setBounds(this._model.minimumRecordTime(), this._model.maximumRecordTime());
     this._setAutoWindowTimes();
     this._refreshViews();
-    for (var i = 0; i < this._overviewControls.length; ++i)
-      this._overviewControls[i].timelineStopped();
     this._setMarkers();
     this._overviewPane.scheduleUpdate();
     this._updateSearchHighlight(false, true);

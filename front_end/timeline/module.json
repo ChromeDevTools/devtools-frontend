@@ -149,6 +149,7 @@
         "TimelineFlameChartView.js",
         "TimelineFlameChart.js",
         "TimelineNetworkFlameChart.js",
+        "TimelineTreeModeView.js",
         "TimelineTreeView.js",
         "TimelineUIUtils.js",
         "TimelineLayersView.js",

@@ -104,16 +104,18 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @param {!Timeline.TimelineModeViewDelegate} delegate
    * @param {!TimelineModel.TimelineModel} timelineModel
    * @param {!TimelineModel.TimelineFrameModel} frameModel
+   * @param {!SDK.FilmStripModel} filmStripModel
    * @param {!TimelineModel.TimelineIRModel} irModel
    * @param {!Array<!{title: string, model: !SDK.TracingModel}>} extensionModels
    * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
    */
-  constructor(delegate, timelineModel, frameModel, irModel, extensionModels, filters) {
+  constructor(delegate, timelineModel, frameModel, filmStripModel, irModel, extensionModels, filters) {
     super();
     this.element.classList.add('timeline-flamechart');
     this._delegate = delegate;
     this._model = timelineModel;
     this._extensionModels = extensionModels;
+
     this._splitWidget = new UI.SplitWidget(false, false, 'timelineFlamechartMainView', 150);
 
     this._dataProvider = new Timeline.TimelineFlameChartDataProvider(this._model, frameModel, irModel, filters);
@@ -138,7 +140,20 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
 
     this._splitWidget.setMainWidget(this._mainView);
     this._splitWidget.setSidebarWidget(networkPane);
-    this._splitWidget.show(this.element);
+
+    if (Runtime.experiments.isEnabled('timelineMultipleMainViews')) {
+      // Create top level properties splitter.
+      this._detailsSplitWidget = new UI.SplitWidget(false, true, 'timelinePanelDetailsSplitViewState');
+      this._detailsSplitWidget.element.classList.add('timeline-details-split');
+      this._detailsView =
+          new Timeline.TimelineDetailsView(timelineModel, frameModel, filmStripModel, filters, delegate);
+      this._detailsSplitWidget.installResizer(this._detailsView.headerElement());
+      this._detailsSplitWidget.setMainWidget(this._splitWidget);
+      this._detailsSplitWidget.setSidebarWidget(this._detailsView);
+      this._detailsSplitWidget.show(this.element);
+    } else {
+      this._splitWidget.show(this.element);
+    }
 
     this._onMainEntrySelected = this._onEntrySelected.bind(this, this._dataProvider);
     this._onNetworkEntrySelected = this._onEntrySelected.bind(this, this._networkDataProvider);
@@ -292,6 +307,8 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._mainView.setSelectedEntry(index);
     index = this._networkDataProvider.entryIndexForSelection(selection);
     this._networkView.setSelectedEntry(index);
+    if (selection && this._detailsView)
+      this._detailsView.setSelection(selection);
   }
 
   /**

@@ -57,13 +57,6 @@ Resources.CookieItemsView = class extends UI.SimpleView {
     this._treeElement = treeElement;
     this._cookieDomain = cookieDomain;
 
-    this._emptyWidget = new UI.EmptyWidget(
-        cookieDomain ?
-            Common.UIString('This site has no cookies.') :
-            Common.UIString(
-                'By default cookies are disabled for local files.\nYou could override this by starting the browser with --enable-file-cookies command line flag.'));
-    this._emptyWidget.show(this.element);
-
     this.element.addEventListener('contextmenu', this._contextMenu.bind(this), true);
   }
 
@@ -121,25 +114,15 @@ Resources.CookieItemsView = class extends UI.SimpleView {
     this._cookies = allCookies;
     this._totalSize = allCookies.reduce((size, cookie) => size + cookie.size(), 0);
 
-    if (!this._cookies.length) {
-      // Nothing to show.
-      this._emptyWidget.show(this.element);
-      this._filterButton.setEnabled(false);
-      this._clearButton.setEnabled(false);
-      this._deleteButton.setEnabled(false);
-      if (this._cookiesTable)
-        this._cookiesTable.detach();
-      return;
-    }
-
     if (!this._cookiesTable) {
+      const parsedURL = this._cookieDomain.asParsedURL();
+      const domain = parsedURL ? parsedURL.host : '';
       this._cookiesTable =
-          new CookieTable.CookiesTable(false, this._update.bind(this), this._enableDeleteButton.bind(this));
+          new CookieTable.CookiesTable(false, this._update.bind(this), this._enableDeleteButton.bind(this), domain);
     }
 
     var shownCookies = this._filterCookies(this._cookies);
     this._cookiesTable.setCookies(shownCookies);
-    this._emptyWidget.detach();
     this._filterBar.show(this.element);
     this._cookiesTable.show(this.element);
     this._treeElement.subtitle =

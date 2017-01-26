@@ -228,6 +228,21 @@
     -webkit-mask-position: -20px -96px;
 }
 
+.data-grid tr.inactive {
+    color: rgb(128, 128, 128);
+    font-style: italic;
+}
+
+.data-grid tr.dirty {
+    background-color: hsl(0, 100%, 92%);
+    color: red;
+    font-style: normal;
+}
+
+.data-grid:focus tr.selected.dirty {
+    background-color: hsl(0, 100%, 70%);
+}
+
 .data-grid-resizer {
     position: absolute;
     top: 0;

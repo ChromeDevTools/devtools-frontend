@@ -250,10 +250,11 @@ SDK.Cookie = class {
   }
 
   /**
-   * @return {string}
+   * @return {!Protocol.Network.CookieSameSite}
    */
   sameSite() {
-    return this._attributes['samesite'];
+    // TODO(allada) This should not rely on _attributes and instead store them individually.
+    return /** @type {!Protocol.Network.CookieSameSite} */ (this._attributes['samesite']);
   }
 
   /**
@@ -287,7 +288,7 @@ SDK.Cookie = class {
   }
 
   /**
-   * @return {string}
+   * @return {number}
    */
   expires() {
     return this._attributes['expires'];
@@ -305,6 +306,13 @@ SDK.Cookie = class {
    */
   size() {
     return this._size;
+  }
+
+  /**
+   * @return {string}
+   */
+  url() {
+    return (this.secure() ? 'https://' : 'http://') + this.domain() + this.path();
   }
 
   /**
@@ -349,8 +357,29 @@ SDK.Cookie = class {
    * @param {function(?Protocol.Error)=} callback
    */
   remove(callback) {
-    this._target.networkAgent().deleteCookie(
-        this.name(), (this.secure() ? 'https://' : 'http://') + this.domain() + this.path(), callback);
+    this._target.networkAgent().deleteCookie(this.name(), this.url(), callback);
+  }
+
+  /**
+   * @param {function(boolean)=} callback
+   */
+  save(callback) {
+    var domain = this.domain();
+    if (!domain.startsWith('.'))
+      domain = '';
+    var expires = undefined;
+    if (this.expires())
+      expires = Math.floor(Date.parse(this.expires()) / 1000);
+    this._target.networkAgent().setCookie(this.url(), this.name(), this.value(), domain, this.path(), this.secure(),
+      this.httpOnly(), this.sameSite(), expires, mycallback);
+
+    /**
+     * @param {?Protocol.Error} error
+     * @param {boolean} success
+     */
+    function mycallback(error, success) {
+      callback(error ? false : success);
+    }
   }
 };
 

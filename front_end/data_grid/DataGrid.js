@@ -310,6 +310,18 @@ DataGrid.DataGrid = class extends Common.Object {
   }
 
   /**
+   * @param {!DataGrid.DataGridNode} node
+   * @param {string} columnIdentifier
+   */
+  startEditingNextEditableColumnOfDataGridNode(node, columnIdentifier) {
+    const column = this._columns[columnIdentifier];
+    const cellIndex = this._visibleColumnsArray.indexOf(column);
+    const nextEditableColumn = this._nextEditableColumn(cellIndex);
+    if (nextEditableColumn !== -1)
+      this._startEditingColumnOfDataGridNode(node, nextEditableColumn);
+  }
+
+  /**
    * @param {!Node} target
    */
   _startEditing(target) {
@@ -367,7 +379,7 @@ DataGrid.DataGrid = class extends Common.Object {
     }
     var column = this._columns[columnId];
     var cellIndex = this._visibleColumnsArray.indexOf(column);
-    var textBeforeEditing = /** @type {string} */ (this._editingNode.data[columnId]);
+    var textBeforeEditing = /** @type {string} */ (this._editingNode.data[columnId] || '');
     var currentEditingNode = this._editingNode;
 
     /**
@@ -1221,6 +1233,10 @@ DataGrid.DataGridNode = class extends Common.Object {
     this._expanded = false;
     /** @type {boolean} */
     this._selected = false;
+    /** @type {boolean} */
+    this._dirty = false;
+    /** @type {boolean} */
+    this._inactive = false;
     /** @type {number|undefined} */
     this._depth;
     /** @type {boolean|undefined} */
@@ -1282,6 +1298,10 @@ DataGrid.DataGridNode = class extends Common.Object {
       this._element.classList.add('selected');
     if (this.revealed)
       this._element.classList.add('revealed');
+    if (this.dirty)
+      this._element.classList.add('dirty');
+    if (this.inactive)
+      this._element.classList.add('inactive');
     return this._element;
   }
 
@@ -1361,6 +1381,51 @@ DataGrid.DataGridNode = class extends Common.Object {
 
     for (var i = 0; i < this.children.length; ++i)
       this.children[i].revealed = x && this.expanded;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isDirty() {
+    return this._dirty;
+  }
+
+  /**
+   * @param {boolean} dirty
+   */
+  setDirty(dirty) {
+    if (this._dirty === dirty)
+      return;
+    this._dirty = dirty;
+    if (!this._element)
+      return;
+    if (dirty)
+      this._element.classList.add('dirty');
+    else
+      this._element.classList.remove('dirty');
+  }
+
+
+  /**
+   * @return {boolean}
+   */
+  isInactive() {
+    return this._inactive;
+  }
+
+  /**
+   * @param {boolean} inactive
+   */
+  setInactive(inactive) {
+    if (this._inactive === inactive)
+      return;
+    this._inactive = inactive;
+    if (!this._element)
+      return;
+    if (inactive)
+      this._element.classList.add('inactive');
+    else
+      this._element.classList.remove('inactive');
   }
 
   /**

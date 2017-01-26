@@ -395,7 +395,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
    */
   addCookieDocument(frame) {
     var parsedURL = frame.url.asParsedURL();
-    if (!parsedURL)
+    if (!parsedURL || (parsedURL.scheme !== 'http' && parsedURL.scheme !== 'https' && parsedURL.scheme !== 'file'))
       return;
 
     var domain = parsedURL.securityOrigin();

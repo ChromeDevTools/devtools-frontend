@@ -117,11 +117,13 @@ UI.ListWidget = class extends UI.VBox {
     controls.createChild('div', 'controls-gradient');
     var buttons = controls.createChild('div', 'controls-buttons');
 
-    var editButton = buttons.createChild('div', 'edit-button');
+    var editButton = UI.Icon.create('largeicon-edit', 'edit-button');
+    buttons.appendChild(editButton);
     editButton.title = Common.UIString('Edit');
     editButton.addEventListener('click', onEditClicked.bind(this), false);
 
-    var removeButton = buttons.createChild('div', 'remove-button');
+    var removeButton = UI.Icon.create('largeicon-trash-bin', 'remove-button');
+    buttons.appendChild(removeButton);
     removeButton.title = Common.UIString('Remove');
     removeButton.addEventListener('click', onRemoveClicked.bind(this), false);
 

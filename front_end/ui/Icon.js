@@ -220,4 +220,6 @@ UI.Icon.Descriptors = {
   'largeicon-navigator-frame': {x: -256, y: -144, width: 32, height: 24, spritesheet: 'largeicons', isMask: true},
   'largeicon-navigator-worker': {x: -320, y: -144, width: 32, height: 24, spritesheet: 'largeicons', isMask: true},
   'largeicon-navigator-snippet': {x: -224, y: -96, width: 32, height: 24, spritesheet: 'largeicons', isMask: true},
+  'largeicon-edit': {x: -160, y: -0, width: 28, height: 24, spritesheet: 'largeicons'},
+
 };

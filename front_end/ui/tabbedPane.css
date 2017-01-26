@@ -146,20 +146,10 @@
     cursor: pointer;
 }
 
-.tabbed-pane-header-tabs-drop-down-container > .glyph {
-    height: 26px;
+.tabbed-pane-header-tabs-drop-down-container > .chevron-icon {
     background-color: hsla(0,0%,20%,1);
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-position: -68px -143px;
-    -webkit-mask-size: 352px 168px;
-    width: 24px;
+    display: block;
 }
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.tabbed-pane-header-tabs-drop-down-container > .glyph {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
 
 .tabbed-pane-header-tabs-drop-down-container:hover {
     background-color: rgb(229, 229, 229);

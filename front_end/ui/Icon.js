@@ -222,5 +222,5 @@ UI.Icon.Descriptors = {
   'largeicon-navigator-worker': {x: -320, y: -144, width: 32, height: 24, spritesheet: 'largeicons', isMask: true},
   'largeicon-navigator-snippet': {x: -224, y: -96, width: 32, height: 24, spritesheet: 'largeicons', isMask: true},
   'largeicon-edit': {x: -160, y: -0, width: 28, height: 24, spritesheet: 'largeicons'},
-
+  'largeicon-chevron': {x: -68, y: -143, width: 24, height: 26, spritesheet: 'largeicons', isMask: true},
 };

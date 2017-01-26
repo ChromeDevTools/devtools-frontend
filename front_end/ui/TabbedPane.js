@@ -535,7 +535,8 @@ UI.TabbedPane = class extends UI.VBox {
 
   _createDropDownButton() {
     var dropDownContainer = createElementWithClass('div', 'tabbed-pane-header-tabs-drop-down-container');
-    dropDownContainer.createChild('div', 'glyph');
+    var chevronIcon = UI.Icon.create('largeicon-chevron', 'chevron-icon');
+    dropDownContainer.appendChild(chevronIcon);
     this._dropDownMenu = new UI.DropDownMenu(dropDownContainer);
     this._dropDownMenu.addEventListener(UI.DropDownMenu.Events.ItemSelected, this._dropDownMenuItemSelected, this);
 

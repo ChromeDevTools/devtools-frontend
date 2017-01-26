@@ -836,12 +836,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
         cell.request = request;
         break;
 
-      case SDK.NetworkRequest.InitiatorType.Preload:
-        cell.title = Common.UIString('Preload');
-        cell.classList.add('network-dim-cell');
-        cell.appendChild(createTextNode(Common.UIString('Preload')));
-        break;
-
       default:
         cell.title = Common.UIString('Other');
         cell.classList.add('network-dim-cell');

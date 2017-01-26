@@ -63,6 +63,9 @@ In addition, you no longer need to pass double dashes (e.g. `--`) before you pas
 #### `npm run format` 
 Formats your code using clang-format
 
+### `npm run format-py`
+Formats your python code using [yapf](https://github.com/google/yapf)
+
 #### `npm test`
 Builds devtools and runs all inspector/devtools layout tests.
 

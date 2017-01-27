@@ -1354,10 +1354,9 @@ UI.appendStyle = function(node, cssFile) {
      * @this {Element}
      */
     createdCallback: function() {
-      this.radioElement = this.createChild('input', 'dt-radio-button');
-      this.radioElement.type = 'radio';
       var root = UI.createShadowRootWithCoreStyles(this, 'ui/radioButton.css');
-      root.createChild('content').select = '.dt-radio-button';
+      this.radioElement = root.createChild('input', 'dt-radio-button');
+      this.radioElement.type = 'radio';
       root.createChild('content');
       this.addEventListener('click', radioClickHandler, false);
     },

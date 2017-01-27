@@ -7,6 +7,10 @@
 Network.NetworkConfigView = class extends UI.VBox {
   constructor() {
     super(true);
+    /** @type {!Element} */
+    this._autoCheckbox;
+    /** @type {!{input: !Element, select: !Element}} */
+    this._customSelectAndInput;
     this.registerRequiredCSS('network/networkConfigView.css');
     this.contentElement.classList.add('network-config');
 

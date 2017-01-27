@@ -633,6 +633,8 @@ Network.NetworkPanel.FilmStripRecorder = class {
    * @param {!PerfUI.FilmStripView} filmStripView
    */
   constructor(timeCalculator, filmStripView) {
+    /** @type {?SDK.Target} */
+    this._target = null;
     this._timeCalculator = timeCalculator;
     this._filmStripView = filmStripView;
   }
@@ -656,7 +658,7 @@ Network.NetworkPanel.FilmStripRecorder = class {
    * @override
    */
   tracingComplete() {
-    if (!this._tracingModel)
+    if (!this._tracingModel || !this._target)
       return;
     this._tracingModel.tracingComplete();
     SDK.targetManager.resumeReload(this._target);

@@ -7,6 +7,7 @@
 Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
   constructor() {
     super();
+    this._selectedFilmStripTime = -1;
     this.element.classList.add('network-overview');
 
     /** @type {number} */

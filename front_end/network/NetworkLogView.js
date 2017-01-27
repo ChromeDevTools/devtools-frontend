@@ -346,7 +346,7 @@ Network.NetworkLogView = class extends UI.VBox {
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @return {?Network.NetworkNode}
+   * @return {?Network.NetworkRequestNode}
    */
   nodeForRequest(request) {
     return this._nodesByRequestId.get(request.requestId());

@@ -30,6 +30,11 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._headerHeight = 0;
     this._calculator = calculator;
 
+    this._offsetWidth = 0;
+    this._offsetHeight = 0;
+    this._startTime = this._calculator.minimumBoundary();
+    this._endTime = this._calculator.maximumBoundary();
+
     this._popoverHelper = new UI.PopoverHelper(this.element);
     this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
     this._popoverHelper.setTimeout(300, 300);
@@ -214,8 +219,10 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     }
     if (eventDividers !== undefined)
       this._eventDividers = eventDividers;
-    this.element.window().cancelAnimationFrame(this._updateRequestID);
-    this._updateRequestID = null;
+    if (this._updateRequestID) {
+      this.element.window().cancelAnimationFrame(this._updateRequestID);
+      delete this._updateRequestID;
+    }
 
     this._startTime = this._calculator.minimumBoundary();
     this._endTime = this._calculator.maximumBoundary();

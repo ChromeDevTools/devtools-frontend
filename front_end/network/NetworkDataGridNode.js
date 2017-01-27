@@ -183,6 +183,12 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   constructor(parentView, request) {
     super(parentView);
+    /** @type {?Element} */
+    this._nameCell = null;
+    /** @type {?Element} */
+    this._initiatorCell = null;
+    /** @type {?Element} */
+    this._linkifiedInitiatorAnchor = null;
     this._request = request;
     this._isNavigationRequest = false;
     this.selectable = true;

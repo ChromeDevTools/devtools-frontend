@@ -151,8 +151,11 @@ Network.NetworkLogViewColumns = class {
       var node = this._waterfallColumn.getNodeFromPoint(event.offsetX, event.offsetY);
       if (!node)
         return;
+      var request = node.request();
+      if (!request)
+        return;
       var contextMenu = new UI.ContextMenu(event);
-      this._networkLogView.handleContextMenuForRequest(contextMenu, node.request());
+      this._networkLogView.handleContextMenuForRequest(contextMenu, request);
       contextMenu.show();
     }
   }

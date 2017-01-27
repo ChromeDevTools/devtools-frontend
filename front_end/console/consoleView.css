@@ -105,7 +105,7 @@
 .message-level-icon, .command-result-icon {
     position: absolute;
     left: -17px;
-    top: 5px;
+    top: 4px;
     -webkit-user-select: none;
 }
 

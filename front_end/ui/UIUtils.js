@@ -752,8 +752,13 @@ UI.anotherProfilerActiveLabel = function() {
  * @return {string}
  */
 UI.asyncStackTraceLabel = function(description) {
-  if (description)
+  if (description) {
+    if (description === 'Promise.resolve')
+      description = Common.UIString('Promise resolved');
+    else if (description === 'Promise.reject')
+      description = Common.UIString('Promise rejected');
     return description + ' ' + Common.UIString('(async)');
+  }
   return Common.UIString('Async Call');
 };
 

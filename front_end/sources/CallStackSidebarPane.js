@@ -93,7 +93,8 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     var peviousStackTrace = details.callFrames;
     while (asyncStackTrace) {
       var title = '';
-      if (asyncStackTrace.description === 'async function') {
+      if (asyncStackTrace.description === 'async function' && peviousStackTrace.length &&
+          asyncStackTrace.callFrames.length) {
         var lastPreviousFrame = peviousStackTrace[peviousStackTrace.length - 1];
         var topFrame = asyncStackTrace.callFrames[0];
         var lastPreviousFrameName = UI.beautifyFunctionName(lastPreviousFrame.functionName);
@@ -110,8 +111,11 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
                 /** @type {!SDK.DebuggerModel.Location} */ (this._itemLocation(item))));
         hiddenCallFramesCount += asyncStackTrace.callFrames.length - asyncItems.length;
       }
-      if (asyncItems.length) {
-        items.push({asyncStackHeader: title});
+      if (asyncItems.length || asyncStackTrace.promiseCreationFrame) {
+        var titleItem = {asyncStackHeader: title};
+        if (asyncStackTrace.promiseCreationFrame)
+          titleItem.promiseCreationFrame = asyncStackTrace.promiseCreationFrame;
+        items.push(titleItem);
         items = items.concat(asyncItems);
       }
 
@@ -149,6 +153,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
 
     var location = this._itemLocation(item);
     if (location) {
+      element.classList.add('contains-location');
       if (Bindings.blackboxManager.isBlackboxedRawLocation(location))
         element.classList.add('blackboxed-call-frame');
 
@@ -159,12 +164,13 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
         var uiLocation = liveLocation.uiLocation();
         if (!uiLocation)
           return;
-        var text = uiLocation.linkText();
+        var text = (hasPromiseCreationFrame ? Common.UIString('created:  ') : '') + uiLocation.linkText();
         linkElement.textContent = text.trimMiddle(30);
         linkElement.title = text;
       }
 
       var linkElement = element.createChild('div', 'call-frame-location');
+      var hasPromiseCreationFrame = !!item.promiseCreationFrame;
       Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(location, updateLocation, this._locationPool);
     }
 
@@ -237,10 +243,9 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
   _itemLocation(item) {
     if (item.debuggerCallFrame)
       return item.debuggerCallFrame.location();
-    if (item.runtimeCallFrame) {
-      return new SDK.DebuggerModel.Location(
-          this._debuggerModel, item.runtimeCallFrame.scriptId, item.runtimeCallFrame.lineNumber,
-          item.runtimeCallFrame.columnNumber);
+    if (item.runtimeCallFrame || item.promiseCreationFrame) {
+      var frame = item.runtimeCallFrame || item.promiseCreationFrame;
+      return new SDK.DebuggerModel.Location(this._debuggerModel, frame.scriptId, frame.lineNumber, frame.columnNumber);
     }
     return null;
   }
@@ -284,7 +289,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
    */
   _onClick(event) {
     var item = this._list.itemForNode(/** @type {?Node} */ (event.target));
-    if (!item || !item.runtimeCallFrame)
+    if (!item || (!item.runtimeCallFrame && !item.promiseCreationFrame))
       return;
     var location = this._itemLocation(item);
     if (!location)
@@ -374,7 +379,8 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
  * @typedef {{
  *     debuggerCallFrame: (SDK.DebuggerModel.CallFrame|undefined),
  *     asyncStackHeader: (string|undefined),
- *     runtimeCallFrame: (Protocol.Runtime.CallFrame|undefined)
+ *     runtimeCallFrame: (Protocol.Runtime.CallFrame|undefined),
+ *     promiseCreationFrame: (Protocol.Runtime.CallFrame|undefined)
  * }}
  */
 Sources.CallStackSidebarPane.Item;

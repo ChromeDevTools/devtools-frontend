@@ -32,11 +32,7 @@
  * @unrestricted
  */
 TimelineModel.TimelineModel = class {
-  /**
-   * @param {!TimelineModel.TimelineModel.Filter} eventFilter
-   */
-  constructor(eventFilter) {
-    this._eventFilter = eventFilter;
+  constructor() {
     this.reset();
   }
 

@@ -63,7 +63,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     // Create models.
     this._tracingModelBackingStorage = new Bindings.TempFileBackingStorage('tracing');
     this._tracingModel = new SDK.TracingModel(this._tracingModelBackingStorage);
-    this._model = new TimelineModel.TimelineModel(Timeline.TimelineUIUtils.visibleEventsFilter());
+    this._model = new TimelineModel.TimelineModel();
     this._frameModel =
         new TimelineModel.TimelineFrameModel(event => Timeline.TimelineUIUtils.eventStyle(event).category.name);
     this._filmStripModel = new SDK.FilmStripModel(this._tracingModel);
@@ -495,10 +495,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
           this, this._model, this._frameModel, this._filmStripModel, this._irModel, this._extensionTracingModels,
           this._filters);
       this._addModeView(this._flameChart);
-      if (showMemory) {
-        this._addModeView(
-            new Timeline.MemoryCountersGraph(this, this._model, [Timeline.TimelineUIUtils.visibleEventsFilter()]));
-      }
+      if (showMemory)
+        this._addModeView(new Timeline.MemoryCountersGraph(this, this._model));
     } else {
       var innerView;
       switch (viewMode) {

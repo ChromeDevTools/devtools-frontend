@@ -35,16 +35,14 @@ Timeline.CountersGraph = class extends UI.VBox {
   /**
    * @param {!Timeline.TimelineModeViewDelegate} delegate
    * @param {!TimelineModel.TimelineModel} model
-   * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
    */
-  constructor(delegate, model, filters) {
+  constructor(delegate, model) {
     super();
 
     this.element.id = 'memory-graphs-container';
 
     this._delegate = delegate;
     this._model = model;
-    this._filters = filters;
     this._calculator = new Timeline.CounterGraphCalculator(this._model);
 
     // Create selectors

@@ -35,10 +35,9 @@ Timeline.MemoryCountersGraph = class extends Timeline.CountersGraph {
   /**
    * @param {!Timeline.TimelineModeViewDelegate} delegate
    * @param {!TimelineModel.TimelineModel} model
-   * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
    */
-  constructor(delegate, model, filters) {
-    super(delegate, model, filters);
+  constructor(delegate, model) {
+    super(delegate, model);
     this._countersByName = {};
     this._countersByName['jsHeapSizeUsed'] = this.createCounter(
         Common.UIString('JS Heap'), Common.UIString('JS Heap: %s'), 'hsl(220, 90%, 43%)', Number.bytesToString);

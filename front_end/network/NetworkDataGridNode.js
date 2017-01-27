@@ -731,6 +731,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    * @param {!Element} cell
    */
   _renderNameCell(cell) {
+    var leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
+    cell.style.setProperty('padding-left', leftPadding);
     this._nameCell = cell;
     cell.addEventListener('dblclick', this._openInNewTab.bind(this), false);
     var iconElement;
@@ -948,6 +950,8 @@ Network.NetworkGroupNode = class extends Network.NetworkNode {
   createCell(columnIdentifier) {
     var cell = this.createTD(columnIdentifier);
     if (columnIdentifier === 'name') {
+      var leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
+      cell.style.setProperty('padding-left', leftPadding);
       cell.classList.add('disclosure');
       this._setTextAndTitle(cell, this._displayName);
     }

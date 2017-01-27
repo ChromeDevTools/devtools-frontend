@@ -67,7 +67,7 @@
     bottom: 0;
     border-top: 0 none transparent;
     background-image: linear-gradient(to bottom, transparent, transparent 50%, hsla(214, 100%, 40%, 0.05) 50%, hsla(214, 100%, 40%, 0.05));
-    background-size: 128px 42px;
+    background-size: 128px 40px;
     table-layout: fixed;
 }
 
@@ -88,9 +88,10 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    line-height: 19px;
-    height: 19px;
+    line-height: 18px;
+    height: 18px;
     border-left: 1px solid #aaa;
+    padding: 1px 4px;
 }
 
 .data-grid th:first-child,
@@ -100,7 +101,6 @@
 
 .data-grid td {
     vertical-align: top;
-    padding: 1px 4px;
     -webkit-user-select: text;
 }
 
@@ -110,7 +110,6 @@
     border-bottom: 1px solid #aaa;
     font-weight: normal;
     vertical-align: middle;
-    padding: 0 4px;
 }
 
 .data-grid td > div,
@@ -183,8 +182,7 @@
     width: 8px;
     height: 12px;
     margin-right: 2px;
-    content: "a";
-    color: transparent;
+    content: "";
     position: relative;
     top: 3px;
     background-color: rgb(110, 110, 110);

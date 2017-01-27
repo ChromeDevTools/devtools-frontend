@@ -560,7 +560,7 @@
 
 .timeline-tree-view .data-grid span.percent-column {
     color: #888;
-    width: 44px;
+    width: 45px;
     display: inline-block;
 }
 
@@ -612,14 +612,14 @@
 
 .timeline-tree-view .data-grid .background-bar {
     float: right;
-    height: 15px;
+    height: 18px;
     background-color: hsla(43, 84%, 64%, 0.2);
     border-bottom: 1px solid hsl(43, 84%, 64%);
 }
 
 .timeline-tree-view .data-grid .selected .background-bar {
     background-color: rgba(255, 255, 255, 0.25);
-    border-bottom-color: transparent;
+    border-bottom-color: rgba(255, 255, 255, 0.5);
 }
 
 .timeline-tree-view .timeline-details-view-body .full-widget-dimmed-banner {
@@ -636,11 +636,6 @@
 
 .timeline-tree-view .data-grid .data-container {
     top: 21px;
-}
-
-.timeline-tree-view .data-grid th {
-    border-bottom: 1px solid #ddd;
-    background-color: #f3f3f3
 }
 
 .timeline-stack-view-header {

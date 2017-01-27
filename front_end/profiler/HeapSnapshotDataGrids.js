@@ -568,12 +568,12 @@ Profiler.HeapSnapshotContainmentDataGrid = class extends Profiler.HeapSnapshotSo
     columns =
         columns || (/** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
           {id: 'object', title: Common.UIString('Object'), disclosure: true, sortable: true},
-          {id: 'distance', title: Common.UIString('Distance'), width: '65px', sortable: true, fixedWidth: true},
-          {id: 'shallowSize', title: Common.UIString('Shallow Size'), width: '105px', sortable: true, fixedWidth: true},
+          {id: 'distance', title: Common.UIString('Distance'), width: '70px', sortable: true, fixedWidth: true},
+          {id: 'shallowSize', title: Common.UIString('Shallow Size'), width: '110px', sortable: true, fixedWidth: true},
           {
             id: 'retainedSize',
             title: Common.UIString('Retained Size'),
-            width: '105px',
+            width: '110px',
             sortable: true,
             fixedWidth: true,
             sort: DataGrid.DataGrid.Order.Descending
@@ -620,13 +620,13 @@ Profiler.HeapSnapshotRetainmentDataGrid = class extends Profiler.HeapSnapshotCon
       {id: 'object', title: Common.UIString('Object'), disclosure: true, sortable: true}, {
         id: 'distance',
         title: Common.UIString('Distance'),
-        width: '65px',
+        width: '70px',
         sortable: true,
         fixedWidth: true,
         sort: DataGrid.DataGrid.Order.Ascending
       },
-      {id: 'shallowSize', title: Common.UIString('Shallow Size'), width: '105px', sortable: true, fixedWidth: true},
-      {id: 'retainedSize', title: Common.UIString('Retained Size'), width: '105px', sortable: true, fixedWidth: true}
+      {id: 'shallowSize', title: Common.UIString('Shallow Size'), width: '110px', sortable: true, fixedWidth: true},
+      {id: 'retainedSize', title: Common.UIString('Retained Size'), width: '110px', sortable: true, fixedWidth: true}
     ]);
     super(dataDisplayDelegate, columns);
   }
@@ -679,12 +679,12 @@ Profiler.HeapSnapshotConstructorsDataGrid = class extends Profiler.HeapSnapshotV
   constructor(dataDisplayDelegate) {
     var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'object', title: Common.UIString('Constructor'), disclosure: true, sortable: true},
-      {id: 'distance', title: Common.UIString('Distance'), width: '65px', sortable: true, fixedWidth: true},
-      {id: 'count', title: Common.UIString('Objects Count'), width: '90px', sortable: true, fixedWidth: true},
-      {id: 'shallowSize', title: Common.UIString('Shallow Size'), width: '105px', sortable: true, fixedWidth: true}, {
+      {id: 'distance', title: Common.UIString('Distance'), width: '70px', sortable: true, fixedWidth: true},
+      {id: 'count', title: Common.UIString('Objects Count'), width: '100px', sortable: true, fixedWidth: true},
+      {id: 'shallowSize', title: Common.UIString('Shallow Size'), width: '110px', sortable: true, fixedWidth: true}, {
         id: 'retainedSize',
         title: Common.UIString('Retained Size'),
-        width: '105px',
+        width: '110px',
         sort: DataGrid.DataGrid.Order.Descending,
         sortable: true,
         fixedWidth: true
@@ -846,18 +846,18 @@ Profiler.HeapSnapshotDiffDataGrid = class extends Profiler.HeapSnapshotViewportD
   constructor(dataDisplayDelegate) {
     var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'object', title: Common.UIString('Constructor'), disclosure: true, sortable: true},
-      {id: 'addedCount', title: Common.UIString('# New'), width: '72px', sortable: true, fixedWidth: true},
-      {id: 'removedCount', title: Common.UIString('# Deleted'), width: '72px', sortable: true, fixedWidth: true},
-      {id: 'countDelta', title: Common.UIString('# Delta'), width: '64px', sortable: true, fixedWidth: true}, {
+      {id: 'addedCount', title: Common.UIString('# New'), width: '75px', sortable: true, fixedWidth: true},
+      {id: 'removedCount', title: Common.UIString('# Deleted'), width: '75px', sortable: true, fixedWidth: true},
+      {id: 'countDelta', title: Common.UIString('# Delta'), width: '65px', sortable: true, fixedWidth: true}, {
         id: 'addedSize',
         title: Common.UIString('Alloc. Size'),
-        width: '72px',
+        width: '75px',
         sortable: true,
         fixedWidth: true,
         sort: DataGrid.DataGrid.Order.Descending
       },
-      {id: 'removedSize', title: Common.UIString('Freed Size'), width: '72px', sortable: true, fixedWidth: true},
-      {id: 'sizeDelta', title: Common.UIString('Size Delta'), width: '72px', sortable: true, fixedWidth: true}
+      {id: 'removedSize', title: Common.UIString('Freed Size'), width: '75px', sortable: true, fixedWidth: true},
+      {id: 'sizeDelta', title: Common.UIString('Size Delta'), width: '75px', sortable: true, fixedWidth: true}
     ]);
     super(dataDisplayDelegate, columns);
   }
@@ -936,13 +936,13 @@ Profiler.AllocationDataGrid = class extends Profiler.HeapSnapshotViewportDataGri
    */
   constructor(target, dataDisplayDelegate) {
     var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'liveCount', title: Common.UIString('Live Count'), width: '72px', sortable: true, fixedWidth: true},
-      {id: 'count', title: Common.UIString('Count'), width: '60px', sortable: true, fixedWidth: true},
-      {id: 'liveSize', title: Common.UIString('Live Size'), width: '72px', sortable: true, fixedWidth: true},
+      {id: 'liveCount', title: Common.UIString('Live Count'), width: '75px', sortable: true, fixedWidth: true},
+      {id: 'count', title: Common.UIString('Count'), width: '65px', sortable: true, fixedWidth: true},
+      {id: 'liveSize', title: Common.UIString('Live Size'), width: '75px', sortable: true, fixedWidth: true},
       {
         id: 'size',
         title: Common.UIString('Size'),
-        width: '72px',
+        width: '75px',
         sortable: true,
         fixedWidth: true,
         sort: DataGrid.DataGrid.Order.Descending

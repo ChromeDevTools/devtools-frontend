@@ -157,59 +157,29 @@ Timeline.TimelineEventOverviewNetwork = class extends Timeline.TimelineEventOver
    */
   update() {
     super.update();
-    const height = this.height();
-    const numBands = categoryBand(Timeline.TimelineUIUtils.NetworkCategory.Other) + 1;
-    const devicePixelRatio = window.devicePixelRatio;
-    const bandHeight = height - (numBands + 1) * devicePixelRatio;
-    const timeOffset = this._model.minimumRecordTime();
-    const timeSpan = this._model.maximumRecordTime() - timeOffset;
-    const canvasWidth = this.width();
-    const scale = canvasWidth / timeSpan;
-    const ctx = this.context();
-    const paths = [];
-    for (const categoryName in Timeline.TimelineUIUtils.NetworkCategory) {
-      const category = Timeline.TimelineUIUtils.NetworkCategory[categoryName];
-      paths[categoryBand(category)] = {
-        style: Timeline.TimelineUIUtils.networkCategoryColor(category),
-        path: new Path2D()
-      };
+    var bandHeight = this.height() / 2;
+    var timeOffset = this._model.minimumRecordTime();
+    var timeSpan = this._model.maximumRecordTime() - timeOffset;
+    var canvasWidth = this.width();
+    var scale = canvasWidth / timeSpan;
+    var highPath = new Path2D();
+    var lowPath = new Path2D();
+    var priorities = Protocol.Network.ResourcePriority;
+    var highPrioritySet = new Set([priorities.VeryHigh, priorities.High, priorities.Medium]);
+    for (var request of this._model.networkRequests()) {
+      var path = highPrioritySet.has(request.priority) ? highPath : lowPath;
+      var s = Math.max(Math.floor((request.startTime - timeOffset) * scale), 0);
+      var e = Math.min(Math.ceil((request.endTime - timeOffset) * scale + 1), canvasWidth);
+      path.rect(s, 0, e - s, bandHeight - 1);
     }
-    for (const request of this._model.networkRequests()) {
-      const category = Timeline.TimelineUIUtils.networkRequestCategory(request);
-      const band = categoryBand(category);
-      const y = (numBands - band - 1) * devicePixelRatio;
-      const s = Math.max(Math.floor((request.startTime - timeOffset) * scale), 0);
-      const e = Math.min(Math.ceil((request.endTime - timeOffset) * scale + 1), canvasWidth);
-      paths[band].path.rect(s, y, e - s, bandHeight);
-    }
-    for (const path of paths.reverse()) {
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = path.style;
-      ctx.fill(path.path);
-      ctx.globalAlpha = 0.4;
-      ctx.fillStyle = 'white';
-      ctx.fill(path.path);
-    }
-
-    /**
-     * @param {!Timeline.TimelineUIUtils.NetworkCategory} category
-     * @return {number}
-     */
-    function categoryBand(category) {
-      const categories = Timeline.TimelineUIUtils.NetworkCategory;
-      switch (category) {
-        case categories.HTML:
-          return 0;
-        case categories.Script:
-          return 1;
-        case categories.Style:
-          return 2;
-        case categories.Media:
-          return 3;
-        default:
-          return 4;
-      }
-    }
+    var ctx = this.context();
+    ctx.save();
+    ctx.fillStyle = 'hsl(214, 60%, 60%)';
+    ctx.fill(/** @type {?} */ (highPath));
+    ctx.translate(0, bandHeight);
+    ctx.fillStyle = 'hsl(214, 80%, 80%)';
+    ctx.fill(/** @type {?} */ (lowPath));
+    ctx.restore();
   }
 };
 

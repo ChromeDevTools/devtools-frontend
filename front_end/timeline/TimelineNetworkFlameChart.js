@@ -298,19 +298,17 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    * @return {?string}
    */
   _colorForPriority(priority) {
-    switch (/** @type {!Protocol.Network.ResourcePriority} */ (priority)) {
-      case Protocol.Network.ResourcePriority.VeryLow:
-        return '#080';
-      case Protocol.Network.ResourcePriority.Low:
-        return '#6c0';
-      case Protocol.Network.ResourcePriority.Medium:
-        return '#fa0';
-      case Protocol.Network.ResourcePriority.High:
-        return '#f60';
-      case Protocol.Network.ResourcePriority.VeryHigh:
-        return '#f00';
+    if (!this._priorityToValue) {
+      var priorities = Protocol.Network.ResourcePriority;
+      this._priorityToValue = new Map([
+        [priorities.VeryLow, 1],
+        [priorities.Low, 2],
+        [priorities.Medium, 3],
+        [priorities.High, 4],
+        [priorities.VeryHigh, 5]]);
     }
-    return null;
+    var value = this._priorityToValue.get(priority);
+    return value ? `hsla(214, 80%, 50%, ${value / 5})` : null;
   }
 
   /**

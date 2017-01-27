@@ -32,42 +32,61 @@ try:
 except ImportError:
     import json
 
-import sys
+import ast
 import re
+import sys
+
+
+def _json5_load(lines):
+    # Use json5.loads when json5 is available. Currently we use simple
+    # regexs to convert well-formed JSON5 to PYL format.
+    # Strip away comments and quote unquoted keys.
+    re_comment = re.compile(r"^\s*//.*$|//+ .*$", re.MULTILINE)
+    re_map_keys = re.compile(r"^\s*([$A-Za-z_][\w]*)\s*:", re.MULTILINE)
+    pyl = re.sub(re_map_keys, r"'\1':", re.sub(re_comment, "", lines))
+    # Convert map values of true/false to Python version True/False.
+    re_true = re.compile(r":\s*true\b")
+    re_false = re.compile(r":\s*false\b")
+    pyl = re.sub(re_true, ":True", re.sub(re_false, ":False", pyl))
+    return ast.literal_eval(pyl)
+
+
+def _keep_only_required_keys(entry):
+    for key in entry.keys():
+        if key not in ("name", "longhands", "svg", "inherited"):
+            del entry[key]
+    return entry
 
 
 def properties_from_file(file_name):
+    with open(file_name) as json5_file:
+        doc = _json5_load(json5_file.read())
+
     properties = []
     propertyNames = set()
-    with open(file_name, "r") as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith("//") or "alias_for" in line:
-                continue
-            partition = re.split("[, ]", line)
-            name = partition[0]
-            attributes = partition[1:]
-            entry = {"name": name}
-            if "inherited" in attributes:
-                entry["inherited"] = True
-            if "svg" in attributes:
-                entry["svg"] = True
-            propertyNames.add(name)
-            longhands = line.partition("longhands=")[2].partition(",")[0]
-            if longhands:
-                entry["longhands"] = longhands.split(";")
-            properties.append(entry)
+    for entry in doc["data"]:
+        if type(entry) is str:
+            entry = {"name": entry}
+        if "alias_for" in entry:
+            continue
+        properties.append(_keep_only_required_keys(entry))
+        propertyNames.add(entry["name"])
+
+    properties.sort(key=lambda entry: entry["name"])
 
     # Filter out unsupported longhands.
     for property in properties:
-        if "longhands" not in property:
+        longhands = property.get("longhands")
+        if not longhands:
             continue
-        longhands = property["longhands"]
+        if type(longhands) is str:
+            longhands = longhands.split(";")
         longhands = [longhand for longhand in longhands if longhand in propertyNames]
         if not longhands:
             del property["longhands"]
         else:
             property["longhands"] = longhands
+
     return properties
 
 

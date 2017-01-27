@@ -94,18 +94,18 @@ function fetchProtocolTask(done) {
 gulp.task('generateSupportedCSSProperties', ['fetchSupportedCSSProperties'], generateSupportedCSSProperties);
 function generateSupportedCSSProperties() {
   var script = path.join(scriptsPath, 'build', 'generate_supported_css.py');
-  var inputs = [path.join(releasePath, 'CSSProperties.in')];
+  var inputs = [path.join(releasePath, 'CSSProperties.json5')];
   var outputs = [path.join(releasePath, 'SupportedCSSProperties.js')];
   var args = inputs.concat(outputs);
   runPythonScript(script, args);
-  del.sync([path.join(releasePath, 'CSSProperties.in')], {force: true});
+  del.sync([path.join(releasePath, 'CSSProperties.json5')], {force: true});
 }
 
 gulp.task('fetchSupportedCSSProperties', ['clean'], fetchSupportedCSSProperties);
 function fetchSupportedCSSProperties(done) {
   var supportedCSSPropertiesURL =
-      'https://chromium.googlesource.com/chromium/src/+/master/third_party/WebKit/Source/core/css/CSSProperties.in?format=TEXT';
-  var supportedCSSPropertiesFile = path.join(releasePath, 'CSSProperties.in');
+      'https://chromium.googlesource.com/chromium/src/+/master/third_party/WebKit/Source/core/css/CSSProperties.json5?format=TEXT';
+  var supportedCSSPropertiesFile = path.join(releasePath, 'CSSProperties.json5');
   fetchAndSaveCodePromise(supportedCSSPropertiesURL, supportedCSSPropertiesFile)
       .then(() => done())
       .catch(err => console.log('Error fetching CSS properties:', err));

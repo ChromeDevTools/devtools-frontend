@@ -57,7 +57,7 @@ Components.EventListenersView = class {
 
     var promises = [];
     promises.push(object.eventListeners().then(storeEventListeners));
-    promises.push(SDK.EventListener.frameworkEventListeners(object).then(storeFrameworkEventListenersObject));
+    promises.push(Components.frameworkEventListeners(object).then(storeFrameworkEventListenersObject));
     return Promise.all(promises).then(markInternalEventListeners).then(addEventListeners.bind(this));
 
     /**

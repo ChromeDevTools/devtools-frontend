@@ -11,7 +11,7 @@ Components.EventListenerObjectInInspectedPage;
  * @param {!SDK.RemoteObject} object
  * @return {!Promise<!Components.FrameworkEventListenersObject>}
  */
-SDK.EventListener.frameworkEventListeners = function(object) {
+Components.frameworkEventListeners = function(object) {
   if (!object.target().hasDOMCapability()) {
     // TODO(kozyatinskiy): figure out how this should work for |window|.
     return Promise.resolve(

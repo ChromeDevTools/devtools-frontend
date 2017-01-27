@@ -790,6 +790,7 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
     this._delegate = delegate;
     this._filters.push.apply(this._filters, this._filtersControl.filters());
     this._dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
+    this._splitWidget.showBoth();
   }
 
   /**

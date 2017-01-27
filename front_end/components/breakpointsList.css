@@ -38,10 +38,8 @@
     max-width: 100%;
 }
 
-.breakpoint-entry .dt-checkbox-text {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+.breakpoint-entry label {
+     white-space: nowrap;
 }
 
 :not(.breakpoints-list-deactivated) > .breakpoint-entry:hover {

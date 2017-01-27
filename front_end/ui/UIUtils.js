@@ -1287,7 +1287,7 @@ UI.createCheckboxLabel = function(title, checked, subtitle) {
   var element = createElement('label', 'dt-checkbox');
   element.checkboxElement.checked = !!checked;
   if (title !== undefined) {
-    element.textElement = element.createChild('div', 'dt-checkbox-text');
+    element.textElement = element.shadowRoot.createChild('div', 'dt-checkbox-text');
     element.textElement.textContent = title;
     if (subtitle !== undefined) {
       element.subtitleElement = element.textElement.createChild('div', 'dt-checkbox-subtitle');

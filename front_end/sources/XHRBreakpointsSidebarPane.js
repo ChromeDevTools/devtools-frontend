@@ -104,7 +104,7 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
     label.checkboxElement.addEventListener('click', this._checkboxClicked.bind(this, url), false);
     element._checkboxElement = label.checkboxElement;
 
-    label.textElement.classList.add('cursor-auto');
+    label.classList.add('cursor-auto');
     label.textElement.addEventListener('dblclick', this._labelClicked.bind(this, url), false);
 
     var currentElement = /** @type {?Element} */ (this.listElement.firstChild);

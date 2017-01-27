@@ -59,10 +59,12 @@ input.dt-checkbox-themed:after {
 
 } /* media */
 
-::content .dt-checkbox-text {
+.dt-checkbox-text {
     margin-left: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-::content .dt-checkbox-subtitle {
+.dt-checkbox-subtitle {
     color: gray;
 }

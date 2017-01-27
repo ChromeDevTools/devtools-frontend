@@ -784,8 +784,9 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
    */
   constructor(model, filters, delegate) {
     super();
-    this._filtersControl = new Timeline.TimelineFilters();
-    this._filtersControl.addEventListener(Timeline.TimelineFilters.Events.FilterChanged, this._onFilterChanged, this);
+    this._filtersControl = new Timeline.EventsTimelineTreeView.Filters();
+    this._filtersControl.addEventListener(
+        Timeline.EventsTimelineTreeView.Filters.Events.FilterChanged, this._onFilterChanged, this);
     this._init(model, filters);
     this._delegate = delegate;
     this._filters.push.apply(this._filters, this._filtersControl.filters());
@@ -904,6 +905,197 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
    */
   _onHover(node) {
     this._delegate.highlightEvent(node && node.event);
+  }
+};
+
+
+/**
+ * @unrestricted
+ */
+Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
+  constructor() {
+    super();
+
+    this._categoryFilter = new Timeline.TimelineCategoryFilter();
+    this._durationFilter = new Timeline.TimelineIsLongFilter();
+    this._textFilter = new Timeline.TimelineTextFilter();
+    this._filters = [this._categoryFilter, this._durationFilter, this._textFilter];
+
+    this._createFilterBar();
+  }
+
+  /**
+   * @return {!Array<!TimelineModel.TimelineModel.Filter>}
+   */
+  filters() {
+    return this._filters;
+  }
+
+  /**
+   * @return {?RegExp}
+   */
+  searchRegExp() {
+    return this._textFilter._regExp;
+  }
+
+  /**
+   * @return {!UI.ToolbarItem}
+   */
+  filterButton() {
+    return this._filterBar.filterButton();
+  }
+
+  /**
+   * @return {!UI.Widget}
+   */
+  filtersWidget() {
+    return this._filterBar;
+  }
+
+  _createFilterBar() {
+    this._filterBar = new UI.FilterBar('timelinePanel');
+
+    this._textFilterUI = new UI.TextFilterUI();
+    this._textFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, textFilterChanged, this);
+    this._filterBar.addFilter(this._textFilterUI);
+
+    var durationOptions = [];
+    for (var durationMs of Timeline.EventsTimelineTreeView.Filters._durationFilterPresetsMs) {
+      var durationOption = {};
+      if (!durationMs) {
+        durationOption.label = Common.UIString('All');
+        durationOption.title = Common.UIString('Show all records');
+      } else {
+        durationOption.label = Common.UIString('\u2265 %dms', durationMs);
+        durationOption.title = Common.UIString('Hide records shorter than %dms', durationMs);
+      }
+      durationOption.value = durationMs;
+      durationOptions.push(durationOption);
+    }
+    var durationFilterUI = new UI.ComboBoxFilterUI(durationOptions);
+    durationFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, durationFilterChanged, this);
+    this._filterBar.addFilter(durationFilterUI);
+
+    var categoryFiltersUI = {};
+    var categories = Timeline.TimelineUIUtils.categories();
+    for (var categoryName in categories) {
+      var category = categories[categoryName];
+      if (!category.visible)
+        continue;
+      var filter = new UI.CheckboxFilterUI(category.name, category.title);
+      filter.setColor(category.color, 'rgba(0, 0, 0, 0.2)');
+      categoryFiltersUI[category.name] = filter;
+      filter.addEventListener(UI.FilterUI.Events.FilterChanged, categoriesFilterChanged.bind(this, categoryName));
+      this._filterBar.addFilter(filter);
+    }
+    return this._filterBar;
+
+    /**
+     * @this {Timeline.EventsTimelineTreeView.Filters}
+     */
+    function textFilterChanged() {
+      var searchQuery = this._textFilterUI.value();
+      this._textFilter._setRegExp(searchQuery ? createPlainTextSearchRegex(searchQuery, 'i') : null);
+      this._notifyFiltersChanged();
+    }
+
+    /**
+     * @this {Timeline.EventsTimelineTreeView.Filters}
+     */
+    function durationFilterChanged() {
+      var duration = durationFilterUI.value();
+      var minimumRecordDuration = parseInt(duration, 10);
+      this._durationFilter.setMinimumRecordDuration(minimumRecordDuration);
+      this._notifyFiltersChanged();
+    }
+
+    /**
+     * @param {string} name
+     * @this {Timeline.EventsTimelineTreeView.Filters}
+     */
+    function categoriesFilterChanged(name) {
+      var categories = Timeline.TimelineUIUtils.categories();
+      categories[name].hidden = !categoryFiltersUI[name].checked();
+      this._notifyFiltersChanged();
+    }
+  }
+
+  _notifyFiltersChanged() {
+    this.dispatchEventToListeners(Timeline.EventsTimelineTreeView.Filters.Events.FilterChanged);
+  }
+};
+
+/** @enum {symbol} */
+Timeline.EventsTimelineTreeView.Filters.Events = {
+  FilterChanged: Symbol('FilterChanged')
+};
+
+Timeline.EventsTimelineTreeView.Filters._durationFilterPresetsMs = [0, 1, 15];
+
+Timeline.TimelineCategoryFilter = class extends TimelineModel.TimelineModel.Filter {
+  constructor() {
+    super();
+  }
+
+  /**
+   * @override
+   * @param {!SDK.TracingModel.Event} event
+   * @return {boolean}
+   */
+  accept(event) {
+    return !Timeline.TimelineUIUtils.eventStyle(event).category.hidden;
+  }
+};
+
+Timeline.TimelineIsLongFilter = class extends TimelineModel.TimelineModel.Filter {
+  constructor() {
+    super();
+    this._minimumRecordDuration = 0;
+  }
+
+  /**
+   * @param {number} value
+   */
+  setMinimumRecordDuration(value) {
+    this._minimumRecordDuration = value;
+  }
+
+  /**
+   * @override
+   * @param {!SDK.TracingModel.Event} event
+   * @return {boolean}
+   */
+  accept(event) {
+    var duration = event.endTime ? event.endTime - event.startTime : 0;
+    return duration >= this._minimumRecordDuration;
+  }
+};
+
+Timeline.TimelineTextFilter = class extends TimelineModel.TimelineModel.Filter {
+  /**
+   * @param {!RegExp=} regExp
+   */
+  constructor(regExp) {
+    super();
+    /** @type {?RegExp} */
+    this._regExp;
+    this._setRegExp(regExp || null);
+  }
+
+  /**
+   * @param {?RegExp} regExp
+   */
+  _setRegExp(regExp) {
+    this._regExp = regExp;
+  }
+
+  /**
+   * @override
+   * @param {!SDK.TracingModel.Event} event
+   * @return {boolean}
+   */
+  accept(event) {
+    return !this._regExp || Timeline.TimelineUIUtils.testContentMatching(event, this._regExp);
   }
 };
 

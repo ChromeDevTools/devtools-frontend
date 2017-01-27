@@ -13,7 +13,8 @@ var Flags = {
   DEBUG_DEVTOOLS: '--debug-devtools',
   DEBUG_DEVTOOLS_SHORTHAND: '-d',
   FETCH_CONTENT_SHELL: '--fetch-content-shell',
-  COMPAT_PROTOCOL: '--compat-protocol',
+  COMPAT_PROTOCOL: '--compat-protocol',  // backwards compatibility testing
+  CHROMIUM_PATH: '--chromium-path'       // useful for bisecting
 };
 
 var COMPAT_URL_MAPPING = {
@@ -23,6 +24,7 @@ var COMPAT_URL_MAPPING = {
 var IS_DEBUG_ENABLED =
     utils.includes(process.argv, Flags.DEBUG_DEVTOOLS) || utils.includes(process.argv, Flags.DEBUG_DEVTOOLS_SHORTHAND);
 var COMPAT_PROTOCOL = utils.parseArgs(process.argv)[Flags.COMPAT_PROTOCOL];
+var CUSTOM_CHROMIUM_PATH = utils.parseArgs(process.argv)[Flags.CHROMIUM_PATH];
 var IS_FETCH_CONTENT_SHELL = utils.includes(process.argv, Flags.FETCH_CONTENT_SHELL);
 
 var CONTENT_SHELL_ZIP = 'content-shell.zip';
@@ -30,10 +32,10 @@ var MAX_CONTENT_SHELLS = 10;
 var PLATFORM = getPlatform();
 var PYTHON = process.platform === 'win32' ? 'python.bat' : 'python';
 
-var CHROMIUM_SRC_PATH = path.resolve(__dirname, '..', '..', '..', '..', '..');
+var CHROMIUM_SRC_PATH = CUSTOM_CHROMIUM_PATH || path.resolve(__dirname, '..', '..', '..', '..', '..');
 var RELEASE_PATH = path.resolve(CHROMIUM_SRC_PATH, 'out', 'Release');
 var BLINK_TEST_PATH = path.resolve(CHROMIUM_SRC_PATH, 'blink', 'tools', 'run_layout_tests.py');
-var DEVTOOLS_PATH = path.resolve(__dirname, '..');
+var DEVTOOLS_PATH = path.resolve(CHROMIUM_SRC_PATH, 'third_party', 'WebKit', 'Source', 'devtools');
 var CACHE_PATH = path.resolve(DEVTOOLS_PATH, '.test_cache');
 var SOURCE_PATH = path.resolve(DEVTOOLS_PATH, 'front_end');
 
@@ -67,6 +69,7 @@ main();
 
 function runCompatibilityTests() {
   const folder = `compat-protocol-${COMPAT_PROTOCOL}`;
+  utils.removeRecursive(path.resolve(RELEASE_PATH, 'resources', 'inspector'));
   compileFrontend();
   var outPath = path.resolve(CACHE_PATH, folder, 'out');
   var contentShellDirPath = path.resolve(outPath, 'Release');
@@ -87,7 +90,7 @@ function runCompatibilityTests() {
 function compileFrontend() {
   console.log('Compiling devtools frontend');
   try {
-    shell(`ninja -C ${RELEASE_PATH} devtools_frontend_resources`);
+    shell(`ninja -C ${RELEASE_PATH} devtools_frontend_resources`, {cwd: CHROMIUM_SRC_PATH});
   } catch (err) {
     console.log(err.stdout.toString());
     console.log('ERROR: Cannot compile frontend\n' + err);
@@ -271,9 +274,12 @@ function runTests(buildDirectoryPath, useDebugDevtools) {
     console.log('TIP: You can debug a test using: npm run debug-test inspector/test-name.html');
 
   if (COMPAT_PROTOCOL) {
-    let platform = `protocol-${COMPAT_PROTOCOL}`;
-    let compatBaselinePath = path.resolve(DEVTOOLS_PATH, 'tests', 'baseline', platform);
+    const platform = `protocol-${COMPAT_PROTOCOL}`;
+    const testsPath = path.resolve(DEVTOOLS_PATH, 'tests');
+    const compatBaselinePath = path.resolve(testsPath, 'baseline', platform);
     testArgs.push(`--additional-platform-directory=${compatBaselinePath}`);
+    const expectationsPath = path.resolve(testsPath, 'TestExpectations');
+    testArgs.push(`--additional-expectations=${expectationsPath}`);
   }
   if (IS_DEBUG_ENABLED) {
     testArgs.push('--additional-driver-flag=--remote-debugging-port=9222');

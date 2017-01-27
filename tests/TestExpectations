@@ -1,0 +1,55 @@
+# Skipping service worker tests b/c migration from ServiceWorker domain to Target domain
+# https://crrev.com/c2cea7d490e0b9ec93b72b0e00502bb9fa79f10a
+http/tests/inspector/elements/event-listeners-framework-with-service-worker.html [ Skip ]
+http/tests/inspector/service-workers/lazy-addeventlisteners.html [ Skip ]
+http/tests/inspector/service-workers/service-worker-agents.html [ Skip ]
+http/tests/inspector/service-workers/service-worker-manager.html [ Skip ]
+http/tests/inspector/service-workers/service-worker-pause.html [ Skip ]
+http/tests/inspector/service-workers/service-workers-force-update-on-page-load.html [ Skip ]
+http/tests/inspector/service-workers/service-workers-navigation-preload.html [ Skip ]
+http/tests/inspector/service-workers/service-workers-redundant.html [ Skip ]
+http/tests/inspector/service-workers/service-workers-view.html [ Skip ]
+http/tests/inspector/service-workers/service-workers-bypass-for-network-redirect.html [ Skip ]
+
+# Skipping worker tests b/c migration from Worker domain to Target domain
+# https://crrev.com/14d5ae1493499885e5f9820490e77aef43d0d083
+http/tests/inspector-enabled/dedicated-workers-list.html [ Skip ]
+http/tests/inspector/sources/debugger/worker-debugging-script-mapping.html [ Skip ]
+http/tests/inspector/sources/debugger/worker-debugging.html [ Skip ]
+inspector/console/console-revoke-error-in-worker.html [ Skip ]
+inspector/console/worker-eval-contains-stack.html [ Skip ]
+inspector/sources/debugger-frameworks/frameworks-with-worker.html [ Skip ]
+inspector/sources/debugger-ui/script-snippet-model.html [ Skip ] # TODO(chenwilliam): extract the worker test
+
+# Skipping accessibility tests b/c of protocol change
+# https://crrev.com/3a46cc72d58945804dd4919a679a8ce26690bfc0
+inspector-protocol/accessibility/accessibility-getNodeWithNoAXNode.html [ Skip ]
+inspector-protocol/accessibility/accessibility-getRelationships.html [ Skip ]
+inspector-protocol/accessibility/accessibility-ignoredNodes.html [ Skip ]
+inspector-protocol/accessibility/accessibility-ignoredNodesModal.html [ Skip ]
+inspector-protocol/accessibility/accessibility-nameSources-buttons.html [ Skip ]
+inspector-protocol/accessibility/accessibility-nameSources-img-figure.html [ Skip ]
+inspector-protocol/accessibility/accessibility-nameSources-input-buttons.html [ Skip ]
+inspector-protocol/accessibility/accessibility-nameSources-input.html [ Skip ]
+inspector-protocol/accessibility/accessibility-nameSources-labelledby.html [ Skip ]
+inspector-protocol/accessibility/accessibility-nameSources-summary.html [ Skip ]
+inspector-protocol/accessibility/accessibility-nameSources-visiblity.html [ Skip ]
+
+# Skipping async await tests b/c 1.2 content shell (DevTools runtime) does not
+# support async await
+inspector/sources/debugger-async/async-await/async-callstack-async-await1.html [ Skip ]
+inspector/sources/debugger-async/async-await/async-callstack-async-await2.html [ Skip ]
+inspector/sources/debugger-async/async-await/async-callstack-async-await3.html [ Skip ]
+inspector/sources/debugger-async/async-await/async-pause-on-exception.html [ Skip ]
+inspector/sources/debugger-ui/async-call-stack-async-function.html [ Skip ]
+
+# 1.2 content shell does not support inspector-unit
+http/tests/inspector-unit/filtered-item-selection-dialog-filtering.js [ Skip ]
+http/tests/inspector-unit/list-control-equal-height.js [ Skip ]
+http/tests/inspector-unit/list-control-non-viewport.js [ Skip ]
+http/tests/inspector-unit/list-control-various-height.js [ Skip ]
+http/tests/inspector-unit/suggest-box.js [ Skip ]
+http/tests/inspector-unit/test-failure.js [ Skip ]
+http/tests/inspector-unit/text-prompt-hint.js [ Skip ]
+http/tests/inspector-unit/text-prompt.js [ Skip ]
+http/tests/inspector-unit/trie.js [ Skip ]

@@ -1385,14 +1385,14 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
           var text = node.nodeValue();
           newNode.textContent = text.startsWith('\n') ? text.substring(1) : text;
 
-          var javascriptSyntaxHighlighter = new UI.DOMSyntaxHighlighter('text/javascript', true);
+          var javascriptSyntaxHighlighter = new UI.SyntaxHighlighter('text/javascript', true);
           javascriptSyntaxHighlighter.syntaxHighlightNode(newNode).then(updateSearchHighlight.bind(this));
         } else if (node.parentNode && node.parentNode.nodeName().toLowerCase() === 'style') {
           var newNode = titleDOM.createChild('span', 'webkit-html-text-node webkit-html-css-node');
           var text = node.nodeValue();
           newNode.textContent = text.startsWith('\n') ? text.substring(1) : text;
 
-          var cssSyntaxHighlighter = new UI.DOMSyntaxHighlighter('text/css', true);
+          var cssSyntaxHighlighter = new UI.SyntaxHighlighter('text/css', true);
           cssSyntaxHighlighter.syntaxHighlightNode(newNode).then(updateSearchHighlight.bind(this));
         } else {
           titleDOM.createTextChild('"');

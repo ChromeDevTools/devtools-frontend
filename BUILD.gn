@@ -582,7 +582,7 @@ all_devtools_files = [
   "front_end/ui/ContextMenu.js",
   "front_end/ui/dialog.css",
   "front_end/ui/Dialog.js",
-  "front_end/ui/DOMSyntaxHighlighter.js",
+  "front_end/ui/SyntaxHighlighter.js",
   "front_end/ui/DropDownMenu.js",
   "front_end/ui/dropTarget.css",
   "front_end/ui/DropTarget.js",

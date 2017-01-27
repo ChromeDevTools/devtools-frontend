@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-UI.DOMSyntaxHighlighter = class {
+UI.SyntaxHighlighter = class {
   /**
    * @param {string} mimeType
    * @param {boolean} stripExtraWhitespace
@@ -68,7 +68,7 @@ UI.DOMSyntaxHighlighter = class {
 
     /**
      * @param {!Common.TokenizerFactory} tokenizerFactory
-     * @this {UI.DOMSyntaxHighlighter}
+     * @this {UI.SyntaxHighlighter}
      */
     function processTokens(tokenizerFactory) {
       node.removeChildren();
@@ -91,7 +91,7 @@ UI.DOMSyntaxHighlighter = class {
      * @param {?string} tokenType
      * @param {number} column
      * @param {number} newColumn
-     * @this {UI.DOMSyntaxHighlighter}
+     * @this {UI.SyntaxHighlighter}
      */
     function processToken(token, tokenType, column, newColumn) {
       if (!tokenType)

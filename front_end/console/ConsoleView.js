@@ -1216,7 +1216,7 @@ Console.ConsoleCommand = class extends Console.ConsoleViewMessage {
       this._contentElement.appendChild(this._formattedCommand);
 
       if (this._formattedCommand.textContent.length < Console.ConsoleCommand.MaxLengthToIgnoreHighlighter) {
-        var javascriptSyntaxHighlighter = new UI.DOMSyntaxHighlighter('text/javascript', true);
+        var javascriptSyntaxHighlighter = new UI.SyntaxHighlighter('text/javascript', true);
         javascriptSyntaxHighlighter.syntaxHighlightNode(this._formattedCommand).then(this._updateSearch.bind(this));
       } else {
         this._updateSearch();

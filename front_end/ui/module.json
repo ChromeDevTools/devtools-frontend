@@ -15,7 +15,7 @@
         "Context.js",
         "ContextMenu.js",
         "Dialog.js",
-        "DOMSyntaxHighlighter.js",
+        "SyntaxHighlighter.js",
         "DropDownMenu.js",
         "DropTarget.js",
         "EmptyWidget.js",

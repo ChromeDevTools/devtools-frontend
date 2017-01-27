@@ -578,6 +578,7 @@ all_devtools_files = [
   "front_end/ui/ActionRegistry.js",
   "front_end/ui/checkboxTextLabel.css",
   "front_end/ui/closeButton.css",
+  "front_end/ui/confirmDialog.css",
   "front_end/ui/Context.js",
   "front_end/ui/ContextMenu.js",
   "front_end/ui/dialog.css",

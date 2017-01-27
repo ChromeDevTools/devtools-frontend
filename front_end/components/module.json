@@ -56,7 +56,7 @@
     ],
     "scripts": [
         "BreakpointsSidebarPaneBase.js",
-        "CustomPreviewSection.js",
+        "CustomPreviewComponent.js",
         "CPUThrottlingManager.js",
         "DataSaverInfobar.js",
         "DOMBreakpointsSidebarPane.js",
@@ -74,7 +74,7 @@
     ],
     "resources": [
         "breakpointsList.css",
-        "customPreviewSection.css",
+        "customPreviewComponent.css",
         "eventListenersView.css",
         "domUtils.css",
         "networkConditionsSettingsTab.css",

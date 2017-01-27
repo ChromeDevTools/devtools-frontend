@@ -965,11 +965,12 @@ Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
       if (!durationMs) {
         durationOption.label = Common.UIString('All');
         durationOption.title = Common.UIString('Show all records');
+        durationOption.default = true;
       } else {
         durationOption.label = Common.UIString('\u2265 %dms', durationMs);
         durationOption.title = Common.UIString('Hide records shorter than %dms', durationMs);
       }
-      durationOption.value = durationMs;
+      durationOption.value = String(durationMs);
       durationOptions.push(durationOption);
     }
     var durationFilterUI = new UI.ComboBoxFilterUI(durationOptions);

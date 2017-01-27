@@ -79,6 +79,10 @@ UI.FilterBar = class extends UI.HBox {
     this._updateFilterBar();
   }
 
+  showOnce() {
+    this._stateSetting.set(true);
+  }
+
   /**
    * @param {!Common.Event} event
    */
@@ -452,26 +456,28 @@ UI.NamedBitSetFilterUI.ALL_TYPES = 'all';
  */
 UI.ComboBoxFilterUI = class extends Common.Object {
   /**
-   * @param {!Array.<!{value: *, label: string, title: string}>} options
+   * @param {!Array.<!{value: string, label: string, title: string, default:(boolean|undefined)}>} options
+   * @param {string=} label
+   * @param {!Common.Setting=} setting
    */
-  constructor(options) {
+  constructor(options, label, setting) {
     super();
-    this._filterElement = createElement('div');
-    this._filterElement.className = 'filter-combobox-filter';
+    this._setting = setting;
+    this._toolbar = new UI.Toolbar('');
+    this._filterComboBox = new UI.ToolbarComboBox(this._filterChanged.bind(this));
+    this._toolbar.appendToolbarItem(this._filterComboBox);
 
     this._options = options;
-    this._filterComboBox = createElementWithClass('select', 'chrome-select');
-    this._filterComboBox.addEventListener('input', this._filterChanged.bind(this), false);
     for (var i = 0; i < options.length; ++i) {
       var filterOption = options[i];
-      var option = createElement('option');
-      option.text = filterOption.label;
-      option.title = filterOption.title;
-      this._filterComboBox.appendChild(option);
+      var option = this._filterComboBox.createOption(filterOption.label, filterOption.title, filterOption.value);
+      this._filterComboBox.addOption(option);
+      if (setting && setting.get() === filterOption.value)
+        this._filterComboBox.setSelectedIndex(i);
     }
-    if (options.length)
-      this._filterComboBox.title = options[0].title;
-    this._filterElement.appendChild(this._filterComboBox);
+
+    if (setting)
+      setting.addChangeListener(this._settingChanged, this);
   }
 
   /**
@@ -479,7 +485,8 @@ UI.ComboBoxFilterUI = class extends Common.Object {
    * @return {boolean}
    */
   isActive() {
-    return this._filterComboBox.selectedIndex !== 0;
+    var option = this._options[this._filterComboBox.selectedIndex()];
+    return !option || !option.default;
   }
 
   /**
@@ -487,37 +494,53 @@ UI.ComboBoxFilterUI = class extends Common.Object {
    * @return {!Element}
    */
   element() {
-    return this._filterElement;
+    return this._toolbar.element;
   }
 
   /**
-   * @return {*}
+   * @return {string}
    */
   value() {
-    var option = this._options[this._filterComboBox.selectedIndex];
-    return option.value;
+    return this._options[this._filterComboBox.selectedIndex()].value;
   }
 
   /**
    * @param {number} index
    */
   setSelectedIndex(index) {
-    this._filterComboBox.selectedIndex = index;
+    this._filterComboBox.setSelectedIndex(index);
   }
 
   /**
    * @return {number}
    */
   selectedIndex(index) {
-    return this._filterComboBox.selectedIndex;
+    return this._filterComboBox.selectedIndex();
+  }
+
+  _settingChanged() {
+    if (this._muteSettingListener)
+      return;
+
+    var value = this._setting.get();
+    for (var i = 0; i < this._options.length; ++i) {
+      if (value === this._options[i].value) {
+        this._filterComboBox.setSelectedIndex(i);
+        break;
+      }
+    }
   }
 
   /**
    * @param {!Event} event
    */
   _filterChanged(event) {
-    var option = this._options[this._filterComboBox.selectedIndex];
-    this._filterComboBox.title = option.title;
+    var option = this._options[this._filterComboBox.selectedIndex()];
+    if (this._setting) {
+      this._muteSettingListener = true;
+      this._setting.set(option.value);
+      this._muteSettingListener = false;
+    }
     this.dispatchEventToListeners(UI.FilterUI.Events.FilterChanged, null);
   }
 };

@@ -109,7 +109,7 @@ UI.TextPrompt = class extends Common.Object {
     this._boundClearAutocomplete = this.clearAutocomplete.bind(this);
     this._proxyElement = element.ownerDocument.createElement('span');
     var shadowRoot = UI.createShadowRootWithCoreStyles(this._proxyElement, 'ui/textPrompt.css');
-    this._contentElement = shadowRoot.createChild('div');
+    this._contentElement = shadowRoot.createChild('div', 'text-prompt-root');
     this._contentElement.createChild('content');
     this._proxyElement.style.display = this._proxyElementDisplay;
     element.parentElement.insertBefore(this._proxyElement, element);

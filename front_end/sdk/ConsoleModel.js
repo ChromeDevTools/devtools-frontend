@@ -273,7 +273,7 @@ SDK.ConsoleMessage = class {
       workerId) {
     this._target = target;
     this.source = source;
-    this.level = level;
+    this.level = /** @type {?SDK.ConsoleMessage.MessageLevel} */ (level);
     this.messageText = messageText;
     this.type = type || SDK.ConsoleMessage.MessageType.Log;
     /** @type {string|undefined} */
@@ -519,6 +519,19 @@ SDK.ConsoleMessage.MessageLevel = {
   Error: 'error'
 };
 
+/**
+ * @param {!SDK.ConsoleMessage.MessageLevel} level
+ * @return {number}
+ */
+SDK.ConsoleMessage.MessageLevel.ordinal = function(level) {
+  if (level === SDK.ConsoleMessage.MessageLevel.Verbose)
+    return 0;
+  if (level === SDK.ConsoleMessage.MessageLevel.Info)
+    return 1;
+  if (level === SDK.ConsoleMessage.MessageLevel.Warning)
+    return 2;
+  return 3;
+};
 
 /**
  * @implements {Protocol.LogDispatcher}

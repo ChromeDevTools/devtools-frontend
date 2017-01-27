@@ -137,6 +137,7 @@
 .console-info {
     color: rgb(128, 128, 128);
     font-style: italic;
+    padding-bottom: 2px;
 }
 
 .console-group .console-group > .console-group-messages {
@@ -231,10 +232,6 @@
 .-theme-with-dark-background .console-error-level .console-message-text,
 .-theme-with-dark-background .console-error-level .console-view-object-properties-section {
     color: hsl(0, 100%, 75%) !important;
-}
-
-.console-verbose-level .console-message-text {
-    color: blue;
 }
 
 .-theme-with-dark-background .console-verbose-level .console-message-text {

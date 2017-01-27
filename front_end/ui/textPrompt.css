@@ -4,6 +4,11 @@
  * found in the LICENSE file.
  */
 
+.text-prompt-root {
+    display: flex;
+    align-items: center;
+}
+
 .text-prompt-editing {
     -webkit-user-select: text;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2),

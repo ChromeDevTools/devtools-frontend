@@ -30,7 +30,6 @@
 
 .filter-bar {
     background-color: #f3f3f3;
-    padding: 2px 0;
     flex: none;
     flex-wrap: wrap;
     align-items: center;
@@ -142,7 +141,7 @@
     border: 1px solid rgb(163, 163, 163);
     border-radius: 2px;
     padding: 1px 3px 0;
-    margin: 0 0 0 1px;
+    margin: 0 0 0 3px;
     width: 143px;
     height: 20px;
     line-height: 17px;

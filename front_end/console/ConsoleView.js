@@ -59,8 +59,8 @@ Console.ConsoleView = class extends UI.VBox {
     this._executionContextComboBox.setMaxWidth(200);
     this._consoleContextSelector = new Console.ConsoleContextSelector(this._executionContextComboBox.selectElement());
 
-    this._filter = new Console.ConsoleViewFilter(this);
-    this._filter.addEventListener(Console.ConsoleViewFilter.Events.FilterChanged, this._updateMessageList.bind(this));
+    this._showAllMessagesCheckbox = new UI.ToolbarCheckbox(Common.UIString('Show all messages'));
+    this._filter = new Console.ConsoleViewFilter(this._showAllMessagesCheckbox, this._updateMessageList.bind(this));
 
     this._filterBar = new UI.FilterBar('consoleView');
 
@@ -95,9 +95,9 @@ Console.ConsoleView = class extends UI.VBox {
     this._messagesElement.insertBefore(this._filterStatusMessageElement, this._messagesElement.firstChild);
     this._filterStatusTextElement = this._filterStatusMessageElement.createChild('span', 'console-info');
     this._filterStatusMessageElement.createTextChild(' ');
-    var resetFiltersLink = this._filterStatusMessageElement.createChild('span', 'console-info link');
-    resetFiltersLink.textContent = Common.UIString('Show all messages.');
-    resetFiltersLink.addEventListener('click', this._filter.reset.bind(this._filter), true);
+    this._resetFiltersLink = createElementWithClass('span', 'link');
+    this._resetFiltersLink.textContent = Common.UIString('filters');
+    this._resetFiltersLink.addEventListener('click', () => this._filterBar.showOnce(), true);
 
     this._topGroup = Console.ConsoleGroup.createTopGroup();
     this._currentGroup = this._topGroup;
@@ -112,7 +112,6 @@ Console.ConsoleView = class extends UI.VBox {
     var selectAllFixer = this._messagesElement.createChild('div', 'console-view-fix-select-all');
     selectAllFixer.textContent = '.';
 
-    this._showAllMessagesCheckbox = new UI.ToolbarCheckbox(Common.UIString('Show all messages'));
     this._showAllMessagesCheckbox.inputElement.checked = true;
     this._showAllMessagesCheckbox.inputElement.addEventListener('change', this._updateMessageList.bind(this), false);
 
@@ -433,9 +432,11 @@ Console.ConsoleView = class extends UI.VBox {
   }
 
   _updateFilterStatus() {
-    this._filterStatusTextElement.textContent = Common.UIString(
-        this._hiddenByFilterCount === 1 ? '%d message is hidden by filters.' : '%d messages are hidden by filters.',
-        this._hiddenByFilterCount);
+    this._filterStatusTextElement.removeChildren();
+    this._filterStatusTextElement.appendChild(UI.formatLocalized(
+        this._hiddenByFilterCount === 1 ? '1 message is hidden by %s.' :
+                                          this._hiddenByFilterCount + ' messages are hidden by %s.',
+        [this._resetFiltersLink]));
     this._filterStatusMessageElement.style.display = this._hiddenByFilterCount ? '' : 'none';
   }
 
@@ -511,8 +512,7 @@ Console.ConsoleView = class extends UI.VBox {
    */
   _appendMessageToEnd(viewMessage) {
     if (!this._filter.shouldBeVisible(viewMessage)) {
-      if (this._filter.shouldBeVisibleByDefault(viewMessage))
-        this._hiddenByFilterCount++;
+      this._hiddenByFilterCount++;
       return;
     }
 
@@ -605,7 +605,7 @@ Console.ConsoleView = class extends UI.VBox {
 
     var hasFilters = false;
 
-    for (var url in this._filter.messageURLFilters) {
+    for (var url in this._filter.messageURLFilters()) {
       filterSubMenu.appendCheckboxItem(
           String.sprintf('%s (%d)', new Common.ParsedURL(url).displayName, this._urlToMessageCount[url]),
           this._filter.removeMessageURLFilter.bind(this._filter, url), true);
@@ -1043,16 +1043,22 @@ Console.ConsoleView.persistedHistorySize = 300;
  */
 Console.ConsoleViewFilter = class extends Common.Object {
   /**
-   * @param {!Console.ConsoleView} view
+   * @param {!UI.ToolbarCheckbox} showAllMessagesCheckbox
+   * @param {function()} filterChangedCallback
    */
-  constructor(view) {
+  constructor(showAllMessagesCheckbox, filterChangedCallback) {
     super();
-    this._messageURLFiltersSetting = Common.settings.createSetting('messageURLFilters', {});
-    this._messageLevelFiltersSetting = Common.settings.createSetting('messageLevelFilters', {});
+    this._showAllMessagesCheckbox = showAllMessagesCheckbox;
+    this._filterChanged = filterChangedCallback;
 
-    this._view = view;
-    this._messageURLFilters = this._messageURLFiltersSetting.get();
-    this._filterChanged = this.dispatchEventToListeners.bind(this, Console.ConsoleViewFilter.Events.FilterChanged);
+    this._messageURLFiltersSetting = Common.settings.createSetting('messageURLFilters', {});
+    this._messageLevelFiltersSetting =
+        Common.settings.createSetting('messageLevelFilters2', SDK.ConsoleMessage.MessageLevel.Info);
+    this._hideNetworkMessagesSetting = Common.moduleSetting('hideNetworkMessages');
+
+    this._messageURLFiltersSetting.addChangeListener(this._filterChanged);
+    this._messageLevelFiltersSetting.addChangeListener(this._filterChanged);
+    this._hideNetworkMessagesSetting.addChangeListener(this._filterChanged);
   }
 
   addFilters(filterBar) {
@@ -1061,28 +1067,22 @@ Console.ConsoleViewFilter = class extends Common.Object {
     filterBar.addFilter(this._textFilterUI);
 
     this._hideNetworkMessagesCheckbox =
-        new UI.CheckboxFilterUI('', Common.UIString('Hide network'), true, Common.moduleSetting('hideNetworkMessages'));
-    this._hideViolationMessagesCheckbox = new UI.CheckboxFilterUI(
-        '', Common.UIString('Hide violations'), false, Common.moduleSetting('hideViolationMessages'));
-    Common.moduleSetting('hideNetworkMessages').addChangeListener(this._filterChanged, this);
-    Common.moduleSetting('hideViolationMessages').addChangeListener(this._filterChanged, this);
-    filterBar.addFilter(this._hideNetworkMessagesCheckbox);
-    filterBar.addFilter(this._hideViolationMessagesCheckbox);
+        new UI.CheckboxFilterUI('', Common.UIString('Hide network'), true, this._hideNetworkMessagesSetting);
 
     var levels = [
-      {name: SDK.ConsoleMessage.MessageLevel.Error, label: Common.UIString('Errors')},
-      {name: SDK.ConsoleMessage.MessageLevel.Warning, label: Common.UIString('Warnings')},
-      {name: SDK.ConsoleMessage.MessageLevel.Info, label: Common.UIString('Info')},
-      {name: SDK.ConsoleMessage.MessageLevel.Verbose, label: Common.UIString('Verbose')}
+      {value: SDK.ConsoleMessage.MessageLevel.Verbose, label: Common.UIString('Verbose')},
+      {value: SDK.ConsoleMessage.MessageLevel.Info, label: Common.UIString('Info'), default: true},
+      {value: SDK.ConsoleMessage.MessageLevel.Warning, label: Common.UIString('Warnings')},
+      {value: SDK.ConsoleMessage.MessageLevel.Error, label: Common.UIString('Errors')}
     ];
-    this._levelFilterUI = new UI.NamedBitSetFilterUI(levels, this._messageLevelFiltersSetting);
-    this._levelFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, this._filterChanged, this);
-    filterBar.addFilter(this._levelFilterUI);
+
+    var levelFilter = new UI.ComboBoxFilterUI(levels, Common.UIString('Level: '), this._messageLevelFiltersSetting);
+    filterBar.addFilter(levelFilter);
+    filterBar.addFilter(this._hideNetworkMessagesCheckbox);
   }
 
   _textFilterChanged(event) {
     this._filterRegex = this._textFilterUI.regex();
-
     this._filterChanged();
   }
 
@@ -1090,29 +1090,30 @@ Console.ConsoleViewFilter = class extends Common.Object {
    * @param {string} url
    */
   addMessageURLFilter(url) {
-    this._messageURLFilters[url] = true;
-    this._messageURLFiltersSetting.set(this._messageURLFilters);
-    this._filterChanged();
+    var value = this._messageURLFiltersSetting.get();
+    value[url] = true;
+    this._messageURLFiltersSetting.set(value);
   }
 
   /**
    * @param {string} url
    */
   removeMessageURLFilter(url) {
-    if (!url)
-      this._messageURLFilters = {};
-    else
-      delete this._messageURLFilters[url];
-
-    this._messageURLFiltersSetting.set(this._messageURLFilters);
-    this._filterChanged();
+    var value;
+    if (url) {
+      value = this._messageURLFiltersSetting.get();
+      delete value[url];
+    } else {
+      value = {};
+    }
+    this._messageURLFiltersSetting.set(value);
   }
 
   /**
    * @returns {!Object}
    */
-  get messageURLFilters() {
-    return this._messageURLFilters;
+  messageURLFilters() {
+    return this._messageURLFiltersSetting.get();
   }
 
   /**
@@ -1125,7 +1126,7 @@ Console.ConsoleViewFilter = class extends Common.Object {
     if (!message.target())
       return true;
 
-    if (!this._view._showAllMessagesCheckbox.checked() && executionContext) {
+    if (!this._showAllMessagesCheckbox.checked() && executionContext) {
       if (message.target() !== executionContext.target())
         return false;
       if (message.executionContextId && message.executionContextId !== executionContext.id)
@@ -1136,10 +1137,6 @@ Console.ConsoleViewFilter = class extends Common.Object {
         viewMessage.consoleMessage().source === SDK.ConsoleMessage.MessageSource.Network)
       return false;
 
-    if (Common.moduleSetting('hideViolationMessages').get() &&
-        viewMessage.consoleMessage().source === SDK.ConsoleMessage.MessageSource.Violation)
-      return false;
-
     if (viewMessage.consoleMessage().isGroupMessage())
       return true;
 
@@ -1147,10 +1144,12 @@ Console.ConsoleViewFilter = class extends Common.Object {
         message.type === SDK.ConsoleMessage.MessageType.Command)
       return true;
 
-    if (message.url && this._messageURLFilters[message.url])
+    if (message.url && this._messageURLFiltersSetting.get()[message.url])
       return false;
 
-    if (message.level && !this._levelFilterUI.accept(message.level))
+    var filterOrdinal = SDK.ConsoleMessage.MessageLevel.ordinal(
+        /** @type {!SDK.ConsoleMessage.MessageLevel} */ (this._messageLevelFiltersSetting.get()));
+    if (message.level && SDK.ConsoleMessage.MessageLevel.ordinal(message.level) < filterOrdinal)
       return false;
 
     if (this._filterRegex) {
@@ -1162,28 +1161,14 @@ Console.ConsoleViewFilter = class extends Common.Object {
     return true;
   }
 
-  /**
-   * @return {boolean}
-   */
-  shouldBeVisibleByDefault(viewMessage) {
-    return viewMessage.consoleMessage().source !== SDK.ConsoleMessage.MessageSource.Violation;
-  }
-
   reset() {
-    this._messageURLFilters = {};
-    this._messageURLFiltersSetting.set(this._messageURLFilters);
-    this._messageLevelFiltersSetting.set({});
-    this._view._showAllMessagesCheckbox.inputElement.checked = true;
+    this._messageURLFiltersSetting.set({});
+    this._messageLevelFiltersSetting.set(SDK.ConsoleMessage.MessageLevel.Info);
+    this._showAllMessagesCheckbox.inputElement.checked = true;
     Common.moduleSetting('hideNetworkMessages').set(false);
-    Common.moduleSetting('hideViolationMessages').set(true);
     this._textFilterUI.setValue('');
     this._filterChanged();
   }
-};
-
-/** @enum {symbol} */
-Console.ConsoleViewFilter.Events = {
-  FilterChanged: Symbol('FilterChanged')
 };
 
 /**

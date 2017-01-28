@@ -1454,7 +1454,7 @@ Timeline.TimelineUIUtils = class {
       other:
           new Timeline.TimelineCategory('other', Common.UIString('Other'), false, 'hsl(0, 0%, 87%)', 'hsl(0, 0%, 79%)'),
       idle: new Timeline.TimelineCategory(
-          'idle', Common.UIString('Idle'), false, 'hsl(0, 100%, 100%)', 'hsl(0, 100%, 100%)')
+          'idle', Common.UIString('Idle'), false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)')
     };
     return Timeline.TimelineUIUtils._categories;
   }

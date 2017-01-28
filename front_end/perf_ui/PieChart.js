@@ -43,9 +43,18 @@ PerfUI.PieChart = class {
     var root = this._shadowRoot.createChild('div', 'root');
     var svg = this._createSVGChild(root, 'svg');
     this._group = this._createSVGChild(svg, 'g');
-    var background = this._createSVGChild(this._group, 'circle');
-    background.setAttribute('r', 1.01);
-    background.setAttribute('fill', 'hsl(0, 0%, 90%)');
+    this._innerR = 0.618;
+    var strokeWidth = 1 / size;
+    var circle = this._createSVGChild(this._group, 'circle');
+    circle.setAttribute('r', 1);
+    circle.setAttribute('stroke', 'hsl(0, 0%, 80%)');
+    circle.setAttribute('fill', 'transparent');
+    circle.setAttribute('stroke-width', strokeWidth);
+    circle = this._createSVGChild(this._group, 'circle');
+    circle.setAttribute('r', this._innerR);
+    circle.setAttribute('stroke', 'hsl(0, 0%, 80%)');
+    circle.setAttribute('fill', 'transparent');
+    circle.setAttribute('stroke-width', strokeWidth);
     this._foregroundElement = root.createChild('div', 'pie-chart-foreground');
     if (showTotal)
       this._totalElement = this._foregroundElement.createChild('div', 'pie-chart-total');
@@ -97,8 +106,14 @@ PerfUI.PieChart = class {
     this._lastAngle += sliceAngle;
     var x2 = Math.cos(this._lastAngle);
     var y2 = Math.sin(this._lastAngle);
+    var r2 = this._innerR;
+    var x3 = x2 * r2;
+    var y3 = y2 * r2;
+    var x4 = x1 * r2;
+    var y4 = y1 * r2;
     var largeArc = sliceAngle > Math.PI ? 1 : 0;
-    path.setAttribute('d', 'M0,0 L' + x1 + ',' + y1 + ' A1,1,0,' + largeArc + ',1,' + x2 + ',' + y2 + ' Z');
+    path.setAttribute('d',
+        `M${x1},${y1} A1,1,0,${largeArc},1,${x2},${y2} L${x3},${y3} A${r2},${r2},0,${largeArc},0,${x4},${y4} Z`);
     path.setAttribute('fill', color);
     this._slices.push(path);
   }

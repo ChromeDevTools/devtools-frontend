@@ -215,7 +215,7 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
    * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(Accessibility.AccessibilityModel, target);
+    super(target);
     this._agent = target.accessibilityAgent();
 
     /** @type {!Map<string, !Accessibility.AccessibilityNode>} */
@@ -225,13 +225,10 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
 
   /**
    * @param {!SDK.Target} target
-   * @return {!Accessibility.AccessibilityModel}
+   * @return {?Accessibility.AccessibilityModel}
    */
   static fromTarget(target) {
-    if (!target[Accessibility.AccessibilityModel._symbol])
-      target[Accessibility.AccessibilityModel._symbol] = new Accessibility.AccessibilityModel(target);
-
-    return target[Accessibility.AccessibilityModel._symbol];
+    return target.model(Accessibility.AccessibilityModel);
   }
 
   clear() {
@@ -314,4 +311,4 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
   }
 };
 
-Accessibility.AccessibilityModel._symbol = Symbol('AccessibilityModel');
+SDK.SDKModel.register(Accessibility.AccessibilityModel, SDK.Target.Capability.DOM);

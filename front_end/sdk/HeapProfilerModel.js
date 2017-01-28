@@ -6,7 +6,7 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
    * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(SDK.HeapProfilerModel, target);
+    super(target);
     target.registerHeapProfilerDispatcher(new SDK.HeapProfilerDispatcher(this));
     this._enabled = false;
     this._heapProfilerAgent = target.heapProfilerAgent();
@@ -69,6 +69,9 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
     this.dispatchEventToListeners(SDK.HeapProfilerModel.Events.ResetProfiles);
   }
 };
+
+// TODO(dgozman): should be JS.
+SDK.SDKModel.register(SDK.HeapProfilerModel, SDK.Target.Capability.None);
 
 /** @enum {symbol} */
 SDK.HeapProfilerModel.Events = {

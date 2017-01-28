@@ -34,11 +34,10 @@
 Resources.IndexedDBModel = class extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
-   * @param {!SDK.SecurityOriginManager} securityOriginManager
    */
-  constructor(target, securityOriginManager) {
-    super(Resources.IndexedDBModel, target);
-    this._securityOriginManager = securityOriginManager;
+  constructor(target) {
+    super(target);
+    this._securityOriginManager = SDK.SecurityOriginManager.fromTarget(target);
     this._agent = target.indexedDBAgent();
 
     /** @type {!Map.<!Resources.IndexedDBModel.DatabaseId, !Resources.IndexedDBModel.Database>} */
@@ -144,10 +143,7 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    * @return {!Resources.IndexedDBModel}
    */
   static fromTarget(target) {
-    var model = target.model(Resources.IndexedDBModel);
-    if (!model)
-      model = new Resources.IndexedDBModel(target, SDK.SecurityOriginManager.fromTarget(target));
-    return model;
+    return /** @type {!Resources.IndexedDBModel} */ (target.model(Resources.IndexedDBModel));
   }
 
   enable() {
@@ -429,6 +425,8 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
         keyRange ? keyRange : undefined, innerCallback.bind(this));
   }
 };
+
+SDK.SDKModel.register(Resources.IndexedDBModel, SDK.Target.Capability.None);
 
 Resources.IndexedDBModel.KeyTypes = {
   NumberType: 'number',

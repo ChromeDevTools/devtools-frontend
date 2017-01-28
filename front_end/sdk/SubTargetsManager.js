@@ -9,7 +9,7 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
    * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(SDK.SubTargetsManager, target);
+    super(target);
     target.registerTargetDispatcher(new SDK.SubTargetsDispatcher(this));
     this._lastAnonymousTargetId = 0;
     this._agent = target.targetAgent();
@@ -241,6 +241,8 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
     idsToDetach.forEach(id => this._detachedFromTarget(id));
   }
 };
+
+SDK.SDKModel.register(SDK.SubTargetsManager, SDK.Target.Capability.Target);
 
 /** @enum {symbol} */
 SDK.SubTargetsManager.Events = {

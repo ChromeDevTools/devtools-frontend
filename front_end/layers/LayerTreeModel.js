@@ -33,7 +33,7 @@
  */
 Layers.LayerTreeModel = class extends SDK.SDKModel {
   constructor(target) {
-    super(Layers.LayerTreeModel, target);
+    super(target);
     target.registerLayerTreeDispatcher(new Layers.LayerTreeDispatcher(this));
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
     /** @type {?SDK.LayerTreeBase} */
@@ -45,13 +45,7 @@ Layers.LayerTreeModel = class extends SDK.SDKModel {
    * @return {?Layers.LayerTreeModel}
    */
   static fromTarget(target) {
-    if (!target.hasDOMCapability())
-      return null;
-
-    var model = target.model(Layers.LayerTreeModel);
-    if (!model)
-      model = new Layers.LayerTreeModel(target);
-    return model;
+    return target.model(Layers.LayerTreeModel);
   }
 
   disable() {
@@ -130,6 +124,8 @@ Layers.LayerTreeModel = class extends SDK.SDKModel {
       this._forceEnable();
   }
 };
+
+SDK.SDKModel.register(Layers.LayerTreeModel, SDK.Target.Capability.DOM);
 
 /** @enum {symbol} */
 Layers.LayerTreeModel.Events = {

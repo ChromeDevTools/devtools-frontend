@@ -34,7 +34,7 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
    * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(SDK.CPUProfilerModel, target);
+    super(target);
     this._isRecording = false;
     target.registerProfilerDispatcher(this);
     target.profilerAgent().enable();
@@ -128,6 +128,9 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
         .removeChangeListener(this._configureCpuProfilerSamplingInterval, this);
   }
 };
+
+// TODO(dgozman): should be JS.
+SDK.SDKModel.register(SDK.CPUProfilerModel, SDK.Target.Capability.None);
 
 /** @enum {symbol} */
 SDK.CPUProfilerModel.Events = {

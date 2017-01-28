@@ -133,7 +133,7 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
    * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(Resources.DatabaseModel, target);
+    super(target);
 
     this._databases = [];
     this._agent = target.databaseAgent();
@@ -145,10 +145,7 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
    * @return {!Resources.DatabaseModel}
    */
   static fromTarget(target) {
-    if (!target[Resources.DatabaseModel._symbol])
-      target[Resources.DatabaseModel._symbol] = new Resources.DatabaseModel(target);
-
-    return target[Resources.DatabaseModel._symbol];
+    return /** @type {!Resources.DatabaseModel} */ (target.model(Resources.DatabaseModel));
   }
 
   enable() {
@@ -185,6 +182,9 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
     this.emit(new Resources.DatabaseModel.DatabaseAddedEvent(database));
   }
 };
+
+SDK.SDKModel.register(Resources.DatabaseModel, SDK.Target.Capability.None);
+
 
 /** @implements {Common.Emittable} */
 Resources.DatabaseModel.DatabaseAddedEvent = class {

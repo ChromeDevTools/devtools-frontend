@@ -36,7 +36,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(SDK.RuntimeModel, target);
+    super(target);
 
     this._agent = target.runtimeAgent();
     this.target().registerRuntimeDispatcher(new SDK.RuntimeDispatcher(this));
@@ -322,6 +322,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
     }
   }
 };
+
+// TODO(dgozman): should be JS.
+SDK.SDKModel.register(SDK.RuntimeModel, SDK.Target.Capability.None);
 
 /** @enum {symbol} */
 SDK.RuntimeModel.Events = {

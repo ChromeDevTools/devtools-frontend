@@ -164,44 +164,30 @@ SDK.TargetManager = class extends Common.Object {
   createTarget(name, capabilitiesMask, connectionFactory, parentTarget) {
     var target = new SDK.Target(this, name, capabilitiesMask, connectionFactory, parentTarget);
 
-    var logAgent = target.hasLogCapability() ? target.logAgent() : null;
-
     /** @type {!SDK.ConsoleModel} */
-    target.consoleModel = new SDK.ConsoleModel(target, logAgent);
+    target.consoleModel = /** @type {!SDK.ConsoleModel} */ (target.model(SDK.ConsoleModel));
 
-    var networkManager = null;
-    var resourceTreeModel = null;
-    if (target.hasNetworkCapability())
-      networkManager = new SDK.NetworkManager(target);
-    if (networkManager && target.hasDOMCapability()) {
-      resourceTreeModel =
-          new SDK.ResourceTreeModel(target, networkManager, SDK.SecurityOriginManager.fromTarget(target));
+    var networkManager = target.model(SDK.NetworkManager);
+    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    if (networkManager && resourceTreeModel)
       new SDK.NetworkLog(target, resourceTreeModel, networkManager);
-    }
 
     /** @type {!SDK.RuntimeModel} */
-    target.runtimeModel = new SDK.RuntimeModel(target);
-
-    if (target.hasJSCapability())
-      new SDK.DebuggerModel(target);
-
-    if (resourceTreeModel) {
-      var domModel = new SDK.DOMModel(target);
-      // TODO(eostroukhov) CSSModel should not depend on RTM
-      new SDK.CSSModel(target, domModel);
-    }
+    target.runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
+    target.model(SDK.DebuggerModel);
+    target.model(SDK.DOMModel);
+    target.model(SDK.CSSModel);
 
     /** @type {?SDK.SubTargetsManager} */
-    target.subTargetsManager = target.hasTargetCapability() ? new SDK.SubTargetsManager(target) : null;
+    target.subTargetsManager = target.model(SDK.SubTargetsManager);
     /** @type {!SDK.CPUProfilerModel} */
-    target.cpuProfilerModel = new SDK.CPUProfilerModel(target);
+    target.cpuProfilerModel = /** @type {!SDK.CPUProfilerModel} */ (target.model(SDK.CPUProfilerModel));
     /** @type {!SDK.HeapProfilerModel} */
-    target.heapProfilerModel = new SDK.HeapProfilerModel(target);
+    target.heapProfilerModel = /** @type {!SDK.HeapProfilerModel} */ (target.model(SDK.HeapProfilerModel));
 
     target.tracingManager = new SDK.TracingManager(target);
 
-    if (target.subTargetsManager && target.hasBrowserCapability())
-      target.serviceWorkerManager = new SDK.ServiceWorkerManager(target, target.subTargetsManager);
+    target.serviceWorkerManager = target.model(SDK.ServiceWorkerManager);
 
     this.addTarget(target);
     return target;

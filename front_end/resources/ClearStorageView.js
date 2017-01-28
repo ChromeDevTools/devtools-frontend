@@ -143,7 +143,7 @@ Resources.ClearStorageView = class extends UI.VBox {
     }
 
     if (set.has(Protocol.Storage.StorageType.Appcache) || hasAll) {
-      var appcacheModel = SDK.ApplicationCacheModel.fromTarget(this._target);
+      var appcacheModel = Resources.ApplicationCacheModel.fromTarget(this._target);
       if (appcacheModel)
         appcacheModel.reset();
     }

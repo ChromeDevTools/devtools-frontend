@@ -10,7 +10,7 @@ Animation.AnimationModel = class extends SDK.SDKModel {
    * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(Animation.AnimationModel, target);
+    super(target);
     this._agent = target.animationAgent();
     target.registerAnimationDispatcher(new Animation.AnimationDispatcher(this));
     /** @type {!Map.<string, !Animation.AnimationModel.Animation>} */
@@ -31,12 +31,7 @@ Animation.AnimationModel = class extends SDK.SDKModel {
    * @return {?Animation.AnimationModel}
    */
   static fromTarget(target) {
-    if (!target.hasDOMCapability())
-      return null;
-    if (!target[Animation.AnimationModel._symbol])
-      target[Animation.AnimationModel._symbol] = new Animation.AnimationModel(target);
-
-    return target[Animation.AnimationModel._symbol];
+    return target.model(Animation.AnimationModel);
   }
 
   _reset() {
@@ -191,13 +186,13 @@ Animation.AnimationModel = class extends SDK.SDKModel {
   }
 };
 
+SDK.SDKModel.register(Animation.AnimationModel, SDK.Target.Capability.DOM);
+
 /** @enum {symbol} */
 Animation.AnimationModel.Events = {
   AnimationGroupStarted: Symbol('AnimationGroupStarted'),
   ModelReset: Symbol('ModelReset')
 };
-
-Animation.AnimationModel._symbol = Symbol('AnimationModel');
 
 
 /**

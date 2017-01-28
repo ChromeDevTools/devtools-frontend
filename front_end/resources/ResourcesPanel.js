@@ -700,24 +700,24 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
    * @param {!SDK.ResourceTreeModel} resourceTreeModel
    */
   _populateApplicationCacheTree(resourceTreeModel) {
-    this._applicationCacheModel = new SDK.ApplicationCacheModel(this._target, resourceTreeModel);
+    this._applicationCacheModel = Resources.ApplicationCacheModel.fromTarget(this._target);
 
     this._applicationCacheViews = {};
     this._applicationCacheFrameElements = {};
     this._applicationCacheManifestElements = {};
 
     this._applicationCacheModel.addEventListener(
-        SDK.ApplicationCacheModel.Events.FrameManifestAdded, this._applicationCacheFrameManifestAdded, this);
+        Resources.ApplicationCacheModel.Events.FrameManifestAdded, this._applicationCacheFrameManifestAdded, this);
     this._applicationCacheModel.addEventListener(
-        SDK.ApplicationCacheModel.Events.FrameManifestRemoved, this._applicationCacheFrameManifestRemoved, this);
+        Resources.ApplicationCacheModel.Events.FrameManifestRemoved, this._applicationCacheFrameManifestRemoved, this);
     this._applicationCacheModel.addEventListener(
-        SDK.ApplicationCacheModel.Events.FrameManifestsReset, this._resetAppCache, this);
+        Resources.ApplicationCacheModel.Events.FrameManifestsReset, this._resetAppCache, this);
 
     this._applicationCacheModel.addEventListener(
-        SDK.ApplicationCacheModel.Events.FrameManifestStatusUpdated, this._applicationCacheFrameManifestStatusChanged,
-        this);
+        Resources.ApplicationCacheModel.Events.FrameManifestStatusUpdated,
+        this._applicationCacheFrameManifestStatusChanged, this);
     this._applicationCacheModel.addEventListener(
-        SDK.ApplicationCacheModel.Events.NetworkStateChanged, this._applicationCacheNetworkStateChanged, this);
+        Resources.ApplicationCacheModel.Events.NetworkStateChanged, this._applicationCacheNetworkStateChanged, this);
   }
 
   _applicationCacheFrameManifestAdded(event) {

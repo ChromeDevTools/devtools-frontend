@@ -8,17 +8,16 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
   /**
    * Invariant: This model can only be constructed on a ServiceWorker target.
    * @param {!SDK.Target} target
-   * @param {!SDK.SecurityOriginManager} securityOriginManager
    */
-  constructor(target, securityOriginManager) {
-    super(SDK.ServiceWorkerCacheModel, target);
+  constructor(target) {
+    super(target);
 
     /** @type {!Map<string, !SDK.ServiceWorkerCacheModel.Cache>} */
     this._caches = new Map();
 
     this._agent = target.cacheStorageAgent();
 
-    this._securityOriginManager = securityOriginManager;
+    this._securityOriginManager = SDK.SecurityOriginManager.fromTarget(target);
 
     /** @type {boolean} */
     this._enabled = false;
@@ -29,12 +28,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @return {?SDK.ServiceWorkerCacheModel}
    */
   static fromTarget(target) {
-    if (!target.hasBrowserCapability())
-      return null;
-    var instance = target.model(SDK.ServiceWorkerCacheModel);
-    if (!instance)
-      instance = new SDK.ServiceWorkerCacheModel(target, SDK.SecurityOriginManager.fromTarget(target));
-    return instance;
+    return target.model(SDK.ServiceWorkerCacheModel);
   }
 
   enable() {
@@ -270,6 +264,8 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
     this._agent.requestEntries(cache.cacheId, skipCount, pageSize, innerCallback);
   }
 };
+
+SDK.SDKModel.register(SDK.ServiceWorkerCacheModel, SDK.Target.Capability.Browser);
 
 /** @enum {symbol} */
 SDK.ServiceWorkerCacheModel.Events = {

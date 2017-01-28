@@ -29,18 +29,18 @@
 /**
  * @unrestricted
  */
-SDK.ApplicationCacheModel = class extends SDK.SDKModel {
+Resources.ApplicationCacheModel = class extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
-   * @param {!SDK.ResourceTreeModel} resourceTreeModel
    */
-  constructor(target, resourceTreeModel) {
-    super(SDK.ApplicationCacheModel, target);
+  constructor(target) {
+    super(target);
 
-    target.registerApplicationCacheDispatcher(new SDK.ApplicationCacheDispatcher(this));
+    target.registerApplicationCacheDispatcher(new Resources.ApplicationCacheDispatcher(this));
     this._agent = target.applicationCacheAgent();
     this._agent.enable();
 
+    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
 
@@ -53,10 +53,10 @@ SDK.ApplicationCacheModel = class extends SDK.SDKModel {
 
   /**
    * @param {!SDK.Target} target
-   * @return {?SDK.ApplicationCacheModel}
+   * @return {?Resources.ApplicationCacheModel}
    */
   static fromTarget(target) {
-    return target.model(SDK.ApplicationCacheModel);
+    return target.model(Resources.ApplicationCacheModel);
   }
 
   _frameNavigated(event) {
@@ -80,7 +80,7 @@ SDK.ApplicationCacheModel = class extends SDK.SDKModel {
   reset() {
     this._statuses = {};
     this._manifestURLsByFrame = {};
-    this.dispatchEventToListeners(SDK.ApplicationCacheModel.Events.FrameManifestsReset);
+    this.dispatchEventToListeners(Resources.ApplicationCacheModel.Events.FrameManifestsReset);
   }
 
   _mainFrameNavigated() {
@@ -140,11 +140,11 @@ SDK.ApplicationCacheModel = class extends SDK.SDKModel {
 
     if (!this._manifestURLsByFrame[frameId]) {
       this._manifestURLsByFrame[frameId] = manifestURL;
-      this.dispatchEventToListeners(SDK.ApplicationCacheModel.Events.FrameManifestAdded, frameId);
+      this.dispatchEventToListeners(Resources.ApplicationCacheModel.Events.FrameManifestAdded, frameId);
     }
 
     if (statusChanged)
-      this.dispatchEventToListeners(SDK.ApplicationCacheModel.Events.FrameManifestStatusUpdated, frameId);
+      this.dispatchEventToListeners(Resources.ApplicationCacheModel.Events.FrameManifestStatusUpdated, frameId);
   }
 
   /**
@@ -157,7 +157,7 @@ SDK.ApplicationCacheModel = class extends SDK.SDKModel {
     delete this._manifestURLsByFrame[frameId];
     delete this._statuses[frameId];
 
-    this.dispatchEventToListeners(SDK.ApplicationCacheModel.Events.FrameManifestRemoved, frameId);
+    this.dispatchEventToListeners(Resources.ApplicationCacheModel.Events.FrameManifestRemoved, frameId);
   }
 
   /**
@@ -219,12 +219,14 @@ SDK.ApplicationCacheModel = class extends SDK.SDKModel {
    */
   _networkStateUpdated(isNowOnline) {
     this._onLine = isNowOnline;
-    this.dispatchEventToListeners(SDK.ApplicationCacheModel.Events.NetworkStateChanged, isNowOnline);
+    this.dispatchEventToListeners(Resources.ApplicationCacheModel.Events.NetworkStateChanged, isNowOnline);
   }
 };
 
+SDK.SDKModel.register(Resources.ApplicationCacheModel, SDK.Target.Capability.DOM);
+
 /** @enum {symbol} */
-SDK.ApplicationCacheModel.Events = {
+Resources.ApplicationCacheModel.Events = {
   FrameManifestStatusUpdated: Symbol('FrameManifestStatusUpdated'),
   FrameManifestAdded: Symbol('FrameManifestAdded'),
   FrameManifestRemoved: Symbol('FrameManifestRemoved'),
@@ -236,7 +238,7 @@ SDK.ApplicationCacheModel.Events = {
  * @implements {Protocol.ApplicationCacheDispatcher}
  * @unrestricted
  */
-SDK.ApplicationCacheDispatcher = class {
+Resources.ApplicationCacheDispatcher = class {
   constructor(applicationCacheModel) {
     this._applicationCacheModel = applicationCacheModel;
   }

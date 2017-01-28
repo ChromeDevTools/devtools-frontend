@@ -34,11 +34,10 @@
 SDK.CSSModel = class extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
-   * @param {!SDK.DOMModel} domModel
    */
-  constructor(target, domModel) {
-    super(SDK.CSSModel, target);
-    this._domModel = domModel;
+  constructor(target) {
+    super(target);
+    this._domModel = /** @type {!SDK.DOMModel} */ (SDK.DOMModel.fromTarget(target));
     this._agent = target.cssAgent();
     this._styleLoader = new SDK.CSSModel.ComputedStyleLoader(this);
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
@@ -1000,6 +999,8 @@ SDK.CSSModel = class extends SDK.SDKModel {
     delete this._cachedMatchedCascadePromise;
   }
 };
+
+SDK.SDKModel.register(SDK.CSSModel, SDK.Target.Capability.DOM);
 
 /** @typedef {!{range: !Protocol.CSS.SourceRange, styleSheetId: !Protocol.CSS.StyleSheetId, wasUsed: boolean}} */
 SDK.CSSModel.RuleUsage;

@@ -9,7 +9,7 @@ Security.SecurityModel = class extends SDK.SDKModel {
    * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(Security.SecurityModel, target);
+    super(target);
     this._dispatcher = new Security.SecurityDispatcher(this);
     this._securityAgent = target.securityAgent();
     target.registerSecurityDispatcher(this._dispatcher);
@@ -21,10 +21,7 @@ Security.SecurityModel = class extends SDK.SDKModel {
    * @return {?Security.SecurityModel}
    */
   static fromTarget(target) {
-    var model = target.model(Security.SecurityModel);
-    if (!model)
-      model = new Security.SecurityModel(target);
-    return model;
+    return target.model(Security.SecurityModel);
   }
 
   /**
@@ -60,6 +57,8 @@ Security.SecurityModel = class extends SDK.SDKModel {
     this._securityAgent.showCertificateViewer();
   }
 };
+
+SDK.SDKModel.register(Security.SecurityModel, SDK.Target.Capability.None);
 
 /** @enum {symbol} */
 Security.SecurityModel.Events = {

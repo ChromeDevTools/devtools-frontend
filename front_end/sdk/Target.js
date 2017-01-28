@@ -24,7 +24,7 @@ SDK.Target = class extends Protocol.TargetBase {
     this._parentTarget = parentTarget;
     this._id = SDK.Target._nextId++;
 
-    /** @type {!Map.<!Function, !SDK.SDKModel>} */
+    /** @type {!Map.<function(new:SDK.SDKModel, !SDK.Target), !SDK.SDKModel>} */
     this._modelByConstructor = new Map();
   }
 
@@ -136,11 +136,18 @@ SDK.Target = class extends Protocol.TargetBase {
   }
 
   /**
-   * @param {function(new: (!T<!SDK.SDKModel>), ...)} modelClass
+   * @param {function(new:T, !SDK.Target)} modelClass
    * @return {?T}
    * @template T
    */
   model(modelClass) {
+    if (!this._modelByConstructor.get(modelClass)) {
+      var capabilities = SDK.SDKModel._capabilitiesByModelClass.get(modelClass);
+      if (capabilities === undefined)
+        throw 'Model class is not registered';
+      if ((this._capabilitiesMask & capabilities) === capabilities)
+        this._modelByConstructor.set(modelClass, new modelClass(this));
+    }
     return this._modelByConstructor.get(modelClass) || null;
   }
 
@@ -184,6 +191,8 @@ SDK.Target.Capability = {
   Network: 16,
   Target: 32,
 
+  None: 0,
+
   AllForTests: 63
 };
 
@@ -214,12 +223,10 @@ SDK.SDKObject = class extends Common.Object {
  */
 SDK.SDKModel = class extends SDK.SDKObject {
   /**
-   * @param {!Function} modelClass
    * @param {!SDK.Target} target
    */
-  constructor(modelClass, target) {
+  constructor(target) {
     super(target);
-    target._modelByConstructor.set(modelClass, this);
   }
 
   /**
@@ -249,3 +256,17 @@ SDK.SDKModel = class extends SDK.SDKObject {
     this.dispose();
   }
 };
+
+
+/**
+ * @param {function(new:SDK.SDKModel, !SDK.Target)} modelClass
+ * @param {number} capabilities
+ */
+SDK.SDKModel.register = function(modelClass, capabilities) {
+  if (!SDK.SDKModel._capabilitiesByModelClass)
+    SDK.SDKModel._capabilitiesByModelClass = new Map();
+  SDK.SDKModel._capabilitiesByModelClass.set(modelClass, capabilities);
+};
+
+/** @type {!Map<function(new:SDK.SDKModel, !SDK.Target), number>} */
+SDK.SDKModel._capabilitiesByModelClass;

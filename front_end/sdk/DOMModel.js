@@ -1048,7 +1048,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
    * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(SDK.DOMModel, target);
+    super(target);
 
     this._agent = target.domAgent();
 
@@ -1907,6 +1907,8 @@ SDK.DOMModel = class extends SDK.SDKModel {
     this.dispatchEventToListeners(SDK.DOMModel.Events.NodeHighlightedInOverlay, node);
   }
 };
+
+SDK.SDKModel.register(SDK.DOMModel, SDK.Target.Capability.DOM);
 
 /** @enum {symbol} */
 SDK.DOMModel.Events = {

@@ -31,15 +31,15 @@
 /**
  * @unrestricted
  */
-SDK.NetworkLog = class extends SDK.SDKModel {
+SDK.NetworkLog = class {
   /**
    * @param {!SDK.Target} target
    * @param {!SDK.ResourceTreeModel} resourceTreeModel
    * @param {!SDK.NetworkManager} networkManager
    */
   constructor(target, resourceTreeModel, networkManager) {
-    super(SDK.NetworkLog, target);
-
+    this._target = target;
+    target[SDK.NetworkLog._logSymbol] = this;
     /** @type {!Array<!SDK.NetworkRequest>} */
     this._requests = [];
     /** @type {!Object<string, !SDK.NetworkRequest>} */
@@ -53,11 +53,18 @@ SDK.NetworkLog = class extends SDK.SDKModel {
   }
 
   /**
+   * @return {!SDK.Target}
+   */
+  target() {
+    return this._target;
+  }
+
+  /**
    * @param {!SDK.Target} target
    * @return {?SDK.NetworkLog}
    */
   static fromTarget(target) {
-    return target.model(SDK.NetworkLog);
+    return target[SDK.NetworkLog._logSymbol] || null;
   }
 
   /**
@@ -326,3 +333,4 @@ SDK.NetworkLog._InitiatorInfo;
 
 SDK.NetworkLog._initiatorDataSymbol = Symbol('InitiatorData');
 SDK.NetworkLog._pageLoadForRequestSymbol = Symbol('PageLoadForRequest');
+SDK.NetworkLog._logSymbol = Symbol('NetworkLog');

@@ -34,11 +34,11 @@
 SDK.ResourceTreeModel = class extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
-   * @param {?SDK.NetworkManager} networkManager
-   * @param {!SDK.SecurityOriginManager} securityOriginManager
    */
-  constructor(target, networkManager, securityOriginManager) {
-    super(SDK.ResourceTreeModel, target);
+  constructor(target) {
+    super(target);
+
+    var networkManager = SDK.NetworkManager.fromTarget(target);
     if (networkManager) {
       networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
       networkManager.addEventListener(
@@ -47,7 +47,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
 
     this._agent = target.pageAgent();
     this._agent.enable();
-    this._securityOriginManager = securityOriginManager;
+    this._securityOriginManager = SDK.SecurityOriginManager.fromTarget(target);
 
     this._fetchResourceTree();
 
@@ -445,6 +445,8 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     this._securityOriginManager.setMainSecurityOrigin(mainSecurityOrigin || '');
   }
 };
+
+SDK.SDKModel.register(SDK.ResourceTreeModel, SDK.Target.Capability.DOM);
 
 /** @enum {symbol} */
 SDK.ResourceTreeModel.Events = {

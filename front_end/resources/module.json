@@ -24,6 +24,7 @@
         "components"
     ],
     "scripts": [
+        "ApplicationCacheModel.js",
         "AppManifestView.js",
         "ApplicationCacheItemsView.js",
         "ClearStorageView.js",

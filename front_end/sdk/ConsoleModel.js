@@ -34,10 +34,9 @@
 SDK.ConsoleModel = class extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
-   * @param {?Protocol.LogAgent} logAgent
    */
-  constructor(target, logAgent) {
-    super(SDK.ConsoleModel, target);
+  constructor(target) {
+    super(target);
 
     /** @type {!Array.<!SDK.ConsoleMessage>} */
     this._messages = [];
@@ -45,7 +44,8 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
     this._messageByExceptionId = new Map();
     this._warnings = 0;
     this._errors = 0;
-    this._logAgent = logAgent;
+    /** @type {?Protocol.LogAgent} */
+    this._logAgent = target.hasLogCapability() ? target.logAgent() : null;
     if (this._logAgent) {
       target.registerLogDispatcher(new SDK.LogDispatcher(this));
       this._logAgent.enable();
@@ -224,6 +224,8 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
     return this._warnings;
   }
 };
+
+SDK.SDKModel.register(SDK.ConsoleModel, SDK.Target.Capability.None);
 
 /** @enum {symbol} */
 SDK.ConsoleModel.Events = {

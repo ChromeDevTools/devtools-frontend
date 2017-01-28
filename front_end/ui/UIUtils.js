@@ -1400,7 +1400,8 @@ UI.appendStyle = function(node, cssFile) {
        * @this {Node}
        */
       function toggleCheckbox(event) {
-        if (event.target !== checkboxElement && event.target !== this) {
+        var deepTarget = event.deepElementFromPoint();
+        if (deepTarget !== checkboxElement && deepTarget !== this) {
           event.consume();
           checkboxElement.click();
         }

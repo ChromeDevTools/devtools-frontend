@@ -46,7 +46,6 @@ UI.SuggestBoxDelegate.prototype = {
 };
 
 /**
- * @unrestricted
  * @implements {UI.ListDelegate}
  */
 UI.SuggestBox = class {
@@ -70,9 +69,19 @@ UI.SuggestBox = class {
     this._element.addEventListener('mousedown', this._onBoxMouseDown.bind(this), true);
     this._userInteracted = false;
     this._captureEnter = captureEnter;
-    this._viewportWidth = '100vw';
     this._hasVerticalScroll = false;
     this._userEnteredText = '';
+
+    /** @type {?UI.SuggestBox.Overlay} */
+    this._overlay = null;
+    /** @type {?AnchorBox} */
+    this._lastAnchorBox = null;
+    this._lastItemCount = 0;
+    this._hideTimeoutId = 0;
+    /** @type {?Element} */
+    this._bodyElement = null;
+    /** @type {?string} */
+    this._onlyCompletion = null;
   }
 
   /**
@@ -157,7 +166,7 @@ UI.SuggestBox = class {
   _onBoxMouseDown(event) {
     if (this._hideTimeoutId) {
       window.clearTimeout(this._hideTimeoutId);
-      delete this._hideTimeoutId;
+      this._hideTimeoutId = 0;
     }
     event.preventDefault();
   }
@@ -190,11 +199,11 @@ UI.SuggestBox = class {
     this._userInteracted = false;
     this._bodyElement.removeEventListener('mousedown', this._maybeHideBound, true);
     this._element.ownerDocument.defaultView.removeEventListener('resize', this._hideBound, false);
-    delete this._bodyElement;
+    this._bodyElement = null;
     this._container.remove();
     this._overlay.dispose();
-    delete this._overlay;
-    delete this._lastAnchorBox;
+    this._overlay = null;
+    this._lastAnchorBox = null;
   }
 
   /**
@@ -335,7 +344,7 @@ UI.SuggestBox = class {
    * @param {string} userEnteredText
    */
   updateSuggestions(anchorBox, completions, selectHighestPriority, canShowForSingleItem, userEnteredText) {
-    delete this._onlyCompletion;
+    this._onlyCompletion = null;
     if (this._canShowBox(completions, canShowForSingleItem, userEnteredText)) {
       this._userEnteredText = userEnteredText;
 
@@ -404,7 +413,7 @@ UI.SuggestBox = class {
     if (!this._userInteracted && this._captureEnter)
       return false;
 
-    var hasSelectedItem = !!this._list.selectedItem() || this._onlyCompletion;
+    var hasSelectedItem = !!this._list.selectedItem() || !!this._onlyCompletion;
     this.acceptSuggestion();
 
     // Report the event as non-handled if there is no selected item,
@@ -423,9 +432,6 @@ UI.SuggestBox.Suggestion;
  */
 UI.SuggestBox.Suggestions;
 
-/**
- * @unrestricted
- */
 UI.SuggestBox.Overlay = class {
   /**
    * // FIXME: make SuggestBox work for multiple documents.

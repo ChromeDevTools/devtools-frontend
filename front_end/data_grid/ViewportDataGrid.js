@@ -23,7 +23,6 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
     this._scrollContainer.addEventListener('mousewheel', this._onWheel.bind(this), true);
     /** @type {!Array.<!DataGrid.ViewportDataGridNode>} */
     this._visibleNodes = [];
-    /** @type {boolean} */
     this._inline = false;
 
     // Wheel target shouldn't be removed from DOM to preserve native kinetic scrolling.
@@ -34,11 +33,9 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
     /** @type {?Node} */
     this._hiddenWheelTarget = null;
 
-    /** @type {boolean} */
     this._stickToBottom = false;
-    /** @type {boolean} */
+    this._updateIsFromUser = false;
     this._atBottom = true;
-    /** @type {number} */
     this._lastScrollTop = 0;
     this._firstVisibleIsStriped = false;
 
@@ -84,7 +81,7 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
   _onScroll(event) {
     this._atBottom = this._scrollContainer.isScrolledToBottom();
     if (this._lastScrollTop !== this._scrollContainer.scrollTop)
-      this.scheduleUpdate();
+      this.scheduleUpdate(true);
   }
 
   /**
@@ -94,7 +91,11 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
     this.scheduleUpdate();
   }
 
-  scheduleUpdate() {
+  /**
+   * @param {boolean=} isFromUser
+   */
+  scheduleUpdate(isFromUser) {
+    this._updateIsFromUser = this._updateIsFromUser || isFromUser;
     if (this._updateAnimationFrameId)
       return;
     this._updateAnimationFrameId = this.element.window().requestAnimationFrame(this._update.bind(this));
@@ -173,8 +174,9 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
     var scrollTop = this._scrollContainer.scrollTop;
     var currentScrollTop = scrollTop;
     var maxScrollTop = Math.max(0, this._contentHeight() - clientHeight);
-    if (this._stickToBottom && this._atBottom)
+    if (!this._updateIsFromUser && this._stickToBottom && this._atBottom)
       scrollTop = maxScrollTop;
+    this._updateIsFromUser = false;
     scrollTop = Math.min(maxScrollTop, scrollTop);
     this._atBottom = scrollTop === maxScrollTop;
 

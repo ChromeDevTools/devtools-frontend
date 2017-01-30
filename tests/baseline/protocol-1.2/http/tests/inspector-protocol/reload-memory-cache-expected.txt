@@ -1,0 +1,4 @@
+Tests that reloads when coming from protocol still use memory cache.
+
+This should never be reached.
+

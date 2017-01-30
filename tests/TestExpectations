@@ -53,3 +53,6 @@ http/tests/inspector-unit/test-failure.js [ Skip ]
 http/tests/inspector-unit/text-prompt-hint.js [ Skip ]
 http/tests/inspector-unit/text-prompt.js [ Skip ]
 http/tests/inspector-unit/trie.js [ Skip ]
+
+# Potentially flaky network test (may be caching related)
+http/tests/inspector/network/network-datareceived.html [ Skip ]

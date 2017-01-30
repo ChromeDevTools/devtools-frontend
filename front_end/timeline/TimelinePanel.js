@@ -718,20 +718,31 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._landingPage.contentElement.classList.add('timeline-landing-page', 'fill');
     var centered = this._landingPage.contentElement.createChild('div');
 
-    var p = centered.createChild('p');
-    p.appendChild(UI.formatLocalized(
-        'To capture a new recording, click the record toolbar button or hit %s. ' +
-            'To evaluate page load performance, hit %s to record the reload.',
-        [recordNode, reloadNode]));
+    centered.createChild('p').appendChild(UI.formatLocalized(
+        'To capture a new recording, click the record button or hit %s.%s' +
+        'To evaluate the page load, click the reload button or hit %s to record the reload.',
+        [recordNode, createElement('br'), reloadNode]));
 
-    p = centered.createChild('p');
-    p.appendChild(UI.formatLocalized(
+    centered.createChild('p').appendChild(UI.formatLocalized(
         'After recording, select an area of interest in the overview by dragging. ' +
-            'Then, zoom and pan the timeline with the mousewheel or %s keys.',
-        [navigateNode]));
+        'Then, zoom and pan the timeline with the mousewheel or %s keys. %s',
+        [navigateNode, learnMoreNode]));
 
-    p = centered.createChild('p');
-    p.appendChild(learnMoreNode);
+    var cpuProfilerHintSetting = Common.settings.createSetting('timelineShowProfilerHint', true);
+    if (cpuProfilerHintSetting.get()) {
+      var warning = centered.createChild('p', 'timeline-landing-warning');
+      var closeButton = warning.createChild('div', 'timeline-landing-warning-close', 'dt-close-button');
+      closeButton.addEventListener('click', () => {
+        warning.style.visibility = 'hidden';
+        cpuProfilerHintSetting.set(false);
+      }, false);
+      var performanceSpan = encloseWithTag('b', Common.UIString('Performance'));
+      warning.createChild('div').appendChild(UI.formatLocalized(
+          'The %s panel provides the combined functionality of Timeline and CPU profiler.%s' +
+          'The JavaScript CPU profiler will be removed shortly. Meanwhile, it\'s available under ' +
+          '%s \u2192 More Tools \u2192 JavaScript Profiler.',
+          [performanceSpan, createElement('p'), UI.Icon.create('largeicon-menu')]));
+    }
 
     this._landingPage.show(this._statusPaneContainer);
   }

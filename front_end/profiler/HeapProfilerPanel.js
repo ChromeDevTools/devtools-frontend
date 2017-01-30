@@ -11,10 +11,7 @@ Profiler.HeapProfilerPanel = class extends Profiler.ProfilesPanel {
     var registry = Profiler.ProfileTypeRegistry.instance;
     super(
         'heap_profiler',
-        [
-          registry.cpuProfileType, registry.heapSnapshotProfileType, registry.samplingHeapProfileType,
-          registry.trackingHeapSnapshotProfileType
-        ],
+        [registry.heapSnapshotProfileType, registry.samplingHeapProfileType, registry.trackingHeapSnapshotProfileType],
         'profiler.heap-toggle-recording');
   }
 

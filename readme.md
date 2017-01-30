@@ -63,6 +63,11 @@ In addition, you no longer need to pass double dashes (e.g. `--`) before you pas
 #### `npm run format` 
 Formats your code using clang-format
 
+### `npm run format-py`
+Formats your Python code using [yapf](https://github.com/google/yapf)
+
+> Note: Yapf is a command line tool. You will have to install this manually, either from PyPi through `pip install yapf` or if you want to enable multiprocessing in Python 2.7, `pip install futures`
+
 #### `npm test`
 Builds devtools and runs all inspector/devtools layout tests.
 

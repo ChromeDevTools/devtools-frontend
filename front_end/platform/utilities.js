@@ -404,31 +404,6 @@ Date.prototype.toISO8601Compact = function() {
       leadZero(this.getHours()) + leadZero(this.getMinutes()) + leadZero(this.getSeconds());
 };
 
-/**
- * @return {string}
- */
-Date.prototype.toConsoleTime = function() {
-  /**
-   * @param {number} x
-   * @return {string}
-   */
-  function leadZero2(x) {
-    return (x > 9 ? '' : '0') + x;
-  }
-
-  /**
-   * @param {number} x
-   * @return {string}
-   */
-  function leadZero3(x) {
-    return '0'.repeat(3 - x.toString().length) + x;
-  }
-
-  return this.getFullYear() + '-' + leadZero2(this.getMonth() + 1) + '-' + leadZero2(this.getDate()) + ' ' +
-      leadZero2(this.getHours()) + ':' + leadZero2(this.getMinutes()) + ':' + leadZero2(this.getSeconds()) + '.' +
-      leadZero3(this.getMilliseconds());
-};
-
 Object.defineProperty(Array.prototype, 'remove', {
   /**
    * @param {!T} value

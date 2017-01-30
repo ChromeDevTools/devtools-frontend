@@ -709,6 +709,15 @@ Common.VersionController = class {
     breakpointsSetting.set(breakpoints);
   }
 
+  _updateVersionFrom22To23() {
+    var oldSetting = Common.settings.createSetting('consoleTimestampsEnabled', false);
+    var newSetting = Common.settings.createSetting('consoleTimestampFormat', 'none');
+    var oldValue = oldSetting.get();
+    if (oldValue)
+      newSetting.set('short');
+    oldSetting.remove();
+  }
+
   _migrateSettingsFromLocalStorage() {
     // This step migrates all the settings except for the ones below into the browser profile.
     var localSettings = new Set([
@@ -741,7 +750,7 @@ Common.VersionController = class {
 };
 
 Common.VersionController._currentVersionName = 'inspectorVersion';
-Common.VersionController.currentVersion = 22;
+Common.VersionController.currentVersion = 23;
 
 /**
  * @type {!Common.Settings}

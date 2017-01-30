@@ -817,23 +817,47 @@ Console.ConsoleViewMessage = class {
     return regexObject.test(text);
   }
 
-  /**
-   * @param {boolean} show
-   */
-  updateTimestamp(show) {
+  updateTimestamp() {
     if (!this._contentElement)
       return;
 
-    if (show && !this.timestampElement) {
-      this.timestampElement = createElementWithClass('span', 'console-timestamp');
-      this.timestampElement.textContent = (new Date(this._message.timestamp)).toConsoleTime() + ' ';
-      this._contentElement.insertBefore(this.timestampElement, this._contentElement.firstChild);
-      return;
+    var format = Common.moduleSetting('consoleTimestampFormat').get();
+    if (format !== Console.ConsoleViewMessage.TimestampFormat.None) {
+      var timestampText = formatTimestamp(this._message.timestamp, format);
+      if (!this._timestampElement)
+        this._timestampElement = createElementWithClass('span', 'console-timestamp');
+      this._timestampElement.textContent = timestampText + ' ';
+      this._timestampElement.title = timestampText;
+      this._contentElement.insertBefore(this._timestampElement, this._contentElement.firstChild);
+    } else if (this._timestampElement) {
+      this._timestampElement.remove();
+      delete this._timestampElement;
     }
 
-    if (!show && this.timestampElement) {
-      this.timestampElement.remove();
-      delete this.timestampElement;
+    /**
+     * @param {number} timestamp
+     * @param {!Console.ConsoleViewMessage.TimestampFormat} format
+     * @return {string}
+     */
+    function formatTimestamp(timestamp, format) {
+      var date = new Date(timestamp);
+      var yymmdd = date.getFullYear() + '-' + leadZero(date.getMonth() + 1, 2) + '-' + leadZero(date.getDate(), 2);
+      var hhmmssfff = leadZero(date.getHours(), 2) + ':' + leadZero(date.getMinutes(), 2) + ':' +
+          leadZero(date.getSeconds(), 2) + '.' + leadZero(date.getMilliseconds(), 3);
+      if (format === Console.ConsoleViewMessage.TimestampFormat.Full)
+        return yymmdd + ' ' + hhmmssfff;
+      return hhmmssfff;
+
+      /**
+       * @param {number} value
+       * @param {number} length
+       * @return {string}
+       */
+      function leadZero(value, length) {
+        var valueString = value.toString();
+        var padding = length - valueString.length;
+        return padding <= 0 ? valueString : '0'.repeat(padding) + valueString;
+      }
     }
   }
 
@@ -896,7 +920,7 @@ Console.ConsoleViewMessage = class {
       formattedMessage = this._buildMessage(consoleMessage);
     contentElement.appendChild(formattedMessage);
 
-    this.updateTimestamp(Common.moduleSetting('consoleTimestampsEnabled').get());
+    this.updateTimestamp();
     return this._contentElement;
   }
 
@@ -987,6 +1011,8 @@ Console.ConsoleViewMessage = class {
       return;
 
     this._repeatCountElement.remove();
+    if (this._contentElement)
+      this._contentElement.classList.remove('repeated-message');
     delete this._repeatCountElement;
   }
 
@@ -1170,6 +1196,15 @@ Console.ConsoleViewMessage = class {
 
     return formattedResult;
   }
+};
+
+/**
+ * @enum {string}
+ */
+Console.ConsoleViewMessage.TimestampFormat = {
+  None: 'none',
+  Full: 'full',
+  Short: 'short'
 };
 
 /**

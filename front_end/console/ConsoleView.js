@@ -144,7 +144,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._consoleHistoryAutocompleteChanged();
 
     this._updateFilterStatus();
-    Common.moduleSetting('consoleTimestampsEnabled').addChangeListener(this._consoleTimestampsSettingChanged, this);
+    Common.moduleSetting('consoleTimestampFormat').addChangeListener(this._consoleTimestampsSettingChanged, this);
 
     this._registerWithMessageSink();
     SDK.targetManager.observeTargets(this);
@@ -321,15 +321,9 @@ Console.ConsoleView = class extends UI.VBox {
     this._addConsoleMessage(consoleMessage);
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _consoleTimestampsSettingChanged(event) {
-    var enabled = /** @type {boolean} */ (event.data);
+  _consoleTimestampsSettingChanged() {
     this._updateMessageList();
-    this._consoleMessages.forEach(function(viewMessage) {
-      viewMessage.updateTimestamp(enabled);
-    });
+    this._consoleMessages.forEach(viewMessage => viewMessage.updateTimestamp());
   }
 
   _executionContextChanged() {
@@ -684,8 +678,9 @@ Console.ConsoleView = class extends UI.VBox {
    * @return {boolean}
    */
   _tryToCollapseMessages(lastMessage, viewMessage) {
-    if (!Common.moduleSetting('consoleTimestampsEnabled').get() && viewMessage &&
-        !lastMessage.consoleMessage().isGroupMessage() &&
+    var timestampFormat = Common.moduleSetting('consoleTimestampFormat').get();
+    var timestampsShown = timestampFormat !== Console.ConsoleViewMessage.TimestampFormat.None;
+    if (!timestampsShown && viewMessage && !lastMessage.consoleMessage().isGroupMessage() &&
         lastMessage.consoleMessage().isEqual(viewMessage.consoleMessage())) {
       viewMessage.incrementRepeatCount();
       return true;
@@ -1206,6 +1201,8 @@ Console.ConsoleCommand = class extends Console.ConsoleViewMessage {
       } else {
         this._updateSearch();
       }
+
+      this.updateTimestamp();
     }
     return this._contentElement;
   }
@@ -1248,7 +1245,6 @@ Console.ConsoleCommandResult = class extends Console.ConsoleViewMessage {
         element.insertBefore(icon, element.firstChild);
       }
     }
-    this.updateTimestamp(false);
     return element;
   }
 };

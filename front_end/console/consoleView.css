@@ -98,7 +98,7 @@
 .console-timestamp {
     color: gray;
     -webkit-user-select: none;
-    flex-grow: 0;
+    flex: none;
     margin-right: 5px;
 }
 

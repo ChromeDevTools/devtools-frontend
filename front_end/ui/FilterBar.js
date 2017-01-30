@@ -233,7 +233,7 @@ UI.TextFilterUI = class extends Common.Object {
    * @return {!Element}
    */
   element() {
-    return this._proxyElement;
+    return this._filterElement;
   }
 
   /**

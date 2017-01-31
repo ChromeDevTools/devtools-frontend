@@ -298,15 +298,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.5"
-     inkscape:cx="140.93508"
+     inkscape:cx="119.1169"
      inkscape:cy="10.610521"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1384"
-     inkscape:window-height="1040"
-     inkscape:window-x="829"
-     inkscape:window-y="333"
+     inkscape:window-width="1278"
+     inkscape:window-height="746"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="0">
     <inkscape:grid
        type="xygrid"
@@ -356,25 +356,6 @@
        id="path3705"
        inkscape:connector-curvature="0"
        style="stroke:#ffffff" />
-    <g
-       id="g3234"
-       transform="translate(-205,915.3622)">
-      <path
-         style="fill:url(#linearGradient3239)"
-         inkscape:connector-curvature="0"
-         id="path3699-5"
-         d="m 250,107 c -2.76,0 -5,2.24 -5,5 0,2.76 2.24,5 5,5 2.76,0 5,-2.24 5,-5 0,-2.76 -2.24,-5 -5,-5" />
-      <path
-         id="path3701-0"
-         d="m 245.36,112 c 0,2.56 2.08,4.64 4.64,4.64 2.56,0 4.64,-2.08 4.64,-4.64 0,-2.56 -2.08,-4.64 -4.64,-4.64 -2.56,0 -4.64,2.08 -4.64,4.64"
-         inkscape:connector-curvature="0"
-         style="fill:#f4979b;fill-opacity:1" />
-      <path
-         style="fill:#ffffff;fill-opacity:1"
-         id="path3689-2"
-         d="m 248.64912,113.55532 -1.12,-1.57887 -0.94113,0.9411 1.98332,2.80777 5.01668,-5.96555 -0.8711,-1.03445 z"
-         inkscape:connector-curvature="0" />
-    </g>
     <path
        d="m 61,1031.3622 4,-8 4,8 z"
        id="path3707"

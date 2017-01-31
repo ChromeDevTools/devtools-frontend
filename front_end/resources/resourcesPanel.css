@@ -28,6 +28,11 @@
  */
 
 .resources-toolbar {
+    border-top: 1px solid #ccc;
+    background-color: #f3f3f3;
+}
+
+.top-resources-toolbar {
     border-bottom: 1px solid #ccc;
     background-color: #f3f3f3;
 }

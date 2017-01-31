@@ -27,71 +27,75 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @unrestricted
- */
-Resources.CookieItemsView = class extends UI.SimpleView {
+Resources.CookieItemsView = class extends Resources.StorageItemsView {
+  /**
+   * @param {!Resources.CookieTreeElement} treeElement
+   * @param {!SDK.Target} target
+   * @param {string} cookieDomain
+   */
   constructor(treeElement, target, cookieDomain) {
-    super(Common.UIString('Cookies'));
+    super(Common.UIString('Cookies'), 'cookiesPanel');
 
     this.element.classList.add('storage-view');
-
-    this._deleteButton = new UI.ToolbarButton(Common.UIString('Delete Selected'), 'largeicon-delete');
-    this._deleteButton.addEventListener(UI.ToolbarButton.Events.Click, this._deleteButtonClicked, this);
-
-    this._clearButton = new UI.ToolbarButton(Common.UIString('Clear All'), 'largeicon-clear');
-    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearButtonClicked, this);
-
-    this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
-    this._refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
-
-    this._filterBar = new UI.FilterBar('cookiesPanel', true);
-    this._textFilterUI = new UI.TextFilterUI(true);
-    this._textFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, this._filterChanged, this);
-    this._filterBar.addFilter(this._textFilterUI);
-
-    this._filterSeparator = new UI.ToolbarSeparator();
-    this._filterButton = this._filterBar.filterButton();
 
     this._target = target;
     this._treeElement = treeElement;
     this._cookieDomain = cookieDomain;
 
-    this.element.addEventListener('contextmenu', this._contextMenu.bind(this), true);
+    /** @type {?Array<!SDK.Cookie>} */
+    this._cookies = null;
+    this._totalSize = 0;
+    /** @type {?CookieTable.CookiesTable} */
+    this._cookiesTable = null;
+  }
+
+  /**
+   * @param {!Array.<!SDK.Cookie>} allCookies
+   */
+  _updateWithCookies(allCookies) {
+    this._cookies = allCookies;
+    this._totalSize = allCookies.reduce((size, cookie) => size + cookie.size(), 0);
+
+    if (!this._cookiesTable) {
+      const parsedURL = this._cookieDomain.asParsedURL();
+      const domain = parsedURL ? parsedURL.host : '';
+      this._cookiesTable = new CookieTable.CookiesTable(
+          false, this.refreshItems.bind(this), () => this.setCanDeleteSelected(true), domain);
+    }
+
+    var shownCookies = this.filter(allCookies, cookie => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);
+    this._cookiesTable.setCookies(shownCookies);
+    this._cookiesTable.show(this.element);
+    this._treeElement.subtitle =
+        String.sprintf(Common.UIString('%d cookies (%s)'), this._cookies.length, Number.bytesToString(this._totalSize));
+    this.setCanFilter(true);
+    this.setCanDeleteAll(true);
+    this.setCanDeleteSelected(!!this._cookiesTable.selectedCookie());
   }
 
   /**
    * @override
-   * @return {!Array.<!UI.ToolbarItem>}
    */
-  syncToolbarItems() {
-    return [this._refreshButton, this._clearButton, this._deleteButton, this._filterSeparator, this._filterButton];
+  deleteAllItems() {
+    this._cookiesTable.clear();
+    this.refreshItems();
   }
 
   /**
    * @override
    */
-  wasShown() {
-    this._update();
+  deleteSelectedItem() {
+    var selectedCookie = this._cookiesTable.selectedCookie();
+    if (selectedCookie) {
+      selectedCookie.remove();
+      this.refreshItems();
+    }
   }
 
   /**
    * @override
    */
-  willHide() {
-    this._deleteButton.setEnabled(false);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _filterChanged(event) {
-    var text = this._textFilterUI.value();
-    this._filterRegex = text && new RegExp(text.escapeForRegExp(), 'i');
-    this._update();
-  }
-
-  _update() {
+  refreshItems() {
     var resourceURLs = [];
     var cookieDomain = this._cookieDomain;
     /**
@@ -105,85 +109,5 @@ Resources.CookieItemsView = class extends UI.SimpleView {
 
     SDK.ResourceTreeModel.fromTarget(this._target).forAllResources(populateResourceURLs);
     SDK.Cookies.getCookiesAsync(this._target, resourceURLs, this._updateWithCookies.bind(this));
-  }
-
-  /**
-   * @param {!Array.<!SDK.Cookie>} allCookies
-   */
-  _updateWithCookies(allCookies) {
-    this._cookies = allCookies;
-    this._totalSize = allCookies.reduce((size, cookie) => size + cookie.size(), 0);
-
-    if (!this._cookiesTable) {
-      const parsedURL = this._cookieDomain.asParsedURL();
-      const domain = parsedURL ? parsedURL.host : '';
-      this._cookiesTable =
-          new CookieTable.CookiesTable(false, this._update.bind(this), this._enableDeleteButton.bind(this), domain);
-    }
-
-    var shownCookies = this._filterCookies(this._cookies);
-    this._cookiesTable.setCookies(shownCookies);
-    this._filterBar.show(this.element);
-    this._cookiesTable.show(this.element);
-    this._treeElement.subtitle =
-        String.sprintf(Common.UIString('%d cookies (%s)'), this._cookies.length, Number.bytesToString(this._totalSize));
-    this._filterButton.setEnabled(true);
-    this._clearButton.setEnabled(true);
-    this._deleteButton.setEnabled(!!this._cookiesTable.selectedCookie());
-  }
-
-  /**
-   * @param {!Array.<!SDK.Cookie>} cookies
-   */
-  _filterCookies(cookies) {
-    if (!this._filterRegex)
-      return cookies;
-
-    return cookies.filter(cookie => {
-      const candidate = `${cookie.name()} ${cookie.value()} ${cookie.domain()}`;
-      return this._filterRegex.test(candidate);
-    });
-  }
-
-  clear() {
-    this._cookiesTable.clear();
-    this._update();
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _clearButtonClicked(event) {
-    this.clear();
-  }
-
-  _enableDeleteButton() {
-    this._deleteButton.setEnabled(true);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _deleteButtonClicked(event) {
-    var selectedCookie = this._cookiesTable.selectedCookie();
-    if (selectedCookie) {
-      selectedCookie.remove();
-      this._update();
-    }
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _refreshButtonClicked(event) {
-    this._update();
-  }
-
-  _contextMenu(event) {
-    if (!this._cookies.length) {
-      var contextMenu = new UI.ContextMenu(event);
-      contextMenu.appendItem(Common.UIString('Refresh'), this._update.bind(this));
-      contextMenu.show();
-    }
   }
 };

@@ -403,6 +403,7 @@ all_devtools_files = [
   "front_end/resources/ServiceWorkerCacheViews.js",
   "front_end/resources/serviceWorkersView.css",
   "front_end/resources/ServiceWorkersView.js",
+  "front_end/resources/StorageItemsView.js",
   "front_end/Runtime.js",
   "front_end/sass/ASTService.js",
   "front_end/sass/ASTSourceMap.js",

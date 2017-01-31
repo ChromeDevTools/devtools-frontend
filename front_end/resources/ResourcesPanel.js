@@ -91,8 +91,8 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     this.resourcesListTreeElement = this._addSidebarSection(Common.UIString('Frames'));
 
     var mainContainer = new UI.VBox();
-    this._storageViewToolbar = new UI.Toolbar('resources-toolbar', mainContainer.element);
     this.storageViews = mainContainer.element.createChild('div', 'vbox flex-auto');
+    this._storageViewToolbar = new UI.Toolbar('resources-toolbar', mainContainer.element);
     this.splitWidget().setMainWidget(mainContainer);
 
     /** @type {!Map.<!Resources.Database, !Object.<string, !Resources.DatabaseTableView>>} */
@@ -597,7 +597,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
   /**
    * @param {!Resources.CookieTreeElement} treeElement
    * @param {string} cookieDomain
-   * @param {!SDK.ResourceTreeFrame} cookieFrameTarget
+   * @param {!SDK.Target} cookieFrameTarget
    */
   showCookies(treeElement, cookieDomain, cookieFrameTarget) {
     var view = this._cookieViews[cookieDomain];
@@ -614,7 +614,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
    */
   clearCookies(cookieDomain) {
     if (this._cookieViews[cookieDomain])
-      this._cookieViews[cookieDomain].clear();
+      this._cookieViews[cookieDomain].deleteAllItems();
   }
 
   showApplicationCache(frameId) {

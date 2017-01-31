@@ -114,10 +114,7 @@ UI.Tooltip = class {
 
     // Get container element.
     var container = UI.Dialog.modalHostView().element;
-    if (!anchorElement.isDescendant(container))
-      container = this.element.parentElement;
-
-    // Posititon tooltip based on the anchor element.
+    // Position tooltip based on the anchor element.
     var containerBox = container.boxInWindow(this.element.window());
     var anchorBox = this._anchorElement.boxInWindow(this.element.window());
     const anchorOffset = 2;

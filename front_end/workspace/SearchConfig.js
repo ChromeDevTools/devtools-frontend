@@ -58,20 +58,20 @@ Workspace.SearchConfig = class {
   }
 
   _parse() {
-    var filePattern =
-        '-?f(ile)?:(([^\\\\ ]|\\\\.)+)';  // After file: prefix: any symbol except space and backslash or any symbol escaped with a backslash.
-    var quotedPattern =
-        '"(([^\\\\"]|\\\\.)+)"';  // Inside double quotes: any symbol except double quote and backslash or any symbol escaped with a backslash.
-
+    // Inside double quotes: any symbol except double quote and backslash or any symbol escaped with a backslash.
+    var quotedPattern = /"([^\\"]|\\.)+"/;
     // A word is a sequence of any symbols except space and backslash or any symbols escaped with a backslash, that does not start with file:.
-    var unquotedWordPattern = '(\\s*(?!-?f(ile)?:)[^\\\\ ]|\\\\.)+';
-    var unquotedPattern =
-        unquotedWordPattern + '( +' + unquotedWordPattern + ')*';  // A word or several words separated by space(s).
+    var unquotedWordPattern = /(\s*(?!-?f(ile)?:)[^\\ ]|\\.)+/;
+    var unquotedPattern = unquotedWordPattern.source + '(\\s+' + unquotedWordPattern.source + ')*';
 
-    var pattern = '(' + filePattern + ')|(' + quotedPattern + ')|(' + unquotedPattern + ')';
+
+    var pattern = [
+      '(\\s*' + Workspace.SearchConfig.FilePatternRegex.source + '\\s*)',
+      '(' + quotedPattern.source + ')',
+      '(' + unquotedPattern + ')',
+    ].join('|');
     var regexp = new RegExp(pattern, 'g');
     var queryParts = this._query.match(regexp) || [];
-
     /**
      * @type {!Array.<!Workspace.SearchConfig.QueryTerm>}
      */
@@ -145,11 +145,11 @@ Workspace.SearchConfig = class {
    * @return {?Workspace.SearchConfig.QueryTerm}
    */
   _parseFileQuery(query) {
-    var match = query.match(/^(-)?f(ile)?:/);
+    var match = query.match(Workspace.SearchConfig.FilePatternRegex);
     if (!match)
       return null;
     var isNegative = !!match[1];
-    query = query.substr(match[0].length);
+    query = match[3];
     var result = '';
     for (var i = 0; i < query.length; ++i) {
       var char = query[i];
@@ -169,6 +169,9 @@ Workspace.SearchConfig = class {
     return new Workspace.SearchConfig.QueryTerm(result, isNegative);
   }
 };
+
+// After file: prefix: any symbol except space and backslash or any symbol escaped with a backslash.
+Workspace.SearchConfig.FilePatternRegex = /(-)?f(ile)?:((?:[^\\ ]|\\.)+)/;
 
 /** @typedef {!{regex: !RegExp, isNegative: boolean}} */
 Workspace.SearchConfig.RegexQuery;

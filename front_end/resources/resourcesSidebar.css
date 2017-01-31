@@ -13,12 +13,6 @@
     padding-bottom: 10px;
 }
 
-.icon {
-    width: 16px;
-    height: 16px;
-    margin-right: 4px;
-}
-
 .tree-outline li {
     min-height: 20px;
 }
@@ -32,107 +26,35 @@ li.storage-group-list-item::before {
     display: none;
 }
 
-.navigator-tree-item .icon {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
-    width: 32px;
-    height: 20px;
-    -webkit-mask-position: -224px -72px;
-    position: relative;
-    top: -2px;
-    margin-right: -3px;
-    margin-left: -9px;
+.navigator-tree-item {
+    margin: -3px -7px -3px -7px;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.navigator-tree-item .icon {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
-}
-} /* media */
-
-.navigator-file-tree-item .icon {
-    -webkit-mask-position: -224px -72px;
+.navigator-file-tree-item {
     background: linear-gradient(45deg, hsl(0, 0%, 50%), hsl(0, 0%, 70%));
 }
 
-:focus .navigator-file-tree-item.selected .icon,
-:focus .navigator-folder-tree-item.selected .icon,
-:focus .navigator-frame-tree-item.selected .icon {
-    background: white !important;
-}
-
-.navigator-folder-tree-item .icon {
-    -webkit-mask-position: -64px -120px;
+.navigator-folder-tree-item {
     background: linear-gradient(45deg, hsl(210, 82%, 65%), hsl(210, 82%, 80%));
 }
 
-.navigator-domain-tree-item .icon  {
-    -webkit-mask-position: -160px -144px;
-}
-
-.navigator-frame-tree-item .icon {
-    -webkit-mask-position: -256px -144px;
+.navigator-frame-tree-item {
     background-color: #5a5a5a;
 }
 
-.navigator-script-tree-item .icon {
+.navigator-script-tree-item {
     background: linear-gradient(45deg, hsl(48, 70%, 50%), hsl(48, 70%, 70%));
 }
 
-.navigator-stylesheet-tree-item .icon {
+.navigator-stylesheet-tree-item {
     background: linear-gradient(45deg, hsl(256, 50%, 50%), hsl(256, 50%, 70%));
 }
 
-.navigator-image-tree-item .icon,
-.navigator-font-tree-item .icon {
+.navigator-image-tree-item,
+.navigator-font-tree-item {
     background: linear-gradient(45deg, hsl(109, 33%, 50%), hsl(109, 33%, 70%));
 }
 
-.resource-tree-item .icon {
-    -webkit-mask: url(Images/resourceGlyphs.png) no-repeat 0 0;
-    -webkit-mask-size: 140px 20px;
+.resource-tree-item {
     background: rgba(90, 90, 90, .7);
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.resource-tree-item .icon {
-    -webkit-mask-image: url(Images/resourceGlyphs_2x.png);
-}
-} /* media */
-
-:focus .resource-tree-item.selected .icon {
-    background: white !important;
-}
-
-.database-tree-item .icon {
-    -webkit-mask-position: -60px 0;
-}
-
-.table-tree-item .icon {
-    -webkit-mask-position: -80px 0;
-}
-
-:focus .service-workers-tree-item.selected .icon {
-    -webkit-filter: invert();
-}
-
-.-theme-with-dark-background .service-workers-tree-item .icon,
-{
-    -webkit-filter: invert(70%);
-}
-
-.cookie-tree-item .icon {
-    -webkit-mask-position: -120px 0;
-}
-
-.manifest-tree-item .icon {
-    -webkit-mask-position: 0 0;
-}
-
-.service-worker-tree-item .icon {
-    -webkit-mask-position: -20px 0;
-}
-
-.clear-storage-tree-item .icon {
-    -webkit-mask-position: -40px 0;
 }

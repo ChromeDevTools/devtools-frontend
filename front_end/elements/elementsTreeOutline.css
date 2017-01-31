@@ -47,8 +47,8 @@
 
 .elements-disclosure li.parent::before {
     -webkit-user-select: none;
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
+    -webkit-mask-image: url(Images/treeoutlineTriangles.png);
+    -webkit-mask-size: 32px 24px;
     content: "aa";
     color: transparent;
     text-shadow: none;
@@ -61,12 +61,12 @@
 
 @media (-webkit-min-device-pixel-ratio: 1.1) {
 .elements-disclosure li.parent::before {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
+    -webkit-mask-image: url(Images/treeoutlineTriangles_2x.png);
 }
 } /* media */
 
 .elements-disclosure li.parent::before {
-    -webkit-mask-position: -4px -96px;
+    -webkit-mask-position: 0 0;
     background-color: rgb(110, 110, 110);
 }
 
@@ -84,7 +84,7 @@
 }
 
 .elements-disclosure li.parent.expanded::before {
-    -webkit-mask-position: -20px -96px;
+    -webkit-mask-position: -16px 0;
 }
 
 .elements-disclosure li.selected .selection {

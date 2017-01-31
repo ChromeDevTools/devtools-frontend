@@ -781,6 +781,8 @@ devtools_image_files = [
   "front_end/Images/smallIcons.png",
   "front_end/Images/smallIcons_2x.png",
   "front_end/Images/speech.png",
+  "front_end/Images/treeoutlineTriangles.png",
+  "front_end/Images/treeoutlineTriangles_2x.png",
   "front_end/Images/toolbarButtonGlyphs.png",
   "front_end/Images/toolbarButtonGlyphs_2x.png",
   "front_end/Images/toolbarResizerHorizontal.png",

@@ -589,7 +589,7 @@ SDK.CSSMetadata._propertyDataMap = {
   'page-break-before': {values: ['left', 'right', 'auto', 'always', 'avoid']},
   'border-image': {values: ['repeat', 'stretch']},
   'text-decoration': {values: ['none', 'blink', 'line-through', 'overline', 'underline']},
-  'position': {values: ['absolute', 'fixed', 'relative', 'static']},
+  'position': {values: ['absolute', 'fixed', 'relative', 'static', 'sticky']},
   'font-family':
       {values: ['serif', 'sans-serif', 'cursive', 'fantasy', 'monospace', '-webkit-body', '-webkit-pictograph']},
   'text-overflow-mode': {values: ['clip', 'ellipsis']},

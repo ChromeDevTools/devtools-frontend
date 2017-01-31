@@ -1,0 +1,38 @@
+Checks that JavaScriptSourceFrame show breakpoints correctly
+
+
+Running: testAddRemoveBreakpoint
+Setting breakpoint
+breakpoint at 2
+Toggle breakpoint
+
+Running: testTwoBreakpointsResolvedInOneLine
+Setting breakpoint
+breakpoint at 2
+Toggle breakpoint
+
+Running: testDecorationInGutter
+Adding regular disabled breakpoint
+breakpoint at 2 disabled
+Adding conditional disabled breakpoint
+breakpoint at 0 disabled conditional
+breakpoint at 2 disabled
+Adding regular enabled breakpoint
+breakpoint at 2
+  inline breakpoint at (2, 0) disabled
+  inline breakpoint at (2, 4)
+Adding conditional enabled breakpoint
+breakpoint at 2
+  inline breakpoint at (2, 0) disabled
+  inline breakpoint at (2, 4)
+Disable breakpoints
+breakpoint at 0 disabled
+breakpoint at 2 disabled
+  inline breakpoint at (2, 0) disabled
+  inline breakpoint at (2, 4) disabled
+Enable breakpoints
+breakpoint at 0 disabled
+breakpoint at 2
+Remove breakpoints
+breakpoint at 0 disabled
+

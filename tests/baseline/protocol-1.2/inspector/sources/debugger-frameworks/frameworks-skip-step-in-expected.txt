@@ -1,0 +1,39 @@
+
+Tests the skip stack frames feature when stepping.
+
+Set timer for test function.
+Call stack:
+    0) test1 (frameworks-skip-step-in.html:23)
+    1) testFunction (frameworks-skip-step-in.html:11)
+
+Call stack:
+    0) test2 (frameworks-skip-step-in.html:29)
+    1) testFunction (frameworks-skip-step-in.html:11)
+
+Call stack:
+    0) callback (frameworks-skip-step-in.html:16)
+  * 1) Framework.safeRun (framework.js:8)
+  * 2) Framework.safeRun (framework.js:10)
+    3) test3 (frameworks-skip-step-in.html:34)
+    4) testFunction (frameworks-skip-step-in.html:11)
+
+Call stack:
+    0) test4 (frameworks-skip-step-in.html:41)
+    1) testFunction (frameworks-skip-step-in.html:11)
+
+Call stack:
+    0) callback (frameworks-skip-step-in.html:16)
+  * 1) Framework.safeRun (framework.js:8)
+  * 2) Framework.safeRun (framework.js:13)
+  * 3) Framework.safeRun (framework.js:10)
+    4) test5 (frameworks-skip-step-in.html:46)
+    5) testFunction (frameworks-skip-step-in.html:11)
+
+Call stack:
+    0) callback (frameworks-skip-step-in.html:16)
+  * 1) Framework.safeRun (framework.js:8)
+  * 2) Framework.safeRun (framework.js:10)
+    3) test6 (frameworks-skip-step-in.html:52)
+    4) testFunction (frameworks-skip-step-in.html:11)
+
+

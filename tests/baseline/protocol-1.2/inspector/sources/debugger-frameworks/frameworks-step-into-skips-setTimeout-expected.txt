@@ -1,0 +1,25 @@
+
+Tests that stepping into blackboxed framework will not pause on setTimeout() inside the framework.
+
+Set timer for test function.
+Call stack:
+    0) stop (frameworks-step-into-skips-setTimeout.html:25)
+    1) callback (frameworks-step-into-skips-setTimeout.html:19)
+  * 2) Framework_scheduleUntilDone (framework.js:142)
+
+Executing StepOut...
+Call stack:
+    0) callback (frameworks-step-into-skips-setTimeout.html:20)
+  * 1) Framework_scheduleUntilDone (framework.js:142)
+
+Executing StepInto...
+Call stack:
+    0) callback (frameworks-step-into-skips-setTimeout.html:21)
+  * 1) Framework_scheduleUntilDone (framework.js:142)
+
+Executing StepInto...
+Call stack:
+    0) callback (frameworks-step-into-skips-setTimeout.html:17)
+  * 1) Framework_scheduleUntilDone (framework.js:142)
+
+

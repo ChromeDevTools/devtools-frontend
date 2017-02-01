@@ -10,7 +10,7 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
    * @param {!TimelineModel.TimelineModel} timelineModel
    * @param {!TimelineModel.TimelineFrameModel} frameModel
    * @param {!SDK.FilmStripModel} filmStripModel
-   * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
+   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    * @param {!Timeline.TimelineModeViewDelegate} delegate
    */
   constructor(timelineModel, frameModel, filmStripModel, filters, delegate) {

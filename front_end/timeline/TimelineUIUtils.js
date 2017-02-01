@@ -1428,7 +1428,7 @@ Timeline.TimelineUIUtils = class {
   }
 
   /**
-   * @return {!TimelineModel.TimelineModel.Filter}
+   * @return {!TimelineModel.TimelineModelFilter}
    */
   static visibleEventsFilter() {
     return new TimelineModel.TimelineVisibleEventsFilter(Timeline.TimelineUIUtils._visibleTypes());

@@ -53,7 +53,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._toggleRecordAction =
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('timeline.toggle-recording'));
 
-    /** @type {!Array<!TimelineModel.TimelineModel.Filter>} */
+    /** @type {!Array<!TimelineModel.TimelineModelFilter>} */
     this._filters = [];
     if (!Runtime.experiments.isEnabled('timelineShowAllEvents')) {
       this._filters.push(Timeline.TimelineUIUtils.visibleEventsFilter());
@@ -965,7 +965,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     // FIXME: search on all threads.
     var events = this._model.mainThreadEvents();
-    var filters = this._filters.concat([new Timeline.TimelineTextFilter(this._searchRegex)]);
+    var filters = this._filters.concat([new Timeline.TimelineFilters.RegExp(this._searchRegex)]);
     var matches = [];
     for (var index = events.lowerBound(this._windowStartTime, (time, event) => time - event.startTime);
          index < events.length; ++index) {

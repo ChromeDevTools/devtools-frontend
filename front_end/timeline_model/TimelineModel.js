@@ -85,20 +85,7 @@ TimelineModel.TimelineModel = class {
   }
 
   /**
-   * @return {!TimelineModel.TimelineModel.RecordType}
-   */
-  static _eventType(event) {
-    if (event.hasCategory(TimelineModel.TimelineModel.Category.Console))
-      return TimelineModel.TimelineModel.RecordType.ConsoleTime;
-    if (event.hasCategory(TimelineModel.TimelineModel.Category.UserTiming))
-      return TimelineModel.TimelineModel.RecordType.UserTiming;
-    if (event.hasCategory(TimelineModel.TimelineModel.Category.LatencyInfo))
-      return TimelineModel.TimelineModel.RecordType.LatencyInfo;
-    return /** @type !TimelineModel.TimelineModel.RecordType */ (event.name);
-  }
-
-  /**
-   * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
+   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    * @param {!SDK.TracingModel.Event} event
    * @return {boolean}
    */
@@ -1349,68 +1336,6 @@ TimelineModel.TimelineModel.NetworkRequest = class {
   }
 };
 
-TimelineModel.TimelineModel.Filter = class {
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
-    return true;
-  }
-};
-
-TimelineModel.TimelineVisibleEventsFilter = class extends TimelineModel.TimelineModel.Filter {
-  /**
-   * @param {!Array.<string>} visibleTypes
-   */
-  constructor(visibleTypes) {
-    super();
-    this._visibleTypes = new Set(visibleTypes);
-  }
-
-  /**
-   * @override
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
-    return this._visibleTypes.has(TimelineModel.TimelineModel._eventType(event));
-  }
-};
-
-TimelineModel.ExclusiveNameFilter = class extends TimelineModel.TimelineModel.Filter {
-  /**
-   * @param {!Array<string>} excludeNames
-   */
-  constructor(excludeNames) {
-    super();
-    this._excludeNames = new Set(excludeNames);
-  }
-
-  /**
-   * @override
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
-    return !this._excludeNames.has(event.name);
-  }
-};
-
-TimelineModel.ExcludeTopLevelFilter = class extends TimelineModel.TimelineModel.Filter {
-  constructor() {
-    super();
-  }
-
-  /**
-   * @override
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
-    return !SDK.TracingModel.isTopLevelEvent(event);
-  }
-};
 
 /**
  * @unrestricted

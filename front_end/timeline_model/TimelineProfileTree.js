@@ -37,7 +37,7 @@ TimelineModel.TimelineProfileTree.Node = class {
 
 /**
  * @param {!Array<!SDK.TracingModel.Event>} events
- * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
+ * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
  * @param {number} startTime
  * @param {number} endTime
  * @param {function(!SDK.TracingModel.Event):string=} eventGroupIdCallback

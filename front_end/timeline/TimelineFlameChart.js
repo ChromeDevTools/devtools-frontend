@@ -37,7 +37,7 @@ Timeline.TimelineFlameChartDataProvider = class {
    * @param {!TimelineModel.TimelineModel} model
    * @param {!TimelineModel.TimelineFrameModel} frameModel
    * @param {!TimelineModel.TimelineIRModel} irModel
-   * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
+   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    */
   constructor(model, frameModel, irModel, filters) {
     this.reset();

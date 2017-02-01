@@ -23,17 +23,18 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   }
 
   /**
+   * @protected
    * @param {!TimelineModel.TimelineModel} model
-   * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
+   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    */
-  _init(model, filters) {
+  init(model, filters) {
     this._model = model;
     this._linkifier = new Components.Linkifier();
 
     this._filters = filters.slice();
 
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([]);
-    this._populateColumns(columns);
+    this.populateColumns(columns);
 
     this._splitWidget = new UI.SplitWidget(true, true, 'timelineTreeViewDetailsSplitWidget');
     const mainView = new UI.VBox();
@@ -59,6 +60,14 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   }
 
   /**
+   * @protected
+   * @return {?TimelineModel.TimelineProfileTree.Node|undefined}
+   */
+  lastSelectedNode() {
+    return this._lastSelectedNode;
+  }
+
+  /**
    * @param {!Timeline.TimelineSelection} selection
    */
   updateContents(selection) {
@@ -72,7 +81,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   setRange(startTime, endTime) {
     this._startTime = startTime;
     this._endTime = endTime;
-    this._refreshTree();
+    this.refreshTree();
   }
 
   /**
@@ -124,18 +133,21 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     for (var node = treeNode; node; node = node.parent)
       pathToRoot.push(node);
     for (var i = pathToRoot.length - 1; i > 0; --i) {
-      var gridNode = this._dataGridNodeForTreeNode(pathToRoot[i]);
+      var gridNode = this.dataGridNodeForTreeNode(pathToRoot[i]);
       if (gridNode && gridNode.dataGrid)
         gridNode.expand();
     }
-    var gridNode = this._dataGridNodeForTreeNode(treeNode);
+    var gridNode = this.dataGridNodeForTreeNode(treeNode);
     if (gridNode.dataGrid) {
       gridNode.reveal();
       gridNode.select(suppressSelectedEvent);
     }
   }
 
-  _refreshTree() {
+  /**
+   * @protected
+   */
+  refreshTree() {
     this._linkifier.reset();
     this._dataGrid.rootNode().removeChildren();
     var tree = this._buildTree();
@@ -164,18 +176,20 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   }
 
   /**
+   * @protected
    * @param {function(!SDK.TracingModel.Event):(string|symbol)=} eventIdCallback
    * @return {!TimelineModel.TimelineProfileTree.Node}
    */
-  _buildTopDownTree(eventIdCallback) {
+  buildTopDownTree(eventIdCallback) {
     return TimelineModel.TimelineProfileTree.buildTopDown(
         this._model.mainThreadEvents(), this._filters, this._startTime, this._endTime, eventIdCallback);
   }
 
   /**
+   * @protected
    * @param {!Array<!DataGrid.DataGrid.ColumnDescriptor>} columns
    */
-  _populateColumns(columns) {
+  populateColumns(columns) {
     columns.push({id: 'self', title: Common.UIString('Self Time'), width: '110px', fixedWidth: true, sortable: true});
     columns.push({id: 'total', title: Common.UIString('Total Time'), width: '110px', fixedWidth: true, sortable: true});
     columns.push({id: 'activity', title: Common.UIString('Activity'), disclosure: true, sortable: true});
@@ -293,9 +307,10 @@ Timeline.TimelineTreeView = class extends UI.VBox {
 
   /**
    * @param {!TimelineModel.TimelineProfileTree.Node} treeNode
+   * @protected
    * @return {?Timeline.TimelineTreeView.GridNode}
    */
-  _dataGridNodeForTreeNode(treeNode) {
+  dataGridNodeForTreeNode(treeNode) {
     return treeNode[Timeline.TimelineTreeView.TreeGridNode._gridNodeSymbol] || null;
   }
 };
@@ -452,13 +467,13 @@ Timeline.TimelineTreeView.TreeGridNode._gridNodeSymbol = Symbol('treeGridNode');
 Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
   /**
    * @param {!TimelineModel.TimelineModel} model
-   * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
+   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    */
   constructor(model, filters) {
     super();
     this._groupBySetting =
         Common.settings.createSetting('timelineTreeGroupBy', Timeline.AggregatedTimelineTreeView.GroupBy.None);
-    this._init(model, filters);
+    this.init(model, filters);
     var nonessentialEvents = [
       TimelineModel.TimelineModel.RecordType.EventDispatch, TimelineModel.TimelineModel.RecordType.FunctionCall,
       TimelineModel.TimelineModel.RecordType.TimerFire
@@ -597,7 +612,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
 
   _onGroupByChanged() {
     this._groupBySetting.set(this._groupByCombobox.selectedOption().value);
-    this._refreshTree();
+    this.refreshTree();
   }
 
   _onStackViewSelectionChanged() {
@@ -730,7 +745,7 @@ Timeline.AggregatedTimelineTreeView.GroupBy = {
 Timeline.CallTreeTimelineTreeView = class extends Timeline.AggregatedTimelineTreeView {
   /**
    * @param {!TimelineModel.TimelineModel} model
-   * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
+   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    */
   constructor(model, filters) {
     super(model, filters);
@@ -743,7 +758,7 @@ Timeline.CallTreeTimelineTreeView = class extends Timeline.AggregatedTimelineTre
    */
   _buildTree() {
     var grouping = this._groupBySetting.get();
-    var topDown = this._buildTopDownTree(this._groupingFunction(grouping));
+    var topDown = this.buildTopDownTree(this._groupingFunction(grouping));
     if (grouping === Timeline.AggregatedTimelineTreeView.GroupBy.None)
       return topDown;
     return new TimelineModel.TimelineAggregator().performGrouping(topDown);
@@ -756,7 +771,7 @@ Timeline.CallTreeTimelineTreeView = class extends Timeline.AggregatedTimelineTre
 Timeline.BottomUpTimelineTreeView = class extends Timeline.AggregatedTimelineTreeView {
   /**
    * @param {!TimelineModel.TimelineModel} model
-   * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
+   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    */
   constructor(model, filters) {
     super(model, filters);
@@ -768,335 +783,8 @@ Timeline.BottomUpTimelineTreeView = class extends Timeline.AggregatedTimelineTre
    * @return {!TimelineModel.TimelineProfileTree.Node}
    */
   _buildTree() {
-    var topDown = this._buildTopDownTree(this._groupingFunction(this._groupBySetting.get()));
+    var topDown = this.buildTopDownTree(this._groupingFunction(this._groupBySetting.get()));
     return TimelineModel.TimelineProfileTree.buildBottomUp(topDown);
-  }
-};
-
-/**
- * @unrestricted
- */
-Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
-  /**
-   * @param {!TimelineModel.TimelineModel} model
-   * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
-   * @param {!Timeline.TimelineModeViewDelegate} delegate
-   */
-  constructor(model, filters, delegate) {
-    super();
-    this._filtersControl = new Timeline.EventsTimelineTreeView.Filters();
-    this._filtersControl.addEventListener(
-        Timeline.EventsTimelineTreeView.Filters.Events.FilterChanged, this._onFilterChanged, this);
-    this._init(model, filters);
-    this._delegate = delegate;
-    this._filters.push.apply(this._filters, this._filtersControl.filters());
-    this._dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
-    this._splitWidget.showBoth();
-  }
-
-  /**
-   * @override
-   * @param {!Timeline.TimelineSelection} selection
-   */
-  updateContents(selection) {
-    super.updateContents(selection);
-    if (selection.type() === Timeline.TimelineSelection.Type.TraceEvent) {
-      var event = /** @type {!SDK.TracingModel.Event} */ (selection.object());
-      this._selectEvent(event, true);
-    }
-  }
-
-  /**
-   * @override
-   * @return {!TimelineModel.TimelineProfileTree.Node}
-   */
-  _buildTree() {
-    this._currentTree = this._buildTopDownTree();
-    return this._currentTree;
-  }
-
-  _onFilterChanged() {
-    var selectedEvent = this._lastSelectedNode && this._lastSelectedNode.event;
-    this._refreshTree();
-    if (selectedEvent)
-      this._selectEvent(selectedEvent, false);
-  }
-
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {?TimelineModel.TimelineProfileTree.Node}
-   */
-  _findNodeWithEvent(event) {
-    var iterators = [this._currentTree.children.values()];
-
-    while (iterators.length) {
-      var iterator = iterators.peekLast().next();
-      if (iterator.done) {
-        iterators.pop();
-        continue;
-      }
-      var child = /** @type {!TimelineModel.TimelineProfileTree.Node} */ (iterator.value);
-      if (child.event === event)
-        return child;
-      if (child.children)
-        iterators.push(child.children.values());
-    }
-    return null;
-  }
-
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @param {boolean=} expand
-   */
-  _selectEvent(event, expand) {
-    var node = this._findNodeWithEvent(event);
-    if (!node)
-      return;
-    this.selectProfileNode(node, false);
-    if (expand)
-      this._dataGridNodeForTreeNode(node).expand();
-  }
-
-  /**
-   * @override
-   * @param {!Array<!DataGrid.DataGrid.ColumnDescriptor>} columns
-   */
-  _populateColumns(columns) {
-    columns.push(
-        {id: 'startTime', title: Common.UIString('Start Time'), width: '110px', fixedWidth: true, sortable: true});
-    super._populateColumns(columns);
-  }
-
-  /**
-   * @override
-   * @param {!Element} parent
-   */
-  _populateToolbar(parent) {
-    var filtersWidget = this._filtersControl.filtersWidget();
-    filtersWidget.forceShowFilterBar();
-    filtersWidget.show(parent);
-  }
-
-  /**
-   * @override
-   * @param {!TimelineModel.TimelineProfileTree.Node} node
-   * @return {boolean}
-   */
-  _showDetailsForNode(node) {
-    var traceEvent = node.event;
-    if (!traceEvent)
-      return false;
-    Timeline.TimelineUIUtils.buildTraceEventDetails(
-        traceEvent, this._model, this._linkifier, false, showDetails.bind(this));
-    return true;
-
-    /**
-     * @param {!DocumentFragment} fragment
-     * @this {Timeline.EventsTimelineTreeView}
-     */
-    function showDetails(fragment) {
-      this._detailsView.element.appendChild(fragment);
-    }
-  }
-
-  /**
-   * @override
-   * @param {?TimelineModel.TimelineProfileTree.Node} node
-   */
-  _onHover(node) {
-    this._delegate.highlightEvent(node && node.event);
-  }
-};
-
-
-/**
- * @unrestricted
- */
-Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
-  constructor() {
-    super();
-
-    this._categoryFilter = new Timeline.TimelineCategoryFilter();
-    this._durationFilter = new Timeline.TimelineIsLongFilter();
-    this._textFilter = new Timeline.TimelineTextFilter();
-    this._filters = [this._categoryFilter, this._durationFilter, this._textFilter];
-
-    this._createFilterBar();
-  }
-
-  /**
-   * @return {!Array<!TimelineModel.TimelineModel.Filter>}
-   */
-  filters() {
-    return this._filters;
-  }
-
-  /**
-   * @return {?RegExp}
-   */
-  searchRegExp() {
-    return this._textFilter._regExp;
-  }
-
-  /**
-   * @return {!UI.ToolbarItem}
-   */
-  filterButton() {
-    return this._filterBar.filterButton();
-  }
-
-  /**
-   * @return {!UI.Widget}
-   */
-  filtersWidget() {
-    return this._filterBar;
-  }
-
-  _createFilterBar() {
-    this._filterBar = new UI.FilterBar('timelinePanel');
-
-    this._textFilterUI = new UI.TextFilterUI();
-    this._textFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, textFilterChanged, this);
-    this._filterBar.addFilter(this._textFilterUI);
-
-    var durationOptions = [];
-    for (var durationMs of Timeline.EventsTimelineTreeView.Filters._durationFilterPresetsMs) {
-      var durationOption = {};
-      if (!durationMs) {
-        durationOption.label = Common.UIString('All');
-        durationOption.title = Common.UIString('Show all records');
-        durationOption.default = true;
-      } else {
-        durationOption.label = Common.UIString('\u2265 %dms', durationMs);
-        durationOption.title = Common.UIString('Hide records shorter than %dms', durationMs);
-      }
-      durationOption.value = String(durationMs);
-      durationOptions.push(durationOption);
-    }
-    var durationFilterUI = new UI.ComboBoxFilterUI(durationOptions);
-    durationFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, durationFilterChanged, this);
-    this._filterBar.addFilter(durationFilterUI);
-
-    var categoryFiltersUI = {};
-    var categories = Timeline.TimelineUIUtils.categories();
-    for (var categoryName in categories) {
-      var category = categories[categoryName];
-      if (!category.visible)
-        continue;
-      var filter = new UI.CheckboxFilterUI(category.name, category.title);
-      filter.setColor(category.color, 'rgba(0, 0, 0, 0.2)');
-      categoryFiltersUI[category.name] = filter;
-      filter.addEventListener(UI.FilterUI.Events.FilterChanged, categoriesFilterChanged.bind(this, categoryName));
-      this._filterBar.addFilter(filter);
-    }
-    return this._filterBar;
-
-    /**
-     * @this {Timeline.EventsTimelineTreeView.Filters}
-     */
-    function textFilterChanged() {
-      var searchQuery = this._textFilterUI.value();
-      this._textFilter._setRegExp(searchQuery ? createPlainTextSearchRegex(searchQuery, 'i') : null);
-      this._notifyFiltersChanged();
-    }
-
-    /**
-     * @this {Timeline.EventsTimelineTreeView.Filters}
-     */
-    function durationFilterChanged() {
-      var duration = durationFilterUI.value();
-      var minimumRecordDuration = parseInt(duration, 10);
-      this._durationFilter.setMinimumRecordDuration(minimumRecordDuration);
-      this._notifyFiltersChanged();
-    }
-
-    /**
-     * @param {string} name
-     * @this {Timeline.EventsTimelineTreeView.Filters}
-     */
-    function categoriesFilterChanged(name) {
-      var categories = Timeline.TimelineUIUtils.categories();
-      categories[name].hidden = !categoryFiltersUI[name].checked();
-      this._notifyFiltersChanged();
-    }
-  }
-
-  _notifyFiltersChanged() {
-    this.dispatchEventToListeners(Timeline.EventsTimelineTreeView.Filters.Events.FilterChanged);
-  }
-};
-
-/** @enum {symbol} */
-Timeline.EventsTimelineTreeView.Filters.Events = {
-  FilterChanged: Symbol('FilterChanged')
-};
-
-Timeline.EventsTimelineTreeView.Filters._durationFilterPresetsMs = [0, 1, 15];
-
-Timeline.TimelineCategoryFilter = class extends TimelineModel.TimelineModel.Filter {
-  constructor() {
-    super();
-  }
-
-  /**
-   * @override
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
-    return !Timeline.TimelineUIUtils.eventStyle(event).category.hidden;
-  }
-};
-
-Timeline.TimelineIsLongFilter = class extends TimelineModel.TimelineModel.Filter {
-  constructor() {
-    super();
-    this._minimumRecordDuration = 0;
-  }
-
-  /**
-   * @param {number} value
-   */
-  setMinimumRecordDuration(value) {
-    this._minimumRecordDuration = value;
-  }
-
-  /**
-   * @override
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
-    var duration = event.endTime ? event.endTime - event.startTime : 0;
-    return duration >= this._minimumRecordDuration;
-  }
-};
-
-Timeline.TimelineTextFilter = class extends TimelineModel.TimelineModel.Filter {
-  /**
-   * @param {!RegExp=} regExp
-   */
-  constructor(regExp) {
-    super();
-    /** @type {?RegExp} */
-    this._regExp;
-    this._setRegExp(regExp || null);
-  }
-
-  /**
-   * @param {?RegExp} regExp
-   */
-  _setRegExp(regExp) {
-    this._regExp = regExp;
-  }
-
-  /**
-   * @override
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
-    return !this._regExp || Timeline.TimelineUIUtils.testContentMatching(event, this._regExp);
   }
 };
 

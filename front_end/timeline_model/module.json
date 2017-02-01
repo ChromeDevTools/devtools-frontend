@@ -3,6 +3,7 @@
         "sdk"
     ],
     "scripts": [
+        "TimelineModelFilter.js",
         "TracingLayerTree.js",
         "TimelineModel.js",
         "TimelineIRModel.js",

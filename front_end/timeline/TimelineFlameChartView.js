@@ -107,7 +107,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @param {!SDK.FilmStripModel} filmStripModel
    * @param {!TimelineModel.TimelineIRModel} irModel
    * @param {!Array<!{title: string, model: !SDK.TracingModel}>} extensionModels
-   * @param {!Array<!TimelineModel.TimelineModel.Filter>} filters
+   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    */
   constructor(delegate, timelineModel, frameModel, filmStripModel, irModel, extensionModels, filters) {
     super();

@@ -1026,7 +1026,7 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
     var visible = true;
     /** @type !Array<{nestingLevel: number, visible: boolean}> */
     var groupStack = [{nestingLevel: -1, visible: true}];
-    var lastGroupLevel = Math.max(levelCount, groups.peekLast().startLevel + 1);
+    var lastGroupLevel = Math.max(levelCount, groups.length ? groups.peekLast().startLevel + 1 : 0);
     for (var level = 0; level < lastGroupLevel; ++level) {
       while (groupIndex < groups.length - 1 && level === groups[groupIndex + 1].startLevel) {
         ++groupIndex;

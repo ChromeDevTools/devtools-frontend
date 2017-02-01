@@ -1,12 +1,12 @@
 {
     "securityIcons.svg": "27676f7c1f1542659c7c49a8052259dc",
     "resourceGlyphs.svg": "ae5287ef4b10714c8858b5384c348b6a",
-    "audits_logo_bw.svg": "203dcb2ba32ef0f4595ad45bb8feffab",
     "breakpointConditional.svg": "4cf90210b2af2ed84db2f60b07bcde28",
     "errorWave.svg": "e183fa242a22ed4784a92f6becbc2c45",
     "smallIcons.svg": "d884babbd1c785b92eb46ee736c95541",
-    "toolbarButtonGlyphs.svg": "db0b7d1af08a57a11e5609e0b2cbbc01",
+    "toolbarButtonGlyphs.svg": "2b963249c94071016f109403ec246f00",
     "breakpoint.svg": "69cd92d807259c022791112809b97799",
     "treeoutlineTriangles.svg": "017d2f89437df0afc6b9cd5ff43735d9",
+    "audits_logo_bw.svg": "203dcb2ba32ef0f4595ad45bb8feffab",
     "audits_logo.svg": "647095d7981857c22a816eef12f75b91"
 }

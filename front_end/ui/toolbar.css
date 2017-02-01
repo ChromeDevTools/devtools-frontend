@@ -201,7 +201,7 @@ select.toolbar-item {
 /* Input */
 
 input.toolbar-item {
-    width: 200px;
+    width: 120px;
     height: 20px;
     padding: 3px;
     margin: 1px 3px;

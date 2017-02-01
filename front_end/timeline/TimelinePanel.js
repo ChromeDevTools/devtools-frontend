@@ -301,11 +301,14 @@ Timeline.TimelinePanel = class extends UI.Panel {
         Common.UIString('Memory'), this._showMemorySetting, Common.UIString('Show memory timeline.'));
     this._panelToolbar.appendToolbarItem(this._showMemoryToolbarCheckbox);
 
-    // Settings
-    this._panelToolbar.appendToolbarItem(this._showSettingsPaneButton);
-
     // GC
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('components.collect-garbage'));
+
+    // Settings
+    this._panelToolbar.appendSpacer();
+    this._panelToolbar.appendText('');
+    this._panelToolbar.appendSeparator();
+    this._panelToolbar.appendToolbarItem(this._showSettingsPaneButton);
   }
 
   _createSettingsPane() {
@@ -720,12 +723,12 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     centered.createChild('p').appendChild(UI.formatLocalized(
         'To capture a new recording, click the record button or hit %s.%s' +
-        'To evaluate the page load, click the reload button or hit %s to record the reload.',
+            'To evaluate the page load, click the reload button or hit %s to record the reload.',
         [recordNode, createElement('br'), reloadNode]));
 
     centered.createChild('p').appendChild(UI.formatLocalized(
         'After recording, select an area of interest in the overview by dragging. ' +
-        'Then, zoom and pan the timeline with the mousewheel or %s keys. %s',
+            'Then, zoom and pan the timeline with the mousewheel or %s keys. %s',
         [navigateNode, learnMoreNode]));
 
     var cpuProfilerHintSetting = Common.settings.createSetting('timelineShowProfilerHint', true);
@@ -739,8 +742,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
       var performanceSpan = encloseWithTag('b', Common.UIString('Performance'));
       warning.createChild('div').appendChild(UI.formatLocalized(
           'The %s panel provides the combined functionality of Timeline and CPU profiler.%s' +
-          'The JavaScript CPU profiler will be removed shortly. Meanwhile, it\'s available under ' +
-          '%s \u2192 More Tools \u2192 JavaScript Profiler.',
+              'The JavaScript CPU profiler will be removed shortly. Meanwhile, it\'s available under ' +
+              '%s \u2192 More Tools \u2192 JavaScript Profiler.',
           [performanceSpan, createElement('p'), UI.Icon.create('largeicon-menu')]));
     }
 

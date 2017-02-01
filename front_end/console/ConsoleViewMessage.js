@@ -817,6 +817,15 @@ Console.ConsoleViewMessage = class {
     return regexObject.test(text);
   }
 
+  /**
+   * @param {string} filter
+   * @return {boolean}
+   */
+  matchesFilterText(filter) {
+    var text = this.contentElement().deepTextContent();
+    return text.toLowerCase().includes(filter.toLowerCase());
+  }
+
   updateTimestamp() {
     if (!this._contentElement)
       return;

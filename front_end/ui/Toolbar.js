@@ -553,12 +553,15 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
   /**
    * @param {string=} placeholder
    * @param {number=} growFactor
+   * @param {number=} shrinkFactor
    */
-  constructor(placeholder, growFactor) {
+  constructor(placeholder, growFactor, shrinkFactor) {
     super(createElementWithClass('input', 'toolbar-item'));
     this.element.addEventListener('input', this._onChangeCallback.bind(this), false);
     if (growFactor)
       this.element.style.flexGrow = growFactor;
+    if (shrinkFactor)
+      this.element.style.flexShrink = shrinkFactor;
     if (placeholder)
       this.element.setAttribute('placeholder', placeholder);
     this._value = '';
@@ -889,6 +892,68 @@ UI.ToolbarComboBox = class extends UI.ToolbarItem {
    */
   setMaxWidth(width) {
     this._selectElement.style.maxWidth = width + 'px';
+  }
+};
+
+/**
+ * @unrestricted
+ */
+UI.ToolbarSettingComboBox = class extends UI.ToolbarComboBox {
+  /**
+   * @param {!Array.<!{value: string, label: string, title: string, default:(boolean|undefined)}>} options
+   * @param {!Common.Setting} setting
+   * @param {string=} optGroup
+   */
+  constructor(options, setting, optGroup) {
+    super(null);
+    this._setting = setting;
+    this._options = options;
+    this._selectElement.addEventListener('change', this._valueChanged.bind(this), false);
+    var optionContainer = this._selectElement;
+    var optGroupElement = optGroup ? this._selectElement.createChild('optgroup') : null;
+    if (optGroupElement) {
+      optGroupElement.label = optGroup;
+      optionContainer = optGroupElement;
+    }
+    for (var i = 0; i < options.length; ++i) {
+      var dataOption = options[i];
+      var option = this.createOption(dataOption.label, dataOption.title, dataOption.value);
+      optionContainer.appendChild(option);
+      if (setting.get() === dataOption.value)
+        this.setSelectedIndex(i);
+    }
+
+    setting.addChangeListener(this._settingChanged, this);
+  }
+
+  /**
+   * @return {string}
+   */
+  value() {
+    return this._options[this.selectedIndex()].value;
+  }
+
+  _settingChanged() {
+    if (this._muteSettingListener)
+      return;
+
+    var value = this._setting.get();
+    for (var i = 0; i < this._options.length; ++i) {
+      if (value === this._options[i].value) {
+        this.setSelectedIndex(i);
+        break;
+      }
+    }
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _valueChanged(event) {
+    var option = this._options[this.selectedIndex()];
+    this._muteSettingListener = true;
+    this._setting.set(option.value);
+    this._muteSettingListener = false;
   }
 };
 

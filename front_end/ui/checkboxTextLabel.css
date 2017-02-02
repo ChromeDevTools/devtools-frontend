@@ -47,14 +47,14 @@ input.dt-checkbox-themed:checked:after {
 }
 
 input.dt-checkbox-themed:after {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs.png);
-    -webkit-mask-size: 352px 168px;
-    -webkit-mask-position: -128px -110px;
+    -webkit-mask-image: url(Images/checkboxCheckmark.png);
+    -webkit-mask-size: 11px 11px;
+    -webkit-mask-position: 0 0;
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.1) {
 input.dt-checkbox-themed:after {
-    -webkit-mask-image: url(Images/toolbarButtonGlyphs_2x.png);
+    -webkit-mask-image: url(Images/checkboxCheckmark_2x.png);
 }
 
 } /* media */

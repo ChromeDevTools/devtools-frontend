@@ -1,14 +1,6 @@
 {
     "extensions": [
         {
-            "type": "setting",
-            "category": "Console",
-            "title": "Enable custom formatters",
-            "settingName": "customFormatters",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
             "type": "@Components.DOMPresentationUtils.MarkerDecorator",
             "factoryName": "Components.DOMPresentationUtils.GenericDecorator",
             "marker": "breakpoint-marker",

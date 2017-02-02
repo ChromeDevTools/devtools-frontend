@@ -87,6 +87,14 @@
             "settingName": "showMetricsRulers",
             "settingType": "boolean",
             "defaultValue": false
+        },
+        {
+            "type": "setting",
+            "category": "Console",
+            "title": "Enable custom formatters",
+            "settingName": "customFormatters",
+            "settingType": "boolean",
+            "defaultValue": false
         }
     ],
     "scripts": [

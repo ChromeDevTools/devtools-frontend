@@ -43,6 +43,8 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
 
     this._gutterContainer = this.listItemElement.createChild('div', 'gutter-container');
     this._gutterContainer.addEventListener('click', this._showContextMenu.bind(this));
+    var gutterMenuIcon = UI.Icon.create('largeicon-menu', 'gutter-menu-icon');
+    this._gutterContainer.appendChild(gutterMenuIcon);
     this._decorationsElement = this._gutterContainer.createChild('div', 'hidden');
 
     this._elementCloseTag = elementCloseTag;

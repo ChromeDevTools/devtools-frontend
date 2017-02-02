@@ -23,8 +23,6 @@ SDK.Target = class extends Protocol.TargetBase {
     this._capabilitiesMask = capabilitiesMask;
     this._parentTarget = parentTarget;
     this._id = SDK.Target._nextId++;
-
-    /** @type {!Map.<function(new:SDK.SDKModel, !SDK.Target), !SDK.SDKModel>} */
     this._modelByConstructor = new Map();
   }
 
@@ -145,17 +143,20 @@ SDK.Target = class extends Protocol.TargetBase {
       var capabilities = SDK.SDKModel._capabilitiesByModelClass.get(modelClass);
       if (capabilities === undefined)
         throw 'Model class is not registered';
-      if ((this._capabilitiesMask & capabilities) === capabilities)
-        this._modelByConstructor.set(modelClass, new modelClass(this));
+      if ((this._capabilitiesMask & capabilities) === capabilities) {
+        var model = new modelClass(this);
+        this._modelByConstructor.set(modelClass, model);
+        this._targetManager.modelAdded(this, modelClass, model);
+      }
     }
     return this._modelByConstructor.get(modelClass) || null;
   }
 
   /**
-   * @return {!Array<!SDK.SDKModel>}
+   * @return {!Map<function(new:SDK.SDKModel, !SDK.Target), !SDK.SDKModel>}
    */
   models() {
-    return this._modelByConstructor.valuesArray();
+    return this._modelByConstructor;
   }
 
   /**
@@ -244,16 +245,6 @@ SDK.SDKModel = class extends SDK.SDKObject {
   }
 
   dispose() {
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _targetDisposed(event) {
-    var target = /** @type {!SDK.Target} */ (event.data);
-    if (target !== this._target)
-      return;
-    this.dispose();
   }
 };
 

@@ -169,9 +169,9 @@ Components.Linkifier = class {
     info.fallback = fallbackAnchor;
     info.liveLocation = Bindings.debuggerWorkspaceBinding.createLiveLocation(
         rawLocation, this._updateAnchor.bind(this, anchor),
-        /** @type {!Bindings.LiveLocationPool} */ (this._locationPoolByTarget.get(rawLocation.target())));
+        /** @type {!Bindings.LiveLocationPool} */ (this._locationPoolByTarget.get(rawLocation.debuggerModel.target())));
 
-    var anchors = /** @type {!Array<!Element>} */ (this._anchorsByTarget.get(rawLocation.target()));
+    var anchors = /** @type {!Array<!Element>} */ (this._anchorsByTarget.get(rawLocation.debuggerModel.target()));
     anchors.push(anchor);
     return anchor;
   }
@@ -198,8 +198,8 @@ Components.Linkifier = class {
    */
   linkifyRawLocation(rawLocation, fallbackUrl, classes) {
     return this.linkifyScriptLocation(
-        rawLocation.target(), rawLocation.scriptId, fallbackUrl, rawLocation.lineNumber, rawLocation.columnNumber,
-        classes);
+        rawLocation.debuggerModel.target(), rawLocation.scriptId, fallbackUrl, rawLocation.lineNumber,
+        rawLocation.columnNumber, classes);
   }
 
   /**

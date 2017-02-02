@@ -39,7 +39,6 @@ Bindings.CompilerScriptMapping = class {
    * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
   constructor(debuggerModel, workspace, networkProject, debuggerWorkspaceBinding) {
-    this._target = debuggerModel.target();
     this._debuggerModel = debuggerModel;
     this._workspace = workspace;
     this._networkProject = networkProject;
@@ -56,7 +55,7 @@ Bindings.CompilerScriptMapping = class {
     /** @type {!Map.<string, !Workspace.UISourceCode>} */
     this._stubUISourceCodes = new Map();
 
-    var projectId = Bindings.CompilerScriptMapping.projectIdForTarget(this._target);
+    var projectId = Bindings.CompilerScriptMapping.projectIdForTarget(this._debuggerModel.target());
     this._stubProject = new Bindings.ContentProviderBasedProject(
         workspace, projectId, Workspace.projectTypes.Service, '', true /* isServiceProject */);
     this._eventListeners = [
@@ -287,14 +286,14 @@ Bindings.CompilerScriptMapping = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _bindUISourceCode(uiSourceCode) {
-    this._debuggerWorkspaceBinding.setSourceMapping(this._target, uiSourceCode, this);
+    this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel, uiSourceCode, this);
   }
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _unbindUISourceCode(uiSourceCode) {
-    this._debuggerWorkspaceBinding.setSourceMapping(this._target, uiSourceCode, null);
+    this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel, uiSourceCode, null);
   }
 
   /**
@@ -314,7 +313,7 @@ Bindings.CompilerScriptMapping = class {
   _loadSourceMapForScript(script) {
     // script.sourceURL can be a random string, but is generally an absolute path -> complete it to inspected page url for
     // relative links.
-    var scriptURL = Common.ParsedURL.completeURL(this._target.inspectedURL(), script.sourceURL);
+    var scriptURL = Common.ParsedURL.completeURL(this._debuggerModel.target().inspectedURL(), script.sourceURL);
     if (!scriptURL)
       return Promise.resolve(/** @type {?SDK.TextSourceMap} */ (null));
 

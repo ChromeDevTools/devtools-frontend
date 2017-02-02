@@ -107,7 +107,7 @@ Bindings.DefaultScriptMapping = class {
     script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol] = uiSourceCode;
     this._project.addUISourceCodeWithProvider(uiSourceCode, script, null);
 
-    this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel.target(), uiSourceCode, this);
+    this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel, uiSourceCode, this);
     this._debuggerWorkspaceBinding.pushSourceMapping(script, this);
   }
 

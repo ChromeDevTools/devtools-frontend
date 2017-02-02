@@ -56,7 +56,7 @@ Components.DOMBreakpointsSidebarPane = class extends Components.BreakpointsSideb
     mainElement.appendChild(createTextNode(
         String.sprintf('Paused on %s', Components.DOMBreakpointsSidebarPane.BreakpointTypeNouns[auxData['type']])));
 
-    var domModel = SDK.DOMModel.fromTarget(details.target());
+    var domModel = SDK.DOMModel.fromTarget(details.debuggerModel.target());
     if (domModel) {
       var subElement = messageWrapper.createChild('div', 'status-sub monospace');
       var node = domModel.nodeForId(auxData['nodeId']);

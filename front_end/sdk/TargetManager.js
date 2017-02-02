@@ -17,6 +17,10 @@ SDK.TargetManager = class extends Common.Object {
     this._observerCapabiliesMaskSymbol = Symbol('observerCapabilitiesMask');
     /** @type {!Map<symbol, !Array<{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!Common.Event)}>>} */
     this._modelListeners = new Map();
+    /** @type {!Map<function(new:SDK.SDKModel,!SDK.Target), !Array<!SDK.SDKModelObserver>>} */
+    this._modelObservers = new Map();
+    /** @type {!Set<!SDK.Target>} */
+    this._pendingTargets = new Set();
     this._isSuspended = false;
   }
 
@@ -27,7 +31,7 @@ SDK.TargetManager = class extends Common.Object {
     this.dispatchEventToListeners(SDK.TargetManager.Events.SuspendStateChanged);
 
     for (var i = 0; i < this._targets.length; ++i) {
-      for (var model of this._targets[i].models())
+      for (var model of this._targets[i].models().values())
         model.suspendModel();
     }
   }
@@ -43,7 +47,7 @@ SDK.TargetManager = class extends Common.Object {
 
     var promises = [];
     for (var i = 0; i < this._targets.length; ++i) {
-      for (var model of this._targets[i].models())
+      for (var model of this._targets[i].models().values())
         promises.push(model.resumeModel());
     }
     return Promise.all(promises);
@@ -59,6 +63,21 @@ SDK.TargetManager = class extends Common.Object {
    */
   allTargetsSuspended() {
     return this._isSuspended;
+  }
+
+  /**
+   * @param {function(new:T,!SDK.Target)} modelClass
+   * @return {!Array<!T>}
+   * @template T
+   */
+  models(modelClass) {
+    var result = [];
+    for (var i = 0; i < this._targets.length; ++i) {
+      var model = this._targets[i].model(modelClass);
+      if (model)
+        result.push(model);
+    }
+    return result;
   }
 
   /**
@@ -89,6 +108,61 @@ SDK.TargetManager = class extends Common.Object {
       return;
 
     resourceTreeModel.reloadPage(bypassCache, injectedScript);
+  }
+
+  /**
+   * @param {function(new:T,!SDK.Target)} modelClass
+   * @param {!SDK.SDKModelObserver<T>} observer
+   * @template T
+   */
+  observeModels(modelClass, observer) {
+    if (!this._modelObservers.has(modelClass))
+      this._modelObservers.set(modelClass, []);
+    this._modelObservers.get(modelClass).push(observer);
+    for (var model of this.models(modelClass))
+      observer.modelAdded(model);
+  }
+
+  /**
+   * @param {function(new:T,!SDK.Target)} modelClass
+   * @param {!SDK.SDKModelObserver<T>} observer
+   * @template T
+   */
+  unobserveModels(modelClass, observer) {
+    if (!this._modelObservers.has(modelClass))
+      return;
+    var observers = this._modelObservers.get(modelClass);
+    observers.remove(observer);
+    if (!observers.length)
+      this._modelObservers.delete(modelClass);
+  }
+
+  /**
+   * @param {!SDK.Target} target
+   * @param {function(new:SDK.SDKModel,!SDK.Target)} modelClass
+   * @param {!SDK.SDKModel} model
+   */
+  modelAdded(target, modelClass, model) {
+    if (this._pendingTargets.has(target))
+      return;
+    if (!this._modelObservers.has(modelClass))
+      return;
+    for (var observer of this._modelObservers.get(modelClass).slice())
+      observer.modelAdded(model);
+  }
+
+  /**
+   * @param {!SDK.Target} target
+   * @param {function(new:SDK.SDKModel,!SDK.Target)} modelClass
+   * @param {!SDK.SDKModel} model
+   */
+  _modelRemoved(target, modelClass, model) {
+    if (this._pendingTargets.has(target))
+      return;
+    if (!this._modelObservers.has(modelClass))
+      return;
+    for (var observer of this._modelObservers.get(modelClass).slice())
+      observer.modelRemoved(model);
   }
 
   /**
@@ -163,6 +237,7 @@ SDK.TargetManager = class extends Common.Object {
    */
   createTarget(name, capabilitiesMask, connectionFactory, parentTarget) {
     var target = new SDK.Target(this, name, capabilitiesMask, connectionFactory, parentTarget);
+    this._pendingTargets.add(target);
 
     /** @type {!SDK.ConsoleModel} */
     target.consoleModel = /** @type {!SDK.ConsoleModel} */ (target.model(SDK.ConsoleModel));
@@ -189,7 +264,49 @@ SDK.TargetManager = class extends Common.Object {
 
     target.serviceWorkerManager = target.model(SDK.ServiceWorkerManager);
 
-    this.addTarget(target);
+    // Force creation of models which have observers.
+    for (var modelClass of this._modelObservers.keys())
+      target.model(modelClass);
+    this._pendingTargets.delete(target);
+
+    this._targets.push(target);
+
+    /**
+     * @param {!SDK.ResourceTreeModel.Events} sourceEvent
+     * @param {!SDK.TargetManager.Events} targetEvent
+     * @return {!Common.EventTarget.EventDescriptor}
+     * @this {SDK.TargetManager}
+     */
+    function setupRedispatch(sourceEvent, targetEvent) {
+      return resourceTreeModel.addEventListener(sourceEvent, this._redispatchEvent.bind(this, targetEvent));
+    }
+
+    if (this._targets.length === 1 && resourceTreeModel) {
+      resourceTreeModel[SDK.TargetManager._listenersSymbol] = [
+        setupRedispatch.call(
+            this, SDK.ResourceTreeModel.Events.MainFrameNavigated, SDK.TargetManager.Events.MainFrameNavigated),
+        setupRedispatch.call(this, SDK.ResourceTreeModel.Events.Load, SDK.TargetManager.Events.Load),
+        setupRedispatch.call(
+            this, SDK.ResourceTreeModel.Events.PageReloadRequested, SDK.TargetManager.Events.PageReloadRequested),
+        setupRedispatch.call(this, SDK.ResourceTreeModel.Events.WillReloadPage, SDK.TargetManager.Events.WillReloadPage)
+      ];
+    }
+    var copy = this._observersForTarget(target);
+    for (var i = 0; i < copy.length; ++i)
+      copy[i].targetAdded(target);
+
+    for (var modelClass of target.models().keys())
+      this.modelAdded(target, modelClass, target.models().get(modelClass));
+
+    for (var pair of this._modelListeners) {
+      var listeners = pair[1];
+      for (var i = 0; i < listeners.length; ++i) {
+        var model = target.model(listeners[i].modelClass);
+        if (model)
+          model.addEventListener(/** @type {symbol} */ (pair[0]), listeners[i].listener, listeners[i].thisObject);
+      }
+    }
+
     return target;
   }
 
@@ -205,46 +322,6 @@ SDK.TargetManager = class extends Common.Object {
   /**
    * @param {!SDK.Target} target
    */
-  addTarget(target) {
-    this._targets.push(target);
-    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
-    if (this._targets.length === 1 && resourceTreeModel) {
-      resourceTreeModel[SDK.TargetManager._listenersSymbol] = [
-        setupRedispatch.call(
-            this, SDK.ResourceTreeModel.Events.MainFrameNavigated, SDK.TargetManager.Events.MainFrameNavigated),
-        setupRedispatch.call(this, SDK.ResourceTreeModel.Events.Load, SDK.TargetManager.Events.Load),
-        setupRedispatch.call(
-            this, SDK.ResourceTreeModel.Events.PageReloadRequested, SDK.TargetManager.Events.PageReloadRequested),
-        setupRedispatch.call(this, SDK.ResourceTreeModel.Events.WillReloadPage, SDK.TargetManager.Events.WillReloadPage)
-      ];
-    }
-    var copy = this._observersForTarget(target);
-    for (var i = 0; i < copy.length; ++i)
-      copy[i].targetAdded(target);
-
-    for (var pair of this._modelListeners) {
-      var listeners = pair[1];
-      for (var i = 0; i < listeners.length; ++i) {
-        var model = target.model(listeners[i].modelClass);
-        if (model)
-          model.addEventListener(/** @type {symbol} */ (pair[0]), listeners[i].listener, listeners[i].thisObject);
-      }
-    }
-
-    /**
-     * @param {!SDK.ResourceTreeModel.Events} sourceEvent
-     * @param {!SDK.TargetManager.Events} targetEvent
-     * @return {!Common.EventTarget.EventDescriptor}
-     * @this {SDK.TargetManager}
-     */
-    function setupRedispatch(sourceEvent, targetEvent) {
-      return resourceTreeModel.addEventListener(sourceEvent, this._redispatchEvent.bind(this, targetEvent));
-    }
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   */
   removeTarget(target) {
     if (!this._targets.includes(target))
       return;
@@ -253,6 +330,9 @@ SDK.TargetManager = class extends Common.Object {
     var treeModelListeners = resourceTreeModel && resourceTreeModel[SDK.TargetManager._listenersSymbol];
     if (treeModelListeners)
       Common.EventTarget.removeEventListeners(treeModelListeners);
+
+    for (var modelClass of target.models().keys())
+      this._modelRemoved(target, modelClass, target.models().get(modelClass));
 
     var copy = this._observersForTarget(target);
     for (var i = 0; i < copy.length; ++i)
@@ -404,6 +484,24 @@ SDK.TargetManager.Observer.prototype = {
    * @param {!SDK.Target} target
    */
   targetRemoved(target) {},
+};
+
+/**
+ * @interface
+ * @template T
+ */
+SDK.SDKModelObserver = function() {};
+
+SDK.SDKModelObserver.prototype = {
+  /**
+   * @param {!T} model
+   */
+  modelAdded(model) {},
+
+  /**
+   * @param {!T} model
+   */
+  modelRemoved(model) {},
 };
 
 /**

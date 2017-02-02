@@ -252,9 +252,8 @@ Sources.SourceMapNamesResolver.resolveExpression = function(
  */
 Sources.SourceMapNamesResolver._resolveExpression = function(
     callFrame, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber) {
-  var target = callFrame.target();
-  var rawLocation =
-      Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(target, uiSourceCode, lineNumber, startColumnNumber);
+  var rawLocation = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(
+      callFrame.debuggerModel, uiSourceCode, lineNumber, startColumnNumber);
   if (!rawLocation)
     return Promise.resolve('');
 
@@ -318,8 +317,9 @@ Sources.SourceMapNamesResolver.resolveThisObject = function(callFrame) {
    * @param {?Protocol.Runtime.RemoteObject} evaluateResult
    */
   function onEvaluated(callback, evaluateResult) {
-    var remoteObject =
-        evaluateResult ? callFrame.target().runtimeModel.createRemoteObject(evaluateResult) : callFrame.thisObject();
+    var remoteObject = evaluateResult ?
+        callFrame.debuggerModel.target().runtimeModel.createRemoteObject(evaluateResult) :
+        callFrame.thisObject();
     callback(remoteObject);
   }
 };

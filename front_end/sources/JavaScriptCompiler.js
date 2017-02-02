@@ -24,39 +24,37 @@ Sources.JavaScriptCompiler = class {
   }
 
   /**
-   * @return {?SDK.Target}
+   * @return {?SDK.RuntimeModel}
    */
-  _findTarget() {
-    var targets = SDK.targetManager.targets();
+  _findRuntimeModel() {
+    var debuggerModels = SDK.targetManager.models(SDK.DebuggerModel);
     var sourceCode = this._sourceFrame.uiSourceCode();
-    for (var i = 0; i < targets.length; ++i) {
-      var scriptFile = Bindings.debuggerWorkspaceBinding.scriptFile(sourceCode, targets[i]);
+    for (var i = 0; i < debuggerModels.length; ++i) {
+      var scriptFile = Bindings.debuggerWorkspaceBinding.scriptFile(sourceCode, debuggerModels[i]);
       if (scriptFile)
-        return targets[i];
+        return debuggerModels[i].target().runtimeModel;
     }
-    return SDK.targetManager.mainTarget();
+    return SDK.targetManager.mainTarget() ? SDK.targetManager.mainTarget().runtimeModel : null;
   }
 
   _compile() {
-    var target = this._findTarget();
-    if (!target)
+    var runtimeModel = this._findRuntimeModel();
+    if (!runtimeModel)
       return;
-    var runtimeModel = target.runtimeModel;
     var currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
     if (!currentExecutionContext)
       return;
 
     this._compiling = true;
     var code = this._sourceFrame.textEditor.text();
-    runtimeModel.compileScript(code, '', false, currentExecutionContext.id, compileCallback.bind(this, target));
+    runtimeModel.compileScript(code, '', false, currentExecutionContext.id, compileCallback.bind(this));
 
     /**
-     * @param {!SDK.Target} target
      * @param {!Protocol.Runtime.ScriptId=} scriptId
      * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {Sources.JavaScriptCompiler}
      */
-    function compileCallback(target, scriptId, exceptionDetails) {
+    function compileCallback(scriptId, exceptionDetails) {
       this._compiling = false;
       if (this._recompileScheduled) {
         delete this._recompileScheduled;

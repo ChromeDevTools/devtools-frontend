@@ -296,10 +296,10 @@ Sources.SourcesPanel = class extends UI.Panel {
     if (!this._paused)
       this._setAsCurrentPanel();
 
-    if (UI.context.flavor(SDK.Target) === details.target())
-      this._showDebuggerPausedDetails(details);
+    if (UI.context.flavor(SDK.Target) === debuggerModel.target())
+      this._showDebuggerPausedDetails(/** @type {!SDK.DebuggerPausedDetails} */ (details));
     else if (!this._paused)
-      UI.context.setFlavor(SDK.Target, details.target());
+      UI.context.setFlavor(SDK.Target, debuggerModel.target());
   }
 
   /**
@@ -514,7 +514,7 @@ Sources.SourcesPanel = class extends UI.Panel {
       return;
     if (debuggerModel.isPaused())
       return;
-    var debuggerModels = SDK.DebuggerModel.instances();
+    var debuggerModels = SDK.targetManager.models(SDK.DebuggerModel);
     for (var i = 0; i < debuggerModels.length; ++i) {
       if (debuggerModels[i].isPaused()) {
         UI.context.setFlavor(SDK.Target, debuggerModels[i].target());
@@ -650,7 +650,7 @@ Sources.SourcesPanel = class extends UI.Panel {
 
     // Always use 0 column.
     var rawLocation = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(
-        executionContext.target(), uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
+        SDK.DebuggerModel.fromTarget(executionContext.target()), uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
     if (!rawLocation)
       return;
 

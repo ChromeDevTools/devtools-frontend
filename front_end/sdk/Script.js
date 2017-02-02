@@ -98,7 +98,7 @@ SDK.Script = class {
    * @param {string} source
    */
   static _reportDeprecatedCommentIfNeeded(script, source) {
-    var consoleModel = script.target().consoleModel;
+    var consoleModel = script.debuggerModel.target().consoleModel;
     if (!consoleModel)
       return;
     var linesToCheck = 5;
@@ -116,16 +116,10 @@ SDK.Script = class {
     var text = Common.UIString(
         '\'//@ sourceURL\' and \'//@ sourceMappingURL\' are deprecated, please use \'//# sourceURL=\' and \'//# sourceMappingURL=\' instead.');
     var msg = new SDK.ConsoleMessage(
-        script.target(), SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Warning, text, undefined,
-        undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, script.scriptId);
+        script.debuggerModel.target(), SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Warning,
+        text, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
+        script.scriptId);
     consoleModel.addMessage(msg);
-  }
-
-  /**
-   * @return {!SDK.Target}
-   */
-  target() {
-    return this.debuggerModel.target();
   }
 
   /**
@@ -139,7 +133,7 @@ SDK.Script = class {
    * @return {?SDK.ExecutionContext}
    */
   executionContext() {
-    return this.target().runtimeModel.executionContext(this._executionContextId);
+    return this.debuggerModel.target().runtimeModel.executionContext(this._executionContextId);
   }
 
   /**
@@ -177,7 +171,7 @@ SDK.Script = class {
 
     var callback;
     var promise = new Promise(fulfill => callback = fulfill);
-    this.target().debuggerAgent().getScriptSource(this.scriptId, didGetScriptSource.bind(this));
+    this.debuggerModel.target().debuggerAgent().getScriptSource(this.scriptId, didGetScriptSource.bind(this));
     return promise;
 
     /**
@@ -225,7 +219,8 @@ SDK.Script = class {
 
     if (this.scriptId) {
       // Script failed to parse.
-      this.target().debuggerAgent().searchInContent(this.scriptId, query, caseSensitive, isRegex, innerCallback);
+      this.debuggerModel.target().debuggerAgent().searchInContent(
+          this.scriptId, query, caseSensitive, isRegex, innerCallback);
     } else {
       callback([]);
     }
@@ -266,7 +261,7 @@ SDK.Script = class {
     newSource = this._appendSourceURLCommentIfNeeded(newSource);
 
     if (this.scriptId) {
-      this.target().debuggerAgent().setScriptSource(
+      this.debuggerModel.target().debuggerAgent().setScriptSource(
           this.scriptId, newSource, undefined, didEditScriptSource.bind(this));
     } else {
       callback('Script failed to parse');
@@ -327,7 +322,7 @@ SDK.Script = class {
      * @this {SDK.Script}
      */
     function setBlackboxedRanges(fulfill, reject) {
-      this.target().debuggerAgent().setBlackboxedRanges(this.scriptId, positions, callback);
+      this.debuggerModel.target().debuggerAgent().setBlackboxedRanges(this.scriptId, positions, callback);
       /**
        * @param {?Protocol.Error} error
        */

@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {SDK.TargetManager.Observer}
  * @unrestricted
+ * @implements {SDK.SDKModelObserver<!SDK.DebuggerModel>}
  */
 Bindings.BlackboxManager = class {
   /**
@@ -27,7 +27,7 @@ Bindings.BlackboxManager = class {
     /** @type {!Map<string, boolean>} */
     this._isBlackboxedURLCache = new Map();
 
-    SDK.targetManager.observeTargets(this);
+    SDK.targetManager.observeModels(SDK.DebuggerModel, this);
   }
 
   /**
@@ -46,24 +46,19 @@ Bindings.BlackboxManager = class {
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    */
-  targetAdded(target) {
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
-    if (debuggerModel)
-      this._setBlackboxPatterns(debuggerModel);
+  modelAdded(debuggerModel) {
+    this._setBlackboxPatterns(debuggerModel);
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    */
-  targetRemoved(target) {
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
-    if (debuggerModel) {
-      this._debuggerModelData.delete(debuggerModel);
-      this._isBlackboxedURLCache.clear();
-    }
+  modelRemoved(debuggerModel) {
+    this._debuggerModelData.delete(debuggerModel);
+    this._isBlackboxedURLCache.clear();
   }
 
   /**
@@ -279,7 +274,7 @@ Bindings.BlackboxManager = class {
 
     /** @type {!Array<!Promise>} */
     var promises = [];
-    for (var debuggerModel of SDK.DebuggerModel.instances()) {
+    for (var debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
       promises.push(this._setBlackboxPatterns(debuggerModel));
       for (var scriptId in debuggerModel.scripts) {
         var script = debuggerModel.scripts[scriptId];

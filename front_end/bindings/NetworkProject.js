@@ -391,7 +391,7 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
    * @return {?Workspace.UISourceCode}
    */
   static uiSourceCodeForScriptURL(workspace, url, script) {
-    var target = script.target();
+    var target = script.debuggerModel.target();
     var frame = SDK.ResourceTreeFrame.fromScript(script);
     return workspace.uiSourceCode(Bindings.NetworkProject.projectId(target, frame, false), url) ||
         workspace.uiSourceCode(Bindings.NetworkProject.projectId(target, frame, true), url);

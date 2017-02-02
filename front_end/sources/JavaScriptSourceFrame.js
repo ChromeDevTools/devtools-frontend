@@ -71,8 +71,8 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     /** @type {!Map<!Bindings.BreakpointManager.Breakpoint, !Sources.JavaScriptSourceFrame.BreakpointDecoration>} */
     this._decorationByBreakpoint = new Map();
 
-    /** @type {!Map.<!SDK.Target, !Bindings.ResourceScriptFile>}*/
-    this._scriptFileForTarget = new Map();
+    /** @type {!Map.<!SDK.DebuggerModel, !Bindings.ResourceScriptFile>}*/
+    this._scriptFileForDebuggerModel = new Map();
 
     Common.moduleSetting('skipStackFramesPattern').addChangeListener(this._showBlackboxInfobarIfNeeded, this);
     Common.moduleSetting('skipContentScripts').addChangeListener(this._showBlackboxInfobarIfNeeded, this);
@@ -126,7 +126,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     infobar.createDetailsRowMessage(
         Common.UIString('Debugger will skip stepping through this script, and will not stop on exceptions'));
 
-    var scriptFile = this._scriptFileForTarget.size ? this._scriptFileForTarget.valuesArray()[0] : null;
+    var scriptFile = this._scriptFileForDebuggerModel.size ? this._scriptFileForDebuggerModel.valuesArray()[0] : null;
     if (scriptFile && scriptFile.hasSourceMapURL())
       infobar.createDetailsRowMessage(Common.UIString('Source map found, but ignored for blackboxed file.'));
     infobar.createDetailsRowMessage();
@@ -273,8 +273,8 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       if (this._debuggerSourceCode.project().type() === Workspace.projectTypes.Network &&
           Common.moduleSetting('jsSourceMapsEnabled').get() &&
           !Bindings.blackboxManager.isBlackboxedUISourceCode(this._debuggerSourceCode)) {
-        if (this._scriptFileForTarget.size) {
-          var scriptFile = this._scriptFileForTarget.valuesArray()[0];
+        if (this._scriptFileForDebuggerModel.size) {
+          var scriptFile = this._scriptFileForDebuggerModel.valuesArray()[0];
           var addSourceMapURLLabel = Common.UIString.capitalize('Add ^source ^map\u2026');
           contextMenu.appendItem(addSourceMapURLLabel, addSourceMapURL.bind(null, scriptFile));
           contextMenu.appendSeparator();
@@ -290,7 +290,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
    * @param {!Common.Event} event
    */
   _workingCopyChanged(event) {
-    if (this._supportsEnabledBreakpointsWhileEditing() || this._scriptFileForTarget.size)
+    if (this._supportsEnabledBreakpointsWhileEditing() || this._scriptFileForDebuggerModel.size)
       return;
 
     if (this.uiSourceCode().isDirty())
@@ -307,7 +307,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     if (this._supportsEnabledBreakpointsWhileEditing())
       return;
 
-    if (!this._scriptFileForTarget.size)
+    if (!this._scriptFileForDebuggerModel.size)
       this._restoreBreakpointsAfterEditing();
   }
 
@@ -336,7 +336,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
   }
 
   _restoreBreakpointsIfConsistentScripts() {
-    var scriptFiles = this._scriptFileForTarget.valuesArray();
+    var scriptFiles = this._scriptFileForDebuggerModel.valuesArray();
     for (var i = 0; i < scriptFiles.length; ++i) {
       if (scriptFiles[i].hasDivergedFromVM() || scriptFiles[i].isMergingToVM())
         return;
@@ -883,7 +883,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       return false;
     if (this._muted)
       return true;
-    var scriptFiles = this._scriptFileForTarget.valuesArray();
+    var scriptFiles = this._scriptFileForDebuggerModel.valuesArray();
     for (var i = 0; i < scriptFiles.length; ++i) {
       if (scriptFiles[i].isDivergingFromVM() || scriptFiles[i].isMergingToVM())
         return true;
@@ -1013,7 +1013,8 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     this._updateScriptFiles();
     this._refreshBreakpoints();
 
-    var canLiveCompileJavascript = this._scriptFileForTarget.size || this._debuggerSourceCode.extension() === 'js' ||
+    var canLiveCompileJavascript = this._scriptFileForDebuggerModel.size ||
+        this._debuggerSourceCode.extension() === 'js' ||
         this._debuggerSourceCode.project().type() === Workspace.projectTypes.Snippets;
     if (!!canLiveCompileJavascript !== !!this._compiler)
       this._compiler = canLiveCompileJavascript ? new Sources.JavaScriptCompiler(this) : null;
@@ -1043,10 +1044,10 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
    * @param {!Common.Event} event
    */
   _onSourceMappingChanged(event) {
-    var data = /** @type {{target: !SDK.Target, uiSourceCode: !Workspace.UISourceCode}} */ (event.data);
+    var data = /** @type {{debuggerModel: !SDK.DebuggerModel, uiSourceCode: !Workspace.UISourceCode}} */ (event.data);
     if (this._debuggerSourceCode !== data.uiSourceCode)
       return;
-    this._updateScriptFile(data.target);
+    this._updateScriptFile(data.debuggerModel);
     this._updateLinesWithoutMappingHighlight();
   }
 
@@ -1062,20 +1063,20 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
   }
 
   _updateScriptFiles() {
-    for (var target of SDK.targetManager.targets()) {
-      var scriptFile = Bindings.debuggerWorkspaceBinding.scriptFile(this._debuggerSourceCode, target);
+    for (var debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
+      var scriptFile = Bindings.debuggerWorkspaceBinding.scriptFile(this._debuggerSourceCode, debuggerModel);
       if (scriptFile)
-        this._updateScriptFile(target);
+        this._updateScriptFile(debuggerModel);
     }
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    */
-  _updateScriptFile(target) {
-    var oldScriptFile = this._scriptFileForTarget.get(target);
-    var newScriptFile = Bindings.debuggerWorkspaceBinding.scriptFile(this._debuggerSourceCode, target);
-    this._scriptFileForTarget.remove(target);
+  _updateScriptFile(debuggerModel) {
+    var oldScriptFile = this._scriptFileForDebuggerModel.get(debuggerModel);
+    var newScriptFile = Bindings.debuggerWorkspaceBinding.scriptFile(this._debuggerSourceCode, debuggerModel);
+    this._scriptFileForDebuggerModel.delete(debuggerModel);
     if (oldScriptFile) {
       oldScriptFile.removeEventListener(Bindings.ResourceScriptFile.Events.DidMergeToVM, this._didMergeToVM, this);
       oldScriptFile.removeEventListener(
@@ -1084,7 +1085,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
         this._restoreBreakpointsIfConsistentScripts();
     }
     if (newScriptFile)
-      this._scriptFileForTarget.set(target, newScriptFile);
+      this._scriptFileForDebuggerModel.set(debuggerModel, newScriptFile);
 
     if (newScriptFile) {
       newScriptFile.addEventListener(Bindings.ResourceScriptFile.Events.DidMergeToVM, this._didMergeToVM, this);
@@ -1119,7 +1120,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     for (var breakpointLocation of breakpointLocations)
       this._addBreakpoint(breakpointLocation.uiLocation, breakpointLocation.breakpoint);
 
-    var scriptFiles = this._scriptFileForTarget.valuesArray();
+    var scriptFiles = this._scriptFileForDebuggerModel.valuesArray();
     for (var i = 0; i < scriptFiles.length; ++i)
       scriptFiles[i].checkMapping();
 

@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {SDK.TargetManager.Observer}
  * @unrestricted
+ * @implements {SDK.SDKModelObserver<!SDK.DebuggerModel>}
  */
 Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
   /**
@@ -14,39 +14,33 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
     super();
     this._workspace = workspace;
 
-    // FIXME: Migrate from _targetToData to _debuggerModelToData.
-    /** @type {!Map.<!SDK.Target, !Bindings.DebuggerWorkspaceBinding.TargetData>} */
-    this._targetToData = new Map();
-    targetManager.observeTargets(this);
-
+    /** @type {!Map.<!SDK.DebuggerModel, !Bindings.DebuggerWorkspaceBinding.ModelData>} */
+    this._debuggerModelToData = new Map();
     targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this);
     targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this._debuggerResumed, this);
     workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
     workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
+    targetManager.observeModels(SDK.DebuggerModel, this);
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    */
-  targetAdded(target) {
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
-    if (debuggerModel)
-      this._targetToData.set(target, new Bindings.DebuggerWorkspaceBinding.TargetData(debuggerModel, this));
+  modelAdded(debuggerModel) {
+    this._debuggerModelToData.set(debuggerModel, new Bindings.DebuggerWorkspaceBinding.ModelData(debuggerModel, this));
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    */
-  targetRemoved(target) {
-    if (!SDK.DebuggerModel.fromTarget(target))
-      return;
-    var targetData = this._targetToData.get(target);
-    targetData._dispose();
-    this._targetToData.remove(target);
+  modelRemoved(debuggerModel) {
+    var modelData = this._debuggerModelToData.get(debuggerModel);
+    modelData._dispose();
+    this._debuggerModelToData.remove(debuggerModel);
   }
 
   /**
@@ -54,9 +48,9 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
    */
   _uiSourceCodeRemoved(event) {
     var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
-    var targetDatas = this._targetToData.valuesArray();
-    for (var i = 0; i < targetDatas.length; ++i)
-      targetDatas[i]._uiSourceCodeRemoved(uiSourceCode);
+    var modelDatas = this._debuggerModelToData.valuesArray();
+    for (var i = 0; i < modelDatas.length; ++i)
+      modelDatas[i]._uiSourceCodeRemoved(uiSourceCode);
   }
 
   /**
@@ -64,11 +58,11 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
    */
   _projectRemoved(event) {
     var project = /** @type {!Workspace.Project} */ (event.data);
-    var targetDatas = this._targetToData.valuesArray();
+    var modelDatas = this._debuggerModelToData.valuesArray();
     var uiSourceCodes = project.uiSourceCodes();
-    for (var i = 0; i < targetDatas.length; ++i) {
+    for (var i = 0; i < modelDatas.length; ++i) {
       for (var j = 0; j < uiSourceCodes.length; ++j)
-        targetDatas[i]._uiSourceCodeRemoved(uiSourceCodes[j]);
+        modelDatas[i]._uiSourceCodeRemoved(uiSourceCodes[j]);
     }
   }
 
@@ -92,12 +86,12 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {?Bindings.DebuggerSourceMapping} sourceMapping
    */
-  setSourceMapping(target, uiSourceCode, sourceMapping) {
-    var data = this._targetToData.get(target);
+  setSourceMapping(debuggerModel, uiSourceCode, sourceMapping) {
+    var data = this._debuggerModelToData.get(debuggerModel);
     if (data)
       data._setSourceMapping(uiSourceCode, sourceMapping);
   }
@@ -150,10 +144,10 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
     var script = location.script();
     if (!script)
       return null;
-    var target = location.target();
+    var debuggerModel = location.debuggerModel;
     this._ensureInfoForScript(script);
     var liveLocation = this.createLiveLocation(location, updateDelegate, locationPool);
-    this._registerCallFrameLiveLocation(target, liveLocation);
+    this._registerCallFrameLiveLocation(debuggerModel, liveLocation);
     return liveLocation;
   }
 
@@ -168,17 +162,17 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {?SDK.DebuggerModel} debuggerModel
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
    * @return {?SDK.DebuggerModel.Location}
    */
-  uiLocationToRawLocation(target, uiSourceCode, lineNumber, columnNumber) {
-    var targetData = this._targetToData.get(target);
-    return targetData ? /** @type {?SDK.DebuggerModel.Location} */ (
-                            targetData._uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber)) :
-                        null;
+  uiLocationToRawLocation(debuggerModel, uiSourceCode, lineNumber, columnNumber) {
+    var modelData = debuggerModel ? this._debuggerModelToData.get(debuggerModel) : null;
+    return modelData ? /** @type {?SDK.DebuggerModel.Location} */ (
+                           modelData._uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber)) :
+                       null;
   }
 
   /**
@@ -189,9 +183,9 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
    */
   uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
     var result = [];
-    var targetDatas = this._targetToData.valuesArray();
-    for (var i = 0; i < targetDatas.length; ++i) {
-      var rawLocation = targetDatas[i]._uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
+    var modelDatas = this._debuggerModelToData.valuesArray();
+    for (var i = 0; i < modelDatas.length; ++i) {
+      var rawLocation = modelDatas[i]._uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
       if (rawLocation)
         result.push(rawLocation);
     }
@@ -205,8 +199,9 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
   normalizeUILocation(uiLocation) {
     var target = Bindings.NetworkProject.targetForUISourceCode(uiLocation.uiSourceCode);
     if (target) {
-      var rawLocation =
-          this.uiLocationToRawLocation(target, uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
+      var rawLocation = this.uiLocationToRawLocation(
+          SDK.DebuggerModel.fromTarget(target), uiLocation.uiSourceCode, uiLocation.lineNumber,
+          uiLocation.columnNumber);
       if (rawLocation)
         return this.rawLocationToUILocation(rawLocation);
     }
@@ -219,9 +214,9 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
    * @return {boolean}
    */
   uiLineHasMapping(uiSourceCode, lineNumber) {
-    var targetDatas = this._targetToData.valuesArray();
-    for (var i = 0; i < targetDatas.length; ++i) {
-      if (!targetDatas[i]._uiLineHasMapping(uiSourceCode, lineNumber))
+    var modelDatas = this._debuggerModelToData.valuesArray();
+    for (var i = 0; i < modelDatas.length; ++i) {
+      if (!modelDatas[i]._uiLineHasMapping(uiSourceCode, lineNumber))
         return false;
     }
     return true;
@@ -229,12 +224,12 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    * @return {?Bindings.ResourceScriptFile}
    */
-  scriptFile(uiSourceCode, target) {
-    var targetData = this._targetToData.get(target);
-    return targetData ? targetData._resourceMapping.scriptFile(uiSourceCode) : null;
+  scriptFile(uiSourceCode, debuggerModel) {
+    var modelData = this._debuggerModelToData.get(debuggerModel);
+    return modelData ? modelData._resourceMapping.scriptFile(uiSourceCode) : null;
   }
 
   /**
@@ -242,20 +237,20 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
    * @return {?SDK.TextSourceMap}
    */
   sourceMapForScript(script) {
-    var targetData = this._targetToData.get(script.target());
-    if (!targetData)
+    var modelData = this._debuggerModelToData.get(script.debuggerModel);
+    if (!modelData)
       return null;
-    return targetData._compilerMapping.sourceMapForScript(script);
+    return modelData._compilerMapping.sourceMapForScript(script);
   }
 
   /**
    * @param {!SDK.Script} script
    */
   maybeLoadSourceMap(script) {
-    var targetData = this._targetToData.get(script.target());
-    if (!targetData)
+    var modelData = this._debuggerModelToData.get(script.debuggerModel);
+    if (!modelData)
       return;
-    targetData._compilerMapping.maybeLoadSourceMap(script);
+    modelData._compilerMapping.maybeLoadSourceMap(script);
   }
 
   /**
@@ -263,16 +258,16 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
    */
   _globalObjectCleared(event) {
     var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
-    this._reset(debuggerModel.target());
+    this._reset(debuggerModel);
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    */
-  _reset(target) {
-    var targetData = this._targetToData.get(target);
-    targetData.callFrameLocations.valuesArray().forEach((location) => this._removeLiveLocation(location));
-    targetData.callFrameLocations.clear();
+  _reset(debuggerModel) {
+    var modelData = this._debuggerModelToData.get(debuggerModel);
+    modelData.callFrameLocations.valuesArray().forEach((location) => this._removeLiveLocation(location));
+    modelData.callFrameLocations.clear();
   }
 
   /**
@@ -299,11 +294,11 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Bindings.DebuggerWorkspaceBinding.Location} location
    */
-  _registerCallFrameLiveLocation(target, location) {
-    var locations = this._targetToData.get(target).callFrameLocations;
+  _registerCallFrameLiveLocation(debuggerModel, location) {
+    var locations = this._debuggerModelToData.get(debuggerModel).callFrameLocations;
     locations.add(location);
   }
 
@@ -321,7 +316,7 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
    */
   _debuggerResumed(event) {
     var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
-    this._reset(debuggerModel.target());
+    this._reset(debuggerModel);
   }
 };
 
@@ -331,7 +326,7 @@ Bindings.DebuggerWorkspaceBinding._sourceMappingSymbol = Symbol('sourceMapping')
 /**
  * @unrestricted
  */
-Bindings.DebuggerWorkspaceBinding.TargetData = class {
+Bindings.DebuggerWorkspaceBinding.ModelData = class {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
@@ -405,7 +400,7 @@ Bindings.DebuggerWorkspaceBinding.TargetData = class {
     this._debuggerWorkspaceBinding.dispatchEventToListeners(
         Bindings.DebuggerWorkspaceBinding.Events.SourceMappingChanged, {
           uiSourceCode: uiSourceCode,
-          target: this._debuggerModel.target(),
+          debuggerModel: this._debuggerModel,
           isIdentity: sourceMapping ? sourceMapping.isIdentity() : false
         });
   }

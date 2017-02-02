@@ -97,7 +97,7 @@ Sources.FormatterScriptMapping.FormatData = class {
 
 /**
  * @implements {Sources.SourcesView.EditorAction}
- * @implements {SDK.TargetManager.Observer}
+ * @implements {SDK.SDKModelObserver<!SDK.DebuggerModel>}
  * @unrestricted
  */
 Sources.ScriptFormatterEditorAction = class {
@@ -117,34 +117,28 @@ Sources.ScriptFormatterEditorAction = class {
     /** @type {!Set.<string>} */
     this._pathsToFormatOnLoad = new Set();
 
-    /** @type {!Map.<!SDK.Target, !Sources.FormatterScriptMapping>} */
-    this._scriptMappingByTarget = new Map();
+    /** @type {!Map.<!SDK.DebuggerModel, !Sources.FormatterScriptMapping>} */
+    this._scriptMappingByDebuggerModel = new Map();
     this._workspace = Workspace.workspace;
-    SDK.targetManager.observeTargets(this);
+    SDK.targetManager.observeModels(SDK.DebuggerModel, this);
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    */
-  targetAdded(target) {
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
-    if (!debuggerModel)
-      return;
-    this._scriptMappingByTarget.set(target, new Sources.FormatterScriptMapping(debuggerModel, this));
+  modelAdded(debuggerModel) {
+    this._scriptMappingByDebuggerModel.set(debuggerModel, new Sources.FormatterScriptMapping(debuggerModel, this));
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    */
-  targetRemoved(target) {
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
-    if (!debuggerModel)
-      return;
-    this._scriptMappingByTarget.remove(target);
-    this._cleanForTarget(target);
+  modelRemoved(debuggerModel) {
+    this._scriptMappingByDebuggerModel.remove(debuggerModel);
+    this._cleanForModel(debuggerModel);
     debuggerModel.removeEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this);
   }
 
@@ -264,16 +258,16 @@ Sources.ScriptFormatterEditorAction = class {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    */
-  _cleanForTarget(target) {
+  _cleanForModel(debuggerModel) {
     var uiSourceCodes = this._formatData.keysArray();
     for (var i = 0; i < uiSourceCodes.length; ++i) {
-      Bindings.debuggerWorkspaceBinding.setSourceMapping(target, uiSourceCodes[i], null);
+      Bindings.debuggerWorkspaceBinding.setSourceMapping(debuggerModel, uiSourceCodes[i], null);
       var formatData = this._formatData.get(uiSourceCodes[i]);
       var scripts = [];
       for (var j = 0; j < formatData.scripts.length; ++j) {
-        if (formatData.scripts[j].target() === target)
+        if (formatData.scripts[j].debuggerModel === debuggerModel)
           this._uiSourceCodes.remove(formatData.scripts[j]);
         else
           scripts.push(formatData.scripts[j]);
@@ -294,7 +288,7 @@ Sources.ScriptFormatterEditorAction = class {
    */
   _debuggerReset(event) {
     var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
-    this._cleanForTarget(debuggerModel.target());
+    this._cleanForModel(debuggerModel);
   }
 
   /**
@@ -312,7 +306,7 @@ Sources.ScriptFormatterEditorAction = class {
 
     if (uiSourceCode.contentType() === Common.resourceTypes.Document) {
       var scripts = [];
-      var debuggerModels = SDK.DebuggerModel.instances();
+      var debuggerModels = SDK.targetManager.models(SDK.DebuggerModel);
       for (var i = 0; i < debuggerModels.length; ++i)
         scripts.pushAll(debuggerModels[i].scriptsForSourceURL(uiSourceCode.url()));
       return scripts.filter(isInlineScript);
@@ -374,15 +368,16 @@ Sources.ScriptFormatterEditorAction = class {
       for (var i = 0; i < scripts.length; ++i) {
         this._uiSourceCodes.set(scripts[i], formattedUISourceCode);
         var scriptMapping =
-            /** @type {!Sources.FormatterScriptMapping} */ (this._scriptMappingByTarget.get(scripts[i].target()));
+            /** @type {!Sources.FormatterScriptMapping} */ (
+                this._scriptMappingByDebuggerModel.get(scripts[i].debuggerModel));
         Bindings.debuggerWorkspaceBinding.pushSourceMapping(scripts[i], scriptMapping);
       }
 
-      var targets = SDK.targetManager.targets();
-      for (var i = 0; i < targets.length; ++i) {
+      var debuggerModels = SDK.targetManager.models(SDK.DebuggerModel);
+      for (var i = 0; i < debuggerModels.length; ++i) {
         var scriptMapping =
-            /** @type {!Sources.FormatterScriptMapping} */ (this._scriptMappingByTarget.get(targets[i]));
-        Bindings.debuggerWorkspaceBinding.setSourceMapping(targets[i], formattedUISourceCode, scriptMapping);
+            /** @type {!Sources.FormatterScriptMapping} */ (this._scriptMappingByDebuggerModel.get(debuggerModels[i]));
+        Bindings.debuggerWorkspaceBinding.setSourceMapping(debuggerModels[i], formattedUISourceCode, scriptMapping);
       }
       this._showIfNeeded(uiSourceCode, formattedUISourceCode, formatterMapping);
     }

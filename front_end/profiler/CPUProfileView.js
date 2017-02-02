@@ -159,7 +159,7 @@ Profiler.CPUProfileType = class extends Profiler.ProfileType {
       resolvedTitle = this._anonymousConsoleProfileIdToTitle[data.id];
       delete this._anonymousConsoleProfileIdToTitle[data.id];
     }
-    var profile = new Profiler.CPUProfileHeader(data.scriptLocation.target(), this, resolvedTitle);
+    var profile = new Profiler.CPUProfileHeader(data.scriptLocation.debuggerModel.target(), this, resolvedTitle);
     profile.setProtocolProfile(cpuProfile);
     this.addProfile(profile);
     this._addMessageToConsole(
@@ -174,7 +174,7 @@ Profiler.CPUProfileType = class extends Profiler.ProfileType {
    */
   _addMessageToConsole(type, scriptLocation, messageText) {
     var script = scriptLocation.script();
-    var target = scriptLocation.target();
+    var target = scriptLocation.debuggerModel.target();
     var message = new SDK.ConsoleMessage(
         target, SDK.ConsoleMessage.MessageSource.ConsoleAPI, SDK.ConsoleMessage.MessageLevel.Verbose, messageText, type,
         undefined, undefined, undefined, undefined, [{

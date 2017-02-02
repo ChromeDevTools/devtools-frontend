@@ -28,8 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {SDK.TargetManager.Observer}
  * @unrestricted
+ * @implements {SDK.SDKModelObserver<!SDK.DebuggerModel>}
  */
 Snippets.ScriptSnippetModel = class extends Common.Object {
   /**
@@ -43,40 +43,37 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
     /** @type {!Map.<!Workspace.UISourceCode, string>} */
     this._snippetIdForUISourceCode = new Map();
 
-    /** @type {!Map.<!SDK.Target, !Snippets.SnippetScriptMapping>} */
-    this._mappingForTarget = new Map();
+    /** @type {!Map.<!SDK.DebuggerModel, !Snippets.SnippetScriptMapping>} */
+    this._mappingForDebuggerModel = new Map();
     this._snippetStorage = new Snippets.SnippetStorage('script', 'Script snippet #');
     this._lastSnippetEvaluationIndexSetting = Common.settings.createSetting('lastSnippetEvaluationIndex', 0);
     this._project = new Snippets.SnippetsProject(workspace, this);
     this._loadSnippets();
-    SDK.targetManager.observeTargets(this);
+    SDK.targetManager.observeModels(SDK.DebuggerModel, this);
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    */
-  targetAdded(target) {
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
-    if (debuggerModel)
-      this._mappingForTarget.set(target, new Snippets.SnippetScriptMapping(debuggerModel, this));
+  modelAdded(debuggerModel) {
+    this._mappingForDebuggerModel.set(debuggerModel, new Snippets.SnippetScriptMapping(debuggerModel, this));
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    */
-  targetRemoved(target) {
-    if (SDK.DebuggerModel.fromTarget(target))
-      this._mappingForTarget.remove(target);
+  modelRemoved(debuggerModel) {
+    this._mappingForDebuggerModel.remove(debuggerModel);
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.DebuggerModel} debuggerModel
    * @return {!Snippets.SnippetScriptMapping|undefined}
    */
-  snippetScriptMapping(target) {
-    return this._mappingForTarget.get(target);
+  snippetScriptMapping(debuggerModel) {
+    return this._mappingForDebuggerModel.get(debuggerModel);
   }
 
   /**
@@ -180,7 +177,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
     var breakpointLocations = this._removeBreakpoints(uiSourceCode);
     this._releaseSnippetScript(uiSourceCode);
     this._restoreBreakpoints(uiSourceCode, breakpointLocations);
-    this._mappingForTarget.valuesArray().forEach(function(mapping) {
+    this._mappingForDebuggerModel.valuesArray().forEach(function(mapping) {
       mapping._restoreBreakpoints(uiSourceCode, breakpointLocations);
     });
   }
@@ -206,8 +203,9 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
 
     var target = executionContext.target();
     var runtimeModel = target.runtimeModel;
+    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (SDK.DebuggerModel.fromTarget(target));
     var evaluationIndex = this._nextEvaluationIndex();
-    var mapping = this._mappingForTarget.get(target);
+    var mapping = this._mappingForDebuggerModel.get(debuggerModel);
     mapping._setEvaluationIndex(evaluationIndex, uiSourceCode);
     var evaluationUrl = mapping._evaluationSourceURL(uiSourceCode);
     uiSourceCode.requestContent().then(compileSnippet.bind(this));
@@ -227,7 +225,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
      * @this {Snippets.ScriptSnippetModel}
      */
     function compileCallback(scriptId, exceptionDetails) {
-      var mapping = this._mappingForTarget.get(target);
+      var mapping = this._mappingForDebuggerModel.get(debuggerModel);
       if (mapping.evaluationIndex(uiSourceCode) !== evaluationIndex)
         return;
 
@@ -324,7 +322,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _releaseSnippetScript(uiSourceCode) {
-    this._mappingForTarget.valuesArray().forEach(function(mapping) {
+    this._mappingForDebuggerModel.valuesArray().forEach(function(mapping) {
       mapping._releaseSnippetScript(uiSourceCode);
     });
   }
@@ -355,7 +353,6 @@ Snippets.SnippetScriptMapping = class {
    * @param {!Snippets.ScriptSnippetModel} scriptSnippetModel
    */
   constructor(debuggerModel, scriptSnippetModel) {
-    this._target = debuggerModel.target();
     this._debuggerModel = debuggerModel;
     this._scriptSnippetModel = scriptSnippetModel;
     /** @type {!Object.<string, !Workspace.UISourceCode>} */
@@ -447,7 +444,7 @@ Snippets.SnippetScriptMapping = class {
    */
   _addScript(script, uiSourceCode) {
     console.assert(!this._scriptForUISourceCode.get(uiSourceCode));
-    Bindings.debuggerWorkspaceBinding.setSourceMapping(this._target, uiSourceCode, this);
+    Bindings.debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel, uiSourceCode, this);
     this._uiSourceCodeForScriptId[script.scriptId] = uiSourceCode;
     this._scriptForUISourceCode.set(uiSourceCode, script);
     Bindings.debuggerWorkspaceBinding.pushSourceMapping(script, this);

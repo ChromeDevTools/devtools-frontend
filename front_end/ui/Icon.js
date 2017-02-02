@@ -111,7 +111,12 @@ UI.Icon.Descriptors = {
   'smallicon-triangle-down': {x: -20, y: -98, width: 10, height: 8, spritesheet: 'largeicons', isMask: true},
   'smallicon-triangle-up': {x: -4, y: -111, width: 10, height: 8, spritesheet: 'largeicons', isMask: true},
   'smallicon-arrow-in-circle': {x: -10, y: -127, width: 11, height: 11, spritesheet: 'largeicons', isMask: true},
-  'smallicon-cross': {x: -177, y: -98, width: 10, height: 10, spritesheet: 'largeicons'},
+  'smallicon-cross': {x: -177, y: -98, width: 9, height: 9, spritesheet: 'largeicons'},
+  'smallicon-red-cross-hover': {x: -96, y: -96, width: 14, height: 14, spritesheet: 'largeicons'},
+  'smallicon-red-cross-active': {x: -111, y: -96, width: 14, height: 14, spritesheet: 'largeicons'},
+  'smallicon-gray-cross-hover': {x: -143, y: -96, width: 13, height: 13, spritesheet: 'largeicons'},
+  'smallicon-gray-cross-active': {x: -160, y: -96, width: 13, height: 13, spritesheet: 'largeicons'},
+
   'smallicon-inline-breakpoint': {x: -140, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-inline-breakpoint-conditional': {x: -160, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-file': {x: -64, y: -24, width: 12, height: 14, spritesheet: 'largeicons'},

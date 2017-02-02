@@ -1506,6 +1506,12 @@ UI.appendStyle = function(node, cssFile) {
     createdCallback: function() {
       var root = UI.createShadowRootWithCoreStyles(this, 'ui/closeButton.css');
       this._buttonElement = root.createChild('div', 'close-button');
+      var regularIcon = UI.Icon.create('smallicon-cross', 'default-icon');
+      this._hoverIcon = UI.Icon.create('smallicon-red-cross-hover', 'hover-icon');
+      this._activeIcon = UI.Icon.create('smallicon-red-cross-active', 'active-icon');
+      this._buttonElement.appendChild(regularIcon);
+      this._buttonElement.appendChild(this._hoverIcon);
+      this._buttonElement.appendChild(this._activeIcon);
     },
 
     /**
@@ -1513,7 +1519,13 @@ UI.appendStyle = function(node, cssFile) {
      * @this {Element}
      */
     set gray(gray) {
-      this._buttonElement.className = gray ? 'close-button-gray' : 'close-button';
+      if (gray) {
+        this._hoverIcon.setIconType('smallicon-gray-cross-hover');
+        this._activeIcon.setIconType('smallicon-gray-cross-active');
+      } else {
+        this._hoverIcon.setIconType('smallicon-red-cross-hover');
+        this._activeIcon.setIconType('smallicon-red-cross-active');
+      }
     },
 
     __proto__: HTMLDivElement.prototype

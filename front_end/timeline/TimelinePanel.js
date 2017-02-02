@@ -499,7 +499,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
           this._filters);
       this._addModeView(this._flameChart);
       if (showMemory)
-        this._addModeView(new Timeline.MemoryCountersGraph(this, this._model));
+        this._addModeView(new Timeline.CountersGraph(this, this._model));
     } else {
       var innerView;
       switch (viewMode) {

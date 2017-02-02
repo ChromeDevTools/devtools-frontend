@@ -555,7 +555,6 @@ all_devtools_files = [
   "front_end/timeline/CountersGraph.js",
   "front_end/timeline/EventsTimelineTreeView.js",
   "front_end/timeline/invalidationsTree.css",
-  "front_end/timeline/MemoryCountersGraph.js",
   "front_end/timeline/module.json",
   "front_end/timeline/TimelineController.js",
   "front_end/timeline/TimelineDetailsView.js",

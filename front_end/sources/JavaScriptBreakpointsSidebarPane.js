@@ -204,6 +204,10 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
     }
     var removeAllTitle = Common.UIString('Remove all breakpoints');
     contextMenu.appendItem(removeAllTitle, this._breakpointManager.removeAllBreakpoints.bind(this._breakpointManager));
+    var removeOtherTitle = Common.UIString('Remove other breakpoints');
+    contextMenu.appendItem(
+        removeOtherTitle,
+        this._breakpointManager.removeOtherBreakpoints.bind(this._breakpointManager, new Set(breakpoints)));
     contextMenu.show();
   }
 

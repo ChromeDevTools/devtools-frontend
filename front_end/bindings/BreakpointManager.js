@@ -383,6 +383,17 @@ Bindings.BreakpointManager = class extends Common.Object {
       breakpoints[i].remove();
   }
 
+  /**
+   * @param {!Set.<!Bindings.BreakpointManager.Breakpoint>} selectedBreakpoints
+   */
+  removeOtherBreakpoints(selectedBreakpoints) {
+    var allBreakpoints = this._allBreakpoints();
+    allBreakpoints.forEach(breakpoint => {
+      if (!selectedBreakpoints.has(breakpoint))
+        breakpoint.remove();
+    });
+  }
+
   _projectRemoved(event) {
     var project = /** @type {!Workspace.Project} */ (event.data);
     var uiSourceCodes = project.uiSourceCodes();

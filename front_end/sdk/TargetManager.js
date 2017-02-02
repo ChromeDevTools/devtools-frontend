@@ -331,6 +331,7 @@ SDK.TargetManager = class extends Common.Object {
           this, Common.UIString('Node'), SDK.Target.Capability.Target, this._createMainConnection.bind(this), null);
       target.subTargetsManager = new SDK.SubTargetsManager(target);
       target.setInspectedURL('Node');
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
       return;
     }
 
@@ -341,6 +342,7 @@ SDK.TargetManager = class extends Common.Object {
           SDK.Target.Capability.Target;
     } else if (Runtime.queryParam('v8only')) {
       capabilities = SDK.Target.Capability.JS;
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSDirectly);
     }
 
     var target = this.createTarget(Common.UIString('Main'), capabilities, this._createMainConnection.bind(this), null);

@@ -56,11 +56,3 @@
     display: flex;
     flex-direction: row;
 }
-
-.object-properties-section-root-element::before {
-    -webkit-mask-position: -4px -97px !important;
-}
-
-.object-properties-section-root-element.expanded::before {
-    -webkit-mask-position: -20px -97px !important;
-}

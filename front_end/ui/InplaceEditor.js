@@ -166,8 +166,9 @@ UI.InplaceEditor = class {
         event.consume(true);
       } else if (result && result.startsWith('move-')) {
         moveDirection = result.substring(5);
-        if (event.key !== 'Tab')
-          blurEventListener();
+        if (event.key === 'Tab')
+          event.consume(true);
+        blurEventListener();
       }
     }
 

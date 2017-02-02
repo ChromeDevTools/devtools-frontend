@@ -43,6 +43,9 @@ inspector/sources/debugger-async/async-await/async-callstack-async-await3.html [
 inspector/sources/debugger-async/async-await/async-pause-on-exception.html [ Skip ]
 inspector/sources/debugger-ui/async-call-stack-async-function.html [ Skip ]
 
+# Skipping b/c 1.2 content shell (DevTools runtime) does not support async await
+inspector/console/console-functions.html [ Skip ]
+
 # 1.2 content shell does not support inspector-unit
 http/tests/inspector-unit/filtered-item-selection-dialog-filtering.js [ Skip ]
 http/tests/inspector-unit/list-control-equal-height.js [ Skip ]

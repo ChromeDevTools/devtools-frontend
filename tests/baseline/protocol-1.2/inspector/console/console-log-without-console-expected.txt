@@ -1,0 +1,13 @@
+CONSOLE MESSAGE: line 7: 1
+CONSOLE INFO: line 9: 2
+CONSOLE ERROR: line 11: 3
+CONSOLE WARNING: line 13: 4
+Test that console.log can be called without console receiver.
+
+console-log-without-console.html:7 1
+console-log-without-console.html:9 2
+console-log-without-console.html:11 3
+(anonymous) @ console-log-without-console.html:11
+console-log-without-console.html:13 4
+(anonymous) @ console-log-without-console.html:13
+

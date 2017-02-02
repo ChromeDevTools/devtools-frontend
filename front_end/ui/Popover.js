@@ -165,7 +165,7 @@ UI.Popover = class extends UI.Widget {
     // Skinny tooltips are not pretty, their arrow location is not nice.
     preferredWidth = Math.max(preferredWidth, 50);
     // Position relative to main DevTools element.
-    const container = UI.Dialog.modalHostView().element;
+    const container = UI.GlassPane.container(/** @type {!Document} */ (this._containerElement.ownerDocument));
     const totalWidth = container.offsetWidth;
     const totalHeight = container.offsetHeight;
 

@@ -5,10 +5,7 @@
  */
 
 :host {
-    position: absolute;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2),
-                0 2px 4px rgba(0, 0, 0, 0.2),
-                0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.1);
     background: white;
     justify-content: flex-start;
     align-items: stretch;
@@ -22,14 +19,12 @@
 }
 
 :host-context(.wraps-content) {
-    justify-content: center;
     align-items: flex-start;
     overflow: hidden;
 }
 
 :host-context(.wraps-content) .widget {
     flex: none !important;
-    justify-content: center;
     align-items: center;
 }
 

@@ -113,7 +113,7 @@ UI.Tooltip = class {
     this._tooltipLastOpened = instant ? now : now + UI.Tooltip.Timing.OpeningDelay;
 
     // Get container element.
-    var container = UI.Dialog.modalHostView().element;
+    var container = UI.GlassPane.container(/** @type {!Document} */ (anchorElement.ownerDocument));
     // Position tooltip based on the anchor element.
     var containerBox = container.boxInWindow(this.element.window());
     var anchorBox = this._anchorElement.boxInWindow(this.element.window());

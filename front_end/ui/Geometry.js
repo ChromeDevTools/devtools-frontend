@@ -346,6 +346,16 @@ UI.Size = class {
     this.width = width;
     this.height = height;
   }
+
+  /**
+   * @param {?UI.Size} size
+   * @return {!UI.Size}
+   */
+  clipTo(size) {
+    if (!size)
+      return this;
+    return new UI.Size(Math.min(this.width, size.width), Math.min(this.height, size.height));
+  }
 };
 
 /**

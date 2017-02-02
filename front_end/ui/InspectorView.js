@@ -34,7 +34,7 @@
 UI.InspectorView = class extends UI.VBox {
   constructor() {
     super();
-    UI.Dialog.setModalHostView(this);
+    UI.GlassPane.setContainer(this.element);
     this.setMinimumSize(240, 72);
 
     // DevTools sidebar is a vertical split of panels tabbed pane and a drawer.
@@ -268,7 +268,7 @@ UI.InspectorView = class extends UI.VBox {
    * @override
    */
   onResize() {
-    UI.Dialog.modalHostRepositioned();
+    UI.GlassPane.containerMoved(this.element);
   }
 
   /**

@@ -29,6 +29,7 @@
         "KeyboardShortcut.js",
         "ListControl.js",
         "ListWidget.js",
+        "GlassPane.js",
         "Panel.js",
         "Popover.js",
         "ProgressIndicator.js",

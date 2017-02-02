@@ -82,8 +82,9 @@ UI.SoftContextMenu = class {
     }
 
     // Re-position menu in case it does not fit.
-    var hostLeft = UI.Dialog.modalHostView().element.totalOffsetLeft();
-    var hostRight = hostLeft + UI.Dialog.modalHostView().element.offsetWidth;
+    var containerElement = UI.GlassPane.container(document);
+    var hostLeft = containerElement.totalOffsetLeft();
+    var hostRight = hostLeft + containerElement.offsetWidth;
     if (hostRight < this.element.offsetLeft + this.element.offsetWidth) {
       var left = this._parentMenu ? this._parentMenu.element.offsetLeft - this.element.offsetWidth + subMenuOverlap :
                                     hostRight - this.element.offsetWidth;
@@ -92,13 +93,12 @@ UI.SoftContextMenu = class {
 
     // Move submenus upwards if it does not fit.
     if (this._parentMenu && document.body.offsetHeight < this.element.offsetTop + this.element.offsetHeight) {
-      y = Math.max(
-          UI.Dialog.modalHostView().element.totalOffsetTop(), document.body.offsetHeight - this.element.offsetHeight);
+      y = Math.max(containerElement.totalOffsetTop(), document.body.offsetHeight - this.element.offsetHeight);
       this.element.style.top = y + 'px';
     }
 
-    var maxHeight = UI.Dialog.modalHostView().element.offsetHeight;
-    maxHeight -= y - UI.Dialog.modalHostView().element.totalOffsetTop();
+    var maxHeight = containerElement.offsetHeight;
+    maxHeight -= y - containerElement.totalOffsetTop();
     this.element.style.maxHeight = maxHeight + 'px';
 
     this._focus();

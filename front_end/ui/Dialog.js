@@ -39,11 +39,16 @@ UI.Dialog = class extends UI.Widget {
 
     this.contentElement.createChild('content');
     this.contentElement.tabIndex = 0;
-    this.contentElement.addEventListener('focus', this._onFocus.bind(this), false);
-    this._keyDownBound = this._onKeyDown.bind(this);
-
-    this._wrapsContent = false;
+    this.contentElement.addEventListener('focus', this.focus.bind(this), false);
+    this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
     this._dimmed = false;
+    this._wrapsContent = false;
+    this._maxSize = null;
+    /** @type {?number} */
+    this._positionX = null;
+    /** @type {?number} */
+    this._positionY = null;
+
     /** @type {!Map<!HTMLElement, number>} */
     this._tabIndexMap = new Map();
   }
@@ -56,44 +61,25 @@ UI.Dialog = class extends UI.Widget {
   }
 
   /**
-   * @param {!UI.Widget} view
-   */
-  static setModalHostView(view) {
-    UI.Dialog._modalHostView = view;
-  }
-
-  /**
-   * FIXME: make utility method in Dialog, so clients use it instead of this getter.
-   * Method should be like Dialog.showModalElement(position params, reposition callback).
-   * @return {?UI.Widget}
-   */
-  static modalHostView() {
-    return UI.Dialog._modalHostView;
-  }
-
-  static modalHostRepositioned() {
-    if (UI.Dialog._instance)
-      UI.Dialog._instance._position();
-  }
-
-  /**
    * @override
+   * @suppressGlobalPropertiesCheck
+   * TODO(dgozman): pass document in constructor.
    */
   show() {
     if (UI.Dialog._instance)
       UI.Dialog._instance.detach();
     UI.Dialog._instance = this;
 
-    var document = /** @type {!Document} */ (UI.Dialog._modalHostView.element.ownerDocument);
     this._disableTabIndexOnElements(document);
 
-    this._glassPane = new UI.GlassPane(document, this._dimmed);
-    this._glassPane.element.addEventListener('click', this._onGlassPaneClick.bind(this), false);
-    this.element.ownerDocument.body.addEventListener('keydown', this._keyDownBound, false);
-
-    super.show(this._glassPane.element);
-
-    this._position();
+    this._glassPane = new UI.GlassPane(document, this._dimmed, true /* blockPointerEvents*/, event => {
+      this.detach();
+      event.consume(true);
+    });
+    this._glassPane.show();
+    super.show(this._glassPane.contentElement);
+    this._glassPane.setContentPosition(this._positionX, this._positionY);
+    this._glassPane.setMaxContentSize(this._effectiveMaxSize());
     this._focusRestorer = new UI.WidgetFocusRestorer(this);
   }
 
@@ -103,10 +89,8 @@ UI.Dialog = class extends UI.Widget {
   detach() {
     this._focusRestorer.restore();
 
-    this.element.ownerDocument.body.removeEventListener('keydown', this._keyDownBound, false);
     super.detach();
-
-    this._glassPane.dispose();
+    this._glassPane.hide();
     delete this._glassPane;
 
     this._restoreTabIndexOnElements();
@@ -121,12 +105,12 @@ UI.Dialog = class extends UI.Widget {
   }
 
   /**
-   * @param {number=} positionX
-   * @param {number=} positionY
+   * @param {?number} positionX
+   * @param {?number} positionY
    */
   setPosition(positionX, positionY) {
-    this._defaultPositionX = positionX;
-    this._defaultPositionY = positionY;
+    this._positionX = positionX;
+    this._positionY = positionY;
   }
 
   /**
@@ -137,11 +121,20 @@ UI.Dialog = class extends UI.Widget {
   }
 
   /**
+   * @return {?UI.Size}
+   */
+  _effectiveMaxSize() {
+    if (!this._wrapsContent)
+      return this._maxSize;
+    return new UI.Size(this.contentElement.offsetWidth, this.contentElement.offsetHeight).clipTo(this._maxSize);
+  }
+
+  /**
    * @param {boolean} wraps
    */
   setWrapsContent(wraps) {
-    this.element.classList.toggle('wraps-content', wraps);
     this._wrapsContent = wraps;
+    this.element.classList.toggle('wraps-content', wraps);
   }
 
   /**
@@ -152,8 +145,9 @@ UI.Dialog = class extends UI.Widget {
   }
 
   contentResized() {
-    if (this._wrapsContent)
-      this._position();
+    if (!this._wrapsContent || !this._glassPane)
+      return;
+    this._glassPane.setMaxContentSize(this._effectiveMaxSize());
   }
 
   /**
@@ -182,58 +176,6 @@ UI.Dialog = class extends UI.Widget {
   /**
    * @param {!Event} event
    */
-  _onFocus(event) {
-    this.focus();
-  }
-
-  /**
-   * @param {!Event} event
-   */
-  _onGlassPaneClick(event) {
-    if (!this.element.isSelfOrAncestor(/** @type {?Node} */ (event.target)))
-      this.detach();
-  }
-
-  _position() {
-    var container = UI.Dialog._modalHostView.element;
-
-    var width = container.offsetWidth - 10;
-    var height = container.offsetHeight - 10;
-
-    if (this._wrapsContent) {
-      width = Math.min(width, this.contentElement.offsetWidth);
-      height = Math.min(height, this.contentElement.offsetHeight);
-    }
-
-    if (this._maxSize) {
-      width = Math.min(width, this._maxSize.width);
-      height = Math.min(height, this._maxSize.height);
-    }
-
-    var positionX;
-    if (typeof this._defaultPositionX === 'number') {
-      positionX = this._defaultPositionX;
-    } else {
-      positionX = (container.offsetWidth - width) / 2;
-      positionX = Number.constrain(positionX, 0, container.offsetWidth - width);
-    }
-
-    var positionY;
-    if (typeof this._defaultPositionY === 'number') {
-      positionY = this._defaultPositionY;
-    } else {
-      positionY = (container.offsetHeight - height) / 2;
-      positionY = Number.constrain(positionY, 0, container.offsetHeight - height);
-    }
-
-    this.element.style.width = width + 'px';
-    this.element.style.height = height + 'px';
-    this.element.positionAt(positionX, positionY, container);
-  }
-
-  /**
-   * @param {!Event} event
-   */
   _onKeyDown(event) {
     if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
       event.consume(true);
@@ -241,10 +183,3 @@ UI.Dialog = class extends UI.Widget {
     }
   }
 };
-
-
-/** @type {?Element} */
-UI.Dialog._previousFocusedElement = null;
-
-/** @type {?UI.Widget} */
-UI.Dialog._modalHostView = null;

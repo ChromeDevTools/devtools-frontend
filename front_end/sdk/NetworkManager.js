@@ -38,7 +38,6 @@ SDK.NetworkManager = class extends SDK.SDKModel {
   constructor(target) {
     super(target);
     this._dispatcher = new SDK.NetworkDispatcher(this);
-    this._target = target;
     this._networkAgent = target.networkAgent();
     target.registerNetworkDispatcher(this._dispatcher);
     if (Common.moduleSetting('cacheDisabled').get())
@@ -250,13 +249,13 @@ SDK.NetworkDispatcher = class {
     networkRequest.setSecurityState(response.securityState);
 
     if (!this._mimeTypeIsConsistentWithType(networkRequest)) {
-      var consoleModel = this._manager._target.consoleModel;
+      var consoleModel = this._manager.target().model(SDK.ConsoleModel);
       consoleModel.addMessage(new SDK.ConsoleMessage(
           consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network, SDK.ConsoleMessage.MessageLevel.Info,
           Common.UIString(
               'Resource interpreted as %s but transferred with MIME type %s: "%s".',
               networkRequest.resourceType().title(), networkRequest.mimeType, networkRequest.url()),
-          SDK.ConsoleMessage.MessageType.Log, '', 0, 0, networkRequest.requestId()));
+          undefined, undefined, undefined, undefined, networkRequest.requestId()));
     }
 
     if (response.securityDetails)
@@ -390,9 +389,14 @@ SDK.NetworkDispatcher = class {
 
     // net::ParsedCookie::kMaxCookieSize = 4096 (net/cookies/parsed_cookie.h)
     if ('Set-Cookie' in response.headers && response.headers['Set-Cookie'].length > 4096) {
-      Common.console.warn(Common.UIString(
-          'Set-Cookie header is ignored in response from url: %s. Cookie length should be less then or equal to 4096 characters.',
-          response.url));
+      var consoleModel = this._manager.target().model(SDK.ConsoleModel);
+      consoleModel.addMessage(
+          new SDK.ConsoleMessage(
+              consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network, SDK.ConsoleMessage.MessageLevel.Warning,
+              Common.UIString(
+                  'Set-Cookie header is ignored in response from url: %s. Cookie length should be less then or equal to 4096 characters.',
+                  response.url)),
+          undefined, undefined, undefined, undefined, requestId);
     }
 
     this._updateNetworkRequestWithResponse(networkRequest, response);
@@ -454,11 +458,11 @@ SDK.NetworkDispatcher = class {
     if (blockedReason) {
       networkRequest.setBlockedReason(blockedReason);
       if (blockedReason === Protocol.Network.BlockedReason.Inspector) {
-        var consoleModel = this._manager._target.consoleModel;
+        var consoleModel = this._manager.target().model(SDK.ConsoleModel);
         consoleModel.addMessage(new SDK.ConsoleMessage(
             consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network, SDK.ConsoleMessage.MessageLevel.Warning,
-            Common.UIString('Request was blocked by DevTools: "%s".', networkRequest.url()),
-            SDK.ConsoleMessage.MessageType.Log, '', 0, 0, networkRequest.requestId()));
+            Common.UIString('Request was blocked by DevTools: "%s".', networkRequest.url()), undefined, undefined,
+            undefined, undefined, requestId));
       }
     }
     networkRequest.localizedFailDescription = localizedDescription;
@@ -473,7 +477,7 @@ SDK.NetworkDispatcher = class {
    */
   webSocketCreated(requestId, requestURL, initiator) {
     var networkRequest =
-        new SDK.NetworkRequest(this._manager._target, requestId, requestURL, '', '', '', initiator || null);
+        new SDK.NetworkRequest(this._manager.target(), requestId, requestURL, '', '', '', initiator || null);
     networkRequest.setResourceType(Common.resourceTypes.WebSocket);
     this._startNetworkRequest(networkRequest);
   }
@@ -669,7 +673,7 @@ SDK.NetworkDispatcher = class {
    * @param {?Protocol.Network.Initiator} initiator
    */
   _createNetworkRequest(requestId, frameId, loaderId, url, documentURL, initiator) {
-    return new SDK.NetworkRequest(this._manager._target, requestId, url, documentURL, frameId, loaderId, initiator);
+    return new SDK.NetworkRequest(this._manager.target(), requestId, url, documentURL, frameId, loaderId, initiator);
   }
 };
 

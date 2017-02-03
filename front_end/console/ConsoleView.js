@@ -1115,8 +1115,6 @@ Console.ConsoleViewFilter = class {
   shouldBeVisible(viewMessage) {
     var message = viewMessage.consoleMessage();
     var executionContext = UI.context.flavor(SDK.ExecutionContext);
-    if (!message.target())
-      return true;
 
     if (this._showTargetMessagesCheckbox.checked() && executionContext) {
       if (message.target() !== executionContext.target())

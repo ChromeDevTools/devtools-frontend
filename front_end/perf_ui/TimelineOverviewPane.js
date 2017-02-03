@@ -216,7 +216,7 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
   _update() {
     if (!this.isShowing())
       return;
-    this._overviewCalculator.setDisplayWindow(this._overviewGrid.clientWidth());
+    this._overviewCalculator.setDisplayWidth(this._overviewGrid.clientWidth());
     for (var i = 0; i < this._overviewControls.length; ++i)
       this._overviewControls[i].update();
     this._overviewGrid.updateDividers(this._overviewCalculator);
@@ -284,8 +284,13 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
     // Always use first control as a time converter.
     if (!this._overviewControls.length)
       return;
-    var windowTimes =
-        this._overviewControls[0].windowTimes(this._overviewGrid.windowLeft(), this._overviewGrid.windowRight());
+
+    var absoluteMin = this._overviewCalculator.minimumBoundary();
+    var timeSpan = this._overviewCalculator.maximumBoundary() - absoluteMin;
+    var windowTimes = {
+      startTime: absoluteMin + timeSpan * this._overviewGrid.windowLeft(),
+      endTime: absoluteMin + timeSpan * this._overviewGrid.windowRight()
+    };
     this._windowStartTime = windowTimes.startTime;
     this._windowEndTime = windowTimes.endTime;
     this.dispatchEventToListeners(PerfUI.TimelineOverviewPane.Events.WindowChanged, windowTimes);
@@ -308,9 +313,14 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
   _updateWindow() {
     if (!this._overviewControls.length)
       return;
-    var windowBoundaries = this._overviewControls[0].windowBoundaries(this._windowStartTime, this._windowEndTime);
+
+    var absoluteMin = this._overviewCalculator.minimumBoundary();
+    var timeSpan = this._overviewCalculator.maximumBoundary() - absoluteMin;
+    var haveRecords = absoluteMin > 0;
+    var left = haveRecords && this._windowStartTime ? Math.min((this._windowStartTime - absoluteMin) / timeSpan, 1) : 0;
+    var right = haveRecords && this._windowEndTime < Infinity ? (this._windowEndTime - absoluteMin) / timeSpan : 1;
     this._muteOnWindowChanged = true;
-    this._overviewGrid.setWindow(windowBoundaries.left, windowBoundaries.right);
+    this._overviewGrid.setWindow(left, right);
     this._muteOnWindowChanged = false;
   }
 };
@@ -344,7 +354,7 @@ PerfUI.TimelineOverviewCalculator = class {
    * @return {number}
    */
   paddingLeft() {
-    return this._paddingLeft;
+    return 0;
   }
 
   /**
@@ -353,7 +363,7 @@ PerfUI.TimelineOverviewCalculator = class {
    * @return {number}
    */
   computePosition(time) {
-    return (time - this._minimumBoundary) / this.boundarySpan() * this._workingArea + this._paddingLeft;
+    return (time - this._minimumBoundary) / this.boundarySpan() * this._workingArea;
   }
 
   /**
@@ -361,7 +371,7 @@ PerfUI.TimelineOverviewCalculator = class {
    * @return {number}
    */
   positionToTime(position) {
-    return (position - this._paddingLeft) / this._workingArea * this.boundarySpan() + this._minimumBoundary;
+    return position / this._workingArea * this.boundarySpan() + this._minimumBoundary;
   }
 
   /**
@@ -375,11 +385,9 @@ PerfUI.TimelineOverviewCalculator = class {
 
   /**
    * @param {number} clientWidth
-   * @param {number=} paddingLeft
    */
-  setDisplayWindow(clientWidth, paddingLeft) {
-    this._paddingLeft = paddingLeft || 0;
-    this._workingArea = clientWidth - this._paddingLeft;
+  setDisplayWidth(clientWidth) {
+    this._workingArea = clientWidth;
   }
 
   reset() {
@@ -458,20 +466,6 @@ PerfUI.TimelineOverview.prototype = {
    * @return {boolean}
    */
   onClick(event) {},
-
-  /**
-   * @param {number} windowLeft
-   * @param {number} windowRight
-   * @return {!{startTime: number, endTime: number}}
-   */
-  windowTimes(windowLeft, windowRight) {},
-
-  /**
-   * @param {number} startTime
-   * @param {number} endTime
-   * @return {!{left: number, right: number}}
-   */
-  windowBoundaries(startTime, endTime) {},
 };
 
 /**
@@ -553,34 +547,6 @@ PerfUI.TimelineOverviewBase = class extends UI.VBox {
    */
   onClick(event) {
     return false;
-  }
-
-  /**
-   * @override
-   * @param {number} windowLeft
-   * @param {number} windowRight
-   * @return {!{startTime: number, endTime: number}}
-   */
-  windowTimes(windowLeft, windowRight) {
-    var absoluteMin = this._calculator.minimumBoundary();
-    var timeSpan = this._calculator.maximumBoundary() - absoluteMin;
-    return {startTime: absoluteMin + timeSpan * windowLeft, endTime: absoluteMin + timeSpan * windowRight};
-  }
-
-  /**
-   * @override
-   * @param {number} startTime
-   * @param {number} endTime
-   * @return {!{left: number, right: number}}
-   */
-  windowBoundaries(startTime, endTime) {
-    var absoluteMin = this._calculator.minimumBoundary();
-    var timeSpan = this._calculator.maximumBoundary() - absoluteMin;
-    var haveRecords = absoluteMin > 0;
-    return {
-      left: haveRecords && startTime ? Math.min((startTime - absoluteMin) / timeSpan, 1) : 0,
-      right: haveRecords && endTime < Infinity ? (endTime - absoluteMin) / timeSpan : 1
-    };
   }
 
   resetCanvas() {

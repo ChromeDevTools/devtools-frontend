@@ -102,7 +102,7 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
   onResize() {
     var width = this.element.offsetWidth;
     var height = this.element.offsetHeight;
-    this.calculator().setDisplayWindow(width);
+    this.calculator().setDisplayWidth(width);
     this.resetCanvas();
     var numBands = (((height - 1) / Network.NetworkOverview._bandHeight) - 1) | 0;
     this._numBands = (numBands > 0) ? numBands : 1;

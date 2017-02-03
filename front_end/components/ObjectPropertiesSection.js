@@ -53,15 +53,6 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
       this.element.appendChild(title);
     }
 
-    if (object.description && Components.ObjectPropertiesSection._needsAlternateTitle(object)) {
-      this.expandedTitleElement = createElement('span');
-      this.expandedTitleElement.createTextChild(object.description);
-
-      var note = this.expandedTitleElement.createChild('span', 'object-state-note');
-      note.classList.add('info-note');
-      note.title = Common.UIString('Value below was evaluated just now.');
-    }
-
     this.element._section = this;
     this.registerRequiredCSS('components/objectValue.css');
     this.registerRequiredCSS('components/objectPropertiesSection.css');
@@ -336,15 +327,6 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
   }
 
   /**
-   * @param {!SDK.RemoteObject} object
-   * @return {boolean}
-   */
-  static _needsAlternateTitle(object) {
-    return object && object.hasChildren && !object.customPreview() && object.subtype !== 'node' &&
-        object.type !== 'function' && (object.type !== 'object' || object.preview);
-  }
-
-  /**
    * @param {!SDK.RemoteObject} func
    * @param {!Element} element
    * @param {boolean} linkify
@@ -446,32 +428,16 @@ Components.ObjectPropertiesSection.RootElement = class extends UI.TreeElement {
    * @override
    */
   onexpand() {
-    if (this.treeOutline) {
+    if (this.treeOutline)
       this.treeOutline.element.classList.add('expanded');
-      this._showExpandedTitleElement(true);
-    }
   }
 
   /**
    * @override
    */
   oncollapse() {
-    if (this.treeOutline) {
+    if (this.treeOutline)
       this.treeOutline.element.classList.remove('expanded');
-      this._showExpandedTitleElement(false);
-    }
-  }
-
-  /**
-   * @param {boolean} value
-   */
-  _showExpandedTitleElement(value) {
-    if (!this.treeOutline.expandedTitleElement)
-      return;
-    if (value)
-      this.treeOutline.element.replaceChild(this.treeOutline.expandedTitleElement, this.treeOutline.titleElement);
-    else
-      this.treeOutline.element.replaceChild(this.treeOutline.titleElement, this.treeOutline.expandedTitleElement);
   }
 
   /**
@@ -767,7 +733,9 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
    * @return {?Element}
    */
   _createExpandedValueElement(value) {
-    if (!Components.ObjectPropertiesSection._needsAlternateTitle(value))
+    var needsAlternateValue = value.hasChildren && !value.customPreview() && value.subtype !== 'node' &&
+        value.type !== 'function' && (value.type !== 'object' || value.preview);
+    if (!needsAlternateValue)
       return null;
 
     var valueElement = createElementWithClass('span', 'value');

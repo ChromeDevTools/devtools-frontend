@@ -538,6 +538,10 @@ Console.ConsoleViewMessage = class {
       titleElement.createTextChild(obj.description || '');
     }
 
+    var note = titleElement.createChild('span', 'object-state-note');
+    note.classList.add('info-note');
+    note.title = Common.UIString('Value below was evaluated just now.');
+
     var section = new Components.ObjectPropertiesSection(obj, titleElement, this._linkifier);
     section.element.classList.add('console-view-object-properties-section');
     section.enableContextMenu();

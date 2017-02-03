@@ -626,7 +626,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
   _clear() {
     this._showLandingPage();
-    this._detailsSplitWidget.hideSidebar();
+    if (this._detailsSplitWidget)
+      this._detailsSplitWidget.hideSidebar();
     this._sessionGeneration = null;
     this._recordingStartTime = 0;
     this._reset();

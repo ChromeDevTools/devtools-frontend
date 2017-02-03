@@ -1,6 +1,7 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @unrestricted
  */
@@ -151,15 +152,14 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     this._linkifier.reset();
     this._dataGrid.rootNode().removeChildren();
     var tree = this._buildTree();
-    if (!tree.children)
-      return;
+    var children = tree.children();
     var maxSelfTime = 0;
     var maxTotalTime = 0;
-    for (var child of tree.children.values()) {
+    for (var child of children.values()) {
       maxSelfTime = Math.max(maxSelfTime, child.selfTime);
       maxTotalTime = Math.max(maxTotalTime, child.totalTime);
     }
-    for (var child of tree.children.values()) {
+    for (var child of children.values()) {
       // Exclude the idle time off the total calculation.
       var gridNode = new Timeline.TimelineTreeView.TreeGridNode(child, tree.totalTime, maxSelfTime, maxTotalTime, this);
       this._dataGrid.insertChild(gridNode);
@@ -315,7 +315,6 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   }
 };
 
-
 /**
  * @unrestricted
  */
@@ -329,7 +328,6 @@ Timeline.TimelineTreeView.GridNode = class extends DataGrid.SortableDataGridNode
    */
   constructor(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView) {
     super(null, false);
-
     this._populated = false;
     this._profileNode = profileNode;
     this._treeView = treeView;
@@ -438,7 +436,7 @@ Timeline.TimelineTreeView.TreeGridNode = class extends Timeline.TimelineTreeView
    */
   constructor(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView) {
     super(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView);
-    this.setHasChildren(this._profileNode.children ? this._profileNode.children.size > 0 : false);
+    this.setHasChildren(this._profileNode.hasChildren());
     profileNode[Timeline.TimelineTreeView.TreeGridNode._gridNodeSymbol] = this;
   }
 
@@ -451,7 +449,7 @@ Timeline.TimelineTreeView.TreeGridNode = class extends Timeline.TimelineTreeView
     this._populated = true;
     if (!this._profileNode.children)
       return;
-    for (var node of this._profileNode.children.values()) {
+    for (var node of this._profileNode.children().values()) {
       var gridNode = new Timeline.TimelineTreeView.TreeGridNode(
           node, this._grandTotalTime, this._maxSelfTime, this._maxTotalTime, this._treeView);
       this.insertChildOrdered(gridNode);
@@ -510,7 +508,8 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
    */
   _displayInfoForGroupNode(node) {
     var categories = Timeline.TimelineUIUtils.categories();
-    var color = node.id ? Timeline.TimelineUIUtils.eventColor(node.event) : categories['other'].color;
+    var color = node.id ? Timeline.TimelineUIUtils.eventColor(/** @type {!SDK.TracingModel.Event} */ (node.event)) :
+        categories['other'].color;
 
     switch (this._groupBySetting.get()) {
       case Timeline.AggregatedTimelineTreeView.GroupBy.Category:
@@ -594,8 +593,8 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
     for (var node = treeNode; node && node.parent; node = node.parent)
       result.push(node);
     result = result.reverse();
-    for (node = treeNode; node && node.children && node.children.size;) {
-      var children = Array.from(node.children.values());
+    for (node = treeNode; node && node.children() && node.children().size;) {
+      var children = Array.from(node.children().values());
       node = children.reduce((a, b) => a.totalTime > b.totalTime ? a : b);
       result.push(node);
     }
@@ -635,7 +634,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
 
   /**
    * @param {!Timeline.AggregatedTimelineTreeView.GroupBy} groupBy
-   * @return {function(!SDK.TracingModel.Event):string}
+   * @return {function(!SDK.TracingModel.Event):(string|symbol)}
    */
   _groupingFunction(groupBy) {
     /**
@@ -783,8 +782,10 @@ Timeline.BottomUpTimelineTreeView = class extends Timeline.AggregatedTimelineTre
    * @return {!TimelineModel.TimelineProfileTree.Node}
    */
   _buildTree() {
-    var topDown = this.buildTopDownTree(this._groupingFunction(this._groupBySetting.get()));
-    return TimelineModel.TimelineProfileTree.buildBottomUp(topDown);
+    var tree = new TimelineModel.TimelineProfileTree(
+        this._model.mainThreadEvents(), this._filters, this._startTime, this._endTime,
+        this._groupingFunction(this._groupBySetting.get()));
+    return tree.bottomUpTreeRoot();
   }
 };
 

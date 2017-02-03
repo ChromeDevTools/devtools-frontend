@@ -56,7 +56,7 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
    * @return {?TimelineModel.TimelineProfileTree.Node}
    */
   _findNodeWithEvent(event) {
-    var iterators = [this._currentTree.children.values()];
+    var iterators = [this._currentTree.children().values()];
 
     while (iterators.length) {
       var iterator = iterators.peekLast().next();
@@ -67,8 +67,7 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
       var child = /** @type {!TimelineModel.TimelineProfileTree.Node} */ (iterator.value);
       if (child.event === event)
         return child;
-      if (child.children)
-        iterators.push(child.children.values());
+      iterators.push(child.children().values());
     }
     return null;
   }

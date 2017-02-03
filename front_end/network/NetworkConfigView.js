@@ -113,7 +113,7 @@ Network.NetworkConfigView = class extends UI.VBox {
 
   _createNetworkThrottlingSection() {
     var section = this._createSection(Common.UIString('Network throttling'), 'network-config-throttling');
-    Components.NetworkConditionsSelector.decorateSelect(
+    NetworkConditions.NetworkConditionsSelector.decorateSelect(
         /** @type {!HTMLSelectElement} */ (section.createChild('select', 'chrome-select')));
   }
 

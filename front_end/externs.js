@@ -871,6 +871,8 @@ var Main = {};
 /** @type {!Object} */
 var Network = {};
 /** @type {!Object} */
+var NetworkConditions = {};
+/** @type {!Object} */
 var PerfUI = {};
 /** @type {!Object} */
 var Persistence = {};

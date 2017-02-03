@@ -1,0 +1,51 @@
+{
+    "extensions": [
+        {
+            "type": "setting",
+            "settingName": "customNetworkConditions",
+            "settingType": "array",
+            "defaultValue": []
+        },
+        {
+            "type": "@UI.ActionDelegate",
+            "actionId": "network-conditions.network-offline",
+            "category": "Network",
+            "title": "Go offline",
+            "className": "NetworkConditions.NetworkConditionsActionDelegate",
+            "tags": "device"
+        },
+        {
+            "type": "@UI.ActionDelegate",
+            "actionId": "network-conditions.network-online",
+            "category": "Network",
+            "title": "Go online",
+            "className": "NetworkConditions.NetworkConditionsActionDelegate",
+            "tags": "device"
+        },
+        {
+            "type": "view",
+            "location": "settings-view",
+            "id": "network-conditions",
+            "title": "Throttling",
+            "order": "35",
+            "className": "NetworkConditions.NetworkConditionsSettingsTab",
+            "settings": [
+                "customNetworkConditions"
+            ]
+        }
+    ],
+    "dependencies": [
+        "common",
+        "sdk",
+        "ui",
+        "protocol"
+    ],
+    "scripts": [
+        "NetworkConditionsSelector.js",
+        "NetworkConditionsSettingsTab.js",
+        "NetworkPriorities.js"
+    ],
+    "resources": [
+        "networkConditionsSettingsTab.css"
+    ]
+}

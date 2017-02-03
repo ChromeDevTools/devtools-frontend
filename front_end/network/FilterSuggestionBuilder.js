@@ -89,11 +89,11 @@ Network.FilterSuggestionBuilder = class {
       result = [];
       /** @type {!Map<number, !Protocol.Network.ResourcePriority>} */
       var numericToPriorityMap = new Map();
-      Components.prioritySymbolToNumericMap().forEach((value, key) => numericToPriorityMap.set(value, key));
+      NetworkConditions.prioritySymbolToNumericMap().forEach((value, key) => numericToPriorityMap.set(value, key));
       var sortedNumericPriorities = numericToPriorityMap.keysArray();
       sortedNumericPriorities.sortNumbers();
       var sortedPriorities = sortedNumericPriorities.map(value => numericToPriorityMap.get(value));
-      var sortedPriorityLabels = sortedPriorities.map(value => Components.uiLabelForPriority(value));
+      var sortedPriorityLabels = sortedPriorities.map(value => NetworkConditions.uiLabelForPriority(value));
 
       for (var value of sortedPriorityLabels) {
         if (!resultSet.has(value))

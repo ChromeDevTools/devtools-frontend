@@ -21,7 +21,8 @@
         "cookie_table",
         "inline_editor",
         "data_grid",
-        "components"
+        "components",
+        "network_conditions"
     ],
     "scripts": [
         "ApplicationCacheModel.js",

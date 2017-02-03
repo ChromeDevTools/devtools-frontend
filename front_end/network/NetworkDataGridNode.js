@@ -373,7 +373,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
-    var priorityMap = Components.prioritySymbolToNumericMap();
+    var priorityMap = NetworkConditions.prioritySymbolToNumericMap();
     var aPriority = aRequest.initialPriority();
     var aScore = aPriority ? priorityMap.get(aPriority) : 0;
     aScore = aScore || 0;
@@ -634,7 +634,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
         break;
       case 'priority':
         var priority = this._request.initialPriority();
-        this._setTextAndTitle(cell, priority ? Components.uiLabelForPriority(priority) : '');
+        this._setTextAndTitle(cell, priority ? NetworkConditions.uiLabelForPriority(priority) : '');
         break;
       case 'connectionid':
         this._setTextAndTitle(cell, this._request.connectionId);

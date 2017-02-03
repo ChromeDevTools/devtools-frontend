@@ -136,7 +136,8 @@
         "timeline_model",
         "perf_ui",
         "extensions",
-        "data_grid"
+        "data_grid",
+        "network_conditions"
     ],
     "scripts": [
         "CountersGraph.js",

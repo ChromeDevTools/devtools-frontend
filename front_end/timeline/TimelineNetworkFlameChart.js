@@ -286,7 +286,7 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
     if (typeof request.priority === 'string') {
       var div = contents.createChild('span');
       div.textContent =
-          Components.uiLabelForPriority(/** @type {!Protocol.Network.ResourcePriority} */ (request.priority));
+          NetworkConditions.uiLabelForPriority(/** @type {!Protocol.Network.ResourcePriority} */ (request.priority));
       div.style.color = this._colorForPriority(request.priority) || 'black';
     }
     contents.createChild('span').textContent = request.url.trimMiddle(maxURLChars);
@@ -301,11 +301,9 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
     if (!this._priorityToValue) {
       var priorities = Protocol.Network.ResourcePriority;
       this._priorityToValue = new Map([
-        [priorities.VeryLow, 1],
-        [priorities.Low, 2],
-        [priorities.Medium, 3],
-        [priorities.High, 4],
-        [priorities.VeryHigh, 5]]);
+        [priorities.VeryLow, 1], [priorities.Low, 2], [priorities.Medium, 3], [priorities.High, 4],
+        [priorities.VeryHigh, 5]
+      ]);
     }
     var value = this._priorityToValue.get(priority);
     return value ? `hsla(214, 80%, 50%, ${value / 5})` : null;

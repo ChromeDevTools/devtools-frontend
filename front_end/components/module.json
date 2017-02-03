@@ -6,39 +6,6 @@
             "marker": "breakpoint-marker",
             "title": "DOM Breakpoint",
             "color": "rgb(105, 140, 254)"
-        },
-        {
-            "type": "setting",
-            "settingName": "customNetworkConditions",
-            "settingType": "array",
-            "defaultValue": []
-        },
-        {
-            "type": "@UI.ActionDelegate",
-            "actionId": "components.network-offline",
-            "category": "Network",
-            "title": "Go offline",
-            "className": "Components.NetworkConditionsActionDelegate",
-            "tags": "device"
-        },
-        {
-            "type": "@UI.ActionDelegate",
-            "actionId": "components.network-online",
-            "category": "Network",
-            "title": "Go online",
-            "className": "Components.NetworkConditionsActionDelegate",
-            "tags": "device"
-        },
-        {
-            "type": "view",
-            "location": "settings-view",
-            "id": "network-conditions",
-            "title": "Throttling",
-            "order": "35",
-            "className": "Components.NetworkConditionsSettingsTab",
-            "settings": [
-                "customNetworkConditions"
-            ]
         }
     ],
     "dependencies": [
@@ -56,7 +23,6 @@
         "DockController.js",
         "JavaScriptAutocomplete.js",
         "Linkifier.js",
-        "NetworkConditionsSelector.js",
         "ObjectPopoverHelper.js",
         "ObjectPropertiesSection.js",
         "RemoteObjectPreviewFormatter.js",
@@ -69,7 +35,6 @@
         "customPreviewComponent.css",
         "eventListenersView.css",
         "domUtils.css",
-        "networkConditionsSettingsTab.css",
         "objectPropertiesSection.css",
         "objectValue.css"
     ]

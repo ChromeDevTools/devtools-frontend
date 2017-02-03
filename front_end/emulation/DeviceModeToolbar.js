@@ -178,7 +178,7 @@ Emulation.DeviceModeToolbar = class {
    * @param {!UI.Toolbar} toolbar
    */
   _fillOptionsToolbar(toolbar) {
-    this._networkConditionsItem = Components.NetworkConditionsSelector.createToolbarMenuButton();
+    this._networkConditionsItem = NetworkConditions.NetworkConditionsSelector.createToolbarMenuButton();
     this._networkConditionsItem.setVisible(this._showNetworkConditionsSetting.get());
     this._networkConditionsItem.setTitle(Common.UIString('Network throttling'));
     this._networkConditionsItem.element.style.padding = '0 5px';

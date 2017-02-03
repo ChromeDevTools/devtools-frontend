@@ -17,7 +17,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     /** @type {!Map<!SDK.ServiceWorkerRegistration, !Resources.ServiceWorkersView.Section>} */
     this._sections = new Map();
 
-    this._toolbar.appendToolbarItem(Components.NetworkConditionsSelector.createOfflineToolbarCheckbox());
+    this._toolbar.appendToolbarItem(NetworkConditions.NetworkConditionsSelector.createOfflineToolbarCheckbox());
     var forceUpdate = new UI.ToolbarCheckbox(
         Common.UIString('Update on reload'), Common.UIString('Force update Service Worker on page reload'),
         Common.settings.createSetting('serviceWorkerUpdateOnReload', false));

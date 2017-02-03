@@ -699,21 +699,21 @@
 
     function step1() {
       testPreset(
-          Components.NetworkConditionsSelector._presets[0],
+          NetworkConditions.NetworkConditionsSelector.presets[0],
           ['offline event: online = false', 'connection change event: type = none; downlinkMax = 0'], step2);
     }
 
     function step2() {
       testPreset(
-          Components.NetworkConditionsSelector._presets[2],
+          NetworkConditions.NetworkConditionsSelector.presets[2],
           ['online event: online = true', 'connection change event: type = cellular; downlinkMax = 0.244140625'],
           step3);
     }
 
     function step3() {
       testPreset(
-          Components.NetworkConditionsSelector._presets[8], ['connection change event: type = wifi; downlinkMax = 30'],
-          test.releaseControl.bind(test));
+          NetworkConditions.NetworkConditionsSelector.presets[8],
+          ['connection change event: type = wifi; downlinkMax = 30'], test.releaseControl.bind(test));
     }
   };
 

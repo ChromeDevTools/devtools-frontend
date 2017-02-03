@@ -49,7 +49,8 @@
         { "name": "inline_editor" },
         { "name": "color_picker" },
         { "name": "data_grid" },
-        { "name": "heap_snapshot_model" }
+        { "name": "heap_snapshot_model" },
+        { "name": "network_conditions", "type": "autostart"}
     ],
 
     "has_html": true

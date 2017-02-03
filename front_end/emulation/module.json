@@ -53,8 +53,14 @@
             "settingType": "boolean",
             "defaultValue": false,
             "options": [
-                {"value": true, "title": "Show media queries"},
-                {"value": false, "title": "Hide media queries"}
+                {
+                    "value": true,
+                    "title": "Show media queries"
+                },
+                {
+                    "value": false,
+                    "title": "Hide media queries"
+                }
             ],
             "tags": "device"
         },
@@ -65,8 +71,14 @@
             "settingType": "boolean",
             "defaultValue": false,
             "options": [
-                {"value": true, "title": "Show rulers"},
-                {"value": false, "title": "Hide rulers"}
+                {
+                    "value": true,
+                    "title": "Show rulers"
+                },
+                {
+                    "value": false,
+                    "title": "Hide rulers"
+                }
             ],
             "tags": "device"
         },
@@ -77,8 +89,14 @@
             "settingType": "boolean",
             "defaultValue": false,
             "options": [
-                {"value": true, "title": "Show device frame"},
-                {"value": false, "title": "Hide device frame"}
+                {
+                    "value": true,
+                    "title": "Show device frame"
+                },
+                {
+                    "value": false,
+                    "title": "Hide device frame"
+                }
             ],
             "tags": "device"
         },
@@ -115,7 +133,8 @@
         "bindings",
         "components",
         "platform",
-        "ui"
+        "ui",
+        "network_conditions"
     ],
     "scripts": [
         "AdvancedApp.js",

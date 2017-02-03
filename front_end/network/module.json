@@ -107,7 +107,8 @@
         "components",
         "perf_ui",
         "cookie_table",
-        "data_grid"
+        "data_grid",
+        "network_conditions"
     ],
     "scripts": [
         "BlockedURLsPane.js",

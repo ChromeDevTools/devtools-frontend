@@ -24,17 +24,17 @@ const APPLICATION_DESCRIPTORS = [
 const MODULES_TO_REMOVE = [];
 
 const JS_FILES_MAPPING = [
-  {file: 'common/CSSShadowModel.js', existing: 'inline_editor'}, {file: 'common/Geometry.js', existing: 'ui'},
+  {file: 'components/NetworkConditionsSelector.js', new: 'network_conditions'},
   // {file: 'module/file.js', existing: 'module'}
 ];
 
 const MODULE_MAPPING = {
-    // heap_snapshot_model: {
-    //   dependencies: [],
-    //   dependents: ['heap_snapshot_worker', 'profiler'],
-    //   applications: ['inspector.json'], // need to manually add to heap snapshot worker b/c it's autostart
-    //   autostart: false,
-    // },
+  network_conditions: {
+    dependencies: ['common', 'sdk', 'ui', 'protocol'],
+    dependents: ['emulation', 'resources', 'network', 'timeline'],
+    applications: ['inspector.json'],
+    autostart: true,  // because emulation is autostart
+  },
 };
 
 const NEW_DEPENDENCIES_BY_EXISTING_MODULES = {
@@ -434,10 +434,16 @@ function removeFromExistingModuleDescriptors(modules, identifierMap, cssFilesMap
       return;
     let remainingExtensions = [];
     for (let extension of moduleObj.extensions) {
-      if (!objectIncludesIdentifier(extension))
+      if (!objectIncludesIdentifier(extension)) {
         remainingExtensions.push(extension);
-      else
-        extensionMap.set(objectIncludesIdentifier(extension), extension);
+      } else {
+        if (extensionMap.has(objectIncludesIdentifier(extension))) {
+          let existingExtensions = extensionMap.get(objectIncludesIdentifier(extension));
+          extensionMap.set(objectIncludesIdentifier(extension), existingExtensions.concat(extension));
+        } else {
+          extensionMap.set(objectIncludesIdentifier(extension), [extension]);
+        }
+      }
     }
     moduleObj.extensions = remainingExtensions;
   }
@@ -511,7 +517,7 @@ function createNewModuleDescriptors(extensionMap, cssFilesMapping, identifiersBy
             .reduce((acc, file) => acc.concat(identifiersByFile.get(targetToOriginalFilesMap.get(file))), []);
     for (let identifier of identifiers) {
       if (extensionMap.has(identifier))
-        extensions.push(extensionMap.get(identifier));
+        extensions = extensions.concat(extensionMap.get(identifier));
     }
     return extensions;
   }
@@ -577,7 +583,7 @@ function updateExistingModuleDescriptors(extensionMap, cssFilesMapping, identifi
             .reduce((acc, file) => acc.concat(identifiersByFile.get(targetToOriginalFilesMap.get(file))), []);
     for (let identifier of identifiers) {
       if (extensionMap.has(identifier))
-        extensions.push(extensionMap.get(identifier));
+        extensions = extensions.concat(extensionMap.get(identifier));
     }
     return extensions;
   }

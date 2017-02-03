@@ -51,6 +51,7 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
     var filterContainerElement = hbox.createChild('div', 'styles-sidebar-pane-filter-box');
     var filterInput = Elements.StylesSidebarPane.createPropertyFilterElement(
         Common.UIString('Filter'), hbox, filterCallback.bind(this));
+    UI.ARIAUtils.setAccessibleName(filterInput, Common.UIString('Filter Computed Styles'));
     filterContainerElement.appendChild(filterInput);
 
     var toolbar = new UI.Toolbar('styles-pane-toolbar', hbox);

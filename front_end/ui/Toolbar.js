@@ -607,6 +607,7 @@ UI.ToolbarToggle = class extends UI.ToolbarButton {
     this._untoggledGlyph = glyph;
     this._toggledGlyph = toggledGlyph;
     this.element.classList.add('toolbar-state-off');
+    UI.ARIAUtils.setPressed(this.element, false);
   }
 
   /**
@@ -625,6 +626,7 @@ UI.ToolbarToggle = class extends UI.ToolbarButton {
     this._toggled = toggled;
     this.element.classList.toggle('toolbar-state-on', toggled);
     this.element.classList.toggle('toolbar-state-off', !toggled);
+    UI.ARIAUtils.setPressed(this.element, toggled);
     if (this._toggledGlyph && this._untoggledGlyph)
       this.setGlyph(toggled ? this._toggledGlyph : this._untoggledGlyph);
   }

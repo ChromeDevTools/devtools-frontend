@@ -40,7 +40,6 @@ UI.TabbedPane = class extends UI.VBox {
     this.contentElement.tabIndex = -1;
     this._headerElement = this.contentElement.createChild('div', 'tabbed-pane-header');
     this._headerContentsElement = this._headerElement.createChild('div', 'tabbed-pane-header-contents');
-    this._headerContentsElement.setAttribute('aria-label', Common.UIString('Panels'));
     this._tabSlider = createElementWithClass('div', 'tabbed-pane-tab-slider');
     this._tabsElement = this._headerContentsElement.createChild('div', 'tabbed-pane-header-tabs');
     this._tabsElement.setAttribute('role', 'tablist');
@@ -58,6 +57,13 @@ UI.TabbedPane = class extends UI.VBox {
 
     this._dropDownButton = this._createDropDownButton();
     UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
+  }
+
+  /**
+   * @param {string} name
+   */
+  setAccessibleName(name) {
+    UI.ARIAUtils.setAccessibleName(this._tabsElement, name);
   }
 
   /**
@@ -753,7 +759,7 @@ UI.TabbedPane = class extends UI.VBox {
    */
   _showTab(tab) {
     tab.tabElement.classList.add('selected');
-    tab.tabElement.setAttribute('aria-selected', 'true');
+    UI.ARIAUtils.setSelected(tab.tabElement, true);
     tab.view.show(this.element);
     this._updateTabSlider();
   }
@@ -1023,8 +1029,8 @@ UI.TabbedPaneTab = class {
     var tabElement = createElementWithClass('div', 'tabbed-pane-header-tab');
     tabElement.id = 'tab-' + this._id;
     tabElement.tabIndex = -1;
-    tabElement.setAttribute('role', 'tab');
-    tabElement.setAttribute('aria-selected', 'false');
+    UI.ARIAUtils.markAsTab(tabElement);
+    UI.ARIAUtils.setSelected(tabElement, false);
     tabElement.selectTabForTest = this._tabbedPane.selectTab.bind(this._tabbedPane, this.id, true);
 
     var titleElement = tabElement.createChild('span', 'tabbed-pane-header-tab-title');

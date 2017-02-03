@@ -48,6 +48,7 @@
         "SuggestBox.js",
         "TabbedPane.js",
         "UIUtils.js",
+        "ARIAUtils.js",
         "ZoomManager.js",
         "ShortcutsScreen.js",
         "Geometry.js"

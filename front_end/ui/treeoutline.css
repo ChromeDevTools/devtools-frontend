@@ -50,11 +50,11 @@
     border-top: 2px solid rgb(56, 121, 217);
 }
 
-ol.tree-outline:focus li.selected .selection {
+ol.tree-outline li.selected:focus .selection {
     background-color: rgb(56, 121, 217);
 }
 
-ol.tree-outline:focus li.parent.selected::before {
+ol.tree-outline li.parent.selected:focus::before {
     background-color: white;
 }
 
@@ -80,11 +80,11 @@ ol.tree-outline,
     min-height: 16px;
 }
 
-ol.tree-outline:focus li.selected {
+ol.tree-outline li.selected:focus {
     color: white;
 }
 
-ol.tree-outline:focus li.selected * {
+ol.tree-outline li.selected:focus * {
     color: inherit;
 }
 

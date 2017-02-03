@@ -827,6 +827,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
         return;
 
       treeOutline.runPendingUpdates();
+      treeOutline.focus();
 
       // Search for the attribute's position, and then decide where to move to.
       var attributes = this._node.attributes();

@@ -18,8 +18,8 @@
     white-space: nowrap;
 }
 
-.tree-outline:focus li.selected .lock-icon,
-.tree-outline:focus .security-sidebar-tree-item.selected .icon
+.tree-outline li.selected:focus .lock-icon,
+.tree-outline .security-sidebar-tree-item.selected:focus .icon
 {
     background-color: white;
 }

@@ -161,7 +161,7 @@ li .inspect-dom-node {
     top: 2px;
 }
 
-.tree-outline:focus li.selected .inspect-dom-node {
+.tree-outline li.selected:focus .inspect-dom-node {
     background-color: white;
 }
 

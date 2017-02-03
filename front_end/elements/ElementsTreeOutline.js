@@ -110,12 +110,6 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     return this._treeElementSymbol;
   }
 
-  /**
-   * @override
-   */
-  focus() {
-    this._element.focus();
-  }
 
   /**
    * @param {boolean} wrap

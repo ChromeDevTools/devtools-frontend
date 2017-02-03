@@ -100,6 +100,12 @@ npm test -- --time-out-ms=6000000 <test_path>
 npm test -- --fetch-content-shell
 ```
 
+#### `--target=SUB_DIRECTORY_NAME`
+```
+# If you're using a build sub-directory that's not out/Release, 
+# such as out/Default, then use --target=SUB_DIRECTORY_NAME
+npm test -- --target=Default
+```
 ### Development
 * All devtools commits: [View the log], [RSS feed] or [@DevToolsCommits] on Twitter
 * [All open DevTools tickets] on crbug.com

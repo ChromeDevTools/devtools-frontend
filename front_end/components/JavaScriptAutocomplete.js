@@ -128,7 +128,7 @@ Components.JavaScriptAutocomplete._mapCompletions = function(text, query) {
       endChar = ', ';
 
     var sorter = rawKeys.length < 1000 ? String.naturalOrderComparator : undefined;
-    var keys = rawKeys.sort(sorter).map(key => quoteChar + key + quoteChar + endChar);
+    var keys = rawKeys.sort(sorter).map(key => quoteChar + key + quoteChar);
 
     for (var key of keys) {
       if (key.length < query.length)
@@ -137,15 +137,16 @@ Components.JavaScriptAutocomplete._mapCompletions = function(text, query) {
         continue;
       // Substitute actual newlines with newline characters. @see crbug.com/498421
       var title = key.split('\n').join('\\n');
+      var text = title + endChar;
 
       if (key.startsWith(query))
-        caseSensitivePrefix.push({title: title, priority: 4});
+        caseSensitivePrefix.push({text: text, title: title, priority: 4});
       else if (key.toLowerCase().startsWith(query.toLowerCase()))
-        caseInsensitivePrefix.push({title: title, priority: 3});
+        caseInsensitivePrefix.push({text: text, title: title, priority: 3});
       else if (key.indexOf(query) !== -1)
-        caseSensitiveAnywhere.push({title: title, priority: 2});
+        caseSensitiveAnywhere.push({text: text, title: title, priority: 2});
       else
-        caseInsensitiveAnywhere.push({title: title, priority: 1});
+        caseInsensitiveAnywhere.push({text: text, title: title, priority: 1});
     }
     var suggestions = caseSensitivePrefix.concat(caseInsensitivePrefix, caseSensitiveAnywhere, caseInsensitiveAnywhere);
     if (suggestions.length)
@@ -428,13 +429,13 @@ Components.JavaScriptAutocomplete._completionsForQuery = function(
       var prop = property.split('\n').join('\\n');
 
       if (property.startsWith(query))
-        caseSensitivePrefix.push({title: prop, priority: 4});
+        caseSensitivePrefix.push({text: prop, priority: 4});
       else if (property.toLowerCase().startsWith(query.toLowerCase()))
-        caseInsensitivePrefix.push({title: prop, priority: 3});
+        caseInsensitivePrefix.push({text: prop, priority: 3});
       else if (property.indexOf(query) !== -1)
-        caseSensitiveAnywhere.push({title: prop, priority: 2});
+        caseSensitiveAnywhere.push({text: prop, priority: 2});
       else
-        caseInsensitiveAnywhere.push({title: prop, priority: 1});
+        caseInsensitiveAnywhere.push({text: prop, priority: 1});
     }
     var structuredGroup =
         caseSensitivePrefix.concat(caseInsensitivePrefix, caseSensitiveAnywhere, caseInsensitiveAnywhere);
@@ -443,6 +444,10 @@ Components.JavaScriptAutocomplete._completionsForQuery = function(
       lastGroupTitle = group.title;
     }
     result = result.concat(structuredGroup);
+    result.forEach(item => {
+      if (item.text.endsWith(']'))
+        item.title = item.text.substring(0, item.text.length - 1);
+    });
   }
   return result;
 

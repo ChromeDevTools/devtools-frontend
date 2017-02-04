@@ -2907,11 +2907,11 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
     var results = prefixResults.concat(anywhereResults);
 
     if (!this._isEditingName && !results.length && query.length > 1 && '!important'.startsWith(lowerQuery))
-      results.push({title: '!important'});
+      results.push({text: '!important'});
     var userEnteredText = query.replace('-', '');
     if (userEnteredText && (userEnteredText === userEnteredText.toUpperCase())) {
       for (var i = 0; i < results.length; ++i)
-        results[i].title = results[i].title.toUpperCase();
+        results[i].text = results[i].text.toUpperCase();
     }
     return Promise.resolve(results);
 
@@ -2923,9 +2923,9 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
       var index = completion.indexOf(lowerQuery);
       if (index === 0) {
         var priority = this._isEditingName ? SDK.cssMetadata().propertyUsageWeight(completion) : 1;
-        prefixResults.push({title: completion, priority: priority});
+        prefixResults.push({text: completion, priority: priority});
       } else if (index > -1) {
-        anywhereResults.push({title: completion});
+        anywhereResults.push({text: completion});
       }
     }
   }

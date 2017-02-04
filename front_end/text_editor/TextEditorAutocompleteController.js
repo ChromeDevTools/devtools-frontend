@@ -129,7 +129,7 @@ TextEditor.TextEditorAutocompleteController = class {
       completions = completions.filter((word) => word !== substituteWord);
 
     completions.sort((a, b) => this._dictionary.wordCount(b) - this._dictionary.wordCount(a) || a.length - b.length);
-    return Promise.resolve(completions.map(item => ({title: item})));
+    return Promise.resolve(completions.map(item => ({text: item})));
   }
 
   /**
@@ -244,7 +244,7 @@ TextEditor.TextEditorAutocompleteController = class {
      * @this {TextEditor.TextEditorAutocompleteController}
      */
     function wordsAcquired(wordsWithQuery) {
-      if (!wordsWithQuery.length || (wordsWithQuery.length === 1 && query === wordsWithQuery[0].title) ||
+      if (!wordsWithQuery.length || (wordsWithQuery.length === 1 && query === wordsWithQuery[0].text) ||
           (!this._suggestBox && hadSuggestBox)) {
         this.clearAutocomplete();
         this._onSuggestionsShownForTest([]);

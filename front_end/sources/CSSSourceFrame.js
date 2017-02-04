@@ -327,7 +327,7 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     var line = this.textEditor.line(prefixRange.startLine);
     var tokenContent = line.substring(propertyToken.startColumn, propertyToken.endColumn);
     var propertyValues = SDK.cssMetadata().propertyValues(tokenContent);
-    return Promise.resolve(propertyValues.filter(value => value.startsWith(prefix)).map(value => ({title: value})));
+    return Promise.resolve(propertyValues.filter(value => value.startsWith(prefix)).map(value => ({text: value})));
   }
 
   /**

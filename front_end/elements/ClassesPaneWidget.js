@@ -258,7 +258,7 @@ Elements.ClassesPaneWidget.ClassNamePrompt = class extends UI.TextPrompt {
     return this._classNamesPromise.then(completions => {
       if (prefix[0] === '.')
         completions = completions.map(value => '.' + value);
-      return completions.filter(value => value.startsWith(prefix)).map(completion => ({title: completion}));
+      return completions.filter(value => value.startsWith(prefix)).map(completion => ({text: completion}));
     });
   }
 };

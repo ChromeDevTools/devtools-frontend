@@ -89,7 +89,7 @@ Resources.DatabaseQueryView = class extends UI.VBox {
         'INSERT INTO ', 'VALUES ('
       ]);
 
-      fulfill(results.map(completion => ({title: completion})));
+      fulfill(results.map(completion => ({text: completion})));
     }
     this.database.getTableNames(tableNamesCallback);
     return promise;

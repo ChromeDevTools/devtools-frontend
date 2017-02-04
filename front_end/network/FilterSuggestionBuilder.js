@@ -59,7 +59,7 @@ Network.FilterSuggestionBuilder = class {
       var matcher = new RegExp('^' + prefix.escapeForRegExp(), 'i');
       for (var j = 0; j < this._keys.length; ++j) {
         if (this._keys[j].match(matcher))
-          suggestions.push({title: modifier + this._keys[j] + ':'});
+          suggestions.push({text: modifier + this._keys[j] + ':'});
       }
     } else {
       var key = prefix.substring(0, valueDelimiterIndex).toLowerCase();
@@ -68,7 +68,7 @@ Network.FilterSuggestionBuilder = class {
       var items = this._values(key);
       for (var i = 0; i < items.length; ++i) {
         if (items[i].match(matcher) && (items[i] !== value))
-          suggestions.push({title: modifier + key + ':' + items[i]});
+          suggestions.push({text: modifier + key + ':' + items[i]});
       }
     }
     return Promise.resolve(suggestions);

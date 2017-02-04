@@ -460,7 +460,7 @@ UI.TextPrompt = class extends Common.Object {
 
     // Filter out dupes.
     var store = new Set();
-    completions = completions.filter(item => !store.has(item.title) && !!store.add(item.title));
+    completions = completions.filter(item => !store.has(item.text) && !!store.add(item.text));
 
     if (query || force) {
       if (query)

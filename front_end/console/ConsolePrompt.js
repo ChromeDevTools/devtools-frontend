@@ -220,7 +220,7 @@ Console.ConsolePrompt = class extends UI.Widget {
         continue;
       set.add(item);
       result.push(
-          {title: item.substring(text.length - prefix.length), iconType: 'smallicon-text-prompt', isSecondary: true});
+          {text: item.substring(text.length - prefix.length), iconType: 'smallicon-text-prompt', isSecondary: true});
     }
     return result;
   }

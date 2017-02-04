@@ -114,7 +114,7 @@ UI.SuggestBox = class {
     var maxItem;
     var maxLength = -Infinity;
     for (var i = 0; i < items.length; i++) {
-      var length = items[i].title.length + (items[i].subtitle || '').length;
+      var length = (items[i].title || items[i].text).length + (items[i].subtitle || '').length;
       if (length > maxLength) {
         maxLength = length;
         maxItem = items[i];
@@ -129,7 +129,7 @@ UI.SuggestBox = class {
       return;
     this._glassPane.show();
     this._rowHeight =
-        UI.measurePreferredSize(this.createElementForItem({title: '1', subtitle: '12'}), this._element).height;
+        UI.measurePreferredSize(this.createElementForItem({text: '1', subtitle: '12'}), this._element).height;
   }
 
   hide() {
@@ -152,7 +152,7 @@ UI.SuggestBox = class {
     if (!this.visible() || !this._list.selectedItem())
       return false;
 
-    var suggestion = this._list.selectedItem().title;
+    var suggestion = this._list.selectedItem().text;
     if (!suggestion)
       return false;
 
@@ -190,7 +190,7 @@ UI.SuggestBox = class {
       element.classList.add('secondary');
     element.tabIndex = -1;
     var maxTextLength = 50 + query.length;
-    var displayText = item.title.trimEnd(maxTextLength);
+    var displayText = (item.title || item.text).trimEnd(maxTextLength);
 
     var titleElement = element.createChild('span', 'suggestion-title');
     var index = displayText.toLowerCase().indexOf(query.toLowerCase());
@@ -262,11 +262,11 @@ UI.SuggestBox = class {
     if (completions.length > 1)
       return true;
 
-    if (!completions[0].title.startsWith(userEnteredText))
+    if (!completions[0].text.startsWith(userEnteredText))
       return true;
 
     // Do not show a single suggestion if it is the same as user-entered query, even if allowed to show single-item suggest boxes.
-    return canShowForSingleItem && completions[0].title !== userEnteredText;
+    return canShowForSingleItem && completions[0].text !== userEnteredText;
   }
 
   /**
@@ -301,7 +301,7 @@ UI.SuggestBox = class {
       }
     } else {
       if (completions.length === 1) {
-        this._onlyCompletion = completions[0].title;
+        this._onlyCompletion = completions[0].text;
         this._applySuggestion(true);
       }
       this.hide();
@@ -356,7 +356,7 @@ UI.SuggestBox = class {
 };
 
 /**
- * @typedef {!{title: string, subtitle: (string|undefined), iconType: (string|undefined), priority: (number|undefined), isSecondary: (boolean|undefined)}}
+ * @typedef {!{text: string, subtitle: (string|undefined), iconType: (string|undefined), priority: (number|undefined), isSecondary: (boolean|undefined), title: (string|undefined)}}
  */
 UI.SuggestBox.Suggestion;
 

@@ -1461,15 +1461,6 @@ PerfUI.FlameChart.Calculator = class {
    */
   constructor(dataProvider) {
     this._dataProvider = dataProvider;
-    this._paddingLeft = 0;
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  paddingLeft() {
-    return this._paddingLeft;
   }
 
   /**

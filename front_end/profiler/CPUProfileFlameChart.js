@@ -339,14 +339,6 @@ Profiler.CPUProfileFlameChart.OverviewCalculator = class {
   }
 
   /**
-   * @override
-   * @return {number}
-   */
-  paddingLeft() {
-    return 0;
-  }
-
-  /**
    * @param {!Profiler.CPUProfileFlameChart.OverviewPane} overviewPane
    */
   _updateBoundaries(overviewPane) {

@@ -1934,14 +1934,6 @@ Profiler.HeapTrackingOverviewGrid.SmoothScale = class {
  */
 Profiler.HeapTrackingOverviewGrid.OverviewCalculator = class {
   /**
-   * @override
-   * @return {number}
-   */
-  paddingLeft() {
-    return 0;
-  }
-
-  /**
    * @param {!Profiler.HeapTrackingOverviewGrid} chart
    */
   _updateBoundaries(chart) {

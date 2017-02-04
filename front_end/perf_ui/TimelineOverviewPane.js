@@ -351,14 +351,6 @@ PerfUI.TimelineOverviewCalculator = class {
 
   /**
    * @override
-   * @return {number}
-   */
-  paddingLeft() {
-    return 0;
-  }
-
-  /**
-   * @override
    * @param {number} time
    * @return {number}
    */

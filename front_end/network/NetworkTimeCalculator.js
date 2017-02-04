@@ -80,14 +80,6 @@ Network.NetworkTimeCalculator = class extends Common.Object {
 
   /**
    * @override
-   * @return {number}
-   */
-  paddingLeft() {
-    return 0;
-  }
-
-  /**
-   * @override
    * @param {number} time
    * @return {number}
    */
@@ -160,7 +152,7 @@ Network.NetworkTimeCalculator = class extends Common.Object {
   /**
    * @param {number} clientWidth
    */
-  setDisplayWindow(clientWidth) {
+  setDisplayWidth(clientWidth) {
     this._workingArea = clientWidth;
   }
 

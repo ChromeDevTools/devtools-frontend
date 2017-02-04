@@ -70,9 +70,9 @@ PerfUI.TimelineGrid = class {
     if (gridSliceTime * pixelsPerTime >= 2 * minGridSlicePx)
       gridSliceTime = gridSliceTime / 2;
 
-    var leftBoundaryTime = calculator.minimumBoundary() - calculator.paddingLeft() / pixelsPerTime;
     var firstDividerTime =
-        Math.ceil((leftBoundaryTime - calculator.zeroTime()) / gridSliceTime) * gridSliceTime + calculator.zeroTime();
+        Math.ceil((calculator.minimumBoundary() - calculator.zeroTime()) / gridSliceTime) * gridSliceTime +
+        calculator.zeroTime();
     var lastDividerTime = calculator.maximumBoundary();
     // Add some extra space past the right boundary as the rightmost divider label text
     // may be partially shown rather than just pop up when a new rightmost divider gets into the view.
@@ -263,11 +263,6 @@ PerfUI.TimelineGrid = class {
 PerfUI.TimelineGrid.Calculator = function() {};
 
 PerfUI.TimelineGrid.Calculator.prototype = {
-  /**
-   * @return {number}
-   */
-  paddingLeft() {},
-
   /**
    * @param {number} time
    * @return {number}

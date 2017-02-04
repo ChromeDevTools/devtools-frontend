@@ -175,8 +175,7 @@ Timeline.CountersGraph = class extends UI.VBox {
     var parentElement = this._canvas.parentElement;
     this._canvas.width = parentElement.clientWidth * window.devicePixelRatio;
     this._canvas.height = parentElement.clientHeight * window.devicePixelRatio;
-    var timelinePaddingLeft = 15;
-    this._calculator.setDisplayWindow(this._canvas.width, timelinePaddingLeft);
+    this._calculator.setDisplayWidth(this._canvas.width);
     this.refresh();
   }
 
@@ -557,13 +556,6 @@ Timeline.CountersGraph.Calculator = class {
     this._model = model;
   }
 
-  /**
-   * @override
-   * @return {number}
-   */
-  paddingLeft() {
-    return this._paddingLeft;
-  }
 
   /**
    * @override
@@ -571,7 +563,7 @@ Timeline.CountersGraph.Calculator = class {
    * @return {number}
    */
   computePosition(time) {
-    return (time - this._minimumBoundary) / this.boundarySpan() * this._workingArea + this._paddingLeft;
+    return (time - this._minimumBoundary) / this.boundarySpan() * this._workingArea;
   }
 
   setWindow(minimumBoundary, maximumBoundary) {
@@ -581,11 +573,9 @@ Timeline.CountersGraph.Calculator = class {
 
   /**
    * @param {number} clientWidth
-   * @param {number=} paddingLeft
    */
-  setDisplayWindow(clientWidth, paddingLeft) {
-    this._paddingLeft = paddingLeft || 0;
-    this._workingArea = clientWidth - Timeline.CountersGraph.Calculator._minWidth - this._paddingLeft;
+  setDisplayWidth(clientWidth) {
+    this._workingArea = clientWidth;
   }
 
   /**
@@ -630,5 +620,3 @@ Timeline.CountersGraph.Calculator = class {
     return this._maximumBoundary - this._minimumBoundary;
   }
 };
-
-Timeline.CountersGraph.Calculator._minWidth = 5;

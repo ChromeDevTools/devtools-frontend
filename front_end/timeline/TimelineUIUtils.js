@@ -1485,13 +1485,11 @@ Timeline.TimelineUIUtils = class {
       total += aggregatedStats[categoryName];
 
     var element = createElementWithClass('div', 'timeline-details-view-pie-chart-wrapper hbox');
-    var pieChart = new PerfUI.PieChart(100);
+    var pieChart = new PerfUI.PieChart(110, value => Number.preciseMillisToString(value), true);
     pieChart.element.classList.add('timeline-details-view-pie-chart');
     pieChart.setTotal(total);
     var pieChartContainer = element.createChild('div', 'vbox');
     pieChartContainer.appendChild(pieChart.element);
-    pieChartContainer.createChild('div', 'timeline-details-view-pie-chart-total').textContent =
-        Common.UIString('Total: %s', Number.millisToString(total, true));
     var footerElement = element.createChild('div', 'timeline-aggregated-info-legend');
 
     /**

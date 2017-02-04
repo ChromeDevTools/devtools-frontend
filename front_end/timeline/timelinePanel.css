@@ -428,12 +428,6 @@
     margin-top: 5px;
 }
 
-.timeline-details-view-pie-chart-total {
-    width: 100px;
-    margin-top: 10px;
-    text-align: center;
-}
-
 .timeline-details-view-row-stack-trace {
     padding: 4px 0;
     line-height: inherit;

@@ -2,29 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-TimelineModel.TimelineProfileTree = class {
-  /**
-   * @param {!Array<!SDK.TracingModel.Event>} events
-   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
-   * @param {number} startTime
-   * @param {number} endTime
-   * @param {function(!SDK.TracingModel.Event):string=} eventGroupIdCallback
-   */
-  constructor(events, filters, startTime, endTime, eventGroupIdCallback) {
-    this._events = events;
-    this._filter = e => TimelineModel.TimelineModel.isVisible(filters, e);
-    this._startTime = startTime;
-    this._endTime = endTime;
-    this._eventGroupIdCallback = eventGroupIdCallback;
-  }
-
-  /**
-   * @return {!TimelineModel.TimelineProfileTree.Node}
-   */
-  bottomUpTreeRoot() {
-    return new TimelineModel.TimelineProfileTree.BottomUpTreeRootNode(this);
-  }
-};
+TimelineModel.TimelineProfileTree = {};
 
 /**
  * @unrestricted
@@ -168,12 +146,20 @@ TimelineModel.TimelineProfileTree.buildTopDown = function(events, filters, start
 
 TimelineModel.TimelineProfileTree.BottomUpTreeRootNode = class extends TimelineModel.TimelineProfileTree.Node {
   /**
-   * @param {!TimelineModel.TimelineProfileTree} tree
+   * @param {!Array<!SDK.TracingModel.Event>} events
+   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
+   * @param {number} startTime
+   * @param {number} endTime
+   * @param {function(!SDK.TracingModel.Event):string=} eventGroupIdCallback
    */
-  constructor(tree) {
+  constructor(events, filters, startTime, endTime, eventGroupIdCallback) {
     super('', null);
-    this._tree = tree;
-    this.totalTime = this._tree._endTime - this._tree._startTime;
+    this._events = events;
+    this._filter = e => TimelineModel.TimelineModel.isVisible(filters, e);
+    this._startTime = startTime;
+    this._endTime = endTime;
+    this._eventGroupIdCallback = eventGroupIdCallback;
+    this.totalTime = endTime - startTime;
   }
 
   /**
@@ -197,8 +183,8 @@ TimelineModel.TimelineProfileTree.BottomUpTreeRootNode = class extends TimelineM
    */
   _ungrouppedTopNodes() {
     var root = this;
-    var startTime = this._tree._startTime;
-    var endTime = this._tree._endTime;
+    var startTime = this._startTime;
+    var endTime = this._endTime;
     /** @type {!Map<string, !TimelineModel.TimelineProfileTree.Node>} */
     var nodeById = new Map();
     /** @type {!Array<number>} */
@@ -208,7 +194,7 @@ TimelineModel.TimelineProfileTree.BottomUpTreeRootNode = class extends TimelineM
     /** @type {!Map<string, number>} */
     var totalTimeById = new Map();
     TimelineModel.TimelineModel.forEachEvent(
-        this._tree._events, onStartEvent, onEndEvent, undefined, startTime, endTime, this._tree._filter);
+        this._events, onStartEvent, onEndEvent, undefined, startTime, endTime, this._filter);
 
     /**
      * @param {!SDK.TracingModel.Event} e
@@ -231,7 +217,7 @@ TimelineModel.TimelineProfileTree.BottomUpTreeRootNode = class extends TimelineM
       var id = TimelineModel.TimelineProfileTree._eventId(e);
       var node = nodeById.get(id);
       if (!node) {
-        node = new TimelineModel.TimelineProfileTree.BottomUpTreeNode(root._tree, id, e, true, root);
+        node = new TimelineModel.TimelineProfileTree.BottomUpTreeNode(root, id, e, true, root);
         nodeById.set(id, node);
       }
       node.selfTime += selfTimeStack.pop();
@@ -256,7 +242,7 @@ TimelineModel.TimelineProfileTree.BottomUpTreeRootNode = class extends TimelineM
     var flatNodes = this._ungrouppedTopNodes();
     var groupNodes = new Map();
     for (var node of flatNodes.values()) {
-      var groupId = this._tree._eventGroupIdCallback(/** @type {!SDK.TracingModel.Event} */ (node.event));
+      var groupId = this._eventGroupIdCallback(/** @type {!SDK.TracingModel.Event} */ (node.event));
       if (typeof groupId !== 'string')
         return flatNodes;
       var groupNode = groupNodes.get(groupId);
@@ -312,16 +298,16 @@ TimelineModel.TimelineProfileTree.BottomUpTreeGroupNode = class extends Timeline
 
 TimelineModel.TimelineProfileTree.BottomUpTreeNode = class extends TimelineModel.TimelineProfileTree.Node {
   /**
-   * @param {!TimelineModel.TimelineProfileTree} tree
+   * @param {!TimelineModel.TimelineProfileTree.BottomUpTreeRootNode} root
    * @param {string} id
    * @param {!SDK.TracingModel.Event} event
    * @param {boolean} hasChildren
    * @param {!TimelineModel.TimelineProfileTree.Node} parent
    */
-  constructor(tree, id, event, hasChildren, parent) {
+  constructor(root, id, event, hasChildren, parent) {
     super(id, event);
     this.parent = parent;
-    this._tree = tree;
+    this._root = root;
     this._depth = (parent._depth || 0) + 1;
     this._cachedChildren = null;
     this._hasChildren = hasChildren;
@@ -350,12 +336,12 @@ TimelineModel.TimelineProfileTree.BottomUpTreeNode = class extends TimelineModel
     var eventStack = [];
     /** @type {!Map<string, !TimelineModel.TimelineProfileTree.Node>} */
     var nodeById = new Map();
-    var startTime = this._tree._startTime;
-    var endTime = this._tree._endTime;
+    var startTime = this._root._startTime;
+    var endTime = this._root._endTime;
     var lastTimeMarker = startTime;
     var self = this;
     TimelineModel.TimelineModel.forEachEvent(
-        this._tree._events, onStartEvent, onEndEvent, undefined, startTime, endTime, this._tree._filter);
+        this._root._events, onStartEvent, onEndEvent, undefined, startTime, endTime, this._root._filter);
 
     /**
      * @param {!SDK.TracingModel.Event} e
@@ -389,7 +375,7 @@ TimelineModel.TimelineProfileTree.BottomUpTreeNode = class extends TimelineModel
       if (!node) {
         var event = eventStack[eventStack.length - self._depth];
         var hasChildren = eventStack.length > self._depth;
-        node = new TimelineModel.TimelineProfileTree.BottomUpTreeNode(self._tree, childId, event, hasChildren, self);
+        node = new TimelineModel.TimelineProfileTree.BottomUpTreeNode(self._root, childId, event, hasChildren, self);
         nodeById.set(childId, node);
       }
       var totalTime = Math.min(e.endTime, endTime) - Math.max(e.startTime, lastTimeMarker);

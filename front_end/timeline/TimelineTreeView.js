@@ -782,10 +782,9 @@ Timeline.BottomUpTimelineTreeView = class extends Timeline.AggregatedTimelineTre
    * @return {!TimelineModel.TimelineProfileTree.Node}
    */
   _buildTree() {
-    var tree = new TimelineModel.TimelineProfileTree(
+    return new TimelineModel.TimelineProfileTree.BottomUpTreeRootNode(
         this._model.mainThreadEvents(), this._filters, this._startTime, this._endTime,
         this._groupingFunction(this._groupBySetting.get()));
-    return tree.bottomUpTreeRoot();
   }
 };
 

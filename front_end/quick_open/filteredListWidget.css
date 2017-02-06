@@ -8,8 +8,6 @@
     display: flex;
     flex-direction: column;
     flex: auto;
-    width: 504px;
-    max-height: 340px;
 }
 
 .filtered-list-widget-prompt-element {

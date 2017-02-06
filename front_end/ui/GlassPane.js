@@ -31,6 +31,7 @@ UI.GlassPane = class {
     /** @type {?AnchorBox} */
     this._anchorBox = null;
     this._anchorBehavior = UI.GlassPane.AnchorBehavior.PreferTop;
+    this._fixedHeight = true;
   }
 
   /**
@@ -39,6 +40,13 @@ UI.GlassPane = class {
   setMaxContentSize(size) {
     this._maxSize = size;
     this._positionContent();
+  }
+
+  /**
+   * @param {boolean} fixedHeight
+   */
+  setFixedHeight(fixedHeight) {
+    this._fixedHeight = fixedHeight;
   }
 
   /**
@@ -161,7 +169,10 @@ UI.GlassPane = class {
     }
 
     this.contentElement.style.width = width + 'px';
-    this.contentElement.style.height = height + 'px';
+    if (this._fixedHeight)
+      this.contentElement.style.height = height + 'px';
+    else
+      this.contentElement.style.maxHeight = height + 'px';
     this.contentElement.positionAt(positionX, positionY, container);
   }
 

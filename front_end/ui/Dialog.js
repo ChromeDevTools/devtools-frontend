@@ -48,6 +48,7 @@ UI.Dialog = class extends UI.Widget {
     this._positionX = null;
     /** @type {?number} */
     this._positionY = null;
+    this._fixedHeight = true;
 
     /** @type {!Map<!HTMLElement, number>} */
     this._tabIndexMap = new Map();
@@ -76,6 +77,7 @@ UI.Dialog = class extends UI.Widget {
       this.detach();
       event.consume(true);
     });
+    this._glassPane.setFixedHeight(this._fixedHeight);
     this._glassPane.show();
     super.show(this._glassPane.contentElement);
     this._glassPane.setContentPosition(this._positionX, this._positionY);
@@ -118,6 +120,13 @@ UI.Dialog = class extends UI.Widget {
    */
   setMaxSize(size) {
     this._maxSize = size;
+  }
+
+  /**
+   * @param {boolean} fixedHeight
+   */
+  setFixedHeight(fixedHeight) {
+    this._fixedHeight = fixedHeight;
   }
 
   /**

@@ -34,6 +34,8 @@ inspector-protocol/accessibility/accessibility-nameSources-input.html [ Skip ]
 inspector-protocol/accessibility/accessibility-nameSources-labelledby.html [ Skip ]
 inspector-protocol/accessibility/accessibility-nameSources-summary.html [ Skip ]
 inspector-protocol/accessibility/accessibility-nameSources-visiblity.html [ Skip ]
+inspector/elements/accessibility/autocomplete-attribute.html [ Skip ]
+inspector/elements/accessibility/edit-aria-attributes.html [ Skip ]
 
 # Skipping async await tests b/c 1.2 content shell (DevTools runtime) does not
 # support async await
@@ -59,3 +61,29 @@ http/tests/inspector-unit/trie.js [ Skip ]
 
 # Potentially flaky network test (may be caching related)
 http/tests/inspector/network/network-datareceived.html [ Skip ]
+
+# CSS.collectClassNames & DOM.collectClassNamesFromSubtree added after 1.2 protocol
+# https://crrev.com/9f5d339452d3d4f76337ecb08e86227e13f15a79
+inspector-protocol/css/css-collect-class-names.html [ Skip ]
+inspector-protocol/dom/dom-collect-class-names.html [ Skip ]
+
+# CSS.startRuleUsageTracking added after 1.2 protocol
+# https://crrev.com/68f60f6cfa8d0b968ed9a90e2188dd84c62788e5
+inspector-protocol/css/css-get-rule-list.html [ Skip ]
+inspector-protocol/css/cssom-modify-rule-and-get-rule-list.html [ Skip ]
+
+# CSS.getLayoutTreeAndStyles added after 1.2 protocol
+# https://crrev.com/00fb6e725b5a430daf992402acba94be93aa0412
+inspector-protocol/css/css-getLayoutTreeNodes.html [ Skip ]
+
+# DOM.getFlattenedDocument added after 1.2 protocol
+# https://crrev.com/ea635266172221937f38f16417c0b622a5bdef97
+inspector-protocol/dom/dom-getFlattenedDocument.html [ Skip ]
+
+# DOM.getDocument modified after 1.2 protocol
+# https://crrev.com/86b48bfeabfd2b8876efcd18f2f018c5d9a3e53a
+inspector-protocol/dom/dom-request-document-with-child-nodes.html [ Skip ]
+
+# Showing distribution for Shadow DOM V1 added after 1.2 protocol
+# https://crrev.com/e11af1f748a4236062fffa6b7db7dc5f79d20c7e
+inspector/elements/shadow/shadow-distribution.html [ Skip ]

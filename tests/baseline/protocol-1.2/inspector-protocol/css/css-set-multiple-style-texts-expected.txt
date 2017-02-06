@@ -1,0 +1,117 @@
+The test verifies functionality of protocol method CSS.setStyleTexts.
+
+==== Initial style sheet text ====
+#test {
+    box-sizing: border-box;
+}
+
+#test {
+    /* resetting some properties */
+    line-height: 1;
+    font-family: "Arial";
+    color: blue;
+    display: flex; /* flex FTW! */
+}
+
+@media (min-width: 1px) {
+    #test {
+        font-size: 200%;
+    }
+
+    #test {
+    }
+}
+
+
+
+Running test: testMalformedArguments1
+Expected protocol error: Invalid request (edits.1.styleSheetId: string value expected)
+
+Running test: testMalformedArguments2
+Expected protocol error: Invalid request (edits.0.range: object expected; edits.0.text: string value expected; edits.2.styleSheetId: string value expected)
+
+Running test: testMalformedArguments3
+Expected protocol error: Invalid request (edits.0.range.startLine: integer value expected)
+
+Running test: testFirstEditDoesNotApply
+Expected protocol error: Failed applying edit #0: SyntaxError Style text is not valid.
+
+Running test: testSecondEditDoesNotApply
+Expected protocol error: Failed applying edit #1: SyntaxError Style text is not valid.
+
+Running test: testBasicSetStyle
+==== Style sheet text ====
+#test {
+    content: 'EDITED';
+}
+
+#test {
+    /* resetting some properties */
+    line-height: 1;
+    font-family: "Arial";
+    color: blue;
+    display: flex; /* flex FTW! */
+}
+
+@media (min-width: 1px) {
+    #test {
+        font-size: 200%;
+    }
+
+    #test {
+    }
+}
+
+
+
+Running test: testMultipleStyleTexts1
+==== Style sheet text ====
+#test {
+    content: 'EDITED2';
+}
+
+#test {
+    /* resetting some properties */
+    line-height: 1;
+    font-family: "Arial";
+    color: blue;
+    display: flex; /* flex FTW! */
+}
+
+@media (min-width: 1px) {
+    #test {
+        content: 'EDITED1';
+}
+
+    #test {
+    }
+}
+
+
+
+Running test: testMultipleStyleTexts2
+==== Style sheet text ====
+#test {
+    content: 'EDITED3';
+}
+
+#test {
+    /* resetting some properties */
+    line-height: 1;
+    font-family: "Arial";
+    color: blue;
+    display: flex; /* flex FTW! */
+}
+
+@media (min-width: 1px) {
+    #test {
+        content: 'EDITED4';
+}
+
+    #test {
+        content: 'EDITED5';
+}
+}
+
+
+

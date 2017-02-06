@@ -1,0 +1,28 @@
+Tests event listeners output in the Elements sidebar panel when the listeners are added on an element in about:blank page.
+
+
+
+======== click ========
+== normal
+[expanded] bodyRemoveevent-listeners-about-blank.html:9
+    useCapture: true
+    passive: false
+    once: undefined
+    handler: function f() {}
+
+======== hover ========
+== normal
+[expanded] div#div-in-iframeRemoveevent-listeners-about-blank.html:9
+    useCapture: true
+    passive: false
+    once: undefined
+    handler: function f() {}
+
+======== wheel ========
+== normal
+[expanded] bodyRemoveToggle Passiveevent-listeners-about-blank.html:9
+    useCapture: false
+    passive: true
+    once: undefined
+    handler: function f() {}
+

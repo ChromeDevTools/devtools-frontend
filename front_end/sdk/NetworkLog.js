@@ -134,7 +134,7 @@ SDK.NetworkLog = class {
 
     if (request.redirectSource) {
       type = SDK.NetworkRequest.InitiatorType.Redirect;
-      url = request.redirectSource.url;
+      url = request.redirectSource.url();
     } else if (initiator) {
       if (initiator.type === Protocol.Network.InitiatorType.Parser) {
         type = SDK.NetworkRequest.InitiatorType.Parser;

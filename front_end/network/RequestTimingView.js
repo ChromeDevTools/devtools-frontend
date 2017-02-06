@@ -236,9 +236,8 @@ Network.RequestTimingView = class extends UI.VBox {
     var footer = tableElement.createChild('tr', 'network-timing-footer');
     var note = footer.createChild('td');
     note.colSpan = 2;
-    note.appendChild(UI.createDocumentationLink(
-        'profile/network-performance/resource-loading#view-network-timing-details-for-a-specific-resource',
-        Common.UIString('Explanation')));
+    note.appendChild(
+        UI.createDocumentationLink('network-performance/reference#timing', Common.UIString('Explanation')));
     footer.createChild('td').createTextChild(Number.secondsToString(totalDuration, true));
 
     var serverTimings = request.serverTimings;

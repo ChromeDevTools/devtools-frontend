@@ -50,9 +50,9 @@ Workspace.IsolatedFileSystem = class {
     this._nonConfigurableExcludedFolders = new Set();
 
     /** @type {!Set<string>} */
-    this._filePaths = new Set();
+    this._initialFilePaths = new Set();
     /** @type {!Set<string>} */
-    this._gitFolders = new Set();
+    this._initialGitFolders = new Set();
   }
 
   /**
@@ -130,15 +130,15 @@ Workspace.IsolatedFileSystem = class {
   /**
    * @return {!Array<string>}
    */
-  filePaths() {
-    return this._filePaths.valuesArray();
+  initialFilePaths() {
+    return this._initialFilePaths.valuesArray();
   }
 
   /**
    * @return {!Array<string>}
    */
-  gitFolders() {
-    return this._gitFolders.valuesArray();
+  initialGitFolders() {
+    return this._initialGitFolders.valuesArray();
   }
 
   /**
@@ -199,12 +199,12 @@ Workspace.IsolatedFileSystem = class {
         if (!entry.isDirectory) {
           if (this._isFileExcluded(entry.fullPath))
             continue;
-          this._filePaths.add(entry.fullPath.substr(1));
+          this._initialFilePaths.add(entry.fullPath.substr(1));
         } else {
           if (entry.fullPath.endsWith('/.git')) {
             var lastSlash = entry.fullPath.lastIndexOf('/');
             var parentFolder = entry.fullPath.substring(1, lastSlash);
-            this._gitFolders.add(parentFolder);
+            this._initialGitFolders.add(parentFolder);
           }
           if (this._isFileExcluded(entry.fullPath + '/'))
             continue;

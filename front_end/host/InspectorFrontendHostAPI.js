@@ -41,7 +41,7 @@ InspectorFrontendHostAPI.Events = {
   FileSystemsLoaded: Symbol('fileSystemsLoaded'),
   FileSystemRemoved: Symbol('fileSystemRemoved'),
   FileSystemAdded: Symbol('fileSystemAdded'),
-  FileSystemFilesChanged: Symbol('fileSystemFilesChanged'),
+  FileSystemFilesChangedAddedRemoved: Symbol('FileSystemFilesChangedAddedRemoved'),
   IndexingTotalWorkCalculated: Symbol('indexingTotalWorkCalculated'),
   IndexingWorked: Symbol('indexingWorked'),
   IndexingDone: Symbol('indexingDone'),
@@ -77,7 +77,10 @@ InspectorFrontendHostAPI.EventDescriptors = [
   [InspectorFrontendHostAPI.Events.FileSystemsLoaded, 'fileSystemsLoaded', ['fileSystems']],
   [InspectorFrontendHostAPI.Events.FileSystemRemoved, 'fileSystemRemoved', ['fileSystemPath']],
   [InspectorFrontendHostAPI.Events.FileSystemAdded, 'fileSystemAdded', ['errorMessage', 'fileSystem']],
-  [InspectorFrontendHostAPI.Events.FileSystemFilesChanged, 'fileSystemFilesChanged', ['paths']],
+  [
+    InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, 'fileSystemFilesChangedAddedRemoved',
+    ['changed', 'added', 'removed']
+  ],
   [
     InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, 'indexingTotalWorkCalculated',
     ['requestId', 'fileSystemPath', 'totalWork']

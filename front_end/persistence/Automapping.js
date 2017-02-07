@@ -84,7 +84,7 @@ Persistence.Automapping = class {
     if (project.type() !== Workspace.projectTypes.FileSystem)
       return;
     var fileSystem = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project);
-    for (var gitFolder of fileSystem.gitFolders())
+    for (var gitFolder of fileSystem.initialGitFolders())
       this._projectFoldersIndex.removeFolder(gitFolder);
     this._projectFoldersIndex.removeFolder(fileSystem.fileSystemPath());
     this._scheduleRemap();
@@ -97,7 +97,7 @@ Persistence.Automapping = class {
     if (project.type() !== Workspace.projectTypes.FileSystem)
       return;
     var fileSystem = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project);
-    for (var gitFolder of fileSystem.gitFolders())
+    for (var gitFolder of fileSystem.initialGitFolders())
       this._projectFoldersIndex.addFolder(gitFolder);
     this._projectFoldersIndex.addFolder(fileSystem.fileSystemPath());
     this._scheduleRemap();

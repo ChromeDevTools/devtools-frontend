@@ -47,7 +47,7 @@ Workspace.IsolatedFileSystemManager = class extends Common.Object {
     InspectorFrontendHost.events.addEventListener(
         InspectorFrontendHostAPI.Events.FileSystemAdded, this._onFileSystemAdded, this);
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.FileSystemFilesChanged, this._onFileSystemFilesChanged, this);
+        InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved, this._onFileSystemFilesChanged, this);
     InspectorFrontendHost.events.addEventListener(
         InspectorFrontendHostAPI.Events.IndexingTotalWorkCalculated, this._onIndexingTotalWorkCalculated, this);
     InspectorFrontendHost.events.addEventListener(
@@ -167,9 +167,12 @@ Workspace.IsolatedFileSystemManager = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _onFileSystemFilesChanged(event) {
-    var embedderPaths = /** @type {!Array<string>} */ (event.data);
-    var paths = embedderPaths.map(embedderPath => Common.ParsedURL.platformPathToURL(embedderPath));
-    this.dispatchEventToListeners(Workspace.IsolatedFileSystemManager.Events.FileSystemFilesChanged, paths);
+    var paths = /** @type {!Workspace.IsolatedFileSystemManager.FilesChangedData} */ (event.data);
+    var urlPaths = {};
+    urlPaths.changed = paths.changed.map(embedderPath => Common.ParsedURL.platformPathToURL(embedderPath));
+    urlPaths.added = paths.added.map(embedderPath => Common.ParsedURL.platformPathToURL(embedderPath));
+    urlPaths.removed = paths.removed.map(embedderPath => Common.ParsedURL.platformPathToURL(embedderPath));
+    this.dispatchEventToListeners(Workspace.IsolatedFileSystemManager.Events.FileSystemFilesChanged, urlPaths);
   }
 
   /**
@@ -297,6 +300,9 @@ Workspace.IsolatedFileSystemManager = class extends Common.Object {
 
 /** @typedef {!{fileSystemName: string, rootURL: string, fileSystemPath: string}} */
 Workspace.IsolatedFileSystemManager.FileSystem;
+
+/** @typedef {!{changed:!Array<string>, added:!Array<string>, removed:!Array<string>}} */
+Workspace.IsolatedFileSystemManager.FilesChangedData;
 
 /** @enum {symbol} */
 Workspace.IsolatedFileSystemManager.Events = {

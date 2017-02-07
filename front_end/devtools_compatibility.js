@@ -176,9 +176,18 @@
 
     /**
      * @param {!Array<string>} changedPaths
+     * @param {!Array<string>} addedPaths
+     * @param {!Array<string>} removedPaths
      */
-    fileSystemFilesChanged(changedPaths) {
-      this._dispatchOnInspectorFrontendAPI('fileSystemFilesChanged', [changedPaths]);
+    fileSystemFilesChangedAddedRemoved(changedPaths, addedPaths, removedPaths) {
+      // Support for legacy front-ends (<M58)
+      if (window['InspectorFrontendAPI'] && window['InspectorFrontendAPI']['fileSystemFilesChanged']) {
+        this._dispatchOnInspectorFrontendAPI(
+            'fileSystemFilesChanged', [changedPaths.concat(addedPaths).concat(removedPaths)]);
+      } else {
+        this._dispatchOnInspectorFrontendAPI(
+            'fileSystemFilesChangedAddedRemoved', [changedPaths, addedPaths, removedPaths]);
+      }
     }
 
     /**

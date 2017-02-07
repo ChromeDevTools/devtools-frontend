@@ -150,12 +150,23 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @param {!Common.Event} event
    */
   _fileSystemFilesChanged(event) {
-    var paths = /** @type {!Array<string>} */ (event.data);
-    for (var path of paths) {
-      for (var key of this._boundFileSystems.keys()) {
-        if (!path.startsWith(key))
-          continue;
-        this._boundFileSystems.get(key)._fileChanged(path);
+    var paths = /** @type {!Workspace.IsolatedFileSystemManager.FilesChangedData} */ (event.data);
+    forEachFile.call(this, paths.changed, (path, fileSystem) => fileSystem._fileChanged(path));
+    forEachFile.call(this, paths.added, (path, fileSystem) => fileSystem._fileChanged(path));
+    forEachFile.call(this, paths.removed, (path, fileSystem) => fileSystem.removeUISourceCode(path));
+
+    /**
+     * @param {!Array<string>} filePaths
+     * @param {function(string, !Persistence.FileSystemWorkspaceBinding.FileSystem)} callback
+     * @this {Persistence.FileSystemWorkspaceBinding}
+     */
+    function forEachFile(filePaths, callback) {
+      for (var filePath of filePaths) {
+        for (var fileSystemPath of this._boundFileSystems.keys()) {
+          if (!filePath.startsWith(fileSystemPath))
+            continue;
+          callback(filePath, this._boundFileSystems.get(fileSystemPath));
+        }
       }
     }
   }
@@ -228,8 +239,8 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
   /**
    * @return {!Array<string>}
    */
-  gitFolders() {
-    return this._fileSystem.gitFolders().map(folder => this._fileSystemPath + '/' + folder);
+  initialGitFolders() {
+    return this._fileSystem.initialGitFolders().map(folder => this._fileSystemPath + '/' + folder);
   }
 
   /**
@@ -457,7 +468,7 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
 
   populate() {
     var chunkSize = 1000;
-    var filePaths = this._fileSystem.filePaths();
+    var filePaths = this._fileSystem.initialFilePaths();
     reportFileChunk.call(this, 0);
 
     /**

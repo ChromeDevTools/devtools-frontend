@@ -1,0 +1,10 @@
+Tests that a line-level CPU profile is shown in the text editor.
+.../inspector/tracing/resources/timeline-data.js
+99 CodeMirror-gutter-performance 10.0 ms rgba(255, 187, 0, 0.262745)
+101 CodeMirror-gutter-performance 1900.0 ms rgba(255, 187, 0, 0.717647)
+0 CodeMirror-gutter-performance 100.0 ms rgba(255, 187, 0, 0.462745)
+1 CodeMirror-gutter-performance 200.0 ms rgba(255, 187, 0, 0.521569)
+2 CodeMirror-gutter-performance 300.0 ms rgba(255, 187, 0, 0.556863)
+3 CodeMirror-gutter-performance 400.0 ms rgba(255, 187, 0, 0.580392)
+54 CodeMirror-gutter-performance 220.0 ms rgba(255, 187, 0, 0.529412)
+

@@ -1,0 +1,19 @@
+CONSOLE MESSAGE: line 8: iframe loaded
+Tests the Timeline API instrumentation of an HTML script tag.
+
+
+EvaluateScript Properties:
+{
+    data : {
+        columnNumber : <number>
+        frame : <string>
+        lineNumber : <number>
+        url : .../inspector/tracing/resources/timeline-iframe-data.html
+    }
+    endTime : <number>
+    frameId : <string>
+    startTime : <number>
+    type : "EvaluateScript"
+}
+----> Timestamp: SCRIPT TAG
+

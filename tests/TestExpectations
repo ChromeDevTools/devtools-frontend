@@ -20,6 +20,7 @@ inspector/console/console-revoke-error-in-worker.html [ Skip ]
 inspector/console/worker-eval-contains-stack.html [ Skip ]
 inspector/sources/debugger-frameworks/frameworks-with-worker.html [ Skip ]
 inspector/sources/debugger-ui/script-snippet-model.html [ Skip ] # TODO(chenwilliam): extract the worker test
+inspector/tracing/worker-events.html [ Skip ]
 
 # Skipping accessibility tests b/c of protocol change
 # https://crrev.com/3a46cc72d58945804dd4919a679a8ce26690bfc0
@@ -87,3 +88,11 @@ inspector-protocol/dom/dom-request-document-with-child-nodes.html [ Skip ]
 # Showing distribution for Shadow DOM V1 added after 1.2 protocol
 # https://crrev.com/e11af1f748a4236062fffa6b7db7dc5f79d20c7e
 inspector/elements/shadow/shadow-distribution.html [ Skip ]
+
+# Added frame information to timeline:
+# crrev.com/79b4a4119de12f1f37748e7fedb3e2a87a534e3a
+inspector-protocol/timeline/page-frames.html [ Skip ]
+
+# Added runtime stats to timeline: http://crbug.com/660428
+inspector/tracing/timeline-js/timeline-runtime-stats.html [ Skip ]
+

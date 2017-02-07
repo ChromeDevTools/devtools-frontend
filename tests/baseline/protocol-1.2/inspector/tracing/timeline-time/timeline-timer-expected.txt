@@ -1,0 +1,127 @@
+Tests the Timeline events for Timers
+
+TimerInstall Properties:
+{
+    data : {
+        frame : <string>
+        singleShot : true
+        stackTrace : <object>
+        timeout : 10
+        timerId : <number>
+    }
+    endTime : <number>
+    frameId : <string>
+    stackTrace : <object>
+    startTime : <number>
+    type : "TimerInstall"
+}
+Text details for TimerInstall: timeline-timer.html:11
+TimerInstall Properties:
+{
+    data : {
+        frame : <string>
+        singleShot : false
+        stackTrace : <object>
+        timeout : 20
+        timerId : <number>
+    }
+    endTime : <number>
+    frameId : <string>
+    stackTrace : <object>
+    startTime : <number>
+    type : "TimerInstall"
+}
+Text details for TimerInstall: timeline-timer.html:12
+TimerFire Properties:
+{
+    data : {
+        frame : <string>
+        timerId : <number>
+    }
+    endTime : <number>
+    frameId : <string>
+    startTime : <number>
+    type : "TimerFire"
+}
+Text details for TimerFire: timeline-timer.html:11
+TimerFire Properties:
+{
+    data : {
+        frame : <string>
+        timerId : <number>
+    }
+    endTime : <number>
+    frameId : <string>
+    startTime : <number>
+    type : "TimerFire"
+}
+Text details for TimerFire: timeline-timer.html:12
+TimerFire Properties:
+{
+    data : {
+        frame : <string>
+        timerId : <number>
+    }
+    endTime : <number>
+    frameId : <string>
+    startTime : <number>
+    type : "TimerFire"
+}
+Text details for TimerFire: timeline-timer.html:12
+TimerRemove Properties:
+{
+    data : {
+        frame : <string>
+        stackTrace : <object>
+        timerId : <number>
+    }
+    endTime : <number>
+    frameId : <string>
+    stackTrace : <object>
+    startTime : <number>
+    type : "TimerRemove"
+}
+Text details for TimerRemove: timeline-timer.html:19
+FunctionCall Properties:
+{
+    data : {
+        frame : <string>
+        functionName : "intervalTimerWork"
+        lineNumber : <number>
+        scriptId : <string>
+        url : .../inspector/tracing/timeline-time/timeline-timer.html
+    }
+    endTime : <number>
+    frameId : <string>
+    startTime : <number>
+    type : "FunctionCall"
+}
+FunctionCall Properties:
+{
+    data : {
+        frame : <string>
+        functionName : "intervalTimerWork"
+        lineNumber : <number>
+        scriptId : <string>
+        url : .../inspector/tracing/timeline-time/timeline-timer.html
+    }
+    endTime : <number>
+    frameId : <string>
+    startTime : <number>
+    type : "FunctionCall"
+}
+EvaluateScript Properties:
+{
+    data : {
+        columnNumber : <number>
+        frame : <string>
+        lineNumber : <number>
+        url : 
+    }
+    endTime : <number>
+    frameId : <string>
+    startTime : <number>
+    type : "EvaluateScript"
+}
+Text details for EvaluateScript: undefined
+

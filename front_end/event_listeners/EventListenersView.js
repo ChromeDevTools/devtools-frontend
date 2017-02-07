@@ -4,12 +4,12 @@
 /**
  * @typedef {Array<{object: !SDK.RemoteObject, eventListeners: ?Array<!SDK.EventListener>, frameworkEventListeners: ?{eventListeners: ?Array<!SDK.EventListener>, internalHandlers: ?SDK.RemoteArray}, isInternal: ?Array<boolean>}>}
  */
-Components.EventListenersResult;
+EventListeners.EventListenersResult;
 
 /**
  * @unrestricted
  */
-Components.EventListenersView = class {
+EventListeners.EventListenersView = class {
   /**
    * @param {!Element} element
    * @param {function()} changeCallback
@@ -20,14 +20,14 @@ Components.EventListenersView = class {
     this._treeOutline = new UI.TreeOutlineInShadow();
     this._treeOutline.hideOverflow();
     this._treeOutline.registerRequiredCSS('components/objectValue.css');
-    this._treeOutline.registerRequiredCSS('components/eventListenersView.css');
-    this._treeOutline.setComparator(Components.EventListenersTreeElement.comparator);
+    this._treeOutline.registerRequiredCSS('event_listeners/eventListenersView.css');
+    this._treeOutline.setComparator(EventListeners.EventListenersTreeElement.comparator);
     this._treeOutline.element.classList.add('monospace');
     this._element.appendChild(this._treeOutline.element);
     this._emptyHolder = createElementWithClass('div', 'gray-info-message');
     this._emptyHolder.textContent = Common.UIString('No Event Listeners');
     this._linkifier = new Components.Linkifier();
-    /** @type {!Map<string, !Components.EventListenersTreeElement>} */
+    /** @type {!Map<string, !EventListeners.EventListenersTreeElement>} */
     this._treeItemMap = new Map();
   }
 
@@ -52,12 +52,12 @@ Components.EventListenersView = class {
   _addObject(object) {
     /** @type {?Array<!SDK.EventListener>} */
     var eventListeners = null;
-    /** @type {?Components.FrameworkEventListenersObject}*/
+    /** @type {?EventListeners.FrameworkEventListenersObject}*/
     var frameworkEventListenersObject = null;
 
     var promises = [];
     promises.push(object.eventListeners().then(storeEventListeners));
-    promises.push(Components.frameworkEventListeners(object).then(storeFrameworkEventListenersObject));
+    promises.push(EventListeners.frameworkEventListeners(object).then(storeFrameworkEventListenersObject));
     return Promise.all(promises).then(markInternalEventListeners).then(addEventListeners.bind(this));
 
     /**
@@ -68,7 +68,7 @@ Components.EventListenersView = class {
     }
 
     /**
-     * @param {?Components.FrameworkEventListenersObject} result
+     * @param {?EventListeners.FrameworkEventListenersObject} result
      */
     function storeFrameworkEventListenersObject(result) {
       frameworkEventListenersObject = result;
@@ -117,7 +117,7 @@ Components.EventListenersView = class {
     }
 
     /**
-     * @this {Components.EventListenersView}
+     * @this {EventListeners.EventListenersView}
      */
     function addEventListeners() {
       this._addObjectEventListeners(object, eventListeners);
@@ -167,12 +167,12 @@ Components.EventListenersView = class {
 
   /**
    * @param {string} type
-   * @return {!Components.EventListenersTreeElement}
+   * @return {!EventListeners.EventListenersTreeElement}
    */
   _getOrCreateTreeElementForType(type) {
     var treeItem = this._treeItemMap.get(type);
     if (!treeItem) {
-      treeItem = new Components.EventListenersTreeElement(type, this._linkifier, this._changeCallback);
+      treeItem = new EventListeners.EventListenersTreeElement(type, this._linkifier, this._changeCallback);
       this._treeItemMap.set(type, treeItem);
       treeItem.hidden = true;
       this._treeOutline.appendChild(treeItem);
@@ -205,7 +205,7 @@ Components.EventListenersView = class {
 /**
  * @unrestricted
  */
-Components.EventListenersTreeElement = class extends UI.TreeElement {
+EventListeners.EventListenersTreeElement = class extends UI.TreeElement {
   /**
    * @param {string} type
    * @param {!Components.Linkifier} linkifier
@@ -236,7 +236,7 @@ Components.EventListenersTreeElement = class extends UI.TreeElement {
    */
   addObjectEventListener(eventListener, object) {
     var treeElement =
-        new Components.ObjectEventListenerBar(eventListener, object, this._linkifier, this._changeCallback);
+        new EventListeners.ObjectEventListenerBar(eventListener, object, this._linkifier, this._changeCallback);
     this.appendChild(/** @type {!UI.TreeElement} */ (treeElement));
   }
 };
@@ -245,7 +245,7 @@ Components.EventListenersTreeElement = class extends UI.TreeElement {
 /**
  * @unrestricted
  */
-Components.ObjectEventListenerBar = class extends UI.TreeElement {
+EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
   /**
    * @param {!SDK.EventListener} eventListener
    * @param {!SDK.RemoteObject} object
@@ -306,7 +306,7 @@ Components.ObjectEventListenerBar = class extends UI.TreeElement {
 
     /**
      * @param {!Event} event
-     * @this {Components.ObjectEventListenerBar}
+     * @this {EventListeners.ObjectEventListenerBar}
      */
     function removeListener(event) {
       event.consume();
@@ -316,7 +316,7 @@ Components.ObjectEventListenerBar = class extends UI.TreeElement {
 
     /**
      * @param {!Event} event
-     * @this {Components.ObjectEventListenerBar}
+     * @this {EventListeners.ObjectEventListenerBar}
      */
     function togglePassiveListener(event) {
       event.consume();

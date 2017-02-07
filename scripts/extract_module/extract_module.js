@@ -24,16 +24,17 @@ const APPLICATION_DESCRIPTORS = [
 const MODULES_TO_REMOVE = [];
 
 const JS_FILES_MAPPING = [
-  {file: 'components/NetworkConditionsSelector.js', new: 'network_conditions'},
+  {file: 'components/EventListenersView.js', new: 'event_listeners'},
+  {file: 'components/EventListenersUtils.js', new: 'event_listeners'},
   // {file: 'module/file.js', existing: 'module'}
 ];
 
 const MODULE_MAPPING = {
-  network_conditions: {
-    dependencies: ['common', 'sdk', 'ui', 'protocol'],
-    dependents: ['emulation', 'resources', 'network', 'timeline'],
+  event_listeners: {
+    dependencies: ['ui', 'common', 'components', 'sdk'],
+    dependents: ['elements', 'sources'],
     applications: ['inspector.json'],
-    autostart: true,  // because emulation is autostart
+    autostart: false,
   },
 };
 
@@ -73,6 +74,9 @@ function extractModule() {
   }, new Map());
 
   const cssFilesMapping = findCSSFiles();
+  // todo: one-off
+  cssFilesMapping.get('components/EventListenersView.js').delete('objectValue.css');
+  console.log('cssFilesMapping', cssFilesMapping);
   const identifiersByFile = calculateIdentifiers();
   const identifierMap = mapIdentifiers(identifiersByFile, cssFilesMapping);
   console.log('identifierMap', identifierMap);

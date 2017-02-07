@@ -615,7 +615,8 @@
         "persistence",
         "quick_open",
         "inline_editor",
-        "color_picker"
+        "color_picker",
+        "event_listeners"
     ],
     "scripts": [
         "UIList.js",

@@ -2,23 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /** @typedef {{eventListeners:!Array<!SDK.EventListener>, internalHandlers:?SDK.RemoteArray}} */
-Components.FrameworkEventListenersObject;
+EventListeners.FrameworkEventListenersObject;
 
 /** @typedef {{type: string, useCapture: boolean, passive: boolean, once: boolean, handler: function()}} */
-Components.EventListenerObjectInInspectedPage;
+EventListeners.EventListenerObjectInInspectedPage;
 
 /**
  * @param {!SDK.RemoteObject} object
- * @return {!Promise<!Components.FrameworkEventListenersObject>}
+ * @return {!Promise<!EventListeners.FrameworkEventListenersObject>}
  */
-Components.frameworkEventListeners = function(object) {
+EventListeners.frameworkEventListeners = function(object) {
   if (!object.target().hasDOMCapability()) {
     // TODO(kozyatinskiy): figure out how this should work for |window|.
     return Promise.resolve(
-        /** @type {!Components.FrameworkEventListenersObject} */ ({eventListeners: [], internalHandlers: null}));
+        /** @type {!EventListeners.FrameworkEventListenersObject} */ ({eventListeners: [], internalHandlers: null}));
   }
 
-  var listenersResult = /** @type {!Components.FrameworkEventListenersObject} */ ({eventListeners: []});
+  var listenersResult = /** @type {!EventListeners.FrameworkEventListenersObject} */ ({eventListeners: []});
   return object.callFunctionPromise(frameworkEventListeners, undefined)
       .then(assertCallFunctionResult)
       .then(getOwnProperties)
@@ -88,7 +88,7 @@ Components.frameworkEventListeners = function(object) {
 
       /**
        * @suppressReceiverCheck
-       * @this {Components.EventListenerObjectInInspectedPage}
+       * @this {EventListeners.EventListenerObjectInInspectedPage}
        * @return {!{type:string, useCapture:boolean, passive:boolean, once:boolean}}
        */
       function truncatePageEventListener() {
@@ -114,7 +114,7 @@ Components.frameworkEventListeners = function(object) {
       /**
        * @suppressReceiverCheck
        * @return {function()}
-       * @this {Components.EventListenerObjectInInspectedPage}
+       * @this {EventListeners.EventListenerObjectInInspectedPage}
        */
       function handlerFunction() {
         return this.handler;
@@ -153,7 +153,7 @@ Components.frameworkEventListeners = function(object) {
       /**
        * @suppressReceiverCheck
        * @return {function()}
-       * @this {Components.EventListenerObjectInInspectedPage}
+       * @this {EventListeners.EventListenerObjectInInspectedPage}
        */
       function getRemoveFunction() {
         return this.remove;
@@ -223,7 +223,7 @@ Components.frameworkEventListeners = function(object) {
   }
 
   /**
-   * @return {!Components.FrameworkEventListenersObject}
+   * @return {!EventListeners.FrameworkEventListenersObject}
    */
   function returnResult() {
     return listenersResult;
@@ -282,7 +282,7 @@ Components.frameworkEventListeners = function(object) {
     */
   /**
    * @suppressReceiverCheck
-   * @return {!{eventListeners:!Array<!Components.EventListenerObjectInInspectedPage>, internalHandlers:?Array<function()>}}
+   * @return {!{eventListeners:!Array<!EventListeners.EventListenerObjectInInspectedPage>, internalHandlers:?Array<function()>}}
    * @this {Object}
    */
   function frameworkEventListeners() {
@@ -341,7 +341,7 @@ Components.frameworkEventListeners = function(object) {
 
     /**
      * @param {*} eventListener
-     * @return {?Components.EventListenerObjectInInspectedPage}
+     * @return {?EventListeners.EventListenerObjectInInspectedPage}
      */
     function checkEventListener(eventListener) {
       try {

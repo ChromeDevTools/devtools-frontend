@@ -1,0 +1,15 @@
+{
+    "dependencies": [
+        "ui",
+        "common",
+        "components",
+        "sdk"
+    ],
+    "scripts": [
+        "EventListenersView.js",
+        "EventListenersUtils.js"
+    ],
+    "resources": [
+        "eventListenersView.css"
+    ]
+}

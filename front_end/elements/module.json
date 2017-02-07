@@ -254,7 +254,8 @@
         "components",
         "extensions",
         "inline_editor",
-        "color_picker"
+        "color_picker",
+        "event_listeners"
     ],
     "scripts": [
         "InspectElementModeController.js",

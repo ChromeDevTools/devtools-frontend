@@ -26,14 +26,11 @@
         "ObjectPopoverHelper.js",
         "ObjectPropertiesSection.js",
         "RemoteObjectPreviewFormatter.js",
-        "EventListenersUtils.js",
-        "EventListenersView.js",
         "Reload.js"
     ],
     "resources": [
         "breakpointsList.css",
         "customPreviewComponent.css",
-        "eventListenersView.css",
         "domUtils.css",
         "objectPropertiesSection.css",
         "objectValue.css"

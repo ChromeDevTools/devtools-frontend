@@ -50,7 +50,8 @@
         { "name": "color_picker" },
         { "name": "data_grid" },
         { "name": "heap_snapshot_model" },
-        { "name": "network_conditions", "type": "autostart"}
+        { "name": "network_conditions", "type": "autostart"},
+        { "name": "event_listeners" }
     ],
 
     "has_html": true

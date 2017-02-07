@@ -109,9 +109,14 @@ TextEditor.CodeMirrorUtils = class extends UI.InplaceEditor {
         '.CodeMirror .CodeMirror-selectedtext:not(.CodeMirror-persist-highlight) { color: ' + foregroundColor +
             '!important;}' :
         '';
+
+    var selectionRule = (foregroundColor && backgroundColor) ?
+        '.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: ' +
+            backgroundColor + '; color: ' + foregroundColor + ' !important }' :
+        '';
     var style = createElement('style');
     if (foregroundColorRule || backgroundColorRule)
-      style.textContent = backgroundColorRule + foregroundColorRule;
+      style.textContent = backgroundColorRule + foregroundColorRule + selectionRule;
     element.appendChild(style);
   }
 

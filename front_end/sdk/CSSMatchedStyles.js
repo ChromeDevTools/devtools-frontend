@@ -306,6 +306,20 @@ SDK.CSSMatchedStyles = class {
   }
 
   /**
+   * @return {!Array<string>}
+   */
+  cssVariables() {
+    var cssVariables = [];
+    for (var style of this.nodeStyles()) {
+      for (var property of style.allProperties()) {
+        if (property.name.startsWith('--'))
+          cssVariables.push(property.name);
+      }
+    }
+    return cssVariables;
+  }
+
+  /**
    * @param {!SDK.CSSStyleDeclaration} style
    * @return {boolean}
    */

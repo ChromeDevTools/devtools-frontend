@@ -2353,8 +2353,9 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     } else {
       cssCompletions = SDK.cssMetadata().propertyValues(this.nameElement.textContent);
     }
+    var cssVariables = this._matchedStyles.cssVariables().sort(String.naturalOrderComparator);
 
-    this._prompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(cssCompletions, this, isEditingName);
+    this._prompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(cssCompletions, cssVariables, this, isEditingName);
     this._prompt.setAutocompletionTimeout(0);
     if (applyItemCallback) {
       this._prompt.addEventListener(UI.TextPrompt.Events.ItemApplied, applyItemCallback, this);
@@ -2760,14 +2761,16 @@ Elements.StylePropertyTreeElement.Context;
 Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
   /**
    * @param {!Array<string>} cssCompletions
+   * @param {!Array<string>} cssVariables
    * @param {!Elements.StylePropertyTreeElement} treeElement
    * @param {boolean} isEditingName
    */
-  constructor(cssCompletions, treeElement, isEditingName) {
+  constructor(cssCompletions, cssVariables, treeElement, isEditingName) {
     // Use the same callback both for applyItemCallback and acceptItemCallback.
     super();
     this.initialize(this._buildPropertyCompletions.bind(this), UI.StyleValueDelimiters);
     this._cssCompletions = cssCompletions;
+    this._cssVariables = cssVariables;
     this._treeElement = treeElement;
     this._isEditingName = isEditingName;
 
@@ -2887,7 +2890,7 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
     if (!word)
       return false;
     word = word.toLowerCase();
-    return this._cssCompletions.indexOf(word) !== -1;
+    return this._cssCompletions.indexOf(word) !== -1 || word.startsWith('--');
   }
 
   /**
@@ -2898,21 +2901,29 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
    */
   _buildPropertyCompletions(expression, query, force) {
     var lowerQuery = query.toLowerCase();
-    if (!query && !force && (this._isEditingName || expression))
+    var editingVariable = !this._isEditingName && expression.trim().endsWith('var(');
+    if (!query && !force && !editingVariable && (this._isEditingName || expression))
       return Promise.resolve([]);
 
     var prefixResults = [];
     var anywhereResults = [];
-    this._cssCompletions.forEach(filterCompletions.bind(this));
-    var results = prefixResults.concat(anywhereResults);
+    if (!editingVariable)
+      this._cssCompletions.forEach(filterCompletions.bind(this));
+    if (this._isEditingName || editingVariable)
+      this._cssVariables.forEach(filterCompletions.bind(this));
 
+    var results = prefixResults.concat(anywhereResults);
     if (!this._isEditingName && !results.length && query.length > 1 && '!important'.startsWith(lowerQuery))
       results.push({text: '!important'});
     var userEnteredText = query.replace('-', '');
     if (userEnteredText && (userEnteredText === userEnteredText.toUpperCase())) {
-      for (var i = 0; i < results.length; ++i)
-        results[i].text = results[i].text.toUpperCase();
+      for (var i = 0; i < results.length; ++i) {
+        if (!results[i].text.startsWith('--'))
+          results[i].text = results[i].text.toUpperCase();
+      }
     }
+    if (editingVariable)
+      results.forEach(result => result.text += ')');
     return Promise.resolve(results);
 
     /**
@@ -2920,7 +2931,7 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
      * @this {Elements.StylesSidebarPane.CSSPropertyPrompt}
      */
     function filterCompletions(completion) {
-      var index = completion.indexOf(lowerQuery);
+      var index = completion.toLowerCase().indexOf(lowerQuery);
       if (index === 0) {
         var priority = this._isEditingName ? SDK.cssMetadata().propertyUsageWeight(completion) : 1;
         prefixResults.push({text: completion, priority: priority});

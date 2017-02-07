@@ -45,6 +45,12 @@
     color: rgb(128, 128, 128);
 }
 
+::content .text-prompt:empty::after {
+    content: '\00A0';
+    width: 0;
+    display: block;
+}
+
 .text-prompt-editing ::content br {
     display: none;
 }

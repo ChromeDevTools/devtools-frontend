@@ -367,6 +367,13 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
   }
 
   /**
+   * @return {boolean}
+   */
+  isExpanded() {
+    return this._group.expanded;
+  }
+
+  /**
    * @override
    * @param {number} value
    * @param {number=} precision

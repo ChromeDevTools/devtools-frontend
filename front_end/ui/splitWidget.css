@@ -78,6 +78,10 @@
     pointer-events: none;
 }
 
+.shadow-split-widget.vbox > .shadow-split-widget-sidebar.no-default-splitter {
+    border: 0 !important;
+}
+
 .shadow-split-widget.vbox > .shadow-split-widget-sidebar:not(.maximized) {
     border: 0;
     border-top: 1px solid rgb(64%, 64%, 64%);

@@ -131,15 +131,15 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._networkView.alwaysShowVerticalScroll();
     networkViewGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights.bind(this));
 
-    const networkPane = new UI.VBox();
-    networkPane.setMinimumSize(23, 23);
-    this._networkView.show(networkPane.element);
-    this._splitResizer = networkPane.element.createChild('div', 'timeline-flamechart-resizer');
-    this._splitWidget.hideDefaultResizer();
+    this._networkPane = new UI.VBox();
+    this._networkPane.setMinimumSize(23, 23);
+    this._networkView.show(this._networkPane.element);
+    this._splitResizer = this._networkPane.element.createChild('div', 'timeline-flamechart-resizer');
+    this._splitWidget.hideDefaultResizer(true);
     this._splitWidget.installResizer(this._splitResizer);
 
     this._splitWidget.setMainWidget(this._mainView);
-    this._splitWidget.setSidebarWidget(networkPane);
+    this._splitWidget.setSidebarWidget(this._networkPane);
 
     if (Runtime.experiments.isEnabled('timelineMultipleMainViews')) {
       // Create top level properties splitter.
@@ -321,9 +321,11 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   }
 
   resizeToPreferredHeights() {
+    this._networkPane.element.classList.toggle(
+        'timeline-network-resizer-disabled', !this._networkDataProvider.isExpanded());
     this._splitWidget.setSidebarSize(
         this._networkDataProvider.preferredHeight() + this._splitResizer.clientHeight + PerfUI.FlameChart.HeaderHeight +
-        3);
+        2);
   }
 };
 

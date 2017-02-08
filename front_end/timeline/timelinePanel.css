@@ -515,7 +515,7 @@
     overflow: hidden;
 }
 
-.timeline-tree-view > .toolbar {
+.timeline-tree-view .toolbar {
     border-bottom: 1px solid #dadada;
 }
 

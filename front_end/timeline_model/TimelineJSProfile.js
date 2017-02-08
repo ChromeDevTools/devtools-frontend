@@ -53,7 +53,9 @@ TimelineModel.TimelineJSProfileProcessor = class {
      * @return {boolean}
      */
     function equalFrames(frame1, frame2) {
-      return frame1.scriptId === frame2.scriptId && frame1.functionName === frame2.functionName;
+      return frame1.scriptId === frame2.scriptId &&
+             frame1.functionName === frame2.functionName &&
+             frame1.lineNumber === frame2.lineNumber;
     }
 
     /**

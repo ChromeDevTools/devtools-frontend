@@ -710,12 +710,7 @@ Common.VersionController = class {
   }
 
   _updateVersionFrom22To23() {
-    var oldSetting = Common.settings.createSetting('consoleTimestampsEnabled', false);
-    var newSetting = Common.settings.createSetting('consoleTimestampFormat', 'none');
-    var oldValue = oldSetting.get();
-    if (oldValue)
-      newSetting.set('short');
-    oldSetting.remove();
+    // This update is no-op.
   }
 
   _migrateSettingsFromLocalStorage() {

@@ -834,13 +834,11 @@ Console.ConsoleViewMessage = class {
     if (!this._contentElement)
       return;
 
-    var format = Common.moduleSetting('consoleTimestampFormat').get();
-    if (format !== Console.ConsoleViewMessage.TimestampFormat.None) {
-      var timestampText = formatTimestamp(this._message.timestamp, format);
+    if (Common.moduleSetting('consoleTimestampsEnabled').get()) {
       if (!this._timestampElement)
         this._timestampElement = createElementWithClass('span', 'console-timestamp');
-      this._timestampElement.textContent = timestampText + ' ';
-      this._timestampElement.title = timestampText;
+      this._timestampElement.textContent = formatTimestamp(this._message.timestamp, false) + ' ';
+      this._timestampElement.title = formatTimestamp(this._message.timestamp, true);
       this._contentElement.insertBefore(this._timestampElement, this._contentElement.firstChild);
     } else if (this._timestampElement) {
       this._timestampElement.remove();
@@ -849,17 +847,15 @@ Console.ConsoleViewMessage = class {
 
     /**
      * @param {number} timestamp
-     * @param {!Console.ConsoleViewMessage.TimestampFormat} format
+     * @param {boolean} full
      * @return {string}
      */
-    function formatTimestamp(timestamp, format) {
+    function formatTimestamp(timestamp, full) {
       var date = new Date(timestamp);
       var yymmdd = date.getFullYear() + '-' + leadZero(date.getMonth() + 1, 2) + '-' + leadZero(date.getDate(), 2);
       var hhmmssfff = leadZero(date.getHours(), 2) + ':' + leadZero(date.getMinutes(), 2) + ':' +
           leadZero(date.getSeconds(), 2) + '.' + leadZero(date.getMilliseconds(), 3);
-      if (format === Console.ConsoleViewMessage.TimestampFormat.Full)
-        return yymmdd + ' ' + hhmmssfff;
-      return hhmmssfff;
+      return full ? (yymmdd + ' ' + hhmmssfff) : hhmmssfff;
 
       /**
        * @param {number} value
@@ -1209,15 +1205,6 @@ Console.ConsoleViewMessage = class {
 
     return formattedResult;
   }
-};
-
-/**
- * @enum {string}
- */
-Console.ConsoleViewMessage.TimestampFormat = {
-  None: 'none',
-  Full: 'full',
-  Short: 'short'
 };
 
 /**

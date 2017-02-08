@@ -88,25 +88,18 @@
         {
             "type": "setting",
             "category": "Console",
-            "title": "Timestamps:",
-            "settingName": "consoleTimestampFormat",
-            "settingType": "enum",
-            "defaultValue": "none",
+            "title": "Show timestamps",
+            "settingName": "consoleTimestampsEnabled",
+            "settingType": "boolean",
+            "defaultValue": false,
             "options": [
                 {
-                    "title": "Hide timestamps",
-                    "text": "None",
-                    "value": "none"
+                    "value": true,
+                    "title": "Show timestamps"
                 },
                 {
-                    "title": "Full (yyyy-MM-dd HH:mm:ss.fff)",
-                    "text": "Full",
-                    "value": "full"
-                },
-                {
-                    "title": "Short (HH:mm:ss.fff)",
-                    "text": "Short",
-                    "value": "short"
+                    "value": false,
+                    "title": "Hide timestamps"
                 }
             ]
         },

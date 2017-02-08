@@ -189,10 +189,8 @@ UI.TextFilterUI = class extends Common.Object {
     this._proxyElement = this._prompt.attach(this._filterInputElement);
     this._prompt.setPlaceholder(Common.UIString('Filter'));
 
-    this._proxyElement.addEventListener('input', this._valueChanged.bind(this), false);
     this._proxyElement.addEventListener('keydown', this._onInputKeyDown.bind(this), false);
-    this._prompt.addEventListener(UI.TextPrompt.Events.ItemAccepted, this._valueChanged.bind(this));
-    this._prompt.addEventListener(UI.TextPrompt.Events.ItemApplied, this._valueChanged.bind(this));
+    this._prompt.on(UI.TextPrompt.TextChangedEvent, this._valueChanged.bind(this));
 
     /** @type {?function(string, string, boolean=):!Promise<!UI.SuggestBox.Suggestions>} */
     this._suggestionProvider = null;

@@ -2344,7 +2344,6 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (selectElement.parentElement)
       selectElement.parentElement.scrollIntoViewIfNeeded(false);
 
-    var applyItemCallback = !isEditingName ? this._applyFreeFlowStyleTextEdit.bind(this) : undefined;
     var cssCompletions = [];
     if (isEditingName) {
       cssCompletions = SDK.cssMetadata().allProperties();
@@ -2357,16 +2356,16 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
     this._prompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(cssCompletions, cssVariables, this, isEditingName);
     this._prompt.setAutocompletionTimeout(0);
-    if (applyItemCallback) {
-      this._prompt.addEventListener(UI.TextPrompt.Events.ItemApplied, applyItemCallback, this);
-      this._prompt.addEventListener(UI.TextPrompt.Events.ItemAccepted, applyItemCallback, this);
-    }
+
+    // Do not live-edit "content" property of pseudo elements. crbug.com/433889
+    if (!isEditingName && (!this._parentPane.node().pseudoType() || this.name !== 'content'))
+      this._prompt.on(UI.TextPrompt.TextChangedEvent, this._applyFreeFlowStyleTextEdit.bind(this));
+
     var proxyElement = this._prompt.attachAndStartEditing(selectElement, blurListener.bind(this, context));
     this._navigateToSource(selectElement, true);
 
     proxyElement.addEventListener('keydown', this._editingNameValueKeyDown.bind(this, context), false);
     proxyElement.addEventListener('keypress', this._editingNameValueKeyPress.bind(this, context), false);
-    proxyElement.addEventListener('input', this._editingNameValueInput.bind(this, context), false);
     if (isEditingName)
       proxyElement.addEventListener('paste', pasteHandler.bind(this, context), false);
 
@@ -2453,16 +2452,6 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       this._editingCommitted(event.target.textContent, context, 'forward');
       return;
     }
-  }
-
-  /**
-   * @param {!Elements.StylePropertyTreeElement.Context} context
-   * @param {!Event} event
-   */
-  _editingNameValueInput(context, event) {
-    // Do not live-edit "content" property of pseudo elements. crbug.com/433889
-    if (!context.isEditingName && (!this._parentPane.node().pseudoType() || this.name !== 'content'))
-      this._applyFreeFlowStyleTextEdit();
   }
 
   _applyFreeFlowStyleTextEdit() {

@@ -1052,7 +1052,7 @@ Console.ConsoleViewFilter = class {
     this._messageLevelFiltersSetting.addChangeListener(this._filterChanged);
     this._hideNetworkMessagesSetting.addChangeListener(this._filterChanged);
 
-    this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'), 0.2, 1);
+    this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'), 0.2, 1, true);
     this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, this._textFilterChanged, this);
 
     var levels = [

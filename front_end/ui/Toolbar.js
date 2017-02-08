@@ -552,39 +552,73 @@ UI.ToolbarButton.Events = {
  */
 UI.ToolbarInput = class extends UI.ToolbarItem {
   /**
-   * @param {string=} placeholder
+   * @param {string} placeholder
    * @param {number=} growFactor
    * @param {number=} shrinkFactor
+   * @param {boolean=} isSearchField
    */
-  constructor(placeholder, growFactor, shrinkFactor) {
-    super(createElementWithClass('input', 'toolbar-item'));
-    this.element.addEventListener('input', this._onChangeCallback.bind(this), false);
+  constructor(placeholder, growFactor, shrinkFactor, isSearchField) {
+    super(createElementWithClass('div', 'toolbar-input'));
+
+    this.input = this.element.createChild('input');
+    this.input.addEventListener('focus', () => this.element.classList.add('focused'));
+    this.input.addEventListener('blur', () => this.element.classList.remove('focused'));
+    this.input.addEventListener('input', () => this._onChangeCallback(), false);
+    this._isSearchField = !!isSearchField;
     if (growFactor)
       this.element.style.flexGrow = growFactor;
     if (shrinkFactor)
       this.element.style.flexShrink = shrinkFactor;
     if (placeholder)
-      this.element.setAttribute('placeholder', placeholder);
-    this._value = '';
+      this.input.setAttribute('placeholder', placeholder);
+
+    if (isSearchField)
+      this._setupSearchControls();
+  }
+
+  _setupSearchControls() {
+    var clearButton = this.element.createChild('div', 'toolbar-input-clear-button');
+    clearButton.appendChild(UI.Icon.create('smallicon-clear-input', 'search-cancel-button'));
+    clearButton.addEventListener('click', () => this._internalSetValue('', true));
+    this.input.addEventListener('keydown', event => this._onKeydownCallback(event));
   }
 
   /**
    * @param {string} value
    */
   setValue(value) {
-    this._value = value;
-    this.element.value = value;
+    this._internalSetValue(value, false);
+  }
+
+  /**
+   * @param {string} value
+   * @param {boolean} notify
+   */
+  _internalSetValue(value, notify) {
+    this.input.value = value;
+    if (notify)
+      this._onChangeCallback();
   }
 
   /**
    * @return {string}
    */
   value() {
-    return this.element.value;
+    return this.input.value;
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onKeydownCallback(event) {
+    if (this.isSearchField || !isEscKey(event) || !this.input.value)
+      return;
+    this._internalSetValue('', true);
+    event.consume(true);
   }
 
   _onChangeCallback() {
-    this.dispatchEventToListeners(UI.ToolbarInput.Event.TextChanged, this.element.value);
+    this.dispatchEventToListeners(UI.ToolbarInput.Event.TextChanged, this.input.value);
   }
 };
 

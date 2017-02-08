@@ -200,7 +200,7 @@ select.toolbar-item {
 
 /* Input */
 
-input.toolbar-item {
+.toolbar-input {
     width: 120px;
     height: 20px;
     padding: 3px;
@@ -209,9 +209,25 @@ input.toolbar-item {
     border: solid 1px #d8d8d8;
 }
 
-input.toolbar-item:focus,
-input.toolbar-item.hover {
+.toolbar-input.focused,
+.toolbar-input.hover {
     border: solid 1px rgb(202, 202, 202);
+}
+
+.toolbar-input > input {
+    border: none;
+    flex-grow: 1;
+}
+
+.toolbar-input-clear-button {
+    opacity: 0.7;
+    flex-basis: 13px;
+    flex-shrink: 0;
+    height: 13px;
+}
+
+.toolbar-input-clear-button:hover {
+    opacity: 1;
 }
 
 /* Separator */

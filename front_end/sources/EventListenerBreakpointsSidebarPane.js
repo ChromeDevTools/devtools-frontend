@@ -24,6 +24,8 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
     // this._createCategory(Common.UIString("Drag"), ["drag", "drop", "dragstart", "dragend", "dragenter", "dragleave", "dragover"]);
     this._createCategory(
         Common.UIString('Animation'), ['requestAnimationFrame', 'cancelAnimationFrame', 'animationFrameFired'], true);
+    this._createCategory(Common.UIString('Canvas'), ['canvasContextCreated', 'webglErrorFired', 'webglWarningFired'],
+        true);
     this._createCategory(
         Common.UIString('Clipboard'), ['copy', 'cut', 'paste', 'beforecopy', 'beforecut', 'beforepaste']);
     this._createCategory(
@@ -60,7 +62,6 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
     this._createCategory(Common.UIString('Script'), ['scriptFirstStatement', 'scriptBlockedByCSP'], true);
     this._createCategory(Common.UIString('Timer'), ['setTimer', 'clearTimer', 'timerFired'], true);
     this._createCategory(Common.UIString('Touch'), ['touchstart', 'touchmove', 'touchend', 'touchcancel']);
-    this._createCategory(Common.UIString('WebGL'), ['webglErrorFired', 'webglWarningFired'], true);
     this._createCategory(Common.UIString('Window'), ['close'], true);
     this._createCategory(
         Common.UIString('XHR'),
@@ -92,6 +93,7 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
         'instrumentation:webglErrorFired': Common.UIString('WebGL Error Fired'),
         'instrumentation:webglWarningFired': Common.UIString('WebGL Warning Fired'),
         'instrumentation:setInnerHTML': Common.UIString('Set innerHTML'),
+        'instrumentation:canvasContextCreated': Common.UIString('Create canvas context'),
       };
     }
     if (auxData) {

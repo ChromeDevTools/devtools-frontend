@@ -177,12 +177,13 @@ Timeline.TimelineTreeView = class extends UI.VBox {
 
   /**
    * @protected
-   * @param {function(!SDK.TracingModel.Event):(string|symbol)=} eventIdCallback
+   * @param {boolean} doNotAggregate
+   * @param {?function(!SDK.TracingModel.Event):string} groupIdCallback
    * @return {!TimelineModel.TimelineProfileTree.Node}
    */
-  buildTopDownTree(eventIdCallback) {
-    return TimelineModel.TimelineProfileTree.buildTopDown(
-        this._model.mainThreadEvents(), this._filters, this._startTime, this._endTime, eventIdCallback);
+  buildTopDownTree(doNotAggregate, groupIdCallback) {
+    return new TimelineModel.TimelineProfileTree.TopDownRootNode(
+        this._model.mainThreadEvents(), this._filters, this._startTime, this._endTime, doNotAggregate, groupIdCallback);
   }
 
   /**
@@ -634,7 +635,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
 
   /**
    * @param {!Timeline.AggregatedTimelineTreeView.GroupBy} groupBy
-   * @return {function(!SDK.TracingModel.Event):(string|symbol)}
+   * @return {?function(!SDK.TracingModel.Event):string}
    */
   _groupingFunction(groupBy) {
     /**
@@ -671,7 +672,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
 
     switch (groupBy) {
       case Timeline.AggregatedTimelineTreeView.GroupBy.None:
-        return () => Symbol('uniqueGroupId');
+        return null;
       case Timeline.AggregatedTimelineTreeView.GroupBy.EventName:
         return event => Timeline.TimelineUIUtils.eventStyle(event).title;
       case Timeline.AggregatedTimelineTreeView.GroupBy.Category:
@@ -686,7 +687,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
         return event => TimelineModel.TimelineData.forEvent(event).frameId;
       default:
         console.assert(false, `Unexpected aggregation setting: ${groupBy}`);
-        return () => Symbol('uniqueGroupId');
+        return null;
     }
   }
   /**
@@ -757,10 +758,7 @@ Timeline.CallTreeTimelineTreeView = class extends Timeline.AggregatedTimelineTre
    */
   _buildTree() {
     var grouping = this._groupBySetting.get();
-    var topDown = this.buildTopDownTree(this._groupingFunction(grouping));
-    if (grouping === Timeline.AggregatedTimelineTreeView.GroupBy.None)
-      return topDown;
-    return new TimelineModel.TimelineAggregator().performGrouping(topDown);
+    return this.buildTopDownTree(false, this._groupingFunction(grouping));
   }
 };
 

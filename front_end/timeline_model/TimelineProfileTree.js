@@ -55,11 +55,15 @@ TimelineModel.TimelineProfileTree.TopDownNode = class extends TimelineModel.Time
   /**
    * @param {string} id
    * @param {?SDK.TracingModel.Event} event
+   * @param {?TimelineModel.TimelineProfileTree.TopDownNode} parent
    */
-  constructor(id, event) {
+  constructor(id, event, parent) {
     super(id, event);
-    /** @type {!Map<string, !TimelineModel.TimelineProfileTree.Node>} */
-    this._children = new Map();
+    /** @type {?TimelineModel.TimelineProfileTree.TopDownRootNode} */
+    this._root = parent && parent._root;
+    this._hasChildren = false;
+    this._children = null;
+    this.parent = parent;
   }
 
   /**
@@ -67,7 +71,7 @@ TimelineModel.TimelineProfileTree.TopDownNode = class extends TimelineModel.Time
    * @return {boolean}
    */
   hasChildren() {
-    return !!this._children.size;
+    return this._hasChildren;
   }
 
   /**
@@ -75,73 +79,177 @@ TimelineModel.TimelineProfileTree.TopDownNode = class extends TimelineModel.Time
    * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
    */
   children() {
-    return this._children;
+    return this._children || this._buildChildren();
+  }
+
+  /**
+   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
+   */
+  _buildChildren() {
+    /** @type {!Array<!TimelineModel.TimelineProfileTree.TopDownNode>} */
+    var path = [];
+    for (var node = this; node.parent; node = node.parent)
+      path.push(/** @type {!TimelineModel.TimelineProfileTree.TopDownNode} */ (node));
+    path.reverse();
+    /** @type {!Map<string, !TimelineModel.TimelineProfileTree.Node>} */
+    var children = new Map();
+    var self = this;
+    var root = this._root;
+    var startTime = root._startTime;
+    var endTime = root._endTime;
+    var instantEventCallback = root._doNotAggregate ? onInstantEvent : undefined;
+    var eventIdCallback = root._doNotAggregate ? undefined : TimelineModel.TimelineProfileTree._eventId;
+    var eventGroupIdCallback = root._eventGroupIdCallback;
+    var depth = 0;
+    var matchedDepth = 0;
+    var currentDirectChild = null;
+    TimelineModel.TimelineModel.forEachEvent(
+        root._events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime, root._filter);
+
+    /**
+     * @param {!SDK.TracingModel.Event} e
+     */
+    function onStartEvent(e) {
+      ++depth;
+      if (depth > path.length + 2)
+        return;
+      if (!matchPath(e))
+        return;
+      var duration = Math.min(endTime, e.endTime) - Math.max(startTime, e.startTime);
+      if (duration < 0)
+        console.error('Negative event duration');
+      processEvent(e, duration);
+    }
+
+    /**
+     * @param {!SDK.TracingModel.Event} e
+     */
+    function onInstantEvent(e) {
+      if (matchedDepth === path.length && matchedDepth === depth)
+        processEvent(e, 0);
+    }
+
+    /**
+     * @param {!SDK.TracingModel.Event} e
+     * @param {number} duration
+     */
+    function processEvent(e, duration) {
+      if (depth === path.length + 2) {
+        currentDirectChild._hasChildren = true;
+        currentDirectChild.selfTime -= duration;
+        return;
+      }
+      var id;
+      var groupId = '';
+      if (!eventIdCallback) {
+        id = Symbol('uniqueId');
+      } else {
+        id = eventIdCallback(e);
+        groupId = eventGroupIdCallback ? eventGroupIdCallback(e) : '';
+        if (groupId)
+          id += '/' + groupId;
+      }
+      var node = children.get(id);
+      if (!node) {
+        node = new TimelineModel.TimelineProfileTree.TopDownNode(id, e, self);
+        node._groupId = groupId;
+        children.set(id, node);
+      }
+      node.selfTime += duration;
+      node.totalTime += duration;
+      currentDirectChild = node;
+    }
+
+    /**
+     * @param {!SDK.TracingModel.Event} e
+     * @return {boolean}
+     */
+    function matchPath(e) {
+      if (matchedDepth === path.length)
+        return true;
+      if (matchedDepth !== depth - 1)
+        return false;
+      if (!e.endTime)
+        return false;
+      if (!eventIdCallback) {
+        if (e === path[matchedDepth].event)
+          ++matchedDepth;
+        return false;
+      }
+      var id = eventIdCallback(e);
+      var groupId = eventGroupIdCallback ? eventGroupIdCallback(e) : '';
+      if (groupId)
+        id += '/' + groupId;
+      if (id === path[matchedDepth].id)
+        ++matchedDepth;
+      return false;
+    }
+
+    /**
+     * @param {!SDK.TracingModel.Event} e
+     */
+    function onEndEvent(e) {
+      --depth;
+      if (matchedDepth > depth)
+        matchedDepth = depth;
+    }
+
+    this._children = children;
+    return children;
   }
 };
 
-/**
- * @param {!Array<!SDK.TracingModel.Event>} events
- * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
- * @param {number} startTime
- * @param {number} endTime
- * @param {function(!SDK.TracingModel.Event):string=} eventGroupIdCallback
- * @return {!TimelineModel.TimelineProfileTree.Node}
- */
-TimelineModel.TimelineProfileTree.buildTopDown = function(events, filters, startTime, endTime, eventGroupIdCallback) {
-  // Temporarily deposit a big enough value that exceeds the max recording time.
-  var /** @const */ initialTime = 1e7;
-  var root = new TimelineModel.TimelineProfileTree.TopDownNode('', null);
-  root.totalTime = initialTime;
-  root.selfTime = initialTime;
-  var parent = root;
-
+TimelineModel.TimelineProfileTree.TopDownRootNode = class extends TimelineModel.TimelineProfileTree.TopDownNode {
   /**
-   * @param {!SDK.TracingModel.Event} e
+   * @param {!Array<!SDK.TracingModel.Event>} events
+   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
+   * @param {number} startTime
+   * @param {number} endTime
+   * @param {boolean=} doNotAggregate
+   * @param {?function(!SDK.TracingModel.Event):string=} eventGroupIdCallback
    */
-  function onStartEvent(e) {
-    if (!TimelineModel.TimelineModel.isVisible(filters, e))
-      return;
-    var time = e.endTime ? Math.min(endTime, e.endTime) - Math.max(startTime, e.startTime) : 0;
-    var groupId = eventGroupIdCallback ? eventGroupIdCallback(e) : Symbol('uniqueGroupId');
-    var id = eventGroupIdCallback ? TimelineModel.TimelineProfileTree._eventId(e) : Symbol('uniqueEventId');
-    if (typeof groupId === 'string' && typeof id === 'string')
-      id += '/' + groupId;
-    var node = parent.children().get(id);
-    if (node) {
-      node.selfTime += time;
-      node.totalTime += time;
-    } else {
-      node = new TimelineModel.TimelineProfileTree.TopDownNode(id, e);
-      node.totalTime = time;
-      node.selfTime = time;
-      node.parent = parent;
-      node._groupId = groupId;
-      parent.children().set(id, node);
-    }
-    parent.selfTime -= time;
-    if (parent.selfTime < 0) {
-      console.error('Error: Negative self of ' + parent.selfTime, e);
-      parent.selfTime = 0;
-    }
-    if (e.endTime)
-      parent = node;
+  constructor(events, filters, startTime, endTime, doNotAggregate, eventGroupIdCallback) {
+    super('', null, null);
+    this._root = this;
+    this._events = events;
+    this._filter = e => TimelineModel.TimelineModel.isVisible(filters, e);
+    this._startTime = startTime;
+    this._endTime = endTime;
+    this._eventGroupIdCallback = eventGroupIdCallback;
+    this._doNotAggregate = doNotAggregate;
+    this.totalTime = endTime - startTime;
+    this.selfTime = this.totalTime;
   }
 
   /**
-   * @param {!SDK.TracingModel.Event} e
+   * @override
+   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
    */
-  function onEndEvent(e) {
-    if (!TimelineModel.TimelineModel.isVisible(filters, e))
-      return;
-    parent = parent.parent;
+  children() {
+    return this._children || this._grouppedTopNodes();
   }
 
-  var instantEventCallback =
-      eventGroupIdCallback ? undefined : onStartEvent;  // Ignore instant events when aggregating.
-  TimelineModel.TimelineModel.forEachEvent(events, onStartEvent, onEndEvent, instantEventCallback, startTime, endTime);
-  root.totalTime -= root.selfTime;
-  root.selfTime = 0;
-  return root;
+  /**
+   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
+   */
+  _grouppedTopNodes() {
+    var flatNodes = super.children();
+    if (!this._eventGroupIdCallback)
+      return flatNodes;
+    var groupNodes = new Map();
+    for (var node of flatNodes.values()) {
+      var groupId = this._eventGroupIdCallback(/** @type {!SDK.TracingModel.Event} */ (node.event));
+      var groupNode = groupNodes.get(groupId);
+      if (!groupNode) {
+        groupNode = new TimelineModel.TimelineProfileTree.GroupNode(
+            groupId, /** @type {!SDK.TracingModel.Event} */ (node.event));
+        groupNodes.set(groupId, groupNode);
+      }
+      groupNode.addChild(node, node.selfTime, node.totalTime);
+    }
+    this._children = groupNodes;
+    return groupNodes;
+  }
 };
 
 TimelineModel.TimelineProfileTree.BottomUpTreeRootNode = class extends TimelineModel.TimelineProfileTree.Node {
@@ -150,7 +258,7 @@ TimelineModel.TimelineProfileTree.BottomUpTreeRootNode = class extends TimelineM
    * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    * @param {number} startTime
    * @param {number} endTime
-   * @param {function(!SDK.TracingModel.Event):string=} eventGroupIdCallback
+   * @param {?function(!SDK.TracingModel.Event):string} eventGroupIdCallback
    */
   constructor(events, filters, startTime, endTime, eventGroupIdCallback) {
     super('', null);
@@ -240,26 +348,25 @@ TimelineModel.TimelineProfileTree.BottomUpTreeRootNode = class extends TimelineM
    */
   _grouppedTopNodes() {
     var flatNodes = this._ungrouppedTopNodes();
+    if (!this._eventGroupIdCallback)
+      return flatNodes;
     var groupNodes = new Map();
     for (var node of flatNodes.values()) {
       var groupId = this._eventGroupIdCallback(/** @type {!SDK.TracingModel.Event} */ (node.event));
-      if (typeof groupId !== 'string')
-        return flatNodes;
       var groupNode = groupNodes.get(groupId);
       if (!groupNode) {
-        groupNode = new TimelineModel.TimelineProfileTree.BottomUpTreeGroupNode(
+        groupNode = new TimelineModel.TimelineProfileTree.GroupNode(
             groupId, /** @type {!SDK.TracingModel.Event} */ (node.event));
-        groupNode.parent = this;
         groupNodes.set(groupId, groupNode);
       }
-      groupNode.addChild(node);
+      groupNode.addChild(node, node.selfTime, node.selfTime);
       node.parent = groupNode;
     }
     return groupNodes;
   }
 };
 
-TimelineModel.TimelineProfileTree.BottomUpTreeGroupNode = class extends TimelineModel.TimelineProfileTree.Node {
+TimelineModel.TimelineProfileTree.GroupNode = class extends TimelineModel.TimelineProfileTree.Node {
   /**
    * @param {string} id
    * @param {!SDK.TracingModel.Event} event
@@ -272,11 +379,13 @@ TimelineModel.TimelineProfileTree.BottomUpTreeGroupNode = class extends Timeline
 
   /**
    * @param {!TimelineModel.TimelineProfileTree.BottomUpTreeNode} child
+   * @param {number} selfTime
+   * @param {number} totalTime
    */
-  addChild(child) {
+  addChild(child, selfTime, totalTime) {
     this._children.set(child.id, child);
-    this.selfTime += child.selfTime;
-    this.totalTime += child.selfTime;
+    this.selfTime += selfTime;
+    this.totalTime += totalTime;
   }
 
   /**
@@ -431,55 +540,4 @@ TimelineModel.TimelineProfileTree._eventId = function(event) {
       TimelineModel.TimelineJSProfileProcessor.nativeGroup(functionName) || functionName :
       functionName;
   return `f:${name}@${location}`;
-};
-
-/**
- * @unrestricted
- */
-TimelineModel.TimelineAggregator = class {
-  constructor() {
-    /** @type {!Map<string, !TimelineModel.TimelineProfileTree.TopDownNode>} */
-    this._groupNodes = new Map();
-  }
-
-  /**
-   * @param {!TimelineModel.TimelineProfileTree.Node} root
-   * @return {!TimelineModel.TimelineProfileTree.Node}
-   */
-  performGrouping(root) {
-    for (var node of root.children().values()) {
-      var groupNode = this.groupNodeForId(node._groupId, /** @type {!SDK.TracingModel.Event} */ (node.event));
-      groupNode.parent = root;
-      groupNode.selfTime += node.selfTime;
-      groupNode.totalTime += node.totalTime;
-      groupNode.children().set(node.id, node);
-      node.parent = root;
-    }
-    root._children = this._groupNodes;
-    return root;
-  }
-
-  /**
-   * @param {string} groupId
-   * @param {!SDK.TracingModel.Event} event
-   * @return {!TimelineModel.TimelineProfileTree.Node}
-   */
-  groupNodeForId(groupId, event) {
-    var node = this._groupNodes.get(groupId);
-    return node || this._buildGroupNode(groupId, event);
-  }
-
-  /**
-   * @param {string} id
-   * @param {!SDK.TracingModel.Event} event
-   * @return {!TimelineModel.TimelineProfileTree.Node}
-   */
-  _buildGroupNode(id, event) {
-    var groupNode = new TimelineModel.TimelineProfileTree.TopDownNode(id, event);
-    groupNode.selfTime = 0;
-    groupNode.totalTime = 0;
-    groupNode._isGroupNode = true;
-    this._groupNodes.set(id, groupNode);
-    return groupNode;
-  }
 };

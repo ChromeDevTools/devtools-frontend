@@ -40,7 +40,7 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
    * @return {!TimelineModel.TimelineProfileTree.Node}
    */
   _buildTree() {
-    this._currentTree = this.buildTopDownTree();
+    this._currentTree = this.buildTopDownTree(true, null);
     return this._currentTree;
   }
 

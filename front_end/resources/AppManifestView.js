@@ -10,8 +10,14 @@ Resources.AppManifestView = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('resources/appManifestView.css');
 
+    this._emptyView = new UI.EmptyWidget(Common.UIString('No web app manifest'));
+
+    this._emptyView.show(this.contentElement);
+    this._emptyView.hideWidget();
+
     this._reportView = new UI.ReportView(Common.UIString('App Manifest'));
     this._reportView.show(this.contentElement);
+    this._reportView.hideWidget();
 
     this._errorsSection = this._reportView.appendSection(Common.UIString('Errors and warnings'));
     this._identitySection = this._reportView.appendSection(Common.UIString('Identity'));
@@ -81,6 +87,14 @@ Resources.AppManifestView = class extends UI.VBox {
    * @param {!Array<!Protocol.Page.AppManifestError>} errors
    */
   _renderManifest(url, data, errors) {
+    if (!data && !errors.length) {
+      this._emptyView.showWidget();
+      this._reportView.hideWidget();
+      return;
+    }
+    this._emptyView.hideWidget();
+    this._reportView.showWidget();
+
     this._reportView.setURL(Components.Linkifier.linkifyURL(url));
     this._errorsSection.clearContent();
     this._errorsSection.element.classList.toggle('hidden', !errors.length);

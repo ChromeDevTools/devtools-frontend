@@ -1,0 +1,36 @@
+CONSOLE MESSAGE: line 25: angle: 0; type: portrait-primary
+CONSOLE MESSAGE: line 25: angle: 180; type: portrait-secondary
+CONSOLE MESSAGE: line 25: angle: 90; type: landscape-primary
+CONSOLE MESSAGE: line 25: angle: 270; type: landscape-secondary
+CONSOLE MESSAGE: line 25: angle: 0; type: landscape-primary
+
+Running: initial
+
+Running: setWrongAngle1
+error: Request Emulation.setDeviceMetricsOverride failed. {"code":-32602,"message":"Missing or invalid 'Screen orientation angle must be non-negative, less than 360' parameter"}
+
+Running: setWrongAngle2
+error: Request Emulation.setDeviceMetricsOverride failed. {"code":-32602,"message":"Missing or invalid 'Screen orientation angle must be non-negative, less than 360' parameter"}
+
+Running: setWrongType
+error: Request Emulation.setDeviceMetricsOverride failed. {"code":-32602,"message":"Missing or invalid 'Invalid screen orientation type value' parameter"}
+
+Running: setPortraitPrimary
+angle: 0; type: portrait-primary
+
+Running: setPortraitSecondary
+angle: 180; type: portrait-secondary
+
+Running: setLandscapePrimary
+angle: 90; type: landscape-primary
+
+Running: restoresAfterReload
+Page reloaded.
+angle: 90; type: landscape-primary
+
+Running: setLandscapeSecondary
+angle: 270; type: landscape-secondary
+
+Running: clearOverride
+Equals to initial: true
+

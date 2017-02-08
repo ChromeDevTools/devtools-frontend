@@ -21,6 +21,15 @@ inspector/console/worker-eval-contains-stack.html [ Skip ]
 inspector/sources/debugger-frameworks/frameworks-with-worker.html [ Skip ]
 inspector/sources/debugger-ui/script-snippet-model.html [ Skip ] # TODO(chenwilliam): extract the worker test
 inspector/tracing/worker-events.html [ Skip ]
+inspector-protocol/debugger/debugger-evaluate-in-worker-while-pause-in-page.html [ Skip ]
+inspector-protocol/debugger/debugger-pause-dedicated-worker-loop.html [ Skip ]
+inspector-protocol/debugger/debugger-pause-dedicated-worker.html [ Skip ]
+inspector-protocol/debugger/debugger-setTimeout-sourceUrl-dedicated-worker-loop.html [ Skip ]
+inspector-protocol/debugger/debugger-step-into-dedicated-worker.html [ Skip ]
+inspector-protocol/debugger/debugger-terminate-dedicated-worker-while-paused.html [ Skip ]
+inspector-protocol/debugger/suspend-setTimeout-on-pause-in-dedicated-worker.html [ Skip ]
+inspector-protocol/worker/exception-from-worker-contains-stack.html [ Skip ]
+inspector-protocol/worker/worker-console.html [ Skip ]
 
 # Skipping accessibility tests b/c of protocol change
 # https://crrev.com/3a46cc72d58945804dd4919a679a8ce26690bfc0
@@ -96,3 +105,12 @@ inspector-protocol/timeline/page-frames.html [ Skip ]
 # Added runtime stats to timeline: http://crbug.com/660428
 inspector/tracing/timeline-js/timeline-runtime-stats.html [ Skip ]
 
+# Page.getLayoutMetrics added after 1.2 protocol
+# https://crrev.com/10f7e12361ee5e1eeb6955f0bc27eb3c182dd412
+inspector-protocol/page/get-layout-metrics.html [ Skip ]
+
+# CSSTracker added after 1.2 protocol
+# https://crrev.com/f8d52df8d16f6521c895fba8f0b8bf957d7eb7f7
+inspector/css_tracker/css-tracker-view.html [ Skip ]
+inspector/css_tracker/decorations-after-inplace-formatter.html [ Skip ]
+inspector/css_tracker/highlight-in-source.html [ Skip ]

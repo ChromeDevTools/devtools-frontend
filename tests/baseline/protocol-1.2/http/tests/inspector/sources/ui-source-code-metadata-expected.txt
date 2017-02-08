@@ -1,0 +1,18 @@
+CONSOLE MESSAGE: line 1: Script loaded.
+Verify that network UISourceCode has metadata.
+
+
+Running: testCachedResource
+Metadata for UISourceCode: http://127.0.0.1:8000/inspector/sources/resources/style.css
+    Metadata is EMPTY
+
+Running: testDynamicResource
+Metadata for UISourceCode: http://127.0.0.1:8000/inspector/sources/resources/script.js
+    content size: 31
+    modification time: <Date>
+
+Running: testInlinedSourceMapSource
+Metadata for UISourceCode: http://127.0.0.1:8000/inspector/sources/resources/style.scss
+    content size: 26
+    modification time: null
+

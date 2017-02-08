@@ -5,7 +5,7 @@ Node was hidden after dblclick: true
 Node was hidden after dblclick: true
 Node was hidden after dblclick: true
 logToConsole()
-console-edit-property-value.html:10 Object
+console-edit-property-value.html:10 Object {a: 1, b: "foo", c: null}
     a: 3
     b: "foo"
     c: Array[3]

@@ -230,6 +230,10 @@ select.toolbar-item {
     opacity: 1;
 }
 
+.toolbar-input-empty .toolbar-input-clear-button {
+    display: none;
+}
+
 /* Separator */
 
 .toolbar-divider {

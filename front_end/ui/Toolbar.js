@@ -547,9 +547,6 @@ UI.ToolbarButton.Events = {
   MouseUp: Symbol('MouseUp')
 };
 
-/**
- * @unrestricted
- */
 UI.ToolbarInput = class extends UI.ToolbarItem {
   /**
    * @param {string} placeholder
@@ -574,6 +571,8 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
 
     if (isSearchField)
       this._setupSearchControls();
+
+    this._updateEmptyStyles();
   }
 
   _setupSearchControls() {
@@ -598,6 +597,7 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
     this.input.value = value;
     if (notify)
       this._onChangeCallback();
+    this._updateEmptyStyles();
   }
 
   /**
@@ -611,14 +611,19 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
    * @param {!Event} event
    */
   _onKeydownCallback(event) {
-    if (this.isSearchField || !isEscKey(event) || !this.input.value)
+    if (!this._isSearchField || !isEscKey(event) || !this.input.value)
       return;
     this._internalSetValue('', true);
     event.consume(true);
   }
 
   _onChangeCallback() {
+    this._updateEmptyStyles();
     this.dispatchEventToListeners(UI.ToolbarInput.Event.TextChanged, this.input.value);
+  }
+
+  _updateEmptyStyles() {
+    this.element.classList.toggle('toolbar-input-empty', !this.input.value);
   }
 };
 

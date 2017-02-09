@@ -234,7 +234,7 @@ Network.ResourceWebSocketFrameNode = class extends DataGrid.SortableDataGridNode
    * @return {number}
    */
   nodeSelfHeight() {
-    return 17;
+    return 21;
   }
 
   /**

@@ -1585,7 +1585,7 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @return {number}
    */
   nodeSelfHeight() {
-    return 16;
+    return 20;
   }
 
   /**

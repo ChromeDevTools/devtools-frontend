@@ -135,7 +135,7 @@ DataGrid.ShowMoreDataGridNode = class extends DataGrid.DataGridNode {
    * @return {number}
    */
   nodeSelfHeight() {
-    return 32;
+    return 40;
   }
 
   dispose() {

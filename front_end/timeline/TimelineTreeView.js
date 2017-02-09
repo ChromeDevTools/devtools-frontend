@@ -53,8 +53,9 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     this.populateColumns(columns);
 
     this._splitWidget = new UI.SplitWidget(true, true, 'timelineTreeViewDetailsSplitWidget');
-    const mainView = new UI.VBox();
-    this._populateToolbar(mainView.element);
+    var mainView = new UI.VBox();
+    var toolbar = new UI.Toolbar('', mainView.element);
+    this._populateToolbar(toolbar);
 
     this._dataGrid = new DataGrid.SortableDataGrid(columns);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
@@ -108,9 +109,9 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Element} parent
+   * @param {!UI.Toolbar} toolbar
    */
-  _populateToolbar(parent) {
+  _populateToolbar(toolbar) {
   }
 
   /**
@@ -209,8 +210,8 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @param {!Array<!DataGrid.DataGrid.ColumnDescriptor>} columns
    */
   populateColumns(columns) {
-    columns.push({id: 'self', title: Common.UIString('Self Time'), width: '110px', fixedWidth: true, sortable: true});
-    columns.push({id: 'total', title: Common.UIString('Total Time'), width: '110px', fixedWidth: true, sortable: true});
+    columns.push({id: 'self', title: Common.UIString('Self Time'), width: '120px', fixedWidth: true, sortable: true});
+    columns.push({id: 'total', title: Common.UIString('Total Time'), width: '120px', fixedWidth: true, sortable: true});
     columns.push({id: 'activity', title: Common.UIString('Activity'), disclosure: true, sortable: true});
   }
 
@@ -571,10 +572,9 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
 
   /**
    * @override
-   * @param {!Element} parent
+   * @param {!UI.Toolbar} toolbar
    */
-  _populateToolbar(parent) {
-    var panelToolbar = new UI.Toolbar('', parent);
+  _populateToolbar(toolbar) {
     this._groupByCombobox = new UI.ToolbarComboBox(this._onGroupByChanged.bind(this));
     /**
      * @param {string} name
@@ -595,9 +595,9 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
     addGroupingOption.call(this, Common.UIString('Group by Subdomain'), groupBy.Subdomain);
     addGroupingOption.call(this, Common.UIString('Group by URL'), groupBy.URL);
     addGroupingOption.call(this, Common.UIString('Group by Frame'), groupBy.Frame);
-    panelToolbar.appendToolbarItem(this._groupByCombobox);
-    panelToolbar.appendSpacer();
-    panelToolbar.appendToolbarItem(this._splitWidget.createShowHideSidebarButton(Common.UIString('heaviest stack')));
+    toolbar.appendToolbarItem(this._groupByCombobox);
+    toolbar.appendSpacer();
+    toolbar.appendToolbarItem(this._splitWidget.createShowHideSidebarButton(Common.UIString('heaviest stack')));
   }
 
   /**

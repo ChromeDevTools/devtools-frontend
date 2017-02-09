@@ -90,18 +90,17 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
    */
   populateColumns(columns) {
     columns.push(
-        {id: 'startTime', title: Common.UIString('Start Time'), width: '110px', fixedWidth: true, sortable: true});
+        {id: 'startTime', title: Common.UIString('Start Time'), width: '80px', fixedWidth: true, sortable: true});
     super.populateColumns(columns);
+    columns.filter(c => c.fixedWidth).forEach(c => c.width = '80px');
   }
 
   /**
    * @override
-   * @param {!Element} parent
+   * @param {!UI.Toolbar} toolbar
    */
-  _populateToolbar(parent) {
-    var filtersWidget = this._filtersControl.filtersWidget();
-    filtersWidget.forceShowFilterBar();
-    filtersWidget.show(parent);
+  _populateToolbar(toolbar) {
+    this._filtersControl.populateToolbar(toolbar);
   }
 
   /**
@@ -141,13 +140,10 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
 Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
   constructor() {
     super();
-
     this._categoryFilter = new Timeline.TimelineFilters.Category();
     this._durationFilter = new Timeline.TimelineFilters.IsLong();
     this._textFilter = new Timeline.TimelineFilters.RegExp();
     this._filters = [this._categoryFilter, this._durationFilter, this._textFilter];
-
-    this._createFilterBar();
   }
 
   /**
@@ -158,49 +154,22 @@ Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
   }
 
   /**
-   * @return {?RegExp}
+   * @param {!UI.Toolbar} toolbar
    */
-  searchRegExp() {
-    return this._textFilter.regExp();
-  }
+  populateToolbar(toolbar) {
+    this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'));
+    this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, textFilterChanged, this);
+    toolbar.appendToolbarItem(this._textFilterUI);
 
-  /**
-   * @return {!UI.ToolbarItem}
-   */
-  filterButton() {
-    return this._filterBar.filterButton();
-  }
-
-  /**
-   * @return {!UI.Widget}
-   */
-  filtersWidget() {
-    return this._filterBar;
-  }
-
-  _createFilterBar() {
-    this._filterBar = new UI.FilterBar('timelinePanel');
-
-    this._textFilterUI = new UI.TextFilterUI();
-    this._textFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, textFilterChanged, this);
-    this._filterBar.addFilter(this._textFilterUI);
-
-    var durationOptions = [];
+    var durationFilterUI = new UI.ToolbarComboBox(durationFilterChanged.bind(this));
     for (var durationMs of Timeline.EventsTimelineTreeView.Filters._durationFilterPresetsMs) {
-      var durationOption = {};
-      if (!durationMs) {
-        durationOption.label = Common.UIString('All');
-        durationOption.title = Common.UIString('Show all records');
-      } else {
-        durationOption.label = Common.UIString('\u2265 %dms', durationMs);
-        durationOption.title = Common.UIString('Hide records shorter than %dms', durationMs);
-      }
-      durationOption.value = String(durationMs);
-      durationOptions.push(durationOption);
+      durationFilterUI.addOption(durationFilterUI.createOption(
+          durationMs ? Common.UIString('\u2265 %d\u2009ms', durationMs) : Common.UIString('All'),
+          durationMs ? Common.UIString('Hide records shorter than %d\u2009ms', durationMs)
+                     : Common.UIString('Show all records'),
+          String(durationMs)));
     }
-    var durationFilterUI = new UI.ComboBoxFilterUI(durationOptions);
-    durationFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, durationFilterChanged, this);
-    this._filterBar.addFilter(durationFilterUI);
+    toolbar.appendToolbarItem(durationFilterUI);
 
     var categoryFiltersUI = {};
     var categories = Timeline.TimelineUIUtils.categories();
@@ -208,13 +177,13 @@ Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
       var category = categories[categoryName];
       if (!category.visible)
         continue;
-      var filter = new UI.CheckboxFilterUI(category.name, category.title);
-      filter.setColor(category.color, 'rgba(0, 0, 0, 0.2)');
-      categoryFiltersUI[category.name] = filter;
-      filter.addEventListener(UI.FilterUI.Events.FilterChanged, categoriesFilterChanged.bind(this, categoryName));
-      this._filterBar.addFilter(filter);
+      var checkbox = new UI.ToolbarCheckbox(
+          category.title, undefined, undefined, categoriesFilterChanged.bind(this, categoryName));
+      checkbox.setChecked(true);
+      checkbox.inputElement.style.backgroundColor = category.color;
+      categoryFiltersUI[category.name] = checkbox;
+      toolbar.appendToolbarItem(checkbox);
     }
-    return this._filterBar;
 
     /**
      * @this {Timeline.EventsTimelineTreeView.Filters}
@@ -229,7 +198,7 @@ Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
      * @this {Timeline.EventsTimelineTreeView.Filters}
      */
     function durationFilterChanged() {
-      var duration = durationFilterUI.value();
+      var duration = durationFilterUI.selectedOption().value;
       var minimumRecordDuration = parseInt(duration, 10);
       this._durationFilter.setMinimumRecordDuration(minimumRecordDuration);
       this._notifyFiltersChanged();

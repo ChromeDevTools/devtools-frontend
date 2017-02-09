@@ -30,7 +30,7 @@
  */
 
 /**
- * @implements {Timeline.TimelineLifecycleDelegate}
+ * @implements {Timeline.TimelineController.Client}
  * @implements {Timeline.TimelineModeViewDelegate}
  * @implements {UI.Searchable}
  * @unrestricted
@@ -1155,40 +1155,6 @@ Timeline.TimelinePanel.ViewMode = {
 Timeline.TimelinePanel.rowHeight = 18;
 Timeline.TimelinePanel.headerHeight = 20;
 
-/**
- * @interface
- */
-Timeline.LoaderClient = function() {};
-
-Timeline.LoaderClient.prototype = {
-  loadingStarted() {},
-
-  /**
-   * @param {number=} progress
-   */
-  loadingProgress(progress) {},
-
-  /**
-   * @param {?SDK.TracingModel} tracingModel
-   * @param {?Bindings.TempFileBackingStorage} backingStorage
-   */
-  loadingComplete(tracingModel, backingStorage) {},
-};
-
-/**
- * @interface
- * @extends {Timeline.LoaderClient}
- */
-Timeline.TimelineLifecycleDelegate = function() {};
-
-Timeline.TimelineLifecycleDelegate.prototype = {
-  recordingStarted() {},
-
-  /**
-   * @param {number} usage
-   */
-  recordingProgress(usage) {},
-};
 
 Timeline.TimelineSelection = class {
   /**

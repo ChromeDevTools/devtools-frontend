@@ -8,10 +8,10 @@
  */
 Timeline.TimelineLoader = class {
   /**
-   * @param {!Timeline.LoaderClient} delegate
+   * @param {!Timeline.TimelineLoader.Client} client
    */
-  constructor(delegate) {
-    this._delegate = delegate;
+  constructor(client) {
+    this._client = client;
 
     this._backingStorage = new Bindings.TempFileBackingStorage('tracing');
     this._tracingModel = new SDK.TracingModel(this._backingStorage);
@@ -30,11 +30,11 @@ Timeline.TimelineLoader = class {
 
   /**
    * @param {!File} file
-   * @param {!Timeline.TimelineLifecycleDelegate} delegate
+   * @param {!Timeline.TimelineLoader.Client} client
    * @return {!Timeline.TimelineLoader}
    */
-  static loadFromFile(file, delegate) {
-    var loader = new Timeline.TimelineLoader(delegate);
+  static loadFromFile(file, client) {
+    var loader = new Timeline.TimelineLoader(client);
     var fileReader = Timeline.TimelineLoader._createFileReader(file, loader);
     loader._canceledCallback = fileReader.cancel.bind(fileReader);
     loader._totalSize = file.size;
@@ -44,11 +44,11 @@ Timeline.TimelineLoader = class {
 
   /**
    * @param {string} url
-   * @param {!Timeline.LoaderClient} delegate
+   * @param {!Timeline.TimelineLoader.Client} client
    * @return {!Timeline.TimelineLoader}
    */
-  static loadFromURL(url, delegate) {
-    var stream = new Timeline.TimelineLoader(delegate);
+  static loadFromURL(url, client) {
+    var stream = new Timeline.TimelineLoader(client);
     Host.ResourceLoader.loadAsStream(url, null, stream);
     return stream;
   }
@@ -65,8 +65,8 @@ Timeline.TimelineLoader = class {
   cancel() {
     this._tracingModel = null;
     this._backingStorage.reset();
-    this._delegate.loadingComplete(null, null);
-    this._delegate = null;
+    this._client.loadingComplete(null, null);
+    this._client = null;
     if (this._canceledCallback)
       this._canceledCallback();
   }
@@ -76,11 +76,11 @@ Timeline.TimelineLoader = class {
    * @param {string} chunk
    */
   write(chunk) {
-    if (!this._delegate)
+    if (!this._client)
       return;
     this._loadedBytes += chunk.length;
     if (!this._firstChunk)
-      this._delegate.loadingProgress(this._totalSize ? this._loadedBytes / this._totalSize : undefined);
+      this._client.loadingProgress(this._totalSize ? this._loadedBytes / this._totalSize : undefined);
 
     if (this._state === Timeline.TimelineLoader.State.Initial) {
       if (chunk[0] === '{') {
@@ -122,7 +122,7 @@ Timeline.TimelineLoader = class {
     var json = data + ']';
 
     if (this._firstChunk) {
-      this._delegate.loadingStarted();
+      this._client.loadingStarted();
     } else {
       var commaIndex = json.indexOf(',');
       if (commaIndex !== -1)
@@ -175,10 +175,10 @@ Timeline.TimelineLoader = class {
    * @override
    */
   close() {
-    if (!this._delegate)
+    if (!this._client)
       return;
     this._tracingModel.tracingComplete();
-    this._delegate.loadingComplete(this._tracingModel, this._backingStorage);
+    this._client.loadingComplete(this._tracingModel, this._backingStorage);
   }
 
   /**
@@ -225,6 +225,25 @@ Timeline.TimelineLoader = class {
 
 Timeline.TimelineLoader.TransferChunkLengthBytes = 5000000;
 
+/**
+ * @interface
+ */
+Timeline.TimelineLoader.Client = function() {};
+
+Timeline.TimelineLoader.Client.prototype = {
+  loadingStarted() {},
+
+  /**
+   * @param {number=} progress
+   */
+  loadingProgress(progress) {},
+
+  /**
+   * @param {?SDK.TracingModel} tracingModel
+   * @param {?Bindings.TempFileBackingStorage} backingStorage
+   */
+  loadingComplete(tracingModel, backingStorage) {},
+};
 
 /**
  * @enum {symbol}

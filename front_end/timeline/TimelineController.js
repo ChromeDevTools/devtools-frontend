@@ -11,12 +11,12 @@ Timeline.TimelineController = class {
   /**
    * @param {!SDK.Target} target
    * @param {!Timeline.PerformanceModel} performanceModel
-   * @param {!Timeline.TimelineLifecycleDelegate} delegate
+   * @param {!Timeline.TimelineController.Client} client
    */
-  constructor(target, performanceModel, delegate) {
+  constructor(target, performanceModel, client) {
     this._target = target;
     this._performanceModel = performanceModel;
-    this._delegate = delegate;
+    this._client = client;
 
     this._tracingModelBackingStorage = new Bindings.TempFileBackingStorage('tracing');
     this._tracingModel = new SDK.TracingModel(this._tracingModelBackingStorage);
@@ -83,7 +83,7 @@ Timeline.TimelineController = class {
     this._target.tracingManager.stop();
     tracingStoppedPromises.push(SDK.targetManager.resumeAllTargets());
 
-    this._delegate.loadingStarted();
+    this._client.loadingStarted();
 
     var extensionCompletionPromises = this._extensionSessions.map(session => session.stop());
     if (extensionCompletionPromises.length) {
@@ -196,7 +196,7 @@ Timeline.TimelineController = class {
    * @override
    */
   tracingStarted() {
-    this._delegate.recordingStarted();
+    this._client.recordingStarted();
   }
 
   /**
@@ -218,7 +218,7 @@ Timeline.TimelineController = class {
   _allSourcesFinished() {
     this._injectCpuProfileEvents();
     this._tracingModel.tracingComplete();
-    this._delegate.loadingComplete(this._tracingModel, this._tracingModelBackingStorage);
+    this._client.loadingComplete(this._tracingModel, this._tracingModelBackingStorage);
   }
 
   /**
@@ -273,7 +273,7 @@ Timeline.TimelineController = class {
    * @override
    */
   tracingBufferUsage(usage) {
-    this._delegate.recordingProgress(usage);
+    this._client.recordingProgress(usage);
   }
 
   /**
@@ -281,8 +281,23 @@ Timeline.TimelineController = class {
    * @override
    */
   eventsRetrievalProgress(progress) {
-    this._delegate.loadingProgress(progress);
+    this._client.loadingProgress(progress);
   }
+};
+
+/**
+ * @interface
+ * @extends {Timeline.TimelineLoader.Client}
+ */
+Timeline.TimelineController.Client = function() {};
+
+Timeline.TimelineController.Client.prototype = {
+  recordingStarted() {},
+
+  /**
+   * @param {number} usage
+   */
+  recordingProgress(usage) {},
 };
 
 /**

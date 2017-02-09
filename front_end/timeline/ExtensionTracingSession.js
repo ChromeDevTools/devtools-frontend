@@ -4,7 +4,7 @@
 
 /**
  * @implements {Extensions.TracingSession}
- * @implements {Timeline.LoaderClient}
+ * @implements {Timeline.TimelineLoader.Client}
  */
 Timeline.ExtensionTracingSession = class {
   /**

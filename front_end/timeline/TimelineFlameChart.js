@@ -34,21 +34,20 @@
  */
 Timeline.TimelineFlameChartDataProvider = class {
   /**
-   * @param {!TimelineModel.TimelineModel} model
-   * @param {!TimelineModel.TimelineFrameModel} frameModel
-   * @param {!TimelineModel.TimelineIRModel} irModel
    * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    */
-  constructor(model, frameModel, irModel, filters) {
+  constructor(filters) {
     this.reset();
     this._font = '11px ' + Host.fontFamily();
-    this._model = model;
     this._filters = filters;
     /** @type {?PerfUI.FlameChart.TimelineData} */
     this._timelineData = null;
     this._currentLevel = 0;
-    this._frameModel = frameModel;
-    this._irModel = irModel;
+    /** @type {?Timeline.PerformanceModel} */
+    this._performanceModel = null;
+    /** @type {?TimelineModel.TimelineModel} */
+    this._model = null;
+
     this._consoleColorGenerator =
         new PerfUI.FlameChart.ColorGenerator({min: 30, max: 55}, {min: 70, max: 100, count: 6}, 50, 0.7);
     this._extensionColorGenerator =
@@ -75,6 +74,15 @@ Timeline.TimelineFlameChartDataProvider = class {
         (Object.assign({useFirstLineForOverview: true}, defaultGroupStyle));
     this._interactionsHeaderLevel2 = /** @type {!PerfUI.FlameChart.GroupStyle} */
         (Object.assign({}, defaultGroupStyle, {padding: 2, nestingLevel: 1}));
+  }
+
+  /**
+   * @param {?Timeline.PerformanceModel} performanceModel
+   */
+  setModel(performanceModel) {
+    this.reset();
+    this._performanceModel = performanceModel;
+    this._model = performanceModel && performanceModel.timelineModel();
   }
 
   /**
@@ -164,13 +172,15 @@ Timeline.TimelineFlameChartDataProvider = class {
       return this._timelineData;
 
     this._timelineData = new PerfUI.FlameChart.TimelineData([], [], [], []);
+    if (!this._model)
+      return this._timelineData;
 
     this._minimumBoundary = this._model.minimumRecordTime();
     this._timeSpan = this._model.isEmpty() ? 1000 : this._model.maximumRecordTime() - this._minimumBoundary;
     this._currentLevel = 0;
 
     this._appendHeader(Common.UIString('Frames'), this._staticHeader);
-    this._appendFrameBars(this._frameModel.frames());
+    this._appendFrameBars(this._performanceModel.frames());
 
     this._appendHeader(Common.UIString('Interactions'), this._interactionsHeaderLevel1);
     this._appendInteractionRecords();
@@ -408,7 +418,7 @@ Timeline.TimelineFlameChartDataProvider = class {
   }
 
   _appendInteractionRecords() {
-    this._irModel.interactionRecords().forEach(this._appendSegment, this);
+    this._performanceModel.interactionRecords().forEach(this._appendSegment, this);
     this._entryTypeByLevel[this._currentLevel++] = Timeline.TimelineFlameChartEntryType.InteractionRecord;
   }
 

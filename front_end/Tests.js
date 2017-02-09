@@ -744,7 +744,7 @@
 
     function onTimelineDone() {
       captureFilmStripSetting.set(false);
-      var filmStripModel = new SDK.FilmStripModel(UI.panels.timeline._tracingModel);
+      var filmStripModel = UI.panels.timeline._performanceModel.filmStripModel();
       var frames = filmStripModel.frames();
       test.assertTrue(frames.length > 4 && typeof frames.length === 'number');
       loadFrameImages(frames);
@@ -963,7 +963,7 @@
 
   TestSuite.prototype.checkInputEventsPresent = function() {
     var expectedEvents = new Set(arguments);
-    var model = UI.panels.timeline._model;
+    var model = UI.panels.timeline._performanceModel.timelineModel();
     var asyncEvents = model.mainThreadAsyncEvents();
     var input = asyncEvents.get(TimelineModel.TimelineModel.AsyncEventGroup.input) || [];
     var prefix = 'InputLatency::';

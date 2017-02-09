@@ -102,23 +102,18 @@ Timeline.TimelineFlameChartMarker = class {
 Timeline.TimelineFlameChartView = class extends UI.VBox {
   /**
    * @param {!Timeline.TimelineModeViewDelegate} delegate
-   * @param {!TimelineModel.TimelineModel} timelineModel
-   * @param {!TimelineModel.TimelineFrameModel} frameModel
-   * @param {!SDK.FilmStripModel} filmStripModel
-   * @param {!TimelineModel.TimelineIRModel} irModel
-   * @param {!Array<!{title: string, model: !SDK.TracingModel}>} extensionModels
    * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    */
-  constructor(delegate, timelineModel, frameModel, filmStripModel, irModel, extensionModels, filters) {
+  constructor(delegate, filters) {
     super();
     this.element.classList.add('timeline-flamechart');
     this._delegate = delegate;
-    this._model = timelineModel;
-    this._extensionModels = extensionModels;
+    /** @type {?Timeline.PerformanceModel} */
+    this._model = null;
 
     this._splitWidget = new UI.SplitWidget(false, false, 'timelineFlamechartMainView', 150);
 
-    this._dataProvider = new Timeline.TimelineFlameChartDataProvider(this._model, frameModel, irModel, filters);
+    this._dataProvider = new Timeline.TimelineFlameChartDataProvider(filters);
     var mainViewGroupExpansionSetting = Common.settings.createSetting('timelineFlamechartMainViewGroupExpansion', {});
     this._mainView = new PerfUI.FlameChart(this._dataProvider, this, mainViewGroupExpansionSetting);
     this._mainView.alwaysShowVerticalScroll();
@@ -126,7 +121,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
 
     var networkViewGroupExpansionSetting =
         Common.settings.createSetting('timelineFlamechartNetworkViewGroupExpansion', {});
-    this._networkDataProvider = new Timeline.TimelineFlameChartNetworkDataProvider(this._model);
+    this._networkDataProvider = new Timeline.TimelineFlameChartNetworkDataProvider();
     this._networkView = new PerfUI.FlameChart(this._networkDataProvider, this, networkViewGroupExpansionSetting);
     this._networkView.alwaysShowVerticalScroll();
     networkViewGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights.bind(this));
@@ -145,8 +140,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
       // Create top level properties splitter.
       this._detailsSplitWidget = new UI.SplitWidget(false, true, 'timelinePanelDetailsSplitViewState');
       this._detailsSplitWidget.element.classList.add('timeline-details-split');
-      this._detailsView =
-          new Timeline.TimelineDetailsView(timelineModel, frameModel, filmStripModel, filters, delegate);
+      this._detailsView = new Timeline.TimelineDetailsView(filters, delegate);
       this._detailsSplitWidget.installResizer(this._detailsView.headerElement());
       this._detailsSplitWidget.setMainWidget(this._splitWidget);
       this._detailsSplitWidget.setSidebarWidget(this._detailsView);
@@ -161,18 +155,9 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._networkView.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
     this._nextExtensionIndex = 0;
 
-    this._boundRefresh = this.refreshRecords.bind(this);
-    Bindings.blackboxManager.addChangeListener(this._boundRefresh);
+    this._boundRefresh = this._refresh.bind(this);
   }
 
-  /**
-   * @override
-   */
-  dispose() {
-    this._mainView.removeEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
-    this._networkView.removeEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
-    Bindings.blackboxManager.removeChangeListener(this._boundRefresh);
-  }
 
   /**
    * @override
@@ -202,11 +187,29 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
 
   /**
    * @override
+   * @param {?Timeline.PerformanceModel} model
    */
-  refreshRecords() {
-    this._dataProvider.reset();
+  setModel(model) {
+    var extensionDataAdded = Timeline.PerformanceModel.Events.ExtensionDataAdded;
+    if (this._model)
+      this._model.removeEventListener(extensionDataAdded, this._appendExtensionData, this);
+    this._model = model;
+    if (this._model)
+      this._model.addEventListener(extensionDataAdded, this._appendExtensionData, this);
+    this._refresh();
+  }
+
+  _refresh() {
+    this._dataProvider.setModel(this._model);
+    this._mainView.reset();
+
+    this._networkDataProvider.setModel(this._model);
+    this._networkView.reset();
+
+    this._detailsView.setModel(this._model);
+
     this._nextExtensionIndex = 0;
-    this.extensionDataAdded();
+    this._appendExtensionData();
     this._mainView.scheduleUpdate();
 
     this._networkDataProvider.reset();
@@ -221,12 +224,12 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._networkView.scheduleUpdate();
   }
 
-  /**
-   * @override
-   */
-  extensionDataAdded() {
-    while (this._nextExtensionIndex < this._extensionModels.length)
-      this._dataProvider.appendExtensionEvents(this._extensionModels[this._nextExtensionIndex++]);
+  _appendExtensionData() {
+    if (!this._model)
+      return;
+    var extensions = this._model.extensionInfo();
+    while (this._nextExtensionIndex < extensions.length)
+      this._dataProvider.appendExtensionEvents(extensions[this._nextExtensionIndex++]);
     this._mainView.scheduleUpdate();
   }
 
@@ -246,7 +249,15 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   /**
    * @override
    */
+  willHide() {
+    Bindings.blackboxManager.removeChangeListener(this._boundRefresh);
+  }
+
+  /**
+   * @override
+   */
   wasShown() {
+    Bindings.blackboxManager.addChangeListener(this._boundRefresh);
     this._mainView.scheduleUpdate();
     this._networkView.scheduleUpdate();
   }
@@ -257,18 +268,6 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    */
   view() {
     return this;
-  }
-
-  /**
-   * @override
-   */
-  reset() {
-    this._dataProvider.reset();
-    this._mainView.reset();
-    this._mainView.setWindowTimes(0, Infinity);
-    this._networkDataProvider.reset();
-    this._networkView.reset();
-    this._networkView.setWindowTimes(0, Infinity);
   }
 
   /**

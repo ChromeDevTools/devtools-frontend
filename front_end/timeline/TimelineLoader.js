@@ -8,16 +8,16 @@
  */
 Timeline.TimelineLoader = class {
   /**
-   * @param {!SDK.TracingModel} model
    * @param {!Timeline.LoaderClient} delegate
    */
-  constructor(model, delegate) {
-    this._model = model;
+  constructor(delegate) {
     this._delegate = delegate;
+
+    this._backingStorage = new Bindings.TempFileBackingStorage('tracing');
+    this._tracingModel = new SDK.TracingModel(this._backingStorage);
 
     /** @type {?function()} */
     this._canceledCallback = null;
-
     this._state = Timeline.TimelineLoader.State.Initial;
     this._buffer = '';
     this._firstChunk = true;
@@ -29,13 +29,12 @@ Timeline.TimelineLoader = class {
   }
 
   /**
-   * @param {!SDK.TracingModel} model
    * @param {!File} file
    * @param {!Timeline.TimelineLifecycleDelegate} delegate
    * @return {!Timeline.TimelineLoader}
    */
-  static loadFromFile(model, file, delegate) {
-    var loader = new Timeline.TimelineLoader(model, delegate);
+  static loadFromFile(file, delegate) {
+    var loader = new Timeline.TimelineLoader(delegate);
     var fileReader = Timeline.TimelineLoader._createFileReader(file, loader);
     loader._canceledCallback = fileReader.cancel.bind(fileReader);
     loader._totalSize = file.size;
@@ -44,13 +43,12 @@ Timeline.TimelineLoader = class {
   }
 
   /**
-   * @param {!SDK.TracingModel} model
    * @param {string} url
    * @param {!Timeline.LoaderClient} delegate
    * @return {!Timeline.TimelineLoader}
    */
-  static loadFromURL(model, url, delegate) {
-    var stream = new Timeline.TimelineLoader(model, delegate);
+  static loadFromURL(url, delegate) {
+    var stream = new Timeline.TimelineLoader(delegate);
     Host.ResourceLoader.loadAsStream(url, null, stream);
     return stream;
   }
@@ -65,8 +63,9 @@ Timeline.TimelineLoader = class {
   }
 
   cancel() {
-    this._model.reset();
-    this._delegate.loadingComplete(false);
+    this._tracingModel = null;
+    this._backingStorage.reset();
+    this._delegate.loadingComplete(null, null);
     this._delegate = null;
     if (this._canceledCallback)
       this._canceledCallback();
@@ -141,7 +140,6 @@ Timeline.TimelineLoader = class {
 
     if (this._firstChunk) {
       this._firstChunk = false;
-      this._model.reset();
       if (this._looksLikeAppVersion(items[0])) {
         this._reportErrorAndCancelLoading(Common.UIString('Legacy Timeline format is not supported.'));
         return;
@@ -149,7 +147,7 @@ Timeline.TimelineLoader = class {
     }
 
     try {
-      this._model.addEvents(items);
+      this._tracingModel.addEvents(items);
     } catch (e) {
       this._reportErrorAndCancelLoading(Common.UIString('Malformed timeline data: %s', e.toString()));
       return;
@@ -177,9 +175,10 @@ Timeline.TimelineLoader = class {
    * @override
    */
   close() {
-    this._model.tracingComplete();
-    if (this._delegate)
-      this._delegate.loadingComplete(true);
+    if (!this._delegate)
+      return;
+    this._tracingModel.tracingComplete();
+    this._delegate.loadingComplete(this._tracingModel, this._backingStorage);
   }
 
   /**

@@ -142,6 +142,7 @@
     "scripts": [
         "CountersGraph.js",
         "ExtensionTracingSession.js",
+        "PerformanceModel.js",
         "TimelineController.js",
         "TimelineDetailsView.js",
         "TimelineLoader.js",

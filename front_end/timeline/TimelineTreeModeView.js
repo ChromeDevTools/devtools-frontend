@@ -18,12 +18,6 @@ Timeline.TimelineTreeModeView = class extends UI.VBox {
 
   /**
    * @override
-   */
-  dispose() {
-  }
-
-  /**
-   * @override
    * @return {?Element}
    */
   resizerElement() {
@@ -45,20 +39,10 @@ Timeline.TimelineTreeModeView = class extends UI.VBox {
 
   /**
    * @override
+   * @param {?Timeline.PerformanceModel} model
    */
-  refreshRecords() {
-  }
-
-  /**
-   * @override
-   */
-  extensionDataAdded() {
-  }
-
-  /**
-   * @override
-   */
-  reset() {
+  setModel(model) {
+    this._treeView.setModel(model);
   }
 
   /**

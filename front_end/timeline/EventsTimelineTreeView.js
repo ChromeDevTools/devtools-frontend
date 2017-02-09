@@ -7,16 +7,15 @@
  */
 Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
   /**
-   * @param {!TimelineModel.TimelineModel} model
    * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    * @param {!Timeline.TimelineModeViewDelegate} delegate
    */
-  constructor(model, filters, delegate) {
+  constructor(filters, delegate) {
     super();
     this._filtersControl = new Timeline.EventsTimelineTreeView.Filters();
     this._filtersControl.addEventListener(
         Timeline.EventsTimelineTreeView.Filters.Events.FilterChanged, this._onFilterChanged, this);
-    this.init(model, filters);
+    this.init(filters);
     this._delegate = delegate;
     this._filters.push.apply(this._filters, this._filtersControl.filters());
     this._dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
@@ -115,7 +114,7 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
     if (!traceEvent)
       return false;
     Timeline.TimelineUIUtils.buildTraceEventDetails(
-        traceEvent, this._model, this._linkifier, false, showDetails.bind(this));
+        traceEvent, this.model().timelineModel(), this._linkifier, false, showDetails.bind(this));
     return true;
 
     /**

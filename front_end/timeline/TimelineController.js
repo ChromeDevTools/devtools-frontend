@@ -10,13 +10,20 @@
 Timeline.TimelineController = class {
   /**
    * @param {!SDK.Target} target
+   * @param {!Timeline.PerformanceModel} performanceModel
    * @param {!Timeline.TimelineLifecycleDelegate} delegate
-   * @param {!SDK.TracingModel} tracingModel
    */
-  constructor(target, delegate, tracingModel) {
-    this._delegate = delegate;
+  constructor(target, performanceModel, delegate) {
     this._target = target;
-    this._tracingModel = tracingModel;
+    this._performanceModel = performanceModel;
+    this._delegate = delegate;
+
+    this._tracingModelBackingStorage = new Bindings.TempFileBackingStorage('tracing');
+    this._tracingModel = new SDK.TracingModel(this._tracingModelBackingStorage);
+
+    this._performanceModel.setMainTarget(target);
+
+    /** @type {!Array<!SDK.Target>} */
     this._targets = [];
     /** @type {!Array<!Timeline.ExtensionTracingSession>} */
     this._extensionSessions = [];
@@ -62,9 +69,11 @@ Timeline.TimelineController = class {
     if (options.captureFilmStrip)
       categoriesArray.push(disabledByDefault('devtools.screenshot'));
 
-    this._extensionSessions = providers.map(provider => new Timeline.ExtensionTracingSession(provider, this._delegate));
+    this._extensionSessions =
+        providers.map(provider => new Timeline.ExtensionTracingSession(provider, this._performanceModel));
     this._extensionSessions.forEach(session => session.start());
     this._startRecordingWithCategories(categoriesArray.join(','), options.enableJSSampling);
+    this._performanceModel.setRecordStartTime(Date.now());
   }
 
   stopRecording() {
@@ -72,7 +81,6 @@ Timeline.TimelineController = class {
     tracingStoppedPromises.push(new Promise(resolve => this._tracingCompleteCallback = resolve));
     tracingStoppedPromises.push(this._stopProfilingOnAllTargets());
     this._target.tracingManager.stop();
-
     tracingStoppedPromises.push(SDK.targetManager.resumeAllTargets());
 
     this._delegate.loadingStarted();
@@ -188,7 +196,6 @@ Timeline.TimelineController = class {
    * @override
    */
   tracingStarted() {
-    this._tracingModel.reset();
     this._delegate.recordingStarted();
   }
 
@@ -211,7 +218,7 @@ Timeline.TimelineController = class {
   _allSourcesFinished() {
     this._injectCpuProfileEvents();
     this._tracingModel.tracingComplete();
-    this._delegate.loadingComplete(true);
+    this._delegate.loadingComplete(this._tracingModel, this._tracingModelBackingStorage);
   }
 
   /**

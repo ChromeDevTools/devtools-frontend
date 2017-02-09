@@ -7,12 +7,10 @@
  * @unrestricted
  */
 Timeline.TimelineFlameChartNetworkDataProvider = class {
-  /**
-   * @param {!TimelineModel.TimelineModel} model
-   */
-  constructor(model) {
+  constructor() {
     this._font = '11px ' + Host.fontFamily();
-    this._model = model;
+    /** @type {?TimelineModel.TimelineModel} */
+    this._model = null;
     this.reset();
     this._style = {
       padding: 4,
@@ -27,6 +25,13 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
       shareHeaderLine: false
     };
     this._group = {startLevel: 0, name: Common.UIString('Network'), expanded: false, style: this._style};
+  }
+
+  /**
+   * @param {?Timeline.PerformanceModel} performanceModel
+   */
+  setModel(performanceModel) {
+    this._model = performanceModel && performanceModel.timelineModel();
   }
 
   /**
@@ -55,7 +60,8 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
     /** @type {!Array<!TimelineModel.TimelineModel.NetworkRequest>} */
     this._requests = [];
     this._timelineData = new PerfUI.FlameChart.TimelineData([], [], [], []);
-    this._appendTimelineData(this._model.mainThreadEvents());
+    if (this._model)
+      this._appendTimelineData(this._model.mainThreadEvents());
     return this._timelineData;
   }
 

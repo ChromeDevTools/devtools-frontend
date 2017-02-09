@@ -9,18 +9,16 @@
 Timeline.ExtensionTracingSession = class {
   /**
    * @param {!Extensions.ExtensionTraceProvider} provider
-   * @param {!Timeline.TimelineLifecycleDelegate} delegate
+   * @param {!Timeline.PerformanceModel} performanceModel
    */
-  constructor(provider, delegate) {
+  constructor(provider, performanceModel) {
     this._provider = provider;
-    this._delegate = delegate;
-    this._sessionGeneration = delegate.sessionGeneration();
+    this._performanceModel = performanceModel;
     /** @type {function()} */
     this._completionCallback;
-    this._completionPromise = new Promise(fulfill => {this._completionCallback = fulfill;});
-    /** @type {?SDK.TracingModel} */
-    this._tracingModel = null;
-    /** @type {number} */
+    this._completionPromise = new Promise(fulfill => {
+      this._completionCallback = fulfill;
+    });
     this._timeOffset = 0;
   }
 
@@ -37,16 +35,13 @@ Timeline.ExtensionTracingSession = class {
 
   /**
    * @override
-   * @param {boolean} success
+   * @param {?SDK.TracingModel} tracingModel
+   * @param {?Bindings.TempFileBackingStorage} storage
    */
-  loadingComplete(success) {
-    if (!success || this._sessionGeneration !== this._delegate.sessionGeneration()) {
-      this._tracingModel.reset();
-    } else {
-      this._delegate.addExtensionEvents(
-          this._provider.longDisplayName(),
-          /** @type {!SDK.TracingModel} */ (this._tracingModel), this._timeOffset);
-    }
+  loadingComplete(tracingModel, storage) {
+    if (!tracingModel)
+      return;
+    this._performanceModel.addExtensionEvents(this._provider.longDisplayName(), tracingModel, this._timeOffset);
     this._completionCallback();
   }
 
@@ -56,14 +51,12 @@ Timeline.ExtensionTracingSession = class {
    * @param {number} timeOffsetMicroseconds
    */
   complete(url, timeOffsetMicroseconds) {
-    if (!url || this._sessionGeneration !== this._delegate.sessionGeneration()) {
+    if (!url) {
       this._completionCallback();
       return;
     }
-    var storage = new Bindings.TempFileBackingStorage('tracing');
-    this._tracingModel = new SDK.TracingModel(storage);
     this._timeOffset = timeOffsetMicroseconds;
-    Timeline.TimelineLoader.loadFromURL(this._tracingModel, url, this);
+    Timeline.TimelineLoader.loadFromURL(url, this);
   }
 
   start() {

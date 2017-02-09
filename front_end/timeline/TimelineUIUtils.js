@@ -1535,12 +1535,11 @@ Timeline.TimelineUIUtils = class {
   }
 
   /**
-   * @param {!TimelineModel.TimelineFrameModel} frameModel
    * @param {!TimelineModel.TimelineFrame} frame
    * @param {?SDK.FilmStripModel.Frame} filmStripFrame
    * @return {!Element}
    */
-  static generateDetailsContentForFrame(frameModel, frame, filmStripFrame) {
+  static generateDetailsContentForFrame(frame, filmStripFrame) {
     var contentHelper = new Timeline.TimelineDetailsContentHelper(null, null);
     contentHelper.addSection(Common.UIString('Frame'));
 

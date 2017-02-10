@@ -39,7 +39,7 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    */
   isEmpty() {
     this.timelineData();
-    return this._maxLevel === 0;
+    return !this._requests.length;
   }
 
   /**

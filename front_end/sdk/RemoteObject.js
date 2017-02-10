@@ -560,7 +560,7 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
         return;
       }
 
-      this.target().domdebuggerAgent().getEventListeners(this._objectId, mycallback.bind(this));
+      this.target().domdebuggerAgent().getEventListeners(this._objectId, undefined, undefined, mycallback.bind(this));
 
       /**
        * @this {SDK.RemoteObjectImpl}

@@ -47,7 +47,8 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   init(filters) {
     this._linkifier = new Components.Linkifier();
 
-    this._filters = filters.slice();
+    this._textFilter = new Timeline.TimelineFilters.RegExp();
+    this._filters = [...filters, this._textFilter];
 
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([]);
     this.populateColumns(columns);
@@ -55,7 +56,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     this._splitWidget = new UI.SplitWidget(true, true, 'timelineTreeViewDetailsSplitWidget');
     var mainView = new UI.VBox();
     var toolbar = new UI.Toolbar('', mainView.element);
-    this._populateToolbar(toolbar);
+    this.populateToolbar(toolbar);
 
     this._dataGrid = new DataGrid.SortableDataGrid(columns);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
@@ -109,9 +110,22 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   }
 
   /**
+   * @protected
    * @param {!UI.Toolbar} toolbar
    */
-  _populateToolbar(toolbar) {
+  populateToolbar(toolbar) {
+    this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'), 0, 0, true);
+    this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, textFilterChanged, this);
+    toolbar.appendToolbarItem(this._textFilterUI);
+
+    /**
+     * @this {Timeline.TimelineTreeView}
+     */
+    function textFilterChanged() {
+      var searchQuery = this._textFilterUI.value();
+      this._textFilter.setRegExp(searchQuery ? createPlainTextSearchRegex(searchQuery, 'i') : null);
+      this.refreshTree();
+    }
   }
 
   /**
@@ -574,7 +588,8 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
    * @override
    * @param {!UI.Toolbar} toolbar
    */
-  _populateToolbar(toolbar) {
+  populateToolbar(toolbar) {
+    super.populateToolbar(toolbar);
     this._groupByCombobox = new UI.ToolbarComboBox(this._onGroupByChanged.bind(this));
     /**
      * @param {string} name

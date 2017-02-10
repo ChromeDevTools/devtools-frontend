@@ -99,7 +99,8 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
    * @override
    * @param {!UI.Toolbar} toolbar
    */
-  _populateToolbar(toolbar) {
+  populateToolbar(toolbar) {
+    super.populateToolbar(toolbar);
     this._filtersControl.populateToolbar(toolbar);
   }
 
@@ -142,8 +143,7 @@ Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
     super();
     this._categoryFilter = new Timeline.TimelineFilters.Category();
     this._durationFilter = new Timeline.TimelineFilters.IsLong();
-    this._textFilter = new Timeline.TimelineFilters.RegExp();
-    this._filters = [this._categoryFilter, this._durationFilter, this._textFilter];
+    this._filters = [this._categoryFilter, this._durationFilter];
   }
 
   /**
@@ -157,10 +157,6 @@ Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
    * @param {!UI.Toolbar} toolbar
    */
   populateToolbar(toolbar) {
-    this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'));
-    this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, textFilterChanged, this);
-    toolbar.appendToolbarItem(this._textFilterUI);
-
     var durationFilterUI = new UI.ToolbarComboBox(durationFilterChanged.bind(this));
     for (var durationMs of Timeline.EventsTimelineTreeView.Filters._durationFilterPresetsMs) {
       durationFilterUI.addOption(durationFilterUI.createOption(
@@ -183,15 +179,6 @@ Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
       checkbox.inputElement.style.backgroundColor = category.color;
       categoryFiltersUI[category.name] = checkbox;
       toolbar.appendToolbarItem(checkbox);
-    }
-
-    /**
-     * @this {Timeline.EventsTimelineTreeView.Filters}
-     */
-    function textFilterChanged() {
-      var searchQuery = this._textFilterUI.value();
-      this._textFilter.setRegExp(searchQuery ? createPlainTextSearchRegex(searchQuery, 'i') : null);
-      this._notifyFiltersChanged();
     }
 
     /**

@@ -1160,8 +1160,11 @@ SDK.DebuggerModel.CallFrame = class {
       }
       callback(result, exceptionDetails);
     }
-    this.debuggerModel._agent.evaluateOnCallFrame(
-        this._payload.callFrameId, code, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview,
+    this.debuggerModel._agent.invoke_evaluateOnCallFrame(
+        {
+          callFrameId: this._payload.callFrameId,
+          expression: code, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview
+        },
         didEvaluateOnCallFrame);
   }
 

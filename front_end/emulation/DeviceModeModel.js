@@ -414,7 +414,9 @@ Emulation.DeviceModeModel = class {
       this._applyDeviceMetrics(
           new UI.Size(orientation.width, orientation.height), insets, outline, this._scaleSetting.get(),
           this._device.deviceScaleFactor, this._device.mobile(),
-          this._mode.orientation === Emulation.EmulatedDevice.Horizontal ? 'landscapePrimary' : 'portraitPrimary',
+          this._mode.orientation === Emulation.EmulatedDevice.Horizontal ?
+              Protocol.Emulation.ScreenOrientationType.LandscapePrimary :
+              Protocol.Emulation.ScreenOrientationType.PortraitPrimary,
           resetPageScaleFactor);
       this._applyUserAgent(this._device.userAgent);
       this._applyTouch(this._device.touch(), this._device.mobile());
@@ -422,7 +424,7 @@ Emulation.DeviceModeModel = class {
       this._fitScale = this._calculateFitScale(this._availableSize.width, this._availableSize.height);
       this._appliedUserAgentType = Emulation.DeviceModeModel.UA.Desktop;
       this._applyDeviceMetrics(
-          this._availableSize, new UI.Insets(0, 0, 0, 0), new UI.Insets(0, 0, 0, 0), 1, 0, false, '',
+          this._availableSize, new UI.Insets(0, 0, 0, 0), new UI.Insets(0, 0, 0, 0), 1, 0, false, null,
           resetPageScaleFactor);
       this._applyUserAgent('');
       this._applyTouch(false, false);
@@ -441,7 +443,9 @@ Emulation.DeviceModeModel = class {
       this._applyDeviceMetrics(
           new UI.Size(screenWidth, screenHeight), new UI.Insets(0, 0, 0, 0), new UI.Insets(0, 0, 0, 0),
           this._scaleSetting.get(), this._deviceScaleFactorSetting.get() || defaultDeviceScaleFactor, mobile,
-          screenHeight >= screenWidth ? 'portraitPrimary' : 'landscapePrimary', resetPageScaleFactor);
+          screenHeight >= screenWidth ? Protocol.Emulation.ScreenOrientationType.PortraitPrimary :
+                                        Protocol.Emulation.ScreenOrientationType.LandscapePrimary,
+          resetPageScaleFactor);
       this._applyUserAgent(mobile ? Emulation.DeviceModeModel._defaultMobileUserAgent : '');
       this._applyTouch(
           this._uaSetting.get() === Emulation.DeviceModeModel.UA.DesktopTouch ||
@@ -507,7 +511,7 @@ Emulation.DeviceModeModel = class {
    * @param {number} scale
    * @param {number} deviceScaleFactor
    * @param {boolean} mobile
-   * @param {string} screenOrientation
+   * @param {?Protocol.Emulation.ScreenOrientationType} screenOrientation
    * @param {boolean} resetPageScaleFactor
    */
   _applyDeviceMetrics(
@@ -527,7 +531,8 @@ Emulation.DeviceModeModel = class {
 
     var positionX = insets.left;
     var positionY = insets.top;
-    var screenOrientationAngle = screenOrientation === 'landscapePrimary' ? 90 : 0;
+    var screenOrientationAngle =
+        screenOrientation === Protocol.Emulation.ScreenOrientationType.LandscapePrimary ? 90 : 0;
 
     this._appliedDeviceSize = screenSize;
     this._appliedDeviceScaleFactor = deviceScaleFactor || window.devicePixelRatio;

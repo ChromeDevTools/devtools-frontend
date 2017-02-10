@@ -135,11 +135,13 @@ def generate_protocol_externs(output_path, file1, file2):
             for command in domain["commands"]:
                 output_file.write("\n/**\n")
                 params = []
+                param_to_type = {}
                 has_return_value = "returns" in command
                 explicit_parameters = promisified and has_return_value
                 if "parameters" in command:
                     for in_param in command["parameters"]:
                         if "optional" in in_param:
+                            param_to_type[in_param["name"]] = "(%s|undefined)" % param_type(domain_name, in_param)
                             if explicit_parameters:
                                 params.append("%s" % in_param["name"])
                                 output_file.write(" * @param {%s|undefined} %s\n" %
@@ -149,6 +151,7 @@ def generate_protocol_externs(output_path, file1, file2):
                                 output_file.write(" * @param {%s=} opt_%s\n" %
                                                   (param_type(domain_name, in_param), in_param["name"]))
                         else:
+                            param_to_type[in_param["name"]] = param_type(domain_name, in_param)
                             params.append(in_param["name"])
                             output_file.write(" * @param {%s} %s\n" % (param_type(domain_name, in_param), in_param["name"]))
                 returns = []
@@ -173,10 +176,22 @@ def generate_protocol_externs(output_path, file1, file2):
                 params.append("opt_callback")
 
                 output_file.write(" */\n")
-                output_file.write("Protocol.%sAgent.prototype.%s = function(%s) {}\n" %
+                output_file.write("Protocol.%sAgent.prototype.%s = function(%s) {};\n" %
                                   (domain_name, command["name"], ", ".join(params)))
-                output_file.write("/** @param {function(%s):void=} opt_callback */\n" % ", ".join(returns))
-                output_file.write("Protocol.%sAgent.prototype.invoke_%s = function(obj, opt_callback) {}\n" %
+                request_object_properties = []
+                for param in param_to_type:
+                    request_object_properties.append("%s: %s" % (param, param_to_type[param]))
+                if request_object_properties:
+                    output_file.write("/** @typedef {!{%s}} obj */\n" % (", ".join(request_object_properties)))
+                else:
+                    output_file.write("/** @typedef {Object|undefined} obj */\n")
+                request = "Protocol.%sAgent.prototype.%s.Request" % (domain_name, command["name"])
+                output_file.write("%s;\n" % (request))
+                output_file.write("/**\n")
+                output_file.write(" * @param {!%s} obj\n" % (request))
+                output_file.write(" * @param {function(%s):void=} opt_callback\n" % ", ".join(returns))
+                output_file.write(" */\n")
+                output_file.write("Protocol.%sAgent.prototype.invoke_%s = function(obj, opt_callback) {};\n" %
                                   (domain_name, command["name"]))
 
         if "types" in domain:

@@ -48,6 +48,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
 
     this._sidebarTree = new UI.TreeOutlineInShadow();
     this._sidebarTree.registerRequiredCSS('profiler/profilesSidebarTree.css');
+    this._sidebarTree.element.classList.add('profiles-sidebar-tree-box');
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
 
     this._sidebarTree.appendChild(this.profilesItemTreeElement);
@@ -60,7 +61,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     this._toolbarElement = createElementWithClass('div', 'profiles-toolbar');
     mainContainer.element.insertBefore(this._toolbarElement, mainContainer.element.firstChild);
 
-    this.panelSidebarElement().classList.add('profiles-sidebar-tree-box');
+    this.panelSidebarElement().classList.add('profiles-tree-sidebar');
     var toolbarContainerLeft = createElementWithClass('div', 'profiles-toolbar');
     this.panelSidebarElement().insertBefore(toolbarContainerLeft, this.panelSidebarElement().firstChild);
     var toolbar = new UI.Toolbar('', toolbarContainerLeft);

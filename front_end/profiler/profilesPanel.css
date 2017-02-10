@@ -67,10 +67,16 @@
 .profiles-toolbar {
     background-color: #f3f3f3;
     border-bottom: 1px solid #ccc;
+    flex-shrink: 0;
+}
+
+.profiles-tree-sidebar {
+    flex: auto;
+    overflow: hidden;
 }
 
 .profiles-sidebar-tree-box {
-    flex: auto;
+    overflow-y: auto;
 }
 
 .profile-view {

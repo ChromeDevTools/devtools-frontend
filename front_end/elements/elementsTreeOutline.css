@@ -323,6 +323,8 @@ ol li.selected:focus .webkit-html-attribute-name {
     top: 0;
     left: 0;
     cursor: pointer;
+    width: 15px;
+    height: 15px;
 }
 
 .gutter-menu-icon {

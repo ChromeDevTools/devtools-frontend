@@ -117,9 +117,27 @@
     text-align: left;
 }
 
-.control-profiling {
-    -webkit-align-self: flex-start;
-    margin-right: 50px;
+.profile-launcher-control {
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.profile-launcher-control > * {
+    margin-top: 10px;
+    margin-right: 6px;
+}
+
+.profile-launcher-control button {
+    min-width: 110px;
+}
+
+.profile-launcher-target {
+    align-items: baseline;
+}
+
+.profile-launcher-target > * {
+    flex: 0 0 auto;
+    margin-right: 8px;
 }
 
 .profile-launcher-view-content h1 {
@@ -178,23 +196,15 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
 }
 
 .js_profiler.panel select.chrome-select,
-.heap_profiler.panel select.chrome-select
- {
-    font-size: 12px;
+.heap_profiler.panel select.chrome-select {
     width: 150px;
-    margin-left: 10px;
-    margin-right: 10px;
 }
 
 button.load-profile {
-    margin-left: 20px;
+    margin-top: 10px;
+    min-width: 110px;
 }
 
-button.load-profile.multi-target {
-    display: block;
-    margin-top: 14px;
-    margin-left: 0;
-}
 
 .cpu-profile-flame-chart-overview-container {
     overflow: hidden;

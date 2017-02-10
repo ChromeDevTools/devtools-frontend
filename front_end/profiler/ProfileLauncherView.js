@@ -45,13 +45,13 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
 
     this._contentElement = this.element.createChild('div', 'profile-launcher-view-content');
     this._innerContentElement = this._contentElement.createChild('div');
-    var targetSpan = this._contentElement.createChild('span');
-    var selectTargetText = targetSpan.createChild('span');
-    selectTargetText.textContent = Common.UIString('Target:');
-    var targetsSelect = targetSpan.createChild('select', 'chrome-select');
-    new Profiler.TargetsComboBoxController(targetsSelect, targetSpan);
-    this._controlButton = UI.createTextButton('', this._controlButtonClicked.bind(this), 'control-profiling');
-    this._contentElement.appendChild(this._controlButton);
+    var controlDiv = this._contentElement.createChild('div', 'hbox profile-launcher-control');
+    var targetDiv = controlDiv.createChild('div', 'hbox profile-launcher-target');
+    targetDiv.createChild('div').textContent = Common.UIString('Target:');
+    var targetsSelect = targetDiv.createChild('select', 'chrome-select');
+    new Profiler.TargetsComboBoxController(targetsSelect, targetDiv);
+    this._controlButton = UI.createTextButton('', this._controlButtonClicked.bind(this));
+    controlDiv.appendChild(this._controlButton);
     this._recordButtonEnabled = true;
     this._loadButton = UI.createTextButton(Common.UIString('Load'), this._loadButtonClicked.bind(this), 'load-profile');
     this._contentElement.appendChild(this._loadButton);

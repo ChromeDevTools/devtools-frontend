@@ -123,9 +123,6 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
    * @param {!SDK.ConsoleMessage} msg
    */
   addMessage(msg) {
-    if (this._isBlacklisted(msg))
-      return;
-
     if (msg.source === SDK.ConsoleMessage.MessageSource.Worker && msg.target().subTargetsManager &&
         msg.target().subTargetsManager.targetForId(msg.workerId))
       return;
@@ -166,28 +163,6 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
         this._errors++;
         break;
     }
-  }
-
-  /**
-   * @param {!SDK.ConsoleMessage} msg
-   * @return {boolean}
-   */
-  _isBlacklisted(msg) {
-    if (msg.source !== SDK.ConsoleMessage.MessageSource.Network ||
-        msg.level !== SDK.ConsoleMessage.MessageLevel.Error || !msg.url || !msg.url.startsWith('chrome-extension'))
-      return false;
-
-    // ignore Chromecast's cast_sender spam
-    if (msg.url.includes('://boadgeojelhgndaghljhdicfkmllpafd') ||
-        msg.url.includes('://dliochdbjfkdbacpmhlcpmleaejidimm') ||
-        msg.url.includes('://pkedcjkdefgpdelpbcmbmeomcjbeemfm') ||
-        msg.url.includes('://fjhoaacokmgbjemoflkofnenfaiekifl') ||
-        msg.url.includes('://fmfcbgogabcbclcofgocippekhfcmgfj') ||
-        msg.url.includes('://enhhojjnijigcajfphajepfemndkmdlo') ||
-        msg.url.includes('://ekpaaapppgpmolpcldedioblbkmijaca'))
-      return true;
-
-    return false;
   }
 
   /**

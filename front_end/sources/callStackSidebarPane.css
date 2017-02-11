@@ -25,11 +25,22 @@
     flex-wrap: wrap;
 }
 
+.call-frame-chained-arrow {
+    transform: rotate(180deg);
+    margin-right: 3px;
+    flex-shrink: 0;
+}
+
+.call-frame-title-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 .call-frame-item:not(.async-header) {
     border-top: 1px solid #efefef;
 }
 
-.call-frame-item.contains-location:hover {
+.call-frame-item:not(.async-header):hover {
     background-color: #eee;
 }
 
@@ -39,8 +50,7 @@
 
 .call-frame-item-title,
 .call-frame-location {
-    text-overflow: ellipsis;
-    overflow: hidden;
+    display: flex;
     white-space: nowrap;
 }
 
@@ -48,12 +58,6 @@
     color: #888;
     margin-left: auto;
     padding: 0 10px 0 10px;
-    background-color: white;
-    white-space: pre;
-}
-
-.call-frame-item:hover .call-frame-location {
-    background-color: inherit;
 }
 
 .async-header::before {
@@ -72,10 +76,6 @@
     background-color: white;
     margin-left: -5px;
     padding: 0 5px;
-}
-
-.call-frame-item.contains-location:hover .call-frame-item-title {
-    background-color: inherit;
 }
 
 .blackboxed-call-frame {

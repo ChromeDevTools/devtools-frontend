@@ -93,8 +93,8 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     var peviousStackTrace = details.callFrames;
     while (asyncStackTrace) {
       var title = '';
-      if (asyncStackTrace.description === 'async function' && peviousStackTrace.length &&
-          asyncStackTrace.callFrames.length) {
+      var isAwait = asyncStackTrace.description === 'async function';
+      if (isAwait && peviousStackTrace.length && asyncStackTrace.callFrames.length) {
         var lastPreviousFrame = peviousStackTrace[peviousStackTrace.length - 1];
         var topFrame = asyncStackTrace.callFrames[0];
         var lastPreviousFrameName = UI.beautifyFunctionName(lastPreviousFrame.functionName);
@@ -111,11 +111,16 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
                 /** @type {!SDK.DebuggerModel.Location} */ (this._itemLocation(item))));
         hiddenCallFramesCount += asyncStackTrace.callFrames.length - asyncItems.length;
       }
-      if (asyncItems.length || asyncStackTrace.promiseCreationFrame) {
-        var titleItem = {asyncStackHeader: title};
-        if (asyncStackTrace.promiseCreationFrame)
-          titleItem.promiseCreationFrame = asyncStackTrace.promiseCreationFrame;
-        items.push(titleItem);
+
+      if (asyncStackTrace.promiseCreationFrame && !isAwait) {
+        var chainedItem = {promiseCreationFrame: asyncStackTrace.promiseCreationFrame};
+        if (!Bindings.blackboxManager.isBlackboxedRawLocation(
+                /** @type {!SDK.DebuggerModel.Location} */ (this._itemLocation(chainedItem))))
+          items.push(chainedItem);
+      }
+
+      if (asyncItems.length) {
+        items.push({asyncStackHeader: title});
         items = items.concat(asyncItems);
       }
 
@@ -147,13 +152,15 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
    */
   createElementForItem(item) {
     var element = createElementWithClass('div', 'call-frame-item');
-    element.createChild('div', 'call-frame-item-title').textContent = this._itemTitle(item);
+    var title = element.createChild('div', 'call-frame-item-title');
+    if (item.promiseCreationFrame)
+      title.createChild('div', 'call-frame-chained-arrow').textContent = '\u2935';
+    title.createChild('div', 'call-frame-title-text').textContent = this._itemTitle(item);
     if (item.asyncStackHeader)
       element.classList.add('async-header');
 
     var location = this._itemLocation(item);
     if (location) {
-      element.classList.add('contains-location');
       if (Bindings.blackboxManager.isBlackboxedRawLocation(location))
         element.classList.add('blackboxed-call-frame');
 
@@ -164,13 +171,12 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
         var uiLocation = liveLocation.uiLocation();
         if (!uiLocation)
           return;
-        var text = (hasPromiseCreationFrame ? Common.UIString('created:  ') : '') + uiLocation.linkText();
+        var text = uiLocation.linkText();
         linkElement.textContent = text.trimMiddle(30);
         linkElement.title = text;
       }
 
       var linkElement = element.createChild('div', 'call-frame-location');
-      var hasPromiseCreationFrame = !!item.promiseCreationFrame;
       Bindings.debuggerWorkspaceBinding.createCallFrameLiveLocation(location, updateLocation, this._locationPool);
     }
 
@@ -233,6 +239,8 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       return UI.beautifyFunctionName(item.debuggerCallFrame.functionName);
     if (item.runtimeCallFrame)
       return UI.beautifyFunctionName(item.runtimeCallFrame.functionName);
+    if (item.promiseCreationFrame)
+      return Common.UIString('chained at');
     return item.asyncStackHeader || '';
   }
 
@@ -353,6 +361,8 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     var text = [];
     for (var i = 0; i < this._list.length(); i++) {
       var item = this._list.itemAtIndex(i);
+      if (item.promiseCreationFrame)
+        continue;
       var itemText = this._itemTitle(item);
       var location = this._itemLocation(item);
       if (location) {

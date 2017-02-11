@@ -615,6 +615,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._performanceModel.dispose();
     this._performanceModel = model;
     this._currentViews.forEach(view => view.setModel(this._performanceModel));
+
     this._overviewPane.reset();
     if (model) {
       this._overviewPane.setBounds(
@@ -622,6 +623,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     }
     for (var control of this._overviewControls)
       control.setModel(model);
+
     if (model) {
       var cpuProfiles = model.timelineModel().cpuProfiles();
       cpuProfiles.forEach(profile => PerfUI.LineLevelProfile.instance().appendCPUProfile(profile));
@@ -632,8 +634,13 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this.requestWindowTimes(0, Infinity);
     }
     this._overviewPane.scheduleUpdate();
+    if (this._detailsView)
+      this._detailsView.setModel(model);
+
     this.select(null);
     this._updateSearchHighlight(false, true);
+    if (this._flameChart)
+      this._flameChart.resizeToPreferredHeights();
   }
 
   /**
@@ -769,8 +776,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._backingStorage = backingStorage;
     this._setModel(performanceModel);
 
-    if (this._flameChart)
-      this._flameChart.resizeToPreferredHeights();
     if (this._detailsSplitWidget)
       this._detailsSplitWidget.showBoth();
   }

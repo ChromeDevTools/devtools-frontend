@@ -9,9 +9,7 @@
 Timeline.TimelineFlameChartNetworkDataProvider = class {
   constructor() {
     this._font = '11px ' + Host.fontFamily();
-    /** @type {?TimelineModel.TimelineModel} */
-    this._model = null;
-    this.reset();
+    this.setModel(null);
     this._style = {
       padding: 4,
       height: 17,
@@ -32,6 +30,10 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    */
   setModel(performanceModel) {
     this._model = performanceModel && performanceModel.timelineModel();
+    this._maxLevel = 0;
+    this._timelineData = null;
+    /** @type {!Array<!TimelineModel.TimelineModel.NetworkRequest>} */
+    this._requests = [];
   }
 
   /**
@@ -79,13 +81,6 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    */
   totalTime() {
     return this._timeSpan;
-  }
-
-  reset() {
-    this._maxLevel = 0;
-    this._timelineData = null;
-    /** @type {!Array<!TimelineModel.TimelineModel.NetworkRequest>} */
-    this._requests = [];
   }
 
   /**

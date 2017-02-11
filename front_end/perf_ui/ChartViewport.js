@@ -86,6 +86,7 @@ PerfUI.ChartViewport = class extends UI.VBox {
     this._totalHeight = 0;
     this._pendingAnimationTimeLeft = 0;
     this._pendingAnimationTimeRight = 0;
+    this._updateContentElementSize();
   }
 
   /**

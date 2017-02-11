@@ -119,12 +119,11 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._mainView.alwaysShowVerticalScroll();
     this._mainView.enableRuler(false);
 
-    var networkViewGroupExpansionSetting =
+    this._networkViewGroupExpansionSetting =
         Common.settings.createSetting('timelineFlamechartNetworkViewGroupExpansion', {});
     this._networkDataProvider = new Timeline.TimelineFlameChartNetworkDataProvider();
-    this._networkView = new PerfUI.FlameChart(this._networkDataProvider, this, networkViewGroupExpansionSetting);
+    this._networkView = new PerfUI.FlameChart(this._networkDataProvider, this, this._networkViewGroupExpansionSetting);
     this._networkView.alwaysShowVerticalScroll();
-    networkViewGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights.bind(this));
 
     this._networkPane = new UI.VBox();
     this._networkPane.setMinimumSize(23, 23);
@@ -201,18 +200,13 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
 
   _refresh() {
     this._dataProvider.setModel(this._model);
-    this._mainView.reset();
-
     this._networkDataProvider.setModel(this._model);
-    this._networkView.reset();
-
-    this._detailsView.setModel(this._model);
+    if (this._detailsView)
+      this._detailsView.setModel(this._model);
 
     this._nextExtensionIndex = 0;
     this._appendExtensionData();
-    this._mainView.scheduleUpdate();
 
-    this._networkDataProvider.reset();
     if (this._networkDataProvider.isEmpty()) {
       this._mainView.enableRuler(true);
       this._splitWidget.hideSidebar();
@@ -221,7 +215,8 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
       this._splitWidget.showBoth();
       this.resizeToPreferredHeights();
     }
-    this._networkView.scheduleUpdate();
+    this._mainView.reset();
+    this._networkView.reset();
   }
 
   _appendExtensionData() {
@@ -250,6 +245,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @override
    */
   willHide() {
+    this._networkViewGroupExpansionSetting.removeChangeListener(this.resizeToPreferredHeights, this);
     Bindings.blackboxManager.removeChangeListener(this._boundRefresh);
   }
 
@@ -257,7 +253,10 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @override
    */
   wasShown() {
+    this._networkViewGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights, this);
     Bindings.blackboxManager.addChangeListener(this._boundRefresh);
+    if (this._needsResizeToPreferredHeights)
+      this.resizeToPreferredHeights();
     this._mainView.scheduleUpdate();
     this._networkView.scheduleUpdate();
   }
@@ -320,6 +319,11 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   }
 
   resizeToPreferredHeights() {
+    if (!this.isShowing()) {
+      this._needsResizeToPreferredHeights = true;
+      return;
+    }
+    this._needsResizeToPreferredHeights = false;
     this._networkPane.element.classList.toggle(
         'timeline-network-resizer-disabled', !this._networkDataProvider.isExpanded());
     this._splitWidget.setSidebarSize(

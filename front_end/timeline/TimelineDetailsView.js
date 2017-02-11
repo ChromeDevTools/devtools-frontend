@@ -56,6 +56,8 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
     this._model = model;
     this._tabbedPane.closeTabs(
         [Timeline.TimelineDetailsView.Tab.PaintProfiler, Timeline.TimelineDetailsView.Tab.LayerViewer], false);
+    for (var view of this._rangeDetailViews.values())
+      view.setModel(model);
     this._lazyPaintProfilerView = null;
     this._lazyLayersView = null;
   }

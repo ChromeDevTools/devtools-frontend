@@ -260,7 +260,7 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
     for (var i = 0; i < this._overviewControls.length; ++i)
       this._overviewControls[i].reset();
     this._popoverHelper.hidePopover();
-    this._update();
+    this.scheduleUpdate();
   }
 
   /**

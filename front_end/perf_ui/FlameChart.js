@@ -1201,12 +1201,14 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
    */
   reset() {
     super.reset();
+    this._rawTimelineData = null;
+    this._rawTimelineDataLength = 0;
     this._highlightedMarkerIndex = -1;
     this._highlightedEntryIndex = -1;
     this._selectedEntryIndex = -1;
     /** @type {!Map<string,!Map<string,number>>} */
     this._textWidth = new Map();
-    this.update();
+    this.scheduleUpdate();
   }
 
   _enabled() {

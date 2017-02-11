@@ -30,6 +30,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    */
   setModel(model) {
     this._model = model;
+    this.refreshTree();
   }
 
   /**

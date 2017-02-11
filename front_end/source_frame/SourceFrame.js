@@ -76,7 +76,8 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    */
   setEditable(editable) {
     this._editable = editable;
-    this._textEditor.setReadOnly(!editable);
+    if (this._loaded)
+      this._textEditor.setReadOnly(!editable);
   }
 
   /**
@@ -267,6 +268,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
       this._loaded = true;
       this._textEditor.setText(content || '');
       this._textEditor.markClean();
+      this._textEditor.setReadOnly(!this._editable);
     } else {
       var scrollTop = this._textEditor.scrollTop();
       var selection = this._textEditor.selection();

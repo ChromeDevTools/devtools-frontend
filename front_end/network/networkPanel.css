@@ -63,12 +63,18 @@
     border-spacing: 0;
     padding-left: 10px;
     padding-right: 10px;
+    line-height: initial;
+}
+
+.network-timing-start {
+    border-top: 5px solid transparent;
+}
+.network-timing-table-header td, .network-timing-footer td {
+    border-top: 10px solid transparent;
 }
 
 .network-timing-table-header td {
     color: #bbb;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
 }
 
 .network-timing-table-header td:last-child {
@@ -76,7 +82,7 @@
 }
 
 .network-timing-table col.labels {
-    width: 120px;
+    width: 156px;
 }
 
 .network-timing-table col.duration {
@@ -97,10 +103,6 @@
     border: 0;
     height: 1px;
     background-image: linear-gradient(to right, #eee, #bbb, #eee);
-}
-
-.network-timing-footer td {
-    border-top: 8px solid transparent;
 }
 
 .network-timing-footer td:last-child {

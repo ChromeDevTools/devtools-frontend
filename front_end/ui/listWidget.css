@@ -50,36 +50,12 @@
     flex-direction: row;
     align-items: center;
     pointer-events: auto;
+    visibility: hidden;
 }
 
 .list-item:hover .controls-buttons {
     background-color: hsl(0, 0%, 96%);
-}
-
-.remove-button,
-.edit-button {
-    opacity: 0.5;
-    cursor: pointer;
-    flex: none;
-    visibility: hidden;
-}
-
-.list-item:hover .remove-button,
-.list-item:hover .edit-button {
     visibility: visible;
-}
-
-.remove-button:hover,
-.edit-button:hover {
-    opacity: 0.7;
-}
-
-.remove-button {
-    background-position: -128px -24px;
-}
-
-.edit-button {
-    background-position: -160px 0px;
 }
 
 .editor-container {

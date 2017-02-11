@@ -115,37 +115,34 @@ UI.ListWidget = class extends UI.VBox {
   _createControls(item, element) {
     var controls = createElementWithClass('div', 'controls-container fill');
     controls.createChild('div', 'controls-gradient');
+
     var buttons = controls.createChild('div', 'controls-buttons');
 
-    var editButton = UI.Icon.create('largeicon-edit', 'edit-button');
-    buttons.appendChild(editButton);
-    editButton.title = Common.UIString('Edit');
-    editButton.addEventListener('click', onEditClicked.bind(this), false);
+    var toolbar = new UI.Toolbar('', buttons);
 
-    var removeButton = UI.Icon.create('largeicon-trash-bin', 'remove-button');
-    buttons.appendChild(removeButton);
-    removeButton.title = Common.UIString('Remove');
-    removeButton.addEventListener('click', onRemoveClicked.bind(this), false);
+    var editButton = new UI.ToolbarButton(Common.UIString('Edit'), 'largeicon-edit');
+    editButton.addEventListener(UI.ToolbarButton.Events.Click, onEditClicked.bind(this));
+    toolbar.appendToolbarItem(editButton);
+
+    var removeButton = new UI.ToolbarButton(Common.UIString('Remove'), 'largeicon-trash-bin');
+    removeButton.addEventListener(UI.ToolbarButton.Events.Click, onRemoveClicked.bind(this));
+    toolbar.appendToolbarItem(removeButton);
 
     return controls;
 
     /**
-     * @param {!Event} event
      * @this {UI.ListWidget}
      */
-    function onEditClicked(event) {
-      event.consume();
+    function onEditClicked() {
       var index = this._elements.indexOf(element);
       var insertionPoint = this._elements[index + 1] || null;
       this._startEditing(item, element, insertionPoint);
     }
 
     /**
-     * @param {!Event} event
      * @this {UI.ListWidget}
      */
-    function onRemoveClicked(event) {
-      event.consume();
+    function onRemoveClicked() {
       var index = this._elements.indexOf(element);
       this._delegate.removeItemRequested(this._items[index], index);
     }

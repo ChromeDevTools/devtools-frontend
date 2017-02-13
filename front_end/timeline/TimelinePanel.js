@@ -681,24 +681,27 @@ Timeline.TimelinePanel = class extends UI.Panel {
     }
 
     var learnMoreNode = UI.createExternalLink(
-        'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/', Common.UIString('Learn more'));
-    var recordNode =
+        'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/', Common.UIString('Learn\xa0more'));
+    var recordKey =
         encloseWithTag('b', UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.toggle-recording')[0].name);
-    var reloadNode = encloseWithTag('b', UI.shortcutRegistry.shortcutDescriptorsForAction('main.reload')[0].name);
+    var reloadKey = encloseWithTag('b', UI.shortcutRegistry.shortcutDescriptorsForAction('main.reload')[0].name);
     var navigateNode = encloseWithTag('b', Common.UIString('WASD'));
 
     this._landingPage = new UI.VBox();
     this._landingPage.contentElement.classList.add('timeline-landing-page', 'fill');
     var centered = this._landingPage.contentElement.createChild('div');
 
-    centered.createChild('p').appendChild(UI.formatLocalized(
-        'To capture a new recording, click the record button or hit %s.%s' +
-            'To evaluate the page load, click the reload button or hit %s to record the reload.',
-        [recordNode, createElement('br'), reloadNode]));
+    var recordButton = UI.Toolbar.createActionButton(this._toggleRecordAction).element;
+    var reloadButton = UI.Toolbar.createActionButtonForId('main.reload').element;
 
     centered.createChild('p').appendChild(UI.formatLocalized(
-        'After recording, select an area of interest in the overview by dragging. ' +
-            'Then, zoom and pan the timeline with the mousewheel or %s keys. %s',
+        'Click the record button %s or hit %s to capture a new recording.\n' +
+        'Click the reload button %s or hit %s to record and evaluate the page load.',
+        [recordButton, recordKey, reloadButton, reloadKey]));
+
+    centered.createChild('p').appendChild(UI.formatLocalized(
+        'After recording, select an area of interest in the overview by dragging.\n' +
+        'Then, zoom and pan the timeline with the mousewheel or %s keys.\n%s',
         [navigateNode, learnMoreNode]));
 
     var cpuProfilerHintSetting = Common.settings.createSetting('timelineShowProfilerHint', true);

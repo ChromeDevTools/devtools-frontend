@@ -248,12 +248,27 @@ Timeline.TimelineUIUtils = class {
     var url = TimelineModel.TimelineData.forEvent(traceEvent).url;
     if (url)
       tokens.push(url);
-    for (var argName in traceEvent.args) {
-      var argValue = traceEvent.args[argName];
-      for (var key in argValue)
-        tokens.push(argValue[key]);
-    }
+    appendObjectProperties(traceEvent.args, 2);
     return regExp.test(tokens.join('|'));
+
+    /**
+     * @param {!Object} object
+     * @param {number} depth
+     */
+    function appendObjectProperties(object, depth) {
+      if (!depth)
+        return;
+      for (var key in object) {
+        var value = object[key];
+        var type = typeof value;
+        if (type === 'string')
+          tokens.push(value);
+        else if (type === 'number')
+          tokens.push(String(value));
+        else if (type === 'object')
+          appendObjectProperties(value, depth - 1);
+      }
+    }
   }
 
   /**

@@ -2369,7 +2369,8 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (isEditingName)
       proxyElement.addEventListener('paste', pasteHandler.bind(this, context), false);
 
-    selectElement.getComponentSelection().setBaseAndExtent(selectElement, 0, selectElement, 1);
+    selectElement.getComponentSelection().setBaseAndExtent(
+        selectElement, 0, selectElement, selectElement.firstChild ? 1 : 0);
   }
 
   /**

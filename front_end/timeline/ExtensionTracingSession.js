@@ -26,6 +26,10 @@ Timeline.ExtensionTracingSession = class {
   loadingStarted() {
   }
 
+  /** @override */
+  processingStarted() {
+  }
+
   /**
    * @override
    * @param {number=} progress

@@ -216,6 +216,11 @@ Timeline.TimelineController = class {
   }
 
   _allSourcesFinished() {
+    this._client.processingStarted();
+    setTimeout(() => this._finalizeTrace(), 0);
+  }
+
+  _finalizeTrace() {
     this._injectCpuProfileEvents();
     this._tracingModel.tracingComplete();
     this._client.loadingComplete(this._tracingModel, this._tracingModelBackingStorage);

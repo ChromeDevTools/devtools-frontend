@@ -755,6 +755,13 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
   /**
    * @override
+   */
+  processingStarted() {
+    this._statusPane.updateStatus(Common.UIString('Processing profile\u2026'));
+  }
+
+  /**
+   * @override
    * @param {?SDK.TracingModel} tracingModel
    * @param {?Bindings.TempFileBackingStorage} backingStorage
    */

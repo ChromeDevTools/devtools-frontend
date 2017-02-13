@@ -177,6 +177,11 @@ Timeline.TimelineLoader = class {
   close() {
     if (!this._client)
       return;
+    this._client.processingStarted();
+    setTimeout(() => this._finalizeTrace(), 0);
+  }
+
+  _finalizeTrace() {
     this._tracingModel.tracingComplete();
     this._client.loadingComplete(this._tracingModel, this._backingStorage);
   }
@@ -237,6 +242,8 @@ Timeline.TimelineLoader.Client.prototype = {
    * @param {number=} progress
    */
   loadingProgress(progress) {},
+
+  processingStarted() {},
 
   /**
    * @param {?SDK.TracingModel} tracingModel

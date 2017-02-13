@@ -603,8 +603,8 @@ SDK.EventListener = class extends SDK.SDKObject {
    * @param {?SDK.RemoteObject} handler
    * @param {?SDK.RemoteObject} originalHandler
    * @param {!SDK.DebuggerModel.Location} location
-   * @param {?SDK.RemoteObject} removeFunction
-   * @param {string=} listenerType
+   * @param {?SDK.RemoteObject} customRemoveFunction
+   * @param {!SDK.EventListener.Origin=} origin
    */
   constructor(
       target,
@@ -616,8 +616,8 @@ SDK.EventListener = class extends SDK.SDKObject {
       handler,
       originalHandler,
       location,
-      removeFunction,
-      listenerType) {
+      customRemoveFunction,
+      origin) {
     super(target);
     this._eventTarget = eventTarget;
     this._type = type;
@@ -629,8 +629,8 @@ SDK.EventListener = class extends SDK.SDKObject {
     this._location = location;
     var script = location.script();
     this._sourceURL = script ? script.contentURL() : '';
-    this._removeFunction = removeFunction;
-    this._listenerType = listenerType || 'normal';
+    this._customRemoveFunction = customRemoveFunction;
+    this._origin = origin || SDK.EventListener.Origin.Raw;
   }
 
   /**
@@ -690,19 +690,40 @@ SDK.EventListener = class extends SDK.SDKObject {
   }
 
   /**
-   * @return {?SDK.RemoteObject}
+   * @return {boolean}
    */
-  removeFunction() {
-    return this._removeFunction;
+  canRemove() {
+    return !!this._customRemoveFunction || this._origin !== SDK.EventListener.Origin.FrameworkUser;
   }
 
   /**
    * @return {!Promise<undefined>}
    */
   remove() {
-    if (!this._removeFunction)
+    if (!this.canRemove())
       return Promise.resolve();
-    return this._removeFunction
+
+    if (this._origin !== SDK.EventListener.Origin.FrameworkUser) {
+      /**
+       * @param {string} type
+       * @param {function()} listener
+       * @param {boolean} useCapture
+       * @this {Object}
+       * @suppressReceiverCheck
+       */
+      function removeListener(type, listener, useCapture) {
+        this.removeEventListener(type, listener, useCapture);
+        if (this['on' + type])
+          this['on' + type] = undefined;
+      }
+
+      return /** @type {!Promise<undefined>} */ (this._eventTarget.callFunctionPromise(removeListener, [
+        SDK.RemoteObject.toCallArgument(this._type), SDK.RemoteObject.toCallArgument(this._originalHandler),
+        SDK.RemoteObject.toCallArgument(this._useCapture)
+      ]));
+    }
+
+    return this._customRemoveFunction
         .callFunctionPromise(
             callCustomRemove,
             [
@@ -727,54 +748,46 @@ SDK.EventListener = class extends SDK.SDKObject {
   }
 
   /**
+   * @return {boolean}
+   */
+  canTogglePassive() {
+    return this._origin !== SDK.EventListener.Origin.FrameworkUser;
+  }
+
+  /**
    * @return {!Promise<undefined>}
    */
   togglePassive() {
-    return new Promise(promiseConstructor.bind(this));
+    return /** @type {!Promise<undefined>} */ (this._eventTarget.callFunctionPromise(callTogglePassive, [
+      SDK.RemoteObject.toCallArgument(this._type),
+      SDK.RemoteObject.toCallArgument(this._originalHandler),
+      SDK.RemoteObject.toCallArgument(this._useCapture),
+      SDK.RemoteObject.toCallArgument(this._passive),
+    ]));
 
     /**
-     * @param {function()} success
-     * @this {SDK.EventListener}
+     * @param {string} type
+     * @param {function()} listener
+     * @param {boolean} useCapture
+     * @param {boolean} passive
+     * @this {Object}
+     * @suppressReceiverCheck
      */
-    function promiseConstructor(success) {
-      this._eventTarget
-          .callFunctionPromise(
-              callTogglePassive,
-              [
-                SDK.RemoteObject.toCallArgument(this._type),
-                SDK.RemoteObject.toCallArgument(this._originalHandler),
-                SDK.RemoteObject.toCallArgument(this._useCapture),
-                SDK.RemoteObject.toCallArgument(this._passive),
-              ])
-          .then(success);
-
-      /**
-       * @param {string} type
-       * @param {function()} listener
-       * @param {boolean} useCapture
-       * @param {boolean} passive
-       * @this {Object}
-       * @suppressReceiverCheck
-       */
-      function callTogglePassive(type, listener, useCapture, passive) {
-        this.removeEventListener(type, listener, {capture: useCapture});
-        this.addEventListener(type, listener, {capture: useCapture, passive: !passive});
-      }
+    function callTogglePassive(type, listener, useCapture, passive) {
+      this.removeEventListener(type, listener, {capture: useCapture});
+      this.addEventListener(type, listener, {capture: useCapture, passive: !passive});
     }
   }
 
   /**
-   * @return {string}
+   * @return {!SDK.EventListener.Origin}
    */
-  listenerType() {
-    return this._listenerType;
+  origin() {
+    return this._origin;
   }
 
-  /**
-   * @param {string} listenerType
-   */
-  setListenerType(listenerType) {
-    this._listenerType = listenerType;
+  markAsFramework() {
+    this._origin = SDK.EventListener.Origin.Framework;
   }
 
   /**
@@ -784,11 +797,11 @@ SDK.EventListener = class extends SDK.SDKObject {
     return this._type === 'touchstart' || this._type === 'touchmove' || this._type === 'mousewheel' ||
         this._type === 'wheel';
   }
+};
 
-  /**
-   * @return {boolean}
-   */
-  isNormalListenerType() {
-    return this._listenerType === 'normal';
-  }
+/** @enum {string} */
+SDK.EventListener.Origin = {
+  Raw: 'Raw',
+  Framework: 'Framework',
+  FrameworkUser: 'FrameworkUser'
 };

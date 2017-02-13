@@ -178,7 +178,7 @@ EventListeners.frameworkEventListeners = function(object) {
           throw new Error('Empty event listener\'s location');
         return new SDK.EventListener(
             handler._target, object, type, useCapture, passive, once, handler, originalHandler, location,
-            removeFunctionObject, 'frameworkUser');
+            removeFunctionObject, SDK.EventListener.Origin.FrameworkUser);
       }
     }
   }

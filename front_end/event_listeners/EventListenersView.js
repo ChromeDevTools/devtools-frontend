@@ -111,7 +111,7 @@ EventListeners.EventListenersView = class {
       function setIsInternal(isInternal) {
         for (var i = 0; i < eventListeners.length; ++i) {
           if (isInternal[i])
-            eventListeners[i].setListenerType('frameworkInternal');
+            eventListeners[i].markAsFramework();
         }
       }
     }
@@ -148,11 +148,11 @@ EventListeners.EventListenersView = class {
     for (var eventType of eventTypes) {
       var hiddenEventType = true;
       for (var listenerElement of eventType.children()) {
-        var listenerType = listenerElement.eventListener().listenerType();
+        var listenerOrigin = listenerElement.eventListener().origin();
         var hidden = false;
-        if (listenerType === 'frameworkUser' && !showFramework)
+        if (listenerOrigin === SDK.EventListener.Origin.FrameworkUser && !showFramework)
           hidden = true;
-        if (listenerType === 'frameworkInternal' && showFramework)
+        if (listenerOrigin === SDK.EventListener.Origin.Framework && showFramework)
           hidden = true;
         if (!showPassive && listenerElement.eventListener().passive())
           hidden = true;
@@ -288,7 +288,7 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
     title.appendChild(
         Components.ObjectPropertiesSection.createValueElement(object, false /* wasThrown */, false /* showPreview */));
 
-    if (this._eventListener.removeFunction()) {
+    if (this._eventListener.canRemove()) {
       var deleteButton = title.createChild('span', 'event-listener-button');
       deleteButton.textContent = Common.UIString('Remove');
       deleteButton.title = Common.UIString('Delete event listener');
@@ -296,7 +296,7 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
       title.appendChild(deleteButton);
     }
 
-    if (this._eventListener.isScrollBlockingType() && this._eventListener.isNormalListenerType()) {
+    if (this._eventListener.isScrollBlockingType() && this._eventListener.canTogglePassive()) {
       var passiveButton = title.createChild('span', 'event-listener-button');
       passiveButton.textContent = Common.UIString('Toggle Passive');
       passiveButton.title = Common.UIString('Toggle whether event listener is passive or blocking');

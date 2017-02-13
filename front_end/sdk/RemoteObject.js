@@ -586,7 +586,7 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
             payload.originalHandler ? this.target().runtimeModel.createRemoteObject(payload.originalHandler) : null,
             /** @type {!SDK.DebuggerModel.Location} */ (this._debuggerModel.createRawLocationByScriptId(
                 payload.scriptId, payload.lineNumber, payload.columnNumber)),
-            payload.removeFunction ? this.target().runtimeModel.createRemoteObject(payload.removeFunction) : null);
+            null);
       }
     }
   }

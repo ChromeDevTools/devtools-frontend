@@ -129,9 +129,9 @@ UI.GlassPane = class {
       if (behavior === UI.GlassPane.AnchorBehavior.PreferTop || behavior === UI.GlassPane.AnchorBehavior.PreferBottom) {
         var top = anchorBox.y - gutterSize;
         var bottom = containerHeight - anchorBox.y - anchorBox.height - gutterSize;
-        if (behavior === UI.GlassPane.AnchorBehavior.PreferTop && top < height && bottom >= height)
+        if (behavior === UI.GlassPane.AnchorBehavior.PreferTop && top < height && bottom > top)
           behavior = UI.GlassPane.AnchorBehavior.PreferBottom;
-        if (behavior === UI.GlassPane.AnchorBehavior.PreferBottom && bottom < height && top >= height)
+        if (behavior === UI.GlassPane.AnchorBehavior.PreferBottom && bottom < height && top > bottom)
           behavior = UI.GlassPane.AnchorBehavior.PreferTop;
 
         positionX = Math.max(gutterSize, Math.min(anchorBox.x, containerWidth - width - gutterSize));
@@ -146,9 +146,9 @@ UI.GlassPane = class {
       } else {
         var left = anchorBox.x - gutterSize;
         var right = containerWidth - anchorBox.x - anchorBox.width - gutterSize;
-        if (behavior === UI.GlassPane.AnchorBehavior.PreferLeft && left < width && right >= width)
+        if (behavior === UI.GlassPane.AnchorBehavior.PreferLeft && left < width && right > left)
           behavior = UI.GlassPane.AnchorBehavior.PreferRight;
-        if (behavior === UI.GlassPane.AnchorBehavior.PreferRight && right < width && left >= width)
+        if (behavior === UI.GlassPane.AnchorBehavior.PreferRight && right < width && left > right)
           behavior = UI.GlassPane.AnchorBehavior.PreferLeft;
 
         positionY = Math.max(gutterSize, Math.min(anchorBox.y, containerHeight - height - gutterSize));

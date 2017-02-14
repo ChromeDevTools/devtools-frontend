@@ -687,7 +687,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
 
     /** @type {!Set<string>} */
     this._blockedURLs = new Set();
-    this._blockedSetting = Common.moduleSetting('blockedURLs');
+    this._blockedSetting = Common.moduleSetting('networkBlockedURLs');
     this._blockedSetting.addChangeListener(this._updateBlockedURLs, this);
     this._blockedSetting.set([]);
     this._updateBlockedURLs();

@@ -1101,24 +1101,50 @@ Network.NetworkLogView = class extends UI.VBox {
     contextMenu.appendItem(Common.UIString.capitalize('Clear ^browser ^cache'), this._clearBrowserCache.bind(this));
     contextMenu.appendItem(Common.UIString.capitalize('Clear ^browser ^cookies'), this._clearBrowserCookies.bind(this));
 
-    var blockedSetting = Common.moduleSetting('blockedURLs');
     if (request && Runtime.experiments.isEnabled('requestBlocking')) {  // Disabled until ready.
       contextMenu.appendSeparator();
 
+      var blockedSetting = Common.moduleSetting('networkBlockedURLs');
+      var blockedSettingData = blockedSetting.get();
+
+      const maxBlockedURLLength = 20;
       var urlWithoutScheme = request.parsedURL.urlWithoutScheme();
-      if (urlWithoutScheme && blockedSetting.get().indexOf(urlWithoutScheme) === -1) {
+      var blockedURLIndex = blockedSettingData.indexOf(urlWithoutScheme);
+      if (urlWithoutScheme && blockedURLIndex === -1) {
         contextMenu.appendItem(
             Common.UIString.capitalize('Block ^request URL'), addBlockedURL.bind(null, urlWithoutScheme));
+      } else if (urlWithoutScheme) {
+        const croppedURL = urlWithoutScheme.trimMiddle(maxBlockedURLLength);
+        contextMenu.appendItem(
+            Common.UIString.capitalize('Unblock ' + croppedURL), removeBlockedURLIndex.bind(null, blockedURLIndex));
       }
 
       var domain = request.parsedURL.domain();
-      if (domain && blockedSetting.get().indexOf(domain) === -1)
+      var blockedDomainIndex = blockedSettingData.indexOf(domain);
+      if (domain && blockedDomainIndex === -1) {
         contextMenu.appendItem(Common.UIString.capitalize('Block ^request ^domain'), addBlockedURL.bind(null, domain));
+      } else if (domain) {
+        const croppedDomain = domain.trimMiddle(maxBlockedURLLength);
+        contextMenu.appendItem(
+            Common.UIString.capitalize('Unblock ' + croppedDomain),
+            removeBlockedURLIndex.bind(null, blockedDomainIndex));
+      }
 
+      /**
+       * @param {string} url
+       */
       function addBlockedURL(url) {
-        var list = blockedSetting.get();
-        list.push(url);
-        blockedSetting.set(list);
+        blockedSettingData.push(url);
+        blockedSetting.set(blockedSettingData);
+        UI.viewManager.showView('network.blocked-urls');
+      }
+
+      /**
+       * @param {number} index
+       */
+      function removeBlockedURLIndex(index) {
+        blockedSettingData.splice(index, 1);
+        blockedSetting.set(blockedSettingData);
         UI.viewManager.showView('network.blocked-urls');
       }
     }

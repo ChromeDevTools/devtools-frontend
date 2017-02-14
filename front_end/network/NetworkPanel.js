@@ -186,7 +186,7 @@ Network.NetworkPanel = class extends UI.Panel {
    * @return {!UI.ToolbarItem}
    */
   _createBlockedURLsButton() {
-    var setting = Common.moduleSetting('blockedURLs');
+    var setting = Common.moduleSetting('networkBlockedURLs');
     setting.addChangeListener(updateAction);
     var action = /** @type {!UI.Action }*/ (UI.actionRegistry.action('network.blocked-urls.show'));
     var button = UI.Toolbar.createActionButton(action);

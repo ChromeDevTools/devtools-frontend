@@ -8,7 +8,7 @@
     "extensions": [
         {
             "type": "setting",
-            "settingName": "blockedURLs",
+            "settingName": "networkBlockedURLs",
             "settingType": "array",
             "defaultValue": []
         },

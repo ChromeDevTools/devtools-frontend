@@ -755,7 +755,7 @@ Main.NetworkPanelIndicator = class {
       return;
     var manager = SDK.multitargetNetworkManager;
     manager.addEventListener(SDK.MultitargetNetworkManager.Events.ConditionsChanged, updateVisibility);
-    var blockedURLsSetting = Common.moduleSetting('blockedURLs');
+    var blockedURLsSetting = Common.moduleSetting('networkBlockedURLs');
     blockedURLsSetting.addChangeListener(updateVisibility);
     updateVisibility();
 

@@ -12,7 +12,7 @@ Network.BlockedURLsPane = class extends UI.VBox {
 
     Network.BlockedURLsPane._instance = this;
 
-    this._blockedURLsSetting = Common.moduleSetting('blockedURLs');
+    this._blockedURLsSetting = Common.moduleSetting('networkBlockedURLs');
     this._blockedURLsSetting.addChangeListener(this._update, this);
 
     this._toolbar = new UI.Toolbar('', this.contentElement);

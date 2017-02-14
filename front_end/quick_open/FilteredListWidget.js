@@ -367,13 +367,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._list.replaceAllItems(filteredItems);
     if (filteredItems.length)
       this._list.selectItem(filteredItems[0]);
-
-    var beforeDialogHeight = this._dialog.element.style.height;
-    this._dialog.contentResized();
-    // If the dialog height changed, the viewport might need to be resized.
-    // We use the CSS on the dialog to avoid measuring it directly.
-    if (beforeDialogHeight !== this._dialog.element.style.height)
-      this._list.viewportResized();
+    this._list.viewportResized();
     this._itemsFilteredForTest();
   }
 

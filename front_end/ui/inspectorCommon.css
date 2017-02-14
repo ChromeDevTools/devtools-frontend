@@ -395,6 +395,7 @@ label[is=dt-icon-label] {
     left: 0;
     right: 0;
     overflow: hidden;
+    contain: strict;
 }
 
 .glass-pane-content {

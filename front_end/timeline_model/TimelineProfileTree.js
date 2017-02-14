@@ -125,8 +125,10 @@ TimelineModel.TimelineProfileTree.TopDownNode = class extends TimelineModel.Time
      * @param {!SDK.TracingModel.Event} e
      */
     function onInstantEvent(e) {
-      if (matchedDepth === path.length && matchedDepth === depth)
+      ++depth;
+      if (matchedDepth === path.length && depth <= path.length + 2)
         processEvent(e, 0);
+      --depth;
     }
 
     /**

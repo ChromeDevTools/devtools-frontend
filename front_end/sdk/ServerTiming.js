@@ -7,8 +7,8 @@
 SDK.ServerTiming = class {
   /**
    * @param {string} metric
-   * @param {number} value
-   * @param {string} description
+   * @param {?number} value
+   * @param {?string} description
    */
   constructor(metric, value, description) {
     this.metric = metric;
@@ -39,9 +39,11 @@ SDK.ServerTiming = class {
         var metric = metricMatch[1];
         var value = metricMatch[2];
         var description = metricMatch[3] || metricMatch[4];
-        if (value !== null)
+        if (value !== undefined)
           value = Math.abs(parseFloat(metricMatch[2]));
         valueString = metricMatch[5];  // comma delimited headers
+        if (value === undefined || isNaN(value))
+          value = null;
         result.push(new SDK.ServerTiming(metric, value, description));
       }
       return result;

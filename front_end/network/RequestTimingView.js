@@ -287,8 +287,11 @@ Network.RequestTimingView = class extends UI.VBox {
       var metric = tr.createChild('td', 'network-timing-metric');
       metric.createTextChild(serverTiming.description || serverTiming.metric);
       var row = tr.createChild('td').createChild('div', 'network-timing-row');
-      var left = scale * (endTime - startTime - serverTiming.value);
-      if (serverTiming.value && left >= 0) {  // don't chart values too big or too small
+
+      if (serverTiming.value === null)
+        return;
+      var left = scale * (endTime - startTime - (serverTiming.value / 1000));
+      if (left >= 0) {  // don't chart values too big or too small
         var bar = row.createChild('span', 'network-timing-bar server-timing');
         bar.style.left = left + '%';
         bar.style.right = right + '%';
@@ -297,8 +300,7 @@ Network.RequestTimingView = class extends UI.VBox {
           bar.style.backgroundColor = colorGenerator.colorForID(serverTiming.metric);
       }
       var label = tr.createChild('td').createChild('div', 'network-timing-bar-title');
-      if (typeof serverTiming.value === 'number')  // a metric timing value is optional
-        label.textContent = Number.secondsToString(serverTiming.value, true);
+      label.textContent = Number.millisToString(serverTiming.value, true);
     }
 
     /**

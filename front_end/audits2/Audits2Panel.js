@@ -35,8 +35,11 @@ Audits2.Audits2Panel = class extends UI.Panel {
     this._protocolService.registerStatusCallback(msg => this._updateStatus(Common.UIString(msg)));
 
     this._pwaSetting = Common.settings.createSetting('audits2_pwa', true);
+    this._pwaSetting.setTitle(Common.UIString('Progressive web app audits'));
     this._perfSetting = Common.settings.createSetting('audits2_perf', true);
+    this._perfSetting.setTitle(Common.UIString('Performance metrics and diagnostics'));
     this._practicesSetting = Common.settings.createSetting('audits2_best_practices', true);
+    this._practicesSetting.setTitle(Common.UIString('Modern web development best practices'));
 
     var auditsViewElement = this.contentElement.createChild('div', 'hbox audits-view');
     this._resultsView = this.contentElement.createChild('div', 'vbox results-view');
@@ -49,16 +52,6 @@ Audits2.Audits2Panel = class extends UI.Panel {
     this._resultsView.removeChildren();
   }
 
-  /**
-   * @param {string} name
-   * @param {!Common.Setting} setting
-   * @return {!UI.ToolbarItem}
-   */
-  _createSettingCheckbox(name, setting) {
-    const checkboxItem = new UI.ToolbarCheckbox(name, undefined, setting);
-    return checkboxItem;
-  }
-
   _createLauncherUI() {
     var uiElement = createElement('div');
     var headerElement = uiElement.createChild('header');
@@ -68,11 +61,9 @@ Audits2.Audits2Panel = class extends UI.Panel {
 
     var auditSelectorForm = uiElement.createChild('form', 'audits2-form');
 
-    var perfCheckbox =
-        this._createSettingCheckbox(Common.UIString('Performance metrics and diagnostics'), this._perfSetting);
-    var pwaCheckbox = this._createSettingCheckbox(Common.UIString('Progressive web app audits'), this._pwaSetting);
-    var practicesCheckbox =
-        this._createSettingCheckbox(Common.UIString('Modern web development best practices'), this._practicesSetting);
+    var perfCheckbox = new UI.ToolbarSettingCheckbox(this._perfSetting);
+    var pwaCheckbox = new UI.ToolbarSettingCheckbox(this._pwaSetting);
+    var practicesCheckbox = new UI.ToolbarSettingCheckbox(this._practicesSetting);
     [perfCheckbox, practicesCheckbox, pwaCheckbox].forEach(checkbox => auditSelectorForm.appendChild(checkbox.element));
 
     this._startButton = UI.createTextButton(

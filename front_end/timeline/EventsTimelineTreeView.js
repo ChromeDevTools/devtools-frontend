@@ -161,8 +161,8 @@ Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
     for (var durationMs of Timeline.EventsTimelineTreeView.Filters._durationFilterPresetsMs) {
       durationFilterUI.addOption(durationFilterUI.createOption(
           durationMs ? Common.UIString('\u2265 %d\u2009ms', durationMs) : Common.UIString('All'),
-          durationMs ? Common.UIString('Hide records shorter than %d\u2009ms', durationMs)
-                     : Common.UIString('Show all records'),
+          durationMs ? Common.UIString('Hide records shorter than %d\u2009ms', durationMs) :
+                       Common.UIString('Show all records'),
           String(durationMs)));
     }
     toolbar.appendToolbarItem(durationFilterUI);
@@ -173,8 +173,8 @@ Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
       var category = categories[categoryName];
       if (!category.visible)
         continue;
-      var checkbox = new UI.ToolbarCheckbox(
-          category.title, undefined, undefined, categoriesFilterChanged.bind(this, categoryName));
+      var checkbox =
+          new UI.ToolbarCheckbox(category.title, undefined, categoriesFilterChanged.bind(this, categoryName));
       checkbox.setChecked(true);
       checkbox.inputElement.style.backgroundColor = category.color;
       categoryFiltersUI[category.name] = checkbox;

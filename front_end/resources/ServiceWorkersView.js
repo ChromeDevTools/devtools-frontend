@@ -18,14 +18,15 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     this._sections = new Map();
 
     this._toolbar.appendToolbarItem(NetworkConditions.NetworkConditionsSelector.createOfflineToolbarCheckbox());
-    var forceUpdate = new UI.ToolbarCheckbox(
-        Common.UIString('Update on reload'), Common.UIString('Force update Service Worker on page reload'),
-        Common.settings.createSetting('serviceWorkerUpdateOnReload', false));
+    var updateOnReloadSetting = Common.settings.createSetting('serviceWorkerUpdateOnReload', false);
+    updateOnReloadSetting.setTitle(Common.UIString('Update on reload'));
+    var forceUpdate = new UI.ToolbarSettingCheckbox(
+        updateOnReloadSetting, Common.UIString('Force update Service Worker on page reload'));
     this._toolbar.appendToolbarItem(forceUpdate);
-    var fallbackToNetwork = new UI.ToolbarCheckbox(
-        Common.UIString('Bypass for network'),
-        Common.UIString('Bypass Service Worker and load resources from the network'),
-        Common.settings.createSetting('bypassServiceWorker', false));
+    var bypassServiceWorkerSetting = Common.settings.createSetting('bypassServiceWorker', false);
+    bypassServiceWorkerSetting.setTitle(Common.UIString('Bypass for network'));
+    var fallbackToNetwork = new UI.ToolbarSettingCheckbox(
+        bypassServiceWorkerSetting, Common.UIString('Bypass Service Worker and load resources from the network'));
     this._toolbar.appendToolbarItem(fallbackToNetwork);
     this._toolbar.appendSpacer();
     this._showAllCheckbox = new UI.ToolbarCheckbox(

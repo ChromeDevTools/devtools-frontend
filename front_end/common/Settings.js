@@ -59,6 +59,8 @@ Common.Settings = class {
     var isLocal = !!descriptor['local'];
     var setting = settingType === 'regex' ? this.createRegExpSetting(settingName, defaultValue, undefined, isLocal) :
                                             this.createSetting(settingName, defaultValue, isLocal);
+    if (descriptor['title'])
+      setting.setTitle(descriptor['title']);
     this._moduleSettings.set(settingName, setting);
   }
 
@@ -231,6 +233,8 @@ Common.Setting = class {
     this._defaultValue = defaultValue;
     this._eventSupport = eventSupport;
     this._storage = storage;
+    /** @type {string} */
+    this._title = '';
   }
 
   /**
@@ -251,6 +255,20 @@ Common.Setting = class {
 
   get name() {
     return this._name;
+  }
+
+  /**
+   * @return {string}
+   */
+  title() {
+    return this._title;
+  }
+
+  /**
+   * @param {string} title
+   */
+  setTitle(title) {
+    this._title = title;
   }
 
   /**

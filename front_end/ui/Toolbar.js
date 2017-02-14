@@ -1005,18 +1005,15 @@ UI.ToolbarSettingComboBox = class extends UI.ToolbarComboBox {
 UI.ToolbarCheckbox = class extends UI.ToolbarItem {
   /**
    * @param {string} text
-   * @param {string=} title
-   * @param {!Common.Setting=} setting
+   * @param {string=} tooltip
    * @param {function()=} listener
    */
-  constructor(text, title, setting, listener) {
+  constructor(text, tooltip, listener) {
     super(UI.createCheckboxLabel(text));
     this.element.classList.add('checkbox');
     this.inputElement = this.element.checkboxElement;
-    if (title)
-      this.element.title = title;
-    if (setting)
-      UI.SettingsUI.bindCheckbox(this.inputElement, setting);
+    if (tooltip)
+      this.element.title = tooltip;
     if (listener)
       this.inputElement.addEventListener('click', listener, false);
   }
@@ -1042,5 +1039,17 @@ UI.ToolbarCheckbox = class extends UI.ToolbarItem {
   _applyEnabledState(enabled) {
     super._applyEnabledState(enabled);
     this.inputElement.disabled = !enabled;
+  }
+};
+
+UI.ToolbarSettingCheckbox = class extends UI.ToolbarCheckbox {
+  /**
+   * @param {!Common.Setting} setting
+   * @param {string=} tooltip
+   * @param {string=} alternateTitle
+   */
+  constructor(setting, tooltip, alternateTitle) {
+    super(alternateTitle || setting.title() || '', tooltip);
+    UI.SettingsUI.bindCheckbox(this.inputElement, setting);
   }
 };

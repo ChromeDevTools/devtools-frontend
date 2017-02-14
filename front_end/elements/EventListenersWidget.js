@@ -44,15 +44,16 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
     this._dispatchFilterBySetting.addChangeListener(this.update.bind(this));
 
     this._showFrameworkListenersSetting = Common.settings.createSetting('showFrameowkrListeners', true);
+    this._showFrameworkListenersSetting.setTitle(Common.UIString('Framework listeners'));
     this._showFrameworkListenersSetting.addChangeListener(this._showFrameworkListenersChanged.bind(this));
     this._eventListenersView = new EventListeners.EventListenersView(this.element, this.update.bind(this));
 
     var refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this.update.bind(this));
     this._toolbarItems.push(refreshButton);
-    this._toolbarItems.push(new UI.ToolbarCheckbox(
-        Common.UIString('Ancestors'), Common.UIString('Show listeners on the ancestors'),
-        this._showForAncestorsSetting));
+    this._toolbarItems.push(new UI.ToolbarSettingCheckbox(
+        this._showForAncestorsSetting, Common.UIString('Show listeners on the ancestors'),
+        Common.UIString('Ancestors')));
     var dispatchFilter = new UI.ToolbarComboBox(this._onDispatchFilterTypeChanged.bind(this));
 
     /**
@@ -72,9 +73,8 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
         this, Common.UIString('Blocking'), Elements.EventListenersWidget.DispatchFilterBy.Blocking);
     dispatchFilter.setMaxWidth(200);
     this._toolbarItems.push(dispatchFilter);
-    this._toolbarItems.push(new UI.ToolbarCheckbox(
-        Common.UIString('Framework listeners'), Common.UIString('Resolve event listeners bound with framework'),
-        this._showFrameworkListenersSetting));
+    this._toolbarItems.push(new UI.ToolbarSettingCheckbox(
+        this._showFrameworkListenersSetting, Common.UIString('Resolve event listeners bound with framework')));
 
     UI.context.addFlavorChangeListener(SDK.DOMNode, this.update, this);
     this.update();

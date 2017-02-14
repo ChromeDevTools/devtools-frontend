@@ -55,8 +55,8 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
     filterContainerElement.appendChild(filterInput);
 
     var toolbar = new UI.Toolbar('styles-pane-toolbar', hbox);
-    toolbar.appendToolbarItem(new UI.ToolbarCheckbox(
-        Common.UIString('Show all'), undefined, this._showInheritedComputedStylePropertiesSetting));
+    toolbar.appendToolbarItem(new UI.ToolbarSettingCheckbox(
+        this._showInheritedComputedStylePropertiesSetting, undefined, Common.UIString('Show all')));
 
     this._propertiesOutline = new UI.TreeOutlineInShadow();
     this._propertiesOutline.hideOverflow();

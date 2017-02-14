@@ -170,9 +170,9 @@ Network.NetworkPanel = class extends UI.Panel {
         'change', this._onPreserveLogCheckboxChanged.bind(this), false);
     this._panelToolbar.appendToolbarItem(this._preserveLogCheckbox);
 
-    this._disableCacheCheckbox = new UI.ToolbarCheckbox(
-        Common.UIString('Disable cache'), Common.UIString('Disable cache (while DevTools is open)'),
-        Common.moduleSetting('cacheDisabled'));
+    this._disableCacheCheckbox = new UI.ToolbarSettingCheckbox(
+        Common.moduleSetting('cacheDisabled'), Common.UIString('Disable cache (while DevTools is open)'),
+        Common.UIString('Disable cache'));
     this._panelToolbar.appendToolbarItem(this._disableCacheCheckbox);
 
     this._panelToolbar.appendSeparator();

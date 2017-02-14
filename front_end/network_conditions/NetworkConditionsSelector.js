@@ -171,7 +171,7 @@ NetworkConditions.NetworkConditionsSelector = class {
    */
   static createOfflineToolbarCheckbox() {
     var checkbox = new UI.ToolbarCheckbox(
-        Common.UIString('Offline'), Common.UIString('Force disconnected from network'), undefined, forceOffline);
+        Common.UIString('Offline'), Common.UIString('Force disconnected from network'), forceOffline);
     SDK.multitargetNetworkManager.addEventListener(
         SDK.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
     checkbox.setChecked(SDK.multitargetNetworkManager.networkConditions() === SDK.NetworkManager.OfflineConditions);

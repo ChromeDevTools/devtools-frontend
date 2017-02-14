@@ -74,11 +74,15 @@ Timeline.TimelinePanel = class extends UI.Panel {
         Common.settings.createSetting('timelineViewMode', Timeline.TimelinePanel.ViewMode.FlameChart);
 
     this._disableCaptureJSProfileSetting = Common.settings.createSetting('timelineDisableJSSampling', false);
+    this._disableCaptureJSProfileSetting.setTitle(Common.UIString('Disable JavaScript Samples'));
     this._captureLayersAndPicturesSetting = Common.settings.createSetting('timelineCaptureLayersAndPictures', false);
+    this._captureLayersAndPicturesSetting.setTitle(Common.UIString('Enable advanced paint instrumentation (slow)'));
 
     this._showScreenshotsSetting = Common.settings.createLocalSetting('timelineShowScreenshots', true);
+    this._showScreenshotsSetting.setTitle(Common.UIString('Screenshots'));
     this._showScreenshotsSetting.addChangeListener(this._onModeChanged, this);
     this._showMemorySetting = Common.settings.createLocalSetting('timelineShowMemory', false);
+    this._showMemorySetting.setTitle(Common.UIString('Memory'));
     this._showMemorySetting.addChangeListener(this._onModeChanged, this);
 
     this._panelToolbar = new UI.Toolbar('', this.element);
@@ -245,13 +249,12 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   /**
-   * @param {string} name
    * @param {!Common.Setting} setting
    * @param {string} tooltip
    * @return {!UI.ToolbarItem}
    */
-  _createSettingCheckbox(name, setting, tooltip) {
-    const checkboxItem = new UI.ToolbarCheckbox(name, tooltip, setting);
+  _createSettingCheckbox(setting, tooltip) {
+    const checkboxItem = new UI.ToolbarSettingCheckbox(setting, tooltip);
     this._recordingOptionUIControls.push(checkboxItem);
     return checkboxItem;
   }
@@ -267,12 +270,12 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     // View
     this._panelToolbar.appendSeparator();
-    this._showScreenshotsToolbarCheckbox = this._createSettingCheckbox(
-        Common.UIString('Screenshots'), this._showScreenshotsSetting, Common.UIString('Capture screenshots'));
+    this._showScreenshotsToolbarCheckbox =
+        this._createSettingCheckbox(this._showScreenshotsSetting, Common.UIString('Capture screenshots'));
     this._panelToolbar.appendToolbarItem(this._showScreenshotsToolbarCheckbox);
 
-    this._showMemoryToolbarCheckbox = this._createSettingCheckbox(
-        Common.UIString('Memory'), this._showMemorySetting, Common.UIString('Show memory timeline.'));
+    this._showMemoryToolbarCheckbox =
+        this._createSettingCheckbox(this._showMemorySetting, Common.UIString('Show memory timeline'));
     this._panelToolbar.appendToolbarItem(this._showMemoryToolbarCheckbox);
 
     // GC
@@ -304,10 +307,10 @@ Timeline.TimelinePanel = class extends UI.Panel {
     captureToolbar.element.classList.add('flex-auto');
     captureToolbar.makeVertical();
     captureToolbar.appendToolbarItem(this._createSettingCheckbox(
-        Common.UIString('Disable JavaScript Samples'), this._disableCaptureJSProfileSetting,
+        this._disableCaptureJSProfileSetting,
         Common.UIString('Disables JavaScript sampling, reduces overhead when running against mobile devices')));
     captureToolbar.appendToolbarItem(this._createSettingCheckbox(
-        Common.UIString('Enable advanced paint instrumentation (slow)'), this._captureLayersAndPicturesSetting,
+        this._captureLayersAndPicturesSetting,
         Common.UIString('Captures advanced paint instrumentation, introduces significant performance overhead')));
 
     var throttlingPane = new UI.VBox();
@@ -331,7 +334,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _appendExtensionsToToolbar(event) {
     var provider = /** @type {!Extensions.ExtensionTraceProvider} */ (event.data);
     const setting = Timeline.TimelinePanel._settingForTraceProvider(provider);
-    const checkbox = this._createSettingCheckbox(provider.shortDisplayName(), setting, provider.longDisplayName());
+    const checkbox = this._createSettingCheckbox(setting, provider.longDisplayName());
     this._panelToolbar.appendToolbarItem(checkbox);
   }
 
@@ -344,6 +347,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     if (!setting) {
       var providerId = traceProvider.persistentIdentifier();
       setting = Common.settings.createSetting(providerId, false);
+      setting.setTitle(traceProvider.shortDisplayName());
       traceProvider[Timeline.TimelinePanel._traceProviderSettingSymbol] = setting;
     }
     return setting;

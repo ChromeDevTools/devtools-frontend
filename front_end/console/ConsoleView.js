@@ -80,12 +80,12 @@ Console.ConsoleView = class extends UI.VBox {
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._showSettingsPaneButton);
 
-    this._preserveLogCheckbox = new UI.ToolbarCheckbox(
-        Common.UIString('Preserve log'), Common.UIString('Do not clear log on page reload / navigation'),
-        Common.moduleSetting('preserveConsoleLog'));
-    this._hideNetworkMessagesCheckbox = new UI.ToolbarCheckbox(
-        Common.UIString('Hide network'), Common.UIString('Hide network messages'),
-        this._filter._hideNetworkMessagesSetting);
+    this._preserveLogCheckbox = new UI.ToolbarSettingCheckbox(
+        Common.moduleSetting('preserveConsoleLog'), Common.UIString('Do not clear log on page reload / navigation'),
+        Common.UIString('Preserve log'));
+    this._hideNetworkMessagesCheckbox = new UI.ToolbarSettingCheckbox(
+        this._filter._hideNetworkMessagesSetting, this._filter._hideNetworkMessagesSetting.title(),
+        Common.UIString('Hide network'));
 
     var settingsToolbar = new UI.Toolbar('', this._contentsElement);
     settingsToolbar.appendToolbarItem(this._hideNetworkMessagesCheckbox);
@@ -1039,7 +1039,7 @@ Console.ConsoleViewFilter = class {
    */
   constructor(filterChangedCallback) {
     this._showTargetMessagesCheckbox =
-        new UI.ToolbarCheckbox(Common.UIString('Selected context only'), undefined, undefined, filterChangedCallback);
+        new UI.ToolbarCheckbox(Common.UIString('Selected context only'), undefined, filterChangedCallback);
     this._filterChanged = filterChangedCallback;
 
     this._messageURLFiltersSetting = Common.settings.createSetting('messageURLFilters', {});

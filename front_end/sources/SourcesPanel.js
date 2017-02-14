@@ -692,9 +692,9 @@ Sources.SourcesPanel = class extends UI.Panel {
     debugToolbar.appendToolbarItem(this._pauseOnExceptionButton);
 
     debugToolbar.appendSeparator();
-    debugToolbar.appendToolbarItem(new UI.ToolbarCheckbox(
-        Common.UIString('Async'), Common.UIString('Capture async stack traces'),
-        Common.moduleSetting('enableAsyncStackTraces')));
+    debugToolbar.appendToolbarItem(new UI.ToolbarSettingCheckbox(
+        Common.moduleSetting('enableAsyncStackTraces'), Common.UIString('Capture async stack traces'),
+        Common.UIString('Async')));
 
     return debugToolbar;
   }

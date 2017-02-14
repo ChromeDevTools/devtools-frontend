@@ -471,6 +471,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._stackView.show(this._tabbedPane.visibleView.element);
     }
     if (viewMode === Timeline.TimelinePanel.ViewMode.FlameChart) {
+      this._searchableView.setSearchProvider(this);
       this._flameChart = new Timeline.TimelineFlameChartView(this, this._filters);
       this._addModeView(this._flameChart);
       if (showMemory)
@@ -489,7 +490,13 @@ Timeline.TimelinePanel = class extends UI.Panel {
           break;
       }
       const treeView = new Timeline.TimelineTreeModeView(this, innerView);
+      innerView.setSearchableView(this._searchableView);
+      this._searchableView.setSearchProvider(innerView);
       this._addModeView(treeView);
+    }
+    if (this._lastViewMode !== viewMode) {
+      this._lastViewMode = viewMode;
+      this._searchableView.cancelSearch();
     }
 
     this.doResize();
@@ -893,7 +900,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
    * @param {number} index
    */
   _jumpToSearchResult(index) {
-    this._selectSearchResult((index + this._searchResults.length) % this._searchResults.length);
+    this._selectSearchResult(mod(index, this._searchResults.length));
     this._currentViews[0].highlightSearchResult(this._selectedSearchResult, this._searchRegex, true);
   }
 

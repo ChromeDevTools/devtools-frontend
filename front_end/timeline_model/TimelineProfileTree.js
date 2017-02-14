@@ -540,6 +540,8 @@ TimelineModel.TimelineProfileTree.eventStackFrame = function(event) {
  * @return {string}
  */
 TimelineModel.TimelineProfileTree._eventId = function(event) {
+  if (event.name === TimelineModel.TimelineModel.RecordType.TimeStamp)
+    return `${event.name}:${event.args.data.message}`;
   if (event.name !== TimelineModel.TimelineModel.RecordType.JSFrame)
     return event.name;
   const frame = event.args['data'];

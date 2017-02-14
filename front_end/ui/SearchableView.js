@@ -195,6 +195,13 @@ UI.SearchableView = class extends UI.VBox {
   }
 
   /**
+   * @param {!UI.Searchable} searchable
+   */
+  setSearchProvider(searchable) {
+    this._searchProvider = searchable;
+  }
+
+  /**
    * @param {number} minimalSearchQuerySize
    */
   setMinimalSearchQuerySize(minimalSearchQuerySize) {

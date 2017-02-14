@@ -37,6 +37,7 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
       'DOMNodeInsertedIntoDocument', 'DOMNodeRemoved', 'DOMNodeRemovedFromDocument', 'DOMSubtreeModified',
       'DOMContentLoaded'
     ]);
+    this._createCategory(Common.UIString('Geolocation'), ['navigator.geolocation.getCurrentPosition', 'navigator.geolocation.watchPosition'], true);
     this._createCategory(Common.UIString('Drag / drop'), ['dragenter', 'dragover', 'dragleave', 'drop']);
     this._createCategory(Common.UIString('Keyboard'), ['keydown', 'keyup', 'keypress', 'input']);
     this._createCategory(
@@ -54,6 +55,7 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
       'auxclick', 'click', 'dblclick', 'mousedown', 'mouseup', 'mouseover', 'mousemove', 'mouseout', 'mouseenter',
       'mouseleave', 'mousewheel', 'wheel', 'contextmenu'
     ]);
+    this._createCategory(Common.UIString('Notification'), ['Notification.requestPermission'], true);
     this._createCategory(Common.UIString('Parse'), ['setInnerHTML', 'document.write'], true);
     this._createCategory(Common.UIString('Pointer'), [
       'pointerover', 'pointerout', 'pointerenter', 'pointerleave', 'pointerdown', 'pointerup', 'pointermove',
@@ -94,6 +96,9 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
         'instrumentation:webglWarningFired': Common.UIString('WebGL Warning Fired'),
         'instrumentation:setInnerHTML': Common.UIString('Set innerHTML'),
         'instrumentation:canvasContextCreated': Common.UIString('Create canvas context'),
+        'instrumentation:navigator.geolocation.getCurrentPosition': 'getCurrentPosition',
+        'instrumentation:navigator.geolocation.watchPosition': 'watchPosition',
+        'instrumentation:Notification.requestPermission': 'requestPermission',
       };
     }
     if (auxData) {

@@ -28,6 +28,14 @@ Resources.AppManifestView = class extends UI.VBox {
     addToHomeScreen.addEventListener(UI.ToolbarButton.Events.Click, this._addToHomescreen, this);
     toolbar.appendToolbarItem(addToHomeScreen);
 
+    this._manifestlessSection = this._reportView.appendSection(Common.UIString('No manifest detected'));
+    var p = createElement('p');
+    p.textContent = 'A web manifest allows you to control how your app behaves when launched and displayed to the user. ';
+    p.appendChild(UI.createExternalLink('https://developers.google.com/web/progressive-web-apps/?utm_source=devtools',
+        Common.UIString('Read more on developers.google.com')));
+    this._manifestlessSection.element.appendChild(p);
+    this._manifestlessSection.element.classList.add('hidden');
+
     this._presentationSection = this._reportView.appendSection(Common.UIString('Presentation'));
     this._iconsSection = this._reportView.appendSection(Common.UIString('Icons'));
 
@@ -103,8 +111,12 @@ Resources.AppManifestView = class extends UI.VBox {
           UI.createLabel(error.message, error.critical ? 'smallicon-error' : 'smallicon-warning'));
     }
 
-    if (!data)
-      data = '{}';
+    var manifestDataFound = !!data;
+    this._manifestlessSection.element.classList.toggle('hidden', manifestDataFound);
+    this._presentationSection.element.classList.toggle('hidden', !manifestDataFound);
+    this._iconsSection.element.classList.toggle('hidden', !manifestDataFound);
+    this._identitySection.element.classList.toggle('hidden', !manifestDataFound);
+    if (!data) return;
 
     var parsedManifest = JSON.parse(data);
     this._nameField.textContent = stringProperty('name');

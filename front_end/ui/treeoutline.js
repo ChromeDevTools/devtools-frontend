@@ -1213,3 +1213,12 @@ UI.TreeElement = class {
 
 /** @const */
 UI.TreeElement._ArrowToggleWidth = 10;
+
+(function() {
+  var img = new Image();
+  if (window.devicePixelRatio > 1)
+    img.src = 'Images/treeoutlineTriangles_2x.png';
+  else
+    img.src = 'Images/treeoutlineTriangles.png';
+  UI.TreeElement._imagePreload = img;
+})();

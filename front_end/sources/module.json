@@ -619,7 +619,6 @@
         "event_listeners"
     ],
     "scripts": [
-        "UIList.js",
         "AddSourceMapURLDialog.js",
         "CallStackSidebarPane.js",
         "DebuggerPausedMessage.js",
@@ -657,7 +656,6 @@
     ],
     "resources": [
         "callStackSidebarPane.css",
-        "uiList.css",
         "debuggerPausedMessage.css",
         "eventListenerBreakpoints.css",
         "fileBasedSearchResultsPane.css",
@@ -668,6 +666,7 @@
         "sourcesPanel.css",
         "sourcesSearch.css",
         "sourcesView.css",
+        "threadsSidebarPane.css",
         "dialog.css"
     ]
 }

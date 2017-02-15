@@ -134,6 +134,16 @@ UI.ListControl = class {
   }
 
   /**
+   * @param {T} item
+   */
+  removeItem(item) {
+    var index = this._items.indexOf(item);
+    if (index === -1)
+      throw 'Attempt to remove non-existing item';
+    this.removeItemAtIndex(index);
+  }
+
+  /**
    * @param {number} from
    * @param {number} to
    * @param {!Array<T>} items
@@ -244,7 +254,8 @@ UI.ListControl = class {
       if (!this._delegate.isItemSelectable(item))
         throw 'Attempt to select non-selectable item';
     }
-    this._select(index);
+    if (this._selectedIndex !== index)
+      this._select(index);
     if (index !== -1)
       this._scrollIntoView(index, center);
   }

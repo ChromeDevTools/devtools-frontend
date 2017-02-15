@@ -118,7 +118,7 @@ iframe {
 }
 
 .audits2-form label {
-    display: block;
+    display: flex;
 }
 
 .audits2-form label div {

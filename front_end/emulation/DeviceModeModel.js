@@ -332,6 +332,13 @@ Emulation.DeviceModeModel = class {
       this._target = null;
   }
 
+  /**
+   * @return {?SDK.Target}
+   */
+  target() {
+    return this._target;
+  }
+
   _scaleSettingChanged() {
     this._calculateAndEmulate(false);
   }

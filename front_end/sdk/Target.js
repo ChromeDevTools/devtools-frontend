@@ -191,10 +191,11 @@ SDK.Target.Capability = {
   Log: 8,
   Network: 16,
   Target: 32,
+  ScreenCapture: 64,
 
   None: 0,
 
-  AllForTests: 63
+  AllForTests: 127
 };
 
 SDK.Target._nextId = 1;

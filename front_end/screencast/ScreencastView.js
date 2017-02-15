@@ -33,14 +33,14 @@
  */
 Screencast.ScreencastView = class extends UI.VBox {
   /**
-   * @param {!SDK.Target} target
-   * @param {!SDK.ResourceTreeModel} resourceTreeModel
+   * @param {!SDK.ScreenCaptureModel} screenCaptureModel
    */
-  constructor(target, resourceTreeModel) {
+  constructor(screenCaptureModel) {
     super();
-    this._target = target;
-    this._domModel = SDK.DOMModel.fromTarget(target);
-    this._resourceTreeModel = resourceTreeModel;
+    this._target = screenCaptureModel.target();
+    this._screenCaptureModel = screenCaptureModel;
+    this._domModel = SDK.DOMModel.fromTarget(this._target);
+    this._resourceTreeModel = SDK.ResourceTreeModel.fromTarget(this._target);
 
     this.setMinimumSize(150, 150);
     this.registerRequiredCSS('screencast/screencastView.css');
@@ -90,10 +90,6 @@ Screencast.ScreencastView = class extends UI.VBox {
     this._shortcuts[UI.KeyboardShortcut.makeKey('l', UI.KeyboardShortcut.Modifiers.Ctrl)] =
         this._focusNavigationBar.bind(this);
 
-    this._resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ScreencastFrame, this._screencastFrame, this);
-    this._resourceTreeModel.addEventListener(
-        SDK.ResourceTreeModel.Events.ScreencastVisibilityChanged, this._screencastVisibilityChanged, this);
-
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChange, this);
     this._updateGlasspane();
   }
@@ -127,29 +123,31 @@ Screencast.ScreencastView = class extends UI.VBox {
     }
     dimensions.width *= window.devicePixelRatio;
     dimensions.height *= window.devicePixelRatio;
-    // Note: startScreencast with and height expect to be integers so must be floored.
-    this._target.pageAgent().startScreencast(
+    // Note: startScreencast width and height are expected to be integers so must be floored.
+    this._screenCaptureModel.startScreencast(
         'jpeg', 80, Math.floor(Math.min(maxImageDimension, dimensions.width)),
-        Math.floor(Math.min(maxImageDimension, dimensions.height)));
-    this._target.emulationAgent().setTouchEmulationEnabled(true);
-    this._domModel.setHighlighter(this);
+        Math.floor(Math.min(maxImageDimension, dimensions.height)), undefined, this._screencastFrame.bind(this),
+        this._screencastVisibilityChanged.bind(this));
+    Emulation.MultitargetTouchModel.instance().setCustomTouchEnabled(true);
+    if (this._domModel)
+      this._domModel.setHighlighter(this);
   }
 
   _stopCasting() {
     if (!this._isCasting)
       return;
     this._isCasting = false;
-    this._target.pageAgent().stopScreencast();
-    this._target.emulationAgent().setTouchEmulationEnabled(false);
-    this._domModel.setHighlighter(null);
+    this._screenCaptureModel.stopScreencast();
+    Emulation.MultitargetTouchModel.instance().setCustomTouchEnabled(false);
+    if (this._domModel)
+      this._domModel.setHighlighter(null);
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {string} base64Data
+   * @param {!Protocol.Page.ScreencastFrameMetadata} metadata
    */
-  _screencastFrame(event) {
-    var metadata = /** type {Protocol.Page.ScreencastFrameMetadata} */ (event.data.metadata);
-    var base64Data = /** type {string} */ (event.data.data);
+  _screencastFrame(base64Data, metadata) {
     this._imageElement.onload = () => {
       this._pageScaleFactor = metadata.pageScaleFactor;
       this._screenOffsetTop = metadata.offsetTop;
@@ -180,10 +178,10 @@ Screencast.ScreencastView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {boolean} visible
    */
-  _screencastVisibilityChanged(event) {
-    this._targetInactive = !event.data.visible;
+  _screencastVisibilityChanged(visible) {
+    this._targetInactive = !visible;
     this._updateGlasspane();
   }
 
@@ -219,7 +217,7 @@ Screencast.ScreencastView = class extends UI.VBox {
       return;
     }
 
-    if (!this._pageScaleFactor)
+    if (!this._pageScaleFactor || !this._domModel)
       return;
 
     if (!this._inspectModeConfig || event.type === 'mousewheel') {
@@ -232,8 +230,8 @@ Screencast.ScreencastView = class extends UI.VBox {
 
     var position = this._convertIntoScreenSpace(event);
     this._domModel.nodeForLocation(
-        position.x / this._pageScaleFactor + this._scrollOffsetX,
-        position.y / this._pageScaleFactor + this._scrollOffsetY, callback.bind(this));
+        Math.floor(position.x / this._pageScaleFactor + this._scrollOffsetX),
+        Math.floor(position.y / this._pageScaleFactor + this._scrollOffsetY), callback.bind(this));
 
     /**
      * @param {?SDK.DOMNode} node
@@ -743,7 +741,8 @@ Screencast.ScreencastView = class extends UI.VBox {
   }
 
   _navigateReload() {
-    this._resourceTreeModel.reloadPage();
+    if (this._resourceTreeModel)
+      this._resourceTreeModel.reloadPage();
   }
 
   _navigationUrlKeyUp(event) {

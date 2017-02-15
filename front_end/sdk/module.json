@@ -126,6 +126,7 @@
         "TracingManager.js",
         "TracingModel.js",
         "RuntimeModel.js",
+        "ScreenCaptureModel.js",
         "Script.js",
         "ServiceWorkerCacheModel.js",
         "RemoteObject.js",

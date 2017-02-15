@@ -360,8 +360,11 @@ Emulation.DeviceModeView = class extends UI.VBox {
   }
 
   captureScreenshot() {
-    var mainTarget = SDK.targetManager.mainTarget();
-    if (!mainTarget)
+    var target = this._model.target();
+    if (!target)
+      return;
+    var screenCaptureModel = target.model(SDK.ScreenCaptureModel);
+    if (!screenCaptureModel)
       return;
     SDK.DOMModel.muteHighlight();
 
@@ -376,14 +379,13 @@ Emulation.DeviceModeView = class extends UI.VBox {
       this._model.deviceOutlineSetting().set(false);
     }
 
-    mainTarget.pageAgent().captureScreenshot('png', 100, screenshotCaptured.bind(this));
+    screenCaptureModel.captureScreenshot('png', 100).then(screenshotCaptured.bind(this));
 
     /**
-     * @param {?Protocol.Error} error
-     * @param {string} content
+     * @param {?string} content
      * @this {Emulation.DeviceModeView}
      */
-    function screenshotCaptured(error, content) {
+    function screenshotCaptured(content) {
       this._model.deviceOutlineSetting().set(outlineVisible);
       var dpr = window.devicePixelRatio;
       var outlineRect = this._model.outlineRect().scale(dpr);
@@ -399,10 +401,8 @@ Emulation.DeviceModeView = class extends UI.VBox {
       SDK.DOMModel.unmuteHighlight();
       UI.inspectorView.restore();
 
-      if (error) {
-        console.error(error);
+      if (content === null)
         return;
-      }
 
       // Create a canvas to splice the images together.
       var canvas = createElement('canvas');
@@ -457,7 +457,7 @@ Emulation.DeviceModeView = class extends UI.VBox {
           ctx.drawImage(
               pageImage, visiblePageRect.left, visiblePageRect.top, Math.min(pageImage.naturalWidth, screenRect.width),
               Math.min(pageImage.naturalHeight, screenRect.height));
-          var url = mainTarget && mainTarget.inspectedURL();
+          var url = target.inspectedURL();
           var fileName = url ? url.trimURL().removeURLFragment() : '';
           if (this._model.type() === Emulation.DeviceModeModel.Type.Device)
             fileName += Common.UIString('(%s)', this._model.device().title);

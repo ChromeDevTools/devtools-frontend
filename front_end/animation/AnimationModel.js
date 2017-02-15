@@ -24,8 +24,9 @@ Animation.AnimationModel = class extends SDK.SDKModel {
     var resourceTreeModel =
         /** @type {!SDK.ResourceTreeModel} */ (SDK.ResourceTreeModel.fromTarget(target));
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.MainFrameNavigated, this._reset, this);
-    this._screenshotCapture =
-        new Animation.AnimationModel.ScreenshotCapture(this, target.pageAgent(), resourceTreeModel);
+    var screenCaptureModel = target.model(SDK.ScreenCaptureModel);
+    if (screenCaptureModel)
+      this._screenshotCapture = new Animation.AnimationModel.ScreenshotCapture(this, screenCaptureModel);
   }
 
   _reset() {
@@ -94,7 +95,8 @@ Animation.AnimationModel = class extends SDK.SDKModel {
 
     if (!matchedGroup) {
       this._animationGroups.set(incomingGroup.id(), incomingGroup);
-      this._screenshotCapture.captureScreenshots(incomingGroup.finiteDuration(), incomingGroup._screenshots);
+      if (this._screenshotCapture)
+        this._screenshotCapture.captureScreenshots(incomingGroup.finiteDuration(), incomingGroup._screenshots);
     }
     this.dispatchEventToListeners(Animation.AnimationModel.Events.AnimationGroupStarted, matchedGroup || incomingGroup);
     return !!matchedGroup;
@@ -775,14 +777,12 @@ Animation.AnimationDispatcher = class {
 Animation.AnimationModel.ScreenshotCapture = class {
   /**
    * @param {!Animation.AnimationModel} animationModel
-   * @param {!Protocol.PageAgent} pageAgent
-   * @param {!SDK.ResourceTreeModel} resourceTreeModel
+   * @param {!SDK.ScreenCaptureModel} screenCaptureModel
    */
-  constructor(animationModel, pageAgent, resourceTreeModel) {
+  constructor(animationModel, screenCaptureModel) {
     /** @type {!Array<!Animation.AnimationModel.ScreenshotCapture.Request>} */
     this._requests = [];
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ScreencastFrame, this._screencastFrame, this);
-    this._pageAgent = pageAgent;
+    this._screenCaptureModel = screenCaptureModel;
     this._animationModel = animationModel;
     this._animationModel.addEventListener(Animation.AnimationModel.Events.ModelReset, this._stopScreencast, this);
   }
@@ -805,13 +805,15 @@ Animation.AnimationModel.ScreenshotCapture = class {
     if (this._capturing)
       return;
     this._capturing = true;
-    this._pageAgent.startScreencast('jpeg', 80, undefined, 300, 2);
+    this._screenCaptureModel.startScreencast(
+        'jpeg', 80, undefined, 300, 2, this._screencastFrame.bind(this), visible => {});
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {string} base64Data
+   * @param {!Protocol.Page.ScreencastFrameMetadata} metadata
    */
-  _screencastFrame(event) {
+  _screencastFrame(base64Data, metadata) {
     /**
      * @param {!Animation.AnimationModel.ScreenshotCapture.Request} request
      * @return {boolean}
@@ -823,7 +825,6 @@ Animation.AnimationModel.ScreenshotCapture = class {
     if (!this._capturing)
       return;
 
-    var base64Data = /** type {string} */ (event.data['data']);
     var now = window.performance.now();
     this._requests = this._requests.filter(isAnimating);
     for (var request of this._requests)
@@ -838,7 +839,7 @@ Animation.AnimationModel.ScreenshotCapture = class {
     delete this._endTime;
     this._requests = [];
     this._capturing = false;
-    this._pageAgent.stopScreencast();
+    this._screenCaptureModel.stopScreencast();
   }
 };
 

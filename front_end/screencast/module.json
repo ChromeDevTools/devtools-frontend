@@ -20,7 +20,8 @@
         }
     ],
     "dependencies": [
-        "components"
+        "components",
+        "emulation"
     ],
     "scripts": [
         "ScreencastApp.js",

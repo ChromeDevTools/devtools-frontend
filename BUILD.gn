@@ -447,6 +447,7 @@ all_devtools_files = [
   "front_end/sdk/Resource.js",
   "front_end/sdk/ResourceTreeModel.js",
   "front_end/sdk/RuntimeModel.js",
+  "front_end/sdk/ScreenCaptureModel.js",
   "front_end/sdk/Script.js",
   "front_end/sdk/SecurityOriginManager.js",
   "front_end/sdk/ServiceWorkerCacheModel.js",

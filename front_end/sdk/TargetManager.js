@@ -416,7 +416,8 @@ SDK.TargetManager = class extends Common.Object {
     }
 
     var capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.JS |
-        SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target;
+        SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target |
+        SDK.Target.Capability.ScreenCapture;
     if (Runtime.queryParam('isSharedWorker')) {
       capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
           SDK.Target.Capability.Target;

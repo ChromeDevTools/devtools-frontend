@@ -463,8 +463,6 @@ SDK.ResourceTreeModel.Events = {
   Load: Symbol('Load'),
   PageReloadRequested: Symbol('PageReloadRequested'),
   WillReloadPage: Symbol('WillReloadPage'),
-  ScreencastFrame: Symbol('ScreencastFrame'),
-  ScreencastVisibilityChanged: Symbol('ScreencastVisibilityChanged'),
   ColorPicked: Symbol('ColorPicked'),
   InterstitialShown: Symbol('InterstitialShown'),
   InterstitialHidden: Symbol('InterstitialHidden')
@@ -746,6 +744,9 @@ SDK.ResourceTreeFrame = class {
  * @unrestricted
  */
 SDK.PageDispatcher = class {
+  /**
+   * @param {!SDK.ResourceTreeModel} resourceTreeModel
+   */
   constructor(resourceTreeModel) {
     this._resourceTreeModel = resourceTreeModel;
   }
@@ -846,13 +847,10 @@ SDK.PageDispatcher = class {
   /**
    * @override
    * @param {string} data
-   * @param {!Protocol.Page.ScreencastFrameMetadata=} metadata
-   * @param {number=} sessionId
+   * @param {!Protocol.Page.ScreencastFrameMetadata} metadata
+   * @param {number} sessionId
    */
   screencastFrame(data, metadata, sessionId) {
-    this._resourceTreeModel._agent.screencastFrameAck(sessionId);
-    this._resourceTreeModel.dispatchEventToListeners(
-        SDK.ResourceTreeModel.Events.ScreencastFrame, {data: data, metadata: metadata});
   }
 
   /**
@@ -860,8 +858,6 @@ SDK.PageDispatcher = class {
    * @param {boolean} visible
    */
   screencastVisibilityChanged(visible) {
-    this._resourceTreeModel.dispatchEventToListeners(
-        SDK.ResourceTreeModel.Events.ScreencastVisibilityChanged, {visible: visible});
   }
 
   /**

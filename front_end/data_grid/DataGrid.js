@@ -306,7 +306,7 @@ DataGrid.DataGrid = class extends Common.Object {
 
     var element = this._editingNode._element.children[cellIndex];
     UI.InplaceEditor.startEditing(element, this._startEditingConfig(element));
-    element.getComponentSelection().setBaseAndExtent(element, 0, element, 1);
+    element.getComponentSelection().selectAllChildren(element);
   }
 
   /**
@@ -345,7 +345,7 @@ DataGrid.DataGrid = class extends Common.Object {
     this._editing = true;
     UI.InplaceEditor.startEditing(element, this._startEditingConfig(element));
 
-    element.getComponentSelection().setBaseAndExtent(element, 0, element, 1);
+    element.getComponentSelection().selectAllChildren(element);
   }
 
   renderInline() {

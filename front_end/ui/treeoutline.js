@@ -633,7 +633,7 @@ UI.TreeElement = class {
    */
   startEditingTitle(editingConfig) {
     UI.InplaceEditor.startEditing(this._titleElement, editingConfig);
-    this.treeOutline._shadowRoot.getSelection().setBaseAndExtent(this._titleElement, 0, this._titleElement, 1);
+    this.treeOutline._shadowRoot.getSelection().selectAllChildren(this._titleElement);
   }
 
   /**

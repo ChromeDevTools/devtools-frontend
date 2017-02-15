@@ -260,7 +260,7 @@ Sources.WatchExpression = class extends Common.Object {
     var proxyElement = this._textPrompt.attachAndStartEditing(newDiv, this._finishEditing.bind(this));
     proxyElement.classList.add('watch-expression-text-prompt-proxy');
     proxyElement.addEventListener('keydown', this._promptKeyDown.bind(this), false);
-    this._element.getComponentSelection().setBaseAndExtent(newDiv, 0, newDiv, 1);
+    this._element.getComponentSelection().selectAllChildren(newDiv);
   }
 
   /**

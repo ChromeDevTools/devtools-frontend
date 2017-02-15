@@ -639,7 +639,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
 
     this._editing = UI.InplaceEditor.startEditing(attribute, config);
 
-    this.listItemElement.getComponentSelection().setBaseAndExtent(elementForSelection, 0, elementForSelection, 1);
+    this.listItemElement.getComponentSelection().selectAllChildren(elementForSelection);
 
     return true;
   }
@@ -663,7 +663,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     var config = new UI.InplaceEditor.Config(
         this._textNodeEditingCommitted.bind(this, textNode), this._editingCancelled.bind(this));
     this._editing = UI.InplaceEditor.startEditing(textNodeElement, config);
-    this.listItemElement.getComponentSelection().setBaseAndExtent(textNodeElement, 0, textNodeElement, 1);
+    this.listItemElement.getComponentSelection().selectAllChildren(textNodeElement);
 
     return true;
   }
@@ -717,7 +717,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
 
     var config = new UI.InplaceEditor.Config(editingComitted.bind(this), editingCancelled.bind(this), tagName);
     this._editing = UI.InplaceEditor.startEditing(tagNameElement, config);
-    this.listItemElement.getComponentSelection().setBaseAndExtent(tagNameElement, 0, tagNameElement, 1);
+    this.listItemElement.getComponentSelection().selectAllChildren(tagNameElement);
     return true;
   }
 

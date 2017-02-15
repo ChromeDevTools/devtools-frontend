@@ -835,7 +835,7 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
 
     var proxyElement =
         this._prompt.attachAndStartEditing(this._editableDiv, this._editingCommitted.bind(this, originalContent));
-    this.listItemElement.getComponentSelection().setBaseAndExtent(this._editableDiv, 0, this._editableDiv, 1);
+    this.listItemElement.getComponentSelection().selectAllChildren(this._editableDiv);
     proxyElement.addEventListener('keydown', this._promptKeyDown.bind(this, originalContent), false);
   }
 

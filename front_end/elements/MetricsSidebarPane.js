@@ -319,7 +319,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
         new UI.InplaceEditor.Config(this._editingCommitted.bind(this), this.editingCancelled.bind(this), context);
     UI.InplaceEditor.startEditing(targetElement, config);
 
-    targetElement.getComponentSelection().setBaseAndExtent(targetElement, 0, targetElement, 1);
+    targetElement.getComponentSelection().selectAllChildren(targetElement);
   }
 
   _handleKeyDown(context, styleProperty, event) {

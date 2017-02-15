@@ -1286,7 +1286,7 @@ Elements.StylePropertiesSection = class {
         this._editingMediaBlurHandler.bind(this));
     UI.InplaceEditor.startEditing(element, config);
 
-    element.getComponentSelection().setBaseAndExtent(element, 0, element, 1);
+    element.getComponentSelection().selectAllChildren(element);
     this._parentPane.setEditingStyle(true);
     var parentMediaElement = element.enclosingNodeOrSelfWithClass('media');
     parentMediaElement.classList.add('editing-media');
@@ -1417,7 +1417,7 @@ Elements.StylePropertiesSection = class {
         new UI.InplaceEditor.Config(this.editingSelectorCommitted.bind(this), this.editingSelectorCancelled.bind(this));
     UI.InplaceEditor.startEditing(this._selectorElement, config);
 
-    element.getComponentSelection().setBaseAndExtent(element, 0, element, 1);
+    element.getComponentSelection().selectAllChildren(element);
     this._parentPane.setEditingStyle(true);
     if (element.classList.contains('simple-selector'))
       this._navigateToSelectorSource(0, false);
@@ -2369,8 +2369,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (isEditingName)
       proxyElement.addEventListener('paste', pasteHandler.bind(this, context), false);
 
-    selectElement.getComponentSelection().setBaseAndExtent(
-        selectElement, 0, selectElement, selectElement.firstChild ? 1 : 0);
+    selectElement.getComponentSelection().selectAllChildren(selectElement);
   }
 
   /**

@@ -136,7 +136,7 @@ Accessibility.ARIAAttributesTreeElement = class extends UI.TreeElement {
 
     proxyElement.addEventListener('keydown', this._editingValueKeyDown.bind(this, previousContent), false);
 
-    valueElement.getComponentSelection().setBaseAndExtent(valueElement, 0, valueElement, 1);
+    valueElement.getComponentSelection().selectAllChildren(valueElement);
   }
 
   _removePrompt() {

@@ -251,15 +251,6 @@ Timeline.CountersGraph = class extends UI.VBox {
   /**
    * @override
    * @param {?SDK.TracingModel.Event} event
-   * @param {string=} regex
-   * @param {boolean=} select
-   */
-  highlightSearchResult(event, regex, select) {
-  }
-
-  /**
-   * @override
-   * @param {?SDK.TracingModel.Event} event
    */
   highlightEvent(event) {
   }

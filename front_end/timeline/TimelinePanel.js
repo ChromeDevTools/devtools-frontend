@@ -32,7 +32,6 @@
 /**
  * @implements {Timeline.TimelineController.Client}
  * @implements {Timeline.TimelineModeViewDelegate}
- * @implements {UI.Searchable}
  * @unrestricted
  */
 Timeline.TimelinePanel = class extends UI.Panel {
@@ -109,10 +108,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.PageReloadRequested, this._pageReloadRequested, this);
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.Load, this._loadEventFired, this);
 
-    this._searchableView = new UI.SearchableView(this);
-    this._searchableView.setMinimumSize(0, 100);
-    this._searchableView.element.classList.add('searchable-view');
-
     this._stackView = new UI.StackView(false);
     this._stackView.element.classList.add('timeline-view-stack');
 
@@ -125,8 +120,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._tabbedPane.appendTab(viewMode.EventLog, Common.UIString('Event Log'), new UI.VBox());
       this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._onMainViewChanged.bind(this));
       this._tabbedPane.selectTab(this._viewModeSetting.get());
-      this._tabbedPane.show(this._searchableView.element);
-      this._searchableView.show(this._timelinePane.element);
     } else {
       // Create top level properties splitter.
       this._detailsSplitWidget = new UI.SplitWidget(false, true, 'timelinePanelDetailsSplitViewState', 400);
@@ -134,10 +127,9 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._detailsView = new Timeline.TimelineDetailsView(this._filters, this);
       this._detailsSplitWidget.installResizer(this._detailsView.headerElement());
       this._detailsSplitWidget.setSidebarWidget(this._detailsView);
-      this._detailsSplitWidget.setMainWidget(this._searchableView);
+      this._detailsSplitWidget.setMainWidget(this._stackView);
       this._detailsSplitWidget.hideSidebar();
       this._detailsSplitWidget.show(this._timelinePane.element);
-      this._stackView.show(this._searchableView.element);
     }
 
     this._onModeChanged();
@@ -150,8 +142,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     /** @type {!SDK.TracingModel.Event}|undefined */
     this._selectedSearchResult;
-    /** @type {!Array<!SDK.TracingModel.Event>}|undefined */
-    this._searchResults;
   }
 
   /**
@@ -470,30 +460,36 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._stackView.detach();
       this._stackView.show(this._tabbedPane.visibleView.element);
     }
+    var mainView;
     if (viewMode === Timeline.TimelinePanel.ViewMode.FlameChart) {
-      this._searchableView.setSearchProvider(this);
       this._flameChart = new Timeline.TimelineFlameChartView(this, this._filters);
       this._addModeView(this._flameChart);
       if (showMemory)
         this._addModeView(new Timeline.CountersGraph(this));
+      mainView = this._flameChart;
     } else {
-      var innerView;
       switch (viewMode) {
         case Timeline.TimelinePanel.ViewMode.CallTree:
-          innerView = new Timeline.CallTreeTimelineTreeView(this._filters);
+          mainView = new Timeline.CallTreeTimelineTreeView(this._filters);
           break;
         case Timeline.TimelinePanel.ViewMode.EventLog:
-          innerView = new Timeline.EventsTimelineTreeView(this._filters, this);
+          mainView = new Timeline.EventsTimelineTreeView(this._filters, this);
           break;
         default:
-          innerView = new Timeline.BottomUpTimelineTreeView(this._filters);
+          mainView = new Timeline.BottomUpTimelineTreeView(this._filters);
           break;
       }
-      const treeView = new Timeline.TimelineTreeModeView(this, innerView);
-      innerView.setSearchableView(this._searchableView);
-      this._searchableView.setSearchProvider(innerView);
+      var treeView = new Timeline.TimelineTreeModeView(this, mainView);
       this._addModeView(treeView);
     }
+    if (this._searchableView)
+      this._searchableView.detach();
+    this._searchableView = new UI.SearchableView(mainView);
+    this._searchableView.setMinimumSize(0, 100);
+    this._searchableView.element.classList.add('searchable-view');
+    this._searchableView.show(this._timelinePane.element);
+    this._tabbedPane.show(this._searchableView.element);
+    mainView.setSearchableView(this._searchableView);
     if (this._lastViewMode !== viewMode) {
       this._lastViewMode = viewMode;
       this._searchableView.cancelSearch();
@@ -649,7 +645,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._detailsView.setModel(model);
 
     this.select(null);
-    this._updateSearchHighlight(false, true);
     if (this._flameChart)
       this._flameChart.resizeToPreferredHeights();
   }
@@ -856,139 +851,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
         return;
       this._stopRecording();
     }
-  }
-
-  // UI.Searchable implementation
-
-  /**
-   * @override
-   */
-  jumpToNextSearchResult() {
-    if (!this._searchResults || !this._searchResults.length)
-      return;
-    var index = this._selectedSearchResult ? this._searchResults.indexOf(this._selectedSearchResult) : -1;
-    this._jumpToSearchResult(index + 1);
-  }
-
-  /**
-   * @override
-   */
-  jumpToPreviousSearchResult() {
-    if (!this._searchResults || !this._searchResults.length)
-      return;
-    var index = this._selectedSearchResult ? this._searchResults.indexOf(this._selectedSearchResult) : 0;
-    this._jumpToSearchResult(index - 1);
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsCaseSensitiveSearch() {
-    return false;
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsRegexSearch() {
-    return false;
-  }
-
-  /**
-   * @param {number} index
-   */
-  _jumpToSearchResult(index) {
-    this._selectSearchResult(mod(index, this._searchResults.length));
-    this._currentViews[0].highlightSearchResult(this._selectedSearchResult, this._searchRegex, true);
-  }
-
-  /**
-   * @param {number} index
-   */
-  _selectSearchResult(index) {
-    this._selectedSearchResult = this._searchResults[index];
-    this._searchableView.updateCurrentMatchIndex(index);
-  }
-
-  _clearHighlight() {
-    this._currentViews[0].highlightSearchResult(null);
-  }
-
-  /**
-   * @param {boolean} revealRecord
-   * @param {boolean} shouldJump
-   * @param {boolean=} jumpBackwards
-   */
-  _updateSearchHighlight(revealRecord, shouldJump, jumpBackwards) {
-    if (!this._searchRegex) {
-      this._clearHighlight();
-      return;
-    }
-
-    if (!this._searchResults)
-      this._updateSearchResults(shouldJump, jumpBackwards);
-    this._currentViews[0].highlightSearchResult(this._selectedSearchResult, this._searchRegex, revealRecord);
-  }
-
-  /**
-   * @param {boolean} shouldJump
-   * @param {boolean=} jumpBackwards
-   */
-  _updateSearchResults(shouldJump, jumpBackwards) {
-    if (!this._searchRegex)
-      return;
-
-    // FIXME: search on all threads.
-    var events = this._performanceModel ? this._performanceModel.timelineModel().mainThreadEvents() : [];
-    var filters = this._filters.concat([new Timeline.TimelineFilters.RegExp(this._searchRegex)]);
-    var matches = [];
-    for (var index = events.lowerBound(this._windowStartTime, (time, event) => time - event.startTime);
-         index < events.length; ++index) {
-      var event = events[index];
-      if (event.startTime > this._windowEndTime)
-        break;
-      if (TimelineModel.TimelineModel.isVisible(filters, event))
-        matches.push(event);
-    }
-
-    var matchesCount = matches.length;
-    if (matchesCount) {
-      this._searchResults = matches;
-      this._searchableView.updateSearchMatchesCount(matchesCount);
-
-      var selectedIndex = matches.indexOf(this._selectedSearchResult);
-      if (shouldJump && selectedIndex === -1)
-        selectedIndex = jumpBackwards ? this._searchResults.length - 1 : 0;
-      this._selectSearchResult(selectedIndex);
-    } else {
-      this._searchableView.updateSearchMatchesCount(0);
-      delete this._selectedSearchResult;
-    }
-  }
-
-  /**
-   * @override
-   */
-  searchCanceled() {
-    this._clearHighlight();
-    delete this._searchResults;
-    delete this._selectedSearchResult;
-    delete this._searchRegex;
-  }
-
-  /**
-   * @override
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
-   * @param {boolean} shouldJump
-   * @param {boolean=} jumpBackwards
-   */
-  performSearch(searchConfig, shouldJump, jumpBackwards) {
-    var query = searchConfig.query;
-    this._searchRegex = createPlainTextSearchRegex(query, 'i');
-    delete this._searchResults;
-    this._updateSearchHighlight(true, shouldJump, jumpBackwards);
   }
 
   /**
@@ -1293,13 +1155,6 @@ Timeline.TimelineModeView.prototype = {
    * @param {?Timeline.PerformanceModel} model
    */
   setModel(model) {},
-
-  /**
-   * @param {?SDK.TracingModel.Event} event
-   * @param {string=} regex
-   * @param {boolean=} select
-   */
-  highlightSearchResult(event, regex, select) {},
 
   /**
    * @param {number} startTime

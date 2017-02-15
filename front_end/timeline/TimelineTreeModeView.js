@@ -26,12 +26,6 @@ Timeline.TimelineTreeModeView = class extends UI.VBox {
 
   /**
    * @override
-   */
-  highlightSearchResult() {
-  }
-
-  /**
-   * @override
    * @param {?SDK.TracingModel.Event} event
    */
   highlightEvent(event) {

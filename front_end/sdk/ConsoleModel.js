@@ -53,7 +53,8 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
         this._logAgent.startViolationsReport([
           {name: 'longTask', threshold: 200}, {name: 'longLayout', threshold: 30},
           {name: 'blockedEvent', threshold: 100}, {name: 'blockedParser', threshold: -1},
-          {name: 'handler', threshold: 150}, {name: 'recurringHandler', threshold: 50}
+          {name: 'handler', threshold: 150}, {name: 'recurringHandler', threshold: 50},
+          {name: 'discouragedAPIUse', threshold: -1}
         ]);
       }
     }
@@ -414,7 +415,7 @@ SDK.ConsoleMessage = class {
     return (this.target() === msg.target()) && (this.source === msg.source) && (this.type === msg.type) &&
         (this.level === msg.level) && (this.line === msg.line) && (this.url === msg.url) &&
         (this.messageText === msg.messageText) && (this.request === msg.request) &&
-        (this.executionContextId === msg.executionContextId) && (this.scriptId === msg.scriptId);
+        (this.executionContextId === msg.executionContextId);
   }
 
   /**

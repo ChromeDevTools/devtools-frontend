@@ -1031,7 +1031,7 @@ Console.ConsoleViewMessage = class {
   }
 
   _showRepeatCountElement() {
-    if (!this._contentElement)
+    if (!this._element)
       return;
 
     if (!this._repeatCountElement) {

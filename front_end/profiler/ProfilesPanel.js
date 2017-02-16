@@ -453,6 +453,7 @@ Profiler.ProfileTypeSidebarSection = class extends UI.TreeElement {
     this._profileGroups = {};
     this.expand();
     this.hidden = true;
+    this.setCollapsible(false);
   }
 
   /**

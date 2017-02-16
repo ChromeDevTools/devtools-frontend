@@ -881,6 +881,8 @@ var Persistence = {};
 /** @type {!Object} */
 var Platform = {};
 /** @type {!Object} */
+var ProductRegistry = {};
+/** @type {!Object} */
 var Profiler = {};
 /** @type {!Object} */
 var Protocol = {};

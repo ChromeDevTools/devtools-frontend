@@ -1,0 +1,11 @@
+{
+    "extensions": [
+    ],
+    "dependencies": [
+        "common"
+    ],
+    "scripts": [
+        "ProductNameForURL.js",
+        "ProductRegistryData.js"
+    ]
+}

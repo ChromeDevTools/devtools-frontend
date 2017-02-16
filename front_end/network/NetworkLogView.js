@@ -800,9 +800,6 @@ Network.NetworkLogView = class extends UI.VBox {
       this._timeCalculator.updateBoundaries(request);
       this._durationCalculator.updateBoundaries(request);
 
-      if (node[Network.NetworkLogView._isFilteredOutSymbol] === isFilteredOut)
-        continue;
-
       node[Network.NetworkLogView._isFilteredOutSymbol] = isFilteredOut;
       var newParent = this._parentNodeForInsert(node);
       var removeFromParent = node.parent && (isFilteredOut || node.parent !== newParent);
@@ -816,7 +813,7 @@ Network.NetworkLogView = class extends UI.VBox {
         }
       }
 
-      if (isFilteredOut)
+      if (!newParent || isFilteredOut)
         continue;
 
       if (!newParent.dataGrid && !nodesToInsert.has(newParent)) {

@@ -321,7 +321,6 @@ Console.ConsoleViewport = class {
 
     var visibleFrom = this.element.scrollTop;
     var visibleHeight = this._visibleHeight();
-    var isInvalidating = !this._cumulativeHeights;
 
     for (var i = 0; i < this._renderedItems.length; ++i) {
       // Tolerate 1-pixel error due to double-to-integer rounding errors.
@@ -331,8 +330,6 @@ Console.ConsoleViewport = class {
         delete this._cumulativeHeights;
     }
     this._rebuildCumulativeHeightsIfNeeded();
-    var oldFirstActiveIndex = this._firstActiveIndex;
-    var oldLastActiveIndex = this._lastActiveIndex;
     var activeHeight = visibleHeight * 2;
     // When the viewport is scrolled to the bottom, using the cumulative heights estimate is not
     // precise enough to determine next visible indices. This stickToBottom check avoids extra
@@ -366,10 +363,7 @@ Console.ConsoleViewport = class {
       this._contentElement.style.setProperty('height', '10000000px');
     }
 
-    if (isInvalidating)
-      this._fullViewportUpdate(prepare.bind(this));
-    else
-      this._partialViewportUpdate(oldFirstActiveIndex, oldLastActiveIndex, prepare.bind(this));
+    this._partialViewportUpdate(prepare.bind(this));
     this._contentElement.style.removeProperty('height');
     // Should be the last call in the method as it might force layout.
     if (shouldRestoreSelection)
@@ -381,55 +375,33 @@ Console.ConsoleViewport = class {
   /**
    * @param {function()} prepare
    */
-  _fullViewportUpdate(prepare) {
-    for (var i = 0; i < this._renderedItems.length; ++i)
-      this._renderedItems[i].willHide();
-    prepare();
-    this._renderedItems = [];
-    this._contentElement.removeChildren();
-    for (var i = this._firstActiveIndex; i <= this._lastActiveIndex; ++i) {
-      var viewportElement = this._providerElement(i);
-      this._contentElement.appendChild(viewportElement.element());
-      this._renderedItems.push(viewportElement);
-    }
-    for (var i = 0; i < this._renderedItems.length; ++i)
-      this._renderedItems[i].wasShown();
-  }
-
-  /**
-   * @param {number} oldFirstActiveIndex
-   * @param {number} oldLastActiveIndex
-   * @param {function()} prepare
-   */
-  _partialViewportUpdate(oldFirstActiveIndex, oldLastActiveIndex, prepare) {
-    var willBeHidden = [];
-    for (var i = 0; i < this._renderedItems.length; ++i) {
-      var index = oldFirstActiveIndex + i;
-      if (index < this._firstActiveIndex || this._lastActiveIndex < index)
-        willBeHidden.push(this._renderedItems[i]);
-    }
+  _partialViewportUpdate(prepare) {
+    var itemsToRender = new Set();
+    for (var i = this._firstActiveIndex; i <= this._lastActiveIndex; ++i)
+      itemsToRender.add(this._providerElement(i));
+    var willBeHidden = this._renderedItems.filter(item => !itemsToRender.has(item));
     for (var i = 0; i < willBeHidden.length; ++i)
       willBeHidden[i].willHide();
     prepare();
     for (var i = 0; i < willBeHidden.length; ++i)
       willBeHidden[i].element().remove();
 
-    this._renderedItems = [];
-    var anchor = this._contentElement.firstChild;
     var wasShown = [];
-    for (var i = this._firstActiveIndex; i <= this._lastActiveIndex; ++i) {
-      var viewportElement = this._providerElement(i);
+    var anchor = this._contentElement.firstChild;
+    for (var viewportElement of itemsToRender) {
       var element = viewportElement.element();
       if (element !== anchor) {
+        var shouldCallWasShown = !element.parentElement;
+        if (shouldCallWasShown)
+          wasShown.push(viewportElement);
         this._contentElement.insertBefore(element, anchor);
-        wasShown.push(viewportElement);
       } else {
         anchor = anchor.nextSibling;
       }
-      this._renderedItems.push(viewportElement);
     }
     for (var i = 0; i < wasShown.length; ++i)
       wasShown[i].wasShown();
+    this._renderedItems = Array.from(itemsToRender);
   }
 
   /**

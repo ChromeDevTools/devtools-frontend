@@ -383,25 +383,10 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     this._currentResult = 0;
     if (!this._root)
       return;
-    this.populateSearchResults(createPlainTextSearchRegex(searchConfig.query, 'i'));
-  }
-
-  /**
-   * @protected
-   * @param {!RegExp} searchRegex
-   */
-  populateSearchResults(searchRegex) {
-    var searchResults = [];
-    searchTree(this._root);
-    this._searchableView.updateSearchMatchesCount(searchResults.length);
-    this._searchResults = searchResults;
-
-    function searchTree(node) {
-      if (node.event && Timeline.TimelineUIUtils.testContentMatching(node.event, searchRegex))
-        searchResults.push(node);
-      for (var child of node.children().values())
-        searchTree(child);
-    }
+    var searchRegex = createPlainTextSearchRegex(searchConfig.query, 'i');
+    this._searchResults =
+        this._root.searchTree(event => Timeline.TimelineUIUtils.testContentMatching(event, searchRegex));
+    this._searchableView.updateSearchMatchesCount(this._searchResults.length);
   }
 
   /**

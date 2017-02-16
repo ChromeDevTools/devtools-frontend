@@ -49,6 +49,20 @@ TimelineModel.TimelineProfileTree.Node = class {
   children() {
     throw 'Not implemented';
   }
+
+  /**
+   * @param {function(!SDK.TracingModel.Event):boolean} matchFunction
+   * @param {!Array<!TimelineModel.TimelineProfileTree.Node>=} results
+   * @return {!Array<!TimelineModel.TimelineProfileTree.Node>}
+   */
+  searchTree(matchFunction, results) {
+    results = results || [];
+    if (this.event && matchFunction(this.event))
+      results.push(this);
+    for (var child of this.children().values())
+      child.searchTree(matchFunction, results);
+    return results;
+  }
 };
 
 TimelineModel.TimelineProfileTree.TopDownNode = class extends TimelineModel.TimelineProfileTree.Node {
@@ -504,6 +518,19 @@ TimelineModel.TimelineProfileTree.BottomUpNode = class extends TimelineModel.Tim
 
     this._cachedChildren = nodeById;
     return nodeById;
+  }
+
+  /**
+   * @override
+   * @param {function(!SDK.TracingModel.Event):boolean} matchFunction
+   * @param {!Array<!TimelineModel.TimelineProfileTree.Node>=} results
+   * @return {!Array<!TimelineModel.TimelineProfileTree.Node>}
+   */
+  searchTree(matchFunction, results) {
+    results = results || [];
+    if (this.event && matchFunction(this.event))
+      results.push(this);
+    return results;
   }
 };
 

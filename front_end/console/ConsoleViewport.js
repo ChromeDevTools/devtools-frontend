@@ -476,9 +476,17 @@ Console.ConsoleViewport = class {
    * @return {number}
    */
   _textOffsetInNode(itemElement, container, offset) {
+    if (container.nodeType !== Node.TEXT_NODE) {
+      if (offset < container.childNodes.length) {
+        container = /** @type {!Node} */ (container.childNodes.item(offset));
+        offset = 0;
+      } else {
+        offset = container.textContent.length;
+      }
+    }
     var chars = 0;
     var node = itemElement;
-    while ((node = node.traverseNextTextNode()) && !node.isSelfOrDescendant(container))
+    while ((node = node.traverseNextTextNode(itemElement)) && !node.isSelfOrDescendant(container))
       chars += node.textContent.length;
     return chars + offset;
   }

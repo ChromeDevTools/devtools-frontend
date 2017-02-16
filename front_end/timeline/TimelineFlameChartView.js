@@ -370,7 +370,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @return {boolean}
    */
   supportsCaseSensitiveSearch() {
-    return false;
+    return true;
   }
 
   /**
@@ -378,7 +378,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @return {boolean}
    */
   supportsRegexSearch() {
-    return false;
+    return true;
   }
 
   /**
@@ -469,8 +469,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @param {boolean=} jumpBackwards
    */
   performSearch(searchConfig, shouldJump, jumpBackwards) {
-    var query = searchConfig.query;
-    this._searchRegex = createPlainTextSearchRegex(query, 'i');
+    this._searchRegex = searchConfig.toSearchRegex();
     delete this._searchResults;
     this._updateSearchHighlight(true, shouldJump, jumpBackwards);
   }

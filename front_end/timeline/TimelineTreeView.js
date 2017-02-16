@@ -383,7 +383,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     this._currentResult = 0;
     if (!this._root)
       return;
-    var searchRegex = createPlainTextSearchRegex(searchConfig.query, 'i');
+    var searchRegex = searchConfig.toSearchRegex();
     this._searchResults =
         this._root.searchTree(event => Timeline.TimelineUIUtils.testContentMatching(event, searchRegex));
     this._searchableView.updateSearchMatchesCount(this._searchResults.length);
@@ -414,7 +414,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @return {boolean}
    */
   supportsCaseSensitiveSearch() {
-    return false;
+    return true;
   }
 
   /**
@@ -422,7 +422,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @return {boolean}
    */
   supportsRegexSearch() {
-    return false;
+    return true;
   }
 };
 

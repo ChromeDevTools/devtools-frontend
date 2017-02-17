@@ -162,9 +162,9 @@ Bindings.ContentProviderBasedProject = class extends Workspace.ProjectStore {
 
   /**
    * @override
-   * @param {string} path
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
-  deleteFile(path) {
+  deleteFile(uiSourceCode) {
   }
 
   /**

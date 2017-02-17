@@ -121,12 +121,9 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
   }
 
   /**
-   * @param {string} url
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
-  deleteScriptSnippet(url) {
-    var uiSourceCode = this._project.uiSourceCodeForURL(url);
-    if (!uiSourceCode)
-      return;
+  deleteScriptSnippet(uiSourceCode) {
     var snippetId = this._snippetIdForUISourceCode.get(uiSourceCode) || '';
     var snippet = this._snippetStorage.snippetForId(snippetId);
     if (!snippet)
@@ -612,10 +609,10 @@ Snippets.SnippetsProject = class extends Bindings.ContentProviderBasedProject {
 
   /**
    * @override
-   * @param {string} url
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
-  deleteFile(url) {
-    this._model.deleteScriptSnippet(url);
+  deleteFile(uiSourceCode) {
+    this._model.deleteScriptSnippet(uiSourceCode);
   }
 };
 

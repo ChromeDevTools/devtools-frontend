@@ -542,11 +542,12 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
 
   /**
    * @override
-   * @param {string} path
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
-  deleteFile(path) {
-    this._fileSystem.deleteFile(path);
-    this.removeUISourceCode(path);
+  deleteFile(uiSourceCode) {
+    var relativePath = this._filePathForUISourceCode(uiSourceCode);
+    this._fileSystem.deleteFile(relativePath);
+    this.removeUISourceCode(uiSourceCode.url());
   }
 
   /**

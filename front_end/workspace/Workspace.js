@@ -147,9 +147,9 @@ Workspace.Project.prototype = {
   createFile(path, name, content, callback) {},
 
   /**
-   * @param {string} path
+   * @param {!Workspace.UISourceCode} uiSourceCode
    */
-  deleteFile(path) {},
+  deleteFile(uiSourceCode) {},
 
   remove() {},
 

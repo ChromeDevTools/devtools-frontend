@@ -615,7 +615,7 @@ Sources.NavigatorView = class extends UI.VBox {
   _handleContextMenuDelete(uiSourceCode) {
     var shouldDelete = window.confirm(Common.UIString('Are you sure you want to delete this file?'));
     if (shouldDelete)
-      uiSourceCode.project().deleteFile(uiSourceCode.url());
+      uiSourceCode.project().deleteFile(uiSourceCode);
   }
 
   /**

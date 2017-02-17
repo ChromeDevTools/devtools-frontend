@@ -67,7 +67,6 @@ Network.NetworkPanel = class extends UI.Panel {
     this._splitWidget.show(this.element);
 
     this._progressBarContainer = createElement('div');
-    this._createToolbarButtons();
 
     this._searchableView = new UI.SearchableView(this);
     this._searchableView.setPlaceholder(Common.UIString('Find by filename or path'));
@@ -89,6 +88,10 @@ Network.NetworkPanel = class extends UI.Panel {
     this._networkLogShowOverviewSetting.addChangeListener(this._toggleShowOverview, this);
     this._networkLogLargeRowsSetting.addChangeListener(this._toggleLargerRequests, this);
     this._networkRecordFilmStripSetting.addChangeListener(this._toggleRecordFilmStrip, this);
+
+    /** @type {!Map<string, !Runtime.Extension>} */
+    this._groupingExtensions = new Map();
+    this._createToolbarButtons();
 
     this._toggleRecord(true);
     this._toggleShowOverview();
@@ -179,7 +182,42 @@ Network.NetworkPanel = class extends UI.Panel {
     this._panelToolbar.appendToolbarItem(this._createBlockedURLsButton());
     this._panelToolbar.appendToolbarItem(NetworkConditions.NetworkConditionsSelector.createOfflineToolbarCheckbox());
     this._panelToolbar.appendToolbarItem(this._createNetworkConditionsSelect());
+
+    this._setupGroupingCombo();
+
     this._panelToolbar.appendToolbarItem(new UI.ToolbarItem(this._progressBarContainer));
+  }
+
+  _setupGroupingCombo() {
+    var extensions = self.runtime.extensions(Network.NetworkGroupLookupInterface);
+    if (!extensions.length)
+      return;
+
+    var setting = Common.settings.createSetting('networkGrouping', '');
+    /** @type {!Array<!{value: string, label: string, title: string}>} */
+    var options = [{value: '', label: Common.UIString('No grouping'), title: Common.UIString('No grouping')}];
+
+    extensions.forEach(extension => {
+      var identifier = extension.descriptor()['id'];
+      this._groupingExtensions.set(identifier, extension);
+      options.push({value: identifier, label: extension.title(), title: extension.title()});
+    });
+    this._panelToolbar.appendToolbarItem(new UI.ToolbarSettingComboBox(options, setting, Common.UIString('Group by')));
+    setting.addChangeListener(event => this._groupingChanged(/** @type {string} */ (event.data)));
+    this._groupingChanged(setting.get());
+  }
+
+  /**
+   * @param {string} identifier
+   */
+  _groupingChanged(identifier) {
+    var extension = this._groupingExtensions.get(identifier);
+    if (extension) {
+      extension.instance().then(
+          grouping => this._networkLogView.setGrouping(/** @type {?Network.NetworkGroupLookupInterface} */ (grouping)));
+    } else {
+      this._networkLogView.setGrouping(null);
+    }
   }
 
   /**

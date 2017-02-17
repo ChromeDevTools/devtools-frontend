@@ -17,7 +17,7 @@ Sass.SASSSourceMapFactory = class {
    * @return {!Promise<?SDK.SourceMap>}
    */
   editableSourceMap(target, sourceMap) {
-    var cssModel = SDK.CSSModel.fromTarget(target);
+    var cssModel = target.model(SDK.CSSModel);
     if (!cssModel)
       return Promise.resolve(/** @type {?SDK.SourceMap} */ (null));
 

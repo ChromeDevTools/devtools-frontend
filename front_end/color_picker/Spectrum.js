@@ -923,8 +923,7 @@ ColorPicker.Spectrum.PaletteGenerator = class {
     /** @type {!Map.<string, number>} */
     this._frequencyMap = new Map();
     var stylesheetPromises = [];
-    for (var target of SDK.targetManager.targets(SDK.Target.Capability.DOM)) {
-      var cssModel = SDK.CSSModel.fromTarget(target);
+    for (var cssModel of SDK.targetManager.models(SDK.CSSModel)) {
       for (var stylesheet of cssModel.allStyleSheets())
         stylesheetPromises.push(new Promise(this._processStylesheet.bind(this, stylesheet)));
     }

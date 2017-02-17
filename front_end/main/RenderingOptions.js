@@ -138,7 +138,7 @@ Main.RenderingOptionsView = class extends UI.VBox {
    */
   _applyPrintMediaOverride(target) {
     target.emulationAgent().setEmulatedMedia(this._mediaCheckbox.checked ? this._mediaSelect.value : '');
-    var cssModel = SDK.CSSModel.fromTarget(target);
+    var cssModel = target.model(SDK.CSSModel);
     if (cssModel)
       cssModel.mediaQueryResultChanged();
   }

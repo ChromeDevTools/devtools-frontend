@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {SDK.TargetManager.Observer}
+ * @implements {SDK.SDKModelObserver<!SDK.CSSModel>}
  * @unrestricted
  */
 Emulation.MediaQueryInspector = class extends UI.Widget {
@@ -22,21 +22,19 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
     this._setWidthCallback = setWidthCallback;
     this._scale = 1;
 
-    SDK.targetManager.observeTargets(this);
+    SDK.targetManager.observeModels(SDK.CSSModel, this);
     UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._renderMediaQueries.bind(this), this);
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.CSSModel} cssModel
    */
-  targetAdded(target) {
+  modelAdded(cssModel) {
     // FIXME: adapt this to multiple targets.
     if (this._cssModel)
       return;
-    this._cssModel = SDK.CSSModel.fromTarget(target);
-    if (!this._cssModel)
-      return;
+    this._cssModel = cssModel;
     this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._scheduleMediaQueriesUpdate, this);
     this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._scheduleMediaQueriesUpdate, this);
     this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, this._scheduleMediaQueriesUpdate, this);
@@ -46,10 +44,10 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.CSSModel} cssModel
    */
-  targetRemoved(target) {
-    if (SDK.CSSModel.fromTarget(target) !== this._cssModel)
+  modelRemoved(cssModel) {
+    if (cssModel !== this._cssModel)
       return;
     this._cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._scheduleMediaQueriesUpdate, this);
     this._cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._scheduleMediaQueriesUpdate, this);

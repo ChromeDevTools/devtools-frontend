@@ -64,8 +64,11 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
     var mainTarget = SDK.targetManager.mainTarget();
     if (!mainTarget)
       return;
+    var cssModel = mainTarget.model(SDK.CSSModel);
+    if (!cssModel)
+      return;
     this._recordButton.setTitle(Common.UIString('Stop recording'));
-    SDK.CSSModel.fromTarget(mainTarget).startRuleUsageTracking();
+    cssModel.startRuleUsageTracking();
 
     this._progressElement.textContent = Common.UIString('Recording...');
   }
@@ -78,7 +81,7 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
     this._recordButton.setTitle(Common.UIString('Start recording'));
     this._progressElement.textContent = Common.UIString('Fetching results...');
 
-    var cssModel = SDK.CSSModel.fromTarget(mainTarget);
+    var cssModel = mainTarget.model(SDK.CSSModel);
     if (!cssModel)
       return;
     cssModel.ruleListPromise().then(ruleListReceived.bind(this, cssModel));

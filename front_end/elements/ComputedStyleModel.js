@@ -8,6 +8,8 @@ Elements.ComputedStyleModel = class extends Common.Object {
   constructor() {
     super();
     this._node = UI.context.flavor(SDK.DOMNode);
+    this._cssModel = null;
+    this._eventListeners = [];
     UI.context.addFlavorChangeListener(SDK.DOMNode, this._onNodeChanged, this);
   }
 
@@ -30,38 +32,29 @@ Elements.ComputedStyleModel = class extends Common.Object {
    */
   _onNodeChanged(event) {
     this._node = /** @type {?SDK.DOMNode} */ (event.data);
-    this._updateTarget(this._node ? this._node.target() : null);
+    this._updateModel(this._node ? SDK.CSSModel.fromNode(this._node) : null);
     this._onComputedStyleChanged(null);
   }
 
   /**
-   * @param {?SDK.Target} target
+   * @param {?SDK.CSSModel} cssModel
    */
-  _updateTarget(target) {
-    if (this._target === target)
+  _updateModel(cssModel) {
+    if (this._cssModel === cssModel)
       return;
-    if (this._targetEvents)
-      Common.EventTarget.removeEventListeners(this._targetEvents);
-    this._target = target;
-
-    var domModel = null;
-    var resourceTreeModel = null;
-    if (target) {
-      this._cssModel = SDK.CSSModel.fromTarget(target);
-      domModel = SDK.DOMModel.fromTarget(target);
-      resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
-    }
-
-    if (this._cssModel && domModel && resourceTreeModel) {
-      this._targetEvents = [
-        this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._onComputedStyleChanged, this),
-        this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._onComputedStyleChanged, this),
-        this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, this._onComputedStyleChanged, this),
-        this._cssModel.addEventListener(SDK.CSSModel.Events.FontsUpdated, this._onComputedStyleChanged, this),
-        this._cssModel.addEventListener(
-            SDK.CSSModel.Events.MediaQueryResultChanged, this._onComputedStyleChanged, this),
-        this._cssModel.addEventListener(SDK.CSSModel.Events.PseudoStateForced, this._onComputedStyleChanged, this),
-        this._cssModel.addEventListener(SDK.CSSModel.Events.ModelWasEnabled, this._onComputedStyleChanged, this),
+    Common.EventTarget.removeEventListeners(this._eventListeners);
+    this._cssModel = cssModel;
+    var domModel = cssModel ? cssModel.target().model(SDK.DOMModel) : null;
+    var resourceTreeModel = cssModel ? cssModel.target().model(SDK.ResourceTreeModel) : null;
+    if (cssModel && domModel && resourceTreeModel) {
+      this._eventListeners = [
+        cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._onComputedStyleChanged, this),
+        cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._onComputedStyleChanged, this),
+        cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, this._onComputedStyleChanged, this),
+        cssModel.addEventListener(SDK.CSSModel.Events.FontsUpdated, this._onComputedStyleChanged, this),
+        cssModel.addEventListener(SDK.CSSModel.Events.MediaQueryResultChanged, this._onComputedStyleChanged, this),
+        cssModel.addEventListener(SDK.CSSModel.Events.PseudoStateForced, this._onComputedStyleChanged, this),
+        cssModel.addEventListener(SDK.CSSModel.Events.ModelWasEnabled, this._onComputedStyleChanged, this),
         domModel.addEventListener(SDK.DOMModel.Events.DOMMutated, this._onDOMModelChanged, this),
         resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameResized, this._onFrameResized, this),
       ];

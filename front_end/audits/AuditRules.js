@@ -352,8 +352,8 @@ Audits.AuditRules.UnusedCssRule = class extends Audits.AuditRule {
    * @param {!Common.Progress} progress
    */
   doRun(target, requests, result, callback, progress) {
-    var domModel = SDK.DOMModel.fromTarget(target);
-    var cssModel = SDK.CSSModel.fromTarget(target);
+    var domModel = target.model(SDK.DOMModel);
+    var cssModel = target.model(SDK.CSSModel);
     if (!domModel || !cssModel) {
       callback(null);
       return;
@@ -813,8 +813,8 @@ Audits.AuditRules.ImageDimensionsRule = class extends Audits.AuditRule {
    * @param {!Common.Progress} progress
    */
   doRun(target, requests, result, callback, progress) {
-    var domModel = SDK.DOMModel.fromTarget(target);
-    var cssModel = SDK.CSSModel.fromTarget(target);
+    var domModel = target.model(SDK.DOMModel);
+    var cssModel = target.model(SDK.CSSModel);
     if (!domModel || !cssModel) {
       callback(null);
       return;
@@ -1181,7 +1181,7 @@ Audits.AuditRules.CSSRuleBase = class extends Audits.AuditRule {
    * @param {!Common.Progress} progress
    */
   doRun(target, requests, result, callback, progress) {
-    var cssModel = SDK.CSSModel.fromTarget(target);
+    var cssModel = target.model(SDK.CSSModel);
     if (!cssModel) {
       callback(null);
       return;

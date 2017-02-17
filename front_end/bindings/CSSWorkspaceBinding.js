@@ -1,9 +1,9 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
- * @implements {SDK.TargetManager.Observer}
- * @unrestricted
+ * @implements {SDK.SDKModelObserver<!SDK.CSSModel>}
  */
 Bindings.CSSWorkspaceBinding = class {
   /**
@@ -13,59 +13,55 @@ Bindings.CSSWorkspaceBinding = class {
   constructor(targetManager, workspace) {
     this._workspace = workspace;
 
-    /** @type {!Map.<!SDK.CSSModel, !Bindings.CSSWorkspaceBinding.TargetInfo>} */
-    this._modelToTargetInfo = new Map();
-    targetManager.observeTargets(this);
+    /** @type {!Map.<!SDK.CSSModel, !Bindings.CSSWorkspaceBinding.ModelInfo>} */
+    this._modelToInfo = new Map();
+    targetManager.observeModels(SDK.CSSModel, this);
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.CSSModel} cssModel
    */
-  targetAdded(target) {
-    var cssModel = SDK.CSSModel.fromTarget(target);
-    if (cssModel)
-      this._modelToTargetInfo.set(cssModel, new Bindings.CSSWorkspaceBinding.TargetInfo(cssModel, this._workspace));
+  modelAdded(cssModel) {
+    this._modelToInfo.set(cssModel, new Bindings.CSSWorkspaceBinding.ModelInfo(cssModel, this._workspace));
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.CSSModel} cssModel
    */
-  targetRemoved(target) {
-    var cssModel = SDK.CSSModel.fromTarget(target);
-    if (cssModel)
-      this._modelToTargetInfo.remove(cssModel)._dispose();
+  modelRemoved(cssModel) {
+    this._modelToInfo.remove(cssModel)._dispose();
   }
 
   /**
    * @param {!SDK.CSSStyleSheetHeader} header
-   * @return {?Bindings.CSSWorkspaceBinding.TargetInfo}
+   * @return {?Bindings.CSSWorkspaceBinding.ModelInfo}
    */
-  _targetInfo(header) {
-    return this._modelToTargetInfo.get(header.cssModel()) || null;
+  _modelInfo(header) {
+    return this._modelToInfo.get(header.cssModel()) || null;
   }
 
   /**
    * @param {!SDK.CSSStyleSheetHeader} header
-   * @return {!Bindings.CSSWorkspaceBinding.TargetInfo}
+   * @return {!Bindings.CSSWorkspaceBinding.ModelInfo}
    */
-  _ensureTargetInfo(header) {
-    var targetInfo = this._modelToTargetInfo.get(header.cssModel());
-    if (!targetInfo) {
-      targetInfo = new Bindings.CSSWorkspaceBinding.TargetInfo(header.cssModel(), this._workspace);
-      this._modelToTargetInfo.set(header.cssModel(), targetInfo);
+  _ensureModelInfo(header) {
+    var modelInfo = this._modelToInfo.get(header.cssModel());
+    if (!modelInfo) {
+      modelInfo = new Bindings.CSSWorkspaceBinding.ModelInfo(header.cssModel(), this._workspace);
+      this._modelToInfo.set(header.cssModel(), modelInfo);
     }
-    return targetInfo;
+    return modelInfo;
   }
 
   /**
    * @param {!SDK.CSSStyleSheetHeader} header
    */
   updateLocations(header) {
-    var targetInfo = this._targetInfo(header);
-    if (targetInfo)
-      targetInfo._updateLocations(header);
+    var modelInfo = this._modelInfo(header);
+    if (modelInfo)
+      modelInfo._updateLocations(header);
   }
 
   /**
@@ -85,16 +81,16 @@ Bindings.CSSWorkspaceBinding = class {
    * @param {!Bindings.CSSWorkspaceBinding.LiveLocation} location
    */
   _addLiveLocation(location) {
-    this._ensureTargetInfo(location._header)._addLocation(location);
+    this._ensureModelInfo(location._header)._addLocation(location);
   }
 
   /**
    * @param {!Bindings.CSSWorkspaceBinding.LiveLocation} location
    */
   _removeLiveLocation(location) {
-    var targetInfo = this._targetInfo(location._header);
-    if (targetInfo)
-      targetInfo._removeLocation(location);
+    var modelInfo = this._modelInfo(location._header);
+    if (modelInfo)
+      modelInfo._removeLocation(location);
   }
 
   /**
@@ -131,16 +127,13 @@ Bindings.CSSWorkspaceBinding = class {
     var header = rawLocation.cssModel().styleSheetHeaderForId(rawLocation.styleSheetId);
     if (!header)
       return null;
-    var targetInfo = this._targetInfo(header);
-    return targetInfo ? targetInfo._rawLocationToUILocation(header, rawLocation.lineNumber, rawLocation.columnNumber) :
-                        null;
+    var modelInfo = this._modelInfo(header);
+    return modelInfo ? modelInfo._rawLocationToUILocation(header, rawLocation.lineNumber, rawLocation.columnNumber) :
+                       null;
   }
 };
 
-/**
- * @unrestricted
- */
-Bindings.CSSWorkspaceBinding.TargetInfo = class {
+Bindings.CSSWorkspaceBinding.ModelInfo = class {
   /**
    * @param {!SDK.CSSModel} cssModel
    * @param {!Workspace.Workspace} workspace
@@ -267,8 +260,8 @@ Bindings.CSSWorkspaceBinding.LiveLocation = class extends Bindings.LiveLocationW
   uiLocation() {
     var cssLocation = this._rawLocation;
     if (this._header) {
-      var targetInfo = this._binding._targetInfo(this._header);
-      return targetInfo._rawLocationToUILocation(this._header, cssLocation.lineNumber, cssLocation.columnNumber);
+      var modelInfo = this._binding._modelInfo(this._header);
+      return modelInfo._rawLocationToUILocation(this._header, cssLocation.lineNumber, cssLocation.columnNumber);
     }
     var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForStyleURL(
         this._binding._workspace, cssLocation.url, cssLocation.header());

@@ -348,7 +348,7 @@ Animation.AnimationModel.Animation = class {
     else
       return;
 
-    var cssModel = SDK.CSSModel.fromTarget(node.target());
+    var cssModel = node.target().model(SDK.CSSModel);
     if (!cssModel)
       return;
     cssModel.setEffectivePropertyValueForNode(node.id, animationPrefix + 'duration', duration + 'ms');

@@ -37,10 +37,14 @@ SDK.CSSModel = class extends SDK.SDKModel {
    */
   constructor(target) {
     super(target);
-    this._domModel = /** @type {!SDK.DOMModel} */ (SDK.DOMModel.fromTarget(target));
+    this._domModel = /** @type {!SDK.DOMModel} */ (target.model(SDK.DOMModel));
     this._agent = target.cssAgent();
     this._styleLoader = new SDK.CSSModel.ComputedStyleLoader(this);
-    SDK.targetManager.addEventListener(SDK.TargetManager.Events.MainFrameNavigated, this._mainFrameNavigated, this);
+    this._resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    if (this._resourceTreeModel) {
+      this._resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.MainFrameNavigated, this._resetStyleSheets, this);
+    }
     target.registerCSSDispatcher(new SDK.CSSDispatcher(this));
     this._agent.enable().then(this._wasEnabled.bind(this));
     /** @type {!Map.<string, !SDK.CSSStyleSheetHeader>} */
@@ -83,19 +87,11 @@ SDK.CSSModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.Target} target
-   * @return {?SDK.CSSModel}
-   */
-  static fromTarget(target) {
-    return target.model(SDK.CSSModel);
-  }
-
-  /**
    * @param {!SDK.DOMNode} node
    * @return {!SDK.CSSModel}
    */
   static fromNode(node) {
-    return /** @type {!SDK.CSSModel} */ (SDK.CSSModel.fromTarget(node.target()));
+    return /** @type {!SDK.CSSModel} */ (node.target().model(SDK.CSSModel));
   }
 
   /**
@@ -732,7 +728,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @param {function(?SDK.CSSStyleSheetHeader)} userCallback
    */
   requestViaInspectorStylesheet(node, userCallback) {
-    var frameId = node.frameId() || SDK.ResourceTreeModel.fromTarget(this.target()).mainFrame.id;
+    var frameId = node.frameId() || (this._resourceTreeModel ? this._resourceTreeModel.mainFrame.id : '');
     var headers = this._styleSheetIdToHeader.valuesArray();
     for (var i = 0; i < headers.length; ++i) {
       var styleSheetHeader = headers[i];
@@ -933,15 +929,6 @@ SDK.CSSModel = class extends SDK.SDKModel {
     return this._agent.getStyleSheetText(styleSheetId, textCallback).catchException(/** @type {string} */ (''));
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _mainFrameNavigated(event) {
-    if (event.data.target() !== this.target())
-      return;
-    this._resetStyleSheets();
-  }
-
   _resetStyleSheets() {
     var headers = this._styleSheetIdToHeader.valuesArray();
     this._styleSheetIdsForURL.clear();
@@ -1042,18 +1029,13 @@ SDK.CSSModel.Edit = class {
   }
 };
 
-
-/**
- * @unrestricted
- */
-SDK.CSSLocation = class extends SDK.SDKObject {
+SDK.CSSLocation = class {
   /**
    * @param {!SDK.CSSStyleSheetHeader} header
    * @param {number} lineNumber
    * @param {number=} columnNumber
    */
   constructor(header, lineNumber, columnNumber) {
-    super(header.target());
     this._header = header;
     this.styleSheetId = header.id;
     this.url = header.resourceURL();

@@ -52,21 +52,16 @@ Elements.ElementStatePaneWidget = class extends UI.Widget {
   }
 
   /**
-   * @param {?SDK.Target} target
+   * @param {?SDK.CSSModel} cssModel
    */
-  _updateTarget(target) {
-    if (this._target === target)
+  _updateModel(cssModel) {
+    if (this._cssModel === cssModel)
       return;
-
-    if (this._target) {
-      var cssModel = SDK.CSSModel.fromTarget(this._target);
-      cssModel.removeEventListener(SDK.CSSModel.Events.PseudoStateForced, this._update, this);
-    }
-    this._target = target;
-    if (target) {
-      var cssModel = SDK.CSSModel.fromTarget(target);
-      cssModel.addEventListener(SDK.CSSModel.Events.PseudoStateForced, this._update, this);
-    }
+    if (this._cssModel)
+      this._cssModel.removeEventListener(SDK.CSSModel.Events.PseudoStateForced, this._update, this);
+    this._cssModel = cssModel;
+    if (this._cssModel)
+      this._cssModel.addEventListener(SDK.CSSModel.Events.PseudoStateForced, this._update, this);
   }
 
   /**
@@ -84,7 +79,7 @@ Elements.ElementStatePaneWidget = class extends UI.Widget {
     if (node)
       node = node.enclosingElementOrSelf();
 
-    this._updateTarget(node ? node.target() : null);
+    this._updateModel(node ? SDK.CSSModel.fromNode(node) : null);
     if (node) {
       var nodePseudoState = SDK.CSSModel.fromNode(node).pseudoState(node);
       for (var input of this._inputs) {

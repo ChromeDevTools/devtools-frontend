@@ -1212,6 +1212,17 @@ Timeline.TimelineUIUtils = class {
       contentHelper.addSection(Common.UIString('Invalidations'));
       Timeline.TimelineUIUtils._generateInvalidations(event, target, relatedNodesMap, contentHelper);
     } else if (initiator) {  // Partial invalidation tracking.
+      var delay = event.startTime - initiator.startTime;
+      contentHelper.appendTextRow(Common.UIString('Pending for'), Number.preciseMillisToString(delay, 1));
+
+      var link = createElementWithClass('span', 'devtools-link');
+      link.textContent = Common.UIString('reveal');
+      link.addEventListener('click', () => {
+        Timeline.TimelinePanel.instance().select(
+            Timeline.TimelineSelection.fromTraceEvent(/** @type {!SDK.TracingModel.Event} */ (initiator)));
+      });
+      contentHelper.appendElementRow(Common.UIString('Initiator'), link);
+
       var initiatorStackTrace = TimelineModel.TimelineData.forEvent(initiator).stackTrace;
       if (initiatorStackTrace) {
         contentHelper.appendStackTrace(

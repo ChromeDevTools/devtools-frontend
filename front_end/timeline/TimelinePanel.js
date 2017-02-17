@@ -77,10 +77,10 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._captureLayersAndPicturesSetting = Common.settings.createSetting('timelineCaptureLayersAndPictures', false);
     this._captureLayersAndPicturesSetting.setTitle(Common.UIString('Enable advanced paint instrumentation (slow)'));
 
-    this._showScreenshotsSetting = Common.settings.createLocalSetting('timelineShowScreenshots', true);
+    this._showScreenshotsSetting = Common.settings.createSetting('timelineShowScreenshots', true);
     this._showScreenshotsSetting.setTitle(Common.UIString('Screenshots'));
     this._showScreenshotsSetting.addChangeListener(this._onModeChanged, this);
-    this._showMemorySetting = Common.settings.createLocalSetting('timelineShowMemory', false);
+    this._showMemorySetting = Common.settings.createSetting('timelineShowMemory', false);
     this._showMemorySetting.setTitle(Common.UIString('Memory'));
     this._showMemorySetting.addChangeListener(this._onModeChanged, this);
 

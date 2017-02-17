@@ -40,6 +40,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    */
   setModel(model) {
     this._model = model;
+    this._populateThreadSelector();
     this.refreshTree();
   }
 
@@ -125,6 +126,10 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @param {!UI.Toolbar} toolbar
    */
   populateToolbar(toolbar) {
+    this._threadSelector = new UI.ToolbarComboBox(targetChanged.bind(this));
+    this._threadSelector.setMaxWidth(230);
+    this._currentThreadSetting = Common.settings.createSetting('timelineTreeCurrentThread', 0);
+    toolbar.appendToolbarItem(this._threadSelector);
     this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'), 0, 0, true);
     this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, textFilterChanged, this);
     toolbar.appendToolbarItem(this._textFilterUI);
@@ -137,6 +142,47 @@ Timeline.TimelineTreeView = class extends UI.VBox {
       this._textFilter.setRegExp(searchQuery ? createPlainTextSearchRegex(searchQuery, 'i') : null);
       this.refreshTree();
     }
+
+    /**
+     * @this {Timeline.TimelineTreeView}
+     */
+    function targetChanged() {
+      this._currentThreadSetting.set(this._threadSelector.selectedIndex());
+      this.refreshTree();
+    }
+  }
+
+  /**
+   * @return {!Array<!SDK.TracingModel.Event>}
+   */
+  _modelEvents() {
+    if (!this._model || this._threadSelector.size() === 0)
+      return [];
+    return this._threadEvents[Number(this._threadSelector.selectedOption().value)];
+  }
+
+  _populateThreadSelector() {
+    this._threadSelector.removeOptions();
+    this._threadEvents = [];
+    if (!this._model) {
+      this._threadSelector.setVisible(false);
+      this._currentThreadSetting.set(0);
+      return;
+    }
+    var option = this._threadSelector.createOption(Common.UIString('Main'), '', '0');
+    this._threadEvents.push(this._model.timelineModel().mainThreadEvents());
+    this._threadSelector.addOption(option);
+    for (var thread of this._model.timelineModel().virtualThreads()) {
+      if (!thread.name)
+        continue;
+      if (!thread.events.some(e => e.name === TimelineModel.TimelineModel.RecordType.JSFrame))
+        continue;
+      option = this._threadSelector.createOption(thread.name, '', String(this._threadEvents.length));
+      this._threadSelector.addOption(option);
+      this._threadEvents.push(thread.events);
+    }
+    this._threadSelector.setSelectedIndex(this._currentThreadSetting.get());
+    this._threadSelector.setVisible(this._threadEvents.length > 1);
   }
 
   /**
@@ -206,8 +252,8 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     }
     for (var child of children.values()) {
       // Exclude the idle time off the total calculation.
-      var gridNode = new Timeline.TimelineTreeView.TreeGridNode(
-          child, this._root.totalTime, maxSelfTime, maxTotalTime, this);
+      var gridNode =
+          new Timeline.TimelineTreeView.TreeGridNode(child, this._root.totalTime, maxSelfTime, maxTotalTime, this);
       this._dataGrid.insertChild(gridNode);
     }
     this._sortingChanged();
@@ -229,8 +275,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    */
   buildTopDownTree(doNotAggregate, groupIdCallback) {
     return new TimelineModel.TimelineProfileTree.TopDownRootNode(
-        this._model.timelineModel().mainThreadEvents(), this._filters, this._startTime, this._endTime, doNotAggregate,
-        groupIdCallback);
+        this._modelEvents(), this._filters, this._startTime, this._endTime, doNotAggregate, groupIdCallback);
   }
 
   /**
@@ -888,7 +933,7 @@ Timeline.BottomUpTimelineTreeView = class extends Timeline.AggregatedTimelineTre
    */
   _buildTree() {
     return new TimelineModel.TimelineProfileTree.BottomUpRootNode(
-        this._model.timelineModel().mainThreadEvents(), this._filters, this._startTime, this._endTime,
+        this._modelEvents(), this._filters, this._startTime, this._endTime,
         this._groupingFunction(this._groupBySetting.get()));
   }
 };

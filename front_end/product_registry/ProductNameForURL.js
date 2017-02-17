@@ -33,4 +33,4 @@ ProductRegistry.register = function(data) {
 };
 
 /** @type {!Map<string, !{url: string, name: string, exact: boolean}>} */
-ProductRegistry._productsByDomain;
+ProductRegistry._productsByDomain = new Map();

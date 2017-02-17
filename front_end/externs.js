@@ -875,6 +875,8 @@ var Network = {};
 /** @type {!Object} */
 var NetworkConditions = {};
 /** @type {!Object} */
+var NetworkGroupLookup = {};
+/** @type {!Object} */
 var PerfUI = {};
 /** @type {!Object} */
 var Persistence = {};

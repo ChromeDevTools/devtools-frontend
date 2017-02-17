@@ -17,6 +17,7 @@
         { "name": "services", "type": "autostart" },
         { "name": "elements", "condition": "!v8only" },
         { "name": "network", "condition": "!v8only" },
+        { "name": "network_group_lookup", "condition": "!v8only", "type": "remote" },
         { "name": "sources" },
         { "name": "timeline", "condition": "!v8only" },
         { "name": "timeline_model", "condition": "!v8only" },

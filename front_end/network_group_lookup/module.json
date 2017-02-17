@@ -1,0 +1,19 @@
+{
+    "extensions": [
+        {
+          "type": "@Network.NetworkGroupLookupInterface",
+          "className": "NetworkGroupLookup.NetworkProductGroupLookup",
+          "title": "Product",
+          "id": "product"
+        }
+    ],
+    "dependencies": [
+        "network",
+        "product_registry",
+        "sdk"
+    ],
+    "experiment": "networkGroupingRequests",
+    "scripts": [
+        "NetworkProductGroupLookup.js"
+    ]
+}

@@ -332,6 +332,8 @@ all_devtools_files = [
   "front_end/network_conditions/module.json",
   "front_end/network_conditions/NetworkConditionsSelector.js",
   "front_end/network_conditions/networkConditionsSettingsTab.css",
+  "front_end/network_group_lookup/module.json",
+  "front_end/network_group_lookup/NetworkProductGroupLookup.js",
   "front_end/perf_ui/ChartViewport.js",
   "front_end/perf_ui/filmStripDialog.css",
   "front_end/perf_ui/filmStripView.css",
@@ -849,6 +851,7 @@ generated_remote_modules = [
   "$resources_out_dir/cm_modes/cm_modes_module.js",
   "$resources_out_dir/emulated_devices/emulated_devices_module.js",
   "$resources_out_dir/gonzales/gonzales_module.js",
+  "$resources_out_dir/network_group_lookup/network_group_lookup_module.js",
   "$resources_out_dir/product_registry/product_registry_module.js",
   "$resources_out_dir/screencast/screencast_module.js",
 ]

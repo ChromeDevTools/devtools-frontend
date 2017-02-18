@@ -215,19 +215,8 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       fromElement.classList.remove('selected');
     if (toElement)
       toElement.classList.add('selected');
-
-    if (!to)
-      return;
-
-    var oldCallFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
-    if (oldCallFrame === to.debuggerCallFrame) {
-      var uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(oldCallFrame.location());
-      Common.Revealer.reveal(uiLocation);
-      return;
-    }
-
-    UI.context.setFlavor(SDK.DebuggerModel.CallFrame, to.debuggerCallFrame);
-    this._debuggerModel.setSelectedCallFrame(to.debuggerCallFrame);
+    if (to)
+      this._activateItem(to);
   }
 
   /**
@@ -297,12 +286,23 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
    */
   _onClick(event) {
     var item = this._list.itemForNode(/** @type {?Node} */ (event.target));
-    if (!item || (!item.runtimeCallFrame && !item.promiseCreationFrame))
-      return;
+    if (item)
+      this._activateItem(item);
+  }
+
+  /**
+   * @param {!Sources.CallStackSidebarPane.Item} item
+   */
+  _activateItem(item) {
     var location = this._itemLocation(item);
     if (!location)
       return;
-    Common.Revealer.reveal(Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location));
+    if (item.debuggerCallFrame && UI.context.flavor(SDK.DebuggerModel.CallFrame) !== item.debuggerCallFrame) {
+      UI.context.setFlavor(SDK.DebuggerModel.CallFrame, item.debuggerCallFrame);
+      this._debuggerModel.setSelectedCallFrame(item.debuggerCallFrame);
+    } else {
+      Common.Revealer.reveal(Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location));
+    }
   }
 
   /**

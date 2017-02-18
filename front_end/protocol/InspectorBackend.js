@@ -599,13 +599,15 @@ Protocol.InspectorBackend._AgentPrototype = class {
     }
     var userCallback = (args.length && typeof args.peekLast() === 'function') ? args.pop() : null;
     var params = this._prepareParameters(method, signature, args, !userCallback, onError);
-    if (errorMessage)
-      return Promise.reject(new Error(errorMessage));
-    else
-      return new Promise(promiseAction.bind(this));
+    var responseArguments;
+    if (errorMessage) {
+      responseArguments = [errorMessage];
+      return Promise.resolve().then(runUserCallback);
+    }
+    return new Promise(promiseAction.bind(this)).then(runUserCallback);
 
     /**
-     * @param {function(?)} resolve
+     * @param {function()} resolve
      * @param {function(!Error)} reject
      * @this {Protocol.InspectorBackend._AgentPrototype}
      */
@@ -614,10 +616,14 @@ Protocol.InspectorBackend._AgentPrototype = class {
        * @param {...*} vararg
        */
       function callback(vararg) {
-        var result = userCallback ? userCallback.apply(null, arguments) : undefined;
-        resolve(result);
+        responseArguments = arguments;
+        resolve();
       }
       this._target._wrapCallbackAndSendMessageObject(this._domain, method, params, callback);
+    }
+
+    function runUserCallback() {
+      return userCallback ? userCallback.apply(null, responseArguments) : undefined;
     }
   }
 

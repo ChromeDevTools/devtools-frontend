@@ -870,6 +870,10 @@ devtools_applications = [
 
 visibility = [ "//third_party/WebKit/*" ]
 
+group("devtools_all_files") {
+  data = all_devtools_files
+}
+
 group("devtools_frontend_resources") {
   public_deps = [
     ":build_release_devtools",

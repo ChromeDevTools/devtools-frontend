@@ -9,7 +9,7 @@ Common.StaticContentProvider = class {
   /**
    * @param {string} contentURL
    * @param {!Common.ResourceType} contentType
-   * @param {function():!Promise<string>} lazyContent
+   * @param {function():!Promise<?string>} lazyContent
    */
   constructor(contentURL, contentType, lazyContent) {
     this._contentURL = contentURL;
@@ -61,9 +61,13 @@ Common.StaticContentProvider = class {
    */
   searchInContent(query, caseSensitive, isRegex, callback) {
     /**
-     * @param {string} content
+     * @param {?string} content
      */
     function performSearch(content) {
+      if (!content) {
+        callback(/** @type {!Array<!Common.ContentProvider.SearchMatch>} */ ([]));
+        return;
+      }
       callback(Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
     }
 

@@ -129,7 +129,7 @@ SDK.CSSStyleSheetHeader = class {
    * @return {!Promise<?string>}
    */
   requestContent() {
-    return /** @type {!Promise<?string>} */ (this._cssModel.getStyleSheetText(this.id));
+    return this._cssModel.getStyleSheetText(this.id);
   }
 
   /**

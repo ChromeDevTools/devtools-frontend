@@ -269,9 +269,13 @@ Bindings.StylesSourceMapping = class {
      */
     function callback(uiSourceCode, content) {
       var styleFile = this._styleFiles.get(uiSourceCode);
-      if (styleFile)
-        styleFile.addRevision(content || '');
+      if (typeof content === 'string' && styleFile)
+        styleFile.addRevision(content);
+      this._styleFileSyncedForTest();
     }
+  }
+
+  _styleFileSyncedForTest() {
   }
 
   dispose() {

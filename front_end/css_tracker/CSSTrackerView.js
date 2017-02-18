@@ -84,130 +84,138 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
     var cssModel = mainTarget.model(SDK.CSSModel);
     if (!cssModel)
       return;
-    cssModel.ruleListPromise().then(ruleListReceived.bind(this, cssModel));
+
+    cssModel.ruleListPromise().then(processRuleList.bind(this)).then(updateViews.bind(this));
 
     /**
-     * @param {!SDK.CSSModel} cssModel
-     * @param {!Array<!CSSTracker.RuleUsage>} ruleUsageList
+     * @param {!Array<!SDK.CSSModel.RuleUsage>} ruleUsageList
+     * @this {!CSSTracker.CSSTrackerView}
+     * @return {!Promise<!Array<!CSSTracker.StyleSheetUsage>>}
+     */
+    function processRuleList(ruleUsageList) {
+      /** @type {!Map<?SDK.CSSStyleSheetHeader, !CSSTracker.StyleSheetUsage>} */
+      var rulesByStyleSheet = new Map();
+      for (var rule of ruleUsageList) {
+        var styleSheetHeader = cssModel.styleSheetHeaderForId(rule.styleSheetId);
+        var entry = rulesByStyleSheet.get(styleSheetHeader);
+        if (!entry) {
+          entry = {styleSheetHeader: styleSheetHeader, rules: []};
+          rulesByStyleSheet.set(styleSheetHeader, entry);
+        }
+        entry.rules.push(rule);
+      }
+      return Promise.all(Array.from(
+          rulesByStyleSheet.values(),
+          entry => this._populateSourceInfo(/** @type {!CSSTracker.StyleSheetUsage} */ (entry))));
+    }
+
+    /**
+     * @param {!Array<!CSSTracker.StyleSheetUsage>} styleSheetUsages
      * @this {!CSSTracker.CSSTrackerView}
      */
-    function ruleListReceived(cssModel, ruleUsageList) {
-      var unusedRulesCount = 0;
-      for (var rule of ruleUsageList) {
-        if (!rule.wasUsed)
-          unusedRulesCount++;
+    function updateViews(styleSheetUsages) {
+      this._updateStats(styleSheetUsages);
+      this._updateGutter(styleSheetUsages);
+      this._updateTree(styleSheetUsages);
+    }
+  }
 
-        var url = this._urlForStyleSheetId(cssModel, rule.styleSheetId);
-        if (!url)
-          continue;
-        var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
-        if (!uiSourceCode)
-          continue;
+  /**
+   * @param {!CSSTracker.StyleSheetUsage} styleSheetUsage
+   * @return {!Promise<!CSSTracker.StyleSheetUsage>}
+   */
+  _populateSourceInfo(styleSheetUsage) {
+    if (!styleSheetUsage.styleSheetHeader)
+      return Promise.resolve(styleSheetUsage);
+    var ruleIndex =
+        new Map(styleSheetUsage.rules.map(rule => [`${rule.range.startLine}.${rule.range.startColumn}`, rule]));
 
+    return new Promise(fulfill => {
+      styleSheetUsage.styleSheetHeader.requestContent().then(
+          content => Common.formatterWorkerPool.parseCSS(content || '', onRules));
+
+      /**
+       * @param {boolean} isLastChunk
+       * @param {!Array<!Common.FormatterWorkerPool.CSSStyleRule>} rules
+       */
+      function onRules(isLastChunk, rules) {
+        for (var rule of rules) {
+          if (!rule.styleRange)
+            continue;
+          var entry = ruleIndex.get(`${rule.styleRange.startLine}.${rule.styleRange.startColumn}`);
+          if (entry)
+            entry.selector = rule.selectorText;
+        }
+        if (isLastChunk)
+          fulfill(styleSheetUsage);
+      }
+    });
+  }
+
+  /**
+   * @param {!Array<!CSSTracker.StyleSheetUsage>} styleSheetUsage
+   */
+  _updateStats(styleSheetUsage) {
+    var total = 0;
+    var unused = 0;
+    for (var styleSheet of styleSheetUsage) {
+      total += styleSheet.rules.length;
+      unused += styleSheet.rules.reduce((count, rule) => rule.wasUsed ? count : count + 1, 0);
+    }
+    var percentUnused = total ? Math.round(100 * unused / total) : 0;
+    if (unused === 1) {
+      this._statusMessageElement.textContent =
+          Common.UIString('%d CSS rule is not used. (%d%%)', unused, percentUnused);
+    } else {
+      this._statusMessageElement.textContent =
+          Common.UIString('%d CSS rules are not used. (%d%%)', unused, percentUnused);
+    }
+  }
+
+  /**
+   * @param {!Array<!CSSTracker.StyleSheetUsage>} styleSheetUsages
+   */
+  _updateGutter(styleSheetUsages) {
+    for (var styleSheet of styleSheetUsages) {
+      if (!styleSheet.styleSheetHeader)
+        continue;
+      var url = styleSheet.styleSheetHeader.sourceURL;
+      var uiSourceCode = url && Workspace.workspace.uiSourceCodeForURL(url);
+      if (!uiSourceCode)
+        continue;
+      for (var rule of styleSheet.rules) {
         var gutterRange = Common.TextRange.fromObject(rule.range);
         if (gutterRange.startColumn)
           gutterRange.startColumn--;
         uiSourceCode.addDecoration(gutterRange, CSSTracker.CSSTrackerView.LineDecorator.type, rule.wasUsed);
       }
-      var percentUnused = Math.round(100 * unusedRulesCount / ruleUsageList.length);
-      if (unusedRulesCount === 1) {
-        this._statusMessageElement.textContent =
-            Common.UIString('%d CSS rule is not used. (%d%%)', unusedRulesCount, percentUnused);
-      } else {
-        this._statusMessageElement.textContent =
-            Common.UIString('%d CSS rules are not used. (%d%%)', unusedRulesCount, percentUnused);
-      }
-
-      this._renderRuleUsage(cssModel, ruleUsageList);
     }
   }
 
   /**
-   * @param {!Array<!SDK.CSSStyleSheetHeader>} styleSheetHeaders
-   * @return {!Promise<!Array<!CSSTracker.ParsedStyleSheet>>}
+   * @param {!Array<!CSSTracker.StyleSheetUsage>} styleSheetUsages
    */
-  _parseStyleSheets(styleSheetHeaders) {
-    var promises = styleSheetHeaders.map(header => parseStyleSheet(header));
-    return Promise.all(promises);
+  _updateTree(styleSheetUsages) {
+    this._cssResultsElement.removeChildren();
+    this._cssResultsElement.appendChild(this._treeOutline.element);
 
-    /**
-     * @param {!SDK.CSSStyleSheetHeader} styleSheet
-     * @return {!Promise<!CSSTracker.ParsedStyleSheet>}
-     */
-    function parseStyleSheet(styleSheet) {
-      return new Promise(fulfill => {
-        /** @type {!Array<!Common.FormatterWorkerPool.CSSStyleRule>} */
-        var allRules = [];
-        styleSheet.requestContent().then(content => Common.formatterWorkerPool.parseCSS(content || '', onRules));
-
-        /**
-         * @param {boolean} isLastChunk
-         * @param {!Array<!Common.FormatterWorkerPool.CSSStyleRule>} rules
-         */
-        function onRules(isLastChunk, rules) {
-          allRules.pushAll(rules);
-          if (isLastChunk)
-            fulfill({sourceURL: styleSheet.sourceURL, rules: allRules});
-        }
-      });
-    }
-  }
-
-  /**
-   * @param {!SDK.CSSModel} cssModel
-   * @param {!Array<!CSSTracker.RuleUsage>} ruleList
-   */
-  _renderRuleUsage(cssModel, ruleList) {
-    var headers = cssModel.allStyleSheets();
-    if (!headers.length)
-      return;
-
-    this._parseStyleSheets(headers).then(this._onGotStyleSheets.bind(this, cssModel, ruleList));
-  }
-
-  /**
-   * @param {!SDK.CSSModel} cssModel
-   * @param {!Array<!CSSTracker.RuleUsage>} ruleList
-   * @param {!Array<!CSSTracker.ParsedStyleSheet>} styleSheets
-   * @this {CSSTracker.CSSTrackerView}
-   */
-  _onGotStyleSheets(cssModel, ruleList, styleSheets) {
-    /** @type {!Map<string, string>} */
-    var rangeToSelector = new Map();
-
-    for (var styleSheet of styleSheets) {
-      for (var rule of styleSheet.rules) {
-        if (!rule.styleRange)
+    for (var sheet of styleSheetUsages) {
+      var unusedRuleCount = sheet.rules.reduce((count, rule) => rule.wasUsed ? count : count + 1, 0);
+      if (sheet.styleSheetHeader) {
+        var url = sheet.styleSheetHeader.sourceURL;
+        if (!url)
           continue;
 
-        rangeToSelector.set(
-            rule.styleRange.startLine + ',' + rule.styleRange.startColumn + ',' + styleSheet.sourceURL,
-            rule.selectorText);
-      }
-    }
-
-    var unattributedRulesCount = 0;
-
-    for (var rule of ruleList) {
-      var url = this._urlForStyleSheetId(cssModel, rule.styleSheetId);
-      if (url === '')
+        var styleSheetTreeElement = new CSSTracker.CSSTrackerView.StyleSheetTreeElement(url, sheet.rules);
+        this._treeOutline.appendChild(styleSheetTreeElement);
         continue;
-      var range = rule.range.startLine + ',' + rule.range.startColumn + ',' + url;
-      rule.selector = rangeToSelector.get(range);
-      if (!rule.selector && !rule.wasUsed)
-        ++unattributedRulesCount;
-    }
-    ruleList = ruleList.filter(rule => rule.selector);
-
-    this._cssResultsElement.removeChildren();
-
-    if (unattributedRulesCount) {
-      if (unattributedRulesCount === 1) {
-        var removedStyleSheetStats = Common.UIString('1 unused rule in a removed style sheet.');
-      } else {
-        var removedStyleSheetStats =
-            Common.UIString('%d unused rules in removed style sheets.', unattributedRulesCount);
       }
+      if (!unusedRuleCount)
+        continue;
+      var removedStyleSheetStats = unusedRuleCount === 1 ?
+          Common.UIString('1 unused rule in a removed style sheet.') :
+          Common.UIString('%d unused rules in removed style sheets.', unusedRuleCount);
+
       var treeElement = new UI.TreeElement(Common.UIString('Unknown style sheets'), true);
       treeElement.toggleOnClick = true;
       treeElement.selectable = false;
@@ -217,51 +225,17 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
       treeElement.appendChild(stats);
       this._treeOutline.appendChild(treeElement);
     }
-
-    if (!ruleList.length)
-      return;
-
-    this._cssResultsElement.appendChild(this._treeOutline.element);
-
-    var startPosition = 0;
-    for (var i = 1; i < ruleList.length; ++i) {
-      if (ruleList[i].styleSheetId === ruleList[i - 1].styleSheetId)
-        continue;
-
-      var url = this._urlForStyleSheetId(cssModel, ruleList[startPosition].styleSheetId);
-      var styleSheetTreeElement =
-          new CSSTracker.CSSTrackerView.StyleSheetTreeElement(url, ruleList.slice(startPosition, i));
-      this._treeOutline.appendChild(styleSheetTreeElement);
-
-      startPosition = i;
-    }
-    var url = this._urlForStyleSheetId(cssModel, ruleList[startPosition].styleSheetId);
-    var styleSheetTreeElement = new CSSTracker.CSSTrackerView.StyleSheetTreeElement(url, ruleList.slice(startPosition));
-    this._treeOutline.appendChild(styleSheetTreeElement);
-  }
-
-  /**
-   * @param {string} styleSheetId
-   * @param {!SDK.CSSModel} cssModel
-   * @return {string}
-   */
-  _urlForStyleSheetId(cssModel, styleSheetId) {
-    var styleSheetHeader = cssModel.styleSheetHeaderForId(styleSheetId);
-    if (!styleSheetHeader)
-      return '';
-    return styleSheetHeader.sourceURL;
   }
 };
 
 /** @typedef {{range: !Protocol.CSS.SourceRange,
  *              selector: (string|undefined),
- *              styleSheetId: !Protocol.CSS.StyleSheetId,
  *              wasUsed: boolean}}
  */
 CSSTracker.RuleUsage;
 
-/** @typedef {{sourceURL: string, rules: !Array<!Common.FormatterWorkerPool.CSSStyleRule>}} */
-CSSTracker.ParsedStyleSheet;
+/** @typedef {{styleSheetHeader: ?SDK.CSSStyleSheetHeader, rules: !Array<!CSSTracker.RuleUsage>}} */
+CSSTracker.StyleSheetUsage;
 
 CSSTracker.CSSTrackerView._rulesShownAtOnce = 20;
 

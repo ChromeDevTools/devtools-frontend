@@ -23,6 +23,7 @@ Components.CPUThrottlingManager = class extends Common.Object {
     SDK.targetManager.targets().forEach(target => target.emulationAgent().setCPUThrottlingRate(this._throttlingRate));
     var icon = null;
     if (this._throttlingRate !== 1) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.CpuThrottlingEnabled);
       icon = UI.Icon.create('smallicon-warning');
       icon.title = Common.UIString('CPU throttling is enabled');
     }

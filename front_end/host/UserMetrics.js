@@ -83,6 +83,7 @@ Host.UserMetrics.Action = {
   TimelinePageReloadStarted: 18,
   ConnectToNodeJSFromFrontend: 19,
   ConnectToNodeJSDirectly: 20,
+  CpuThrottlingEnabled: 21,
 };
 
 Host.UserMetrics._PanelCodes = {

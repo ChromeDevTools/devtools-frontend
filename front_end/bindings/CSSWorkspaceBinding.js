@@ -31,37 +31,15 @@ Bindings.CSSWorkspaceBinding = class {
    * @param {!SDK.CSSModel} cssModel
    */
   modelRemoved(cssModel) {
-    this._modelToInfo.remove(cssModel)._dispose();
-  }
-
-  /**
-   * @param {!SDK.CSSStyleSheetHeader} header
-   * @return {?Bindings.CSSWorkspaceBinding.ModelInfo}
-   */
-  _modelInfo(header) {
-    return this._modelToInfo.get(header.cssModel()) || null;
-  }
-
-  /**
-   * @param {!SDK.CSSStyleSheetHeader} header
-   * @return {!Bindings.CSSWorkspaceBinding.ModelInfo}
-   */
-  _ensureModelInfo(header) {
-    var modelInfo = this._modelToInfo.get(header.cssModel());
-    if (!modelInfo) {
-      modelInfo = new Bindings.CSSWorkspaceBinding.ModelInfo(header.cssModel(), this._workspace);
-      this._modelToInfo.set(header.cssModel(), modelInfo);
-    }
-    return modelInfo;
+    this._modelToInfo.get(cssModel)._dispose();
+    this._modelToInfo.delete(cssModel);
   }
 
   /**
    * @param {!SDK.CSSStyleSheetHeader} header
    */
   updateLocations(header) {
-    var modelInfo = this._modelInfo(header);
-    if (modelInfo)
-      modelInfo._updateLocations(header);
+    this._modelToInfo.get(header.cssModel())._updateLocations(header);
   }
 
   /**
@@ -71,26 +49,7 @@ Bindings.CSSWorkspaceBinding = class {
    * @return {!Bindings.CSSWorkspaceBinding.LiveLocation}
    */
   createLiveLocation(rawLocation, updateDelegate, locationPool) {
-    var header =
-        rawLocation.styleSheetId ? rawLocation.cssModel().styleSheetHeaderForId(rawLocation.styleSheetId) : null;
-    return new Bindings.CSSWorkspaceBinding.LiveLocation(
-        rawLocation.cssModel(), header, rawLocation, this, updateDelegate, locationPool);
-  }
-
-  /**
-   * @param {!Bindings.CSSWorkspaceBinding.LiveLocation} location
-   */
-  _addLiveLocation(location) {
-    this._ensureModelInfo(location._header)._addLocation(location);
-  }
-
-  /**
-   * @param {!Bindings.CSSWorkspaceBinding.LiveLocation} location
-   */
-  _removeLiveLocation(location) {
-    var modelInfo = this._modelInfo(location._header);
-    if (modelInfo)
-      modelInfo._removeLocation(location);
+    return this._modelToInfo.get(rawLocation.cssModel())._createLiveLocation(rawLocation, updateDelegate, locationPool);
   }
 
   /**
@@ -124,12 +83,7 @@ Bindings.CSSWorkspaceBinding = class {
   rawLocationToUILocation(rawLocation) {
     if (!rawLocation)
       return null;
-    var header = rawLocation.cssModel().styleSheetHeaderForId(rawLocation.styleSheetId);
-    if (!header)
-      return null;
-    var modelInfo = this._modelInfo(header);
-    return modelInfo ? modelInfo._rawLocationToUILocation(header, rawLocation.lineNumber, rawLocation.columnNumber) :
-                       null;
+    return this._modelToInfo.get(rawLocation.cssModel())._rawLocationToUILocation(rawLocation);
   }
 };
 
@@ -139,29 +93,48 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
    * @param {!Workspace.Workspace} workspace
    */
   constructor(cssModel, workspace) {
-    this._cssModel = cssModel;
+    this._eventListeners = [
+      cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this),
+      cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this)
+    ];
+
     this._stylesSourceMapping = new Bindings.StylesSourceMapping(cssModel, workspace);
     this._sassSourceMapping =
         new Bindings.SASSSourceMapping(cssModel, workspace, Bindings.NetworkProject.forTarget(cssModel.target()));
 
-    /** @type {!Multimap<!SDK.CSSStyleSheetHeader, !Bindings.LiveLocation>} */
+    /** @type {!Multimap<!SDK.CSSStyleSheetHeader, !Bindings.CSSWorkspaceBinding.LiveLocation>} */
     this._locations = new Multimap();
+    /** @type {!Multimap<string, !Bindings.CSSWorkspaceBinding.LiveLocation>} */
+    this._unboundLocations = new Multimap();
+  }
+
+  /**
+   * @param {!SDK.CSSLocation} rawLocation
+   * @param {function(!Bindings.LiveLocation)} updateDelegate
+   * @param {!Bindings.LiveLocationPool} locationPool
+   * @return {!Bindings.CSSWorkspaceBinding.LiveLocation}
+   */
+  _createLiveLocation(rawLocation, updateDelegate, locationPool) {
+    var location = new Bindings.CSSWorkspaceBinding.LiveLocation(rawLocation, this, updateDelegate, locationPool);
+    var header = rawLocation.header();
+    if (header) {
+      location._header = header;
+      this._locations.set(header, location);
+      location.update();
+    } else {
+      this._unboundLocations.set(rawLocation.url, location);
+    }
+    return location;
   }
 
   /**
    * @param {!Bindings.CSSWorkspaceBinding.LiveLocation} location
    */
-  _addLocation(location) {
-    var header = location._header;
-    this._locations.set(header, location);
-    location.update();
-  }
-
-  /**
-   * @param {!Bindings.CSSWorkspaceBinding.LiveLocation} location
-   */
-  _removeLocation(location) {
-    this._locations.remove(location._header, location);
+  _disposeLocation(location) {
+    if (location._header)
+      this._locations.remove(location._header, location);
+    else
+      this._unboundLocations.remove(location._url, location);
   }
 
   /**
@@ -173,13 +146,39 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
   }
 
   /**
-   * @param {!SDK.CSSStyleSheetHeader} header
-   * @param {number} lineNumber
-   * @param {number=} columnNumber
+   * @param {!Common.Event} event
+   */
+  _styleSheetAdded(event) {
+    var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
+    if (!header.sourceURL)
+      return;
+
+    for (var location of this._unboundLocations.get(header.sourceURL)) {
+      location._header = header;
+      this._locations.set(header, location);
+      location.update();
+    }
+    this._unboundLocations.removeAll(header.sourceURL);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _styleSheetRemoved(event) {
+    var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
+    for (var location of this._locations.get(header)) {
+      location._header = null;
+      this._unboundLocations.set(location._url, location);
+      location.update();
+    }
+    this._locations.removeAll(header);
+  }
+
+  /**
+   * @param {!SDK.CSSLocation} rawLocation
    * @return {?Workspace.UILocation}
    */
-  _rawLocationToUILocation(header, lineNumber, columnNumber) {
-    var rawLocation = new SDK.CSSLocation(header, lineNumber, columnNumber);
+  _rawLocationToUILocation(rawLocation) {
     var uiLocation = null;
     uiLocation = uiLocation || this._sassSourceMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._stylesSourceMapping.rawLocationToUILocation(rawLocation);
@@ -187,6 +186,7 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
   }
 
   _dispose() {
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     this._stylesSourceMapping.dispose();
     this._sassSourceMapping.dispose();
   }
@@ -197,60 +197,18 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
  */
 Bindings.CSSWorkspaceBinding.LiveLocation = class extends Bindings.LiveLocationWithPool {
   /**
-   * @param {!SDK.CSSModel} cssModel
-   * @param {?SDK.CSSStyleSheetHeader} header
    * @param {!SDK.CSSLocation} rawLocation
-   * @param {!Bindings.CSSWorkspaceBinding} binding
+   * @param {!Bindings.CSSWorkspaceBinding.ModelInfo} info
    * @param {function(!Bindings.LiveLocation)} updateDelegate
    * @param {!Bindings.LiveLocationPool} locationPool
    */
-  constructor(cssModel, header, rawLocation, binding, updateDelegate, locationPool) {
+  constructor(rawLocation, info, updateDelegate, locationPool) {
     super(updateDelegate, locationPool);
-    this._cssModel = cssModel;
-    this._rawLocation = rawLocation;
-    this._binding = binding;
-    if (!header)
-      this._clearStyleSheet();
-    else
-      this._setStyleSheet(header);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _styleSheetAdded(event) {
-    console.assert(!this._header);
-    var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
-    if (header.sourceURL && header.sourceURL === this._rawLocation.url)
-      this._setStyleSheet(header);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _styleSheetRemoved(event) {
-    console.assert(this._header);
-    var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
-    if (this._header !== header)
-      return;
-    this._binding._removeLiveLocation(this);
-    this._clearStyleSheet();
-  }
-
-  /**
-   * @param {!SDK.CSSStyleSheetHeader} header
-   */
-  _setStyleSheet(header) {
-    this._header = header;
-    this._binding._addLiveLocation(this);
-    this._cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
-    this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
-  }
-
-  _clearStyleSheet() {
-    delete this._header;
-    this._cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
-    this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
+    this._url = rawLocation.url;
+    this._lineNumber = rawLocation.lineNumber;
+    this._columnNumber = rawLocation.columnNumber;
+    this._info = info;
+    this._header = null;
   }
 
   /**
@@ -258,16 +216,10 @@ Bindings.CSSWorkspaceBinding.LiveLocation = class extends Bindings.LiveLocationW
    * @return {?Workspace.UILocation}
    */
   uiLocation() {
-    var cssLocation = this._rawLocation;
-    if (this._header) {
-      var modelInfo = this._binding._modelInfo(this._header);
-      return modelInfo._rawLocationToUILocation(this._header, cssLocation.lineNumber, cssLocation.columnNumber);
-    }
-    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForStyleURL(
-        this._binding._workspace, cssLocation.url, cssLocation.header());
-    if (!uiSourceCode)
+    if (!this._header)
       return null;
-    return uiSourceCode.uiLocation(cssLocation.lineNumber, cssLocation.columnNumber);
+    var rawLocation = new SDK.CSSLocation(this._header, this._lineNumber, this._columnNumber);
+    return this._info._rawLocationToUILocation(rawLocation);
   }
 
   /**
@@ -275,10 +227,7 @@ Bindings.CSSWorkspaceBinding.LiveLocation = class extends Bindings.LiveLocationW
    */
   dispose() {
     super.dispose();
-    if (this._header)
-      this._binding._removeLiveLocation(this);
-    this._cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this);
-    this._cssModel.removeEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this);
+    this._info._disposeLocation(this);
   }
 
   /**

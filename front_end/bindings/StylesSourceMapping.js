@@ -63,13 +63,14 @@ Bindings.StylesSourceMapping = class {
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var uiSourceCode =
-        Bindings.NetworkProject.uiSourceCodeForStyleURL(this._workspace, rawLocation.url, rawLocation.header());
+    var header = rawLocation.header();
+    if (!header)
+      return null;
+    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForStyleURL(this._workspace, rawLocation.url, header);
     if (!uiSourceCode)
       return null;
     var lineNumber = rawLocation.lineNumber;
     var columnNumber = rawLocation.columnNumber;
-    var header = this._cssModel.styleSheetHeaderForId(rawLocation.styleSheetId);
     if (header && header.isInline && header.hasSourceURL) {
       lineNumber -= header.lineNumberInSource(0);
       columnNumber -= header.columnNumberInSource(lineNumber, 0);

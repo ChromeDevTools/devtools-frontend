@@ -1035,7 +1035,7 @@ SDK.CSSLocation = class {
    * @param {number=} columnNumber
    */
   constructor(header, lineNumber, columnNumber) {
-    this._header = header;
+    this._cssModel = header.cssModel();
     this.styleSheetId = header.id;
     this.url = header.resourceURL();
     this.lineNumber = lineNumber;
@@ -1046,14 +1046,14 @@ SDK.CSSLocation = class {
    * @return {!SDK.CSSModel}
    */
   cssModel() {
-    return this._header.cssModel();
+    return this._cssModel;
   }
 
   /**
-   * @return {!SDK.CSSStyleSheetHeader}
+   * @return {?SDK.CSSStyleSheetHeader}
    */
   header() {
-    return this._header;
+    return this._cssModel.styleSheetHeaderForId(this.styleSheetId);
   }
 };
 

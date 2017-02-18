@@ -102,14 +102,16 @@ Bindings.SASSSourceMapping = class {
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var sourceMap = this._cssModel.sourceMapForHeader(rawLocation.header());
+    var header = rawLocation.header();
+    if (!header)
+      return null;
+    var sourceMap = this._cssModel.sourceMapForHeader(header);
     if (!sourceMap)
       return null;
     var entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
     if (!entry || !entry.sourceURL)
       return null;
-    var uiSourceCode =
-        Bindings.NetworkProject.uiSourceCodeForStyleURL(this._workspace, entry.sourceURL, rawLocation.header());
+    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForStyleURL(this._workspace, entry.sourceURL, header);
     if (!uiSourceCode)
       return null;
     return uiSourceCode.uiLocation(entry.sourceLineNumber || 0, entry.sourceColumnNumber);

@@ -423,7 +423,7 @@ SDK.TextSourceMap = class {
       var url = Common.ParsedURL.completeURL(this._sourceMappingURL, href) || href;
       var source = sourceMap.sourcesContent && sourceMap.sourcesContent[i];
       if (url === this._compiledURL && source)
-        url += Common.UIString(' [sm]');
+        url += Common.UIString('? [sm]');
       this._sourceInfos.set(url, new SDK.TextSourceMap.SourceInfo(source, null));
       sourcesList.push(url);
     }

@@ -758,9 +758,15 @@ Event.prototype.deepElementFromPoint = function() {
  * @return {?Node}
  */
 Document.prototype.deepElementFromPoint = function(x, y) {
-  var node = this.elementFromPoint(x, y);
-  while (node && node.shadowRoot)
-    node = node.shadowRoot.elementFromPoint(x, y);
+  var container = this;
+  var node = null;
+  while (container) {
+    var innerNode = container.elementFromPoint(x, y);
+    if (!innerNode)
+      break;
+    node = innerNode;
+    container = node.shadowRoot;
+  }
   return node;
 };
 

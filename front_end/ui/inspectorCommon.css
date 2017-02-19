@@ -387,17 +387,3 @@ label[is=dt-icon-label] {
     background: unset;
     background-color: white;
 }
-
-.glass-pane {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow: hidden;
-    contain: strict;
-}
-
-.glass-pane-content {
-    display: flex;
-}

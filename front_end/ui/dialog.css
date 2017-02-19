@@ -4,32 +4,17 @@
  * found in the LICENSE file.
  */
 
-:host {
+.widget {
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.1);
     background: white;
     justify-content: flex-start;
     align-items: stretch;
-}
-
-.widget {
     display: flex;
-    flex: auto;
-    justify-content: flex-start;
-    align-items: stretch;
-}
-
-:host-context(.wraps-content) {
-    align-items: flex-start;
-    overflow: hidden;
-}
-
-:host-context(.wraps-content) .widget {
-    flex: none !important;
-    align-items: center;
 }
 
 .dialog-close-button {
     position: absolute;
     right: 9px;
     top: 9px;
+    z-index: 1;
 }

@@ -2,26 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-UI.GlassPane = class {
-  /**
-   * @param {!Document} document
-   * @param {boolean} dimmed
-   * @param {boolean} blockPointerEvents
-   * @param {function(!Event)} onClickOutside
-   */
-  constructor(document, dimmed, blockPointerEvents, onClickOutside) {
-    this._element = createElementWithClass('div', 'glass-pane');
-    this._element.style.backgroundColor = dimmed ? 'rgba(255, 255, 255, 0.5)' : 'transparent';
-    if (!blockPointerEvents)
-      this._element.style.pointerEvents = 'none';
-    this._onMouseDown = event => {
-      if (!this.contentElement.isSelfOrAncestor(/** @type {?Node} */ (event.target)))
-        onClickOutside.call(null, event);
-    };
-
-    this.contentElement = this._element.createChild('div', 'glass-pane-content');
-    this._document = document;
-    this._visible = false;
+UI.GlassPane = class extends UI.Widget {
+  constructor() {
+    super(true);
+    this.markAsRoot();
+    this.registerRequiredCSS('ui/glassPane.css');
+    this.element.classList.add('no-pointer-events');
+    this._onMouseDownBound = this._onMouseDown.bind(this);
+    /** @type {?function(!Event)} */
+    this._onClickOutsideCallback = null;
     /** @type {?UI.Size} */
     this._maxSize = null;
     /** @type {?number} */
@@ -31,7 +20,28 @@ UI.GlassPane = class {
     /** @type {?AnchorBox} */
     this._anchorBox = null;
     this._anchorBehavior = UI.GlassPane.AnchorBehavior.PreferTop;
-    this._fixedHeight = true;
+    this._sizeBehavior = UI.GlassPane.SizeBehavior.SetHeight;
+  }
+
+  /**
+   * @param {boolean} dimmed
+   */
+  setDimmed(dimmed) {
+    this.element.classList.toggle('dimmed-pane', dimmed);
+  }
+
+  /**
+   * @param {boolean} blockPointerEvents
+   */
+  setBlockPointerEvents(blockPointerEvents) {
+    this.element.classList.toggle('no-pointer-events', !blockPointerEvents);
+  }
+
+  /**
+   * @param {?function(!Event)} callback
+   */
+  setSetOutsideClickCallback(callback) {
+    this._onClickOutsideCallback = callback;
   }
 
   /**
@@ -43,10 +53,11 @@ UI.GlassPane = class {
   }
 
   /**
-   * @param {boolean} fixedHeight
+   * @param {!UI.GlassPane.SizeBehavior} sizeBehavior
    */
-  setFixedHeight(fixedHeight) {
-    this._fixedHeight = fixedHeight;
+  setSizeBehavior(sizeBehavior) {
+    this._sizeBehavior = sizeBehavior;
+    this._positionContent();
   }
 
   /**
@@ -76,39 +87,52 @@ UI.GlassPane = class {
     this._anchorBehavior = behavior;
   }
 
-  show() {
-    if (this._visible)
+  /**
+   * @param {!Document} document
+   */
+  showGlassPane(document) {
+    if (this.isShowing())
       return;
-    this._visible = true;
     // Deliberately starts with 3000 to hide other z-indexed elements below.
-    this._element.style.zIndex = 3000 + 1000 * UI.GlassPane._panes.size;
-    this._document.body.appendChild(this._element);
-    this._document.body.addEventListener('mousedown', this._onMouseDown, true);
+    this.element.style.zIndex = 3000 + 1000 * UI.GlassPane._panes.size;
+    document.body.addEventListener('mousedown', this._onMouseDownBound, true);
+    this.show(document.body);
     UI.GlassPane._panes.add(this);
+    this._positionContent();
   }
 
-  hide() {
-    if (!this._visible)
+  hideGlassPane() {
+    if (!this.isShowing())
       return;
     UI.GlassPane._panes.delete(this);
-    this._document.body.removeEventListener('mousedown', this._onMouseDown, true);
-    this._document.body.removeChild(this._element);
-    this._visible = false;
+    this.element.ownerDocument.body.removeEventListener('mousedown', this._onMouseDownBound, true);
+    this.detach();
   }
 
   /**
-   * @return {boolean}
+   * @param {!Event} event
    */
-  visible() {
-    return this._visible;
+  _onMouseDown(event) {
+    if (!this._onClickOutsideCallback)
+      return;
+    if (this.contentElement.isSelfOrAncestor(/** @type {?Node} */ (event.deepElementFromPoint())))
+      return;
+    this._onClickOutsideCallback.call(null, event);
   }
 
   _positionContent() {
-    if (!this._visible)
+    if (!this.isShowing())
       return;
 
     var gutterSize = 5;
-    var container = UI.GlassPane._containers.get(this._document);
+    var container = UI.GlassPane._containers.get(/** @type {!Document} */ (this.element.ownerDocument));
+    if (this._sizeBehavior === UI.GlassPane.SizeBehavior.MeasureContent) {
+      this.contentElement.positionAt(0, 0);
+      this.contentElement.style.width = '';
+      this.contentElement.style.height = '';
+      this.contentElement.style.maxHeight = '';
+    }
+
     var containerWidth = container.offsetWidth;
     var containerHeight = container.offsetHeight;
 
@@ -120,6 +144,11 @@ UI.GlassPane = class {
     if (this._maxSize) {
       width = Math.min(width, this._maxSize.width);
       height = Math.min(height, this._maxSize.height);
+    }
+
+    if (this._sizeBehavior === UI.GlassPane.SizeBehavior.MeasureContent) {
+      width = Math.min(width, this.contentElement.offsetWidth);
+      height = Math.min(height, this.contentElement.offsetHeight);
     }
 
     if (this._anchorBox) {
@@ -169,10 +198,10 @@ UI.GlassPane = class {
     }
 
     this.contentElement.style.width = width + 'px';
-    if (this._fixedHeight)
-      this.contentElement.style.height = height + 'px';
-    else
+    if (this._sizeBehavior === UI.GlassPane.SizeBehavior.SetMaxHeight)
       this.contentElement.style.maxHeight = height + 'px';
+    else
+      this.contentElement.style.height = height + 'px';
     this.contentElement.positionAt(positionX, positionY, container);
   }
 
@@ -197,8 +226,10 @@ UI.GlassPane = class {
    */
   static containerMoved(element) {
     for (var pane of UI.GlassPane._panes) {
-      if (pane._document === element.ownerDocument)
+      if (pane.isShowing() && pane.element.ownerDocument === element.ownerDocument) {
         pane._positionContent();
+        pane.doResize();
+      }
     }
   }
 };
@@ -211,6 +242,15 @@ UI.GlassPane.AnchorBehavior = {
   PreferBottom: Symbol('PreferBottom'),
   PreferLeft: Symbol('PreferLeft'),
   PreferRight: Symbol('PreferRight'),
+};
+
+/**
+ * @enum {symbol}
+ */
+UI.GlassPane.SizeBehavior = {
+  SetHeight: Symbol('SetHeight'),
+  SetMaxHeight: Symbol('SetMaxHeight'),
+  MeasureContent: Symbol('MeasureContent')
 };
 
 /** @type {!Map<!Document, !Element>} */

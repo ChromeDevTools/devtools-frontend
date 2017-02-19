@@ -71,7 +71,7 @@ Resources.IDBDatabaseView = class extends UI.VBox {
 
   _deleteDatabase() {
     UI.ConfirmDialog.show(
-        Common.UIString('Are you sure you want to delete "%s"?', this._database.databaseId.name),
+        this.element, Common.UIString('Are you sure you want to delete "%s"?', this._database.databaseId.name),
         () => this._model.deleteDatabase(this._database.databaseId));
   }
 };

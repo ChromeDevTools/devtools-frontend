@@ -240,11 +240,10 @@ PerfUI.FilmStripView.Dialog = class extends UI.VBox {
   _resize() {
     if (!this._dialog) {
       this._dialog = new UI.Dialog();
-      this.show(this._dialog.element);
-      this._dialog.setWrapsContent(true);
-      this._dialog.show();
+      this.show(this._dialog.contentElement);
+      this._dialog.showDialog();
     }
-    this._dialog.contentResized();
+    this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
   }
 
   /**

@@ -28,30 +28,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @unrestricted
- */
-UI.Dialog = class extends UI.Widget {
+UI.Dialog = class extends UI.GlassPane {
   constructor() {
-    super(true);
-    this.markAsRoot();
+    super();
     this.registerRequiredCSS('ui/dialog.css');
-
-    this.contentElement.createChild('content');
     this.contentElement.tabIndex = 0;
     this.contentElement.addEventListener('focus', this.focus.bind(this), false);
     this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
-    this._dimmed = false;
-    this._wrapsContent = false;
-    this._maxSize = null;
-    /** @type {?number} */
-    this._positionX = null;
-    /** @type {?number} */
-    this._positionY = null;
-    this._fixedHeight = true;
-
+    this.setBlockPointerEvents(true);
+    this.setSetOutsideClickCallback(event => {
+      this.hideDialog();
+      event.consume(true);
+    });
     /** @type {!Map<!HTMLElement, number>} */
     this._tabIndexMap = new Map();
+    /** @type {?UI.WidgetFocusRestorer} */
+    this._focusRestorer = null;
   }
 
   /**
@@ -62,41 +54,23 @@ UI.Dialog = class extends UI.Widget {
   }
 
   /**
-   * @override
-   * @suppressGlobalPropertiesCheck
-   * TODO(dgozman): pass document in constructor.
+   * @param {!Document|!Element=} where
    */
-  show() {
+  showDialog(where) {
+    var document = /** @type {!Document} */ (
+        where instanceof Document ? where : (where || UI.inspectorView.element).ownerDocument);
     if (UI.Dialog._instance)
       UI.Dialog._instance.detach();
     UI.Dialog._instance = this;
-
     this._disableTabIndexOnElements(document);
-
-    this._glassPane = new UI.GlassPane(document, this._dimmed, true /* blockPointerEvents*/, event => {
-      this.detach();
-      event.consume(true);
-    });
-    this._glassPane.setFixedHeight(this._fixedHeight);
-    this._glassPane.show();
-    super.show(this._glassPane.contentElement);
-    this._glassPane.setContentPosition(this._positionX, this._positionY);
-    this._glassPane.setMaxContentSize(this._effectiveMaxSize());
+    this.showGlassPane(document);
     this._focusRestorer = new UI.WidgetFocusRestorer(this);
   }
 
-  /**
-   * @override
-   */
-  detach() {
+  hideDialog() {
     this._focusRestorer.restore();
-
-    super.detach();
-    this._glassPane.hide();
-    delete this._glassPane;
-
+    this.hideGlassPane();
     this._restoreTabIndexOnElements();
-
     delete UI.Dialog._instance;
   }
 
@@ -104,59 +78,6 @@ UI.Dialog = class extends UI.Widget {
     var closeButton = this.contentElement.createChild('div', 'dialog-close-button', 'dt-close-button');
     closeButton.gray = true;
     closeButton.addEventListener('click', () => this.detach(), false);
-  }
-
-  /**
-   * @param {?number} positionX
-   * @param {?number} positionY
-   */
-  setPosition(positionX, positionY) {
-    this._positionX = positionX;
-    this._positionY = positionY;
-  }
-
-  /**
-   * @param {!UI.Size} size
-   */
-  setMaxSize(size) {
-    this._maxSize = size;
-  }
-
-  /**
-   * @param {boolean} fixedHeight
-   */
-  setFixedHeight(fixedHeight) {
-    this._fixedHeight = fixedHeight;
-  }
-
-  /**
-   * @return {?UI.Size}
-   */
-  _effectiveMaxSize() {
-    if (!this._wrapsContent)
-      return this._maxSize;
-    return new UI.Size(this.contentElement.offsetWidth, this.contentElement.offsetHeight).clipTo(this._maxSize);
-  }
-
-  /**
-   * @param {boolean} wraps
-   */
-  setWrapsContent(wraps) {
-    this._wrapsContent = wraps;
-    this.element.classList.toggle('wraps-content', wraps);
-  }
-
-  /**
-   * @param {boolean} dimmed
-   */
-  setDimmed(dimmed) {
-    this._dimmed = dimmed;
-  }
-
-  contentResized() {
-    if (!this._wrapsContent || !this._glassPane)
-      return;
-    this._glassPane.setMaxContentSize(this._effectiveMaxSize());
   }
 
   /**
@@ -188,7 +109,7 @@ UI.Dialog = class extends UI.Widget {
   _onKeyDown(event) {
     if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
       event.consume(true);
-      this.detach();
+      this.hideDialog();
     }
   }
 };

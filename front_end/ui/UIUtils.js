@@ -95,9 +95,9 @@ UI.DragHandler = class {
   _createGlassPane() {
     this._glassPaneInUse = true;
     if (!UI.DragHandler._glassPaneUsageCount++) {
-      UI.DragHandler._glassPane = new UI.GlassPane(
-          UI.DragHandler._documentForMouseOut, false /* dimmed */, true /* blockPointerEvents */, event => {});
-      UI.DragHandler._glassPane.show();
+      UI.DragHandler._glassPane = new UI.GlassPane();
+      UI.DragHandler._glassPane.setBlockPointerEvents(true);
+      UI.DragHandler._glassPane.showGlassPane(UI.DragHandler._documentForMouseOut);
     }
   }
 
@@ -107,7 +107,7 @@ UI.DragHandler = class {
     this._glassPaneInUse = false;
     if (--UI.DragHandler._glassPaneUsageCount)
       return;
-    UI.DragHandler._glassPane.hide();
+    UI.DragHandler._glassPane.hideGlassPane();
     delete UI.DragHandler._glassPane;
     delete UI.DragHandler._documentForMouseOut;
   }
@@ -2037,24 +2037,25 @@ UI.MaxLengthForDisplayedURLs = 150;
  */
 UI.ConfirmDialog = class extends UI.VBox {
   /**
+   * @param {!Document|!Element} where
    * @param {string} message
    * @param {!Function} callback
    */
-  static show(message, callback) {
+  static show(where, message, callback) {
     var dialog = new UI.Dialog();
-    dialog.setWrapsContent(true);
+    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     dialog.addCloseButton();
     dialog.setDimmed(true);
     new UI
         .ConfirmDialog(
             message,
             () => {
-              dialog.detach();
+              dialog.hideDialog();
               callback();
             },
-            () => dialog.detach())
-        .show(dialog.element);
-    dialog.show();
+            () => dialog.hideDialog())
+        .show(dialog.contentElement);
+    dialog.showDialog(where);
   }
 
   /**

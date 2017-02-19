@@ -118,11 +118,11 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
 
   showAsDialog() {
     this._dialog = new UI.Dialog();
-    this._dialog.setMaxSize(new UI.Size(504, 340));
-    this._dialog.setFixedHeight(false);
-    this._dialog.setPosition(null, 22);
-    this.show(this._dialog.element);
-    this._dialog.show();
+    this._dialog.setMaxContentSize(new UI.Size(504, 340));
+    this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetMaxHeight);
+    this._dialog.setContentPosition(null, 22);
+    this.show(this._dialog.contentElement);
+    this._dialog.showDialog();
     this._updateShowMatchingItems();
   }
 
@@ -160,7 +160,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
 
     // Detach dialog before allowing delegate to override focus.
     if (this._dialog)
-      this._dialog.detach();
+      this._dialog.hideDialog();
     this._selectItemWithQuery(selectedIndexInDelegate, this._value());
   }
 
@@ -191,7 +191,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
       event.consume(true);
       // Detach dialog before allowing delegate to override focus.
       if (this._dialog)
-        this._dialog.detach();
+        this._dialog.hideDialog();
       this._selectItemWithQuery(item, this._value());
     }, false);
     return itemElement;
@@ -364,10 +364,12 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     delete this._refreshListWithCurrentResult;
     filteredItems = [].concat(bestItems, overflowItems, filteredItems);
     this._updateNotFoundMessage(!!filteredItems.length);
+    var oldHeight = this._list.element.offsetHeight;
     this._list.replaceAllItems(filteredItems);
     if (filteredItems.length)
       this._list.selectItem(filteredItems[0]);
-    this._list.viewportResized();
+    if (this._list.element.offsetHeight !== oldHeight)
+      this._list.viewportResized();
     this._itemsFilteredForTest();
   }
 

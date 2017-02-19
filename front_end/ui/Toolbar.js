@@ -123,8 +123,9 @@ UI.Toolbar = class {
       var document = button.element.ownerDocument;
       document.documentElement.addEventListener('mouseup', mouseUp, false);
 
-      var optionsGlassPane = new UI.GlassPane(document, false /* dimmed */, true /* blockPointerEvents */, event => {});
-      optionsGlassPane.show();
+      var optionsGlassPane = new UI.GlassPane();
+      optionsGlassPane.setBlockPointerEvents(true);
+      optionsGlassPane.showGlassPane(document);
       var optionsBar = new UI.Toolbar('fill', optionsGlassPane.contentElement);
       optionsBar._contentElement.classList.add('floating');
       const buttonHeight = 26;
@@ -168,7 +169,7 @@ UI.Toolbar = class {
       function mouseUp(e) {
         if (e.which !== 1)
           return;
-        optionsGlassPane.hide();
+        optionsGlassPane.hideGlassPane();
         document.documentElement.removeEventListener('mouseup', mouseUp, false);
 
         for (var i = 0; i < buttons.length; ++i) {

@@ -1,0 +1,31 @@
+/*
+ * Copyright 2017 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+    position: absolute !important;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    contain: strict;
+    background-color: transparent;
+}
+
+:host-context(.dimmed-pane) {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+:host-context(.no-pointer-events) {
+    pointer-events: none;
+}
+
+.widget {
+    display: flex;
+    background-color: transparent;
+    pointer-events: auto;
+    flex: none;
+}

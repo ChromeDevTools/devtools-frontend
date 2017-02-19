@@ -145,14 +145,10 @@ function copyFrontend(contentShellResourcesPath) {
 
 function getPlatform() {
   if (process.platform === 'linux') {
-    if (process.arch === 'x64')
-      return 'Linux_x64';
-    throw new Error('Pre-compiled content shells are only available for x64 on Linux');
+    return 'Linux_x64';
   }
   if (process.platform === 'win32') {
-    if (process.arch === 'x64')
-      return 'Win_x64';
-    return 'Win';
+    return 'Win_x64';
   }
   if (process.platform === 'darwin')
     return 'Mac';

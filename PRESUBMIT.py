@@ -34,8 +34,6 @@ for more details about the presubmit API built into gcl.
 from collections import namedtuple
 import sys
 
-compile_note = "Be sure to run your patch by the compile_frontend.py script prior to committing!"
-
 CheckOutput = namedtuple('CheckOutput', ['results', 'has_errors'])
 
 
@@ -112,26 +110,14 @@ def _CheckDevtoolsStyle(input_api, output_api):
 
 
 def _CompileDevtoolsFrontend(input_api, output_api):
-    local_paths = [f.LocalPath() for f in input_api.AffectedFiles()]
-
-    # FIXME: The compilation does not actually run if injected script-related files
-    # have changed, as they reside in core/inspector, which is not affected
-    # by this presubmit.
-    # Once this is fixed, injected_script_externs.js
-    # should be added to the list of triggers.
-    devtools_front_end = input_api.os_path.join("devtools", "front_end")
-    if (any(devtools_front_end in path for path in local_paths) or any("_protocol.json" in path for path in local_paths) or
-            any("compile_frontend.py" in path for path in local_paths) or any("InjectedScriptSource.js" in path
-                                                                              for path in local_paths) or
-            any("DebuggerScript.js" in path for path in local_paths)):
-        lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "compile_frontend.py")
-        out, _ = input_api.subprocess.Popen(
-            [input_api.python_executable, lint_path], stdout=input_api.subprocess.PIPE,
-            stderr=input_api.subprocess.STDOUT).communicate()
-        if "ERROR" in out or "WARNING" in out:
-            return [output_api.PresubmitError(out)]
-        if "NOTE" in out:
-            return [output_api.PresubmitPromptWarning(out + compile_note)]
+    compile_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "compile_frontend.py")
+    out, _ = input_api.subprocess.Popen(
+        [input_api.python_executable, compile_path], stdout=input_api.subprocess.PIPE,
+        stderr=input_api.subprocess.STDOUT).communicate()
+    if "ERROR" in out or "WARNING" in out:
+        return [output_api.PresubmitError(out)]
+    if "NOTE" in out:
+        return [output_api.PresubmitPromptWarning(out)]
     return []
 
 

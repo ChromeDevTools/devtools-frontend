@@ -111,7 +111,7 @@ function launchChrome(filePath, chromeArgs) {
 function onLaunchChromeError() {
   if (process.platform !== 'linux') {
     console.log('ERROR: Cannot find Chrome Canary on your computer');
-    console.log('Install Chome Canary at:');
+    console.log('Install Chrome Canary at:');
     console.log('https://www.google.com/chrome/browser/canary.html\n');
   } else {
     console.log('ERROR: Could not launch Chromium');

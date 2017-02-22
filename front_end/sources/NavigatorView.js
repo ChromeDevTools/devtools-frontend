@@ -317,10 +317,6 @@ Sources.NavigatorView = class extends UI.VBox {
   _projectRemoved(event) {
     var project = /** @type {!Workspace.Project} */ (event.data);
 
-    var frame = Bindings.NetworkProject.frameForProject(project);
-    if (frame)
-      this._discardFrame(frame);
-
     var uiSourceCodes = project.uiSourceCodes();
     for (var i = 0; i < uiSourceCodes.length; ++i)
       this._removeUISourceCode(uiSourceCodes[i]);
@@ -548,8 +544,10 @@ Sources.NavigatorView = class extends UI.VBox {
           break;
         if (!(node instanceof Sources.NavigatorGroupTreeNode || node instanceof Sources.NavigatorFolderTreeNode))
           break;
-        if (node._type === Sources.NavigatorView.Types.Frame)
+        if (node._type === Sources.NavigatorView.Types.Frame) {
+          this._discardFrame(/** @type {!SDK.ResourceTreeFrame} */ (frame));
           break;
+        }
 
         var folderId = this._folderNodeId(project, target, frame, uiSourceCode.origin(), node._folderPath);
         this._subfolderNodes.delete(folderId);

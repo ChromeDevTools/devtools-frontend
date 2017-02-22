@@ -74,24 +74,17 @@ Sources.SourcesSearchScope = class {
    * @return {!Array.<!Workspace.Project>}
    */
   _projects() {
-    /**
-     * @param {!Workspace.Project} project
-     * @return {boolean}
-     */
-    function filterOutServiceProjects(project) {
-      return project.type() !== Workspace.projectTypes.Service;
-    }
+    var searchInAnonymousAndContentScripts = Common.moduleSetting('searchInAnonymousAndContentScripts').get();
 
-    /**
-     * @param {!Workspace.Project} project
-     * @return {boolean}
-     */
-    function filterOutContentScriptsIfNeeded(project) {
-      return Common.moduleSetting('searchInContentScripts').get() ||
-          project.type() !== Workspace.projectTypes.ContentScripts;
-    }
-
-    return Workspace.workspace.projects().filter(filterOutServiceProjects).filter(filterOutContentScriptsIfNeeded);
+    return Workspace.workspace.projects().filter(project => {
+      if (project.type() === Workspace.projectTypes.Service)
+        return false;
+      if (!searchInAnonymousAndContentScripts && project.isServiceProject())
+        return false;
+      if (!searchInAnonymousAndContentScripts && project.type() === Workspace.projectTypes.ContentScripts)
+        return false;
+      return true;
+    });
   }
 
   /**
@@ -282,14 +275,5 @@ Sources.SourcesSearchScope = class {
    */
   stopSearch() {
     ++this._searchId;
-  }
-
-  /**
-   * @override
-   * @param {!Workspace.ProjectSearchConfig} searchConfig
-   * @return {!Sources.FileBasedSearchResultsPane}
-   */
-  createSearchResultsPane(searchConfig) {
-    return new Sources.FileBasedSearchResultsPane(searchConfig);
   }
 };

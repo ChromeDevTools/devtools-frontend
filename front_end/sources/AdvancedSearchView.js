@@ -154,7 +154,7 @@ Sources.AdvancedSearchView = class extends UI.VBox {
     if (!searchResult.searchMatches.length)
       return;
     if (!this._searchResultsPane)
-      this._searchResultsPane = this._searchScope.createSearchResultsPane(this._searchConfig);
+      this._searchResultsPane = new Sources.FileBasedSearchResultsPane(this._searchConfig);
     this._resetResults();
     this._searchResultsElement.appendChild(this._searchResultsPane.element);
     this._searchResultsPane.addSearchResult(searchResult);
@@ -435,11 +435,5 @@ Sources.SearchScope.prototype = {
    */
   performIndexing(progress) {},
 
-  stopSearch() {},
-
-  /**
-   * @param {!Workspace.ProjectSearchConfig} searchConfig
-   * @return {!Sources.SearchResultsPane}
-   */
-  createSearchResultsPane(searchConfig) {}
+  stopSearch() {}
 };

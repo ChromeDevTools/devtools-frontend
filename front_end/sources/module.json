@@ -375,8 +375,8 @@
         {
             "type": "setting",
             "category": "Sources",
-            "title": "Search in content scripts",
-            "settingName": "searchInContentScripts",
+            "title": "Search in anonymous and content scripts",
+            "settingName": "searchInAnonymousAndContentScripts",
             "settingType": "boolean",
             "defaultValue": false
         },

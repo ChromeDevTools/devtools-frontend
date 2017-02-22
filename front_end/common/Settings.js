@@ -731,6 +731,13 @@ Common.VersionController = class {
     // This update is no-op.
   }
 
+  _updateVersionFrom23To24() {
+    var oldSetting = Common.settings.createSetting('searchInContentScripts', false);
+    var newSetting = Common.settings.createSetting('searchInAnonymousAndContentScripts', false);
+    newSetting.set(oldSetting.get());
+    oldSetting.remove();
+  }
+
   _migrateSettingsFromLocalStorage() {
     // This step migrates all the settings except for the ones below into the browser profile.
     var localSettings = new Set([
@@ -763,7 +770,7 @@ Common.VersionController = class {
 };
 
 Common.VersionController._currentVersionName = 'inspectorVersion';
-Common.VersionController.currentVersion = 23;
+Common.VersionController.currentVersion = 24;
 
 /**
  * @type {!Common.Settings}

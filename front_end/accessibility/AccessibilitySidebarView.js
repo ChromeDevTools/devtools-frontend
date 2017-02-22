@@ -187,7 +187,7 @@ Accessibility.AccessibilitySubPane = class extends UI.SimpleView {
   createTreeOutline() {
     var treeOutline = new UI.TreeOutlineInShadow();
     treeOutline.registerRequiredCSS('accessibility/accessibilityNode.css');
-    treeOutline.registerRequiredCSS('components/objectValue.css');
+    treeOutline.registerRequiredCSS('object_ui/objectValue.css');
 
     treeOutline.element.classList.add('hidden');
     this.element.appendChild(treeOutline.element);

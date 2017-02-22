@@ -36,7 +36,7 @@
 Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
   constructor() {
     super();
-    this.registerRequiredCSS('components/objectValue.css');
+    this.registerRequiredCSS('object_ui/objectValue.css');
 
     /** @type {!Array.<!Sources.WatchExpression>} */
     this._watchExpressions = [];
@@ -49,7 +49,7 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
 
     this._bodyElement = this.element.createChild('div', 'vbox watch-expressions');
     this._bodyElement.addEventListener('contextmenu', this._contextMenu.bind(this), false);
-    this._expandController = new Components.ObjectPropertiesSectionExpandController();
+    this._expandController = new ObjectUI.ObjectPropertiesSectionExpandController();
 
     UI.context.addFlavorChangeListener(SDK.ExecutionContext, this.update, this);
     UI.context.addFlavorChangeListener(SDK.DebuggerModel.CallFrame, this.update, this);
@@ -212,7 +212,7 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
 Sources.WatchExpression = class extends Common.Object {
   /**
    * @param {?string} expression
-   * @param {!Components.ObjectPropertiesSectionExpandController} expandController
+   * @param {!ObjectUI.ObjectPropertiesSectionExpandController} expandController
    * @param {!Components.Linkifier} linkifier
    */
   constructor(expression, expandController, linkifier) {
@@ -255,7 +255,7 @@ Sources.WatchExpression = class extends Common.Object {
     this._element.removeChild(this._objectPresentationElement);
     var newDiv = this._element.createChild('div');
     newDiv.textContent = this._nameElement.textContent;
-    this._textPrompt = new Components.ObjectPropertyPrompt();
+    this._textPrompt = new ObjectUI.ObjectPropertyPrompt();
     this._textPrompt.renderAsBlock();
     var proxyElement = this._textPrompt.attachAndStartEditing(newDiv, this._finishEditing.bind(this));
     proxyElement.classList.add('watch-expression-text-prompt-proxy');
@@ -328,13 +328,13 @@ Sources.WatchExpression = class extends Common.Object {
     deleteButton.addEventListener('click', this._deleteWatchExpression.bind(this), false);
 
     var titleElement = headerElement.createChild('div', 'watch-expression-title');
-    this._nameElement = Components.ObjectPropertiesSection.createNameElement(this._expression);
+    this._nameElement = ObjectUI.ObjectPropertiesSection.createNameElement(this._expression);
     if (!!exceptionDetails || !result) {
       this._valueElement = createElementWithClass('span', 'watch-expression-error value');
       titleElement.classList.add('dimmed');
       this._valueElement.textContent = Common.UIString('<not available>');
     } else {
-      this._valueElement = Components.ObjectPropertiesSection.createValueElementWithCustomSupport(
+      this._valueElement = ObjectUI.ObjectPropertiesSection.createValueElementWithCustomSupport(
           result, !!exceptionDetails, false /* showPreview */, titleElement, this._linkifier);
     }
     var separatorElement = createElementWithClass('span', 'watch-expressions-separator');
@@ -345,7 +345,7 @@ Sources.WatchExpression = class extends Common.Object {
     this._objectPropertiesSection = null;
     if (!exceptionDetails && result && result.hasChildren && !result.customPreview()) {
       headerElement.classList.add('watch-expression-object-header');
-      this._objectPropertiesSection = new Components.ObjectPropertiesSection(result, headerElement, this._linkifier);
+      this._objectPropertiesSection = new ObjectUI.ObjectPropertiesSection(result, headerElement, this._linkifier);
       this._objectPresentationElement = this._objectPropertiesSection.element;
       this._expandController.watchSection(/** @type {string} */ (this._expression), this._objectPropertiesSection);
       var objectTreeElement = this._objectPropertiesSection.objectTreeElement();

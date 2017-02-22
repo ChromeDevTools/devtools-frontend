@@ -46,7 +46,7 @@ Console.ConsoleViewMessage = class {
 
     /** @type {?DataGrid.DataGrid} */
     this._dataGrid = null;
-    this._previewFormatter = new Components.RemoteObjectPreviewFormatter();
+    this._previewFormatter = new ObjectUI.RemoteObjectPreviewFormatter();
     this._searchRegex = null;
     /** @type {?UI.Icon} */
     this._messageLevelIcon = null;
@@ -121,7 +121,7 @@ Console.ConsoleViewMessage = class {
    */
   _buildTableMessage(consoleMessage) {
     var formattedMessage = createElement('span');
-    UI.appendStyle(formattedMessage, 'components/objectValue.css');
+    UI.appendStyle(formattedMessage, 'object_ui/objectValue.css');
     formattedMessage.className = 'source-code';
     var anchorElement = this._buildMessageAnchor(consoleMessage);
     if (anchorElement)
@@ -259,7 +259,7 @@ Console.ConsoleViewMessage = class {
     messageElement.classList.add('console-message-text');
 
     var formattedMessage = createElement('span');
-    UI.appendStyle(formattedMessage, 'components/objectValue.css');
+    UI.appendStyle(formattedMessage, 'object_ui/objectValue.css');
     formattedMessage.className = 'source-code';
 
     var anchorElement = this._buildMessageAnchor(consoleMessage);
@@ -461,7 +461,7 @@ Console.ConsoleViewMessage = class {
    */
   _formatParameter(output, forceObjectFormat, includePreview) {
     if (output.customPreview())
-      return (new Components.CustomPreviewComponent(output)).element;
+      return (new ObjectUI.CustomPreviewComponent(output)).element;
 
     var type = forceObjectFormat ? 'object' : (output.subtype || output.type);
     var element;
@@ -532,7 +532,7 @@ Console.ConsoleViewMessage = class {
       titleElement.classList.add('console-object-preview');
       this._previewFormatter.appendObjectPreview(titleElement, obj.preview, false /* isEntry */);
     } else if (obj.type === 'function') {
-      Components.ObjectPropertiesSection.formatObjectAsFunction(obj, titleElement, false);
+      ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(obj, titleElement, false);
       titleElement.classList.add('object-value-function');
     } else {
       titleElement.createTextChild(obj.description || '');
@@ -542,7 +542,7 @@ Console.ConsoleViewMessage = class {
     note.classList.add('info-note');
     note.title = Common.UIString('Value below was evaluated just now.');
 
-    var section = new Components.ObjectPropertiesSection(obj, titleElement, this._linkifier);
+    var section = new ObjectUI.ObjectPropertiesSection(obj, titleElement, this._linkifier);
     section.element.classList.add('console-view-object-properties-section');
     section.enableContextMenu();
     return section.element;
@@ -564,7 +564,7 @@ Console.ConsoleViewMessage = class {
      */
     function formatTargetFunction(targetFunction) {
       var functionElement = createElement('span');
-      Components.ObjectPropertiesSection.formatObjectAsFunction(targetFunction, functionElement, true, includePreview);
+      ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(targetFunction, functionElement, true, includePreview);
       result.appendChild(functionElement);
       if (targetFunction !== func) {
         var note = result.createChild('span', 'object-info-state-note');
@@ -667,7 +667,7 @@ Console.ConsoleViewMessage = class {
    * @return {!Element}
    */
   _formatAsAccessorProperty(object, propertyPath, isArrayEntry) {
-    var rootElement = Components.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(
+    var rootElement = ObjectUI.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(
         object, propertyPath, onInvokeGetterClick.bind(this));
 
     /**

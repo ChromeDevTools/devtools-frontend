@@ -277,7 +277,7 @@ Extensions.ExtensionSidebarPane = class extends UI.SimpleView {
       return;
     }
     this._objectPropertiesView.element.removeChildren();
-    var section = new Components.ObjectPropertiesSection(object, title);
+    var section = new ObjectUI.ObjectPropertiesSection(object, title);
     if (!title)
       section.titleLessMode();
     section.expand();

@@ -30,7 +30,7 @@
 Sources.ScopeChainSidebarPane = class extends UI.VBox {
   constructor() {
     super();
-    this._expandController = new Components.ObjectPropertiesSectionExpandController();
+    this._expandController = new ObjectUI.ObjectPropertiesSectionExpandController();
     this._linkifier = new Components.Linkifier();
     this._update();
   }
@@ -113,7 +113,7 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
       titleElement.createChild('div', 'scope-chain-sidebar-pane-section-subtitle').textContent = subtitle;
       titleElement.createChild('div', 'scope-chain-sidebar-pane-section-title').textContent = title;
 
-      var section = new Components.ObjectPropertiesSection(
+      var section = new ObjectUI.ObjectPropertiesSection(
           Sources.SourceMapNamesResolver.resolveScopeInObject(scope), titleElement, this._linkifier, emptyPlaceholder,
           true, extraProperties);
       this._expandController.watchSection(title + (subtitle ? ':' + subtitle : ''), section);

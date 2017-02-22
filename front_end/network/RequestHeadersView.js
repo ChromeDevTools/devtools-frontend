@@ -283,7 +283,7 @@ Network.RequestHeadersView = class extends UI.VBox {
       this._populateTreeElementWithSourceText(this._requestPayloadCategory, sourceText);
     } else {
       var object = SDK.RemoteObject.fromLocalObject(parsedObject);
-      var section = new Components.ObjectPropertiesSection(object, object.description);
+      var section = new ObjectUI.ObjectPropertiesSection(object, object.description);
       section.expand();
       section.editable = false;
       treeElement.appendChild(new UI.TreeElement(section.element));

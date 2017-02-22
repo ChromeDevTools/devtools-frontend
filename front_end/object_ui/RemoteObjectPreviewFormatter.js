@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-Components.RemoteObjectPreviewFormatter = class {
+ObjectUI.RemoteObjectPreviewFormatter = class {
   /**
    * @param {!Protocol.Runtime.PropertyPreview} a
    * @param {!Protocol.Runtime.PropertyPreview} b
@@ -77,7 +77,7 @@ Components.RemoteObjectPreviewFormatter = class {
    */
   _appendObjectPropertiesPreview(parentElement, preview) {
     var properties = preview.properties.filter(p => p.type !== 'accessor')
-                         .stableSort(Components.RemoteObjectPreviewFormatter._objectPropertyComparator);
+                         .stableSort(ObjectUI.RemoteObjectPreviewFormatter._objectPropertyComparator);
     for (var i = 0; i < properties.length; ++i) {
       if (i > 0)
         parentElement.createTextChild(', ');
@@ -97,7 +97,7 @@ Components.RemoteObjectPreviewFormatter = class {
     var arrayLength = SDK.RemoteObject.arrayLength(preview);
     var indexProperties = preview.properties.filter(p => toArrayIndex(p.name) !== -1).stableSort(arrayEntryComparator);
     var otherProperties = preview.properties.filter(p => toArrayIndex(p.name) === -1)
-                              .stableSort(Components.RemoteObjectPreviewFormatter._objectPropertyComparator);
+                              .stableSort(ObjectUI.RemoteObjectPreviewFormatter._objectPropertyComparator);
 
     /**
      * @param {!Protocol.Runtime.PropertyPreview} a

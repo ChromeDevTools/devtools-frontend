@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Components.JavaScriptAutocomplete = {};
+ObjectUI.JavaScriptAutocomplete = {};
 
 /** @typedef {{title:(string|undefined), items:Array<string>}} */
-Components.JavaScriptAutocomplete.CompletionGroup;
+ObjectUI.JavaScriptAutocomplete.CompletionGroup;
 
 /**
  * @param {string} text
@@ -13,10 +13,10 @@ Components.JavaScriptAutocomplete.CompletionGroup;
  * @param {boolean=} force
  * @return {!Promise<!UI.SuggestBox.Suggestions>}
  */
-Components.JavaScriptAutocomplete.completionsForTextInCurrentContext = function(text, query, force) {
-  var clippedExpression = Components.JavaScriptAutocomplete._clipExpression(text, true);
-  var mapCompletionsPromise = Components.JavaScriptAutocomplete._mapCompletions(text, query);
-  return Components.JavaScriptAutocomplete.completionsForExpression(clippedExpression, query, force)
+ObjectUI.JavaScriptAutocomplete.completionsForTextInCurrentContext = function(text, query, force) {
+  var clippedExpression = ObjectUI.JavaScriptAutocomplete._clipExpression(text, true);
+  var mapCompletionsPromise = ObjectUI.JavaScriptAutocomplete._mapCompletions(text, query);
+  return ObjectUI.JavaScriptAutocomplete.completionsForExpression(clippedExpression, query, force)
       .then(completions => mapCompletionsPromise.then(mapCompletions => mapCompletions.concat(completions)));
 };
 
@@ -25,7 +25,7 @@ Components.JavaScriptAutocomplete.completionsForTextInCurrentContext = function(
  * @param {boolean=} allowEndingBracket
  * @return {string}
  */
-Components.JavaScriptAutocomplete._clipExpression = function(text, allowEndingBracket) {
+ObjectUI.JavaScriptAutocomplete._clipExpression = function(text, allowEndingBracket) {
   var index;
   var stopChars = new Set('=:({;,!+-*/&|^<>`'.split(''));
   var whiteSpaceChars = new Set(' \r\n\t'.split(''));
@@ -61,13 +61,13 @@ Components.JavaScriptAutocomplete._clipExpression = function(text, allowEndingBr
  * @param {string} query
  * @return {!Promise<!UI.SuggestBox.Suggestions>}
  */
-Components.JavaScriptAutocomplete._mapCompletions = function(text, query) {
+ObjectUI.JavaScriptAutocomplete._mapCompletions = function(text, query) {
   var mapMatch = text.match(/\.\s*(get|set|delete)\s*\(\s*$/);
   var executionContext = UI.context.flavor(SDK.ExecutionContext);
   if (!executionContext || !mapMatch)
     return Promise.resolve([]);
 
-  var clippedExpression = Components.JavaScriptAutocomplete._clipExpression(text.substring(0, mapMatch.index));
+  var clippedExpression = ObjectUI.JavaScriptAutocomplete._clipExpression(text.substring(0, mapMatch.index));
   var fulfill;
   var promise = new Promise(x => fulfill = x);
   executionContext.evaluate(clippedExpression, 'completion', true, true, false, false, false, evaluated);
@@ -161,7 +161,7 @@ Components.JavaScriptAutocomplete._mapCompletions = function(text, query) {
  * @param {boolean=} force
  * @return {!Promise<!UI.SuggestBox.Suggestions>}
  */
-Components.JavaScriptAutocomplete.completionsForExpression = function(expressionString, query, force) {
+ObjectUI.JavaScriptAutocomplete.completionsForExpression = function(expressionString, query, force) {
   var executionContext = UI.context.flavor(SDK.ExecutionContext);
   if (!executionContext)
     return Promise.resolve([]);
@@ -293,7 +293,7 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
 
   /**
    * @param {!SDK.DebuggerModel.CallFrame} callFrame
-   * @param {function(!Array<!Components.JavaScriptAutocomplete.CompletionGroup>)} callback
+   * @param {function(!Array<!ObjectUI.JavaScriptAutocomplete.CompletionGroup>)} callback
    */
   function variableNamesInScopes(callFrame, callback) {
     var result = [{items: ['this']}];
@@ -343,7 +343,7 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
       fulfill([]);
       return;
     }
-    var propertyGroups = /** @type {!Array<!Components.JavaScriptAutocomplete.CompletionGroup>} */ (object);
+    var propertyGroups = /** @type {!Array<!ObjectUI.JavaScriptAutocomplete.CompletionGroup>} */ (object);
     var includeCommandLineAPI = (!dotNotation && !bracketNotation);
     if (includeCommandLineAPI) {
       const commandLineAPI = [
@@ -370,7 +370,7 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
       ];
       propertyGroups.push({items: commandLineAPI});
     }
-    fulfill(Components.JavaScriptAutocomplete._completionsForQuery(
+    fulfill(ObjectUI.JavaScriptAutocomplete._completionsForQuery(
         dotNotation, bracketNotation, expressionString, query, propertyGroups));
   }
 };
@@ -380,10 +380,10 @@ Components.JavaScriptAutocomplete.completionsForExpression = function(expression
    * @param {boolean} bracketNotation
    * @param {string} expressionString
    * @param {string} query
-   * @param {!Array<!Components.JavaScriptAutocomplete.CompletionGroup>} propertyGroups
+   * @param {!Array<!ObjectUI.JavaScriptAutocomplete.CompletionGroup>} propertyGroups
    * @return {!UI.SuggestBox.Suggestions}
    */
-Components.JavaScriptAutocomplete._completionsForQuery = function(
+ObjectUI.JavaScriptAutocomplete._completionsForQuery = function(
     dotNotation, bracketNotation, expressionString, query, propertyGroups) {
   if (bracketNotation) {
     if (query.length && query[0] === '\'')

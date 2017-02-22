@@ -616,7 +616,8 @@
         "quick_open",
         "inline_editor",
         "color_picker",
-        "event_listeners"
+        "event_listeners",
+        "object_ui"
     ],
     "scripts": [
         "AddSourceMapURLDialog.js",

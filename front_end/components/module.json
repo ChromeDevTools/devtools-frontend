@@ -15,24 +15,16 @@
     ],
     "scripts": [
         "BreakpointsSidebarPaneBase.js",
-        "CustomPreviewComponent.js",
         "CPUThrottlingManager.js",
         "DataSaverInfobar.js",
         "DOMBreakpointsSidebarPane.js",
         "DOMPresentationUtils.js",
         "DockController.js",
-        "JavaScriptAutocomplete.js",
         "Linkifier.js",
-        "ObjectPopoverHelper.js",
-        "ObjectPropertiesSection.js",
-        "RemoteObjectPreviewFormatter.js",
         "Reload.js"
     ],
     "resources": [
         "breakpointsList.css",
-        "customPreviewComponent.css",
-        "domUtils.css",
-        "objectPropertiesSection.css",
-        "objectValue.css"
+        "domUtils.css"
     ]
 }

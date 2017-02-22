@@ -24,17 +24,19 @@ const APPLICATION_DESCRIPTORS = [
 const MODULES_TO_REMOVE = [];
 
 const JS_FILES_MAPPING = [
-  {file: 'components/EventListenersView.js', new: 'event_listeners'},
-  {file: 'components/EventListenersUtils.js', new: 'event_listeners'},
-  // {file: 'module/file.js', existing: 'module'}
+  {file: 'components/CustomPreviewComponent.js', new: 'object_ui'},
+  {file: 'components/ObjectPopoverHelper.js', new: 'object_ui'},
+  {file: 'components/ObjectPropertiesSection.js', new: 'object_ui'},
+  {file: 'components/JavaScriptAutocomplete.js', new: 'object_ui'},
+  {file: 'components/RemoteObjectPreviewFormatter.js', new: 'object_ui'},
 ];
 
 const MODULE_MAPPING = {
-  event_listeners: {
-    dependencies: ['ui', 'common', 'components', 'sdk'],
-    dependents: ['elements', 'sources'],
+  object_ui: {
+    dependencies: ['ui', 'sdk', 'components'],
+    dependents: ['console', 'sources', 'extensions', 'event_listeners', 'resources', 'profiler', 'network'],
     applications: ['inspector.json'],
-    autostart: false,
+    autostart: true,  // set to autostart because of extensions
   },
 };
 
@@ -74,8 +76,6 @@ function extractModule() {
   }, new Map());
 
   const cssFilesMapping = findCSSFiles();
-  // todo: one-off
-  cssFilesMapping.get('components/EventListenersView.js').delete('objectValue.css');
   console.log('cssFilesMapping', cssFilesMapping);
   const identifiersByFile = calculateIdentifiers();
   const identifierMap = mapIdentifiers(identifiersByFile, cssFilesMapping);
@@ -289,8 +289,8 @@ function updateBuildGNFile(cssFilesMapping, newModuleSet) {
         continue;
 
       const nextContent = top(contentStack) ? top(contentStack).toLowerCase() : '';
-      if ((line === startLine || nextContent > line.toLowerCase()) &&
-          (nextLine === endLine || nextContent < nextLine.toLowerCase()))
+      if ((line === startLine || nextContent >= line.toLowerCase()) &&
+          (nextLine === endLine || nextContent <= nextLine.toLowerCase()))
         lines.splice(i + 1, 0, contentStack.pop());
     }
     if (contentStack.length)

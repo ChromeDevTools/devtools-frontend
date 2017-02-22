@@ -53,7 +53,8 @@
         { "name": "data_grid" },
         { "name": "heap_snapshot_model" },
         { "name": "network_conditions", "type": "autostart"},
-        { "name": "event_listeners" }
+        { "name": "event_listeners" },
+        { "name": "object_ui", "type": "autostart"}
     ],
 
     "has_html": true

@@ -27,7 +27,7 @@
 /**
  * @unrestricted
  */
-Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
+ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
   /**
    * @param {!SDK.RemoteObject} object
    * @param {?string|!Element=} title
@@ -42,7 +42,7 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
     this._editable = true;
     this.hideOverflow();
     this.setFocusable(false);
-    this._objectTreeElement = new Components.ObjectPropertiesSection.RootElement(
+    this._objectTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(
         object, linkifier, emptyPlaceholder, ignoreHasOwnProperty, extraProperties);
     this.appendChild(this._objectTreeElement);
     if (typeof title === 'string' || !title) {
@@ -54,8 +54,8 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
     }
 
     this.element._section = this;
-    this.registerRequiredCSS('components/objectValue.css');
-    this.registerRequiredCSS('components/objectPropertiesSection.css');
+    this.registerRequiredCSS('object_ui/objectValue.css');
+    this.registerRequiredCSS('object_ui/objectPropertiesSection.css');
     this.rootElement().childrenListElement.classList.add('source-code', 'object-properties-section');
   }
 
@@ -67,13 +67,13 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
    */
   static defaultObjectPresentation(object, linkifier, skipProto) {
     var componentRoot = createElementWithClass('span', 'source-code');
-    var shadowRoot = UI.createShadowRootWithCoreStyles(componentRoot, 'components/objectValue.css');
+    var shadowRoot = UI.createShadowRootWithCoreStyles(componentRoot, 'object_ui/objectValue.css');
     shadowRoot.appendChild(
-        Components.ObjectPropertiesSection.createValueElement(object, false /* wasThrown */, true /* showPreview */));
+        ObjectUI.ObjectPropertiesSection.createValueElement(object, false /* wasThrown */, true /* showPreview */));
     if (!object.hasChildren)
       return componentRoot;
 
-    var objectPropertiesSection = new Components.ObjectPropertiesSection(object, componentRoot, linkifier);
+    var objectPropertiesSection = new ObjectUI.ObjectPropertiesSection(object, componentRoot, linkifier);
     objectPropertiesSection.editable = false;
     if (skipProto)
       objectPropertiesSection.skipProto();
@@ -217,12 +217,11 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
    */
   static createValueElementWithCustomSupport(value, wasThrown, showPreview, parentElement, linkifier) {
     if (value.customPreview()) {
-      var result = (new Components.CustomPreviewComponent(value)).element;
+      var result = (new ObjectUI.CustomPreviewComponent(value)).element;
       result.classList.add('object-properties-section-custom-section');
       return result;
     }
-    return Components.ObjectPropertiesSection.createValueElement(
-        value, wasThrown, showPreview, parentElement, linkifier);
+    return ObjectUI.ObjectPropertiesSection.createValueElement(value, wasThrown, showPreview, parentElement, linkifier);
   }
 
   /**
@@ -247,7 +246,7 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
     } else if (type === 'string' && typeof description === 'string') {
       valueElement = createStringElement();
     } else if (type === 'function') {
-      valueElement = Components.ObjectPropertiesSection.valueElementForFunctionDescription(description);
+      valueElement = ObjectUI.ObjectPropertiesSection.valueElementForFunctionDescription(description);
     } else if (type === 'object' && subtype === 'node' && description) {
       valueElement = createNodeElement();
     } else if (type === 'number' && description && description.indexOf('e') !== -1) {
@@ -258,7 +257,7 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
       valueElement = createElementWithClass('span', 'object-value-' + (subtype || type));
       valueElement.title = description || '';
       if (Runtime.experiments.isEnabled('objectPreviews') && value.preview && showPreview) {
-        var previewFormatter = new Components.RemoteObjectPreviewFormatter();
+        var previewFormatter = new ObjectUI.RemoteObjectPreviewFormatter();
         previewFormatter.appendObjectPreview(valueElement, value.preview, false /* isEntry */);
       } else {
         valueElement.setTextContentTruncatedIfNeeded(description);
@@ -348,7 +347,7 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
       var defaultName = includePreview ? '' : 'anonymous';
       if (response && response.functionName)
         defaultName = response.functionName;
-      var valueElement = Components.ObjectPropertiesSection.valueElementForFunctionDescription(
+      var valueElement = ObjectUI.ObjectPropertiesSection.valueElementForFunctionDescription(
           func.description, includePreview, defaultName);
       element.appendChild(valueElement);
     }
@@ -394,13 +393,13 @@ Components.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
 };
 
 /** @const */
-Components.ObjectPropertiesSection._arrayLoadThreshold = 100;
+ObjectUI.ObjectPropertiesSection._arrayLoadThreshold = 100;
 
 
 /**
  * @unrestricted
  */
-Components.ObjectPropertiesSection.RootElement = class extends UI.TreeElement {
+ObjectUI.ObjectPropertiesSection.RootElement = class extends UI.TreeElement {
   /**
    * @param {!SDK.RemoteObject} object
    * @param {!Components.Linkifier=} linkifier
@@ -453,7 +452,7 @@ Components.ObjectPropertiesSection.RootElement = class extends UI.TreeElement {
    * @override
    */
   onpopulate() {
-    Components.ObjectPropertyTreeElement._populate(
+    ObjectUI.ObjectPropertyTreeElement._populate(
         this, this._object, !!this.treeOutline._skipProto, this._linkifier, this._emptyPlaceholder,
         this._ignoreHasOwnProperty, this._extraProperties);
   }
@@ -462,7 +461,7 @@ Components.ObjectPropertiesSection.RootElement = class extends UI.TreeElement {
 /**
  * @unrestricted
  */
-Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
+ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
   /**
    * @param {!SDK.RemoteObjectProperty} property
    * @param {!Components.Linkifier=} linkifier
@@ -498,9 +497,9 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
       flattenProtoChain,
       extraProperties,
       targetValue) {
-    if (value.arrayLength() > Components.ObjectPropertiesSection._arrayLoadThreshold) {
+    if (value.arrayLength() > ObjectUI.ObjectPropertiesSection._arrayLoadThreshold) {
       treeElement.removeChildren();
-      Components.ArrayGroupingTreeElement._populateArray(treeElement, value, 0, value.arrayLength() - 1, linkifier);
+      ObjectUI.ArrayGroupingTreeElement._populateArray(treeElement, value, 0, value.arrayLength() - 1, linkifier);
       return;
     }
 
@@ -517,7 +516,7 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
       for (var i = 0; i < extraProperties.length; ++i)
         properties.push(extraProperties[i]);
 
-      Components.ObjectPropertyTreeElement.populateWithProperties(
+      ObjectUI.ObjectPropertyTreeElement.populateWithProperties(
           treeElement, properties, internalProperties, skipProto, targetValue || value, linkifier, emptyPlaceholder);
     }
 
@@ -545,7 +544,7 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
       value,
       linkifier,
       emptyPlaceholder) {
-    properties.sort(Components.ObjectPropertiesSection.CompareProperties);
+    properties.sort(ObjectUI.ObjectPropertiesSection.CompareProperties);
 
     var tailProperties = [];
     var protoProperty = null;
@@ -569,17 +568,17 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
       }
       var canShowProperty = property.getter || !property.isAccessorProperty();
       if (canShowProperty && property.name !== '__proto__')
-        treeNode.appendChild(new Components.ObjectPropertyTreeElement(property, linkifier));
+        treeNode.appendChild(new ObjectUI.ObjectPropertyTreeElement(property, linkifier));
     }
     for (var i = 0; i < tailProperties.length; ++i)
-      treeNode.appendChild(new Components.ObjectPropertyTreeElement(tailProperties[i], linkifier));
+      treeNode.appendChild(new ObjectUI.ObjectPropertyTreeElement(tailProperties[i], linkifier));
     if (!skipProto && protoProperty)
-      treeNode.appendChild(new Components.ObjectPropertyTreeElement(protoProperty, linkifier));
+      treeNode.appendChild(new ObjectUI.ObjectPropertyTreeElement(protoProperty, linkifier));
 
     if (internalProperties) {
       for (var i = 0; i < internalProperties.length; i++) {
         internalProperties[i].parentObject = value;
-        var treeElement = new Components.ObjectPropertyTreeElement(internalProperties[i], linkifier);
+        var treeElement = new ObjectUI.ObjectPropertyTreeElement(internalProperties[i], linkifier);
         if (internalProperties[i].name === '[[Entries]]') {
           treeElement.setExpandable(true);
           treeElement.expand();
@@ -588,7 +587,7 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
       }
     }
 
-    Components.ObjectPropertyTreeElement._appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder);
+    ObjectUI.ObjectPropertyTreeElement._appendEmptyPlaceholderIfNeeded(treeNode, emptyPlaceholder);
   }
 
   /**
@@ -678,7 +677,7 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
     console.assert(propertyValue);
     var skipProto = this.treeOutline ? this.treeOutline._skipProto : true;
     var targetValue = this.property.name !== '__proto__' ? propertyValue : this.property.parentObject;
-    Components.ObjectPropertyTreeElement._populate(
+    ObjectUI.ObjectPropertyTreeElement._populate(
         this, propertyValue, skipProto, this._linkifier, undefined, undefined, undefined, targetValue);
   }
 
@@ -746,7 +745,7 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
   }
 
   update() {
-    this.nameElement = Components.ObjectPropertiesSection.createNameElement(this.property.name);
+    this.nameElement = ObjectUI.ObjectPropertiesSection.createNameElement(this.property.name);
     if (!this.property.enumerable)
       this.nameElement.classList.add('object-properties-section-dimmed');
     if (this.property.synthetic)
@@ -760,11 +759,11 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
 
     if (this.property.value) {
       var showPreview = this.property.name !== '__proto__';
-      this.valueElement = Components.ObjectPropertiesSection.createValueElementWithCustomSupport(
+      this.valueElement = ObjectUI.ObjectPropertiesSection.createValueElementWithCustomSupport(
           this.property.value, this.property.wasThrown, showPreview, this.listItemElement, this._linkifier);
       this.valueElement.addEventListener('contextmenu', this._contextMenuFired.bind(this, this.property), false);
     } else if (this.property.getter) {
-      this.valueElement = Components.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(
+      this.valueElement = ObjectUI.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(
           this.property.parentObject, [this.property.name], this._onInvokeGetterClick.bind(this));
     } else {
       this.valueElement = createElementWithClass('span', 'object-value-undefined');
@@ -831,7 +830,7 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
     this.listItemElement.classList.add('editing-sub-part');
     this.valueElement.classList.add('hidden');
 
-    this._prompt = new Components.ObjectPropertyPrompt();
+    this._prompt = new ObjectUI.ObjectPropertyPrompt();
 
     var proxyElement =
         this._prompt.attachAndStartEditing(this._editableDiv, this._editingCommitted.bind(this, originalContent));
@@ -897,7 +896,7 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
 
     /**
      * @param {?Protocol.Error} error
-     * @this {Components.ObjectPropertyTreeElement}
+     * @this {ObjectUI.ObjectPropertyTreeElement}
      */
     function callback(error) {
       if (error) {
@@ -946,7 +945,7 @@ Components.ObjectPropertyTreeElement = class extends UI.TreeElement {
 /**
  * @unrestricted
  */
-Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
+ObjectUI.ArrayGroupingTreeElement = class extends UI.TreeElement {
   /**
    * @param {!SDK.RemoteObject} object
    * @param {number} fromIndex
@@ -974,7 +973,7 @@ Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
    * @param {!Components.Linkifier=} linkifier
    */
   static _populateArray(treeNode, object, fromIndex, toIndex, linkifier) {
-    Components.ArrayGroupingTreeElement._populateRanges(treeNode, object, fromIndex, toIndex, true, linkifier);
+    ObjectUI.ArrayGroupingTreeElement._populateRanges(treeNode, object, fromIndex, toIndex, true, linkifier);
   }
 
   /**
@@ -984,15 +983,15 @@ Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
    * @param {number} toIndex
    * @param {boolean} topLevel
    * @param {!Components.Linkifier=} linkifier
-   * @this {Components.ArrayGroupingTreeElement}
+   * @this {ObjectUI.ArrayGroupingTreeElement}
    */
   static _populateRanges(treeNode, object, fromIndex, toIndex, topLevel, linkifier) {
     object.callFunctionJSON(
         packRanges,
         [
-          {value: fromIndex}, {value: toIndex}, {value: Components.ArrayGroupingTreeElement._bucketThreshold},
-          {value: Components.ArrayGroupingTreeElement._sparseIterationThreshold},
-          {value: Components.ArrayGroupingTreeElement._getOwnPropertyNamesThreshold}
+          {value: fromIndex}, {value: toIndex}, {value: ObjectUI.ArrayGroupingTreeElement._bucketThreshold},
+          {value: ObjectUI.ArrayGroupingTreeElement._sparseIterationThreshold},
+          {value: ObjectUI.ArrayGroupingTreeElement._getOwnPropertyNamesThreshold}
         ],
         callback);
 
@@ -1077,21 +1076,20 @@ Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
         return;
       var ranges = /** @type {!Array.<!Array.<number>>} */ (result.ranges);
       if (ranges.length === 1) {
-        Components.ArrayGroupingTreeElement._populateAsFragment(
-            treeNode, object, ranges[0][0], ranges[0][1], linkifier);
+        ObjectUI.ArrayGroupingTreeElement._populateAsFragment(treeNode, object, ranges[0][0], ranges[0][1], linkifier);
       } else {
         for (var i = 0; i < ranges.length; ++i) {
           var fromIndex = ranges[i][0];
           var toIndex = ranges[i][1];
           var count = ranges[i][2];
           if (fromIndex === toIndex)
-            Components.ArrayGroupingTreeElement._populateAsFragment(treeNode, object, fromIndex, toIndex, linkifier);
+            ObjectUI.ArrayGroupingTreeElement._populateAsFragment(treeNode, object, fromIndex, toIndex, linkifier);
           else
-            treeNode.appendChild(new Components.ArrayGroupingTreeElement(object, fromIndex, toIndex, count, linkifier));
+            treeNode.appendChild(new ObjectUI.ArrayGroupingTreeElement(object, fromIndex, toIndex, count, linkifier));
         }
       }
       if (topLevel) {
-        Components.ArrayGroupingTreeElement._populateNonIndexProperties(
+        ObjectUI.ArrayGroupingTreeElement._populateNonIndexProperties(
             treeNode, object, result.skipGetOwnPropertyNames, linkifier);
       }
     }
@@ -1103,12 +1101,12 @@ Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
    * @param {number} fromIndex
    * @param {number} toIndex
    * @param {!Components.Linkifier=} linkifier
-   * @this {Components.ArrayGroupingTreeElement}
+   * @this {ObjectUI.ArrayGroupingTreeElement}
    */
   static _populateAsFragment(treeNode, object, fromIndex, toIndex, linkifier) {
     object.callFunction(
         buildArrayFragment,
-        [{value: fromIndex}, {value: toIndex}, {value: Components.ArrayGroupingTreeElement._sparseIterationThreshold}],
+        [{value: fromIndex}, {value: toIndex}, {value: ObjectUI.ArrayGroupingTreeElement._sparseIterationThreshold}],
         processArrayFragment.bind(this));
 
     /**
@@ -1140,7 +1138,7 @@ Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
     /**
      * @param {?SDK.RemoteObject} arrayFragment
      * @param {boolean=} wasThrown
-     * @this {Components.ArrayGroupingTreeElement}
+     * @this {ObjectUI.ArrayGroupingTreeElement}
      */
     function processArrayFragment(arrayFragment, wasThrown) {
       if (!arrayFragment || wasThrown)
@@ -1149,15 +1147,15 @@ Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
           false, Runtime.experiments.isEnabled('objectPreviews'), processProperties.bind(this));
     }
 
-    /** @this {Components.ArrayGroupingTreeElement} */
+    /** @this {ObjectUI.ArrayGroupingTreeElement} */
     function processProperties(properties, internalProperties) {
       if (!properties)
         return;
 
-      properties.sort(Components.ObjectPropertiesSection.CompareProperties);
+      properties.sort(ObjectUI.ObjectPropertiesSection.CompareProperties);
       for (var i = 0; i < properties.length; ++i) {
         properties[i].parentObject = this._object;
-        var childTreeElement = new Components.ObjectPropertyTreeElement(properties[i], linkifier);
+        var childTreeElement = new ObjectUI.ObjectPropertyTreeElement(properties[i], linkifier);
         childTreeElement._readOnly = true;
         treeNode.appendChild(childTreeElement);
       }
@@ -1169,7 +1167,7 @@ Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
    * @param {!SDK.RemoteObject} object
    * @param {boolean} skipGetOwnPropertyNames
    * @param {!Components.Linkifier=} linkifier
-   * @this {Components.ArrayGroupingTreeElement}
+   * @this {ObjectUI.ArrayGroupingTreeElement}
    */
   static _populateNonIndexProperties(treeNode, object, skipGetOwnPropertyNames, linkifier) {
     object.callFunction(buildObjectFragment, [{value: skipGetOwnPropertyNames}], processObjectFragment.bind(this));
@@ -1199,7 +1197,7 @@ Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
     /**
      * @param {?SDK.RemoteObject} arrayFragment
      * @param {boolean=} wasThrown
-     * @this {Components.ArrayGroupingTreeElement}
+     * @this {ObjectUI.ArrayGroupingTreeElement}
      */
     function processObjectFragment(arrayFragment, wasThrown) {
       if (!arrayFragment || wasThrown)
@@ -1210,15 +1208,15 @@ Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
     /**
      * @param {?Array.<!SDK.RemoteObjectProperty>} properties
      * @param {?Array.<!SDK.RemoteObjectProperty>=} internalProperties
-     * @this {Components.ArrayGroupingTreeElement}
+     * @this {ObjectUI.ArrayGroupingTreeElement}
      */
     function processProperties(properties, internalProperties) {
       if (!properties)
         return;
-      properties.sort(Components.ObjectPropertiesSection.CompareProperties);
+      properties.sort(ObjectUI.ObjectPropertiesSection.CompareProperties);
       for (var i = 0; i < properties.length; ++i) {
         properties[i].parentObject = this._object;
-        var childTreeElement = new Components.ObjectPropertyTreeElement(properties[i], linkifier);
+        var childTreeElement = new ObjectUI.ObjectPropertyTreeElement(properties[i], linkifier);
         childTreeElement._readOnly = true;
         treeNode.appendChild(childTreeElement);
       }
@@ -1229,12 +1227,12 @@ Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
    * @override
    */
   onpopulate() {
-    if (this._propertyCount >= Components.ArrayGroupingTreeElement._bucketThreshold) {
-      Components.ArrayGroupingTreeElement._populateRanges(
+    if (this._propertyCount >= ObjectUI.ArrayGroupingTreeElement._bucketThreshold) {
+      ObjectUI.ArrayGroupingTreeElement._populateRanges(
           this, this._object, this._fromIndex, this._toIndex, false, this._linkifier);
       return;
     }
-    Components.ArrayGroupingTreeElement._populateAsFragment(
+    ObjectUI.ArrayGroupingTreeElement._populateAsFragment(
         this, this._object, this._fromIndex, this._toIndex, this._linkifier);
   }
 
@@ -1246,25 +1244,25 @@ Components.ArrayGroupingTreeElement = class extends UI.TreeElement {
   }
 };
 
-Components.ArrayGroupingTreeElement._bucketThreshold = 100;
-Components.ArrayGroupingTreeElement._sparseIterationThreshold = 250000;
-Components.ArrayGroupingTreeElement._getOwnPropertyNamesThreshold = 500000;
+ObjectUI.ArrayGroupingTreeElement._bucketThreshold = 100;
+ObjectUI.ArrayGroupingTreeElement._sparseIterationThreshold = 250000;
+ObjectUI.ArrayGroupingTreeElement._getOwnPropertyNamesThreshold = 500000;
 
 
 /**
  * @unrestricted
  */
-Components.ObjectPropertyPrompt = class extends UI.TextPrompt {
+ObjectUI.ObjectPropertyPrompt = class extends UI.TextPrompt {
   constructor() {
     super();
-    this.initialize(Components.JavaScriptAutocomplete.completionsForTextInCurrentContext);
+    this.initialize(ObjectUI.JavaScriptAutocomplete.completionsForTextInCurrentContext);
   }
 };
 
 /**
  * @unrestricted
  */
-Components.ObjectPropertiesSectionExpandController = class {
+ObjectUI.ObjectPropertiesSectionExpandController = class {
   constructor() {
     /** @type {!Set.<string>} */
     this._expandedProperties = new Set();
@@ -1272,13 +1270,13 @@ Components.ObjectPropertiesSectionExpandController = class {
 
   /**
    * @param {string} id
-   * @param {!Components.ObjectPropertiesSection} section
+   * @param {!ObjectUI.ObjectPropertiesSection} section
    */
   watchSection(id, section) {
     section.addEventListener(UI.TreeOutline.Events.ElementAttached, this._elementAttached, this);
     section.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._elementExpanded, this);
     section.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._elementCollapsed, this);
-    section[Components.ObjectPropertiesSectionExpandController._treeOutlineId] = id;
+    section[ObjectUI.ObjectPropertiesSectionExpandController._treeOutlineId] = id;
 
     if (this._expandedProperties.has(id))
       section.expand();
@@ -1324,7 +1322,7 @@ Components.ObjectPropertiesSectionExpandController = class {
    * @return {string}
    */
   _propertyPath(treeElement) {
-    var cachedPropertyPath = treeElement[Components.ObjectPropertiesSectionExpandController._cachedPathSymbol];
+    var cachedPropertyPath = treeElement[ObjectUI.ObjectPropertiesSectionExpandController._cachedPathSymbol];
     if (cachedPropertyPath)
       return cachedPropertyPath;
 
@@ -1343,12 +1341,12 @@ Components.ObjectPropertiesSectionExpandController = class {
       result = currentName + (result ? '.' + result : '');
       current = current.parent;
     }
-    var treeOutlineId = treeElement.treeOutline[Components.ObjectPropertiesSectionExpandController._treeOutlineId];
+    var treeOutlineId = treeElement.treeOutline[ObjectUI.ObjectPropertiesSectionExpandController._treeOutlineId];
     result = treeOutlineId + (result ? ':' + result : '');
-    treeElement[Components.ObjectPropertiesSectionExpandController._cachedPathSymbol] = result;
+    treeElement[ObjectUI.ObjectPropertiesSectionExpandController._cachedPathSymbol] = result;
     return result;
   }
 };
 
-Components.ObjectPropertiesSectionExpandController._cachedPathSymbol = Symbol('cachedPath');
-Components.ObjectPropertiesSectionExpandController._treeOutlineId = Symbol('treeOutlineId');
+ObjectUI.ObjectPropertiesSectionExpandController._cachedPathSymbol = Symbol('cachedPath');
+ObjectUI.ObjectPropertiesSectionExpandController._treeOutlineId = Symbol('treeOutlineId');

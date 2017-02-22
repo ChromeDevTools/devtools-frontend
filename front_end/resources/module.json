@@ -22,7 +22,8 @@
         "inline_editor",
         "data_grid",
         "components",
-        "network_conditions"
+        "network_conditions",
+        "object_ui"
     ],
     "scripts": [
         "ApplicationCacheModel.js",

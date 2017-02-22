@@ -4,7 +4,7 @@
 /**
  * @unrestricted
  */
-Components.CustomPreviewSection = class {
+ObjectUI.CustomPreviewSection = class {
   /**
    * @param {!SDK.RemoteObject} object
    */
@@ -63,7 +63,7 @@ Components.CustomPreviewSection = class {
    */
   _renderElement(object) {
     var tagName = object.shift();
-    if (!Components.CustomPreviewSection._tagsWhiteList.has(tagName)) {
+    if (!ObjectUI.CustomPreviewSection._tagsWhiteList.has(tagName)) {
       Common.console.error('Broken formatter: element ' + tagName + ' is not allowed!');
       return createElement('span');
     }
@@ -93,9 +93,9 @@ Components.CustomPreviewSection = class {
     var remoteObject = this._object.target().runtimeModel.createRemoteObject(
         /** @type {!Protocol.Runtime.RemoteObject} */ (attributes));
     if (remoteObject.customPreview())
-      return (new Components.CustomPreviewSection(remoteObject)).element();
+      return (new ObjectUI.CustomPreviewSection(remoteObject)).element();
 
-    var sectionElement = Components.ObjectPropertiesSection.defaultObjectPresentation(remoteObject);
+    var sectionElement = ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(remoteObject);
     sectionElement.classList.toggle('custom-expandable-section-standard-section', remoteObject.hasChildren);
     return sectionElement;
   }
@@ -186,7 +186,7 @@ Components.CustomPreviewSection = class {
 
     /**
      * @param {*} bodyJsonML
-     * @this {Components.CustomPreviewSection}
+     * @this {ObjectUI.CustomPreviewSection}
      */
     function onBodyLoaded(bodyJsonML) {
       if (!bodyJsonML)
@@ -202,15 +202,15 @@ Components.CustomPreviewSection = class {
 /**
  * @unrestricted
  */
-Components.CustomPreviewComponent = class {
+ObjectUI.CustomPreviewComponent = class {
   /**
    * @param {!SDK.RemoteObject} object
    */
   constructor(object) {
     this._object = object;
-    this._customPreviewSection = new Components.CustomPreviewSection(object);
+    this._customPreviewSection = new ObjectUI.CustomPreviewSection(object);
     this.element = createElementWithClass('span', 'source-code');
-    var shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'components/customPreviewComponent.css');
+    var shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'object_ui/customPreviewComponent.css');
     this.element.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
     shadowRoot.appendChild(this._customPreviewSection.element());
   }
@@ -234,8 +234,8 @@ Components.CustomPreviewComponent = class {
   _disassemble() {
     this.element.shadowRoot.textContent = '';
     this._customPreviewSection = null;
-    this.element.shadowRoot.appendChild(Components.ObjectPropertiesSection.defaultObjectPresentation(this._object));
+    this.element.shadowRoot.appendChild(ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(this._object));
   }
 };
 
-Components.CustomPreviewSection._tagsWhiteList = new Set(['span', 'div', 'ol', 'li', 'table', 'tr', 'td']);
+ObjectUI.CustomPreviewSection._tagsWhiteList = new Set(['span', 'div', 'ol', 'li', 'table', 'tr', 'td']);

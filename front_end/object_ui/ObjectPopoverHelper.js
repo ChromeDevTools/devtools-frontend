@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Components.ObjectPopoverHelper = class extends UI.PopoverHelper {
+ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
   /**
    * @param {!Element} panelElement
    * @param {function(!Element, !Event):(!Element|!AnchorBox|undefined)} getAnchor
@@ -60,7 +60,7 @@ Components.ObjectPopoverHelper = class extends UI.PopoverHelper {
      * @param {!Element} anchorElement
      * @param {?Array.<!SDK.RemoteObjectProperty>} properties
      * @param {?Array.<!SDK.RemoteObjectProperty>} internalProperties
-     * @this {Components.ObjectPopoverHelper}
+     * @this {ObjectUI.ObjectPopoverHelper}
      */
     function didGetFunctionProperties(
         funcObject, popoverContentElement, popoverValueElement, anchorElement, properties, internalProperties) {
@@ -72,7 +72,7 @@ Components.ObjectPopoverHelper = class extends UI.PopoverHelper {
           }
         }
       }
-      Components.ObjectPropertiesSection.formatObjectAsFunction(funcObject, popoverValueElement, true);
+      ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(funcObject, popoverValueElement, true);
       funcObject.debuggerModel()
           .functionDetailsPromise(funcObject)
           .then(didGetFunctionDetails.bind(this, popoverContentElement, anchorElement));
@@ -82,7 +82,7 @@ Components.ObjectPopoverHelper = class extends UI.PopoverHelper {
      * @param {!Element} popoverContentElement
      * @param {!Element} anchorElement
      * @param {?SDK.DebuggerModel.FunctionDetails} response
-     * @this {Components.ObjectPopoverHelper}
+     * @this {ObjectUI.ObjectPopoverHelper}
      */
     function didGetFunctionDetails(popoverContentElement, anchorElement, response) {
       if (!response || popover.disposed)
@@ -112,7 +112,7 @@ Components.ObjectPopoverHelper = class extends UI.PopoverHelper {
      * @param {!SDK.RemoteObject} result
      * @param {boolean} wasThrown
      * @param {!Element=} anchorOverride
-     * @this {Components.ObjectPopoverHelper}
+     * @this {ObjectUI.ObjectPopoverHelper}
      */
     function didQueryObject(result, wasThrown, anchorOverride) {
       if (popover.disposed)
@@ -123,11 +123,11 @@ Components.ObjectPopoverHelper = class extends UI.PopoverHelper {
       }
       this._objectTarget = result.target();
       var anchorElement = anchorOverride || element;
-      var description = result.description.trimEnd(Components.ObjectPopoverHelper.MaxPopoverTextLength);
+      var description = result.description.trimEnd(ObjectUI.ObjectPopoverHelper.MaxPopoverTextLength);
       var popoverContentElement = null;
       if (result.type !== 'object') {
         popoverContentElement = createElement('span');
-        UI.appendStyle(popoverContentElement, 'components/objectValue.css');
+        UI.appendStyle(popoverContentElement, 'object_ui/objectValue.css');
         var valueElement = popoverContentElement.createChild('span', 'monospace object-value-' + result.type);
         valueElement.style.whiteSpace = 'pre';
 
@@ -150,14 +150,14 @@ Components.ObjectPopoverHelper = class extends UI.PopoverHelper {
         }
 
         if (result.customPreview()) {
-          var customPreviewComponent = new Components.CustomPreviewComponent(result);
+          var customPreviewComponent = new ObjectUI.CustomPreviewComponent(result);
           customPreviewComponent.expandIfPossible();
           popoverContentElement = customPreviewComponent.element;
         } else {
           popoverContentElement = createElement('div');
           this._titleElement = popoverContentElement.createChild('div', 'monospace');
           this._titleElement.createChild('span', 'source-frame-popover-title').textContent = description;
-          var section = new Components.ObjectPropertiesSection(result, '', this._lazyLinkifier());
+          var section = new ObjectUI.ObjectPropertiesSection(result, '', this._lazyLinkifier());
           section.element.classList.add('source-frame-popover-tree');
           section.titleLessMode();
           popoverContentElement.appendChild(section.element);
@@ -197,4 +197,4 @@ Components.ObjectPopoverHelper = class extends UI.PopoverHelper {
   }
 };
 
-Components.ObjectPopoverHelper.MaxPopoverTextLength = 10000;
+ObjectUI.ObjectPopoverHelper.MaxPopoverTextLength = 10000;

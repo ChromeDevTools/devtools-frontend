@@ -153,7 +153,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
 
     this._selectedSizeText = new UI.ToolbarText();
 
-    this._popoverHelper = new Components.ObjectPopoverHelper(
+    this._popoverHelper = new ObjectUI.ObjectPopoverHelper(
         this.element, this._getHoverAnchor.bind(this), this._resolveObjectForPopover.bind(this), undefined, true);
 
     this._currentPerspectiveIndex = 0;

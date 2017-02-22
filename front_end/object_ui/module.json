@@ -1,0 +1,20 @@
+{
+    "dependencies": [
+        "ui",
+        "sdk",
+        "components"
+    ],
+    "scripts": [
+        "CustomPreviewComponent.js",
+        "ObjectPopoverHelper.js",
+        "ObjectPropertiesSection.js",
+        "JavaScriptAutocomplete.js",
+        "RemoteObjectPreviewFormatter.js"
+    ],
+    "resources": [
+        "customPreviewComponent.css",
+        "objectValue.css",
+        "objectValue.css",
+        "objectPropertiesSection.css"
+    ]
+}

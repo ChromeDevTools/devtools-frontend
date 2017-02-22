@@ -362,7 +362,7 @@ Resources.IDBDataGridNode = class extends DataGrid.DataGridNode {
       case 'key':
       case 'primaryKey':
         cell.removeChildren();
-        var objectElement = Components.ObjectPropertiesSection.defaultObjectPresentation(value, undefined, true);
+        var objectElement = ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(value, undefined, true);
         cell.appendChild(objectElement);
         break;
       default:

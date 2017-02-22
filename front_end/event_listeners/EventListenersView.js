@@ -19,7 +19,7 @@ EventListeners.EventListenersView = class {
     this._changeCallback = changeCallback;
     this._treeOutline = new UI.TreeOutlineInShadow();
     this._treeOutline.hideOverflow();
-    this._treeOutline.registerRequiredCSS('components/objectValue.css');
+    this._treeOutline.registerRequiredCSS('object_ui/objectValue.css');
     this._treeOutline.registerRequiredCSS('event_listeners/eventListenersView.css');
     this._treeOutline.setComparator(EventListeners.EventListenersTreeElement.comparator);
     this._treeOutline.element.classList.add('monospace');
@@ -273,7 +273,7 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('once', eventListener.once()));
     if (typeof eventListener.handler() !== 'undefined')
       properties.push(new SDK.RemoteObjectProperty('handler', eventListener.handler()));
-    Components.ObjectPropertyTreeElement.populateWithProperties(this, properties, [], true, null);
+    ObjectUI.ObjectPropertyTreeElement.populateWithProperties(this, properties, [], true, null);
   }
 
   /**
@@ -286,7 +286,7 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
     subtitle.appendChild(linkifier.linkifyRawLocation(this._eventListener.location(), this._eventListener.sourceURL()));
 
     title.appendChild(
-        Components.ObjectPropertiesSection.createValueElement(object, false /* wasThrown */, false /* showPreview */));
+        ObjectUI.ObjectPropertiesSection.createValueElement(object, false /* wasThrown */, false /* showPreview */));
 
     if (this._eventListener.canRemove()) {
       var deleteButton = title.createChild('span', 'event-listener-button');

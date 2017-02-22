@@ -1,6 +1,7 @@
 {
   "sdk": "SDK",
   "ui": "UI",
+  "object_ui": "ObjectUI",
   "perf_ui": "PerfUI",
   "css_tracker": "CSSTracker"
 }

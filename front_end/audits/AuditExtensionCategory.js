@@ -192,7 +192,7 @@ Audits.AuditExtensionFormatters = {
   object: function(expression, title, evaluateOptions) {
     var parentElement = createElement('div');
     function onEvaluate(remoteObject) {
-      var section = new Components.ObjectPropertiesSection(remoteObject, title);
+      var section = new ObjectUI.ObjectPropertiesSection(remoteObject, title);
       section.expand();
       section.editable = false;
       parentElement.appendChild(section.element);

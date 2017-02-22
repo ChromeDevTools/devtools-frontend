@@ -42,7 +42,7 @@ Network.JSONView = class extends UI.VBox {
 
     /** @type {?UI.SearchableView} */
     this._searchableView;
-    /** @type {!Components.ObjectPropertiesSection} */
+    /** @type {!ObjectUI.ObjectPropertiesSection} */
     this._treeOutline;
     /** @type {number} */
     this._currentSearchFocusIndex = 0;
@@ -146,7 +146,7 @@ Network.JSONView = class extends UI.VBox {
 
     var obj = SDK.RemoteObject.fromLocalObject(this._parsedJSON.data);
     var title = this._parsedJSON.prefix + obj.description + this._parsedJSON.suffix;
-    this._treeOutline = new Components.ObjectPropertiesSection(obj, title);
+    this._treeOutline = new ObjectUI.ObjectPropertiesSection(obj, title);
     this._treeOutline.setEditable(false);
     this._treeOutline.expand();
     this.element.appendChild(this._treeOutline.element);
@@ -199,7 +199,7 @@ Network.JSONView = class extends UI.VBox {
     this._currentSearchTreeElements = [];
 
     for (var element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof Components.ObjectPropertyTreeElement))
+      if (!(element instanceof ObjectUI.ObjectPropertyTreeElement))
         continue;
       element.revertHighlightChanges();
     }
@@ -220,7 +220,7 @@ Network.JSONView = class extends UI.VBox {
     this._searchRegex = searchConfig.toSearchRegex(true);
 
     for (var element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof Components.ObjectPropertyTreeElement))
+      if (!(element instanceof ObjectUI.ObjectPropertyTreeElement))
         continue;
       var hasMatch = element.setSearchRegex(this._searchRegex);
       if (hasMatch)

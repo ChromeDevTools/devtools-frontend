@@ -3,7 +3,8 @@
         "ui",
         "common",
         "components",
-        "sdk"
+        "sdk",
+        "object_ui"
     ],
     "scripts": [
         "EventListenersView.js",

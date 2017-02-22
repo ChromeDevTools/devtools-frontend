@@ -49,7 +49,7 @@
     -webkit-user-select: none;
     -webkit-mask-image: url(Images/treeoutlineTriangles.png);
     -webkit-mask-size: 32px 24px;
-    content: "aa";
+    content: '\00a0\00a0';
     color: transparent;
     text-shadow: none;
     margin-right: -3px;

@@ -7,8 +7,51 @@ UI.ARIAUtils = {};
 /**
  * @param {!Element} element
  */
+UI.ARIAUtils.markAsGroup = function(element) {
+  element.setAttribute('role', 'group');
+};
+
+/**
+ * @param {!Element} element
+ */
 UI.ARIAUtils.markAsTab = function(element) {
   element.setAttribute('role', 'tab');
+};
+
+/**
+ * @param {!Element} element
+ */
+UI.ARIAUtils.markAsTree = function(element) {
+  element.setAttribute('role', 'tree');
+};
+
+/**
+ * @param {!Element} element
+ */
+UI.ARIAUtils.markAsTreeitem = function(element) {
+  element.setAttribute('role', 'treeitem');
+};
+
+/**
+ * @param {!Element} element
+ */
+UI.ARIAUtils.markAsPresentation = function(element) {
+  element.setAttribute('role', 'presentation');
+};
+
+/**
+ * @param {!Element} element
+ * @param {boolean} value
+ */
+UI.ARIAUtils.setExpanded = function(element, value) {
+  element.setAttribute('aria-expanded', !!value);
+};
+
+/**
+ * @param {!Element} element
+ */
+UI.ARIAUtils.unsetExpanded = function(element) {
+  element.removeAttribute('aria-expanded');
 };
 
 /**

@@ -48,6 +48,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
 
     this._element = this.element;
     this._element.classList.add('elements-tree-outline', 'source-code');
+    UI.ARIAUtils.setAccessibleName(this._element, Common.UIString('Page DOM'));
     this._element.addEventListener('mousedown', this._onmousedown.bind(this), false);
     this._element.addEventListener('mousemove', this._onmousemove.bind(this), false);
     this._element.addEventListener('mouseleave', this._onmouseleave.bind(this), false);

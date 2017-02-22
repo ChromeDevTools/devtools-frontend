@@ -427,6 +427,7 @@ all_devtools_files = [
   "front_end/sdk/Connections.js",
   "front_end/sdk/ConsoleModel.js",
   "front_end/sdk/ContentProviders.js",
+  "front_end/sdk/CookieModel.js",
   "front_end/sdk/CookieParser.js",
   "front_end/sdk/CPUProfileDataModel.js",
   "front_end/sdk/CPUProfilerModel.js",

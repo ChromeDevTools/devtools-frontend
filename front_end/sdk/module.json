@@ -103,6 +103,7 @@
         "Connections.js",
         "ConsoleModel.js",
         "ContentProviders.js",
+        "CookieModel.js",
         "CookieParser.js",
         "ProfileTreeModel.js",
         "ServerTiming.js",

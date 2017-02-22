@@ -612,7 +612,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
   /**
    * @param {string} cookieDomain
    */
-  clearCookies(cookieDomain) {
+  _clearCookies(cookieDomain) {
     if (this._cookieViews[cookieDomain])
       this._cookieViews[cookieDomain].deleteAllItems();
   }
@@ -1978,15 +1978,8 @@ Resources.CookieTreeElement = class extends Resources.BaseStorageTreeElement {
    */
   _handleContextMenuEvent(event) {
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString('Clear'), this._clearCookies.bind(this));
+    contextMenu.appendItem(Common.UIString('Clear'), () => this._storagePanel._clearCookies(this._cookieDomain));
     contextMenu.show();
-  }
-
-  /**
-   * @param {string} domain
-   */
-  _clearCookies(domain) {
-    this._storagePanel.clearCookies(this._cookieDomain);
   }
 
   /**

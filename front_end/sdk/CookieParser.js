@@ -38,33 +38,27 @@
  * @unrestricted
  */
 SDK.CookieParser = class {
-  /**
-   * @param {!SDK.Target} target
-   */
-  constructor(target) {
-    this._target = target;
+  constructor() {
   }
 
   /**
-   * @param {!SDK.Target} target
    * @param {string|undefined} header
-   * @return {?Array.<!SDK.Cookie>}
+   * @return {?Array<!SDK.Cookie>}
    */
-  static parseCookie(target, header) {
-    return (new SDK.CookieParser(target)).parseCookie(header);
+  static parseCookie(header) {
+    return (new SDK.CookieParser()).parseCookie(header);
   }
 
   /**
-   * @param {!SDK.Target} target
    * @param {string|undefined} header
-   * @return {?Array.<!SDK.Cookie>}
+   * @return {?Array<!SDK.Cookie>}
    */
-  static parseSetCookie(target, header) {
-    return (new SDK.CookieParser(target)).parseSetCookie(header);
+  static parseSetCookie(header) {
+    return (new SDK.CookieParser()).parseSetCookie(header);
   }
 
   /**
-   * @return {!Array.<!SDK.Cookie>}
+   * @return {!Array<!SDK.Cookie>}
    */
   cookies() {
     return this._cookies;
@@ -72,7 +66,7 @@ SDK.CookieParser = class {
 
   /**
    * @param {string|undefined} cookieHeader
-   * @return {?Array.<!SDK.Cookie>}
+   * @return {?Array<!SDK.Cookie>}
    */
   parseCookie(cookieHeader) {
     if (!this._initialize(cookieHeader))
@@ -91,7 +85,7 @@ SDK.CookieParser = class {
 
   /**
    * @param {string|undefined} setCookieHeader
-   * @return {?Array.<!SDK.Cookie>}
+   * @return {?Array<!SDK.Cookie>}
    */
   parseSetCookie(setCookieHeader) {
     if (!this._initialize(setCookieHeader))
@@ -169,11 +163,11 @@ SDK.CookieParser = class {
   _addCookie(keyValue, type) {
     if (this._lastCookie)
       this._lastCookie.setSize(keyValue.position - this._lastCookiePosition);
+
     // Mozilla bug 169091: Mozilla, IE and Chrome treat single token (w/o "=") as
     // specifying a value for a cookie with empty name.
-    this._lastCookie = typeof keyValue.value === 'string' ?
-        new SDK.Cookie(this._target, keyValue.key, keyValue.value, type) :
-        new SDK.Cookie(this._target, '', keyValue.key, type);
+    this._lastCookie = typeof keyValue.value === 'string' ? new SDK.Cookie(keyValue.key, keyValue.value, type) :
+                                                            new SDK.Cookie('', keyValue.key, type);
     this._lastCookiePosition = keyValue.position;
     this._cookies.push(this._lastCookie);
   }
@@ -201,17 +195,16 @@ SDK.CookieParser.KeyValue = class {
  */
 SDK.Cookie = class {
   /**
-   * @param {!SDK.Target} target
    * @param {string} name
    * @param {string} value
    * @param {?SDK.Cookie.Type} type
    */
-  constructor(target, name, value, type) {
-    this._target = target;
+  constructor(name, value, type) {
     this._name = name;
     this._value = value;
     this._type = type;
     this._attributes = {};
+    this._size = 0;
   }
 
   /**
@@ -352,35 +345,6 @@ SDK.Cookie = class {
   addAttribute(key, value) {
     this._attributes[key.toLowerCase()] = value;
   }
-
-  /**
-   * @param {function(?Protocol.Error)=} callback
-   */
-  remove(callback) {
-    this._target.networkAgent().deleteCookie(this.name(), this.url(), callback);
-  }
-
-  /**
-   * @param {function(boolean)=} callback
-   */
-  save(callback) {
-    var domain = this.domain();
-    if (!domain.startsWith('.'))
-      domain = '';
-    var expires = undefined;
-    if (this.expires())
-      expires = Math.floor(Date.parse(this.expires()) / 1000);
-    this._target.networkAgent().setCookie(this.url(), this.name(), this.value(), domain, this.path(), this.secure(),
-      this.httpOnly(), this.sameSite(), expires, mycallback);
-
-    /**
-     * @param {?Protocol.Error} error
-     * @param {boolean} success
-     */
-    function mycallback(error, success) {
-      callback(error ? false : success);
-    }
-  }
 };
 
 /**
@@ -389,69 +353,4 @@ SDK.Cookie = class {
 SDK.Cookie.Type = {
   Request: 0,
   Response: 1
-};
-
-SDK.Cookies = {};
-
-/**
- * @param {!SDK.Target} target
- * @param {!Array.<string>} urls
- * @param {function(!Array.<!SDK.Cookie>)} callback
- */
-SDK.Cookies.getCookiesAsync = function(target, urls, callback) {
-  target.networkAgent().getCookies(urls, (err, cookies) => {
-    if (err) {
-      console.error(err);
-      return callback([]);
-    }
-
-    callback(cookies.map(cookie => SDK.Cookies._parseProtocolCookie(target, cookie)));
-  });
-};
-
-/**
- * @param {!SDK.Target} target
- * @param {!Protocol.Network.Cookie} protocolCookie
- * @return {!SDK.Cookie}
- */
-SDK.Cookies._parseProtocolCookie = function(target, protocolCookie) {
-  var cookie = new SDK.Cookie(target, protocolCookie.name, protocolCookie.value, null);
-  cookie.addAttribute('domain', protocolCookie['domain']);
-  cookie.addAttribute('path', protocolCookie['path']);
-  cookie.addAttribute('port', protocolCookie['port']);
-  if (protocolCookie['expires'])
-    cookie.addAttribute('expires', protocolCookie['expires']);
-  if (protocolCookie['httpOnly'])
-    cookie.addAttribute('httpOnly');
-  if (protocolCookie['secure'])
-    cookie.addAttribute('secure');
-  if (protocolCookie['sameSite'])
-    cookie.addAttribute('sameSite', protocolCookie['sameSite']);
-  cookie.setSize(protocolCookie['size']);
-  return cookie;
-};
-
-/**
- * @param {!SDK.Cookie} cookie
- * @param {string} resourceURL
- * @return {boolean}
- */
-SDK.Cookies.cookieMatchesResourceURL = function(cookie, resourceURL) {
-  var url = resourceURL.asParsedURL();
-  if (!url || !SDK.Cookies.cookieDomainMatchesResourceDomain(cookie.domain(), url.host))
-    return false;
-  return (
-      url.path.startsWith(cookie.path()) && (!cookie.port() || url.port === cookie.port()) &&
-      (!cookie.secure() || url.scheme === 'https'));
-};
-
-/**
- * @param {string} cookieDomain
- * @param {string} resourceDomain
- * @return {boolean}
- */
-SDK.Cookies.cookieDomainMatchesResourceDomain = function(cookieDomain, resourceDomain) {
-  if (cookieDomain.charAt(0) !== '.')
-    return resourceDomain === cookieDomain;
-  return !!resourceDomain.match(new RegExp('^([^\\.]+\\.)*' + cookieDomain.substring(1).escapeForRegExp() + '$', 'i'));
 };

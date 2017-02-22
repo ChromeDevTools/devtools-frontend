@@ -138,12 +138,18 @@
     bottom: 0;
 }
 
+.heap-snapshot-statistics-view {
+    overflow: auto;
+}
+
 .heap-snapshot-stats-pie-chart {
     margin: 12px 30px;
+    flex-shrink: 0;
 }
 
 .heap-snapshot-stats-legend {
     margin-left: 24px;
+    flex-shrink: 0;
 }
 
 .heap-snapshot-stats-legend > div {

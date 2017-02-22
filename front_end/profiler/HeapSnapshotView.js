@@ -2000,7 +2000,7 @@ Profiler.HeapTrackingOverviewGrid.OverviewCalculator = class {
 Profiler.HeapSnapshotStatisticsView = class extends UI.VBox {
   constructor() {
     super();
-    this.setMinimumSize(50, 25);
+    this.element.classList.add('heap-snapshot-statistics-view');
     this._pieChart = new PerfUI.PieChart(150, Profiler.HeapSnapshotStatisticsView._valueFormatter, true);
     this._pieChart.element.classList.add('heap-snapshot-stats-pie-chart');
     this.element.appendChild(this._pieChart.element);

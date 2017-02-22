@@ -143,6 +143,7 @@ all_devtools_files = [
   "front_end/console/module.json",
   "front_end/cookie_table/CookiesTable.js",
   "front_end/cookie_table/module.json",
+  "front_end/css_tracker/CSSTrackerListView.js",
   "front_end/css_tracker/cssTrackerView.css",
   "front_end/css_tracker/CSSTrackerView.js",
   "front_end/css_tracker/module.json",

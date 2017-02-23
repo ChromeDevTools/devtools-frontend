@@ -446,7 +446,7 @@ Network.NetworkLogViewColumns = class {
     var dialog = new UI.Dialog();
     manageCustomHeaders.show(dialog.contentElement);
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    dialog.showDialog(this._networkLogView.element);
+    dialog.show(this._networkLogView.element);
   }
 
   /**

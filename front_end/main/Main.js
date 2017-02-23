@@ -875,7 +875,7 @@ Main.RemoteDebuggingTerminatedScreen = class extends UI.VBox {
     dialog.addCloseButton();
     dialog.setDimmed(true);
     new Main.RemoteDebuggingTerminatedScreen(reason).show(dialog.contentElement);
-    dialog.showDialog();
+    dialog.show();
   }
 };
 
@@ -905,11 +905,11 @@ Main.TargetCrashedScreen = class extends UI.VBox {
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     dialog.addCloseButton();
     dialog.setDimmed(true);
-    var hideBound = dialog.hideDialog.bind(dialog);
+    var hideBound = dialog.hide.bind(dialog);
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, hideBound);
 
     new Main.TargetCrashedScreen(onHide).show(dialog.contentElement);
-    dialog.showDialog();
+    dialog.show();
 
     function onHide() {
       debuggerModel.removeEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, hideBound);

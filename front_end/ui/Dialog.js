@@ -33,11 +33,11 @@ UI.Dialog = class extends UI.GlassPane {
     super();
     this.registerRequiredCSS('ui/dialog.css');
     this.contentElement.tabIndex = 0;
-    this.contentElement.addEventListener('focus', this.focus.bind(this), false);
+    this.contentElement.addEventListener('focus', () => this.widget().focus(), false);
     this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
     this.setBlockPointerEvents(true);
     this.setSetOutsideClickCallback(event => {
-      this.hideDialog();
+      this.hide();
       event.consume(true);
     });
     /** @type {!Map<!HTMLElement, number>} */
@@ -54,22 +54,26 @@ UI.Dialog = class extends UI.GlassPane {
   }
 
   /**
+   * @override
    * @param {!Document|!Element=} where
    */
-  showDialog(where) {
+  show(where) {
     var document = /** @type {!Document} */ (
         where instanceof Document ? where : (where || UI.inspectorView.element).ownerDocument);
     if (UI.Dialog._instance)
       UI.Dialog._instance.detach();
     UI.Dialog._instance = this;
     this._disableTabIndexOnElements(document);
-    this.showGlassPane(document);
-    this._focusRestorer = new UI.WidgetFocusRestorer(this);
+    super.show(document);
+    this._focusRestorer = new UI.WidgetFocusRestorer(this.widget());
   }
 
-  hideDialog() {
+  /**
+   * @override
+   */
+  hide() {
     this._focusRestorer.restore();
-    this.hideGlassPane();
+    super.hide();
     this._restoreTabIndexOnElements();
     delete UI.Dialog._instance;
   }
@@ -77,7 +81,7 @@ UI.Dialog = class extends UI.GlassPane {
   addCloseButton() {
     var closeButton = this.contentElement.createChild('div', 'dialog-close-button', 'dt-close-button');
     closeButton.gray = true;
-    closeButton.addEventListener('click', () => this.detach(), false);
+    closeButton.addEventListener('click', () => this.hide(), false);
   }
 
   /**
@@ -109,7 +113,7 @@ UI.Dialog = class extends UI.GlassPane {
   _onKeyDown(event) {
     if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
       event.consume(true);
-      this.hideDialog();
+      this.hide();
     }
   }
 };

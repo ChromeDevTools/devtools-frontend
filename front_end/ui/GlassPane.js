@@ -2,10 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-UI.GlassPane = class extends UI.Widget {
+UI.GlassPane = class {
   constructor() {
-    super(true);
-    this.markAsRoot();
+    this._widget = new UI.Widget(true);
+    this._widget.markAsRoot();
+    this.element = this._widget.element;
+    this.contentElement = this._widget.contentElement;
+
     this.registerRequiredCSS('ui/glassPane.css');
     this.element.classList.add('no-pointer-events');
     this._onMouseDownBound = this._onMouseDown.bind(this);
@@ -21,6 +24,20 @@ UI.GlassPane = class extends UI.Widget {
     this._anchorBox = null;
     this._anchorBehavior = UI.GlassPane.AnchorBehavior.PreferTop;
     this._sizeBehavior = UI.GlassPane.SizeBehavior.SetHeight;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isShowing() {
+    return this._widget.isShowing();
+  }
+
+  /**
+   * @param {string} cssFile
+   */
+  registerRequiredCSS(cssFile) {
+    this._widget.registerRequiredCSS(cssFile);
   }
 
   /**
@@ -90,23 +107,23 @@ UI.GlassPane = class extends UI.Widget {
   /**
    * @param {!Document} document
    */
-  showGlassPane(document) {
+  show(document) {
     if (this.isShowing())
       return;
     // Deliberately starts with 3000 to hide other z-indexed elements below.
     this.element.style.zIndex = 3000 + 1000 * UI.GlassPane._panes.size;
     document.body.addEventListener('mousedown', this._onMouseDownBound, true);
-    this.show(document.body);
+    this._widget.show(document.body);
     UI.GlassPane._panes.add(this);
     this._positionContent();
   }
 
-  hideGlassPane() {
+  hide() {
     if (!this.isShowing())
       return;
     UI.GlassPane._panes.delete(this);
     this.element.ownerDocument.body.removeEventListener('mousedown', this._onMouseDownBound, true);
-    this.detach();
+    this._widget.detach();
   }
 
   /**
@@ -203,6 +220,15 @@ UI.GlassPane = class extends UI.Widget {
     else
       this.contentElement.style.height = height + 'px';
     this.contentElement.positionAt(positionX, positionY, container);
+    this._widget.doResize();
+  }
+
+  /**
+   * @protected
+   * @return {!UI.Widget}
+   */
+  widget() {
+    return this._widget;
   }
 
   /**
@@ -226,10 +252,8 @@ UI.GlassPane = class extends UI.Widget {
    */
   static containerMoved(element) {
     for (var pane of UI.GlassPane._panes) {
-      if (pane.isShowing() && pane.element.ownerDocument === element.ownerDocument) {
+      if (pane.isShowing() && pane.element.ownerDocument === element.ownerDocument)
         pane._positionContent();
-        pane.doResize();
-      }
     }
   }
 };

@@ -122,7 +122,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetMaxHeight);
     this._dialog.setContentPosition(null, 22);
     this.show(this._dialog.contentElement);
-    this._dialog.showDialog();
+    this._dialog.show();
     this._updateShowMatchingItems();
   }
 
@@ -160,7 +160,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
 
     // Detach dialog before allowing delegate to override focus.
     if (this._dialog)
-      this._dialog.hideDialog();
+      this._dialog.hide();
     this._selectItemWithQuery(selectedIndexInDelegate, this._value());
   }
 
@@ -191,7 +191,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
       event.consume(true);
       // Detach dialog before allowing delegate to override focus.
       if (this._dialog)
-        this._dialog.hideDialog();
+        this._dialog.hide();
       this._selectItemWithQuery(item, this._value());
     }, false);
     return itemElement;

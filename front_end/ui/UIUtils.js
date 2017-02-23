@@ -97,7 +97,7 @@ UI.DragHandler = class {
     if (!UI.DragHandler._glassPaneUsageCount++) {
       UI.DragHandler._glassPane = new UI.GlassPane();
       UI.DragHandler._glassPane.setBlockPointerEvents(true);
-      UI.DragHandler._glassPane.showGlassPane(UI.DragHandler._documentForMouseOut);
+      UI.DragHandler._glassPane.show(UI.DragHandler._documentForMouseOut);
     }
   }
 
@@ -107,7 +107,7 @@ UI.DragHandler = class {
     this._glassPaneInUse = false;
     if (--UI.DragHandler._glassPaneUsageCount)
       return;
-    UI.DragHandler._glassPane.hideGlassPane();
+    UI.DragHandler._glassPane.hide();
     delete UI.DragHandler._glassPane;
     delete UI.DragHandler._documentForMouseOut;
   }
@@ -2050,12 +2050,12 @@ UI.ConfirmDialog = class extends UI.VBox {
         .ConfirmDialog(
             message,
             () => {
-              dialog.hideDialog();
+              dialog.hide();
               callback();
             },
-            () => dialog.hideDialog())
+            () => dialog.hide())
         .show(dialog.contentElement);
-    dialog.showDialog(where);
+    dialog.show(where);
   }
 
   /**

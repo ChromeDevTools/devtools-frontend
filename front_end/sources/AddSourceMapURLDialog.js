@@ -34,13 +34,13 @@ Sources.AddSourceMapURLDialog = class extends UI.HBox {
     var addSourceMapURLDialog = new Sources.AddSourceMapURLDialog(done);
     addSourceMapURLDialog.show(dialog.contentElement);
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    dialog.showDialog();
+    dialog.show();
 
     /**
      * @param {string} value
      */
     function done(value) {
-      dialog.hideDialog();
+      dialog.hide();
       callback(value);
     }
   }

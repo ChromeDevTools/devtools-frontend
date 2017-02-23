@@ -125,24 +125,24 @@ UI.Toolbar = class {
 
       var optionsGlassPane = new UI.GlassPane();
       optionsGlassPane.setBlockPointerEvents(true);
-      optionsGlassPane.showGlassPane(document);
+      optionsGlassPane.show(document);
       var optionsBar = new UI.Toolbar('fill', optionsGlassPane.contentElement);
       optionsBar._contentElement.classList.add('floating');
       const buttonHeight = 26;
 
-      var hostButtonPosition = button.element.totalOffset();
+      var hostButtonPosition = button.element.boxInWindow().relativeToElement(UI.GlassPane.container(document));
 
-      var topNotBottom = hostButtonPosition.top + buttonHeight * buttons.length < document.documentElement.offsetHeight;
+      var topNotBottom = hostButtonPosition.y + buttonHeight * buttons.length < document.documentElement.offsetHeight;
 
       if (topNotBottom)
         buttons = buttons.reverse();
 
       optionsBar.element.style.height = (buttonHeight * buttons.length) + 'px';
       if (topNotBottom)
-        optionsBar.element.style.top = (hostButtonPosition.top + 1) + 'px';
+        optionsBar.element.style.top = (hostButtonPosition.y - 5) + 'px';
       else
-        optionsBar.element.style.top = (hostButtonPosition.top - (buttonHeight * (buttons.length - 1))) + 'px';
-      optionsBar.element.style.left = (hostButtonPosition.left + 1) + 'px';
+        optionsBar.element.style.top = (hostButtonPosition.y - (buttonHeight * (buttons.length - 1)) - 6) + 'px';
+      optionsBar.element.style.left = (hostButtonPosition.x - 5) + 'px';
 
       for (var i = 0; i < buttons.length; ++i) {
         buttons[i].element.addEventListener('mousemove', mouseOver, false);
@@ -169,7 +169,7 @@ UI.Toolbar = class {
       function mouseUp(e) {
         if (e.which !== 1)
           return;
-        optionsGlassPane.hideGlassPane();
+        optionsGlassPane.hide();
         document.documentElement.removeEventListener('mouseup', mouseUp, false);
 
         for (var i = 0; i < buttons.length; ++i) {

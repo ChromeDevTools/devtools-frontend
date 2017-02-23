@@ -470,6 +470,35 @@ Emulation.DeviceModeView = class extends UI.VBox {
       }
     }
   }
+
+  captureFullSizeScreenshot() {
+    SDK.DOMModel.muteHighlight();
+    this._model.captureFullSizeScreenshot(content => {
+      SDK.DOMModel.unmuteHighlight();
+      if (content === null)
+        return;
+      var canvas = createElement('canvas');
+      var pageImage = new Image();
+      pageImage.src = 'data:image/png;base64,' + content;
+      pageImage.onload = () => {
+        var ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+        canvas.width = pageImage.width;
+        canvas.height = pageImage.height;
+        ctx.drawImage(pageImage, 0, 0);
+        var url = this._model.target() && this._model.target().inspectedURL();
+        var fileName = url ? url.trimURL().removeURLFragment() : '';
+        if (this._model.type() === Emulation.DeviceModeModel.Type.Device)
+          fileName += Common.UIString('(%s)', this._model.device().title);
+        var link = createElement('a');
+        link.download = fileName + '.png';
+        canvas.toBlob(function(blob) {
+          link.href = URL.createObjectURL(blob);
+          link.click();
+        });
+      };
+    });
+  }
 };
 
 /**

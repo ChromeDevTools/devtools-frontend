@@ -273,6 +273,22 @@ Emulation.DeviceModeModel = class {
   }
 
   /**
+   * @return {boolean}
+   */
+  _isMobile() {
+    switch (this._type) {
+      case Emulation.DeviceModeModel.Type.Device:
+        return this._device.mobile();
+      case Emulation.DeviceModeModel.Type.None:
+        return false;
+      case Emulation.DeviceModeModel.Type.Responsive:
+        return this._uaSetting.get() === Emulation.DeviceModeModel.UA.Mobile ||
+            this._uaSetting.get() === Emulation.DeviceModeModel.UA.MobileNoTouch;
+    }
+    return false;
+  }
+
+  /**
    * @return {!Common.Setting}
    */
   scaleSetting() {
@@ -405,13 +421,13 @@ Emulation.DeviceModeModel = class {
   _calculateAndEmulate(resetPageScaleFactor) {
     if (!this._target)
       this._onTargetAvailable = this._calculateAndEmulate.bind(this, resetPageScaleFactor);
-
+    var mobile = this._isMobile();
     if (this._type === Emulation.DeviceModeModel.Type.Device) {
       var orientation = this._device.orientationByName(this._mode.orientation);
       var outline = this._currentOutline();
       var insets = this._currentInsets();
       this._fitScale = this._calculateFitScale(orientation.width, orientation.height, outline, insets);
-      if (this._device.mobile()) {
+      if (mobile) {
         this._appliedUserAgentType =
             this._device.touch() ? Emulation.DeviceModeModel.UA.Mobile : Emulation.DeviceModeModel.UA.MobileNoTouch;
       } else {
@@ -420,18 +436,17 @@ Emulation.DeviceModeModel = class {
       }
       this._applyDeviceMetrics(
           new UI.Size(orientation.width, orientation.height), insets, outline, this._scaleSetting.get(),
-          this._device.deviceScaleFactor, this._device.mobile(),
-          this._mode.orientation === Emulation.EmulatedDevice.Horizontal ?
+          this._device.deviceScaleFactor, mobile, this._mode.orientation === Emulation.EmulatedDevice.Horizontal ?
               Protocol.Emulation.ScreenOrientationType.LandscapePrimary :
               Protocol.Emulation.ScreenOrientationType.PortraitPrimary,
           resetPageScaleFactor);
       this._applyUserAgent(this._device.userAgent);
-      this._applyTouch(this._device.touch(), this._device.mobile());
+      this._applyTouch(this._device.touch(), mobile);
     } else if (this._type === Emulation.DeviceModeModel.Type.None) {
       this._fitScale = this._calculateFitScale(this._availableSize.width, this._availableSize.height);
       this._appliedUserAgentType = Emulation.DeviceModeModel.UA.Desktop;
       this._applyDeviceMetrics(
-          this._availableSize, new UI.Insets(0, 0, 0, 0), new UI.Insets(0, 0, 0, 0), 1, 0, false, null,
+          this._availableSize, new UI.Insets(0, 0, 0, 0), new UI.Insets(0, 0, 0, 0), 1, 0, mobile, null,
           resetPageScaleFactor);
       this._applyUserAgent('');
       this._applyTouch(false, false);
@@ -442,8 +457,6 @@ Emulation.DeviceModeModel = class {
       var screenHeight = this._heightSetting.get();
       if (!screenHeight || screenHeight > this._preferredScaledHeight())
         screenHeight = this._preferredScaledHeight();
-      var mobile = this._uaSetting.get() === Emulation.DeviceModeModel.UA.Mobile ||
-          this._uaSetting.get() === Emulation.DeviceModeModel.UA.MobileNoTouch;
       var defaultDeviceScaleFactor = mobile ? Emulation.DeviceModeModel.defaultMobileScaleFactor : 0;
       this._fitScale = this._calculateFitScale(this._widthSetting.get(), this._heightSetting.get());
       this._appliedUserAgentType = this._uaSetting.get();
@@ -535,6 +548,7 @@ Emulation.DeviceModeModel = class {
 
     var pageWidth = screenSize.width - insets.left - insets.right;
     var pageHeight = screenSize.height - insets.top - insets.bottom;
+    this._emulatedPageSize = new UI.Size(Math.floor(pageWidth * scale), Math.floor(pageHeight * scale));
 
     var positionX = insets.left;
     var positionY = insets.top;
@@ -607,6 +621,43 @@ Emulation.DeviceModeModel = class {
       allPromises.push(setDevicePromise);
       return Promise.all(allPromises);
     }
+  }
+
+  /**
+   * @param {function(?string)} callback
+   */
+  captureFullSizeScreenshot(callback) {
+    var screenCaptureModel = this._target ? this._target.model(SDK.ScreenCaptureModel) : null;
+    if (!screenCaptureModel) {
+      callback(null);
+      return;
+    }
+
+    screenCaptureModel.fetchContentSize().then(contentSize => {
+      if (!contentSize) {
+        callback(null);
+        return;
+      }
+
+      var scaledPageSize = new UI.Rect(0, 0, contentSize.width, contentSize.height).scale(this._scale);
+      var promises = [];
+      promises.push(this._target.emulationAgent().forceViewport(0, 0, 1));
+      promises.push(this._target.emulationAgent().invoke_setDeviceMetricsOverride({
+        width: 0,
+        height: 0,
+        deviceScaleFactor: this._appliedDeviceScaleFactor,
+        mobile: this._isMobile(),
+        fitWindow: false,
+        scale: this._scale,
+      }));
+      promises.push(this._target.emulationAgent().setVisibleSize(
+          Math.floor(scaledPageSize.width), Math.floor(scaledPageSize.height)));
+      Promise.all(promises).then(() => screenCaptureModel.captureScreenshot('png', 100)).then(content => {
+        this._target.emulationAgent().setVisibleSize(this._emulatedPageSize.width, this._emulatedPageSize.height);
+        this._target.emulationAgent().resetViewport();
+        callback(content);
+      });
+    });
   }
 
   _deviceMetricsOverrideAppliedForTest() {

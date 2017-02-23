@@ -57,6 +57,18 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @return {!Promise<?{width: number, height: number}>}
+   */
+  fetchContentSize() {
+    var fulfill;
+    var promise = new Promise(callback => fulfill = callback);
+    this._agent.getLayoutMetrics((error, layoutViewport, visualViewport, contentSize) => {
+      fulfill(error ? null : {width: contentSize.width, height: contentSize.height});
+    });
+    return promise;
+  }
+
+  /**
    * @override
    * @param {string} data
    * @param {!Protocol.Page.ScreencastFrameMetadata} metadata

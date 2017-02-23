@@ -122,15 +122,23 @@ TimelineModel.TimelineModel = class {
 
   /**
    * @param {!SDK.TracingModel.Event} event
+   * @param {string} field
+   * @return {string}
+   */
+  static globalEventId(event, field) {
+    var data = event.args['data'] || event.args['beginData'];
+    var id = data && data[field];
+    if (!id)
+      return '';
+    return `${event.thread.process().id()}.${id}`;
+  }
+
+  /**
+   * @param {!SDK.TracingModel.Event} event
    * @return {string}
    */
   static eventFrameId(event) {
-    var data = event.args['data'] || event.args['beginData'];
-    var frame = data && data['frame'];
-    if (!frame)
-      return '';
-    var processId = event.thread.process().id();
-    return `${processId}.${frame}`;
+    return TimelineModel.TimelineModel.globalEventId(event, 'frame');
   }
 
   /**
@@ -1008,7 +1016,7 @@ TimelineModel.TimelineModel = class {
       var e = events[i];
       if (!resourceTypes.has(e.name))
         continue;
-      var id = e.args['data']['requestId'];
+      var id = TimelineModel.TimelineModel.globalEventId(e, 'requestId');
       var request = requests.get(id);
       if (request) {
         request.addEvent(e);
@@ -1709,15 +1717,20 @@ TimelineModel.TimelineAsyncEventTracker = class {
     var initiatorInfo = TimelineModel.TimelineAsyncEventTracker._asyncEvents.get(initiatorType);
     if (!initiatorInfo)
       return;
-    var id = event.args['data'][initiatorInfo.joinBy];
+    var id = TimelineModel.TimelineModel.globalEventId(event, initiatorInfo.joinBy);
     if (!id)
       return;
     /** @type {!Map<string, !SDK.TracingModel.Event>|undefined} */
     var initiatorMap = this._initiatorByType.get(initiatorType);
-    if (isInitiator)
+    if (isInitiator) {
       initiatorMap.set(id, event);
-    else
-      TimelineModel.TimelineData.forEvent(event).setInitiator(initiatorMap.get(id) || null);
+      return;
+    }
+    var initiator = initiatorMap.get(id) || null;
+    var timelineData = TimelineModel.TimelineData.forEvent(event);
+    timelineData.setInitiator(initiator);
+    if (!timelineData.frameId && initiator)
+      timelineData.frameId = TimelineModel.TimelineModel.eventFrameId(initiator);
   }
 };
 

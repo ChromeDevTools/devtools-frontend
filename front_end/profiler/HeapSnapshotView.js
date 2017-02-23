@@ -260,8 +260,6 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
   willHide() {
     this._currentSearchResultIndex = -1;
     this._popoverHelper.hidePopover();
-    if (this.helpPopover && this.helpPopover.isShowing())
-      this.helpPopover.hide();
   }
 
   /**

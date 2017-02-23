@@ -144,6 +144,7 @@
         "networkLogView.css",
         "networkManageCustomHeadersView.css",
         "networkPanel.css",
+        "networkTimingTable.css",
         "networkWaterfallColumn.css",
         "requestCookiesView.css",
         "requestHeadersTree.css",

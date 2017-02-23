@@ -128,6 +128,7 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
       if (result.type !== 'object') {
         popoverContentElement = createElement('span');
         UI.appendStyle(popoverContentElement, 'object_ui/objectValue.css');
+        UI.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
         var valueElement = popoverContentElement.createChild('span', 'monospace object-value-' + result.type);
         valueElement.style.whiteSpace = 'pre';
 
@@ -155,10 +156,11 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
           popoverContentElement = customPreviewComponent.element;
         } else {
           popoverContentElement = createElement('div');
+          UI.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
           this._titleElement = popoverContentElement.createChild('div', 'monospace');
-          this._titleElement.createChild('span', 'source-frame-popover-title').textContent = description;
+          this._titleElement.createChild('span', 'object-popover-title').textContent = description;
           var section = new ObjectUI.ObjectPropertiesSection(result, '', this._lazyLinkifier());
-          section.element.classList.add('source-frame-popover-tree');
+          section.element.classList.add('object-popover-tree');
           section.titleLessMode();
           popoverContentElement.appendChild(section.element);
         }

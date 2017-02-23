@@ -55,41 +55,6 @@
     height: 28px;
 }
 
-.function-location-link {
-    float: right;
-    margin-left: 10px;
-}
-
-.function-location-step-into {
-    position: relative;
-    height: 14px;
-    transform: rotate(-90deg);
-}
-
-.object-popover-container {
-    display: inline-block;
-}
-
-.function-popover-title {
-    border-bottom: 1px solid #AAA;
-    margin-bottom: 3px;
-    padding-bottom: 2px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.function-title-link-container {
-    display: flex;
-    align-items: center;
-    position: relative;
-    margin-left: 10px;
-}
-
-.function-popover-title .function-name {
-    font-weight: bold;
-}
-
 .panel.sources .sidebar-pane-stack {
     overflow: auto;
 }

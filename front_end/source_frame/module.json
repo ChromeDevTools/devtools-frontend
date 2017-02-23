@@ -49,6 +49,7 @@
     ],
     "resources": [
         "fontView.css",
-        "imageView.css"
+        "imageView.css",
+        "messagesPopover.css"
     ]
 }

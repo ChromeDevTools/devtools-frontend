@@ -1403,6 +1403,7 @@ Timeline.TimelineUIUtils = class {
         return;
       }
       var container = createElement('div');
+      UI.appendStyle(container, 'components/imagePreview.css');
       container.classList.add('image-preview-container', 'vbox', 'link');
       var img = container.createChild('img');
       img.src = imageURL;

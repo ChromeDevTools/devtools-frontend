@@ -67,22 +67,3 @@
     margin-bottom: -19px;
     background-position: 0 -19px;
 }
-
-.source-frame-popover-title {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    font-weight: bold;
-    padding-left: 18px;
-}
-
-.source-frame-popover-tree {
-    border-top: 1px solid rgb(184, 184, 184);
-    overflow: auto;
-    position: absolute;
-    top: 21px;
-    bottom: 5px;
-    left: 5px;
-    right: 5px;
-    margin-top: 1px;
-}

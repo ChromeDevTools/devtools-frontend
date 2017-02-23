@@ -25,6 +25,7 @@
     ],
     "resources": [
         "breakpointsList.css",
-        "domUtils.css"
+        "domUtils.css",
+        "imagePreview.css"
     ]
 }

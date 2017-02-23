@@ -379,20 +379,6 @@
     cursor: text;
 }
 
-.image-preview-container {
-    background: transparent;
-    text-align: center;
-}
-
-.image-preview-container img {
-    margin: 2px auto;
-    max-width: 100px;
-    max-height: 100px;
-    background-image: url(Images/checker.png);
-    -webkit-user-select: text;
-    -webkit-user-drag: auto;
-}
-
 .metrics {
     border-bottom: 1px solid #ccc;
 }

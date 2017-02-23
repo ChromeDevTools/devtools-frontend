@@ -368,27 +368,6 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
     opacity: 0.5;
 }
 
-.text-editor-messages-description-container {
-    display: inline-block;
-}
-
-.text-editor-row-message:first-child {
-    border-top-width: 0;
-}
-
-.text-editor-row-message {
-    border-top: 1px solid rgb(215, 215, 215);
-    line-height: 1.2;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.text-editor-row-message .message-repeat-count {
-    margin-right: 0.5em;
-}
-
 .CodeMirror .text-editor-line-decoration-icon {
     position: absolute;
     cursor: pointer;

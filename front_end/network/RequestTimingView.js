@@ -180,6 +180,7 @@ Network.RequestTimingView = class extends UI.VBox {
    */
   static createTimingTable(request, calculator) {
     var tableElement = createElementWithClass('table', 'network-timing-table');
+    UI.appendStyle(tableElement, 'network/networkTimingTable.css');
     var colgroup = tableElement.createChild('colgroup');
     colgroup.createChild('col', 'labels');
     colgroup.createChild('col', 'bars');
@@ -212,10 +213,10 @@ Network.RequestTimingView = class extends UI.VBox {
       if (rangeName === Network.RequestTimeRangeNames.Push) {
         createHeader(Common.UIString('Server Push'));
       } else if (rangeName === Network.RequestTimeRangeNames.Queueing) {
-          queueingHeader = tableElement.createChild('tr', 'network-timing-table-header');
-          queueingHeader.createChild('td').createTextChild(Common.UIString('Resource Scheduling'));
-          queueingHeader.createChild('td').createTextChild('');
-          queueingHeader.createChild('td').createTextChild(Common.UIString('TIME'));
+        queueingHeader = tableElement.createChild('tr', 'network-timing-table-header');
+        queueingHeader.createChild('td').createTextChild(Common.UIString('Resource Scheduling'));
+        queueingHeader.createChild('td').createTextChild('');
+        queueingHeader.createChild('td').createTextChild(Common.UIString('TIME'));
       } else if (Network.RequestTimingView.ConnectionSetupRangeNames.has(rangeName)) {
         if (!connectionHeader)
           connectionHeader = createHeader(Common.UIString('Connection Start'));
@@ -339,6 +340,7 @@ Network.RequestTimingView = class extends UI.VBox {
       this._tableElement.remove();
 
     this._tableElement = Network.RequestTimingView.createTimingTable(this._request, this._calculator);
+    this._tableElement.classList.add('resource-timing-table');
     this.element.appendChild(this._tableElement);
   }
 };

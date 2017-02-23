@@ -189,6 +189,7 @@ Components.DOMPresentationUtils.buildImagePreviewContents = function(
 
   function buildContent() {
     var container = createElement('table');
+    UI.appendStyle(container, 'components/imagePreview.css');
     container.className = 'image-preview-container';
     var naturalWidth = precomputedFeatures ? precomputedFeatures.naturalWidth : imageElement.naturalWidth;
     var naturalHeight = precomputedFeatures ? precomputedFeatures.naturalHeight : imageElement.naturalHeight;

@@ -284,25 +284,6 @@
     line-height: 18px;
 }
 
-.image-preview-container {
-    background: transparent;
-    text-align: left;
-    border-spacing: 0;
-    margin: 4px;
-}
-
-.image-preview-container img {
-    max-width: 100px;
-    max-height: 100px;
-    background-image: url(Images/checker.png);
-    -webkit-user-select: text;
-    -webkit-user-drag: auto;
-}
-
-.image-container {
-    padding: 0;
-}
-
 .timeline-filters-header {
     overflow: hidden;
     flex: none;

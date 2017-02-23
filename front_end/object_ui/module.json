@@ -13,8 +13,8 @@
     ],
     "resources": [
         "customPreviewComponent.css",
-        "objectValue.css",
-        "objectValue.css",
-        "objectPropertiesSection.css"
+        "objectPopover.css",
+        "objectPropertiesSection.css",
+        "objectValue.css"
     ]
 }

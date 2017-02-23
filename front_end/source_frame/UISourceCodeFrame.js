@@ -494,9 +494,10 @@ SourceFrame.UISourceCodeFrame.RowMessage = class {
     this.element = createElementWithClass('div', 'text-editor-row-message');
     this._icon = this.element.createChild('label', '', 'dt-icon-label');
     this._icon.type = SourceFrame.UISourceCodeFrame._iconClassPerLevel[message.level()];
-    this._repeatCountElement = this.element.createChild('label', 'message-repeat-count hidden', 'dt-small-bubble');
+    this._repeatCountElement =
+        this.element.createChild('label', 'text-editor-row-message-repeat-count hidden', 'dt-small-bubble');
     this._repeatCountElement.type = SourceFrame.UISourceCodeFrame._bubbleTypePerLevel[message.level()];
-    var linesContainer = this.element.createChild('div', 'text-editor-row-message-lines');
+    var linesContainer = this.element.createChild('div');
     var lines = this._message.text().split('\n');
     for (var i = 0; i < lines.length; ++i) {
       var messageLine = linesContainer.createChild('div');
@@ -579,6 +580,7 @@ SourceFrame.UISourceCodeFrame.RowMessageBucket = class {
    */
   messagesDescription() {
     this._messagesDescriptionElement.removeChildren();
+    UI.appendStyle(this._messagesDescriptionElement, 'source_frame/messagesPopover.css');
     for (var i = 0; i < this._messages.length; ++i)
       this._messagesDescriptionElement.appendChild(this._messages[i].element);
 

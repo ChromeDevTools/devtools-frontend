@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-CSSTracker.CSSTrackerListView = class extends UI.VBox {
+Coverage.CoverageListView = class extends UI.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('css_tracker/cssTrackerListView.css');
+    this.registerRequiredCSS('coverage/coverageListView.css');
     var columns = [
       {id: 'url', title: Common.UIString('URL'), width: '300px', fixedWidth: false, sortable: true}, {
         id: 'size',
@@ -38,14 +38,14 @@ CSSTracker.CSSTrackerListView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Array<!CSSTracker.CoverageInfo>} coverageInfo
+   * @param {!Array<!Coverage.CoverageInfo>} coverageInfo
    */
   update(coverageInfo) {
     var maxSize = coverageInfo.reduce((acc, entry) => Math.max(acc, entry.size), 0);
     var rootNode = this._dataGrid.rootNode();
     rootNode.removeChildren();
     for (var entry of coverageInfo)
-      rootNode.appendChild(new CSSTracker.CSSTrackerListView.GridNode(entry, maxSize));
+      rootNode.appendChild(new Coverage.CoverageListView.GridNode(entry, maxSize));
     this._sortingChanged();
   }
 
@@ -75,7 +75,7 @@ CSSTracker.CSSTrackerListView = class extends UI.VBox {
   _revealSourceForNode(node) {
     if (!node)
       return;
-    var coverageInfo = /** @type {!CSSTracker.CSSTrackerListView.GridNode} */ (node)._coverageInfo;
+    var coverageInfo = /** @type {!Coverage.CoverageListView.GridNode} */ (node)._coverageInfo;
     var sourceCode = coverageInfo && Workspace.workspace.uiSourceCodeForURL(coverageInfo.url);
     if (!sourceCode)
       return;
@@ -110,8 +110,8 @@ CSSTracker.CSSTrackerListView = class extends UI.VBox {
      * @return {number}
      */
     function compareURL(a, b) {
-      var nodeA = /** @type {!CSSTracker.CSSTrackerListView.GridNode} */ (a);
-      var nodeB = /** @type {!CSSTracker.CSSTrackerListView.GridNode} */ (b);
+      var nodeA = /** @type {!Coverage.CoverageListView.GridNode} */ (a);
+      var nodeB = /** @type {!Coverage.CoverageListView.GridNode} */ (b);
 
       return nodeA._coverageInfo.url.localeCompare(nodeB._coverageInfo.url);
     }
@@ -123,17 +123,17 @@ CSSTracker.CSSTrackerListView = class extends UI.VBox {
      * @return {number}
      */
     function compareNumericField(fieldName, a, b) {
-      var nodeA = /** @type {!CSSTracker.CSSTrackerListView.GridNode} */ (a);
-      var nodeB = /** @type {!CSSTracker.CSSTrackerListView.GridNode} */ (b);
+      var nodeA = /** @type {!Coverage.CoverageListView.GridNode} */ (a);
+      var nodeB = /** @type {!Coverage.CoverageListView.GridNode} */ (b);
 
       return nodeA._coverageInfo[fieldName] - nodeB._coverageInfo[fieldName];
     }
   }
 };
 
-CSSTracker.CSSTrackerListView.GridNode = class extends DataGrid.SortableDataGridNode {
+Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode {
   /**
-   * @param {!CSSTracker.CoverageInfo} coverageInfo
+   * @param {!Coverage.CoverageInfo} coverageInfo
    * @param {number} maxSize
    */
   constructor(coverageInfo, maxSize) {

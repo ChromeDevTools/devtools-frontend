@@ -3,23 +3,23 @@
 // found in the LICENSE file.
 
 /** @typedef {{range: !Protocol.CSS.SourceRange, wasUsed: boolean}} */
-CSSTracker.RangeUsage;
+Coverage.RangeUsage;
 
-/** @typedef {{styleSheetHeader: !SDK.CSSStyleSheetHeader, ranges: !Array<!CSSTracker.RangeUsage>}} */
-CSSTracker.StyleSheetUsage;
+/** @typedef {{styleSheetHeader: !SDK.CSSStyleSheetHeader, ranges: !Array<!Coverage.RangeUsage>}} */
+Coverage.StyleSheetUsage;
 
 /** @typedef {{url: string, totalSize: number, unusedSize: number, usedSize: number,
- *      ranges: !Array<!CSSTracker.RangeUsage>}} */
-CSSTracker.CoverageInfo;
+ *      ranges: !Array<!Coverage.RangeUsage>}} */
+Coverage.CoverageInfo;
 
-CSSTracker.CSSTrackerView = class extends UI.VBox {
+Coverage.CoverageView = class extends UI.VBox {
   constructor() {
     super(true);
 
-    this.registerRequiredCSS('css_tracker/cssTrackerView.css');
+    this.registerRequiredCSS('coverage/coverageView.css');
 
-    var toolbarContainer = this.contentElement.createChild('div', 'css-tracker-toolbar-container');
-    var topToolbar = new UI.Toolbar('css-tracker-toolbar', toolbarContainer);
+    var toolbarContainer = this.contentElement.createChild('div', 'coverage-toolbar-container');
+    var topToolbar = new UI.Toolbar('coverage-toolbar', toolbarContainer);
 
     this._recordButton =
         new UI.ToolbarToggle(Common.UIString('Start recording'), 'largeicon-resume', 'largeicon-pause');
@@ -30,24 +30,24 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
     clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset.bind(this));
     topToolbar.appendToolbarItem(clearButton);
 
-    this._cssResultsElement = this.contentElement.createChild('div', 'css-results');
-    this._progressElement = this._cssResultsElement.createChild('div', 'progress-view');
-    this._listView = new CSSTracker.CSSTrackerListView();
+    this._coverageResultsElement = this.contentElement.createChild('div', 'coverage-results');
+    this._progressElement = this._coverageResultsElement.createChild('div', 'progress-view');
+    this._listView = new Coverage.CoverageListView();
 
-    this._statusToolbarElement = this.contentElement.createChild('div', 'css-toolbar-summary');
-    this._statusMessageElement = this._statusToolbarElement.createChild('div', 'css-message');
+    this._statusToolbarElement = this.contentElement.createChild('div', 'coverage-toolbar-summary');
+    this._statusMessageElement = this._statusToolbarElement.createChild('div', 'coverage-message');
 
     this._isRecording = false;
   }
 
   _reset() {
     Workspace.workspace.uiSourceCodes().forEach(
-        uiSourceCode => uiSourceCode.removeDecorationsForType(CSSTracker.CSSTrackerView.LineDecorator.type));
+        uiSourceCode => uiSourceCode.removeDecorationsForType(Coverage.CoverageView.LineDecorator.type));
 
     this._listView.detach();
-    this._cssResultsElement.removeChildren();
+    this._coverageResultsElement.removeChildren();
     this._progressElement.textContent = '';
-    this._cssResultsElement.appendChild(this._progressElement);
+    this._coverageResultsElement.appendChild(this._progressElement);
 
     this._statusMessageElement.textContent = '';
   }
@@ -98,11 +98,11 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
 
     /**
      * @param {!Array<!SDK.CSSModel.RuleUsage>} ruleUsageList
-     * @this {!CSSTracker.CSSTrackerView}
-     * @return {!Promise<!Array<!CSSTracker.CoverageInfo>>}
+     * @this {!Coverage.CoverageView}
+     * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
      */
     function processRuleList(ruleUsageList) {
-      /** @type {!Map<?SDK.CSSStyleSheetHeader, !Array<!CSSTracker.RangeUsage>>} */
+      /** @type {!Map<?SDK.CSSStyleSheetHeader, !Array<!Coverage.RangeUsage>>} */
       var rulesByStyleSheet = new Map();
       for (var rule of ruleUsageList) {
         var styleSheetHeader = cssModel.styleSheetHeaderForId(rule.styleSheetId);
@@ -118,21 +118,21 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
     }
 
     /**
-     * @param {!Array<!CSSTracker.CoverageInfo>} coverageInfo
-     * @this {!CSSTracker.CSSTrackerView}
+     * @param {!Array<!Coverage.CoverageInfo>} coverageInfo
+     * @this {!Coverage.CoverageView}
      */
     function updateViews(coverageInfo) {
       coverageInfo = coalesceByURL(coverageInfo);
       this._updateStats(coverageInfo);
       this._updateGutter(coverageInfo);
-      this._cssResultsElement.removeChildren();
+      this._coverageResultsElement.removeChildren();
       this._listView.update(coverageInfo);
-      this._listView.show(this._cssResultsElement);
+      this._listView.show(this._coverageResultsElement);
     }
 
     /**
-     * @param {!Array<!CSSTracker.CoverageInfo>} coverageInfo
-     * @return {!Array<!CSSTracker.CoverageInfo>}
+     * @param {!Array<!Coverage.CoverageInfo>} coverageInfo
+     * @return {!Array<!Coverage.CoverageInfo>}
      */
     function coalesceByURL(coverageInfo) {
       coverageInfo.sort((a, b) => (a.url || '').localeCompare(b.url));
@@ -155,8 +155,8 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
 
   /**
    * @param {!SDK.CSSStyleSheetHeader} styleSheetHeader
-   * @param {!Array<!CSSTracker.RangeUsage>} ranges
-   * @return {!Promise<!CSSTracker.CoverageInfo>}
+   * @param {!Array<!Coverage.RangeUsage>} ranges
+   * @return {!Promise<!Coverage.CoverageInfo>}
    */
   _convertToCoverageInfo(styleSheetHeader, ranges) {
     var coverageInfo = {
@@ -187,7 +187,7 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Array<!CSSTracker.CoverageInfo>} coverageInfo
+   * @param {!Array<!Coverage.CoverageInfo>} coverageInfo
    */
   _updateStats(coverageInfo) {
     var total = 0;
@@ -203,7 +203,7 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Array<!CSSTracker.CoverageInfo>} coverageInfo
+   * @param {!Array<!Coverage.CoverageInfo>} coverageInfo
    */
   _updateGutter(coverageInfo) {
     for (var info of coverageInfo) {
@@ -214,7 +214,7 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
         var gutterRange = Common.TextRange.fromObject(range.range);
         if (gutterRange.startColumn)
           gutterRange.startColumn--;
-        uiSourceCode.addDecoration(gutterRange, CSSTracker.CSSTrackerView.LineDecorator.type, range.wasUsed);
+        uiSourceCode.addDecoration(gutterRange, Coverage.CoverageView.LineDecorator.type, range.wasUsed);
       }
     }
   }
@@ -223,7 +223,7 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
 /**
  * @implements {SourceFrame.UISourceCodeFrame.LineDecorator}
  */
-CSSTracker.CSSTrackerView.LineDecorator = class {
+Coverage.CoverageView.LineDecorator = class {
   /**
    * @override
    * @param {!Workspace.UISourceCode} uiSourceCode
@@ -232,7 +232,7 @@ CSSTracker.CSSTrackerView.LineDecorator = class {
   decorate(uiSourceCode, textEditor) {
     var gutterType = 'CodeMirror-gutter-coverage';
 
-    var decorations = uiSourceCode.decorationsForType(CSSTracker.CSSTrackerView.LineDecorator.type);
+    var decorations = uiSourceCode.decorationsForType(Coverage.CoverageView.LineDecorator.type);
     textEditor.uninstallGutter(gutterType);
     if (!decorations || !decorations.size)
       return;
@@ -243,9 +243,9 @@ CSSTracker.CSSTrackerView.LineDecorator = class {
       for (var line = decoration.range().startLine; line <= decoration.range().endLine; ++line) {
         var element = createElementWithClass('div');
         if (decoration.data())
-          element.className = 'text-editor-css-rule-used-marker';
+          element.className = 'text-editor-coverage-used-marker';
         else
-          element.className = 'text-editor-css-rule-unused-marker';
+          element.className = 'text-editor-coverage-unused-marker';
 
         textEditor.setGutterDecoration(line, gutterType, element);
       }
@@ -253,4 +253,4 @@ CSSTracker.CSSTrackerView.LineDecorator = class {
   }
 };
 
-CSSTracker.CSSTrackerView.LineDecorator.type = 'coverage';
+Coverage.CoverageView.LineDecorator.type = 'coverage';

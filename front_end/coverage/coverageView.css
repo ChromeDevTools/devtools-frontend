@@ -8,17 +8,17 @@
     overflow: hidden;
 }
 
-.css-tracker-toolbar-container {
+.coverage-toolbar-container {
     display: flex;
     border-bottom: 1px solid #ccc;
     flex: 0 0;
 }
 
-.css-tracker-toolbar {
+.coverage-toolbar {
     display: inline-block;
 }
 
-.css-toolbar-summary {
+.coverage-toolbar-summary {
     background-color: #eee;
     border-top: 1px solid #ccc;
     padding-left: 5px;
@@ -27,7 +27,7 @@
     padding-right: 5px;
 }
 
-.css-toolbar-summary .css-message {
+.coverage-toolbar-summary .coverage-message {
     padding-top: 2px;
     padding-left: 1ex;
     text-overflow: ellipsis;
@@ -35,7 +35,7 @@
     overflow: hidden;
 }
 
-.css-results {
+.coverage-results {
     overflow-y: auto;
     display: flex;
     flex: auto;
@@ -49,6 +49,6 @@
     font-size: 30px;
 }
 
-.css-results > div {
+.coverage-results > div {
     flex: auto;
 }

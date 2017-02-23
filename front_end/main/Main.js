@@ -126,7 +126,7 @@ Main.Main = class {
       // Enable experiments for testing.
       if (testPath.indexOf('accessibility/') !== -1)
         Runtime.experiments.enableForTest('accessibilityInspection');
-      if (testPath.indexOf('css_tracker') !== -1)
+      if (testPath.indexOf('coverage') !== -1)
         Runtime.experiments.enableForTest('cssTrackerPanel');
       if (testPath.indexOf('audits2/') !== -1)
         Runtime.experiments.enableForTest('audits2');

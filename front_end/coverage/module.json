@@ -3,16 +3,16 @@
         {
             "type": "view",
             "location": "drawer-view",
-            "id": "css_tracker",
-            "title": "CSS Tracker",
+            "id": "coverage",
+            "title": "Coverage",
             "persistence": "closeable",
             "order": 0,
-            "className": "CSSTracker.CSSTrackerView",
+            "className": "Coverage.CoverageView",
             "experiment": "cssTrackerPanel"
         },
         {
             "type": "@SourceFrame.UISourceCodeFrame.LineDecorator",
-            "className": "CSSTracker.CSSTrackerView.LineDecorator",
+            "className": "Coverage.CoverageView.LineDecorator",
             "decoratorType": "coverage"
         }
     ],
@@ -23,11 +23,11 @@
         "data_grid"
     ],
     "scripts": [
-        "CSSTrackerListView.js",
-        "CSSTrackerView.js"
+        "CoverageListView.js",
+        "CoverageView.js"
     ],
     "resources": [
-        "cssTrackerListView.css",
-        "cssTrackerView.css"
+        "coverageListView.css",
+        "coverageView.css"
     ]
 }

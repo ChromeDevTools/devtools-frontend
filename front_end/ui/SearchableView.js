@@ -343,7 +343,7 @@ UI.SearchableView = class extends UI.VBox {
 
     var queryCandidate;
     if (!this._searchInputElement.hasFocus()) {
-      var selection = this._searchInputElement.getComponentSelection();
+      var selection = UI.inspectorView.element.window().getSelection();
       if (selection.rangeCount)
         queryCandidate = selection.toString().replace(/\r?\n.*/, '');
     }

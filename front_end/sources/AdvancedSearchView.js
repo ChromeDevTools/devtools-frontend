@@ -394,7 +394,7 @@ Sources.AdvancedSearchView.ActionDelegate = class {
   }
 
   _showSearch() {
-    var selection = UI.inspectorView.element.getDeepSelection();
+    var selection = UI.inspectorView.element.window().getSelection();
     var queryCandidate = '';
     if (selection.rangeCount)
       queryCandidate = selection.toString().replace(/\r?\n.*/, '');

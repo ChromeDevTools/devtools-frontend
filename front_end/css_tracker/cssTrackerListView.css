@@ -1,0 +1,20 @@
+.data-grid td .bar {
+  display: inline-block;
+  height: 8px;
+}
+
+.data-grid .selected td .bar {
+  border: 0.5px solid white;
+}
+
+.data-grid td .bar-slack-size {
+  background-color: rgb(150, 150, 200);
+}
+
+.data-grid td .bar-unused-size {
+  background-color: #E57373;
+}
+
+.data-grid td .bar-used-size {
+  background-color: #81C784;
+}

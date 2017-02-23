@@ -19,14 +19,15 @@
     "dependencies": [
         "sdk",
         "ui",
-        "source_frame"
+        "source_frame",
+        "data_grid"
     ],
     "scripts": [
         "CSSTrackerListView.js",
         "CSSTrackerView.js"
     ],
     "resources": [
-        "cssTrackerView.css",
-        "unusedRulesTree.css"
+        "cssTrackerListView.css",
+        "cssTrackerView.css"
     ]
 }

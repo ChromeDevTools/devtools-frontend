@@ -2,6 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/** @typedef {{range: !Protocol.CSS.SourceRange, wasUsed: boolean}} */
+CSSTracker.RangeUsage;
+
+/** @typedef {{styleSheetHeader: !SDK.CSSStyleSheetHeader, ranges: !Array<!CSSTracker.RangeUsage>}} */
+CSSTracker.StyleSheetUsage;
+
+/** @typedef {{url: string, totalSize: number, unusedSize: number, usedSize: number,
+ *      ranges: !Array<!CSSTracker.RangeUsage>}} */
+CSSTracker.CoverageInfo;
+
 CSSTracker.CSSTrackerView = class extends UI.VBox {
   constructor() {
     super(true);
@@ -89,119 +99,126 @@ CSSTracker.CSSTrackerView = class extends UI.VBox {
     /**
      * @param {!Array<!SDK.CSSModel.RuleUsage>} ruleUsageList
      * @this {!CSSTracker.CSSTrackerView}
-     * @return {!Promise<!Array<!CSSTracker.StyleSheetUsage>>}
+     * @return {!Promise<!Array<!CSSTracker.CoverageInfo>>}
      */
     function processRuleList(ruleUsageList) {
-      /** @type {!Map<?SDK.CSSStyleSheetHeader, !CSSTracker.StyleSheetUsage>} */
+      /** @type {!Map<?SDK.CSSStyleSheetHeader, !Array<!CSSTracker.RangeUsage>>} */
       var rulesByStyleSheet = new Map();
       for (var rule of ruleUsageList) {
         var styleSheetHeader = cssModel.styleSheetHeaderForId(rule.styleSheetId);
-        var entry = rulesByStyleSheet.get(styleSheetHeader);
-        if (!entry) {
-          entry = {styleSheetHeader: styleSheetHeader, rules: []};
-          rulesByStyleSheet.set(styleSheetHeader, entry);
+        var ranges = rulesByStyleSheet.get(styleSheetHeader);
+        if (!ranges) {
+          ranges = [];
+          rulesByStyleSheet.set(styleSheetHeader, ranges);
         }
-        entry.rules.push(rule);
+        ranges.push({range: rule.range, wasUsed: rule.wasUsed});
       }
-      return Promise.all(Array.from(
-          rulesByStyleSheet.values(),
-          entry => this._populateSourceInfo(/** @type {!CSSTracker.StyleSheetUsage} */ (entry))));
+      return Promise.all(
+          Array.from(rulesByStyleSheet.entries(), entry => this._convertToCoverageInfo(entry[0], entry[1])));
     }
 
     /**
-     * @param {!Array<!CSSTracker.StyleSheetUsage>} styleSheetUsages
+     * @param {!Array<!CSSTracker.CoverageInfo>} coverageInfo
      * @this {!CSSTracker.CSSTrackerView}
      */
-    function updateViews(styleSheetUsages) {
-      this._updateStats(styleSheetUsages);
-      this._updateGutter(styleSheetUsages);
+    function updateViews(coverageInfo) {
+      coverageInfo = coalesceByURL(coverageInfo);
+      this._updateStats(coverageInfo);
+      this._updateGutter(coverageInfo);
       this._cssResultsElement.removeChildren();
-      this._listView.update(styleSheetUsages);
+      this._listView.update(coverageInfo);
       this._listView.show(this._cssResultsElement);
+    }
+
+    /**
+     * @param {!Array<!CSSTracker.CoverageInfo>} coverageInfo
+     * @return {!Array<!CSSTracker.CoverageInfo>}
+     */
+    function coalesceByURL(coverageInfo) {
+      coverageInfo.sort((a, b) => (a.url || '').localeCompare(b.url));
+      var result = [];
+      for (var entry of coverageInfo) {
+        if (!entry.url)
+          continue;
+        if (result.length && result.peekLast().url === entry.url) {
+          var lastEntry = result.peekLast();
+          lastEntry.size += entry.size;
+          lastEntry.usedSize += entry.usedSize;
+          lastEntry.unusedSize += entry.unusedSize;
+        } else {
+          result.push(entry);
+        }
+      }
+      return result;
     }
   }
 
   /**
-   * @param {!CSSTracker.StyleSheetUsage} styleSheetUsage
-   * @return {!Promise<!CSSTracker.StyleSheetUsage>}
+   * @param {!SDK.CSSStyleSheetHeader} styleSheetHeader
+   * @param {!Array<!CSSTracker.RangeUsage>} ranges
+   * @return {!Promise<!CSSTracker.CoverageInfo>}
    */
-  _populateSourceInfo(styleSheetUsage) {
-    if (!styleSheetUsage.styleSheetHeader)
-      return Promise.resolve(styleSheetUsage);
-    var ruleIndex =
-        new Map(styleSheetUsage.rules.map(rule => [`${rule.range.startLine}.${rule.range.startColumn}`, rule]));
-
-    return new Promise(fulfill => {
-      styleSheetUsage.styleSheetHeader.requestContent().then(
-          content => Common.formatterWorkerPool.parseCSS(content || '', onRules));
-
-      /**
-       * @param {boolean} isLastChunk
-       * @param {!Array<!Common.FormatterWorkerPool.CSSStyleRule>} rules
-       */
-      function onRules(isLastChunk, rules) {
-        for (var rule of rules) {
-          if (!rule.styleRange)
-            continue;
-          var entry = ruleIndex.get(`${rule.styleRange.startLine}.${rule.styleRange.startColumn}`);
-          if (entry)
-            entry.selector = rule.selectorText;
-        }
-        if (isLastChunk)
-          fulfill(styleSheetUsage);
+  _convertToCoverageInfo(styleSheetHeader, ranges) {
+    var coverageInfo = {
+      url: styleSheetHeader.sourceURL,
+      ranges: ranges,
+    };
+    return styleSheetHeader.requestContent().then(content => {
+      if (!content)
+        return coverageInfo;
+      var text = new Common.Text(content);
+      var usedSize = 0;
+      var unusedSize = 0;
+      for (var entry of ranges) {
+        var range = entry.range;
+        var size = text.offsetFromPosition(range.endLine, range.endColumn) -
+            text.offsetFromPosition(range.startLine, range.startColumn);
+        if (entry.wasUsed)
+          usedSize += size;
+        else
+          unusedSize += size;
       }
+      coverageInfo.size = content.length;
+      coverageInfo.usedSize = usedSize;
+      coverageInfo.unusedSize = unusedSize;
+
+      return coverageInfo;
     });
   }
 
   /**
-   * @param {!Array<!CSSTracker.StyleSheetUsage>} styleSheetUsage
+   * @param {!Array<!CSSTracker.CoverageInfo>} coverageInfo
    */
-  _updateStats(styleSheetUsage) {
+  _updateStats(coverageInfo) {
     var total = 0;
     var unused = 0;
-    for (var styleSheet of styleSheetUsage) {
-      total += styleSheet.rules.length;
-      unused += styleSheet.rules.reduce((count, rule) => rule.wasUsed ? count : count + 1, 0);
+    for (var info of coverageInfo) {
+      total += info.size || 0;
+      unused += info.unusedSize || 0;
     }
     var percentUnused = total ? Math.round(100 * unused / total) : 0;
-    if (unused === 1) {
-      this._statusMessageElement.textContent =
-          Common.UIString('%d CSS rule is not used. (%d%%)', unused, percentUnused);
-    } else {
-      this._statusMessageElement.textContent =
-          Common.UIString('%d CSS rules are not used. (%d%%)', unused, percentUnused);
-    }
+    this._statusMessageElement.textContent = Common.UIString(
+        '%s of %s bytes are not used. (%d%%)', Number.bytesToString(unused), Number.bytesToString(total),
+        percentUnused);
   }
 
   /**
-   * @param {!Array<!CSSTracker.StyleSheetUsage>} styleSheetUsages
+   * @param {!Array<!CSSTracker.CoverageInfo>} coverageInfo
    */
-  _updateGutter(styleSheetUsages) {
-    for (var styleSheet of styleSheetUsages) {
-      if (!styleSheet.styleSheetHeader)
-        continue;
-      var url = styleSheet.styleSheetHeader.sourceURL;
-      var uiSourceCode = url && Workspace.workspace.uiSourceCodeForURL(url);
+  _updateGutter(coverageInfo) {
+    for (var info of coverageInfo) {
+      var uiSourceCode = info.url && Workspace.workspace.uiSourceCodeForURL(info.url);
       if (!uiSourceCode)
         continue;
-      for (var rule of styleSheet.rules) {
-        var gutterRange = Common.TextRange.fromObject(rule.range);
+      for (var range of info.ranges) {
+        var gutterRange = Common.TextRange.fromObject(range.range);
         if (gutterRange.startColumn)
           gutterRange.startColumn--;
-        uiSourceCode.addDecoration(gutterRange, CSSTracker.CSSTrackerView.LineDecorator.type, rule.wasUsed);
+        uiSourceCode.addDecoration(gutterRange, CSSTracker.CSSTrackerView.LineDecorator.type, range.wasUsed);
       }
     }
   }
 };
-
-/** @typedef {{range: !Protocol.CSS.SourceRange,
- *              selector: (string|undefined),
- *              wasUsed: boolean}}
- */
-CSSTracker.RuleUsage;
-
-/** @typedef {{styleSheetHeader: ?SDK.CSSStyleSheetHeader, rules: !Array<!CSSTracker.RuleUsage>}} */
-CSSTracker.StyleSheetUsage;
 
 /**
  * @implements {SourceFrame.UISourceCodeFrame.LineDecorator}

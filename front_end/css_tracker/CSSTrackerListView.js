@@ -5,163 +5,172 @@
 CSSTracker.CSSTrackerListView = class extends UI.VBox {
   constructor() {
     super(true);
-    this._treeOutline = new UI.TreeOutlineInShadow();
-    this._treeOutline.registerRequiredCSS('css_tracker/unusedRulesTree.css');
-    this.contentElement.appendChild(this._treeOutline.element);
+    this.registerRequiredCSS('css_tracker/cssTrackerListView.css');
+    var columns = [
+      {id: 'url', title: Common.UIString('URL'), width: '300px', fixedWidth: false, sortable: true}, {
+        id: 'size',
+        title: Common.UIString('Total Bytes'),
+        width: '60px',
+        fixedWidth: true,
+        sortable: true,
+        align: DataGrid.DataGrid.Align.Right
+      },
+      {
+        id: 'unusedSize',
+        title: Common.UIString('Unused Bytes'),
+        width: '60px',
+        fixedWidth: true,
+        sortable: true,
+        align: DataGrid.DataGrid.Align.Right,
+        sort: DataGrid.DataGrid.Order.Descending
+      },
+      {id: 'bars', title: '', width: '500px', fixedWidth: false, sortable: false}
+    ];
+    this._dataGrid = new DataGrid.SortableDataGrid(columns);
+    this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
+    this._dataGrid.element.classList.add('flex-auto');
+    this._dataGrid.element.addEventListener('dblclick', this._onDoubleClick.bind(this), false);
+    this._dataGrid.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
+    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
+
+    var dataGridWidget = this._dataGrid.asWidget();
+    dataGridWidget.show(this.contentElement);
   }
 
   /**
-   * @param {!Array<!CSSTracker.StyleSheetUsage>} styleSheetUsages
+   * @param {!Array<!CSSTracker.CoverageInfo>} coverageInfo
    */
-  update(styleSheetUsages) {
-    this._treeOutline.removeChildren();
+  update(coverageInfo) {
+    var maxSize = coverageInfo.reduce((acc, entry) => Math.max(acc, entry.size), 0);
+    var rootNode = this._dataGrid.rootNode();
+    rootNode.removeChildren();
+    for (var entry of coverageInfo)
+      rootNode.appendChild(new CSSTracker.CSSTrackerListView.GridNode(entry, maxSize));
+    this._sortingChanged();
+  }
 
-    for (var sheet of styleSheetUsages) {
-      var unusedRuleCount = sheet.rules.reduce((count, rule) => rule.wasUsed ? count : count + 1, 0);
-      if (sheet.styleSheetHeader) {
-        var url = sheet.styleSheetHeader.sourceURL;
-        if (!url)
-          continue;
+  /**
+   * @param {!Event} event
+   */
+  _onDoubleClick(event) {
+    if (!event.target || !(event.target instanceof Node))
+      return;
+    event.consume(true);
+    this._revealSourceForNode(this._dataGrid.dataGridNodeFromNode(event.target));
+  }
 
-        var styleSheetTreeElement = new CSSTracker.CSSTrackerListView.StyleSheetTreeElement(url, sheet.rules);
-        this._treeOutline.appendChild(styleSheetTreeElement);
-        continue;
-      }
-      if (!unusedRuleCount)
-        continue;
-      var removedStyleSheetStats = unusedRuleCount === 1 ?
-          Common.UIString('1 unused rule in a removed style sheet.') :
-          Common.UIString('%d unused rules in removed style sheets.', unusedRuleCount);
+  /**
+   * @param {!Event} event
+   */
+  _onKeyDown(event) {
+    if (!isEnterKey(event))
+      return;
+    event.consume(true);
+    this._revealSourceForNode(this._dataGrid.selectedNode);
+  }
 
-      var treeElement = new UI.TreeElement(Common.UIString('Unknown style sheets'), true);
-      treeElement.toggleOnClick = true;
-      treeElement.selectable = false;
+  /**
+   * @param {?DataGrid.DataGridNode} node
+   */
+  _revealSourceForNode(node) {
+    if (!node)
+      return;
+    var coverageInfo = /** @type {!CSSTracker.CSSTrackerListView.GridNode} */ (node)._coverageInfo;
+    var sourceCode = coverageInfo && Workspace.workspace.uiSourceCodeForURL(coverageInfo.url);
+    if (!sourceCode)
+      return;
+    Common.Revealer.reveal(sourceCode);
+  }
 
-      var stats = new UI.TreeElement(removedStyleSheetStats, false);
-      stats.selectable = false;
-      treeElement.appendChild(stats);
-      this._treeOutline.appendChild(treeElement);
+  _sortingChanged() {
+    var columnId = this._dataGrid.sortColumnId();
+    if (!columnId)
+      return;
+    var sortFunction;
+    switch (columnId) {
+      case 'url':
+        sortFunction = compareURL;
+        break;
+      case 'size':
+        sortFunction = compareNumericField.bind(null, 'size');
+        break;
+      case 'unusedSize':
+        sortFunction = compareNumericField.bind(null, 'unusedSize');
+        break;
+      default:
+        console.assert(false, 'Unknown sort field: ' + columnId);
+        return;
+    }
+
+    this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
+
+    /**
+     * @param {!DataGrid.DataGridNode} a
+     * @param {!DataGrid.DataGridNode} b
+     * @return {number}
+     */
+    function compareURL(a, b) {
+      var nodeA = /** @type {!CSSTracker.CSSTrackerListView.GridNode} */ (a);
+      var nodeB = /** @type {!CSSTracker.CSSTrackerListView.GridNode} */ (b);
+
+      return nodeA._coverageInfo.url.localeCompare(nodeB._coverageInfo.url);
+    }
+
+    /**
+     * @param {string} fieldName
+     * @param {!DataGrid.DataGridNode} a
+     * @param {!DataGrid.DataGridNode} b
+     * @return {number}
+     */
+    function compareNumericField(fieldName, a, b) {
+      var nodeA = /** @type {!CSSTracker.CSSTrackerListView.GridNode} */ (a);
+      var nodeB = /** @type {!CSSTracker.CSSTrackerListView.GridNode} */ (b);
+
+      return nodeA._coverageInfo[fieldName] - nodeB._coverageInfo[fieldName];
     }
   }
 };
 
-CSSTracker.CSSTrackerListView._rulesShownAtOnce = 20;
-
-CSSTracker.CSSTrackerListView.StyleSheetTreeElement = class extends UI.TreeElement {
+CSSTracker.CSSTrackerListView.GridNode = class extends DataGrid.SortableDataGridNode {
   /**
-   * @param {string} url
-   * @param {!Array<!CSSTracker.RuleUsage>} ruleList
+   * @param {!CSSTracker.CoverageInfo} coverageInfo
+   * @param {number} maxSize
    */
-  constructor(url, ruleList) {
-    super('', true);
-
-    this._uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
-
-    /** @type {!Array<!CSSTracker.RuleUsage>} */
-    this._unusedRules = ruleList.filter(rule => !rule.wasUsed);
-
-    var lastLineNumber = 0;
-    for (var i = this._unusedRules.length - 1; i >= 0; --i) {
-      if (this._unusedRules[i].range) {
-        lastLineNumber = this._unusedRules[i].range.startLine;
-        break;
-      }
-    }
-    this._numberOfSpaces = lastLineNumber.toString().length + 1;
-
-    this._percentUnused = Math.round(100 * this._unusedRules.length / ruleList.length);
-
-    this.toggleOnClick = true;
-    this.selectable = false;
-
-    /** @type {?UI.TreeElement} */
-    this._showAllRulesTreeElement = null;
-
-    var title = createElementWithClass('div', 'rule-result');
-    var titleText;
-    if (this._uiSourceCode)
-      titleText = this._uiSourceCode.fullDisplayName();
-    else
-      titleText = Common.UIString('Style Sheet was removed');
-    title.createChild('span', 'rule-result-file-name').textContent = titleText;
-
-    var rulesCountSpan = title.createChild('span', 'rule-result-matches-count');
-
-    if (this._unusedRules.length === 1) {
-      rulesCountSpan.textContent =
-          Common.UIString('(%d unused rule : %d%%)', this._unusedRules.length, this._percentUnused);
-    } else {
-      rulesCountSpan.textContent =
-          Common.UIString('(%d unused rules : %d%%)', this._unusedRules.length, this._percentUnused);
-    }
-    this.title = title;
+  constructor(coverageInfo, maxSize) {
+    super();
+    this._coverageInfo = coverageInfo;
+    this._maxSize = maxSize;
   }
 
   /**
    * @override
+   * @param {string} columnId
+   * @return {!Element}
    */
-  onpopulate() {
-    var toIndex = Math.min(this._unusedRules.length, CSSTracker.CSSTrackerListView._rulesShownAtOnce);
-    this._appendRules(0, toIndex);
-    if (toIndex < this._unusedRules.length)
-      this._appendShowAllRulesButton(toIndex);
-  }
-
-  /**
-   * @param {number} fromIndex
-   * @param {number} toIndex
-   */
-  _appendRules(fromIndex, toIndex) {
-    for (var i = fromIndex; i < toIndex; ++i) {
-      if (!this._uiSourceCode) {
-        var rule = this._unusedRules[i];
-        var contentSpan = createElementWithClass('span', 'rule-match-content');
-        contentSpan.textContent = rule.selector;
-        ruleElement.listItemElement.appendChild(contentSpan);
-        continue;
-      }
-
-      var rule = this._unusedRules[i];
-      var lineNumber = rule.range.startLine;
-      var columnNumber = rule.range.startColumn;
-
-      var anchor = Components.Linkifier.linkifyRevealable(this._uiSourceCode.uiLocation(lineNumber, columnNumber), '');
-
-      var lineNumberSpan = createElement('span');
-      lineNumberSpan.classList.add('rule-match-line-number');
-      lineNumberSpan.textContent = numberToStringWithSpacesPadding(lineNumber + 1, this._numberOfSpaces);
-      anchor.appendChild(lineNumberSpan);
-
-      var contentSpan = anchor.createChild('span', 'rule-match-content');
-      contentSpan.textContent = rule.selector;
-
-      var ruleElement = new UI.TreeElement();
-      ruleElement.selectable = true;
-      this.appendChild(ruleElement);
-      ruleElement.listItemElement.className = 'rule-match source-code';
-      ruleElement.listItemElement.appendChild(anchor);
+  createCell(columnId) {
+    var cell = this.createTD(columnId);
+    switch (columnId) {
+      case 'url':
+        cell.textContent = this._coverageInfo.url;
+        break;
+      case 'size':
+        cell.classList.add('numeric-column');
+        cell.textContent = this._coverageInfo.size;
+        break;
+      case 'unusedSize':
+        cell.classList.add('numeric-column');
+        cell.textContent = this._coverageInfo.unusedSize;
+        break;
+      case 'bars':
+        var barContainer = cell.createChild('div', 'bar-container');
+        var unusedSizeBar = barContainer.createChild('div', 'bar bar-unused-size');
+        unusedSizeBar.style.width = Math.ceil(100 * this._coverageInfo.unusedSize / this._maxSize) + '%';
+        var usedSizeBar = barContainer.createChild('div', 'bar bar-used-size');
+        usedSizeBar.style.width = Math.ceil(100 * this._coverageInfo.usedSize / this._maxSize) + '%';
+        var sizeBar = barContainer.createChild('div', 'bar bar-slack-size');
+        var slackSize = this._coverageInfo.size - this._coverageInfo.unusedSize - this._coverageInfo.usedSize;
+        sizeBar.style.width = Math.ceil(100 * slackSize / this._maxSize) + '%';
     }
-  }
-
-  /**
-   * @param {number} startMatchIndex
-   */
-  _appendShowAllRulesButton(startMatchIndex) {
-    var rulesLeftCount = this._unusedRules.length - startMatchIndex;
-    var button = UI.createTextButton('', this._showMoreRulesElementSelected.bind(this, startMatchIndex));
-    button.textContent = Common.UIString('Show all rules (%d more).', rulesLeftCount);
-    this._showAllRulesTreeElement = new UI.TreeElement(button);
-    this._showAllRulesTreeElement.selectable = false;
-    this.appendChild(this._showAllRulesTreeElement);
-  }
-
-  /**
-   * @param {number} startMatchIndex
-   */
-  _showMoreRulesElementSelected(startMatchIndex) {
-    if (!this._showAllRulesTreeElement)
-      return;
-    this.removeChild(this._showAllRulesTreeElement);
-    this._appendRules(startMatchIndex, this._unusedRules.length);
+    return cell;
   }
 };

@@ -30,21 +30,47 @@
 Resources.CookieItemsView = class extends Resources.StorageItemsView {
   /**
    * @param {!Resources.CookieTreeElement} treeElement
-   * @param {!SDK.Target} target
+   * @param {!SDK.CookieModel} model
    * @param {string} cookieDomain
    */
-  constructor(treeElement, target, cookieDomain) {
+  constructor(treeElement, model, cookieDomain) {
     super(Common.UIString('Cookies'), 'cookiesPanel');
 
     this.element.classList.add('storage-view');
 
-    this._model = SDK.CookieModel.fromTarget(target);
+    this._model = model;
     this._treeElement = treeElement;
     this._cookieDomain = cookieDomain;
 
     this._totalSize = 0;
     /** @type {?CookieTable.CookiesTable} */
     this._cookiesTable = null;
+    this.setCookiesDomain(model, cookieDomain);
+  }
+
+  /**
+   * @param {!SDK.CookieModel} model
+   * @param {string} domain
+   */
+  setCookiesDomain(model, domain) {
+    this._model = model;
+    this._cookieDomain = domain;
+    this.refreshItems();
+  }
+
+  /**
+   * @param {!SDK.Cookie} newCookie
+   * @param {?SDK.Cookie} oldCookie
+   * @param {function(?string)} callback
+   */
+  _saveCookie(newCookie, oldCookie, callback) {
+    if (!this._model) {
+      callback(Common.UIString('Unable to save the cookie'));
+      return;
+    }
+    if (oldCookie && (newCookie.name() !== oldCookie.name() || newCookie.url() !== oldCookie.url()))
+      this._model.deleteCookie(oldCookie);
+    this._model.saveCookie(newCookie, callback);
   }
 
   /**
@@ -57,14 +83,12 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
       const parsedURL = this._cookieDomain.asParsedURL();
       const domain = parsedURL ? parsedURL.host : '';
       this._cookiesTable = new CookieTable.CookiesTable(
-          this._model.target(), false, this.refreshItems.bind(this), () => this.setCanDeleteSelected(true), domain);
+          this._saveCookie.bind(this), this.refreshItems.bind(this), () => this.setCanDeleteSelected(true), domain);
     }
 
     var shownCookies = this.filter(allCookies, cookie => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);
     this._cookiesTable.setCookies(shownCookies);
     this._cookiesTable.show(this.element);
-    this._treeElement.subtitle =
-        String.sprintf(Common.UIString('%d cookies (%s)'), allCookies.length, Number.bytesToString(this._totalSize));
     this.setCanFilter(true);
     this.setCanDeleteAll(true);
     this.setCanDeleteSelected(!!this._cookiesTable.selectedCookie());

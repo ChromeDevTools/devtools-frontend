@@ -274,7 +274,8 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
   getPossibleBreakpoints(startLocation, endLocation) {
     var fulfill;
     var promise = new Promise(resolve => fulfill = resolve);
-    this._agent.getPossibleBreakpoints(startLocation.payload(), endLocation.payload(), checkErrorAndReturn.bind(this));
+    this._agent.invoke_getPossibleBreakpoints(
+        {start: startLocation.payload(), end: endLocation.payload()}, checkErrorAndReturn.bind(this));
     return promise;
 
     /**

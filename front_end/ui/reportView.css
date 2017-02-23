@@ -14,11 +14,6 @@
     overflow: auto;
 }
 
-.report-content-box p {
-    white-space: initial;
-    line-height: 18px;
-}
-
 .report-header {
     border-bottom: 1px solid rgb(230, 230, 230);
     padding: 12px 24px;

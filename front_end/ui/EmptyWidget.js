@@ -32,24 +32,28 @@
  * @unrestricted
  */
 UI.EmptyWidget = class extends UI.VBox {
+  /**
+   * @param {string} text
+   */
   constructor(text) {
     super();
     this.registerRequiredCSS('ui/emptyWidget.css');
     this.element.classList.add('empty-view');
-    this.textElement = this.element.createChild('span');
-    this._text = text;
+    this.textElement = this.element.createChild('h2');
+    this.textElement.textContent = text;
   }
 
   /**
-   * @override
+   * @return {!Element}
    */
-  wasShown() {
-    this.textElement.textContent = this._text;
+  appendParagraph() {
+    return this.element.createChild('p');
   }
 
+  /**
+   * @param {string} text
+   */
   set text(text) {
-    this._text = text;
-    if (this.isShowing())
-      this.textElement.textContent = this._text;
+    this.textElement.textContent = text;
   }
 };

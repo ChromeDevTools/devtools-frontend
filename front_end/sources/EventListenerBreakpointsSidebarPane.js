@@ -23,8 +23,7 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
     // Otherwise, inspector page reacts on drop event and tries to load the event data.
     // this._createCategory(Common.UIString("Drag"), ["drag", "drop", "dragstart", "dragend", "dragenter", "dragleave", "dragover"]);
     this._createCategory(
-        Common.UIString('Animation'),
-        ['DOMWindow.requestAnimationFrame', 'DOMWindow.cancelAnimationFrame', 'animationFrameFired'], true);
+        Common.UIString('Animation'), ['requestAnimationFrame', 'cancelAnimationFrame', 'animationFrameFired'], true);
     this._createCategory(
         Common.UIString('Canvas'), ['canvasContextCreated', 'webglErrorFired', 'webglWarningFired'], true);
     this._createCategory(
@@ -64,7 +63,8 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
       'pointercancel', 'gotpointercapture', 'lostpointercapture'
     ]);
     this._createCategory(Common.UIString('Script'), ['scriptFirstStatement', 'scriptBlockedByCSP'], true);
-    this._createCategory(Common.UIString('Timer'), ['setTimer', 'clearTimer', 'timerFired'], true);
+    this._createCategory(
+        Common.UIString('Timer'), ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'timerFired'], true);
     this._createCategory(Common.UIString('Touch'), ['touchstart', 'touchmove', 'touchend', 'touchcancel']);
     this._createCategory(Common.UIString('Window'), ['DOMWindow.close'], true);
     this._createCategory(
@@ -86,14 +86,12 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
   static eventNameForUI(eventName, auxData) {
     if (!Sources.EventListenerBreakpointsSidebarPane._eventNamesForUI) {
       Sources.EventListenerBreakpointsSidebarPane._eventNamesForUI = {
-        'instrumentation:setTimer': Common.UIString('Set Timer'),
-        'instrumentation:clearTimer': Common.UIString('Clear Timer'),
         'instrumentation:timerFired': Common.UIString('Timer Fired'),
         'instrumentation:scriptFirstStatement': Common.UIString('Script First Statement'),
         'instrumentation:scriptBlockedByCSP': Common.UIString('Script Blocked by Content Security Policy'),
-        'instrumentation:DOMWindow.requestAnimationFrame': Common.UIString('Request Animation Frame'),
-        'instrumentation:DOMWindow.cancelAnimationFrame': Common.UIString('Cancel Animation Frame'),
-        'instrumentation:DOMWindow.requestAnimationFrame.callback': Common.UIString('Animation Frame Fired'),
+        'instrumentation:requestAnimationFrame': Common.UIString('Request Animation Frame'),
+        'instrumentation:cancelAnimationFrame': Common.UIString('Cancel Animation Frame'),
+        'instrumentation:requestAnimationFrame.callback': Common.UIString('Animation Frame Fired'),
         'instrumentation:webglErrorFired': Common.UIString('WebGL Error Fired'),
         'instrumentation:webglWarningFired': Common.UIString('WebGL Warning Fired'),
         'instrumentation:Element.setInnerHTML': Common.UIString('Set innerHTML'),

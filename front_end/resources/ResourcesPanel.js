@@ -101,14 +101,15 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     this._databaseQueryViews = new Map();
     /** @type {!Map.<!Resources.Database, !Resources.DatabaseTreeElement>} */
     this._databaseTreeElements = new Map();
-    /** @type {!Map.<!Resources.DOMStorage, !Resources.DOMStorageItemsView>} */
-    this._domStorageViews = new Map();
     /** @type {!Map.<!Resources.DOMStorage, !Resources.DOMStorageTreeElement>} */
     this._domStorageTreeElements = new Map();
     /** @type {!Object.<string, !Resources.CookieItemsView>} */
     this._cookieViews = {};
     /** @type {!Object.<string, boolean>} */
     this._domains = {};
+
+    /** @type {?Resources.DOMStorageItemsView} */
+    this._domStorageView = null;
 
     this.panelSidebarElement().addEventListener('mousemove', this._onmousemove.bind(this), false);
     this.panelSidebarElement().addEventListener('mouseleave', this._onmouseleave.bind(this), false);
@@ -253,12 +254,11 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
   }
 
   _resetDOMStorage() {
-    if (this.visibleView instanceof Resources.DOMStorageItemsView) {
+    if (this.visibleView === this._domStorageView) {
       this.visibleView.detach();
       delete this.visibleView;
     }
 
-    this._domStorageViews.clear();
     this._domStorageTreeElements.clear();
     this.localStorageListTreeElement.removeChildren();
     this.sessionStorageListTreeElement.removeChildren();
@@ -461,7 +461,6 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     if (wasSelected)
       parentListTreeElement.select();
     this._domStorageTreeElements.remove(domStorage);
-    this._domStorageViews.remove(domStorage);
   }
 
   /**
@@ -584,14 +583,11 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     if (!domStorage)
       return;
 
-    var view;
-    view = this._domStorageViews.get(domStorage);
-    if (!view) {
-      view = new Resources.DOMStorageItemsView(domStorage);
-      this._domStorageViews.set(domStorage, view);
-    }
-
-    this._innerShowView(view);
+    if (!this._domStorageView)
+      this._domStorageView = new Resources.DOMStorageItemsView(domStorage);
+    else
+      this._domStorageView.setStorage(domStorage);
+    this._innerShowView(this._domStorageView);
   }
 
   /**

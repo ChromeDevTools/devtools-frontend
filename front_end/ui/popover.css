@@ -1,9 +1,4 @@
-.popover-container {
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.popover {
+:host {
     position: absolute;
     z-index: 600;
     pointer-events: none;
@@ -13,7 +8,13 @@
     border-radius: 2px;
 }
 
-.popover .content {
+.widget {
+    flex: auto;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.popover-content {
     pointer-events: auto;
     overflow: auto;
     -webkit-user-select: text;
@@ -22,12 +23,12 @@
     padding: 6px;
 }
 
-.popover .content.no-padding {
+.popover-content.no-padding {
     padding: 0;
     overflow: hidden;
 }
 
-.popover .arrow {
+.arrow {
     position: absolute;
     background-image: url(Images/popoverArrows.png);
     width: 19px;
@@ -35,22 +36,23 @@
     margin-top: -19px;
     top: 0;
     left: 0;
+    z-index: 1;
 }
 
-.-theme-with-dark-background .popover .arrow {
+:host-context(.-theme-with-dark-background) .arrow {
     -webkit-filter: invert(80%);
 }
 
-.popover.top-left-arrow .arrow {
+.arrow.top-left-arrow {
     /* The default is top-left, no styles needed. */
 }
 
-.popover.top-right-arrow .arrow {
+.arrow.top-right-arrow {
     right: 19px;
     left: auto;
 }
 
-.popover.bottom-left-arrow .arrow {
+.arrow.bottom-left-arrow {
     top: auto;
     bottom: 0;
     margin-top: 0;
@@ -58,7 +60,7 @@
     background-position: 0 -19px;
 }
 
-.popover.bottom-right-arrow .arrow {
+.arrow.bottom-right-arrow {
     right: 15px;
     left: auto;
     top: auto;

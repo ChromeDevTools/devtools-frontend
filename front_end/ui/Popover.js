@@ -36,14 +36,12 @@ UI.Popover = class extends UI.Widget {
    * @param {!UI.PopoverHelper=} popoverHelper
    */
   constructor(popoverHelper) {
-    super();
+    super(true);
     this.markAsRoot();
-    this.element.className = UI.Popover._classNamePrefix;  // Override
+    this.registerRequiredCSS('ui/popover.css');
     this._containerElement = createElementWithClass('div', 'fill popover-container');
-
-    this._popupArrowElement = this.element.createChild('div', 'arrow');
-    this._contentDiv = this.element.createChild('div', 'content');
-
+    this._popupArrowElement = this.contentElement.createChild('div', 'arrow');
+    this._contentDiv = this.contentElement.createChild('div', 'popover-content');
     this._popoverHelper = popoverHelper;
     this._hideBound = this.hide.bind(this);
   }
@@ -135,7 +133,6 @@ UI.Popover = class extends UI.Widget {
    */
   setCanShrink(canShrink) {
     this._hasFixedHeight = !canShrink;
-    this._contentDiv.classList.toggle('fixed-height', this._hasFixedHeight);
   }
 
   /**
@@ -235,8 +232,7 @@ UI.Popover = class extends UI.Widget {
           Math.max(0, anchorBox.x - newElementPosition.x - borderRadius - arrowRadius + anchorBox.width / 2) + 'px';
     }
 
-    this.element.className =
-        UI.Popover._classNamePrefix + ' ' + verticalAlignment + '-' + horizontalAlignment + '-arrow';
+    this._popupArrowElement.className = 'arrow ' + verticalAlignment + '-' + horizontalAlignment + '-arrow';
     this.element.positionAt(newElementPosition.x, newElementPosition.y - borderWidth, container);
     this.element.style.width = newElementPosition.width + borderWidth * 2 + 'px';
     this.element.style.height = newElementPosition.height + borderWidth * 2 + 'px';

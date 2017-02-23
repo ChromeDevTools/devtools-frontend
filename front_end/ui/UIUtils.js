@@ -1190,7 +1190,6 @@ UI.initializeUIUtils = function(document, themeSetting) {
 
   var body = /** @type {!Element} */ (document.body);
   UI.appendStyle(body, 'ui/inspectorStyle.css');
-  UI.appendStyle(body, 'ui/popover.css');
   UI.GlassPane.setContainer(/** @type {!Element} */ (document.body));
 };
 

@@ -610,20 +610,21 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
    */
   queryObjectContent(target, callback, objectGroupName) {
     /**
-     * @param {?Protocol.Error} error
-     * @param {!Protocol.Runtime.RemoteObject} object
+     * @param {?SDK.RemoteObject} object
      */
-    function formatResult(error, object) {
-      if (!error && object.type)
-        callback(target.runtimeModel.createRemoteObject(object));
-      else
-        callback(target.runtimeModel.createRemoteObjectFromPrimitiveValue(Common.UIString('Preview is not available')));
+    function onResult(object) {
+      callback(
+          object ||
+          target.runtimeModel.createRemoteObjectFromPrimitiveValue(Common.UIString('Preview is not available')));
     }
 
+    var heapProfilerModel = target.heapProfilerModel;
     if (this._type === 'string')
-      callback(target.runtimeModel.createRemoteObjectFromPrimitiveValue(this._name));
+      onResult(target.runtimeModel.createRemoteObjectFromPrimitiveValue(this._name));
+    else if (!heapProfilerModel)
+      onResult(null);
     else
-      target.heapProfilerAgent().getObjectByHeapObjectId(String(this.snapshotNodeId), objectGroupName, formatResult);
+      heapProfilerModel.objectForSnapshotObjectId(String(this.snapshotNodeId), objectGroupName).then(onResult);
   }
 
   updateHasChildren() {

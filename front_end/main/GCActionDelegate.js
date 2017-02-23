@@ -13,7 +13,8 @@ Main.GCActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    SDK.targetManager.targets().forEach(target => target.heapProfilerAgent().collectGarbage());
+    for (var heapProfilerModel of SDK.targetManager.models(SDK.HeapProfilerModel))
+      heapProfilerModel.collectGarbage();
     return true;
   }
 };

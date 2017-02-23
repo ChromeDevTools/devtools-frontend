@@ -464,7 +464,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     var selectedNode = /** @type {!DataGrid.DataGridNode} */ (event.data);
     var target = this._profile.target();
     if (target && selectedNode instanceof Profiler.HeapSnapshotGenericObjectNode)
-      target.heapProfilerAgent().addInspectedHeapObject(String(selectedNode.snapshotNodeId));
+      target.heapProfilerModel.addInspectedHeapObject(String(selectedNode.snapshotNodeId));
   }
 
   /**
@@ -1045,19 +1045,14 @@ Profiler.HeapSnapshotProfileType = class extends Profiler.ProfileType {
     this.addProfile(profile);
     profile.updateStatus(Common.UIString('Snapshotting\u2026'));
 
-    /**
-     * @param {?string} error
-     * @this {Profiler.HeapSnapshotProfileType}
-     */
-    function didTakeHeapSnapshot(error) {
+    target.heapProfilerModel.takeHeapSnapshot(true).then(success => {
       var profile = this.profileBeingRecorded();
       profile.title = Common.UIString('Snapshot %d', profile.uid);
       profile._finishLoad();
       this.setProfileBeingRecorded(null);
       this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, profile);
       callback();
-    }
-    target.heapProfilerAgent().takeHeapSnapshot(true, didTakeHeapSnapshot.bind(this));
+    });
   }
 
   /**
@@ -1201,7 +1196,7 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
       return;
     this._addNewProfile();
     var recordAllocationStacks = Common.moduleSetting('recordAllocationStacks').get();
-    this.profileBeingRecorded().target().heapProfilerAgent().startTrackingHeapObjects(recordAllocationStacks);
+    this.profileBeingRecorded().target().heapProfilerModel.startTrackingHeapObjects(recordAllocationStacks);
   }
 
   _addNewProfile() {
@@ -1218,10 +1213,10 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
   _stopRecordingProfile() {
     this.profileBeingRecorded().updateStatus(Common.UIString('Snapshotting\u2026'));
     /**
-     * @param {?string} error
+     * @param {boolean} success
      * @this {Profiler.HeapSnapshotProfileType}
      */
-    function didTakeHeapSnapshot(error) {
+    function didTakeHeapSnapshot(success) {
       var profile = this.profileBeingRecorded();
       if (!profile)
         return;
@@ -1231,8 +1226,8 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
       this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, profile);
     }
 
-    this.profileBeingRecorded().target().heapProfilerAgent().stopTrackingHeapObjects(
-        true, didTakeHeapSnapshot.bind(this));
+    this.profileBeingRecorded().target().heapProfilerModel.stopTrackingHeapObjects(true).then(
+        didTakeHeapSnapshot.bind(this));
     this._recording = false;
     this.dispatchEventToListeners(Profiler.TrackingHeapSnapshotProfileType.TrackingStopped);
   }

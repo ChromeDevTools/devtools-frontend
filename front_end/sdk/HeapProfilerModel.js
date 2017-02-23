@@ -33,6 +33,66 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @return {!Promise}
+   */
+  collectGarbage() {
+    return this._heapProfilerAgent.collectGarbage();
+  }
+
+  /**
+   * @param {string} objectId
+   * @return {!Promise<?string>}
+   */
+  snapshotObjectIdForObjectId(objectId) {
+    return this._heapProfilerAgent.getHeapObjectId(objectId, (error, result) => error ? null : result);
+  }
+
+  /**
+   * @param {string} snapshotObjectId
+   * @param {string} objectGroupName
+   * @return {!Promise<?SDK.RemoteObject>}
+   */
+  objectForSnapshotObjectId(snapshotObjectId, objectGroupName) {
+    return this._heapProfilerAgent.getObjectByHeapObjectId(snapshotObjectId, objectGroupName, (error, result) => {
+      if (error || !result.type)
+        return null;
+      return this.target().runtimeModel.createRemoteObject(result);
+    });
+  }
+
+  /**
+   * @param {string} snapshotObjectId
+   * @return {!Promise}
+   */
+  addInspectedHeapObject(snapshotObjectId) {
+    return this._heapProfilerAgent.addInspectedHeapObject(snapshotObjectId);
+  }
+
+  /**
+   * @param {boolean} reportProgress
+   * @return {!Promise<boolean>}
+   */
+  takeHeapSnapshot(reportProgress) {
+    return this._heapProfilerAgent.takeHeapSnapshot(reportProgress, error => !error);
+  }
+
+  /**
+   * @param {boolean} recordAllocationStacks
+   * @return {!Promise}
+   */
+  startTrackingHeapObjects(recordAllocationStacks) {
+    return this._heapProfilerAgent.startTrackingHeapObjects(recordAllocationStacks);
+  }
+
+  /**
+   * @param {boolean} reportProgress
+   * @return {!Promise<boolean>}
+   */
+  stopTrackingHeapObjects(reportProgress) {
+    return this._heapProfilerAgent.stopTrackingHeapObjects(reportProgress, error => !error);
+  }
+
+  /**
    * @param {!Array.<number>} samples
    */
   heapStatsUpdate(samples) {

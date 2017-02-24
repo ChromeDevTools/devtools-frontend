@@ -1289,6 +1289,7 @@ TimelineModel.TimelineModel.NetworkRequest = class {
     this.startTime = event.name === TimelineModel.TimelineModel.RecordType.ResourceSendRequest ? event.startTime : 0;
     this.endTime = Infinity;
     this.encodedDataLength = 0;
+    this.decodedBodyLength = 0;
     /** @type {!Array<!SDK.TracingModel.Event>} */
     this.children = [];
     /** @type {?Object} */
@@ -1321,7 +1322,7 @@ TimelineModel.TimelineModel.NetworkRequest = class {
     if (!this.responseTime &&
         (event.name === recordType.ResourceReceiveResponse || event.name === recordType.ResourceReceivedData))
       this.responseTime = event.startTime;
-    const encodedDataLength = eventData['encodedDataLength'] || 0;
+    var encodedDataLength = eventData['encodedDataLength'] || 0;
     if (event.name === recordType.ResourceReceiveResponse) {
       if (eventData['fromCache'])
         this.fromCache = true;
@@ -1333,6 +1334,9 @@ TimelineModel.TimelineModel.NetworkRequest = class {
       this.encodedDataLength += encodedDataLength;
     if (event.name === recordType.ResourceFinish && encodedDataLength)
       this.encodedDataLength = encodedDataLength;
+    var decodedBodyLength = eventData['decodedBodyLength'];
+    if (event.name === recordType.ResourceFinish && decodedBodyLength)
+      this.decodedBodyLength = decodedBodyLength;
     if (!this.url)
       this.url = eventData['url'];
     if (!this.requestMethod)

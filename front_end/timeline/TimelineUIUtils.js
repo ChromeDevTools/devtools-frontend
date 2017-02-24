@@ -802,7 +802,11 @@ Timeline.TimelineUIUtils = class {
         }
         if (eventData['encodedDataLength']) {
           contentHelper.appendTextRow(
-              Common.UIString('Encoded Data Length'), Common.UIString('%d Bytes', eventData['encodedDataLength']));
+              Common.UIString('Encoded Data'), Common.UIString('%d Bytes', eventData['encodedDataLength']));
+        }
+        if (eventData['decodedBodyLength']) {
+          contentHelper.appendTextRow(
+              Common.UIString('Decoded Body'), Common.UIString('%d Bytes', eventData['decodedBodyLength']));
         }
         break;
       case recordTypes.CompileScript:
@@ -1100,12 +1104,14 @@ Timeline.TimelineUIUtils = class {
       contentHelper.appendTextRow(Common.UIString('Mime Type'), request.mimeType);
     var lengthText = '';
     if (request.fromCache)
-      lengthText += Common.UIString('(from cache) ');
+      lengthText += Common.UIString(' (from cache)');
     if (request.fromServiceWorker)
-      lengthText += Common.UIString('(from service worker)');
+      lengthText += Common.UIString(' (from service worker)');
     if (request.encodedDataLength || !lengthText)
-      lengthText = `${Number.bytesToString(request.encodedDataLength)} ${lengthText}`;
-    contentHelper.appendTextRow(Common.UIString('Encoded Length'), lengthText);
+      lengthText = `${Number.bytesToString(request.encodedDataLength)}${lengthText}`;
+    contentHelper.appendTextRow(Common.UIString('Encoded Data'), lengthText);
+    if (request.decodedBodyLength)
+      contentHelper.appendTextRow(Common.UIString('Decoded Body'), Number.bytesToString(request.decodedBodyLength));
     const title = Common.UIString('Initiator');
     const sendRequest = request.children[0];
     const topFrame = TimelineModel.TimelineData.forEvent(sendRequest).topFrame();

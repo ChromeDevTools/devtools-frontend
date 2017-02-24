@@ -81,3 +81,7 @@
     word-break: break-word;
     margin: 0 0 5px 20px;
 }
+
+.panel-enabler-view label:only-of-type {
+    display: none;
+}

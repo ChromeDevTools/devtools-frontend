@@ -155,17 +155,12 @@ Profiler.MultiProfileLauncherView = class extends Profiler.ProfileLauncherView {
    */
   constructor(profilesPanel) {
     super(profilesPanel);
-
     this._selectedProfileTypeSetting = Common.settings.createSetting('selectedProfileType', 'CPU');
-
-    var header = this._innerContentElement.createChild('h1');
-    header.textContent = Common.UIString('Select profiling type');
-
+    this._header = this._innerContentElement.createChild('h1');
     this._profileTypeSelectorForm = this._innerContentElement.createChild('form');
-
     this._innerContentElement.createChild('div', 'flexible-space');
-
-    this._typeIdToOptionElement = {};
+    /** @type {!Map<string, !HTMLOptionElement>} */
+    this._typeIdToOptionElement = new Map();
   }
 
   /**
@@ -176,23 +171,27 @@ Profiler.MultiProfileLauncherView = class extends Profiler.ProfileLauncherView {
     var labelElement = UI.createRadioLabel('profile-type', profileType.name);
     this._profileTypeSelectorForm.appendChild(labelElement);
     var optionElement = labelElement.radioElement;
-    this._typeIdToOptionElement[profileType.id] = optionElement;
+    this._typeIdToOptionElement.set(profileType.id, optionElement);
     optionElement._profileType = profileType;
     optionElement.style.hidden = true;
     optionElement.addEventListener('change', this._profileTypeChanged.bind(this, profileType), false);
-    var descriptionElement = labelElement.createChild('p');
+    var descriptionElement = this._profileTypeSelectorForm.createChild('p');
     descriptionElement.textContent = profileType.description;
     var decorationElement = profileType.decorationElement();
     if (decorationElement)
       labelElement.appendChild(decorationElement);
+    if (this._typeIdToOptionElement.size > 1)
+      this._header.textContent = Common.UIString('Select profiling type');
+    else
+      this._header.textContent = profileType.name;
   }
 
   restoreSelectedProfileType() {
     var typeId = this._selectedProfileTypeSetting.get();
-    if (!(typeId in this._typeIdToOptionElement))
-      typeId = Object.keys(this._typeIdToOptionElement)[0];
-    this._typeIdToOptionElement[typeId].checked = true;
-    var type = this._typeIdToOptionElement[typeId]._profileType;
+    if (!this._typeIdToOptionElement.has(typeId))
+      typeId = this._typeIdToOptionElement.keys().next().value;
+    this._typeIdToOptionElement.get(typeId).checked = true;
+    var type = this._typeIdToOptionElement.get(typeId)._profileType;
     this.dispatchEventToListeners(Profiler.MultiProfileLauncherView.Events.ProfileTypeSelected, type);
   }
 

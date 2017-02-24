@@ -86,7 +86,9 @@ Devices.DevicesView = class extends UI.VBox {
    */
   _devicesUpdated(event) {
     this._devices =
-        /** @type {!Array.<!Adb.Device>} */ (event.data).slice().filter(d => d.adbSerial.toUpperCase() !== 'WEBRTC');
+        /** @type {!Array.<!Adb.Device>} */ (event.data)
+            .slice()
+            .filter(d => d.adbSerial.toUpperCase() !== 'WEBRTC' && d.adbSerial.toUpperCase() !== 'LOCALHOST');
     for (var device of this._devices) {
       if (!device.adbConnected)
         device.adbModel = Common.UIString('Unknown');

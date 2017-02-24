@@ -10,11 +10,11 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('sources/threadsSidebarPane.css');
 
-    this._availableNodeTargetsElement = this.element.createChild('div', 'hidden available-node-targets');
-
     /** @type {!UI.ListControl<!SDK.DebuggerModel>} */
     this._list = new UI.ListControl(this, UI.ListMode.NonViewport);
     this.contentElement.appendChild(this._list.element);
+
+    this._availableNodeTargetsElement = this.contentElement.createChild('div', 'hidden available-node-targets');
 
     UI.context.addFlavorChangeListener(SDK.Target, this._targetFlavorChanged, this);
 

@@ -13,6 +13,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     this._reportView.show(this.contentElement);
 
     this._toolbar = this._reportView.createToolbar();
+    this._toolbar.makeWrappable(false, true);
 
     /** @type {!Map<!SDK.ServiceWorkerRegistration, !Resources.ServiceWorkersView.Section>} */
     this._sections = new Map();
@@ -28,9 +29,9 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     var fallbackToNetwork = new UI.ToolbarSettingCheckbox(
         bypassServiceWorkerSetting, Common.UIString('Bypass Service Worker and load resources from the network'));
     this._toolbar.appendToolbarItem(fallbackToNetwork);
-    this._toolbar.appendSpacer();
     this._showAllCheckbox = new UI.ToolbarCheckbox(
         Common.UIString('Show all'), Common.UIString('Show all Service Workers regardless of the origin'));
+    this._showAllCheckbox.setRightAligned(true);
     this._showAllCheckbox.inputElement.addEventListener('change', this._updateSectionVisibility.bind(this), false);
     this._toolbar.appendToolbarItem(this._showAllCheckbox);
 

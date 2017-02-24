@@ -28,6 +28,10 @@
     flex-direction: row-reverse;
 }
 
+.toolbar-shadow.toolbar-grow-vertical {
+    height: initial;
+}
+
 .toolbar-shadow.vertical {
     flex-direction: column;
     height: auto;

@@ -194,12 +194,15 @@ UI.Toolbar = class {
 
   /**
    * @param {boolean=} reverse
+   * @param {boolean=} growVertically
    */
-  makeWrappable(reverse) {
+  makeWrappable(reverse, growVertically) {
     this._contentElement.classList.add('wrappable');
     this._reverse = !!reverse;
     if (reverse)
       this._contentElement.classList.add('wrappable-reverse');
+    if (growVertically)
+      this._contentElement.classList.add('toolbar-grow-vertical');
   }
 
   makeVertical() {
@@ -428,6 +431,10 @@ UI.ToolbarItem = class extends Common.Object {
     this._visible = x;
     if (this._toolbar && !(this instanceof UI.ToolbarSeparator))
       this._toolbar._hideSeparatorDupes();
+  }
+
+  setRightAligned(alignRight) {
+    this.element.classList.toggle('toolbar-item-right-aligned', alignRight);
   }
 };
 

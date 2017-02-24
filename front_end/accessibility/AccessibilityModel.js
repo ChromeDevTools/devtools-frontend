@@ -142,7 +142,7 @@ Accessibility.AccessibilityNode = class extends SDK.SDKObject {
   highlightDOMNode() {
     if (!this.isDOMNode())
       return;
-    this.deferredDOMNode().resolvePromise().then((node) => {
+    this.deferredDOMNode().resolvePromise().then(node => {
       SDK.DOMModel.fromTarget(this.target()).nodeHighlightRequested(node.id);
     });
   }
@@ -180,7 +180,7 @@ Accessibility.AccessibilityNode = class extends SDK.SDKObject {
     if (!this._childIds || !this._childIds.length)
       return false;
 
-    return !this._childIds.some((id) => this._accessibilityModel.axNodeForId(id) !== undefined);
+    return !this._childIds.some(id => this._accessibilityModel.axNodeForId(id) !== undefined);
   }
 
   /**

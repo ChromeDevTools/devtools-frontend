@@ -16,7 +16,7 @@ Network.BlockedURLsPane = class extends UI.VBox {
     this._blockedURLsSetting.addChangeListener(this._update, this);
 
     this._toolbar = new UI.Toolbar('', this.contentElement);
-    this._toolbar.element.addEventListener('click', (e) => e.consume());
+    this._toolbar.element.addEventListener('click', e => e.consume());
     var addButton = new UI.ToolbarButton(Common.UIString('Add pattern'), 'largeicon-add');
     addButton.addEventListener(UI.ToolbarButton.Events.Click, this._addButtonClicked, this);
     this._toolbar.appendToolbarItem(addButton);

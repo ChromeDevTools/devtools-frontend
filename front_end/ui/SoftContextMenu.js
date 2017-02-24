@@ -61,7 +61,7 @@ UI.SoftContextMenu = class {
     this.element.style.left = (this._parentMenu ? x - subMenuOverlap : x) + 'px';
 
     this._contextMenuElement.tabIndex = 0;
-    this._contextMenuElement.addEventListener('mouseup', (e) => e.consume(), false);
+    this._contextMenuElement.addEventListener('mouseup', e => e.consume(), false);
     this._contextMenuElement.addEventListener('keydown', this._menuKeyDown.bind(this), false);
 
     for (var i = 0; i < this._items.length; ++i)

@@ -866,8 +866,7 @@
 
   TestSuite.prototype.testTempFile = function() {
     this.takeControl();
-    Bindings.TempFile.create('test-file', 'test')
-        .then(() => this.releaseControl(), (error) => this.fail(String(error)));
+    Bindings.TempFile.create('test-file', 'test').then(() => this.releaseControl(), error => this.fail(String(error)));
   };
 
   TestSuite.prototype.waitForTestResultsInConsole = function() {

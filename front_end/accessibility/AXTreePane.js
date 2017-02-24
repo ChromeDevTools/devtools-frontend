@@ -71,7 +71,7 @@ Accessibility.AXTreePane = class extends Accessibility.AccessibilitySubPane {
     } else {
       // Only set the node for the accessibility panel, not the Elements tree.
       var axSidebarView = this._axSidebarView;
-      axNode.deferredDOMNode().resolve((node) => {
+      axNode.deferredDOMNode().resolve(node => {
         axSidebarView.setNode(node);
       });
     }
@@ -321,4 +321,3 @@ Accessibility.AXNodeTreeElement.RoleStyles = {
   internalRole: 'ax-internal-role',
   role: 'ax-role',
 };
-

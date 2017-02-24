@@ -142,7 +142,7 @@ Bindings.BlackboxManager = class {
     if (!previousScriptState)
       return Promise.resolve();
 
-    var hasBlackboxedMappings = sourceMap.sourceURLs().some((url) => this.isBlackboxedURL(url));
+    var hasBlackboxedMappings = sourceMap.sourceURLs().some(url => this.isBlackboxedURL(url));
     var mappings = hasBlackboxedMappings ? sourceMap.mappings().slice() : [];
     if (!mappings.length) {
       if (previousScriptState.length > 0)

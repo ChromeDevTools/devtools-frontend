@@ -112,10 +112,10 @@ Sources.SourcesPanel = class extends UI.Panel {
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerPaused, this._debuggerPaused, this);
     SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed,
-        (event) => this._debuggerResumed(/** @type {!SDK.DebuggerModel} */ (event.data)));
+        event => this._debuggerResumed(/** @type {!SDK.DebuggerModel} */ (event.data)));
     SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared,
-        (event) => this._debuggerResumed(/** @type {!SDK.DebuggerModel} */ (event.data)));
+        event => this._debuggerResumed(/** @type {!SDK.DebuggerModel} */ (event.data)));
     SDK.targetManager.addModelListener(
         SDK.SubTargetsManager, SDK.SubTargetsManager.Events.AvailableNodeTargetsChanged,
         this._availableNodeTargetsChanged, this);

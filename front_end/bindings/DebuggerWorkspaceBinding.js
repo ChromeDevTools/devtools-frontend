@@ -266,7 +266,7 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
    */
   _reset(debuggerModel) {
     var modelData = this._debuggerModelToData.get(debuggerModel);
-    modelData.callFrameLocations.valuesArray().forEach((location) => this._removeLiveLocation(location));
+    modelData.callFrameLocations.valuesArray().forEach(location => this._removeLiveLocation(location));
     modelData.callFrameLocations.clear();
   }
 

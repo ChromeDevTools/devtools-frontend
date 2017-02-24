@@ -212,7 +212,7 @@ Accessibility.ARIAAttributesPane.ARIAAttributePrompt = class extends UI.TextProm
     prefix = prefix.toLowerCase();
     if (!prefix && !force && (this._isEditingName || expression))
       return Promise.resolve([]);
-    return Promise.resolve(this._ariaCompletions.filter((value) => value.startsWith(prefix)).map(c => ({text: c})));
+    return Promise.resolve(this._ariaCompletions.filter(value => value.startsWith(prefix)).map(c => ({text: c})));
   }
 };
 

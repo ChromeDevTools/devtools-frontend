@@ -117,7 +117,7 @@ SDK.WebSocketConnection = class {
     this._socket = new WebSocket(url);
     this._socket.onerror = this._onError.bind(this);
     this._socket.onopen = this._onOpen.bind(this);
-    this._socket.onmessage = (messageEvent) => params.onMessage.call(null, /** @type {string} */ (messageEvent.data));
+    this._socket.onmessage = messageEvent => params.onMessage.call(null, /** @type {string} */ (messageEvent.data));
     this._socket.onclose = this._onClose.bind(this);
 
     this._onDisconnect = params.onDisconnect;

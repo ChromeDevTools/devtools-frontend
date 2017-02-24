@@ -1973,7 +1973,7 @@ Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends UI.TreeElemen
     for (var i = 0; i < invalidations.length; i++) {
       var invalidation = invalidations[i];
       var invalidationNode = this._createInvalidationNode(invalidation, false);
-      invalidationNode.addEventListener('click', (e) => e.consume(), false);
+      invalidationNode.addEventListener('click', e => e.consume(), false);
       if (invalidationNode && !invalidationNodeIdMap[invalidation.nodeId]) {
         invalidationNodes.push(invalidationNode);
         invalidationNodeIdMap[invalidation.nodeId] = true;

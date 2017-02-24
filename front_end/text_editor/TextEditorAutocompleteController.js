@@ -90,7 +90,7 @@ TextEditor.TextEditorAutocompleteController = class {
   _removeWordsFromText(text) {
     Common.TextUtils.textToWords(
         text, /** @type {function(string):boolean} */ (this._config.isWordChar),
-        (word) => this._dictionary.removeWord(word));
+        word => this._dictionary.removeWord(word));
   }
 
   /**
@@ -126,7 +126,7 @@ TextEditor.TextEditorAutocompleteController = class {
     var completions = this._dictionary.wordsWithPrefix(this._textEditor.text(queryRange));
     var substituteWord = this._textEditor.text(substituteRange);
     if (this._dictionary.wordCount(substituteWord) === 1)
-      completions = completions.filter((word) => word !== substituteWord);
+      completions = completions.filter(word => word !== substituteWord);
 
     completions.sort((a, b) => this._dictionary.wordCount(b) - this._dictionary.wordCount(a) || a.length - b.length);
     return Promise.resolve(completions.map(item => ({text: item})));

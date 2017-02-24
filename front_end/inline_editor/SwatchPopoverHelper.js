@@ -10,7 +10,7 @@ InlineEditor.SwatchPopoverHelper = class extends Common.Object {
     this._popover = new UI.Popover();
     this._popover.setCanShrink(false);
     this._popover.setNoPadding(true);
-    this._popover.element.addEventListener('mousedown', (e) => e.consume(), false);
+    this._popover.element.addEventListener('mousedown', e => e.consume(), false);
 
     this._hideProxy = this.hide.bind(this, true);
     this._boundOnKeyDown = this._onKeyDown.bind(this);

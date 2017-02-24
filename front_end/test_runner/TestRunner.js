@@ -9,9 +9,9 @@ self.testRunner;
 
 TestRunner.executeTestScript = function() {
   fetch(`${Runtime.queryParam('test')}`)
-      .then((data) => data.text())
-      .then((testScript) => eval(`(function(){${testScript}})()`))
-      .catch((error) => {
+      .then(data => data.text())
+      .then(testScript => eval(`(function(){${testScript}})()`))
+      .catch(error => {
         TestRunner.addResult(`Unable to execute test script because of error: ${error}`);
         TestRunner.completeTest();
       });

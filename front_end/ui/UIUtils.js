@@ -1942,7 +1942,7 @@ UI.createExternalLink = function(url, linkText, className, preventClick) {
     a.href = href;
     a.classList.add('devtools-link');
     if (!preventClick) {
-      a.addEventListener('click', (event) => {
+      a.addEventListener('click', event => {
         event.consume(true);
         InspectorFrontendHost.openInNewTab(/** @type {string} */ (href));
       }, false);

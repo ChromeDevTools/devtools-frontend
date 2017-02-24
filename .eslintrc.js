@@ -42,6 +42,7 @@ module.exports = {
         "curly": [2, "multi-or-nest", "consistent"],
         "new-parens": 2,
         "func-call-spacing": 2,
+        "arrow-parens": [2, "as-needed"],
 
         // anti-patterns
         "no-with": 2,

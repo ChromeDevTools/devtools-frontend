@@ -314,7 +314,7 @@ SDK.TargetManager = class extends Common.Object {
    */
   _observersForTarget(target) {
     return this._observers.filter(
-        (observer) => target.hasAllCapabilities(observer[this._observerCapabiliesMaskSymbol] || 0));
+        observer => target.hasAllCapabilities(observer[this._observerCapabiliesMaskSymbol] || 0));
   }
 
   /**
@@ -354,7 +354,7 @@ SDK.TargetManager = class extends Common.Object {
     if (!capabilitiesMask)
       return this._targets.slice();
     else
-      return this._targets.filter((target) => target.hasAllCapabilities(capabilitiesMask || 0));
+      return this._targets.filter(target => target.hasAllCapabilities(capabilitiesMask || 0));
   }
 
   /**

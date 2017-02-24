@@ -196,8 +196,8 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
       var trace = propertyTraces.get(propertyName);
       if (trace) {
         var activeProperty = this._renderPropertyTrace(cssModel, matchedStyles, nodeStyle.node, treeElement, trace);
-        treeElement.listItemElement.addEventListener('mousedown', (e) => e.consume(), false);
-        treeElement.listItemElement.addEventListener('dblclick', (e) => e.consume(), false);
+        treeElement.listItemElement.addEventListener('mousedown', e => e.consume(), false);
+        treeElement.listItemElement.addEventListener('dblclick', e => e.consume(), false);
         treeElement.listItemElement.addEventListener('click', handleClick.bind(null, treeElement), false);
         var gotoSourceElement = UI.Icon.create('smallicon-arrow-in-circle', 'goto-source-icon');
         gotoSourceElement.addEventListener('click', this._navigateToSource.bind(this, activeProperty));

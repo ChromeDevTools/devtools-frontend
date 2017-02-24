@@ -1,0 +1,26 @@
+{
+  "extensions": [
+    {
+      "type": "view",
+      "location": "drawer-view",
+      "id": "release-note",
+      "title": "What's New?",
+      "persistence": "closeable",
+      "order": 1,
+      "className": "Help.ReleaseNoteView",
+      "experiment": "releaseNote"
+    }
+  ],
+  "dependencies": [
+    "ui",
+    "host"
+  ],
+  "scripts": [
+    "Help.js",
+    "ReleaseNote.js",
+    "ReleaseNoteText.js"
+  ],
+  "resources": [
+    "releaseNote.css"
+  ]
+}

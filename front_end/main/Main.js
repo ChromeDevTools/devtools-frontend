@@ -107,6 +107,7 @@ Main.Main = class {
     Runtime.experiments.register('objectPreviews', 'Object previews', true);
     Runtime.experiments.register('persistence2', 'Persistence 2.0');
     Runtime.experiments.register('persistenceValidation', 'Validate persistence bindings');
+    Runtime.experiments.register('releaseNote', 'Release note', true);
     Runtime.experiments.register('requestBlocking', 'Request blocking', true);
     Runtime.experiments.register('timelineShowAllEvents', 'Show all events on Timeline', true);
     Runtime.experiments.register('timelineShowAllProcesses', 'Show all processes on Timeline', true);
@@ -130,6 +131,8 @@ Main.Main = class {
         Runtime.experiments.enableForTest('cssTrackerPanel');
       if (testPath.indexOf('audits2/') !== -1)
         Runtime.experiments.enableForTest('audits2');
+      if (testPath.indexOf('help/') !== -1)
+        Runtime.experiments.enableForTest('releaseNote');
     }
 
     Runtime.experiments.setDefaultExperiments(['persistenceValidation', 'timelineMultipleMainViews']);
@@ -278,6 +281,8 @@ Main.Main = class {
     console.timeStamp('Main._lateInitialization');
     this._registerShortcuts();
     Extensions.extensionServer.initializeExtensions();
+    if (!Host.isUnderTest())
+      Help.showReleaseNoteIfNeeded();
   }
 
   _registerForwardedShortcuts() {

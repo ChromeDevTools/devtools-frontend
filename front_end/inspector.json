@@ -54,7 +54,8 @@
         { "name": "heap_snapshot_model" },
         { "name": "network_conditions", "type": "autostart"},
         { "name": "event_listeners" },
-        { "name": "object_ui", "type": "autostart"}
+        { "name": "object_ui", "type": "autostart"},
+        { "name": "help", "type": "autostart"}
     ],
 
     "has_html": true

@@ -427,7 +427,8 @@
         "host",
         "platform",
         "sdk",
-        "persistence"
+        "persistence",
+        "help"
     ],
     "scripts": [
         "RenderingOptions.js",

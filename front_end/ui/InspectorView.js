@@ -227,6 +227,14 @@ UI.InspectorView = class extends UI.VBox {
   }
 
   /**
+   * @param {string} id
+   * @param {boolean=} userGesture
+   */
+  closeDrawerTab(id, userGesture) {
+    this._drawerTabbedPane.closeTab(id, userGesture);
+  }
+
+  /**
    * @param {!Event} event
    */
   _keyDown(event) {

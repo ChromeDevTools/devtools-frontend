@@ -27,8 +27,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
- * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
 Profiler.ProfileLauncherView = class extends UI.VBox {
@@ -37,11 +37,8 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
    */
   constructor(profilesPanel) {
     super();
-
     this._panel = profilesPanel;
-
-    this.element.classList.add('profile-launcher-view');
-    this.element.classList.add('panel-enabler-view');
+    this.element.classList.add('profile-launcher-view', 'panel-enabler-view');
 
     this._contentElement = this.element.createChild('div', 'profile-launcher-view-content');
     this._innerContentElement = this._contentElement.createChild('div');
@@ -55,51 +52,13 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
     this._recordButtonEnabled = true;
     this._loadButton = UI.createTextButton(Common.UIString('Load'), this._loadButtonClicked.bind(this), 'load-profile');
     this._contentElement.appendChild(this._loadButton);
-    SDK.targetManager.observeTargets(this);
-  }
 
-  /**
-   * @return {?UI.SearchableView}
-   */
-  searchableView() {
-    return null;
-  }
-
-  /**
-   * @override
-   * @param {!SDK.Target} target
-   */
-  targetAdded(target) {
-    this._updateLoadButtonLayout();
-  }
-
-  /**
-   * @override
-   * @param {!SDK.Target} target
-   */
-  targetRemoved(target) {
-    this._updateLoadButtonLayout();
-  }
-
-  _updateLoadButtonLayout() {
-    this._loadButton.classList.toggle('multi-target', SDK.targetManager.targets(SDK.Target.Capability.JS).length > 1);
-  }
-
-  /**
-   * @param {!Profiler.ProfileType} profileType
-   */
-  addProfileType(profileType) {
-    var descriptionElement = this._innerContentElement.createChild('h1');
-    descriptionElement.textContent = profileType.description;
-    var decorationElement = profileType.decorationElement();
-    if (decorationElement)
-      this._innerContentElement.appendChild(decorationElement);
-    this._isInstantProfile = profileType.isInstantProfile();
-    this._isEnabled = profileType.isEnabled();
-  }
-
-  _controlButtonClicked() {
-    this._panel.toggleRecord();
+    this._selectedProfileTypeSetting = Common.settings.createSetting('selectedProfileType', 'CPU');
+    this._header = this._innerContentElement.createChild('h1');
+    this._profileTypeSelectorForm = this._innerContentElement.createChild('form');
+    this._innerContentElement.createChild('div', 'flexible-space');
+    /** @type {!Map<string, !HTMLOptionElement>} */
+    this._typeIdToOptionElement = new Map();
   }
 
   _loadButtonClicked() {
@@ -122,6 +81,8 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
       this._controlButton.classList.remove('running');
       this._controlButton.textContent = Common.UIString('Start');
     }
+    for (var item of this._typeIdToOptionElement.values())
+      item.disabled = !!this._isProfiling;
   }
 
   profileStarted() {
@@ -144,27 +105,8 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
     this._isEnabled = profileType.isEnabled();
     this._updateControls();
   }
-};
-
-/**
- * @unrestricted
- */
-Profiler.MultiProfileLauncherView = class extends Profiler.ProfileLauncherView {
-  /**
-   * @param {!Profiler.ProfilesPanel} profilesPanel
-   */
-  constructor(profilesPanel) {
-    super(profilesPanel);
-    this._selectedProfileTypeSetting = Common.settings.createSetting('selectedProfileType', 'CPU');
-    this._header = this._innerContentElement.createChild('h1');
-    this._profileTypeSelectorForm = this._innerContentElement.createChild('form');
-    this._innerContentElement.createChild('div', 'flexible-space');
-    /** @type {!Map<string, !HTMLOptionElement>} */
-    this._typeIdToOptionElement = new Map();
-  }
 
   /**
-   * @override
    * @param {!Profiler.ProfileType} profileType
    */
   addProfileType(profileType) {
@@ -192,57 +134,26 @@ Profiler.MultiProfileLauncherView = class extends Profiler.ProfileLauncherView {
       typeId = this._typeIdToOptionElement.keys().next().value;
     this._typeIdToOptionElement.get(typeId).checked = true;
     var type = this._typeIdToOptionElement.get(typeId)._profileType;
-    this.dispatchEventToListeners(Profiler.MultiProfileLauncherView.Events.ProfileTypeSelected, type);
+    this.dispatchEventToListeners(Profiler.ProfileLauncherView.Events.ProfileTypeSelected, type);
   }
 
-  /**
-   * @override
-   */
   _controlButtonClicked() {
     this._panel.toggleRecord();
-  }
-
-  /**
-   * @override
-   */
-  _updateControls() {
-    super._updateControls();
-    var items = this._profileTypeSelectorForm.elements;
-    for (var i = 0; i < items.length; ++i) {
-      if (items[i].type === 'radio')
-        items[i].disabled = this._isProfiling;
-    }
   }
 
   /**
    * @param {!Profiler.ProfileType} profileType
    */
   _profileTypeChanged(profileType) {
-    this.dispatchEventToListeners(Profiler.MultiProfileLauncherView.Events.ProfileTypeSelected, profileType);
+    this.dispatchEventToListeners(Profiler.ProfileLauncherView.Events.ProfileTypeSelected, profileType);
     this._isInstantProfile = profileType.isInstantProfile();
     this._isEnabled = profileType.isEnabled();
     this._updateControls();
     this._selectedProfileTypeSetting.set(profileType.id);
   }
-
-  /**
-   * @override
-   */
-  profileStarted() {
-    this._isProfiling = true;
-    this._updateControls();
-  }
-
-  /**
-   * @override
-   */
-  profileFinished() {
-    this._isProfiling = false;
-    this._updateControls();
-  }
 };
 
 /** @enum {symbol} */
-Profiler.MultiProfileLauncherView.Events = {
+Profiler.ProfileLauncherView.Events = {
   ProfileTypeSelected: Symbol('ProfileTypeSelected')
 };

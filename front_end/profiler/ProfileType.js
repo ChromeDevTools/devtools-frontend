@@ -199,9 +199,18 @@ Profiler.ProfileType = class extends Common.Object {
   profileBeingRecordedRemoved() {
   }
 
-  reset() {
-    this._profiles.slice(0).forEach(this._disposeProfile.bind(this));
-    this._profiles = [];
+  /**
+   * @param {!SDK.Target=} target
+   */
+  reset(target) {
+    var profilesLeft = [];
+    for (var profile of this._profiles.slice()) {
+      if (!target || profile.target() === target)
+        this._disposeProfile(profile);
+      else
+        profilesLeft.push(profile);
+    }
+    this._profiles = profilesLeft;
     this._nextProfileUid = 1;
   }
 

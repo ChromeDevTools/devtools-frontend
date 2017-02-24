@@ -37,7 +37,7 @@ Profiler.HeapProfilerPanel = class extends Profiler.ProfilesPanel {
     if (!heapProfiles.length)
       return;
 
-    var heapProfilerModel = object.target().heapProfilerModel;
+    var heapProfilerModel = object.target().model(SDK.HeapProfilerModel);
     if (!heapProfilerModel)
       return;
 
@@ -46,7 +46,7 @@ Profiler.HeapProfilerPanel = class extends Profiler.ProfilesPanel {
      * @this {Profiler.ProfilesPanel}
      */
     function revealInView(viewName) {
-      heapProfilerModel.snapshotObjectIdForObjectId(objectId, result => {
+      heapProfilerModel.snapshotObjectIdForObjectId(objectId).then(result => {
         if (this.isShowing() && result)
           this.showObject(result, viewName);
       });

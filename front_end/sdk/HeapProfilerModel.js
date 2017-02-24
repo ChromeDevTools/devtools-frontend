@@ -25,7 +25,7 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise.<?Protocol.Profiler.Profile>}
+   * @return {!Promise.<?Protocol.HeapProfiler.SamplingHeapProfile>}
    */
   stopSampling() {
     this._isRecording = false;
@@ -126,12 +126,11 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
   }
 
   resetProfiles() {
-    this.dispatchEventToListeners(SDK.HeapProfilerModel.Events.ResetProfiles);
+    this.dispatchEventToListeners(SDK.HeapProfilerModel.Events.ResetProfiles, this);
   }
 };
 
-// TODO(dgozman): should be JS.
-SDK.SDKModel.register(SDK.HeapProfilerModel, SDK.Target.Capability.None);
+SDK.SDKModel.register(SDK.HeapProfilerModel, SDK.Target.Capability.JS);
 
 /** @enum {symbol} */
 SDK.HeapProfilerModel.Events = {

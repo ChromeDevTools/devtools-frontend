@@ -32,8 +32,11 @@ Profiler.TargetsComboBoxController = class {
     option.text = target.name();
     option.__target = target;
     this._targetToOption.set(target, option);
-    if (UI.context.flavor(SDK.Target) === target)
+    if (UI.context.flavor(SDK.Target) === target) {
       this._selectElement.selectedIndex = Array.prototype.indexOf.call(/** @type {?} */ (this._selectElement), option);
+      UI.context.setFlavor(SDK.HeapProfilerModel, target.model(SDK.HeapProfilerModel));
+      UI.context.setFlavor(SDK.CPUProfilerModel, target.model(SDK.CPUProfilerModel));
+    }
 
     this._updateVisibility();
   }
@@ -63,6 +66,8 @@ Profiler.TargetsComboBoxController = class {
       return;
 
     UI.context.setFlavor(SDK.Target, selectedOption.__target);
+    UI.context.setFlavor(SDK.HeapProfilerModel, selectedOption.__target.model(SDK.HeapProfilerModel));
+    UI.context.setFlavor(SDK.CPUProfilerModel, selectedOption.__target.model(SDK.CPUProfilerModel));
   }
 
   _updateVisibility() {
@@ -75,10 +80,14 @@ Profiler.TargetsComboBoxController = class {
    */
   _targetChangedExternally(event) {
     var target = /** @type {?SDK.Target} */ (event.data);
-    if (target) {
-      var option = /** @type {!Element} */ (this._targetToOption.get(target));
-      this._select(option);
-    }
+    if (!target)
+      return;
+    var option = this._targetToOption.get(target);
+    if (!option)
+      return;
+    this._select(option);
+    UI.context.setFlavor(SDK.HeapProfilerModel, target.model(SDK.HeapProfilerModel));
+    UI.context.setFlavor(SDK.CPUProfilerModel, target.model(SDK.CPUProfilerModel));
   }
 
   /**

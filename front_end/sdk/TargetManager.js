@@ -257,8 +257,6 @@ SDK.TargetManager = class extends Common.Object {
     target.subTargetsManager = target.model(SDK.SubTargetsManager);
     /** @type {!SDK.CPUProfilerModel} */
     target.cpuProfilerModel = /** @type {!SDK.CPUProfilerModel} */ (target.model(SDK.CPUProfilerModel));
-    /** @type {!SDK.HeapProfilerModel} */
-    target.heapProfilerModel = /** @type {!SDK.HeapProfilerModel} */ (target.model(SDK.HeapProfilerModel));
 
     target.tracingManager = new SDK.TracingManager(target);
 

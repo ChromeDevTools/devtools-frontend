@@ -618,7 +618,7 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
           target.runtimeModel.createRemoteObjectFromPrimitiveValue(Common.UIString('Preview is not available')));
     }
 
-    var heapProfilerModel = target.heapProfilerModel;
+    var heapProfilerModel = target.model(SDK.HeapProfilerModel);
     if (this._type === 'string')
       onResult(target.runtimeModel.createRemoteObjectFromPrimitiveValue(this._name));
     else if (!heapProfilerModel)

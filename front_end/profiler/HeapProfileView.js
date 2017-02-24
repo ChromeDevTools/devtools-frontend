@@ -96,16 +96,16 @@ Profiler.SamplingHeapProfileType = class extends Profiler.ProfileType {
   }
 
   startRecordingProfile() {
-    var target = UI.context.flavor(SDK.Target);
-    if (this.profileBeingRecorded() || !target)
+    var heapProfilerModel = UI.context.flavor(SDK.HeapProfilerModel);
+    if (this.profileBeingRecorded() || !heapProfilerModel)
       return;
-    var profile = new Profiler.SamplingHeapProfileHeader(target, this);
+    var profile = new Profiler.SamplingHeapProfileHeader(heapProfilerModel.target(), this);
     this.setProfileBeingRecorded(profile);
     SDK.targetManager.suspendAllTargets();
     this.addProfile(profile);
     profile.updateStatus(Common.UIString('Recording\u2026'));
     this._recording = true;
-    target.heapProfilerModel.startSampling();
+    heapProfilerModel.startSampling();
   }
 
   stopRecordingProfile() {
@@ -136,8 +136,9 @@ Profiler.SamplingHeapProfileType = class extends Profiler.ProfileType {
       this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, recordedProfile);
     }
 
-    this.profileBeingRecorded().target()
-        .heapProfilerModel.stopSampling()
+    var heapProfilerModel =
+        /** @type {!SDK.HeapProfilerModel} */ (this.profileBeingRecorded().target().model(SDK.HeapProfilerModel));
+    heapProfilerModel.stopSampling()
         .then(didStopProfiling.bind(this))
         .then(SDK.targetManager.resumeAllTargets.bind(SDK.targetManager))
         .then(fireEvent.bind(this));

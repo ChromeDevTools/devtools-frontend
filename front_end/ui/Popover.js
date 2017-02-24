@@ -51,20 +51,17 @@ UI.Popover = class extends UI.Widget {
    * @param {!Element|!AnchorBox} anchor
    * @param {?number=} preferredWidth
    * @param {?number=} preferredHeight
-   * @param {?UI.Popover.Orientation=} arrowDirection
    */
-  showForAnchor(element, anchor, preferredWidth, preferredHeight, arrowDirection) {
-    this._innerShow(null, element, anchor, preferredWidth, preferredHeight, arrowDirection);
+  showForAnchor(element, anchor, preferredWidth, preferredHeight) {
+    this._innerShow(null, element, anchor, preferredWidth, preferredHeight);
   }
 
   /**
    * @param {!UI.Widget} view
    * @param {!Element|!AnchorBox} anchor
-   * @param {?number=} preferredWidth
-   * @param {?number=} preferredHeight
    */
-  showView(view, anchor, preferredWidth, preferredHeight) {
-    this._innerShow(view, view.element, anchor, preferredWidth, preferredHeight);
+  showView(view, anchor) {
+    this._innerShow(view, view.element, anchor);
   }
 
   /**
@@ -73,11 +70,8 @@ UI.Popover = class extends UI.Widget {
    * @param {!Element|!AnchorBox} anchor
    * @param {?number=} preferredWidth
    * @param {?number=} preferredHeight
-   * @param {?UI.Popover.Orientation=} arrowDirection
    */
-  _innerShow(view, contentElement, anchor, preferredWidth, preferredHeight, arrowDirection) {
-    if (this._disposed)
-      return;
+  _innerShow(view, contentElement, anchor, preferredWidth, preferredHeight) {
     this._contentElement = contentElement;
 
     // This should not happen, but we hide previous popup to be on the safe side.
@@ -102,7 +96,7 @@ UI.Popover = class extends UI.Widget {
     else
       this._contentDiv.appendChild(this._contentElement);
 
-    this.positionElement(anchor, this._preferredWidth, this._preferredHeight, arrowDirection);
+    this.positionElement(anchor, this._preferredWidth, this._preferredHeight);
 
     if (this._popoverHelper) {
       this._contentDiv.addEventListener(
@@ -116,16 +110,6 @@ UI.Popover = class extends UI.Widget {
     this.detach();
     this._containerElement.remove();
     delete UI.Popover._popover;
-  }
-
-  get disposed() {
-    return this._disposed;
-  }
-
-  dispose() {
-    if (this.isShowing())
-      this.hide();
-    this._disposed = true;
   }
 
   /**
@@ -147,9 +131,8 @@ UI.Popover = class extends UI.Widget {
    * @param {!Element|!AnchorBox} anchorElement
    * @param {number=} preferredWidth
    * @param {number=} preferredHeight
-   * @param {?UI.Popover.Orientation=} arrowDirection
    */
-  positionElement(anchorElement, preferredWidth, preferredHeight, arrowDirection) {
+  positionElement(anchorElement, preferredWidth, preferredHeight) {
     const borderWidth = this._hasNoPadding ? 0 : 8;
     const scrollerWidth = this._hasFixedHeight ? 0 : 14;
     const arrowHeight = this._hasNoPadding ? 8 : 15;
@@ -170,15 +153,14 @@ UI.Popover = class extends UI.Widget {
     anchorBox = anchorBox.relativeToElement(container);
     var newElementPosition = {x: 0, y: 0, width: preferredWidth + scrollerWidth, height: preferredHeight};
 
-    var verticalAlignment;
+    var arrowAtBottom;
     var roomAbove = anchorBox.y;
     var roomBelow = totalHeight - anchorBox.y - anchorBox.height;
     this._popupArrowElement.hidden = false;
 
-    if ((roomAbove > roomBelow) || (arrowDirection === UI.Popover.Orientation.Bottom)) {
+    if (roomAbove > roomBelow) {
       // Positioning above the anchor.
-      if ((anchorBox.y > newElementPosition.height + arrowHeight + borderRadius) ||
-          (arrowDirection === UI.Popover.Orientation.Bottom)) {
+      if (anchorBox.y > newElementPosition.height + arrowHeight + borderRadius) {
         newElementPosition.y = anchorBox.y - newElementPosition.height - arrowHeight;
       } else {
         this._popupArrowElement.hidden = true;
@@ -189,12 +171,11 @@ UI.Popover = class extends UI.Widget {
           newElementPosition.height = preferredHeight;
         }
       }
-      verticalAlignment = UI.Popover.Orientation.Bottom;
+      arrowAtBottom = true;
     } else {
       // Positioning below the anchor.
       newElementPosition.y = anchorBox.y + anchorBox.height + arrowHeight;
-      if ((newElementPosition.y + newElementPosition.height + borderRadius >= totalHeight) &&
-          (arrowDirection !== UI.Popover.Orientation.Top)) {
+      if (newElementPosition.y + newElementPosition.height + borderRadius >= totalHeight) {
         this._popupArrowElement.hidden = true;
         newElementPosition.height = totalHeight - borderRadius - newElementPosition.y;
         if (this._hasFixedHeight && newElementPosition.height < preferredHeight) {
@@ -203,18 +184,18 @@ UI.Popover = class extends UI.Widget {
         }
       }
       // Align arrow.
-      verticalAlignment = UI.Popover.Orientation.Top;
+      arrowAtBottom = false;
     }
 
-    var horizontalAlignment;
+    var arrowAtLeft;
     this._popupArrowElement.removeAttribute('style');
     if (anchorBox.x + newElementPosition.width < totalWidth) {
       newElementPosition.x = Math.max(borderRadius, anchorBox.x - borderRadius - arrowOffset);
-      horizontalAlignment = 'left';
+      arrowAtLeft = true;
       this._popupArrowElement.style.left = arrowOffset + 'px';
     } else if (newElementPosition.width + borderRadius * 2 < totalWidth) {
       newElementPosition.x = totalWidth - newElementPosition.width - borderRadius - 2 * borderWidth;
-      horizontalAlignment = 'right';
+      arrowAtLeft = false;
       // Position arrow accurately.
       var arrowRightPosition = Math.max(0, totalWidth - anchorBox.x - anchorBox.width - borderRadius - arrowOffset);
       arrowRightPosition += anchorBox.width / 2;
@@ -224,22 +205,21 @@ UI.Popover = class extends UI.Widget {
       newElementPosition.x = borderRadius;
       newElementPosition.width = totalWidth - borderRadius * 2;
       newElementPosition.height += scrollerWidth;
-      horizontalAlignment = 'left';
-      if (verticalAlignment === UI.Popover.Orientation.Bottom)
+      arrowAtLeft = true;
+      if (arrowAtBottom)
         newElementPosition.y -= scrollerWidth;
       // Position arrow accurately.
       this._popupArrowElement.style.left =
           Math.max(0, anchorBox.x - newElementPosition.x - borderRadius - arrowRadius + anchorBox.width / 2) + 'px';
     }
 
-    this._popupArrowElement.className = 'arrow ' + verticalAlignment + '-' + horizontalAlignment + '-arrow';
+    this._popupArrowElement.className =
+        `arrow ${(arrowAtBottom ? 'bottom' : 'top')}-${(arrowAtLeft ? 'left' : 'right')}-arrow`;
     this.element.positionAt(newElementPosition.x, newElementPosition.y - borderWidth, container);
     this.element.style.width = newElementPosition.width + borderWidth * 2 + 'px';
     this.element.style.height = newElementPosition.height + borderWidth * 2 + 'px';
   }
 };
-
-UI.Popover._classNamePrefix = 'popover';
 
 /**
  * @unrestricted
@@ -377,7 +357,8 @@ UI.PopoverHelper = class {
     if (this._onHide)
       this._onHide();
 
-    this._popover.dispose();
+    if (this._popover.isShowing())
+      this._popover.hide();
     delete this._popover;
     this._hoverElement = null;
   }
@@ -400,10 +381,4 @@ UI.PopoverHelper = class {
       this._resetHoverTimer();
     }
   }
-};
-
-/** @enum {string} */
-UI.Popover.Orientation = {
-  Top: 'top',
-  Bottom: 'bottom'
 };

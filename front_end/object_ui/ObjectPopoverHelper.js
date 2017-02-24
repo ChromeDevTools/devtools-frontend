@@ -85,7 +85,7 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
      * @this {ObjectUI.ObjectPopoverHelper}
      */
     function didGetFunctionDetails(popoverContentElement, anchorElement, response) {
-      if (!response || popover.disposed)
+      if (!response || this._disposed)
         return;
 
       var container = createElementWithClass('div', 'object-popover-container');
@@ -115,7 +115,7 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
      * @this {ObjectUI.ObjectPopoverHelper}
      */
     function didQueryObject(result, wasThrown, anchorOverride) {
-      if (popover.disposed)
+      if (this._disposed)
         return;
       if (wasThrown) {
         this.hidePopover();
@@ -169,10 +169,12 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
         popover.showForAnchor(popoverContentElement, anchorElement, popoverWidth, popoverHeight);
       }
     }
+    this._disposed = false;
     this._queryObject(element, didQueryObject.bind(this), this._popoverObjectGroup);
   }
 
   _onHideObjectPopover() {
+    this._disposed = true;
     if (this._resultHighlightedAsDOM) {
       SDK.DOMModel.hideDOMNodeHighlight();
       delete this._resultHighlightedAsDOM;

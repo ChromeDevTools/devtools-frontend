@@ -118,10 +118,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._tabbedPane.appendTab(viewMode.BottomUp, Common.UIString('Bottom-Up'), new UI.VBox());
       this._tabbedPane.appendTab(viewMode.CallTree, Common.UIString('Call Tree'), new UI.VBox());
       this._tabbedPane.appendTab(viewMode.EventLog, Common.UIString('Event Log'), new UI.VBox());
-      this._tabbedPane.setTabIcon(viewMode.FlameChart, UI.Icon.create('largeicon-perf-flamechart'));
-      this._tabbedPane.setTabIcon(viewMode.BottomUp, UI.Icon.create('largeicon-perf-bottom-up-tree'));
-      this._tabbedPane.setTabIcon(viewMode.CallTree, UI.Icon.create('largeicon-perf-call-tree'));
-      this._tabbedPane.setTabIcon(viewMode.EventLog, UI.Icon.create('largeicon-perf-event-list'));
       this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._onMainViewChanged.bind(this));
       this._tabbedPane.selectTab(this._viewModeSetting.get());
     } else {
@@ -143,6 +139,9 @@ Timeline.TimelinePanel = class extends UI.Panel {
     Extensions.extensionServer.addEventListener(
         Extensions.ExtensionServer.Events.TraceProviderAdded, this._appendExtensionsToToolbar, this);
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
+
+    /** @type {!SDK.TracingModel.Event}|undefined */
+    this._selectedSearchResult;
   }
 
   /**

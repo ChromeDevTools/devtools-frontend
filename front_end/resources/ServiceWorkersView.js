@@ -233,7 +233,7 @@ Resources.ServiceWorkersView.Section = class {
     var version = this._manager.findVersion(versionId);
     if (!version || !version.targetId)
       return null;
-    return this._subTargetsManager.targetForId(version.targetId);
+    return SDK.targetManager.targetById(version.targetId);
   }
 
   /**

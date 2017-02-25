@@ -143,7 +143,7 @@ Timeline.TimelineController = class {
   }
 
   /**
-   * @param {number} targetId
+   * @param {string} targetId
    * @param {?Protocol.Error} error
    * @param {?Protocol.Profiler.Profile} cpuProfile
    */
@@ -264,11 +264,12 @@ Timeline.TimelineController = class {
     var workerMetaEvents = metadataEvents.filter(event => event.name === metadataEventTypes.TracingSessionIdForWorker);
     for (var metaEvent of workerMetaEvents) {
       var workerId = metaEvent.args['data']['workerId'];
-      var workerTarget = this._target.subTargetsManager ? this._target.subTargetsManager.targetForId(workerId) : null;
+      var workerTarget = SDK.targetManager.targetById(workerId);
       if (!workerTarget)
         continue;
       var cpuProfile = this._cpuProfiles.get(workerTarget.id());
-      this._injectCpuProfileEvent(pid, metaEvent.args['data']['workerThreadId'], cpuProfile);
+      this._injectCpuProfileEvent(
+          metaEvent.thread.process().id(), metaEvent.args['data']['workerThreadId'], cpuProfile);
     }
     this._cpuProfiles = null;
   }

@@ -583,10 +583,7 @@ SDK.ServiceWorkerContextNamer = class {
     var parent = target.parentTarget();
     if (!parent || parent.parentTarget() !== this._target)
       return null;
-    var targetInfo = this._subTargetsManager.targetInfo(parent);
-    if (!targetInfo || targetInfo.type !== 'service_worker')
-      return null;
-    return targetInfo.id;
+    return parent.id();
   }
 
   _updateAllContextLabels() {
@@ -605,11 +602,12 @@ SDK.ServiceWorkerContextNamer = class {
    * @param {?SDK.ServiceWorkerVersion} version
    */
   _updateContextLabel(context, version) {
+    if (!version) {
+      context.setLabel('');
+      return;
+    }
     var parsedUrl = context.origin.asParsedURL();
     var label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : context.name;
-    if (version)
-      context.setLabel(label + ' #' + version.id + ' (' + version.status + ')');
-    else
-      context.setLabel(label);
+    context.setLabel(label + ' #' + version.id + ' (' + version.status + ')');
   }
 };

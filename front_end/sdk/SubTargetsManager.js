@@ -110,22 +110,6 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {string} targetId
-   * @return {?SDK.Target}
-   */
-  targetForId(targetId) {
-    return this._attachedTargets.get(targetId) || null;
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @return {?SDK.TargetInfo}
-   */
-  targetInfo(target) {
-    return target[SDK.SubTargetsManager._InfoSymbol] || null;
-  }
-
-  /**
    * @param {string} type
    * @return {number}
    */
@@ -156,8 +140,8 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
       targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + (++this._lastAnonymousTargetId);
     }
     var target = SDK.targetManager.createTarget(
-        targetName, this._capabilitiesForType(targetInfo.type), this._createConnection.bind(this, targetInfo.id),
-        this.target());
+        targetInfo.id, targetName, this._capabilitiesForType(targetInfo.type),
+        this._createConnection.bind(this, targetInfo.id), this.target());
     target[SDK.SubTargetsManager._InfoSymbol] = targetInfo;
     this._attachedTargets.set(targetInfo.id, target);
 
@@ -234,8 +218,7 @@ SDK.SubTargetsManager = class extends SDK.SDKModel {
     var idsToDetach = [];
     for (var targetId of this._attachedTargets.keys()) {
       var target = this._attachedTargets.get(targetId);
-      var targetInfo = this.targetInfo(target);
-      if (targetInfo.type === 'worker')
+      if (target[SDK.SubTargetsManager._InfoSymbol].type === 'worker')
         idsToDetach.push(targetId);
     }
     idsToDetach.forEach(id => this._detachedFromTarget(id));

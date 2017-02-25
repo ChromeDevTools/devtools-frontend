@@ -163,7 +163,7 @@ TimelineModel.TimelineModel = class {
     // FIXME: Consider returning null for loaded traces.
     var workerId = this._workerIdByThread.get(event.thread);
     var mainTarget = SDK.targetManager.mainTarget();
-    return workerId ? mainTarget.subTargetsManager.targetForId(workerId) : mainTarget;
+    return workerId ? SDK.targetManager.targetById(workerId) : mainTarget;
   }
 
   /**

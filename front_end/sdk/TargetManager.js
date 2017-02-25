@@ -229,14 +229,15 @@ SDK.TargetManager = class extends Common.Object {
   }
 
   /**
+   * @param {string} id
    * @param {string} name
    * @param {number} capabilitiesMask
    * @param {!Protocol.InspectorBackend.Connection.Factory} connectionFactory
    * @param {?SDK.Target} parentTarget
    * @return {!SDK.Target}
    */
-  createTarget(name, capabilitiesMask, connectionFactory, parentTarget) {
-    var target = new SDK.Target(this, name, capabilitiesMask, connectionFactory, parentTarget);
+  createTarget(id, name, capabilitiesMask, connectionFactory, parentTarget) {
+    var target = new SDK.Target(this, id, name, capabilitiesMask, connectionFactory, parentTarget);
     this._pendingTargets.add(target);
 
     /** @type {!SDK.ConsoleModel} */
@@ -359,7 +360,7 @@ SDK.TargetManager = class extends Common.Object {
 
   /**
    *
-   * @param {number} id
+   * @param {string} id
    * @return {?SDK.Target}
    */
   targetById(id) {
@@ -406,7 +407,8 @@ SDK.TargetManager = class extends Common.Object {
   _connectAndCreateMainTarget() {
     if (Runtime.queryParam('nodeFrontend')) {
       var target = new SDK.Target(
-          this, Common.UIString('Node'), SDK.Target.Capability.Target, this._createMainConnection.bind(this), null);
+          this, 'main', Common.UIString('Node'), SDK.Target.Capability.Target, this._createMainConnection.bind(this),
+          null);
       target.subTargetsManager = new SDK.SubTargetsManager(target);
       target.setInspectedURL('Node');
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
@@ -424,7 +426,8 @@ SDK.TargetManager = class extends Common.Object {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSDirectly);
     }
 
-    var target = this.createTarget(Common.UIString('Main'), capabilities, this._createMainConnection.bind(this), null);
+    var target =
+        this.createTarget('main', Common.UIString('Main'), capabilities, this._createMainConnection.bind(this), null);
     target.runtimeAgent().runIfWaitingForDebugger();
   }
 

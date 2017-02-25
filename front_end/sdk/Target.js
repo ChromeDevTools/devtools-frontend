@@ -10,19 +10,20 @@
 SDK.Target = class extends Protocol.TargetBase {
   /**
    * @param {!SDK.TargetManager} targetManager
+   * @param {string} id
    * @param {string} name
    * @param {number} capabilitiesMask
    * @param {!Protocol.InspectorBackend.Connection.Factory} connectionFactory
    * @param {?SDK.Target} parentTarget
    */
-  constructor(targetManager, name, capabilitiesMask, connectionFactory, parentTarget) {
+  constructor(targetManager, id, name, capabilitiesMask, connectionFactory, parentTarget) {
     super(connectionFactory);
     this._targetManager = targetManager;
     this._name = name;
     this._inspectedURL = '';
     this._capabilitiesMask = capabilitiesMask;
     this._parentTarget = parentTarget;
-    this._id = SDK.Target._nextId++;
+    this._id = id;
     this._modelByConstructor = new Map();
   }
 
@@ -39,7 +40,7 @@ SDK.Target = class extends Protocol.TargetBase {
   }
 
   /**
-   * @return {number}
+   * @return {string}
    */
   id() {
     return this._id;
@@ -197,8 +198,6 @@ SDK.Target.Capability = {
 
   AllForTests: 127
 };
-
-SDK.Target._nextId = 1;
 
 /**
  * @unrestricted

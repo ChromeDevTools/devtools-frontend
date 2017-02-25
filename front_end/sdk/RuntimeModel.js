@@ -453,11 +453,7 @@ SDK.ExecutionContext = class extends SDK.SDKObject {
     this.runtimeModel = target.runtimeModel;
     this.debuggerModel = SDK.DebuggerModel.fromTarget(target);
     this.frameId = frameId;
-
-    this._label = name;
-    var parsedUrl = origin.asParsedURL();
-    if (!this._label && parsedUrl)
-      this._label = parsedUrl.lastPathComponentWithFragment();
+    this._setLabel('');
   }
 
   /**
@@ -583,8 +579,24 @@ SDK.ExecutionContext = class extends SDK.SDKObject {
    * @param {string} label
    */
   setLabel(label) {
-    this._label = label;
+    this._setLabel(label);
     this.runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.ExecutionContextChanged, this);
+  }
+
+  /**
+   * @param {string} label
+   */
+  _setLabel(label) {
+    if (label) {
+      this._label = label;
+      return;
+    }
+    if (this.name) {
+      this._label = this.name;
+      return;
+    }
+    var parsedUrl = this.origin.asParsedURL();
+    this._label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : '';
   }
 };
 

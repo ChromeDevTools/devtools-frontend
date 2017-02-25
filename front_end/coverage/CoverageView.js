@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/** @typedef {{range: !Protocol.CSS.SourceRange, wasUsed: boolean}} */
+/** @typedef {{range: !Common.TextRange, wasUsed: boolean}} */
 Coverage.RangeUsage;
 
 /** @typedef {{styleSheetHeader: !SDK.CSSStyleSheetHeader, ranges: !Array<!Coverage.RangeUsage>}} */
@@ -111,7 +111,7 @@ Coverage.CoverageView = class extends UI.VBox {
           ranges = [];
           rulesByStyleSheet.set(styleSheetHeader, ranges);
         }
-        ranges.push({range: rule.range, wasUsed: rule.wasUsed});
+        ranges.push({range: Common.TextRange.fromObject(rule.range), wasUsed: rule.wasUsed});
       }
       return Promise.all(
           Array.from(rulesByStyleSheet.entries(), entry => this._convertToCoverageInfo(entry[0], entry[1])));
@@ -210,12 +210,8 @@ Coverage.CoverageView = class extends UI.VBox {
       var uiSourceCode = info.url && Workspace.workspace.uiSourceCodeForURL(info.url);
       if (!uiSourceCode)
         continue;
-      for (var range of info.ranges) {
-        var gutterRange = Common.TextRange.fromObject(range.range);
-        if (gutterRange.startColumn)
-          gutterRange.startColumn--;
-        uiSourceCode.addDecoration(gutterRange, Coverage.CoverageView.LineDecorator.type, range.wasUsed);
-      }
+      for (var range of info.ranges)
+        uiSourceCode.addDecoration(range.range, Coverage.CoverageView.LineDecorator.type, range.wasUsed);
     }
   }
 };

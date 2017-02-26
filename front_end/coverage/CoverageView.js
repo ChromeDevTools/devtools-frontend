@@ -8,7 +8,7 @@ Coverage.RangeUsage;
 /** @typedef {{styleSheetHeader: !SDK.CSSStyleSheetHeader, ranges: !Array<!Coverage.RangeUsage>}} */
 Coverage.StyleSheetUsage;
 
-/** @typedef {{url: string, totalSize: number, unusedSize: number, usedSize: number,
+/** @typedef {{url: string, size: (number|undefined), unusedSize: (number|undefined), usedSize: (number|undefined),
  *      ranges: !Array<!Coverage.RangeUsage>}} */
 Coverage.CoverageInfo;
 
@@ -78,112 +78,215 @@ Coverage.CoverageView = class extends UI.VBox {
       return;
     this._recordButton.setTitle(Common.UIString('Stop recording'));
     cssModel.startRuleUsageTracking();
+    mainTarget.profilerAgent().startPreciseCoverage();
 
     this._progressElement.textContent = Common.UIString('Recording...');
   }
 
-  _stopRecording() {
-    var mainTarget = SDK.targetManager.mainTarget();
-    if (!mainTarget)
-      return;
-
+  async _stopRecording() {
     this._recordButton.setTitle(Common.UIString('Start recording'));
     this._progressElement.textContent = Common.UIString('Fetching results...');
 
-    var cssModel = mainTarget.model(SDK.CSSModel);
-    if (!cssModel)
-      return;
+    var cssCoverageInfoPromise = this._stopCSSCoverage();
+    var jsCoverageInfoPromise = this._stopJSCoverage();
+    var cssCoverageInfo = await cssCoverageInfoPromise;
+    var jsCoverageInfo = await jsCoverageInfoPromise;
+    this._updateViews(cssCoverageInfo.concat(jsCoverageInfo));
+  }
 
-    cssModel.ruleListPromise().then(processRuleList.bind(this)).then(updateViews.bind(this));
+  /**
+   * @param {!Array<!Coverage.CoverageInfo>} coverageInfo
+   * @this {!Coverage.CoverageView}
+   */
+  _updateViews(coverageInfo) {
+    coverageInfo = Coverage.CoverageView._coalesceByURL(coverageInfo);
+    this._updateStats(coverageInfo);
+    this._updateGutter(coverageInfo);
+    this._coverageResultsElement.removeChildren();
+    this._listView.update(coverageInfo);
+    this._listView.show(this._coverageResultsElement);
+  }
 
-    /**
-     * @param {!Array<!SDK.CSSModel.RuleUsage>} ruleUsageList
-     * @this {!Coverage.CoverageView}
-     * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
-     */
-    function processRuleList(ruleUsageList) {
-      /** @type {!Map<?SDK.CSSStyleSheetHeader, !Array<!Coverage.RangeUsage>>} */
-      var rulesByStyleSheet = new Map();
-      for (var rule of ruleUsageList) {
-        var styleSheetHeader = cssModel.styleSheetHeaderForId(rule.styleSheetId);
-        var ranges = rulesByStyleSheet.get(styleSheetHeader);
-        if (!ranges) {
-          ranges = [];
-          rulesByStyleSheet.set(styleSheetHeader, ranges);
-        }
-        ranges.push({range: Common.TextRange.fromObject(rule.range), wasUsed: rule.wasUsed});
+  /**
+   * @param {!Array<!Coverage.CoverageInfo>} coverageInfo
+   * @return {!Array<!Coverage.CoverageInfo>}
+   */
+  static _coalesceByURL(coverageInfo) {
+    coverageInfo.sort((a, b) => (a.url || '').localeCompare(b.url));
+    var result = [];
+    for (var entry of coverageInfo) {
+      if (!entry.url)
+        continue;
+      if (result.length && result.peekLast().url === entry.url) {
+        var lastEntry = result.peekLast();
+        lastEntry.size += entry.size;
+        lastEntry.usedSize += entry.usedSize;
+        lastEntry.unusedSize += entry.unusedSize;
+      } else {
+        result.push(entry);
       }
-      return Promise.all(
-          Array.from(rulesByStyleSheet.entries(), entry => this._convertToCoverageInfo(entry[0], entry[1])));
     }
+    return result;
+  }
 
-    /**
-     * @param {!Array<!Coverage.CoverageInfo>} coverageInfo
-     * @this {!Coverage.CoverageView}
-     */
-    function updateViews(coverageInfo) {
-      coverageInfo = coalesceByURL(coverageInfo);
-      this._updateStats(coverageInfo);
-      this._updateGutter(coverageInfo);
-      this._coverageResultsElement.removeChildren();
-      this._listView.update(coverageInfo);
-      this._listView.show(this._coverageResultsElement);
-    }
+  /**
+   * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
+   */
+  async _stopJSCoverage() {
+    var mainTarget = SDK.targetManager.mainTarget();
+    var profilerAgent = mainTarget && mainTarget.profilerAgent();
+    if (!profilerAgent)
+      return [];
+    var coveragePromise = profilerAgent.takePreciseCoverage((error, result) => error ? [] : result);
+    profilerAgent.stopPreciseCoverage();
+    var rawCoverageData = await coveragePromise;
+    return Coverage.CoverageView._processJSCoverage(
+        /** @type !SDK.DebuggerModel */ (SDK.DebuggerModel.fromTarget(mainTarget)), rawCoverageData);
+  }
 
-    /**
-     * @param {!Array<!Coverage.CoverageInfo>} coverageInfo
-     * @return {!Array<!Coverage.CoverageInfo>}
-     */
-    function coalesceByURL(coverageInfo) {
-      coverageInfo.sort((a, b) => (a.url || '').localeCompare(b.url));
-      var result = [];
-      for (var entry of coverageInfo) {
-        if (!entry.url)
-          continue;
-        if (result.length && result.peekLast().url === entry.url) {
-          var lastEntry = result.peekLast();
-          lastEntry.size += entry.size;
-          lastEntry.usedSize += entry.usedSize;
-          lastEntry.unusedSize += entry.unusedSize;
-        } else {
-          result.push(entry);
+  /**
+   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!Array<!Protocol.Profiler.ScriptCoverage>} scriptsCoverage
+   * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
+   */
+  static async _processJSCoverage(debuggerModel, scriptsCoverage) {
+    var promises = [];
+    for (var entry of scriptsCoverage) {
+      var ranges = [];
+      var script = debuggerModel.scriptForId(entry.scriptId);
+      if (!script)
+        continue;
+      for (var func of entry.functions) {
+        for (var range of func.ranges) {
+          var textRange = new Common.TextRange(
+              range.startLineNumber, range.startColumnNumber, range.endLineNumber, range.endColumnNumber);
+          ranges.push({range: textRange, wasUsed: !!range.count});
         }
       }
-      return result;
+      promises.push(convertToCoverageInfo(script, ranges));
+    }
+    return Promise.all(promises);
+
+    /**
+     * @param {!SDK.Script} script
+     * @param {!Array<!Coverage.RangeUsage>} ranges
+     * @return {!Promise<!Coverage.CoverageInfo>}
+     */
+    function convertToCoverageInfo(script, ranges) {
+      return script.requestContent().then(
+          content => Coverage.CoverageView._coverageInfoForText(
+              script.contentURL(), script.lineOffset, script.columnOffset, content, ranges));
     }
   }
 
   /**
-   * @param {!SDK.CSSStyleSheetHeader} styleSheetHeader
-   * @param {!Array<!Coverage.RangeUsage>} ranges
-   * @return {!Promise<!Coverage.CoverageInfo>}
+   * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
    */
-  _convertToCoverageInfo(styleSheetHeader, ranges) {
+  async _stopCSSCoverage() {
+    var mainTarget = SDK.targetManager.mainTarget();
+    const cssModel = mainTarget && mainTarget.model(SDK.CSSModel);
+    if (!cssModel)
+      return Promise.resolve([]);
+
+    var rawCoverageData = await cssModel.ruleListPromise();
+    return Coverage.CoverageView._processCSSCoverage(
+        /** @type !SDK.CSSModel */ (cssModel), rawCoverageData);
+  }
+
+  /**
+   * @param {!SDK.CSSModel} cssModel
+   * @param {!Array<!SDK.CSSModel.RuleUsage>} ruleUsageList
+   * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
+   */
+  static async _processCSSCoverage(cssModel, ruleUsageList) {
+    /** @type {!Map<?SDK.CSSStyleSheetHeader, !Array<!Coverage.RangeUsage>>} */
+    var rulesByStyleSheet = new Map();
+    for (var rule of ruleUsageList) {
+      var styleSheetHeader = cssModel.styleSheetHeaderForId(rule.styleSheetId);
+      var ranges = rulesByStyleSheet.get(styleSheetHeader);
+      if (!ranges) {
+        ranges = [];
+        rulesByStyleSheet.set(styleSheetHeader, ranges);
+      }
+      var textRange = new Common.TextRange(
+          rule.range.startLine + styleSheetHeader.startLine,
+          rule.range.startColumn + (rule.range.startLine ? 0 : styleSheetHeader.startColumn),
+          rule.range.endLine + styleSheetHeader.startLine,
+          rule.range.endColumn + (rule.range.endLine ? 0 : styleSheetHeader.startColumn));
+      ranges.push({range: textRange, wasUsed: rule.wasUsed});
+    }
+    return Promise.all(Array.from(rulesByStyleSheet.entries(), entry => convertToCoverageInfo(entry[0], entry[1])));
+
+    /**
+     * @param {!SDK.CSSStyleSheetHeader} styleSheetHeader
+     * @param {!Array<!Coverage.RangeUsage>} ranges
+     * @return {!Promise<!Coverage.CoverageInfo>}
+     */
+    function convertToCoverageInfo(styleSheetHeader, ranges) {
+      return styleSheetHeader.requestContent().then(
+          content => Coverage.CoverageView._coverageInfoForText(
+              styleSheetHeader.sourceURL, styleSheetHeader.startLine, styleSheetHeader.startColumn, content, ranges));
+    }
+  }
+
+  /**
+   * @param {string} url
+   * @param {number} startLine
+   * @param {number} startColumn
+   * @param {?string} content
+   * @param {!Array<!Coverage.RangeUsage>} ranges
+   * @return {!Coverage.CoverageInfo}
+   */
+  static _coverageInfoForText(url, startLine, startColumn, content, ranges) {
     var coverageInfo = {
-      url: styleSheetHeader.sourceURL,
+      url: url,
       ranges: ranges,
     };
-    return styleSheetHeader.requestContent().then(content => {
-      if (!content)
-        return coverageInfo;
-      var text = new Common.Text(content);
-      var usedSize = 0;
-      var unusedSize = 0;
-      for (var entry of ranges) {
-        var range = entry.range;
-        var size = text.offsetFromPosition(range.endLine, range.endColumn) -
-            text.offsetFromPosition(range.startLine, range.startColumn);
-        if (entry.wasUsed)
-          usedSize += size;
-        else
-          unusedSize += size;
-      }
-      coverageInfo.size = content.length;
-      coverageInfo.usedSize = usedSize;
-      coverageInfo.unusedSize = unusedSize;
-
+    if (!content)
       return coverageInfo;
+
+    var text = new Common.Text(content);
+    var offsetRanges = ranges.map(r => {
+      var range = r.range.relativeTo(startLine, startColumn);
+      return {
+        start: text.offsetFromPosition(range.startLine, range.startColumn),
+        end: text.offsetFromPosition(range.endLine, range.endColumn),
+        wasUsed: r.wasUsed
+      };
     });
+
+    var stack = [];
+    offsetRanges.sort((a, b) => a.start - b.start);
+    for (var entry of offsetRanges) {
+      while (stack.length && stack.peekLast().end <= entry.start)
+        stack.pop();
+
+      entry.ownSize = entry.end - entry.start;
+      var top = stack.peekLast();
+      if (top) {
+        if (top.end < entry.end) {
+          console.assert(
+              false, `Overlapping coverage entries in ${url}: ${top.start}-${top.end} vs. ${entry.start}-${entry.end}`);
+        }
+        top.ownSize -= entry.ownSize;
+      }
+      stack.push(entry);
+    }
+
+    var usedSize = 0;
+    var unusedSize = 0;
+    for (var entry of offsetRanges) {
+      if (entry.wasUsed)
+        usedSize += entry.ownSize;
+      else
+        unusedSize += entry.ownSize;
+    }
+
+    coverageInfo.size = content.length;
+    coverageInfo.usedSize = usedSize;
+    coverageInfo.unusedSize = unusedSize;
+
+    return coverageInfo;
   }
 
   /**

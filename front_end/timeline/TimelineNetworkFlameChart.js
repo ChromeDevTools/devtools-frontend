@@ -295,6 +295,13 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
   }
 
   /**
+   * @override
+   * @param {number} entryIndex
+   */
+  highlightEntry(entryIndex) {
+  }
+
+  /**
    * @param {string} priority
    * @return {?string}
    */

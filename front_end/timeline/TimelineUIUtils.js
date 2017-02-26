@@ -673,25 +673,28 @@ Timeline.TimelineUIUtils = class {
    * @param {!TimelineModel.TimelineModel} model
    * @param {!Components.Linkifier} linkifier
    * @param {boolean} detailed
-   * @param {function(!DocumentFragment)} callback
+   * @return {!Promise<!DocumentFragment>}
    */
-  static buildTraceEventDetails(event, model, linkifier, detailed, callback) {
-    var target = model.targetByEvent(event);
-    if (!target) {
-      callbackWrapper();
-      return;
+  static async buildTraceEventDetails(event, model, linkifier, detailed) {
+    var maybeTarget = model.targetByEvent(event);
+    if (!maybeTarget) {
+      return Timeline.TimelineUIUtils._buildTraceEventDetailsSynchronously(
+          event, model, linkifier, detailed, null);
     }
-    var relatedNodes = null;
-    var barrier = new CallbackBarrier();
+
+    var target = /** @type {!SDK.Target} */ (maybeTarget);
     if (!event[Timeline.TimelineUIUtils._previewElementSymbol]) {
       var url = TimelineModel.TimelineData.forEvent(event).url;
-      if (url) {
-        Components.DOMPresentationUtils.buildImagePreviewContents(
-            target, url, false, barrier.createCallback(saveImage));
-      } else if (TimelineModel.TimelineData.forEvent(event).picture) {
-        Timeline.TimelineUIUtils.buildPicturePreviewContent(event, target, barrier.createCallback(saveImage));
-      }
+      event[Timeline.TimelineUIUtils._previewElementSymbol] = await new Promise(fulfill => {
+        if (url)
+          Components.DOMPresentationUtils.buildImagePreviewContents(target, url, false, fulfill);
+        else if (TimelineModel.TimelineData.forEvent(event).picture)
+          Timeline.TimelineUIUtils.buildPicturePreviewContent(event, target, fulfill);
+        else
+          fulfill();
+      }) || null;
     }
+
     var nodeIdsToResolve = new Set();
     var timelineData = TimelineModel.TimelineData.forEvent(event);
     if (timelineData.backendNodeId)
@@ -699,31 +702,17 @@ Timeline.TimelineUIUtils = class {
     var invalidationTrackingEvents = TimelineModel.InvalidationTracker.invalidationEventsFor(event);
     if (invalidationTrackingEvents)
       Timeline.TimelineUIUtils._collectInvalidationNodeIds(nodeIdsToResolve, invalidationTrackingEvents);
+    var relatedNodes = null;
     if (nodeIdsToResolve.size) {
       var domModel = SDK.DOMModel.fromTarget(target);
-      if (domModel)
-        domModel.pushNodesByBackendIdsToFrontend(nodeIdsToResolve, barrier.createCallback(setRelatedNodeMap));
-    }
-    barrier.callWhenDone(callbackWrapper);
-
-    /**
-     * @param {!Element=} element
-     */
-    function saveImage(element) {
-      event[Timeline.TimelineUIUtils._previewElementSymbol] = element || null;
+      if (domModel) {
+        relatedNodes = await new Promise(fulfill =>
+            domModel.pushNodesByBackendIdsToFrontend(nodeIdsToResolve, fulfill));
+      }
     }
 
-    /**
-     * @param {?Map<number, ?SDK.DOMNode>} nodeMap
-     */
-    function setRelatedNodeMap(nodeMap) {
-      relatedNodes = nodeMap;
-    }
-
-    function callbackWrapper() {
-      callback(Timeline.TimelineUIUtils._buildTraceEventDetailsSynchronously(
-          event, model, linkifier, detailed, relatedNodes));
-    }
+    return Timeline.TimelineUIUtils._buildTraceEventDetailsSynchronously(
+          event, model, linkifier, detailed, relatedNodes);
   }
 
   /**

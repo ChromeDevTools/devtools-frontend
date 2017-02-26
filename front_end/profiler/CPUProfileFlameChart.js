@@ -115,6 +115,13 @@ Profiler.ProfileFlameChartDataProvider = class {
   /**
    * @override
    * @param {number} entryIndex
+   */
+  highlightEntry(entryIndex) {
+  }
+
+  /**
+   * @override
+   * @param {number} entryIndex
    * @return {boolean}
    */
   canJumpToEntry(entryIndex) {

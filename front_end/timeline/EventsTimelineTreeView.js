@@ -113,17 +113,9 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
     var traceEvent = node.event;
     if (!traceEvent)
       return false;
-    Timeline.TimelineUIUtils.buildTraceEventDetails(
-        traceEvent, this.model().timelineModel(), this._linkifier, false, showDetails.bind(this));
+    Timeline.TimelineUIUtils.buildTraceEventDetails(traceEvent, this.model().timelineModel(), this._linkifier, false)
+      .then(fragment => this._detailsView.element.appendChild(fragment));
     return true;
-
-    /**
-     * @param {!DocumentFragment} fragment
-     * @this {Timeline.EventsTimelineTreeView}
-     */
-    function showDetails(fragment) {
-      this._detailsView.element.appendChild(fragment);
-    }
   }
 
   /**

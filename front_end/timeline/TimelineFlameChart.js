@@ -494,6 +494,25 @@ Timeline.TimelineFlameChartDataProvider = class {
   /**
    * @override
    * @param {number} entryIndex
+   */
+  highlightEntry(entryIndex) {
+    SDK.DOMModel.hideDOMNodeHighlight();
+    var event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
+    if (!event)
+      return;
+    var target = this._model.targetByEvent(event);
+    if (!target)
+      return;
+    var timelineData = TimelineModel.TimelineData.forEvent(event);
+    var backendNodeId = timelineData.backendNodeId;
+    if (!backendNodeId)
+      return;
+    new SDK.DeferredDOMNode(target, backendNodeId).highlight();
+  }
+
+  /**
+   * @override
+   * @param {number} entryIndex
    * @return {string}
    */
   entryColor(entryIndex) {

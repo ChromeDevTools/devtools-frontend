@@ -95,12 +95,6 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
 
       var rawLocation = response.location;
       var linkContainer = title.createChild('div', 'function-title-link-container');
-      if (rawLocation && Runtime.experiments.isEnabled('continueToFirstInvocation')) {
-        var sectionToolbar = new UI.Toolbar('function-location-step-into', linkContainer);
-        var stepInto = new UI.ToolbarButton(Common.UIString('Continue to first invocation'), 'largeicon-step-in');
-        stepInto.addEventListener(UI.ToolbarButton.Events.Click, () => rawLocation.continueToLocation());
-        sectionToolbar.appendToolbarItem(stepInto);
-      }
       var sourceURL = rawLocation && rawLocation.script() ? rawLocation.script().sourceURL : null;
       if (rawLocation && sourceURL)
         linkContainer.appendChild(this._lazyLinkifier().linkifyRawLocation(rawLocation, sourceURL));

@@ -269,13 +269,15 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
   /**
    * @param {!SDK.DebuggerModel.Location} startLocation
    * @param {!SDK.DebuggerModel.Location} endLocation
+   * @param {boolean} restrictToFunction
    * @return {!Promise<!Array<!SDK.DebuggerModel.Location>>}
    */
-  getPossibleBreakpoints(startLocation, endLocation) {
+  getPossibleBreakpoints(startLocation, endLocation, restrictToFunction) {
     var fulfill;
     var promise = new Promise(resolve => fulfill = resolve);
     this._agent.invoke_getPossibleBreakpoints(
-        {start: startLocation.payload(), end: endLocation.payload()}, checkErrorAndReturn.bind(this));
+        {start: startLocation.payload(), end: endLocation.payload(), restrictToFunction: restrictToFunction},
+        checkErrorAndReturn.bind(this));
     return promise;
 
     /**

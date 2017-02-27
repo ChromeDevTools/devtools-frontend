@@ -553,7 +553,11 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     this.textEditor.setExecutionLocation(uiLocation.lineNumber, uiLocation.columnNumber);
     if (this.isShowing()) {
       // We need SourcesTextEditor to be initialized prior to this call. @see crbug.com/506566
-      setImmediate(this._generateValuesInSource.bind(this));
+      setImmediate(() => {
+        this._generateValuesInSource();
+        if (Runtime.experiments.isEnabled('continueToLocationMarkers'))
+          this._showContinueToLocations();
+      });
     }
   }
 
@@ -577,6 +581,57 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     if (this._clearValueWidgetsTimer) {
       clearTimeout(this._clearValueWidgetsTimer);
       delete this._clearValueWidgetsTimer;
+    }
+  }
+
+  _showContinueToLocations() {
+    var executionContext = UI.context.flavor(SDK.ExecutionContext);
+    if (!executionContext)
+      return;
+    var callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    if (!callFrame)
+      return;
+    var localScope = callFrame.localScope();
+    if (!localScope)
+      return;
+    var start = localScope.startLocation();
+    var end = localScope.endLocation();
+    var debuggerModel = callFrame.debuggerModel;
+    debuggerModel.getPossibleBreakpoints(start, end, true)
+        .then(locations => this.textEditor.operation(renderLocations.bind(this, locations)));
+
+    if (this._clearContinueToLocationsTimer) {
+      clearTimeout(this._clearContinueToLocationsTimer);
+      delete this._clearContinueToLocationsTimer;
+    }
+
+    /**
+     * @param {!Array<!SDK.DebuggerModel.Location>} locations
+     * @this {Sources.JavaScriptSourceFrame}
+     */
+    function renderLocations(locations) {
+      var bookmarks = this.textEditor.bookmarks(
+          this.textEditor.fullRange(), Sources.JavaScriptSourceFrame.continueToLocationDecorationSymbol);
+      bookmarks.map(bookmark => bookmark.clear());
+
+      for (var location of locations) {
+        var icon = UI.Icon.create('smallicon-green-ball');
+        icon.classList.add('cm-continue-to-location');
+        icon.addEventListener('click', location.continueToLocation.bind(location));
+        icon.addEventListener('mousemove', hidePopoverAndConsumeEvent.bind(this));
+        this.textEditor.addBookmark(
+            location.lineNumber, location.columnNumber, icon,
+            Sources.JavaScriptSourceFrame.continueToLocationDecorationSymbol);
+      }
+    }
+
+    /**
+     * @param {!Event} event
+     * @this {Sources.JavaScriptSourceFrame}
+     */
+    function hidePopoverAndConsumeEvent(event) {
+      event.consume(true);
+      this._popoverHelper.hidePopover();
     }
   }
 
@@ -728,6 +783,8 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       this.textEditor.clearExecutionLine();
     delete this._executionLocation;
     this._clearValueWidgetsTimer = setTimeout(this._clearValueWidgets.bind(this), 1000);
+    if (Runtime.experiments.isEnabled('continueToLocationMarkers'))
+      this._clearContinueToLocationsTimer = setTimeout(this._clearContinueToLocations.bind(this), 1000);
   }
 
   _clearValueWidgets() {
@@ -735,6 +792,13 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     for (var line of this._valueWidgets.keys())
       this.textEditor.removeDecoration(this._valueWidgets.get(line), line);
     this._valueWidgets.clear();
+  }
+
+  _clearContinueToLocations() {
+    delete this._clearContinueToLocationsTimer;
+    var bookmarks = this.textEditor.bookmarks(
+        this.textEditor.fullRange(), Sources.JavaScriptSourceFrame.continueToLocationDecorationSymbol);
+    this.textEditor.operation(() => bookmarks.map(bookmark => bookmark.clear()));
   }
 
   /**
@@ -1382,3 +1446,5 @@ Sources.JavaScriptSourceFrame.BreakpointDecoration = class {
 
 Sources.JavaScriptSourceFrame.BreakpointDecoration.bookmarkSymbol = Symbol('bookmark');
 Sources.JavaScriptSourceFrame.BreakpointDecoration._elementSymbolForTest = Symbol('element');
+
+Sources.JavaScriptSourceFrame.continueToLocationDecorationSymbol = Symbol('bookmark');

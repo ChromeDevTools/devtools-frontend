@@ -151,8 +151,8 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
         } else {
           popoverContentElement = createElement('div');
           UI.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
-          this._titleElement = popoverContentElement.createChild('div', 'monospace');
-          this._titleElement.createChild('span', 'object-popover-title').textContent = description;
+          this._titleElement = popoverContentElement.createChild('div', 'monospace object-popover-title');
+          this._titleElement.createChild('span').textContent = description;
           var section = new ObjectUI.ObjectPropertiesSection(result, '', this._lazyLinkifier());
           section.element.classList.add('object-popover-tree');
           section.titleLessMode();

@@ -80,10 +80,6 @@ span.ax-internal-role {
     left: -2px;
 }
 
-.tree-outline li.selected .selection {
-    background-color: inherit;
-}
-
 .tree-outline li.no-dom-node {
     opacity: 0.5;
 }
@@ -142,33 +138,14 @@ li.siblings-expanded button.expand-siblings {
     display: none;
 }
 
-.tree-outline li:hover .inspect-dom-node {
-    display: inline-block;
-}
-
-.tree-outline li.no-dom-node:hover .inspect-dom-node,
-.tree-outline li.inspected:hover .inspect-dom-node {
-    display: none;
-}
-
-li .inspect-dom-node {
-    background-color: #5a5a5a;
-    padding: 0;
-    margin-left: 5px;
-    border: 0;
-    display: none;
-    position: relative;
-    top: 2px;
-}
-
-.tree-outline li.selected:focus .inspect-dom-node {
-    background-color: white;
-}
-
-.tree-outline li.hovered:not(.selected) .selection {
+.tree-outline li.preselected:not(.selected) .selection (
     display: block;
     left: 3px;
     right: 3px;
     background-color: rgba(56, 121, 217, 0.1);
     border-radius: 5px;
+}
+
+.tree-outline li.inspected .selection {
+    background-color: rgb(56, 121, 217);
 }

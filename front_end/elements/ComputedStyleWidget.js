@@ -158,6 +158,8 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
       var inherited = !inhertiedProperties.has(canonicalName);
       if (!showInherited && inherited && !(propertyName in this._alwaysShowComputedProperties))
         continue;
+      if (!showInherited && propertyName.startsWith('--'))
+        continue;
       if (propertyName !== canonicalName && propertyValue === nodeStyle.computedStyle.get(canonicalName))
         continue;
 

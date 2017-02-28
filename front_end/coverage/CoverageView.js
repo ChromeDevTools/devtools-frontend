@@ -8,9 +8,24 @@ Coverage.RangeUsage;
 /** @typedef {{styleSheetHeader: !SDK.CSSStyleSheetHeader, ranges: !Array<!Coverage.RangeUsage>}} */
 Coverage.StyleSheetUsage;
 
-/** @typedef {{url: string, size: (number|undefined), unusedSize: (number|undefined), usedSize: (number|undefined),
- *      ranges: !Array<!Coverage.RangeUsage>}} */
+/** @typedef {{
+ *    url: string,
+ *    size: (number|undefined),
+ *    unusedSize: (number|undefined),
+ *    usedSize: (number|undefined),
+ *    type: !Coverage.CoverageType,
+ *    ranges: !Array<!Coverage.RangeUsage>
+ * }}
+ */
 Coverage.CoverageInfo;
+
+/**
+ * @enum {number}
+ */
+Coverage.CoverageType = {
+  CSS: (1 << 0),
+  JavaScript: (1 << 1),
+};
 
 Coverage.CoverageView = class extends UI.VBox {
   constructor() {
@@ -112,6 +127,7 @@ Coverage.CoverageView = class extends UI.VBox {
         lastEntry.size += entry.size;
         lastEntry.usedSize += entry.usedSize;
         lastEntry.unusedSize += entry.unusedSize;
+        lastEntry.type |= entry.type;
       } else {
         result.push(entry);
       }
@@ -153,20 +169,9 @@ Coverage.CoverageView = class extends UI.VBox {
           ranges.push({range: textRange, wasUsed: !!range.count});
         }
       }
-      promises.push(convertToCoverageInfo(script, ranges));
+      promises.push(Coverage.CoverageView._coverageInfoForText(script, script.lineOffset, script.columnOffset, ranges));
     }
     return Promise.all(promises);
-
-    /**
-     * @param {!SDK.Script} script
-     * @param {!Array<!Coverage.RangeUsage>} ranges
-     * @return {!Promise<!Coverage.CoverageInfo>}
-     */
-    function convertToCoverageInfo(script, ranges) {
-      return script.requestContent().then(
-          content => Coverage.CoverageView._coverageInfoForText(
-              script.contentURL(), script.lineOffset, script.columnOffset, content, ranges));
-    }
   }
 
   /**
@@ -205,33 +210,30 @@ Coverage.CoverageView = class extends UI.VBox {
           rule.range.endColumn + (rule.range.endLine ? 0 : styleSheetHeader.startColumn));
       ranges.push({range: textRange, wasUsed: rule.wasUsed});
     }
-    return Promise.all(Array.from(rulesByStyleSheet.entries(), entry => convertToCoverageInfo(entry[0], entry[1])));
-
-    /**
-     * @param {!SDK.CSSStyleSheetHeader} styleSheetHeader
-     * @param {!Array<!Coverage.RangeUsage>} ranges
-     * @return {!Promise<!Coverage.CoverageInfo>}
-     */
-    function convertToCoverageInfo(styleSheetHeader, ranges) {
-      return styleSheetHeader.requestContent().then(
-          content => Coverage.CoverageView._coverageInfoForText(
-              styleSheetHeader.sourceURL, styleSheetHeader.startLine, styleSheetHeader.startColumn, content, ranges));
-    }
+    return Promise.all(Array.from(
+        rulesByStyleSheet.entries(), entry => Coverage.CoverageView._coverageInfoForText(
+                                         entry[0], entry[0].startLine, entry[0].startColumn, entry[1])));
   }
 
   /**
-   * @param {string} url
+   * @param {!Common.ContentProvider} contentProvider
    * @param {number} startLine
    * @param {number} startColumn
-   * @param {?string} content
    * @param {!Array<!Coverage.RangeUsage>} ranges
-   * @return {!Coverage.CoverageInfo}
+   * @return {!Promise<!Coverage.CoverageInfo>}
    */
-  static _coverageInfoForText(url, startLine, startColumn, content, ranges) {
-    var coverageInfo = {
-      url: url,
-      ranges: ranges,
-    };
+  static async _coverageInfoForText(contentProvider, startLine, startColumn, ranges) {
+    var url = contentProvider.contentURL();
+    var coverageType;
+    if (contentProvider.contentType().isScript())
+      coverageType = Coverage.CoverageType.JavaScript;
+    else if (contentProvider.contentType().isStyleSheet())
+      coverageType = Coverage.CoverageType.CSS;
+    else
+      console.assert(false, `Unexpected resource type ${contentProvider.contentType().name} for ${url}`);
+
+    var coverageInfo = {url: url, ranges: ranges, type: coverageType};
+    var content = await contentProvider.requestContent();
     if (!content)
       return coverageInfo;
 

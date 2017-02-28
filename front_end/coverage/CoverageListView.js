@@ -15,7 +15,7 @@ Coverage.CoverageListView = class extends UI.VBox {
         sortable: true,
         align: DataGrid.DataGrid.Align.Right
       },
-      {
+      {id: 'type', title: Common.UIString('Type'), width: '30px', fixedWidth: true, sortable: true}, {
         id: 'unusedSize',
         title: Common.UIString('Unused Bytes'),
         width: '60px',
@@ -91,6 +91,9 @@ Coverage.CoverageListView = class extends UI.VBox {
       case 'url':
         sortFunction = compareURL;
         break;
+      case 'type':
+        sortFunction = compareNumericField.bind(null, 'type');
+        break;
       case 'size':
         sortFunction = compareNumericField.bind(null, 'size');
         break;
@@ -129,6 +132,18 @@ Coverage.CoverageListView = class extends UI.VBox {
       return nodeA._coverageInfo[fieldName] - nodeB._coverageInfo[fieldName];
     }
   }
+
+  /**
+   * @param {!Coverage.CoverageType} type
+   */
+  static _typeToString(type) {
+    var types = [];
+    if (type & Coverage.CoverageType.CSS)
+      types.push(Common.UIString('CSS'));
+    if (type & Coverage.CoverageType.JavaScript)
+      types.push(Common.UIString('JS'));
+    return types.join('+');
+  }
 };
 
 Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode {
@@ -152,6 +167,10 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
     switch (columnId) {
       case 'url':
         cell.textContent = this._coverageInfo.url;
+        cell.title = this._coverageInfo.url;
+        break;
+      case 'type':
+        cell.textContent = Coverage.CoverageListView._typeToString(this._coverageInfo.type);
         break;
       case 'size':
         cell.classList.add('numeric-column');

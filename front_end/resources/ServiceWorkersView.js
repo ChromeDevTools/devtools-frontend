@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {SDK.TargetManager.Observer}
+ * @implements {SDK.SDKModelObserver<!SDK.ServiceWorkerManager>}
  * @unrestricted
  */
 Resources.ServiceWorkersView = class extends UI.VBox {
@@ -35,26 +35,26 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     this._showAllCheckbox.inputElement.addEventListener('change', this._updateSectionVisibility.bind(this), false);
     this._toolbar.appendToolbarItem(this._showAllCheckbox);
 
-    /** @type {!Map<!SDK.Target, !Array<!Common.EventTarget.EventDescriptor>>}*/
+    /** @type {!Map<!SDK.ServiceWorkerManager, !Array<!Common.EventTarget.EventDescriptor>>}*/
     this._eventListeners = new Map();
-    SDK.targetManager.observeTargets(this);
+    SDK.targetManager.observeModels(SDK.ServiceWorkerManager, this);
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.ServiceWorkerManager} serviceWorkerManager
    */
-  targetAdded(target) {
-    if (this._manager || !target.serviceWorkerManager)
+  modelAdded(serviceWorkerManager) {
+    if (this._manager)
       return;
-    this._manager = target.serviceWorkerManager;
-    this._subTargetsManager = target.subTargetsManager;
-    this._securityOriginManager = SDK.SecurityOriginManager.fromTarget(target);
+    this._manager = serviceWorkerManager;
+    this._subTargetsManager = serviceWorkerManager.target().subTargetsManager;
+    this._securityOriginManager = SDK.SecurityOriginManager.fromTarget(serviceWorkerManager.target());
 
     for (var registration of this._manager.registrations().values())
       this._updateRegistration(registration);
 
-    this._eventListeners.set(target, [
+    this._eventListeners.set(serviceWorkerManager, [
       this._manager.addEventListener(
           SDK.ServiceWorkerManager.Events.RegistrationUpdated, this._registrationUpdated, this),
       this._manager.addEventListener(
@@ -70,14 +70,14 @@ Resources.ServiceWorkersView = class extends UI.VBox {
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.ServiceWorkerManager} serviceWorkerManager
    */
-  targetRemoved(target) {
-    if (!this._manager || this._manager !== target.serviceWorkerManager)
+  modelRemoved(serviceWorkerManager) {
+    if (!this._manager || this._manager !== serviceWorkerManager)
       return;
 
-    Common.EventTarget.removeEventListeners(this._eventListeners.get(target));
-    this._eventListeners.delete(target);
+    Common.EventTarget.removeEventListeners(this._eventListeners.get(serviceWorkerManager));
+    this._eventListeners.delete(serviceWorkerManager);
     this._manager = null;
     this._subTargetsManager = null;
     this._securityOriginManager = null;

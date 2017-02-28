@@ -261,7 +261,7 @@ SDK.TargetManager = class extends Common.Object {
 
     target.tracingManager = new SDK.TracingManager(target);
 
-    target.serviceWorkerManager = target.model(SDK.ServiceWorkerManager);
+    target.model(SDK.ServiceWorkerManager);
 
     // Force creation of models which have observers.
     for (var modelClass of this._modelObservers.keys())

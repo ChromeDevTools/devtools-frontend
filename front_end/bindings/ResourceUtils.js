@@ -86,13 +86,3 @@ Bindings.displayNameForURL = function(url) {
   var displayName = url.trimURL(parsedURL.host);
   return displayName === '/' ? parsedURL.host + '/' : displayName;
 };
-
-/**
- * @param {?SDK.Resource} resource
- * @return {?Workspace.UISourceCodeMetadata}
- */
-Bindings.resourceMetadata = function(resource) {
-  if (!resource || (typeof resource.contentSize() !== 'number' && !resource.lastModified()))
-    return null;
-  return new Workspace.UISourceCodeMetadata(resource.lastModified(), resource.contentSize());
-};

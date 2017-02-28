@@ -540,12 +540,13 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
   /**
    * @param {boolean} userInitiated
+   * @return {!Promise}
    */
   _startRecording(userInitiated) {
     console.assert(!this._statusPane, 'Status pane is already opened.');
     var mainTarget = SDK.targetManager.mainTarget();
     if (!mainTarget)
-      return;
+      return Promise.resolve();
     this._setState(Timeline.TimelinePanel.State.StartPending);
     this._showRecordingStarted();
 
@@ -561,12 +562,12 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     this._pendingPerformanceModel = new Timeline.PerformanceModel();
     this._controller = new Timeline.TimelineController(mainTarget, this._pendingPerformanceModel, this);
-    this._controller.startRecording(recordingOptions, enabledTraceProviders);
-
     Host.userMetrics.actionTaken(
         userInitiated ? Host.UserMetrics.Action.TimelineStarted : Host.UserMetrics.Action.TimelinePageReloadStarted);
     this._setUIControlsEnabled(false);
     this._hideLandingPage();
+    return this._controller.startRecording(recordingOptions, enabledTraceProviders)
+        .then(() => this._recordingStarted());
   }
 
   _stopRecording() {
@@ -649,10 +650,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._flameChart.resizeToPreferredHeights();
   }
 
-  /**
-   * @override
-   */
-  recordingStarted() {
+  _recordingStarted() {
     this._reset();
     this._setState(Timeline.TimelinePanel.State.Recording);
     this._showRecordingStarted();
@@ -687,7 +685,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     }
 
     var learnMoreNode = UI.createExternalLink(
-        'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/', Common.UIString('Learn\xa0more'));
+        'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/',
+        Common.UIString('Learn\xa0more'));
     var recordKey =
         encloseWithTag('b', UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.toggle-recording')[0].name);
     var reloadKey = encloseWithTag('b', UI.shortcutRegistry.shortcutDescriptorsForAction('main.reload')[0].name);
@@ -702,12 +701,12 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     centered.createChild('p').appendChild(UI.formatLocalized(
         'Click the record button %s or hit %s to capture a new recording.\n' +
-        'Click the reload button %s or hit %s to record and evaluate the page load.',
+            'Click the reload button %s or hit %s to record and evaluate the page load.',
         [recordButton, recordKey, reloadButton, reloadKey]));
 
     centered.createChild('p').appendChild(UI.formatLocalized(
         'After recording, select an area of interest in the overview by dragging.\n' +
-        'Then, zoom and pan the timeline with the mousewheel or %s keys.\n%s',
+            'Then, zoom and pan the timeline with the mousewheel or %s keys.\n%s',
         [navigateNode, learnMoreNode]));
 
     var cpuProfilerHintSetting = Common.settings.createSetting('timelineShowProfilerHint', true);
@@ -830,7 +829,9 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _pageReloadRequested(event) {
     if (this._state !== Timeline.TimelinePanel.State.Idle || !this.isShowing())
       return;
-    this._startRecording(false);
+    var resourceTreeModel = /** @type {!SDK.ResourceTreeModel} */ (event.data);
+    resourceTreeModel.suspendReload();
+    this._startRecording(false).then(() => resourceTreeModel.resumeReload());
   }
 
   /**

@@ -388,24 +388,6 @@ SDK.TargetManager = class extends Common.Object {
   }
 
   /**
-   * @param {!SDK.Target} target
-   */
-  suspendReload(target) {
-    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
-    if (resourceTreeModel)
-      resourceTreeModel.suspendReload();
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   */
-  resumeReload(target) {
-    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
-    if (resourceTreeModel)
-      setImmediate(resourceTreeModel.resumeReload.bind(resourceTreeModel));
-  }
-
-  /**
    * @param {function()} webSocketConnectionLostCallback
    */
   connectToMainTarget(webSocketConnectionLostCallback) {

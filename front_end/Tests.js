@@ -912,7 +912,7 @@
     var test = this;
     this.showPanel('timeline').then(function() {
       var timeline = UI.panels.timeline;
-      test._overrideMethod(timeline, 'recordingStarted', callback);
+      test._overrideMethod(timeline, '_recordingStarted', callback);
       timeline._toggleRecording();
     });
   };

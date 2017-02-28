@@ -33,6 +33,7 @@ Timeline.TimelineController = class {
   /**
    * @param {!Timeline.TimelineController.RecordingOptions} options
    * @param {!Array<!Extensions.ExtensionTraceProvider>} providers
+   * @return {!Promise}
    */
   startRecording(options, providers) {
     this._extensionTraceProviders = Extensions.extensionServer.traceProviders().slice();
@@ -72,8 +73,9 @@ Timeline.TimelineController = class {
     this._extensionSessions =
         providers.map(provider => new Timeline.ExtensionTracingSession(provider, this._performanceModel));
     this._extensionSessions.forEach(session => session.start());
-    this._startRecordingWithCategories(categoriesArray.join(','), options.enableJSSampling);
+    var startPromise = this._startRecordingWithCategories(categoriesArray.join(','), options.enableJSSampling);
     this._performanceModel.setRecordStartTime(Date.now());
+    return startPromise;
   }
 
   stopRecording() {
@@ -169,34 +171,17 @@ Timeline.TimelineController = class {
   /**
    * @param {string} categories
    * @param {boolean=} enableJSSampling
-   * @param {function(?string)=} callback
+   * @return {!Promise}
    */
-  _startRecordingWithCategories(categories, enableJSSampling, callback) {
+  _startRecordingWithCategories(categories, enableJSSampling) {
     SDK.targetManager.suspendAllTargets();
     var profilingStartedPromise = enableJSSampling && !Runtime.experiments.isEnabled('timelineTracingJSProfile') ?
         this._startProfilingOnAllTargets() :
         Promise.resolve();
     var samplingFrequencyHz = Common.moduleSetting('highResolutionCpuProfiling').get() ? 10000 : 1000;
     var options = 'sampling-frequency=' + samplingFrequencyHz;
-    var target = this._target;
-    var tracingManager = target.tracingManager;
-    SDK.targetManager.suspendReload(target);
-    profilingStartedPromise.then(tracingManager.start.bind(tracingManager, this, categories, options, onTraceStarted));
-    /**
-     * @param {?string} error
-     */
-    function onTraceStarted(error) {
-      SDK.targetManager.resumeReload(target);
-      if (callback)
-        callback(error);
-    }
-  }
-
-  /**
-   * @override
-   */
-  tracingStarted() {
-    this._client.recordingStarted();
+    var tracingManager = this._target.tracingManager;
+    return profilingStartedPromise.then(() => tracingManager.start(this, categories, options));
   }
 
   /**
@@ -298,8 +283,6 @@ Timeline.TimelineController = class {
 Timeline.TimelineController.Client = function() {};
 
 Timeline.TimelineController.Client.prototype = {
-  recordingStarted() {},
-
   /**
    * @param {number} usage
    */

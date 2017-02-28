@@ -356,7 +356,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   reloadPage(bypassCache, scriptToEvaluateOnLoad) {
     // Only dispatch PageReloadRequested upon first reload request to simplify client logic.
     if (!this._pendingReloadOptions)
-      this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PageReloadRequested);
+      this.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PageReloadRequested, this);
     if (this._reloadSuspensionCount) {
       this._pendingReloadOptions = [bypassCache, scriptToEvaluateOnLoad];
       return;

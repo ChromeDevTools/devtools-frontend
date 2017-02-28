@@ -53,7 +53,8 @@ promisified_domains = {
     "Emulation",
     "HeapProfiler",
     "Profiler",
-    "LayerTree"
+    "LayerTree",
+    "Tracing"
 }
 # yapf: enable
 

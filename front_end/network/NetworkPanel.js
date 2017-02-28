@@ -679,12 +679,6 @@ Network.NetworkPanel.FilmStripRecorder = class {
 
   /**
    * @override
-   */
-  tracingStarted() {
-  }
-
-  /**
-   * @override
    * @param {!Array.<!SDK.TracingManager.EventPayload>} events
    */
   traceEventsCollected(events) {
@@ -699,10 +693,12 @@ Network.NetworkPanel.FilmStripRecorder = class {
     if (!this._tracingModel || !this._target)
       return;
     this._tracingModel.tracingComplete();
-    SDK.targetManager.resumeReload(this._target);
+    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(this._target);
     this._target = null;
     this._callback(new SDK.FilmStripModel(this._tracingModel, this._timeCalculator.minimumBoundary() * 1000));
     delete this._callback;
+    if (resourceTreeModel)
+      resourceTreeModel.resumeReload();
   }
 
   /**
@@ -747,7 +743,9 @@ Network.NetworkPanel.FilmStripRecorder = class {
       return;
 
     this._target.tracingManager.stop();
-    SDK.targetManager.suspendReload(this._target);
+    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(this._target);
+    if (resourceTreeModel)
+      resourceTreeModel.suspendReload();
     this._callback = callback;
     this._filmStripView.setStatusText(Common.UIString('Fetching frames...'));
   }

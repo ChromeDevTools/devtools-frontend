@@ -9,7 +9,6 @@
 SDK.TracingManagerClient = function() {};
 
 SDK.TracingManagerClient.prototype = {
-  tracingStarted() {},
   /**
    * @param {!Array.<!SDK.TracingManager.EventPayload>} events
    */
@@ -84,17 +83,15 @@ SDK.TracingManager = class {
    * @param {!SDK.TracingManagerClient} client
    * @param {string} categoryFilter
    * @param {string} options
-   * @param {function(?string)=} callback
+   * @return {!Promise}
    */
-  start(client, categoryFilter, options, callback) {
+  start(client, categoryFilter, options) {
     if (this._activeClient)
       throw new Error('Tracing is already started');
     var bufferUsageReportingIntervalMs = 500;
     this._activeClient = client;
-    this._target.tracingAgent().start(
-        categoryFilter, options, bufferUsageReportingIntervalMs, SDK.TracingManager.TransferMode.ReportEvents,
-        callback);
-    this._activeClient.tracingStarted();
+    return this._target.tracingAgent().start(
+        categoryFilter, options, bufferUsageReportingIntervalMs, SDK.TracingManager.TransferMode.ReportEvents);
   }
 
   stop() {

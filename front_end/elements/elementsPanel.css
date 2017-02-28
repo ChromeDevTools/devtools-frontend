@@ -520,3 +520,18 @@
 .styles-pane:not(.is-editing-style) .styles-section.matched-styles:not(.read-only):hover .sidebar-pane-section-toolbar {
     visibility: visible;
 }
+
+.elements-tree-header {
+    height: 24px;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.elements-tree-header-frame {
+    margin-left: 6px;
+    margin-right: 6px;
+    flex: none;
+}

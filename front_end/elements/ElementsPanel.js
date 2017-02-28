@@ -79,7 +79,12 @@ Elements.ElementsPanel = class extends UI.Panel {
 
     /** @type {!Array.<!Elements.ElementsTreeOutline>} */
     this._treeOutlines = [];
+    /** @type {!Map<!Elements.ElementsTreeOutline, !Element>} */
+    this._treeOutlineHeaders = new Map();
     SDK.targetManager.observeTargets(this);
+    SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.NameChanged,
+        event => this._targetNameChanged(/** @type {!SDK.Target} */ (event.data)));
     Common.moduleSetting('showUAShadowDOM').addChangeListener(this._showUAShadowDOMChanged.bind(this));
     SDK.targetManager.addModelListener(
         SDK.DOMModel, SDK.DOMModel.Events.DocumentUpdated, this._documentUpdatedEvent, this);
@@ -217,6 +222,10 @@ Elements.ElementsPanel = class extends UI.Panel {
         Elements.ElementsTreeOutline.Events.ElementsTreeUpdated, this._updateBreadcrumbIfNeeded, this);
     new Elements.ElementsTreeElementHighlighter(treeOutline);
     this._treeOutlines.push(treeOutline);
+    if (target.parentTarget()) {
+      this._treeOutlineHeaders.set(treeOutline, createElementWithClass('div', 'elements-tree-header'));
+      this._targetNameChanged(target);
+    }
 
     // Perform attach if necessary.
     if (this.isShowing())
@@ -234,7 +243,29 @@ Elements.ElementsPanel = class extends UI.Panel {
     var treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
     treeOutline.unwireFromDOMModel();
     this._treeOutlines.remove(treeOutline);
+    var header = this._treeOutlineHeaders.get(treeOutline);
+    if (header)
+      header.remove();
+    this._treeOutlineHeaders.delete(treeOutline);
     treeOutline.element.remove();
+  }
+
+  /**
+   * @param {!SDK.Target} target
+   */
+  _targetNameChanged(target) {
+    var domModel = SDK.DOMModel.fromTarget(target);
+    if (!domModel)
+      return;
+    var treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
+    if (!treeOutline)
+      return;
+    var header = this._treeOutlineHeaders.get(treeOutline);
+    if (!header)
+      return;
+    header.removeChildren();
+    header.createChild('div', 'elements-tree-header-frame').textContent = Common.UIString('Frame');
+    header.appendChild(Components.Linkifier.linkifyURL(target.inspectedURL(), target.name()));
   }
 
   _updateTreeOutlineVisibleWidth() {
@@ -275,8 +306,12 @@ Elements.ElementsPanel = class extends UI.Panel {
     for (var i = 0; i < this._treeOutlines.length; ++i) {
       var treeOutline = this._treeOutlines[i];
       // Attach heavy component lazily
-      if (treeOutline.element.parentElement !== this._contentElement)
+      if (treeOutline.element.parentElement !== this._contentElement) {
+        var header = this._treeOutlineHeaders.get(treeOutline);
+        if (header)
+          this._contentElement.appendChild(header);
         this._contentElement.appendChild(treeOutline.element);
+      }
     }
     super.wasShown();
     this._breadcrumbs.update();
@@ -307,6 +342,9 @@ Elements.ElementsPanel = class extends UI.Panel {
       treeOutline.setVisible(false);
       // Detach heavy component on hide
       this._contentElement.removeChild(treeOutline.element);
+      var header = this._treeOutlineHeaders.get(treeOutline);
+      if (header)
+        this._contentElement.removeChild(header);
     }
     if (this._popoverHelper)
       this._popoverHelper.hidePopover();

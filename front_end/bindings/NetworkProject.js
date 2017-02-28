@@ -31,12 +31,13 @@
  * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
-Bindings.NetworkProjectManager = class {
+Bindings.NetworkProjectManager = class extends Common.Object {
   /**
    * @param {!SDK.TargetManager} targetManager
    * @param {!Workspace.Workspace} workspace
    */
   constructor(targetManager, workspace) {
+    super();
     this._workspace = workspace;
     targetManager.observeTargets(this);
   }
@@ -58,6 +59,17 @@ Bindings.NetworkProjectManager = class {
   }
 };
 
+/** @implements {Common.Emittable} */
+Bindings.NetworkProjectManager.FrameAttributionChangedEvent = class {
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   */
+  constructor(uiSourceCode) {
+    this.uiSourceCode = uiSourceCode;
+  }
+};
+
+
 /**
  * @unrestricted
  */
@@ -70,10 +82,9 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
   constructor(target, workspace, resourceTreeModel) {
     super(target);
     this._workspace = workspace;
-    /** @type {!Map<string, !Bindings.ContentProviderBasedProject>} */
-    this._workspaceProjects = new Map();
     this._resourceTreeModel = resourceTreeModel;
     target[Bindings.NetworkProject._networkProjectSymbol] = this;
+    this._createProjects();
 
     this._eventListeners = [];
 
@@ -105,12 +116,11 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
 
   /**
    * @param {!SDK.Target} target
-   * @param {?SDK.ResourceTreeFrame} frame
    * @param {boolean} isContentScripts
    * @return {string}
    */
-  static projectId(target, frame, isContentScripts) {
-    return target.id() + ':' + (frame ? frame.id : '') + ':' + (isContentScripts ? 'contentscripts' : '');
+  static projectId(target, isContentScripts) {
+    return (isContentScripts ? 'contentscripts' : 'networkproject') + ':' + target.id();
   }
 
   /**
@@ -122,19 +132,11 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
   }
 
   /**
-   * @param {!Workspace.Project} project
-   * @return {?SDK.Target} target
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {?Set<!SDK.ResourceTreeFrame>}
    */
-  static targetForProject(project) {
-    return project[Bindings.NetworkProject._targetSymbol] || null;
-  }
-
-  /**
-   * @param {!Workspace.Project} project
-   * @return {?SDK.ResourceTreeFrame}
-   */
-  static frameForProject(project) {
-    return project[Bindings.NetworkProject._frameSymbol] || null;
+  static framesForUISourceCode(uiSourceCode) {
+    return uiSourceCode[Bindings.NetworkProject._frameSymbol] || null;
   }
 
   /**
@@ -142,7 +144,7 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
    * @return {?SDK.Target} target
    */
   static targetForUISourceCode(uiSourceCode) {
-    return uiSourceCode[Bindings.NetworkProject._targetSymbol] || null;
+    return uiSourceCode.project()[Bindings.NetworkProject._targetSymbol] || null;
   }
 
   /**
@@ -150,7 +152,7 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
    * @return {string}
    */
   static uiSourceCodeMimeType(uiSourceCode) {
-    if (uiSourceCode[Bindings.NetworkProject._scriptSymbol] || uiSourceCode[Bindings.NetworkProject._styleSheetSymbol])
+    if (uiSourceCode[Bindings.NetworkProject._useCanonicalMimeType])
       return uiSourceCode.contentType().canonicalMimeType();
 
     var resource = uiSourceCode[Bindings.NetworkProject._resourceSymbol];
@@ -161,24 +163,36 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
   }
 
   /**
-   * @param {?SDK.ResourceTreeFrame} frame
-   * @param {boolean} isContentScripts
-   * @return {!Bindings.ContentProviderBasedProject}
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!SDK.ResourceTreeFrame} frame
    */
-  _workspaceProject(frame, isContentScripts) {
-    var projectId = Bindings.NetworkProject.projectId(this.target(), frame, isContentScripts);
-    var projectType = isContentScripts ? Workspace.projectTypes.ContentScripts : Workspace.projectTypes.Network;
+  _addFrameToUISourceCode(uiSourceCode, frame) {
+    var frames = uiSourceCode[Bindings.NetworkProject._frameSymbol];
+    if (!frames) {
+      frames = /** @type {!Set<!SDK.ResourceTreeFrame>} */ (new Set());
+      uiSourceCode[Bindings.NetworkProject._frameSymbol] = frames;
+    }
+    frames.add(frame);
+  }
 
-    var project = this._workspaceProjects.get(projectId);
-    if (project)
-      return project;
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!SDK.ResourceTreeFrame} frame
+   */
+  _removeFrameFromUISourceCode(uiSourceCode, frame) {
+    var frames = uiSourceCode[Bindings.NetworkProject._frameSymbol];
+    frames.delete(frame);
+  }
 
-    project = new Bindings.ContentProviderBasedProject(
-        this._workspace, projectId, projectType, '', false /* isServiceProject */);
-    project[Bindings.NetworkProject._targetSymbol] = this.target();
-    project[Bindings.NetworkProject._frameSymbol] = frame;
-    this._workspaceProjects.set(projectId, project);
-    return project;
+  _createProjects() {
+    this._regularProject = new Bindings.ContentProviderBasedProject(
+        this._workspace, Bindings.NetworkProject.projectId(this.target(), false), Workspace.projectTypes.Network, '',
+        false /* isServiceProject */);
+    this._regularProject[Bindings.NetworkProject._targetSymbol] = this.target();
+    this._contentScriptsProject = new Bindings.ContentProviderBasedProject(
+        this._workspace, Bindings.NetworkProject.projectId(this.target(), true), Workspace.projectTypes.ContentScripts,
+        '', false /* isServiceProject */);
+    this._contentScriptsProject[Bindings.NetworkProject._targetSymbol] = this.target();
   }
 
   /**
@@ -193,17 +207,6 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
     var metadata = typeof contentSize === 'number' ? new Workspace.UISourceCodeMetadata(null, contentSize) : null;
     this._addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata);
     return uiSourceCode;
-  }
-
-  /**
-   * @param {?SDK.ResourceTreeFrame} frame
-   * @param {string} url
-   */
-  _removeFileForURL(frame, url) {
-    var project = this._workspaceProjects.get(Bindings.NetworkProject.projectId(this.target(), frame, false));
-    if (!project)
-      return;
-    project.removeFile(url);
   }
 
   _populate() {
@@ -249,10 +252,19 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
       if (!parsedURL.isValid)
         return;
     }
-    var uiSourceCode = this._createFile(script, SDK.ResourceTreeFrame.fromScript(script), script.isContentScript());
-    uiSourceCode[Bindings.NetworkProject._scriptSymbol] = script;
-    var resource = SDK.ResourceTreeModel.resourceForURL(uiSourceCode.url());
-    this._addUISourceCodeWithProvider(uiSourceCode, script, this._resourceMetadata(resource));
+    var frame = SDK.ResourceTreeFrame.fromScript(script);
+    var url = script.sourceURL;
+    var project = script.isContentScript() ? this._contentScriptsProject : this._regularProject;
+    var oldSourceCode = project.uiSourceCodeForURL(url);
+    var oldFrames = oldSourceCode ? Bindings.NetworkProject.framesForUISourceCode(oldSourceCode) : null;
+    var newSourceCode = this._createFile(script, frame, script.isContentScript());
+    newSourceCode[Bindings.NetworkProject._useCanonicalMimeType] = true;
+    if (oldFrames) {
+      for (var oldFrame of oldFrames)
+        this._addFrameToUISourceCode(newSourceCode, oldFrame);
+    }
+    var metadata = frame ? Bindings.resourceMetadata(frame.resourceForURL(newSourceCode.url())) : null;
+    this._addUISourceCodeWithProvider(newSourceCode, script, metadata);
   }
 
   /**
@@ -262,14 +274,23 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
     var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
     if (header.isInline && !header.hasSourceURL && header.origin !== 'inspector')
       return;
-    if (!header.resourceURL())
+    var url = header.resourceURL();
+    if (!url)
       return;
 
+    var frame = SDK.ResourceTreeFrame.fromStyleSheet(header);
+    var uiSourceCode = this._regularProject.uiSourceCodeForURL(url);
+    if (uiSourceCode) {
+      this._addFrameToUISourceCode(uiSourceCode, frame);
+      Bindings.networkProjectManager.emit(
+          new Bindings.NetworkProjectManager.FrameAttributionChangedEvent(uiSourceCode));
+      return;
+    }
     var originalContentProvider = header.originalContentProvider();
-    var uiSourceCode = this._createFile(originalContentProvider, SDK.ResourceTreeFrame.fromStyleSheet(header), false);
-    uiSourceCode[Bindings.NetworkProject._styleSheetSymbol] = header;
-    var resource = SDK.ResourceTreeModel.resourceForURL(uiSourceCode.url());
-    this._addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, this._resourceMetadata(resource));
+    uiSourceCode = this._createFile(originalContentProvider, frame, false);
+    uiSourceCode[Bindings.NetworkProject._useCanonicalMimeType] = true;
+    var metadata = frame ? Bindings.resourceMetadata(frame.resourceForURL(uiSourceCode.url())) : null;
+    this._addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata);
   }
 
   /**
@@ -280,7 +301,16 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
     if (header.isInline && !header.hasSourceURL && header.origin !== 'inspector')
       return;
 
-    this._removeFileForURL(SDK.ResourceTreeFrame.fromStyleSheet(header), header.resourceURL());
+    var url = header.resourceURL();
+    var uiSourceCode = this._regularProject.uiSourceCodeForURL(url);
+    if (!uiSourceCode)
+      return;
+    var frame = SDK.ResourceTreeFrame.fromStyleSheet(header);
+    this._removeFrameFromUISourceCode(uiSourceCode, frame);
+    var frames =
+        /** @type {!Set<!SDK.ResourceTreeFrame>} */ (Bindings.NetworkProject.framesForUISourceCode(uiSourceCode));
+    if (!frames.size)
+      this._regularProject.removeFile(url);
   }
 
   /**
@@ -317,7 +347,7 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
 
     var uiSourceCode = this._createFile(resource, SDK.ResourceTreeFrame.fromResource(resource), false);
     uiSourceCode[Bindings.NetworkProject._resourceSymbol] = resource;
-    this._addUISourceCodeWithProvider(uiSourceCode, resource, this._resourceMetadata(resource));
+    this._addUISourceCodeWithProvider(uiSourceCode, resource, Bindings.resourceMetadata(resource));
   }
 
   /**
@@ -325,12 +355,10 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
    */
   _frameWillNavigate(event) {
     var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
-    var project = this._workspaceProject(frame, false);
-    for (var resource of frame.resources())
-      project.removeUISourceCode(resource.url);
-    project = this._workspaceProject(frame, true);
-    for (var resource of frame.resources())
-      project.removeUISourceCode(resource.url);
+    for (var resource of frame.resources()) {
+      this._regularProject.removeUISourceCode(resource.url);
+      this._contentScriptsProject.removeUISourceCode(resource.url);
+    }
   }
 
   /**
@@ -356,32 +384,24 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
    */
   _createFile(contentProvider, frame, isContentScript) {
     var url = contentProvider.contentURL();
-    var project = this._workspaceProject(frame, isContentScript);
+    var project = isContentScript ? this._contentScriptsProject : this._regularProject;
     var uiSourceCode = project.createUISourceCode(url, contentProvider.contentType());
-    uiSourceCode[Bindings.NetworkProject._targetSymbol] = this.target();
+    if (frame)
+      this._addFrameToUISourceCode(uiSourceCode, frame);
     return uiSourceCode;
   }
 
-  /**
-   * @param {?SDK.Resource} resource
-   * @return {?Workspace.UISourceCodeMetadata}
-   */
-  _resourceMetadata(resource) {
-    if (!resource || (typeof resource.contentSize() !== 'number' && !resource.lastModified()))
-      return null;
-    return new Workspace.UISourceCodeMetadata(resource.lastModified(), resource.contentSize());
-  }
-
   _dispose() {
-    this._reset();
+    this._regularProject.removeProject();
+    this._contentScriptsProject.removeProject();
     Common.EventTarget.removeEventListeners(this._eventListeners);
     delete this.target()[Bindings.NetworkProject._networkProjectSymbol];
   }
 
   _reset() {
-    for (var project of this._workspaceProjects.values())
-      project.removeProject();
-    this._workspaceProjects.clear();
+    this._regularProject.removeProject();
+    this._contentScriptsProject.removeProject();
+    this._createProjects();
   }
 
   /**
@@ -392,9 +412,8 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
    */
   static uiSourceCodeForScriptURL(workspace, url, script) {
     var target = script.debuggerModel.target();
-    var frame = SDK.ResourceTreeFrame.fromScript(script);
-    return workspace.uiSourceCode(Bindings.NetworkProject.projectId(target, frame, false), url) ||
-        workspace.uiSourceCode(Bindings.NetworkProject.projectId(target, frame, true), url);
+    return workspace.uiSourceCode(Bindings.NetworkProject.projectId(target, false), url) ||
+        workspace.uiSourceCode(Bindings.NetworkProject.projectId(target, true), url);
   }
 
   /**
@@ -404,14 +423,12 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
    * @return {?Workspace.UISourceCode}
    */
   static uiSourceCodeForStyleURL(workspace, url, header) {
-    var frame = SDK.ResourceTreeFrame.fromStyleSheet(header);
-    return workspace.uiSourceCode(Bindings.NetworkProject.projectId(header.target(), frame, false), url);
+    return workspace.uiSourceCode(Bindings.NetworkProject.projectId(header.target(), false), url);
   }
 };
 
 Bindings.NetworkProject._networkProjectSymbol = Symbol('networkProject');
 Bindings.NetworkProject._resourceSymbol = Symbol('resource');
-Bindings.NetworkProject._scriptSymbol = Symbol('script');
-Bindings.NetworkProject._styleSheetSymbol = Symbol('styleSheet');
+Bindings.NetworkProject._useCanonicalMimeType = Symbol('useCanonicalMimeType');
 Bindings.NetworkProject._targetSymbol = Symbol('target');
 Bindings.NetworkProject._frameSymbol = Symbol('frame');

@@ -532,10 +532,12 @@ SDK.ResourceTreeFrame = class {
 
   /**
    * @param {!SDK.CSSStyleSheetHeader} header
-   * @return {?SDK.ResourceTreeFrame}
+   * @return {!SDK.ResourceTreeFrame}
    */
   static fromStyleSheet(header) {
-    return SDK.ResourceTreeFrame._fromObject(header);
+    var frame = SDK.ResourceTreeFrame._fromObject(header);
+    console.assert(frame, 'Failed to find frame for header ', header.id);
+    return /** @type {!SDK.ResourceTreeFrame} */ (frame);
   }
 
   /**

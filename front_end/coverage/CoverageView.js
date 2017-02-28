@@ -21,10 +21,9 @@ Coverage.CoverageView = class extends UI.VBox {
     var toolbarContainer = this.contentElement.createChild('div', 'coverage-toolbar-container');
     var topToolbar = new UI.Toolbar('coverage-toolbar', toolbarContainer);
 
-    this._recordButton =
-        new UI.ToolbarToggle(Common.UIString('Start recording'), 'largeicon-resume', 'largeicon-pause');
-    this._recordButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._toggleRecording(!this._isRecording));
-    topToolbar.appendToolbarItem(this._recordButton);
+    this._toggleRecordAction =
+        /** @type {!UI.Action }*/ (UI.actionRegistry.action('coverage.toggle-recording'));
+    topToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
 
     var clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
     clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset.bind(this));
@@ -36,8 +35,6 @@ Coverage.CoverageView = class extends UI.VBox {
 
     this._statusToolbarElement = this.contentElement.createChild('div', 'coverage-toolbar-summary');
     this._statusMessageElement = this._statusToolbarElement.createChild('div', 'coverage-message');
-
-    this._isRecording = false;
   }
 
   _reset() {
@@ -52,17 +49,10 @@ Coverage.CoverageView = class extends UI.VBox {
     this._statusMessageElement.textContent = '';
   }
 
-  /**
-   * @param {boolean} enable
-   */
-  _toggleRecording(enable) {
-    if (enable === this._isRecording)
-      return;
+  _toggleRecording() {
+    var enable = !this._toggleRecordAction.toggled();
 
-    this._isRecording = enable;
-    this._recordButton.setToggled(this._isRecording);
-
-    if (this._isRecording)
+    if (enable)
       this._startRecording();
     else
       this._stopRecording();
@@ -76,7 +66,7 @@ Coverage.CoverageView = class extends UI.VBox {
     var cssModel = mainTarget.model(SDK.CSSModel);
     if (!cssModel)
       return;
-    this._recordButton.setTitle(Common.UIString('Stop recording'));
+    this._toggleRecordAction.setToggled(true);
     cssModel.startRuleUsageTracking();
     mainTarget.profilerAgent().startPreciseCoverage();
 
@@ -84,7 +74,7 @@ Coverage.CoverageView = class extends UI.VBox {
   }
 
   async _stopRecording() {
-    this._recordButton.setTitle(Common.UIString('Start recording'));
+    this._toggleRecordAction.setToggled(false);
     this._progressElement.textContent = Common.UIString('Fetching results...');
 
     var cssCoverageInfoPromise = this._stopCSSCoverage();
@@ -353,3 +343,23 @@ Coverage.CoverageView.LineDecorator = class {
 };
 
 Coverage.CoverageView.LineDecorator.type = 'coverage';
+
+/**
+ * @implements {UI.ActionDelegate}
+ */
+Coverage.CoverageView.RecordActionDelegate = class {
+  /**
+   * @override
+   * @param {!UI.Context} context
+   * @param {string} actionId
+   * @return {boolean}
+   */
+  handleAction(context, actionId) {
+    var coverageViewId = 'coverage';
+    UI.viewManager.showView(coverageViewId)
+        .then(() => UI.viewManager.view(coverageViewId).widget())
+        .then(widget => /** @type !Coverage.CoverageView} */ (widget)._toggleRecording());
+
+    return true;
+  }
+};

@@ -14,6 +14,26 @@
             "type": "@SourceFrame.UISourceCodeFrame.LineDecorator",
             "className": "Coverage.CoverageView.LineDecorator",
             "decoratorType": "coverage"
+        },
+        {
+            "type": "@UI.ActionDelegate",
+            "actionId": "coverage.toggle-recording",
+            "iconClass": "largeicon-start-recording",
+            "toggledIconClass": "largeicon-stop-recording",
+            "toggleWithRedColor": true,
+            "className": "Coverage.CoverageView.RecordActionDelegate",
+            "category": "Performance",
+            "experiment": "cssTrackerPanel",
+            "options": [
+                {
+                    "value": true,
+                    "title": "Instrument coverage"
+                },
+                {
+                    "value": false,
+                    "title": "Stop instrumenting coverage and show results"
+                }
+            ]
         }
     ],
     "dependencies": [

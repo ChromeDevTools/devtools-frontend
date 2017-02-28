@@ -47,8 +47,7 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
     if (this._forceUpdateSetting.get())
       this._forceUpdateSettingChanged();
     this._forceUpdateSetting.addChangeListener(this._forceUpdateSettingChanged, this);
-    new SDK.ServiceWorkerContextNamer(
-        target, this, /** @type {!SDK.SubTargetsManager} */ (SDK.SubTargetsManager.fromTarget(target)));
+    new SDK.ServiceWorkerContextNamer(target, this);
   }
 
   enable() {
@@ -532,12 +531,10 @@ SDK.ServiceWorkerContextNamer = class {
   /**
    * @param {!SDK.Target} target
    * @param {!SDK.ServiceWorkerManager} serviceWorkerManager
-   * @param {!SDK.SubTargetsManager} subTargetsManager
    */
-  constructor(target, serviceWorkerManager, subTargetsManager) {
+  constructor(target, serviceWorkerManager) {
     this._target = target;
     this._serviceWorkerManager = serviceWorkerManager;
-    this._subTargetsManager = subTargetsManager;
     /** @type {!Map<string, !SDK.ServiceWorkerVersion>} */
     this._versionByTargetId = new Map();
     serviceWorkerManager.addEventListener(

@@ -18,9 +18,8 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
 
     UI.context.addFlavorChangeListener(SDK.Target, this._targetFlavorChanged, this);
 
-    SDK.targetManager.addModelListener(
-        SDK.SubTargetsManager, SDK.SubTargetsManager.Events.AvailableNodeTargetsChanged,
-        this._availableNodeTargetsChanged, this);
+    SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.AvailableNodeTargetsChanged, this._availableNodeTargetsChanged, this);
     this._availableNodeTargetsChanged();
 
     SDK.targetManager.observeModels(SDK.DebuggerModel, this);
@@ -33,23 +32,11 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
     var minJSTargets = Runtime.queryParam('nodeFrontend') ? 1 : 2;
     if (SDK.targetManager.models(SDK.DebuggerModel).length >= minJSTargets)
       return true;
-    if (Sources.ThreadsSidebarPane.availableNodeTargetsCount())
-      return true;
-    return false;
-  }
-
-  /**
-   * @return {number}
-   */
-  static availableNodeTargetsCount() {
-    var count = 0;
-    for (var target of SDK.targetManager.targets(SDK.Target.Capability.Target))
-      count += SDK.SubTargetsManager.fromTarget(target).availableNodeTargetsCount();
-    return count;
+    return !!SDK.targetManager.availableNodeTargetsCount();
   }
 
   _availableNodeTargetsChanged() {
-    var count = Sources.ThreadsSidebarPane.availableNodeTargetsCount();
+    var count = SDK.targetManager.availableNodeTargetsCount();
     if (!count) {
       this._availableNodeTargetsElement.classList.add('hidden');
       return;

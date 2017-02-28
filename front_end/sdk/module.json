@@ -123,7 +123,6 @@
         "LayerTreeBase.js",
         "NetworkLog.js",
         "ServiceWorkerManager.js",
-        "SubTargetsManager.js",
         "TracingManager.js",
         "TracingModel.js",
         "RuntimeModel.js",

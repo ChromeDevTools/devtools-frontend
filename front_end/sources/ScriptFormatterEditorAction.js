@@ -379,6 +379,17 @@ Sources.ScriptFormatterEditorAction = class {
             /** @type {!Sources.FormatterScriptMapping} */ (this._scriptMappingByDebuggerModel.get(debuggerModels[i]));
         Bindings.debuggerWorkspaceBinding.setSourceMapping(debuggerModels[i], formattedUISourceCode, scriptMapping);
       }
+
+      for (var decoration of uiSourceCode.allDecorations()) {
+        var range = decoration.range();
+        var startLocation = formatterMapping.originalToFormatted(range.startLine, range.startColumn);
+        var endLocation = formatterMapping.originalToFormatted(range.endLine, range.endColumn);
+
+        formattedUISourceCode.addDecoration(
+            new Common.TextRange(startLocation[0], startLocation[1], endLocation[0], endLocation[1]),
+            /** @type {string} */ (decoration.type()), decoration.data());
+      }
+
       this._showIfNeeded(uiSourceCode, formattedUISourceCode, formatterMapping);
     }
   }

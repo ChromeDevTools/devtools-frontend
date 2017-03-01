@@ -9,19 +9,19 @@
  */
 Timeline.TimelineController = class {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.TracingManager} tracingManager
    * @param {!Timeline.PerformanceModel} performanceModel
    * @param {!Timeline.TimelineController.Client} client
    */
-  constructor(target, performanceModel, client) {
-    this._target = target;
+  constructor(tracingManager, performanceModel, client) {
+    this._tracingManager = tracingManager;
     this._performanceModel = performanceModel;
     this._client = client;
 
     this._tracingModelBackingStorage = new Bindings.TempFileBackingStorage('tracing');
     this._tracingModel = new SDK.TracingModel(this._tracingModelBackingStorage);
 
-    this._performanceModel.setMainTarget(target);
+    this._performanceModel.setMainTarget(tracingManager.target());
 
     /** @type {!Array<!Timeline.ExtensionTracingSession>} */
     this._extensionSessions = [];
@@ -80,7 +80,7 @@ Timeline.TimelineController = class {
     var tracingStoppedPromises = [];
     tracingStoppedPromises.push(new Promise(resolve => this._tracingCompleteCallback = resolve));
     tracingStoppedPromises.push(this._stopProfilingOnAllModels());
-    this._target.tracingManager.stop();
+    this._tracingManager.stop();
     tracingStoppedPromises.push(SDK.targetManager.resumeAllTargets());
 
     this._client.loadingStarted();
@@ -163,8 +163,7 @@ Timeline.TimelineController = class {
         Promise.resolve();
     var samplingFrequencyHz = Common.moduleSetting('highResolutionCpuProfiling').get() ? 10000 : 1000;
     var options = 'sampling-frequency=' + samplingFrequencyHz;
-    var tracingManager = this._target.tracingManager;
-    return profilingStartedPromise.then(() => tracingManager.start(this, categories, options));
+    return profilingStartedPromise.then(() => this._tracingManager.start(this, categories, options));
   }
 
   /**
@@ -226,16 +225,13 @@ Timeline.TimelineController = class {
       return;
 
     var pid = mainMetaEvent.thread.process().id();
-    var mainCpuProfile = this._cpuProfiles.get(this._target.id());
+    var mainCpuProfile = this._cpuProfiles.get(this._tracingManager.target().id());
     this._injectCpuProfileEvent(pid, mainMetaEvent.thread.id(), mainCpuProfile);
 
     var workerMetaEvents = metadataEvents.filter(event => event.name === metadataEventTypes.TracingSessionIdForWorker);
     for (var metaEvent of workerMetaEvents) {
       var workerId = metaEvent.args['data']['workerId'];
-      var workerTarget = SDK.targetManager.targetById(workerId);
-      if (!workerTarget)
-        continue;
-      var cpuProfile = this._cpuProfiles.get(workerTarget.id());
+      var cpuProfile = this._cpuProfiles.get(workerId);
       this._injectCpuProfileEvent(
           metaEvent.thread.process().id(), metaEvent.args['data']['workerThreadId'], cpuProfile);
     }

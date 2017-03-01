@@ -186,17 +186,18 @@ SDK.Target = class extends Protocol.TargetBase {
  * @enum {number}
  */
 SDK.Target.Capability = {
-  Browser: 1,
-  DOM: 2,
-  JS: 4,
-  Log: 8,
-  Network: 16,
-  Target: 32,
-  ScreenCapture: 64,
+  Browser: 1 << 0,
+  DOM: 1 << 1,
+  JS: 1 << 2,
+  Log: 1 << 3,
+  Network: 1 << 4,
+  Target: 1 << 5,
+  ScreenCapture: 1 << 6,
+  Tracing: 1 << 7,
 
   None: 0,
 
-  AllForTests: 127
+  AllForTests: (1 << 8) - 1
 };
 
 /**

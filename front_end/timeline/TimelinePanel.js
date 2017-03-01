@@ -544,8 +544,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
    */
   _startRecording(userInitiated) {
     console.assert(!this._statusPane, 'Status pane is already opened.');
-    var mainTarget = SDK.targetManager.mainTarget();
-    if (!mainTarget)
+    var tracingManagers = SDK.targetManager.models(SDK.TracingManager);
+    if (!tracingManagers.length)
       return Promise.resolve();
     this._setState(Timeline.TimelinePanel.State.StartPending);
     this._showRecordingStarted();
@@ -561,7 +561,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     };
 
     this._pendingPerformanceModel = new Timeline.PerformanceModel();
-    this._controller = new Timeline.TimelineController(mainTarget, this._pendingPerformanceModel, this);
+    this._controller = new Timeline.TimelineController(tracingManagers[0], this._pendingPerformanceModel, this);
     Host.userMetrics.actionTaken(
         userInitiated ? Host.UserMetrics.Action.TimelineStarted : Host.UserMetrics.Action.TimelinePageReloadStarted);
     this._setUIControlsEnabled(false);

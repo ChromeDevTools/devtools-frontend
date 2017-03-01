@@ -27,25 +27,19 @@ SDK.TracingManagerClient.prototype = {
 /**
  * @unrestricted
  */
-SDK.TracingManager = class {
+SDK.TracingManager = class extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
    */
   constructor(target) {
-    this._target = target;
+    super(target);
+    this._tracingAgent = target.tracingAgent();
     target.registerTracingDispatcher(new SDK.TracingDispatcher(this));
 
     /** @type {?SDK.TracingManagerClient} */
     this._activeClient = null;
     this._eventBufferSize = 0;
     this._eventsRetrieved = 0;
-  }
-
-  /**
-   * @return {?SDK.Target}
-   */
-  target() {
-    return this._target;
   }
 
   /**
@@ -90,7 +84,7 @@ SDK.TracingManager = class {
       throw new Error('Tracing is already started');
     var bufferUsageReportingIntervalMs = 500;
     this._activeClient = client;
-    return this._target.tracingAgent().start(
+    return this._tracingAgent.start(
         categoryFilter, options, bufferUsageReportingIntervalMs, SDK.TracingManager.TransferMode.ReportEvents);
   }
 
@@ -100,9 +94,11 @@ SDK.TracingManager = class {
     if (this._finishing)
       throw new Error('Tracing is already being stopped');
     this._finishing = true;
-    this._target.tracingAgent().end();
+    this._tracingAgent.end();
   }
 };
+
+SDK.SDKModel.register(SDK.TracingManager, SDK.Target.Capability.Tracing);
 
 /** @typedef {!{
         cat: string,

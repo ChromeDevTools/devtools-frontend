@@ -258,9 +258,6 @@ SDK.TargetManager = class extends Common.Object {
     target.model(SDK.DOMModel);
     target.model(SDK.CSSModel);
     target.model(SDK.CPUProfilerModel);
-
-    target.tracingManager = new SDK.TracingManager(target);
-
     target.model(SDK.ServiceWorkerManager);
 
     if (target.hasTargetCapability())
@@ -406,7 +403,7 @@ SDK.TargetManager = class extends Common.Object {
 
     var capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.JS |
         SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target |
-        SDK.Target.Capability.ScreenCapture;
+        SDK.Target.Capability.ScreenCapture | SDK.Target.Capability.Tracing;
     if (Runtime.queryParam('isSharedWorker')) {
       capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
           SDK.Target.Capability.Target;
@@ -520,7 +517,8 @@ SDK.ChildTargetManager = class {
       return SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target;
     if (type === 'iframe') {
       return SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.JS |
-          SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target;
+          SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target |
+          SDK.Target.Capability.Tracing;
     }
     if (type === 'node')
       return SDK.Target.Capability.JS;

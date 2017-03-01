@@ -62,22 +62,11 @@ QuickOpen.CommandMenu = class {
    * @return {!QuickOpen.CommandMenu.Command}
    */
   static createRevealPanelCommand(extension) {
-    var panelName = extension.descriptor()['name'];
+    var panelId = extension.descriptor()['id'];
+    var executeHandler = UI.viewManager.showView.bind(UI.viewManager, panelId);
     var tags = extension.descriptor()['tags'] || '';
     return QuickOpen.CommandMenu.createCommand(
-        Common.UIString('Panel'), tags, Common.UIString('Show %s', extension.title()), '', executeHandler,
-        availableHandler);
-
-    /**
-     * @return {boolean}
-     */
-    function availableHandler() {
-      return true;
-    }
-
-    function executeHandler() {
-      UI.viewManager.showView(panelName);
-    }
+        Common.UIString('Panel'), tags, Common.UIString('Show %s', extension.title()), '', executeHandler);
   }
 
   /**
@@ -93,17 +82,12 @@ QuickOpen.CommandMenu = class {
   }
 
   _loadCommands() {
-    // Populate panels.
-    var panelExtensions = self.runtime.extensions(UI.Panel);
-    for (var extension of panelExtensions)
-      this._commands.push(QuickOpen.CommandMenu.createRevealPanelCommand(extension));
-
-    // Populate drawers.
-    var drawerExtensions = self.runtime.extensions('view');
-    for (var extension of drawerExtensions) {
-      if (extension.descriptor()['location'] !== 'drawer-view')
-        continue;
-      this._commands.push(QuickOpen.CommandMenu.createRevealDrawerCommand(extension));
+    var viewExtensions = self.runtime.extensions('view');
+    for (var extension of viewExtensions) {
+      if (extension.descriptor()['location'] === 'panel')
+        this._commands.push(QuickOpen.CommandMenu.createRevealPanelCommand(extension));
+      else if (extension.descriptor()['location'] === 'drawer-view')
+        this._commands.push(QuickOpen.CommandMenu.createRevealDrawerCommand(extension));
     }
 
     // Populate whitelisted settings.

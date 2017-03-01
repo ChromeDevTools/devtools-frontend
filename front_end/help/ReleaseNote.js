@@ -16,30 +16,39 @@ Help.ReleaseNoteView = class extends UI.VBox {
    */
   _createReleaseNoteElement(releaseNote) {
     var container = createElementWithClass('div', 'release-note-container');
-    var textContainer = container.createChild('div', 'release-note-text-container');
-    textContainer.createChild('div', 'release-note-header').textContent =
-        Common.UIString('New in DevTools %d', releaseNote.version);
+    var contentContainer = container.createChild('div', 'release-note-content-container');
+    var textContainer = contentContainer.createChild('div', 'release-note-text-container');
+    textContainer.createChild('div', 'release-note-update-text')
+        .createTextChild(Common.UIString('Chrome has been updated to version %d. ', releaseNote.version));
+    textContainer.createChild('div').createTextChild(Common.UIString(`Here's what's new in DevTools:`));
     var highlightContainer = textContainer.createChild('ul', 'release-note-highlight-container');
     for (var highlight of releaseNote.highlights) {
-      var className = highlight.featured ? 'release-note-featured-link' : 'release-note-link';
-      var highlightLink = UI.createExternalLink(highlight.link, highlight.text, className);
-      highlightContainer.createChild('li').appendChild(highlightLink);
+      var listItem = highlightContainer.createChild('li');
+      for (var content of highlight.contents) {
+        if (content.link) {
+          var className = highlight.featured ? 'release-note-featured-link' : 'release-note-link';
+          listItem.appendChild(UI.createExternalLink(content.link, content.text + ' ', className));
+        } else {
+          listItem.createTextChild(content.text + ' ');
+        }
+      }
     }
 
-    var viewMoreButton = UI.createTextButton(Common.UIString('And more...'), event => {
+    var actionContainer = container.createChild('div', 'release-note-action-container');
+    var viewMoreButton = UI.createTextButton(Common.UIString('Learn more'), event => {
       event.consume(true);
       InspectorFrontendHost.openInNewTab(releaseNote.link);
     });
-    textContainer.appendChild(viewMoreButton);
+    actionContainer.appendChild(viewMoreButton);
 
-    var closeButton = UI.createTextButton(Common.UIString('Dismiss'), event => {
+    var closeButton = UI.createTextButton(Common.UIString('Close'), event => {
       event.consume(true);
       UI.inspectorView.closeDrawerTab(Help._releaseNoteViewId, true);
     }, 'close-release-note');
-    textContainer.appendChild(closeButton);
+    actionContainer.appendChild(closeButton);
 
-    var imageLink = UI.createExternalLink(releaseNote.link, ' ', 'release-note-image-container');
-    container.appendChild(imageLink);
+    var imageLink = UI.createExternalLink(releaseNote.link, ' ');
+    contentContainer.appendChild(imageLink);
     var image = imageLink.createChild('img', 'release-note-image');
     image.src = releaseNote.image.src;
     image.addEventListener('mouseover', e => container.classList.add('image-hover'));

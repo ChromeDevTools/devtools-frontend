@@ -12,22 +12,57 @@ Help.releaseNoteText = [
     version: 58,
     highlights: [
       {
-        text: 'Review CSS changes in the new Changes drawer',
-        link: 'https://developers.google.com/web/updates/2016/06/devtools-digest',
+        contents: [
+          {
+            text: 'Improved',
+          },
+          {
+            text: 'Performance and Memory panels',
+            link: 'https://developers.google.com/web/tools/chrome-devtools/',
+          }
+        ],
         featured: true,
       },
       {
-        text: 'Contextual icons in Console',
-        link: 'https://developers.google.com/web/updates/2016/06/devtools-digest',
+        contents: [
+          {
+            text: 'Edit cookies directly',
+            link: 'https://developers.google.com/web/tools/chrome-devtools/',
+          },
+          {
+            text: 'from the Application panel',
+          },
+        ],
       },
       {
-        text: 'Release notes for DevTools',
-        link: 'https://developers.google.com/web/updates/2016/06/devtools-digest',
+        contents: [
+          {
+            text: 'Better',
+          },
+          {
+            text: 'filtering & settings for Console',
+            link: 'https://developers.google.com/web/tools/chrome-devtools/',
+          },
+        ],
+      },
+      {
+        contents: [
+          {
+            text: 'Debugger',
+          },
+          {
+            text: 'catches out-of-memory',
+            link: 'https://developers.google.com/web/tools/chrome-devtools/',
+          },
+          {
+            text: 'errors',
+          },
+        ],
       },
     ],
-    link: 'https://developers.google.com/web/updates/2016/06/devtools-digest',
+    link: 'https://developers.google.com/web/tools/chrome-devtools/',
     image: {
-      src: 'https://developers.google.com/web/updates/images/2016/08/colorpicker.jpg',
+      src: 'https://developers.google.com/web/tools/chrome-devtools/images/panels/performance.png',
     },
   },
 ];

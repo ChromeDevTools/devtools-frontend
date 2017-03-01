@@ -4,22 +4,37 @@
  * found in the LICENSE file.
  */
 
-.release-note-header {
-    font-size: 15px;
+.release-note-container {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
-.release-note-container {
-    margin: 12px;
+.release-note-update-text {
+    font-weight: bold;
+}
+
+.release-note-content-container {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap-reverse;
-    align-content: flex-start;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 12px 12px 0 12px;
+}
+
+.release-note-text-container {
+    min-width: 220px;
+    max-width: 300px;
+}
+
+.release-note-action-container {
+    padding: 12px;
+    min-height: 48px;
 }
 
 .release-note-highlight-container {
-    margin: 12px 0 12px -25px;
     line-height: 1.5;
-    width: 100%;
+    -webkit-padding-start: 16px;
 }
 
 .release-note-link, .release-note-featured-link {
@@ -33,17 +48,8 @@
     text-decoration: underline;
 }
 
-.release-note-image-container {
-    /* Bottom padding is used when DevTools width is small and the image wraps */
-    padding: 0 0 12px 0;
-}
-
 .release-note-image {
     width: 200px;
-}
-
-.release-note-text-container {
-    max-width: 300px;
 }
 
 .close-release-note {

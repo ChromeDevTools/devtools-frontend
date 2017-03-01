@@ -81,7 +81,10 @@ Help._releaseNoteViewId = 'release-note';
 /** @typedef {!{src: string}} */
 Help.ReleaseNoteImage;
 
-/** @typedef {!{text: string, link: string, featured: (boolean | undefined)}} */
+/** @typedef {!{text: string, link: (string | undefined)}} */
+Help.ReleaseNoteHighlightContent;
+
+/** @typedef {!{contents: !Array<!Help.ReleaseNoteHighlightContent>, featured: (boolean | undefined)}} */
 Help.ReleaseNoteHighlight;
 
 /**

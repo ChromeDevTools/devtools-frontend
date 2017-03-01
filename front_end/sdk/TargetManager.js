@@ -257,9 +257,7 @@ SDK.TargetManager = class extends Common.Object {
     target.model(SDK.DebuggerModel);
     target.model(SDK.DOMModel);
     target.model(SDK.CSSModel);
-
-    /** @type {!SDK.CPUProfilerModel} */
-    target.cpuProfilerModel = /** @type {!SDK.CPUProfilerModel} */ (target.model(SDK.CPUProfilerModel));
+    target.model(SDK.CPUProfilerModel);
 
     target.tracingManager = new SDK.TracingManager(target);
 

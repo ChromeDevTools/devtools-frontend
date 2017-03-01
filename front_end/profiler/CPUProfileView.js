@@ -189,16 +189,16 @@ Profiler.CPUProfileType = class extends Profiler.ProfileType {
   }
 
   startRecordingProfile() {
-    var target = UI.context.flavor(SDK.Target);
-    if (this.profileBeingRecorded() || !target)
+    var cpuProfilerModel = UI.context.flavor(SDK.CPUProfilerModel);
+    if (this.profileBeingRecorded() || !cpuProfilerModel)
       return;
-    var profile = new Profiler.CPUProfileHeader(target, this);
+    var profile = new Profiler.CPUProfileHeader(cpuProfilerModel.target(), this);
     this.setProfileBeingRecorded(profile);
     SDK.targetManager.suspendAllTargets();
     this.addProfile(profile);
     profile.updateStatus(Common.UIString('Recording\u2026'));
     this._recording = true;
-    target.cpuProfilerModel.startRecording();
+    cpuProfilerModel.startRecording();
   }
 
   stopRecordingProfile() {
@@ -231,7 +231,8 @@ Profiler.CPUProfileType = class extends Profiler.ProfileType {
 
     this.profileBeingRecorded()
         .target()
-        .cpuProfilerModel.stopRecording()
+        .model(SDK.CPUProfilerModel)
+        .stopRecording()
         .then(didStopProfiling.bind(this))
         .then(SDK.targetManager.resumeAllTargets.bind(SDK.targetManager))
         .then(fireEvent.bind(this));

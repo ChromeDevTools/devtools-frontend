@@ -79,11 +79,14 @@ Coverage.CoverageView = class extends UI.VBox {
     if (!mainTarget)
       return;
     var cssModel = mainTarget.model(SDK.CSSModel);
-    if (!cssModel)
+    var cpuProfilerModel = mainTarget.model(SDK.CPUProfilerModel);
+    if (!cssModel && !cpuProfilerModel)
       return;
     this._toggleRecordAction.setToggled(true);
-    cssModel.startRuleUsageTracking();
-    mainTarget.profilerAgent().startPreciseCoverage();
+    if (cssModel)
+      cssModel.startRuleUsageTracking();
+    if (cpuProfilerModel)
+      cpuProfilerModel.startPreciseCoverage();
 
     this._progressElement.textContent = Common.UIString('Recording...');
   }
@@ -140,11 +143,11 @@ Coverage.CoverageView = class extends UI.VBox {
    */
   async _stopJSCoverage() {
     var mainTarget = SDK.targetManager.mainTarget();
-    var profilerAgent = mainTarget && mainTarget.profilerAgent();
-    if (!profilerAgent)
+    var cpuProfilerModel = mainTarget ? mainTarget.model(SDK.CPUProfilerModel) : null;
+    if (!cpuProfilerModel)
       return [];
-    var coveragePromise = profilerAgent.takePreciseCoverage((error, result) => error ? [] : result);
-    profilerAgent.stopPreciseCoverage();
+    var coveragePromise = cpuProfilerModel.takePreciseCoverage();
+    cpuProfilerModel.stopPreciseCoverage();
     var rawCoverageData = await coveragePromise;
     return Coverage.CoverageView._processJSCoverage(
         /** @type !SDK.DebuggerModel */ (SDK.DebuggerModel.fromTarget(mainTarget)), rawCoverageData);

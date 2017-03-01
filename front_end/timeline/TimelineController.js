@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @implements {SDK.TargetManager.Observer}
+ * @implements {SDK.SDKModelObserver<!SDK.CPUProfilerModel>}
  * @implements {SDK.TracingManagerClient}
  * @unrestricted
  */
@@ -23,11 +23,9 @@ Timeline.TimelineController = class {
 
     this._performanceModel.setMainTarget(target);
 
-    /** @type {!Array<!SDK.Target>} */
-    this._targets = [];
     /** @type {!Array<!Timeline.ExtensionTracingSession>} */
     this._extensionSessions = [];
-    SDK.targetManager.observeTargets(this);
+    SDK.targetManager.observeModels(SDK.CPUProfilerModel, this);
   }
 
   /**
@@ -81,7 +79,7 @@ Timeline.TimelineController = class {
   stopRecording() {
     var tracingStoppedPromises = [];
     tracingStoppedPromises.push(new Promise(resolve => this._tracingCompleteCallback = resolve));
-    tracingStoppedPromises.push(this._stopProfilingOnAllTargets());
+    tracingStoppedPromises.push(this._stopProfilingOnAllModels());
     this._target.tracingManager.stop();
     tracingStoppedPromises.push(SDK.targetManager.resumeAllTargets());
 
@@ -99,59 +97,38 @@ Timeline.TimelineController = class {
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.CPUProfilerModel} cpuProfilerModel
    */
-  targetAdded(target) {
-    this._targets.push(target);
+  modelAdded(cpuProfilerModel) {
     if (this._profiling)
-      this._startProfilingOnTarget(target);
+      cpuProfilerModel.startRecording();
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.CPUProfilerModel} cpuProfilerModel
    */
-  targetRemoved(target) {
-    this._targets.remove(target, true);
+  modelRemoved(cpuProfilerModel) {
     // FIXME: We'd like to stop profiling on the target and retrieve a profile
     // but it's too late. Backend connection is closed.
   }
 
   /**
-   * @param {!SDK.Target} target
    * @return {!Promise}
    */
-  _startProfilingOnTarget(target) {
-    return target.hasJSCapability() ? target.profilerAgent().start() : Promise.resolve();
-  }
-
-  /**
-   * @return {!Promise}
-   */
-  _startProfilingOnAllTargets() {
-    var intervalUs = Common.moduleSetting('highResolutionCpuProfiling').get() ? 100 : 1000;
-    this._target.profilerAgent().setSamplingInterval(intervalUs);
+  _startProfilingOnAllModels() {
     this._profiling = true;
-    return Promise.all(this._targets.map(this._startProfilingOnTarget));
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @return {!Promise}
-   */
-  _stopProfilingOnTarget(target) {
-    return target.hasJSCapability() ? target.profilerAgent().stop(this._addCpuProfile.bind(this, target.id())) :
-                                      Promise.resolve();
+    var models = SDK.targetManager.models(SDK.CPUProfilerModel);
+    return Promise.all(models.map(model => model.startRecording()));
   }
 
   /**
    * @param {string} targetId
-   * @param {?Protocol.Error} error
    * @param {?Protocol.Profiler.Profile} cpuProfile
    */
-  _addCpuProfile(targetId, error, cpuProfile) {
+  _addCpuProfile(targetId, cpuProfile) {
     if (!cpuProfile) {
-      Common.console.warn(Common.UIString('CPU profile for a target is not available. %s', error || ''));
+      Common.console.warn(Common.UIString('CPU profile for a target is not available.'));
       return;
     }
     if (!this._cpuProfiles)
@@ -162,10 +139,16 @@ Timeline.TimelineController = class {
   /**
    * @return {!Promise}
    */
-  _stopProfilingOnAllTargets() {
-    var targets = this._profiling ? this._targets : [];
+  _stopProfilingOnAllModels() {
+    var models = this._profiling ? SDK.targetManager.models(SDK.CPUProfilerModel) : [];
     this._profiling = false;
-    return Promise.all(targets.map(this._stopProfilingOnTarget, this));
+    var promises = [];
+    for (var model of models) {
+      var targetId = model.target().id();
+      var modelPromise = model.stopRecording().then(this._addCpuProfile.bind(this, targetId));
+      promises.push(modelPromise);
+    }
+    return Promise.all(promises);
   }
 
   /**
@@ -176,7 +159,7 @@ Timeline.TimelineController = class {
   _startRecordingWithCategories(categories, enableJSSampling) {
     SDK.targetManager.suspendAllTargets();
     var profilingStartedPromise = enableJSSampling && !Runtime.experiments.isEnabled('timelineTracingJSProfile') ?
-        this._startProfilingOnAllTargets() :
+        this._startProfilingOnAllModels() :
         Promise.resolve();
     var samplingFrequencyHz = Common.moduleSetting('highResolutionCpuProfiling').get() ? 10000 : 1000;
     var options = 'sampling-frequency=' + samplingFrequencyHz;

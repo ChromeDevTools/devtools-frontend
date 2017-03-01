@@ -31,10 +31,7 @@ See http://dev.chromium.org/developers/how-tos/depottools/presubmit-scripts
 for more details about the presubmit API built into gcl.
 """
 
-from collections import namedtuple
 import sys
-
-CheckOutput = namedtuple('CheckOutput', ['results', 'has_errors'])
 
 
 def _CheckNodeAndNPMModules(input_api, output_api):
@@ -43,14 +40,18 @@ def _CheckNodeAndNPMModules(input_api, output_api):
         [input_api.python_executable, node_script_path], stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)
     out, _ = process.communicate()
     if process.returncode != 0:
-        return CheckOutput([output_api.PresubmitError(out)], has_errors=True)
-    return CheckOutput([output_api.PresubmitNotifyResult(out)], has_errors=False)
+        return [output_api.PresubmitError(out)]
+    return [output_api.PresubmitNotifyResult(out)]
 
 
-def _FormatDevtools(input_api, output_api):
+def _CheckFormat(input_api, output_api):
+
+    def popen(args):
+        return input_api.subprocess.Popen(args=args, stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)
+
     affected_files = _getAffectedJSFiles(input_api)
     if len(affected_files) == 0:
-        return CheckOutput([], has_errors=False)
+        return []
     original_sys_path = sys.path
     try:
         sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts")]
@@ -59,39 +60,34 @@ def _FormatDevtools(input_api, output_api):
         sys.path = original_sys_path
 
     node_path, _ = install_node_deps.resolve_node_paths()
-    format_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "format.js")
-    glob_arg = "--glob=" + ",".join(affected_files)
-    check_formatting_process = _inputPopen(input_api, args=[node_path, format_path] + [glob_arg, "--output-replacements-xml"])
-    check_formatting_out, _ = check_formatting_process.communicate()
-    if check_formatting_process.returncode != 0:
-        return CheckOutput([output_api.PresubmitError(check_formatting_out)], has_errors=True)
-    if "</replacement>" not in check_formatting_out:
-        return CheckOutput([output_api.PresubmitNotifyResult("CL is properly formatted")], has_errors=False)
 
-    format_args = [node_path, format_path] + [glob_arg]
-    format_process = _inputPopen(input_api, format_args)
-    format_process_out, _ = format_process.communicate()
+    check_formatting_process = popen(['git', 'cl', 'format', '--js', '--dry-run', input_api.PresubmitLocalPath()])
+    check_formatting_process.communicate()
+    if check_formatting_process.returncode == 0:
+        return []
+
+    format_args = ['git', 'cl', 'format', '--js', input_api.PresubmitLocalPath()]
+    format_process = popen(format_args)
+    format_out, _ = format_process.communicate()
+    if format_process.returncode != 0:
+        return [output_api.PresubmitError(format_out)]
 
     # Use eslint to autofix the braces
     eslint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "node_modules", ".bin", "eslint")
-    eslint_process = _inputPopen(
-        input_api,
-        [node_path, eslint_path, '--no-eslintrc', '--fix', '--env=es6', '--rule={"curly": [2, "multi-or-nest", "consistent"]}'] +
-        affected_files)
+    eslint_process = popen([
+        node_path, eslint_path, '--no-eslintrc', '--fix', '--env=es6', '--rule={"curly": [2, "multi-or-nest", "consistent"]}'
+    ] + affected_files)
     eslint_process.communicate()
 
     # Need to run clang-format again to align the braces
-    reformat_process = _inputPopen(input_api, format_args)
-    reformat_process.communicate()
+    popen(format_args).communicate()
 
-    return CheckOutput(
-        [
-            output_api.PresubmitError("ERROR: Found formatting violations.\n"
-                                      "Ran clang-format on files changed in CL\n"
-                                      "Use git status to check the formatting changes"),
-            output_api.PresubmitError(format_process_out)
-        ],
-        has_errors=True)
+    return [
+        output_api.PresubmitError("ERROR: Found formatting violations in third_party/WebKit/Source/devtools.\n"
+                                  "Ran clang-format on diff\n"
+                                  "Use git status to check the formatting changes"),
+        output_api.PresubmitError(format_out),
+    ]
 
 
 def _CheckDevtoolsStyle(input_api, output_api):
@@ -188,19 +184,8 @@ def _CheckCSSViolations(input_api, output_api):
 
 def CheckChangeOnUpload(input_api, output_api):
     results = []
-
-    (node_results, has_errors) = _CheckNodeAndNPMModules(input_api, output_api)
-    results.extend(node_results)
-    if has_errors:
-        results.append(output_api.PresubmitError("ERROR: Bailed out early because error using node.js/npm"))
-        return results
-
-    (format_results, has_errors) = _FormatDevtools(input_api, output_api)
-    results.extend(format_results)
-    if has_errors:
-        results.append(output_api.PresubmitError("ERROR: Bailed out early because formatting errors were found"))
-        return results
-
+    results.extend(_CheckNodeAndNPMModules(input_api, output_api))
+    results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
     results.extend(_CompileDevtoolsFrontend(input_api, output_api))
     results.extend(_CheckConvertSVGToPNGHashes(input_api, output_api))
@@ -233,7 +218,3 @@ def _getAffectedJSFiles(input_api):
         if (devtools_front_end in file_name or devtools_scripts in file_name) and file_name.endswith(".js")
     ]
     return [input_api.os_path.relpath(file_name, devtools_root) for file_name in affected_js_files]
-
-
-def _inputPopen(input_api, args):
-    return input_api.subprocess.Popen(args, stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)

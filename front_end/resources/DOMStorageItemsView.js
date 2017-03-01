@@ -66,10 +66,7 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
     this.refreshItems();
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _domStorageItemsCleared(event) {
+  _domStorageItemsCleared() {
     if (!this.isShowing() || !this._dataGrid)
       return;
 
@@ -207,6 +204,8 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
    */
   deleteAllItems() {
     this._domStorage.clear();
+    // explicitly clear the view because the event won't be fired when it has no items
+    this._domStorageItemsCleared();
   }
 
   _editingCallback(editingNode, columnIdentifier, oldText, newText) {

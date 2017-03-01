@@ -74,6 +74,14 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
   }
 
   /**
+   * @param {!SDK.Cookie} cookie
+   * @param {function()} callback
+   */
+  _deleteCookie(cookie, callback) {
+    this._model.deleteCookie(cookie, callback);
+  }
+
+  /**
    * @param {!Array.<!SDK.Cookie>} allCookies
    */
   _updateWithCookies(allCookies) {
@@ -83,7 +91,8 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
       const parsedURL = this._cookieDomain.asParsedURL();
       const domain = parsedURL ? parsedURL.host : '';
       this._cookiesTable = new CookieTable.CookiesTable(
-          this._saveCookie.bind(this), this.refreshItems.bind(this), () => this.setCanDeleteSelected(true), domain);
+          this._saveCookie.bind(this), this.refreshItems.bind(this), () => this.setCanDeleteSelected(true),
+          this._deleteCookie.bind(this), domain);
     }
 
     var shownCookies = this.filter(allCookies, cookie => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);

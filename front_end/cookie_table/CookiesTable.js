@@ -36,13 +36,15 @@ CookieTable.CookiesTable = class extends UI.VBox {
    * @param {function(!SDK.Cookie, ?SDK.Cookie, function(?string))=} saveCallback
    * @param {function()=} refreshCallback
    * @param {function()=} selectedCallback
+   * @param {function(!SDK.Cookie, function())=} deleteCallback
    * @param {string=} cookieDomain
    */
-  constructor(saveCallback, refreshCallback, selectedCallback, cookieDomain) {
+  constructor(saveCallback, refreshCallback, selectedCallback, deleteCallback, cookieDomain) {
     super();
 
     this._saveCallback = saveCallback;
     this._refreshCallback = refreshCallback;
+    this._deleteCallback = deleteCallback;
     this._cookieDomain = cookieDomain;
 
     var editable = !!saveCallback;
@@ -98,7 +100,6 @@ CookieTable.CookiesTable = class extends UI.VBox {
     if (selectedCallback)
       this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, selectedCallback, this);
 
-    this._nextSelectedCookie = /** @type {?SDK.Cookie} */ (null);
     /** @type {?string} */
     this._lastEditedColumnId = null;
 
@@ -130,20 +131,59 @@ CookieTable.CookiesTable = class extends UI.VBox {
   }
 
   /**
+   * @return {{current: ?SDK.Cookie, neighbor: ?SDK.Cookie}}
+   */
+  _getSelectionCookies() {
+    var node = this._dataGrid.selectedNode;
+    var neighbor = node && (node.traverseNextNode(true) || node.traversePreviousNode(true));
+
+    return {current: node && node.cookie, neighbor: neighbor && neighbor.cookie};
+  }
+
+  /**
    * @override
    */
   willHide() {
     this._lastEditedColumnId = null;
   }
 
+  /**
+   * @param {{current: ?SDK.Cookie, neighbor: ?SDK.Cookie}} selectionCookies
+   * @param {!Array<!SDK.Cookie>} cookies
+   * @return {?SDK.Cookie}
+   */
+  _findSelectedCookie(selectionCookies, cookies) {
+    var current = selectionCookies.current;
+    var foundCurrent = cookies.find(cookie => this._isSameCookie(cookie, current));
+    if (foundCurrent)
+      return foundCurrent;
+
+    var neighbor = selectionCookies.neighbor;
+    var foundNeighbor = cookies.find(cookie => this._isSameCookie(cookie, neighbor));
+    if (foundNeighbor)
+      return foundNeighbor;
+
+    return null;
+  }
+
+  /**
+   * @param {!SDK.Cookie} cookieA
+   * @param {?SDK.Cookie} cookieB
+   * @return {boolean}
+   */
+  _isSameCookie(cookieA, cookieB) {
+    return !!cookieB && cookieB.name() === cookieA.name() && cookieB.domain() === cookieA.domain() &&
+        cookieB.path() === cookieA.path();
+  }
+
   _rebuildTable() {
-    var selectedCookie = this._nextSelectedCookie || this.selectedCookie();
+    var selectionCookies = this._getSelectionCookies();
     var lastEditedColumnId = this._lastEditedColumnId;
-    this._nextSelectedCookie = null;
     this._lastEditedColumnId = null;
     this._dataGrid.rootNode().removeChildren();
     for (var i = 0; i < this._data.length; ++i) {
       var item = this._data[i];
+      var selectedCookie = this._findSelectedCookie(selectionCookies, item.cookies);
       if (item.folderName) {
         var groupData = {
           name: item.folderName,
@@ -188,8 +228,7 @@ CookieTable.CookiesTable = class extends UI.VBox {
       var cookie = cookies[i];
       var cookieNode = this._createGridNode(cookie);
       parentNode.appendChild(cookieNode);
-      if (selectedCookie && selectedCookie.name() === cookie.name() && selectedCookie.domain() === cookie.domain() &&
-          selectedCookie.path() === cookie.path()) {
+      if (this._isSameCookie(cookie, selectedCookie)) {
         cookieNode.select();
         if (lastEditedColumnId !== null)
           this._dataGrid.startEditingNextEditableColumnOfDataGridNode(cookieNode, lastEditedColumnId);
@@ -313,13 +352,12 @@ CookieTable.CookiesTable = class extends UI.VBox {
     return node;
   }
 
+  /**
+   * @param {!DataGrid.DataGridNode} node
+   */
   _onDeleteCookie(node) {
-    var cookie = node.cookie;
-    var neighbour = node.traverseNextNode() || node.traversePreviousNode();
-    if (neighbour)
-      this._nextSelectedCookie = neighbour.cookie;
-    cookie.remove();
-    this._refresh();
+    if (node.cookie && this._deleteCallback)
+      this._deleteCallback(node.cookie, () => this._refresh());
   }
 
   /**
@@ -366,7 +404,6 @@ CookieTable.CookiesTable = class extends UI.VBox {
       else
         node.setDirty(true);
     });
-    this._nextSelectedCookie = newCookie;
   }
 
   /**

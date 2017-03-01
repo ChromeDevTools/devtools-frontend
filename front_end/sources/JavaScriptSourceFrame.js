@@ -615,7 +615,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       bookmarks.map(bookmark => bookmark.clear());
 
       for (var location of locations) {
-        var icon = UI.Icon.create('smallicon-green-ball');
+        var icon = UI.Icon.create('smallicon-green-arrow');
         icon.classList.add('cm-continue-to-location');
         icon.addEventListener('click', location.continueToLocation.bind(location));
         icon.addEventListener('mousemove', hidePopoverAndConsumeEvent.bind(this));

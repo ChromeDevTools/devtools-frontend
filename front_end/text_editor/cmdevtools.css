@@ -162,7 +162,13 @@
 
 .cm-continue-to-location {
     cursor: pointer;
-    transform: scale(0.7);
+    opacity: 0.5;
+    position: relative;
+    top: 2px;
+}
+
+.cm-continue-to-location:hover {
+    opacity: 1;
 }
 
 div.CodeMirror span.CodeMirror-matchingbracket {

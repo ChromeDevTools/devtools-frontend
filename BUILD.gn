@@ -657,7 +657,6 @@ all_devtools_files = [
   "front_end/ui/SoftContextMenu.js",
   "front_end/ui/splitWidget.css",
   "front_end/ui/SplitWidget.js",
-  "front_end/ui/StackView.js",
   "front_end/ui/suggestBox.css",
   "front_end/ui/SuggestBox.js",
   "front_end/ui/tabbedPane.css",

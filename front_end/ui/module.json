@@ -40,7 +40,6 @@
         "SettingsUI.js",
         "SoftContextMenu.js",
         "SplitWidget.js",
-        "StackView.js",
         "TextPrompt.js",
         "ThrottledWidget.js",
         "Toolbar.js",

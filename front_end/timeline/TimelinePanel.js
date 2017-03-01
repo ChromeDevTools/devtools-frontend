@@ -66,9 +66,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     this._cpuThrottlingManager = new Components.CPUThrottlingManager();
 
-    /** @type {!Array<!Timeline.TimelineModeView>} */
-    this._currentViews = [];
-
     this._viewModeSetting =
         Common.settings.createSetting('timelineViewMode', Timeline.TimelinePanel.ViewMode.FlameChart);
 
@@ -108,11 +105,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.PageReloadRequested, this._pageReloadRequested, this);
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.Load, this._loadEventFired, this);
 
-    this._stackView = new UI.StackView(false);
-    this._stackView.element.classList.add('timeline-view-stack');
-
     if (Runtime.experiments.isEnabled('timelineMultipleMainViews')) {
-      const viewMode = Timeline.TimelinePanel.ViewMode;
+      var viewMode = Timeline.TimelinePanel.ViewMode;
       this._tabbedPane = new UI.TabbedPane();
       this._tabbedPane.appendTab(viewMode.FlameChart, Common.UIString('Flame Chart'), new UI.VBox());
       this._tabbedPane.appendTab(viewMode.BottomUp, Common.UIString('Bottom-Up'), new UI.VBox());
@@ -120,16 +114,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._tabbedPane.appendTab(viewMode.EventLog, Common.UIString('Event Log'), new UI.VBox());
       this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._onMainViewChanged.bind(this));
       this._tabbedPane.selectTab(this._viewModeSetting.get());
-    } else {
-      // Create top level properties splitter.
-      this._detailsSplitWidget = new UI.SplitWidget(false, true, 'timelinePanelDetailsSplitViewState', 400);
-      this._detailsSplitWidget.element.classList.add('timeline-details-split');
-      this._detailsView = new Timeline.TimelineDetailsView(this._filters, this);
-      this._detailsSplitWidget.installResizer(this._detailsView.headerElement());
-      this._detailsSplitWidget.setSidebarWidget(this._detailsView);
-      this._detailsSplitWidget.setMainWidget(this._stackView);
-      this._detailsSplitWidget.hideSidebar();
-      this._detailsSplitWidget.show(this._timelinePane.element);
     }
 
     this._onModeChanged();
@@ -179,9 +163,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _onWindowChanged(event) {
     this._windowStartTime = event.data.startTime;
     this._windowEndTime = event.data.endTime;
-
-    for (var i = 0; i < this._currentViews.length; ++i)
-      this._currentViews[i].setWindowTimes(this._windowStartTime, this._windowEndTime);
+    this._currentView.setWindowTimes(this._windowStartTime, this._windowEndTime);
 
     if (!this._selection || this._selection.type() === Timeline.TimelineSelection.Type.Range)
       this.select(null);
@@ -207,27 +189,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
    */
   requestWindowTimes(windowStartTime, windowEndTime) {
     this._overviewPane.requestWindowTimes(windowStartTime, windowEndTime);
-  }
-
-  /**
-   * @param {!Timeline.TimelineModeView} modeView
-   */
-  _addModeView(modeView) {
-    modeView.setModel(this._performanceModel);
-    modeView.setWindowTimes(this._windowStartTime, this._windowEndTime);
-    var splitWidget =
-        this._stackView.appendView(modeView.view(), 'timelinePanelTimelineStackSplitViewState', undefined, 112);
-    var resizer = modeView.resizerElement();
-    if (splitWidget && resizer) {
-      splitWidget.hideDefaultResizer();
-      splitWidget.installResizer(resizer);
-    }
-    this._currentViews.push(modeView);
-  }
-
-  _removeAllModeViews() {
-    this._currentViews = [];
-    this._stackView.detachChildWidgets();
   }
 
   /**
@@ -432,8 +393,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   _onModeChanged() {
-    const showMemory = this._showMemorySetting.get();
-    const showScreenshots = this._showScreenshotsSetting.get();
     // Set up overview controls.
     this._overviewControls = [];
     this._overviewControls.push(new Timeline.TimelineEventOverviewResponsiveness());
@@ -442,31 +401,26 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._overviewControls.push(new Timeline.TimelineEventOverviewFrames());
     this._overviewControls.push(new Timeline.TimelineEventOverviewCPUActivity());
     this._overviewControls.push(new Timeline.TimelineEventOverviewNetwork());
-    if (showScreenshots)
+    if (this._showScreenshotsSetting.get())
       this._overviewControls.push(new Timeline.TimelineFilmStripOverview());
-    if (showMemory)
+    if (this._showMemorySetting.get())
       this._overviewControls.push(new Timeline.TimelineEventOverviewMemory());
     for (var control of this._overviewControls)
       control.setModel(this._performanceModel);
     this._overviewPane.setOverviewControls(this._overviewControls);
 
-    // Set up the main view.
-    this._removeAllModeViews();
-
-    var viewMode = Timeline.TimelinePanel.ViewMode.FlameChart;
+    // Set up main view.
+    if (this._currentView)
+      this._currentView.detach();
+    var viewMode = Runtime.experiments.isEnabled('timelineMultipleMainViews')
+        ? this._tabbedPane.selectedTabId
+        : Timeline.TimelinePanel.ViewMode.FlameChart;
     this._flameChart = null;
-    if (Runtime.experiments.isEnabled('timelineMultipleMainViews')) {
-      viewMode = this._tabbedPane.selectedTabId;
-      this._stackView.detach();
-      this._stackView.show(this._tabbedPane.visibleView.element);
-    }
     var mainView;
     if (viewMode === Timeline.TimelinePanel.ViewMode.FlameChart) {
       this._flameChart = new Timeline.TimelineFlameChartView(this, this._filters);
-      this._addModeView(this._flameChart);
-      if (showMemory)
-        this._addModeView(new Timeline.CountersGraph(this));
       mainView = this._flameChart;
+      this._currentView = this._flameChart;
     } else {
       switch (viewMode) {
         case Timeline.TimelinePanel.ViewMode.CallTree:
@@ -480,15 +434,23 @@ Timeline.TimelinePanel = class extends UI.Panel {
           break;
       }
       var treeView = new Timeline.TimelineTreeModeView(this, mainView);
-      this._addModeView(treeView);
+      this._currentView = treeView;
     }
+    this._currentView.setModel(this._performanceModel);
+    this._currentView.setWindowTimes(this._windowStartTime, this._windowEndTime);
     if (this._searchableView)
       this._searchableView.detach();
     this._searchableView = new UI.SearchableView(mainView);
     this._searchableView.setMinimumSize(0, 100);
     this._searchableView.element.classList.add('searchable-view');
     this._searchableView.show(this._timelinePane.element);
-    this._tabbedPane.show(this._searchableView.element);
+
+    if (Runtime.experiments.isEnabled('timelineMultipleMainViews')) {
+      this._tabbedPane.show(this._searchableView.element);
+      this._currentView.show(this._tabbedPane.visibleView.element);
+    } else {
+      this._currentView.show(this._searchableView.element);
+    }
     mainView.setSearchableView(this._searchableView);
     if (this._lastViewMode !== viewMode) {
       this._lastViewMode = viewMode;
@@ -604,8 +566,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
   _clear() {
     this._showLandingPage();
-    if (this._detailsSplitWidget)
-      this._detailsSplitWidget.hideSidebar();
     this._reset();
   }
 
@@ -622,7 +582,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     if (this._performanceModel)
       this._performanceModel.dispose();
     this._performanceModel = model;
-    this._currentViews.forEach(view => view.setModel(this._performanceModel));
+    this._currentView.setModel(model);
 
     this._overviewPane.reset();
     if (model) {
@@ -642,8 +602,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this.requestWindowTimes(0, Infinity);
     }
     this._overviewPane.scheduleUpdate();
-    if (this._detailsView)
-      this._detailsView.setModel(model);
 
     this.select(null);
     if (this._flameChart)
@@ -790,9 +748,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     performanceModel.setTracingModel(tracingModel);
     this._backingStorage = backingStorage;
     this._setModel(performanceModel);
-
-    if (this._detailsSplitWidget)
-      this._detailsSplitWidget.showBoth();
   }
 
   _showRecordingStarted() {
@@ -898,12 +853,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     if (!selection)
       selection = Timeline.TimelineSelection.fromRange(this._windowStartTime, this._windowEndTime);
     this._selection = selection;
-    if (preferredTab && this._detailsView)
-      this._detailsView.setPreferredTab(preferredTab);
-    for (var view of this._currentViews)
-      view.setSelection(selection);
-    if (this._detailsView)
-      this._detailsView.setSelection(selection);
+    this._currentView.setSelection(selection);
   }
 
   /**
@@ -931,8 +881,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
    * @param {?SDK.TracingModel.Event} event
    */
   highlightEvent(event) {
-    for (var view of this._currentViews)
-      view.highlightEvent(event);
+    this._currentView.highlightEvent(event);
   }
 
   /**

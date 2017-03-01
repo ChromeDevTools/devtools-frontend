@@ -27,9 +27,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @unrestricted
- */
 Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
   constructor() {
     super();
@@ -41,6 +38,17 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     this._sectionsContainer = this.element.createChild('div');
     this._swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper();
     this._linkifier = new Components.Linkifier(Elements.StylesSidebarPane._maxLinkLength, /* useLinkDecorator */ true);
+    /** @type {?Elements.StylePropertyHighlighter} */
+    this._decorator = null;
+    this._userOperation = false;
+    this._isEditingStyle = false;
+    /** @type {?RegExp} */
+    this._filterRegex = null;
+
+    /** @type {?Elements.StylePropertyTreeElement} */
+    this._mouseDownTreeElement = null;
+    this._mouseDownTreeElementIsName = false;
+    this._mouseDownTreeElementIsValue = false;
 
     this.element.classList.add('styles-pane');
 
@@ -349,7 +357,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     this._nodeStylesUpdatedForTest(node, true);
     if (this._decorator) {
       this._decorator.perform();
-      delete this._decorator;
+      this._decorator = null;
     }
   }
 
@@ -395,7 +403,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
      * @this {Elements.StylesSidebarPane}
      */
     function onViaInspectorStyleSheet(styleSheetHeader) {
-      delete this._userOperation;
+      this._userOperation = false;
       this._createNewRuleInStyleSheet(styleSheetHeader);
     }
   }
@@ -489,9 +497,6 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
 
 Elements.StylesSidebarPane._maxLinkLength = 30;
 
-/**
- * @unrestricted
- */
 Elements.SectionBlock = class {
   /**
    * @param {?Element} titleElement
@@ -552,10 +557,6 @@ Elements.SectionBlock = class {
   }
 };
 
-
-/**
- * @unrestricted
- */
 Elements.StylePropertiesSection = class {
   /**
    * @param {!Elements.StylesSidebarPane} parentPane
@@ -567,6 +568,11 @@ Elements.StylePropertiesSection = class {
     this._style = style;
     this._matchedStyles = matchedStyles;
     this.editable = !!(style.styleSheetId && style.range);
+    /** @type {?number} */
+    this._hoverTimer = null;
+    /** @type {?function(!Elements.StylePropertiesSection)} */
+    this._afterUpdate = null;
+    this._willCauseCancelEditing = false;
 
     var rule = style.parentRule;
     this.element = createElementWithClass('div', 'styles-section matched-styles monospace');
@@ -1057,7 +1063,7 @@ Elements.StylePropertiesSection = class {
   afterUpdate() {
     if (this._afterUpdate) {
       this._afterUpdate(this);
-      delete this._afterUpdate;
+      this._afterUpdate = null;
       this._afterUpdateFinishedForTest();
     }
   }
@@ -1190,7 +1196,7 @@ Elements.StylePropertiesSection = class {
    */
   _checkWillCancelEditing() {
     var willCauseCancelEditing = this._willCauseCancelEditing;
-    delete this._willCauseCancelEditing;
+    this._willCauseCancelEditing = false;
     return willCauseCancelEditing;
   }
 
@@ -1347,7 +1353,7 @@ Elements.StylePropertiesSection = class {
         this._matchedStyles.resetActiveProperties();
         this._parentPane._refreshUpdate(this);
       }
-      delete this._parentPane._userOperation;
+      this._parentPane._userOperation = false;
       this._editingMediaTextCommittedForTest();
     }
 
@@ -1474,7 +1480,7 @@ Elements.StylePropertiesSection = class {
      * @this {Elements.StylePropertiesSection}
      */
     function headerTextCommitted() {
-      delete this._parentPane._userOperation;
+      this._parentPane._userOperation = false;
       this._moveEditorFromSelector(moveDirection);
       this._editingSelectorCommittedForTest();
     }
@@ -1543,10 +1549,6 @@ Elements.StylePropertiesSection = class {
   }
 };
 
-
-/**
- * @unrestricted
- */
 Elements.BlankStylePropertiesSection = class extends Elements.StylePropertiesSection {
   /**
    * @param {!Elements.StylesSidebarPane} stylesPane
@@ -1560,6 +1562,7 @@ Elements.BlankStylePropertiesSection = class extends Elements.StylePropertiesSec
     var cssModel = /** @type {!SDK.CSSModel} */ (stylesPane.cssModel());
     var rule = SDK.CSSStyleRule.createDummyRule(cssModel, defaultSelectorText);
     super(stylesPane, matchedStyles, rule.style);
+    this._normal = false;
     this._ruleLocation = ruleLocation;
     this._styleSheetId = styleSheetId;
     this._selectorRefElement.removeChildren();
@@ -1611,7 +1614,7 @@ Elements.BlankStylePropertiesSection = class extends Elements.StylePropertiesSec
     /**
      * @param {?SDK.CSSStyleRule} newRule
      * @return {!Promise}
-     * @this {Elements.StylePropertiesSection}
+     * @this {Elements.BlankStylePropertiesSection}
      */
     function onRuleAdded(newRule) {
       if (!newRule) {
@@ -1625,7 +1628,7 @@ Elements.BlankStylePropertiesSection = class extends Elements.StylePropertiesSec
 
     /**
      * @param {!SDK.CSSStyleRule} newRule
-     * @this {Elements.StylePropertiesSection}
+     * @this {Elements.BlankStylePropertiesSection}
      */
     function onAddedToCascade(newRule) {
       var doesSelectorAffectSelectedNode = this._matchedStyles.matchingSelectors(newRule).length > 0;
@@ -1638,7 +1641,7 @@ Elements.BlankStylePropertiesSection = class extends Elements.StylePropertiesSec
       if (this.element.parentElement)  // Might have been detached already.
         this._moveEditorFromSelector(moveDirection);
 
-      delete this._parentPane._userOperation;
+      this._parentPane._userOperation = false;
       this._editingSelectorEnded();
       this._markSelectorMatches();
 
@@ -1658,7 +1661,7 @@ Elements.BlankStylePropertiesSection = class extends Elements.StylePropertiesSec
    * @override
    */
   editingSelectorCancelled() {
-    delete this._parentPane._userOperation;
+    this._parentPane._userOperation = false;
     if (!this.isBlank) {
       super.editingSelectorCancelled();
       return;
@@ -1679,9 +1682,6 @@ Elements.BlankStylePropertiesSection = class extends Elements.StylePropertiesSec
   }
 };
 
-/**
- * @unrestricted
- */
 Elements.KeyframePropertiesSection = class extends Elements.StylePropertiesSection {
   /**
    * @param {!Elements.StylesSidebarPane} stylesPane
@@ -1763,9 +1763,6 @@ Elements.KeyframePropertiesSection = class extends Elements.StylePropertiesSecti
   }
 };
 
-/**
- * @unrestricted
- */
 Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Elements.StylesSidebarPane} stylesPane
@@ -1787,6 +1784,14 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     this._parentPane = stylesPane;
     this.isShorthand = isShorthand;
     this._applyStyleThrottler = new Common.Throttler(0);
+    this._newProperty = false;
+    this._expandedDueToFilter = false;
+    this.valueElement = null;
+    this.nameElement = null;
+    this._expandElement = null;
+    this._originalPropertyText = '';
+    this._prompt = null;
+    this._propertyHasBeenEditedIncrementally = false;
   }
 
   /**
@@ -2038,7 +2043,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
      * @this {Elements.StylePropertyTreeElement}
      */
     function callback(success) {
-      delete this._parentPane._userOperation;
+      this._parentPane._userOperation = false;
 
       if (!success)
         return;
@@ -2105,9 +2110,9 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
   _resetMouseDownElement() {
     if (this._parentPane) {
-      delete this._parentPane._mouseDownTreeElement;
-      delete this._parentPane._mouseDownTreeElementIsName;
-      delete this._parentPane._mouseDownTreeElementIsValue;
+      this._parentPane._mouseDownTreeElement = null;
+      this._parentPane._mouseDownTreeElementIsName = false;
+      this._parentPane._mouseDownTreeElementIsValue = false;
     }
   }
 
@@ -2495,7 +2500,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   _revertStyleUponEditingCanceled() {
     if (this._propertyHasBeenEditedIncrementally) {
       this.applyStyleText(this._originalPropertyText, false);
-      delete this._originalPropertyText;
+      this._originalPropertyText = '';
     } else if (this._newProperty) {
       this.treeOutline.removeChild(this);
     } else {
@@ -2648,7 +2653,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     // BUG 53242. This cannot go into editingEnded(), as it should always happen first for any editing outcome.
     if (this._prompt) {
       this._prompt.detach();
-      delete this._prompt;
+      this._prompt = null;
     }
   }
 
@@ -2693,7 +2698,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
      * @this {Elements.StylePropertyTreeElement}
      */
     function callback(success) {
-      delete this._parentPane._userOperation;
+      this._parentPane._userOperation = false;
 
       if (!success) {
         if (majorChange) {
@@ -2744,9 +2749,6 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 /** @typedef {{expanded: boolean, hasChildren: boolean, isEditingName: boolean, previousContent: string}} */
 Elements.StylePropertyTreeElement.Context;
 
-/**
- * @unrestricted
- */
 Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
   /**
    * @param {!Array<string>} cssCompletions
@@ -2862,7 +2864,7 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
     }
 
     // Handle numeric value increment/decrement only at this point.
-    if (!this._isEditingName &&
+    if (!this._isEditingName && this._treeElement.valueElement &&
         UI.handleElementValueModifications(
             event, this._treeElement.valueElement, finishHandler.bind(this), this._isValueSuggestion.bind(this),
             customNumberHandler.bind(this)))
@@ -2931,9 +2933,6 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
   }
 };
 
-/**
- * @unrestricted
- */
 Elements.StylesSidebarPropertyRenderer = class {
   /**
    * @param {?SDK.CSSRule} rule
@@ -2946,6 +2945,12 @@ Elements.StylesSidebarPropertyRenderer = class {
     this._node = node;
     this._propertyName = name;
     this._propertyValue = value;
+    /** @type {?function(string):!Node} */
+    this._colorHandler = null;
+    /** @type {?function(string):!Node} */
+    this._bezierHandler = null;
+    /** @type {?function(string, string):!Node} */
+    this._shadowHandler = null;
   }
 
   /**
@@ -3042,7 +3047,6 @@ Elements.StylesSidebarPropertyRenderer = class {
 
 /**
  * @implements {UI.ToolbarItem.Provider}
- * @unrestricted
  */
 Elements.StylesSidebarPane.ButtonProvider = class {
   constructor() {

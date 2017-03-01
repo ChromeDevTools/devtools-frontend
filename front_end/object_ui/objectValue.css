@@ -99,6 +99,6 @@
     color: hsl(252, 100%, 75%);
 }
 
-.object-description {
+.object-properties-section .object-description {
     color: gray;
 }

@@ -32,20 +32,18 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
     }
     const isArrayOrTypedArray = preview.subtype === 'array' || preview.subtype === 'typedarray';
     if (description) {
-      if (previewExperimentEnabled) {
-        // Hide the description for plain objects and plain arrays.
-        const plainObjectDescription = 'Object';
-        const size = SDK.RemoteObject.arrayLength(preview) || SDK.RemoteObject.mapOrSetEntriesCount(preview);
-        var text = preview.subtype === 'typedarray' ? SDK.RemoteObject.arrayNameFromDescription(description) : '';
-        if (isArrayOrTypedArray)
-          text += size > 1 ? ('(' + size + ')') : '';
-        else
-          text = description === plainObjectDescription ? '' : description;
-        if (text.length > 0)
-          parentElement.createChild('span', 'object-description').textContent = text + ' ';
-      } else if (preview.subtype !== 'array') {
-        parentElement.createTextChildren(description, ' ');
+      var text;
+      if (isArrayOrTypedArray) {
+        var arrayLength = SDK.RemoteObject.arrayLength(preview);
+        var arrayLengthText = arrayLength > 1 ? ('(' + arrayLength + ')') : '';
+        var arrayName = preview.subtype === 'typedarray' ? SDK.RemoteObject.arrayNameFromDescription(description) : '';
+        text = arrayName + arrayLengthText;
+      } else {
+        var hideDescription = previewExperimentEnabled && description === 'Object';
+        text = hideDescription ? '' : description;
       }
+      if (text.length > 0)
+        parentElement.createChild('span', 'object-description').textContent = text + ' ';
     }
 
     parentElement.createTextChild(isArrayOrTypedArray ? '[' : '{');

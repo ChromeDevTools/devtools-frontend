@@ -168,8 +168,6 @@ Console.ConsoleView = class extends UI.VBox {
     this._registerWithMessageSink();
     SDK.targetManager.observeTargets(this);
 
-    this._initConsoleMessages();
-
     UI.context.addFlavorChangeListener(SDK.ExecutionContext, this._executionContextChanged, this);
 
     this._messagesElement.addEventListener('mousedown', this._updateStickToBottomOnMouseDown.bind(this), false);
@@ -210,14 +208,14 @@ Console.ConsoleView = class extends UI.VBox {
     this._prompt.setAddCompletionsFromHistory(this._consoleHistoryAutocompleteSetting.get());
   }
 
-  _initConsoleMessages() {
-    var mainTarget = SDK.targetManager.mainTarget();
-    var resourceTreeModel = mainTarget && SDK.ResourceTreeModel.fromTarget(mainTarget);
-    var resourcesLoaded = !resourceTreeModel || resourceTreeModel.cachedResourcesLoaded();
-    if (!mainTarget || !resourcesLoaded) {
-      SDK.targetManager.addModelListener(
-          SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this._onResourceTreeModelLoaded,
-          this);
+  /**
+   * @param {!SDK.Target} target
+   */
+  _initConsoleMessages(target) {
+    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
+    if (resourceTreeModel && !resourceTreeModel.cachedResourcesLoaded()) {
+      resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this._onResourceTreeModelLoaded, this);
       return;
     }
     this._fetchMultitargetMessages();
@@ -228,11 +226,8 @@ Console.ConsoleView = class extends UI.VBox {
    */
   _onResourceTreeModelLoaded(event) {
     var resourceTreeModel = /** @type {!SDK.ResourceTreeModel} */ (event.data);
-    if (resourceTreeModel.target() !== SDK.targetManager.mainTarget())
-      return;
-    SDK.targetManager.removeModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this._onResourceTreeModelLoaded,
-        this);
+    resourceTreeModel.removeEventListener(
+        SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this._onResourceTreeModelLoaded, this);
     this._fetchMultitargetMessages();
   }
 
@@ -287,6 +282,8 @@ Console.ConsoleView = class extends UI.VBox {
    * @param {!SDK.Target} target
    */
   targetAdded(target) {
+    if (target === SDK.targetManager.mainTarget())
+      this._initConsoleMessages(target);
     this._viewport.invalidate();
   }
 

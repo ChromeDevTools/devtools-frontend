@@ -98,7 +98,7 @@ Common.Object = class {
 
   /**
    * @override
-   * @param {function(new:Common.Emittable, ...)} eventType
+   * @param {function(new:T, ...)} eventType
    * @param {function(!T)} listener
    * @param {!Object=} thisObject
    * @return {!Common.EventTarget.TypedEventDescriptor}
@@ -115,9 +115,10 @@ Common.Object = class {
 
   /**
    * @override
-   * @param {function(new:Common.Emittable, ...)} eventType
-   * @param {function(!Common.Emittable)} listener
+   * @param {function(new:T, ...)} eventType
+   * @param {function(!T)} listener
    * @param {!Object=} thisObject
+   * @template T
    */
   off(eventType, listener, thisObject) {
     if (!this._listeners || !this._listeners.has(eventType))
@@ -274,7 +275,7 @@ Common.EventTarget.prototype = {
   dispatchEventToListeners(eventType, eventData) {},
 
   /**
-   * @param {function(new:Common.Emittable, ...)} eventType
+   * @param {function(new:T, ...)} eventType
    * @param {function(!T)} listener
    * @param {!Object=} thisObject
    * @return {!Common.EventTarget.TypedEventDescriptor}
@@ -283,9 +284,10 @@ Common.EventTarget.prototype = {
   on(eventType, listener, thisObject) {},
 
   /**
-   * @param {function(new:Common.Emittable, ...)} eventType
-   * @param {function(!Common.Emittable)} listener
+   * @param {function(new:T, ...)} eventType
+   * @param {function(!T)} listener
    * @param {!Object=} thisObject
+   * @template T
    */
   off(eventType, listener, thisObject) {},
 

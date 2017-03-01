@@ -45,7 +45,7 @@
     color: rgb(128, 128, 128);
 }
 
-::content .text-prompt:empty::after {
+::content .text-prompt:not([data-placeholder]):empty::after {
     content: '\00A0';
     width: 0;
     display: block;

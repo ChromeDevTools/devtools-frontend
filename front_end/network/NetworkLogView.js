@@ -853,6 +853,8 @@ Network.NetworkLogView = class extends UI.VBox {
 
     if (nodesToInsert.size)
       this._columns.sortByCurrentColumn();
+
+    this._dataGrid.updateInstantly();
   }
 
   /**

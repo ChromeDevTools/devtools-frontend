@@ -101,10 +101,10 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
     this._updateAnimationFrameId = this.element.window().requestAnimationFrame(this._update.bind(this));
   }
 
-  updateInstantlyForTests() {
-    if (!this._updateAnimationFrameId)
-      return;
-    this.element.window().cancelAnimationFrame(this._updateAnimationFrameId);
+  // TODO(allada) This should be fixed to never be needed. It is needed right now for network because removing
+  // elements happens followed by a scheduleRefresh() which causes white space to be visible, but the waterfall
+  // updates instantly.
+  updateInstantly() {
     this._update();
   }
 

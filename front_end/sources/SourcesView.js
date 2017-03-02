@@ -28,6 +28,8 @@ Sources.SourcesView = class extends UI.VBox {
 
     var tabbedEditorPlaceholderText =
         Host.isMac() ? Common.UIString('Hit \u2318+P to open a file') : Common.UIString('Hit Ctrl+P to open a file');
+    if (Runtime.experiments.isEnabled('persistence2'))
+      tabbedEditorPlaceholderText += '\n\n' + Common.UIString('Drop in a folder to add to workspace');
     this._editorContainer = new Sources.TabbedEditorContainer(
         this, Common.settings.createLocalSetting('previouslyViewedFiles', []), tabbedEditorPlaceholderText);
     this._editorContainer.show(this._searchableView.element);

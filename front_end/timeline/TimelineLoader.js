@@ -20,6 +20,7 @@ Timeline.TimelineLoader = class {
     this._canceledCallback = null;
     this._state = Timeline.TimelineLoader.State.Initial;
     this._buffer = '';
+    this._firstRawChunk = true;
     this._firstChunk = true;
 
     this._loadedBytes = 0;
@@ -79,11 +80,16 @@ Timeline.TimelineLoader = class {
     if (!this._client)
       return;
     this._loadedBytes += chunk.length;
-    if (!this._firstChunk)
+    if (this._firstRawChunk)
+      this._client.loadingStarted();
+    else
       this._client.loadingProgress(this._totalSize ? this._loadedBytes / this._totalSize : undefined);
+    this._firstRawChunk = false;
 
     if (this._state === Timeline.TimelineLoader.State.Initial) {
-      if (chunk[0] === '{') {
+      if (chunk.startsWith('{"nodes":[')) {
+        this._state = Timeline.TimelineLoader.State.LoadingCPUProfileFormat;
+      } else if (chunk[0] === '{') {
         this._state = Timeline.TimelineLoader.State.LookingForEvents;
       } else if (chunk[0] === '[') {
         this._state = Timeline.TimelineLoader.State.ReadingEvents;
@@ -91,6 +97,11 @@ Timeline.TimelineLoader = class {
         this._reportErrorAndCancelLoading(Common.UIString('Malformed timeline data: Unknown JSON format'));
         return;
       }
+    }
+
+    if (this._state === Timeline.TimelineLoader.State.LoadingCPUProfileFormat) {
+      this._buffer += chunk;
+      return;
     }
 
     if (this._state === Timeline.TimelineLoader.State.LookingForEvents) {
@@ -121,9 +132,7 @@ Timeline.TimelineLoader = class {
   _writeBalancedJSON(data) {
     var json = data + ']';
 
-    if (this._firstChunk) {
-      this._client.loadingStarted();
-    } else {
+    if (!this._firstChunk) {
       var commaIndex = json.indexOf(',');
       if (commaIndex !== -1)
         json = json.slice(commaIndex + 1);
@@ -150,7 +159,6 @@ Timeline.TimelineLoader = class {
       this._tracingModel.addEvents(items);
     } catch (e) {
       this._reportErrorAndCancelLoading(Common.UIString('Malformed timeline data: %s', e.toString()));
-      return;
     }
   }
 
@@ -182,6 +190,10 @@ Timeline.TimelineLoader = class {
   }
 
   _finalizeTrace() {
+    if (this._state === Timeline.TimelineLoader.State.LoadingCPUProfileFormat) {
+      this._parseCPUProfileFormat(this._buffer);
+      this._buffer = '';
+    }
     this._tracingModel.tracingComplete();
     this._client.loadingComplete(this._tracingModel, this._backingStorage);
   }
@@ -225,6 +237,21 @@ Timeline.TimelineLoader = class {
             Common.UIString('An error occurred while reading the file "%s"', reader.fileName()));
     }
   }
+
+  /**
+   * @param {string} text
+   */
+  _parseCPUProfileFormat(text) {
+    var traceEvents;
+    try {
+      var profile = JSON.parse(text);
+      traceEvents = TimelineModel.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(profile);
+    } catch (e) {
+      this._reportErrorAndCancelLoading(Common.UIString('Malformed CPU profile format'));
+      return;
+    }
+    this._tracingModel.addEvents(traceEvents);
+  }
 };
 
 
@@ -259,7 +286,8 @@ Timeline.TimelineLoader.State = {
   Initial: Symbol('Initial'),
   LookingForEvents: Symbol('LookingForEvents'),
   ReadingEvents: Symbol('ReadingEvents'),
-  SkippingTail: Symbol('SkippingTail')
+  SkippingTail: Symbol('SkippingTail'),
+  LoadingCPUProfileFormat: Symbol('LoadingCPUProfileFormat')
 };
 
 /**

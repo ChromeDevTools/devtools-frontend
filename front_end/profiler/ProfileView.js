@@ -336,6 +336,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
     this.profileDataGridTree.focus(this.dataGrid.selectedNode);
     this.refresh();
     this.refreshVisibleData();
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.CpuProfileNodeFocused);
   }
 
   /**
@@ -353,6 +354,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
     this.profileDataGridTree.exclude(selectedNode);
     this.refresh();
     this.refreshVisibleData();
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.CpuProfileNodeExcluded);
   }
 
   /**

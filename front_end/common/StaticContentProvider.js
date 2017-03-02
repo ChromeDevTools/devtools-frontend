@@ -49,7 +49,7 @@ Common.StaticContentProvider = class {
    * @return {!Promise<?string>}
    */
   requestContent() {
-    return /** @type {!Promise<?string>} */ (this._lazyContent());
+    return this._lazyContent();
   }
 
   /**

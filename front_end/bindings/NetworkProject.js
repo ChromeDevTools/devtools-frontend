@@ -249,10 +249,12 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
       if (!parsedURL.isValid)
         return;
     }
-    var uiSourceCode = this._createFile(script, SDK.ResourceTreeFrame.fromScript(script), script.isContentScript());
+    var originalContentProvider = script.originalContentProvider();
+    var uiSourceCode =
+        this._createFile(originalContentProvider, SDK.ResourceTreeFrame.fromScript(script), script.isContentScript());
     uiSourceCode[Bindings.NetworkProject._scriptSymbol] = script;
     var resource = SDK.ResourceTreeModel.resourceForURL(uiSourceCode.url());
-    this._addUISourceCodeWithProvider(uiSourceCode, script, this._resourceMetadata(resource));
+    this._addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, this._resourceMetadata(resource));
   }
 
   /**

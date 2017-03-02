@@ -71,6 +71,8 @@ SDK.Script = class {
     this._isLiveEdit = isLiveEdit;
     this.sourceMapURL = sourceMapURL;
     this.hasSourceURL = hasSourceURL;
+    this._originalContentProvider = null;
+    this._originalSource = null;
   }
 
   /**
@@ -186,8 +188,22 @@ SDK.Script = class {
       } else {
         this._source = '';
       }
+      if (this._originalSource === null)
+        this._originalSource = this._source;
       callback(this._source);
     }
+  }
+
+  /**
+   * @return {!Common.ContentProvider}
+   */
+  originalContentProvider() {
+    if (!this._originalContentProvider) {
+      var lazyContent = () => this.requestContent().then(() => this._originalSource);
+      this._originalContentProvider =
+          new Common.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
+    }
+    return this._originalContentProvider;
   }
 
   /**
@@ -261,8 +277,9 @@ SDK.Script = class {
     newSource = this._appendSourceURLCommentIfNeeded(newSource);
 
     if (this.scriptId) {
-      this.debuggerModel.target().debuggerAgent().setScriptSource(
-          this.scriptId, newSource, undefined, didEditScriptSource.bind(this));
+      this.requestContent().then(
+          () => this.debuggerModel.target().debuggerAgent().setScriptSource(
+              this.scriptId, newSource, undefined, didEditScriptSource.bind(this)));
     } else {
       callback('Script failed to parse');
     }

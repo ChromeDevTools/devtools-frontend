@@ -115,7 +115,7 @@ Main.Main = class {
     Runtime.experiments.register('sourceDiff', 'Source diff');
     Runtime.experiments.register('terminalInDrawer', 'Terminal in drawer', true);
     Runtime.experiments.register('timelineInvalidationTracking', 'Timeline invalidation tracking', true);
-    Runtime.experiments.register('timelineMultipleMainViews', 'Timeline with multiple main views');
+    Runtime.experiments.register('timelineMultipleMainViews', 'Tabbed views on Performance panel');
     Runtime.experiments.register('timelineTracingJSProfile', 'Timeline tracing based JS profiler', true);
     Runtime.experiments.register('timelineV8RuntimeCallStats', 'V8 Runtime Call Stats on Timeline', true);
     Runtime.experiments.register('timelinePerFrameTrack', 'Show track per frame on Timeline', true);
@@ -135,7 +135,7 @@ Main.Main = class {
         Runtime.experiments.enableForTest('releaseNote');
     }
 
-    Runtime.experiments.setDefaultExperiments(['persistenceValidation', 'timelineMultipleMainViews']);
+    Runtime.experiments.setDefaultExperiments(['persistenceValidation']);
   }
 
   /**

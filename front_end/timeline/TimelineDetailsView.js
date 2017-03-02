@@ -42,8 +42,8 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
       this._rangeDetailViews.set(tabIds.CallTree, callTreeView);
 
       const eventsView = new Timeline.EventsTimelineTreeView(filters, delegate);
-      this._appendTab(tabIds.Events, Common.UIString('Event Log'), eventsView);
-      this._rangeDetailViews.set(tabIds.Events, eventsView);
+      this._appendTab(tabIds.EventLog, Common.UIString('Event Log'), eventsView);
+      this._rangeDetailViews.set(tabIds.EventLog, eventsView);
     }
 
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
@@ -237,7 +237,7 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
  */
 Timeline.TimelineDetailsView.Tab = {
   Details: 'Details',
-  Events: 'Events',
+  EventLog: 'EventLog',
   CallTree: 'CallTree',
   BottomUp: 'BottomUp',
   PaintProfiler: 'PaintProfiler',

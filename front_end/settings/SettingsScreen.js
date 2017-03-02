@@ -479,7 +479,7 @@ Settings.SettingsScreen.ActionDelegate = class {
       case 'settings.show':
         Settings.SettingsScreen._showSettingsScreen();
         return true;
-      case 'settings.help':
+      case 'settings.documentation':
         InspectorFrontendHost.openInNewTab('https://developers.google.com/web/tools/chrome-devtools/');
         return true;
       case 'settings.shortcuts':

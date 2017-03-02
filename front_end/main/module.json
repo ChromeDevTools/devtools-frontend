@@ -373,6 +373,13 @@
             "order": 80
         },
         {
+            "type": "context-menu-item",
+            "location": "mainMenu/footer",
+            "title": "Help",
+            "subMenuId": "mainMenuHelp",
+            "order": 30
+        },
+        {
             "type": "view",
             "location": "drawer-view",
             "id": "rendering",

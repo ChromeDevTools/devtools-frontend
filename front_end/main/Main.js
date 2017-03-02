@@ -746,6 +746,10 @@ Main.Main.MainMenuItem = class {
       moreTools.appendItem(extension.title(), UI.viewManager.showView.bind(UI.viewManager, descriptor['id']));
     }
 
+    var helpSubMenu = contextMenu.namedSubMenu('mainMenuHelp');
+    helpSubMenu.appendAction('settings.documentation');
+    if (Runtime.experiments.isEnabled('releaseNote'))
+      helpSubMenu.appendItem('Release Notes', () => InspectorFrontendHost.openInNewTab(Help.latestReleaseNote().link));
     contextMenu.show();
   }
 };

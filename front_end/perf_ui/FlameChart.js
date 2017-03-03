@@ -353,7 +353,7 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
       var timelineData = this._timelineData();
       var level = timelineData.entryLevels[this._selectedEntryIndex];
       if (this._selectedEntryIndex >= 0 && level >= group.startLevel &&
-          (groupIndex === groups.length || groups[groupIndex + 1].startLevel > level))
+          (groupIndex >= groups.length - 1 || groups[groupIndex + 1].startLevel > level))
         this._selectedEntryIndex = -1;
     }
 

@@ -41,11 +41,6 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._itemElementsContainer.classList.add('container');
     this._bottomElementsContainer.appendChild(this._itemElementsContainer);
 
-    if (delegate.renderMonospace()) {
-      this._list.element.classList.add('monospace');
-      this._promptElement.classList.add('monospace');
-    }
-
     this._notFoundElement = this._bottomElementsContainer.createChild('div', 'not-found-text');
     this._notFoundElement.classList.add('hidden');
 
@@ -498,13 +493,6 @@ QuickOpen.FilteredListWidget.Delegate = class {
    * @param {!Element} subtitleElement
    */
   renderItem(itemIndex, query, titleElement, subtitleElement) {
-  }
-
-  /**
-   * @return {boolean}
-   */
-  renderMonospace() {
-    return true;
   }
 
   /**

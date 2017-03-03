@@ -221,14 +221,6 @@ QuickOpen.CommandMenuDelegate = class extends QuickOpen.FilteredListWidget.Deleg
 
   /**
    * @override
-   * @return {boolean}
-   */
-  renderMonospace() {
-    return false;
-  }
-
-  /**
-   * @override
    * @return {string}
    */
   notFoundText() {

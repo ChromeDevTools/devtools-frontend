@@ -40,6 +40,8 @@ Sources.OpenResourceDialog = class extends Sources.FilteredUISourceCodeListDeleg
    * @param {number=} columnNumber
    */
   uiSourceCodeSelected(uiSourceCode, lineNumber, columnNumber) {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelectFileFromFilePicker);
+
     if (!uiSourceCode)
       uiSourceCode = this._sourcesView.currentUISourceCode();
     if (!uiSourceCode)

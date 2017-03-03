@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/** @typedef {{range: !Common.TextRange, wasUsed: boolean}} */
-Coverage.RangeUsage;
+/** @typedef {{range: !Common.TextRange, count: number}} */
+Coverage.RangeUseCount;
 
-/** @typedef {{styleSheetHeader: !SDK.CSSStyleSheetHeader, ranges: !Array<!Coverage.RangeUsage>}} */
+/** @typedef {{styleSheetHeader: !SDK.CSSStyleSheetHeader, ranges: !Array<!Coverage.RangeUseCount>}} */
 Coverage.StyleSheetUsage;
 
 /** @typedef {{
@@ -14,7 +14,7 @@ Coverage.StyleSheetUsage;
  *    unusedSize: (number|undefined),
  *    usedSize: (number|undefined),
  *    type: !Coverage.CoverageType,
- *    ranges: !Array<!Coverage.RangeUsage>
+ *    ranges: !Array<!Coverage.RangeUseCount>
  * }}
  */
 Coverage.CoverageInfo;
@@ -169,7 +169,7 @@ Coverage.CoverageView = class extends UI.VBox {
         for (var range of func.ranges) {
           var textRange = new Common.TextRange(
               range.startLineNumber, range.startColumnNumber, range.endLineNumber, range.endColumnNumber);
-          ranges.push({range: textRange, wasUsed: !!range.count});
+          ranges.push({range: textRange, count: range.count});
         }
       }
       promises.push(Coverage.CoverageView._coverageInfoForText(script, script.lineOffset, script.columnOffset, ranges));
@@ -197,7 +197,7 @@ Coverage.CoverageView = class extends UI.VBox {
    * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
    */
   static async _processCSSCoverage(cssModel, ruleUsageList) {
-    /** @type {!Map<?SDK.CSSStyleSheetHeader, !Array<!Coverage.RangeUsage>>} */
+    /** @type {!Map<?SDK.CSSStyleSheetHeader, !Array<!Coverage.RangeUseCount>>} */
     var rulesByStyleSheet = new Map();
     for (var rule of ruleUsageList) {
       var styleSheetHeader = cssModel.styleSheetHeaderForId(rule.styleSheetId);
@@ -211,7 +211,7 @@ Coverage.CoverageView = class extends UI.VBox {
           rule.range.startColumn + (rule.range.startLine ? 0 : styleSheetHeader.startColumn),
           rule.range.endLine + styleSheetHeader.startLine,
           rule.range.endColumn + (rule.range.endLine ? 0 : styleSheetHeader.startColumn));
-      ranges.push({range: textRange, wasUsed: rule.wasUsed});
+      ranges.push({range: textRange, count: Number(rule.wasUsed)});
     }
     return Promise.all(Array.from(
         rulesByStyleSheet.entries(), entry => Coverage.CoverageView._coverageInfoForText(
@@ -222,7 +222,7 @@ Coverage.CoverageView = class extends UI.VBox {
    * @param {!Common.ContentProvider} contentProvider
    * @param {number} startLine
    * @param {number} startColumn
-   * @param {!Array<!Coverage.RangeUsage>} ranges
+   * @param {!Array<!Coverage.RangeUseCount>} ranges
    * @return {!Promise<!Coverage.CoverageInfo>}
    */
   static async _coverageInfoForText(contentProvider, startLine, startColumn, ranges) {
@@ -246,7 +246,7 @@ Coverage.CoverageView = class extends UI.VBox {
       return {
         start: text.offsetFromPosition(range.startLine, range.startColumn),
         end: text.offsetFromPosition(range.endLine, range.endColumn),
-        wasUsed: r.wasUsed
+        count: r.count
       };
     });
 
@@ -271,7 +271,7 @@ Coverage.CoverageView = class extends UI.VBox {
     var usedSize = 0;
     var unusedSize = 0;
     for (var entry of offsetRanges) {
-      if (entry.wasUsed)
+      if (entry.count)
         usedSize += entry.ownSize;
       else
         unusedSize += entry.ownSize;
@@ -309,7 +309,7 @@ Coverage.CoverageView = class extends UI.VBox {
       if (!uiSourceCode)
         continue;
       for (var range of info.ranges)
-        uiSourceCode.addDecoration(range.range, Coverage.CoverageView.LineDecorator.type, range.wasUsed);
+        uiSourceCode.addDecoration(range.range, Coverage.CoverageView.LineDecorator.type, range.count);
     }
   }
 };

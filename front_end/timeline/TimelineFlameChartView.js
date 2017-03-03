@@ -115,20 +115,19 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._model = model;
     if (this._model)
       this._model.addEventListener(extensionDataAdded, this._appendExtensionData, this);
+    this._mainDataProvider.setModel(this._model);
+    this._networkDataProvider.setModel(this._model);
+    this._countersView.setModel(this._model);
+    this._detailsView.setModel(this._model);
+
+    this._nextExtensionIndex = 0;
+    this._appendExtensionData();
+
     this._updateSearchHighlight(false, true);
     this._refresh();
   }
 
   _refresh() {
-    this._mainDataProvider.setModel(this._model);
-    this._networkDataProvider.setModel(this._model);
-    this._countersView.setModel(this._model);
-    if (this._detailsView)
-      this._detailsView.setModel(this._model);
-
-    this._nextExtensionIndex = 0;
-    this._appendExtensionData();
-
     if (this._networkDataProvider.isEmpty()) {
       this._mainFlameChart.enableRuler(true);
       this._networkSplitWidget.hideSidebar();

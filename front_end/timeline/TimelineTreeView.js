@@ -240,8 +240,10 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     if (this._searchableView)
       this._searchableView.cancelSearch();
     this._dataGrid.rootNode().removeChildren();
-    if (!this._model)
+    if (!this._model) {
+      this._updateDetailsForSelection();
       return;
+    }
     this._root = this._buildTree();
     var children = this._root.children();
     var maxSelfTime = 0;

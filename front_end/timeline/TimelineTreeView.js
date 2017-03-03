@@ -84,6 +84,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     this._splitWidget.setSidebarWidget(this._detailsView);
     this._splitWidget.hideSidebar();
     this._splitWidget.show(this.element);
+    this._splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, this._updateDetailsForSelection, this);
 
     /** @type {?TimelineModel.TimelineProfileTree.Node|undefined} */
     this._lastSelectedNode;
@@ -358,6 +359,8 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     if (selectedNode === this._lastSelectedNode)
       return;
     this._lastSelectedNode = selectedNode;
+    if (this._splitWidget.showMode() === UI.SplitWidget.ShowMode.OnlyMain)
+      return;
     this._detailsView.detachChildWidgets();
     this._detailsView.element.removeChildren();
     if (!selectedNode || !this._showDetailsForNode(selectedNode)) {

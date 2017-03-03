@@ -824,7 +824,6 @@ generated_resources = [
   # this contains non-autostart non-remote modules only.
   "$resources_out_dir/animation/animation_module.js",
   "$resources_out_dir/audits/audits_module.js",
-  "$resources_out_dir/audits2_worker/audits2_worker_module.js",
   "$resources_out_dir/audits2/audits2_module.js",
   "$resources_out_dir/cm/cm_module.js",
   "$resources_out_dir/color_picker/color_picker_module.js",
@@ -859,6 +858,7 @@ generated_resources = [
 
 generated_remote_modules = [
   "$resources_out_dir/accessibility/accessibility_module.js",
+  "$resources_out_dir/audits2_worker/audits2_worker_module.js",
   "$resources_out_dir/cm_modes/cm_modes_module.js",
   "$resources_out_dir/emulated_devices/emulated_devices_module.js",
   "$resources_out_dir/gonzales/gonzales_module.js",

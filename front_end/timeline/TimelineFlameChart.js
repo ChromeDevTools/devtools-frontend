@@ -497,9 +497,9 @@ Timeline.TimelineFlameChartDataProvider = class {
    */
   highlightEntry(entryIndex) {
     SDK.DOMModel.hideDOMNodeHighlight();
-    var event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
-    if (!event)
+    if (this._entryType(entryIndex) !== Timeline.TimelineFlameChartEntryType.Event)
       return;
+    var event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
     var target = this._model.targetByEvent(event);
     if (!target)
       return;

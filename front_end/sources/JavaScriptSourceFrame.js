@@ -161,7 +161,11 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     super.wasShown();
     if (this._executionLocation && this.loaded) {
       // We need SourcesTextEditor to be initialized prior to this call. @see crbug.com/499889
-      setImmediate(this._generateValuesInSource.bind(this));
+      setImmediate(() => {
+        this._generateValuesInSource();
+        if (Runtime.experiments.isEnabled('continueToLocationMarkers'))
+          this._showContinueToLocations();
+      });
     }
   }
 

@@ -544,11 +544,6 @@ SDK.ExecutionContext = class extends SDK.SDKObject {
       generatePreview,
       userGesture,
       callback) {
-    if (!expression) {
-      // There is no expression, so the completion should happen against global properties.
-      expression = 'this';
-    }
-
     /**
      * @this {SDK.ExecutionContext}
      * @param {?Protocol.Error} error

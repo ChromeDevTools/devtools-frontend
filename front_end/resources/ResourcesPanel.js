@@ -88,7 +88,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
 
     cacheTreeElement.appendChild(this.applicationCacheListTreeElement);
 
-    this.resourcesListTreeElement = this._addSidebarSection(Common.UIString('Frames'));
+    this._resourcesSection = new Resources.ResourcesSection(this, this._addSidebarSection(Common.UIString('Frames')));
 
     var mainContainer = new UI.VBox();
     this.storageViews = mainContainer.element.createChild('div', 'vbox flex-auto');
@@ -115,6 +115,8 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     this.panelSidebarElement().addEventListener('mouseleave', this._onmouseleave.bind(this), false);
 
     SDK.targetManager.observeTargets(this);
+    SDK.targetManager.addModelListener(
+        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
   }
 
   /**
@@ -191,6 +193,8 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
   }
 
   _initialize() {
+    for (var frame of SDK.ResourceTreeModel.frames())
+      this._addCookieDocument(frame);
     this._databaseModel.enable();
 
     var indexedDBModel = Resources.IndexedDBModel.fromTarget(this._target);
@@ -201,10 +205,8 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     if (cacheStorageModel)
       cacheStorageModel.enable();
     var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(this._target);
-    if (resourceTreeModel) {
-      this._populateResourceTree(resourceTreeModel);
+    if (resourceTreeModel)
       this._populateApplicationCacheTree(resourceTreeModel);
-    }
     var domStorageModel = Resources.DOMStorageModel.fromTarget(this._target);
     if (domStorageModel)
       this._populateDOMStorageTree(domStorageModel);
@@ -229,8 +231,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
   }
 
   _resetWithFrames() {
-    this.resourcesListTreeElement.removeChildren();
-    this._treeElementForFrameId = {};
+    this._resourcesSection.reset();
     this._reset();
   }
 
@@ -307,89 +308,16 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
       this._sidebarTree.selectedTreeElement.deselect();
   }
 
-  /**
-   * @param {!SDK.ResourceTreeModel} resourceTreeModel
-   */
-  _populateResourceTree(resourceTreeModel) {
-    this._treeElementForFrameId = {};
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameAdded, this._frameAdded, this);
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ResourceAdded, this._resourceAdded, this);
-
-    /**
-     * @param {!SDK.ResourceTreeFrame} frame
-     * @this {Resources.ResourcesPanel}
-     */
-    function populateFrame(frame) {
-      this._frameAdded({data: frame});
-      for (var i = 0; i < frame.childFrames.length; ++i)
-        populateFrame.call(this, frame.childFrames[i]);
-
-      var resources = frame.resources();
-      for (var i = 0; i < resources.length; ++i)
-        this._resourceAdded({data: resources[i]});
-    }
-    populateFrame.call(this, resourceTreeModel.mainFrame);
-  }
-
-  _frameAdded(event) {
-    var frame = event.data;
-    var parentFrame = frame.parentFrame;
-
-    var parentTreeElement = parentFrame ? this._treeElementForFrameId[parentFrame.id] : this.resourcesListTreeElement;
-    if (!parentTreeElement) {
-      console.warn('No frame to route ' + frame.url + ' to.');
-      return;
-    }
-
-    var frameTreeElement = new Resources.FrameTreeElement(this, frame);
-    this._treeElementForFrameId[frame.id] = frameTreeElement;
-    parentTreeElement.appendChild(frameTreeElement);
-  }
-
-  _frameDetached(event) {
-    var frame = event.data;
-    var frameTreeElement = this._treeElementForFrameId[frame.id];
-    if (!frameTreeElement)
-      return;
-
-    delete this._treeElementForFrameId[frame.id];
-    if (frameTreeElement.parent)
-      frameTreeElement.parent.removeChild(frameTreeElement);
-  }
-
-  _resourceAdded(event) {
-    var resource = event.data;
-    var frameId = resource.frameId;
-
-    if (resource.statusCode >= 301 && resource.statusCode <= 303)
-      return;
-
-    var frameTreeElement = this._treeElementForFrameId[frameId];
-    if (!frameTreeElement) {
-      // This is a frame's main resource, it will be retained
-      // and re-added by the resource manager;
-      return;
-    }
-
-    frameTreeElement.appendResource(resource);
-  }
-
   _frameNavigated(event) {
     var frame = event.data;
 
     if (!frame.parentFrame)
       this._reset();
 
-    var frameId = frame.id;
-    var frameTreeElement = this._treeElementForFrameId[frameId];
-    if (frameTreeElement)
-      frameTreeElement.frameNavigated(frame);
-
-    var applicationCacheFrameTreeElement = this._applicationCacheFrameElements[frameId];
+    var applicationCacheFrameTreeElement = this._applicationCacheFrameElements[frame.id];
     if (applicationCacheFrameTreeElement)
       applicationCacheFrameTreeElement.frameNavigated(frame);
+    this._addCookieDocument(frame);
   }
 
   /**
@@ -404,7 +332,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
   /**
    * @param {!SDK.ResourceTreeFrame} frame
    */
-  addCookieDocument(frame) {
+  _addCookieDocument(frame) {
     var parsedURL = frame.url.asParsedURL();
     if (!parsedURL || (parsedURL.scheme !== 'http' && parsedURL.scheme !== 'https' && parsedURL.scheme !== 'file'))
       return;
@@ -489,7 +417,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
    * @return {boolean}
    */
   showResource(resource, line, column) {
-    var resourceTreeElement = this._findTreeElementForResource(resource);
+    var resourceTreeElement = Resources.FrameResourceTreeElement.forResource(resource);
     if (resourceTreeElement)
       resourceTreeElement.revealAndSelect(true);
 
@@ -501,43 +429,12 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     return true;
   }
 
-  _showResourceView(resource) {
-    var view = this._resourceViewForResource(resource);
-    if (!view) {
-      this.visibleView.detach();
-      return;
-    }
-    this._innerShowView(view);
-  }
-
-  /**
-   * @param {!SDK.Resource} resource
-   * @return {?UI.Widget}
-   */
-  _resourceViewForResource(resource) {
-    if (resource.hasTextContent()) {
-      var treeElement = this._findTreeElementForResource(resource);
-      if (!treeElement)
-        return null;
-      return treeElement.sourceView();
-    }
-
-    switch (resource.resourceType()) {
-      case Common.resourceTypes.Image:
-        return new SourceFrame.ImageView(resource.mimeType, resource);
-      case Common.resourceTypes.Font:
-        return new SourceFrame.FontView(resource.mimeType, resource);
-      default:
-        return new UI.EmptyWidget(resource.url);
-    }
-  }
-
   /**
    * @param {!SDK.Resource} resource
    * @return {?SourceFrame.ResourceSourceFrame}
    */
   _resourceSourceFrameViewForResource(resource) {
-    var resourceView = this._resourceViewForResource(resource);
+    var resourceView = Resources.FrameResourceTreeElement.resourceViewForResource(resource);
     if (resourceView && resourceView instanceof SourceFrame.ResourceSourceFrame)
       return /** @type {!SourceFrame.ResourceSourceFrame} */ (resourceView);
     return null;
@@ -780,10 +677,6 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
       this._applicationCacheViews[manifestURL].updateNetworkState(isNowOnline);
   }
 
-  _findTreeElementForResource(resource) {
-    return resource[Resources.FrameResourceTreeElement._symbol];
-  }
-
   showView(view) {
     if (view)
       this.showResource(view.resource);
@@ -865,6 +758,18 @@ Resources.BaseStorageTreeElement = class extends UI.TreeElement {
       this._storagePanel._resourcesLastSelectedItemSetting.set(itemURL);
     return false;
   }
+
+  /**
+   * @protected
+   * @param {?UI.Widget} view
+   */
+  showView(view) {
+    if (!view) {
+      this._storagePanel.visibleView.detach();
+      return;
+    }
+    this._storagePanel._innerShowView(view);
+  }
 };
 
 /**
@@ -927,216 +832,6 @@ Resources.StorageCategoryTreeElement = class extends Resources.BaseStorageTreeEl
     this._expandedSetting.set(false);
   }
 };
-
-/**
- * @unrestricted
- */
-Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
-  /**
-   * @param {!Resources.ResourcesPanel} storagePanel
-   * @param {!SDK.ResourceTreeFrame} frame
-   */
-  constructor(storagePanel, frame) {
-    super(storagePanel, '', false);
-    this._frame = frame;
-    this.frameNavigated(frame);
-
-    var icon = UI.Icon.create('largeicon-navigator-frame', 'navigator-tree-item');
-    icon.classList.add('navigator-frame-tree-item');
-    this.setLeadingIcons([icon]);
-  }
-
-  frameNavigated(frame) {
-    this.removeChildren();
-    this._frameId = frame.id;
-    this.title = frame.displayName();
-    this._categoryElements = {};
-    this._treeElementForResource = {};
-
-    this._storagePanel.addCookieDocument(frame);
-  }
-
-  get itemURL() {
-    return 'frame://' + encodeURI(this.titleAsText());
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  onselect(selectedByUser) {
-    super.onselect(selectedByUser);
-    this._storagePanel.showCategoryView(this.titleAsText());
-
-    this.listItemElement.classList.remove('hovered');
-    SDK.DOMModel.hideDOMNodeHighlight();
-    return false;
-  }
-
-  set hovered(hovered) {
-    if (hovered) {
-      this.listItemElement.classList.add('hovered');
-      var domModel = SDK.DOMModel.fromTarget(this._frame.target());
-      if (domModel)
-        domModel.highlightFrame(this._frameId);
-    } else {
-      this.listItemElement.classList.remove('hovered');
-      SDK.DOMModel.hideDOMNodeHighlight();
-    }
-  }
-
-  /**
-   * @param {!SDK.Resource} resource
-   */
-  appendResource(resource) {
-    var resourceType = resource.resourceType();
-    var categoryName = resourceType.name();
-    var categoryElement = resourceType === Common.resourceTypes.Document ? this : this._categoryElements[categoryName];
-    if (!categoryElement) {
-      categoryElement = new Resources.StorageCategoryTreeElement(
-          this._storagePanel, resource.resourceType().category().title, categoryName);
-      this._categoryElements[resourceType.name()] = categoryElement;
-      this._insertInPresentationOrder(this, categoryElement);
-    }
-    var resourceTreeElement = new Resources.FrameResourceTreeElement(this._storagePanel, resource);
-    this._insertInPresentationOrder(categoryElement, resourceTreeElement);
-    this._treeElementForResource[resource.url] = resourceTreeElement;
-  }
-
-  /**
-   * @param {string} url
-   * @return {?SDK.Resource}
-   */
-  resourceByURL(url) {
-    var treeElement = this._treeElementForResource[url];
-    return treeElement ? treeElement._resource : null;
-  }
-
-  /**
-   * @override
-   */
-  appendChild(treeElement) {
-    this._insertInPresentationOrder(this, treeElement);
-  }
-
-  _insertInPresentationOrder(parentTreeElement, childTreeElement) {
-    // Insert in the alphabetical order, first frames, then resources. Document resource goes last.
-    function typeWeight(treeElement) {
-      if (treeElement instanceof Resources.StorageCategoryTreeElement)
-        return 2;
-      if (treeElement instanceof Resources.FrameTreeElement)
-        return 1;
-      return 3;
-    }
-
-    function compare(treeElement1, treeElement2) {
-      var typeWeight1 = typeWeight(treeElement1);
-      var typeWeight2 = typeWeight(treeElement2);
-
-      var result;
-      if (typeWeight1 > typeWeight2)
-        result = 1;
-      else if (typeWeight1 < typeWeight2)
-        result = -1;
-      else
-        result = treeElement1.titleAsText().localeCompare(treeElement2.titleAsText());
-      return result;
-    }
-
-    var childCount = parentTreeElement.childCount();
-    var i;
-    for (i = 0; i < childCount; ++i) {
-      if (compare(childTreeElement, parentTreeElement.childAt(i)) < 0)
-        break;
-    }
-    parentTreeElement.insertChild(childTreeElement, i);
-  }
-};
-
-/**
- * @unrestricted
- */
-Resources.FrameResourceTreeElement = class extends Resources.BaseStorageTreeElement {
-  /**
-   * @param {!Resources.ResourcesPanel} storagePanel
-   * @param {!SDK.Resource} resource
-   */
-  constructor(storagePanel, resource) {
-    super(storagePanel, resource.displayName, false);
-    /** @type {!SDK.Resource} */
-    this._resource = resource;
-    this.tooltip = resource.url;
-    this._resource[Resources.FrameResourceTreeElement._symbol] = this;
-
-    var icon = UI.Icon.create('largeicon-navigator-file', 'navigator-tree-item');
-    icon.classList.add('navigator-file-tree-item');
-    icon.classList.add('navigator-' + resource.resourceType().name() + '-tree-item');
-    this.setLeadingIcons([icon]);
-  }
-
-  get itemURL() {
-    return this._resource.url;
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  onselect(selectedByUser) {
-    super.onselect(selectedByUser);
-    this._storagePanel._showResourceView(this._resource);
-    return false;
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  ondblclick(event) {
-    InspectorFrontendHost.openInNewTab(this._resource.url);
-    return false;
-  }
-
-  /**
-   * @override
-   */
-  onattach() {
-    super.onattach();
-    this.listItemElement.draggable = true;
-    this.listItemElement.addEventListener('dragstart', this._ondragstart.bind(this), false);
-    this.listItemElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), true);
-  }
-
-  /**
-   * @param {!MouseEvent} event
-   * @return {boolean}
-   */
-  _ondragstart(event) {
-    event.dataTransfer.setData('text/plain', this._resource.content || '');
-    event.dataTransfer.effectAllowed = 'copy';
-    return true;
-  }
-
-  _handleContextMenuEvent(event) {
-    var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendApplicableItems(this._resource);
-    contextMenu.show();
-  }
-
-  /**
-   * @return {!SourceFrame.ResourceSourceFrame}
-   */
-  sourceView() {
-    if (!this._sourceView) {
-      var sourceFrame = new SourceFrame.ResourceSourceFrame(this._resource);
-      sourceFrame.setHighlighterType(this._resource.canonicalMimeType());
-      this._sourceView = sourceFrame;
-    }
-    return this._sourceView;
-  }
-};
-
-Resources.FrameResourceTreeElement._symbol = Symbol('treeElement');
 
 /**
  * @unrestricted
@@ -1382,7 +1077,7 @@ Resources.SWCacheTreeElement = class extends Resources.BaseStorageTreeElement {
     if (!this._view)
       this._view = new Resources.ServiceWorkerCacheView(this._model, this._cache);
 
-    this._storagePanel._innerShowView(this._view);
+    this.showView(this._view);
     return false;
   }
 
@@ -1420,7 +1115,7 @@ Resources.ServiceWorkersTreeElement = class extends Resources.BaseStorageTreeEle
     super.onselect(selectedByUser);
     if (!this._view)
       this._view = new Resources.ServiceWorkersView();
-    this._storagePanel._innerShowView(this._view);
+    this.showView(this._view);
     return false;
   }
 };
@@ -1453,7 +1148,7 @@ Resources.AppManifestTreeElement = class extends Resources.BaseStorageTreeElemen
     super.onselect(selectedByUser);
     if (!this._view)
       this._view = new Resources.AppManifestView();
-    this._storagePanel._innerShowView(this._view);
+    this.showView(this._view);
     return false;
   }
 };
@@ -1486,7 +1181,7 @@ Resources.ClearStorageTreeElement = class extends Resources.BaseStorageTreeEleme
     super.onselect(selectedByUser);
     if (!this._view)
       this._view = new Resources.ClearStorageView(this._storagePanel);
-    this._storagePanel._innerShowView(this._view);
+    this.showView(this._view);
     return false;
   }
 };
@@ -1694,7 +1389,7 @@ Resources.IDBDatabaseTreeElement = class extends Resources.BaseStorageTreeElemen
     if (!this._view)
       this._view = new Resources.IDBDatabaseView(this._model, this._database);
 
-    this._storagePanel._innerShowView(this._view);
+    this.showView(this._view);
     return false;
   }
 
@@ -1817,7 +1512,7 @@ Resources.IDBObjectStoreTreeElement = class extends Resources.BaseStorageTreeEle
     if (!this._view)
       this._view = new Resources.IDBDataView(this._model, this._databaseId, this._objectStore, null);
 
-    this._storagePanel._innerShowView(this._view);
+    this.showView(this._view);
     return false;
   }
 
@@ -1895,7 +1590,7 @@ Resources.IDBIndexTreeElement = class extends Resources.BaseStorageTreeElement {
     if (!this._view)
       this._view = new Resources.IDBDataView(this._model, this._databaseId, this._objectStore, this._index);
 
-    this._storagePanel._innerShowView(this._view);
+    this.showView(this._view);
     return false;
   }
 

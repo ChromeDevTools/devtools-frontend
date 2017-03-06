@@ -415,6 +415,7 @@ all_devtools_files = [
   "front_end/resources/module.json",
   "front_end/resources/resourcesPanel.css",
   "front_end/resources/ResourcesPanel.js",
+  "front_end/resources/ResourcesSection.js",
   "front_end/resources/resourcesSidebar.css",
   "front_end/resources/serviceWorkerCacheViews.css",
   "front_end/resources/ServiceWorkerCacheViews.js",

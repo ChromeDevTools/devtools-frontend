@@ -251,6 +251,7 @@
             "title": "Disable JavaScript",
             "settingName": "javaScriptDisabled",
             "settingType": "boolean",
+            "storageType": "session",
             "order": 1,
             "defaultValue": false,
             "options": [

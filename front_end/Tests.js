@@ -808,9 +808,9 @@
     setTimeout(reset, 0);
 
     function createSettings() {
-      var localSetting = Common.settings.createSetting('local', undefined, true);
+      var localSetting = Common.settings.createLocalSetting('local', undefined);
       localSetting.set({s: 'local', n: 1});
-      var globalSetting = Common.settings.createSetting('global', undefined, false);
+      var globalSetting = Common.settings.createSetting('global', undefined);
       globalSetting.set({s: 'global', n: 2});
     }
 
@@ -822,11 +822,11 @@
     function gotPreferences(prefs) {
       Main.Main._instanceForTest._createSettings(prefs);
 
-      var localSetting = Common.settings.createSetting('local', undefined, true);
+      var localSetting = Common.settings.createLocalSetting('local', undefined);
       test.assertEquals('object', typeof localSetting.get());
       test.assertEquals('local', localSetting.get().s);
       test.assertEquals(1, localSetting.get().n);
-      var globalSetting = Common.settings.createSetting('global', undefined, false);
+      var globalSetting = Common.settings.createSetting('global', undefined);
       test.assertEquals('object', typeof globalSetting.get());
       test.assertEquals('global', globalSetting.get().s);
       test.assertEquals(2, globalSetting.get().n);

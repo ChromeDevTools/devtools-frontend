@@ -35,7 +35,7 @@ Help._getReleaseNoteByVersion = function(version) {
 Help.releaseNoteVersionSetting = function() {
   if (!Help._releaseNoteVersionSetting) {
     /** @type {!Common.Setting} */
-    Help._releaseNoteVersionSetting = Common.settings.createSetting('releaseNoteVersionSeen', 0, false);
+    Help._releaseNoteVersionSetting = Common.settings.createSetting('releaseNoteVersionSeen', 0);
   }
   return Help._releaseNoteVersionSetting;
 };

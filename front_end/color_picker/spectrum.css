@@ -90,12 +90,12 @@
 }
 
 .swatch {
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     margin: 0;
     position: absolute;
-    top: 144px;
-    left: 47px;
+    top: 139px;
+    left: 44px;
     background-image: url(Images/checker.png);
     border-radius: 16px;
 }
@@ -116,6 +116,7 @@
 .swatch-overlay {
     cursor: pointer;
     opacity: 0;
+    padding: 4px;
 }
 
 .swatch-overlay:hover {
@@ -205,8 +206,8 @@
     width: 32px;
     height: 24px;
     position: absolute;
-    left: 12px;
-    top: 144px;
+    left: 8px;
+    top: 141px;
     cursor: pointer;
 }
 

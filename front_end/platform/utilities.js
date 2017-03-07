@@ -164,6 +164,12 @@ String.prototype.trimMiddle = function(maxLength) {
     return String(this);
   var leftHalf = maxLength >> 1;
   var rightHalf = maxLength - leftHalf - 1;
+  if (this.codePointAt(this.length - rightHalf - 1) >= 0x10000) {
+    --rightHalf;
+    ++leftHalf;
+  }
+  if (leftHalf > 0 && this.codePointAt(leftHalf - 1) >= 0x10000)
+    --leftHalf;
   return this.substr(0, leftHalf) + '\u2026' + this.substr(this.length - rightHalf, rightHalf);
 };
 

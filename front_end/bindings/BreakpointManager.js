@@ -285,7 +285,7 @@ Bindings.BreakpointManager = class extends Common.Object {
 
     /**
      * @this {!Bindings.BreakpointManager}
-     * @param {!Array<!SDK.DebuggerModel.Location>} locations
+     * @param {!Array<!SDK.DebuggerModel.BreakLocation>} locations
      * @return {!Array<!Workspace.UILocation>}
      */
     function toUILocations(locations) {

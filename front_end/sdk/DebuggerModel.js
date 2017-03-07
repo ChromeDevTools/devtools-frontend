@@ -168,6 +168,10 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     this._agent.stepOut();
   }
 
+  scheduleStepIntoAsync() {
+    this._agent.scheduleStepIntoAsync();
+  }
+
   resume() {
     this._agent.resume();
     this._isPausing = false;
@@ -270,7 +274,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    * @param {!SDK.DebuggerModel.Location} startLocation
    * @param {!SDK.DebuggerModel.Location} endLocation
    * @param {boolean} restrictToFunction
-   * @return {!Promise<!Array<!SDK.DebuggerModel.Location>>}
+   * @return {!Promise<!Array<!SDK.DebuggerModel.BreakLocation>>}
    */
   getPossibleBreakpoints(startLocation, endLocation, restrictToFunction) {
     var fulfill;
@@ -283,14 +287,14 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     /**
      * @this {!SDK.DebuggerModel}
      * @param {?Protocol.Error} error
-     * @param {?Array<!Protocol.Debugger.Location>} locations
+     * @param {?Array<!Protocol.Debugger.BreakLocation>} locations
      */
     function checkErrorAndReturn(error, locations) {
       if (error || !locations) {
         fulfill([]);
         return;
       }
-      fulfill(locations.map(location => SDK.DebuggerModel.Location.fromPayload(this, location)));
+      fulfill(locations.map(location => SDK.DebuggerModel.BreakLocation.fromPayload(this, location)));
     }
   }
 
@@ -870,6 +874,13 @@ SDK.DebuggerModel.BreakReason = {
   Other: 'other'
 };
 
+/** @enum {string} */
+SDK.DebuggerModel.BreakLocationType = {
+  Return: 'return',
+  Call: 'call',
+  DebuggerStatement: 'debuggerStatement'
+};
+
 SDK.DebuggerEventTypes = {
   JavaScriptPause: 0,
   JavaScriptBreakpoint: 1,
@@ -1033,6 +1044,33 @@ SDK.DebuggerModel.Location = class {
   }
 };
 
+/**
+ * @unrestricted
+ */
+SDK.DebuggerModel.BreakLocation = class extends SDK.DebuggerModel.Location {
+  /**
+   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {string} scriptId
+   * @param {number} lineNumber
+   * @param {number=} columnNumber
+   * @param {!Protocol.Debugger.BreakLocationType=} type
+   */
+  constructor(debuggerModel, scriptId, lineNumber, columnNumber, type) {
+    super(debuggerModel, scriptId, lineNumber, columnNumber);
+    if (type)
+      this.type = type;
+  }
+
+  /**
+   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {!Protocol.Debugger.BreakLocation} payload
+   * @return {!SDK.DebuggerModel.BreakLocation}
+   */
+  static fromPayload(debuggerModel, payload) {
+    return new SDK.DebuggerModel.BreakLocation(
+        debuggerModel, payload.scriptId, payload.lineNumber, payload.columnNumber, payload.type);
+  }
+};
 
 /**
  * @unrestricted

@@ -601,6 +601,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     var start = localScope.startLocation();
     var end = localScope.endLocation();
     var debuggerModel = callFrame.debuggerModel;
+    var executionLocation = callFrame.location();
     debuggerModel.getPossibleBreakpoints(start, end, true)
         .then(locations => this.textEditor.operation(renderLocations.bind(this, locations)));
 
@@ -610,7 +611,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     }
 
     /**
-     * @param {!Array<!SDK.DebuggerModel.Location>} locations
+     * @param {!Array<!SDK.DebuggerModel.BreakLocation>} locations
      * @this {Sources.JavaScriptSourceFrame}
      */
     function renderLocations(locations) {
@@ -619,9 +620,26 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       bookmarks.map(bookmark => bookmark.clear());
 
       for (var location of locations) {
-        var icon = UI.Icon.create('smallicon-green-arrow');
+        var icon;
+        var isCurrent = location.lineNumber === executionLocation.lineNumber &&
+            location.columnNumber === executionLocation.columnNumber;
+        if (!isCurrent || (location.type !== SDK.DebuggerModel.BreakLocationType.Call &&
+                           location.type !== SDK.DebuggerModel.BreakLocationType.Return)) {
+          icon = UI.Icon.create('smallicon-green-arrow');
+          icon.addEventListener('click', location.continueToLocation.bind(location));
+        } else if (location.type === SDK.DebuggerModel.BreakLocationType.Call) {
+          icon = UI.Icon.create('smallicon-step-in');
+          icon.addEventListener('click', () => {
+            debuggerModel.scheduleStepIntoAsync();
+            debuggerModel.stepInto();
+          });
+        } else if (location.type === SDK.DebuggerModel.BreakLocationType.Return) {
+          icon = UI.Icon.create('smallicon-step-out');
+          icon.addEventListener('click', () => {
+            debuggerModel.stepOut();
+          });
+        }
         icon.classList.add('cm-continue-to-location');
-        icon.addEventListener('click', location.continueToLocation.bind(location));
         icon.addEventListener('mousemove', hidePopoverAndConsumeEvent.bind(this));
         this.textEditor.addBookmark(
             location.lineNumber, location.columnNumber, icon,

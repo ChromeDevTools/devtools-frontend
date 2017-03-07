@@ -96,6 +96,8 @@ UI.Icon.Descriptors = {
   'smallicon-green-ball': {x: -140, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-orange-ball': {x: -160, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-green-arrow': {x: -120, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
+  'smallicon-step-in': {x: -100, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
+  'smallicon-step-out': {x: 0, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-thick-right-arrow': {x: -180, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-thick-left-arrow': {x: -180, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-user-command': {x: 0, y: -19, width: 10, height: 10, spritesheet: 'smallicons'},

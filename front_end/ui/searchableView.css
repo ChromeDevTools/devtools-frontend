@@ -33,18 +33,24 @@
     outline: none;
 }
 
+.toolbar-replace-checkbox {
+    margin-top: 2px;
+    display: block;
+}
+
 .toolbar-search {
-    border-spacing: 1px;
-}
-
-.toolbar-search td {
-    padding: 0 5px 0 0;
-}
-
-.toolbar-search td > span {
     display: flex;
-    align-items: baseline;
-    line-height: 17px;
+    width: 100%;
+}
+
+.toolbar-search > div {
+    margin: 0px 2px;
+    flex-shrink: 0;
+}
+
+.toolbar-search-inputs {
+    flex-grow: 1;
+    min-width: 150px;
 }
 
 .toolbar-search-navigation-controls {
@@ -69,9 +75,9 @@
 .toolbar-search button.search-action-button {
     border: 1px solid rgb(163, 163, 163);
     border-radius: 8px;
-    margin: 0;
+    margin: 1px 3px 0 3px;
     background-image: linear-gradient(rgb(241, 241, 241), rgb(220, 220, 220));
-    width: 100%;
+    width: 75px;
     height: 20px;
     white-space: nowrap;
 }
@@ -86,9 +92,13 @@
     background-color: white;
 }
 
+.toolbar-search-buttons {
+    flex-basis: 165px;
+}
+
 .toolbar-replace-control,
 #search-input-field {
-    padding-top: 1px;
+    margin-top: 1px;
     line-height: 17px;
 }
 
@@ -96,8 +106,8 @@
     border: 1px solid rgb(163, 163, 163);
     height: 20px;
     border-radius: 2px;
-    width: 253px;
-    margin-left: 1px;
+    width: 100%;
+    margin-top: 1px;
 }
 
 .toolbar-search-navigation.enabled:active {
@@ -131,4 +141,5 @@
     text-align: right;
     padding: 0 4px;
     color: rgb(165, 165, 165);
+    align-self: center;
 }

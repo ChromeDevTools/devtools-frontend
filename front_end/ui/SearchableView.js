@@ -65,85 +65,76 @@ UI.SearchableView = class extends UI.VBox {
       toolbar.appendToolbarItem(this._regexButton);
     }
 
-    this._footerElement = this._footerElementContainer.createChild('table', 'toolbar-search');
-    this._footerElement.cellSpacing = 0;
+    this._footerElement = this._footerElementContainer.createChild('div', 'toolbar-search');
 
-    this._firstRowElement = this._footerElement.createChild('tr');
-    this._secondRowElement = this._footerElement.createChild('tr', 'hidden');
-
-    // Column 1
-    var searchControlElementColumn = this._firstRowElement.createChild('td');
-    this._searchControlElement = searchControlElementColumn.createChild('span', 'toolbar-search-control');
+    // Build the text input elements.
+    var searchInputElements = this._footerElement.createChild('div', 'toolbar-search-inputs');
+    var searchControlElement = searchInputElements.createChild('div', 'toolbar-search-control');
 
     this._searchInputElement = UI.HistoryInput.create();
     this._searchInputElement.classList.add('search-replace');
-    this._searchControlElement.appendChild(this._searchInputElement);
-
     this._searchInputElement.id = 'search-input-field';
     this._searchInputElement.placeholder = Common.UIString('Find');
+    searchControlElement.appendChild(this._searchInputElement);
 
-    this._matchesElement = this._searchControlElement.createChild('label', 'search-results-matches');
+    this._matchesElement = searchControlElement.createChild('label', 'search-results-matches');
     this._matchesElement.setAttribute('for', 'search-input-field');
 
-    this._searchNavigationElement = this._searchControlElement.createChild('div', 'toolbar-search-navigation-controls');
+    var searchNavigationElement = searchControlElement.createChild('div', 'toolbar-search-navigation-controls');
 
     this._searchNavigationPrevElement =
-        this._searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-prev');
+        searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-prev');
     this._searchNavigationPrevElement.addEventListener('click', this._onPrevButtonSearch.bind(this), false);
     this._searchNavigationPrevElement.title = Common.UIString('Search Previous');
 
     this._searchNavigationNextElement =
-        this._searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-next');
+        searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-next');
     this._searchNavigationNextElement.addEventListener('click', this._onNextButtonSearch.bind(this), false);
     this._searchNavigationNextElement.title = Common.UIString('Search Next');
 
     this._searchInputElement.addEventListener('keydown', this._onSearchKeyDown.bind(this), true);
     this._searchInputElement.addEventListener('input', this._onInput.bind(this), false);
 
-    this._replaceInputElement =
-        this._secondRowElement.createChild('td').createChild('input', 'search-replace toolbar-replace-control');
+    this._replaceInputElement = searchInputElements.createChild('input', 'search-replace toolbar-replace-control');
     this._replaceInputElement.addEventListener('keydown', this._onReplaceKeyDown.bind(this), true);
     this._replaceInputElement.placeholder = Common.UIString('Replace');
 
-    // Column 2
-    this._findButtonElement =
-        this._firstRowElement.createChild('td').createChild('button', 'search-action-button hidden');
-    this._findButtonElement.textContent = Common.UIString('Find');
-    this._findButtonElement.tabIndex = -1;
-    this._findButtonElement.addEventListener('click', this._onFindClick.bind(this), false);
+    // Build the buttons (Find, Previous, Replace, Replace All).
+    this._buttonsContainer = this._footerElement.createChild('div', 'toolbar-search-buttons hidden');
 
-    this._replaceButtonElement = this._secondRowElement.createChild('td').createChild('button', 'search-action-button');
+    var findButtonElement = this._buttonsContainer.createChild('button', 'search-action-button');
+    findButtonElement.textContent = Common.UIString('Find');
+    findButtonElement.tabIndex = -1;
+    findButtonElement.addEventListener('click', this._onFindClick.bind(this), false);
+
+    var prevButtonElement = this._buttonsContainer.createChild('button', 'search-action-button');
+    prevButtonElement.textContent = Common.UIString('Previous');
+    prevButtonElement.tabIndex = -1;
+    prevButtonElement.addEventListener('click', this._onPreviousClick.bind(this), false);
+
+    this._replaceButtonElement = this._buttonsContainer.createChild('button', 'search-action-button');
     this._replaceButtonElement.textContent = Common.UIString('Replace');
     this._replaceButtonElement.disabled = true;
     this._replaceButtonElement.tabIndex = -1;
     this._replaceButtonElement.addEventListener('click', this._replace.bind(this), false);
 
-    // Column 3
-    this._prevButtonElement =
-        this._firstRowElement.createChild('td').createChild('button', 'search-action-button hidden');
-    this._prevButtonElement.textContent = Common.UIString('Previous');
-    this._prevButtonElement.tabIndex = -1;
-    this._prevButtonElement.addEventListener('click', this._onPreviousClick.bind(this), false);
+    var replaceAllButtonElement = this._buttonsContainer.createChild('button', 'search-action-button');
+    replaceAllButtonElement.textContent = Common.UIString('Replace All');
+    replaceAllButtonElement.addEventListener('click', this._replaceAll.bind(this), false);
 
-    this._replaceAllButtonElement =
-        this._secondRowElement.createChild('td').createChild('button', 'search-action-button');
-    this._replaceAllButtonElement.textContent = Common.UIString('Replace All');
-    this._replaceAllButtonElement.addEventListener('click', this._replaceAll.bind(this), false);
+    // Build the replace checkbox and cancel button.
+    this._replaceElement = this._footerElement.createChild('div').createChild('span', 'toolbar-replace-checkbox');
 
-    // Column 4
-    this._replaceElement = this._firstRowElement.createChild('td').createChild('span');
-
-    this._replaceLabelElement = UI.createCheckboxLabel(Common.UIString('Replace'));
-    this._replaceCheckboxElement = this._replaceLabelElement.checkboxElement;
-    this._uniqueId = ++UI.SearchableView._lastUniqueId;
-    var replaceCheckboxId = 'search-replace-trigger' + this._uniqueId;
+    var replaceLabelElement = UI.createCheckboxLabel(Common.UIString('Replace'));
+    this._replaceCheckboxElement = replaceLabelElement.checkboxElement;
+    var uniqueId = ++UI.SearchableView._lastUniqueId;
+    var replaceCheckboxId = 'search-replace-trigger' + uniqueId;
     this._replaceCheckboxElement.id = replaceCheckboxId;
     this._replaceCheckboxElement.addEventListener('change', this._updateSecondRowVisibility.bind(this), false);
 
-    this._replaceElement.appendChild(this._replaceLabelElement);
+    this._replaceElement.appendChild(replaceLabelElement);
 
-    // Column 5
-    var cancelButtonElement = this._firstRowElement.createChild('td').createChild('button', 'search-action-button');
+    var cancelButtonElement = this._footerElement.createChild('div').createChild('button', 'search-action-button');
     cancelButtonElement.textContent = Common.UIString('Cancel');
     cancelButtonElement.tabIndex = -1;
     cancelButtonElement.addEventListener('click', this.closeSearch.bind(this), false);
@@ -476,10 +467,7 @@ UI.SearchableView = class extends UI.VBox {
   _updateSecondRowVisibility() {
     var secondRowVisible = this._replaceCheckboxElement.checked;
     this._footerElementContainer.classList.toggle('replaceable', secondRowVisible);
-    this._footerElement.classList.toggle('toolbar-search-replace', secondRowVisible);
-    this._secondRowElement.classList.toggle('hidden', !secondRowVisible);
-    this._prevButtonElement.classList.toggle('hidden', !secondRowVisible);
-    this._findButtonElement.classList.toggle('hidden', !secondRowVisible);
+    this._buttonsContainer.classList.toggle('hidden', !secondRowVisible);
     this._replaceCheckboxElement.tabIndex = secondRowVisible ? -1 : 0;
 
     if (secondRowVisible)

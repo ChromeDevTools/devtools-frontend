@@ -77,7 +77,8 @@ Coverage.CoverageListView = class extends UI.VBox {
     if (!node)
       return;
     var coverageInfo = /** @type {!Coverage.CoverageListView.GridNode} */ (node)._coverageInfo;
-    var sourceCode = coverageInfo && Workspace.workspace.uiSourceCodeForURL(coverageInfo.url);
+    var url = coverageInfo.contentProvider.contentURL();
+    var sourceCode = Workspace.workspace.uiSourceCodeForURL(url);
     if (!sourceCode)
       return;
     Common.Revealer.reveal(sourceCode);
@@ -155,7 +156,8 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
   constructor(coverageInfo, maxSize) {
     super();
     this._coverageInfo = coverageInfo;
-    this._displayURL = new Common.ParsedURL(coverageInfo.url).displayName;
+    this._url = coverageInfo.contentProvider.contentURL();
+    this._displayURL = new Common.ParsedURL(this._url).displayName;
     this._maxSize = maxSize;
   }
 
@@ -168,12 +170,12 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
     var cell = this.createTD(columnId);
     switch (columnId) {
       case 'url':
-        cell.title = this._coverageInfo.url;
+        cell.title = this._url;
         var outer = cell.createChild('div', 'url-outer');
         var prefix = outer.createChild('div', 'url-prefix');
         var suffix = outer.createChild('div', 'url-suffix');
-        var splitURL = /^(.*)(\/[^/]*)$/.exec(this._coverageInfo.url);
-        prefix.textContent = splitURL ? splitURL[1] : this._coverageInfo.url;
+        var splitURL = /^(.*)(\/[^/]*)$/.exec(this._url);
+        prefix.textContent = splitURL ? splitURL[1] : this._url;
         suffix.textContent = splitURL ? splitURL[2] : '';
         break;
       case 'type':

@@ -2,19 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/** @typedef {{range: !Common.TextRange, count: number}} */
+// FIXME: range will be gone and startOffset/endOffset will be just numbers
+// when the transition to using offset in protocol is complete.
+//
+/** @typedef {{range: (Common.TextRange|undefined), startOffset: (number|undefined), endOffset: (number|undefined), count: number}} */
 Coverage.RangeUseCount;
 
 /** @typedef {{styleSheetHeader: !SDK.CSSStyleSheetHeader, ranges: !Array<!Coverage.RangeUseCount>}} */
 Coverage.StyleSheetUsage;
 
 /** @typedef {{
- *    url: string,
+ *    contentProvider: !Common.ContentProvider,
  *    size: (number|undefined),
  *    unusedSize: (number|undefined),
  *    usedSize: (number|undefined),
  *    type: !Coverage.CoverageType,
- *    ranges: !Array<!Coverage.RangeUseCount>
+ *    lineOffset: number,
+ *    columnOffset: number,
+ *    ranges: !Array<!{startOffset: number, endOffset: number, count: number}>
  * }}
  */
 Coverage.CoverageInfo;
@@ -99,20 +104,19 @@ Coverage.CoverageView = class extends UI.VBox {
     var jsCoverageInfoPromise = this._stopJSCoverage();
     var cssCoverageInfo = await cssCoverageInfoPromise;
     var jsCoverageInfo = await jsCoverageInfoPromise;
-    this._updateViews(cssCoverageInfo.concat(jsCoverageInfo));
+    await this._updateViews(cssCoverageInfo.concat(jsCoverageInfo));
   }
 
   /**
    * @param {!Array<!Coverage.CoverageInfo>} coverageInfo
-   * @this {!Coverage.CoverageView}
    */
-  _updateViews(coverageInfo) {
+  async _updateViews(coverageInfo) {
     coverageInfo = Coverage.CoverageView._coalesceByURL(coverageInfo);
     this._updateStats(coverageInfo);
-    this._updateGutter(coverageInfo);
     this._coverageResultsElement.removeChildren();
     this._listView.update(coverageInfo);
     this._listView.show(this._coverageResultsElement);
+    await Promise.all(coverageInfo.map(entry => Coverage.CoverageView._updateGutter(entry)));
   }
 
   /**
@@ -120,12 +124,13 @@ Coverage.CoverageView = class extends UI.VBox {
    * @return {!Array<!Coverage.CoverageInfo>}
    */
   static _coalesceByURL(coverageInfo) {
-    coverageInfo.sort((a, b) => (a.url || '').localeCompare(b.url));
+    coverageInfo.sort((a, b) => (a.contentProvider.contentURL() || '').localeCompare(b.contentProvider.contentURL()));
     var result = [];
     for (var entry of coverageInfo) {
-      if (!entry.url)
+      var url = entry.contentProvider.contentURL();
+      if (!url)
         continue;
-      if (result.length && result.peekLast().url === entry.url) {
+      if (result.length && result.peekLast().contentProvider.contentURL() === url) {
         var lastEntry = result.peekLast();
         lastEntry.size += entry.size;
         lastEntry.usedSize += entry.usedSize;
@@ -167,9 +172,13 @@ Coverage.CoverageView = class extends UI.VBox {
         continue;
       for (var func of entry.functions) {
         for (var range of func.ranges) {
-          var textRange = new Common.TextRange(
-              range.startLineNumber, range.startColumnNumber, range.endLineNumber, range.endColumnNumber);
-          ranges.push({range: textRange, count: range.count});
+          if (typeof range.startOffset === 'number') {
+            ranges.push({startOffset: range.startOffset, endOffset: range.endOffset, count: range.count});
+          } else {
+            var textRange = new Common.TextRange(
+                range.startLineNumber, range.startColumnNumber, range.endLineNumber, range.endColumnNumber);
+            ranges.push({range: textRange, count: range.count});
+          }
         }
       }
       promises.push(Coverage.CoverageView._coverageInfoForText(script, script.lineOffset, script.columnOffset, ranges));
@@ -223,11 +232,11 @@ Coverage.CoverageView = class extends UI.VBox {
    * @param {number} startLine
    * @param {number} startColumn
    * @param {!Array<!Coverage.RangeUseCount>} ranges
-   * @return {!Promise<!Coverage.CoverageInfo>}
+   * @return {!Promise<?Coverage.CoverageInfo>}
    */
   static async _coverageInfoForText(contentProvider, startLine, startColumn, ranges) {
-    var url = contentProvider.contentURL();
     var coverageType;
+    var url = contentProvider.contentURL();
     if (contentProvider.contentType().isScript())
       coverageType = Coverage.CoverageType.JavaScript;
     else if (contentProvider.contentType().isStyleSheet())
@@ -235,31 +244,35 @@ Coverage.CoverageView = class extends UI.VBox {
     else
       console.assert(false, `Unexpected resource type ${contentProvider.contentType().name} for ${url}`);
 
-    var coverageInfo = {url: url, ranges: ranges, type: coverageType};
     var content = await contentProvider.requestContent();
-    if (!content)
-      return coverageInfo;
+    if (typeof content !== 'string')
+      return null;
 
-    var text = new Common.Text(content);
-    var offsetRanges = ranges.map(r => {
-      var range = r.range.relativeTo(startLine, startColumn);
-      return {
-        start: text.offsetFromPosition(range.startLine, range.startColumn),
-        end: text.offsetFromPosition(range.endLine, range.endColumn),
-        count: r.count
-      };
-    });
-
+    var offsetRanges;
+    if (!ranges.length || typeof ranges[0].startOffset === 'number') {
+      offsetRanges = ranges.map(r => ({startOffset: r.startOffset, endOffset: r.endOffset, count: r.count}));
+    } else {
+      // FIXME: This branch should be gone once protocol conversion to offset ranges is complete.
+      var text = new Common.Text(content);
+      offsetRanges = ranges.map(r => {
+        var range = r.range.relativeTo(startLine, startColumn);
+        return {
+          startOffset: text.offsetFromPosition(range.startLine, range.startColumn),
+          endOffset: text.offsetFromPosition(range.endLine, range.endColumn),
+          count: r.count
+        };
+      });
+    }
     var stack = [];
-    offsetRanges.sort((a, b) => a.start - b.start);
+    offsetRanges.sort((a, b) => a.startOffset - b.startOffset);
     for (var entry of offsetRanges) {
-      while (stack.length && stack.peekLast().end <= entry.start)
+      while (stack.length && stack.peekLast().endOffset <= entry.startOffset)
         stack.pop();
 
-      entry.ownSize = entry.end - entry.start;
+      entry.ownSize = entry.endOffset - entry.startOffset;
       var top = stack.peekLast();
       if (top) {
-        if (top.end < entry.end) {
+        if (top.endOffset < entry.endOffset) {
           console.assert(
               false, `Overlapping coverage entries in ${url}: ${top.start}-${top.end} vs. ${entry.start}-${entry.end}`);
         }
@@ -277,10 +290,16 @@ Coverage.CoverageView = class extends UI.VBox {
         unusedSize += entry.ownSize;
     }
 
-    coverageInfo.size = content.length;
-    coverageInfo.usedSize = usedSize;
-    coverageInfo.unusedSize = unusedSize;
-
+    var coverageInfo = {
+      contentProvider: contentProvider,
+      ranges: offsetRanges,
+      type: coverageType,
+      size: content.length,
+      usedSize: usedSize,
+      unusedSize: unusedSize,
+      lineOffset: startLine,
+      columnOffset: startColumn
+    };
     return coverageInfo;
   }
 
@@ -301,15 +320,30 @@ Coverage.CoverageView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Array<!Coverage.CoverageInfo>} coverageInfo
+   * @param {!Coverage.CoverageInfo} coverageInfo
    */
-  _updateGutter(coverageInfo) {
-    for (var info of coverageInfo) {
-      var uiSourceCode = info.url && Workspace.workspace.uiSourceCodeForURL(info.url);
-      if (!uiSourceCode)
-        continue;
-      for (var range of info.ranges)
-        uiSourceCode.addDecoration(range.range, Coverage.CoverageView.LineDecorator.type, range.count);
+  static async _updateGutter(coverageInfo) {
+    var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(coverageInfo.contentProvider.contentURL());
+    if (!uiSourceCode)
+      return;
+    // FIXME: gutter should be set in terms of offsets and therefore should not require contents.
+    var contents = await coverageInfo.contentProvider.requestContent();
+    if (!contents)
+      return;
+    var text = new Common.Text(contents);
+    for (var range of coverageInfo.ranges) {
+      var startPosition = text.positionFromOffset(range.startOffset);
+      var endPosition = text.positionFromOffset(range.endOffset);
+      if (!startPosition.lineNumber)
+        startPosition.columnNumber += coverageInfo.columnOffset;
+      startPosition.lineNumber += coverageInfo.lineOffset;
+      if (!endPosition.lineNumber)
+        endPosition.columnNumber += coverageInfo.columnOffset;
+      endPosition.lineNumber += coverageInfo.lineOffset;
+
+      var textRange = new Common.TextRange(
+          startPosition.lineNumber, startPosition.columnNumber, endPosition.lineNumber, endPosition.columnNumber);
+      uiSourceCode.addDecoration(textRange, Coverage.CoverageView.LineDecorator.type, range.count);
     }
   }
 };

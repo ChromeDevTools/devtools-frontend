@@ -41,11 +41,21 @@ Common.Text = class {
 
   /**
    * @param {number} lineNumber
-   * @param {number} columNumber
+   * @param {number} columnNumber
    * @return {number}
    */
-  offsetFromPosition(lineNumber, columNumber) {
-    return (lineNumber ? this.lineEndings()[lineNumber - 1] + 1 : 0) + columNumber;
+  offsetFromPosition(lineNumber, columnNumber) {
+    return (lineNumber ? this.lineEndings()[lineNumber - 1] + 1 : 0) + columnNumber;
+  }
+
+  /**
+   * @param {number} offset
+   * @return {!Common.Text.Position}
+   */
+  positionFromOffset(offset) {
+    var lineEndings = this.lineEndings();
+    var lineNumber = lineEndings.lowerBound(offset);
+    return {lineNumber: lineNumber, columnNumber: offset - (lineNumber && (lineEndings[lineNumber - 1] + 1))};
   }
 
   /**
@@ -109,6 +119,9 @@ Common.Text = class {
     return this._value.substr(sourceRange.offset, sourceRange.length);
   }
 };
+
+/** @typedef {{lineNumber: number, columnNumber: number}} */
+Common.Text.Position;
 
 /**
  * @unrestricted

@@ -52,7 +52,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       electricChars: true,
       styleActiveLine: true,
       indentUnit: 4,
-      lineWrapping: options.lineWrapping
+      lineWrapping: options.lineWrapping,
+      lineWiseCopyCut: false
     });
     this._codeMirrorElement = this.element.lastElementChild;
 
@@ -132,6 +133,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       'Cmd-U': 'undoLastSelection',
       fallthrough: 'devtools-common'
     };
+
     if (options.bracketMatchingSetting)
       options.bracketMatchingSetting.addChangeListener(this._enableBracketMatchingIfNeeded, this);
     this._enableBracketMatchingIfNeeded();
@@ -942,6 +944,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @param {number} height
    */
   _updatePaddingBottom(width, height) {
+    if (!this._options.padBottom)
+      return;
     var scrollInfo = this._codeMirror.getScrollInfo();
     var newPaddingBottom;
     var linesElement = this._codeMirrorElement.querySelector('.CodeMirror-lines');

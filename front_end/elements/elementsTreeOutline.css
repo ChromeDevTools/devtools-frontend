@@ -157,8 +157,10 @@
 }
 
 .elements-tree-editor {
-    -webkit-user-select: text;
-    -webkit-user-modify: read-write-plaintext-only;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2),
+                0 2px 4px rgba(0, 0, 0, 0.2),
+                0 2px 6px rgba(0, 0, 0, 0.1);
+    margin-right: 4px;
 }
 
 .elements-disclosure li.elements-drag-over .selection {
@@ -172,10 +174,8 @@
 }
 
 .CodeMirror {
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2),
-                0 2px 4px rgba(0, 0, 0, 0.2),
-                0 2px 6px rgba(0, 0, 0, 0.1);
     background-color: white;
+    height: 300px !important;
 }
 
 .CodeMirror-lines {

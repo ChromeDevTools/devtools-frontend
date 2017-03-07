@@ -757,13 +757,46 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     this.listItemElement.classList.add('editing-as-html');
     this.treeOutline.element.addEventListener('mousedown', consume, false);
 
+    self.runtime.extension(UI.TextEditorFactory).instance().then(gotFactory.bind(this));
+
     /**
-     * @param {!Element} element
-     * @param {string} newValue
+     * @param {!UI.TextEditorFactory} factory
      * @this {Elements.ElementsTreeElement}
      */
-    function commit(element, newValue) {
-      commitCallback(initialValue, newValue);
+    function gotFactory(factory) {
+      var editor = factory.createEditor({
+        lineNumbers: false,
+        lineWrapping: Common.moduleSetting('domWordWrap').get(),
+        mimeType: 'text/html',
+        autoHeight: false,
+        padBottom: false
+      });
+      this._editing =
+          {commit: commit.bind(this), cancel: dispose.bind(this), editor: editor, resize: resize.bind(this)};
+      resize.call(this);
+
+      editor.widget().show(this._htmlEditElement);
+      editor.setText(initialValue);
+      editor.widget().focus();
+      editor.widget().element.addEventListener('blur', this._editing.commit, true);
+      editor.widget().element.addEventListener('keydown', keydown.bind(this), true);
+
+      this.treeOutline.setMultilineEditing(this._editing);
+    }
+
+    /**
+     * @this {Elements.ElementsTreeElement}
+     */
+    function resize() {
+      this._htmlEditElement.style.width = this.treeOutline.visibleWidth() - this._computeLeftIndent() - 30 + 'px';
+      this._editing.editor.onResize();
+    }
+
+    /**
+     * @this {Elements.ElementsTreeElement}
+     */
+    function commit() {
+      commitCallback(initialValue, this._editing.editor.text());
       dispose.call(this);
     }
 
@@ -771,9 +804,9 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
      * @this {Elements.ElementsTreeElement}
      */
     function dispose() {
-      disposeCallback();
+      this._editing.editor.widget().element.removeEventListener('blur', this._editing.commit, true);
+      this._editing.editor.widget().detach();
       delete this._editing;
-      this.treeOutline.setMultilineEditing(null);
 
       this.listItemElement.classList.remove('editing-as-html');
       // Remove editor.
@@ -789,24 +822,29 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
         child = child.nextSibling;
       }
 
-      this.treeOutline.element.removeEventListener('mousedown', consume, false);
-      this.treeOutline.focus();
+      if (this.treeOutline) {
+        this.treeOutline.setMultilineEditing(null);
+        this.treeOutline.element.removeEventListener('mousedown', consume, false);
+        this.treeOutline.focus();
+      }
+
+      disposeCallback();
     }
 
-    var config = new UI.InplaceEditor.Config(commit.bind(this), dispose.bind(this));
-    config.setMultilineOptions(
-        initialValue, {name: 'xml', htmlMode: true}, 'web-inspector-html', Common.moduleSetting('domWordWrap').get(),
-        true);
-    UI.InplaceEditor.startMultilineEditing(this._htmlEditElement, config).then(markAsBeingEdited.bind(this));
-
     /**
-     * @param {!Object} controller
-     * @this {Elements.ElementsTreeElement}
+     * @param {!Event} event
+     * @this {!Elements.ElementsTreeElement}
      */
-    function markAsBeingEdited(controller) {
-      this._editing = /** @type {!UI.InplaceEditor.Controller} */ (controller);
-      this._editing.setWidth(this.treeOutline.visibleWidth() - this._computeLeftIndent());
-      this.treeOutline.setMultilineEditing(this._editing);
+    function keydown(event) {
+      var isMetaOrCtrl = UI.KeyboardShortcut.eventHasCtrlOrMeta(/** @type {!KeyboardEvent} */ (event)) &&
+          !event.altKey && !event.shiftKey;
+      if (isEnterKey(event) && (isMetaOrCtrl || event.isMetaOrCtrlForTest)) {
+        event.consume(true);
+        this._editing.commit();
+      } else if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code || event.key === 'Escape') {
+        event.consume(true);
+        this._editing.cancel();
+      }
     }
   }
 
@@ -1472,7 +1510,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
    * @param {boolean=} startEditing
    */
   toggleEditAsHTML(callback, startEditing) {
-    if (this._editing && this._htmlEditElement && UI.isBeingEdited(this._htmlEditElement)) {
+    if (this._editing && this._htmlEditElement) {
       this._editing.commit();
       return;
     }
@@ -1573,3 +1611,6 @@ Elements.ElementsTreeElement.ForbiddenClosingTagElements = new Set([
 
 // These tags we do not allow editing their tag name.
 Elements.ElementsTreeElement.EditTagBlacklist = new Set(['html', 'head', 'body']);
+
+/** @typedef {{cancel: function(), commit: function(), resize: function(), editor:!UI.TextEditor}} */
+Elements.MultilineEditorController;

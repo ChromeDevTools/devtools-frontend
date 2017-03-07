@@ -13,6 +13,7 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
       lineNumbers: true,
       lineWrapping: false,
       bracketMatchingSetting: Common.moduleSetting('textEditorBracketMatching'),
+      padBottom: true
     });
 
     this.codeMirror().addKeyMap({'Enter': 'smartNewlineAndIndent', 'Esc': 'sourcesDismiss'});

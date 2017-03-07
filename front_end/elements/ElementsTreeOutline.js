@@ -127,7 +127,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
   }
 
   /**
-   * @param {?UI.InplaceEditor.Controller} multilineEditing
+   * @param {?Elements.MultilineEditorController} multilineEditing
    */
   setMultilineEditing(multilineEditing) {
     this._multilineEditing = multilineEditing;
@@ -146,7 +146,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
   setVisibleWidth(width) {
     this._visibleWidth = width;
     if (this._multilineEditing)
-      this._multilineEditing.setWidth(this._visibleWidth);
+      this._multilineEditing.resize();
   }
 
   /**

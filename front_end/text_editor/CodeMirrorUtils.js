@@ -28,168 +28,89 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+TextEditor.CodeMirrorUtils = {};
 /**
- * @unrestricted
+ * @param {!Common.TextRange} range
+ * @return {!{start: !CodeMirror.Pos, end: !CodeMirror.Pos}}
  */
-TextEditor.CodeMirrorUtils = class extends UI.InplaceEditor {
-  constructor() {
-    super();
+TextEditor.CodeMirrorUtils.toPos = function(range) {
+  return {
+    start: new CodeMirror.Pos(range.startLine, range.startColumn),
+    end: new CodeMirror.Pos(range.endLine, range.endColumn)
+  };
+};
+
+/**
+ * @param {!CodeMirror.Pos} start
+ * @param {!CodeMirror.Pos} end
+ * @return {!Common.TextRange}
+ */
+TextEditor.CodeMirrorUtils.toRange = function(start, end) {
+  return new Common.TextRange(start.line, start.ch, end.line, end.ch);
+};
+
+/**
+ * @param {!CodeMirror.ChangeObject} changeObject
+ * @return {{oldRange: !Common.TextRange, newRange: !Common.TextRange}}
+ */
+TextEditor.CodeMirrorUtils.changeObjectToEditOperation = function(changeObject) {
+  var oldRange = TextEditor.CodeMirrorUtils.toRange(changeObject.from, changeObject.to);
+  var newRange = oldRange.clone();
+  var linesAdded = changeObject.text.length;
+  if (linesAdded === 0) {
+    newRange.endLine = newRange.startLine;
+    newRange.endColumn = newRange.startColumn;
+  } else if (linesAdded === 1) {
+    newRange.endLine = newRange.startLine;
+    newRange.endColumn = newRange.startColumn + changeObject.text[0].length;
+  } else {
+    newRange.endLine = newRange.startLine + linesAdded - 1;
+    newRange.endColumn = changeObject.text[linesAdded - 1].length;
   }
+  return {oldRange: oldRange, newRange: newRange};
+};
+
+/**
+ * @param {!CodeMirror} codeMirror
+ * @param {number} linesCount
+ * @return {!Array.<string>}
+ */
+TextEditor.CodeMirrorUtils.pullLines = function(codeMirror, linesCount) {
+  var lines = [];
+  codeMirror.eachLine(0, linesCount, onLineHandle);
+  return lines;
 
   /**
-   * @param {!Common.TextRange} range
-   * @return {!{start: !CodeMirror.Pos, end: !CodeMirror.Pos}}
+   * @param {!{text: string}} lineHandle
    */
-  static toPos(range) {
-    return {
-      start: new CodeMirror.Pos(range.startLine, range.startColumn),
-      end: new CodeMirror.Pos(range.endLine, range.endColumn)
-    };
+  function onLineHandle(lineHandle) {
+    lines.push(lineHandle.text);
   }
+};
 
-  /**
-   * @param {!CodeMirror.Pos} start
-   * @param {!CodeMirror.Pos} end
-   * @return {!Common.TextRange}
-   */
-  static toRange(start, end) {
-    return new Common.TextRange(start.line, start.ch, end.line, end.ch);
-  }
+/**
+ * @param {!Element} element
+ */
+TextEditor.CodeMirrorUtils.appendThemeStyle = function(element) {
+  if (UI.themeSupport.hasTheme())
+    return;
+  var backgroundColor = InspectorFrontendHost.getSelectionBackgroundColor();
+  var backgroundColorRule =
+      backgroundColor ? '.CodeMirror .CodeMirror-selected { background-color: ' + backgroundColor + ';}' : '';
+  var foregroundColor = InspectorFrontendHost.getSelectionForegroundColor();
+  var foregroundColorRule = foregroundColor ?
+      '.CodeMirror .CodeMirror-selectedtext:not(.CodeMirror-persist-highlight) { color: ' + foregroundColor +
+          '!important;}' :
+      '';
 
-  /**
-   * @param {!CodeMirror.ChangeObject} changeObject
-   * @return {{oldRange: !Common.TextRange, newRange: !Common.TextRange}}
-   */
-  static changeObjectToEditOperation(changeObject) {
-    var oldRange = TextEditor.CodeMirrorUtils.toRange(changeObject.from, changeObject.to);
-    var newRange = oldRange.clone();
-    var linesAdded = changeObject.text.length;
-    if (linesAdded === 0) {
-      newRange.endLine = newRange.startLine;
-      newRange.endColumn = newRange.startColumn;
-    } else if (linesAdded === 1) {
-      newRange.endLine = newRange.startLine;
-      newRange.endColumn = newRange.startColumn + changeObject.text[0].length;
-    } else {
-      newRange.endLine = newRange.startLine + linesAdded - 1;
-      newRange.endColumn = changeObject.text[linesAdded - 1].length;
-    }
-    return {oldRange: oldRange, newRange: newRange};
-  }
-
-  /**
-   * @param {!CodeMirror} codeMirror
-   * @param {number} linesCount
-   * @return {!Array.<string>}
-   */
-  static pullLines(codeMirror, linesCount) {
-    var lines = [];
-    codeMirror.eachLine(0, linesCount, onLineHandle);
-    return lines;
-
-    /**
-     * @param {!{text: string}} lineHandle
-     */
-    function onLineHandle(lineHandle) {
-      lines.push(lineHandle.text);
-    }
-  }
-
-  /**
-   * @param {!Element} element
-   */
-  static appendThemeStyle(element) {
-    if (UI.themeSupport.hasTheme())
-      return;
-    var backgroundColor = InspectorFrontendHost.getSelectionBackgroundColor();
-    var backgroundColorRule =
-        backgroundColor ? '.CodeMirror .CodeMirror-selected { background-color: ' + backgroundColor + ';}' : '';
-    var foregroundColor = InspectorFrontendHost.getSelectionForegroundColor();
-    var foregroundColorRule = foregroundColor ?
-        '.CodeMirror .CodeMirror-selectedtext:not(.CodeMirror-persist-highlight) { color: ' + foregroundColor +
-            '!important;}' :
-        '';
-
-    var selectionRule = (foregroundColor && backgroundColor) ?
-        '.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: ' +
-            backgroundColor + '; color: ' + foregroundColor + ' !important }' :
-        '';
-    var style = createElement('style');
-    if (foregroundColorRule || backgroundColorRule)
-      style.textContent = backgroundColorRule + foregroundColorRule + selectionRule;
-    element.appendChild(style);
-  }
-
-  /**
-   * @override
-   * @return {string}
-   */
-  editorContent(editingContext) {
-    return editingContext.codeMirror.getValue();
-  }
-
-  /**
-   * @param {!Event} e
-   */
-  _consumeCopy(e) {
-    e.consume();
-  }
-
-  /**
-   * @override
-   */
-  setUpEditor(editingContext) {
-    var element = editingContext.element;
-    var config = editingContext.config;
-    editingContext.cssLoadView = new TextEditor.CodeMirrorCSSLoadView();
-    editingContext.cssLoadView.show(element);
-    element.focus();
-    element.addEventListener('copy', this._consumeCopy, false);
-    var codeMirror = new window.CodeMirror(element, {
-      mode: config.mode,
-      lineWrapping: config.lineWrapping,
-      lineWiseCopyCut: false,
-      smartIndent: config.smartIndent,
-      autofocus: true,
-      theme: config.theme,
-      value: config.initialValue
-    });
-    codeMirror.getWrapperElement().classList.add('source-code');
-    codeMirror.on('cursorActivity', function(cm) {
-      cm.display.cursorDiv.scrollIntoViewIfNeeded(false);
-    });
-    editingContext.codeMirror = codeMirror;
-  }
-
-  /**
-   * @override
-   */
-  closeEditor(editingContext) {
-    editingContext.element.removeEventListener('copy', this._consumeCopy, false);
-    editingContext.cssLoadView.detach();
-  }
-
-  /**
-   * @override
-   */
-  cancelEditing(editingContext) {
-    editingContext.codeMirror.setValue(editingContext.oldText);
-  }
-
-  /**
-   * @override
-   */
-  augmentEditingHandle(editingContext, handle) {
-    function setWidth(editingContext, width) {
-      var padding = 30;
-      var codeMirror = editingContext.codeMirror;
-      codeMirror.getWrapperElement().style.width = (width - codeMirror.getWrapperElement().offsetLeft - padding) + 'px';
-      codeMirror.refresh();
-    }
-
-    handle.codeMirror = editingContext.codeMirror;
-    handle.setWidth = setWidth.bind(null, editingContext);
-  }
+  var selectionRule = (foregroundColor && backgroundColor) ?
+      '.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: ' +
+          backgroundColor + '; color: ' + foregroundColor + ' !important }' :
+      '';
+  var style = createElement('style');
+  if (foregroundColorRule || backgroundColorRule)
+    style.textContent = backgroundColorRule + foregroundColorRule + selectionRule;
+  element.appendChild(style);
 };
 
 

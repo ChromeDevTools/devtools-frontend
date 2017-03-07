@@ -1,10 +1,6 @@
 {
     "extensions": [
         {
-            "type": "@UI.InplaceEditor",
-            "className": "TextEditor.CodeMirrorUtils"
-        },
-        {
             "type": "@Common.TokenizerFactory",
             "className": "TextEditor.CodeMirrorUtils.TokenizerFactory"
         },

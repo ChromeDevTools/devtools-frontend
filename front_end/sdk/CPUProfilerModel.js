@@ -91,7 +91,6 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
 
   startRecording() {
     this._isRecording = true;
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.ProfilesCPUProfileTaken);
     var intervalUs = Common.moduleSetting('highResolutionCpuProfiling').get() ? 100 : 1000;
     this._profilerAgent.setSamplingInterval(intervalUs);
     this._profilerAgent.start();

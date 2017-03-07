@@ -199,6 +199,7 @@ Profiler.CPUProfileType = class extends Profiler.ProfileType {
     profile.updateStatus(Common.UIString('Recording\u2026'));
     this._recording = true;
     cpuProfilerModel.startRecording();
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.ProfilesCPUProfileTaken);
   }
 
   stopRecordingProfile() {

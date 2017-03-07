@@ -64,7 +64,9 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
     ]);
     this._createCategory(Common.UIString('Script'), ['scriptFirstStatement', 'scriptBlockedByCSP'], true);
     this._createCategory(
-        Common.UIString('Timer'), ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'timerFired'], true);
+        Common.UIString('Timer'),
+        ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'setTimeout.callback', 'setInterval.callback'],
+        true);
     this._createCategory(Common.UIString('Touch'), ['touchstart', 'touchmove', 'touchend', 'touchcancel']);
     this._createCategory(Common.UIString('Window'), ['DOMWindow.close'], true);
     this._createCategory(
@@ -86,7 +88,8 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
   static eventNameForUI(eventName, auxData) {
     if (!Sources.EventListenerBreakpointsSidebarPane._eventNamesForUI) {
       Sources.EventListenerBreakpointsSidebarPane._eventNamesForUI = {
-        'instrumentation:timerFired': Common.UIString('Timer Fired'),
+        'instrumentation:setTimeout.callback': Common.UIString('setTimeout fired'),
+        'instrumentation:setInterval.callback': Common.UIString('setInterval fired'),
         'instrumentation:scriptFirstStatement': Common.UIString('Script First Statement'),
         'instrumentation:scriptBlockedByCSP': Common.UIString('Script Blocked by Content Security Policy'),
         'instrumentation:requestAnimationFrame': Common.UIString('Request Animation Frame'),

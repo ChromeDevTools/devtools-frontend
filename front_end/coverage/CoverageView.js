@@ -202,7 +202,7 @@ Coverage.CoverageView = class extends UI.VBox {
 
   /**
    * @param {!SDK.CSSModel} cssModel
-   * @param {!Array<!SDK.CSSModel.RuleUsage>} ruleUsageList
+   * @param {!Array<!Protocol.CSS.RuleUsage>} ruleUsageList
    * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
    */
   static async _processCSSCoverage(cssModel, ruleUsageList) {
@@ -215,12 +215,7 @@ Coverage.CoverageView = class extends UI.VBox {
         ranges = [];
         rulesByStyleSheet.set(styleSheetHeader, ranges);
       }
-      var textRange = new Common.TextRange(
-          rule.range.startLine + styleSheetHeader.startLine,
-          rule.range.startColumn + (rule.range.startLine ? 0 : styleSheetHeader.startColumn),
-          rule.range.endLine + styleSheetHeader.startLine,
-          rule.range.endColumn + (rule.range.endLine ? 0 : styleSheetHeader.startColumn));
-      ranges.push({range: textRange, count: Number(rule.wasUsed)});
+      ranges.push({startOffset: rule.startOffset, endOffset: rule.endOffset, count: Number(rule.used)});
     }
     return Promise.all(Array.from(
         rulesByStyleSheet.entries(), entry => Coverage.CoverageView._coverageInfoForText(

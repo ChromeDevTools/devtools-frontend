@@ -438,19 +438,19 @@ SDK.CSSModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise<!Array<!SDK.CSSModel.RuleUsage>>}
+   * @return {!Promise<!Array<!Protocol.CSS.RuleUsage>>}
    */
   ruleListPromise() {
     /**
      * @param {?string} error
      * @param {!Array<!Protocol.CSS.RuleUsage>=} ruleUsage
-     * @return {!Array<!SDK.CSSModel.RuleUsage>}
+     * @return {!Array<!Protocol.CSS.RuleUsage>}
      */
     function usedRulesCallback(error, ruleUsage) {
       if (error || !ruleUsage)
         return [];
 
-      return ruleUsage.map(rule => ({range: rule.range, styleSheetId: rule.styleSheetId, wasUsed: rule.used}));
+      return ruleUsage;
     }
 
     return this._agent.stopRuleUsageTracking(usedRulesCallback);

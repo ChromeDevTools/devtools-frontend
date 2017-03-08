@@ -135,9 +135,13 @@ CookieTable.CookiesTable = class extends UI.VBox {
    */
   _getSelectionCookies() {
     var node = this._dataGrid.selectedNode;
-    var neighbor = node && (node.traverseNextNode(true) || node.traversePreviousNode(true));
+    var nextNeighbor = node && node.traverseNextNode(true);
+    var previousNeighbor = node && node.traversePreviousNode(true);
 
-    return {current: node && node.cookie, neighbor: neighbor && neighbor.cookie};
+    return {
+      current: node && node.cookie,
+      neighbor: (nextNeighbor && nextNeighbor.cookie) || (previousNeighbor && previousNeighbor.cookie)
+    };
   }
 
   /**

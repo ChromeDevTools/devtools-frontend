@@ -403,7 +403,7 @@ SDK.TargetManager = class extends Common.Object {
 
     var capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.JS |
         SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target |
-        SDK.Target.Capability.ScreenCapture | SDK.Target.Capability.Tracing;
+        SDK.Target.Capability.ScreenCapture | SDK.Target.Capability.Tracing | SDK.Target.Capability.TouchEmulation;
     if (Runtime.queryParam('isSharedWorker')) {
       capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
           SDK.Target.Capability.Target;
@@ -511,7 +511,7 @@ SDK.ChildTargetManager = class {
     if (type === 'iframe') {
       return SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.JS |
           SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target |
-          SDK.Target.Capability.Tracing;
+          SDK.Target.Capability.Tracing | SDK.Target.Capability.TouchEmulation;
     }
     if (type === 'node')
       return SDK.Target.Capability.JS;

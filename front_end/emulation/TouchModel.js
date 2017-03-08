@@ -11,7 +11,7 @@ Emulation.MultitargetTouchModel = class {
     this._touchMobile = false;
     this._customTouchEnabled = false;
 
-    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.TouchEmulation);
   }
 
   /**
@@ -42,7 +42,7 @@ Emulation.MultitargetTouchModel = class {
   }
 
   _updateAllTargets() {
-    for (var target of SDK.targetManager.targets(SDK.Target.Capability.Browser))
+    for (var target of SDK.targetManager.targets(SDK.Target.Capability.TouchEmulation))
       this._applyToTarget(target);
   }
 

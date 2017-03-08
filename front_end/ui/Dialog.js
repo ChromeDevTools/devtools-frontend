@@ -61,7 +61,7 @@ UI.Dialog = class extends UI.GlassPane {
     var document = /** @type {!Document} */ (
         where instanceof Document ? where : (where || UI.inspectorView.element).ownerDocument);
     if (UI.Dialog._instance)
-      UI.Dialog._instance.detach();
+      UI.Dialog._instance.hide();
     UI.Dialog._instance = this;
     this._disableTabIndexOnElements(document);
     super.show(document);

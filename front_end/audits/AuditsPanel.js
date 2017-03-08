@@ -48,6 +48,7 @@ Audits.AuditsPanel = class extends UI.PanelWithSidebar {
     this._auditResultsTreeElement.selectable = false;
     this._auditResultsTreeElement.listItemElement.classList.add('audits-sidebar-results');
     this._auditResultsTreeElement.expand();
+    this._auditResultsTreeElement.setCollapsible(false);
     this._sidebarTree.appendChild(this._auditResultsTreeElement);
 
     this._constructCategories();

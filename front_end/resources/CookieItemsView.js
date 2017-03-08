@@ -88,12 +88,14 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
     this._totalSize = allCookies.reduce((size, cookie) => size + cookie.size(), 0);
 
     if (!this._cookiesTable) {
-      const parsedURL = this._cookieDomain.asParsedURL();
-      const domain = parsedURL ? parsedURL.host : '';
       this._cookiesTable = new CookieTable.CookiesTable(
           this._saveCookie.bind(this), this.refreshItems.bind(this), () => this.setCanDeleteSelected(true),
-          this._deleteCookie.bind(this), domain);
+          this._deleteCookie.bind(this));
     }
+
+    const parsedURL = this._cookieDomain.asParsedURL();
+    const host = parsedURL ? parsedURL.host : '';
+    this._cookiesTable.setCookieDomain(host);
 
     var shownCookies = this.filter(allCookies, cookie => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);
     this._cookiesTable.setCookies(shownCookies);

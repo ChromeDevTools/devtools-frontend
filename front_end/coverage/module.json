@@ -43,6 +43,7 @@
         "data_grid"
     ],
     "scripts": [
+        "CoverageModel.js",
         "CoverageListView.js",
         "CoverageView.js"
     ],

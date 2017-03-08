@@ -83,7 +83,8 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
           resourceTreeModel.addEventListener(
               SDK.ResourceTreeModel.Events.FrameWillNavigate, this._frameWillNavigate, this),
           resourceTreeModel.addEventListener(
-              SDK.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this));
+              SDK.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this),
+          resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this));
     }
 
     var debuggerModel = SDK.DebuggerModel.fromTarget(target);
@@ -313,20 +314,22 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
         resource.contentURL().startsWith('data:'))
       return;
 
+    var frame = SDK.ResourceTreeFrame.fromResource(resource);
     // Never load document twice.
-    if (this._workspace.uiSourceCodeForURL(resource.url))
+    var projectId = Bindings.NetworkProject.projectId(this.target(), frame, false);
+    var project = this._workspaceProjects.get(projectId);
+    if (project && project.uiSourceCodeForURL(resource.url))
       return;
 
-    var uiSourceCode = this._createFile(resource, SDK.ResourceTreeFrame.fromResource(resource), false);
+    var uiSourceCode = this._createFile(resource, frame, false);
     uiSourceCode[Bindings.NetworkProject._resourceSymbol] = resource;
     this._addUISourceCodeWithProvider(uiSourceCode, resource, this._resourceMetadata(resource));
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!SDK.ResourceTreeFrame} frame
    */
-  _frameWillNavigate(event) {
-    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+  _removeFrameResources(frame) {
     var project = this._workspaceProject(frame, false);
     for (var resource of frame.resources())
       project.removeUISourceCode(resource.url);
@@ -338,9 +341,24 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
   /**
    * @param {!Common.Event} event
    */
+  _frameWillNavigate(event) {
+    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+    this._removeFrameResources(frame);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _frameDetached(event) {
+    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+    this._removeFrameResources(frame);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
   _mainFrameNavigated(event) {
     this._reset();
-    this._populate();
   }
 
   _suspendStateChanged() {

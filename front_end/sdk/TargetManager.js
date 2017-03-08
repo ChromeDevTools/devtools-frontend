@@ -476,12 +476,6 @@ SDK.ChildTargetManager = class {
       this._targetAgent.setRemoteLocations([{host: 'localhost', port: 9229}]);
       this._targetAgent.setDiscoverTargets(true);
     }
-
-    this._eventListeners = [];
-    if (resourceTreeModel) {
-      this._eventListeners.push(resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.MainFrameNavigated, this._detachWorkersOnMainFrameNavigated, this));
-    }
   }
 
   suspend() {
@@ -499,7 +493,6 @@ SDK.ChildTargetManager = class {
   }
 
   dispose() {
-    Common.EventTarget.removeEventListeners(this._eventListeners);
     // TODO(dgozman): this is O(n^2) when removing main target.
     var childTargets = this._targetManager._targets.filter(child => child.parentTarget() === this._parentTarget);
     for (var child of childTargets)
@@ -523,16 +516,6 @@ SDK.ChildTargetManager = class {
     if (type === 'node')
       return SDK.Target.Capability.JS;
     return 0;
-  }
-
-  _detachWorkersOnMainFrameNavigated() {
-    // TODO(dgozman): send these from backend.
-    var idsToDetach = [];
-    for (var target of this._targetManager._targets) {
-      if (target.parentTarget() === this._parentTarget && target[SDK.TargetManager._isWorkerSymbol])
-        idsToDetach.push(target.id());
-    }
-    idsToDetach.forEach(id => this.detachedFromTarget(id));
   }
 
   /**

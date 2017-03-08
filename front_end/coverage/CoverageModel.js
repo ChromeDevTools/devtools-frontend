@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/** @typedef {{range: (Common.TextRange|undefined), startOffset: (number|undefined), endOffset: (number|undefined), count: number}} */
+/** @typedef {{startOffset: number, endOffset: number, count: number}} */
 Coverage.RangeUseCount;
 
 /** @typedef {{
@@ -13,7 +13,7 @@ Coverage.RangeUseCount;
  *    type: !Coverage.CoverageType,
  *    lineOffset: number,
  *    columnOffset: number,
- *    ranges: !Array<!{startOffset: number, endOffset: number, count: number}>
+ *    ranges: !Array<!Coverage.RangeUseCount>
  * }}
  */
 Coverage.CoverageInfo;
@@ -104,20 +104,13 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
   static async _processJSCoverage(debuggerModel, scriptsCoverage) {
     var promises = [];
     for (var entry of scriptsCoverage) {
-      var ranges = [];
       var script = debuggerModel.scriptForId(entry.scriptId);
       if (!script)
         continue;
+      var ranges = [];
       for (var func of entry.functions) {
-        for (var range of func.ranges) {
-          if (typeof range.startOffset === 'number') {
-            ranges.push({startOffset: range.startOffset, endOffset: range.endOffset, count: range.count});
-          } else {
-            var textRange = new Common.TextRange(
-                range.startLineNumber, range.startColumnNumber, range.endLineNumber, range.endColumnNumber);
-            ranges.push({range: textRange, count: range.count});
-          }
-        }
+        for (var range of func.ranges)
+          ranges.push({startOffset: range.startOffset, endOffset: range.endOffset, count: range.count});
       }
       promises.push(
           Coverage.CoverageModel._coverageInfoForText(script, script.lineOffset, script.columnOffset, ranges));
@@ -177,28 +170,9 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     else
       console.assert(false, `Unexpected resource type ${contentProvider.contentType().name} for ${url}`);
 
-    var content = await contentProvider.requestContent();
-    if (typeof content !== 'string')
-      return null;
-
-    var offsetRanges;
-    if (!ranges.length || typeof ranges[0].startOffset === 'number') {
-      offsetRanges = ranges.map(r => ({startOffset: r.startOffset, endOffset: r.endOffset, count: r.count}));
-    } else {
-      // FIXME: This branch should be gone once protocol conversion to offset ranges is complete.
-      var text = new Common.Text(content);
-      offsetRanges = ranges.map(r => {
-        var range = r.range.relativeTo(startLine, startColumn);
-        return {
-          startOffset: text.offsetFromPosition(range.startLine, range.startColumn),
-          endOffset: text.offsetFromPosition(range.endLine, range.endColumn),
-          count: r.count
-        };
-      });
-    }
     var stack = [];
-    offsetRanges.sort((a, b) => a.startOffset - b.startOffset);
-    for (var entry of offsetRanges) {
+    ranges.sort((a, b) => a.startOffset - b.startOffset);
+    for (var entry of ranges) {
       while (stack.length && stack.peekLast().endOffset <= entry.startOffset)
         stack.pop();
 
@@ -216,16 +190,21 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
 
     var usedSize = 0;
     var unusedSize = 0;
-    for (var entry of offsetRanges) {
+    for (var entry of ranges) {
       if (entry.count)
         usedSize += entry.ownSize;
       else
         unusedSize += entry.ownSize;
     }
 
+    // FIXME: get rid of this when we get the size upfront.
+    var content = await contentProvider.requestContent();
+    if (typeof content !== 'string')
+      return null;
+
     var coverageInfo = {
       contentProvider: contentProvider,
-      ranges: offsetRanges,
+      ranges: ranges,
       type: coverageType,
       size: content.length,
       usedSize: usedSize,

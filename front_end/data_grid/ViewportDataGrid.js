@@ -270,7 +270,6 @@ DataGrid.ViewportDataGrid.Events = {
 
 /**
  * @unrestricted
- * @this {NODE_TYPE}
  * @extends {DataGrid.DataGridNode<!NODE_TYPE>}
  * @template NODE_TYPE
  */

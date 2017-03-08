@@ -1218,7 +1218,6 @@ DataGrid.DataGrid.ResizeMethod = {
 
 /**
  * @unrestricted
- * @this {NODE_TYPE}
  * @template NODE_TYPE
  */
 DataGrid.DataGridNode = class extends Common.Object {

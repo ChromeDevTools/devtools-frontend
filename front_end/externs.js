@@ -361,29 +361,6 @@ diff_match_patch.prototype = {
 };
 
 /** @constructor */
-function Path2D() {
-}
-Path2D.prototype = {
-  /**
-   * @param {number} x
-   * @param {number} y
-   * @param {number} w
-   * @param {number} h
-   */
-  rect: function(x, y, w, h) {},
-  /**
-   * @param {number} x
-   * @param {number} y
-   */
-  moveTo: function(x, y) {},
-  /**
-   * @param {number} x
-   * @param {number} y
-   */
-  lineTo: function(x, y) {}
-};
-
-/** @constructor */
 var Doc = function() {};
 Doc.prototype = {
   /** @type {number} */

@@ -502,26 +502,6 @@ UI.Widget = class extends Common.Object {
   }
 
   /**
-   * @return {!UI.Size}
-   */
-  measurePreferredSize() {
-    var document = this.element.ownerDocument;
-    var oldParent = this.element.parentElement;
-    var oldNextSibling = this.element.nextSibling;
-
-    UI.Widget._originalAppendChild.call(document.body, this.element);
-    this.element.positionAt(0, 0);
-    var result = new UI.Size(this.element.offsetWidth, this.element.offsetHeight);
-
-    this.element.positionAt(undefined, undefined);
-    if (oldParent)
-      UI.Widget._originalInsertBefore.call(oldParent, this.element, oldNextSibling);
-    else
-      UI.Widget._originalRemoveChild.call(document.body, this.element);
-    return result;
-  }
-
-  /**
    * @return {!UI.Constraints}
    */
   calculateConstraints() {

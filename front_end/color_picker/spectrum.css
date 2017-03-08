@@ -3,9 +3,10 @@
     width: 232px;
     height: 240px;
     -webkit-user-select: none;
+    overflow: hidden;
 }
 
-:host(.palettes-enabled) {
+:host-context(.palettes-enabled) {
     height: 319px;
 }
 

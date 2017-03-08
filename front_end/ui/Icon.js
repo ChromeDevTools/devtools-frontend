@@ -226,4 +226,9 @@ UI.Icon.Descriptors = {
   'mediumicon-database': {x: -60, y: -0, width: 16, height: 16, spritesheet: 'resourceicons', isMask: true},
   'mediumicon-table': {x: -80, y: -0, width: 16, height: 16, spritesheet: 'resourceicons', isMask: true},
   'mediumicon-cookie': {x: -120, y: -0, width: 16, height: 16, spritesheet: 'resourceicons', isMask: true},
+
+  'mediumicon-arrow-top': {x: 0, y: 0, width: 19, height: 19, spritesheet: 'arrowicons'},
+  'mediumicon-arrow-bottom': {x: 0, y: -19, width: 19, height: 19, spritesheet: 'arrowicons'},
+  'mediumicon-arrow-left': {x: 0, y: -38, width: 19, height: 19, spritesheet: 'arrowicons'},
+  'mediumicon-arrow-right': {x: 0, y: -57, width: 19, height: 19, spritesheet: 'arrowicons'},
 };

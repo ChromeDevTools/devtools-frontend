@@ -29,3 +29,29 @@
     pointer-events: auto;
     flex: none;
 }
+
+.arrow-top {
+    margin-top: -19px;
+    margin-left: -10px;
+}
+
+.arrow-bottom {
+    margin-left: -10px;
+}
+
+.arrow-left {
+    margin-left: -19px;
+    margin-top: -10px;
+}
+
+.arrow-right {
+    margin-top: -10px;
+}
+
+.arrow-none {
+    display: none;
+}
+
+:host-context(.-theme-with-dark-background) .arrow {
+    -webkit-filter: invert(80%);
+}

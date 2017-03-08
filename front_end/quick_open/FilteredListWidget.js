@@ -114,7 +114,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
   showAsDialog() {
     this._dialog = new UI.Dialog();
     this._dialog.setMaxContentSize(new UI.Size(504, 340));
-    this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetMaxHeight);
+    this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
     this._dialog.setContentPosition(null, 22);
     this.show(this._dialog.contentElement);
     this._dialog.show();

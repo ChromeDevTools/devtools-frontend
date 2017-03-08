@@ -4,23 +4,26 @@
  * found in the LICENSE file.
  */
 
+.object-popover-content {
+    display: block;
+    position: relative;
+    overflow: hidden;
+}
+
 .object-popover-title {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     font-weight: bold;
     padding-left: 18px;
+    padding-bottom: 2px;
 }
 
 .object-popover-tree {
     border-top: 1px solid rgb(184, 184, 184);
     overflow: auto;
-    position: absolute;
-    top: 21px;
-    bottom: 5px;
-    left: 5px;
-    right: 5px;
-    margin-top: 1px;
+    width: 100%;
+    height: calc(100% - 13px);
 }
 
 .object-popover-container {

@@ -545,7 +545,6 @@ Network.NetworkLogViewColumns = class {
     var initiator = /** @type {!Protocol.Network.Initiator} */ (request.initiator());
     var content = Components.DOMPresentationUtils.buildStackTracePreviewContents(
         request.target(), this._popupLinkifier, initiator.stack);
-    popover.setCanShrink(true);
     popover.showForAnchor(content, anchor);
   }
 

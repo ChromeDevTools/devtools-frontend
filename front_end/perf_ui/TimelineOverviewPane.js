@@ -112,7 +112,7 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
     if (!this._popover)
       return;
     this._buildPopoverContents().then(updatePopover.bind(this));
-    this._popover.positionElement(this._cursorElement);
+    this._popover.setContentAnchorBox(this._cursorElement.boxInWindow());
 
     /**
      * @param {!DocumentFragment} fragment

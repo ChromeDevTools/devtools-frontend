@@ -596,7 +596,6 @@ Elements.ElementsPanel = class extends UI.Panel {
     function showPopover(contents) {
       if (!contents)
         return;
-      popover.setCanShrink(false);
       popover.showForAnchor(contents, link);
     }
   }

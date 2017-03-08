@@ -8,6 +8,8 @@ UI.GlassPane = class {
     this._widget.markAsRoot();
     this.element = this._widget.element;
     this.contentElement = this._widget.contentElement;
+    this._arrowElement = UI.Icon.create('', 'arrow hidden');
+    this.element.shadowRoot.appendChild(this._arrowElement);
 
     this.registerRequiredCSS('ui/glassPane.css');
     this.element.classList.add('no-pointer-events');
@@ -23,7 +25,8 @@ UI.GlassPane = class {
     /** @type {?AnchorBox} */
     this._anchorBox = null;
     this._anchorBehavior = UI.GlassPane.AnchorBehavior.PreferTop;
-    this._sizeBehavior = UI.GlassPane.SizeBehavior.SetHeight;
+    this._sizeBehavior = UI.GlassPane.SizeBehavior.SetExactSize;
+    this._showArrow = false;
   }
 
   /**
@@ -105,6 +108,14 @@ UI.GlassPane = class {
   }
 
   /**
+   * @param {boolean} showArrow
+   */
+  setShowArrow(showArrow) {
+    this._showArrow = showArrow;
+    this._arrowElement.classList.toggle('hidden', !showArrow);
+  }
+
+  /**
    * @param {!Document} document
    */
   show(document) {
@@ -141,11 +152,15 @@ UI.GlassPane = class {
     if (!this.isShowing())
       return;
 
-    var gutterSize = 5;
+    var gutterSize = this._showArrow ? 6 : 3;
+    var scrollbarSize = 14;
+    var arrowSize = 10;
+
     var container = UI.GlassPane._containers.get(/** @type {!Document} */ (this.element.ownerDocument));
     if (this._sizeBehavior === UI.GlassPane.SizeBehavior.MeasureContent) {
       this.contentElement.positionAt(0, 0);
       this.contentElement.style.width = '';
+      this.contentElement.style.maxWidth = '';
       this.contentElement.style.height = '';
       this.contentElement.style.maxHeight = '';
     }
@@ -163,48 +178,119 @@ UI.GlassPane = class {
       height = Math.min(height, this._maxSize.height);
     }
 
+    var measuredWidth = 0;
+    var measuredHeight = 0;
     if (this._sizeBehavior === UI.GlassPane.SizeBehavior.MeasureContent) {
-      width = Math.min(width, this.contentElement.offsetWidth);
-      height = Math.min(height, this.contentElement.offsetHeight);
+      measuredWidth = this.contentElement.offsetWidth;
+      measuredHeight = this.contentElement.offsetHeight;
+      width = Math.min(width, measuredWidth);
+      height = Math.min(height, measuredHeight);
     }
 
     if (this._anchorBox) {
       var anchorBox = this._anchorBox.relativeToElement(container);
       var behavior = this._anchorBehavior;
+      this._arrowElement.classList.remove('arrow-none', 'arrow-top', 'arrow-bottom', 'arrow-left', 'arrow-right');
 
       if (behavior === UI.GlassPane.AnchorBehavior.PreferTop || behavior === UI.GlassPane.AnchorBehavior.PreferBottom) {
-        var top = anchorBox.y - gutterSize;
-        var bottom = containerHeight - anchorBox.y - anchorBox.height - gutterSize;
+        var top = anchorBox.y - 2 * gutterSize;
+        var bottom = containerHeight - anchorBox.y - anchorBox.height - 2 * gutterSize;
         if (behavior === UI.GlassPane.AnchorBehavior.PreferTop && top < height && bottom > top)
           behavior = UI.GlassPane.AnchorBehavior.PreferBottom;
         if (behavior === UI.GlassPane.AnchorBehavior.PreferBottom && bottom < height && top > bottom)
           behavior = UI.GlassPane.AnchorBehavior.PreferTop;
 
+        var arrowY;
+        if (behavior === UI.GlassPane.AnchorBehavior.PreferTop) {
+          positionY = Math.max(gutterSize, anchorBox.y - height - gutterSize);
+          var spaceTop = anchorBox.y - positionY - gutterSize;
+          if (this._sizeBehavior === UI.GlassPane.SizeBehavior.MeasureContent) {
+            if (height < measuredHeight)
+              width += scrollbarSize;
+            if (height > spaceTop)
+              this._arrowElement.classList.add('arrow-none');
+          } else {
+            height = Math.min(height, spaceTop);
+          }
+          this._arrowElement.setIconType('mediumicon-arrow-bottom');
+          this._arrowElement.classList.add('arrow-bottom');
+          arrowY = anchorBox.y - gutterSize;
+        } else {
+          positionY = anchorBox.y + anchorBox.height + gutterSize;
+          var spaceBottom = containerHeight - positionY - gutterSize;
+          if (this._sizeBehavior === UI.GlassPane.SizeBehavior.MeasureContent) {
+            if (height < measuredHeight)
+              width += scrollbarSize;
+            if (height > spaceBottom) {
+              this._arrowElement.classList.add('arrow-none');
+              positionY = containerHeight - gutterSize - height;
+            }
+          } else {
+            height = Math.min(height, spaceBottom);
+          }
+          this._arrowElement.setIconType('mediumicon-arrow-top');
+          this._arrowElement.classList.add('arrow-top');
+          arrowY = anchorBox.y + anchorBox.height + gutterSize;
+        }
+
         positionX = Math.max(gutterSize, Math.min(anchorBox.x, containerWidth - width - gutterSize));
         width = Math.min(width, containerWidth - positionX - gutterSize);
-        if (behavior === UI.GlassPane.AnchorBehavior.PreferTop) {
-          positionY = Math.max(gutterSize, anchorBox.y - height);
-          height = Math.min(height, anchorBox.y - positionY);
+        if (2 * arrowSize >= width) {
+          this._arrowElement.classList.add('arrow-none');
         } else {
-          positionY = anchorBox.y + anchorBox.height;
-          height = Math.min(height, containerHeight - positionY - gutterSize);
+          var arrowX = anchorBox.x + Math.min(50, Math.floor(anchorBox.width / 2));
+          arrowX = Number.constrain(arrowX, positionX + arrowSize, positionX + width - arrowSize);
+          this._arrowElement.positionAt(arrowX, arrowY, container);
         }
       } else {
-        var left = anchorBox.x - gutterSize;
-        var right = containerWidth - anchorBox.x - anchorBox.width - gutterSize;
+        var left = anchorBox.x - 2 * gutterSize;
+        var right = containerWidth - anchorBox.x - anchorBox.width - 2 * gutterSize;
         if (behavior === UI.GlassPane.AnchorBehavior.PreferLeft && left < width && right > left)
           behavior = UI.GlassPane.AnchorBehavior.PreferRight;
         if (behavior === UI.GlassPane.AnchorBehavior.PreferRight && right < width && left > right)
           behavior = UI.GlassPane.AnchorBehavior.PreferLeft;
 
+        var arrowX;
+        if (behavior === UI.GlassPane.AnchorBehavior.PreferLeft) {
+          positionX = Math.max(gutterSize, anchorBox.x - width - gutterSize);
+          var spaceLeft = anchorBox.x - positionX - gutterSize;
+          if (this._sizeBehavior === UI.GlassPane.SizeBehavior.MeasureContent) {
+            if (width < measuredWidth)
+              height += scrollbarSize;
+            if (width > spaceLeft)
+              this._arrowElement.classList.add('arrow-none');
+          } else {
+            width = Math.min(width, spaceLeft);
+          }
+          this._arrowElement.setIconType('mediumicon-arrow-right');
+          this._arrowElement.classList.add('arrow-right');
+          arrowX = anchorBox.x - gutterSize;
+        } else {
+          positionX = anchorBox.x + anchorBox.width + gutterSize;
+          var spaceRight = containerWidth - positionX - gutterSize;
+          if (this._sizeBehavior === UI.GlassPane.SizeBehavior.MeasureContent) {
+            if (width < measuredWidth)
+              height += scrollbarSize;
+            if (width > spaceRight) {
+              this._arrowElement.classList.add('arrow-none');
+              positionX = containerWidth - gutterSize - width;
+            }
+          } else {
+            width = Math.min(width, spaceRight);
+          }
+          this._arrowElement.setIconType('mediumicon-arrow-left');
+          this._arrowElement.classList.add('arrow-left');
+          arrowX = anchorBox.x + anchorBox.width + gutterSize;
+        }
+
         positionY = Math.max(gutterSize, Math.min(anchorBox.y, containerHeight - height - gutterSize));
         height = Math.min(height, containerHeight - positionY - gutterSize);
-        if (behavior === UI.GlassPane.AnchorBehavior.PreferLeft) {
-          positionX = Math.max(gutterSize, anchorBox.x - width);
-          width = Math.min(width, anchorBox.x - positionX);
+        if (2 * arrowSize >= height) {
+          this._arrowElement.classList.add('arrow-none');
         } else {
-          positionX = anchorBox.x + anchorBox.width;
-          width = Math.min(width, containerWidth - positionX - gutterSize);
+          var arrowY = anchorBox.y + Math.min(50, Math.floor(anchorBox.height / 2));
+          arrowY = Number.constrain(arrowY, positionY + arrowSize, positionY + height - arrowSize);
+          this._arrowElement.positionAt(arrowX, arrowY, container);
         }
       }
     } else {
@@ -212,13 +298,21 @@ UI.GlassPane = class {
       positionY = this._positionY !== null ? this._positionY : (containerHeight - height) / 2;
       width = Math.min(width, containerWidth - positionX - gutterSize);
       height = Math.min(height, containerHeight - positionY - gutterSize);
+      this._arrowElement.classList.add('arrow-none');
     }
 
-    this.contentElement.style.width = width + 'px';
-    if (this._sizeBehavior === UI.GlassPane.SizeBehavior.SetMaxHeight)
+    if (this._sizeBehavior === UI.GlassPane.SizeBehavior.SetMaxSize)
+      this.contentElement.style.maxWidth = width + 'px';
+    else
+      this.contentElement.style.width = width + 'px';
+
+    if (this._sizeBehavior === UI.GlassPane.SizeBehavior.SetMaxSize ||
+        this._sizeBehavior === UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight)
       this.contentElement.style.maxHeight = height + 'px';
     else
       this.contentElement.style.height = height + 'px';
+
+
     this.contentElement.positionAt(positionX, positionY, container);
     this._widget.doResize();
   }
@@ -272,8 +366,9 @@ UI.GlassPane.AnchorBehavior = {
  * @enum {symbol}
  */
 UI.GlassPane.SizeBehavior = {
-  SetHeight: Symbol('SetHeight'),
-  SetMaxHeight: Symbol('SetMaxHeight'),
+  SetExactSize: Symbol('SetExactSize'),
+  SetMaxSize: Symbol('SetMaxSize'),
+  SetExactWidthMaxHeight: Symbol('SetExactWidthMaxHeight'),
   MeasureContent: Symbol('MeasureContent')
 };
 

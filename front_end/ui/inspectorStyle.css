@@ -87,8 +87,3 @@ iframe.panel.extension {
     display: block;
     height: 100%;
 }
-
-.popover-container {
-    pointer-events: none;
-    overflow: hidden;
-}

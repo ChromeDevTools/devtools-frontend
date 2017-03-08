@@ -149,18 +149,18 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
           customPreviewComponent.expandIfPossible();
           popoverContentElement = customPreviewComponent.element;
         } else {
-          popoverContentElement = createElement('div');
+          popoverContentElement = createElementWithClass('div', 'object-popover-content');
           UI.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
-          this._titleElement = popoverContentElement.createChild('div', 'monospace object-popover-title');
-          this._titleElement.createChild('span').textContent = description;
+          var titleElement = popoverContentElement.createChild('div', 'monospace object-popover-title');
+          titleElement.createChild('span').textContent = description;
           var section = new ObjectUI.ObjectPropertiesSection(result, '', this._lazyLinkifier());
           section.element.classList.add('object-popover-tree');
           section.titleLessMode();
           popoverContentElement.appendChild(section.element);
         }
-        var popoverWidth = 300;
-        var popoverHeight = 250;
-        popover.showForAnchor(popoverContentElement, anchorElement, popoverWidth, popoverHeight);
+        popover.setMaxContentSize(new UI.Size(300, 250));
+        popover.setSizeBehavior(UI.GlassPane.SizeBehavior.SetMaxSize);
+        popover.showForAnchor(popoverContentElement, anchorElement);
       }
     }
     this._disposed = false;

@@ -588,7 +588,6 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     function showPopover(contents) {
       if (!contents)
         return;
-      popover.setCanShrink(false);
       popover.showForAnchor(contents, link);
     }
   }

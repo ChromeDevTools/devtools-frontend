@@ -180,7 +180,7 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
     if (this._onHideCallback)
       this._onHideCallback();
     if (this._objectTarget) {
-      this._objectTarget.runtimeAgent().releaseObjectGroup(this._popoverObjectGroup);
+      this._objectTarget.runtimeModel.releaseObjectGroup(this._popoverObjectGroup);
       delete this._objectTarget;
     }
   }

@@ -414,7 +414,7 @@ SDK.TargetManager = class extends Common.Object {
 
     var target =
         this.createTarget('main', Common.UIString('Main'), capabilities, this._createMainConnection.bind(this), null);
-    target.runtimeAgent().runIfWaitingForDebugger();
+    target.runtimeModel.runIfWaitingForDebugger();
   }
 
   /**
@@ -564,9 +564,12 @@ SDK.ChildTargetManager = class {
     target[SDK.TargetManager._isWorkerSymbol] = targetInfo.type === 'worker';
 
     // Only pause the new worker if debugging SW - we are going through the pause on start checkbox.
-    if (!this._parentTarget.parentTarget() && Runtime.queryParam('isSharedWorker') && waitingForDebugger)
-      target.debuggerAgent().pause();
-    target.runtimeAgent().runIfWaitingForDebugger();
+    if (!this._parentTarget.parentTarget() && Runtime.queryParam('isSharedWorker') && waitingForDebugger) {
+      var debuggerModel = target.model(SDK.DebuggerModel);
+      if (debuggerModel)
+        debuggerModel.pause();
+    }
+    target.runtimeModel.runIfWaitingForDebugger();
   }
 
   /**

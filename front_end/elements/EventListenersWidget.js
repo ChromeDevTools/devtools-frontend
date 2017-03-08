@@ -87,8 +87,7 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
    */
   doUpdate() {
     if (this._lastRequestedNode) {
-      this._lastRequestedNode.target().runtimeAgent().releaseObjectGroup(
-          Elements.EventListenersWidget._objectGroupName);
+      this._lastRequestedNode.target().runtimeModel.releaseObjectGroup(Elements.EventListenersWidget._objectGroupName);
       delete this._lastRequestedNode;
     }
     var node = UI.context.flavor(SDK.DOMNode);

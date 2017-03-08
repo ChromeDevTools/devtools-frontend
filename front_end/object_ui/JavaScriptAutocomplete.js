@@ -327,7 +327,7 @@ ObjectUI.JavaScriptAutocomplete.completionsForExpression = function(expressionSt
    * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
    */
   function receivedPropertyNamesFromEval(result, exceptionDetails) {
-    executionContext.target().runtimeAgent().releaseObjectGroup('completion');
+    executionContext.target().runtimeModel.releaseObjectGroup('completion');
     if (result && !exceptionDetails)
       receivedPropertyNames(/** @type {!Object} */ (result.value));
     else
@@ -338,7 +338,7 @@ ObjectUI.JavaScriptAutocomplete.completionsForExpression = function(expressionSt
    * @param {?Object} object
    */
   function receivedPropertyNames(object) {
-    executionContext.target().runtimeAgent().releaseObjectGroup('completion');
+    executionContext.target().runtimeModel.releaseObjectGroup('completion');
     if (!object) {
       fulfill([]);
       return;

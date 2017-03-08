@@ -646,7 +646,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    * @param {boolean} silent
    * @param {boolean} returnByValue
    * @param {boolean} generatePreview
-   * @param {function(?SDK.RemoteObject, !Protocol.Runtime.ExceptionDetails=)} callback
+   * @param {function(?SDK.RemoteObject, !Protocol.Runtime.ExceptionDetails=, string=)} callback
    */
   evaluateOnSelectedCallFrame(
       code,
@@ -659,11 +659,12 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     /**
      * @param {?Protocol.Runtime.RemoteObject} result
      * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
+     * @param {string=} error
      * @this {SDK.DebuggerModel}
      */
-    function didEvaluate(result, exceptionDetails) {
+    function didEvaluate(result, exceptionDetails, error) {
       if (!result)
-        callback(null);
+        callback(null, undefined, error);
       else
         callback(this._runtimeModel.createRemoteObject(result), exceptionDetails);
     }
@@ -1185,7 +1186,7 @@ SDK.DebuggerModel.CallFrame = class {
    * @param {boolean} silent
    * @param {boolean} returnByValue
    * @param {boolean} generatePreview
-   * @param {function(?Protocol.Runtime.RemoteObject, !Protocol.Runtime.ExceptionDetails=)} callback
+   * @param {function(?Protocol.Runtime.RemoteObject, !Protocol.Runtime.ExceptionDetails=, string=)} callback
    */
   evaluate(code, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview, callback) {
     /**
@@ -1196,7 +1197,7 @@ SDK.DebuggerModel.CallFrame = class {
     function didEvaluateOnCallFrame(error, result, exceptionDetails) {
       if (error) {
         console.error(error);
-        callback(null);
+        callback(null, undefined, error);
         return;
       }
       callback(result, exceptionDetails);

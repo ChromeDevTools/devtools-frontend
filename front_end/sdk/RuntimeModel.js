@@ -187,6 +187,17 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {string} objectGroupName
+   */
+  releaseObjectGroup(objectGroupName) {
+    this._agent.releaseObjectGroup(objectGroupName);
+  }
+
+  runIfWaitingForDebugger() {
+    this._agent.runIfWaitingForDebugger();
+  }
+
+  /**
    * @param {!Common.Event} event
    */
   _customFormattersStateChanged(event) {
@@ -496,7 +507,7 @@ SDK.ExecutionContext = class extends SDK.SDKObject {
    * @param {boolean} returnByValue
    * @param {boolean} generatePreview
    * @param {boolean} userGesture
-   * @param {function(?SDK.RemoteObject, !Protocol.Runtime.ExceptionDetails=)} callback
+   * @param {function(?SDK.RemoteObject, !Protocol.Runtime.ExceptionDetails=, string=)} callback
    */
   evaluate(
       expression,
@@ -513,13 +524,14 @@ SDK.ExecutionContext = class extends SDK.SDKObject {
           expression, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview, callback);
       return;
     }
-    this._evaluateGlobal.apply(this, arguments);
+    this._evaluateGlobal(
+        expression, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview, userGesture, callback);
   }
 
   /**
    * @param {string} objectGroup
    * @param {boolean} generatePreview
-   * @param {function(?SDK.RemoteObject, !Protocol.Runtime.ExceptionDetails=)} callback
+   * @param {function(?SDK.RemoteObject, !Protocol.Runtime.ExceptionDetails=, string=)} callback
    */
   globalObject(objectGroup, generatePreview, callback) {
     this._evaluateGlobal('this', objectGroup, false, true, false, generatePreview, false, callback);
@@ -533,7 +545,7 @@ SDK.ExecutionContext = class extends SDK.SDKObject {
    * @param {boolean} returnByValue
    * @param {boolean} generatePreview
    * @param {boolean} userGesture
-   * @param {function(?SDK.RemoteObject, !Protocol.Runtime.ExceptionDetails=)} callback
+   * @param {function(?SDK.RemoteObject, !Protocol.Runtime.ExceptionDetails=, string=)} callback
    */
   _evaluateGlobal(
       expression,
@@ -558,12 +570,12 @@ SDK.ExecutionContext = class extends SDK.SDKObject {
     function evalCallback(error, result, exceptionDetails) {
       if (error) {
         console.error(error);
-        callback(null);
+        callback(null, undefined, error);
         return;
       }
       callback(this.runtimeModel.createRemoteObject(result), exceptionDetails);
     }
-    this.target().runtimeAgent().evaluate(
+    this.runtimeModel._agent.evaluate(
         expression, objectGroup, includeCommandLineAPI, silent, this.id, returnByValue, generatePreview, userGesture,
         false, evalCallback.bind(this));
   }

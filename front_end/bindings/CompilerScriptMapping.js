@@ -200,7 +200,16 @@ Bindings.CompilerScriptMapping = class {
     this._stubUISourceCodes.set(script.scriptId, stubUISourceCode);
 
     this._debuggerWorkspaceBinding.pushSourceMapping(script, this);
-    this._loadSourceMapForScript(script).then(this._sourceMapLoaded.bind(this, script, stubUISourceCode.url()));
+    this._loadSourceMapForScript(script).then(sourceMap => {
+      this._sourceMapLoaded(script, stubUISourceCode.url(), sourceMap);
+      this._sourceMapAttachedForTest(sourceMap);
+    });
+  }
+
+  /**
+   * @param {?SDK.TextSourceMap} sourceMap
+   */
+  _sourceMapAttachedForTest(sourceMap) {
   }
 
   /**

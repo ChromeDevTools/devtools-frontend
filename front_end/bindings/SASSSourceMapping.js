@@ -49,6 +49,12 @@ Bindings.SASSSourceMapping = class {
   }
 
   /**
+   * @param {?SDK.SourceMap} sourceMap
+   */
+  _sourceMapAttachedForTest(sourceMap) {
+  }
+
+  /**
    * @param {!Common.Event} event
    */
   _sourceMapAttached(event) {
@@ -62,6 +68,7 @@ Bindings.SASSSourceMapping = class {
           contentProvider, SDK.ResourceTreeFrame.fromStyleSheet(header), false, embeddedContentLength);
     }
     Bindings.cssWorkspaceBinding.updateLocations(header);
+    this._sourceMapAttachedForTest(sourceMap);
   }
 
   /**

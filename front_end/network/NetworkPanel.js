@@ -179,7 +179,6 @@ Network.NetworkPanel = class extends UI.Panel {
     this._panelToolbar.appendToolbarItem(this._disableCacheCheckbox);
 
     this._panelToolbar.appendSeparator();
-    this._panelToolbar.appendToolbarItem(this._createBlockedURLsButton());
     this._panelToolbar.appendToolbarItem(NetworkConditions.NetworkConditionsSelector.createOfflineToolbarCheckbox());
     this._panelToolbar.appendToolbarItem(this._createNetworkConditionsSelect());
 
@@ -217,23 +216,6 @@ Network.NetworkPanel = class extends UI.Panel {
           grouping => this._networkLogView.setGrouping(/** @type {?Network.NetworkGroupLookupInterface} */ (grouping)));
     } else {
       this._networkLogView.setGrouping(null);
-    }
-  }
-
-  /**
-   * @return {!UI.ToolbarItem}
-   */
-  _createBlockedURLsButton() {
-    var setting = Common.moduleSetting('networkBlockedURLs');
-    setting.addChangeListener(updateAction);
-    var action = /** @type {!UI.Action }*/ (UI.actionRegistry.action('network.blocked-urls.show'));
-    var button = UI.Toolbar.createActionButton(action);
-    button.setVisible(Runtime.experiments.isEnabled('requestBlocking'));
-    updateAction();
-    return button;
-
-    function updateAction() {
-      action.setToggled(!!setting.get().length);
     }
   }
 

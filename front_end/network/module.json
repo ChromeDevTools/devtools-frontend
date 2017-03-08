@@ -45,13 +45,6 @@
         },
         {
             "type": "@UI.ActionDelegate",
-            "actionId": "network.blocked-urls.show",
-            "className": "Network.BlockedURLsPane.ActionDelegate",
-            "iconClass": "largeicon-block",
-            "title": "Block network requests"
-        },
-        {
-            "type": "@UI.ActionDelegate",
             "actionId": "network.toggle-recording",
             "iconClass": "largeicon-start-recording",
             "toggledIconClass": "largeicon-stop-recording",

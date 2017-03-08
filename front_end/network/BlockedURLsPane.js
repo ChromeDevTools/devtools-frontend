@@ -266,21 +266,3 @@ Network.BlockedURLsPane = class extends UI.VBox {
 
 /** @type {?Network.BlockedURLsPane} */
 Network.BlockedURLsPane._instance = null;
-
-
-/**
- * @implements {UI.ActionDelegate}
- * @unrestricted
- */
-Network.BlockedURLsPane.ActionDelegate = class {
-  /**
-   * @override
-   * @param {!UI.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
-    UI.viewManager.showView('network.blocked-urls');
-    return true;
-  }
-};

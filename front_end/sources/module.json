@@ -627,7 +627,7 @@
         "EditingLocationHistoryManager.js",
         "EventListenerBreakpointsSidebarPane.js",
         "FilePathScoreFunction.js",
-        "FilteredUISourceCodeListDelegate.js",
+        "FilteredUISourceCodeListProvider.js",
         "SourceMapNamesResolver.js",
         "JavaScriptBreakpointsSidebarPane.js",
         "JavaScriptOutlineDialog.js",

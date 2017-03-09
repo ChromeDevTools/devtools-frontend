@@ -7,7 +7,7 @@
 /**
  * @unrestricted
  */
-Sources.FilteredUISourceCodeListDelegate = class extends QuickOpen.FilteredListWidget.Delegate {
+Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListWidget.Provider {
   /**
    * @param {!Map.<!Workspace.UISourceCode, number>=} defaultScores
    */
@@ -16,8 +16,6 @@ Sources.FilteredUISourceCodeListDelegate = class extends QuickOpen.FilteredListW
 
     this._defaultScores = defaultScores;
     this._scorer = new Sources.FilePathScoreFunction('');
-    Workspace.workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
-    Workspace.workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
   }
 
   /**
@@ -25,15 +23,14 @@ Sources.FilteredUISourceCodeListDelegate = class extends QuickOpen.FilteredListW
    */
   _projectRemoved(event) {
     var project = /** @type {!Workspace.Project} */ (event.data);
-    this.populate(project);
+    this._populate(project);
     this.refresh();
   }
 
   /**
-   * @protected
    * @param {!Workspace.Project=} skipProject
    */
-  populate(skipProject) {
+  _populate(skipProject) {
     /** @type {!Array.<!Workspace.UISourceCode>} */
     this._uiSourceCodes = [];
     var projects = Workspace.workspace.projects().filter(this.filterProject.bind(this));
@@ -213,7 +210,16 @@ Sources.FilteredUISourceCodeListDelegate = class extends QuickOpen.FilteredListW
   /**
    * @override
    */
-  dispose() {
+  attach() {
+    Workspace.workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
+    Workspace.workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
+    this._populate();
+  }
+
+  /**
+   * @override
+   */
+  detach() {
     Workspace.workspace.removeEventListener(
         Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
     Workspace.workspace.removeEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);

@@ -29,7 +29,7 @@
 /**
  * @unrestricted
  */
-Sources.StyleSheetOutlineDialog = class extends QuickOpen.FilteredListWidget.Delegate {
+Sources.StyleSheetOutlineDialog = class extends QuickOpen.FilteredListWidget.Provider {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {function(number, number)} selectItemCallback

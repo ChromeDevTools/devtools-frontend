@@ -9,13 +9,12 @@
  */
 QuickOpen.FilteredListWidget = class extends UI.VBox {
   /**
-   * @param {!QuickOpen.FilteredListWidget.Delegate} delegate
+   * @param {?QuickOpen.FilteredListWidget.Provider} provider
    * @param {!Array<string>=} promptHistory
    */
-  constructor(delegate, promptHistory) {
+  constructor(provider, promptHistory) {
     super(true);
     this._promptHistory = promptHistory || [];
-    this._renderAsTwoRows = delegate.renderAsTwoRows();
 
     this.contentElement.classList.add('filtered-list-widget');
     this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), true);
@@ -46,10 +45,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
 
     this.setDefaultFocusedElement(this._promptElement);
 
-    this._delegate = delegate;
-    this._delegate.setRefreshCallback(this._itemsLoaded.bind(this));
-    this._itemsLoaded();
-    this._updateShowMatchingItems();
+    this._provider = provider;
   }
 
   /**
@@ -118,6 +114,30 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._dialog.setContentPosition(null, 22);
     this.show(this._dialog.contentElement);
     this._dialog.show();
+  }
+
+  /**
+   * @param {?QuickOpen.FilteredListWidget.Provider} provider
+   */
+  setProvider(provider) {
+    if (provider === this._provider)
+      return;
+
+    if (this._provider)
+      this._provider.detach();
+    this._clearTimers();
+
+    this._provider = provider;
+    if (this.isShowing())
+      this._attachProvider();
+  }
+
+  _attachProvider() {
+    if (this._provider) {
+      this._provider.setRefreshCallback(this._itemsLoaded.bind(this, this._provider));
+      this._provider.attach();
+    }
+    this._itemsLoaded(this._provider);
     this._updateShowMatchingItems();
   }
 
@@ -133,15 +153,26 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    */
   wasShown() {
     this._list.invalidateItemHeight();
+    this._attachProvider();
   }
 
   /**
    * @override
    */
   willHide() {
-    this._delegate.dispose();
-    if (this._filterTimer)
-      clearTimeout(this._filterTimer);
+    if (this._provider)
+      this._provider.detach();
+    this._clearTimers();
+  }
+
+  _clearTimers() {
+    clearTimeout(this._filterTimer);
+    clearTimeout(this._scoringTimer);
+    clearTimeout(this._loadTimeout);
+    delete this._filterTimer;
+    delete this._scoringTimer;
+    delete this._loadTimeout;
+    delete this._refreshListWithCurrentResult;
   }
 
   /**
@@ -149,18 +180,21 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    */
   _onEnter(event) {
     event.preventDefault();
-    if (!this._delegate.itemCount())
+    if (!this._provider || !this._provider.itemCount())
       return;
-    var selectedIndexInDelegate = this._shouldShowMatchingItems() ? this._list.selectedItem() : null;
+    var selectedIndexInProvider = this._shouldShowMatchingItems() ? this._list.selectedItem() : null;
 
-    // Detach dialog before allowing delegate to override focus.
+    // Detach dialog before allowing provider to override focus.
     if (this._dialog)
       this._dialog.hide();
-    this._selectItemWithQuery(selectedIndexInDelegate, this._value());
+    this._selectItemWithQuery(selectedIndexInProvider, this._value());
   }
 
-  _itemsLoaded() {
-    if (this._loadTimeout)
+  /**
+   * @param {?QuickOpen.FilteredListWidget.Provider} provider
+   */
+  _itemsLoaded(provider) {
+    if (this._loadTimeout || provider !== this._provider)
       return;
     this._loadTimeout = setTimeout(this._updateAfterItemsLoaded.bind(this), 0);
   }
@@ -177,14 +211,14 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    */
   createElementForItem(item) {
     var itemElement = createElement('div');
-    itemElement.className = 'filtered-list-widget-item ' + (this._renderAsTwoRows ? 'two-rows' : 'one-row');
+    itemElement.className = 'filtered-list-widget-item ' + (this._provider.renderAsTwoRows() ? 'two-rows' : 'one-row');
     var titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
     var subtitleElement = itemElement.createChild('div', 'filtered-list-widget-subtitle');
     subtitleElement.textContent = '\u200B';
-    this._delegate.renderItem(item, this._value(), titleElement, subtitleElement);
+    this._provider.renderItem(item, this._value(), titleElement, subtitleElement);
     itemElement.addEventListener('click', event => {
       event.consume(true);
-      // Detach dialog before allowing delegate to override focus.
+      // Detach dialog before allowing provider to override focus.
       if (this._dialog)
         this._dialog.hide();
       this._selectItemWithQuery(item, this._value());
@@ -265,11 +299,16 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
         this._refreshListWithCurrentResult();
     }
 
+    if (!this._provider) {
+      this._itemsFilteredForTest();
+      return;
+    }
+
     this._progressBarElement.style.transform = 'scaleX(0)';
     this._progressBarElement.classList.remove('filtered-widget-progress-fade');
     this._progressBarElement.classList.remove('hidden');
 
-    var query = this._delegate.rewriteQuery(this._value());
+    var query = this._provider.rewriteQuery(this._value());
     this._query = query;
 
     var filterRegex = query ? QuickOpen.FilteredListWidget.filterRegex(query) : null;
@@ -283,7 +322,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     var overflowItems = [];
     var scoreStartTime = window.performance.now();
 
-    var maxWorkItems = Number.constrain(10, 500, (this._delegate.itemCount() / 10) | 0);
+    var maxWorkItems = Number.constrain(10, 500, (this._provider.itemCount() / 10) | 0);
 
     scoreItems.call(this, 0);
 
@@ -304,13 +343,13 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
       delete this._scoringTimer;
       var workDone = 0;
 
-      for (var i = fromIndex; i < this._delegate.itemCount() && workDone < maxWorkItems; ++i) {
+      for (var i = fromIndex; i < this._provider.itemCount() && workDone < maxWorkItems; ++i) {
         // Filter out non-matching items quickly.
-        if (filterRegex && !filterRegex.test(this._delegate.itemKeyAt(i)))
+        if (filterRegex && !filterRegex.test(this._provider.itemKeyAt(i)))
           continue;
 
         // Score item.
-        var score = this._delegate.itemScoreAt(i, query);
+        var score = this._provider.itemScoreAt(i, query);
         if (query)
           workDone++;
 
@@ -334,10 +373,10 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
       this._refreshListWithCurrentResult = this._refreshList.bind(this, bestItems, overflowItems, filteredItems);
 
       // Process everything in chunks.
-      if (i < this._delegate.itemCount()) {
+      if (i < this._provider.itemCount()) {
         this._scoringTimer = setTimeout(scoreItems.bind(this, i), 0);
         if (window.performance.now() - scoreStartTime > 50)
-          this._progressBarElement.style.transform = 'scaleX(' + i / this._delegate.itemCount() + ')';
+          this._progressBarElement.style.transform = 'scaleX(' + i / this._provider.itemCount() + ')';
         return;
       }
       if (window.performance.now() - scoreStartTime > 100) {
@@ -375,14 +414,14 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._list.element.classList.toggle('hidden', !hasItems);
     this._notFoundElement.classList.toggle('hidden', hasItems);
     if (!hasItems)
-      this._notFoundElement.textContent = this._delegate.notFoundText();
+      this._notFoundElement.textContent = this._provider.notFoundText();
   }
 
   /**
    * @return {boolean}
    */
   _shouldShowMatchingItems() {
-    return this._delegate.shouldShowMatchingItems(this._value());
+    return !!this._provider && this._provider.shouldShowMatchingItems(this._value());
   }
 
   _onInput() {
@@ -438,7 +477,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._promptHistory.push(promptValue);
     if (this._promptHistory.length > 100)
       this._promptHistory.shift();
-    this._delegate.selectItem(itemIndex, promptValue);
+    this._provider.selectItem(itemIndex, promptValue);
   }
 };
 
@@ -446,12 +485,15 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
 /**
  * @unrestricted
  */
-QuickOpen.FilteredListWidget.Delegate = class {
+QuickOpen.FilteredListWidget.Provider = class {
   /**
    * @param {function():void} refreshCallback
    */
   setRefreshCallback(refreshCallback) {
     this._refreshCallback = refreshCallback;
+  }
+
+  attach() {
   }
 
   /**
@@ -528,6 +570,6 @@ QuickOpen.FilteredListWidget.Delegate = class {
     return Common.UIString('No results found');
   }
 
-  dispose() {
+  detach() {
   }
 };

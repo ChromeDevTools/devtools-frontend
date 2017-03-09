@@ -518,7 +518,7 @@ all_devtools_files = [
   "front_end/sources/fileBasedSearchResultsPane.css",
   "front_end/sources/FileBasedSearchResultsPane.js",
   "front_end/sources/FilePathScoreFunction.js",
-  "front_end/sources/FilteredUISourceCodeListDelegate.js",
+  "front_end/sources/FilteredUISourceCodeListProvider.js",
   "front_end/sources/InplaceFormatterEditorAction.js",
   "front_end/sources/JavaScriptBreakpointsSidebarPane.js",
   "front_end/sources/JavaScriptCompiler.js",

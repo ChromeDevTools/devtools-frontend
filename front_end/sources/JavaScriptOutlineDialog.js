@@ -7,7 +7,7 @@
 /**
  * @unrestricted
  */
-Sources.JavaScriptOutlineDialog = class extends QuickOpen.FilteredListWidget.Delegate {
+Sources.JavaScriptOutlineDialog = class extends QuickOpen.FilteredListWidget.Provider {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {function(number, number)} selectItemCallback

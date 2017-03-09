@@ -7,7 +7,7 @@
 /**
  * @unrestricted
  */
-Sources.OpenResourceDialog = class extends Sources.FilteredUISourceCodeListDelegate {
+Sources.OpenResourceDialog = class extends Sources.FilteredUISourceCodeListProvider {
   /**
    * @param {!Sources.SourcesView} sourcesView
    * @param {!Map.<!Workspace.UISourceCode, number>} defaultScores
@@ -15,7 +15,6 @@ Sources.OpenResourceDialog = class extends Sources.FilteredUISourceCodeListDeleg
   constructor(sourcesView, defaultScores) {
     super(defaultScores);
     this._sourcesView = sourcesView;
-    this.populate();
   }
 
   /**
@@ -80,7 +79,7 @@ Sources.OpenResourceDialog = class extends Sources.FilteredUISourceCodeListDeleg
 /**
  * @unrestricted
  */
-Sources.SelectUISourceCodeForProjectTypesDialog = class extends Sources.FilteredUISourceCodeListDelegate {
+Sources.SelectUISourceCodeForProjectTypesDialog = class extends Sources.FilteredUISourceCodeListProvider {
   /**
    * @param {!Array.<string>} types
    * @param {function(?Workspace.UISourceCode)} callback
@@ -89,7 +88,6 @@ Sources.SelectUISourceCodeForProjectTypesDialog = class extends Sources.Filtered
     super();
     this._types = types;
     this._callback = callback;
-    this.populate();
   }
 
   /**

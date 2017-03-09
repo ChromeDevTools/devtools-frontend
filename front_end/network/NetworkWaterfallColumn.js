@@ -1,9 +1,6 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/**
- * @unrestricted
- */
 Network.NetworkWaterfallColumn = class extends UI.VBox {
   /**
    * @param {number} rowHeight
@@ -25,6 +22,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._fontSize = 10;
 
     this._rightPadding = 0;
+    this._scrollTop = 0;
 
     this._rowHeight = rowHeight;
     this._headerHeight = 0;
@@ -47,6 +45,9 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
     /** @type {!Map<string, !Array<number>>} */
     this._eventDividers = new Map();
+
+    /** @type {(number|undefined)} */
+    this._updateRequestID;
 
     var colorUsage = UI.ThemeSupport.ColorUsage;
     this._rowNavigationRequestColor = UI.themeSupport.patchColor('#def', colorUsage.Background);

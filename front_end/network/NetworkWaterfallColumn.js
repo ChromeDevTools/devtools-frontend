@@ -56,13 +56,40 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._parentInitiatorColor = UI.themeSupport.patchColor('hsla(120, 68%, 54%, 0.2)', colorUsage.Background);
     this._initiatedColor = UI.themeSupport.patchColor('hsla(0, 68%, 54%, 0.2)', colorUsage.Background);
 
-    /** @type {!Map<!Common.ResourceType, string>} */
-    this._borderColorsForResourceTypeCache = new Map();
-    /** @type {!Map<string, !CanvasGradient>} */
-    this._colorsForResourceTypeCache = new Map();
-
     this.element.addEventListener('mousemove', this._onMouseMove.bind(this), true);
     this.element.addEventListener('mouseleave', event => this._setHoveredNode(null, false), true);
+  }
+
+  /**
+   * @param {string} color
+   * @return {string}
+   */
+  _waitingColorForBaseColor(color) {
+    var parsedColor = Common.Color.parse(color);
+    var hsla = parsedColor.hsla();
+    hsla[2] *= 1.1;
+    return /** @type {string} */ (parsedColor.asString(null));
+  }
+
+  /**
+   * @param {string} color
+   * @return {string}
+   */
+  _borderColorForBaseColor(color) {
+    var parsedColor = Common.Color.parse(color);
+    var hsla = parsedColor.hsla();
+    hsla[1] /= 2;
+    hsla[2] -= Math.min(hsla[2], 0.2);
+    return /** @type {string} */ (parsedColor.asString(null));
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   * @return {string}
+   */
+  _colorForResourceType(request) {
+    var colorsForResourceType = Network.NetworkWaterfallColumn._colorsForResourceType;
+    return colorsForResourceType[request.resourceType()] || colorsForResourceType.other;
   }
 
   /**
@@ -384,50 +411,6 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @return {string}
-   */
-  _borderColorForResourceType(request) {
-    var resourceType = request.resourceType();
-    if (this._borderColorsForResourceTypeCache.has(resourceType))
-      return this._borderColorsForResourceTypeCache.get(resourceType);
-    var colorsForResourceType = Network.NetworkWaterfallColumn._colorsForResourceType;
-    var color = colorsForResourceType[resourceType] || colorsForResourceType.other;
-    var parsedColor = Common.Color.parse(color);
-    var hsla = parsedColor.hsla();
-    hsla[1] /= 2;
-    hsla[2] -= Math.min(hsla[2], 0.2);
-    var resultColor = /** @type {string} */ (parsedColor.asString(null));
-    this._borderColorsForResourceTypeCache.set(resourceType, resultColor);
-    return resultColor;
-  }
-
-  /**
-   * @param {!CanvasRenderingContext2D} context
-   * @param {!SDK.NetworkRequest} request
-   * @return {string|!CanvasGradient}
-   */
-  _colorForResourceType(context, request) {
-    var colorsForResourceType = Network.NetworkWaterfallColumn._colorsForResourceType;
-    var resourceType = request.resourceType();
-    var color = colorsForResourceType[resourceType] || colorsForResourceType.other;
-    if (request.cached())
-      return color;
-
-    if (this._colorsForResourceTypeCache.has(color))
-      return this._colorsForResourceTypeCache.get(color);
-    var parsedColor = Common.Color.parse(color);
-    var hsla = parsedColor.hsla();
-    hsla[1] -= Math.min(hsla[1], 0.28);
-    hsla[2] -= Math.min(hsla[2], 0.15);
-    var gradient = context.createLinearGradient(0, 0, 0, this._getBarHeight());
-    gradient.addColorStop(0, color);
-    gradient.addColorStop(1, /** @type {string} */ (parsedColor.asString(null)));
-    this._colorsForResourceTypeCache.set(color, gradient);
-    return gradient;
-  }
-
-  /**
-   * @param {!SDK.NetworkRequest} request
    * @param {number} borderOffset
    * @return {!{start: number, mid: number, end: number}}
    */
@@ -459,19 +442,19 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     y += Math.floor(this._rowHeight / 2 - height / 2 + borderWidth) - borderWidth / 2;
 
     context.translate(0, y);
-    context.fillStyle = this._colorForResourceType(context, request);
-    context.strokeStyle = this._borderColorForResourceType(request);
+    var fillColor = this._colorForResourceType(request);
+    context.strokeStyle = this._borderColorForBaseColor(fillColor);
     context.lineWidth = borderWidth;
 
     context.beginPath();
-    context.globalAlpha = 0.5;
+    context.fillStyle = this._waitingColorForBaseColor(fillColor);
     context.rect(ranges.start, 0, ranges.mid - ranges.start, height - borderWidth);
     context.fill();
     context.stroke();
 
     var barWidth = Math.max(2, ranges.end - ranges.mid);
     context.beginPath();
-    context.globalAlpha = 1;
+    context.fillStyle = fillColor;
     context.rect(ranges.mid, 0, barWidth, height - borderWidth);
     context.fill();
     context.stroke();
@@ -525,8 +508,8 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     var height = this._getBarHeight();
     var leftLabelWidth = context.measureText(leftText).width;
     var rightLabelWidth = context.measureText(rightText).width;
-    context.fillStyle = UI.themeSupport.patchColor('#444', UI.ThemeSupport.ColorUsage.Foreground);
-    context.strokeStyle = UI.themeSupport.patchColor('#444', UI.ThemeSupport.ColorUsage.Foreground);
+    context.fillStyle = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
+    context.strokeStyle = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
     if (leftLabelWidth < midX - startX) {
       var midBarX = startX + (midX - startX) / 2 - leftLabelWidth / 2;
       context.fillText(leftText, midBarX, this._fontSize);

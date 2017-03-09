@@ -59,6 +59,9 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
     this.element.addEventListener('mousemove', this._onMouseMove.bind(this), true);
     this.element.addEventListener('mouseleave', event => this._setHoveredNode(null, false), true);
+
+    /** @type {!Array<!Network.NetworkWaterfallColumn._TextLayer>} */
+    this._textLayers = [];
   }
 
   /**
@@ -255,6 +258,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._startTime = this._calculator.minimumBoundary();
     this._endTime = this._calculator.maximumBoundary();
     this._resetCanvas();
+    this._textLayers = [];
     this._draw();
   }
 
@@ -354,6 +358,13 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
           this._drawSimplifiedBars(context, drawNode, rowOffset - this._scrollTop);
       }
     }
+
+    context.save();
+    context.fillStyle = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
+    for (var textData of this._textLayers)
+      context.fillText(textData.text, textData.x, textData.y);
+    context.restore();
+
     this._drawEventDividers(context);
     context.restore();
 
@@ -465,7 +476,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     if (node.hovered()) {
       labels = this._calculator.computeBarGraphLabels(request);
       this._drawSimplifiedBarDetails(
-          context, labels.left, labels.right, ranges.start, ranges.mid, ranges.mid + barWidth + borderOffset);
+          context, labels.left, labels.right, ranges.start, ranges.mid, ranges.mid + barWidth + borderOffset, y);
     }
 
     if (!this._calculator.startAtZero) {
@@ -500,8 +511,9 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    * @param {number} startX
    * @param {number} midX
    * @param {number} endX
+   * @param {number} currentY
    */
-  _drawSimplifiedBarDetails(context, leftText, rightText, startX, midX, endX) {
+  _drawSimplifiedBarDetails(context, leftText, rightText, startX, midX, endX, currentY) {
     /** @const */
     var barDotLineLength = 10;
 
@@ -513,12 +525,13 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     context.strokeStyle = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
     if (leftLabelWidth < midX - startX) {
       var midBarX = startX + (midX - startX) / 2 - leftLabelWidth / 2;
-      context.fillText(leftText, midBarX, this._fontSize);
+      this._textLayers.push({text: leftText, x: midBarX, y: currentY + this._fontSize});
     } else if (barDotLineLength + leftLabelWidth + this._leftPadding < startX) {
+      this._textLayers.push(
+          {text: leftText, x: startX - leftLabelWidth - barDotLineLength - 1, y: currentY + this._fontSize});
       context.beginPath();
       context.arc(startX, Math.floor(height / 2), 2, 0, 2 * Math.PI);
       context.fill();
-      context.fillText(leftText, startX - leftLabelWidth - barDotLineLength - 1, this._fontSize);
       context.beginPath();
       context.lineWidth = 1;
       context.moveTo(startX - barDotLineLength, Math.floor(height / 2));
@@ -528,12 +541,12 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
     if (rightLabelWidth < endX - midX) {
       var midBarX = midX + (endX - midX) / 2 - rightLabelWidth / 2;
-      context.fillText(rightText, midBarX, this._fontSize);
+      this._textLayers.push({text: rightText, x: midBarX, y: currentY + this._fontSize});
     } else if (endX + barDotLineLength + rightLabelWidth < this._offsetWidth - this._leftPadding) {
+      this._textLayers.push({text: rightText, x: endX + barDotLineLength + 1, y: currentY + this._fontSize});
       context.beginPath();
       context.arc(endX, Math.floor(height / 2), 2, 0, 2 * Math.PI);
       context.fill();
-      context.fillText(rightText, endX + barDotLineLength + 1, this._fontSize);
       context.beginPath();
       context.lineWidth = 1;
       context.moveTo(endX, Math.floor(height / 2));
@@ -638,3 +651,6 @@ Network.NetworkWaterfallColumn._colorsForResourceType = {
   xhr: 'hsl(53, 100%, 80%)',
   other: 'hsl(0, 0%, 95%)'
 };
+
+/** @typedef {!{x: number, y: number, text: string}} */
+Network.NetworkWaterfallColumn._TextLayer;

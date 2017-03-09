@@ -7,9 +7,9 @@ Coverage.RangeUseCount;
 
 /** @typedef {{
  *    contentProvider: !Common.ContentProvider,
- *    size: (number|undefined),
- *    unusedSize: (number|undefined),
- *    usedSize: (number|undefined),
+ *    size: number,
+ *    unusedSize: number,
+ *    usedSize: number,
  *    type: !Coverage.CoverageType,
  *    lineOffset: number,
  *    columnOffset: number,
@@ -99,10 +99,10 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Array<!Protocol.Profiler.ScriptCoverage>} scriptsCoverage
-   * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
+   * @return {!Array<!Coverage.CoverageInfo>}
    */
-  static async _processJSCoverage(debuggerModel, scriptsCoverage) {
-    var promises = [];
+  static _processJSCoverage(debuggerModel, scriptsCoverage) {
+    var result = [];
     for (var entry of scriptsCoverage) {
       var script = debuggerModel.scriptForId(entry.scriptId);
       if (!script)
@@ -112,10 +112,10 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
         for (var range of func.ranges)
           ranges.push({startOffset: range.startOffset, endOffset: range.endOffset, count: range.count});
       }
-      promises.push(
-          Coverage.CoverageModel._coverageInfoForText(script, script.lineOffset, script.columnOffset, ranges));
+      result.push(Coverage.CoverageModel._buildCoverageInfo(
+          script, script.contentLength, script.lineOffset, script.columnOffset, ranges));
     }
-    return Promise.all(promises);
+    return result;
   }
 
   /**
@@ -133,9 +133,9 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
   /**
    * @param {!SDK.CSSModel} cssModel
    * @param {!Array<!Protocol.CSS.RuleUsage>} ruleUsageList
-   * @return {!Promise<!Array<!Coverage.CoverageInfo>>}
+   * @return {!Array<!Coverage.CoverageInfo>}
    */
-  static async _processCSSCoverage(cssModel, ruleUsageList) {
+  static _processCSSCoverage(cssModel, ruleUsageList) {
     /** @type {!Map<?SDK.CSSStyleSheetHeader, !Array<!Coverage.RangeUseCount>>} */
     var rulesByStyleSheet = new Map();
     for (var rule of ruleUsageList) {
@@ -147,20 +147,22 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       }
       ranges.push({startOffset: rule.startOffset, endOffset: rule.endOffset, count: Number(rule.used)});
     }
-    return Promise.all(Array.from(
+    return Array.from(
         rulesByStyleSheet.entries(),
-        entry =>
-            Coverage.CoverageModel._coverageInfoForText(entry[0], entry[0].startLine, entry[0].startColumn, entry[1])));
+        entry => Coverage.CoverageModel._buildCoverageInfo(
+            entry[0], entry[0].contentLength, entry[0].startLine, entry[0].startColumn, entry[1]));
   }
 
   /**
    * @param {!Common.ContentProvider} contentProvider
+   * @param {number} contentLength
    * @param {number} startLine
    * @param {number} startColumn
    * @param {!Array<!Coverage.RangeUseCount>} ranges
-   * @return {!Promise<?Coverage.CoverageInfo>}
+   * @return {!Coverage.CoverageInfo}
    */
-  static async _coverageInfoForText(contentProvider, startLine, startColumn, ranges) {
+  static _buildCoverageInfo(contentProvider, contentLength, startLine, startColumn, ranges) {
+    /** @type Coverage.CoverageType */
     var coverageType;
     var url = contentProvider.contentURL();
     if (contentProvider.contentType().isScript())
@@ -197,16 +199,11 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
         unusedSize += entry.ownSize;
     }
 
-    // FIXME: get rid of this when we get the size upfront.
-    var content = await contentProvider.requestContent();
-    if (typeof content !== 'string')
-      return null;
-
     var coverageInfo = {
       contentProvider: contentProvider,
       ranges: ranges,
       type: coverageType,
-      size: content.length,
+      size: contentLength,
       usedSize: usedSize,
       unusedSize: unusedSize,
       lineOffset: startLine,

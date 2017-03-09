@@ -458,25 +458,15 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    * @param {string} hash
    * @param {*|undefined} executionContextAuxData
    * @param {boolean} isLiveEdit
-   * @param {string=} sourceMapURL
-   * @param {boolean=} hasSourceURL
-   * @param {boolean=} hasSyntaxError
+   * @param {string|undefined} sourceMapURL
+   * @param {boolean} hasSourceURL
+   * @param {boolean} hasSyntaxError
+   * @param {number} length
    * @return {!SDK.Script}
    */
   _parsedScriptSource(
-      scriptId,
-      sourceURL,
-      startLine,
-      startColumn,
-      endLine,
-      endColumn,
-      executionContextId,
-      hash,
-      executionContextAuxData,
-      isLiveEdit,
-      sourceMapURL,
-      hasSourceURL,
-      hasSyntaxError) {
+      scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
+      executionContextAuxData, isLiveEdit, sourceMapURL, hasSourceURL, hasSyntaxError, length) {
     var isContentScript = false;
     if (executionContextAuxData && ('isDefault' in executionContextAuxData))
       isContentScript = !executionContextAuxData['isDefault'];
@@ -491,7 +481,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     }
     var script = new SDK.Script(
         this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId,
-        this._internString(hash), isContentScript, isLiveEdit, sourceMapURL, hasSourceURL);
+        this._internString(hash), isContentScript, isLiveEdit, sourceMapURL, hasSourceURL, length);
     this._registerScript(script);
     if (!hasSyntaxError)
       this.dispatchEventToListeners(SDK.DebuggerModel.Events.ParsedScriptSource, script);
@@ -933,23 +923,15 @@ SDK.DebuggerDispatcher = class {
    * @param {boolean=} isLiveEdit
    * @param {string=} sourceMapURL
    * @param {boolean=} hasSourceURL
+   * @param {boolean=} isModule
+   * @param {number=} length
    */
   scriptParsed(
-      scriptId,
-      sourceURL,
-      startLine,
-      startColumn,
-      endLine,
-      endColumn,
-      executionContextId,
-      hash,
-      executionContextAuxData,
-      isLiveEdit,
-      sourceMapURL,
-      hasSourceURL) {
+      scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
+      executionContextAuxData, isLiveEdit, sourceMapURL, hasSourceURL, isModule, length) {
     this._debuggerModel._parsedScriptSource(
         scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
-        executionContextAuxData, !!isLiveEdit, sourceMapURL, hasSourceURL, false);
+        executionContextAuxData, !!isLiveEdit, sourceMapURL, !!hasSourceURL, false, length || 0);
   }
 
   /**
@@ -965,22 +947,15 @@ SDK.DebuggerDispatcher = class {
    * @param {*=} executionContextAuxData
    * @param {string=} sourceMapURL
    * @param {boolean=} hasSourceURL
+   * @param {boolean=} isModule
+   * @param {number=} length
    */
   scriptFailedToParse(
-      scriptId,
-      sourceURL,
-      startLine,
-      startColumn,
-      endLine,
-      endColumn,
-      executionContextId,
-      hash,
-      executionContextAuxData,
-      sourceMapURL,
-      hasSourceURL) {
+      scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
+      executionContextAuxData, sourceMapURL, hasSourceURL, isModule, length) {
     this._debuggerModel._parsedScriptSource(
         scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
-        executionContextAuxData, false, sourceMapURL, hasSourceURL, true);
+        executionContextAuxData, false, sourceMapURL, !!hasSourceURL, true, length || 0);
   }
 
   /**

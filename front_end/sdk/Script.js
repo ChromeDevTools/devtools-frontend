@@ -40,23 +40,13 @@ SDK.Script = class {
    * @param {string} hash
    * @param {boolean} isContentScript
    * @param {boolean} isLiveEdit
-   * @param {string=} sourceMapURL
-   * @param {boolean=} hasSourceURL
+   * @param {string|undefined} sourceMapURL
+   * @param {boolean} hasSourceURL
+   * @param {number} length
    */
   constructor(
-      debuggerModel,
-      scriptId,
-      sourceURL,
-      startLine,
-      startColumn,
-      endLine,
-      endColumn,
-      executionContextId,
-      hash,
-      isContentScript,
-      isLiveEdit,
-      sourceMapURL,
-      hasSourceURL) {
+      debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
+      isContentScript, isLiveEdit, sourceMapURL, hasSourceURL, length) {
     this.debuggerModel = debuggerModel;
     this.scriptId = scriptId;
     this.sourceURL = sourceURL;
@@ -71,6 +61,7 @@ SDK.Script = class {
     this._isLiveEdit = isLiveEdit;
     this.sourceMapURL = sourceMapURL;
     this.hasSourceURL = hasSourceURL;
+    this.contentLength = length;
     this._originalContentProvider = null;
     this._originalSource = null;
   }

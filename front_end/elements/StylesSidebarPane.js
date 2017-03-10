@@ -56,6 +56,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     this._sectionBlocks = [];
     Elements.StylesSidebarPane._instance = this;
     UI.context.addFlavorChangeListener(SDK.DOMNode, this.forceUpdate, this);
+    this.element.addEventListener('copy', this._clipboardCopy.bind(this));
   }
 
   /**
@@ -492,6 +493,13 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     for (var block of this._sectionBlocks)
       sections = sections.concat(block.sections);
     return sections;
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _clipboardCopy(event) {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleCopied);
   }
 };
 

@@ -88,6 +88,8 @@ Host.UserMetrics.Action = {
   CpuProfileNodeExcluded: 23,
   SelectFileFromFilePicker: 24,
   SelectCommandFromCommandMenu: 25,
+  ChangeInspectedNodeInElementsPanel: 26,
+  StyleRuleCopied: 27,
 };
 
 Host.UserMetrics._PanelCodes = {

@@ -60,6 +60,8 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this.element.addEventListener('mousemove', this._onMouseMove.bind(this), true);
     this.element.addEventListener('mouseleave', event => this._setHoveredNode(null, false), true);
 
+    /** @type {!Map<!Network.NetworkWaterfallColumn._LayerStyles, !Path2D>} */
+    this._pathForStyle = new Map();
     /** @type {!Array<!Network.NetworkWaterfallColumn._TextLayer>} */
     this._textLayers = [];
   }
@@ -258,6 +260,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._startTime = this._calculator.minimumBoundary();
     this._endTime = this._calculator.maximumBoundary();
     this._resetCanvas();
+    this._pathForStyle.clear();
     this._textLayers = [];
     this._draw();
   }
@@ -353,11 +356,12 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       drawNodes.push(node);
       for (var drawNode of drawNodes) {
         if (useTimingBars)
-          this._drawTimingBars(context, drawNode, rowOffset - this._scrollTop);
+          this._buildTimingBarLayers(drawNode, rowOffset - this._scrollTop);
         else
-          this._drawSimplifiedBars(context, drawNode, rowOffset - this._scrollTop);
+          this._buildSimplifiedBarLayers(context, drawNode, rowOffset - this._scrollTop);
       }
     }
+    this._drawLayers(context);
 
     context.save();
     context.fillStyle = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
@@ -378,6 +382,27 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
   /**
    * @param {!CanvasRenderingContext2D} context
    */
+  _drawLayers(context) {
+    for (var style of this._pathForStyle.keys()) {
+      var path = /** @type {!Path2D} */ (this._pathForStyle.get(style));
+      context.save();
+      context.beginPath();
+      if (style.lineWidth) {
+        context.lineWidth = style.lineWidth;
+        context.strokeStyle = style.borderColor;
+        context.stroke(path);
+      }
+      if (style.fillStyle) {
+        context.fillStyle = style.fillStyle;
+        context.fill(path);
+      }
+      context.restore();
+    }
+  }
+
+  /**
+   * @param {!CanvasRenderingContext2D} context
+   */
   _drawEventDividers(context) {
     context.save();
     context.lineWidth = 1;
@@ -392,13 +417,6 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       context.stroke();
     }
     context.restore();
-  }
-
-  /**
-   * @return {number}
-   */
-  _waterfallDuration() {
-    return this._calculator.maximumBoundary() - this._calculator.minimumBoundary();
   }
 
   /**
@@ -441,60 +459,63 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    * @param {!Network.NetworkNode} node
    * @param {number} y
    */
-  _drawSimplifiedBars(context, node, y) {
+  _buildSimplifiedBarLayers(context, node, y) {
     var request = node.request();
     if (!request)
       return;
     const borderWidth = 1;
     var borderOffset = borderWidth % 2 === 0 ? 0 : 0.5;
 
-    context.save();
     var ranges = this._getSimplifiedBarRange(request, borderOffset);
     var height = this._getBarHeight();
     y += Math.floor(this._rowHeight / 2 - height / 2 + borderWidth) - borderWidth / 2;
 
-    context.translate(0, y);
     var fillColor = this._colorForResourceType(request);
-    context.strokeStyle = this._borderColorForBaseColor(fillColor);
-    context.lineWidth = borderWidth;
-
-    context.beginPath();
-    context.fillStyle = this._waitingColorForBaseColor(fillColor);
-    context.rect(ranges.start, 0, ranges.mid - ranges.start, height - borderWidth);
-    context.fill();
-    context.stroke();
+    var waitingPath = new Path2D();
+    waitingPath.rect(ranges.start, y, ranges.mid - ranges.start, height - borderWidth);
+    /** @type {!Network.NetworkWaterfallColumn._LayerStyles} */
+    var waitingStyle = {
+      fillStyle: this._waitingColorForBaseColor(fillColor),
+      lineWidth: borderWidth,
+      borderColor: this._borderColorForBaseColor(fillColor)
+    };
+    this._pathForStyle.set(waitingStyle, waitingPath);
 
     var barWidth = Math.max(2, ranges.end - ranges.mid);
-    context.beginPath();
-    context.fillStyle = fillColor;
-    context.rect(ranges.mid, 0, barWidth, height - borderWidth);
-    context.fill();
-    context.stroke();
+    var downloadingPath = new Path2D();
+    downloadingPath.rect(ranges.mid, y, barWidth, height - borderWidth);
+    /** @type {!Network.NetworkWaterfallColumn._LayerStyles} */
+    var downloadingStyle = {
+      fillStyle: fillColor,
+      lineWidth: borderWidth,
+      borderColor: this._borderColorForBaseColor(fillColor)
+    };
+    this._pathForStyle.set(downloadingStyle, downloadingPath);
 
     /** @type {?{left: string, right: string, tooltip: (string|undefined)}} */
     var labels = null;
     if (node.hovered()) {
       labels = this._calculator.computeBarGraphLabels(request);
       const barDotLineLength = 10;
-      context.save();
       var leftLabelWidth = context.measureText(labels.left).width;
       var rightLabelWidth = context.measureText(labels.right).width;
-      context.fillStyle = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
-      context.strokeStyle = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
+
+      var hoverLinePath = new Path2D();
+      var hoverLineColor = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
+      /** @type {!Network.NetworkWaterfallColumn._LayerStyles} */
+      var hoverLineStyles = {fillStyle: hoverLineColor, lineWidth: 1, borderColor: hoverLineColor};
+      this._pathForStyle.set(hoverLineStyles, hoverLinePath);
+
       if (leftLabelWidth < ranges.mid - ranges.start) {
         var midBarX = ranges.start + (ranges.mid - ranges.start - leftLabelWidth) / 2;
         this._textLayers.push({text: labels.left, x: midBarX, y: y + this._fontSize});
       } else if (barDotLineLength + leftLabelWidth + this._leftPadding < ranges.start) {
         this._textLayers.push(
             {text: labels.left, x: ranges.start - leftLabelWidth - barDotLineLength - 1, y: y + this._fontSize});
-        context.beginPath();
-        context.arc(ranges.start, Math.floor(height / 2), 2, 0, 2 * Math.PI);
-        context.fill();
-        context.beginPath();
-        context.lineWidth = 1;
-        context.moveTo(ranges.start - barDotLineLength, Math.floor(height / 2));
-        context.lineTo(ranges.start, Math.floor(height / 2));
-        context.stroke();
+        hoverLinePath.moveTo(ranges.start - barDotLineLength, y + Math.floor(height / 2));
+        hoverLinePath.arc(ranges.start, y + Math.floor(height / 2), 2, 0, 2 * Math.PI);
+        hoverLinePath.moveTo(ranges.start - barDotLineLength, y + Math.floor(height / 2));
+        hoverLinePath.lineTo(ranges.start, y + Math.floor(height / 2));
       }
 
       var endX = ranges.mid + barWidth + borderOffset;
@@ -503,16 +524,11 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
         this._textLayers.push({text: labels.right, x: midBarX, y: y + this._fontSize});
       } else if (endX + barDotLineLength + rightLabelWidth < this._offsetWidth - this._leftPadding) {
         this._textLayers.push({text: labels.right, x: endX + barDotLineLength + 1, y: y + this._fontSize});
-        context.beginPath();
-        context.arc(endX, Math.floor(height / 2), 2, 0, 2 * Math.PI);
-        context.fill();
-        context.beginPath();
-        context.lineWidth = 1;
-        context.moveTo(endX, Math.floor(height / 2));
-        context.lineTo(endX + barDotLineLength, Math.floor(height / 2));
-        context.stroke();
+        hoverLinePath.moveTo(endX, y + Math.floor(height / 2));
+        hoverLinePath.arc(endX, y + Math.floor(height / 2), 2, 0, 2 * Math.PI);
+        hoverLinePath.moveTo(endX, y + Math.floor(height / 2));
+        hoverLinePath.lineTo(endX + barDotLineLength, y + Math.floor(height / 2));
       }
-      context.restore();
     }
 
     if (!this._calculator.startAtZero) {
@@ -524,38 +540,36 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       var textOffset = (labels && !leftTextPlacedInBar) ? leftLabelWidth + wiskerTextPadding : 0;
       var queueingStart = this._timeToPosition(queueingRange.start);
       if (ranges.start - textOffset > queueingStart) {
-        context.beginPath();
-        context.globalAlpha = 1;
-        context.strokeStyle = UI.themeSupport.patchColor('#a5a5a5', UI.ThemeSupport.ColorUsage.Foreground);
-        context.moveTo(queueingStart, Math.floor(height / 2));
-        context.lineTo(ranges.start - textOffset, Math.floor(height / 2));
+        var wiskerPath = new Path2D();
+        var wiskerColor = UI.themeSupport.patchColor('#a5a5a5', UI.ThemeSupport.ColorUsage.Foreground);
+        /** @type {!Network.NetworkWaterfallColumn._LayerStyles} */
+        var wiskerStyles = {lineWidth: 1, borderColor: wiskerColor};
+        this._pathForStyle.set(wiskerStyles, wiskerPath);
 
+        wiskerPath.moveTo(queueingStart, y + Math.floor(height / 2));
+        wiskerPath.lineTo(ranges.start - textOffset, y + Math.floor(height / 2));
+
+        // TODO(allada) This needs to be floored.
         const wiskerHeight = height / 2;
-        context.moveTo(queueingStart + borderOffset, wiskerHeight / 2);
-        context.lineTo(queueingStart + borderOffset, height - wiskerHeight / 2 - 1);
-        context.stroke();
+        wiskerPath.moveTo(queueingStart + borderOffset, y + wiskerHeight / 2);
+        wiskerPath.lineTo(queueingStart + borderOffset, y + height - wiskerHeight / 2 - 1);
       }
     }
-
-    context.restore();
   }
 
   /**
-   * @param {!CanvasRenderingContext2D} context
    * @param {!Network.NetworkNode} node
    * @param {number} y
    */
-  _drawTimingBars(context, node, y) {
+  _buildTimingBarLayers(node, y) {
     var request = node.request();
     if (!request)
       return;
-    context.save();
     var ranges = Network.RequestTimingView.calculateRequestTimeRanges(request, 0);
     for (var range of ranges) {
       if (range.name === Network.RequestTimeRangeNames.Total || range.name === Network.RequestTimeRangeNames.Sending ||
           range.end - range.start === 0)
         continue;
-      context.beginPath();
       var lineWidth = 0;
       var color = this._colorForType(range.name);
       var borderColor = color;
@@ -565,20 +579,17 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       }
       if (range.name === Network.RequestTimeRangeNames.Receiving)
         lineWidth = 2;
-      context.fillStyle = color;
+
+      var path = new Path2D();
+      /** @type {!Network.NetworkWaterfallColumn._LayerStyles} */
+      var style = {fillStyle: color, lineWidth: lineWidth, borderColor: borderColor};
+      this._pathForStyle.set(style, path);
       var height = this._getBarHeight(range.name);
       var middleBarY = y + Math.floor(this._rowHeight / 2 - height / 2) + lineWidth / 2;
       var start = this._timeToPosition(range.start);
       var end = this._timeToPosition(range.end);
-      context.rect(start, middleBarY, end - start, height - lineWidth);
-      if (lineWidth) {
-        context.lineWidth = lineWidth;
-        context.strokeStyle = borderColor;
-        context.stroke();
-      }
-      context.fill();
+      path.rect(start, middleBarY, end - start, height - lineWidth);
     }
-    context.restore();
   }
 
   /**
@@ -635,6 +646,9 @@ Network.NetworkWaterfallColumn._colorsForResourceType = {
   xhr: 'hsl(53, 100%, 80%)',
   other: 'hsl(0, 0%, 95%)'
 };
+
+/** @typedef {!{fillStyle: (string|undefined), lineWidth: (number|undefined), borderColor: (string|undefined)}} */
+Network.NetworkWaterfallColumn._LayerStyles;
 
 /** @typedef {!{x: number, y: number, text: string}} */
 Network.NetworkWaterfallColumn._TextLayer;

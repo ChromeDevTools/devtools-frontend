@@ -305,17 +305,11 @@ UI.GlassPane = class {
       this._arrowElement.classList.add('arrow-none');
     }
 
-    if (this._sizeBehavior === UI.GlassPane.SizeBehavior.SetMaxSize)
-      this.contentElement.style.maxWidth = width + 'px';
-    else
-      this.contentElement.style.width = width + 'px';
-
-    if (this._sizeBehavior === UI.GlassPane.SizeBehavior.SetMaxSize ||
-        this._sizeBehavior === UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight)
+    this.contentElement.style.width = width + 'px';
+    if (this._sizeBehavior === UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight)
       this.contentElement.style.maxHeight = height + 'px';
     else
       this.contentElement.style.height = height + 'px';
-
 
     this.contentElement.positionAt(positionX, positionY, container);
     this._widget.doResize();
@@ -371,7 +365,6 @@ UI.GlassPane.AnchorBehavior = {
  */
 UI.GlassPane.SizeBehavior = {
   SetExactSize: Symbol('SetExactSize'),
-  SetMaxSize: Symbol('SetMaxSize'),
   SetExactWidthMaxHeight: Symbol('SetExactWidthMaxHeight'),
   MeasureContent: Symbol('MeasureContent')
 };

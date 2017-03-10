@@ -159,7 +159,7 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
           popoverContentElement.appendChild(section.element);
         }
         popover.setMaxContentSize(new UI.Size(300, 250));
-        popover.setSizeBehavior(UI.GlassPane.SizeBehavior.SetMaxSize);
+        popover.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactSize);
         popover.showForAnchor(popoverContentElement, anchorElement);
       }
     }

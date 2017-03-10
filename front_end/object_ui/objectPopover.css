@@ -8,6 +8,7 @@
     display: block;
     position: relative;
     overflow: hidden;
+    flex: 1 1 auto;
 }
 
 .object-popover-title {

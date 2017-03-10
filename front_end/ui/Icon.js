@@ -44,8 +44,7 @@ UI.Icon = class extends HTMLSpanElement {
    */
   setIconType(iconType) {
     if (this._descriptor) {
-      this.style.removeProperty('-webkit-mask-position');
-      this.style.removeProperty('background-position');
+      this.style.removeProperty('--spritesheet-position');
       this.style.removeProperty('width');
       this.style.removeProperty('height');
       this._toggleClasses(false);
@@ -56,8 +55,7 @@ UI.Icon = class extends HTMLSpanElement {
     if (descriptor) {
       this._iconType = iconType;
       this._descriptor = descriptor;
-      this.style.setProperty('-webkit-mask-position', this._propertyValue());
-      this.style.setProperty('background-position', this._propertyValue());
+      this.style.setProperty('--spritesheet-position', this._propertyValue());
       this.style.setProperty('width', this._descriptor.width + 'px');
       this.style.setProperty('height', this._descriptor.height + 'px');
       this._toggleClasses(true);

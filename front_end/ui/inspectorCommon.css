@@ -327,8 +327,13 @@ label[is=dt-icon-label] {
     flex-shrink: 0;
 }
 
-.icon-mask {
+[is=ui-icon].icon-mask {
     background-color: rgb(110, 110, 110);
+    -webkit-mask-position: var(--spritesheet-position);
+}
+
+[is=ui-icon]:not(.icon-mask) {
+    background-position: var(--spritesheet-position);
 }
 
 .spritesheet-smallicons:not(.icon-mask) {
@@ -369,26 +374,20 @@ label[is=dt-icon-label] {
 .force-white-icons [is=ui-icon].spritesheet-smallicons, [is=ui-icon].force-white-icons.spritesheet-smallicons {
     -webkit-mask-image: -webkit-image-set(url(Images/smallIcons.png) 1x, url(Images/smallIcons_2x.png) 2x);
     -webkit-mask-size: 190px 30px;
-    background-image: unset;
-    background-size: unset;
-    background: unset;
-    background-color: white;
+    -webkit-mask-position: var(--spritesheet-position);
+    background: white !important;
 }
 
 .force-white-icons [is=ui-icon].spritesheet-largeicons, [is=ui-icon].force-white-icons.spritesheet-largeicons {
     -webkit-mask-image: -webkit-image-set(url(Images/toolbarButtonGlyphs.png) 1x, url(Images/toolbarButtonGlyphs_2x.png) 2x);
     -webkit-mask-size: 352px 168px;
-    background-image: unset;
-    background-size: unset;
-    background: unset;
-    background-color: white;
+    -webkit-mask-position: var(--spritesheet-position);
+    background: white !important;
 }
 
 .force-white-icons [is=ui-icon].spritesheet-resourceicons, [is=ui-icon].force-white-icons.spritesheet-resourceicons {
     -webkit-mask-image: -webkit-image-set(url(Images/resourceGlyphs.png) 1x, url(Images/resourceGlyphs_2x.png) 2x);
     -webkit-mask-size: 140px 20px;
-    background-image: unset;
-    background-size: unset;
-    background: unset;
-    background-color: white;
+    -webkit-mask-position: var(--spritesheet-position);
+    background: white !important;
 }

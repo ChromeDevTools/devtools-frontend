@@ -475,41 +475,34 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     var labels = null;
     if (node.hovered()) {
       labels = this._calculator.computeBarGraphLabels(request);
-      // TODO(allada) This will be inlined in an immidate next patch.
-      var leftText = labels.left;
-      var rightText = labels.right;
-      var startX = ranges.start;
-      var midX = ranges.mid;
-      var endX = ranges.mid + barWidth + borderOffset;
-      var currentY = y;
-
-      var barDotLineLength = 10;
+      const barDotLineLength = 10;
       context.save();
-      var leftLabelWidth = context.measureText(leftText).width;
-      var rightLabelWidth = context.measureText(rightText).width;
+      var leftLabelWidth = context.measureText(labels.left).width;
+      var rightLabelWidth = context.measureText(labels.right).width;
       context.fillStyle = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
       context.strokeStyle = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
-      if (leftLabelWidth < midX - startX) {
-        var midBarX = startX + (midX - startX) / 2 - leftLabelWidth / 2;
-        this._textLayers.push({text: leftText, x: midBarX, y: currentY + this._fontSize});
-      } else if (barDotLineLength + leftLabelWidth + this._leftPadding < startX) {
+      if (leftLabelWidth < ranges.mid - ranges.start) {
+        var midBarX = ranges.start + (ranges.mid - ranges.start - leftLabelWidth) / 2;
+        this._textLayers.push({text: labels.left, x: midBarX, y: y + this._fontSize});
+      } else if (barDotLineLength + leftLabelWidth + this._leftPadding < ranges.start) {
         this._textLayers.push(
-            {text: leftText, x: startX - leftLabelWidth - barDotLineLength - 1, y: currentY + this._fontSize});
+            {text: labels.left, x: ranges.start - leftLabelWidth - barDotLineLength - 1, y: y + this._fontSize});
         context.beginPath();
-        context.arc(startX, Math.floor(height / 2), 2, 0, 2 * Math.PI);
+        context.arc(ranges.start, Math.floor(height / 2), 2, 0, 2 * Math.PI);
         context.fill();
         context.beginPath();
         context.lineWidth = 1;
-        context.moveTo(startX - barDotLineLength, Math.floor(height / 2));
-        context.lineTo(startX, Math.floor(height / 2));
+        context.moveTo(ranges.start - barDotLineLength, Math.floor(height / 2));
+        context.lineTo(ranges.start, Math.floor(height / 2));
         context.stroke();
       }
 
-      if (rightLabelWidth < endX - midX) {
-        var midBarX = midX + (endX - midX) / 2 - rightLabelWidth / 2;
-        this._textLayers.push({text: rightText, x: midBarX, y: currentY + this._fontSize});
+      var endX = ranges.mid + barWidth + borderOffset;
+      if (rightLabelWidth < endX - ranges.mid) {
+        var midBarX = ranges.mid + (endX - ranges.mid - rightLabelWidth) / 2;
+        this._textLayers.push({text: labels.right, x: midBarX, y: y + this._fontSize});
       } else if (endX + barDotLineLength + rightLabelWidth < this._offsetWidth - this._leftPadding) {
-        this._textLayers.push({text: rightText, x: endX + barDotLineLength + 1, y: currentY + this._fontSize});
+        this._textLayers.push({text: labels.right, x: endX + barDotLineLength + 1, y: y + this._fontSize});
         context.beginPath();
         context.arc(endX, Math.floor(height / 2), 2, 0, 2 * Math.PI);
         context.fill();

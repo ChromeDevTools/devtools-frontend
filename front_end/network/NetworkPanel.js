@@ -110,6 +110,28 @@ Network.NetworkPanel = class extends UI.Panel {
     this._networkLogView.addEventListener(Network.NetworkLogView.Events.UpdateRequest, this._onUpdateRequest, this);
 
     Components.DataSaverInfobar.maybeShowInPanel(this);
+
+    var blockedURLsSetting = Common.moduleSetting('networkBlockedURLs');
+    blockedURLsSetting.addChangeListener(updateIconVisibility.bind(this));
+    var requestBlockingEnabledSetting = Common.moduleSetting('requestBlockingEnabled');
+    requestBlockingEnabledSetting.addChangeListener(updateIconVisibility.bind(this));
+
+    updateIconVisibility.call(this);
+
+    /**
+     * @this {Network.NetworkPanel}
+     */
+    function updateIconVisibility() {
+      var icon = null;
+      if (SDK.multitargetNetworkManager.isThrottling()) {
+        icon = UI.Icon.create('smallicon-warning');
+        icon.title = Common.UIString('Network throttling is enabled');
+      } else if (requestBlockingEnabledSetting.get() && blockedURLsSetting.get().length) {
+        icon = UI.Icon.create('smallicon-warning');
+        icon.title = Common.UIString('Requests may be blocked');
+      }
+      UI.inspectorView.setPanelIcon(this.name, icon);
+    }
   }
 
   /**

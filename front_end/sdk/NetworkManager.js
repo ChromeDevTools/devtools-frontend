@@ -684,18 +684,18 @@ SDK.NetworkDispatcher = class {
 SDK.MultitargetNetworkManager = class extends Common.Object {
   constructor() {
     super();
-
-    /** @type {!Set<string>} */
-    this._blockedURLs = new Set();
-    this._blockedSetting = Common.moduleSetting('networkBlockedURLs');
-    this._blockedSetting.addChangeListener(this._updateBlockedURLs, this);
-    this._updateBlockedURLs();
-
     this._userAgentOverride = '';
     /** @type {!Set<!Protocol.NetworkAgent>} */
     this._agents = new Set();
     /** @type {!SDK.NetworkManager.Conditions} */
     this._networkConditions = SDK.NetworkManager.NoThrottlingConditions;
+
+    this._agentsHaveBlockedURLs = false;
+    this._blockedEnabledSetting = Common.moduleSetting('requestBlockingEnabled');
+    this._blockedEnabledSetting.addChangeListener(this._updateBlockedURLs, this);
+    this._blockedURLsSetting = Common.moduleSetting('networkBlockedURLs');
+    this._blockedURLsSetting.addChangeListener(this._updateBlockedURLs, this);
+    this._updateBlockedURLs();
 
     SDK.targetManager.observeTargets(this, SDK.Target.Capability.Network);
   }
@@ -723,8 +723,8 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
       networkAgent.setExtraHTTPHeaders(this._extraHeaders);
     if (this._currentUserAgent())
       networkAgent.setUserAgentOverride(this._currentUserAgent());
-    for (var url of this._blockedURLs)
-      networkAgent.addBlockedURL(url);
+    if (this._blockedEnabledSetting.get())
+      networkAgent.setBlockedURLs(this._blockedURLsSetting.get());
     this._agents.add(networkAgent);
     if (this.isThrottling())
       this._updateNetworkConditions(networkAgent);
@@ -835,33 +835,14 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
   }
 
   _updateBlockedURLs() {
-    var blocked = this._blockedSetting.get();
-    for (var url of blocked) {
-      if (!this._blockedURLs.has(url))
-        this._addBlockedURL(url);
-    }
-    for (var url of this._blockedURLs) {
-      if (blocked.indexOf(url) === -1)
-        this._removeBlockedURL(url);
-    }
-  }
-
-  /**
-   * @param {string} url
-   */
-  _addBlockedURL(url) {
-    this._blockedURLs.add(url);
+    var urls = /** @type {!Array<string>} */ ([]);
+    if (this._blockedEnabledSetting.get())
+      urls = this._blockedURLsSetting.get();
+    if (!urls.length && !this._agentsHaveBlockedURLs)
+      return;
+    this._agentsHaveBlockedURLs = !!urls.length;
     for (var agent of this._agents)
-      agent.addBlockedURL(url);
-  }
-
-  /**
-   * @param {string} url
-   */
-  _removeBlockedURL(url) {
-    this._blockedURLs.delete(url);
-    for (var agent of this._agents)
-      agent.removeBlockedURL(url);
+      agent.setBlockedURLs(urls);
   }
 
   clearBrowserCache() {
@@ -914,7 +895,6 @@ SDK.MultitargetNetworkManager.Events = {
   ConditionsChanged: Symbol('ConditionsChanged'),
   UserAgentChanged: Symbol('UserAgentChanged')
 };
-
 
 /**
  * @type {!SDK.MultitargetNetworkManager}

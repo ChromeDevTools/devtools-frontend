@@ -24,6 +24,9 @@ Network.BlockedURLsPane = class extends UI.VBox {
     clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._removeAll, this);
     this._toolbar.appendToolbarItem(clearButton);
 
+    var enableRequestBlockingCheckbox = new UI.ToolbarSettingCheckbox(Common.moduleSetting('requestBlockingEnabled'));
+    this._toolbar.appendToolbarItem(enableRequestBlockingCheckbox);
+
     this._emptyElement = this.contentElement.createChild('div', 'no-blocked-urls');
     this._emptyElement.createChild('span').textContent = Common.UIString('Requests are not blocked. ');
     var addLink = this._emptyElement.createChild('span', 'link');

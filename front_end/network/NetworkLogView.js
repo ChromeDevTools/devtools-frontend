@@ -1143,6 +1143,7 @@ Network.NetworkLogView = class extends UI.VBox {
         blockedSettingData.push(url);
         blockedSetting.set(blockedSettingData);
         UI.viewManager.showView('network.blocked-urls');
+        Common.moduleSetting('requestBlockingEnabled').set(true);
       }
 
       /**

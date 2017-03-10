@@ -595,9 +595,15 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     var callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
     if (!callFrame)
       return;
+    if (this._clearContinueToLocationsTimer) {
+      clearTimeout(this._clearContinueToLocationsTimer);
+      delete this._clearContinueToLocationsTimer;
+    }
     var localScope = callFrame.localScope();
-    if (!localScope)
+    if (!localScope) {
+      this.textEditor.operation(clearExistingLocations.bind(this));
       return;
+    }
     var start = localScope.startLocation();
     var end = localScope.endLocation();
     var debuggerModel = callFrame.debuggerModel;
@@ -605,20 +611,12 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     debuggerModel.getPossibleBreakpoints(start, end, true)
         .then(locations => this.textEditor.operation(renderLocations.bind(this, locations)));
 
-    if (this._clearContinueToLocationsTimer) {
-      clearTimeout(this._clearContinueToLocationsTimer);
-      delete this._clearContinueToLocationsTimer;
-    }
-
     /**
      * @param {!Array<!SDK.DebuggerModel.BreakLocation>} locations
      * @this {Sources.JavaScriptSourceFrame}
      */
     function renderLocations(locations) {
-      var bookmarks = this.textEditor.bookmarks(
-          this.textEditor.fullRange(), Sources.JavaScriptSourceFrame.continueToLocationDecorationSymbol);
-      bookmarks.map(bookmark => bookmark.clear());
-
+      clearExistingLocations.call(this);
       for (var location of locations) {
         var icon;
         var isCurrent = location.lineNumber === executionLocation.lineNumber &&
@@ -645,6 +643,15 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
             location.lineNumber, location.columnNumber, icon,
             Sources.JavaScriptSourceFrame.continueToLocationDecorationSymbol);
       }
+    }
+
+    /**
+     * @this {Sources.JavaScriptSourceFrame}
+     */
+    function clearExistingLocations() {
+      var bookmarks = this.textEditor.bookmarks(
+          this.textEditor.fullRange(), Sources.JavaScriptSourceFrame.continueToLocationDecorationSymbol);
+      bookmarks.map(bookmark => bookmark.clear());
     }
 
     /**

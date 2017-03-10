@@ -5,6 +5,9 @@
 /** @typedef {{startOffset: number, endOffset: number, count: number}} */
 Coverage.RangeUseCount;
 
+/** @typedef {{end: number, count: (number|undefined), depth: number}} */
+Coverage.CoverageSegment;
+
 /** @typedef {{
  *    contentProvider: !Common.ContentProvider,
  *    size: number,
@@ -13,7 +16,7 @@ Coverage.RangeUseCount;
  *    type: !Coverage.CoverageType,
  *    lineOffset: number,
  *    columnOffset: number,
- *    ranges: !Array<!Coverage.RangeUseCount>
+ *    segments: !Array<!Coverage.CoverageSegment>
  * }}
  */
 Coverage.CoverageInfo;
@@ -110,11 +113,58 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       var ranges = [];
       for (var func of entry.functions) {
         for (var range of func.ranges)
-          ranges.push({startOffset: range.startOffset, endOffset: range.endOffset, count: range.count});
+          ranges.push(range);
       }
+      ranges.sort((a, b) => a.startOffset - b.startOffset);
       result.push(Coverage.CoverageModel._buildCoverageInfo(
           script, script.contentLength, script.lineOffset, script.columnOffset, ranges));
     }
+    return result;
+  }
+
+  /**
+   * @param {!Array<!Coverage.RangeUseCount>} ranges
+   * @return {!Array<!Coverage.CoverageSegment>}
+   */
+  static _convertToDisjointSegments(ranges) {
+    var result = [];
+
+    var stack = [];
+    for (var entry of ranges) {
+      var top = stack.peekLast();
+      while (top && top.endOffset <= entry.startOffset) {
+        append(top.endOffset, top.count, stack.length);
+        stack.pop();
+        top = stack.peekLast();
+      }
+      append(entry.startOffset, top ? top.count : undefined, stack.length);
+      stack.push(entry);
+    }
+
+    while (stack.length) {
+      var depth = stack.length;
+      var top = stack.pop();
+      append(top.endOffset, top.count, depth);
+    }
+
+    /**
+     * @param {number} end
+     * @param {number} count
+     * @param {number} depth
+     */
+    function append(end, count, depth) {
+      var last = result.peekLast();
+      if (last) {
+        if (last.end === end)
+          return;
+        if (last.count === count && last.depth === depth) {
+          last.end = end;
+          return;
+        }
+      }
+      result.push({end: end, count: count, depth: depth});
+    }
+
     return result;
   }
 
@@ -172,36 +222,22 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     else
       console.assert(false, `Unexpected resource type ${contentProvider.contentType().name} for ${url}`);
 
-    var stack = [];
-    ranges.sort((a, b) => a.startOffset - b.startOffset);
-    for (var entry of ranges) {
-      while (stack.length && stack.peekLast().endOffset <= entry.startOffset)
-        stack.pop();
-
-      entry.ownSize = entry.endOffset - entry.startOffset;
-      var top = stack.peekLast();
-      if (top) {
-        if (top.endOffset < entry.endOffset) {
-          console.assert(
-              false, `Overlapping coverage entries in ${url}: ${top.start}-${top.end} vs. ${entry.start}-${entry.end}`);
-        }
-        top.ownSize -= entry.ownSize;
-      }
-      stack.push(entry);
-    }
-
+    var segments = Coverage.CoverageModel._convertToDisjointSegments(ranges);
     var usedSize = 0;
     var unusedSize = 0;
-    for (var entry of ranges) {
-      if (entry.count)
-        usedSize += entry.ownSize;
-      else
-        unusedSize += entry.ownSize;
+    var last = 0;
+    for (var segment of segments) {
+      if (typeof segment.count === 'number') {
+        if (segment.count)
+          usedSize += segment.end - last;
+        else
+          unusedSize += segment.end - last;
+      }
+      last = segment.end;
     }
-
     var coverageInfo = {
       contentProvider: contentProvider,
-      ranges: ranges,
+      segments: segments,
       type: coverageType,
       size: contentLength,
       usedSize: usedSize,

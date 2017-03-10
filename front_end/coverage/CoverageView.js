@@ -113,9 +113,15 @@ Coverage.CoverageView = class extends UI.VBox {
     if (!contents)
       return;
     var text = new Common.Text(contents);
-    for (var range of coverageInfo.ranges) {
-      var startPosition = text.positionFromOffset(range.startOffset);
-      var endPosition = text.positionFromOffset(range.endOffset);
+    var lastOffset = 0;
+    var rangesByDepth = [];
+    for (var segment of coverageInfo.segments) {
+      if (typeof segment.count !== 'number') {
+        lastOffset = segment.end;
+        continue;
+      }
+      var startPosition = text.positionFromOffset(lastOffset);
+      var endPosition = text.positionFromOffset(segment.end);
       if (!startPosition.lineNumber)
         startPosition.columnNumber += coverageInfo.columnOffset;
       startPosition.lineNumber += coverageInfo.lineOffset;
@@ -123,9 +129,21 @@ Coverage.CoverageView = class extends UI.VBox {
         endPosition.columnNumber += coverageInfo.columnOffset;
       endPosition.lineNumber += coverageInfo.lineOffset;
 
-      var textRange = new Common.TextRange(
-          startPosition.lineNumber, startPosition.columnNumber, endPosition.lineNumber, endPosition.columnNumber);
-      uiSourceCode.addDecoration(textRange, Coverage.CoverageView.LineDecorator.type, range.count);
+      var ranges = rangesByDepth[segment.depth - 1];  // depth === 0 => count === undefined
+      if (!ranges) {
+        ranges = [];
+        rangesByDepth[segment.depth - 1] = ranges;
+      }
+      ranges.push({
+        count: segment.count,
+        range: new Common.TextRange(
+            startPosition.lineNumber, startPosition.columnNumber, endPosition.lineNumber, endPosition.columnNumber)
+      });
+      lastOffset = segment.end;
+    }
+    for (var ranges of rangesByDepth) {
+      for (var r of ranges)
+        uiSourceCode.addDecoration(r.range, Coverage.CoverageView.LineDecorator.type, r.count);
     }
   }
 };

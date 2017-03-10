@@ -181,9 +181,9 @@ ol.expanded {
 
 .expand-icon {
     -webkit-user-select: none;
-    background-color: #777;
     margin-left: -6px;
     margin-right: 2px;
+    margin-bottom: -2px;
 }
 
 .tree-outline li:not(.parent) .expand-icon {

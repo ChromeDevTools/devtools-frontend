@@ -375,3 +375,7 @@
 .console-message-stack-trace-wrapper > * {
     flex: none;
 }
+
+.console-message-expand-icon {
+    margin-bottom: -2px;
+}

@@ -13,6 +13,7 @@
     -webkit-user-select: none;
     opacity: 0.5;
     margin-right: 4px;
+    margin-bottom: -2px;
     background: black;
 }
 

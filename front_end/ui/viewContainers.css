@@ -59,6 +59,7 @@
 
 .title-expand-icon {
     margin-right: 2px;
+    margin-bottom: -2px;
 }
 
 .expandable-view-title > .toolbar {

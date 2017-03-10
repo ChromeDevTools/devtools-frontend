@@ -319,7 +319,7 @@ Console.ConsoleViewMessage = class {
     var contentElement = toggleElement.createChild('div', 'console-message-stack-trace-wrapper');
 
     var messageElement = this._buildMessage(consoleMessage);
-    var icon = UI.Icon.create('smallicon-triangle-right');
+    var icon = UI.Icon.create('smallicon-triangle-right', 'console-message-expand-icon');
     var clickableElement = contentElement.createChild('div');
     clickableElement.appendChild(icon);
 

@@ -23,7 +23,7 @@
 .data-grid .header-container {
     top: 0;
     height: 21px;
- }
+}
 
 .data-grid .data-container {
     top: 21px;
@@ -156,6 +156,7 @@
 
 .data-grid th .sort-order-icon {
     margin-right: 4px;
+    margin-bottom: -2px;
     display: none;
 }
 

@@ -379,4 +379,5 @@
 .network-waterfall-header .sort-order-icon {
     align-items: center;
     margin-right: 4px;
+    margin-bottom: -2px;
 }

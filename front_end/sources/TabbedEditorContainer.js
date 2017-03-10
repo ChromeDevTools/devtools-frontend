@@ -91,19 +91,18 @@ Sources.TabbedEditorContainer = class extends Common.Object {
     if (!networkTabId)
       return;
 
-    var tabIndex = this._tabbedPane.tabIndex(networkTabId);
-    var tabsToClose = [networkTabId];
-    if (fileSystemTabId)
-      tabsToClose.push(fileSystemTabId);
-    this._closeTabs(tabsToClose, true);
-    fileSystemTabId = this._appendFileTab(binding.fileSystem, false, tabIndex);
-    this._updateHistory();
+    if (!fileSystemTabId) {
+      var tabIndex = this._tabbedPane.tabIndex(networkTabId);
+      fileSystemTabId = this._appendFileTab(binding.fileSystem, false, tabIndex);
+      var fileSystemTabView = /** @type {!UI.Widget} */ (this._tabbedPane.tabView(fileSystemTabId));
+      this._restoreEditorProperties(fileSystemTabView, currentSelectionRange, currentScrollLineNumber);
+    }
 
+    this._closeTabs([networkTabId], true);
     if (wasSelectedInNetwork)
       this._tabbedPane.selectTab(fileSystemTabId, false);
 
-    var fileSystemTabView = /** @type {!UI.Widget} */ (this._tabbedPane.tabView(fileSystemTabId));
-    this._restoreEditorProperties(fileSystemTabView, currentSelectionRange, currentScrollLineNumber);
+    this._updateHistory();
   }
 
   /**

@@ -475,8 +475,51 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     var labels = null;
     if (node.hovered()) {
       labels = this._calculator.computeBarGraphLabels(request);
-      this._drawSimplifiedBarDetails(
-          context, labels.left, labels.right, ranges.start, ranges.mid, ranges.mid + barWidth + borderOffset, y);
+      // TODO(allada) This will be inlined in an immidate next patch.
+      var leftText = labels.left;
+      var rightText = labels.right;
+      var startX = ranges.start;
+      var midX = ranges.mid;
+      var endX = ranges.mid + barWidth + borderOffset;
+      var currentY = y;
+
+      var barDotLineLength = 10;
+      context.save();
+      var leftLabelWidth = context.measureText(leftText).width;
+      var rightLabelWidth = context.measureText(rightText).width;
+      context.fillStyle = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
+      context.strokeStyle = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
+      if (leftLabelWidth < midX - startX) {
+        var midBarX = startX + (midX - startX) / 2 - leftLabelWidth / 2;
+        this._textLayers.push({text: leftText, x: midBarX, y: currentY + this._fontSize});
+      } else if (barDotLineLength + leftLabelWidth + this._leftPadding < startX) {
+        this._textLayers.push(
+            {text: leftText, x: startX - leftLabelWidth - barDotLineLength - 1, y: currentY + this._fontSize});
+        context.beginPath();
+        context.arc(startX, Math.floor(height / 2), 2, 0, 2 * Math.PI);
+        context.fill();
+        context.beginPath();
+        context.lineWidth = 1;
+        context.moveTo(startX - barDotLineLength, Math.floor(height / 2));
+        context.lineTo(startX, Math.floor(height / 2));
+        context.stroke();
+      }
+
+      if (rightLabelWidth < endX - midX) {
+        var midBarX = midX + (endX - midX) / 2 - rightLabelWidth / 2;
+        this._textLayers.push({text: rightText, x: midBarX, y: currentY + this._fontSize});
+      } else if (endX + barDotLineLength + rightLabelWidth < this._offsetWidth - this._leftPadding) {
+        this._textLayers.push({text: rightText, x: endX + barDotLineLength + 1, y: currentY + this._fontSize});
+        context.beginPath();
+        context.arc(endX, Math.floor(height / 2), 2, 0, 2 * Math.PI);
+        context.fill();
+        context.beginPath();
+        context.lineWidth = 1;
+        context.moveTo(endX, Math.floor(height / 2));
+        context.lineTo(endX + barDotLineLength, Math.floor(height / 2));
+        context.stroke();
+      }
+      context.restore();
     }
 
     if (!this._calculator.startAtZero) {
@@ -501,58 +544,6 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       }
     }
 
-    context.restore();
-  }
-
-  /**
-   * @param {!CanvasRenderingContext2D} context
-   * @param {string} leftText
-   * @param {string} rightText
-   * @param {number} startX
-   * @param {number} midX
-   * @param {number} endX
-   * @param {number} currentY
-   */
-  _drawSimplifiedBarDetails(context, leftText, rightText, startX, midX, endX, currentY) {
-    /** @const */
-    var barDotLineLength = 10;
-
-    context.save();
-    var height = this._getBarHeight();
-    var leftLabelWidth = context.measureText(leftText).width;
-    var rightLabelWidth = context.measureText(rightText).width;
-    context.fillStyle = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
-    context.strokeStyle = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
-    if (leftLabelWidth < midX - startX) {
-      var midBarX = startX + (midX - startX) / 2 - leftLabelWidth / 2;
-      this._textLayers.push({text: leftText, x: midBarX, y: currentY + this._fontSize});
-    } else if (barDotLineLength + leftLabelWidth + this._leftPadding < startX) {
-      this._textLayers.push(
-          {text: leftText, x: startX - leftLabelWidth - barDotLineLength - 1, y: currentY + this._fontSize});
-      context.beginPath();
-      context.arc(startX, Math.floor(height / 2), 2, 0, 2 * Math.PI);
-      context.fill();
-      context.beginPath();
-      context.lineWidth = 1;
-      context.moveTo(startX - barDotLineLength, Math.floor(height / 2));
-      context.lineTo(startX, Math.floor(height / 2));
-      context.stroke();
-    }
-
-    if (rightLabelWidth < endX - midX) {
-      var midBarX = midX + (endX - midX) / 2 - rightLabelWidth / 2;
-      this._textLayers.push({text: rightText, x: midBarX, y: currentY + this._fontSize});
-    } else if (endX + barDotLineLength + rightLabelWidth < this._offsetWidth - this._leftPadding) {
-      this._textLayers.push({text: rightText, x: endX + barDotLineLength + 1, y: currentY + this._fontSize});
-      context.beginPath();
-      context.arc(endX, Math.floor(height / 2), 2, 0, 2 * Math.PI);
-      context.fill();
-      context.beginPath();
-      context.lineWidth = 1;
-      context.moveTo(endX, Math.floor(height / 2));
-      context.lineTo(endX + barDotLineLength, Math.floor(height / 2));
-      context.stroke();
-    }
     context.restore();
   }
 

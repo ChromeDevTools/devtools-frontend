@@ -113,6 +113,7 @@ Main.Main = class {
     Runtime.experiments.register('timelineShowAllProcesses', 'Show all processes on Timeline', true);
     Runtime.experiments.register('timelinePaintTimingMarkers', 'Show paint timing markers on Timeline', true);
     Runtime.experiments.register('sourceDiff', 'Source diff');
+    Runtime.experiments.register('timelineFlowEvents', 'Timeline flow events', true);
     Runtime.experiments.register('terminalInDrawer', 'Terminal in drawer', true);
     Runtime.experiments.register('timelineInvalidationTracking', 'Timeline invalidation tracking', true);
     Runtime.experiments.register('timelineMultipleMainViews', 'Tabbed views on Performance panel');

@@ -50,6 +50,9 @@ Timeline.TimelineController = class {
     ];
     categoriesArray.push(TimelineModel.TimelineModel.Category.LatencyInfo);
 
+    if (Runtime.experiments.isEnabled('timelineFlowEvents'))
+      categoriesArray.push('devtools.timeline.async');
+
     if (Runtime.experiments.isEnabled('timelineV8RuntimeCallStats') && options.enableJSSampling)
       categoriesArray.push(disabledByDefault('v8.runtime_stats_sampling'));
     if (Runtime.experiments.isEnabled('timelineTracingJSProfile') && options.enableJSSampling) {

@@ -1163,7 +1163,9 @@ TimelineModel.TimelineModel.RecordType = {
   // CpuProfile is a virtual event created on frontend to support
   // serialization of CPU Profiles within tracing timeline data.
   CpuProfile: 'CpuProfile',
-  Profile: 'Profile'
+  Profile: 'Profile',
+
+  AsyncTask: 'AsyncTask',
 };
 
 TimelineModel.TimelineModel.Category = {

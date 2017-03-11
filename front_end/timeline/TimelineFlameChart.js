@@ -74,6 +74,9 @@ Timeline.TimelineFlameChartDataProvider = class {
         (Object.assign({useFirstLineForOverview: true}, defaultGroupStyle));
     this._interactionsHeaderLevel2 = /** @type {!PerfUI.FlameChart.GroupStyle} */
         (Object.assign({}, defaultGroupStyle, {padding: 2, nestingLevel: 1}));
+
+    /** @type {!Map<string, number>} */
+    this._flowEventIndexById = new Map();
   }
 
   /**
@@ -175,6 +178,8 @@ Timeline.TimelineFlameChartDataProvider = class {
     if (!this._model)
       return this._timelineData;
 
+    this._flowEventIndexById.clear();
+
     this._minimumBoundary = this._model.minimumRecordTime();
     this._timeSpan = this._model.isEmpty() ? 1000 : this._model.maximumRecordTime() - this._minimumBoundary;
     this._currentLevel = 0;
@@ -240,6 +245,7 @@ Timeline.TimelineFlameChartDataProvider = class {
 
     this._markers.sort(compareStartTime);
     this._timelineData.markers = this._markers;
+    this._flowEventIndexById.clear();
 
     return this._timelineData;
   }
@@ -296,6 +302,7 @@ Timeline.TimelineFlameChartDataProvider = class {
   _appendSyncEvents(events, title, style, entryType, forceExpanded) {
     var isExtension = entryType === Timeline.TimelineFlameChartEntryType.ExtensionEvent;
     var openEvents = [];
+    var flowEventsEnabled = Runtime.experiments.isEnabled('timelineFlowEvents');
     var blackboxingEnabled = !isExtension && Runtime.experiments.isEnabled('blackboxJSFramesOnTimeline');
     var maxStackDepth = 0;
     for (var i = 0; i < events.length; ++i) {
@@ -328,6 +335,8 @@ Timeline.TimelineFlameChartDataProvider = class {
       }
 
       var level = this._currentLevel + openEvents.length;
+      if (flowEventsEnabled)
+        this._appendFlowEvent(e, level);
       this._appendEvent(e, level);
       if (!isExtension && TimelineModel.TimelineModel.isMarkerEvent(e))
         this._timelineData.entryTotalTimes[this._entryData.length] = undefined;
@@ -592,7 +601,7 @@ Timeline.TimelineFlameChartDataProvider = class {
 
     if (type === Timeline.TimelineFlameChartEntryType.InteractionRecord) {
       var color = Timeline.TimelineUIUtils.interactionPhaseColor(
-          /** @type {!TimelineModel.TimelineIRModel.Phases} */ (this._entryData[entryIndex]));
+          /** @type {!TimelineModel.TimelineIRModel.Phases} */ (data));
       context.fillStyle = color;
       context.fillRect(barX, barY, barWidth - 1, 2);
       context.fillRect(barX, barY - 3, 2, 3);
@@ -601,7 +610,7 @@ Timeline.TimelineFlameChartDataProvider = class {
     }
 
     if (type === Timeline.TimelineFlameChartEntryType.Event) {
-      var event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
+      var event = /** @type {!SDK.TracingModel.Event} */ (data);
       if (event.hasCategory(TimelineModel.TimelineModel.Category.LatencyInfo)) {
         var timeWaitingForMainThread = TimelineModel.TimelineData.forEvent(event).timeWaitingForMainThread;
         if (timeWaitingForMainThread) {
@@ -643,10 +652,14 @@ Timeline.TimelineFlameChartDataProvider = class {
    */
   forceDecoration(entryIndex) {
     var type = this._entryType(entryIndex);
-    return type === Timeline.TimelineFlameChartEntryType.Frame ||
-        type === Timeline.TimelineFlameChartEntryType.Event &&
-        !!TimelineModel.TimelineData.forEvent(/** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]))
-              .warning;
+    if (type === Timeline.TimelineFlameChartEntryType.Frame)
+      return true;
+
+    if (type === Timeline.TimelineFlameChartEntryType.Event) {
+      var event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
+      return !!TimelineModel.TimelineData.forEvent(event).warning;
+    }
+    return false;
   }
 
   /**
@@ -717,6 +730,47 @@ Timeline.TimelineFlameChartDataProvider = class {
       this._timelineData.entryLevels[index] = level;
       this._timelineData.entryTotalTimes[index] = steps[i + 1].startTime - startTime;
       this._timelineData.entryStartTimes[index] = startTime;
+    }
+  }
+
+  /**
+   * @param {!SDK.TracingModel.Event} event
+   * @param {number} level
+   */
+  _appendFlowEvent(event, level) {
+    var timelineData = this._timelineData;
+    /**
+     * @param {!SDK.TracingModel.Event} event
+     * @return {number}
+     */
+    function pushStartFlow(event) {
+      var flowIndex = timelineData.flowStartTimes.length;
+      timelineData.flowStartTimes.push(event.startTime);
+      timelineData.flowStartLevels.push(level);
+      return flowIndex;
+    }
+
+    /**
+     * @param {!SDK.TracingModel.Event} event
+     * @param {number} flowIndex
+     */
+    function pushEndFlow(event, flowIndex) {
+      timelineData.flowEndTimes[flowIndex] = event.startTime;
+      timelineData.flowEndLevels[flowIndex] = level;
+    }
+
+    switch (event.phase) {
+      case SDK.TracingModel.Phase.FlowBegin:
+        this._flowEventIndexById.set(event.id, pushStartFlow(event));
+        break;
+      case SDK.TracingModel.Phase.FlowStep:
+        pushEndFlow(event, this._flowEventIndexById.get(event.id));
+        this._flowEventIndexById.set(event.id, pushStartFlow(event));
+        break;
+      case SDK.TracingModel.Phase.FlowEnd:
+        pushEndFlow(event, this._flowEventIndexById.get(event.id));
+        this._flowEventIndexById.delete(event.id);
+        break;
     }
   }
 

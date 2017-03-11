@@ -42,6 +42,7 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
   constructor(panelElement, getAnchor, queryObject, onHide, disableOnClick) {
     super(panelElement, disableOnClick);
     this.initializeCallbacks(getAnchor, this._showObjectPopover.bind(this), this._onHideObjectPopover.bind(this));
+    this.setHasPadding(true);
     this._queryObject = queryObject;
     this._onHideCallback = onHide;
     this._popoverObjectGroup = 'popover';
@@ -50,20 +51,23 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
 
   /**
    * @param {!Element} element
-   * @param {!UI.Popover} popover
+   * @param {!UI.GlassPane} popover
+   * @return {!Promise<boolean>}
    */
   _showObjectPopover(element, popover) {
+    var fulfill;
+    var promise = new Promise(x => fulfill = x);
+
     /**
      * @param {!SDK.RemoteObject} funcObject
      * @param {!Element} popoverContentElement
      * @param {!Element} popoverValueElement
-     * @param {!Element} anchorElement
      * @param {?Array.<!SDK.RemoteObjectProperty>} properties
      * @param {?Array.<!SDK.RemoteObjectProperty>} internalProperties
      * @this {ObjectUI.ObjectPopoverHelper}
      */
     function didGetFunctionProperties(
-        funcObject, popoverContentElement, popoverValueElement, anchorElement, properties, internalProperties) {
+        funcObject, popoverContentElement, popoverValueElement, properties, internalProperties) {
       if (internalProperties) {
         for (var i = 0; i < internalProperties.length; i++) {
           if (internalProperties[i].name === '[[TargetFunction]]') {
@@ -75,18 +79,19 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
       ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(funcObject, popoverValueElement, true);
       funcObject.debuggerModel()
           .functionDetailsPromise(funcObject)
-          .then(didGetFunctionDetails.bind(this, popoverContentElement, anchorElement));
+          .then(didGetFunctionDetails.bind(this, popoverContentElement));
     }
 
     /**
      * @param {!Element} popoverContentElement
-     * @param {!Element} anchorElement
      * @param {?SDK.DebuggerModel.FunctionDetails} response
      * @this {ObjectUI.ObjectPopoverHelper}
      */
-    function didGetFunctionDetails(popoverContentElement, anchorElement, response) {
-      if (!response || this._disposed)
+    function didGetFunctionDetails(popoverContentElement, response) {
+      if (!response || this._disposed) {
+        fulfill(false);
         return;
+      }
 
       var container = createElementWithClass('div', 'object-popover-container');
       var title = container.createChild('div', 'function-popover-title source-code');
@@ -99,24 +104,29 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
       if (rawLocation && sourceURL)
         linkContainer.appendChild(this._lazyLinkifier().linkifyRawLocation(rawLocation, sourceURL));
       container.appendChild(popoverContentElement);
-      popover.showForAnchor(container, anchorElement);
+      popover.contentElement.appendChild(container);
+      fulfill(true);
     }
 
     /**
      * @param {!SDK.RemoteObject} result
      * @param {boolean} wasThrown
-     * @param {!Element=} anchorOverride
+     * @param {!Element|!AnchorBox=} anchorOverride
      * @this {ObjectUI.ObjectPopoverHelper}
      */
     function didQueryObject(result, wasThrown, anchorOverride) {
-      if (this._disposed)
+      if (this._disposed) {
+        fulfill(false);
         return;
+      }
       if (wasThrown) {
         this.hidePopover();
+        fulfill(false);
         return;
       }
       this._objectTarget = result.target();
-      var anchorElement = anchorOverride || element;
+      var anchor = anchorOverride || element;
+      popover.setContentAnchorBox(anchor instanceof AnchorBox ? anchor : anchor.boxInWindow());
       var description = result.description.trimEnd(ObjectUI.ObjectPopoverHelper.MaxPopoverTextLength);
       var popoverContentElement = null;
       if (result.type !== 'object') {
@@ -134,10 +144,11 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
         if (result.type === 'function') {
           result.getOwnProperties(
               false /* generatePreview */,
-              didGetFunctionProperties.bind(this, result, popoverContentElement, valueElement, anchorElement));
+              didGetFunctionProperties.bind(this, result, popoverContentElement, valueElement));
           return;
         }
-        popover.showForAnchor(popoverContentElement, anchorElement);
+        popover.contentElement.appendChild(popoverContentElement);
+        fulfill(true);
       } else {
         if (result.subtype === 'node') {
           SDK.DOMModel.highlightObjectAsDOMNode(result);
@@ -160,11 +171,13 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
         }
         popover.setMaxContentSize(new UI.Size(300, 250));
         popover.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactSize);
-        popover.showForAnchor(popoverContentElement, anchorElement);
+        popover.contentElement.appendChild(popoverContentElement);
+        fulfill(true);
       }
     }
     this._disposed = false;
     this._queryObject(element, didQueryObject.bind(this), this._popoverObjectGroup);
+    return promise;
   }
 
   _onHideObjectPopover() {

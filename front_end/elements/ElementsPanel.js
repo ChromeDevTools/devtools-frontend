@@ -581,22 +581,27 @@ Elements.ElementsPanel = class extends UI.Panel {
 
   /**
    * @param {!Element} link
-   * @param {!UI.Popover} popover
+   * @param {!UI.GlassPane} popover
+   * @return {!Promise<boolean>}
    */
   _showPopover(link, popover) {
     var node = this.selectedDOMNode();
-    if (node) {
-      Components.DOMPresentationUtils.buildImagePreviewContents(
-          node.target(), link[Elements.ElementsTreeElement.HrefSymbol], true, showPopover);
-    }
+    if (!node)
+      return Promise.resolve(false);
+
+    var fulfill;
+    var promise = new Promise(x => fulfill = x);
+    Components.DOMPresentationUtils.buildImagePreviewContents(
+        node.target(), link[Elements.ElementsTreeElement.HrefSymbol], true, showPopover);
+    return promise;
 
     /**
      * @param {!Element=} contents
      */
     function showPopover(contents) {
-      if (!contents)
-        return;
-      popover.showForAnchor(contents, link);
+      if (contents)
+        popover.contentElement.appendChild(contents);
+      fulfill(!!contents);
     }
   }
 
@@ -903,6 +908,7 @@ Elements.ElementsPanel = class extends UI.Panel {
     if (this._popoverHelper)
       this._popoverHelper.hidePopover();
     this._popoverHelper = new UI.PopoverHelper(tabbedPane.element);
+    this._popoverHelper.setHasPadding(true);
     this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
     this._popoverHelper.setTimeout(0);
 

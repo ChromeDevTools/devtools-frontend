@@ -173,7 +173,8 @@ Animation.AnimationTimeline = class extends UI.VBox {
 
   /**
    * @param {!Element} anchor
-   * @param {!UI.Popover} popover
+   * @param {!UI.GlassPane} popover
+   * @return {!Promise<boolean>}
    */
   _showPopover(anchor, popover) {
     var animGroup;
@@ -184,20 +185,22 @@ Animation.AnimationTimeline = class extends UI.VBox {
     console.assert(animGroup);
     var screenshots = animGroup.screenshots();
     if (!screenshots.length)
-      return;
+      return Promise.resolve(false);
 
+    var fulfill;
+    var promise = new Promise(x => fulfill = x);
     if (!screenshots[0].complete)
       screenshots[0].onload = onFirstScreenshotLoaded.bind(null, screenshots);
     else
       onFirstScreenshotLoaded(screenshots);
+    return promise;
 
     /**
      * @param  {!Array.<!Image>} screenshots
      */
     function onFirstScreenshotLoaded(screenshots) {
-      var content = new Animation.AnimationScreenshotPopover(screenshots);
-      popover.setNoPadding(true);
-      popover.showView(content, anchor);
+      new Animation.AnimationScreenshotPopover(screenshots).show(popover.contentElement);
+      fulfill(true);
     }
   }
 

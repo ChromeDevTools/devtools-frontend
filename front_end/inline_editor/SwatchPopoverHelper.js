@@ -7,8 +7,11 @@
 InlineEditor.SwatchPopoverHelper = class extends Common.Object {
   constructor() {
     super();
-    this._popover = new UI.Popover();
-    this._popover.setNoPadding(true);
+    this._popover = new UI.GlassPane();
+    this._popover.registerRequiredCSS('inline_editor/swatchPopover.css');
+    this._popover.setBlockPointerEvents(false);
+    this._popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    this._popover.setShowArrow(true);
     this._popover.element.addEventListener('mousedown', e => e.consume(), false);
 
     this._hideProxy = this.hide.bind(this, true);
@@ -61,9 +64,11 @@ InlineEditor.SwatchPopoverHelper = class extends Common.Object {
   }
 
   reposition() {
-    // Unbind "blur" listener to avoid reenterability: |popover.showView| will hide the popover and trigger it synchronously.
+    // Unbind "blur" listener to avoid reenterability: |popover.show()| will hide the popover and trigger it synchronously.
     this._view.contentElement.removeEventListener('focusout', this._boundFocusOut, false);
-    this._popover.showView(this._view, this._anchorElement);
+    this._view.show(this._popover.contentElement);
+    this._popover.setContentAnchorBox(this._anchorElement.boxInWindow());
+    this._popover.show(this._anchorElement.ownerDocument);
     this._view.contentElement.addEventListener('focusout', this._boundFocusOut, false);
     if (!this._focusRestorer)
       this._focusRestorer = new UI.WidgetFocusRestorer(this._view);

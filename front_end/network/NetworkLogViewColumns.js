@@ -91,6 +91,7 @@ Network.NetworkLogViewColumns = class {
     this._popoverHelper = new UI.PopoverHelper(this._networkLogView.element);
     this._popoverHelper.initializeCallbacks(
         this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
+    this._popoverHelper.setHasPadding(true);
 
     /** @type {!DataGrid.SortableDataGrid<!Network.NetworkNode>} */
     this._dataGrid =
@@ -538,14 +539,16 @@ Network.NetworkLogViewColumns = class {
 
   /**
    * @param {!Element} anchor
-   * @param {!UI.Popover} popover
+   * @param {!UI.GlassPane} popover
+   * @return {!Promise<boolean>}
    */
   _showPopover(anchor, popover) {
     var request = /** @type {!SDK.NetworkRequest} */ (anchor.request);
     var initiator = /** @type {!Protocol.Network.Initiator} */ (request.initiator());
     var content = Components.DOMPresentationUtils.buildStackTracePreviewContents(
         request.target(), this._popupLinkifier, initiator.stack);
-    popover.showForAnchor(content, anchor);
+    popover.contentElement.appendChild(content);
+    return Promise.resolve(true);
   }
 
   _onHidePopover() {

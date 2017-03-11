@@ -15,6 +15,7 @@
         "colorSwatch.css",
         "bezierSwatch.css",
         "cssShadowSwatch.css",
-        "cssShadowEditor.css"
+        "cssShadowEditor.css",
+        "swatchPopover.css"
     ]
 }

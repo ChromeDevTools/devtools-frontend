@@ -74,6 +74,7 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
 
     this._errorPopoverHelper = new UI.PopoverHelper(this.element);
     this._errorPopoverHelper.initializeCallbacks(this._getErrorAnchor.bind(this), this._showErrorPopover.bind(this));
+    this._errorPopoverHelper.setHasPadding(true);
 
     this._errorPopoverHelper.setTimeout(100, 100);
 
@@ -400,14 +401,17 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
 
   /**
    * @param {!Element} anchor
-   * @param {!UI.Popover} popover
+   * @param {!UI.GlassPane} popover
+   * @return {!Promise<boolean>}
    */
   _showErrorPopover(anchor, popover) {
     var messageBucket = anchor.enclosingNodeOrSelfWithClass('text-editor-line-decoration')._messageBucket;
     var messagesOutline = messageBucket.messagesDescription();
-    var popoverAnchor =
-        anchor.enclosingNodeOrSelfWithClass('text-editor-line-decoration-icon') ? anchor : this._errorWavePopoverAnchor;
-    popover.showForAnchor(messagesOutline, popoverAnchor);
+    popover.setContentAnchorBox(
+        anchor.enclosingNodeOrSelfWithClass('text-editor-line-decoration-icon') ? anchor.boxInWindow() :
+                                                                                  this._errorWavePopoverAnchor);
+    popover.contentElement.appendChild(messagesOutline);
+    return Promise.resolve(true);
   }
 
   _updateBucketDecorations() {

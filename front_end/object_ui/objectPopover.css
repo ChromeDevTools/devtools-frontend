@@ -51,6 +51,11 @@
     margin-left: 10px;
 }
 
+.function-title-link-container .devtools-link {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .function-location-step-into {
     position: relative;
     height: 14px;

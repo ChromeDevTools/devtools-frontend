@@ -35,6 +35,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
     this._popoverHelper = new UI.PopoverHelper(this.element);
     this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
+    this._popoverHelper.setHasPadding(true);
     this._popoverHelper.setTimeout(300, 300);
 
     /** @type {!Array<!Network.NetworkNode>} */
@@ -168,16 +169,18 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
   /**
    * @param {!Element|!AnchorBox} anchor
-   * @param {!UI.Popover} popover
+   * @param {!UI.GlassPane} popover
+   * @return {!Promise<boolean>}
    */
   _showPopover(anchor, popover) {
     if (!this._hoveredNode)
-      return;
+      return Promise.resolve(false);
     var request = this._hoveredNode.request();
     if (!request)
-      return;
+      return Promise.resolve(false);
     var content = Network.RequestTimingView.createTimingTable(request, this._calculator);
-    popover.showForAnchor(content, anchor);
+    popover.contentElement.appendChild(content);
+    return Promise.resolve(true);
   }
 
   /**

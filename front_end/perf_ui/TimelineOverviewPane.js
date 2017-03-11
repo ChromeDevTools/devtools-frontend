@@ -56,6 +56,7 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
     this._popoverHelper = new UI.PopoverHelper(this._cursorArea);
     this._popoverHelper.initializeCallbacks(
         this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
+    this._popoverHelper.setHasPadding(true);
     this._popoverHelper.setTimeout(0);
 
     this._updateThrottler = new Common.Throttler(100);
@@ -76,22 +77,26 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
 
   /**
    * @param {!Element} anchor
-   * @param {!UI.Popover} popover
+   * @param {!UI.GlassPane} popover
+   * @return {!Promise<boolean>}
    */
   _showPopover(anchor, popover) {
-    this._buildPopoverContents().then(maybeShowPopover.bind(this));
+    return this._buildPopoverContents().then(maybeShowPopover.bind(this));
+
     /**
      * @this {PerfUI.TimelineOverviewPane}
      * @param {!DocumentFragment} fragment
+     * @return {boolean}
      */
     function maybeShowPopover(fragment) {
       if (!fragment.firstChild)
-        return;
+        return false;
       var content = new PerfUI.TimelineOverviewPane.PopoverContents();
       this._popoverContents = content.contentElement.createChild('div');
       this._popoverContents.appendChild(fragment);
       this._popover = popover;
-      popover.showView(content, this._cursorElement);
+      content.show(popover.contentElement);
+      return true;
     }
   }
 

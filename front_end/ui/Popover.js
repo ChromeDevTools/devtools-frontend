@@ -28,83 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-UI.Popover = class extends UI.GlassPane {
-  /**
-   * @param {!UI.PopoverHelper=} popoverHelper
-   */
-  constructor(popoverHelper) {
-    super();
-    this.registerRequiredCSS('ui/popover.css');
-    this.setBlockPointerEvents(false);
-    this.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    this.setShowArrow(true);
-    this._popoverHelper = popoverHelper;
-  }
-
-  /**
-   * @param {!Element} element
-   * @param {!Element|!AnchorBox} anchor
-   */
-  showForAnchor(element, anchor) {
-    this._innerShow(null, element, anchor);
-  }
-
-  /**
-   * @param {!UI.Widget} view
-   * @param {!Element|!AnchorBox} anchor
-   */
-  showView(view, anchor) {
-    this._innerShow(view, view.element, anchor);
-  }
-
-  /**
-   * @param {?UI.Widget} widget
-   * @param {!Element} contentElement
-   * @param {!Element|!AnchorBox} anchor
-   */
-  _innerShow(widget, contentElement, anchor) {
-    // This should not happen, but we hide previous popup to be on the safe side.
-    if (UI.Popover._popover)
-      UI.Popover._popover.hide();
-    UI.Popover._popover = this;
-
-    var document =
-        /** @type {!Document} */ (anchor instanceof Element ? anchor.ownerDocument : contentElement.ownerDocument);
-    var anchorBox = anchor instanceof AnchorBox ? anchor : anchor.boxInWindow();
-    this.setContentAnchorBox(anchorBox);
-
-    if (widget)
-      widget.show(this.contentElement);
-    else
-      this.contentElement.appendChild(contentElement);
-
-    super.show(document);
-
-    if (this._popoverHelper) {
-      this.contentElement.addEventListener(
-          'mousemove', this._popoverHelper._killHidePopoverTimer.bind(this._popoverHelper), true);
-      this.contentElement.addEventListener(
-          'mouseout', this._popoverHelper._popoverMouseOut.bind(this._popoverHelper), true);
-    }
-  }
-
-  /**
-   * @override
-   */
-  hide() {
-    super.hide();
-    delete UI.Popover._popover;
-  }
-
-  /**
-   * @param {boolean} noPadding
-   */
-  setNoPadding(noPadding) {
-    // TODO(dgozman): remove this. Clients should add padding themselves.
-    this.contentElement.classList.toggle('no-padding', noPadding);
-  }
-};
-
 /**
  * @unrestricted
  */
@@ -115,6 +38,7 @@ UI.PopoverHelper = class {
    */
   constructor(panelElement, disableOnClick) {
     this._disableOnClick = !!disableOnClick;
+    this._hasPadding = false;
     panelElement.addEventListener('mousedown', this._mouseDown.bind(this), false);
     panelElement.addEventListener('mousemove', this._mouseMove.bind(this), false);
     panelElement.addEventListener('mouseout', this._mouseOut.bind(this), false);
@@ -123,7 +47,7 @@ UI.PopoverHelper = class {
 
   /**
    * @param {function(!Element, !Event):(!Element|!AnchorBox|undefined)} getAnchor
-   * @param {function(!Element, !UI.Popover):undefined} showPopover
+   * @param {function(!Element, !UI.GlassPane):!Promise<boolean>} showPopover
    * @param {function()=} onHide
    */
   initializeCallbacks(getAnchor, showPopover, onHide) {
@@ -142,6 +66,13 @@ UI.PopoverHelper = class {
       this._hideTimeout = hideTimeout;
     else
       this._hideTimeout = timeout / 2;
+  }
+
+  /**
+   * @param {boolean} hasPadding
+   */
+  setHasPadding(hasPadding) {
+    this._hasPadding = hasPadding;
   }
 
   /**
@@ -212,7 +143,8 @@ UI.PopoverHelper = class {
     if (!this._hoverElement)
       return;
     const toolTipDelay = isMouseDown ? 0 : (this._popup ? this._timeout * 0.6 : this._timeout);
-    this._hoverTimer = setTimeout(this._mouseHover.bind(this, this._hoverElement), toolTipDelay);
+    this._hoverTimer =
+        setTimeout(this._mouseHover.bind(this, this._hoverElement, event.target.ownerDocument), toolTipDelay);
   }
 
   _resetHoverTimer() {
@@ -238,6 +170,7 @@ UI.PopoverHelper = class {
     if (!this._popover)
       return;
 
+    delete UI.PopoverHelper._popover;
     if (this._onHide)
       this._onHide();
 
@@ -247,12 +180,33 @@ UI.PopoverHelper = class {
     this._hoverElement = null;
   }
 
-  _mouseHover(element) {
+  _mouseHover(element, document) {
     delete this._hoverTimer;
     this._hoverElement = element;
     this._hidePopover();
-    this._popover = new UI.Popover(this);
-    this._showPopover(element, this._popover);
+
+    this._popover = new UI.GlassPane();
+    this._popover.registerRequiredCSS('ui/popover.css');
+    this._popover.setBlockPointerEvents(false);
+    this._popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    this._popover.setShowArrow(true);
+    this._popover.contentElement.classList.toggle('has-padding', this._hasPadding);
+    this._popover.contentElement.addEventListener('mousemove', this._killHidePopoverTimer.bind(this), true);
+    this._popover.contentElement.addEventListener('mouseout', this._popoverMouseOut.bind(this), true);
+    this._popover.setContentAnchorBox(
+        this._hoverElement instanceof AnchorBox ? this._hoverElement : this._hoverElement.boxInWindow());
+
+    // This should not happen, but we hide previous popover to be on the safe side.
+    if (UI.PopoverHelper._popover) {
+      console.error('One popover is already visible');
+      UI.PopoverHelper._popover.hide();
+    }
+    UI.PopoverHelper._popover = this._popover;
+    var popover = this._popover;
+    this._showPopover(element, this._popover).then(success => {
+      if (success && this._popover === popover && this._hoverElement === element)
+        popover.show(document);
+    });
   }
 
   _killHidePopoverTimer() {

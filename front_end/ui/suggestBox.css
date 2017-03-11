@@ -90,6 +90,22 @@
 }
 
 .suggest-box-content-item.selected > span {
+    color: #fff;
+}
+
+.default-selection-is-dimmed .suggest-box-content-item.selected {
+    background-color: whitesmoke;
+}
+
+.default-selection-is-dimmed .suggest-box-content-item.selected > span {
+    color: inherit;
+}
+
+.user-has-interacted .suggest-box-content-item.selected {
+    background-color: rgb(56, 121, 217);
+}
+
+.user-has-interacted .suggest-box-content-item.selected > span {
     color: #FFF;
 }
 

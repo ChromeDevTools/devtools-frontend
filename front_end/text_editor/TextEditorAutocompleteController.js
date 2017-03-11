@@ -250,8 +250,10 @@ TextEditor.TextEditorAutocompleteController = class {
         this._onSuggestionsShownForTest([]);
         return;
       }
-      if (!this._suggestBox)
+      if (!this._suggestBox) {
         this._suggestBox = new UI.SuggestBox(this, 20, this._config.captureEnter);
+        this._suggestBox.setDefaultSelectionIsDimmed(!!this._config.captureEnter);
+      }
 
       var oldQueryRange = this._queryRange;
       this._queryRange = queryRange;

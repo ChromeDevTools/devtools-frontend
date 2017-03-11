@@ -222,7 +222,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     var frame = this._frames.get(frameId);
     if (frame && !frame.isMainFrame())
       return;
-    if (!Common.moduleSetting('preserveConsoleLog').get())
+    if (!Common.moduleSetting('preserveConsoleLog').get() && this.target().consoleModel)
       this.target().consoleModel.clear();
   }
 

@@ -58,6 +58,14 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
         ]);
       }
     }
+
+    var cpuProfilerModel = target.model(SDK.CPUProfilerModel);
+    if (cpuProfilerModel) {
+      cpuProfilerModel.addEventListener(
+          SDK.CPUProfilerModel.Events.ConsoleProfileStarted, this._consoleProfileStarted, this);
+      cpuProfilerModel.addEventListener(
+          SDK.CPUProfilerModel.Events.ConsoleProfileFinished, this._consoleProfileFinished, this);
+    }
   }
 
   /**
@@ -147,6 +155,44 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
     this._errors--;
     exceptionMessage.level = SDK.ConsoleMessage.MessageLevel.Info;
     this.dispatchEventToListeners(SDK.ConsoleModel.Events.MessageUpdated, exceptionMessage);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _consoleProfileStarted(event) {
+    var data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
+    this._addConsoleProfileMessage(
+        SDK.ConsoleMessage.MessageType.Profile, data.scriptLocation,
+        Common.UIString('Profile \'%s\' started.', data.title));
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _consoleProfileFinished(event) {
+    var data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
+    this._addConsoleProfileMessage(
+        SDK.ConsoleMessage.MessageType.ProfileEnd, data.scriptLocation,
+        Common.UIString('Profile \'%s\' finished.', data.title));
+  }
+
+  /**
+   * @param {string} type
+   * @param {!SDK.DebuggerModel.Location} scriptLocation
+   * @param {string} messageText
+   */
+  _addConsoleProfileMessage(type, scriptLocation, messageText) {
+    var stackTrace = [{
+      functionName: '',
+      scriptId: scriptLocation.scriptId,
+      url: scriptLocation.script() ? scriptLocation.script().contentURL() : '',
+      lineNumber: scriptLocation.lineNumber,
+      columnNumber: scriptLocation.columnNumber || 0
+    }];
+    this.addMessage(new SDK.ConsoleMessage(
+        this.target(), SDK.ConsoleMessage.MessageSource.ConsoleAPI, SDK.ConsoleMessage.MessageLevel.Info, messageText,
+        type, undefined, undefined, undefined, undefined, stackTrace));
   }
 
   /**

@@ -40,7 +40,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
 
     target.registerDebuggerDispatcher(new SDK.DebuggerDispatcher(this));
     this._agent = target.debuggerAgent();
-    this._runtimeModel = target.runtimeModel;
+    this._runtimeModel = target.model(SDK.RuntimeModel);
 
     /** @type {?SDK.DebuggerPausedDetails} */
     this._debuggerPausedDetails = null;

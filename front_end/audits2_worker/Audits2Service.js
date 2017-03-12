@@ -40,17 +40,15 @@ var Audits2Service = class {
    * @return {!Promise<!Audits2.WorkerResult>}
    */
   start(params) {
-    const connection = this;
-    const options = undefined;
-
     self.listenForStatus(message => {
       this.statusUpdate(message[1]);
     });
-    return self.runLighthouseInWorker(connection, params.url, options, params.aggregationTags)
-        .then(
-            /** @type {!Audits2.LighthouseResult} */ result =>
+
+    return Promise.resolve()
+      .then(_ => self.runLighthouseInWorker(this, params.url, undefined, params.aggregationIDs))
+      .then(/** @type {!Audits2.LighthouseResult} */ result =>
                 ({blobUrl: /** @type {?string} */ self.createReportPageAsBlob(result, 'devtools'), result}))
-        .catchException(null);
+      .catchException(null);
   }
 
   /**

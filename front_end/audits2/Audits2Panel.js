@@ -34,17 +34,16 @@ Audits2.Audits2Panel = class extends UI.Panel {
     this._protocolService = new Audits2.ProtocolService();
     this._protocolService.registerStatusCallback(msg => this._updateStatus(Common.UIString(msg)));
 
-    this._pwaSetting = Common.settings.createSetting('audits2_pwa', true);
-    this._pwaSetting.setTitle(Common.UIString('Progressive web app audits'));
-    this._perfSetting = Common.settings.createSetting('audits2_perf', true);
-    this._perfSetting.setTitle(Common.UIString('Performance metrics and diagnostics'));
-    this._practicesSetting = Common.settings.createSetting('audits2_best_practices', true);
-    this._practicesSetting.setTitle(Common.UIString('Modern web development best practices'));
+    this._settings = Audits2.Audits2Panel.Presets.map(preset => {
+      const setting = Common.settings.createSetting(preset.id, true);
+      setting.setTitle(Common.UIString(preset.description));
+      return setting;
+    });
 
-    var auditsViewElement = this.contentElement.createChild('div', 'hbox audits-view');
+    var auditsViewElement = this.contentElement.createChild('div', 'hbox audits2-view');
     this._resultsView = this.contentElement.createChild('div', 'vbox results-view');
-    auditsViewElement.appendChild(createElementWithClass('div', 'audits2-logo'));
-    auditsViewElement.appendChild(this._createLauncherUI());
+    auditsViewElement.createChild('div', 'audits2-logo');
+    this._createLauncherUI(auditsViewElement);
   }
 
   _reset() {
@@ -52,8 +51,11 @@ Audits2.Audits2Panel = class extends UI.Panel {
     this._resultsView.removeChildren();
   }
 
-  _createLauncherUI() {
-    var uiElement = createElement('div');
+  /**
+   * @param {!Element} auditsViewElement
+   */
+  _createLauncherUI(auditsViewElement) {
+    var uiElement = auditsViewElement.createChild('div');
     var headerElement = uiElement.createChild('header');
     headerElement.createChild('p').textContent = Common.UIString(
         'Audits will analyze the page against modern development best practices and collect useful performance metrics and diagnostics. Select audits to collect:');
@@ -61,25 +63,23 @@ Audits2.Audits2Panel = class extends UI.Panel {
 
     var auditSelectorForm = uiElement.createChild('form', 'audits2-form');
 
-    var perfCheckbox = new UI.ToolbarSettingCheckbox(this._perfSetting);
-    var pwaCheckbox = new UI.ToolbarSettingCheckbox(this._pwaSetting);
-    var practicesCheckbox = new UI.ToolbarSettingCheckbox(this._practicesSetting);
-    [perfCheckbox, practicesCheckbox, pwaCheckbox].forEach(checkbox => auditSelectorForm.appendChild(checkbox.element));
+    this._settings
+      .map(setting => new UI.ToolbarSettingCheckbox(setting))
+      .forEach(checkbox => auditSelectorForm.appendChild(checkbox.element));
 
     this._startButton = UI.createTextButton(
         Common.UIString('Audit this page'), this._startButtonClicked.bind(this), 'run-audit audit-btn');
     auditSelectorForm.appendChild(this._startButton);
 
-    this._statusView = this._createStatusView();
-    uiElement.appendChild(this._statusView);
-    return uiElement;
+    this._statusView = this._createStatusView(uiElement);
   }
 
   /**
+   * @param {!Element} launcherUIElement
    * @return {!Element}
    */
-  _createStatusView() {
-    var statusView = createElementWithClass('div', 'audits2-status hbox hidden');
+  _createStatusView(launcherUIElement) {
+    var statusView = launcherUIElement.createChild('div', 'audits2-status hbox hidden');
     statusView.createChild('span', 'icon');
     this._statusElement = createElement('p');
     statusView.appendChild(this._statusElement);
@@ -88,17 +88,21 @@ Audits2.Audits2Panel = class extends UI.Panel {
   }
 
   _start() {
-    this._auditRunning = true;
-    this._updateButton();
-    this._updateStatus(Common.UIString('Loading...'));
-
     this._inspectedURL = SDK.targetManager.mainTarget().inspectedURL();
-    const aggregationTags = [this._pwaSetting, this._perfSetting, this._practicesSetting].map(
-        setting => ({id: setting.name.replace('audits2_', ''), value: setting.get()}));
+
+    const aggregationIDs = this._settings.map(setting => {
+      const preset = Audits2.Audits2Panel.Presets.find(preset => preset.id === setting.name);
+      return {configID: preset.configID, value: setting.get()};
+    }).filter(agg => !!agg.value).map(agg => agg.configID);
 
     return Promise.resolve()
         .then(_ => this._protocolService.attach())
-        .then(_ => this._protocolService.startLighthouse(this._inspectedURL, aggregationTags))
+        .then(_ => {
+          this._auditRunning = true;
+          this._updateButton();
+          this._updateStatus(Common.UIString('Loading...'));
+        })
+        .then(_ => this._protocolService.startLighthouse(this._inspectedURL, aggregationIDs))
         .then(workerResult => {
           this._finish(workerResult);
           return this._stop();
@@ -154,30 +158,31 @@ Audits2.Audits2Panel = class extends UI.Panel {
     }
     this._resultsView.removeChildren();
 
-    this._resultsView.appendChild(this._createResultsBar(workerResult.result.url, workerResult.result.generatedTime));
-    this._resultsView.appendChild(this._createIframe(workerResult.blobUrl));
+    var url = workerResult.result.url;
+    var timestamp = workerResult.result.generatedTime;
+    this._createResultsBar(this._resultsView, url, timestamp);
+    this._createIframe(this._resultsView, workerResult.blobUrl);
     this.contentElement.classList.add('show-results');
   }
 
   /**
+   * @param {!Element} resultsView
    * @param {string} blobUrl
-   * @return {!Element}
    */
-  _createIframe(blobUrl) {
-    var iframeContainer = createElementWithClass('div', 'iframe-container');
+  _createIframe(resultsView, blobUrl) {
+    var iframeContainer = resultsView.createChild('div', 'iframe-container');
     var iframe = iframeContainer.createChild('iframe', 'fill');
     iframe.setAttribute('sandbox', 'allow-scripts allow-popups-to-escape-sandbox allow-popups');
     iframe.src = blobUrl;
-    return iframeContainer;
   }
 
   /**
+   * @param {!Element} resultsView
    * @param {string} url
    * @param {string} timestamp
-   * @return {!Element}
    */
-  _createResultsBar(url, timestamp) {
-    var elem = createElementWithClass('div', 'results-bar hbox');
+  _createResultsBar(resultsView, url, timestamp) {
+    var elem = resultsView.createChild('div', 'results-bar hbox');
     elem.createChild('div', 'audits2-logo audits2-logo-small');
 
     var summaryElem = elem.createChild('div', 'audits2-summary');
@@ -192,9 +197,19 @@ Audits2.Audits2Panel = class extends UI.Panel {
     var newAuditButton =
         UI.createTextButton(Common.UIString('New Audit'), this._reset.bind(this), 'new-audit audit-btn');
     elem.appendChild(newAuditButton);
-    return elem;
   }
 };
+
+/** @typedef {{id: string, configID: string, description: string}} */
+Audits2.Audits2Panel.Preset;
+
+/** @type {!Array.<!Audits2.Audits2Panel.Preset>} */
+Audits2.Audits2Panel.Presets = [
+  // configID maps to Lighthouse's config.aggregations[0].id value
+  {id: 'audits2_cat_pwa', configID: 'pwa', description: 'Progressive web app audits'},
+  {id: 'audits2_cat_perf', configID: 'perf', description: 'Performance metrics and diagnostics'},
+  {id: 'audits2_cat_best_practices', configID: 'bp', description: 'Modern web development best practices'},
+];
 
 Audits2.ProtocolService = class extends Common.Object {
   constructor() {
@@ -220,11 +235,11 @@ Audits2.ProtocolService = class extends Common.Object {
 
   /**
    * @param {string} inspectedURL
-   * @param {!Array<!{id: string, value: boolean}>} aggregationTags
+   * @param {!Array<string>} aggregationIDs
    * @return {!Promise<!Audits2.WorkerResult|undefined>}
    */
-  startLighthouse(inspectedURL, aggregationTags) {
-    return this._send('start', {url: inspectedURL, aggregationTags});
+  startLighthouse(inspectedURL, aggregationIDs) {
+    return this._send('start', {url: inspectedURL, aggregationIDs});
   }
 
   /**

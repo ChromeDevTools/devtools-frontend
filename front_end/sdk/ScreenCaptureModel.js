@@ -48,7 +48,7 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
   captureScreenshot(format, quality) {
     var fulfill;
     var promise = new Promise(callback => fulfill = callback);
-    this._agent.captureScreenshot(format, quality, (error, content) => {
+    this._agent.captureScreenshot(format, quality, false, (error, content) => {
       if (error)
         console.error(error);
       fulfill(error ? null : content);

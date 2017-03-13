@@ -39,10 +39,10 @@ Coverage.CoverageListView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Array<!Coverage.CoverageInfo>} coverageInfo
+   * @param {!Array<!Coverage.URLCoverageInfo>} coverageInfo
    */
   update(coverageInfo) {
-    var maxSize = coverageInfo.reduce((acc, entry) => Math.max(acc, entry.size), 0);
+    var maxSize = coverageInfo.reduce((acc, entry) => Math.max(acc, entry.size()), 0);
     var rootNode = this._dataGrid.rootNode();
     rootNode.removeChildren();
     for (var entry of coverageInfo)
@@ -77,8 +77,7 @@ Coverage.CoverageListView = class extends UI.VBox {
     if (!node)
       return;
     var coverageInfo = /** @type {!Coverage.CoverageListView.GridNode} */ (node)._coverageInfo;
-    var url = coverageInfo.contentProvider.contentURL();
-    var sourceCode = Workspace.workspace.uiSourceCodeForURL(url);
+    var sourceCode = Workspace.workspace.uiSourceCodeForURL(coverageInfo.url());
     if (!sourceCode)
       return;
     Common.Revealer.reveal(sourceCode);
@@ -131,7 +130,7 @@ Coverage.CoverageListView = class extends UI.VBox {
       var nodeA = /** @type {!Coverage.CoverageListView.GridNode} */ (a);
       var nodeB = /** @type {!Coverage.CoverageListView.GridNode} */ (b);
 
-      return nodeA._coverageInfo[fieldName] - nodeB._coverageInfo[fieldName];
+      return nodeA._coverageInfo[fieldName]() - nodeB._coverageInfo[fieldName]();
     }
   }
 
@@ -150,13 +149,13 @@ Coverage.CoverageListView = class extends UI.VBox {
 
 Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode {
   /**
-   * @param {!Coverage.CoverageInfo} coverageInfo
+   * @param {!Coverage.URLCoverageInfo} coverageInfo
    * @param {number} maxSize
    */
   constructor(coverageInfo, maxSize) {
     super();
     this._coverageInfo = coverageInfo;
-    this._url = coverageInfo.contentProvider.contentURL();
+    this._url = coverageInfo.url();
     this._displayURL = new Common.ParsedURL(this._url).displayName;
     this._maxSize = maxSize;
   }
@@ -179,26 +178,26 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
         suffix.textContent = splitURL ? splitURL[2] : '';
         break;
       case 'type':
-        cell.textContent = Coverage.CoverageListView._typeToString(this._coverageInfo.type);
+        cell.textContent = Coverage.CoverageListView._typeToString(this._coverageInfo.type());
         break;
       case 'size':
         cell.classList.add('numeric-column');
-        cell.textContent = Number.withThousandsSeparator(this._coverageInfo.size || 0);
+        cell.textContent = Number.withThousandsSeparator(this._coverageInfo.size() || 0);
         break;
       case 'unusedSize':
         cell.classList.add('numeric-column');
-        cell.textContent = Number.withThousandsSeparator(this._coverageInfo.unusedSize || 0);
-        if (this._coverageInfo.size)
-          cell.title = Math.round(100 * this._coverageInfo.unusedSize / this._coverageInfo.size) + '%';
+        cell.textContent = Number.withThousandsSeparator(this._coverageInfo.unusedSize() || 0);
+        if (this._coverageInfo.size())
+          cell.title = Math.round(100 * this._coverageInfo.unusedSize() / this._coverageInfo.size()) + '%';
         break;
       case 'bars':
         var barContainer = cell.createChild('div', 'bar-container');
         var unusedSizeBar = barContainer.createChild('div', 'bar bar-unused-size');
-        unusedSizeBar.style.width = Math.ceil(100 * this._coverageInfo.unusedSize / this._maxSize) + '%';
+        unusedSizeBar.style.width = Math.ceil(100 * this._coverageInfo.unusedSize() / this._maxSize) + '%';
         var usedSizeBar = barContainer.createChild('div', 'bar bar-used-size');
-        usedSizeBar.style.width = Math.ceil(100 * this._coverageInfo.usedSize / this._maxSize) + '%';
+        usedSizeBar.style.width = Math.ceil(100 * this._coverageInfo.usedSize() / this._maxSize) + '%';
         var sizeBar = barContainer.createChild('div', 'bar bar-slack-size');
-        var slackSize = this._coverageInfo.size - this._coverageInfo.unusedSize - this._coverageInfo.usedSize;
+        var slackSize = this._coverageInfo.size() - this._coverageInfo.unusedSize() - this._coverageInfo.usedSize();
         sizeBar.style.width = Math.ceil(100 * slackSize / this._maxSize) + '%';
     }
     return cell;

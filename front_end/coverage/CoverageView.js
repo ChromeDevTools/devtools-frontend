@@ -74,7 +74,7 @@ Coverage.CoverageView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Array<!Coverage.CoverageInfo>} coverageInfo
+   * @param {!Array<!Coverage.URLCoverageInfo>} coverageInfo
    */
   async _updateViews(coverageInfo) {
     this._updateStats(coverageInfo);
@@ -85,14 +85,14 @@ Coverage.CoverageView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Array<!Coverage.CoverageInfo>} coverageInfo
+   * @param {!Array<!Coverage.URLCoverageInfo>} coverageInfo
    */
   _updateStats(coverageInfo) {
     var total = 0;
     var unused = 0;
     for (var info of coverageInfo) {
-      total += info.size || 0;
-      unused += info.unusedSize || 0;
+      total += info.size();
+      unused += info.unusedSize();
     }
 
     var percentUnused = total ? Math.round(100 * unused / total) : 0;
@@ -102,49 +102,16 @@ Coverage.CoverageView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Coverage.CoverageInfo} coverageInfo
+   * @param {!Coverage.URLCoverageInfo} coverageInfo
    */
   static async _updateGutter(coverageInfo) {
-    var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(coverageInfo.contentProvider.contentURL());
+    var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(coverageInfo.url());
     if (!uiSourceCode)
       return;
     // FIXME: gutter should be set in terms of offsets and therefore should not require contents.
-    var contents = await coverageInfo.contentProvider.requestContent();
-    if (!contents)
-      return;
-    var text = new Common.Text(contents);
-    var lastOffset = 0;
-    var rangesByDepth = [];
-    for (var segment of coverageInfo.segments) {
-      if (typeof segment.count !== 'number') {
-        lastOffset = segment.end;
-        continue;
-      }
-      var startPosition = text.positionFromOffset(lastOffset);
-      var endPosition = text.positionFromOffset(segment.end);
-      if (!startPosition.lineNumber)
-        startPosition.columnNumber += coverageInfo.columnOffset;
-      startPosition.lineNumber += coverageInfo.lineOffset;
-      if (!endPosition.lineNumber)
-        endPosition.columnNumber += coverageInfo.columnOffset;
-      endPosition.lineNumber += coverageInfo.lineOffset;
-
-      var ranges = rangesByDepth[segment.depth - 1];  // depth === 0 => count === undefined
-      if (!ranges) {
-        ranges = [];
-        rangesByDepth[segment.depth - 1] = ranges;
-      }
-      ranges.push({
-        count: segment.count,
-        range: new Common.TextRange(
-            startPosition.lineNumber, startPosition.columnNumber, endPosition.lineNumber, endPosition.columnNumber)
-      });
-      lastOffset = segment.end;
-    }
-    for (var ranges of rangesByDepth) {
-      for (var r of ranges)
-        uiSourceCode.addDecoration(r.range, Coverage.CoverageView.LineDecorator.type, r.count);
-    }
+    var ranges = await coverageInfo.buildTextRanges();
+    for (var r of ranges)
+      uiSourceCode.addDecoration(r.range, Coverage.CoverageView.LineDecorator.type, r.count);
   }
 };
 

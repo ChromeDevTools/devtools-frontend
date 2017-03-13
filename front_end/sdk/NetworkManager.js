@@ -394,7 +394,7 @@ SDK.NetworkDispatcher = class {
           new SDK.ConsoleMessage(
               consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network, SDK.ConsoleMessage.MessageLevel.Warning,
               Common.UIString(
-                  'Set-Cookie header is ignored in response from url: %s. Cookie length should be less then or equal to 4096 characters.',
+                  'Set-Cookie header is ignored in response from url: %s. Cookie length should be less than or equal to 4096 characters.',
                   response.url)),
           undefined, undefined, undefined, undefined, requestId);
     }

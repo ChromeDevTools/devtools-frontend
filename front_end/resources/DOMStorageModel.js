@@ -150,6 +150,11 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
   clearForOrigin(origin) {
     if (!this._enabled)
       return;
+    for (var isLocal of [true, false]) {
+      var key = this._storageKey(origin, isLocal);
+      var storage = this._storages[key];
+      storage.clear();
+    }
     this._removeOrigin(origin);
     this._addOrigin(origin);
   }
@@ -165,17 +170,13 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    * @param {string} securityOrigin
    */
   _addOrigin(securityOrigin) {
-    var localStorageKey = this._storageKey(securityOrigin, true);
-    console.assert(!this._storages[localStorageKey]);
-    var localStorage = new Resources.DOMStorage(this, securityOrigin, true);
-    this._storages[localStorageKey] = localStorage;
-    this.dispatchEventToListeners(Resources.DOMStorageModel.Events.DOMStorageAdded, localStorage);
-
-    var sessionStorageKey = this._storageKey(securityOrigin, false);
-    console.assert(!this._storages[sessionStorageKey]);
-    var sessionStorage = new Resources.DOMStorage(this, securityOrigin, false);
-    this._storages[sessionStorageKey] = sessionStorage;
-    this.dispatchEventToListeners(Resources.DOMStorageModel.Events.DOMStorageAdded, sessionStorage);
+    for (var isLocal of [true, false]) {
+      var key = this._storageKey(securityOrigin, isLocal);
+      console.assert(!this._storages[key]);
+      var storage = new Resources.DOMStorage(this, securityOrigin, isLocal);
+      this._storages[key] = storage;
+      this.dispatchEventToListeners(Resources.DOMStorageModel.Events.DOMStorageAdded, storage);
+    }
   }
 
   /**
@@ -189,17 +190,13 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    * @param {string} securityOrigin
    */
   _removeOrigin(securityOrigin) {
-    var localStorageKey = this._storageKey(securityOrigin, true);
-    var localStorage = this._storages[localStorageKey];
-    console.assert(localStorage);
-    delete this._storages[localStorageKey];
-    this.dispatchEventToListeners(Resources.DOMStorageModel.Events.DOMStorageRemoved, localStorage);
-
-    var sessionStorageKey = this._storageKey(securityOrigin, false);
-    var sessionStorage = this._storages[sessionStorageKey];
-    console.assert(sessionStorage);
-    delete this._storages[sessionStorageKey];
-    this.dispatchEventToListeners(Resources.DOMStorageModel.Events.DOMStorageRemoved, sessionStorage);
+    for (var isLocal of [true, false]) {
+      var key = this._storageKey(securityOrigin, isLocal);
+      var storage = this._storages[key];
+      console.assert(storage);
+      delete this._storages[key];
+      this.dispatchEventToListeners(Resources.DOMStorageModel.Events.DOMStorageRemoved, storage);
+    }
   }
 
   /**

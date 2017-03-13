@@ -149,10 +149,11 @@ Resources.ClearStorageView = class extends UI.VBox {
     }
 
     this._clearButton.disabled = true;
+    var label = this._clearButton.textContent;
     this._clearButton.textContent = Common.UIString('Clearing...');
     setTimeout(() => {
       this._clearButton.disabled = false;
-      this._clearButton.textContent = Common.UIString('Clear selected');
+      this._clearButton.textContent = label;
     }, 500);
   }
 };

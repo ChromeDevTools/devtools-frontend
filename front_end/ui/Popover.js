@@ -47,7 +47,7 @@ UI.PopoverHelper = class {
 
   /**
    * @param {function(!Element, !Event):(!Element|!AnchorBox|undefined)} getAnchor
-   * @param {function(!Element, !UI.GlassPane):!Promise<boolean>} showPopover
+   * @param {function((!Element|!AnchorBox), !UI.GlassPane):!Promise<boolean>} showPopover
    * @param {function()=} onHide
    */
   initializeCallbacks(getAnchor, showPopover, onHide) {

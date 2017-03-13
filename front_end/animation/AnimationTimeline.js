@@ -172,7 +172,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
   }
 
   /**
-   * @param {!Element} anchor
+   * @param {!Element|!AnchorBox} anchor
    * @param {!UI.GlassPane} popover
    * @return {!Promise<boolean>}
    */

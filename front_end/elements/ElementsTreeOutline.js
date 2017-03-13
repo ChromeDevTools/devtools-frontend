@@ -572,7 +572,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
   }
 
   /**
-   * @param {!Element} link
+   * @param {!Element|!AnchorBox} link
    * @param {!UI.GlassPane} popover
    * @return {!Promise<boolean>}
    */

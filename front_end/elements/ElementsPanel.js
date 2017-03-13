@@ -580,7 +580,7 @@ Elements.ElementsPanel = class extends UI.Panel {
   }
 
   /**
-   * @param {!Element} link
+   * @param {!Element|!AnchorBox} link
    * @param {!UI.GlassPane} popover
    * @return {!Promise<boolean>}
    */

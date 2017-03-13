@@ -44,10 +44,13 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     if (uiSourceCode.project().type() === Workspace.projectTypes.Debugger)
       this.element.classList.add('source-frame-debugger-script');
 
-    this._popoverHelper = new ObjectUI.ObjectPopoverHelper(
-        this._scriptsPanel.element, this._getPopoverAnchor.bind(this), this._resolveObjectForPopover.bind(this),
-        this._onHidePopover.bind(this), true);
+    this._popoverHelper = new UI.PopoverHelper(this._scriptsPanel.element, true);
+    this._popoverHelper.initializeCallbacks(
+        this._getPopoverAnchor.bind(this), this._showObjectPopover.bind(this), this._onHidePopover.bind(this));
     this._popoverHelper.setTimeout(250, 250);
+    this._popoverHelper.setHasPadding(true);
+    this._scriptsPanel.element.addEventListener(
+        'scroll', this._popoverHelper.hidePopover.bind(this._popoverHelper), true);
 
     this.textEditor.element.addEventListener('keydown', this._onKeyDown.bind(this), true);
 
@@ -422,12 +425,14 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     return anchorBox;
   }
 
-  _resolveObjectForPopover(anchorBox, showCallback, objectGroupName) {
+  /**
+   * @param {!AnchorBox} anchorBox
+   * @return {!Promise<?SDK.RemoteObject>}
+   */
+  _resolveObjectForPopover(anchorBox) {
     var selectedCallFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
-    if (!selectedCallFrame) {
-      this._popoverHelper.hidePopover();
-      return;
-    }
+    if (!selectedCallFrame)
+      return Promise.resolve(/** @type {?SDK.RemoteObject} */ (null));
     var lineNumber = anchorBox.highlight.lineNumber;
     var startHighlight = anchorBox.highlight.startColumn;
     var endHighlight = anchorBox.highlight.endColumn;
@@ -435,57 +440,86 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     if (!anchorBox.forSelection) {
       while (startHighlight > 1 && line.charAt(startHighlight - 1) === '.') {
         var token = this.textEditor.tokenAtTextPosition(lineNumber, startHighlight - 2);
-        if (!token || !token.type) {
-          this._popoverHelper.hidePopover();
-          return;
-        }
+        if (!token || !token.type)
+          return Promise.resolve(/** @type {?SDK.RemoteObject} */ (null));
         startHighlight = token.startColumn;
       }
     }
     var evaluationText = line.substring(startHighlight, endHighlight + 1);
-    Sources.SourceMapNamesResolver
+    return Sources.SourceMapNamesResolver
         .resolveExpression(
             selectedCallFrame, evaluationText, this._debuggerSourceCode, lineNumber, startHighlight, endHighlight)
         .then(onResolve.bind(this));
 
     /**
      * @param {?string=} text
+     * @return {!Promise<?SDK.RemoteObject>}
      * @this {Sources.JavaScriptSourceFrame}
      */
     function onResolve(text) {
+      var fulfill;
+      var promise = new Promise(x => fulfill = x);
       selectedCallFrame.evaluate(
-          text || evaluationText, objectGroupName, false, true, false, false, showObjectPopover.bind(this));
+          text || evaluationText, 'popover', false, true, false, false, showObjectPopover.bind(this, fulfill));
+      return promise;
     }
 
     /**
+     * @param {function(?SDK.RemoteObject)} fulfill
      * @param {?Protocol.Runtime.RemoteObject} result
      * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {Sources.JavaScriptSourceFrame}
      */
-    function showObjectPopover(result, exceptionDetails) {
+    function showObjectPopover(fulfill, result, exceptionDetails) {
       var target = UI.context.flavor(SDK.Target);
       var potentiallyUpdatedCallFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
-      if (selectedCallFrame !== potentiallyUpdatedCallFrame || !result) {
-        this._popoverHelper.hidePopover();
+      if (selectedCallFrame !== potentiallyUpdatedCallFrame || !result || exceptionDetails) {
+        fulfill(null);
         return;
       }
       this._popoverAnchorBox = anchorBox;
-      showCallback(target.runtimeModel.createRemoteObject(result), !!exceptionDetails, this._popoverAnchorBox);
-      // Popover may have been removed by showCallback().
-      if (this._popoverAnchorBox) {
-        var highlightRange = new Common.TextRange(lineNumber, startHighlight, lineNumber, endHighlight);
-        this._popoverAnchorBox._highlightDescriptor =
-            this.textEditor.highlightRange(highlightRange, 'source-frame-eval-expression');
-      }
+      this._popoverTarget = target;
+      var highlightRange = new Common.TextRange(lineNumber, startHighlight, lineNumber, endHighlight);
+      this._popoverAnchorBox._highlightDescriptor =
+          this.textEditor.highlightRange(highlightRange, 'source-frame-eval-expression');
+      fulfill(target.runtimeModel.createRemoteObject(result));
     }
   }
 
+  /**
+   * @param {!AnchorBox|!Element} anchorBox
+   * @param {!UI.GlassPane} popover
+   * @return {!Promise<boolean>}
+   */
+  _showObjectPopover(anchorBox, popover) {
+    return this._resolveObjectForPopover(/** @type {!AnchorBox} */ (anchorBox)).then(object => {
+      if (!object)
+        return false;
+      return ObjectUI.ObjectPopoverHelper.buildObjectPopover(object, popover).then(objectPopoverHelper => {
+        if (!objectPopoverHelper) {
+          this._onHidePopover();  // Cleanup artifacts from _resolveObjectForPopover.
+          return false;
+        }
+        this._objectPopoverHelper = objectPopoverHelper;
+        return true;
+      });
+    });
+  }
+
   _onHidePopover() {
-    if (!this._popoverAnchorBox)
-      return;
-    if (this._popoverAnchorBox._highlightDescriptor)
-      this.textEditor.removeHighlight(this._popoverAnchorBox._highlightDescriptor);
-    delete this._popoverAnchorBox;
+    if (this._objectPopoverHelper) {
+      this._objectPopoverHelper.dispose();
+      delete this._objectPopoverHelper;
+    }
+    if (this._popoverTarget) {
+      this._popoverTarget.runtimeModel.releaseObjectGroup('popover');
+      delete this._popoverTarget;
+    }
+    if (this._popoverAnchorBox) {
+      if (this._popoverAnchorBox._highlightDescriptor)
+        this.textEditor.removeHighlight(this._popoverAnchorBox._highlightDescriptor);
+      delete this._popoverAnchorBox;
+    }
   }
 
   _onKeyDown(event) {

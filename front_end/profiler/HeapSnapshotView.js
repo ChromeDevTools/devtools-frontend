@@ -153,8 +153,11 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
 
     this._selectedSizeText = new UI.ToolbarText();
 
-    this._popoverHelper = new ObjectUI.ObjectPopoverHelper(
-        this.element, this._getHoverAnchor.bind(this), this._resolveObjectForPopover.bind(this), undefined, true);
+    this._popoverHelper = new UI.PopoverHelper(this.element, true);
+    this._popoverHelper.initializeCallbacks(
+        this._getHoverAnchor.bind(this), this._showObjectPopover.bind(this), this._onHidePopover.bind(this));
+    this._popoverHelper.setHasPadding(true);
+    this.element.addEventListener('scroll', this._popoverHelper.hidePopover.bind(this._popoverHelper), true);
 
     this._currentPerspectiveIndex = 0;
     this._currentPerspective = this._perspectives[0];
@@ -615,12 +618,47 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     return span;
   }
 
-  _resolveObjectForPopover(element, showCallback, objectGroupName) {
-    if (!this._profile.target())
-      return;
-    if (!element.node)
-      return;
-    element.node.queryObjectContent(this._profile.target(), showCallback, objectGroupName);
+  /**
+   * @param {!Element|!AnchorBox} element
+   * @param {!UI.GlassPane} popover
+   * @return {!Promise<boolean>}
+   */
+  _showObjectPopover(element, popover) {
+    if (!this._profile.target() || !element.node)
+      return Promise.resolve(false);
+
+    var fulfill;
+    var promise = new Promise(x => fulfill = x);
+    element.node.queryObjectContent(this._profile.target(), onObjectResolved.bind(this), 'popover');
+    return promise;
+
+    /**
+     * @param {?SDK.RemoteObject} result
+     * @this {Profiler.HeapSnapshotView}
+     */
+    function onObjectResolved(result) {
+      if (!result) {
+        fulfill(false);
+        return;
+      }
+      ObjectUI.ObjectPopoverHelper.buildObjectPopover(result, popover).then(objectPopoverHelper => {
+        if (!objectPopoverHelper) {
+          this._onHidePopover();  // Cleanup object resolving artifacts.
+          fulfill(false);
+          return;
+        }
+        this._objectPopoverHelper = objectPopoverHelper;
+        fulfill(true);
+      });
+    }
+  }
+
+  _onHidePopover() {
+    if (this._objectPopoverHelper) {
+      this._objectPopoverHelper.dispose();
+      delete this._objectPopoverHelper;
+    }
+    this._profile.target().runtimeModel.releaseObjectGroup('popover');
   }
 
   _updatePerspectiveOptions() {

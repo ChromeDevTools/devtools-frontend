@@ -28,33 +28,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @unrestricted
- */
-ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
+ObjectUI.ObjectPopoverHelper = class {
   /**
-   * @param {!Element} panelElement
-   * @param {function(!Element, !Event):(!Element|!AnchorBox|undefined)} getAnchor
-   * @param {function(!Element, function(!SDK.RemoteObject, boolean, !Element=):undefined, string):undefined} queryObject
-   * @param {function()=} onHide
-   * @param {boolean=} disableOnClick
+   * @param {?Components.Linkifier} linkifier
+   * @param {boolean} resultHighlightedAsDOM
    */
-  constructor(panelElement, getAnchor, queryObject, onHide, disableOnClick) {
-    super(panelElement, disableOnClick);
-    this.initializeCallbacks(getAnchor, this._showObjectPopover.bind(this), this._onHideObjectPopover.bind(this));
-    this.setHasPadding(true);
-    this._queryObject = queryObject;
-    this._onHideCallback = onHide;
-    this._popoverObjectGroup = 'popover';
-    panelElement.addEventListener('scroll', this.hidePopover.bind(this), true);
+  constructor(linkifier, resultHighlightedAsDOM) {
+    this._linkifier = linkifier;
+    this._resultHighlightedAsDOM = resultHighlightedAsDOM;
+  }
+
+  dispose() {
+    if (this._resultHighlightedAsDOM)
+      SDK.DOMModel.hideDOMNodeHighlight();
+    if (this._linkifier)
+      this._linkifier.dispose();
   }
 
   /**
-   * @param {!Element} element
+   * @param {!SDK.RemoteObject} result
    * @param {!UI.GlassPane} popover
-   * @return {!Promise<boolean>}
+   * @return {!Promise<?ObjectUI.ObjectPopoverHelper>}
    */
-  _showObjectPopover(element, popover) {
+  static buildObjectPopover(result, popover) {
     var fulfill;
     var promise = new Promise(x => fulfill = x);
 
@@ -64,7 +60,6 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
      * @param {!Element} popoverValueElement
      * @param {?Array.<!SDK.RemoteObjectProperty>} properties
      * @param {?Array.<!SDK.RemoteObjectProperty>} internalProperties
-     * @this {ObjectUI.ObjectPopoverHelper}
      */
     function didGetFunctionProperties(
         funcObject, popoverContentElement, popoverValueElement, properties, internalProperties) {
@@ -79,17 +74,16 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
       ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(funcObject, popoverValueElement, true);
       funcObject.debuggerModel()
           .functionDetailsPromise(funcObject)
-          .then(didGetFunctionDetails.bind(this, popoverContentElement));
+          .then(didGetFunctionDetails.bind(null, popoverContentElement));
     }
 
     /**
      * @param {!Element} popoverContentElement
      * @param {?SDK.DebuggerModel.FunctionDetails} response
-     * @this {ObjectUI.ObjectPopoverHelper}
      */
     function didGetFunctionDetails(popoverContentElement, response) {
-      if (!response || this._disposed) {
-        fulfill(false);
+      if (!response) {
+        fulfill(null);
         return;
       }
 
@@ -101,110 +95,67 @@ ObjectUI.ObjectPopoverHelper = class extends UI.PopoverHelper {
       var rawLocation = response.location;
       var linkContainer = title.createChild('div', 'function-title-link-container');
       var sourceURL = rawLocation && rawLocation.script() ? rawLocation.script().sourceURL : null;
-      if (rawLocation && sourceURL)
-        linkContainer.appendChild(this._lazyLinkifier().linkifyRawLocation(rawLocation, sourceURL));
+      var linkifier = null;
+      if (rawLocation && sourceURL) {
+        linkifier = new Components.Linkifier();
+        linkContainer.appendChild(linkifier.linkifyRawLocation(rawLocation, sourceURL));
+      }
       container.appendChild(popoverContentElement);
       popover.contentElement.appendChild(container);
-      fulfill(true);
+      fulfill(new ObjectUI.ObjectPopoverHelper(linkifier, false));
     }
 
-    /**
-     * @param {!SDK.RemoteObject} result
-     * @param {boolean} wasThrown
-     * @param {!Element|!AnchorBox=} anchorOverride
-     * @this {ObjectUI.ObjectPopoverHelper}
-     */
-    function didQueryObject(result, wasThrown, anchorOverride) {
-      if (this._disposed) {
-        fulfill(false);
-        return;
-      }
-      if (wasThrown) {
-        this.hidePopover();
-        fulfill(false);
-        return;
-      }
-      this._objectTarget = result.target();
-      var anchor = anchorOverride || element;
-      popover.setContentAnchorBox(anchor instanceof AnchorBox ? anchor : anchor.boxInWindow());
-      var description = result.description.trimEnd(ObjectUI.ObjectPopoverHelper.MaxPopoverTextLength);
-      var popoverContentElement = null;
-      if (result.type !== 'object') {
-        popoverContentElement = createElement('span');
-        UI.appendStyle(popoverContentElement, 'object_ui/objectValue.css');
-        UI.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
-        var valueElement = popoverContentElement.createChild('span', 'monospace object-value-' + result.type);
-        valueElement.style.whiteSpace = 'pre';
+    var description = result.description.trimEnd(ObjectUI.ObjectPopoverHelper.MaxPopoverTextLength);
+    var popoverContentElement = null;
+    if (result.type !== 'object') {
+      popoverContentElement = createElement('span');
+      UI.appendStyle(popoverContentElement, 'object_ui/objectValue.css');
+      UI.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
+      var valueElement = popoverContentElement.createChild('span', 'monospace object-value-' + result.type);
+      valueElement.style.whiteSpace = 'pre';
 
-        if (result.type === 'string')
-          valueElement.createTextChildren('"', description, '"');
-        else if (result.type !== 'function')
-          valueElement.textContent = description;
+      if (result.type === 'string')
+        valueElement.createTextChildren('"', description, '"');
+      else if (result.type !== 'function')
+        valueElement.textContent = description;
 
-        if (result.type === 'function') {
-          result.getOwnProperties(
-              false /* generatePreview */,
-              didGetFunctionProperties.bind(this, result, popoverContentElement, valueElement));
-          return;
-        }
-        popover.contentElement.appendChild(popoverContentElement);
-        fulfill(true);
+      if (result.type === 'function') {
+        result.getOwnProperties(
+            false /* generatePreview */,
+            didGetFunctionProperties.bind(null, result, popoverContentElement, valueElement));
+        return promise;
+      }
+      popover.contentElement.appendChild(popoverContentElement);
+      fulfill(new ObjectUI.ObjectPopoverHelper(null, false));
+    } else {
+      var linkifier = null;
+      var resultHighlightedAsDOM = false;
+      if (result.subtype === 'node') {
+        SDK.DOMModel.highlightObjectAsDOMNode(result);
+        resultHighlightedAsDOM = true;
+      }
+
+      if (result.customPreview()) {
+        var customPreviewComponent = new ObjectUI.CustomPreviewComponent(result);
+        customPreviewComponent.expandIfPossible();
+        popoverContentElement = customPreviewComponent.element;
       } else {
-        if (result.subtype === 'node') {
-          SDK.DOMModel.highlightObjectAsDOMNode(result);
-          this._resultHighlightedAsDOM = true;
-        }
-
-        if (result.customPreview()) {
-          var customPreviewComponent = new ObjectUI.CustomPreviewComponent(result);
-          customPreviewComponent.expandIfPossible();
-          popoverContentElement = customPreviewComponent.element;
-        } else {
-          popoverContentElement = createElementWithClass('div', 'object-popover-content');
-          UI.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
-          var titleElement = popoverContentElement.createChild('div', 'monospace object-popover-title');
-          titleElement.createChild('span').textContent = description;
-          var section = new ObjectUI.ObjectPropertiesSection(result, '', this._lazyLinkifier());
-          section.element.classList.add('object-popover-tree');
-          section.titleLessMode();
-          popoverContentElement.appendChild(section.element);
-        }
-        popover.setMaxContentSize(new UI.Size(300, 250));
-        popover.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactSize);
-        popover.contentElement.appendChild(popoverContentElement);
-        fulfill(true);
+        popoverContentElement = createElementWithClass('div', 'object-popover-content');
+        UI.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
+        var titleElement = popoverContentElement.createChild('div', 'monospace object-popover-title');
+        titleElement.createChild('span').textContent = description;
+        linkifier = new Components.Linkifier();
+        var section = new ObjectUI.ObjectPropertiesSection(result, '', linkifier);
+        section.element.classList.add('object-popover-tree');
+        section.titleLessMode();
+        popoverContentElement.appendChild(section.element);
       }
+      popover.setMaxContentSize(new UI.Size(300, 250));
+      popover.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactSize);
+      popover.contentElement.appendChild(popoverContentElement);
+      fulfill(new ObjectUI.ObjectPopoverHelper(linkifier, resultHighlightedAsDOM));
     }
-    this._disposed = false;
-    this._queryObject(element, didQueryObject.bind(this), this._popoverObjectGroup);
     return promise;
-  }
-
-  _onHideObjectPopover() {
-    this._disposed = true;
-    if (this._resultHighlightedAsDOM) {
-      SDK.DOMModel.hideDOMNodeHighlight();
-      delete this._resultHighlightedAsDOM;
-    }
-    if (this._linkifier) {
-      this._linkifier.dispose();
-      delete this._linkifier;
-    }
-    if (this._onHideCallback)
-      this._onHideCallback();
-    if (this._objectTarget) {
-      this._objectTarget.runtimeModel.releaseObjectGroup(this._popoverObjectGroup);
-      delete this._objectTarget;
-    }
-  }
-
-  /**
-   * @return {!Components.Linkifier}
-   */
-  _lazyLinkifier() {
-    if (!this._linkifier)
-      this._linkifier = new Components.Linkifier();
-    return this._linkifier;
   }
 };
 

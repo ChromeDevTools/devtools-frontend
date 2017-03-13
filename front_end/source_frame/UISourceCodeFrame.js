@@ -400,16 +400,17 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   }
 
   /**
-   * @param {!Element} anchor
+   * @param {!Element|!AnchorBox} anchor
    * @param {!UI.GlassPane} popover
    * @return {!Promise<boolean>}
    */
   _showErrorPopover(anchor, popover) {
-    var messageBucket = anchor.enclosingNodeOrSelfWithClass('text-editor-line-decoration')._messageBucket;
+    var element = /** @type {!Element} */ (anchor);
+    var messageBucket = element.enclosingNodeOrSelfWithClass('text-editor-line-decoration')._messageBucket;
     var messagesOutline = messageBucket.messagesDescription();
     popover.setContentAnchorBox(
-        anchor.enclosingNodeOrSelfWithClass('text-editor-line-decoration-icon') ? anchor.boxInWindow() :
-                                                                                  this._errorWavePopoverAnchor);
+        element.enclosingNodeOrSelfWithClass('text-editor-line-decoration-icon') ? element.boxInWindow() :
+                                                                                   this._errorWavePopoverAnchor);
     popover.contentElement.appendChild(messagesOutline);
     return Promise.resolve(true);
   }

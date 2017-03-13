@@ -332,6 +332,35 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
       }
     }
   }
+
+  /**
+   * @param {number} timestamp
+   * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
+   */
+  _exceptionThrown(timestamp, exceptionDetails) {
+    var exceptionWithTimestamp = {timestamp: timestamp, details: exceptionDetails};
+    this.dispatchEventToListeners(SDK.RuntimeModel.Events.ExceptionThrown, exceptionWithTimestamp);
+  }
+
+  /**
+   * @param {number} exceptionId
+   */
+  _exceptionRevoked(exceptionId) {
+    this.dispatchEventToListeners(SDK.RuntimeModel.Events.ExceptionRevoked, exceptionId);
+  }
+
+  /**
+   * @param {string} type
+   * @param {!Array.<!Protocol.Runtime.RemoteObject>} args
+   * @param {number} executionContextId
+   * @param {number} timestamp
+   * @param {!Protocol.Runtime.StackTrace=} stackTrace
+   */
+  _consoleAPICalled(type, args, executionContextId, timestamp, stackTrace) {
+    var consoleAPICall =
+        {type: type, args: args, executionContextId: executionContextId, timestamp: timestamp, stackTrace: stackTrace};
+    this.dispatchEventToListeners(SDK.RuntimeModel.Events.ConsoleAPICalled, consoleAPICall);
+  }
 };
 
 // TODO(dgozman): should be JS.
@@ -342,8 +371,25 @@ SDK.RuntimeModel.Events = {
   ExecutionContextCreated: Symbol('ExecutionContextCreated'),
   ExecutionContextDestroyed: Symbol('ExecutionContextDestroyed'),
   ExecutionContextChanged: Symbol('ExecutionContextChanged'),
-  ExecutionContextOrderChanged: Symbol('ExecutionContextOrderChanged')
+  ExecutionContextOrderChanged: Symbol('ExecutionContextOrderChanged'),
+  ExceptionThrown: Symbol('ExceptionThrown'),
+  ExceptionRevoked: Symbol('ExceptionRevoked'),
+  ConsoleAPICalled: Symbol('ConsoleAPICalled'),
 };
+
+/** @typedef {{timestamp: number, details: !Protocol.Runtime.ExceptionDetails}} */
+SDK.RuntimeModel.ExceptionWithTimestamp;
+
+/**
+ * @typedef {{
+ *    type: string,
+ *    args: !Array<!Protocol.Runtime.RemoteObject>,
+ *    executionContextId: number,
+ *    timestamp: number,
+ *    stackTrace: (!Protocol.Runtime.StackTrace|undefined)
+ * }}
+ */
+SDK.RuntimeModel.ConsoleAPICall;
 
 /**
  * @implements {Protocol.RuntimeDispatcher}
@@ -386,10 +432,7 @@ SDK.RuntimeDispatcher = class {
    * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    */
   exceptionThrown(timestamp, exceptionDetails) {
-    var consoleMessage = SDK.ConsoleMessage.fromException(
-        this._runtimeModel.target(), exceptionDetails, undefined, timestamp, undefined);
-    consoleMessage.setExceptionId(exceptionDetails.exceptionId);
-    this._runtimeModel.target().consoleModel.addMessage(consoleMessage);
+    this._runtimeModel._exceptionThrown(timestamp, exceptionDetails);
   }
 
   /**
@@ -398,7 +441,7 @@ SDK.RuntimeDispatcher = class {
    * @param {number} exceptionId
    */
   exceptionRevoked(reason, exceptionId) {
-    this._runtimeModel.target().consoleModel.revokeException(exceptionId);
+    this._runtimeModel._exceptionRevoked(exceptionId);
   }
 
   /**
@@ -410,27 +453,7 @@ SDK.RuntimeDispatcher = class {
    * @param {!Protocol.Runtime.StackTrace=} stackTrace
    */
   consoleAPICalled(type, args, executionContextId, timestamp, stackTrace) {
-    var level = SDK.ConsoleMessage.MessageLevel.Info;
-    if (type === SDK.ConsoleMessage.MessageType.Debug)
-      level = SDK.ConsoleMessage.MessageLevel.Verbose;
-    if (type === SDK.ConsoleMessage.MessageType.Error || type === SDK.ConsoleMessage.MessageType.Assert)
-      level = SDK.ConsoleMessage.MessageLevel.Error;
-    if (type === SDK.ConsoleMessage.MessageType.Warning)
-      level = SDK.ConsoleMessage.MessageLevel.Warning;
-    if (type === SDK.ConsoleMessage.MessageType.Info || type === SDK.ConsoleMessage.MessageType.Log)
-      level = SDK.ConsoleMessage.MessageLevel.Info;
-    var message = '';
-    if (args.length && typeof args[0].value === 'string')
-      message = args[0].value;
-    else if (args.length && args[0].description)
-      message = args[0].description;
-    var callFrame = stackTrace && stackTrace.callFrames.length ? stackTrace.callFrames[0] : null;
-    var consoleMessage = new SDK.ConsoleMessage(
-        this._runtimeModel.target(), SDK.ConsoleMessage.MessageSource.ConsoleAPI, level,
-        /** @type {string} */ (message), type, callFrame ? callFrame.url : undefined,
-        callFrame ? callFrame.lineNumber : undefined, callFrame ? callFrame.columnNumber : undefined, undefined, args,
-        stackTrace, timestamp, executionContextId, undefined);
-    this._runtimeModel.target().consoleModel.addMessage(consoleMessage);
+    this._runtimeModel._consoleAPICalled(type, args, executionContextId, timestamp, stackTrace);
   }
 
   /**

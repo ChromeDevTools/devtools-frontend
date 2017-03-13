@@ -182,10 +182,8 @@ Console.ConsoleView = class extends UI.VBox {
   }
 
   static clearConsole() {
-    for (var target of SDK.targetManager.targets()) {
-      target.runtimeModel.discardConsoleEntries();
+    for (var target of SDK.targetManager.targets())
       target.consoleModel.requestClearMessages();
-    }
   }
 
   /**

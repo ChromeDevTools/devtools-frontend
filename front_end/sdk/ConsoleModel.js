@@ -66,6 +66,13 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
       cpuProfilerModel.addEventListener(
           SDK.CPUProfilerModel.Events.ConsoleProfileFinished, this._consoleProfileFinished, this);
     }
+
+    var runtimeModel = target.model(SDK.RuntimeModel);
+    if (runtimeModel) {
+      runtimeModel.addEventListener(SDK.RuntimeModel.Events.ExceptionThrown, this._exceptionThrown, this);
+      runtimeModel.addEventListener(SDK.RuntimeModel.Events.ExceptionRevoked, this._exceptionRevoked, this);
+      runtimeModel.addEventListener(SDK.RuntimeModel.Events.ConsoleAPICalled, this._consoleAPICalled, this);
+    }
   }
 
   /**
@@ -146,15 +153,55 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {number} exceptionId
+   * @param {!Common.Event} event
    */
-  revokeException(exceptionId) {
+  _exceptionThrown(event) {
+    var exceptionWithTimestamp = /** @type {!SDK.RuntimeModel.ExceptionWithTimestamp} */ (event.data);
+    var consoleMessage = SDK.ConsoleMessage.fromException(
+        this.target(), exceptionWithTimestamp.details, undefined, exceptionWithTimestamp.timestamp, undefined);
+    consoleMessage.setExceptionId(exceptionWithTimestamp.details.exceptionId);
+    this.addMessage(consoleMessage);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _exceptionRevoked(event) {
+    var exceptionId = /** @type {number} */ (event.data);
     var exceptionMessage = this._messageByExceptionId.get(exceptionId);
     if (!exceptionMessage)
       return;
     this._errors--;
     exceptionMessage.level = SDK.ConsoleMessage.MessageLevel.Info;
     this.dispatchEventToListeners(SDK.ConsoleModel.Events.MessageUpdated, exceptionMessage);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _consoleAPICalled(event) {
+    var call = /** @type {!SDK.RuntimeModel.ConsoleAPICall} */ (event.data);
+    var level = SDK.ConsoleMessage.MessageLevel.Info;
+    if (call.type === SDK.ConsoleMessage.MessageType.Debug)
+      level = SDK.ConsoleMessage.MessageLevel.Verbose;
+    else if (call.type === SDK.ConsoleMessage.MessageType.Error || call.type === SDK.ConsoleMessage.MessageType.Assert)
+      level = SDK.ConsoleMessage.MessageLevel.Error;
+    else if (call.type === SDK.ConsoleMessage.MessageType.Warning)
+      level = SDK.ConsoleMessage.MessageLevel.Warning;
+    else if (call.type === SDK.ConsoleMessage.MessageType.Info || call.type === SDK.ConsoleMessage.MessageType.Log)
+      level = SDK.ConsoleMessage.MessageLevel.Info;
+    var message = '';
+    if (call.args.length && typeof call.args[0].value === 'string')
+      message = call.args[0].value;
+    else if (call.args.length && call.args[0].description)
+      message = call.args[0].description;
+    var callFrame = call.stackTrace && call.stackTrace.callFrames.length ? call.stackTrace.callFrames[0] : null;
+    var consoleMessage = new SDK.ConsoleMessage(
+        this.target(), SDK.ConsoleMessage.MessageSource.ConsoleAPI, level,
+        /** @type {string} */ (message), call.type, callFrame ? callFrame.url : undefined,
+        callFrame ? callFrame.lineNumber : undefined, callFrame ? callFrame.columnNumber : undefined, undefined,
+        call.args, call.stackTrace, call.timestamp, call.executionContextId, undefined);
+    this.addMessage(consoleMessage);
   }
 
   /**
@@ -221,11 +268,13 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
   requestClearMessages() {
     this._logAgent && this._logAgent.clear();
     this.clear();
+    this.target().runtimeModel.discardConsoleEntries();
   }
 
   clear() {
     this._messages = [];
     this._messageByExceptionId.clear();
+    // TODO(dgozman): clear exceptions and console api entries in runtimeModel.
     this._errors = 0;
     this._warnings = 0;
     this.dispatchEventToListeners(SDK.ConsoleModel.Events.ConsoleCleared);

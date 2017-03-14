@@ -955,29 +955,44 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
     context.scale(ratio, ratio);
     context.translate(0, -top);
 
-    context.fillStyle = '#7f0000';
-    context.strokeStyle = '#7f0000';
+    context.fillStyle = '#7f5050';
+    context.strokeStyle = '#7f5050';
     var td = this._timelineData();
     var endIndex = td.flowStartTimes.lowerBound(this._timeWindowRight);
 
     context.lineWidth = 0.5;
     for (var i = 0; i < endIndex; ++i) {
-      if (td.flowEndTimes[i] < this._timeWindowLeft)
+      if (!td.flowEndTimes[i] || td.flowEndTimes[i] < this._timeWindowLeft)
         continue;
       var startX = this._timeToPosition(td.flowStartTimes[i]);
       var endX = this._timeToPosition(td.flowEndTimes[i]);
       var startY = this._levelToHeight(td.flowStartLevels[i]) + this._barHeight / 2;
       var endY = this._levelToHeight(td.flowEndLevels[i]) + this._barHeight / 2;
-      var distance = (endY - startY) / 10;
-      var spread = 30;
-      var lineY = spread + Math.max(0, startY + distance * (i % spread));
+
 
       var segment = Math.min((endX - startX) / 4, 40);
+      var distanceTime = td.flowEndTimes[i] - td.flowStartTimes[i];
+      var distanceY = (endY - startY) / 10;
+      var spread = 30;
+      var lineY = distanceTime < 1 ? startY : spread + Math.max(0, startY + distanceY * (i % spread));
+
+      var p = [];
+      p.push({x: startX, y: startY});
+      p.push({x: startX + arrowWidth, y: startY});
+      p.push({x: startX + segment + 2 * arrowWidth, y: startY});
+      p.push({x: startX + segment, y: lineY});
+      p.push({x: startX + segment * 2, y: lineY});
+      p.push({x: endX - segment * 2, y: lineY});
+      p.push({x: endX - segment, y: lineY});
+      p.push({x: endX - segment - 2 * arrowWidth, y: endY});
+      p.push({x: endX - arrowWidth, y: endY});
+
       context.beginPath();
-      context.moveTo(startX, startY);
-      context.bezierCurveTo(startX + segment, startY, startX + segment, lineY, startX + segment * 2, lineY);
-      context.lineTo(endX - segment * 2, lineY);
-      context.bezierCurveTo(endX - segment, lineY, endX - segment, endY, endX - arrowWidth, endY);
+      context.moveTo(p[0].x, p[0].y);
+      context.lineTo(p[1].x, p[1].y);
+      context.bezierCurveTo(p[2].x, p[2].y, p[3].x, p[3].y, p[4].x, p[4].y);
+      context.lineTo(p[5].x, p[5].y);
+      context.bezierCurveTo(p[6].x, p[6].y, p[7].x, p[7].y, p[8].x, p[8].y);
       context.stroke();
 
       context.beginPath();

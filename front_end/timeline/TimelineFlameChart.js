@@ -337,7 +337,8 @@ Timeline.TimelineFlameChartDataProvider = class {
       var level = this._currentLevel + openEvents.length;
       if (flowEventsEnabled)
         this._appendFlowEvent(e, level);
-      this._appendEvent(e, level);
+      if (e.phase !== SDK.TracingModel.Phase.FlowEnd)
+        this._appendEvent(e, level);
       if (!isExtension && TimelineModel.TimelineModel.isMarkerEvent(e))
         this._timelineData.entryTotalTimes[this._entryData.length] = undefined;
 
@@ -768,7 +769,6 @@ Timeline.TimelineFlameChartDataProvider = class {
         this._flowEventIndexById.set(event.id, pushStartFlow(event));
         break;
       case SDK.TracingModel.Phase.FlowEnd:
-        pushEndFlow(event, this._flowEventIndexById.get(event.id));
         this._flowEventIndexById.delete(event.id);
         break;
     }

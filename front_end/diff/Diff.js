@@ -5,11 +5,15 @@ Diff.Diff = {
   /**
    * @param {string} text1
    * @param {string} text2
+   * @param {boolean=} cleanup
    * @return {!Array.<!{0: number, 1: string}>}
    */
-  charDiff: function(text1, text2) {
+  charDiff: function(text1, text2, cleanup) {
     var differ = new diff_match_patch();
-    return differ.diff_main(text1, text2);
+    var diff = differ.diff_main(text1, text2);
+    if (cleanup)
+      differ.diff_cleanupSemantic(diff);
+    return diff;
   },
 
   /**

@@ -357,7 +357,12 @@ diff_match_patch.prototype = {
    * @param {string} text2
    * @return {!Array.<!{0: number, 1: string}>}
    */
-  diff_main: function(text1, text2) {}
+  diff_main: function(text1, text2) {},
+
+  /**
+   * @param {!Array.<!{0: number, 1: string}>} diff
+   */
+  diff_cleanupSemantic(diff) {}
 };
 
 /** @constructor */

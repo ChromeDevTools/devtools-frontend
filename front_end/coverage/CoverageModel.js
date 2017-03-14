@@ -36,7 +36,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
   start() {
     this._coverageByURL.clear();
     if (this._cssModel)
-      this._cssModel.startCoverageTracking();
+      this._cssModel.startRuleUsageTracking();
     if (this._cpuProfilerModel)
       this._cpuProfilerModel.startPreciseCoverage();
     return !!(this._cssModel || this._cpuProfilerModel);
@@ -127,10 +127,8 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     if (!this._cssModel)
       return [];
 
-    var coverageDataPromise = this._cssModel.coverage();
-    this._cssModel.stopCoverageTracking();
-    var coverageData = await coverageDataPromise;
-    this._processCSSCoverage(coverageData);
+    var rawCoverageData = await this._cssModel.ruleListPromise();
+    this._processCSSCoverage(rawCoverageData);
   }
 
   /**

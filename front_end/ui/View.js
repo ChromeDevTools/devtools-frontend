@@ -222,9 +222,10 @@ UI.ViewLocation.prototype = {
   /**
    * @param {!UI.View} view
    * @param {?UI.View=} insertBefore
+   * @param {boolean=} userGesture
    * @return {!Promise}
    */
-  showView(view, insertBefore) {},
+  showView(view, insertBefore, userGesture) {},
 
   /**
    * @param {!UI.View} view
@@ -326,9 +327,10 @@ UI.ViewManager = class {
 
   /**
    * @param {string} viewId
+   * @param {boolean=} userGesture
    * @return {!Promise}
    */
-  showView(viewId) {
+  showView(viewId, userGesture) {
     var view = this._views.get(viewId);
     if (!view) {
       console.error('Could not find view for id: \'' + viewId + '\' ' + new Error().stack);
@@ -342,14 +344,14 @@ UI.ViewManager = class {
     var location = view[UI.ViewManager._Location.symbol];
     if (location) {
       location._reveal();
-      return location.showView(view);
+      return location.showView(view, undefined, userGesture);
     }
 
     return this._resolveLocation(locationName).then(location => {
       if (!location)
         throw new Error('Could not resolve location for view: ' + viewId);
       location._reveal();
-      return location.showView(view);
+      return location.showView(view, undefined, userGesture);
     });
   }
 
@@ -662,7 +664,7 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
   _appendTabsToMenu(contextMenu) {
     for (var view of this._views.values()) {
       var title = Common.UIString(view.title());
-      contextMenu.appendItem(title, this.showView.bind(this, view));
+      contextMenu.appendItem(title, this.showView.bind(this, view, undefined, true));
     }
   }
 
@@ -714,11 +716,12 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
    * @override
    * @param {!UI.View} view
    * @param {?UI.View=} insertBefore
+   * @param {boolean=} userGesture
    * @return {!Promise}
    */
-  showView(view, insertBefore) {
+  showView(view, insertBefore, userGesture) {
     this.appendView(view, insertBefore);
-    this._tabbedPane.selectTab(view.viewId());
+    this._tabbedPane.selectTab(view.viewId(), userGesture);
     this._tabbedPane.focus();
     var widget = /** @type {!UI.ViewManager._ContainerWidget} */ (this._tabbedPane.tabView(view.viewId()));
     return widget._materialize();

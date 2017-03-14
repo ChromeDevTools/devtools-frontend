@@ -56,7 +56,7 @@ Help._showReleaseNoteIfNeeded = function(lastSeenVersion, browserVersion) {
   if (Help.latestReleaseNote().version !== browserVersion)
     return;
   Help.releaseNoteVersionSetting().set(Help.browserVersion());
-  UI.inspectorView.showPanel(Help._releaseNoteViewId);
+  UI.viewManager.showView(Help._releaseNoteViewId, true);
 };
 
 /**

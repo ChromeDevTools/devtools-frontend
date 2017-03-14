@@ -87,35 +87,6 @@ SDK.Script = class {
   }
 
   /**
-   * @param {!SDK.Script} script
-   * @param {string} source
-   */
-  static _reportDeprecatedCommentIfNeeded(script, source) {
-    var consoleModel = script.debuggerModel.target().consoleModel;
-    if (!consoleModel)
-      return;
-    var linesToCheck = 5;
-    var offset = source.lastIndexOf('\n');
-    while (linesToCheck && offset !== -1) {
-      offset = source.lastIndexOf('\n', offset - 1);
-      --linesToCheck;
-    }
-    offset = offset !== -1 ? offset : 0;
-    var sourceTail = source.substr(offset);
-    if (sourceTail.length > 5000)
-      return;
-    if (sourceTail.search(/^[\040\t]*\/\/@ source(mapping)?url=/mi) === -1)
-      return;
-    var text = Common.UIString(
-        '\'//@ sourceURL\' and \'//@ sourceMappingURL\' are deprecated, please use \'//# sourceURL=\' and \'//# sourceMappingURL=\' instead.');
-    var msg = new SDK.ConsoleMessage(
-        script.debuggerModel.target(), SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Warning,
-        text, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined,
-        script.scriptId);
-    consoleModel.addMessage(msg);
-  }
-
-  /**
    * @return {boolean}
    */
   isContentScript() {
@@ -173,12 +144,7 @@ SDK.Script = class {
      * @param {string} source
      */
     function didGetScriptSource(error, source) {
-      if (!error) {
-        SDK.Script._reportDeprecatedCommentIfNeeded(this, source);
-        this._source = SDK.Script._trimSourceURLComment(source);
-      } else {
-        this._source = '';
-      }
+      this._source = error ? '' : SDK.Script._trimSourceURLComment(source);
       if (this._originalSource === null)
         this._originalSource = this._source;
       callback(this._source);

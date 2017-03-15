@@ -122,6 +122,8 @@ Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListW
     new Sources.FilePathScoreFunction(query).score(fullDisplayName, indexes);
     var fileNameIndex = fullDisplayName.lastIndexOf('/');
 
+    titleElement.classList.add('monospace');
+    subtitleElement.classList.add('monospace');
     titleElement.textContent = uiSourceCode.displayName() + (this._queryLineNumberAndColumnNumber || '');
     this._renderSubtitleElement(subtitleElement, fullDisplayName);
     subtitleElement.title = fullDisplayName;

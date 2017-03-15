@@ -769,6 +769,7 @@ Timeline.TimelineFlameChartDataProvider = class {
         this._flowEventIndexById.set(event.id, pushStartFlow(event));
         break;
       case SDK.TracingModel.Phase.FlowEnd:
+        pushEndFlow(event, this._flowEventIndexById.get(event.id));
         this._flowEventIndexById.delete(event.id);
         break;
     }

@@ -456,6 +456,7 @@ all_devtools_files = [
   "front_end/sdk/HAREntry.js",
   "front_end/sdk/HeapProfilerModel.js",
   "front_end/sdk/LayerTreeBase.js",
+  "front_end/sdk/LogModel.js",
   "front_end/sdk/module.json",
   "front_end/sdk/NetworkLog.js",
   "front_end/sdk/NetworkManager.js",

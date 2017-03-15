@@ -44,20 +44,10 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
     this._messageByExceptionId = new Map();
     this._warnings = 0;
     this._errors = 0;
-    /** @type {?Protocol.LogAgent} */
-    this._logAgent = target.hasLogCapability() ? target.logAgent() : null;
-    if (this._logAgent) {
-      target.registerLogDispatcher(new SDK.LogDispatcher(this));
-      this._logAgent.enable();
-      if (!Host.isUnderTest()) {
-        this._logAgent.startViolationsReport([
-          {name: 'longTask', threshold: 200}, {name: 'longLayout', threshold: 30},
-          {name: 'blockedEvent', threshold: 100}, {name: 'blockedParser', threshold: -1},
-          {name: 'handler', threshold: 150}, {name: 'recurringHandler', threshold: 50},
-          {name: 'discouragedAPIUse', threshold: -1}
-        ]);
-      }
-    }
+
+    var logModel = target.model(SDK.LogModel);
+    if (logModel)
+      logModel.on(SDK.LogModel.EntryAddedEvent, this._logEntryAdded, this);
 
     var cpuProfilerModel = target.model(SDK.CPUProfilerModel);
     if (cpuProfilerModel) {
@@ -162,6 +152,17 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
       this._messageByExceptionId.set(msg._exceptionId, msg);
     this._incrementErrorWarningCount(msg);
     this.dispatchEventToListeners(SDK.ConsoleModel.Events.MessageAdded, msg);
+  }
+
+  /**
+   * @param {!SDK.LogModel.EntryAddedEvent} event
+   */
+  _logEntryAdded(event) {
+    var consoleMessage = new SDK.ConsoleMessage(
+        this.target(), event.entry.source, event.entry.level, event.entry.text, undefined, event.entry.url,
+        event.entry.lineNumber, undefined, event.entry.networkRequestId, undefined, event.entry.stackTrace,
+        event.entry.timestamp, undefined, undefined, event.entry.workerId);
+    this.addMessage(consoleMessage);
   }
 
   /**
@@ -304,7 +305,9 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
   }
 
   requestClearMessages() {
-    this._logAgent && this._logAgent.clear();
+    var logModel = this.target().model(SDK.LogModel);
+    if (logModel)
+      logModel.requestClear();
     this.clear();
     this.target().runtimeModel.discardConsoleEntries();
   }
@@ -627,31 +630,6 @@ SDK.ConsoleMessage.MessageLevel.ordinal = function(level) {
   if (level === SDK.ConsoleMessage.MessageLevel.Warning)
     return 2;
   return 3;
-};
-
-/**
- * @implements {Protocol.LogDispatcher}
- * @unrestricted
- */
-SDK.LogDispatcher = class {
-  /**
-   * @param {!SDK.ConsoleModel} console
-   */
-  constructor(console) {
-    this._console = console;
-  }
-
-  /**
-   * @override
-   * @param {!Protocol.Log.LogEntry} payload
-   */
-  entryAdded(payload) {
-    var consoleMessage = new SDK.ConsoleMessage(
-        this._console.target(), payload.source, payload.level, payload.text, undefined, payload.url, payload.lineNumber,
-        undefined, payload.networkRequestId, undefined, payload.stackTrace, payload.timestamp, undefined, undefined,
-        payload.workerId);
-    this._console.addMessage(consoleMessage);
-  }
 };
 
 /**

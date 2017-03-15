@@ -252,6 +252,7 @@ SDK.TargetManager = class extends Common.Object {
     /** @type {!SDK.RuntimeModel} */
     target.runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
     target.model(SDK.DebuggerModel);
+    target.model(SDK.LogModel);
     /** @type {!SDK.ConsoleModel} */
     target.consoleModel = /** @type {!SDK.ConsoleModel} */ (target.model(SDK.ConsoleModel));
     target.model(SDK.DOMModel);

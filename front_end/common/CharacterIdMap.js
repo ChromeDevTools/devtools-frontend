@@ -35,6 +35,9 @@ Common.CharacterIdMap = class {
    * @return {?T}
    */
   fromChar(character) {
-    return this._characterToElement.get(character) || null;
+    var object = this._characterToElement.get(character);
+    if (object === undefined)
+      return null;
+    return object;
   }
 };

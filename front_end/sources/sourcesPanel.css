@@ -43,6 +43,7 @@
     padding-top: 25px;
     background-color: white;
     overflow: hidden;
+    white-space: nowrap;
 }
 
 .scripts-debug-toolbar-drawer.expanded {

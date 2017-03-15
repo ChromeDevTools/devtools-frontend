@@ -294,6 +294,7 @@ body.inactive select.chrome-select,
     font-style: italic;
     padding: 6px;
     color: #888;
+    white-space: nowrap;
 }
 
 label[is=dt-icon-label] {

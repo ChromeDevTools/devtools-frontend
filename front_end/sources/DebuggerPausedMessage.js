@@ -30,6 +30,9 @@ Sources.DebuggerPausedMessage = class {
     if (!details)
       return;
 
+    var errorLike = details.reason === SDK.DebuggerModel.BreakReason.Exception ||
+        details.reason === SDK.DebuggerModel.BreakReason.PromiseRejection ||
+        details.reason === SDK.DebuggerModel.BreakReason.Assert || details.reason === SDK.DebuggerModel.BreakReason.OOM;
     var messageWrapper;
     if (details.reason === SDK.DebuggerModel.BreakReason.DOM) {
       messageWrapper = Components.DOMBreakpointsSidebarPane.createBreakpointHitMessage(details);
@@ -65,9 +68,6 @@ Sources.DebuggerPausedMessage = class {
           'ScriptsPanel paused, but callFrames.length is zero.');  // TODO remove this once we understand this case better
     }
 
-    var errorLike = details.reason === SDK.DebuggerModel.BreakReason.Exception ||
-        details.reason === SDK.DebuggerModel.BreakReason.PromiseRejection ||
-        details.reason === SDK.DebuggerModel.BreakReason.Assert || details.reason === SDK.DebuggerModel.BreakReason.OOM;
     status.classList.toggle('error-reason', errorLike);
     if (messageWrapper)
       status.appendChild(messageWrapper);
@@ -81,14 +81,16 @@ Sources.DebuggerPausedMessage = class {
     function buildWrapper(mainText, subText, title) {
       var messageWrapper = createElement('span');
       var mainElement = messageWrapper.createChild('div', 'status-main');
-      mainElement.appendChild(UI.Icon.create('smallicon-info', 'status-icon'));
+      var icon = UI.Icon.create(errorLike ? 'smallicon-error' : 'smallicon-info', 'status-icon');
+      mainElement.appendChild(icon);
       mainElement.appendChild(createTextNode(mainText));
       if (subText) {
         var subElement = messageWrapper.createChild('div', 'status-sub monospace');
         subElement.textContent = subText;
       }
-      if (title)
-        messageWrapper.title = title;
+      var tooltip = title || subText;
+      if (tooltip)
+        messageWrapper.title = tooltip;
       return messageWrapper;
     }
   }

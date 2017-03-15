@@ -957,18 +957,16 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
 
     context.fillStyle = '#7f5050';
     context.strokeStyle = '#7f5050';
-    var td = this._timelineData();
-    var endIndex = td.flowStartTimes.lowerBound(this._timeWindowRight);
-
     context.lineWidth = 0.5;
-    for (var i = 0; i < endIndex; ++i) {
+
+    var td = this._timelineData();
+    for (var i = 0; i < td.flowStartTimes.length && td.flowStartTimes[i] < this._timeWindowRight; ++i) {
       if (!td.flowEndTimes[i] || td.flowEndTimes[i] < this._timeWindowLeft)
         continue;
       var startX = this._timeToPosition(td.flowStartTimes[i]);
       var endX = this._timeToPosition(td.flowEndTimes[i]);
       var startY = this._levelToHeight(td.flowStartLevels[i]) + this._barHeight / 2;
       var endY = this._levelToHeight(td.flowEndLevels[i]) + this._barHeight / 2;
-
 
       var segment = Math.min((endX - startX) / 4, 40);
       var distanceTime = td.flowEndTimes[i] - td.flowStartTimes[i];

@@ -129,8 +129,12 @@ SDK.NetworkManager.Events = {
   RequestUpdated: Symbol('RequestUpdated'),
   RequestFinished: Symbol('RequestFinished'),
   RequestUpdateDropped: Symbol('RequestUpdateDropped'),
-  ResponseReceived: Symbol('ResponseReceived')
+  ResponseReceived: Symbol('ResponseReceived'),
+  WarningGenerated: Symbol('WarningGenerated'),
 };
+
+/** @typedef {{message: string, requestId: string}} */
+SDK.NetworkManager.Warning;
 
 /** @implements {Common.Emittable} */
 SDK.NetworkManager.RequestRedirectEvent = class {
@@ -249,13 +253,11 @@ SDK.NetworkDispatcher = class {
     networkRequest.setSecurityState(response.securityState);
 
     if (!this._mimeTypeIsConsistentWithType(networkRequest)) {
-      var consoleModel = this._manager.target().model(SDK.ConsoleModel);
-      consoleModel.addMessage(new SDK.ConsoleMessage(
-          consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network, SDK.ConsoleMessage.MessageLevel.Info,
-          Common.UIString(
-              'Resource interpreted as %s but transferred with MIME type %s: "%s".',
-              networkRequest.resourceType().title(), networkRequest.mimeType, networkRequest.url()),
-          undefined, undefined, undefined, undefined, networkRequest.requestId()));
+      var message = Common.UIString(
+          'Resource interpreted as %s but transferred with MIME type %s: "%s".', networkRequest.resourceType().title(),
+          networkRequest.mimeType, networkRequest.url());
+      this._manager.dispatchEventToListeners(
+          SDK.NetworkManager.Events.WarningGenerated, {message: message, requestId: networkRequest.requestId()});
     }
 
     if (response.securityDetails)
@@ -389,14 +391,11 @@ SDK.NetworkDispatcher = class {
 
     // net::ParsedCookie::kMaxCookieSize = 4096 (net/cookies/parsed_cookie.h)
     if ('Set-Cookie' in response.headers && response.headers['Set-Cookie'].length > 4096) {
-      var consoleModel = this._manager.target().model(SDK.ConsoleModel);
-      consoleModel.addMessage(
-          new SDK.ConsoleMessage(
-              consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network, SDK.ConsoleMessage.MessageLevel.Warning,
-              Common.UIString(
-                  'Set-Cookie header is ignored in response from url: %s. Cookie length should be less then or equal to 4096 characters.',
-                  response.url)),
-          undefined, undefined, undefined, undefined, requestId);
+      var message = Common.UIString(
+          'Set-Cookie header is ignored in response from url: %s. Cookie length should be less than or equal to 4096 characters.',
+          response.url);
+      this._manager.dispatchEventToListeners(
+          SDK.NetworkManager.Events.WarningGenerated, {message: message, requestId: requestId});
     }
 
     this._updateNetworkRequestWithResponse(networkRequest, response);
@@ -458,11 +457,9 @@ SDK.NetworkDispatcher = class {
     if (blockedReason) {
       networkRequest.setBlockedReason(blockedReason);
       if (blockedReason === Protocol.Network.BlockedReason.Inspector) {
-        var consoleModel = this._manager.target().model(SDK.ConsoleModel);
-        consoleModel.addMessage(new SDK.ConsoleMessage(
-            consoleModel.target(), SDK.ConsoleMessage.MessageSource.Network, SDK.ConsoleMessage.MessageLevel.Warning,
-            Common.UIString('Request was blocked by DevTools: "%s".', networkRequest.url()), undefined, undefined,
-            undefined, undefined, requestId));
+        var message = Common.UIString('Request was blocked by DevTools: "%s".', networkRequest.url());
+        this._manager.dispatchEventToListeners(
+            SDK.NetworkManager.Events.WarningGenerated, {message: message, requestId: requestId});
       }
     }
     networkRequest.localizedFailDescription = localizedDescription;
@@ -631,14 +628,14 @@ SDK.NetworkDispatcher = class {
   _startNetworkRequest(networkRequest) {
     this._inflightRequestsById[networkRequest.requestId()] = networkRequest;
     this._inflightRequestsByURL[networkRequest.url()] = networkRequest;
-    this._dispatchEventToListeners(SDK.NetworkManager.Events.RequestStarted, networkRequest);
+    this._manager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestStarted, networkRequest);
   }
 
   /**
    * @param {!SDK.NetworkRequest} networkRequest
    */
   _updateNetworkRequest(networkRequest) {
-    this._dispatchEventToListeners(SDK.NetworkManager.Events.RequestUpdated, networkRequest);
+    this._manager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestUpdated, networkRequest);
   }
 
   /**
@@ -651,17 +648,9 @@ SDK.NetworkDispatcher = class {
     networkRequest.finished = true;
     if (encodedDataLength >= 0)
       networkRequest.setTransferSize(encodedDataLength);
-    this._dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, networkRequest);
+    this._manager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, networkRequest);
     delete this._inflightRequestsById[networkRequest.requestId()];
     delete this._inflightRequestsByURL[networkRequest.url()];
-  }
-
-  /**
-   * @param {string} eventType
-   * @param {!SDK.NetworkRequest} networkRequest
-   */
-  _dispatchEventToListeners(eventType, networkRequest) {
-    this._manager.dispatchEventToListeners(eventType, networkRequest);
   }
 
   /**

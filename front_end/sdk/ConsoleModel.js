@@ -81,6 +81,10 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
       runtimeModel.addEventListener(SDK.RuntimeModel.Events.ExceptionRevoked, this._exceptionRevoked, this);
       runtimeModel.addEventListener(SDK.RuntimeModel.Events.ConsoleAPICalled, this._consoleAPICalled, this);
     }
+
+    var networkManager = target.model(SDK.NetworkManager);
+    if (networkManager)
+      networkManager.addEventListener(SDK.NetworkManager.Events.WarningGenerated, this._networkWarningGenerated, this);
   }
 
   /**
@@ -264,6 +268,16 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
     this.addMessage(new SDK.ConsoleMessage(
         this.target(), SDK.ConsoleMessage.MessageSource.ConsoleAPI, SDK.ConsoleMessage.MessageLevel.Info, messageText,
         type, undefined, undefined, undefined, undefined, stackTrace));
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _networkWarningGenerated(event) {
+    var warning = /** @type {!SDK.NetworkManager.Warning} */ (event.data);
+    this.addMessage(new SDK.ConsoleMessage(
+        this.target(), SDK.ConsoleMessage.MessageSource.Network, SDK.ConsoleMessage.MessageLevel.Warning,
+        warning.message, undefined, undefined, undefined, undefined, warning.requestId));
   }
 
   /**

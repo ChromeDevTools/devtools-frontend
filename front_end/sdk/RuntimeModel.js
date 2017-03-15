@@ -334,6 +334,21 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
+   * @return {string}
+   */
+  static simpleTextFromException(exceptionDetails) {
+    var text = exceptionDetails.text;
+    if (exceptionDetails.exception && exceptionDetails.exception.description) {
+      var description = exceptionDetails.exception.description;
+      if (description.indexOf('\n') !== -1)
+        description = description.substring(0, description.indexOf('\n'));
+      text += ' ' + description;
+    }
+    return text;
+  }
+
+  /**
    * @param {number} timestamp
    * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    */

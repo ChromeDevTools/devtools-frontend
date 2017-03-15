@@ -425,21 +425,6 @@ SDK.ConsoleMessage = class {
   }
 
   /**
-   * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
-   * @return {string}
-   */
-  static simpleTextFromException(exceptionDetails) {
-    var text = exceptionDetails.text;
-    if (exceptionDetails.exception && exceptionDetails.exception.description) {
-      var description = exceptionDetails.exception.description;
-      if (description.indexOf('\n') !== -1)
-        description = description.substring(0, description.indexOf('\n'));
-      text += ' ' + description;
-    }
-    return text;
-  }
-
-  /**
    * @param {!SDK.Target} target
    * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    * @param {string=} messageType
@@ -450,8 +435,9 @@ SDK.ConsoleMessage = class {
   static fromException(target, exceptionDetails, messageType, timestamp, forceUrl) {
     return new SDK.ConsoleMessage(
         target, SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Error,
-        SDK.ConsoleMessage.simpleTextFromException(exceptionDetails), messageType, forceUrl || exceptionDetails.url,
-        exceptionDetails.lineNumber, exceptionDetails.columnNumber, undefined, exceptionDetails.exception ?
+        SDK.RuntimeModel.simpleTextFromException(exceptionDetails), messageType, forceUrl || exceptionDetails.url,
+        exceptionDetails.lineNumber, exceptionDetails.columnNumber, undefined,
+        exceptionDetails.exception ?
             [SDK.RemoteObject.fromLocalObject(exceptionDetails.text), exceptionDetails.exception] :
             undefined,
         exceptionDetails.stackTrace, timestamp, exceptionDetails.executionContextId, exceptionDetails.scriptId);

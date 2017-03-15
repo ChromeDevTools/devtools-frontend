@@ -67,6 +67,14 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
           SDK.CPUProfilerModel.Events.ConsoleProfileFinished, this._consoleProfileFinished, this);
     }
 
+    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    if (resourceTreeModel) {
+      resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.MainFrameStartedLoading, this._mainFrameStartedLoading, this);
+      resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this);
+    }
+
     var runtimeModel = target.model(SDK.RuntimeModel);
     if (runtimeModel) {
       runtimeModel.addEventListener(SDK.RuntimeModel.Events.ExceptionThrown, this._exceptionThrown, this);
@@ -202,6 +210,22 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
         callFrame ? callFrame.lineNumber : undefined, callFrame ? callFrame.columnNumber : undefined, undefined,
         call.args, call.stackTrace, call.timestamp, call.executionContextId, undefined);
     this.addMessage(consoleMessage);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _mainFrameStartedLoading(event) {
+    if (!Common.moduleSetting('preserveConsoleLog').get())
+      this.clear();
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _mainFrameNavigated(event) {
+    if (Common.moduleSetting('preserveConsoleLog').get())
+      Common.console.log(Common.UIString('Navigated to %s', event.data.url));
   }
 
   /**

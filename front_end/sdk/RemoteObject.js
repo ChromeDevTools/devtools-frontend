@@ -638,8 +638,7 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
         return;
       }
       if (exceptionDetails) {
-        this._target.consoleModel.addMessage(
-            SDK.ConsoleMessage.fromException(this._target, exceptionDetails, undefined, undefined, undefined));
+        this.target().runtimeModel.exceptionThrown(Date.now(), exceptionDetails);
         callback(null, null);
         return;
       }

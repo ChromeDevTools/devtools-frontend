@@ -337,7 +337,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {number} timestamp
    * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    */
-  _exceptionThrown(timestamp, exceptionDetails) {
+  exceptionThrown(timestamp, exceptionDetails) {
     var exceptionWithTimestamp = {timestamp: timestamp, details: exceptionDetails};
     this.dispatchEventToListeners(SDK.RuntimeModel.Events.ExceptionThrown, exceptionWithTimestamp);
   }
@@ -432,7 +432,7 @@ SDK.RuntimeDispatcher = class {
    * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    */
   exceptionThrown(timestamp, exceptionDetails) {
-    this._runtimeModel._exceptionThrown(timestamp, exceptionDetails);
+    this._runtimeModel.exceptionThrown(timestamp, exceptionDetails);
   }
 
   /**

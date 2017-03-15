@@ -55,7 +55,8 @@
         { "name": "network_conditions", "type": "autostart"},
         { "name": "event_listeners" },
         { "name": "object_ui", "type": "autostart"},
-        { "name": "help", "type": "autostart"}
+        { "name": "help", "type": "autostart"},
+        { "name": "workspace_diff" }
     ],
 
     "has_html": true

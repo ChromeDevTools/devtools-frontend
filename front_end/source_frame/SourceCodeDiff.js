@@ -6,30 +6,21 @@
  */
 SourceFrame.SourceCodeDiff = class {
   /**
-   * @param {!Promise<?string>} diffBaseline
+   * @param {!WorkspaceDiff.WorkspaceDiff} workspaceDiff
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {!TextEditor.CodeMirrorTextEditor} textEditor
    */
-  constructor(diffBaseline, textEditor) {
+  constructor(workspaceDiff, uiSourceCode, textEditor) {
     this._textEditor = textEditor;
     this._decorations = [];
     this._textEditor.installGutter(SourceFrame.SourceCodeDiff.DiffGutterType, true);
-    this._diffBaseline = diffBaseline;
+    this._uiSourceCode = uiSourceCode;
+    this._workspaceDiff = workspaceDiff;
     /** @type {!Array<!TextEditor.TextEditorPositionHandle>}*/
     this._animatedLines = [];
-  }
 
-  updateDiffMarkersWhenPossible() {
-    if (this._updateTimeout)
-      clearTimeout(this._updateTimeout);
-    this._updateTimeout =
-        setTimeout(this.updateDiffMarkersImmediately.bind(this), SourceFrame.SourceCodeDiff.UpdateTimeout);
-  }
-
-  updateDiffMarkersImmediately() {
-    if (this._updateTimeout)
-      clearTimeout(this._updateTimeout);
-    this._updateTimeout = null;
-    this._diffBaseline.then(this._innerUpdate.bind(this));
+    this._workspaceDiff.subscribeToDiffChange(this._uiSourceCode, this._update, this);
+    this._update();
   }
 
   /**
@@ -40,7 +31,7 @@ SourceFrame.SourceCodeDiff = class {
     if (typeof oldContent !== 'string' || typeof newContent !== 'string')
       return;
 
-    var diff = this._computeDiff(oldContent, newContent);
+    var diff = this._computeDiff(Diff.Diff.lineDiff(oldContent.split('\n'), newContent.split('\n')));
     var changedLines = [];
     for (var i = 0; i < diff.length; ++i) {
       var diffEntry = diff[i];
@@ -104,12 +95,10 @@ SourceFrame.SourceCodeDiff = class {
   }
 
   /**
-   * @param {string} baseline
-   * @param {string} current
+   * @param {!Diff.Diff.DiffArray} diff
    * @return {!Array<!{type: !SourceFrame.SourceCodeDiff.GutterDecorationType, from: number, to: number}>}
    */
-  _computeDiff(baseline, current) {
-    var diff = Diff.Diff.lineDiff(baseline.split('\n'), current.split('\n'));
+  _computeDiff(diff) {
     var result = [];
     var hasAdded = false;
     var hasRemoved = false;
@@ -165,18 +154,16 @@ SourceFrame.SourceCodeDiff = class {
     }
   }
 
-  /**
-   * @param {?string} baseline
-   */
-  _innerUpdate(baseline) {
-    var current = this._textEditor.text();
-    if (typeof baseline !== 'string') {
-      this._updateDecorations(this._decorations, [] /* added */);
-      this._decorations = [];
-      return;
-    }
+  _update() {
+    this._workspaceDiff.requestDiff(this._uiSourceCode).then(this._innerUpdate.bind(this));
+  }
 
-    var diff = this._computeDiff(baseline, current);
+  /**
+   * @param {?Diff.Diff.DiffArray} lineDiff
+   */
+  _innerUpdate(lineDiff) {
+    if (!lineDiff)
+      return;
 
     /** @type {!Map<number, !SourceFrame.SourceCodeDiff.GutterDecoration>} */
     var oldDecorations = new Map();
@@ -187,6 +174,8 @@ SourceFrame.SourceCodeDiff = class {
         continue;
       oldDecorations.set(lineNumber, decoration);
     }
+
+    var diff = this._computeDiff(lineDiff);
 
     /** @type {!Map<number, !{lineNumber: number, type: !SourceFrame.SourceCodeDiff.GutterDecorationType}>} */
     var newDecorations = new Map();
@@ -210,10 +199,11 @@ SourceFrame.SourceCodeDiff = class {
    */
   _decorationsSetForTest(decorations) {
   }
-};
 
-/** @type {number} */
-SourceFrame.SourceCodeDiff.UpdateTimeout = 200;
+  dispose() {
+    WorkspaceDiff.workspaceDiff().unsubscribeFromDiffChange(this._uiSourceCode, this._update, this);
+  }
+};
 
 /** @type {string} */
 SourceFrame.SourceCodeDiff.DiffGutterType = 'CodeMirror-gutter-diff';

@@ -39,7 +39,8 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this.setEditable(this._canEditSource());
 
     if (Runtime.experiments.isEnabled('sourceDiff'))
-      this._diff = new SourceFrame.SourceCodeDiff(uiSourceCode.requestOriginalContent(), this.textEditor);
+      this._diff = new SourceFrame.SourceCodeDiff(WorkspaceDiff.workspaceDiff(), uiSourceCode, this.textEditor);
+
 
     /** @type {?UI.AutocompleteConfig} */
     this._autocompleteConfig = {isWordChar: Common.TextUtils.isWordChar};
@@ -167,8 +168,6 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    * @override
    */
   onTextEditorContentSet() {
-    if (this._diff)
-      this._diff.updateDiffMarkersImmediately();
     super.onTextEditorContentSet();
     for (var message of this._allMessages())
       this._addMessageToSource(message);
@@ -190,8 +189,6 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    * @param {!Common.TextRange} newRange
    */
   onTextChanged(oldRange, newRange) {
-    if (this._diff)
-      this._diff.updateDiffMarkersWhenPossible();
     super.onTextChanged(oldRange, newRange);
     this._errorPopoverHelper.hidePopover();
     if (this._isSettingContent)
@@ -321,6 +318,8 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   }
 
   dispose() {
+    if (this._diff)
+      this._diff.dispose();
     this.textEditor.dispose();
     Common.moduleSetting('textEditorAutocompletion').removeChangeListener(this._updateAutocomplete, this);
     this.detach();

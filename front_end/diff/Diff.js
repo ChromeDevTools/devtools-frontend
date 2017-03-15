@@ -19,7 +19,7 @@ Diff.Diff = {
   /**
    * @param {!Array.<string>} lines1
    * @param {!Array.<string>} lines2
-   * @return {!Array.<!{0: number, 1: !Array.<string>}>}
+   * @return {!Diff.Diff.DiffArray}
    */
   lineDiff: function(lines1, lines2) {
     /** @type {!Common.CharacterIdMap<string>} */
@@ -40,7 +40,7 @@ Diff.Diff = {
   },
 
   /**
-   * @param {!Array.<!{0: number, 1: !Array.<string>}>} diff
+   * @param {!Diff.Diff.DiffArray} diff
    * @return {!Array<!Array<number>>}
    */
   convertToEditDiff: function(diff) {
@@ -80,9 +80,13 @@ Diff.Diff = {
 
 };
 
+/** @enum {number} */
 Diff.Diff.Operation = {
   Equal: 0,
   Insert: 1,
   Delete: -1,
   Edit: 2
 };
+
+/** @typedef {!Array<!{0: !Diff.Diff.Operation, 1: !Array<string>}>} */
+Diff.Diff.DiffArray;

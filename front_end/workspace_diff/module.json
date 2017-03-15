@@ -1,0 +1,9 @@
+{
+  "dependencies": [
+      "workspace",
+      "diff"
+  ],
+  "scripts": [
+      "WorkspaceDiff.js"
+  ]
+}

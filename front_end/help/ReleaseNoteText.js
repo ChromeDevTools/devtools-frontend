@@ -9,17 +9,20 @@
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
   {
-    version: 58,
+    version: 1,
     highlights: [
       {
         contents: [
           {
-            text: 'Improved',
+            text: 'Debugger',
           },
           {
-            text: 'Performance and Memory panels',
-            link: 'https://developers.google.com/web/tools/chrome-devtools/',
-          }
+            text: 'catches out-of-memory',
+            link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#out-of-memory-breakpoints',
+          },
+          {
+            text: 'errors',
+          },
         ],
         featured: true,
       },
@@ -27,7 +30,7 @@ Help.releaseNoteText = [
         contents: [
           {
             text: 'Edit cookies directly',
-            link: 'https://developers.google.com/web/tools/chrome-devtools/',
+            link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#cookies',
           },
           {
             text: 'from the Application panel',
@@ -41,28 +44,25 @@ Help.releaseNoteText = [
           },
           {
             text: 'filtering & settings for Console',
-            link: 'https://developers.google.com/web/tools/chrome-devtools/',
+            link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#console',
           },
         ],
       },
       {
         contents: [
           {
-            text: 'Debugger',
+            text: 'Improved',
           },
           {
-            text: 'catches out-of-memory',
-            link: 'https://developers.google.com/web/tools/chrome-devtools/',
-          },
-          {
-            text: 'errors',
-          },
+            text: 'Performance and Memory panels',
+            link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#performance-panel',
+          }
         ],
       },
     ],
-    link: 'https://developers.google.com/web/tools/chrome-devtools/',
+    link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes',
     image: {
-      src: 'https://developers.google.com/web/tools/chrome-devtools/images/panels/performance.png',
+      src: 'https://developers.google.com/web/updates/images/2017/03/release-notes-preview.png',
     },
   },
 ];

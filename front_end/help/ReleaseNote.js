@@ -19,7 +19,7 @@ Help.ReleaseNoteView = class extends UI.VBox {
     var contentContainer = container.createChild('div', 'release-note-content-container');
     var textContainer = contentContainer.createChild('div', 'release-note-text-container');
     textContainer.createChild('div', 'release-note-update-text')
-        .createTextChild(Common.UIString('Chrome has been updated to version %d. ', releaseNote.version));
+        .createTextChild(Common.UIString('Chrome has been updated. '));
     textContainer.createChild('div').createTextChild(Common.UIString(`Here's what's new in DevTools:`));
     var highlightContainer = textContainer.createChild('ul', 'release-note-highlight-container');
     for (var highlight of releaseNote.highlights) {

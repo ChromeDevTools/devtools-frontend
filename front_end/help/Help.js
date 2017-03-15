@@ -8,25 +8,9 @@
 Help.latestReleaseNote = function() {
   if (!Help._latestReleaseNote) {
     /** @type {!Help.ReleaseNote} */
-    Help._latestReleaseNote = Help._getReleaseNoteByVersion(Help.browserVersion());
+    Help._latestReleaseNote = Help.releaseNoteText.reduce((acc, note) => note.version > acc.version ? note : acc);
   }
   return Help._latestReleaseNote;
-};
-
-/**
- * @param {number} version
- * @return {!Help.ReleaseNote}
- */
-Help._getReleaseNoteByVersion = function(version) {
-  var originalVersion = version;
-  while (version) {
-    var note = Help.releaseNoteText.find(note => note.version === version);
-    if (note)
-      return note;
-    version--;
-  }
-  console.error(`Unable to find release note for version ${originalVersion} - using last release note as fallback`);
-  return /** @type {!Help.ReleaseNote} */ (Help.releaseNoteText.peekLast());
 };
 
 /**
@@ -41,21 +25,19 @@ Help.releaseNoteVersionSetting = function() {
 };
 
 Help.showReleaseNoteIfNeeded = function() {
-  Help._showReleaseNoteIfNeeded(Help.releaseNoteVersionSetting().get(), Help.browserVersion());
+  Help._showReleaseNoteIfNeeded(Help.releaseNoteVersionSetting().get(), Help.latestReleaseNote().version);
 };
 
 /**
  * @param {number} lastSeenVersion
- * @param {number} browserVersion
+ * @param {number} latestVersion
  */
-Help._showReleaseNoteIfNeeded = function(lastSeenVersion, browserVersion) {
+Help._showReleaseNoteIfNeeded = function(lastSeenVersion, latestVersion) {
   if (!Runtime.experiments.isEnabled('releaseNote'))
     return;
-  if (lastSeenVersion >= browserVersion)
+  if (lastSeenVersion >= latestVersion)
     return;
-  if (Help.latestReleaseNote().version !== browserVersion)
-    return;
-  Help.releaseNoteVersionSetting().set(Help.browserVersion());
+  Help.releaseNoteVersionSetting().set(latestVersion);
   UI.viewManager.showView(Help._releaseNoteViewId, true);
 };
 

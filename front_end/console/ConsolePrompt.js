@@ -191,7 +191,7 @@ Console.ConsolePrompt = class extends UI.Widget {
     this.setText('');
     var currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
     if (currentExecutionContext) {
-      SDK.ConsoleModel.evaluateCommandInConsole(currentExecutionContext, text, useCommandLineAPI);
+      SDK.consoleModel.evaluateCommandInConsole(currentExecutionContext, text, useCommandLineAPI);
       if (Console.ConsolePanel.instance().isShowing())
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.CommandEvaluatedInConsolePanel);
     }

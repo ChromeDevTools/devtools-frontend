@@ -44,10 +44,9 @@ Bindings.PresentationConsoleMessageHelper = class {
     /** @type {!Array.<!Bindings.PresentationConsoleMessage>} */
     this._presentationConsoleMessages = [];
 
-    SDK.multitargetConsoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
-    SDK.multitargetConsoleModel.addEventListener(
-        SDK.ConsoleModel.Events.MessageAdded, this._onConsoleMessageAdded, this);
-    SDK.multitargetConsoleModel.messages().forEach(this._consoleMessageAdded, this);
+    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
+    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, this._onConsoleMessageAdded, this);
+    SDK.consoleModel.messages().forEach(this._consoleMessageAdded, this);
     // TODO(dgozman): setImmediate because we race with DebuggerWorkspaceBinding on ParsedScriptSource event delivery.
     SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.ParsedScriptSource,

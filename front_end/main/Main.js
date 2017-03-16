@@ -165,7 +165,7 @@ Main.Main = class {
     UI.ContextMenu.installHandler(document);
     UI.Tooltip.installHandler(document);
     Components.dockController = new Components.DockController(canDock);
-    SDK.multitargetConsoleModel = new SDK.MultitargetConsoleModel();
+    SDK.consoleModel = new SDK.ConsoleModel();
     SDK.multitargetNetworkManager = new SDK.MultitargetNetworkManager();
     SDK.targetManager.addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
@@ -602,9 +602,9 @@ Main.Main.WarningErrorCounter = class {
     this._warnings = this._createItem(shadowRoot, 'smallicon-warning');
     this._titles = [];
 
-    SDK.multitargetConsoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._update, this);
-    SDK.multitargetConsoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, this._update, this);
-    SDK.multitargetConsoleModel.addEventListener(SDK.ConsoleModel.Events.MessageUpdated, this._update, this);
+    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._update, this);
+    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, this._update, this);
+    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageUpdated, this._update, this);
     this._update();
   }
 
@@ -637,8 +637,8 @@ Main.Main.WarningErrorCounter = class {
   }
 
   _update() {
-    var errors = SDK.multitargetConsoleModel.errors();
-    var warnings = SDK.multitargetConsoleModel.warnings();
+    var errors = SDK.consoleModel.errors();
+    var warnings = SDK.consoleModel.warnings();
 
     this._titles = [];
     this._toolbarItem.setVisible(!!(errors || warnings));

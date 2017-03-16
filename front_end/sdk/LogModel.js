@@ -28,7 +28,7 @@ SDK.LogModel = class extends SDK.SDKModel {
    * @param {!Protocol.Log.LogEntry} payload
    */
   entryAdded(payload) {
-    this.emit(new SDK.LogModel.EntryAddedEvent(payload));
+    this.emit(new SDK.LogModel.EntryAddedEvent(this, payload));
   }
 
   requestClear() {
@@ -41,9 +41,11 @@ SDK.SDKModel.register(SDK.LogModel, SDK.Target.Capability.Log);
 /** @implements {Common.Emittable} */
 SDK.LogModel.EntryAddedEvent = class {
   /**
+   * @param {!SDK.LogModel} logModel
    * @param {!Protocol.Log.LogEntry} entry
    */
-  constructor(entry) {
+  constructor(logModel, entry) {
+    this.logModel = logModel;
     this.entry = entry;
   }
 };

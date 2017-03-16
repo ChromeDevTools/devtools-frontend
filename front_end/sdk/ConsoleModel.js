@@ -31,12 +31,13 @@
 /**
  * @unrestricted
  */
-SDK.ConsoleModel = class extends SDK.SDKModel {
+SDK.ConsoleModel = class extends Common.Object {
   /**
    * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(target);
+    super();
+    this._target = target;
 
     /** @type {!Array.<!SDK.ConsoleMessage>} */
     this._messages = [];
@@ -78,6 +79,13 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @return {!SDK.Target}
+   */
+  target() {
+    return this._target;
+  }
+
+  /**
    * @param {!SDK.ExecutionContext} executionContext
    * @param {string} text
    * @param {boolean} useCommandLineAPI
@@ -89,7 +97,7 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
     var commandMessage = new SDK.ConsoleMessage(
         target, SDK.ConsoleMessage.MessageSource.JS, null, text, SDK.ConsoleMessage.MessageType.Command);
     commandMessage.setExecutionContextId(executionContext.id);
-    target.consoleModel.addMessage(commandMessage);
+    SDK.multitargetConsoleModel.addMessage(commandMessage);
 
     /**
      * @param {?SDK.RemoteObject} result
@@ -101,7 +109,7 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
 
       Common.console.showPromise().then(reportUponEvaluation);
       function reportUponEvaluation() {
-        target.consoleModel.dispatchEventToListeners(
+        SDK.multitargetConsoleModel._consoleModels.get(target).dispatchEventToListeners(
             SDK.ConsoleModel.Events.CommandEvaluated,
             {result: result, text: requestedText, commandMessage: commandMessage, exceptionDetails: exceptionDetails});
       }
@@ -335,8 +343,6 @@ SDK.ConsoleModel = class extends SDK.SDKModel {
     return this._warnings;
   }
 };
-
-SDK.SDKModel.register(SDK.ConsoleModel, SDK.Target.Capability.None);
 
 /** @enum {symbol} */
 SDK.ConsoleModel.Events = {
@@ -639,13 +645,9 @@ SDK.ConsoleMessage.MessageLevel.ordinal = function(level) {
 SDK.MultitargetConsoleModel = class extends Common.Object {
   constructor() {
     super();
+    /** @type {!Map<!SDK.Target, !SDK.ConsoleModel>} */
+    this._consoleModels = new Map();
     SDK.targetManager.observeTargets(this);
-    SDK.targetManager.addModelListener(
-        SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, this._consoleMessageAdded, this);
-    SDK.targetManager.addModelListener(
-        SDK.ConsoleModel, SDK.ConsoleModel.Events.MessageUpdated, this._consoleMessageUpdated, this);
-    SDK.targetManager.addModelListener(
-        SDK.ConsoleModel, SDK.ConsoleModel.Events.CommandEvaluated, this._commandEvaluated, this);
   }
 
   /**
@@ -653,9 +655,17 @@ SDK.MultitargetConsoleModel = class extends Common.Object {
    * @param {!SDK.Target} target
    */
   targetAdded(target) {
+    var consoleModel = new SDK.ConsoleModel(target);
+    this._consoleModels.set(target, consoleModel);
+    consoleModel[SDK.MultitargetConsoleModel._events] = [
+      consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, this._consoleMessageAdded, this),
+      consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageUpdated, this._consoleMessageUpdated, this),
+      consoleModel.addEventListener(SDK.ConsoleModel.Events.CommandEvaluated, this._commandEvaluated, this)
+    ];
+
     if (!this._mainTarget) {
       this._mainTarget = target;
-      target.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
+      consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
     }
   }
 
@@ -664,9 +674,13 @@ SDK.MultitargetConsoleModel = class extends Common.Object {
    * @param {!SDK.Target} target
    */
   targetRemoved(target) {
+    var consoleModel = this._consoleModels.get(target);
+    this._consoleModels.delete(target);
+    Common.EventTarget.removeEventListeners(consoleModel[SDK.MultitargetConsoleModel._events]);
+
     if (this._mainTarget === target) {
       delete this._mainTarget;
-      target.consoleModel.removeEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
+      consoleModel.removeEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
     }
   }
 
@@ -674,10 +688,44 @@ SDK.MultitargetConsoleModel = class extends Common.Object {
    * @return {!Array.<!SDK.ConsoleMessage>}
    */
   messages() {
-    var targets = SDK.targetManager.targets();
     var result = [];
-    for (var i = 0; i < targets.length; ++i)
-      result = result.concat(targets[i].consoleModel.messages());
+    for (var consoleModel of this._consoleModels.values())
+      result = result.concat(consoleModel.messages());
+    return result;
+  }
+
+  requestClearMessages() {
+    for (var consoleModel of this._consoleModels.values())
+      consoleModel.requestClearMessages();
+  }
+
+  /**
+   * @param {!SDK.ConsoleMessage} consoleMessage
+   */
+  addMessage(consoleMessage) {
+    // TODO(dgozman): make target non-nullable, as we only have messages without a target
+    // internally in ConsoleView.
+    var target = /** @type {!SDK.Target} */ (consoleMessage.target());
+    this._consoleModels.get(target).addMessage(consoleMessage);
+  }
+
+  /**
+   * @return {number}
+   */
+  errors() {
+    var result = 0;
+    for (var consoleModel of this._consoleModels.values())
+      result += consoleModel.errors();
+    return result;
+  }
+
+  /**
+   * @return {number}
+   */
+  warnings() {
+    var result = 0;
+    for (var consoleModel of this._consoleModels.values())
+      result += consoleModel.warnings();
     return result;
   }
 
@@ -706,6 +754,8 @@ SDK.MultitargetConsoleModel = class extends Common.Object {
     this.dispatchEventToListeners(SDK.ConsoleModel.Events.CommandEvaluated, event.data);
   }
 };
+
+SDK.MultitargetConsoleModel._events = Symbol('SDK.MultitargetConsoleModel.events');
 
 /**
  * @type {!SDK.MultitargetConsoleModel}

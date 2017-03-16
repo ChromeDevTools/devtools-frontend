@@ -637,13 +637,8 @@ Main.Main.WarningErrorCounter = class {
   }
 
   _update() {
-    var errors = 0;
-    var warnings = 0;
-    var targets = SDK.targetManager.targets();
-    for (var i = 0; i < targets.length; ++i) {
-      errors += targets[i].consoleModel.errors();
-      warnings += targets[i].consoleModel.warnings();
-    }
+    var errors = SDK.multitargetConsoleModel.errors();
+    var warnings = SDK.multitargetConsoleModel.warnings();
 
     this._titles = [];
     this._toolbarItem.setVisible(!!(errors || warnings));

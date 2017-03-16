@@ -182,8 +182,7 @@ Console.ConsoleView = class extends UI.VBox {
   }
 
   static clearConsole() {
-    for (var target of SDK.targetManager.targets())
-      target.consoleModel.requestClearMessages();
+    SDK.multitargetConsoleModel.requestClearMessages();
   }
 
   /**
@@ -806,7 +805,7 @@ Console.ConsoleView = class extends UI.VBox {
           result.target(), exceptionDetails, SDK.ConsoleMessage.MessageType.Result, undefined, undefined);
     }
     message.setOriginatingMessage(originatingConsoleMessage);
-    result.target().consoleModel.addMessage(message);
+    SDK.multitargetConsoleModel.addMessage(message);
   }
 
   /**

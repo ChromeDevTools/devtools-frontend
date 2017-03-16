@@ -118,13 +118,6 @@ SDK.TracingModel = class {
   }
 
   /**
-   * @return {!Array.<!SDK.TracingModel.Event>}
-   */
-  flowHeads() {
-    return this._flowHeads;
-  }
-
-  /**
    * @param {!Array.<!SDK.TracingManager.EventPayload>} events
    */
   setEventsForTest(events) {
@@ -143,7 +136,6 @@ SDK.TracingModel = class {
 
   tracingComplete() {
     this._processPendingAsyncEvents();
-    this._processFlowEvents();
     this._backingStorage.appendString(this._firstWritePending ? '[]' : ']');
     this._backingStorage.finishWriting();
     this._firstWritePending = false;
@@ -170,14 +162,10 @@ SDK.TracingModel = class {
     this._openAsyncEvents = new Map();
     /** @type {!Map<string, !Array<!SDK.TracingModel.AsyncEvent>>} */
     this._openNestableAsyncEvents = new Map();
-    /** @type {!Map<string, !Array<!SDK.TracingModel.Event>>} */
-    this._flowEventsById = new Map();
     /** @type {!Map<string, !SDK.TracingModel.ProfileEventsGroup>} */
     this._profileGroups = new Map();
     /** @type {!Map<string, !Set<string>>} */
     this._parsedCategories = new Map();
-    /** @type {!Array<!SDK.TracingModel.Event>} */
-    this._flowHeads = [];
   }
 
   /**
@@ -243,18 +231,8 @@ SDK.TracingModel = class {
     // Build async event when we've got events from all threads & processes, so we can sort them and process in the
     // chronological order. However, also add individual async events to the thread flow (above), so we can easily
     // display them on the same chart as other events, should we choose so.
-    if (SDK.TracingModel.isAsyncPhase(payload.ph)) {
+    if (SDK.TracingModel.isAsyncPhase(payload.ph))
       this._asyncEvents.push(event);
-    } else if (SDK.TracingModel.isFlowPhase(payload.ph)) {
-      var key = `${event.categoriesString}-${event.name}-${event.id}`;
-      var flowEvents = this._flowEventsById.get(key);
-      if (!flowEvents) {
-        flowEvents = [];
-        this._flowEventsById.set(key, flowEvents);
-      }
-      flowEvents.push(event);
-    }
-
     event._setBackingStorage(backingStorage);
     if (event.hasCategory(SDK.TracingModel.DevToolsMetadataEventCategory))
       this._devToolsMetadataEvents.push(event);
@@ -349,22 +327,6 @@ SDK.TracingModel = class {
     }
     this._asyncEvents = [];
     this._closeOpenAsyncEvents();
-  }
-
-  _processFlowEvents() {
-    var phases = SDK.TracingModel.Phase;
-    for (var events of this._flowEventsById.values()) {
-      events.stableSort(SDK.TracingModel.Event.compareStartTime);
-      var lastInChain = null;
-      for (var e of events) {
-        if (lastInChain && e.phase !== phases.FlowBegin)
-          lastInChain._appendFlowEvent(e);
-        if (!lastInChain && e.phase !== phases.FlowEnd)
-          this._flowHeads.push(e);
-        lastInChain = e.phase !== phases.FlowEnd ? e : null;
-      }
-    }
-    this._flowEventsById.clear();
   }
 
   _closeOpenAsyncEvents() {
@@ -563,10 +525,6 @@ SDK.TracingModel.Event = class {
     this.thread = thread;
     /** @type {!Object} */
     this.args = {};
-    /** @type {!SDK.TracingModel.Event|undefined} */
-    this.nextFlow;
-    /** @type {!SDK.TracingModel.Event|undefined} */
-    this.previousFlow;
 
     /** @type {number} */
     this.selfTime = 0;
@@ -667,14 +625,6 @@ SDK.TracingModel.Event = class {
     else
       console.error('Missing mandatory event argument \'args\' at ' + endEvent.startTime);
     this.setEndTime(endEvent.startTime);
-  }
-
-  /**
-   * @param {!SDK.TracingModel.Event} nextFlow
-   */
-  _appendFlowEvent(nextFlow) {
-    this.nextFlow = nextFlow;
-    nextFlow.previousFlow = this;
   }
 
   /**

@@ -56,7 +56,8 @@
         { "name": "event_listeners" },
         { "name": "object_ui", "type": "autostart"},
         { "name": "help", "type": "autostart"},
-        { "name": "workspace_diff" }
+        { "name": "workspace_diff" },
+        { "name": "console_model", "type": "autostart"}
     ],
 
     "has_html": true

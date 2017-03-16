@@ -3,7 +3,8 @@
         "sdk",
         "platform",
         "services",
-        "workspace"
+        "workspace",
+        "console_model"
     ],
     "scripts": [
         "LiveLocation.js",

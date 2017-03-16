@@ -33,7 +33,7 @@
  */
 Console.ConsoleViewMessage = class {
   /**
-   * @param {!SDK.ConsoleMessage} consoleMessage
+   * @param {!ConsoleModel.ConsoleMessage} consoleMessage
    * @param {!Components.Linkifier} linkifier
    * @param {number} nestingLevel
    */
@@ -100,7 +100,7 @@ Console.ConsoleViewMessage = class {
     // This value reflects the 18px min-height of .console-message, plus the
     // 1px border of .console-message-wrapper. Keep in sync with consoleView.css.
     const defaultConsoleRowHeight = 19;
-    if (this._message.type === SDK.ConsoleMessage.MessageType.Table) {
+    if (this._message.type === ConsoleModel.ConsoleMessage.MessageType.Table) {
       var table = this._message.parameters[0];
       if (table && table.preview)
         return defaultConsoleRowHeight * table.preview.properties.length;
@@ -109,14 +109,14 @@ Console.ConsoleViewMessage = class {
   }
 
   /**
-   * @return {!SDK.ConsoleMessage}
+   * @return {!ConsoleModel.ConsoleMessage}
    */
   consoleMessage() {
     return this._message;
   }
 
   /**
-   * @param {!SDK.ConsoleMessage} consoleMessage
+   * @param {!ConsoleModel.ConsoleMessage} consoleMessage
    * @return {!Element}
    */
   _buildTableMessage(consoleMessage) {
@@ -188,34 +188,34 @@ Console.ConsoleViewMessage = class {
   }
 
   /**
-   * @param {!SDK.ConsoleMessage} consoleMessage
+   * @param {!ConsoleModel.ConsoleMessage} consoleMessage
    * @return {!Element}
    */
   _buildMessage(consoleMessage) {
     var messageElement;
     var messageText = consoleMessage.messageText;
-    if (consoleMessage.source === SDK.ConsoleMessage.MessageSource.ConsoleAPI) {
+    if (consoleMessage.source === ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI) {
       switch (consoleMessage.type) {
-        case SDK.ConsoleMessage.MessageType.Trace:
+        case ConsoleModel.ConsoleMessage.MessageType.Trace:
           messageElement = this._format(consoleMessage.parameters || ['console.trace']);
           break;
-        case SDK.ConsoleMessage.MessageType.Clear:
+        case ConsoleModel.ConsoleMessage.MessageType.Clear:
           messageElement = createElementWithClass('span', 'console-info');
           messageElement.textContent = Common.UIString('Console was cleared');
           break;
-        case SDK.ConsoleMessage.MessageType.Assert:
+        case ConsoleModel.ConsoleMessage.MessageType.Assert:
           var args = [Common.UIString('Assertion failed:')];
           if (consoleMessage.parameters)
             args = args.concat(consoleMessage.parameters);
           messageElement = this._format(args);
           break;
-        case SDK.ConsoleMessage.MessageType.Dir:
+        case ConsoleModel.ConsoleMessage.MessageType.Dir:
           var obj = consoleMessage.parameters ? consoleMessage.parameters[0] : undefined;
           var args = ['%O', obj];
           messageElement = this._format(args);
           break;
-        case SDK.ConsoleMessage.MessageType.Profile:
-        case SDK.ConsoleMessage.MessageType.ProfileEnd:
+        case ConsoleModel.ConsoleMessage.MessageType.Profile:
+        case ConsoleModel.ConsoleMessage.MessageType.ProfileEnd:
           messageElement = this._format([messageText]);
           break;
         default:
@@ -225,10 +225,10 @@ Console.ConsoleViewMessage = class {
           var args = consoleMessage.parameters || [messageText];
           messageElement = messageElement || this._format(args);
       }
-    } else if (consoleMessage.source === SDK.ConsoleMessage.MessageSource.Network) {
+    } else if (consoleMessage.source === ConsoleModel.ConsoleMessage.MessageSource.Network) {
       if (consoleMessage.request) {
         messageElement = createElement('span');
-        if (consoleMessage.level === SDK.ConsoleMessage.MessageLevel.Error) {
+        if (consoleMessage.level === ConsoleModel.ConsoleMessage.MessageLevel.Error) {
           messageElement.createTextChild(consoleMessage.request.requestMethod + ' ');
           messageElement.appendChild(Components.Linkifier.linkifyRevealable(
               consoleMessage.request, consoleMessage.request.url(), consoleMessage.request.url()));
@@ -247,11 +247,11 @@ Console.ConsoleViewMessage = class {
         messageElement = this._format([messageText]);
       }
     } else {
-      if (consoleMessage.source === SDK.ConsoleMessage.MessageSource.Violation)
+      if (consoleMessage.source === ConsoleModel.ConsoleMessage.MessageSource.Violation)
         messageText = Common.UIString('[Violation] %s', messageText);
-      else if (consoleMessage.source === SDK.ConsoleMessage.MessageSource.Intervention)
+      else if (consoleMessage.source === ConsoleModel.ConsoleMessage.MessageSource.Intervention)
         messageText = Common.UIString('[Intervention] %s', messageText);
-      if (consoleMessage.source === SDK.ConsoleMessage.MessageSource.Deprecation)
+      if (consoleMessage.source === ConsoleModel.ConsoleMessage.MessageSource.Deprecation)
         messageText = Common.UIString('[Deprecation] %s', messageText);
       var args = consoleMessage.parameters || [messageText];
       messageElement = this._format(args);
@@ -271,7 +271,7 @@ Console.ConsoleViewMessage = class {
     /**
      * @param {string} title
      * @return {!Element}
-     * @this {SDK.ConsoleMessage}
+     * @this {ConsoleModel.ConsoleMessage}
      */
     function linkifyRequest(title) {
       return Components.Linkifier.linkifyRevealable(
@@ -280,12 +280,12 @@ Console.ConsoleViewMessage = class {
   }
 
   /**
-   * @param {!SDK.ConsoleMessage} consoleMessage
+   * @param {!ConsoleModel.ConsoleMessage} consoleMessage
    * @return {?Element}
    */
   _buildMessageAnchor(consoleMessage) {
     var anchorElement = null;
-    if (consoleMessage.source !== SDK.ConsoleMessage.MessageSource.Network || consoleMessage.request) {
+    if (consoleMessage.source !== ConsoleModel.ConsoleMessage.MessageSource.Network || consoleMessage.request) {
       if (consoleMessage.scriptId) {
         anchorElement = this._linkifyScriptId(
             consoleMessage.scriptId, consoleMessage.url || '', consoleMessage.line, consoleMessage.column);
@@ -309,7 +309,7 @@ Console.ConsoleViewMessage = class {
   }
 
   /**
-   * @param {!SDK.ConsoleMessage} consoleMessage
+   * @param {!ConsoleModel.ConsoleMessage} consoleMessage
    * @param {!SDK.Target} target
    * @param {!Components.Linkifier} linkifier
    * @return {!Element}
@@ -349,7 +349,7 @@ Console.ConsoleViewMessage = class {
     }
 
     clickableElement.addEventListener('click', toggleStackTrace, false);
-    if (consoleMessage.type === SDK.ConsoleMessage.MessageType.Trace)
+    if (consoleMessage.type === ConsoleModel.ConsoleMessage.MessageType.Trace)
       expandStackTrace(true);
 
     toggleElement._expandStackTraceForTest = expandStackTrace.bind(null, true);
@@ -428,8 +428,8 @@ Console.ConsoleViewMessage = class {
     // There can be string log and string eval result. We distinguish between them based on message type.
     var shouldFormatMessage =
         SDK.RemoteObject.type((/** @type {!Array.<!SDK.RemoteObject>} **/ (parameters))[0]) === 'string' &&
-        (this._message.type !== SDK.ConsoleMessage.MessageType.Result ||
-         this._message.level === SDK.ConsoleMessage.MessageLevel.Error);
+        (this._message.type !== ConsoleModel.ConsoleMessage.MessageType.Result ||
+         this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Error);
 
     // Multiple parameters with the first being a format string. Save unused substitutions.
     if (shouldFormatMessage) {
@@ -909,21 +909,21 @@ Console.ConsoleViewMessage = class {
     if (this._messageLevelIcon)
       contentElement.appendChild(this._messageLevelIcon);
     this._contentElement = contentElement;
-    if (this._message.type === SDK.ConsoleMessage.MessageType.StartGroup ||
-        this._message.type === SDK.ConsoleMessage.MessageType.StartGroupCollapsed)
+    if (this._message.type === ConsoleModel.ConsoleMessage.MessageType.StartGroup ||
+        this._message.type === ConsoleModel.ConsoleMessage.MessageType.StartGroupCollapsed)
       contentElement.classList.add('console-group-title');
 
     var formattedMessage;
     var consoleMessage = this._message;
     var target = consoleMessage.target();
-    var shouldIncludeTrace =
-        !!consoleMessage.stackTrace && (consoleMessage.source === SDK.ConsoleMessage.MessageSource.Network ||
-                                        consoleMessage.level === SDK.ConsoleMessage.MessageLevel.Error ||
-                                        consoleMessage.type === SDK.ConsoleMessage.MessageType.Trace ||
-                                        consoleMessage.level === SDK.ConsoleMessage.MessageLevel.Warning);
+    var shouldIncludeTrace = !!consoleMessage.stackTrace &&
+        (consoleMessage.source === ConsoleModel.ConsoleMessage.MessageSource.Network ||
+         consoleMessage.level === ConsoleModel.ConsoleMessage.MessageLevel.Error ||
+         consoleMessage.type === ConsoleModel.ConsoleMessage.MessageType.Trace ||
+         consoleMessage.level === ConsoleModel.ConsoleMessage.MessageLevel.Warning);
     if (target && shouldIncludeTrace)
       formattedMessage = this._buildMessageWithStackTrace(consoleMessage, target, this._linkifier);
-    else if (this._message.type === SDK.ConsoleMessage.MessageType.Table)
+    else if (this._message.type === ConsoleModel.ConsoleMessage.MessageType.Table)
       formattedMessage = this._buildTableMessage(this._message);
     else
       formattedMessage = this._buildMessage(consoleMessage);
@@ -959,30 +959,30 @@ Console.ConsoleViewMessage = class {
     this._element.message = this;
 
     switch (this._message.level) {
-      case SDK.ConsoleMessage.MessageLevel.Verbose:
+      case ConsoleModel.ConsoleMessage.MessageLevel.Verbose:
         this._element.classList.add('console-verbose-level');
         this._updateMessageLevelIcon('');
         break;
-      case SDK.ConsoleMessage.MessageLevel.Info:
+      case ConsoleModel.ConsoleMessage.MessageLevel.Info:
         this._element.classList.add('console-info-level');
         break;
-      case SDK.ConsoleMessage.MessageLevel.Warning:
+      case ConsoleModel.ConsoleMessage.MessageLevel.Warning:
         this._element.classList.add('console-warning-level');
         this._updateMessageLevelIcon('smallicon-warning');
         break;
-      case SDK.ConsoleMessage.MessageLevel.Error:
+      case ConsoleModel.ConsoleMessage.MessageLevel.Error:
         this._element.classList.add('console-error-level');
         this._updateMessageLevelIcon('smallicon-error');
         break;
     }
 
     // Render verbose and info deprecations, interventions and violations with warning background.
-    if (this._message.level === SDK.ConsoleMessage.MessageLevel.Verbose ||
-        this._message.level === SDK.ConsoleMessage.MessageLevel.Info) {
+    if (this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Verbose ||
+        this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Info) {
       switch (this._message.source) {
-        case SDK.ConsoleMessage.MessageSource.Violation:
-        case SDK.ConsoleMessage.MessageSource.Deprecation:
-        case SDK.ConsoleMessage.MessageSource.Intervention:
+        case ConsoleModel.ConsoleMessage.MessageSource.Violation:
+        case ConsoleModel.ConsoleMessage.MessageSource.Deprecation:
+        case ConsoleModel.ConsoleMessage.MessageSource.Intervention:
           this._element.classList.add('console-warning-level');
           break;
       }
@@ -1037,13 +1037,13 @@ Console.ConsoleViewMessage = class {
     if (!this._repeatCountElement) {
       this._repeatCountElement = createElementWithClass('label', 'console-message-repeat-count', 'dt-small-bubble');
       switch (this._message.level) {
-        case SDK.ConsoleMessage.MessageLevel.Warning:
+        case ConsoleModel.ConsoleMessage.MessageLevel.Warning:
           this._repeatCountElement.type = 'warning';
           break;
-        case SDK.ConsoleMessage.MessageLevel.Error:
+        case ConsoleModel.ConsoleMessage.MessageLevel.Error:
           this._repeatCountElement.type = 'error';
           break;
-        case SDK.ConsoleMessage.MessageLevel.Verbose:
+        case ConsoleModel.ConsoleMessage.MessageLevel.Verbose:
           this._repeatCountElement.type = 'verbose';
           break;
         default:
@@ -1212,14 +1212,14 @@ Console.ConsoleViewMessage = class {
  */
 Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
   /**
-   * @param {!SDK.ConsoleMessage} consoleMessage
+   * @param {!ConsoleModel.ConsoleMessage} consoleMessage
    * @param {!Components.Linkifier} linkifier
    * @param {number} nestingLevel
    */
   constructor(consoleMessage, linkifier, nestingLevel) {
     console.assert(consoleMessage.isGroupStartMessage());
     super(consoleMessage, linkifier, nestingLevel);
-    this._collapsed = consoleMessage.type === SDK.ConsoleMessage.MessageType.StartGroupCollapsed;
+    this._collapsed = consoleMessage.type === ConsoleModel.ConsoleMessage.MessageType.StartGroupCollapsed;
     /** @type {?UI.Icon} */
     this._expandGroupIcon = null;
   }

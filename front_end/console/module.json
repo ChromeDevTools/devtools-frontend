@@ -125,7 +125,8 @@
     "dependencies": [
         "components",
         "data_grid",
-        "object_ui"
+        "object_ui",
+        "console_model"
     ],
     "scripts": [
         "ConsoleContextSelector.js",

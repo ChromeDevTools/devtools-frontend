@@ -120,7 +120,6 @@
         "Target.js",
         "TargetManager.js",
         "Connections.js",
-        "ConsoleModel.js",
         "ContentProviders.js",
         "CookieModel.js",
         "CookieParser.js",

@@ -182,7 +182,7 @@ Console.ConsoleView = class extends UI.VBox {
   }
 
   static clearConsole() {
-    SDK.consoleModel.requestClearMessages();
+    ConsoleModel.consoleModel.requestClearMessages();
   }
 
   /**
@@ -225,11 +225,15 @@ Console.ConsoleView = class extends UI.VBox {
   }
 
   _fetchMultitargetMessages() {
-    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
-    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, this._onConsoleMessageAdded, this);
-    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageUpdated, this._onConsoleMessageUpdated, this);
-    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.CommandEvaluated, this._commandEvaluated, this);
-    SDK.consoleModel.messages().forEach(this._addConsoleMessage, this);
+    ConsoleModel.consoleModel.addEventListener(
+        ConsoleModel.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
+    ConsoleModel.consoleModel.addEventListener(
+        ConsoleModel.ConsoleModel.Events.MessageAdded, this._onConsoleMessageAdded, this);
+    ConsoleModel.consoleModel.addEventListener(
+        ConsoleModel.ConsoleModel.Events.MessageUpdated, this._onConsoleMessageUpdated, this);
+    ConsoleModel.consoleModel.addEventListener(
+        ConsoleModel.ConsoleModel.Events.CommandEvaluated, this._commandEvaluated, this);
+    ConsoleModel.consoleModel.messages().forEach(this._addConsoleMessage, this);
     this._viewport.invalidate();
   }
 
@@ -301,22 +305,22 @@ Console.ConsoleView = class extends UI.VBox {
    * @param {!Common.Console.Message} message
    */
   _addSinkMessage(message) {
-    var level = SDK.ConsoleMessage.MessageLevel.Verbose;
+    var level = ConsoleModel.ConsoleMessage.MessageLevel.Verbose;
     switch (message.level) {
       case Common.Console.MessageLevel.Info:
-        level = SDK.ConsoleMessage.MessageLevel.Info;
+        level = ConsoleModel.ConsoleMessage.MessageLevel.Info;
         break;
       case Common.Console.MessageLevel.Error:
-        level = SDK.ConsoleMessage.MessageLevel.Error;
+        level = ConsoleModel.ConsoleMessage.MessageLevel.Error;
         break;
       case Common.Console.MessageLevel.Warning:
-        level = SDK.ConsoleMessage.MessageLevel.Warning;
+        level = ConsoleModel.ConsoleMessage.MessageLevel.Warning;
         break;
     }
 
-    var consoleMessage = new SDK.ConsoleMessage(
-        null, SDK.ConsoleMessage.MessageSource.Other, level, message.text, undefined, undefined, undefined, undefined,
-        undefined, undefined, undefined, message.timestamp);
+    var consoleMessage = new ConsoleModel.ConsoleMessage(
+        null, ConsoleModel.ConsoleMessage.MessageSource.Other, level, message.text, undefined, undefined, undefined,
+        undefined, undefined, undefined, undefined, message.timestamp);
     this._addConsoleMessage(consoleMessage);
   }
 
@@ -435,12 +439,12 @@ Console.ConsoleView = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _onConsoleMessageAdded(event) {
-    var message = /** @type {!SDK.ConsoleMessage} */ (event.data);
+    var message = /** @type {!ConsoleModel.ConsoleMessage} */ (event.data);
     this._addConsoleMessage(message);
   }
 
   /**
-   * @param {!SDK.ConsoleMessage} message
+   * @param {!ConsoleModel.ConsoleMessage} message
    */
   _addConsoleMessage(message) {
     /**
@@ -449,11 +453,12 @@ Console.ConsoleView = class extends UI.VBox {
      * @return {number}
      */
     function compareTimestamps(viewMessage1, viewMessage2) {
-      return SDK.ConsoleMessage.timestampComparator(viewMessage1.consoleMessage(), viewMessage2.consoleMessage());
+      return ConsoleModel.ConsoleMessage.timestampComparator(
+          viewMessage1.consoleMessage(), viewMessage2.consoleMessage());
     }
 
-    if (message.type === SDK.ConsoleMessage.MessageType.Command ||
-        message.type === SDK.ConsoleMessage.MessageType.Result) {
+    if (message.type === ConsoleModel.ConsoleMessage.MessageType.Command ||
+        message.type === ConsoleModel.ConsoleMessage.MessageType.Result) {
       message.timestamp =
           this._consoleMessages.length ? this._consoleMessages.peekLast().consoleMessage().timestamp : 0;
     }
@@ -484,7 +489,7 @@ Console.ConsoleView = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _onConsoleMessageUpdated(event) {
-    var message = /** @type {!SDK.ConsoleMessage} */ (event.data);
+    var message = /** @type {!ConsoleModel.ConsoleMessage} */ (event.data);
     var viewMessage = message[this._viewMessageSymbol];
     if (viewMessage) {
       viewMessage.updateMessageElement();
@@ -511,7 +516,7 @@ Console.ConsoleView = class extends UI.VBox {
       return;
 
     var lastMessage = this._visibleViewMessages.peekLast();
-    if (viewMessage.consoleMessage().type === SDK.ConsoleMessage.MessageType.EndGroup) {
+    if (viewMessage.consoleMessage().type === ConsoleModel.ConsoleMessage.MessageType.EndGroup) {
       if (lastMessage && !this._currentGroup.messagesHidden())
         lastMessage.incrementCloseGroupDecorationCount();
       this._currentGroup = this._currentGroup.parentGroup();
@@ -537,18 +542,18 @@ Console.ConsoleView = class extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.ConsoleMessage} message
+   * @param {!ConsoleModel.ConsoleMessage} message
    * @return {!Console.ConsoleViewMessage}
    */
   _createViewMessage(message) {
     var nestingLevel = this._currentGroup.nestingLevel();
     switch (message.type) {
-      case SDK.ConsoleMessage.MessageType.Command:
+      case ConsoleModel.ConsoleMessage.MessageType.Command:
         return new Console.ConsoleCommand(message, this._linkifier, nestingLevel);
-      case SDK.ConsoleMessage.MessageType.Result:
+      case ConsoleModel.ConsoleMessage.MessageType.Result:
         return new Console.ConsoleCommandResult(message, this._linkifier, nestingLevel);
-      case SDK.ConsoleMessage.MessageType.StartGroupCollapsed:
-      case SDK.ConsoleMessage.MessageType.StartGroup:
+      case ConsoleModel.ConsoleMessage.MessageType.StartGroupCollapsed:
+      case ConsoleModel.ConsoleMessage.MessageType.StartGroup:
         return new Console.ConsoleGroupViewMessage(message, this._linkifier, nestingLevel);
       default:
         return new Console.ConsoleViewMessage(message, this._linkifier, nestingLevel);
@@ -784,25 +789,26 @@ Console.ConsoleView = class extends UI.VBox {
 
   /**
    * @param {?SDK.RemoteObject} result
-   * @param {!SDK.ConsoleMessage} originatingConsoleMessage
+   * @param {!ConsoleModel.ConsoleMessage} originatingConsoleMessage
    * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
    */
   _printResult(result, originatingConsoleMessage, exceptionDetails) {
     if (!result)
       return;
 
-    var level = !!exceptionDetails ? SDK.ConsoleMessage.MessageLevel.Error : SDK.ConsoleMessage.MessageLevel.Info;
+    var level = !!exceptionDetails ? ConsoleModel.ConsoleMessage.MessageLevel.Error :
+                                     ConsoleModel.ConsoleMessage.MessageLevel.Info;
     var message;
     if (!exceptionDetails) {
-      message = new SDK.ConsoleMessage(
-          result.target(), SDK.ConsoleMessage.MessageSource.JS, level, '', SDK.ConsoleMessage.MessageType.Result,
-          undefined, undefined, undefined, undefined, [result]);
+      message = new ConsoleModel.ConsoleMessage(
+          result.target(), ConsoleModel.ConsoleMessage.MessageSource.JS, level, '',
+          ConsoleModel.ConsoleMessage.MessageType.Result, undefined, undefined, undefined, undefined, [result]);
     } else {
-      message = SDK.ConsoleMessage.fromException(
-          result.target(), exceptionDetails, SDK.ConsoleMessage.MessageType.Result, undefined, undefined);
+      message = ConsoleModel.ConsoleMessage.fromException(
+          result.target(), exceptionDetails, ConsoleModel.ConsoleMessage.MessageType.Result, undefined, undefined);
     }
     message.setOriginatingMessage(originatingConsoleMessage);
-    SDK.consoleModel.addMessage(message);
+    ConsoleModel.consoleModel.addMessage(message);
   }
 
   /**
@@ -810,7 +816,7 @@ Console.ConsoleView = class extends UI.VBox {
    */
   _commandEvaluated(event) {
     var data =
-        /** @type {{result: ?SDK.RemoteObject, text: string, commandMessage: !SDK.ConsoleMessage, exceptionDetails: (!Protocol.Runtime.ExceptionDetails|undefined)}} */
+        /** @type {{result: ?SDK.RemoteObject, text: string, commandMessage: !ConsoleModel.ConsoleMessage, exceptionDetails: (!Protocol.Runtime.ExceptionDetails|undefined)}} */
         (event.data);
     this._prompt.history().pushHistoryItem(data.text);
     this._consoleHistorySetting.set(
@@ -1045,7 +1051,7 @@ Console.ConsoleViewFilter = class {
 
     this._messageURLFiltersSetting = Common.settings.createSetting('messageURLFilters', {});
     this._messageLevelFiltersSetting =
-        Common.settings.createSetting('messageLevelFilters2', SDK.ConsoleMessage.MessageLevel.Info);
+        Common.settings.createSetting('messageLevelFilters2', ConsoleModel.ConsoleMessage.MessageLevel.Info);
     this._hideNetworkMessagesSetting = Common.moduleSetting('hideNetworkMessages');
 
     this._messageURLFiltersSetting.addChangeListener(this._filterChanged);
@@ -1056,10 +1062,10 @@ Console.ConsoleViewFilter = class {
     this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, this._textFilterChanged, this);
 
     var levels = [
-      {value: SDK.ConsoleMessage.MessageLevel.Verbose, label: Common.UIString('Verbose')},
-      {value: SDK.ConsoleMessage.MessageLevel.Info, label: Common.UIString('Info'), default: true},
-      {value: SDK.ConsoleMessage.MessageLevel.Warning, label: Common.UIString('Warnings')},
-      {value: SDK.ConsoleMessage.MessageLevel.Error, label: Common.UIString('Errors')}
+      {value: ConsoleModel.ConsoleMessage.MessageLevel.Verbose, label: Common.UIString('Verbose')},
+      {value: ConsoleModel.ConsoleMessage.MessageLevel.Info, label: Common.UIString('Info'), default: true},
+      {value: ConsoleModel.ConsoleMessage.MessageLevel.Warning, label: Common.UIString('Warnings')},
+      {value: ConsoleModel.ConsoleMessage.MessageLevel.Error, label: Common.UIString('Errors')}
     ];
 
     this._levelComboBox =
@@ -1124,22 +1130,22 @@ Console.ConsoleViewFilter = class {
     }
 
     if (this._hideNetworkMessagesSetting.get() &&
-        viewMessage.consoleMessage().source === SDK.ConsoleMessage.MessageSource.Network)
+        viewMessage.consoleMessage().source === ConsoleModel.ConsoleMessage.MessageSource.Network)
       return false;
 
     if (viewMessage.consoleMessage().isGroupMessage())
       return true;
 
-    if (message.type === SDK.ConsoleMessage.MessageType.Result ||
-        message.type === SDK.ConsoleMessage.MessageType.Command)
+    if (message.type === ConsoleModel.ConsoleMessage.MessageType.Result ||
+        message.type === ConsoleModel.ConsoleMessage.MessageType.Command)
       return true;
 
     if (message.url && this._messageURLFiltersSetting.get()[message.url])
       return false;
 
-    var filterOrdinal = SDK.ConsoleMessage.MessageLevel.ordinal(
-        /** @type {!SDK.ConsoleMessage.MessageLevel} */ (this._messageLevelFiltersSetting.get()));
-    if (message.level && SDK.ConsoleMessage.MessageLevel.ordinal(message.level) < filterOrdinal)
+    var filterOrdinal = ConsoleModel.ConsoleMessage.MessageLevel.ordinal(
+        /** @type {!ConsoleModel.ConsoleMessage.MessageLevel} */ (this._messageLevelFiltersSetting.get()));
+    if (message.level && ConsoleModel.ConsoleMessage.MessageLevel.ordinal(message.level) < filterOrdinal)
       return false;
 
     if (this._filterRegex) {
@@ -1155,7 +1161,7 @@ Console.ConsoleViewFilter = class {
 
   reset() {
     this._messageURLFiltersSetting.set({});
-    this._messageLevelFiltersSetting.set(SDK.ConsoleMessage.MessageLevel.Info);
+    this._messageLevelFiltersSetting.set(ConsoleModel.ConsoleMessage.MessageLevel.Info);
     this._showTargetMessagesCheckbox.inputElement.checked = false;
     this._hideNetworkMessagesSetting.set(false);
     this._textFilterUI.setValue('');
@@ -1168,7 +1174,7 @@ Console.ConsoleViewFilter = class {
  */
 Console.ConsoleCommand = class extends Console.ConsoleViewMessage {
   /**
-   * @param {!SDK.ConsoleMessage} message
+   * @param {!ConsoleModel.ConsoleMessage} message
    * @param {!Components.Linkifier} linkifier
    * @param {number} nestingLevel
    */
@@ -1221,7 +1227,7 @@ Console.ConsoleCommand.MaxLengthToIgnoreHighlighter = 10000;
  */
 Console.ConsoleCommandResult = class extends Console.ConsoleViewMessage {
   /**
-   * @param {!SDK.ConsoleMessage} message
+   * @param {!ConsoleModel.ConsoleMessage} message
    * @param {!Components.Linkifier} linkifier
    * @param {number} nestingLevel
    */
@@ -1237,7 +1243,7 @@ Console.ConsoleCommandResult = class extends Console.ConsoleViewMessage {
     var element = super.contentElement();
     if (!element.classList.contains('console-user-command-result')) {
       element.classList.add('console-user-command-result');
-      if (this.consoleMessage().level === SDK.ConsoleMessage.MessageLevel.Info) {
+      if (this.consoleMessage().level === ConsoleModel.ConsoleMessage.MessageLevel.Info) {
         var icon = UI.Icon.create('smallicon-command-result', 'command-result-icon');
         element.insertBefore(icon, element.firstChild);
       }

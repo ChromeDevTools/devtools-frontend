@@ -275,10 +275,10 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {?string=} sourceURL
    */
   _printRunScriptResult(target, result, scriptId, sourceURL) {
-    var consoleMessage = new SDK.ConsoleMessage(
-        target, SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Info, '', undefined, sourceURL,
-        undefined, undefined, undefined, [result], undefined, undefined, undefined, scriptId);
-    SDK.consoleModel.addMessage(consoleMessage);
+    var consoleMessage = new ConsoleModel.ConsoleMessage(
+        target, ConsoleModel.ConsoleMessage.MessageSource.JS, ConsoleModel.ConsoleMessage.MessageLevel.Info, '',
+        undefined, sourceURL, undefined, undefined, undefined, [result], undefined, undefined, undefined, scriptId);
+    ConsoleModel.consoleModel.addMessage(consoleMessage);
   }
 
   /**
@@ -287,8 +287,8 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {?string=} sourceURL
    */
   _printRunOrCompileScriptResultFailure(target, exceptionDetails, sourceURL) {
-    SDK.consoleModel.addMessage(
-        SDK.ConsoleMessage.fromException(target, exceptionDetails, undefined, undefined, sourceURL || undefined));
+    ConsoleModel.consoleModel.addMessage(ConsoleModel.ConsoleMessage.fromException(
+        target, exceptionDetails, undefined, undefined, sourceURL || undefined));
   }
 
   /**

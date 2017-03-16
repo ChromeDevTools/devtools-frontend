@@ -1,0 +1,8 @@
+{
+    "dependencies": [
+        "sdk"
+    ],
+    "scripts": [
+        "ConsoleModel.js"
+    ]
+}

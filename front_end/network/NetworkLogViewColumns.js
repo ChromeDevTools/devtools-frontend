@@ -86,7 +86,7 @@ Network.NetworkLogViewColumns = class {
         columnConfig.titleDOMFragment = this._makeHeaderFragment(columnConfig.title, columnConfig.subtitle);
       this._columns.push(columnConfig);
     }
-    this._loadColumns();
+    this._loadCustomColumnsAndSettings();
 
     this._popoverHelper = new UI.PopoverHelper(this._networkLogView.element);
     this._popoverHelper.initializeCallbacks(
@@ -330,13 +330,13 @@ Network.NetworkLogViewColumns = class {
    * @param {!Network.NetworkLogViewColumns.Descriptor} columnConfig
    */
   _toggleColumnVisibility(columnConfig) {
-    this._loadColumns();
+    this._loadCustomColumnsAndSettings();
     columnConfig.visible = !columnConfig.visible;
-    this._saveColumns();
+    this._saveColumnsSettings();
     this._updateColumns();
   }
 
-  _saveColumns() {
+  _saveColumnsSettings() {
     var saveableSettings = {};
     for (var columnConfig of this._columns)
       saveableSettings[columnConfig.id] = {visible: columnConfig.visible, title: columnConfig.title};
@@ -344,7 +344,7 @@ Network.NetworkLogViewColumns = class {
     this._persistantSettings.set(saveableSettings);
   }
 
-  _loadColumns() {
+  _loadCustomColumnsAndSettings() {
     var savedSettings = this._persistantSettings.get();
     var columnIds = Object.keys(savedSettings);
     for (var columnId of columnIds) {
@@ -461,7 +461,7 @@ Network.NetworkLogViewColumns = class {
       return false;
     this._columns.splice(index, 1);
     this._dataGrid.removeColumn(headerId);
-    this._saveColumns();
+    this._saveColumnsSettings();
     this._updateColumns();
     return true;
   }
@@ -494,7 +494,7 @@ Network.NetworkLogViewColumns = class {
     this._columns.splice(index, 0, columnConfig);
     if (this._dataGrid)
       this._dataGrid.addColumn(Network.NetworkLogViewColumns._convertToDataGridDescriptor(columnConfig), index);
-    this._saveColumns();
+    this._saveColumnsSettings();
     this._updateColumns();
     return columnConfig;
   }

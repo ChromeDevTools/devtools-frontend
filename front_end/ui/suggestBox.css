@@ -94,7 +94,7 @@
 }
 
 .default-selection-is-dimmed .suggest-box-content-item.selected {
-    background-color: whitesmoke;
+    background-color: #E0E0E0;
 }
 
 .default-selection-is-dimmed .suggest-box-content-item.selected > span {

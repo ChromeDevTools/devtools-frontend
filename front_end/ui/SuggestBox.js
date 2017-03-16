@@ -61,6 +61,8 @@ UI.SuggestBox = class {
     this._rowHeight = 17;
     this._userInteracted = false;
     this._userEnteredText = '';
+    this._defaultSelectionIsDimmed = false;
+
     /** @type {?string} */
     this._onlyCompletion = null;
 
@@ -81,6 +83,7 @@ UI.SuggestBox = class {
    * @param {boolean} value
    */
   setDefaultSelectionIsDimmed(value) {
+    this._defaultSelectionIsDimmed = value;
     this._element.classList.toggle('default-selection-is-dimmed', value);
   }
 
@@ -259,8 +262,11 @@ UI.SuggestBox = class {
   selectedItemChanged(from, to, fromElement, toElement) {
     if (fromElement)
       fromElement.classList.remove('selected', 'force-white-icons');
-    if (toElement)
-      toElement.classList.add('selected', 'force-white-icons');
+    if (toElement) {
+      toElement.classList.add('selected');
+      if (fromElement || this._userInteracted || !this._defaultSelectionIsDimmed)
+        toElement.classList.add('force-white-icons');
+    }
     if (!to)
       return;
     this._applySuggestion(true);

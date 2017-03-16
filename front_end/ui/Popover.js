@@ -182,8 +182,8 @@ UI.PopoverHelper = class {
 
   _mouseHover(element, document) {
     delete this._hoverTimer;
-    this._hoverElement = element;
     this._hidePopover();
+    this._hoverElement = element;
 
     this._popover = new UI.GlassPane();
     this._popover.registerRequiredCSS('ui/popover.css');

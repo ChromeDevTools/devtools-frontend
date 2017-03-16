@@ -7,8 +7,7 @@
       "title": "What's New?",
       "persistence": "closeable",
       "order": 1,
-      "className": "Help.ReleaseNoteView",
-      "experiment": "releaseNote"
+      "className": "Help.ReleaseNoteView"
     }
   ],
   "dependencies": [

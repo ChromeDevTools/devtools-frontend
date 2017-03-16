@@ -248,7 +248,7 @@ Bindings.CompilerScriptMapping = class {
         var contentProvider = sourceMap.sourceContentProvider(sourceURL, Common.resourceTypes.SourceMapScript);
         var embeddedContent = sourceMap.embeddedContentByURL(sourceURL);
         var embeddedContentLength = typeof embeddedContent === 'string' ? embeddedContent.length : null;
-        uiSourceCode = this._networkProject.addFile(
+        uiSourceCode = this._networkProject.addSourceMapFile(
             contentProvider, SDK.ResourceTreeFrame.fromScript(script), script.isContentScript(), embeddedContentLength);
         uiSourceCode[Bindings.CompilerScriptMapping._originSymbol] = script.sourceURL;
       }

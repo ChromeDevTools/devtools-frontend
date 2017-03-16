@@ -189,7 +189,7 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
    * @param {?number} contentSize
    * @return {!Workspace.UISourceCode}
    */
-  addFile(contentProvider, frame, isContentScript, contentSize) {
+  addSourceMapFile(contentProvider, frame, isContentScript, contentSize) {
     var uiSourceCode = this._createFile(contentProvider, frame, isContentScript || false);
     var metadata = typeof contentSize === 'number' ? new Workspace.UISourceCodeMetadata(null, contentSize) : null;
     this._addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata);

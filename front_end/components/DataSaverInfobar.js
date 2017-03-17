@@ -32,7 +32,7 @@ Components.DataSaverInfobar = class extends UI.Infobar {
    */
   dispose() {
     for (var infobar of Components.DataSaverInfobar._infobars)
-      infobar.dispose();
+      UI.Infobar.prototype.dispose.call(infobar);
   }
 };
 

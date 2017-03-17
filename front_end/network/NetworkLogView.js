@@ -400,9 +400,7 @@ Network.NetworkLogView = class extends UI.VBox {
             SDK.ResourceTreeModel.Events.DOMContentLoaded, this._domContentLoadedEventFired, this);
       }
     }
-    var networkLog = SDK.NetworkLog.fromTarget(target);
-    if (networkLog)
-      networkLog.requests().forEach(this._appendRequest.bind(this));
+    SDK.networkLog.requestsForTarget(target).forEach(this._appendRequest.bind(this));
   }
 
   /**
@@ -1026,8 +1024,7 @@ Network.NetworkLogView = class extends UI.VBox {
 
     // Pick provisional load requests.
     var requestsToPick = [];
-    var networkLog = SDK.NetworkLog.fromTarget(frame.target());
-    var requests = networkLog ? networkLog.requests() : [];
+    var requests = SDK.networkLog.requestsForTarget(frame.target());
     for (var i = 0; i < requests.length; ++i) {
       var request = requests[i];
       if (request.loaderId === loaderId)

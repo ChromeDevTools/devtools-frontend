@@ -29,83 +29,96 @@
  */
 
 /**
- * @unrestricted
+ * @implements {SDK.SDKModelObserver<!SDK.NetworkManager>}
  */
 SDK.NetworkLog = class {
-  /**
-   * @param {!SDK.Target} target
-   * @param {!SDK.ResourceTreeModel} resourceTreeModel
-   * @param {!SDK.NetworkManager} networkManager
-   */
-  constructor(target, resourceTreeModel, networkManager) {
-    this._target = target;
-    target[SDK.NetworkLog._logSymbol] = this;
+  constructor() {
     /** @type {!Array<!SDK.NetworkRequest>} */
     this._requests = [];
-    /** @type {!Object<string, !SDK.NetworkRequest>} */
-    this._requestForId = {};
-    networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
-    resourceTreeModel.addEventListener(
-        SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, this._onLoad, this);
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.DOMContentLoaded, this._onDOMContentLoaded, this);
-    networkManager.on(SDK.NetworkManager.RequestRedirectEvent, this._onRequestRedirect, this);
+    /** @type {!Map<!SDK.Target, !Map<string, !SDK.NetworkRequest>>} */
+    this._requestsByTargetAndId = new Map();
+    /** @type {!Map<!SDK.Target, !SDK.PageLoad>} */
+    this._currentPageLoad = new Map();
+    SDK.targetManager.observeModels(SDK.NetworkManager, this);
   }
 
   /**
-   * @return {!SDK.Target}
+   * @override
+   * @param {!SDK.NetworkManager} networkManager
    */
-  target() {
-    return this._target;
+  modelAdded(networkManager) {
+    var eventListeners = [];
+    eventListeners.push(
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, this._onRequestStarted, this));
+    eventListeners.push(networkManager.on(SDK.NetworkManager.RequestRedirectEvent, this._onRequestRedirect, this));
+
+    var resourceTreeModel = networkManager.target().model(SDK.ResourceTreeModel);
+    if (resourceTreeModel) {
+      eventListeners.push(resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this));
+      eventListeners.push(resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.Load, this._onLoad.bind(this, resourceTreeModel)));
+      eventListeners.push(resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.DOMContentLoaded, this._onDOMContentLoaded.bind(this, resourceTreeModel)));
+    }
+
+    networkManager[SDK.NetworkLog._events] = eventListeners;
+    this._requestsByTargetAndId.set(networkManager.target(), new Map());
   }
 
   /**
-   * @param {!SDK.Target} target
-   * @return {?SDK.NetworkLog}
+   * @override
+   * @param {!SDK.NetworkManager} networkManager
    */
-  static fromTarget(target) {
-    return target[SDK.NetworkLog._logSymbol] || null;
+  modelRemoved(networkManager) {
+    this._requestsByTargetAndId.delete(networkManager.target());
+    Common.EventTarget.removeEventListeners(networkManager[SDK.NetworkLog._events]);
   }
 
   /**
    * @param {string} url
    * @return {?SDK.NetworkRequest}
    */
-  static requestForURL(url) {
-    for (var target of SDK.targetManager.targets()) {
-      var networkLog = SDK.NetworkLog.fromTarget(target);
-      var result = networkLog && networkLog.requestForURL(url);
-      if (result)
-        return result;
+  requestForURL(url) {
+    return this._requests.find(request => request.url() === url) || null;
+  }
+
+  /**
+   * @return {!Array<!SDK.NetworkRequest>}
+   */
+  requests() {
+    return this._requests;
+  }
+
+  /**
+   * @param {!SDK.Target} target
+   * @return {!Array<!SDK.NetworkRequest>}
+   */
+  requestsForTarget(target) {
+    var map = this._requestsByTargetAndId.get(target);
+    return map ? Array.from(map.values()) : [];
+  }
+
+  /**
+   * @param {string} url
+   * @param {!SDK.Target} target
+   * @return {?SDK.NetworkRequest}
+   */
+  _requestForURLInTarget(url, target) {
+    var map = this._requestsByTargetAndId.get(target);
+    if (!map)
+      return null;
+    for (var request of map.values()) {
+      if (request.url() === url)
+        return request;
     }
     return null;
   }
 
   /**
-   * @return {!Array.<!SDK.NetworkRequest>}
-   */
-  static requests() {
-    var result = [];
-    for (var target of SDK.targetManager.targets()) {
-      var networkLog = SDK.NetworkLog.fromTarget(target);
-      if (networkLog)
-        result = result.concat(networkLog.requests());
-    }
-    return result;
-  }
-
-  /**
-   * @param {!SDK.NetworkRequest} request
-   * @return {?SDK.NetworkLog}
-   */
-  static fromRequest(request) {
-    return SDK.NetworkLog.fromTarget(request.target());
-  }
-
-  /**
    * @param {!SDK.NetworkRequest} request
    */
-  static _initializeInitiatorSymbolIfNeeded(request) {
+  _initializeInitiatorSymbolIfNeeded(request) {
     if (!request[SDK.NetworkLog._initiatorDataSymbol]) {
       /** @type {!{info: ?SDK.NetworkLog._InitiatorInfo, chain: !Set<!SDK.NetworkRequest>, request: (?SDK.NetworkRequest|undefined)}} */
       request[SDK.NetworkLog._initiatorDataSymbol] = {
@@ -120,8 +133,8 @@ SDK.NetworkLog = class {
    * @param {!SDK.NetworkRequest} request
    * @return {!SDK.NetworkLog._InitiatorInfo}
    */
-  static initiatorInfoForRequest(request) {
-    SDK.NetworkLog._initializeInitiatorSymbolIfNeeded(request);
+  initiatorInfoForRequest(request) {
+    this._initializeInitiatorSymbolIfNeeded(request);
     if (request[SDK.NetworkLog._initiatorDataSymbol].info)
       return request[SDK.NetworkLog._initiatorDataSymbol].info;
 
@@ -166,104 +179,88 @@ SDK.NetworkLog = class {
    * @param {!SDK.NetworkRequest} request
    * @return {!SDK.NetworkLog.InitiatorGraph}
    */
-  static initiatorGraphForRequest(request) {
+  initiatorGraphForRequest(request) {
     /** @type {!Set<!SDK.NetworkRequest>} */
     var initiated = new Set();
-    var networkLog = SDK.NetworkLog.fromRequest(request);
-    if (!networkLog)
-      return {initiators: new Set(), initiated: new Set()};
-
-    var requests = networkLog.requests();
-    for (var logRequest of requests) {
-      var localInitiators = initiatorChain(logRequest);
-      if (localInitiators.has(request))
-        initiated.add(logRequest);
-    }
-    return {initiators: initiatorChain(request), initiated: initiated};
-
-    /**
-     * @param {!SDK.NetworkRequest} request
-     * @return {!Set<!SDK.NetworkRequest>}
-     */
-    function initiatorChain(request) {
-      SDK.NetworkLog._initializeInitiatorSymbolIfNeeded(request);
-      var initiatorChainCache =
-          /** @type {?Set<!SDK.NetworkRequest>} */ (request[SDK.NetworkLog._initiatorDataSymbol].chain);
-      if (initiatorChainCache)
-        return initiatorChainCache;
-
-      initiatorChainCache = new Set();
-
-      var checkRequest = request;
-      while (checkRequest) {
-        initiatorChainCache.add(checkRequest);
-        checkRequest = initiatorRequest(checkRequest);
+    var map = this._requestsByTargetAndId.get(request.target());
+    if (map) {
+      for (var otherRequest of map.values()) {
+        if (this._initiatorChain(otherRequest).has(request))
+          initiated.add(otherRequest);
       }
-      request[SDK.NetworkLog._initiatorDataSymbol].chain = initiatorChainCache;
-      return initiatorChainCache;
     }
+    return {initiators: this._initiatorChain(request), initiated: initiated};
+  }
 
-    /**
-     * @param {!SDK.NetworkRequest} request
-     * @return {?SDK.NetworkRequest}
-     */
-    function initiatorRequest(request) {
-      SDK.NetworkLog._initializeInitiatorSymbolIfNeeded(request);
-      if (request[SDK.NetworkLog._initiatorDataSymbol].request !== undefined)
-        return request[SDK.NetworkLog._initiatorDataSymbol].request;
-      var networkLog = SDK.NetworkLog.fromRequest(request);
-      var url = SDK.NetworkLog.initiatorInfoForRequest(request).url;
-      request[SDK.NetworkLog._initiatorDataSymbol].request = networkLog.requestForURL(url);
+  /**
+   * @param {!SDK.NetworkRequest} request
+   * @return {!Set<!SDK.NetworkRequest>}
+   */
+  _initiatorChain(request) {
+    this._initializeInitiatorSymbolIfNeeded(request);
+    var initiatorChainCache =
+        /** @type {?Set<!SDK.NetworkRequest>} */ (request[SDK.NetworkLog._initiatorDataSymbol].chain);
+    if (initiatorChainCache)
+      return initiatorChainCache;
+
+    initiatorChainCache = new Set();
+
+    var checkRequest = request;
+    do {
+      initiatorChainCache.add(checkRequest);
+      checkRequest = this._initiatorRequest(checkRequest);
+    } while (checkRequest);
+    request[SDK.NetworkLog._initiatorDataSymbol].chain = initiatorChainCache;
+    return initiatorChainCache;
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   * @return {?SDK.NetworkRequest}
+   */
+  _initiatorRequest(request) {
+    this._initializeInitiatorSymbolIfNeeded(request);
+    if (request[SDK.NetworkLog._initiatorDataSymbol].request !== undefined)
       return request[SDK.NetworkLog._initiatorDataSymbol].request;
-    }
+    var url = this.initiatorInfoForRequest(request).url;
+    request[SDK.NetworkLog._initiatorDataSymbol].request = this._requestForURLInTarget(url, request.target());
+    return request[SDK.NetworkLog._initiatorDataSymbol].request;
   }
 
   /**
    * @param {!SDK.NetworkRequest} request
    * @return {?SDK.PageLoad}
    */
-  static pageLoadForRequest(request) {
+  pageLoadForRequest(request) {
     return request[SDK.NetworkLog._pageLoadForRequestSymbol];
-  }
-
-  /**
-   * @return {!Array.<!SDK.NetworkRequest>}
-   */
-  requests() {
-    return this._requests;
-  }
-
-  /**
-   * @param {string} url
-   * @return {?SDK.NetworkRequest}
-   */
-  requestForURL(url) {
-    for (var i = 0; i < this._requests.length; ++i) {
-      if (this._requests[i].url() === url)
-        return this._requests[i];
-    }
-    return null;
   }
 
   /**
    * @param {!Common.Event} event
    */
   _onMainFrameNavigated(event) {
-    var mainFrame = /** type {SDK.ResourceTreeFrame} */ event.data;
+    var mainFrame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+    var target = mainFrame.target();
+    this._currentPageLoad.delete(target);
+    var oldRequests = this.requestsForTarget(target);
+    this._requests = this._requests.filter(request => request.target() !== target);
+    var idMap = new Map();
+    this._requestsByTargetAndId.set(target, idMap);
+
     // Preserve requests from the new session.
-    this._currentPageLoad = null;
-    var oldRequests = this._requests.splice(0, this._requests.length);
-    this._requestForId = {};
+    var currentPageLoad = null;
     for (var i = 0; i < oldRequests.length; ++i) {
       var request = oldRequests[i];
       if (request.loaderId === mainFrame.loaderId) {
-        if (!this._currentPageLoad)
-          this._currentPageLoad = new SDK.PageLoad(request);
+        if (!currentPageLoad)
+          currentPageLoad = new SDK.PageLoad(request);
         this._requests.push(request);
-        this._requestForId[request.requestId()] = request;
-        request[SDK.NetworkLog._pageLoadForRequestSymbol] = this._currentPageLoad;
+        idMap.set(request.requestId(), request);
+        request[SDK.NetworkLog._pageLoadForRequestSymbol] = currentPageLoad;
       }
     }
+    if (currentPageLoad)
+      this._currentPageLoad.set(target, currentPageLoad);
   }
 
   /**
@@ -272,8 +269,8 @@ SDK.NetworkLog = class {
   _onRequestStarted(event) {
     var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     this._requests.push(request);
-    this._requestForId[request.requestId()] = request;
-    request[SDK.NetworkLog._pageLoadForRequestSymbol] = this._currentPageLoad;
+    this._requestsByTargetAndId.get(request.target()).set(request.requestId(), request);
+    request[SDK.NetworkLog._pageLoadForRequestSymbol] = this._currentPageLoad.get(request.target());
   }
 
   /**
@@ -285,33 +282,36 @@ SDK.NetworkLog = class {
   }
 
   /**
+   * @param {!SDK.ResourceTreeModel} resourceTreeModel
    * @param {!Common.Event} event
    */
-  _onDOMContentLoaded(event) {
-    if (this._currentPageLoad)
-      this._currentPageLoad.contentLoadTime = event.data;
+  _onDOMContentLoaded(resourceTreeModel, event) {
+    var pageLoad = this._currentPageLoad.get(resourceTreeModel.target());
+    if (pageLoad)
+      pageLoad.contentLoadTime = /** @type {number} */ (event.data);
   }
 
   /**
+   * @param {!SDK.ResourceTreeModel} resourceTreeModel
    * @param {!Common.Event} event
    */
-  _onLoad(event) {
-    if (this._currentPageLoad)
-      this._currentPageLoad.loadTime = event.data;
+  _onLoad(resourceTreeModel, event) {
+    var pageLoad = this._currentPageLoad.get(resourceTreeModel.target());
+    if (pageLoad)
+      pageLoad.loadTime = /** @type {number} */ (event.data);
   }
 
   /**
+   * @param {!SDK.Target} target
    * @param {!Protocol.Network.RequestId} requestId
    * @return {?SDK.NetworkRequest}
    */
-  requestForId(requestId) {
-    return this._requestForId[requestId];
+  requestForId(target, requestId) {
+    var map = this._requestsByTargetAndId.get(target);
+    return map ? (map.get(requestId) || null) : null;
   }
 };
 
-/**
- * @unrestricted
- */
 SDK.PageLoad = class {
   /**
    * @param {!SDK.NetworkRequest} mainRequest
@@ -320,6 +320,10 @@ SDK.PageLoad = class {
     this.id = ++SDK.PageLoad._lastIdentifier;
     this.url = mainRequest.url();
     this.startTime = mainRequest.startTime;
+    /** @type {number} */
+    this.loadTime;
+    /** @type {number} */
+    this.contentLoadTime;
   }
 };
 
@@ -333,4 +337,7 @@ SDK.NetworkLog._InitiatorInfo;
 
 SDK.NetworkLog._initiatorDataSymbol = Symbol('InitiatorData');
 SDK.NetworkLog._pageLoadForRequestSymbol = Symbol('PageLoadForRequest');
-SDK.NetworkLog._logSymbol = Symbol('NetworkLog');
+SDK.NetworkLog._events = Symbol('SDK.NetworkLog.events');
+
+/** @type {!SDK.NetworkLog} */
+SDK.networkLog;

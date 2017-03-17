@@ -73,7 +73,7 @@ SDK.HAREntry = class {
 
     if (this._request.connectionId !== '0')
       entry.connection = this._request.connectionId;
-    var page = SDK.NetworkLog.pageLoadForRequest(this._request);
+    var page = SDK.networkLog.pageLoadForRequest(this._request);
     if (page)
       entry.pageref = 'page_' + page.id;
     return entry;
@@ -305,7 +305,7 @@ SDK.HARLog = class {
     var pages = [];
     for (var i = 0; i < this._requests.length; ++i) {
       var request = this._requests[i];
-      var page = SDK.NetworkLog.pageLoadForRequest(request);
+      var page = SDK.networkLog.pageLoadForRequest(request);
       if (!page || seenIdentifiers[page.id])
         continue;
       seenIdentifiers[page.id] = true;

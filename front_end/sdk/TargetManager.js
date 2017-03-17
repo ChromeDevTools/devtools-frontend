@@ -244,11 +244,8 @@ SDK.TargetManager = class extends Common.Object {
     var target = new SDK.Target(this, id, name, capabilitiesMask, connectionFactory, parentTarget);
     this._pendingTargets.add(target);
 
-    var networkManager = target.model(SDK.NetworkManager);
+    target.model(SDK.NetworkManager);
     var resourceTreeModel = target.model(SDK.ResourceTreeModel);
-    if (networkManager && resourceTreeModel)
-      new SDK.NetworkLog(target, resourceTreeModel, networkManager);
-
     /** @type {!SDK.RuntimeModel} */
     target.runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
     target.model(SDK.DebuggerModel);

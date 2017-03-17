@@ -497,7 +497,7 @@ Components.Linkifier = class {
       uiLocation = uiSourceCode ? uiSourceCode.uiLocation(info.lineNumber || 0, info.columnNumber || 0) : null;
     }
     var resource = url ? Bindings.resourceForURL(url) : null;
-    var request = url ? SDK.NetworkLog.requestForURL(url) : null;
+    var request = url ? SDK.networkLog.requestForURL(url) : null;
     var contentProvider = uiLocation ? uiLocation.uiSourceCode : resource;
 
     if (info.revealable)

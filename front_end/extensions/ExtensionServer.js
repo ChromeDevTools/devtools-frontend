@@ -393,7 +393,7 @@ Extensions.ExtensionServer = class extends Common.Object {
       return this._status.OK();
     }
 
-    var request = SDK.NetworkLog.requestForURL(message.url);
+    var request = SDK.networkLog.requestForURL(message.url);
     if (request) {
       Common.Revealer.reveal(request);
       return this._status.OK();
@@ -449,7 +449,7 @@ Extensions.ExtensionServer = class extends Common.Object {
   }
 
   _onGetHAR() {
-    var requests = SDK.NetworkLog.requests();
+    var requests = SDK.networkLog.requests();
     var harLog = (new SDK.HARLog(requests)).build();
     for (var i = 0; i < harLog.entries.length; ++i)
       harLog.entries[i]._requestId = this._requestId(requests[i]);

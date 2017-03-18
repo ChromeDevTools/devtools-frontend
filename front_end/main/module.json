@@ -437,7 +437,8 @@
         "sdk",
         "persistence",
         "help",
-        "console_model"
+        "console_model",
+        "network_log"
     ],
     "scripts": [
         "RenderingOptions.js",

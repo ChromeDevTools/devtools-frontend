@@ -401,7 +401,7 @@ Network.NetworkLogView = class extends UI.VBox {
             SDK.ResourceTreeModel.Events.DOMContentLoaded, this._domContentLoadedEventFired, this);
       }
     }
-    SDK.networkLog.requestsForTarget(target).forEach(this._appendRequest.bind(this));
+    NetworkLog.networkLog.requestsForTarget(target).forEach(this._appendRequest.bind(this));
   }
 
   /**
@@ -1037,7 +1037,7 @@ Network.NetworkLogView = class extends UI.VBox {
 
     // Pick provisional load requests.
     var requestsToPick = [];
-    var requests = SDK.networkLog.requestsForTarget(frame.target());
+    var requests = NetworkLog.networkLog.requestsForTarget(frame.target());
     for (var i = 0; i < requests.length; ++i) {
       var request = requests[i];
       if (request.loaderId === loaderId)
@@ -1182,7 +1182,7 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _copyAll() {
-    var harArchive = {log: (new SDK.HARLog(this._harRequests())).build()};
+    var harArchive = {log: (new NetworkLog.HARLog(this._harRequests())).build()};
     InspectorFrontendHost.copyText(JSON.stringify(harArchive, null, 2));
   }
 

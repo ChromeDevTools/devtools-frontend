@@ -31,13 +31,13 @@
 /**
  * @implements {SDK.SDKModelObserver<!SDK.NetworkManager>}
  */
-SDK.NetworkLog = class {
+NetworkLog.NetworkLog = class {
   constructor() {
     /** @type {!Array<!SDK.NetworkRequest>} */
     this._requests = [];
     /** @type {!Map<!SDK.Target, !Map<string, !SDK.NetworkRequest>>} */
     this._requestsByTargetAndId = new Map();
-    /** @type {!Map<!SDK.Target, !SDK.PageLoad>} */
+    /** @type {!Map<!SDK.Target, !NetworkLog.PageLoad>} */
     this._currentPageLoad = new Map();
     SDK.targetManager.observeModels(SDK.NetworkManager, this);
   }
@@ -62,7 +62,7 @@ SDK.NetworkLog = class {
           SDK.ResourceTreeModel.Events.DOMContentLoaded, this._onDOMContentLoaded.bind(this, resourceTreeModel)));
     }
 
-    networkManager[SDK.NetworkLog._events] = eventListeners;
+    networkManager[NetworkLog.NetworkLog._events] = eventListeners;
     this._requestsByTargetAndId.set(networkManager.target(), new Map());
   }
 
@@ -72,7 +72,7 @@ SDK.NetworkLog = class {
    */
   modelRemoved(networkManager) {
     this._requestsByTargetAndId.delete(networkManager.target());
-    Common.EventTarget.removeEventListeners(networkManager[SDK.NetworkLog._events]);
+    Common.EventTarget.removeEventListeners(networkManager[NetworkLog.NetworkLog._events]);
   }
 
   /**
@@ -119,9 +119,9 @@ SDK.NetworkLog = class {
    * @param {!SDK.NetworkRequest} request
    */
   _initializeInitiatorSymbolIfNeeded(request) {
-    if (!request[SDK.NetworkLog._initiatorDataSymbol]) {
-      /** @type {!{info: ?SDK.NetworkLog._InitiatorInfo, chain: !Set<!SDK.NetworkRequest>, request: (?SDK.NetworkRequest|undefined)}} */
-      request[SDK.NetworkLog._initiatorDataSymbol] = {
+    if (!request[NetworkLog.NetworkLog._initiatorDataSymbol]) {
+      /** @type {!{info: ?NetworkLog.NetworkLog._InitiatorInfo, chain: !Set<!SDK.NetworkRequest>, request: (?SDK.NetworkRequest|undefined)}} */
+      request[NetworkLog.NetworkLog._initiatorDataSymbol] = {
         info: null,
         chain: null,
         request: undefined,
@@ -131,12 +131,12 @@ SDK.NetworkLog = class {
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @return {!SDK.NetworkLog._InitiatorInfo}
+   * @return {!NetworkLog.NetworkLog._InitiatorInfo}
    */
   initiatorInfoForRequest(request) {
     this._initializeInitiatorSymbolIfNeeded(request);
-    if (request[SDK.NetworkLog._initiatorDataSymbol].info)
-      return request[SDK.NetworkLog._initiatorDataSymbol].info;
+    if (request[NetworkLog.NetworkLog._initiatorDataSymbol].info)
+      return request[NetworkLog.NetworkLog._initiatorDataSymbol].info;
 
     var type = SDK.NetworkRequest.InitiatorType.Other;
     var url = '';
@@ -170,14 +170,14 @@ SDK.NetworkLog = class {
       }
     }
 
-    request[SDK.NetworkLog._initiatorDataSymbol].info =
+    request[NetworkLog.NetworkLog._initiatorDataSymbol].info =
         {type: type, url: url, lineNumber: lineNumber, columnNumber: columnNumber, scriptId: scriptId};
-    return request[SDK.NetworkLog._initiatorDataSymbol].info;
+    return request[NetworkLog.NetworkLog._initiatorDataSymbol].info;
   }
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @return {!SDK.NetworkLog.InitiatorGraph}
+   * @return {!NetworkLog.NetworkLog.InitiatorGraph}
    */
   initiatorGraphForRequest(request) {
     /** @type {!Set<!SDK.NetworkRequest>} */
@@ -199,7 +199,7 @@ SDK.NetworkLog = class {
   _initiatorChain(request) {
     this._initializeInitiatorSymbolIfNeeded(request);
     var initiatorChainCache =
-        /** @type {?Set<!SDK.NetworkRequest>} */ (request[SDK.NetworkLog._initiatorDataSymbol].chain);
+        /** @type {?Set<!SDK.NetworkRequest>} */ (request[NetworkLog.NetworkLog._initiatorDataSymbol].chain);
     if (initiatorChainCache)
       return initiatorChainCache;
 
@@ -210,7 +210,7 @@ SDK.NetworkLog = class {
       initiatorChainCache.add(checkRequest);
       checkRequest = this._initiatorRequest(checkRequest);
     } while (checkRequest);
-    request[SDK.NetworkLog._initiatorDataSymbol].chain = initiatorChainCache;
+    request[NetworkLog.NetworkLog._initiatorDataSymbol].chain = initiatorChainCache;
     return initiatorChainCache;
   }
 
@@ -220,19 +220,19 @@ SDK.NetworkLog = class {
    */
   _initiatorRequest(request) {
     this._initializeInitiatorSymbolIfNeeded(request);
-    if (request[SDK.NetworkLog._initiatorDataSymbol].request !== undefined)
-      return request[SDK.NetworkLog._initiatorDataSymbol].request;
+    if (request[NetworkLog.NetworkLog._initiatorDataSymbol].request !== undefined)
+      return request[NetworkLog.NetworkLog._initiatorDataSymbol].request;
     var url = this.initiatorInfoForRequest(request).url;
-    request[SDK.NetworkLog._initiatorDataSymbol].request = this._requestForURLInTarget(url, request.target());
-    return request[SDK.NetworkLog._initiatorDataSymbol].request;
+    request[NetworkLog.NetworkLog._initiatorDataSymbol].request = this._requestForURLInTarget(url, request.target());
+    return request[NetworkLog.NetworkLog._initiatorDataSymbol].request;
   }
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @return {?SDK.PageLoad}
+   * @return {?NetworkLog.PageLoad}
    */
   pageLoadForRequest(request) {
-    return request[SDK.NetworkLog._pageLoadForRequestSymbol];
+    return request[NetworkLog.NetworkLog._pageLoadForRequestSymbol];
   }
 
   /**
@@ -253,10 +253,10 @@ SDK.NetworkLog = class {
       var request = oldRequests[i];
       if (request.loaderId === mainFrame.loaderId) {
         if (!currentPageLoad)
-          currentPageLoad = new SDK.PageLoad(request);
+          currentPageLoad = new NetworkLog.PageLoad(request);
         this._requests.push(request);
         idMap.set(request.requestId(), request);
-        request[SDK.NetworkLog._pageLoadForRequestSymbol] = currentPageLoad;
+        request[NetworkLog.NetworkLog._pageLoadForRequestSymbol] = currentPageLoad;
       }
     }
     if (currentPageLoad)
@@ -270,7 +270,7 @@ SDK.NetworkLog = class {
     var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     this._requests.push(request);
     this._requestsByTargetAndId.get(request.target()).set(request.requestId(), request);
-    request[SDK.NetworkLog._pageLoadForRequestSymbol] = this._currentPageLoad.get(request.target());
+    request[NetworkLog.NetworkLog._pageLoadForRequestSymbol] = this._currentPageLoad.get(request.target());
   }
 
   /**
@@ -278,7 +278,7 @@ SDK.NetworkLog = class {
    */
   _onRequestRedirect(event) {
     var request = event.request;
-    delete request[SDK.NetworkLog._initiatorDataSymbol];
+    delete request[NetworkLog.NetworkLog._initiatorDataSymbol];
   }
 
   /**
@@ -312,12 +312,12 @@ SDK.NetworkLog = class {
   }
 };
 
-SDK.PageLoad = class {
+NetworkLog.PageLoad = class {
   /**
    * @param {!SDK.NetworkRequest} mainRequest
    */
   constructor(mainRequest) {
-    this.id = ++SDK.PageLoad._lastIdentifier;
+    this.id = ++NetworkLog.PageLoad._lastIdentifier;
     this.url = mainRequest.url();
     this.startTime = mainRequest.startTime;
     /** @type {number} */
@@ -327,17 +327,17 @@ SDK.PageLoad = class {
   }
 };
 
-SDK.PageLoad._lastIdentifier = 0;
+NetworkLog.PageLoad._lastIdentifier = 0;
 
 /** @typedef {!{initiators: !Set<!SDK.NetworkRequest>, initiated: !Set<!SDK.NetworkRequest>}} */
-SDK.NetworkLog.InitiatorGraph;
+NetworkLog.NetworkLog.InitiatorGraph;
 
 /** @typedef {!{type: !SDK.NetworkRequest.InitiatorType, url: string, lineNumber: number, columnNumber: number, scriptId: ?string}} */
-SDK.NetworkLog._InitiatorInfo;
+NetworkLog.NetworkLog._InitiatorInfo;
 
-SDK.NetworkLog._initiatorDataSymbol = Symbol('InitiatorData');
-SDK.NetworkLog._pageLoadForRequestSymbol = Symbol('PageLoadForRequest');
-SDK.NetworkLog._events = Symbol('SDK.NetworkLog.events');
+NetworkLog.NetworkLog._initiatorDataSymbol = Symbol('InitiatorData');
+NetworkLog.NetworkLog._pageLoadForRequestSymbol = Symbol('PageLoadForRequest');
+NetworkLog.NetworkLog._events = Symbol('NetworkLog.NetworkLog.events');
 
-/** @type {!SDK.NetworkLog} */
-SDK.networkLog;
+/** @type {!NetworkLog.NetworkLog} */
+NetworkLog.networkLog;

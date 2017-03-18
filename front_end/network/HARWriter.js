@@ -39,7 +39,7 @@ Network.HARWriter = class {
    */
   write(stream, requests, progress) {
     this._stream = stream;
-    this._harLog = (new SDK.HARLog(requests)).build();
+    this._harLog = (new NetworkLog.HARLog(requests)).build();
     this._pendingRequests = 1;  // Guard against completing resource transfer before all requests are made.
     var entries = this._harLog.entries;
     for (var i = 0; i < entries.length; ++i) {

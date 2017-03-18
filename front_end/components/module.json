@@ -11,7 +11,8 @@
     "dependencies": [
         "bindings",
         "platform",
-        "ui"
+        "ui",
+        "network_log"
     ],
     "scripts": [
         "BreakpointsSidebarPaneBase.js",

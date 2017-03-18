@@ -57,7 +57,8 @@
         { "name": "object_ui", "type": "autostart"},
         { "name": "help", "type": "autostart"},
         { "name": "workspace_diff" },
-        { "name": "console_model", "type": "autostart"}
+        { "name": "console_model", "type": "autostart"},
+        { "name": "network_log", "type": "autostart"}
     ],
 
     "has_html": true

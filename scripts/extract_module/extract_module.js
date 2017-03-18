@@ -24,13 +24,14 @@ const APPLICATION_DESCRIPTORS = [
 const MODULES_TO_REMOVE = [];
 
 const JS_FILES_MAPPING = [
-  {file: 'sdk/ConsoleModel.js', new: 'console_model'},
+  {file: 'sdk/NetworkLog.js', new: 'network_log'},
+  {file: 'sdk/HAREntry.js', new: 'network_log'},
 ];
 
 const MODULE_MAPPING = {
-  console_model: {
+  network_log: {
     dependencies: ['sdk'],
-    dependents: ['bindings', 'console', 'main'],
+    dependents: ['audits', 'components', 'console_model', 'extensions', 'main', 'network'],
     applications: ['inspector.json'],
     autostart: true,  // set to autostart because of extensions
   },

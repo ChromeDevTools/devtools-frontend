@@ -70,7 +70,7 @@ Audits.AuditController = class {
       resultCallback(mainResourceURL, results);
     }
 
-    var requests = SDK.networkLog.requestsForTarget(target).slice();
+    var requests = NetworkLog.networkLog.requestsForTarget(target).slice();
     var compositeProgress = new Common.CompositeProgress(this._progress);
     var subprogresses = [];
     for (var i = 0; i < categories.length; ++i)

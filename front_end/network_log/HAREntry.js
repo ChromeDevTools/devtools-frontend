@@ -36,7 +36,7 @@
 /**
  * @unrestricted
  */
-SDK.HAREntry = class {
+NetworkLog.HAREntry = class {
   /**
    * @param {!SDK.NetworkRequest} request
    */
@@ -62,8 +62,8 @@ SDK.HAREntry = class {
       ipAddress = ipAddress.substr(0, portPositionInString);
 
     var entry = {
-      startedDateTime: SDK.HARLog.pseudoWallTime(this._request, this._request.startTime),
-      time: this._request.timing ? SDK.HAREntry._toMilliseconds(this._request.duration) : 0,
+      startedDateTime: NetworkLog.HARLog.pseudoWallTime(this._request, this._request.startTime),
+      time: this._request.timing ? NetworkLog.HAREntry._toMilliseconds(this._request.duration) : 0,
       request: this._buildRequest(),
       response: this._buildResponse(),
       cache: {},  // Not supported yet.
@@ -73,7 +73,7 @@ SDK.HAREntry = class {
 
     if (this._request.connectionId !== '0')
       entry.connection = this._request.connectionId;
-    var page = SDK.networkLog.pageLoadForRequest(this._request);
+    var page = NetworkLog.networkLog.pageLoadForRequest(this._request);
     if (page)
       entry.pageref = 'page_' + page.id;
     return entry;
@@ -166,7 +166,7 @@ SDK.HAREntry = class {
 
     var send = timing.sendEnd - timing.sendStart;
     var wait = timing.receiveHeadersEnd - timing.sendEnd;
-    var receive = SDK.HAREntry._toMilliseconds(this._request.duration) - timing.receiveHeadersEnd;
+    var receive = NetworkLog.HAREntry._toMilliseconds(this._request.duration) - timing.receiveHeadersEnd;
 
     var ssl = -1;
     if (timing.sslStart >= 0 && timing.sslEnd >= 0)
@@ -219,7 +219,7 @@ SDK.HAREntry = class {
       value: cookie.value(),
       path: cookie.path(),
       domain: cookie.domain(),
-      expires: cookie.expiresDate(SDK.HARLog.pseudoWallTime(this._request, this._request.startTime)),
+      expires: cookie.expiresDate(NetworkLog.HARLog.pseudoWallTime(this._request, this._request.startTime)),
       httpOnly: cookie.httpOnly(),
       secure: cookie.secure()
     };
@@ -262,7 +262,7 @@ SDK.HAREntry = class {
 /**
  * @unrestricted
  */
-SDK.HARLog = class {
+NetworkLog.HARLog = class {
   /**
    * @param {!Array.<!SDK.NetworkRequest>} requests
    */
@@ -305,7 +305,7 @@ SDK.HARLog = class {
     var pages = [];
     for (var i = 0; i < this._requests.length; ++i) {
       var request = this._requests[i];
-      var page = SDK.networkLog.pageLoadForRequest(request);
+      var page = NetworkLog.networkLog.pageLoadForRequest(request);
       if (!page || seenIdentifiers[page.id])
         continue;
       seenIdentifiers[page.id] = true;
@@ -315,13 +315,13 @@ SDK.HARLog = class {
   }
 
   /**
-   * @param {!SDK.PageLoad} page
+   * @param {!NetworkLog.PageLoad} page
    * @param {!SDK.NetworkRequest} request
    * @return {!Object}
    */
   _convertPage(page, request) {
     return {
-      startedDateTime: SDK.HARLog.pseudoWallTime(request, page.startTime),
+      startedDateTime: NetworkLog.HARLog.pseudoWallTime(request, page.startTime),
       id: 'page_' + page.id,
       title: page.url,  // We don't have actual page title here. URL is probably better than nothing.
       pageTimings: {
@@ -336,11 +336,11 @@ SDK.HARLog = class {
    * @return {!Object}
    */
   _convertResource(request) {
-    return (new SDK.HAREntry(request)).build();
+    return (new NetworkLog.HAREntry(request)).build();
   }
 
   /**
-   * @param {!SDK.PageLoad} page
+   * @param {!NetworkLog.PageLoad} page
    * @param {number} time
    * @return {number}
    */
@@ -348,6 +348,6 @@ SDK.HARLog = class {
     var startTime = page.startTime;
     if (time === -1 || startTime === -1)
       return -1;
-    return SDK.HAREntry._toMilliseconds(time - startTime);
+    return NetworkLog.HAREntry._toMilliseconds(time - startTime);
   }
 };

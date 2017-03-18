@@ -164,7 +164,7 @@ Main.Main = class {
     Components.dockController = new Components.DockController(canDock);
     ConsoleModel.consoleModel = new ConsoleModel.ConsoleModel();
     SDK.multitargetNetworkManager = new SDK.MultitargetNetworkManager();
-    SDK.networkLog = new SDK.NetworkLog();
+    NetworkLog.networkLog = new NetworkLog.NetworkLog();
     SDK.targetManager.addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
 

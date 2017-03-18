@@ -102,7 +102,8 @@
         "cookie_table",
         "data_grid",
         "network_conditions",
-        "object_ui"
+        "object_ui",
+        "network_log"
     ],
     "scripts": [
         "BlockedURLsPane.js",

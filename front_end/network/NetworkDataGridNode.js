@@ -307,8 +307,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
-    var aInitiator = SDK.networkLog.initiatorInfoForRequest(aRequest);
-    var bInitiator = SDK.networkLog.initiatorInfoForRequest(bRequest);
+    var aInitiator = NetworkLog.networkLog.initiatorInfoForRequest(aRequest);
+    var bInitiator = NetworkLog.networkLog.initiatorInfoForRequest(bRequest);
 
     if (aInitiator.type < bInitiator.type)
       return -1;
@@ -496,7 +496,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   showingInitiatorChainChanged() {
     var showInitiatorChain = this.showingInitiatorChain();
 
-    var initiatorGraph = SDK.networkLog.initiatorGraphForRequest(this._request);
+    var initiatorGraph = NetworkLog.networkLog.initiatorGraphForRequest(this._request);
     for (var request of initiatorGraph.initiators) {
       if (request === this._request)
         continue;
@@ -711,7 +711,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   willAttach() {
     if (this._initiatorCell &&
-        SDK.networkLog.initiatorInfoForRequest(this._request).type === SDK.NetworkRequest.InitiatorType.Script)
+        NetworkLog.networkLog.initiatorInfoForRequest(this._request).type === SDK.NetworkRequest.InitiatorType.Script)
       this._initiatorCell.insertBefore(this._linkifiedInitiatorAnchor, this._initiatorCell.firstChild);
   }
 
@@ -845,7 +845,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   _renderInitiatorCell(cell) {
     this._initiatorCell = cell;
     var request = this._request;
-    var initiator = SDK.networkLog.initiatorInfoForRequest(request);
+    var initiator = NetworkLog.networkLog.initiatorInfoForRequest(request);
 
     if (request.timing && request.timing.pushStart)
       cell.appendChild(createTextNode(Common.UIString('Push / ')));

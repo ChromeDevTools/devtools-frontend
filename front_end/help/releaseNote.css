@@ -35,6 +35,7 @@
 .release-note-highlight-container {
     line-height: 1.5;
     -webkit-padding-start: 16px;
+    -webkit-margin-after: 0;
 }
 
 .release-note-link, .release-note-featured-link {
@@ -50,6 +51,8 @@
 
 .release-note-image {
     width: 200px;
+    margin-left: 12px;
+    border: 1px solid lightgrey;
 }
 
 .close-release-note {

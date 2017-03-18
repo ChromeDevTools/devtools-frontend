@@ -61,42 +61,108 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this.element.addEventListener('mousemove', this._onMouseMove.bind(this), true);
     this.element.addEventListener('mouseleave', event => this._setHoveredNode(null, false), true);
 
-    /** @type {!Map<!Network.NetworkWaterfallColumn._LayerStyles, !Path2D>} */
+    this._styleForTimeRangeName = Network.NetworkWaterfallColumn._buildRequestTimeRangeStyle();
+
+    var resourceStyleTuple = Network.NetworkWaterfallColumn._buildResourceTypeStyle();
+    /** @type {!Map<!Common.ResourceType, !Network.NetworkWaterfallColumn._LayerStyle>} */
+    this._styleForWaitingResourceType = resourceStyleTuple[0];
+    /** @type {!Map<!Common.ResourceType, !Network.NetworkWaterfallColumn._LayerStyle>} */
+    this._styleForDownloadingResourceType = resourceStyleTuple[1];
+
+    var baseLineColor = UI.themeSupport.patchColor('#a5a5a5', UI.ThemeSupport.ColorUsage.Foreground);
+    /** @type {!Network.NetworkWaterfallColumn._LayerStyle} */
+    this._wiskerStyle = {borderColor: baseLineColor, lineWidth: 1};
+    /** @type {!Network.NetworkWaterfallColumn._LayerStyle} */
+    this._hoverDetailsStyle = {fillStyle: baseLineColor, lineWidth: 1, borderColor: baseLineColor};
+
+    /** @type {!Map<!Network.NetworkWaterfallColumn._LayerStyle, !Path2D>} */
     this._pathForStyle = new Map();
     /** @type {!Array<!Network.NetworkWaterfallColumn._TextLayer>} */
     this._textLayers = [];
   }
 
   /**
-   * @param {string} color
-   * @return {string}
+   * @return {!Map<!Network.RequestTimeRangeNames, !Network.NetworkWaterfallColumn._LayerStyle>}
    */
-  _waitingColorForBaseColor(color) {
-    var parsedColor = Common.Color.parse(color);
-    var hsla = parsedColor.hsla();
-    hsla[2] *= 1.1;
-    return /** @type {string} */ (parsedColor.asString(null));
+  static _buildRequestTimeRangeStyle() {
+    const types = Network.RequestTimeRangeNames;
+    var styleMap = new Map();
+    styleMap.set(types.Connecting, {fillStyle: '#FF9800'});
+    styleMap.set(types.SSL, {fillStyle: '#9C27B0'});
+    styleMap.set(types.DNS, {fillStyle: '#009688'});
+    styleMap.set(types.Proxy, {fillStyle: '#A1887F'});
+    styleMap.set(types.Blocking, {fillStyle: '#AAAAAA'});
+    styleMap.set(types.Push, {fillStyle: '#8CDBff'});
+    styleMap.set(types.Queueing, {fillStyle: 'white', lineWidth: 2, borderColor: 'lightgrey'});
+    // This ensures we always show at least 2 px for a request.
+    styleMap.set(types.Receiving, {fillStyle: '#03A9F4', lineWidth: 2, borderColor: '#03A9F4'});
+    styleMap.set(types.Waiting, {fillStyle: '#00C853'});
+    styleMap.set(types.ReceivingPush, {fillStyle: '#03A9F4'});
+    styleMap.set(types.ServiceWorker, {fillStyle: 'orange'});
+    styleMap.set(types.ServiceWorkerPreparation, {fillStyle: 'orange'});
+    return styleMap;
   }
 
   /**
-   * @param {string} color
-   * @return {string}
+   * @return {!Array<!Map<!Common.ResourceType, !Network.NetworkWaterfallColumn._LayerStyle>>}
    */
-  _borderColorForBaseColor(color) {
-    var parsedColor = Common.Color.parse(color);
-    var hsla = parsedColor.hsla();
-    hsla[1] /= 2;
-    hsla[2] -= Math.min(hsla[2], 0.2);
-    return /** @type {string} */ (parsedColor.asString(null));
+  static _buildResourceTypeStyle() {
+    const baseResourceTypeColors = new Map([
+      ['document', 'hsl(215, 100%, 80%)'],
+      ['font', 'hsl(8, 100%, 80%)'],
+      ['media', 'hsl(90, 50%, 80%)'],
+      ['image', 'hsl(90, 50%, 80%)'],
+      ['script', 'hsl(31, 100%, 80%)'],
+      ['stylesheet', 'hsl(272, 64%, 80%)'],
+      ['texttrack', 'hsl(8, 100%, 80%)'],
+      ['websocket', 'hsl(0, 0%, 95%)'],
+      ['xhr', 'hsl(53, 100%, 80%)'],
+      ['fetch', 'hsl(53, 100%, 80%)'],
+      ['other', 'hsl(0, 0%, 95%)'],
+    ]);
+    var waitingStyleMap = new Map();
+    var downloadingStyleMap = new Map();
+
+    for (var resourceType of Object.values(Common.resourceTypes)) {
+      var color = baseResourceTypeColors.get(resourceType.name());
+      if (!color)
+        color = baseResourceTypeColors.get('other');
+      var borderColor = toBorderColor(color);
+
+      waitingStyleMap.set(resourceType, {fillStyle: toWaitingColor(color), lineWidth: 1, borderColor: borderColor});
+      downloadingStyleMap.set(resourceType, {fillStyle: color, lineWidth: 1, borderColor: borderColor});
+    }
+    return [waitingStyleMap, downloadingStyleMap];
+
+    /**
+     * @param {string} color
+     */
+    function toBorderColor(color) {
+      var parsedColor = Common.Color.parse(color);
+      var hsla = parsedColor.hsla();
+      hsla[1] /= 2;
+      hsla[2] -= Math.min(hsla[2], 0.2);
+      return parsedColor.asString(null);
+    }
+
+    /**
+     * @param {string} color
+     */
+    function toWaitingColor(color) {
+      var parsedColor = Common.Color.parse(color);
+      var hsla = parsedColor.hsla();
+      hsla[2] *= 1.1;
+      return parsedColor.asString(null);
+    }
   }
 
-  /**
-   * @param {!SDK.NetworkRequest} request
-   * @return {string}
-   */
-  _colorForResourceType(request) {
-    var colorsForResourceType = Network.NetworkWaterfallColumn._colorsForResourceType;
-    return colorsForResourceType[request.resourceType()] || colorsForResourceType.other;
+  _resetPaths() {
+    this._pathForStyle.clear();
+    this._pathForStyle.set(this._wiskerStyle, new Path2D());
+    this._styleForTimeRangeName.forEach(style => this._pathForStyle.set(style, new Path2D()));
+    this._styleForWaitingResourceType.forEach(style => this._pathForStyle.set(style, new Path2D()));
+    this._styleForDownloadingResourceType.forEach(style => this._pathForStyle.set(style, new Path2D()));
+    this._pathForStyle.set(this._hoverDetailsStyle, new Path2D());
   }
 
   /**
@@ -263,7 +329,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._startTime = this._calculator.minimumBoundary();
     this._endTime = this._calculator.maximumBoundary();
     this._resetCanvas();
-    this._pathForStyle.clear();
+    this._resetPaths();
     this._textLayers = [];
     this._draw();
   }
@@ -290,39 +356,6 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._offsetHeight = this.contentElement.offsetHeight;
     this._calculator.setDisplayWidth(this._offsetWidth);
     this._canvasPosition = this._canvas.getBoundingClientRect();
-  }
-
-  /**
-   * @param {!Network.RequestTimeRangeNames} type
-   * @return {string}
-   */
-  _colorForType(type) {
-    var types = Network.RequestTimeRangeNames;
-    switch (type) {
-      case types.Receiving:
-      case types.ReceivingPush:
-        return '#03A9F4';
-      case types.Waiting:
-        return '#00C853';
-      case types.Connecting:
-        return '#FF9800';
-      case types.SSL:
-        return '#9C27B0';
-      case types.DNS:
-        return '#009688';
-      case types.Proxy:
-        return '#A1887F';
-      case types.Blocking:
-        return '#AAAAAA';
-      case types.Push:
-        return '#8CDBff';
-      case types.Queueing:
-        return 'white';
-      case types.ServiceWorker:
-      case types.ServiceWorkerPreparation:
-      default:
-        return 'orange';
-    }
   }
 
   /**
@@ -386,8 +419,9 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    * @param {!CanvasRenderingContext2D} context
    */
   _drawLayers(context) {
-    for (var style of this._pathForStyle.keys()) {
-      var path = /** @type {!Path2D} */ (this._pathForStyle.get(style));
+    for (var entry of this._pathForStyle) {
+      var style = /** @type {!Network.NetworkWaterfallColumn._LayerStyle} */ (entry[0]);
+      var path = /** @type {!Path2D} */ (entry[1]);
       context.save();
       context.beginPath();
       if (style.lineWidth) {
@@ -473,27 +507,14 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     var height = this._getBarHeight();
     y += Math.floor(this._rowHeight / 2 - height / 2 + borderWidth) - borderWidth / 2;
 
-    var fillColor = this._colorForResourceType(request);
-    var waitingPath = new Path2D();
+    var waitingStyle = this._styleForWaitingResourceType.get(request.resourceType());
+    var waitingPath = this._pathForStyle.get(waitingStyle);
     waitingPath.rect(ranges.start, y, ranges.mid - ranges.start, height - borderWidth);
-    /** @type {!Network.NetworkWaterfallColumn._LayerStyles} */
-    var waitingStyle = {
-      fillStyle: this._waitingColorForBaseColor(fillColor),
-      lineWidth: borderWidth,
-      borderColor: this._borderColorForBaseColor(fillColor)
-    };
-    this._pathForStyle.set(waitingStyle, waitingPath);
 
     var barWidth = Math.max(2, ranges.end - ranges.mid);
-    var downloadingPath = new Path2D();
+    var downloadingStyle = this._styleForDownloadingResourceType.get(request.resourceType());
+    var downloadingPath = this._pathForStyle.get(downloadingStyle);
     downloadingPath.rect(ranges.mid, y, barWidth, height - borderWidth);
-    /** @type {!Network.NetworkWaterfallColumn._LayerStyles} */
-    var downloadingStyle = {
-      fillStyle: fillColor,
-      lineWidth: borderWidth,
-      borderColor: this._borderColorForBaseColor(fillColor)
-    };
-    this._pathForStyle.set(downloadingStyle, downloadingPath);
 
     /** @type {?{left: string, right: string, tooltip: (string|undefined)}} */
     var labels = null;
@@ -502,12 +523,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       const barDotLineLength = 10;
       var leftLabelWidth = context.measureText(labels.left).width;
       var rightLabelWidth = context.measureText(labels.right).width;
-
-      var hoverLinePath = new Path2D();
-      var hoverLineColor = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
-      /** @type {!Network.NetworkWaterfallColumn._LayerStyles} */
-      var hoverLineStyles = {fillStyle: hoverLineColor, lineWidth: 1, borderColor: hoverLineColor};
-      this._pathForStyle.set(hoverLineStyles, hoverLinePath);
+      var hoverLinePath = this._pathForStyle.get(this._hoverDetailsStyle);
 
       if (leftLabelWidth < ranges.mid - ranges.start) {
         var midBarX = ranges.start + (ranges.mid - ranges.start - leftLabelWidth) / 2;
@@ -543,12 +559,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       var textOffset = (labels && !leftTextPlacedInBar) ? leftLabelWidth + wiskerTextPadding : 0;
       var queueingStart = this._timeToPosition(queueingRange.start);
       if (ranges.start - textOffset > queueingStart) {
-        var wiskerPath = new Path2D();
-        var wiskerColor = UI.themeSupport.patchColor('#a5a5a5', UI.ThemeSupport.ColorUsage.Foreground);
-        /** @type {!Network.NetworkWaterfallColumn._LayerStyles} */
-        var wiskerStyles = {lineWidth: 1, borderColor: wiskerColor};
-        this._pathForStyle.set(wiskerStyles, wiskerPath);
-
+        var wiskerPath = this._pathForStyle.get(this._wiskerStyle);
         wiskerPath.moveTo(queueingStart, y + Math.floor(height / 2));
         wiskerPath.lineTo(ranges.start - textOffset, y + Math.floor(height / 2));
 
@@ -573,20 +584,10 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
       if (range.name === Network.RequestTimeRangeNames.Total || range.name === Network.RequestTimeRangeNames.Sending ||
           range.end - range.start === 0)
         continue;
-      var lineWidth = 0;
-      var color = this._colorForType(range.name);
-      var borderColor = color;
-      if (range.name === Network.RequestTimeRangeNames.Queueing) {
-        borderColor = 'lightgrey';
-        lineWidth = 2;
-      }
-      if (range.name === Network.RequestTimeRangeNames.Receiving)
-        lineWidth = 2;
 
-      var path = new Path2D();
-      /** @type {!Network.NetworkWaterfallColumn._LayerStyles} */
-      var style = {fillStyle: color, lineWidth: lineWidth, borderColor: borderColor};
-      this._pathForStyle.set(style, path);
+      var style = this._styleForTimeRangeName.get(range.name);
+      var path = this._pathForStyle.get(style);
+      var lineWidth = style.lineWidth || 0;
       var height = this._getBarHeight(range.name);
       var middleBarY = y + Math.floor(this._rowHeight / 2 - height / 2) + lineWidth / 2;
       var start = this._timeToPosition(range.start);
@@ -636,22 +637,8 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
   }
 };
 
-/** @enum {string} */
-Network.NetworkWaterfallColumn._colorsForResourceType = {
-  document: 'hsl(215, 100%, 80%)',
-  font: 'hsl(8, 100%, 80%)',
-  media: 'hsl(90, 50%, 80%)',
-  image: 'hsl(90, 50%, 80%)',
-  script: 'hsl(31, 100%, 80%)',
-  stylesheet: 'hsl(272, 64%, 80%)',
-  texttrack: 'hsl(8, 100%, 80%)',
-  websocket: 'hsl(0, 0%, 95%)',
-  xhr: 'hsl(53, 100%, 80%)',
-  other: 'hsl(0, 0%, 95%)'
-};
-
 /** @typedef {!{fillStyle: (string|undefined), lineWidth: (number|undefined), borderColor: (string|undefined)}} */
-Network.NetworkWaterfallColumn._LayerStyles;
+Network.NetworkWaterfallColumn._LayerStyle;
 
 /** @typedef {!{x: number, y: number, text: string}} */
 Network.NetworkWaterfallColumn._TextLayer;

@@ -504,45 +504,6 @@ SDK.ResourceTreeFrame = class {
   }
 
   /**
-   * @param {!SDK.ExecutionContext|!SDK.CSSStyleSheetHeader|!SDK.Resource} object
-   * @return {?SDK.ResourceTreeFrame}
-   */
-  static _fromObject(object) {
-    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(object.target());
-    var frameId = object.frameId;
-    if (!resourceTreeModel || !frameId)
-      return null;
-    return resourceTreeModel.frameForId(frameId);
-  }
-
-  /**
-   * @param {!SDK.Script} script
-   * @return {?SDK.ResourceTreeFrame}
-   */
-  static fromScript(script) {
-    var executionContext = script.executionContext();
-    if (!executionContext)
-      return null;
-    return SDK.ResourceTreeFrame._fromObject(executionContext);
-  }
-
-  /**
-   * @param {!SDK.CSSStyleSheetHeader} header
-   * @return {?SDK.ResourceTreeFrame}
-   */
-  static fromStyleSheet(header) {
-    return SDK.ResourceTreeFrame._fromObject(header);
-  }
-
-  /**
-   * @param {!SDK.Resource} resource
-   * @return {?SDK.ResourceTreeFrame}
-   */
-  static fromResource(resource) {
-    return SDK.ResourceTreeFrame._fromObject(resource);
-  }
-
-  /**
    * @return {!SDK.Target}
    */
   target() {

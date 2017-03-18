@@ -239,6 +239,8 @@ Bindings.CompilerScriptMapping = class {
 
     // Report sources.
     var missingSources = [];
+    var executionContext = script.executionContext();
+    var frameId = executionContext ? executionContext.frameId || '' : '';
     for (var sourceURL of sourceMap.sourceURLs()) {
       if (this._sourceMapForURL.get(sourceURL))
         continue;
@@ -249,7 +251,7 @@ Bindings.CompilerScriptMapping = class {
         var embeddedContent = sourceMap.embeddedContentByURL(sourceURL);
         var embeddedContentLength = typeof embeddedContent === 'string' ? embeddedContent.length : null;
         uiSourceCode = this._networkProject.addSourceMapFile(
-            contentProvider, SDK.ResourceTreeFrame.fromScript(script), script.isContentScript(), embeddedContentLength);
+            contentProvider, frameId, script.isContentScript(), embeddedContentLength);
         uiSourceCode[Bindings.CompilerScriptMapping._originSymbol] = script.sourceURL;
       }
       if (uiSourceCode) {

@@ -64,8 +64,7 @@ Bindings.SASSSourceMapping = class {
       var contentProvider = sourceMap.sourceContentProvider(sassURL, Common.resourceTypes.SourceMapStyleSheet);
       var embeddedContent = sourceMap.embeddedContentByURL(sassURL);
       var embeddedContentLength = typeof embeddedContent === 'string' ? embeddedContent.length : null;
-      this._networkProject.addSourceMapFile(
-          contentProvider, SDK.ResourceTreeFrame.fromStyleSheet(header), false, embeddedContentLength);
+      this._networkProject.addSourceMapFile(contentProvider, header.frameId, false, embeddedContentLength);
     }
     Bindings.cssWorkspaceBinding.updateLocations(header);
     this._sourceMapAttachedForTest(sourceMap);

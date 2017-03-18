@@ -175,12 +175,15 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   }
 
   /**
-   * @return {!Array<!Workspace.UISourceCode.Message>}
+   * @return {!Set<!Workspace.UISourceCode.Message>}
    */
   _allMessages() {
-    return this._persistenceBinding ?
-        this._persistenceBinding.network.messages().concat(this._persistenceBinding.fileSystem.messages()) :
-        this._uiSourceCode.messages();
+    if (this._persistenceBinding) {
+      var combinedSet = this._persistenceBinding.network.messages();
+      combinedSet.addAll(this._persistenceBinding.fileSystem.messages());
+      return combinedSet;
+    }
+    return this._uiSourceCode.messages();
   }
 
   /**

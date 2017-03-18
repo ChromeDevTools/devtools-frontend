@@ -185,7 +185,7 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
 
   _update() {
     var target = UI.context.flavor(SDK.Target);
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
+    var debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
     var details = debuggerModel ? debuggerModel.debuggerPausedDetails() : null;
 
     if (!details || details.reason !== SDK.DebuggerModel.BreakReason.EventListener) {

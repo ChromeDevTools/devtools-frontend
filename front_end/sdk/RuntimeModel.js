@@ -53,6 +53,20 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @return {!SDK.DebuggerModel}
+   */
+  debuggerModel() {
+    return /** @type {!SDK.DebuggerModel} */ (this.target().model(SDK.DebuggerModel));
+  }
+
+  /**
+   * @return {!SDK.HeapProfilerModel}
+   */
+  heapProfilerModel() {
+    return /** @type {!SDK.HeapProfilerModel} */ (this.target().model(SDK.HeapProfilerModel));
+  }
+
+  /**
    * @return {!Array.<!SDK.ExecutionContext>}
    */
   executionContexts() {
@@ -97,8 +111,8 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    */
   _executionContextCreated(context) {
     var data = context.auxData || {isDefault: true};
-    var executionContext = new SDK.ExecutionContext(
-        this.target(), context.id, context.name, context.origin, data['isDefault'], data['frameId']);
+    var executionContext =
+        new SDK.ExecutionContext(this, context.id, context.name, context.origin, data['isDefault'], data['frameId']);
     this._executionContextById.set(executionContext.id, executionContext);
     this.dispatchEventToListeners(SDK.RuntimeModel.Events.ExecutionContextCreated, executionContext);
   }
@@ -119,9 +133,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   }
 
   _executionContextsCleared() {
-    var debuggerModel = SDK.DebuggerModel.fromTarget(this.target());
-    if (debuggerModel)
-      debuggerModel.globalObjectCleared();
+    this.debuggerModel().globalObjectCleared();
     var contexts = this.executionContexts();
     this._executionContextById.clear();
     for (var i = 0; i < contexts.length; ++i)
@@ -135,7 +147,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   createRemoteObject(payload) {
     console.assert(typeof payload === 'object', 'Remote object payload should only be an object');
     return new SDK.RemoteObjectImpl(
-        this.target(), payload.objectId, payload.type, payload.subtype, payload.value, payload.unserializableValue,
+        this, payload.objectId, payload.type, payload.subtype, payload.value, payload.unserializableValue,
         payload.description, payload.preview, payload.customPreview);
   }
 
@@ -146,8 +158,8 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    */
   createScopeRemoteObject(payload, scopeRef) {
     return new SDK.ScopeRemoteObject(
-        this.target(), payload.objectId, scopeRef, payload.type, payload.subtype, payload.value,
-        payload.unserializableValue, payload.description, payload.preview);
+        this, payload.objectId, scopeRef, payload.type, payload.subtype, payload.value, payload.unserializableValue,
+        payload.description, payload.preview);
   }
 
   /**
@@ -170,7 +182,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
       if (typeof unserializableValue !== 'undefined')
         value = undefined;
     }
-    return new SDK.RemoteObjectImpl(this.target(), undefined, type, undefined, value, unserializableValue);
+    return new SDK.RemoteObjectImpl(this, undefined, type, undefined, value, unserializableValue);
   }
 
   /**
@@ -484,25 +496,31 @@ SDK.RuntimeDispatcher = class {
 /**
  * @unrestricted
  */
-SDK.ExecutionContext = class extends SDK.SDKObject {
+SDK.ExecutionContext = class {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.RuntimeModel} runtimeModel
    * @param {number} id
    * @param {string} name
    * @param {string} origin
    * @param {boolean} isDefault
    * @param {string=} frameId
    */
-  constructor(target, id, name, origin, isDefault, frameId) {
-    super(target);
+  constructor(runtimeModel, id, name, origin, isDefault, frameId) {
     this.id = id;
     this.name = name;
     this.origin = origin;
     this.isDefault = isDefault;
-    this.runtimeModel = target.runtimeModel;
-    this.debuggerModel = SDK.DebuggerModel.fromTarget(target);
+    this.runtimeModel = runtimeModel;
+    this.debuggerModel = runtimeModel.debuggerModel();
     this.frameId = frameId;
     this._setLabel('');
+  }
+
+  /**
+   * @return {!SDK.Target}
+   */
+  target() {
+    return this.runtimeModel.target();
   }
 
   /**
@@ -651,12 +669,9 @@ SDK.ExecutionContext = class extends SDK.SDKObject {
 };
 
 
-/**
- * @unrestricted
- */
-SDK.EventListener = class extends SDK.SDKObject {
+SDK.EventListener = class {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.RuntimeModel} runtimeModel
    * @param {!SDK.RemoteObject} eventTarget
    * @param {string} type
    * @param {boolean} useCapture
@@ -669,18 +684,9 @@ SDK.EventListener = class extends SDK.SDKObject {
    * @param {!SDK.EventListener.Origin=} origin
    */
   constructor(
-      target,
-      eventTarget,
-      type,
-      useCapture,
-      passive,
-      once,
-      handler,
-      originalHandler,
-      location,
-      customRemoveFunction,
-      origin) {
-    super(target);
+      runtimeModel, eventTarget, type, useCapture, passive, once, handler, originalHandler, location,
+      customRemoveFunction, origin) {
+    this._runtimeModel = runtimeModel;
     this._eventTarget = eventTarget;
     this._type = type;
     this._useCapture = useCapture;
@@ -693,6 +699,13 @@ SDK.EventListener = class extends SDK.SDKObject {
     this._sourceURL = script ? script.contentURL() : '';
     this._customRemoveFunction = customRemoveFunction;
     this._origin = origin || SDK.EventListener.Origin.Raw;
+  }
+
+  /**
+   * @return {!SDK.RuntimeModel}
+   */
+  runtimeModel() {
+    return this._runtimeModel;
   }
 
   /**

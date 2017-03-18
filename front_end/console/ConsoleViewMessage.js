@@ -1137,7 +1137,7 @@ Console.ConsoleViewMessage = class {
     var target = this._target();
     if (!target || !errorPrefixes.some(startsWith))
       return null;
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
+    var debuggerModel = target.model(SDK.DebuggerModel);
     if (!debuggerModel)
       return null;
 

@@ -317,10 +317,9 @@ Sources.SourceMapNamesResolver.resolveThisObject = function(callFrame) {
    * @param {?Protocol.Runtime.RemoteObject} evaluateResult
    */
   function onEvaluated(callback, evaluateResult) {
-    var remoteObject = evaluateResult ?
-        callFrame.debuggerModel.target().runtimeModel.createRemoteObject(evaluateResult) :
-        callFrame.thisObject();
-    callback(remoteObject);
+    var remoteObject = evaluateResult ? callFrame.debuggerModel.runtimeModel().createRemoteObject(evaluateResult) :
+                                        callFrame.thisObject();
+    callback(/** @type {!SDK.RemoteObject} */ (remoteObject));
   }
 };
 
@@ -363,6 +362,14 @@ Sources.SourceMapNamesResolver.RemoteObject = class extends SDK.RemoteObject {
 
   /**
    * @override
+   * @return {!Protocol.Runtime.RemoteObjectId|undefined}
+   */
+  get objectId() {
+    return this._object.objectId;
+  }
+
+  /**
+   * @override
    * @return {string}
    */
   get type() {
@@ -379,6 +386,14 @@ Sources.SourceMapNamesResolver.RemoteObject = class extends SDK.RemoteObject {
 
   /**
    * @override
+   * @return {*}
+   */
+  get value() {
+    return this._object.value;
+  }
+
+  /**
+   * @override
    * @return {string|undefined}
    */
   get description() {
@@ -391,6 +406,14 @@ Sources.SourceMapNamesResolver.RemoteObject = class extends SDK.RemoteObject {
    */
   get hasChildren() {
     return this._object.hasChildren;
+  }
+
+  /**
+   * @override
+   * @return {!Protocol.Runtime.ObjectPreview|undefined}
+   */
+  get preview() {
+    return this._object.preview;
   }
 
   /**
@@ -483,6 +506,15 @@ Sources.SourceMapNamesResolver.RemoteObject = class extends SDK.RemoteObject {
 
   /**
    * @override
+   * @param {!Array.<string>} propertyPath
+   * @param {function(?SDK.RemoteObject, boolean=)} callback
+   */
+  getProperty(propertyPath, callback) {
+    this._object.getProperty(propertyPath, callback);
+  }
+
+  /**
+   * @override
    * @return {!Promise<?Array<!SDK.EventListener>>}
    */
   eventListeners() {
@@ -520,18 +552,25 @@ Sources.SourceMapNamesResolver.RemoteObject = class extends SDK.RemoteObject {
 
   /**
    * @override
-   * @return {!SDK.Target}
    */
-  target() {
-    return this._object.target();
+  release() {
+    this._object.release();
   }
 
   /**
    * @override
-   * @return {?SDK.DebuggerModel}
+   * @return {!SDK.DebuggerModel}
    */
   debuggerModel() {
     return this._object.debuggerModel();
+  }
+
+  /**
+   * @override
+   * @return {!SDK.RuntimeModel}
+   */
+  runtimeModel() {
+    return this._object.runtimeModel();
   }
 
   /**

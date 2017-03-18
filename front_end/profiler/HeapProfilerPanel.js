@@ -29,15 +29,15 @@ Profiler.HeapProfilerPanel = class extends Profiler.ProfilesPanel {
       return;
 
     var object = /** @type {!SDK.RemoteObject} */ (target);
-    var objectId = object.objectId;
-    if (!objectId)
+    if (!object.objectId)
       return;
+    var objectId = /** @type {string} */ (object.objectId);
 
     var heapProfiles = Profiler.ProfileTypeRegistry.instance.heapSnapshotProfileType.getProfiles();
     if (!heapProfiles.length)
       return;
 
-    var heapProfilerModel = object.target().model(SDK.HeapProfilerModel);
+    var heapProfilerModel = object.runtimeModel().heapProfilerModel();
     if (!heapProfilerModel)
       return;
 

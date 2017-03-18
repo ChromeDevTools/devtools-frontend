@@ -801,11 +801,12 @@ Console.ConsoleView = class extends UI.VBox {
     var message;
     if (!exceptionDetails) {
       message = new ConsoleModel.ConsoleMessage(
-          result.target(), ConsoleModel.ConsoleMessage.MessageSource.JS, level, '',
+          result.runtimeModel().target(), ConsoleModel.ConsoleMessage.MessageSource.JS, level, '',
           ConsoleModel.ConsoleMessage.MessageType.Result, undefined, undefined, undefined, undefined, [result]);
     } else {
       message = ConsoleModel.ConsoleMessage.fromException(
-          result.target(), exceptionDetails, ConsoleModel.ConsoleMessage.MessageType.Result, undefined, undefined);
+          result.runtimeModel(), exceptionDetails, ConsoleModel.ConsoleMessage.MessageType.Result, undefined,
+          undefined);
     }
     message.setOriginatingMessage(originatingConsoleMessage);
     ConsoleModel.consoleModel.addMessage(message);

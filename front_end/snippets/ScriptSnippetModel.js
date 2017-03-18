@@ -198,9 +198,8 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
     this._releaseSnippetScript(uiSourceCode);
     this._restoreBreakpoints(uiSourceCode, breakpointLocations);
 
-    var target = executionContext.target();
-    var runtimeModel = target.runtimeModel;
-    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (SDK.DebuggerModel.fromTarget(target));
+    var runtimeModel = executionContext.runtimeModel;
+    var debuggerModel = executionContext.debuggerModel;
     var evaluationIndex = this._nextEvaluationIndex();
     var mapping = this._mappingForDebuggerModel.get(debuggerModel);
     mapping._setEvaluationIndex(evaluationIndex, uiSourceCode);
@@ -222,16 +221,15 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
      * @this {Snippets.ScriptSnippetModel}
      */
     function compileCallback(scriptId, exceptionDetails) {
-      var mapping = this._mappingForDebuggerModel.get(debuggerModel);
       if (mapping.evaluationIndex(uiSourceCode) !== evaluationIndex)
         return;
 
       var script = /** @type {!SDK.Script} */ (
-          executionContext.debuggerModel.scriptForId(/** @type {string} */ (scriptId || exceptionDetails.scriptId)));
+          debuggerModel.scriptForId(/** @type {string} */ (scriptId || exceptionDetails.scriptId)));
       mapping._addScript(script, uiSourceCode);
       if (!scriptId) {
         this._printRunOrCompileScriptResultFailure(
-            target, /** @type {!Protocol.Runtime.ExceptionDetails} */ (exceptionDetails), evaluationUrl);
+            runtimeModel, /** @type {!Protocol.Runtime.ExceptionDetails} */ (exceptionDetails), evaluationUrl);
         return;
       }
 
@@ -248,47 +246,46 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {?string=} sourceURL
    */
   _runScript(scriptId, executionContext, sourceURL) {
-    var target = executionContext.target();
-    target.runtimeModel.runScript(
+    var runtimeModel = executionContext.runtimeModel;
+    runtimeModel.runScript(
         scriptId, executionContext.id, 'console', /* silent */ false, /* includeCommandLineAPI */ true,
-        /* returnByValue */ false, /* generatePreview */ true, /* awaitPromise */ undefined,
-        runCallback.bind(this, target));
+        /* returnByValue */ false, /* generatePreview */ true, /* awaitPromise */ undefined, runCallback.bind(this));
 
     /**
-     * @param {!SDK.Target} target
      * @param {?Protocol.Runtime.RemoteObject} result
      * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {Snippets.ScriptSnippetModel}
      */
-    function runCallback(target, result, exceptionDetails) {
+    function runCallback(result, exceptionDetails) {
       if (!exceptionDetails)
-        this._printRunScriptResult(target, result, scriptId, sourceURL);
+        this._printRunScriptResult(runtimeModel, result, scriptId, sourceURL);
       else
-        this._printRunOrCompileScriptResultFailure(target, exceptionDetails, sourceURL);
+        this._printRunOrCompileScriptResultFailure(runtimeModel, exceptionDetails, sourceURL);
     }
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.RuntimeModel} runtimeModel
    * @param {?Protocol.Runtime.RemoteObject} result
    * @param {!Protocol.Runtime.ScriptId} scriptId
    * @param {?string=} sourceURL
    */
-  _printRunScriptResult(target, result, scriptId, sourceURL) {
+  _printRunScriptResult(runtimeModel, result, scriptId, sourceURL) {
     var consoleMessage = new ConsoleModel.ConsoleMessage(
-        target, ConsoleModel.ConsoleMessage.MessageSource.JS, ConsoleModel.ConsoleMessage.MessageLevel.Info, '',
-        undefined, sourceURL, undefined, undefined, undefined, [result], undefined, undefined, undefined, scriptId);
+        runtimeModel.target(), ConsoleModel.ConsoleMessage.MessageSource.JS,
+        ConsoleModel.ConsoleMessage.MessageLevel.Info, '', undefined, sourceURL, undefined, undefined, undefined,
+        [result], undefined, undefined, undefined, scriptId);
     ConsoleModel.consoleModel.addMessage(consoleMessage);
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.RuntimeModel} runtimeModel
    * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    * @param {?string=} sourceURL
    */
-  _printRunOrCompileScriptResultFailure(target, exceptionDetails, sourceURL) {
+  _printRunOrCompileScriptResultFailure(runtimeModel, exceptionDetails, sourceURL) {
     ConsoleModel.consoleModel.addMessage(ConsoleModel.ConsoleMessage.fromException(
-        target, exceptionDetails, undefined, undefined, sourceURL || undefined));
+        runtimeModel, exceptionDetails, undefined, undefined, sourceURL || undefined));
   }
 
   /**

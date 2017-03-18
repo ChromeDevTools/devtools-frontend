@@ -191,7 +191,7 @@ Sources.SourcesPanel = class extends UI.Panel {
   _setTarget(target) {
     if (!target)
       return;
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
+    var debuggerModel = target.model(SDK.DebuggerModel);
     if (!debuggerModel)
       return;
 
@@ -470,7 +470,7 @@ Sources.SourcesPanel = class extends UI.Panel {
 
   _updateDebuggerButtonsAndStatus() {
     var currentTarget = UI.context.flavor(SDK.Target);
-    var currentDebuggerModel = SDK.DebuggerModel.fromTarget(currentTarget);
+    var currentDebuggerModel = currentTarget ? currentTarget.model(SDK.DebuggerModel) : null;
     if (!currentDebuggerModel) {
       this._togglePauseAction.setEnabled(false);
       this._stepOverAction.setEnabled(false);
@@ -561,7 +561,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     var target = UI.context.flavor(SDK.Target);
     if (!target)
       return true;
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
+    var debuggerModel = target.model(SDK.DebuggerModel);
     if (!debuggerModel)
       return true;
 
@@ -588,7 +588,7 @@ Sources.SourcesPanel = class extends UI.Panel {
 
     this._clearInterface();
     var target = UI.context.flavor(SDK.Target);
-    return target ? SDK.DebuggerModel.fromTarget(target) : null;
+    return target ? target.model(SDK.DebuggerModel) : null;
   }
 
   /**
@@ -649,7 +649,7 @@ Sources.SourcesPanel = class extends UI.Panel {
 
     // Always use 0 column.
     var rawLocation = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(
-        SDK.DebuggerModel.fromTarget(executionContext.target()), uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
+        executionContext.debuggerModel, uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
     if (!rawLocation)
       return;
 
@@ -861,7 +861,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     var contentType = uiSourceCode.contentType();
     if (contentType.hasScripts()) {
       var target = UI.context.flavor(SDK.Target);
-      var debuggerModel = SDK.DebuggerModel.fromTarget(target);
+      var debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
       if (debuggerModel && debuggerModel.isPaused()) {
         contextMenu.appendItem(
             Common.UIString.capitalize('Continue to ^here'), this._continueToLocation.bind(this, uiLocation));
@@ -957,7 +957,7 @@ Sources.SourcesPanel = class extends UI.Panel {
         failedToSave(result);
       } else {
         ConsoleModel.consoleModel.evaluateCommandInConsole(
-            /** @type {!SDK.ExecutionContext} */ (currentExecutionContext), result.value,
+            /** @type {!SDK.ExecutionContext} */ (currentExecutionContext), /** @type {string} */ (result.value),
             /* useCommandLineAPI */ false);
       }
     }

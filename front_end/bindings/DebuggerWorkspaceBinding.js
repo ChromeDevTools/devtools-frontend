@@ -200,8 +200,7 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
     var target = Bindings.NetworkProject.targetForUISourceCode(uiLocation.uiSourceCode);
     if (target) {
       var rawLocation = this.uiLocationToRawLocation(
-          SDK.DebuggerModel.fromTarget(target), uiLocation.uiSourceCode, uiLocation.lineNumber,
-          uiLocation.columnNumber);
+          target.model(SDK.DebuggerModel), uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
       if (rawLocation)
         return this.rawLocationToUILocation(rawLocation);
     }

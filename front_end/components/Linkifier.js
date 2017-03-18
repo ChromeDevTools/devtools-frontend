@@ -153,7 +153,7 @@ Components.Linkifier = class {
         sourceURL ? Components.Linkifier.linkifyURL(sourceURL, undefined, classes, lineNumber, columnNumber) : null;
     if (!target || target.isDisposed())
       return fallbackAnchor;
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
+    var debuggerModel = target.model(SDK.DebuggerModel);
     if (!debuggerModel)
       return fallbackAnchor;
 
@@ -228,7 +228,7 @@ Components.Linkifier = class {
     if (target.isDisposed())
       return fallbackAnchor;
 
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
+    var debuggerModel = target.model(SDK.DebuggerModel);
     var rawLocations = debuggerModel.createRawLocationsByStackTrace(stackTrace);
     if (rawLocations.length === 0)
       return fallbackAnchor;

@@ -1072,7 +1072,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
    * @param {!SDK.RemoteObject} object
    */
   static highlightObjectAsDOMNode(object) {
-    var domModel = SDK.DOMModel.fromTarget(object.target());
+    var domModel = SDK.DOMModel.fromTarget(object.runtimeModel().target());
     if (domModel)
       domModel.highlightDOMNode(undefined, undefined, undefined, object.objectId);
   }
@@ -1851,7 +1851,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
    */
   pushObjectAsNodeToFrontend(object, callback) {
     if (object.isNode())
-      this.pushNodeToFrontend(object.objectId, callback);
+      this.pushNodeToFrontend(/** @type {string} */ (object.objectId), callback);
     else
       callback(null);
   }

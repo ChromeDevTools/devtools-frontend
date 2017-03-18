@@ -207,7 +207,7 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
   _exceptionThrown(runtimeModel, event) {
     var exceptionWithTimestamp = /** @type {!SDK.RuntimeModel.ExceptionWithTimestamp} */ (event.data);
     var consoleMessage = ConsoleModel.ConsoleMessage.fromException(
-        runtimeModel.target(), exceptionWithTimestamp.details, undefined, exceptionWithTimestamp.timestamp, undefined);
+        runtimeModel, exceptionWithTimestamp.details, undefined, exceptionWithTimestamp.timestamp, undefined);
     consoleMessage.setExceptionId(exceptionWithTimestamp.details.exceptionId);
     this.addMessage(consoleMessage);
   }
@@ -460,18 +460,19 @@ ConsoleModel.ConsoleMessage = class {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.RuntimeModel} runtimeModel
    * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    * @param {string=} messageType
    * @param {number=} timestamp
    * @param {string=} forceUrl
    * @return {!ConsoleModel.ConsoleMessage}
    */
-  static fromException(target, exceptionDetails, messageType, timestamp, forceUrl) {
+  static fromException(runtimeModel, exceptionDetails, messageType, timestamp, forceUrl) {
     return new ConsoleModel.ConsoleMessage(
-        target, ConsoleModel.ConsoleMessage.MessageSource.JS, ConsoleModel.ConsoleMessage.MessageLevel.Error,
-        SDK.RuntimeModel.simpleTextFromException(exceptionDetails), messageType, forceUrl || exceptionDetails.url,
-        exceptionDetails.lineNumber, exceptionDetails.columnNumber, undefined,
+        runtimeModel.target(), ConsoleModel.ConsoleMessage.MessageSource.JS,
+        ConsoleModel.ConsoleMessage.MessageLevel.Error, SDK.RuntimeModel.simpleTextFromException(exceptionDetails),
+        messageType, forceUrl || exceptionDetails.url, exceptionDetails.lineNumber, exceptionDetails.columnNumber,
+        undefined,
         exceptionDetails.exception ?
             [SDK.RemoteObject.fromLocalObject(exceptionDetails.text), exceptionDetails.exception] :
             undefined,

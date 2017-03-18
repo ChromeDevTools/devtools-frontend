@@ -74,7 +74,7 @@ PerfUI.LineLevelProfile = class {
       if (!uiSourceCode)
         continue;
       var target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode) || SDK.targetManager.mainTarget();
-      var debuggerModel = target ? SDK.DebuggerModel.fromTarget(target) : null;
+      var debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
       if (!debuggerModel)
         continue;
       for (var lineInfo of fileInfo[1]) {

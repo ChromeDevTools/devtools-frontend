@@ -1600,7 +1600,7 @@ Elements.ElementsTreeOutline.Renderer = class {
       } else if (object instanceof SDK.DeferredDOMNode) {
         (/** @type {!SDK.DeferredDOMNode} */ (object)).resolve(onNodeResolved);
       } else if (object instanceof SDK.RemoteObject) {
-        var domModel = SDK.DOMModel.fromTarget((/** @type {!SDK.RemoteObject} */ (object)).target());
+        var domModel = SDK.DOMModel.fromTarget((/** @type {!SDK.RemoteObject} */ (object)).runtimeModel().target());
         if (domModel)
           domModel.pushObjectAsNodeToFrontend(object, onNodeResolved);
         else

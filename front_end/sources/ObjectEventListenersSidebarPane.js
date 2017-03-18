@@ -27,7 +27,7 @@ Sources.ObjectEventListenersSidebarPane = class extends UI.VBox {
 
   update() {
     if (this._lastRequestedContext) {
-      this._lastRequestedContext.target().runtimeModel.releaseObjectGroup(
+      this._lastRequestedContext.runtimeModel.releaseObjectGroup(
           Sources.ObjectEventListenersSidebarPane._objectGroupName);
       delete this._lastRequestedContext;
     }

@@ -401,7 +401,7 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
    */
   constructor(target, type, title) {
     super(target, type, title || Common.UIString('Profile %d', type.nextProfileUid()));
-    this._debuggerModel = SDK.DebuggerModel.fromTarget(target);
+    this._debuggerModel = target && target.model(SDK.DebuggerModel);
     this._tempFile = null;
   }
 

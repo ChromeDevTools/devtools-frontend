@@ -260,7 +260,7 @@
    */
   TestSuite.prototype.testScriptsTabIsPopulatedOnInspectedPageRefresh = function() {
     var test = this;
-    var debuggerModel = SDK.DebuggerModel.fromTarget(SDK.targetManager.mainTarget());
+    var debuggerModel = SDK.targetManager.mainTarget().model(SDK.DebuggerModel);
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, waitUntilScriptIsParsed);
 
     this.showPanel('elements').then(function() {
@@ -345,7 +345,7 @@
   // Tests that debugger works correctly if pause event occurs when DevTools
   // frontend is being loaded.
   TestSuite.prototype.testPauseWhenLoadingDevTools = function() {
-    var debuggerModel = SDK.DebuggerModel.fromTarget(SDK.targetManager.mainTarget());
+    var debuggerModel = SDK.targetManager.mainTarget().model(SDK.DebuggerModel);
     if (debuggerModel.debuggerPausedDetails)
       return;
 
@@ -577,8 +577,7 @@
     this._waitForTargets(2, callback.bind(this));
 
     function callback() {
-      var target = SDK.targetManager.targets(SDK.Target.Capability.JS)[0];
-      var debuggerModel = SDK.DebuggerModel.fromTarget(target);
+      var debuggerModel = SDK.targetManager.models(SDK.DebuggerModel)[0];
       if (debuggerModel.isPaused()) {
         this.releaseControl();
         return;
@@ -598,7 +597,7 @@
   };
 
   TestSuite.prototype.waitForDebuggerPaused = function() {
-    var debuggerModel = SDK.DebuggerModel.fromTarget(SDK.targetManager.mainTarget());
+    var debuggerModel = SDK.targetManager.mainTarget().model(SDK.DebuggerModel);
     if (debuggerModel.debuggerPausedDetails)
       return;
 

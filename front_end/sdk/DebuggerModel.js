@@ -40,7 +40,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
 
     target.registerDebuggerDispatcher(new SDK.DebuggerDispatcher(this));
     this._agent = target.debuggerAgent();
-    this._runtimeModel = target.model(SDK.RuntimeModel);
+    this._runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
 
     /** @type {?SDK.DebuggerPausedDetails} */
     this._debuggerPausedDetails = null;
@@ -68,11 +68,10 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {?SDK.Target} target
-   * @return {?SDK.DebuggerModel}
+   * @return {!SDK.RuntimeModel}
    */
-  static fromTarget(target) {
-    return target ? target.model(SDK.DebuggerModel) : null;
+  runtimeModel() {
+    return this._runtimeModel;
   }
 
   /**

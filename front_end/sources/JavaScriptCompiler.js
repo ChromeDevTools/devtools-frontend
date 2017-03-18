@@ -32,7 +32,7 @@ Sources.JavaScriptCompiler = class {
     for (var i = 0; i < debuggerModels.length; ++i) {
       var scriptFile = Bindings.debuggerWorkspaceBinding.scriptFile(sourceCode, debuggerModels[i]);
       if (scriptFile)
-        return debuggerModels[i].target().runtimeModel;
+        return debuggerModels[i].runtimeModel();
     }
     return SDK.targetManager.mainTarget() ? SDK.targetManager.mainTarget().runtimeModel : null;
   }

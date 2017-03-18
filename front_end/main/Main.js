@@ -488,7 +488,7 @@ Main.Main.InspectorDomainDispatcher = class {
    * @override
    */
   targetCrashed() {
-    var debuggerModel = SDK.DebuggerModel.fromTarget(this._target);
+    var debuggerModel = this._target.model(SDK.DebuggerModel);
     if (debuggerModel)
       Main.TargetCrashedScreen.show(debuggerModel);
   }

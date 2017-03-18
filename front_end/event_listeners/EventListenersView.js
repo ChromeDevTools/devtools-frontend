@@ -267,7 +267,7 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
   onpopulate() {
     var properties = [];
     var eventListener = this._eventListener;
-    var runtimeModel = eventListener.target().runtimeModel;
+    var runtimeModel = eventListener.runtimeModel();
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('useCapture', eventListener.useCapture()));
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('passive', eventListener.passive()));
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('once', eventListener.once()));

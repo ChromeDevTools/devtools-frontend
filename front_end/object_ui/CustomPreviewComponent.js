@@ -90,7 +90,7 @@ ObjectUI.CustomPreviewSection = class {
   _layoutObjectTag(objectTag) {
     objectTag.shift();
     var attributes = objectTag.shift();
-    var remoteObject = this._object.target().runtimeModel.createRemoteObject(
+    var remoteObject = this._object.runtimeModel().createRemoteObject(
         /** @type {!Protocol.Runtime.RemoteObject} */ (attributes));
     if (remoteObject.customPreview())
       return (new ObjectUI.CustomPreviewSection(remoteObject)).element();

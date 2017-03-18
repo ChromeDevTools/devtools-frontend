@@ -1028,7 +1028,7 @@ Elements.ElementsPanel.DOMNodeRevealer = class {
       } else if (node instanceof SDK.DeferredDOMNode) {
         (/** @type {!SDK.DeferredDOMNode} */ (node)).resolve(onNodeResolved);
       } else if (node instanceof SDK.RemoteObject) {
-        var domModel = SDK.DOMModel.fromTarget(/** @type {!SDK.RemoteObject} */ (node).target());
+        var domModel = SDK.DOMModel.fromTarget(/** @type {!SDK.RemoteObject} */ (node).runtimeModel().target());
         if (domModel)
           domModel.pushObjectAsNodeToFrontend(node, onNodeResolved);
         else

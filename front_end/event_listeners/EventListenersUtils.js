@@ -12,7 +12,7 @@ EventListeners.EventListenerObjectInInspectedPage;
  * @return {!Promise<!EventListeners.FrameworkEventListenersObject>}
  */
 EventListeners.frameworkEventListeners = function(object) {
-  if (!object.target().hasDOMCapability()) {
+  if (!object.runtimeModel().target().hasDOMCapability()) {
     // TODO(kozyatinskiy): figure out how this should work for |window|.
     return Promise.resolve(
         /** @type {!EventListeners.FrameworkEventListenersObject} */ ({eventListeners: [], internalHandlers: null}));
@@ -177,7 +177,7 @@ EventListeners.frameworkEventListeners = function(object) {
         if (!location)
           throw new Error('Empty event listener\'s location');
         return new SDK.EventListener(
-            handler._target, object, type, useCapture, passive, once, handler, originalHandler, location,
+            handler.runtimeModel(), object, type, useCapture, passive, once, handler, originalHandler, location,
             removeFunctionObject, SDK.EventListener.Origin.FrameworkUser);
       }
     }

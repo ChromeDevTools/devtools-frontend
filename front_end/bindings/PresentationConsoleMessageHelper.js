@@ -89,7 +89,9 @@ Bindings.PresentationConsoleMessageHelper = class {
    * @return {?SDK.DebuggerModel.Location}
    */
   _rawLocation(message) {
-    var debuggerModel = SDK.DebuggerModel.fromTarget(message.target());
+    if (!message.target())
+      return null;
+    var debuggerModel = message.target().model(SDK.DebuggerModel);
     if (!debuggerModel)
       return null;
     if (message.scriptId)

@@ -18,10 +18,8 @@ Main.OverlayController = class {
   }
 
   _updateAllOverlays() {
-    for (var target of SDK.targetManager.targets(SDK.Target.Capability.Browser)) {
-      this._updateTargetOverlay(
-          /** @type {!SDK.DebuggerModel} */ (SDK.DebuggerModel.fromTarget(target)));
-    }
+    for (var debuggerModel of SDK.targetManager.models(SDK.DebuggerModel))
+      this._updateTargetOverlay(debuggerModel);
   }
 
   /**

@@ -378,7 +378,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
 
   _getPopoverAnchor(element, event) {
     var target = UI.context.flavor(SDK.Target);
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
+    var debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
     if (!debuggerModel || !debuggerModel.isPaused())
       return;
 

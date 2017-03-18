@@ -551,7 +551,7 @@ Timeline.TimelineUIUtils = class {
      * @return {?string}
      */
     function linkifyLocationAsText(scriptId, lineNumber, columnNumber) {
-      var debuggerModel = SDK.DebuggerModel.fromTarget(target);
+      var debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
       if (!target || target.isDisposed() || !scriptId || !debuggerModel)
         return null;
       var rawLocation = debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber);

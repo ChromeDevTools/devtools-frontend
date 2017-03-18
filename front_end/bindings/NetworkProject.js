@@ -87,7 +87,7 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
           resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this));
     }
 
-    var debuggerModel = SDK.DebuggerModel.fromTarget(target);
+    var debuggerModel = target.model(SDK.DebuggerModel);
     if (debuggerModel) {
       this._eventListeners.push(
           debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),

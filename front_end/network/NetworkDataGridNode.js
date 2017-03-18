@@ -38,6 +38,8 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
   constructor(parentView) {
     super({});
     this._parentView = parentView;
+    /** @type {!Map<string, ?Network.NetworkColumnExtensionInterface>} */
+    this._columnExtensions = new Map();
     this._isHovered = false;
     this._showingInitiatorChain = false;
     /** @type {?SDK.NetworkRequest} */
@@ -71,6 +73,13 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
    */
   nodeSelfHeight() {
     return this._parentView.rowHeight();
+  }
+
+  /**
+   * @param {!Map<string, ?Network.NetworkColumnExtensionInterface>} columnExtensions
+   */
+  setColumnExtensions(columnExtensions) {
+    this._columnExtensions = columnExtensions;
   }
 
   /**
@@ -464,6 +473,24 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   }
 
   /**
+   * @param {!Map<string, ?Network.NetworkColumnExtensionInterface>} extensionsMap
+   * @param {string} extensionId
+   * @param {!Network.NetworkNode} a
+   * @param {!Network.NetworkNode} b
+   * @return {number}
+   */
+  static ExtensionColumnComparator(extensionsMap, extensionId, a, b) {
+    var aRequest = a.requestOrFirstKnownChildRequest();
+    var bRequest = b.requestOrFirstKnownChildRequest();
+    if (!aRequest || !bRequest)
+      return !aRequest ? -1 : 1;
+    var instance = extensionsMap.get(extensionId);
+    if (!instance)
+      return aRequest.indentityCompare(bRequest);
+    return instance.requestComparator(aRequest, bRequest);
+  }
+
+  /**
    * @override
    */
   showingInitiatorChainChanged() {
@@ -604,6 +631,14 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   createCell(columnIdentifier) {
     var cell = this.createTD(columnIdentifier);
+    // If the key exists but the value is null it means the extension instance has not resolved yet.
+    // The view controller will force all rows to update when extension is resolved.
+    if (this._columnExtensions.has(columnIdentifier)) {
+      var instance = this._columnExtensions.get(columnIdentifier);
+      if (instance)
+        this._setTextAndTitle(cell, instance.lookupColumnValue(this._request));
+      return cell;
+    }
     switch (columnIdentifier) {
       case 'name':
         this._renderNameCell(cell);
@@ -954,6 +989,8 @@ Network.NetworkGroupNode = class extends Network.NetworkNode {
    */
   createCell(columnIdentifier) {
     var cell = this.createTD(columnIdentifier);
+    if (this._columnExtensions.has(columnIdentifier))
+      return cell;
     if (columnIdentifier === 'name') {
       var leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
       cell.style.setProperty('padding-left', leftPadding);

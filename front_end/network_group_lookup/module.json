@@ -5,6 +5,11 @@
           "className": "NetworkGroupLookup.NetworkProductGroupLookup",
           "title": "Product",
           "id": "product"
+        },
+        {
+          "type": "@Network.NetworkColumnExtensionInterface",
+          "className": "NetworkGroupLookup.NetworkProductGroupLookup",
+          "title": "Product"
         }
     ],
     "dependencies": [

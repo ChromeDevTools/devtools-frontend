@@ -107,7 +107,8 @@ Network.NetworkLogView = class extends UI.VBox {
     this._resetSuggestionBuilder();
     this._initializeView();
 
-    Common.moduleSetting('networkColorCodeResourceTypes').addChangeListener(this._invalidateAllItems, this);
+    Common.moduleSetting('networkColorCodeResourceTypes')
+        .addChangeListener(this._invalidateAllItems.bind(this, false), this);
 
     SDK.targetManager.observeTargets(this);
     SDK.targetManager.addModelListener(
@@ -530,6 +531,10 @@ Network.NetworkLogView = class extends UI.VBox {
     return [this._dataGrid.scrollContainer];
   }
 
+  columnExtensionResolved() {
+    this._invalidateAllItems(true);
+  }
+
   _setupDataGrid() {
     /** @type {!DataGrid.SortableDataGrid<!Network.NetworkNode>} */
     this._dataGrid = this._columns.dataGrid();
@@ -681,11 +686,17 @@ Network.NetworkLogView = class extends UI.VBox {
       this._refresh();
   }
 
-  _invalidateAllItems() {
+  /**
+   * @param {boolean=} deferUpdate
+   */
+  _invalidateAllItems(deferUpdate) {
     var requestIds = this._nodesByRequestId.keysArray();
     for (var i = 0; i < requestIds.length; ++i)
       this._staleRequestIds[requestIds[i]] = true;
-    this._refresh();
+    if (deferUpdate)
+      this.scheduleRefresh();
+    else
+      this._refresh();
   }
 
   /**
@@ -871,6 +882,7 @@ Network.NetworkLogView = class extends UI.VBox {
     if (group)
       return group;
     group = new Network.NetworkGroupNode(this, groupName);
+    group.setColumnExtensions(this._columns.columnExtensions());
     this._nodeGroups.set(groupName, group);
     return group;
   }
@@ -932,6 +944,7 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   _appendRequest(request) {
     var node = new Network.NetworkRequestNode(this, request);
+    node.setColumnExtensions(this._columns.columnExtensions());
     node[Network.NetworkLogView._isFilteredOutSymbol] = true;
     node[Network.NetworkLogView._isMatchingSearchQuerySymbol] = false;
 

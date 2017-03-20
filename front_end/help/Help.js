@@ -33,6 +33,8 @@ Help.showReleaseNoteIfNeeded = function() {
  * @param {number} latestVersion
  */
 Help._showReleaseNoteIfNeeded = function(lastSeenVersion, latestVersion) {
+  if (!Runtime.experiments.isEnabled('releaseNote'))
+    return;
   if (lastSeenVersion >= latestVersion)
     return;
   Help.releaseNoteVersionSetting().set(latestVersion);

@@ -39,7 +39,7 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this.setEditable(this._canEditSource());
 
     if (Runtime.experiments.isEnabled('sourceDiff'))
-      this._diff = new SourceFrame.SourceCodeDiff(WorkspaceDiff.workspaceDiff(), uiSourceCode, this.textEditor);
+      this._diff = new SourceFrame.SourceCodeDiff(WorkspaceDiff.workspaceDiff(), this.textEditor);
 
 
     /** @type {?UI.AutocompleteConfig} */
@@ -72,6 +72,7 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
         () => UI.context.setFlavor(SourceFrame.UISourceCodeFrame, this));
 
     this._updateStyle();
+    this._updateDiffUISourceCode();
 
     this._errorPopoverHelper = new UI.PopoverHelper(this.element);
     this._errorPopoverHelper.initializeCallbacks(this._getErrorAnchor.bind(this), this._showErrorPopover.bind(this));
@@ -241,6 +242,7 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this._installMessageAndDecorationListeners();
     this._updateStyle();
     this._decorateAllTypes();
+    this._updateDiffUISourceCode();
     this.onBindingChanged();
   }
 
@@ -249,6 +251,17 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    */
   onBindingChanged() {
     // Overriden in subclasses.
+  }
+
+  _updateDiffUISourceCode() {
+    if (!this._diff)
+      return;
+    if (this._persistenceBinding)
+      this._diff.setUISourceCode(this._persistenceBinding.network);
+    else if (this._uiSourceCode.project().type() === Workspace.projectTypes.Network)
+      this._diff.setUISourceCode(this._uiSourceCode);
+    else
+      this._diff.setUISourceCode(null);
   }
 
   _updateStyle() {

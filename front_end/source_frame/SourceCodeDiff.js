@@ -7,19 +7,31 @@
 SourceFrame.SourceCodeDiff = class {
   /**
    * @param {!WorkspaceDiff.WorkspaceDiff} workspaceDiff
-   * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {!TextEditor.CodeMirrorTextEditor} textEditor
    */
-  constructor(workspaceDiff, uiSourceCode, textEditor) {
+  constructor(workspaceDiff, textEditor) {
     this._textEditor = textEditor;
     this._decorations = [];
     this._textEditor.installGutter(SourceFrame.SourceCodeDiff.DiffGutterType, true);
-    this._uiSourceCode = uiSourceCode;
+    this._uiSourceCode = null;
     this._workspaceDiff = workspaceDiff;
     /** @type {!Array<!TextEditor.TextEditorPositionHandle>}*/
     this._animatedLines = [];
 
-    this._workspaceDiff.subscribeToDiffChange(this._uiSourceCode, this._update, this);
+    this._update();
+  }
+
+  /**
+   * @param {?Workspace.UISourceCode} uiSourceCode
+   */
+  setUISourceCode(uiSourceCode) {
+    if (uiSourceCode === this._uiSourceCode)
+      return;
+    if (this._uiSourceCode)
+      this._workspaceDiff.unsubscribeFromDiffChange(this._uiSourceCode, this._update, this);
+    if (uiSourceCode)
+      this._workspaceDiff.subscribeToDiffChange(uiSourceCode, this._update, this);
+    this._uiSourceCode = uiSourceCode;
     this._update();
   }
 
@@ -155,15 +167,21 @@ SourceFrame.SourceCodeDiff = class {
   }
 
   _update() {
-    this._workspaceDiff.requestDiff(this._uiSourceCode).then(this._innerUpdate.bind(this));
+    if (this._uiSourceCode)
+      this._workspaceDiff.requestDiff(this._uiSourceCode).then(this._innerUpdate.bind(this));
+    else
+      this._innerUpdate(null);
   }
 
   /**
    * @param {?Diff.Diff.DiffArray} lineDiff
    */
   _innerUpdate(lineDiff) {
-    if (!lineDiff)
+    if (!lineDiff) {
+      this._updateDecorations(this._decorations, []);
+      this._decorations = [];
       return;
+    }
 
     /** @type {!Map<number, !SourceFrame.SourceCodeDiff.GutterDecoration>} */
     var oldDecorations = new Map();
@@ -201,7 +219,8 @@ SourceFrame.SourceCodeDiff = class {
   }
 
   dispose() {
-    WorkspaceDiff.workspaceDiff().unsubscribeFromDiffChange(this._uiSourceCode, this._update, this);
+    if (this._uiSourceCode)
+      WorkspaceDiff.workspaceDiff().unsubscribeFromDiffChange(this._uiSourceCode, this._update, this);
   }
 };
 

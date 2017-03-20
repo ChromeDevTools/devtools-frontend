@@ -50,6 +50,22 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
    * @param {!SDK.Target} target
    */
   targetAdded(target) {
+    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    if (!resourceTreeModel || resourceTreeModel.cachedResourcesLoaded()) {
+      this._initTarget(target);
+      return;
+    }
+
+    var eventListener = resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, () => {
+      Common.EventTarget.removeEventListeners([eventListener]);
+      this._initTarget(target);
+    });
+  }
+
+  /**
+   * @param {!SDK.Target} target
+   */
+  _initTarget(target) {
     var eventListeners = [];
 
     var logModel = target.model(SDK.LogModel);
@@ -98,7 +114,7 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
    */
   targetRemoved(target) {
     this._messageByExceptionId.delete(target);
-    Common.EventTarget.removeEventListeners(target[ConsoleModel.ConsoleModel._events]);
+    Common.EventTarget.removeEventListeners(target[ConsoleModel.ConsoleModel._events] || []);
   }
 
   /**

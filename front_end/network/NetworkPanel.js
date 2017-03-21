@@ -115,6 +115,8 @@ Network.NetworkPanel = class extends UI.Panel {
     blockedURLsSetting.addChangeListener(updateIconVisibility.bind(this));
     var requestBlockingEnabledSetting = Common.moduleSetting('requestBlockingEnabled');
     requestBlockingEnabledSetting.addChangeListener(updateIconVisibility.bind(this));
+    SDK.multitargetNetworkManager.addEventListener(
+        SDK.MultitargetNetworkManager.Events.ConditionsChanged, updateIconVisibility.bind(this));
 
     updateIconVisibility.call(this);
 

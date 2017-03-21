@@ -198,6 +198,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       var oldSecurityState = originState.securityState;
       originState.securityState = this._securityStateMin(oldSecurityState, securityState);
       if (oldSecurityState !== originState.securityState) {
+        let securityDetails = /** @type {?Protocol.Network.SecurityDetails} */ (request.securityDetails());
+        if (securityDetails)
+          originState.securityDetails = securityDetails;
         this._sidebarTree.updateOrigin(origin, securityState);
         if (originState.originView)
           originState.originView.setSecurityState(securityState);

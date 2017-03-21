@@ -102,8 +102,10 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     this._createFileSelector();
 
-    SDK.targetManager.addEventListener(SDK.TargetManager.Events.PageReloadRequested, this._pageReloadRequested, this);
-    SDK.targetManager.addEventListener(SDK.TargetManager.Events.Load, this._loadEventFired, this);
+    SDK.targetManager.addModelListener(
+        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.PageReloadRequested, this._pageReloadRequested, this);
+    SDK.targetManager.addModelListener(
+        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
 
     if (Runtime.experiments.isEnabled('timelineMultipleMainViews')) {
       var viewMode = Timeline.TimelinePanel.ViewMode;
@@ -501,18 +503,16 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   /**
+   * @param {!SDK.TracingManager} tracingManager
    * @param {boolean} userInitiated
    * @return {!Promise}
    */
-  _startRecording(userInitiated) {
+  _startRecording(tracingManager, userInitiated) {
     console.assert(!this._statusPane, 'Status pane is already opened.');
-    var tracingManagers = SDK.targetManager.models(SDK.TracingManager);
-    if (!tracingManagers.length)
-      return Promise.resolve();
     this._setState(Timeline.TimelinePanel.State.StartPending);
     this._showRecordingStarted();
 
-    this._autoRecordGeneration = userInitiated ? null : Symbol('Generation');
+    this._autoRecordGeneration = userInitiated ? null : {tracingManager: tracingManager};
     var enabledTraceProviders = Extensions.extensionServer.traceProviders().filter(
         provider => Timeline.TimelinePanel._settingForTraceProvider(provider).get());
 
@@ -523,7 +523,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     };
 
     this._pendingPerformanceModel = new Timeline.PerformanceModel();
-    this._controller = new Timeline.TimelineController(tracingManagers[0], this._pendingPerformanceModel, this);
+    this._controller = new Timeline.TimelineController(tracingManager, this._pendingPerformanceModel, this);
     Host.userMetrics.actionTaken(
         userInitiated ? Host.UserMetrics.Action.TimelineStarted : Host.UserMetrics.Action.TimelinePageReloadStarted);
     this._setUIControlsEnabled(false);
@@ -558,10 +558,13 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   _toggleRecording() {
-    if (this._state === Timeline.TimelinePanel.State.Idle)
-      this._startRecording(true);
-    else if (this._state === Timeline.TimelinePanel.State.Recording)
+    if (this._state === Timeline.TimelinePanel.State.Idle) {
+      var tracingManagers = SDK.targetManager.models(SDK.TracingManager);
+      if (tracingManagers.length)
+        this._startRecording(tracingManagers[0], true);
+    } else if (this._state === Timeline.TimelinePanel.State.Recording) {
       this._stopRecording();
+    }
   }
 
   _clear() {
@@ -785,15 +788,20 @@ Timeline.TimelinePanel = class extends UI.Panel {
     if (this._state !== Timeline.TimelinePanel.State.Idle || !this.isShowing())
       return;
     var resourceTreeModel = /** @type {!SDK.ResourceTreeModel} */ (event.data);
+    var tracingManager = resourceTreeModel.target().model(SDK.TracingManager);
+    if (resourceTreeModel.target() !== SDK.targetManager.mainTarget() || !tracingManager)
+      return;
+
     resourceTreeModel.suspendReload();
-    this._startRecording(false).then(() => resourceTreeModel.resumeReload());
+    this._startRecording(tracingManager, false).then(() => resourceTreeModel.resumeReload());
   }
 
   /**
    * @param {!Common.Event} event
    */
   _loadEventFired(event) {
-    if (this._state !== Timeline.TimelinePanel.State.Recording || !this._autoRecordGeneration)
+    if (this._state !== Timeline.TimelinePanel.State.Recording || !this._autoRecordGeneration ||
+        this._autoRecordGeneration.tracingManager.target() !== event.data.resourceTreeModel.target())
       return;
     setTimeout(stopRecordingOnReload.bind(this, this._autoRecordGeneration), this._millisecondsToRecordAfterLoadEvent);
 

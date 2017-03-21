@@ -35,7 +35,11 @@ Layers.LayerTreeModel = class extends SDK.SDKModel {
   constructor(target) {
     super(target);
     target.registerLayerTreeDispatcher(new Layers.LayerTreeDispatcher(this));
-    SDK.targetManager.addEventListener(SDK.TargetManager.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
+    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    if (resourceTreeModel) {
+      resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
+    }
     /** @type {?SDK.LayerTreeBase} */
     this._layerTree = null;
   }

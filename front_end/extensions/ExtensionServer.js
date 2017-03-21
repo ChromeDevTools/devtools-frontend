@@ -422,7 +422,7 @@ Extensions.ExtensionServer = class extends Common.Object {
     var injectedScript;
     if (options.injectedScript)
       injectedScript = '(function(){' + options.injectedScript + '})()';
-    SDK.targetManager.reloadPage(!!options.ignoreCache, injectedScript);
+    SDK.ResourceTreeModel.reloadAllPages(!!options.ignoreCache, injectedScript);
     return this._status.OK();
   }
 

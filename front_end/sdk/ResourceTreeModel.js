@@ -90,6 +90,17 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     return null;
   }
 
+  /**
+   * @param {boolean=} bypassCache
+   * @param {string=} scriptToEvaluateOnLoad
+   */
+  static reloadAllPages(bypassCache, scriptToEvaluateOnLoad) {
+    for (var resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
+      if (!resourceTreeModel.target().parentTarget())
+        resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad);
+    }
+  }
+
   _fetchResourceTree() {
     /** @type {!Map<string, !SDK.ResourceTreeFrame>} */
     this._frames = new Map();
@@ -721,7 +732,8 @@ SDK.PageDispatcher = class {
    * @param {number} time
    */
   loadEventFired(time) {
-    this._resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.Load, time);
+    this._resourceTreeModel.dispatchEventToListeners(
+        SDK.ResourceTreeModel.Events.Load, {resourceTreeModel: this._resourceTreeModel, loadTime: time});
   }
 
   /**

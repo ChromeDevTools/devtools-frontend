@@ -38,7 +38,8 @@ Audits.AuditController = class {
    */
   constructor(auditsPanel) {
     this._auditsPanel = auditsPanel;
-    SDK.targetManager.addEventListener(SDK.TargetManager.Events.Load, this._didMainResourceLoad, this);
+    SDK.targetManager.addModelListener(
+        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._didMainResourceLoad, this);
     SDK.targetManager.addModelListener(
         SDK.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this._didLoadResource, this);
   }
@@ -141,7 +142,7 @@ Audits.AuditController = class {
    */
   _reloadResources(callback) {
     this._pageReloadCallback = callback;
-    SDK.targetManager.reloadPage();
+    SDK.ResourceTreeModel.reloadAllPages();
   }
 
   _didLoadResource() {
@@ -149,7 +150,12 @@ Audits.AuditController = class {
       this._pageReloadCallback();
   }
 
-  _didMainResourceLoad() {
+  /**
+   * @param {!Common.Event} event
+   */
+  _didMainResourceLoad(event) {
+    if (event.data.resourceTreeModel.target() !== SDK.targetManager.mainTarget())
+      return;
     if (this._pageReloadCallback) {
       var callback = this._pageReloadCallback;
       delete this._pageReloadCallback;

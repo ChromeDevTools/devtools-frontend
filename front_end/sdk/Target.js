@@ -143,7 +143,7 @@ SDK.Target = class extends Protocol.TargetBase {
     if (!this._modelByConstructor.get(modelClass)) {
       var capabilities = SDK.SDKModel._capabilitiesByModelClass.get(modelClass);
       if (capabilities === undefined)
-        throw 'Model class is not registered';
+        throw 'Model class is not registered @' + new Error().stack;
       if ((this._capabilitiesMask & capabilities) === capabilities) {
         var model = new modelClass(this);
         this._modelByConstructor.set(modelClass, model);

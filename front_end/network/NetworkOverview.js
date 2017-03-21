@@ -48,9 +48,9 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
    * @param {!Common.Event} event
    */
   _loadEventFired(event) {
-    var data = /** @type {number} */ (event.data);
-    if (data)
-      this._loadEvents.push(data * 1000);
+    var time = /** @type {number} */ (event.data.loadTime);
+    if (time)
+      this._loadEvents.push(time * 1000);
     this.scheduleUpdate();
   }
 

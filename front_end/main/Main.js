@@ -44,9 +44,7 @@ Main.Main = class {
    * @param {boolean} hard
    */
   static _reloadPage(hard) {
-    var mainTarget = SDK.targetManager.mainTarget();
-    if (mainTarget && mainTarget.hasBrowserCapability())
-      SDK.targetManager.reloadPage(hard);
+    SDK.ResourceTreeModel.reloadAllPages(hard);
   }
 
   _loaded() {

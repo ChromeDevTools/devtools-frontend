@@ -741,10 +741,10 @@ Network.NetworkLogView = class extends UI.VBox {
     if (!this._recording)
       return;
 
-    var data = /** @type {number} */ (event.data);
-    if (data) {
-      this._mainRequestLoadTime = data;
-      this._columns.addEventDividers([data], 'network-red-divider');
+    var time = /** @type {number} */ (event.data.loadTime);
+    if (time) {
+      this._mainRequestLoadTime = time;
+      this._columns.addEventDividers([time], 'network-red-divider');
     }
   }
 

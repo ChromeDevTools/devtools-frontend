@@ -56,8 +56,7 @@ NetworkLog.NetworkLog = class {
     if (resourceTreeModel) {
       eventListeners.push(resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this));
-      eventListeners.push(resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.Load, this._onLoad.bind(this, resourceTreeModel)));
+      eventListeners.push(resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, this._onLoad, this));
       eventListeners.push(resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.DOMContentLoaded, this._onDOMContentLoaded.bind(this, resourceTreeModel)));
     }
@@ -292,13 +291,12 @@ NetworkLog.NetworkLog = class {
   }
 
   /**
-   * @param {!SDK.ResourceTreeModel} resourceTreeModel
    * @param {!Common.Event} event
    */
-  _onLoad(resourceTreeModel, event) {
-    var pageLoad = this._currentPageLoad.get(resourceTreeModel.target());
+  _onLoad(event) {
+    var pageLoad = this._currentPageLoad.get(event.data.resourceTreeModel.target());
     if (pageLoad)
-      pageLoad.loadTime = /** @type {number} */ (event.data);
+      pageLoad.loadTime = /** @type {number} */ (event.data.loadTime);
   }
 
   /**

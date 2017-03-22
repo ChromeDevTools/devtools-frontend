@@ -97,7 +97,7 @@ SDK.Script = class {
    * @return {?SDK.ExecutionContext}
    */
   executionContext() {
-    return this.debuggerModel.target().runtimeModel.executionContext(this._executionContextId);
+    return this.debuggerModel.runtimeModel().executionContext(this._executionContextId);
   }
 
   /**

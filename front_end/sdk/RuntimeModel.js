@@ -40,8 +40,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
 
     this._agent = target.runtimeAgent();
     this.target().registerRuntimeDispatcher(new SDK.RuntimeDispatcher(this));
-    if (target.hasJSCapability())
-      this._agent.enable();
+    this._agent.enable();
     /** @type {!Map<number, !SDK.ExecutionContext>} */
     this._executionContextById = new Map();
     this._executionContextComparator = SDK.ExecutionContext.comparator;
@@ -390,8 +389,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   }
 };
 
-// TODO(dgozman): should be JS.
-SDK.SDKModel.register(SDK.RuntimeModel, SDK.Target.Capability.None);
+SDK.SDKModel.register(SDK.RuntimeModel, SDK.Target.Capability.JS);
 
 /** @enum {symbol} */
 SDK.RuntimeModel.Events = {

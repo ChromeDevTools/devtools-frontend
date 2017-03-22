@@ -614,7 +614,8 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     var span = event.target.enclosingNodeOrSelfWithNodeName('span');
     var row = event.target.enclosingNodeOrSelfWithNodeName('tr');
     var target = this._profile.target();
-    if (!row || !span || !target)
+    var runtimeModel = target ? target.model(SDK.RuntimeModel) : null;
+    if (!row || !span || !target || !runtimeModel)
       return null;
     var node = row._dataGridNode;
     var objectPopoverHelper;
@@ -626,13 +627,13 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
           return false;
         objectPopoverHelper = await ObjectUI.ObjectPopoverHelper.buildObjectPopover(remoteObject, popover);
         if (!objectPopoverHelper) {
-          target.runtimeModel.releaseObjectGroup('popover');
+          runtimeModel.releaseObjectGroup('popover');
           return false;
         }
         return true;
       },
       hide: () => {
-        target.runtimeModel.releaseObjectGroup('popover');
+        runtimeModel.releaseObjectGroup('popover');
         objectPopoverHelper.dispose();
       }
     };

@@ -1096,7 +1096,7 @@
   };
 
   TestSuite.prototype._waitForExecutionContexts = function(n, callback) {
-    var runtimeModel = SDK.targetManager.mainTarget().runtimeModel;
+    var runtimeModel = SDK.targetManager.mainTarget().model(SDK.RuntimeModel);
     checkForExecutionContexts.call(this);
 
     function checkForExecutionContexts() {

@@ -160,7 +160,7 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._appendCommand(str, true);
       return;
     }
-    currentExecutionContext.target().runtimeModel.compileScript(
+    currentExecutionContext.runtimeModel.compileScript(
         str, '', false, currentExecutionContext.id, compileCallback.bind(this));
 
     /**

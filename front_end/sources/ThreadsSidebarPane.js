@@ -65,7 +65,7 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
     element.appendChild(UI.Icon.create('smallicon-thick-right-arrow', 'selected-thread-icon'));
 
     function updateTitle() {
-      var executionContext = debuggerModel.target().runtimeModel.defaultExecutionContext();
+      var executionContext = debuggerModel.runtimeModel().defaultExecutionContext();
       title.textContent =
           executionContext && executionContext.label() ? executionContext.label() : debuggerModel.target().name();
     }
@@ -85,7 +85,7 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
 
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerPaused, updatePausedState);
     debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebuggerResumed, updatePausedState);
-    debuggerModel.target().runtimeModel.addEventListener(SDK.RuntimeModel.Events.ExecutionContextChanged, updateTitle);
+    debuggerModel.runtimeModel().addEventListener(SDK.RuntimeModel.Events.ExecutionContextChanged, updateTitle);
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, targetNameChanged);
 
     updatePausedState();

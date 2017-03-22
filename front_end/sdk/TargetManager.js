@@ -231,8 +231,7 @@ SDK.TargetManager = class extends Common.Object {
 
     target.model(SDK.NetworkManager);
     target.model(SDK.ResourceTreeModel);
-    /** @type {!SDK.RuntimeModel} */
-    target.runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
+    target.model(SDK.RuntimeModel);
     target.model(SDK.DebuggerModel);
     target.model(SDK.LogModel);
     target.model(SDK.DOMModel);
@@ -373,7 +372,7 @@ SDK.TargetManager = class extends Common.Object {
 
     var target =
         this.createTarget('main', Common.UIString('Main'), capabilities, this._createMainConnection.bind(this), null);
-    target.runtimeModel.runIfWaitingForDebugger();
+    target.runtimeAgent().runIfWaitingForDebugger();
   }
 
   /**
@@ -529,7 +528,7 @@ SDK.ChildTargetManager = class {
       if (debuggerModel)
         debuggerModel.pause();
     }
-    target.runtimeModel.runIfWaitingForDebugger();
+    target.runtimeAgent().runIfWaitingForDebugger();
   }
 
   /**

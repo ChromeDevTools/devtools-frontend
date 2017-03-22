@@ -453,7 +453,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
         objectPopoverHelper = await ObjectUI.ObjectPopoverHelper.buildObjectPopover(remoteObject, popover);
         var potentiallyUpdatedCallFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
         if (!objectPopoverHelper || selectedCallFrame !== potentiallyUpdatedCallFrame) {
-          target.runtimeModel.releaseObjectGroup('popover');
+          debuggerModel.runtimeModel().releaseObjectGroup('popover');
           if (objectPopoverHelper)
             objectPopoverHelper.dispose();
           return false;
@@ -464,7 +464,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       },
       hide: () => {
         objectPopoverHelper.dispose();
-        target.runtimeModel.releaseObjectGroup('popover');
+        debuggerModel.runtimeModel().releaseObjectGroup('popover');
         this.textEditor.removeHighlight(highlightDescriptor);
       }
     };

@@ -87,7 +87,8 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
    */
   doUpdate() {
     if (this._lastRequestedNode) {
-      this._lastRequestedNode.target().runtimeModel.releaseObjectGroup(Elements.EventListenersWidget._objectGroupName);
+      this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(
+          Elements.EventListenersWidget._objectGroupName);
       delete this._lastRequestedNode;
     }
     var node = UI.context.flavor(SDK.DOMNode);
@@ -150,7 +151,7 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
      * @param {function(*)} reject
      */
     function windowObjectInNodeContext(fulfill, reject) {
-      var executionContexts = node.target().runtimeModel.executionContexts();
+      var executionContexts = node.domModel().runtimeModel().executionContexts();
       var context = null;
       if (node.frameId()) {
         for (var i = 0; i < executionContexts.length; ++i) {

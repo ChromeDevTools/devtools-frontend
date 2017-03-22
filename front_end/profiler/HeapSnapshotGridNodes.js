@@ -616,15 +616,14 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
      * @param {?SDK.RemoteObject} object
      */
     function onResult(object) {
-      fulfill(
-          object ||
-          target.runtimeModel.createRemoteObjectFromPrimitiveValue(Common.UIString('Preview is not available')));
+      fulfill(object || runtimeModel.createRemoteObjectFromPrimitiveValue(Common.UIString('Preview is not available')));
     }
 
     var heapProfilerModel = target.model(SDK.HeapProfilerModel);
+    var runtimeModel = target.model(SDK.RuntimeModel);
     if (this._type === 'string')
-      onResult(target.runtimeModel.createRemoteObjectFromPrimitiveValue(this._name));
-    else if (!heapProfilerModel)
+      onResult(runtimeModel.createRemoteObjectFromPrimitiveValue(this._name));
+    else if (!heapProfilerModel || !runtimeModel)
       onResult(null);
     else
       heapProfilerModel.objectForSnapshotObjectId(String(this.snapshotNodeId), objectGroupName).then(onResult);

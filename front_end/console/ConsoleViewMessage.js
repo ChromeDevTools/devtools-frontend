@@ -395,18 +395,19 @@ Console.ConsoleViewMessage = class {
   }
 
   /**
-   * @param {!SDK.RemoteObject|!Object|string} parameter
+   * @param {!SDK.RemoteObject|!Protocol.Runtime.RemoteObject|string} parameter
    * @param {?SDK.Target} target
    * @return {!SDK.RemoteObject}
    */
   _parameterToRemoteObject(parameter, target) {
     if (parameter instanceof SDK.RemoteObject)
       return parameter;
-    if (!target)
+    var runtimeModel = target ? target.model(SDK.RuntimeModel) : null;
+    if (!runtimeModel)
       return SDK.RemoteObject.fromLocalObject(parameter);
     if (typeof parameter === 'object')
-      return target.runtimeModel.createRemoteObject(parameter);
-    return target.runtimeModel.createRemoteObjectFromPrimitiveValue(parameter);
+      return runtimeModel.createRemoteObject(parameter);
+    return runtimeModel.createRemoteObjectFromPrimitiveValue(parameter);
   }
 
   /**

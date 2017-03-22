@@ -27,6 +27,7 @@ Sources.JavaScriptCompiler = class {
    * @return {?SDK.RuntimeModel}
    */
   _findRuntimeModel() {
+    // TODO(dgozman): grab correct runtime model from JavaScriptSourceFrame instead.
     var debuggerModels = SDK.targetManager.models(SDK.DebuggerModel);
     var sourceCode = this._sourceFrame.uiSourceCode();
     for (var i = 0; i < debuggerModels.length; ++i) {
@@ -34,7 +35,7 @@ Sources.JavaScriptCompiler = class {
       if (scriptFile)
         return debuggerModels[i].runtimeModel();
     }
-    return SDK.targetManager.mainTarget() ? SDK.targetManager.mainTarget().runtimeModel : null;
+    return SDK.targetManager.mainTarget() ? SDK.targetManager.mainTarget().model(SDK.RuntimeModel) : null;
   }
 
   _compile() {

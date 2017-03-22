@@ -858,7 +858,7 @@ SDK.DOMNode = class extends SDK.SDKObject {
       if (error || !object)
         callback(null);
       else
-        callback(this.target().runtimeModel.createRemoteObject(object));
+        callback(this._domModel._runtimeModel.createRemoteObject(object));
     }
   }
 
@@ -1061,11 +1061,19 @@ SDK.DOMModel = class extends SDK.SDKModel {
     target.registerDOMDispatcher(new SDK.DOMDispatcher(this));
 
     this._inspectModeEnabled = false;
+    this._runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
 
     this._defaultHighlighter = new SDK.DefaultDOMNodeHighlighter(this._agent);
     this._highlighter = this._defaultHighlighter;
 
     this._agent.enable();
+  }
+
+  /**
+   * @return {!SDK.RuntimeModel}
+   */
+  runtimeModel() {
+    return this._runtimeModel;
   }
 
   /**

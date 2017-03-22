@@ -60,7 +60,7 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
    */
   doUpdate() {
     if (this._lastRequestedNode) {
-      this._lastRequestedNode.target().runtimeModel.releaseObjectGroup(Elements.PropertiesWidget._objectGroupName);
+      this._lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(Elements.PropertiesWidget._objectGroupName);
       delete this._lastRequestedNode;
     }
 

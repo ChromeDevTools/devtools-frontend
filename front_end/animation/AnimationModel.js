@@ -11,7 +11,7 @@ Animation.AnimationModel = class extends SDK.SDKModel {
    */
   constructor(target) {
     super(target);
-    this._runtimeModel = target.runtimeModel;
+    this._runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
     this._agent = target.animationAgent();
     target.registerAnimationDispatcher(new Animation.AnimationDispatcher(this));
     /** @type {!Map.<string, !Animation.AnimationModel.Animation>} */

@@ -383,7 +383,7 @@ Elements.ElementsPanel = class extends UI.Panel {
       this._hasNonDefaultSelectedNode = true;
     }
 
-    var executionContexts = selectedNode.target().runtimeModel.executionContexts();
+    var executionContexts = selectedNode.domModel().runtimeModel().executionContexts();
     var nodeFrameId = selectedNode.frameId();
     for (var context of executionContexts) {
       if (context.frameId === nodeFrameId) {

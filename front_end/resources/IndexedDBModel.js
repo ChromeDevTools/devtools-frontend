@@ -407,13 +407,14 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
         return;
       }
 
-      if (!this._databaseNamesBySecurityOrigin[databaseId.securityOrigin])
+      var runtimeModel = this.target().model(SDK.RuntimeModel);
+      if (!runtimeModel || !this._databaseNamesBySecurityOrigin[databaseId.securityOrigin])
         return;
       var entries = [];
       for (var i = 0; i < dataEntries.length; ++i) {
-        var key = this.target().runtimeModel.createRemoteObject(dataEntries[i].key);
-        var primaryKey = this.target().runtimeModel.createRemoteObject(dataEntries[i].primaryKey);
-        var value = this.target().runtimeModel.createRemoteObject(dataEntries[i].value);
+        var key = runtimeModel.createRemoteObject(dataEntries[i].key);
+        var primaryKey = runtimeModel.createRemoteObject(dataEntries[i].primaryKey);
+        var value = runtimeModel.createRemoteObject(dataEntries[i].value);
         entries.push(new Resources.IndexedDBModel.Entry(key, primaryKey, value));
       }
       callback(entries, hasMore);

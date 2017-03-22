@@ -656,8 +656,8 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
 
   _updateExtensionResolver() {
     this._executionContextNamesByOrigin = new Map();
-    for (var target of SDK.targetManager.targets()) {
-      for (var context of target.runtimeModel.executionContexts())
+    for (var runtimeModel of SDK.targetManager.models(SDK.RuntimeModel)) {
+      for (var context of runtimeModel.executionContexts())
         this._executionContextNamesByOrigin.set(context.origin, context.name);
     }
   }

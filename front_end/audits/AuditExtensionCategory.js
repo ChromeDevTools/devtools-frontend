@@ -168,9 +168,10 @@ Audits.AuditExtensionCategoryResults = class {
      * @this {Audits.AuditExtensionCategoryResults}
      */
     function onEvaluate(error, result, wasThrown) {
-      if (wasThrown)
+      var runtimeModel = this._target.model(SDK.RuntimeModel);
+      if (wasThrown || !runtimeModel)
         return;
-      var object = this._target.runtimeModel.createRemoteObject(result);
+      var object = runtimeModel.createRemoteObject(result);
       callback(object);
     }
 

@@ -476,7 +476,9 @@ Sources.NavigatorView = class extends UI.VBox {
    * @return {string}
    */
   _computeProjectDisplayName(target, projectOrigin) {
-    for (var context of target.runtimeModel.executionContexts()) {
+    var runtimeModel = target.model(SDK.RuntimeModel);
+    var executionContexts = runtimeModel ? runtimeModel.executionContexts() : [];
+    for (var context of executionContexts) {
       if (context.name && context.origin && projectOrigin.startsWith(context.origin))
         return context.name;
     }

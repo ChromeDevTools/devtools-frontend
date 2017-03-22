@@ -789,7 +789,7 @@ Elements.StylePropertiesSection = class {
         this._style.styleSheetId ? this._style.cssModel().styleSheetHeaderForId(this._style.styleSheetId) : null;
     if (!header)
       return false;
-    var sourceMap = header.cssModel().sourceMapForHeader(header);
+    var sourceMap = header.cssModel().sourceMapManager().sourceMapForClient(header);
     return sourceMap ? sourceMap.editable() : false;
   }
 

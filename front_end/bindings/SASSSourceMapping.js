@@ -33,18 +33,21 @@
  */
 Bindings.SASSSourceMapping = class {
   /**
-   * @param {!SDK.CSSModel} cssModel
+   * @param {!SDK.SourceMapManager} sourceMapManager
    * @param {!Workspace.Workspace} workspace
    * @param {!Bindings.NetworkProject} networkProject
    */
-  constructor(cssModel, workspace, networkProject) {
-    this._cssModel = cssModel;
+  constructor(sourceMapManager, workspace, networkProject) {
+    this._sourceMapManager = sourceMapManager;
     this._networkProject = networkProject;
     this._workspace = workspace;
     this._eventListeners = [
-      this._cssModel.addEventListener(SDK.CSSModel.Events.SourceMapAttached, this._sourceMapAttached, this),
-      this._cssModel.addEventListener(SDK.CSSModel.Events.SourceMapDetached, this._sourceMapDetached, this),
-      this._cssModel.addEventListener(SDK.CSSModel.Events.SourceMapChanged, this._sourceMapChanged, this)
+      this._sourceMapManager.addEventListener(
+          SDK.SourceMapManager.Events.SourceMapAttached, this._sourceMapAttached, this),
+      this._sourceMapManager.addEventListener(
+          SDK.SourceMapManager.Events.SourceMapDetached, this._sourceMapDetached, this),
+      this._sourceMapManager.addEventListener(
+          SDK.SourceMapManager.Events.SourceMapChanged, this._sourceMapChanged, this)
     ];
   }
 
@@ -59,7 +62,7 @@ Bindings.SASSSourceMapping = class {
    */
   _sourceMapAttached(event) {
     var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
-    var sourceMap = this._cssModel.sourceMapForHeader(header);
+    var sourceMap = this._sourceMapManager.sourceMapForClient(header);
     for (var sassURL of sourceMap.sourceURLs()) {
       var contentProvider = sourceMap.sourceContentProvider(sassURL, Common.resourceTypes.SourceMapStyleSheet);
       var embeddedContent = sourceMap.embeddedContentByURL(sassURL);
@@ -84,7 +87,7 @@ Bindings.SASSSourceMapping = class {
   _sourceMapChanged(event) {
     var sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
     var newSources = /** @type {!Map<string, string>} */ (event.data.newSources);
-    var headers = this._cssModel.headersForSourceMap(sourceMap);
+    var headers = this._sourceMapManager.clientsForSourceMap(sourceMap);
     var handledUISourceCodes = new Set();
     for (var header of headers) {
       Bindings.cssWorkspaceBinding.updateLocations(header);
@@ -111,7 +114,7 @@ Bindings.SASSSourceMapping = class {
     var header = rawLocation.header();
     if (!header)
       return null;
-    var sourceMap = this._cssModel.sourceMapForHeader(header);
+    var sourceMap = this._sourceMapManager.sourceMapForClient(header);
     if (!sourceMap)
       return null;
     var entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);

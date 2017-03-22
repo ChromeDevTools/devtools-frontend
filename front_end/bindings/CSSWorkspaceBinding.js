@@ -99,8 +99,9 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
     ];
 
     this._stylesSourceMapping = new Bindings.StylesSourceMapping(cssModel, workspace);
-    this._sassSourceMapping =
-        new Bindings.SASSSourceMapping(cssModel, workspace, Bindings.NetworkProject.forTarget(cssModel.target()));
+    var sourceMapManager = cssModel.sourceMapManager();
+    this._sassSourceMapping = new Bindings.SASSSourceMapping(
+        sourceMapManager, workspace, Bindings.NetworkProject.forTarget(cssModel.target()));
 
     /** @type {!Multimap<!SDK.CSSStyleSheetHeader, !Bindings.CSSWorkspaceBinding.LiveLocation>} */
     this._locations = new Multimap();

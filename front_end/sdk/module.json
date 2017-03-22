@@ -151,6 +151,7 @@
         "ResourceTreeModel.js",
         "SecurityOriginManager.js",
         "SourceMap.js",
+        "SourceMapManager.js",
         "NetworkManager.js",
         "NetworkRequest.js",
         "PaintProfiler.js",

@@ -132,6 +132,8 @@ Main.Main = class {
         Runtime.experiments.enableForTest('audits2');
       if (testPath.indexOf('help/') !== -1)
         Runtime.experiments.enableForTest('releaseNote');
+      if (testPath.indexOf('sass/') !== -1)
+        Runtime.experiments.enableForTest('liveSASS');
     }
 
     Runtime.experiments.setDefaultExperiments(['persistenceValidation']);

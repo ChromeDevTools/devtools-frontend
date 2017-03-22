@@ -21,8 +21,8 @@ Sass.SASSSourceMapFactory = class {
     if (!cssModel)
       return Promise.resolve(/** @type {?SDK.SourceMap} */ (null));
 
-    var header =
-        cssModel.styleSheetHeaders().find(styleSheetHeader => styleSheetHeader.sourceMapURL === sourceMap.url());
+    var headers = cssModel.sourceMapManager().clientsForSourceMap(sourceMap);
+    var header = headers.length ? headers[0] : null;
     if (!header)
       return Promise.resolve(/** @type {?SDK.SourceMap} */ (null));
 

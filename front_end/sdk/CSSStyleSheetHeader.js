@@ -44,9 +44,7 @@ SDK.CSSStyleSheetHeader = class {
    * @param {string=} sourceMapURL
    */
   setSourceMapURL(sourceMapURL) {
-    var completeSourceMapURL =
-        this.sourceURL && sourceMapURL ? Common.ParsedURL.completeURL(this.sourceURL, sourceMapURL) : sourceMapURL;
-    this.sourceMapURL = completeSourceMapURL;
+    this.sourceMapURL = sourceMapURL;
   }
 
   /**
@@ -67,7 +65,7 @@ SDK.CSSStyleSheetHeader = class {
    * @return {boolean}
    */
   isAnonymousInlineStyleSheet() {
-    return !this.resourceURL() && !this._cssModel.sourceMapForHeader(this);
+    return !this.resourceURL() && !this._cssModel.sourceMapManager().sourceMapForClient(this);
   }
 
   /**

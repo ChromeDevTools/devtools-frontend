@@ -38,6 +38,8 @@ SDK.CSSModel = class extends SDK.SDKModel {
   constructor(target) {
     super(target);
     this._domModel = /** @type {!SDK.DOMModel} */ (target.model(SDK.DOMModel));
+    /** @type {!SDK.SourceMapManager<!SDK.CSSStyleSheetHeader>} */
+    this._sourceMapManager = new SDK.SourceMapManager(target);
     this._agent = target.cssAgent();
     this._styleLoader = new SDK.CSSModel.ComputedStyleLoader(this);
     this._resourceTreeModel = target.model(SDK.ResourceTreeModel);
@@ -55,14 +57,16 @@ SDK.CSSModel = class extends SDK.SDKModel {
     /** @type {!Map.<!SDK.CSSStyleSheetHeader, !Promise<?string>>} */
     this._originalStyleSheetText = new Map();
 
-    /** @type {!Multimap<string, !Protocol.CSS.StyleSheetId>} */
-    this._sourceMapLoadingStyleSheetsIds = new Multimap();
+    this._sourceMapManager.setEnabled(Common.moduleSetting('cssSourceMapsEnabled').get());
+    Common.moduleSetting('cssSourceMapsEnabled')
+        .addChangeListener(event => this._sourceMapManager.setEnabled(/** @type {boolean} */ (event.data)));
+  }
 
-    /** @type {!Map<string, !SDK.SourceMap>} */
-    this._sourceMapByURL = new Map();
-    /** @type {!Multimap<string, !SDK.CSSStyleSheetHeader>} */
-    this._sourceMapURLToHeaders = new Multimap();
-    Common.moduleSetting('cssSourceMapsEnabled').addChangeListener(this._toggleSourceMapSupport, this);
+  /**
+   * @return {!SDK.SourceMapManager<!SDK.CSSStyleSheetHeader>}
+   */
+  sourceMapManager() {
+    return this._sourceMapManager;
   }
 
   /**
@@ -95,138 +99,6 @@ SDK.CSSModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!Common.Event} event
-   */
-  _toggleSourceMapSupport(event) {
-    var enabled = /** @type {boolean} */ (event.data);
-    var headers = this.styleSheetHeaders();
-    for (var header of headers) {
-      if (enabled)
-        this._attachSourceMap(header);
-      else
-        this._detachSourceMap(header);
-    }
-  }
-
-  /**
-   * @param {!SDK.CSSStyleSheetHeader} header
-   * @return {?SDK.SourceMap}
-   */
-  sourceMapForHeader(header) {
-    return this._sourceMapByURL.get(header.sourceMapURL) || null;
-  }
-
-  _sourceMapLoadedForTest() {
-  }
-
-  /**
-   * @param {!SDK.SourceMap} sourceMap
-   * @return {!Array<!SDK.CSSStyleSheetHeader>}
-   */
-  headersForSourceMap(sourceMap) {
-    return this._sourceMapURLToHeaders.get(sourceMap.url()).valuesArray();
-  }
-
-  /**
-   * @param {!SDK.CSSStyleSheetHeader} header
-   */
-  _attachSourceMap(header) {
-    var sourceMapURL = header.sourceMapURL;
-    if (!sourceMapURL || !Common.moduleSetting('cssSourceMapsEnabled').get())
-      return;
-    if (this._sourceMapByURL.has(sourceMapURL)) {
-      attach.call(this, sourceMapURL, header);
-      return;
-    }
-    if (!this._sourceMapLoadingStyleSheetsIds.has(sourceMapURL)) {
-      SDK.TextSourceMap.load(sourceMapURL, header.sourceURL)
-          .then(onTextSourceMapLoaded.bind(this, sourceMapURL))
-          .then(onSourceMap.bind(this, sourceMapURL));
-    }
-    this._sourceMapLoadingStyleSheetsIds.set(sourceMapURL, header.id);
-
-    /**
-     * @param {string} sourceMapURL
-     * @param {?SDK.TextSourceMap} sourceMap
-     * @return {!Promise<?SDK.SourceMap>}
-     * @this {SDK.CSSModel}
-     */
-    function onTextSourceMapLoaded(sourceMapURL, sourceMap) {
-      if (!sourceMap)
-        return Promise.resolve(/** @type {?SDK.SourceMap} */ (null));
-      var factoryExtension = this._factoryForSourceMap(sourceMap);
-      if (!factoryExtension)
-        return Promise.resolve(/** @type {?SDK.SourceMap} */ (sourceMap));
-      return factoryExtension.instance()
-          .then(factory => factory.editableSourceMap(this.target(), sourceMap))
-          .then(map => map || sourceMap)
-          .catchException(/** @type {?SDK.SourceMap} */ (null));
-    }
-
-    /**
-     * @param {string} sourceMapURL
-     * @param {?SDK.SourceMap} sourceMap
-     * @this {SDK.CSSModel}
-     */
-    function onSourceMap(sourceMapURL, sourceMap) {
-      this._sourceMapLoadedForTest();
-      var styleSheetIds = this._sourceMapLoadingStyleSheetsIds.get(sourceMapURL);
-      this._sourceMapLoadingStyleSheetsIds.removeAll(sourceMapURL);
-      if (!sourceMap)
-        return;
-      var headers = new Set();
-      for (var styleSheetId of styleSheetIds) {
-        var header = this.styleSheetHeaderForId(styleSheetId);
-        if (header)
-          headers.add(header);
-      }
-      if (!headers.size)
-        return;
-      this._sourceMapByURL.set(sourceMapURL, sourceMap);
-      for (var header of headers)
-        attach.call(this, sourceMapURL, header);
-    }
-
-    /**
-     * @param {string} sourceMapURL
-     * @param {!SDK.CSSStyleSheetHeader} header
-     * @this {SDK.CSSModel}
-     */
-    function attach(sourceMapURL, header) {
-      this._sourceMapURLToHeaders.set(sourceMapURL, header);
-      this.dispatchEventToListeners(SDK.CSSModel.Events.SourceMapAttached, header);
-    }
-  }
-
-  /**
-   * @param {!SDK.SourceMap} sourceMap
-   * @return {?Runtime.Extension}
-   */
-  _factoryForSourceMap(sourceMap) {
-    var sourceExtensions = new Set();
-    for (var url of sourceMap.sourceURLs())
-      sourceExtensions.add(Common.ParsedURL.extractExtension(url));
-    for (var runtimeExtension of self.runtime.extensions(SDK.SourceMapFactory)) {
-      var supportedExtensions = new Set(runtimeExtension.descriptor()['extensions']);
-      if (supportedExtensions.containsAll(sourceExtensions))
-        return runtimeExtension;
-    }
-    return null;
-  }
-
-  /**
-   * @param {!SDK.CSSStyleSheetHeader} header
-   */
-  _detachSourceMap(header) {
-    if (!header.sourceMapURL || !this._sourceMapURLToHeaders.hasValue(header.sourceMapURL, header))
-      return;
-    this._sourceMapURLToHeaders.remove(header.sourceMapURL, header);
-    if (!this._sourceMapURLToHeaders.has(header.sourceMapURL))
-      this._sourceMapByURL.delete(header.sourceMapURL);
-    this.dispatchEventToListeners(SDK.CSSModel.Events.SourceMapDetached, header);
-  }
-
-  /**
    * @return {!SDK.DOMModel}
    */
   domModel() {
@@ -246,7 +118,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
     if (!header)
       return original();
 
-    var sourceMap = this.sourceMapForHeader(header);
+    var sourceMap = this._sourceMapManager.sourceMapForClient(header);
     if (!sourceMap)
       return original();
 
@@ -296,9 +168,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
       if (!success)
         return originalAndDetach();
 
-      this._sourceMapByURL.set(header.sourceMapURL, editResult.map);
-      this.dispatchEventToListeners(
-          SDK.CSSModel.Events.SourceMapChanged, {sourceMap: editResult.map, newSources: editResult.newSources});
+      this._sourceMapManager.applySourceMapEdit(editResult);
       return Promise.resolve(true);
     }
 
@@ -311,7 +181,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
     function onError(header, error) {
       Common.console.error(Common.UIString('LiveSASS failed: %s', sourceMap.compiledURL()));
       console.error(error);
-      this._detachSourceMap(header);
+      this._sourceMapManager.detachSourceMap(header);
       return original();
     }
 
@@ -330,7 +200,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
        */
       function detachIfSuccess(success) {
         if (success)
-          this._detachSourceMap(header);
+          this._sourceMapManager.detachSourceMap(header);
         return success;
       }
     }
@@ -830,7 +700,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
       frameIdToStyleSheetIds[styleSheetHeader.frameId] = styleSheetIds;
     }
     styleSheetIds.push(styleSheetHeader.id);
-    this._attachSourceMap(styleSheetHeader);
+    this._sourceMapManager.attachSourceMap(styleSheetHeader, styleSheetHeader.sourceURL, styleSheetHeader.sourceMapURL);
     this.dispatchEventToListeners(SDK.CSSModel.Events.StyleSheetAdded, styleSheetHeader);
   }
 
@@ -854,7 +724,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
         this._styleSheetIdsForURL.remove(url);
     }
     this._originalStyleSheetText.remove(header);
-    this._detachSourceMap(header);
+    this._sourceMapManager.detachSourceMap(header);
     this.dispatchEventToListeners(SDK.CSSModel.Events.StyleSheetRemoved, header);
   }
 
@@ -895,9 +765,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
      * @this {SDK.CSSModel}
      */
     function callback(error, sourceMapURL) {
-      this._detachSourceMap(header);
+      this._sourceMapManager.detachSourceMap(header);
       header.setSourceMapURL(sourceMapURL);
-      this._attachSourceMap(header);
+      this._sourceMapManager.attachSourceMap(header, header.sourceURL, header.sourceMapURL);
       if (error)
         return error;
       if (majorChange)
@@ -933,12 +803,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
     this._styleSheetIdsForURL.clear();
     this._styleSheetIdToHeader.clear();
     for (var i = 0; i < headers.length; ++i) {
-      this._detachSourceMap(headers[i]);
+      this._sourceMapManager.detachSourceMap(headers[i]);
       this.dispatchEventToListeners(SDK.CSSModel.Events.StyleSheetRemoved, headers[i]);
     }
-    this._sourceMapByURL.clear();
-    this._sourceMapURLToHeaders.clear();
-    this._sourceMapLoadingStyleSheetsIds.clear();
   }
 
   /**
@@ -984,6 +851,14 @@ SDK.CSSModel = class extends SDK.SDKModel {
     delete this._cachedMatchedCascadeNode;
     delete this._cachedMatchedCascadePromise;
   }
+
+  /**
+   * @override
+   */
+  dispose() {
+    super.dispose();
+    this._sourceMapManager.dispose();
+  }
 };
 
 SDK.SDKModel.register(SDK.CSSModel, SDK.Target.Capability.DOM);
@@ -999,10 +874,7 @@ SDK.CSSModel.Events = {
   PseudoStateForced: Symbol('PseudoStateForced'),
   StyleSheetAdded: Symbol('StyleSheetAdded'),
   StyleSheetChanged: Symbol('StyleSheetChanged'),
-  StyleSheetRemoved: Symbol('StyleSheetRemoved'),
-  SourceMapAttached: Symbol('SourceMapAttached'),
-  SourceMapDetached: Symbol('SourceMapDetached'),
-  SourceMapChanged: Symbol('SourceMapChanged')
+  StyleSheetRemoved: Symbol('StyleSheetRemoved')
 };
 
 SDK.CSSModel.MediaTypes =

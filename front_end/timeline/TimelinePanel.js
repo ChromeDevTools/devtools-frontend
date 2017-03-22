@@ -648,6 +648,10 @@ Timeline.TimelinePanel = class extends UI.Panel {
     var learnMoreNode = UI.createExternalLink(
         'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/',
         Common.UIString('Learn\xa0more'));
+    var learnMoreMigrationNode = UI.createExternalLink(
+        'https://developers.google.com/web/updates/2016/12/devtools-javascript-cpu-profile-migration',
+        Common.UIString('Learn\xa0more'));
+
     var recordKey =
         encloseWithTag('b', UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.toggle-recording')[0].name);
     var reloadKey = encloseWithTag('b', UI.shortcutRegistry.shortcutDescriptorsForAction('main.reload')[0].name);
@@ -662,12 +666,12 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     centered.createChild('p').appendChild(UI.formatLocalized(
         'Click the record button %s or hit %s to capture a new recording.\n' +
-            'Click the reload button %s or hit %s to record and evaluate the page load.',
+        'Click the reload button %s or hit %s to record and evaluate the page load.',
         [recordButton, recordKey, reloadButton, reloadKey]));
 
     centered.createChild('p').appendChild(UI.formatLocalized(
         'After recording, select an area of interest in the overview by dragging.\n' +
-            'Then, zoom and pan the timeline with the mousewheel or %s keys.\n%s',
+        'Then, zoom and pan the timeline with the mousewheel or %s keys.\n%s',
         [navigateNode, learnMoreNode]));
 
     var cpuProfilerHintSetting = Common.settings.createSetting('timelineShowProfilerHint', true);
@@ -680,10 +684,10 @@ Timeline.TimelinePanel = class extends UI.Panel {
       }, false);
       var performanceSpan = encloseWithTag('b', Common.UIString('Performance'));
       warning.createChild('div').appendChild(UI.formatLocalized(
-          'The %s panel provides the combined functionality of Timeline and CPU profiler.%s' +
-              'The JavaScript CPU profiler will be removed shortly. Meanwhile, it\'s available under ' +
-              '%s \u2192 More Tools \u2192 JavaScript Profiler.',
-          [performanceSpan, createElement('p'), UI.Icon.create('largeicon-menu')]));
+          `The %s panel provides the combined functionality of Timeline and JavaScript CPU profiler. %s%s` +
+          `The JavaScript CPU profiler will be removed shortly. Meanwhile, it's available under ` +
+          `%s \u2192 More Tools \u2192 JavaScript Profiler.`,
+          [performanceSpan, learnMoreMigrationNode, createElement('p'), UI.Icon.create('largeicon-menu')]));
     }
 
     this._landingPage.show(this._statusPaneContainer);

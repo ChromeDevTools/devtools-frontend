@@ -176,21 +176,19 @@ NetworkConditions.NetworkConditionsSelector = class {
         SDK.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
     checkbox.setChecked(SDK.multitargetNetworkManager.networkConditions() === SDK.NetworkManager.OfflineConditions);
 
-    var lastNetworkConditions;
-
     function forceOffline() {
       if (checkbox.checked()) {
-        lastNetworkConditions = SDK.multitargetNetworkManager.networkConditions();
+        NetworkConditions.NetworkConditionsSelector._lastNetworkConditions =
+            SDK.multitargetNetworkManager.networkConditions();
         SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
       } else {
-        SDK.multitargetNetworkManager.setNetworkConditions(lastNetworkConditions);
+        SDK.multitargetNetworkManager.setNetworkConditions(
+            NetworkConditions.NetworkConditionsSelector._lastNetworkConditions);
       }
     }
 
     function networkConditionsChanged() {
       var conditions = SDK.multitargetNetworkManager.networkConditions();
-      if (conditions !== SDK.NetworkManager.OfflineConditions)
-        lastNetworkConditions = conditions;
       checkbox.setChecked(conditions === SDK.NetworkManager.OfflineConditions);
     }
     return checkbox;

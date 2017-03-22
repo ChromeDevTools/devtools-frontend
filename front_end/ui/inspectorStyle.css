@@ -48,7 +48,7 @@ body {
 
 .platform-linux {
     color: rgb(48, 57, 66);
-    font-family: Ubuntu, Arial, sans-serif;
+    font-family: Roboto, Ubuntu, Arial, sans-serif;
 }
 
 .platform-mac {

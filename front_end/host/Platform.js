@@ -71,7 +71,7 @@ Host.fontFamily = function() {
     return Host._fontFamily;
   switch (Host.platform()) {
     case 'linux':
-      Host._fontFamily = 'Ubuntu, Arial, sans-serif';
+      Host._fontFamily = 'Roboto, Ubuntu, Arial, sans-serif';
       break;
     case 'mac':
       Host._fontFamily = '\'Lucida Grande\', sans-serif';

@@ -161,10 +161,13 @@ CookieTable.CookiesTable = class extends UI.VBox {
 
   /**
    * @param {{current: ?SDK.Cookie, neighbor: ?SDK.Cookie}} selectionCookies
-   * @param {!Array<!SDK.Cookie>} cookies
+   * @param {?Array<!SDK.Cookie>} cookies
    * @return {?SDK.Cookie}
    */
   _findSelectedCookie(selectionCookies, cookies) {
+    if (!cookies)
+      return null;
+
     var current = selectionCookies.current;
     var foundCurrent = cookies.find(cookie => this._isSameCookie(cookie, current));
     if (foundCurrent)

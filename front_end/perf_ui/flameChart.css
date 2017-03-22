@@ -13,19 +13,16 @@
 }
 
 .flame-chart-highlight-element {
-    background-color: black;
     position: absolute;
-    opacity: 0.2;
     pointer-events: none;
+    background-color: rgba(56, 121, 217, 0.1);
 }
 
 .flame-chart-selected-element {
     position: absolute;
     pointer-events: none;
-    border-color: rgb(56, 121, 217);
-    border-width: 1px;
-    border-style: solid;
-    background-color: rgba(56, 121, 217, 0.2);
+    outline: 2px solid rgb(56, 121, 217);
+    background-color: rgba(56, 121, 217, 0.1);
 }
 
 .flame-chart-v-scroll {

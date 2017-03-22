@@ -252,6 +252,7 @@ SDK.CSSMetadata._colorAwareProperties = new Set([
   'border-top',
   'border-top-color',
   'box-shadow',
+  'caret-color',
   'color',
   'column-rule',
   'column-rule-color',

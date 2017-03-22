@@ -29,17 +29,15 @@
 
 Resources.CookieItemsView = class extends Resources.StorageItemsView {
   /**
-   * @param {!Resources.CookieTreeElement} treeElement
    * @param {!SDK.CookieModel} model
    * @param {string} cookieDomain
    */
-  constructor(treeElement, model, cookieDomain) {
+  constructor(model, cookieDomain) {
     super(Common.UIString('Cookies'), 'cookiesPanel');
 
     this.element.classList.add('storage-view');
 
     this._model = model;
-    this._treeElement = treeElement;
     this._cookieDomain = cookieDomain;
 
     this._totalSize = 0;

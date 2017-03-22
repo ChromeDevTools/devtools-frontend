@@ -6,13 +6,9 @@
  * @unrestricted
  */
 Resources.ClearStorageView = class extends UI.VBox {
-  /**
-   * @param {!Resources.ResourcesPanel} resourcesPanel
-   */
-  constructor(resourcesPanel) {
+  constructor() {
     super(true);
 
-    this._resourcesPanel = resourcesPanel;
     this._reportView = new UI.ReportView(Common.UIString('Clear storage'));
     this._reportView.registerRequiredCSS('resources/clearStorageView.css');
     this._reportView.element.classList.add('clear-storage-header');

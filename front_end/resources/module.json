@@ -40,6 +40,7 @@
         "IndexedDBModel.js",
         "IndexedDBViews.js",
         "ResourcesPanel.js",
+        "ApplicationPanelSidebar.js",
         "ResourcesSection.js",
         "ServiceWorkerCacheViews.js",
         "ServiceWorkersView.js"

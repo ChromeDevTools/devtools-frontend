@@ -406,6 +406,7 @@ all_devtools_files = [
   "front_end/quick_open/module.json",
   "front_end/resources/ApplicationCacheModel.js",
   "front_end/resources/ApplicationCacheItemsView.js",
+  "front_end/resources/ApplicationPanelSidebar.js",
   "front_end/resources/appManifestView.css",
   "front_end/resources/AppManifestView.js",
   "front_end/resources/clearStorageView.css",

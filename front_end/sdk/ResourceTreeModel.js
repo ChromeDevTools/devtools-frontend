@@ -149,17 +149,22 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   /**
    * @param {!Protocol.Page.FrameId} frameId
    * @param {?Protocol.Page.FrameId} parentFrameId
+   * @param {!Protocol.Runtime.StackTrace=} stackTrace
    * @return {?SDK.ResourceTreeFrame}
    */
-  _frameAttached(frameId, parentFrameId) {
+  _frameAttached(frameId, parentFrameId, stackTrace) {
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
     if (!this._cachedResourcesProcessed && parentFrameId)
       return null;
     if (this._frames.has(frameId))
       return null;
 
+    var callFrames = null;
+    if (stackTrace && stackTrace.callFrames)
+      callFrames = stackTrace.callFrames;
+
     var parentFrame = parentFrameId ? (this._frames.get(parentFrameId) || null) : null;
-    var frame = new SDK.ResourceTreeFrame(this, parentFrame, frameId);
+    var frame = new SDK.ResourceTreeFrame(this, parentFrame, frameId, null, callFrames);
     if (frame.isMainFrame() && this.mainFrame) {
       // Navigation to the new backend process.
       this._frameDetached(this.mainFrame.id);
@@ -310,7 +315,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    */
   _addFramesRecursively(parentFrame, frameTreePayload) {
     var framePayload = frameTreePayload.frame;
-    var frame = new SDK.ResourceTreeFrame(this, parentFrame, framePayload.id, framePayload);
+    var frame = new SDK.ResourceTreeFrame(this, parentFrame, framePayload.id, framePayload, null);
     this._addFrame(frame);
 
     var frameResource = this._createResourceFromFramePayload(
@@ -484,9 +489,10 @@ SDK.ResourceTreeFrame = class {
    * @param {!SDK.ResourceTreeModel} model
    * @param {?SDK.ResourceTreeFrame} parentFrame
    * @param {!Protocol.Page.FrameId} frameId
-   * @param {!Protocol.Page.Frame=} payload
+   * @param {?Protocol.Page.Frame} payload
+   * @param {?Array<!Protocol.Runtime.CallFrame>} creationStackTrace
    */
-  constructor(model, parentFrame, frameId, payload) {
+  constructor(model, parentFrame, frameId, payload, creationStackTrace) {
     this._model = model;
     this._parentFrame = parentFrame;
     this._id = frameId;
@@ -499,6 +505,8 @@ SDK.ResourceTreeFrame = class {
       this._securityOrigin = payload.securityOrigin;
       this._mimeType = payload.mimeType;
     }
+
+    this._creationStackTrace = creationStackTrace;
 
     /**
      * @type {!Array.<!SDK.ResourceTreeFrame>}
@@ -740,9 +748,10 @@ SDK.PageDispatcher = class {
    * @override
    * @param {!Protocol.Page.FrameId} frameId
    * @param {!Protocol.Page.FrameId} parentFrameId
+   * @param {!Protocol.Runtime.StackTrace=} stackTrace
    */
-  frameAttached(frameId, parentFrameId) {
-    this._resourceTreeModel._frameAttached(frameId, parentFrameId);
+  frameAttached(frameId, parentFrameId, stackTrace) {
+    this._resourceTreeModel._frameAttached(frameId, parentFrameId, stackTrace);
   }
 
   /**

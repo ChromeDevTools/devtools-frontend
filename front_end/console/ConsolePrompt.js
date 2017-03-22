@@ -241,6 +241,10 @@ Console.ConsolePrompt = class extends UI.Widget {
    * @return {?Common.TextRange}
    */
   _substituteRange(lineNumber, columnNumber) {
+    var token = this._editor.tokenAtTextPosition(lineNumber, columnNumber);
+    if (token && token.type === 'js-string')
+      return new Common.TextRange(lineNumber, token.startColumn, lineNumber, columnNumber);
+
     var lineText = this._editor.line(lineNumber);
     var index;
     for (index = columnNumber - 1; index >= 0; index--) {
@@ -254,23 +258,23 @@ Console.ConsolePrompt = class extends UI.Widget {
    * @param {!Common.TextRange} queryRange
    * @param {!Common.TextRange} substituteRange
    * @param {boolean=} force
-   * @param {string=} currentTokenType
    * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
-  _wordsWithQuery(queryRange, substituteRange, force, currentTokenType) {
+  _wordsWithQuery(queryRange, substituteRange, force) {
     var query = this._editor.text(queryRange);
     var before = this._editor.text(new Common.TextRange(0, 0, queryRange.startLine, queryRange.startColumn));
     var historyWords = this._historyCompletions(query, force);
-
-    var excludedTokens = new Set(['js-comment', 'js-string-2', 'js-def']);
-    var trimmedBefore = before.trim();
-    if (!trimmedBefore.endsWith('[') && !trimmedBefore.match(/\.\s*(get|set|delete)\s*\(\s*$/))
-      excludedTokens.add('js-string');
-    if (!trimmedBefore.endsWith('.'))
-      excludedTokens.add('js-property');
-    if (excludedTokens.has(currentTokenType))
-      return Promise.resolve(historyWords);
-
+    var token = this._editor.tokenAtTextPosition(substituteRange.startLine, substituteRange.startColumn);
+    if (token) {
+      var excludedTokens = new Set(['js-comment', 'js-string-2', 'js-def']);
+      var trimmedBefore = before.trim();
+      if (!trimmedBefore.endsWith('[') && !trimmedBefore.match(/\.\s*(get|set|delete)\s*\(\s*$/))
+        excludedTokens.add('js-string');
+      if (!trimmedBefore.endsWith('.'))
+        excludedTokens.add('js-property');
+      if (excludedTokens.has(token.type))
+        return Promise.resolve(historyWords);
+    }
     return ObjectUI.JavaScriptAutocomplete.completionsForTextInCurrentContext(before, query, force)
         .then(words => words.concat(historyWords));
   }

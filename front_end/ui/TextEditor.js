@@ -70,7 +70,14 @@ UI.TextEditor.prototype = {
    */
   configureAutocomplete(config) {},
 
-  clearAutocomplete() {}
+  clearAutocomplete() {},
+
+  /**
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @return {?{startColumn: number, endColumn: number, type: string}}
+   */
+  tokenAtTextPosition(lineNumber, columnNumber) {}
 };
 
 /**
@@ -88,7 +95,7 @@ UI.TextEditor.Options;
 /**
  * @typedef {{
  *     substituteRangeCallback: ((function(number, number):?Common.TextRange)|undefined),
- *     suggestionsCallback: ((function(!Common.TextRange, !Common.TextRange, boolean=, string=):?Promise.<!UI.SuggestBox.Suggestions>)|undefined),
+ *     suggestionsCallback: ((function(!Common.TextRange, !Common.TextRange, boolean=):?Promise.<!UI.SuggestBox.Suggestions>)|undefined),
  *     isWordChar: ((function(string):boolean)|undefined),
  *     captureEnter: (boolean|undefined)
  * }}

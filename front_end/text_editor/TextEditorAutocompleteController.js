@@ -110,13 +110,11 @@ TextEditor.TextEditorAutocompleteController = class {
    * @param {!Common.TextRange} queryRange
    * @param {!Common.TextRange} substituteRange
    * @param {boolean=} force
-   * @param {string=} tokenType
    * @return {!Promise.<!UI.SuggestBox.Suggestions>}
    */
-  _wordsWithQuery(queryRange, substituteRange, force, tokenType) {
-    var external = this._config.suggestionsCallback ?
-        this._config.suggestionsCallback(queryRange, substituteRange, force, tokenType) :
-        null;
+  _wordsWithQuery(queryRange, substituteRange, force) {
+    var external =
+        this._config.suggestionsCallback ? this._config.suggestionsCallback(queryRange, substituteRange, force) : null;
     if (external)
       return external;
 
@@ -235,9 +233,7 @@ TextEditor.TextEditorAutocompleteController = class {
     var hadSuggestBox = false;
     if (this._suggestBox)
       hadSuggestBox = true;
-    var token = this._textEditor.tokenAtTextPosition(substituteRange.startLine, substituteRange.startColumn);
-    var tokenType = (token && token.type) || '';
-    this._wordsWithQuery(queryRange, substituteRange, force, tokenType).then(wordsAcquired.bind(this));
+    this._wordsWithQuery(queryRange, substituteRange, force).then(wordsAcquired.bind(this));
 
     /**
      * @param {!UI.SuggestBox.Suggestions} wordsWithQuery

@@ -626,14 +626,15 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
   }
 
   /**
+   * @override
    * @param {number} lineNumber
-   * @param {number} column
+   * @param {number} columnNumber
    * @return {?{startColumn: number, endColumn: number, type: string}}
    */
-  tokenAtTextPosition(lineNumber, column) {
+  tokenAtTextPosition(lineNumber, columnNumber) {
     if (lineNumber < 0 || lineNumber >= this._codeMirror.lineCount())
       return null;
-    var token = this._codeMirror.getTokenAt(new CodeMirror.Pos(lineNumber, (column || 0) + 1));
+    var token = this._codeMirror.getTokenAt(new CodeMirror.Pos(lineNumber, (columnNumber || 0) + 1));
     if (!token)
       return null;
     return {startColumn: token.start, endColumn: token.end, type: token.type};

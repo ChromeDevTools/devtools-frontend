@@ -1847,13 +1847,15 @@ SDK.DOMModel = class extends SDK.SDKModel {
 
   /**
    * @param {!SDK.RemoteObject} object
-   * @param {function(?SDK.DOMNode)} callback
+   * @return {!Promise<?SDK.DOMNode>}
    */
-  pushObjectAsNodeToFrontend(object, callback) {
-    if (object.isNode())
-      this.pushNodeToFrontend(/** @type {string} */ (object.objectId), callback);
-    else
-      callback(null);
+  pushObjectAsNodeToFrontend(object) {
+    return new Promise(fulfill => {
+      if (object.isNode())
+        this.pushNodeToFrontend(/** @type {string} */ (object.objectId), fulfill);
+      else
+        fulfill(null);
+    });
   }
 
   /**

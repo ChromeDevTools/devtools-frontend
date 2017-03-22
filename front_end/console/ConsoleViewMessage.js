@@ -486,7 +486,7 @@ Console.ConsoleViewMessage = class {
         element = this._formatParameterAsObject(output, includePreview);
         break;
       case 'node':
-        element = this._formatParameterAsNode(output);
+        element = output.isNode() ? this._formatParameterAsNode(output) : this._formatParameterAsObject(output, false);
         break;
       case 'string':
         element = this._formatParameterAsString(output);
@@ -598,29 +598,27 @@ Console.ConsoleViewMessage = class {
   }
 
   /**
-   * @param {!SDK.RemoteObject} object
+   * @param {!SDK.RemoteObject} remoteObject
    * @return {!Element}
    */
-  _formatParameterAsNode(object) {
+  _formatParameterAsNode(remoteObject) {
     var result = createElement('span');
-    Common.Renderer.renderPromise(object).then(appendRenderer.bind(this), failedToRender.bind(this));
+
+    var domModel = SDK.DOMModel.fromTarget(remoteObject.runtimeModel().target());
+    if (!domModel)
+      return result;
+    domModel.pushObjectAsNodeToFrontend(remoteObject).then(node => {
+      if (!node) {
+        result.appendChild(this._formatParameterAsObject(remoteObject, false));
+        return;
+      }
+      Common.Renderer.renderPromise(node).then(rendererElement => {
+        result.appendChild(rendererElement);
+        this._formattedParameterAsNodeForTest();
+      });
+    });
+
     return result;
-
-    /**
-     * @param {!Element} rendererElement
-     * @this {Console.ConsoleViewMessage}
-     */
-    function appendRenderer(rendererElement) {
-      result.appendChild(rendererElement);
-      this._formattedParameterAsNodeForTest();
-    }
-
-    /**
-     * @this {Console.ConsoleViewMessage}
-     */
-    function failedToRender() {
-      result.appendChild(this._formatParameterAsObject(object, false));
-    }
   }
 
   _formattedParameterAsNodeForTest() {

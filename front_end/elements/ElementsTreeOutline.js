@@ -1583,19 +1583,13 @@ Elements.ElementsTreeOutline.Renderer = class {
      * @param {function(!Error)} reject
      */
     function renderPromise(resolve, reject) {
-      if (object instanceof SDK.DOMNode) {
+      if (object instanceof SDK.DOMNode)
         onNodeResolved(/** @type {!SDK.DOMNode} */ (object));
-      } else if (object instanceof SDK.DeferredDOMNode) {
+      else if (object instanceof SDK.DeferredDOMNode)
         (/** @type {!SDK.DeferredDOMNode} */ (object)).resolve(onNodeResolved);
-      } else if (object instanceof SDK.RemoteObject) {
-        var domModel = SDK.DOMModel.fromTarget((/** @type {!SDK.RemoteObject} */ (object)).runtimeModel().target());
-        if (domModel)
-          domModel.pushObjectAsNodeToFrontend(object, onNodeResolved);
-        else
-          reject(new Error('No dom model for given JS object target found.'));
-      } else {
+      else
         reject(new Error('Can\'t reveal not a node.'));
-      }
+
 
       /**
        * @param {?SDK.DOMNode} node

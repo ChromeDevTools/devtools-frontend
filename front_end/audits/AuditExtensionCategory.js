@@ -209,22 +209,27 @@ Audits.AuditExtensionFormatters = {
    */
   node: function(expression, evaluateOptions) {
     var parentElement = createElement('div');
-    this.evaluate(expression, evaluateOptions, onEvaluate);
+    this.evaluate(expression, evaluateOptions, async remoteObject => {
+      await append(remoteObject);
+      remoteObject.release();
+    });
+    return parentElement;
 
     /**
      * @param {!SDK.RemoteObject} remoteObject
      */
-    function onEvaluate(remoteObject) {
-      Common.Renderer.renderPromise(remoteObject).then(appendRenderer).then(remoteObject.release.bind(remoteObject));
-
-      /**
-       * @param {!Element} element
-       */
-      function appendRenderer(element) {
-        parentElement.appendChild(element);
-      }
+    async function append(remoteObject) {
+      if (!remoteObject.isNode())
+        return;
+      var domModel = SDK.DOMModel.fromTarget(remoteObject.runtimeModel().target());
+      if (!domModel)
+        return;
+      var node = await domModel.pushObjectAsNodeToFrontend(remoteObject);
+      if (!node)
+        return;
+      var element = await Common.Renderer.renderPromise(/** @type {!SDK.DOMNode} */ (node));
+      parentElement.appendChild(element);
     }
-    return parentElement;
   }
 };
 

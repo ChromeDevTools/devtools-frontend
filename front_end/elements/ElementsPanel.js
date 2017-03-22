@@ -1017,7 +1017,7 @@ Elements.ElementsPanel.DOMNodeRevealer = class {
       } else if (node instanceof SDK.RemoteObject) {
         var domModel = SDK.DOMModel.fromTarget(/** @type {!SDK.RemoteObject} */ (node).runtimeModel().target());
         if (domModel)
-          domModel.pushObjectAsNodeToFrontend(node, onNodeResolved);
+          domModel.pushObjectAsNodeToFrontend(node).then(onNodeResolved);
         else
           reject(new Error('Could not resolve a node to reveal.'));
       } else {

@@ -21,7 +21,7 @@
             "type": "@Common.Renderer",
             "contextTypes": [
                 "SDK.DOMNode",
-                "SDK.RemoteObject"
+                "SDK.DeferredDOMNode"
             ],
             "className": "Elements.ElementsTreeOutline.Renderer"
         },

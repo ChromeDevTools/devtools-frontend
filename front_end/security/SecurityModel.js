@@ -108,4 +108,14 @@ Security.SecurityDispatcher = class {
         securityState, schemeIsCryptographic, explanations, insecureContentStatus, summary || null);
     this._model.dispatchEventToListeners(Security.SecurityModel.Events.SecurityStateChanged, pageSecurityState);
   }
+
+
+  /**
+   * @override
+   * @param {number} eventId
+   * @param {string} errorType
+   * @param {string} requestURL
+   */
+  certificateError(eventId, errorType, requestURL) {
+  }
 };

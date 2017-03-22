@@ -57,11 +57,6 @@ Common.Throttler = class {
     this._innerSchedule(forceTimerUpdate);
   }
 
-  flush() {
-    if (this._process)
-      this._onTimeout();
-  }
-
   /**
    * @param {boolean} forceTimerUpdate
    */

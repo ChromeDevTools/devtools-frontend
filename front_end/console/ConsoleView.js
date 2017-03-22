@@ -344,24 +344,24 @@ Console.ConsoleView = class extends UI.VBox {
     this._prompt.clearAutocomplete();
   }
 
-  _scheduleViewportRefresh() {
-    /**
-     * @this {Console.ConsoleView}
-     * @return {!Promise.<undefined>}
-     */
-    function invalidateViewport() {
-      if (this._muteViewportUpdates) {
-        this._maybeDirtyWhileMuted = true;
-        return Promise.resolve();
-      }
-      if (this._needsFullUpdate) {
-        this._updateMessageList();
-        delete this._needsFullUpdate;
-      } else {
-        this._viewport.invalidate();
-      }
+  /**
+   * @return {!Promise.<undefined>}
+   */
+  _invalidateViewport() {
+    if (this._muteViewportUpdates) {
+      this._maybeDirtyWhileMuted = true;
       return Promise.resolve();
     }
+    if (this._needsFullUpdate) {
+      this._updateMessageList();
+      delete this._needsFullUpdate;
+    } else {
+      this._viewport.invalidate();
+    }
+    return Promise.resolve();
+  }
+
+  _scheduleViewportRefresh() {
     if (this._muteViewportUpdates) {
       this._maybeDirtyWhileMuted = true;
       this._scheduleViewportRefreshForTest(true);
@@ -369,7 +369,7 @@ Console.ConsoleView = class extends UI.VBox {
     } else {
       this._scheduleViewportRefreshForTest(false);
     }
-    this._viewportThrottler.schedule(invalidateViewport.bind(this));
+    this._viewportThrottler.schedule(this._invalidateViewport.bind(this));
   }
 
   /**

@@ -980,7 +980,7 @@ LayerViewer.LayerTextureManager = class {
   forceUpdate() {
     this._queue.forEach(layer => this._updateLayer(layer));
     this._queue = [];
-    this._throttler.flush();
+    this._update();
   }
 
   /**

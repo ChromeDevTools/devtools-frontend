@@ -490,7 +490,7 @@ UI.TextPrompt = class extends Common.Object {
     this._queryRange = new Common.TextRange(
         0, beforeRange.toString().length, 0, beforeRange.toString().length + fullWordRange.toString().length);
 
-    var shouldSelect = !this._disableDefaultSuggestionForEmptyInput || this.text();
+    var shouldSelect = !this._disableDefaultSuggestionForEmptyInput || !!this.text();
     if (this._suggestBox) {
       this._suggestBox.updateSuggestions(
           this._boxForAnchorAtStart(selection, fullWordRange), completions, shouldSelect, !this._isCaretAtEndOfPrompt(),

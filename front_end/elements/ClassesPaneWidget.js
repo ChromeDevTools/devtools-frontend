@@ -41,6 +41,10 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
 
     if (!isEnterKey(event))
       return;
+    if (this._prompt.acceptAutoComplete()) {
+      event.consume(true);
+      return;
+    }
     var node = UI.context.flavor(SDK.DOMNode);
     if (!node)
       return;

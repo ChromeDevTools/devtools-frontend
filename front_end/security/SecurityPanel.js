@@ -350,11 +350,14 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     // explanations to reflect the new counts.
     this._mainView.refreshExplanations();
 
-    if (request) {
-      var origin = Common.ParsedURL.extractOrigin(request.url());
-      this._sidebarTree.setMainOrigin(origin);
+    // If we could not find a matching request (as in the case of clicking
+    // through an interstitial, see crbug.com/669309), set the origin based upon
+    // the url data from the MainFrameNavigated event itself.
+    let origin = Common.ParsedURL.extractOrigin(request ? request.url() : frame.url);
+    this._sidebarTree.setMainOrigin(origin);
+
+    if (request)
       this._processRequest(request);
-    }
   }
 
   _onInterstitialShown() {

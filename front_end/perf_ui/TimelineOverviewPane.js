@@ -53,9 +53,7 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
     this._overviewControls = [];
     this._markers = new Map();
 
-    this._popoverHelper = new UI.PopoverHelper(this._cursorArea);
-    this._popoverHelper.initializeCallbacks(
-        this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
+    this._popoverHelper = new UI.PopoverHelper(this._cursorArea, this._getPopoverRequest.bind(this));
     this._popoverHelper.setHasPadding(true);
     this._popoverHelper.setTimeout(0);
 
@@ -67,42 +65,27 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
   }
 
   /**
-   * @param {!Element} element
    * @param {!Event} event
-   * @return {!Element|!AnchorBox|undefined}
+   * @return {?UI.PopoverRequest}
    */
-  _getPopoverAnchor(element, event) {
-    return this._cursorArea;
-  }
-
-  /**
-   * @param {!Element|!AnchorBox} anchor
-   * @param {!UI.GlassPane} popover
-   * @return {!Promise<boolean>}
-   */
-  _showPopover(anchor, popover) {
-    return this._buildPopoverContents().then(maybeShowPopover.bind(this));
-
-    /**
-     * @this {PerfUI.TimelineOverviewPane}
-     * @param {!DocumentFragment} fragment
-     * @return {boolean}
-     */
-    function maybeShowPopover(fragment) {
-      if (!fragment.firstChild)
-        return false;
-      var content = new PerfUI.TimelineOverviewPane.PopoverContents();
-      this._popoverContents = content.contentElement.createChild('div');
-      this._popoverContents.appendChild(fragment);
-      this._popover = popover;
-      content.show(popover.contentElement);
-      return true;
-    }
-  }
-
-  _onHidePopover() {
-    this._popover = null;
-    this._popoverContents = null;
+  _getPopoverRequest(event) {
+    return {
+      box: this._cursorElement.boxInWindow(),
+      show: popover => this._buildPopoverContents().then(fragment => {
+        if (!fragment.firstChild)
+          return false;
+        var content = new PerfUI.TimelineOverviewPane.PopoverContents();
+        this._popoverContents = content.contentElement.createChild('div');
+        this._popoverContents.appendChild(fragment);
+        this._popover = popover;
+        content.show(popover.contentElement);
+        return true;
+      }),
+      hide: () => {
+        this._popover = null;
+        this._popoverContents = null;
+      }
+    };
   }
 
   /**

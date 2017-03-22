@@ -472,6 +472,15 @@ var AnchorBox = class {
     this.width = width || 0;
     this.height = height || 0;
   }
+
+  /**
+   * @param {number} x
+   * @param {number} y
+   * @return {boolean}
+   */
+  contains(x, y) {
+    return x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height;
+  }
 };
 
 /**

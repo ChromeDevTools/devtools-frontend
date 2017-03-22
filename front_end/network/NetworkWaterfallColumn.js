@@ -33,8 +33,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._startTime = this._calculator.minimumBoundary();
     this._endTime = this._calculator.maximumBoundary();
 
-    this._popoverHelper = new UI.PopoverHelper(this.element);
-    this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
+    this._popoverHelper = new UI.PopoverHelper(this.element, this._getPopoverRequest.bind(this));
     this._popoverHelper.setHasPadding(true);
     this._popoverHelper.setTimeout(300, 300);
 
@@ -187,16 +186,15 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
   }
 
   /**
-   * @param {!Element} element
    * @param {!Event} event
-   * @return {!AnchorBox|undefined}
+   * @return {?UI.PopoverRequest}
    */
-  _getPopoverAnchor(element, event) {
+  _getPopoverRequest(event) {
     if (!this._hoveredNode)
-      return;
+      return null;
     var request = this._hoveredNode.request();
     if (!request)
-      return;
+      return null;
     var useTimingBars = !Common.moduleSetting('networkColorCodeResourceTypes').get() && !this._calculator.startAtZero;
     if (useTimingBars) {
       var range = Network.RequestTimingView.calculateRequestTimeRanges(request, 0)
@@ -216,37 +214,30 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     }
 
     if (event.clientX < this._canvasPosition.left + start || event.clientX > this._canvasPosition.left + end)
-      return;
+      return null;
 
     var rowIndex = this._nodes.findIndex(node => node.hovered());
     var barHeight = this._getBarHeight(range.name);
     var y = this._headerHeight + (this._rowHeight * rowIndex - this._scrollTop) + ((this._rowHeight - barHeight) / 2);
 
     if (event.clientY < this._canvasPosition.top + y || event.clientY > this._canvasPosition.top + y + barHeight)
-      return;
+      return null;
 
     var anchorBox = this.element.boxInWindow();
     anchorBox.x += start;
     anchorBox.y += y;
     anchorBox.width = end - start;
     anchorBox.height = barHeight;
-    return anchorBox;
-  }
 
-  /**
-   * @param {!Element|!AnchorBox} anchor
-   * @param {!UI.GlassPane} popover
-   * @return {!Promise<boolean>}
-   */
-  _showPopover(anchor, popover) {
-    if (!this._hoveredNode)
-      return Promise.resolve(false);
-    var request = this._hoveredNode.request();
-    if (!request)
-      return Promise.resolve(false);
-    var content = Network.RequestTimingView.createTimingTable(request, this._calculator);
-    popover.contentElement.appendChild(content);
-    return Promise.resolve(true);
+    return {
+      box: anchorBox,
+      show: popover => {
+        var content =
+            Network.RequestTimingView.createTimingTable(/** @type {!SDK.NetworkRequest} */ (request), this._calculator);
+        popover.contentElement.appendChild(content);
+        return Promise.resolve(true);
+      }
+    };
   }
 
   /**

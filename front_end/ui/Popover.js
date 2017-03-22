@@ -33,27 +33,20 @@
  */
 UI.PopoverHelper = class {
   /**
-   * @param {!Element} panelElement
-   * @param {boolean=} disableOnClick
+   * @param {!Element} container
+   * @param {function(!Event):?UI.PopoverRequest} getRequest
    */
-  constructor(panelElement, disableOnClick) {
-    this._disableOnClick = !!disableOnClick;
+  constructor(container, getRequest) {
+    this._disableOnClick = false;
     this._hasPadding = false;
-    panelElement.addEventListener('mousedown', this._mouseDown.bind(this), false);
-    panelElement.addEventListener('mousemove', this._mouseMove.bind(this), false);
-    panelElement.addEventListener('mouseout', this._mouseOut.bind(this), false);
+    this._getRequest = getRequest;
+    this._scheduledRequest = null;
+    /** @type {?function()} */
+    this._hidePopoverCallback = null;
+    container.addEventListener('mousedown', this._mouseDown.bind(this), false);
+    container.addEventListener('mousemove', this._mouseMove.bind(this), false);
+    container.addEventListener('mouseout', this._mouseOut.bind(this), false);
     this.setTimeout(1000, 500);
-  }
-
-  /**
-   * @param {function(!Element, !Event):(!Element|!AnchorBox|undefined)} getAnchor
-   * @param {function((!Element|!AnchorBox), !UI.GlassPane):!Promise<boolean>} showPopover
-   * @param {function()=} onHide
-   */
-  initializeCallbacks(getAnchor, showPopover, onHide) {
-    this._getAnchor = getAnchor;
-    this._showPopover = showPopover;
-    this._onHide = onHide;
   }
 
   /**
@@ -76,147 +69,182 @@ UI.PopoverHelper = class {
   }
 
   /**
-   * @param {!MouseEvent} event
-   * @return {boolean}
+   * @param {boolean} disableOnClick
    */
-  _eventInHoverElement(event) {
-    if (!this._hoverElement)
-      return false;
-    var box = this._hoverElement instanceof AnchorBox ? this._hoverElement : this._hoverElement.boxInWindow();
-    return (
-        box.x <= event.clientX && event.clientX <= box.x + box.width && box.y <= event.clientY &&
-        event.clientY <= box.y + box.height);
+  setDisableOnClick(disableOnClick) {
+    this._disableOnClick = disableOnClick;
   }
 
+  /**
+   * @param {!Event} event
+   * @return {boolean}
+   */
+  _eventInScheduledContent(event) {
+    return this._scheduledRequest ? this._scheduledRequest.box.contains(event.clientX, event.clientY) : false;
+  }
+
+  /**
+   * @param {!Event} event
+   */
   _mouseDown(event) {
-    if (this._disableOnClick || !this._eventInHoverElement(event)) {
+    if (this._disableOnClick || !this._eventInScheduledContent(event)) {
       this.hidePopover();
     } else {
-      this._killHidePopoverTimer();
-      this._handleMouseAction(event, true);
+      this._stopHidePopoverTimer();
+      this._stopShowPopoverTimer();
+      this._startShowPopoverTimer(event, 0);
     }
   }
 
+  /**
+   * @param {!Event} event
+   */
   _mouseMove(event) {
     // Pretend that nothing has happened.
-    if (this._eventInHoverElement(event))
+    if (this._eventInScheduledContent(event))
       return;
 
     this._startHidePopoverTimer();
-    this._handleMouseAction(event, false);
+    this._stopShowPopoverTimer();
+    if (event.which && this._disableOnClick)
+      return;
+    this._startShowPopoverTimer(
+        event, this.isPopoverVisible() ? Math.max(this._timeout * 0.6, this._hideTimeout) : this._timeout);
   }
 
-  _popoverMouseOut(event) {
-    if (!this.isPopoverVisible())
+  /**
+   * @param {!Event} event
+   */
+  _popoverMouseMove(event) {
+    this._stopHidePopoverTimer();
+  }
+
+  /**
+   * @param {!UI.GlassPane} popover
+   * @param {!Event} event
+   */
+  _popoverMouseOut(popover, event) {
+    if (!popover.isShowing())
       return;
-    if (event.relatedTarget && !event.relatedTarget.isSelfOrDescendant(this._popover.contentElement))
+    if (event.relatedTarget && !event.relatedTarget.isSelfOrDescendant(popover.contentElement))
       this._startHidePopoverTimer();
   }
 
+  /**
+   * @param {!Event} event
+   */
   _mouseOut(event) {
     if (!this.isPopoverVisible())
       return;
-    if (!this._eventInHoverElement(event))
+    if (!this._eventInScheduledContent(event))
       this._startHidePopoverTimer();
   }
 
   _startHidePopoverTimer() {
-    // User has 500ms (this._hideTimeout) to reach the popup.
-    if (!this._popover || this._hidePopoverTimer)
+    // User has this._hideTimeout to reach the popup.
+    if (!this._hidePopoverCallback || this._hidePopoverTimer)
       return;
 
-    /**
-     * @this {UI.PopoverHelper}
-     */
-    function doHide() {
+    this._hidePopoverTimer = setTimeout(() => {
       this._hidePopover();
       delete this._hidePopoverTimer;
-    }
-    this._hidePopoverTimer = setTimeout(doHide.bind(this), this._hideTimeout);
+    }, this._hideTimeout);
   }
 
-  _handleMouseAction(event, isMouseDown) {
-    this._resetHoverTimer();
-    if (event.which && this._disableOnClick)
+  /**
+   * @param {!Event} event
+   * @param {number} timeout
+   */
+  _startShowPopoverTimer(event, timeout) {
+    this._scheduledRequest = this._getRequest.call(null, event);
+    if (!this._scheduledRequest)
       return;
-    this._hoverElement = this._getAnchor(event.target, event);
-    if (!this._hoverElement)
-      return;
-    const toolTipDelay = isMouseDown ? 0 : (this._popup ? this._timeout * 0.6 : this._timeout);
-    this._hoverTimer =
-        setTimeout(this._mouseHover.bind(this, this._hoverElement, event.target.ownerDocument), toolTipDelay);
+
+    this._showPopoverTimer = setTimeout(() => {
+      delete this._showPopoverTimer;
+      this._showPopover(event.target.ownerDocument);
+    }, timeout);
   }
 
-  _resetHoverTimer() {
-    if (this._hoverTimer) {
-      clearTimeout(this._hoverTimer);
-      delete this._hoverTimer;
-    }
+  _stopShowPopoverTimer() {
+    if (!this._showPopoverTimer)
+      return;
+    clearTimeout(this._showPopoverTimer);
+    delete this._showPopoverTimer;
   }
 
   /**
    * @return {boolean}
    */
   isPopoverVisible() {
-    return !!this._popover;
+    return !!this._hidePopoverCallback;
   }
 
   hidePopover() {
-    this._resetHoverTimer();
+    this._stopShowPopoverTimer();
     this._hidePopover();
   }
 
   _hidePopover() {
-    if (!this._popover)
+    if (!this._hidePopoverCallback)
       return;
-
-    delete UI.PopoverHelper._popover;
-    if (this._onHide)
-      this._onHide();
-
-    if (this._popover.isShowing())
-      this._popover.hide();
-    delete this._popover;
-    this._hoverElement = null;
+    this._hidePopoverCallback.call(null);
+    this._hidePopoverCallback = null;
   }
 
-  _mouseHover(element, document) {
-    delete this._hoverTimer;
-    this._hidePopover();
-    this._hoverElement = element;
+  /**
+   * @param {!Document} document
+   */
+  _showPopover(document) {
+    var popover = new UI.GlassPane();
+    popover.registerRequiredCSS('ui/popover.css');
+    popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    popover.setBlockPointerEvents(false);
+    popover.setShowArrow(true);
+    var request = this._scheduledRequest;
+    request.show.call(null, popover).then(success => {
+      if (!success)
+        return;
 
-    this._popover = new UI.GlassPane();
-    this._popover.registerRequiredCSS('ui/popover.css');
-    this._popover.setBlockPointerEvents(false);
-    this._popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    this._popover.setShowArrow(true);
-    this._popover.contentElement.classList.toggle('has-padding', this._hasPadding);
-    this._popover.contentElement.addEventListener('mousemove', this._killHidePopoverTimer.bind(this), true);
-    this._popover.contentElement.addEventListener('mouseout', this._popoverMouseOut.bind(this), true);
-    this._popover.setContentAnchorBox(
-        this._hoverElement instanceof AnchorBox ? this._hoverElement : this._hoverElement.boxInWindow());
+      if (this._scheduledRequest !== request) {
+        if (request.hide)
+          request.hide.call(null);
+        return;
+      }
 
-    // This should not happen, but we hide previous popover to be on the safe side.
-    if (UI.PopoverHelper._popover) {
-      console.error('One popover is already visible');
-      UI.PopoverHelper._popover.hide();
-    }
-    UI.PopoverHelper._popover = this._popover;
-    var popover = this._popover;
-    this._showPopover(element, this._popover).then(success => {
-      if (success && this._popover === popover && this._hoverElement === element)
-        popover.show(document);
+      // This should not happen, but we hide previous popover to be on the safe side.
+      if (UI.PopoverHelper._popoverHelper) {
+        console.error('One popover is already visible');
+        UI.PopoverHelper._popoverHelper.hidePopover();
+      }
+      UI.PopoverHelper._popoverHelper = this;
+
+      popover.contentElement.classList.toggle('has-padding', this._hasPadding);
+      popover.contentElement.addEventListener('mousemove', this._popoverMouseMove.bind(this), true);
+      popover.contentElement.addEventListener('mouseout', this._popoverMouseOut.bind(this, popover), true);
+      popover.setContentAnchorBox(request.box);
+      popover.show(document);
+
+      this._hidePopoverCallback = () => {
+        if (request.hide)
+          request.hide.call(null);
+        popover.hide();
+        delete UI.PopoverHelper._popoverHelper;
+      };
     });
   }
 
-  _killHidePopoverTimer() {
-    if (this._hidePopoverTimer) {
-      clearTimeout(this._hidePopoverTimer);
-      delete this._hidePopoverTimer;
+  _stopHidePopoverTimer() {
+    if (!this._hidePopoverTimer)
+      return;
+    clearTimeout(this._hidePopoverTimer);
+    delete this._hidePopoverTimer;
 
-      // We know that we reached the popup, but we might have moved over other elements.
-      // Discard pending command.
-      this._resetHoverTimer();
-    }
+    // We know that we reached the popup, but we might have moved over other elements.
+    // Discard pending command.
+    this._stopShowPopoverTimer();
   }
 };
+
+/** @typedef {{box: !AnchorBox, show:(function(!UI.GlassPane):!Promise<boolean>), hide:(function()|undefined)}} */
+UI.PopoverRequest;

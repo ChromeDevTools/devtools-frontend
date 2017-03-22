@@ -153,9 +153,8 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
 
     this._selectedSizeText = new UI.ToolbarText();
 
-    this._popoverHelper = new UI.PopoverHelper(this.element, true);
-    this._popoverHelper.initializeCallbacks(
-        this._getHoverAnchor.bind(this), this._showObjectPopover.bind(this), this._onHidePopover.bind(this));
+    this._popoverHelper = new UI.PopoverHelper(this.element, this._getPopoverRequest.bind(this));
+    this._popoverHelper.setDisableOnClick(true);
     this._popoverHelper.setHasPadding(true);
     this.element.addEventListener('scroll', this._popoverHelper.hidePopover.bind(this._popoverHelper), true);
 
@@ -607,58 +606,36 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     }
   }
 
-  _getHoverAnchor(target) {
-    var span = target.enclosingNodeOrSelfWithNodeName('span');
-    if (!span)
-      return;
-    var row = target.enclosingNodeOrSelfWithNodeName('tr');
-    if (!row)
-      return;
-    span.node = row._dataGridNode;
-    return span;
-  }
-
   /**
-   * @param {!Element|!AnchorBox} element
-   * @param {!UI.GlassPane} popover
-   * @return {!Promise<boolean>}
+   * @param {!Event} event
+   * @return {?UI.PopoverRequest}
    */
-  _showObjectPopover(element, popover) {
-    if (!this._profile.target() || !element.node)
-      return Promise.resolve(false);
-
-    var fulfill;
-    var promise = new Promise(x => fulfill = x);
-    element.node.queryObjectContent(this._profile.target(), onObjectResolved.bind(this), 'popover');
-    return promise;
-
-    /**
-     * @param {?SDK.RemoteObject} result
-     * @this {Profiler.HeapSnapshotView}
-     */
-    function onObjectResolved(result) {
-      if (!result) {
-        fulfill(false);
-        return;
-      }
-      ObjectUI.ObjectPopoverHelper.buildObjectPopover(result, popover).then(objectPopoverHelper => {
+  _getPopoverRequest(event) {
+    var span = event.target.enclosingNodeOrSelfWithNodeName('span');
+    var row = event.target.enclosingNodeOrSelfWithNodeName('tr');
+    var target = this._profile.target();
+    if (!row || !span || !target)
+      return null;
+    var node = row._dataGridNode;
+    var objectPopoverHelper;
+    return {
+      box: span.boxInWindow(),
+      show: async popover => {
+        var remoteObject = await node.queryObjectContent(target, 'popover');
+        if (!remoteObject)
+          return false;
+        objectPopoverHelper = await ObjectUI.ObjectPopoverHelper.buildObjectPopover(remoteObject, popover);
         if (!objectPopoverHelper) {
-          this._onHidePopover();  // Cleanup object resolving artifacts.
-          fulfill(false);
-          return;
+          target.runtimeModel.releaseObjectGroup('popover');
+          return false;
         }
-        this._objectPopoverHelper = objectPopoverHelper;
-        fulfill(true);
-      });
-    }
-  }
-
-  _onHidePopover() {
-    if (this._objectPopoverHelper) {
-      this._objectPopoverHelper.dispose();
-      delete this._objectPopoverHelper;
-    }
-    this._profile.target().runtimeModel.releaseObjectGroup('popover');
+        return true;
+      },
+      hide: () => {
+        target.runtimeModel.releaseObjectGroup('popover');
+        objectPopoverHelper.dispose();
+      }
+    };
   }
 
   _updatePerspectiveOptions() {

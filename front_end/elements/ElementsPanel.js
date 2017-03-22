@@ -568,41 +568,29 @@ Elements.ElementsPanel = class extends UI.Panel {
   }
 
   /**
-   * @param {!Element} element
    * @param {!Event} event
-   * @return {!Element|!AnchorBox|undefined}
+   * @return {?UI.PopoverRequest}
    */
-  _getPopoverAnchor(element, event) {
-    var link = element;
+  _getPopoverRequest(event) {
+    var link = event.target;
     while (link && !link[Elements.ElementsTreeElement.HrefSymbol])
       link = link.parentElementOrShadowHost();
-    return link ? link : undefined;
-  }
+    if (!link)
+      return null;
 
-  /**
-   * @param {!Element|!AnchorBox} link
-   * @param {!UI.GlassPane} popover
-   * @return {!Promise<boolean>}
-   */
-  _showPopover(link, popover) {
-    var node = this.selectedDOMNode();
-    if (!node)
-      return Promise.resolve(false);
-
-    var fulfill;
-    var promise = new Promise(x => fulfill = x);
-    Components.DOMPresentationUtils.buildImagePreviewContents(
-        node.target(), link[Elements.ElementsTreeElement.HrefSymbol], true, showPopover);
-    return promise;
-
-    /**
-     * @param {!Element=} contents
-     */
-    function showPopover(contents) {
-      if (contents)
-        popover.contentElement.appendChild(contents);
-      fulfill(!!contents);
-    }
+    return {
+      box: link.boxInWindow(),
+      show: async popover => {
+        var node = this.selectedDOMNode();
+        if (!node)
+          return false;
+        var preview = await Components.DOMPresentationUtils.buildImagePreviewContents(
+            node.target(), link[Elements.ElementsTreeElement.HrefSymbol], true);
+        if (preview)
+          popover.contentElement.appendChild(preview);
+        return !!preview;
+      }
+    };
   }
 
   _jumpToSearchResult(index) {
@@ -907,9 +895,8 @@ Elements.ElementsPanel = class extends UI.Panel {
     var tabbedPane = this.sidebarPaneView.tabbedPane();
     if (this._popoverHelper)
       this._popoverHelper.hidePopover();
-    this._popoverHelper = new UI.PopoverHelper(tabbedPane.element);
+    this._popoverHelper = new UI.PopoverHelper(tabbedPane.element, this._getPopoverRequest.bind(this));
     this._popoverHelper.setHasPadding(true);
-    this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
     this._popoverHelper.setTimeout(0);
 
     if (horizontally) {

@@ -148,36 +148,30 @@ Components.DOMPresentationUtils.linkifyDeferredNodeReference = function(deferred
  * @param {!SDK.Target} target
  * @param {string} originalImageURL
  * @param {boolean} showDimensions
- * @param {function(!Element=)} userCallback
  * @param {!Object=} precomputedFeatures
+ * @return {!Promise<?Element>}
  */
 Components.DOMPresentationUtils.buildImagePreviewContents = function(
-    target, originalImageURL, showDimensions, userCallback, precomputedFeatures) {
+    target, originalImageURL, showDimensions, precomputedFeatures) {
   var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
-  if (!resourceTreeModel) {
-    userCallback();
-    return;
-  }
+  if (!resourceTreeModel)
+    return Promise.resolve(/** @type {?Element} */ (null));
   var resource = resourceTreeModel.resourceForURL(originalImageURL);
   var imageURL = originalImageURL;
   if (!isImageResource(resource) && precomputedFeatures && precomputedFeatures.currentSrc) {
     imageURL = precomputedFeatures.currentSrc;
     resource = resourceTreeModel.resourceForURL(imageURL);
   }
-  if (!isImageResource(resource)) {
-    userCallback();
-    return;
-  }
+  if (!isImageResource(resource))
+    return Promise.resolve(/** @type {?Element} */ (null));
 
+  var fulfill;
+  var promise = new Promise(x => fulfill = x);
   var imageElement = createElement('img');
   imageElement.addEventListener('load', buildContent, false);
-  imageElement.addEventListener('error', errorCallback, false);
+  imageElement.addEventListener('error', () => fulfill(null), false);
   resource.populateImageSource(imageElement);
-
-  function errorCallback() {
-    // Drop the event parameter when invoking userCallback.
-    userCallback();
-  }
+  return promise;
 
   /**
    * @param {?SDK.Resource} resource
@@ -212,7 +206,7 @@ Components.DOMPresentationUtils.buildImagePreviewContents = function(
       container.createChild('tr').createChild('td').createChild('span', 'description').textContent =
           String.sprintf('currentSrc: %s', imageURL.trimMiddle(100));
     }
-    userCallback(container);
+    fulfill(container);
   }
 };
 

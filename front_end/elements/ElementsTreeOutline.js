@@ -75,8 +75,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
 
     this._visible = false;
 
-    this._popoverHelper = new UI.PopoverHelper(this._element);
-    this._popoverHelper.initializeCallbacks(this._getPopoverAnchor.bind(this), this._showPopover.bind(this));
+    this._popoverHelper = new UI.PopoverHelper(this._element, this._getPopoverRequest.bind(this));
     this._popoverHelper.setHasPadding(true);
     this._popoverHelper.setTimeout(0, 100);
 
@@ -522,36 +521,51 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
   }
 
   /**
-   * @param {!Element} element
    * @param {!Event} event
-   * @return {!Element|!AnchorBox|undefined}
+   * @return {?UI.PopoverRequest}
    */
-  _getPopoverAnchor(element, event) {
-    var link = element;
+  _getPopoverRequest(event) {
+    var link = event.target;
     while (link && !link[Elements.ElementsTreeElement.HrefSymbol])
       link = link.parentElementOrShadowHost();
-    return link ? link : undefined;
+    if (!link)
+      return null;
+
+    return {
+      box: link.boxInWindow(),
+      show: async popover => {
+        var listItem = link.enclosingNodeOrSelfWithNodeName('li');
+        var node = /** @type {!Elements.ElementsTreeElement} */ (listItem.treeElement).node();
+        var precomputedFeatures = await this._loadDimensionsForNode(node);
+        var preview = await Components.DOMPresentationUtils.buildImagePreviewContents(
+            node.target(), link[Elements.ElementsTreeElement.HrefSymbol], true, precomputedFeatures);
+        if (preview)
+          popover.contentElement.appendChild(preview);
+        return !!preview;
+      }
+    };
   }
 
   /**
    * @param {!SDK.DOMNode} node
-   * @param {function()} callback
+   * @return {!Promise<!Object|undefined>}
    */
-  _loadDimensionsForNode(node, callback) {
-    if (!node.nodeName() || node.nodeName().toLowerCase() !== 'img') {
-      callback();
-      return;
-    }
+  _loadDimensionsForNode(node) {
+    if (!node.nodeName() || node.nodeName().toLowerCase() !== 'img')
+      return Promise.resolve();
 
+    var fulfill;
+    var promise = new Promise(x => fulfill = x);
     node.resolveToObject('', resolvedNode);
+    return promise;
 
     function resolvedNode(object) {
       if (!object) {
-        callback();
+        fulfill();
         return;
       }
 
-      object.callFunctionJSON(features, undefined, callback);
+      object.callFunctionJSON(features, undefined, fulfill);
       object.release();
 
       /**
@@ -568,32 +582,6 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
           currentSrc: this.currentSrc
         };
       }
-    }
-  }
-
-  /**
-   * @param {!Element|!AnchorBox} link
-   * @param {!UI.GlassPane} popover
-   * @return {!Promise<boolean>}
-   */
-  _showPopover(link, popover) {
-    var fulfill;
-    var promise = new Promise(x => fulfill = x);
-    var listItem = link.enclosingNodeOrSelfWithNodeName('li');
-    var node = /** @type {!Elements.ElementsTreeElement} */ (listItem.treeElement).node();
-    this._loadDimensionsForNode(
-        node, Components.DOMPresentationUtils.buildImagePreviewContents.bind(
-                  Components.DOMPresentationUtils, node.target(), link[Elements.ElementsTreeElement.HrefSymbol], true,
-                  showPopover));
-    return promise;
-
-    /**
-     * @param {!Element=} contents
-     */
-    function showPopover(contents) {
-      if (contents)
-        popover.contentElement.appendChild(contents);
-      fulfill(!!contents);
     }
   }
 

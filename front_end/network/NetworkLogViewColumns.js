@@ -92,9 +92,7 @@ Network.NetworkLogViewColumns = class {
     this._loadColumnExtensions();
     this._loadCustomColumnsAndSettings();
 
-    this._popoverHelper = new UI.PopoverHelper(this._networkLogView.element);
-    this._popoverHelper.initializeCallbacks(
-        this._getPopoverAnchor.bind(this), this._showPopover.bind(this), this._onHidePopover.bind(this));
+    this._popoverHelper = new UI.PopoverHelper(this._networkLogView.element, this._getPopoverRequest.bind(this));
     this._popoverHelper.setHasPadding(true);
 
     /** @type {!DataGrid.SortableDataGrid<!Network.NetworkNode>} */
@@ -570,37 +568,31 @@ Network.NetworkLogViewColumns = class {
   }
 
   /**
-   * @param {!Element} element
    * @param {!Event} event
-   * @return {!Element|!AnchorBox|undefined}
+   * @return {?UI.PopoverRequest}
    */
-  _getPopoverAnchor(element, event) {
+  _getPopoverRequest(event) {
     if (!this._gridMode)
-      return;
-    var anchor = element.enclosingNodeOrSelfWithClass('network-script-initiated');
-    if (anchor && anchor.request) {
-      var initiator = /** @type {!SDK.NetworkRequest} */ (anchor.request).initiator();
-      if (initiator && initiator.stack)
-        return anchor;
-    }
-  }
+      return null;
 
-  /**
-   * @param {!Element|!AnchorBox} anchor
-   * @param {!UI.GlassPane} popover
-   * @return {!Promise<boolean>}
-   */
-  _showPopover(anchor, popover) {
-    var request = /** @type {!SDK.NetworkRequest} */ (anchor.request);
-    var initiator = /** @type {!Protocol.Network.Initiator} */ (request.initiator());
-    var content = Components.DOMPresentationUtils.buildStackTracePreviewContents(
-        request.target(), this._popupLinkifier, initiator.stack);
-    popover.contentElement.appendChild(content);
-    return Promise.resolve(true);
-  }
+    var anchor = event.target.enclosingNodeOrSelfWithClass('network-script-initiated');
+    var request = /** @type {?SDK.NetworkRequest} */ (anchor ? anchor.request : null);
+    var initiator = request ? request.initiator() : null;
+    if (!initiator || !initiator.stack)
+      return null;
 
-  _onHidePopover() {
-    this._popupLinkifier.reset();
+    return {
+      box: anchor.boxInWindow(),
+      show: popover => {
+        var content = Components.DOMPresentationUtils.buildStackTracePreviewContents(
+            anchor.request.target(), this._popupLinkifier, initiator.stack);
+        popover.contentElement.appendChild(content);
+        return Promise.resolve(true);
+      },
+      hide: () => {
+        this._popupLinkifier.reset();
+      }
+    };
   }
 
   /**

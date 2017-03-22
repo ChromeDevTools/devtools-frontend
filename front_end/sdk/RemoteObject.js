@@ -84,19 +84,6 @@ SDK.RemoteObject = class {
   }
 
   /**
-   * @param {!Protocol.Runtime.ObjectPreview} preview
-   * @return {number}
-   */
-  static mapOrSetEntriesCount(preview) {
-    if (preview.subtype !== 'map' && preview.subtype !== 'set')
-      return 0;
-    var matches = preview.description.match(SDK.RemoteObject._descriptionLengthParenRegex);
-    if (!matches)
-      return 0;
-    return parseInt(matches[1], 10);
-  }
-
-  /**
    * @param {!Protocol.Runtime.RemoteObject|!SDK.RemoteObject|number|string|boolean|undefined|null} object
    * @return {!Protocol.Runtime.CallArgument}
    */

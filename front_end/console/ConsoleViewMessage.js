@@ -483,6 +483,8 @@ Console.ConsoleViewMessage = class {
       case 'promise':
       case 'proxy':
       case 'set':
+      case 'weakmap':
+      case 'weakset':
         element = this._formatParameterAsObject(output, includePreview);
         break;
       case 'node':

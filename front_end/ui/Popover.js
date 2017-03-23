@@ -87,13 +87,16 @@ UI.PopoverHelper = class {
    * @param {!Event} event
    */
   _mouseDown(event) {
-    if (this._disableOnClick || !this._eventInScheduledContent(event)) {
+    if (this._disableOnClick) {
       this.hidePopover();
-    } else {
-      this._stopHidePopoverTimer();
-      this._stopShowPopoverTimer();
-      this._startShowPopoverTimer(event, 0);
+      return;
     }
+    if (this._eventInScheduledContent(event))
+      return;
+
+    this._startHidePopoverTimer(0);
+    this._stopShowPopoverTimer();
+    this._startShowPopoverTimer(event, 0);
   }
 
   /**
@@ -104,7 +107,7 @@ UI.PopoverHelper = class {
     if (this._eventInScheduledContent(event))
       return;
 
-    this._startHidePopoverTimer();
+    this._startHidePopoverTimer(this._hideTimeout);
     this._stopShowPopoverTimer();
     if (event.which && this._disableOnClick)
       return;
@@ -127,7 +130,7 @@ UI.PopoverHelper = class {
     if (!popover.isShowing())
       return;
     if (event.relatedTarget && !event.relatedTarget.isSelfOrDescendant(popover.contentElement))
-      this._startHidePopoverTimer();
+      this._startHidePopoverTimer(this._hideTimeout);
   }
 
   /**
@@ -137,18 +140,21 @@ UI.PopoverHelper = class {
     if (!this.isPopoverVisible())
       return;
     if (!this._eventInScheduledContent(event))
-      this._startHidePopoverTimer();
+      this._startHidePopoverTimer(this._hideTimeout);
   }
 
-  _startHidePopoverTimer() {
-    // User has this._hideTimeout to reach the popup.
+  /**
+   * @param {number} timeout
+   */
+  _startHidePopoverTimer(timeout) {
+    // User has |timeout| ms to reach the popup.
     if (!this._hidePopoverCallback || this._hidePopoverTimer)
       return;
 
     this._hidePopoverTimer = setTimeout(() => {
       this._hidePopover();
       delete this._hidePopoverTimer;
-    }, this._hideTimeout);
+    }, timeout);
   }
 
   /**

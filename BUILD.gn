@@ -246,8 +246,8 @@ all_devtools_files = [
   "front_end/help/Help.js",
   "front_end/help/module.json",
   "front_end/help/releaseNote.css",
-  "front_end/help/ReleaseNote.js",
   "front_end/help/ReleaseNoteText.js",
+  "front_end/help/ReleaseNoteView.js",
   "front_end/host/InspectorFrontendHost.js",
   "front_end/host/InspectorFrontendHostAPI.js",
   "front_end/host/module.json",
@@ -812,6 +812,7 @@ devtools_image_files = [
   "front_end/Images/toolbarResizerVertical.png",
   "front_end/Images/touchCursor.png",
   "front_end/Images/touchCursor_2x.png",
+  "front_end/Images/whatsnew.png",
 ]
 
 resources_out_dir = "$root_out_dir/resources/inspector"

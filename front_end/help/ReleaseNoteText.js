@@ -7,62 +7,29 @@
 // https://github.com/ChromeDevTools/devtools-frontend/wiki/Release-Notes
 
 /** @type {!Array<!Help.ReleaseNote>} */
-Help.releaseNoteText = [
-  {
-    version: 1,
-    highlights: [
-      {
-        contents: [
-          {
-            text: 'Debugger',
-          },
-          {
-            text: 'catches out-of-memory',
-            link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#out-of-memory-breakpoints',
-          },
-          {
-            text: 'errors',
-          },
-        ],
-        featured: true,
-      },
-      {
-        contents: [
-          {
-            text: 'Edit cookies directly',
-            link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#cookies',
-          },
-          {
-            text: 'from the Application panel',
-          },
-        ],
-      },
-      {
-        contents: [
-          {
-            text: 'Better',
-          },
-          {
-            text: 'filtering & settings for Console',
-            link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#console',
-          },
-        ],
-      },
-      {
-        contents: [
-          {
-            text: 'Improved',
-          },
-          {
-            text: 'Performance and Memory panels',
-            link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#performance-panel',
-          }
-        ],
-      },
-    ],
-    link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes',
-    image: {
-      src: 'https://developers.google.com/web/updates/images/2017/03/release-notes-preview.png',
+Help.releaseNoteText = [{
+  version: 1,
+  highlights: [
+    {
+      title: 'New Performance and Memory panels',
+      subtitle: 'Head to Performance for JavaScript profiling',
+      link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#performance-panel',
     },
-  },
-];
+    {
+      title: 'Editable cookies',
+      subtitle: 'You can edit any existing cookies and create new ones in the Application panel',
+      link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#cookies',
+    },
+    {
+      title: 'Console filtering & settings',
+      subtitle: 'Use the text filter or click the Console settings icon to touch up your preferences',
+      link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#console',
+    },
+    {
+      title: 'Debugger catches out-of-memory errors',
+      subtitle: 'See the stack or grab a heap snapshot to see why the app may crash',
+      link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#out-of-memory-breakpoints',
+    },
+  ],
+  link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes',
+}];

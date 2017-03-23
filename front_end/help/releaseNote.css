@@ -4,57 +4,100 @@
  * found in the LICENSE file.
  */
 
+:host {
+}
+
+.hbox {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.release-note-top-section {
+    color: white;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 15px;
+    font-size: 16px;
+    flex: none;
+    background-color:  #3367d6;
+    box-shadow: 0 2px 4px rgba(0,0,0,.28);
+}
+
 .release-note-container {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
 }
 
-.release-note-update-text {
-    font-weight: bold;
-}
-
-.release-note-content-container {
+.release-note-container ul {
     display: flex;
-    flex-direction: row;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding: 12px 12px 0 12px;
+    padding: 10px 16px;
+    flex-direction: column;
+    flex: none;
+    margin: 4px 12px 0 2px;
+    max-width: 600px;
 }
 
-.release-note-text-container {
-    min-width: 220px;
-    max-width: 300px;
+.release-note-container li {
+    display: flex;
+    flex-direction:column;
+    flex: none;
+    line-height: 24px;
+    font-size: 14px;
 }
 
-.release-note-action-container {
-    padding: 12px;
-    min-height: 48px;
-}
 
-.release-note-highlight-container {
-    line-height: 1.5;
-    -webkit-padding-start: 16px;
-    -webkit-margin-after: 0;
-}
-
-.release-note-link, .release-note-featured-link {
+.release-note-container li:hover {
     color: #039be5;
+}
+
+.release-note-title,
+.release-note-subtitle {
+    color: inherit;
     text-decoration: none;
 }
 
-.release-note-link:hover,
-.release-note-featured-link:hover,
-.image-hover .release-note-featured-link {
-    text-decoration: underline;
+.release-note-subtitle {
+    font-size: 13px;
+    line-height: 13px;
+    padding-bottom: 8px;
+}
+
+.release-note-container li:not(:hover) .release-note-subtitle {
+    color: #999;
+}
+
+.release-note-action-container > button,
+.release-note-action-container > button:hover {
+    margin: 10px 20px;
+    background: none;
+    border: none;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #757575;
+    font-size: 13px;
+}
+
+.release-note-action-container > button:hover {
+    cursor: pointer;
+    color: #666;
+}
+
+.release-note-action-container {
+    flex: none;
 }
 
 .release-note-image {
-    width: 200px;
-    margin-left: 12px;
-    border: 1px solid lightgrey;
+    flex-shrink: 2;
 }
 
-.close-release-note {
-    margin-left: 4px;
+img {
+    margin: 20px;
+    width: 260px;
+    height: 200px;
+    flex: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .3);
+}
+
+img:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .5);
 }

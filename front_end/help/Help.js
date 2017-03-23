@@ -60,17 +60,11 @@ Help.browserVersion = function() {
  */
 Help._releaseNoteViewId = 'release-note';
 
-/** @typedef {!{src: string}} */
-Help.ReleaseNoteImage;
-
-/** @typedef {!{text: string, link: (string | undefined)}} */
-Help.ReleaseNoteHighlightContent;
-
-/** @typedef {!{contents: !Array<!Help.ReleaseNoteHighlightContent>, featured: (boolean | undefined)}} */
+/** @typedef {!{title: string, subtitle: string, link: string}} */
 Help.ReleaseNoteHighlight;
 
 /**
  * @typedef {!{version: number, highlights: !Array<!Help.ReleaseNoteHighlight>,
- *    link: string, image: !Help.ReleaseNoteImage}}
+ *    link: string}}
  */
 Help.ReleaseNote;

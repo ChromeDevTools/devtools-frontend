@@ -1834,10 +1834,11 @@ SDK.DOMModel = class extends SDK.SDKModel {
   /**
    * @param {number} x
    * @param {number} y
+   * @param {boolean} includeUserAgentShadowDOM
    * @param {function(?SDK.DOMNode)} callback
    */
-  nodeForLocation(x, y, callback) {
-    this._agent.getNodeForLocation(x, y, mycallback.bind(this));
+  nodeForLocation(x, y, includeUserAgentShadowDOM, callback) {
+    this._agent.getNodeForLocation(x, y, includeUserAgentShadowDOM, mycallback.bind(this));
 
     /**
      * @param {?Protocol.Error} error

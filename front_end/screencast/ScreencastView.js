@@ -231,7 +231,8 @@ Screencast.ScreencastView = class extends UI.VBox {
     var position = this._convertIntoScreenSpace(event);
     this._domModel.nodeForLocation(
         Math.floor(position.x / this._pageScaleFactor + this._scrollOffsetX),
-        Math.floor(position.y / this._pageScaleFactor + this._scrollOffsetY), callback.bind(this));
+        Math.floor(position.y / this._pageScaleFactor + this._scrollOffsetY),
+        Common.moduleSetting('showUAShadowDOM').get(), callback.bind(this));
 
     /**
      * @param {?SDK.DOMNode} node

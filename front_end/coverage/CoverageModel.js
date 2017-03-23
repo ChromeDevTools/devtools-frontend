@@ -172,6 +172,8 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       this._coverageByURL.set(url, entry);
     }
     var segments = Coverage.CoverageModel._convertToDisjointSegments(ranges);
+    if (segments.length && segments.peekLast().end < contentLength)
+      segments.push({end: contentLength});
     entry.update(contentProvider, contentLength, startLine, startColumn, segments);
   }
 };
@@ -185,7 +187,6 @@ Coverage.URLCoverageInfo = class {
     /** @type {!Map<string, !Coverage.CoverageInfo>} */
     this._coverageInfoByLocation = new Map();
     this._size = 0;
-    this._unusedSize = 0;
     this._usedSize = 0;
     /** @type {!Coverage.CoverageType} */
     this._type;
@@ -209,10 +210,8 @@ Coverage.URLCoverageInfo = class {
       this._type |= entry.type();
     }
     this._usedSize -= entry._usedSize;
-    this._unusedSize -= entry._unusedSize;
     entry.mergeCoverage(segments);
     this._usedSize += entry._usedSize;
-    this._unusedSize += entry._unusedSize;
   }
 
   /**
@@ -239,15 +238,15 @@ Coverage.URLCoverageInfo = class {
   /**
    * @return {number}
    */
-  unusedSize() {
-    return this._unusedSize;
+  usedSize() {
+    return this._usedSize;
   }
 
   /**
    * @return {number}
    */
-  usedSize() {
-    return this._usedSize;
+  unusedSize() {
+    return this._size - this._usedSize;
   }
 
   /**
@@ -273,7 +272,6 @@ Coverage.CoverageInfo = class {
     this._lineOffset = lineOffset;
     this._columnOffset = columnOffset;
     this._usedSize = 0;
-    this._unusedSize = 0;
 
     if (contentProvider.contentType().isScript()) {
       this._coverageType = Coverage.CoverageType.JavaScript;
@@ -366,16 +364,11 @@ Coverage.CoverageInfo = class {
 
   _updateStats() {
     this._usedSize = 0;
-    this._unusedSize = 0;
 
     var last = 0;
     for (var segment of this._segments) {
-      if (typeof segment.count === 'number') {
-        if (segment.count)
-          this._usedSize += segment.end - last;
-        else
-          this._unusedSize += segment.end - last;
-      }
+      if (segment.count)
+        this._usedSize += segment.end - last;
       last = segment.end;
     }
   }

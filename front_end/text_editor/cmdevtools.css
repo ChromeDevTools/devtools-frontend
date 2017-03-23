@@ -346,6 +346,18 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
     content: " ";
 }
 
+.CodeMirror .text-editor-coverage-mixed-marker {
+    text-align: right;
+    padding-right: 2px;
+    background-repeat: repeat;
+    background-size: 5px 5px;
+    background-image: linear-gradient(0, #81C784 0px, #81C784 2.5px, #E57373 2.5px, #E57373 5px);
+}
+
+.CodeMirror .text-editor-coverage-mixed-marker::after {
+    content: " ";
+}
+
 .CodeMirror .text-editor-line-decoration {
     position: absolute;
 }

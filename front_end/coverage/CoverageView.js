@@ -133,15 +133,23 @@ Coverage.CoverageView.LineDecorator = class {
       return;
 
     textEditor.installGutter(gutterType, false);
-
+    var lastLine = 0;
+    var lastData = undefined;
     for (var decoration of decorations) {
-      for (var line = decoration.range().startLine; line <= decoration.range().endLine; ++line) {
-        var element = createElementWithClass('div');
-        if (decoration.data())
-          element.className = 'text-editor-coverage-used-marker';
-        else
-          element.className = 'text-editor-coverage-unused-marker';
-
+      var range = decoration.range();
+      var startLine = range.startLine;
+      if (lastLine && lastLine === startLine && lastData !== !!decoration.data()) {
+        var element = createElementWithClass('div', 'text-editor-coverage-mixed-marker');
+        textEditor.setGutterDecoration(startLine, gutterType, element);
+        startLine++;
+      } else {
+        startLine = Math.max(startLine, lastLine);
+      }
+      lastLine = range.endLine;
+      lastData = !!decoration.data();
+      var className = lastData ? 'text-editor-coverage-used-marker' : 'text-editor-coverage-unused-marker';
+      for (var line = startLine; line <= lastLine; ++line) {
+        var element = createElementWithClass('div', className);
         textEditor.setGutterDecoration(line, gutterType, element);
       }
     }

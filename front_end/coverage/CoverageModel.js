@@ -5,7 +5,7 @@
 /** @typedef {{startOffset: number, endOffset: number, count: number}} */
 Coverage.RangeUseCount;
 
-/** @typedef {{end: number, count: (number|undefined), depth: number}} */
+/** @typedef {{end: number, count: (number|undefined)}} */
 Coverage.CoverageSegment;
 
 /**
@@ -88,36 +88,34 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     for (var entry of ranges) {
       var top = stack.peekLast();
       while (top && top.endOffset <= entry.startOffset) {
-        append(top.endOffset, top.count, stack.length);
+        append(top.endOffset, top.count);
         stack.pop();
         top = stack.peekLast();
       }
-      append(entry.startOffset, top ? top.count : undefined, stack.length);
+      append(entry.startOffset, top ? top.count : undefined);
       stack.push(entry);
     }
 
     while (stack.length) {
-      var depth = stack.length;
       var top = stack.pop();
-      append(top.endOffset, top.count, depth);
+      append(top.endOffset, top.count);
     }
 
     /**
      * @param {number} end
      * @param {number} count
-     * @param {number} depth
      */
-    function append(end, count, depth) {
+    function append(end, count) {
       var last = result.peekLast();
       if (last) {
         if (last.end === end)
           return;
-        if (last.count === count && last.depth === depth) {
+        if (last.count === count) {
           last.end = end;
           return;
         }
       }
-      result.push({end: end, count: count, depth: depth});
+      result.push({end: end, count: count});
     }
 
     return result;
@@ -318,11 +316,10 @@ Coverage.CoverageInfo = class {
       var b = segmentsB[indexB];
       var count =
           typeof a.count === 'number' || typeof b.count === 'number' ? (a.count || 0) + (b.count || 0) : undefined;
-      var depth = Math.max(a.depth, b.depth);
       var end = Math.min(a.end, b.end);
       var last = result.peekLast();
-      if (!last || last.count !== count || last.depth !== depth)
-        result.push({end: end, count: count, depth: depth});
+      if (!last || last.count !== count)
+        result.push({end: end, count: count});
       else
         last.end = end;
       if (a.end <= b.end)
@@ -347,12 +344,10 @@ Coverage.CoverageInfo = class {
       return [];
     var text = new Common.Text(contents);
     var lastOffset = 0;
-    var rangesByDepth = [];
+    var result = [];
     for (var segment of this._segments) {
-      if (typeof segment.count !== 'number') {
-        lastOffset = segment.end;
+      if (!segment.end)
         continue;
-      }
       var startPosition = text.positionFromOffset(lastOffset);
       var endPosition = text.positionFromOffset(segment.end);
       if (!startPosition.lineNumber)
@@ -361,23 +356,10 @@ Coverage.CoverageInfo = class {
       if (!endPosition.lineNumber)
         endPosition.columnNumber += this._columnOffset;
       endPosition.lineNumber += this._lineOffset;
-
-      var ranges = rangesByDepth[segment.depth - 1];  // depth === 0 => count === undefined
-      if (!ranges) {
-        ranges = [];
-        rangesByDepth[segment.depth - 1] = ranges;
-      }
-      ranges.push({
-        count: segment.count,
-        range: new Common.TextRange(
-            startPosition.lineNumber, startPosition.columnNumber, endPosition.lineNumber, endPosition.columnNumber)
-      });
+      var range = new Common.TextRange(
+          startPosition.lineNumber, startPosition.columnNumber, endPosition.lineNumber, endPosition.columnNumber);
+      result.push({count: segment.count || 0, range: range});
       lastOffset = segment.end;
-    }
-    var result = [];
-    for (var ranges of rangesByDepth) {
-      for (var r of ranges)
-        result.push({count: r.count, range: r.range});
     }
     return result;
   }

@@ -152,7 +152,7 @@ UI.GlassPane = class {
     if (!this.isShowing())
       return;
 
-    var gutterSize = this._showArrow ? 6 : 3;
+    var gutterSize = this._showArrow ? 8 : 3;
     var scrollbarSize = 14;
     var arrowSize = 10;
 

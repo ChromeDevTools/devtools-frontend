@@ -116,7 +116,7 @@ CookieTable.CookiesTable = class extends UI.VBox {
   }
 
   /**
-   * @param {!Array.<!{folderName: ?string, cookies: !Array.<!SDK.Cookie>}>} cookieFolders
+   * @param {!Array.<!{folderName: ?string, cookies: ?Array.<!SDK.Cookie>}>} cookieFolders
    */
   setCookieFolders(cookieFolders) {
     this._data = cookieFolders;

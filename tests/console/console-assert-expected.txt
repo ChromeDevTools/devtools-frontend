@@ -1,0 +1,11 @@
+CONSOLE ERROR: line 9: 1
+CONSOLE ERROR: line 10: a
+Tests that console.assert() will dump a message and stack trace with source URLs and line numbers.
+
+console-assert.html:4 Assertion failed: 1
+b @ console-assert.html:4
+a @ console-assert.html:10
+console-assert.html:5 Assertion failed: a b
+b @ console-assert.html:5
+a @ console-assert.html:10
+

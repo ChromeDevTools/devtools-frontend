@@ -72,7 +72,6 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
         for (var range of func.ranges)
           ranges.push(range);
       }
-      ranges.sort((a, b) => a.startOffset - b.startOffset);
       this._addCoverage(script, script.contentLength, script.lineOffset, script.columnOffset, ranges);
     }
   }
@@ -82,8 +81,9 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
    * @return {!Array<!Coverage.CoverageSegment>}
    */
   static _convertToDisjointSegments(ranges) {
-    var result = [];
+    ranges.sort((a, b) => a.startOffset - b.startOffset);
 
+    var result = [];
     var stack = [];
     for (var entry of ranges) {
       var top = stack.peekLast();

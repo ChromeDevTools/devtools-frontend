@@ -585,7 +585,7 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
 
   _setupSearchControls() {
     var clearButton = this.element.createChild('div', 'toolbar-input-clear-button');
-    clearButton.appendChild(UI.Icon.create('smallicon-clear-input', 'search-cancel-button'));
+    clearButton.appendChild(UI.Icon.create('smallicon-gray-cross-hover', 'search-cancel-button'));
     clearButton.addEventListener('click', () => this._internalSetValue('', true));
     this.input.addEventListener('keydown', event => this._onKeydownCallback(event));
   }

@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-Common.TextUtils = {
+TextUtils.TextUtils = {
   /**
    * @param {string} char
    * @return {boolean}
@@ -42,7 +42,7 @@ Common.TextUtils = {
    * @return {boolean}
    */
   isWordChar: function(char) {
-    return !Common.TextUtils.isStopChar(char) && !Common.TextUtils.isSpaceChar(char);
+    return !TextUtils.TextUtils.isStopChar(char) && !TextUtils.TextUtils.isSpaceChar(char);
   },
 
   /**
@@ -50,7 +50,7 @@ Common.TextUtils = {
    * @return {boolean}
    */
   isSpaceChar: function(char) {
-    return Common.TextUtils._SpaceCharRegex.test(char);
+    return TextUtils.TextUtils._SpaceCharRegex.test(char);
   },
 
   /**
@@ -59,7 +59,7 @@ Common.TextUtils = {
    */
   isWord: function(word) {
     for (var i = 0; i < word.length; ++i) {
-      if (!Common.TextUtils.isWordChar(word.charAt(i)))
+      if (!TextUtils.TextUtils.isWordChar(word.charAt(i)))
         return false;
     }
     return true;
@@ -86,7 +86,7 @@ Common.TextUtils = {
    * @return {boolean}
    */
   isBraceChar: function(char) {
-    return Common.TextUtils.isOpeningBraceChar(char) || Common.TextUtils.isClosingBraceChar(char);
+    return TextUtils.TextUtils.isOpeningBraceChar(char) || TextUtils.TextUtils.isClosingBraceChar(char);
   },
 
   /**
@@ -115,7 +115,7 @@ Common.TextUtils = {
    */
   lineIndent: function(line) {
     var indentation = 0;
-    while (indentation < line.length && Common.TextUtils.isSpaceChar(line.charAt(indentation)))
+    while (indentation < line.length && TextUtils.TextUtils.isSpaceChar(line.charAt(indentation)))
       ++indentation;
     return line.substr(0, indentation);
   },
@@ -184,12 +184,12 @@ Common.TextUtils = {
   }
 };
 
-Common.TextUtils._SpaceCharRegex = /\s/;
+TextUtils.TextUtils._SpaceCharRegex = /\s/;
 
 /**
  * @enum {string}
  */
-Common.TextUtils.Indent = {
+TextUtils.TextUtils.Indent = {
   TwoSpaces: '  ',
   FourSpaces: '    ',
   EightSpaces: '        ',
@@ -199,7 +199,7 @@ Common.TextUtils.Indent = {
 /**
  * @unrestricted
  */
-Common.TextUtils.BalancedJSONTokenizer = class {
+TextUtils.TextUtils.BalancedJSONTokenizer = class {
   /**
    * @param {function(string)} callback
    * @param {boolean=} findMultiple
@@ -271,9 +271,9 @@ Common.TextUtils.BalancedJSONTokenizer = class {
 /**
  * @interface
  */
-Common.TokenizerFactory = function() {};
+TextUtils.TokenizerFactory = function() {};
 
-Common.TokenizerFactory.prototype = {
+TextUtils.TokenizerFactory.prototype = {
   /**
    * @param {string} mimeType
    * @return {function(string, function(string, ?string, number, number))}

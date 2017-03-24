@@ -1343,7 +1343,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
 
   /**
    * @param {string} text
-   * @return {!{text: string, entityRanges: !Array.<!Common.SourceRange>}}
+   * @return {!{text: string, entityRanges: !Array.<!TextUtils.SourceRange>}}
    */
   _convertWhitespaceToEntities(text) {
     var result = '';
@@ -1565,13 +1565,13 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     var match = regexObject.exec(text);
     var matchRanges = [];
     while (match) {
-      matchRanges.push(new Common.SourceRange(match.index, match[0].length));
+      matchRanges.push(new TextUtils.SourceRange(match.index, match[0].length));
       match = regexObject.exec(text);
     }
 
     // Fall back for XPath, etc. matches.
     if (!matchRanges.length)
-      matchRanges.push(new Common.SourceRange(0, text.length));
+      matchRanges.push(new TextUtils.SourceRange(0, text.length));
 
     this._highlightResult = [];
     UI.highlightSearchResults(this.listItemElement, matchRanges, this._highlightResult);

@@ -657,7 +657,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
     regex.lastIndex = 0;
     var match = regex.exec(content);
     while (match) {
-      ranges.push(new Common.SourceRange(match.index, match[0].length));
+      ranges.push(new TextUtils.SourceRange(match.index, match[0].length));
       match = regex.exec(content);
     }
     if (ranges.length)

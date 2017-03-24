@@ -189,14 +189,14 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   }
 
   /**
-   * @return {!Common.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   selection() {
     return this.textEditor.selection();
   }
 
   /**
-   * @param {!Common.TextRange} textRange
+   * @param {!TextUtils.TextRange} textRange
    */
   setSelection(textRange) {
     this._selectionToSet = textRange;
@@ -221,8 +221,8 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   }
 
   /**
-   * @param {!Common.TextRange} oldRange
-   * @param {!Common.TextRange} newRange
+   * @param {!TextUtils.TextRange} oldRange
+   * @param {!TextUtils.TextRange} newRange
    */
   onTextChanged(oldRange, newRange) {
     if (this._searchConfig && this._searchableView)
@@ -392,7 +392,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @return {number}
    */
   _searchResultIndexForCurrentSelection() {
-    return this._searchResults.lowerBound(this._textEditor.selection().collapseToEnd(), Common.TextRange.comparator);
+    return this._searchResults.lowerBound(this._textEditor.selection().collapseToEnd(), TextUtils.TextRange.comparator);
   }
 
   /**
@@ -492,7 +492,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
       return;
 
     // Calculate the position of the end of the last range to be edited.
-    var currentRangeIndex = ranges.lowerBound(this._textEditor.selection(), Common.TextRange.comparator);
+    var currentRangeIndex = ranges.lowerBound(this._textEditor.selection(), TextUtils.TextRange.comparator);
     var lastRangeIndex = mod(currentRangeIndex - 1, ranges.length);
     var lastRange = ranges[lastRangeIndex];
     var replacementLineEndings = replacement.computeLineEndings();
@@ -506,7 +506,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
 
     this._textEditor.editRange(range, text);
     this._textEditor.revealPosition(lastLineNumber, lastColumnNumber);
-    this._textEditor.setSelection(Common.TextRange.createFromLocation(lastLineNumber, lastColumnNumber));
+    this._textEditor.setSelection(TextUtils.TextRange.createFromLocation(lastLineNumber, lastColumnNumber));
   }
 
   _collectRegexMatches(regexObject) {
@@ -519,7 +519,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
         if (match) {
           var matchEndIndex = match.index + Math.max(match[0].length, 1);
           if (match[0].length)
-            ranges.push(new Common.TextRange(i, offset + match.index, i, offset + matchEndIndex));
+            ranges.push(new TextUtils.TextRange(i, offset + match.index, i, offset + matchEndIndex));
           offset += matchEndIndex;
           line = line.substring(matchEndIndex);
         }

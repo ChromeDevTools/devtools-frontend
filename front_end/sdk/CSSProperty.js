@@ -27,7 +27,7 @@ SDK.CSSProperty = class {
     this.parsedOk = parsedOk;
     this.implicit = implicit;  // A longhand, implicitly set by missing values of shorthand.
     this.text = text;
-    this.range = range ? Common.TextRange.fromObject(range) : null;
+    this.range = range ? TextUtils.TextRange.fromObject(range) : null;
     this._active = true;
     this._nameRange = null;
     this._valueRange = null;
@@ -55,7 +55,7 @@ SDK.CSSProperty = class {
     if (this._nameRange && this._valueRange)
       return;
     var range = this.range;
-    var text = this.text ? new Common.Text(this.text) : null;
+    var text = this.text ? new TextUtils.Text(this.text) : null;
     if (!range || !text)
       return;
 
@@ -64,17 +64,17 @@ SDK.CSSProperty = class {
     if (nameIndex === -1 || valueIndex === -1 || nameIndex > valueIndex)
       return;
 
-    var nameSourceRange = new Common.SourceRange(nameIndex, this.name.length);
-    var valueSourceRange = new Common.SourceRange(valueIndex, this.value.length);
+    var nameSourceRange = new TextUtils.SourceRange(nameIndex, this.name.length);
+    var valueSourceRange = new TextUtils.SourceRange(valueIndex, this.value.length);
 
     this._nameRange = rebase(text.toTextRange(nameSourceRange), range.startLine, range.startColumn);
     this._valueRange = rebase(text.toTextRange(valueSourceRange), range.startLine, range.startColumn);
 
     /**
-     * @param {!Common.TextRange} oneLineRange
+     * @param {!TextUtils.TextRange} oneLineRange
      * @param {number} lineOffset
      * @param {number} columnOffset
-     * @return {!Common.TextRange}
+     * @return {!TextUtils.TextRange}
      */
     function rebase(oneLineRange, lineOffset, columnOffset) {
       if (oneLineRange.startLine === 0) {
@@ -88,7 +88,7 @@ SDK.CSSProperty = class {
   }
 
   /**
-   * @return {?Common.TextRange}
+   * @return {?TextUtils.TextRange}
    */
   nameRange() {
     this._ensureRanges();
@@ -96,7 +96,7 @@ SDK.CSSProperty = class {
   }
 
   /**
-   * @return {?Common.TextRange}
+   * @return {?TextUtils.TextRange}
    */
   valueRange() {
     this._ensureRanges();
@@ -165,10 +165,10 @@ SDK.CSSProperty = class {
     var indentation = this.ownerStyle.cssText ? this._detectIndentation(this.ownerStyle.cssText) :
                                                 Common.moduleSetting('textEditorIndent').get();
     var endIndentation = this.ownerStyle.cssText ? indentation.substring(0, this.ownerStyle.range.endColumn) : '';
-    var text = new Common.Text(this.ownerStyle.cssText || '');
+    var text = new TextUtils.Text(this.ownerStyle.cssText || '');
     var newStyleText = text.replaceRange(range, String.sprintf(';%s;', propertyText));
 
-    return self.runtime.extension(Common.TokenizerFactory)
+    return self.runtime.extension(TextUtils.TokenizerFactory)
         .instance()
         .then(this._formatStyle.bind(this, newStyleText, indentation, endIndentation))
         .then(setStyleText.bind(this));
@@ -187,7 +187,7 @@ SDK.CSSProperty = class {
    * @param {string} styleText
    * @param {string} indentation
    * @param {string} endIndentation
-   * @param {!Common.TokenizerFactory} tokenizerFactory
+   * @param {!TextUtils.TokenizerFactory} tokenizerFactory
    * @return {string}
    */
   _formatStyle(styleText, indentation, endIndentation, tokenizerFactory) {
@@ -257,7 +257,7 @@ SDK.CSSProperty = class {
     var lines = text.split('\n');
     if (lines.length < 2)
       return '';
-    return Common.TextUtils.lineIndent(lines[1]);
+    return TextUtils.TextUtils.lineIndent(lines[1]);
   }
 
   /**

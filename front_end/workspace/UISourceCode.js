@@ -540,13 +540,13 @@ Workspace.UISourceCode = class extends Common.Object {
    */
   addLineMessage(level, text, lineNumber, columnNumber) {
     return this.addMessage(
-        level, text, new Common.TextRange(lineNumber, columnNumber || 0, lineNumber, columnNumber || 0));
+        level, text, new TextUtils.TextRange(lineNumber, columnNumber || 0, lineNumber, columnNumber || 0));
   }
 
   /**
    * @param {!Workspace.UISourceCode.Message.Level} level
    * @param {string} text
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @return {!Workspace.UISourceCode.Message} message
    */
   addMessage(level, text, range) {
@@ -580,11 +580,11 @@ Workspace.UISourceCode = class extends Common.Object {
    * @param {?} data
    */
   addLineDecoration(lineNumber, type, data) {
-    this.addDecoration(Common.TextRange.createFromLocation(lineNumber, 0), type, data);
+    this.addDecoration(TextUtils.TextRange.createFromLocation(lineNumber, 0), type, data);
   }
 
   /**
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @param {string} type
    * @param {?} data
    */
@@ -804,7 +804,7 @@ Workspace.UISourceCode.Message = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {!Workspace.UISourceCode.Message.Level} level
    * @param {string} text
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    */
   constructor(uiSourceCode, level, text, range) {
     this._uiSourceCode = uiSourceCode;
@@ -835,7 +835,7 @@ Workspace.UISourceCode.Message = class {
   }
 
   /**
-   * @return {!Common.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   range() {
     return this._range;
@@ -882,7 +882,7 @@ Workspace.UISourceCode.Message.Level = {
  */
 Workspace.UISourceCode.LineMarker = class {
   /**
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @param {string} type
    * @param {?} data
    */
@@ -893,7 +893,7 @@ Workspace.UISourceCode.LineMarker = class {
   }
 
   /**
-   * @return {!Common.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   range() {
     return this._range;

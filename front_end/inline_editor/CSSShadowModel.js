@@ -43,7 +43,7 @@ InlineEditor.CSSShadowModel = class {
   static _parseShadow(text, isBoxShadow) {
     var shadowTexts = [];
     // Split by commas that aren't inside of color values to get the individual shadow values.
-    var splits = Common.TextUtils.splitStringByRegexes(text, [Common.Color.Regex, /,/g]);
+    var splits = TextUtils.TextUtils.splitStringByRegexes(text, [Common.Color.Regex, /,/g]);
     var currentIndex = 0;
     for (var i = 0; i < splits.length; i++) {
       if (splits[i].regexIndex === 1) {
@@ -60,7 +60,7 @@ InlineEditor.CSSShadowModel = class {
       shadow._format = [];
       var nextPartAllowed = true;
       var regexes = [/inset/gi, Common.Color.Regex, InlineEditor.CSSLength.Regex];
-      var results = Common.TextUtils.splitStringByRegexes(shadowTexts[i], regexes);
+      var results = TextUtils.TextUtils.splitStringByRegexes(shadowTexts[i], regexes);
       for (var j = 0; j < results.length; j++) {
         var result = results[j];
         if (result.regexIndex === -1) {

@@ -262,7 +262,7 @@ Bindings.BreakpointManager = class extends Common.Object {
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {!Common.TextRange} textRange
+   * @param {!TextUtils.TextRange} textRange
    * @return {!Promise<!Array<!Workspace.UILocation>>}
    */
   possibleBreakpoints(uiSourceCode, textRange) {

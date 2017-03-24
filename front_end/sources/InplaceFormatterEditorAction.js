@@ -124,7 +124,7 @@ Sources.InplaceFormatterEditorAction = class {
       var endLocation = sourceMapping.originalToFormatted(range.endLine, range.endColumn);
 
       uiSourceCode.addDecoration(
-          new Common.TextRange(startLocation[0], startLocation[1], endLocation[0], endLocation[1]),
+          new TextUtils.TextRange(startLocation[0], startLocation[1], endLocation[0], endLocation[1]),
           /** @type {string} */ (decoration.type()), decoration.data());
     }
   }

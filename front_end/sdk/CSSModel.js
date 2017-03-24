@@ -107,7 +107,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @param {string} text
    * @param {boolean} majorChange
    * @return {!Promise<boolean>}
@@ -143,7 +143,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
       if (!edits.length)
         return onCSSPatched.call(this, editResult, true);
 
-      edits.sort(Common.SourceEdit.comparator);
+      edits.sort(TextUtils.SourceEdit.comparator);
       edits = edits.reverse();
 
       var styleSheetIds = [];
@@ -208,7 +208,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
 
   /**
    * @param {!Array<!Protocol.CSS.StyleSheetId>} styleSheetIds
-   * @param {!Array<!Common.TextRange>} ranges
+   * @param {!Array<!TextUtils.TextRange>} ranges
    * @param {!Array<string>} texts
    * @param {boolean} majorChange
    * @return {!Promise<boolean>}
@@ -249,7 +249,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @param {string} text
    * @return {!Promise<boolean>}
    */
@@ -277,7 +277,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @param {string} text
    * @return {!Promise<boolean>}
    */
@@ -540,7 +540,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @param {string} newMediaText
    * @return {!Promise<boolean>}
    */
@@ -569,7 +569,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @param {string} ruleText
-   * @param {!Common.TextRange} ruleLocation
+   * @param {!TextUtils.TextRange} ruleLocation
    * @return {!Promise<?SDK.CSSStyleRule>}
    */
   addRule(styleSheetId, ruleText, ruleLocation) {
@@ -888,14 +888,14 @@ SDK.CSSModel.PseudoStateMarker = 'pseudo-state-marker';
 SDK.CSSModel.Edit = class {
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
-   * @param {!Common.TextRange} oldRange
+   * @param {!TextUtils.TextRange} oldRange
    * @param {string} newText
    * @param {?Object} payload
    */
   constructor(styleSheetId, oldRange, newText, payload) {
     this.styleSheetId = styleSheetId;
     this.oldRange = oldRange;
-    this.newRange = Common.TextRange.fromEdit(oldRange, newText);
+    this.newRange = TextUtils.TextRange.fromEdit(oldRange, newText);
     this.payload = payload;
   }
 };

@@ -11,7 +11,7 @@ SDK.CSSValue = class {
   constructor(payload) {
     this.text = payload.text;
     if (payload.range)
-      this.range = Common.TextRange.fromObject(payload.range);
+      this.range = TextUtils.TextRange.fromObject(payload.range);
   }
 
   /**
@@ -126,7 +126,7 @@ SDK.CSSStyleRule = class extends SDK.CSSRule {
       selectorList: {
         selectors: [{text: selectorText}],
       },
-      style: {styleSheetId: '0', range: new Common.TextRange(0, 0, 0, 0), shorthandEntries: [], cssProperties: []}
+      style: {styleSheetId: '0', range: new TextUtils.TextRange(0, 0, 0, 0), shorthandEntries: [], cssProperties: []}
     };
     return new SDK.CSSStyleRule(cssModel, /** @type {!Protocol.CSS.CSSRule} */ (dummyPayload));
   }
@@ -163,14 +163,15 @@ SDK.CSSStyleRule = class extends SDK.CSSRule {
   }
 
   /**
-   * @return {?Common.TextRange}
+   * @return {?TextUtils.TextRange}
    */
   selectorRange() {
     var firstRange = this.selectors[0].range;
     if (!firstRange)
       return null;
     var lastRange = this.selectors.peekLast().range;
-    return new Common.TextRange(firstRange.startLine, firstRange.startColumn, lastRange.endLine, lastRange.endColumn);
+    return new TextUtils.TextRange(
+        firstRange.startLine, firstRange.startColumn, lastRange.endLine, lastRange.endColumn);
   }
 
   /**

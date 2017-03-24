@@ -10,7 +10,7 @@ Sass.ASTSourceMap = class {
    * @param {string} compiledURL
    * @param {string} sourceMapURL
    * @param {!Map<string, !Sass.SASSSupport.AST>} models
-   * @param {?function(!Sass.ASTSourceMap, !Array<!Common.TextRange>, !Array<string>):!Promise<?SDK.SourceMap.EditResult>} editCallback
+   * @param {?function(!Sass.ASTSourceMap, !Array<!TextUtils.TextRange>, !Array<string>):!Promise<?SDK.SourceMap.EditResult>} editCallback
    */
   constructor(compiledURL, sourceMapURL, models, editCallback) {
     this._editCallback = editCallback;
@@ -98,7 +98,7 @@ Sass.ASTSourceMap = class {
 
   /**
    * @override
-   * @param {!Array<!Common.TextRange>} ranges
+   * @param {!Array<!TextUtils.TextRange>} ranges
    * @param {!Array<string>} texts
    * @return {!Promise<?SDK.SourceMap.EditResult>}
    */

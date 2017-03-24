@@ -1093,7 +1093,7 @@ Console.ConsoleViewMessage = class {
     this._searchRegex.lastIndex = 0;
     var sourceRanges = [];
     while ((match = this._searchRegex.exec(text)) && match[0])
-      sourceRanges.push(new Common.SourceRange(match.index, match[0].length));
+      sourceRanges.push(new TextUtils.SourceRange(match.index, match[0].length));
 
     if (sourceRanges.length) {
       this._searchHighlightNodes =

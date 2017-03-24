@@ -38,7 +38,7 @@ Sass.SASSProcessor = class {
   /**
    * @param {!Sass.ASTService} astService
    * @param {!Sass.ASTSourceMap} map
-   * @param {!Array<!Common.TextRange>} ranges
+   * @param {!Array<!TextUtils.TextRange>} ranges
    * @param {!Array<string>} newTexts
    * @return {!Promise<?SDK.SourceMap.EditResult>}
    */
@@ -47,7 +47,7 @@ Sass.SASSProcessor = class {
     var cssURL = map.compiledURL();
     var cssText = map.compiledModel().document.text;
     for (var i = 0; i < ranges.length; ++i)
-      cssText = new Common.Text(cssText.replaceRange(ranges[i], newTexts[i]));
+      cssText = new TextUtils.Text(cssText.replaceRange(ranges[i], newTexts[i]));
     return astService.parseCSS(cssURL, cssText.value()).then(onCSSParsed);
 
     /**
@@ -154,7 +154,7 @@ Sass.SASSProcessor = class {
       var oldRange = rule.styleRange;
       var newRule = nodeMapping.get(rule);
       var newText = newRule.document.text.extract(newRule.styleRange);
-      cssEdits.push(new Common.SourceEdit(newRule.document.url, oldRange, newText));
+      cssEdits.push(new TextUtils.SourceEdit(newRule.document.url, oldRange, newText));
     }
 
     /** @type {!Map<string, string>} */

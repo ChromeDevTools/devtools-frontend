@@ -12,8 +12,7 @@ FormatterWorker.AcornTokenizer = class {
     this._content = content;
     this._comments = [];
     this._tokenizer = acorn.tokenizer(this._content, {ecmaVersion: 8, onComment: this._comments});
-    this._lineEndings = this._content.computeLineEndings();
-    this._lineNumber = 0;
+    this._textCursor = new TextUtils.TextCursor(this._content.computeLineEndings());
     this._tokenLineStart = 0;
     this._tokenLineEnd = 0;
     this._nextTokenInternal();
@@ -78,16 +77,6 @@ FormatterWorker.AcornTokenizer = class {
   }
 
   /**
-   * @param {number} position
-   * @return {number}
-   */
-  _rollLineNumberToPosition(position) {
-    while (this._lineNumber + 1 < this._lineEndings.length && position > this._lineEndings[this._lineNumber])
-      ++this._lineNumber;
-    return this._lineNumber;
-  }
-
-  /**
    * @return {?Acorn.TokenOrComment}
    */
   nextToken() {
@@ -95,10 +84,12 @@ FormatterWorker.AcornTokenizer = class {
     if (token.type === acorn.tokTypes.eof)
       return null;
 
-    this._tokenLineStart = this._rollLineNumberToPosition(token.start);
-    this._tokenLineEnd = this._rollLineNumberToPosition(token.end);
-    this._tokenColumnStart =
-        this._tokenLineStart > 0 ? token.start - this._lineEndings[this._tokenLineStart - 1] - 1 : token.start;
+    this._textCursor.advance(token.start);
+    this._tokenLineStart = this._textCursor.lineNumber();
+    this._tokenColumnStart = this._textCursor.columnNumber();
+
+    this._textCursor.advance(token.end);
+    this._tokenLineEnd = this._textCursor.lineNumber();
     return token;
   }
 

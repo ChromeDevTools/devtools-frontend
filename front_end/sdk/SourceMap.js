@@ -143,7 +143,7 @@ SDK.SourceMap.prototype = {
   editable() {},
 
   /**
-   * @param {!Array<!Common.TextRange>} ranges
+   * @param {!Array<!TextUtils.TextRange>} ranges
    * @param {!Array<string>} texts
    * @return {!Promise<?SDK.SourceMap.EditResult>}
    */
@@ -156,7 +156,7 @@ SDK.SourceMap.prototype = {
 SDK.SourceMap.EditResult = class {
   /**
    * @param {!SDK.SourceMap} map
-   * @param {!Array<!Common.SourceEdit>} compiledEdits
+   * @param {!Array<!TextUtils.SourceEdit>} compiledEdits
    * @param {!Map<string, string>} newSources
    */
   constructor(map, compiledEdits, newSources) {
@@ -305,7 +305,7 @@ SDK.TextSourceMap = class {
 
   /**
    * @override
-   * @param {!Array<!Common.TextRange>} ranges
+   * @param {!Array<!TextUtils.TextRange>} ranges
    * @param {!Array<string>} texts
    * @return {!Promise<?SDK.SourceMap.EditResult>}
    */
@@ -527,8 +527,8 @@ SDK.TextSourceMap = class {
 
   /**
    * @param {string} url
-   * @param {!Common.TextRange} textRange
-   * @return {!Common.TextRange}
+   * @param {!TextUtils.TextRange} textRange
+   * @return {!TextUtils.TextRange}
    */
   reverseMapTextRange(url, textRange) {
     /**
@@ -550,7 +550,7 @@ SDK.TextSourceMap = class {
 
     var startMapping = mappings[startIndex];
     var endMapping = mappings[endIndex];
-    return new Common.TextRange(
+    return new TextUtils.TextRange(
         startMapping.lineNumber, startMapping.columnNumber, endMapping.lineNumber, endMapping.columnNumber);
   }
 };

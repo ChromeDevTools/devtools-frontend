@@ -9,7 +9,7 @@ Sass.SASSSupport = {};
  * @return {!Promise<!Sass.SASSSupport.AST>}
  */
 Sass.SASSSupport.parseSCSS = function(url, content) {
-  var text = new Common.Text(content);
+  var text = new TextUtils.Text(content);
   var document = new Sass.SASSSupport.ASTDocument(url, text);
 
   return Common.formatterWorkerPool.parseSCSS(content).then(onParsed);
@@ -24,7 +24,7 @@ Sass.SASSSupport.parseSCSS = function(url, content) {
       var rulePayload = rulePayloads[i];
       var selectors = rulePayload.selectors.map(createTextNode);
       var properties = rulePayload.properties.map(createProperty);
-      var range = Common.TextRange.fromObject(rulePayload.styleRange);
+      var range = TextUtils.TextRange.fromObject(rulePayload.styleRange);
       var rule = new Sass.SASSSupport.Rule(document, selectors, range, properties);
       rules.push(rule);
     }
@@ -35,7 +35,7 @@ Sass.SASSSupport.parseSCSS = function(url, content) {
    * @param {!Object} payload
    */
   function createTextNode(payload) {
-    var range = Common.TextRange.fromObject(payload);
+    var range = TextUtils.TextRange.fromObject(payload);
     return new Sass.SASSSupport.TextNode(document, text.extract(range), range);
   }
 
@@ -46,7 +46,7 @@ Sass.SASSSupport.parseSCSS = function(url, content) {
     var name = createTextNode(payload.name);
     var value = createTextNode(payload.value);
     return new Sass.SASSSupport.Property(
-        document, name, value, Common.TextRange.fromObject(payload.range), payload.disabled);
+        document, name, value, TextUtils.TextRange.fromObject(payload.range), payload.disabled);
   }
 };
 
@@ -56,7 +56,7 @@ Sass.SASSSupport.parseSCSS = function(url, content) {
 Sass.SASSSupport.ASTDocument = class {
   /**
    * @param {string} url
-   * @param {!Common.Text} text
+   * @param {!TextUtils.Text} text
    */
   constructor(url, text) {
     this.url = url;
@@ -79,7 +79,7 @@ Sass.SASSSupport.ASTDocument = class {
   }
 
   /**
-   * @return {!Common.Text}
+   * @return {!TextUtils.Text}
    */
   newText() {
     this.edits.stableSort(sequentialOrder);
@@ -87,13 +87,13 @@ Sass.SASSSupport.ASTDocument = class {
     for (var i = this.edits.length - 1; i >= 0; --i) {
       var range = this.edits[i].oldRange;
       var newText = this.edits[i].newText;
-      text = new Common.Text(text.replaceRange(range, newText));
+      text = new TextUtils.Text(text.replaceRange(range, newText));
     }
     return text;
 
     /**
-     * @param {!Common.SourceEdit} edit1
-     * @param {!Common.SourceEdit} edit2
+     * @param {!TextUtils.SourceEdit} edit1
+     * @param {!TextUtils.SourceEdit} edit2
      * @return {number}
      */
     function sequentialOrder(edit1, edit2) {
@@ -125,7 +125,7 @@ Sass.SASSSupport.TextNode = class extends Sass.SASSSupport.Node {
   /**
    * @param {!Sass.SASSSupport.ASTDocument} document
    * @param {string} text
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    */
   constructor(document, text, range) {
     super(document);
@@ -140,7 +140,7 @@ Sass.SASSSupport.TextNode = class extends Sass.SASSSupport.Node {
     if (this.text === newText)
       return;
     this.text = newText;
-    this.document.edits.push(new Common.SourceEdit(this.document.url, this.range, newText));
+    this.document.edits.push(new TextUtils.SourceEdit(this.document.url, this.range, newText));
   }
 
   /**
@@ -173,7 +173,7 @@ Sass.SASSSupport.Property = class extends Sass.SASSSupport.Node {
    * @param {!Sass.SASSSupport.ASTDocument} document
    * @param {!Sass.SASSSupport.TextNode} name
    * @param {!Sass.SASSSupport.TextNode} value
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @param {boolean} disabled
    */
   constructor(document, name, value, range, disabled) {
@@ -225,23 +225,23 @@ Sass.SASSSupport.Property = class extends Sass.SASSSupport.Node {
       return;
     this.disabled = disabled;
     if (disabled) {
-      var oldRange1 = Common.TextRange.createFromLocation(this.range.startLine, this.range.startColumn);
-      var edit1 = new Common.SourceEdit(this.document.url, oldRange1, '/* ');
-      var oldRange2 = Common.TextRange.createFromLocation(this.range.endLine, this.range.endColumn);
-      var edit2 = new Common.SourceEdit(this.document.url, oldRange2, ' */');
+      var oldRange1 = TextUtils.TextRange.createFromLocation(this.range.startLine, this.range.startColumn);
+      var edit1 = new TextUtils.SourceEdit(this.document.url, oldRange1, '/* ');
+      var oldRange2 = TextUtils.TextRange.createFromLocation(this.range.endLine, this.range.endColumn);
+      var edit2 = new TextUtils.SourceEdit(this.document.url, oldRange2, ' */');
       this.document.edits.push(edit1, edit2);
       return;
     }
-    var oldRange1 = new Common.TextRange(
+    var oldRange1 = new TextUtils.TextRange(
         this.range.startLine, this.range.startColumn, this.range.startLine, this.name.range.startColumn);
-    var edit1 = new Common.SourceEdit(this.document.url, oldRange1, '');
+    var edit1 = new TextUtils.SourceEdit(this.document.url, oldRange1, '');
 
     var propertyText = this.document.text.extract(this.range);
     var endsWithSemicolon = propertyText.slice(0, -2).trim().endsWith(';');
-    var oldRange2 = new Common.TextRange(
+    var oldRange2 = new TextUtils.TextRange(
         this.range.endLine, this.value.range.endColumn + (endsWithSemicolon ? 1 : 0), this.range.endLine,
         this.range.endColumn);
-    var edit2 = new Common.SourceEdit(this.document.url, oldRange2, '');
+    var edit2 = new TextUtils.SourceEdit(this.document.url, oldRange2, '');
     this.document.edits.push(edit1, edit2);
   }
 
@@ -252,13 +252,13 @@ Sass.SASSSupport.Property = class extends Sass.SASSSupport.Node {
     rule.properties.splice(index, 1);
     this.parent = null;
 
-    var lineRange = new Common.TextRange(this.range.startLine, 0, this.range.endLine + 1, 0);
+    var lineRange = new TextUtils.TextRange(this.range.startLine, 0, this.range.endLine + 1, 0);
     var oldRange;
     if (this.document.text.extract(lineRange).trim() === this.document.text.extract(this.range).trim())
       oldRange = lineRange;
     else
       oldRange = this.range;
-    this.document.edits.push(new Common.SourceEdit(this.document.url, oldRange, ''));
+    this.document.edits.push(new TextUtils.SourceEdit(this.document.url, oldRange, ''));
   }
 };
 
@@ -269,7 +269,7 @@ Sass.SASSSupport.Rule = class extends Sass.SASSSupport.Node {
   /**
    * @param {!Sass.SASSSupport.ASTDocument} document
    * @param {!Array<!Sass.SASSSupport.TextNode>} selectors
-   * @param {!Common.TextRange} styleRange
+   * @param {!TextUtils.TextRange} styleRange
    * @param {!Array<!Sass.SASSSupport.Property>} properties
    */
   constructor(document, selectors, styleRange, properties) {
@@ -342,7 +342,7 @@ Sass.SASSSupport.Rule = class extends Sass.SASSSupport.Node {
       return;
     this._hasTrailingSemicolon = true;
     this.document.edits.push(
-        new Common.SourceEdit(this.document.url, this.properties.peekLast().range.collapseToEnd(), ';'));
+        new TextUtils.SourceEdit(this.document.url, this.properties.peekLast().range.collapseToEnd(), ';'));
   }
 
   /**
@@ -366,10 +366,10 @@ Sass.SASSSupport.Rule = class extends Sass.SASSSupport.Node {
       var disabled = disabledStates[i];
       this.document.edits.push(this._insertPropertyEdit(anchorProperty, nameText, valueText, disabled));
 
-      var name = new Sass.SASSSupport.TextNode(this.document, nameText, Common.TextRange.createFromLocation(0, 0));
-      var value = new Sass.SASSSupport.TextNode(this.document, valueText, Common.TextRange.createFromLocation(0, 0));
+      var name = new Sass.SASSSupport.TextNode(this.document, nameText, TextUtils.TextRange.createFromLocation(0, 0));
+      var value = new Sass.SASSSupport.TextNode(this.document, valueText, TextUtils.TextRange.createFromLocation(0, 0));
       var newProperty = new Sass.SASSSupport.Property(
-          this.document, name, value, Common.TextRange.createFromLocation(0, 0), disabled);
+          this.document, name, value, TextUtils.TextRange.createFromLocation(0, 0), disabled);
 
       this.properties.splice(index + i + 1, 0, newProperty);
       newProperty.parent = this;
@@ -383,7 +383,7 @@ Sass.SASSSupport.Rule = class extends Sass.SASSSupport.Node {
    * @param {string} nameText
    * @param {string} valueText
    * @param {boolean} disabled
-   * @return {!Common.SourceEdit}
+   * @return {!TextUtils.SourceEdit}
    */
   _insertPropertyEdit(anchorProperty, nameText, valueText, disabled) {
     var anchorRange = anchorProperty ? anchorProperty.range : this.blockStart.range;
@@ -391,7 +391,7 @@ Sass.SASSSupport.Rule = class extends Sass.SASSSupport.Node {
     var leftComment = disabled ? '/* ' : '';
     var rightComment = disabled ? ' */' : '';
     var newText = String.sprintf('\n%s%s%s: %s;%s', indent, leftComment, nameText, valueText, rightComment);
-    return new Common.SourceEdit(this.document.url, anchorRange.collapseToEnd(), newText);
+    return new TextUtils.SourceEdit(this.document.url, anchorRange.collapseToEnd(), newText);
   }
 
   /**
@@ -401,13 +401,13 @@ Sass.SASSSupport.Rule = class extends Sass.SASSSupport.Node {
     var indentProperty = this.properties.find(property => !property.range.isEmpty());
     var result = '';
     if (indentProperty) {
-      result = this.document.text.extract(new Common.TextRange(
+      result = this.document.text.extract(new TextUtils.TextRange(
           indentProperty.range.startLine, 0, indentProperty.range.startLine, indentProperty.range.startColumn));
     } else {
       var lineNumber = this.blockStart.range.startLine;
       var columnNumber = this.blockStart.range.startColumn;
-      var baseLine = this.document.text.extract(new Common.TextRange(lineNumber, 0, lineNumber, columnNumber));
-      result = Common.TextUtils.lineIndent(baseLine) + Common.moduleSetting('textEditorIndent').get();
+      var baseLine = this.document.text.extract(new TextUtils.TextRange(lineNumber, 0, lineNumber, columnNumber));
+      result = TextUtils.TextUtils.lineIndent(baseLine) + Common.moduleSetting('textEditorIndent').get();
     }
     return result.isWhitespace() ? result : '';
   }
@@ -512,7 +512,7 @@ Sass.SASSSupport.AST = class extends Sass.SASSSupport.Node {
      * @return {number}
      */
     function nodeComparator(text1, text2) {
-      return Common.TextRange.comparator(text1.range, text2.range);
+      return TextUtils.TextRange.comparator(text1.range, text2.range);
     }
   }
 };

@@ -71,7 +71,7 @@ TextEditor.TextEditorAutocompleteController = class {
    * @param {string} text
    */
   _addWordsFromText(text) {
-    Common.TextUtils.textToWords(
+    TextUtils.TextUtils.textToWords(
         text, /** @type {function(string):boolean} */ (this._config.isWordChar), addWord.bind(this));
 
     /**
@@ -88,7 +88,7 @@ TextEditor.TextEditorAutocompleteController = class {
    * @param {string} text
    */
   _removeWordsFromText(text) {
-    Common.TextUtils.textToWords(
+    TextUtils.TextUtils.textToWords(
         text, /** @type {function(string):boolean} */ (this._config.isWordChar),
         word => this._dictionary.removeWord(word));
   }
@@ -96,7 +96,7 @@ TextEditor.TextEditorAutocompleteController = class {
   /**
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?Common.TextRange}
+   * @return {?TextUtils.TextRange}
    */
   _substituteRange(lineNumber, columnNumber) {
     var range =
@@ -107,8 +107,8 @@ TextEditor.TextEditorAutocompleteController = class {
   }
 
   /**
-   * @param {!Common.TextRange} queryRange
-   * @param {!Common.TextRange} substituteRange
+   * @param {!TextUtils.TextRange} queryRange
+   * @param {!TextUtils.TextRange} substituteRange
    * @param {boolean=} force
    * @return {!Promise.<!UI.SuggestBox.Suggestions>}
    */
@@ -191,7 +191,7 @@ TextEditor.TextEditorAutocompleteController = class {
   }
 
   /**
-   * @param {!Common.TextRange} mainSelection
+   * @param {!TextUtils.TextRange} mainSelection
    * @return {boolean}
    */
   _validateSelectionsContexts(mainSelection) {
@@ -275,7 +275,7 @@ TextEditor.TextEditorAutocompleteController = class {
     var cursor = this._codeMirror.getCursor('to');
     if (this._hintMarker) {
       var position = this._hintMarker.position();
-      if (!position || !position.equal(Common.TextRange.createFromLocation(cursor.line, cursor.ch))) {
+      if (!position || !position.equal(TextUtils.TextRange.createFromLocation(cursor.line, cursor.ch))) {
         this._hintMarker.clear();
         this._hintMarker = null;
       }

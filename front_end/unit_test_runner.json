@@ -4,6 +4,7 @@
         { "name": "dom_extension", "type": "autostart" },
         { "name": "ui", "type": "autostart" },
         { "name": "host", "type": "autostart" },
+        { "name": "text_utils", "type": "autostart" },
         { "name": "common", "type": "autostart" },
         { "name": "workspace", "type": "autostart" },
         { "name": "text_editor", "type": "autostart" },

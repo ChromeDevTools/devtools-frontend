@@ -43,7 +43,7 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
 
 
     /** @type {?UI.AutocompleteConfig} */
-    this._autocompleteConfig = {isWordChar: Common.TextUtils.isWordChar};
+    this._autocompleteConfig = {isWordChar: TextUtils.TextUtils.isWordChar};
     Common.moduleSetting('textEditorAutocompletion').addChangeListener(this._updateAutocomplete, this);
     this._updateAutocomplete();
 
@@ -188,8 +188,8 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
 
   /**
    * @override
-   * @param {!Common.TextRange} oldRange
-   * @param {!Common.TextRange} newRange
+   * @param {!TextUtils.TextRange} oldRange
+   * @param {!TextUtils.TextRange} newRange
    */
   onTextChanged(oldRange, newRange) {
     super.onTextChanged(oldRange, newRange);
@@ -580,7 +580,7 @@ SourceFrame.UISourceCodeFrame.RowMessageBucket = class {
     lineNumber = Math.min(lineNumber, this.textEditor.linesCount - 1);
     var lineText = this.textEditor.line(lineNumber);
     columnNumber = Math.min(columnNumber, lineText.length);
-    var lineIndent = Common.TextUtils.lineIndent(lineText).length;
+    var lineIndent = TextUtils.TextUtils.lineIndent(lineText).length;
     if (this._hasDecoration)
       this.textEditor.removeDecoration(this._decoration, lineNumber);
     this._hasDecoration = true;

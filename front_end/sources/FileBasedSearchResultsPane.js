@@ -180,7 +180,7 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends UI.TreeElemen
 
   /**
    * @param {string} lineContent
-   * @param {!Array.<!Common.SourceRange>} matchRanges
+   * @param {!Array.<!TextUtils.SourceRange>} matchRanges
    */
   _createContentSpan(lineContent, matchRanges) {
     var contentSpan = createElement('span');
@@ -193,14 +193,14 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends UI.TreeElemen
   /**
    * @param {string} lineContent
    * @param {!RegExp} regex
-   * @return {!Array.<!Common.SourceRange>}
+   * @return {!Array.<!TextUtils.SourceRange>}
    */
   _regexMatchRanges(lineContent, regex) {
     regex.lastIndex = 0;
     var match;
     var matchRanges = [];
     while ((regex.lastIndex < lineContent.length) && (match = regex.exec(lineContent)))
-      matchRanges.push(new Common.SourceRange(match.index, match[0].length));
+      matchRanges.push(new TextUtils.SourceRange(match.index, match[0].length));
 
     return matchRanges;
   }

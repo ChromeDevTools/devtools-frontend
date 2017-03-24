@@ -90,7 +90,7 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       return false;
 
     var cssUnitRange =
-        new Common.TextRange(selection.startLine, token.startColumn, selection.startLine, token.endColumn);
+        new TextUtils.TextRange(selection.startLine, token.startColumn, selection.startLine, token.endColumn);
     var cssUnitText = this.textEditor.text(cssUnitRange);
     var newUnitText = this._modifyUnit(cssUnitText, change);
     if (!newUnitText)
@@ -118,7 +118,7 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
 
     for (var lineNumber = startLine; lineNumber <= endLine; lineNumber++) {
       var line = this.textEditor.line(lineNumber).substring(0, Sources.CSSSourceFrame.maxSwatchProcessingLength);
-      var results = Common.TextUtils.splitStringByRegexes(line, regexes);
+      var results = TextUtils.TextUtils.splitStringByRegexes(line, regexes);
       for (var i = 0; i < results.length; i++) {
         var result = results[i];
         if (result.regexIndex === -1 || !handlers.has(regexes[result.regexIndex]))
@@ -133,7 +133,7 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
         if (!swatch)
           continue;
         swatches.push(swatch);
-        swatchPositions.push(Common.TextRange.createFromLocation(lineNumber, result.position));
+        swatchPositions.push(TextUtils.TextRange.createFromLocation(lineNumber, result.position));
       }
     }
     this.textEditor.operation(putSwatchesInline.bind(this));
@@ -142,7 +142,7 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
      * @this {Sources.CSSSourceFrame}
      */
     function putSwatchesInline() {
-      var clearRange = new Common.TextRange(startLine, 0, endLine, this.textEditor.line(endLine).length);
+      var clearRange = new TextUtils.TextRange(startLine, 0, endLine, this.textEditor.line(endLine).length);
       this.textEditor.bookmarks(clearRange, Sources.CSSSourceFrame.SwatchBookmark).forEach(marker => marker.clear());
 
       for (var i = 0; i < swatches.length; i++) {
@@ -293,8 +293,8 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
 
   /**
    * @override
-   * @param {!Common.TextRange} oldRange
-   * @param {!Common.TextRange} newRange
+   * @param {!TextUtils.TextRange} oldRange
+   * @param {!TextUtils.TextRange} newRange
    */
   onTextChanged(oldRange, newRange) {
     super.onTextChanged(oldRange, newRange);
@@ -307,12 +307,12 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
    * @return {boolean}
    */
   _isWordChar(char) {
-    return Common.TextUtils.isWordChar(char) || char === '.' || char === '-' || char === '$';
+    return TextUtils.TextUtils.isWordChar(char) || char === '.' || char === '-' || char === '$';
   }
 
   /**
-   * @param {!Common.TextRange} prefixRange
-   * @param {!Common.TextRange} substituteRange
+   * @param {!TextUtils.TextRange} prefixRange
+   * @param {!TextUtils.TextRange} substituteRange
    * @return {?Promise.<!UI.SuggestBox.Suggestions>}
    */
   _cssSuggestions(prefixRange, substituteRange) {

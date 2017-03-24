@@ -458,7 +458,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
             objectPopoverHelper.dispose();
           return false;
         }
-        var highlightRange = new Common.TextRange(lineNumber, startHighlight, lineNumber, endHighlight);
+        var highlightRange = new TextUtils.TextRange(lineNumber, startHighlight, lineNumber, endHighlight);
         highlightDescriptor = this.textEditor.highlightRange(highlightRange, 'source-frame-eval-expression');
         return true;
       },
@@ -870,7 +870,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
             new Set(decorations.map(decoration => decoration.bookmark).filter(bookmark => !!bookmark));
         var lineEnd = this.textEditor.line(lineNumber).length;
         var bookmarks = this.textEditor.bookmarks(
-            new Common.TextRange(lineNumber, 0, lineNumber, lineEnd),
+            new TextUtils.TextRange(lineNumber, 0, lineNumber, lineEnd),
             Sources.JavaScriptSourceFrame.BreakpointDecoration.bookmarkSymbol);
         for (var bookmark of bookmarks) {
           if (!actualBookmarks.has(bookmark))
@@ -1003,7 +1003,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       this._willAddInlineDecorationsForTest();
       this._breakpointManager
           .possibleBreakpoints(
-              this._debuggerSourceCode, new Common.TextRange(uiLocation.lineNumber, 0, uiLocation.lineNumber + 1, 0))
+              this._debuggerSourceCode, new TextUtils.TextRange(uiLocation.lineNumber, 0, uiLocation.lineNumber + 1, 0))
           .then(addInlineDecorations.bind(this, uiLocation.lineNumber));
     }
 
@@ -1301,7 +1301,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       if (this.textEditor.line(lineNumber).length >= maxLengthToCheck)
         return Promise.resolve(/** @type {?Array<!Workspace.UILocation>} */ ([]));
       return this._breakpointManager
-          .possibleBreakpoints(this._debuggerSourceCode, new Common.TextRange(lineNumber, 0, lineNumber + 1, 0))
+          .possibleBreakpoints(this._debuggerSourceCode, new TextUtils.TextRange(lineNumber, 0, lineNumber + 1, 0))
           .then(locations => locations.length ? locations : null);
     }
 

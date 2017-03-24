@@ -64,10 +64,10 @@ UI.SyntaxHighlighter = class {
     var plainTextStart;
     var line;
 
-    return self.runtime.extension(Common.TokenizerFactory).instance().then(processTokens.bind(this));
+    return self.runtime.extension(TextUtils.TokenizerFactory).instance().then(processTokens.bind(this));
 
     /**
-     * @param {!Common.TokenizerFactory} tokenizerFactory
+     * @param {!TextUtils.TokenizerFactory} tokenizerFactory
      * @this {UI.SyntaxHighlighter}
      */
     function processTokens(tokenizerFactory) {

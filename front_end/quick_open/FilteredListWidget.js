@@ -79,7 +79,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     /**
      * @param {string} text
      * @param {string} query
-     * @return {?Array.<!Common.SourceRange>}
+     * @return {?Array.<!TextUtils.SourceRange>}
      */
     function rangesForMatch(text, query) {
       var opcodes = Diff.Diff.charDiff(query, text);
@@ -88,7 +88,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
       for (var i = 0; i < opcodes.length; ++i) {
         var opcode = opcodes[i];
         if (opcode[0] === Diff.Diff.Operation.Equal)
-          ranges.push(new Common.SourceRange(offset, opcode[1].length));
+          ranges.push(new TextUtils.SourceRange(offset, opcode[1].length));
         else if (opcode[0] !== Diff.Diff.Operation.Insert)
           return null;
         offset += opcode[1].length;

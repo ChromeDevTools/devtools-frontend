@@ -81,7 +81,7 @@ Common.ContentProvider.SearchMatch = class {
 Common.ContentProvider.performSearchInContent = function(content, query, caseSensitive, isRegex) {
   var regex = createSearchRegex(query, caseSensitive, isRegex);
 
-  var text = new Common.Text(content);
+  var text = new TextUtils.Text(content);
   var result = [];
   for (var i = 0; i < text.lineCount(); ++i) {
     var lineContent = text.lineAt(i);

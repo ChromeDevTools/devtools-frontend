@@ -1,7 +1,7 @@
 {
     "extensions": [
         {
-            "type": "@Common.TokenizerFactory",
+            "type": "@TextUtils.TokenizerFactory",
             "className": "TextEditor.CodeMirrorUtils.TokenizerFactory"
         },
         {

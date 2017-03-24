@@ -487,7 +487,7 @@ UI.TextPrompt = class extends Common.Object {
     var beforeRange = this._createRange();
     beforeRange.setStart(this._element, 0);
     beforeRange.setEnd(fullWordRange.startContainer, fullWordRange.startOffset);
-    this._queryRange = new Common.TextRange(
+    this._queryRange = new TextUtils.TextRange(
         0, beforeRange.toString().length, 0, beforeRange.toString().length + fullWordRange.toString().length);
 
     var shouldSelect = !this._disableDefaultSuggestionForEmptyInput || !!this.text();

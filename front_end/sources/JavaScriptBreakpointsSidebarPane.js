@@ -124,7 +124,7 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
      */
     function fillSnippetElement(snippetElement, content) {
       var lineNumber = uiLocation.lineNumber;
-      var text = new Common.Text(content || '');
+      var text = new TextUtils.Text(content || '');
       if (lineNumber < text.lineCount()) {
         var lineText = text.lineAt(lineNumber);
         var maxSnippetLength = 200;

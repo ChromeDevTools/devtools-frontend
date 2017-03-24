@@ -30,7 +30,7 @@
 
 TextEditor.CodeMirrorUtils = {};
 /**
- * @param {!Common.TextRange} range
+ * @param {!TextUtils.TextRange} range
  * @return {!{start: !CodeMirror.Pos, end: !CodeMirror.Pos}}
  */
 TextEditor.CodeMirrorUtils.toPos = function(range) {
@@ -43,15 +43,15 @@ TextEditor.CodeMirrorUtils.toPos = function(range) {
 /**
  * @param {!CodeMirror.Pos} start
  * @param {!CodeMirror.Pos} end
- * @return {!Common.TextRange}
+ * @return {!TextUtils.TextRange}
  */
 TextEditor.CodeMirrorUtils.toRange = function(start, end) {
-  return new Common.TextRange(start.line, start.ch, end.line, end.ch);
+  return new TextUtils.TextRange(start.line, start.ch, end.line, end.ch);
 };
 
 /**
  * @param {!CodeMirror.ChangeObject} changeObject
- * @return {{oldRange: !Common.TextRange, newRange: !Common.TextRange}}
+ * @return {{oldRange: !TextUtils.TextRange, newRange: !TextUtils.TextRange}}
  */
 TextEditor.CodeMirrorUtils.changeObjectToEditOperation = function(changeObject) {
   var oldRange = TextEditor.CodeMirrorUtils.toRange(changeObject.from, changeObject.to);
@@ -115,7 +115,7 @@ TextEditor.CodeMirrorUtils.appendThemeStyle = function(element) {
 
 
 /**
- * @implements {Common.TokenizerFactory}
+ * @implements {TextUtils.TokenizerFactory}
  * @unrestricted
  */
 TextEditor.CodeMirrorUtils.TokenizerFactory = class {

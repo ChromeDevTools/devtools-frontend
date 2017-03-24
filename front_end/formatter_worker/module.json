@@ -1,6 +1,7 @@
 {
     "dependencies": [
         "platform",
+        "text_utils",
         "cm_headless"
     ],
     "scripts": [

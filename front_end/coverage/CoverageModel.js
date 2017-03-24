@@ -250,7 +250,7 @@ Coverage.URLCoverageInfo = class {
   }
 
   /**
-   * @return {!Promise<!Array<!{range: !Common.TextRange, count: number}>>}
+   * @return {!Promise<!Array<!{range: !TextUtils.TextRange, count: number}>>}
    */
   async buildTextRanges() {
     var textRangePromises = [];
@@ -334,13 +334,13 @@ Coverage.CoverageInfo = class {
   }
 
   /**
-   * @return {!Promise<!Array<!{range: !Common.TextRange, count: number}>>}
+   * @return {!Promise<!Array<!{range: !TextUtils.TextRange, count: number}>>}
    */
   async buildTextRanges() {
     var contents = await this._contentProvider.requestContent();
     if (!contents)
       return [];
-    var text = new Common.Text(contents);
+    var text = new TextUtils.Text(contents);
     var lastOffset = 0;
     var result = [];
     for (var segment of this._segments) {
@@ -354,7 +354,7 @@ Coverage.CoverageInfo = class {
       if (!endPosition.lineNumber)
         endPosition.columnNumber += this._columnOffset;
       endPosition.lineNumber += this._lineOffset;
-      var range = new Common.TextRange(
+      var range = new TextUtils.TextRange(
           startPosition.lineNumber, startPosition.columnNumber, endPosition.lineNumber, endPosition.columnNumber);
       result.push({count: segment.count || 0, range: range});
       lastOffset = segment.end;

@@ -15,7 +15,7 @@ SDK.CSSStyleDeclaration = class {
     this._allProperties;
     /** @type {string|undefined} */
     this.styleSheetId;
-    /** @type {?Common.TextRange} */
+    /** @type {?TextUtils.TextRange} */
     this.range;
     /** @type {string|undefined} */
     this.cssText;
@@ -51,7 +51,7 @@ SDK.CSSStyleDeclaration = class {
    */
   _reinitialize(payload) {
     this.styleSheetId = payload.styleSheetId;
-    this.range = payload.range ? Common.TextRange.fromObject(payload.range) : null;
+    this.range = payload.range ? TextUtils.TextRange.fromObject(payload.range) : null;
 
     var shorthandEntries = payload.shorthandEntries;
     this._shorthandValues = new Map();
@@ -253,7 +253,7 @@ SDK.CSSStyleDeclaration = class {
 
   /**
    * @param {number} index
-   * @return {!Common.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   _insertionRange(index) {
     var property = this.propertyAt(index);

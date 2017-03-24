@@ -64,7 +64,7 @@ Console.ConsolePrompt = class extends UI.Widget {
 
   moveCaretToEndOfPrompt() {
     if (this._editor)
-      this._editor.setSelection(Common.TextRange.createFromLocation(Infinity, Infinity));
+      this._editor.setSelection(TextUtils.TextRange.createFromLocation(Infinity, Infinity));
   }
 
   /**
@@ -134,7 +134,7 @@ Console.ConsolePrompt = class extends UI.Widget {
     this.setText(newText);
 
     if (isPrevious)
-      this._editor.setSelection(Common.TextRange.createFromLocation(0, Infinity));
+      this._editor.setSelection(TextUtils.TextRange.createFromLocation(0, Infinity));
     else
       this.moveCaretToEndOfPrompt();
     this.setMinimumSize(0, this._editor.widget().element.offsetHeight);
@@ -238,12 +238,12 @@ Console.ConsolePrompt = class extends UI.Widget {
   /**
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?Common.TextRange}
+   * @return {?TextUtils.TextRange}
    */
   _substituteRange(lineNumber, columnNumber) {
     var token = this._editor.tokenAtTextPosition(lineNumber, columnNumber);
     if (token && token.type === 'js-string')
-      return new Common.TextRange(lineNumber, token.startColumn, lineNumber, columnNumber);
+      return new TextUtils.TextRange(lineNumber, token.startColumn, lineNumber, columnNumber);
 
     var lineText = this._editor.line(lineNumber);
     var index;
@@ -251,18 +251,18 @@ Console.ConsolePrompt = class extends UI.Widget {
       if (' =:[({;,!+-*/&|^<>.\t\r\n'.indexOf(lineText.charAt(index)) !== -1)
         break;
     }
-    return new Common.TextRange(lineNumber, index + 1, lineNumber, columnNumber);
+    return new TextUtils.TextRange(lineNumber, index + 1, lineNumber, columnNumber);
   }
 
   /**
-   * @param {!Common.TextRange} queryRange
-   * @param {!Common.TextRange} substituteRange
+   * @param {!TextUtils.TextRange} queryRange
+   * @param {!TextUtils.TextRange} substituteRange
    * @param {boolean=} force
    * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
   _wordsWithQuery(queryRange, substituteRange, force) {
     var query = this._editor.text(queryRange);
-    var before = this._editor.text(new Common.TextRange(0, 0, queryRange.startLine, queryRange.startColumn));
+    var before = this._editor.text(new TextUtils.TextRange(0, 0, queryRange.startLine, queryRange.startColumn));
     var historyWords = this._historyCompletions(query, force);
     var token = this._editor.tokenAtTextPosition(substituteRange.startLine, substituteRange.startColumn);
     if (token) {

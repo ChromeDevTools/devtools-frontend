@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-self['Common'] = self['Common'] || {};
-
 /**
  * @unrestricted
  */
-Common.Text = class {
+TextUtils.Text = class {
   /**
    * @param {string} value
    */
@@ -50,7 +48,7 @@ Common.Text = class {
 
   /**
    * @param {number} offset
-   * @return {!Common.Text.Position}
+   * @return {!TextUtils.Text.Position}
    */
   positionFromOffset(offset) {
     var lineEndings = this.lineEndings();
@@ -72,22 +70,22 @@ Common.Text = class {
   }
 
   /**
-   * @param {!Common.TextRange} range
-   * @return {!Common.SourceRange}
+   * @param {!TextUtils.TextRange} range
+   * @return {!TextUtils.SourceRange}
    */
   toSourceRange(range) {
     var start = this.offsetFromPosition(range.startLine, range.startColumn);
     var end = this.offsetFromPosition(range.endLine, range.endColumn);
-    return new Common.SourceRange(start, end - start);
+    return new TextUtils.SourceRange(start, end - start);
   }
 
   /**
-   * @param {!Common.SourceRange} sourceRange
-   * @return {!Common.TextRange}
+   * @param {!TextUtils.SourceRange} sourceRange
+   * @return {!TextUtils.TextRange}
    */
   toTextRange(sourceRange) {
-    var cursor = new Common.TextCursor(this.lineEndings());
-    var result = Common.TextRange.createFromLocation(0, 0);
+    var cursor = new TextUtils.TextCursor(this.lineEndings());
+    var result = TextUtils.TextRange.createFromLocation(0, 0);
 
     cursor.resetTo(sourceRange.offset);
     result.startLine = cursor.lineNumber();
@@ -100,7 +98,7 @@ Common.Text = class {
   }
 
   /**
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @param {string} replacement
    * @return {string}
    */
@@ -111,7 +109,7 @@ Common.Text = class {
   }
 
   /**
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @return {string}
    */
   extract(range) {
@@ -121,12 +119,12 @@ Common.Text = class {
 };
 
 /** @typedef {{lineNumber: number, columnNumber: number}} */
-Common.Text.Position;
+TextUtils.Text.Position;
 
 /**
  * @unrestricted
  */
-Common.TextCursor = class {
+TextUtils.TextCursor = class {
   /**
    * @param {!Array<number>} lineEndings
    */

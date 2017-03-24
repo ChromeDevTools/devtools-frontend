@@ -247,7 +247,7 @@ InlineEditor.CSSShadowSwatch = class extends HTMLSpanElement {
   setCSSShadow(model) {
     this._model = model;
     this._contentElement.removeChildren();
-    var results = Common.TextUtils.splitStringByRegexes(model.asCSSText(), [/inset/g, Common.Color.Regex]);
+    var results = TextUtils.TextUtils.splitStringByRegexes(model.asCSSText(), [/inset/g, Common.Color.Regex]);
     for (var i = 0; i < results.length; i++) {
       var result = results[i];
       if (result.regexIndex === 1) {

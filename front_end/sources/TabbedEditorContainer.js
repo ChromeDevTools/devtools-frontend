@@ -237,7 +237,7 @@ Sources.TabbedEditorContainer = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _selectionChanged(event) {
-    var range = /** @type {!Common.TextRange} */ (event.data);
+    var range = /** @type {!TextUtils.TextRange} */ (event.data);
     this._history.updateSelectionRange(this._currentFile.url(), range);
     this._history.save(this._previouslyViewedFilesSetting);
   }
@@ -453,7 +453,7 @@ Sources.TabbedEditorContainer = class extends Common.Object {
 
   /**
    * @param {!UI.Widget} editorView
-   * @param {!Common.TextRange=} selection
+   * @param {!TextUtils.TextRange=} selection
    * @param {number=} firstLineNumber
    */
   _restoreEditorProperties(editorView, selection, firstLineNumber) {
@@ -599,7 +599,7 @@ Sources.TabbedEditorContainer.maximalPreviouslyViewedFilesCount = 30;
 Sources.TabbedEditorContainer.HistoryItem = class {
   /**
    * @param {string} url
-   * @param {!Common.TextRange=} selectionRange
+   * @param {!TextUtils.TextRange=} selectionRange
    * @param {number=} scrollLineNumber
    */
   constructor(url, selectionRange, scrollLineNumber) {
@@ -616,7 +616,7 @@ Sources.TabbedEditorContainer.HistoryItem = class {
    */
   static fromObject(serializedHistoryItem) {
     var selectionRange = serializedHistoryItem.selectionRange ?
-        Common.TextRange.fromObject(serializedHistoryItem.selectionRange) :
+        TextUtils.TextRange.fromObject(serializedHistoryItem.selectionRange) :
         undefined;
     return new Sources.TabbedEditorContainer.HistoryItem(
         serializedHistoryItem.url, selectionRange, serializedHistoryItem.scrollLineNumber);
@@ -681,7 +681,7 @@ Sources.TabbedEditorContainer.History = class {
 
   /**
    * @param {string} url
-   * @return {!Common.TextRange|undefined}
+   * @return {!TextUtils.TextRange|undefined}
    */
   selectionRange(url) {
     var index = this.index(url);
@@ -690,7 +690,7 @@ Sources.TabbedEditorContainer.History = class {
 
   /**
    * @param {string} url
-   * @param {!Common.TextRange=} selectionRange
+   * @param {!TextUtils.TextRange=} selectionRange
    */
   updateSelectionRange(url, selectionRange) {
     if (!selectionRange)

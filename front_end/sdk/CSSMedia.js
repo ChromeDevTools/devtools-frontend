@@ -50,7 +50,7 @@ SDK.CSSMediaQueryExpression = class {
     this._value = payload.value;
     this._unit = payload.unit;
     this._feature = payload.feature;
-    this._valueRange = payload.valueRange ? Common.TextRange.fromObject(payload.valueRange) : null;
+    this._valueRange = payload.valueRange ? TextUtils.TextRange.fromObject(payload.valueRange) : null;
     this._computedLength = payload.computedLength || null;
   }
 
@@ -84,7 +84,7 @@ SDK.CSSMediaQueryExpression = class {
   }
 
   /**
-   * @return {?Common.TextRange}
+   * @return {?TextUtils.TextRange}
    */
   valueRange() {
     return this._valueRange;
@@ -140,7 +140,7 @@ SDK.CSSMedia = class {
     this.text = payload.text;
     this.source = payload.source;
     this.sourceURL = payload.sourceURL || '';
-    this.range = payload.range ? Common.TextRange.fromObject(payload.range) : null;
+    this.range = payload.range ? TextUtils.TextRange.fromObject(payload.range) : null;
     this.styleSheetId = payload.styleSheetId;
     this.mediaList = null;
     if (payload.mediaList) {

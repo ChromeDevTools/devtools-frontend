@@ -818,13 +818,13 @@ UI.ElementFocusRestorer = class {
  * @return {?Element}
  */
 UI.highlightSearchResult = function(element, offset, length, domChanges) {
-  var result = UI.highlightSearchResults(element, [new Common.SourceRange(offset, length)], domChanges);
+  var result = UI.highlightSearchResults(element, [new TextUtils.SourceRange(offset, length)], domChanges);
   return result.length ? result[0] : null;
 };
 
 /**
  * @param {!Element} element
- * @param {!Array.<!Common.SourceRange>} resultRanges
+ * @param {!Array.<!TextUtils.SourceRange>} resultRanges
  * @param {!Array.<!Object>=} changes
  * @return {!Array.<!Element>}
  */
@@ -851,7 +851,7 @@ UI.runCSSAnimationOnce = function(element, className) {
 
 /**
  * @param {!Element} element
- * @param {!Array.<!Common.SourceRange>} resultRanges
+ * @param {!Array.<!TextUtils.SourceRange>} resultRanges
  * @param {string} styleClass
  * @param {!Array.<!Object>=} changes
  * @return {!Array.<!Element>}

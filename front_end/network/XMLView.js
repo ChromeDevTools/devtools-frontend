@@ -270,7 +270,7 @@ Network.XMLView.Node = class extends UI.TreeElement {
     var match = regex.exec(content);
     var ranges = [];
     while (match) {
-      ranges.push(new Common.SourceRange(match.index, match[0].length));
+      ranges.push(new TextUtils.SourceRange(match.index, match[0].length));
       match = regex.exec(content);
     }
     if (ranges.length)

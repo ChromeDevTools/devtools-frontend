@@ -31,7 +31,7 @@
 /**
  * @unrestricted
  */
-Common.TextRange = class {
+TextUtils.TextRange = class {
   /**
    * @param {number} startLine
    * @param {number} startColumn
@@ -48,25 +48,25 @@ Common.TextRange = class {
   /**
    * @param {number} line
    * @param {number} column
-   * @return {!Common.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   static createFromLocation(line, column) {
-    return new Common.TextRange(line, column, line, column);
+    return new TextUtils.TextRange(line, column, line, column);
   }
 
   /**
    * @param {!Object} serializedTextRange
-   * @return {!Common.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   static fromObject(serializedTextRange) {
-    return new Common.TextRange(
+    return new TextUtils.TextRange(
         serializedTextRange.startLine, serializedTextRange.startColumn, serializedTextRange.endLine,
         serializedTextRange.endColumn);
   }
 
   /**
-   * @param {!Common.TextRange} range1
-   * @param {!Common.TextRange} range2
+   * @param {!TextUtils.TextRange} range1
+   * @param {!TextUtils.TextRange} range2
    * @return {number}
    */
   static comparator(range1, range2) {
@@ -74,9 +74,9 @@ Common.TextRange = class {
   }
 
   /**
-   * @param {!Common.TextRange} oldRange
+   * @param {!TextUtils.TextRange} oldRange
    * @param {string} newText
-   * @return {!Common.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   static fromEdit(oldRange, newText) {
     var endLine = oldRange.startLine;
@@ -87,7 +87,7 @@ Common.TextRange = class {
       var len = lineEndings.length;
       endColumn = lineEndings[len - 1] - lineEndings[len - 2] - 1;
     }
-    return new Common.TextRange(oldRange.startLine, oldRange.startColumn, endLine, endColumn);
+    return new TextUtils.TextRange(oldRange.startLine, oldRange.startColumn, endLine, endColumn);
   }
 
   /**
@@ -98,7 +98,7 @@ Common.TextRange = class {
   }
 
   /**
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @return {boolean}
    */
   immediatelyPrecedes(range) {
@@ -108,7 +108,7 @@ Common.TextRange = class {
   }
 
   /**
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @return {boolean}
    */
   immediatelyFollows(range) {
@@ -118,7 +118,7 @@ Common.TextRange = class {
   }
 
   /**
-   * @param {!Common.TextRange} range
+   * @param {!TextUtils.TextRange} range
    * @return {boolean}
    */
   follows(range) {
@@ -133,34 +133,34 @@ Common.TextRange = class {
   }
 
   /**
-   * @return {!Common.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   collapseToEnd() {
-    return new Common.TextRange(this.endLine, this.endColumn, this.endLine, this.endColumn);
+    return new TextUtils.TextRange(this.endLine, this.endColumn, this.endLine, this.endColumn);
   }
 
   /**
-   * @return {!Common.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   collapseToStart() {
-    return new Common.TextRange(this.startLine, this.startColumn, this.startLine, this.startColumn);
+    return new TextUtils.TextRange(this.startLine, this.startColumn, this.startLine, this.startColumn);
   }
 
   /**
-   * @return {!Common.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   normalize() {
     if (this.startLine > this.endLine || (this.startLine === this.endLine && this.startColumn > this.endColumn))
-      return new Common.TextRange(this.endLine, this.endColumn, this.startLine, this.startColumn);
+      return new TextUtils.TextRange(this.endLine, this.endColumn, this.startLine, this.startColumn);
     else
       return this.clone();
   }
 
   /**
-   * @return {!Common.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   clone() {
-    return new Common.TextRange(this.startLine, this.startColumn, this.endLine, this.endColumn);
+    return new TextUtils.TextRange(this.startLine, this.startColumn, this.endLine, this.endColumn);
   }
 
   /**
@@ -176,7 +176,7 @@ Common.TextRange = class {
   }
 
   /**
-   * @param {!Common.TextRange} other
+   * @param {!TextUtils.TextRange} other
    * @return {number}
    */
   compareTo(other) {
@@ -205,7 +205,7 @@ Common.TextRange = class {
   }
 
   /**
-   * @param {!Common.TextRange} other
+   * @param {!TextUtils.TextRange} other
    * @return {boolean}
    */
   equal(other) {
@@ -216,7 +216,7 @@ Common.TextRange = class {
   /**
    * @param {number} line
    * @param {number} column
-   * @return {!Common.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   relativeTo(line, column) {
     var relative = this.clone();
@@ -232,9 +232,9 @@ Common.TextRange = class {
   }
 
   /**
-   * @param {!Common.TextRange} originalRange
-   * @param {!Common.TextRange} editedRange
-   * @return {!Common.TextRange}
+   * @param {!TextUtils.TextRange} originalRange
+   * @param {!TextUtils.TextRange} editedRange
+   * @return {!TextUtils.TextRange}
    */
   rebaseAfterTextEdit(originalRange, editedRange) {
     console.assert(originalRange.startLine === editedRange.startLine);
@@ -281,7 +281,7 @@ Common.TextRange = class {
 /**
  * @unrestricted
  */
-Common.SourceRange = class {
+TextUtils.SourceRange = class {
   /**
    * @param {number} offset
    * @param {number} length
@@ -295,10 +295,10 @@ Common.SourceRange = class {
 /**
  * @unrestricted
  */
-Common.SourceEdit = class {
+TextUtils.SourceEdit = class {
   /**
    * @param {string} sourceURL
-   * @param {!Common.TextRange} oldRange
+   * @param {!TextUtils.TextRange} oldRange
    * @param {string} newText
    */
   constructor(sourceURL, oldRange, newText) {
@@ -308,18 +308,18 @@ Common.SourceEdit = class {
   }
 
   /**
-   * @param {!Common.SourceEdit} edit1
-   * @param {!Common.SourceEdit} edit2
+   * @param {!TextUtils.SourceEdit} edit1
+   * @param {!TextUtils.SourceEdit} edit2
    * @return {number}
    */
   static comparator(edit1, edit2) {
-    return Common.TextRange.comparator(edit1.oldRange, edit2.oldRange);
+    return TextUtils.TextRange.comparator(edit1.oldRange, edit2.oldRange);
   }
 
   /**
-   * @return {!Common.TextRange}
+   * @return {!TextUtils.TextRange}
    */
   newRange() {
-    return Common.TextRange.fromEdit(this.oldRange, this.newText);
+    return TextUtils.TextRange.fromEdit(this.oldRange, this.newText);
   }
 };

@@ -129,7 +129,7 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
           this._state = 'parse-snapshot-info';
           this._progress.updateStatus('Loading snapshot info\u2026');
           this._json = null;  // tokenizer takes over input.
-          this._jsonTokenizer = new Common.TextUtils.BalancedJSONTokenizer(this._writeBalancedJSON.bind(this));
+          this._jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(this._writeBalancedJSON.bind(this));
           // Fall through with adjusted payload.
           chunk = json;
         }

@@ -55,7 +55,6 @@
 .toolbar-dropdown-arrow {
     background-color: #6D6D6D;
     pointer-events: none;
-    margin: auto 0;
     flex: none;
 }
 
@@ -202,7 +201,7 @@ select.toolbar-item {
     -webkit-appearance: none;
     border: 0;
     border-radius: 0;
-    padding: 0 8px 0 5px;
+    padding: 0 13px 0 5px;
     margin-right: -10px;
     position: relative;
 }

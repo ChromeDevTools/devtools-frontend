@@ -103,7 +103,6 @@ UI.Icon.Descriptors = {
   'smallicon-command-result': {x: -40, y: -19, width: 10, height: 10, spritesheet: 'smallicons'},
   'smallicon-shadow': {x: -60, y: -20, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
   'smallicon-bezier': {x: -80, y: -20, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
-  'smallicon-dropdown-arrow': {x: -18, y: -96, width: 12, height: 12, spritesheet: 'largeicons', isMask: true},
   'smallicon-triangle-right': {x: -4, y: -98, width: 10, height: 10, spritesheet: 'largeicons', isMask: true},
   'smallicon-triangle-down': {x: -20, y: -98, width: 10, height: 10, spritesheet: 'largeicons', isMask: true},
   'smallicon-triangle-up': {x: -4, y: -111, width: 10, height: 10, spritesheet: 'largeicons', isMask: true},

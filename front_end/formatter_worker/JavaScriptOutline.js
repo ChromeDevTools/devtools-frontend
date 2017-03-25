@@ -5,78 +5,155 @@
  * @param {string} content
  */
 FormatterWorker.javaScriptOutline = function(content) {
-  var chunkSize = 100000;  // characters per data chunk
+  var chunkSize = 100000;
   var outlineChunk = [];
-  var previousIdentifier = null;
-  var previousToken = null;
-  var processedChunkCharacters = 0;
-  var addedFunction = false;
-  var isReadingArguments = false;
-  var argumentsText = '';
-  var currentFunction = null;
-  var tokenizer = new FormatterWorker.AcornTokenizer(content);
-  var AT = FormatterWorker.AcornTokenizer;
+  var lastReportedOffset = 0;
 
-  while (tokenizer.peekToken()) {
-    var token = /** @type {!Acorn.TokenOrComment} */ (tokenizer.nextToken());
-    if (AT.lineComment(token) || AT.blockComment(token))
-      continue;
+  var ast;
+  try {
+    ast = acorn.parse(content, {ranges: false, ecmaVersion: 8});
+  } catch (e) {
+    ast = acorn.parse_dammit(content, {ranges: false, ecmaVersion: 8});
+  }
 
-    var tokenValue = content.substring(token.start, token.end);
+  var textCursor = new TextUtils.TextCursor(content.computeLineEndings());
+  var walker = new FormatterWorker.ESTreeWalker(beforeVisit);
+  walker.walk(ast);
+  postMessage({chunk: outlineChunk, isLastChunk: true});
 
-    if (AT.identifier(token) && previousToken &&
-        (AT.identifier(previousToken, 'get') || AT.identifier(previousToken, 'set'))) {
-      currentFunction = {
-        line: tokenizer.tokenLineStart(),
-        column: tokenizer.tokenColumnStart(),
-        name: previousToken.value + ' ' + tokenValue
-      };
-      addedFunction = true;
-      previousIdentifier = null;
-    } else if (AT.identifier(token)) {
-      previousIdentifier = tokenValue;
-      if (tokenValue && previousToken && AT.keyword(previousToken, 'function')) {
-        // A named function: "function f...".
-        currentFunction = {line: tokenizer.tokenLineStart(), column: tokenizer.tokenColumnStart(), name: tokenValue};
-        addedFunction = true;
-        previousIdentifier = null;
-      }
+  /**
+   * @param {!ESTree.Node} node
+   */
+  function beforeVisit(node) {
+    if (node.type === 'ClassDeclaration') {
+      reportClass(/** @type {!ESTree.Node} */ (node.id));
+    } else if (node.type === 'VariableDeclarator' && isClassNode(node.init)) {
+      reportClass(/** @type {!ESTree.Node} */ (node.id));
+    } else if (node.type === 'AssignmentExpression' && isNameNode(node.left) && isClassNode(node.right)) {
+      reportClass(/** @type {!ESTree.Node} */ (node.left));
+    } else if (node.type === 'Property' && isNameNode(node.key) && isClassNode(node.value)) {
+      reportClass(/** @type {!ESTree.Node} */ (node.key));
+    } else if (node.type === 'FunctionDeclaration') {
+      reportFunction(/** @type {!ESTree.Node} */ (node.id), node);
+    } else if (node.type === 'VariableDeclarator' && isFunctionNode(node.init)) {
+      reportFunction(/** @type {!ESTree.Node} */ (node.id), /** @type {!ESTree.Node} */ (node.init));
+    } else if (node.type === 'AssignmentExpression' && isNameNode(node.left) && isFunctionNode(node.right)) {
+      reportFunction(/** @type {!ESTree.Node} */ (node.left), /** @type {!ESTree.Node} */ (node.right));
     } else if (
-        AT.keyword(token, 'function') && previousIdentifier && previousToken && AT.punctuator(previousToken, ':=')) {
-      // Anonymous function assigned to an identifier: "...f = function..."
-      // or "funcName: function...".
-      currentFunction = {
-        line: tokenizer.tokenLineStart(),
-        column: tokenizer.tokenColumnStart(),
-        name: previousIdentifier
-      };
-      addedFunction = true;
-      previousIdentifier = null;
-    } else if (AT.punctuator(token, '.') && previousToken && AT.identifier(previousToken)) {
-      previousIdentifier += '.';
-    } else if (AT.punctuator(token, '(') && addedFunction) {
-      isReadingArguments = true;
-    }
-    if (isReadingArguments && tokenValue)
-      argumentsText += tokenValue;
-
-    if (AT.punctuator(token, ')') && isReadingArguments) {
-      addedFunction = false;
-      isReadingArguments = false;
-      currentFunction.arguments = argumentsText.replace(/,[\r\n\s]*/g, ', ').replace(/([^,])[\r\n\s]+/g, '$1');
-      argumentsText = '';
-      outlineChunk.push(currentFunction);
-    }
-
-    previousToken = token;
-    processedChunkCharacters += token.end - token.start;
-
-    if (processedChunkCharacters >= chunkSize) {
-      postMessage({chunk: outlineChunk, isLastChunk: false});
-      outlineChunk = [];
-      processedChunkCharacters = 0;
+        (node.type === 'MethodDefinition' || node.type === 'Property') && isNameNode(node.key) &&
+        isFunctionNode(node.value)) {
+      var namePrefix = [];
+      if (node.kind === 'get' || node.kind === 'set')
+        namePrefix.push(node.kind);
+      if (node.static)
+        namePrefix.push('static');
+      reportFunction(node.key, node.value, namePrefix.join(' '));
     }
   }
 
-  postMessage({chunk: outlineChunk, isLastChunk: true});
+  /**
+   * @param {!ESTree.Node} nameNode
+   */
+  function reportClass(nameNode) {
+    var name = 'class ' + stringifyNameNode(nameNode);
+    textCursor.advance(nameNode.start);
+    addOutlineItem({
+      name: name,
+      line: textCursor.lineNumber(),
+      column: textCursor.columnNumber(),
+    });
+  }
+
+  /**
+   * @param {!ESTree.Node} nameNode
+   * @param {!ESTree.Node} functionNode
+   * @param {string=} namePrefix
+   */
+  function reportFunction(nameNode, functionNode, namePrefix) {
+    var name = stringifyNameNode(nameNode);
+    if (functionNode.generator)
+      name = '*' + name;
+    if (namePrefix)
+      name = namePrefix + ' ' + name;
+    if (functionNode.async)
+      name = 'async ' + name;
+
+    textCursor.advance(nameNode.start);
+    addOutlineItem({
+      name: name,
+      line: textCursor.lineNumber(),
+      column: textCursor.columnNumber(),
+      arguments: stringifyArguments(/** @type {!Array<!ESTree.Node>} */ (functionNode.params))
+    });
+  }
+
+  /**
+   * @param {(!ESTree.Node|undefined)} node
+   * @return {boolean}
+   */
+  function isNameNode(node) {
+    if (!node)
+      return false;
+    if (node.type === 'MemberExpression')
+      return !node.computed && node.property.type === 'Identifier';
+    return node.type === 'Identifier';
+  }
+
+  /**
+   * @param {(!ESTree.Node|undefined)} node
+   * @return {boolean}
+   */
+  function isFunctionNode(node) {
+    if (!node)
+      return false;
+    return node.type === 'FunctionExpression' || node.type === 'ArrowFunctionExpression';
+  }
+
+  /**
+   * @param {(!ESTree.Node|undefined)} node
+   * @return {boolean}
+   */
+  function isClassNode(node) {
+    return !!node && node.type === 'ClassExpression';
+  }
+
+  /**
+   * @param {!ESTree.Node} node
+   * @return {string}
+   */
+  function stringifyNameNode(node) {
+    if (node.type === 'MemberExpression')
+      node = /** @type {!ESTree.Node} */ (node.property);
+    console.assert(node.type === 'Identifier', 'Cannot extract identifier from unknown type: ' + node.type);
+    return /** @type {string} */ (node.name);
+  }
+
+  /**
+   * @param {!Array<!ESTree.Node>} params
+   * @return {string}
+   */
+  function stringifyArguments(params) {
+    var result = [];
+    for (var param of params) {
+      if (param.type === 'Identifier')
+        result.push(param.name);
+      else if (param.type === 'RestElement' && param.argument.type === 'Identifier')
+        result.push('...' + param.argument.name);
+      else
+        console.error('Error: unexpected function parameter type: ' + param.type);
+    }
+    return '(' + result.join(', ') + ')';
+  }
+
+  /**
+   * @param {{name: string, line: number, column: number, arguments: (string|undefined)}} item
+   */
+  function addOutlineItem(item) {
+    outlineChunk.push(item);
+    if (textCursor.offset() - lastReportedOffset < chunkSize)
+      return;
+    postMessage({chunk: outlineChunk, isLastChunk: false});
+    outlineChunk = [];
+    lastReportedOffset = textCursor.offset();
+  }
 };

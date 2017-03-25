@@ -10,6 +10,7 @@
         "ESTreeWalker.js",
         "FormatterWorker.js",
         "acorn/acorn.js",
+        "acorn/acorn_loose.js",
         "CSSFormatter.js",
         "AcornTokenizer.js",
         "JavaScriptFormatter.js",
@@ -22,6 +23,7 @@
     ],
     "skip_compilation": [
         "acorn/acorn.js",
+        "acorn/acorn_loose.js",
         "../cm_web_modes/css.js",
         "../cm_web_modes/xml.js"
     ]

@@ -640,6 +640,13 @@ var acorn = {
   /**
    * @param {string} text
    * @param {Object.<string, boolean>} options
+   * @return {!ESTree.Node}
+   */
+  parse_dammit: function(text, options) {},
+
+  /**
+   * @param {string} text
+   * @param {Object.<string, boolean>} options
    * @return {!Acorn.Tokenizer}
    */
   tokenizer: function(text, options) {},
@@ -722,6 +729,20 @@ ESTree.Node = function() {
   this.argument;
   /** @type {(string|undefined)} */
   this.operator;
+  /** @type {(!ESTree.Node|undefined)} */
+  this.right;
+  /** @type {(!ESTree.Node|undefined)} */
+  this.left;
+  /** @type {(string|undefined)} */
+  this.kind;
+  /** @type {(!ESTree.Node|undefined)} */
+  this.property;
+  /** @type {(!ESTree.Node|undefined)} */
+  this.object;
+  /** @type {(string|undefined)} */
+  this.raw;
+  /** @type {(boolean|undefined)} */
+  this.computed;
 };
 
 /**

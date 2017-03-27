@@ -351,8 +351,8 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     this._mainView.refreshExplanations();
 
     // If we could not find a matching request (as in the case of clicking
-    // through an interstitial, see crbug.com/669309), set the origin based upon
-    // the url data from the MainFrameNavigated event itself.
+    // through an interstitial, see https://crbug.com/669309), set the origin
+    // based upon the url data from the MainFrameNavigated event itself.
     let origin = Common.ParsedURL.extractOrigin(request ? request.url() : frame.url);
     this._sidebarTree.setMainOrigin(origin);
 
@@ -710,7 +710,8 @@ Security.SecurityMainView = class extends UI.VBox {
       return;
 
     if (this._insecureContentStatus &&
-        (this._insecureContentStatus.ranMixedContent || this._insecureContentStatus.displayedMixedContent)) {
+        (this._insecureContentStatus.ranMixedContent || this._insecureContentStatus.displayedMixedContent ||
+         this._insecureContentStatus.containedMixedForm)) {
       if (this._insecureContentStatus.ranMixedContent) {
         this._addMixedContentExplanation(
             this._securityExplanationsMain, this._insecureContentStatus.ranInsecureContentStyle,
@@ -719,6 +720,13 @@ Security.SecurityMainView = class extends UI.VBox {
                 'You have recently allowed non-secure content (such as scripts or iframes) to run on this site.'),
             Network.NetworkLogView.MixedContentFilterValues.BlockOverridden,
             showBlockOverriddenMixedContentInNetworkPanel);
+      }
+      if (this._insecureContentStatus.containedMixedForm) {
+        this._addMixedFormExplanation(
+            // TODO(elawrence): Replace |displayedInsecureContentStyle| with |containedMixedFormStyle|. https://crbug.com/705003
+            this._securityExplanationsMain, this._insecureContentStatus.displayedInsecureContentStyle,
+            Common.UIString('Non-secure Form'),
+            Common.UIString('The page includes a form with a non-secure "action" attribute.'));
       }
       if (this._insecureContentStatus.displayedMixedContent) {
         this._addMixedContentExplanation(
@@ -804,6 +812,19 @@ Security.SecurityMainView = class extends UI.VBox {
 
     requestsAnchor.href = '';
     requestsAnchor.addEventListener('click', networkFilterFn);
+  }
+
+  /**
+   * @param {!Element} parent
+   * @param {!Protocol.Security.SecurityState} securityState
+   * @param {string} summary
+   * @param {string} description
+   */
+  _addMixedFormExplanation(parent, securityState, summary, description) {
+    var mixedContentExplanation = /** @type {!Protocol.Security.SecurityStateExplanation} */ (
+        {'securityState': securityState, 'summary': summary, 'description': description});
+
+    this._addExplanation(parent, mixedContentExplanation);
   }
 
   _addContentWithCertErrorsExplanations() {

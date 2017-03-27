@@ -58,7 +58,7 @@ Security.SecurityModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(Security.SecurityModel, SDK.Target.Capability.None);
+SDK.SDKModel.register(Security.SecurityModel, SDK.Target.Capability.None, false);
 
 /** @enum {symbol} */
 Security.SecurityModel.Events = {

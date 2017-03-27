@@ -36,7 +36,7 @@ SDK.LogModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.LogModel, SDK.Target.Capability.Log);
+SDK.SDKModel.register(SDK.LogModel, SDK.Target.Capability.Log, true);
 
 /** @implements {Common.Emittable} */
 SDK.LogModel.EntryAddedEvent = class {

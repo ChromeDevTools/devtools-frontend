@@ -223,7 +223,7 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(Resources.ApplicationCacheModel, SDK.Target.Capability.DOM);
+SDK.SDKModel.register(Resources.ApplicationCacheModel, SDK.Target.Capability.DOM, false);
 
 /** @enum {symbol} */
 Resources.ApplicationCacheModel.Events = {

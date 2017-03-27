@@ -1919,7 +1919,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.DOMModel, SDK.Target.Capability.DOM);
+SDK.SDKModel.register(SDK.DOMModel, SDK.Target.Capability.DOM, true);
 
 /** @enum {symbol} */
 SDK.DOMModel.Events = {

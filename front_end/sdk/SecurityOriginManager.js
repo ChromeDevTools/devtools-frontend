@@ -65,7 +65,7 @@ SDK.SecurityOriginManager = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.SecurityOriginManager, SDK.Target.Capability.None);
+SDK.SDKModel.register(SDK.SecurityOriginManager, SDK.Target.Capability.None, false);
 
 /** @enum {symbol} */
 SDK.SecurityOriginManager.Events = {

@@ -243,7 +243,7 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.ServiceWorkerManager, SDK.Target.Capability.Target | SDK.Target.Capability.Browser);
+SDK.SDKModel.register(SDK.ServiceWorkerManager, SDK.Target.Capability.Target | SDK.Target.Capability.Browser, true);
 
 /** @enum {symbol} */
 SDK.ServiceWorkerManager.Events = {

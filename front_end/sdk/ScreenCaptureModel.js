@@ -201,4 +201,4 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.ScreenCaptureModel, SDK.Target.Capability.ScreenCapture);
+SDK.SDKModel.register(SDK.ScreenCaptureModel, SDK.Target.Capability.ScreenCapture, false);

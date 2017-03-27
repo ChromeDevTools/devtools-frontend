@@ -281,7 +281,7 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(Resources.DOMStorageModel, SDK.Target.Capability.None);
+SDK.SDKModel.register(Resources.DOMStorageModel, SDK.Target.Capability.None, false);
 
 /** @enum {symbol} */
 Resources.DOMStorageModel.Events = {

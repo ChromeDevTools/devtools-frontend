@@ -27,6 +27,19 @@ SDK.Target = class extends Protocol.TargetBase {
     this._modelByConstructor = new Map();
   }
 
+  createModels(required) {
+    this._creatingModels = true;
+    // TODO(dgozman): fix this in bindings layer.
+    this.model(SDK.ResourceTreeModel);
+    var registered = Array.from(SDK.SDKModel._registeredModels.keys());
+    for (var modelClass of registered) {
+      var info = SDK.SDKModel._registeredModels.get(modelClass);
+      if (info.autostart || required.has(modelClass))
+        this.model(modelClass);
+    }
+    this._creatingModels = false;
+  }
+
   /**
    * @return {boolean}
    */
@@ -141,13 +154,14 @@ SDK.Target = class extends Protocol.TargetBase {
    */
   model(modelClass) {
     if (!this._modelByConstructor.get(modelClass)) {
-      var capabilities = SDK.SDKModel._capabilitiesByModelClass.get(modelClass);
-      if (capabilities === undefined)
+      var info = SDK.SDKModel._registeredModels.get(modelClass);
+      if (info === undefined)
         throw 'Model class is not registered @' + new Error().stack;
-      if ((this._capabilitiesMask & capabilities) === capabilities) {
+      if ((this._capabilitiesMask & info.capabilities) === info.capabilities) {
         var model = new modelClass(this);
         this._modelByConstructor.set(modelClass, model);
-        this._targetManager.modelAdded(this, modelClass, model);
+        if (!this._creatingModels)
+          this._targetManager.modelAdded(this, modelClass, model);
       }
     }
     return this._modelByConstructor.get(modelClass) || null;
@@ -254,12 +268,13 @@ SDK.SDKModel = class extends SDK.SDKObject {
 /**
  * @param {function(new:SDK.SDKModel, !SDK.Target)} modelClass
  * @param {number} capabilities
+ * @param {boolean} autostart
  */
-SDK.SDKModel.register = function(modelClass, capabilities) {
-  if (!SDK.SDKModel._capabilitiesByModelClass)
-    SDK.SDKModel._capabilitiesByModelClass = new Map();
-  SDK.SDKModel._capabilitiesByModelClass.set(modelClass, capabilities);
+SDK.SDKModel.register = function(modelClass, capabilities, autostart) {
+  if (!SDK.SDKModel._registeredModels)
+    SDK.SDKModel._registeredModels = new Map();
+  SDK.SDKModel._registeredModels.set(modelClass, {capabilities: capabilities, autostart: autostart});
 };
 
-/** @type {!Map<function(new:SDK.SDKModel, !SDK.Target), number>} */
-SDK.SDKModel._capabilitiesByModelClass;
+/** @type {!Map<function(new:SDK.SDKModel, !SDK.Target), !{capabilities: number, autostart: boolean}>} */
+SDK.SDKModel._registeredModels;

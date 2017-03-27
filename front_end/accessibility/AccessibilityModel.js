@@ -311,4 +311,4 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(Accessibility.AccessibilityModel, SDK.Target.Capability.DOM);
+SDK.SDKModel.register(Accessibility.AccessibilityModel, SDK.Target.Capability.DOM, false);

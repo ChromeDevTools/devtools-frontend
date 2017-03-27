@@ -265,7 +265,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.ServiceWorkerCacheModel, SDK.Target.Capability.Browser);
+SDK.SDKModel.register(SDK.ServiceWorkerCacheModel, SDK.Target.Capability.Browser, false);
 
 /** @enum {symbol} */
 SDK.ServiceWorkerCacheModel.Events = {

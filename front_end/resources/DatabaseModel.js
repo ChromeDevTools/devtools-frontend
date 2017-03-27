@@ -183,7 +183,7 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(Resources.DatabaseModel, SDK.Target.Capability.None);
+SDK.SDKModel.register(Resources.DatabaseModel, SDK.Target.Capability.None, false);
 
 
 /** @implements {Common.Emittable} */

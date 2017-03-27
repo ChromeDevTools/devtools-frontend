@@ -132,7 +132,7 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.HeapProfilerModel, SDK.Target.Capability.JS);
+SDK.SDKModel.register(SDK.HeapProfilerModel, SDK.Target.Capability.JS, false);
 
 /** @enum {symbol} */
 SDK.HeapProfilerModel.Events = {

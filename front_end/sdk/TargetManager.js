@@ -14,10 +14,8 @@ SDK.TargetManager = class extends Common.Object {
     this._observerCapabiliesMaskSymbol = Symbol('observerCapabilitiesMask');
     /** @type {!Map<symbol, !Array<{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!Common.Event)}>>} */
     this._modelListeners = new Map();
-    /** @type {!Map<function(new:SDK.SDKModel,!SDK.Target), !Array<!SDK.SDKModelObserver>>} */
+    /** @type {!Map<function(new:SDK.SDKModel, !SDK.Target), !Array<!SDK.SDKModelObserver>>} */
     this._modelObservers = new Map();
-    /** @type {!Set<!SDK.Target>} */
-    this._pendingTargets = new Set();
     this._isSuspended = false;
     this._lastAnonymousTargetId = 0;
     /** @type {!Map<!SDK.Target, !SDK.ChildTargetManager>} */
@@ -63,11 +61,6 @@ SDK.TargetManager = class extends Common.Object {
         promises.push(model.resumeModel());
     }
     return Promise.all(promises);
-  }
-
-  suspendAndResumeAllTargets() {
-    this.suspendAllTargets();
-    this.resumeAllTargets();
   }
 
   /**
@@ -132,8 +125,6 @@ SDK.TargetManager = class extends Common.Object {
    * @param {!SDK.SDKModel} model
    */
   modelAdded(target, modelClass, model) {
-    if (this._pendingTargets.has(target))
-      return;
     if (!this._modelObservers.has(modelClass))
       return;
     for (var observer of this._modelObservers.get(modelClass).slice())
@@ -146,8 +137,6 @@ SDK.TargetManager = class extends Common.Object {
    * @param {!SDK.SDKModel} model
    */
   _modelRemoved(target, modelClass, model) {
-    if (this._pendingTargets.has(target))
-      return;
     if (!this._modelObservers.has(modelClass))
       return;
     for (var observer of this._modelObservers.get(modelClass).slice())
@@ -227,26 +216,9 @@ SDK.TargetManager = class extends Common.Object {
    */
   createTarget(id, name, capabilitiesMask, connectionFactory, parentTarget) {
     var target = new SDK.Target(this, id, name, capabilitiesMask, connectionFactory, parentTarget);
-    this._pendingTargets.add(target);
-
-    target.model(SDK.NetworkManager);
-    target.model(SDK.ResourceTreeModel);
-    target.model(SDK.RuntimeModel);
-    target.model(SDK.DebuggerModel);
-    target.model(SDK.LogModel);
-    target.model(SDK.DOMModel);
-    target.model(SDK.CSSModel);
-    target.model(SDK.CPUProfilerModel);
-    target.model(SDK.ServiceWorkerManager);
-
+    target.createModels(new Set(this._modelObservers.keys()));
     if (target.hasTargetCapability())
       this._childTargetManagers.set(target, new SDK.ChildTargetManager(this, target));
-
-    // Force creation of models which have observers.
-    for (var modelClass of this._modelObservers.keys())
-      target.model(modelClass);
-    this._pendingTargets.delete(target);
-
     this._targets.push(target);
 
     var copy = this._observersForTarget(target);

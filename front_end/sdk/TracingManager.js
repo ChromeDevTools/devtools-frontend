@@ -98,7 +98,7 @@ SDK.TracingManager = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.TracingManager, SDK.Target.Capability.Tracing);
+SDK.SDKModel.register(SDK.TracingManager, SDK.Target.Capability.Tracing, false);
 
 /** @typedef {!{
         cat: string,

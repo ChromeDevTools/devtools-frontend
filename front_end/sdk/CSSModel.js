@@ -861,7 +861,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.CSSModel, SDK.Target.Capability.DOM);
+SDK.SDKModel.register(SDK.CSSModel, SDK.Target.Capability.DOM, true);
 
 /** @typedef {!{range: !Protocol.CSS.SourceRange, styleSheetId: !Protocol.CSS.StyleSheetId, wasUsed: boolean}} */
 SDK.CSSModel.RuleUsage;

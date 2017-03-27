@@ -143,4 +143,4 @@ SDK.CookieModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.CookieModel, SDK.Target.Capability.Network);
+SDK.SDKModel.register(SDK.CookieModel, SDK.Target.Capability.Network, false);

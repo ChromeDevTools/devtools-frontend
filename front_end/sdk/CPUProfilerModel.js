@@ -144,7 +144,7 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.CPUProfilerModel, SDK.Target.Capability.JS);
+SDK.SDKModel.register(SDK.CPUProfilerModel, SDK.Target.Capability.JS, true);
 
 /** @enum {symbol} */
 SDK.CPUProfilerModel.Events = {

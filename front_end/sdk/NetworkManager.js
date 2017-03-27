@@ -121,7 +121,7 @@ SDK.NetworkManager = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.NetworkManager, SDK.Target.Capability.Network);
+SDK.SDKModel.register(SDK.NetworkManager, SDK.Target.Capability.Network, true);
 
 /** @enum {symbol} */
 SDK.NetworkManager.Events = {

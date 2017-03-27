@@ -182,7 +182,7 @@ Animation.AnimationModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(Animation.AnimationModel, SDK.Target.Capability.DOM);
+SDK.SDKModel.register(Animation.AnimationModel, SDK.Target.Capability.DOM, false);
 
 /** @enum {symbol} */
 Animation.AnimationModel.Events = {

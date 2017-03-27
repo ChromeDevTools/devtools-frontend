@@ -38,7 +38,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   constructor(target) {
     super(target);
 
-    var networkManager = SDK.NetworkManager.fromTarget(target);
+    var networkManager = target.model(SDK.NetworkManager);
     if (networkManager) {
       networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
       networkManager.addEventListener(
@@ -460,7 +460,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.ResourceTreeModel, SDK.Target.Capability.DOM);
+SDK.SDKModel.register(SDK.ResourceTreeModel, SDK.Target.Capability.DOM, true);
 
 /** @enum {symbol} */
 SDK.ResourceTreeModel.Events = {

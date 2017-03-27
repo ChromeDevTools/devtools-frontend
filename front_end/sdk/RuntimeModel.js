@@ -389,7 +389,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.RuntimeModel, SDK.Target.Capability.JS);
+SDK.SDKModel.register(SDK.RuntimeModel, SDK.Target.Capability.JS, true);
 
 /** @enum {symbol} */
 SDK.RuntimeModel.Events = {

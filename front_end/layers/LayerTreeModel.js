@@ -129,7 +129,7 @@ Layers.LayerTreeModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(Layers.LayerTreeModel, SDK.Target.Capability.DOM);
+SDK.SDKModel.register(Layers.LayerTreeModel, SDK.Target.Capability.DOM, false);
 
 /** @enum {symbol} */
 Layers.LayerTreeModel.Events = {

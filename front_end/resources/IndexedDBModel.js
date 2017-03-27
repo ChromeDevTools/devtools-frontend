@@ -427,7 +427,7 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(Resources.IndexedDBModel, SDK.Target.Capability.None);
+SDK.SDKModel.register(Resources.IndexedDBModel, SDK.Target.Capability.None, false);
 
 Resources.IndexedDBModel.KeyTypes = {
   NumberType: 'number',

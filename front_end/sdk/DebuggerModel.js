@@ -820,7 +820,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.DebuggerModel, SDK.Target.Capability.JS);
+SDK.SDKModel.register(SDK.DebuggerModel, SDK.Target.Capability.JS, true);
 
 /** @typedef {{location: ?SDK.DebuggerModel.Location, functionName: string}} */
 SDK.DebuggerModel.FunctionDetails;

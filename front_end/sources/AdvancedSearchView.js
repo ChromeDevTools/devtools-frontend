@@ -29,10 +29,10 @@ Sources.AdvancedSearchView = class extends UI.VBox {
     this._search.setAttribute('results', '0');
     this._search.setAttribute('size', 42);
 
-    var searchIcon = UI.Icon.create('smallicon-search', 'search-icon');
+    var searchIcon = UI.Icon.create('mediumicon-search', 'search-icon');
     this._searchPanelElement.appendChild(searchIcon);
 
-    this._searchInputClearElement = UI.Icon.create('smallicon-gray-cross-hover', 'search-cancel-button');
+    this._searchInputClearElement = UI.Icon.create('mediumicon-gray-cross-hover', 'search-cancel-button');
     this._searchInputClearElement.classList.add('hidden');
     this._searchInputClearElement.addEventListener('click', this._onSearchInputClear.bind(this), false);
     var cancelButtonContainer = this._searchPanelElement.createChild('div', 'search-cancel-button-container');

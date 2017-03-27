@@ -27,13 +27,13 @@ Persistence.PersistenceUtils = class {
       return null;
     var binding = Persistence.persistence.binding(uiSourceCode);
     if (binding) {
-      var icon = UI.Icon.create('smallicon-file-sync');
+      var icon = UI.Icon.create('mediumicon-file-sync');
       icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(binding.fileSystem);
       return icon;
     }
     if (uiSourceCode.project().type() !== Workspace.projectTypes.FileSystem)
       return null;
-    var icon = UI.Icon.create('smallicon-file');
+    var icon = UI.Icon.create('mediumicon-file');
     icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(uiSourceCode);
     return icon;
   }

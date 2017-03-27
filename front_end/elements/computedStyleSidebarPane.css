@@ -40,6 +40,7 @@
 
 .tree-outline li:hover .goto-source-icon {
     display: block;
+    margin-top: -2px;
 }
 
 .goto-source-icon {

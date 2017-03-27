@@ -232,7 +232,7 @@ select.toolbar-item {
     opacity: 0.7;
     flex-basis: 13px;
     flex-shrink: 0;
-    height: 13px;
+    height: 16px;
 }
 
 .toolbar-input-clear-button:hover {

@@ -23,8 +23,8 @@
 }
 
 .search-drawer-header .search-icon {
-    left: 10px;
-    top: 10px;
+    left: 8px;
+    top: 8px;
     position: absolute;
 }
 
@@ -38,8 +38,8 @@
 
 .search-drawer-header .search-cancel-button {
     position: absolute;
-    right: 9px;
-    top: 9px;
+    right: 7px;
+    top: 7px;
 }
 
 :host-context(.platform-mac) .search-drawer-header input.search-config-search {

@@ -1506,8 +1506,8 @@ UI.appendStyle = function(node, cssFile) {
       var root = UI.createShadowRootWithCoreStyles(this, 'ui/closeButton.css');
       this._buttonElement = root.createChild('div', 'close-button');
       var regularIcon = UI.Icon.create('smallicon-cross', 'default-icon');
-      this._hoverIcon = UI.Icon.create('smallicon-red-cross-hover', 'hover-icon');
-      this._activeIcon = UI.Icon.create('smallicon-red-cross-active', 'active-icon');
+      this._hoverIcon = UI.Icon.create('mediumicon-red-cross-hover', 'hover-icon');
+      this._activeIcon = UI.Icon.create('mediumicon-red-cross-active', 'active-icon');
       this._buttonElement.appendChild(regularIcon);
       this._buttonElement.appendChild(this._hoverIcon);
       this._buttonElement.appendChild(this._activeIcon);
@@ -1519,11 +1519,11 @@ UI.appendStyle = function(node, cssFile) {
      */
     set gray(gray) {
       if (gray) {
-        this._hoverIcon.setIconType('smallicon-gray-cross-hover');
-        this._activeIcon.setIconType('smallicon-gray-cross-active');
+        this._hoverIcon.setIconType('mediumicon-gray-cross-hover');
+        this._activeIcon.setIconType('mediumicon-gray-cross-active');
       } else {
-        this._hoverIcon.setIconType('smallicon-red-cross-hover');
-        this._activeIcon.setIconType('smallicon-red-cross-active');
+        this._hoverIcon.setIconType('mediumicon-red-cross-hover');
+        this._activeIcon.setIconType('mediumicon-red-cross-active');
       }
     },
 

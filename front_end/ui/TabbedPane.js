@@ -543,19 +543,32 @@ UI.TabbedPane = class extends UI.VBox {
     var dropDownContainer = createElementWithClass('div', 'tabbed-pane-header-tabs-drop-down-container');
     var chevronIcon = UI.Icon.create('largeicon-chevron', 'chevron-icon');
     dropDownContainer.appendChild(chevronIcon);
-    this._dropDownMenu = new UI.DropDownMenu(dropDownContainer);
-    this._dropDownMenu.addEventListener(UI.DropDownMenu.Events.ItemSelected, this._dropDownMenuItemSelected, this);
-
+    dropDownContainer.addEventListener('mousedown', this._onDropDownMouseDown.bind(this));
     return dropDownContainer;
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!Event} event
    */
-  _dropDownMenuItemSelected(event) {
-    var tabId = /** @type {string} */ (event.data);
-    this._lastSelectedOverflowTab = this._tabsById.get(tabId);
-    this.selectTab(tabId, true);
+  _onDropDownMouseDown(event) {
+    if (event.which !== 1)
+      return;
+    var menu = new UI.ContextMenu(event);
+    for (var i = 0; i < this._tabs.length; ++i) {
+      var tab = this._tabs[i];
+      if (tab._shown)
+        continue;
+      menu.appendCheckboxItem(tab.title, this._dropDownMenuItemSelected.bind(this, tab), this._tabsHistory[0] === tab);
+    }
+    menu.show();
+  }
+
+  /**
+   * @param {!UI.TabbedPaneTab} tab
+   */
+  _dropDownMenuItemSelected(tab) {
+    this._lastSelectedOverflowTab = tab;
+    this.selectTab(tab.id, true);
   }
 
   _totalWidth() {
@@ -598,32 +611,17 @@ UI.TabbedPane = class extends UI.VBox {
     }
 
     if (!this._overflowDisabled)
-      this._populateDropDownFromIndex();
+      this._maybeShowDropDown(tabsToShowIndexes.length !== this._tabs.length);
   }
 
-  _populateDropDownFromIndex() {
-    if (this._dropDownButton.parentElement)
-      this._headerContentsElement.removeChild(this._dropDownButton);
-
-    this._dropDownMenu.clear();
-
-    var tabsToShow = [];
-    for (var i = 0; i < this._tabs.length; ++i) {
-      if (!this._tabs[i]._shown)
-        tabsToShow.push(this._tabs[i]);
-    }
-
-    var selectedId = null;
-    for (var i = 0; i < tabsToShow.length; ++i) {
-      var tab = tabsToShow[i];
-      this._dropDownMenu.addItem(tab.id, tab.title);
-      if (this._tabsHistory[0] === tab)
-        selectedId = tab.id;
-    }
-    if (tabsToShow.length) {
+  /**
+   * @param {boolean} hasMoreTabs
+   */
+  _maybeShowDropDown(hasMoreTabs) {
+    if (hasMoreTabs && !this._dropDownButton.parentElement)
       this._headerContentsElement.appendChild(this._dropDownButton);
-      this._dropDownMenu.selectItem(selectedId);
-    }
+    else if (!hasMoreTabs && this._dropDownButton.parentElement)
+      this._headerContentsElement.removeChild(this._dropDownButton);
   }
 
   _measureDropDownButton() {

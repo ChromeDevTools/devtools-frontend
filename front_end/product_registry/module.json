@@ -6,6 +6,7 @@
     ],
     "scripts": [
         "ProductNameForURL.js",
-        "ProductRegistryData.js"
+        "ProductRegistryData.js",
+        "sha1/sha1.js"
     ]
 }

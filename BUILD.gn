@@ -374,6 +374,7 @@ all_devtools_files = [
   "front_end/product_registry/module.json",
   "front_end/product_registry/ProductNameForURL.js",
   "front_end/product_registry/ProductRegistryData.js",
+  "front_end/product_registry/sha1/sha1.js",
   "front_end/profiler/BottomUpProfileDataGrid.js",
   "front_end/profiler/CPUProfileFlameChart.js",
   "front_end/profiler/CPUProfileView.js",

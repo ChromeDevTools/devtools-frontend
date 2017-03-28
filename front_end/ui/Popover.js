@@ -111,8 +111,7 @@ UI.PopoverHelper = class {
     this._stopShowPopoverTimer();
     if (event.which && this._disableOnClick)
       return;
-    this._startShowPopoverTimer(
-        event, this.isPopoverVisible() ? Math.max(this._timeout * 0.6, this._hideTimeout) : this._timeout);
+    this._startShowPopoverTimer(event, this.isPopoverVisible() ? this._timeout * 0.6 : this._timeout);
   }
 
   /**
@@ -168,6 +167,8 @@ UI.PopoverHelper = class {
 
     this._showPopoverTimer = setTimeout(() => {
       delete this._showPopoverTimer;
+      this._stopHidePopoverTimer();
+      this._hidePopover();
       this._showPopover(event.target.ownerDocument);
     }, timeout);
   }

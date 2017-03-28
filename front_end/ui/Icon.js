@@ -35,6 +35,8 @@ UI.Icon = class extends HTMLSpanElement {
   createdCallback() {
     /** @type {?UI.Icon.Descriptor} */
     this._descriptor = null;
+    /** @type {?UI.Icon.SpriteSheet} */
+    this._spriteSheet = null;
     /** @type {string} */
     this._iconType = '';
   }
@@ -50,14 +52,19 @@ UI.Icon = class extends HTMLSpanElement {
       this._toggleClasses(false);
       this._iconType = '';
       this._descriptor = null;
+      this._spriteSheet = null;
     }
     var descriptor = UI.Icon.Descriptors[iconType] || null;
     if (descriptor) {
       this._iconType = iconType;
       this._descriptor = descriptor;
+      this._spriteSheet = UI.Icon.SpriteSheets[this._descriptor.spritesheet];
+      console.assert(
+          this._spriteSheet, `ERROR: icon ${this._iconType} has unknown spritesheet: ${this._descriptor.spritesheet}`);
+
       this.style.setProperty('--spritesheet-position', this._propertyValue());
-      this.style.setProperty('width', this._descriptor.width + 'px');
-      this.style.setProperty('height', this._descriptor.height + 'px');
+      this.style.setProperty('width', this._spriteSheet.cellWidth + 'px');
+      this.style.setProperty('height', this._spriteSheet.cellHeight + 'px');
       this._toggleClasses(true);
     } else if (iconType) {
       throw new Error(`ERROR: failed to find icon descriptor for type: ${iconType}`);
@@ -77,126 +84,146 @@ UI.Icon = class extends HTMLSpanElement {
    * @return {string}
    */
   _propertyValue() {
-    return `${this._descriptor.x}px ${this._descriptor.y}px`;
+    if (!this._descriptor.coordinates) {
+      if (!this._descriptor.position || !UI.Icon._positionRegex.test(this._descriptor.position))
+        throw new Error(`ERROR: icon '${this._iconType}' has malformed position: '${this._descriptor.position}'`);
+      var column = this._descriptor.position[0].toLowerCase().charCodeAt(0) - 97;
+      var row = parseInt(this._descriptor.position.substring(1), 10) - 1;
+      this._descriptor.coordinates = {
+        x: -(this._spriteSheet.cellWidth + this._spriteSheet.padding) * column,
+        y: (this._spriteSheet.cellHeight + this._spriteSheet.padding) * (row + 1) - this._spriteSheet.padding
+      };
+    }
+    return `${this._descriptor.coordinates.x}px ${this._descriptor.coordinates.y}px`;
   }
 };
 
-/** @typedef {{x: number, y: number, width: number, height: number, spritesheet: string, isMask: (boolean|undefined)}} */
+UI.Icon._positionRegex = /^[a-z][1-9][0-9]*$/;
+
+/** @typedef {{position: string, spritesheet: string, isMask: (boolean|undefined)}} */
 UI.Icon.Descriptor;
+
+/** @typedef {{cellWidth: number, cellHeight: number, padding: number}} */
+UI.Icon.SpriteSheet;
+
+/** @enum {!UI.Icon.SpriteSheet} */
+UI.Icon.SpriteSheets = {
+  'smallicons': {cellWidth: 10, cellHeight: 10, padding: 10},
+  'mediumicons': {cellWidth: 16, cellHeight: 16, padding: 0},
+  'largeicons': {cellWidth: 28, cellHeight: 24, padding: 0},
+  'arrowicons': {cellWidth: 19, cellHeight: 19, padding: 0}
+};
 
 /** @enum {!UI.Icon.Descriptor} */
 UI.Icon.Descriptors = {
-  // small icons
-  'smallicon-bezier': {x: 0, y: 0, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
-  'smallicon-checkmark': {x: -20, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-command-result': {x: 0, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-cross': {x: -20, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-device': {x: -40, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-error': {x: -40, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-green-arrow': {x: 0, y: -40, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-green-ball': {x: -20, y: -40, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-info': {x: -40, y: -40, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-inline-breakpoint-conditional': {x: -60, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-inline-breakpoint': {x: -60, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-orange-ball': {x: -60, y: -40, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-red-ball': {x: 0, y: -60, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-shadow': {x: -20, y: -60, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
-  'smallicon-step-in': {x: -40, y: -60, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-step-out': {x: -60, y: -60, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-text-prompt': {x: -80, y: 0, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-thick-left-arrow': {x: -80, y: -20, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-thick-right-arrow': {x: -80, y: -40, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-triangle-down': {x: -80, y: -60, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
-  'smallicon-triangle-right': {x: 0, y: -80, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
-  'smallicon-triangle-up': {x: -20, y: -80, width: 10, height: 10, spritesheet: 'smallicons', isMask: true},
-  'smallicon-user-command': {x: -40, y: -80, width: 10, height: 10, spritesheet: 'smallicons'},
-  'smallicon-warning': {x: -60, y: -80, width: 10, height: 10, spritesheet: 'smallicons'},
+  'smallicon-bezier': {position: 'a5', spritesheet: 'smallicons', isMask: true},
+  'smallicon-checkmark': {position: 'b5', spritesheet: 'smallicons'},
+  'smallicon-command-result': {position: 'a4', spritesheet: 'smallicons'},
+  'smallicon-cross': {position: 'b4', spritesheet: 'smallicons'},
+  'smallicon-device': {position: 'c5', spritesheet: 'smallicons'},
+  'smallicon-error': {position: 'c4', spritesheet: 'smallicons'},
+  'smallicon-green-arrow': {position: 'a3', spritesheet: 'smallicons'},
+  'smallicon-green-ball': {position: 'b3', spritesheet: 'smallicons'},
+  'smallicon-info': {position: 'c3', spritesheet: 'smallicons'},
+  'smallicon-inline-breakpoint-conditional': {position: 'd5', spritesheet: 'smallicons'},
+  'smallicon-inline-breakpoint': {position: 'd4', spritesheet: 'smallicons'},
+  'smallicon-orange-ball': {position: 'd3', spritesheet: 'smallicons'},
+  'smallicon-red-ball': {position: 'a2', spritesheet: 'smallicons'},
+  'smallicon-shadow': {position: 'b2', spritesheet: 'smallicons', isMask: true},
+  'smallicon-step-in': {position: 'c2', spritesheet: 'smallicons'},
+  'smallicon-step-out': {position: 'd2', spritesheet: 'smallicons'},
+  'smallicon-text-prompt': {position: 'e5', spritesheet: 'smallicons'},
+  'smallicon-thick-left-arrow': {position: 'e4', spritesheet: 'smallicons'},
+  'smallicon-thick-right-arrow': {position: 'e3', spritesheet: 'smallicons'},
+  'smallicon-triangle-down': {position: 'e2', spritesheet: 'smallicons', isMask: true},
+  'smallicon-triangle-right': {position: 'a1', spritesheet: 'smallicons', isMask: true},
+  'smallicon-triangle-up': {position: 'b1', spritesheet: 'smallicons', isMask: true},
+  'smallicon-user-command': {position: 'c1', spritesheet: 'smallicons'},
+  'smallicon-warning': {position: 'd1', spritesheet: 'smallicons'},
 
-  // medium icons
-  'mediumicon-clear-storage': {x: 0, y: 0, width: 16, height: 16, spritesheet: 'mediumicons', isMask: true},
-  'mediumicon-cookie': {x: -16, y: 0, width: 16, height: 16, spritesheet: 'mediumicons', isMask: true},
-  'mediumicon-database': {x: -32, y: 0, width: 16, height: 16, spritesheet: 'mediumicons', isMask: true},
-  'mediumicon-manifest': {x: -48, y: 0, width: 16, height: 16, spritesheet: 'mediumicons', isMask: true},
-  'mediumicon-service-worker': {x: 0, y: -16, width: 16, height: 16, spritesheet: 'mediumicons', isMask: true},
-  'mediumicon-table': {x: -16, y: -16, width: 16, height: 16, spritesheet: 'mediumicons', isMask: true},
-  'mediumicon-arrow-in-circle': {x: -32, y: -16, width: 16, height: 16, spritesheet: 'mediumicons', isMask: true},
-  'mediumicon-file-sync': {x: -48, y: -16, width: 16, height: 16, spritesheet: 'mediumicons'},
-  'mediumicon-file': {x: 0, y: -32, width: 16, height: 16, spritesheet: 'mediumicons'},
-  'mediumicon-gray-cross-active': {x: -16, y: -32, width: 16, height: 16, spritesheet: 'mediumicons'},
-  'mediumicon-gray-cross-hover': {x: -32, y: -32, width: 16, height: 16, spritesheet: 'mediumicons'},
-  'mediumicon-red-cross-active': {x: -48, y: -32, width: 16, height: 16, spritesheet: 'mediumicons'},
-  'mediumicon-red-cross-hover': {x: 0, y: -48, width: 16, height: 16, spritesheet: 'mediumicons'},
-  'mediumicon-search': {x: -16, y: -48, width: 16, height: 16, spritesheet: 'mediumicons'},
+  'mediumicon-clear-storage': {position: 'a4', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-cookie': {position: 'b4', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-database': {position: 'c4', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-manifest': {position: 'd4', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-service-worker': {position: 'a3', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-table': {position: 'b3', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-arrow-in-circle': {position: 'c3', spritesheet: 'mediumicons', isMask: true},
+  'mediumicon-file-sync': {position: 'd3', spritesheet: 'mediumicons'},
+  'mediumicon-file': {position: 'a2', spritesheet: 'mediumicons'},
+  'mediumicon-gray-cross-active': {position: 'b2', spritesheet: 'mediumicons'},
+  'mediumicon-gray-cross-hover': {position: 'c2', spritesheet: 'mediumicons'},
+  'mediumicon-red-cross-active': {position: 'd2', spritesheet: 'mediumicons'},
+  'mediumicon-red-cross-hover': {position: 'a1', spritesheet: 'mediumicons'},
+  'mediumicon-search': {position: 'b1', spritesheet: 'mediumicons'},
 
-  // large icons
-  'badge-navigator-file-sync': {x: 0, y: 0, width: 28, height: 24, spritesheet: 'largeicons'},
-  'largeicon-activate-breakpoints': {x: -28, y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-add': {x: 0, y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-background-color': {x: -28, y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-box-shadow': {x: 0, y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-camera': {x: -28, y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-center': {x: -56, y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-checkmark': {x: -56, y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-chevron': {x: -56, y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-clear': {x: 0, y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-copy': {x: -28, y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-deactivate-breakpoints': {x: -56, y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-delete': {x: -84, y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-dock-to-bottom': {x: -84, y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-dock-to-left': {x: -84, y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-dock-to-right': {x: -84, y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-edit': {x: 0, y: -96, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-eyedropper': {x: -28, y: -96, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-filter': {x: -56, y: -96, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-foreground-color': {x: -84, y: -96, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-hide-bottom-sidebar': {x: -112, y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-hide-left-sidebar': {x: -112, y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-hide-right-sidebar': {x: -112, y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-hide-top-sidebar': {x: -112, y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-large-list': {x: -112, y: -96, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-layout-editor': {x: 0, y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-longclick-triangle': {x: -28, y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-menu': {x: -56, y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-navigator-domain': {x: -84, y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-navigator-file': {x: -112, y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-navigator-file-sync': {x: -140, y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-navigator-folder': {x: -140, y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-navigator-frame': {x: -140, y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-navigator-snippet': {x: -140, y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-navigator-worker': {x: -140, y: -96, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-node-search': {x: -140, y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-pan': {x: 0, y: -144, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-pause-animation': {x: -28, y: -144, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-pause': {x: -56, y: -144, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-pause-on-exceptions': {x: -84, y: -144, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-phone': {x: -112, y: -144, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-play-animation': {x: -140, y: -144, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-play-back': {x: 0, y: -168, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-play': {x: -28, y: -168, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-pretty-print': {x: -56, y: -168, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-refresh': {x: -84, y: -168, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-replay-animation': {x: -112, y: -168, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-resume': {x: -140, y: -168, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-rotate': {x: -168, y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-rotate-screen': {x: -168, y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-settings-gear': {x: -168, y: -48, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-show-bottom-sidebar': {x: -168, y: -72, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-show-left-sidebar': {x: -168, y: -96, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-show-right-sidebar': {x: -168, y: -120, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-show-top-sidebar': {x: -168, y: -144, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-start-recording': {x: -168, y: -168, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-step-in': {x: 0, y: -192, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-step-out': {x: -28, y: -192, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-step-over': {x: -56, y: -192, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-stop-recording': {x: -84, y: -192, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-text-shadow': {x: -112, y: -192, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-trash-bin': {x: -140, y: -192, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-undock': {x: -168, y: -192, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-visibility': {x: -196, y: 0, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
-  'largeicon-waterfall': {x: -196, y: -24, width: 28, height: 24, spritesheet: 'largeicons', isMask: true},
+  'badge-navigator-file-sync': {position: 'a9', spritesheet: 'largeicons'},
+  'largeicon-activate-breakpoints': {position: 'b9', spritesheet: 'largeicons', isMask: true},
+  'largeicon-add': {position: 'a8', spritesheet: 'largeicons', isMask: true},
+  'largeicon-background-color': {position: 'b8', spritesheet: 'largeicons', isMask: true},
+  'largeicon-box-shadow': {position: 'a7', spritesheet: 'largeicons', isMask: true},
+  'largeicon-camera': {position: 'b7', spritesheet: 'largeicons', isMask: true},
+  'largeicon-center': {position: 'c9', spritesheet: 'largeicons', isMask: true},
+  'largeicon-checkmark': {position: 'c8', spritesheet: 'largeicons', isMask: true},
+  'largeicon-chevron': {position: 'c7', spritesheet: 'largeicons', isMask: true},
+  'largeicon-clear': {position: 'a6', spritesheet: 'largeicons', isMask: true},
+  'largeicon-copy': {position: 'b6', spritesheet: 'largeicons', isMask: true},
+  'largeicon-deactivate-breakpoints': {position: 'c6', spritesheet: 'largeicons', isMask: true},
+  'largeicon-delete': {position: 'd9', spritesheet: 'largeicons', isMask: true},
+  'largeicon-dock-to-bottom': {position: 'd8', spritesheet: 'largeicons', isMask: true},
+  'largeicon-dock-to-left': {position: 'd7', spritesheet: 'largeicons', isMask: true},
+  'largeicon-dock-to-right': {position: 'd6', spritesheet: 'largeicons', isMask: true},
+  'largeicon-edit': {position: 'a5', spritesheet: 'largeicons', isMask: true},
+  'largeicon-eyedropper': {position: 'b5', spritesheet: 'largeicons', isMask: true},
+  'largeicon-filter': {position: 'c5', spritesheet: 'largeicons', isMask: true},
+  'largeicon-foreground-color': {position: 'd5', spritesheet: 'largeicons', isMask: true},
+  'largeicon-hide-bottom-sidebar': {position: 'e9', spritesheet: 'largeicons', isMask: true},
+  'largeicon-hide-left-sidebar': {position: 'e8', spritesheet: 'largeicons', isMask: true},
+  'largeicon-hide-right-sidebar': {position: 'e7', spritesheet: 'largeicons', isMask: true},
+  'largeicon-hide-top-sidebar': {position: 'e6', spritesheet: 'largeicons', isMask: true},
+  'largeicon-large-list': {position: 'e5', spritesheet: 'largeicons', isMask: true},
+  'largeicon-layout-editor': {position: 'a4', spritesheet: 'largeicons', isMask: true},
+  'largeicon-longclick-triangle': {position: 'b4', spritesheet: 'largeicons', isMask: true},
+  'largeicon-menu': {position: 'c4', spritesheet: 'largeicons', isMask: true},
+  'largeicon-navigator-domain': {position: 'd4', spritesheet: 'largeicons', isMask: true},
+  'largeicon-navigator-file': {position: 'e4', spritesheet: 'largeicons', isMask: true},
+  'largeicon-navigator-file-sync': {position: 'f9', spritesheet: 'largeicons', isMask: true},
+  'largeicon-navigator-folder': {position: 'f8', spritesheet: 'largeicons', isMask: true},
+  'largeicon-navigator-frame': {position: 'f7', spritesheet: 'largeicons', isMask: true},
+  'largeicon-navigator-snippet': {position: 'f6', spritesheet: 'largeicons', isMask: true},
+  'largeicon-navigator-worker': {position: 'f5', spritesheet: 'largeicons', isMask: true},
+  'largeicon-node-search': {position: 'f4', spritesheet: 'largeicons', isMask: true},
+  'largeicon-pan': {position: 'a3', spritesheet: 'largeicons', isMask: true},
+  'largeicon-pause-animation': {position: 'b3', spritesheet: 'largeicons', isMask: true},
+  'largeicon-pause': {position: 'c3', spritesheet: 'largeicons', isMask: true},
+  'largeicon-pause-on-exceptions': {position: 'd3', spritesheet: 'largeicons', isMask: true},
+  'largeicon-phone': {position: 'e3', spritesheet: 'largeicons', isMask: true},
+  'largeicon-play-animation': {position: 'f3', spritesheet: 'largeicons', isMask: true},
+  'largeicon-play-back': {position: 'a2', spritesheet: 'largeicons', isMask: true},
+  'largeicon-play': {position: 'b2', spritesheet: 'largeicons', isMask: true},
+  'largeicon-pretty-print': {position: 'c2', spritesheet: 'largeicons', isMask: true},
+  'largeicon-refresh': {position: 'd2', spritesheet: 'largeicons', isMask: true},
+  'largeicon-replay-animation': {position: 'e2', spritesheet: 'largeicons', isMask: true},
+  'largeicon-resume': {position: 'f2', spritesheet: 'largeicons', isMask: true},
+  'largeicon-rotate': {position: 'g9', spritesheet: 'largeicons', isMask: true},
+  'largeicon-rotate-screen': {position: 'g8', spritesheet: 'largeicons', isMask: true},
+  'largeicon-settings-gear': {position: 'g7', spritesheet: 'largeicons', isMask: true},
+  'largeicon-show-bottom-sidebar': {position: 'g6', spritesheet: 'largeicons', isMask: true},
+  'largeicon-show-left-sidebar': {position: 'g5', spritesheet: 'largeicons', isMask: true},
+  'largeicon-show-right-sidebar': {position: 'g4', spritesheet: 'largeicons', isMask: true},
+  'largeicon-show-top-sidebar': {position: 'g3', spritesheet: 'largeicons', isMask: true},
+  'largeicon-start-recording': {position: 'g2', spritesheet: 'largeicons', isMask: true},
+  'largeicon-step-in': {position: 'a1', spritesheet: 'largeicons', isMask: true},
+  'largeicon-step-out': {position: 'b1', spritesheet: 'largeicons', isMask: true},
+  'largeicon-step-over': {position: 'c1', spritesheet: 'largeicons', isMask: true},
+  'largeicon-stop-recording': {position: 'd1', spritesheet: 'largeicons', isMask: true},
+  'largeicon-text-shadow': {position: 'e1', spritesheet: 'largeicons', isMask: true},
+  'largeicon-trash-bin': {position: 'f1', spritesheet: 'largeicons', isMask: true},
+  'largeicon-undock': {position: 'g1', spritesheet: 'largeicons', isMask: true},
+  'largeicon-visibility': {position: 'h9', spritesheet: 'largeicons', isMask: true},
+  'largeicon-waterfall': {position: 'h8', spritesheet: 'largeicons', isMask: true},
 
-  'mediumicon-arrow-top': {x: 0, y: 0, width: 19, height: 19, spritesheet: 'arrowicons'},
-  'mediumicon-arrow-bottom': {x: 0, y: -19, width: 19, height: 19, spritesheet: 'arrowicons'},
-  'mediumicon-arrow-left': {x: 0, y: -38, width: 19, height: 19, spritesheet: 'arrowicons'},
-  'mediumicon-arrow-right': {x: 0, y: -57, width: 19, height: 19, spritesheet: 'arrowicons'},
+  'mediumicon-arrow-top': {position: 'a4', spritesheet: 'arrowicons'},
+  'mediumicon-arrow-bottom': {position: 'a3', spritesheet: 'arrowicons'},
+  'mediumicon-arrow-left': {position: 'a2', spritesheet: 'arrowicons'},
+  'mediumicon-arrow-right': {position: 'a1', spritesheet: 'arrowicons'}
 };

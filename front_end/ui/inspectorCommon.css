@@ -339,56 +339,46 @@ label[is=dt-icon-label] {
 
 .spritesheet-smallicons:not(.icon-mask) {
     background-image: -webkit-image-set(url(Images/smallIcons.png) 1x, url(Images/smallIcons_2x.png) 2x);
-    background-size: 90px 90px;
 }
 
 .spritesheet-smallicons.icon-mask {
     -webkit-mask-image: -webkit-image-set(url(Images/smallIcons.png) 1x, url(Images/smallIcons_2x.png) 2x);
-    -webkit-mask-size: 90px 90px;
 }
 
 .spritesheet-largeicons:not(.icon-mask) {
     background-image: -webkit-image-set(url(Images/largeIcons.png) 1x, url(Images/largeIcons_2x.png) 2x);
-    background-size: 224px 216px;
 }
 
 .spritesheet-largeicons.icon-mask {
     -webkit-mask-image: -webkit-image-set(url(Images/largeIcons.png) 1x, url(Images/largeIcons_2x.png) 2x);
-    -webkit-mask-size: 224px 216px;
 }
 
 .spritesheet-mediumicons:not(.icon-mask) {
     background-image: -webkit-image-set(url(Images/mediumIcons.png) 1x, url(Images/mediumIcons_2x.png) 2x);
-    background-size: 64px 64px;
 }
 
 .spritesheet-mediumicons.icon-mask {
     -webkit-mask-image: -webkit-image-set(url(Images/mediumIcons.png) 1x, url(Images/mediumIcons_2x.png) 2x);
-    -webkit-mask-size: 64px 64px;
 }
 
 .spritesheet-arrowicons {
     background-image: url(Images/popoverArrows.png);
-    background-size: 19px 76px;
 }
 
 .force-white-icons [is=ui-icon].spritesheet-smallicons, [is=ui-icon].force-white-icons.spritesheet-smallicons {
     -webkit-mask-image: -webkit-image-set(url(Images/smallIcons.png) 1x, url(Images/smallIcons_2x.png) 2x);
-    -webkit-mask-size: 90px 90px;
     -webkit-mask-position: var(--spritesheet-position);
     background: white !important;
 }
 
 .force-white-icons [is=ui-icon].spritesheet-largeicons, [is=ui-icon].force-white-icons.spritesheet-largeicons {
     -webkit-mask-image: -webkit-image-set(url(Images/largeIcons.png) 1x, url(Images/largeIcons_2x.png) 2x);
-    -webkit-mask-size: 224px 216px;
     -webkit-mask-position: var(--spritesheet-position);
     background: white !important;
 }
 
 .force-white-icons [is=ui-icon].spritesheet-mediumicons, [is=ui-icon].force-white-icons.spritesheet-mediumicons {
     -webkit-mask-image: -webkit-image-set(url(Images/mediumIcons.png) 1x, url(Images/mediumIcons_2x.png) 2x);
-    -webkit-mask-size: 64px 64px;
     -webkit-mask-position: var(--spritesheet-position);
     background: white !important;
 }

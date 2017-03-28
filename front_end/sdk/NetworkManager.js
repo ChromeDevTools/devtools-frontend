@@ -131,20 +131,11 @@ SDK.NetworkManager.Events = {
   RequestUpdateDropped: Symbol('RequestUpdateDropped'),
   ResponseReceived: Symbol('ResponseReceived'),
   WarningGenerated: Symbol('WarningGenerated'),
+  RequestRedirected: Symbol('RequestRedirected'),
 };
 
 /** @typedef {{message: string, requestId: string}} */
 SDK.NetworkManager.Warning;
-
-/** @implements {Common.Emittable} */
-SDK.NetworkManager.RequestRedirectEvent = class {
-  /**
-   * @param {!SDK.NetworkRequest} request
-   */
-  constructor(request) {
-    this.request = request;
-  }
-};
 
 SDK.NetworkManager._MIMETypes = {
   'text/html': {'document': true},
@@ -336,7 +327,7 @@ SDK.NetworkDispatcher = class {
         return;
       this.responseReceived(requestId, frameId, loaderId, time, Protocol.Page.ResourceType.Other, redirectResponse);
       networkRequest = this._appendRedirect(requestId, time, request.url);
-      this._manager.emit(new SDK.NetworkManager.RequestRedirectEvent(networkRequest));
+      this._manager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestRedirected, networkRequest);
     } else {
       networkRequest = this._createNetworkRequest(requestId, frameId, loaderId, request.url, documentURL, initiator);
     }

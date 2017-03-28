@@ -70,7 +70,7 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
 
     var logModel = target.model(SDK.LogModel);
     if (logModel)
-      eventListeners.push(logModel.on(SDK.LogModel.EntryAddedEvent, this._logEntryAdded, this));
+      eventListeners.push(logModel.addEventListener(SDK.LogModel.Events.EntryAdded, this._logEntryAdded, this));
 
     var cpuProfilerModel = target.model(SDK.CPUProfilerModel);
     if (cpuProfilerModel) {
@@ -206,13 +206,14 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
   }
 
   /**
-   * @param {!SDK.LogModel.EntryAddedEvent} event
+   * @param {!Common.Event} event
    */
   _logEntryAdded(event) {
+    var data = /** @type {{logModel: !SDK.LogModel, entry: !Protocol.Log.LogEntry}} */ (event.data);
     var consoleMessage = new ConsoleModel.ConsoleMessage(
-        event.logModel.target(), event.entry.source, event.entry.level, event.entry.text, undefined, event.entry.url,
-        event.entry.lineNumber, undefined, event.entry.networkRequestId, undefined, event.entry.stackTrace,
-        event.entry.timestamp, undefined, undefined, event.entry.workerId);
+        data.logModel.target(), data.entry.source, data.entry.level, data.entry.text, undefined, data.entry.url,
+        data.entry.lineNumber, undefined, data.entry.networkRequestId, undefined, data.entry.stackTrace,
+        data.entry.timestamp, undefined, undefined, data.entry.workerId);
     this.addMessage(consoleMessage);
   }
 

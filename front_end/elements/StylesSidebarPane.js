@@ -2372,7 +2372,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
     // Do not live-edit "content" property of pseudo elements. crbug.com/433889
     if (!isEditingName && (!this._parentPane.node().pseudoType() || this.name !== 'content'))
-      this._prompt.on(UI.TextPrompt.TextChangedEvent, this._applyFreeFlowStyleTextEdit.bind(this));
+      this._prompt.addEventListener(UI.TextPrompt.Events.TextChanged, this._applyFreeFlowStyleTextEdit.bind(this));
 
     var proxyElement = this._prompt.attachAndStartEditing(selectElement, blurListener.bind(this, context));
     this._navigateToSource(selectElement, true);

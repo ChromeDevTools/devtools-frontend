@@ -42,8 +42,7 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
     this._dataGrid = new DataGrid.DataGrid(columns, this._editingCallback.bind(this), this._deleteCallback.bind(this));
     this._dataGrid.setName('DOMStorageItemsView');
     this._dataGrid.asWidget().show(this.element);
-    /** @type {!Array<!Common.EventTarget.EventDescriptorStruct>} */
-    this._listeners = [];
+    this._eventListeners = [];
     this.setStorage(domStorage);
   }
 
@@ -51,9 +50,9 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
    * @param {!Resources.DOMStorage} domStorage
    */
   setStorage(domStorage) {
-    Common.EventTarget.removeEventListeners(this._listeners);
+    Common.EventTarget.removeEventListeners(this._eventListeners);
     this._domStorage = domStorage;
-    this._listeners = [
+    this._eventListeners = [
       this._domStorage.addEventListener(
           Resources.DOMStorage.Events.DOMStorageItemsCleared, this._domStorageItemsCleared, this),
       this._domStorage.addEventListener(

@@ -50,7 +50,8 @@ NetworkLog.NetworkLog = class {
     var eventListeners = [];
     eventListeners.push(
         networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, this._onRequestStarted, this));
-    eventListeners.push(networkManager.on(SDK.NetworkManager.RequestRedirectEvent, this._onRequestRedirect, this));
+    eventListeners.push(
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestRedirected, this._onRequestRedirect, this));
 
     var resourceTreeModel = networkManager.target().model(SDK.ResourceTreeModel);
     if (resourceTreeModel) {
@@ -273,10 +274,10 @@ NetworkLog.NetworkLog = class {
   }
 
   /**
-   * @param {!SDK.NetworkManager.RequestRedirectEvent} event
+   * @param {!Common.Event} event
    */
   _onRequestRedirect(event) {
-    var request = event.request;
+    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     delete request[NetworkLog.NetworkLog._initiatorDataSymbol];
   }
 

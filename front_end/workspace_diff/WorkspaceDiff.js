@@ -19,20 +19,20 @@ WorkspaceDiff.WorkspaceDiff = class {
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {function(!WorkspaceDiff.DiffChangedEvent)} callback
+   * @param {function(!Common.Event)} callback
    * @param {!Object=} thisObj
    */
   subscribeToDiffChange(uiSourceCode, callback, thisObj) {
-    this._uiSourceCodeDiff(uiSourceCode).on(WorkspaceDiff.DiffChangedEvent, callback, thisObj);
+    this._uiSourceCodeDiff(uiSourceCode).addEventListener(WorkspaceDiff.Events.DiffChanged, callback, thisObj);
   }
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {function(!WorkspaceDiff.DiffChangedEvent)} callback
+   * @param {function(!Common.Event)} callback
    * @param {!Object=} thisObj
    */
   unsubscribeFromDiffChange(uiSourceCode, callback, thisObj) {
-    this._uiSourceCodeDiff(uiSourceCode).off(WorkspaceDiff.DiffChangedEvent, callback, thisObj);
+    this._uiSourceCodeDiff(uiSourceCode).removeEventListener(WorkspaceDiff.Events.DiffChanged, callback, thisObj);
   }
 
   /**
@@ -74,7 +74,7 @@ WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff = class extends Common.Object {
      * @this {WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff}
      */
     function emitDiffChanged() {
-      this.emit(new WorkspaceDiff.DiffChangedEvent());
+      this.dispatchEventToListeners(WorkspaceDiff.Events.DiffChanged);
       this._pendingChanges = null;
     }
   }
@@ -103,9 +103,11 @@ WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff = class extends Common.Object {
 };
 
 /**
- * @implements {Common.Emittable}
+ * @enum {symbol}
  */
-WorkspaceDiff.DiffChangedEvent = class {};
+WorkspaceDiff.Events = {
+  DiffChanged: Symbol('DiffChanged')
+};
 
 /**
  * @return {!WorkspaceDiff.WorkspaceDiff}

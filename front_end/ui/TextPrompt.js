@@ -307,7 +307,7 @@ UI.TextPrompt = class extends Common.Object {
       this._queryRange.endColumn += text.length - this._previousText.length;
     this._refreshGhostText();
     this._previousText = text;
-    this.emit(new UI.TextPrompt.TextChangedEvent());
+    this.dispatchEventToListeners(UI.TextPrompt.Events.TextChanged);
 
     this.autoCompleteSoon();
   }
@@ -335,7 +335,7 @@ UI.TextPrompt = class extends Common.Object {
     this._refreshGhostText();
 
     if (beforeText !== this.textWithCurrentSuggestion())
-      this.emit(new UI.TextPrompt.TextChangedEvent());
+      this.dispatchEventToListeners(UI.TextPrompt.Events.TextChanged);
   }
 
   _refreshGhostText() {
@@ -509,7 +509,7 @@ UI.TextPrompt = class extends Common.Object {
     this._currentSuggestion = suggestion;
     this._refreshGhostText();
     if (isIntermediateSuggestion)
-      this.emit(new UI.TextPrompt.TextChangedEvent());
+      this.dispatchEventToListeners(UI.TextPrompt.Events.TextChanged);
   }
 
   /**
@@ -532,7 +532,7 @@ UI.TextPrompt = class extends Common.Object {
         this._queryRange.startColumn + this._currentSuggestion.length);
 
     this.clearAutocomplete();
-    this.emit(new UI.TextPrompt.TextChangedEvent());
+    this.dispatchEventToListeners(UI.TextPrompt.Events.TextChanged);
 
     return true;
   }
@@ -639,5 +639,7 @@ UI.TextPrompt = class extends Common.Object {
 
 UI.TextPrompt.DefaultAutocompletionTimeout = 250;
 
-/** @implements {Common.Emittable} */
-UI.TextPrompt.TextChangedEvent = class {};
+/** @enum {symbol} */
+UI.TextPrompt.Events = {
+  TextChanged: Symbol('TextChanged')
+};

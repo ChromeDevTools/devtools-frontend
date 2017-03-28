@@ -22,15 +22,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @implements {Common.EventTarget}
  * @unrestricted
  */
 Common.Object = class {
   constructor() {
-    /** @type {(!Map<(symbol|!Common.Emittable), !Array<!Common.Object._listenerCallbackTuple>>|undefined)} */
+    /** @type {(!Map<symbol, !Array<!Common.Object._listenerCallbackTuple>>|undefined)} */
     this._listeners;
   }
+
   /**
    * @override
    * @param {symbol} eventType
@@ -48,7 +50,7 @@ Common.Object = class {
     if (!this._listeners.has(eventType))
       this._listeners.set(eventType, []);
     this._listeners.get(eventType).push({thisObject: thisObject, listener: listener});
-    return new Common.EventTarget.EventDescriptor(this, eventType, thisObject, listener);
+    return {eventTarget: this, eventType: eventType, thisObject: thisObject, listener: listener};
   }
 
   /**
@@ -90,56 +92,7 @@ Common.Object = class {
     if (!this._listeners || !this._listeners.has(eventType))
       return;
 
-    var event = new Common.Event(eventData);
-    var listeners = this._listeners.get(eventType).slice(0);
-    for (var i = 0; i < listeners.length; ++i)
-      listeners[i].listener.call(listeners[i].thisObject, event);
-  }
-
-  /**
-   * @override
-   * @param {function(new:T, ...)} eventType
-   * @param {function(!T)} listener
-   * @param {!Object=} thisObject
-   * @return {!Common.EventTarget.TypedEventDescriptor}
-   * @template T
-   */
-  on(eventType, listener, thisObject) {
-    if (!this._listeners)
-      this._listeners = new Map();
-    if (!this._listeners.has(eventType))
-      this._listeners.set(eventType, []);
-    this._listeners.get(eventType).push({thisObject: thisObject, listener: listener});
-    return new Common.EventTarget.TypedEventDescriptor(this, eventType, thisObject, listener);
-  }
-
-  /**
-   * @override
-   * @param {function(new:T, ...)} eventType
-   * @param {function(!T)} listener
-   * @param {!Object=} thisObject
-   * @template T
-   */
-  off(eventType, listener, thisObject) {
-    if (!this._listeners || !this._listeners.has(eventType))
-      return;
-    var listeners = this._listeners.get(eventType);
-    for (var i = 0; i < listeners.length; ++i) {
-      if (listeners[i].listener === listener && listeners[i].thisObject === thisObject)
-        listeners.splice(i--, 1);
-    }
-    if (!listeners.length)
-      this._listeners.delete(eventType);
-  }
-
-  /**
-   * @override
-   * @param {!Common.Emittable} event
-   */
-  emit(event) {
-    var eventType = event.constructor;
-    if (!this._listeners || !this._listeners.has(eventType))
-      return;
+    var event = /** @type {!Common.Event} */ ({data: eventData});
     var listeners = this._listeners.get(eventType).slice(0);
     for (var i = 0; i < listeners.length; ++i)
       listeners[i].listener.call(listeners[i].thisObject, event);
@@ -147,27 +100,14 @@ Common.Object = class {
 };
 
 /**
- * @interface
+ * @typedef {!{data: *}}
  */
-Common.Emittable = function() {};
+Common.Event;
 
 /**
- * @typedef {!{thisObject: (!Object|undefined), listener: function(!Common.Emittable)}}
+ * @typedef {!{thisObject: (!Object|undefined), listener: function(!Common.Event)}}
  */
 Common.Object._listenerCallbackTuple;
-
-/**
- * @implements {Common.Emittable}
- * @unrestricted
- */
-Common.Event = class {
-  /**
-   * @param {*=} data
-   */
-  constructor(data) {
-    this.data = data;
-  }
-};
 
 /**
  * @interface
@@ -175,72 +115,17 @@ Common.Event = class {
 Common.EventTarget = function() {};
 
 /**
- * @record
- * @template T
+ * @typedef {!{eventTarget: !Common.EventTarget, eventType: symbol, thisObject: (!Object|undefined), listener: function(!Common.Event)}}
  */
-Common.EventTarget.EventDescriptorStruct = class {
-  constructor() {
-    /** @type {!Common.EventTarget} */
-    this.eventTarget;
-    /** @type {!T} */
-    this.eventType;
-    /** @type {(!Object|undefined)} */
-    this.receiver;
-    /** @type {function(!Common.Emittable)} */
-    this.method;
-  }
-};
+Common.EventTarget.EventDescriptor;
 
 /**
- * @implements {Common.EventTarget.EventDescriptorStruct<symbol>}
- * @unrestricted
- */
-Common.EventTarget.EventDescriptor = class {
-  /**
-   * @param {!Common.EventTarget} eventTarget
-   * @param {symbol} eventType
-   * @param {(!Object|undefined)} receiver
-   * @param {function(!Common.Event)} method
-   */
-  constructor(eventTarget, eventType, receiver, method) {
-    this.eventTarget = eventTarget;
-    this.eventType = eventType;
-    this.receiver = receiver;
-    this.method = method;
-  }
-};
-
-/**
- * @implements {Common.EventTarget.EventDescriptorStruct<function(new:Common.Emittable)>}
- * @unrestricted
- */
-Common.EventTarget.TypedEventDescriptor = class {
-  /**
-   * @param {!Common.EventTarget} eventTarget
-   * @param {function(new:Common.Emittable, ...)} eventType
-   * @param {(!Object|undefined)} receiver
-   * @param {function(!Common.Emittable)} method
-   */
-  constructor(eventTarget, eventType, receiver, method) {
-    this.eventTarget = eventTarget;
-    this.eventType = eventType;
-    this.receiver = receiver;
-    this.method = method;
-  }
-};
-
-/**
- * @param {!Array<!Common.EventTarget.EventDescriptorStruct>} eventList
+ * @param {!Array<!Common.EventTarget.EventDescriptor>} eventList
  */
 Common.EventTarget.removeEventListeners = function(eventList) {
   for (var i = 0; i < eventList.length; ++i) {
-    if (eventList[i] instanceof Common.EventTarget.EventDescriptor) {
-      var eventInfo = /** @type {!Common.EventTarget.EventDescriptor} */ (eventList[i]);
-      eventInfo.eventTarget.removeEventListener(eventInfo.eventType, eventInfo.method, eventInfo.receiver);
-    } else {
-      var eventInfo = /** @type {!Common.EventTarget.TypedEventDescriptor} */ (eventList[i]);
-      eventInfo.eventTarget.off(eventInfo.eventType, eventInfo.method, eventInfo.receiver);
-    }
+    var eventInfo = eventList[i];
+    eventInfo.eventTarget.removeEventListener(eventInfo.eventType, eventInfo.listener, eventInfo.thisObject);
   }
   // Do not hold references on unused event descriptors.
   eventList.splice(0, eventList.length);
@@ -273,26 +158,4 @@ Common.EventTarget.prototype = {
    * @param {*=} eventData
    */
   dispatchEventToListeners(eventType, eventData) {},
-
-  /**
-   * @param {function(new:T, ...)} eventType
-   * @param {function(!T)} listener
-   * @param {!Object=} thisObject
-   * @return {!Common.EventTarget.TypedEventDescriptor}
-   * @template T
-   */
-  on(eventType, listener, thisObject) {},
-
-  /**
-   * @param {function(new:T, ...)} eventType
-   * @param {function(!T)} listener
-   * @param {!Object=} thisObject
-   * @template T
-   */
-  off(eventType, listener, thisObject) {},
-
-  /**
-   * @param {!Common.Emittable} event
-   */
-  emit(event) {},
 };

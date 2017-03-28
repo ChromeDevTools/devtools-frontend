@@ -216,9 +216,9 @@ Timeline.TimelinePanel = class extends UI.Panel {
     // Record
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('main.reload'));
-    var clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
-    clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._clear());
-    this._panelToolbar.appendToolbarItem(clearButton);
+    this._clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
+    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._clear());
+    this._panelToolbar.appendToolbarItem(this._clearButton);
     this._panelToolbar.appendSeparator();
 
     // View
@@ -553,6 +553,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     var state = Timeline.TimelinePanel.State;
     this._toggleRecordAction.setToggled(this._state === state.Recording);
     this._toggleRecordAction.setEnabled(this._state === state.Recording || this._state === state.Idle);
+    this._clearButton.setEnabled(this._state === state.Idle);
     this._panelToolbar.setEnabled(this._state !== state.Loading);
     this._dropTarget.setEnabled(this._state === state.Idle);
   }

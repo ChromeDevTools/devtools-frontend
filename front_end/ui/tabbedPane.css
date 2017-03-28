@@ -139,13 +139,11 @@
 
 .tabbed-pane-header-tabs-drop-down-container {
     float: left;
-    position: relative;
-    vertical-align: bottom;
-    line-height: 24px;
     opacity: 0.8;
-    color: inherit;
-    font-size: 133%;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 
 .tabbed-pane-header-tabs-drop-down-container > .chevron-icon {

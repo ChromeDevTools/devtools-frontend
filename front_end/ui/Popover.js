@@ -206,7 +206,7 @@ UI.PopoverHelper = class {
     popover.registerRequiredCSS('ui/popover.css');
     popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     popover.setBlockPointerEvents(false);
-    popover.setShowArrow(true);
+    popover.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
     var request = this._scheduledRequest;
     request.show.call(null, popover).then(success => {
       if (!success)

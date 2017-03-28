@@ -391,7 +391,7 @@ UI.ContextMenu = class extends UI.ContextSubMenuItem {
     UI._contextMenu = this;
     if (this._useSoftMenu || UI.ContextMenu._useSoftMenu || InspectorFrontendHost.isHostedMode()) {
       this._softMenu = new UI.SoftContextMenu(menuObject, this._itemSelected.bind(this));
-      this._softMenu.show(this._event.target.ownerDocument, this._x, this._y);
+      this._softMenu.show(this._event.target.ownerDocument, new AnchorBox(this._x, this._y, 0, 0));
     } else {
       InspectorFrontendHost.showContextMenuAtPoint(this._x, this._y, menuObject, this._event.target.ownerDocument);
 

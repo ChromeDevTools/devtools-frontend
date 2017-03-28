@@ -9,6 +9,7 @@
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [{
   version: 1,
+  date: 'March 2017',
   highlights: [
     {
       title: 'New Performance and Memory panels',

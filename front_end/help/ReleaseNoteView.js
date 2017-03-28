@@ -8,7 +8,7 @@ Help.ReleaseNoteView = class extends UI.VBox {
     this.registerRequiredCSS('help/releaseNote.css');
     var releaseNoteElement = this._createReleaseNoteElement(Help.latestReleaseNote());
     var topSection = this.contentElement.createChild('div', 'release-note-top-section');
-    topSection.textContent = Common.UIString('New since the last update');
+    topSection.textContent = Common.UIString(`Highlights from ${Help.latestReleaseNote().date} update`);
     this.contentElement.appendChild(releaseNoteElement);
   }
 

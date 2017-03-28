@@ -4,7 +4,7 @@
       "type": "view",
       "location": "drawer-view",
       "id": "release-note",
-      "title": "What's New?",
+      "title": "What's New",
       "persistence": "closeable",
       "order": 1,
       "className": "Help.ReleaseNoteView",

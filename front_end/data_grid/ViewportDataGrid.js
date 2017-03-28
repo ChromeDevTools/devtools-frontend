@@ -372,8 +372,9 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
     if (child.parent !== this)
       throw 'removeChild: Node is not a child of this node.';
 
-    child._unlink();
     this.children.remove(child, true);
+    child._unlink();
+
     if (!this.children.length)
       this.setHasChildren(false);
     if (this._expanded)
@@ -400,10 +401,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
       this.existingElement().remove();
       this.wasDetached();
     }
-    this.dataGrid = null;
-    this.parent = null;
-    this.nextSibling = null;
-    this.previousSibling = null;
+    this.resetNode();
   }
 
   /**

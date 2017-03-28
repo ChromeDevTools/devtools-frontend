@@ -1596,6 +1596,26 @@ DataGrid.DataGridNode = class extends Common.Object {
   }
 
   /**
+   * @param {boolean=} onlyCaches
+   */
+  resetNode(onlyCaches) {
+    // @TODO(allada) This is a hack to make sure ViewportDataGrid can clean up these caches. Try Not To Use.
+    delete this._depth;
+    delete this._revealed;
+    if (onlyCaches)
+      return;
+    if (this.previousSibling)
+      this.previousSibling.nextSibling = this.nextSibling;
+    if (this.nextSibling)
+      this.nextSibling.previousSibling = this.previousSibling;
+    this.dataGrid = null;
+    this.parent = null;
+    this.nextSibling = null;
+    this.previousSibling = null;
+    this._attached = false;
+  }
+
+  /**
    * @param {!NODE_TYPE} child
    * @param {number} index
    */
@@ -1621,16 +1641,12 @@ DataGrid.DataGridNode = class extends Common.Object {
     child.dataGrid = this.dataGrid;
     child.recalculateSiblings(index);
 
-    child._depth = undefined;
-    child._revealed = undefined;
-    child._attached = false;
     child._shouldRefreshChildren = true;
 
     var current = child.children[0];
     while (current) {
+      current.resetNode(true);
       current.dataGrid = this.dataGrid;
-      current._depth = undefined;
-      current._revealed = undefined;
       current._attached = false;
       current._shouldRefreshChildren = true;
       current = current.traverseNextNode(false, child, true);
@@ -1658,19 +1674,10 @@ DataGrid.DataGridNode = class extends Common.Object {
 
     if (this.dataGrid)
       this.dataGrid.updateSelectionBeforeRemoval(child, false);
+
     child._detach();
-
+    child.resetNode();
     this.children.remove(child, true);
-
-    if (child.previousSibling)
-      child.previousSibling.nextSibling = child.nextSibling;
-    if (child.nextSibling)
-      child.nextSibling.previousSibling = child.previousSibling;
-
-    child.dataGrid = null;
-    child.parent = null;
-    child.nextSibling = null;
-    child.previousSibling = null;
 
     if (this.children.length <= 0)
       this.setHasChildren(false);
@@ -1682,10 +1689,7 @@ DataGrid.DataGridNode = class extends Common.Object {
     for (var i = 0; i < this.children.length; ++i) {
       var child = this.children[i];
       child._detach();
-      child.dataGrid = null;
-      child.parent = null;
-      child.nextSibling = null;
-      child.previousSibling = null;
+      child.resetNode();
     }
 
     this.children = [];

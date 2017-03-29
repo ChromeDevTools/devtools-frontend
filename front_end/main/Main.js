@@ -198,6 +198,7 @@ Main.Main = class {
 
     new Main.Main.PauseListener();
     new Main.Main.InspectedNodeRevealer();
+    new Main.NetworkPanelIndicator();
     new Main.SourcesPanelIndicator();
     new Main.BackendSettingsSync();
     Components.domBreakpointsSidebarPane = new Components.DOMBreakpointsSidebarPane();
@@ -743,6 +744,33 @@ Main.Main.MainMenuItem = class {
     helpSubMenu.appendAction('settings.documentation');
     helpSubMenu.appendItem('Release Notes', () => InspectorFrontendHost.openInNewTab(Help.latestReleaseNote().link));
     contextMenu.show();
+  }
+};
+
+Main.NetworkPanelIndicator = class {
+  constructor() {
+    // TODO: we should not access network from other modules.
+    if (!UI.inspectorView.hasPanel('network'))
+      return;
+    var manager = SDK.multitargetNetworkManager;
+    manager.addEventListener(SDK.MultitargetNetworkManager.Events.ConditionsChanged, updateVisibility);
+    var blockedURLsSetting = Common.moduleSetting('networkBlockedURLs');
+    blockedURLsSetting.addChangeListener(updateVisibility);
+    var requestBlockingEnabledSetting = Common.moduleSetting('requestBlockingEnabled');
+    requestBlockingEnabledSetting.addChangeListener(updateVisibility);
+    updateVisibility();
+
+    function updateVisibility() {
+      var icon = null;
+      if (manager.isThrottling()) {
+        icon = UI.Icon.create('smallicon-warning');
+        icon.title = Common.UIString('Network throttling is enabled');
+      } else if (requestBlockingEnabledSetting.get() && blockedURLsSetting.get().length) {
+        icon = UI.Icon.create('smallicon-warning');
+        icon.title = Common.UIString('Requests may be blocked');
+      }
+      UI.inspectorView.setPanelIcon('network', icon);
+    }
   }
 };
 

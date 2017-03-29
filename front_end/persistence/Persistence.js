@@ -32,6 +32,14 @@ Persistence.Persistence = class extends Common.Object {
   }
 
   /**
+   * @param {function(function(!Persistence.PersistenceBinding), function(!Persistence.PersistenceBinding)):{dispose: function()}} mappingFactory
+   */
+  _setMappingForTest(mappingFactory) {
+    this._mapping.dispose();
+    this._mapping = mappingFactory(this._validateBinding.bind(this), this._onBindingRemoved.bind(this));
+  }
+
+  /**
    * @param {!Persistence.PersistenceBinding} binding
    */
   _validateBinding(binding) {

@@ -134,6 +134,8 @@ Persistence.DefaultMapping = class {
   }
 
   dispose() {
+    for (var binding of this._bindings.valuesArray())
+      this._unbind(binding.network);
     Common.EventTarget.removeEventListeners(this._eventListeners);
   }
 };

@@ -149,7 +149,7 @@ Persistence.Automapping = class {
       if (networkSourceCode[Persistence.Automapping._processingPromise] !== createBindingPromise)
         return;
       networkSourceCode[Persistence.Automapping._processingPromise] = null;
-      if (!binding) {
+      if (!binding || this._disposed) {
         this._onBindingFailedForTest();
         return;
       }
@@ -276,6 +276,15 @@ Persistence.Automapping = class {
       var contentMatches = !networkMetadata.contentSize || fileMetadata.contentSize === networkMetadata.contentSize;
       return timeMatches && contentMatches;
     });
+  }
+
+  dispose() {
+    if (this._disposed)
+      return;
+    this._disposed = true;
+    Common.EventTarget.removeEventListeners(this._eventListeners);
+    for (var binding of this._bindings.valuesArray())
+      this._unbindNetwork(binding.network);
   }
 };
 

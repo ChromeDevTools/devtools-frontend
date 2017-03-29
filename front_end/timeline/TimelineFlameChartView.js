@@ -247,6 +247,10 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    */
   _onEntrySelected(dataProvider, event) {
     var entryIndex = /** @type{number} */ (event.data);
+    if (Runtime.experiments.isEnabled('timelineEventInitiators') && dataProvider === this._mainDataProvider) {
+      if (this._mainDataProvider.buildFlowForInitiator(entryIndex))
+        this._mainFlameChart.scheduleUpdate();
+    }
     this._delegate.select(dataProvider.createSelection(entryIndex));
   }
 

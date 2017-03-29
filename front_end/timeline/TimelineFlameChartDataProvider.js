@@ -709,6 +709,7 @@ Timeline.TimelineFlameChartDataProvider = class {
     this._timelineData.entryTotalTimes[index] =
         event.duration || Timeline.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs;
     this._timelineData.entryStartTimes[index] = event.startTime;
+    event[Timeline.TimelineFlameChartDataProvider._indexSymbol] = index;
   }
 
   /**
@@ -873,6 +874,39 @@ Timeline.TimelineFlameChartDataProvider = class {
       return filter.accept(event);
     });
   }
+
+  /**
+   * @param {number} entryIndex
+   * @return {boolean}
+   */
+  buildFlowForInitiator(entryIndex) {
+    if (this._lastInitiatorEntry === entryIndex)
+      return false;
+    this._lastInitiatorEntry = entryIndex;
+    var event = this._entryType(entryIndex) === Timeline.TimelineFlameChartEntryType.Event ?
+        /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]) :
+        null;
+    var td = this._timelineData;
+    var initiator = event && TimelineModel.TimelineData.forEvent(event).initiator();
+    if (initiator && !this._isVisible(initiator))
+      initiator = null;
+    if (td.flowStartTimes.length || initiator) {
+      td.flowStartTimes = [];
+      td.flowStartLevels = [];
+      td.flowEndTimes = [];
+      td.flowEndLevels = [];
+    }
+    if (!initiator)
+      return true;
+    var initiatorIndex = initiator[Timeline.TimelineFlameChartDataProvider._indexSymbol];
+    var eventIndex = event[Timeline.TimelineFlameChartDataProvider._indexSymbol];
+    td.flowStartTimes.push(initiator.endTime || initiator.startTime);
+    td.flowStartLevels.push(td.entryLevels[initiatorIndex]);
+    td.flowEndTimes.push(event.startTime);
+    td.flowEndLevels.push(td.entryLevels[eventIndex]);
+    return true;
+  }
 };
 
 Timeline.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs = 0.001;
+Timeline.TimelineFlameChartDataProvider._indexSymbol = Symbol('index');

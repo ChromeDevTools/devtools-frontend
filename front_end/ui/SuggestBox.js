@@ -71,6 +71,7 @@ UI.SuggestBox = class {
     this._element = this._list.element;
     this._element.classList.add('suggest-box');
     this._element.addEventListener('mousedown', event => event.preventDefault(), true);
+    this._element.addEventListener('click', this._onClick.bind(this), false);
 
     this._glassPane = new UI.GlassPane();
     this._glassPane.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PreferBottom);
@@ -224,13 +225,6 @@ UI.SuggestBox = class {
       var subtitleElement = element.createChild('span', 'suggestion-subtitle');
       subtitleElement.textContent = item.subtitle.trimEnd(maxTextLength - displayText.length);
     }
-
-    element.addEventListener('click', event => {
-      this._list.selectItem(item);
-      this._setUserInteracted(true);
-      event.consume(true);
-      this.acceptSuggestion();
-    });
     return element;
   }
 
@@ -270,6 +264,20 @@ UI.SuggestBox = class {
     if (!to)
       return;
     this._applySuggestion(true);
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onClick(event) {
+    var item = this._list.itemForNode(/** @type {?Node} */ (event.target));
+    if (!item)
+      return;
+
+    this._list.selectItem(item);
+    this._setUserInteracted(true);
+    this.acceptSuggestion();
+    event.consume(true);
   }
 
   /**

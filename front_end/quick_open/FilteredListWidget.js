@@ -39,6 +39,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._itemElementsContainer = this._list.element;
     this._itemElementsContainer.classList.add('container');
     this._bottomElementsContainer.appendChild(this._itemElementsContainer);
+    this._itemElementsContainer.addEventListener('click', this._onClick.bind(this), false);
 
     this._notFoundElement = this._bottomElementsContainer.createChild('div', 'not-found-text');
     this._notFoundElement.classList.add('hidden');
@@ -216,13 +217,6 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     var subtitleElement = itemElement.createChild('div', 'filtered-list-widget-subtitle');
     subtitleElement.textContent = '\u200B';
     this._provider.renderItem(item, this._value(), titleElement, subtitleElement);
-    itemElement.addEventListener('click', event => {
-      event.consume(true);
-      // Detach dialog before allowing provider to override focus.
-      if (this._dialog)
-        this._dialog.hide();
-      this._selectItemWithQuery(item, this._value());
-    }, false);
     return itemElement;
   }
 
@@ -257,6 +251,21 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
       fromElement.classList.remove('selected');
     if (toElement)
       toElement.classList.add('selected');
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onClick(event) {
+    var item = this._list.itemForNode(/** @type {?Node} */ (event.target));
+    if (!item)
+      return;
+
+    event.consume(true);
+    // Detach dialog before allowing provider to override focus.
+    if (this._dialog)
+      this._dialog.hide();
+    this._selectItemWithQuery(item, this._value());
   }
 
   /**

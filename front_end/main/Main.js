@@ -134,7 +134,7 @@ Main.Main = class {
         Runtime.experiments.enableForTest('liveSASS');
     }
 
-    Runtime.experiments.setDefaultExperiments(['persistenceValidation']);
+    Runtime.experiments.setDefaultExperiments(['persistenceValidation', 'persistence2']);
   }
 
   /**

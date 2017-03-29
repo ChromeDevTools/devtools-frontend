@@ -4,32 +4,13 @@
  * found in the LICENSE file.
  */
 
-/**
- * @unrestricted
- */
-Sources.OpenResourceDialog = class extends Sources.FilteredUISourceCodeListProvider {
+Sources.OpenFileQuickOpen = class extends Sources.FilteredUISourceCodeListProvider {
   /**
-   * @param {!Sources.SourcesView} sourcesView
-   * @param {!Map.<!Workspace.UISourceCode, number>} defaultScores
+   * @override
    */
-  constructor(sourcesView, defaultScores) {
-    super(defaultScores);
-    this._sourcesView = sourcesView;
-  }
-
-  /**
-   * @param {!Sources.SourcesView} sourcesView
-   * @param {string} query
-   * @param {!Map.<!Workspace.UISourceCode, number>} defaultScores
-   * @param {!Array<string>} history
-   */
-  static show(sourcesView, query, defaultScores, history) {
-    var dialog = new Sources.OpenResourceDialog(sourcesView, defaultScores);
-    if (InspectorFrontendHost.isUnderTest())
-      Sources.OpenResourceDialog._instanceForTest = dialog;
-    var filteredItemSelectionDialog = new QuickOpen.FilteredListWidget(dialog, history);
-    filteredItemSelectionDialog.showAsDialog();
-    filteredItemSelectionDialog.setQuery(query);
+  attach() {
+    this.setDefaultScores(Sources.SourcesView.defaultUISourceCodeScores());
+    super.attach();
   }
 
   /**
@@ -42,19 +23,8 @@ Sources.OpenResourceDialog = class extends Sources.FilteredUISourceCodeListProvi
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelectFileFromFilePicker);
 
     if (!uiSourceCode)
-      uiSourceCode = this._sourcesView.currentUISourceCode();
-    if (!uiSourceCode)
       return;
-    this._sourcesView.showSourceLocation(uiSourceCode, lineNumber, columnNumber);
-  }
-
-  /**
-   * @override
-   * @param {string} query
-   * @return {boolean}
-   */
-  shouldShowMatchingItems(query) {
-    return !query.startsWith(':');
+    Common.Revealer.reveal(uiSourceCode.uiLocation((lineNumber || 0), columnNumber));
   }
 
   /**
@@ -75,10 +45,6 @@ Sources.OpenResourceDialog = class extends Sources.FilteredUISourceCodeListProvi
   }
 };
 
-
-/**
- * @unrestricted
- */
 Sources.SelectUISourceCodeForProjectTypesDialog = class extends Sources.FilteredUISourceCodeListProvider {
   /**
    * @param {!Array.<string>} types

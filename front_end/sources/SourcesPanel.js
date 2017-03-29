@@ -998,10 +998,6 @@ Sources.SourcesPanel = class extends UI.Panel {
       this.showUILocation(uiLocation);
   }
 
-  showGoToSourceDialog() {
-    this._sourcesView.showOpenResourceDialog();
-  }
-
   _revealNavigatorSidebar() {
     this._setAsCurrentPanel();
     this.editorView.showBoth(true);
@@ -1224,9 +1220,6 @@ Sources.SourcesPanel.RevealingActionDelegate = class {
     switch (actionId) {
       case 'debugger.toggle-pause':
         panel._togglePause();
-        return true;
-      case 'sources.go-to-source':
-        panel.showGoToSourceDialog();
         return true;
     }
     return false;

@@ -95,6 +95,21 @@ Sources.SourcesView = class extends UI.VBox {
   }
 
   /**
+   * @return {!Map.<!Workspace.UISourceCode, number>}
+   */
+  static defaultUISourceCodeScores() {
+    /** @type {!Map.<!Workspace.UISourceCode, number>} */
+    var defaultScores = new Map();
+    var sourcesView = UI.context.flavor(Sources.SourcesView);
+    if (sourcesView) {
+      var uiSourceCodes = sourcesView._editorContainer.historyUISourceCodes();
+      for (var i = 1; i < uiSourceCodes.length; ++i)  // Skip current element
+        defaultScores.set(uiSourceCodes[i], uiSourceCodes.length - i);
+    }
+    return defaultScores;
+  }
+
+  /**
    * @param {function(!Array.<!UI.KeyboardShortcut.Descriptor>, function(!Event=):boolean)} registerShortcutDelegate
    */
   registerShortcuts(registerShortcutDelegate) {
@@ -115,7 +130,8 @@ Sources.SourcesView = class extends UI.VBox {
         this, UI.ShortcutsScreen.SourcesPanelShortcuts.JumpToNextLocation, this._onJumpToNextLocation.bind(this));
     registerShortcut.call(
         this, UI.ShortcutsScreen.SourcesPanelShortcuts.CloseEditorTab, this._onCloseEditorTab.bind(this));
-    registerShortcut.call(this, UI.ShortcutsScreen.SourcesPanelShortcuts.GoToLine, this._showGoToLineDialog.bind(this));
+    registerShortcut.call(
+        this, UI.ShortcutsScreen.SourcesPanelShortcuts.GoToLine, this._showGoToLineQuickOpen.bind(this));
     registerShortcut.call(
         this, UI.ShortcutsScreen.SourcesPanelShortcuts.GoToMember, this._showOutlineDialog.bind(this));
     registerShortcut.call(
@@ -604,26 +620,12 @@ Sources.SourcesView = class extends UI.VBox {
   }
 
   /**
-   * @param {string=} query
-   */
-  showOpenResourceDialog(query) {
-    var uiSourceCodes = this._editorContainer.historyUISourceCodes();
-    /** @type {!Map.<!Workspace.UISourceCode, number>} */
-    var defaultScores = new Map();
-    for (var i = 1; i < uiSourceCodes.length; ++i)  // Skip current element
-      defaultScores.set(uiSourceCodes[i], uiSourceCodes.length - i);
-    if (!this._openResourceDialogHistory)
-      this._openResourceDialogHistory = [];
-    Sources.OpenResourceDialog.show(this, query || '', defaultScores, this._openResourceDialogHistory);
-  }
-
-  /**
    * @param {!Event=} event
    * @return {boolean}
    */
-  _showGoToLineDialog(event) {
+  _showGoToLineQuickOpen(event) {
     if (this._editorContainer.currentFile())
-      this.showOpenResourceDialog(':');
+      QuickOpen.QuickOpen.show(':');
     return true;
   }
 

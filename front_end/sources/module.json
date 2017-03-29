@@ -215,6 +215,18 @@
             ]
         },
         {
+            "type": "@QuickOpen.FilteredListWidget.Provider",
+            "title": "Open file",
+            "prefix": "",
+            "className": "Sources.OpenFileQuickOpen"
+        },
+        {
+            "type": "@QuickOpen.FilteredListWidget.Provider",
+            "title": "Go to line",
+            "prefix": ":",
+            "className": "Sources.GoToLineQuickOpen"
+        },
+        {
             "type": "context-menu-item",
             "location": "mainMenu/navigate",
             "actionId": "sources.search.toggle"
@@ -222,7 +234,7 @@
         {
             "type": "context-menu-item",
             "location": "navigatorMenu/navigate",
-            "actionId": "sources.go-to-source"
+            "actionId": "quickOpen.show"
         },
         {
             "type": "@Common.Revealer",
@@ -335,23 +347,6 @@
             "type": "@Sources.NavigatorView",
             "viewId": "navigator-snippets",
             "className": "Sources.SnippetsNavigatorView"
-        },
-        {
-            "type": "@UI.ActionDelegate",
-            "actionId": "sources.go-to-source",
-            "title": "Go to file...",
-            "className": "Sources.SourcesPanel.RevealingActionDelegate",
-            "order": 100,
-            "bindings": [
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+P Meta+O"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+P Ctrl+O"
-                }
-            ]
         },
         {
             "type": "@UI.ActionDelegate",
@@ -628,6 +623,7 @@
         "EventListenerBreakpointsSidebarPane.js",
         "FilePathScoreFunction.js",
         "FilteredUISourceCodeListProvider.js",
+        "GoToLineQuickOpen.js",
         "SourceMapNamesResolver.js",
         "JavaScriptBreakpointsSidebarPane.js",
         "JavaScriptOutlineDialog.js",
@@ -644,7 +640,7 @@
         "ScriptFormatterEditorAction.js",
         "InplaceFormatterEditorAction.js",
         "ScriptFormatter.js",
-        "OpenResourceDialog.js",
+        "OpenFileQuickOpen.js",
         "SourcesView.js",
         "AdvancedSearchView.js",
         "FileBasedSearchResultsPane.js",

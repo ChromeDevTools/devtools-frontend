@@ -9,12 +9,12 @@
  */
 Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListWidget.Provider {
   /**
-   * @param {!Map.<!Workspace.UISourceCode, number>=} defaultScores
+   * @param {?Map.<!Workspace.UISourceCode, number>=} defaultScores
    */
   constructor(defaultScores) {
     super();
 
-    this._defaultScores = defaultScores;
+    this._defaultScores = defaultScores || null;
     this._scorer = new Sources.FilePathScoreFunction('');
   }
 
@@ -84,6 +84,14 @@ Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListW
    */
   itemKeyAt(itemIndex) {
     return this._uiSourceCodes[itemIndex].url();
+  }
+
+  /**
+   * @protected
+   * @param {?Map.<!Workspace.UISourceCode, number>} defaultScores
+   */
+  setDefaultScores(defaultScores) {
+    this._defaultScores = defaultScores;
   }
 
   /**

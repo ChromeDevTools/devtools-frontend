@@ -1176,7 +1176,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
               'Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files.'));
           sourceMapInfobar.createDetailsRowMessage(Common.UIString(
               'Associated files are available via file tree or %s.',
-              UI.shortcutRegistry.shortcutTitleForAction('sources.go-to-source')));
+              UI.shortcutRegistry.shortcutTitleForAction('quickOpen.show')));
           this.attachInfobars([sourceMapInfobar]);
         }
       }

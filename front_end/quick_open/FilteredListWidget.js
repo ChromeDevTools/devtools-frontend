@@ -11,8 +11,9 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
   /**
    * @param {?QuickOpen.FilteredListWidget.Provider} provider
    * @param {!Array<string>=} promptHistory
+   * @param {function(string)=} queryChangedCallback
    */
-  constructor(provider, promptHistory) {
+  constructor(provider, promptHistory, queryChangedCallback) {
     super(true);
     this._promptHistory = promptHistory || [];
 
@@ -46,7 +47,9 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
 
     this.setDefaultFocusedElement(this._promptElement);
 
+    this._prefix = '';
     this._provider = provider;
+    this._queryChangedCallback = queryChangedCallback;
   }
 
   /**
@@ -118,6 +121,13 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
   }
 
   /**
+   * @param {string} prefix
+   */
+  setPrefix(prefix) {
+    this._prefix = prefix;
+  }
+
+  /**
    * @param {?QuickOpen.FilteredListWidget.Provider} provider
    */
   setProvider(provider) {
@@ -139,7 +149,6 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
       this._provider.attach();
     }
     this._itemsLoaded(this._provider);
-    this._updateShowMatchingItems();
   }
 
   /**
@@ -147,6 +156,10 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    */
   _value() {
     return this._prompt.text().trim();
+  }
+
+  _cleanValue() {
+    return this._value().substring(this._prefix.length);
   }
 
   /**
@@ -181,14 +194,14 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    */
   _onEnter(event) {
     event.preventDefault();
-    if (!this._provider || !this._provider.itemCount())
+    if (!this._provider)
       return;
-    var selectedIndexInProvider = this._shouldShowMatchingItems() ? this._list.selectedItem() : null;
+    var selectedIndexInProvider = this._provider.itemCount() ? this._list.selectedItem() : null;
 
     // Detach dialog before allowing provider to override focus.
     if (this._dialog)
       this._dialog.hide();
-    this._selectItemWithQuery(selectedIndexInProvider, this._value());
+    this._selectItem(selectedIndexInProvider);
   }
 
   /**
@@ -216,7 +229,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     var titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
     var subtitleElement = itemElement.createChild('div', 'filtered-list-widget-subtitle');
     subtitleElement.textContent = '\u200B';
-    this._provider.renderItem(item, this._value(), titleElement, subtitleElement);
+    this._provider.renderItem(item, this._cleanValue(), titleElement, subtitleElement);
     return itemElement;
   }
 
@@ -265,7 +278,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     // Detach dialog before allowing provider to override focus.
     if (this._dialog)
       this._dialog.hide();
-    this._selectItemWithQuery(item, this._value());
+    this._selectItem(item);
   }
 
   /**
@@ -273,9 +286,9 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    */
   setQuery(query) {
     this._prompt.setText(query);
+    this._queryChanged();
     this._prompt.autoCompleteSoon(true);
     this._scheduleFilter();
-    this._updateShowMatchingItems();
   }
 
   _tabKeyPressed() {
@@ -309,15 +322,18 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     }
 
     if (!this._provider) {
+      this._bottomElementsContainer.classList.toggle('hidden', true);
       this._itemsFilteredForTest();
       return;
     }
+
+    this._bottomElementsContainer.classList.toggle('hidden', false);
 
     this._progressBarElement.style.transform = 'scaleX(0)';
     this._progressBarElement.classList.remove('filtered-widget-progress-fade');
     this._progressBarElement.classList.remove('hidden');
 
-    var query = this._provider.rewriteQuery(this._value());
+    var query = this._provider.rewriteQuery(this._cleanValue());
     this._query = query;
 
     var filterRegex = query ? QuickOpen.FilteredListWidget.filterRegex(query) : null;
@@ -423,24 +439,19 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._list.element.classList.toggle('hidden', !hasItems);
     this._notFoundElement.classList.toggle('hidden', hasItems);
     if (!hasItems)
-      this._notFoundElement.textContent = this._provider.notFoundText();
-  }
-
-  /**
-   * @return {boolean}
-   */
-  _shouldShowMatchingItems() {
-    return !!this._provider && this._provider.shouldShowMatchingItems(this._value());
+      this._notFoundElement.textContent = this._provider.notFoundText(this._cleanValue());
   }
 
   _onInput() {
-    this._updateShowMatchingItems();
+    this._queryChanged();
     this._scheduleFilter();
   }
 
-  _updateShowMatchingItems() {
-    var shouldShowMatchingItems = this._shouldShowMatchingItems();
-    this._bottomElementsContainer.classList.toggle('hidden', !shouldShowMatchingItems);
+  _queryChanged() {
+    if (this._queryChangedCallback)
+      this._queryChangedCallback(this._value());
+    if (this._provider)
+      this._provider.queryChanged(this._cleanValue());
   }
 
   /**
@@ -480,13 +491,12 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
 
   /**
    * @param {?number} itemIndex
-   * @param {string} promptValue
    */
-  _selectItemWithQuery(itemIndex, promptValue) {
-    this._promptHistory.push(promptValue);
+  _selectItem(itemIndex) {
+    this._promptHistory.push(this._value());
     if (this._promptHistory.length > 100)
       this._promptHistory.shift();
-    this._provider.selectItem(itemIndex, promptValue);
+    this._provider.selectItem(itemIndex, this._cleanValue());
   }
 };
 
@@ -503,14 +513,6 @@ QuickOpen.FilteredListWidget.Provider = class {
   }
 
   attach() {
-  }
-
-  /**
-   * @param {string} query
-   * @return {boolean}
-   */
-  shouldShowMatchingItems(query) {
-    return true;
   }
 
   /**
@@ -573,9 +575,16 @@ QuickOpen.FilteredListWidget.Provider = class {
   }
 
   /**
+   * @param {string} query
+   */
+  queryChanged(query) {
+  }
+
+  /**
+   * @param {string} query
    * @return {string}
    */
-  notFoundText() {
+  notFoundText(query) {
     return Common.UIString('No results found');
   }
 

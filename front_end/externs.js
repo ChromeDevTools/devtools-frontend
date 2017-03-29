@@ -557,12 +557,6 @@ CodeMirror.Pos.prototype.ch;
  */
 CodeMirror.cmpPos = function(pos1, pos2) {};
 
-/**
- * @param {string} mode
- * @param {?} definition
- */
-CodeMirror.defineSimpleMode = function(mode, definition) {};
-
 /** @constructor */
 CodeMirror.StringStream = function(line) {
   this.pos = 0;

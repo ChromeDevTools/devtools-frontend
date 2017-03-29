@@ -213,6 +213,9 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
     var y = this._levelToHeight(timelineData.entryLevels[entryIndex]);
     this.setScrollOffset(y, this._barHeight);
 
+    var minVisibleWidthPx = 30;
+    var futurePixelToTime = (timeRight - timeLeft) / this._offsetWidth;
+    minEntryTimeWindow = Math.max(minEntryTimeWindow, futurePixelToTime * minVisibleWidthPx);
     if (timeLeft > entryEndTime) {
       var delta = timeLeft - entryEndTime + minEntryTimeWindow;
       this._flameChartDelegate.requestWindowTimes(timeLeft - delta, timeRight - delta);

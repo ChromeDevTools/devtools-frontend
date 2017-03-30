@@ -548,7 +548,7 @@ Emulation.DeviceModeModel = class {
 
     var pageWidth = screenSize.width - insets.left - insets.right;
     var pageHeight = screenSize.height - insets.top - insets.bottom;
-    this._emulatedPageSize = new UI.Size(Math.floor(pageWidth * scale), Math.floor(pageHeight * scale));
+    this._emulatedPageSize = new UI.Size(pageWidth, pageHeight);
 
     var positionX = insets.left;
     var positionY = insets.top;
@@ -624,40 +624,45 @@ Emulation.DeviceModeModel = class {
   }
 
   /**
-   * @param {function(?string)} callback
+   * @param {boolean} fullSize
+   * @return {!Promise<?string>}
    */
-  captureFullSizeScreenshot(callback) {
+  async captureScreenshot(fullSize) {
     var screenCaptureModel = this._target ? this._target.model(SDK.ScreenCaptureModel) : null;
-    if (!screenCaptureModel) {
-      callback(null);
-      return;
-    }
+    if (!screenCaptureModel)
+      return null;
 
-    screenCaptureModel.fetchContentSize().then(contentSize => {
-      if (!contentSize) {
-        callback(null);
-        return;
-      }
+    var metrics = await screenCaptureModel.fetchLayoutMetrics();
+    if (!metrics)
+      return null;
 
-      var scaledPageSize = new UI.Rect(0, 0, contentSize.width, contentSize.height).scale(this._scale);
-      var promises = [];
+    var pageSize = fullSize ? new UI.Size(metrics.contentWidth, metrics.contentHeight) : this._emulatedPageSize;
+    var promises = [];
+    promises.push(
+        this._target.emulationAgent().setVisibleSize(Math.floor(pageSize.width), Math.floor(pageSize.height)));
+    if (fullSize) {
       promises.push(this._target.emulationAgent().forceViewport(0, 0, 1));
-      promises.push(this._target.emulationAgent().invoke_setDeviceMetricsOverride({
-        width: 0,
-        height: 0,
-        deviceScaleFactor: this._appliedDeviceScaleFactor,
-        mobile: this._isMobile(),
-        fitWindow: false,
-        scale: this._scale,
-      }));
-      promises.push(this._target.emulationAgent().setVisibleSize(
-          Math.floor(scaledPageSize.width), Math.floor(scaledPageSize.height)));
-      Promise.all(promises).then(() => screenCaptureModel.captureScreenshot('png', 100)).then(content => {
-        this._target.emulationAgent().setVisibleSize(this._emulatedPageSize.width, this._emulatedPageSize.height);
-        this._target.emulationAgent().resetViewport();
-        callback(content);
-      });
-    });
+    } else {
+      promises.push(this._target.emulationAgent().forceViewport(
+          Math.floor(metrics.viewportX), Math.floor(metrics.viewportY), metrics.viewportScale));
+    }
+    promises.push(this._target.emulationAgent().invoke_setDeviceMetricsOverride({
+      width: 0,
+      height: 0,
+      deviceScaleFactor: this._appliedDeviceScaleFactor,
+      mobile: this._isMobile(),
+      fitWindow: false,
+      scale: 1,
+    }));
+    await Promise.all(promises);
+
+    var screenshot = await screenCaptureModel.captureScreenshot('png', 100);
+    this._target.emulationAgent().setVisibleSize(
+        Math.floor(this._emulatedPageSize.width * this._scale),
+        Math.floor(this._emulatedPageSize.height * this._scale));
+    this._target.emulationAgent().resetViewport();
+    this._calculateAndEmulate(false);
+    return screenshot;
   }
 
   _deviceMetricsOverrideAppliedForTest() {

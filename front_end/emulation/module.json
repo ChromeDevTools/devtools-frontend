@@ -47,6 +47,20 @@
             "order": 1
         },
         {
+            "type": "@UI.ActionDelegate",
+            "actionId": "emulation.capture-full-height-screenshot",
+            "category": "Mobile",
+            "className": "Emulation.DeviceModeWrapper.ActionDelegate",
+            "title": "Capture full size screenshot",
+            "tags": "device"
+        },
+        {
+            "type": "context-menu-item",
+            "location": "deviceModeMenu/tools",
+            "order": 13,
+            "actionId": "emulation.capture-full-height-screenshot"
+        },
+        {
             "type": "setting",
             "category": "Mobile",
             "settingName": "showMediaQueryInspector",

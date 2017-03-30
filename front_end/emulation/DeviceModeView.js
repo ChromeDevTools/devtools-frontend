@@ -359,144 +359,96 @@ Emulation.DeviceModeView = class extends UI.VBox {
     this._model.emulate(Emulation.DeviceModeModel.Type.None, null, null);
   }
 
-  captureScreenshot() {
-    var target = this._model.target();
-    if (!target)
-      return;
-    var screenCaptureModel = target.model(SDK.ScreenCaptureModel);
-    if (!screenCaptureModel)
-      return;
+  /**
+   * @return {!Promise}
+   */
+  async captureScreenshot() {
     SDK.DOMModel.muteHighlight();
+    var screenshot = await this._model.captureScreenshot(false);
+    SDK.DOMModel.unmuteHighlight();
+    if (screenshot === null)
+      return;
 
-    var zoomFactor = UI.zoomManager.zoomFactor();
-    var rect = this._contentArea.getBoundingClientRect();
-    var availableSize = new UI.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
-    var outlineVisible = this._model.deviceOutlineSetting().get();
+    var pageImage = new Image();
+    pageImage.src = 'data:image/png;base64,' + screenshot;
+    pageImage.onload = async () => {
+      var scale = 1 / this._model.scale();
+      var outlineRect = this._model.outlineRect().scale(scale);
+      var screenRect = this._model.screenRect().scale(scale);
+      var visiblePageRect = this._model.visiblePageRect().scale(scale);
+      var contentLeft = screenRect.left + visiblePageRect.left - outlineRect.left;
+      var contentTop = screenRect.top + visiblePageRect.top - outlineRect.top;
 
-    if (availableSize.width < this._model.screenRect().width ||
-        availableSize.height < this._model.screenRect().height) {
-      UI.inspectorView.minimize();
-      this._model.deviceOutlineSetting().set(false);
-    }
-
-    screenCaptureModel.captureScreenshot('png', 100).then(screenshotCaptured.bind(this));
-
-    /**
-     * @param {?string} content
-     * @this {Emulation.DeviceModeView}
-     */
-    function screenshotCaptured(content) {
-      this._model.deviceOutlineSetting().set(outlineVisible);
-      var dpr = window.devicePixelRatio;
-      var outlineRect = this._model.outlineRect().scale(dpr);
-      var screenRect = this._model.screenRect().scale(dpr);
-      screenRect.left -= outlineRect.left;
-      screenRect.top -= outlineRect.top;
-      var visiblePageRect = this._model.visiblePageRect().scale(dpr);
-      visiblePageRect.left += screenRect.left;
-      visiblePageRect.top += screenRect.top;
-      outlineRect.left = 0;
-      outlineRect.top = 0;
-
-      SDK.DOMModel.unmuteHighlight();
-      UI.inspectorView.restore();
-
-      if (content === null)
-        return;
-
-      // Create a canvas to splice the images together.
       var canvas = createElement('canvas');
+      canvas.width = Math.floor(outlineRect.width);
+      canvas.height = Math.floor(outlineRect.height);
       var ctx = canvas.getContext('2d');
-      canvas.width = outlineRect.width;
-      canvas.height = outlineRect.height;
       ctx.imageSmoothingEnabled = false;
 
-      var promise = Promise.resolve();
       if (this._model.outlineImage())
-        promise = promise.then(paintImage.bind(null, this._model.outlineImage(), outlineRect));
-      promise = promise.then(drawBorder);
+        await this._paintImage(ctx, this._model.outlineImage(), outlineRect.relativeTo(outlineRect));
       if (this._model.screenImage())
-        promise = promise.then(paintImage.bind(null, this._model.screenImage(), screenRect));
-      promise.then(paintScreenshot.bind(this));
-
-      /**
-       * @param {string} src
-       * @param {!UI.Rect} rect
-       * @return {!Promise<undefined>}
-       */
-      function paintImage(src, rect) {
-        var callback;
-        var promise = new Promise(fulfill => callback = fulfill);
-        var image = new Image();
-        image.crossOrigin = 'Anonymous';
-        image.srcset = src;
-        image.onload = onImageLoad;
-        image.onerror = callback;
-        return promise;
-
-        function onImageLoad() {
-          ctx.drawImage(image, rect.left, rect.top, rect.width, rect.height);
-          callback();
-        }
-      }
-
-      function drawBorder() {
-        ctx.strokeStyle = 'hsla(0, 0%, 98%, 0.5)';
-        ctx.lineWidth = 1;
-        ctx.setLineDash([10, 10]);
-        ctx.strokeRect(screenRect.left + 1, screenRect.top + 1, screenRect.width - 2, screenRect.height - 2);
-      }
-
-      /**
-       * @this {Emulation.DeviceModeView}
-       */
-      function paintScreenshot() {
-        var pageImage = new Image();
-        pageImage.src = 'data:image/png;base64,' + content;
-        pageImage.onload = () => {
-          ctx.drawImage(
-              pageImage, visiblePageRect.left, visiblePageRect.top, Math.min(pageImage.naturalWidth, screenRect.width),
-              Math.min(pageImage.naturalHeight, screenRect.height));
-          var url = target.inspectedURL();
-          var fileName = url ? url.trimURL().removeURLFragment() : '';
-          if (this._model.type() === Emulation.DeviceModeModel.Type.Device)
-            fileName += Common.UIString('(%s)', this._model.device().title);
-          // Trigger download.
-          var link = createElement('a');
-          link.download = fileName + '.png';
-          link.href = canvas.toDataURL('image/png');
-          link.click();
-        };
-      }
-    }
+        await this._paintImage(ctx, this._model.screenImage(), screenRect.relativeTo(outlineRect));
+      ctx.drawImage(pageImage, Math.floor(contentLeft), Math.floor(contentTop));
+      this._saveScreenshot(canvas);
+    };
   }
 
-  captureFullSizeScreenshot() {
+  /**
+   * @return {!Promise}
+   */
+  async captureFullSizeScreenshot() {
     SDK.DOMModel.muteHighlight();
-    this._model.captureFullSizeScreenshot(content => {
-      SDK.DOMModel.unmuteHighlight();
-      if (content === null)
-        return;
+    var screenshot = await this._model.captureScreenshot(true);
+    SDK.DOMModel.unmuteHighlight();
+    if (screenshot === null)
+      return;
+
+    var pageImage = new Image();
+    pageImage.src = 'data:image/png;base64,' + screenshot;
+    pageImage.onload = () => {
       var canvas = createElement('canvas');
-      var pageImage = new Image();
-      pageImage.src = 'data:image/png;base64,' + content;
-      pageImage.onload = () => {
-        var ctx = canvas.getContext('2d');
-        ctx.imageSmoothingEnabled = false;
-        canvas.width = pageImage.width;
-        canvas.height = pageImage.height;
-        ctx.drawImage(pageImage, 0, 0);
-        var url = this._model.target() && this._model.target().inspectedURL();
-        var fileName = url ? url.trimURL().removeURLFragment() : '';
-        if (this._model.type() === Emulation.DeviceModeModel.Type.Device)
-          fileName += Common.UIString('(%s)', this._model.device().title);
-        var link = createElement('a');
-        link.download = fileName + '.png';
-        canvas.toBlob(function(blob) {
-          link.href = URL.createObjectURL(blob);
-          link.click();
-        });
+      canvas.width = pageImage.width;
+      canvas.height = pageImage.height;
+      var ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(pageImage, 0, 0);
+      this._saveScreenshot(canvas);
+    };
+  }
+
+  /**
+   * @param {!CanvasRenderingContext2D} ctx
+   * @param {string} src
+   * @param {!UI.Rect} rect
+   * @return {!Promise}
+   */
+  _paintImage(ctx, src, rect) {
+    return new Promise(fulfill => {
+      var image = new Image();
+      image.crossOrigin = 'Anonymous';
+      image.srcset = src;
+      image.onerror = fulfill;
+      image.onload = () => {
+        ctx.drawImage(image, rect.left, rect.top, rect.width, rect.height);
+        fulfill();
       };
+    });
+  }
+
+  /**
+   * @param {!Element} canvas
+   */
+  _saveScreenshot(canvas) {
+    var url = this._model.target() && this._model.target().inspectedURL();
+    var fileName = url ? url.trimURL().removeURLFragment() : '';
+    if (this._model.type() === Emulation.DeviceModeModel.Type.Device)
+      fileName += Common.UIString('(%s)', this._model.device().title);
+    var link = createElement('a');
+    link.download = fileName + '.png';
+    canvas.toBlob(blob => {
+      link.href = URL.createObjectURL(blob);
+      link.click();
     });
   }
 };

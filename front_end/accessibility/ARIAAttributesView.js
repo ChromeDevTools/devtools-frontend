@@ -21,7 +21,7 @@ Accessibility.ARIAAttributesPane = class extends Accessibility.AccessibilitySubP
     this._treeOutline.removeChildren();
     if (!this.node())
       return;
-    var target = this.node().target();
+    var target = this.node().domModel().target();
     var attributes = node.attributes();
     for (var i = 0; i < attributes.length; ++i) {
       var attribute = attributes[i];

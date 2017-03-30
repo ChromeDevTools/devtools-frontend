@@ -32,12 +32,11 @@
 /**
  * @unrestricted
  */
-SDK.DOMNode = class extends SDK.SDKObject {
+SDK.DOMNode = class {
   /**
    * @param {!SDK.DOMModel} domModel
    */
   constructor(domModel) {
-    super(domModel.target());
     this._domModel = domModel;
   }
 
@@ -1077,6 +1076,13 @@ SDK.DOMModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @return {!SDK.CSSModel}
+   */
+  cssModel() {
+    return /** @type {!SDK.CSSModel} */ (this.target().model(SDK.CSSModel));
+  }
+
+  /**
    * @param {!SDK.RemoteObject} object
    */
   static highlightObjectAsDOMNode(object) {
@@ -1085,21 +1091,8 @@ SDK.DOMModel = class extends SDK.SDKModel {
       domModel.highlightDOMNode(undefined, undefined, undefined, object.objectId);
   }
 
-  /**
-   * @return {!Array<!SDK.DOMModel>}
-   */
-  static instances() {
-    var result = [];
-    for (var target of SDK.targetManager.targets()) {
-      var domModel = SDK.DOMModel.fromTarget(target);
-      if (domModel)
-        result.push(domModel);
-    }
-    return result;
-  }
-
   static hideDOMNodeHighlight() {
-    for (var domModel of SDK.DOMModel.instances())
+    for (var domModel of SDK.targetManager.models(SDK.DOMModel))
       domModel.highlightDOMNode(0);
   }
 
@@ -1113,7 +1106,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
   }
 
   static cancelSearch() {
-    for (var domModel of SDK.DOMModel.instances())
+    for (var domModel of SDK.targetManager.models(SDK.DOMModel))
       domModel._cancelSearch();
   }
 

@@ -348,9 +348,7 @@ Animation.AnimationModel.Animation = class {
     else
       return;
 
-    var cssModel = node.target().model(SDK.CSSModel);
-    if (!cssModel)
-      return;
+    var cssModel = node.domModel().cssModel();
     cssModel.setEffectivePropertyValueForNode(node.id, animationPrefix + 'duration', duration + 'ms');
     cssModel.setEffectivePropertyValueForNode(node.id, animationPrefix + 'delay', delay + 'ms');
   }

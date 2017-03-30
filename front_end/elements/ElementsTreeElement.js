@@ -106,7 +106,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
    */
   static populateForcedPseudoStateItems(subMenu, node) {
     const pseudoClasses = ['active', 'hover', 'focus', 'visited'];
-    var forcedPseudoState = SDK.CSSModel.fromNode(node).pseudoState(node);
+    var forcedPseudoState = node.domModel().cssModel().pseudoState(node);
     for (var i = 0; i < pseudoClasses.length; ++i) {
       var pseudoClassForced = forcedPseudoState.indexOf(pseudoClasses[i]) >= 0;
       subMenu.appendCheckboxItem(
@@ -119,7 +119,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
      * @param {boolean} enabled
      */
     function setPseudoStateCallback(pseudoState, enabled) {
-      SDK.CSSModel.fromNode(node).forcePseudoState(node, pseudoState, enabled);
+      node.domModel().cssModel().forcePseudoState(node, pseudoState, enabled);
     }
   }
 

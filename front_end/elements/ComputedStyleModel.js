@@ -32,7 +32,7 @@ Elements.ComputedStyleModel = class extends Common.Object {
    */
   _onNodeChanged(event) {
     this._node = /** @type {?SDK.DOMNode} */ (event.data);
-    this._updateModel(this._node ? SDK.CSSModel.fromNode(this._node) : null);
+    this._updateModel(this._node ? this._node.domModel().cssModel() : null);
     this._onComputedStyleChanged(null);
   }
 
@@ -44,7 +44,7 @@ Elements.ComputedStyleModel = class extends Common.Object {
       return;
     Common.EventTarget.removeEventListeners(this._eventListeners);
     this._cssModel = cssModel;
-    var domModel = cssModel ? cssModel.target().model(SDK.DOMModel) : null;
+    var domModel = cssModel ? cssModel.domModel() : null;
     var resourceTreeModel = cssModel ? cssModel.target().model(SDK.ResourceTreeModel) : null;
     if (cssModel && domModel && resourceTreeModel) {
       this._eventListeners = [

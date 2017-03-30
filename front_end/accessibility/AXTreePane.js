@@ -182,7 +182,7 @@ Accessibility.AXTreePane = class extends Accessibility.AccessibilitySubPane {
    * @return {!SDK.Target}
    */
   target() {
-    return this.node().target();
+    return this.node().domModel().target();
   }
 };
 

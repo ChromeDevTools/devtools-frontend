@@ -171,7 +171,7 @@ Components.DOMBreakpointsSidebarPane = class extends Components.BreakpointsSideb
       breakpointElement._checkboxElement.checked = enabled;
     }
     if (enabled)
-      node.target().domdebuggerAgent().setDOMBreakpoint(node.id, type);
+      node.domModel().target().domdebuggerAgent().setDOMBreakpoint(node.id, type);
     node.setMarker(Components.DOMBreakpointsSidebarPane.Marker, true);
   }
 
@@ -233,7 +233,7 @@ Components.DOMBreakpointsSidebarPane = class extends Components.BreakpointsSideb
     this.removeListElement(element);
     this._breakpointElements.delete(breakpointId);
     if (element._checkboxElement.checked)
-      node.target().domdebuggerAgent().removeDOMBreakpoint(node.id, type);
+      node.domModel().target().domdebuggerAgent().removeDOMBreakpoint(node.id, type);
     node.setMarker(Components.DOMBreakpointsSidebarPane.Marker, this.hasBreakpoints(node) ? true : null);
   }
 
@@ -265,9 +265,9 @@ Components.DOMBreakpointsSidebarPane = class extends Components.BreakpointsSideb
    */
   _checkboxClicked(node, type, event) {
     if (event.target.checked)
-      node.target().domdebuggerAgent().setDOMBreakpoint(node.id, type);
+      node.domModel().target().domdebuggerAgent().setDOMBreakpoint(node.id, type);
     else
-      node.target().domdebuggerAgent().removeDOMBreakpoint(node.id, type);
+      node.domModel().target().domdebuggerAgent().removeDOMBreakpoint(node.id, type);
     this._saveBreakpoints();
   }
 

@@ -90,7 +90,7 @@ Elements.InspectElementModeController = class {
    */
   _setMode(mode) {
     this._mode = mode;
-    for (var domModel of SDK.DOMModel.instances())
+    for (var domModel of SDK.targetManager.models(SDK.DOMModel))
       domModel.setInspectMode(mode);
     this._toggleSearchAction.setToggled(this.isInInspectElementMode());
   }

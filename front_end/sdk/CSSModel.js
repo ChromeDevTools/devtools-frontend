@@ -91,14 +91,6 @@ SDK.CSSModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.DOMNode} node
-   * @return {!SDK.CSSModel}
-   */
-  static fromNode(node) {
-    return /** @type {!SDK.CSSModel} */ (node.target().model(SDK.CSSModel));
-  }
-
-  /**
    * @return {!SDK.DOMModel}
    */
   domModel() {

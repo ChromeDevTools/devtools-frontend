@@ -236,7 +236,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     if (this._clipboardNodeData.isCut && (node === targetNode || node.isAncestor(targetNode)))
       return false;
 
-    if (targetNode.target() !== node.target())
+    if (targetNode.domModel() !== node.domModel())
       return false;
     return true;
   }
@@ -538,7 +538,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
         var node = /** @type {!Elements.ElementsTreeElement} */ (listItem.treeElement).node();
         var precomputedFeatures = await this._loadDimensionsForNode(node);
         var preview = await Components.DOMPresentationUtils.buildImagePreviewContents(
-            node.target(), link[Elements.ElementsTreeElement.HrefSymbol], true, precomputedFeatures);
+            node.domModel().target(), link[Elements.ElementsTreeElement.HrefSymbol], true, precomputedFeatures);
         if (preview)
           popover.contentElement.appendChild(preview);
         return !!preview;

@@ -515,7 +515,7 @@ Elements.ElementsPanel = class extends UI.Panel {
     this._searchConfig = searchConfig;
 
     var promises = [];
-    var domModels = SDK.DOMModel.instances();
+    var domModels = SDK.targetManager.models(SDK.DOMModel);
     for (var domModel of domModels) {
       promises.push(
           domModel.performSearchPromise(whitespaceTrimmedQuery, Common.moduleSetting('showUAShadowDOM').get()));
@@ -585,7 +585,7 @@ Elements.ElementsPanel = class extends UI.Panel {
         if (!node)
           return false;
         var preview = await Components.DOMPresentationUtils.buildImagePreviewContents(
-            node.target(), link[Elements.ElementsTreeElement.HrefSymbol], true);
+            node.domModel().target(), link[Elements.ElementsTreeElement.HrefSymbol], true);
         if (preview)
           popover.contentElement.appendChild(preview);
         return !!preview;
@@ -1102,7 +1102,7 @@ Elements.ElementsPanel.PseudoStateMarkerDecorator = class {
   decorate(node) {
     return {
       color: 'orange',
-      title: Common.UIString('Element state: %s', ':' + SDK.CSSModel.fromNode(node).pseudoState(node).join(', :'))
+      title: Common.UIString('Element state: %s', ':' + node.domModel().cssModel().pseudoState(node).join(', :'))
     };
   }
 };

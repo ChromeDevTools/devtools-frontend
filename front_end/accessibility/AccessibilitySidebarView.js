@@ -68,7 +68,7 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
     this._ariaSubPane.setNode(node);
     if (!node)
       return Promise.resolve();
-    var accessibilityModel = Accessibility.AccessibilityModel.fromTarget(node.target());
+    var accessibilityModel = Accessibility.AccessibilityModel.fromTarget(node.domModel().target());
     accessibilityModel.clear();
     return accessibilityModel.requestPartialAXTree(node).then(() => {
       this.accessibilityNodeCallback(accessibilityModel.axNodeForDOMNode(node));

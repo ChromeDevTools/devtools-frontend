@@ -218,6 +218,7 @@ UI.Icon.Descriptors = {
   'largeicon-stop-recording': {position: 'd1', spritesheet: 'largeicons', isMask: true},
   'largeicon-text-shadow': {position: 'e1', spritesheet: 'largeicons', isMask: true},
   'largeicon-trash-bin': {position: 'f1', spritesheet: 'largeicons', isMask: true},
+  'largeicon-undo': {position: 'h7', spritesheet: 'largeicons', isMask: true},
   'largeicon-undock': {position: 'g1', spritesheet: 'largeicons', isMask: true},
   'largeicon-visibility': {position: 'h9', spritesheet: 'largeicons', isMask: true},
   'largeicon-waterfall': {position: 'h8', spritesheet: 'largeicons', isMask: true},

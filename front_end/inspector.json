@@ -59,7 +59,8 @@
         { "name": "workspace_diff" },
         { "name": "console_model", "type": "autostart"},
         { "name": "network_log", "type": "autostart"},
-        { "name": "text_utils", "type": "autostart"}
+        { "name": "text_utils", "type": "autostart"},
+        { "name": "changes"}
     ],
 
     "has_html": true

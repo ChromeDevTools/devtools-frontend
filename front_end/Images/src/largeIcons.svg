@@ -1856,4 +1856,24 @@
        id="tspan4357-4"
        x="-15.644068"
        y="15.559311">9</tspan></text>
+  <g
+     id="Page-1-6"
+     style="fill:none;stroke:none"
+     transform="translate(200,50)">
+    <g
+       id="undo">
+      <rect
+         height="20"
+         width="20"
+         y="0"
+         x="0"
+         id="bounds"
+         style="fill:#ffffff;fill-opacity:0" />
+      <path
+         id="shape"
+         d="M 4.3431457,9.3431458 C 5.790861,7.8954305 7.790861,7 10,7 c 3.555275,0 6.568879,2.3191676 7.610506,5.527197 L 16.155367,13 15.658589,13 C 14.834916,10.669615 12.612438,9 10,9 8.3431458,9 6.8431457,9.6715729 5.7573593,10.757359 L 8,13 2,13 2,7 l 2.3431457,2.3431458 0,0 z"
+         inkscape:connector-curvature="0"
+         style="fill:#000000" />
+    </g>
+  </g>
 </svg>

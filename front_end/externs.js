@@ -536,6 +536,7 @@ CodeMirror.getMode = function(options, spec) {};
 CodeMirror.overlayMode = function(mode1, mode2, squashSpans) {};
 CodeMirror.defineMode = function(modeName, modeConstructor) {};
 CodeMirror.startState = function(mode) {};
+CodeMirror.copyState = function(mode, state) {};
 
 /** @typedef {{canceled: boolean, from: !CodeMirror.Pos, to: !CodeMirror.Pos, text: string, origin: string, cancel: function()}} */
 CodeMirror.BeforeChangeObject;
@@ -603,6 +604,12 @@ CodeMirror.keyMap;
 
 /** @type {{scrollLeft: number, scrollTop: number}} */
 CodeMirror.doc;
+
+/**
+ * @param {string} mime
+ * @param {string} mode
+ */
+CodeMirror.defineMIME = function(mime, mode) {};
 
 /** @type {boolean} */
 window.dispatchStandaloneTestRunnerMessages;

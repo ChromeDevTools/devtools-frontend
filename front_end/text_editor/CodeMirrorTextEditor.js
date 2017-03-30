@@ -144,7 +144,10 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
 
     this._codeMirror.setOption('flattenSpans', false);
 
-    this._codeMirror.setOption('maxHighlightLength', TextEditor.CodeMirrorTextEditor.maxHighlightLength);
+    var maxHighlightLength = options.maxHighlightLength;
+    if (typeof maxHighlightLength !== 'number')
+      maxHighlightLength = TextEditor.CodeMirrorTextEditor.maxHighlightLength;
+    this._codeMirror.setOption('maxHighlightLength', maxHighlightLength);
     this._codeMirror.setOption('mode', null);
     this._codeMirror.setOption('crudeMeasuringFrom', 1000);
 
@@ -696,6 +699,14 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
   }
 
   /**
+   * @param {!Object} mode
+   */
+  setHighlightMode(mode) {
+    this._mimeType = '';
+    this._codeMirror.setOption('mode', mode);
+  }
+
+  /**
    * @protected
    * @param {string} mimeType
    */
@@ -729,6 +740,13 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    */
   readOnly() {
     return !!this._codeMirror.getOption('readOnly');
+  }
+
+  /**
+   * @param {function(number):string} formatter
+   */
+  setLineNumberFormatter(formatter) {
+    this._codeMirror.setOption('lineNumberFormatter', formatter);
   }
 
   /**

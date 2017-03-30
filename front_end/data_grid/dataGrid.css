@@ -165,7 +165,7 @@
     display: block;
 }
 
-.data-grid th:hover {
+.data-grid th.sortable:hover {
     background-color: hsla(0, 0%, 90%, 1);
 }
 

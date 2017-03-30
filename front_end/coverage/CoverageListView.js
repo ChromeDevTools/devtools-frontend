@@ -25,13 +25,13 @@ Coverage.CoverageListView = class extends UI.VBox {
         align: DataGrid.DataGrid.Align.Right,
         sort: DataGrid.DataGrid.Order.Descending
       },
-      {id: 'bars', title: '', width: '500px', fixedWidth: false, sortable: false}
+      {id: 'bars', title: '', width: '500px', fixedWidth: false, sortable: true}
     ];
     this._dataGrid = new DataGrid.SortableDataGrid(columns);
     this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
     this._dataGrid.element.classList.add('flex-auto');
-    this._dataGrid.element.addEventListener('dblclick', this._onDoubleClick.bind(this), false);
     this._dataGrid.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
+    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.OpenedNode, this._onOpenedNode, this);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
 
     var dataGridWidget = this._dataGrid.asWidget();
@@ -51,13 +51,11 @@ Coverage.CoverageListView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!Common.Event} event
    */
-  _onDoubleClick(event) {
-    if (!event.target || !(event.target instanceof Node))
-      return;
-    event.consume(true);
-    this._revealSourceForNode(this._dataGrid.dataGridNodeFromNode(event.target));
+  _onOpenedNode(event) {
+    var node = /** @type Coverage.CoverageListView.GridNode */ (event.data);
+    this._revealSourceForNode(node);
   }
 
   /**
@@ -93,11 +91,12 @@ Coverage.CoverageListView = class extends UI.VBox {
         sortFunction = compareURL;
         break;
       case 'type':
-        sortFunction = compareNumericField.bind(null, 'type');
+        sortFunction = compareType;
         break;
       case 'size':
         sortFunction = compareNumericField.bind(null, 'size');
         break;
+      case 'bars':
       case 'unusedSize':
         sortFunction = compareNumericField.bind(null, 'unusedSize');
         break;
@@ -131,6 +130,19 @@ Coverage.CoverageListView = class extends UI.VBox {
       var nodeB = /** @type {!Coverage.CoverageListView.GridNode} */ (b);
 
       return nodeA._coverageInfo[fieldName]() - nodeB._coverageInfo[fieldName]();
+    }
+
+    /**
+     * @param {!DataGrid.DataGridNode} a
+     * @param {!DataGrid.DataGridNode} b
+     * @return {number}
+     */
+    function compareType(a, b) {
+      var nodeA = /** @type {!Coverage.CoverageListView.GridNode} */ (a);
+      var nodeB = /** @type {!Coverage.CoverageListView.GridNode} */ (b);
+      var typeA = Coverage.CoverageListView._typeToString(nodeA._coverageInfo.type());
+      var typeB = Coverage.CoverageListView._typeToString(nodeB._coverageInfo.type());
+      return typeA.localeCompare(typeB);
     }
   }
 
@@ -181,14 +193,14 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
         cell.textContent = Coverage.CoverageListView._typeToString(this._coverageInfo.type());
         break;
       case 'size':
-        cell.classList.add('numeric-column');
         cell.textContent = Number.withThousandsSeparator(this._coverageInfo.size() || 0);
         break;
       case 'unusedSize':
-        cell.classList.add('numeric-column');
-        cell.textContent = Number.withThousandsSeparator(this._coverageInfo.unusedSize() || 0);
-        if (this._coverageInfo.size())
-          cell.title = Math.round(100 * this._coverageInfo.unusedSize() / this._coverageInfo.size()) + '%';
+        var unusedSize = this._coverageInfo.unusedSize() || 0;
+        var unusedSizeSpan = cell.createChild('span');
+        var unusedPercentsSpan = cell.createChild('span', 'percent-value');
+        unusedSizeSpan.textContent = Number.withThousandsSeparator(unusedSize);
+        unusedPercentsSpan.textContent = Common.UIString('%.1f\u2009%%', unusedSize / this._coverageInfo.size() * 100);
         break;
       case 'bars':
         var barContainer = cell.createChild('div', 'bar-container');

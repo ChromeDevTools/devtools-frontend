@@ -45,3 +45,9 @@
 .data-grid td .bar-used-size {
   background-color: #81C784;
 }
+
+.data-grid td .percent-value {
+  color: #888;
+  width: 45px;
+  display: inline-block;
+}

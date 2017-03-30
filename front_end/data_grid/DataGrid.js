@@ -838,6 +838,8 @@ DataGrid.DataGrid = class extends Common.Object {
       if (this._editCallback) {
         handled = true;
         this._startEditing(this.selectedNode._element.children[this._nextEditableColumn(-1)]);
+      } else {
+        this.dispatchEventToListeners(DataGrid.DataGrid.Events.OpenedNode, this.selectedNode);
       }
     }
 
@@ -964,6 +966,7 @@ DataGrid.DataGrid = class extends Common.Object {
         gridNode.select();
     } else {
       gridNode.select();
+      this.dispatchEventToListeners(DataGrid.DataGrid.Events.OpenedNode, gridNode);
     }
   }
 
@@ -1186,8 +1189,9 @@ DataGrid.DataGrid.ColumnDescriptor;
 DataGrid.DataGrid.Events = {
   SelectedNode: Symbol('SelectedNode'),
   DeselectedNode: Symbol('DeselectedNode'),
+  OpenedNode: Symbol('OpenedNode'),
   SortingChanged: Symbol('SortingChanged'),
-  PaddingChanged: Symbol('PaddingChanged')
+  PaddingChanged: Symbol('PaddingChanged'),
 };
 
 /** @enum {string} */

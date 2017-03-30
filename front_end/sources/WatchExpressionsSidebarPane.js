@@ -202,6 +202,10 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
+    var frame = UI.context.flavor(SourceFrame.UISourceCodeFrame);
+    if (!frame || frame.textEditor.selection().isEmpty())
+      return;
+
     contextMenu.appendAction('sources.add-to-watch');
   }
 };

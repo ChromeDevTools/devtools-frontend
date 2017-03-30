@@ -198,11 +198,22 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
   }
 
   /**
+   * @param {string} url
+   * @param {string} frameId
+   * @param {boolean} isContentScript
+   */
+  removeSourceMapFile(url, frameId, isContentScript) {
+    this._removeFileForURL(url, frameId, isContentScript);
+  }
+
+  /**
    * @param {string} frameId
    * @param {string} url
+   * @param {boolean} isContentScript
    */
-  _removeFileForURL(frameId, url) {
-    var project = this._workspaceProjects.get(Bindings.NetworkProject.projectId(this.target(), frameId, false));
+  _removeFileForURL(url, frameId, isContentScript) {
+    var project =
+        this._workspaceProjects.get(Bindings.NetworkProject.projectId(this.target(), frameId, isContentScript));
     if (!project)
       return;
     project.removeFile(url);
@@ -285,7 +296,7 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
     if (header.isInline && !header.hasSourceURL && header.origin !== 'inspector')
       return;
 
-    this._removeFileForURL(header.frameId, header.resourceURL());
+    this._removeFileForURL(header.resourceURL(), header.frameId, false);
   }
 
   /**

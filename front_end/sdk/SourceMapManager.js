@@ -184,7 +184,9 @@ SDK.SourceMapManager = class extends SDK.SDKObject {
      */
     function attach(sourceMapURL, client) {
       this._sourceMapURLToClients.set(sourceMapURL, client);
-      this.dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapAttached, client);
+      var sourceMap = this._sourceMapByURL.get(sourceMapURL);
+      this.dispatchEventToListeners(
+          SDK.SourceMapManager.Events.SourceMapAttached, {client: client, sourceMap: sourceMap});
     }
   }
 
@@ -220,9 +222,11 @@ SDK.SourceMapManager = class extends SDK.SDKObject {
       return;
     }
     this._sourceMapURLToClients.remove(sourceMapURL, client);
+    var sourceMap = this._sourceMapByURL.get(sourceMapURL);
     if (!this._sourceMapURLToClients.has(sourceMapURL))
       this._sourceMapByURL.delete(sourceMapURL);
-    this.dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapDetached, client);
+    this.dispatchEventToListeners(
+        SDK.SourceMapManager.Events.SourceMapDetached, {client: client, sourceMap: sourceMap});
   }
 
   _sourceMapLoadedForTest() {

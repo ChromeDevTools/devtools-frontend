@@ -279,15 +279,15 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
       trace.appendChild(valueElement);
 
       var rule = property.ownerStyle.parentRule;
+      var selectorElement = trace.createChild('span', 'property-trace-selector');
+      selectorElement.textContent = rule ? rule.selectorText() : 'element.style';
+      selectorElement.title = selectorElement.textContent;
+
       if (rule) {
         var linkSpan = trace.createChild('span', 'trace-link');
         linkSpan.appendChild(
             Elements.StylePropertiesSection.createRuleOriginNode(matchedStyles, this._linkifier, rule));
       }
-
-      var selectorElement = trace.createChild('span', 'property-trace-selector');
-      selectorElement.textContent = rule ? rule.selectorText() : 'element.style';
-      selectorElement.title = selectorElement.textContent;
 
       var traceTreeElement = new UI.TreeElement();
       traceTreeElement.title = trace;

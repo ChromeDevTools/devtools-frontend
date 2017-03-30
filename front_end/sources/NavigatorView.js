@@ -1343,7 +1343,7 @@ Sources.NavigatorUISourceCodeTreeNode = class extends Sources.NavigatorTreeNode 
     function commitHandler(element, newTitle, oldTitle) {
       if (newTitle !== oldTitle) {
         this._treeElement.title = newTitle;
-        this._uiSourceCode.rename(newTitle, renameCallback.bind(this));
+        this._uiSourceCode.rename(newTitle).then(renameCallback.bind(this));
         return;
       }
       afterEditing.call(this, true);

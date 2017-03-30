@@ -143,10 +143,13 @@ Workspace.UISourceCode = class extends Common.Object {
 
   /**
    * @param {string} newName
-   * @param {function(boolean)} callback
+   * @return {!Promise<boolean>}
    */
-  rename(newName, callback) {
+  rename(newName) {
+    var fulfill;
+    var promise = new Promise(x => fulfill = x);
     this._project.rename(this, newName, innerCallback.bind(this));
+    return promise;
 
     /**
      * @param {boolean} success
@@ -161,7 +164,7 @@ Workspace.UISourceCode = class extends Common.Object {
             /** @type {string} */ (newName), /** @type {string} */ (newURL),
             /** @type {!Common.ResourceType} */ (newContentType));
       }
-      callback(success);
+      fulfill(success);
     }
   }
 
@@ -175,6 +178,7 @@ Workspace.UISourceCode = class extends Common.Object {
    * @param {!Common.ResourceType=} contentType
    */
   _updateName(name, url, contentType) {
+    var oldURL = this._url;
     this._url = this._url.substring(0, this._url.length - this._name.length) + name;
     this._name = name;
     if (url)
@@ -182,6 +186,8 @@ Workspace.UISourceCode = class extends Common.Object {
     if (contentType)
       this._contentType = contentType;
     this.dispatchEventToListeners(Workspace.UISourceCode.Events.TitleChanged, this);
+    this.project().workspace().dispatchEventToListeners(
+        Workspace.Workspace.Events.UISourceCodeRenamed, {oldURL: oldURL, uiSourceCode: this});
   }
 
   /**

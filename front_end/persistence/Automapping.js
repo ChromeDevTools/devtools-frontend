@@ -35,6 +35,8 @@ Persistence.Automapping = class {
           Workspace.Workspace.Events.UISourceCodeRemoved,
           event => this._onUISourceCodeRemoved(/** @type {!Workspace.UISourceCode} */ (event.data))),
       this._workspace.addEventListener(
+          Workspace.Workspace.Events.UISourceCodeRenamed, this._onUISourceCodeRenamed, this),
+      this._workspace.addEventListener(
           Workspace.Workspace.Events.ProjectAdded,
           event => this._onProjectAdded(/** @type {!Workspace.Project} */ (event.data)), this),
       this._workspace.addEventListener(
@@ -129,6 +131,26 @@ Persistence.Automapping = class {
     } else if (uiSourceCode.project().type() === Workspace.projectTypes.Network) {
       this._unbindNetwork(uiSourceCode);
     }
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _onUISourceCodeRenamed(event) {
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
+    var oldURL = /** @type {string} */ (event.data.oldURL);
+    if (uiSourceCode.project().type() !== Workspace.projectTypes.FileSystem)
+      return;
+
+    this._filesIndex.removePath(oldURL);
+    this._fileSystemUISourceCodes.delete(oldURL);
+    var binding = uiSourceCode[Persistence.Automapping._binding];
+    if (binding)
+      this._unbindNetwork(binding.network);
+
+    this._filesIndex.addPath(uiSourceCode.url());
+    this._fileSystemUISourceCodes.set(uiSourceCode.url(), uiSourceCode);
+    this._scheduleSweep();
   }
 
   /**

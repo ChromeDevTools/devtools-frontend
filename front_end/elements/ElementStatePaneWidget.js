@@ -30,7 +30,7 @@ Elements.ElementStatePaneWidget = class extends UI.Widget {
      */
     function createCheckbox(state) {
       var td = createElement('td');
-      var label = UI.createCheckboxLabel(':' + state);
+      var label = UI.CheckboxLabel.create(':' + state);
       var input = label.checkboxElement;
       input.state = state;
       input.addEventListener('click', clickListener, false);

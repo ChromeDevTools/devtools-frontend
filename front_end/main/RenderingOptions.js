@@ -68,7 +68,7 @@ Main.RenderingOptionsView = class extends UI.VBox {
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     var cssMediaSubtitle = Common.UIString('Forces media type for testing print and screen styles');
-    var checkboxLabel = UI.createCheckboxLabel(Common.UIString('Emulate CSS Media'), false, cssMediaSubtitle);
+    var checkboxLabel = UI.CheckboxLabel.create(Common.UIString('Emulate CSS Media'), false, cssMediaSubtitle);
     this._mediaCheckbox = checkboxLabel.checkboxElement;
     this._mediaCheckbox.addEventListener('click', this._mediaToggled.bind(this), false);
     this.contentElement.appendChild(checkboxLabel);
@@ -98,7 +98,7 @@ Main.RenderingOptionsView = class extends UI.VBox {
    * @param {string=} subtitle
    */
   _appendCheckbox(label, setterName, subtitle) {
-    var checkboxLabel = UI.createCheckboxLabel(label, false, subtitle);
+    var checkboxLabel = UI.CheckboxLabel.create(label, false, subtitle);
     this._settings.set(setterName, checkboxLabel.checkboxElement);
     checkboxLabel.checkboxElement.addEventListener('click', this._settingToggled.bind(this, setterName));
     this.contentElement.appendChild(checkboxLabel);

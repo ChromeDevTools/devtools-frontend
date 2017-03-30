@@ -209,13 +209,12 @@ Audits.AuditLauncherView = class extends UI.VBox {
    * @param {string=} id
    */
   _createCategoryElement(title, id) {
-    var labelElement = UI.createCheckboxLabel(title);
+    var labelElement = UI.CheckboxLabel.create(title);
     if (id) {
       labelElement.id = this._categoryIdPrefix + id;
       labelElement.checkboxElement.addEventListener('click', this._boundCategoryClickListener, false);
     }
-    labelElement.__displayName = title;
-
+    /** @type {!Object} */ (labelElement).__displayName = title;
     return labelElement;
   }
 

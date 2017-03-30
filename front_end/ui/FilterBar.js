@@ -197,7 +197,7 @@ UI.TextFilterUI = class extends Common.Object {
 
     if (this._supportRegex) {
       this._filterElement.classList.add('supports-regex');
-      var label = UI.createCheckboxLabel(Common.UIString('Regex'));
+      var label = UI.CheckboxLabel.create(Common.UIString('Regex'));
       this._regexCheckBox = label.checkboxElement;
       this._regexCheckBox.id = 'text-filter-regex';
       this._regexCheckBox.addEventListener('change', this._valueChanged.bind(this), false);
@@ -558,7 +558,7 @@ UI.CheckboxFilterUI = class extends Common.Object {
     super();
     this._filterElement = createElementWithClass('div', 'filter-checkbox-filter');
     this._activeWhenChecked = !!activeWhenChecked;
-    this._label = UI.createCheckboxLabel(title);
+    this._label = UI.CheckboxLabel.create(title);
     this._filterElement.appendChild(this._label);
     this._checkboxElement = this._label.checkboxElement;
     if (setting)

@@ -142,7 +142,7 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
    * @param {!Array.<string>=} targetNames
    */
   _createCategory(name, eventNames, isInstrumentationEvent, targetNames) {
-    var labelNode = UI.createCheckboxLabel(name);
+    var labelNode = UI.CheckboxLabel.create(name);
 
     var categoryItem = {};
     categoryItem.element = new UI.TreeElement(labelNode);
@@ -164,7 +164,7 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
       var breakpointItem = {};
       var title = Sources.EventListenerBreakpointsSidebarPane.eventNameForUI(eventName);
 
-      labelNode = UI.createCheckboxLabel(title);
+      labelNode = UI.CheckboxLabel.create(title);
       labelNode.classList.add('source-code');
 
       breakpointItem.element = new UI.TreeElement(labelNode);

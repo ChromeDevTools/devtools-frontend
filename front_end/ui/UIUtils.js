@@ -1257,26 +1257,6 @@ UI.createLabel = function(title, iconClass) {
 };
 
 /**
- * @param {string=} title
- * @param {boolean=} checked
- * @param {string=} subtitle
- * @return {!Element}
- */
-UI.createCheckboxLabel = function(title, checked, subtitle) {
-  var element = createElement('label', 'dt-checkbox');
-  element.checkboxElement.checked = !!checked;
-  if (title !== undefined) {
-    element.textElement = element.shadowRoot.createChild('div', 'dt-checkbox-text');
-    element.textElement.textContent = title;
-    if (subtitle !== undefined) {
-      element.subtitleElement = element.textElement.createChild('div', 'dt-checkbox-subtitle');
-      element.subtitleElement.textContent = subtitle;
-    }
-  }
-  return element;
-};
-
-/**
  * @return {!Element}
  * @param {number} min
  * @param {number} max
@@ -1311,6 +1291,93 @@ UI.appendStyle = function(node, cssFile) {
     styleElement.type = 'text/css';
     styleElement.textContent = themeStyleSheet + '\n' + Runtime.resolveSourceURL(cssFile + '.theme');
     node.appendChild(styleElement);
+  }
+};
+
+/**
+ * @extends {HTMLLabelElement}
+ */
+UI.CheckboxLabel = class extends HTMLLabelElement {
+  constructor() {
+    super();
+    /** @type {!DocumentFragment} */
+    this._shadowRoot;
+    /** @type {!HTMLInputElement} */
+    this.checkboxElement;
+    /** @type {!Element} */
+    this.textElement;
+    throw new Error('Checkbox must be created via factory method.');
+  }
+
+  /**
+   * @override
+   */
+  createdCallback() {
+    UI.CheckboxLabel._lastId = (UI.CheckboxLabel._lastId || 0) + 1;
+    var id = 'ui-checkbox-label' + UI.CheckboxLabel._lastId;
+    this._shadowRoot = UI.createShadowRootWithCoreStyles(this, 'ui/checkboxTextLabel.css');
+    this.checkboxElement = /** @type {!HTMLInputElement} */ (this._shadowRoot.createChild('input'));
+    this.checkboxElement.type = 'checkbox';
+    this.checkboxElement.setAttribute('id', id);
+    this.textElement = this._shadowRoot.createChild('label', 'dt-checkbox-text');
+    this.textElement.setAttribute('for', id);
+    this._shadowRoot.createChild('content');
+  }
+
+  /**
+   * @param {string=} title
+   * @param {boolean=} checked
+   * @param {string=} subtitle
+   * @return {!UI.CheckboxLabel}
+   */
+  static create(title, checked, subtitle) {
+    if (!UI.CheckboxLabel._constructor)
+      UI.CheckboxLabel._constructor = UI.registerCustomElement('label', 'dt-checkbox', UI.CheckboxLabel.prototype);
+    var element = /** @type {!UI.CheckboxLabel} */ (new UI.CheckboxLabel._constructor());
+    element.checkboxElement.checked = !!checked;
+    if (title !== undefined) {
+      element.textElement.textContent = title;
+      if (subtitle !== undefined)
+        element.textElement.createChild('div', 'dt-checkbox-subtitle').textContent = subtitle;
+    }
+    return element;
+  }
+
+  /**
+   * @param {string} color
+   * @this {Element}
+   */
+  set backgroundColor(color) {
+    this.checkboxElement.classList.add('dt-checkbox-themed');
+    this.checkboxElement.style.backgroundColor = color;
+  }
+
+  /**
+   * @param {string} color
+   * @this {Element}
+   */
+  set checkColor(color) {
+    this.checkboxElement.classList.add('dt-checkbox-themed');
+    var stylesheet = createElement('style');
+    stylesheet.textContent = 'input.dt-checkbox-themed:checked:after { background-color: ' + color + '}';
+    this._shadowRoot.appendChild(stylesheet);
+  }
+
+  /**
+   * @param {string} color
+   * @this {Element}
+   */
+  set borderColor(color) {
+    this.checkboxElement.classList.add('dt-checkbox-themed');
+    this.checkboxElement.style.borderColor = color;
+  }
+
+  /**
+   * @param {boolean} focus
+   * @this {Element}
+   */
+  set visualizeFocus(focus) {
+    this.checkboxElement.classList.toggle('dt-checkbox-visualize-focus', focus);
   }
 };
 
@@ -1355,74 +1422,6 @@ UI.appendStyle = function(node, cssFile) {
     this.radioElement.checked = true;
     this.radioElement.dispatchEvent(new Event('change'));
   }
-
-  UI.registerCustomElement('label', 'dt-checkbox', {
-    /**
-     * @this {Element}
-     */
-    createdCallback: function() {
-      this._root = UI.createShadowRootWithCoreStyles(this, 'ui/checkboxTextLabel.css');
-      var checkboxElement = createElementWithClass('input', 'dt-checkbox-button');
-      checkboxElement.type = 'checkbox';
-      this._root.appendChild(checkboxElement);
-      this.checkboxElement = checkboxElement;
-
-      this.addEventListener('click', toggleCheckbox.bind(this));
-
-      /**
-       * @param {!Event} event
-       * @this {Node}
-       */
-      function toggleCheckbox(event) {
-        var deepTarget = event.deepElementFromPoint();
-        if (deepTarget !== checkboxElement && deepTarget !== this) {
-          event.consume();
-          checkboxElement.click();
-        }
-      }
-
-      this._root.createChild('content');
-    },
-
-    /**
-     * @param {string} color
-     * @this {Element}
-     */
-    set backgroundColor(color) {
-      this.checkboxElement.classList.add('dt-checkbox-themed');
-      this.checkboxElement.style.backgroundColor = color;
-    },
-
-    /**
-     * @param {string} color
-     * @this {Element}
-     */
-    set checkColor(color) {
-      this.checkboxElement.classList.add('dt-checkbox-themed');
-      var stylesheet = createElement('style');
-      stylesheet.textContent = 'input.dt-checkbox-themed:checked:after { background-color: ' + color + '}';
-      this._root.appendChild(stylesheet);
-    },
-
-    /**
-     * @param {string} color
-     * @this {Element}
-     */
-    set borderColor(color) {
-      this.checkboxElement.classList.add('dt-checkbox-themed');
-      this.checkboxElement.style.borderColor = color;
-    },
-
-    /**
-     * @param {boolean} focus
-     * @this {Element}
-     */
-    set visualizeFocus(focus) {
-      this.checkboxElement.classList.toggle('dt-checkbox-visualize-focus', focus);
-    },
-
-    __proto__: HTMLLabelElement.prototype
-  });
 
   UI.registerCustomElement('label', 'dt-icon-label', {
     /**

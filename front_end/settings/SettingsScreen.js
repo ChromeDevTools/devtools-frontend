@@ -447,7 +447,7 @@ Settings.ExperimentsSettingsTab = class extends Settings.SettingsTab {
   }
 
   _createExperimentCheckbox(experiment) {
-    var label = UI.createCheckboxLabel(Common.UIString(experiment.title), experiment.isEnabled());
+    var label = UI.CheckboxLabel.create(Common.UIString(experiment.title), experiment.isEnabled());
     var input = label.checkboxElement;
     input.name = experiment.name;
     function listener() {

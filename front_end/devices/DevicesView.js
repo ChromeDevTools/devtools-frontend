@@ -212,7 +212,7 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
     this.contentElement.createChild('div', 'hbox device-text-row').createChild('div', 'view-title').textContent =
         Common.UIString('Settings');
 
-    var discoverUsbDevicesCheckbox = UI.createCheckboxLabel(Common.UIString('Discover USB devices'));
+    var discoverUsbDevicesCheckbox = UI.CheckboxLabel.create(Common.UIString('Discover USB devices'));
     discoverUsbDevicesCheckbox.classList.add('usb-checkbox');
     this.element.appendChild(discoverUsbDevicesCheckbox);
     this._discoverUsbDevicesCheckbox = discoverUsbDevicesCheckbox.checkboxElement;
@@ -225,7 +225,7 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
         Common.UIString('remote debugging documentation.')));
 
     var portForwardingHeader = this.element.createChild('div', 'port-forwarding-header');
-    var portForwardingEnabledCheckbox = UI.createCheckboxLabel(Common.UIString('Port forwarding'));
+    var portForwardingEnabledCheckbox = UI.CheckboxLabel.create(Common.UIString('Port forwarding'));
     portForwardingEnabledCheckbox.classList.add('port-forwarding-checkbox');
     portForwardingHeader.appendChild(portForwardingEnabledCheckbox);
     this._portForwardingEnabledCheckbox = portForwardingEnabledCheckbox.checkboxElement;

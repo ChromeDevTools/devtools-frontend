@@ -125,7 +125,7 @@ UI.SearchableView = class extends UI.VBox {
     // Build the replace checkbox and cancel button.
     this._replaceElement = this._footerElement.createChild('div').createChild('span', 'toolbar-replace-checkbox');
 
-    var replaceLabelElement = UI.createCheckboxLabel(Common.UIString('Replace'));
+    var replaceLabelElement = UI.CheckboxLabel.create(Common.UIString('Replace'));
     this._replaceCheckboxElement = replaceLabelElement.checkboxElement;
     var uniqueId = ++UI.SearchableView._lastUniqueId;
     var replaceCheckboxId = 'search-replace-trigger' + uniqueId;

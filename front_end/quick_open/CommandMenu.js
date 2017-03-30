@@ -308,8 +308,7 @@ QuickOpen.CommandMenu.ShowActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    new QuickOpen.FilteredListWidget(new QuickOpen.CommandMenuProvider()).showAsDialog();
-    InspectorFrontendHost.bringToFront();
+    QuickOpen.QuickOpen.show('>');
     return true;
   }
 };

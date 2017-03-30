@@ -1,6 +1,12 @@
 {
     "extensions": [
         {
+            "type": "@QuickOpen.FilteredListWidget.Provider",
+            "title": "Run a command",
+            "prefix": ">",
+            "className": "QuickOpen.CommandMenuProvider"
+        },
+        {
             "type": "@UI.ActionDelegate",
             "actionId": "commandMenu.show",
             "className": "QuickOpen.CommandMenu.ShowActionDelegate",

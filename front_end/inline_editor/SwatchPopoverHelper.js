@@ -11,7 +11,7 @@ InlineEditor.SwatchPopoverHelper = class extends Common.Object {
     this._popover.registerRequiredCSS('inline_editor/swatchPopover.css');
     this._popover.setBlockPointerEvents(false);
     this._popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    this._popover.setShowArrow(true);
+    this._popover.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
     this._popover.element.addEventListener('mousedown', e => e.consume(), false);
 
     this._hideProxy = this.hide.bind(this, true);

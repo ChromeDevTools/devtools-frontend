@@ -26,7 +26,7 @@ UI.GlassPane = class {
     this._anchorBox = null;
     this._anchorBehavior = UI.GlassPane.AnchorBehavior.PreferTop;
     this._sizeBehavior = UI.GlassPane.SizeBehavior.SetExactSize;
-    this._showArrow = false;
+    this._marginBehavior = UI.GlassPane.MarginBehavior.DefaultMargin;
   }
 
   /**
@@ -108,11 +108,11 @@ UI.GlassPane = class {
   }
 
   /**
-   * @param {boolean} showArrow
+   * @param {boolean} behavior
    */
-  setShowArrow(showArrow) {
-    this._showArrow = showArrow;
-    this._arrowElement.classList.toggle('hidden', !showArrow);
+  setMarginBehavior(behavior) {
+    this._marginBehavior = behavior;
+    this._arrowElement.classList.toggle('hidden', behavior !== UI.GlassPane.MarginBehavior.Arrow);
   }
 
   /**
@@ -123,7 +123,7 @@ UI.GlassPane = class {
       return;
     // Deliberately starts with 3000 to hide other z-indexed elements below.
     this.element.style.zIndex = 3000 + 1000 * UI.GlassPane._panes.size;
-    document.body.addEventListener('mousedown', this._onMouseDownBound, true);
+    document.body.addEventListener('click', this._onMouseDownBound, true);
     this._widget.show(document.body);
     UI.GlassPane._panes.add(this);
     this._positionContent();
@@ -133,7 +133,7 @@ UI.GlassPane = class {
     if (!this.isShowing())
       return;
     UI.GlassPane._panes.delete(this);
-    this.element.ownerDocument.body.removeEventListener('mousedown', this._onMouseDownBound, true);
+    this.element.ownerDocument.body.removeEventListener('click', this._onMouseDownBound, true);
     this._widget.detach();
   }
 
@@ -152,7 +152,8 @@ UI.GlassPane = class {
     if (!this.isShowing())
       return;
 
-    var gutterSize = this._showArrow ? 8 : 3;
+    var showArrow = this._marginBehavior === UI.GlassPane.MarginBehavior.Arrow;
+    var gutterSize = showArrow ? 8 : (this._marginBehavior === UI.GlassPane.MarginBehavior.NoMargin ? 0 : 3);
     var scrollbarSize = 14;
     var arrowSize = 10;
 
@@ -240,7 +241,7 @@ UI.GlassPane = class {
         positionX = Math.max(gutterSize, Math.min(anchorBox.x, containerWidth - width - gutterSize));
         if (!enoughHeight)
           positionX += arrowSize;
-        else if (this._showArrow && positionX - arrowSize >= gutterSize)
+        else if (showArrow && positionX - arrowSize >= gutterSize)
           positionX -= arrowSize;
         width = Math.min(width, containerWidth - positionX - gutterSize);
         if (2 * arrowSize >= width) {
@@ -298,7 +299,7 @@ UI.GlassPane = class {
         positionY = Math.max(gutterSize, Math.min(anchorBox.y, containerHeight - height - gutterSize));
         if (!enoughWidth)
           positionY += arrowSize;
-        else if (this._showArrow && positionY - arrowSize >= gutterSize)
+        else if (showArrow && positionY - arrowSize >= gutterSize)
           positionY -= arrowSize;
         height = Math.min(height, containerHeight - positionY - gutterSize);
         if (2 * arrowSize >= height) {
@@ -379,6 +380,15 @@ UI.GlassPane.SizeBehavior = {
   SetExactSize: Symbol('SetExactSize'),
   SetExactWidthMaxHeight: Symbol('SetExactWidthMaxHeight'),
   MeasureContent: Symbol('MeasureContent')
+};
+
+/**
+ * @enum {symbol}
+ */
+UI.GlassPane.MarginBehavior = {
+  Arrow: Symbol('Arrow'),
+  DefaultMargin: Symbol('DefaultMargin'),
+  NoMargin: Symbol('NoMargin')
 };
 
 /** @type {!Map<!Document, !Element>} */

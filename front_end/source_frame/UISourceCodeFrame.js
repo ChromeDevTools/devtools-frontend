@@ -455,14 +455,19 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
         .instance()
         .then(decorator => {
           this._typeDecorationsPending.delete(type);
-          decorator.decorate(
-              this._persistenceBinding ? this._persistenceBinding.network : this.uiSourceCode(), this.textEditor);
+          this.textEditor.codeMirror().operation(() => {
+            decorator.decorate(
+                this._persistenceBinding ? this._persistenceBinding.network : this.uiSourceCode(), this.textEditor);
+          });
         });
   }
 
   _decorateAllTypes() {
-    var extensions = self.runtime.extensions(SourceFrame.UISourceCodeFrame.LineDecorator);
-    extensions.forEach(extension => this._decorateTypeThrottled(extension.descriptor()['decoratorType']));
+    for (var extension of self.runtime.extensions(SourceFrame.UISourceCodeFrame.LineDecorator)) {
+      var type = extension.descriptor()['decoratorType'];
+      if (this._uiSourceCode.decorationsForType(type))
+        this._decorateTypeThrottled(type);
+    }
   }
 };
 

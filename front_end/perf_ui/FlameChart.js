@@ -165,14 +165,14 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
       return;
     this._highlightedEntryIndex = entryIndex;
     this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
-    this._dataProvider.highlightEntry(entryIndex);
+    this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntryHighlighted, entryIndex);
   }
 
   hideHighlight() {
     this._entryInfo.removeChildren();
     this._highlightedEntryIndex = -1;
     this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
-    this._dataProvider.highlightEntry(-1);
+    this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntryHighlighted, -1);
   }
 
   _resetCanvas() {
@@ -1417,11 +1417,6 @@ PerfUI.FlameChartDataProvider.prototype = {
 
   /**
    * @param {number} entryIndex
-   */
-  highlightEntry(entryIndex) {},
-
-  /**
-   * @param {number} entryIndex
    * @return {boolean}
    */
   forceDecoration(entryIndex) {},
@@ -1465,7 +1460,8 @@ PerfUI.FlameChartMarker.prototype = {
 
 /** @enum {symbol} */
 PerfUI.FlameChart.Events = {
-  EntrySelected: Symbol('EntrySelected')
+  EntrySelected: Symbol('EntrySelected'),
+  EntryHighlighted: Symbol('EntryHighlighted')
 };
 
 /**

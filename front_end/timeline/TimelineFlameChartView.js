@@ -73,6 +73,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._onNetworkEntrySelected = this._onEntrySelected.bind(this, this._networkDataProvider);
     this._mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onMainEntrySelected, this);
     this._networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntrySelected, this._onNetworkEntrySelected, this);
+    this._mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, this._onEntryHighlighted, this);
     this._nextExtensionIndex = 0;
 
     this._boundRefresh = this._refresh.bind(this);
@@ -147,6 +148,25 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     while (this._nextExtensionIndex < extensions.length)
       this._mainDataProvider.appendExtensionEvents(extensions[this._nextExtensionIndex++]);
     this._mainFlameChart.scheduleUpdate();
+  }
+
+  /**
+   * @param {!Common.Event} commonEvent
+   */
+  _onEntryHighlighted(commonEvent) {
+    SDK.DOMModel.hideDOMNodeHighlight();
+    var entryIndex = /** @type {number} */ (commonEvent.data);
+    var event = this._mainDataProvider.eventByIndex(entryIndex);
+    if (!event)
+      return;
+    var target = this._model && this._model.timelineModel().targetByEvent(event);
+    if (!target)
+      return;
+    var timelineData = TimelineModel.TimelineData.forEvent(event);
+    var backendNodeId = timelineData.backendNodeId;
+    if (!backendNodeId)
+      return;
+    new SDK.DeferredDOMNode(target, backendNodeId).highlight();
   }
 
   /**

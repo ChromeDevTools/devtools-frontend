@@ -504,25 +504,6 @@ Timeline.TimelineFlameChartDataProvider = class {
   /**
    * @override
    * @param {number} entryIndex
-   */
-  highlightEntry(entryIndex) {
-    SDK.DOMModel.hideDOMNodeHighlight();
-    if (this._entryType(entryIndex) !== Timeline.TimelineFlameChartEntryType.Event)
-      return;
-    var event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
-    var target = this._model.targetByEvent(event);
-    if (!target)
-      return;
-    var timelineData = TimelineModel.TimelineData.forEvent(event);
-    var backendNodeId = timelineData.backendNodeId;
-    if (!backendNodeId)
-      return;
-    new SDK.DeferredDOMNode(target, backendNodeId).highlight();
-  }
-
-  /**
-   * @override
-   * @param {number} entryIndex
    * @return {string}
    */
   entryColor(entryIndex) {
@@ -883,13 +864,11 @@ Timeline.TimelineFlameChartDataProvider = class {
     if (this._lastInitiatorEntry === entryIndex)
       return false;
     this._lastInitiatorEntry = entryIndex;
-    var event = this._entryType(entryIndex) === Timeline.TimelineFlameChartEntryType.Event ?
-        /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]) :
-        null;
-    var td = this._timelineData;
+    var event = this.eventByIndex(entryIndex);
     var initiator = event && TimelineModel.TimelineData.forEvent(event).initiator();
     if (initiator && !this._isVisible(initiator))
       initiator = null;
+    var td = this._timelineData;
     if (td.flowStartTimes.length || initiator) {
       td.flowStartTimes = [];
       td.flowStartLevels = [];
@@ -905,6 +884,16 @@ Timeline.TimelineFlameChartDataProvider = class {
     td.flowEndTimes.push(event.startTime);
     td.flowEndLevels.push(td.entryLevels[eventIndex]);
     return true;
+  }
+
+  /**
+   * @param {number} entryIndex
+   * @return {?SDK.TracingModel.Event}
+   */
+  eventByIndex(entryIndex) {
+    return this._entryType(entryIndex) === Timeline.TimelineFlameChartEntryType.Event ?
+        /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]) :
+        null;
   }
 };
 

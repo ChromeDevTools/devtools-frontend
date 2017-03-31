@@ -43,8 +43,7 @@ SDK.SourceMapManager = class extends SDK.SDKObject {
       var relativeSourceURL = this._relativeSourceURL.get(client);
       var relativeSourceMapURL = this._relativeSourceMapURL.get(client);
       this.detachSourceMap(client);
-      if (isEnabled)
-        this.attachSourceMap(client, relativeSourceURL, relativeSourceMapURL);
+      this.attachSourceMap(client, relativeSourceURL, relativeSourceMapURL);
     }
   }
 

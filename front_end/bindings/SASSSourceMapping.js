@@ -51,7 +51,7 @@ Bindings.SASSSourceMapping = class {
     ];
 
     /** @type {!Multimap<string, !SDK.CSSStyleSheetHeader>} */
-    this._frameIdToHeaders = new Multimap();
+    this._sourceMapIdToHeaders = new Multimap();
   }
 
   /**
@@ -61,17 +61,27 @@ Bindings.SASSSourceMapping = class {
   }
 
   /**
+   * @param {string} frameId
+   * @param {string} sourceMapURL
+   * @return {string}
+   */
+  static _sourceMapId(frameId, sourceMapURL) {
+    return frameId + ':' + sourceMapURL;
+  }
+
+  /**
    * @param {!Common.Event} event
    */
   _sourceMapAttached(event) {
     var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data.client);
     var sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
-    if (this._frameIdToHeaders.has(header.frameId)) {
-      this._frameIdToHeaders.set(header.frameId, header);
+    var sourceMapId = Bindings.SASSSourceMapping._sourceMapId(header.frameId, sourceMap.url());
+    if (this._sourceMapIdToHeaders.has(sourceMapId)) {
+      this._sourceMapIdToHeaders.set(sourceMapId, header);
       this._sourceMapAttachedForTest(sourceMap);
       return;
     }
-    this._frameIdToHeaders.set(header.frameId, header);
+    this._sourceMapIdToHeaders.set(sourceMapId, header);
 
     for (var sassURL of sourceMap.sourceURLs()) {
       var contentProvider = sourceMap.sourceContentProvider(sassURL, Common.resourceTypes.SourceMapStyleSheet);
@@ -88,10 +98,11 @@ Bindings.SASSSourceMapping = class {
    */
   _sourceMapDetached(event) {
     var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data.client);
-    this._frameIdToHeaders.remove(header.frameId, header);
-    if (this._frameIdToHeaders.has(header.frameId))
-      return;
     var sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
+    var sourceMapId = Bindings.SASSSourceMapping._sourceMapId(header.frameId, sourceMap.url());
+    this._sourceMapIdToHeaders.remove(sourceMapId, header);
+    if (this._sourceMapIdToHeaders.has(sourceMapId))
+      return;
     for (var sassURL of sourceMap.sourceURLs())
       this._networkProject.removeSourceMapFile(sassURL, header.frameId, false);
     Bindings.cssWorkspaceBinding.updateLocations(header);

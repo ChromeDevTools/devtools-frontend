@@ -7,8 +7,7 @@
             "title": "Coverage",
             "persistence": "closeable",
             "className": "Coverage.CoverageView",
-            "order": 100,
-            "experiment": "cssTrackerPanel"
+            "order": 100
         },
         {
             "type": "@SourceFrame.UISourceCodeFrame.LineDecorator",
@@ -23,7 +22,6 @@
             "toggleWithRedColor": true,
             "className": "Coverage.CoverageView.ActionDelegate",
             "category": "Performance",
-            "experiment": "cssTrackerPanel",
             "options": [
                 {
                     "value": true,
@@ -41,7 +39,6 @@
             "iconClass": "largeicon-refresh",
             "className": "Coverage.CoverageView.ActionDelegate",
             "category": "Performance",
-            "experiment": "cssTrackerPanel",
             "title": "Start recording and reload page"
         }
     ],

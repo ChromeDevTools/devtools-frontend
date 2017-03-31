@@ -420,7 +420,7 @@ UI.ViewManager._ContainerWidget = class extends UI.VBox {
     super();
     this.element.classList.add('flex-auto', 'view-container', 'overflow-auto');
     this._view = view;
-    this.element.tabIndex = 0;
+    this.element.tabIndex = -1;
     this.setDefaultFocusedElement(this.element);
   }
 

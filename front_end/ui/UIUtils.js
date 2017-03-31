@@ -576,30 +576,30 @@ UI.handleElementValueModifications = function(event, element, finishHandler, sug
  */
 Number.preciseMillisToString = function(ms, precision) {
   precision = precision || 0;
-  var format = '%.' + precision + 'f\u2009ms';
+  var format = '%.' + precision + 'f\xa0ms';
   return Common.UIString(format, ms);
 };
 
 /** @type {!Common.UIStringFormat} */
-UI._microsFormat = new Common.UIStringFormat('%.0f\u2009\u03bcs');
+UI._microsFormat = new Common.UIStringFormat('%.0f\xa0\u03bcs');
 
 /** @type {!Common.UIStringFormat} */
-UI._subMillisFormat = new Common.UIStringFormat('%.2f\u2009ms');
+UI._subMillisFormat = new Common.UIStringFormat('%.2f\xa0ms');
 
 /** @type {!Common.UIStringFormat} */
-UI._millisFormat = new Common.UIStringFormat('%.0f\u2009ms');
+UI._millisFormat = new Common.UIStringFormat('%.0f\xa0ms');
 
 /** @type {!Common.UIStringFormat} */
-UI._secondsFormat = new Common.UIStringFormat('%.2f\u2009s');
+UI._secondsFormat = new Common.UIStringFormat('%.2f\xa0s');
 
 /** @type {!Common.UIStringFormat} */
-UI._minutesFormat = new Common.UIStringFormat('%.1f\u2009min');
+UI._minutesFormat = new Common.UIStringFormat('%.1f\xa0min');
 
 /** @type {!Common.UIStringFormat} */
-UI._hoursFormat = new Common.UIStringFormat('%.1f\u2009hrs');
+UI._hoursFormat = new Common.UIStringFormat('%.1f\xa0hrs');
 
 /** @type {!Common.UIStringFormat} */
-UI._daysFormat = new Common.UIStringFormat('%.1f\u2009days');
+UI._daysFormat = new Common.UIStringFormat('%.1f\xa0days');
 
 /**
  * @param {number} ms
@@ -653,19 +653,19 @@ Number.secondsToString = function(seconds, higherResolution) {
  */
 Number.bytesToString = function(bytes) {
   if (bytes < 1024)
-    return Common.UIString('%.0f\u2009B', bytes);
+    return Common.UIString('%.0f\xa0B', bytes);
 
   var kilobytes = bytes / 1024;
   if (kilobytes < 100)
-    return Common.UIString('%.1f\u2009KB', kilobytes);
+    return Common.UIString('%.1f\xa0KB', kilobytes);
   if (kilobytes < 1024)
-    return Common.UIString('%.0f\u2009KB', kilobytes);
+    return Common.UIString('%.0f\xa0KB', kilobytes);
 
   var megabytes = kilobytes / 1024;
   if (megabytes < 100)
-    return Common.UIString('%.1f\u2009MB', megabytes);
+    return Common.UIString('%.1f\xa0MB', megabytes);
   else
-    return Common.UIString('%.0f\u2009MB', megabytes);
+    return Common.UIString('%.0f\xa0MB', megabytes);
 };
 
 /**
@@ -676,7 +676,7 @@ Number.withThousandsSeparator = function(num) {
   var str = num + '';
   var re = /(\d+)(\d{3})/;
   while (str.match(re))
-    str = str.replace(re, '$1\u2009$2');  // \u2009 is a thin space.
+    str = str.replace(re, '$1\xa0$2');  // \xa0 is a non-breaking space
   return str;
 };
 

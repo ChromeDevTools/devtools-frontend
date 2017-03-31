@@ -200,7 +200,7 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
         var unusedSizeSpan = cell.createChild('span');
         var unusedPercentsSpan = cell.createChild('span', 'percent-value');
         unusedSizeSpan.textContent = Number.withThousandsSeparator(unusedSize);
-        unusedPercentsSpan.textContent = Common.UIString('%.1f\u2009%%', unusedSize / this._coverageInfo.size() * 100);
+        unusedPercentsSpan.textContent = Common.UIString('%.1f\xa0%%', unusedSize / this._coverageInfo.size() * 100);
         break;
       case 'bars':
         var barContainer = cell.createChild('div', 'bar-container');

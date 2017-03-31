@@ -467,7 +467,7 @@ Timeline.TimelineUIUtils = class {
         var width = Timeline.TimelineUIUtils.quadWidth(eventData.clip);
         var height = Timeline.TimelineUIUtils.quadHeight(eventData.clip);
         if (width && height)
-          detailsText = Common.UIString('%d\u2009\u00d7\u2009%d', width, height);
+          detailsText = Common.UIString('%d\xa0\u00d7\xa0%d', width, height);
         break;
       case recordType.ParseHTML:
         var endLine = event.args['endData'] && event.args['endData']['endLine'];

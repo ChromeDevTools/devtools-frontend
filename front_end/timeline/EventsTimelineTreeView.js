@@ -152,8 +152,8 @@ Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
     var durationFilterUI = new UI.ToolbarComboBox(durationFilterChanged.bind(this));
     for (var durationMs of Timeline.EventsTimelineTreeView.Filters._durationFilterPresetsMs) {
       durationFilterUI.addOption(durationFilterUI.createOption(
-          durationMs ? Common.UIString('\u2265 %d\u2009ms', durationMs) : Common.UIString('All'),
-          durationMs ? Common.UIString('Hide records shorter than %d\u2009ms', durationMs) :
+          durationMs ? Common.UIString('\u2265 %d\xa0ms', durationMs) : Common.UIString('All'),
+          durationMs ? Common.UIString('Hide records shorter than %d\xa0ms', durationMs) :
                        Common.UIString('Show all records'),
           String(durationMs)));
     }

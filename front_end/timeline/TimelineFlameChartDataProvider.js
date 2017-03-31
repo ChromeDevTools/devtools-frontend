@@ -480,7 +480,7 @@ Timeline.TimelineFlameChartDataProvider = class {
     } else if (type === Timeline.TimelineFlameChartEntryType.Frame) {
       var frame = /** @type {!TimelineModel.TimelineFrame} */ (this._entryData[entryIndex]);
       time = Common.UIString(
-          '%s ~ %.0f\u2009fps', Number.preciseMillisToString(frame.duration, 1), (1000 / frame.duration));
+          '%s ~ %.0f\xa0fps', Number.preciseMillisToString(frame.duration, 1), (1000 / frame.duration));
       title = frame.idle ? Common.UIString('Idle Frame') : Common.UIString('Frame');
       if (frame.hasWarnings()) {
         warning = createElement('span');

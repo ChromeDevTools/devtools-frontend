@@ -1251,7 +1251,7 @@ Timeline.TimelinePanel.StatusPane = class extends UI.VBox {
     if (!this._timeUpdateTimer)
       return;
     var elapsed = (Date.now() - this._startTime) / 1000;
-    this._time.textContent = Common.UIString('%s\u2009sec', elapsed.toFixed(precise ? 1 : 0));
+    this._time.textContent = Common.UIString('%s\xa0sec', elapsed.toFixed(precise ? 1 : 0));
   }
 };
 

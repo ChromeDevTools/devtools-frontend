@@ -151,7 +151,7 @@ Profiler.HeapSnapshotGridNode = class extends DataGrid.DataGridNode {
    * @return {string}
    */
   _toPercentString(num) {
-    return num.toFixed(0) + '\u2009%';  // \u2009 is a thin space.
+    return num.toFixed(0) + '\xa0%';  // \xa0 is a non-breaking space.
   }
 
   /**

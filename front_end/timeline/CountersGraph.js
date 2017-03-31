@@ -406,7 +406,7 @@ Timeline.CountersGraph.CounterUI = class {
   setRange(minValue, maxValue) {
     var min = this._formatter(minValue);
     var max = this._formatter(maxValue);
-    this._range.textContent = Common.UIString('[%s\u2009\u2013\u2009%s]', min, max);
+    this._range.textContent = Common.UIString('[%s\xa0\u2013\xa0%s]', min, max);
   }
 
   /**

@@ -569,11 +569,11 @@ Timeline.TimelineTreeView.GridNode = class extends DataGrid.SortableDataGridNode
     var cell = this.createTD(columnId);
     cell.className = 'numeric-column';
     var textDiv = cell.createChild('div');
-    textDiv.createChild('span').textContent = Common.UIString('%.1f\u2009ms', value);
+    textDiv.createChild('span').textContent = Common.UIString('%.1f\xa0ms', value);
 
     if (showPercents && this._treeView._exposePercentages()) {
       textDiv.createChild('span', 'percent-column').textContent =
-          Common.UIString('%.1f\u2009%%', value / this._grandTotalTime * 100);
+          Common.UIString('%.1f\xa0%%', value / this._grandTotalTime * 100);
     }
     if (maxTime) {
       textDiv.classList.add('background-percent-bar');

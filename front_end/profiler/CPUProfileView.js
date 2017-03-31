@@ -253,7 +253,7 @@ Profiler.CPUProfileView.NodeFormatter = class {
    * @return {string}
    */
   formatValue(value) {
-    return Common.UIString('%.1f\u2009ms', value);
+    return Common.UIString('%.1f\xa0ms', value);
   }
 
   /**
@@ -263,7 +263,7 @@ Profiler.CPUProfileView.NodeFormatter = class {
    * @return {string}
    */
   formatPercent(value, node) {
-    return node.profileNode === this._profileView.profile.idleNode ? '' : Common.UIString('%.2f\u2009%%', value);
+    return node.profileNode === this._profileView.profile.idleNode ? '' : Common.UIString('%.2f\xa0%%', value);
   }
 
   /**
@@ -376,7 +376,7 @@ Profiler.CPUFlameChartDataProvider = class extends Profiler.ProfileFlameChartDat
       if (ms === 0)
         return '0';
       if (ms < 1000)
-        return Common.UIString('%.1f\u2009ms', ms);
+        return Common.UIString('%.1f\xa0ms', ms);
       return Number.secondsToString(ms / 1000, true);
     }
     var name = UI.beautifyFunctionName(node.functionName);

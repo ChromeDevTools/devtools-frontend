@@ -272,7 +272,7 @@ Profiler.HeapProfileView.NodeFormatter = class {
    * @return {string}
    */
   formatPercent(value, node) {
-    return Common.UIString('%.2f\u2009%%', value);
+    return Common.UIString('%.2f\xa0%%', value);
   }
 
   /**
@@ -323,7 +323,7 @@ Profiler.HeapFlameChartDataProvider = class extends Profiler.ProfileFlameChartDa
    * @return {string}
    */
   formatValue(value, precision) {
-    return Common.UIString('%s\u2009KB', Number.withThousandsSeparator(value / 1e3));
+    return Common.UIString('%s\xa0KB', Number.withThousandsSeparator(value / 1e3));
   }
 
   /**

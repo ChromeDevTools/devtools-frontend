@@ -92,6 +92,16 @@ Settings.EditFileSystemView = class extends UI.VBox {
       return;
 
     this._mappings = [];
+
+    this._excludedFoldersList.clear();
+    this._excludedFolders = [];
+    for (var folder of Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+             .excludedFolders()
+             .values()) {
+      this._excludedFolders.push(folder);
+      this._excludedFoldersList.appendItem(folder, true);
+    }
+
     if (Runtime.experiments.isEnabled('persistence2'))
       return;
 
@@ -110,14 +120,6 @@ Settings.EditFileSystemView = class extends UI.VBox {
       }
     }
 
-    this._excludedFoldersList.clear();
-    this._excludedFolders = [];
-    for (var folder of Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
-             .excludedFolders()
-             .values()) {
-      this._excludedFolders.push(folder);
-      this._excludedFoldersList.appendItem(folder, true);
-    }
     for (var folder of Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
              .nonConfigurableExcludedFolders()
              .values()) {

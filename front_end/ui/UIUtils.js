@@ -785,6 +785,10 @@ UI._focusChanged = function(event) {
   var document = event.target && event.target.ownerDocument;
   var element = document ? document.deepActiveElement() : null;
   UI.Widget.focusWidgetForNode(element);
+  if (!UI._keyboardFocus)
+    return;
+  element.setAttribute('data-keyboard-focus', 'true');
+  element.addEventListener('blur', () => element.removeAttribute('data-keyboard-focus'), {once: true, capture: true});
 };
 
 /**
@@ -1183,6 +1187,10 @@ UI.initializeUIUtils = function(document, themeSetting) {
   document.defaultView.addEventListener('focus', UI._windowFocused.bind(UI, document), false);
   document.defaultView.addEventListener('blur', UI._windowBlurred.bind(UI, document), false);
   document.addEventListener('focus', UI._focusChanged.bind(UI), true);
+  document.addEventListener('keydown', event => {
+    UI._keyboardFocus = true;
+    document.defaultView.requestAnimationFrame(() => UI._keyboardFocus = false);
+  }, true);
 
   if (!UI.themeSupport)
     UI.themeSupport = new UI.ThemeSupport(themeSetting);
@@ -1370,14 +1378,6 @@ UI.CheckboxLabel = class extends HTMLLabelElement {
   set borderColor(color) {
     this.checkboxElement.classList.add('dt-checkbox-themed');
     this.checkboxElement.style.borderColor = color;
-  }
-
-  /**
-   * @param {boolean} focus
-   * @this {Element}
-   */
-  set visualizeFocus(focus) {
-    this.checkboxElement.classList.toggle('dt-checkbox-visualize-focus', focus);
   }
 };
 

@@ -204,6 +204,14 @@ select.toolbar-item {
     padding: 0 13px 0 5px;
     margin-right: -10px;
     position: relative;
+    height: 22px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+select.toolbar-item[data-keyboard-focus="true"]:focus {
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 2px;
 }
 
 /* Input */
@@ -267,6 +275,17 @@ select.toolbar-item {
 
 .toolbar-button.emulate-active {
     background-color: rgb(163, 163, 163);
+}
+
+.toolbar-button[data-keyboard-focus="true"]:focus::after {
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+    background-color: rgba(0, 0, 0, 0.08);
+    border-radius: 2px;
+    content: "";
 }
 
 .toolbar-shadow.floating {

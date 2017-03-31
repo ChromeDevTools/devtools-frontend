@@ -18,7 +18,7 @@ input {
     flex-shrink: 0;
 }
 
-input.dt-checkbox-visualize-focus:focus {
+input:focus {
     outline: auto 5px -webkit-focus-ring-color;
 }
 

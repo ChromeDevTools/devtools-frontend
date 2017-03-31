@@ -38,8 +38,6 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     /** @type {!UI.ListControl<number>} */
     this._list = new UI.ListControl(this, UI.ListMode.EqualHeightItems);
     this._itemElementsContainer = this._list.element;
-    this._itemElementsContainer.addEventListener('mousemove', event => this._updateHover(event));
-    this._itemElementsContainer.addEventListener('mouseout', event => this._updateHover(event));
     this._itemElementsContainer.classList.add('container');
     this._bottomElementsContainer.appendChild(this._itemElementsContainer);
     this._itemElementsContainer.addEventListener('click', this._onClick.bind(this), false);
@@ -52,9 +50,6 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     this._prefix = '';
     this._provider = provider;
     this._queryChangedCallback = queryChangedCallback;
-
-    /** @type {?number} */
-    this._selectedItemIndex = null;
   }
 
   /**
@@ -168,22 +163,6 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
   }
 
   /**
-   * @param {!Event} event
-   */
-  _updateHover(event) {
-    var element = event.deepElementFromPoint();
-    var listItemElement = element && element.enclosingNodeOrSelfWithClass('filtered-list-widget-item');
-    if (listItemElement && listItemElement.classList.contains('hovered'))
-      return;
-    for (var child of this._list.element.getElementsByClassName('hovered'))
-      child.classList.remove('hovered');
-    var item = listItemElement && this._list.itemForNode(listItemElement);
-    if (listItemElement)
-      listItemElement.classList.add('hovered');
-    this._hover(item);
-  }
-
-  /**
    * @override
    */
   wasShown() {
@@ -195,7 +174,6 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    * @override
    */
   willHide() {
-    this._hover(null);
     if (this._provider)
       this._provider.detach();
     this._clearTimers();
@@ -286,17 +264,6 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
       fromElement.classList.remove('selected');
     if (toElement)
       toElement.classList.add('selected');
-    this._hover(to);
-  }
-
-  /**
-   * @param {number} item
-   */
-  selectItem(item) {
-    if (this._list.length() > 0)
-      this._list.selectItem(item, true);
-    else
-      this._selectedItemIndex = item;
   }
 
   /**
@@ -453,21 +420,13 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    * @param {!Array<number>} filteredItems
    */
   _refreshList(bestItems, overflowItems, filteredItems) {
-    var preservedSelection = this._list.selectedItem();
-    if (this._selectedItemIndex !== null) {
-      preservedSelection = this._selectedItemIndex;
-      this._selectedItemIndex = null;
-    }
     delete this._refreshListWithCurrentResult;
     filteredItems = [].concat(bestItems, overflowItems, filteredItems);
     this._updateNotFoundMessage(!!filteredItems.length);
     var oldHeight = this._list.element.offsetHeight;
     this._list.replaceAllItems(filteredItems);
-    if (filteredItems.length) {
-      if (!filteredItems.includes(preservedSelection))
-        preservedSelection = filteredItems[0];
-      this._list.selectItem(preservedSelection, true);
-    }
+    if (filteredItems.length)
+      this._list.selectItem(filteredItems[0]);
     if (this._list.element.offsetHeight !== oldHeight)
       this._list.viewportResized();
     this._itemsFilteredForTest();
@@ -539,14 +498,6 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
       this._promptHistory.shift();
     this._provider.selectItem(itemIndex, this._cleanValue());
   }
-
-  /**
-   * @param {?number} item
-   */
-  _hover(item) {
-    if (this._provider)
-      this._provider.hoverItem(item);
-  }
 };
 
 
@@ -586,12 +537,6 @@ QuickOpen.FilteredListWidget.Provider = class {
    */
   itemScoreAt(itemIndex, query) {
     return 1;
-  }
-
-  /**
-   * @param {?number} itemIndex
-   */
-  hoverItem(itemIndex) {
   }
 
   /**

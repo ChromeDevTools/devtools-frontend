@@ -144,6 +144,8 @@ Timeline.TimelineFlameChartDataProvider = class {
     this._timelineData = null;
     /** @type {!Array<!SDK.TracingModel.Event|!TimelineModel.TimelineFrame|!TimelineModel.TimelineIRModel.Phases>} */
     this._entryData = [];
+    /** @type {!Array<!SDK.TracingModel.Event>} */
+    this._entryParent = [];
     /** @type {!Array<!Timeline.TimelineFlameChartEntryType>} */
     this._entryTypeByLevel = [];
     /** @type {!Array<string>} */
@@ -337,8 +339,9 @@ Timeline.TimelineFlameChartDataProvider = class {
       var level = this._currentLevel + openEvents.length;
       if (flowEventsEnabled)
         this._appendFlowEvent(e, level);
-      if (e.phase !== SDK.TracingModel.Phase.FlowEnd)
-        this._appendEvent(e, level);
+      var index = this._appendEvent(e, level);
+      if (openEvents.length)
+        this._entryParent[index] = openEvents.peekLast();
       if (!isExtension && TimelineModel.TimelineModel.isMarkerEvent(e))
         this._timelineData.entryTotalTimes[this._entryData.length] = undefined;
 
@@ -682,6 +685,7 @@ Timeline.TimelineFlameChartDataProvider = class {
   /**
    * @param {!SDK.TracingModel.Event} event
    * @param {number} level
+   * @return {number}
    */
   _appendEvent(event, level) {
     var index = this._entryData.length;
@@ -691,6 +695,7 @@ Timeline.TimelineFlameChartDataProvider = class {
         event.duration || Timeline.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs;
     this._timelineData.entryStartTimes[index] = event.startTime;
     event[Timeline.TimelineFlameChartDataProvider._indexSymbol] = index;
+    return index;
   }
 
   /**
@@ -865,25 +870,37 @@ Timeline.TimelineFlameChartDataProvider = class {
       return false;
     this._lastInitiatorEntry = entryIndex;
     var event = this.eventByIndex(entryIndex);
-    var initiator = event && TimelineModel.TimelineData.forEvent(event).initiator();
-    if (initiator && !this._isVisible(initiator))
-      initiator = null;
     var td = this._timelineData;
-    if (td.flowStartTimes.length || initiator) {
-      td.flowStartTimes = [];
-      td.flowStartLevels = [];
-      td.flowEndTimes = [];
-      td.flowEndLevels = [];
+    td.flowStartTimes = [];
+    td.flowStartLevels = [];
+    td.flowEndTimes = [];
+    td.flowEndLevels = [];
+    // Find the closest ancestor with an initiator.
+    var initiator;
+    for (; event; event = this._eventParent(event)) {
+      if (!this._isVisible(event))
+        continue;
+      initiator = TimelineModel.TimelineData.forEvent(event).initiator();
+      if (initiator)
+        break;
     }
-    if (!initiator)
+    if (!initiator || !this._isVisible(initiator))
       return true;
-    var initiatorIndex = initiator[Timeline.TimelineFlameChartDataProvider._indexSymbol];
     var eventIndex = event[Timeline.TimelineFlameChartDataProvider._indexSymbol];
+    var initiatorIndex = initiator[Timeline.TimelineFlameChartDataProvider._indexSymbol];
     td.flowStartTimes.push(initiator.endTime || initiator.startTime);
     td.flowStartLevels.push(td.entryLevels[initiatorIndex]);
     td.flowEndTimes.push(event.startTime);
     td.flowEndLevels.push(td.entryLevels[eventIndex]);
     return true;
+  }
+
+  /**
+   * @param {!SDK.TracingModel.Event} event
+   * @return {?SDK.TracingModel.Event}
+   */
+  _eventParent(event) {
+    return this._entryParent[event[Timeline.TimelineFlameChartDataProvider._indexSymbol]] || null;
   }
 
   /**

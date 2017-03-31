@@ -15,11 +15,17 @@ Coverage.CoverageView = class extends UI.VBox {
 
     this._toggleRecordAction =
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('coverage.toggle-recording'));
-    topToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
+    this._toggleRecordButton = UI.Toolbar.createActionButton(this._toggleRecordAction);
+    topToolbar.appendToolbarItem(this._toggleRecordButton);
 
-    var clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
-    clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset.bind(this));
-    topToolbar.appendToolbarItem(clearButton);
+    var startWithReloadAction =
+        /** @type {!UI.Action }*/ (UI.actionRegistry.action('coverage.start-with-reload'));
+    this._startWithReloadButton = UI.Toolbar.createActionButton(startWithReloadAction);
+    topToolbar.appendToolbarItem(this._startWithReloadButton);
+
+    this._clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
+    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset.bind(this));
+    topToolbar.appendToolbarItem(this._clearButton);
 
     this._coverageResultsElement = this.contentElement.createChild('div', 'coverage-results');
     this._progressElement = this._coverageResultsElement.createChild('div', 'progress-view');
@@ -27,6 +33,7 @@ Coverage.CoverageView = class extends UI.VBox {
 
     this._statusToolbarElement = this.contentElement.createChild('div', 'coverage-toolbar-summary');
     this._statusMessageElement = this._statusToolbarElement.createChild('div', 'coverage-message');
+    this._showHelpScreen();
   }
 
   _reset() {
@@ -35,10 +42,23 @@ Coverage.CoverageView = class extends UI.VBox {
 
     this._listView.detach();
     this._coverageResultsElement.removeChildren();
-    this._progressElement.textContent = '';
-    this._coverageResultsElement.appendChild(this._progressElement);
+    this._showHelpScreen();
 
     this._statusMessageElement.textContent = '';
+  }
+
+  _showHelpScreen() {
+    this._coverageResultsElement.appendChild(this._progressElement);
+    this._progressElement.removeChildren();
+
+    var recordButton = UI.Toolbar.createActionButton(this._toggleRecordAction).element;
+    var reloadButton = UI.Toolbar.createActionButtonForId('coverage.start-with-reload').element;
+
+    this._progressElement.createChild('p', 'landing-page')
+        .appendChild(UI.formatLocalized(
+            'Click the record button %s to start capturing coverage.\n' +
+                'Click the reload button %s to reload and start capturing coverage.',
+            [recordButton, reloadButton]));
   }
 
   _toggleRecording() {
@@ -48,6 +68,17 @@ Coverage.CoverageView = class extends UI.VBox {
       this._startRecording();
     else
       this._stopRecording();
+  }
+
+  _startWithReload() {
+    var mainTarget = SDK.targetManager.mainTarget();
+    if (!mainTarget)
+      return;
+    var resourceTreeModel = /** @type {?SDK.ResourceTreeModel} */ (mainTarget.model(SDK.ResourceTreeModel));
+    if (!resourceTreeModel)
+      return;
+    this._startRecording();
+    resourceTreeModel.reloadPage();
   }
 
   _startRecording() {
@@ -61,6 +92,8 @@ Coverage.CoverageView = class extends UI.VBox {
       return;
     this._model = model;
     this._toggleRecordAction.setToggled(true);
+    this._clearButton.setEnabled(false);
+    this._startWithReloadButton.setEnabled(false);
     this._progressElement.textContent = Common.UIString('Recording...');
   }
 
@@ -70,7 +103,9 @@ Coverage.CoverageView = class extends UI.VBox {
 
     var coverageInfo = await this._model.stop();
     this._model = null;
-    this._updateViews(coverageInfo);
+    await this._updateViews(coverageInfo);
+    this._startWithReloadButton.setEnabled(true);
+    this._clearButton.setEnabled(true);
   }
 
   /**
@@ -161,7 +196,7 @@ Coverage.CoverageView.LineDecorator.type = 'coverage';
 /**
  * @implements {UI.ActionDelegate}
  */
-Coverage.CoverageView.RecordActionDelegate = class {
+Coverage.CoverageView.ActionDelegate = class {
   /**
    * @override
    * @param {!UI.Context} context
@@ -172,8 +207,25 @@ Coverage.CoverageView.RecordActionDelegate = class {
     var coverageViewId = 'coverage';
     UI.viewManager.showView(coverageViewId)
         .then(() => UI.viewManager.view(coverageViewId).widget())
-        .then(widget => /** @type !Coverage.CoverageView} */ (widget)._toggleRecording());
+        .then(widget => this._innerHandleAction(/** @type !Coverage.CoverageView} */ (widget), actionId));
 
     return true;
+  }
+
+  /**
+   * @param {!Coverage.CoverageView} coverageView
+   * @param {string} actionId
+   */
+  _innerHandleAction(coverageView, actionId) {
+    switch (actionId) {
+      case 'coverage.toggle-recording':
+        coverageView._toggleRecording();
+        break;
+      case 'coverage.start-with-reload':
+        coverageView._startWithReload();
+        break;
+      default:
+        console.assert(false, `Unknown action: ${actionId}`);
+    }
   }
 };

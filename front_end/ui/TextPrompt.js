@@ -623,10 +623,7 @@ UI.TextPrompt = class extends Common.Object {
    * @return {boolean}
    */
   tabKeyPressed(event) {
-    this.acceptAutoComplete();
-
-    // Consume the key.
-    return true;
+    return this.acceptAutoComplete();
   }
 
   /**

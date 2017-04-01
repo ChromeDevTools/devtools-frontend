@@ -55,7 +55,7 @@ SDK.Script = class {
     this.endLine = endLine;
     this.endColumn = endColumn;
 
-    this._executionContextId = executionContextId;
+    this.executionContextId = executionContextId;
     this.hash = hash;
     this._isContentScript = isContentScript;
     this._isLiveEdit = isLiveEdit;
@@ -97,7 +97,7 @@ SDK.Script = class {
    * @return {?SDK.ExecutionContext}
    */
   executionContext() {
-    return this.debuggerModel.runtimeModel().executionContext(this._executionContextId);
+    return this.debuggerModel.runtimeModel().executionContext(this.executionContextId);
   }
 
   /**
@@ -257,16 +257,6 @@ SDK.Script = class {
   isInlineScript() {
     var startsAtZero = !this.lineOffset && !this.columnOffset;
     return !!this.sourceURL && !startsAtZero;
-  }
-
-  /**
-   * @param {string} sourceMapURL
-   */
-  addSourceMapURL(sourceMapURL) {
-    if (this.sourceMapURL)
-      return;
-    this.sourceMapURL = sourceMapURL;
-    this.debuggerModel.dispatchEventToListeners(SDK.DebuggerModel.Events.SourceMapURLAdded, this);
   }
 
   /**

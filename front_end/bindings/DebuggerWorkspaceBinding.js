@@ -233,7 +233,7 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
 
   /**
    * @param {!SDK.Script} script
-   * @return {?SDK.TextSourceMap}
+   * @return {?SDK.SourceMap}
    */
   sourceMapForScript(script) {
     var modelData = this._debuggerModelToData.get(script.debuggerModel);
@@ -370,9 +370,6 @@ Bindings.DebuggerWorkspaceBinding.ModelData = class {
     var script = /** @type {!SDK.Script} */ (event.data);
     this._defaultMapping.addScript(script);
     this._resourceMapping.addScript(script);
-
-    if (Common.moduleSetting('jsSourceMapsEnabled').get())
-      this._compilerMapping.addScript(script);
   }
 
   /**

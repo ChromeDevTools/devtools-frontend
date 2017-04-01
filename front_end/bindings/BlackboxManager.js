@@ -132,7 +132,7 @@ Bindings.BlackboxManager = class {
 
   /**
    * @param {!SDK.Script} script
-   * @param {?SDK.TextSourceMap} sourceMap
+   * @param {?SDK.SourceMap} sourceMap
    * @return {!Promise<undefined>}
    */
   sourceMapLoaded(script, sourceMap) {

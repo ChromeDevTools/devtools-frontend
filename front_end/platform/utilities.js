@@ -1213,12 +1213,14 @@ Multimap.prototype = {
   /**
    * @param {K} key
    * @param {V} value
+   * @return {boolean}
    */
   remove: function(key, value) {
     var values = this.get(key);
-    values.delete(value);
+    var result = values.delete(value);
     if (!values.size)
       this._map.delete(key);
+    return result;
   },
 
   /**

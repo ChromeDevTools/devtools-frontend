@@ -425,7 +425,7 @@ Bindings.ResourceScriptFile = class extends Common.Object {
   addSourceMapURL(sourceMapURL) {
     if (!this._script)
       return;
-    this._script.addSourceMapURL(sourceMapURL);
+    this._script.debuggerModel.setSourceMapURL(this._script, sourceMapURL);
   }
 
   /**

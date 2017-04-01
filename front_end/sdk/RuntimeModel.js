@@ -123,6 +123,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
     var executionContext = this._executionContextById.get(executionContextId);
     if (!executionContext)
       return;
+    this.debuggerModel().executionContextDestroyed(executionContext);
     this._executionContextById.delete(executionContextId);
     this.dispatchEventToListeners(SDK.RuntimeModel.Events.ExecutionContextDestroyed, executionContext);
   }

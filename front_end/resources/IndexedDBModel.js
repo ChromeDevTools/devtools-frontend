@@ -37,7 +37,7 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    */
   constructor(target) {
     super(target);
-    this._securityOriginManager = SDK.SecurityOriginManager.fromTarget(target);
+    this._securityOriginManager = target.model(SDK.SecurityOriginManager);
     this._agent = target.indexedDBAgent();
 
     /** @type {!Map.<!Resources.IndexedDBModel.DatabaseId, !Resources.IndexedDBModel.Database>} */
@@ -136,14 +136,6 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
     if (idbKeyPath instanceof Array)
       return '["' + idbKeyPath.join('", "') + '"]';
     return null;
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @return {!Resources.IndexedDBModel}
-   */
-  static fromTarget(target) {
-    return /** @type {!Resources.IndexedDBModel} */ (target.model(Resources.IndexedDBModel));
   }
 
   enable() {

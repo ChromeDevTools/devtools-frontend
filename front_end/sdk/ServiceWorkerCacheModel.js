@@ -17,18 +17,10 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
 
     this._agent = target.cacheStorageAgent();
 
-    this._securityOriginManager = SDK.SecurityOriginManager.fromTarget(target);
+    this._securityOriginManager = target.model(SDK.SecurityOriginManager);
 
     /** @type {boolean} */
     this._enabled = false;
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @return {?SDK.ServiceWorkerCacheModel}
-   */
-  static fromTarget(target) {
-    return target.model(SDK.ServiceWorkerCacheModel);
   }
 
   enable() {

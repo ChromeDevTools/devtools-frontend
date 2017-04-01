@@ -392,7 +392,7 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   targetAdded(target) {
     if (!target.parentTarget()) {
-      var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
+      var resourceTreeModel = target.model(SDK.ResourceTreeModel);
       if (resourceTreeModel) {
         resourceTreeModel.addEventListener(
             SDK.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this);
@@ -410,7 +410,7 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   targetRemoved(target) {
     if (!target.parentTarget()) {
-      var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
+      var resourceTreeModel = target.model(SDK.ResourceTreeModel);
       if (resourceTreeModel) {
         resourceTreeModel.removeEventListener(
             SDK.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this);

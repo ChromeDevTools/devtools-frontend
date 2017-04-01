@@ -153,7 +153,7 @@ Components.DOMPresentationUtils.linkifyDeferredNodeReference = function(deferred
  */
 Components.DOMPresentationUtils.buildImagePreviewContents = function(
     target, originalImageURL, showDimensions, precomputedFeatures) {
-  var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
+  var resourceTreeModel = target.model(SDK.ResourceTreeModel);
   if (!resourceTreeModel)
     return Promise.resolve(/** @type {?Element} */ (null));
   var resource = resourceTreeModel.resourceForURL(originalImageURL);

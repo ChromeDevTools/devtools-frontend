@@ -125,7 +125,9 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
    * @param {string} cookieDomain
    */
   showCookies(cookieFrameTarget, cookieDomain) {
-    var model = SDK.CookieModel.fromTarget(cookieFrameTarget);
+    var model = cookieFrameTarget.model(SDK.CookieModel);
+    if (!model)
+      return;
     if (!this._cookieView)
       this._cookieView = new Resources.CookieItemsView(model, cookieDomain);
     else
@@ -149,7 +151,10 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
    * @param {string} cookieDomain
    */
   clearCookies(target, cookieDomain) {
-    SDK.CookieModel.fromTarget(target).clear(cookieDomain, () => {
+    var model = target.model(SDK.CookieModel);
+    if (!model)
+      return;
+    model.clear(cookieDomain, () => {
       if (this._cookieView)
         this._cookieView.refreshItems();
     });

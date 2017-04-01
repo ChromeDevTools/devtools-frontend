@@ -17,14 +17,6 @@ SDK.SecurityOriginManager = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.Target} target
-   * @return {!SDK.SecurityOriginManager}
-   */
-  static fromTarget(target) {
-    return /** @type {!SDK.SecurityOriginManager} */ (target.model(SDK.SecurityOriginManager));
-  }
-
-  /**
    * @param {!Set<string>} securityOrigins
    */
   updateSecurityOrigins(securityOrigins) {

@@ -22,7 +22,7 @@ Resources.ResourcesSection = class {
     addListener(SDK.ResourceTreeModel.Events.ResourceAdded, this._resourceAdded, this);
 
     var mainTarget = SDK.targetManager.mainTarget();
-    var resourceTreeModel = mainTarget && mainTarget.hasDOMCapability() && SDK.ResourceTreeModel.fromTarget(mainTarget);
+    var resourceTreeModel = mainTarget && mainTarget.model(SDK.ResourceTreeModel);
     var mainFrame = resourceTreeModel && resourceTreeModel.mainFrame;
     if (mainFrame)
       this._populateFrame(mainFrame);
@@ -39,8 +39,7 @@ Resources.ResourcesSection = class {
     var parentTarget = frame.target().parentTarget();
     if (!parentTarget)
       return null;
-    console.assert(parentTarget.hasDOMCapability());
-    return SDK.ResourceTreeModel.fromTarget(parentTarget).mainFrame;
+    return parentTarget.model(SDK.ResourceTreeModel).mainFrame;
   }
 
   /**
@@ -165,7 +164,7 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
   set hovered(hovered) {
     if (hovered) {
       this.listItemElement.classList.add('hovered');
-      var domModel = SDK.DOMModel.fromTarget(this._frame.target());
+      var domModel = this._frame.target().model(SDK.DOMModel);
       if (domModel)
         domModel.highlightFrame(this._frameId);
     } else {

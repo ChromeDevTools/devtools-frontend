@@ -46,7 +46,7 @@ Bindings.NetworkProjectManager = class {
    * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    new Bindings.NetworkProject(target, this._workspace, SDK.ResourceTreeModel.fromTarget(target));
+    new Bindings.NetworkProject(target, this._workspace, target.model(SDK.ResourceTreeModel));
   }
 
   /**
@@ -437,7 +437,8 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
    * @return {?Workspace.UISourceCode}
    */
   static uiSourceCodeForStyleURL(workspace, url, header) {
-    return workspace.uiSourceCode(Bindings.NetworkProject.projectId(header.target(), header.frameId, false), url);
+    return workspace.uiSourceCode(
+        Bindings.NetworkProject.projectId(header.cssModel().target(), header.frameId, false), url);
   }
 };
 

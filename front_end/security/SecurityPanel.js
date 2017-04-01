@@ -265,8 +265,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
   }
 
   showCertificateViewer() {
-    var securityModel = Security.SecurityModel.fromTarget(this._target);
-    securityModel.showCertificateViewer();
+    this._target.model(Security.SecurityModel).showCertificateViewer();
   }
 
   /**
@@ -287,7 +286,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       return;
 
     var listeners = [];
-    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
+    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
     if (resourceTreeModel) {
       listeners = listeners.concat([
         resourceTreeModel.addEventListener(
@@ -302,7 +301,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
         this._onInterstitialShown();
     }
 
-    var networkManager = SDK.NetworkManager.fromTarget(target);
+    var networkManager = target.model(SDK.NetworkManager);
     if (networkManager) {
       listeners = listeners.concat([
         networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this),
@@ -310,7 +309,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       ]);
     }
 
-    var securityModel = Security.SecurityModel.fromTarget(target);
+    var securityModel = target.model(Security.SecurityModel);
     if (securityModel) {
       listeners = listeners.concat([securityModel.addEventListener(
           Security.SecurityModel.Events.SecurityStateChanged, this._onSecurityStateChanged, this)]);

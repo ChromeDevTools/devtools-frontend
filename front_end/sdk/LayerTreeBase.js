@@ -146,7 +146,7 @@ SDK.LayerTreeBase = class {
    */
   constructor(target) {
     this._target = target;
-    this._domModel = target ? SDK.DOMModel.fromTarget(target) : null;
+    this._domModel = target ? target.model(SDK.DOMModel) : null;
     this._layersById = {};
     this._root = null;
     this._contentRoot = null;

@@ -61,7 +61,7 @@ Resources.ClearStorageView = class extends UI.VBox {
     if (this._target)
       return;
     this._target = target;
-    var securityOriginManager = SDK.SecurityOriginManager.fromTarget(target);
+    var securityOriginManager = target.model(SDK.SecurityOriginManager);
     this._updateOrigin(securityOriginManager.mainSecurityOrigin());
     securityOriginManager.addEventListener(
         SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this._originChanged, this);
@@ -74,7 +74,7 @@ Resources.ClearStorageView = class extends UI.VBox {
   targetRemoved(target) {
     if (this._target !== target)
       return;
-    var securityOriginManager = SDK.SecurityOriginManager.fromTarget(target);
+    var securityOriginManager = target.model(SDK.SecurityOriginManager);
     securityOriginManager.removeEventListener(
         SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this._originChanged, this);
   }
@@ -106,25 +106,28 @@ Resources.ClearStorageView = class extends UI.VBox {
 
     var set = new Set(storageTypes);
     var hasAll = set.has(Protocol.Storage.StorageType.All);
-    if (set.has(Protocol.Storage.StorageType.Cookies) || hasAll)
-      SDK.CookieModel.fromTarget(this._target).clear();
+    if (set.has(Protocol.Storage.StorageType.Cookies) || hasAll) {
+      var cookieModel = this._target.model(SDK.CookieModel);
+      if (cookieModel)
+        cookieModel.clear();
+    }
 
     if (set.has(Protocol.Storage.StorageType.Indexeddb) || hasAll) {
       for (var target of SDK.targetManager.targets()) {
-        var indexedDBModel = Resources.IndexedDBModel.fromTarget(target);
+        var indexedDBModel = target.model(Resources.IndexedDBModel);
         if (indexedDBModel)
           indexedDBModel.clearForOrigin(this._securityOrigin);
       }
     }
 
     if (set.has(Protocol.Storage.StorageType.Local_storage) || hasAll) {
-      var storageModel = Resources.DOMStorageModel.fromTarget(this._target);
+      var storageModel = this._target.model(Resources.DOMStorageModel);
       if (storageModel)
         storageModel.clearForOrigin(this._securityOrigin);
     }
 
     if (set.has(Protocol.Storage.StorageType.Websql) || hasAll) {
-      var databaseModel = Resources.DatabaseModel.fromTarget(this._target);
+      var databaseModel = this._target.model(Resources.DatabaseModel);
       if (databaseModel) {
         databaseModel.disable();
         databaseModel.enable();
@@ -133,13 +136,13 @@ Resources.ClearStorageView = class extends UI.VBox {
 
     if (set.has(Protocol.Storage.StorageType.Cache_storage) || hasAll) {
       var target = SDK.targetManager.mainTarget();
-      var model = target && SDK.ServiceWorkerCacheModel.fromTarget(target);
+      var model = target && target.model(SDK.ServiceWorkerCacheModel);
       if (model)
         model.clearForOrigin(this._securityOrigin);
     }
 
     if (set.has(Protocol.Storage.StorageType.Appcache) || hasAll) {
-      var appcacheModel = Resources.ApplicationCacheModel.fromTarget(this._target);
+      var appcacheModel = this._target.model(Resources.ApplicationCacheModel);
       if (appcacheModel)
         appcacheModel.reset();
     }

@@ -60,14 +60,6 @@ SDK.NetworkManager = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.Target} target
-   * @return {?SDK.NetworkManager}
-   */
-  static fromTarget(target) {
-    return target.model(SDK.NetworkManager);
-  }
-
-  /**
    * @param {!SDK.NetworkManager.Conditions} conditions
    * @return {!Protocol.Network.ConnectionType}
    * TODO(allada): this belongs to NetworkConditionsSelector, which should hardcode/guess it.

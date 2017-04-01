@@ -26,7 +26,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {SDK.TargetManager.Observer}
+ * @implements {SDK.SDKModelObserver<!SDK.DOMModel>}
  * @unrestricted
  */
 Elements.InspectElementModeController = class {
@@ -34,27 +34,26 @@ Elements.InspectElementModeController = class {
     this._toggleSearchAction = UI.actionRegistry.action('elements.toggle-element-search');
     this._mode = Protocol.DOM.InspectMode.None;
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
-    SDK.targetManager.observeTargets(this, SDK.Target.Capability.DOM);
+    SDK.targetManager.observeModels(SDK.DOMModel, this);
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.DOMModel} domModel
    */
-  targetAdded(target) {
+  modelAdded(domModel) {
     // When DevTools are opening in the inspect element mode, the first target comes in
     // much later than the InspectorFrontendAPI.enterInspectElementMode event.
     if (this._mode === Protocol.DOM.InspectMode.None)
       return;
-    var domModel = SDK.DOMModel.fromTarget(target);
     domModel.setInspectMode(this._mode);
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.DOMModel} domModel
    */
-  targetRemoved(target) {
+  modelRemoved(domModel) {
   }
 
   /**

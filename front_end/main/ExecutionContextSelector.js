@@ -129,7 +129,7 @@ Main.ExecutionContextSelector = class {
       return false;
     if (executionContext.target().parentTarget())
       return false;
-    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(executionContext.target());
+    var resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
     var frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
     if (frame && frame.isMainFrame())
       return true;

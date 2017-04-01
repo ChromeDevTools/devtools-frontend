@@ -222,7 +222,7 @@ Audits.AuditExtensionFormatters = {
     async function append(remoteObject) {
       if (!remoteObject.isNode())
         return;
-      var domModel = SDK.DOMModel.fromTarget(remoteObject.runtimeModel().target());
+      var domModel = remoteObject.runtimeModel().target().model(SDK.DOMModel);
       if (!domModel)
         return;
       var node = await domModel.pushObjectAsNodeToFrontend(remoteObject);

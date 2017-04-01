@@ -39,7 +39,7 @@ Console.ConsoleContextSelector = class {
     if (!executionContext.isDefault)
       depth++;
     if (executionContext.frameId) {
-      var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
+      var resourceTreeModel = target.model(SDK.ResourceTreeModel);
       var frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
       if (frame) {
         label = label || frame.displayName();
@@ -170,7 +170,7 @@ Console.ConsoleContextSelector = class {
   _isTopContext(executionContext) {
     if (!executionContext || !executionContext.isDefault)
       return false;
-    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(executionContext.target());
+    var resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
     var frame = executionContext.frameId && resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
     if (!frame)
       return false;

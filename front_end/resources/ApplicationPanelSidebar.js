@@ -132,12 +132,11 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     if (this._target)
       return;
     this._target = target;
-    this._databaseModel = Resources.DatabaseModel.fromTarget(target);
-
+    this._databaseModel = target.model(Resources.DatabaseModel);
     this._databaseModel.addEventListener(Resources.DatabaseModel.Events.DatabaseAdded, this._databaseAdded, this);
     this._databaseModel.addEventListener(Resources.DatabaseModel.Events.DatabasesRemoved, this._resetWebSQL, this);
 
-    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
+    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
     if (!resourceTreeModel)
       return;
 
@@ -158,7 +157,7 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
       return;
     delete this._target;
 
-    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
+    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
     if (resourceTreeModel) {
       resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this._initialize, this);
       resourceTreeModel.removeEventListener(
@@ -182,21 +181,21 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
       this._addCookieDocument(frame);
     this._databaseModel.enable();
 
-    var indexedDBModel = Resources.IndexedDBModel.fromTarget(this._target);
+    var indexedDBModel = this._target.model(Resources.IndexedDBModel);
     if (indexedDBModel)
       indexedDBModel.enable();
 
-    var cacheStorageModel = SDK.ServiceWorkerCacheModel.fromTarget(this._target);
+    var cacheStorageModel = this._target.model(SDK.ServiceWorkerCacheModel);
     if (cacheStorageModel)
       cacheStorageModel.enable();
-    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(this._target);
+    var resourceTreeModel = this._target.model(SDK.ResourceTreeModel);
     if (resourceTreeModel)
       this._populateApplicationCacheTree(resourceTreeModel);
-    var domStorageModel = Resources.DOMStorageModel.fromTarget(this._target);
+    var domStorageModel = this._target.model(Resources.DOMStorageModel);
     if (domStorageModel)
       this._populateDOMStorageTree(domStorageModel);
     this.indexedDBListTreeElement._initialize();
-    var serviceWorkerCacheModel = SDK.ServiceWorkerCacheModel.fromTarget(this._target);
+    var serviceWorkerCacheModel = this._target.model(SDK.ServiceWorkerCacheModel);
     this.cacheStorageListTreeElement._initialize(serviceWorkerCacheModel);
     this._initDefaultSelection();
   }
@@ -492,7 +491,7 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
    * @param {!SDK.ResourceTreeModel} resourceTreeModel
    */
   _populateApplicationCacheTree(resourceTreeModel) {
-    this._applicationCacheModel = Resources.ApplicationCacheModel.fromTarget(this._target);
+    this._applicationCacheModel = this._target.model(Resources.ApplicationCacheModel);
 
     this._applicationCacheViews = {};
     this._applicationCacheFrameElements = {};
@@ -523,7 +522,7 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
       this._applicationCacheManifestElements[manifestURL] = manifestTreeElement;
     }
 
-    var model = SDK.ResourceTreeModel.fromTarget(this._target);
+    var model = this._target.model(SDK.ResourceTreeModel);
     var frameTreeElement = new Resources.ApplicationCacheFrameTreeElement(this, model.frameForId(frameId), manifestURL);
     manifestTreeElement.appendChild(frameTreeElement);
     manifestTreeElement.expand();
@@ -1066,9 +1065,7 @@ Resources.IndexedDBTreeElement = class extends Resources.StorageCategoryTreeElem
     /** @type {!Array.<!Resources.IDBDatabaseTreeElement>} */
     this._idbDatabaseTreeElements = [];
 
-    var targets = SDK.targetManager.targets(SDK.Target.Capability.Browser);
-    for (var i = 0; i < targets.length; ++i) {
-      var indexedDBModel = Resources.IndexedDBModel.fromTarget(targets[i]);
+    for (var indexedDBModel of SDK.targetManager.models(Resources.IndexedDBModel)) {
       var databases = indexedDBModel.databases();
       for (var j = 0; j < databases.length; ++j)
         this._addIndexedDB(indexedDBModel, databases[j]);
@@ -1090,9 +1087,8 @@ Resources.IndexedDBTreeElement = class extends Resources.StorageCategoryTreeElem
   }
 
   refreshIndexedDB() {
-    var targets = SDK.targetManager.targets(SDK.Target.Capability.Browser);
-    for (var i = 0; i < targets.length; ++i)
-      Resources.IndexedDBModel.fromTarget(targets[i]).refreshDatabaseNames();
+    for (var indexedDBModel of SDK.targetManager.models(Resources.IndexedDBModel))
+      indexedDBModel.refreshDatabaseNames();
   }
 
   /**

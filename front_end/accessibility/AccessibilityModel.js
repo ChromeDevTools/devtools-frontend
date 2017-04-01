@@ -139,14 +139,6 @@ Accessibility.AccessibilityNode = class extends SDK.SDKObject {
     return this._deferredDOMNode;
   }
 
-  highlightDOMNode() {
-    if (!this.isDOMNode())
-      return;
-    this.deferredDOMNode().resolvePromise().then(node => {
-      SDK.DOMModel.fromTarget(this.target()).nodeHighlightRequested(node.id);
-    });
-  }
-
   /**
    * @return {!Array<!Accessibility.AccessibilityNode>}
    */
@@ -221,14 +213,6 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
     /** @type {!Map<string, !Accessibility.AccessibilityNode>} */
     this._axIdToAXNode = new Map();
     this._backendDOMNodeIdToAXNode = new Map();
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @return {?Accessibility.AccessibilityModel}
-   */
-  static fromTarget(target) {
-    return target.model(Accessibility.AccessibilityModel);
   }
 
   clear() {

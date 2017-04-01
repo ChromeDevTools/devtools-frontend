@@ -39,8 +39,8 @@ Screencast.ScreencastView = class extends UI.VBox {
     super();
     this._target = screenCaptureModel.target();
     this._screenCaptureModel = screenCaptureModel;
-    this._domModel = SDK.DOMModel.fromTarget(this._target);
-    this._resourceTreeModel = SDK.ResourceTreeModel.fromTarget(this._target);
+    this._domModel = this._target.model(SDK.DOMModel);
+    this._resourceTreeModel = this._target.model(SDK.ResourceTreeModel);
 
     this.setMinimumSize(150, 150);
     this.registerRequiredCSS('screencast/screencastView.css');

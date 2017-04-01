@@ -140,14 +140,6 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
     this.target().registerDatabaseDispatcher(new Resources.DatabaseDispatcher(this));
   }
 
-  /**
-   * @param {!SDK.Target} target
-   * @return {!Resources.DatabaseModel}
-   */
-  static fromTarget(target) {
-    return /** @type {!Resources.DatabaseModel} */ (target.model(Resources.DatabaseModel));
-  }
-
   enable() {
     if (this._enabled)
       return;

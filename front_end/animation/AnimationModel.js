@@ -21,8 +21,7 @@ Animation.AnimationModel = class extends SDK.SDKModel {
     /** @type {!Array.<string>} */
     this._pendingAnimations = [];
     this._playbackRate = 1;
-    var resourceTreeModel =
-        /** @type {!SDK.ResourceTreeModel} */ (SDK.ResourceTreeModel.fromTarget(target));
+    var resourceTreeModel = /** @type {!SDK.ResourceTreeModel} */ (target.model(SDK.ResourceTreeModel));
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.MainFrameNavigated, this._reset, this);
     var screenCaptureModel = target.model(SDK.ScreenCaptureModel);
     if (screenCaptureModel)

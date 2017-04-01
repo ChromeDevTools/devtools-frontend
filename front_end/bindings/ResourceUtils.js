@@ -32,9 +32,8 @@
  * @return {?SDK.Resource}
  */
 Bindings.resourceForURL = function(url) {
-  var targets = SDK.targetManager.targets(SDK.Target.Capability.DOM);
-  for (var i = 0; i < targets.length; ++i) {
-    var resource = SDK.ResourceTreeModel.fromTarget(targets[i]).resourceForURL(url);
+  for (var resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
+    var resource = resourceTreeModel.resourceForURL(url);
     if (resource)
       return resource;
   }
@@ -45,9 +44,8 @@ Bindings.resourceForURL = function(url) {
  * @param {function(!SDK.Resource)} callback
  */
 Bindings.forAllResources = function(callback) {
-  var targets = SDK.targetManager.targets(SDK.Target.Capability.DOM);
-  for (var i = 0; i < targets.length; ++i)
-    SDK.ResourceTreeModel.fromTarget(targets[i]).forAllResources(callback);
+  for (var resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel))
+    resourceTreeModel.forAllResources(callback);
 };
 
 /**

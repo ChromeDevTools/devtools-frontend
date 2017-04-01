@@ -226,7 +226,8 @@ Accessibility.AXNodeTreeElement = class extends UI.TreeElement {
     if (this._preselected) {
       this._treePane._setPreselectedTreeElement(this);
       this.listItemElement.classList.toggle('hovered', true);
-      this._axNode.highlightDOMNode();
+      if (this._axNode.deferredDOMNode())
+        this._axNode.deferredDOMNode().highlight();
     }
   }
 
@@ -241,7 +242,8 @@ Accessibility.AXNodeTreeElement = class extends UI.TreeElement {
     if (this._hovered) {
       this._treePane.setHoveredElement(this);
       this.listItemElement.classList.toggle('hovered', true);
-      this._axNode.highlightDOMNode();
+      if (this._axNode.deferredDOMNode())
+        this._axNode.deferredDOMNode().highlight();
     }
   }
 

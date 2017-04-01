@@ -17,14 +17,6 @@ Security.SecurityModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.Target} target
-   * @return {?Security.SecurityModel}
-   */
-  static fromTarget(target) {
-    return target.model(Security.SecurityModel);
-  }
-
-  /**
    * @param {!Protocol.Security.SecurityState} a
    * @param {!Protocol.Security.SecurityState} b
    * @return {number}

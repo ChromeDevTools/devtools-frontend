@@ -709,7 +709,7 @@ Timeline.TimelineUIUtils = class {
       Timeline.TimelineUIUtils._collectInvalidationNodeIds(nodeIdsToResolve, invalidationTrackingEvents);
     var relatedNodes = null;
     if (nodeIdsToResolve.size) {
-      var domModel = SDK.DOMModel.fromTarget(target);
+      var domModel = target.model(SDK.DOMModel);
       if (domModel) {
         relatedNodes = await new Promise(fulfill =>
             domModel.pushNodesByBackendIdsToFrontend(nodeIdsToResolve, fulfill));

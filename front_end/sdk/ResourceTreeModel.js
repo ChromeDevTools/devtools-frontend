@@ -47,7 +47,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
 
     this._agent = target.pageAgent();
     this._agent.enable();
-    this._securityOriginManager = SDK.SecurityOriginManager.fromTarget(target);
+    this._securityOriginManager = target.model(SDK.SecurityOriginManager);
 
     this._fetchResourceTree();
 
@@ -59,20 +59,12 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!SDK.Target} target
-   * @return {?SDK.ResourceTreeModel}
-   */
-  static fromTarget(target) {
-    return target.model(SDK.ResourceTreeModel);
-  }
-
-  /**
    * @return {!Array.<!SDK.ResourceTreeFrame>}
    */
   static frames() {
     var result = [];
-    for (var target of SDK.targetManager.targets(SDK.Target.Capability.DOM))
-      result = result.concat(SDK.ResourceTreeModel.fromTarget(target)._frames.valuesArray());
+    for (var resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel))
+      result = result.concat(resourceTreeModel._frames.valuesArray());
     return result;
   }
 
@@ -81,8 +73,8 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    * @return {?SDK.Resource}
    */
   static resourceForURL(url) {
-    for (var target of SDK.targetManager.targets(SDK.Target.Capability.DOM)) {
-      var mainFrame = SDK.ResourceTreeModel.fromTarget(target).mainFrame;
+    for (var resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
+      var mainFrame = resourceTreeModel.mainFrame;
       var result = mainFrame ? mainFrame.resourceForURL(url) : null;
       if (result)
         return result;

@@ -48,7 +48,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     if (this._manager)
       return;
     this._manager = serviceWorkerManager;
-    this._securityOriginManager = SDK.SecurityOriginManager.fromTarget(serviceWorkerManager.target());
+    this._securityOriginManager = serviceWorkerManager.target().model(SDK.SecurityOriginManager);
 
     for (var registration of this._manager.registrations().values())
       this._updateRegistration(registration);

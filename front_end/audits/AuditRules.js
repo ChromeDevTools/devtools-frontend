@@ -953,7 +953,7 @@ Audits.AuditRules.CssInHeadRule = class extends Audits.AuditRule {
    * @param {!Common.Progress} progress
    */
   doRun(target, requests, result, callback, progress) {
-    var domModel = SDK.DOMModel.fromTarget(target);
+    var domModel = target.model(SDK.DOMModel);
     if (!domModel) {
       callback(null);
       return;
@@ -1064,7 +1064,7 @@ Audits.AuditRules.StylesScriptsOrderRule = class extends Audits.AuditRule {
    * @param {!Common.Progress} progress
    */
   doRun(target, requests, result, callback, progress) {
-    var domModel = SDK.DOMModel.fromTarget(target);
+    var domModel = target.model(SDK.DOMModel);
     if (!domModel) {
       callback(null);
       return;
@@ -1315,7 +1315,11 @@ Audits.AuditRules.CookieRuleBase = class extends Audits.AuditRule {
     }
 
     const nonDataUrls = requests.map(r => r.url()).filter(url => url && url.asParsedURL());
-    SDK.CookieModel.fromTarget(target).getCookiesAsync(nonDataUrls, resultCallback);
+    var cookieModel = target.model(SDK.CookieModel);
+    if (cookieModel)
+      cookieModel.getCookiesAsync(nonDataUrls, resultCallback);
+    else
+      callback(result);
   }
 
   mapResourceCookies(requestsByDomain, allCookies, callback) {

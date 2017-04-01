@@ -48,13 +48,6 @@ SDK.CSSStyleSheetHeader = class {
   }
 
   /**
-   * @return {!SDK.Target}
-   */
-  target() {
-    return this._cssModel.target();
-  }
-
-  /**
    * @return {!SDK.CSSModel}
    */
   cssModel() {
@@ -79,8 +72,7 @@ SDK.CSSStyleSheetHeader = class {
    * @return {string}
    */
   _viaInspectorResourceURL() {
-    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(this.target());
-    var frame = resourceTreeModel.frameForId(this.frameId);
+    var frame = this._cssModel.target().model(SDK.ResourceTreeModel).frameForId(this.frameId);
     console.assert(frame);
     var parsedURL = new Common.ParsedURL(frame.url);
     var fakeURL = 'inspector://' + parsedURL.host + parsedURL.folderPathComponents;

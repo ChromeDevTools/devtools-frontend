@@ -44,14 +44,6 @@ Layers.LayerTreeModel = class extends SDK.SDKModel {
     this._layerTree = null;
   }
 
-  /**
-   * @param {!SDK.Target} target
-   * @return {?Layers.LayerTreeModel}
-   */
-  static fromTarget(target) {
-    return target.model(Layers.LayerTreeModel);
-  }
-
   disable() {
     if (!this._enabled)
       return;

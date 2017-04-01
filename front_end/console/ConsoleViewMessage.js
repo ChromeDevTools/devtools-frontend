@@ -607,7 +607,7 @@ Console.ConsoleViewMessage = class {
   _formatParameterAsNode(remoteObject) {
     var result = createElement('span');
 
-    var domModel = SDK.DOMModel.fromTarget(remoteObject.runtimeModel().target());
+    var domModel = remoteObject.runtimeModel().target().model(SDK.DOMModel);
     if (!domModel)
       return result;
     domModel.pushObjectAsNodeToFrontend(remoteObject).then(node => {

@@ -54,7 +54,7 @@ Emulation.MultitargetTouchModel = class {
     if (this._customTouchEnabled)
       current = {enabled: true, configuration: 'mobile'};
 
-    var domModel = SDK.DOMModel.fromTarget(target);
+    var domModel = target.model(SDK.DOMModel);
     var inspectModeEnabled = domModel ? domModel.inspectModeEnabled() : false;
     if (inspectModeEnabled)
       current = {enabled: false, configuration: 'mobile'};
@@ -116,7 +116,7 @@ Emulation.MultitargetTouchModel = class {
    * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    var domModel = SDK.DOMModel.fromTarget(target);
+    var domModel = target.model(SDK.DOMModel);
     if (domModel)
       domModel.addEventListener(SDK.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeToggled, this);
     this._applyToTarget(target);
@@ -127,7 +127,7 @@ Emulation.MultitargetTouchModel = class {
    * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-    var domModel = SDK.DOMModel.fromTarget(target);
+    var domModel = target.model(SDK.DOMModel);
     if (domModel)
       domModel.removeEventListener(SDK.DOMModel.Events.InspectModeWillBeToggled, this._inspectModeToggled, this);
   }

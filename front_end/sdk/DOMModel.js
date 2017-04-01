@@ -948,7 +948,7 @@ SDK.DeferredDOMNode = class {
    * @param {number} backendNodeId
    */
   constructor(target, backendNodeId) {
-    this._domModel = SDK.DOMModel.fromTarget(target);
+    this._domModel = target.model(SDK.DOMModel);
     this._backendNodeId = backendNodeId;
   }
 
@@ -1086,7 +1086,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
    * @param {!SDK.RemoteObject} object
    */
   static highlightObjectAsDOMNode(object) {
-    var domModel = SDK.DOMModel.fromTarget(object.runtimeModel().target());
+    var domModel = object.runtimeModel().target().model(SDK.DOMModel);
     if (domModel)
       domModel.highlightDOMNode(undefined, undefined, undefined, object.objectId);
   }
@@ -1108,14 +1108,6 @@ SDK.DOMModel = class extends SDK.SDKModel {
   static cancelSearch() {
     for (var domModel of SDK.targetManager.models(SDK.DOMModel))
       domModel._cancelSearch();
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @return {?SDK.DOMModel}
-   */
-  static fromTarget(target) {
-    return target.model(SDK.DOMModel);
   }
 
   /**

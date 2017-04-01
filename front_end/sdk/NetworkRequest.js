@@ -44,7 +44,7 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
   constructor(target, requestId, url, documentURL, frameId, loaderId, initiator) {
     super(target);
 
-    this._networkManager = /** @type {!SDK.NetworkManager} */ (SDK.NetworkManager.fromTarget(target));
+    this._networkManager = /** @type {!SDK.NetworkManager} */ (target.model(SDK.NetworkManager));
     this._requestId = requestId;
     this.setUrl(url);
     this._documentURL = documentURL;

@@ -113,18 +113,10 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
   constructor(target) {
     super(target);
 
-    this._securityOriginManager = SDK.SecurityOriginManager.fromTarget(target);
+    this._securityOriginManager = target.model(SDK.SecurityOriginManager);
     /** @type {!Object.<string, !Resources.DOMStorage>} */
     this._storages = {};
     this._agent = target.domstorageAgent();
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @return {!Resources.DOMStorageModel}
-   */
-  static fromTarget(target) {
-    return /** @type {!Resources.DOMStorageModel} */ (target.model(Resources.DOMStorageModel));
   }
 
   enable() {

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {SDK.TargetManager.Observer}
+ * @implements {SDK.SDKModelObserver<!SDK.ResourceTreeModel>}
  * @unrestricted
  */
 Resources.AppManifestView = class extends UI.VBox {
@@ -51,18 +51,15 @@ Resources.AppManifestView = class extends UI.VBox {
     this._orientationField = this._presentationSection.appendField(Common.UIString('Orientation'));
     this._displayField = this._presentationSection.appendField(Common.UIString('Display'));
 
-    SDK.targetManager.observeTargets(this, SDK.Target.Capability.DOM);
+    SDK.targetManager.observeModels(SDK.ResourceTreeModel, this);
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.ResourceTreeModel} resourceTreeModel
    */
-  targetAdded(target) {
+  modelAdded(resourceTreeModel) {
     if (this._resourceTreeModel)
-      return;
-    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
-    if (!resourceTreeModel)
       return;
     this._resourceTreeModel = resourceTreeModel;
     this._updateManifest();
@@ -71,10 +68,9 @@ Resources.AppManifestView = class extends UI.VBox {
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.ResourceTreeModel} resourceTreeModel
    */
-  targetRemoved(target) {
-    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
+  modelRemoved(resourceTreeModel) {
     if (!this._resourceTreeModel || this._resourceTreeModel !== resourceTreeModel)
       return;
     resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.MainFrameNavigated, this._updateManifest, this);

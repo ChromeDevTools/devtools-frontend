@@ -29,7 +29,7 @@
  */
 /**
  * @implements {UI.Searchable}
- * @implements {SDK.TargetManager.Observer}
+ * @implements {SDK.SDKModelObserver<!SDK.DOMModel>}
  * @implements {UI.ViewLocationResolver}
  * @unrestricted
  */
@@ -81,7 +81,7 @@ Elements.ElementsPanel = class extends UI.Panel {
     this._treeOutlines = [];
     /** @type {!Map<!Elements.ElementsTreeOutline, !Element>} */
     this._treeOutlineHeaders = new Map();
-    SDK.targetManager.observeTargets(this);
+    SDK.targetManager.observeModels(SDK.DOMModel, this);
     SDK.targetManager.addEventListener(
         SDK.TargetManager.Events.NameChanged,
         event => this._targetNameChanged(/** @type {!SDK.Target} */ (event.data)));
@@ -207,12 +207,9 @@ Elements.ElementsPanel = class extends UI.Panel {
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.DOMModel} domModel
    */
-  targetAdded(target) {
-    var domModel = SDK.DOMModel.fromTarget(target);
-    if (!domModel)
-      return;
+  modelAdded(domModel) {
     var treeOutline = new Elements.ElementsTreeOutline(domModel, true, true);
     treeOutline.setWordWrap(Common.moduleSetting('domWordWrap').get());
     treeOutline.wireToDOMModel();
@@ -222,9 +219,9 @@ Elements.ElementsPanel = class extends UI.Panel {
         Elements.ElementsTreeOutline.Events.ElementsTreeUpdated, this._updateBreadcrumbIfNeeded, this);
     new Elements.ElementsTreeElementHighlighter(treeOutline);
     this._treeOutlines.push(treeOutline);
-    if (target.parentTarget()) {
+    if (domModel.target().parentTarget()) {
       this._treeOutlineHeaders.set(treeOutline, createElementWithClass('div', 'elements-tree-header'));
-      this._targetNameChanged(target);
+      this._targetNameChanged(domModel.target());
     }
 
     // Perform attach if necessary.
@@ -234,12 +231,9 @@ Elements.ElementsPanel = class extends UI.Panel {
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.DOMModel} domModel
    */
-  targetRemoved(target) {
-    var domModel = SDK.DOMModel.fromTarget(target);
-    if (!domModel)
-      return;
+  modelRemoved(domModel) {
     var treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
     treeOutline.unwireFromDOMModel();
     this._treeOutlines.remove(treeOutline);
@@ -254,7 +248,7 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {!SDK.Target} target
    */
   _targetNameChanged(target) {
-    var domModel = SDK.DOMModel.fromTarget(target);
+    var domModel = target.model(SDK.DOMModel);
     if (!domModel)
       return;
     var treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
@@ -1015,7 +1009,7 @@ Elements.ElementsPanel.DOMNodeRevealer = class {
       } else if (node instanceof SDK.DeferredDOMNode) {
         (/** @type {!SDK.DeferredDOMNode} */ (node)).resolve(onNodeResolved);
       } else if (node instanceof SDK.RemoteObject) {
-        var domModel = SDK.DOMModel.fromTarget(/** @type {!SDK.RemoteObject} */ (node).runtimeModel().target());
+        var domModel = /** @type {!SDK.RemoteObject} */ (node).runtimeModel().target().model(SDK.DOMModel);
         if (domModel)
           domModel.pushObjectAsNodeToFrontend(node).then(onNodeResolved);
         else

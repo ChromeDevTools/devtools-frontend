@@ -40,7 +40,7 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
     this._agent = target.applicationCacheAgent();
     this._agent.enable();
 
-    var resourceTreeModel = SDK.ResourceTreeModel.fromTarget(target);
+    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
 
@@ -49,14 +49,6 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
 
     this._mainFrameNavigated();
     this._onLine = true;
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @return {?Resources.ApplicationCacheModel}
-   */
-  static fromTarget(target) {
-    return target.model(Resources.ApplicationCacheModel);
   }
 
   _frameNavigated(event) {

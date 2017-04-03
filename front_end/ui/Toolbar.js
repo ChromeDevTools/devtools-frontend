@@ -745,9 +745,8 @@ UI.ToolbarMenuButton = class extends UI.ToolbarButton {
    * @param {!Event} event
    */
   _clicked(event) {
-    if (!this._triggerTimeout)
-      return;
-    clearTimeout(this._triggerTimeout);
+    if (this._triggerTimeout)
+      clearTimeout(this._triggerTimeout);
     this._trigger(event);
   }
 };

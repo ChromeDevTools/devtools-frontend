@@ -238,12 +238,11 @@ Sources.SourceMapNamesResolver.resolveExpression = function(
       return Promise.resolve(reverseMapping.get(originalText) || '');
 
     return Sources.SourceMapNamesResolver._resolveExpression(
-        callFrame, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber);
+        uiSourceCode, lineNumber, startColumnNumber, endColumnNumber);
   }
 };
 
 /**
- * @param {!SDK.DebuggerModel.CallFrame} callFrame
  * @param {!Workspace.UISourceCode} uiSourceCode
  * @param {number} lineNumber
  * @param {number} startColumnNumber
@@ -251,9 +250,9 @@ Sources.SourceMapNamesResolver.resolveExpression = function(
  * @return {!Promise<string>}
  */
 Sources.SourceMapNamesResolver._resolveExpression = function(
-    callFrame, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber) {
-  var rawLocation = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(
-      callFrame.debuggerModel, uiSourceCode, lineNumber, startColumnNumber);
+    uiSourceCode, lineNumber, startColumnNumber, endColumnNumber) {
+  var rawLocation =
+      Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, lineNumber, startColumnNumber);
   if (!rawLocation)
     return Promise.resolve('');
 

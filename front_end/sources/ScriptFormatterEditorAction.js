@@ -312,10 +312,9 @@ Sources.ScriptFormatterEditorAction = class {
       return scripts.filter(isInlineScript);
     }
     if (uiSourceCode.contentType().isScript()) {
-      var rawLocations = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, 0, 0);
-      return rawLocations.map(function(rawLocation) {
-        return rawLocation.script();
-      });
+      var rawLocation = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, 0, 0);
+      if (rawLocation)
+        return [rawLocation.script()];
     }
     return [];
   }

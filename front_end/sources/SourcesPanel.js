@@ -646,13 +646,11 @@ Sources.SourcesPanel = class extends UI.Panel {
     var executionContext = UI.context.flavor(SDK.ExecutionContext);
     if (!executionContext)
       return;
-
     // Always use 0 column.
-    var rawLocation = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(
-        executionContext.debuggerModel, uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
-    if (!rawLocation)
+    var rawLocation =
+        Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
+    if (!rawLocation || rawLocation.debuggerModel !== executionContext.debuggerModel)
       return;
-
     if (!this._prepareToResume())
       return;
 

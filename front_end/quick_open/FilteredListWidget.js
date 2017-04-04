@@ -271,7 +271,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    */
   _onClick(event) {
     var item = this._list.itemForNode(/** @type {?Node} */ (event.target));
-    if (!item)
+    if (item === null)
       return;
 
     event.consume(true);

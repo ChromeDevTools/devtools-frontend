@@ -239,6 +239,13 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     }
   }
 
+  _createHint() {
+    if (this.listItemElement && !this._hintElement) {
+      this._hintElement = this.listItemElement.createChild('span', 'selected-hint');
+      this._hintElement.title = Common.UIString('Use $0 in the console to refer to this element.');
+    }
+  }
+
   /**
    * @override
    */
@@ -328,6 +335,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.ChangeInspectedNodeInElementsPanel);
     }
     this._createSelection();
+    this._createHint();
     this.treeOutline.suppressRevealAndSelect = false;
     return true;
   }
@@ -756,7 +764,6 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
       this.childrenListElement.style.display = 'none';
     // Append editor.
     this.listItemElement.appendChild(this._htmlEditElement);
-    this.listItemElement.classList.add('editing-as-html');
     this.treeOutline.element.addEventListener('mousedown', consume, false);
 
     self.runtime.extension(UI.TextEditorFactory).instance().then(gotFactory.bind(this));
@@ -810,7 +817,6 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
       this._editing.editor.widget().detach();
       delete this._editing;
 
-      this.listItemElement.classList.remove('editing-as-html');
       // Remove editor.
       this.listItemElement.removeChild(this._htmlEditElement);
       delete this._htmlEditElement;
@@ -1048,11 +1054,14 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
       this.updateDecorations();
       this.listItemElement.insertBefore(this._gutterContainer, this.listItemElement.firstChild);
       delete this._highlightResult;
+      delete this.selectionElement;
+      delete this._hintElement;
+      if (this.selected) {
+        this._createSelection();
+        this._createHint();
+      }
     }
 
-    delete this.selectionElement;
-    if (this.selected)
-      this._createSelection();
     this._highlightSearchResults();
   }
 

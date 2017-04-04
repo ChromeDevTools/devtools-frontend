@@ -25,20 +25,12 @@
     margin-left: -13px;
 }
 
-.elements-disclosure li.selected:after {
+.elements-disclosure li.selected .selected-hint:before {
     font-style: italic;
     content: " == $0";
-    color: black;
     opacity: 0.6;
     position: absolute;
-}
-
-.elements-disclosure li.selected.editing-as-html:after {
-    display: none;
-}
-
-.elements-disclosure ol li.selected:focus:after {
-    color: white;
+    white-space: pre;
 }
 
 .elements-disclosure li.parent::before {

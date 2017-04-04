@@ -139,6 +139,21 @@ Accessibility.AccessibilityNode = class extends SDK.SDKObject {
     return this._deferredDOMNode;
   }
 
+  highlightDOMNode() {
+    if (!this.deferredDOMNode())
+      return;
+
+    // Highlight node in page.
+    this.deferredDOMNode().highlight();
+
+    // Highlight node in Elements tree.
+    this.deferredDOMNode().resolvePromise().then(node => {
+      if (!node)
+        return;
+      node.domModel().nodeHighlightRequested(node.id);
+    });
+  }
+
   /**
    * @return {!Array<!Accessibility.AccessibilityNode>}
    */

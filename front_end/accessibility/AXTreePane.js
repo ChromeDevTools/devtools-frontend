@@ -15,6 +15,7 @@ Accessibility.AXTreePane = class extends Accessibility.AccessibilitySubPane {
     this._treeOutline = this.createTreeOutline();
     this._treeOutline.setPaddingSize(12);
     this._treeOutline.element.addEventListener('keydown', this._onKeyDown.bind(this), true);
+    this._treeOutline.element.addEventListener('mouseleave', this._onMouseLeave.bind(this), false);
 
     this.element.classList.add('accessibility-computed');
 
@@ -136,7 +137,14 @@ Accessibility.AXTreePane = class extends Accessibility.AccessibilitySubPane {
   }
 
   /**
-   * @param {!Accessibility.AXNodeTreeElement} treeElement
+   * @param {!Event} event
+   */
+  _onMouseLeave(event) {
+    this.setHoveredElement(null);
+  }
+
+  /**
+   * @param {?Accessibility.AXNodeTreeElement} treeElement
    */
   setHoveredElement(treeElement) {
     if (treeElement === this._hoveredElement)
@@ -144,6 +152,12 @@ Accessibility.AXTreePane = class extends Accessibility.AccessibilitySubPane {
     if (this._hoveredElement)
       this._hoveredElement.setHovered(false);
     this._hoveredElement = treeElement;
+    if (!this._hoveredElement) {
+      if (!this.node())
+        return;
+      // Highlight and scroll into view the currently inspected node.
+      this.node().domModel().nodeHighlightRequested(this.node().id);
+    }
   }
 
   /**
@@ -226,8 +240,7 @@ Accessibility.AXNodeTreeElement = class extends UI.TreeElement {
     if (this._preselected) {
       this._treePane._setPreselectedTreeElement(this);
       this.listItemElement.classList.toggle('hovered', true);
-      if (this._axNode.deferredDOMNode())
-        this._axNode.deferredDOMNode().highlight();
+      this._axNode.highlightDOMNode();
     }
   }
 
@@ -242,8 +255,7 @@ Accessibility.AXNodeTreeElement = class extends UI.TreeElement {
     if (this._hovered) {
       this._treePane.setHoveredElement(this);
       this.listItemElement.classList.toggle('hovered', true);
-      if (this._axNode.deferredDOMNode())
-        this._axNode.deferredDOMNode().highlight();
+      this._axNode.highlightDOMNode();
     }
   }
 

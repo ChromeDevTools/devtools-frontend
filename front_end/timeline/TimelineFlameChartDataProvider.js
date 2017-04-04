@@ -875,23 +875,24 @@ Timeline.TimelineFlameChartDataProvider = class {
     td.flowStartLevels = [];
     td.flowEndTimes = [];
     td.flowEndLevels = [];
-    // Find the closest ancestor with an initiator.
-    var initiator;
-    for (; event; event = this._eventParent(event)) {
-      if (!this._isVisible(event))
-        continue;
-      initiator = TimelineModel.TimelineData.forEvent(event).initiator();
-      if (initiator)
+    while (event) {
+      // Find the closest ancestor with an initiator.
+      var initiator;
+      for (; event; event = this._eventParent(event)) {
+        initiator = TimelineModel.TimelineData.forEvent(event).initiator();
+        if (initiator)
+          break;
+      }
+      if (!initiator)
         break;
+      var eventIndex = event[Timeline.TimelineFlameChartDataProvider._indexSymbol];
+      var initiatorIndex = initiator[Timeline.TimelineFlameChartDataProvider._indexSymbol];
+      td.flowStartTimes.push(initiator.endTime || initiator.startTime);
+      td.flowStartLevels.push(td.entryLevels[initiatorIndex]);
+      td.flowEndTimes.push(event.startTime);
+      td.flowEndLevels.push(td.entryLevels[eventIndex]);
+      event = initiator;
     }
-    if (!initiator || !this._isVisible(initiator))
-      return true;
-    var eventIndex = event[Timeline.TimelineFlameChartDataProvider._indexSymbol];
-    var initiatorIndex = initiator[Timeline.TimelineFlameChartDataProvider._indexSymbol];
-    td.flowStartTimes.push(initiator.endTime || initiator.startTime);
-    td.flowStartLevels.push(td.entryLevels[initiatorIndex]);
-    td.flowEndTimes.push(event.startTime);
-    td.flowEndLevels.push(td.entryLevels[eventIndex]);
     return true;
   }
 

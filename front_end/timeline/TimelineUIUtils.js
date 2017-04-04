@@ -922,7 +922,8 @@ Timeline.TimelineUIUtils = class {
       contentHelper.appendElementRow('', event[Timeline.TimelineUIUtils._previewElementSymbol]);
     }
 
-    if (timelineData.stackTraceForSelfOrInitiator() || TimelineModel.InvalidationTracker.invalidationEventsFor(event))
+    if (initiator || timelineData.stackTraceForSelfOrInitiator() ||
+        TimelineModel.InvalidationTracker.invalidationEventsFor(event))
       Timeline.TimelineUIUtils._generateCauses(event, model.targetByEvent(event), relatedNodesMap, contentHelper);
 
     var stats = {};

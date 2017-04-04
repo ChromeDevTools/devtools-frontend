@@ -9,10 +9,22 @@ NetworkGroupLookup.NetworkProductGroupLookup = class {
   /**
    * @override
    * @param {!SDK.NetworkRequest} request
-   * @return {?string}
+   * @return {?*}
    */
-  lookup(request) {
-    return ProductRegistry.nameForUrl(request.parsedURL);
+  groupForRequest(request) {
+    var productName = ProductRegistry.nameForUrl(request.parsedURL);
+    if (!productName)
+      return null;
+    return productName;
+  }
+
+  /**
+   * @override
+   * @param {!*} key
+   * @return {string}
+   */
+  groupName(key) {
+    return /** @type {string} */ (key);
   }
 
   /**
@@ -21,7 +33,7 @@ NetworkGroupLookup.NetworkProductGroupLookup = class {
    * @return {string}
    */
   lookupColumnValue(request) {
-    return this.lookup(request) || '';
+    return ProductRegistry.nameForUrl(request.parsedURL) || '';
   }
 
   /**
@@ -38,3 +50,67 @@ NetworkGroupLookup.NetworkProductGroupLookup = class {
     return aValue > bValue ? 1 : -1;
   }
 };
+
+/**
+ * @implements {Network.NetworkGroupLookupInterface}
+ */
+NetworkGroupLookup.NetworkProductFrameGroupLookup = class {
+  /**
+   * @override
+   * @param {!SDK.NetworkRequest} request
+   * @return {?*}
+   */
+  groupForRequest(request) {
+    var resourceTreeModel = request.target().model(SDK.ResourceTreeModel);
+    if (!resourceTreeModel)
+      return null;
+    var frame = resourceTreeModel.frameForId(request.frameId);
+    if (!frame || frame.isMainFrame())
+      return null;
+    return frame;
+  }
+
+  /**
+   * @override
+   * @param {!*} frameArg
+   * @return {string}
+   */
+  groupName(frameArg) {
+    var frame = /** @type {!SDK.ResourceTreeFrame} */ (frameArg);
+    var name;
+    var frameParsedURL = new Common.ParsedURL(frame.url);
+    if (frame.url)
+      name = ProductRegistry.nameForUrl(frameParsedURL);
+    if (name)
+      return name;
+    // We are not caching the frame url result because it may change.
+    var symbol = NetworkGroupLookup.NetworkProductFrameGroupLookup._productFrameGroupNameSymbol;
+    if (frame[symbol])
+      return frame[symbol];
+    frame[symbol] = this._lookupFrameStacktraceName(frame) || frameParsedURL.host || frame.name || '<iframe>';
+    return frame[symbol];
+  }
+
+  /**
+   * @param {!SDK.ResourceTreeFrame} frame
+   * @return {?string}
+   */
+  _lookupFrameStacktraceName(frame) {
+    // TODO(allada) This probably belongs in another shared module with some lookup that console will use for execution
+    // context name lookup.
+    var stackTrace = frame.creationStackTrace();
+    var name;
+    while (stackTrace) {
+      for (var stack of stackTrace.callFrames) {
+        if (stack.url)
+          name = ProductRegistry.nameForUrl(new Common.ParsedURL(stack.url));
+        if (name)
+          return name;
+      }
+      stackTrace = frame.parent;
+    }
+    return null;
+  }
+};
+
+NetworkGroupLookup.NetworkProductFrameGroupLookup._productFrameGroupNameSymbol = Symbol('ProductFrameGroupName');

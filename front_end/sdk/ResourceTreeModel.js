@@ -154,12 +154,8 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     if (this._frames.has(frameId))
       return null;
 
-    var callFrames = null;
-    if (stackTrace && stackTrace.callFrames)
-      callFrames = stackTrace.callFrames;
-
     var parentFrame = parentFrameId ? (this._frames.get(parentFrameId) || null) : null;
-    var frame = new SDK.ResourceTreeFrame(this, parentFrame, frameId, null, callFrames);
+    var frame = new SDK.ResourceTreeFrame(this, parentFrame, frameId, null, stackTrace || null);
     if (frame.isMainFrame() && this.mainFrame) {
       // Navigation to the new backend process.
       this._frameDetached(this.mainFrame.id);
@@ -485,7 +481,7 @@ SDK.ResourceTreeFrame = class {
    * @param {?SDK.ResourceTreeFrame} parentFrame
    * @param {!Protocol.Page.FrameId} frameId
    * @param {?Protocol.Page.Frame} payload
-   * @param {?Array<!Protocol.Runtime.CallFrame>} creationStackTrace
+   * @param {?Protocol.Runtime.StackTrace} creationStackTrace
    */
   constructor(model, parentFrame, frameId, payload, creationStackTrace) {
     this._model = model;
@@ -571,6 +567,13 @@ SDK.ResourceTreeFrame = class {
    */
   get childFrames() {
     return this._childFrames;
+  }
+
+  /**
+   * @return {?Protocol.Runtime.StackTrace}
+   */
+  creationStackTrace() {
+    return this._creationStackTrace;
   }
 
   /**

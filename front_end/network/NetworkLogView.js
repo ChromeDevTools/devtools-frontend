@@ -74,7 +74,7 @@ Network.NetworkLogView = class extends UI.VBox {
 
     /** @type {!Map.<string, !Network.NetworkRequestNode>} */
     this._nodesByRequestId = new Map();
-    /** @type {!Map.<string, !Network.NetworkGroupNode>} */
+    /** @type {!Map<*, !Network.NetworkGroupNode>} */
     this._nodeGroups = new Map();
     /** @type {!Object.<string, boolean>} */
     this._staleRequestIds = {};
@@ -353,6 +353,7 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   setGrouping(grouping) {
     this._activeGroupLookup = grouping;
+    this._nodeGroups.clear();
     this._invalidateAllItems();
   }
 
@@ -874,16 +875,16 @@ Network.NetworkLogView = class extends UI.VBox {
     if (!this._activeGroupLookup)
       return this._dataGrid.rootNode();
 
-    var groupName = this._activeGroupLookup.lookup(node.request());
-    if (!groupName)
+    var groupKey = this._activeGroupLookup.groupForRequest(node.request());
+    if (!groupKey)
       return this._dataGrid.rootNode();
 
-    var group = this._nodeGroups.get(groupName);
+    var group = this._nodeGroups.get(groupKey);
     if (group)
       return group;
-    group = new Network.NetworkGroupNode(this, groupName);
+    group = new Network.NetworkGroupNode(this, this._activeGroupLookup.groupName(groupKey));
     group.setColumnExtensions(this._columns.columnExtensions());
-    this._nodeGroups.set(groupName, group);
+    this._nodeGroups.set(groupKey, group);
     return group;
   }
 
@@ -1808,7 +1809,13 @@ Network.NetworkGroupLookupInterface = function() {};
 Network.NetworkGroupLookupInterface.prototype = {
   /**
    * @param {!SDK.NetworkRequest} request
-   * @return {?string}
+   * @return {?*}
    */
-  lookup(request) {}
+  groupForRequest(request) {},
+
+  /**
+   * @param {!*} key
+   * @return {string}
+   */
+  groupName(key) {}
 };

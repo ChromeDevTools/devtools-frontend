@@ -198,10 +198,9 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
       return;
     var selectedIndexInProvider = this._provider.itemCount() ? this._list.selectedItem() : null;
 
-    // Detach dialog before allowing provider to override focus.
+    this._selectItem(selectedIndexInProvider);
     if (this._dialog)
       this._dialog.hide();
-    this._selectItem(selectedIndexInProvider);
   }
 
   /**
@@ -275,10 +274,9 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
       return;
 
     event.consume(true);
-    // Detach dialog before allowing provider to override focus.
+    this._selectItem(item);
     if (this._dialog)
       this._dialog.hide();
-    this._selectItem(item);
   }
 
   /**

@@ -133,7 +133,7 @@ Sources.SourcesView = class extends UI.VBox {
     registerShortcut.call(
         this, UI.ShortcutsScreen.SourcesPanelShortcuts.GoToLine, this._showGoToLineQuickOpen.bind(this));
     registerShortcut.call(
-        this, UI.ShortcutsScreen.SourcesPanelShortcuts.GoToMember, this._showOutlineDialog.bind(this));
+        this, UI.ShortcutsScreen.SourcesPanelShortcuts.GoToMember, this._showOutlineQuickOpen.bind(this));
     registerShortcut.call(
         this, UI.ShortcutsScreen.SourcesPanelShortcuts.ToggleBreakpoint, this._toggleBreakpoint.bind(this));
     registerShortcut.call(this, UI.ShortcutsScreen.SourcesPanelShortcuts.Save, this._save.bind(this));
@@ -598,24 +598,9 @@ Sources.SourcesView = class extends UI.VBox {
 
   /**
    * @param {!Event=} event
-   * @return {boolean}
    */
-  _showOutlineDialog(event) {
-    var uiSourceCode = this._editorContainer.currentFile();
-    if (!uiSourceCode)
-      return false;
-
-    if (uiSourceCode.contentType().hasScripts()) {
-      Sources.JavaScriptOutlineDialog.show(uiSourceCode, this.showSourceLocation.bind(this, uiSourceCode));
-      return true;
-    }
-
-    if (uiSourceCode.contentType().isStyleSheet()) {
-      Sources.StyleSheetOutlineDialog.show(uiSourceCode, this.showSourceLocation.bind(this, uiSourceCode));
-      return true;
-    }
-
-    // We don't want default browser shortcut to be executed, so pretend to handle this event.
+  _showOutlineQuickOpen(event) {
+    QuickOpen.QuickOpen.show('@');
     return true;
   }
 

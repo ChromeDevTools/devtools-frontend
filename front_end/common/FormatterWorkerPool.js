@@ -182,6 +182,46 @@ Common.FormatterWorkerPool = class {
       callback(isLastChunk, items);
     }
   }
+
+  /**
+   * @param {string} content
+   * @param {string} mimeType
+   * @param {function(boolean, !Array<!Common.FormatterWorkerPool.OutlineItem>)} callback
+   * @return {boolean}
+   */
+  outlineForMimetype(content, mimeType, callback) {
+    switch (mimeType) {
+      case 'text/html':
+      case 'text/javascript':
+        this.javaScriptOutline(content, javaScriptCallback);
+        return true;
+      case 'text/css':
+        this.parseCSS(content, cssCallback);
+        return true;
+    }
+    return false;
+
+    /**
+     * @param {boolean} isLastChunk
+     * @param {!Array<!Common.FormatterWorkerPool.JSOutlineItem>} items
+     */
+    function javaScriptCallback(isLastChunk, items) {
+      callback(
+          isLastChunk,
+          items.map(item => ({line: item.line, column: item.column, title: item.name, subtitle: item.arguments})));
+    }
+
+    /**
+     * @param {boolean} isLastChunk
+     * @param {!Array<!Common.FormatterWorkerPool.CSSRule>} rules
+     */
+    function cssCallback(isLastChunk, rules) {
+      callback(
+          isLastChunk,
+          rules.map(
+              rule => ({line: rule.lineNumber, column: rule.columnNumber, title: rule.selectorText || rule.atRule})));
+    }
+  }
 };
 
 Common.FormatterWorkerPool.MaxWorkers = 2;
@@ -215,6 +255,9 @@ Common.FormatterWorkerPool.FormatResult = class {
 
 /** @typedef {{original: !Array<number>, formatted: !Array<number>}} */
 Common.FormatterWorkerPool.FormatMapping;
+
+/** @typedef {{line: number, column: number, title: string, subtitle: (string|undefined) }} */
+Common.FormatterWorkerPool.OutlineItem;
 
 Common.FormatterWorkerPool.JSOutlineItem = class {
   constructor() {

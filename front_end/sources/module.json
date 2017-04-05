@@ -227,6 +227,12 @@
             "className": "Sources.GoToLineQuickOpen"
         },
         {
+            "type": "@QuickOpen.FilteredListWidget.Provider",
+            "title": "Go to symbol",
+            "prefix": "@",
+            "className": "Sources.OutlineQuickOpen"
+        },
+        {
             "type": "context-menu-item",
             "location": "mainMenu/navigate",
             "actionId": "sources.search.toggle"
@@ -626,14 +632,13 @@
         "GoToLineQuickOpen.js",
         "SourceMapNamesResolver.js",
         "JavaScriptBreakpointsSidebarPane.js",
-        "JavaScriptOutlineDialog.js",
         "JavaScriptSourceFrame.js",
         "CSSSourceFrame.js",
         "NavigatorView.js",
         "RevisionHistoryView.js",
         "ScopeChainSidebarPane.js",
         "SourcesNavigator.js",
-        "StyleSheetOutlineDialog.js",
+        "OutlineQuickOpen.js",
         "TabbedEditorContainer.js",
         "WatchExpressionsSidebarPane.js",
         "ThreadsSidebarPane.js",

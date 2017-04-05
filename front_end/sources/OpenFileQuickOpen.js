@@ -24,7 +24,10 @@ Sources.OpenFileQuickOpen = class extends Sources.FilteredUISourceCodeListProvid
 
     if (!uiSourceCode)
       return;
-    Common.Revealer.reveal(uiSourceCode.uiLocation((lineNumber || 0), columnNumber));
+    if (typeof lineNumber === 'number')
+      Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
+    else
+      Common.Revealer.reveal(uiSourceCode);
   }
 
   /**

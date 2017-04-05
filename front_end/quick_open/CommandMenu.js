@@ -113,10 +113,12 @@ QuickOpen.CommandMenuProvider = class extends QuickOpen.FilteredListWidget.Provi
   constructor() {
     super();
     this._commands = [];
-    this._appendAvailableCommands();
   }
 
-  _appendAvailableCommands() {
+  /**
+   * @override
+   */
+  attach() {
     var allCommands = QuickOpen.commandMenu.commands();
 
     // Populate whitelisted actions.
@@ -142,6 +144,13 @@ QuickOpen.CommandMenuProvider = class extends QuickOpen.FilteredListWidget.Provi
       var cats = left.category().compareTo(right.category());
       return cats ? cats : left.title().compareTo(right.title());
     }
+  }
+
+  /**
+   * @override
+   */
+  detach() {
+    this._commands = [];
   }
 
   /**

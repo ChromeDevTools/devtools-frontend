@@ -757,10 +757,7 @@ Main.NetworkPanelIndicator = class {
       return;
     var manager = SDK.multitargetNetworkManager;
     manager.addEventListener(SDK.MultitargetNetworkManager.Events.ConditionsChanged, updateVisibility);
-    var blockedURLsSetting = Common.moduleSetting('networkBlockedURLs');
-    blockedURLsSetting.addChangeListener(updateVisibility);
-    var requestBlockingEnabledSetting = Common.moduleSetting('requestBlockingEnabled');
-    requestBlockingEnabledSetting.addChangeListener(updateVisibility);
+    manager.addEventListener(SDK.MultitargetNetworkManager.Events.BlockedPatternsChanged, updateVisibility);
     updateVisibility();
 
     function updateVisibility() {
@@ -768,7 +765,7 @@ Main.NetworkPanelIndicator = class {
       if (manager.isThrottling()) {
         icon = UI.Icon.create('smallicon-warning');
         icon.title = Common.UIString('Network throttling is enabled');
-      } else if (requestBlockingEnabledSetting.get() && blockedURLsSetting.get().length) {
+      } else if (manager.isBlocking()) {
         icon = UI.Icon.create('smallicon-warning');
         icon.title = Common.UIString('Requests may be blocked');
       }

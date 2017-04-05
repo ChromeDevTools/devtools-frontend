@@ -8,12 +8,6 @@
     "extensions": [
         {
             "type": "setting",
-            "settingName": "networkBlockedURLs",
-            "settingType": "array",
-            "defaultValue": []
-        },
-        {
-            "type": "setting",
             "settingName": "skipStackFramesPattern",
             "settingType": "regex",
             "defaultValue": ""
@@ -107,7 +101,7 @@
             "options": [
                 {
                     "value": true,
-                    "title": "Enables request blocking"
+                    "title": "Enable request blocking"
                 },
                 {
                     "value": false,

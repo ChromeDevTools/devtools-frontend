@@ -4,15 +4,16 @@
  * found in the LICENSE file.
  */
 
-.blocked-urls-pane {
-    overflow: hidden;
+.list {
+    border: none !important;
+    border-top: 1px solid #dadada !important;
 }
 
-.toolbar {
-    border-bottom: 1px solid #dadada;
+.editor-container {
+    padding: 0 4px;
 }
 
-.no-blocked-urls, .blocked-urls-list {
+.no-blocked-urls, .blocked-urls {
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -20,7 +21,7 @@
 .no-blocked-urls {
     display: flex;
     justify-content: center;
-    padding: 3px;
+    padding: 10px;
 }
 
 .no-blocked-urls > span {
@@ -28,49 +29,48 @@
 }
 
 .blocked-url {
-    flex: none;
     display: flex;
+    flex-direction: row;
     align-items: center;
-    padding: 3px 10px 3px 9px;
-    position: relative;
+    flex: auto;
 }
 
-.blocked-url:not(.blocked-url-editing):hover {
-    background-color: #dadada;
+.blocked-url-count {
+    flex: none;
+    padding-right: 9px;
 }
 
-.blocked-url .blocked-count {
-    flex: 30px 0 0;
-    font-size: smaller !important;
-    padding-right: 5px;
+.blocked-url-checkbox {
+    margin-left: 8px;
 }
 
-.blocked-url > input {
-    position: absolute;
-    left: 6px;
-    right: 6px;
-    top: 0;
-    bottom: 0;
-    width: calc(100% - 12px);
-}
-
-.blocked-url-text {
+.blocked-url-label {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     flex: auto;
-    margin-right: 5px;
+    padding: 0 3px;
 }
 
-.remove-icon {
-    opacity: 0.7;
-    visibility: hidden;
+.blocked-url-edit-row {
+    flex: none;
+    display: flex;
+    flex-direction: row;
+    margin: 7px 5px 0 5px;
+    align-items: center;
 }
 
-.blocked-url .remove-icon:hover {
-    opacity: 1.0;
+.blocked-url-edit-value {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -webkit-user-select: none;
+    color: #222;
+    flex: 1 1 0px;
+    overflow: hidden;
 }
 
-.blocked-url:hover .remove-icon {
-    visibility: visible;
+.blocked-url-edit-row input {
+    width: 100%;
+    text-align: inherit;
+    height: 22px;
 }

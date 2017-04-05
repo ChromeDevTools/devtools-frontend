@@ -2,40 +2,35 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
+ * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
 Network.BlockedURLsPane = class extends UI.VBox {
   constructor() {
     super(true);
     this.registerRequiredCSS('network/blockedURLsPane.css');
-    this.contentElement.classList.add('blocked-urls-pane');
 
     Network.BlockedURLsPane._instance = this;
-
-    this._blockedURLsSetting = Common.moduleSetting('networkBlockedURLs');
-    this._blockedURLsSetting.addChangeListener(this._update, this);
+    this._manager = SDK.multitargetNetworkManager;
+    this._manager.addEventListener(SDK.MultitargetNetworkManager.Events.BlockedPatternsChanged, this._update, this);
 
     this._toolbar = new UI.Toolbar('', this.contentElement);
-    this._toolbar.element.addEventListener('click', e => e.consume());
+    this._enabledCheckbox =
+        new UI.ToolbarCheckbox(Common.UIString('Enable request blocking'), undefined, this._toggleEnabled.bind(this));
+    this._toolbar.appendToolbarItem(this._enabledCheckbox);
+    this._toolbar.appendSeparator();
     var addButton = new UI.ToolbarButton(Common.UIString('Add pattern'), 'largeicon-add');
     addButton.addEventListener(UI.ToolbarButton.Events.Click, this._addButtonClicked, this);
     this._toolbar.appendToolbarItem(addButton);
-    var clearButton = new UI.ToolbarButton(Common.UIString('Remove all'), 'largeicon-clear');
+    var clearButton = new UI.ToolbarButton(Common.UIString('Remove all patterns'), 'largeicon-clear');
     clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._removeAll, this);
     this._toolbar.appendToolbarItem(clearButton);
 
-    var enableRequestBlockingCheckbox = new UI.ToolbarSettingCheckbox(Common.moduleSetting('requestBlockingEnabled'));
-    this._toolbar.appendToolbarItem(enableRequestBlockingCheckbox);
-
-    this._emptyElement = this.contentElement.createChild('div', 'no-blocked-urls');
-    this._emptyElement.createChild('span').textContent = Common.UIString('Requests are not blocked. ');
-    var addLink = this._emptyElement.createChild('span', 'link');
-    addLink.textContent = Common.UIString('Add pattern.');
-    addLink.href = '';
-    addLink.addEventListener('click', this._addButtonClicked.bind(this), false);
-    this._emptyElement.addEventListener('contextmenu', this._emptyElementContextMenu.bind(this), true);
-
-    this._listElement = this.contentElement.createChild('div', 'blocked-urls-list');
+    this._list = new UI.ListWidget(this);
+    this._list.element.classList.add('blocked-urls');
+    this._list.registerRequiredCSS('network/blockedURLsPane.css');
+    this._list.setEmptyPlaceholder(this._createEmptyPlaceholder());
+    this._list.show(this.contentElement);
 
     /** @type {!Map<string, number>} */
     this._blockedCountForUrl = new Map();
@@ -47,171 +42,140 @@ Network.BlockedURLsPane = class extends UI.VBox {
     this._update();
   }
 
+  /**
+   * @return {!Element}
+   */
+  _createEmptyPlaceholder() {
+    var element = this.contentElement.createChild('div', 'no-blocked-urls');
+    element.createChild('span').textContent = Common.UIString('Requests are not blocked. ');
+    var addLink = element.createChild('span', 'link');
+    addLink.textContent = Common.UIString('Add pattern.');
+    addLink.href = '';
+    addLink.addEventListener('click', this._addButtonClicked.bind(this), false);
+    return element;
+  }
+
   static reset() {
     if (Network.BlockedURLsPane._instance)
       Network.BlockedURLsPane._instance.reset();
   }
 
+  _addButtonClicked() {
+    this._list.addNewItem(0, {url: '', enabled: true});
+  }
+
   /**
+   * @override
+   * @param {*} item
+   * @param {boolean} editable
+   * @return {!Element}
+   */
+  renderItem(item, editable) {
+    var pattern = /** @type {!SDK.NetworkManager.BlockedPattern} */ (item);
+    var count = this._blockedRequestsCount(pattern.url);
+    var element = createElementWithClass('div', 'blocked-url');
+    var checkbox = element.createChild('input', 'blocked-url-checkbox');
+    checkbox.type = 'checkbox';
+    checkbox.checked = pattern.enabled;
+    element.createChild('div', 'blocked-url-label').textContent = pattern.url;
+    element.createChild('div', 'blocked-url-count').textContent = Common.UIString('%d blocked', count);
+    element.addEventListener('click', event => this._togglePattern(pattern, event), false);
+    checkbox.addEventListener('click', event => this._togglePattern(pattern, event), false);
+    return element;
+  }
+
+  /**
+   * @param {!SDK.NetworkManager.BlockedPattern} pattern
    * @param {!Event} event
    */
-  _emptyElementContextMenu(event) {
-    var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString.capitalize('Add ^pattern'), this._addButtonClicked.bind(this));
-    contextMenu.show();
+  _togglePattern(pattern, event) {
+    event.consume(true);
+    var patterns = this._manager.blockedPatterns();
+    patterns.splice(patterns.indexOf(pattern), 1, {enabled: !pattern.enabled, url: pattern.url});
+    this._manager.setBlockedPatterns(patterns);
   }
 
-  _addButtonClicked() {
-    this._emptyElement.classList.add('hidden');
-    var element = this._createElement('', this._blockedURLsSetting.get().length);
-    this._listElement.appendChild(element);
-    element.scrollIntoViewIfNeeded();
-    this._edit('', element, this._addBlockedURL.bind(this));
+  _toggleEnabled() {
+    this._manager.setBlockingEnabled(!this._manager.blockingEnabled());
   }
 
   /**
-   * @param {string} content
-   * @param {!Element} element
-   * @param {function(string)} onAccept
-   * @private
-   */
-  _edit(content, element, onAccept) {
-    this._editing = true;
-
-    element.classList.add('blocked-url-editing');
-    var input = element.createChild('input');
-    input.setAttribute('type', 'text');
-    input.value = content;
-    input.placeholder = Common.UIString('Text pattern to block matching requests; use * for wildcard');
-    input.addEventListener('blur', commit.bind(this), false);
-    input.addEventListener('keydown', keydown.bind(this), false);
-    input.focus();
-
-    /**
-     * @this {Network.BlockedURLsPane}
-     */
-    function finish() {
-      this._editing = false;
-      element.removeChild(input);
-      element.classList.remove('blocked-url-editing');
-    }
-
-    /**
-     * @this {Network.BlockedURLsPane}
-     */
-    function commit() {
-      if (!this._editing)
-        return;
-      var text = input.value.trim();
-      finish.call(this);
-      if (text)
-        onAccept(text);
-      else
-        this._update();
-    }
-
-    /**
-     * @this {Network.BlockedURLsPane}
-     * @param {!Event} event
-     */
-    function keydown(event) {
-      if (isEnterKey(event)) {
-        event.consume();
-        commit.call(this);
-      } else if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code || event.key === 'Escape') {
-        event.consume();
-        finish.call(this);
-        this._update();
-      }
-    }
-  }
-
-  /**
-   * @param {string} url
-   */
-  _addBlockedURL(url) {
-    var blocked = this._blockedURLsSetting.get();
-    blocked.push(url);
-    this._blockedURLsSetting.set(blocked);
-  }
-
-  /**
+   * @override
+   * @param {*} item
    * @param {number} index
    */
-  _removeBlockedURL(index) {
-    var blocked = this._blockedURLsSetting.get();
-    blocked.splice(index, 1);
-    this._blockedURLsSetting.set(blocked);
+  removeItemRequested(item, index) {
+    var patterns = this._manager.blockedPatterns();
+    patterns.splice(index, 1);
+    this._manager.setBlockedPatterns(patterns);
   }
 
   /**
-   * @param {number} index
-   * @param {string} url
+   * @override
+   * @param {*} item
+   * @return {!UI.ListWidget.Editor}
    */
-  _changeBlockedURL(index, url) {
-    var blocked = this._blockedURLsSetting.get();
-    blocked.splice(index, 1, url);
-    this._blockedURLsSetting.set(blocked);
+  beginEdit(item) {
+    var pattern = /** @type {!SDK.NetworkManager.BlockedPattern} */ (item);
+    var editor = this._createEditor();
+    editor.control('url').value = pattern.url;
+    return editor;
+  }
+
+  /**
+   * @override
+   * @param {*} item
+   * @param {!UI.ListWidget.Editor} editor
+   * @param {boolean} isNew
+   */
+  commitEdit(item, editor, isNew) {
+    var url = editor.control('url').value;
+    var patterns = this._manager.blockedPatterns();
+    if (isNew) {
+      patterns.push({enabled: true, url: url});
+    } else {
+      patterns.splice(
+          patterns.indexOf(/** @type {!SDK.NetworkManager.BlockedPattern} */ (item)), 1, {enabled: true, url: url});
+    }
+    this._manager.setBlockedPatterns(patterns);
+  }
+
+  /**
+   * @return {!UI.ListWidget.Editor}
+   */
+  _createEditor() {
+    if (this._editor)
+      return this._editor;
+
+    var editor = new UI.ListWidget.Editor();
+    var content = editor.contentElement();
+    var titles = content.createChild('div', 'blocked-url-edit-row');
+    titles.createChild('div', 'blocked-url-edit-value').textContent =
+        Common.UIString('Text pattern to block matching requests; use * for wildcard');
+    var fields = content.createChild('div', 'blocked-url-edit-row');
+    var urlInput = editor.createInput(
+        'url', 'text', '',
+        (item, index, input) =>
+            !!input.value && !this._manager.blockedPatterns().find(pattern => pattern.url === input.value));
+    fields.createChild('div', 'blocked-url-edit-value').appendChild(urlInput);
+
+    this._editor = editor;
+    return editor;
   }
 
   _removeAll() {
-    this._blockedURLsSetting.set([]);
-  }
-
-  /**
-   * @param {number} index
-   * @param {!Event} event
-   */
-  _contextMenu(index, event) {
-    var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString.capitalize('Add ^pattern'), this._addButtonClicked.bind(this));
-    contextMenu.appendItem(Common.UIString.capitalize('Remove ^pattern'), this._removeBlockedURL.bind(this, index));
-    contextMenu.appendItem(Common.UIString.capitalize('Remove ^all'), this._removeAll.bind(this));
-    contextMenu.show();
+    this._manager.setBlockedPatterns([]);
   }
 
   /**
    * @return {!Promise<?>}
    */
   _update() {
-    if (this._editing)
-      return Promise.resolve();
-
-    this._listElement.removeChildren();
-    var blocked = this._blockedURLsSetting.get();
-    for (var index = 0; index < blocked.length; index++)
-      this._listElement.appendChild(this._createElement(blocked[index], index));
-
-    this._emptyElement.classList.toggle('hidden', !!blocked.length);
+    this._enabledCheckbox.setChecked(this._manager.blockingEnabled());
+    this._list.clear();
+    for (var pattern of this._manager.blockedPatterns())
+      this._list.appendItem(pattern, true);
     return Promise.resolve();
-  }
-
-  /**
-   * @param {string} url
-   * @param {number} index
-   * @return {!Element}
-   */
-  _createElement(url, index) {
-    var element = createElementWithClass('div', 'blocked-url');
-
-    var label = element.createChild('div', 'blocked-url-text');
-    label.textContent = url;
-
-    var count = this._blockedRequestsCount(url);
-    var countElement = element.createChild('div', 'blocked-count monospace');
-    countElement.textContent = String.sprintf('[%d]', count);
-    countElement.title = Common.UIString(
-        count === 1 ? '%d request blocked by this pattern' : '%d requests blocked by this pattern', count);
-
-    var removeButton = UI.Icon.create('smallicon-cross', 'remove-icon');
-    element.appendChild(removeButton);
-    removeButton.title = Common.UIString('Remove');
-    removeButton.addEventListener('click', this._removeBlockedURL.bind(this, index), false);
-
-    element.addEventListener('contextmenu', this._contextMenu.bind(this, index), true);
-    element.addEventListener(
-        'dblclick', this._edit.bind(this, url, element, this._changeBlockedURL.bind(this, index)), false);
-    return element;
   }
 
   /**
@@ -252,6 +216,7 @@ Network.BlockedURLsPane = class extends UI.VBox {
 
   reset() {
     this._blockedCountForUrl.clear();
+    this._updateThrottler.schedule(this._update.bind(this));
   }
 
   /**

@@ -631,10 +631,9 @@ Elements.ElementsPanel = class extends UI.Panel {
     var searchResults = this._searchResults;
     var searchResult = searchResults[index];
 
-    if (searchResult.node === null) {
-      this._searchableView.updateCurrentMatchIndex(index);
+    this._searchableView.updateCurrentMatchIndex(index);
+    if (searchResult.node === null)
       return;
-    }
 
     /**
      * @param {?SDK.DOMNode} node
@@ -650,8 +649,6 @@ Elements.ElementsPanel = class extends UI.Panel {
       searchResult.domModel.searchResult(searchResult.index, searchCallback.bind(this));
       return;
     }
-
-    this._searchableView.updateCurrentMatchIndex(index);
 
     var treeElement = this._treeElementForNode(searchResult.node);
     if (treeElement) {

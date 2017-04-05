@@ -53,9 +53,12 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
         SourceFrame.SourcesTextEditor.Events.EditorFocused, this._resetCurrentSearchResultIndex, this);
     this._textEditor.addEventListener(
         SourceFrame.SourcesTextEditor.Events.SelectionChanged, this._updateSourcePosition, this);
-    this._textEditor.addEventListener(
-        SourceFrame.SourcesTextEditor.Events.TextChanged,
-        event => this.onTextChanged(event.data.oldRange, event.data.newRange));
+    this._textEditor.addEventListener(UI.TextEditor.Events.TextChanged, event => {
+      if (!this._muteChangeEventsForSetContent)
+        this.onTextChanged(event.data.oldRange, event.data.newRange);
+    });
+    /** @type {boolean|undefined} */
+    this._muteChangeEventsForSetContent;
 
     this._shortcuts = {};
     this.element.addEventListener('keydown', this._handleKeyDown.bind(this), false);
@@ -264,6 +267,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @param {?string} content
    */
   setContent(content) {
+    this._muteChangeEventsForSetContent = true;
     if (!this._loaded) {
       this._loaded = true;
       this._textEditor.setText(content || '');
@@ -284,6 +288,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
       this._delayedFindSearchMatches();
       delete this._delayedFindSearchMatches;
     }
+    delete this._muteChangeEventsForSetContent;
     this.onTextEditorContentSet();
   }
 

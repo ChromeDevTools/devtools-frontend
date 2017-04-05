@@ -128,7 +128,6 @@ Console.ConsoleView = class extends UI.VBox {
     var promptIcon = UI.Icon.create('smallicon-text-prompt', 'console-prompt-icon');
     this._promptElement.appendChild(promptIcon);
     this._promptElement.id = 'console-prompt';
-    this._promptElement.addEventListener('input', this._promptInput.bind(this), false);
 
     // FIXME: This is a workaround for the selection machinery bug. See crbug.com/410899
     var selectAllFixer = this._messagesElement.createChild('div', 'console-view-fix-select-all');
@@ -150,6 +149,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._prompt = new Console.ConsolePrompt();
     this._prompt.show(this._promptElement);
     this._prompt.element.addEventListener('keydown', this._promptKeyDown.bind(this), true);
+    this._prompt.addEventListener(Console.ConsolePrompt.Events.TextChanged, this._promptTextChanged, this);
 
     this._consoleHistoryAutocompleteSetting.addChangeListener(this._consoleHistoryAutocompleteChanged, this);
 
@@ -984,10 +984,16 @@ Console.ConsoleView = class extends UI.VBox {
     this._updateStickToBottomOnMouseUp();
   }
 
-  _promptInput(event) {
+  _promptTextChanged() {
     // Scroll to the bottom, except when the prompt is the only visible item.
     if (this.itemCount() !== 0 && this._viewport.firstVisibleIndex() !== this.itemCount())
       this._immediatelyScrollToBottom();
+
+    this._promptTextChangedForTest();
+  }
+
+  _promptTextChangedForTest() {
+    // This method is sniffed in tests.
   }
 };
 

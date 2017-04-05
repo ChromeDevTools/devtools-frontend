@@ -16,6 +16,7 @@ UI.TextEditorFactory.prototype = {
 
 /**
  * @interface
+ * @extends {Common.EventTarget}
  */
 UI.TextEditor = function() {};
 
@@ -78,6 +79,11 @@ UI.TextEditor.prototype = {
    * @return {?{startColumn: number, endColumn: number, type: string}}
    */
   tokenAtTextPosition(lineNumber, columnNumber) {}
+};
+
+/** @enum {symbol} */
+UI.TextEditor.Events = {
+  TextChanged: Symbol('TextChanged')
 };
 
 /**

@@ -32,6 +32,7 @@ Console.ConsolePrompt = class extends UI.Widget {
       });
       this._editor.widget().element.addEventListener('keydown', this._editorKeyDown.bind(this), true);
       this._editor.widget().show(this.element);
+      this._editor.addEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
 
       this.setText(this._initialText);
       delete this._initialText;
@@ -41,6 +42,10 @@ Console.ConsolePrompt = class extends UI.Widget {
 
       this._editorSetForTest();
     }
+  }
+
+  _onTextChanged() {
+    this.dispatchEventToListeners(Console.ConsolePrompt.Events.TextChanged);
   }
 
   /**
@@ -75,6 +80,7 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._editor.setText(text);
     else
       this._initialText = text;
+    this.dispatchEventToListeners(Console.ConsolePrompt.Events.TextChanged);
   }
 
   /**
@@ -137,7 +143,6 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._editor.setSelection(TextUtils.TextRange.createFromLocation(0, Infinity));
     else
       this.moveCaretToEndOfPrompt();
-    this.setMinimumSize(0, this._editor.widget().element.offsetHeight);
   }
 
   /**
@@ -371,4 +376,8 @@ Console.ConsoleHistoryManager = class {
   _currentHistoryItem() {
     return this._data[this._data.length - this._historyOffset];
   }
+};
+
+Console.ConsolePrompt.Events = {
+  TextChanged: Symbol('TextChanged')
 };

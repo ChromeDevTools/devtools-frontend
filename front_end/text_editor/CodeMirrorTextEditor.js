@@ -1022,8 +1022,10 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
   editRange(range, text, origin) {
     var pos = TextEditor.CodeMirrorUtils.toPos(range);
     this._codeMirror.replaceRange(text, pos.start, pos.end, origin);
-    return TextEditor.CodeMirrorUtils.toRange(
+    var newRange = TextEditor.CodeMirrorUtils.toRange(
         pos.start, this._codeMirror.posFromIndex(this._codeMirror.indexFromPos(pos.start) + text.length));
+    this.dispatchEventToListeners(UI.TextEditor.Events.TextChanged, {oldRange: range, newRange: newRange});
+    return newRange;
   }
 
   /**
@@ -1069,6 +1071,25 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
 
     this._decorations.valuesArray().forEach(decoration => this._codeMirror.removeLineWidget(decoration.widget));
     this._decorations.clear();
+
+    var edits = [];
+    var currentEdit;
+
+    for (var changeIndex = 0; changeIndex < changes.length; ++changeIndex) {
+      var changeObject = changes[changeIndex];
+      var edit = TextEditor.CodeMirrorUtils.changeObjectToEditOperation(changeObject);
+      if (currentEdit && edit.oldRange.equal(currentEdit.newRange)) {
+        currentEdit.newRange = edit.newRange;
+      } else {
+        currentEdit = edit;
+        edits.push(currentEdit);
+      }
+    }
+
+    for (var i = 0; i < edits.length; i++) {
+      this.dispatchEventToListeners(
+          UI.TextEditor.Events.TextChanged, {oldRange: edits[i].oldRange, newRange: edits[i].newRange});
+    }
   }
 
   /**

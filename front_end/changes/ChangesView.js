@@ -132,24 +132,31 @@ Changes.ChangesView = class extends UI.VBox {
     var currentLineNumber = 0;
     var baselineLineNumber = 0;
     var paddingLines = 3;
+    var originalLines = [];
+    var currentLines = [];
 
     for (var i = 0; i < diff.length; ++i) {
       var token = diff[i];
       switch (token[0]) {
         case Diff.Diff.Operation.Equal:
           this._diffRows.pushAll(createEqualRows(token[1], i === 0, i === diff.length - 1));
+          originalLines.pushAll(token[1]);
+          currentLines.pushAll(token[1]);
           break;
         case Diff.Diff.Operation.Insert:
           for (var line of token[1])
             this._diffRows.push(createRow(line, Changes.ChangesView.RowType.Addition));
           insertions += token[1].length;
+          currentLines.pushAll(token[1]);
           break;
         case Diff.Diff.Operation.Delete:
           deletions += token[1].length;
+          originalLines.pushAll(token[1]);
           if (diff[i + 1] && diff[i + 1][0] === Diff.Diff.Operation.Insert) {
             i++;
             this._diffRows.pushAll(createModifyRows(token[1].join('\n'), diff[i][1].join('\n')));
             insertions += diff[i][1].length;
+            currentLines.pushAll(diff[i][1]);
           } else {
             for (var line of token[1])
               this._diffRows.push(createRow(line, Changes.ChangesView.RowType.Deletion));
@@ -168,8 +175,15 @@ Changes.ChangesView = class extends UI.VBox {
 
     this._editor.operation(() => {
       this._editor.showWidget();
-      this._editor.setHighlightMode({name: 'devtools-diff', rows: this._diffRows});
-      this._editor.setText(this._diffRows.map(row => row.content.map(t => t.text).join('')).join('\n'));
+      this._editor.setHighlightMode({
+        name: 'devtools-diff',
+        diffRows: this._diffRows,
+        mimeType: Bindings.NetworkProject.uiSourceCodeMimeType(
+            /** @type {!Workspace.UISourceCode} */ (this._selectedUISourceCode)),
+        baselineLines: originalLines,
+        currentLines: currentLines
+      });
+      this._editor.setText(this._diffRows.map(row => row.tokens.map(t => t.text).join('')).join('\n'));
       this._editor.setLineNumberFormatter(this._lineFormatter.bind(this));
     });
 
@@ -230,9 +244,9 @@ Changes.ChangesView = class extends UI.VBox {
           if (!lines[i])
             continue;
           if (type !== Diff.Diff.Operation.Insert)
-            deletionRows[deletionRows.length - 1].content.push({text: lines[i], className});
+            deletionRows[deletionRows.length - 1].tokens.push({text: lines[i], className});
           if (type !== Diff.Diff.Operation.Delete)
-            insertionRows[insertionRows.length - 1].content.push({text: lines[i], className});
+            insertionRows[insertionRows.length - 1].tokens.push({text: lines[i], className});
         }
       }
       return deletionRows.concat(insertionRows);
@@ -253,7 +267,7 @@ Changes.ChangesView = class extends UI.VBox {
         currentLineNumber++;
       }
 
-      return {baselineLineNumber, currentLineNumber, content: text ? [{text, className: 'inner-diff'}] : [], type};
+      return {baselineLineNumber, currentLineNumber, tokens: text ? [{text, className: 'inner-diff'}] : [], type};
     }
   }
 
@@ -281,7 +295,7 @@ Changes.ChangesView = class extends UI.VBox {
  * @typedef {!{
  *  baselineLineNumber: number,
  *  currentLineNumber: number,
- *  content: !Array<!{text: string, className: string}>,
+ *  tokens: !Array<!{text: string, className: string}>,
  *  type: !Changes.ChangesView.RowType
  * }}
  */

@@ -143,7 +143,8 @@ UI.GlassPane = class {
   _onMouseDown(event) {
     if (!this._onClickOutsideCallback)
       return;
-    if (this.contentElement.isSelfOrAncestor(/** @type {?Node} */ (event.deepElementFromPoint())))
+    var node = event.deepElementFromPoint();
+    if (!node || this.contentElement.isSelfOrAncestor(node))
       return;
     this._onClickOutsideCallback.call(null, event);
   }

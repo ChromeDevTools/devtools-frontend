@@ -757,6 +757,9 @@ Node.prototype.setTextContentTruncatedIfNeeded = function(text, placeholder) {
  * @return {?Node}
  */
 Event.prototype.deepElementFromPoint = function() {
+  // Some synthetic events have zero coordinates which lead to a wrong element. Better return nothing in this case.
+  if (!this.which && !this.pageX && !this.pageY && !this.clientX && !this.clientY && !this.movementX && !this.movementY)
+    return null;
   var root = this.target && this.target.getComponentRoot();
   return root ? root.deepElementFromPoint(this.pageX, this.pageY) : null;
 };

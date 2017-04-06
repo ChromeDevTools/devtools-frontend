@@ -632,11 +632,6 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
     this._groupBySetting =
         Common.settings.createSetting('timelineTreeGroupBy', Timeline.AggregatedTimelineTreeView.GroupBy.None);
     this.init(filters);
-    var nonessentialEvents = [
-      TimelineModel.TimelineModel.RecordType.EventDispatch, TimelineModel.TimelineModel.RecordType.FunctionCall,
-      TimelineModel.TimelineModel.RecordType.TimerFire
-    ];
-    this._filters.push(new TimelineModel.ExclusiveNameFilter(nonessentialEvents));
     this._stackView = new Timeline.TimelineStackView(this);
     this._stackView.addEventListener(
         Timeline.TimelineStackView.Events.SelectionChanged, this._onStackViewSelectionChanged, this);

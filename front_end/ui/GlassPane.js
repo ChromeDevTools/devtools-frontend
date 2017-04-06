@@ -241,7 +241,7 @@ UI.GlassPane = class {
 
         positionX = Math.max(gutterSize, Math.min(anchorBox.x, containerWidth - width - gutterSize));
         if (!enoughHeight)
-          positionX += arrowSize;
+          positionX = Math.min(positionX + arrowSize, containerWidth - width - gutterSize);
         else if (showArrow && positionX - arrowSize >= gutterSize)
           positionX -= arrowSize;
         width = Math.min(width, containerWidth - positionX - gutterSize);
@@ -299,7 +299,7 @@ UI.GlassPane = class {
 
         positionY = Math.max(gutterSize, Math.min(anchorBox.y, containerHeight - height - gutterSize));
         if (!enoughWidth)
-          positionY += arrowSize;
+          positionY = Math.min(positionY + arrowSize, containerHeight - height - gutterSize);
         else if (showArrow && positionY - arrowSize >= gutterSize)
           positionY -= arrowSize;
         height = Math.min(height, containerHeight - positionY - gutterSize);

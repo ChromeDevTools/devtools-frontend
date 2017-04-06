@@ -87,11 +87,15 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
           resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this));
     }
 
-    var debuggerModel = target.model(SDK.DebuggerModel);
-    if (debuggerModel) {
+    this._debuggerModel = target.model(SDK.DebuggerModel);
+    if (this._debuggerModel) {
+      var runtimeModel = this._debuggerModel.runtimeModel();
       this._eventListeners.push(
-          debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
-          debuggerModel.addEventListener(
+          runtimeModel.addEventListener(
+              SDK.RuntimeModel.Events.ExecutionContextDestroyed, this._executionContextDestroyed, this),
+          this._debuggerModel.addEventListener(
+              SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
+          this._debuggerModel.addEventListener(
               SDK.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this));
     }
     var cssModel = target.model(SDK.CSSModel);
@@ -250,21 +254,32 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!SDK.Script} script
+   * @return {boolean}
    */
-  _parsedScriptSource(event) {
-    var script = /** @type {!SDK.Script} */ (event.data);
+  _acceptsScript(script) {
     if (!script.sourceURL || script.isLiveEdit() || (script.isInlineScript() && !script.hasSourceURL))
-      return;
+      return false;
     // Filter out embedder injected content scripts.
     if (script.isContentScript() && !script.hasSourceURL) {
       var parsedURL = new Common.ParsedURL(script.sourceURL);
       if (!parsedURL.isValid)
-        return;
+        return false;
     }
+    return true;
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _parsedScriptSource(event) {
+    var script = /** @type {!SDK.Script} */ (event.data);
+    if (!this._acceptsScript(script))
+      return;
     var originalContentProvider = script.originalContentProvider();
     var executionContext = script.executionContext();
     var frameId = executionContext ? executionContext.frameId || '' : '';
+    script[Bindings.NetworkProject._frameIdSymbol] = frameId;
     var uiSourceCode = this._createFile(originalContentProvider, frameId, script.isContentScript());
     uiSourceCode[Bindings.NetworkProject._scriptSymbol] = script;
     var resource = SDK.ResourceTreeModel.resourceForURL(uiSourceCode.url());
@@ -274,11 +289,34 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
   /**
    * @param {!Common.Event} event
    */
+  _executionContextDestroyed(event) {
+    var executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
+    var scripts = this._debuggerModel.scriptsForExecutionContext(executionContext);
+    for (var script of scripts) {
+      if (!this._acceptsScript(script))
+        continue;
+      var frameId = script[Bindings.NetworkProject._frameIdSymbol];
+      this._removeFileForURL(script.contentURL(), frameId, script.isContentScript());
+    }
+  }
+
+  /**
+   * @param {!SDK.CSSStyleSheetHeader} header
+   */
+  _acceptsHeader(header) {
+    if (header.isInline && !header.hasSourceURL && header.origin !== 'inspector')
+      return false;
+    if (!header.resourceURL())
+      return false;
+    return true;
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
   _styleSheetAdded(event) {
     var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
-    if (header.isInline && !header.hasSourceURL && header.origin !== 'inspector')
-      return;
-    if (!header.resourceURL())
+    if (!this._acceptsHeader(header))
       return;
 
     var originalContentProvider = header.originalContentProvider();
@@ -293,9 +331,8 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
    */
   _styleSheetRemoved(event) {
     var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
-    if (header.isInline && !header.hasSourceURL && header.origin !== 'inspector')
+    if (!this._acceptsHeader(header))
       return;
-
     this._removeFileForURL(header.resourceURL(), header.frameId, false);
   }
 
@@ -316,7 +353,6 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
     if (resourceType !== Common.resourceTypes.Image && resourceType !== Common.resourceTypes.Font &&
         resourceType !== Common.resourceTypes.Document && resourceType !== Common.resourceTypes.Manifest)
       return;
-
 
     // Ignore non-images and non-fonts.
     if (resourceType === Common.resourceTypes.Image && resource.mimeType && !resource.mimeType.startsWith('image'))
@@ -448,3 +484,4 @@ Bindings.NetworkProject._scriptSymbol = Symbol('script');
 Bindings.NetworkProject._styleSheetSymbol = Symbol('styleSheet');
 Bindings.NetworkProject._targetSymbol = Symbol('target');
 Bindings.NetworkProject._frameSymbol = Symbol('frame');
+Bindings.NetworkProject._frameIdSymbol = Symbol('frameid');

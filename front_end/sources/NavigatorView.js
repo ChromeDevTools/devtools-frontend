@@ -57,10 +57,6 @@ Sources.NavigatorView = class extends UI.VBox {
     this._navigatorGroupByFolderSetting.addChangeListener(this._groupingChanged.bind(this));
 
     this._initGrouping();
-    SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
-    SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
 
     if (Runtime.experiments.isEnabled('persistence2')) {
       Persistence.persistence.addEventListener(
@@ -755,28 +751,6 @@ Sources.NavigatorView = class extends UI.VBox {
   _resetForTest() {
     this.reset();
     this._workspace.uiSourceCodes().forEach(this._addUISourceCode.bind(this));
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _frameNavigated(event) {
-    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
-    var node = this._frameNodes.get(frame);
-    if (!node)
-      return;
-
-    node.treeNode().title = frame.displayName();
-    for (var child of frame.childFrames)
-      this._discardFrame(child);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _frameDetached(event) {
-    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
-    this._discardFrame(frame);
   }
 
   /**

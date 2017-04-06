@@ -276,10 +276,8 @@ Bindings.BlackboxManager = class {
     var promises = [];
     for (var debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
       promises.push(this._setBlackboxPatterns(debuggerModel));
-      for (var scriptId in debuggerModel.scripts) {
-        var script = debuggerModel.scripts[scriptId];
+      for (var script of debuggerModel.scripts())
         promises.push(this._addScript(script).then(loadSourceMap.bind(this, script)));
-      }
     }
     Promise.all(promises).then(() => {
       var listeners = Array.from(this._listeners);

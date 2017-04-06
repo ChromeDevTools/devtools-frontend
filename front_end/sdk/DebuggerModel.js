@@ -49,8 +49,8 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
 
     /** @type {?SDK.DebuggerPausedDetails} */
     this._debuggerPausedDetails = null;
-    /** @type {!Object.<string, !SDK.Script>} */
-    this._scripts = {};
+    /** @type {!Map<string, !SDK.Script>} */
+    this._scripts = new Map();
     /** @type {!Map.<string, !Array.<!SDK.Script>>} */
     this._scriptsBySourceURL = new Map();
     /** @type {!Array.<!SDK.Script>} */
@@ -345,17 +345,17 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
       this._sourceMapManager.detachSourceMap(scriptWithSourceMap);
     this._sourceMapIdToScript.clear();
 
-    this._scripts = {};
+    this._scripts.clear();
     this._scriptsBySourceURL.clear();
     this._stringMap.clear();
     this._discardableScripts = [];
   }
 
   /**
-   * @return {!Object.<string, !SDK.Script>}
+   * @return {!Array<!SDK.Script>}
    */
-  get scripts() {
-    return this._scripts;
+  scripts() {
+    return Array.from(this._scripts.values());
   }
 
   /**
@@ -363,7 +363,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    * @return {?SDK.Script}
    */
   scriptForId(scriptId) {
-    return this._scripts[scriptId] || null;
+    return this._scripts.get(scriptId) || null;
   }
 
   /**
@@ -376,12 +376,26 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {!SDK.ExecutionContext} executionContext
+   * @return {!Array<!SDK.Script>}
+   */
+  scriptsForExecutionContext(executionContext) {
+    var result = [];
+    for (var script of this._scripts.values()) {
+      if (script.executionContextId === executionContext.id)
+        result.push(script);
+    }
+    return result;
+  }
+
+  /**
    * @param {!Protocol.Runtime.ScriptId} scriptId
    * @param {string} newSource
    * @param {function(?Protocol.Error, !Protocol.Runtime.ExceptionDetails=)} callback
    */
   setScriptSource(scriptId, newSource, callback) {
-    this._scripts[scriptId].editSource(newSource, this._didEditScriptSource.bind(this, scriptId, newSource, callback));
+    this._scripts.get(scriptId).editSource(
+        newSource, this._didEditScriptSource.bind(this, scriptId, newSource, callback));
   }
 
   /**
@@ -573,7 +587,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    * @param {!SDK.Script} script
    */
   _registerScript(script) {
-    this._scripts[script.scriptId] = script;
+    this._scripts.set(script.scriptId, script);
     if (script.isAnonymousScript())
       return;
 
@@ -590,7 +604,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    */
   _unregisterScript(script) {
     console.assert(script.isAnonymousScript());
-    delete this._scripts[script.scriptId];
+    this._scripts.delete(script.scriptId);
   }
 
   _collectDiscardedScripts() {

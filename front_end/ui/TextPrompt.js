@@ -162,17 +162,11 @@ UI.TextPrompt = class extends Common.Object {
   }
 
   /**
-   * @param {string} x
+   * @param {string} text
    */
-  setText(x) {
+  setText(text) {
     this.clearAutocomplete();
-    if (!x) {
-      // Append a break element instead of setting textContent to make sure the selection is inside the prompt.
-      this._element.removeChildren();
-      this._element.createChild('br');
-    } else {
-      this._element.textContent = x;
-    }
+    this._element.textContent = text;
     this._previousText = this.text();
 
     this.moveCaretToEndOfPrompt();

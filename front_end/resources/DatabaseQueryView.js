@@ -35,13 +35,11 @@ Resources.DatabaseQueryView = class extends UI.VBox {
     this.element.classList.add('storage-view', 'query', 'monospace');
     this.element.addEventListener('selectstart', this._selectStart.bind(this), false);
 
-    this._promptIcon = UI.Icon.create('smallicon-text-prompt', 'prompt-icon');
-    this._promptElement = createElement('div');
-    this._promptElement.appendChild(this._promptIcon);
+    this._promptContainer = this.element.createChild('div', 'database-query-prompt-container');
+    this._promptContainer.appendChild(UI.Icon.create('smallicon-text-prompt', 'prompt-icon'));
+    this._promptElement = this._promptContainer.createChild('div');
     this._promptElement.className = 'database-query-prompt';
-    this._promptElement.appendChild(createElement('br'));
     this._promptElement.addEventListener('keydown', this._promptKeyDown.bind(this), true);
-    this.element.appendChild(this._promptElement);
 
     this._prompt = new UI.TextPrompt();
     this._prompt.initialize(this.completions.bind(this), ' ');
@@ -131,7 +129,6 @@ Resources.DatabaseQueryView = class extends UI.VBox {
       return;
 
     this._prompt.setText('');
-    this._promptElement.insertBefore(this._promptIcon, this._promptElement.firstChild);
 
     this.database.executeSql(query, this._queryFinished.bind(this, query), this._queryError.bind(this, query));
   }
@@ -184,7 +181,7 @@ Resources.DatabaseQueryView = class extends UI.VBox {
     var element = createElement('div');
     element.className = 'database-user-query';
     element.appendChild(UI.Icon.create('smallicon-user-command', 'prompt-icon'));
-    this.element.insertBefore(element, this._proxyElement);
+    this.element.insertBefore(element, this._promptContainer);
 
     var commandTextElement = createElement('span');
     commandTextElement.className = 'database-query-text';

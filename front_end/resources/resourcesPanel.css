@@ -90,9 +90,12 @@ li.selected .base-storage-tree-element-subtitle {
     border-bottom: 1px solid #dadada;
 }
 
-.database-query-prompt {
+.database-query-prompt-container {
     position: relative;
     padding: 1px 22px 1px 24px;
+}
+
+.database-query-prompt {
     min-height: 16px;
     white-space: pre-wrap;
     -webkit-user-modify: read-write-plaintext-only;
@@ -103,9 +106,13 @@ li.selected .base-storage-tree-element-subtitle {
     position: absolute;
     display: block;
     left: 7px;
-    top: 0.8em;
+    top: 9px;
     margin-top: -7px;
     -webkit-user-select: none;
+}
+
+.database-query-prompt-container .prompt-icon {
+    top: 10px;
 }
 
 .database-user-query {

@@ -506,6 +506,7 @@ all_devtools_files = [
   "front_end/shell/TestShell.js",
   "front_end/snippets/module.json",
   "front_end/snippets/ScriptSnippetModel.js",
+  "front_end/snippets/SnippetsQuickOpen.js",
   "front_end/snippets/SnippetStorage.js",
   "front_end/source_frame/fontView.css",
   "front_end/source_frame/FontView.js",

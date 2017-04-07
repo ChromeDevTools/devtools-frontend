@@ -50,10 +50,6 @@ UI.SoftContextMenu = class {
 
     this._glassPane = new UI.GlassPane();
     this._glassPane.setBlockPointerEvents(!this._parentMenu);
-    this._glassPane.setSetOutsideClickCallback(event => {
-      this._discardMenu(true, event);
-      event.consume();
-    });
     this._glassPane.registerRequiredCSS('ui/softContextMenu.css');
     this._glassPane.setContentAnchorBox(anchorBox);
     this._glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
@@ -71,6 +67,11 @@ UI.SoftContextMenu = class {
 
     this._glassPane.show(document);
     this._focus();
+
+    if (!this._parentMenu) {
+      this._onBodyMouseDown = event => this._discardMenu(true, event);
+      this._document.body.addEventListener('mousedown', this._onBodyMouseDown, false);
+    }
   }
 
   discard() {
@@ -330,6 +331,10 @@ UI.SoftContextMenu = class {
     if (this._glassPane) {
       this._glassPane.hide();
       delete this._glassPane;
+      if (this._onBodyMouseDown) {
+        this._document.body.removeEventListener('mousedown', this._onBodyMouseDown, false);
+        delete this._onBodyMouseDown;
+      }
     }
     if (this._parentMenu)
       delete this._parentMenu._subMenu;

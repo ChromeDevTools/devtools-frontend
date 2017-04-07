@@ -123,7 +123,7 @@ UI.GlassPane = class {
       return;
     // Deliberately starts with 3000 to hide other z-indexed elements below.
     this.element.style.zIndex = 3000 + 1000 * UI.GlassPane._panes.size;
-    document.body.addEventListener('click', this._onMouseDownBound, true);
+    document.body.addEventListener('mousedown', this._onMouseDownBound, true);
     this._widget.show(document.body);
     UI.GlassPane._panes.add(this);
     this._positionContent();
@@ -133,7 +133,7 @@ UI.GlassPane = class {
     if (!this.isShowing())
       return;
     UI.GlassPane._panes.delete(this);
-    this.element.ownerDocument.body.removeEventListener('click', this._onMouseDownBound, true);
+    this.element.ownerDocument.body.removeEventListener('mousedown', this._onMouseDownBound, true);
     this._widget.detach();
   }
 

@@ -61,7 +61,7 @@ NetworkGroupLookup.NetworkProductFrameGroupLookup = class {
    * @return {?*}
    */
   groupForRequest(request) {
-    var resourceTreeModel = request.target().model(SDK.ResourceTreeModel);
+    var resourceTreeModel = request.networkManager().target().model(SDK.ResourceTreeModel);
     if (!resourceTreeModel)
       return null;
     var frame = resourceTreeModel.frameForId(request.frameId);

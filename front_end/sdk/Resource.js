@@ -29,9 +29,9 @@
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-SDK.Resource = class extends SDK.SDKObject {
+SDK.Resource = class {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.ResourceTreeModel} resourceTreeModel
    * @param {?SDK.NetworkRequest} request
    * @param {string} url
    * @param {string} documentURL
@@ -42,8 +42,9 @@ SDK.Resource = class extends SDK.SDKObject {
    * @param {?Date} lastModified
    * @param {?number} contentSize
    */
-  constructor(target, request, url, documentURL, frameId, loaderId, type, mimeType, lastModified, contentSize) {
-    super(target);
+  constructor(
+      resourceTreeModel, request, url, documentURL, frameId, loaderId, type, mimeType, lastModified, contentSize) {
+    this._resourceTreeModel = resourceTreeModel;
     this._request = request;
     this.url = url;
     this._documentURL = documentURL;
@@ -223,7 +224,7 @@ SDK.Resource = class extends SDK.SDKObject {
     }
 
     if (this.frameId) {
-      this.target().pageAgent().searchInResource(
+      this._resourceTreeModel.target().pageAgent().searchInResource(
           this.frameId, this.url, query, caseSensitive, isRegex, callbackWrapper);
     } else {
       callback([]);
@@ -311,7 +312,8 @@ SDK.Resource = class extends SDK.SDKObject {
       contentLoaded.call(this, null, content, this.request.contentEncoded);
     }
 
-    this.target().pageAgent().getResourceContent(this.frameId, this.url, resourceContentLoaded.bind(this));
+    this._resourceTreeModel.target().pageAgent().getResourceContent(
+        this.frameId, this.url, resourceContentLoaded.bind(this));
   }
 
   /**

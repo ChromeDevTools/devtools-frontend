@@ -4,13 +4,12 @@
 /**
  * @unrestricted
  */
-Accessibility.AccessibilityNode = class extends SDK.SDKObject {
+Accessibility.AccessibilityNode = class {
   /**
    * @param {!Accessibility.AccessibilityModel} accessibilityModel
    * @param {!Protocol.Accessibility.AXNode} payload
    */
   constructor(accessibilityModel, payload) {
-    super(accessibilityModel.target());
     this._accessibilityModel = accessibilityModel;
     this._agent = accessibilityModel._agent;
 
@@ -19,7 +18,7 @@ Accessibility.AccessibilityNode = class extends SDK.SDKObject {
     if (payload.backendDOMNodeId) {
       accessibilityModel._setAXNodeForBackendDOMNodeId(payload.backendDOMNodeId, this);
       this._backendDOMNodeId = payload.backendDOMNodeId;
-      this._deferredDOMNode = new SDK.DeferredDOMNode(this.target(), payload.backendDOMNodeId);
+      this._deferredDOMNode = new SDK.DeferredDOMNode(accessibilityModel.target(), payload.backendDOMNodeId);
     } else {
       this._backendDOMNodeId = null;
       this._deferredDOMNode = null;
@@ -35,6 +34,13 @@ Accessibility.AccessibilityNode = class extends SDK.SDKObject {
     this._properties = payload.properties || null;
     this._childIds = payload.childIds || null;
     this._parentNode = null;
+  }
+
+  /**
+   * @return {!Accessibility.AccessibilityModel}
+   */
+  accessibilityModel() {
+    return this._accessibilityModel;
   }
 
   /**

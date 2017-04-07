@@ -36,7 +36,7 @@ Resources.ResourcesSection = class {
     var parentFrame = frame.parentFrame;
     if (parentFrame)
       return parentFrame;
-    var parentTarget = frame.target().parentTarget();
+    var parentTarget = frame.resourceTreeModel().target().parentTarget();
     if (!parentTarget)
       return null;
     return parentTarget.model(SDK.ResourceTreeModel).mainFrame;
@@ -164,9 +164,8 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
   set hovered(hovered) {
     if (hovered) {
       this.listItemElement.classList.add('hovered');
-      var domModel = this._frame.target().model(SDK.DOMModel);
-      if (domModel)
-        domModel.highlightFrame(this._frameId);
+      var domModel = this._frame.resourceTreeModel().domModel();
+      domModel.highlightFrame(this._frameId);
     } else {
       this.listItemElement.classList.remove('hovered');
       SDK.DOMModel.hideDOMNodeHighlight();

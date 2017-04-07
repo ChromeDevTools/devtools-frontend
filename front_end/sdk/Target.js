@@ -218,7 +218,7 @@ SDK.Target.Capability = {
 /**
  * @unrestricted
  */
-SDK.SDKObject = class extends Common.Object {
+SDK.SDKModel = class extends Common.Object {
   /**
    * @param {!SDK.Target} target
    */
@@ -232,18 +232,6 @@ SDK.SDKObject = class extends Common.Object {
    */
   target() {
     return this._target;
-  }
-};
-
-/**
- * @unrestricted
- */
-SDK.SDKModel = class extends SDK.SDKObject {
-  /**
-   * @param {!SDK.Target} target
-   */
-  constructor(target) {
-    super(target);
   }
 
   /**

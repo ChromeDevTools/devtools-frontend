@@ -145,8 +145,6 @@ Bindings.StylesSourceMapping = class {
    * @param {!Common.Event} event
    */
   _unbindAllUISourceCodes(event) {
-    if (event.data.target() !== this._cssModel.target())
-      return;
     for (var styleFile of this._styleFiles.values())
       styleFile.dispose();
     this._styleFiles.clear();

@@ -31,20 +31,20 @@
  * @implements {Common.ContentProvider}
  * @unrestricted
  */
-SDK.NetworkRequest = class extends SDK.SDKObject {
+SDK.NetworkRequest = class extends Common.Object {
   /**
+   * @param {!SDK.NetworkManager} networkManager
    * @param {!Protocol.Network.RequestId} requestId
-   * @param {!SDK.Target} target
    * @param {string} url
    * @param {string} documentURL
    * @param {!Protocol.Page.FrameId} frameId
    * @param {!Protocol.Network.LoaderId} loaderId
    * @param {?Protocol.Network.Initiator} initiator
    */
-  constructor(target, requestId, url, documentURL, frameId, loaderId, initiator) {
-    super(target);
+  constructor(networkManager, requestId, url, documentURL, frameId, loaderId, initiator) {
+    super();
 
-    this._networkManager = /** @type {!SDK.NetworkManager} */ (target.model(SDK.NetworkManager));
+    this._networkManager = networkManager;
     this._requestId = requestId;
     this.setUrl(url);
     this._documentURL = documentURL;
@@ -531,7 +531,7 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
     } else {
       this._path = this._parsedURL.host + this._parsedURL.folderPathComponents;
 
-      var inspectedURL = this.target().inspectedURL().asParsedURL();
+      var inspectedURL = this._networkManager.target().inspectedURL().asParsedURL();
       this._path = this._path.trimURL(inspectedURL ? inspectedURL.host : '');
       if (this._parsedURL.lastPathComponent || this._parsedURL.queryParams) {
         this._name =
@@ -1034,7 +1034,7 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
       this._pendingContentCallbacks.length = 0;
       delete this._contentRequested;
     }
-    this.target().networkAgent().getResponseBody(this._requestId, onResourceContent.bind(this));
+    this._networkManager.target().networkAgent().getResponseBody(this._requestId, onResourceContent.bind(this));
   }
 
   /**
@@ -1109,7 +1109,7 @@ SDK.NetworkRequest = class extends SDK.SDKObject {
   }
 
   replayXHR() {
-    this.target().networkAgent().replayXHR(this._requestId);
+    this._networkManager.target().networkAgent().replayXHR(this._requestId);
   }
 
   /**

@@ -61,14 +61,14 @@ Bindings.NetworkProjectManager = class {
 /**
  * @unrestricted
  */
-Bindings.NetworkProject = class extends SDK.SDKObject {
+Bindings.NetworkProject = class {
   /**
    * @param {!SDK.Target} target
    * @param {!Workspace.Workspace} workspace
    * @param {?SDK.ResourceTreeModel} resourceTreeModel
    */
   constructor(target, workspace, resourceTreeModel) {
-    super(target);
+    this._target = target;
     this._workspace = workspace;
     /** @type {!Map<string, !Bindings.ContentProviderBasedProject>} */
     this._workspaceProjects = new Map();
@@ -171,7 +171,7 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
    * @return {!Bindings.ContentProviderBasedProject}
    */
   _workspaceProject(frameId, isContentScripts) {
-    var projectId = Bindings.NetworkProject.projectId(this.target(), frameId, isContentScripts);
+    var projectId = Bindings.NetworkProject.projectId(this._target, frameId, isContentScripts);
     var projectType = isContentScripts ? Workspace.projectTypes.ContentScripts : Workspace.projectTypes.Network;
 
     var project = this._workspaceProjects.get(projectId);
@@ -180,7 +180,7 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
 
     project = new Bindings.ContentProviderBasedProject(
         this._workspace, projectId, projectType, '', false /* isServiceProject */);
-    project[Bindings.NetworkProject._targetSymbol] = this.target();
+    project[Bindings.NetworkProject._targetSymbol] = this._target;
     project[Bindings.NetworkProject._frameSymbol] =
         frameId && this._resourceTreeModel ? this._resourceTreeModel.frameForId(frameId) : null;
     this._workspaceProjects.set(projectId, project);
@@ -217,7 +217,7 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
    */
   _removeFileForURL(url, frameId, isContentScript) {
     var project =
-        this._workspaceProjects.get(Bindings.NetworkProject.projectId(this.target(), frameId, isContentScript));
+        this._workspaceProjects.get(Bindings.NetworkProject.projectId(this._target, frameId, isContentScript));
     if (!project)
       return;
     project.removeFile(url);
@@ -364,7 +364,7 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
       return;
 
     // Never load document twice.
-    var projectId = Bindings.NetworkProject.projectId(this.target(), resource.frameId, false);
+    var projectId = Bindings.NetworkProject.projectId(this._target, resource.frameId, false);
     var project = this._workspaceProjects.get(projectId);
     if (project && project.uiSourceCodeForURL(resource.url))
       return;
@@ -410,7 +410,7 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
   }
 
   _suspendStateChanged() {
-    if (this.target().targetManager().allTargetsSuspended())
+    if (this._target.targetManager().allTargetsSuspended())
       this._reset();
     else
       this._populate();
@@ -426,7 +426,7 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
     var url = contentProvider.contentURL();
     var project = this._workspaceProject(frameId, isContentScript);
     var uiSourceCode = project.createUISourceCode(url, contentProvider.contentType());
-    uiSourceCode[Bindings.NetworkProject._targetSymbol] = this.target();
+    uiSourceCode[Bindings.NetworkProject._targetSymbol] = this._target;
     return uiSourceCode;
   }
 
@@ -443,7 +443,7 @@ Bindings.NetworkProject = class extends SDK.SDKObject {
   _dispose() {
     this._reset();
     Common.EventTarget.removeEventListeners(this._eventListeners);
-    delete this.target()[Bindings.NetworkProject._networkProjectSymbol];
+    delete this._target[Bindings.NetworkProject._networkProjectSymbol];
   }
 
   _reset() {

@@ -932,7 +932,7 @@ Extensions.ExtensionServer = class extends Common.Object {
     else if (options.scriptExecutionContext)
       contextSecurityOrigin = options.scriptExecutionContext;
 
-    var runtimeModel = frame.target().model(SDK.RuntimeModel);
+    var runtimeModel = frame.resourceTreeModel().target().model(SDK.RuntimeModel);
     var executionContexts = runtimeModel ? runtimeModel.executionContexts() : [];
     if (contextSecurityOrigin) {
       for (var i = 0; i < executionContexts.length; ++i) {

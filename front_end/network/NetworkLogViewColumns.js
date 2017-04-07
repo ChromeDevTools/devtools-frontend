@@ -585,7 +585,7 @@ Network.NetworkLogViewColumns = class {
       box: anchor.boxInWindow(),
       show: popover => {
         var content = Components.DOMPresentationUtils.buildStackTracePreviewContents(
-            anchor.request.target(), this._popupLinkifier, initiator.stack);
+            anchor.request.networkManager().target(), this._popupLinkifier, initiator.stack);
         popover.contentElement.appendChild(content);
         return Promise.resolve(true);
       },

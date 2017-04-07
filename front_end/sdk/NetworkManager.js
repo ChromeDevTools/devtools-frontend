@@ -458,8 +458,7 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.Initiator=} initiator
    */
   webSocketCreated(requestId, requestURL, initiator) {
-    var networkRequest =
-        new SDK.NetworkRequest(this._manager.target(), requestId, requestURL, '', '', '', initiator || null);
+    var networkRequest = new SDK.NetworkRequest(this._manager, requestId, requestURL, '', '', '', initiator || null);
     networkRequest.setResourceType(Common.resourceTypes.WebSocket);
     this._startNetworkRequest(networkRequest);
   }
@@ -647,7 +646,7 @@ SDK.NetworkDispatcher = class {
    * @param {?Protocol.Network.Initiator} initiator
    */
   _createNetworkRequest(requestId, frameId, loaderId, url, documentURL, initiator) {
-    return new SDK.NetworkRequest(this._manager.target(), requestId, url, documentURL, frameId, loaderId, initiator);
+    return new SDK.NetworkRequest(this._manager, requestId, url, documentURL, frameId, loaderId, initiator);
   }
 };
 

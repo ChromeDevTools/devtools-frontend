@@ -5,13 +5,14 @@
 /**
  * @template T
  */
-SDK.SourceMapManager = class extends SDK.SDKObject {
+SDK.SourceMapManager = class extends Common.Object {
   /**
    * @param {!SDK.Target} target
    */
   constructor(target) {
-    super(target);
+    super();
 
+    this._target = target;
     this._isEnabled = true;
 
     /** @type {!Map<!T, string>} */
@@ -51,7 +52,7 @@ SDK.SourceMapManager = class extends SDK.SDKObject {
    * @param {!Common.Event} event
    */
   _inspectedURLChanged(event) {
-    if (event.data !== this.target())
+    if (event.data !== this._target)
       return;
 
     var clients = Array.from(this._resolvedSourceMapURL.keys());
@@ -105,7 +106,7 @@ SDK.SourceMapManager = class extends SDK.SDKObject {
   _resolveRelativeURLs(sourceURL, sourceMapURL) {
     // |sourceURL| can be a random string, but is generally an absolute path.
     // Complete it to inspected page url for relative links.
-    var resolvedSourceURL = Common.ParsedURL.completeURL(this.target().inspectedURL(), sourceURL);
+    var resolvedSourceURL = Common.ParsedURL.completeURL(this._target.inspectedURL(), sourceURL);
     var resolvedSourceMapURL = resolvedSourceURL ? Common.ParsedURL.completeURL(resolvedSourceURL, sourceMapURL) : null;
     return {sourceURL: resolvedSourceURL, sourceMapURL: resolvedSourceMapURL};
   }
@@ -157,7 +158,7 @@ SDK.SourceMapManager = class extends SDK.SDKObject {
       if (!factoryExtension)
         return Promise.resolve(/** @type {?SDK.SourceMap} */ (sourceMap));
       return factoryExtension.instance()
-          .then(factory => factory.editableSourceMap(this.target(), sourceMap))
+          .then(factory => factory.editableSourceMap(this._target, sourceMap))
           .then(map => map || sourceMap)
           .catchException(/** @type {?SDK.SourceMap} */ (null));
     }

@@ -213,7 +213,8 @@ Accessibility.AXNodePropertyTreeElement = class extends UI.TreeElement {
    * @param {number} index
    */
   appendRelatedNode(relatedNode, index) {
-    var deferredNode = new SDK.DeferredDOMNode(this._axNode.target(), relatedNode.backendDOMNodeId);
+    var deferredNode =
+        new SDK.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
     var nodeTreeElement = new Accessibility.AXRelatedNodeSourceTreeElement({deferredNode: deferredNode}, relatedNode);
     this.appendChild(nodeTreeElement);
   }
@@ -222,7 +223,8 @@ Accessibility.AXNodePropertyTreeElement = class extends UI.TreeElement {
    * @param {!Protocol.Accessibility.AXRelatedNode} relatedNode
    */
   appendRelatedNodeInline(relatedNode) {
-    var deferredNode = new SDK.DeferredDOMNode(this._axNode.target(), relatedNode.backendDOMNodeId);
+    var deferredNode =
+        new SDK.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
     var linkedNode = new Accessibility.AXRelatedNodeElement({deferredNode: deferredNode}, relatedNode);
     this.listItemElement.appendChild(linkedNode.render());
   }
@@ -331,7 +333,8 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
    * @param {string} idref
    */
   appendRelatedNodeWithIdref(relatedNode, index, idref) {
-    var deferredNode = new SDK.DeferredDOMNode(this._axNode.target(), relatedNode.backendDOMNodeId);
+    var deferredNode =
+        new SDK.DeferredDOMNode(this._axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
     var nodeTreeElement =
         new Accessibility.AXRelatedNodeSourceTreeElement({deferredNode: deferredNode, idref: idref}, relatedNode);
     this.appendChild(nodeTreeElement);

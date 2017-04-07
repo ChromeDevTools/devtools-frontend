@@ -93,6 +93,13 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     }
   }
 
+  /**
+   * @return {!SDK.DOMModel}
+   */
+  domModel() {
+    return /** @type {!SDK.DOMModel} */ (this.target().model(SDK.DOMModel));
+  }
+
   _fetchResourceTree() {
     /** @type {!Map<string, !SDK.ResourceTreeFrame>} */
     this._frames = new Map();
@@ -261,8 +268,8 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
       return;
 
     var resource = new SDK.Resource(
-        this.target(), null, url, frame.url, frameId, event.data.loaderId,
-        Common.resourceTypes[event.data.resourceType], event.data.mimeType, event.data.lastModified, null);
+        this, null, url, frame.url, frameId, event.data.loaderId, Common.resourceTypes[event.data.resourceType],
+        event.data.mimeType, event.data.lastModified, null);
     frame.addResource(resource);
   }
 
@@ -337,7 +344,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   _createResourceFromFramePayload(frame, url, type, mimeType, lastModifiedTime, contentSize) {
     var lastModified = typeof lastModifiedTime === 'number' ? new Date(lastModifiedTime * 1000) : null;
     return new SDK.Resource(
-        this.target(), null, url, frame.url, frame.id, frame.loaderId, type, mimeType, lastModified, contentSize);
+        this, null, url, frame.url, frame.id, frame.loaderId, type, mimeType, lastModified, contentSize);
   }
 
   suspendReload() {
@@ -514,10 +521,10 @@ SDK.ResourceTreeFrame = class {
   }
 
   /**
-   * @return {!SDK.Target}
+   * @return {!SDK.ResourceTreeModel}
    */
-  target() {
-    return this._model.target();
+  resourceTreeModel() {
+    return this._model;
   }
 
   /**
@@ -650,7 +657,7 @@ SDK.ResourceTreeFrame = class {
       return;
     }
     resource = new SDK.Resource(
-        this.target(), request, request.url(), request.documentURL, request.frameId, request.loaderId,
+        this._model, request, request.url(), request.documentURL, request.frameId, request.loaderId,
         request.resourceType(), request.mimeType, null, null);
     this._resourcesMap[resource.url] = resource;
     this._model.dispatchEventToListeners(SDK.ResourceTreeModel.Events.ResourceAdded, resource);

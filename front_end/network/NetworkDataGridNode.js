@@ -724,8 +724,10 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   }
 
   dispose() {
-    if (this._linkifiedInitiatorAnchor)
-      this.parentView().linkifier.disposeAnchor(this._request.target(), this._linkifiedInitiatorAnchor);
+    if (this._linkifiedInitiatorAnchor) {
+      this.parentView().linkifier.disposeAnchor(
+          this._request.networkManager().target(), this._linkifiedInitiatorAnchor);
+    }
   }
 
   /**
@@ -783,7 +785,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     iconElement.classList.add(this._request.resourceType().name());
 
     cell.appendChild(iconElement);
-    cell.createTextChild(this._request.target().decorateLabel(this._request.name()));
+    cell.createTextChild(this._request.networkManager().target().decorateLabel(this._request.name()));
     this._appendSubtitle(cell, this._request.path());
     cell.title = this._request.url();
   }
@@ -875,7 +877,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
       case SDK.NetworkRequest.InitiatorType.Script:
         if (!this._linkifiedInitiatorAnchor) {
           this._linkifiedInitiatorAnchor = this.parentView().linkifier.linkifyScriptLocation(
-              request.target(), initiator.scriptId, initiator.url, initiator.lineNumber, initiator.columnNumber);
+              request.networkManager().target(), initiator.scriptId, initiator.url, initiator.lineNumber,
+              initiator.columnNumber);
           this._linkifiedInitiatorAnchor.title = '';
         }
         cell.appendChild(this._linkifiedInitiatorAnchor);

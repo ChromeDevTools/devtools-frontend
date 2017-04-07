@@ -1511,7 +1511,7 @@ Resources.CookieTreeElement = class extends Resources.BaseStorageTreeElement {
    */
   constructor(storagePanel, frame, cookieDomain) {
     super(storagePanel, cookieDomain ? cookieDomain : Common.UIString('Local Files'), false);
-    this._target = frame.target();
+    this._target = frame.resourceTreeModel().target();
     this._cookieDomain = cookieDomain;
     var icon = UI.Icon.create('mediumicon-cookie', 'resource-tree-item');
     this.setLeadingIcons([icon]);

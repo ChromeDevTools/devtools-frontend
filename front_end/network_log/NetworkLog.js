@@ -35,9 +35,9 @@ NetworkLog.NetworkLog = class {
   constructor() {
     /** @type {!Array<!SDK.NetworkRequest>} */
     this._requests = [];
-    /** @type {!Map<!SDK.Target, !Map<string, !SDK.NetworkRequest>>} */
-    this._requestsByTargetAndId = new Map();
-    /** @type {!Map<!SDK.Target, !NetworkLog.PageLoad>} */
+    /** @type {!Map<!SDK.NetworkManager, !Map<string, !SDK.NetworkRequest>>} */
+    this._requestsByManagerAndId = new Map();
+    /** @type {!Map<!SDK.NetworkManager, !NetworkLog.PageLoad>} */
     this._currentPageLoad = new Map();
     SDK.targetManager.observeModels(SDK.NetworkManager, this);
   }
@@ -63,7 +63,7 @@ NetworkLog.NetworkLog = class {
     }
 
     networkManager[NetworkLog.NetworkLog._events] = eventListeners;
-    this._requestsByTargetAndId.set(networkManager.target(), new Map());
+    this._requestsByManagerAndId.set(networkManager, new Map());
   }
 
   /**
@@ -71,7 +71,7 @@ NetworkLog.NetworkLog = class {
    * @param {!SDK.NetworkManager} networkManager
    */
   modelRemoved(networkManager) {
-    this._requestsByTargetAndId.delete(networkManager.target());
+    this._requestsByManagerAndId.delete(networkManager);
     Common.EventTarget.removeEventListeners(networkManager[NetworkLog.NetworkLog._events]);
   }
 
@@ -91,21 +91,21 @@ NetworkLog.NetworkLog = class {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.NetworkManager} networkManager
    * @return {!Array<!SDK.NetworkRequest>}
    */
-  requestsForTarget(target) {
-    var map = this._requestsByTargetAndId.get(target);
+  requestsForManager(networkManager) {
+    var map = this._requestsByManagerAndId.get(networkManager);
     return map ? Array.from(map.values()) : [];
   }
 
   /**
+   * @param {!SDK.NetworkManager} networkManager
    * @param {string} url
-   * @param {!SDK.Target} target
    * @return {?SDK.NetworkRequest}
    */
-  _requestForURLInTarget(url, target) {
-    var map = this._requestsByTargetAndId.get(target);
+  _requestByManagerAndURL(networkManager, url) {
+    var map = this._requestsByManagerAndId.get(networkManager);
     if (!map)
       return null;
     for (var request of map.values()) {
@@ -182,7 +182,7 @@ NetworkLog.NetworkLog = class {
   initiatorGraphForRequest(request) {
     /** @type {!Set<!SDK.NetworkRequest>} */
     var initiated = new Set();
-    var map = this._requestsByTargetAndId.get(request.target());
+    var map = this._requestsByManagerAndId.get(request.networkManager());
     if (map) {
       for (var otherRequest of map.values()) {
         if (this._initiatorChain(otherRequest).has(request))
@@ -223,7 +223,8 @@ NetworkLog.NetworkLog = class {
     if (request[NetworkLog.NetworkLog._initiatorDataSymbol].request !== undefined)
       return request[NetworkLog.NetworkLog._initiatorDataSymbol].request;
     var url = this.initiatorInfoForRequest(request).url;
-    request[NetworkLog.NetworkLog._initiatorDataSymbol].request = this._requestForURLInTarget(url, request.target());
+    request[NetworkLog.NetworkLog._initiatorDataSymbol].request =
+        this._requestByManagerAndURL(request.networkManager(), url);
     return request[NetworkLog.NetworkLog._initiatorDataSymbol].request;
   }
 
@@ -240,12 +241,15 @@ NetworkLog.NetworkLog = class {
    */
   _onMainFrameNavigated(event) {
     var mainFrame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
-    var target = mainFrame.target();
-    this._currentPageLoad.delete(target);
-    var oldRequests = this.requestsForTarget(target);
-    this._requests = this._requests.filter(request => request.target() !== target);
+    var networkManager = mainFrame.resourceTreeModel().target().model(SDK.NetworkManager);
+    if (!networkManager)
+      return;
+
+    this._currentPageLoad.delete(networkManager);
+    var oldRequests = this.requestsForManager(networkManager);
+    this._requests = this._requests.filter(request => request.networkManager() !== networkManager);
     var idMap = new Map();
-    this._requestsByTargetAndId.set(target, idMap);
+    this._requestsByManagerAndId.set(networkManager, idMap);
 
     // Preserve requests from the new session.
     var currentPageLoad = null;
@@ -260,7 +264,7 @@ NetworkLog.NetworkLog = class {
       }
     }
     if (currentPageLoad)
-      this._currentPageLoad.set(target, currentPageLoad);
+      this._currentPageLoad.set(networkManager, currentPageLoad);
   }
 
   /**
@@ -269,8 +273,8 @@ NetworkLog.NetworkLog = class {
   _onRequestStarted(event) {
     var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     this._requests.push(request);
-    this._requestsByTargetAndId.get(request.target()).set(request.requestId(), request);
-    request[NetworkLog.NetworkLog._pageLoadForRequestSymbol] = this._currentPageLoad.get(request.target());
+    this._requestsByManagerAndId.get(request.networkManager()).set(request.requestId(), request);
+    request[NetworkLog.NetworkLog._pageLoadForRequestSymbol] = this._currentPageLoad.get(request.networkManager());
   }
 
   /**
@@ -286,7 +290,8 @@ NetworkLog.NetworkLog = class {
    * @param {!Common.Event} event
    */
   _onDOMContentLoaded(resourceTreeModel, event) {
-    var pageLoad = this._currentPageLoad.get(resourceTreeModel.target());
+    var networkManager = resourceTreeModel.target().model(SDK.NetworkManager);
+    var pageLoad = networkManager ? this._currentPageLoad.get(networkManager) : null;
     if (pageLoad)
       pageLoad.contentLoadTime = /** @type {number} */ (event.data);
   }
@@ -295,18 +300,19 @@ NetworkLog.NetworkLog = class {
    * @param {!Common.Event} event
    */
   _onLoad(event) {
-    var pageLoad = this._currentPageLoad.get(event.data.resourceTreeModel.target());
+    var networkManager = event.data.resourceTreeModel.target().model(SDK.NetworkManager);
+    var pageLoad = networkManager ? this._currentPageLoad.get(networkManager) : null;
     if (pageLoad)
       pageLoad.loadTime = /** @type {number} */ (event.data.loadTime);
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.NetworkManager} networkManager
    * @param {!Protocol.Network.RequestId} requestId
    * @return {?SDK.NetworkRequest}
    */
-  requestForId(target, requestId) {
-    var map = this._requestsByTargetAndId.get(target);
+  requestForId(networkManager, requestId) {
+    var map = this._requestsByManagerAndId.get(networkManager);
     return map ? (map.get(requestId) || null) : null;
   }
 };

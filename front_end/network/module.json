@@ -81,8 +81,7 @@
             "title": "Request blocking",
             "persistence": "closeable",
             "order": 60,
-            "className": "Network.BlockedURLsPane",
-            "experiment": "requestBlocking"
+            "className": "Network.BlockedURLsPane"
         },
         {
             "type": "view",

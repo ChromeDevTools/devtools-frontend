@@ -1120,7 +1120,7 @@ Network.NetworkLogView = class extends UI.VBox {
     contextMenu.appendItem(Common.UIString.capitalize('Clear ^browser ^cache'), this._clearBrowserCache.bind(this));
     contextMenu.appendItem(Common.UIString.capitalize('Clear ^browser ^cookies'), this._clearBrowserCookies.bind(this));
 
-    if (request && Runtime.experiments.isEnabled('requestBlocking')) {  // Disabled until ready.
+    if (request) {
       contextMenu.appendSeparator();
 
       const maxBlockedURLLength = 20;

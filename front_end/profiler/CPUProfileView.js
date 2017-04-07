@@ -338,7 +338,7 @@ Profiler.CPUFlameChartDataProvider = class extends Profiler.ProfileFlameChartDat
       entrySelfTimes[i] = entry.selfTime;
     }
 
-    this._maxStackDepth = maxDepth;
+    this._maxStackDepth = maxDepth + 1;
 
     this._timelineData = new PerfUI.FlameChart.TimelineData(entryLevels, entryTotalTimes, entryStartTimes, null);
 

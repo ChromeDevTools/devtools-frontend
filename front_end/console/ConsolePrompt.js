@@ -132,6 +132,10 @@ Console.ConsolePrompt = class extends UI.Widget {
       case UI.KeyboardShortcut.Keys.Enter.code:
         this._enterKeyPressed(keyboardEvent);
         break;
+      case UI.KeyboardShortcut.Keys.Tab.code:
+        if (!this.text())
+          keyboardEvent.consume();
+        break;
     }
 
     if (newText === undefined)

@@ -53,7 +53,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       styleActiveLine: true,
       indentUnit: 4,
       lineWrapping: options.lineWrapping,
-      lineWiseCopyCut: false
+      lineWiseCopyCut: false,
+      tabIndex: 0
     });
     this._codeMirrorElement = this.element.lastElementChild;
 
@@ -170,10 +171,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
     /** @type {!Multimap<number, !TextEditor.CodeMirrorTextEditor.Decoration>} */
     this._decorations = new Multimap();
 
-    this.element.addEventListener('focus', this._handleElementFocus.bind(this), false);
     this.element.addEventListener('keydown', this._handleKeyDown.bind(this), true);
     this.element.addEventListener('keydown', this._handlePostKeyDown.bind(this), false);
-    this.element.tabIndex = 0;
 
     this._needsRefresh = true;
 
@@ -809,10 +808,6 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    */
   hasFocus() {
     return this._codeMirror.hasFocus();
-  }
-
-  _handleElementFocus() {
-    this._codeMirror.focus();
   }
 
   /**

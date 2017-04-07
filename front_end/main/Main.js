@@ -662,12 +662,11 @@ Main.Main.WarningErrorCounter = class {
 
 /**
  * @implements {UI.ToolbarItem.Provider}
- * @unrestricted
  */
 Main.Main.MainMenuItem = class {
   constructor() {
-    this._item = new UI.ToolbarButton(Common.UIString('Customize and control DevTools'), 'largeicon-menu');
-    this._item.addEventListener(UI.ToolbarButton.Events.MouseDown, this._mouseDown, this);
+    this._item = new UI.ToolbarMenuButton(this._handleContextMenu.bind(this), true);
+    this._item.setTitle(Common.UIString('Customize and control DevTools'));
   }
 
   /**
@@ -679,13 +678,9 @@ Main.Main.MainMenuItem = class {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!UI.ContextMenu} contextMenu
    */
-  _mouseDown(event) {
-    var contextMenu = new UI.ContextMenu(
-        /** @type {!Event} */ (event.data), true, this._item.element.totalOffsetLeft(),
-        this._item.element.totalOffsetTop() + this._item.element.offsetHeight);
-
+  _handleContextMenu(contextMenu) {
     if (Components.dockController.canDock()) {
       var dockItemElement = createElementWithClass('div', 'flex-centered flex-auto');
       var titleElement = dockItemElement.createChild('span', 'flex-auto');
@@ -746,7 +741,6 @@ Main.Main.MainMenuItem = class {
     var helpSubMenu = contextMenu.namedSubMenu('mainMenuHelp');
     helpSubMenu.appendAction('settings.documentation');
     helpSubMenu.appendItem('Release Notes', () => InspectorFrontendHost.openInNewTab(Help.latestReleaseNote().link));
-    contextMenu.show();
   }
 };
 

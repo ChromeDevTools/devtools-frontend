@@ -89,11 +89,9 @@ Bindings.PresentationConsoleMessageHelper = class {
    * @return {?SDK.DebuggerModel.Location}
    */
   _rawLocation(message) {
-    if (!message.target())
+    if (!message.runtimeModel())
       return null;
-    var debuggerModel = message.target().model(SDK.DebuggerModel);
-    if (!debuggerModel)
-      return null;
+    var debuggerModel = message.runtimeModel().debuggerModel();
     if (message.scriptId)
       return debuggerModel.createRawLocationByScriptId(message.scriptId, message.line, message.column);
     var callFrame = message.stackTrace && message.stackTrace.callFrames ? message.stackTrace.callFrames[0] : null;
@@ -144,7 +142,7 @@ Bindings.PresentationConsoleMessageHelper = class {
       var rawLocation = this._rawLocation(message);
       if (!rawLocation)
         continue;
-      if (script.debuggerModel.target() === message.target() && script.scriptId === rawLocation.scriptId)
+      if (script.debuggerModel.runtimeModel() === message.runtimeModel() && script.scriptId === rawLocation.scriptId)
         this._addConsoleMessageToScript(message, rawLocation);
       else
         pendingMessages.push(message);

@@ -45,6 +45,13 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @return {!SDK.RuntimeModel}
+   */
+  runtimeModel() {
+    return this._debuggerModel.runtimeModel();
+  }
+
+  /**
    * @override
    * @param {string} id
    * @param {!Protocol.Debugger.Location} scriptLocation

@@ -53,13 +53,6 @@ Console.ConsoleViewMessage = class {
   }
 
   /**
-   * @return {?SDK.Target}
-   */
-  _target() {
-    return this.consoleMessage().target();
-  }
-
-  /**
    * @override
    * @return {!Element}
    */
@@ -116,20 +109,19 @@ Console.ConsoleViewMessage = class {
   }
 
   /**
-   * @param {!ConsoleModel.ConsoleMessage} consoleMessage
    * @return {!Element}
    */
-  _buildTableMessage(consoleMessage) {
+  _buildTableMessage() {
     var formattedMessage = createElement('span');
     UI.appendStyle(formattedMessage, 'object_ui/objectValue.css');
     formattedMessage.className = 'source-code';
-    var anchorElement = this._buildMessageAnchor(consoleMessage);
+    var anchorElement = this._buildMessageAnchor();
     if (anchorElement)
       formattedMessage.appendChild(anchorElement);
 
-    var table = consoleMessage.parameters && consoleMessage.parameters.length ? consoleMessage.parameters[0] : null;
+    var table = this._message.parameters && this._message.parameters.length ? this._message.parameters[0] : null;
     if (table)
-      table = this._parameterToRemoteObject(table, this._target());
+      table = this._parameterToRemoteObject(table);
     if (!table || !table.preview)
       return formattedMessage;
 
@@ -188,16 +180,15 @@ Console.ConsoleViewMessage = class {
   }
 
   /**
-   * @param {!ConsoleModel.ConsoleMessage} consoleMessage
    * @return {!Element}
    */
-  _buildMessage(consoleMessage) {
+  _buildMessage() {
     var messageElement;
-    var messageText = consoleMessage.messageText;
-    if (consoleMessage.source === ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI) {
-      switch (consoleMessage.type) {
+    var messageText = this._message.messageText;
+    if (this._message.source === ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI) {
+      switch (this._message.type) {
         case ConsoleModel.ConsoleMessage.MessageType.Trace:
-          messageElement = this._format(consoleMessage.parameters || ['console.trace']);
+          messageElement = this._format(this._message.parameters || ['console.trace']);
           break;
         case ConsoleModel.ConsoleMessage.MessageType.Clear:
           messageElement = createElementWithClass('span', 'console-info');
@@ -205,12 +196,12 @@ Console.ConsoleViewMessage = class {
           break;
         case ConsoleModel.ConsoleMessage.MessageType.Assert:
           var args = [Common.UIString('Assertion failed:')];
-          if (consoleMessage.parameters)
-            args = args.concat(consoleMessage.parameters);
+          if (this._message.parameters)
+            args = args.concat(this._message.parameters);
           messageElement = this._format(args);
           break;
         case ConsoleModel.ConsoleMessage.MessageType.Dir:
-          var obj = consoleMessage.parameters ? consoleMessage.parameters[0] : undefined;
+          var obj = this._message.parameters ? this._message.parameters[0] : undefined;
           var args = ['%O', obj];
           messageElement = this._format(args);
           break;
@@ -219,41 +210,42 @@ Console.ConsoleViewMessage = class {
           messageElement = this._format([messageText]);
           break;
         default:
-          if (consoleMessage.parameters && consoleMessage.parameters.length === 1 &&
-              consoleMessage.parameters[0].type === 'string')
-            messageElement = this._tryFormatAsError(/** @type {string} */ (consoleMessage.parameters[0].value));
-          var args = consoleMessage.parameters || [messageText];
+          if (this._message.parameters && this._message.parameters.length === 1 &&
+              this._message.parameters[0].type === 'string')
+            messageElement = this._tryFormatAsError(/** @type {string} */ (this._message.parameters[0].value));
+          var args = this._message.parameters || [messageText];
           messageElement = messageElement || this._format(args);
       }
-    } else if (consoleMessage.source === ConsoleModel.ConsoleMessage.MessageSource.Network) {
-      if (consoleMessage.request) {
+    } else if (this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Network) {
+      var request = this._message.request;
+      if (request) {
         messageElement = createElement('span');
-        if (consoleMessage.level === ConsoleModel.ConsoleMessage.MessageLevel.Error) {
-          messageElement.createTextChild(consoleMessage.request.requestMethod + ' ');
-          messageElement.appendChild(Components.Linkifier.linkifyRevealable(
-              consoleMessage.request, consoleMessage.request.url(), consoleMessage.request.url()));
-          if (consoleMessage.request.failed) {
-            messageElement.createTextChildren(' ', consoleMessage.request.localizedFailDescription);
-          } else {
-            messageElement.createTextChildren(
-                ' ', String(consoleMessage.request.statusCode), ' (', consoleMessage.request.statusText, ')');
-          }
+        if (this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Error) {
+          messageElement.createTextChild(request.requestMethod + ' ');
+          messageElement.appendChild(Components.Linkifier.linkifyRevealable(request, request.url(), request.url()));
+          if (request.failed)
+            messageElement.createTextChildren(' ', request.localizedFailDescription);
+          else
+            messageElement.createTextChildren(' ', String(request.statusCode), ' (', request.statusText, ')');
+
         } else {
-          var fragment =
-              Components.linkifyStringAsFragmentWithCustomLinkifier(messageText, linkifyRequest.bind(consoleMessage));
+          var fragment = Components.linkifyStringAsFragmentWithCustomLinkifier(
+              messageText,
+              title => Components.Linkifier.linkifyRevealable(
+                  /** @type {!SDK.NetworkRequest} */ (request), title, request.url()));
           messageElement.appendChild(fragment);
         }
       } else {
         messageElement = this._format([messageText]);
       }
     } else {
-      if (consoleMessage.source === ConsoleModel.ConsoleMessage.MessageSource.Violation)
+      if (this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Violation)
         messageText = Common.UIString('[Violation] %s', messageText);
-      else if (consoleMessage.source === ConsoleModel.ConsoleMessage.MessageSource.Intervention)
+      else if (this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Intervention)
         messageText = Common.UIString('[Intervention] %s', messageText);
-      if (consoleMessage.source === ConsoleModel.ConsoleMessage.MessageSource.Deprecation)
+      if (this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Deprecation)
         messageText = Common.UIString('[Deprecation] %s', messageText);
-      var args = consoleMessage.parameters || [messageText];
+      var args = this._message.parameters || [messageText];
       messageElement = this._format(args);
     }
     messageElement.classList.add('console-message-text');
@@ -262,40 +254,29 @@ Console.ConsoleViewMessage = class {
     UI.appendStyle(formattedMessage, 'object_ui/objectValue.css');
     formattedMessage.className = 'source-code';
 
-    var anchorElement = this._buildMessageAnchor(consoleMessage);
+    var anchorElement = this._buildMessageAnchor();
     if (anchorElement)
       formattedMessage.appendChild(anchorElement);
     formattedMessage.appendChild(messageElement);
     return formattedMessage;
-
-    /**
-     * @param {string} title
-     * @return {!Element}
-     * @this {ConsoleModel.ConsoleMessage}
-     */
-    function linkifyRequest(title) {
-      return Components.Linkifier.linkifyRevealable(
-          /** @type {!SDK.NetworkRequest} */ (this.request), title, this.request.url());
-    }
   }
 
   /**
-   * @param {!ConsoleModel.ConsoleMessage} consoleMessage
    * @return {?Element}
    */
-  _buildMessageAnchor(consoleMessage) {
+  _buildMessageAnchor() {
     var anchorElement = null;
-    if (consoleMessage.source !== ConsoleModel.ConsoleMessage.MessageSource.Network || consoleMessage.request) {
-      if (consoleMessage.scriptId) {
+    if (this._message.source !== ConsoleModel.ConsoleMessage.MessageSource.Network || this._message.request) {
+      if (this._message.scriptId) {
         anchorElement = this._linkifyScriptId(
-            consoleMessage.scriptId, consoleMessage.url || '', consoleMessage.line, consoleMessage.column);
-      } else if (consoleMessage.stackTrace && consoleMessage.stackTrace.callFrames.length) {
-        anchorElement = this._linkifyStackTraceTopFrame(consoleMessage.stackTrace);
-      } else if (consoleMessage.url && consoleMessage.url !== 'undefined') {
-        anchorElement = this._linkifyLocation(consoleMessage.url, consoleMessage.line, consoleMessage.column);
+            this._message.scriptId, this._message.url || '', this._message.line, this._message.column);
+      } else if (this._message.stackTrace && this._message.stackTrace.callFrames.length) {
+        anchorElement = this._linkifyStackTraceTopFrame(this._message.stackTrace);
+      } else if (this._message.url && this._message.url !== 'undefined') {
+        anchorElement = this._linkifyLocation(this._message.url, this._message.line, this._message.column);
       }
-    } else if (consoleMessage.url) {
-      anchorElement = Components.Linkifier.linkifyURL(consoleMessage.url, undefined);
+    } else if (this._message.url) {
+      anchorElement = Components.Linkifier.linkifyURL(this._message.url, undefined);
     }
 
     // Append a space to prevent the anchor text from being glued to the console message when the user selects and copies the console messages.
@@ -309,24 +290,21 @@ Console.ConsoleViewMessage = class {
   }
 
   /**
-   * @param {!ConsoleModel.ConsoleMessage} consoleMessage
-   * @param {!SDK.Target} target
-   * @param {!Components.Linkifier} linkifier
    * @return {!Element}
    */
-  _buildMessageWithStackTrace(consoleMessage, target, linkifier) {
+  _buildMessageWithStackTrace() {
     var toggleElement = createElementWithClass('div', 'console-message-stack-trace-toggle');
     var contentElement = toggleElement.createChild('div', 'console-message-stack-trace-wrapper');
 
-    var messageElement = this._buildMessage(consoleMessage);
+    var messageElement = this._buildMessage();
     var icon = UI.Icon.create('smallicon-triangle-right', 'console-message-expand-icon');
     var clickableElement = contentElement.createChild('div');
     clickableElement.appendChild(icon);
 
     clickableElement.appendChild(messageElement);
     var stackTraceElement = contentElement.createChild('div');
-    var stackTracePreview =
-        Components.DOMPresentationUtils.buildStackTracePreviewContents(target, linkifier, consoleMessage.stackTrace);
+    var stackTracePreview = Components.DOMPresentationUtils.buildStackTracePreviewContents(
+        this._message.runtimeModel().target(), this._linkifier, this._message.stackTrace);
     stackTraceElement.appendChild(stackTracePreview);
     stackTraceElement.classList.add('hidden');
 
@@ -349,7 +327,7 @@ Console.ConsoleViewMessage = class {
     }
 
     clickableElement.addEventListener('click', toggleStackTrace, false);
-    if (consoleMessage.type === ConsoleModel.ConsoleMessage.MessageType.Trace)
+    if (this._message.type === ConsoleModel.ConsoleMessage.MessageType.Trace)
       expandStackTrace(true);
 
     toggleElement._expandStackTraceForTest = expandStackTrace.bind(null, true);
@@ -363,10 +341,10 @@ Console.ConsoleViewMessage = class {
    * @return {?Element}
    */
   _linkifyLocation(url, lineNumber, columnNumber) {
-    var target = this._target();
-    if (!target)
+    if (!this._message.runtimeModel())
       return null;
-    return this._linkifier.linkifyScriptLocation(target, null, url, lineNumber, columnNumber);
+    return this._linkifier.linkifyScriptLocation(
+        this._message.runtimeModel().target(), null, url, lineNumber, columnNumber);
   }
 
   /**
@@ -374,10 +352,9 @@ Console.ConsoleViewMessage = class {
    * @return {?Element}
    */
   _linkifyStackTraceTopFrame(stackTrace) {
-    var target = this._target();
-    if (!target)
+    if (!this._message.runtimeModel())
       return null;
-    return this._linkifier.linkifyStackTraceTopFrame(target, stackTrace);
+    return this._linkifier.linkifyStackTraceTopFrame(this._message.runtimeModel().target(), stackTrace);
   }
 
   /**
@@ -388,21 +365,20 @@ Console.ConsoleViewMessage = class {
    * @return {?Element}
    */
   _linkifyScriptId(scriptId, url, lineNumber, columnNumber) {
-    var target = this._target();
-    if (!target)
+    if (!this._message.runtimeModel())
       return null;
-    return this._linkifier.linkifyScriptLocation(target, scriptId, url, lineNumber, columnNumber);
+    return this._linkifier.linkifyScriptLocation(
+        this._message.runtimeModel().target(), scriptId, url, lineNumber, columnNumber);
   }
 
   /**
    * @param {!SDK.RemoteObject|!Protocol.Runtime.RemoteObject|string} parameter
-   * @param {?SDK.Target} target
    * @return {!SDK.RemoteObject}
    */
-  _parameterToRemoteObject(parameter, target) {
+  _parameterToRemoteObject(parameter) {
     if (parameter instanceof SDK.RemoteObject)
       return parameter;
-    var runtimeModel = target ? target.model(SDK.RuntimeModel) : null;
+    var runtimeModel = this._message.runtimeModel();
     if (!runtimeModel)
       return SDK.RemoteObject.fromLocalObject(parameter);
     if (typeof parameter === 'object')
@@ -424,7 +400,7 @@ Console.ConsoleViewMessage = class {
     // API allows passing arbitrary values as messages (strings, numbers, etc.). Wrap them here.
     // FIXME: Only pass runtime wrappers here.
     for (var i = 0; i < parameters.length; ++i)
-      parameters[i] = this._parameterToRemoteObject(parameters[i], this._target());
+      parameters[i] = this._parameterToRemoteObject(parameters[i]);
 
     // There can be string log and string eval result. We distinguish between them based on message type.
     var shouldFormatMessage =
@@ -915,19 +891,17 @@ Console.ConsoleViewMessage = class {
       contentElement.classList.add('console-group-title');
 
     var formattedMessage;
-    var consoleMessage = this._message;
-    var target = consoleMessage.target();
-    var shouldIncludeTrace = !!consoleMessage.stackTrace &&
-        (consoleMessage.source === ConsoleModel.ConsoleMessage.MessageSource.Network ||
-         consoleMessage.level === ConsoleModel.ConsoleMessage.MessageLevel.Error ||
-         consoleMessage.type === ConsoleModel.ConsoleMessage.MessageType.Trace ||
-         consoleMessage.level === ConsoleModel.ConsoleMessage.MessageLevel.Warning);
-    if (target && shouldIncludeTrace)
-      formattedMessage = this._buildMessageWithStackTrace(consoleMessage, target, this._linkifier);
+    var shouldIncludeTrace = !!this._message.stackTrace &&
+        (this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Network ||
+         this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Error ||
+         this._message.type === ConsoleModel.ConsoleMessage.MessageType.Trace ||
+         this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Warning);
+    if (this._message.runtimeModel() && shouldIncludeTrace)
+      formattedMessage = this._buildMessageWithStackTrace();
     else if (this._message.type === ConsoleModel.ConsoleMessage.MessageType.Table)
-      formattedMessage = this._buildTableMessage(this._message);
+      formattedMessage = this._buildTableMessage();
     else
-      formattedMessage = this._buildMessage(consoleMessage);
+      formattedMessage = this._buildMessage();
     contentElement.appendChild(formattedMessage);
 
     this.updateTimestamp();
@@ -1135,12 +1109,9 @@ Console.ConsoleViewMessage = class {
     }
 
     var errorPrefixes = ['EvalError', 'ReferenceError', 'SyntaxError', 'TypeError', 'RangeError', 'Error', 'URIError'];
-    var target = this._target();
-    if (!target || !errorPrefixes.some(startsWith))
+    if (!this._message.runtimeModel() || !errorPrefixes.some(startsWith))
       return null;
-    var debuggerModel = target.model(SDK.DebuggerModel);
-    if (!debuggerModel)
-      return null;
+    var debuggerModel = this._message.runtimeModel().debuggerModel();
 
     var lines = string.split('\n');
     var links = [];
@@ -1197,7 +1168,7 @@ Console.ConsoleViewMessage = class {
     for (var i = 0; i < links.length; ++i) {
       formattedResult.appendChild(Components.linkifyStringAsFragment(string.substring(start, links[i].positionLeft)));
       formattedResult.appendChild(this._linkifier.linkifyScriptLocation(
-          target, null, links[i].url, links[i].lineNumber, links[i].columnNumber));
+          debuggerModel.target(), null, links[i].url, links[i].lineNumber, links[i].columnNumber));
       start = links[i].positionRight;
     }
 

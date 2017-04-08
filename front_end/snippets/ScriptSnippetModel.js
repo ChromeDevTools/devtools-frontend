@@ -272,9 +272,8 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    */
   _printRunScriptResult(runtimeModel, result, scriptId, sourceURL) {
     var consoleMessage = new ConsoleModel.ConsoleMessage(
-        runtimeModel.target(), ConsoleModel.ConsoleMessage.MessageSource.JS,
-        ConsoleModel.ConsoleMessage.MessageLevel.Info, '', undefined, sourceURL, undefined, undefined, undefined,
-        [result], undefined, undefined, undefined, scriptId);
+        runtimeModel, ConsoleModel.ConsoleMessage.MessageSource.JS, ConsoleModel.ConsoleMessage.MessageLevel.Info, '',
+        undefined, sourceURL, undefined, undefined, undefined, [result], undefined, undefined, undefined, scriptId);
     ConsoleModel.consoleModel.addMessage(consoleMessage);
   }
 

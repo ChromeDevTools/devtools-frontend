@@ -645,6 +645,7 @@
         "ScriptFormatterEditorAction.js",
         "InplaceFormatterEditorAction.js",
         "ScriptFormatter.js",
+        "SourceFormatter.js",
         "OpenFileQuickOpen.js",
         "SourcesView.js",
         "AdvancedSearchView.js",

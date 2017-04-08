@@ -13,6 +13,7 @@ Accessibility.AXTreePane = class extends Accessibility.AccessibilitySubPane {
 
     this._axSidebarView = axSidebarView;
     this._treeOutline = this.createTreeOutline();
+    this._treeOutline.contentElement.classList.add('ax-tree');
     this._treeOutline.setPaddingSize(12);
     this._treeOutline.element.addEventListener('keydown', this._onKeyDown.bind(this), true);
     this._treeOutline.element.addEventListener('mouseleave', this._onMouseLeave.bind(this), false);
@@ -210,7 +211,7 @@ Accessibility.AXNodeTreeElement = class extends UI.TreeElement {
    */
   constructor(axNode, treePane) {
     // Pass an empty title, the title gets made later in onattach.
-    super('');
+    super('', false);
 
     /** @type {!Accessibility.AccessibilityNode} */
     this._axNode = axNode;
@@ -271,6 +272,16 @@ Accessibility.AXNodeTreeElement = class extends UI.TreeElement {
       this.listItemElement.setAttribute('tabIndex', 0);
     else
       this.listItemElement.removeAttribute('tabIndex');
+  }
+
+  /**
+   * @param {!Event} event
+   * @return {boolean}
+   * @override
+   */
+  isEventWithinDisclosureTriangle(event) {
+    // Accessibility tree doesn't have a "disclosure triangle" per se.
+    return false;
   }
 
   _onmousemove(event) {

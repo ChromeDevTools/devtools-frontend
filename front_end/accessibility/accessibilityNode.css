@@ -80,16 +80,25 @@ span.ax-internal-role {
     left: -2px;
 }
 
-.tree-outline li.no-dom-node {
+.tree-outline.ax-tree li::before {
+    -webkit-mask-image: url(Images/chevrons.png);
+    -webkit-mask-size: 30px 10px;
+    -webkit-mask-repeat: no-repeat;
+}
+
+.tree-outline.ax-tree li.parent::before {
+    -webkit-mask-position: -20px 1px;
+}
+.tree-outline.ax-tree li.children-unloaded::before {
+    -webkit-mask-position: 0px 1px;
+}
+
+.tree-outline.ax-tree li.no-dom-node {
     opacity: 0.5;
 }
 
-.tree-outline li.children-unloaded::before {
+.tree-outline.ax-tree li.children-unloaded::before {
     opacity: 0.2;
-}
-
-.tree-outline li.partially-expanded::before {
-    -webkit-mask-position: -19px -108px;
 }
 
 .invalid {

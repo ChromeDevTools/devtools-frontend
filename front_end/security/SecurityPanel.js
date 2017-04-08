@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {SDK.TargetManager.Observer}
+ * @implements {SDK.SDKModelObserver<!Security.SecurityModel>}
  * @unrestricted
  */
 Security.SecurityPanel = class extends UI.PanelWithSidebar {
@@ -26,9 +26,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     /** @type {!Map<!Network.NetworkLogView.MixedContentFilterValues, number>} */
     this._filterRequestCounts = new Map();
 
-    /** @type {!Map<!SDK.Target, !Array<!Common.EventTarget.EventDescriptor>>}*/
-    this._eventListeners = new Map();
-    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Network);
+    SDK.targetManager.observeModels(Security.SecurityModel, this);
   }
 
   /**
@@ -265,7 +263,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
   }
 
   showCertificateViewer() {
-    this._target.model(Security.SecurityModel).showCertificateViewer();
+    this._securityModel.showCertificateViewer();
   }
 
   /**
@@ -279,58 +277,42 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!Security.SecurityModel} securityModel
    */
-  targetAdded(target) {
-    if (this._target)
+  modelAdded(securityModel) {
+    if (this._securityModel)
       return;
 
-    var listeners = [];
-    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
-    if (resourceTreeModel) {
-      listeners = listeners.concat([
-        resourceTreeModel.addEventListener(
-            SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this),
-        resourceTreeModel.addEventListener(
-            SDK.ResourceTreeModel.Events.InterstitialShown, this._onInterstitialShown, this),
-        resourceTreeModel.addEventListener(
-            SDK.ResourceTreeModel.Events.InterstitialHidden, this._onInterstitialHidden, this),
-      ]);
+    this._securityModel = securityModel;
+    var resourceTreeModel = securityModel.resourceTreeModel();
+    var networkManager = securityModel.networkManager();
+    this._eventListeners = [
+      securityModel.addEventListener(
+          Security.SecurityModel.Events.SecurityStateChanged, this._onSecurityStateChanged, this),
+      resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this),
+      resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.InterstitialShown, this._onInterstitialShown, this),
+      resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.InterstitialHidden, this._onInterstitialHidden, this),
+      networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this),
+      networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this),
+    ];
 
-      if (resourceTreeModel.isInterstitialShowing())
-        this._onInterstitialShown();
-    }
-
-    var networkManager = target.model(SDK.NetworkManager);
-    if (networkManager) {
-      listeners = listeners.concat([
-        networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this),
-        networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this),
-      ]);
-    }
-
-    var securityModel = target.model(Security.SecurityModel);
-    if (securityModel) {
-      listeners = listeners.concat([securityModel.addEventListener(
-          Security.SecurityModel.Events.SecurityStateChanged, this._onSecurityStateChanged, this)]);
-    }
-
-    this._target = target;
-    this._eventListeners.set(target, listeners);
+    if (resourceTreeModel.isInterstitialShowing())
+      this._onInterstitialShown();
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!Security.SecurityModel} securityModel
    */
-  targetRemoved(target) {
-    if (this._target !== target)
+  modelRemoved(securityModel) {
+    if (this._securityModel !== securityModel)
       return;
 
-    delete this._target;
-
-    Common.EventTarget.removeEventListeners(this._eventListeners.get(target));
-    this._eventListeners.delete(target);
+    delete this._securityModel;
+    Common.EventTarget.removeEventListeners(this._eventListeners);
   }
 
   /**

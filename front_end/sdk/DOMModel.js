@@ -413,6 +413,15 @@ SDK.DOMNode = class {
   }
 
   /**
+  * @param {string} name
+  * @param {string} value
+  * @return {!Promise<?Protocol.Error>}
+  */
+  setAttributeValuePromise(name, value) {
+    return new Promise(fulfill => this.setAttributeValue(name, value, fulfill));
+  }
+
+  /**
    * @return {!Array<!SDK.DOMNode.Attribute>}
    */
   attributes() {

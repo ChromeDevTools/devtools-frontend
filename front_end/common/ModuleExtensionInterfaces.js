@@ -9,16 +9,18 @@ Common.Renderer = function() {};
 Common.Renderer.prototype = {
   /**
    * @param {!Object} object
+   * @param {!Common.Renderer.Options} options
    * @return {!Promise.<!Element>}
    */
-  render(object) {}
+  render(object, options) {}
 };
 
 /**
  * @param {!Object} object
+ * @param {!Common.Renderer.Options=} options
  * @return {!Promise.<!Element>}
  */
-Common.Renderer.renderPromise = function(object) {
+Common.Renderer.renderPromise = function(object, options) {
   if (!object)
     return Promise.reject(new Error('Can\'t render ' + object));
 
@@ -26,11 +28,16 @@ Common.Renderer.renderPromise = function(object) {
 
   /**
    * @param {!Common.Renderer} renderer
+   * @return {!Promise.<!Element>}
    */
   function render(renderer) {
-    return renderer.render(object);
+    return renderer.render(object, options || {});
   }
 };
+
+/** @typedef {!{title: (string|!Element|undefined), expanded: (boolean|undefined),
+ *    editable: (boolean|undefined)}} */
+Common.Renderer.Options;
 
 /**
  * @interface

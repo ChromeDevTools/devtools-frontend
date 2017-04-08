@@ -1567,7 +1567,6 @@ Elements.ElementsTreeOutline.UpdateRecord = class {
 
 /**
  * @implements {Common.Renderer}
- * @unrestricted
  */
 Elements.ElementsTreeOutline.Renderer = class {
   /**

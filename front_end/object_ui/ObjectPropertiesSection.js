@@ -1350,3 +1350,28 @@ ObjectUI.ObjectPropertiesSectionExpandController = class {
 
 ObjectUI.ObjectPropertiesSectionExpandController._cachedPathSymbol = Symbol('cachedPath');
 ObjectUI.ObjectPropertiesSectionExpandController._treeOutlineId = Symbol('treeOutlineId');
+
+/**
+ * @implements {Common.Renderer}
+ */
+ObjectUI.ObjectPropertiesSection.Renderer = class {
+  /**
+   * @override
+   * @param {!Object} object
+   * @param {!Common.Renderer.Options=} options
+   * @return {!Promise<!Element>}
+   */
+  render(object, options) {
+    if (!(object instanceof SDK.RemoteObject))
+      return Promise.reject(new Error('Can\'t render ' + object));
+    options = options || {};
+    var title = options.title;
+    var section = new ObjectUI.ObjectPropertiesSection(object, title);
+    if (!title)
+      section.titleLessMode();
+    if (options.expanded)
+      section.expand();
+    section.editable = !!options.editable;
+    return Promise.resolve(section.element);
+  }
+};

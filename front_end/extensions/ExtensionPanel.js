@@ -277,12 +277,15 @@ Extensions.ExtensionSidebarPane = class extends UI.SimpleView {
       return;
     }
     this._objectPropertiesView.element.removeChildren();
-    var section = new ObjectUI.ObjectPropertiesSection(object, title);
-    if (!title)
-      section.titleLessMode();
-    section.expand();
-    section.editable = false;
-    this._objectPropertiesView.element.appendChild(section.element);
-    callback();
+    Common.Renderer
+        .renderPromise(object, {
+          title: title,
+          expanded: true,
+          editable: false,
+        })
+        .then(element => {
+          this._objectPropertiesView.element.appendChild(element);
+          callback();
+        });
   }
 };

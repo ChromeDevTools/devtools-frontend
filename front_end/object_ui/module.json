@@ -1,4 +1,13 @@
 {
+    "extensions": [
+        {
+            "type": "@Common.Renderer",
+            "contextTypes": [
+                "SDK.RemoteObject"
+            ],
+            "className": "ObjectUI.ObjectPropertiesSection.Renderer"
+        }
+    ],
     "dependencies": [
         "ui",
         "sdk",

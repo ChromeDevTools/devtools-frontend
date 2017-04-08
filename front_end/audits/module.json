@@ -12,7 +12,8 @@
     "dependencies": [
         "components",
         "extensions",
-        "network_log"
+        "network_log",
+        "object_ui"
     ],
     "scripts": [
         "AuditsPanel.js",

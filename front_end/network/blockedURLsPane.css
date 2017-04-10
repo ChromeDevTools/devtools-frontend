@@ -9,6 +9,11 @@
     border-top: 1px solid #dadada !important;
 }
 
+.blocking-disabled {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
 .editor-container {
     padding: 0 4px;
 }
@@ -42,6 +47,7 @@
 
 .blocked-url-checkbox {
     margin-left: 8px;
+    flex: none;
 }
 
 .blocked-url-label {

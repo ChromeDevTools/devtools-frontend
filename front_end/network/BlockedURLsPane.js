@@ -61,6 +61,7 @@ Network.BlockedURLsPane = class extends UI.VBox {
   }
 
   _addButtonClicked() {
+    this._manager.setBlockingEnabled(true);
     this._list.addNewItem(0, {url: '', enabled: true});
   }
 
@@ -77,6 +78,7 @@ Network.BlockedURLsPane = class extends UI.VBox {
     var checkbox = element.createChild('input', 'blocked-url-checkbox');
     checkbox.type = 'checkbox';
     checkbox.checked = pattern.enabled;
+    checkbox.disabled = !this._manager.blockingEnabled();
     element.createChild('div', 'blocked-url-label').textContent = pattern.url;
     element.createChild('div', 'blocked-url-count').textContent = Common.UIString('%d blocked', count);
     element.addEventListener('click', event => this._togglePattern(pattern, event), false);
@@ -97,6 +99,7 @@ Network.BlockedURLsPane = class extends UI.VBox {
 
   _toggleEnabled() {
     this._manager.setBlockingEnabled(!this._manager.blockingEnabled());
+    this._update();
   }
 
   /**
@@ -171,7 +174,9 @@ Network.BlockedURLsPane = class extends UI.VBox {
    * @return {!Promise<?>}
    */
   _update() {
-    this._enabledCheckbox.setChecked(this._manager.blockingEnabled());
+    var enabled = this._manager.blockingEnabled();
+    this._list.element.classList.toggle('blocking-disabled', !enabled);
+    this._enabledCheckbox.setChecked(enabled);
     this._list.clear();
     for (var pattern of this._manager.blockedPatterns())
       this._list.appendItem(pattern, true);

@@ -694,6 +694,10 @@ Main.Main.MainMenuItem = class {
       var bottom = new UI.ToolbarToggle(Common.UIString('Dock to bottom'), 'largeicon-dock-to-bottom');
       var right = new UI.ToolbarToggle(Common.UIString('Dock to right'), 'largeicon-dock-to-right');
       var left = new UI.ToolbarToggle(Common.UIString('Dock to left'), 'largeicon-dock-to-left');
+      undock.addEventListener(UI.ToolbarButton.Events.MouseDown, event => event.data.consume());
+      bottom.addEventListener(UI.ToolbarButton.Events.MouseDown, event => event.data.consume());
+      right.addEventListener(UI.ToolbarButton.Events.MouseDown, event => event.data.consume());
+      left.addEventListener(UI.ToolbarButton.Events.MouseDown, event => event.data.consume());
       undock.addEventListener(
           UI.ToolbarButton.Events.MouseUp, setDockSide.bind(null, Components.DockController.State.Undocked));
       bottom.addEventListener(

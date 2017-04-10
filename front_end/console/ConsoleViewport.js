@@ -62,6 +62,7 @@ Console.ConsoleViewport = class {
     this._anchorSelection = null;
     this._headSelection = null;
     this._itemCount = 0;
+    this._cumulativeHeights = new Int32Array(0);
 
     // Listen for any changes to descendants and trigger a refresh. This ensures
     // that items updated asynchronously will not break stick-to-bottom behavior
@@ -120,9 +121,9 @@ Console.ConsoleViewport = class {
   }
 
   invalidate() {
-    delete this._cumulativeHeights;
     delete this._cachedProviderElements;
     this._itemCount = this._provider.itemCount();
+    this._rebuildCumulativeHeights();
     this.refresh();
   }
 
@@ -141,11 +142,7 @@ Console.ConsoleViewport = class {
     return element;
   }
 
-  _rebuildCumulativeHeightsIfNeeded() {
-    if (this._cumulativeHeights)
-      return;
-    if (!this._itemCount)
-      return;
+  _rebuildCumulativeHeights() {
     var firstActiveIndex = this._firstActiveIndex;
     var lastActiveIndex = this._lastActiveIndex;
     var height = 0;
@@ -324,12 +321,12 @@ Console.ConsoleViewport = class {
 
     for (var i = 0; i < this._renderedItems.length; ++i) {
       // Tolerate 1-pixel error due to double-to-integer rounding errors.
-      if (this._cumulativeHeights &&
-          Math.abs(this._cachedItemHeight(this._firstActiveIndex + i) - this._renderedItems[i].element().offsetHeight) >
-              1)
-        delete this._cumulativeHeights;
+      var cachedItemHeight = this._cachedItemHeight(this._firstActiveIndex + i);
+      if (Math.abs(cachedItemHeight - this._renderedItems[i].element().offsetHeight) > 1) {
+        this._rebuildCumulativeHeights();
+        break;
+      }
     }
-    this._rebuildCumulativeHeightsIfNeeded();
     var activeHeight = visibleHeight * 2;
     // When the viewport is scrolled to the bottom, using the cumulative heights estimate is not
     // precise enough to determine next visible indices. This stickToBottom check avoids extra
@@ -340,7 +337,7 @@ Console.ConsoleViewport = class {
       this._lastActiveIndex = this._itemCount - 1;
     } else {
       this._firstActiveIndex = Math.max(
-          Array.prototype.lowerBound.call(
+          Int32Array.prototype.lowerBound.call(
               this._cumulativeHeights, visibleFrom + 1 - (activeHeight - visibleHeight) / 2),
           0);
       // Proactively render more rows in case some of them will be collapsed without triggering refresh. @see crbug.com/390169
@@ -475,7 +472,7 @@ Console.ConsoleViewport = class {
    */
   firstVisibleIndex() {
     var firstVisibleIndex =
-        Math.max(Array.prototype.lowerBound.call(this._cumulativeHeights, this.element.scrollTop + 1), 0);
+        Math.max(Int32Array.prototype.lowerBound.call(this._cumulativeHeights, this.element.scrollTop + 1), 0);
     return Math.max(firstVisibleIndex, this._firstActiveIndex);
   }
 
@@ -526,7 +523,6 @@ Console.ConsoleViewport = class {
    */
   forceScrollItemToBeFirst(index) {
     this.setStickToBottom(false);
-    this._rebuildCumulativeHeightsIfNeeded();
     this.element.scrollTop = index > 0 ? this._cumulativeHeights[index - 1] : 0;
     if (this.element.isScrolledToBottom())
       this.setStickToBottom(true);
@@ -538,7 +534,6 @@ Console.ConsoleViewport = class {
    */
   forceScrollItemToBeLast(index) {
     this.setStickToBottom(false);
-    this._rebuildCumulativeHeightsIfNeeded();
     this.element.scrollTop = this._cumulativeHeights[index] - this._visibleHeight();
     if (this.element.isScrolledToBottom())
       this.setStickToBottom(true);

@@ -132,11 +132,11 @@ Profiler.HeapSnapshotGridNode = class extends DataGrid.DataGridNode {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.HeapProfilerModel} heapProfilerModel
    * @param {string} objectGroupName
    * @return {!Promise<!SDK.RemoteObject>}
    */
-  queryObjectContent(target, objectGroupName) {
+  queryObjectContent(heapProfilerModel, objectGroupName) {
   }
 
   /**
@@ -604,11 +604,11 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.HeapProfilerModel} heapProfilerModel
    * @param {string} objectGroupName
    * @return {!Promise<!SDK.RemoteObject>}
    */
-  queryObjectContent(target, objectGroupName) {
+  queryObjectContent(heapProfilerModel, objectGroupName) {
     var fulfill;
     var promise = new Promise(x => fulfill = x);
 
@@ -619,8 +619,7 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
       fulfill(object || runtimeModel.createRemoteObjectFromPrimitiveValue(Common.UIString('Preview is not available')));
     }
 
-    var heapProfilerModel = target.model(SDK.HeapProfilerModel);
-    var runtimeModel = target.model(SDK.RuntimeModel);
+    var runtimeModel = heapProfilerModel.runtimeModel();
     if (this._type === 'string')
       onResult(runtimeModel.createRemoteObjectFromPrimitiveValue(this._name));
     else if (!heapProfilerModel || !runtimeModel)
@@ -1432,12 +1431,12 @@ Profiler.AllocationGridNode = class extends Profiler.HeapSnapshotGridNode {
 
     var cell = super.createCell(columnId);
     var allocationNode = this._allocationNode;
-    var target = this._dataGrid.target();
+    var heapProfilerModel = this._dataGrid.heapProfilerModel();
     if (allocationNode.scriptId) {
       var linkifier = this._dataGrid._linkifier;
       var urlElement = linkifier.linkifyScriptLocation(
-          target, String(allocationNode.scriptId), allocationNode.scriptName, allocationNode.line - 1,
-          allocationNode.column - 1, 'profile-node-file');
+          heapProfilerModel ? heapProfilerModel.target() : null, String(allocationNode.scriptId),
+          allocationNode.scriptName, allocationNode.line - 1, allocationNode.column - 1, 'profile-node-file');
       urlElement.style.maxWidth = '75%';
       cell.insertBefore(urlElement, cell.firstChild);
     }

@@ -13,6 +13,20 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
     this._runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
   }
 
+  /**
+   * @return {!SDK.DebuggerModel}
+   */
+  debuggerModel() {
+    return this._runtimeModel.debuggerModel();
+  }
+
+  /**
+   * @return {!SDK.RuntimeModel}
+   */
+  runtimeModel() {
+    return this._runtimeModel;
+  }
+
   enable() {
     if (this._enabled)
       return;

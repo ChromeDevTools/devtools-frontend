@@ -7,24 +7,15 @@
  */
 Profiler.ProfileHeader = class extends Common.Object {
   /**
-   * @param {?SDK.Target} target
    * @param {!Profiler.ProfileType} profileType
    * @param {string} title
    */
-  constructor(target, profileType, title) {
+  constructor(profileType, title) {
     super();
-    this._target = target;
     this._profileType = profileType;
     this.title = title;
     this.uid = profileType.incrementProfileUid();
     this._fromFile = false;
-  }
-
-  /**
-   * @return {?SDK.Target}
-   */
-  target() {
-    return this._target;
   }
 
   /**

@@ -110,13 +110,6 @@ Profiler.ProfileView = class extends UI.SimpleView {
   }
 
   /**
-   * @return {?SDK.Target}
-   */
-  target() {
-    return this._profileHeader.target();
-  }
-
-  /**
    * @param {number} timeLeft
    * @param {number} timeRight
    */
@@ -395,13 +388,13 @@ Profiler.ProfileView.ViewTypes = {
  */
 Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
   /**
-   * @param {?SDK.Target} target
+   * @param {?SDK.DebuggerModel} debuggerModel
    * @param {!Profiler.ProfileType} type
    * @param {string=} title
    */
-  constructor(target, type, title) {
-    super(target, type, title || Common.UIString('Profile %d', type.nextProfileUid()));
-    this._debuggerModel = target && target.model(SDK.DebuggerModel);
+  constructor(debuggerModel, type, title) {
+    super(type, title || Common.UIString('Profile %d', type.nextProfileUid()));
+    this._debuggerModel = debuggerModel;
     this._tempFile = null;
   }
 

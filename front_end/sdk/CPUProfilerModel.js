@@ -52,6 +52,13 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @return {!SDK.DebuggerModel}
+   */
+  debuggerModel() {
+    return this._debuggerModel;
+  }
+
+  /**
    * @override
    * @param {string} id
    * @param {!Protocol.Debugger.Location} scriptLocation
@@ -95,7 +102,7 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
     var debuggerLocation = SDK.DebuggerModel.Location.fromPayload(this._debuggerModel, scriptLocation);
     var globalId = this.target().id() + '.' + id;
     var data = /** @type {!SDK.CPUProfilerModel.EventData} */ (
-        {id: globalId, scriptLocation: debuggerLocation, cpuProfile: cpuProfile, title: title});
+        {id: globalId, scriptLocation: debuggerLocation, cpuProfile: cpuProfile, title: title, cpuProfilerModel: this});
     this.dispatchEventToListeners(eventName, data);
   }
 
@@ -159,5 +166,5 @@ SDK.CPUProfilerModel.Events = {
   ConsoleProfileFinished: Symbol('ConsoleProfileFinished')
 };
 
-/** @typedef {!{id: string, scriptLocation: !SDK.DebuggerModel.Location, title: string, cpuProfile: (!Protocol.Profiler.Profile|undefined)}} */
+/** @typedef {!{id: string, scriptLocation: !SDK.DebuggerModel.Location, title: string, cpuProfile: (!Protocol.Profiler.Profile|undefined), cpuProfilerModel: !SDK.CPUProfilerModel}} */
 SDK.CPUProfilerModel.EventData;

@@ -233,21 +233,6 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     this.databasesListTreeElement.setExpandable(false);
   }
 
-  _resetDOMStorage() {
-    this._domStorageTreeElements.clear();
-    this.localStorageListTreeElement.removeChildren();
-    this.sessionStorageListTreeElement.removeChildren();
-  }
-
-  _resetCookies() {
-    this.cookieListTreeElement.removeChildren();
-  }
-
-  _resetCacheStorage() {
-    this.cacheStorageListTreeElement.removeChildren();
-    this.cacheStorageListTreeElement.setExpandable(false);
-  }
-
   _resetAppCache() {
     for (var frameId of Object.keys(this._applicationCacheFrameElements))
       this._applicationCacheFrameManifestRemoved({data: frameId});
@@ -257,15 +242,7 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
   _reset() {
     this._domains = {};
     this._resetWebSQL();
-    this._resetDOMStorage();
-    this._resetCookies();
-    this._resetCacheStorage();
-    // No need to this._resetAppCache.
-
-    this._panel.resetView();
-
-    if (this._sidebarTree.selectedTreeElement)
-      this._sidebarTree.selectedTreeElement.deselect();
+    this.cookieListTreeElement.removeChildren();
   }
 
   _frameNavigated(event) {
@@ -859,6 +836,7 @@ Resources.ServiceWorkerCacheTreeElement = class extends Resources.StorageCategor
     swCacheTreeElement.clear();
     this.removeChild(swCacheTreeElement);
     this._swCacheTreeElements.remove(swCacheTreeElement);
+    this.setExpandable(this.childCount() > 0);
   }
 
   /**
@@ -1130,6 +1108,7 @@ Resources.IndexedDBTreeElement = class extends Resources.StorageCategoryTreeElem
     idbDatabaseTreeElement.clear();
     this.removeChild(idbDatabaseTreeElement);
     this._idbDatabaseTreeElements.remove(idbDatabaseTreeElement);
+    this.setExpandable(this.childCount() > 0);
   }
 
   /**

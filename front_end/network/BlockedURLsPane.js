@@ -175,7 +175,7 @@ Network.BlockedURLsPane = class extends UI.VBox {
    */
   _update() {
     var enabled = this._manager.blockingEnabled();
-    this._list.element.classList.toggle('blocking-disabled', !enabled);
+    this._list.element.classList.toggle('blocking-disabled', !enabled && !!this._manager.blockedPatterns().length);
     this._enabledCheckbox.setChecked(enabled);
     this._list.clear();
     for (var pattern of this._manager.blockedPatterns())

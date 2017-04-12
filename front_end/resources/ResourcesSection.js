@@ -75,8 +75,6 @@ Resources.ResourcesSection = class {
    * @param {!SDK.ResourceTreeFrame} frame
    */
   _frameNavigated(frame) {
-    if (!Resources.ResourcesSection._getParentFrame(frame))
-      return;
     var frameTreeElement = this._treeElementForFrameId.get(frame.id);
     if (frameTreeElement)
       frameTreeElement.frameNavigated(frame);

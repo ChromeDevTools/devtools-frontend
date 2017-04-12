@@ -29,7 +29,7 @@
  */
 
 /**
- * @unrestricted
+ * @implements {Bindings.CSSWorkspaceBinding.SourceMapping}
  */
 Bindings.SASSSourceMapping = class {
   /**
@@ -134,6 +134,7 @@ Bindings.SASSSourceMapping = class {
   }
 
   /**
+   * @override
    * @param {!SDK.CSSLocation} rawLocation
    * @return {?Workspace.UILocation}
    */

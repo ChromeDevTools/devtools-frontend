@@ -476,6 +476,14 @@ Bindings.NetworkProject = class {
     return workspace.uiSourceCode(
         Bindings.NetworkProject.projectId(header.cssModel().target(), header.frameId, false), url);
   }
+
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {?SDK.CSSStyleSheetHeader}
+   */
+  static styleHeaderForUISourceCode(uiSourceCode) {
+    return uiSourceCode[Bindings.NetworkProject._styleSheetSymbol];
+  }
 };
 
 Bindings.NetworkProject._networkProjectSymbol = Symbol('networkProject');

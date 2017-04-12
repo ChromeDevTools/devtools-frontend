@@ -2,63 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @implements {Bindings.DebuggerSourceMapping}
- */
-Sources.FormatterScriptMapping = class {
-  /**
-   * @override
-   * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @return {?Workspace.UILocation}
-   */
-  rawLocationToUILocation(rawLocation) {
-    var script = rawLocation.script();
-    var formatData = script && Sources.SourceFormatData._for(script);
-    if (!formatData)
-      return null;
-    var lineNumber = rawLocation.lineNumber;
-    var columnNumber = rawLocation.columnNumber || 0;
-    var formattedLocation = formatData.mapping.originalToFormatted(lineNumber, columnNumber);
-    return formatData.formattedSourceCode.uiLocation(formattedLocation[0], formattedLocation[1]);
-  }
-
-  /**
-   * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {number} lineNumber
-   * @param {number} columnNumber
-   * @return {?SDK.DebuggerModel.Location}
-   */
-  uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
-    var formatData = Sources.SourceFormatData._for(uiSourceCode);
-    if (!formatData)
-      return null;
-    var originalLocation = formatData.mapping.formattedToOriginal(lineNumber, columnNumber);
-    var scripts = Sources.SourceFormatter._scriptsForUISourceCode(formatData.originalSourceCode);
-    if (!scripts.length)
-      return null;
-    return scripts[0].debuggerModel.createRawLocation(scripts[0], originalLocation[0], originalLocation[1]);
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isIdentity() {
-    return false;
-  }
-
-  /**
-   * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {number} lineNumber
-   * @return {boolean}
-   */
-  uiLineHasMapping(uiSourceCode, lineNumber) {
-    return true;
-  }
-};
-
 Sources.SourceFormatData = class {
   /**
    * @param {!Workspace.UISourceCode} originalSourceCode
@@ -95,7 +38,8 @@ Sources.SourceFormatter = class {
 
     /** @type {!Map<string, !Workspace.UISourceCode>} */
     this._formattedPaths = new Map();
-    this._scriptMapping = new Sources.FormatterScriptMapping();
+    this._scriptMapping = new Sources.SourceFormatter.ScriptMapping();
+    this._styleMapping = new Sources.SourceFormatter.StyleMapping();
     Workspace.workspace.addEventListener(
         Workspace.Workspace.Events.UISourceCodeRemoved, this._onUISourceCodeRemoved, this);
   }
@@ -120,38 +64,11 @@ Sources.SourceFormatter = class {
       return null;
 
     delete formattedUISourceCode[Sources.SourceFormatData._formatDataSymbol];
-    var scripts = Sources.SourceFormatter._scriptsForUISourceCode(formatData.originalSourceCode);
-    for (var script of scripts) {
-      delete script[Sources.SourceFormatData._formatDataSymbol];
-      Bindings.debuggerWorkspaceBinding.popSourceMapping(script);
-    }
-    if (scripts[0])
-      Bindings.debuggerWorkspaceBinding.setSourceMapping(scripts[0].debuggerModel, formattedUISourceCode, null);
+    this._scriptMapping._setSourceMappingEnabled(formatData, false);
+    this._styleMapping._setSourceMappingEnabled(formatData, false);
     this._project.removeFile(formattedUISourceCode.url());
     this._formattedPaths.remove(formatData.originalPath());
     return formatData.originalSourceCode;
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {!Array<!SDK.Script>}
-   */
-  static _scriptsForUISourceCode(uiSourceCode) {
-    if (uiSourceCode.contentType() === Common.resourceTypes.Document) {
-      var target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
-      var debuggerModel = target && target.model(SDK.DebuggerModel);
-      if (debuggerModel) {
-        var scripts = debuggerModel.scriptsForSourceURL(uiSourceCode.url())
-                          .filter(script => script.isInlineScript() && !script.hasSourceURL);
-        return scripts;
-      }
-    }
-    if (uiSourceCode.contentType().isScript()) {
-      var rawLocation = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, 0, 0);
-      if (rawLocation)
-        return [rawLocation.script()];
-    }
-    return [];
   }
 
   /**
@@ -192,20 +109,11 @@ Sources.SourceFormatter = class {
       var formattedUISourceCode = this._project.addContentProvider(formattedURL, contentProvider);
       var formatData = new Sources.SourceFormatData(uiSourceCode, formattedUISourceCode, formatterMapping);
       formattedUISourceCode[Sources.SourceFormatData._formatDataSymbol] = formatData;
+      this._scriptMapping._setSourceMappingEnabled(formatData, true);
+      this._styleMapping._setSourceMappingEnabled(formatData, true);
 
       var path = formatData.originalPath();
       this._formattedPaths.set(path, formattedUISourceCode);
-
-      var scripts = Sources.SourceFormatter._scriptsForUISourceCode(uiSourceCode);
-      if (!scripts)
-        return;
-      for (var script of scripts) {
-        script[Sources.SourceFormatData._formatDataSymbol] = formatData;
-        Bindings.debuggerWorkspaceBinding.pushSourceMapping(script, this._scriptMapping);
-      }
-
-      Bindings.debuggerWorkspaceBinding.setSourceMapping(
-          scripts[0].debuggerModel, formattedUISourceCode, this._scriptMapping);
 
       for (var decoration of uiSourceCode.allDecorations()) {
         var range = decoration.range();
@@ -219,6 +127,149 @@ Sources.SourceFormatter = class {
 
       fulfillFormatPromise(formatData);
     }
+  }
+};
+
+/**
+ * @implements {Bindings.DebuggerSourceMapping}
+ */
+Sources.SourceFormatter.ScriptMapping = class {
+  /**
+   * @override
+   * @param {!SDK.DebuggerModel.Location} rawLocation
+   * @return {?Workspace.UILocation}
+   */
+  rawLocationToUILocation(rawLocation) {
+    var script = rawLocation.script();
+    var formatData = script && Sources.SourceFormatData._for(script);
+    if (!formatData)
+      return null;
+    var lineNumber = rawLocation.lineNumber;
+    var columnNumber = rawLocation.columnNumber || 0;
+    var formattedLocation = formatData.mapping.originalToFormatted(lineNumber, columnNumber);
+    return formatData.formattedSourceCode.uiLocation(formattedLocation[0], formattedLocation[1]);
+  }
+
+  /**
+   * @override
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @return {?SDK.DebuggerModel.Location}
+   */
+  uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
+    var formatData = Sources.SourceFormatData._for(uiSourceCode);
+    if (!formatData)
+      return null;
+    var originalLocation = formatData.mapping.formattedToOriginal(lineNumber, columnNumber);
+    var scripts = this._scriptsForUISourceCode(formatData.originalSourceCode);
+    if (!scripts.length)
+      return null;
+    return scripts[0].debuggerModel.createRawLocation(scripts[0], originalLocation[0], originalLocation[1]);
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  isIdentity() {
+    return false;
+  }
+
+  /**
+   * @override
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {number} lineNumber
+   * @return {boolean}
+   */
+  uiLineHasMapping(uiSourceCode, lineNumber) {
+    return true;
+  }
+
+  /**
+   * @param {!Sources.SourceFormatData} formatData
+   * @param {boolean} enabled
+   */
+  _setSourceMappingEnabled(formatData, enabled) {
+    var scripts = this._scriptsForUISourceCode(formatData.originalSourceCode);
+    if (!scripts.length)
+      return;
+    if (enabled) {
+      for (var script of scripts) {
+        script[Sources.SourceFormatData._formatDataSymbol] = formatData;
+        Bindings.debuggerWorkspaceBinding.pushSourceMapping(script, this);
+      }
+    } else {
+      for (var script of scripts) {
+        delete script[Sources.SourceFormatData._formatDataSymbol];
+        Bindings.debuggerWorkspaceBinding.popSourceMapping(script);
+      }
+    }
+
+    Bindings.debuggerWorkspaceBinding.setSourceMapping(
+        scripts[0].debuggerModel, formatData.formattedSourceCode, enabled ? this : null);
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {!Array<!SDK.Script>}
+   */
+  _scriptsForUISourceCode(uiSourceCode) {
+    if (uiSourceCode.contentType() === Common.resourceTypes.Document) {
+      var target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
+      var debuggerModel = target && target.model(SDK.DebuggerModel);
+      if (debuggerModel) {
+        var scripts = debuggerModel.scriptsForSourceURL(uiSourceCode.url())
+                          .filter(script => script.isInlineScript() && !script.hasSourceURL);
+        return scripts;
+      }
+    }
+    if (uiSourceCode.contentType().isScript()) {
+      var rawLocation = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, 0, 0);
+      if (rawLocation)
+        return [rawLocation.script()];
+    }
+    return [];
+  }
+};
+
+/**
+ * @implements {Bindings.CSSWorkspaceBinding.SourceMapping}
+ */
+Sources.SourceFormatter.StyleMapping = class {
+  constructor() {
+    Bindings.cssWorkspaceBinding.addSourceMapping(this);
+  }
+
+  /**
+   * @override
+   * @param {!SDK.CSSLocation} rawLocation
+   * @return {?Workspace.UILocation}
+   */
+  rawLocationToUILocation(rawLocation) {
+    var styleHeader = rawLocation.header();
+    var formatData = styleHeader && Sources.SourceFormatData._for(styleHeader);
+    if (!formatData)
+      return null;
+    var formattedLocation =
+        formatData.mapping.originalToFormatted(rawLocation.lineNumber, rawLocation.columnNumber || 0);
+    return formatData.formattedSourceCode.uiLocation(formattedLocation[0], formattedLocation[1]);
+  }
+
+  /**
+   * @param {!Sources.SourceFormatData} formatData
+   * @param {boolean} enable
+   */
+  _setSourceMappingEnabled(formatData, enable) {
+    var original = formatData.originalSourceCode;
+    var styleHeader = Bindings.NetworkProject.styleHeaderForUISourceCode(original);
+    if (!styleHeader)
+      return;
+    if (enable)
+      styleHeader[Sources.SourceFormatData._formatDataSymbol] = formatData;
+    else
+      delete styleHeader[Sources.SourceFormatData._formatDataSymbol];
+    Bindings.cssWorkspaceBinding.updateLocations(styleHeader);
   }
 };
 

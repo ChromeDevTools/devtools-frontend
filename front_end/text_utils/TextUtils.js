@@ -280,3 +280,22 @@ TextUtils.TokenizerFactory.prototype = {
    */
   createTokenizer(mimeType) {}
 };
+
+/**
+ * @param {string} text
+ * @return {boolean}
+ */
+TextUtils.isMinified = function(text) {
+  var kMaxNonMinifiedLength = 500;
+  var linesToCheck = 10;
+  var lastPosition = 0;
+  do {
+    var eolIndex = text.indexOf('\n', lastPosition);
+    if (eolIndex < 0)
+      eolIndex = text.length;
+    if (eolIndex - lastPosition > kMaxNonMinifiedLength && text.substr(lastPosition, 3) !== '//#')
+      return true;
+    lastPosition = eolIndex + 1;
+  } while (--linesToCheck >= 0 && lastPosition < text.length);
+  return false;
+};

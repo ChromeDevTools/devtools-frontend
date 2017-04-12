@@ -71,14 +71,20 @@ Coverage.CoverageListView = class extends UI.VBox {
   /**
    * @param {?DataGrid.DataGridNode} node
    */
-  _revealSourceForNode(node) {
+  async _revealSourceForNode(node) {
     if (!node)
       return;
     var coverageInfo = /** @type {!Coverage.CoverageListView.GridNode} */ (node)._coverageInfo;
     var sourceCode = Workspace.workspace.uiSourceCodeForURL(coverageInfo.url());
     if (!sourceCode)
       return;
-    Common.Revealer.reveal(sourceCode);
+    var content = await sourceCode.requestContent();
+    if (TextUtils.isMinified(content)) {
+      var formatData = await Sources.sourceFormatter.format(sourceCode);
+      Common.Revealer.reveal(formatData.formattedSourceCode);
+    } else {
+      Common.Revealer.reveal(sourceCode);
+    }
   }
 
   _sortingChanged() {

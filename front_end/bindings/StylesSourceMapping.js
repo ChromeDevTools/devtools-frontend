@@ -29,6 +29,7 @@
  */
 
 /**
+ * @implements {Bindings.CSSWorkspaceBinding.SourceMapping}
  * @unrestricted
  */
 Bindings.StylesSourceMapping = class {
@@ -60,6 +61,7 @@ Bindings.StylesSourceMapping = class {
   }
 
   /**
+   * @override
    * @param {!SDK.CSSLocation} rawLocation
    * @return {?Workspace.UILocation}
    */

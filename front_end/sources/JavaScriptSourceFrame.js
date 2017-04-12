@@ -1207,17 +1207,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     if (this._prettyPrintInfobar)
       return;
 
-    var minified = false;
-    for (var i = 0; i < 10 && i < this.textEditor.linesCount; ++i) {
-      var line = this.textEditor.line(i);
-      if (line.startsWith('//#'))  // mind source map.
-        continue;
-      if (line.length > 500) {
-        minified = true;
-        break;
-      }
-    }
-    if (!minified)
+    if (!TextUtils.isMinified(/** @type {string} */ (this._debuggerSourceCode.content())))
       return;
 
     this._prettyPrintInfobar = UI.Infobar.create(

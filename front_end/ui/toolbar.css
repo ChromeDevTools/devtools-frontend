@@ -79,6 +79,8 @@
 
 .toolbar-has-dropdown {
     justify-content: space-between;
+    padding: 0 3px 0 5px;
+    margin: 0 -3px 0 -5px;
 }
 
 .toolbar-has-dropdown .toolbar-text {

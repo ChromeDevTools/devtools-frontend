@@ -52,6 +52,7 @@ promisified_domains = {
     "CSS",
     "Emulation",
     "HeapProfiler",
+    "Page",
     "Profiler",
     "LayerTree",
     "Tracing"

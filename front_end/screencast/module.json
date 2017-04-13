@@ -24,6 +24,7 @@
         "emulation"
     ],
     "scripts": [
+        "InputModel.js",
         "ScreencastApp.js",
         "ScreencastView.js"
     ],

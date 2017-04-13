@@ -142,8 +142,9 @@ Audits2.Audits2Panel = class extends UI.Panel {
     return this._protocolService.detach().then(_ => {
       this._auditRunning = false;
       this._updateButton();
-      if (this._inspectedURL !== SDK.targetManager.mainTarget().inspectedURL())
-        SDK.targetManager.mainTarget().pageAgent().navigate(this._inspectedURL);
+      var resourceTreeModel = SDK.targetManager.mainTarget().model(SDK.ResourceTreeModel);
+      if (resourceTreeModel && this._inspectedURL !== SDK.targetManager.mainTarget().inspectedURL())
+        resourceTreeModel.navigate(this._inspectedURL);
 
     });
   }

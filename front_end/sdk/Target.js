@@ -210,10 +210,11 @@ SDK.Target.Capability = {
   Tracing: 1 << 7,
   TouchEmulation: 1 << 8,
   Security: 1 << 9,
+  Input: 1 << 10,
 
   None: 0,
 
-  AllForTests: (1 << 10) - 1
+  AllForTests: (1 << 11) - 1
 };
 
 /**

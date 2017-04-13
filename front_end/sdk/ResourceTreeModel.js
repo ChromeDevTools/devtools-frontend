@@ -376,6 +376,31 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {string} url
+   */
+  navigate(url) {
+    this._agent.navigate(url, undefined, (error, frameId) => undefined);
+  }
+
+  /**
+   * @return {!Promise<?{currentIndex: number, entries: !Protocol.Page.NavigationEntry}>}
+   */
+  navigationHistory() {
+    return this._agent.getNavigationHistory((error, currentIndex, entries) => {
+      if (error)
+        return null;
+      return {currentIndex: currentIndex, entries: entries};
+    });
+  }
+
+  /**
+   * @param {!Protocol.Page.NavigationEntry} entry
+   */
+  navigateToHistoryEntry(entry) {
+    this._agent.navigateToHistoryEntry(entry.id);
+  }
+
+  /**
    * @param {function(string, ?string,!Array<!Protocol.Page.AppManifestError>)} callback
    */
   fetchAppManifest(callback) {

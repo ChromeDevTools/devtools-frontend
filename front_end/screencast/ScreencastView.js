@@ -37,10 +37,11 @@ Screencast.ScreencastView = class extends UI.VBox {
    */
   constructor(screenCaptureModel) {
     super();
-    this._target = screenCaptureModel.target();
     this._screenCaptureModel = screenCaptureModel;
-    this._domModel = this._target.model(SDK.DOMModel);
-    this._resourceTreeModel = this._target.model(SDK.ResourceTreeModel);
+    this._domModel = screenCaptureModel.target().model(SDK.DOMModel);
+    this._resourceTreeModel = screenCaptureModel.target().model(SDK.ResourceTreeModel);
+    this._networkManager = screenCaptureModel.target().model(SDK.NetworkManager);
+    this._inputModel = screenCaptureModel.target().model(Screencast.InputModel);
 
     this.setMinimumSize(150, 150);
     this.registerRequiredCSS('screencast/screencastView.css');
@@ -221,7 +222,8 @@ Screencast.ScreencastView = class extends UI.VBox {
       return;
 
     if (!this._inspectModeConfig || event.type === 'mousewheel') {
-      this._simulateTouchForMouseEvent(event);
+      if (this._inputModel)
+        this._inputModel.emitTouchFromMouseEvent(event, this._screenOffsetTop, this._screenZoom);
       event.preventDefault();
       if (event.type === 'mousedown')
         this._canvasElement.focus();
@@ -266,37 +268,8 @@ Screencast.ScreencastView = class extends UI.VBox {
       return;
     }
 
-    var type;
-    switch (event.type) {
-      case 'keydown':
-        type = 'keyDown';
-        break;
-      case 'keyup':
-        type = 'keyUp';
-        break;
-      case 'keypress':
-        type = 'char';
-        break;
-      default:
-        return;
-    }
-
-    var text = event.type === 'keypress' ? String.fromCharCode(event.charCode) : undefined;
-    this._target.inputAgent().invoke_dispatchKeyEvent({
-      type: type,
-      modifiers: this._modifiersForEvent(event),
-      timestamp: event.timeStamp / 1000,
-      text: text,
-      unmodifiedText: text ? text.toLowerCase() : undefined,
-      keyIdentifier: event.keyIdentifier,
-      code: event.code,
-      key: event.key,
-      windowsVirtualKeyCode: event.keyCode,
-      nativeVirtualKeyCode: event.keyCode,
-      autoRepeat: false,
-      isKeypad: false,
-      isSystemKey: false
-    });
+    if (this._inputModel)
+      this._inputModel.emitKeyEvent(event);
     event.consume();
     this._canvasElement.focus();
   }
@@ -311,68 +284,9 @@ Screencast.ScreencastView = class extends UI.VBox {
   /**
    * @param {!Event} event
    */
-  _simulateTouchForMouseEvent(event) {
-    const buttons = {0: 'none', 1: 'left', 2: 'middle', 3: 'right'};
-    const types = {
-      'mousedown': 'mousePressed',
-      'mouseup': 'mouseReleased',
-      'mousemove': 'mouseMoved',
-      'mousewheel': 'mouseWheel'
-    };
-    if (!(event.type in types) || !(event.which in buttons))
-      return;
-    if (event.type !== 'mousewheel' && buttons[event.which] === 'none')
-      return;
-
-    if (event.type === 'mousedown' || typeof this._eventScreenOffsetTop === 'undefined')
-      this._eventScreenOffsetTop = this._screenOffsetTop;
-
-    var modifiers =
-        (event.altKey ? 1 : 0) | (event.ctrlKey ? 2 : 0) | (event.metaKey ? 4 : 0) | (event.shiftKey ? 8 : 0);
-
-    var convertedPosition = this._zoomIntoScreenSpace(event);
-    convertedPosition.y = Math.round(convertedPosition.y - this._eventScreenOffsetTop);
-    var params = {
-      type: types[event.type],
-      x: convertedPosition.x,
-      y: convertedPosition.y,
-      modifiers: modifiers,
-      timestamp: event.timeStamp / 1000,
-      button: buttons[event.which],
-      clickCount: 0
-    };
-    if (event.type === 'mousewheel') {
-      params.deltaX = event.wheelDeltaX / this._screenZoom;
-      params.deltaY = event.wheelDeltaY / this._screenZoom;
-    } else {
-      this._eventParams = params;
-    }
-    if (event.type === 'mouseup')
-      delete this._eventScreenOffsetTop;
-    this._target.inputAgent().invoke_emulateTouchFromMouseEvent(params);
-  }
-
-  /**
-   * @param {!Event} event
-   */
   _handleBlurEvent(event) {
-    if (typeof this._eventScreenOffsetTop !== 'undefined') {
-      var params = this._eventParams;
-      delete this._eventParams;
-      params.type = 'mouseReleased';
-      this._target.inputAgent().invoke_emulateTouchFromMouseEvent(params);
-    }
-  }
-
-  /**
-   * @param {!Event} event
-   * @return {!{x: number, y: number}}
-   */
-  _zoomIntoScreenSpace(event) {
-    var position = {};
-    position.x = Math.round(event.offsetX / this._screenZoom);
-    position.y = Math.round(event.offsetY / this._screenZoom);
-    return position;
+    if (this._inputModel)
+      this._inputModel.cancelTouch();
   }
 
   /**
@@ -380,26 +294,10 @@ Screencast.ScreencastView = class extends UI.VBox {
    * @return {!{x: number, y: number}}
    */
   _convertIntoScreenSpace(event) {
-    var position = this._zoomIntoScreenSpace(event);
-    position.y = Math.round(position.y - this._screenOffsetTop);
+    var position = {};
+    position.x = Math.round(event.offsetX / this._screenZoom);
+    position.y = Math.round(event.offsetY / this._screenZoom - this._screenOffsetTop);
     return position;
-  }
-
-  /**
-   * @param {!Event} event
-   * @return {number}
-   */
-  _modifiersForEvent(event) {
-    var modifiers = 0;
-    if (event.altKey)
-      modifiers = 1;
-    if (event.ctrlKey)
-      modifiers += 2;
-    if (event.metaKey)
-      modifiers += 4;
-    if (event.shiftKey)
-      modifiers += 8;
-    return modifiers;
   }
 
   /**
@@ -709,43 +607,47 @@ Screencast.ScreencastView = class extends UI.VBox {
 
   _createNavigationBar() {
     this._navigationBar = this.element.createChild('div', 'screencast-navigation');
-
     this._navigationBack = this._navigationBar.createChild('button', 'back');
     this._navigationBack.disabled = true;
-    this._navigationBack.addEventListener('click', this._navigateToHistoryEntry.bind(this, -1), false);
-
     this._navigationForward = this._navigationBar.createChild('button', 'forward');
     this._navigationForward.disabled = true;
-    this._navigationForward.addEventListener('click', this._navigateToHistoryEntry.bind(this, 1), false);
-
     this._navigationReload = this._navigationBar.createChild('button', 'reload');
-    this._navigationReload.addEventListener('click', this._navigateReload.bind(this), false);
-
     this._navigationUrl = this._navigationBar.createChild('input');
     this._navigationUrl.type = 'text';
-    this._navigationUrl.addEventListener('keyup', this._navigationUrlKeyUp.bind(this), true);
+    this._navigationProgressBar = new Screencast.ScreencastView.ProgressTracker(
+        this._resourceTreeModel, this._networkManager, this._navigationBar.createChild('div', 'progress'));
 
-    this._navigationProgressBar =
-        new Screencast.ScreencastView.ProgressTracker(this._navigationBar.createChild('div', 'progress'));
-
-    this._requestNavigationHistory();
-    SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.InspectedURLChanged, this._requestNavigationHistory, this);
+    if (this._resourceTreeModel) {
+      this._navigationBack.addEventListener('click', this._navigateToHistoryEntry.bind(this, -1), false);
+      this._navigationForward.addEventListener('click', this._navigateToHistoryEntry.bind(this, 1), false);
+      this._navigationReload.addEventListener('click', this._navigateReload.bind(this), false);
+      this._navigationUrl.addEventListener('keyup', this._navigationUrlKeyUp.bind(this), true);
+      this._requestNavigationHistory();
+      this._resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.MainFrameNavigated, this._requestNavigationHistory, this);
+      this._resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.CachedResourcesLoaded, this._requestNavigationHistory, this);
+    }
   }
 
+  /**
+   * @param {number} offset
+   */
   _navigateToHistoryEntry(offset) {
     var newIndex = this._historyIndex + offset;
     if (newIndex < 0 || newIndex >= this._historyEntries.length)
       return;
-    this._target.pageAgent().navigateToHistoryEntry(this._historyEntries[newIndex].id);
+    this._resourceTreeModel.navigateToHistoryEntry(this._historyEntries[newIndex]);
     this._requestNavigationHistory();
   }
 
   _navigateReload() {
-    if (this._resourceTreeModel)
-      this._resourceTreeModel.reloadPage();
+    this._resourceTreeModel.reloadPage();
   }
 
+  /**
+   * @param {!Event} event
+   */
   _navigationUrlKeyUp(event) {
     if (event.key !== 'Enter')
       return;
@@ -754,25 +656,22 @@ Screencast.ScreencastView = class extends UI.VBox {
       return;
     if (!url.match(Screencast.ScreencastView._SchemeRegex))
       url = 'http://' + url;
-    this._target.pageAgent().navigate(url);
+    this._resourceTreeModel.navigate(url);
     this._canvasElement.focus();
   }
 
-  _requestNavigationHistory() {
-    this._target.pageAgent().getNavigationHistory(this._onNavigationHistory.bind(this));
-  }
-
-  _onNavigationHistory(error, currentIndex, entries) {
-    if (error)
+  async _requestNavigationHistory() {
+    var history = await this._resourceTreeModel.navigationHistory();
+    if (!history)
       return;
 
-    this._historyIndex = currentIndex;
-    this._historyEntries = entries;
+    this._historyIndex = history.currentIndex;
+    this._historyEntries = history.entries;
 
-    this._navigationBack.disabled = currentIndex === 0;
-    this._navigationForward.disabled = currentIndex === (entries.length - 1);
+    this._navigationBack.disabled = this._historyIndex === 0;
+    this._navigationForward.disabled = this._historyIndex === (this._historyEntries.length - 1);
 
-    var url = entries[currentIndex].url;
+    var url = this._historyEntries[this._historyIndex].url;
     var match = url.match(Screencast.ScreencastView._HttpRegex);
     if (match)
       url = match[1];
@@ -800,18 +699,21 @@ Screencast.ScreencastView._SchemeRegex = /^(https?|about|chrome):/;
  */
 Screencast.ScreencastView.ProgressTracker = class {
   /**
+   * @param {?SDK.ResourceTreeModel} resourceTreeModel
+   * @param {?SDK.NetworkManager} networkManager
    * @param {!Element} element
    */
-  constructor(element) {
+  constructor(resourceTreeModel, networkManager, element) {
     this._element = element;
-
-    SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
-    SDK.targetManager.addModelListener(SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._onLoad, this);
-    SDK.targetManager.addModelListener(
-        SDK.NetworkManager, SDK.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
-    SDK.targetManager.addModelListener(
-        SDK.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
+    if (resourceTreeModel) {
+      resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
+      resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, this._onLoad, this);
+    }
+    if (networkManager) {
+      networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, this._onRequestStarted, this);
+      networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, this._onRequestFinished, this);
+    }
   }
 
   _onMainFrameNavigated() {

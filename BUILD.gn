@@ -443,6 +443,7 @@ all_devtools_files = [
   "front_end/sass/SASSProcessor.js",
   "front_end/sass/SASSSourceMapFactory.js",
   "front_end/sass/SASSSupport.js",
+  "front_end/screencast/InputModel.js",
   "front_end/screencast/module.json",
   "front_end/screencast/ScreencastApp.js",
   "front_end/screencast/screencastView.css",

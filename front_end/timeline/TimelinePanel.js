@@ -58,6 +58,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._filters.push(Timeline.TimelineUIUtils.visibleEventsFilter());
       this._filters.push(new TimelineModel.ExcludeTopLevelFilter());
     }
+    if (!Runtime.experiments.isEnabled('timelinePaintTimingMarkers'))
+      this._filters.push(Timeline.TimelineUIUtils.paintEventsFilter());
 
     /** @type {?Timeline.PerformanceModel} */
     this._performanceModel = null;

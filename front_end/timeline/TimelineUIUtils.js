@@ -111,6 +111,10 @@ Timeline.TimelineUIUtils = class {
         new Timeline.TimelineRecordStyle(Common.UIString('DOMContentLoaded event'), categories['scripting'], true);
     eventStyles[recordTypes.MarkFirstPaint] =
         new Timeline.TimelineRecordStyle(Common.UIString('First paint'), categories['painting'], true);
+    eventStyles[recordTypes.MarkFMP] =
+        new Timeline.TimelineRecordStyle(Common.UIString('FMP'), categories['rendering'], true);
+    eventStyles[recordTypes.MarkFMPCandidate] =
+        new Timeline.TimelineRecordStyle(Common.UIString('FMP candidate'), categories['rendering'], true);
     eventStyles[recordTypes.TimeStamp] =
         new Timeline.TimelineRecordStyle(Common.UIString('Timestamp'), categories['scripting']);
     eventStyles[recordTypes.ConsoleTime] =
@@ -1417,16 +1421,9 @@ Timeline.TimelineUIUtils = class {
     var eventDivider = createElementWithClass('div', 'resources-event-divider');
     var startTime = Number.millisToString(event.startTime - zeroTime);
     eventDivider.title = Common.UIString('%s at %s', Timeline.TimelineUIUtils.eventTitle(event), startTime);
-
-    var recordTypes = TimelineModel.TimelineModel.RecordType;
-    var name = event.name;
-    if (name === recordTypes.MarkDOMContent)
-      eventDivider.classList.add('resources-blue-divider');
-    else if (name === recordTypes.MarkLoad)
-      eventDivider.classList.add('resources-red-divider');
-    else if (name === recordTypes.MarkFirstPaint)
-      eventDivider.classList.add('resources-green-divider');
-
+    var style = Timeline.TimelineUIUtils.markerStyleForEvent(event);
+    if (style.tall)
+      eventDivider.style.backgroundColor = style.color;
     return eventDivider;
   }
 
@@ -1448,6 +1445,14 @@ Timeline.TimelineUIUtils = class {
    */
   static visibleEventsFilter() {
     return new TimelineModel.TimelineVisibleEventsFilter(Timeline.TimelineUIUtils._visibleTypes());
+  }
+
+  /**
+   * @return {!TimelineModel.TimelineModelFilter}
+   */
+  static paintEventsFilter() {
+    var recordTypes = TimelineModel.TimelineModel.RecordType;
+    return new TimelineModel.TimelineInvisibleEventsFilter([recordTypes.MarkFMP, recordTypes.MarkFMPCandidate]);
   }
 
   /**
@@ -1682,11 +1687,6 @@ Timeline.TimelineUIUtils = class {
    * @return {!Timeline.TimelineMarkerStyle}
    */
   static markerStyleForEvent(event) {
-    const red = 'rgb(255, 0, 0)';
-    const blue = 'rgb(0, 0, 255)';
-    const orange = 'rgb(255, 178, 23)';
-    const green = 'rgb(0, 130, 0)';
-    const purple = '#a2f';
     const tallMarkerDashStyle = [10, 5];
     const title = Timeline.TimelineUIUtils.eventTitle(event);
 
@@ -1696,29 +1696,37 @@ Timeline.TimelineUIUtils = class {
         title: title,
         dashStyle: tallMarkerDashStyle,
         lineWidth: 0.5,
-        color: event.hasCategory(TimelineModel.TimelineModel.Category.UserTiming) ? purple : orange,
+        color: event.hasCategory(TimelineModel.TimelineModel.Category.UserTiming) ? 'purple' : 'orange',
         tall: false,
         lowPriority: false,
       };
     }
     var recordTypes = TimelineModel.TimelineModel.RecordType;
     var tall = false;
-    var color = green;
+    var color = 'green';
     switch (event.name) {
       case recordTypes.MarkDOMContent:
-        color = blue;
+        color = 'blue';
         tall = true;
         break;
       case recordTypes.MarkLoad:
-        color = red;
+        color = 'red';
         tall = true;
         break;
       case recordTypes.MarkFirstPaint:
-        color = green;
+        color = 'green';
+        tall = true;
+        break;
+      case recordTypes.MarkFMP:
+        color = 'orange';
+        tall = true;
+        break;
+      case recordTypes.MarkFMPCandidate:
+        color = 'orange';
         tall = true;
         break;
       case recordTypes.TimeStamp:
-        color = orange;
+        color = 'orange';
         break;
     }
     return {

@@ -90,33 +90,36 @@ Main.Main = class {
    * @param {!Object<string, string>} prefs
    */
   _initializeExperiments(prefs) {
+    // Keep this sorted alphabetically: both keys and values.
     Runtime.experiments.register('accessibilityInspection', 'Accessibility Inspection');
     Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
     Runtime.experiments.register('audits2', 'Audits 2.0', true);
     Runtime.experiments.register('autoAttachToCrossProcessSubframes', 'Auto-attach to cross-process subframes', true);
     Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
     Runtime.experiments.register('changesDrawer', 'Changes drawer', true);
+    Runtime.experiments.register('colorContrastRatio', 'Color contrast ratio line in color picker', true);
     Runtime.experiments.register('continueToLocationMarkers', 'Continue to location markers', true);
-    Runtime.experiments.register('colorContrastRatio', 'Contrast ratio line in color picker', true);
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Runtime.experiments.register('liveSASS', 'Live SASS');
     Runtime.experiments.register('networkGroupingRequests', 'Network request groups support', true);
     Runtime.experiments.register('objectPreviews', 'Object previews', true);
     Runtime.experiments.register('persistence2', 'Persistence 2.0');
-    Runtime.experiments.register('persistenceValidation', 'Validate persistence bindings');
-    Runtime.experiments.register('timelineShowAllEvents', 'Show all events on Timeline', true);
-    Runtime.experiments.register('timelineShowAllProcesses', 'Show all processes on Timeline', true);
-    Runtime.experiments.register('timelinePaintTimingMarkers', 'Show paint timing markers on Timeline', true);
+    Runtime.experiments.register('persistenceValidation', 'Persistence validation');
     Runtime.experiments.register('sourceDiff', 'Source diff');
-    Runtime.experiments.register('timelineEventInitiators', 'Timeline event initiators');
-    Runtime.experiments.register('timelineFlowEvents', 'Timeline flow events', true);
     Runtime.experiments.register('terminalInDrawer', 'Terminal in drawer', true);
-    Runtime.experiments.register('timelineInvalidationTracking', 'Timeline invalidation tracking', true);
-    Runtime.experiments.register('timelineMultipleMainViews', 'Tabbed views on Performance panel');
-    Runtime.experiments.register('timelineTracingJSProfile', 'Timeline tracing based JS profiler', true);
-    Runtime.experiments.register('timelineV8RuntimeCallStats', 'V8 Runtime Call Stats on Timeline', true);
-    Runtime.experiments.register('timelinePerFrameTrack', 'Show track per frame on Timeline', true);
+
+    // Timeline
+    Runtime.experiments.register('timelineEventInitiators', 'Timeline: event initiators');
+    Runtime.experiments.register('timelineFlowEvents', 'Timeline: flow events', true);
+    Runtime.experiments.register('timelineInvalidationTracking', 'Timeline: invalidation tracking', true);
+    Runtime.experiments.register('timelineMultipleMainViews', 'Timeline: multiple main views');
+    Runtime.experiments.register('timelinePaintTimingMarkers', 'Timeline: paint timing markers', true);
+    Runtime.experiments.register('timelinePerFrameTrack', 'Timeline: per-frame tracks', true);
+    Runtime.experiments.register('timelineShowAllEvents', 'Timeline: show all events', true);
+    Runtime.experiments.register('timelineShowAllProcesses', 'Timeline: show all processes', true);
+    Runtime.experiments.register('timelineTracingJSProfile', 'Timeline: tracing based JS profiler', true);
+    Runtime.experiments.register('timelineV8RuntimeCallStats', 'Timeline: V8 Runtime Call Stats on Timeline', true);
 
     Runtime.experiments.cleanUpStaleExperiments();
 

@@ -46,7 +46,7 @@
 
 .resources-event-divider {
     position: absolute;
-    width: 2px;
+    width: 1px;
     top: 0;
     bottom: 0;
     z-index: 300;

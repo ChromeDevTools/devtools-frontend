@@ -44,6 +44,25 @@ TimelineModel.TimelineVisibleEventsFilter = class extends TimelineModel.Timeline
   }
 };
 
+TimelineModel.TimelineInvisibleEventsFilter = class extends TimelineModel.TimelineModelFilter {
+  /**
+   * @param {!Array<string>} invisibleTypes
+   */
+  constructor(invisibleTypes) {
+    super();
+    this._invisibleTypes = new Set(invisibleTypes);
+  }
+
+  /**
+   * @override
+   * @param {!SDK.TracingModel.Event} event
+   * @return {boolean}
+   */
+  accept(event) {
+    return !this._invisibleTypes.has(TimelineModel.TimelineVisibleEventsFilter._eventType(event));
+  }
+};
+
 TimelineModel.ExclusiveNameFilter = class extends TimelineModel.TimelineModelFilter {
   /**
    * @param {!Array<string>} excludeNames

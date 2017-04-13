@@ -214,6 +214,10 @@ select.toolbar-item[data-keyboard-focus="true"]:focus {
     border-radius: 2px;
 }
 
+select.toolbar-item[data-keyboard-focus="true"]:focus > * {
+    background: white;
+}
+
 /* Input */
 
 .toolbar-input {

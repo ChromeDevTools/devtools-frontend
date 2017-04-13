@@ -6,31 +6,72 @@
 // be shown in Canary (e.g. make sure the release notes are accurate).
 // https://github.com/ChromeDevTools/devtools-frontend/wiki/Release-Notes
 
+var commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Shift + P';
+
 /** @type {!Array<!Help.ReleaseNote>} */
-Help.releaseNoteText = [{
-  version: 1,
-  date: 'March 2017',
-  highlights: [
-    {
-      title: 'New Performance and Memory panels',
-      subtitle: 'Head to Performance for JavaScript profiling',
-      link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#performance-panel',
-    },
-    {
-      title: 'Editable cookies',
-      subtitle: 'You can edit any existing cookies and create new ones in the Application panel',
-      link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#cookies',
-    },
-    {
-      title: 'Console filtering & settings',
-      subtitle: 'Use the text filter or click the Console settings icon to touch up your preferences',
-      link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#console',
-    },
-    {
-      title: 'Debugger catches out-of-memory errors',
-      subtitle: 'See the stack or grab a heap snapshot to see why the app may crash',
-      link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#out-of-memory-breakpoints',
-    },
-  ],
-  link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes',
-}];
+Help.releaseNoteText = [
+  {
+    version: 2,
+    date: 'April 2017',
+    highlights: [
+      {
+        title: 'CSS and JS code coverage',
+        subtitle: 'Find unused CSS and JS with the new Coverage drawer.',
+        link: 'https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage',
+      },
+      {
+        title: 'Full-page screenshots',
+        subtitle: 'Take a screenshot of the entire page, from the top of the viewport to the bottom.',
+        link: 'https://developers.google.com/web/updates/2017/04/devtools-release-notes#screenshots',
+      },
+      {
+        title: 'Block requests',
+        subtitle: 'Manually disable individual requests in the Network panel.',
+        link: 'https://developers.google.com/web/updates/2017/04/devtools-release-notes#block-requests',
+      },
+      {
+        title: 'Step over async await',
+        subtitle: 'Step through async functions predictably.',
+        link: 'https://developers.google.com/web/updates/2017/04/devtools-release-notes#async',
+      },
+      {
+        title: 'Unified Command Menu',
+        subtitle: 'Execute commands and open files from the newly-unified Command Menu (' + commandMenuShortcut + ').',
+        link: 'https://developers.google.com/web/updates/2017/04/devtools-release-notes#command-menu',
+      },
+      {
+        title: 'Workspaces 2.0',
+        subtitle: 'Check out the new UX for using DevTools as your code editor.',
+        link: 'https://developers.google.com/web/updates/2017/04/devtools-release-notes#workspaces',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2017/04/devtools-release-notes',
+  },
+  {
+    version: 1,
+    date: 'March 2017',
+    highlights: [
+      {
+        title: 'New Performance and Memory panels',
+        subtitle: 'Head to Performance for JavaScript profiling',
+        link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#performance-panel',
+      },
+      {
+        title: 'Editable cookies',
+        subtitle: 'You can edit any existing cookies and create new ones in the Application panel',
+        link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#cookies',
+      },
+      {
+        title: 'Console filtering & settings',
+        subtitle: 'Use the text filter or click the Console settings icon to touch up your preferences',
+        link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#console',
+      },
+      {
+        title: 'Debugger catches out-of-memory errors',
+        subtitle: 'See the stack or grab a heap snapshot to see why the app may crash',
+        link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes#out-of-memory-breakpoints',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2017/03/devtools-release-notes',
+  }
+];

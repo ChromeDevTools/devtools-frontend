@@ -23,6 +23,7 @@ QuickOpen.QuickOpen = class {
     var filteredListWidget =
         new QuickOpen.FilteredListWidget(null, this._history, quickOpen._queryChanged.bind(quickOpen));
     quickOpen._filteredListWidget = filteredListWidget;
+    filteredListWidget.setPlaceholder(Common.UIString('Type \'?\' to see available commands'));
     filteredListWidget.showAsDialog();
     filteredListWidget.setQuery(query);
   }

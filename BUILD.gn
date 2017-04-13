@@ -408,6 +408,7 @@ all_devtools_files = [
   "front_end/quick_open/CommandMenu.js",
   "front_end/quick_open/filteredListWidget.css",
   "front_end/quick_open/FilteredListWidget.js",
+  "front_end/quick_open/HelpQuickOpen.js",
   "front_end/quick_open/QuickOpen.js",
   "front_end/quick_open/module.json",
   "front_end/resources/ApplicationCacheModel.js",

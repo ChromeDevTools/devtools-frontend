@@ -7,6 +7,11 @@
             "className": "QuickOpen.CommandMenuProvider"
         },
         {
+            "type": "@QuickOpen.FilteredListWidget.Provider",
+            "prefix": "?",
+            "className": "QuickOpen.HelpQuickOpen"
+        },
+        {
             "type": "@UI.ActionDelegate",
             "actionId": "commandMenu.show",
             "className": "QuickOpen.CommandMenu.ShowActionDelegate",
@@ -46,7 +51,8 @@
     "scripts": [
         "FilteredListWidget.js",
         "QuickOpen.js",
-        "CommandMenu.js"
+        "CommandMenu.js",
+        "HelpQuickOpen.js"
     ],
     "resources": [
         "filteredListWidget.css"

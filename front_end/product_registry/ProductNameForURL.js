@@ -6,6 +6,17 @@
  * @return {?string}
  */
 ProductRegistry.nameForUrl = function(parsedUrl) {
+  var entry = ProductRegistry.entryForUrl(parsedUrl);
+  if (entry)
+    return entry.name;
+  return null;
+};
+
+/**
+ * @param {!Common.ParsedURL} parsedUrl
+ * @return {?ProductRegistry.ProductEntry}
+ */
+ProductRegistry.entryForUrl = function(parsedUrl) {
   if (parsedUrl.isDataURL())
     return null;
   // TODO(allada) This should be expanded to allow paths as as well as domain to find a product.
@@ -42,6 +53,17 @@ ProductRegistry.nameForUrl = function(parsedUrl) {
 };
 
 /**
+ * @param {!Common.ParsedURL} parsedUrl
+ * @return {?string}
+ */
+ProductRegistry.typeForUrl = function(parsedUrl) {
+  var entry = ProductRegistry.entryForUrl(parsedUrl);
+  if (entry)
+    return entry.type;
+  return null;
+};
+
+/**
  * @param {string} domain
  * @return {string}
  */
@@ -50,20 +72,29 @@ ProductRegistry._hashForDomain = function(domain) {
 };
 
 /**
+ * @param {!Array<string>} productTypes
  * @param {!Array<string>} productNames
- * @param {!Array<!{hash: string, prefixes: !Object<string, number>}>} data
+ * @param {!Array<!{hash: string, prefixes: !Object<string, !{product: number, type: (number|undefined)}>}>} data
  */
-ProductRegistry.register = function(productNames, data) {
+ProductRegistry.register = function(productTypes, productNames, data) {
+  var typesMap = /** @type {!Map<number, string>} */ (new Map());
+  for (var i = 0; i < productTypes.length; i++)
+    typesMap.set(i, productTypes[i]);
+
   for (var i = 0; i < data.length; i++) {
     var entry = data[i];
     var prefixes = {};
     for (var prefix in entry.prefixes) {
-      var productNameIndex = entry.prefixes[prefix];
-      prefixes[prefix] = productNames[productNameIndex];
+      var prefixEntry = entry.prefixes[prefix];
+      var type = prefixEntry.type !== undefined ? (typesMap.get(prefixEntry.type) || null) : null;
+      prefixes[prefix] = {name: productNames[prefixEntry.product], type: type};
     }
     ProductRegistry._productsByDomainHash.set(entry.hash, prefixes);
   }
 };
 
-/** @type {!Map<string, !Object<string, string>>}} */
+/** @typedef {!{name: string, type: ?string}} */
+ProductRegistry.ProductEntry;
+
+/** @type {!Map<string, !Object<string, !ProductRegistry.ProductEntry>>}} */
 ProductRegistry._productsByDomainHash = new Map();

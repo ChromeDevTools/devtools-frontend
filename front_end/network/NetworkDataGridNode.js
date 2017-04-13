@@ -44,6 +44,8 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
     this._showingInitiatorChain = false;
     /** @type {?SDK.NetworkRequest} */
     this._requestOrFirstKnownChildRequest = null;
+    /** @type {!Map<string, !UI.Icon>} */
+    this._columnIcons = new Map();
   }
 
   /**
@@ -612,7 +614,17 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
 
     element.classList.toggle('network-error-row', this._isFailed());
     element.classList.toggle('network-navigation-row', this._isNavigationRequest);
+    for (var rowDecorator of this._parentView.rowDecorators())
+      rowDecorator.decorate(this);
     super.createCells(element);
+  }
+
+  /**
+   * @param {string} columnId
+   * @param {!UI.Icon} icon
+   */
+  setIconForColumn(columnId, icon) {
+    this._columnIcons.set(columnId, icon);
   }
 
   /**
@@ -620,7 +632,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    * @param {string} text
    */
   _setTextAndTitle(element, text) {
-    element.textContent = text;
+    element.createTextChild(text);
     element.title = text;
   }
 
@@ -631,6 +643,9 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   createCell(columnIdentifier) {
     var cell = this.createTD(columnIdentifier);
+    var icon = this._columnIcons.get(columnIdentifier);
+    if (icon)
+      cell.appendChild(icon);
     // If the key exists but the value is null it means the extension instance has not resolved yet.
     // The view controller will force all rows to update when extension is resolved.
     if (this._columnExtensions.has(columnIdentifier)) {

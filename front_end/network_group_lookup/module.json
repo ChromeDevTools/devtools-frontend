@@ -16,6 +16,10 @@
           "type": "@Network.NetworkColumnExtensionInterface",
           "className": "NetworkGroupLookup.NetworkProductGroupLookup",
           "title": "Product"
+        },
+        {
+          "type": "@Network.NetworkRowDecorator",
+          "className": "NetworkGroupLookup.NetworkProductTypeGroupLookup"
         }
     ],
     "dependencies": [

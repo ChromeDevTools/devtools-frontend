@@ -1,3 +1,6 @@
+// Copyright 2017 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 const fs = require('fs');
 
 /*
@@ -18,6 +21,13 @@ How to use:
 const hexcase = 0;  /* hex output format. 0 - lowercase; 1 - uppercase        */
 const b64pad = '='; /* base-64 pad character. "=" for strict RFC compliance   */
 const chrsz = 8;    /* bits per input character. 8 - ASCII; 16 - Unicode      */
+
+const typeClassifications = new Map([
+  ['cdn_provider', 'CDN'], ['cdn_commercial_owner', 'CDN'], ['cdn_creative_agency', 'CDN'], ['ad_blocking', 'Ad'],
+  ['ad_exchange', 'Ad'], ['ad_server_ad_network', 'Ad'], ['ad_server_advertiser', 'Ad'], ['demand_side_platform', 'Ad'],
+  ['vast_provider', 'Ad'], ['data_management_platform', 'Tracking'], ['research_analytics', 'Tracking'],
+  ['research_verification', 'Tracking'], ['research_brand_lift', 'Tracking']
+]);
 
 var data = fs.readFileSync('3pas.csv', 'utf8');
 var headerLine = data.split('\n', 1)[0];
@@ -114,6 +124,7 @@ for (var lineObj of lineObjs) {
 }
 
 var outputProducts = [];
+var outputTypes = [];
 var outputObj = new Map();
 for (var [baseDomain, subdomains] of map) {
   for (var prefixes of subdomains.values()) {
@@ -154,7 +165,7 @@ for (var [baseDomain, subdomains] of map) {
         outputPart = {hash: hex_sha1(fullSubdomain).substr(0, 16), prefixes: {}};
         outputObj.set(fullSubdomain, outputPart);
       }
-      outputPart.prefixes[lineObj.prefix] = registerOutputProduct(lineObj.name_legal_product);
+      outputPart.prefixes[lineObj.prefix] = registerOutputProduct(lineObj.name_legal_product, lineObj.type_vendor);
     }
   }
 }
@@ -166,6 +177,12 @@ console.log(
     '// clang-format off\n' +
     '/* eslint-disable */\n' +
     'ProductRegistry.register([');
+if (outputTypes.length) {
+  var data = JSON.stringify(outputTypes).replace(/","/g, '",\n  "');
+  console.log('  ' + data.substring(1, data.length - 1));
+}
+console.log('],');
+console.log('[');
 var data = JSON.stringify(outputProducts).replace(/","/g, '",\n  "');
 console.log('  ' + data.substring(1, data.length - 1));
 console.log('],');
@@ -175,8 +192,14 @@ for (var i = 0; i < outputObjArray.length; i++) {
   var obj = outputObjArray[i];
   var lineEnding = (i === outputObjArray.length - 1) ? '' : ',';
   var comments = [];
-  for (var prefix in obj.prefixes)
-    comments.push('[' + outputProducts[obj.prefixes[prefix]] + ']');
+  for (var prefix in obj.prefixes) {
+    var typeName = outputTypes[obj.prefixes[prefix].type];
+    if (!typeName)
+      typeName = '';
+    else
+      typeName = ':' + typeName;
+    comments.push('[' + outputProducts[obj.prefixes[prefix].product] + typeName + ']');
+  }
   console.log('  ' + JSON.stringify(obj) + lineEnding + ' // ' + comments.join(' '));
 }
 console.log(']);');
@@ -189,11 +212,27 @@ console.log(']);');
 
 
 // Linear but meh.
-function registerOutputProduct(name) {
+function registerOutputProduct(name, type) {
   var index = outputProducts.indexOf(name);
+  var typeIndex = registerOutputType(type);
+  var outObj = {product: index};
   if (index === -1) {
     outputProducts.push(name);
-    return outputProducts.length - 1;
+    outObj.product = outputProducts.length - 1;
+  }
+  if (typeIndex !== -1)
+    outObj.type = typeIndex;
+  return outObj;
+}
+
+function registerOutputType(type) {
+  var name = typeClassifications.get(type);
+  if (!name)
+    return -1;
+  var index = outputTypes.indexOf(name);
+  if (index === -1) {
+    outputTypes.push(name);
+    return outputTypes.length - 1;
   }
   return index;
 }

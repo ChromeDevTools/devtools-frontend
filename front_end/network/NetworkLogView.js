@@ -76,6 +76,9 @@ Network.NetworkLogView = class extends UI.VBox {
     this._nodesByRequestId = new Map();
     /** @type {!Map<*, !Network.NetworkGroupNode>} */
     this._nodeGroups = new Map();
+    /** @type {!Set<!Network.NetworkRowDecorator>} */
+    this._rowDecorators = new Set();
+
     /** @type {!Object.<string, boolean>} */
     this._staleRequestIds = {};
     /** @type {number} */
@@ -358,6 +361,13 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   /**
+   * @return {!Set<!Network.NetworkRowDecorator>}
+   */
+  rowDecorators() {
+    return this._rowDecorators;
+  }
+
+  /**
    * @param {!SDK.NetworkRequest} request
    * @return {?Network.NetworkRequestNode}
    */
@@ -487,6 +497,12 @@ Network.NetworkLogView = class extends UI.VBox {
   _initializeView() {
     this.element.id = 'network-container';
     this._setupDataGrid();
+
+    self.runtime.allInstances(Network.NetworkRowDecorator).then(instances => {
+      for (var instance of instances)
+        this._rowDecorators.add(instance);
+      this._invalidateAllItems(true);
+    });
 
     this._columns.show(this.element);
 
@@ -1817,4 +1833,16 @@ Network.NetworkGroupLookupInterface.prototype = {
    * @return {string}
    */
   groupName(key) {}
+};
+
+/**
+ * @interface
+ */
+Network.NetworkRowDecorator = function() {};
+
+Network.NetworkRowDecorator.prototype = {
+  /**
+   * @param {!Network.NetworkNode} node
+   */
+  decorate(node) {}
 };

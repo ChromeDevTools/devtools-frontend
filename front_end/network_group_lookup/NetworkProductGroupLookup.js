@@ -113,4 +113,29 @@ NetworkGroupLookup.NetworkProductFrameGroupLookup = class {
   }
 };
 
+/**
+ * @implements {Network.NetworkRowDecorator}
+ */
+NetworkGroupLookup.NetworkProductTypeGroupLookup = class {
+  /**
+   * @override
+   * @param {!Network.NetworkNode} node
+   */
+  decorate(node) {
+    var request = node.request();
+    var element = node.existingElement();
+    if (!request || !element)
+      return;
+    var typeName = ProductRegistry.typeForUrl(request.parsedURL);
+    if (!typeName)
+      return;
+    var icon = UI.Icon.create('smallicon-network-product');
+    if (typeName === 'Tracking')
+      icon.style.filter = 'hue-rotate(220deg) brightness(1.5)';
+    if (typeName === 'CDN')
+      icon.style.filter = 'hue-rotate(-90deg) brightness(1.5)';
+    node.setIconForColumn('product-extension', icon);
+  }
+};
+
 NetworkGroupLookup.NetworkProductFrameGroupLookup._productFrameGroupNameSymbol = Symbol('ProductFrameGroupName');

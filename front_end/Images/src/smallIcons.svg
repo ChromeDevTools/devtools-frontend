@@ -36,15 +36,15 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1986"
-     inkscape:window-height="1353"
+     inkscape:window-width="938"
+     inkscape:window-height="826"
      id="namedview4455"
      showgrid="true"
-     inkscape:zoom="10.488889"
-     inkscape:cx="52.875124"
-     inkscape:cy="43.09204"
-     inkscape:window-x="201"
-     inkscape:window-y="36"
+     inkscape:zoom="3.7083823"
+     inkscape:cx="22.472364"
+     inkscape:cy="66.155904"
+     inkscape:window-x="940"
+     inkscape:window-y="26"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg4185">
     <inkscape:grid
@@ -755,4 +755,19 @@
        id="tspan5193-90"
        x="-7.1080513"
        y="8.0561762">5</tspan></text>
+  <g
+     transform="matrix(1.1320755,0,0,1.1320754,81.603774,82.603774)"
+     style="fill:#00bcd4;stroke:#000000;stroke-width:0.30000001"
+     id="g3669">
+    <circle
+       d="M 5.5,3 C 5.5,4.3807119 4.3807119,5.5 3,5.5 1.6192881,5.5 0.5,4.3807119 0.5,3 0.5,1.6192881 1.6192881,0.5 3,0.5 4.3807119,0.5 5.5,1.6192881 5.5,3 z"
+       sodipodi:ry="2.5"
+       sodipodi:rx="2.5"
+       sodipodi:cy="3"
+       sodipodi:cx="3"
+       cx="3"
+       cy="3"
+       r="2.5"
+       id="circle3671" />
+  </g>
 </svg>

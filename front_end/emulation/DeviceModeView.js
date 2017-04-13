@@ -372,7 +372,7 @@ Emulation.DeviceModeView = class extends UI.VBox {
     var pageImage = new Image();
     pageImage.src = 'data:image/png;base64,' + screenshot;
     pageImage.onload = async () => {
-      var scale = 1 / this._model.scale();
+      var scale = window.devicePixelRatio / this._model.scale();
       var outlineRect = this._model.outlineRect().scale(scale);
       var screenRect = this._model.screenRect().scale(scale);
       var visiblePageRect = this._model.visiblePageRect().scale(scale);

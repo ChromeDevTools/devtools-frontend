@@ -62,7 +62,7 @@ Help._releaseNoteViewId = 'release-note';
 Help.ReleaseNoteHighlight;
 
 /**
- * @typedef {!{version: number, date: string, highlights: !Array<!Help.ReleaseNoteHighlight>,
+ * @typedef {!{version: number, header: string, highlights: !Array<!Help.ReleaseNoteHighlight>,
  *    link: string}}
  */
 Help.ReleaseNote;

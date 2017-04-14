@@ -12,7 +12,7 @@ var commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Shif
 Help.releaseNoteText = [
   {
     version: 2,
-    date: 'April 2017',
+    header: 'Highlights from Chrome 59 update',
     highlights: [
       {
         title: 'CSS and JS code coverage',
@@ -49,7 +49,7 @@ Help.releaseNoteText = [
   },
   {
     version: 1,
-    date: 'March 2017',
+    header: 'Highlights from Chrome 58 update',
     highlights: [
       {
         title: 'New Performance and Memory panels',

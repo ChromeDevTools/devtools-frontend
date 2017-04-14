@@ -87,8 +87,6 @@ Sources.SourcesPanel = class extends UI.Panel {
 
     this._threadsSidebarPane = null;
     this._watchSidebarPane = /** @type {!UI.View} */ (UI.viewManager.view('sources.watch'));
-    // TODO: Force installing listeners from the model, not the UI.
-    self.runtime.sharedInstance(Sources.XHRBreakpointsSidebarPane);
     this._callstackPane = self.runtime.sharedInstance(Sources.CallStackSidebarPane);
     this._callstackPane.registerShortcuts(this.registerShortcuts.bind(this));
 

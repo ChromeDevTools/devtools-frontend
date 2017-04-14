@@ -3,15 +3,12 @@
 // found in the LICENSE file.
 /**
  * @implements {UI.ContextFlavorListener}
- * @implements {SDK.TargetManager.Observer}
  * @implements {UI.ToolbarItem.ItemsProvider}
  * @unrestricted
  */
 Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarPaneBase {
   constructor() {
     super();
-    this._xhrBreakpointsSetting = Common.settings.createLocalSetting('xhrBreakpoints', []);
-
     /** @type {!Map.<string, !Element>} */
     this._breakpointElements = new Map();
 
@@ -19,23 +16,8 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
     this._addButton.addEventListener(UI.ToolbarButton.Events.Click, this._addButtonClicked.bind(this));
 
     this.emptyElement.addEventListener('contextmenu', this._emptyElementContextMenu.bind(this), true);
-    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
+    this._restoreBreakpoints();
     this._update();
-  }
-
-  /**
-   * @override
-   * @param {!SDK.Target} target
-   */
-  targetAdded(target) {
-    this._restoreBreakpoints(target);
-  }
-
-  /**
-   * @override
-   * @param {!SDK.Target} target
-   */
-  targetRemoved(target) {
   }
 
   /**
@@ -71,8 +53,8 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
     function finishEditing(accept, e, text) {
       this.removeListElement(inputElementContainer);
       if (accept) {
+        SDK.xhrBreakpointManager.addBreakpoint(text, true);
         this._setBreakpoint(text, true);
-        this._saveBreakpoints();
       }
     }
 
@@ -83,12 +65,8 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
   /**
    * @param {string} url
    * @param {boolean} enabled
-   * @param {!SDK.Target=} target
    */
-  _setBreakpoint(url, enabled, target) {
-    if (enabled)
-      this._updateBreakpointOnTarget(url, true, target);
-
+  _setBreakpoint(url, enabled) {
     if (this._breakpointElements.has(url)) {
       this._breakpointElements.get(url)._checkboxElement.checked = enabled;
       return;
@@ -119,32 +97,14 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
 
   /**
    * @param {string} url
-   * @param {!SDK.Target=} target
    */
-  _removeBreakpoint(url, target) {
+  _removeBreakpoint(url) {
     var element = this._breakpointElements.get(url);
     if (!element)
       return;
 
     this.removeListElement(element);
     this._breakpointElements.delete(url);
-    if (element._checkboxElement.checked)
-      this._updateBreakpointOnTarget(url, false, target);
-  }
-
-  /**
-   * @param {string} url
-   * @param {boolean} enable
-   * @param {!SDK.Target=} target
-   */
-  _updateBreakpointOnTarget(url, enable, target) {
-    var targets = target ? [target] : SDK.targetManager.targets(SDK.Target.Capability.Browser);
-    for (target of targets) {
-      if (enable)
-        target.domdebuggerAgent().setXHRBreakpoint(url);
-      else
-        target.domdebuggerAgent().removeXHRBreakpoint(url);
-    }
   }
 
   _contextMenu(url, event) {
@@ -154,17 +114,18 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
      * @this {Sources.XHRBreakpointsSidebarPane}
      */
     function removeBreakpoint() {
+      SDK.xhrBreakpointManager.removeBreakpoint(url);
       this._removeBreakpoint(url);
-      this._saveBreakpoints();
     }
 
     /**
      * @this {Sources.XHRBreakpointsSidebarPane}
      */
     function removeAllBreakpoints() {
-      for (var url of this._breakpointElements.keys())
+      for (var url of this._breakpointElements.keys()) {
+        SDK.xhrBreakpointManager.removeBreakpoint(url);
         this._removeBreakpoint(url);
-      this._saveBreakpoints();
+      }
     }
     var removeAllTitle = Common.UIString.capitalize('Remove ^all ^breakpoints');
 
@@ -175,8 +136,7 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
   }
 
   _checkboxClicked(url, event) {
-    this._updateBreakpointOnTarget(url, event.target.checked);
-    this._saveBreakpoints();
+    SDK.xhrBreakpointManager.toggleBreakpoint(url, event.target.checked);
   }
 
   _labelClicked(url) {
@@ -195,9 +155,11 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
     function finishEditing(accept, e, text) {
       this.removeListElement(inputElement);
       if (accept) {
+        SDK.xhrBreakpointManager.removeBreakpoint(url);
         this._removeBreakpoint(url);
-        this._setBreakpoint(text, element._checkboxElement.checked);
-        this._saveBreakpoints();
+        var enabled = element ? element._checkboxElement.checked : true;
+        SDK.xhrBreakpointManager.addBreakpoint(text, enabled);
+        this._setBreakpoint(text, enabled);
       } else {
         element.classList.remove('hidden');
       }
@@ -233,22 +195,9 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
     this._highlightedElement = element;
   }
 
-  _saveBreakpoints() {
-    var breakpoints = [];
-    for (var url of this._breakpointElements.keys())
-      breakpoints.push({url: url, enabled: this._breakpointElements.get(url)._checkboxElement.checked});
-    this._xhrBreakpointsSetting.set(breakpoints);
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   */
-  _restoreBreakpoints(target) {
-    var breakpoints = this._xhrBreakpointsSetting.get();
-    for (var i = 0; i < breakpoints.length; ++i) {
-      var breakpoint = breakpoints[i];
-      if (breakpoint && typeof breakpoint.url === 'string')
-        this._setBreakpoint(breakpoint.url, breakpoint.enabled, target);
-    }
+  _restoreBreakpoints() {
+    var breakpoints = SDK.xhrBreakpointManager.breakpoints();
+    for (var url of breakpoints.keys())
+      this._setBreakpoint(url, breakpoints.get(url));
   }
 };

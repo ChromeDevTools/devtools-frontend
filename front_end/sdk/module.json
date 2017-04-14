@@ -129,6 +129,7 @@
         "CSSRule.js",
         "CSSStyleDeclaration.js",
         "CSSStyleSheetHeader.js",
+        "DOMDebuggerModel.js",
         "DOMModel.js",
         "DebuggerModel.js",
         "LayerTreeBase.js",

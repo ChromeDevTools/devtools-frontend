@@ -463,6 +463,7 @@ all_devtools_files = [
   "front_end/sdk/CSSRule.js",
   "front_end/sdk/CSSStyleDeclaration.js",
   "front_end/sdk/CSSStyleSheetHeader.js",
+  "front_end/sdk/DOMDebuggerModel.js",
   "front_end/sdk/DebuggerModel.js",
   "front_end/sdk/DOMModel.js",
   "front_end/sdk/FilmStripModel.js",

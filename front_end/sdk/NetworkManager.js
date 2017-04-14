@@ -42,8 +42,6 @@ SDK.NetworkManager = class extends SDK.SDKModel {
     target.registerNetworkDispatcher(this._dispatcher);
     if (Common.moduleSetting('cacheDisabled').get())
       this._networkAgent.setCacheDisabled(true);
-    if (Common.moduleSetting('monitoringXHREnabled').get())
-      this._networkAgent.setMonitoringXHREnabled(true);
 
     // Limit buffer when talking to a remote device.
     if (Runtime.queryParam('remoteFrontend') || Runtime.queryParam('ws'))
@@ -122,12 +120,12 @@ SDK.NetworkManager.Events = {
   RequestFinished: Symbol('RequestFinished'),
   RequestUpdateDropped: Symbol('RequestUpdateDropped'),
   ResponseReceived: Symbol('ResponseReceived'),
-  WarningGenerated: Symbol('WarningGenerated'),
+  MessageGenerated: Symbol('MessageGenerated'),
   RequestRedirected: Symbol('RequestRedirected'),
 };
 
-/** @typedef {{message: string, requestId: string}} */
-SDK.NetworkManager.Warning;
+/** @typedef {{message: string, requestId: string, warning: boolean}} */
+SDK.NetworkManager.Message;
 
 SDK.NetworkManager._MIMETypes = {
   'text/html': {'document': true},
@@ -242,7 +240,8 @@ SDK.NetworkDispatcher = class {
           'Resource interpreted as %s but transferred with MIME type %s: "%s".', networkRequest.resourceType().title(),
           networkRequest.mimeType, networkRequest.url());
       this._manager.dispatchEventToListeners(
-          SDK.NetworkManager.Events.WarningGenerated, {message: message, requestId: networkRequest.requestId()});
+          SDK.NetworkManager.Events.MessageGenerated,
+          {message: message, requestId: networkRequest.requestId(), warning: true});
     }
 
     if (response.securityDetails)
@@ -380,7 +379,7 @@ SDK.NetworkDispatcher = class {
           'Set-Cookie header is ignored in response from url: %s. Cookie length should be less than or equal to 4096 characters.',
           response.url);
       this._manager.dispatchEventToListeners(
-          SDK.NetworkManager.Events.WarningGenerated, {message: message, requestId: requestId});
+          SDK.NetworkManager.Events.MessageGenerated, {message: message, requestId: requestId, warning: true});
     }
 
     this._updateNetworkRequestWithResponse(networkRequest, response);
@@ -444,7 +443,7 @@ SDK.NetworkDispatcher = class {
       if (blockedReason === Protocol.Network.BlockedReason.Inspector) {
         var message = Common.UIString('Request was blocked by DevTools: "%s".', networkRequest.url());
         this._manager.dispatchEventToListeners(
-            SDK.NetworkManager.Events.WarningGenerated, {message: message, requestId: requestId});
+            SDK.NetworkManager.Events.MessageGenerated, {message: message, requestId: requestId, warning: true});
       }
     }
     networkRequest.localizedFailDescription = localizedDescription;
@@ -635,6 +634,17 @@ SDK.NetworkDispatcher = class {
     this._manager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, networkRequest);
     delete this._inflightRequestsById[networkRequest.requestId()];
     delete this._inflightRequestsByURL[networkRequest.url()];
+
+    if (Common.moduleSetting('monitoringXHREnabled').get() &&
+        networkRequest.resourceType().category() === Common.resourceCategories.XHR) {
+      var message = Common.UIString(
+          (networkRequest.failed || networkRequest.hasErrorStatusCode()) ? '%s failed loading: %s "%s".' :
+                                                                           '%s finished loading: %s "%s".',
+          networkRequest.resourceType().title(), networkRequest.requestMethod, networkRequest.url());
+      this._manager.dispatchEventToListeners(
+          SDK.NetworkManager.Events.MessageGenerated,
+          {message: message, requestId: networkRequest.requestId(), warning: false});
+    }
   }
 
   /**

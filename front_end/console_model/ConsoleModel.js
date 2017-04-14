@@ -102,7 +102,7 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
     var networkManager = target.model(SDK.NetworkManager);
     if (networkManager) {
       eventListeners.push(networkManager.addEventListener(
-          SDK.NetworkManager.Events.WarningGenerated, this._networkWarningGenerated.bind(this, networkManager)));
+          SDK.NetworkManager.Events.MessageGenerated, this._networkMessageGenerated.bind(this, networkManager)));
     }
 
     target[ConsoleModel.ConsoleModel._events] = eventListeners;
@@ -337,12 +337,13 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
    * @param {!SDK.NetworkManager} networkManager
    * @param {!Common.Event} event
    */
-  _networkWarningGenerated(networkManager, event) {
-    var warning = /** @type {!SDK.NetworkManager.Warning} */ (event.data);
+  _networkMessageGenerated(networkManager, event) {
+    var message = /** @type {!SDK.NetworkManager.Message} */ (event.data);
     this.addMessage(new ConsoleModel.ConsoleMessage(
         networkManager.target().model(SDK.RuntimeModel), ConsoleModel.ConsoleMessage.MessageSource.Network,
-        ConsoleModel.ConsoleMessage.MessageLevel.Warning, warning.message, undefined, undefined, undefined, undefined,
-        warning.requestId));
+        message.warning ? ConsoleModel.ConsoleMessage.MessageLevel.Warning :
+                          ConsoleModel.ConsoleMessage.MessageLevel.Info,
+        message.message, undefined, undefined, undefined, undefined, message.requestId));
   }
 
   /**

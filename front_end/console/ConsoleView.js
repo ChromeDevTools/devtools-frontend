@@ -136,7 +136,6 @@ Console.ConsoleView = class extends UI.VBox {
     this._registerShortcuts();
 
     this._messagesElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), false);
-    monitoringXHREnabledSetting.addChangeListener(this._monitoringXHREnabledSettingChanged, this);
 
     this._linkifier = new Components.Linkifier();
 
@@ -662,16 +661,6 @@ Console.ConsoleView = class extends UI.VBox {
     this._updateFilterStatus();
     this._searchableView.updateSearchMatchesCount(this._regexMatchRanges.length);
     this._viewport.invalidate();
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _monitoringXHREnabledSettingChanged(event) {
-    var enabled = /** @type {boolean} */ (event.data);
-    SDK.targetManager.targets().forEach(function(target) {
-      target.networkAgent().setMonitoringXHREnabled(enabled);
-    });
   }
 
   /**

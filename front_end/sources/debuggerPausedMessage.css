@@ -10,7 +10,6 @@
 
 .paused-status {
     padding: 6px;
-    pointer-events: none;
     border-bottom: 1px solid transparent;
     border-top: 1px solid rgb(189, 189, 189);
     background-color: hsl(50, 100%, 95%);

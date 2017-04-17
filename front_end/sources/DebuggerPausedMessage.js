@@ -87,10 +87,8 @@ Sources.DebuggerPausedMessage = class {
       if (subText) {
         var subElement = messageWrapper.createChild('div', 'status-sub monospace');
         subElement.textContent = subText;
+        subElement.title = title || subText;
       }
-      var tooltip = title || subText;
-      if (tooltip)
-        messageWrapper.title = tooltip;
       return messageWrapper;
     }
   }

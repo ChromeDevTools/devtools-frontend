@@ -50,6 +50,7 @@ promisified_domains = {
     "Animation",
     "Browser",
     "CSS",
+    "DOMDebugger",
     "Emulation",
     "HeapProfiler",
     "Page",

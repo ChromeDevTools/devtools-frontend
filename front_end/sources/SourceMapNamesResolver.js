@@ -514,14 +514,6 @@ Sources.SourceMapNamesResolver.RemoteObject = class extends SDK.RemoteObject {
 
   /**
    * @override
-   * @return {!Promise<?Array<!SDK.EventListener>>}
-   */
-  eventListeners() {
-    return this._object.eventListeners();
-  }
-
-  /**
-   * @override
    * @param {!Protocol.Runtime.CallArgument} name
    * @param {function(string=)} callback
    */

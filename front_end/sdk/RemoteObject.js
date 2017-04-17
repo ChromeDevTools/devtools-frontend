@@ -313,13 +313,6 @@ SDK.RemoteObject = class {
   }
 
   /**
-   * @return {!Promise<?Array<!SDK.EventListener>>}
-   */
-  eventListeners() {
-    throw 'Not implemented';
-  }
-
-  /**
    * @param {!Protocol.Runtime.CallArgument} name
    * @param {function(string=)} callback
    */
@@ -553,62 +546,6 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
    */
   getAllProperties(accessorPropertiesOnly, generatePreview, callback) {
     this.doGetProperties(false, accessorPropertiesOnly, generatePreview, callback);
-  }
-
-  /**
-   * @override
-   * @return {!Promise<?Array<!SDK.EventListener>>}
-   */
-  eventListeners() {
-    return new Promise(eventListeners.bind(this));
-    /**
-     * @param {function(?)} fulfill
-     * @param {function(*)} reject
-     * @this {SDK.RemoteObjectImpl}
-     */
-    function eventListeners(fulfill, reject) {
-      if (!this._runtimeModel.target().hasDOMCapability()) {
-        // TODO(kozyatinskiy): figure out how this should work for |window| when there is no DOMDebugger.
-        fulfill([]);
-        return;
-      }
-
-      if (!this._objectId) {
-        reject(new Error('No object id specified'));
-        return;
-      }
-
-      this._runtimeModel.target().domdebuggerAgent().getEventListeners(
-          this._objectId, undefined, undefined, mycallback.bind(this));
-
-      /**
-       * @this {SDK.RemoteObjectImpl}
-       * @param {?Protocol.Error} error
-       * @param {!Array<!Protocol.DOMDebugger.EventListener>} payloads
-       */
-      function mycallback(error, payloads) {
-        if (error) {
-          reject(new Error(error));
-          return;
-        }
-        fulfill(payloads.map(createEventListener.bind(this)));
-      }
-
-      /**
-       * @this {SDK.RemoteObjectImpl}
-       * @param {!Protocol.DOMDebugger.EventListener} payload
-       */
-      function createEventListener(payload) {
-        return new SDK.EventListener(
-            this._runtimeModel, this, payload.type, payload.useCapture, payload.passive, payload.once,
-            payload.handler ? this._runtimeModel.createRemoteObject(payload.handler) : null,
-            payload.originalHandler ? this._runtimeModel.createRemoteObject(payload.originalHandler) : null,
-            /** @type {!SDK.DebuggerModel.Location} */
-            (this.debuggerModel().createRawLocationByScriptId(
-                payload.scriptId, payload.lineNumber, payload.columnNumber)),
-            null);
-      }
-    }
   }
 
   /**

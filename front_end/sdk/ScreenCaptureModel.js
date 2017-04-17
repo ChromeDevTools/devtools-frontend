@@ -183,13 +183,6 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
 
   /**
    * @override
-   * @param {!Protocol.DOM.RGBA} color
-   */
-  colorPicked(color) {
-  }
-
-  /**
-   * @override
    */
   interstitialShown() {
   }

@@ -339,6 +339,13 @@ Host.InspectorFrontendHostStub = class {
   }
 
   /**
+   * @override
+   * @param {boolean} active
+   */
+  setEyeDropperActive(active) {
+  }
+
+  /**
    * @param {!Array<string>} certChain
    * @override
    */

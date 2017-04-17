@@ -158,6 +158,13 @@
     }
 
     /**
+     * @param {!{r: number, g: number, b: number, a: number}} color
+     */
+    eyeDropperPickedColor(color) {
+      this._dispatchOnInspectorFrontendAPI('eyeDropperPickedColor', [color]);
+    }
+
+    /**
      * @param {!Array.<!{fileSystemName: string, rootURL: string, fileSystemPath: string}>} fileSystems
      */
     fileSystemsLoaded(fileSystems) {
@@ -617,6 +624,14 @@
      */
     setWhitelistedShortcuts(shortcuts) {
       DevToolsAPI.sendMessageToEmbedder('setWhitelistedShortcuts', [shortcuts], null);
+    }
+
+    /**
+     * @override
+     * @param {boolean} active
+     */
+    setEyeDropperActive(active) {
+      DevToolsAPI.sendMessageToEmbedder('setEyeDropperActive', [active], null);
     }
 
     /**

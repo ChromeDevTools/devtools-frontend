@@ -498,7 +498,6 @@ SDK.ResourceTreeModel.Events = {
   Load: Symbol('Load'),
   PageReloadRequested: Symbol('PageReloadRequested'),
   WillReloadPage: Symbol('WillReloadPage'),
-  ColorPicked: Symbol('ColorPicked'),
   InterstitialShown: Symbol('InterstitialShown'),
   InterstitialHidden: Symbol('InterstitialHidden')
 };
@@ -866,14 +865,6 @@ SDK.PageDispatcher = class {
    * @param {boolean} visible
    */
   screencastVisibilityChanged(visible) {
-  }
-
-  /**
-   * @override
-   * @param {!Protocol.DOM.RGBA} color
-   */
-  colorPicked(color) {
-    this._resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.ColorPicked, color);
   }
 
   /**

@@ -140,6 +140,8 @@ ColorPicker.Spectrum = class extends UI.VBox {
     addColorButton.addEventListener(UI.ToolbarButton.Events.Click, this._addColorToCustomPalette, this);
     this._addColorToolbar.appendToolbarItem(addColorButton);
 
+    this._colorPickedBound = this._colorPicked.bind(this);
+
     this._loadPalettes();
     new ColorPicker.Spectrum.PaletteGenerator(this._generatedPaletteLoaded.bind(this));
 
@@ -855,8 +857,6 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._colorDragElementHeight = this._colorDragElement.offsetHeight / 2;
     this._innerSetColor(undefined, undefined, undefined, ColorPicker.Spectrum._ChangeSource.Model);
     this._toggleColorPicker(true);
-    SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.ColorPicked, this._colorPicked, this);
   }
 
   /**
@@ -864,8 +864,6 @@ ColorPicker.Spectrum = class extends UI.VBox {
    */
   willHide() {
     this._toggleColorPicker(false);
-    SDK.targetManager.removeModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.ColorPicked, this._colorPicked, this);
   }
 
   /**
@@ -876,15 +874,21 @@ ColorPicker.Spectrum = class extends UI.VBox {
     if (enabled === undefined)
       enabled = !this._colorPickerButton.toggled();
     this._colorPickerButton.setToggled(enabled);
-    for (var target of SDK.targetManager.targets())
-      target.pageAgent().setColorPickerEnabled(enabled);
+    InspectorFrontendHost.setEyeDropperActive(enabled);
+    if (enabled) {
+      InspectorFrontendHost.events.addEventListener(
+          InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._colorPickedBound);
+    } else {
+      InspectorFrontendHost.events.removeEventListener(
+          InspectorFrontendHostAPI.Events.EyeDropperPickedColor, this._colorPickedBound);
+    }
   }
 
   /**
    * @param {!Common.Event} event
    */
   _colorPicked(event) {
-    var rgbColor = /** @type {!Protocol.DOM.RGBA} */ (event.data);
+    var rgbColor = /** @type {!{r: number, g: number, b: number, a: number}} */ (event.data);
     var rgba = [rgbColor.r, rgbColor.g, rgbColor.b, (rgbColor.a / 2.55 | 0) / 100];
     var color = Common.Color.fromRGBA(rgba);
     this._innerSetColor(color.hsva(), '', undefined, ColorPicker.Spectrum._ChangeSource.Other);

@@ -150,6 +150,8 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
   }
 
   _attachProvider() {
+    this._list.replaceAllItems([]);
+    this._list.invalidateItemHeight();
     if (this._provider) {
       this._provider.setRefreshCallback(this._itemsLoaded.bind(this, this._provider));
       this._provider.attach();
@@ -172,7 +174,6 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    * @override
    */
   wasShown() {
-    this._list.invalidateItemHeight();
     this._attachProvider();
   }
 

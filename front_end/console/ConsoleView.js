@@ -177,8 +177,6 @@ Console.ConsoleView = class extends UI.VBox {
     ConsoleModel.consoleModel.addEventListener(
         ConsoleModel.ConsoleModel.Events.CommandEvaluated, this._commandEvaluated, this);
     ConsoleModel.consoleModel.messages().forEach(this._addConsoleMessage, this);
-    if (this._consoleMessages.length)
-      this._viewport.invalidate();
   }
 
   /**

@@ -130,7 +130,10 @@ public class ContextTrackingValidationCheck extends ValidationCheck {
         Node parametersNode = NodeUtil.getFunctionParameters(functionNode);
         for (int i = 0, childCount = parametersNode.getChildCount(); i < childCount; ++i) {
             Node paramNode = parametersNode.getChildAtIndex(i);
-            String paramName = state.getContext().getNodeText(paramNode);
+            String paramText = state.getContext().getNodeText(paramNode);
+
+            // Handle default parameters (ES6)
+            String paramName = paramText.split("=")[0].trim();
             parameterNames.add(paramName);
         }
         return parameterNames;

@@ -334,10 +334,10 @@ SDK.TargetManager = class extends Common.Object {
     var capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.JS |
         SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target |
         SDK.Target.Capability.ScreenCapture | SDK.Target.Capability.Tracing | SDK.Target.Capability.TouchEmulation |
-        SDK.Target.Capability.Security | SDK.Target.Capability.Input;
+        SDK.Target.Capability.Security | SDK.Target.Capability.Input | SDK.Target.Capability.Inspector;
     if (Runtime.queryParam('isSharedWorker')) {
       capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
-          SDK.Target.Capability.Target;
+          SDK.Target.Capability.Target | SDK.Target.Capability.Inspector;
     } else if (Runtime.queryParam('v8only')) {
       capabilities = SDK.Target.Capability.JS;
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSDirectly);

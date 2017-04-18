@@ -46,19 +46,18 @@ UI.PopoverHelper = class {
     container.addEventListener('mousedown', this._mouseDown.bind(this), false);
     container.addEventListener('mousemove', this._mouseMove.bind(this), false);
     container.addEventListener('mouseout', this._mouseOut.bind(this), false);
-    this.setTimeout(1000, 500);
+    this.setTimeout(1000);
   }
 
   /**
-   * @param {number} timeout
+   * @param {number} showTimeout
    * @param {number=} hideTimeout
+   * @param {boolean=} hideOnAnchorLeave
    */
-  setTimeout(timeout, hideTimeout) {
-    this._timeout = timeout;
-    if (typeof hideTimeout === 'number')
-      this._hideTimeout = hideTimeout;
-    else
-      this._hideTimeout = timeout / 2;
+  setTimeout(showTimeout, hideTimeout, hideOnAnchorLeave) {
+    this._showTimeout = showTimeout;
+    this._hideTimeout = typeof hideTimeout === 'number' ? hideTimeout : showTimeout / 2;
+    this._hideOnAnchorLeave = hideOnAnchorLeave;
   }
 
   /**
@@ -111,7 +110,7 @@ UI.PopoverHelper = class {
     this._stopShowPopoverTimer();
     if (event.which && this._disableOnClick)
       return;
-    this._startShowPopoverTimer(event, this.isPopoverVisible() ? this._timeout * 0.6 : this._timeout);
+    this._startShowPopoverTimer(event, this.isPopoverVisible() ? this._showTimeout * 0.6 : this._showTimeout);
   }
 
   /**
@@ -242,7 +241,7 @@ UI.PopoverHelper = class {
   }
 
   _stopHidePopoverTimer() {
-    if (!this._hidePopoverTimer)
+    if (!this._hidePopoverTimer || this._hideOnAnchorLeave)
       return;
     clearTimeout(this._hidePopoverTimer);
     delete this._hidePopoverTimer;

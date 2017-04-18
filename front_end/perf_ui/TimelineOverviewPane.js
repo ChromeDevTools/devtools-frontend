@@ -55,7 +55,7 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
 
     this._popoverHelper = new UI.PopoverHelper(this._cursorArea, this._getPopoverRequest.bind(this));
     this._popoverHelper.setHasPadding(true);
-    this._popoverHelper.setTimeout(0, 300);
+    this._popoverHelper.setTimeout(0, 0, true);
 
     this._updateThrottler = new Common.Throttler(100);
 

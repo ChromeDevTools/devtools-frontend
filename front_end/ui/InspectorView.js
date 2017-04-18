@@ -111,7 +111,11 @@ UI.InspectorView = class extends UI.VBox {
    * @return {?UI.ViewLocation}
    */
   resolveLocation(locationName) {
-    return this._drawerTabbedLocation;
+    if (locationName === 'drawer-view')
+      return this._drawerTabbedLocation;
+    if (locationName === 'panel')
+      return this._tabbedLocation;
+    return null;
   }
 
   createToolbars() {

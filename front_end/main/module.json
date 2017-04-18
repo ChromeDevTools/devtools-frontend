@@ -413,6 +413,13 @@
         {
             "type": "@UI.ViewLocationResolver",
             "name": "drawer-view",
+            "category": "Drawer",
+            "className": "UI.InspectorView"
+        },
+        {
+            "type": "@UI.ViewLocationResolver",
+            "name": "panel",
+            "category": "Panel",
             "className": "UI.InspectorView"
         },
         {

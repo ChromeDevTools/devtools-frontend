@@ -79,6 +79,7 @@
         {
             "type": "@UI.ViewLocationResolver",
             "name": "settings-view",
+            "category": "Settings",
             "className": "Settings.SettingsScreen"
         }
     ],

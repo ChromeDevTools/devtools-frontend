@@ -219,6 +219,7 @@
         {
             "type": "@UI.ViewLocationResolver",
             "name": "elements-sidebar",
+            "category": "Elements",
             "className": "Elements.ElementsPanel"
         },
         {

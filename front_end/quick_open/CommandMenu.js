@@ -59,35 +59,30 @@ QuickOpen.CommandMenu = class {
 
   /**
    * @param {!Runtime.Extension} extension
+   * @param {string} category
    * @return {!QuickOpen.CommandMenu.Command}
    */
-  static createRevealPanelCommand(extension) {
-    var panelId = extension.descriptor()['id'];
-    var executeHandler = UI.viewManager.showView.bind(UI.viewManager, panelId);
+  static createRevealViewCommand(extension, category) {
+    var viewId = extension.descriptor()['id'];
+    var executeHandler = UI.viewManager.showView.bind(UI.viewManager, viewId);
     var tags = extension.descriptor()['tags'] || '';
     return QuickOpen.CommandMenu.createCommand(
-        Common.UIString('Panel'), tags, Common.UIString('Show %s', extension.title()), '', executeHandler);
-  }
-
-  /**
-   * @param {!Runtime.Extension} extension
-   * @return {!QuickOpen.CommandMenu.Command}
-   */
-  static createRevealDrawerCommand(extension) {
-    var drawerId = extension.descriptor()['id'];
-    var executeHandler = UI.viewManager.showView.bind(UI.viewManager, drawerId);
-    var tags = extension.descriptor()['tags'] || '';
-    return QuickOpen.CommandMenu.createCommand(
-        Common.UIString('Drawer'), tags, Common.UIString('Show %s', extension.title()), '', executeHandler);
+        category, tags, Common.UIString('Show %s', extension.title()), '', executeHandler);
   }
 
   _loadCommands() {
+    var locations = new Map();
+    self.runtime.extensions(UI.ViewLocationResolver).forEach(extension => {
+      var category = extension.descriptor()['category'];
+      var name = extension.descriptor()['name'];
+      if (category && name)
+        locations.set(name, category);
+    });
     var viewExtensions = self.runtime.extensions('view');
     for (var extension of viewExtensions) {
-      if (extension.descriptor()['location'] === 'panel')
-        this._commands.push(QuickOpen.CommandMenu.createRevealPanelCommand(extension));
-      else if (extension.descriptor()['location'] === 'drawer-view')
-        this._commands.push(QuickOpen.CommandMenu.createRevealDrawerCommand(extension));
+      var category = locations.get(extension.descriptor()['location']);
+      if (category)
+        this._commands.push(QuickOpen.CommandMenu.createRevealViewCommand(extension, category));
     }
 
     // Populate whitelisted settings.

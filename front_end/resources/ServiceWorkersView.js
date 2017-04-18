@@ -297,7 +297,7 @@ Resources.ServiceWorkersView.Section = class {
       waitingEntry.createChild('span').textContent = Common.UIString('#%s waiting to activate', waiting.id);
       createLink(waitingEntry, Common.UIString('skipWaiting'), this._skipButtonClicked.bind(this));
       waitingEntry.createChild('div', 'service-worker-subtitle').textContent =
-          new Date(waiting.scriptResponseTime * 1000).toLocaleString();
+          Common.UIString('Received %s', new Date(waiting.scriptResponseTime * 1000).toLocaleString());
       if (!this._targetForVersionId(waiting.id) && (waiting.isRunning() || waiting.isStarting()))
         createLink(waitingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, waiting.id));
     }
@@ -306,7 +306,7 @@ Resources.ServiceWorkersView.Section = class {
       installingEntry.createChild('div', 'service-worker-installing-circle');
       installingEntry.createChild('span').textContent = Common.UIString('#%s installing', installing.id);
       installingEntry.createChild('div', 'service-worker-subtitle').textContent =
-          new Date(installing.scriptResponseTime * 1000).toLocaleString();
+          Common.UIString('Received %s', new Date(installing.scriptResponseTime * 1000).toLocaleString());
       if (!this._targetForVersionId(installing.id) && (installing.isRunning() || installing.isStarting()))
         createLink(installingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, installing.id));
     }

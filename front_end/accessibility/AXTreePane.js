@@ -157,7 +157,7 @@ Accessibility.AXTreePane = class extends Accessibility.AccessibilitySubPane {
       if (!this.node())
         return;
       // Highlight and scroll into view the currently inspected node.
-      this.node().domModel().nodeHighlightRequested(this.node().id);
+      this.node().domModel().overlayModel().nodeHighlightRequested(this.node().id);
     }
   }
 

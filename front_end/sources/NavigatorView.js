@@ -436,11 +436,11 @@ Sources.NavigatorView = class extends UI.VBox {
      */
     function hoverCallback(hovered) {
       if (hovered) {
-        var domModel = target.model(SDK.DOMModel);
-        if (domModel)
-          domModel.highlightFrame(frame.id);
+        var overlayModel = target.model(SDK.OverlayModel);
+        if (overlayModel)
+          overlayModel.highlightFrame(frame.id);
       } else {
-        SDK.DOMModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.hideDOMNodeHighlight();
       }
     }
     return frameNode;

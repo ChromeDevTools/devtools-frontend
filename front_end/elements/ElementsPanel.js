@@ -330,7 +330,7 @@ Elements.ElementsPanel = class extends UI.Panel {
   willHide() {
     UI.context.setFlavor(Elements.ElementsPanel, null);
 
-    SDK.DOMModel.hideDOMNodeHighlight();
+    SDK.OverlayModel.hideDOMNodeHighlight();
     for (var i = 0; i < this._treeOutlines.length; ++i) {
       var treeOutline = this._treeOutlines[i];
       treeOutline.setVisible(false);

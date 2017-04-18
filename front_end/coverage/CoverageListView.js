@@ -213,7 +213,7 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
         var unusedSizeBar = barContainer.createChild('div', 'bar bar-unused-size');
         unusedSizeBar.style.width = Math.ceil(100 * this._coverageInfo.unusedSize() / this._maxSize) + '%';
         var usedSizeBar = barContainer.createChild('div', 'bar bar-used-size');
-        usedSizeBar.style.width = Math.ceil(100 * this._coverageInfo.usedSize() / this._maxSize) + '%';
+        usedSizeBar.style.width = Math.floor(100 * this._coverageInfo.usedSize() / this._maxSize) + '%';
     }
     return cell;
   }

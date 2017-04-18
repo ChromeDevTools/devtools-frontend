@@ -43,7 +43,7 @@ Persistence.Persistence = class extends Common.Object {
    * @param {!Persistence.PersistenceBinding} binding
    */
   _validateBinding(binding) {
-    if (!Runtime.experiments.isEnabled('persistenceValidation') || binding.network.contentType().isFromSourceMap() ||
+    if (!Runtime.experiments.isEnabled('persistence2') || binding.network.contentType().isFromSourceMap() ||
         !binding.fileSystem.contentType().isTextType()) {
       this._establishBinding(binding);
       return;

@@ -105,7 +105,6 @@ Main.Main = class {
     Runtime.experiments.register('networkGroupingRequests', 'Network request groups support', true);
     Runtime.experiments.register('objectPreviews', 'Object previews', true);
     Runtime.experiments.register('persistence2', 'Persistence 2.0');
-    Runtime.experiments.register('persistenceValidation', 'Persistence validation');
     Runtime.experiments.register('sourceDiff', 'Source diff');
     Runtime.experiments.register('terminalInDrawer', 'Terminal in drawer', true);
 
@@ -138,7 +137,7 @@ Main.Main = class {
         Runtime.experiments.enableForTest('liveSASS');
     }
 
-    Runtime.experiments.setDefaultExperiments(['persistenceValidation', 'persistence2', 'continueToLocationMarkers']);
+    Runtime.experiments.setDefaultExperiments(['continueToLocationMarkers']);
   }
 
   /**

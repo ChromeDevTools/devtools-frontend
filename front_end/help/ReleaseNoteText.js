@@ -38,12 +38,7 @@ Help.releaseNoteText = [
         title: 'Unified Command Menu',
         subtitle: 'Execute commands and open files from the newly-unified Command Menu (' + commandMenuShortcut + ').',
         link: 'https://developers.google.com/web/updates/2017/04/devtools-release-notes#command-menu',
-      },
-      {
-        title: 'Workspaces 2.0',
-        subtitle: 'Check out the new UX for using DevTools as your code editor.',
-        link: 'https://developers.google.com/web/updates/2017/04/devtools-release-notes#workspaces',
-      },
+      }
     ],
     link: 'https://developers.google.com/web/updates/2017/04/devtools-release-notes',
   },

@@ -54,7 +54,7 @@ ProductRegistry.entryForUrl = function(parsedUrl) {
 
 /**
  * @param {!Common.ParsedURL} parsedUrl
- * @return {?string}
+ * @return {?number}
  */
 ProductRegistry.typeForUrl = function(parsedUrl) {
   var entry = ProductRegistry.entryForUrl(parsedUrl);
@@ -72,28 +72,23 @@ ProductRegistry._hashForDomain = function(domain) {
 };
 
 /**
- * @param {!Array<string>} productTypes
  * @param {!Array<string>} productNames
  * @param {!Array<!{hash: string, prefixes: !Object<string, !{product: number, type: (number|undefined)}>}>} data
  */
-ProductRegistry.register = function(productTypes, productNames, data) {
-  var typesMap = /** @type {!Map<number, string>} */ (new Map());
-  for (var i = 0; i < productTypes.length; i++)
-    typesMap.set(i, productTypes[i]);
-
+ProductRegistry.register = function(productNames, data) {
   for (var i = 0; i < data.length; i++) {
     var entry = data[i];
     var prefixes = {};
     for (var prefix in entry.prefixes) {
       var prefixEntry = entry.prefixes[prefix];
-      var type = prefixEntry.type !== undefined ? (typesMap.get(prefixEntry.type) || null) : null;
+      var type = prefixEntry.type !== undefined ? prefixEntry.type : null;
       prefixes[prefix] = {name: productNames[prefixEntry.product], type: type};
     }
     ProductRegistry._productsByDomainHash.set(entry.hash, prefixes);
   }
 };
 
-/** @typedef {!{name: string, type: ?string}} */
+/** @typedef {!{name: string, type: ?number}} */
 ProductRegistry.ProductEntry;
 
 /** @type {!Map<string, !Object<string, !ProductRegistry.ProductEntry>>}} */

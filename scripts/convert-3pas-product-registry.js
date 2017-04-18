@@ -23,10 +23,10 @@ const b64pad = '='; /* base-64 pad character. "=" for strict RFC compliance   */
 const chrsz = 8;    /* bits per input character. 8 - ASCII; 16 - Unicode      */
 
 const typeClassifications = new Map([
-  ['cdn_provider', 'CDN'], ['cdn_commercial_owner', 'CDN'], ['cdn_creative_agency', 'CDN'], ['ad_blocking', 'Ad'],
-  ['ad_exchange', 'Ad'], ['ad_server_ad_network', 'Ad'], ['ad_server_advertiser', 'Ad'], ['demand_side_platform', 'Ad'],
-  ['vast_provider', 'Ad'], ['data_management_platform', 'Tracking'], ['research_analytics', 'Tracking'],
-  ['research_verification', 'Tracking'], ['research_brand_lift', 'Tracking']
+  ['cdn_provider', 0], ['cdn_commercial_owner', 2], ['cdn_creative_agency', 2], ['ad_blocking', 0], ['ad_exchange', 0],
+  ['ad_server_ad_network', 0], ['ad_server_advertiser', 0], ['demand_side_platform', 0], ['vast_provider', 0],
+  ['data_management_platform', 1], ['research_analytics', 1], ['research_verification', 1],
+  ['research_brand_lift', 1]
 ]);
 
 var data = fs.readFileSync('3pas.csv', 'utf8');
@@ -124,7 +124,6 @@ for (var lineObj of lineObjs) {
 }
 
 var outputProducts = [];
-var outputTypes = [];
 var outputObj = new Map();
 for (var [baseDomain, subdomains] of map) {
   for (var prefixes of subdomains.values()) {
@@ -177,12 +176,6 @@ console.log(
     '// clang-format off\n' +
     '/* eslint-disable */\n' +
     'ProductRegistry.register([');
-if (outputTypes.length) {
-  var data = JSON.stringify(outputTypes).replace(/","/g, '",\n  "');
-  console.log('  ' + data.substring(1, data.length - 1));
-}
-console.log('],');
-console.log('[');
 var data = JSON.stringify(outputProducts).replace(/","/g, '",\n  "');
 console.log('  ' + data.substring(1, data.length - 1));
 console.log('],');
@@ -192,14 +185,8 @@ for (var i = 0; i < outputObjArray.length; i++) {
   var obj = outputObjArray[i];
   var lineEnding = (i === outputObjArray.length - 1) ? '' : ',';
   var comments = [];
-  for (var prefix in obj.prefixes) {
-    var typeName = outputTypes[obj.prefixes[prefix].type];
-    if (!typeName)
-      typeName = '';
-    else
-      typeName = ':' + typeName;
-    comments.push('[' + outputProducts[obj.prefixes[prefix].product] + typeName + ']');
-  }
+  for (var prefix in obj.prefixes)
+    comments.push('[' + outputProducts[obj.prefixes[prefix].product] + ']');
   console.log('  ' + JSON.stringify(obj) + lineEnding + ' // ' + comments.join(' '));
 }
 console.log(']);');
@@ -226,14 +213,9 @@ function registerOutputProduct(name, type) {
 }
 
 function registerOutputType(type) {
-  var name = typeClassifications.get(type);
-  if (!name)
+  var index = typeClassifications.get(type);
+  if (index === undefined)
     return -1;
-  var index = outputTypes.indexOf(name);
-  if (index === -1) {
-    outputTypes.push(name);
-    return outputTypes.length - 1;
-  }
   return index;
 }
 

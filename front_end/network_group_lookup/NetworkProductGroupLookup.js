@@ -127,12 +127,12 @@ NetworkGroupLookup.NetworkProductTypeGroupLookup = class {
     if (!request || !element)
       return;
     var typeName = ProductRegistry.typeForUrl(request.parsedURL);
-    if (!typeName)
+    if (typeName === null)
       return;
     var icon = UI.Icon.create('smallicon-network-product');
-    if (typeName === 'Tracking')
+    if (typeName === 1)
       icon.style.filter = 'hue-rotate(220deg) brightness(1.5)';
-    if (typeName === 'CDN')
+    if (typeName === 2)
       icon.style.filter = 'hue-rotate(-90deg) brightness(1.5)';
     node.setIconForColumn('product-extension', icon);
   }

@@ -620,20 +620,20 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     this.setHoverEffect(element);
 
     if (element instanceof Elements.ElementsTreeElement) {
-      this._domModel.overlayModel().highlightDOMNodeWithConfig(
+      this._domModel.highlightDOMNodeWithConfig(
           element.node().id, {mode: 'all', showInfo: !UI.KeyboardShortcut.eventHasCtrlOrMeta(event)});
       return;
     }
 
     if (element instanceof Elements.ElementsTreeOutline.ShortcutTreeElement) {
-      this._domModel.overlayModel().highlightDOMNodeWithConfig(
+      this._domModel.highlightDOMNodeWithConfig(
           undefined, {mode: 'all', showInfo: !UI.KeyboardShortcut.eventHasCtrlOrMeta(event)}, element.backendNodeId());
     }
   }
 
   _onmouseleave(event) {
     this.setHoverEffect(null);
-    SDK.OverlayModel.hideDOMNodeHighlight();
+    SDK.DOMModel.hideDOMNodeHighlight();
   }
 
   _ondragstart(event) {
@@ -653,7 +653,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     event.dataTransfer.effectAllowed = 'copyMove';
     this._treeElementBeingDragged = treeElement;
 
-    SDK.OverlayModel.hideDOMNodeHighlight();
+    SDK.DOMModel.hideDOMNodeHighlight();
 
     return true;
   }
@@ -971,7 +971,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     this.selectDOMNode(null, false);
     this._popoverHelper.hidePopover();
     delete this._clipboardNodeData;
-    SDK.OverlayModel.hideDOMNodeHighlight();
+    SDK.DOMModel.hideDOMNodeHighlight();
     this._updateRecords.clear();
   }
 

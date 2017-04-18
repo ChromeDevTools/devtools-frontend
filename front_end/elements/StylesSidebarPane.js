@@ -815,7 +815,7 @@ Elements.StylePropertiesSection = class {
   _onMouseOutSelector() {
     if (this._hoverTimer)
       clearTimeout(this._hoverTimer);
-    SDK.OverlayModel.hideDOMNodeHighlight();
+    SDK.DOMModel.hideDOMNodeHighlight();
   }
 
   _onMouseEnterSelector() {
@@ -825,11 +825,11 @@ Elements.StylePropertiesSection = class {
   }
 
   _highlight() {
-    SDK.OverlayModel.hideDOMNodeHighlight();
+    SDK.DOMModel.hideDOMNodeHighlight();
     var node = this._parentPane.node();
+    var domModel = node.domModel();
     var selectors = this._style.parentRule ? this._style.parentRule.selectorText() : undefined;
-    node.domModel().overlayModel().highlightDOMNodeWithConfig(
-        node.id, {mode: 'all', showInfo: undefined, selectors: selectors});
+    domModel.highlightDOMNodeWithConfig(node.id, {mode: 'all', showInfo: undefined, selectors: selectors});
   }
 
   /**

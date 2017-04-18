@@ -53,7 +53,6 @@ promisified_domains = {
     "DOMDebugger",
     "Emulation",
     "HeapProfiler",
-    "Overlay",
     "Page",
     "Profiler",
     "LayerTree",

@@ -56,7 +56,7 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
 
   _mouseMovedOutOfCrumbs(event) {
     if (this._currentDOMNode)
-      SDK.OverlayModel.hideDOMNodeHighlight();
+      SDK.DOMModel.hideDOMNodeHighlight();
   }
 
 

@@ -36,22 +36,35 @@ Main.RenderingOptionsView = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('main/renderingOptions.css');
 
-    this._appendCheckbox(
-        Common.UIString('Paint Flashing'),
-        Common.UIString('Highlights areas of the page (green) that need to be repainted'),
-        Common.moduleSetting('showPaintRects'));
-    this._appendCheckbox(
-        Common.UIString('Layer Borders'), Common.UIString('Shows layer borders (orange/olive) and tiles (cyan)'),
-        Common.moduleSetting('showDebugBorders'));
-    this._appendCheckbox(
-        Common.UIString('FPS Meter'),
-        Common.UIString('Plots frames per second, frame rate distribution, and GPU memory'),
-        Common.moduleSetting('showFPSCounter'));
-    this._appendCheckbox(
-        Common.UIString('Scrolling Performance Issues'),
-        Common.UIString(
+    /** @type {!Map.<string, !Element>} */
+    this._settings = new Map();
+
+    var options = [
+      {
+        label: Common.UIString('Paint Flashing'),
+        subtitle: Common.UIString('Highlights areas of the page (green) that need to be repainted'),
+        setterName: 'setShowPaintRects'
+      },
+      {
+        label: Common.UIString('Layer Borders'),
+        subtitle: Common.UIString('Shows layer borders (orange/olive) and tiles (cyan)'),
+        setterName: 'setShowDebugBorders'
+      },
+      {
+        label: Common.UIString('FPS Meter'),
+        subtitle: Common.UIString('Plots frames per second, frame rate distribution, and GPU memory'),
+        setterName: 'setShowFPSCounter'
+      },
+      {
+        label: Common.UIString('Scrolling Performance Issues'),
+        subtitle: Common.UIString(
             'Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations.'),
-        Common.moduleSetting('showScrollBottleneckRects'));
+        setterName: 'setShowScrollBottleneckRects'
+      }
+    ];
+    for (var i = 0; i < options.length; i++)
+      this._appendCheckbox(options[i].label, options[i].setterName, options[i].subtitle);
+
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     var cssMediaSubtitle = Common.UIString('Forces media type for testing print and screen styles');
@@ -67,7 +80,7 @@ Main.RenderingOptionsView = class extends UI.VBox {
     this._mediaSelect.addEventListener('change', this._mediaToggled.bind(this), false);
     this._mediaSelect.disabled = true;
 
-    SDK.targetManager.observeTargets(this);
+    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
   }
 
   /**
@@ -81,13 +94,23 @@ Main.RenderingOptionsView = class extends UI.VBox {
 
   /**
    * @param {string} label
-   * @param {string} subtitle
-   * @param {!Common.Setting} setting
+   * @param {string} setterName
+   * @param {string=} subtitle
    */
-  _appendCheckbox(label, subtitle, setting) {
+  _appendCheckbox(label, setterName, subtitle) {
     var checkboxLabel = UI.CheckboxLabel.create(label, false, subtitle);
-    UI.SettingsUI.bindCheckbox(checkboxLabel.checkboxElement, setting);
+    this._settings.set(setterName, checkboxLabel.checkboxElement);
+    checkboxLabel.checkboxElement.addEventListener('click', this._settingToggled.bind(this, setterName));
     this.contentElement.appendChild(checkboxLabel);
+  }
+
+  /**
+   * @param {string} setterName
+   */
+  _settingToggled(setterName) {
+    var enabled = this._settings.get(setterName).checked;
+    for (var target of SDK.targetManager.targets(SDK.Target.Capability.Browser))
+      target.renderingAgent()[setterName](enabled);
   }
 
   /**
@@ -95,7 +118,11 @@ Main.RenderingOptionsView = class extends UI.VBox {
    * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    if (this._mediaCheckbox.checked && target.hasBrowserCapability())
+    for (var setterName of this._settings.keysArray()) {
+      if (this._settings.get(setterName).checked)
+        target.renderingAgent()[setterName](true);
+    }
+    if (this._mediaCheckbox.checked)
       this._applyPrintMediaOverride(target);
   }
 

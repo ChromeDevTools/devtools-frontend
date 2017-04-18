@@ -10,7 +10,8 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
     super();
     this.registerRequiredCSS('components/breakpointsList.css');
 
-    this._eventListenerBreakpointsSetting = Common.settings.createLocalSetting('eventListenerBreakpoints', []);
+    this._eventListenerBreakpointsSetting =
+        Common.settings.createSetting('eventListenerBreakpoints', [], Common.SettingStorageType.Session);
 
     this._categoriesTreeOutline = new UI.TreeOutlineInShadow();
     this._categoriesTreeOutline.element.tabIndex = 0;

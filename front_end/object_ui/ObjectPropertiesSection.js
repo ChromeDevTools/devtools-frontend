@@ -306,8 +306,8 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
         Common.Revealer.reveal(value);
         event.consume(true);
       }, false);
-      valueElement.addEventListener('mousemove', () => SDK.DOMModel.highlightObjectAsDOMNode(value), false);
-      valueElement.addEventListener('mouseleave', () => SDK.DOMModel.hideDOMNodeHighlight(), false);
+      valueElement.addEventListener('mousemove', () => SDK.OverlayModel.highlightObjectAsDOMNode(value), false);
+      valueElement.addEventListener('mouseleave', () => SDK.OverlayModel.hideDOMNodeHighlight(), false);
       return valueElement;
     }
 

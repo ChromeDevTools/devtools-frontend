@@ -95,7 +95,8 @@ UI.SearchableView = class extends UI.VBox {
     this._searchInputElement.addEventListener('keydown', this._onSearchKeyDown.bind(this), true);
     this._searchInputElement.addEventListener('input', this._onInput.bind(this), false);
 
-    this._replaceInputElement = searchInputElements.createChild('input', 'search-replace toolbar-replace-control');
+    this._replaceInputElement =
+        searchInputElements.createChild('input', 'search-replace toolbar-replace-control hidden');
     this._replaceInputElement.addEventListener('keydown', this._onReplaceKeyDown.bind(this), true);
     this._replaceInputElement.placeholder = Common.UIString('Replace');
 
@@ -468,6 +469,7 @@ UI.SearchableView = class extends UI.VBox {
     var secondRowVisible = this._replaceCheckboxElement.checked;
     this._footerElementContainer.classList.toggle('replaceable', secondRowVisible);
     this._buttonsContainer.classList.toggle('hidden', !secondRowVisible);
+    this._replaceInputElement.classList.toggle('hidden', !secondRowVisible);
     this._replaceCheckboxElement.tabIndex = secondRowVisible ? -1 : 0;
 
     if (secondRowVisible)

@@ -46,6 +46,71 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
     this._requestOrFirstKnownChildRequest = null;
     /** @type {!Map<string, !UI.Icon>} */
     this._columnIcons = new Map();
+    /** @type {?Common.Color} */
+    this._backgroundColor = null;
+  }
+
+  /**
+   * @return {!Network.NetworkNode._SupportedBackgroundColors}
+   */
+  static _themedBackgroundColors() {
+    if (Network.NetworkNode._themedBackgroundColorsCache)
+      return Network.NetworkNode._themedBackgroundColorsCache;
+    var themedColors = {};
+    for (var name in Network.NetworkNode._backgroundColors) {
+      var color = Common.Color.fromRGBA(Network.NetworkNode._backgroundColors[name]);
+      themedColors[name] = UI.themeSupport.patchColor(color, UI.ThemeSupport.ColorUsage.Background);
+    }
+    Network.NetworkNode._themedBackgroundColorsCache =
+        /** @type {!Network.NetworkNode._SupportedBackgroundColors} */ (themedColors);
+    return Network.NetworkNode._themedBackgroundColorsCache;
+  }
+
+  /**
+   * @return {string}
+   */
+  backgroundColor() {
+    var bgColors = Network.NetworkNode._themedBackgroundColors();
+    var color = this.isStriped() ? bgColors.Stripe : bgColors.Default;
+    if (this.isNavigationRequest())
+      color = color.blendWith(bgColors.Navigation);
+    if (this.hovered())
+      color = color.blendWith(bgColors.Hovered);
+    if (this._backgroundColor)
+      color = color.blendWith(this._backgroundColor);
+    if (this.isOnInitiatorPath())
+      color = color.blendWith(bgColors.InitiatorPath);
+    if (this.isOnInitiatedPath())
+      color = color.blendWith(bgColors.InitiatedPath);
+    if (this.selected)
+      color = color.blendWith(bgColors.Selected);
+
+    return /** @type {string} */ (color.asString(Common.Color.Format.HEX));
+  }
+
+  /**
+   * @param {?Common.Color} color
+   */
+  setBackgroundColor(color) {
+    this._backgroundColor = color;
+    this._updateBackgroundColor();
+  }
+
+  _updateBackgroundColor() {
+    var element = this.existingElement();
+    if (!element)
+      return;
+    element.style.backgroundColor = this.backgroundColor();
+    this._parentView.stylesChanged();
+  }
+
+  /**
+   * @override
+   * @param {boolean} isStriped
+   */
+  setStriped(isStriped) {
+    super.setStriped(isStriped);
+    this._updateBackgroundColor();
   }
 
   /**
@@ -101,6 +166,7 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
       this.showingInitiatorChainChanged();
     }
     this._parentView.stylesChanged();
+    this._updateBackgroundColor();
   }
 
   /**
@@ -183,6 +249,31 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
     return this._requestOrFirstKnownChildRequest;
   }
 };
+
+/** @type {!Object<string, !Array<number>>} */
+Network.NetworkNode._backgroundColors = {
+  Default: [255, 255, 255, 1.0],
+  Stripe: [245, 245, 245, 1.0],
+  Navigation: [221, 238, 255, 1.0],
+  Hovered: [235, 242, 252, 0.7],
+  InitiatorPath: [58, 217, 58, 0.4],
+  InitiatedPath: [217, 58, 58, 0.4],
+  Selected: [63, 81, 181, .6]
+};
+
+/** @typedef {!{
+  Default: !Common.Color,
+  Stripe: !Common.Color,
+  Navigation: !Common.Color,
+  Hovered: !Common.Color,
+  InitiatorPath: !Common.Color,
+  InitiatedPath: !Common.Color,
+  Selected: !Common.Color
+}} */
+Network.NetworkNode._SupportedBackgroundColors;
+
+/** @type {!Network.NetworkNode._SupportedBackgroundColors} */
+Network.NetworkNode._themedBackgroundColorsCache;
 
 /**
  * @unrestricted
@@ -524,7 +615,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     if (this._isOnInitiatorPath === isOnInitiatorPath || !this.attached())
       return;
     this._isOnInitiatorPath = isOnInitiatorPath;
-    this.element().classList.toggle('network-node-on-initiator-path', isOnInitiatorPath);
+    this._updateBackgroundColor();
   }
 
   /**
@@ -542,7 +633,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     if (this._isOnInitiatedPath === isOnInitiatedPath || !this.attached())
       return;
     this._isOnInitiatedPath = isOnInitiatedPath;
-    this.element().classList.toggle('network-node-on-initiated-path', isOnInitiatedPath);
+    this._updateBackgroundColor();
   }
 
   /**
@@ -594,6 +685,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   markAsNavigationRequest() {
     this._isNavigationRequest = true;
     this.refresh();
+    this._updateBackgroundColor();
   }
 
   /**
@@ -617,6 +709,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     for (var rowDecorator of this._parentView.rowDecorators())
       rowDecorator.decorate(this);
     super.createCells(element);
+    this._updateBackgroundColor();
   }
 
   /**

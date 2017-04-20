@@ -49,14 +49,6 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     /** @type {(number|undefined)} */
     this._updateRequestID;
 
-    var colorUsage = UI.ThemeSupport.ColorUsage;
-    this._rowNavigationRequestColor = UI.themeSupport.patchColorText('#def', colorUsage.Background);
-    this._rowStripeColor = UI.themeSupport.patchColorText('#f5f5f5', colorUsage.Background);
-    this._rowHoverColor = UI.themeSupport.patchColorText(
-        '#ebf2fc', /** @type {!UI.ThemeSupport.ColorUsage} */ (colorUsage.Background | colorUsage.Selection));
-    this._parentInitiatorColor = UI.themeSupport.patchColorText('hsla(120, 68%, 54%, 0.2)', colorUsage.Background);
-    this._initiatedColor = UI.themeSupport.patchColorText('hsla(0, 68%, 54%, 0.2)', colorUsage.Background);
-
     this.element.addEventListener('mousemove', this._onMouseMove.bind(this), true);
     this.element.addEventListener('mouseleave', event => this._setHoveredNode(null, false), true);
 
@@ -593,38 +585,12 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    * @param {number} y
    */
   _decorateRow(context, node, y) {
-    var isStriped = node.isStriped();
-    if (!isStriped && !node.hovered() && !node.isNavigationRequest() && !node.isOnInitiatorPath() &&
-        !node.isOnInitiatedPath())
-      return;
-
-    var color = getRowColor.call(this);
-    if (color === 'transparent')
-      return;
     context.save();
     context.beginPath();
-    context.fillStyle = color;
+    context.fillStyle = node.backgroundColor();
     context.rect(0, y, this._offsetWidth, this._rowHeight);
     context.fill();
     context.restore();
-
-    /**
-     * @return {string}
-     * @this {Network.NetworkWaterfallColumn}
-     */
-    function getRowColor() {
-      if (node.hovered())
-        return this._rowHoverColor;
-      if (node.isOnInitiatorPath())
-        return this._parentInitiatorColor;
-      if (node.isOnInitiatedPath())
-        return this._initiatedColor;
-      if (node.isNavigationRequest())
-        return this._rowNavigationRequestColor;
-      if (!isStriped)
-        return 'transparent';
-      return this._rowStripeColor;
-    }
   }
 };
 

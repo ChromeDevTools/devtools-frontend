@@ -56,15 +56,6 @@
     background: transparent;
 }
 
-.network-log-grid .odd {
-    background: #f5f5f5;
-}
-
-.network-log-grid .network-navigation-row,
-.network-log-grid .network-navigation-row.odd {
-    background: #def;
-}
-
 .network-log-grid.data-grid td {
     height: 41px;
     border-left: 1px solid #e1e1e1;
@@ -106,7 +97,6 @@
 
 .network-log-grid.data-grid select {
     -webkit-appearance: none;
-    background-color: transparent;
     border: none;
     width: 100%;
     color: inherit;
@@ -313,18 +303,6 @@
 
 #network-container {
     overflow: hidden;
-}
-
-.network-log-grid.data-grid .data-container tr:not(.data-grid-filler-row):not(.selected).hover {
-    background-color: #ebf2fc;
-}
-
-.network-log-grid .network-node-on-initiator-path {
-    background-color: hsla(120, 68%, 54%, 0.2) !important;
-}
-
-.network-log-grid .network-node-on-initiated-path {
-    background-color: hsla(0, 68%, 54%, 0.2) !important;
 }
 
 .network-status-pane {

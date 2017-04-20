@@ -123,6 +123,7 @@ FormatterWorker.ESTreeWalker._walkOrder = {
   'MethodDefinition': ['key', 'value'],
   'NewExpression': ['callee', 'arguments'],
   'ObjectExpression': ['properties'],
+  'ParenthesizedExpression': ['expression'],
   'Program': ['body'],
   'Property': ['key', 'value'],
   'ReturnStatement': ['argument'],

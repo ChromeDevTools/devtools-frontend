@@ -368,6 +368,7 @@ all_devtools_files = [
   "front_end/perf_ui/PieChart.js",
   "front_end/perf_ui/timelineGrid.css",
   "front_end/perf_ui/TimelineGrid.js",
+  "front_end/perf_ui/timelineOverviewInfo.css",
   "front_end/perf_ui/TimelineOverviewPane.js",
   "front_end/persistence/Automapping.js",
   "front_end/persistence/DefaultMapping.js",

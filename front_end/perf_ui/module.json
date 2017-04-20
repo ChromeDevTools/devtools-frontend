@@ -29,6 +29,7 @@
         "flameChart.css",
         "overviewGrid.css",
         "pieChart.css",
-        "timelineGrid.css"
+        "timelineGrid.css",
+        "timelineOverviewInfo.css"
     ]
 }

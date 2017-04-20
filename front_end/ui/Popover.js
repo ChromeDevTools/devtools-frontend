@@ -52,12 +52,10 @@ UI.PopoverHelper = class {
   /**
    * @param {number} showTimeout
    * @param {number=} hideTimeout
-   * @param {boolean=} hideOnAnchorLeave
    */
-  setTimeout(showTimeout, hideTimeout, hideOnAnchorLeave) {
+  setTimeout(showTimeout, hideTimeout) {
     this._showTimeout = showTimeout;
     this._hideTimeout = typeof hideTimeout === 'number' ? hideTimeout : showTimeout / 2;
-    this._hideOnAnchorLeave = hideOnAnchorLeave;
   }
 
   /**
@@ -241,7 +239,7 @@ UI.PopoverHelper = class {
   }
 
   _stopHidePopoverTimer() {
-    if (!this._hidePopoverTimer || this._hideOnAnchorLeave)
+    if (!this._hidePopoverTimer)
       return;
     clearTimeout(this._hidePopoverTimer);
     delete this._hidePopoverTimer;

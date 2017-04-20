@@ -454,7 +454,7 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
    * @param {number} x
    * @return {!Promise<?Element>}
    */
-  popoverElementPromise(x) {
+  overviewInfoPromise(x) {
     if (!this._model || !this._model.filmStripModel().frames().length)
       return Promise.resolve(/** @type {?Element} */ (null));
 
@@ -473,7 +473,6 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
     function createFrameElement(image) {
       var element = createElementWithClass('div', 'frame');
       element.createChild('div', 'thumbnail').appendChild(image);
-      UI.appendStyle(element, 'timeline/timelinePanel.css');
       this._lastFrame = frame;
       this._lastElement = element;
       return element;

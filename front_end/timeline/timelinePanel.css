@@ -487,15 +487,6 @@
     border: 1px solid #ddd;
 }
 
-.timeline-overview-popover .frame .time {
-    display: none;
-}
-
-.timeline-overview-popover .frame .thumbnail img {
-    max-width: 300px;
-    max-height: 500px;
-}
-
 .timeline-tree-view {
     display: flex;
     overflow: hidden;

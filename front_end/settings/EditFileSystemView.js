@@ -108,28 +108,13 @@ Settings.EditFileSystemView = class extends UI.VBox {
     this._mappingsList.clear();
     var mappings = Workspace.fileSystemMapping.mappingEntries(this._fileSystemPath);
     for (var entry of mappings) {
-      if (entry.configurable) {
-        this._mappingsList.appendItem(entry, true);
-        this._mappings.push(entry);
-      }
-    }
-    for (var entry of mappings) {
-      if (!entry.configurable) {
-        this._mappingsList.appendItem(entry, false);
-        this._mappings.push(entry);
-      }
-    }
-
-    for (var folder of Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
-             .nonConfigurableExcludedFolders()
-             .values()) {
-      this._excludedFolders.push(folder);
-      this._excludedFoldersList.appendItem(folder, false);
+      this._mappingsList.appendItem(entry, true);
+      this._mappings.push(entry);
     }
   }
 
   _addMappingButtonClicked() {
-    var entry = new Workspace.FileSystemMapping.Entry(this._fileSystemPath, '', '', true);
+    var entry = new Workspace.FileSystemMapping.Entry(this._fileSystemPath, '', '');
     this._mappingsList.addNewItem(0, entry);
   }
 
@@ -145,14 +130,11 @@ Settings.EditFileSystemView = class extends UI.VBox {
    */
   renderItem(item, editable) {
     var element = createElementWithClass('div', 'file-system-list-item');
-    if (!editable)
-      element.classList.add('locked');
     if (item instanceof Workspace.FileSystemMapping.Entry) {
       var entry = /** @type {!Workspace.FileSystemMapping.Entry} */ (item);
-      var urlPrefix = entry.configurable ? entry.urlPrefix : Common.UIString('%s (via .devtools)', entry.urlPrefix);
       var urlPrefixElement = element.createChild('div', 'file-system-value');
-      urlPrefixElement.textContent = urlPrefix;
-      urlPrefixElement.title = urlPrefix;
+      urlPrefixElement.textContent = entry.urlPrefix;
+      urlPrefixElement.title = entry.urlPrefix;
       element.createChild('div', 'file-system-separator');
       var pathPrefixElement = element.createChild('div', 'file-system-value');
       pathPrefixElement.textContent = entry.pathPrefix;
@@ -163,7 +145,6 @@ Settings.EditFileSystemView = class extends UI.VBox {
       pathPrefixElement.textContent = pathPrefix;
       pathPrefixElement.title = pathPrefix;
     }
-    element.createChild('div', 'file-system-locked').title = Common.UIString('From .devtools file');
     return element;
   }
 
@@ -264,7 +245,7 @@ Settings.EditFileSystemView = class extends UI.VBox {
     function urlPrefixValidator(item, index, input) {
       var prefix = this._normalizePrefix(input.value);
       for (var i = 0; i < this._mappings.length; ++i) {
-        if (i !== index && this._mappings[i].configurable && this._mappings[i].urlPrefix === prefix)
+        if (i !== index && this._mappings[i].urlPrefix === prefix)
           return false;
       }
       return !!prefix;
@@ -280,7 +261,7 @@ Settings.EditFileSystemView = class extends UI.VBox {
     function pathPrefixValidator(item, index, input) {
       var prefix = this._normalizePrefix(input.value);
       for (var i = 0; i < this._mappings.length; ++i) {
-        if (i !== index && this._mappings[i].configurable && this._mappings[i].pathPrefix === prefix)
+        if (i !== index && this._mappings[i].pathPrefix === prefix)
           return false;
       }
       return !!prefix;

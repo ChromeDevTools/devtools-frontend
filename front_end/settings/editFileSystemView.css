@@ -75,16 +75,3 @@
     width: 100%;
     text-align: inherit;
 }
-
-.file-system-locked {
-    flex: none;
-    visibility: hidden;
-}
-
-.file-system-locked:after {
-    content: "\1F512";
-}
-
-.file-system-list-item.locked .file-system-locked {
-    visibility: visible;
-}

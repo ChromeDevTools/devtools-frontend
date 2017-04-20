@@ -56,7 +56,7 @@ Workspace.FileSystemMapping = class extends Common.Object {
    */
   _fileSystemsLoaded(fileSystems) {
     for (var fileSystem of fileSystems)
-      this._addMappingsForFilesystem(fileSystem);
+      this.addFileSystem(fileSystem.path());
   }
 
   /**
@@ -64,26 +64,7 @@ Workspace.FileSystemMapping = class extends Common.Object {
    */
   _fileSystemAdded(event) {
     var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
-    this._addMappingsForFilesystem(fileSystem);
-  }
-
-  /**
-   * @param {!Workspace.IsolatedFileSystem} fileSystem
-   */
-  _addMappingsForFilesystem(fileSystem) {
     this.addFileSystem(fileSystem.path());
-
-    var mappings = fileSystem.projectProperty('mappings');
-    for (var i = 0; Array.isArray(mappings) && i < mappings.length; ++i) {
-      var mapping = mappings[i];
-      if (!mapping || typeof mapping !== 'object')
-        continue;
-      var folder = mapping['folder'];
-      var url = mapping['url'];
-      if (typeof folder !== 'string' || typeof url !== 'string')
-        continue;
-      this.addNonConfigurableFileMapping(fileSystem.path(), url, folder);
-    }
   }
 
   /**
@@ -105,8 +86,7 @@ Workspace.FileSystemMapping = class extends Common.Object {
 
       for (var i = 0; i < savedFileSystemMappings.length; ++i) {
         var savedEntry = savedFileSystemMappings[i];
-        var entry =
-            new Workspace.FileSystemMapping.Entry(fileSystemPath, savedEntry.urlPrefix, savedEntry.pathPrefix, true);
+        var entry = new Workspace.FileSystemMapping.Entry(fileSystemPath, savedEntry.urlPrefix, savedEntry.pathPrefix);
         fileSystemMappings.push(entry);
       }
     }
@@ -119,10 +99,8 @@ Workspace.FileSystemMapping = class extends Common.Object {
     for (var fileSystemPath in this._fileSystemMappings) {
       setting[fileSystemPath] = [];
       var entries = this._fileSystemMappings[fileSystemPath];
-      for (var entry of entries) {
-        if (entry.configurable)
-          setting[fileSystemPath].push(entry);
-      }
+      for (var entry of entries)
+        setting[fileSystemPath].push(entry);
     }
     this._fileSystemMappingSetting.set(setting);
   }
@@ -135,9 +113,6 @@ Workspace.FileSystemMapping = class extends Common.Object {
       var fileSystemMapping = this._fileSystemMappings[fileSystemPath];
       for (var i = 0; i < fileSystemMapping.length; ++i) {
         var entry = fileSystemMapping[i];
-        // Resolve conflict in favor of configurable mapping.
-        if (this._mappingForURLPrefix[entry.urlPrefix] && !entry.configurable)
-          continue;
         this._mappingForURLPrefix[entry.urlPrefix] = entry;
         if (this._urlPrefixes.indexOf(entry.urlPrefix) === -1)
           this._urlPrefixes.push(entry.urlPrefix);
@@ -180,7 +155,7 @@ Workspace.FileSystemMapping = class extends Common.Object {
       pathPrefix += '/';
     if (!pathPrefix.startsWith('/'))
       pathPrefix = '/' + pathPrefix;
-    this._innerAddFileMapping(fileSystemPath, urlPrefix, pathPrefix, true);
+    this._innerAddFileMapping(fileSystemPath, urlPrefix, pathPrefix);
     this._saveToSettings();
   }
 
@@ -189,18 +164,8 @@ Workspace.FileSystemMapping = class extends Common.Object {
    * @param {string} urlPrefix
    * @param {string} pathPrefix
    */
-  addNonConfigurableFileMapping(fileSystemPath, urlPrefix, pathPrefix) {
-    this._innerAddFileMapping(fileSystemPath, urlPrefix, pathPrefix, false);
-  }
-
-  /**
-   * @param {string} fileSystemPath
-   * @param {string} urlPrefix
-   * @param {string} pathPrefix
-   * @param {boolean} configurable
-   */
-  _innerAddFileMapping(fileSystemPath, urlPrefix, pathPrefix, configurable) {
-    var entry = new Workspace.FileSystemMapping.Entry(fileSystemPath, urlPrefix, pathPrefix, configurable);
+  _innerAddFileMapping(fileSystemPath, urlPrefix, pathPrefix) {
+    var entry = new Workspace.FileSystemMapping.Entry(fileSystemPath, urlPrefix, pathPrefix);
     this._fileSystemMappings[fileSystemPath].push(entry);
     this._rebuildIndexes();
     this.dispatchEventToListeners(Workspace.FileSystemMapping.Events.FileMappingAdded, entry);
@@ -247,8 +212,6 @@ Workspace.FileSystemMapping = class extends Common.Object {
     var entry = null;
     for (var i = 0; i < entries.length; ++i) {
       var pathPrefix = entries[i].pathPrefix;
-      if (entry && entry.configurable && !entries[i].configurable)
-        continue;
       // We are looking for the longest pathPrefix match.
       if (entry && entry.pathPrefix.length > pathPrefix.length)
         continue;
@@ -266,7 +229,7 @@ Workspace.FileSystemMapping = class extends Common.Object {
   _configurableMappingEntryForPathPrefix(fileSystemPath, pathPrefix) {
     var entries = this._fileSystemMappings[fileSystemPath];
     for (var i = 0; i < entries.length; ++i) {
-      if (entries[i].configurable && pathPrefix === entries[i].pathPrefix)
+      if (pathPrefix === entries[i].pathPrefix)
         return entries[i];
     }
     return null;
@@ -320,7 +283,7 @@ Workspace.FileSystemMapping = class extends Common.Object {
    */
   removeMappingForURL(url) {
     var entry = this._mappingEntryForURL(url);
-    if (!entry || !entry.configurable)
+    if (!entry)
       return;
     this._fileSystemMappings[entry.fileSystemPath].remove(entry);
     this._saveToSettings();
@@ -374,13 +337,11 @@ Workspace.FileSystemMapping.Entry = class {
    * @param {string} fileSystemPath
    * @param {string} urlPrefix
    * @param {string} pathPrefix
-   * @param {boolean} configurable
    */
-  constructor(fileSystemPath, urlPrefix, pathPrefix, configurable) {
+  constructor(fileSystemPath, urlPrefix, pathPrefix) {
     this.fileSystemPath = fileSystemPath;
     this.urlPrefix = urlPrefix;
     this.pathPrefix = pathPrefix;
-    this.configurable = configurable;
   }
 };
 

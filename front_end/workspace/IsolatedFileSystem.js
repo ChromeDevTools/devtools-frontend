@@ -46,8 +46,6 @@ Workspace.IsolatedFileSystem = class {
     this._excludedFoldersSetting = Common.settings.createLocalSetting('workspaceExcludedFolders', {});
     /** @type {!Set<string>} */
     this._excludedFolders = new Set(this._excludedFoldersSetting.get()[path] || []);
-    /** @type {!Set<string>} */
-    this._nonConfigurableExcludedFolders = new Set();
 
     /** @type {!Set<string>} */
     this._initialFilePaths = new Set();
@@ -69,27 +67,9 @@ Workspace.IsolatedFileSystem = class {
       return Promise.resolve(/** @type {?Workspace.IsolatedFileSystem} */ (null));
 
     var fileSystem = new Workspace.IsolatedFileSystem(manager, path, embedderPath, domFileSystem);
-    var fileContentPromise = fileSystem.requestFileContentPromise('.devtools');
-    return fileContentPromise.then(onConfigAvailable)
+    return fileSystem._initializeFilePaths()
         .then(() => fileSystem)
         .catchException(/** @type {?Workspace.IsolatedFileSystem} */ (null));
-
-    /**
-     * @param {?string} projectText
-     * @return {!Promise}
-     */
-    function onConfigAvailable(projectText) {
-      if (projectText) {
-        try {
-          var projectObject = JSON.parse(projectText);
-          fileSystem._initializeProject(
-              typeof projectObject === 'object' ? /** @type {!Object} */ (projectObject) : null);
-        } catch (e) {
-          Common.console.error('Invalid project file: ' + projectText);
-        }
-      }
-      return fileSystem._initializeFilePaths();
-    }
   }
 
   /**
@@ -153,29 +133,6 @@ Workspace.IsolatedFileSystem = class {
    */
   embedderPath() {
     return this._embedderPath;
-  }
-
-  /**
-   * @param {?Object} projectObject
-   */
-  _initializeProject(projectObject) {
-    this._projectObject = projectObject;
-
-    var projectExcludes = this.projectProperty('excludes');
-    if (Array.isArray(projectExcludes)) {
-      for (var folder of /** @type {!Array<*>} */ (projectExcludes)) {
-        if (typeof folder === 'string')
-          this._nonConfigurableExcludedFolders.add(folder);
-      }
-    }
-  }
-
-  /**
-   * @param {string} key
-   * @return {*}
-   */
-  projectProperty(key) {
-    return this._projectObject ? this._projectObject[key] : null;
   }
 
   /**
@@ -574,7 +531,7 @@ Workspace.IsolatedFileSystem = class {
    * @return {boolean}
    */
   _isFileExcluded(folderPath) {
-    if (this._nonConfigurableExcludedFolders.has(folderPath) || this._excludedFolders.has(folderPath))
+    if (this._excludedFolders.has(folderPath))
       return true;
     var regex = this._manager.workspaceFolderExcludePatternSetting().asRegExp();
     return !!(regex && regex.test(folderPath));
@@ -585,13 +542,6 @@ Workspace.IsolatedFileSystem = class {
    */
   excludedFolders() {
     return this._excludedFolders;
-  }
-
-  /**
-   * @return {!Set<string>}
-   */
-  nonConfigurableExcludedFolders() {
-    return this._nonConfigurableExcludedFolders;
   }
 
   /**

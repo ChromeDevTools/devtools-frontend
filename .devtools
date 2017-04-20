@@ -1,5 +1,0 @@
-{
-    "mappings": [
-        { "folder": "/front_end/", "url": "chrome-devtools://devtools/bundled/" }
-    ]
-}

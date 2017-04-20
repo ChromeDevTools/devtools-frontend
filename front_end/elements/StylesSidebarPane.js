@@ -57,6 +57,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     Elements.StylesSidebarPane._instance = this;
     UI.context.addFlavorChangeListener(SDK.DOMNode, this.forceUpdate, this);
     this.element.addEventListener('copy', this._clipboardCopy.bind(this));
+    this._resizeThrottler = new Common.Throttler(100);
   }
 
   /**
@@ -252,6 +253,22 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
    */
   doUpdate() {
     return this._fetchMatchedCascade().then(this._innerRebuildUpdate.bind(this));
+  }
+
+  /**
+   * @override
+   */
+  onResize() {
+    this._resizeThrottler.schedule(this._innerResize.bind(this));
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  _innerResize() {
+    var width = this.element.getBoundingClientRect().width + 'px';
+    this.allSections().forEach(section => section.propertiesTreeOutline.element.style.width = width);
+    return Promise.resolve();
   }
 
   _resetCache() {
@@ -585,14 +602,15 @@ Elements.StylePropertiesSection = class {
     var rule = style.parentRule;
     this.element = createElementWithClass('div', 'styles-section matched-styles monospace');
     this.element._section = this;
+    this._innerElement = this.element.createChild('div');
 
-    this._titleElement = this.element.createChild('div', 'styles-section-title ' + (rule ? 'styles-selector' : ''));
+    this._titleElement = this._innerElement.createChild('div', 'styles-section-title ' + (rule ? 'styles-selector' : ''));
 
     this.propertiesTreeOutline = new UI.TreeOutlineInShadow();
     this.propertiesTreeOutline.registerRequiredCSS('elements/stylesSectionTree.css');
     this.propertiesTreeOutline.element.classList.add('style-properties', 'matched-styles', 'monospace');
     this.propertiesTreeOutline.section = this;
-    this.element.appendChild(this.propertiesTreeOutline.element);
+    this._innerElement.appendChild(this.propertiesTreeOutline.element);
 
     var selectorContainer = createElement('div');
     this._selectorElement = createElementWithClass('span', 'selector');
@@ -607,7 +625,7 @@ Elements.StylePropertiesSection = class {
     selectorContainer.addEventListener('mousedown', this._handleEmptySpaceMouseDown.bind(this), false);
     selectorContainer.addEventListener('click', this._handleSelectorContainerClick.bind(this), false);
 
-    var closeBrace = this.element.createChild('div', 'sidebar-pane-closing-brace');
+    var closeBrace = this._innerElement.createChild('div', 'sidebar-pane-closing-brace');
     closeBrace.textContent = '}';
 
     this._createHoverMenuToolbar(closeBrace);
@@ -645,6 +663,9 @@ Elements.StylePropertiesSection = class {
       this.element.classList.add('read-only');
       this.propertiesTreeOutline.element.classList.add('read-only');
     }
+
+    var throttler = new Common.Throttler(100);
+    this._scheduleHeightUpdate = () => throttler.schedule(this._manuallySetHeight.bind(this));
 
     this._hoverableSelectorsMode = false;
     this._markSelectorMatches();
@@ -1299,6 +1320,7 @@ Elements.StylePropertiesSection = class {
         this._editingMediaCommitted.bind(this, media), this._editingMediaCancelled.bind(this, element), undefined,
         this._editingMediaBlurHandler.bind(this));
     UI.InplaceEditor.startEditing(element, config);
+    this._startEditing();
 
     element.getComponentSelection().selectAllChildren(element);
     this._parentPane.setEditingStyle(true);
@@ -1315,6 +1337,7 @@ Elements.StylePropertiesSection = class {
     this._parentPane.setEditingStyle(false);
     var parentMediaElement = element.enclosingNodeOrSelfWithClass('media');
     parentMediaElement.classList.remove('editing-media');
+    this._stopEditing();
   }
 
   /**
@@ -1430,6 +1453,7 @@ Elements.StylePropertiesSection = class {
     var config =
         new UI.InplaceEditor.Config(this.editingSelectorCommitted.bind(this), this.editingSelectorCancelled.bind(this));
     UI.InplaceEditor.startEditing(this._selectorElement, config);
+    this._startEditing();
 
     element.getComponentSelection().selectAllChildren(element);
     this._parentPane.setEditingStyle(true);
@@ -1546,6 +1570,7 @@ Elements.StylePropertiesSection = class {
 
   _editingSelectorEnded() {
     this._parentPane.setEditingStyle(false);
+    this._stopEditing();
   }
 
   editingSelectorCancelled() {
@@ -1554,6 +1579,26 @@ Elements.StylePropertiesSection = class {
     // Mark the selectors in group if necessary.
     // This is overridden by BlankStylePropertiesSection.
     this._markSelectorMatches();
+  }
+
+  _startEditing() {
+    this._manuallySetHeight();
+    this.element.addEventListener('input', this._scheduleHeightUpdate, true);
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  _manuallySetHeight() {
+    this.element.style.height = this._innerElement.clientHeight + 'px';
+    this.element.style.contain = 'strict';
+    return Promise.resolve();
+  }
+
+  _stopEditing() {
+    this.element.style.removeProperty('height');
+    this.element.style.removeProperty('contain');
+    this.element.removeEventListener('input', this._scheduleHeightUpdate, true);
   }
 };
 
@@ -2369,6 +2414,8 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
     this._prompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(cssCompletions, cssVariables, this, isEditingName);
     this._prompt.setAutocompletionTimeout(0);
+    if (section)
+      section._startEditing();
 
     // Do not live-edit "content" property of pseudo elements. crbug.com/433889
     if (!isEditingName && (!this._parentPane.node().pseudoType() || this.name !== 'content'))
@@ -2663,6 +2710,9 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       this._prompt.detach();
       this._prompt = null;
     }
+    var section = this.section();
+    if (section)
+      section._stopEditing();
   }
 
   styleTextAppliedForTest() {

@@ -152,13 +152,16 @@
 }
 
 .styles-section {
-    padding: 2px 2px 4px 4px;
     min-height: 18px;
     white-space: nowrap;
     -webkit-user-select: text;
     border-bottom: 1px solid #eee;
     position: relative;
     overflow: hidden;
+}
+
+.styles-section > div {
+    padding: 2px 2px 4px 4px;
 }
 
 .styles-section:last-child {

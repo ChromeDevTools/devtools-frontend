@@ -614,6 +614,16 @@ Common.Color = class {
     rgba[3] = alpha;
     return new Common.Color(rgba, Common.Color.Format.RGBA);
   }
+
+  /**
+   * @param {!Common.Color} fgColor
+   * @return {!Common.Color}
+   */
+  blendWith(fgColor) {
+    var rgba = [];
+    Common.Color.blendColors(fgColor._rgba, this._rgba, rgba);
+    return new Common.Color(rgba, Common.Color.Format.RGBA);
+  }
 };
 
 /** @type {!RegExp} */

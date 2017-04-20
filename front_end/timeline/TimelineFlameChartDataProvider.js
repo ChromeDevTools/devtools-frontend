@@ -57,8 +57,8 @@ Timeline.TimelineFlameChartDataProvider = class {
       padding: 4,
       height: 17,
       collapsible: true,
-      color: UI.themeSupport.patchColor('#222', UI.ThemeSupport.ColorUsage.Foreground),
-      backgroundColor: UI.themeSupport.patchColor('white', UI.ThemeSupport.ColorUsage.Background),
+      color: UI.themeSupport.patchColorText('#222', UI.ThemeSupport.ColorUsage.Foreground),
+      backgroundColor: UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background),
       font: this._font,
       nestingLevel: 0,
       shareHeaderLine: true

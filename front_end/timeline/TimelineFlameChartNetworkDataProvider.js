@@ -14,9 +14,9 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
       padding: 4,
       height: 17,
       collapsible: true,
-      color: UI.themeSupport.patchColor('#222', UI.ThemeSupport.ColorUsage.Foreground),
+      color: UI.themeSupport.patchColorText('#222', UI.ThemeSupport.ColorUsage.Foreground),
       font: this._font,
-      backgroundColor: UI.themeSupport.patchColor('white', UI.ThemeSupport.ColorUsage.Background),
+      backgroundColor: UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background),
       nestingLevel: 0,
       useFirstLineForOverview: false,
       useDecoratorsForOverview: true,
@@ -205,7 +205,7 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
 
     context.fillStyle = 'hsla(0, 100%, 100%, 0.8)';
     context.fillRect(sendStart + 0.5, barY + 0.5, headersEnd - sendStart - 0.5, barHeight - 2);
-    context.fillStyle = UI.themeSupport.patchColor('white', UI.ThemeSupport.ColorUsage.Background);
+    context.fillStyle = UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background);
     context.fillRect(barX, barY - 0.5, sendStart - barX, barHeight);
     context.fillRect(finish, barY - 0.5, barX + barWidth - finish, barHeight);
 

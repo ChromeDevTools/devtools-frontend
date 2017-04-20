@@ -740,7 +740,7 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
     var defaultFont = '11px ' + Host.fontFamily();
     context.font = defaultFont;
 
-    context.fillStyle = UI.themeSupport.patchColor('#fff', colorUsage.Background);
+    context.fillStyle = UI.themeSupport.patchColorText('#fff', colorUsage.Background);
     forEachGroup.call(this, (offset, index, group) => {
       var paddingHeight = group.style.padding;
       if (paddingHeight < 5)
@@ -750,7 +750,7 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
     if (groups.length && lastGroupOffset < top + height)
       context.fillRect(0, lastGroupOffset + 2, width, top + height - lastGroupOffset);
 
-    context.strokeStyle = UI.themeSupport.patchColor('#eee', colorUsage.Background);
+    context.strokeStyle = UI.themeSupport.patchColorText('#eee', colorUsage.Background);
     context.beginPath();
     forEachGroup.call(this, (offset, index, group, isFirst) => {
       if (isFirst || group.style.padding < 4)
@@ -794,7 +794,7 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
     });
     context.restore();
 
-    context.fillStyle = UI.themeSupport.patchColor('#6e6e6e', colorUsage.Foreground);
+    context.fillStyle = UI.themeSupport.patchColorText('#6e6e6e', colorUsage.Foreground);
     context.beginPath();
     forEachGroup.call(this, (offset, index, group) => {
       if (this._isGroupCollapsible(index)) {
@@ -805,7 +805,7 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
     });
     context.fill();
 
-    context.strokeStyle = UI.themeSupport.patchColor('#ddd', colorUsage.Background);
+    context.strokeStyle = UI.themeSupport.patchColorText('#ddd', colorUsage.Background);
     context.beginPath();
     context.stroke();
 

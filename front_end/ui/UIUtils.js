@@ -1852,7 +1852,7 @@ UI.ThemeSupport = class {
     output.push(':');
     var items = value.replace(Common.Color.Regex, '\0$1\0').split('\0');
     for (var i = 0; i < items.length; ++i)
-      output.push(this.patchColor(items[i], colorUsage));
+      output.push(this.patchColorText(items[i], colorUsage));
     if (style.getPropertyPriority(name))
       output.push(' !important');
     output.push(';');
@@ -1863,20 +1863,28 @@ UI.ThemeSupport = class {
    * @param {!UI.ThemeSupport.ColorUsage} colorUsage
    * @return {string}
    */
-  patchColor(text, colorUsage) {
+  patchColorText(text, colorUsage) {
     var color = Common.Color.parse(text);
     if (!color)
       return text;
-
-    var hsla = color.hsla();
-    this._patchHSLA(hsla, colorUsage);
-    var rgba = [];
-    Common.Color.hsl2rgb(hsla, rgba);
-    var outColor = new Common.Color(rgba, color.format());
+    var outColor = this.patchColor(color, colorUsage);
     var outText = outColor.asString(null);
     if (!outText)
       outText = outColor.asString(outColor.hasAlpha() ? Common.Color.Format.RGBA : Common.Color.Format.RGB);
     return outText || text;
+  }
+
+  /**
+   * @param {!Common.Color} color
+   * @param {!UI.ThemeSupport.ColorUsage} colorUsage
+   * @return {!Common.Color}
+   */
+  patchColor(color, colorUsage) {
+    var hsla = color.hsla();
+    this._patchHSLA(hsla, colorUsage);
+    var rgba = [];
+    Common.Color.hsl2rgb(hsla, rgba);
+    return new Common.Color(rgba, color.format());
   }
 
   /**

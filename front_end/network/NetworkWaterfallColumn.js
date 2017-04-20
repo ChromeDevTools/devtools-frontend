@@ -50,12 +50,12 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._updateRequestID;
 
     var colorUsage = UI.ThemeSupport.ColorUsage;
-    this._rowNavigationRequestColor = UI.themeSupport.patchColor('#def', colorUsage.Background);
-    this._rowStripeColor = UI.themeSupport.patchColor('#f5f5f5', colorUsage.Background);
-    this._rowHoverColor = UI.themeSupport.patchColor(
+    this._rowNavigationRequestColor = UI.themeSupport.patchColorText('#def', colorUsage.Background);
+    this._rowStripeColor = UI.themeSupport.patchColorText('#f5f5f5', colorUsage.Background);
+    this._rowHoverColor = UI.themeSupport.patchColorText(
         '#ebf2fc', /** @type {!UI.ThemeSupport.ColorUsage} */ (colorUsage.Background | colorUsage.Selection));
-    this._parentInitiatorColor = UI.themeSupport.patchColor('hsla(120, 68%, 54%, 0.2)', colorUsage.Background);
-    this._initiatedColor = UI.themeSupport.patchColor('hsla(0, 68%, 54%, 0.2)', colorUsage.Background);
+    this._parentInitiatorColor = UI.themeSupport.patchColorText('hsla(120, 68%, 54%, 0.2)', colorUsage.Background);
+    this._initiatedColor = UI.themeSupport.patchColorText('hsla(0, 68%, 54%, 0.2)', colorUsage.Background);
 
     this.element.addEventListener('mousemove', this._onMouseMove.bind(this), true);
     this.element.addEventListener('mouseleave', event => this._setHoveredNode(null, false), true);
@@ -68,7 +68,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     /** @type {!Map<!Common.ResourceType, !Network.NetworkWaterfallColumn._LayerStyle>} */
     this._styleForDownloadingResourceType = resourceStyleTuple[1];
 
-    var baseLineColor = UI.themeSupport.patchColor('#a5a5a5', UI.ThemeSupport.ColorUsage.Foreground);
+    var baseLineColor = UI.themeSupport.patchColorText('#a5a5a5', UI.ThemeSupport.ColorUsage.Foreground);
     /** @type {!Network.NetworkWaterfallColumn._LayerStyle} */
     this._wiskerStyle = {borderColor: baseLineColor, lineWidth: 1};
     /** @type {!Network.NetworkWaterfallColumn._LayerStyle} */
@@ -391,7 +391,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._drawLayers(context);
 
     context.save();
-    context.fillStyle = UI.themeSupport.patchColor('#888', UI.ThemeSupport.ColorUsage.Foreground);
+    context.fillStyle = UI.themeSupport.patchColorText('#888', UI.ThemeSupport.ColorUsage.Foreground);
     for (var textData of this._textLayers)
       context.fillText(textData.text, textData.x, textData.y);
     context.restore();

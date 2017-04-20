@@ -130,11 +130,18 @@ NetworkGroupLookup.NetworkProductTypeGroupLookup = class {
     if (typeName === null)
       return;
     var icon = UI.Icon.create('smallicon-network-product');
-    if (typeName === 1)
+    var color;
+    if (typeName === 1) {
+      color = Common.Color.fromRGBA([255, 252, 225, .6]);
       icon.style.filter = 'hue-rotate(220deg) brightness(1.5)';
-    if (typeName === 2)
+    } else if (typeName === 2) {
+      color = Common.Color.fromRGBA([211, 253, 211, .6]);
       icon.style.filter = 'hue-rotate(-90deg) brightness(1.5)';
+    } else {
+      color = Common.Color.fromRGBA([224, 247, 250, .6]);
+    }
     node.setIconForColumn('product-extension', icon);
+    node.setBackgroundColor(color);
   }
 };
 

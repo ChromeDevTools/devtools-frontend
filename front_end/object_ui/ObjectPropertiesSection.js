@@ -888,7 +888,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
    */
   _applyExpression(expression) {
     var property = SDK.RemoteObject.toCallArgument(this.property.symbol || this.property.name);
-    expression = expression.trim();
+    expression = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(expression.trim());
     if (expression)
       this.property.parentObject.setPropertyValue(property, expression, callback.bind(this));
     else

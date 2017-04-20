@@ -148,32 +148,7 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
       });
     }
 
-    /**
-     * @param {string} code
-     * @suppress {uselessCode}
-     * @return {boolean}
-     */
-    function looksLikeAnObjectLiteral(code) {
-      // Only parenthesize what appears to be an object literal.
-      if (!(/^\s*\{/.test(code) && /\}\s*$/.test(code)))
-        return false;
-
-      try {
-        // Check if the code can be interpreted as an expression.
-        Function('return ' + code + ';');
-
-        // No syntax error! Does it work parenthesized?
-        Function('(' + code + ')');
-
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }
-
-    if (looksLikeAnObjectLiteral(text))
-      text = '(' + text + ')';
-
+    text = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text);
     executionContext.evaluate(text, 'console', useCommandLineAPI, false, false, true, true, printResult.bind(this));
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
   }

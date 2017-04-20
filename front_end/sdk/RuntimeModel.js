@@ -52,6 +52,29 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {string} code
+   * @return {string}
+   */
+  static wrapObjectLiteralExpressionIfNeeded(code) {
+    // Only parenthesize what appears to be an object literal.
+    if (!(/^\s*\{/.test(code) && /\}\s*$/.test(code)))
+      return code;
+
+    try {
+      // Check if the code can be interpreted as an expression.
+      Function('return ' + code + ';');
+
+      // No syntax error! Does it work parenthesized?
+      var wrappedCode = '(' + code + ')';
+      Function(wrappedCode);
+
+      return wrappedCode;
+    } catch (e) {
+      return code;
+    }
+  }
+
+  /**
    * @return {!SDK.DebuggerModel}
    */
   debuggerModel() {

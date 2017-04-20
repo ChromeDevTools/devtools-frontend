@@ -15,9 +15,8 @@ Elements.ElementsTreeElementHighlighter = class {
     this._treeOutline.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._clearState, this);
     this._treeOutline.addEventListener(Elements.ElementsTreeOutline.Events.SelectedNodeChanged, this._clearState, this);
     SDK.targetManager.addModelListener(
-        SDK.OverlayModel, SDK.OverlayModel.Events.HighlightNodeRequested, this._highlightNode, this);
-    this._treeOutline.domModel().overlayModel().addEventListener(
-        SDK.OverlayModel.Events.InspectModeWillBeToggled, this._clearState, this);
+        SDK.DOMModel, SDK.DOMModel.Events.NodeHighlightedInOverlay, this._highlightNode, this);
+    this._treeOutline.domModel().addEventListener(SDK.DOMModel.Events.InspectModeWillBeToggled, this._clearState, this);
   }
 
   /**

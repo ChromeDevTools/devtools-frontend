@@ -840,11 +840,11 @@ SDK.DOMNode = class {
    * @param {!Protocol.Runtime.RemoteObjectId=} objectId
    */
   highlight(mode, objectId) {
-    this._domModel.overlayModel().highlightDOMNode(this.id, mode, undefined, objectId);
+    this._domModel.highlightDOMNode(this.id, mode, undefined, objectId);
   }
 
   highlightForTwoSeconds() {
-    this._domModel.overlayModel().highlightDOMNodeForTwoSeconds(this.id);
+    this._domModel.highlightDOMNodeForTwoSeconds(this.id);
   }
 
   /**
@@ -1011,7 +1011,7 @@ SDK.DeferredDOMNode = class {
 
   highlight() {
     if (this._domModel)
-      this._domModel.overlayModel().highlightDOMNode(undefined, undefined, this._backendNodeId);
+      this._domModel.highlightDOMNode(undefined, undefined, this._backendNodeId);
   }
 };
 
@@ -1068,7 +1068,11 @@ SDK.DOMModel = class extends SDK.SDKModel {
     this._attributeLoadNodeIds = {};
     target.registerDOMDispatcher(new SDK.DOMDispatcher(this));
 
+    this._inspectModeEnabled = false;
     this._runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
+
+    this._defaultHighlighter = new SDK.DefaultDOMNodeHighlighter(this._agent);
+    this._highlighter = this._defaultHighlighter;
 
     this._agent.enable();
   }
@@ -1088,10 +1092,26 @@ SDK.DOMModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!SDK.OverlayModel}
+   * @param {!SDK.RemoteObject} object
    */
-  overlayModel() {
-    return /** @type {!SDK.OverlayModel} */ (this.target().model(SDK.OverlayModel));
+  static highlightObjectAsDOMNode(object) {
+    var domModel = object.runtimeModel().target().model(SDK.DOMModel);
+    if (domModel)
+      domModel.highlightDOMNode(undefined, undefined, undefined, object.objectId);
+  }
+
+  static hideDOMNodeHighlight() {
+    for (var domModel of SDK.targetManager.models(SDK.DOMModel))
+      domModel.highlightDOMNode(0);
+  }
+
+  static muteHighlight() {
+    SDK.DOMModel.hideDOMNodeHighlight();
+    SDK.DOMModel._highlightDisabled = true;
+  }
+
+  static unmuteHighlight() {
+    SDK.DOMModel._highlightDisabled = false;
   }
 
   static cancelSearch() {
@@ -1521,6 +1541,14 @@ SDK.DOMModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {!Protocol.DOM.BackendNodeId} backendNodeId
+   */
+  _inspectNodeRequested(backendNodeId) {
+    var deferredNode = new SDK.DeferredDOMNode(this.target(), backendNodeId);
+    this.dispatchEventToListeners(SDK.DOMModel.Events.NodeInspected, deferredNode);
+  }
+
+  /**
    * @param {string} query
    * @param {boolean} includeUserAgentShadowDOM
    * @param {function(number)} searchCallback
@@ -1651,6 +1679,107 @@ SDK.DOMModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {!Protocol.DOM.NodeId=} nodeId
+   * @param {string=} mode
+   * @param {!Protocol.DOM.BackendNodeId=} backendNodeId
+   * @param {!Protocol.Runtime.RemoteObjectId=} objectId
+   */
+  highlightDOMNode(nodeId, mode, backendNodeId, objectId) {
+    this.highlightDOMNodeWithConfig(nodeId, {mode: mode}, backendNodeId, objectId);
+  }
+
+  /**
+   * @param {!Protocol.DOM.NodeId=} nodeId
+   * @param {!{mode: (string|undefined), showInfo: (boolean|undefined), selectors: (string|undefined)}=} config
+   * @param {!Protocol.DOM.BackendNodeId=} backendNodeId
+   * @param {!Protocol.Runtime.RemoteObjectId=} objectId
+   */
+  highlightDOMNodeWithConfig(nodeId, config, backendNodeId, objectId) {
+    if (SDK.DOMModel._highlightDisabled)
+      return;
+    config = config || {mode: 'all', showInfo: undefined, selectors: undefined};
+    if (this._hideDOMNodeHighlightTimeout) {
+      clearTimeout(this._hideDOMNodeHighlightTimeout);
+      delete this._hideDOMNodeHighlightTimeout;
+    }
+    var highlightConfig = this._buildHighlightConfig(config.mode);
+    if (typeof config.showInfo !== 'undefined')
+      highlightConfig.showInfo = config.showInfo;
+    if (typeof config.selectors !== 'undefined')
+      highlightConfig.selectorList = config.selectors;
+    this._highlighter.highlightDOMNode(this.nodeForId(nodeId || 0), highlightConfig, backendNodeId, objectId);
+  }
+
+  /**
+   * @param {!Protocol.DOM.NodeId} nodeId
+   */
+  highlightDOMNodeForTwoSeconds(nodeId) {
+    this.highlightDOMNode(nodeId);
+    this._hideDOMNodeHighlightTimeout = setTimeout(SDK.DOMModel.hideDOMNodeHighlight.bind(SDK.DOMModel), 2000);
+  }
+
+  /**
+   * @param {!Protocol.Page.FrameId} frameId
+   */
+  highlightFrame(frameId) {
+    if (SDK.DOMModel._highlightDisabled)
+      return;
+    this._highlighter.highlightFrame(frameId);
+  }
+
+  /**
+   * @param {!Protocol.DOM.InspectMode} mode
+   * @param {function(?Protocol.Error)=} callback
+   */
+  setInspectMode(mode, callback) {
+    /**
+     * @this {SDK.DOMModel}
+     */
+    function onDocumentAvailable() {
+      this._inspectModeEnabled = mode !== Protocol.DOM.InspectMode.None;
+      this.dispatchEventToListeners(SDK.DOMModel.Events.InspectModeWillBeToggled, this);
+      this._highlighter.setInspectMode(mode, this._buildHighlightConfig(), callback);
+    }
+    this.requestDocument(onDocumentAvailable.bind(this));
+  }
+
+  /**
+   * @return {boolean}
+   */
+  inspectModeEnabled() {
+    return this._inspectModeEnabled;
+  }
+
+  /**
+   * @param {string=} mode
+   * @return {!Protocol.DOM.HighlightConfig}
+   */
+  _buildHighlightConfig(mode) {
+    mode = mode || 'all';
+    var showRulers = Common.moduleSetting('showMetricsRulers').get();
+    var highlightConfig = {showInfo: mode === 'all', showRulers: showRulers, showExtensionLines: showRulers};
+    if (mode === 'all' || mode === 'content')
+      highlightConfig.contentColor = Common.Color.PageHighlight.Content.toProtocolRGBA();
+
+    if (mode === 'all' || mode === 'padding')
+      highlightConfig.paddingColor = Common.Color.PageHighlight.Padding.toProtocolRGBA();
+
+    if (mode === 'all' || mode === 'border')
+      highlightConfig.borderColor = Common.Color.PageHighlight.Border.toProtocolRGBA();
+
+    if (mode === 'all' || mode === 'margin')
+      highlightConfig.marginColor = Common.Color.PageHighlight.Margin.toProtocolRGBA();
+
+    if (mode === 'all') {
+      highlightConfig.eventTargetColor = Common.Color.PageHighlight.EventTarget.toProtocolRGBA();
+      highlightConfig.shapeColor = Common.Color.PageHighlight.Shape.toProtocolRGBA();
+      highlightConfig.shapeMarginColor = Common.Color.PageHighlight.ShapeMargin.toProtocolRGBA();
+      highlightConfig.displayAsMaterial = true;
+    }
+    return highlightConfig;
+  }
+
+  /**
    * @param {!SDK.DOMNode} node
    * @param {function(?Protocol.Error, ...)=} callback
    * @return {function(...)}
@@ -1687,6 +1816,13 @@ SDK.DOMModel = class extends SDK.SDKModel {
    */
   redo(callback) {
     this._agent.redo(callback);
+  }
+
+  /**
+   * @param {?SDK.DOMNodeHighlighter} highlighter
+   */
+  setHighlighter(highlighter) {
+    this._highlighter = highlighter || this._defaultHighlighter;
   }
 
   /**
@@ -1764,6 +1900,17 @@ SDK.DOMModel = class extends SDK.SDKModel {
       this._agent.enable(fulfill);
     }
   }
+
+  /**
+   * @param {!Protocol.DOM.NodeId} nodeId
+   */
+  nodeHighlightRequested(nodeId) {
+    var node = this.nodeForId(nodeId);
+    if (!node)
+      return;
+
+    this.dispatchEventToListeners(SDK.DOMModel.Events.NodeHighlightedInOverlay, node);
+  }
 };
 
 SDK.SDKModel.register(SDK.DOMModel, SDK.Target.Capability.DOM, true);
@@ -1775,10 +1922,13 @@ SDK.DOMModel.Events = {
   CharacterDataModified: Symbol('CharacterDataModified'),
   DOMMutated: Symbol('DOMMutated'),
   NodeInserted: Symbol('NodeInserted'),
+  NodeInspected: Symbol('NodeInspected'),
+  NodeHighlightedInOverlay: Symbol('NodeHighlightedInOverlay'),
   NodeRemoved: Symbol('NodeRemoved'),
   DocumentUpdated: Symbol('DocumentUpdated'),
   ChildNodeCountUpdated: Symbol('ChildNodeCountUpdated'),
   DistributedNodesChanged: Symbol('DistributedNodesChanged'),
+  InspectModeWillBeToggled: Symbol('InspectModeWillBeToggled'),
   MarkersChanged: Symbol('MarkersChanged')
 };
 
@@ -1800,6 +1950,14 @@ SDK.DOMDispatcher = class {
    */
   documentUpdated() {
     this._domModel._documentUpdated();
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.DOM.NodeId} nodeId
+   */
+  inspectNodeRequested(nodeId) {
+    this._domModel._inspectNodeRequested(nodeId);
   }
 
   /**
@@ -1918,5 +2076,87 @@ SDK.DOMDispatcher = class {
    */
   distributedNodesUpdated(insertionPointId, distributedNodes) {
     this._domModel._distributedNodesUpdated(insertionPointId, distributedNodes);
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.DOM.NodeId} nodeId
+   */
+  nodeHighlightRequested(nodeId) {
+    this._domModel.nodeHighlightRequested(nodeId);
+  }
+};
+
+/**
+ * @interface
+ */
+SDK.DOMNodeHighlighter = function() {};
+
+SDK.DOMNodeHighlighter.prototype = {
+  /**
+   * @param {?SDK.DOMNode} node
+   * @param {!Protocol.DOM.HighlightConfig} config
+   * @param {!Protocol.DOM.BackendNodeId=} backendNodeId
+   * @param {!Protocol.Runtime.RemoteObjectId=} objectId
+   */
+  highlightDOMNode(node, config, backendNodeId, objectId) {},
+
+  /**
+   * @param {!Protocol.DOM.InspectMode} mode
+   * @param {!Protocol.DOM.HighlightConfig} config
+   * @param {function(?Protocol.Error)=} callback
+   */
+  setInspectMode(mode, config, callback) {},
+
+  /**
+   * @param {!Protocol.Page.FrameId} frameId
+   */
+  highlightFrame(frameId) {}
+};
+
+/**
+ * @implements {SDK.DOMNodeHighlighter}
+ * @unrestricted
+ */
+SDK.DefaultDOMNodeHighlighter = class {
+  /**
+   * @param {!Protocol.DOMAgent} agent
+   */
+  constructor(agent) {
+    this._agent = agent;
+  }
+
+  /**
+   * @override
+   * @param {?SDK.DOMNode} node
+   * @param {!Protocol.DOM.HighlightConfig} config
+   * @param {!Protocol.DOM.BackendNodeId=} backendNodeId
+   * @param {!Protocol.Runtime.RemoteObjectId=} objectId
+   */
+  highlightDOMNode(node, config, backendNodeId, objectId) {
+    if (objectId || node || backendNodeId)
+      this._agent.highlightNode(config, (objectId || backendNodeId) ? undefined : node.id, backendNodeId, objectId);
+    else
+      this._agent.hideHighlight();
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.DOM.InspectMode} mode
+   * @param {!Protocol.DOM.HighlightConfig} config
+   * @param {function(?Protocol.Error)=} callback
+   */
+  setInspectMode(mode, config, callback) {
+    this._agent.setInspectMode(mode, config, callback);
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.Page.FrameId} frameId
+   */
+  highlightFrame(frameId) {
+    this._agent.highlightFrame(
+        frameId, Common.Color.PageHighlight.Content.toProtocolRGBA(),
+        Common.Color.PageHighlight.ContentOutline.toProtocolRGBA());
   }
 };

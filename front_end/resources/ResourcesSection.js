@@ -155,17 +155,18 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
     this._panel.showCategoryView(this.titleAsText());
 
     this.listItemElement.classList.remove('hovered');
-    SDK.OverlayModel.hideDOMNodeHighlight();
+    SDK.DOMModel.hideDOMNodeHighlight();
     return false;
   }
 
   set hovered(hovered) {
     if (hovered) {
       this.listItemElement.classList.add('hovered');
-      this._frame.resourceTreeModel().domModel().overlayModel().highlightFrame(this._frameId);
+      var domModel = this._frame.resourceTreeModel().domModel();
+      domModel.highlightFrame(this._frameId);
     } else {
       this.listItemElement.classList.remove('hovered');
-      SDK.OverlayModel.hideDOMNodeHighlight();
+      SDK.DOMModel.hideDOMNodeHighlight();
     }
   }
 

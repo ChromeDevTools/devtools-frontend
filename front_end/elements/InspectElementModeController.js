@@ -26,46 +26,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {SDK.SDKModelObserver<!SDK.OverlayModel>}
+ * @implements {SDK.SDKModelObserver<!SDK.DOMModel>}
  * @unrestricted
  */
 Elements.InspectElementModeController = class {
   constructor() {
     this._toggleSearchAction = UI.actionRegistry.action('elements.toggle-element-search');
-    this._mode = Protocol.Overlay.InspectMode.None;
+    this._mode = Protocol.DOM.InspectMode.None;
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
-    SDK.targetManager.observeModels(SDK.OverlayModel, this);
+    SDK.targetManager.observeModels(SDK.DOMModel, this);
   }
 
   /**
    * @override
-   * @param {!SDK.OverlayModel} overlayModel
+   * @param {!SDK.DOMModel} domModel
    */
-  modelAdded(overlayModel) {
+  modelAdded(domModel) {
     // When DevTools are opening in the inspect element mode, the first target comes in
     // much later than the InspectorFrontendAPI.enterInspectElementMode event.
-    if (this._mode === Protocol.Overlay.InspectMode.None)
+    if (this._mode === Protocol.DOM.InspectMode.None)
       return;
-    overlayModel.setInspectMode(this._mode);
+    domModel.setInspectMode(this._mode);
   }
 
   /**
    * @override
-   * @param {!SDK.OverlayModel} overlayModel
+   * @param {!SDK.DOMModel} domModel
    */
-  modelRemoved(overlayModel) {
+  modelRemoved(domModel) {
   }
 
   /**
    * @return {boolean}
    */
   isInInspectElementMode() {
-    return this._mode === Protocol.Overlay.InspectMode.SearchForNode ||
-        this._mode === Protocol.Overlay.InspectMode.SearchForUAShadowDOM;
+    return this._mode === Protocol.DOM.InspectMode.SearchForNode ||
+        this._mode === Protocol.DOM.InspectMode.SearchForUAShadowDOM;
   }
 
   stopInspection() {
-    if (this._mode && this._mode !== Protocol.Overlay.InspectMode.None)
+    if (this._mode && this._mode !== Protocol.DOM.InspectMode.None)
       this._toggleInspectMode();
   }
 
@@ -75,22 +75,22 @@ Elements.InspectElementModeController = class {
 
     var mode;
     if (this.isInInspectElementMode()) {
-      mode = Protocol.Overlay.InspectMode.None;
+      mode = Protocol.DOM.InspectMode.None;
     } else {
-      mode = Common.moduleSetting('showUAShadowDOM').get() ? Protocol.Overlay.InspectMode.SearchForUAShadowDOM :
-                                                             Protocol.Overlay.InspectMode.SearchForNode;
+      mode = Common.moduleSetting('showUAShadowDOM').get() ? Protocol.DOM.InspectMode.SearchForUAShadowDOM :
+                                                             Protocol.DOM.InspectMode.SearchForNode;
     }
 
     this._setMode(mode);
   }
 
   /**
-   * @param {!Protocol.Overlay.InspectMode} mode
+   * @param {!Protocol.DOM.InspectMode} mode
    */
   _setMode(mode) {
     this._mode = mode;
-    for (var overlayModel of SDK.targetManager.models(SDK.OverlayModel))
-      overlayModel.setInspectMode(mode);
+    for (var domModel of SDK.targetManager.models(SDK.DOMModel))
+      domModel.setInspectMode(mode);
     this._toggleSearchAction.setToggled(this.isInInspectElementMode());
   }
 
@@ -98,7 +98,7 @@ Elements.InspectElementModeController = class {
     if (!SDK.targetManager.allTargetsSuspended())
       return;
 
-    this._mode = Protocol.Overlay.InspectMode.None;
+    this._mode = Protocol.DOM.InspectMode.None;
     this._toggleSearchAction.setToggled(false);
   }
 };

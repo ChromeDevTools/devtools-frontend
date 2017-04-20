@@ -156,7 +156,7 @@ Accessibility.AccessibilityNode = class {
     this.deferredDOMNode().resolvePromise().then(node => {
       if (!node)
         return;
-      node.domModel().overlayModel().nodeHighlightRequested(node.id);
+      node.domModel().nodeHighlightRequested(node.id);
     });
   }
 

@@ -40,7 +40,7 @@ ObjectUI.ObjectPopoverHelper = class {
 
   dispose() {
     if (this._resultHighlightedAsDOM)
-      SDK.OverlayModel.hideDOMNodeHighlight();
+      SDK.DOMModel.hideDOMNodeHighlight();
     if (this._linkifier)
       this._linkifier.dispose();
   }
@@ -131,7 +131,7 @@ ObjectUI.ObjectPopoverHelper = class {
       var linkifier = null;
       var resultHighlightedAsDOM = false;
       if (result.subtype === 'node') {
-        SDK.OverlayModel.highlightObjectAsDOMNode(result);
+        SDK.DOMModel.highlightObjectAsDOMNode(result);
         resultHighlightedAsDOM = true;
       }
 

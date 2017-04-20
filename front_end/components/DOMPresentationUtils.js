@@ -415,7 +415,8 @@ Components.DOMPresentationUtils._cssPathStep = function(node, optimized, isTarge
    * @return {boolean}
    */
   function isCSSIdentifier(value) {
-    return /^-?[a-zA-Z_][a-zA-Z0-9_-]*$/.test(value);
+    // Double hyphen prefixes are not allowed by specification, but many sites use it.
+    return /^-{0,2}[a-zA-Z_][a-zA-Z0-9_-]*$/.test(value);
   }
 
   var prefixedOwnClassNamesArray = prefixedElementClassNames(node);

@@ -214,7 +214,7 @@ SDK.CSSMatchedStyles = class {
      * @param {!SDK.DOMNode} node
      * @param {string} selectorText
      * @param {function()} callback
-     * @param {!Array.<!Protocol.DOM.NodeId>=} matchingNodeIds
+     * @param {?Array<!Protocol.DOM.NodeId>} matchingNodeIds
      * @this {SDK.CSSMatchedStyles}
      */
     function onQueryComplete(node, selectorText, callback, matchingNodeIds) {

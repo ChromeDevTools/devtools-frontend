@@ -90,7 +90,7 @@ SDK.CookieModel = class extends SDK.SDKModel {
 
   /**
    * @param {!SDK.Cookie} cookie
-   * @param {function(?Protocol.Error, ?)=} callback
+   * @param {function(?Protocol.Error, boolean)} callback
    */
   saveCookie(cookie, callback) {
     var domain = cookie.domain();

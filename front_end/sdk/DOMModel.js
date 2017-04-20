@@ -1203,7 +1203,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
 
   /**
    * @param {string} path
-   * @param {function(?number)=} callback
+   * @param {function(?number)} callback
    */
   pushNodeByPathToFrontend(path, callback) {
     this._dispatchWhenDocumentAvailable(this._agent.pushNodeByPathToFrontend.bind(this._agent, path), callback);
@@ -1237,28 +1237,26 @@ SDK.DOMModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {function(!T)=} callback
-   * @return {function(?Protocol.Error, !T=)|undefined}
+   * @param {function(?T)} callback
+   * @return {function(?Protocol.Error, !T=)}
    * @template T
    */
   _wrapClientCallback(callback) {
-    if (!callback)
-      return;
     /**
      * @param {?Protocol.Error} error
      * @param {!T=} result
      * @template T
      */
-    var wrapper = function(error, result) {
+    function wrapper(error, result) {
       // Caller is responsible for handling the actual error.
-      callback(error ? null : result);
-    };
+      callback(error ? null : result || null);
+    }
     return wrapper;
   }
 
   /**
-   * @param {function(function(?Protocol.Error, !T=)=)} func
-   * @param {function(!T)=} callback
+   * @param {function(function(?Protocol.Error, !T))} func
+   * @param {function(?T)} callback
    * @template T
    */
   _dispatchWhenDocumentAvailable(func, callback) {
@@ -1663,7 +1661,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
   /**
    * @param {!Protocol.DOM.NodeId} nodeId
    * @param {string} selectors
-   * @param {function(?Protocol.DOM.NodeId)=} callback
+   * @param {function(?Protocol.DOM.NodeId)} callback
    */
   querySelector(nodeId, selectors, callback) {
     this._agent.querySelector(nodeId, selectors, this._wrapClientCallback(callback));
@@ -1672,7 +1670,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
   /**
    * @param {!Protocol.DOM.NodeId} nodeId
    * @param {string} selectors
-   * @param {function(!Array.<!Protocol.DOM.NodeId>=)=} callback
+   * @param {function(?Array<!Protocol.DOM.NodeId>)} callback
    */
   querySelectorAll(nodeId, selectors, callback) {
     this._agent.querySelectorAll(nodeId, selectors, this._wrapClientCallback(callback));

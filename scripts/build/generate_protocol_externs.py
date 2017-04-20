@@ -44,22 +44,6 @@ type_traits = {
     "object": "!Object",
 }
 
-# yapf: disable
-promisified_domains = {
-    "Accessibility",
-    "Animation",
-    "Browser",
-    "CSS",
-    "DOMDebugger",
-    "Emulation",
-    "HeapProfiler",
-    "Page",
-    "Profiler",
-    "LayerTree",
-    "Tracing"
-}
-# yapf: enable
-
 ref_types = {}
 
 
@@ -106,6 +90,11 @@ def param_type(domain_name, param):
             return "!! Type not found: " + type_id
 
 
+def param_name(param):
+    name = param["name"]
+    return name if name != "arguments" else "_arguments"
+
+
 def load_schema(file, domains):
     input_file = open(file, "r")
     json_string = input_file.read()
@@ -128,7 +117,6 @@ def generate_protocol_externs(output_path, file1, file2):
 
     for domain in domains:
         domain_name = domain["domain"]
-        promisified = domain_name in promisified_domains
 
         output_file.write("Protocol.%s = {};\n" % domain_name)
         output_file.write("\n\n/**\n * @constructor\n*/\n")
@@ -140,23 +128,17 @@ def generate_protocol_externs(output_path, file1, file2):
                 params = []
                 param_to_type = {}
                 has_return_value = "returns" in command
-                explicit_parameters = promisified and has_return_value
                 if "parameters" in command:
                     for in_param in command["parameters"]:
+                        in_param_name = param_name(in_param)
                         if "optional" in in_param:
-                            param_to_type[in_param["name"]] = "(%s|undefined)" % param_type(domain_name, in_param)
-                            if explicit_parameters:
-                                params.append("%s" % in_param["name"])
-                                output_file.write(" * @param {%s|undefined} %s\n" %
-                                                  (param_type(domain_name, in_param), in_param["name"]))
-                            else:
-                                params.append("opt_%s" % in_param["name"])
-                                output_file.write(" * @param {%s=} opt_%s\n" %
-                                                  (param_type(domain_name, in_param), in_param["name"]))
+                            param_to_type[in_param_name] = "(%s|undefined)" % param_type(domain_name, in_param)
+                            params.append("opt_%s" % in_param_name)
+                            output_file.write(" * @param {%s=} opt_%s\n" % (param_type(domain_name, in_param), in_param_name))
                         else:
-                            param_to_type[in_param["name"]] = param_type(domain_name, in_param)
-                            params.append(in_param["name"])
-                            output_file.write(" * @param {%s} %s\n" % (param_type(domain_name, in_param), in_param["name"]))
+                            param_to_type[in_param_name] = param_type(domain_name, in_param)
+                            params.append(in_param_name)
+                            output_file.write(" * @param {%s} %s\n" % (param_type(domain_name, in_param), in_param_name))
                 returns = []
                 returns.append("?Protocol.Error")
                 if ("error" in command):
@@ -167,15 +149,9 @@ def generate_protocol_externs(output_path, file1, file2):
                             returns.append("%s=" % param_type(domain_name, out_param))
                         else:
                             returns.append("%s" % param_type(domain_name, out_param))
-                callback_return_type = "void="
-                if explicit_parameters:
-                    callback_return_type = "T"
-                elif promisified:
-                    callback_return_type = "T="
-                output_file.write(" * @param {function(%s):%s} opt_callback\n" % (", ".join(returns), callback_return_type))
-                if (promisified):
-                    output_file.write(" * @return {!Promise.<T>}\n")
-                    output_file.write(" * @template T\n")
+                output_file.write(" * @param {function(%s):T=} opt_callback\n" % ", ".join(returns))
+                output_file.write(" * @return {!Promise<T>}\n")
+                output_file.write(" * @template T\n")
                 params.append("opt_callback")
 
                 output_file.write(" */\n")

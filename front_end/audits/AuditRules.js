@@ -880,7 +880,7 @@ Audits.AuditRules.ImageDimensionsRule = class extends Audits.AuditRule {
     }
 
     /**
-     * @param {!Array.<!Protocol.DOM.NodeId>=} nodeIds
+     * @param {?Array<!Protocol.DOM.NodeId>} nodeIds
      */
     function getStyles(nodeIds) {
       if (progress.isCanceled()) {
@@ -987,8 +987,8 @@ Audits.AuditRules.CssInHeadRule = class extends Audits.AuditRule {
 
     /**
      * @param {!SDK.DOMNode} root
-     * @param {!Array.<!Protocol.DOM.NodeId>=} inlineStyleNodeIds
-     * @param {!Array.<!Protocol.DOM.NodeId>=} nodeIds
+     * @param {!Array<!Protocol.DOM.NodeId>} inlineStyleNodeIds
+     * @param {?Array<!Protocol.DOM.NodeId>} nodeIds
      */
     function externalStylesheetsReceived(root, inlineStyleNodeIds, nodeIds) {
       if (progress.isCanceled()) {
@@ -1017,7 +1017,7 @@ Audits.AuditRules.CssInHeadRule = class extends Audits.AuditRule {
 
     /**
      * @param {!SDK.DOMNode} root
-     * @param {!Array.<!Protocol.DOM.NodeId>=} nodeIds
+     * @param {?Array<!Protocol.DOM.NodeId>} nodeIds
      */
     function inlineStylesReceived(root, nodeIds) {
       if (progress.isCanceled()) {
@@ -1102,7 +1102,7 @@ Audits.AuditRules.StylesScriptsOrderRule = class extends Audits.AuditRule {
 
     /**
      * @param {!Array.<!Protocol.DOM.NodeId>} lateStyleIds
-     * @param {!Array.<!Protocol.DOM.NodeId>=} nodeIds
+     * @param {?Array.<!Protocol.DOM.NodeId>} nodeIds
      */
     function cssBeforeInlineReceived(lateStyleIds, nodeIds) {
       if (progress.isCanceled()) {
@@ -1131,7 +1131,7 @@ Audits.AuditRules.StylesScriptsOrderRule = class extends Audits.AuditRule {
 
     /**
      * @param {!SDK.DOMDocument} root
-     * @param {!Array.<!Protocol.DOM.NodeId>=} nodeIds
+     * @param {?Array<!Protocol.DOM.NodeId>} nodeIds
      */
     function lateStylesReceived(root, nodeIds) {
       if (progress.isCanceled()) {

@@ -1,5 +1,3 @@
-# DevTools Tests
+NOTE: For the actual DevTools tests, please go to chromium/src/third_party/WebKit/LayoutTests/
 
-The tests inside ./console/ are intentional duplicates of those in third_party/WebKit/LayoutTests/ and are used as a pilot to migrating all devtools frontend related tests to this directory. Once the migration is completed, these tests will no longer be duplicates.
-
-Please direct questions to chenwilliam@
+This contains test expectations for protocol version 1.2. This is meant for backwards compatability testing, however it's currently not functional because the content shell for protocol 1.2 doesn't support async await which is currently used by devtools front-end.

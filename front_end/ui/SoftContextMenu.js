@@ -66,16 +66,32 @@ UI.SoftContextMenu = class {
       this._contextMenuElement.appendChild(this._createMenuItem(this._items[i]));
 
     this._glassPane.show(document);
-    this._focus();
+    this._focusRestorer = new UI.ElementFocusRestorer(this._contextMenuElement);
 
     if (!this._parentMenu) {
-      this._onBodyMouseDown = event => this._discardMenu(true, event);
+      this._onBodyMouseDown = event => {
+        this.discard();
+        event.consume(true);
+      };
       this._document.body.addEventListener('mousedown', this._onBodyMouseDown, false);
     }
   }
 
   discard() {
-    this._discardMenu(true);
+    if (this._subMenu)
+      this._subMenu.discard();
+    if (this._focusRestorer)
+      this._focusRestorer.restore();
+    if (this._glassPane) {
+      this._glassPane.hide();
+      delete this._glassPane;
+      if (this._onBodyMouseDown) {
+        this._document.body.removeEventListener('mousedown', this._onBodyMouseDown, false);
+        delete this._onBodyMouseDown;
+      }
+    }
+    if (this._parentMenu)
+      delete this._parentMenu._subMenu;
   }
 
   _createMenuItem(item) {
@@ -156,13 +172,20 @@ UI.SoftContextMenu = class {
     event.consume();
   }
 
-  _focus() {
-    this._contextMenuElement.focus();
+  /**
+   * @return {!UI.SoftContextMenu}
+   */
+  _root() {
+    var root = this;
+    while (root._parentMenu)
+      root = root._parentMenu;
+    return root;
   }
 
   _triggerAction(menuItemElement, event) {
     if (!menuItemElement._subItems) {
-      this._discardMenu(true, event);
+      this._root().discard();
+      event.consume(true);
       if (typeof menuItemElement._actionId !== 'undefined') {
         this._itemSelectedCallback(menuItemElement._actionId);
         delete menuItemElement._actionId;
@@ -192,13 +215,6 @@ UI.SoftContextMenu = class {
     this._subMenu.show(this._document, anchorBox);
   }
 
-  _hideSubMenu() {
-    if (!this._subMenu)
-      return;
-    this._subMenu._discardSubMenus();
-    this._focus();
-  }
-
   _menuItemMouseOver(event) {
     this._highlightMenuItem(event.target, true);
   }
@@ -222,7 +238,8 @@ UI.SoftContextMenu = class {
     if (this._highlightedMenuItemElement === menuItemElement)
       return;
 
-    this._hideSubMenu();
+    if (this._subMenu)
+      this._subMenu.discard();
     if (this._highlightedMenuItemElement) {
       this._highlightedMenuItemElement.classList.remove('force-white-icons');
       this._highlightedMenuItemElement.classList.remove('soft-context-menu-item-mouse-over');
@@ -273,7 +290,7 @@ UI.SoftContextMenu = class {
       case 'ArrowLeft':
         if (this._parentMenu) {
           this._highlightMenuItem(null, false);
-          this._parentMenu._hideSubMenu();
+          this.discard();
         }
         break;
       case 'ArrowRight':
@@ -281,12 +298,11 @@ UI.SoftContextMenu = class {
           break;
         if (this._highlightedMenuItemElement._subItems) {
           this._showSubMenu(this._highlightedMenuItemElement);
-          this._subMenu._focus();
           this._subMenu._highlightNext();
         }
         break;
       case 'Escape':
-        this._discardMenu(false, event);
+        this.discard();
         break;
       case 'Enter':
         if (!isEnterKey(event))
@@ -295,48 +311,10 @@ UI.SoftContextMenu = class {
       case ' ':  // Space
         if (this._highlightedMenuItemElement)
           this._triggerAction(this._highlightedMenuItemElement, event);
-        if (this._highlightedMenuItemElement._subItems) {
-          this._subMenu._focus();
+        if (this._highlightedMenuItemElement._subItems)
           this._subMenu._highlightNext();
-        }
         break;
     }
     event.consume(true);
-  }
-
-  /**
-   * @param {boolean} closeParentMenus
-   * @param {!Event=} event
-   */
-  _discardMenu(closeParentMenus, event) {
-    if (this._subMenu && !closeParentMenus)
-      return;
-
-    this._discardSubMenus();
-
-    if (this._parentMenu) {
-      if (closeParentMenus)
-        this._parentMenu._discardMenu(closeParentMenus, event);
-      else
-        this._parentMenu._focus();
-    }
-
-    if (event)
-      event.consume(true);
-  }
-
-  _discardSubMenus() {
-    if (this._subMenu)
-      this._subMenu._discardSubMenus();
-    if (this._glassPane) {
-      this._glassPane.hide();
-      delete this._glassPane;
-      if (this._onBodyMouseDown) {
-        this._document.body.removeEventListener('mousedown', this._onBodyMouseDown, false);
-        delete this._onBodyMouseDown;
-      }
-    }
-    if (this._parentMenu)
-      delete this._parentMenu._subMenu;
   }
 };

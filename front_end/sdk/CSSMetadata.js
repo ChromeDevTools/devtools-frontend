@@ -655,12 +655,16 @@ SDK.CSSMetadata._propertyDataMap = {
   'transform-origin': {values: ['left', 'center', 'right', 'top', 'bottom']},
   'transform-style': {values: ['flat', 'preserve-3d']},
   'transition-timing-function': {
-    values:
-        ['ease', 'linear', 'ease-in', 'ease-out', 'ease-in-out', 'step-start', 'step-end', 'steps', 'cubic-bezier']
+    values: [
+      'ease', 'linear', 'ease-in', 'ease-out', 'ease-in-out', 'step-start', 'step-end', 'steps', 'frames',
+      'cubic-bezier'
+    ]
   },
   'animation-timing-function': {
-    values:
-        ['ease', 'linear', 'ease-in', 'ease-out', 'ease-in-out', 'step-start', 'step-end', 'steps', 'cubic-bezier']
+    values: [
+      'ease', 'linear', 'ease-in', 'ease-out', 'ease-in-out', 'step-start', 'step-end', 'steps', 'frames',
+      'cubic-bezier'
+    ]
   },
   'animation-direction': {values: ['normal', 'reverse', 'alternate', 'alternate-reverse']},
   'animation-play-state': {values: ['running', 'paused']},

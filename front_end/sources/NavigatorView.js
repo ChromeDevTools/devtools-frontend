@@ -243,20 +243,6 @@ Sources.NavigatorView = class extends UI.VBox {
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {?SDK.ResourceTreeFrame}
-   */
-  _uiSourceCodeFrame(uiSourceCode) {
-    var frame = Bindings.NetworkProject.frameForProject(uiSourceCode.project());
-    if (!frame) {
-      var target = Bindings.NetworkProject.targetForProject(uiSourceCode.project());
-      var resourceTreeModel = target && target.model(SDK.ResourceTreeModel);
-      frame = resourceTreeModel && resourceTreeModel.mainFrame;
-    }
-    return frame;
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _addUISourceCode(uiSourceCode) {
     if (!this.accept(uiSourceCode))
@@ -275,13 +261,24 @@ Sources.NavigatorView = class extends UI.VBox {
 
     var project = uiSourceCode.project();
     var target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
-    var frame = this._uiSourceCodeFrame(uiSourceCode);
-
-    var folderNode =
-        this._folderNode(uiSourceCode, project, target, frame, uiSourceCode.origin(), path, isFromSourceMap);
-    var uiSourceCodeNode = new Sources.NavigatorUISourceCodeTreeNode(this, uiSourceCode);
-    this._uiSourceCodeNodes.set(uiSourceCode, [uiSourceCodeNode]);
-    folderNode.appendChild(uiSourceCodeNode);
+    var frames = Bindings.NetworkProject.framesForUISourceCode(uiSourceCode);
+    var uiSourceCodeNodes = [];
+    if (frames.length) {
+      for (var frame of frames) {
+        var folderNode =
+            this._folderNode(uiSourceCode, project, target, frame, uiSourceCode.origin(), path, isFromSourceMap);
+        var uiSourceCodeNode = new Sources.NavigatorUISourceCodeTreeNode(this, uiSourceCode, frame);
+        folderNode.appendChild(uiSourceCodeNode);
+        uiSourceCodeNodes.push(uiSourceCodeNode);
+      }
+    } else {
+      var folderNode =
+          this._folderNode(uiSourceCode, project, target, null, uiSourceCode.origin(), path, isFromSourceMap);
+      var uiSourceCodeNode = new Sources.NavigatorUISourceCodeTreeNode(this, uiSourceCode, null);
+      folderNode.appendChild(uiSourceCodeNode);
+      uiSourceCodeNodes.push(uiSourceCodeNode);
+    }
+    this._uiSourceCodeNodes.set(uiSourceCode, uiSourceCodeNodes);
     this.uiSourceCodeAdded(uiSourceCode);
   }
 
@@ -530,7 +527,7 @@ Sources.NavigatorView = class extends UI.VBox {
 
       var project = uiSourceCode.project();
       var target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
-      var frame = this._uiSourceCodeFrame(uiSourceCode);
+      var frame = node.frame();
 
       var parentNode = node.parent;
       parentNode.removeChild(node);
@@ -1214,13 +1211,22 @@ Sources.NavigatorUISourceCodeTreeNode = class extends Sources.NavigatorTreeNode 
   /**
    * @param {!Sources.NavigatorView} navigatorView
    * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {?SDK.ResourceTreeFrame} frame
    */
-  constructor(navigatorView, uiSourceCode) {
+  constructor(navigatorView, uiSourceCode, frame) {
     super(uiSourceCode.project().id() + ':' + uiSourceCode.url(), Sources.NavigatorView.Types.File);
     this._navigatorView = navigatorView;
     this._uiSourceCode = uiSourceCode;
     this._treeElement = null;
     this._eventListeners = [];
+    this._frame = frame;
+  }
+
+  /**
+   * @return {?SDK.ResourceTreeFrame}
+   */
+  frame() {
+    return this._frame;
   }
 
   /**

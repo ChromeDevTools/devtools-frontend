@@ -127,19 +127,12 @@ Bindings.NetworkProject = class {
   }
 
   /**
-   * @param {!Workspace.Project} project
-   * @return {?SDK.Target} target
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {?Set<string>}
    */
-  static targetForProject(project) {
-    return project[Bindings.NetworkProject._targetSymbol] || null;
-  }
-
-  /**
-   * @param {!Workspace.Project} project
-   * @return {?SDK.ResourceTreeFrame}
-   */
-  static frameForProject(project) {
-    return project[Bindings.NetworkProject._frameSymbol] || null;
+  static frameAttribution(uiSourceCode) {
+    var frameId = uiSourceCode[Bindings.NetworkProject._frameAttributionSymbol];
+    return frameId ? new Set([frameId]) : null;
   }
 
   /**
@@ -147,7 +140,21 @@ Bindings.NetworkProject = class {
    * @return {?SDK.Target} target
    */
   static targetForUISourceCode(uiSourceCode) {
-    return uiSourceCode[Bindings.NetworkProject._targetSymbol] || null;
+    return uiSourceCode.project()[Bindings.NetworkProject._targetSymbol] || null;
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {!Array<!SDK.ResourceTreeFrame>}
+   */
+  static framesForUISourceCode(uiSourceCode) {
+    var target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
+    var resourceTreeModel = target && target.model(SDK.ResourceTreeModel);
+    var frameIds = Bindings.NetworkProject.frameAttribution(uiSourceCode);
+    if (!resourceTreeModel || !frameIds)
+      return [];
+    var frames = Array.from(frameIds).map(frameId => resourceTreeModel.frameForId(frameId));
+    return frames.filter(frame => !!frame);
   }
 
   /**
@@ -181,8 +188,6 @@ Bindings.NetworkProject = class {
     project = new Bindings.ContentProviderBasedProject(
         this._workspace, projectId, projectType, '', false /* isServiceProject */);
     project[Bindings.NetworkProject._targetSymbol] = this._target;
-    project[Bindings.NetworkProject._frameSymbol] =
-        frameId && this._resourceTreeModel ? this._resourceTreeModel.frameForId(frameId) : null;
     this._workspaceProjects.set(projectId, project);
     return project;
   }
@@ -277,13 +282,12 @@ Bindings.NetworkProject = class {
     if (!this._acceptsScript(script))
       return;
     var originalContentProvider = script.originalContentProvider();
-    var executionContext = script.executionContext();
-    var frameId = executionContext ? executionContext.frameId || '' : '';
+    var frameId = Bindings.frameIdForScript(script);
     script[Bindings.NetworkProject._frameIdSymbol] = frameId;
     var uiSourceCode = this._createFile(originalContentProvider, frameId, script.isContentScript());
     uiSourceCode[Bindings.NetworkProject._scriptSymbol] = script;
-    var resource = SDK.ResourceTreeModel.resourceForURL(uiSourceCode.url());
-    this._addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, this._resourceMetadata(resource));
+    var metadata = this._fetchMetadata(frameId, uiSourceCode.url());
+    this._addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata);
   }
 
   /**
@@ -322,8 +326,8 @@ Bindings.NetworkProject = class {
     var originalContentProvider = header.originalContentProvider();
     var uiSourceCode = this._createFile(originalContentProvider, header.frameId, false);
     uiSourceCode[Bindings.NetworkProject._styleSheetSymbol] = header;
-    var resource = SDK.ResourceTreeModel.resourceForURL(uiSourceCode.url());
-    this._addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, this._resourceMetadata(resource));
+    var metadata = this._fetchMetadata(header.frameId, uiSourceCode.url());
+    this._addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata);
   }
 
   /**
@@ -371,7 +375,7 @@ Bindings.NetworkProject = class {
 
     var uiSourceCode = this._createFile(resource, resource.frameId, false);
     uiSourceCode[Bindings.NetworkProject._resourceSymbol] = resource;
-    this._addUISourceCodeWithProvider(uiSourceCode, resource, this._resourceMetadata(resource));
+    this._addUISourceCodeWithProvider(uiSourceCode, resource, Bindings.resourceMetadata(resource));
   }
 
   /**
@@ -426,18 +430,22 @@ Bindings.NetworkProject = class {
     var url = contentProvider.contentURL();
     var project = this._workspaceProject(frameId, isContentScript);
     var uiSourceCode = project.createUISourceCode(url, contentProvider.contentType());
-    uiSourceCode[Bindings.NetworkProject._targetSymbol] = this._target;
+    uiSourceCode[Bindings.NetworkProject._frameAttributionSymbol] = frameId;
     return uiSourceCode;
   }
 
   /**
-   * @param {?SDK.Resource} resource
+   * @param {string} frameId
+   * @param {string} url
    * @return {?Workspace.UISourceCodeMetadata}
    */
-  _resourceMetadata(resource) {
-    if (!resource || (typeof resource.contentSize() !== 'number' && !resource.lastModified()))
+  _fetchMetadata(frameId, url) {
+    if (!this._resourceTreeModel)
       return null;
-    return new Workspace.UISourceCodeMetadata(resource.lastModified(), resource.contentSize());
+    var frame = this._resourceTreeModel.frameForId(frameId);
+    if (!frame)
+      return null;
+    return Bindings.resourceMetadata(frame.resourceForURL(url));
   }
 
   _dispose() {
@@ -491,5 +499,6 @@ Bindings.NetworkProject._resourceSymbol = Symbol('resource');
 Bindings.NetworkProject._scriptSymbol = Symbol('script');
 Bindings.NetworkProject._styleSheetSymbol = Symbol('styleSheet');
 Bindings.NetworkProject._targetSymbol = Symbol('target');
-Bindings.NetworkProject._frameSymbol = Symbol('frame');
 Bindings.NetworkProject._frameIdSymbol = Symbol('frameid');
+
+Bindings.NetworkProject._frameAttributionSymbol = Symbol('Bindings.NetworkProject._frameAttributionSymbol');

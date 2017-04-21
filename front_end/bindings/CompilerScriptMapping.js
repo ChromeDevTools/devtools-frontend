@@ -244,8 +244,7 @@ Bindings.CompilerScriptMapping = class {
    * @param {!SDK.SourceMap} sourceMap
    */
   _populateSourceMapSources(script, sourceMap) {
-    var executionContext = script.executionContext();
-    var frameId = executionContext ? executionContext.frameId || '' : '';
+    var frameId = Bindings.frameIdForScript(script);
     script[Bindings.CompilerScriptMapping._frameIdSymbol] = frameId;
     for (var sourceURL of sourceMap.sourceURLs()) {
       var contentProvider = sourceMap.sourceContentProvider(sourceURL, Common.resourceTypes.SourceMapScript);

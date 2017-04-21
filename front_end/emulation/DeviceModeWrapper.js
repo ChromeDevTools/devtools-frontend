@@ -25,22 +25,17 @@ Emulation.DeviceModeWrapper = class extends UI.VBox {
   }
 
   /**
+   * @param {boolean=} fullSize
    * @return {boolean}
    */
-  _captureScreenshot() {
+  _captureScreenshot(fullSize) {
     if (!this._deviceModeView)
-      return false;
-    this._deviceModeView.captureScreenshot();
-    return true;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  _captureFullSizeScreenshot() {
-    if (!this._deviceModeView)
-      return false;
-    this._deviceModeView.captureFullSizeScreenshot();
+      this._deviceModeView = new Emulation.DeviceModeView();
+    this._deviceModeView.setNonEmulatedAvailableSize(this._inspectedPagePlaceholder.element);
+    if (fullSize)
+      this._deviceModeView.captureFullSizeScreenshot();
+    else
+      this._deviceModeView.captureScreenshot();
     return true;
   }
 
@@ -91,7 +86,7 @@ Emulation.DeviceModeWrapper.ActionDelegate = class {
           return Emulation.DeviceModeView._wrapperInstance._captureScreenshot();
 
         case 'emulation.capture-full-height-screenshot':
-          return Emulation.DeviceModeView._wrapperInstance._captureFullSizeScreenshot();
+          return Emulation.DeviceModeView._wrapperInstance._captureScreenshot(true);
 
         case 'emulation.toggle-device-mode':
           Emulation.DeviceModeView._wrapperInstance._toggleDeviceMode();

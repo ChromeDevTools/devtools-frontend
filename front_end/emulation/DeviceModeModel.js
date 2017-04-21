@@ -636,6 +636,10 @@ Emulation.DeviceModeModel = class {
     if (!metrics)
       return null;
 
+    if (!this._emulatedPageSize)
+      this._calculateAndEmulate(false);
+    this._target.renderingAgent().setShowViewportSizeOnResize(false);
+
     var pageSize = fullSize ? new UI.Size(metrics.contentWidth, metrics.contentHeight) : this._emulatedPageSize;
     var promises = [];
     promises.push(

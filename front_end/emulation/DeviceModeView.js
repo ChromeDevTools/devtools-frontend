@@ -375,9 +375,9 @@ Emulation.DeviceModeView = class extends UI.VBox {
    * @return {!Promise}
    */
   async captureScreenshot() {
-    SDK.DOMModel.muteHighlight();
+    SDK.OverlayModel.muteHighlight();
     var screenshot = await this._model.captureScreenshot(false);
-    SDK.DOMModel.unmuteHighlight();
+    SDK.OverlayModel.unmuteHighlight();
     if (screenshot === null)
       return;
 
@@ -410,9 +410,9 @@ Emulation.DeviceModeView = class extends UI.VBox {
    * @return {!Promise}
    */
   async captureFullSizeScreenshot() {
-    SDK.DOMModel.muteHighlight();
+    SDK.OverlayModel.muteHighlight();
     var screenshot = await this._model.captureScreenshot(true);
-    SDK.DOMModel.unmuteHighlight();
+    SDK.OverlayModel.unmuteHighlight();
     if (screenshot === null)
       return;
 

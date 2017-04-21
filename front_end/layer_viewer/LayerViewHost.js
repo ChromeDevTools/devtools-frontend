@@ -255,6 +255,6 @@ LayerViewer.LayerViewHost = class {
       node.highlightForTwoSeconds();
       return;
     }
-    SDK.DOMModel.hideDOMNodeHighlight();
+    SDK.OverlayModel.hideDOMNodeHighlight();
   }
 };

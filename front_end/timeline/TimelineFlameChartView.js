@@ -154,7 +154,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @param {!Common.Event} commonEvent
    */
   _onEntryHighlighted(commonEvent) {
-    SDK.DOMModel.hideDOMNodeHighlight();
+    SDK.OverlayModel.hideDOMNodeHighlight();
     var entryIndex = /** @type {number} */ (commonEvent.data);
     var event = this._mainDataProvider.eventByIndex(entryIndex);
     if (!event)

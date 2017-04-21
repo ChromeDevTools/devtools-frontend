@@ -124,7 +124,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
       this.node().highlight(mode);
     } else {
       delete this._highlightMode;
-      SDK.DOMModel.hideDOMNodeHighlight();
+      SDK.OverlayModel.hideDOMNodeHighlight();
     }
 
     for (var i = 0; this._boxElements && i < this._boxElements.length; ++i) {

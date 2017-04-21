@@ -137,7 +137,7 @@ Main.Main = class {
         Runtime.experiments.enableForTest('liveSASS');
     }
 
-    Runtime.experiments.setDefaultExperiments(['continueToLocationMarkers']);
+    Runtime.experiments.setDefaultExperiments([]);
   }
 
   /**

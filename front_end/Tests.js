@@ -612,19 +612,16 @@
 
   // Regression test for crbug.com/370035.
   TestSuite.prototype.testDeviceMetricsOverrides = function() {
-    const dumpPageMetrics = function() {
+    function dumpPageMetrics() {
       return JSON.stringify(
           {width: window.innerWidth, height: window.innerHeight, deviceScaleFactor: window.devicePixelRatio});
-    };
+    }
 
     var test = this;
 
-    function testOverrides(params, metrics, callback) {
-      SDK.targetManager.mainTarget().emulationAgent().invoke_setDeviceMetricsOverride(params, getMetrics);
-
-      function getMetrics() {
-        test.evaluateInConsole_('(' + dumpPageMetrics.toString() + ')()', checkMetrics);
-      }
+    async function testOverrides(params, metrics, callback) {
+      await SDK.targetManager.mainTarget().emulationAgent().invoke_setDeviceMetricsOverride(params);
+      test.evaluateInConsole_('(' + dumpPageMetrics.toString() + ')()', checkMetrics);
 
       function checkMetrics(consoleResult) {
         test.assertEquals(

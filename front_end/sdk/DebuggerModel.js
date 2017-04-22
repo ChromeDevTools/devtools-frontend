@@ -302,26 +302,12 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    * @param {boolean} restrictToFunction
    * @return {!Promise<!Array<!SDK.DebuggerModel.BreakLocation>>}
    */
-  getPossibleBreakpoints(startLocation, endLocation, restrictToFunction) {
-    var fulfill;
-    var promise = new Promise(resolve => fulfill = resolve);
-    this._agent.invoke_getPossibleBreakpoints(
-        {start: startLocation.payload(), end: endLocation.payload(), restrictToFunction: restrictToFunction},
-        checkErrorAndReturn.bind(this));
-    return promise;
-
-    /**
-     * @this {!SDK.DebuggerModel}
-     * @param {?Protocol.Error} error
-     * @param {?Array<!Protocol.Debugger.BreakLocation>} locations
-     */
-    function checkErrorAndReturn(error, locations) {
-      if (error || !locations) {
-        fulfill([]);
-        return;
-      }
-      fulfill(locations.map(location => SDK.DebuggerModel.BreakLocation.fromPayload(this, location)));
-    }
+  async getPossibleBreakpoints(startLocation, endLocation, restrictToFunction) {
+    var response = await this._agent.invoke_getPossibleBreakpoints(
+        {start: startLocation.payload(), end: endLocation.payload(), restrictToFunction: restrictToFunction});
+    if (response[Protocol.Error] || !response.locations)
+      return [];
+    return response.locations.map(location => SDK.DebuggerModel.BreakLocation.fromPayload(this, location));
   }
 
   /**
@@ -1251,26 +1237,23 @@ SDK.DebuggerModel.CallFrame = class {
    * @param {boolean} generatePreview
    * @param {function(?Protocol.Runtime.RemoteObject, !Protocol.Runtime.ExceptionDetails=, string=)} callback
    */
-  evaluate(code, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview, callback) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Protocol.Runtime.RemoteObject} result
-     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     */
-    function didEvaluateOnCallFrame(error, result, exceptionDetails) {
-      if (error) {
-        console.error(error);
-        callback(null, undefined, error);
-        return;
-      }
-      callback(result, exceptionDetails);
+  async evaluate(code, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview, callback) {
+    var response = await this.debuggerModel._agent.invoke_evaluateOnCallFrame({
+      callFrameId: this._payload.callFrameId,
+      expression: code,
+      objectGroup: objectGroup,
+      includeCommandLineAPI: includeCommandLineAPI,
+      silent: silent,
+      returnByValue: returnByValue,
+      generatePreview: generatePreview
+    });
+    var error = response[Protocol.Error];
+    if (error) {
+      console.error(error);
+      callback(null, undefined, error);
+      return;
     }
-    this.debuggerModel._agent.invoke_evaluateOnCallFrame(
-        {
-          callFrameId: this._payload.callFrameId,
-          expression: code, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview
-        },
-        didEvaluateOnCallFrame);
+    callback(response.result, response.exceptionDetails);
   }
 
   /**

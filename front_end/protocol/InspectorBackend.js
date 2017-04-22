@@ -29,7 +29,7 @@
  */
 
 /** @typedef {string} */
-Protocol.Error;
+Protocol.Error = Symbol('Protocol.Error');
 
 /**
  * @unrestricted
@@ -513,12 +513,12 @@ Protocol.InspectorBackend._AgentPrototype = class {
     this[methodName] = sendMessagePromise;
 
     /**
-     * @param {...*} vararg
+     * @param {!Object} request
+     * @return {!Promise}
      * @this {Protocol.InspectorBackend._AgentPrototype}
      */
-    function invoke(vararg) {
-      var params = [domainAndMethod].concat(Array.prototype.slice.call(arguments));
-      Protocol.InspectorBackend._AgentPrototype.prototype._invoke.apply(this, params);
+    function invoke(request) {
+      return this._invoke(domainAndMethod, request);
     }
 
     this['invoke_' + methodName] = invoke;
@@ -584,9 +584,9 @@ Protocol.InspectorBackend._AgentPrototype = class {
 
   /**
    * @param {string} method
-   * @param {!Array.<!Object>} signature
-   * @param {!Array.<*>} args
-   * @return {!Promise.<*>}
+   * @param {!Array<!Object>} signature
+   * @param {!Array<*>} args
+   * @return {!Promise<*>}
    */
   _sendMessageToBackendPromise(method, signature, args) {
     var errorMessage;
@@ -599,47 +599,62 @@ Protocol.InspectorBackend._AgentPrototype = class {
     }
     var userCallback = (args.length && typeof args.peekLast() === 'function') ? args.pop() : null;
     var params = this._prepareParameters(method, signature, args, !userCallback, onError);
-    var responseArguments;
-    if (errorMessage) {
-      responseArguments = [errorMessage];
-      return Promise.resolve().then(runUserCallback);
-    }
+    if (errorMessage)
+      return Promise.resolve([errorMessage]).then(runUserCallback);
     return new Promise(promiseAction.bind(this)).then(runUserCallback);
 
     /**
-     * @param {function()} resolve
-     * @param {function(!Error)} reject
+     * @param {function(!Array<*>)} resolve
      * @this {Protocol.InspectorBackend._AgentPrototype}
      */
-    function promiseAction(resolve, reject) {
+    function promiseAction(resolve) {
       /**
-       * @param {...*} vararg
+       * @param {?Protocol.Error} error
+       * @param {?Object} result
+       * @this {Protocol.InspectorBackend._AgentPrototype}
        */
-      function callback(vararg) {
-        responseArguments = arguments;
-        resolve();
+      function prepareArgsAndResolve(error, result) {
+        var argumentsArray = [error ? error.message : null];
+        if (this._hasErrorData[method])
+          argumentsArray.push(error ? error.data : null);
+        if (result) {
+          for (var paramName of this._replyArgs[method] || [])
+            argumentsArray.push(result[paramName]);
+        }
+        resolve(argumentsArray);
       }
-      this._target._wrapCallbackAndSendMessageObject(this._domain, method, params, callback);
+      this._target._wrapCallbackAndSendMessageObject(this._domain, method, params, prepareArgsAndResolve.bind(this));
     }
 
-    function runUserCallback() {
-      return userCallback ? userCallback.apply(null, responseArguments) : undefined;
+    /**
+     * @param {!Array<*>} args
+     */
+    function runUserCallback(args) {
+      return userCallback ? userCallback.apply(null, args) : undefined;
     }
   }
 
   /**
    * @param {string} method
-   * @param {?Object} args
-   * @param {?function(*)} callback
+   * @param {?Object} request
+   * @return {!Promise<!Object>}
    */
-  _invoke(method, args, callback) {
-    this._target._wrapCallbackAndSendMessageObject(this._domain, method, args, callback);
+  _invoke(method, request) {
+    return new Promise(fulfill => {
+      this._target._wrapCallbackAndSendMessageObject(this._domain, method, request, (error, result) => {
+        if (!result)
+          result = {};
+        if (error)
+          result[Protocol.Error] = error.message;
+        fulfill(result);
+      });
+    });
   }
 
   /**
    * @param {!Object} messageObject
    * @param {string} methodName
-   * @param {function(*)|function(?Protocol.Error, ?Object)} callback
+   * @param {function(?Protocol.Error, ?Object)} callback
    */
   dispatchResponse(messageObject, methodName, callback) {
     if (messageObject.error && messageObject.error.code !== Protocol.InspectorBackend._ConnectionClosedErrorCode &&
@@ -648,20 +663,7 @@ Protocol.InspectorBackend._AgentPrototype = class {
       var id = Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages ? ' with id = ' + messageObject.id : '';
       console.error('Request ' + methodName + id + ' failed. ' + JSON.stringify(messageObject.error));
     }
-
-    var argumentsArray = [];
-    argumentsArray[0] = messageObject.error ? messageObject.error.message : null;
-
-    if (this._hasErrorData[methodName])
-      argumentsArray[1] = messageObject.error ? messageObject.error.data : null;
-
-    if (messageObject.result) {
-      var paramNames = this._replyArgs[methodName] || [];
-      for (var i = 0; i < paramNames.length; ++i)
-        argumentsArray.push(messageObject.result[paramNames[i]]);
-    }
-
-    callback.apply(null, argumentsArray);
+    callback(messageObject.error, messageObject.result);
   }
 };
 

@@ -418,10 +418,7 @@ SDK.ChildTargetManager = class {
    * @return {!Promise}
    */
   resume() {
-    var fulfill;
-    var promise = new Promise(callback => fulfill = callback);
-    this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true}, fulfill);
-    return promise;
+    return this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true});
   }
 
   dispose() {

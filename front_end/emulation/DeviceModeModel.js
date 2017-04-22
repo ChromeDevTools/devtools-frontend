@@ -599,8 +599,7 @@ Emulation.DeviceModeModel = class {
         allPromises.push(this._target.emulationAgent().resetPageScaleFactor());
       var setDevicePromise;
       if (clear) {
-        setDevicePromise = this._target.emulationAgent().clearDeviceMetricsOverride(
-            this._deviceMetricsOverrideAppliedForTest.bind(this));
+        setDevicePromise = this._target.emulationAgent().clearDeviceMetricsOverride();
       } else {
         var params = {
           width: pageWidth,
@@ -616,8 +615,7 @@ Emulation.DeviceModeModel = class {
         };
         if (screenOrientation)
           params.screenOrientation = {type: screenOrientation, angle: screenOrientationAngle};
-        setDevicePromise = this._target.emulationAgent().invoke_setDeviceMetricsOverride(
-            params, this._deviceMetricsOverrideAppliedForTest.bind(this));
+        setDevicePromise = this._target.emulationAgent().invoke_setDeviceMetricsOverride(params);
       }
       allPromises.push(setDevicePromise);
       return Promise.all(allPromises);
@@ -668,10 +666,6 @@ Emulation.DeviceModeModel = class {
     this._target.emulationAgent().resetViewport();
     this._calculateAndEmulate(false);
     return screenshot;
-  }
-
-  _deviceMetricsOverrideAppliedForTest() {
-    // Used for sniffing in tests.
   }
 
   /**

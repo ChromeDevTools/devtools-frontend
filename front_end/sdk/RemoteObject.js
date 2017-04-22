@@ -647,28 +647,23 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
       return;
     }
 
-    this._runtimeAgent.invoke_evaluate({expression: value, silent: true}, evaluatedCallback.bind(this));
-
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Protocol.Runtime.RemoteObject} result
-     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     * @this {SDK.RemoteObjectImpl}
-     */
-    function evaluatedCallback(error, result, exceptionDetails) {
-      if (error || !!exceptionDetails) {
-        callback(error || (result.type !== 'string' ? result.description : /** @type {string} */ (result.value)));
+    this._runtimeAgent.invoke_evaluate({expression: value, silent: true}).then(response => {
+      if (response[Protocol.Error] || response.exceptionDetails) {
+        callback(
+            response[Protocol.Error] ||
+            (response.result.type !== 'string' ? response.result.description :
+                                                 /** @type {string} */ (response.result.value)));
         return;
       }
 
       if (typeof name === 'string')
         name = SDK.RemoteObject.toCallArgument(name);
 
-      this.doSetObjectPropertyValue(result, name, callback);
+      this.doSetObjectPropertyValue(response.result, name, callback);
 
-      if (result.objectId)
-        this._runtimeAgent.releaseObject(result.objectId);
-    }
+      if (response.result.objectId)
+        this._runtimeAgent.releaseObject(response.result.objectId);
+    });
   }
 
   /**

@@ -14,6 +14,7 @@ UI.ListWidget = class extends UI.VBox {
     this._delegate = delegate;
 
     this._list = this.contentElement.createChild('div', 'list');
+    this.element.tabIndex = -1;
 
     /** @type {?UI.ListWidget.Editor} */
     this._editor = null;
@@ -144,6 +145,7 @@ UI.ListWidget = class extends UI.VBox {
      */
     function onRemoveClicked() {
       var index = this._elements.indexOf(element);
+      this.element.focus();
       this._delegate.removeItemRequested(this._items[index], index);
     }
   }
@@ -176,6 +178,7 @@ UI.ListWidget = class extends UI.VBox {
       return;
 
     this._stopEditing();
+    this._focusRestorer = new UI.ElementFocusRestorer(this.element);
 
     this._list.classList.add('list-editing');
     this._editItem = item;
@@ -202,6 +205,8 @@ UI.ListWidget = class extends UI.VBox {
 
   _stopEditing() {
     this._list.classList.remove('list-editing');
+    if (this._focusRestorer)
+      this._focusRestorer.restore();
     if (this._editElement)
       this._editElement.classList.remove('hidden');
     if (this._editor && this._editor.element.parentElement)

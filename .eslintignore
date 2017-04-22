@@ -1,6 +1,7 @@
 front_end/.eslintrc.js
 front_end/acorn/*
-front_end/audits2_worker/lighthouse/lighthouse-background.js
+front_end/audits2_worker/lighthouse/
+front_end/audits2/lighthouse/
 front_end/cm/*
 front_end/cm_headless/*
 front_end/cm_modes/*

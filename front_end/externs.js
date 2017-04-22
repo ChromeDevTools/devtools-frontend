@@ -345,6 +345,9 @@ Adb.DevicePortForwardingStatus;
 /** @typedef {!Object<string, !Adb.DevicePortForwardingStatus>} */
 Adb.PortForwardingStatus;
 
+/** @const */
+var module = {};
+
 /**
  * @constructor
  */

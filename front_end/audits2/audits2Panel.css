@@ -4,14 +4,6 @@
  * found in the LICENSE file.
  */
 
-iframe {
-    width: 100%;
-    height: 100%;
-    flex-direction: column !important;
-    position: relative;
-    flex: auto;
-}
-
 .audits2-view {
     max-width: 550px;
     min-width: 334px;
@@ -92,10 +84,11 @@ iframe {
     flex-shrink: 0;
 }
 
-.iframe-container {
+.report-container {
     flex: 1 1 auto;
     align-self: auto;
     position: relative;
+    overflow: auto;
 }
 
 .audits2-form label {

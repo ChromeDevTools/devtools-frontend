@@ -3,26 +3,6 @@
 // found in the LICENSE file.
 
 /**
- * @typedef {{
- *     lighthouseVersion: !string,
- *     generatedTime: !string,
- *     initialUrl: !string,
- *     url: !string,
- *     audits: ?Object,
- *     aggregations: !Array<*>
- * }}
- */
-Audits2.LighthouseResult;
-
-/**
- * @typedef {{
- *     blobUrl: !string,
- *     result: !Audits2.LighthouseResult
- * }}
- */
-Audits2.WorkerResult;
-
-/**
  * @unrestricted
  */
 Audits2.Audits2Panel = class extends UI.Panel {
@@ -30,6 +10,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
     super('audits2');
     this.setHideOnDetach();
     this.registerRequiredCSS('audits2/audits2Panel.css');
+    this.registerRequiredCSS('audits2/lighthouse/report-styles.css');
 
     this._protocolService = new Audits2.ProtocolService();
     this._protocolService.registerStatusCallback(msg => this._updateStatus(Common.UIString(msg)));
@@ -42,7 +23,6 @@ Audits2.Audits2Panel = class extends UI.Panel {
 
     var auditsViewElement = this.contentElement.createChild('div', 'hbox audits2-view');
     this._resultsView = this.contentElement.createChild('div', 'vbox results-view');
-    auditsViewElement.createChild('div', 'audits2-logo');
     this._createLauncherUI(auditsViewElement);
   }
 
@@ -55,6 +35,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
    * @param {!Element} auditsViewElement
    */
   _createLauncherUI(auditsViewElement) {
+    auditsViewElement.createChild('div', 'audits2-logo');
     var uiElement = auditsViewElement.createChild('div');
     var headerElement = uiElement.createChild('header');
     headerElement.createChild('p').textContent = Common.UIString(
@@ -90,7 +71,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
   _start() {
     this._inspectedURL = SDK.targetManager.mainTarget().inspectedURL();
 
-    const aggregationIDs = this._settings.map(setting => {
+    const categoryIDs = this._settings.map(setting => {
       const preset = Audits2.Audits2Panel.Presets.find(preset => preset.id === setting.name);
       return {configID: preset.configID, value: setting.get()};
     }).filter(agg => !!agg.value).map(agg => agg.configID);
@@ -102,9 +83,9 @@ Audits2.Audits2Panel = class extends UI.Panel {
           this._updateButton();
           this._updateStatus(Common.UIString('Loading...'));
         })
-        .then(_ => this._protocolService.startLighthouse(this._inspectedURL, aggregationIDs))
-        .then(workerResult => {
-          this._finish(workerResult);
+        .then(_ => this._protocolService.startLighthouse(this._inspectedURL, categoryIDs))
+        .then(lighthouseResult => {
+          this._finish(lighthouseResult);
           return this._stop();
         });
   }
@@ -150,31 +131,41 @@ Audits2.Audits2Panel = class extends UI.Panel {
   }
 
   /**
-   * @param {!Audits2.WorkerResult} workerResult
+   * @param {!ReportRenderer.ReportJSON} lighthouseResult
    */
-  _finish(workerResult) {
-    if (workerResult === null) {
+  _finish(lighthouseResult) {
+    if (lighthouseResult === null) {
       this._updateStatus(Common.UIString('Auditing failed.'));
       return;
     }
     this._resultsView.removeChildren();
 
-    var url = workerResult.result.url;
-    var timestamp = workerResult.result.generatedTime;
+    var url = lighthouseResult.url;
+    var timestamp = lighthouseResult.generatedTime;
     this._createResultsBar(this._resultsView, url, timestamp);
-    this._createIframe(this._resultsView, workerResult.blobUrl);
+    this._renderReport(this._resultsView, lighthouseResult);
     this.contentElement.classList.add('show-results');
   }
 
   /**
    * @param {!Element} resultsView
-   * @param {string} blobUrl
+   * @param {!ReportRenderer.ReportJSON} lighthouseResult
+   * @suppressGlobalPropertiesCheck
    */
-  _createIframe(resultsView, blobUrl) {
-    var iframeContainer = resultsView.createChild('div', 'iframe-container');
-    var iframe = iframeContainer.createChild('iframe', 'fill');
-    iframe.setAttribute('sandbox', 'allow-scripts allow-popups-to-escape-sandbox allow-popups');
-    iframe.src = blobUrl;
+  _renderReport(resultsView, lighthouseResult) {
+    var reportContainer = resultsView.createChild('div', 'report-container');
+
+    var dom = new DOM(document);
+    var detailsRenderer = new DetailsRenderer(dom);
+    var renderer = new ReportRenderer(dom, detailsRenderer);
+
+    var templatesHTML = Runtime.cachedResources['audits2/lighthouse/templates.html'];
+    var templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
+    if (!templatesDOM)
+      return;
+
+    renderer.setTemplateContext(templatesDOM);
+    reportContainer.appendChild(renderer.renderReport(lighthouseResult));
   }
 
   /**
@@ -206,10 +197,11 @@ Audits2.Audits2Panel.Preset;
 
 /** @type {!Array.<!Audits2.Audits2Panel.Preset>} */
 Audits2.Audits2Panel.Presets = [
-  // configID maps to Lighthouse's config.aggregations[0].id value
-  {id: 'audits2_cat_pwa', configID: 'pwa', description: 'Progressive web app audits'},
-  {id: 'audits2_cat_perf', configID: 'perf', description: 'Performance metrics and diagnostics'},
-  {id: 'audits2_cat_best_practices', configID: 'bp', description: 'Modern web development best practices'},
+  // configID maps to Lighthouse's Object.keys(config.categories)[0] value
+  {id: 'audits2_cat_pwa', configID: 'pwa', description: 'Progressive Web App'},
+  {id: 'audits2_cat_perf', configID: 'performance', description: 'Performance metrics and diagnostics'},
+  {id: 'audits2_cat_a11y', configID: 'accessibility', description: 'Accessibility'},
+  {id: 'audits2_cat_best_practices', configID: 'best-practices', description: 'Modern best practices'},
 ];
 
 Audits2.ProtocolService = class extends Common.Object {
@@ -236,11 +228,11 @@ Audits2.ProtocolService = class extends Common.Object {
 
   /**
    * @param {string} inspectedURL
-   * @param {!Array<string>} aggregationIDs
-   * @return {!Promise<!Audits2.WorkerResult|undefined>}
+   * @param {!Array<string>} categoryIDs
+   * @return {!Promise<!ReportRenderer.ReportJSON>}
    */
-  startLighthouse(inspectedURL, aggregationIDs) {
-    return this._send('start', {url: inspectedURL, aggregationIDs});
+  startLighthouse(inspectedURL, categoryIDs) {
+    return this._send('start', {url: inspectedURL, categoryIDs});
   }
 
   /**
@@ -282,7 +274,7 @@ Audits2.ProtocolService = class extends Common.Object {
   /**
    * @param {string} method
    * @param {!Object=} params
-   * @return {!Promise<!Audits2.WorkerResult|undefined>}
+   * @return {!Promise<!ReportRenderer.ReportJSON>}
    */
   _send(method, params) {
     if (!this._backendPromise)

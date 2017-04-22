@@ -18,9 +18,14 @@
     ],
     "experiment": "audits2",
     "scripts": [
+        "lighthouse/renderer/dom.js",
+        "lighthouse/renderer/details-renderer.js",
+        "lighthouse/renderer/report-renderer.js",
         "Audits2Panel.js"
     ],
     "resources": [
-        "audits2Panel.css"
+        "audits2Panel.css",
+        "lighthouse/report-styles.css",
+        "lighthouse/templates.html"
     ]
 }

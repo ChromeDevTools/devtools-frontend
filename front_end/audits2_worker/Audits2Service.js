@@ -37,7 +37,7 @@ var Audits2Service = class {
   }
 
   /**
-   * @return {!Promise<!Audits2.WorkerResult>}
+   * @return {!Promise<!ReportRenderer.ReportJSON>}
    */
   start(params) {
     self.listenForStatus(message => {
@@ -45,9 +45,8 @@ var Audits2Service = class {
     });
 
     return Promise.resolve()
-      .then(_ => self.runLighthouseInWorker(this, params.url, undefined, params.aggregationIDs))
-      .then(/** @type {!Audits2.LighthouseResult} */ result =>
-                ({blobUrl: /** @type {?string} */ self.createReportPageAsBlob(result, 'devtools'), result}))
+      .then(_ => self.runLighthouseInWorker(this, params.url, undefined, params.categoryIDs))
+      .then(/** @type {!ReportRenderer.ReportJSON} */ result => result)
       .catchException(null);
   }
 
@@ -105,7 +104,7 @@ var Audits2Service = class {
   }
 };
 
-// Make lighthouse happy.
+// Make lighthouse and traceviewer happy.
 global = self;
 global.isVinn = true;
 global.document = {};

@@ -53,7 +53,7 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
     function finishEditing(accept, e, text) {
       this.removeListElement(inputElementContainer);
       if (accept) {
-        SDK.xhrBreakpointManager.addBreakpoint(text, true);
+        SDK.domDebuggerManager.addXHRBreakpoint(text, true);
         this._setBreakpoint(text, true);
       }
     }
@@ -114,7 +114,7 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
      * @this {Sources.XHRBreakpointsSidebarPane}
      */
     function removeBreakpoint() {
-      SDK.xhrBreakpointManager.removeBreakpoint(url);
+      SDK.domDebuggerManager.removeXHRBreakpoint(url);
       this._removeBreakpoint(url);
     }
 
@@ -123,7 +123,7 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
      */
     function removeAllBreakpoints() {
       for (var url of this._breakpointElements.keys()) {
-        SDK.xhrBreakpointManager.removeBreakpoint(url);
+        SDK.domDebuggerManager.removeXHRBreakpoint(url);
         this._removeBreakpoint(url);
       }
     }
@@ -136,7 +136,7 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
   }
 
   _checkboxClicked(url, event) {
-    SDK.xhrBreakpointManager.toggleBreakpoint(url, event.target.checked);
+    SDK.domDebuggerManager.toggleXHRBreakpoint(url, event.target.checked);
   }
 
   _labelClicked(url) {
@@ -155,10 +155,10 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
     function finishEditing(accept, e, text) {
       this.removeListElement(inputElement);
       if (accept) {
-        SDK.xhrBreakpointManager.removeBreakpoint(url);
+        SDK.domDebuggerManager.removeXHRBreakpoint(url);
         this._removeBreakpoint(url);
         var enabled = element ? element._checkboxElement.checked : true;
-        SDK.xhrBreakpointManager.addBreakpoint(text, enabled);
+        SDK.domDebuggerManager.addXHRBreakpoint(text, enabled);
         this._setBreakpoint(text, enabled);
       } else {
         element.classList.remove('hidden');
@@ -196,7 +196,7 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
   }
 
   _restoreBreakpoints() {
-    var breakpoints = SDK.xhrBreakpointManager.breakpoints();
+    var breakpoints = SDK.domDebuggerManager.xhrBreakpoints();
     for (var url of breakpoints.keys())
       this._setBreakpoint(url, breakpoints.get(url));
   }

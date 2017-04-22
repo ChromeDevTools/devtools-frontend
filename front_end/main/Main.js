@@ -169,7 +169,7 @@ Main.Main = class {
     ConsoleModel.consoleModel = new ConsoleModel.ConsoleModel();
     SDK.multitargetNetworkManager = new SDK.MultitargetNetworkManager();
     NetworkLog.networkLog = new NetworkLog.NetworkLog();
-    SDK.xhrBreakpointManager = new SDK.XHRBreakpointManager();
+    SDK.domDebuggerManager = new SDK.DOMDebuggerManager();
     SDK.targetManager.addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged.bind(this));
 

@@ -260,72 +260,332 @@ SDK.EventListener.Origin = {
   FrameworkUser: 'FrameworkUser'
 };
 
+SDK.DOMDebuggerModel.EventListenerBreakpoint = class {
+  /**
+   * @param {string} instrumentationName
+   * @param {string} eventName
+   * @param {!Array<string>} eventTargetNames
+   * @param {string} category
+   * @param {string} title
+   */
+  constructor(instrumentationName, eventName, eventTargetNames, category, title) {
+    this._instrumentationName = instrumentationName;
+    this._eventName = eventName;
+    this._eventTargetNames = eventTargetNames;
+    this._category = category;
+    this._title = title;
+    this._enabled = false;
+  }
+
+  /**
+   * @return {string}
+   */
+  category() {
+    return this._category;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  enabled() {
+    return this._enabled;
+  }
+
+  /**
+   * @param {boolean} enabled
+   */
+  setEnabled(enabled) {
+    if (this._enabled === enabled)
+      return;
+    this._enabled = enabled;
+    for (var model of SDK.targetManager.models(SDK.DOMDebuggerModel))
+      this._updateOnModel(model);
+  }
+
+  /**
+   * @param {!SDK.DOMDebuggerModel} model
+   */
+  _updateOnModel(model) {
+    if (this._instrumentationName) {
+      if (this._enabled)
+        model._agent.setInstrumentationBreakpoint(this._instrumentationName);
+      else
+        model._agent.removeInstrumentationBreakpoint(this._instrumentationName);
+    } else {
+      for (var eventTargetName of this._eventTargetNames) {
+        if (this._enabled)
+          model._agent.setEventListenerBreakpoint(this._eventName, eventTargetName);
+        else
+          model._agent.removeEventListenerBreakpoint(this._eventName, eventTargetName);
+      }
+    }
+  }
+
+  /**
+   * @return {string}
+   */
+  title() {
+    return this._title;
+  }
+};
+
+SDK.DOMDebuggerModel.EventListenerBreakpoint._listener = 'listener:';
+SDK.DOMDebuggerModel.EventListenerBreakpoint._instrumentation = 'instrumentation:';
+
 /**
  * @implements {SDK.SDKModelObserver<!SDK.DOMDebuggerModel>}
  */
-SDK.XHRBreakpointManager = class {
+SDK.DOMDebuggerManager = class {
   constructor() {
-    this._setting = Common.settings.createLocalSetting('xhrBreakpoints', []);
+    this._xhrBreakpointsSetting = Common.settings.createLocalSetting('xhrBreakpoints', []);
     /** @type {!Map<string, boolean>} */
-    this._breakpoints = new Map();
-    for (var breakpoint of this._setting.get())
-      this._breakpoints.set(breakpoint.url, breakpoint.enabled);
+    this._xhrBreakpoints = new Map();
+    for (var breakpoint of this._xhrBreakpointsSetting.get())
+      this._xhrBreakpoints.set(breakpoint.url, breakpoint.enabled);
+
+    /** @type {!Array<!SDK.DOMDebuggerModel.EventListenerBreakpoint>} */
+    this._eventListenerBreakpoints = [];
+    this._createInstrumentationBreakpoints(
+        Common.UIString('Animation'),
+        ['requestAnimationFrame', 'cancelAnimationFrame', 'requestAnimationFrame.callback']);
+    this._createInstrumentationBreakpoints(
+        Common.UIString('Canvas'), ['canvasContextCreated', 'webglErrorFired', 'webglWarningFired']);
+    this._createInstrumentationBreakpoints(
+        Common.UIString('Geolocation'), ['Geolocation.getCurrentPosition', 'Geolocation.watchPosition']);
+    this._createInstrumentationBreakpoints(Common.UIString('Notification'), ['Notification.requestPermission']);
+    this._createInstrumentationBreakpoints(Common.UIString('Parse'), ['Element.setInnerHTML', 'Document.write']);
+    this._createInstrumentationBreakpoints(Common.UIString('Script'), ['scriptFirstStatement', 'scriptBlockedByCSP']);
+    this._createInstrumentationBreakpoints(
+        Common.UIString('Timer'),
+        ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'setTimeout.callback', 'setInterval.callback']);
+    this._createInstrumentationBreakpoints(Common.UIString('Window'), ['DOMWindow.close']);
+
+    this._createEventListenerBreakpoints(
+        Common.UIString('Media'),
+        [
+          'play',      'pause',          'playing',    'canplay',    'canplaythrough', 'seeking',
+          'seeked',    'timeupdate',     'ended',      'ratechange', 'durationchange', 'volumechange',
+          'loadstart', 'progress',       'suspend',    'abort',      'error',          'emptied',
+          'stalled',   'loadedmetadata', 'loadeddata', 'waiting'
+        ],
+        ['audio', 'video']);
+    this._createEventListenerBreakpoints(
+        Common.UIString('Clipboard'), ['copy', 'cut', 'paste', 'beforecopy', 'beforecut', 'beforepaste'], ['*']);
+    this._createEventListenerBreakpoints(
+        Common.UIString('Control'),
+        ['resize', 'scroll', 'zoom', 'focus', 'blur', 'select', 'change', 'submit', 'reset'], ['*']);
+    this._createEventListenerBreakpoints(Common.UIString('Device'), ['deviceorientation', 'devicemotion'], ['*']);
+    this._createEventListenerBreakpoints(
+        Common.UIString('DOM Mutation'),
+        [
+          'DOMActivate', 'DOMFocusIn', 'DOMFocusOut', 'DOMAttrModified', 'DOMCharacterDataModified', 'DOMNodeInserted',
+          'DOMNodeInsertedIntoDocument', 'DOMNodeRemoved', 'DOMNodeRemovedFromDocument', 'DOMSubtreeModified',
+          'DOMContentLoaded'
+        ],
+        ['*']);
+    this._createEventListenerBreakpoints(
+        Common.UIString('Drag / drop'), ['dragenter', 'dragover', 'dragleave', 'drop'], ['*']);
+    this._createEventListenerBreakpoints(Common.UIString('Keyboard'), ['keydown', 'keyup', 'keypress', 'input'], ['*']);
+    this._createEventListenerBreakpoints(
+        Common.UIString('Load'), ['load', 'beforeunload', 'unload', 'abort', 'error', 'hashchange', 'popstate'], ['*']);
+    this._createEventListenerBreakpoints(
+        Common.UIString('Mouse'),
+        [
+          'auxclick', 'click', 'dblclick', 'mousedown', 'mouseup', 'mouseover', 'mousemove', 'mouseout', 'mouseenter',
+          'mouseleave', 'mousewheel', 'wheel', 'contextmenu'
+        ],
+        ['*']);
+    this._createEventListenerBreakpoints(
+        Common.UIString('Pointer'),
+        [
+          'pointerover', 'pointerout', 'pointerenter', 'pointerleave', 'pointerdown', 'pointerup', 'pointermove',
+          'pointercancel', 'gotpointercapture', 'lostpointercapture'
+        ],
+        ['*']);
+    this._createEventListenerBreakpoints(
+        Common.UIString('Touch'), ['touchstart', 'touchmove', 'touchend', 'touchcancel'], ['*']);
+    this._createEventListenerBreakpoints(
+        Common.UIString('XHR'),
+        ['readystatechange', 'load', 'loadstart', 'loadend', 'abort', 'error', 'progress', 'timeout'],
+        ['xmlhttprequest', 'xmlhttprequestupload']);
+
+    this._resolveEventListenerBreakpoint('instrumentation:setTimeout.callback')._title =
+        Common.UIString('setTimeout fired');
+    this._resolveEventListenerBreakpoint('instrumentation:setInterval.callback')._title =
+        Common.UIString('setInterval fired');
+    this._resolveEventListenerBreakpoint('instrumentation:scriptFirstStatement')._title =
+        Common.UIString('Script First Statement');
+    this._resolveEventListenerBreakpoint('instrumentation:scriptBlockedByCSP')._title =
+        Common.UIString('Script Blocked by Content Security Policy');
+    this._resolveEventListenerBreakpoint('instrumentation:requestAnimationFrame')._title =
+        Common.UIString('Request Animation Frame');
+    this._resolveEventListenerBreakpoint('instrumentation:cancelAnimationFrame')._title =
+        Common.UIString('Cancel Animation Frame');
+    this._resolveEventListenerBreakpoint('instrumentation:requestAnimationFrame.callback')._title =
+        Common.UIString('Animation Frame Fired');
+    this._resolveEventListenerBreakpoint('instrumentation:webglErrorFired')._title =
+        Common.UIString('WebGL Error Fired');
+    this._resolveEventListenerBreakpoint('instrumentation:webglWarningFired')._title =
+        Common.UIString('WebGL Warning Fired');
+    this._resolveEventListenerBreakpoint('instrumentation:Element.setInnerHTML')._title =
+        Common.UIString('Set innerHTML');
+    this._resolveEventListenerBreakpoint('instrumentation:canvasContextCreated')._title =
+        Common.UIString('Create canvas context');
+    this._resolveEventListenerBreakpoint('instrumentation:Geolocation.getCurrentPosition')._title =
+        'getCurrentPosition';
+    this._resolveEventListenerBreakpoint('instrumentation:Geolocation.watchPosition')._title = 'watchPosition';
+    this._resolveEventListenerBreakpoint('instrumentation:Notification.requestPermission')._title = 'requestPermission';
+    this._resolveEventListenerBreakpoint('instrumentation:DOMWindow.close')._title = 'window.close';
+    this._resolveEventListenerBreakpoint('instrumentation:Document.write')._title = 'document.write';
+
     SDK.targetManager.observeModels(SDK.DOMDebuggerModel, this);
+  }
+
+  /**
+   * @param {string} category
+   * @param {!Array<string>} instrumentationNames
+   */
+  _createInstrumentationBreakpoints(category, instrumentationNames) {
+    for (var instrumentationName of instrumentationNames) {
+      this._eventListenerBreakpoints.push(
+          new SDK.DOMDebuggerModel.EventListenerBreakpoint(instrumentationName, '', [], category, instrumentationName));
+    }
+  }
+
+  /**
+   * @param {string} category
+   * @param {!Array<string>} eventNames
+   * @param {!Array<string>} eventTargetNames
+   */
+  _createEventListenerBreakpoints(category, eventNames, eventTargetNames) {
+    for (var eventName of eventNames) {
+      this._eventListenerBreakpoints.push(
+          new SDK.DOMDebuggerModel.EventListenerBreakpoint('', eventName, eventTargetNames, category, eventName));
+    }
+  }
+
+  /**
+   * @param {string} eventName
+   * @param {string=} eventTargetName
+   * @return {?SDK.DOMDebuggerModel.EventListenerBreakpoint}
+   */
+  _resolveEventListenerBreakpoint(eventName, eventTargetName) {
+    var instrumentationPrefix = 'instrumentation:';
+    var listenerPrefix = 'listener:';
+    var instrumentationName = '';
+    if (eventName.startsWith(instrumentationPrefix)) {
+      instrumentationName = eventName.substring(instrumentationPrefix.length);
+      eventName = '';
+    } else if (eventName.startsWith(listenerPrefix)) {
+      eventName = eventName.substring(listenerPrefix.length);
+    } else {
+      return null;
+    }
+    eventTargetName = (eventTargetName || '*').toLowerCase();
+    var result = null;
+    for (var breakpoint of this._eventListenerBreakpoints) {
+      if (instrumentationName && breakpoint._instrumentationName === instrumentationName)
+        result = breakpoint;
+      if (eventName && breakpoint._eventName === eventName &&
+          breakpoint._eventTargetNames.indexOf(eventTargetName) !== -1)
+        result = breakpoint;
+      if (!result && eventName && breakpoint._eventName === eventName &&
+          breakpoint._eventTargetNames.indexOf('*') !== -1)
+        result = breakpoint;
+    }
+    return result;
+  }
+
+  /**
+   * @return {!Array<!SDK.DOMDebuggerModel.EventListenerBreakpoint>}
+   */
+  eventListenerBreakpoints() {
+    return this._eventListenerBreakpoints.slice();
+  }
+
+  /**
+   * @param {!Object} auxData
+   * @return {string}
+   */
+  resolveEventListenerBreakpointTitle(auxData) {
+    var id = auxData['eventName'];
+    if (id === 'instrumentation:webglErrorFired' && auxData['webglErrorName']) {
+      var errorName = auxData['webglErrorName'];
+      // If there is a hex code of the error, display only this.
+      errorName = errorName.replace(/^.*(0x[0-9a-f]+).*$/i, '$1');
+      return Common.UIString('WebGL Error Fired (%s)', errorName);
+    }
+    if (id === 'instrumentation:scriptBlockedByCSP' && auxData['directiveText'])
+      return Common.UIString('Script blocked due to Content Security Policy directive: %s', auxData['directiveText']);
+    var breakpoint = this._resolveEventListenerBreakpoint(id, auxData['targetName']);
+    if (!breakpoint)
+      return '';
+    if (auxData['targetName'])
+      return auxData['targetName'] + '.' + breakpoint._title;
+    return breakpoint._title;
+  }
+
+  /**
+   * @param {!Object} auxData
+   * @return {?SDK.DOMDebuggerModel.EventListenerBreakpoint}
+   */
+  resolveEventListenerBreakpoint(auxData) {
+    return this._resolveEventListenerBreakpoint(auxData['eventName'], auxData['targetName']);
   }
 
   /**
    * @return {!Map<string, boolean>}
    */
-  breakpoints() {
-    return this._breakpoints;
+  xhrBreakpoints() {
+    return this._xhrBreakpoints;
   }
 
-  _saveBreakpoints() {
+  _saveXHRBreakpoints() {
     var breakpoints = [];
-    for (var url of this._breakpoints.keys())
-      breakpoints.push({url: url, enabled: this._breakpoints.get(url)});
-    this._setting.set(breakpoints);
+    for (var url of this._xhrBreakpoints.keys())
+      breakpoints.push({url: url, enabled: this._xhrBreakpoints.get(url)});
+    this._xhrBreakpointsSetting.set(breakpoints);
   }
 
   /**
    * @param {string} url
    * @param {boolean} enabled
    */
-  addBreakpoint(url, enabled) {
-    this._breakpoints.set(url, enabled);
+  addXHRBreakpoint(url, enabled) {
+    this._xhrBreakpoints.set(url, enabled);
     if (enabled) {
       for (var model of SDK.targetManager.models(SDK.DOMDebuggerModel))
         model._agent.setXHRBreakpoint(url);
     }
-    this._saveBreakpoints();
+    this._saveXHRBreakpoints();
   }
 
   /**
    * @param {string} url
    */
-  removeBreakpoint(url) {
-    var enabled = this._breakpoints.get(url);
-    this._breakpoints.delete(url);
+  removeXHRBreakpoint(url) {
+    var enabled = this._xhrBreakpoints.get(url);
+    this._xhrBreakpoints.delete(url);
     if (enabled) {
       for (var model of SDK.targetManager.models(SDK.DOMDebuggerModel))
         model._agent.removeXHRBreakpoint(url);
     }
-    this._saveBreakpoints();
+    this._saveXHRBreakpoints();
   }
 
   /**
    * @param {string} url
    * @param {boolean} enabled
    */
-  toggleBreakpoint(url, enabled) {
-    this._breakpoints.set(url, enabled);
+  toggleXHRBreakpoint(url, enabled) {
+    this._xhrBreakpoints.set(url, enabled);
     for (var model of SDK.targetManager.models(SDK.DOMDebuggerModel)) {
       if (enabled)
         model._agent.setXHRBreakpoint(url);
       else
         model._agent.removeXHRBreakpoint(url);
     }
-    this._saveBreakpoints();
+    this._saveXHRBreakpoints();
   }
 
   /**
@@ -333,9 +593,13 @@ SDK.XHRBreakpointManager = class {
    * @param {!SDK.DOMDebuggerModel} domDebuggerModel
    */
   modelAdded(domDebuggerModel) {
-    for (var url of this._breakpoints.keys()) {
-      if (this._breakpoints.get(url))
+    for (var url of this._xhrBreakpoints.keys()) {
+      if (this._xhrBreakpoints.get(url))
         domDebuggerModel._agent.setXHRBreakpoint(url);
+    }
+    for (var breakpoint of this._eventListenerBreakpoints) {
+      if (breakpoint._enabled)
+        breakpoint._updateOnModel(domDebuggerModel);
     }
   }
 
@@ -347,5 +611,5 @@ SDK.XHRBreakpointManager = class {
   }
 };
 
-/** @type {!SDK.XHRBreakpointManager} */
-SDK.xhrBreakpointManager;
+/** @type {!SDK.DOMDebuggerManager} */
+SDK.domDebuggerManager;

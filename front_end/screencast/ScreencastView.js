@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {SDK.OverlayModel.Highlighter}
+ * @implements {SDK.DOMNodeHighlighter}
  * @unrestricted
  */
 Screencast.ScreencastView = class extends UI.VBox {
@@ -39,7 +39,6 @@ Screencast.ScreencastView = class extends UI.VBox {
     super();
     this._screenCaptureModel = screenCaptureModel;
     this._domModel = screenCaptureModel.target().model(SDK.DOMModel);
-    this._overlayModel = screenCaptureModel.target().model(SDK.OverlayModel);
     this._resourceTreeModel = screenCaptureModel.target().model(SDK.ResourceTreeModel);
     this._networkManager = screenCaptureModel.target().model(SDK.NetworkManager);
     this._inputModel = screenCaptureModel.target().model(Screencast.InputModel);
@@ -131,8 +130,8 @@ Screencast.ScreencastView = class extends UI.VBox {
         Math.floor(Math.min(maxImageDimension, dimensions.height)), undefined, this._screencastFrame.bind(this),
         this._screencastVisibilityChanged.bind(this));
     Emulation.MultitargetTouchModel.instance().setCustomTouchEnabled(true);
-    if (this._overlayModel)
-      this._overlayModel.setHighlighter(this);
+    if (this._domModel)
+      this._domModel.setHighlighter(this);
   }
 
   _stopCasting() {
@@ -141,8 +140,8 @@ Screencast.ScreencastView = class extends UI.VBox {
     this._isCasting = false;
     this._screenCaptureModel.stopScreencast();
     Emulation.MultitargetTouchModel.instance().setCustomTouchEnabled(false);
-    if (this._overlayModel)
-      this._overlayModel.setHighlighter(null);
+    if (this._domModel)
+      this._domModel.setHighlighter(null);
   }
 
   /**
@@ -246,7 +245,7 @@ Screencast.ScreencastView = class extends UI.VBox {
         return;
       if (event.type === 'mousemove') {
         this.highlightDOMNode(node, this._inspectModeConfig);
-        this._domModel.overlayModel().nodeHighlightRequested(node.id);
+        this._domModel.nodeHighlightRequested(node.id);
       } else if (event.type === 'click') {
         Common.Revealer.reveal(node);
       }
@@ -317,7 +316,7 @@ Screencast.ScreencastView = class extends UI.VBox {
   /**
    * @override
    * @param {?SDK.DOMNode} node
-   * @param {?Protocol.Overlay.HighlightConfig} config
+   * @param {?Protocol.DOM.HighlightConfig} config
    * @param {!Protocol.DOM.BackendNodeId=} backendNodeId
    * @param {!Protocol.Runtime.RemoteObjectId=} objectId
    */
@@ -570,13 +569,14 @@ Screencast.ScreencastView = class extends UI.VBox {
 
   /**
    * @override
-   * @param {!Protocol.Overlay.InspectMode} mode
-   * @param {!Protocol.Overlay.HighlightConfig} config
-   * @return {!Promise}
+   * @param {!Protocol.DOM.InspectMode} mode
+   * @param {!Protocol.DOM.HighlightConfig} config
+   * @param {function(?Protocol.Error)=} callback
    */
-  setInspectMode(mode, config) {
-    this._inspectModeConfig = mode !== Protocol.Overlay.InspectMode.None ? config : null;
-    return Promise.resolve();
+  setInspectMode(mode, config, callback) {
+    this._inspectModeConfig = mode !== Protocol.DOM.InspectMode.None ? config : null;
+    if (callback)
+      callback(null);
   }
 
   /**

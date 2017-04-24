@@ -450,7 +450,6 @@
     "scripts": [
         "RenderingOptions.js",
         "SimpleApp.js",
-        "OverlayController.js",
         "GCActionDelegate.js",
         "RequestAppBannerActionDelegate.js",
         "ExecutionContextSelector.js",

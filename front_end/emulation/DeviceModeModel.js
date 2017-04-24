@@ -472,8 +472,9 @@ Emulation.DeviceModeModel = class {
               this._uaSetting.get() === Emulation.DeviceModeModel.UA.Mobile,
           this._uaSetting.get() === Emulation.DeviceModeModel.UA.Mobile);
     }
-    if (this._target)
-      this._target.renderingAgent().setShowViewportSizeOnResize(this._type === Emulation.DeviceModeModel.Type.None);
+    var overlayModel = this._target ? this._target.model(SDK.OverlayModel) : null;
+    if (overlayModel)
+      overlayModel.setShowViewportSizeOnResize(this._type === Emulation.DeviceModeModel.Type.None);
     this._updateCallback.call(null);
   }
 
@@ -636,7 +637,9 @@ Emulation.DeviceModeModel = class {
 
     if (!this._emulatedPageSize)
       this._calculateAndEmulate(false);
-    this._target.renderingAgent().setShowViewportSizeOnResize(false);
+    var overlayModel = this._target ? this._target.model(SDK.OverlayModel) : null;
+    if (overlayModel)
+      overlayModel.setShowViewportSizeOnResize(false);
 
     var pageSize = fullSize ? new UI.Size(metrics.contentWidth, metrics.contentHeight) : this._emulatedPageSize;
     var promises = [];

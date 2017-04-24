@@ -62,17 +62,19 @@
         {
             "type": "setting",
             "category": "Debugger",
-            "settingName": "enableAsyncStackTraces",
+            "title": "Disable async stack traces",
+            "settingName": "disableAsyncStackTraces",
             "settingType": "boolean",
             "defaultValue": false,
+            "order": 2,
             "options": [
                 {
                     "value": true,
-                    "title": "Capture async stack traces"
+                    "title": "Do not capture async stack traces"
                 },
                 {
                     "value": false,
-                    "title": "Do not capture async stack traces"
+                    "title": "Capture async stack traces"
                 }
             ]
         },

@@ -62,7 +62,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     this._isPausing = false;
     Common.moduleSetting('pauseOnExceptionEnabled').addChangeListener(this._pauseOnExceptionStateChanged, this);
     Common.moduleSetting('pauseOnCaughtException').addChangeListener(this._pauseOnExceptionStateChanged, this);
-    Common.moduleSetting('enableAsyncStackTraces').addChangeListener(this.asyncStackTracesStateChanged, this);
+    Common.moduleSetting('disableAsyncStackTraces').addChangeListener(this._asyncStackTracesStateChanged, this);
 
     /** @type {!Map<string, string>} */
     this._fileURLToNodeJSPath = new Map();
@@ -120,7 +120,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     this._agent.enable(callback);
     this._debuggerEnabled = true;
     this._pauseOnExceptionStateChanged();
-    this.asyncStackTracesStateChanged();
+    this._asyncStackTracesStateChanged();
     this.dispatchEventToListeners(SDK.DebuggerModel.Events.DebuggerWasEnabled, this);
   }
 
@@ -137,7 +137,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     this._agent.disable(callback);
     this._debuggerEnabled = false;
     this._isPausing = false;
-    this.asyncStackTracesStateChanged();
+    this._asyncStackTracesStateChanged();
     this.globalObjectCleared();
     this.dispatchEventToListeners(SDK.DebuggerModel.Events.DebuggerWasDisabled);
   }
@@ -176,9 +176,9 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     this._agent.setPauseOnExceptions(state);
   }
 
-  asyncStackTracesStateChanged() {
-    const maxAsyncStackChainDepth = 8;
-    var enabled = Common.moduleSetting('enableAsyncStackTraces').get() && this._debuggerEnabled;
+  _asyncStackTracesStateChanged() {
+    const maxAsyncStackChainDepth = 32;
+    var enabled = !Common.moduleSetting('disableAsyncStackTraces').get() && this._debuggerEnabled;
     this._agent.setAsyncCallStackDepth(enabled ? maxAsyncStackChainDepth : 0);
   }
 
@@ -850,7 +850,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     this._sourceMapManager.dispose();
     Common.moduleSetting('pauseOnExceptionEnabled').removeChangeListener(this._pauseOnExceptionStateChanged, this);
     Common.moduleSetting('pauseOnCaughtException').removeChangeListener(this._pauseOnExceptionStateChanged, this);
-    Common.moduleSetting('enableAsyncStackTraces').removeChangeListener(this.asyncStackTracesStateChanged, this);
+    Common.moduleSetting('disableAsyncStackTraces').removeChangeListener(this._asyncStackTracesStateChanged, this);
   }
 
   /**

@@ -106,6 +106,9 @@ Resources.AppManifestView = class extends UI.VBox {
     if (!data)
       return;
 
+    if (data.charCodeAt(0) === 0xFEFF)
+      data = data.slice(1);  // Trim the BOM as per https://tools.ietf.org/html/rfc7159#section-8.1.
+
     var parsedManifest = JSON.parse(data);
     this._nameField.textContent = stringProperty('name');
     this._shortNameField.textContent = stringProperty('short_name');

@@ -631,10 +631,21 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
     super();
     this._groupBySetting =
         Common.settings.createSetting('timelineTreeGroupBy', Timeline.AggregatedTimelineTreeView.GroupBy.None);
+    this._groupByCombobox = new UI.ToolbarComboBox(this._onGroupByChanged.bind(this));
     this.init(filters);
     this._stackView = new Timeline.TimelineStackView(this);
     this._stackView.addEventListener(
         Timeline.TimelineStackView.Events.SelectionChanged, this._onStackViewSelectionChanged, this);
+  }
+
+  /**
+   * @override
+   */
+  wasShown() {
+    var groupById = this._groupBySetting.get();
+    var option = this._groupByCombobox.options().find(option => option.value === groupById);
+    if (option)
+      this._groupByCombobox.select(option);
   }
 
   /**
@@ -712,7 +723,6 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
    */
   populateToolbar(toolbar) {
     super.populateToolbar(toolbar);
-    this._groupByCombobox = new UI.ToolbarComboBox(this._onGroupByChanged.bind(this));
     /**
      * @param {string} name
      * @param {string} id

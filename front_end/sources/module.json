@@ -519,15 +519,6 @@
         {
             "type": "view",
             "location": "sources-sidebar",
-            "id": "sources.domBreakpoints",
-            "title": "DOM Breakpoints",
-            "order": 7,
-            "persistence": "permanent",
-            "factoryName": "Components.DOMBreakpointsSidebarPane.Proxy"
-        },
-        {
-            "type": "view",
-            "location": "sources-sidebar",
             "id": "sources.globalListeners",
             "title": "Global Listeners",
             "order": 8,
@@ -586,13 +577,6 @@
                 "SDK.DebuggerPausedDetails"
             ],
             "className": "Sources.XHRBreakpointsSidebarPane"
-        },
-        {
-            "type": "@UI.ContextFlavorListener",
-            "contextTypes": [
-                "SDK.DebuggerPausedDetails"
-            ],
-            "className": "Components.DOMBreakpointsSidebarPane"
         },
         {
             "type": "@UI.ContextFlavorListener",

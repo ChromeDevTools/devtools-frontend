@@ -11,6 +11,14 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
     this._agent = target.domdebuggerAgent();
     this._runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
     this._domModel = /** @type {!SDK.DOMModel} */ (target.model(SDK.DOMModel));
+    this._domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this._documentUpdated, this);
+    this._domModel.addEventListener(SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
+
+    /** @type {!Array<!SDK.DOMDebuggerModel.DOMBreakpoint>} */
+    this._domBreakpoints = [];
+    this._domBreakpointsSetting = Common.settings.createLocalSetting('domBreakpoints', []);
+    if (this._domModel.existingDocument())
+      this._documentUpdated();
   }
 
   /**
@@ -44,9 +52,224 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
     }
     return eventListeners;
   }
+
+  retrieveDOMBreakpoints() {
+    this._domModel.requestDocument();
+  }
+
+  /**
+   * @return {!Array<!SDK.DOMDebuggerModel.DOMBreakpoint>}
+   */
+  domBreakpoints() {
+    return this._domBreakpoints.slice();
+  }
+
+  /**
+   * @param {!SDK.DOMNode} node
+   * @param {!SDK.DOMDebuggerModel.DOMBreakpoint.Type} type
+   * @return {boolean}
+   */
+  hasDOMBreakpoint(node, type) {
+    return this._domBreakpoints.some(breakpoint => (breakpoint.node === node && breakpoint.type === type));
+  }
+
+  /**
+   * @param {!SDK.DOMNode} node
+   * @param {!SDK.DOMDebuggerModel.DOMBreakpoint.Type} type
+   * @return {!SDK.DOMDebuggerModel.DOMBreakpoint}
+   */
+  setDOMBreakpoint(node, type) {
+    for (var breakpoint of this._domBreakpoints) {
+      if (breakpoint.node === node && breakpoint.type === type) {
+        this.toggleDOMBreakpoint(breakpoint, true);
+        return breakpoint;
+      }
+    }
+    var breakpoint = new SDK.DOMDebuggerModel.DOMBreakpoint(this, node, type, true);
+    this._domBreakpoints.push(breakpoint);
+    this._saveDOMBreakpoints();
+    this._enableDOMBreakpoint(breakpoint);
+    this.dispatchEventToListeners(SDK.DOMDebuggerModel.Events.DOMBreakpointAdded, breakpoint);
+    return breakpoint;
+  }
+
+  /**
+   * @param {!SDK.DOMNode} node
+   * @param {!SDK.DOMDebuggerModel.DOMBreakpoint.Type} type
+   */
+  removeDOMBreakpoint(node, type) {
+    this._removeDOMBreakpoints(breakpoint => breakpoint.node === node && breakpoint.type === type);
+  }
+
+  removeAllDOMBreakpoints() {
+    this._removeDOMBreakpoints(breakpoint => true);
+  }
+
+  /**
+   * @param {!SDK.DOMDebuggerModel.DOMBreakpoint} breakpoint
+   * @param {boolean} enabled
+   */
+  toggleDOMBreakpoint(breakpoint, enabled) {
+    if (enabled === breakpoint.enabled)
+      return;
+    breakpoint.enabled = enabled;
+    if (enabled)
+      this._enableDOMBreakpoint(breakpoint);
+    else
+      this._disableDOMBreakpoint(breakpoint);
+    this.dispatchEventToListeners(SDK.DOMDebuggerModel.Events.DOMBreakpointToggled, breakpoint);
+  }
+
+  /**
+   * @param {!SDK.DOMDebuggerModel.DOMBreakpoint} breakpoint
+   */
+  _enableDOMBreakpoint(breakpoint) {
+    this._agent.setDOMBreakpoint(breakpoint.node.id, breakpoint.type);
+    breakpoint.node.setMarker(SDK.DOMDebuggerModel.DOMBreakpoint.Marker, true);
+  }
+
+  /**
+   * @param {!SDK.DOMDebuggerModel.DOMBreakpoint} breakpoint
+   */
+  _disableDOMBreakpoint(breakpoint) {
+    this._agent.removeDOMBreakpoint(breakpoint.node.id, breakpoint.type);
+    breakpoint.node.setMarker(
+        SDK.DOMDebuggerModel.DOMBreakpoint.Marker, this._nodeHasBreakpoints(breakpoint.node) ? true : null);
+  }
+
+  /**
+   * @param {!SDK.DOMNode} node
+   * @return {boolean}
+   */
+  _nodeHasBreakpoints(node) {
+    for (var breakpoint of this._domBreakpoints) {
+      if (breakpoint.node === node && breakpoint.enabled)
+        return true;
+    }
+    return false;
+  }
+
+  /**
+   * @param {!Object} auxData
+   * @return {?{type: !SDK.DOMDebuggerModel.DOMBreakpoint.Type, node: !SDK.DOMNode, targetNode: ?SDK.DOMNode, insertion: boolean}}
+   */
+  resolveDOMBreakpointData(auxData) {
+    var type = auxData['type'];
+    var node = this._domModel.nodeForId(auxData['nodeId']);
+    if (!type || !node)
+      return null;
+    var targetNode = null;
+    var insertion = false;
+    if (type === SDK.DOMDebuggerModel.DOMBreakpoint.Type.SubtreeModified) {
+      insertion = auxData['insertion'] || false;
+      targetNode = this._domModel.nodeForId(auxData['targetNodeId']);
+    }
+    return {type: type, node: node, targetNode: targetNode, insertion: insertion};
+  }
+
+  /**
+   * @return {string}
+   */
+  _currentURL() {
+    var domDocument = this._domModel.existingDocument();
+    return domDocument ? domDocument.documentURL : '';
+  }
+
+  _documentUpdated() {
+    var removed = this._domBreakpoints;
+    this._domBreakpoints = [];
+    this.dispatchEventToListeners(SDK.DOMDebuggerModel.Events.DOMBreakpointsRemoved, removed);
+
+    var currentURL = this._currentURL();
+    for (var breakpoint of this._domBreakpointsSetting.get()) {
+      if (breakpoint.url !== currentURL)
+        continue;
+      this._domModel.pushNodeByPathToFrontend(breakpoint.path, nodeId => {
+        var node = nodeId ? this._domModel.nodeForId(nodeId) : null;
+        if (!node)
+          return;
+        var domBreakpoint = new SDK.DOMDebuggerModel.DOMBreakpoint(this, node, breakpoint.type, breakpoint.enabled);
+        this._domBreakpoints.push(domBreakpoint);
+        if (breakpoint.enabled)
+          this._enableDOMBreakpoint(domBreakpoint);
+        this.dispatchEventToListeners(SDK.DOMDebuggerModel.Events.DOMBreakpointAdded, domBreakpoint);
+      });
+    }
+  }
+
+  /**
+   * @param {function(!SDK.DOMDebuggerModel.DOMBreakpoint):boolean} filter
+   */
+  _removeDOMBreakpoints(filter) {
+    var removed = [];
+    var left = [];
+    for (var breakpoint of this._domBreakpoints) {
+      if (filter(breakpoint)) {
+        removed.push(breakpoint);
+        if (breakpoint.enabled) {
+          breakpoint.enabled = false;
+          this._disableDOMBreakpoint(breakpoint);
+        }
+      } else {
+        left.push(breakpoint);
+      }
+    }
+
+    if (!removed.length)
+      return;
+    this._domBreakpoints = left;
+    this._saveDOMBreakpoints();
+    this.dispatchEventToListeners(SDK.DOMDebuggerModel.Events.DOMBreakpointsRemoved, removed);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _nodeRemoved(event) {
+    var node = /** @type {!SDK.DOMNode} */ (event.data.node);
+    var children = node.children() || [];
+    this._removeDOMBreakpoints(breakpoint => breakpoint.node === node || children.indexOf(breakpoint.node) !== -1);
+  }
+
+  _saveDOMBreakpoints() {
+    var currentURL = this._currentURL();
+    var breakpoints = this._domBreakpointsSetting.get().filter(breakpoint => breakpoint.url !== currentURL);
+    for (var breakpoint of this._domBreakpoints) {
+      breakpoints.push(
+          {url: currentURL, path: breakpoint.node.path(), type: breakpoint.type, enabled: breakpoint.enabled});
+    }
+    this._domBreakpointsSetting.set(breakpoints);
+  }
 };
 
 SDK.SDKModel.register(SDK.DOMDebuggerModel, SDK.Target.Capability.DOM, false);
+
+/** @enum {symbol} */
+SDK.DOMDebuggerModel.Events = {
+  DOMBreakpointAdded: Symbol('DOMBreakpointAdded'),
+  DOMBreakpointToggled: Symbol('DOMBreakpointToggled'),
+  DOMBreakpointsRemoved: Symbol('DOMBreakpointsRemoved'),
+};
+
+SDK.DOMDebuggerModel.DOMBreakpoint = class {
+  /**
+   * @param {!SDK.DOMDebuggerModel} domDebuggerModel
+   * @param {!SDK.DOMNode} node
+   * @param {!SDK.DOMDebuggerModel.DOMBreakpoint.Type} type
+   * @param {boolean} enabled
+   */
+  constructor(domDebuggerModel, node, type, enabled) {
+    this.domDebuggerModel = domDebuggerModel;
+    this.node = node;
+    this.type = type;
+    this.enabled = enabled;
+  }
+};
+
+/** @typedef {Protocol.DOMDebugger.DOMBreakpointType} */
+SDK.DOMDebuggerModel.DOMBreakpoint.Type = Protocol.DOMDebugger.DOMBreakpointType;
+
+SDK.DOMDebuggerModel.DOMBreakpoint.Marker = 'breakpoint-marker';
 
 SDK.EventListener = class {
   /**

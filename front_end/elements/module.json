@@ -235,15 +235,6 @@
         {
             "type": "view",
             "location": "elements-sidebar",
-            "id": "elements.domBreakpoints",
-            "title": "DOM Breakpoints",
-            "order": 6,
-            "persistence": "permanent",
-            "factoryName": "Components.DOMBreakpointsSidebarPane.Proxy"
-        },
-        {
-            "type": "view",
-            "location": "elements-sidebar",
             "id": "elements.domProperties",
             "title": "Properties",
             "order": 7,

@@ -205,7 +205,6 @@ Main.Main = class {
     new Main.NetworkPanelIndicator();
     new Main.SourcesPanelIndicator();
     new Main.BackendSettingsSync();
-    Components.domBreakpointsSidebarPane = new Components.DOMBreakpointsSidebarPane();
 
     UI.actionRegistry = new UI.ActionRegistry();
     UI.shortcutRegistry = new UI.ShortcutRegistry(UI.actionRegistry, document);

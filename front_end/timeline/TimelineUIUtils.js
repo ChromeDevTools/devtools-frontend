@@ -1046,14 +1046,13 @@ Timeline.TimelineUIUtils = class {
    */
   static _buildRangeStatsCacheIfNeeded(model) {
     var tasks = model.mainThreadTasks();
-    var filter = Timeline.TimelineUIUtils._filterForStats();
-    var firstTask = tasks.find(filter);
-    if (!firstTask || firstTask[Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol])
+    if (tasks.length && tasks[0][Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol])
       return;
     var aggregatedStats = {};
     var ownTimes = [];
     TimelineModel.TimelineModel.forEachEvent(
-        model.mainThreadEvents(), onStartEvent, onEndEvent, undefined, undefined, undefined, filter);
+        model.mainThreadEvents(), onStartEvent, onEndEvent, undefined, undefined, undefined,
+        Timeline.TimelineUIUtils._filterForStats());
 
     /**
      * @param {!SDK.TracingModel.Event} e

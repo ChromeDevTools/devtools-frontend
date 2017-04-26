@@ -182,18 +182,24 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
 
     var currentURL = this._currentURL();
     for (var breakpoint of this._domBreakpointsSetting.get()) {
-      if (breakpoint.url !== currentURL)
-        continue;
-      this._domModel.pushNodeByPathToFrontend(breakpoint.path, nodeId => {
-        var node = nodeId ? this._domModel.nodeForId(nodeId) : null;
-        if (!node)
-          return;
-        var domBreakpoint = new SDK.DOMDebuggerModel.DOMBreakpoint(this, node, breakpoint.type, breakpoint.enabled);
-        this._domBreakpoints.push(domBreakpoint);
-        if (breakpoint.enabled)
-          this._enableDOMBreakpoint(domBreakpoint);
-        this.dispatchEventToListeners(SDK.DOMDebuggerModel.Events.DOMBreakpointAdded, domBreakpoint);
-      });
+      if (breakpoint.url === currentURL)
+        this._domModel.pushNodeByPathToFrontend(breakpoint.path, appendBreakpoint.bind(this, breakpoint));
+    }
+
+    /**
+     * @param {!{type: !SDK.DOMDebuggerModel.DOMBreakpoint.Type, enabled: boolean}} breakpoint
+     * @param {?number} nodeId
+     * @this {SDK.DOMDebuggerModel}
+     */
+    function appendBreakpoint(breakpoint, nodeId) {
+      var node = nodeId ? this._domModel.nodeForId(nodeId) : null;
+      if (!node)
+        return;
+      var domBreakpoint = new SDK.DOMDebuggerModel.DOMBreakpoint(this, node, breakpoint.type, breakpoint.enabled);
+      this._domBreakpoints.push(domBreakpoint);
+      if (breakpoint.enabled)
+        this._enableDOMBreakpoint(domBreakpoint);
+      this.dispatchEventToListeners(SDK.DOMDebuggerModel.Events.DOMBreakpointAdded, domBreakpoint);
     }
   }
 

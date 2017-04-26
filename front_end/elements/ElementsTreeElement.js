@@ -53,6 +53,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
       this._canAddAttributes = true;
     this._searchQuery = null;
     this._expandedChildrenLimit = Elements.ElementsTreeElement.InitialChildrenLimit;
+    this._decorationsThrottler = new Common.Throttler(100);
   }
 
   /**
@@ -1086,9 +1087,20 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     if (this.isClosingTag())
       return;
 
-    var node = this._node;
-    if (node.nodeType() !== Node.ELEMENT_NODE)
+    if (this._node.nodeType() !== Node.ELEMENT_NODE)
       return;
+
+    this._decorationsThrottler.schedule(this._updateDecorationsInternal.bind(this));
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  _updateDecorationsInternal() {
+    if (!this.treeOutline)
+      return Promise.resolve();
+
+    var node = this._node;
 
     if (!this.treeOutline._decoratorExtensions)
       /** @type {!Array.<!Runtime.Extension>} */
@@ -1127,7 +1139,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
       (n === node ? decorations : descendantDecorations).push(decoration);
     }
 
-    Promise.all(promises).then(updateDecorationsUI.bind(this));
+    return Promise.all(promises).then(updateDecorationsUI.bind(this));
 
     /**
      * @this {Elements.ElementsTreeElement}

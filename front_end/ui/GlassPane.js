@@ -12,7 +12,8 @@ UI.GlassPane = class {
     this.element.shadowRoot.appendChild(this._arrowElement);
 
     this.registerRequiredCSS('ui/glassPane.css');
-    this.element.classList.add('no-pointer-events');
+    this.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.PierceGlassPane);
+
     this._onMouseDownBound = this._onMouseDown.bind(this);
     /** @type {?function(!Event)} */
     this._onClickOutsideCallback = null;
@@ -51,10 +52,13 @@ UI.GlassPane = class {
   }
 
   /**
-   * @param {boolean} blockPointerEvents
+   * @param {!UI.GlassPane.PointerEventsBehavior} pointerEventsBehavior
    */
-  setBlockPointerEvents(blockPointerEvents) {
-    this.element.classList.toggle('no-pointer-events', !blockPointerEvents);
+  setPointerEventsBehavior(pointerEventsBehavior) {
+    this.element.classList.toggle(
+        'no-pointer-events', pointerEventsBehavior !== UI.GlassPane.PointerEventsBehavior.BlockedByGlassPane);
+    this.contentElement.classList.toggle(
+        'no-pointer-events', pointerEventsBehavior === UI.GlassPane.PointerEventsBehavior.PierceContents);
   }
 
   /**
@@ -364,9 +368,14 @@ UI.GlassPane = class {
   }
 };
 
-/**
- * @enum {symbol}
- */
+/** @enum {symbol} */
+UI.GlassPane.PointerEventsBehavior = {
+  BlockedByGlassPane: Symbol('BlockedByGlassPane'),
+  PierceGlassPane: Symbol('PierceGlassPane'),
+  PierceContents: Symbol('PierceContents')
+};
+
+/** @enum {symbol} */
 UI.GlassPane.AnchorBehavior = {
   PreferTop: Symbol('PreferTop'),
   PreferBottom: Symbol('PreferBottom'),
@@ -374,18 +383,14 @@ UI.GlassPane.AnchorBehavior = {
   PreferRight: Symbol('PreferRight'),
 };
 
-/**
- * @enum {symbol}
- */
+/** @enum {symbol} */
 UI.GlassPane.SizeBehavior = {
   SetExactSize: Symbol('SetExactSize'),
   SetExactWidthMaxHeight: Symbol('SetExactWidthMaxHeight'),
   MeasureContent: Symbol('MeasureContent')
 };
 
-/**
- * @enum {symbol}
- */
+/** @enum {symbol} */
 UI.GlassPane.MarginBehavior = {
   Arrow: Symbol('Arrow'),
   DefaultMargin: Symbol('DefaultMargin'),

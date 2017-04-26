@@ -96,7 +96,7 @@ UI.DragHandler = class {
     this._glassPaneInUse = true;
     if (!UI.DragHandler._glassPaneUsageCount++) {
       UI.DragHandler._glassPane = new UI.GlassPane();
-      UI.DragHandler._glassPane.setBlockPointerEvents(true);
+      UI.DragHandler._glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.BlockedByGlassPane);
       UI.DragHandler._glassPane.show(UI.DragHandler._documentForMouseOut);
     }
   }

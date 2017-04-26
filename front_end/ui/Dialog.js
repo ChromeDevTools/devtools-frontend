@@ -35,7 +35,7 @@ UI.Dialog = class extends UI.GlassPane {
     this.contentElement.tabIndex = 0;
     this.contentElement.addEventListener('focus', () => this.widget().focus(), false);
     this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
-    this.setBlockPointerEvents(true);
+    this.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.BlockedByGlassPane);
     this.setSetOutsideClickCallback(event => {
       this.hide();
       event.consume(true);

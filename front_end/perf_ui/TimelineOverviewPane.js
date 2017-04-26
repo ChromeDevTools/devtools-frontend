@@ -479,8 +479,8 @@ PerfUI.TimelineOverviewPane.OverviewInfo = class {
   constructor(anchor) {
     this._anchorElement = anchor;
     this._glassPane = new UI.GlassPane();
-    this._glassPane.setBlockPointerEvents(false);
-    this._glassPane.setMarginBehavior(UI.GlassPane.MarginBehavior.NoMargin);
+    this._glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.PierceContents);
+    this._glassPane.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
     this._glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     this._element =
         UI.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'perf_ui/timelineOverviewInfo.css')

@@ -9,7 +9,6 @@ InlineEditor.SwatchPopoverHelper = class extends Common.Object {
     super();
     this._popover = new UI.GlassPane();
     this._popover.registerRequiredCSS('inline_editor/swatchPopover.css');
-    this._popover.setBlockPointerEvents(false);
     this._popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     this._popover.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
     this._popover.element.addEventListener('mousedown', e => e.consume(), false);

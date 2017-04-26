@@ -49,7 +49,9 @@ UI.SoftContextMenu = class {
     this._document = document;
 
     this._glassPane = new UI.GlassPane();
-    this._glassPane.setBlockPointerEvents(!this._parentMenu);
+    this._glassPane.setPointerEventsBehavior(
+        this._parentMenu ? UI.GlassPane.PointerEventsBehavior.PierceGlassPane :
+                           UI.GlassPane.PointerEventsBehavior.BlockedByGlassPane);
     this._glassPane.registerRequiredCSS('ui/softContextMenu.css');
     this._glassPane.setContentAnchorBox(anchorBox);
     this._glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);

@@ -8,7 +8,6 @@
     display: flex;
     background: white;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.1);
-    pointer-events: none;
 }
 
 .overview-info .frame .time {
@@ -19,5 +18,3 @@
     max-width: 400px;
     max-height: 500px;
 }
-
-

@@ -124,7 +124,7 @@ UI.Toolbar = class {
       document.documentElement.addEventListener('mouseup', mouseUp, false);
 
       var optionsGlassPane = new UI.GlassPane();
-      optionsGlassPane.setBlockPointerEvents(true);
+      optionsGlassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.BlockedByGlassPane);
       optionsGlassPane.show(document);
       var optionsBar = new UI.Toolbar('fill', optionsGlassPane.contentElement);
       optionsBar._contentElement.classList.add('floating');

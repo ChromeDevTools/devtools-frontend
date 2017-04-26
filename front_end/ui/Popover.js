@@ -203,7 +203,6 @@ UI.PopoverHelper = class {
     var popover = new UI.GlassPane();
     popover.registerRequiredCSS('ui/popover.css');
     popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    popover.setBlockPointerEvents(false);
     popover.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
     var request = this._scheduledRequest;
     request.show.call(null, popover).then(success => {

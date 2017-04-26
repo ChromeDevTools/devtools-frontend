@@ -250,6 +250,8 @@ TimelineModel.TimelineProfileTree.TopDownRootNode = class extends TimelineModel.
    */
   _grouppedTopNodes() {
     var flatNodes = super.children();
+    for (var node of flatNodes.values())
+      this.selfTime -= node.totalTime;
     if (!this._eventGroupIdCallback)
       return flatNodes;
     var groupNodes = new Map();

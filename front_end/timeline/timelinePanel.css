@@ -590,8 +590,8 @@
 }
 
 .timeline-tree-view .data-grid .selected .background-bar {
-    background-color: rgba(255, 255, 255, 0.25);
-    border-bottom-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.3);
+    border-bottom-color: rgba(255, 255, 255, 0.9);
 }
 
 .timeline-tree-view .timeline-details-view-body .full-widget-dimmed-banner {

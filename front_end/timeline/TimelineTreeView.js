@@ -249,14 +249,14 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     var children = this._root.children();
     var maxSelfTime = 0;
     var maxTotalTime = 0;
+    var totalUsedTime = this._root.totalTime - this._root.selfTime;
     for (var child of children.values()) {
       maxSelfTime = Math.max(maxSelfTime, child.selfTime);
       maxTotalTime = Math.max(maxTotalTime, child.totalTime);
     }
     for (var child of children.values()) {
       // Exclude the idle time off the total calculation.
-      var gridNode =
-          new Timeline.TimelineTreeView.TreeGridNode(child, this._root.totalTime, maxSelfTime, maxTotalTime, this);
+      var gridNode = new Timeline.TimelineTreeView.TreeGridNode(child, totalUsedTime, maxSelfTime, maxTotalTime, this);
       this._dataGrid.insertChild(gridNode);
     }
     this._sortingChanged();
@@ -854,6 +854,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
         return null;
     }
   }
+
   /**
    * @override
    * @param {!UI.ContextMenu} contextMenu

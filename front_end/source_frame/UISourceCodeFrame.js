@@ -568,7 +568,8 @@ SourceFrame.UISourceCodeFrame.RowMessageBucket = class {
     this._decoration._messageBucket = this;
     this._wave = this._decoration.createChild('div', 'text-editor-line-decoration-wave');
     this._icon = this._wave.createChild('label', 'text-editor-line-decoration-icon', 'dt-icon-label');
-    this._hasDecoration = false;
+    /** @type {?number} */
+    this._decorationStartColumn = null;
 
     this._messagesDescriptionElement = createElementWithClass('div', 'text-editor-messages-description-container');
     /** @type {!Array.<!SourceFrame.UISourceCodeFrame.RowMessage>} */
@@ -586,10 +587,13 @@ SourceFrame.UISourceCodeFrame.RowMessageBucket = class {
     var lineText = this.textEditor.line(lineNumber);
     columnNumber = Math.min(columnNumber, lineText.length);
     var lineIndent = TextUtils.TextUtils.lineIndent(lineText).length;
-    if (this._hasDecoration)
+    var startColumn = Math.max(columnNumber - 1, lineIndent);
+    if (this._decorationStartColumn === startColumn)
+      return;
+    if (this._decorationStartColumn !== null)
       this.textEditor.removeDecoration(this._decoration, lineNumber);
-    this._hasDecoration = true;
-    this.textEditor.addDecoration(this._decoration, lineNumber, Math.max(columnNumber - 1, lineIndent));
+    this.textEditor.addDecoration(this._decoration, lineNumber, startColumn);
+    this._decorationStartColumn = startColumn;
   }
 
   /**
@@ -611,9 +615,10 @@ SourceFrame.UISourceCodeFrame.RowMessageBucket = class {
     var lineNumber = position.lineNumber;
     if (this._level)
       this.textEditor.toggleLineClass(lineNumber, SourceFrame.UISourceCodeFrame._lineClassPerLevel[this._level], false);
-    if (this._hasDecoration)
+    if (this._decorationStartColumn !== null) {
       this.textEditor.removeDecoration(this._decoration, lineNumber);
-    this._hasDecoration = false;
+      this._decorationStartColumn = null;
+    }
   }
 
   /**
@@ -676,6 +681,8 @@ SourceFrame.UISourceCodeFrame.RowMessageBucket = class {
     }
     this._updateWavePosition(lineNumber, columnNumber);
 
+    if (this._level === maxMessage.level())
+      return;
     if (this._level) {
       this.textEditor.toggleLineClass(lineNumber, SourceFrame.UISourceCodeFrame._lineClassPerLevel[this._level], false);
       this._icon.type = '';

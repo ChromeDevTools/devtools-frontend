@@ -247,26 +247,6 @@
         },
         {
             "type": "setting",
-            "category": "Debugger",
-            "title": "Disable JavaScript",
-            "settingName": "javaScriptDisabled",
-            "settingType": "boolean",
-            "storageType": "session",
-            "order": 1,
-            "defaultValue": false,
-            "options": [
-                {
-                    "value": true,
-                    "title": "Disable JavaScript"
-                },
-                {
-                    "value": false,
-                    "title": "Enable JavaScript"
-                }
-            ]
-        },
-        {
-            "type": "setting",
             "category": "DevTools",
             "title": "Auto-open DevTools for popups",
             "settingName": "autoAttachToCreatedPages",

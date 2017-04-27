@@ -208,14 +208,15 @@ SDK.Target.Capability = {
   Target: 1 << 5,
   ScreenCapture: 1 << 6,
   Tracing: 1 << 7,
-  TouchEmulation: 1 << 8,
+  Emulation: 1 << 8,
   Security: 1 << 9,
   Input: 1 << 10,
   Inspector: 1 << 11,
+  DeviceEmulation: 1 << 12,
 
   None: 0,
 
-  AllForTests: (1 << 12) - 1
+  AllForTests: (1 << 13) - 1
 };
 
 /**

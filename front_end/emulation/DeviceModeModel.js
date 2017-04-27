@@ -675,7 +675,8 @@ Emulation.DeviceModeModel = class {
    * @param {boolean} mobile
    */
   _applyTouch(touchEnabled, mobile) {
-    Emulation.MultitargetTouchModel.instance().setTouchEnabled(touchEnabled, mobile);
+    for (var emulationModel of SDK.targetManager.models(SDK.EmulationModel))
+      emulationModel.emulateTouch(touchEnabled, mobile);
   }
 };
 

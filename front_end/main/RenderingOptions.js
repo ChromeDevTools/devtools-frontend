@@ -27,9 +27,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
- * @implements {SDK.TargetManager.Observer}
- * @unrestricted
+ * @implements {SDK.SDKModelObserver<!SDK.EmulationModel>}
  */
 Main.RenderingOptionsView = class extends UI.VBox {
   constructor() {
@@ -67,16 +67,7 @@ Main.RenderingOptionsView = class extends UI.VBox {
     this._mediaSelect.addEventListener('change', this._mediaToggled.bind(this), false);
     this._mediaSelect.disabled = true;
 
-    SDK.targetManager.observeTargets(this);
-  }
-
-  /**
-   * @return {!Main.RenderingOptionsView}
-   */
-  static instance() {
-    if (!Main.RenderingOptionsView._instanceObject)
-      Main.RenderingOptionsView._instanceObject = new Main.RenderingOptionsView();
-    return Main.RenderingOptionsView._instanceObject;
+    SDK.targetManager.observeModels(SDK.EmulationModel, this);
   }
 
   /**
@@ -92,34 +83,24 @@ Main.RenderingOptionsView = class extends UI.VBox {
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.EmulationModel} emulationModel
    */
-  targetAdded(target) {
-    if (this._mediaCheckbox.checked && target.hasBrowserCapability())
-      this._applyPrintMediaOverride(target);
+  modelAdded(emulationModel) {
+    if (this._mediaCheckbox.checked)
+      emulationModel.emulateCSSMedia(this._mediaSelect.value);
   }
 
   _mediaToggled() {
     this._mediaSelect.disabled = !this._mediaCheckbox.checked;
-    var targets = SDK.targetManager.targets(SDK.Target.Capability.Browser);
-    for (var target of targets)
-      this._applyPrintMediaOverride(target);
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   */
-  _applyPrintMediaOverride(target) {
-    target.emulationAgent().setEmulatedMedia(this._mediaCheckbox.checked ? this._mediaSelect.value : '');
-    var cssModel = target.model(SDK.CSSModel);
-    if (cssModel)
-      cssModel.mediaQueryResultChanged();
+    var media = this._mediaCheckbox.checked ? this._mediaSelect.value : null;
+    for (var emulationModel of SDK.targetManager.models(SDK.EmulationModel))
+      emulationModel.emulateCSSMedia(media);
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.EmulationModel} emulationModel
    */
-  targetRemoved(target) {
+  modelRemoved(emulationModel) {
   }
 };

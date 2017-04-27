@@ -3,16 +3,16 @@
 // found in the LICENSE file.
 
 /**
- * @implements {SDK.TargetManager.Observer}
+ * @implements {SDK.SDKModelObserver<!SDK.EmulationModel>}
  */
 Components.CPUThrottlingManager = class extends Common.Object {
   constructor() {
     super();
     this._throttlingRate = 1;  // No throttling
-    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
     /** @type {!Set<!UI.ToolbarComboBox>} */
     this._controls = new Set();
     this._rates = [1, 2, 5, 10, 20];
+    SDK.targetManager.observeModels(SDK.EmulationModel, this);
   }
 
   /**
@@ -20,7 +20,8 @@ Components.CPUThrottlingManager = class extends Common.Object {
    */
   _setRateIndex(index) {
     this._throttlingRate = this._rates[index];
-    SDK.targetManager.targets().forEach(target => target.emulationAgent().setCPUThrottlingRate(this._throttlingRate));
+    for (var emulationModel of SDK.targetManager.models(SDK.EmulationModel))
+      emulationModel.setCPUThrottlingRate(this._throttlingRate);
     var icon = null;
     if (this._throttlingRate !== 1) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.CpuThrottlingEnabled);
@@ -42,18 +43,18 @@ Components.CPUThrottlingManager = class extends Common.Object {
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.EmulationModel} emulationModel
    */
-  targetAdded(target) {
+  modelAdded(emulationModel) {
     if (this._throttlingRate !== 1)
-      target.emulationAgent().setCPUThrottlingRate(this._throttlingRate);
+      emulationModel.setCPUThrottlingRate(this._throttlingRate);
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.EmulationModel} emulationModel
    */
-  targetRemoved(target) {
+  modelRemoved(emulationModel) {
   }
 
   /**

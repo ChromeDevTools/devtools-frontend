@@ -11,14 +11,14 @@ Emulation.SensorsView = class extends UI.VBox {
     this.contentElement.classList.add('sensors-view');
 
     this._geolocationSetting = Common.settings.createSetting('emulation.geolocationOverride', '');
-    this._geolocation = Emulation.Geolocation.parseSetting(this._geolocationSetting.get());
+    this._geolocation = SDK.EmulationModel.Geolocation.parseSetting(this._geolocationSetting.get());
     this._geolocationOverrideEnabled = false;
     this._createGeolocationSection(this._geolocation);
 
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     this._deviceOrientationSetting = Common.settings.createSetting('emulation.deviceOrientationOverride', '');
-    this._deviceOrientation = Emulation.DeviceOrientation.parseSetting(this._deviceOrientationSetting.get());
+    this._deviceOrientation = SDK.EmulationModel.DeviceOrientation.parseSetting(this._deviceOrientationSetting.get());
     this._deviceOrientationOverrideEnabled = false;
     this._createDeviceOrientationSection();
 
@@ -37,7 +37,7 @@ Emulation.SensorsView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Emulation.Geolocation} geolocation
+   * @param {!SDK.EmulationModel.Geolocation} geolocation
    */
   _createGeolocationSection(geolocation) {
     var geogroup = this.contentElement.createChild('section', 'sensors-group');
@@ -80,15 +80,16 @@ Emulation.SensorsView = class extends UI.VBox {
     this._latitudeInput.setAttribute('type', 'number');
     this._latitudeInput.value = 0;
     this._latitudeSetter = UI.bindInput(
-        this._latitudeInput, this._applyGeolocationUserInput.bind(this), Emulation.Geolocation.latitudeValidator, true);
+        this._latitudeInput, this._applyGeolocationUserInput.bind(this),
+        SDK.EmulationModel.Geolocation.latitudeValidator, true);
     this._latitudeSetter(String(geolocation.latitude));
 
     this._longitudeInput = longitudeGroup.createChild('input');
     this._longitudeInput.setAttribute('type', 'number');
     this._longitudeInput.value = 0;
     this._longitudeSetter = UI.bindInput(
-        this._longitudeInput, this._applyGeolocationUserInput.bind(this), Emulation.Geolocation.longitudeValidator,
-        true);
+        this._longitudeInput, this._applyGeolocationUserInput.bind(this),
+        SDK.EmulationModel.Geolocation.longitudeValidator, true);
     this._longitudeSetter(String(geolocation.longitude));
 
     latitudeGroup.createChild('div', 'latlong-title').textContent = Common.UIString('Latitude');
@@ -105,11 +106,11 @@ Emulation.SensorsView = class extends UI.VBox {
       this._geolocationOverrideEnabled = true;
     } else if (value === Emulation.SensorsView.NonPresetOptions.Unavailable) {
       this._geolocationOverrideEnabled = true;
-      this._geolocation = new Emulation.Geolocation(0, 0, true);
+      this._geolocation = new SDK.EmulationModel.Geolocation(0, 0, true);
     } else {
       this._geolocationOverrideEnabled = true;
       var coordinates = JSON.parse(value);
-      this._geolocation = new Emulation.Geolocation(coordinates[0], coordinates[1], false);
+      this._geolocation = new SDK.EmulationModel.Geolocation(coordinates[0], coordinates[1], false);
       this._latitudeSetter(coordinates[0]);
       this._longitudeSetter(coordinates[1]);
     }
@@ -120,8 +121,8 @@ Emulation.SensorsView = class extends UI.VBox {
   }
 
   _applyGeolocationUserInput() {
-    var geolocation =
-        Emulation.Geolocation.parseUserInput(this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), '');
+    var geolocation = SDK.EmulationModel.Geolocation.parseUserInput(
+        this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), '');
     if (!geolocation)
       return;
 
@@ -131,12 +132,10 @@ Emulation.SensorsView = class extends UI.VBox {
   }
 
   _applyGeolocation() {
-    if (this._geolocationOverrideEnabled) {
+    if (this._geolocationOverrideEnabled)
       this._geolocationSetting.set(this._geolocation.toSetting());
-      this._geolocation.apply();
-    } else {
-      this._geolocation.clear();
-    }
+    for (var emulationModel of SDK.targetManager.models(SDK.EmulationModel))
+      emulationModel.emulateGeolocation(this._geolocationOverrideEnabled ? this._geolocation : null);
   }
 
   _createDeviceOrientationSection() {
@@ -220,19 +219,18 @@ Emulation.SensorsView = class extends UI.VBox {
     } else {
       var parsedValue = JSON.parse(value);
       this._deviceOrientationOverrideEnabled = true;
-      this._deviceOrientation = new Emulation.DeviceOrientation(parsedValue[0], parsedValue[1], parsedValue[2]);
+      this._deviceOrientation =
+          new SDK.EmulationModel.DeviceOrientation(parsedValue[0], parsedValue[1], parsedValue[2]);
       this._setDeviceOrientation(
           this._deviceOrientation, Emulation.SensorsView.DeviceOrientationModificationSource.SelectPreset);
     }
   }
 
   _applyDeviceOrientation() {
-    if (this._deviceOrientationOverrideEnabled) {
+    if (this._deviceOrientationOverrideEnabled)
       this._deviceOrientationSetting.set(this._deviceOrientation.toSetting());
-      this._deviceOrientation.apply();
-    } else {
-      this._deviceOrientation.clear();
-    }
+    for (var emulationModel of SDK.targetManager.models(SDK.EmulationModel))
+      emulationModel.emulateDeviceOrientation(this._deviceOrientationOverrideEnabled ? this._deviceOrientation : null);
   }
 
   /**
@@ -246,7 +244,7 @@ Emulation.SensorsView = class extends UI.VBox {
 
   _applyDeviceOrientationUserInput() {
     this._setDeviceOrientation(
-        Emulation.DeviceOrientation.parseUserInput(
+        SDK.EmulationModel.DeviceOrientation.parseUserInput(
             this._alphaElement.value.trim(), this._betaElement.value.trim(), this._gammaElement.value.trim()),
         Emulation.SensorsView.DeviceOrientationModificationSource.UserInput);
     this._setSelectElementLabel(this._orientationSelectElement, Emulation.SensorsView.NonPresetOptions.Custom);
@@ -254,13 +252,13 @@ Emulation.SensorsView = class extends UI.VBox {
 
   _resetDeviceOrientation() {
     this._setDeviceOrientation(
-        new Emulation.DeviceOrientation(0, 90, 0),
+        new SDK.EmulationModel.DeviceOrientation(0, 90, 0),
         Emulation.SensorsView.DeviceOrientationModificationSource.ResetButton);
     this._setSelectElementLabel(this._orientationSelectElement, '[0, 90, 0]');
   }
 
   /**
-   * @param {?Emulation.DeviceOrientation} deviceOrientation
+   * @param {?SDK.EmulationModel.DeviceOrientation} deviceOrientation
    * @param {!Emulation.SensorsView.DeviceOrientationModificationSource} modificationSource
    */
   _setDeviceOrientation(deviceOrientation, modificationSource) {
@@ -300,11 +298,11 @@ Emulation.SensorsView = class extends UI.VBox {
     div.createTextChild(label);
     input.type = 'number';
     return UI.bindInput(
-        input, this._applyDeviceOrientationUserInput.bind(this), Emulation.DeviceOrientation.validator, true);
+        input, this._applyDeviceOrientationUserInput.bind(this), SDK.EmulationModel.DeviceOrientation.validator, true);
   }
 
   /**
-   * @param {!Emulation.DeviceOrientation} deviceOrientation
+   * @param {!SDK.EmulationModel.DeviceOrientation} deviceOrientation
    * @return {!Element}
    */
   _createDeviceOrientationOverrideElement(deviceOrientation) {
@@ -330,7 +328,7 @@ Emulation.SensorsView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Emulation.DeviceOrientation} deviceOrientation
+   * @param {!SDK.EmulationModel.DeviceOrientation} deviceOrientation
    * @param {boolean} animate
    */
   _setBoxOrientation(deviceOrientation, animate) {
@@ -375,7 +373,8 @@ Emulation.SensorsView = class extends UI.VBox {
                         .multiply(this._originalBoxMatrix);
 
     var eulerAngles = UI.Geometry.EulerAngles.fromRotationMatrix(currentMatrix);
-    var newOrientation = new Emulation.DeviceOrientation(-eulerAngles.alpha, -eulerAngles.beta, eulerAngles.gamma);
+    var newOrientation =
+        new SDK.EmulationModel.DeviceOrientation(-eulerAngles.alpha, -eulerAngles.beta, eulerAngles.gamma);
     this._setDeviceOrientation(newOrientation, Emulation.SensorsView.DeviceOrientationModificationSource.UserDrag);
     this._setSelectElementLabel(this._orientationSelectElement, Emulation.SensorsView.NonPresetOptions.Custom);
     return false;
@@ -428,7 +427,8 @@ Emulation.SensorsView = class extends UI.VBox {
     select.addEventListener('change', applyTouch, false);
 
     function applyTouch() {
-      Emulation.MultitargetTouchModel.instance().setCustomTouchEnabled(select.value === 'enabled');
+      for (var emulationModel of SDK.targetManager.models(SDK.EmulationModel))
+        emulationModel.overrideEmulateTouch(select.value === 'enabled');
     }
   }
 };
@@ -472,7 +472,7 @@ Emulation.SensorsView.PresetLocations = [
   }
 ];
 
-/** @type {!Array.<{title: string, value: !Array.<{title: string, orientation: !Emulation.DeviceOrientation}>}>} */
+/** @type {!Array.<{title: string, value: !Array.<{title: string, orientation: string}>}>} */
 Emulation.SensorsView.PresetOrientations = [{
   title: 'Presets',
   value: [

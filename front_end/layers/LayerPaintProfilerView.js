@@ -34,7 +34,7 @@ Layers.LayerPaintProfilerView = class extends UI.SplitWidget {
      * @this {Layers.LayerPaintProfilerView}
      */
     function setSnapshotAndLog(snapshot, log) {
-      this._logTreeView.setCommandLog(snapshot && snapshot.target(), log || []);
+      this._logTreeView.setCommandLog(log || []);
       this._paintProfilerView.setSnapshotAndLog(snapshot, log || [], null);
       if (snapshot)
         snapshot.release();

@@ -27,61 +27,71 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+SDK.PaintProfilerModel = class extends SDK.SDKModel {
+  /**
+   * @param {!SDK.Target} target
+   */
+  constructor(target) {
+    super(target);
+    this._layerTreeAgent = target.layerTreeAgent();
+  }
+
+  /**
+   * @param {!Array.<!SDK.PictureFragment>} fragments
+   * @return {!Promise<?SDK.PaintProfilerSnapshot>}
+   */
+  loadSnapshotFromFragments(fragments) {
+    return this._layerTreeAgent.loadSnapshot(
+        fragments, (error, snapshotId) => error ? null : new SDK.PaintProfilerSnapshot(this, snapshotId));
+  }
+
+  /**
+   * @param {string} encodedPicture
+   * @return {!Promise<?SDK.PaintProfilerSnapshot>}
+   */
+  loadSnapshot(encodedPicture) {
+    var fragment = {x: 0, y: 0, picture: encodedPicture};
+    return this.loadSnapshotFromFragments([fragment]);
+  }
+
+  /**
+   * @param {string} layerId
+   * @return {!Promise<?SDK.PaintProfilerSnapshot>}
+   */
+  makeSnapshot(layerId) {
+    return this._layerTreeAgent.makeSnapshot(
+        layerId, (error, snapshotId) => error ? null : new SDK.PaintProfilerSnapshot(this, snapshotId));
+  }
+};
+
+SDK.SDKModel.register(SDK.PaintProfilerModel, SDK.Target.Capability.DOM, false);
+
 /**
  * @typedef {!{x: number, y: number, picture: string}}
  */
 SDK.PictureFragment;
 
-/**
- * @unrestricted
- */
 SDK.PaintProfilerSnapshot = class {
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.PaintProfilerModel} paintProfilerModel
    * @param {string} snapshotId
    */
-  constructor(target, snapshotId) {
-    this._target = target;
+  constructor(paintProfilerModel, snapshotId) {
+    this._paintProfilerModel = paintProfilerModel;
     this._id = snapshotId;
     this._refCount = 1;
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @param {!Array.<!SDK.PictureFragment>} fragments
-   * @return {!Promise<?SDK.PaintProfilerSnapshot>}
-   */
-  static loadFromFragments(target, fragments) {
-    return target.layerTreeAgent().loadSnapshot(
-        fragments, (error, snapshotId) => error ? null : new SDK.PaintProfilerSnapshot(target, snapshotId));
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @param {string} encodedPicture
-   * @return {!Promise<?SDK.PaintProfilerSnapshot>}
-   */
-  static load(target, encodedPicture) {
-    var fragment = {x: 0, y: 0, picture: encodedPicture};
-    return SDK.PaintProfilerSnapshot.loadFromFragments(target, [fragment]);
   }
 
   release() {
     console.assert(this._refCount > 0, 'release is already called on the object');
     if (!--this._refCount)
-      this._target.layerTreeAgent().releaseSnapshot(this._id);
+      this._paintProfilerModel._layerTreeAgent.releaseSnapshot(this._id);
   }
 
   addReference() {
     ++this._refCount;
     console.assert(this._refCount > 0, 'Referencing a dead object');
-  }
-
-  /**
-   * @return {!SDK.Target}
-   */
-  target() {
-    return this._target;
   }
 
   /**
@@ -91,7 +101,7 @@ SDK.PaintProfilerSnapshot = class {
    * @return {!Promise<?string>}
    */
   replay(firstStep, lastStep, scale) {
-    return this._target.layerTreeAgent().replaySnapshot(
+    return this._paintProfilerModel._layerTreeAgent.replaySnapshot(
         this._id, firstStep || undefined, lastStep || undefined, scale || 1.0, (error, str) => error ? null : str);
   }
 
@@ -102,14 +112,14 @@ SDK.PaintProfilerSnapshot = class {
   profile(clipRect, callback) {
     var wrappedCallback =
         Protocol.inspectorBackend.wrapClientCallback(callback, 'Protocol.LayerTree.profileSnapshot(): ');
-    this._target.layerTreeAgent().profileSnapshot(this._id, 5, 1, clipRect || undefined, wrappedCallback);
+    this._paintProfilerModel._layerTreeAgent.profileSnapshot(this._id, 5, 1, clipRect || undefined, wrappedCallback);
   }
 
   /**
    * @return {!Promise<?Array<!SDK.PaintProfilerLogItem>>}
    */
   commandLog() {
-    return this._target.layerTreeAgent().snapshotCommandLog(this._id, processLog);
+    return this._paintProfilerModel._layerTreeAgent.snapshotCommandLog(this._id, processLog);
 
     /**
      * @param {?string} error
@@ -124,7 +134,6 @@ SDK.PaintProfilerSnapshot = class {
     }
   }
 };
-
 
 /**
  * @typedef {!{method: string, params: ?Object<string, *>}}

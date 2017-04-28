@@ -204,11 +204,11 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
    * @param {!SDK.TracingModel.Event} event
    */
   _showEventInPaintProfiler(event) {
-    const target = SDK.targetManager.mainTarget();
-    if (!target)
+    const paintProfilerModel = SDK.targetManager.models(SDK.PaintProfilerModel)[0];
+    if (!paintProfilerModel)
       return;
     const paintProfilerView = this._paintProfilerView();
-    const hasProfileData = paintProfilerView.setEvent(target, event);
+    const hasProfileData = paintProfilerView.setEvent(paintProfilerModel, event);
     if (!hasProfileData)
       return;
     if (this._tabbedPane.hasTab(Timeline.TimelineDetailsView.Tab.PaintProfiler))

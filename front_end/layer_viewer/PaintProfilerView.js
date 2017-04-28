@@ -370,11 +370,9 @@ LayerViewer.PaintProfilerCommandLogView = class extends UI.ThrottledWidget {
   }
 
   /**
-   * @param {?SDK.Target} target
    * @param {!Array.<!SDK.PaintProfilerLogItem>} log
    */
-  setCommandLog(target, log) {
-    this._target = target;
+  setCommandLog(log) {
     this._log = log;
     /** @type {!Map<!SDK.PaintProfilerLogItem>} */
     this._treeItemCache = new Map();

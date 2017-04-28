@@ -505,10 +505,11 @@ TimelineModel.LayerPaintEvent = class {
    * @return !Promise<?{rect: !Array<number>, snapshot: !SDK.PaintProfilerSnapshot}>}
    */
   snapshotPromise() {
+    var paintProfilerModel = this._target && this._target.model(SDK.PaintProfilerModel);
     return this.picturePromise().then(picture => {
-      if (!picture || !this._target)
+      if (!picture || !paintProfilerModel)
         return null;
-      return SDK.PaintProfilerSnapshot.load(this._target, picture.serializedPicture)
+      return paintProfilerModel.loadSnapshot(picture.serializedPicture)
           .then(snapshot => snapshot ? {rect: picture.rect, snapshot: snapshot} : null);
     });
   }

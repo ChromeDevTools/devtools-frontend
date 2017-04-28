@@ -32,8 +32,8 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
     this._pendingSnapshot = null;
     /** @type {?SDK.TracingModel.Event} */
     this._event = null;
-    /** @type {?SDK.Target} */
-    this._target = null;
+    /** @type {?SDK.PaintProfilerModel} */
+    this._paintProfilerModel = null;
     /** @type {?SDK.PaintProfilerSnapshot} */
     this._lastLoadedSnapshot = null;
   }
@@ -59,13 +59,13 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
   }
 
   /**
-   * @param {!SDK.Target} target
+   * @param {!SDK.PaintProfilerModel} paintProfilerModel
    * @param {!SDK.TracingModel.Event} event
    * @return {boolean}
    */
-  setEvent(target, event) {
+  setEvent(paintProfilerModel, event) {
     this._releaseSnapshot();
-    this._target = target;
+    this._paintProfilerModel = paintProfilerModel;
     this._pendingSnapshot = null;
     this._event = event;
 
@@ -85,7 +85,7 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
   }
 
   _update() {
-    this._logTreeView.setCommandLog(null, []);
+    this._logTreeView.setCommandLog([]);
     this._paintProfilerView.setSnapshotAndLog(null, [], null);
 
     var snapshotPromise;
@@ -93,10 +93,9 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
       snapshotPromise = Promise.resolve({rect: null, snapshot: this._pendingSnapshot});
     } else if (this._event.name === TimelineModel.TimelineModel.RecordType.Paint) {
       var picture = TimelineModel.TimelineData.forEvent(this._event).picture;
-      snapshotPromise =
-          picture.objectPromise()
-              .then(data => SDK.PaintProfilerSnapshot.load(/** @type {!SDK.Target} */ (this._target), data['skp64']))
-              .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
+      snapshotPromise = picture.objectPromise()
+                            .then(data => this._paintProfilerModel.loadSnapshot(data['skp64']))
+                            .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
     } else if (this._event.name === TimelineModel.TimelineModel.RecordType.RasterTask) {
       snapshotPromise = this._frameModel.rasterTilePromise(this._event);
     } else {
@@ -122,7 +121,7 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
      * @this {Timeline.TimelinePaintProfilerView}
      */
     function onCommandLogDone(snapshot, clipRect, log) {
-      this._logTreeView.setCommandLog(snapshot.target(), log || []);
+      this._logTreeView.setCommandLog(log || []);
       this._paintProfilerView.setSnapshotAndLog(snapshot, log || [], clipRect);
     }
   }

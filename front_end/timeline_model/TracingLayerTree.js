@@ -37,6 +37,7 @@ TimelineModel.TracingLayerTree = class extends SDK.LayerTreeBase {
     super(target);
     /** @type {!Map.<string, !TimelineModel.TracingLayerTile>} */
     this._tileById = new Map();
+    this._paintProfilerModel = target && target.model(SDK.PaintProfilerModel);
   }
 
   /**
@@ -129,7 +130,7 @@ TimelineModel.TracingLayerTree = class extends SDK.LayerTreeBase {
     if (layer)
       layer._reset(payload);
     else
-      layer = new TimelineModel.TracingLayer(this.target(), payload);
+      layer = new TimelineModel.TracingLayer(this._paintProfilerModel, payload);
     this._layersById[payload.layer_id] = layer;
     if (payload.owner_node)
       layer._setNode(this.backendNodeIdToNode().get(payload.owner_node) || null);
@@ -160,11 +161,11 @@ TimelineModel.TracingLayerTree = class extends SDK.LayerTreeBase {
  */
 TimelineModel.TracingLayer = class {
   /**
+   * @param {?SDK.PaintProfilerModel} paintProfilerModel
    * @param {!TimelineModel.TracingLayerPayload} payload
-   * @param {?SDK.Target} target
    */
-  constructor(target, payload) {
-    this._target = target;
+  constructor(paintProfilerModel, payload) {
+    this._paintProfilerModel = paintProfilerModel;
     this._reset(payload);
   }
 
@@ -387,14 +388,14 @@ TimelineModel.TracingLayer = class {
       var fragments =
           pictures.filter(picture => picture && rectsOverlap(picture.rect, targetRect))
               .map(picture => ({x: picture.rect[0], y: picture.rect[1], picture: picture.serializedPicture}));
-      if (!fragments.length || !this._target)
+      if (!fragments.length || !this._paintProfilerModel)
         return null;
       var x0 = fragments.reduce((min, item) => Math.min(min, item.x), Infinity);
       var y0 = fragments.reduce((min, item) => Math.min(min, item.y), Infinity);
       // Rect is in layer content coordinates, make it relative to picture by offsetting to the top left corner.
       var rect = {x: targetRect[0] - x0, y: targetRect[1] - y0, width: targetRect[2], height: targetRect[3]};
-      return SDK.PaintProfilerSnapshot.loadFromFragments(this._target, fragments)
-          .then(snapshot => snapshot ? {rect: rect, snapshot: snapshot} : null);
+      return this._paintProfilerModel.loadSnapshotFromFragments(fragments).then(
+          snapshot => snapshot ? {rect: rect, snapshot: snapshot} : null);
     });
 
     /**

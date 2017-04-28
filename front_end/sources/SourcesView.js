@@ -26,12 +26,8 @@ Sources.SourcesView = class extends UI.VBox {
     /** @type {!Map.<!Workspace.UISourceCode, !UI.Widget>} */
     this._sourceViewByUISourceCode = new Map();
 
-    var tabbedEditorPlaceholderText =
-        Host.isMac() ? Common.UIString('Hit \u2318+P to open a file') : Common.UIString('Hit Ctrl+P to open a file');
-    if (Runtime.experiments.isEnabled('persistence2'))
-      tabbedEditorPlaceholderText += '\n\n' + Common.UIString('Drop in a folder to add to workspace');
     this._editorContainer = new Sources.TabbedEditorContainer(
-        this, Common.settings.createLocalSetting('previouslyViewedFiles', []), tabbedEditorPlaceholderText);
+        this, Common.settings.createLocalSetting('previouslyViewedFiles', []), this._placeholderElement());
     this._editorContainer.show(this._searchableView.element);
     this._editorContainer.addEventListener(
         Sources.TabbedEditorContainer.Events.EditorSelected, this._editorSelected, this);
@@ -92,6 +88,28 @@ Sources.SourcesView = class extends UI.VBox {
 
     this._shortcuts = {};
     this.element.addEventListener('keydown', this._handleKeyDown.bind(this), false);
+  }
+
+  /**
+   * @return {!Element}
+   */
+  _placeholderElement() {
+    var shortcuts = [
+      {actionId: 'quickOpen.show', description: Common.UIString('Open file')},
+      {actionId: 'commandMenu.show', description: Common.UIString('Run command')}
+    ];
+
+    var element = createElementWithClass('span', 'tabbed-pane-placeholder');
+    for (var shortcut of shortcuts) {
+      var shortcutKeyText = UI.shortcutRegistry.shortcutTitleForAction(shortcut.actionId);
+      var row = element.createChild('div', 'tabbed-pane-placeholder-row');
+      row.createChild('div', 'tabbed-pane-placeholder-key').textContent = shortcutKeyText;
+      row.createChild('div', 'tabbed-pane-placeholder-value').textContent = shortcut.description;
+    }
+    if (Runtime.experiments.isEnabled('persistence2'))
+      element.createChild('div').textContent = Common.UIString('Drop in a folder to add to workspace');
+
+    return element;
   }
 
   /**

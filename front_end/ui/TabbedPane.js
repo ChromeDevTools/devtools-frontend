@@ -489,10 +489,15 @@ UI.TabbedPane = class extends UI.VBox {
   }
 
   /**
-   * @param {string} text
+   * @param {!Element} element
    */
-  setPlaceholderText(text) {
-    this._noTabsMessage = text;
+  setPlaceholderElement(element) {
+    this._placeholderElement = element;
+
+    if (this._placeholderContainerElement) {
+      this._placeholderContainerElement.removeChildren();
+      this._placeholderContainerElement.appendChild(element);
+    }
   }
 
   _innerUpdateTabElements() {
@@ -501,15 +506,15 @@ UI.TabbedPane = class extends UI.VBox {
 
     if (!this._tabs.length) {
       this._contentElement.classList.add('has-no-tabs');
-      if (this._noTabsMessage && !this._noTabsMessageElement) {
-        this._noTabsMessageElement = this._contentElement.createChild('div', 'tabbed-pane-placeholder fill');
-        this._noTabsMessageElement.textContent = this._noTabsMessage;
+      if (this._placeholderElement && !this._placeholderContainerElement) {
+        this._placeholderContainerElement = this._contentElement.createChild('div', 'tabbed-pane-placeholder fill');
+        this._placeholderContainerElement.appendChild(this._placeholderElement);
       }
     } else {
       this._contentElement.classList.remove('has-no-tabs');
-      if (this._noTabsMessageElement) {
-        this._noTabsMessageElement.remove();
-        delete this._noTabsMessageElement;
+      if (this._placeholderContainerElement) {
+        this._placeholderContainerElement.remove();
+        delete this._placeholderContainerElement;
       }
     }
 

@@ -2,7 +2,7 @@
     "extensions": [
         {
             "type": "@QuickOpen.FilteredListWidget.Provider",
-            "title": "Run a command",
+            "title": "Run command",
             "prefix": ">",
             "className": "QuickOpen.CommandMenuProvider"
         },
@@ -29,7 +29,7 @@
         {
             "type": "@UI.ActionDelegate",
             "actionId": "quickOpen.show",
-            "title": "Go to file...",
+            "title": "Open file",
             "className": "QuickOpen.QuickOpen.ShowActionDelegate",
             "order": 100,
             "bindings": [
@@ -42,6 +42,11 @@
                     "shortcut": "Ctrl+P Ctrl+O"
                 }
             ]
+        },
+        {
+            "type": "context-menu-item",
+            "location": "mainMenu/navigate",
+            "actionId": "quickOpen.show"
         }
     ],
     "dependencies": [

@@ -122,7 +122,12 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
         break;
       case Timeline.TimelineSelection.Type.Frame:
         var frame = /** @type {!TimelineModel.TimelineFrame} */ (this._selection.object());
-        var filmStripFrame = Timeline.TimelineUIUtils.filmStripModelFrame(this._model.filmStripModel(), frame);
+        var screenshotTime = frame.idle ?
+            frame.startTime :
+            frame.endTime;  // For idle frames, look at the state at the beginning of the frame.
+        var filmStripFrame = this._model.filmStripModel().frameByTimestamp(screenshotTime);
+        if (filmStripFrame && filmStripFrame.timestamp - frame.endTime > 10)
+          filmStripFrame = null;
         this._setContent(Timeline.TimelineUIUtils.generateDetailsContentForFrame(frame, filmStripFrame));
         if (frame.layerTree) {
           var layersView = this._layersView();

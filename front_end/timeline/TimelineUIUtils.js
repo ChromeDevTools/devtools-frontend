@@ -1819,21 +1819,6 @@ Timeline.TimelineUIUtils = class {
       trimAt = 30;
     return url.startsWith('about:') ? `"${frame.name.trimMiddle(trimAt)}"` : frame.url.trimEnd(trimAt);
   }
-
-  /**
-   * @param {!SDK.FilmStripModel} filmStripModel
-   * @param {!TimelineModel.TimelineFrame} frame
-   * @return {?SDK.FilmStripModel.Frame}
-   */
-  static filmStripModelFrame(filmStripModel, frame) {
-    var screenshotTime = frame.idle ?
-        frame.startTime :
-        frame.endTime;  // For idle frames, look at the state at the beginning of the frame.
-    var filmStripFrame = filmStripModel.frameByTimestamp(screenshotTime);
-    if (filmStripFrame && filmStripFrame.timestamp - frame.endTime > 10)
-      filmStripFrame = null;
-    return filmStripFrame;
-  }
 };
 
 /**

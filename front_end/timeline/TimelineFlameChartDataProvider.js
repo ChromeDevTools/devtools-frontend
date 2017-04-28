@@ -47,7 +47,6 @@ Timeline.TimelineFlameChartDataProvider = class {
     this._performanceModel = null;
     /** @type {?TimelineModel.TimelineModel} */
     this._model = null;
-    this._expandedFrameBarHeight = 5;  // Number of bars.
 
     this._consoleColorGenerator =
         new PerfUI.FlameChart.ColorGenerator({min: 30, max: 55}, {min: 70, max: 100, count: 6}, 50, 0.7);
@@ -71,10 +70,8 @@ Timeline.TimelineFlameChartDataProvider = class {
         (Object.assign({}, defaultGroupStyle, {padding: 2, nestingLevel: 1, collapsible: false}));
     this._staticHeader = /** @type {!PerfUI.FlameChart.GroupStyle} */
         (Object.assign({}, defaultGroupStyle, {collapsible: false}));
-    this._framesHeader = /** @type {!PerfUI.FlameChart.GroupStyle} */
-        (Object.assign({}, defaultGroupStyle, {useFirstLineForOverview: true, shareHeaderLine: true}));
     this._interactionsHeaderLevel1 = /** @type {!PerfUI.FlameChart.GroupStyle} */
-        (Object.assign({}, defaultGroupStyle, {useFirstLineForOverview: true}));
+        (Object.assign({useFirstLineForOverview: true}, defaultGroupStyle));
     this._interactionsHeaderLevel2 = /** @type {!PerfUI.FlameChart.GroupStyle} */
         (Object.assign({}, defaultGroupStyle, {padding: 2, nestingLevel: 1}));
 
@@ -161,8 +158,6 @@ Timeline.TimelineFlameChartDataProvider = class {
     this._asyncColorByInteractionPhase = new Map();
     /** @type {!Array<!{title: string, model: !SDK.TracingModel}>} */
     this._extensionInfo = [];
-    /** @type {!Map<!TimelineModel.TimelineFrame, ?Promise<?Image>>} */
-    this._frameImageCache = new Map();
   }
 
   /**
@@ -191,6 +186,7 @@ Timeline.TimelineFlameChartDataProvider = class {
     this._timeSpan = this._model.isEmpty() ? 1000 : this._model.maximumRecordTime() - this._minimumBoundary;
     this._currentLevel = 0;
 
+    this._appendHeader(Common.UIString('Frames'), this._staticHeader);
     this._appendFrameBars(this._performanceModel.frames());
 
     this._appendHeader(Common.UIString('Interactions'), this._interactionsHeaderLevel1);
@@ -443,18 +439,14 @@ Timeline.TimelineFlameChartDataProvider = class {
    * @param {!Array.<!TimelineModel.TimelineFrame>} frames
    */
   _appendFrameBars(frames) {
-    var hasFilmStrtip = !!this._performanceModel.filmStripModel().frames().length;
-    this._framesHeader.collapsible = hasFilmStrtip;
-    this._appendHeader(Common.UIString('Frames'), this._framesHeader);
-    this._frameGroup = this._timelineData.groups.peekLast();
     var style = Timeline.TimelineUIUtils.markerStyleForFrame();
     this._entryTypeByLevel[this._currentLevel] = Timeline.TimelineFlameChartEntryType.Frame;
-    for (var frame of frames) {
+    for (var i = 0; i < frames.length; ++i) {
       this._markers.push(new Timeline.TimelineFlameChartMarker(
-          frame.startTime, frame.startTime - this._model.minimumRecordTime(), style));
-      this._appendFrame(frame);
+          frames[i].startTime, frames[i].startTime - this._model.minimumRecordTime(), style));
+      this._appendFrame(frames[i]);
     }
-    this._currentLevel += hasFilmStrtip ? this._expandedFrameBarHeight : 1;
+    ++this._currentLevel;
   }
 
   /**
@@ -558,66 +550,6 @@ Timeline.TimelineFlameChartDataProvider = class {
   }
 
   /**
-   * @param {number} entryIndex
-   * @param {!CanvasRenderingContext2D} context
-   * @param {?string} text
-   * @param {number} barX
-   * @param {number} barY
-   * @param {number} barWidth
-   * @param {number} barHeight
-   * @return {!Promise}
-   */
-  async _drawFrame(entryIndex, context, text, barX, barY, barWidth, barHeight) {
-    var /** @const */ hPadding = 1;
-    var frame = /** @type {!TimelineModel.TimelineFrame} */ (this._entryData[entryIndex]);
-    barX += hPadding;
-    barWidth -= 2 * hPadding;
-    context.fillStyle = frame.idle ? 'white' : (frame.hasWarnings() ? '#fad1d1' : '#d7f0d1');
-    context.fillRect(barX, barY, barWidth, barHeight);
-
-    var imagePromise;
-    if (this._frameImageCache.has(frame)) {
-      imagePromise = this._frameImageCache.get(frame);
-    } else {
-      var modelFrame = Timeline.TimelineUIUtils.filmStripModelFrame(this._performanceModel.filmStripModel(), frame);
-      imagePromise = modelFrame &&
-          modelFrame.imageDataPromise().then(data => UI.loadImage(data ? 'data:image/jpg;base64,' + data : ''));
-      this._frameImageCache.set(frame, imagePromise);
-    }
-    var image = await imagePromise;
-    // ---------------- ASYNC ----------------
-    var maxTextWidth = barWidth;
-    if (image) {
-      var imageHeight = barHeight;
-      var imageY = barY;
-      if (this._frameGroup.expanded) {
-        imageHeight *= (this._expandedFrameBarHeight - 1);
-        imageY += barHeight;
-      }
-      var scale = imageHeight / image.naturalHeight;
-      var imageWidth = image.naturalWidth * scale;
-      if (!this._frameGroup.expanded)
-        maxTextWidth = Math.max(0, barWidth - imageWidth);
-      context.save();
-      context.beginPath();
-      context.rect(barX, imageY, barWidth, imageHeight);
-      context.clip();
-      context.drawImage(image, barX + barWidth - imageWidth, imageY, imageWidth, imageHeight);
-      context.restore();
-    }
-
-    var frameDurationText = Number.preciseMillisToString(frame.duration, 1);
-    var textWidth = context.measureText(frameDurationText).width;
-    if (textWidth <= maxTextWidth) {
-      var font = this.entryFont(entryIndex);
-      if (font)
-        context.font = font;
-      context.fillStyle = this.textColor(entryIndex);
-      context.fillText(frameDurationText, barX + (maxTextWidth - textWidth) / 2, barY + barHeight - 4);
-    }
-  }
-
-  /**
    * @override
    * @param {number} entryIndex
    * @param {!CanvasRenderingContext2D} context
@@ -634,7 +566,21 @@ Timeline.TimelineFlameChartDataProvider = class {
     var data = this._entryData[entryIndex];
     var type = this._entryType(entryIndex);
     if (type === Timeline.TimelineFlameChartEntryType.Frame) {
-      this._drawFrame(entryIndex, context, text, barX, barY, barWidth, barHeight);
+      var /** @const */ vPadding = 1;
+      var /** @const */ hPadding = 1;
+      var frame = /** {!TimelineModel.TimelineFrame} */ (data);
+      barX += hPadding;
+      barWidth -= 2 * hPadding;
+      barY += vPadding;
+      barHeight -= 2 * vPadding + 1;
+      context.fillStyle = frame.idle ? 'white' : (frame.hasWarnings() ? '#fad1d1' : '#d7f0d1');
+      context.fillRect(barX, barY, barWidth, barHeight);
+      var frameDurationText = Number.preciseMillisToString(frame.duration, 1);
+      var textWidth = context.measureText(frameDurationText).width;
+      if (barWidth >= textWidth) {
+        context.fillStyle = this.textColor(entryIndex);
+        context.fillText(frameDurationText, barX + (barWidth - textWidth) / 2, barY + barHeight - 3);
+      }
       return true;
     }
 

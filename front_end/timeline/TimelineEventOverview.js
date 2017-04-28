@@ -364,7 +364,7 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
     this._imageByFrame(frames[0]).then(image => {
       if (this._drawGeneration !== drawGeneration)
         return;
-      if (!image || !image.naturalWidth || !image.naturalHeight)
+      if (!image.naturalWidth || !image.naturalHeight)
         return;
       var imageHeight = this.height() - 2 * Timeline.TimelineFilmStripOverview.Padding;
       var imageWidth = Math.ceil(imageHeight * image.naturalWidth / image.naturalHeight);
@@ -376,15 +376,34 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
 
   /**
    * @param {!SDK.FilmStripModel.Frame} frame
-   * @return {!Promise<?HTMLImageElement>}
+   * @return {!Promise<!HTMLImageElement>}
    */
   _imageByFrame(frame) {
     var imagePromise = this._frameToImagePromise.get(frame);
     if (!imagePromise) {
-      imagePromise = frame.imageDataPromise().then(data => UI.loadImage(data ? 'data:image/jpg;base64,' + data : ''));
+      imagePromise = frame.imageDataPromise().then(createImage);
       this._frameToImagePromise.set(frame, imagePromise);
     }
     return imagePromise;
+
+    /**
+     * @param {?string} data
+     * @return {!Promise<!HTMLImageElement>}
+     */
+    function createImage(data) {
+      var fulfill;
+      var promise = new Promise(f => fulfill = f);
+
+      var image = /** @type {!HTMLImageElement} */ (createElement('img'));
+      if (data) {
+        image.src = 'data:image/jpg;base64,' + data;
+        image.addEventListener('load', () => fulfill(image));
+        image.addEventListener('error', () => fulfill(image));
+      } else {
+        fulfill(image);
+      }
+      return promise;
+    }
   }
 
   /**
@@ -419,12 +438,12 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
 
     /**
      * @param {number} x
-     * @param {?HTMLImageElement} image
+     * @param {!HTMLImageElement} image
      * @this {Timeline.TimelineFilmStripOverview}
      */
     function drawFrameImage(x, image) {
       // Ignore draws deferred from a previous update call.
-      if (this._drawGeneration !== drawGeneration || !image)
+      if (this._drawGeneration !== drawGeneration)
         return;
       context.drawImage(image, x, 1, imageWidth, imageHeight);
     }
@@ -448,13 +467,12 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
 
     /**
      * @this {Timeline.TimelineFilmStripOverview}
-     * @param {?HTMLImageElement} image
+     * @param {!HTMLImageElement} image
      * @return {?Element}
      */
     function createFrameElement(image) {
       var element = createElementWithClass('div', 'frame');
-      if (image)
-        element.createChild('div', 'thumbnail').appendChild(image);
+      element.createChild('div', 'thumbnail').appendChild(image);
       this._lastFrame = frame;
       this._lastElement = element;
       return element;

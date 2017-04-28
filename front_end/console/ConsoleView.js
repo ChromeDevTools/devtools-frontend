@@ -307,12 +307,8 @@ Console.ConsoleView = class extends UI.VBox {
    * @override
    */
   focus() {
-    if (this._prompt.hasFocus())
-      return;
-    // Set caret position before setting focus in order to avoid scrolling
-    // by focus().
-    this._prompt.moveCaretToEndOfPrompt();
-    this._prompt.focus();
+    if (!this._prompt.hasFocus())
+      this._prompt.focus();
   }
 
   /**
@@ -666,8 +662,14 @@ Console.ConsoleView = class extends UI.VBox {
    */
   _messagesClicked(event) {
     var targetElement = event.deepElementFromPoint();
-    if (!targetElement || targetElement.isComponentSelectionCollapsed())
+
+    // Do not focus prompt if messages have selection.
+    if (!targetElement || targetElement.isComponentSelectionCollapsed()) {
+      var clickedOutsideMessageList = event.target === this._messagesElement;
+      if (clickedOutsideMessageList)
+        this._prompt.moveCaretToEndOfPrompt();
       this.focus();
+    }
     var groupMessage = event.target.enclosingNodeOrSelfWithClass('console-group-title');
     if (!groupMessage)
       return;

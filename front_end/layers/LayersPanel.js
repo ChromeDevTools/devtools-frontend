@@ -81,7 +81,6 @@ Layers.LayersPanel = class extends UI.PanelWithSidebar {
     super.wasShown();
     if (this._model)
       this._model.enable();
-    this._layerTreeOutline.focus();
   }
 
   /**

@@ -452,7 +452,7 @@ Emulation.DeviceModeView = class extends UI.VBox {
    * @param {!Element} canvas
    */
   _saveScreenshot(canvas) {
-    var url = this._model.target() && this._model.target().inspectedURL();
+    var url = this._model.inspectedURL();
     var fileName = url ? url.trimURL().removeURLFragment() : '';
     if (this._model.type() === Emulation.DeviceModeModel.Type.Device)
       fileName += Common.UIString('(%s)', this._model.device().title);

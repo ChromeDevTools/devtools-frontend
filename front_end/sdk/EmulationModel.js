@@ -36,6 +36,51 @@ SDK.EmulationModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @return {!Promise}
+   */
+  resetPageScaleFactor() {
+    return this._emulationAgent.resetPageScaleFactor();
+  }
+
+  /**
+   * @param {?Protocol.PageAgent.SetDeviceMetricsOverrideRequest} metrics
+   * @return {!Promise}
+   */
+  emulateDevice(metrics) {
+    if (metrics)
+      return this._emulationAgent.invoke_setDeviceMetricsOverride(metrics);
+    else
+      return this._emulationAgent.clearDeviceMetricsOverride();
+  }
+
+  /**
+   * @param {number} width
+   * @param {number} height
+   * @return {!Promise}
+   */
+  setVisibleSize(width, height) {
+    return this._emulationAgent.setVisibleSize(width, height);
+  }
+
+  /**
+   * @param {{x: number, y: number, scale: number}|null} viewport
+   * @return {!Promise}
+   */
+  forceViewport(viewport) {
+    if (viewport)
+      return this._emulationAgent.forceViewport(viewport.x, viewport.y, viewport.scale);
+    else
+      return this._emulationAgent.resetViewport();
+  }
+
+  /**
+   * @return {?SDK.OverlayModel}
+   */
+  overlayModel() {
+    return this._overlayModel;
+  }
+
+  /**
    * @param {?SDK.EmulationModel.Geolocation} geolocation
    */
   emulateGeolocation(geolocation) {

@@ -48,12 +48,12 @@ Common.ParsedURL = class {
     var match = url.match(Common.ParsedURL._urlRegex());
     if (match) {
       this.isValid = true;
-      this.scheme = match[1].toLowerCase();
-      this.host = match[2];
-      this.port = match[3];
-      this.path = match[4] || '/';
-      this.queryParams = match[5] || '';
-      this.fragment = match[6];
+      this.scheme = match[2].toLowerCase();
+      this.host = match[3];
+      this.port = match[4];
+      this.path = match[5] || '/';
+      this.queryParams = match[6] || '';
+      this.fragment = match[7];
     } else {
       if (this.url.startsWith('data:')) {
         this.scheme = 'data';
@@ -97,12 +97,13 @@ Common.ParsedURL = class {
     if (Common.ParsedURL._urlRegexInstance)
       return Common.ParsedURL._urlRegexInstance;
     // RegExp groups:
-    // 1 - scheme (using the RFC3986 grammar)
-    // 2 - hostname
-    // 3 - ?port
-    // 4 - ?path
-    // 5 - ?query
-    // 6 - ?fragment
+    // 1 - scheme, hostname, ?port
+    // 2 - scheme (using the RFC3986 grammar)
+    // 3 - hostname
+    // 4 - ?port
+    // 5 - ?path
+    // 6 - ?query
+    // 7 - ?fragment
     var schemeRegex = /([A-Za-z][A-Za-z0-9+.-]*):\/\//;
     var hostRegex = /([^\s\/:]*)/;
     var portRegex = /(?::([\d]+))?/;
@@ -111,7 +112,7 @@ Common.ParsedURL = class {
     var fragmentRegex = /(?:#(.*))?/;
 
     Common.ParsedURL._urlRegexInstance = new RegExp(
-        '^' + schemeRegex.source + hostRegex.source + portRegex.source + pathRegex.source + queryRegex.source +
+        '^(' + schemeRegex.source + hostRegex.source + portRegex.source + ')' + pathRegex.source + queryRegex.source +
         fragmentRegex.source + '$');
     return Common.ParsedURL._urlRegexInstance;
   }
@@ -210,8 +211,17 @@ Common.ParsedURL = class {
    * @return {!{url: string, lineNumber: (number|undefined), columnNumber: (number|undefined)}}
    */
   static splitLineAndColumn(string) {
+    // Only look for line and column numbers in the path to avoid matching port numbers.
+    var beforePathMatch = string.match(Common.ParsedURL._urlRegex());
+    var beforePath = '';
+    var pathAndAfter = string;
+    if (beforePathMatch) {
+      beforePath = beforePathMatch[1];
+      pathAndAfter = string.substring(beforePathMatch[1].length);
+    }
+
     var lineColumnRegEx = /(?::(\d+))?(?::(\d+))?$/;
-    var lineColumnMatch = lineColumnRegEx.exec(string);
+    var lineColumnMatch = lineColumnRegEx.exec(pathAndAfter);
     var lineNumber;
     var columnNumber;
     console.assert(lineColumnMatch);
@@ -227,7 +237,7 @@ Common.ParsedURL = class {
     }
 
     return {
-      url: string.substring(0, string.length - lineColumnMatch[0].length),
+      url: beforePath + pathAndAfter.substring(0, pathAndAfter.length - lineColumnMatch[0].length),
       lineNumber: lineNumber,
       columnNumber: columnNumber
     };

@@ -34,7 +34,7 @@
 UI.PopoverHelper = class {
   /**
    * @param {!Element} container
-   * @param {function(!Event):?UI.PopoverRequest} getRequest
+   * @param {function(!MouseEvent):?UI.PopoverRequest} getRequest
    */
   constructor(container, getRequest) {
     this._disableOnClick = false;
@@ -93,7 +93,7 @@ UI.PopoverHelper = class {
 
     this._startHidePopoverTimer(0);
     this._stopShowPopoverTimer();
-    this._startShowPopoverTimer(event, 0);
+    this._startShowPopoverTimer(/** @type {!MouseEvent} */ (event), 0);
   }
 
   /**
@@ -108,7 +108,8 @@ UI.PopoverHelper = class {
     this._stopShowPopoverTimer();
     if (event.which && this._disableOnClick)
       return;
-    this._startShowPopoverTimer(event, this.isPopoverVisible() ? this._showTimeout * 0.6 : this._showTimeout);
+    this._startShowPopoverTimer(
+        /** @type {!MouseEvent} */ (event), this.isPopoverVisible() ? this._showTimeout * 0.6 : this._showTimeout);
   }
 
   /**
@@ -154,7 +155,7 @@ UI.PopoverHelper = class {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!MouseEvent} event
    * @param {number} timeout
    */
   _startShowPopoverTimer(event, timeout) {

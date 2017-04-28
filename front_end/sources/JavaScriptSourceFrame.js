@@ -54,6 +54,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     this.textEditor.element.addEventListener('keydown', this._onKeyDown.bind(this), true);
     this.textEditor.element.addEventListener('keyup', this._onKeyUp.bind(this), true);
     this.textEditor.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
+    this.textEditor.element.addEventListener('mousedown', this._onMouseDown.bind(this), true);
     if (Runtime.experiments.isEnabled('continueToLocationMarkers')) {
       this.textEditor.element.addEventListener('wheel', event => {
         if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event))
@@ -92,6 +93,8 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     this.onBindingChanged();
     Bindings.debuggerWorkspaceBinding.addEventListener(
         Bindings.DebuggerWorkspaceBinding.Events.SourceMappingChanged, this._onSourceMappingChanged, this);
+    /** @type {?Map<!Object, !Function>} */
+    this._continueToLocationDecorations = null;
   }
 
   /**
@@ -382,10 +385,12 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!MouseEvent} event
    * @return {?UI.PopoverRequest}
    */
   _getPopoverRequest(event) {
+    if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event))
+      return null;
     var target = UI.context.flavor(SDK.Target);
     var debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
     if (!debuggerModel || !debuggerModel.isPaused())
@@ -488,10 +493,8 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       return;
     }
     if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event) && this._executionLocation) {
-      if (!this._continueToLocationShown) {
+      if (!this._continueToLocationDecorations)
         this._showContinueToLocations();
-        this._continueToLocationShown = true;
-      }
     }
   }
 
@@ -500,11 +503,31 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
    */
   _onMouseMove(event) {
     if (this._executionLocation && UI.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
-      if (!this._continueToLocationShown) {
+      if (!this._continueToLocationDecorations)
         this._showContinueToLocations();
-        this._continueToLocationShown = true;
-      }
+    }
+  }
+
+  /**
+   * @param {!MouseEvent} event
+   */
+  _onMouseDown(event) {
+    if (!this._executionLocation || !UI.KeyboardShortcut.eventHasCtrlOrMeta(event))
       return;
+    if (!this._continueToLocationDecorations)
+      return;
+    event.consume();
+    var textPosition = this.textEditor.coordinatesToCursorPosition(event.x, event.y);
+    if (!textPosition)
+      return;
+    for (var decoration of this._continueToLocationDecorations.keys()) {
+      var range = decoration.find();
+      if (range.from.line !== textPosition.startLine || range.to.line !== textPosition.startLine)
+        continue;
+      if (range.from.ch <= textPosition.startColumn && textPosition.startColumn <= range.to.ch) {
+        this._continueToLocationDecorations.get(decoration)();
+        break;
+      }
     }
   }
 
@@ -514,10 +537,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
   _onKeyUp(event) {
     if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event))
       return;
-    if (!this._continueToLocationShown)
-      return;
     this._clearContinueToLocations();
-    this._continueToLocationShown = false;
   }
 
   /**
@@ -583,7 +603,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       setImmediate(() => {
         this._generateValuesInSource();
         if (Runtime.experiments.isEnabled('continueToLocationMarkers')) {
-          if (this._continueToLocationShown)
+          if (this._continueToLocationDecorations)
             this._showContinueToLocations();
         }
       });
@@ -616,77 +636,45 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
   _showContinueToLocations() {
     if (!Runtime.experiments.isEnabled('continueToLocationMarkers'))
       return;
+    this._popoverHelper.hidePopover();
     var executionContext = UI.context.flavor(SDK.ExecutionContext);
     if (!executionContext)
       return;
     var callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
     if (!callFrame)
       return;
-    if (this._clearContinueToLocationsTimer) {
-      clearTimeout(this._clearContinueToLocationsTimer);
-      delete this._clearContinueToLocationsTimer;
-    }
     var localScope = callFrame.localScope();
     if (!localScope) {
-      this.textEditor.operation(clearExistingLocations.bind(this));
+      this._clearContinueToLocations();
       return;
     }
     var start = localScope.startLocation();
     var end = localScope.endLocation();
     var debuggerModel = callFrame.debuggerModel;
-    var executionLocation = callFrame.location();
     debuggerModel.getPossibleBreakpoints(start, end, true)
         .then(locations => this.textEditor.operation(renderLocations.bind(this, locations)));
+
     /**
      * @param {!Array<!SDK.DebuggerModel.BreakLocation>} locations
      * @this {Sources.JavaScriptSourceFrame}
      */
     function renderLocations(locations) {
-      clearExistingLocations.call(this);
+      this._clearContinueToLocations();
+      this._continueToLocationDecorations = new Map();
       for (var location of locations) {
-        var icon;
-        var isCurrent = location.lineNumber === executionLocation.lineNumber &&
-            location.columnNumber === executionLocation.columnNumber;
-        if (!isCurrent || (location.type !== SDK.DebuggerModel.BreakLocationType.Call &&
-                           location.type !== SDK.DebuggerModel.BreakLocationType.Return)) {
-          icon = UI.Icon.create('smallicon-green-arrow');
-          icon.addEventListener('click', location.continueToLocation.bind(location));
-        } else if (location.type === SDK.DebuggerModel.BreakLocationType.Call) {
-          icon = UI.Icon.create('smallicon-step-in');
-          icon.addEventListener('click', () => {
-            debuggerModel.scheduleStepIntoAsync();
-            debuggerModel.stepInto();
-          });
-        } else if (location.type === SDK.DebuggerModel.BreakLocationType.Return) {
-          icon = UI.Icon.create('smallicon-step-out');
-          icon.addEventListener('click', () => {
-            debuggerModel.stepOut();
-          });
-        }
-        icon.classList.add('cm-continue-to-location');
-        icon.addEventListener('mousemove', hidePopoverAndConsumeEvent.bind(this));
-        this.textEditor.addBookmark(
-            location.lineNumber, location.columnNumber, icon,
-            Sources.JavaScriptSourceFrame.continueToLocationDecorationSymbol);
+        var lineNumber = location.lineNumber;
+        var token = this.textEditor.tokenAtTextPosition(lineNumber, location.columnNumber);
+        if (!token || !token.type)
+          continue;
+        var line = this.textEditor.line(lineNumber);
+        var tokenContent = line.substring(token.startColumn, token.endColumn);
+        if (!this._isIdentifier(token.type) && (token.type !== 'js-keyword' || tokenContent !== 'this'))
+          continue;
+
+        var highlightRange = new TextUtils.TextRange(lineNumber, token.startColumn, lineNumber, token.endColumn - 1);
+        var decoration = this.textEditor.highlightRange(highlightRange, 'source-frame-continue-to-location');
+        this._continueToLocationDecorations.set(decoration, location.continueToLocation.bind(location));
       }
-    }
-
-    /**
-     * @this {Sources.JavaScriptSourceFrame}
-     */
-    function clearExistingLocations() {
-      var bookmarks = this.textEditor.bookmarks(
-          this.textEditor.fullRange(), Sources.JavaScriptSourceFrame.continueToLocationDecorationSymbol);
-      bookmarks.map(bookmark => bookmark.clear());
-    }
-
-    /**
-     * @param {!Event} event
-     * @this {Sources.JavaScriptSourceFrame}
-     */
-    function hidePopoverAndConsumeEvent(event) {
-      event.consume(true);
-      this._popoverHelper.hidePopover();
     }
   }
 
@@ -834,28 +822,32 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
   }
 
   clearExecutionLine() {
-    if (this.loaded && this._executionLocation)
-      this.textEditor.clearExecutionLine();
-    delete this._executionLocation;
-    this._clearValueWidgetsTimer = setTimeout(this._clearValueWidgets.bind(this), 1000);
-    if (Runtime.experiments.isEnabled('continueToLocationMarkers'))
-      this._clearContinueToLocationsTimer = setTimeout(this._clearContinueToLocations.bind(this), 1000);
+    this.textEditor.operation(() => {
+      if (this.loaded && this._executionLocation)
+        this.textEditor.clearExecutionLine();
+      delete this._executionLocation;
+      this._clearValueWidgetsTimer = setTimeout(this._clearValueWidgets.bind(this), 1000);
+      this._clearContinueToLocations();
+    });
   }
 
   _clearValueWidgets() {
     delete this._clearValueWidgetsTimer;
-    for (var line of this._valueWidgets.keys())
-      this.textEditor.removeDecoration(this._valueWidgets.get(line), line);
-    this._valueWidgets.clear();
+    this.textEditor.operation(() => {
+      for (var line of this._valueWidgets.keys())
+        this.textEditor.removeDecoration(this._valueWidgets.get(line), line);
+      this._valueWidgets.clear();
+    });
   }
 
   _clearContinueToLocations() {
-    if (!Runtime.experiments.isEnabled('continueToLocationMarkers'))
+    if (!this._continueToLocationDecorations)
       return;
-    delete this._clearContinueToLocationsTimer;
-    var bookmarks = this.textEditor.bookmarks(
-        this.textEditor.fullRange(), Sources.JavaScriptSourceFrame.continueToLocationDecorationSymbol);
-    this.textEditor.operation(() => bookmarks.map(bookmark => bookmark.clear()));
+    this.textEditor.operation(() => {
+      for (var decoration of this._continueToLocationDecorations.keys())
+        this.textEditor.removeHighlight(decoration);
+      delete this._continueToLocationDecorations;
+    });
   }
 
   /**

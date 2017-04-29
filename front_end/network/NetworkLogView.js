@@ -837,7 +837,8 @@ Network.NetworkLogView = class extends UI.VBox {
       var request = node.request();
       this._timeCalculator.updateBoundaries(request);
       this._durationCalculator.updateBoundaries(request);
-
+      if (node[Network.NetworkLogView._isFilteredOutSymbol] === isFilteredOut)
+        continue;
       node[Network.NetworkLogView._isFilteredOutSymbol] = isFilteredOut;
       var newParent = this._parentNodeForInsert(node);
       var removeFromParent = node.parent && (isFilteredOut || node.parent !== newParent);

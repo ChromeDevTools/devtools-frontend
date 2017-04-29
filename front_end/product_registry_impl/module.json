@@ -1,0 +1,18 @@
+{
+    "extensions": [
+        {
+          "type": "@ProductRegistry.Registry",
+          "className": "ProductRegistryImpl.Registry"
+        }
+    ],
+    "dependencies": [
+        "common",
+        "product_registry",
+        "sdk"
+    ],
+    "scripts": [
+        "ProductRegistryImpl.js",
+        "ProductRegistryData.js",
+        "sha1/sha1.js"
+    ]
+}

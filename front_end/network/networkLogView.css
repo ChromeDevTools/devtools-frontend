@@ -161,6 +161,29 @@
 .network-header-subtitle {
     color: gray;
 }
+.network-log-grid.data-grid .product-ad::before,
+.network-log-grid.data-grid .product-tracking::before,
+.network-log-grid.data-grid .product-cdn::before {
+    content: "";
+    border-radius: 5px;
+    height: 5px;
+    width: 5px;
+    margin-right: 3px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.network-log-grid.data-grid .product-ad::before {
+    background-color: #00BCD4;
+}
+
+.network-log-grid.data-grid .product-tracking::before {
+    background-color: #FF9800;
+}
+
+.network-log-grid.data-grid .product-cdn::before {
+    background-color: #4CAF50;
+}
 
 .network-log-grid.data-grid.small .network-cell-subtitle,
 .network-log-grid.data-grid.small .network-header-subtitle {

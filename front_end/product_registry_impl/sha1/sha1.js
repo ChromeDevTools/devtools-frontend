@@ -12,7 +12,7 @@
  * @param {string} str
  * @return {string}
  */
-ProductRegistry.sha1 = function(str) {
+ProductRegistryImpl.sha1 = function(str) {
   return rstr2hex(rstr_sha1(str2rstr_utf8(str)));
 
   /**

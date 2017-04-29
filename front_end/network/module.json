@@ -92,6 +92,20 @@
             "order": 40,
             "className": "Network.NetworkConfigView",
             "tags": "disk cache, network throttling, useragent, user agent"
+        },
+        {
+          "type": "@Network.GroupLookupInterface",
+          "className": "Network.ProductGrouper",
+          "experiment": "networkGroupingRequests",
+          "title": "Product",
+          "id": "product"
+        },
+        {
+          "type": "@Network.GroupLookupInterface",
+          "className": "Network.FrameGrouper",
+          "experiment": "networkGroupingRequests",
+          "title": "Frame",
+          "id": "frame"
         }
     ],
     "dependencies": [
@@ -102,7 +116,8 @@
         "data_grid",
         "network_conditions",
         "object_ui",
-        "network_log"
+        "network_log",
+        "product_registry"
     ],
     "scripts": [
         "BlockedURLsPane.js",
@@ -117,6 +132,7 @@
         "NetworkTimeCalculator.js",
         "NetworkLogView.js",
         "NetworkLogViewColumns.js",
+        "NetworkGroupers.js",
         "NetworkManageCustomHeadersView.js",
         "NetworkOverview.js",
         "NetworkWaterfallColumn.js",

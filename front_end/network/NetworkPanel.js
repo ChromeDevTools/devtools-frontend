@@ -40,8 +40,7 @@ Network.NetworkPanel = class extends UI.Panel {
     this._networkLogShowOverviewSetting = Common.settings.createSetting('networkLogShowOverview', true);
     this._networkLogLargeRowsSetting = Common.settings.createSetting('networkLogLargeRows', false);
     this._networkRecordFilmStripSetting = Common.settings.createSetting('networkRecordFilmStripSetting', false);
-    this._toggleRecordAction =
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('network.toggle-recording'));
+    this._toggleRecordAction = /** @type {!UI.Action }*/ (UI.actionRegistry.action('network.toggle-recording'));
 
     /** @type {?PerfUI.FilmStripView} */
     this._filmStripView = null;
@@ -89,8 +88,6 @@ Network.NetworkPanel = class extends UI.Panel {
     this._networkLogLargeRowsSetting.addChangeListener(this._toggleLargerRequests, this);
     this._networkRecordFilmStripSetting.addChangeListener(this._toggleRecordFilmStrip, this);
 
-    /** @type {!Map<string, !Runtime.Extension>} */
-    this._groupingExtensions = new Map();
     this._createToolbarButtons();
 
     this._toggleRecord(true);
@@ -188,35 +185,16 @@ Network.NetworkPanel = class extends UI.Panel {
   }
 
   _setupGroupingCombo() {
-    var extensions = self.runtime.extensions(Network.NetworkGroupLookupInterface);
-    if (!extensions.length)
+    if (!Runtime.experiments.isEnabled('networkGroupingRequests'))
       return;
-
-    var setting = Common.settings.createSetting('networkGrouping', '');
     /** @type {!Array<!{value: string, label: string, title: string}>} */
     var options = [{value: '', label: Common.UIString('No grouping'), title: Common.UIString('No grouping')}];
+    for (var name of this._networkLogView.groupLookups().keys())
+      options.push({value: name, label: Common.UIString(name), title: Common.UIString(name)});
 
-    extensions.forEach(extension => {
-      var identifier = extension.descriptor()['id'];
-      this._groupingExtensions.set(identifier, extension);
-      options.push({value: identifier, label: extension.title(), title: extension.title()});
-    });
+    var setting = Common.settings.createSetting('networkGrouping', '');
     this._panelToolbar.appendToolbarItem(new UI.ToolbarSettingComboBox(options, setting, Common.UIString('Group by')));
-    setting.addChangeListener(event => this._groupingChanged(/** @type {string} */ (event.data)));
-    this._groupingChanged(setting.get());
-  }
-
-  /**
-   * @param {string} identifier
-   */
-  _groupingChanged(identifier) {
-    var extension = this._groupingExtensions.get(identifier);
-    if (extension) {
-      extension.instance().then(
-          grouping => this._networkLogView.setGrouping(/** @type {?Network.NetworkGroupLookupInterface} */ (grouping)));
-    } else {
-      this._networkLogView.setGrouping(null);
-    }
+    setting.addChangeListener(event => this._networkLogView.setGrouping(/** @type {string} */ (event.data)));
   }
 
   /**

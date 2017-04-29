@@ -2,11 +2,10 @@
     "extensions": [
     ],
     "dependencies": [
-        "common"
+        "common",
+        "sdk"
     ],
     "scripts": [
-        "ProductNameForURL.js",
-        "ProductRegistryData.js",
-        "sha1/sha1.js"
+        "ProductRegistry.js"
     ]
 }

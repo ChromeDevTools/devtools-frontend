@@ -57,9 +57,6 @@ Network.NetworkLogView = class extends UI.VBox {
     this._durationCalculator = new Network.NetworkTransferDurationCalculator();
     this._calculator = this._timeCalculator;
 
-    /** @type {?Network.NetworkGroupLookupInterface} */
-    this._activeGroupLookup = null;
-
     /**
      * @this {Network.NetworkLogView}
      */
@@ -76,9 +73,6 @@ Network.NetworkLogView = class extends UI.VBox {
     this._nodesByRequestId = new Map();
     /** @type {!Map<*, !Network.NetworkGroupNode>} */
     this._nodeGroups = new Map();
-    /** @type {!Set<!Network.NetworkRowDecorator>} */
-    this._rowDecorators = new Set();
-
     /** @type {!Object.<string, boolean>} */
     this._staleRequestIds = {};
     /** @type {number} */
@@ -105,6 +99,14 @@ Network.NetworkLogView = class extends UI.VBox {
     this._preserveLog = false;
 
     this._headerHeight = 0;
+
+    /** @type {!Map<string, !Network.GroupLookupInterface>} */
+    this._groupLookups = new Map();
+    this._groupLookups.set('Product', new Network.ProductGrouper());
+    this._groupLookups.set('Frame', new Network.FrameGrouper());
+
+    /** @type {?Network.GroupLookupInterface} */
+    this._activeGroupLookup = null;
 
     this._addFilters();
     this._resetSuggestionBuilder();
@@ -352,19 +354,29 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   /**
-   * @param {?Network.NetworkGroupLookupInterface} grouping
+   * @return {!Map<string, !Network.GroupLookupInterface>}
    */
-  setGrouping(grouping) {
-    this._activeGroupLookup = grouping;
-    this._nodeGroups.clear();
-    this._invalidateAllItems();
+  groupLookups() {
+    return this._groupLookups;
   }
 
   /**
-   * @return {!Set<!Network.NetworkRowDecorator>}
+   * @param {string} groupKey
    */
-  rowDecorators() {
-    return this._rowDecorators;
+  setGrouping(groupKey) {
+    var groupLookup = this._groupLookups.get(groupKey) || null;
+    this._activeGroupLookup = groupLookup;
+    if (!groupLookup) {
+      this._nodeGroups.clear();
+      this._invalidateAllItems();
+      return;
+    }
+    groupLookup.initialize().then(() => {
+      if (this._activeGroupLookup !== groupLookup)
+        return;
+      this._nodeGroups.clear();
+      this._invalidateAllItems();
+    });
   }
 
   /**
@@ -497,12 +509,6 @@ Network.NetworkLogView = class extends UI.VBox {
   _initializeView() {
     this.element.id = 'network-container';
     this._setupDataGrid();
-
-    self.runtime.allInstances(Network.NetworkRowDecorator).then(instances => {
-      for (var instance of instances)
-        this._rowDecorators.add(instance);
-      this._invalidateAllItems(true);
-    });
 
     this._columns.show(this.element);
 
@@ -901,7 +907,6 @@ Network.NetworkLogView = class extends UI.VBox {
     if (group)
       return group;
     group = new Network.NetworkGroupNode(this, this._activeGroupLookup.groupName(groupKey));
-    group.setColumnExtensions(this._columns.columnExtensions());
     this._nodeGroups.set(groupKey, group);
     return group;
   }
@@ -963,7 +968,6 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   _appendRequest(request) {
     var node = new Network.NetworkRequestNode(this, request);
-    node.setColumnExtensions(this._columns.columnExtensions());
     node[Network.NetworkLogView._isFilteredOutSymbol] = true;
     node[Network.NetworkLogView._isMatchingSearchQuerySymbol] = false;
 
@@ -1820,30 +1824,23 @@ Network.NetworkLogView.Filter;
 /**
  * @interface
  */
-Network.NetworkGroupLookupInterface = function() {};
+Network.GroupLookupInterface = function() {};
 
-Network.NetworkGroupLookupInterface.prototype = {
+Network.GroupLookupInterface.prototype = {
+  /**
+   * @return {!Promise}
+   */
+  initialize: function() {},
+
   /**
    * @param {!SDK.NetworkRequest} request
    * @return {?*}
    */
-  groupForRequest(request) {},
+  groupForRequest: function(request) {},
 
   /**
    * @param {!*} key
    * @return {string}
    */
-  groupName(key) {}
-};
-
-/**
- * @interface
- */
-Network.NetworkRowDecorator = function() {};
-
-Network.NetworkRowDecorator.prototype = {
-  /**
-   * @param {!Network.NetworkNode} node
-   */
-  decorate(node) {}
+  groupName: function(key) {}
 };

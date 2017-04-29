@@ -38,14 +38,10 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
   constructor(parentView) {
     super({});
     this._parentView = parentView;
-    /** @type {!Map<string, ?Network.NetworkColumnExtensionInterface>} */
-    this._columnExtensions = new Map();
     this._isHovered = false;
     this._showingInitiatorChain = false;
     /** @type {?SDK.NetworkRequest} */
     this._requestOrFirstKnownChildRequest = null;
-    /** @type {!Map<string, !UI.Icon>} */
-    this._columnIcons = new Map();
     /** @type {?Common.Color} */
     this._backgroundColor = null;
   }
@@ -86,14 +82,6 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
       color = color.blendWith(bgColors.Selected);
 
     return /** @type {string} */ (color.asString(Common.Color.Format.HEX));
-  }
-
-  /**
-   * @param {?Common.Color} color
-   */
-  setBackgroundColor(color) {
-    this._backgroundColor = color;
-    this._updateBackgroundColor();
   }
 
   _updateBackgroundColor() {
@@ -140,13 +128,6 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
    */
   nodeSelfHeight() {
     return this._parentView.rowHeight();
-  }
-
-  /**
-   * @param {!Map<string, ?Network.NetworkColumnExtensionInterface>} columnExtensions
-   */
-  setColumnExtensions(columnExtensions) {
-    this._columnExtensions = columnExtensions;
   }
 
   /**
@@ -348,6 +329,22 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     if (bRemoteAddress > aRemoteAddress)
       return -1;
     return aRequest.indentityCompare(bRequest);
+  }
+
+  /**
+   * @param {!ProductRegistry.Registry} productRegistry
+   * @param {!Network.NetworkNode} a
+   * @param {!Network.NetworkNode} b
+   * @return {number}
+   */
+  static ProductComparator(productRegistry, a, b) {
+    var aRequest = a.request();
+    var bRequest = b.request();
+    if (!aRequest || !bRequest)
+      return !aRequest ? -1 : 1;
+    var aName = productRegistry.nameForUrl(aRequest.parsedURL) || '';
+    var bName = productRegistry.nameForUrl(bRequest.parsedURL) || '';
+    return aName.localeCompare(bName) || aRequest.indentityCompare(bRequest);
   }
 
   /**
@@ -566,24 +563,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   }
 
   /**
-   * @param {!Map<string, ?Network.NetworkColumnExtensionInterface>} extensionsMap
-   * @param {string} extensionId
-   * @param {!Network.NetworkNode} a
-   * @param {!Network.NetworkNode} b
-   * @return {number}
-   */
-  static ExtensionColumnComparator(extensionsMap, extensionId, a, b) {
-    var aRequest = a.requestOrFirstKnownChildRequest();
-    var bRequest = b.requestOrFirstKnownChildRequest();
-    if (!aRequest || !bRequest)
-      return !aRequest ? -1 : 1;
-    var instance = extensionsMap.get(extensionId);
-    if (!instance)
-      return aRequest.indentityCompare(bRequest);
-    return instance.requestComparator(aRequest, bRequest);
-  }
-
-  /**
    * @override
    */
   showingInitiatorChainChanged() {
@@ -706,18 +685,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
 
     element.classList.toggle('network-error-row', this._isFailed());
     element.classList.toggle('network-navigation-row', this._isNavigationRequest);
-    for (var rowDecorator of this._parentView.rowDecorators())
-      rowDecorator.decorate(this);
     super.createCells(element);
     this._updateBackgroundColor();
-  }
-
-  /**
-   * @param {string} columnId
-   * @param {!UI.Icon} icon
-   */
-  setIconForColumn(columnId, icon) {
-    this._columnIcons.set(columnId, icon);
   }
 
   /**
@@ -736,20 +705,17 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   createCell(columnIdentifier) {
     var cell = this.createTD(columnIdentifier);
-    var icon = this._columnIcons.get(columnIdentifier);
-    if (icon)
-      cell.appendChild(icon);
-    // If the key exists but the value is null it means the extension instance has not resolved yet.
-    // The view controller will force all rows to update when extension is resolved.
-    if (this._columnExtensions.has(columnIdentifier)) {
-      var instance = this._columnExtensions.get(columnIdentifier);
-      if (instance)
-        this._setTextAndTitle(cell, instance.lookupColumnValue(this._request));
-      return cell;
-    }
     switch (columnIdentifier) {
       case 'name':
         this._renderNameCell(cell);
+        break;
+      case 'product':
+        if (!Runtime.experiments.isEnabled('networkGroupingRequests')) {
+          this._setTextAndTitle(cell, this._request.responseHeaderValue(columnIdentifier) || '');
+          break;
+        }
+        if (this.request())
+          ProductRegistry.instance().then(this._renderProductCell.bind(this, cell));
         break;
       case 'method':
         this._setTextAndTitle(cell, this._request.requestMethod);
@@ -896,6 +862,42 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     cell.createTextChild(this._request.networkManager().target().decorateLabel(this._request.name()));
     this._appendSubtitle(cell, this._request.path());
     cell.title = this._request.url();
+  }
+
+  /**
+   * @param {!Element} cell
+   * @param {!ProductRegistry.Registry} productRegistry
+   */
+  _renderProductCell(cell, productRegistry) {
+    var request = this.request();
+    if (!request)
+      return;
+    var entry = productRegistry.entryForUrl(request.parsedURL);
+    if (!entry)
+      return;
+    this._setTextAndTitle(cell, entry.name);
+    if (entry.type !== null) {
+      var element = this.existingElement();
+      if (!element)
+        return;
+      switch (entry.type) {
+        case 0:
+          this._backgroundColor = Common.Color.fromRGBA([224, 247, 250, .6]);
+          cell.classList.add('product-ad');
+          break;
+        case 1:
+          this._backgroundColor = Common.Color.fromRGBA([255, 252, 225, .6]);
+          cell.classList.add('product-tracking');
+          break;
+        case 2:
+          this._backgroundColor = Common.Color.fromRGBA([211, 253, 211, .6]);
+          cell.classList.add('product-cdn');
+          break;
+        default:
+          this._backgroundColor = null;
+      }
+      this._updateBackgroundColor();
+    }
   }
 
   /**
@@ -1100,8 +1102,6 @@ Network.NetworkGroupNode = class extends Network.NetworkNode {
    */
   createCell(columnIdentifier) {
     var cell = this.createTD(columnIdentifier);
-    if (this._columnExtensions.has(columnIdentifier))
-      return cell;
     if (columnIdentifier === 'name') {
       var leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
       cell.style.setProperty('padding-left', leftPadding);

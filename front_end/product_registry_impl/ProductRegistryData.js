@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 // clang-format off
 /* eslint-disable */
-ProductRegistry.register([
+ProductRegistryImpl.register([
   "1&1 Internet AG",
   "A9",
   "AdGenie",

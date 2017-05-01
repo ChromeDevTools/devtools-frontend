@@ -1561,6 +1561,7 @@ UI.bindInput = function(input, apply, validate, numeric) {
     if (isEnterKey(event)) {
       if (validate(input.value))
         apply(input.value);
+      event.preventDefault();
       return;
     }
 

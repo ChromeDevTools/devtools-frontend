@@ -244,10 +244,6 @@ TimelineModel.TimelineFrameModel = class {
   addTraceEvents(target, events, sessionId) {
     this._target = target;
     this._sessionId = sessionId;
-    if (!events.length)
-      return;
-    if (events[0].startTime < this._minimumRecordTime)
-      this._minimumRecordTime = events[0].startTime;
     for (var i = 0; i < events.length; ++i)
       this._addTraceEvent(events[i]);
   }
@@ -257,6 +253,8 @@ TimelineModel.TimelineFrameModel = class {
    */
   _addTraceEvent(event) {
     var eventNames = TimelineModel.TimelineModel.RecordType;
+    if (event.startTime && event.startTime < this._minimumRecordTime)
+      this._minimumRecordTime = event.startTime;
 
     if (event.name === eventNames.SetLayerTreeId) {
       var sessionId = event.args['sessionId'] || event.args['data']['sessionId'];

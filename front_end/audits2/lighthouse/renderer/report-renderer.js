@@ -22,78 +22,38 @@
  * Dummy text for ensuring report robustness: </script> pre$`post %%LIGHTHOUSE_JSON%%
  */
 
-const RATINGS = {
-  PASS: {label: 'pass', minScore: 75},
-  AVERAGE: {label: 'average', minScore: 45},
-  FAIL: {label: 'fail'}
-};
-
-/**
- * Convert a score to a rating label.
- * @param {number} score
- * @return {string}
- */
-function calculateRating(score) {
-  let rating = RATINGS.FAIL.label;
-  if (score >= RATINGS.PASS.minScore) {
-    rating = RATINGS.PASS.label;
-  } else if (score >= RATINGS.AVERAGE.minScore) {
-    rating = RATINGS.AVERAGE.label;
-  }
-  return rating;
-}
-
-/**
- * Format number.
- * @param {number} number
- * @return {string}
- */
-function formatNumber(number) {
-  return number.toLocaleString(undefined, {maximumFractionDigits: 1});
-}
+/* globals self, Util */
 
 class ReportRenderer {
   /**
    * @param {!DOM} dom
-   * @param {!DetailsRenderer} detailsRenderer
+   * @param {!CategoryRenderer} categoryRenderer
+   * @param {?ReportUIFeatures=} uiFeatures
    */
-  constructor(dom, detailsRenderer) {
+  constructor(dom, categoryRenderer, uiFeatures = null) {
+    /** @private {!DOM} */
     this._dom = dom;
-    this._detailsRenderer = detailsRenderer;
-
+    /** @private {!CategoryRenderer} */
+    this._categoryRenderer = categoryRenderer;
+    /** @private {!Document|!Element} */
     this._templateContext = this._dom.document();
+    /** @private {ReportUIFeatures} */
+    this._uiFeatures = uiFeatures;
   }
 
   /**
    * @param {!ReportRenderer.ReportJSON} report
-   * @return {!Element}
+   * @param {!Element} container Parent element to render the report into.
    */
-  renderReport(report) {
-    try {
-      return this._renderReport(report);
-    } catch (e) {
-      return this._renderException(e);
+  renderReport(report, container) {
+    container.textContent = ''; // Remove previous report.
+    const element = container.appendChild(this._renderReport(report));
+
+    // Hook in JS features and page-level event listeners after the report
+    // is in the document.
+    if (this._uiFeatures) {
+      this._uiFeatures.initFeatures(report);
     }
-  }
-
-  /**
-   * @param {!DocumentFragment|!Element} element DOM node to populate with values.
-   * @param {number} score
-   * @param {string} scoringMode
-   * @param {string} title
-   * @param {string} description
-   * @return {!Element}
-   */
-  _populateScore(element, score, scoringMode, title, description) {
-    // Fill in the blanks.
-    const valueEl = element.querySelector('.lh-score__value');
-    valueEl.textContent = formatNumber(score);
-    valueEl.classList.add(`lh-score__value--${calculateRating(score)}`,
-                          `lh-score__value--${scoringMode}`);
-
-    element.querySelector('.lh-score__title').textContent = title;
-    element.querySelector('.lh-score__description')
-        .appendChild(this._dom.createSpanFromMarkdown(description));
 
     return /** @type {!Element} **/ (element);
   }
@@ -105,54 +65,70 @@ class ReportRenderer {
    */
   setTemplateContext(context) {
     this._templateContext = context;
+    this._categoryRenderer.setTemplateContext(context);
   }
 
   /**
-   * @param {!ReportRenderer.AuditJSON} audit
-   * @return {!Element}
+   * @param {!ReportRenderer.ReportJSON} report
+   * @return {!DocumentFragment}
    */
-  _renderAuditScore(audit) {
-    const tmpl = this._dom.cloneTemplate('#tmpl-lh-audit-score', this._templateContext);
+  _renderReportHeader(report) {
+    const header = this._dom.cloneTemplate('#tmpl-lh-heading', this._templateContext);
+    this._dom.find('.lh-config__timestamp', header).textContent =
+        Util.formatDateTime(report.generatedTime);
+    const url = this._dom.find('.lh-metadata__url', header);
+    url.href = report.url;
+    url.textContent = report.url;
 
-    const scoringMode = audit.result.scoringMode;
-    const description = audit.result.helpText;
-    let title = audit.result.description;
+    const env = this._dom.find('.lh-env__items', header);
+    report.runtimeConfig.environment.forEach(runtime => {
+      const item = this._dom.cloneTemplate('#tmpl-lh-env__items', env);
+      this._dom.find('.lh-env__name', item).textContent = runtime.name;
+      this._dom.find('.lh-env__description', item).textContent = runtime.description;
+      this._dom.find('.lh-env__enabled', item).textContent =
+          runtime.enabled ? 'Enabled' : 'Disabled';
+      env.appendChild(item);
+    });
 
-    if (audit.result.displayValue) {
-      title += `:  ${audit.result.displayValue}`;
-    }
-    if (audit.result.optimalValue) {
-      title += ` (target: ${audit.result.optimalValue})`;
-    }
-
-    // Append audit details to header section so the entire audit is within a <details>.
-    const header = tmpl.querySelector('.lh-score__header');
-    header.open = audit.score < 100; // expand failed audits
-    if (audit.result.details) {
-      header.appendChild(this._detailsRenderer.render(audit.result.details));
-    }
-
-    return this._populateScore(tmpl, audit.score, scoringMode, title, description);
+    return header;
   }
 
   /**
-   * @param {!ReportRenderer.CategoryJSON} category
-   * @return {!Element}
+   * @param {!ReportRenderer.ReportJSON} report
+   * @return {!DocumentFragment}
    */
-  _renderCategoryScore(category) {
-    const tmpl = this._dom.cloneTemplate('#tmpl-lh-category-score', this._templateContext);
-    const score = Math.round(category.score);
-    return this._populateScore(tmpl, score, 'numeric', category.name, category.description);
+  _renderReportFooter(report) {
+    const footer = this._dom.cloneTemplate('#tmpl-lh-footer', this._templateContext);
+    this._dom.find('.lh-footer__version', footer).textContent = report.lighthouseVersion;
+    this._dom.find('.lh-footer__timestamp', footer).textContent =
+        Util.formatDateTime(report.generatedTime);
+    return footer;
   }
 
   /**
-   * @param {!Error} e
-   * @return {!Element}
+   * @param {!ReportRenderer.ReportJSON} report
+   * @return {!DocumentFragment}
    */
-  _renderException(e) {
-    const element = this._dom.createElement('div', 'lh-exception');
-    element.textContent = String(e.stack);
-    return element;
+  _renderReportNav(report) {
+    const leftNav = this._dom.cloneTemplate('#tmpl-lh-leftnav', this._templateContext);
+
+    this._dom.find('.leftnav__header__version', leftNav).textContent =
+        `Version: ${report.lighthouseVersion}`;
+
+    const nav = this._dom.find('.lh-leftnav', leftNav);
+    for (const category of report.reportCategories) {
+      const itemsTmpl = this._dom.cloneTemplate('#tmpl-lh-leftnav__items', leftNav);
+
+      const navItem = this._dom.find('.lh-leftnav__item', itemsTmpl);
+      navItem.href = `#${category.id}`;
+
+      this._dom.find('.leftnav-item__category', navItem).textContent = category.name;
+      const score = this._dom.find('.leftnav-item__score', navItem);
+      score.classList.add(`lh-score__value--${Util.calculateRating(category.score)}`);
+      score.textContent = Math.round(Util.formatNumber(category.score));
+      nav.appendChild(navItem);
+    }
+    return leftNav;
   }
 
   /**
@@ -160,69 +136,48 @@ class ReportRenderer {
    * @return {!Element}
    */
   _renderReport(report) {
-    const element = this._dom.createElement('div', 'lh-report');
+    const container = this._dom.createElement('div', 'lh-container');
+
+    container.appendChild(this._renderReportHeader(report)); // sticky header goes at the top.
+    container.appendChild(this._renderReportNav(report));
+
+    const reportSection = container.appendChild(this._dom.createElement('div', 'lh-report'));
+
+    const scoreHeader = reportSection.appendChild(
+        this._dom.createElement('div', 'lh-scores-header'));
+
+    const categories = reportSection.appendChild(this._dom.createElement('div', 'lh-categories'));
     for (const category of report.reportCategories) {
-      element.appendChild(this._renderCategory(category));
-    }
-    return element;
-  }
-
-  /**
-   * @param {!ReportRenderer.CategoryJSON} category
-   * @return {!Element}
-   */
-  _renderCategory(category) {
-    const element = this._dom.createElement('div', 'lh-category');
-    element.appendChild(this._renderCategoryScore(category));
-
-    const passedAudits = category.audits.filter(audit => audit.score === 100);
-    const nonPassedAudits = category.audits.filter(audit => !passedAudits.includes(audit));
-
-    for (const audit of nonPassedAudits) {
-      element.appendChild(this._renderAudit(audit));
+      scoreHeader.appendChild(this._categoryRenderer.renderScoreGauge(category));
+      categories.appendChild(this._categoryRenderer.render(category));
     }
 
-    // don't create a passed section if there are no passed
-    if (!passedAudits.length) return element;
+    reportSection.appendChild(this._renderReportFooter(report));
 
-    const passedElem = this._dom.createElement('details', 'lh-passed-audits');
-    const passedSummary = this._dom.createElement('summary', 'lh-passed-audits-summary');
-    passedSummary.textContent = `View ${passedAudits.length} passed items`;
-    passedElem.appendChild(passedSummary);
-
-    for (const audit of passedAudits) {
-      passedElem.appendChild(this._renderAudit(audit));
-    }
-    element.appendChild(passedElem);
-    return element;
-  }
-
-  /**
-   * @param {!ReportRenderer.AuditJSON} audit
-   * @return {!Element}
-   */
-  _renderAudit(audit) {
-    const element = this._dom.createElement('div', 'lh-audit');
-    element.appendChild(this._renderAuditScore(audit));
-    return element;
+    return container;
   }
 }
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = ReportRenderer;
+} else {
+  self.ReportRenderer = ReportRenderer;
 }
 
 /**
  * @typedef {{
- *     id: string, weight:
- *     number, score: number,
+ *     id: string,
+ *     weight: number,
+ *     score: number,
  *     result: {
  *       description: string,
+ *       debugString: string,
  *       displayValue: string,
  *       helpText: string,
  *       score: (number|boolean),
  *       scoringMode: string,
- *       details: (!DetailsRenderer.DetailsJSON|!DetailsRenderer.CardsDetailsJSON|undefined)
+ *       optimalValue: number,
+ *       details: (!DetailsRenderer.DetailsJSON|undefined)
  *     }
  * }}
  */
@@ -231,6 +186,7 @@ ReportRenderer.AuditJSON; // eslint-disable-line no-unused-expressions
 /**
  * @typedef {{
  *     name: string,
+ *     id: string,
  *     weight: number,
  *     score: number,
  *     description: string,
@@ -241,12 +197,15 @@ ReportRenderer.CategoryJSON; // eslint-disable-line no-unused-expressions
 
 /**
  * @typedef {{
- *     lighthouseVersion: !string,
- *     generatedTime: !string,
- *     initialUrl: !string,
- *     url: !string,
- *     audits: ?Object,
- *     reportCategories: !Array<!ReportRenderer.CategoryJSON>
+ *     lighthouseVersion: string,
+ *     generatedTime: string,
+ *     initialUrl: string,
+ *     url: string,
+ *     reportCategories: !Array<!ReportRenderer.CategoryJSON>,
+ *     runtimeConfig: {
+ *       blockedUrlPatterns: !Array<string>,
+ *       environment: !Array<{description: string, enabled: boolean, name: string}>
+ *     }
  * }}
  */
 ReportRenderer.ReportJSON; // eslint-disable-line no-unused-expressions

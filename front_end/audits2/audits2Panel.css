@@ -163,6 +163,17 @@ button.new-audit {
     content: "";
 }
 
+.audits2-status .icon.error,
+.audits2-status .icon.error::before,
+.audits2-status .icon.error::after {
+  display:none;
+}
+
+.lh-root {
+  --report-menu-width: 0 !important;
+}
+
+
 @keyframes spinner-animation {
     from { transform: rotate(0); }
     to { transform: rotate(360deg); }

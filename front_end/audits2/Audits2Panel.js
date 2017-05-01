@@ -61,9 +61,8 @@ Audits2.Audits2Panel = class extends UI.Panel {
    */
   _createStatusView(launcherUIElement) {
     var statusView = launcherUIElement.createChild('div', 'audits2-status hbox hidden');
-    statusView.createChild('span', 'icon');
-    this._statusElement = createElement('p');
-    statusView.appendChild(this._statusElement);
+    this._statusIcon = statusView.createChild('span', 'icon');
+    this._statusElement = statusView.createChild('p');
     this._updateStatus(Common.UIString('Loading...'));
     return statusView;
   }
@@ -87,6 +86,8 @@ Audits2.Audits2Panel = class extends UI.Panel {
         .then(lighthouseResult => {
           this._finish(lighthouseResult);
           return this._stop();
+        }).catch(err => {
+          if (err instanceof Error) this._renderBugReport(err);
         });
   }
 
@@ -148,16 +149,47 @@ Audits2.Audits2Panel = class extends UI.Panel {
   }
 
   /**
+   * @param {!Error} err
+   */
+  _renderBugReport(err) {
+    console.error(err);
+    this._statusElement.textContent = '';
+    this._statusIcon.classList.add('error');
+    this._statusElement.createTextChild(Common.UIString('We ran into an error. '));
+    this._createBugReportLink(err, this._statusElement);
+  }
+
+  /**
+   * @param {!Error} err
+   * @param {!Element} parentElem
+   */
+  _createBugReportLink(err, parentElem) {
+    var baseURI = 'https://github.com/GoogleChrome/lighthouse/issues/new?';
+    var title = encodeURI('title=DevTools Error: ' + err.message.substring(0, 60));
+
+    var qsBody = '';
+    qsBody += '**Error Message**: ' + err.message + '\n';
+    qsBody += '**Stack Trace**:\n ```' + err.stack + '```';
+    var body = '&body=' + encodeURI(qsBody);
+
+    var reportErrorEl = parentElem.createChild('a', 'audits2-link audits2-report-error');
+    reportErrorEl.href = baseURI + title + body;
+    reportErrorEl.textContent = Common.UIString('Report this bug');
+    reportErrorEl.target = '_blank';
+  }
+
+  /**
    * @param {!Element} resultsView
    * @param {!ReportRenderer.ReportJSON} lighthouseResult
    * @suppressGlobalPropertiesCheck
    */
   _renderReport(resultsView, lighthouseResult) {
-    var reportContainer = resultsView.createChild('div', 'report-container');
+    var reportContainer = resultsView.createChild('div', 'report-container lh-root');
 
     var dom = new DOM(document);
     var detailsRenderer = new DetailsRenderer(dom);
-    var renderer = new ReportRenderer(dom, detailsRenderer);
+    var categoryRenderer = new CategoryRenderer(dom, detailsRenderer);
+    var renderer = new Audits2.ReportRenderer(dom, categoryRenderer);
 
     var templatesHTML = Runtime.cachedResources['audits2/lighthouse/templates.html'];
     var templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
@@ -165,7 +197,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
       return;
 
     renderer.setTemplateContext(templatesDOM);
-    reportContainer.appendChild(renderer.renderReport(lighthouseResult));
+    renderer.renderReport(lighthouseResult, reportContainer);
   }
 
   /**
@@ -191,6 +223,28 @@ Audits2.Audits2Panel = class extends UI.Panel {
     elem.appendChild(newAuditButton);
   }
 };
+
+/**
+ * @override
+ */
+Audits2.ReportRenderer = class extends ReportRenderer {
+  /**
+   * Provides empty element for left nav
+   * @override
+   * @returns {!DocumentFragment}
+   */
+  _renderReportNav() {
+    return createDocumentFragment();
+  }
+};
+
+
+class ReportUIFeatures {
+  /**
+   * @param {!ReportRenderer.ReportJSON} report
+   */
+  initFeatures(report) {}
+}
 
 /** @typedef {{id: string, configID: string, description: string}} */
 Audits2.Audits2Panel.Preset;

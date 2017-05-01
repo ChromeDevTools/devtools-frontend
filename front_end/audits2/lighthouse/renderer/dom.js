@@ -15,13 +15,14 @@
  */
 'use strict';
 
-/* globals URL */
+/* globals URL self */
 
 class DOM {
   /**
    * @param {!Document} document
    */
   constructor(document) {
+    /** @private {!Document} */
     this._document = document;
   }
 
@@ -33,9 +34,7 @@ class DOM {
    *     set the attribute on the node.
    * @return {!Element}
    */
-  createElement(name, className, attrs) {
-    // TODO(all): adopt `attrs` default arg when https://codereview.chromium.org/2821773002/ lands
-    attrs = attrs || {};
+  createElement(name, className, attrs = {}) {
     const element = this._document.createElement(name);
     if (className) {
       element.className = className;
@@ -51,16 +50,36 @@ class DOM {
 
   /**
    * @param {string} selector
-   * @param {!Document|!Element} context
+   * @param {!Node} context
    * @return {!DocumentFragment} A clone of the template content.
    * @throws {Error}
    */
   cloneTemplate(selector, context) {
-    const template = context.querySelector(selector);
+    const template = /** @type {?HTMLTemplateElement} */ (context.querySelector(selector));
     if (!template) {
       throw new Error(`Template not found: template${selector}`);
     }
-    return /** @type {!DocumentFragment} */ (this._document.importNode(template.content, true));
+
+    const clone = /** @type {!DocumentFragment} */ (
+        this._document.importNode(template.content, true));
+
+    // Prevent duplicate styles in the DOM. After a template has been stamped
+    // for the first time, remove the clone's styles so they're not re-added.
+    if (template.hasAttribute('data-stamped')) {
+      this.findAll('style', clone).forEach(style => style.remove());
+    }
+    template.setAttribute('data-stamped', true);
+
+    return clone;
+  }
+
+  /**
+   * Resets the "stamped" state of the templates.
+   */
+  resetTemplates() {
+    this.findAll('template[data-stamped]', this._document).forEach(t => {
+      t.removeAttribute('data-stamped');
+    });
   }
 
   /**
@@ -80,7 +99,7 @@ class DOM {
 
       // Append link if there are any.
       if (linkText && linkHref) {
-        const a = this.createElement('a');
+        const a = /** @type {!HTMLAnchorElement} */ (this.createElement('a'));
         a.rel = 'noopener';
         a.target = '_blank';
         a.textContent = linkText;
@@ -98,8 +117,35 @@ class DOM {
   document() {
     return this._document;
   }
+
+  /**
+   * Guaranteed context.querySelector. Always returns an element or throws if
+   * nothing matches query.
+   * @param {string} query
+   * @param {!Node} context
+   * @return {!Element}
+   */
+  find(query, context) {
+    const result = context.querySelector(query);
+    if (result === null) {
+      throw new Error(`query ${query} not found`);
+    }
+    return result;
+  }
+
+  /**
+   * Helper for context.querySelectorAll. Returns an Array instead of a NodeList.
+   * @param {string} query
+   * @param {!Node} context
+   * @return {!Array<!Element>}
+   */
+  findAll(query, context) {
+    return Array.from(context.querySelectorAll(query));
+  }
 }
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = DOM;
+} else {
+  self.DOM = DOM;
 }

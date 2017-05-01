@@ -689,11 +689,10 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    * @param {?SDK.DebuggerModel.CallFrame} callFrame
    */
   setSelectedCallFrame(callFrame) {
-    this._selectedCallFrame = callFrame;
-    if (!this._selectedCallFrame)
+    if (this._selectedCallFrame === callFrame)
       return;
-
-    this.dispatchEventToListeners(SDK.DebuggerModel.Events.CallFrameSelected, callFrame);
+    this._selectedCallFrame = callFrame;
+    this.dispatchEventToListeners(SDK.DebuggerModel.Events.CallFrameSelected, this);
   }
 
   /**

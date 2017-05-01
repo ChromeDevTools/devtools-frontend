@@ -215,17 +215,37 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     if (!this._executionLine)
       return;
 
-    this.codeMirror().addLineClass(this._executionLine, 'wrap', 'cm-execution-line');
+    this.showExecutionLineBackground();
+    this.codeMirror().addLineClass(this._executionLine, 'wrap', 'cm-execution-line-outline');
+    var token = this.tokenAtTextPosition(lineNumber, columnNumber);
+    var endColumn;
+    if (token && token.type)
+      endColumn = token.endColumn;
+    else
+      endColumn = this.codeMirror().getLine(lineNumber).length;
+
+
     this._executionLineTailMarker = this.codeMirror().markText(
-        {line: lineNumber, ch: columnNumber}, {line: lineNumber, ch: this.codeMirror().getLine(lineNumber).length},
-        {className: 'cm-execution-line-tail'});
+        {line: lineNumber, ch: columnNumber}, {line: lineNumber, ch: endColumn}, {className: 'cm-execution-line-tail'});
+  }
+
+  showExecutionLineBackground() {
+    if (this._executionLine)
+      this.codeMirror().addLineClass(this._executionLine, 'wrap', 'cm-execution-line');
+  }
+
+  hideExecutionLineBackground() {
+    if (this._executionLine)
+      this.codeMirror().removeLineClass(this._executionLine, 'wrap', 'cm-execution-line');
   }
 
   clearExecutionLine() {
     this.clearPositionHighlight();
 
-    if (this._executionLine)
-      this.codeMirror().removeLineClass(this._executionLine, 'wrap', 'cm-execution-line');
+    if (this._executionLine) {
+      this.hideExecutionLineBackground();
+      this.codeMirror().removeLineClass(this._executionLine, 'wrap', 'cm-execution-line-outline');
+    }
     delete this._executionLine;
 
     if (this._executionLineTailMarker)

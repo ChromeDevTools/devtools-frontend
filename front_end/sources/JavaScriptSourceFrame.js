@@ -55,6 +55,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     this.textEditor.element.addEventListener('keyup', this._onKeyUp.bind(this), true);
     this.textEditor.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     this.textEditor.element.addEventListener('mousedown', this._onMouseDown.bind(this), true);
+    this.textEditor.element.addEventListener('focusout', this._onBlur.bind(this), false);
     if (Runtime.experiments.isEnabled('continueToLocationMarkers')) {
       this.textEditor.element.addEventListener('wheel', event => {
         if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event))
@@ -485,6 +486,8 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
    * @param {!KeyboardEvent} event
    */
   _onKeyDown(event) {
+    this._clearControlDown();
+
     if (event.key === 'Escape') {
       if (this._popoverHelper.isPopoverVisible()) {
         this._popoverHelper.hidePopover();
@@ -492,9 +495,15 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       }
       return;
     }
+
     if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event) && this._executionLocation) {
-      if (!this._continueToLocationDecorations)
-        this._showContinueToLocations();
+      this._controlDown = true;
+      if (event.key === UI.KeyboardShortcut.Keys.CtrlOrMeta.name) {
+        this._controlTimeout = setTimeout(() => {
+          if (this._executionLocation && this._controlDown)
+            this._showContinueToLocations();
+        }, 150);
+      }
     }
   }
 
@@ -502,7 +511,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
    * @param {!MouseEvent} event
    */
   _onMouseMove(event) {
-    if (this._executionLocation && UI.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
+    if (this._executionLocation && this._controlDown && UI.KeyboardShortcut.eventHasCtrlOrMeta(event)) {
       if (!this._continueToLocationDecorations)
         this._showContinueToLocations();
     }
@@ -532,12 +541,25 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
   }
 
   /**
+   * @param {!Event} event
+   */
+  _onBlur(event) {
+    if (this.textEditor.element.isAncestor(event.target))
+      return;
+    this._clearControlDown();
+  }
+
+  /**
    * @param {!KeyboardEvent} event
    */
   _onKeyUp(event) {
-    if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event))
-      return;
+    this._clearControlDown();
+  }
+
+  _clearControlDown() {
+    this._controlDown = false;
     this._clearContinueToLocations();
+    clearTimeout(this._controlTimeout);
   }
 
   /**
@@ -601,10 +623,11 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     if (this.isShowing()) {
       // We need SourcesTextEditor to be initialized prior to this call. @see crbug.com/506566
       setImmediate(() => {
-        this._generateValuesInSource();
-        if (Runtime.experiments.isEnabled('continueToLocationMarkers')) {
-          if (this._continueToLocationDecorations)
+        if (this._controlDown) {
+          if (Runtime.experiments.isEnabled('continueToLocationMarkers'))
             this._showContinueToLocations();
+        } else {
+          this._generateValuesInSource();
         }
       });
     }
@@ -645,7 +668,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       return;
     var localScope = callFrame.localScope();
     if (!localScope) {
-      this._clearContinueToLocations();
+      this._clearContinueToLocationsNoRestore();
       return;
     }
     var start = localScope.startLocation();
@@ -659,7 +682,9 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
      * @this {Sources.JavaScriptSourceFrame}
      */
     function renderLocations(locations) {
-      this._clearContinueToLocations();
+      this._clearContinueToLocationsNoRestore();
+      this.textEditor.hideExecutionLineBackground();
+      this._clearValueWidgets();
       this._continueToLocationDecorations = new Map();
       for (var location of locations) {
         var lineNumber = location.lineNumber;
@@ -827,11 +852,12 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
         this.textEditor.clearExecutionLine();
       delete this._executionLocation;
       this._clearValueWidgetsTimer = setTimeout(this._clearValueWidgets.bind(this), 1000);
-      this._clearContinueToLocations();
+      this._clearContinueToLocationsNoRestore();
     });
   }
 
   _clearValueWidgets() {
+    clearTimeout(this._clearValueWidgetsTimer);
     delete this._clearValueWidgetsTimer;
     this.textEditor.operation(() => {
       for (var line of this._valueWidgets.keys())
@@ -840,13 +866,23 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     });
   }
 
-  _clearContinueToLocations() {
+  _clearContinueToLocationsNoRestore() {
     if (!this._continueToLocationDecorations)
       return;
     this.textEditor.operation(() => {
       for (var decoration of this._continueToLocationDecorations.keys())
         this.textEditor.removeHighlight(decoration);
-      delete this._continueToLocationDecorations;
+      this._continueToLocationDecorations = null;
+    });
+  }
+
+  _clearContinueToLocations() {
+    if (!this._continueToLocationDecorations)
+      return;
+    this.textEditor.operation(() => {
+      this.textEditor.showExecutionLineBackground();
+      this._generateValuesInSource();
+      this._clearContinueToLocationsNoRestore();
     });
   }
 

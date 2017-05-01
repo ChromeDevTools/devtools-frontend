@@ -51,6 +51,7 @@
     border: 1px solid rgb(121, 141, 254);
     background-color: rgb(171, 191, 254);
 }
+
 .CodeMirror .source-frame-continue-to-location-start {
     border-left-width: 1px;
     margin-left: -1px;
@@ -244,6 +245,10 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .cm-execution-line,
 .-theme-selection-color {
     background-color: rgb(230, 236, 255);
+}
+
+.cm-execution-line-outline,
+.-theme-selection-color {
     outline: 1px solid rgb(64, 115, 244);
 }
 

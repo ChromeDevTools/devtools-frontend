@@ -266,13 +266,15 @@ Bindings.BreakpointManager = class extends Common.Object {
    * @return {!Promise<!Array<!Workspace.UILocation>>}
    */
   possibleBreakpoints(uiSourceCode, textRange) {
-    var startLocation = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(
+    var startLocations = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(
         uiSourceCode, textRange.startLine, textRange.startColumn);
-    var endLocation =
-        Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, textRange.endLine, textRange.endColumn);
-    if (!startLocation || !endLocation || startLocation.debuggerModel !== endLocation.debuggerModel)
+    var endLocations = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(
+        uiSourceCode, textRange.endLine, textRange.endColumn);
+    var startLocationsByScript = new Map(startLocations.map(location => [location.script(), location]));
+    var endLocation = endLocations.find(location => location.script() && startLocationsByScript.get(location.script()));
+    if (!endLocation)
       return Promise.resolve([]);
-
+    var startLocation = startLocationsByScript.get(endLocation.script());
     return startLocation.debuggerModel
         .getPossibleBreakpoints(startLocation, endLocation, /* restrictToFunction */ false)
         .then(toUILocations.bind(this));
@@ -809,7 +811,7 @@ Bindings.BreakpointManager.ModelBreakpoint = class {
     var condition = this._breakpoint.condition();
 
     var debuggerLocation = uiSourceCode &&
-        Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
+        Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber)[0];
     var newState;
     if (this._breakpoint._isRemoved || !this._breakpoint.enabled() || this._scriptDiverged()) {
       newState = null;

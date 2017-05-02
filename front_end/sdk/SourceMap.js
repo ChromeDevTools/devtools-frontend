@@ -345,23 +345,15 @@ SDK.TextSourceMap = class {
   /**
    * @param {string} sourceURL
    * @param {number} lineNumber
-   * @return {?SDK.SourceMapEntry}
+   * @return {!Array<!SDK.SourceMapEntry>}
    */
-  firstSourceLineMapping(sourceURL, lineNumber) {
+  mappingsForLine(sourceURL, lineNumber) {
     var mappings = this._reversedMappings(sourceURL);
-    var index = mappings.lowerBound(lineNumber, lineComparator);
-    if (index >= mappings.length || mappings[index].sourceLineNumber !== lineNumber)
-      return null;
-    return mappings[index];
-
-    /**
-     * @param {number} lineNumber
-     * @param {!SDK.SourceMapEntry} mapping
-     * @return {number}
-     */
-    function lineComparator(lineNumber, mapping) {
-      return lineNumber - mapping.sourceLineNumber;
-    }
+    var startIndex = mappings.lowerBound(lineNumber, (lineNumber, mapping) => lineNumber - mapping.sourceLineNumber);
+    var endIndex = startIndex;
+    while (endIndex < mappings.length && mappings[endIndex].sourceLineNumber === lineNumber)
+      ++endIndex;
+    return mappings.slice(startIndex, endIndex);
   }
 
   /**

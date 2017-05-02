@@ -170,11 +170,11 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?SDK.DebuggerModel.Location}
+   * @return {!Array<!SDK.DebuggerModel.Location>}
    */
-  uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
+  uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
     var sourceMapping = uiSourceCode[Bindings.DebuggerWorkspaceBinding._sourceMappingSymbol];
-    return sourceMapping && sourceMapping.uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
+    return sourceMapping ? sourceMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) : [];
   }
 
   /**
@@ -182,10 +182,10 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
    * @return {!Workspace.UILocation}
    */
   normalizeUILocation(uiLocation) {
-    var rawLocation =
-        this.uiLocationToRawLocation(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
-    if (rawLocation)
-      return this.rawLocationToUILocation(rawLocation);
+    var rawLocations =
+        this.uiLocationToRawLocations(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
+    if (rawLocations.length)
+      return this.rawLocationToUILocation(rawLocations[0]);
     return uiLocation;
   }
 
@@ -586,9 +586,9 @@ Bindings.DebuggerSourceMapping.prototype = {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?SDK.DebuggerModel.Location}
+   * @return {!Array<!SDK.DebuggerModel.Location>}
    */
-  uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {},
+  uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {},
 
   /**
    * @return {boolean}

@@ -645,14 +645,16 @@ Sources.SourcesPanel = class extends UI.Panel {
     if (!executionContext)
       return;
     // Always use 0 column.
-    var rawLocation =
-        Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
-    if (!rawLocation || rawLocation.debuggerModel !== executionContext.debuggerModel)
+    var rawLocations =
+        Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
+    // TODO(kozyatinskiy): make it possible to continue to multiple locations (whichever is hit first).
+    var location = rawLocations.find(location => location.debuggerModel === executionContext.debuggerModel);
+    if (!location)
       return;
     if (!this._prepareToResume())
       return;
 
-    rawLocation.continueToLocation();
+    location.continueToLocation();
   }
 
   _toggleBreakpointsActive() {

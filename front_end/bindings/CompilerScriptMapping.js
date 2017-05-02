@@ -150,19 +150,16 @@ Bindings.CompilerScriptMapping = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?SDK.DebuggerModel.Location}
+   * @return {!Array<!SDK.DebuggerModel.Location>}
    */
-  uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
+  uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
     var script = uiSourceCode[Bindings.CompilerScriptMapping._scriptSymbol];
-    if (!script)
-      return null;
-    var sourceMap = this._sourceMapManager.sourceMapForClient(script);
+    var sourceMap = script && this._sourceMapManager.sourceMapForClient(script);
     if (!sourceMap)
-      return null;
-    var entry = sourceMap.firstSourceLineMapping(uiSourceCode.url(), lineNumber);
-    if (!entry)
-      return null;
-    return this._debuggerModel.createRawLocation(script, entry.lineNumber, entry.columnNumber);
+      return [];
+    return sourceMap.mappingsForLine(uiSourceCode.url(), lineNumber)
+        .map(entry => this._debuggerModel.createRawLocation(script, entry.lineNumber, entry.columnNumber))
+        .filter(location => !!location);
   }
 
   /**
@@ -278,7 +275,7 @@ Bindings.CompilerScriptMapping = class {
     var sourceMap = script ? this._sourceMapManager.sourceMapForClient(script) : null;
     if (!sourceMap)
       return true;
-    return !!sourceMap.firstSourceLineMapping(uiSourceCode.url(), lineNumber);
+    return sourceMap.mappingsForLine(uiSourceCode.url(), lineNumber).length > 0;
   }
 
   dispose() {

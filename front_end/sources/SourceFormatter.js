@@ -155,17 +155,18 @@ Sources.SourceFormatter.ScriptMapping = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?SDK.DebuggerModel.Location}
+   * @return {!Array<!SDK.DebuggerModel.Location>}
    */
-  uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
+  uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
     var formatData = Sources.SourceFormatData._for(uiSourceCode);
     if (!formatData)
-      return null;
+      return [];
     var originalLocation = formatData.mapping.formattedToOriginal(lineNumber, columnNumber);
     var scripts = this._scriptsForUISourceCode(formatData.originalSourceCode);
     if (!scripts.length)
-      return null;
-    return scripts[0].debuggerModel.createRawLocation(scripts[0], originalLocation[0], originalLocation[1]);
+      return [];
+    var location = scripts[0].debuggerModel.createRawLocation(scripts[0], originalLocation[0], originalLocation[1]);
+    return location ? [location] : [];
   }
 
   /**
@@ -225,9 +226,8 @@ Sources.SourceFormatter.ScriptMapping = class {
       }
     }
     if (uiSourceCode.contentType().isScript()) {
-      var rawLocation = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, 0, 0);
-      if (rawLocation)
-        return [rawLocation.script()];
+      return Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, 0, 0)
+          .map(location => location.script());
     }
     return [];
   }

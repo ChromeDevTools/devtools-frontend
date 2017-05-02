@@ -251,12 +251,12 @@ Sources.SourceMapNamesResolver.resolveExpression = function(
  */
 Sources.SourceMapNamesResolver._resolveExpression = function(
     uiSourceCode, lineNumber, startColumnNumber, endColumnNumber) {
-  var rawLocation =
-      Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, lineNumber, startColumnNumber);
-  if (!rawLocation)
+  var rawLocations =
+      Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, lineNumber, startColumnNumber);
+  if (!rawLocations.length)
     return Promise.resolve('');
 
-  var script = rawLocation.script();
+  var script = rawLocations[0].script();
   if (!script)
     return Promise.resolve('');
   var sourceMap = Bindings.debuggerWorkspaceBinding.sourceMapForScript(script);

@@ -1233,27 +1233,38 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       if (this._muted && !this.uiSourceCode().isDirty())
         this._restoreBreakpointsIfConsistentScripts();
     }
-    if (newScriptFile)
-      this._scriptFileForDebuggerModel.set(debuggerModel, newScriptFile);
+    if (!newScriptFile)
+      return;
+    this._scriptFileForDebuggerModel.set(debuggerModel, newScriptFile);
+    newScriptFile.addEventListener(Bindings.ResourceScriptFile.Events.DidMergeToVM, this._didMergeToVM, this);
+    newScriptFile.addEventListener(Bindings.ResourceScriptFile.Events.DidDivergeFromVM, this._didDivergeFromVM, this);
+    if (this.loaded)
+      newScriptFile.checkMapping();
+    this._showSourceMapInfobar(newScriptFile.hasSourceMapURL());
+  }
 
-    if (newScriptFile) {
-      newScriptFile.addEventListener(Bindings.ResourceScriptFile.Events.DidMergeToVM, this._didMergeToVM, this);
-      newScriptFile.addEventListener(Bindings.ResourceScriptFile.Events.DidDivergeFromVM, this._didDivergeFromVM, this);
-      if (this.loaded)
-        newScriptFile.checkMapping();
-      if (newScriptFile.hasSourceMapURL()) {
-        var sourceMapInfobar = UI.Infobar.create(
-            UI.Infobar.Type.Info, Common.UIString('Source Map detected.'),
-            Common.settings.createSetting('sourceMapInfobarDisabled', false));
-        if (sourceMapInfobar) {
-          sourceMapInfobar.createDetailsRowMessage(Common.UIString(
-              'Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files.'));
-          sourceMapInfobar.createDetailsRowMessage(Common.UIString(
-              'Associated files are available via file tree or %s.',
-              UI.shortcutRegistry.shortcutTitleForAction('quickOpen.show')));
-          this.attachInfobars([sourceMapInfobar]);
-        }
+  /**
+   * @param {boolean} show
+   */
+  _showSourceMapInfobar(show) {
+    if (this._sourceMapInfobar) {
+      if (!show) {
+        this._sourceMapInfobar.dispose();
+        delete this._sourceMapInfobar;
       }
+      return;
+    }
+    this._sourceMapInfobar = UI.Infobar.create(
+        UI.Infobar.Type.Info, Common.UIString('Source Map detected.'),
+        Common.settings.createSetting('sourceMapInfobarDisabled', false));
+    if (this._sourceMapInfobar) {
+      this._sourceMapInfobar.createDetailsRowMessage(Common.UIString(
+          'Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files.'));
+      this._sourceMapInfobar.createDetailsRowMessage(Common.UIString(
+          'Associated files are available via file tree or %s.',
+          UI.shortcutRegistry.shortcutTitleForAction('quickOpen.show')));
+      this._sourceMapInfobar.setCloseCallback(() => delete this._sourceMapInfobar);
+      this.attachInfobars([this._sourceMapInfobar]);
     }
   }
 

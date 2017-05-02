@@ -420,8 +420,11 @@ Console.ConsoleViewport = class {
     }
 
     var textLines = [];
-    for (var i = startSelection.item; i <= endSelection.item; ++i)
-      textLines.push(this._providerElement(i).element().deepTextContent());
+    for (var i = startSelection.item; i <= endSelection.item; ++i) {
+      var element = this._providerElement(i).element();
+      var lineContent = element.childTextNodes().map(Components.Linkifier.untruncatedNodeText).join('');
+      textLines.push(lineContent);
+    }
 
     var endSelectionElement = this._providerElement(endSelection.item).element();
     if (endSelection.node && endSelection.node.isSelfOrDescendant(endSelectionElement)) {
@@ -453,10 +456,15 @@ Console.ConsoleViewport = class {
         offset = container.textContent.length;
       }
     }
+
     var chars = 0;
     var node = itemElement;
     while ((node = node.traverseNextTextNode(itemElement)) && !node.isSelfOrDescendant(container))
-      chars += node.textContent.length;
+      chars += Components.Linkifier.untruncatedNodeText(node).length;
+    // If the selection offset is at the end of a link's ellipsis, use the untruncated length as offset.
+    var untruncatedContainerLength = Components.Linkifier.untruncatedNodeText(container).length;
+    if (offset === 1 && untruncatedContainerLength > offset)
+      offset = untruncatedContainerLength;
     return chars + offset;
   }
 

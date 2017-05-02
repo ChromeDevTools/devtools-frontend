@@ -367,7 +367,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       var location = this._itemLocation(item);
       if (location) {
         var uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location);
-        itemText += ' (' + uiLocation.linkText() + ')';
+        itemText += ' (' + uiLocation.linkText(true /* skipTrim */) + ')';
       }
       text.push(itemText);
     }

@@ -1040,11 +1040,7 @@ Console.ConsoleViewMessage = class {
   toExportString() {
     var lines = [];
     var nodes = this.contentElement().childTextNodes();
-    var messageContent = '';
-    for (var i = 0; i < nodes.length; ++i) {
-      var originalLinkText = Components.Linkifier.originalLinkText(nodes[i].parentElement);
-      messageContent += typeof originalLinkText === 'string' ? originalLinkText : nodes[i].textContent;
-    }
+    var messageContent = nodes.map(Components.Linkifier.untruncatedNodeText).join('');
     for (var i = 0; i < this.repeatCount(); ++i)
       lines.push(messageContent);
     return lines.join('\n');

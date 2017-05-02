@@ -44,11 +44,13 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
     for (var payload of payloads) {
       var location = this._runtimeModel.debuggerModel().createRawLocationByScriptId(
           payload.scriptId, payload.lineNumber, payload.columnNumber);
+      if (!location)
+        continue;
       eventListeners.push(new SDK.EventListener(
           this, remoteObject, payload.type, payload.useCapture, payload.passive, payload.once,
           payload.handler ? this._runtimeModel.createRemoteObject(payload.handler) : null,
-          payload.originalHandler ? this._runtimeModel.createRemoteObject(payload.originalHandler) : null,
-          /** @type {!SDK.DebuggerModel.Location} */ (location), null));
+          payload.originalHandler ? this._runtimeModel.createRemoteObject(payload.originalHandler) : null, location,
+          null));
     }
     return eventListeners;
   }

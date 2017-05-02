@@ -38,7 +38,8 @@ Timeline.TimelineFlameChartDataProvider = class {
    */
   constructor(filters) {
     this.reset();
-    this._font = '11px ' + Host.fontFamily();
+    var font = '11px ' + Host.fontFamily();
+    this._font = font;
     this._filters = filters;
     /** @type {?PerfUI.FlameChart.TimelineData} */
     this._timelineData = null;
@@ -53,27 +54,29 @@ Timeline.TimelineFlameChartDataProvider = class {
     this._extensionColorGenerator =
         new PerfUI.FlameChart.ColorGenerator({min: 210, max: 300}, {min: 70, max: 100, count: 6}, 70, 0.7);
 
-    var defaultGroupStyle = {
-      padding: 4,
-      height: 17,
-      collapsible: true,
-      color: UI.themeSupport.patchColorText('#222', UI.ThemeSupport.ColorUsage.Foreground),
-      backgroundColor: UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background),
-      font: this._font,
-      nestingLevel: 0,
-      shareHeaderLine: true
-    };
+    /**
+     * @param {!Object} extra
+     * @return {!PerfUI.FlameChart.GroupStyle}
+     */
+    function buildGroupStyle(extra) {
+      var defaultGroupStyle = {
+        padding: 4,
+        height: 17,
+        collapsible: true,
+        color: UI.themeSupport.patchColorText('#222', UI.ThemeSupport.ColorUsage.Foreground),
+        backgroundColor: UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background),
+        font: font,
+        nestingLevel: 0,
+        shareHeaderLine: true
+      };
+      return /** @type {!PerfUI.FlameChart.GroupStyle} */ (Object.assign(defaultGroupStyle, extra));
+    }
 
-    this._headerLevel1 = /** @type {!PerfUI.FlameChart.GroupStyle} */
-        (Object.assign({}, defaultGroupStyle, {shareHeaderLine: false}));
-    this._headerLevel2 = /** @type {!PerfUI.FlameChart.GroupStyle} */
-        (Object.assign({}, defaultGroupStyle, {padding: 2, nestingLevel: 1, collapsible: false}));
-    this._staticHeader = /** @type {!PerfUI.FlameChart.GroupStyle} */
-        (Object.assign({}, defaultGroupStyle, {collapsible: false}));
-    this._interactionsHeaderLevel1 = /** @type {!PerfUI.FlameChart.GroupStyle} */
-        (Object.assign({useFirstLineForOverview: true}, defaultGroupStyle));
-    this._interactionsHeaderLevel2 = /** @type {!PerfUI.FlameChart.GroupStyle} */
-        (Object.assign({}, defaultGroupStyle, {padding: 2, nestingLevel: 1}));
+    this._headerLevel1 = buildGroupStyle({shareHeaderLine: false});
+    this._headerLevel2 = buildGroupStyle({padding: 2, nestingLevel: 1, collapsible: false});
+    this._staticHeader = buildGroupStyle({collapsible: false});
+    this._interactionsHeaderLevel1 = buildGroupStyle({useFirstLineForOverview: true});
+    this._interactionsHeaderLevel2 = buildGroupStyle({padding: 2, nestingLevel: 1});
 
     /** @type {!Map<string, number>} */
     this._flowEventIndexById = new Map();

@@ -64,7 +64,7 @@ UI.GlassPane = class {
   /**
    * @param {?function(!Event)} callback
    */
-  setSetOutsideClickCallback(callback) {
+  setOutsideClickCallback(callback) {
     this._onClickOutsideCallback = callback;
   }
 

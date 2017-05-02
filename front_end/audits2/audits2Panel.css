@@ -4,176 +4,52 @@
  * found in the LICENSE file.
  */
 
-.audits2-view {
-    max-width: 550px;
-    min-width: 334px;
-    align-self: center;
-    margin: 30px 20px;
-}
-
-.results-view {
-    display: none;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-content: stretch;
-    align-items: stretch;
-}
-
-.show-results .audits2-view {
-    display: none;
-}
-
-.show-results .results-view {
-    display: flex;
-    flex: auto;
-}
-
-.results-bar {
-    flex: none;
-    align-self: auto;
-    border-bottom: 1px solid #cccccc;
-}
-
-.audits2-summary {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    padding: 6px;
-    line-height: 1.7;
-    align-self: center;
-}
-
-.audits2-summary span {
-    color: #b7b7b7;
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.audits2-summary span b {
-    font-weight: normal;
-    color: #636382;
-}
-
-.audits2-summary span:first-child {
-    color: inherit;
-    font-size: 110%;
+.toolbar {
+    border-bottom: 1px solid #ccc;
 }
 
 .audits2-logo {
-    width: 100px;
-    height: 110px;
+    width: 210px;
+    height: 200px;
     flex-shrink: 0;
     background-repeat: no-repeat;
     background-size: contain;
     margin-top: 10px;
-    background-image: -webkit-image-set(
-        url(Images/audits_logo.png) 1x,
-        url(Images/audits_logo_2x.png) 2x);
+    background-image: url(Images/audits_logo.svg);
 }
 
-.audits2-logo-small {
-    background-image: -webkit-image-set(
-        url(Images/audits_logo_bw.png) 1x,
-        url(Images/audits_logo_bw_2x.png) 2x);
-    height: 41px;
-    width: 42px;
-    align-self: center;
-    margin: 0 0 0 20px;
-    flex-shrink: 0;
-}
-
-.report-container {
-    flex: 1 1 auto;
-    align-self: auto;
-    position: relative;
-    overflow: auto;
-}
-
-.audits2-form label {
+.audits2-landing-page {
     display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.audits2-form label div {
-    display: inline;
+
+.audits2-landing-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 400px;
+    margin: 50px;
 }
 
-button.audit-btn {
-    display: inline-block;
-    color: white;
-    text-shadow: none;
-    padding: 6px 10px;
-    background-color: #4285f4 !important;
-    background-image: unset !important;
-    font-size: 11px;
-    box-shadow: none !important;
+.audits2-landing-text {
+    color: #666;
 }
 
-button.audit-btn:hover {
-    background-color: hsla(217, 89%, 58%, 1) !important;
-    color: white !important;
-}
-
-button.run-audit {
-    margin-top: 12px;
-}
-button.run-audit.started {
-    background-color: #ffffff !important;
-    color: gray;
-}
-
-button.run-audit.started:hover {
-    background-color: #eee !important;
-    color: gray !important;
-}
-
-button.new-audit {
-    align-self: center;
-    margin-right: 20px;
-}
-
-.audits2-status .icon {
-    width: 16px;
-    height: 16px;
-    margin-top: 10px;
-    margin-right: 4px;
-    animation: spinner-animation 1200ms linear infinite;
-    transform-origin: 50% 50%;
-    padding: 1px;
-}
-
-.audits2-status .icon::before {
-    display: inline-block;
-    border: 1px solid #1565C0;
-    border-radius: 7px;
-    width: 14px;
-    height: 14px;
-    content: "";
-    position: absolute;
-    box-sizing: border-box;
-}
-
-.audits2-status .icon::after {
-    display: inline-block;
-    width: 6px;
-    height: 7px;
-    background: white;
-    position: absolute;
-    content: "";
-}
-
-.audits2-status .icon.error,
-.audits2-status .icon.error::before,
-.audits2-status .icon.error::after {
-  display:none;
+.audits2-landing-bold-text {
+    font-weight: bold;
 }
 
 .lh-root {
   --report-menu-width: 0 !important;
 }
 
+.audits2-landing-center button {
+    margin-top: 20px;
+}
 
-@keyframes spinner-animation {
-    from { transform: rotate(0); }
-    to { transform: rotate(360deg); }
+.report-container {
+    overflow: auto;
+    position: relative;
+}

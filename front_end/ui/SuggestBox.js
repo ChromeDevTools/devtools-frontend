@@ -75,7 +75,7 @@ UI.SuggestBox = class {
 
     this._glassPane = new UI.GlassPane();
     this._glassPane.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PreferBottom);
-    this._glassPane.setSetOutsideClickCallback(this.hide.bind(this));
+    this._glassPane.setOutsideClickCallback(this.hide.bind(this));
     var shadowRoot = UI.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'ui/suggestBox.css');
     shadowRoot.appendChild(this._element);
   }

@@ -1,0 +1,75 @@
+/*
+ * Copyright 2017 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.audits2-view {
+    margin: 7px 20px;
+}
+
+header {
+    color: #666;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.audits2-form label {
+    display: flex;
+}
+
+.audits2-form label div {
+    display: inline;
+}
+
+.audits2-status .icon {
+    width: 16px;
+    height: 16px;
+    margin-top: 10px;
+    margin-right: 4px;
+    animation: spinner-animation 1200ms linear infinite;
+    transform-origin: 50% 50%;
+    padding: 1px;
+}
+
+.audits2-status .icon::before {
+    display: inline-block;
+    border: 1px solid #1565C0;
+    border-radius: 7px;
+    width: 14px;
+    height: 14px;
+    content: "";
+    position: absolute;
+    box-sizing: border-box;
+}
+
+.audits2-status .icon::after {
+    display: inline-block;
+    width: 6px;
+    height: 7px;
+    background: white;
+    position: absolute;
+    content: "";
+}
+
+button {
+    margin: 15px 10px;
+}
+
+.audits2-status .icon.error,
+.audits2-status .icon.error::before,
+.audits2-status .icon.error::after {
+    display: none;
+}
+
+.audits2-launcher-row {
+    padding: 6px;
+}
+
+.audits2-launcher-description {
+    padding: 3px 0 0 22px;
+}
+
+@keyframes spinner-animation {
+    from { transform: rotate(0); }
+    to { transform: rotate(360deg); }

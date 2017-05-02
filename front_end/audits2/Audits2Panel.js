@@ -5,7 +5,7 @@
 /**
  * @unrestricted
  */
-Audits2.Audits2Panel = class extends UI.Panel {
+Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
   constructor() {
     super('audits2');
     this.setHideOnDetach();
@@ -15,44 +15,100 @@ Audits2.Audits2Panel = class extends UI.Panel {
     this._protocolService = new Audits2.ProtocolService();
     this._protocolService.registerStatusCallback(msg => this._updateStatus(Common.UIString(msg)));
 
-    this._settings = Audits2.Audits2Panel.Presets.map(preset => {
-      const setting = Common.settings.createSetting(preset.id, true);
-      setting.setTitle(Common.UIString(preset.description));
-      return setting;
-    });
+    var toolbar = new UI.Toolbar('', this.panelSidebarElement());
 
-    var auditsViewElement = this.contentElement.createChild('div', 'hbox audits2-view');
-    this._resultsView = this.contentElement.createChild('div', 'vbox results-view');
-    this._createLauncherUI(auditsViewElement);
+    var newButton = new UI.ToolbarButton(Common.UIString('New audit\u2026'), 'largeicon-add');
+    toolbar.appendToolbarItem(newButton);
+    newButton.addEventListener(UI.ToolbarButton.Events.Click, this._showLauncherUI.bind(this));
+
+    var deleteButton = new UI.ToolbarButton(Common.UIString('Delete audit'), 'largeicon-delete');
+    toolbar.appendToolbarItem(deleteButton);
+    deleteButton.addEventListener(UI.ToolbarButton.Events.Click, this._deleteSelected.bind(this));
+
+    toolbar.appendSeparator();
+
+    var clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
+    toolbar.appendToolbarItem(clearButton);
+    clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearAll.bind(this));
+
+    this._treeOutline = new UI.TreeOutlineInShadow();
+    this._treeOutline.registerRequiredCSS('audits2/lighthouse/report-styles.css');
+    this._treeOutline.registerRequiredCSS('audits2/audits2Tree.css');
+    this.panelSidebarElement().appendChild(this._treeOutline.element);
+
+    this._dropTarget = new UI.DropTarget(
+        this.contentElement, [UI.DropTarget.Types.Files],
+        Common.UIString('Drop audit file here'), this._handleDrop.bind(this));
+
+    this._showLandingPage();
   }
 
-  _reset() {
-    this.contentElement.classList.remove('show-results');
-    this._resultsView.removeChildren();
+  _clearAll() {
+    this._treeOutline.removeChildren();
+    if (!this._treeOutline.rootElement().childCount())
+      this._showLandingPage();
   }
 
-  /**
-   * @param {!Element} auditsViewElement
-   */
-  _createLauncherUI(auditsViewElement) {
-    auditsViewElement.createChild('div', 'audits2-logo');
+  _deleteSelected() {
+    var selection = this._treeOutline.selectedTreeElement;
+    if (selection)
+      this._treeOutline.removeChild(selection);
+    if (!this._treeOutline.rootElement().childCount())
+      this._showLandingPage();
+  }
+
+  _showLandingPage() {
+    this.mainElement().removeChildren();
+    var landingPage = this.mainElement().createChild('div', 'vbox audits2-landing-page');
+    var landingCenter = landingPage.createChild('div', 'vbox audits2-landing-center');
+    landingCenter.createChild('div', 'audits2-logo');
+    var text = landingCenter.createChild('div', 'audits2-landing-text');
+    text.createChild('span', 'audits2-landing-bold-text').textContent = Common.UIString('Audits');
+    text.createChild('span').textContent = Common.UIString(' help you identify and fix common problems that affect' +
+        ' your site\'s performance, accessibility, and user experience. ');
+    var link = text.createChild('span', 'link');
+    link.textContent = Common.UIString('Learn more');
+    link.addEventListener(
+        'click', () => InspectorFrontendHost.openInNewTab('https://developers.google.com/web/tools/lighthouse/'));
+
+    var newButton = UI.createTextButton(
+        Common.UIString('Perform an audit\u2026'), this._showLauncherUI.bind(this), 'material-button default');
+    landingCenter.appendChild(newButton);
+  }
+
+  _showLauncherUI() {
+    this._dialog = new UI.Dialog();
+    this._dialog.setOutsideClickCallback(event => event.consume(true));
+    var root = UI.createShadowRootWithCoreStyles(this._dialog.contentElement, 'audits2/audits2Dialog.css');
+    var auditsViewElement = root.createChild('div', 'audits2-view');
     var uiElement = auditsViewElement.createChild('div');
     var headerElement = uiElement.createChild('header');
-    headerElement.createChild('p').textContent = Common.UIString(
-        'Audits will analyze the page against modern development best practices and collect useful performance metrics and diagnostics. Select audits to collect:');
+    headerElement.createChild('p').textContent = Common.UIString('Audits to perform');
     uiElement.appendChild(headerElement);
 
     var auditSelectorForm = uiElement.createChild('form', 'audits2-form');
 
-    this._settings
-      .map(setting => new UI.ToolbarSettingCheckbox(setting))
-      .forEach(checkbox => auditSelectorForm.appendChild(checkbox.element));
+    for (var preset of Audits2.Audits2Panel.Presets) {
+      preset.setting.setTitle(preset.title);
+      var checkbox = new UI.ToolbarSettingCheckbox(preset.setting);
+      var row = auditSelectorForm.createChild('div', 'vbox audits2-launcher-row');
+      row.appendChild(checkbox.element);
+      row.createChild('span', 'audits2-launcher-description dimmed').textContent = preset.description;
+    }
 
-    this._startButton = UI.createTextButton(
-        Common.UIString('Audit this page'), this._startButtonClicked.bind(this), 'run-audit audit-btn');
+    this._startButton =
+        UI.createTextButton(Common.UIString('Run audit'), this._start.bind(this), 'material-button default');
     auditSelectorForm.appendChild(this._startButton);
+    this._cancelButton = UI.createTextButton(Common.UIString('Cancel'), this._cancel.bind(this), 'material-button');
+    auditSelectorForm.appendChild(this._cancelButton);
 
     this._statusView = this._createStatusView(uiElement);
+
+    this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
+    this._dialog.setMaxContentSize(new UI.Size(600, 400));
+    this._dialog.show(this.mainElement());
+    auditsViewElement.tabIndex = 0;
+    auditsViewElement.focus();
   }
 
   /**
@@ -68,45 +124,59 @@ Audits2.Audits2Panel = class extends UI.Panel {
   }
 
   _start() {
+    this._dialog.setCloseOnEscape(false);
     this._inspectedURL = SDK.targetManager.mainTarget().inspectedURL();
 
-    const categoryIDs = this._settings.map(setting => {
-      const preset = Audits2.Audits2Panel.Presets.find(preset => preset.id === setting.name);
-      return {configID: preset.configID, value: setting.get()};
-    }).filter(agg => !!agg.value).map(agg => agg.configID);
+    var categoryIDs = [];
+    for (var preset of Audits2.Audits2Panel.Presets) {
+      if (preset.setting.get())
+        categoryIDs.push(preset.configID);
+    }
 
     return Promise.resolve()
         .then(_ => this._protocolService.attach())
         .then(_ => {
           this._auditRunning = true;
           this._updateButton();
-          this._updateStatus(Common.UIString('Loading...'));
+          this._updateStatus(Common.UIString('Loading\u2026'));
         })
         .then(_ => this._protocolService.startLighthouse(this._inspectedURL, categoryIDs))
         .then(lighthouseResult => {
           this._finish(lighthouseResult);
           return this._stop();
-        }).catch(err => {
-          if (err instanceof Error) this._renderBugReport(err);
+        })
+        .catch(err => {
+          if (err instanceof Error)
+            this._renderBugReport(err);
         });
   }
 
-  /**
-   * @param {!Event} event
-   */
-  _startButtonClicked(event) {
-    if (this._auditRunning) {
-      this._updateStatus(Common.UIString('Cancelling...'));
-      this._stop();
+  _hideDialog() {
+    if (!this._dialog)
       return;
+    this._dialog.hide();
+    delete this._dialog;
+    delete this._statusView;
+    delete this._statusIcon;
+    delete this._statusElement;
+    delete this._startButton;
+    delete this._cancelButton;
+  }
+
+  _cancel() {
+    if (this._auditRunning) {
+      this._updateStatus(Common.UIString('Cancelling\u2026'));
+      this._stop();
+    } else {
+      this._hideDialog();
     }
-    this._start();
   }
 
   _updateButton() {
-    this._startButton.textContent =
-        this._auditRunning ? Common.UIString('Cancel audit') : Common.UIString('Audit this page');
-    this._startButton.classList.toggle('started', this._auditRunning);
+    if (!this._dialog)
+      return;
+    this._startButton.classList.toggle('default', !this._auditRunning);
+    this._startButton.disabled = this._auditRunning;
     this._statusView.classList.toggle('hidden', !this._auditRunning);
   }
 
@@ -114,6 +184,8 @@ Audits2.Audits2Panel = class extends UI.Panel {
    * @param {string} statusMessage
    */
   _updateStatus(statusMessage) {
+    if (!this._dialog)
+      return;
     this._statusElement.textContent = statusMessage;
   }
 
@@ -126,8 +198,9 @@ Audits2.Audits2Panel = class extends UI.Panel {
       this._updateButton();
       var resourceTreeModel = SDK.targetManager.mainTarget().model(SDK.ResourceTreeModel);
       if (resourceTreeModel && this._inspectedURL !== SDK.targetManager.mainTarget().inspectedURL())
-        resourceTreeModel.navigate(this._inspectedURL);
-
+        resourceTreeModel.navigate(this._inspectedURL).then(() => this._hideDialog());
+      else
+        this._hideDialog();
     });
   }
 
@@ -139,13 +212,11 @@ Audits2.Audits2Panel = class extends UI.Panel {
       this._updateStatus(Common.UIString('Auditing failed.'));
       return;
     }
-    this._resultsView.removeChildren();
-
-    var url = lighthouseResult.url;
-    var timestamp = lighthouseResult.generatedTime;
-    this._createResultsBar(this._resultsView, url, timestamp);
-    this._renderReport(this._resultsView, lighthouseResult);
-    this.contentElement.classList.add('show-results');
+    var treeElement = new Audits2.Audits2Panel.TreeElement(lighthouseResult, this.mainElement());
+    this._treeOutline.appendChild(treeElement);
+    treeElement._populate();
+    treeElement.select();
+    this._hideDialog();
   }
 
   /**
@@ -179,55 +250,40 @@ Audits2.Audits2Panel = class extends UI.Panel {
   }
 
   /**
-   * @param {!Element} resultsView
-   * @param {!ReportRenderer.ReportJSON} lighthouseResult
-   * @suppressGlobalPropertiesCheck
+   * @param {!DataTransfer} dataTransfer
    */
-  _renderReport(resultsView, lighthouseResult) {
-    var reportContainer = resultsView.createChild('div', 'report-container lh-root');
-
-    var dom = new DOM(document);
-    var detailsRenderer = new DetailsRenderer(dom);
-    var categoryRenderer = new CategoryRenderer(dom, detailsRenderer);
-    var renderer = new Audits2.ReportRenderer(dom, categoryRenderer);
-
-    var templatesHTML = Runtime.cachedResources['audits2/lighthouse/templates.html'];
-    var templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
-    if (!templatesDOM)
+  _handleDrop(dataTransfer) {
+    var items = dataTransfer.items;
+    if (!items.length)
       return;
-
-    renderer.setTemplateContext(templatesDOM);
-    renderer.renderReport(lighthouseResult, reportContainer);
+    var item = items[0];
+    if (item.kind === 'file') {
+      var entry = items[0].webkitGetAsEntry();
+      if (!entry.isFile)
+        return;
+      entry.file(file => {
+        var reader = new FileReader();
+        reader.onload = () => this._loadedFromFile(/** @type {string} */ (reader.result));
+        reader.readAsText(file);
+      });
+    }
   }
 
   /**
-   * @param {!Element} resultsView
-   * @param {string} url
-   * @param {string} timestamp
+   * @param {string} profile
    */
-  _createResultsBar(resultsView, url, timestamp) {
-    var elem = resultsView.createChild('div', 'results-bar hbox');
-    elem.createChild('div', 'audits2-logo audits2-logo-small');
-
-    var summaryElem = elem.createChild('div', 'audits2-summary');
-    var reportFor = summaryElem.createChild('span');
-    reportFor.createTextChild('Report for ');
-    var urlElem = reportFor.createChild('b');
-    urlElem.textContent = url;
-    var timeElem = summaryElem.createChild('span');
-    timeElem.textContent =
-        `Generated at ${new Date(timestamp).toLocaleDateString()} ${new Date(timestamp).toLocaleTimeString()}`;
-
-    var newAuditButton =
-        UI.createTextButton(Common.UIString('New Audit'), this._reset.bind(this), 'new-audit audit-btn');
-    elem.appendChild(newAuditButton);
+  _loadedFromFile(profile) {
+    var data = JSON.parse(profile);
+    if (!data['lighthouseVersion'])
+      return;
+    this._finish(/** @type {!ReportRenderer.ReportJSON} */(data));
   }
 };
 
 /**
  * @override
  */
-Audits2.ReportRenderer = class extends ReportRenderer {
+Audits2.Audits2Panel.ReportRenderer = class extends ReportRenderer {
   /**
    * Provides empty element for left nav
    * @override
@@ -236,26 +292,55 @@ Audits2.ReportRenderer = class extends ReportRenderer {
   _renderReportNav() {
     return createDocumentFragment();
   }
-};
 
+  /**
+   * @param {!ReportRenderer.ReportJSON} report
+   * @override
+   * @return {!DocumentFragment}
+   */
+  _renderReportHeader(report) {
+    return createDocumentFragment();
+  }
+};
 
 class ReportUIFeatures {
   /**
    * @param {!ReportRenderer.ReportJSON} report
    */
-  initFeatures(report) {}
+  initFeatures(report) {
+  }
 }
 
-/** @typedef {{id: string, configID: string, description: string}} */
+/** @typedef {{setting: !Common.Setting, configID: string, title: string, description: string}} */
 Audits2.Audits2Panel.Preset;
 
 /** @type {!Array.<!Audits2.Audits2Panel.Preset>} */
 Audits2.Audits2Panel.Presets = [
   // configID maps to Lighthouse's Object.keys(config.categories)[0] value
-  {id: 'audits2_cat_pwa', configID: 'pwa', description: 'Progressive Web App'},
-  {id: 'audits2_cat_perf', configID: 'performance', description: 'Performance metrics and diagnostics'},
-  {id: 'audits2_cat_a11y', configID: 'accessibility', description: 'Accessibility'},
-  {id: 'audits2_cat_best_practices', configID: 'best-practices', description: 'Modern best practices'},
+  {
+    setting: Common.settings.createSetting('audits2.cat_pwa', true),
+    configID: 'pwa',
+    title: 'Progressive Web App',
+    description: 'Does this page meet the standard of a Progressive Web App'
+  },
+  {
+    setting: Common.settings.createSetting('audits2.cat_perf', true),
+    configID: 'performance',
+    title: 'Performance',
+    description: 'How long does this app take to show content and become usable'
+  },
+  {
+    setting: Common.settings.createSetting('audits2.cat_best_practices', true),
+    configID: 'best-practices',
+    title: 'Best practices',
+    description: 'Does this page follow best practices for modern web development'
+  },
+  {
+    setting: Common.settings.createSetting('audits2.cat_a11y', true),
+    configID: 'accessibility',
+    title: 'Accessibility',
+    description: 'Is this page usable by people with disabilities or impairments'
+  },
 ];
 
 Audits2.ProtocolService = class extends Common.Object {
@@ -335,5 +420,119 @@ Audits2.ProtocolService = class extends Common.Object {
       this._initWorker();
 
     return this._backendPromise.then(_ => this._backend.send(method, params));
+  }
+};
+
+Audits2.Audits2Panel.TreeElement = class extends UI.TreeElement {
+  /**
+   * @param {!ReportRenderer.ReportJSON} lighthouseResult
+   * @param {!Element} resultsView
+   */
+  constructor(lighthouseResult, resultsView) {
+    super('', false);
+    this._lighthouseResult = lighthouseResult;
+    this._resultsView = resultsView;
+    /** @type {?Element} */
+    this._reportContainer = null;
+
+    var url = new Common.ParsedURL(lighthouseResult.url);
+    var timestamp = lighthouseResult.generatedTime;
+    var titleElement = this.titleElement();
+    titleElement.classList.add('audits2-report-tree-item');
+    titleElement.createChild('div').textContent = url.domain();
+    titleElement.createChild('span', 'dimmed').textContent = new Date(timestamp).toLocaleString();
+    this.listItemElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), false);
+  }
+
+  _populate() {
+    for (var category of this._lighthouseResult.reportCategories) {
+      var treeElement = new Audits2.Audits2Panel.TreeSubElement(category.id, category.name, category.score);
+      this.appendChild(treeElement);
+    }
+  }
+
+  /**
+   * @override
+   * @param {boolean=} selectedByUser
+   * @return {boolean}
+   */
+  onselect(selectedByUser) {
+    this._renderReport();
+    return true;
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _handleContextMenuEvent(event) {
+    var contextMenu = new UI.ContextMenu(event);
+    contextMenu.appendItem(Common.UIString('Save as\u2026'), () => {
+      var url = new Common.ParsedURL(this._lighthouseResult.url).domain();
+      var timestamp = this._lighthouseResult.generatedTime;
+      var fileName = `${url}-${new Date(timestamp).toISO8601Compact()}.json`;
+      Workspace.fileManager.save(fileName, JSON.stringify(this._lighthouseResult), true);
+    });
+    contextMenu.show();
+  }
+
+  /**
+   * @override
+   */
+  onunbind() {
+    if (this._reportContainer && this._reportContainer.parentElement)
+      this._reportContainer.remove();
+  }
+
+  _renderReport() {
+    this._resultsView.removeChildren();
+    if (this._reportContainer) {
+      this._resultsView.appendChild(this._reportContainer);
+      return;
+    }
+
+    this._reportContainer = this._resultsView.createChild('div', 'report-container lh-root');
+
+    var dom = new DOM(/** @type {!Document} */(this._resultsView.ownerDocument));
+    var detailsRenderer = new DetailsRenderer(dom);
+    var categoryRenderer = new CategoryRenderer(dom, detailsRenderer);
+    var renderer = new Audits2.Audits2Panel.ReportRenderer(dom, categoryRenderer);
+
+    var templatesHTML = Runtime.cachedResources['audits2/lighthouse/templates.html'];
+    var templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
+    if (!templatesDOM)
+      return;
+
+    renderer.setTemplateContext(templatesDOM);
+    renderer.renderReport(this._lighthouseResult, this._reportContainer);
+  }
+};
+
+Audits2.Audits2Panel.TreeSubElement = class extends UI.TreeElement {
+  /**
+   * @param {string} id
+   * @param {string} name
+   * @param {number} score
+   */
+  constructor(id, name, score) {
+    super('');
+    this._id = id;
+    this.listItemElement.textContent = name;
+    var label = Util.calculateRating(score);
+    var subtitleElement = this.listItemElement.createChild('span', 'lh-root audits2-tree-subtitle-' + label);
+    subtitleElement.textContent = String(Math.round(score));
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  onselect() {
+    this.parent._renderReport();
+    var node = this.parent._resultsView.querySelector('.lh-category[id=' + this._id + ']');
+    if (node) {
+      node.scrollIntoView(true);
+      return true;
+    }
+    return false;
   }
 };

@@ -382,3 +382,29 @@ label[is=dt-icon-label] {
     -webkit-mask-position: var(--spritesheet-position);
     background: white !important;
 }
+
+button.material-button {
+    display: inline-block;
+    text-shadow: none;
+    padding: 6px 10px;
+    background-color: #ffffff !important;
+    color: gray;
+    background-image: unset !important;
+    box-shadow: none !important;
+    cursor: pointer;
+}
+
+button.material-button.default {
+    color: white;
+    background-color: #4285f4 !important;
+}
+
+button.material-button.default:not(:disabled):hover {
+    background-color: hsla(217, 89%, 58%, 1) !important;
+    color: white !important;
+}
+
+button.material-button:not(:disabled):hover {
+    background-color: #eee !important;
+    color: gray !important;
+}

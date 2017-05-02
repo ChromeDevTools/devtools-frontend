@@ -30,6 +30,8 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
 
     var mainViewGroupExpansionSetting = Common.settings.createSetting('timelineFlamechartMainViewGroupExpansion', {});
     this._mainDataProvider = new Timeline.TimelineFlameChartDataProvider(filters);
+    this._mainDataProvider.addEventListener(
+        Timeline.TimelineFlameChartDataProvider.Events.DataChanged, () => this._mainFlameChart.scheduleUpdate());
     this._mainFlameChart = new PerfUI.FlameChart(this._mainDataProvider, this, mainViewGroupExpansionSetting);
     this._mainFlameChart.alwaysShowVerticalScroll();
     this._mainFlameChart.enableRuler(false);

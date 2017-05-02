@@ -133,6 +133,17 @@ Timeline.PerformanceModel = class extends Common.Object {
     for (var extensionEntry of this._extensionTracingModels)
       extensionEntry.model.reset();
   }
+
+  /**
+   * @param {!TimelineModel.TimelineFrame} frame
+   * @return {?SDK.FilmStripModel.Frame}
+   */
+  filmStripModelFrame(frame) {
+    // For idle frames, look at the state at the beginning of the frame.
+    var screenshotTime = frame.idle ? frame.startTime : frame.endTime;
+    var filmStripFrame = this._filmStripModel.frameByTimestamp(screenshotTime);
+    return filmStripFrame && filmStripFrame.timestamp - frame.endTime < 10 ? filmStripFrame : null;
+  }
 };
 
 /**

@@ -479,10 +479,10 @@
     flex: none;
 }
 
-.timeline-filmstrip-preview {
-    margin-top: 10px;
-    max-width: 200px;
-    max-height: 200px;
+.timeline-filmstrip-preview > img {
+    margin-top: 5px;
+    max-width: 500px;
+    max-height: 300px;
     cursor: pointer;
     border: 1px solid #ddd;
 }

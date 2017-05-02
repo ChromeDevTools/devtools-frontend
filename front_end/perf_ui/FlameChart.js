@@ -1124,8 +1124,10 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
       if (level < levelCount) {
         var height;
         if (groupIndex >= 0) {
-          var style = groups[groupIndex].style;
-          height = isFirstOnLevel ? style.height : (style.itemsHeight || this._barHeight);
+          var group = groups[groupIndex];
+          var style = group.style;
+          height = isFirstOnLevel && !style.shareHeaderLine || !group.expanded ? style.height :
+                                                                                 (style.itemsHeight || this._barHeight);
         } else {
           height = this._barHeight;
         }
@@ -1153,8 +1155,11 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
     if (!isLastGroup && groups[index + 1].style.nestingLevel > style.nestingLevel)
       return true;
     var nextGroupLevel = isLastGroup ? this._dataProvider.maxStackDepth() : groups[index + 1].startLevel;
-    // For groups that only have one line and share header line, pretend these are not collapsible.
-    return nextGroupLevel !== groups[index].startLevel + 1;
+    if (nextGroupLevel !== groups[index].startLevel + 1)
+      return true;
+    // For groups that only have one line and share header line, pretend these are not collapsible
+    // unless the itemsHeight does not match the headerHeight
+    return style.height !== style.itemsHeight;
   }
 
   /**

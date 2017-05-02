@@ -32,11 +32,12 @@
  * @implements {PerfUI.FlameChartDataProvider}
  * @unrestricted
  */
-Timeline.TimelineFlameChartDataProvider = class {
+Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
   /**
    * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    */
   constructor(filters) {
+    super();
     this.reset();
     var font = '11px ' + Host.fontFamily();
     this._font = font;
@@ -75,6 +76,7 @@ Timeline.TimelineFlameChartDataProvider = class {
     this._headerLevel1 = buildGroupStyle({shareHeaderLine: false});
     this._headerLevel2 = buildGroupStyle({padding: 2, nestingLevel: 1, collapsible: false});
     this._staticHeader = buildGroupStyle({collapsible: false});
+    this._framesHeader = buildGroupStyle({useFirstLineForOverview: true, shareHeaderLine: true, itemsHeight: 150});
     this._interactionsHeaderLevel1 = buildGroupStyle({useFirstLineForOverview: true});
     this._interactionsHeaderLevel2 = buildGroupStyle({padding: 2, nestingLevel: 1});
 
@@ -161,6 +163,8 @@ Timeline.TimelineFlameChartDataProvider = class {
     this._asyncColorByInteractionPhase = new Map();
     /** @type {!Array<!{title: string, model: !SDK.TracingModel}>} */
     this._extensionInfo = [];
+    /** @type {!Map<!TimelineModel.TimelineFrame, ?Image>} */
+    this._frameImageCache = new Map();
   }
 
   /**
@@ -189,7 +193,6 @@ Timeline.TimelineFlameChartDataProvider = class {
     this._timeSpan = this._model.isEmpty() ? 1000 : this._model.maximumRecordTime() - this._minimumBoundary;
     this._currentLevel = 0;
 
-    this._appendHeader(Common.UIString('Frames'), this._staticHeader);
     this._appendFrameBars(this._performanceModel.frames());
 
     this._appendHeader(Common.UIString('Interactions'), this._interactionsHeaderLevel1);
@@ -442,12 +445,16 @@ Timeline.TimelineFlameChartDataProvider = class {
    * @param {!Array.<!TimelineModel.TimelineFrame>} frames
    */
   _appendFrameBars(frames) {
+    var hasFilmStrip = !!this._performanceModel.filmStripModel().frames().length;
+    this._framesHeader.collapsible = hasFilmStrip;
+    this._appendHeader(Common.UIString('Frames'), this._framesHeader);
+    this._frameGroup = this._timelineData.groups.peekLast();
     var style = Timeline.TimelineUIUtils.markerStyleForFrame();
     this._entryTypeByLevel[this._currentLevel] = Timeline.TimelineFlameChartEntryType.Frame;
-    for (var i = 0; i < frames.length; ++i) {
+    for (var frame of frames) {
       this._markers.push(new Timeline.TimelineFlameChartMarker(
-          frames[i].startTime, frames[i].startTime - this._model.minimumRecordTime(), style));
-      this._appendFrame(frames[i]);
+          frame.startTime, frame.startTime - this._model.minimumRecordTime(), style));
+      this._appendFrame(frame);
     }
     ++this._currentLevel;
   }
@@ -553,6 +560,62 @@ Timeline.TimelineFlameChartDataProvider = class {
   }
 
   /**
+   * @param {number} entryIndex
+   * @param {!CanvasRenderingContext2D} context
+   * @param {?string} text
+   * @param {number} barX
+   * @param {number} barY
+   * @param {number} barWidth
+   * @param {number} barHeight
+   */
+  _drawFrame(entryIndex, context, text, barX, barY, barWidth, barHeight) {
+    var /** @const */ hPadding = 1;
+    var frame = /** @type {!TimelineModel.TimelineFrame} */ (this._entryData[entryIndex]);
+    barX += hPadding;
+    barWidth -= 2 * hPadding;
+    context.fillStyle = frame.idle ? 'white' : (frame.hasWarnings() ? '#fad1d1' : '#d7f0d1');
+    context.fillRect(barX, barY, barWidth, barHeight);
+
+    var headerHeight = 17;
+    var frameDurationText = Number.preciseMillisToString(frame.duration, 1);
+    var textWidth = context.measureText(frameDurationText).width;
+    if (textWidth <= barWidth) {
+      var font = this.entryFont(entryIndex);
+      if (font)
+        context.font = font;
+      context.fillStyle = this.textColor(entryIndex);
+      context.fillText(frameDurationText, barX + (barWidth - textWidth) / 2, barY + headerHeight - 4);
+    }
+
+    var imageHeight = barHeight - headerHeight;
+    if (imageHeight < headerHeight)
+      return;
+    if (!this._frameImageCache.has(frame)) {
+      this._frameImageCache.set(frame, null);  // Mark the image promise is in flight.
+      var modelFrame = this._performanceModel.filmStripModelFrame(frame);
+      if (modelFrame) {
+        modelFrame.imageDataPromise().then(data => UI.loadImageFromData(data)).then(image => {
+          this._frameImageCache.set(frame, image);
+          this.dispatchEventToListeners(Timeline.TimelineFlameChartDataProvider.Events.DataChanged);
+        });
+      }
+    }
+    var image = this._frameImageCache.get(frame);
+    if (!image)
+      return;
+    var imageX = barX;
+    var imageY = barY + headerHeight;
+    var scale = imageHeight / image.naturalHeight;
+    var imageWidth = image.naturalWidth * scale;
+    context.save();
+    context.beginPath();
+    context.rect(imageX, imageY, barWidth, imageHeight);
+    context.clip();
+    context.drawImage(image, imageX, imageY, imageWidth, imageHeight);
+    context.restore();
+  }
+
+  /**
    * @override
    * @param {number} entryIndex
    * @param {!CanvasRenderingContext2D} context
@@ -569,21 +632,7 @@ Timeline.TimelineFlameChartDataProvider = class {
     var data = this._entryData[entryIndex];
     var type = this._entryType(entryIndex);
     if (type === Timeline.TimelineFlameChartEntryType.Frame) {
-      var /** @const */ vPadding = 1;
-      var /** @const */ hPadding = 1;
-      var frame = /** {!TimelineModel.TimelineFrame} */ (data);
-      barX += hPadding;
-      barWidth -= 2 * hPadding;
-      barY += vPadding;
-      barHeight -= 2 * vPadding + 1;
-      context.fillStyle = frame.idle ? 'white' : (frame.hasWarnings() ? '#fad1d1' : '#d7f0d1');
-      context.fillRect(barX, barY, barWidth, barHeight);
-      var frameDurationText = Number.preciseMillisToString(frame.duration, 1);
-      var textWidth = context.measureText(frameDurationText).width;
-      if (barWidth >= textWidth) {
-        context.fillStyle = this.textColor(entryIndex);
-        context.fillText(frameDurationText, barX + (barWidth - textWidth) / 2, barY + barHeight - 3);
-      }
+      this._drawFrame(entryIndex, context, text, barX, barY, barWidth, barHeight);
       return true;
     }
 
@@ -920,3 +969,8 @@ Timeline.TimelineFlameChartDataProvider = class {
 
 Timeline.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs = 0.001;
 Timeline.TimelineFlameChartDataProvider._indexSymbol = Symbol('index');
+
+/** @enum {symbol} */
+Timeline.TimelineFlameChartDataProvider.Events = {
+  DataChanged: Symbol('DataChanged')
+};

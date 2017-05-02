@@ -1569,29 +1569,22 @@ Timeline.TimelineUIUtils = class {
 
     var duration = Timeline.TimelineUIUtils.frameDuration(frame);
     contentHelper.appendElementRow(Common.UIString('Duration'), duration, frame.hasWarnings());
-    if (filmStripFrame) {
-      var filmStripPreview = createElementWithClass('img', 'timeline-filmstrip-preview');
-      filmStripFrame.imageDataPromise().then(onGotImageData.bind(null, filmStripPreview));
-      contentHelper.appendElementRow('', filmStripPreview);
-      filmStripPreview.addEventListener('click', frameClicked.bind(null, filmStripFrame), false);
-    }
     var durationInMillis = frame.endTime - frame.startTime;
     contentHelper.appendTextRow(Common.UIString('FPS'), Math.floor(1000 / durationInMillis));
     contentHelper.appendTextRow(Common.UIString('CPU time'), Number.millisToString(frame.cpuTime, true));
+    if (filmStripFrame) {
+      var filmStripPreview = createElementWithClass('div', 'timeline-filmstrip-preview');
+      filmStripFrame.imageDataPromise()
+          .then(data => UI.loadImageFromData(data))
+          .then(image => image && filmStripPreview.appendChild(image));
+      contentHelper.appendElementRow('', filmStripPreview);
+      filmStripPreview.addEventListener('click', frameClicked.bind(null, filmStripFrame), false);
+    }
 
     if (frame.layerTree) {
       contentHelper.appendElementRow(
           Common.UIString('Layer tree'),
           Components.Linkifier.linkifyRevealable(frame.layerTree, Common.UIString('show')));
-    }
-
-    /**
-     * @param {!Element} image
-     * @param {?string} data
-     */
-    function onGotImageData(image, data) {
-      if (data)
-        image.src = 'data:image/jpg;base64,' + data;
     }
 
     /**

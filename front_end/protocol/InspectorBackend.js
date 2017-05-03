@@ -628,9 +628,10 @@ Protocol.InspectorBackend._AgentPrototype = class {
 
     /**
      * @param {!Array<*>} args
+     * @return {?}
      */
     function runUserCallback(args) {
-      return userCallback ? userCallback.apply(null, args) : undefined;
+      return userCallback ? userCallback.apply(null, args) : !args[0] && args[1] || null;
     }
   }
 

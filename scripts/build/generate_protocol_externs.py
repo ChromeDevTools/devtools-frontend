@@ -46,6 +46,11 @@ type_traits = {
 
 ref_types = {}
 
+PROMISIFIED_DOMAINS = frozenset([
+    "HeapProfiler",
+    "Profiler",
+])
+
 
 def full_qualified_type_id(domain_name, type_id):
     if type_id.find(".") == -1:
@@ -117,6 +122,7 @@ def generate_protocol_externs(output_path, file1, file2):
 
     for domain in domains:
         domain_name = domain["domain"]
+        is_promisified = domain_name in PROMISIFIED_DOMAINS
 
         output_file.write("Protocol.%s = {};\n" % domain_name)
         output_file.write("\n\n/**\n * @constructor\n*/\n")
@@ -152,38 +158,49 @@ def generate_protocol_externs(output_path, file1, file2):
                             returns.append("%s=" % out_param_type)
                         else:
                             returns.append("%s" % out_param_type)
-                output_file.write(" * @param {function(%s):T=} opt_callback\n" % ", ".join(returns))
-                output_file.write(" * @return {!Promise<T>}\n")
-                output_file.write(" * @template T\n")
-                params.append("opt_callback")
+
+                if is_promisified:
+                    if has_return_value and len(command["returns"]) > 0:
+                        out_param_type = param_type(domain_name, command["returns"][0])
+                        if re.match(r"^[!?]", out_param_type[:1]):
+                            out_param_type = out_param_type[1:]
+                        out_param_type = "?%s" % out_param_type
+                    else:
+                        out_param_type = "undefined"
+                    output_file.write(" * @return {!Promise<%s>}\n" % out_param_type)
+                else:
+                    output_file.write(" * @param {function(%s):T=} opt_callback\n" % ", ".join(returns))
+                    output_file.write(" * @return {!Promise<T>}\n")
+                    output_file.write(" * @template T\n")
+                    params.append("opt_callback")
 
                 output_file.write(" */\n")
                 output_file.write("Protocol.%sAgent.prototype.%s = function(%s) {};\n" %
                                   (domain_name, command["name"], ", ".join(params)))
 
                 request_object_properties = []
+                request_type = "Protocol.%sAgent.%sRequest" % (domain_name, to_title_case(command["name"]))
                 for param in in_param_to_type:
                     request_object_properties.append("%s: %s" % (param, in_param_to_type[param]))
                 if request_object_properties:
                     output_file.write("/** @typedef {!{%s}} */\n" % (", ".join(request_object_properties)))
                 else:
                     output_file.write("/** @typedef {Object|undefined} */\n")
-                request = "Protocol.%sAgent.%sRequest" % (domain_name, to_title_case(command["name"]))
-                output_file.write("%s;\n" % request)
+                output_file.write("%s;\n" % request_type)
 
                 response_object_properties = []
+                response_type = "Protocol.%sAgent.%sResponse" % (domain_name, to_title_case(command["name"]))
                 for param in out_param_to_type:
                     response_object_properties.append("%s: %s" % (param, out_param_to_type[param]))
                 if response_object_properties:
                     output_file.write("/** @typedef {!{%s}} */\n" % (", ".join(response_object_properties)))
                 else:
                     output_file.write("/** @typedef {Object|undefined} */\n")
-                response = "Protocol.%sAgent.%sResponse" % (domain_name, to_title_case(command["name"]))
-                output_file.write("%s;\n" % response)
+                output_file.write("%s;\n" % response_type)
 
                 output_file.write("/**\n")
-                output_file.write(" * @param {!%s} obj\n" % request)
-                output_file.write(" * @return {!Promise<!%s>}" % response)
+                output_file.write(" * @param {!%s} obj\n" % request_type)
+                output_file.write(" * @return {!Promise<!%s>}" % response_type)
                 output_file.write(" */\n")
                 output_file.write("Protocol.%sAgent.prototype.invoke_%s = function(obj) {};\n" %
                                   (domain_name, command["name"]))

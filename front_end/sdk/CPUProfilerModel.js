@@ -121,19 +121,11 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise.<?Protocol.Profiler.Profile>}
+   * @return {!Promise<?Protocol.Profiler.Profile>}
    */
   stopRecording() {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {?Protocol.Profiler.Profile} profile
-     * @return {?Protocol.Profiler.Profile}
-     */
-    function extractProfile(error, profile) {
-      return !error && profile ? profile : null;
-    }
     this._isRecording = false;
-    return this._profilerAgent.stop(extractProfile);
+    return this._profilerAgent.stop();
   }
 
   /**
@@ -147,7 +139,7 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
    * @return {!Promise<!Array<!Protocol.Profiler.ScriptCoverage>>}
    */
   takePreciseCoverage() {
-    return this._profilerAgent.takePreciseCoverage((error, coverage) => error ? [] : coverage);
+    return this._profilerAgent.takePreciseCoverage().then(result => result || []);
   }
 
   /**

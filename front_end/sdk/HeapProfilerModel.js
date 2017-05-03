@@ -41,11 +41,11 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise.<?Protocol.HeapProfiler.SamplingHeapProfile>}
+   * @return {!Promise<?Protocol.HeapProfiler.SamplingHeapProfile>}
    */
   stopSampling() {
     this._isRecording = false;
-    return this._heapProfilerAgent.stopSampling((error, profile) => error ? null : profile);
+    return this._heapProfilerAgent.stopSampling();
   }
 
   /**
@@ -60,7 +60,7 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
    * @return {!Promise<?string>}
    */
   snapshotObjectIdForObjectId(objectId) {
-    return this._heapProfilerAgent.getHeapObjectId(objectId, (error, result) => error ? null : result);
+    return this._heapProfilerAgent.getHeapObjectId(objectId);
   }
 
   /**
@@ -69,11 +69,8 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
    * @return {!Promise<?SDK.RemoteObject>}
    */
   objectForSnapshotObjectId(snapshotObjectId, objectGroupName) {
-    return this._heapProfilerAgent.getObjectByHeapObjectId(snapshotObjectId, objectGroupName, (error, result) => {
-      if (error || !result.type)
-        return null;
-      return this._runtimeModel.createRemoteObject(result);
-    });
+    return this._heapProfilerAgent.getObjectByHeapObjectId(snapshotObjectId, objectGroupName)
+        .then(result => result && result.type ? this._runtimeModel.createRemoteObject(result) : null);
   }
 
   /**
@@ -86,10 +83,10 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
 
   /**
    * @param {boolean} reportProgress
-   * @return {!Promise<boolean>}
+   * @return {!Promise}
    */
   takeHeapSnapshot(reportProgress) {
-    return this._heapProfilerAgent.takeHeapSnapshot(reportProgress, error => !error);
+    return this._heapProfilerAgent.takeHeapSnapshot(reportProgress);
   }
 
   /**
@@ -102,14 +99,14 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
 
   /**
    * @param {boolean} reportProgress
-   * @return {!Promise<boolean>}
+   * @return {!Promise}
    */
   stopTrackingHeapObjects(reportProgress) {
-    return this._heapProfilerAgent.stopTrackingHeapObjects(reportProgress, error => !error);
+    return this._heapProfilerAgent.stopTrackingHeapObjects(reportProgress);
   }
 
   /**
-   * @param {!Array.<number>} samples
+   * @param {!Array<number>} samples
    */
   heapStatsUpdate(samples) {
     this.dispatchEventToListeners(SDK.HeapProfilerModel.Events.HeapStatsUpdate, samples);

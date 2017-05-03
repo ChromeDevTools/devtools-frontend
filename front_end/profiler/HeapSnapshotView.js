@@ -1035,7 +1035,7 @@ Profiler.HeapSnapshotProfileType = class extends Profiler.ProfileType {
    * @return {boolean}
    */
   buttonClicked() {
-    this._takeHeapSnapshot(function() {});
+    this._takeHeapSnapshot();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ProfilesHeapProfileTaken);
     return false;
   }
@@ -1058,7 +1058,7 @@ Profiler.HeapSnapshotProfileType = class extends Profiler.ProfileType {
     return new Profiler.HeapProfileHeader(null, this, title);
   }
 
-  _takeHeapSnapshot(callback) {
+  async _takeHeapSnapshot() {
     if (this.profileBeingRecorded())
       return;
     var heapProfilerModel = UI.context.flavor(SDK.HeapProfilerModel);
@@ -1070,14 +1070,13 @@ Profiler.HeapSnapshotProfileType = class extends Profiler.ProfileType {
     this.addProfile(profile);
     profile.updateStatus(Common.UIString('Snapshotting\u2026'));
 
-    heapProfilerModel.takeHeapSnapshot(true).then(success => {
-      var profile = this.profileBeingRecorded();
-      profile.title = Common.UIString('Snapshot %d', profile.uid);
-      profile._finishLoad();
-      this.setProfileBeingRecorded(null);
-      this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, profile);
-      callback();
-    });
+    await heapProfilerModel.takeHeapSnapshot(true);
+    // ------------ ASYNC ------------
+    profile = this.profileBeingRecorded();
+    profile.title = Common.UIString('Snapshot %d', profile.uid);
+    profile._finishLoad();
+    this.setProfileBeingRecorded(null);
+    this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, profile);
   }
 
   /**
@@ -1246,25 +1245,20 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
     return heapProfilerModel;
   }
 
-  _stopRecordingProfile() {
+  async _stopRecordingProfile() {
     this.profileBeingRecorded().updateStatus(Common.UIString('Snapshotting\u2026'));
-    /**
-     * @param {boolean} success
-     * @this {Profiler.HeapSnapshotProfileType}
-     */
-    function didTakeHeapSnapshot(success) {
-      var profile = this.profileBeingRecorded();
-      if (!profile)
-        return;
-      profile._finishLoad();
-      this._profileSamples = null;
-      this.setProfileBeingRecorded(null);
-      this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, profile);
-    }
-
-    this.profileBeingRecorded()._heapProfilerModel.stopTrackingHeapObjects(true).then(didTakeHeapSnapshot.bind(this));
+    var stopPromise = this.profileBeingRecorded()._heapProfilerModel.stopTrackingHeapObjects(true);
     this._recording = false;
     this.dispatchEventToListeners(Profiler.TrackingHeapSnapshotProfileType.TrackingStopped);
+    await stopPromise;
+    // ------------ ASYNC ------------
+    var profile = this.profileBeingRecorded();
+    if (!profile)
+      return;
+    profile._finishLoad();
+    this._profileSamples = null;
+    this.setProfileBeingRecorded(null);
+    this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, profile);
   }
 
   _toggleRecording() {

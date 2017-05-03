@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
-.overview-info {
+.overview-info:not(:empty) {
     display: flex;
     background: white;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.1);

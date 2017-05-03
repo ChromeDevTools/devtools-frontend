@@ -46,9 +46,21 @@ type_traits = {
 
 ref_types = {}
 
-PROMISIFIED_DOMAINS = frozenset([
-    "HeapProfiler",
-    "Profiler",
+NON_PROMISIFIED_DOMAINS = frozenset([
+    "Accessibility",
+    "Animation",
+    "ApplicationCache",
+    "CacheStorage",
+    "CSS",
+    "Debugger",
+    "DOM",
+    "DOMDebugger",
+    "IndexedDB",
+    "LayerTree",
+    "Network",
+    "Page",
+    "Runtime",
+    "Target",
 ])
 
 
@@ -122,7 +134,7 @@ def generate_protocol_externs(output_path, file1, file2):
 
     for domain in domains:
         domain_name = domain["domain"]
-        is_promisified = domain_name in PROMISIFIED_DOMAINS
+        is_promisified = domain_name not in NON_PROMISIFIED_DOMAINS
 
         output_file.write("Protocol.%s = {};\n" % domain_name)
         output_file.write("\n\n/**\n * @constructor\n*/\n")

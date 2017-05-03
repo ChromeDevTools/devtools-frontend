@@ -6,6 +6,8 @@
 
 .audits2-view {
     margin: 7px 20px;
+    flex: auto;
+    align-items: center;
 }
 
 header {
@@ -22,22 +24,27 @@ header {
     display: inline;
 }
 
+.audits2-status {
+    flex: auto;
+    align-items: center;
+    color: #666;
+}
+
 .audits2-status .icon {
-    width: 16px;
-    height: 16px;
-    margin-top: 10px;
-    margin-right: 4px;
+    width: 64px;
+    height: 64px;
+    margin: 20px;
     animation: spinner-animation 1200ms linear infinite;
     transform-origin: 50% 50%;
-    padding: 1px;
+    padding: 4px;
 }
 
 .audits2-status .icon::before {
     display: inline-block;
-    border: 1px solid #1565C0;
-    border-radius: 7px;
-    width: 14px;
-    height: 14px;
+    border: 4px solid #1565C0;
+    border-radius: 28px;
+    width: 56px;
+    height: 56px;
     content: "";
     position: absolute;
     box-sizing: border-box;
@@ -45,8 +52,8 @@ header {
 
 .audits2-status .icon::after {
     display: inline-block;
-    width: 6px;
-    height: 7px;
+    width: 24px;
+    height: 28px;
     background: white;
     position: absolute;
     content: "";
@@ -68,6 +75,10 @@ button {
 
 .audits2-launcher-description {
     padding: 3px 0 0 22px;
+}
+
+.audits2-dialog-buttons {
+    justify-content: center;
 }
 
 @keyframes spinner-animation {

@@ -37,8 +37,8 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     this.panelSidebarElement().appendChild(this._treeOutline.element);
 
     this._dropTarget = new UI.DropTarget(
-        this.contentElement, [UI.DropTarget.Types.Files],
-        Common.UIString('Drop audit file here'), this._handleDrop.bind(this));
+        this.contentElement, [UI.DropTarget.Types.Files], Common.UIString('Drop audit file here'),
+        this._handleDrop.bind(this));
 
     this._showLandingPage();
   }
@@ -64,7 +64,8 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     landingCenter.createChild('div', 'audits2-logo');
     var text = landingCenter.createChild('div', 'audits2-landing-text');
     text.createChild('span', 'audits2-landing-bold-text').textContent = Common.UIString('Audits');
-    text.createChild('span').textContent = Common.UIString(' help you identify and fix common problems that affect' +
+    text.createChild('span').textContent = Common.UIString(
+        ' help you identify and fix common problems that affect' +
         ' your site\'s performance, accessibility, and user experience. ');
     var link = text.createChild('span', 'link');
     link.textContent = Common.UIString('Learn more');
@@ -83,29 +84,31 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     var auditsViewElement = root.createChild('div', 'audits2-view');
     var uiElement = auditsViewElement.createChild('div');
     var headerElement = uiElement.createChild('header');
-    headerElement.createChild('p').textContent = Common.UIString('Audits to perform');
+    this._headerTitleElement = headerElement.createChild('p');
+    this._headerTitleElement.textContent = Common.UIString('Audits to perform');
     uiElement.appendChild(headerElement);
 
-    var auditSelectorForm = uiElement.createChild('form', 'audits2-form');
+    this._auditSelectorForm = uiElement.createChild('form', 'audits2-form');
 
     for (var preset of Audits2.Audits2Panel.Presets) {
       preset.setting.setTitle(preset.title);
       var checkbox = new UI.ToolbarSettingCheckbox(preset.setting);
-      var row = auditSelectorForm.createChild('div', 'vbox audits2-launcher-row');
+      var row = this._auditSelectorForm.createChild('div', 'vbox audits2-launcher-row');
       row.appendChild(checkbox.element);
       row.createChild('span', 'audits2-launcher-description dimmed').textContent = preset.description;
     }
 
-    this._startButton =
-        UI.createTextButton(Common.UIString('Run audit'), this._start.bind(this), 'material-button default');
-    auditSelectorForm.appendChild(this._startButton);
-    this._cancelButton = UI.createTextButton(Common.UIString('Cancel'), this._cancel.bind(this), 'material-button');
-    auditSelectorForm.appendChild(this._cancelButton);
-
     this._statusView = this._createStatusView(uiElement);
 
+    var buttonsRow = uiElement.createChild('div', 'audits2-dialog-buttons hbox');
+    this._startButton =
+        UI.createTextButton(Common.UIString('Run audit'), this._start.bind(this), 'material-button default');
+    buttonsRow.appendChild(this._startButton);
+    this._cancelButton = UI.createTextButton(Common.UIString('Cancel'), this._cancel.bind(this), 'material-button');
+    buttonsRow.appendChild(this._cancelButton);
+
     this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
-    this._dialog.setMaxContentSize(new UI.Size(600, 400));
+    this._dialog.setMaxContentSize(new UI.Size(500, 400));
     this._dialog.show(this.mainElement());
     auditsViewElement.tabIndex = 0;
     auditsViewElement.focus();
@@ -116,9 +119,9 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
    * @return {!Element}
    */
   _createStatusView(launcherUIElement) {
-    var statusView = launcherUIElement.createChild('div', 'audits2-status hbox hidden');
-    this._statusIcon = statusView.createChild('span', 'icon');
-    this._statusElement = statusView.createChild('p');
+    var statusView = launcherUIElement.createChild('div', 'audits2-status vbox hidden');
+    this._statusIcon = statusView.createChild('div', 'icon');
+    this._statusElement = statusView.createChild('div');
     this._updateStatus(Common.UIString('Loading...'));
     return statusView;
   }
@@ -161,6 +164,8 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     delete this._statusElement;
     delete this._startButton;
     delete this._cancelButton;
+    delete this._auditSelectorForm;
+    delete this._headerTitleElement;
   }
 
   _cancel() {
@@ -175,9 +180,14 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
   _updateButton() {
     if (!this._dialog)
       return;
-    this._startButton.classList.toggle('default', !this._auditRunning);
+    this._startButton.classList.toggle('hidden', this._auditRunning);
     this._startButton.disabled = this._auditRunning;
     this._statusView.classList.toggle('hidden', !this._auditRunning);
+    this._auditSelectorForm.classList.toggle('hidden', this._auditRunning);
+    if (this._auditRunning)
+      this._headerTitleElement.textContent = Common.UIString('Auditing your web page \u2026');
+    else
+      this._headerTitleElement.textContent = Common.UIString('Audits to perform');
   }
 
   /**
@@ -276,7 +286,7 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     var data = JSON.parse(profile);
     if (!data['lighthouseVersion'])
       return;
-    this._finish(/** @type {!ReportRenderer.ReportJSON} */(data));
+    this._finish(/** @type {!ReportRenderer.ReportJSON} */ (data));
   }
 };
 
@@ -492,7 +502,7 @@ Audits2.Audits2Panel.TreeElement = class extends UI.TreeElement {
 
     this._reportContainer = this._resultsView.createChild('div', 'report-container lh-root');
 
-    var dom = new DOM(/** @type {!Document} */(this._resultsView.ownerDocument));
+    var dom = new DOM(/** @type {!Document} */ (this._resultsView.ownerDocument));
     var detailsRenderer = new DetailsRenderer(dom);
     var categoryRenderer = new CategoryRenderer(dom, detailsRenderer);
     var renderer = new Audits2.Audits2Panel.ReportRenderer(dom, categoryRenderer);

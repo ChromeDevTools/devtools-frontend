@@ -421,14 +421,14 @@ Snippets.SnippetScriptMapping = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {!Array<!SDK.DebuggerModel.Location>}
+   * @return {?SDK.DebuggerModel.Location}
    */
-  uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
+  uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
     var script = this._scriptForUISourceCode.get(uiSourceCode);
-    var location;
-    if (script)
-      location = this._debuggerModel.createRawLocation(script, lineNumber, columnNumber);
-    return location ? [location] : [];
+    if (!script)
+      return null;
+
+    return this._debuggerModel.createRawLocation(script, lineNumber, columnNumber);
   }
 
   /**

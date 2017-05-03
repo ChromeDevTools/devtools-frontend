@@ -83,20 +83,17 @@ Bindings.ResourceScriptMapping = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {!Array<!SDK.DebuggerModel.Location>}
+   * @return {?SDK.DebuggerModel.Location}
    */
-  uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
+  uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
     var scripts = this._scriptsForUISourceCode(uiSourceCode);
     console.assert(scripts.length);
     var script = scripts[scripts.length - 1];
-    var location;
     if (script.isInlineScriptWithSourceURL()) {
-      location = this._debuggerModel.createRawLocation(
+      return this._debuggerModel.createRawLocation(
           script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset);
-    } else {
-      location = this._debuggerModel.createRawLocation(script, lineNumber, columnNumber);
     }
-    return location ? [location] : [];
+    return this._debuggerModel.createRawLocation(script, lineNumber, columnNumber);
   }
 
   /**

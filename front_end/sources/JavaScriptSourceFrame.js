@@ -498,7 +498,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
 
     if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event) && this._executionLocation) {
       this._controlDown = true;
-      if (event.key === UI.KeyboardShortcut.Keys.CtrlOrMeta.name) {
+      if (event.key === (Host.isMac() ? 'Meta' : 'Control')) {
         this._controlTimeout = setTimeout(() => {
           if (this._executionLocation && this._controlDown)
             this._showContinueToLocations();

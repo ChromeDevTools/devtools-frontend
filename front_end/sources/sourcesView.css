@@ -89,7 +89,6 @@
     width: 100%;
     box-shadow: none !important;
     outline: none !important;
-    -webkit-user-modify: read-write;
 }
 
 @-webkit-keyframes source-frame-value-update-highlight-animation {

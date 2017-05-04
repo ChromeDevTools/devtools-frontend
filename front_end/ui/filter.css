@@ -145,8 +145,6 @@
     width: 143px;
     height: 20px;
     line-height: 17px;
-    -webkit-user-modify: read-write-plaintext-only;
-    -webkit-user-select: text;
     display: inline-block;
     background: #FFF;
     overflow: hidden;

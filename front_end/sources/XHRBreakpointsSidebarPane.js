@@ -40,7 +40,7 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
     var inputElementContainer = createElementWithClass('p', 'breakpoint-condition');
     inputElementContainer.textContent = Common.UIString('Break when URL contains:');
 
-    var inputElement = inputElementContainer.createChild('span', 'editing');
+    var inputElement = inputElementContainer.createChild('span');
     inputElement.id = 'breakpoint-condition-input';
     this.addListElement(inputElementContainer, /** @type {?Element} */ (this.listElement.firstChild));
 
@@ -141,7 +141,7 @@ Sources.XHRBreakpointsSidebarPane = class extends Components.BreakpointsSidebarP
 
   _labelClicked(url) {
     var element = this._breakpointElements.get(url) || null;
-    var inputElement = createElementWithClass('span', 'breakpoint-condition editing');
+    var inputElement = createElementWithClass('span', 'breakpoint-condition');
     inputElement.textContent = url;
     this.listElement.insertBefore(inputElement, element);
     element.classList.add('hidden');

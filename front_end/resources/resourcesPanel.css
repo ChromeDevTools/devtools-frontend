@@ -98,8 +98,6 @@ li.selected .base-storage-tree-element-subtitle {
 .database-query-prompt {
     min-height: 16px;
     white-space: pre-wrap;
-    -webkit-user-modify: read-write-plaintext-only;
-    -webkit-user-select: text;
 }
 
 .prompt-icon {

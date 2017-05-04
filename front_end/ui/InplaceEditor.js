@@ -30,6 +30,7 @@ UI.InplaceEditor = class {
   setUpEditor(editingContext) {
     var element = editingContext.element;
     element.classList.add('editing');
+    element.setAttribute('contenteditable', 'plaintext-only');
 
     var oldTabIndex = element.getAttribute('tabIndex');
     if (typeof oldTabIndex !== 'number' || oldTabIndex < 0)
@@ -41,6 +42,7 @@ UI.InplaceEditor = class {
   closeEditor(editingContext) {
     var element = editingContext.element;
     element.classList.remove('editing');
+    element.removeAttribute('contenteditable');
 
     if (typeof editingContext.oldTabIndex !== 'number')
       element.removeAttribute('tabIndex');

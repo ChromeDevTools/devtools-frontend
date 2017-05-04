@@ -330,7 +330,6 @@
     line-height: 15px;
     margin-left: 3px;
     width: calc(100% - 7px);
-    -webkit-user-modify: read-write-plaintext-only;
     background-color: #fff;
     cursor: text;
 }

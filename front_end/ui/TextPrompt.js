@@ -115,6 +115,7 @@ UI.TextPrompt = class extends Common.Object {
     element.parentElement.insertBefore(this._proxyElement, element);
     this._proxyElement.appendChild(element);
     this._element.classList.add('text-prompt');
+    this._element.setAttribute('contenteditable', 'plaintext-only');
     this._element.addEventListener('keydown', this._boundOnKeyDown, false);
     this._element.addEventListener('input', this._boundOnInput, false);
     this._element.addEventListener('mousewheel', this._boundOnMouseWheel, false);
@@ -136,6 +137,7 @@ UI.TextPrompt = class extends Common.Object {
     this._proxyElement.remove();
     delete this._proxyElement;
     this._element.classList.remove('text-prompt');
+    this._element.removeAttribute('contenteditable');
   }
 
   /**

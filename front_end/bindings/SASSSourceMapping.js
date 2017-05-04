@@ -87,7 +87,9 @@ Bindings.SASSSourceMapping = class {
       var contentProvider = sourceMap.sourceContentProvider(sassURL, Common.resourceTypes.SourceMapStyleSheet);
       var embeddedContent = sourceMap.embeddedContentByURL(sassURL);
       var embeddedContentLength = typeof embeddedContent === 'string' ? embeddedContent.length : null;
-      this._networkProject.addSourceMapFile(contentProvider, header.frameId, false, embeddedContentLength);
+      var uiSourceCode =
+          this._networkProject.addSourceMapFile(contentProvider, header.frameId, false, embeddedContentLength);
+      uiSourceCode[Bindings.SASSSourceMapping._sourceMapSymbol] = sourceMap;
     }
     Bindings.cssWorkspaceBinding.updateLocations(header);
     this._sourceMapAttachedForTest(sourceMap);
@@ -127,6 +129,7 @@ Bindings.SASSSourceMapping = class {
         if (handledUISourceCodes.has(uiSourceCode))
           continue;
         handledUISourceCodes.add(uiSourceCode);
+        uiSourceCode[Bindings.SASSSourceMapping._sourceMapSymbol] = sourceMap;
         var sassText = /** @type {string} */ (newSources.get(sourceURL));
         uiSourceCode.setWorkingCopy(sassText);
       }
@@ -154,7 +157,26 @@ Bindings.SASSSourceMapping = class {
     return uiSourceCode.uiLocation(entry.sourceLineNumber || 0, entry.sourceColumnNumber);
   }
 
+  /**
+   * @override
+   * @param {!Workspace.UILocation} uiLocation
+   * @return {!Array<!SDK.CSSLocation>}
+   */
+  uiLocationToRawLocations(uiLocation) {
+    var sourceMap = uiLocation.uiSourceCode[Bindings.SASSSourceMapping._sourceMapSymbol];
+    if (!sourceMap)
+      return [];
+    var entries =
+        sourceMap.findReverseEntries(uiLocation.uiSourceCode.url(), uiLocation.lineNumber, uiLocation.columnNumber);
+    var locations = [];
+    for (var header of this._sourceMapManager.clientsForSourceMap(sourceMap))
+      locations.pushAll(entries.map(entry => new SDK.CSSLocation(header, entry.lineNumber, entry.columnNumber)));
+    return locations;
+  }
+
   dispose() {
     Common.EventTarget.removeEventListeners(this._eventListeners);
   }
 };
+
+Bindings.SASSSourceMapping._sourceMapSymbol = Symbol('sourceMap');

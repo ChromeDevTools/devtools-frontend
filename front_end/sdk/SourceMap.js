@@ -365,6 +365,24 @@ SDK.TextSourceMap = class {
   }
 
   /**
+   * @param {string} sourceURL
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @return {!Array<!SDK.SourceMapEntry>}
+   */
+  findReverseEntries(sourceURL, lineNumber, columnNumber) {
+    var mappings = this._reversedMappings(sourceURL);
+    var endIndex = mappings.upperBound(
+        undefined, (unused, entry) => lineNumber - entry.sourceLineNumber || columnNumber - entry.sourceColumnNumber);
+    var startIndex = endIndex;
+    while (startIndex > 0 && mappings[startIndex - 1].sourceLineNumber === mappings[endIndex - 1].sourceLineNumber &&
+           mappings[startIndex - 1].sourceColumnNumber === mappings[endIndex - 1].sourceColumnNumber)
+      --startIndex;
+
+    return mappings.slice(startIndex, endIndex);
+  }
+
+  /**
    * @return {!Array<!SDK.SourceMapEntry>}
    */
   mappings() {

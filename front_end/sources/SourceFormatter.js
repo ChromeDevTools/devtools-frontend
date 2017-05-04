@@ -257,6 +257,22 @@ Sources.SourceFormatter.StyleMapping = class {
   }
 
   /**
+   * @override
+   * @param {!Workspace.UILocation} uiLocation
+   * @return {!Array<!SDK.CSSLocation>}
+   */
+  uiLocationToRawLocations(uiLocation) {
+    var formatData = Sources.SourceFormatData._for(uiLocation.uiSourceCode);
+    if (!formatData)
+      return [];
+    var originalLocation = formatData.mapping.formattedToOriginal(uiLocation.lineNumber, uiLocation.columnNumber);
+    var header = Bindings.NetworkProject.styleHeaderForUISourceCode(formatData.originalSourceCode);
+    if (!header)
+      return [];
+    return [new SDK.CSSLocation(header, originalLocation[0], originalLocation[1])];
+  }
+
+  /**
    * @param {!Sources.SourceFormatData} formatData
    * @param {boolean} enable
    */

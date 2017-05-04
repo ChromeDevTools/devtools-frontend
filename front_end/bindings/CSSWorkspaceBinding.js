@@ -79,18 +79,32 @@ Bindings.CSSWorkspaceBinding = class {
   }
 
   /**
-   * @param {?SDK.CSSLocation} rawLocation
+   * @param {!SDK.CSSLocation} rawLocation
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    if (!rawLocation)
-      return null;
     for (var i = this._sourceMappings.length - 1; i >= 0; --i) {
       var uiLocation = this._sourceMappings[i].rawLocationToUILocation(rawLocation);
       if (uiLocation)
         return uiLocation;
     }
     return this._modelToInfo.get(rawLocation.cssModel())._rawLocationToUILocation(rawLocation);
+  }
+
+  /**
+   * @param {!Workspace.UILocation} uiLocation
+   * @return {!Array<!SDK.CSSLocation>}
+   */
+  uiLocationToRawLocations(uiLocation) {
+    for (var i = this._sourceMappings.length - 1; i >= 0; --i) {
+      var rawLocations = this._sourceMappings[i].uiLocationToRawLocations(uiLocation);
+      if (rawLocations.length)
+        return rawLocations;
+    }
+    var rawLocations = [];
+    for (var modelInfo of this._modelToInfo.values())
+      rawLocations.pushAll(modelInfo._uiLocationToRawLocations(uiLocation));
+    return rawLocations;
   }
 
   /**
@@ -112,6 +126,12 @@ Bindings.CSSWorkspaceBinding.SourceMapping.prototype = {
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {},
+
+  /**
+   * @param {!Workspace.UILocation} uiLocation
+   * @return {!Array<!SDK.CSSLocation>}
+   */
+  uiLocationToRawLocations(uiLocation) {},
 };
 
 Bindings.CSSWorkspaceBinding.ModelInfo = class {
@@ -212,6 +232,18 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
     uiLocation = uiLocation || this._stylesSourceMapping.rawLocationToUILocation(rawLocation);
     return uiLocation;
   }
+
+  /**
+   * @param {!Workspace.UILocation} uiLocation
+   * @return {!Array<!SDK.CSSLocation>}
+   */
+  _uiLocationToRawLocations(uiLocation) {
+    var rawLocations = this._sassSourceMapping.uiLocationToRawLocations(uiLocation);
+    if (rawLocations.length)
+      return rawLocations;
+    return this._stylesSourceMapping.uiLocationToRawLocations(uiLocation);
+  }
+
 
   _dispose() {
     Common.EventTarget.removeEventListeners(this._eventListeners);

@@ -74,11 +74,30 @@ Bindings.StylesSourceMapping = class {
       return null;
     var lineNumber = rawLocation.lineNumber;
     var columnNumber = rawLocation.columnNumber;
-    if (header && header.isInline && header.hasSourceURL) {
+    if (header.isInline && header.hasSourceURL) {
       lineNumber -= header.lineNumberInSource(0);
       columnNumber -= header.columnNumberInSource(lineNumber, 0);
     }
     return uiSourceCode.uiLocation(lineNumber, columnNumber);
+  }
+
+  /**
+   * @override
+   * @param {!Workspace.UILocation} uiLocation
+   * @return {!Array<!SDK.CSSLocation>}
+   */
+  uiLocationToRawLocations(uiLocation) {
+    // TODO(caseq,lushnikov): return multiple raw locations.
+    var header = Bindings.NetworkProject.styleHeaderForUISourceCode(uiLocation.uiSourceCode);
+    if (!header)
+      return [];
+    var lineNumber = uiLocation.lineNumber;
+    var columnNumber = uiLocation.columnNumber;
+    if (header.isInline && header.hasSourceURL) {
+      columnNumber = header.columnNumberInSource(lineNumber, columnNumber);
+      lineNumber = header.lineNumberInSource(lineNumber);
+    }
+    return [new SDK.CSSLocation(header, lineNumber, columnNumber)];
   }
 
   /**

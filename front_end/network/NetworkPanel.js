@@ -195,6 +195,7 @@ Network.NetworkPanel = class extends UI.Panel {
     var setting = Common.settings.createSetting('networkGrouping', '');
     this._panelToolbar.appendToolbarItem(new UI.ToolbarSettingComboBox(options, setting, Common.UIString('Group by')));
     setting.addChangeListener(event => this._networkLogView.setGrouping(/** @type {string} */ (event.data)));
+    this._networkLogView.setGrouping(/** @type {string} */ (setting.get()));
   }
 
   /**

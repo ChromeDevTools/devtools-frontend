@@ -149,7 +149,7 @@ class ReportRenderer {
     const categories = reportSection.appendChild(this._dom.createElement('div', 'lh-categories'));
     for (const category of report.reportCategories) {
       scoreHeader.appendChild(this._categoryRenderer.renderScoreGauge(category));
-      categories.appendChild(this._categoryRenderer.render(category));
+      categories.appendChild(this._categoryRenderer.render(category, report.reportGroups));
     }
 
     reportSection.appendChild(this._renderReportFooter(report));
@@ -169,8 +169,10 @@ if (typeof module !== 'undefined' && module.exports) {
  *     id: string,
  *     weight: number,
  *     score: number,
+ *     group: string,
  *     result: {
  *       description: string,
+ *       informative: boolean,
  *       debugString: string,
  *       displayValue: string,
  *       helpText: string,
@@ -197,11 +199,21 @@ ReportRenderer.CategoryJSON; // eslint-disable-line no-unused-expressions
 
 /**
  * @typedef {{
+ *     title: string,
+ *     description: string,
+ * }}
+ */
+ReportRenderer.GroupJSON; // eslint-disable-line no-unused-expressions
+
+/**
+ * @typedef {{
  *     lighthouseVersion: string,
  *     generatedTime: string,
  *     initialUrl: string,
  *     url: string,
+ *     artifacts: {traces: !Object},
  *     reportCategories: !Array<!ReportRenderer.CategoryJSON>,
+ *     reportGroups: !Object<string, !ReportRenderer.GroupJSON>,
  *     runtimeConfig: {
  *       blockedUrlPatterns: !Array<string>,
  *       environment: !Array<{description: string, enabled: boolean, name: string}>

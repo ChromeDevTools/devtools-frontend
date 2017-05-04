@@ -500,7 +500,7 @@ Audits2.Audits2Panel.TreeElement = class extends UI.TreeElement {
       return;
     }
 
-    this._reportContainer = this._resultsView.createChild('div', 'report-container lh-root');
+    this._reportContainer = this._resultsView.createChild('div', 'report-container lh-vars lh-root');
 
     var dom = new DOM(/** @type {!Document} */ (this._resultsView.ownerDocument));
     var detailsRenderer = new DetailsRenderer(dom);
@@ -528,7 +528,7 @@ Audits2.Audits2Panel.TreeSubElement = class extends UI.TreeElement {
     this._id = id;
     this.listItemElement.textContent = name;
     var label = Util.calculateRating(score);
-    var subtitleElement = this.listItemElement.createChild('span', 'lh-root audits2-tree-subtitle-' + label);
+    var subtitleElement = this.listItemElement.createChild('span', 'lh-vars audits2-tree-subtitle-' + label);
     subtitleElement.textContent = String(Math.round(score));
   }
 

@@ -2,6 +2,7 @@
 <template id="tmpl-lh-category-score">
   <div class="lh-score">
     <div class="lh-score__value"><!-- fill me --></div>
+    <div class="lh-score__gauge"></div>
     <div class="lh-score__header">
       <div class="lh-score__snippet">
         <span class="lh-score__title"><!-- fill me --></span>
@@ -15,8 +16,8 @@
 <template id="tmpl-lh-audit-score">
   <div class="lh-score">
     <div class="lh-score__value"><!-- fill me --></div>
-    <details class="lh-score__header">
-      <summary class="lh-score__snippet">
+    <details class="lh-score__header lh-expandable-details">
+      <summary class="lh-score__snippet lh-expandable-details__summary">
         <span class="lh-score__title"><!-- fill me --></span>
         <div class="lh-toggle-arrow" title="See audits"></div>
       </summary>
@@ -48,6 +49,9 @@
     }
     .leftnav-item__score {
       background: transparent;
+    }
+    .leftnav-item__score::after {
+      content: '';
     }
     .leftnav-item__score.lh-score__value--pass {
       color: var(--pass-color);

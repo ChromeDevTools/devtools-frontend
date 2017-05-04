@@ -46,7 +46,14 @@ var Audits2Service = class {
 
     return Promise.resolve()
       .then(_ => self.runLighthouseInWorker(this, params.url, undefined, params.categoryIDs))
-      .then(/** @type {!ReportRenderer.ReportJSON} */ result => result)
+      .then(/** @type {!ReportRenderer.ReportJSON} */ result => {
+         // Filter out artifacts except for screenshots in traces to minimize report size.
+         var traces = result.artifacts.traces;
+         for (var pass in traces)
+           traces[pass]['traceEvents'] = traces[pass]['traceEvents'].filter(e => e['cat'] === 'disabled-by-default-devtools.screenshot');
+         result.artifacts = { traces: traces };
+         return result;
+       })
       .catchException(null);
   }
 

@@ -277,3 +277,27 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
     this._handleRemoveSnippet(uiSourceCode);
   }
 };
+
+/**
+ * @implements {UI.ActionDelegate}
+ */
+Sources.SourcesNavigatorView.CreatingActionDelegate = class {
+  /**
+   * @override
+   * @param {!UI.Context} context
+   * @param {string} actionId
+   * @return {boolean}
+   */
+  handleAction(context, actionId) {
+    switch (actionId) {
+      case 'sources.create-snippet':
+        var uiSourceCode = Snippets.scriptSnippetModel.createScriptSnippet('');
+        Common.Revealer.reveal(uiSourceCode);
+        return true;
+      case 'sources.add-folder-to-workspace':
+        Workspace.isolatedFileSystemManager.addFileSystem();
+        return true;
+    }
+    return false;
+  }
+};

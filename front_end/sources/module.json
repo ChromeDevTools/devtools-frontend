@@ -496,6 +496,20 @@
             "title": "Close All"
         },
         {
+            "type": "@UI.ActionDelegate",
+            "category": "Sources",
+            "actionId": "sources.create-snippet",
+            "className": "Sources.SourcesNavigatorView.CreatingActionDelegate",
+            "title": "Create new snippet"
+        },
+        {
+            "type": "@UI.ActionDelegate",
+            "category": "Sources",
+            "actionId": "sources.add-folder-to-workspace",
+            "className": "Sources.SourcesNavigatorView.CreatingActionDelegate",
+            "title": "Add folder to workspace"
+        },
+        {
             "type": "@UI.ViewLocationResolver",
             "name": "navigator-view",
             "className": "Sources.SourcesPanel"

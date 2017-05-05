@@ -137,7 +137,8 @@
         "perf_ui",
         "extensions",
         "data_grid",
-        "network_conditions"
+        "network_conditions",
+        "product_registry"
     ],
     "scripts": [
         "CountersGraph.js",

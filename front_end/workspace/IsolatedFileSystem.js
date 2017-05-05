@@ -210,7 +210,6 @@ Workspace.IsolatedFileSystem = class {
           dirEntryLoaded.call(this, dirEntry);
           return;
         }
-
         var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
         console.error(
             errorMessage + ' when testing if file exists \'' + (this._path + '/' + path + '/' + nameCandidate) + '\'');

@@ -579,6 +579,11 @@ Sources.NavigatorView = class extends UI.VBox {
    * @param {!Workspace.UISourceCode=} uiSourceCode
    */
   _handleContextMenuCreate(project, path, uiSourceCode) {
+    if (uiSourceCode) {
+      var relativePath = Persistence.FileSystemWorkspaceBinding.relativePath(uiSourceCode);
+      relativePath.pop();
+      path = relativePath.join('/');
+    }
     this.create(project, path, uiSourceCode);
   }
 
@@ -623,11 +628,9 @@ Sources.NavigatorView = class extends UI.VBox {
 
     var project = uiSourceCode.project();
     if (project.type() === Workspace.projectTypes.FileSystem) {
-      var parentURL = uiSourceCode.parentURL();
       contextMenu.appendItem(Common.UIString('Rename\u2026'), this._handleContextMenuRename.bind(this, node));
       contextMenu.appendItem(
-          Common.UIString('Make a copy\u2026'),
-          this._handleContextMenuCreate.bind(this, project, parentURL, uiSourceCode));
+          Common.UIString('Make a copy\u2026'), this._handleContextMenuCreate.bind(this, project, '', uiSourceCode));
       contextMenu.appendItem(Common.UIString('Delete'), this._handleContextMenuDelete.bind(this, uiSourceCode));
       contextMenu.appendSeparator();
     }

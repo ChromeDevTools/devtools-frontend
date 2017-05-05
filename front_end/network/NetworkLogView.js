@@ -71,8 +71,6 @@ Network.NetworkLogView = class extends UI.VBox {
 
     /** @type {!Map.<string, !Network.NetworkRequestNode>} */
     this._nodesByRequestId = new Map();
-    /** @type {!Map<*, !Network.NetworkGroupNode>} */
-    this._nodeGroups = new Map();
     /** @type {!Object.<string, boolean>} */
     this._staleRequestIds = {};
     /** @type {number} */
@@ -102,8 +100,7 @@ Network.NetworkLogView = class extends UI.VBox {
 
     /** @type {!Map<string, !Network.GroupLookupInterface>} */
     this._groupLookups = new Map();
-    this._groupLookups.set('Product', new Network.ProductGrouper());
-    this._groupLookups.set('Frame', new Network.FrameGrouper());
+    this._groupLookups.set('Frame', new Network.FrameGrouper(this));
 
     /** @type {?Network.GroupLookupInterface} */
     this._activeGroupLookup = null;
@@ -367,14 +364,13 @@ Network.NetworkLogView = class extends UI.VBox {
     var groupLookup = this._groupLookups.get(groupKey) || null;
     this._activeGroupLookup = groupLookup;
     if (!groupLookup) {
-      this._nodeGroups.clear();
       this._invalidateAllItems();
       return;
     }
     groupLookup.initialize().then(() => {
       if (this._activeGroupLookup !== groupLookup)
         return;
-      this._nodeGroups.clear();
+      this._activeGroupLookup.reset();
       this._invalidateAllItems();
     });
   }
@@ -899,16 +895,10 @@ Network.NetworkLogView = class extends UI.VBox {
     if (!this._activeGroupLookup)
       return this._dataGrid.rootNode();
 
-    var groupKey = this._activeGroupLookup.groupForRequest(node.request());
-    if (!groupKey)
+    var groupNode = this._activeGroupLookup.groupNodeForRequest(node.request());
+    if (!groupNode)
       return this._dataGrid.rootNode();
-
-    var group = this._nodeGroups.get(groupKey);
-    if (group)
-      return group;
-    group = new Network.NetworkGroupNode(this, this._activeGroupLookup.groupName(groupKey));
-    this._nodeGroups.set(groupKey, group);
-    return group;
+    return groupNode;
   }
 
   reset() {
@@ -929,7 +919,8 @@ Network.NetworkLogView = class extends UI.VBox {
     for (var i = 0; i < nodes.length; ++i)
       nodes[i].dispose();
 
-    this._nodeGroups.clear();
+    if (this._activeGroupLookup)
+      this._activeGroupLookup.reset();
     this._nodesByRequestId.clear();
     this._staleRequestIds = {};
     this._resetSuggestionBuilder();
@@ -1834,13 +1825,9 @@ Network.GroupLookupInterface.prototype = {
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @return {?*}
+   * @return {?Network.NetworkGroupNode}
    */
-  groupForRequest: function(request) {},
+  groupNodeForRequest: function(request) {},
 
-  /**
-   * @param {!*} key
-   * @return {string}
-   */
-  groupName: function(key) {}
+  reset: function() {}
 };

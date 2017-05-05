@@ -39,11 +39,10 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
     super({});
     this._parentView = parentView;
     this._isHovered = false;
+    this._isProduct = false;
     this._showingInitiatorChain = false;
     /** @type {?SDK.NetworkRequest} */
     this._requestOrFirstKnownChildRequest = null;
-    /** @type {?Common.Color} */
-    this._backgroundColor = null;
   }
 
   /**
@@ -65,6 +64,39 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
   /**
    * @return {string}
    */
+  displayName() {
+    return '';
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isFromFrame() {
+    return false;
+  }
+
+  /**
+   * @override
+   * @param {string} columnId
+   * @return {!Element}
+   */
+  createCell(columnId) {
+    var cell = this.createTD(columnId);
+    this.renderCell(cell, columnId);
+    return cell;
+  }
+
+  /**
+   * @protected
+   * @param {!Element} cell
+   * @param {string} columnId
+   */
+  renderCell(cell, columnId) {
+  }
+
+  /**
+   * @return {string}
+   */
   backgroundColor() {
     var bgColors = Network.NetworkNode._themedBackgroundColors();
     var color = this.isStriped() ? bgColors.Stripe : bgColors.Default;
@@ -72,8 +104,10 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
       color = color.blendWith(bgColors.Navigation);
     if (this.hovered())
       color = color.blendWith(bgColors.Hovered);
-    if (this._backgroundColor)
-      color = color.blendWith(this._backgroundColor);
+    if (this.isFromFrame())
+      color = color.blendWith(bgColors.FromFrame);
+    else if (this._isProduct)
+      color = color.blendWith(bgColors.IsProduct);
     if (this.isOnInitiatorPath())
       color = color.blendWith(bgColors.InitiatorPath);
     if (this.isOnInitiatedPath())
@@ -185,20 +219,6 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
   }
 
   /**
-   * @return {?Network.NetworkRequestNode}
-   */
-  asRequestNode() {
-    return null;
-  }
-
-  /**
-   * @return {?Network.NetworkGroupNode}
-   */
-  asGroupNode() {
-    return null;
-  }
-
-  /**
    * @override
    */
   clearFlatNodes() {
@@ -239,7 +259,9 @@ Network.NetworkNode._backgroundColors = {
   Hovered: [235, 242, 252, 0.7],
   InitiatorPath: [58, 217, 58, 0.4],
   InitiatedPath: [217, 58, 58, 0.4],
-  Selected: [63, 81, 181, .6]
+  Selected: [63, 81, 181, .6],
+  FromFrame: [224, 247, 250, .4],
+  IsProduct: [255, 252, 225, .6],
 };
 
 /** @typedef {!{
@@ -249,7 +271,9 @@ Network.NetworkNode._backgroundColors = {
   Hovered: !Common.Color,
   InitiatorPath: !Common.Color,
   InitiatedPath: !Common.Color,
-  Selected: !Common.Color
+  Selected: !Common.Color,
+  FromFrame: !Common.Color,
+  IsProduct: !Common.Color
 }} */
 Network.NetworkNode._SupportedBackgroundColors;
 
@@ -277,7 +301,13 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     this.selectable = true;
     this._isOnInitiatorPath = false;
     this._isOnInitiatedPath = false;
+    this._isFromFrame = false;
+    if (!Runtime.experiments.isEnabled('networkGroupingRequests'))
+      return;
+    var frame = SDK.ResourceTreeModel.frameForRequest(request);
+    this._isFromFrame = frame ? !frame.isMainFrame() : false;
   }
+
 
   /**
    * @param {!Network.NetworkNode} a
@@ -285,28 +315,14 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    * @return {number}
    */
   static NameComparator(a, b) {
-    var aGroupNode = a.asGroupNode();
-    var bGroupNode = b.asGroupNode();
-
-    if ((!aGroupNode && bGroupNode) || (aGroupNode && !bGroupNode))
-      return aGroupNode ? 1 : -1;
-
-    var aName;
-    var bName;
-    if (aGroupNode && bGroupNode) {
-      aName = aGroupNode.displayName();
-      bName = bGroupNode.displayName();
-      if (aName === bName)
-        return Network.NetworkRequestNode.RequestPropertyComparator('startTime', a, b);
-    } else {
+    var aName = a.displayName().toLowerCase();
+    var bName = b.displayName().toLowerCase();
+    if (aName === bName) {
       var aRequest = a.requestOrFirstKnownChildRequest();
       var bRequest = b.requestOrFirstKnownChildRequest();
-      if (!aRequest || !bRequest)
-        return aRequest ? 1 : -1;
-      aName = aRequest.name();
-      bName = bRequest.name();
-      if (aName === bName)
+      if (aRequest && bRequest)
         return aRequest.indentityCompare(bRequest);
+      return aRequest ? -1 : 1;
     }
     return aName < bName ? -1 : 1;
   }
@@ -376,8 +392,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
-    var aSimpleType = a.asRequestNode().displayType();
-    var bSimpleType = b.asRequestNode().displayType();
+    var aSimpleType = a.displayType();
+    var bSimpleType = b.displayType();
 
     if (aSimpleType > bSimpleType)
       return 1;
@@ -624,6 +640,14 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   }
 
   /**
+   * @override
+   * @return {boolean}
+   */
+  isFromFrame() {
+    return this._isFromFrame;
+  }
+
+  /**
    * @return {string}
    */
   displayType() {
@@ -639,18 +663,18 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
 
   /**
    * @override
-   * @return {!SDK.NetworkRequest}
+   * @return {string}
    */
-  request() {
-    return this._request;
+  displayName() {
+    return this._request.name();
   }
 
   /**
    * @override
-   * @return {!Network.NetworkRequestNode}
+   * @return {!SDK.NetworkRequest}
    */
-  asRequestNode() {
-    return this;
+  request() {
+    return this._request;
   }
 
   /**
@@ -687,6 +711,17 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     element.classList.toggle('network-navigation-row', this._isNavigationRequest);
     super.createCells(element);
     this._updateBackgroundColor();
+    if (!Runtime.experiments.isEnabled('networkGroupingRequests'))
+      return;
+    ProductRegistry.instance().then(productRegistry => {
+      var frame = SDK.ResourceTreeModel.frameForRequest(this._request);
+      if (frame && frame.isMainFrame())
+        frame = null;
+      if (productRegistry.entryForUrl(this._request.parsedURL)) {
+        this._isProduct = true;
+        this._updateBackgroundColor();
+      }
+    });
   }
 
   /**
@@ -700,22 +735,20 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
 
   /**
    * @override
-   * @param {string} columnIdentifier
-   * @return {!Element}
+   * @param {!Element} cell
+   * @param {string} columnId
    */
-  createCell(columnIdentifier) {
-    var cell = this.createTD(columnIdentifier);
-    switch (columnIdentifier) {
+  renderCell(cell, columnId) {
+    switch (columnId) {
       case 'name':
         this._renderNameCell(cell);
         break;
       case 'product':
         if (!Runtime.experiments.isEnabled('networkGroupingRequests')) {
-          this._setTextAndTitle(cell, this._request.responseHeaderValue(columnIdentifier) || '');
+          this._setTextAndTitle(cell, this._request.responseHeaderValue(columnId) || '');
           break;
         }
-        if (this.request())
-          ProductRegistry.instance().then(this._renderProductCell.bind(this, cell));
+        ProductRegistry.instance().then(this._renderProductCell.bind(this, cell));
         break;
       case 'method':
         this._setTextAndTitle(cell, this._request.requestMethod);
@@ -764,11 +797,9 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
         this._setTextAndTitle(cell, '');
         break;
       default:
-        this._setTextAndTitle(cell, this._request.responseHeaderValue(columnIdentifier) || '');
+        this._setTextAndTitle(cell, this._request.responseHeaderValue(columnId) || '');
         break;
     }
-
-    return cell;
   }
 
   /**
@@ -869,35 +900,19 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    * @param {!ProductRegistry.Registry} productRegistry
    */
   _renderProductCell(cell, productRegistry) {
-    var request = this.request();
-    if (!request)
+    var rowElement = this.existingElement();
+    if (!rowElement)
       return;
-    var entry = productRegistry.entryForUrl(request.parsedURL);
+    var frame = SDK.ResourceTreeModel.frameForRequest(this._request);
+    if (frame && frame.isMainFrame())
+      frame = null;
+    var entry = frame ? productRegistry.entryForFrame(frame) : null;
+    if (!entry)
+      entry = productRegistry.entryForUrl(this._request.parsedURL);
     if (!entry)
       return;
-    this._setTextAndTitle(cell, entry.name);
-    if (entry.type !== null) {
-      var element = this.existingElement();
-      if (!element)
-        return;
-      switch (entry.type) {
-        case 0:
-          this._backgroundColor = Common.Color.fromRGBA([224, 247, 250, .6]);
-          cell.classList.add('product-ad');
-          break;
-        case 1:
-          this._backgroundColor = Common.Color.fromRGBA([255, 252, 225, .6]);
-          cell.classList.add('product-tracking');
-          break;
-        case 2:
-          this._backgroundColor = Common.Color.fromRGBA([211, 253, 211, .6]);
-          cell.classList.add('product-cdn');
-          break;
-        default:
-          this._backgroundColor = null;
-      }
-      this._updateBackgroundColor();
-    }
+    cell.textContent = entry.name;
+    cell.title = entry.name;
   }
 
   /**
@@ -1056,59 +1071,18 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   }
 };
 
-/**
- * @unrestricted
- */
 Network.NetworkGroupNode = class extends Network.NetworkNode {
   /**
-   * @param {!Network.NetworkLogView} parentView
-   * @param {string} displayName
-   * @param {string=} sortKey
-   */
-  constructor(parentView, displayName, sortKey) {
-    super(parentView);
-    this._displayName = displayName;
-    this._name = sortKey;
-  }
-
-  /**
    * @override
-   * @return {?Network.NetworkGroupNode}
+   * @param {!Element} cell
+   * @param {string} columnId
    */
-  asGroupNode() {
-    return this;
-  }
-
-  /**
-   * @return {string}
-   */
-  displayName() {
-    return this._displayName;
-  }
-
-  /**
-   * @param {!Element} element
-   * @param {string} text
-   */
-  _setTextAndTitle(element, text) {
-    element.textContent = text;
-    element.title = text;
-  }
-
-  /**
-   * @override
-   * @param {string} columnIdentifier
-   * @return {!Element}
-   */
-  createCell(columnIdentifier) {
-    var cell = this.createTD(columnIdentifier);
-    if (columnIdentifier === 'name') {
+  renderCell(cell, columnId) {
+    if (columnId === 'name') {
       var leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
       cell.style.setProperty('padding-left', leftPadding);
       cell.classList.add('disclosure');
-      this._setTextAndTitle(cell, this._displayName);
     }
-    return cell;
   }
 
   /**

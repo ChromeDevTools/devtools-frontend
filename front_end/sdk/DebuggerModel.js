@@ -66,7 +66,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
 
     /** @type {!Map<string, string>} */
     this._fileURLToNodeJSPath = new Map();
-    this.enableDebugger();
+    this._enableDebugger();
 
     /** @type {!Map<string, string>} */
     this._stringMap = new Map();
@@ -109,37 +109,34 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {function()=} callback
+   * @return {!Promise}
    */
-  enableDebugger(callback) {
-    if (this._debuggerEnabled) {
-      if (callback)
-        callback();
-      return;
-    }
-    this._agent.enable(callback);
+  _enableDebugger() {
+    if (this._debuggerEnabled)
+      return Promise.resolve();
     this._debuggerEnabled = true;
+
+    var enablePromise = new Promise(fulfill => this._agent.enable(fulfill));
     this._pauseOnExceptionStateChanged();
     this._asyncStackTracesStateChanged();
     this.dispatchEventToListeners(SDK.DebuggerModel.Events.DebuggerWasEnabled, this);
+    return enablePromise;
   }
 
   /**
-   * @param {function()=} callback
+   * @return {!Promise}
    */
-  disableDebugger(callback) {
-    if (!this._debuggerEnabled) {
-      if (callback)
-        callback();
-      return;
-    }
-
-    this._agent.disable(callback);
+  _disableDebugger() {
+    if (!this._debuggerEnabled)
+      return Promise.resolve();
     this._debuggerEnabled = false;
+
+    var disablePromise = new Promise(fulfill => this._agent.disable(fulfill));
     this._isPausing = false;
     this._asyncStackTracesStateChanged();
     this.globalObjectCleared();
     this.dispatchEventToListeners(SDK.DebuggerModel.Events.DebuggerWasDisabled);
+    return disablePromise;
   }
 
   /**
@@ -856,32 +853,16 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    * @override
    * @return {!Promise}
    */
-  suspendModel() {
-    return new Promise(promiseBody.bind(this));
-
-    /**
-     * @param {function()} fulfill
-     * @this {SDK.DebuggerModel}
-     */
-    function promiseBody(fulfill) {
-      this.disableDebugger(fulfill);
-    }
+  async suspendModel() {
+    await this._disableDebugger();
   }
 
   /**
    * @override
    * @return {!Promise}
    */
-  resumeModel() {
-    return new Promise(promiseBody.bind(this));
-
-    /**
-     * @param {function()} fulfill
-     * @this {SDK.DebuggerModel}
-     */
-    function promiseBody(fulfill) {
-      this.enableDebugger(fulfill);
-    }
+  async resumeModel() {
+    await this._enableDebugger();
   }
 
   /**

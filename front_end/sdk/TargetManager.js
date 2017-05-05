@@ -28,19 +28,24 @@ SDK.TargetManager = class extends Common.Object {
     this._webSocketConnectionLostCallback;
   }
 
+  /**
+   * @return {!Promise}
+   */
   suspendAllTargets() {
     if (this._isSuspended)
-      return;
+      return Promise.resolve();
     this._isSuspended = true;
     this.dispatchEventToListeners(SDK.TargetManager.Events.SuspendStateChanged);
 
+    var promises = [];
     for (var target of this._targets) {
       var childTargetManager = this._childTargetManagers.get(target);
       if (childTargetManager)
-        childTargetManager.suspend();
+        promises.push(childTargetManager.suspend());
       for (var model of target.models().values())
-        model.suspendModel();
+        promises.push(model.suspendModel());
     }
+    return Promise.all(promises);
   }
 
   /**
@@ -48,7 +53,7 @@ SDK.TargetManager = class extends Common.Object {
    */
   resumeAllTargets() {
     if (!this._isSuspended)
-      throw new Error('Not suspended');
+      return Promise.resolve();
     this._isSuspended = false;
     this.dispatchEventToListeners(SDK.TargetManager.Events.SuspendStateChanged);
 
@@ -411,8 +416,11 @@ SDK.ChildTargetManager = class {
     }
   }
 
+  /**
+   * @return {!Promise}
+   */
   suspend() {
-    this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: false});
+    return this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: false});
   }
 
   /**

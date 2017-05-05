@@ -88,11 +88,15 @@ Bindings.NetworkProject = class {
     }
 
     this._debuggerModel = target.model(SDK.DebuggerModel);
+    /** @type {!Set<!SDK.Script>} */
+    this._acceptedScripts = new Set();
     if (this._debuggerModel) {
       var runtimeModel = this._debuggerModel.runtimeModel();
       this._eventListeners.push(
           runtimeModel.addEventListener(
               SDK.RuntimeModel.Events.ExecutionContextDestroyed, this._executionContextDestroyed, this),
+          this._debuggerModel.addEventListener(
+              SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this),
           this._debuggerModel.addEventListener(
               SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
           this._debuggerModel.addEventListener(
@@ -281,6 +285,7 @@ Bindings.NetworkProject = class {
     var script = /** @type {!SDK.Script} */ (event.data);
     if (!this._acceptsScript(script))
       return;
+    this._acceptedScripts.add(script);
     var originalContentProvider = script.originalContentProvider();
     var frameId = Bindings.frameIdForScript(script);
     script[Bindings.NetworkProject._frameIdSymbol] = frameId;
@@ -296,12 +301,27 @@ Bindings.NetworkProject = class {
   _executionContextDestroyed(event) {
     var executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
     var scripts = this._debuggerModel.scriptsForExecutionContext(executionContext);
+    this._removeScripts(scripts);
+  }
+
+  /**
+   * @param {!Array<!SDK.Script>} scripts
+   */
+  _removeScripts(scripts) {
     for (var script of scripts) {
-      if (!this._acceptsScript(script))
+      if (!this._acceptedScripts.has(script))
         continue;
+      this._acceptedScripts.delete(script);
       var frameId = script[Bindings.NetworkProject._frameIdSymbol];
       this._removeFileForURL(script.contentURL(), frameId, script.isContentScript());
     }
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _globalObjectCleared(event) {
+    this._removeScripts(Array.from(this._acceptedScripts));
   }
 
   /**

@@ -8,13 +8,11 @@
  * @unrestricted
  */
 Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListWidget.Provider {
-  /**
-   * @param {?Map.<!Workspace.UISourceCode, number>=} defaultScores
-   */
-  constructor(defaultScores) {
+  constructor() {
     super();
 
-    this._defaultScores = defaultScores || null;
+    this._queryLineNumberAndColumnNumber = '';
+    this._defaultScores = null;
     this._scorer = new Sources.FilePathScoreFunction('');
   }
 
@@ -233,5 +231,7 @@ Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListW
     Workspace.workspace.removeEventListener(
         Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
     Workspace.workspace.removeEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this);
+    this._queryLineNumberAndColumnNumber = '';
+    this._defaultScores = null;
   }
 };

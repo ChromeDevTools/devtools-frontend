@@ -320,26 +320,10 @@ SDK.TextSourceMap = class {
    * @return {?SDK.SourceMapEntry}
    */
   findEntry(lineNumber, columnNumber) {
-    var first = 0;
     var mappings = this.mappings();
-    var count = mappings.length;
-    while (count > 1) {
-      var step = count >> 1;
-      var middle = first + step;
-      var mapping = mappings[middle];
-      if (lineNumber < mapping.lineNumber ||
-          (lineNumber === mapping.lineNumber && columnNumber < mapping.columnNumber)) {
-        count = step;
-      } else {
-        first = middle;
-        count -= step;
-      }
-    }
-    var entry = mappings[first];
-    if (!first && entry &&
-        (lineNumber < entry.lineNumber || (lineNumber === entry.lineNumber && columnNumber < entry.columnNumber)))
-      return null;
-    return entry;
+    var index = mappings.upperBound(
+        undefined, (unused, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
+    return index ? mappings[index - 1] : null;
   }
 
   /**

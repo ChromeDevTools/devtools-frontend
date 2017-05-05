@@ -4,8 +4,9 @@
             "type": "view",
             "location": "panel",
             "id": "audits",
-            "title": "Audits",
+            "title": "Legacy Audits",
             "order": 90,
+            "persistence": "closeable",
             "className": "Audits.AuditsPanel"
         }
     ],

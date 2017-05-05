@@ -109,7 +109,8 @@ Host.UserMetrics._PanelCodes = {
   'drawer-sensors': 14,
   'drawer-sources.search': 15,
   security: 16,
-  js_profiler: 17
+  js_profiler: 17,
+  audits2: 18,
 };
 
 /** @type {!Host.UserMetrics} */

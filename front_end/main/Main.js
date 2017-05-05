@@ -93,7 +93,6 @@ Main.Main = class {
     // Keep this sorted alphabetically: both keys and values.
     Runtime.experiments.register('accessibilityInspection', 'Accessibility Inspection');
     Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
-    Runtime.experiments.register('audits2', 'Audits 2.0', true);
     Runtime.experiments.register('autoAttachToCrossProcessSubframes', 'Auto-attach to cross-process subframes', true);
     Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
     Runtime.experiments.register('changesDrawer', 'Changes drawer', true);
@@ -129,8 +128,6 @@ Main.Main = class {
         Runtime.experiments.enableForTest('accessibilityInspection');
       if (testPath.indexOf('coverage') !== -1)
         Runtime.experiments.enableForTest('cssTrackerPanel');
-      if (testPath.indexOf('audits2/') !== -1)
-        Runtime.experiments.enableForTest('audits2');
       if (testPath.indexOf('changes/') !== -1)
         Runtime.experiments.enableForTest('changesDrawer');
       if (testPath.indexOf('sass/') !== -1)

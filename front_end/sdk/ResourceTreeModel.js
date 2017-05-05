@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @unrestricted
- */
 SDK.ResourceTreeModel = class extends SDK.SDKModel {
   /**
    * @param {!SDK.Target} target
@@ -44,18 +41,22 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
       networkManager.addEventListener(
           SDK.NetworkManager.Events.RequestUpdateDropped, this._onRequestUpdateDropped, this);
     }
-
     this._agent = target.pageAgent();
     this._agent.enable();
     this._securityOriginManager = target.model(SDK.SecurityOriginManager);
 
-    this._fetchResourceTree();
-
     target.registerPageDispatcher(new SDK.PageDispatcher(this));
 
+    /** @type {!Map<string, !SDK.ResourceTreeFrame>} */
+    this._frames = new Map();
+    this._cachedResourcesProcessed = false;
     this._pendingReloadOptions = null;
     this._reloadSuspensionCount = 0;
     this._isInterstitialShowing = false;
+    /** @type {?SDK.ResourceTreeFrame} */
+    this.mainFrame = null;
+
+    this._agent.getResourceTree(this._processCachedResources.bind(this));
   }
 
   /**
@@ -109,13 +110,6 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    */
   domModel() {
     return /** @type {!SDK.DOMModel} */ (this.target().model(SDK.DOMModel));
-  }
-
-  _fetchResourceTree() {
-    /** @type {!Map<string, !SDK.ResourceTreeFrame>} */
-    this._frames = new Map();
-    this._cachedResourcesProcessed = false;
-    this._agent.getResourceTree(this._processCachedResources.bind(this));
   }
 
   _processCachedResources(error, mainFramePayload) {

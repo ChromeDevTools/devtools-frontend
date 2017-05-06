@@ -1,2 +1,1 @@
 Full-size screenshots in Device Mode.
-New audits panel.

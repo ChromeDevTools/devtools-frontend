@@ -1,6 +1,7 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @unrestricted
  */
@@ -9,8 +10,11 @@ PerfUI.ChartViewport = class extends UI.VBox {
     super(true);
 
     this.viewportElement = this.contentElement.createChild('div', 'fill');
+    this.viewportElement.addEventListener('mousemove', this._updateCursorPosition.bind(this), false);
+    this.viewportElement.addEventListener('mouseout', this._showCursor.bind(this, false), false);
     this.viewportElement.addEventListener('mousewheel', this._onMouseWheel.bind(this), false);
-    this.viewportElement.addEventListener('keydown', this._handleZoomPanKeys.bind(this), false);
+    this.viewportElement.addEventListener('keydown', this._onChartKeyDown.bind(this), false);
+    this.viewportElement.addEventListener('keyup', this._onChartKeyUp.bind(this), false);
 
     UI.installInertialDragHandle(
         this.viewportElement, this._startDragging.bind(this), this._dragging.bind(this), this._endDragging.bind(this),
@@ -26,6 +30,8 @@ PerfUI.ChartViewport = class extends UI.VBox {
 
     this._selectionOverlay = this.contentElement.createChild('div', 'flame-chart-selection-overlay hidden');
     this._selectedTimeSpanLabel = this._selectionOverlay.createChild('div', 'time-span');
+
+    this._cursorElement = this.contentElement.createChild('div', 'chart-cursor-element hidden');
 
     this.reset();
   }
@@ -300,6 +306,36 @@ PerfUI.ChartViewport = class extends UI.VBox {
   _onScroll() {
     this._scrollTop = this._vScrollElement.scrollTop;
     this.scheduleUpdate();
+  }
+
+  /**
+   * @param {!Event} e
+   */
+  _updateCursorPosition(e) {
+    this._showCursor(e.shiftKey);
+    this._cursorElement.style.left = e.offsetX + 'px';
+  }
+
+  /**
+   * @param {boolean} visible
+   */
+  _showCursor(visible) {
+    this._cursorElement.classList.toggle('hidden', !visible || this._isDragging);
+  }
+
+  /**
+   * @param {!Event} e
+   */
+  _onChartKeyDown(e) {
+    this._showCursor(e.shiftKey);
+    this._handleZoomPanKeys(e);
+  }
+
+  /**
+   * @param {!Event} e
+   */
+  _onChartKeyUp(e) {
+    this._showCursor(e.shiftKey);
   }
 
   /**

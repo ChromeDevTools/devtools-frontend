@@ -295,27 +295,22 @@ SDK.CSSModel = class extends SDK.SDKModel {
         .catchException(false);
   }
 
-  startRuleUsageTracking() {
+  startCoverage() {
     this._agent.startRuleUsageTracking();
   }
 
   /**
    * @return {!Promise<!Array<!Protocol.CSS.RuleUsage>>}
    */
-  ruleListPromise() {
-    /**
-     * @param {?string} error
-     * @param {!Array<!Protocol.CSS.RuleUsage>=} ruleUsage
-     * @return {!Array<!Protocol.CSS.RuleUsage>}
-     */
-    function usedRulesCallback(error, ruleUsage) {
-      if (error || !ruleUsage)
-        return [];
+  takeCoverageDelta() {
+    return this._agent.takeCoverageDelta((error, ruleUsage) => error || !ruleUsage ? [] : ruleUsage);
+  }
 
-      return ruleUsage;
-    }
-
-    return this._agent.stopRuleUsageTracking(usedRulesCallback);
+  /**
+   * @return {!Promise}
+   */
+  stopCoverage() {
+    return this._agent.stopRuleUsageTracking();
   }
 
   /**

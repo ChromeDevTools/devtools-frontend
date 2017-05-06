@@ -364,18 +364,13 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
     content: " ";
 }
 
-.CodeMirror .text-editor-coverage-used-marker,
-.CodeMirror .text-editor-coverage-mixed-marker {
+.CodeMirror .text-editor-coverage-used-marker {
     text-align: right;
     padding-right: 2px;
     background-color: #81C784;
 }
 
 .CodeMirror .text-editor-coverage-used-marker::after {
-    content: " ";
-}
-
-.CodeMirror .text-editor-coverage-mixed-marker::after {
     content: " ";
 }
 

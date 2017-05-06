@@ -150,6 +150,7 @@ all_devtools_files = [
   "front_end/cookie_table/CookiesTable.js",
   "front_end/cookie_table/module.json",
   "front_end/coverage/coverageListView.css",
+  "front_end/coverage/CoverageDecorationManager.js",
   "front_end/coverage/CoverageListView.js",
   "front_end/coverage/CoverageModel.js",
   "front_end/coverage/coverageView.css",

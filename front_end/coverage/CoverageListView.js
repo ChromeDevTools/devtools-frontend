@@ -5,6 +5,8 @@
 Coverage.CoverageListView = class extends UI.VBox {
   constructor() {
     super(true);
+    /** @type {!Map<!Coverage.URLCoverageInfo, !Coverage.CoverageListView.GridNode>} */
+    this._nodeForCoverageInfo = new Map();
     this.registerRequiredCSS('coverage/coverageListView.css');
     var columns = [
       {id: 'url', title: Common.UIString('URL'), width: '300px', fixedWidth: false, sortable: true},
@@ -42,12 +44,27 @@ Coverage.CoverageListView = class extends UI.VBox {
    * @param {!Array<!Coverage.URLCoverageInfo>} coverageInfo
    */
   update(coverageInfo) {
+    var hadUpdates = false;
     var maxSize = coverageInfo.reduce((acc, entry) => Math.max(acc, entry.size()), 0);
     var rootNode = this._dataGrid.rootNode();
-    rootNode.removeChildren();
-    for (var entry of coverageInfo)
-      rootNode.appendChild(new Coverage.CoverageListView.GridNode(entry, maxSize));
-    this._sortingChanged();
+    for (var entry of coverageInfo) {
+      var node = this._nodeForCoverageInfo.get(entry);
+      if (node) {
+        hadUpdates = node._refreshIfNeeded(maxSize) || hadUpdates;
+        continue;
+      }
+      hadUpdates = true;
+      node = new Coverage.CoverageListView.GridNode(entry, maxSize);
+      this._nodeForCoverageInfo.set(entry, node);
+      rootNode.appendChild(node);
+    }
+    if (hadUpdates)
+      this._sortingChanged();
+  }
+
+  reset() {
+    this._nodeForCoverageInfo.clear();
+    this._dataGrid.rootNode().removeChildren();
   }
 
   /**
@@ -135,7 +152,7 @@ Coverage.CoverageListView = class extends UI.VBox {
       var nodeA = /** @type {!Coverage.CoverageListView.GridNode} */ (a);
       var nodeB = /** @type {!Coverage.CoverageListView.GridNode} */ (b);
 
-      return nodeA._coverageInfo[fieldName]() - nodeB._coverageInfo[fieldName]();
+      return nodeA._coverageInfo[fieldName]() - nodeB._coverageInfo[fieldName]() || compareURL(a, b);
     }
 
     /**
@@ -148,7 +165,7 @@ Coverage.CoverageListView = class extends UI.VBox {
       var nodeB = /** @type {!Coverage.CoverageListView.GridNode} */ (b);
       var typeA = Coverage.CoverageListView._typeToString(nodeA._coverageInfo.type());
       var typeB = Coverage.CoverageListView._typeToString(nodeB._coverageInfo.type());
-      return typeA.localeCompare(typeB);
+      return typeA.localeCompare(typeB) || compareURL(a, b);
     }
   }
 
@@ -173,9 +190,24 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
   constructor(coverageInfo, maxSize) {
     super();
     this._coverageInfo = coverageInfo;
+    /** @type {number|undefined} */
+    this._lastUsedSize;
     this._url = coverageInfo.url();
     this._displayURL = new Common.ParsedURL(this._url).displayName;
     this._maxSize = maxSize;
+  }
+
+  /**
+   * @param {number} maxSize
+   * @return {boolean}
+   */
+  _refreshIfNeeded(maxSize) {
+    if (this._lastUsedSize === this._coverageInfo.usedSize() && maxSize === this._maxSize)
+      return false;
+    this._lastUsedSize = this._coverageInfo.usedSize();
+    this._maxSize = maxSize;
+    this.refresh();
+    return true;
   }
 
   /**

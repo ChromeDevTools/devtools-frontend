@@ -52,7 +52,8 @@
     "scripts": [
         "CoverageModel.js",
         "CoverageListView.js",
-        "CoverageView.js"
+        "CoverageView.js",
+        "CoverageDecorationManager.js"
     ],
     "resources": [
         "coverageListView.css",

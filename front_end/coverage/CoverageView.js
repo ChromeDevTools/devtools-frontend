@@ -8,6 +8,11 @@ Coverage.CoverageView = class extends UI.VBox {
 
     /** @type {?Coverage.CoverageModel} */
     this._model = null;
+    /** @type {number|undefined} */
+    this._pollTimer;
+    /** @type {?Coverage.CoverageDecorationManager} */
+    this._decorationManager = null;
+
     this.registerRequiredCSS('coverage/coverageView.css');
 
     var toolbarContainer = this.contentElement.createChild('div', 'coverage-toolbar-container');
@@ -37,9 +42,11 @@ Coverage.CoverageView = class extends UI.VBox {
   }
 
   _reset() {
-    Workspace.workspace.uiSourceCodes().forEach(
-        uiSourceCode => uiSourceCode.removeDecorationsForType(Coverage.CoverageView.LineDecorator.type));
-
+    if (this._decorationManager) {
+      this._decorationManager.dispose();
+      this._decorationManager = null;
+    }
+    this._listView.reset();
     this._listView.detach();
     this._coverageResultsElement.removeChildren();
     this._showHelpScreen();
@@ -91,32 +98,43 @@ Coverage.CoverageView = class extends UI.VBox {
     if (!model.start())
       return;
     this._model = model;
+    this._decorationManager = new Coverage.CoverageDecorationManager(model);
     this._toggleRecordAction.setToggled(true);
     this._clearButton.setEnabled(false);
     this._startWithReloadButton.setEnabled(false);
-    this._progressElement.textContent = Common.UIString('Recording...');
+    this._coverageResultsElement.removeChildren();
+    this._listView.show(this._coverageResultsElement);
+    this._poll();
+  }
+
+  async _poll() {
+    delete this._pollTimer;
+    var updates = await this._model.poll();
+    this._updateViews(updates);
+    this._pollTimer = setTimeout(() => this._poll(), 700);
   }
 
   async _stopRecording() {
-    this._toggleRecordAction.setToggled(false);
-    this._progressElement.textContent = Common.UIString('Fetching results...');
-
-    var coverageInfo = await this._model.stop();
+    if (this._pollTimer) {
+      clearTimeout(this._pollTimer);
+      delete this._pollTimer;
+    }
+    var updatedEntries = await this._model.stop();
+    this._updateViews(updatedEntries);
     this._model = null;
-    await this._updateViews(coverageInfo);
+    this._toggleRecordAction.setToggled(false);
     this._startWithReloadButton.setEnabled(true);
     this._clearButton.setEnabled(true);
   }
 
   /**
-   * @param {!Array<!Coverage.URLCoverageInfo>} coverageInfo
+   * @param {!Array<!Coverage.CoverageInfo>} updatedEntries
    */
-  async _updateViews(coverageInfo) {
-    this._updateStats(coverageInfo);
-    this._coverageResultsElement.removeChildren();
-    this._listView.update(coverageInfo);
-    this._listView.show(this._coverageResultsElement);
-    await Promise.all(coverageInfo.map(entry => Coverage.CoverageView._updateGutter(entry)));
+  async _updateViews(updatedEntries) {
+    var urlEntries = this._model.entries();
+    this._updateStats(urlEntries);
+    this._listView.update(urlEntries);
+    this._decorationManager.update(updatedEntries);
   }
 
   /**
@@ -135,63 +153,7 @@ Coverage.CoverageView = class extends UI.VBox {
         '%s of %s bytes are not used. (%d%%)', Number.bytesToString(unused), Number.bytesToString(total),
         percentUnused);
   }
-
-  /**
-   * @param {!Coverage.URLCoverageInfo} coverageInfo
-   */
-  static async _updateGutter(coverageInfo) {
-    var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(coverageInfo.url());
-    if (!uiSourceCode)
-      return;
-    // FIXME: gutter should be set in terms of offsets and therefore should not require contents.
-    var ranges = await coverageInfo.buildTextRanges();
-    for (var r of ranges)
-      uiSourceCode.addDecoration(r.range, Coverage.CoverageView.LineDecorator.type, r.count);
-  }
 };
-
-/**
- * @implements {SourceFrame.UISourceCodeFrame.LineDecorator}
- */
-Coverage.CoverageView.LineDecorator = class {
-  /**
-   * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {!TextEditor.CodeMirrorTextEditor} textEditor
-   */
-  decorate(uiSourceCode, textEditor) {
-    var gutterType = 'CodeMirror-gutter-coverage';
-
-    var decorations = uiSourceCode.decorationsForType(Coverage.CoverageView.LineDecorator.type);
-    textEditor.uninstallGutter(gutterType);
-    if (!decorations || !decorations.size)
-      return;
-
-    textEditor.installGutter(gutterType, false);
-    var lastLine = 0;
-    var lastData = undefined;
-    for (var decoration of decorations) {
-      var range = decoration.range();
-      var startLine = range.startLine;
-      if (lastLine && lastLine === startLine && lastData !== !!decoration.data()) {
-        var element = createElementWithClass('div', 'text-editor-coverage-mixed-marker');
-        textEditor.setGutterDecoration(startLine, gutterType, element);
-        startLine++;
-      } else {
-        startLine = Math.max(startLine, lastLine);
-      }
-      lastLine = range.endLine;
-      lastData = !!decoration.data();
-      var className = lastData ? 'text-editor-coverage-used-marker' : 'text-editor-coverage-unused-marker';
-      for (var line = startLine; line <= lastLine; ++line) {
-        var element = createElementWithClass('div', className);
-        textEditor.setGutterDecoration(line, gutterType, element);
-      }
-    }
-  }
-};
-
-Coverage.CoverageView.LineDecorator.type = 'coverage';
 
 /**
  * @implements {UI.ActionDelegate}

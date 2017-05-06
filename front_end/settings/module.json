@@ -28,7 +28,9 @@
         },
         {
             "type": "@Common.Revealer",
-            "contextTypes": ["Common.Setting"],
+            "contextTypes": [
+                "Common.Setting"
+            ],
             "className": "Settings.SettingsScreen.Revealer"
         },
         {
@@ -50,14 +52,6 @@
             "title": "Preferences",
             "order": "0",
             "className": "Settings.GenericSettingsTab"
-        },
-        {
-            "type": "view",
-            "location": "settings-view",
-            "id": "workspace",
-            "title": "Workspace",
-            "order": "1",
-            "className": "Settings.WorkspaceSettingsTab"
         },
         {
             "type": "view",
@@ -87,12 +81,10 @@
         "components"
     ],
     "scripts": [
-        "EditFileSystemView.js",
         "SettingsScreen.js",
         "FrameworkBlackboxSettingsTab.js"
     ],
     "resources": [
-        "editFileSystemView.css",
         "frameworkBlackboxSettingsTab.css",
         "settingsScreen.css"
     ]

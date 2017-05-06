@@ -31,14 +31,14 @@
 /**
  * @unrestricted
  */
-Workspace.FileSystemMapping = class extends Common.Object {
+Persistence.FileSystemMapping = class extends Common.Object {
   /**
    * @param {!Workspace.IsolatedFileSystemManager} fileSystemManager
    */
   constructor(fileSystemManager) {
     super();
     this._fileSystemMappingSetting = Common.settings.createLocalSetting('fileSystemMapping', {});
-    /** @type {!Object.<string, !Array.<!Workspace.FileSystemMapping.Entry>>} */
+    /** @type {!Object.<string, !Array.<!Persistence.FileSystemMapping.Entry>>} */
     this._fileSystemMappings = {};
     this._loadFromSettings();
 
@@ -86,7 +86,8 @@ Workspace.FileSystemMapping = class extends Common.Object {
 
       for (var i = 0; i < savedFileSystemMappings.length; ++i) {
         var savedEntry = savedFileSystemMappings[i];
-        var entry = new Workspace.FileSystemMapping.Entry(fileSystemPath, savedEntry.urlPrefix, savedEntry.pathPrefix);
+        var entry =
+            new Persistence.FileSystemMapping.Entry(fileSystemPath, savedEntry.urlPrefix, savedEntry.pathPrefix);
         fileSystemMappings.push(entry);
       }
     }
@@ -165,10 +166,10 @@ Workspace.FileSystemMapping = class extends Common.Object {
    * @param {string} pathPrefix
    */
   _innerAddFileMapping(fileSystemPath, urlPrefix, pathPrefix) {
-    var entry = new Workspace.FileSystemMapping.Entry(fileSystemPath, urlPrefix, pathPrefix);
+    var entry = new Persistence.FileSystemMapping.Entry(fileSystemPath, urlPrefix, pathPrefix);
     this._fileSystemMappings[fileSystemPath].push(entry);
     this._rebuildIndexes();
-    this.dispatchEventToListeners(Workspace.FileSystemMapping.Events.FileMappingAdded, entry);
+    this.dispatchEventToListeners(Persistence.FileSystemMapping.Events.FileMappingAdded, entry);
   }
 
   /**
@@ -183,12 +184,12 @@ Workspace.FileSystemMapping = class extends Common.Object {
     this._fileSystemMappings[fileSystemPath].remove(entry);
     this._rebuildIndexes();
     this._saveToSettings();
-    this.dispatchEventToListeners(Workspace.FileSystemMapping.Events.FileMappingRemoved, entry);
+    this.dispatchEventToListeners(Persistence.FileSystemMapping.Events.FileMappingRemoved, entry);
   }
 
   /**
    * @param {string} url
-   * @return {?Workspace.FileSystemMapping.Entry}
+   * @return {?Persistence.FileSystemMapping.Entry}
    */
   _mappingEntryForURL(url) {
     for (var i = this._urlPrefixes.length - 1; i >= 0; --i) {
@@ -202,7 +203,7 @@ Workspace.FileSystemMapping = class extends Common.Object {
   /**
    * @param {string} fileSystemPath
    * @param {string} filePath
-   * @return {?Workspace.FileSystemMapping.Entry}
+   * @return {?Persistence.FileSystemMapping.Entry}
    */
   _mappingEntryForPath(fileSystemPath, filePath) {
     var entries = this._fileSystemMappings[fileSystemPath];
@@ -224,7 +225,7 @@ Workspace.FileSystemMapping = class extends Common.Object {
   /**
    * @param {string} fileSystemPath
    * @param {string} pathPrefix
-   * @return {?Workspace.FileSystemMapping.Entry}
+   * @return {?Persistence.FileSystemMapping.Entry}
    */
   _configurableMappingEntryForPathPrefix(fileSystemPath, pathPrefix) {
     var entries = this._fileSystemMappings[fileSystemPath];
@@ -237,7 +238,7 @@ Workspace.FileSystemMapping = class extends Common.Object {
 
   /**
    * @param {string} fileSystemPath
-   * @return {!Array.<!Workspace.FileSystemMapping.Entry>}
+   * @return {!Array.<!Persistence.FileSystemMapping.Entry>}
    */
   mappingEntries(fileSystemPath) {
     return this._fileSystemMappings[fileSystemPath].slice();
@@ -324,7 +325,7 @@ Workspace.FileSystemMapping = class extends Common.Object {
 };
 
 /** @enum {symbol} */
-Workspace.FileSystemMapping.Events = {
+Persistence.FileSystemMapping.Events = {
   FileMappingAdded: Symbol('FileMappingAdded'),
   FileMappingRemoved: Symbol('FileMappingRemoved')
 };
@@ -332,7 +333,7 @@ Workspace.FileSystemMapping.Events = {
 /**
  * @unrestricted
  */
-Workspace.FileSystemMapping.Entry = class {
+Persistence.FileSystemMapping.Entry = class {
   /**
    * @param {string} fileSystemPath
    * @param {string} urlPrefix
@@ -346,6 +347,6 @@ Workspace.FileSystemMapping.Entry = class {
 };
 
 /**
- * @type {!Workspace.FileSystemMapping}
+ * @type {!Persistence.FileSystemMapping}
  */
-Workspace.fileSystemMapping;
+Persistence.fileSystemMapping;

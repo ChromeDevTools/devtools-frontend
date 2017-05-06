@@ -735,7 +735,8 @@ Sources.SourcesPanel = class extends UI.Panel {
       if (!networkUISourceCode)
         return;
       var fileSystemPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
-      Workspace.fileSystemMapping.addMappingForResource(networkUISourceCode.url(), fileSystemPath, uiSourceCode.url());
+      Persistence.fileSystemMapping.addMappingForResource(
+          networkUISourceCode.url(), fileSystemPath, uiSourceCode.url());
     }
   }
 
@@ -753,7 +754,8 @@ Sources.SourcesPanel = class extends UI.Panel {
       if (!uiSourceCode)
         return;
       var fileSystemPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
-      Workspace.fileSystemMapping.addMappingForResource(networkUISourceCode.url(), fileSystemPath, uiSourceCode.url());
+      Persistence.fileSystemMapping.addMappingForResource(
+          networkUISourceCode.url(), fileSystemPath, uiSourceCode.url());
     }
   }
 
@@ -761,7 +763,7 @@ Sources.SourcesPanel = class extends UI.Panel {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _removeNetworkMapping(uiSourceCode) {
-    Workspace.fileSystemMapping.removeMappingForURL(uiSourceCode.url());
+    Persistence.fileSystemMapping.removeMappingForURL(uiSourceCode.url());
   }
 
   /**

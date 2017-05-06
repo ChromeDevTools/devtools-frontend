@@ -10,13 +10,6 @@
     padding: 11px 0 0 0;
 }
 
-.help-window-caption {
-    border-bottom: solid 1px rgb(153, 153, 153);
-    margin: 0 8px;
-    padding: 0 2px;
-    line-height: 28px;
-}
-
 .help-content {
     overflow-y: auto;
     overflow-x: hidden;
@@ -35,10 +28,6 @@
     width: 100%;
     -webkit-user-select: auto;
     -webkit-column-width: 288px;
-}
-
-.help-no-columns {
-    -webkit-column-width: initial !important;
 }
 
 .help-block {
@@ -230,68 +219,6 @@ fieldset {
     margin-left: 10px;
 }
 
-#workspace-tab-content .settings-tab.help-content.help-container {
-    -webkit-column-width: initial;
-    overflow: hidden;
-    padding-right: 10px;
-}
-
-
-#workspace-tab-content .button:hover {
-    opacity: 1.0 !important;
-}
-
-#workspace-tab-content .help-block {
-    width: auto;
-    margin-right: 20px;
-}
-
-p.folder-exclude-pattern {
-    display: flex;
-    align-items: center;
-}
-
-p.folder-exclude-pattern > input {
-    flex: auto;
-}
-
-.file-system-mapping-view {
-}
-
-.settings-tab .file-system-container {
-    border-top: 1px solid #aaa;
-    padding: 19px 0 10px;
-    margin: 20px 0;
-}
-
-.settings-tab .file-system-header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.settings-tab .file-system-name {
-    font-weight: bold;
-    flex: none;
-    margin-right: 10px;
-    font-size: 15px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 70%;
-}
-
-.settings-tab .file-system-path {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: auto;
-}
-
-.settings-tab .file-system-remove {
-    flex: none;
-    margin-left: 10px;
-}
-
 .help-indent-labels label {
     padding-left: 10px;
 }
@@ -306,10 +233,4 @@ p.folder-exclude-pattern > input {
 
 .settings-developer-mode .settings-experiment-hidden {
     display: block;
-}
-
-.settings-info-message {
-    background-color: #eee;
-    padding: 10px;
-    margin: 20px 0;
 }

@@ -1,10 +1,31 @@
 {
-    "dependencies": ["bindings", "workspace", "components"],
+    "dependencies": [
+        "bindings",
+        "workspace",
+        "components"
+    ],
+    "extensions": [
+        {
+            "type": "view",
+            "location": "settings-view",
+            "id": "workspace",
+            "title": "Workspace",
+            "order": "1",
+            "className": "Persistence.WorkspaceSettingsTab"
+        }
+    ],
     "scripts": [
         "FileSystemWorkspaceBinding.js",
         "DefaultMapping.js",
         "Automapping.js",
         "Persistence.js",
-        "PersistenceUtils.js"
+        "PersistenceUtils.js",
+        "FileSystemMapping.js",
+        "EditFileSystemView.js",
+        "WorkspaceSettingsTab.js"
+    ],
+    "resources": [
+        "editFileSystemView.css",
+        "workspaceSettingsTab.css"
     ]
 }

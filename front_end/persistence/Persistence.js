@@ -1,6 +1,7 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @unrestricted
  */
@@ -8,7 +9,7 @@ Persistence.Persistence = class extends Common.Object {
   /**
    * @param {!Workspace.Workspace} workspace
    * @param {!Bindings.BreakpointManager} breakpointManager
-   * @param {!Workspace.FileSystemMapping} fileSystemMapping
+   * @param {!Persistence.FileSystemMapping} fileSystemMapping
    */
   constructor(workspace, breakpointManager, fileSystemMapping) {
     super();
@@ -32,7 +33,7 @@ Persistence.Persistence = class extends Common.Object {
   }
 
   /**
-   * @param {function(function(!Persistence.PersistenceBinding), function(!Persistence.PersistenceBinding)):{dispose: function()}} mappingFactory
+   * @param {function(function(!Persistence.PersistenceBinding), function(!Persistence.PersistenceBinding)):!Persistence.MappingSystem} mappingFactory
    */
   _setMappingForTest(mappingFactory) {
     this._mapping.dispose();
@@ -388,6 +389,15 @@ Persistence.PersistenceBinding = class {
     this.exactMatch = exactMatch;
     this._removed = false;
   }
+};
+
+/**
+ * @interface
+ */
+Persistence.MappingSystem = function() {};
+
+Persistence.MappingSystem.prototype = {
+  dispose: function() {}
 };
 
 /** @type {!Persistence.Persistence} */

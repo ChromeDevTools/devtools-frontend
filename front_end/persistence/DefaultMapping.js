@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
+ * @implements {Persistence.MappingSystem}
  * @unrestricted
  */
 Persistence.DefaultMapping = class {
   /**
    * @param {!Workspace.Workspace} workspace
-   * @param {!Workspace.FileSystemMapping} fileSystemMapping
+   * @param {!Persistence.FileSystemMapping} fileSystemMapping
    * @param {function(!Persistence.PersistenceBinding)} onBindingCreated
    * @param {function(!Persistence.PersistenceBinding)} onBindingRemoved
    */
@@ -23,8 +24,10 @@ Persistence.DefaultMapping = class {
       workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._onUISourceCodeAdded, this),
       workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._onUISourceCodeRemoved, this),
       workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._onProjectRemoved, this),
-      this._fileSystemMapping.addEventListener(Workspace.FileSystemMapping.Events.FileMappingAdded, this._remap, this),
-      this._fileSystemMapping.addEventListener(Workspace.FileSystemMapping.Events.FileMappingRemoved, this._remap, this)
+      this._fileSystemMapping.addEventListener(
+          Persistence.FileSystemMapping.Events.FileMappingAdded, this._remap, this),
+      this._fileSystemMapping.addEventListener(
+          Persistence.FileSystemMapping.Events.FileMappingRemoved, this._remap, this)
     ];
     this._remap();
   }
@@ -133,6 +136,9 @@ Persistence.DefaultMapping = class {
     this._bind(binding.network);
   }
 
+  /**
+   * @override
+   */
   dispose() {
     for (var binding of this._bindings.valuesArray())
       this._unbind(binding.network);

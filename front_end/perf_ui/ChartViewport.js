@@ -16,7 +16,7 @@ PerfUI.ChartViewport = class extends UI.VBox {
     this.viewportElement.addEventListener('keydown', this._onChartKeyDown.bind(this), false);
     this.viewportElement.addEventListener('keyup', this._onChartKeyUp.bind(this), false);
 
-    UI.installInertialDragHandle(
+    UI.installDragHandle(
         this.viewportElement, this._startDragging.bind(this), this._dragging.bind(this), this._endDragging.bind(this),
         '-webkit-grabbing', null);
     UI.installDragHandle(
@@ -162,21 +162,18 @@ PerfUI.ChartViewport = class extends UI.VBox {
   }
 
   /**
-   * @param {number} x
-   * @param {number} y
    * @param {!MouseEvent} event
-   * @private
    * @return {boolean}
    */
-  _startDragging(x, y, event) {
+  _startDragging(event) {
     if (event.shiftKey)
       return false;
     if (this._windowRight === Infinity)
       return false;
     this._isDragging = true;
     this._initMaxDragOffset(event);
-    this._dragStartPointX = x;
-    this._dragStartPointY = y;
+    this._dragStartPointX = event.offsetX;
+    this._dragStartPointY = event.offsetY;
     this._dragStartScrollTop = this._vScrollElement.scrollTop;
     this.viewportElement.style.cursor = '';
     this.hideHighlight();
@@ -184,20 +181,17 @@ PerfUI.ChartViewport = class extends UI.VBox {
   }
 
   /**
-   * @param {number} x
-   * @param {number} y
-   * @private
+   * @param {!MouseEvent} event
    */
-  _dragging(x, y) {
-    var pixelShift = this._dragStartPointX - x;
-    this._dragStartPointX = x;
+  _dragging(event) {
+    var pixelShift = this._dragStartPointX - event.offsetX;
+    this._dragStartPointX = event.offsetX;
     this._muteAnimation = true;
     this._handlePanGesture(pixelShift * this._pixelToTime);
     this._muteAnimation = false;
-
-    var pixelScroll = this._dragStartPointY - y;
+    var pixelScroll = this._dragStartPointY - event.offsetY;
     this._vScrollElement.scrollTop = this._dragStartScrollTop + pixelScroll;
-    this._updateMaxDragOffset(x, y);
+    this._updateMaxDragOffset(event.offsetX, event.offsetY);
   }
 
   /**

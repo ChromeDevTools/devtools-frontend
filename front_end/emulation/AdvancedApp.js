@@ -33,7 +33,7 @@ Emulation.AdvancedApp = class {
     this._rootSplitWidget.setDefaultFocusedChild(UI.inspectorView);
     UI.inspectorView.setOwnerSplit(this._rootSplitWidget);
 
-    this._inspectedPagePlaceholder = new Emulation.InspectedPagePlaceholder();
+    this._inspectedPagePlaceholder = Emulation.InspectedPagePlaceholder.instance();
     this._inspectedPagePlaceholder.addEventListener(
         Emulation.InspectedPagePlaceholder.Events.Update, this._onSetInspectedPageBounds.bind(this), this);
     this._deviceModeView = new Emulation.DeviceModeWrapper(this._inspectedPagePlaceholder);

@@ -1444,3 +1444,18 @@ function runOnWindowLoad(callback) {
   else
     self.addEventListener('DOMContentLoaded', windowLoaded, false);
 }
+
+var _singletonSymbol = Symbol('singleton');
+
+/**
+ * @template T
+ * @param {function(new:T, ...)} constructorFunction
+ * @return {!T}
+ */
+function singleton(constructorFunction) {
+  if (_singletonSymbol in constructorFunction)
+    return constructorFunction[_singletonSymbol];
+  var instance = new constructorFunction();
+  constructorFunction[_singletonSymbol] = instance;
+  return instance;
+}

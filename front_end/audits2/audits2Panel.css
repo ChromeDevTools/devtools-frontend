@@ -53,3 +53,61 @@
     overflow: auto;
     position: relative;
 }
+
+.audits2-timeline {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding: 5px 0;
+    margin: 5px 0;
+    overflow: auto;
+}
+
+.audits2-filmstrip {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+}
+
+.audits2-filmstrip .frame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px;
+    flex: none;
+}
+
+.audits2-filmstrip .frame .thumbnail {
+    display: flex;
+    width: 54px;
+    height: 100%;
+    flex-direction: row;
+    align-items: center;
+    margin: 4px 0 2px;
+    border: 2px solid transparent;
+    box-shadow: 0 0 3px #bbb;
+}
+
+.audits2-filmstrip .frame .thumbnail img {
+    height: auto;
+    width: 50px;
+    flex: 0 0 auto;
+}
+
+.audits2-filmstrip .frame .time {
+    margin-top: 2px;
+}
+
+.audits2-timeline-marker {
+    margin: 4px 0 6px;
+    width: calc(68px * 7);
+}
+
+.audits2-timeline-subtitle {
+    color: #01579B;
+}
+
+.audits2-timeline-bar {
+    border-top: 4px solid #03A9F4;
+}

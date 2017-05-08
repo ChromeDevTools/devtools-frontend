@@ -45,19 +45,19 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
 
   _clearAll() {
     this._treeOutline.removeChildren();
-    if (!this._treeOutline.rootElement().childCount())
-      this._showLandingPage();
+    this._showLandingPage();
   }
 
   _deleteSelected() {
     var selection = this._treeOutline.selectedTreeElement;
     if (selection)
-      this._treeOutline.removeChild(selection);
-    if (!this._treeOutline.rootElement().childCount())
-      this._showLandingPage();
+      selection._deleteItem();
   }
 
   _showLandingPage() {
+    if (this._treeOutline.rootElement().childCount())
+      return;
+
     this.mainElement().removeChildren();
     var landingPage = this.mainElement().createChild('div', 'vbox audits2-landing-page');
     var landingCenter = landingPage.createChild('div', 'vbox audits2-landing-center');
@@ -204,6 +204,7 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
    */
   _stop() {
     return this._protocolService.detach().then(_ => {
+      Emulation.InspectedPagePlaceholder.instance().update(true);
       this._auditRunning = false;
       this._updateButton();
       var resourceTreeModel = SDK.targetManager.mainTarget().model(SDK.ResourceTreeModel);
@@ -222,7 +223,8 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
       this._updateStatus(Common.UIString('Auditing failed.'));
       return;
     }
-    var treeElement = new Audits2.Audits2Panel.TreeElement(lighthouseResult, this.mainElement());
+    var treeElement =
+        new Audits2.Audits2Panel.TreeElement(lighthouseResult, this.mainElement(), this._showLandingPage.bind(this));
     this._treeOutline.appendChild(treeElement);
     treeElement._populate();
     treeElement.select();
@@ -437,11 +439,13 @@ Audits2.Audits2Panel.TreeElement = class extends UI.TreeElement {
   /**
    * @param {!ReportRenderer.ReportJSON} lighthouseResult
    * @param {!Element} resultsView
+   * @param {function()} showLandingCallback
    */
-  constructor(lighthouseResult, resultsView) {
+  constructor(lighthouseResult, resultsView, showLandingCallback) {
     super('', false);
     this._lighthouseResult = lighthouseResult;
     this._resultsView = resultsView;
+    this._showLandingCallback = showLandingCallback;
     /** @type {?Element} */
     this._reportContainer = null;
 
@@ -472,6 +476,19 @@ Audits2.Audits2Panel.TreeElement = class extends UI.TreeElement {
   }
 
   /**
+   * @override
+   */
+  ondelete() {
+    this._deleteItem();
+    return true;
+  }
+
+  _deleteItem() {
+    this.treeOutline.removeChild(this);
+    this._showLandingCallback();
+  }
+
+  /**
    * @param {!Event} event
    */
   _handleContextMenuEvent(event) {
@@ -482,6 +499,7 @@ Audits2.Audits2Panel.TreeElement = class extends UI.TreeElement {
       var fileName = `${url}-${new Date(timestamp).toISO8601Compact()}.json`;
       Workspace.fileManager.save(fileName, JSON.stringify(this._lighthouseResult), true);
     });
+    contextMenu.appendItem(Common.UIString('Delete'), () => this._deleteItem());
     contextMenu.show();
   }
 
@@ -514,6 +532,77 @@ Audits2.Audits2Panel.TreeElement = class extends UI.TreeElement {
 
     renderer.setTemplateContext(templatesDOM);
     renderer.renderReport(this._lighthouseResult, this._reportContainer);
+
+    var performanceScoreElement = this._reportContainer.querySelector('.lh-category[id=performance] .lh-score');
+    var artifacts = this._lighthouseResult['artifacts'];
+    if (!performanceScoreElement || !artifacts)
+      return;
+    var tracePass = artifacts['traces'] ? artifacts['traces']['defaultPass'] : null;
+    if (!tracePass)
+      return;
+
+    var fmp = this._lighthouseResult['audits']['first-meaningful-paint'];
+    if (!fmp || !fmp['extendedInfo'])
+      return;
+
+    var tti = this._lighthouseResult['audits']['time-to-interactive'];
+    if (!tti || !tti['extendedInfo'])
+      return;
+
+    var navStart = fmp['extendedInfo']['value']['timestamps']['navStart'];
+    var markers = [
+      {
+        title: Common.UIString('First contentful paint'),
+        value: (fmp['extendedInfo']['value']['timestamps']['fCP'] - navStart) / 1000
+      },
+      {
+        title: Common.UIString('First meaningful paint'),
+        value: (fmp['extendedInfo']['value']['timestamps']['fMP'] - navStart) / 1000
+      },
+      {
+        title: Common.UIString('Time to interactive'),
+        value: (tti['extendedInfo']['value']['timestamps']['timeToInteractive'] - navStart) / 1000
+      },
+      {
+        title: Common.UIString('Visually ready'),
+        value: (tti['extendedInfo']['value']['timestamps']['visuallyReady'] - navStart) / 1000
+      }
+    ];
+
+    var timeSpan = Math.max(...markers.map(marker => marker.value));
+    var screenshots = tracePass.traceEvents.filter(e => e.cat === 'disabled-by-default-devtools.screenshot');
+    var timelineElement = createElementWithClass('div', 'audits2-timeline');
+    var filmStripElement = timelineElement.createChild('div', 'audits2-filmstrip');
+
+    var numberOfFrames = 8;
+    var roundToMs = 100;
+    var timeStep = (Math.ceil(timeSpan / numberOfFrames / roundToMs)) * roundToMs;
+
+    for (var time = 0; time < timeSpan; time += timeStep) {
+      var frameForTime = null;
+      for (var e of screenshots) {
+        if ((e.ts - navStart) / 1000 < time + timeStep)
+          frameForTime = e.args.snapshot;
+      }
+      var frame = filmStripElement.createChild('div', 'frame');
+      frame.createChild('div', 'time').textContent = Number.millisToString(time + timeStep);
+
+      var thumbnail = frame.createChild('div', 'thumbnail');
+      if (frameForTime) {
+        var img = thumbnail.createChild('img');
+        img.src = 'data:image/jpg;base64,' + frameForTime;
+      }
+    }
+
+    for (var marker of markers) {
+      var markerElement = timelineElement.createChild('div', 'audits2-timeline-marker');
+      markerElement.createChild('div', 'audits2-timeline-bar').style.width =
+          (100 * (marker.value / timeSpan) | 0) + '%';
+      markerElement.createChild('span').textContent = Common.UIString('%s: ', marker.title);
+      markerElement.createChild('span', 'audits2-timeline-subtitle').textContent = Number.millisToString(marker.value);
+    }
+
+    performanceScoreElement.parentElement.insertBefore(timelineElement, performanceScoreElement.nextSibling);
   }
 };
 

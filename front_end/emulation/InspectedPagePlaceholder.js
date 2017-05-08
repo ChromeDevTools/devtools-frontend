@@ -1,6 +1,7 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @unrestricted
  */
@@ -18,7 +19,7 @@ Emulation.InspectedPagePlaceholder = class extends UI.Widget {
   onResize() {
     if (this._updateId)
       this.element.window().cancelAnimationFrame(this._updateId);
-    this._updateId = this.element.window().requestAnimationFrame(this.update.bind(this));
+    this._updateId = this.element.window().requestAnimationFrame(this.update.bind(this, false));
   }
 
   restoreMinimumSize() {
@@ -42,17 +43,33 @@ Emulation.InspectedPagePlaceholder = class extends UI.Widget {
     return {x: left, y: top, width: right - left, height: bottom - top};
   }
 
-  update() {
+  /**
+   * @param {boolean=} force
+   */
+  update(force) {
     delete this._updateId;
     var rect = this._dipPageRect();
     var bounds = {
       x: Math.round(rect.x),
       y: Math.round(rect.y),
       height: Math.max(1, Math.round(rect.height)),
-      width: Math.max(1, Math.round(rect.width))
+      width: Math.max(1, Math.round(rect.width)),
     };
+    if (force) {
+      // Short term fix for Lighthouse interop.
+      --bounds.height;
+      this.dispatchEventToListeners(Emulation.InspectedPagePlaceholder.Events.Update, bounds);
+      ++bounds.height;
+    }
     this.dispatchEventToListeners(Emulation.InspectedPagePlaceholder.Events.Update, bounds);
   }
+};
+
+/**
+ * @return {!Emulation.InspectedPagePlaceholder}
+ */
+Emulation.InspectedPagePlaceholder.instance = function() {
+  return singleton(Emulation.InspectedPagePlaceholder);
 };
 
 /** @enum {symbol} */

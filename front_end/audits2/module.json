@@ -12,6 +12,7 @@
     ],
     "dependencies": [
         "components",
+        "emulation",
         "sdk",
         "services",
         "ui"

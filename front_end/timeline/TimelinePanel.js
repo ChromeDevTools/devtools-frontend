@@ -236,6 +236,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     // GC
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('components.collect-garbage'));
 
+    this._currentView.populateToolbar(this._panelToolbar);
+
     // Settings
     this._panelToolbar.appendSpacer();
     this._panelToolbar.appendText('');

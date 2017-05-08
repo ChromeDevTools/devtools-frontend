@@ -312,7 +312,7 @@ Timeline.TimelineUIUtils = class {
     if (event.name === TimelineModel.TimelineModel.RecordType.JSFrame) {
       var frame = event.args['data'];
       if (Timeline.TimelineUIUtils.isUserFrame(frame))
-        return Timeline.TimelineUIUtils.colorForURL(frame.url);
+        return Timeline.TimelineUIUtils.colorForId(frame.url);
     }
     return Timeline.TimelineUIUtils.eventStyle(event).category.color;
   }
@@ -1728,15 +1728,15 @@ Timeline.TimelineUIUtils = class {
   }
 
   /**
-   * @param {string} url
+   * @param {string} id
    * @return {string}
    */
-  static colorForURL(url) {
-    if (!Timeline.TimelineUIUtils.colorForURL._colorGenerator) {
-      Timeline.TimelineUIUtils.colorForURL._colorGenerator =
+  static colorForId(id) {
+    if (!Timeline.TimelineUIUtils.colorForId._colorGenerator) {
+      Timeline.TimelineUIUtils.colorForId._colorGenerator =
           new PerfUI.FlameChart.ColorGenerator({min: 30, max: 330}, {min: 50, max: 80, count: 3}, 85);
     }
-    return Timeline.TimelineUIUtils.colorForURL._colorGenerator.colorForID(url);
+    return Timeline.TimelineUIUtils.colorForId._colorGenerator.colorForID(id);
   }
 
   /**

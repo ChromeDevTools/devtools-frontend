@@ -79,6 +79,62 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._nextExtensionIndex = 0;
 
     this._boundRefresh = this._refresh.bind(this);
+
+    this._mainDataProvider.setEventColorMapping(Timeline.TimelineUIUtils.eventColor);
+    if (Runtime.experiments.isEnabled('timelineColorByProduct'))
+      ProductRegistry.instance().then(registry => this._productRegistry = registry);
+  }
+
+  /**
+   * @param {!UI.Toolbar} toolbar
+   */
+  populateToolbar(toolbar) {
+    if (!Runtime.experiments.isEnabled('timelineColorByProduct'))
+      return;
+    toolbar.appendSeparator();
+    var colorBySetting = Common.settings.createSetting('timelineColorBy', Timeline.TimelineFlameChartView._ColorBy.URL);
+    colorBySetting.addChangeListener(this._onColorByChanged, this);
+    var options = [
+      {value: Timeline.TimelineFlameChartView._ColorBy.URL, label: Common.UIString('Color by URL')},
+      {value: Timeline.TimelineFlameChartView._ColorBy.Product, label: Common.UIString('Color by Product')}
+    ];
+    this._colorByCombobox = new UI.ToolbarSettingComboBox(options, colorBySetting);
+    toolbar.appendToolbarItem(this._colorByCombobox);
+    this._onColorByChanged();
+  }
+
+  _onColorByChanged() {
+    /** @type {!Map<string, string>} */
+    this._urlToColorCache = new Map();
+    this._mainDataProvider.setEventColorMapping(
+        this._colorByCombobox.selectedOption().value === Timeline.TimelineFlameChartView._ColorBy.Product ?
+            colorByProduct.bind(this) :
+            Timeline.TimelineUIUtils.eventColor);
+    this._mainFlameChart.update();
+
+    /**
+     * @param {!SDK.TracingModel.Event} event
+     * @this {Timeline.TimelineFlameChartView}
+     * @return {string}
+     */
+    function colorByProduct(event) {
+      if (event.name !== TimelineModel.TimelineModel.RecordType.JSFrame)
+        return Timeline.TimelineUIUtils.eventStyle(event).category.color;
+      var frame = event.args['data'];
+      if (!Timeline.TimelineUIUtils.isUserFrame(frame))
+        return Timeline.TimelineUIUtils.eventStyle(event).category.color;
+      var color = this._urlToColorCache.get(frame.url);
+      if (!color) {
+        var defaultColor = '#f2ecdc';
+        if (!this._productRegistry)
+          return defaultColor;
+        var parsedURL = frame.url.asParsedURL();
+        var name = parsedURL && this._productRegistry.nameForUrl(parsedURL);
+        color = name ? Timeline.TimelineUIUtils.colorForId(name) : defaultColor;
+        this._urlToColorCache.set(frame.url, color);
+      }
+      return color;
+    }
   }
 
   /**
@@ -532,4 +588,10 @@ Timeline.TimelineFlameChartMarker = class {
     }
     context.restore();
   }
+};
+
+/** @enum {string} */
+Timeline.TimelineFlameChartView._ColorBy = {
+  URL: 'URL',
+  Product: 'Product'
 };

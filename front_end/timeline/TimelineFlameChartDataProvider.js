@@ -535,7 +535,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     if (type === Timeline.TimelineFlameChartEntryType.Event) {
       var event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
       if (!SDK.TracingModel.isAsyncPhase(event.phase))
-        return Timeline.TimelineUIUtils.eventColor(event);
+        return this._colorForEvent(event);
       if (event.hasCategory(TimelineModel.TimelineModel.Category.Console) ||
           event.hasCategory(TimelineModel.TimelineModel.Category.UserTiming))
         return this._consoleColorGenerator.colorForID(event.name);
@@ -964,6 +964,13 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     return this._entryType(entryIndex) === Timeline.TimelineFlameChartEntryType.Event ?
         /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]) :
         null;
+  }
+
+  /**
+   * @param {function(!SDK.TracingModel.Event):string} colorForEvent
+   */
+  setEventColorMapping(colorForEvent) {
+    this._colorForEvent = colorForEvent;
   }
 };
 

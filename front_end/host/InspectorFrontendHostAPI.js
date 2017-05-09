@@ -63,10 +63,7 @@ InspectorFrontendHostAPI.EventDescriptors = [
   [InspectorFrontendHostAPI.Events.ContextMenuCleared, 'contextMenuCleared', []],
   [InspectorFrontendHostAPI.Events.ContextMenuItemSelected, 'contextMenuItemSelected', ['id']],
   [InspectorFrontendHostAPI.Events.DeviceCountUpdated, 'deviceCountUpdated', ['count']],
-  [
-    InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, 'devicesDiscoveryConfigChanged',
-    ['discoverUsbDevices', 'portForwardingEnabled', 'portForwardingConfig']
-  ],
+  [InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, 'devicesDiscoveryConfigChanged', ['config']],
   [
     InspectorFrontendHostAPI.Events.DevicesPortForwardingStatusChanged, 'devicesPortForwardingStatusChanged', ['status']
   ],
@@ -250,11 +247,9 @@ InspectorFrontendHostAPI.prototype = {
   sendMessageToBackend(message) {},
 
   /**
-   * @param {boolean} discoverUsbDevices
-   * @param {boolean} portForwardingEnabled
-   * @param {!Adb.PortForwardingConfig} portForwardingConfig
+   * @param {!Adb.Config} config
    */
-  setDevicesDiscoveryConfig(discoverUsbDevices, portForwardingEnabled, portForwardingConfig) {},
+  setDevicesDiscoveryConfig(config) {},
 
   /**
    * @param {boolean} enabled

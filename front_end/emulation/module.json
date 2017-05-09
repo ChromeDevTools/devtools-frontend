@@ -130,6 +130,7 @@
             "type": "@UI.ActionDelegate",
             "actionId": "emulation.show-sensors",
             "title": "Sensors",
+            "condition": "!v8only",
             "className": "Emulation.SensorsView.ShowActionDelegate"
         },
         {
@@ -137,6 +138,7 @@
             "location": "drawer-view",
             "id": "sensors",
             "title": "Sensors",
+            "condition": "!v8only",
             "persistence": "closeable",
             "order": 100,
             "className": "Emulation.SensorsView",

@@ -83,6 +83,10 @@
     padding: 5px;
 }
 
+.material .editor-buttons {
+    padding: 5px 9px 9px 9px;
+}
+
 .editor-buttons > button {
     flex: none;
     margin-right: 10px;

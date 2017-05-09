@@ -410,10 +410,28 @@ SDK.ChildTargetManager = class {
     if (Runtime.experiments.isEnabled('autoAttachToCrossProcessSubframes'))
       this._targetAgent.setAttachToFrames(true);
 
-    if (!parentTarget.parentTarget()) {
-      this._targetAgent.setRemoteLocations([{host: 'localhost', port: 9229}]);
+    if (!parentTarget.parentTarget())
       this._targetAgent.setDiscoverTargets(true);
+
+    if (Runtime.queryParam('nodeFrontend') && !this._parentTarget.parentTarget()) {
+      InspectorFrontendHost.setDevicesUpdatesEnabled(true);
+      InspectorFrontendHost.events.addEventListener(
+          InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
     }
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _devicesDiscoveryConfigChanged(event) {
+    var config = /** @type {!Adb.Config} */ (event.data);
+    var locations = [];
+    for (var address of config.networkDiscoveryConfig) {
+      var parts = address.split(':');
+      var port = parseInt(parts[1], 10);
+      locations.push({host: parts[0] || 'localhost', port: port || 9229});
+    }
+    this._targetAgent.setRemoteLocations(locations);
   }
 
   /**
@@ -431,6 +449,11 @@ SDK.ChildTargetManager = class {
   }
 
   dispose() {
+    if (Runtime.queryParam('nodeFrontend') && !this._parentTarget.parentTarget()) {
+      InspectorFrontendHost.events.removeEventListener(
+          InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
+    }
+
     // TODO(dgozman): this is O(n^2) when removing main target.
     var childTargets = this._targetManager._targets.filter(child => child.parentTarget() === this._parentTarget);
     for (var child of childTargets)
@@ -508,6 +531,9 @@ SDK.ChildTargetManager = class {
         debuggerModel.pause();
     }
     target.runtimeAgent().runIfWaitingForDebugger();
+
+    if (Runtime.queryParam('nodeFrontend'))
+      InspectorFrontendHost.bringToFront();
   }
 
   /**

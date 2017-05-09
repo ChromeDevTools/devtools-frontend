@@ -367,6 +367,7 @@
             "title": "Rendering",
             "persistence": "closeable",
             "order": 50,
+            "condition": "!v8only",
             "className": "Main.RenderingOptionsView"
         },
         {

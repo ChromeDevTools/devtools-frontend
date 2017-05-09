@@ -26,7 +26,7 @@
         { "name": "resources", "condition": "!v8only" },
         { "name": "audits", "condition": "!v8only" },
         { "name": "audits2", "condition": "!v8only" },
-        { "name": "devices", "condition": "!v8only" },
+        { "name": "devices" },
         { "name": "security", "condition": "!v8only" },
         { "name": "console" },
         { "name": "source_frame" },

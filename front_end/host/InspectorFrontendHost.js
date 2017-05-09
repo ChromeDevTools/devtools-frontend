@@ -375,11 +375,9 @@ Host.InspectorFrontendHostStub = class {
 
   /**
    * @override
-   * @param {boolean} discoverUsbDevices
-   * @param {boolean} portForwardingEnabled
-   * @param {!Adb.PortForwardingConfig} portForwardingConfig
+   * @param {!Adb.Config} config
    */
-  setDevicesDiscoveryConfig(discoverUsbDevices, portForwardingEnabled, portForwardingConfig) {
+  setDevicesDiscoveryConfig(config) {
   }
 
   /**

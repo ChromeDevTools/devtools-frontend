@@ -308,6 +308,16 @@ UI.ListWidget.Editor = class {
   }
 
   /**
+   * @param {boolean} material
+   */
+  setMaterial(material) {
+    this._commitButton.classList.toggle('material-button', material);
+    this._commitButton.classList.toggle('default', material);
+    this._cancelButton.classList.toggle('material-button', material);
+    this.element.classList.toggle('material', material);
+  }
+
+  /**
    * @param {string} name
    * @param {string} type
    * @param {string} title

@@ -344,6 +344,18 @@ Adb.PortForwardingRule;
 Adb.DevicePortForwardingStatus;
 /** @typedef {!Object<string, !Adb.DevicePortForwardingStatus>} */
 Adb.PortForwardingStatus;
+/** @typedef {!Array<string>} */
+Adb.NetworkDiscoveryConfig;
+/**
+ * @typedef {!{
+ *   discoverUsbDevices: boolean,
+ *   portForwardingEnabled: boolean,
+ *   portForwardingConfig: !Adb.PortForwardingConfig,
+ *   networkDiscoveryEnabled: boolean,
+ *   networkDiscoveryConfig: !Adb.NetworkDiscoveryConfig
+ * }}
+ */
+Adb.Config;
 
 /** @const */
 var module = {};

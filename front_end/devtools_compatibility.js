@@ -107,13 +107,10 @@
     }
 
     /**
-     * @param {boolean} discoverUsbDevices
-     * @param {boolean} portForwardingEnabled
-     * @param {!Adb.PortForwardingConfig} portForwardingConfig
+     * @param {!Adb.Config} config
      */
-    devicesDiscoveryConfigChanged(discoverUsbDevices, portForwardingEnabled, portForwardingConfig) {
-      this._dispatchOnInspectorFrontendAPI(
-          'devicesDiscoveryConfigChanged', [discoverUsbDevices, portForwardingEnabled, portForwardingConfig]);
+    devicesDiscoveryConfigChanged(config) {
+      this._dispatchOnInspectorFrontendAPI('devicesDiscoveryConfigChanged', [config]);
     }
 
     /**
@@ -667,14 +664,16 @@
 
     /**
      * @override
-     * @param {boolean} discoverUsbDevices
-     * @param {boolean} portForwardingEnabled
-     * @param {!Adb.PortForwardingConfig} portForwardingConfig
+     * @param {!Adb.Config} config
      */
-    setDevicesDiscoveryConfig(discoverUsbDevices, portForwardingEnabled, portForwardingConfig) {
+    setDevicesDiscoveryConfig(config) {
       DevToolsAPI.sendMessageToEmbedder(
           'setDevicesDiscoveryConfig',
-          [discoverUsbDevices, portForwardingEnabled, JSON.stringify(portForwardingConfig)], null);
+          [
+            config.discoverUsbDevices, config.portForwardingEnabled, JSON.stringify(config.portForwardingConfig),
+            config.networkDiscoveryEnabled, JSON.stringify(config.networkDiscoveryConfig)
+          ],
+          null);
     }
 
     /**

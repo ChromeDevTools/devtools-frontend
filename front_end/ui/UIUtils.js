@@ -1110,6 +1110,7 @@ UI.LongClickController = class extends Common.Object {
  * @param {!Common.Setting} themeSetting
  */
 UI.initializeUIUtils = function(document, themeSetting) {
+  document.body.classList.toggle('inactive', !document.hasFocus());
   document.defaultView.addEventListener('focus', UI._windowFocused.bind(UI, document), false);
   document.defaultView.addEventListener('blur', UI._windowBlurred.bind(UI, document), false);
   document.addEventListener('focus', UI._focusChanged.bind(UI), true);

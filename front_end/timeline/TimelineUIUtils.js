@@ -1735,6 +1735,7 @@ Timeline.TimelineUIUtils = class {
     if (!Timeline.TimelineUIUtils.colorForId._colorGenerator) {
       Timeline.TimelineUIUtils.colorForId._colorGenerator =
           new PerfUI.FlameChart.ColorGenerator({min: 30, max: 330}, {min: 50, max: 80, count: 3}, 85);
+      Timeline.TimelineUIUtils.colorForId._colorGenerator.setColorForID('', '#f2ecdc');
     }
     return Timeline.TimelineUIUtils.colorForId._colorGenerator.colorForID(id);
   }

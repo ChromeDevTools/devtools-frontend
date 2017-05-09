@@ -125,12 +125,11 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
         return Timeline.TimelineUIUtils.eventStyle(event).category.color;
       var color = this._urlToColorCache.get(frame.url);
       if (!color) {
-        var defaultColor = '#f2ecdc';
         if (!this._productRegistry)
-          return defaultColor;
+          return Timeline.TimelineUIUtils.colorForId('');
         var parsedURL = frame.url.asParsedURL();
-        var name = parsedURL && this._productRegistry.nameForUrl(parsedURL);
-        color = name ? Timeline.TimelineUIUtils.colorForId(name) : defaultColor;
+        var name = parsedURL && this._productRegistry.nameForUrl(parsedURL) || '';
+        color = Timeline.TimelineUIUtils.colorForId(name);
         this._urlToColorCache.set(frame.url, color);
       }
       return color;

@@ -443,26 +443,31 @@ Console.ConsoleViewport = class {
 
   /**
    * @param {!Element} itemElement
-   * @param {!Node} container
+   * @param {!Node} selectionNode
    * @param {number} offset
    * @return {number}
    */
-  _textOffsetInNode(itemElement, container, offset) {
-    if (container.nodeType !== Node.TEXT_NODE) {
-      if (offset < container.childNodes.length) {
-        container = /** @type {!Node} */ (container.childNodes.item(offset));
+  _textOffsetInNode(itemElement, selectionNode, offset) {
+    // If the selectionNode is not a TextNode, we may need to convert a child offset into a character offset.
+    if (selectionNode.nodeType !== Node.TEXT_NODE) {
+      if (offset < selectionNode.childNodes.length) {
+        selectionNode = /** @type {!Node} */ (selectionNode.childNodes.item(offset));
         offset = 0;
       } else {
-        offset = container.textContent.length;
+        offset = selectionNode.textContent.length;
       }
     }
 
     var chars = 0;
     var node = itemElement;
-    while ((node = node.traverseNextTextNode(itemElement)) && !node.isSelfOrDescendant(container))
+    while ((node = node.traverseNextNode(itemElement)) && node !== selectionNode) {
+      if (node.nodeType !== Node.TEXT_NODE || node.parentElement.nodeName === 'STYLE' ||
+          node.parentElement.nodeName === 'SCRIPT')
+        continue;
       chars += Components.Linkifier.untruncatedNodeText(node).length;
+    }
     // If the selection offset is at the end of a link's ellipsis, use the untruncated length as offset.
-    var untruncatedContainerLength = Components.Linkifier.untruncatedNodeText(container).length;
+    var untruncatedContainerLength = Components.Linkifier.untruncatedNodeText(selectionNode).length;
     if (offset === 1 && untruncatedContainerLength > offset)
       offset = untruncatedContainerLength;
     return chars + offset;

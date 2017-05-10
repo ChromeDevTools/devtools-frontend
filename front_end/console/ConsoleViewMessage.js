@@ -893,9 +893,10 @@ Console.ConsoleViewMessage = class {
     var formattedMessage;
     var shouldIncludeTrace = !!this._message.stackTrace &&
         (this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Network ||
+         this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Violation ||
          this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Error ||
-         this._message.type === ConsoleModel.ConsoleMessage.MessageType.Trace ||
-         this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Warning);
+         this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Warning ||
+         this._message.type === ConsoleModel.ConsoleMessage.MessageType.Trace);
     if (this._message.runtimeModel() && shouldIncludeTrace)
       formattedMessage = this._buildMessageWithStackTrace();
     else if (this._message.type === ConsoleModel.ConsoleMessage.MessageType.Table)

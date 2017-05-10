@@ -12,7 +12,8 @@ Emulation.DeviceModeView = class extends UI.VBox {
     this.registerRequiredCSS('emulation/deviceModeView.css');
     UI.Tooltip.addNativeOverrideContainer(this.contentElement);
 
-    this._model = new Emulation.DeviceModeModel(this._updateUI.bind(this));
+    this._model = self.singleton(Emulation.DeviceModeModel);
+    this._model.addEventListener(Emulation.DeviceModeModel.Events.Updated, this._updateUI, this);
     this._mediaInspector = new Emulation.MediaQueryInspector(
         () => this._model.appliedDeviceSize().width, this._model.setWidth.bind(this._model));
     this._showMediaInspectorSetting = Common.settings.moduleSetting('showMediaQueryInspector');

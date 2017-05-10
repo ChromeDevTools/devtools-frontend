@@ -127,6 +127,17 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
   }
 
   _start() {
+    var emulationModel = self.singleton(Emulation.DeviceModeModel);
+    this._emulationEnabledBefore = emulationModel.enabledSetting().get();
+    this._emulationOutlineEnabledBefore = emulationModel.deviceOutlineSetting().get();
+    emulationModel.enabledSetting().set(true);
+    emulationModel.deviceOutlineSetting().set(true);
+    emulationModel.toolbarControlsEnabledSetting().set(false);
+
+    for (var device of Emulation.EmulatedDevicesList.instance().standard()) {
+      if (device.title === 'Nexus 5X')
+        emulationModel.emulate(Emulation.DeviceModeModel.Type.Device, device, device.modes[0], 1);
+    }
     this._dialog.setCloseOnEscape(false);
     this._inspectedURL = SDK.targetManager.mainTarget().inspectedURL();
 
@@ -158,6 +169,12 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     if (!this._dialog)
       return;
     this._dialog.hide();
+
+    var emulationModel = self.singleton(Emulation.DeviceModeModel);
+    emulationModel.enabledSetting().set(this._emulationEnabledBefore);
+    emulationModel.deviceOutlineSetting().set(this._emulationOutlineEnabledBefore);
+    emulationModel.toolbarControlsEnabledSetting().set(true);
+
     delete this._dialog;
     delete this._statusView;
     delete this._statusIcon;
@@ -166,6 +183,8 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     delete this._cancelButton;
     delete this._auditSelectorForm;
     delete this._headerTitleElement;
+    delete this._emulationEnabledBefore;
+    delete this._emulationOutlineEnabledBefore;
   }
 
   _cancel() {
@@ -418,8 +437,21 @@ Audits2.ProtocolService = class extends Common.Object {
             return;
           this._backend = backend;
           this._backend.on('statusUpdate', result => this._status(result.message));
-          this._backend.on('sendProtocolMessage', result => this._rawConnection.sendMessage(result.message));
+          this._backend.on('sendProtocolMessage', result => this._sendProtocolMessage(result.message));
         });
+  }
+
+  /**
+   * @param {string} message
+   */
+  _sendProtocolMessage(message) {
+    var parsedMessage = JSON.parse(message);
+    if (parsedMessage['method'] === 'Emulation.setVisibleSize' ||
+        parsedMessage['method'] === 'Emulation.setDeviceMetricsOverride') {
+      this._dispatchProtocolMessage(JSON.stringify({id: parsedMessage['id'], result: {}}));
+      return;
+    }
+    this._rawConnection.sendMessage(message);
   }
 
   /**

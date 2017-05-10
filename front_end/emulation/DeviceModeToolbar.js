@@ -63,6 +63,18 @@ Emulation.DeviceModeToolbar = class {
 
     this._persistenceSetting =
         Common.settings.createSetting('emulation.deviceModeValue', {device: '', orientation: '', mode: ''});
+
+    this._model.toolbarControlsEnabledSetting().addChangeListener(updateToolbarsEnabled);
+    updateToolbarsEnabled();
+
+    function updateToolbarsEnabled() {
+      var enabled = model.toolbarControlsEnabledSetting().get();
+      leftToolbar.setEnabled(enabled);
+      mainToolbar.setEnabled(enabled);
+      rightToolbar.setEnabled(enabled);
+      modeToolbar.setEnabled(enabled);
+      optionsToolbar.setEnabled(enabled);
+    }
   }
 
   /**

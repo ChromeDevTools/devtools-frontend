@@ -3,14 +3,12 @@
 // found in the LICENSE file.
 /**
  * @implements {SDK.SDKModelObserver<!SDK.EmulationModel>}
+ * @extends {Common.Object}
  * @unrestricted
  */
-Emulation.DeviceModeModel = class {
-  /**
-   * @param {function()} updateCallback
-   */
-  constructor(updateCallback) {
-    this._updateCallback = updateCallback;
+Emulation.DeviceModeModel = class extends Common.Object {
+  constructor() {
+    super();
     this._screenRect = new UI.Rect(0, 0, 1, 1);
     this._visiblePageRect = new UI.Rect(0, 0, 1, 1);
     this._availableSize = new UI.Size(1, 1);
@@ -48,6 +46,9 @@ Emulation.DeviceModeModel = class {
 
     this._deviceOutlineSetting = Common.settings.moduleSetting('emulation.showDeviceOutline');
     this._deviceOutlineSetting.addChangeListener(this._deviceOutlineSettingChanged, this);
+
+    this._toolbarControlsEnabledSetting =
+        Common.settings.createSetting('emulation.toolbarControlsEnabled', true, Common.SettingStorageType.Session);
 
     /** @type {!Emulation.DeviceModeModel.Type} */
     this._type = Emulation.DeviceModeModel.Type.None;
@@ -291,6 +292,13 @@ Emulation.DeviceModeModel = class {
   /**
    * @return {!Common.Setting}
    */
+  enabledSetting() {
+    return Common.settings.createSetting('emulation.showDeviceMode', false);
+  }
+
+  /**
+   * @return {!Common.Setting}
+   */
   scaleSetting() {
     return this._scaleSetting;
   }
@@ -314,6 +322,13 @@ Emulation.DeviceModeModel = class {
    */
   deviceOutlineSetting() {
     return this._deviceOutlineSetting;
+  }
+
+  /**
+   * @return {!Common.Setting}
+   */
+  toolbarControlsEnabledSetting() {
+    return this._toolbarControlsEnabledSetting;
   }
 
   reset() {
@@ -475,7 +490,7 @@ Emulation.DeviceModeModel = class {
     var overlayModel = this._emulationModel ? this._emulationModel.overlayModel() : null;
     if (overlayModel)
       overlayModel.setShowViewportSizeOnResize(this._type === Emulation.DeviceModeModel.Type.None);
-    this._updateCallback.call(null);
+    this.dispatchEventToListeners(Emulation.DeviceModeModel.Events.Updated);
   }
 
   /**
@@ -674,6 +689,11 @@ Emulation.DeviceModeModel = class {
     for (var emulationModel of SDK.targetManager.models(SDK.EmulationModel))
       emulationModel.emulateTouch(touchEnabled, mobile);
   }
+};
+
+/** @enum {string} */
+Emulation.DeviceModeModel.Events = {
+  Updated: 'Updated'
 };
 
 /** @enum {string} */

@@ -69,7 +69,7 @@ Emulation.InspectedPagePlaceholder = class extends UI.Widget {
  * @return {!Emulation.InspectedPagePlaceholder}
  */
 Emulation.InspectedPagePlaceholder.instance = function() {
-  return singleton(Emulation.InspectedPagePlaceholder);
+  return self.singleton(Emulation.InspectedPagePlaceholder);
 };
 
 /** @enum {symbol} */

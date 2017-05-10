@@ -15,7 +15,8 @@ Emulation.DeviceModeWrapper = class extends UI.VBox {
     /** @type {?Emulation.DeviceModeView} */
     this._deviceModeView = null;
     this._toggleDeviceModeAction = UI.actionRegistry.action('emulation.toggle-device-mode');
-    this._showDeviceModeSetting = Common.settings.createSetting('emulation.showDeviceMode', false);
+    var model = self.singleton(Emulation.DeviceModeModel);
+    this._showDeviceModeSetting = model.enabledSetting();
     this._showDeviceModeSetting.addChangeListener(this._update.bind(this, false));
     this._update(true);
   }

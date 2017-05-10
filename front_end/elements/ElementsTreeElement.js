@@ -1281,37 +1281,68 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
       return link;
     }
 
-    if (node && (name === 'src' || name === 'href')) {
+    var nodeName = node ? node.nodeName().toLowerCase() : '';
+    if (nodeName && (name === 'src' || name === 'href'))
       attrValueElement.appendChild(linkifyValue.call(this, value));
-    } else if (
-        node && (node.nodeName().toLowerCase() === 'img' || node.nodeName().toLowerCase() === 'source') &&
-        name === 'srcset') {
-      var sources = value.split(',');
-      for (var i = 0; i < sources.length; ++i) {
-        if (i > 0)
-          attrValueElement.createTextChild(', ');
-        var source = sources[i].trim();
-        var indexOfSpace = source.indexOf(' ');
-        var url, tail;
-
-        if (indexOfSpace === -1) {
-          url = source;
-        } else {
-          url = source.substring(0, indexOfSpace);
-          tail = source.substring(indexOfSpace);
-        }
-
-        attrValueElement.appendChild(linkifyValue.call(this, url));
-
-        if (tail)
-          attrValueElement.createTextChild(tail);
-      }
-    } else {
+    else if ((nodeName === 'img' || nodeName === 'source') && name === 'srcset')
+      attrValueElement.appendChild(linkifySrcset.call(this, value));
+    else
       setValueWithEntities.call(this, attrValueElement, value);
-    }
 
     if (hasText)
       attrSpanElement.createTextChild('"');
+
+    /**
+     * @param {string} value
+     * @return {!DocumentFragment}
+     * @this {!Elements.ElementsTreeElement}
+     */
+    function linkifySrcset(value) {
+      // Splitting normally on commas or spaces will break on valid srcsets "foo 1x,bar 2x" and "data:,foo 1x".
+      // 1) Let the index of the next space be `indexOfSpace`.
+      // 2a) If the character at `indexOfSpace - 1` is a comma, collect the preceding characters up to
+      //     `indexOfSpace - 1` as a URL and repeat step 1).
+      // 2b) Else, collect the preceding characters as a URL.
+      // 3) Collect the characters from `indexOfSpace` up to the next comma as the size descriptor and repeat step 1).
+      // https://html.spec.whatwg.org/multipage/embedded-content.html#parse-a-srcset-attribute
+      var fragment = createDocumentFragment();
+      var i = 0;
+      while (value.length) {
+        if (i++ > 0)
+          fragment.createTextChild(' ');
+        value = value.trim();
+        // The url and descriptor may end with a separating comma.
+        var url = '';
+        var descriptor = '';
+        var indexOfSpace = value.search(/\s/);
+        if (indexOfSpace === -1) {
+          url = value;
+        } else if (indexOfSpace > 0 && value[indexOfSpace - 1] === ',') {
+          url = value.substring(0, indexOfSpace);
+        } else {
+          url = value.substring(0, indexOfSpace);
+          var indexOfComma = value.indexOf(',', indexOfSpace);
+          if (indexOfComma !== -1)
+            descriptor = value.substring(indexOfSpace, indexOfComma + 1);
+          else
+            descriptor = value.substring(indexOfSpace);
+        }
+
+        if (url) {
+          // Up to one trailing comma should be removed from `url`.
+          if (url.endsWith(',')) {
+            fragment.appendChild(linkifyValue.call(this, url.substring(0, url.length - 1)));
+            fragment.createTextChild(',');
+          } else {
+            fragment.appendChild(linkifyValue.call(this, url));
+          }
+        }
+        if (descriptor)
+          fragment.createTextChild(descriptor);
+        value = value.substring(url.length + descriptor.length);
+      }
+      return fragment;
+    }
   }
 
   /**

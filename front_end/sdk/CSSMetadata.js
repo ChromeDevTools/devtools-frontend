@@ -226,7 +226,8 @@ SDK.cssMetadata = function() {
 
 SDK.CSSMetadata._distanceProperties = new Set([
   'background-position', 'border-spacing', 'bottom', 'font-size', 'height', 'left', 'letter-spacing', 'max-height',
-  'max-width', 'min-height', 'min-width', 'right', 'text-indent', 'top', 'width', 'word-spacing'
+  'max-width', 'min-height', 'min-width', 'right', 'text-indent', 'top', 'width', 'word-spacing', 'grid-row-gap',
+  'grid-column-gap'
 ]);
 
 SDK.CSSMetadata._bezierAwareProperties = new Set([
@@ -705,6 +706,21 @@ SDK.CSSMetadata._propertyDataMap = {
     ]
   },
   'caret-color': {values: ['auto']},
+  'grid-template-columns': {values: ['none']},
+  'grid-template-rows': {values: ['none']},
+  'grid-template-areas': {values: ['none']},
+  'grid-template': {values: ['none']},
+  'grid-auto-columns': {values: ['auto']},
+  'grid-auto-rows': {values: ['auto']},
+  'grid-auto-flow': {values: ['row', 'column', 'dense']},
+  'grid': {values: ['none']},
+  'grid-row-start': {values: ['auto']},
+  'grid-column-start': {values: ['auto']},
+  'grid-row-end': {values: ['auto']},
+  'grid-column-end': {values: ['auto']},
+  'grid-row': {values: ['auto']},
+  'grid-column': {values: ['auto']},
+  'grid-area': {values: ['auto']},
 };
 
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity

@@ -203,6 +203,8 @@ SDK.TextSourceMap = class {
     this._json = payload;
     this._compiledURL = compiledURL;
     this._sourceMappingURL = sourceMappingURL;
+    this._baseURL = sourceMappingURL.startsWith('data:') ? compiledURL : sourceMappingURL;
+
     /** @type {?Array<!SDK.SourceMapEntry>} */
     this._mappings = null;
     /** @type {!Map<string, !SDK.TextSourceMap.SourceInfo>} */
@@ -237,8 +239,7 @@ SDK.TextSourceMap = class {
         content = content.substring(content.indexOf('\n'));
       try {
         var payload = /** @type {!SDK.SourceMapV3} */ (JSON.parse(content));
-        var baseURL = sourceMapURL.startsWith('data:') ? compiledURL : sourceMapURL;
-        callback(new SDK.TextSourceMap(compiledURL, baseURL, payload));
+        callback(new SDK.TextSourceMap(compiledURL, sourceMapURL, payload));
       } catch (e) {
         console.error(e);
         Common.console.warn('DevTools failed to parse SourceMap: ' + sourceMapURL);
@@ -432,7 +433,7 @@ SDK.TextSourceMap = class {
       sourceRoot += '/';
     for (var i = 0; i < sourceMap.sources.length; ++i) {
       var href = sourceRoot + sourceMap.sources[i];
-      var url = Common.ParsedURL.completeURL(this._sourceMappingURL, href) || href;
+      var url = Common.ParsedURL.completeURL(this._baseURL, href) || href;
       var source = sourceMap.sourcesContent && sourceMap.sourcesContent[i];
       if (url === this._compiledURL && source)
         url += Common.UIString('? [sm]');

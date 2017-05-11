@@ -441,12 +441,6 @@ Audits2.ProtocolService = class extends Common.Object {
    * @param {string} message
    */
   _sendProtocolMessage(message) {
-    var parsedMessage = JSON.parse(message);
-    if (parsedMessage['method'] === 'Emulation.setVisibleSize' ||
-        parsedMessage['method'] === 'Emulation.setDeviceMetricsOverride') {
-      this._dispatchProtocolMessage(JSON.stringify({id: parsedMessage['id'], result: {}}));
-      return;
-    }
     this._rawConnection.sendMessage(message);
   }
 

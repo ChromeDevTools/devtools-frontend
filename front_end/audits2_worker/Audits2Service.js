@@ -45,7 +45,7 @@ var Audits2Service = class {
     });
 
     return Promise.resolve()
-        .then(_ => self.runLighthouseInWorker(this, params.url, {disableDeviceEmulation: true}, params.categoryIDs))
+        .then(_ => self.runLighthouseInWorker(this, params.url, {}, params.categoryIDs))
         .then(/** @type {!ReportRenderer.ReportJSON} */ result => {
           // Filter out artifacts except for screenshots in traces to minimize report size.
           var traces = result.artifacts.traces;

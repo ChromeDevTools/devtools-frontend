@@ -31,9 +31,9 @@
 /**
  * @unrestricted
  */
-Workspace.IsolatedFileSystem = class {
+Persistence.IsolatedFileSystem = class {
   /**
-   * @param {!Workspace.IsolatedFileSystemManager} manager
+   * @param {!Persistence.IsolatedFileSystemManager} manager
    * @param {string} path
    * @param {string} embedderPath
    * @param {!DOMFileSystem} domFileSystem
@@ -54,22 +54,22 @@ Workspace.IsolatedFileSystem = class {
   }
 
   /**
-   * @param {!Workspace.IsolatedFileSystemManager} manager
+   * @param {!Persistence.IsolatedFileSystemManager} manager
    * @param {string} path
    * @param {string} embedderPath
    * @param {string} name
    * @param {string} rootURL
-   * @return {!Promise<?Workspace.IsolatedFileSystem>}
+   * @return {!Promise<?Persistence.IsolatedFileSystem>}
    */
   static create(manager, path, embedderPath, name, rootURL) {
     var domFileSystem = InspectorFrontendHost.isolatedFileSystem(name, rootURL);
     if (!domFileSystem)
-      return Promise.resolve(/** @type {?Workspace.IsolatedFileSystem} */ (null));
+      return Promise.resolve(/** @type {?Persistence.IsolatedFileSystem} */ (null));
 
-    var fileSystem = new Workspace.IsolatedFileSystem(manager, path, embedderPath, domFileSystem);
+    var fileSystem = new Persistence.IsolatedFileSystem(manager, path, embedderPath, domFileSystem);
     return fileSystem._initializeFilePaths()
         .then(() => fileSystem)
-        .catchException(/** @type {?Workspace.IsolatedFileSystem} */ (null));
+        .catchException(/** @type {?Persistence.IsolatedFileSystem} */ (null));
   }
 
   /**
@@ -101,7 +101,7 @@ Workspace.IsolatedFileSystem = class {
      * @param {!FileError} error
      */
     function errorHandler(error) {
-      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when getting file metadata \'' + path);
       fulfill(null);
     }
@@ -148,7 +148,7 @@ Workspace.IsolatedFileSystem = class {
 
     /**
      * @param {!Array.<!FileEntry>} entries
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      */
     function innerCallback(entries) {
       for (var i = 0; i < entries.length; ++i) {
@@ -189,7 +189,7 @@ Workspace.IsolatedFileSystem = class {
 
     /**
      * @param {!DirectoryEntry} dirEntry
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      */
     function dirEntryLoaded(dirEntry) {
       var nameCandidate = name;
@@ -203,14 +203,14 @@ Workspace.IsolatedFileSystem = class {
       }
 
       /**
-       * @this {Workspace.IsolatedFileSystem}
+       * @this {Persistence.IsolatedFileSystem}
        */
       function fileCreationError(error) {
         if (error.name === 'InvalidModificationError') {
           dirEntryLoaded.call(this, dirEntry);
           return;
         }
-        var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
+        var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
         console.error(
             errorMessage + ' when testing if file exists \'' + (this._path + '/' + path + '/' + nameCandidate) + '\'');
         callback(null);
@@ -218,10 +218,10 @@ Workspace.IsolatedFileSystem = class {
     }
 
     /**
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      */
     function errorHandler(error) {
-      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
       var filePath = this._path + '/' + path;
       if (nameCandidate)
         filePath += '/' + nameCandidate;
@@ -238,7 +238,7 @@ Workspace.IsolatedFileSystem = class {
 
     /**
      * @param {!FileEntry} fileEntry
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      */
     function fileEntryLoaded(fileEntry) {
       fileEntry.remove(fileEntryRemoved, errorHandler.bind(this));
@@ -249,12 +249,12 @@ Workspace.IsolatedFileSystem = class {
 
     /**
      * @param {!FileError} error
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      * @suppress {checkTypes}
      * TODO(jsbell): Update externs replacing FileError with DOMException. https://crbug.com/496901
      */
     function errorHandler(error) {
-      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when deleting file \'' + (this._path + '/' + path) + '\'');
     }
   }
@@ -279,7 +279,7 @@ Workspace.IsolatedFileSystem = class {
 
     /**
      * @param {!FileEntry} entry
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      */
     function fileEntryLoaded(entry) {
       entry.file(fileLoaded, errorHandler.bind(this));
@@ -291,7 +291,7 @@ Workspace.IsolatedFileSystem = class {
     function fileLoaded(file) {
       var reader = new FileReader();
       reader.onloadend = readerLoadEnd;
-      if (Workspace.IsolatedFileSystem.ImageExtensions.has(Common.ParsedURL.extractExtension(path)))
+      if (Persistence.IsolatedFileSystem.ImageExtensions.has(Common.ParsedURL.extractExtension(path)))
         reader.readAsDataURL(file);
       else
         reader.readAsText(file);
@@ -312,7 +312,7 @@ Workspace.IsolatedFileSystem = class {
     }
 
     /**
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      */
     function errorHandler(error) {
       if (error.name === 'NotFoundError') {
@@ -320,7 +320,7 @@ Workspace.IsolatedFileSystem = class {
         return;
       }
 
-      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when getting content for file \'' + (this._path + '/' + path) + '\'');
       callback(null);
     }
@@ -337,7 +337,7 @@ Workspace.IsolatedFileSystem = class {
 
     /**
      * @param {!FileEntry} entry
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      */
     function fileEntryLoaded(entry) {
       entry.createWriter(fileWriterCreated.bind(this), errorHandler.bind(this));
@@ -345,7 +345,7 @@ Workspace.IsolatedFileSystem = class {
 
     /**
      * @param {!FileWriter} fileWriter
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      */
     function fileWriterCreated(fileWriter) {
       fileWriter.onerror = errorHandler.bind(this);
@@ -360,10 +360,10 @@ Workspace.IsolatedFileSystem = class {
     }
 
     /**
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      */
     function errorHandler(error) {
-      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when setting content for file \'' + (this._path + '/' + path) + '\'');
       callback();
     }
@@ -387,7 +387,7 @@ Workspace.IsolatedFileSystem = class {
 
     /**
      * @param {!FileEntry} entry
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      */
     function fileEntryLoaded(entry) {
       if (entry.name === newName) {
@@ -401,7 +401,7 @@ Workspace.IsolatedFileSystem = class {
 
     /**
      * @param {!Entry} entry
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      */
     function dirEntryLoaded(entry) {
       dirEntry = entry;
@@ -416,7 +416,7 @@ Workspace.IsolatedFileSystem = class {
     }
 
     /**
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      */
     function newFileEntryLoadErrorHandler(error) {
       if (error.name !== 'NotFoundError') {
@@ -434,10 +434,10 @@ Workspace.IsolatedFileSystem = class {
     }
 
     /**
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      */
     function errorHandler(error) {
-      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when renaming file \'' + (this._path + '/' + path) + '\' to \'' + newName + '\'');
       callback(false);
     }
@@ -467,7 +467,7 @@ Workspace.IsolatedFileSystem = class {
     dirReader.readEntries(innerCallback, errorHandler);
 
     function errorHandler(error) {
-      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when reading directory \'' + dirEntry.fullPath + '\'');
       callback([]);
     }
@@ -482,14 +482,14 @@ Workspace.IsolatedFileSystem = class {
 
     /**
      * @param {!DirectoryEntry} dirEntry
-     * @this {Workspace.IsolatedFileSystem}
+     * @this {Persistence.IsolatedFileSystem}
      */
     function innerCallback(dirEntry) {
       this._readDirectory(dirEntry, callback);
     }
 
     function errorHandler(error) {
-      var errorMessage = Workspace.IsolatedFileSystem.errorMessage(error);
+      var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when requesting entry \'' + path + '\'');
       callback([]);
     }
@@ -507,7 +507,7 @@ Workspace.IsolatedFileSystem = class {
   addExcludedFolder(path) {
     this._excludedFolders.add(path);
     this._saveExcludedFolders();
-    this._manager.dispatchEventToListeners(Workspace.IsolatedFileSystemManager.Events.ExcludedFolderAdded, path);
+    this._manager.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.ExcludedFolderAdded, path);
   }
 
   /**
@@ -516,7 +516,7 @@ Workspace.IsolatedFileSystem = class {
   removeExcludedFolder(path) {
     this._excludedFolders.delete(path);
     this._saveExcludedFolders();
-    this._manager.dispatchEventToListeners(Workspace.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, path);
+    this._manager.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, path);
   }
 
   fileSystemRemoved() {
@@ -572,5 +572,5 @@ Workspace.IsolatedFileSystem = class {
   }
 };
 
-Workspace.IsolatedFileSystem.ImageExtensions =
+Persistence.IsolatedFileSystem.ImageExtensions =
     new Set(['jpeg', 'jpg', 'svg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp']);

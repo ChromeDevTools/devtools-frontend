@@ -45,10 +45,10 @@ Persistence.EditFileSystemView = class extends UI.VBox {
           Persistence.FileSystemMapping.Events.FileMappingAdded, this._update, this),
       Persistence.fileSystemMapping.addEventListener(
           Persistence.FileSystemMapping.Events.FileMappingRemoved, this._update, this),
-      Workspace.isolatedFileSystemManager.addEventListener(
-          Workspace.IsolatedFileSystemManager.Events.ExcludedFolderAdded, this._update, this),
-      Workspace.isolatedFileSystemManager.addEventListener(
-          Workspace.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, this._update, this)
+      Persistence.isolatedFileSystemManager.addEventListener(
+          Persistence.IsolatedFileSystemManager.Events.ExcludedFolderAdded, this._update, this),
+      Persistence.isolatedFileSystemManager.addEventListener(
+          Persistence.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, this._update, this)
     ];
 
 
@@ -95,7 +95,7 @@ Persistence.EditFileSystemView = class extends UI.VBox {
 
     this._excludedFoldersList.clear();
     this._excludedFolders = [];
-    for (var folder of Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+    for (var folder of Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
              .excludedFolders()
              .values()) {
       this._excludedFolders.push(folder);
@@ -158,7 +158,7 @@ Persistence.EditFileSystemView = class extends UI.VBox {
       var entry = this._mappings[index];
       Persistence.fileSystemMapping.removeFileMapping(entry.fileSystemPath, entry.urlPrefix, entry.pathPrefix);
     } else {
-      Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+      Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
           .removeExcludedFolder(this._excludedFolders[index]);
     }
   }
@@ -180,10 +180,10 @@ Persistence.EditFileSystemView = class extends UI.VBox {
           this._normalizePrefix(editor.control('pathPrefix').value));
     } else {
       if (!isNew) {
-        Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+        Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
             .removeExcludedFolder(/** @type {string} */ (item));
       }
-      Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+      Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
           .addExcludedFolder(this._normalizePrefix(editor.control('pathPrefix').value));
     }
     this._muteUpdate = false;
@@ -298,7 +298,7 @@ Persistence.EditFileSystemView = class extends UI.VBox {
     function pathPrefixValidator(item, index, input) {
       var prefix = this._normalizePrefix(input.value);
       var configurableCount =
-          Workspace.isolatedFileSystemManager.fileSystem(this._fileSystemPath).excludedFolders().size;
+          Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath).excludedFolders().size;
       for (var i = 0; i < configurableCount; ++i) {
         if (i !== index && this._excludedFolders[i] === prefix)
           return false;

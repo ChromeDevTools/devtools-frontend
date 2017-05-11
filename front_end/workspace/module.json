@@ -6,8 +6,6 @@
     ],
     "scripts": [
         "FileManager.js",
-        "IsolatedFileSystem.js",
-        "IsolatedFileSystemManager.js",
         "SearchConfig.js",
         "UISourceCode.js",
         "Workspace.js"

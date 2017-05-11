@@ -145,7 +145,7 @@ Sources.FilesNavigatorView = class extends Sources.NavigatorView {
     var title = Common.UIString('Add folder to workspace');
     var addButton = new UI.ToolbarButton(title, 'largeicon-add', title);
     addButton.addEventListener(
-        UI.ToolbarButton.Events.Click, () => Workspace.isolatedFileSystemManager.addFileSystem());
+        UI.ToolbarButton.Events.Click, () => Persistence.isolatedFileSystemManager.addFileSystem());
     toolbar.appendToolbarItem(addButton);
     this.element.insertBefore(toolbar.element, this.element.firstChild);
   }
@@ -295,7 +295,7 @@ Sources.SourcesNavigatorView.CreatingActionDelegate = class {
         Common.Revealer.reveal(uiSourceCode);
         return true;
       case 'sources.add-folder-to-workspace':
-        Workspace.isolatedFileSystemManager.addFileSystem();
+        Persistence.isolatedFileSystemManager.addFileSystem();
         return true;
     }
     return false;

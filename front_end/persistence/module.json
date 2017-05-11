@@ -15,6 +15,8 @@
         }
     ],
     "scripts": [
+        "IsolatedFileSystem.js",
+        "IsolatedFileSystemManager.js",
         "FileSystemWorkspaceBinding.js",
         "DefaultMapping.js",
         "Automapping.js",

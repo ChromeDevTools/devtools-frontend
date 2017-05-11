@@ -16,10 +16,10 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
     this.containerElement = this.element.createChild('div', 'help-container-wrapper')
                                 .createChild('div', 'settings-tab help-content help-container');
 
-    Workspace.isolatedFileSystemManager.addEventListener(
-        Workspace.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
-    Workspace.isolatedFileSystemManager.addEventListener(
-        Workspace.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
+    Persistence.isolatedFileSystemManager.addEventListener(
+        Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this);
+    Persistence.isolatedFileSystemManager.addEventListener(
+        Persistence.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this);
 
     var folderExcludePatternInput = this._createFolderExcludePatternInput();
     folderExcludePatternInput.classList.add('folder-exclude-pattern');
@@ -45,7 +45,7 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
     /** @type {!Map<string, !Persistence.EditFileSystemView>} */
     this._mappingViewByPath = new Map();
 
-    var fileSystems = Workspace.isolatedFileSystemManager.fileSystems();
+    var fileSystems = Persistence.isolatedFileSystemManager.fileSystems();
     for (var i = 0; i < fileSystems.length; ++i)
       this._addItem(fileSystems[i]);
   }
@@ -60,7 +60,7 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
     var inputElement = p.createChild('input');
     inputElement.type = 'text';
     inputElement.style.width = '270px';
-    var folderExcludeSetting = Workspace.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
+    var folderExcludeSetting = Persistence.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
     var setValue =
         UI.bindInput(inputElement, folderExcludeSetting.set.bind(folderExcludeSetting), regexValidator, false);
     folderExcludeSetting.addChangeListener(() => setValue.call(null, folderExcludeSetting.get()));
@@ -82,7 +82,7 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
   }
 
   /**
-   * @param {!Workspace.IsolatedFileSystem} fileSystem
+   * @param {!Persistence.IsolatedFileSystem} fileSystem
    */
   _addItem(fileSystem) {
     var element = this._renderFileSystem(fileSystem);
@@ -97,7 +97,7 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
   }
 
   /**
-   * @param {!Workspace.IsolatedFileSystem} fileSystem
+   * @param {!Persistence.IsolatedFileSystem} fileSystem
    * @return {!Element}
    */
   _renderFileSystem(fileSystem) {
@@ -123,23 +123,23 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
   }
 
   /**
-   * @param {!Workspace.IsolatedFileSystem} fileSystem
+   * @param {!Persistence.IsolatedFileSystem} fileSystem
    */
   _removeFileSystemClicked(fileSystem) {
-    Workspace.isolatedFileSystemManager.removeFileSystem(fileSystem);
+    Persistence.isolatedFileSystemManager.removeFileSystem(fileSystem);
   }
 
   _addFileSystemClicked() {
-    Workspace.isolatedFileSystemManager.addFileSystem();
+    Persistence.isolatedFileSystemManager.addFileSystem();
   }
 
   _fileSystemAdded(event) {
-    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
+    var fileSystem = /** @type {!Persistence.IsolatedFileSystem} */ (event.data);
     this._addItem(fileSystem);
   }
 
   _fileSystemRemoved(event) {
-    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
+    var fileSystem = /** @type {!Persistence.IsolatedFileSystem} */ (event.data);
 
     var mappingView = this._mappingViewByPath.get(fileSystem.path());
     if (mappingView) {

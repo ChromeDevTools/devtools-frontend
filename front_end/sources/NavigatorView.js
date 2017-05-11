@@ -119,7 +119,7 @@ Sources.NavigatorView = class extends UI.VBox {
    */
   static appendAddFolderItem(contextMenu) {
     function addFolder() {
-      Workspace.isolatedFileSystemManager.addFileSystem();
+      Persistence.isolatedFileSystemManager.addFileSystem();
     }
 
     var addFolderLabel = Common.UIString('Add folder to workspace');

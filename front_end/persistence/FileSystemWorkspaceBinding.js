@@ -33,7 +33,7 @@
  */
 Persistence.FileSystemWorkspaceBinding = class {
   /**
-   * @param {!Workspace.IsolatedFileSystemManager} isolatedFileSystemManager
+   * @param {!Persistence.IsolatedFileSystemManager} isolatedFileSystemManager
    * @param {!Workspace.Workspace} workspace
    */
   constructor(isolatedFileSystemManager, workspace) {
@@ -41,11 +41,11 @@ Persistence.FileSystemWorkspaceBinding = class {
     this._workspace = workspace;
     this._eventListeners = [
       this._isolatedFileSystemManager.addEventListener(
-          Workspace.IsolatedFileSystemManager.Events.FileSystemAdded, this._onFileSystemAdded, this),
+          Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, this._onFileSystemAdded, this),
       this._isolatedFileSystemManager.addEventListener(
-          Workspace.IsolatedFileSystemManager.Events.FileSystemRemoved, this._onFileSystemRemoved, this),
+          Persistence.IsolatedFileSystemManager.Events.FileSystemRemoved, this._onFileSystemRemoved, this),
       this._isolatedFileSystemManager.addEventListener(
-          Workspace.IsolatedFileSystemManager.Events.FileSystemFilesChanged, this._fileSystemFilesChanged, this)
+          Persistence.IsolatedFileSystemManager.Events.FileSystemFilesChanged, this._fileSystemFilesChanged, this)
     ];
     /** @type {!Map.<string, !Persistence.FileSystemWorkspaceBinding.FileSystem>} */
     this._boundFileSystems = new Map();
@@ -106,14 +106,14 @@ Persistence.FileSystemWorkspaceBinding = class {
   }
 
   /**
-   * @return {!Workspace.IsolatedFileSystemManager}
+   * @return {!Persistence.IsolatedFileSystemManager}
    */
   fileSystemManager() {
     return this._isolatedFileSystemManager;
   }
 
   /**
-   * @param {!Array<!Workspace.IsolatedFileSystem>} fileSystems
+   * @param {!Array<!Persistence.IsolatedFileSystem>} fileSystems
    */
   _onFileSystemsLoaded(fileSystems) {
     for (var fileSystem of fileSystems)
@@ -124,12 +124,12 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @param {!Common.Event} event
    */
   _onFileSystemAdded(event) {
-    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
+    var fileSystem = /** @type {!Persistence.IsolatedFileSystem} */ (event.data);
     this._addFileSystem(fileSystem);
   }
 
   /**
-   * @param {!Workspace.IsolatedFileSystem} fileSystem
+   * @param {!Persistence.IsolatedFileSystem} fileSystem
    */
   _addFileSystem(fileSystem) {
     var boundFileSystem = new Persistence.FileSystemWorkspaceBinding.FileSystem(this, fileSystem, this._workspace);
@@ -140,7 +140,7 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @param {!Common.Event} event
    */
   _onFileSystemRemoved(event) {
-    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
+    var fileSystem = /** @type {!Persistence.IsolatedFileSystem} */ (event.data);
     var boundFileSystem = this._boundFileSystems.get(fileSystem.path());
     boundFileSystem.dispose();
     this._boundFileSystems.remove(fileSystem.path());
@@ -150,7 +150,7 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @param {!Common.Event} event
    */
   _fileSystemFilesChanged(event) {
-    var paths = /** @type {!Workspace.IsolatedFileSystemManager.FilesChangedData} */ (event.data);
+    var paths = /** @type {!Persistence.IsolatedFileSystemManager.FilesChangedData} */ (event.data);
     forEachFile.call(this, paths.changed, (path, fileSystem) => fileSystem._fileChanged(path));
     forEachFile.call(this, paths.added, (path, fileSystem) => fileSystem._fileChanged(path));
     forEachFile.call(this, paths.removed, (path, fileSystem) => fileSystem.removeUISourceCode(path));
@@ -187,7 +187,7 @@ Persistence.FileSystemWorkspaceBinding._scriptExtensions = new Set([
   'jsp', 'jsx',  'h', 'm',  'mm',   'py',     'sh',  'ts', 'tsx',  'ls'
 ]);
 
-Persistence.FileSystemWorkspaceBinding._imageExtensions = Workspace.IsolatedFileSystem.ImageExtensions;
+Persistence.FileSystemWorkspaceBinding._imageExtensions = Persistence.IsolatedFileSystem.ImageExtensions;
 
 Persistence.FileSystemWorkspaceBinding._binaryExtensions = new Set([
   // Executable extensions, roughly taken from https://en.wikipedia.org/wiki/Comparison_of_executable_file_formats
@@ -208,7 +208,7 @@ Persistence.FileSystemWorkspaceBinding._binaryExtensions = new Set([
 Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.ProjectStore {
   /**
    * @param {!Persistence.FileSystemWorkspaceBinding} fileSystemWorkspaceBinding
-   * @param {!Workspace.IsolatedFileSystem} isolatedFileSystem
+   * @param {!Persistence.IsolatedFileSystem} isolatedFileSystem
    * @param {!Workspace.Workspace} workspace
    */
   constructor(fileSystemWorkspaceBinding, isolatedFileSystem, workspace) {

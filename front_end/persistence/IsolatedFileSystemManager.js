@@ -31,11 +31,11 @@
 /**
  * @unrestricted
  */
-Workspace.IsolatedFileSystemManager = class extends Common.Object {
+Persistence.IsolatedFileSystemManager = class extends Common.Object {
   constructor() {
     super();
 
-    /** @type {!Map<string, !Workspace.IsolatedFileSystem>} */
+    /** @type {!Map<string, !Persistence.IsolatedFileSystem>} */
     this._fileSystems = new Map();
     /** @type {!Map<number, function(!Array.<string>)>} */
     this._callbacks = new Map();
@@ -63,7 +63,7 @@ Workspace.IsolatedFileSystemManager = class extends Common.Object {
   }
 
   /**
-   * @return {!Promise<!Array<!Workspace.IsolatedFileSystem>>}
+   * @return {!Promise<!Array<!Persistence.IsolatedFileSystem>>}
    */
   _requestFileSystems() {
     var fulfill;
@@ -75,10 +75,10 @@ Workspace.IsolatedFileSystemManager = class extends Common.Object {
 
     /**
      * @param {!Common.Event} event
-     * @this {Workspace.IsolatedFileSystemManager}
+     * @this {Persistence.IsolatedFileSystemManager}
      */
     function onFileSystemsLoaded(event) {
-      var fileSystems = /** @type {!Array.<!Workspace.IsolatedFileSystemManager.FileSystem>} */ (event.data);
+      var fileSystems = /** @type {!Array.<!Persistence.IsolatedFileSystemManager.FileSystem>} */ (event.data);
       var promises = [];
       for (var i = 0; i < fileSystems.length; ++i)
         promises.push(this._innerAddFileSystem(fileSystems[i], false));
@@ -86,7 +86,7 @@ Workspace.IsolatedFileSystemManager = class extends Common.Object {
     }
 
     /**
-     * @param {!Array<?Workspace.IsolatedFileSystem>} fileSystems
+     * @param {!Array<?Persistence.IsolatedFileSystem>} fileSystems
      */
     function onFileSystemsAdded(fileSystems) {
       fulfill(fileSystems.filter(fs => !!fs));
@@ -98,41 +98,41 @@ Workspace.IsolatedFileSystemManager = class extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.IsolatedFileSystem} fileSystem
+   * @param {!Persistence.IsolatedFileSystem} fileSystem
    */
   removeFileSystem(fileSystem) {
     InspectorFrontendHost.removeFileSystem(fileSystem.embedderPath());
   }
 
   /**
-   * @return {!Promise<!Array<!Workspace.IsolatedFileSystem>>}
+   * @return {!Promise<!Array<!Persistence.IsolatedFileSystem>>}
    */
   waitForFileSystems() {
     return this._fileSystemsLoadedPromise;
   }
 
   /**
-   * @param {!Workspace.IsolatedFileSystemManager.FileSystem} fileSystem
+   * @param {!Persistence.IsolatedFileSystemManager.FileSystem} fileSystem
    * @param {boolean} dispatchEvent
-   * @return {!Promise<?Workspace.IsolatedFileSystem>}
+   * @return {!Promise<?Persistence.IsolatedFileSystem>}
    */
   _innerAddFileSystem(fileSystem, dispatchEvent) {
     var embedderPath = fileSystem.fileSystemPath;
     var fileSystemURL = Common.ParsedURL.platformPathToURL(fileSystem.fileSystemPath);
-    var promise = Workspace.IsolatedFileSystem.create(
+    var promise = Persistence.IsolatedFileSystem.create(
         this, fileSystemURL, embedderPath, fileSystem.fileSystemName, fileSystem.rootURL);
     return promise.then(storeFileSystem.bind(this));
 
     /**
-     * @param {?Workspace.IsolatedFileSystem} fileSystem
-     * @this {Workspace.IsolatedFileSystemManager}
+     * @param {?Persistence.IsolatedFileSystem} fileSystem
+     * @this {Persistence.IsolatedFileSystemManager}
      */
     function storeFileSystem(fileSystem) {
       if (!fileSystem)
         return null;
       this._fileSystems.set(fileSystemURL, fileSystem);
       if (dispatchEvent)
-        this.dispatchEventToListeners(Workspace.IsolatedFileSystemManager.Events.FileSystemAdded, fileSystem);
+        this.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, fileSystem);
       return fileSystem;
     }
   }
@@ -142,7 +142,7 @@ Workspace.IsolatedFileSystemManager = class extends Common.Object {
    */
   _onFileSystemAdded(event) {
     var errorMessage = /** @type {string} */ (event.data['errorMessage']);
-    var fileSystem = /** @type {?Workspace.IsolatedFileSystemManager.FileSystem} */ (event.data['fileSystem']);
+    var fileSystem = /** @type {?Persistence.IsolatedFileSystemManager.FileSystem} */ (event.data['fileSystem']);
     if (errorMessage)
       Common.console.error(errorMessage);
     else if (fileSystem)
@@ -160,23 +160,23 @@ Workspace.IsolatedFileSystemManager = class extends Common.Object {
       return;
     this._fileSystems.delete(fileSystemPath);
     isolatedFileSystem.fileSystemRemoved();
-    this.dispatchEventToListeners(Workspace.IsolatedFileSystemManager.Events.FileSystemRemoved, isolatedFileSystem);
+    this.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.FileSystemRemoved, isolatedFileSystem);
   }
 
   /**
    * @param {!Common.Event} event
    */
   _onFileSystemFilesChanged(event) {
-    var paths = /** @type {!Workspace.IsolatedFileSystemManager.FilesChangedData} */ (event.data);
+    var paths = /** @type {!Persistence.IsolatedFileSystemManager.FilesChangedData} */ (event.data);
     var urlPaths = {};
     urlPaths.changed = paths.changed.map(embedderPath => Common.ParsedURL.platformPathToURL(embedderPath));
     urlPaths.added = paths.added.map(embedderPath => Common.ParsedURL.platformPathToURL(embedderPath));
     urlPaths.removed = paths.removed.map(embedderPath => Common.ParsedURL.platformPathToURL(embedderPath));
-    this.dispatchEventToListeners(Workspace.IsolatedFileSystemManager.Events.FileSystemFilesChanged, urlPaths);
+    this.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.FileSystemFilesChanged, urlPaths);
   }
 
   /**
-   * @return {!Array<!Workspace.IsolatedFileSystem>}
+   * @return {!Array<!Persistence.IsolatedFileSystem>}
    */
   fileSystems() {
     return this._fileSystems.valuesArray();
@@ -184,7 +184,7 @@ Workspace.IsolatedFileSystemManager = class extends Common.Object {
 
   /**
    * @param {string} fileSystemPath
-   * @return {?Workspace.IsolatedFileSystem}
+   * @return {?Persistence.IsolatedFileSystem}
    */
   fileSystem(fileSystemPath) {
     return this._fileSystems.get(fileSystemPath) || null;
@@ -225,7 +225,7 @@ Workspace.IsolatedFileSystemManager = class extends Common.Object {
    * @return {number}
    */
   registerCallback(callback) {
-    var requestId = ++Workspace.IsolatedFileSystemManager._lastRequestId;
+    var requestId = ++Persistence.IsolatedFileSystemManager._lastRequestId;
     this._callbacks.set(requestId, callback);
     return requestId;
   }
@@ -235,7 +235,7 @@ Workspace.IsolatedFileSystemManager = class extends Common.Object {
    * @return {number}
    */
   registerProgress(progress) {
-    var requestId = ++Workspace.IsolatedFileSystemManager._lastRequestId;
+    var requestId = ++Persistence.IsolatedFileSystemManager._lastRequestId;
     this._progresses.set(requestId, progress);
     return requestId;
   }
@@ -299,13 +299,13 @@ Workspace.IsolatedFileSystemManager = class extends Common.Object {
 };
 
 /** @typedef {!{fileSystemName: string, rootURL: string, fileSystemPath: string}} */
-Workspace.IsolatedFileSystemManager.FileSystem;
+Persistence.IsolatedFileSystemManager.FileSystem;
 
 /** @typedef {!{changed:!Array<string>, added:!Array<string>, removed:!Array<string>}} */
-Workspace.IsolatedFileSystemManager.FilesChangedData;
+Persistence.IsolatedFileSystemManager.FilesChangedData;
 
 /** @enum {symbol} */
-Workspace.IsolatedFileSystemManager.Events = {
+Persistence.IsolatedFileSystemManager.Events = {
   FileSystemAdded: Symbol('FileSystemAdded'),
   FileSystemRemoved: Symbol('FileSystemRemoved'),
   FileSystemFilesChanged: Symbol('FileSystemFilesChanged'),
@@ -313,9 +313,9 @@ Workspace.IsolatedFileSystemManager.Events = {
   ExcludedFolderRemoved: Symbol('ExcludedFolderRemoved')
 };
 
-Workspace.IsolatedFileSystemManager._lastRequestId = 0;
+Persistence.IsolatedFileSystemManager._lastRequestId = 0;
 
 /**
- * @type {!Workspace.IsolatedFileSystemManager}
+ * @type {!Persistence.IsolatedFileSystemManager}
  */
-Workspace.isolatedFileSystemManager;
+Persistence.isolatedFileSystemManager;

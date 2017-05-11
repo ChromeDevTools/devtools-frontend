@@ -33,7 +33,7 @@
  */
 Persistence.FileSystemMapping = class extends Common.Object {
   /**
-   * @param {!Workspace.IsolatedFileSystemManager} fileSystemManager
+   * @param {!Persistence.IsolatedFileSystemManager} fileSystemManager
    */
   constructor(fileSystemManager) {
     super();
@@ -44,15 +44,15 @@ Persistence.FileSystemMapping = class extends Common.Object {
 
     this._eventListeners = [
       fileSystemManager.addEventListener(
-          Workspace.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this),
+          Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, this._fileSystemAdded, this),
       fileSystemManager.addEventListener(
-          Workspace.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this),
+          Persistence.IsolatedFileSystemManager.Events.FileSystemRemoved, this._fileSystemRemoved, this),
     ];
     fileSystemManager.waitForFileSystems().then(this._fileSystemsLoaded.bind(this));
   }
 
   /**
-   * @param {!Array<!Workspace.IsolatedFileSystem>} fileSystems
+   * @param {!Array<!Persistence.IsolatedFileSystem>} fileSystems
    */
   _fileSystemsLoaded(fileSystems) {
     for (var fileSystem of fileSystems)
@@ -63,7 +63,7 @@ Persistence.FileSystemMapping = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _fileSystemAdded(event) {
-    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
+    var fileSystem = /** @type {!Persistence.IsolatedFileSystem} */ (event.data);
     this.addFileSystem(fileSystem.path());
   }
 
@@ -71,7 +71,7 @@ Persistence.FileSystemMapping = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _fileSystemRemoved(event) {
-    var fileSystem = /** @type {!Workspace.IsolatedFileSystem} */ (event.data);
+    var fileSystem = /** @type {!Persistence.IsolatedFileSystem} */ (event.data);
     this.removeFileSystem(fileSystem.path());
   }
 

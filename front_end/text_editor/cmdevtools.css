@@ -62,6 +62,27 @@
     margin-right: -1px;
 }
 
+.CodeMirror .source-frame-async-step-in {
+    outline: 0;
+    background-color: hsl(100, 46%, 77%);
+    cursor: pointer;
+}
+
+.CodeMirror :not(.source-frame-async-step-in) + .source-frame-async-step-in:before {
+    -webkit-user-select: none;
+    background-image: -webkit-image-set(url(Images/smallIcons.png) 1x, url(Images/smallIcons_2x.png) 2x);
+    background-position: 1px 51px;
+    content: "aa";
+    color: transparent;
+    text-shadow: none;
+    height: 10px;
+    width: 10px;
+}
+
+.CodeMirror .source-frame-async-step-in:hover {
+    background-color: hsl(100, 79%, 77%);
+}
+
 .CodeMirror-readonly .CodeMirror-cursor {
     display: none;
 }

@@ -218,12 +218,18 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     this.showExecutionLineBackground();
     this.codeMirror().addLineClass(this._executionLine, 'wrap', 'cm-execution-line-outline');
     var token = this.tokenAtTextPosition(lineNumber, columnNumber);
+
+    if (token && !token.type && token.startColumn + 1 === token.endColumn) {
+      var tokenContent = this.codeMirror().getLine(lineNumber)[token.startColumn];
+      if (tokenContent === '.' || tokenContent === '(')
+        token = this.tokenAtTextPosition(lineNumber, token.endColumn + 1);
+    }
+
     var endColumn;
     if (token && token.type)
       endColumn = token.endColumn;
     else
       endColumn = this.codeMirror().getLine(lineNumber).length;
-
 
     this._executionLineTailMarker = this.codeMirror().markText(
         {line: lineNumber, ch: columnNumber}, {line: lineNumber, ch: endColumn}, {className: 'cm-execution-line-tail'});

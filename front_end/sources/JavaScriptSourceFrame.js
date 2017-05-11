@@ -686,19 +686,61 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       this.textEditor.hideExecutionLineBackground();
       this._clearValueWidgets();
       this._continueToLocationDecorations = new Map();
+      locations = locations.reverse();
+      var previousCallLine = -1;
       for (var location of locations) {
         var lineNumber = location.lineNumber;
         var token = this.textEditor.tokenAtTextPosition(lineNumber, location.columnNumber);
-        if (!token || !token.type)
+        if (!token)
           continue;
         var line = this.textEditor.line(lineNumber);
         var tokenContent = line.substring(token.startColumn, token.endColumn);
-        if (!this._isIdentifier(token.type) && (token.type !== 'js-keyword' || tokenContent !== 'this'))
+        if (!token.type && tokenContent === '.') {
+          token = this.textEditor.tokenAtTextPosition(lineNumber, token.endColumn + 1);
+          tokenContent = line.substring(token.startColumn, token.endColumn);
+        }
+        if (!token.type)
+          continue;
+        var validKeyword = token.type === 'js-keyword' &&
+            (tokenContent === 'this' || tokenContent === 'return' || tokenContent === 'new' ||
+             tokenContent === 'continue' || tokenContent === 'break');
+        if (!validKeyword && !this._isIdentifier(token.type))
+          continue;
+        if (previousCallLine === lineNumber && location.type !== Protocol.Debugger.BreakLocationType.Call)
           continue;
 
         var highlightRange = new TextUtils.TextRange(lineNumber, token.startColumn, lineNumber, token.endColumn - 1);
         var decoration = this.textEditor.highlightRange(highlightRange, 'source-frame-continue-to-location');
         this._continueToLocationDecorations.set(decoration, location.continueToLocation.bind(location));
+        if (location.type === Protocol.Debugger.BreakLocationType.Call)
+          previousCallLine = lineNumber;
+
+        var isAsyncCall = (line[token.startColumn - 1] === '.' && tokenContent === 'then') ||
+            tokenContent === 'setTimeout' || tokenContent === 'setInterval';
+        var isCurrentPosition = this._executionLocation && lineNumber === this._executionLocation.lineNumber &&
+            location.columnNumber === this._executionLocation.columnNumber;
+        if (location.type === Protocol.Debugger.BreakLocationType.Call && isAsyncCall && isCurrentPosition) {
+          var functionPosition = line.indexOf('(', token.endColumn);
+          if (functionPosition !== -1) {
+            functionPosition++;
+            while (functionPosition < line.length && line[functionPosition] === ' ')
+              functionPosition++;
+            var nextToken = this.textEditor.tokenAtTextPosition(lineNumber, functionPosition);
+            if (nextToken) {
+              if (line.substring(nextToken.startColumn, nextToken.endColumn) === '(') {
+                var closeParen = line.indexOf(')', nextToken.endColumn);
+                nextToken.endColumn = closeParen === -1 ? line.length : closeParen + 1;
+              }
+              highlightRange =
+                  new TextUtils.TextRange(lineNumber, nextToken.startColumn, lineNumber, nextToken.endColumn - 1);
+              decoration = this.textEditor.highlightRange(highlightRange, 'source-frame-async-step-in');
+              this._continueToLocationDecorations.set(decoration, () => {
+                debuggerModel.scheduleStepIntoAsync();
+                debuggerModel.stepInto();
+              });
+            }
+          }
+        }
       }
     }
   }

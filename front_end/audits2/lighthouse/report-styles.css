@@ -16,6 +16,7 @@
 
 .lh-vars {
   --text-font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;
+  --monospace-font-family: 'Menlo', 'dejavu sans mono', 'Consolas', 'Lucida Console', monospace;
   --body-font-size: 13px;
   --header-font-size: 16px;
   --body-line-height: 1.5;
@@ -27,7 +28,7 @@
   --pass-color: #2b882f;
   --informative-color: #0c50c7;
   --average-color: #ef6c00; /* md orange 800 */
-  --warning-color: #757575; /* md grey 600 */
+  --warning-color: #ffab00; /* md amber a700 */
 
   --report-border-color: #ccc;
   --report-secondary-border-color: #ebebeb;
@@ -38,6 +39,7 @@
   --lh-score-highlight-bg: #fafafa;
   --lh-score-icon-background-size: 24px;
   --lh-score-margin: calc(var(--default-padding) / 2);
+  --lh-sparkline-height: 10px;
   --lh-audit-score-width: 35px;
   --lh-category-score-width: 60px;
 }
@@ -68,12 +70,16 @@ summary {
 }
 
 .lh-details {
-  font-size: smaller;
+  font-size: var(--body-font-size);
   margin-top: var(--default-padding);
 }
 
 .lh-details[open] summary {
   margin-bottom: var(--default-padding);
+}
+
+.lh-details.flex .lh-code {
+  max-width: 70%;
 }
 
 /* Report header */
@@ -115,10 +121,26 @@ summary {
   padding-left: var(--default-padding);
 }
 
-.lh-list__items > * {
-  border-bottom: 1px solid gray;
+.lh-list__item {
   margin-bottom: 2px;
 }
+
+.lh-list__item::after {
+  content: ', ';
+}
+.lh-list__item:last-child::after {
+  content: '';
+}
+
+
+/* Node */
+.lh-node {
+  display: block;
+  font-family: var(--monospace-font-family);
+  word-break: break-word;
+  color: hsl(174, 100%, 27%);
+}
+
 
 /* Card */
 .lh-scorecards {
@@ -294,6 +316,89 @@ summary {
   outline: rgb(59, 153, 252) auto 5px;
 }*/
 
+.lh-perf-hint {
+  margin-top: var(--default-padding);
+  margin-left: var(--default-padding);
+  padding-bottom: var(--default-padding);
+  border-bottom: 1px solid var(--report-secondary-border-color);
+}
+
+.lh-perf-hint:last-of-type {
+  border-bottom: none;
+}
+
+.lh-perf-hint__summary {
+  display: flex;
+  align-items: center;
+}
+
+.lh-perf-hint__title {
+  font-size: var(--header-font-size);
+  flex: 0 0 30%;
+}
+
+.lh-perf-hint__sparkline {
+  flex: 0 0 50%;
+}
+
+.lh-perf-hint__sparkline .lh-sparkline {
+  width: calc(100% - var(--default-padding) * 2);
+  float: right;
+}
+
+.lh-perf-hint__stats {
+  width: 60px;
+  text-align: right;
+  flex: 10;
+}
+
+.lh-perf-hint__primary-stat {
+  font-size: var(--header-font-size);
+}
+
+.lh-perf-hint__description {
+  color: var(--secondary-text-color);
+  margin-top: calc(var(--default-padding) / 2);
+}
+
+.lh-perf-hint--pass .lh-perf-hint__stats {
+  color: var(--pass-color);
+}
+
+.lh-perf-hint--pass .lh-sparkline__bar {
+  background: var(--pass-color);
+}
+
+.lh-perf-hint--average .lh-sparkline__bar {
+  background: var(--average-color);
+}
+
+.lh-perf-hint--average .lh-perf-hint__stats {
+  color: var(--average-color);
+}
+
+.lh-perf-hint--fail .lh-sparkline__bar {
+  background: var(--fail-color);
+}
+
+.lh-perf-hint--fail .lh-perf-hint__stats {
+  color: var(--fail-color);
+}
+
+/* Sparkline */
+
+.lh-sparkline {
+  margin: 5px;
+  height: var(--lh-sparkline-height);
+  width: 100%;
+}
+
+.lh-sparkline__bar {
+  background: var(--warning-color);
+  height: var(--lh-sparkline-height);
+  float: right;
+}
+
 /* Audit */
 
 .lh-audit {
@@ -339,6 +444,19 @@ summary {
   color: var(--fail-color);
 }
 
+.lh-debug::before {
+  display: inline-block;
+  content: '';
+  background: url('data:image/svg+xml;utf8,<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>warn</title><path d="M0 0h24v24H0z" fill="none"/><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" fill="#FFAB00"/></svg>') no-repeat 50% 50%;
+  background-size: contain;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  margin-right: calc(var(--default-padding) / 2);
+  top: 5px;
+}
+
+
 /* Report */
 
 .lh-container {
@@ -349,11 +467,23 @@ summary {
 
 .lh-report {
   margin-left: var(--report-menu-width);
+  width: var(--report-width);
   background-color: #fff;
 }
 
 .lh-exception {
   font-size: large;
+}
+
+.lh-text__url {
+  white-space: nowrap;
+}
+
+.lh-code {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: pre-line;
+  margin-top: 0;
 }
 
 .lh-scores-header {
@@ -485,6 +615,16 @@ summary.lh-passed-audits-summary::-webkit-details-marker {
   .lh-categories {
     margin-top: 0;
   }
+}
+
+.lh-table {
+  --image-preview-size: 24px;
+}
+
+.lh-thumbnail {
+  height: var(--image-preview-size);
+  width: var(--image-preview-size);
+  object-fit: contain;
 }
 
 /*# sourceURL=report.styles.css */

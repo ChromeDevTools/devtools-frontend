@@ -48,6 +48,29 @@ class DOM {
     return element;
   }
 
+ /**
+   * @param {string} text
+   * @return {!Node}
+   */
+  createText(text) {
+    return this._document.createTextNode(text);
+  }
+
+ /**
+   * @param {!Element} parentElem
+   * @param {string} elementName
+   * @param {string=} className
+   * @param {!Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
+   *     Note: if an attribute key has an undefined value, this method does not
+   *     set the attribute on the node.
+   * @return {!Element}
+   */
+  createChildOf(parentElem, elementName, className, attrs) {
+    const element = this.createElement(elementName, className, attrs);
+    parentElem.appendChild(element);
+    return element;
+  }
+
   /**
    * @param {string} selector
    * @param {!Node} context

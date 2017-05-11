@@ -43,6 +43,7 @@
 
 .lh-root {
   --report-menu-width: 0 !important;
+  user-select: initial;
 }
 
 .audits2-landing-center button {

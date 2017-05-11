@@ -20,6 +20,7 @@
     "scripts": [
         "lighthouse/renderer/util.js",
         "lighthouse/renderer/dom.js",
+        "lighthouse/renderer/category-renderer.js",
         "lighthouse/renderer/details-renderer.js",
         "lighthouse/renderer/category-renderer.js",
         "lighthouse/renderer/report-renderer.js",

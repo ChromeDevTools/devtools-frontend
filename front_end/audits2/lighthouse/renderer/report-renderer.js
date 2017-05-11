@@ -80,6 +80,8 @@ class ReportRenderer {
     url.href = report.url;
     url.textContent = report.url;
 
+    this._dom.find('.lh-env__item__ua', header).textContent = report.userAgent;
+
     const env = this._dom.find('.lh-env__items', header);
     report.runtimeConfig.environment.forEach(runtime => {
       const item = this._dom.cloneTemplate('#tmpl-lh-env__items', env);
@@ -171,6 +173,7 @@ if (typeof module !== 'undefined' && module.exports) {
  *     score: number,
  *     group: string,
  *     result: {
+ *       rawValue: (number|undefined),
  *       description: string,
  *       informative: boolean,
  *       debugString: string,
@@ -179,6 +182,7 @@ if (typeof module !== 'undefined' && module.exports) {
  *       score: (number|boolean),
  *       scoringMode: string,
  *       optimalValue: number,
+ *       extendedInfo: Object,
  *       details: (!DetailsRenderer.DetailsJSON|undefined)
  *     }
  * }}
@@ -208,6 +212,7 @@ ReportRenderer.GroupJSON; // eslint-disable-line no-unused-expressions
 /**
  * @typedef {{
  *     lighthouseVersion: string,
+ *     userAgent: string,
  *     generatedTime: string,
  *     initialUrl: string,
  *     url: string,

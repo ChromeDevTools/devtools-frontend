@@ -33,8 +33,9 @@ Components.DOMPresentationUtils = {};
 /**
  * @param {!SDK.DOMNode} node
  * @param {!Element} parentElement
+ * @param {string=} tooltipContent
  */
-Components.DOMPresentationUtils.decorateNodeLabel = function(node, parentElement) {
+Components.DOMPresentationUtils.decorateNodeLabel = function(node, parentElement, tooltipContent) {
   var originalNode = node;
   var isPseudo = node.nodeType() === Node.ELEMENT_NODE && node.pseudoType();
   if (isPseudo && node.parentNode)
@@ -81,7 +82,7 @@ Components.DOMPresentationUtils.decorateNodeLabel = function(node, parentElement
     pseudoElement.createTextChild(pseudoText);
     title += pseudoText;
   }
-  parentElement.title = title;
+  parentElement.title = tooltipContent || title;
 };
 
 /**
@@ -100,9 +101,10 @@ Components.DOMPresentationUtils.createSpansForNodeTitle = function(container, no
 /**
  * @param {?SDK.DOMNode} node
  * @param {string=} idref
+ * @param {string=} tooltipContent
  * @return {!Node}
  */
-Components.DOMPresentationUtils.linkifyNodeReference = function(node, idref) {
+Components.DOMPresentationUtils.linkifyNodeReference = function(node, idref, tooltipContent) {
   if (!node)
     return createTextNode(Common.UIString('<node>'));
 
@@ -113,7 +115,7 @@ Components.DOMPresentationUtils.linkifyNodeReference = function(node, idref) {
   if (idref)
     link.createChild('span', 'node-label-id').createTextChild('#' + idref);
   else
-    Components.DOMPresentationUtils.decorateNodeLabel(node, link);
+    Components.DOMPresentationUtils.decorateNodeLabel(node, link, tooltipContent);
 
   link.addEventListener('click', Common.Revealer.reveal.bind(Common.Revealer, node, undefined), false);
   link.addEventListener('mouseover', node.highlight.bind(node, undefined, undefined), false);

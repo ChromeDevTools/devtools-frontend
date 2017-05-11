@@ -194,7 +194,8 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
       var element = node.element();
       node.willAttach();
       node.setStriped((offset + i) % 2 === 0);
-      tBody.insertBefore(element, previousElement.nextSibling);
+      if (element !== previousElement.nextSibling)
+        tBody.insertBefore(element, previousElement.nextSibling);
       node.revealed = true;
       previousElement = element;
     }

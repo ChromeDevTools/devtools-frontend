@@ -704,6 +704,7 @@ SDK.CSSMetadata._propertyDataMap = {
       'soft-light', 'difference', 'exclusion', 'hue', 'saturation', 'color', 'luminosity', 'unset'
     ]
   },
+  'caret-color': {values: ['auto']},
 };
 
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity

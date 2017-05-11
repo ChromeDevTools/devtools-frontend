@@ -365,7 +365,7 @@ Coverage.CoverageInfo = class {
       if (this._segments[index].count)
         return true;
     }
-    return index < this._segments.length && this._segments[index].count;
+    return index < this._segments.length && !!this._segments[index].count;
   }
 
   /**

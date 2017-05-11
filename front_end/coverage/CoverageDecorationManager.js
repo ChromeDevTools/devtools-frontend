@@ -22,6 +22,9 @@ Coverage.CoverageDecorationManager = class {
     this._textByProvider = new Map();
     /** @type {!Multimap<!Common.ContentProvider, !Workspace.UISourceCode>} */
     this._uiSourceCodeByContentProvider = new Multimap();
+    // TODO(crbug.com/720162): get rid of this, use bindings.
+    /** @type {!WeakMap<!Workspace.UISourceCode, !Array<!SDK.CSSStyleSheetHeader>>} */
+    this._documentUISouceCodeToStylesheets = new WeakMap();
 
     for (var uiSourceCode of Workspace.workspace.uiSourceCodes())
       uiSourceCode.addLineDecoration(0, Coverage.CoverageDecorationManager._decoratorType, this);
@@ -59,12 +62,12 @@ Coverage.CoverageDecorationManager = class {
     for (var line = 0; line < sourceText.lineCount(); ++line) {
       var lineLength = lineEndings[line] - (line ? lineEndings[line - 1] : 0) - 1;
       if (!lineLength) {
-        result.push(false);
+        result.push(undefined);
         continue;
       }
       var startLocations = this._rawLocationsForSourceLocation(uiSourceCode, line, 0);
       var endLocations = this._rawLocationsForSourceLocation(uiSourceCode, line, lineLength);
-      var used = false;
+      var used = undefined;
       for (var startIndex = 0, endIndex = 0; startIndex < startLocations.length; ++startIndex) {
         var start = startLocations[startIndex];
         while (endIndex < endLocations.length &&
@@ -77,14 +80,14 @@ Coverage.CoverageDecorationManager = class {
         if (!text)
           continue;
         var textValue = text.value();
-        var startOffset = text.offsetFromPosition(start.line, start.column);
-        var endOffset = text.offsetFromPosition(end.line, end.column);
+        var startOffset = Math.min(text.offsetFromPosition(start.line, start.column), textValue.length - 1);
+        var endOffset = Math.min(text.offsetFromPosition(end.line, end.column), textValue.length - 1);
         while (startOffset <= endOffset && /\s/.test(textValue[startOffset]))
           ++startOffset;
         while (startOffset <= endOffset && /\s/.test(textValue[endOffset]))
           --endOffset;
-        used =
-            startOffset <= endOffset && this._coverageModel.usageForRange(end.contentProvider, startOffset, endOffset);
+        if (startOffset <= endOffset)
+          used = this._coverageModel.usageForRange(end.contentProvider, startOffset, endOffset);
         if (used)
           break;
       }
@@ -133,20 +136,41 @@ Coverage.CoverageDecorationManager = class {
     if (contentType.hasScripts()) {
       var location = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, line, column);
       if (location && location.script()) {
-        result.push({
-          id: `js:${location.scriptId}`,
-          contentProvider: location.script(),
-          line: location.lineNumber,
-          column: location.columnNumber
-        });
+        var script = location.script();
+        if (script.isInlineScript() && contentType.isDocument()) {
+          if (comparePositions(script.lineOffset, script.columnOffset, location.lineNumber, location.columnNumber) >
+                  0 ||
+              comparePositions(script.endLine, script.endColumn, location.lineNumber, location.columnNumber) <= 0) {
+            location = null;
+          } else {
+            location.lineNumber -= script.lineOffset;
+            if (!location.lineNumber)
+              location.columnNumber -= script.columnOffset;
+          }
+        }
+        if (location) {
+          result.push({
+            id: `js:${location.scriptId}`,
+            contentProvider: location.script(),
+            line: location.lineNumber,
+            column: location.columnNumber
+          });
+        }
       }
     }
     if (contentType.isStyleSheet() || contentType.isDocument()) {
-      var rawStyleLocations =
+      var rawStyleLocations = contentType.isDocument() ?
+          this._documentUILocationToCSSRawLocations(uiSourceCode, line, column) :
           Bindings.cssWorkspaceBinding.uiLocationToRawLocations(new Workspace.UILocation(uiSourceCode, line, column));
       for (var location of rawStyleLocations) {
-        if (!location.header())
+        var header = location.header();
+        if (!header)
           continue;
+        if (header.isInline && contentType.isDocument()) {
+          location.lineNumber -= header.startLine;
+          if (!location.lineNumber)
+            location.columnNumber -= header.startColumn;
+        }
         result.push({
           id: `css:${location.styleSheetId}`,
           contentProvider: location.header(),
@@ -156,7 +180,63 @@ Coverage.CoverageDecorationManager = class {
       }
     }
     result.sort(Coverage.CoverageDecorationManager._compareLocations);
+
+    /**
+     * @param {number} aLine
+     * @param {number} aColumn
+     * @param {number} bLine
+     * @param {number} bColumn
+     * @return {number}
+     */
+    function comparePositions(aLine, aColumn, bLine, bColumn) {
+      return aLine - bLine || aColumn - bColumn;
+    }
     return result;
+  }
+
+  /**
+   * TODO(crbug.com/720162): get rid of this, use bindings.
+   *
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {number} line
+   * @param {number} column
+   * @return {!Array<!SDK.CSSLocation>}
+   */
+  _documentUILocationToCSSRawLocations(uiSourceCode, line, column) {
+    var stylesheets = this._documentUISouceCodeToStylesheets.get(uiSourceCode);
+    if (!stylesheets) {
+      stylesheets = [];
+      var cssModel = this._coverageModel.target().model(SDK.CSSModel);
+      if (!cssModel)
+        return [];
+      for (var headerId of cssModel.styleSheetIdsForURL(uiSourceCode.url())) {
+        var header = cssModel.styleSheetHeaderForId(headerId);
+        if (header)
+          stylesheets.push(header);
+      }
+      stylesheets.sort(stylesheetComparator);
+      this._documentUISouceCodeToStylesheets.set(uiSourceCode, stylesheets);
+    }
+    var endIndex =
+        stylesheets.upperBound(undefined, (unused, header) => line - header.startLine || column - header.startColumn);
+    if (!endIndex)
+      return [];
+    var locations = [];
+    var last = stylesheets[endIndex - 1];
+    for (var index = endIndex - 1; index >= 0 && stylesheets[index].startLine === last.startLine &&
+         stylesheets[index].startColumn === last.startColumn;
+         --index)
+      locations.push(new SDK.CSSLocation(stylesheets[index], line, column));
+
+    return locations;
+    /**
+     * @param {!SDK.CSSStyleSheetHeader} a
+     * @param {!SDK.CSSStyleSheetHeader} b
+     * @return {number}
+     */
+    function stylesheetComparator(a, b) {
+      return a.startLine - b.startLine || a.startColumn - b.startColumn || a.id.localeCompare(b.id);
+    }
   }
 
   /**
@@ -189,7 +269,7 @@ Coverage.CoverageView.LineDecorator = class {
    */
   decorate(uiSourceCode, textEditor) {
     var decorations = uiSourceCode.decorationsForType(Coverage.CoverageDecorationManager._decoratorType);
-    if (!decorations.size) {
+    if (!decorations || !decorations.size) {
       textEditor.uninstallGutter(Coverage.CoverageView.LineDecorator._gutterType);
       return;
     }
@@ -209,6 +289,9 @@ Coverage.CoverageView.LineDecorator = class {
     textEditor.uninstallGutter(gutterType);
     textEditor.installGutter(gutterType, false);
     for (var line = 0; line < lineUsage.length; ++line) {
+      // Do not decorate the line if we don't have data.
+      if (typeof lineUsage[line] !== 'boolean')
+        continue;
       var className = lineUsage[line] ? 'text-editor-coverage-used-marker' : 'text-editor-coverage-unused-marker';
       textEditor.setGutterDecoration(line, gutterType, createElementWithClass('div', className));
     }

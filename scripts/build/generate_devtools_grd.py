@@ -53,7 +53,9 @@ kGrdTemplate = '''<?xml version="1.0" encoding="UTF-8"?>
     <output filename="devtools_resources.pak" type="data_package" />
   </outputs>
   <release seq="1">
-    <includes></includes>
+    <includes>
+      <include name="COMPRESSED_PROTOCOL_JSON" file="${compressed_protocol_file}" use_base_dir="false" type="BINDATA" />
+    </includes>
   </release>
 </grit>
 '''

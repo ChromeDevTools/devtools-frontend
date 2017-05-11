@@ -102,6 +102,7 @@ Network.NetworkLogViewColumns = class {
 
     this._popoverHelper = new UI.PopoverHelper(this._networkLogView.element, this._getPopoverRequest.bind(this));
     this._popoverHelper.setHasPadding(true);
+    this._popoverHelper.setTimeout(300, 300);
 
     /** @type {!DataGrid.SortableDataGrid<!Network.NetworkNode>} */
     this._dataGrid =
@@ -549,13 +550,26 @@ Network.NetworkLogViewColumns = class {
   _getPopoverRequest(event) {
     if (!this._gridMode)
       return null;
+    var hoveredNode = this._networkLogView.hoveredNode();
+    if (!hoveredNode)
+      return null;
 
-    var anchor = event.target.enclosingNodeOrSelfWithClass('network-script-initiated');
-    var request = /** @type {?SDK.NetworkRequest} */ (anchor ? anchor.request : null);
+    var anchor = event.target.enclosingNodeOrSelfWithClass('product-column');
+    if (anchor) {
+      return {
+        box: anchor.boxInWindow(),
+        show: hoveredNode.handleProductPopover.bind(hoveredNode),
+        hide: this._popupLinkifier.reset.bind(this._popupLinkifier)
+      };
+    }
+
+    anchor = event.target.enclosingNodeOrSelfWithClass('network-script-initiated');
+    if (!anchor)
+      return null;
+    var request = hoveredNode.request();
     var initiator = request ? request.initiator() : null;
     if (!initiator || !initiator.stack)
       return null;
-
     return {
       box: anchor.boxInWindow(),
       show: popover => {
@@ -564,9 +578,7 @@ Network.NetworkLogViewColumns = class {
         popover.contentElement.appendChild(content);
         return Promise.resolve(true);
       },
-      hide: () => {
-        this._popupLinkifier.reset();
-      }
+      hide: this._popupLinkifier.reset.bind(this._popupLinkifier)
     };
   }
 

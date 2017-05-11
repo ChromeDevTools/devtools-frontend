@@ -139,6 +139,7 @@
         "networkLogView.css",
         "networkManageCustomHeadersView.css",
         "networkPanel.css",
+        "networkReportProductEntry.css",
         "networkTimingTable.css",
         "networkWaterfallColumn.css",
         "requestCookiesView.css",

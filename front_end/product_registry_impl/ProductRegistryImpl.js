@@ -73,46 +73,7 @@ ProductRegistryImpl.Registry = class {
       return entry.type;
     return null;
   }
-
-  /**
-   * @override
-   * @param {!SDK.ResourceTreeFrame} frame
-   * @return {?ProductRegistry.Registry.ProductEntry}
-   */
-  entryForFrame(frame) {
-    var entry;
-    if (frame.url)
-      entry = this.entryForUrl(new Common.ParsedURL(frame.url));
-    if (entry)
-      return entry;
-    // We are not caching the frame url result because it may change.
-    var symbol = ProductRegistryImpl.Registry._productEntryForFrameSymbol;
-    if (!(symbol in frame))
-      frame[symbol] = this._lookupStackTraceEntryForFrame(frame);
-    return frame[symbol];
-  }
-
-  /**
-   * @param {!SDK.ResourceTreeFrame} frame
-   * @return {?ProductRegistry.Registry.ProductEntry}
-   */
-  _lookupStackTraceEntryForFrame(frame) {
-    var stackTrace = frame.creationStackTrace();
-    var entry;
-    while (stackTrace) {
-      for (var stack of stackTrace.callFrames) {
-        if (stack.url)
-          entry = this.entryForUrl(new Common.ParsedURL(stack.url));
-        if (entry)
-          return entry;
-      }
-      stackTrace = frame.parent;
-    }
-    return null;
-  }
 };
-
-ProductRegistryImpl.Registry._productEntryForFrameSymbol = Symbol('ProductEntryForFrame');
 
 /**
  * @param {string} domain

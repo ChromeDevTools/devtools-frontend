@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) 2017 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+.network-product-popover {
+  white-space: nowrap;
+}
+
+.network-product-popover .network-product-domain {
+  white-space: nowrap;
+  font-weight: bold;
+  color: #565656;
+}
+
+.network-product-popover .network-product-entry-name {
+  padding-top: 5px;
+}
+
+.network-product-popover .network-report-product-link {
+  font-size: 11px;
+  padding-top: 5px;
+}

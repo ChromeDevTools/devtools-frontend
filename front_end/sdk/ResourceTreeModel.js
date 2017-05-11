@@ -607,10 +607,18 @@ SDK.ResourceTreeFrame = class {
   }
 
   /**
-   * @return {?Protocol.Runtime.StackTrace}
+   * @param {function(!Protocol.Runtime.CallFrame):boolean} searchFn
+   * @return {?Protocol.Runtime.CallFrame}
    */
-  creationStackTrace() {
-    return this._creationStackTrace;
+  findCreationCallFrame(searchFn) {
+    var stackTrace = this._creationStackTrace;
+    while (stackTrace) {
+      var foundEntry = stackTrace.callFrames.find(searchFn);
+      if (foundEntry)
+        return foundEntry;
+      stackTrace = this.parent;
+    }
+    return null;
   }
 
   /**

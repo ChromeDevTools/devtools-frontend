@@ -63,8 +63,8 @@ Network.FrameGroupNode = class extends Network.NetworkGroupNode {
     super(parentView);
     this._frame = frame;
     this._grouper = grouper;
-    /** @type {?ProductRegistry.Registry.ProductEntry|undefined} */
-    this._productEntryCache;
+    /** @type {?Network.NetworkNode._ProductEntryInfo|undefined} */
+    this._productInfoEntryCache;
   }
 
   /**
@@ -79,8 +79,9 @@ Network.FrameGroupNode = class extends Network.NetworkGroupNode {
    * @override
    */
   displayName() {
-    var entry = this._entry();
-    return entry ? entry.name : (new Common.ParsedURL(this._frame.url)).host || this._frame.name || '<iframe>';
+    var entryInfo = this._innerProductEntry();
+    return entryInfo ? entryInfo.entry.name :
+                       (new Common.ParsedURL(this._frame.url)).host || this._frame.name || '<iframe>';
   }
 
   /**
@@ -96,24 +97,30 @@ Network.FrameGroupNode = class extends Network.NetworkGroupNode {
       cell.title = name;
     }
     if (columnId === 'product') {
-      var entry = this._entry();
-      if (!entry)
-        return;
-      cell.textContent = entry.name;
-      cell.title = entry.name;
+      var entryInfo = this._innerProductEntry();
+      if (entryInfo)
+        cell.textContent = entryInfo.entry.name;
     }
   }
 
   /**
-   * @return {?ProductRegistry.Registry.ProductEntry}
+   * @override
+   * @return {!Promise<?Network.NetworkNode._ProductEntryInfo>}
    */
-  _entry() {
-    if (this._productEntryCache !== undefined)
-      return this._productEntryCache;
+  productEntry() {
+    return Promise.resolve(this._innerProductEntry());
+  }
+
+  /**
+   * @return {?Network.NetworkNode._ProductEntryInfo}
+   */
+  _innerProductEntry() {
+    if (this._productInfoEntryCache !== undefined)
+      return this._productInfoEntryCache;
     var productRegistry = this._grouper._productRegistry;
     if (!productRegistry)
       return null;
-    this._productEntryCache = productRegistry.entryForFrame(this._frame);
-    return this._productEntryCache;
+    this._productInfoEntryCache = Network.NetworkNode.productEntryInfoForFrame(productRegistry, this._frame);
+    return this._productInfoEntryCache;
   }
 };

@@ -30,13 +30,7 @@ ProductRegistry.Registry.prototype = {
    * @param {!Common.ParsedURL} parsedUrl
    * @return {?number}
    */
-  typeForUrl: function(parsedUrl) {},
-
-  /**
-   * @param {!SDK.ResourceTreeFrame} frame
-   * @return {?ProductRegistry.Registry.ProductEntry}
-   */
-  entryForFrame: function(frame) {}
+  typeForUrl: function(parsedUrl) {}
 };
 
 /** @typedef {!{name: string, type: ?number}} */

@@ -46,6 +46,27 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
   }
 
   /**
+   * @param {!Network.NetworkNode._ProductEntryInfo} entryInfo
+   */
+  static buildReportLinkElement(entryInfo) {
+    var shadowRoot = UI.createShadowRootWithCoreStyles(createElement('div'), 'network/networkReportProductEntry.css');
+    var content = shadowRoot.createChild('div', 'network-product-popover');
+
+    var domainElement = content.createChild('div', 'network-product-domain');
+    domainElement.textContent = entryInfo.matchedURL.domain();
+
+    var entryNameElement = content.createChild('div', 'network-product-entry-name');
+    entryNameElement.textContent = entryInfo.entry.name;
+
+    var matchedURL = entryInfo.matchedURL;
+    var reportLink =
+        'https://docs.google.com/forms/d/e/1FAIpQLSchz2FdcQ-rRllzl8BbhWaTRRY-12BpPjW6Hr9e1-BpCA083w/viewform' +
+        '?entry_1425918171=' + encodeURIComponent((matchedURL.domain() + matchedURL.path).substr(0, 100));
+    content.appendChild(UI.createExternalLink(reportLink, 'Report mismatch', 'network-report-product-link'));
+    return shadowRoot;
+  }
+
+  /**
    * @return {!Network.NetworkNode._SupportedBackgroundColors}
    */
   static _themedBackgroundColors() {
@@ -59,6 +80,50 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
     Network.NetworkNode._themedBackgroundColorsCache =
         /** @type {!Network.NetworkNode._SupportedBackgroundColors} */ (themedColors);
     return Network.NetworkNode._themedBackgroundColorsCache;
+  }
+
+  /**
+   * @param {!ProductRegistry.Registry} productRegistry
+   * @param {!SDK.ResourceTreeFrame} frame
+   * @return {?Network.NetworkNode._ProductEntryInfo}
+   */
+  static productEntryInfoForFrame(productRegistry, frame) {
+    var parsedURL = new Common.ParsedURL(frame.url);
+    var entry = productRegistry.entryForUrl(parsedURL);
+    if (entry)
+      return {entry: entry, matchedURL: parsedURL};
+    frame.findCreationCallFrame(callFrame => {
+      if (!callFrame.url)
+        return false;
+      parsedURL = new Common.ParsedURL(callFrame.url);
+      entry = productRegistry.entryForUrl(parsedURL);
+      return !!entry;
+    });
+    if (!entry)
+      return null;
+    return {entry: entry, matchedURL: parsedURL};
+  }
+
+  /**
+   * @protected
+   * @return {!Promise<?Network.NetworkNode._ProductEntryInfo>}
+   */
+  productEntry() {
+    return Promise.resolve(/** @type {?Network.NetworkNode._ProductEntryInfo} */ (null));
+  }
+
+  /**
+   * @param {!UI.PopoverRequest} popover
+   * @return {!Promise<boolean>}
+   */
+  handleProductPopover(popover) {
+    return this.productEntry().then(entryInfo => {
+      if (!entryInfo)
+        return false;
+      popover.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PreferBottom);
+      popover.contentElement.appendChild(Network.NetworkNode.buildReportLinkElement(entryInfo));
+      return true;
+    });
   }
 
   /**
@@ -279,6 +344,9 @@ Network.NetworkNode._SupportedBackgroundColors;
 
 /** @type {!Network.NetworkNode._SupportedBackgroundColors} */
 Network.NetworkNode._themedBackgroundColorsCache;
+
+/** @typedef {!{entry: !ProductRegistry.Registry.ProductEntry, matchedURL: !Common.ParsedURL}} */
+Network.NetworkNode._ProductEntryInfo;
 
 /**
  * @unrestricted
@@ -714,9 +782,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     if (!Runtime.experiments.isEnabled('networkGroupingRequests'))
       return;
     ProductRegistry.instance().then(productRegistry => {
-      var frame = SDK.ResourceTreeModel.frameForRequest(this._request);
-      if (frame && frame.isMainFrame())
-        frame = null;
       if (productRegistry.entryForUrl(this._request.parsedURL)) {
         this._isProduct = true;
         this._updateBackgroundColor();
@@ -748,7 +813,10 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
           this._setTextAndTitle(cell, this._request.responseHeaderValue(columnId) || '');
           break;
         }
-        ProductRegistry.instance().then(this._renderProductCell.bind(this, cell));
+        this.productEntry().then(entryInfo => {
+          if (entryInfo)
+            cell.textContent = entryInfo.entry.name;
+        });
         break;
       case 'method':
         this._setTextAndTitle(cell, this._request.requestMethod);
@@ -896,23 +964,21 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   }
 
   /**
-   * @param {!Element} cell
-   * @param {!ProductRegistry.Registry} productRegistry
+   * @override
+   * @return {!Promise<?Network.NetworkNode._ProductEntryInfo>}
    */
-  _renderProductCell(cell, productRegistry) {
-    var rowElement = this.existingElement();
-    if (!rowElement)
-      return;
-    var frame = SDK.ResourceTreeModel.frameForRequest(this._request);
-    if (frame && frame.isMainFrame())
-      frame = null;
-    var entry = frame ? productRegistry.entryForFrame(frame) : null;
-    if (!entry)
+  productEntry() {
+    return ProductRegistry.instance().then(productRegistry => {
+      var frame = SDK.ResourceTreeModel.frameForRequest(this._request);
+      var entry = /** @type {?ProductRegistry.Registry.ProductEntry} */ (null);
+      if (frame && frame.isMainFrame())
+        frame = null;
+      var entryInfo = frame ? Network.NetworkNode.productEntryInfoForFrame(productRegistry, frame) : null;
+      if (entryInfo)
+        return entryInfo;
       entry = productRegistry.entryForUrl(this._request.parsedURL);
-    if (!entry)
-      return;
-    cell.textContent = entry.name;
-    cell.title = entry.name;
+      return entry ? {entry: entry, matchedURL: this._request.parsedURL} : null;
+    });
   }
 
   /**

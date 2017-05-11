@@ -581,6 +581,13 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   /**
+   * @return {?Network.NetworkNode}
+   */
+  hoveredNode() {
+    return this._hoveredNode;
+  }
+
+  /**
    * @param {?Network.NetworkNode} node
    * @param {boolean=} highlightInitiatorChain
    */

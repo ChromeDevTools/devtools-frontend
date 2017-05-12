@@ -645,11 +645,61 @@ SDK.CSSMetadata._propertyDataMap = {
   'box-sizing': {values: ['content-box', 'border-box']},
   'clip': {values: ['auto']},
   'resize': {values: ['none', 'both', 'horizontal', 'vertical']},
-  'align-content': {values: ['flex-start', 'flex-end', 'center', 'space-between', 'space-around', 'stretch']},
-  'align-items': {values: ['flex-start', 'flex-end', 'center', 'baseline', 'stretch']},
-  'align-self': {values: ['auto', 'flex-start', 'flex-end', 'center', 'baseline', 'stretch']},
+  'align-content': {
+    values: [
+      'normal', 'baseline', 'space-between', 'space-around', 'space-evenly', 'stretch', 'unsafe', 'safe', 'center',
+      'start', 'end', 'flex-start', 'flex-end', 'left', 'right'
+    ]
+  },
+  'justify-content': {
+    values: [
+      'normal', 'space-between', 'space-around', 'space-evenly', 'stretch', 'unsafe', 'safe', 'center', 'start', 'end',
+      'flex-start', 'flex-end', 'left', 'right'
+    ]
+  },
+  'place-content': {
+    values: [
+      'normal', 'space-between', 'space-around', 'space-evenly', 'stretch', 'unsafe', 'safe', 'center', 'start', 'end',
+      'flex-start', 'flex-end', 'left', 'right'
+    ]
+  },
+  'align-items': {
+    values: [
+      'normal', 'stretch', 'basline', 'unsafe', 'safe', 'center', 'start', 'end', 'self-start', 'self-end',
+      'flex-start', 'flex-end', 'left', 'right'
+    ]
+  },
+  'justify-items': {
+    values: [
+      'normal', 'stretch', 'basline', 'unsafe', 'safe', 'center', 'start', 'end', 'self-start', 'self-end',
+      'flex-start', 'flex-end', 'left', 'right', 'legacy'
+    ]
+  },
+  'place-items': {
+    values: [
+      'auto', 'normal', 'stretch', 'basline', 'unsafe', 'safe', 'center', 'start', 'end', 'self-start', 'self-end',
+      'flex-start', 'flex-end', 'left', 'right'
+    ]
+  },
+  'align-self': {
+    values: [
+      'auto', 'normal', 'stretch', 'basline', 'unsafe', 'safe', 'center', 'start', 'end', 'self-start', 'self-end',
+      'flex-start', 'flex-end', 'left', 'right'
+    ]
+  },
+  'justify-self': {
+    values: [
+      'auto', 'normal', 'stretch', 'basline', 'unsafe', 'safe', 'center', 'start', 'end', 'self-start', 'self-end',
+      'flex-start', 'flex-end', 'left', 'right'
+    ]
+  },
+  'place-self': {
+    values: [
+      'auto', 'normal', 'stretch', 'basline', 'unsafe', 'safe', 'center', 'start', 'end', 'self-start', 'self-end',
+      'flex-start', 'flex-end', 'left', 'right'
+    ]
+  },
   'flex-direction': {values: ['row', 'row-reverse', 'column', 'column-reverse']},
-  'justify-content': {values: ['flex-start', 'flex-end', 'center', 'space-between', 'space-around']},
   'flex-wrap': {values: ['nowrap', 'wrap', 'wrap-reverse']},
   'perspective': {values: ['none']},
   'perspective-origin': {values: ['left', 'center', 'right', 'top', 'bottom']},

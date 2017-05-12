@@ -515,6 +515,11 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       if (!this._continueToLocationDecorations)
         this._showContinueToLocations();
     }
+    if (this._continueToLocationDecorations) {
+      this.textEditor.element.classList.toggle(
+          'source-frame-async-step-in-hovered',
+          !!event.target.enclosingNodeOrSelfWithClass('source-frame-async-step-in'));
+    }
   }
 
   /**
@@ -915,6 +920,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
       for (var decoration of this._continueToLocationDecorations.keys())
         this.textEditor.removeHighlight(decoration);
       this._continueToLocationDecorations = null;
+      this.textEditor.element.classList.remove('source-frame-async-step-in-hovered');
     });
   }
 

@@ -674,7 +674,21 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
     var categories = Timeline.TimelineUIUtils.categories();
     var color = node.id ? Timeline.TimelineUIUtils.eventColor(/** @type {!SDK.TracingModel.Event} */ (node.event)) :
                           categories['other'].color;
-
+    var unattributed = Common.UIString('[unattributed]');
+    /**
+     * @param {string} name
+     * @return {string}
+     * @this {Timeline.AggregatedTimelineTreeView}
+     */
+    function beautifyDomainName(name) {
+      if (Timeline.AggregatedTimelineTreeView._isExtensionInternalURL(name))
+        name = Common.UIString('[Chrome extensions overhead]');
+      else if (Timeline.AggregatedTimelineTreeView._isV8NativeURL(name))
+        name = Common.UIString('[V8 Runtime]');
+      else if (name.startsWith('chrome-extension'))
+        name = this._executionContextNamesByOrigin.get(name) || name;
+      return name;
+    }
     switch (this._groupBySetting.get()) {
       case Timeline.AggregatedTimelineTreeView.GroupBy.Category:
         var category = categories[node.id] || categories['other'];
@@ -682,14 +696,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
 
       case Timeline.AggregatedTimelineTreeView.GroupBy.Domain:
       case Timeline.AggregatedTimelineTreeView.GroupBy.Subdomain:
-        var name = node.id;
-        if (Timeline.AggregatedTimelineTreeView._isExtensionInternalURL(name))
-          name = Common.UIString('[Chrome extensions overhead]');
-        else if (Timeline.AggregatedTimelineTreeView._isV8NativeURL(name))
-          name = Common.UIString('[V8 Runtime]');
-        else if (name.startsWith('chrome-extension'))
-          name = this._executionContextNamesByOrigin.get(name) || name;
-        return {name: name || Common.UIString('unattributed'), color: color};
+        return {name: beautifyDomainName.call(this, node.id) || unattributed, color: color};
 
       case Timeline.AggregatedTimelineTreeView.GroupBy.EventName:
         var name = node.event.name === TimelineModel.TimelineModel.RecordType.JSFrame ?
@@ -703,8 +710,10 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
         };
 
       case Timeline.AggregatedTimelineTreeView.GroupBy.Product:
-        var name = node.event ? this._productByEvent(node.event) : '';
-        return {name: name || Common.UIString('unattributed'), color: Timeline.TimelineUIUtils.colorForId(name)};
+        var productName = this._productByEvent(/** @type {!SDK.TracingModel.Event} */ (node.event));
+        color = productName ? Timeline.TimelineUIUtils.colorForId(productName) : '#eee';
+        var name = productName || this._domainByEvent(true, /** @type {!SDK.TracingModel.Event} */ (node.event)) || '';
+        return {name: beautifyDomainName.call(this, name) || unattributed, color: color};
 
       case Timeline.AggregatedTimelineTreeView.GroupBy.URL:
         break;
@@ -717,7 +726,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
       default:
         console.assert(false, 'Unexpected aggregation type');
     }
-    return {name: node.id || Common.UIString('unattributed'), color: color};
+    return {name: node.id || unattributed, color: color};
   }
 
   /**
@@ -794,54 +803,23 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
    * @return {?function(!SDK.TracingModel.Event):string}
    */
   _groupingFunction(groupBy) {
-    /**
-     * @param {!SDK.TracingModel.Event} event
-     * @return {string}
-     */
-    function groupByURL(event) {
-      return TimelineModel.TimelineProfileTree.eventURL(event) || '';
-    }
-
-    /**
-     * @param {boolean} groupSubdomains
-     * @param {!SDK.TracingModel.Event} event
-     * @return {string}
-     */
-    function groupByDomain(groupSubdomains, event) {
-      var url = TimelineModel.TimelineProfileTree.eventURL(event) || '';
-      if (Timeline.AggregatedTimelineTreeView._isExtensionInternalURL(url))
-        return Timeline.AggregatedTimelineTreeView._extensionInternalPrefix;
-      if (Timeline.AggregatedTimelineTreeView._isV8NativeURL(url))
-        return Timeline.AggregatedTimelineTreeView._v8NativePrefix;
-      var parsedURL = url.asParsedURL();
-      if (!parsedURL)
-        return '';
-      if (parsedURL.scheme === 'chrome-extension')
-        return parsedURL.scheme + '://' + parsedURL.host;
-      if (!groupSubdomains)
-        return parsedURL.host;
-      if (/^[.0-9]+$/.test(parsedURL.host))
-        return parsedURL.host;
-      var domainMatch = /([^.]*\.)?[^.]*$/.exec(parsedURL.host);
-      return domainMatch && domainMatch[0] || '';
-    }
-
+    var GroupBy = Timeline.AggregatedTimelineTreeView.GroupBy;
     switch (groupBy) {
-      case Timeline.AggregatedTimelineTreeView.GroupBy.None:
+      case GroupBy.None:
         return null;
-      case Timeline.AggregatedTimelineTreeView.GroupBy.EventName:
+      case GroupBy.EventName:
         return event => Timeline.TimelineUIUtils.eventStyle(event).title;
-      case Timeline.AggregatedTimelineTreeView.GroupBy.Category:
+      case GroupBy.Category:
         return event => Timeline.TimelineUIUtils.eventStyle(event).category.name;
-      case Timeline.AggregatedTimelineTreeView.GroupBy.Subdomain:
-        return groupByDomain.bind(null, false);
-      case Timeline.AggregatedTimelineTreeView.GroupBy.Domain:
-        return groupByDomain.bind(null, true);
-      case Timeline.AggregatedTimelineTreeView.GroupBy.Product:
-        return this._productByEvent.bind(this);
-      case Timeline.AggregatedTimelineTreeView.GroupBy.URL:
-        return groupByURL;
-      case Timeline.AggregatedTimelineTreeView.GroupBy.Frame:
+      case GroupBy.Subdomain:
+        return this._domainByEvent.bind(this, false);
+      case GroupBy.Domain:
+        return this._domainByEvent.bind(this, true);
+      case GroupBy.Product:
+        return event => this._productByEvent(event) || this._domainByEvent(true, event);
+      case GroupBy.URL:
+        return event => TimelineModel.TimelineProfileTree.eventURL(event) || '';
+      case GroupBy.Frame:
         return event => TimelineModel.TimelineData.forEvent(event).frameId;
       default:
         console.assert(false, `Unexpected aggregation setting: ${groupBy}`);
@@ -850,18 +828,43 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
   }
 
   /**
+   * @param {boolean} groupSubdomains
+   * @param {!SDK.TracingModel.Event} event
+   * @return {string}
+   */
+  _domainByEvent(groupSubdomains, event) {
+    var url = TimelineModel.TimelineProfileTree.eventURL(event) || '';
+    if (Timeline.AggregatedTimelineTreeView._isExtensionInternalURL(url))
+      return Timeline.AggregatedTimelineTreeView._extensionInternalPrefix;
+    if (Timeline.AggregatedTimelineTreeView._isV8NativeURL(url))
+      return Timeline.AggregatedTimelineTreeView._v8NativePrefix;
+    var parsedURL = url.asParsedURL();
+    if (!parsedURL)
+      return '';
+    if (parsedURL.scheme === 'chrome-extension')
+      return parsedURL.scheme + '://' + parsedURL.host;
+    if (!groupSubdomains)
+      return parsedURL.host;
+    if (/^[.0-9]+$/.test(parsedURL.host))
+      return parsedURL.host;
+    var domainMatch = /([^.]*\.)?[^.]*$/.exec(parsedURL.host);
+    return domainMatch && domainMatch[0] || '';
+  }
+
+  /**
    * @param {!SDK.TracingModel.Event} event
    * @return {string}
    */
   _productByEvent(event) {
+    var url = TimelineModel.TimelineProfileTree.eventURL(event);
+    if (!url)
+      return '';
+    if (this._productByURLCache.has(url))
+      return this._productByURLCache.get(url);
     if (!this._productRegistry)
       return '';
-    var url = TimelineModel.TimelineProfileTree.eventURL(event) || '';
-    var name = this._productByURLCache.get(url);
-    if (name)
-      return name;
     var parsedURL = url.asParsedURL();
-    name = parsedURL && this._productRegistry.nameForUrl(parsedURL) || '';
+    var name = parsedURL && this._productRegistry.nameForUrl(parsedURL) || '';
     this._productByURLCache.set(url, name);
     return name;
   }

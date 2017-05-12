@@ -13,6 +13,7 @@
     position: relative;
     white-space: nowrap;
     height: 26px;
+    contain: strict;
     overflow: hidden;
     z-index: 12;
     display: flex;
@@ -23,6 +24,7 @@
 .toolbar-shadow.wrappable {
     flex-wrap: wrap;
     overflow: visible;
+    contain: none;
 }
 
 .toolbar-shadow.wrappable-reverse {
@@ -36,6 +38,7 @@
 .toolbar-shadow.vertical {
     flex-direction: column;
     height: auto;
+    contain: none;
     align-items: flex-start;
 }
 
@@ -296,15 +299,10 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
 .toolbar-shadow.floating {
     flex-direction: column;
     height: auto;
+    contain: none;
     background-color: white;
     border: 1px solid #ccc;
     margin-top: -1px;
     width: 28px;
     left: -2px;
-}
-
-span.toolbar-select-container.toolbar-item.warning {
-    background: #ffd7d7;
-    padding: 0 5px 0 0;
-    margin-right: 1px;
 }

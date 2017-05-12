@@ -126,7 +126,8 @@
         "components",
         "data_grid",
         "object_ui",
-        "console_model"
+        "console_model",
+        "product_registry"
     ],
     "scripts": [
         "ConsoleContextSelector.js",
@@ -137,6 +138,8 @@
         "ConsolePanel.js"
     ],
     "resources": [
+        "consoleContextSelector.css",
+        "consoleContextSelectorButton.css",
         "consoleView.css"
     ]
 }

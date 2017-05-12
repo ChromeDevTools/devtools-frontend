@@ -124,6 +124,23 @@ UI.ListControl = class {
   }
 
   /**
+   * @param {T} item
+   * @param {function(T, T):number} comparator
+   */
+  insertItemWithComparator(item, comparator) {
+    var index = this._items.lowerBound(item, comparator);
+    this.insertItemAtIndex(index, item);
+  }
+
+  /**
+   * @param {T} item
+   * @return {number}
+   */
+  indexOfItem(item) {
+    return this._items.indexOf(item);
+  }
+
+  /**
    * @param {number} index
    * @return {T}
    */
@@ -138,8 +155,10 @@ UI.ListControl = class {
    */
   removeItem(item) {
     var index = this._items.indexOf(item);
-    if (index === -1)
-      throw 'Attempt to remove non-existing item';
+    if (index === -1) {
+      console.error('Attempt to remove non-existing item');
+      return;
+    }
     this.removeItemAtIndex(index);
   }
 
@@ -181,6 +200,22 @@ UI.ListControl = class {
     this.replaceItemsInRange(0, this._items.length, items);
   }
 
+  refreshAllItems() {
+    this.refreshItemsInRange(0, this._items.length);
+  }
+
+  /**
+   * @param {number} from
+   * @param {number} to
+   */
+  refreshItemsInRange(from, to) {
+    for (var i = from; i < to; i++)
+      this._itemToElement.delete(this._items[i]);
+    this.invalidateRange(from, to);
+    if (this._selectedIndex !== -1)
+      this._select(this._selectedIndex, null, null);
+  }
+
   /**
    * @param {number} from
    * @param {number} to
@@ -200,8 +235,10 @@ UI.ListControl = class {
   }
 
   invalidateItemHeight() {
-    if (this._mode !== UI.ListMode.EqualHeightItems)
-      throw 'Only supported in equal height items mode';
+    if (this._mode !== UI.ListMode.EqualHeightItems) {
+      console.error('Only supported in equal height items mode');
+      return;
+    }
     this._fixedHeight = 0;
     if (this._items.length) {
       this._itemToElement.clear();
@@ -229,8 +266,10 @@ UI.ListControl = class {
    */
   scrollItemIntoView(item, center) {
     var index = this._items.indexOf(item);
-    if (index === -1)
-      throw 'Attempt to scroll onto missing item';
+    if (index === -1) {
+      console.error('Attempt to scroll onto missing item');
+      return;
+    }
     this._scrollIntoView(index, center);
   }
 
@@ -242,21 +281,33 @@ UI.ListControl = class {
   }
 
   /**
+   * @return {number}
+   */
+  selectedIndex() {
+    return this._selectedIndex;
+  }
+
+  /**
    * @param {?T} item
    * @param {boolean=} center
+   * @param {boolean=} dontScroll
    */
-  selectItem(item, center) {
+  selectItem(item, center, dontScroll) {
     var index = -1;
     if (item !== null) {
       index = this._items.indexOf(item);
-      if (index === -1)
-        throw 'Attempt to select missing item';
-      if (!this._delegate.isItemSelectable(item))
-        throw 'Attempt to select non-selectable item';
+      if (index === -1) {
+        console.error('Attempt to select missing item');
+        return;
+      }
+      if (!this._delegate.isItemSelectable(item)) {
+        console.error('Attempt to select non-selectable item');
+        return;
+      }
     }
     if (this._selectedIndex !== index)
       this._select(index);
-    if (index !== -1)
+    if (index !== -1 && !dontScroll)
       this._scrollIntoView(index, center);
   }
 
@@ -595,8 +646,10 @@ UI.ListControl = class {
   }
 
   _clearViewport() {
-    if (this._mode === UI.ListMode.NonViewport)
-      throw 'There should be no viewport updates in non-viewport mode';
+    if (this._mode === UI.ListMode.NonViewport) {
+      console.error('There should be no viewport updates in non-viewport mode');
+      return;
+    }
     this._firstIndex = 0;
     this._lastIndex = 0;
     this._renderedHeight = 0;
@@ -620,9 +673,10 @@ UI.ListControl = class {
    */
   _updateViewport(scrollTop, viewportHeight) {
     // Note: this method should not force layout. Be careful.
-    if (this._mode === UI.ListMode.NonViewport)
-      throw 'There should be no viewport updates in non-viewport mode';
-
+    if (this._mode === UI.ListMode.NonViewport) {
+      console.error('There should be no viewport updates in non-viewport mode');
+      return;
+    }
     var totalHeight = this._totalHeight();
     if (!totalHeight) {
       this._firstIndex = 0;

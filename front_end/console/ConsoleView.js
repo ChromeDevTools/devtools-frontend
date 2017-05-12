@@ -55,9 +55,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._regexMatchRanges = [];
     this._filter = new Console.ConsoleViewFilter(this._updateMessageList.bind(this));
 
-    this._executionContextComboBox = new UI.ToolbarComboBox(null, 'console-context');
-    this._executionContextComboBox.setMaxWidth(80);
-    this._consoleContextSelector = new Console.ConsoleContextSelector(this._executionContextComboBox.selectElement());
+    this._consoleContextSelector = new Console.ConsoleContextSelector();
 
     this._filterStatusText = new UI.ToolbarText();
     this._filterStatusText.element.classList.add('dimmed');
@@ -70,7 +68,7 @@ Console.ConsoleView = class extends UI.VBox {
     toolbar.appendToolbarItem(UI.Toolbar.createActionButton(
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('console.clear'))));
     toolbar.appendSeparator();
-    toolbar.appendToolbarItem(this._executionContextComboBox);
+    toolbar.appendToolbarItem(this._consoleContextSelector.toolbarItem());
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._filter._textFilterUI);
     toolbar.appendToolbarItem(this._filter._levelComboBox);

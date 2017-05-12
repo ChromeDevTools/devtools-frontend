@@ -847,10 +847,10 @@
 
     function onExecutionContexts() {
       var consoleView = Console.ConsoleView.instance();
-      var options = consoleView._consoleContextSelector._selectElement.options;
+      var items = consoleView._consoleContextSelector._list._items;
       var values = [];
-      for (var i = 0; i < options.length; ++i)
-        values.push(options[i].value.trim());
+      for (var i = 0; i < items.length; ++i)
+        values.push(consoleView._consoleContextSelector._titleFor(items[i]));
       test.assertEquals('top', values[0]);
       test.assertEquals('Simple content script', values[1]);
       test.releaseControl();

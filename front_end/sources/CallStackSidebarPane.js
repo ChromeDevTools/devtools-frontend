@@ -296,8 +296,8 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     if (!location)
       return;
     if (item.debuggerCallFrame && UI.context.flavor(SDK.DebuggerModel.CallFrame) !== item.debuggerCallFrame) {
-      UI.context.setFlavor(SDK.DebuggerModel.CallFrame, item.debuggerCallFrame);
       this._debuggerModel.setSelectedCallFrame(item.debuggerCallFrame);
+      UI.context.setFlavor(SDK.DebuggerModel.CallFrame, item.debuggerCallFrame);
     } else {
       Common.Revealer.reveal(Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location));
     }

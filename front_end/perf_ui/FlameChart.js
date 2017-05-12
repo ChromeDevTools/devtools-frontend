@@ -1120,7 +1120,8 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
           currentOffset += style.height;
       }
       var isFirstOnLevel = groupIndex >= 0 && level === groups[groupIndex].startLevel;
-      var thisLevelIsVisible = visible || isFirstOnLevel && groups[groupIndex].style.useFirstLineForOverview;
+      var thisLevelIsVisible =
+          parentGroupIsVisible && (visible || isFirstOnLevel && groups[groupIndex].style.useFirstLineForOverview);
       if (level < levelCount) {
         var height;
         if (groupIndex >= 0) {

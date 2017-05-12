@@ -502,16 +502,6 @@ Timeline.FlameChartStyle = {
 };
 
 /**
- * @enum {symbol}
- */
-Timeline.TimelineFlameChartEntryType = {
-  Frame: Symbol('Frame'),
-  Event: Symbol('Event'),
-  InteractionRecord: Symbol('InteractionRecord'),
-  ExtensionEvent: Symbol('ExtensionEvent')
-};
-
-/**
  * @implements {PerfUI.FlameChartMarker}
  * @unrestricted
  */

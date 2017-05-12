@@ -86,21 +86,6 @@ UI.SettingsUI.createCustomSetting = function(name, element) {
 };
 
 /**
- * @param {!Common.Setting} setting
- * @return {!Element}
- */
-UI.SettingsUI.createSettingFieldset = function(setting) {
-  var fieldset = createElement('fieldset');
-  fieldset.disabled = !setting.get();
-  setting.addChangeListener(settingChanged);
-  return fieldset;
-
-  function settingChanged() {
-    fieldset.disabled = !setting.get();
-  }
-};
-
-/**
  * @interface
  */
 UI.SettingUI = function() {};

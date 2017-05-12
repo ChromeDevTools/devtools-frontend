@@ -33,12 +33,13 @@ Coverage.CoverageView = class extends UI.VBox {
     topToolbar.appendToolbarItem(this._clearButton);
 
     this._coverageResultsElement = this.contentElement.createChild('div', 'coverage-results');
-    this._progressElement = this._coverageResultsElement.createChild('div', 'progress-view');
+    this._landingPage = this._buildLandingPage();
+
     this._listView = new Coverage.CoverageListView();
 
     this._statusToolbarElement = this.contentElement.createChild('div', 'coverage-toolbar-summary');
     this._statusMessageElement = this._statusToolbarElement.createChild('div', 'coverage-message');
-    this._showHelpScreen();
+    this._landingPage.show(this._coverageResultsElement);
   }
 
   _reset() {
@@ -48,24 +49,25 @@ Coverage.CoverageView = class extends UI.VBox {
     }
     this._listView.reset();
     this._listView.detach();
-    this._coverageResultsElement.removeChildren();
-    this._showHelpScreen();
-
+    this._landingPage.show(this._coverageResultsElement);
     this._statusMessageElement.textContent = '';
   }
 
-  _showHelpScreen() {
-    this._coverageResultsElement.appendChild(this._progressElement);
-    this._progressElement.removeChildren();
-
-    var recordButton = UI.Toolbar.createActionButton(this._toggleRecordAction).element;
-    var reloadButton = UI.Toolbar.createActionButtonForId('coverage.start-with-reload').element;
-
-    this._progressElement.createChild('p', 'landing-page')
-        .appendChild(UI.formatLocalized(
-            'Click the record button %s to start capturing coverage.\n' +
-                'Click the reload button %s to reload and start capturing coverage.',
-            [recordButton, reloadButton]));
+  /**
+   * @return {!UI.VBox}
+   */
+  _buildLandingPage() {
+    var recordButton = UI.createInlineButton(UI.Toolbar.createActionButton(this._toggleRecordAction));
+    var reloadButton = UI.createInlineButton(UI.Toolbar.createActionButtonForId('coverage.start-with-reload'));
+    var widget = new UI.VBox();
+    var message = UI.formatLocalized(
+        'Click the record button %s to start capturing coverage.\n' +
+            'Click the reload button %s to reload and start capturing coverage.',
+        [recordButton, reloadButton]);
+    message.classList.add('message');
+    widget.contentElement.appendChild(message);
+    widget.element.classList.add('landing-page');
+    return widget;
   }
 
   _toggleRecording() {
@@ -102,7 +104,8 @@ Coverage.CoverageView = class extends UI.VBox {
     this._toggleRecordAction.setToggled(true);
     this._clearButton.setEnabled(false);
     this._startWithReloadButton.setEnabled(false);
-    this._coverageResultsElement.removeChildren();
+    if (this._landingPage.isShowing())
+      this._landingPage.detach();
     this._listView.show(this._coverageResultsElement);
     this._poll();
   }

@@ -659,6 +659,7 @@ all_devtools_files = [
   "front_end/ui/Icon.js",
   "front_end/ui/infobar.css",
   "front_end/ui/Infobar.js",
+  "front_end/ui/inlineButton.css",
   "front_end/ui/InplaceEditor.js",
   "front_end/ui/inspectorCommon.css",
   "front_end/ui/inspectorStyle.css",

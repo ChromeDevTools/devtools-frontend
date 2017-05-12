@@ -41,34 +41,12 @@
     flex: auto;
 }
 
-.progress-view {
-    display: flex;
+.landing-page {
     justify-content: center;
-    align-items: center;
-    font-size: 30px;
+    align-items:  center;
+    padding: 20px;
 }
 
-.progress-view .landing-page {
-    flex: none;
-    overflow: auto;
-    font-size: 13px;
-    line-height: 15px;
-    color: #777;
+.landing-page .message {
     white-space: pre-line;
-}
-
-.progress-view .landing-page button {
-    padding: 0;
-    vertical-align: sub;
-    border: 1px solid #ddd;
-    margin-top: 4px;
-    background-color: #f3f3f3;
-}
-
-.progress-view .landing-page button  > span {
-    margin: -1px 2px -3px -2px;
-}
-
-.coverage-results > div {
-    flex: auto;
 }

@@ -666,8 +666,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._landingPage.contentElement.classList.add('timeline-landing-page', 'fill');
     var centered = this._landingPage.contentElement.createChild('div');
 
-    var recordButton = UI.Toolbar.createActionButton(this._toggleRecordAction).element;
-    var reloadButton = UI.Toolbar.createActionButtonForId('main.reload').element;
+    var recordButton = UI.createInlineButton(UI.Toolbar.createActionButton(this._toggleRecordAction));
+    var reloadButton = UI.createInlineButton(UI.Toolbar.createActionButtonForId('main.reload'));
 
     centered.createChild('p').appendChild(UI.formatLocalized(
         'Click the record button %s or hit %s to capture a new recording.\n' +

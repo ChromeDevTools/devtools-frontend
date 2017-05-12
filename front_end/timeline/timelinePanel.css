@@ -639,22 +639,6 @@
     white-space: pre-line;
 }
 
-.timeline-landing-page button {
-    padding: 0;
-    vertical-align: sub;
-    border: 1px solid #ddd;
-    margin-top: 4px;
-    background-color: #f3f3f3;
-}
-
-.timeline-landing-page button > span {
-    margin: -1px 2px -3px -2px;
-}
-
-.timeline-landing-page button > span:hover {
-    background-color: #333;
-}
-
 .timeline-landing-warning {
     background-color: #fffde7;
     padding: 16px 20px;

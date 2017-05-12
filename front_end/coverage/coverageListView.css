@@ -51,3 +51,7 @@
   width: 45px;
   display: inline-block;
 }
+
+.data-grid:focus tr.selected span.percent-value {
+  color: #eee;
+}

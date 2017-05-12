@@ -139,7 +139,7 @@ Coverage.CoverageListView = class extends UI.VBox {
       var nodeA = /** @type {!Coverage.CoverageListView.GridNode} */ (a);
       var nodeB = /** @type {!Coverage.CoverageListView.GridNode} */ (b);
 
-      return nodeA._displayURL.localeCompare(nodeB._displayURL);
+      return nodeA._url.localeCompare(nodeB._url);
     }
 
     /**
@@ -193,7 +193,6 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
     /** @type {number|undefined} */
     this._lastUsedSize;
     this._url = coverageInfo.url();
-    this._displayURL = new Common.ParsedURL(this._url).displayName;
     this._maxSize = maxSize;
   }
 

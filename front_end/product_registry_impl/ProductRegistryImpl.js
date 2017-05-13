@@ -27,7 +27,7 @@ ProductRegistryImpl.Registry = class {
    * @return {?ProductRegistry.Registry.ProductEntry}
    */
   entryForUrl(parsedUrl) {
-    if (parsedUrl.isDataURL() || !parsedUrl.isValid)
+    if (parsedUrl.isDataURL())
       return null;
     // TODO(allada) This should be expanded to allow paths as as well as domain to find a product.
     var productsByDomainHash = ProductRegistryImpl._productsByDomainHash;

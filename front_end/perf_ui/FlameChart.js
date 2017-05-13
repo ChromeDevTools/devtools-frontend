@@ -1494,6 +1494,73 @@ PerfUI.FlameChart.Events = {
 };
 
 /**
+ * @unrestricted
+ */
+PerfUI.FlameChart.ColorGenerator = class {
+  /**
+   * @param {!{min: number, max: number}|number=} hueSpace
+   * @param {!{min: number, max: number, count: (number|undefined)}|number=} satSpace
+   * @param {!{min: number, max: number, count: (number|undefined)}|number=} lightnessSpace
+   * @param {!{min: number, max: number, count: (number|undefined)}|number=} alphaSpace
+   */
+  constructor(hueSpace, satSpace, lightnessSpace, alphaSpace) {
+    this._hueSpace = hueSpace || {min: 0, max: 360};
+    this._satSpace = satSpace || 67;
+    this._lightnessSpace = lightnessSpace || 80;
+    this._alphaSpace = alphaSpace || 1;
+    /** @type {!Map<string, string>} */
+    this._colors = new Map();
+  }
+
+  /**
+   * @param {string} id
+   * @param {string} color
+   */
+  setColorForID(id, color) {
+    this._colors.set(id, color);
+  }
+
+  /**
+   * @param {string} id
+   * @return {string}
+   */
+  colorForID(id) {
+    var color = this._colors.get(id);
+    if (!color) {
+      color = this._generateColorForID(id);
+      this._colors.set(id, color);
+    }
+    return color;
+  }
+
+  /**
+   * @param {string} id
+   * @return {string}
+   */
+  _generateColorForID(id) {
+    var hash = String.hashCode(id);
+    var h = this._indexToValueInSpace(hash, this._hueSpace);
+    var s = this._indexToValueInSpace(hash >> 8, this._satSpace);
+    var l = this._indexToValueInSpace(hash >> 16, this._lightnessSpace);
+    var a = this._indexToValueInSpace(hash >> 24, this._alphaSpace);
+    return `hsla(${h}, ${s}%, ${l}%, ${a})`;
+  }
+
+  /**
+   * @param {number} index
+   * @param {!{min: number, max: number, count: (number|undefined)}|number} space
+   * @return {number}
+   */
+  _indexToValueInSpace(index, space) {
+    if (typeof space === 'number')
+      return space;
+    var count = space.count || space.max - space.min;
+    index %= count;
+    return space.min + Math.floor(index / (count - 1) * (space.max - space.min));
+  }
+};
+
+/**
  * @implements {PerfUI.TimelineGrid.Calculator}
  * @unrestricted
  */

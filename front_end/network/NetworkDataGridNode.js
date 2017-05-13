@@ -361,9 +361,9 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     /** @type {?Element} */
     this._nameCell = null;
     /** @type {?Element} */
-    this._nameBadgeElement = null;
-    /** @type {?Element} */
     this._initiatorCell = null;
+    /** @type {?Element} */
+    this._linkifiedInitiatorAnchor = null;
     this._request = request;
     this._isNavigationRequest = false;
     this.selectable = true;
@@ -933,9 +933,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     iconElement.classList.add(this._request.resourceType().name());
 
     cell.appendChild(iconElement);
-    if (!this._nameBadgeElement)
-      this._nameBadgeElement = this.parentView().badgePool.badgeForURL(this._request.parsedURL);
-    cell.appendChild(this._nameBadgeElement);
     cell.createTextChild(this._request.networkManager().target().decorateLabel(this._request.name()));
     this._appendSubtitle(cell, this._request.path());
     cell.title = this._request.url();

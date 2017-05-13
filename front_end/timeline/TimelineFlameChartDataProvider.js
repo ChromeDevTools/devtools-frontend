@@ -51,9 +51,9 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     this._model = null;
 
     this._consoleColorGenerator =
-        new Common.Color.Generator({min: 30, max: 55}, {min: 70, max: 100, count: 6}, 50, 0.7);
+        new PerfUI.FlameChart.ColorGenerator({min: 30, max: 55}, {min: 70, max: 100, count: 6}, 50, 0.7);
     this._extensionColorGenerator =
-        new Common.Color.Generator({min: 210, max: 300}, {min: 70, max: 100, count: 6}, 70, 0.7);
+        new PerfUI.FlameChart.ColorGenerator({min: 210, max: 300}, {min: 70, max: 100, count: 6}, 70, 0.7);
 
     /**
      * @param {!Object} extra

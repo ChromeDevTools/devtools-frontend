@@ -64,23 +64,26 @@
 
 .CodeMirror .source-frame-async-step-in {
     outline: 0;
-    background-color: hsl(100, 46%, 77%);
+    background-color: hsla(100, 46%, 80%, 1);
     cursor: pointer;
-}
-
-.CodeMirror :not(.source-frame-async-step-in) + .source-frame-async-step-in:before {
-    -webkit-user-select: none;
-    background-image: -webkit-image-set(url(Images/smallIcons.png) 1x, url(Images/smallIcons_2x.png) 2x);
-    background-position: 1px 51px;
-    content: "aa";
-    color: transparent;
-    text-shadow: none;
-    height: 10px;
-    width: 10px;
+    border: 1px solid transparent;
+    border-left-width: 0;
+    border-right-width: 0;
 }
 
 .source-frame-async-step-in-hovered .source-frame-async-step-in {
-    background-color: hsl(100, 79%, 77%);
+    background-color: hsl(96, 53%, 65%);
+    border-color: rgb(100, 154, 100);
+}
+
+.source-frame-async-step-in-hovered .source-frame-async-step-in-start {
+    border-left-width: 1px;
+    margin-left: -1px;
+}
+
+.source-frame-async-step-in-hovered .source-frame-async-step-in-end {
+    border-right-width: 1px;
+    margin-right: -1px;
 }
 
 .CodeMirror-readonly .CodeMirror-cursor {

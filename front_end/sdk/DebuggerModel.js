@@ -465,6 +465,14 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
   _pausedScript(callFrames, reason, auxData, breakpointIds, asyncStackTrace) {
     var pausedDetails =
         new SDK.DebuggerPausedDetails(this, callFrames, reason, auxData, breakpointIds, asyncStackTrace);
+
+    if (pausedDetails && this._continueToLocationCallback) {
+      var callback = this._continueToLocationCallback;
+      delete this._continueToLocationCallback;
+      if (callback(pausedDetails))
+        return;
+    }
+
     if (!this._setDebuggerPausedDetails(pausedDetails))
       this._agent.stepInto();
   }
@@ -1062,8 +1070,28 @@ SDK.DebuggerModel.Location = class {
     return this.debuggerModel.scriptForId(this.scriptId);
   }
 
-  continueToLocation() {
+  /**
+   * @param {function()=} pausedCallback
+   */
+  continueToLocation(pausedCallback) {
+    if (pausedCallback)
+      this.debuggerModel._continueToLocationCallback = this._paused.bind(this, pausedCallback);
     this.debuggerModel._agent.continueToLocation(this.payload());
+  }
+
+  /**
+   * @param {function()|undefined} pausedCallback
+   * @param {!SDK.DebuggerPausedDetails} debuggerPausedDetails
+   * @return {boolean}
+   */
+  _paused(pausedCallback, debuggerPausedDetails) {
+    var location = debuggerPausedDetails.callFrames[0].location();
+    if (location.scriptId === this.scriptId && location.lineNumber === this.lineNumber &&
+        location.columnNumber === this.columnNumber) {
+      pausedCallback();
+      return true;
+    }
+    return false;
   }
 
   /**

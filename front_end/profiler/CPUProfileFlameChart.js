@@ -39,12 +39,12 @@ Profiler.ProfileFlameChartDataProvider = class {
   }
 
   /**
-   * @return {!PerfUI.FlameChart.ColorGenerator}
+   * @return {!Common.Color.Generator}
    */
   static colorGenerator() {
     if (!Profiler.ProfileFlameChartDataProvider._colorGenerator) {
-      var colorGenerator = new PerfUI.FlameChart.ColorGenerator(
-          {min: 30, max: 330}, {min: 50, max: 80, count: 5}, {min: 80, max: 90, count: 3});
+      var colorGenerator =
+          new Common.Color.Generator({min: 30, max: 330}, {min: 50, max: 80, count: 5}, {min: 80, max: 90, count: 3});
 
       colorGenerator.setColorForID('(idle)', 'hsl(0, 0%, 94%)');
       colorGenerator.setColorForID('(program)', 'hsl(0, 0%, 80%)');

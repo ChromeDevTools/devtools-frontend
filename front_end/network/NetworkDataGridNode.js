@@ -880,31 +880,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
 
   /**
    * @override
-   * @protected
-   */
-  willAttach() {
-    if (this._initiatorCell &&
-        NetworkLog.networkLog.initiatorInfoForRequest(this._request).type === SDK.NetworkRequest.InitiatorType.Script)
-      this._initiatorCell.insertBefore(this._linkifiedInitiatorAnchor, this._initiatorCell.firstChild);
-  }
-
-  /**
-   * @override
-   */
-  wasDetached() {
-    if (this._linkifiedInitiatorAnchor)
-      this._linkifiedInitiatorAnchor.remove();
-  }
-
-  dispose() {
-    if (this._linkifiedInitiatorAnchor) {
-      this.parentView().linkifier.disposeAnchor(
-          this._request.networkManager().target(), this._linkifiedInitiatorAnchor);
-    }
-  }
-
-  /**
-   * @override
    * @param {boolean=} supressSelectedEvent
    */
   select(supressSelectedEvent) {
@@ -1066,12 +1041,10 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
         break;
 
       case SDK.NetworkRequest.InitiatorType.Script:
-        if (!this._linkifiedInitiatorAnchor) {
-          this._linkifiedInitiatorAnchor = this.parentView().linkifier.linkifyScriptLocation(
-              request.networkManager().target(), initiator.scriptId, initiator.url, initiator.lineNumber,
-              initiator.columnNumber);
-          this._linkifiedInitiatorAnchor.title = '';
-        }
+        this._linkifiedInitiatorAnchor = this.parentView().linkifier.linkifyScriptLocation(
+            request.networkManager().target(), initiator.scriptId, initiator.url, initiator.lineNumber,
+            initiator.columnNumber);
+        this._linkifiedInitiatorAnchor.title = '';
         cell.appendChild(this._linkifiedInitiatorAnchor);
         this._appendSubtitle(cell, Common.UIString('Script'));
         cell.classList.add('network-script-initiated');

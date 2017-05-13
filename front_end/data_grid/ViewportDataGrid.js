@@ -172,7 +172,6 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
       if (!visibleNodesSet.has(oldNode) && oldNode.attached()) {
         var element = oldNode.existingElement();
         element.remove();
-        oldNode.wasDetached();
       }
     }
 
@@ -192,7 +191,6 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
     for (var i = 0; i < visibleNodes.length; ++i) {
       var node = visibleNodes[i];
       var element = node.element();
-      node.willAttach();
       node.setStriped((offset + i) % 2 === 0);
       if (element !== previousElement.nextSibling)
         tBody.insertBefore(element, previousElement.nextSibling);
@@ -398,10 +396,8 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
   }
 
   _unlink() {
-    if (this.attached()) {
+    if (this.attached())
       this.existingElement().remove();
-      this.wasDetached();
-    }
     this.resetNode();
   }
 
@@ -427,12 +423,6 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
     this.clearFlatNodes();
     super.expand();
     this.dataGrid.scheduleUpdateStructure();
-  }
-
-  /**
-   * @protected
-   */
-  willAttach() {
   }
 
   /**

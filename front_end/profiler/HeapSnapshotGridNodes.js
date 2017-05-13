@@ -140,13 +140,6 @@ Profiler.HeapSnapshotGridNode = class extends DataGrid.DataGridNode {
   }
 
   /**
-   * @override
-   */
-  wasDetached() {
-    this._dataGrid.nodeWasDetached(this);
-  }
-
-  /**
    * @param {number} num
    * @return {string}
    */

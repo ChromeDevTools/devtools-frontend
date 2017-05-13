@@ -264,20 +264,6 @@ Components.Linkifier = class {
     return anchor;
   }
 
-  /**
-   * @param {!SDK.Target} target
-   * @param {!Element} anchor
-   */
-  disposeAnchor(target, anchor) {
-    Components.Linkifier._unbindUILocation(anchor);
-    var info = Components.Linkifier._linkInfo(anchor);
-    info.fallback = null;
-    if (info.liveLocation) {
-      info.liveLocation.dispose();
-      info.liveLocation = null;
-    }
-  }
-
   reset() {
     for (var target of this._anchorsByTarget.keysArray()) {
       this.targetRemoved(target);

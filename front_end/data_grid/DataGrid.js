@@ -1952,11 +1952,6 @@ DataGrid.DataGridNode = class extends Common.Object {
 
     for (var i = 0; i < this.children.length; ++i)
       this.children[i]._detach();
-
-    this.wasDetached();
-  }
-
-  wasDetached() {
   }
 
   savePosition() {

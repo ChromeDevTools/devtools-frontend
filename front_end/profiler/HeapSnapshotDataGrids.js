@@ -166,11 +166,6 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
     UI.runCSSAnimationOnce(this._highlightedNode.element(), 'highlighted-row');
   }
 
-  nodeWasDetached(node) {
-    if (this._highlightedNode === node)
-      this._clearCurrentHighlight();
-  }
-
   _clearCurrentHighlight() {
     if (!this._highlightedNode)
       return;

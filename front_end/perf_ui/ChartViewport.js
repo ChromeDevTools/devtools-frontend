@@ -172,8 +172,8 @@ PerfUI.ChartViewport = class extends UI.VBox {
       return false;
     this._isDragging = true;
     this._initMaxDragOffset(event);
-    this._dragStartPointX = event.offsetX;
-    this._dragStartPointY = event.offsetY;
+    this._dragStartPointX = event.pageX;
+    this._dragStartPointY = event.pageY;
     this._dragStartScrollTop = this._vScrollElement.scrollTop;
     this.viewportElement.style.cursor = '';
     this.hideHighlight();
@@ -184,14 +184,14 @@ PerfUI.ChartViewport = class extends UI.VBox {
    * @param {!MouseEvent} event
    */
   _dragging(event) {
-    var pixelShift = this._dragStartPointX - event.offsetX;
-    this._dragStartPointX = event.offsetX;
+    var pixelShift = this._dragStartPointX - event.pageX;
+    this._dragStartPointX = event.pageX;
     this._muteAnimation = true;
     this._handlePanGesture(pixelShift * this._pixelToTime);
     this._muteAnimation = false;
-    var pixelScroll = this._dragStartPointY - event.offsetY;
+    var pixelScroll = this._dragStartPointY - event.pageY;
     this._vScrollElement.scrollTop = this._dragStartScrollTop + pixelScroll;
-    this._updateMaxDragOffset(event.offsetX, event.offsetY);
+    this._updateMaxDragOffset(event.pageX, event.pageY);
   }
 
   /**

@@ -16,25 +16,29 @@ Coverage.CoverageView = class extends UI.VBox {
     this.registerRequiredCSS('coverage/coverageView.css');
 
     var toolbarContainer = this.contentElement.createChild('div', 'coverage-toolbar-container');
-    var topToolbar = new UI.Toolbar('coverage-toolbar', toolbarContainer);
+    var toolbar = new UI.Toolbar('coverage-toolbar', toolbarContainer);
 
     this._toggleRecordAction =
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('coverage.toggle-recording'));
     this._toggleRecordButton = UI.Toolbar.createActionButton(this._toggleRecordAction);
-    topToolbar.appendToolbarItem(this._toggleRecordButton);
+    toolbar.appendToolbarItem(this._toggleRecordButton);
 
     var startWithReloadAction =
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('coverage.start-with-reload'));
     this._startWithReloadButton = UI.Toolbar.createActionButton(startWithReloadAction);
-    topToolbar.appendToolbarItem(this._startWithReloadButton);
-
+    toolbar.appendToolbarItem(this._startWithReloadButton);
     this._clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
     this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset.bind(this));
-    topToolbar.appendToolbarItem(this._clearButton);
+    toolbar.appendToolbarItem(this._clearButton);
+
+    toolbar.appendSeparator();
+    this._filterInput = new UI.ToolbarInput(Common.UIString('URL filter'), 0.4, 1, true);
+    this._filterInput.setEnabled(false);
+    this._filterInput.addEventListener(UI.ToolbarInput.Event.TextChanged, this._filterChanged, this);
+    toolbar.appendToolbarItem(this._filterInput);
 
     this._coverageResultsElement = this.contentElement.createChild('div', 'coverage-results');
     this._landingPage = this._buildLandingPage();
-
     this._listView = new Coverage.CoverageListView();
 
     this._statusToolbarElement = this.contentElement.createChild('div', 'coverage-toolbar-summary');
@@ -51,6 +55,7 @@ Coverage.CoverageView = class extends UI.VBox {
     this._listView.detach();
     this._landingPage.show(this._coverageResultsElement);
     this._statusMessageElement.textContent = '';
+    this._filterInput.setEnabled(false);
   }
 
   /**
@@ -104,6 +109,7 @@ Coverage.CoverageView = class extends UI.VBox {
     this._toggleRecordAction.setToggled(true);
     this._clearButton.setEnabled(false);
     this._startWithReloadButton.setEnabled(false);
+    this._filterInput.setEnabled(true);
     if (this._landingPage.isShowing())
       this._landingPage.detach();
     this._listView.show(this._coverageResultsElement);
@@ -155,6 +161,13 @@ Coverage.CoverageView = class extends UI.VBox {
     this._statusMessageElement.textContent = Common.UIString(
         '%s of %s bytes are not used. (%d%%)', Number.bytesToString(unused), Number.bytesToString(total),
         percentUnused);
+  }
+
+  _filterChanged() {
+    if (!this._listView)
+      return;
+    var text = this._filterInput.value();
+    this._listView.setFilter(text ? createPlainTextSearchRegex(text, 'i') : null);
   }
 };
 

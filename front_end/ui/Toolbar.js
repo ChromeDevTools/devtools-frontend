@@ -583,6 +583,14 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
     this._updateEmptyStyles();
   }
 
+  /**
+   * @override
+   * @param {boolean} enabled
+   */
+  _applyEnabledState(enabled) {
+    this.input.disabled = !enabled;
+  }
+
   _setupSearchControls() {
     var clearButton = this.element.createChild('div', 'toolbar-input-clear-button');
     clearButton.appendChild(UI.Icon.create('mediumicon-gray-cross-hover', 'search-cancel-button'));

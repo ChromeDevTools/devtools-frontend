@@ -696,7 +696,13 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
 
       case Timeline.AggregatedTimelineTreeView.GroupBy.Domain:
       case Timeline.AggregatedTimelineTreeView.GroupBy.Subdomain:
-        return {name: beautifyDomainName.call(this, node.id) || unattributed, color: color};
+        var domainName = beautifyDomainName.call(this, node.id);
+        if (domainName) {
+          var productName = this._productByEvent(/** @type {!SDK.TracingModel.Event} */ (node.event));
+          if (productName)
+            domainName += ' \u2014 ' + productName;
+        }
+        return {name: domainName || unattributed, color: color};
 
       case Timeline.AggregatedTimelineTreeView.GroupBy.EventName:
         var name = node.event.name === TimelineModel.TimelineModel.RecordType.JSFrame ?
@@ -724,7 +730,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
         return {name: frameName, color: color};
 
       default:
-        console.assert(false, 'Unexpected aggregation type');
+        console.assert(false, 'Unexpected grouping type');
     }
     return {name: node.id || unattributed, color: color};
   }

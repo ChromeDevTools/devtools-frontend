@@ -25,12 +25,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-.cm-js-keyword {color: rgb(170, 13, 145);}
-.cm-js-number {color: rgb(28, 0, 207);}
-.cm-js-comment {color: rgb(0, 116, 0) !important;}
-.cm-js-string {color: rgb(196, 26, 22) !important;}
-.cm-js-string-2 {color: rgb(196, 26, 22) !important;}
-.cm-js-atom {color: rgb(170, 13, 145);}
+.cm-js-keyword {color: hsl(310, 86%, 36%);}
+.cm-js-number {color: hsl(248, 100%, 41%);}
+.cm-js-comment {color: hsl(120, 100%, 23%) !important; font-style: italic;}
+.cm-js-string {color: hsl(1, 80%, 43%) !important;}
+.cm-js-string-2 {color: hsl(1, 99%, 39%) !important;}
+.cm-js-atom {color: hsl(310, 86%, 36%);}
+.cm-js-def {color: hsl(240, 73%, 38%);}
+.cm-js-operator {color: hsl(184, 71%, 31%); }
+.cm-js-variable {color: hsl(185, 30%, 39%);}
+.cm-js-property {color:  black;}
 
 .cm-css-keyword { color: rgb(7, 144, 154);}
 .cm-css-number {color: rgb(50, 0, 255);}

@@ -36,9 +36,12 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
    * @return {boolean}
    */
   start() {
-    this._coverageByURL.clear();
-    if (this._cssModel)
+    if (this._cssModel) {
+      // Note there's no JS coverage since JS won't ever return
+      // coverage twice, even after it's restarted.
+      this._clearCSS();
       this._cssModel.startCoverage();
+    }
     if (this._cpuProfilerModel)
       this._cpuProfilerModel.startPreciseCoverage();
     return !!(this._cssModel || this._cpuProfilerModel);
@@ -80,6 +83,23 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
   usageForRange(contentProvider, startOffset, endOffset) {
     var coverageInfo = this._coverageByContentProvider.get(contentProvider);
     return coverageInfo && coverageInfo.usageForRange(startOffset, endOffset);
+  }
+
+  _clearCSS() {
+    for (var entry of this._coverageByContentProvider.values()) {
+      if (entry.type() !== Coverage.CoverageType.CSS)
+        continue;
+      var contentProvider = /** @type {!SDK.CSSStyleSheetHeader} */ (entry.contentProvider());
+      this._coverageByContentProvider.delete(contentProvider);
+      var key = `${contentProvider.startLine}:${contentProvider.startColumn}`;
+      var urlEntry = this._coverageByURL.get(entry.url());
+      if (!urlEntry || !urlEntry._coverageInfoByLocation.delete(key))
+        continue;
+      urlEntry._size -= entry._size;
+      urlEntry._usedSize -= entry._usedSize;
+      if (!urlEntry._coverageInfoByLocation.size)
+        this._coverageByURL.delete(entry.url());
+    }
   }
 
   /**
@@ -292,7 +312,7 @@ Coverage.URLCoverageInfo = class {
     var entry = this._coverageInfoByLocation.get(key);
 
     if (!entry) {
-      entry = new Coverage.CoverageInfo(contentProvider, lineOffset, columnOffset);
+      entry = new Coverage.CoverageInfo(contentProvider, contentLength);
       this._coverageInfoByLocation.set(key, entry);
       this._size += contentLength;
       this._type |= entry.type();
@@ -304,13 +324,11 @@ Coverage.URLCoverageInfo = class {
 Coverage.CoverageInfo = class {
   /**
    * @param {!Common.ContentProvider} contentProvider
-   * @param {number} lineOffset
-   * @param {number} columnOffset
+   * @param {number} size
    */
-  constructor(contentProvider, lineOffset, columnOffset) {
+  constructor(contentProvider, size) {
     this._contentProvider = contentProvider;
-    this._lineOffset = lineOffset;
-    this._columnOffset = columnOffset;
+    this._size = size;
     this._usedSize = 0;
 
     if (contentProvider.contentType().isScript()) {

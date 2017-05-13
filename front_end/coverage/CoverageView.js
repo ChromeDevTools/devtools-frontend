@@ -28,7 +28,7 @@ Coverage.CoverageView = class extends UI.VBox {
     this._startWithReloadButton = UI.Toolbar.createActionButton(startWithReloadAction);
     toolbar.appendToolbarItem(this._startWithReloadButton);
     this._clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
-    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset.bind(this));
+    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear.bind(this));
     toolbar.appendToolbarItem(this._clearButton);
 
     toolbar.appendSeparator();
@@ -44,18 +44,6 @@ Coverage.CoverageView = class extends UI.VBox {
     this._statusToolbarElement = this.contentElement.createChild('div', 'coverage-toolbar-summary');
     this._statusMessageElement = this._statusToolbarElement.createChild('div', 'coverage-message');
     this._landingPage.show(this._coverageResultsElement);
-  }
-
-  _reset() {
-    if (this._decorationManager) {
-      this._decorationManager.dispose();
-      this._decorationManager = null;
-    }
-    this._listView.reset();
-    this._listView.detach();
-    this._landingPage.show(this._coverageResultsElement);
-    this._statusMessageElement.textContent = '';
-    this._filterInput.setEnabled(false);
   }
 
   /**
@@ -75,6 +63,23 @@ Coverage.CoverageView = class extends UI.VBox {
     return widget;
   }
 
+  _clear() {
+    this._model = null;
+    this._reset();
+  }
+
+  _reset() {
+    if (this._decorationManager) {
+      this._decorationManager.dispose();
+      this._decorationManager = null;
+    }
+    this._listView.reset();
+    this._listView.detach();
+    this._landingPage.show(this._coverageResultsElement);
+    this._statusMessageElement.textContent = '';
+    this._filterInput.setEnabled(false);
+  }
+
   _toggleRecording() {
     var enable = !this._toggleRecordAction.toggled();
 
@@ -91,6 +96,7 @@ Coverage.CoverageView = class extends UI.VBox {
     var resourceTreeModel = /** @type {?SDK.ResourceTreeModel} */ (mainTarget.model(SDK.ResourceTreeModel));
     if (!resourceTreeModel)
       return;
+    this._model = null;
     this._startRecording();
     resourceTreeModel.reloadPage();
   }
@@ -100,12 +106,11 @@ Coverage.CoverageView = class extends UI.VBox {
     var mainTarget = SDK.targetManager.mainTarget();
     if (!mainTarget)
       return;
-    console.assert(!this._model, 'Attempting to start coverage twice');
-    var model = new Coverage.CoverageModel(mainTarget);
-    if (!model.start())
+    if (!this._model)
+      this._model = new Coverage.CoverageModel(mainTarget);
+    if (!this._model.start())
       return;
-    this._model = model;
-    this._decorationManager = new Coverage.CoverageDecorationManager(model);
+    this._decorationManager = new Coverage.CoverageDecorationManager(this._model);
     this._toggleRecordAction.setToggled(true);
     this._clearButton.setEnabled(false);
     this._startWithReloadButton.setEnabled(false);
@@ -130,7 +135,6 @@ Coverage.CoverageView = class extends UI.VBox {
     }
     var updatedEntries = await this._model.stop();
     this._updateViews(updatedEntries);
-    this._model = null;
     this._toggleRecordAction.setToggled(false);
     this._startWithReloadButton.setEnabled(true);
     this._clearButton.setEnabled(true);

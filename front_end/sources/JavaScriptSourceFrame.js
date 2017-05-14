@@ -740,25 +740,94 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
         var isCurrentPosition = this._executionLocation && lineNumber === this._executionLocation.lineNumber &&
             location.columnNumber === this._executionLocation.columnNumber;
         if (location.type === Protocol.Debugger.BreakLocationType.Call && isAsyncCall) {
-          var functionPosition = line.indexOf('(', token.endColumn);
-          if (functionPosition !== -1) {
-            functionPosition++;
-            while (functionPosition < line.length && line[functionPosition] === ' ')
-              functionPosition++;
-            var nextToken = this.textEditor.tokenAtTextPosition(lineNumber, functionPosition);
-            if (nextToken) {
-              if (line.substring(nextToken.startColumn, nextToken.endColumn) === '(') {
-                var closeParen = line.indexOf(')', nextToken.endColumn);
-                nextToken.endColumn = closeParen === -1 ? line.length : closeParen + 1;
-              }
-              highlightRange =
-                  new TextUtils.TextRange(lineNumber, nextToken.startColumn, lineNumber, nextToken.endColumn - 1);
-              decoration = this.textEditor.highlightRange(highlightRange, 'source-frame-async-step-in');
-              this._continueToLocationDecorations.set(
-                  decoration, this._asyncStepIn.bind(this, location, isCurrentPosition));
-            }
+          var asyncStepInRange = this._findAsyncStepInRange(this.textEditor, lineNumber, line, token.endColumn);
+          if (asyncStepInRange) {
+            highlightRange =
+                new TextUtils.TextRange(lineNumber, asyncStepInRange.from, lineNumber, asyncStepInRange.to - 1);
+            decoration = this.textEditor.highlightRange(highlightRange, 'source-frame-async-step-in');
+            this._continueToLocationDecorations.set(
+                decoration, this._asyncStepIn.bind(this, location, isCurrentPosition));
           }
         }
+      }
+
+      this._continueToLocationRenderedForTest();
+    }
+  }
+
+  _continueToLocationRenderedForTest() {
+  }
+
+  /**
+   * @param {!SourceFrame.SourcesTextEditor} textEditor
+   * @param {number} lineNumber
+   * @param {string} line
+   * @param {number} column
+   * @return {?{from: number, to: number}}
+   */
+  _findAsyncStepInRange(textEditor, lineNumber, line, column) {
+    var token;
+    var tokenText;
+    var from = column;
+    var to = line.length;
+
+    var position = line.indexOf('(', column);
+    if (position === -1)
+      return null;
+    position++;
+
+    skipWhitespace();
+    if (position >= line.length)
+      return null;
+
+    nextToken();
+    if (!token)
+      return null;
+    from = token.startColumn;
+
+    if (token.type === 'js-keyword' && tokenText === 'async') {
+      skipWhitespace();
+      if (position >= line.length)
+        return {from: from, to: to};
+      nextToken();
+      if (!token)
+        return {from: from, to: to};
+    }
+
+    if (token.type === 'js-keyword' && tokenText === 'function')
+      return {from: from, to: to};
+
+    if (token.type && this._isIdentifier(token.type))
+      return {from: from, to: to};
+
+    if (tokenText !== '(')
+      return null;
+    var closeParen = line.indexOf(')', position);
+    if (closeParen === -1 || line.substring(position, closeParen).indexOf('(') !== -1)
+      return {from: from, to: to};
+    return {from: from, to: closeParen + 1};
+
+    function nextToken() {
+      token = textEditor.tokenAtTextPosition(lineNumber, position);
+      if (token) {
+        position = token.endColumn;
+        to = token.endColumn;
+        tokenText = line.substring(token.startColumn, token.endColumn);
+      }
+    }
+
+    function skipWhitespace() {
+      while (position < line.length) {
+        if (line[position] === ' ') {
+          position++;
+          continue;
+        }
+        var token = textEditor.tokenAtTextPosition(lineNumber, position);
+        if (token.type === 'js-comment') {
+          position = token.endColumn;
+          continue;
+        }
+        break;
       }
     }
   }

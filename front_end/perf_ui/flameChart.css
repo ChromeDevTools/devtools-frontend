@@ -33,29 +33,35 @@
 
 .flame-chart-v-scroll {
     position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
     overflow-x: hidden;
     z-index: 200;
     padding-left: 1px;
-    right: 2px;
-    top: 3px;
-    bottom: 3px;
 }
 
 .flame-chart-v-scroll.always-show-scrollbar {
     overflow-y: scroll;
 }
 
+:host-context(.platform-mac) .flame-chart-v-scroll {
+    right: 2px;
+    top: 3px;
+    bottom: 3px;
+}
+
 /* force non-overlay scrollbars */
-::-webkit-scrollbar {
+:host-context(.platform-mac) ::-webkit-scrollbar {
     width: 8px;
 }
 
-::-webkit-scrollbar-thumb {
+:host-context(.platform-mac) ::-webkit-scrollbar-thumb {
     background-color: hsla(0, 0%, 56%, 0.6);
     border-radius: 50px;
 }
 
-.flame-chart-v-scroll:hover::-webkit-scrollbar-thumb {
+:host-context(.platform-mac) .flame-chart-v-scroll:hover::-webkit-scrollbar-thumb {
     background-color: hsla(0, 0%, 25%, 0.6);
 }
 

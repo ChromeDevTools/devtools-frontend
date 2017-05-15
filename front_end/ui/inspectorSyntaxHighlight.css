@@ -32,9 +32,11 @@
 .cm-js-string-2 {color: hsl(1, 99%, 39%) !important;}
 .cm-js-atom {color: hsl(310, 86%, 36%);}
 .cm-js-def {color: hsl(240, 73%, 38%);}
-.cm-js-operator {color: hsl(184, 71%, 31%); }
-.cm-js-variable {color: hsl(185, 30%, 39%);}
-.cm-js-property {color:  black;}
+.cm-js-operator {color: hsl(27, 100%, 30%);}
+.cm-js-meta {color: hsl(27, 100%, 30%);}
+.cm-js-variable {color: hsl(0, 0%, 0%);}
+.cm-js-variable-2 {color: hsl(240, 73%, 38%);}
+.cm-js-property {color: black;}
 
 .cm-css-keyword { color: rgb(7, 144, 154);}
 .cm-css-number {color: rgb(50, 0, 255);}

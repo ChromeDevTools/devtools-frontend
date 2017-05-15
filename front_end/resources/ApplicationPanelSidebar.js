@@ -44,8 +44,10 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     this._sidebarTree.element.classList.add('resources-sidebar');
     this._sidebarTree.registerRequiredCSS('resources/resourcesSidebar.css');
     this._sidebarTree.element.classList.add('filter-all');
-    this.contentElement.appendChild(this._sidebarTree.element);
+    // Listener needs to have been set up before the elements are added
+    this._sidebarTree.addEventListener(UI.TreeOutline.Events.ElementAttached, this._treeElementAdded, this);
 
+    this.contentElement.appendChild(this._sidebarTree.element);
     this._applicationTreeElement = this._addSidebarSection(Common.UIString('Application'));
     this._manifestTreeElement = new Resources.AppManifestTreeElement(panel);
     this._applicationTreeElement.appendChild(this._manifestTreeElement);
@@ -103,12 +105,16 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     /** @type {!Object.<string, boolean>} */
     this._domains = {};
 
+    this._shouldRestoreSelection = true;
+
     this._sidebarTree.contentElement.addEventListener('mousemove', this._onmousemove.bind(this), false);
     this._sidebarTree.contentElement.addEventListener('mouseleave', this._onmouseleave.bind(this), false);
 
     SDK.targetManager.observeTargets(this);
     SDK.targetManager.addModelListener(
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
+    SDK.targetManager.addModelListener(
+        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.WillReloadPage, this._willReloadPage, this);
   }
 
   /**
@@ -197,22 +203,6 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     this.indexedDBListTreeElement._initialize();
     var serviceWorkerCacheModel = this._target.model(SDK.ServiceWorkerCacheModel);
     this.cacheStorageListTreeElement._initialize(serviceWorkerCacheModel);
-    this._initDefaultSelection();
-  }
-
-  _initDefaultSelection() {
-    var itemURL = this._panel.lastSelectedItemURL();
-    if (itemURL) {
-      var rootElement = this._sidebarTree.rootElement();
-      for (var treeElement = rootElement.firstChild(); treeElement;
-           treeElement = treeElement.traverseNextTreeElement(false, rootElement, true)) {
-        if (treeElement.itemURL === itemURL) {
-          treeElement.revealAndSelect(true);
-          return;
-        }
-      }
-    }
-    this._manifestTreeElement.select();
   }
 
   _resetWithFrames() {
@@ -237,6 +227,31 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     for (var frameId of Object.keys(this._applicationCacheFrameElements))
       this._applicationCacheFrameManifestRemoved({data: frameId});
     this.applicationCacheListTreeElement.setExpandable(false);
+  }
+
+  _willReloadPage() {
+    this._shouldRestoreSelection = true;
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _treeElementAdded(event) {
+    if (!this._shouldRestoreSelection)
+      return;
+    var selection = this._panel.lastSelectedItemPath();
+    if (!selection.length)
+      return;
+    var element = event.data;
+    var index = selection.indexOf(element.itemURL);
+    if (index > 0)
+      element.expand();
+    if (index)
+      return;
+    for (var parent = element.parent; parent; parent = parent.parent)
+      parent.expand();
+    element.select();
+    this._shouldRestoreSelection = false;
   }
 
   _reset() {
@@ -598,9 +613,16 @@ Resources.BaseStorageTreeElement = class extends UI.TreeElement {
   onselect(selectedByUser) {
     if (!selectedByUser)
       return false;
-    var itemURL = this.itemURL;
-    if (itemURL)
-      this._storagePanel.setLastSelectedItemURL(itemURL);
+
+    var path = [];
+    for (var el = this; el; el = el.parent) {
+      var url = el.itemURL;
+      if (!url)
+        break;
+      path.push(url);
+    }
+    this._storagePanel.setLastSelectedItemPath(path);
+
     return false;
   }
 
@@ -1246,9 +1268,6 @@ Resources.IDBDatabaseTreeElement = class extends Resources.BaseStorageTreeElemen
   }
 };
 
-/**
- * @unrestricted
- */
 Resources.IDBObjectStoreTreeElement = class extends Resources.BaseStorageTreeElement {
   /**
    * @param {!Resources.ResourcesPanel} storagePanel
@@ -1261,6 +1280,9 @@ Resources.IDBObjectStoreTreeElement = class extends Resources.BaseStorageTreeEle
     this._model = model;
     this._databaseId = databaseId;
     this._idbIndexTreeElements = {};
+    this._objectStore = objectStore;
+    /** @type {?Resources.IDBDataView} */
+    this._view = null;
     var icon = UI.Icon.create('mediumicon-table', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
@@ -1327,7 +1349,7 @@ Resources.IDBObjectStoreTreeElement = class extends Resources.BaseStorageTreeEle
       this.expand();
 
     if (this._view)
-      this._view.update(this._objectStore);
+      this._view.update(this._objectStore, null);
 
     this._updateTooltip();
   }

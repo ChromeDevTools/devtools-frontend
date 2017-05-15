@@ -7,7 +7,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     super('resources');
     this.registerRequiredCSS('resources/resourcesPanel.css');
 
-    this._resourcesLastSelectedItemSetting = Common.settings.createSetting('resourcesLastSelectedItem', '');
+    this._resourcesLastSelectedItemSetting = Common.settings.createSetting('resourcesLastSelectedElementPath', []);
 
     /** @type {?UI.Widget} */
     this.visibleView = null;
@@ -60,14 +60,17 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
   }
 
   /**
-   * @return {string}
+   * @return {!Array<string>}
    */
-  lastSelectedItemURL() {
+  lastSelectedItemPath() {
     return this._resourcesLastSelectedItemSetting.get();
   }
 
-  setLastSelectedItemURL(url) {
-    this._resourcesLastSelectedItemSetting.set(url);
+  /**
+   * @param {!Array<string>} path
+   */
+  setLastSelectedItemPath(path) {
+    this._resourcesLastSelectedItemSetting.set(path);
   }
 
   resetView() {

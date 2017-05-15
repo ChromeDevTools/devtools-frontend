@@ -43,6 +43,9 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
     this._totalSize = 0;
     /** @type {?CookieTable.CookiesTable} */
     this._cookiesTable = null;
+    this._refreshThrottler = new Common.Throttler(300);
+    /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
+    this._eventDescriptors = [];
     this.setCookiesDomain(model, cookieDomain);
   }
 
@@ -54,6 +57,10 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
     this._model = model;
     this._cookieDomain = domain;
     this.refreshItems();
+    Common.EventTarget.removeEventListeners(this._eventDescriptors);
+    var networkManager = model.target().model(SDK.NetworkManager);
+    this._eventDescriptors =
+        [networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this)];
   }
 
   /**
@@ -126,5 +133,9 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
    */
   refreshItems() {
     this._model.getCookiesForDomain(this._cookieDomain, cookies => this._updateWithCookies(cookies));
+  }
+
+  _onResponseReceived() {
+    this._refreshThrottler.schedule(() => Promise.resolve(this.refreshItems()));
   }
 };

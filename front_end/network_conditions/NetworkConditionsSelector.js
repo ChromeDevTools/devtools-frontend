@@ -38,31 +38,6 @@ NetworkConditions.NetworkConditionsSelector = class {
   }
 
   /**
-   * @param {!SDK.NetworkManager.Conditions} conditions
-   * @param {boolean=} plainText
-   * @return {!{text: string, title: string}}
-   */
-  static _conditionsTitle(conditions, plainText) {
-    var downloadInKbps = conditions.download / (1024 / 8);
-    var uploadInKbps = conditions.upload / (1024 / 8);
-    var isThrottling = (downloadInKbps >= 0) || (uploadInKbps >= 0) || (conditions.latency > 0);
-    var conditionTitle = Common.UIString(conditions.title);
-    if (!isThrottling)
-      return {text: conditionTitle, title: conditionTitle};
-
-    var downloadText = NetworkConditions.NetworkConditionsSelector.throughputText(conditions.download, plainText);
-    var uploadText = NetworkConditions.NetworkConditionsSelector.throughputText(conditions.upload, plainText);
-    var pattern = plainText ? '%s (%dms, %s, %s)' : '%s (%dms RTT, %s\u2b07, %s\u2b06)';
-    var title = Common.UIString(pattern, conditionTitle, conditions.latency, downloadText, uploadText);
-    return {
-      text: title,
-      title: Common.UIString(
-          'Maximum download throughput: %s.\r\nMaximum upload throughput: %s.\r\nMinimum round-trip time: %dms.',
-          downloadText, uploadText, conditions.latency)
-    };
-  }
-
-  /**
    * @param {!HTMLSelectElement} selectElement
    */
   static decorateSelect(selectElement) {
@@ -82,9 +57,8 @@ NetworkConditions.NetworkConditionsSelector = class {
         var groupElement = selectElement.createChild('optgroup');
         groupElement.label = group.title;
         for (var conditions of group.items) {
-          var title = NetworkConditions.NetworkConditionsSelector._conditionsTitle(conditions, true);
-          var option = new Option(title.text, title.text);
-          option.title = title.title;
+          var title = Common.UIString(conditions.title);
+          var option = new Option(title, title);
           groupElement.appendChild(option);
           options.push(conditions);
         }
@@ -136,8 +110,8 @@ NetworkConditions.NetworkConditionsSelector = class {
           contextMenu.appendSeparator();
         } else {
           contextMenu.appendCheckboxItem(
-              NetworkConditions.NetworkConditionsSelector._conditionsTitle(conditions, true).text,
-              selector.optionSelected.bind(selector, conditions), selectedIndex === index);
+              Common.UIString(conditions.title), selector.optionSelected.bind(selector, conditions),
+              selectedIndex === index);
         }
       }
       contextMenu.appendItem(Common.UIString('Edit\u2026'), selector.revealAndUpdate.bind(selector));
@@ -244,14 +218,9 @@ NetworkConditions.NetworkConditionsGroup;
 
 /** @type {!Array.<!SDK.NetworkManager.Conditions>} */
 NetworkConditions.NetworkConditionsSelector.presets = [
-  SDK.NetworkManager.OfflineConditions, {title: 'GPRS', download: 50 * 1024 / 8, upload: 20 * 1024 / 8, latency: 500},
-  {title: 'Regular 2G', download: 250 * 1024 / 8, upload: 50 * 1024 / 8, latency: 300},
-  {title: 'Good 2G', download: 450 * 1024 / 8, upload: 150 * 1024 / 8, latency: 150},
-  {title: 'Regular 3G', download: 750 * 1024 / 8, upload: 250 * 1024 / 8, latency: 100},
-  {title: 'Good 3G', download: 1.5 * 1024 * 1024 / 8, upload: 750 * 1024 / 8, latency: 40},
-  {title: 'Regular 4G', download: 4 * 1024 * 1024 / 8, upload: 3 * 1024 * 1024 / 8, latency: 20},
-  {title: 'DSL', download: 2 * 1024 * 1024 / 8, upload: 1 * 1024 * 1024 / 8, latency: 5},
-  {title: 'WiFi', download: 30 * 1024 * 1024 / 8, upload: 15 * 1024 * 1024 / 8, latency: 2}
+  SDK.NetworkManager.OfflineConditions,
+  {title: 'Slow 3G', download: 500 * 1024 / 8 * .8, upload: 500 * 1024 / 8 * .8, latency: 400 * 5},
+  {title: 'Fast 3G', download: 1.6 * 1024 * 1024 / 8 * .9, upload: 750 * 1024 / 8 * .9, latency: 150 * 3.75}
 ];
 
 /**

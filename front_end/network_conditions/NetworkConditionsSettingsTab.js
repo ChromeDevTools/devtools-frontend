@@ -45,10 +45,6 @@ NetworkConditions.NetworkConditionsSettingsTab = class extends UI.VBox {
       this._list.appendItem(conditions[i], true);
 
     this._list.appendSeparator();
-
-    conditions = NetworkConditions.NetworkConditionsSelector.presets;
-    for (var i = 0; i < conditions.length; ++i)
-      this._list.appendItem(conditions[i], false);
   }
 
   _addButtonClicked() {

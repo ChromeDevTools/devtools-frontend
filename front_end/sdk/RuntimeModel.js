@@ -411,6 +411,27 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
         {type: type, args: args, executionContextId: executionContextId, timestamp: timestamp, stackTrace: stackTrace};
     this.dispatchEventToListeners(SDK.RuntimeModel.Events.ConsoleAPICalled, consoleAPICall);
   }
+
+  /**
+   * @param {!Protocol.Runtime.ScriptId} scriptId
+   * @return {number}
+   */
+  executionContextIdForScriptId(scriptId) {
+    var script = this.debuggerModel().scriptForId(scriptId);
+    return script ? script.executionContextId : 0;
+  }
+
+  /**
+   * @param {!Protocol.Runtime.StackTrace} stackTrace
+   * @return {number}
+   */
+  executionContextForStackTrace(stackTrace) {
+    while (stackTrace && !stackTrace.callFrames.length)
+      stackTrace = stackTrace.parent;
+    if (!stackTrace || !stackTrace.callFrames.length)
+      return 0;
+    return this.executionContextIdForScriptId(stackTrace.callFrames[0].scriptId);
+  }
 };
 
 SDK.SDKModel.register(SDK.RuntimeModel, SDK.Target.Capability.JS, true);

@@ -440,6 +440,12 @@ ConsoleModel.ConsoleMessage = class {
         }
       }
     }
+    if (!this.executionContextId && this._runtimeModel) {
+      if (this.scriptId)
+        this.executionContextId = this._runtimeModel.executionContextIdForScriptId(this.scriptId);
+      else if (this.stackTrace)
+        this.executionContextId = this._runtimeModel.executionContextForStackTrace(this.stackTrace);
+    }
   }
 
   /**

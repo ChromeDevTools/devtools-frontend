@@ -282,7 +282,7 @@ Network.RequestTimingView = class extends UI.VBox {
      * @param {number} right
      */
     function addTiming(serverTiming, right) {
-      var colorGenerator = new PerfUI.FlameChart.ColorGenerator({min: 0, max: 360, count: 36}, {min: 50, max: 80}, 80);
+      var colorGenerator = new Common.Color.Generator({min: 0, max: 360, count: 36}, {min: 50, max: 80}, 80);
       var isTotal = serverTiming.metric.toLowerCase() === 'total';
       var tr = tableElement.createChild('tr', isTotal ? 'network-timing-footer' : '');
       var metric = tr.createChild('td', 'network-timing-metric');

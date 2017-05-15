@@ -1,11 +1,34 @@
 {
     "extensions": [
+        {
+            "type": "setting",
+            "category": "UI",
+            "settingName": "product_registry.badges-visible",
+            "settingType": "boolean",
+            "defaultValue": false,
+            "options": [
+                {
+                    "value": true,
+                    "title": "Show third party badges"
+                },
+                {
+                    "value": false,
+                    "title": "Do not show third party badges"
+                }
+            ]
+        }
     ],
     "dependencies": [
         "common",
-        "sdk"
+        "sdk",
+        "ui"
     ],
     "scripts": [
+        "BadgePool.js",
         "ProductRegistry.js"
+    ],
+    "resources": [
+        "badge.css",
+        "popup.css"
     ]
 }

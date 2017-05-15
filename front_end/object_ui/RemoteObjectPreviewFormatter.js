@@ -46,16 +46,17 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
         parentElement.createChild('span', 'object-description').textContent = text + ' ';
     }
 
-    parentElement.createTextChild(isArrayOrTypedArray ? '[' : '{');
+    var propertiesElement = parentElement.createChild('span', 'object-properties-preview source-code');
+    propertiesElement.createTextChild(isArrayOrTypedArray ? '[' : '{');
     if (preview.entries)
-      this._appendEntriesPreview(parentElement, preview);
+      this._appendEntriesPreview(propertiesElement, preview);
     else if (isArrayOrTypedArray)
-      this._appendArrayPropertiesPreview(parentElement, preview);
+      this._appendArrayPropertiesPreview(propertiesElement, preview);
     else
-      this._appendObjectPropertiesPreview(parentElement, preview);
+      this._appendObjectPropertiesPreview(propertiesElement, preview);
     if (preview.overflow)
-      parentElement.createChild('span').textContent = '\u2026';
-    parentElement.createTextChild(isArrayOrTypedArray ? ']' : '}');
+      propertiesElement.createChild('span').textContent = '\u2026';
+    propertiesElement.createTextChild(isArrayOrTypedArray ? ']' : '}');
   }
 
   /**
@@ -222,7 +223,7 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
     }
 
     if (type === 'function') {
-      span.textContent = 'function';
+      span.textContent = '\u0192';
       return span;
     }
 
@@ -237,7 +238,10 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
     }
 
     if (type === 'object' && !subtype) {
-      span.textContent = this._abbreviateFullQualifiedClassName(description);
+      var preview = this._abbreviateFullQualifiedClassName(description);
+      if (preview === 'Object')
+        preview = '{\u2026}';
+      span.textContent = preview;
       span.title = description;
       return span;
     }

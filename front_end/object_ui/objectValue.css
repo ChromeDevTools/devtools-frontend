@@ -25,7 +25,7 @@
 
 .object-value-function-prefix,
 .object-value-boolean {
-    color: rgb(170, 13, 145);
+    color: rgb(13, 34, 170);
 }
 
 .object-value-function {
@@ -101,4 +101,17 @@
 
 .object-properties-section .object-description {
     color: gray;
+}
+
+.object-properties-preview {
+    white-space: nowrap;
+}
+
+.name {
+    color: rgb(136, 19, 145);
+    flex-shrink: 0;
+}
+
+.object-properties-preview .name {
+    color: #565656;
 }

@@ -4,11 +4,6 @@
  * found in the LICENSE file.
  */
 
-.object-properties-section .name {
-    color: rgb(136, 19, 145);
-    flex-shrink: 0;
-}
-
 .object-properties-section-separator {
     flex-shrink: 0;
     padding-right: 5px;

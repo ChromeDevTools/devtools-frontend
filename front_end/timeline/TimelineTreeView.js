@@ -863,7 +863,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
    */
   _productByEvent(event) {
     var url = TimelineModel.TimelineProfileTree.eventURL(event);
-    if (!url)
+    if (!url || !this._productByURLCache)
       return '';
     if (this._productByURLCache.has(url))
       return this._productByURLCache.get(url);

@@ -29,6 +29,13 @@ Timeline.TimelineController = class {
   }
 
   /**
+   * @return {!SDK.Target}
+   */
+  mainTarget() {
+    return this._tracingManager.target();
+  }
+
+  /**
    * @param {!Timeline.TimelineController.RecordingOptions} options
    * @param {!Array<!Extensions.ExtensionTraceProvider>} providers
    * @return {!Promise}

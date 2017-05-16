@@ -46,6 +46,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     /** @type {!Array<!UI.ToolbarItem>} */
     this._recordingOptionUIControls = [];
     this._state = Timeline.TimelinePanel.State.Idle;
+    this._recordingPageReload = false;
     this._windowStartTime = 0;
     this._windowEndTime = Infinity;
     this._millisecondsToRecordAfterLoadEvent = 3000;
@@ -104,8 +105,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     this._createFileSelector();
 
-    SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.PageReloadRequested, this._pageReloadRequested, this);
     SDK.targetManager.addModelListener(
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
 
@@ -217,7 +216,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _populateToolbar() {
     // Record
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
-    this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('main.reload'));
+    this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('timeline.record-reload'));
     this._clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
     this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._clear());
     this._panelToolbar.appendToolbarItem(this._clearButton);
@@ -505,16 +504,17 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   /**
-   * @param {!SDK.TracingManager} tracingManager
-   * @param {boolean} userInitiated
    * @return {!Promise}
    */
-  _startRecording(tracingManager, userInitiated) {
+  _startRecording() {
+    var tracingManagers = SDK.targetManager.models(SDK.TracingManager);
+    if (!tracingManagers.length)
+      return Promise.resolve();
+
     console.assert(!this._statusPane, 'Status pane is already opened.');
     this._setState(Timeline.TimelinePanel.State.StartPending);
     this._showRecordingStarted();
 
-    this._autoRecordGeneration = userInitiated ? null : {tracingManager: tracingManager};
     var enabledTraceProviders = Extensions.extensionServer.traceProviders().filter(
         provider => Timeline.TimelinePanel._settingForTraceProvider(provider).get());
 
@@ -525,9 +525,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     };
 
     this._pendingPerformanceModel = new Timeline.PerformanceModel();
-    this._controller = new Timeline.TimelineController(tracingManager, this._pendingPerformanceModel, this);
-    Host.userMetrics.actionTaken(
-        userInitiated ? Host.UserMetrics.Action.TimelineStarted : Host.UserMetrics.Action.TimelinePageReloadStarted);
+    this._controller = new Timeline.TimelineController(tracingManagers[0], this._pendingPerformanceModel, this);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.TimelineStarted);
     this._setUIControlsEnabled(false);
     this._hideLandingPage();
     return this._controller.startRecording(recordingOptions, enabledTraceProviders)
@@ -541,7 +540,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._statusPane.updateProgressBar(Common.UIString('Received'), 0);
     }
     this._setState(Timeline.TimelinePanel.State.StopPending);
-    this._autoRecordGeneration = null;
     this._controller.stopRecording();
     this._controller = null;
     this._setUIControlsEnabled(true);
@@ -562,12 +560,18 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
   _toggleRecording() {
     if (this._state === Timeline.TimelinePanel.State.Idle) {
-      var tracingManagers = SDK.targetManager.models(SDK.TracingManager);
-      if (tracingManagers.length)
-        this._startRecording(tracingManagers[0], true);
+      this._recordingPageReload = false;
+      this._startRecording();
     } else if (this._state === Timeline.TimelinePanel.State.Recording) {
       this._stopRecording();
     }
+  }
+
+  _recordReload() {
+    if (this._state !== Timeline.TimelinePanel.State.Idle)
+      return;
+    this._recordingPageReload = true;
+    this._startRecording();
   }
 
   _clear() {
@@ -615,6 +619,12 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   _recordingStarted() {
+    if (this._recordingPageReload) {
+      var target = this._controller.mainTarget();
+      var resourceModel = target.model(SDK.ResourceTreeModel);
+      if (resourceModel)
+        resourceModel.reloadPage();
+    }
     this._reset();
     this._setState(Timeline.TimelinePanel.State.Recording);
     this._showRecordingStarted();
@@ -665,7 +675,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     var centered = this._landingPage.contentElement.createChild('div');
 
     var recordButton = UI.createInlineButton(UI.Toolbar.createActionButton(this._toggleRecordAction));
-    var reloadButton = UI.createInlineButton(UI.Toolbar.createActionButtonForId('main.reload'));
+    var reloadButton = UI.createInlineButton(UI.Toolbar.createActionButtonForId('timeline.record-reload'));
 
     centered.createChild('p').appendChild(UI.formatLocalized(
         'Click the record button %s or hit %s to capture a new recording.\n' +
@@ -791,35 +801,21 @@ Timeline.TimelinePanel = class extends UI.Panel {
   /**
    * @param {!Common.Event} event
    */
-  _pageReloadRequested(event) {
-    if (this._state !== Timeline.TimelinePanel.State.Idle || !this.isShowing())
-      return;
-    var resourceTreeModel = /** @type {!SDK.ResourceTreeModel} */ (event.data);
-    var tracingManager = resourceTreeModel.target().model(SDK.TracingManager);
-    if (resourceTreeModel.target() !== SDK.targetManager.mainTarget() || !tracingManager)
-      return;
-
-    resourceTreeModel.suspendReload();
-    this._startRecording(tracingManager, false).then(() => resourceTreeModel.resumeReload());
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
   _loadEventFired(event) {
-    if (this._state !== Timeline.TimelinePanel.State.Recording || !this._autoRecordGeneration ||
-        this._autoRecordGeneration.tracingManager.target() !== event.data.resourceTreeModel.target())
+    if (this._state !== Timeline.TimelinePanel.State.Recording || !this._recordingPageReload ||
+        this._controller.mainTarget() !== event.data.resourceTreeModel.target())
       return;
-    setTimeout(stopRecordingOnReload.bind(this, this._autoRecordGeneration), this._millisecondsToRecordAfterLoadEvent);
+    setTimeout(stopRecordingOnReload.bind(this, this._controller), this._millisecondsToRecordAfterLoadEvent);
 
     /**
+     * @param {!Timeline.TimelineController} controller
      * @this {Timeline.TimelinePanel}
-     * @param {!Object} recordGeneration
      */
-    function stopRecordingOnReload(recordGeneration) {
+    function stopRecordingOnReload(controller) {
       // Check if we're still in the same recording session.
-      if (this._state !== Timeline.TimelinePanel.State.Recording || this._autoRecordGeneration !== recordGeneration)
+      if (controller !== this._controller)
         return;
+      this._recordingPageReload = false;
       this._stopRecording();
     }
   }
@@ -1291,6 +1287,9 @@ Timeline.TimelinePanel.ActionDelegate = class {
     switch (actionId) {
       case 'timeline.toggle-recording':
         panel._toggleRecording();
+        return true;
+      case 'timeline.record-reload':
+        panel._recordReload();
         return true;
       case 'timeline.save-to-file':
         panel._saveToFile();

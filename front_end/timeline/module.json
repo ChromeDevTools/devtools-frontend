@@ -64,6 +64,27 @@
         },
         {
             "type": "@UI.ActionDelegate",
+            "actionId": "timeline.record-reload",
+            "iconClass": "largeicon-refresh",
+            "contextTypes": [
+                "Timeline.TimelinePanel"
+            ],
+            "category": "Performance",
+            "title": "Start profiling and reload page",
+            "className": "Timeline.TimelinePanel.ActionDelegate",
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+Shift+E"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+Shift+E"
+                }
+            ]
+        },
+        {
+            "type": "@UI.ActionDelegate",
             "category": "Timeline",
             "actionId": "timeline.save-to-file",
             "contextTypes": [

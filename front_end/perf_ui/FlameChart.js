@@ -1127,8 +1127,9 @@ PerfUI.FlameChart = class extends PerfUI.ChartViewport {
         if (groupIndex >= 0) {
           var group = groups[groupIndex];
           var style = group.style;
-          height = isFirstOnLevel && !style.shareHeaderLine || !group.expanded ? style.height :
-                                                                                 (style.itemsHeight || this._barHeight);
+          height = isFirstOnLevel && !style.shareHeaderLine || (style.collapsible && !group.expanded) ?
+              style.height :
+              (style.itemsHeight || this._barHeight);
         } else {
           height = this._barHeight;
         }

@@ -13,7 +13,6 @@
     position: relative;
     white-space: nowrap;
     height: 26px;
-    contain: strict;
     overflow: hidden;
     z-index: 12;
     display: flex;
@@ -24,7 +23,6 @@
 .toolbar-shadow.wrappable {
     flex-wrap: wrap;
     overflow: visible;
-    contain: none;
 }
 
 .toolbar-shadow.wrappable-reverse {
@@ -38,7 +36,6 @@
 .toolbar-shadow.vertical {
     flex-direction: column;
     height: auto;
-    contain: none;
     align-items: flex-start;
 }
 
@@ -299,7 +296,6 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
 .toolbar-shadow.floating {
     flex-direction: column;
     height: auto;
-    contain: none;
     background-color: white;
     border: 1px solid #ccc;
     margin-top: -1px;

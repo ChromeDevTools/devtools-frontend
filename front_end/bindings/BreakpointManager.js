@@ -110,6 +110,12 @@ Bindings.BreakpointManager = class extends Common.Object {
     var breakpointItems = this._storage.breakpointItems(fromURL);
     for (var item of breakpointItems)
       this.setBreakpoint(toSourceCode, item.lineNumber, item.columnNumber, item.condition, item.enabled);
+    // Since we can not have two provisional breakpoints which point to the same url, remove one of them.
+    if (fromURL === toSourceCode.url()) {
+      var provisionalBreakpoints = this._provisionalBreakpointsForURL(fromURL);
+      for (var breakpoint of provisionalBreakpoints.values())
+        breakpoint.remove();
+    }
   }
 
   removeProvisionalBreakpointsForTest() {

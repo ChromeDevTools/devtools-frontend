@@ -8,6 +8,7 @@
     display: flex;
     background: white;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 3px;
 }
 
 .overview-info .frame .time {

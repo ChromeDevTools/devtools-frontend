@@ -70,7 +70,7 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
     this._cursorPosition = event.offsetX + event.target.offsetLeft;
     this._cursorElement.style.left = this._cursorPosition + 'px';
     this._cursorElement.style.visibility = 'visible';
-    this._buildOverviewInfo().then(content => this._overviewInfo.setContent(content));
+    this._overviewInfo.setContent(this._buildOverviewInfo());
   }
 
   /**
@@ -482,15 +482,20 @@ PerfUI.TimelineOverviewPane.OverviewInfo = class {
     this._glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.PierceContents);
     this._glassPane.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
     this._glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    this._visible = false;
     this._element =
         UI.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'perf_ui/timelineOverviewInfo.css')
             .createChild('div', 'overview-info');
   }
 
   /**
-   * @param {!DocumentFragment} content
+   * @param {!Promise<!DocumentFragment>} contentPromise
    */
-  setContent(content) {
+  async setContent(contentPromise) {
+    this._visible = true;
+    var content = await contentPromise;
+    if (!this._visible)
+      return;
     this._element.removeChildren();
     this._element.appendChild(content);
     this._glassPane.setContentAnchorBox(this._anchorElement.boxInWindow());
@@ -499,6 +504,7 @@ PerfUI.TimelineOverviewPane.OverviewInfo = class {
   }
 
   hide() {
+    this._visible = false;
     this._glassPane.hide();
   }
 };

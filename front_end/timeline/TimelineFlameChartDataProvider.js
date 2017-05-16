@@ -990,7 +990,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
    * @return {?SDK.TracingModel.Event}
    */
   eventByIndex(entryIndex) {
-    return this._entryType(entryIndex) === Timeline.TimelineFlameChartDataProvider.EntryType.Event ?
+    return entryIndex >= 0 && this._entryType(entryIndex) === Timeline.TimelineFlameChartDataProvider.EntryType.Event ?
         /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]) :
         null;
   }

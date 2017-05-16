@@ -167,6 +167,18 @@ Bindings.DebuggerWorkspaceBinding = class extends Common.Object {
   }
 
   /**
+   * @param {!SDK.DebuggerModel} debuggerModel
+   * @param {string} url
+   * @param {boolean} isContentScript
+   */
+  uiSourceCodeForSourceMapSourceURL(debuggerModel, url, isContentScript) {
+    var modelData = this._debuggerModelToData.get(debuggerModel);
+    if (!modelData)
+      return null;
+    return modelData._compilerMapping.uiSourceCodeForURL(url, isContentScript);
+  }
+
+  /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
@@ -326,9 +338,7 @@ Bindings.DebuggerWorkspaceBinding.ModelData = class {
 
     this._defaultMapping = new Bindings.DefaultScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._resourceMapping = new Bindings.ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
-    this._compilerMapping = new Bindings.CompilerScriptMapping(
-        debuggerModel, workspace, Bindings.NetworkProject.forTarget(this._debuggerModel.target()),
-        debuggerWorkspaceBinding);
+    this._compilerMapping = new Bindings.CompilerScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
 
     debuggerModel.setBeforePausedCallback(this._beforePaused.bind(this));
     this._eventListeners = [

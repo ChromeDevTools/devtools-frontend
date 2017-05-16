@@ -1092,6 +1092,16 @@ Set.prototype.valuesArray = function() {
 };
 
 /**
+ * @return {?T}
+ * @template T
+ */
+Set.prototype.firstValue = function() {
+  if (!this.size)
+    return null;
+  return this.values().next().value;
+};
+
+/**
  * @param {!Iterable<T>|!Array<!T>} iterable
  * @template T
  */

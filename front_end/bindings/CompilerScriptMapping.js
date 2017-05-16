@@ -35,24 +35,28 @@ Bindings.CompilerScriptMapping = class {
   /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Workspace.Workspace} workspace
-   * @param {!Bindings.NetworkProject} networkProject
    * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    */
-  constructor(debuggerModel, workspace, networkProject, debuggerWorkspaceBinding) {
+  constructor(debuggerModel, workspace, debuggerWorkspaceBinding) {
     this._debuggerModel = debuggerModel;
     this._sourceMapManager = this._debuggerModel.sourceMapManager();
     this._workspace = workspace;
-    this._networkProject = networkProject;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
 
-    /** @type {!Multimap<!SDK.Script, !Workspace.UISourceCode>} */
-    this._scriptSources = new Multimap();
+    var target = debuggerModel.target();
+    this._regularProject = new Bindings.ContentProviderBasedProject(
+        workspace, 'jsSourceMaps::' + target.id(), Workspace.projectTypes.Network, '', false /* isServiceProject */);
+    this._contentScriptsProject = new Bindings.ContentProviderBasedProject(
+        workspace, 'jsSourceMaps:extensions:' + target.id(), Workspace.projectTypes.ContentScripts, '',
+        false /* isServiceProject */);
+    Bindings.NetworkProject.setTargetForProject(this._regularProject, target);
+    Bindings.NetworkProject.setTargetForProject(this._contentScriptsProject, target);
+
     /** @type {!Map<!SDK.Script, !Workspace.UISourceCode>} */
     this._stubUISourceCodes = new Map();
 
-    var projectId = Bindings.CompilerScriptMapping.projectIdForTarget(this._debuggerModel.target());
     this._stubProject = new Bindings.ContentProviderBasedProject(
-        workspace, projectId, Workspace.projectTypes.Service, '', true /* isServiceProject */);
+        workspace, 'jsSourceMaps:stub:' + target.id(), Workspace.projectTypes.Service, '', true /* isServiceProject */);
     this._eventListeners = [
       this._sourceMapManager.addEventListener(
           SDK.SourceMapManager.Events.SourceMapWillAttach, this._sourceMapWillAttach, this),
@@ -91,16 +95,10 @@ Bindings.CompilerScriptMapping = class {
    * @return {?string}
    */
   static uiSourceCodeOrigin(uiSourceCode) {
-    var script = uiSourceCode[Bindings.CompilerScriptMapping._scriptSymbol];
-    return script ? script.sourceURL : null;
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @return {string}
-   */
-  static projectIdForTarget(target) {
-    return 'compiler-script-project:' + target.id();
+    var sourceMap = uiSourceCode[Bindings.CompilerScriptMapping._sourceMapSymbol];
+    if (!sourceMap)
+      return null;
+    return sourceMap.compiledURL();
   }
 
   /**
@@ -113,6 +111,15 @@ Bindings.CompilerScriptMapping = class {
     if (!sourceMap)
       return true;
     return !!sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
+  }
+
+  /**
+   * @param {string} url
+   * @param {boolean} isContentScript
+   */
+  uiSourceCodeForURL(url, isContentScript) {
+    return isContentScript ? this._contentScriptsProject.uiSourceCodeForURL(url) :
+                             this._regularProject.uiSourceCodeForURL(url);
   }
 
   /**
@@ -137,8 +144,8 @@ Bindings.CompilerScriptMapping = class {
     var entry = sourceMap.findEntry(lineNumber, columnNumber);
     if (!entry || !entry.sourceURL)
       return null;
-    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForScriptURL(
-        this._workspace, /** @type {string} */ (entry.sourceURL), script);
+    var uiSourceCode = script.isContentScript() ? this._contentScriptsProject.uiSourceCodeForURL(entry.sourceURL) :
+                                                  this._regularProject.uiSourceCodeForURL(entry.sourceURL);
     if (!uiSourceCode)
       return null;
     return uiSourceCode.uiLocation(
@@ -153,11 +160,12 @@ Bindings.CompilerScriptMapping = class {
    * @return {?SDK.DebuggerModel.Location}
    */
   uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
-    var script = uiSourceCode[Bindings.CompilerScriptMapping._scriptSymbol];
-    if (!script)
-      return null;
-    var sourceMap = this._sourceMapManager.sourceMapForClient(script);
+    var sourceMap = uiSourceCode[Bindings.CompilerScriptMapping._sourceMapSymbol];
     if (!sourceMap)
+      return null;
+    var scripts = this._sourceMapManager.clientsForSourceMap(sourceMap);
+    var script = scripts.length ? scripts[0] : null;
+    if (!script)
       return null;
     var entry = sourceMap.firstSourceLineMapping(uiSourceCode.url(), lineNumber);
     if (!entry)
@@ -204,13 +212,19 @@ Bindings.CompilerScriptMapping = class {
    */
   _sourceMapDetached(event) {
     var script = /** @type {!SDK.Script} */ (event.data.client);
-    var sources = this._scriptSources.get(script);
-    if (!sources.size)
-      return;
     var frameId = script[Bindings.CompilerScriptMapping._frameIdSymbol];
-    for (var uiSourceCode of sources) {
-      this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel, uiSourceCode, null);
-      this._networkProject.removeSourceMapFile(uiSourceCode.url(), frameId, script.isContentScript());
+    var sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
+    var scripts = this._sourceMapManager.clientsForSourceMap(sourceMap);
+    var hasOtherScripts = scripts.some(someScript => someScript.isContentScript() === script.isContentScript());
+    var project = script.isContentScript() ? this._contentScriptsProject : this._regularProject;
+    for (var sourceURL of sourceMap.sourceURLs()) {
+      var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (project.uiSourceCodeForURL(sourceURL));
+      if (hasOtherScripts) {
+        Bindings.NetworkProject.removeFrameAttribution(uiSourceCode, frameId);
+      } else {
+        this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel, uiSourceCode, null);
+        project.removeFile(sourceURL);
+      }
     }
     this._debuggerWorkspaceBinding.updateLocations(script);
   }
@@ -228,7 +242,7 @@ Bindings.CompilerScriptMapping = class {
    */
   maybeLoadSourceMap(script) {
     var sourceMap = this._sourceMapManager.sourceMapForClient(script);
-    if (!sourceMap || this._scriptSources.has(script))
+    if (!sourceMap)
       return;
     this._populateSourceMapSources(script, sourceMap);
   }
@@ -246,14 +260,22 @@ Bindings.CompilerScriptMapping = class {
   _populateSourceMapSources(script, sourceMap) {
     var frameId = Bindings.frameIdForScript(script);
     script[Bindings.CompilerScriptMapping._frameIdSymbol] = frameId;
+    var project = script.isContentScript() ? this._contentScriptsProject : this._regularProject;
     for (var sourceURL of sourceMap.sourceURLs()) {
+      var uiSourceCode = project.uiSourceCodeForURL(sourceURL);
+      if (uiSourceCode) {
+        Bindings.NetworkProject.addFrameAttribution(uiSourceCode, frameId);
+        continue;
+      }
+
       var contentProvider = sourceMap.sourceContentProvider(sourceURL, Common.resourceTypes.SourceMapScript);
       var embeddedContent = sourceMap.embeddedContentByURL(sourceURL);
-      var embeddedContentLength = typeof embeddedContent === 'string' ? embeddedContent.length : null;
-      var uiSourceCode = this._networkProject.addSourceMapFile(
-          contentProvider, frameId, script.isContentScript(), embeddedContentLength);
-      uiSourceCode[Bindings.CompilerScriptMapping._scriptSymbol] = script;
-      this._scriptSources.set(script, uiSourceCode);
+      var metadata =
+          typeof embeddedContent === 'string' ? new Workspace.UISourceCodeMetadata(null, embeddedContent.length) : null;
+      uiSourceCode = project.createUISourceCode(sourceURL, contentProvider.contentType());
+      uiSourceCode[Bindings.CompilerScriptMapping._sourceMapSymbol] = sourceMap;
+      Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, frameId);
+      project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata);
       this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel, uiSourceCode, this);
     }
     this._debuggerWorkspaceBinding.updateLocations(script);
@@ -274,8 +296,7 @@ Bindings.CompilerScriptMapping = class {
    * @return {boolean}
    */
   uiLineHasMapping(uiSourceCode, lineNumber) {
-    var script = uiSourceCode[Bindings.CompilerScriptMapping._scriptSymbol];
-    var sourceMap = script ? this._sourceMapManager.sourceMapForClient(script) : null;
+    var sourceMap = uiSourceCode[Bindings.CompilerScriptMapping._sourceMapSymbol];
     if (!sourceMap)
       return true;
     return !!sourceMap.firstSourceLineMapping(uiSourceCode.url(), lineNumber);
@@ -283,9 +304,11 @@ Bindings.CompilerScriptMapping = class {
 
   dispose() {
     Common.EventTarget.removeEventListeners(this._eventListeners);
+    this._regularProject.dispose();
+    this._contentScriptsProject.dispose();
     this._stubProject.dispose();
   }
 };
 
-Bindings.CompilerScriptMapping._scriptSymbol = Symbol('Bindings.CompilerScriptMapping._scriptSymbol');
 Bindings.CompilerScriptMapping._frameIdSymbol = Symbol('Bindings.CompilerScriptMapping._frameIdSymbol');
+Bindings.CompilerScriptMapping._sourceMapSymbol = Symbol('Bindings.CompilerScriptMapping._sourceMapSymbol');

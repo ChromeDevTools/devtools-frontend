@@ -20,7 +20,7 @@
         { "name": "sources" },
         { "name": "timeline", "condition": "!v8only" },
         { "name": "timeline_model", "condition": "!v8only" },
-        { "name": "product_registry", "condition": "!v8only", "type": "autostart" },
+        { "name": "product_registry", "type": "autostart" },
         { "name": "product_registry_impl", "condition": "!v8only", "type": "remote" },
         { "name": "profiler" },
         { "name": "resources", "condition": "!v8only" },

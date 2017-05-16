@@ -152,7 +152,7 @@ ProductRegistry.BadgePool = class {
   static colorForEntryName(entryName) {
     if (!ProductRegistry.BadgePool._colorGenerator) {
       ProductRegistry.BadgePool._colorGenerator =
-          new Common.Color.Generator({min: 30, max: 330}, {min: 50, max: 80, count: 3}, 85);
+          new Common.Color.Generator({min: 30, max: 330}, {min: 50, max: 80, count: 3}, 80);
     }
     return ProductRegistry.BadgePool._colorGenerator.colorForID(entryName);
   }

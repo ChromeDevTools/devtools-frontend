@@ -2,7 +2,8 @@
     "extensions": [
         {
             "type": "setting",
-            "category": "UI",
+            "category": "Appearance",
+            "title": "Show third party URL badges",
             "settingName": "product_registry.badges-visible",
             "settingType": "boolean",
             "defaultValue": false,

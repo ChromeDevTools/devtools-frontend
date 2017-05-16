@@ -859,7 +859,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
       this._nameBadgeElement.classList.add('network-badge');
     }
     cell.appendChild(this._nameBadgeElement);
-    cell.createTextChild(this._request.networkManager().target().decorateLabel(this._request.name()));
+    cell.createTextChild(this._request.networkManager().target().decorateLabel(this._request.name().trimMiddle(100)));
     this._appendSubtitle(cell, this._request.path());
     cell.title = this._request.url();
   }

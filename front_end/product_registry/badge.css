@@ -8,7 +8,11 @@
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 2px;
   padding: 1px 2px;
-  margin-right: 4px;
   white-space: pre;
   cursor: pointer;
+}
+
+.product-registry-badge::before {
+  content: attr(data-initial);
+  color: #222;
 }

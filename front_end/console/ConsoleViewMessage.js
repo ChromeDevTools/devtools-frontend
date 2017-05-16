@@ -35,11 +35,13 @@ Console.ConsoleViewMessage = class {
   /**
    * @param {!ConsoleModel.ConsoleMessage} consoleMessage
    * @param {!Components.Linkifier} linkifier
+   * @param {!ProductRegistry.BadgePool} badgePool
    * @param {number} nestingLevel
    */
-  constructor(consoleMessage, linkifier, nestingLevel) {
+  constructor(consoleMessage, linkifier, badgePool, nestingLevel) {
     this._message = consoleMessage;
     this._linkifier = linkifier;
+    this._badgePool = badgePool;
     this._repeatCount = 1;
     this._closeGroupDecorationCount = 0;
     this._nestingLevel = nestingLevel;
@@ -118,6 +120,9 @@ Console.ConsoleViewMessage = class {
     var anchorElement = this._buildMessageAnchor();
     if (anchorElement)
       formattedMessage.appendChild(anchorElement);
+    var badgeElement = this._buildMessageBadge();
+    if (badgeElement)
+      formattedMessage.appendChild(badgeElement);
 
     var table = this._message.parameters && this._message.parameters.length ? this._message.parameters[0] : null;
     if (table)
@@ -257,6 +262,9 @@ Console.ConsoleViewMessage = class {
     var anchorElement = this._buildMessageAnchor();
     if (anchorElement)
       formattedMessage.appendChild(anchorElement);
+    var badgeElement = this._buildMessageBadge();
+    if (badgeElement)
+      formattedMessage.appendChild(badgeElement);
     formattedMessage.appendChild(messageElement);
     return formattedMessage;
   }
@@ -287,6 +295,29 @@ Console.ConsoleViewMessage = class {
       return anchorWrapperElement;
     }
     return null;
+  }
+
+  /**
+   * @return {?Element}
+   */
+  _buildMessageBadge() {
+    if (!this._message.executionContextId)
+      return null;
+    var runtimeModel = this._message.runtimeModel();
+    if (!runtimeModel)
+      return null;
+    var executionContext = runtimeModel.executionContext(this._message.executionContextId);
+    if (!executionContext || !executionContext.frameId)
+      return null;
+    var resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
+    if (!resourceTreeModel)
+      return null;
+    var frame = resourceTreeModel.frameForId(executionContext.frameId);
+    if (!frame || !frame.parentFrame)
+      return null;
+    var badgeElement = this._badgePool.badgeForFrame(frame);
+    badgeElement.classList.add('console-message-badge');
+    return badgeElement;
   }
 
   /**
@@ -1183,11 +1214,12 @@ Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
   /**
    * @param {!ConsoleModel.ConsoleMessage} consoleMessage
    * @param {!Components.Linkifier} linkifier
+   * @param {!ProductRegistry.BadgePool} badgePool
    * @param {number} nestingLevel
    */
-  constructor(consoleMessage, linkifier, nestingLevel) {
+  constructor(consoleMessage, linkifier, badgePool, nestingLevel) {
     console.assert(consoleMessage.isGroupStartMessage());
-    super(consoleMessage, linkifier, nestingLevel);
+    super(consoleMessage, linkifier, badgePool, nestingLevel);
     this._collapsed = consoleMessage.type === ConsoleModel.ConsoleMessage.MessageType.StartGroupCollapsed;
     /** @type {?UI.Icon} */
     this._expandGroupIcon = null;

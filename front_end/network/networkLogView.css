@@ -124,6 +124,10 @@
     color: gray;
 }
 
+.network-badge {
+    margin-right: 4px;
+}
+
 .network-error-row,
 .network-error-row .network-cell-subtitle {
     color: rgb(230, 0, 0);

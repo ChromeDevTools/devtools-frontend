@@ -38,7 +38,8 @@ ProductRegistry.BadgePool = class {
     var element = createElement('span');
     var root = UI.createShadowRootWithCoreStyles(element, 'product_registry/badge.css');
     var badgeElement = root.createChild('span', 'product-registry-badge monospace hidden');
-    badgeElement.textContent = '  ';
+    badgeElement.setAttribute('data-initial', '  ');
+    badgeElement.title = '';
     badgeElement.addEventListener('mousedown', event => event.consume());
     badgeElement.addEventListener('click', event => {
       this._showPopup(badgeElement);
@@ -82,7 +83,8 @@ ProductRegistry.BadgePool = class {
     var entryName = registry.nameForUrl(parsedUrl);
 
     if (!entryName) {
-      badgeElement.textContent = '  ';
+      badgeElement.setAttribute('data-initial', '  ');
+      badgeElement.title = '';
       badgeElement.style.removeProperty('background-color');
       return;
     }
@@ -94,7 +96,8 @@ ProductRegistry.BadgePool = class {
     else
       label = entryName;
 
-    badgeElement.textContent = label.substring(0, 2).toUpperCase();
+    badgeElement.setAttribute('data-initial', label.substring(0, 2).toUpperCase());
+    badgeElement.title = entryName;
     badgeElement.style.backgroundColor = ProductRegistry.BadgePool.colorForEntryName(entryName);
     badgeElement.classList.toggle('hidden', !this._setting.get());
   }

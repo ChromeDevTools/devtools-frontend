@@ -854,8 +854,10 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     iconElement.classList.add(this._request.resourceType().name());
 
     cell.appendChild(iconElement);
-    if (!this._nameBadgeElement)
+    if (!this._nameBadgeElement) {
       this._nameBadgeElement = this.parentView().badgePool.badgeForURL(this._request.parsedURL);
+      this._nameBadgeElement.classList.add('network-badge');
+    }
     cell.appendChild(this._nameBadgeElement);
     cell.createTextChild(this._request.networkManager().target().decorateLabel(this._request.name()));
     this._appendSubtitle(cell, this._request.path());

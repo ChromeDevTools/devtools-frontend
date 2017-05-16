@@ -321,6 +321,11 @@
     margin-left: 4px;
 }
 
+.console-message-badge {
+    float: right;
+    margin-left: 4px;
+}
+
 .console-message-nowrap-below,
 .console-message-nowrap-below div,
 .console-message-nowrap-below span {

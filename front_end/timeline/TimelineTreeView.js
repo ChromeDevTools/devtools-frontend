@@ -717,7 +717,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
 
       case Timeline.AggregatedTimelineTreeView.GroupBy.Product:
         var productName = this._productByEvent(/** @type {!SDK.TracingModel.Event} */ (node.event));
-        color = productName ? Timeline.TimelineUIUtils.colorForId(productName) : '#eee';
+        color = productName ? ProductRegistry.BadgePool.colorForEntryName(productName) : '#eee';
         var name = productName || this._domainByEvent(true, /** @type {!SDK.TracingModel.Event} */ (node.event)) || '';
         return {name: beautifyDomainName.call(this, name) || unattributed, color: color};
 
@@ -747,10 +747,10 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
       {label: Common.UIString('Group by Activity'), value: groupBy.EventName},
       {label: Common.UIString('Group by Category'), value: groupBy.Category},
       {label: Common.UIString('Group by Domain'), value: groupBy.Domain},
-      {label: Common.UIString('Group by Subdomain'), value: groupBy.Subdomain},
-      {label: Common.UIString('Group by Product'), value: groupBy.Product},
-      {label: Common.UIString('Group by URL'), value: groupBy.URL},
       {label: Common.UIString('Group by Frame'), value: groupBy.Frame},
+      {label: Common.UIString('Group by Product'), value: groupBy.Product},
+      {label: Common.UIString('Group by Subdomain'), value: groupBy.Subdomain},
+      {label: Common.UIString('Group by URL'), value: groupBy.URL},
     ];
     if (!Runtime.experiments.isEnabled('timelineColorByProduct'))
       options = options.filter(option => option.value !== groupBy.Product);

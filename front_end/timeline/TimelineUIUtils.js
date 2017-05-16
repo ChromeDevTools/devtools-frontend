@@ -280,6 +280,21 @@ Timeline.TimelineUIUtils = class {
 
   /**
    * @param {!SDK.TracingModel.Event} event
+   * @return {?string}
+   */
+  static eventURL(event) {
+    var data = event.args['data'] || event.args['beginData'];
+    var url = data && data.url;
+    if (url)
+      return url;
+    var stackTrace = data && data['stackTrace'];
+    var frame =
+        stackTrace && stackTrace.length && stackTrace[0] || TimelineModel.TimelineData.forEvent(event).topFrame();
+    return frame && frame.url || null;
+  }
+
+  /**
+   * @param {!SDK.TracingModel.Event} event
    * @return {!{title: string, category: !Timeline.TimelineCategory}}
    */
   static eventStyle(event) {
@@ -1195,8 +1210,8 @@ Timeline.TimelineUIUtils = class {
 
     var initiator = TimelineModel.TimelineData.forEvent(event).initiator();
     // Indirect causes.
-    if (TimelineModel.InvalidationTracker.invalidationEventsFor(event) &&
-        target) {  // Full invalidation tracking (experimental).
+    if (TimelineModel.InvalidationTracker.invalidationEventsFor(event) && target) {
+      // Full invalidation tracking (experimental).
       contentHelper.addSection(Common.UIString('Invalidations'));
       Timeline.TimelineUIUtils._generateInvalidations(event, target, relatedNodesMap, contentHelper);
     } else if (initiator) {  // Partial invalidation tracking.

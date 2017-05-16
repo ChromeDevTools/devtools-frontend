@@ -81,35 +81,22 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._boundRefresh = this._refresh.bind(this);
 
     this._mainDataProvider.setEventColorMapping(Timeline.TimelineUIUtils.eventColor);
-    if (Runtime.experiments.isEnabled('timelineColorByProduct'))
-      ProductRegistry.instance().then(registry => this._productRegistry = registry);
-  }
-
-  /**
-   * @param {!UI.Toolbar} toolbar
-   */
-  populateToolbar(toolbar) {
     if (!Runtime.experiments.isEnabled('timelineColorByProduct'))
       return;
-    toolbar.appendSeparator();
-    var colorBySetting = Common.settings.createSetting('timelineColorBy', Timeline.TimelineFlameChartView._ColorBy.URL);
-    colorBySetting.addChangeListener(this._onColorByChanged, this);
-    var options = [
-      {value: Timeline.TimelineFlameChartView._ColorBy.URL, label: Common.UIString('Color by URL')},
-      {value: Timeline.TimelineFlameChartView._ColorBy.Product, label: Common.UIString('Color by Product')}
-    ];
-    this._colorByCombobox = new UI.ToolbarSettingComboBox(options, colorBySetting);
-    toolbar.appendToolbarItem(this._colorByCombobox);
-    this._onColorByChanged();
+    this._groupBySetting =
+        Common.settings.createSetting('timelineTreeGroupBy', Timeline.AggregatedTimelineTreeView.GroupBy.None);
+    this._groupBySetting.addChangeListener(this._onGroupByChanged, this);
+    this._onGroupByChanged();
+    ProductRegistry.instance().then(registry => this._productRegistry = registry);
   }
 
-  _onColorByChanged() {
+  _onGroupByChanged() {
     /** @type {!Map<string, string>} */
     this._urlToColorCache = new Map();
+    var colorByProduct = Runtime.experiments.isEnabled('timelineColorByProduct') &&
+        this._groupBySetting.get() === Timeline.AggregatedTimelineTreeView.GroupBy.Product;
     this._mainDataProvider.setEventColorMapping(
-        this._colorByCombobox.selectedOption().value === Timeline.TimelineFlameChartView._ColorBy.Product ?
-            colorByProduct.bind(this) :
-            Timeline.TimelineUIUtils.eventColor);
+        colorByProduct ? eventToColorByProduct.bind(this) : Timeline.TimelineUIUtils.eventColor);
     this._mainFlameChart.update();
 
     /**
@@ -117,20 +104,25 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
      * @this {Timeline.TimelineFlameChartView}
      * @return {string}
      */
-    function colorByProduct(event) {
-      if (event.name !== TimelineModel.TimelineModel.RecordType.JSFrame)
-        return Timeline.TimelineUIUtils.eventStyle(event).category.color;
-      var frame = event.args['data'];
-      if (!Timeline.TimelineUIUtils.isUserFrame(frame))
-        return Timeline.TimelineUIUtils.eventStyle(event).category.color;
-      var color = this._urlToColorCache.get(frame.url);
+    function eventToColorByProduct(event) {
+      var url = Timeline.TimelineUIUtils.eventURL(event) || '';
+      var color = this._urlToColorCache.get(url);
       if (!color) {
+        var defaultColor = '#f2ecdc';
         if (!this._productRegistry)
-          return Timeline.TimelineUIUtils.colorForId('');
-        var parsedURL = frame.url.asParsedURL();
-        var name = parsedURL && this._productRegistry.nameForUrl(parsedURL) || '';
-        color = Timeline.TimelineUIUtils.colorForId(name);
-        this._urlToColorCache.set(frame.url, color);
+          return defaultColor;
+        var parsedURL = url.asParsedURL();
+        if (!parsedURL)
+          return defaultColor;
+        var name = this._productRegistry.nameForUrl(parsedURL);
+        if (!name) {
+          name = parsedURL.host;
+          var rootFrames = this._model.timelineModel().rootFrames();
+          if (rootFrames.some(pageFrame => new Common.ParsedURL(pageFrame.url).host === name))
+            return defaultColor;
+        }
+        color = name ? ProductRegistry.BadgePool.colorForEntryName(name) : defaultColor;
+        this._urlToColorCache.set(url, color);
       }
       return color;
     }

@@ -32,9 +32,6 @@ Network.NetworkLogViewColumns = class {
     this._waterfallRequestsAreStale = false;
     this._waterfallScrollerWidthIsStale = true;
 
-    /** @type {?ProductRegistry.Registry} */
-    this._productRegistryInstance = null;
-
     /** @type {!Components.Linkifier} */
     this._popupLinkifier = new Components.Linkifier();
 
@@ -78,14 +75,6 @@ Network.NetworkLogViewColumns = class {
 
   _setupDataGrid() {
     var defaultColumns = Network.NetworkLogViewColumns._defaultColumns;
-
-    if (Runtime.experiments.isEnabled('networkGroupingRequests')) {
-      defaultColumns.splice(1, 0, /** @type {!Network.NetworkLogViewColumns.Descriptor} */ ({
-                              id: 'product',
-                              title: Common.UIString('Product'),
-                              visible: true
-                            }));
-    }
 
     var defaultColumnConfig = Network.NetworkLogViewColumns._defaultColumnConfig;
 
@@ -287,17 +276,6 @@ Network.NetworkLogViewColumns = class {
       var sortFunction = Network.NetworkRequestNode.RequestPropertyComparator.bind(null, this._activeWaterfallSortId);
       this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
       this._networkLogView.dataGridSorted();
-      return;
-    } else if (columnId === 'product' && !this._productRegistryInstance) {
-      ProductRegistry.instance().then(productRegistry => {
-        this._productRegistryInstance = productRegistry;
-        var columnConfig = this._columns.find(columnConfig => columnConfig.id === columnId);
-        if (!columnConfig)
-          return;
-        columnConfig.sortingFunction = Network.NetworkRequestNode.ProductComparator.bind(null, productRegistry);
-        if (this._dataGrid.sortColumnId() === 'product')
-          this._sortHandler();
-      });
       return;
     }
     this._waterfallColumnSortIcon.setIconType('');
@@ -554,16 +532,7 @@ Network.NetworkLogViewColumns = class {
     if (!hoveredNode)
       return null;
 
-    var anchor = event.target.enclosingNodeOrSelfWithClass('product-column');
-    if (anchor) {
-      return {
-        box: anchor.boxInWindow(),
-        show: hoveredNode.handleProductPopover.bind(hoveredNode),
-        hide: this._popupLinkifier.reset.bind(this._popupLinkifier)
-      };
-    }
-
-    anchor = event.target.enclosingNodeOrSelfWithClass('network-script-initiated');
+    var anchor = event.target.enclosingNodeOrSelfWithClass('network-script-initiated');
     if (!anchor)
       return null;
     var request = hoveredNode.request();
@@ -629,8 +598,6 @@ Network.NetworkLogViewColumns = class {
 };
 
 Network.NetworkLogViewColumns._initialSortColumn = 'waterfall';
-/** @type {?ProductRegistry.Registry} */
-Network.NetworkRequestNode._productRegistryInstance = null;
 
 /**
  * @typedef {{

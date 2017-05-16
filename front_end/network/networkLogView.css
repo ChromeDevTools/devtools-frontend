@@ -115,10 +115,6 @@
     pointer-events: none;
 }
 
-#network-container:not(.brief-mode) .network-log-grid.data-grid td.name-column:hover {
-    text-decoration: underline;
-}
-
 .network-log-grid.data-grid th.sortable:active {
     background-image: none !important;
 }

@@ -327,7 +327,6 @@ all_devtools_files = [
   "front_end/network/NetworkOverview.js",
   "front_end/network/networkPanel.css",
   "front_end/network/NetworkPanel.js",
-  "front_end/network/networkReportProductEntry.css",
   "front_end/network/NetworkTimeCalculator.js",
   "front_end/network/networkTimingTable.css",
   "front_end/network/NetworkWaterfallColumn.js",

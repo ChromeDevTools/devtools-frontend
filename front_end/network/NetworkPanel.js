@@ -162,6 +162,12 @@ Network.NetworkPanel = class extends UI.Panel {
         this._networkLogShowOverviewSetting, 'largeicon-waterfall', Common.UIString('Show overview'),
         Common.UIString('Hide overview'));
     this._panelToolbar.appendToolbarItem(showOverviewButton);
+
+    if (Runtime.experiments.isEnabled('networkGroupingRequests')) {
+      this._panelToolbar.appendToolbarItem(new UI.ToolbarSettingCheckbox(
+          Common.moduleSetting('network.group-by-frame'), '', Common.UIString('Group by frame')));
+    }
+
     this._panelToolbar.appendSeparator();
 
     this._preserveLogCheckbox = new UI.ToolbarCheckbox(
@@ -179,23 +185,7 @@ Network.NetworkPanel = class extends UI.Panel {
     this._panelToolbar.appendToolbarItem(NetworkConditions.NetworkConditionsSelector.createOfflineToolbarCheckbox());
     this._panelToolbar.appendToolbarItem(this._createNetworkConditionsSelect());
 
-    this._setupGroupingCombo();
-
     this._panelToolbar.appendToolbarItem(new UI.ToolbarItem(this._progressBarContainer));
-  }
-
-  _setupGroupingCombo() {
-    if (!Runtime.experiments.isEnabled('networkGroupingRequests'))
-      return;
-    /** @type {!Array<!{value: string, label: string, title: string}>} */
-    var options = [{value: '', label: Common.UIString('No grouping'), title: Common.UIString('No grouping')}];
-    for (var name of this._networkLogView.groupLookups().keys())
-      options.push({value: name, label: Common.UIString(name), title: Common.UIString(name)});
-
-    var setting = Common.settings.createSetting('networkGrouping', '');
-    this._panelToolbar.appendToolbarItem(new UI.ToolbarSettingComboBox(options, setting, Common.UIString('Group by')));
-    setting.addChangeListener(event => this._networkLogView.setGrouping(/** @type {string} */ (event.data)));
-    this._networkLogView.setGrouping(/** @type {string} */ (setting.get()));
   }
 
   /**

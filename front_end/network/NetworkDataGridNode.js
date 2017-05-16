@@ -46,27 +46,6 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
   }
 
   /**
-   * @param {!Network.NetworkNode._ProductEntryInfo} entryInfo
-   */
-  static buildReportLinkElement(entryInfo) {
-    var shadowRoot = UI.createShadowRootWithCoreStyles(createElement('div'), 'network/networkReportProductEntry.css');
-    var content = shadowRoot.createChild('div', 'network-product-popover');
-
-    var domainElement = content.createChild('div', 'network-product-domain');
-    domainElement.textContent = entryInfo.matchedURL.domain();
-
-    var entryNameElement = content.createChild('div', 'network-product-entry-name');
-    entryNameElement.textContent = entryInfo.entry.name;
-
-    var matchedURL = entryInfo.matchedURL;
-    var reportLink =
-        'https://docs.google.com/forms/d/e/1FAIpQLSchz2FdcQ-rRllzl8BbhWaTRRY-12BpPjW6Hr9e1-BpCA083w/viewform' +
-        '?entry_1425918171=' + encodeURIComponent((matchedURL.domain() + matchedURL.path).substr(0, 100));
-    content.appendChild(UI.createExternalLink(reportLink, 'Report mismatch', 'network-report-product-link'));
-    return shadowRoot;
-  }
-
-  /**
    * @return {!Network.NetworkNode._SupportedBackgroundColors}
    */
   static _themedBackgroundColors() {
@@ -80,50 +59,6 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
     Network.NetworkNode._themedBackgroundColorsCache =
         /** @type {!Network.NetworkNode._SupportedBackgroundColors} */ (themedColors);
     return Network.NetworkNode._themedBackgroundColorsCache;
-  }
-
-  /**
-   * @param {!ProductRegistry.Registry} productRegistry
-   * @param {!SDK.ResourceTreeFrame} frame
-   * @return {?Network.NetworkNode._ProductEntryInfo}
-   */
-  static productEntryInfoForFrame(productRegistry, frame) {
-    var parsedURL = new Common.ParsedURL(frame.url);
-    var entry = productRegistry.entryForUrl(parsedURL);
-    if (entry)
-      return {entry: entry, matchedURL: parsedURL};
-    frame.findCreationCallFrame(callFrame => {
-      if (!callFrame.url)
-        return false;
-      parsedURL = new Common.ParsedURL(callFrame.url);
-      entry = productRegistry.entryForUrl(parsedURL);
-      return !!entry;
-    });
-    if (!entry)
-      return null;
-    return {entry: entry, matchedURL: parsedURL};
-  }
-
-  /**
-   * @protected
-   * @return {!Promise<?Network.NetworkNode._ProductEntryInfo>}
-   */
-  productEntry() {
-    return Promise.resolve(/** @type {?Network.NetworkNode._ProductEntryInfo} */ (null));
-  }
-
-  /**
-   * @param {!UI.PopoverRequest} popover
-   * @return {!Promise<boolean>}
-   */
-  handleProductPopover(popover) {
-    return this.productEntry().then(entryInfo => {
-      if (!entryInfo)
-        return false;
-      popover.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PreferBottom);
-      popover.contentElement.appendChild(Network.NetworkNode.buildReportLinkElement(entryInfo));
-      return true;
-    });
   }
 
   /**
@@ -169,10 +104,6 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
       color = color.blendWith(bgColors.Navigation);
     if (this.hovered())
       color = color.blendWith(bgColors.Hovered);
-    if (this.isFromFrame())
-      color = color.blendWith(bgColors.FromFrame);
-    else if (this._isProduct)
-      color = color.blendWith(bgColors.IsProduct);
     if (this.isOnInitiatorPath())
       color = color.blendWith(bgColors.InitiatorPath);
     if (this.isOnInitiatedPath())
@@ -808,16 +739,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
       case 'name':
         this._renderNameCell(cell);
         break;
-      case 'product':
-        if (!Runtime.experiments.isEnabled('networkGroupingRequests')) {
-          this._setTextAndTitle(cell, this._request.responseHeaderValue(columnId) || '');
-          break;
-        }
-        this.productEntry().then(entryInfo => {
-          if (entryInfo)
-            cell.textContent = entryInfo.entry.name;
-        });
-        break;
       case 'method':
         this._setTextAndTitle(cell, this._request.requestMethod);
         break;
@@ -939,24 +860,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     cell.createTextChild(this._request.networkManager().target().decorateLabel(this._request.name()));
     this._appendSubtitle(cell, this._request.path());
     cell.title = this._request.url();
-  }
-
-  /**
-   * @override
-   * @return {!Promise<?Network.NetworkNode._ProductEntryInfo>}
-   */
-  productEntry() {
-    return ProductRegistry.instance().then(productRegistry => {
-      var frame = SDK.ResourceTreeModel.frameForRequest(this._request);
-      var entry = /** @type {?ProductRegistry.Registry.ProductEntry} */ (null);
-      if (frame && frame.isMainFrame())
-        frame = null;
-      var entryInfo = frame ? Network.NetworkNode.productEntryInfoForFrame(productRegistry, frame) : null;
-      if (entryInfo)
-        return entryInfo;
-      entry = productRegistry.entryForUrl(this._request.parsedURL);
-      return entry ? {entry: entry, matchedURL: this._request.parsedURL} : null;
-    });
   }
 
   /**

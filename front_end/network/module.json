@@ -44,6 +44,25 @@
             ]
         },
         {
+            "type": "setting",
+            "category": "Network",
+            "title": "Group network log by frame",
+            "settingName": "network.group-by-frame",
+            "settingType": "boolean",
+            "defaultValue": false,
+            "tags": "network, frame, group",
+            "options": [
+                {
+                    "value": true,
+                    "title": "Group network log items by frame"
+                },
+                {
+                    "value": false,
+                    "title": "Don't group network log items by frame"
+                }
+            ]
+        },
+        {
             "type": "@UI.ActionDelegate",
             "actionId": "network.toggle-recording",
             "iconClass": "largeicon-start-recording",
@@ -139,7 +158,6 @@
         "networkLogView.css",
         "networkManageCustomHeadersView.css",
         "networkPanel.css",
-        "networkReportProductEntry.css",
         "networkTimingTable.css",
         "networkWaterfallColumn.css",
         "requestCookiesView.css",

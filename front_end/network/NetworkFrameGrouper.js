@@ -5,27 +5,14 @@
 /**
  * @implements {Network.GroupLookupInterface}
  */
-Network.FrameGrouper = class {
+Network.NetworkFrameGrouper = class {
   /**
    * @param {!Network.NetworkLogView} parentView
    */
   constructor(parentView) {
     this._parentView = parentView;
-    /** @type {?ProductRegistry.Registry} */
-    this._productRegistry = null;
     /** @type {!Map<!SDK.ResourceTreeFrame, !Network.FrameGroupNode>} */
     this._activeGroups = new Map();
-  }
-
-  /**
-   * @override
-   * @return {!Promise}
-   */
-  initialize() {
-    return ProductRegistry.instance().then(productRegistry => {
-      this._productRegistry = productRegistry;
-      this._activeGroups.forEach(node => node.refresh());
-    });
   }
 
   /**
@@ -40,7 +27,7 @@ Network.FrameGrouper = class {
     var groupNode = this._activeGroups.get(frame);
     if (groupNode)
       return groupNode;
-    groupNode = new Network.FrameGroupNode(this._parentView, frame, this);
+    groupNode = new Network.FrameGroupNode(this._parentView, frame);
     this._activeGroups.set(frame, groupNode);
     return groupNode;
   }
@@ -57,14 +44,12 @@ Network.FrameGroupNode = class extends Network.NetworkGroupNode {
   /**
    * @param {!Network.NetworkLogView} parentView
    * @param {!SDK.ResourceTreeFrame} frame
-   * @param {!Network.FrameGrouper} grouper
    */
-  constructor(parentView, frame, grouper) {
+  constructor(parentView, frame) {
     super(parentView);
     this._frame = frame;
-    this._grouper = grouper;
-    /** @type {?Network.NetworkNode._ProductEntryInfo|undefined} */
-    this._productInfoEntryCache;
+    /** @type {?Element} */
+    this._productBadge = null;
   }
 
   /**
@@ -79,9 +64,7 @@ Network.FrameGroupNode = class extends Network.NetworkGroupNode {
    * @override
    */
   displayName() {
-    var entryInfo = this._innerProductEntry();
-    return entryInfo ? entryInfo.entry.name :
-                       (new Common.ParsedURL(this._frame.url)).host || this._frame.name || '<iframe>';
+    return new Common.ParsedURL(this._frame.url).domain() || this._frame.name || '<iframe>';
   }
 
   /**
@@ -93,34 +76,11 @@ Network.FrameGroupNode = class extends Network.NetworkGroupNode {
     super.renderCell(cell, columnId);
     if (columnId === 'name') {
       var name = this.displayName();
-      cell.textContent = name;
+      if (!this._productBadge)
+        this._productBadge = this.parentView().badgePool.badgeForFrame(this._frame);
+      cell.appendChild(this._productBadge);
+      cell.createTextChild(name);
       cell.title = name;
     }
-    if (columnId === 'product') {
-      var entryInfo = this._innerProductEntry();
-      if (entryInfo)
-        cell.textContent = entryInfo.entry.name;
-    }
-  }
-
-  /**
-   * @override
-   * @return {!Promise<?Network.NetworkNode._ProductEntryInfo>}
-   */
-  productEntry() {
-    return Promise.resolve(this._innerProductEntry());
-  }
-
-  /**
-   * @return {?Network.NetworkNode._ProductEntryInfo}
-   */
-  _innerProductEntry() {
-    if (this._productInfoEntryCache !== undefined)
-      return this._productInfoEntryCache;
-    var productRegistry = this._grouper._productRegistry;
-    if (!productRegistry)
-      return null;
-    this._productInfoEntryCache = Network.NetworkNode.productEntryInfoForFrame(productRegistry, this._frame);
-    return this._productInfoEntryCache;
   }
 };

@@ -138,7 +138,8 @@ Main.Main = class {
         Runtime.experiments.enableForTest('liveSASS');
     }
 
-    Runtime.experiments.setDefaultExperiments(['continueToLocationMarkers', 'autoAttachToCrossProcessSubframes']);
+    Runtime.experiments.setDefaultExperiments(
+        ['continueToLocationMarkers', 'autoAttachToCrossProcessSubframes', 'objectPreviews']);
   }
 
   /**

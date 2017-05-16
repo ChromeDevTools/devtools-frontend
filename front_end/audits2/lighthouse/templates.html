@@ -435,3 +435,78 @@
     <div class="lh-gauge__label"><!-- fill me --></div>
   </a>
 </template>
+
+<!-- Lighthouse crtiical request chains component -->
+<template id="tmpl-lh-crc">
+  <style>
+    .lh-crc .tree-marker {
+      width: 12px;
+      height: 26px;
+      display: block;
+      float: left;
+      background-position: top left;
+    }
+    .lh-crc .horiz-down {
+      background: url('data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><g fill="#D8D8D8" fill-rule="evenodd"><path d="M16 12v2H-2v-2z"/><path d="M9 12v14H7V12z"/></g></svg>');
+    }
+    .lh-crc .right {
+      background: url('data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><path d="M16 12v2H0v-2z" fill="#D8D8D8" fill-rule="evenodd"/></svg>');
+    }
+    .lh-crc .up-right {
+      background: url('data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><path d="M7 0h2v14H7zm2 12h7v2H9z" fill="#D8D8D8" fill-rule="evenodd"/></svg>');
+    }
+    .lh-crc .vert-right {
+      background: url('data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><path d="M7 0h2v27H7zm2 12h7v2H9z" fill="#D8D8D8" fill-rule="evenodd"/></svg>');
+    }
+    .lh-crc .vert {
+      background: url('data:image/svg+xml;utf8,<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg"><path d="M7 0h2v26H7z" fill="#D8D8D8" fill-rule="evenodd"/></svg>');
+    }
+    .lh-crc .crc-tree {
+      font-size: 14px;
+      width: 100%;
+      overflow-x: auto;
+    }
+    .lh-crc .crc-node {
+      height: 26px;
+      line-height: 26px;
+      white-space: nowrap;
+    }
+    .lh-crc .crc-node__tree-value {
+      margin-left: 10px;
+    }
+    .lh-crc .crc-node__chain-duration {
+      font-weight: 700;
+    }
+    .lh-crc .crc-node__tree-hostname {
+      color: #595959;
+    }
+    .lh-crc .crc-initial-nav {
+      color: #595959;
+      font-style: italic;
+    }
+  </style>
+  <div class="lh-score__description">
+    Longest chain: <b class="lh-crc__longest_duration"><!-- fill me: longestChain.duration --></b>
+    over <b class="lh-crc__longest_length"><!-- fill me: longestChain.length --></b> requests, totalling
+    <b class="lh-crc__longest_transfersize"><!-- fill me: longestChain.length --></b>
+  </div>
+  <div class="lh-crc">
+    <details class="lh-details">
+      <summary><!-- fill me --></summary>
+      <div class="crc-initial-nav">Initial Navigation</div>
+      <!-- stamp for each chain -->
+      <template id="tmpl-lh-crc__chains">
+        <div class="crc-node">
+          <span class="crc-node__tree-marker">
+            <!-- fill me -->
+          </span>
+          <span class="crc-node__tree-value">
+            <span class="crc-node__tree-file"><!-- fill me: node.request.url.file --></span>
+            <span class="crc-node__tree-hostname">(<!-- fill me: node.request.url.host -->)</span>
+            <!-- fill me -->
+          </span>
+        </div>
+      </template>
+    </details>
+  </div>
+</template>

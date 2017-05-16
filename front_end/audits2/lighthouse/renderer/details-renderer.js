@@ -15,7 +15,7 @@
  */
 'use strict';
 
-/* globals self */
+/* globals self CriticalRequestChainRenderer */
 
 class DetailsRenderer {
   /**
@@ -24,11 +24,20 @@ class DetailsRenderer {
   constructor(dom) {
     /** @private {!DOM} */
     this._dom = dom;
+    /** @private {!Document|!Element} */
+    this._templateContext; // eslint-disable-line no-unused-expressions
+  }
+
+  /**
+   * @param {!Document|!Element} context
+   */
+  setTemplateContext(context) {
+    this._templateContext = context;
   }
 
   /**
    * @param {!DetailsRenderer.DetailsJSON} details
-   * @return {!Element}
+   * @return {!Node}
    */
   render(details) {
     switch (details.type) {
@@ -37,7 +46,9 @@ class DetailsRenderer {
       case 'url':
         return this._renderURL(details);
       case 'thumbnail':
-        return this._renderThumbnail(details);
+        return this._renderThumbnail(/** @type {!DetailsRenderer.ThumbnailDetails} */ (details));
+      case 'filmstrip':
+        return this._renderFilmstrip(/** @type {!DetailsRenderer.FilmstripDetails} */ (details));
       case 'cards':
         return this._renderCards(/** @type {!DetailsRenderer.CardsDetailsJSON} */ (details));
       case 'table':
@@ -45,7 +56,10 @@ class DetailsRenderer {
       case 'code':
         return this._renderCode(details);
       case 'node':
-        return this.renderNode(/** @type {!DetailsRenderer.NodeDetailsJSON} */ (details));
+        return this.renderNode(/** @type {!DetailsRenderer.NodeDetailsJSON} */(details));
+      case 'criticalrequestchain':
+        return CriticalRequestChainRenderer.render(this._dom, this._templateContext,
+            /** @type {!CriticalRequestChainRenderer.CRCDetailsJSON} */ (details));
       case 'list':
         return this._renderList(/** @type {!DetailsRenderer.ListDetailsJSON} */ (details));
       default:
@@ -113,7 +127,6 @@ class DetailsRenderer {
     return element;
   }
 
-
   /**
    * @param {!DetailsRenderer.TableDetailsJSON} details
    * @return {!Element}
@@ -131,14 +144,17 @@ class DetailsRenderer {
     const theadTrElem = this._dom.createChildOf(theadElem, 'tr');
 
     for (const heading of details.itemHeaders) {
-      this._dom.createChildOf(theadTrElem, 'th').appendChild(this.render(heading));
+      const itemType = heading.itemType || 'text';
+      const classes = `lh-table-column--${itemType}`;
+      this._dom.createChildOf(theadTrElem, 'th', classes).appendChild(this.render(heading));
     }
 
     const tbodyElem = this._dom.createChildOf(tableElem, 'tbody');
     for (const row of details.items) {
       const rowElem = this._dom.createChildOf(tbodyElem, 'tr');
       for (const columnItem of row) {
-        this._dom.createChildOf(rowElem, 'td').appendChild(this.render(columnItem));
+        const classes = `lh-table-column--${columnItem.type}`;
+        this._dom.createChildOf(rowElem, 'td', classes).appendChild(this.render(columnItem));
       }
     }
     return element;
@@ -188,6 +204,34 @@ class DetailsRenderer {
 
     element.appendChild(cardsParent);
     return element;
+  }
+
+  /**
+   * @param {!DetailsRenderer.FilmstripDetails} details
+   * @return {!Element}
+   */
+  _renderFilmstrip(details) {
+    const filmstripEl = this._dom.createElement('div', 'lh-filmstrip');
+
+    for (const thumbnail of details.items) {
+      const frameEl = this._dom.createChildOf(filmstripEl, 'div', 'lh-filmstrip__frame');
+
+      let timing = thumbnail.timing.toLocaleString() + ' ms';
+      if (thumbnail.timing > 1000) {
+        timing = Math.round(thumbnail.timing / 100) / 10 + ' s';
+      }
+
+      const timingEl = this._dom.createChildOf(frameEl, 'div', 'lh-filmstrip__timestamp');
+      timingEl.textContent = timing;
+
+      const base64data = thumbnail.data;
+      this._dom.createChildOf(frameEl, 'img', 'lh-filmstrip__thumbnail', {
+        src: `data:image/jpeg;base64,${base64data}`,
+        alt: `Screenshot at ${timing}`,
+      });
+    }
+
+    return filmstripEl;
   }
 
   /**
@@ -243,15 +287,34 @@ DetailsRenderer.NodeDetailsJSON; // eslint-disable-line no-unused-expressions
  */
 DetailsRenderer.CardsDetailsJSON; // eslint-disable-line no-unused-expressions
 
+/**
+ * @typedef {{
+ *     type: string,
+ *     itemType: (string|undefined),
+ *     text: (string|undefined)
+ * }}
+ */
+DetailsRenderer.TableHeaderJSON; // eslint-disable-line no-unused-expressions
+
+/**
+ * @typedef {{
+ *     type: string,
+ *     text: (string|undefined),
+ *     path: (string|undefined),
+ *     selector: (string|undefined),
+ *     snippet:(string|undefined)
+ * }}
+ */
+DetailsRenderer.NodeDetailsJSON; // eslint-disable-line no-unused-expressions
+
 /** @typedef {{
  *     type: string,
  *     header: ({text: string}|undefined),
  *     items: !Array<!Array<!DetailsRenderer.DetailsJSON>>,
- *     itemHeaders: !Array<!DetailsRenderer.DetailsJSON>
+ *     itemHeaders: !Array<!DetailsRenderer.TableHeaderJSON>
  * }}
  */
 DetailsRenderer.TableDetailsJSON; // eslint-disable-line no-unused-expressions
-
 
 /** @typedef {{
  *     type: string,
@@ -260,3 +323,10 @@ DetailsRenderer.TableDetailsJSON; // eslint-disable-line no-unused-expressions
  * }}
  */
 DetailsRenderer.ThumbnailDetails; // eslint-disable-line no-unused-expressions
+
+/** @typedef {{
+ *     type: string,
+ *     items: !Array<{timing: number, timestamp: number, data: string}>,
+ * }}
+ */
+DetailsRenderer.FilmstripDetails; // eslint-disable-line no-unused-expressions

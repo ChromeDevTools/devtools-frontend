@@ -39,6 +39,10 @@
   --lh-score-highlight-bg: #fafafa;
   --lh-score-icon-background-size: 24px;
   --lh-score-margin: calc(var(--default-padding) / 2);
+
+  --lh-table-header-bg: #ccc;
+  --lh-table-higlight-bg: #fafafa;
+
   --lh-sparkline-height: 10px;
   --lh-audit-score-width: 35px;
   --lh-category-score-width: 60px;
@@ -125,14 +129,6 @@ summary {
   margin-bottom: 2px;
 }
 
-.lh-list__item::after {
-  content: ', ';
-}
-.lh-list__item:last-child::after {
-  content: '';
-}
-
-
 /* Node */
 .lh-node {
   display: block;
@@ -140,7 +136,10 @@ summary {
   word-break: break-word;
   color: hsl(174, 100%, 27%);
 }
-
+span.lh-node:hover {
+    background: hsl(0, 0%, 98%);
+    border-radius: 2px;
+}
 
 /* Card */
 .lh-scorecards {
@@ -385,6 +384,28 @@ summary {
   color: var(--fail-color);
 }
 
+/* Filmstrip */
+
+.lh-filmstrip {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: var(--default-padding);
+}
+
+.lh-filmstrip__frame {
+  text-align: center;
+}
+
+.lh-filmstrip__timestamp {
+  margin-bottom: 5px;
+}
+
+.lh-filmstrip__thumbnail {
+  border: 1px solid var(--report-secondary-border-color);
+  max-height: 100px;
+}
+
 /* Sparkline */
 
 .lh-sparkline {
@@ -619,6 +640,38 @@ summary.lh-passed-audits-summary::-webkit-details-marker {
 
 .lh-table {
   --image-preview-size: 24px;
+  border: 1px solid var(--report-secondary-border-color);
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.lh-table thead {
+  background: var(--lh-table-header-bg);
+}
+
+.lh-table tbody tr:nth-child(even) {
+  background-color: var(--lh-table-higlight-bg);
+}
+
+.lh-table th,
+.lh-table td {
+  padding: 10px;
+  overflow: auto;
+}
+
+.lh-table-column--text {
+  text-align: right;
+}
+
+.lh-table-column--thumbnail {
+  width: calc(var(--image-preview-size) * 2);
+}
+
+.lh-table-column--url {
+  text-align: left;
+  min-width: 250px;
+  white-space: nowrap;
 }
 
 .lh-thumbnail {

@@ -704,7 +704,9 @@ Audits2.DetailsRenderer = class extends DetailsRenderer {
           return;
 
         var element = Components.DOMPresentationUtils.linkifyNodeReference(node, undefined, detailsItem.snippet);
-        origElement.parentNode.replaceChild(element, origElement);
+        origElement.title = '';
+        origElement.textContent = '';
+        origElement.appendChild(element);
       });
     });
   }

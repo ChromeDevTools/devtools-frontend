@@ -26,7 +26,7 @@ class DOM {
     this._document = document;
   }
 
- /**
+  /**
    * @param {string} name
    * @param {string=} className
    * @param {!Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
@@ -48,15 +48,7 @@ class DOM {
     return element;
   }
 
- /**
-   * @param {string} text
-   * @return {!Node}
-   */
-  createText(text) {
-    return this._document.createTextNode(text);
-  }
-
- /**
+  /**
    * @param {!Element} parentElem
    * @param {string} elementName
    * @param {string=} className

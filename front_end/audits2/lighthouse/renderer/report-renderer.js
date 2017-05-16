@@ -214,6 +214,7 @@ ReportRenderer.GroupJSON; // eslint-disable-line no-unused-expressions
  *     lighthouseVersion: string,
  *     userAgent: string,
  *     generatedTime: string,
+ *     timing: {total: number},
  *     initialUrl: string,
  *     url: string,
  *     artifacts: {traces: !Object},

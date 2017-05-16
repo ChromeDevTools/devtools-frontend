@@ -139,7 +139,7 @@ Main.Main = class {
     }
 
     Runtime.experiments.setDefaultExperiments(
-        ['continueToLocationMarkers', 'autoAttachToCrossProcessSubframes', 'objectPreviews']);
+        ['continueToLocationMarkers', 'autoAttachToCrossProcessSubframes', 'objectPreviews', 'audits2']);
   }
 
   /**

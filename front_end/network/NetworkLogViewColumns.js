@@ -118,8 +118,7 @@ Network.NetworkLogViewColumns = class {
   }
 
   _setupWaterfall() {
-    this._waterfallColumn =
-        new Network.NetworkWaterfallColumn(this._networkLogView.rowHeight(), this._networkLogView.calculator());
+    this._waterfallColumn = new Network.NetworkWaterfallColumn(this._networkLogView.calculator());
 
     this._waterfallColumn.element.addEventListener('contextmenu', handleContextMenu.bind(this));
     this._waterfallColumn.element.addEventListener('mousewheel', this._onMouseWheel.bind(this, false), {passive: true});
@@ -235,11 +234,12 @@ Network.NetworkLogViewColumns = class {
 
   _updateRowsSize() {
     var largeRows = !!this._networkLogLargeRowsSetting.get();
+
     this._dataGrid.element.classList.toggle('small', !largeRows);
     this._dataGrid.scheduleUpdate();
 
     this._waterfallScrollerWidthIsStale = true;
-    this._waterfallColumn.setRowHeight(this._networkLogView.rowHeight());
+    this._waterfallColumn.setRowHeight(largeRows ? 41 : 21);
     this._waterfallScroller.classList.toggle('small', !largeRows);
     this._waterfallHeaderElement.classList.toggle('small', !largeRows);
     this._waterfallColumn.setHeaderHeight(this._waterfallScroller.offsetTop);

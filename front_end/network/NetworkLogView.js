@@ -47,6 +47,7 @@ Network.NetworkLogView = class extends UI.VBox {
     this._networkResourceTypeFiltersSetting = Common.settings.createSetting('networkResourceTypeFilters', {});
 
     this._filterBar = filterBar;
+    this._rawRowHeight = 0;
     this._progressBarContainer = progressBarContainer;
     this._networkLogLargeRowsSetting = networkLogLargeRowsSetting;
     this._networkLogLargeRowsSetting.addChangeListener(updateRowHeight.bind(this), this);
@@ -62,7 +63,8 @@ Network.NetworkLogView = class extends UI.VBox {
      */
     function updateRowHeight() {
       /** @type {number} */
-      this._rowHeight = !!this._networkLogLargeRowsSetting.get() ? 41 : 21;
+      this._rawRowHeight = !!this._networkLogLargeRowsSetting.get() ? 41 : 21;
+      this._updateRowHeight();
     }
     updateRowHeight.call(this);
 
@@ -367,6 +369,10 @@ Network.NetworkLogView = class extends UI.VBox {
     if (groupLookup)
       groupLookup.reset();
     this._invalidateAllItems();
+  }
+
+  _updateRowHeight() {
+    this._rowHeight = Math.floor(this._rawRowHeight * window.devicePixelRatio) / window.devicePixelRatio;
   }
 
   /**
@@ -798,6 +804,13 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   /**
+   * @override
+   */
+  onResize() {
+    this._updateRowHeight();
+  }
+
+  /**
    * @return {!Array<!Network.NetworkNode>}
    */
   flatNodesList() {
@@ -927,10 +940,9 @@ Network.NetworkLogView = class extends UI.VBox {
     this._mainRequestLoadTime = -1;
     this._mainRequestDOMContentLoadedTime = -1;
 
-    if (this._dataGrid) {
-      this._dataGrid.rootNode().removeChildren();
-      this._updateSummaryBar();
-    }
+    this._dataGrid.rootNode().removeChildren();
+    this._updateSummaryBar();
+    this._dataGrid.setStickToBottom(true);
   }
 
   /**

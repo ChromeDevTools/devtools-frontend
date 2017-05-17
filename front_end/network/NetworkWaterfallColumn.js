@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 Network.NetworkWaterfallColumn = class extends UI.VBox {
   /**
-   * @param {number} rowHeight
    * @param {!Network.NetworkTimeCalculator} calculator
    */
-  constructor(rowHeight, calculator) {
+  constructor(calculator) {
     // TODO(allada) Make this a shadowDOM when the NetworkWaterfallColumn gets moved into NetworkLogViewColumns.
     super(false);
     this.registerRequiredCSS('network/networkWaterfallColumn.css');
@@ -24,9 +23,13 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this._rightPadding = 0;
     this._scrollTop = 0;
 
-    this._rowHeight = rowHeight;
     this._headerHeight = 0;
     this._calculator = calculator;
+
+    // this._rawRowHeight captures model height (41 or 21px),
+    // this._rowHeight is computed height of the row in CSS pixels, can be 20.8 for zoomed-in content.
+    this._rawRowHeight = 0;
+    this._rowHeight = 0;
 
     this._offsetWidth = 0;
     this._offsetHeight = 0;
@@ -248,7 +251,12 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    * @param {number} height
    */
   setRowHeight(height) {
-    this._rowHeight = height;
+    this._rawRowHeight = height;
+    this._updateRowHeight();
+  }
+
+  _updateRowHeight() {
+    this._rowHeight = Math.floor(this._rawRowHeight * window.devicePixelRatio) / window.devicePixelRatio;
   }
 
   /**
@@ -330,6 +338,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
    */
   onResize() {
     super.onResize();
+    this._updateRowHeight();
     this._calculateCanvasSize();
     this.scheduleDraw();
   }

@@ -109,7 +109,7 @@ Main.Main = class {
     Runtime.experiments.register('terminalInDrawer', 'Terminal in drawer', true);
 
     // Timeline
-    Runtime.experiments.register('timelineColorByProduct', 'Timeline: group and color by product', true);
+    Runtime.experiments.register('timelineColorByProduct', 'Timeline: color by product', true);
     Runtime.experiments.register('timelineEventInitiators', 'Timeline: event initiators');
     Runtime.experiments.register('timelineFlowEvents', 'Timeline: flow events', true);
     Runtime.experiments.register('timelineInvalidationTracking', 'Timeline: invalidation tracking', true);

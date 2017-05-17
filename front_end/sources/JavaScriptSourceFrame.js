@@ -82,6 +82,8 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     this._breakpointDecorations = new Set();
     /** @type {!Map<!Bindings.BreakpointManager.Breakpoint, !Sources.JavaScriptSourceFrame.BreakpointDecoration>} */
     this._decorationByBreakpoint = new Map();
+    /** @type {!Set<number>} */
+    this._possibleBreakpointsRequested = new Set();
 
     /** @type {!Map.<!SDK.DebuggerModel, !Bindings.ResourceScriptFile>}*/
     this._scriptFileForDebuggerModel = new Map();
@@ -1080,42 +1082,67 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
         lineNumbers.add(location.lineNumber);
       }
       delete this._scheduledBreakpointDecorationUpdates;
+      var waitingForInlineDecorations = false;
       for (var lineNumber of lineNumbers) {
-        this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint', false);
-        this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint-disabled', false);
-        this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint-conditional', false);
-
         var decorations = this._lineBreakpointDecorations(lineNumber);
-        var actualBookmarks =
-            new Set(decorations.map(decoration => decoration.bookmark).filter(bookmark => !!bookmark));
-        var lineEnd = this.textEditor.line(lineNumber).length;
-        var bookmarks = this.textEditor.bookmarks(
-            new TextUtils.TextRange(lineNumber, 0, lineNumber, lineEnd),
-            Sources.JavaScriptSourceFrame.BreakpointDecoration.bookmarkSymbol);
-        for (var bookmark of bookmarks) {
-          if (!actualBookmarks.has(bookmark))
-            bookmark.clear();
-        }
-        if (!decorations.length)
+        updateGutter.call(this, lineNumber, decorations);
+        if (this._possibleBreakpointsRequested.has(location.lineNumber)) {
+          waitingForInlineDecorations = true;
           continue;
+        }
+        updateInlineDecorations.call(this, lineNumber, decorations);
+      }
+      if (!waitingForInlineDecorations)
+        this._breakpointDecorationsUpdatedForTest();
+    }
+
+    /**
+     * @param {number} lineNumber
+     * @param {!Array<!Sources.JavaScriptSourceFrame.BreakpointDecoration>} decorations
+     * @this {Sources.JavaScriptSourceFrame}
+     */
+    function updateGutter(lineNumber, decorations) {
+      this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint', false);
+      this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint-disabled', false);
+      this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint-conditional', false);
+
+      if (decorations.length) {
         decorations.sort(Sources.JavaScriptSourceFrame.BreakpointDecoration.mostSpecificFirst);
         this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint', true);
         this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint-disabled', !decorations[0].enabled || this._muted);
         this.textEditor.toggleLineClass(lineNumber, 'cm-breakpoint-conditional', !!decorations[0].condition);
-        if (decorations.length > 1) {
-          for (var decoration of decorations) {
-            decoration.update();
-            if (!this._muted)
-              decoration.show();
-            else
-              decoration.hide();
-          }
-        } else {
-          decorations[0].update();
-          decorations[0].hide();
-        }
       }
-      this._breakpointDecorationsUpdatedForTest();
+    }
+
+    /**
+     * @param {number} lineNumber
+     * @param {!Array<!Sources.JavaScriptSourceFrame.BreakpointDecoration>} decorations
+     * @this {Sources.JavaScriptSourceFrame}
+     */
+    function updateInlineDecorations(lineNumber, decorations) {
+      var actualBookmarks = new Set(decorations.map(decoration => decoration.bookmark).filter(bookmark => !!bookmark));
+      var lineEnd = this.textEditor.line(lineNumber).length;
+      var bookmarks = this.textEditor.bookmarks(
+          new TextUtils.TextRange(lineNumber, 0, lineNumber, lineEnd),
+          Sources.JavaScriptSourceFrame.BreakpointDecoration.bookmarkSymbol);
+      for (var bookmark of bookmarks) {
+        if (!actualBookmarks.has(bookmark))
+          bookmark.clear();
+      }
+      if (!decorations.length)
+        return;
+      if (decorations.length > 1) {
+        for (var decoration of decorations) {
+          decoration.update();
+          if (!this._muted)
+            decoration.show();
+          else
+            decoration.hide();
+        }
+      } else {
+        decorations[0].update();
+        decorations[0].hide();
+      }
     }
   }
 
@@ -1220,7 +1247,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     this._decorationByBreakpoint.set(breakpoint, decoration);
     this._updateBreakpointDecoration(decoration);
     if (!lineDecorations.length) {
-      this._willAddInlineDecorationsForTest();
+      this._possibleBreakpointsRequested.add(uiLocation.lineNumber);
       this._breakpointManager
           .possibleBreakpoints(
               this._debuggerSourceCode, new TextUtils.TextRange(uiLocation.lineNumber, 0, uiLocation.lineNumber + 1, 0))
@@ -1233,11 +1260,12 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
      * @param {!Array<!Workspace.UILocation>} possibleLocations
      */
     function addInlineDecorations(lineNumber, possibleLocations) {
+      this._possibleBreakpointsRequested.delete(lineNumber);
       var decorations = this._lineBreakpointDecorations(lineNumber);
-      if (!decorations.some(decoration => !!decoration.breakpoint)) {
-        this._didAddInlineDecorationsForTest(false);
+      for (var decoration of decorations)
+        this._updateBreakpointDecoration(decoration);
+      if (!decorations.some(decoration => !!decoration.breakpoint))
         return;
-      }
       /** @type {!Set<number>} */
       var columns = new Set();
       for (var decoration of decorations) {
@@ -1246,7 +1274,6 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
           continue;
         columns.add(location.columnNumber);
       }
-      var updateWasScheduled = false;
       for (var location of possibleLocations) {
         if (columns.has(location.columnNumber))
           continue;
@@ -1257,20 +1284,9 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
         decoration.element.addEventListener(
             'contextmenu', this._inlineBreakpointContextMenu.bind(this, decoration), true);
         this._breakpointDecorations.add(decoration);
-        updateWasScheduled = true;
         this._updateBreakpointDecoration(decoration);
       }
-      this._didAddInlineDecorationsForTest(updateWasScheduled);
     }
-  }
-
-  _willAddInlineDecorationsForTest() {
-  }
-
-  /**
-   * @param {boolean} updateWasScheduled
-   */
-  _didAddInlineDecorationsForTest(updateWasScheduled) {
   }
 
   /**

@@ -301,6 +301,29 @@ Console.ConsoleViewMessage = class {
    * @return {?Element}
    */
   _buildMessageBadge() {
+    var badgeElement = this._badgeElement();
+    if (!badgeElement)
+      return null;
+    badgeElement.classList.add('console-message-badge');
+    return badgeElement;
+  }
+
+  /**
+   * @return {?Element}
+   */
+  _badgeElement() {
+    if (this._message._url)
+      return this._badgePool.badgeForURL(new Common.ParsedURL(this._message._url));
+    if (this._message.stackTrace) {
+      var stackTrace = this._message.stackTrace;
+      while (stackTrace) {
+        for (var callFrame of this._message.stackTrace.callFrames) {
+          if (callFrame.url)
+            return this._badgePool.badgeForURL(new Common.ParsedURL(callFrame.url));
+        }
+        stackTrace = stackTrace.parent;
+      }
+    }
     if (!this._message.executionContextId)
       return null;
     var runtimeModel = this._message.runtimeModel();
@@ -315,9 +338,7 @@ Console.ConsoleViewMessage = class {
     var frame = resourceTreeModel.frameForId(executionContext.frameId);
     if (!frame || !frame.parentFrame)
       return null;
-    var badgeElement = this._badgePool.badgeForFrame(frame);
-    badgeElement.classList.add('console-message-badge');
-    return badgeElement;
+    return this._badgePool.badgeForFrame(frame);
   }
 
   /**

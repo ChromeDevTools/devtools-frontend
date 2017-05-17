@@ -54,6 +54,8 @@ Elements.ElementsPanel = class extends UI.Panel {
     stackElement.appendChild(crumbsContainer);
 
     this._splitWidget.setMainWidget(this._searchableView);
+    /** @type {?Elements.ElementsPanel._splitMode} */
+    this._splitMode = null;
 
     this._contentElement.id = 'elements-content';
     // FIXME: crbug.com/425984
@@ -349,8 +351,7 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @override
    */
   onResize() {
-    if (Common.moduleSetting('sidebarPosition').get() === 'auto')
-      this.element.window().requestAnimationFrame(this._updateSidebarPosition.bind(this));  // Do not force layout.
+    this.element.window().requestAnimationFrame(this._updateSidebarPosition.bind(this));  // Do not force layout.
     this._updateTreeOutlineVisibleWidth();
   }
 
@@ -823,20 +824,21 @@ Elements.ElementsPanel = class extends UI.Panel {
   }
 
   _updateSidebarPosition() {
-    var horizontally;
-    var position = Common.moduleSetting('sidebarPosition').get();
-    if (position === 'right')
-      horizontally = false;
-    else if (position === 'bottom')
-      horizontally = true;
-    else
-      horizontally = UI.inspectorView.element.offsetWidth < 680;
-
-    if (this.sidebarPaneView && horizontally === !this._splitWidget.isVertical())
-      return;
-
     if (this.sidebarPaneView && this.sidebarPaneView.tabbedPane().shouldHideOnDetach())
       return;  // We can't reparent extension iframes.
+
+    var splitMode;
+    var position = Common.moduleSetting('sidebarPosition').get();
+    if (position === 'right' || (position === 'auto' && UI.inspectorView.element.offsetWidth > 680))
+      splitMode = Elements.ElementsPanel._splitMode.Vertical;
+    else if (UI.inspectorView.element.offsetWidth > 415)
+      splitMode = Elements.ElementsPanel._splitMode.Horizontal;
+    else
+      splitMode = Elements.ElementsPanel._splitMode.Slim;
+
+    if (this.sidebarPaneView && splitMode === this._splitMode)
+      return;
+    this._splitMode = splitMode;
 
     var extensionSidebarPanes = Extensions.extensionServer.sidebarPanes();
     if (this.sidebarPaneView) {
@@ -844,7 +846,7 @@ Elements.ElementsPanel = class extends UI.Panel {
       this._splitWidget.uninstallResizer(this.sidebarPaneView.tabbedPane().headerElement());
     }
 
-    this._splitWidget.setVertical(!horizontally);
+    this._splitWidget.setVertical(this._splitMode === Elements.ElementsPanel._splitMode.Vertical);
     this.showToolbarPane(null);
 
     var matchedStylesContainer = new UI.VBox();
@@ -889,24 +891,21 @@ Elements.ElementsPanel = class extends UI.Panel {
     this._popoverHelper.setHasPadding(true);
     this._popoverHelper.setTimeout(0);
 
-    if (horizontally) {
-      // Styles and computed are merged into a single tab.
+    if (this._splitMode !== Elements.ElementsPanel._splitMode.Vertical)
       this._splitWidget.installResizer(tabbedPane.headerElement());
 
-      var stylesView = new UI.SimpleView(Common.UIString('Styles'));
+    var stylesView = new UI.SimpleView(Common.UIString('Styles'));
+    this.sidebarPaneView.appendView(stylesView);
+    if (splitMode === Elements.ElementsPanel._splitMode.Horizontal) {
+      // Styles and computed are merged into a single tab.
       stylesView.element.classList.add('flex-auto');
 
       var splitWidget = new UI.SplitWidget(true, true, 'stylesPaneSplitViewState', 215);
       splitWidget.show(stylesView.element);
-
       splitWidget.setMainWidget(matchedStylesContainer);
       splitWidget.setSidebarWidget(computedStylePanesWrapper);
-
-      this.sidebarPaneView.appendView(stylesView);
-      this._stylesViewToReveal = stylesView;
     } else {
       // Styles and computed are in separate tabs.
-      var stylesView = new UI.SimpleView(Common.UIString('Styles'));
       stylesView.element.classList.add('flex-auto', 'metrics-and-styles');
       matchedStylesContainer.show(stylesView.element);
 
@@ -915,12 +914,11 @@ Elements.ElementsPanel = class extends UI.Panel {
       computedStylePanesWrapper.show(computedView.element);
 
       tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, tabSelected, this);
-      this.sidebarPaneView.appendView(stylesView);
       this.sidebarPaneView.appendView(computedView);
-      this._stylesViewToReveal = stylesView;
     }
+    this._stylesViewToReveal = stylesView;
 
-    showMetrics.call(this, horizontally);
+    showMetrics.call(this, this._splitMode === Elements.ElementsPanel._splitMode.Horizontal);
 
     this.sidebarPaneView.appendApplicableItems('elements-sidebar');
     for (var i = 0; i < extensionSidebarPanes.length; ++i)
@@ -947,6 +945,13 @@ Elements.ElementsPanel = class extends UI.Panel {
 };
 
 Elements.ElementsPanel._elementsSidebarViewTitleSymbol = Symbol('title');
+
+/** @enum {symbol} */
+Elements.ElementsPanel._splitMode = {
+  Vertical: Symbol('Vertical'),
+  Horizontal: Symbol('Horizontal'),
+  Slim: Symbol('Slim'),
+};
 
 /**
  * @implements {UI.ContextMenu.Provider}

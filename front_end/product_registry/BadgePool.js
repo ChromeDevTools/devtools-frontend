@@ -75,10 +75,9 @@ ProductRegistry.BadgePool = class {
    * @param {!Element} badgeElement
    */
   async _renderBadge(badgeElement) {
+    var registry = await ProductRegistry.instance();
     if (!this._badgeElements.has(badgeElement))
       return;
-
-    var registry = await ProductRegistry.instance();
     var parsedUrl = await this._badgeElements.get(badgeElement)();
     var entryName = registry.nameForUrl(parsedUrl);
 

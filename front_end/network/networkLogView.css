@@ -359,3 +359,12 @@
     margin-right: 4px;
     margin-bottom: -2px;
 }
+
+.network-frame-group-icon {
+    display: inline-block;
+    margin: -8px -2px;
+}
+
+.network-frame-group-badge {
+    margin-right: 4px;
+}

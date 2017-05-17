@@ -76,8 +76,11 @@ Network.FrameGroupNode = class extends Network.NetworkGroupNode {
     super.renderCell(cell, columnId);
     if (columnId === 'name') {
       var name = this.displayName();
-      if (!this._productBadge)
+      if (!this._productBadge) {
         this._productBadge = this.parentView().badgePool.badgeForFrame(this._frame);
+        this._productBadge.classList.add('network-frame-group-badge');
+      }
+      cell.appendChild(UI.Icon.create('largeicon-navigator-frame', 'network-frame-group-icon'));
       cell.appendChild(this._productBadge);
       cell.createTextChild(name);
       cell.title = name;

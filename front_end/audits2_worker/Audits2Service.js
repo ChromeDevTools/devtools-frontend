@@ -56,7 +56,11 @@ var Audits2Service = class {
           result.artifacts = {traces: traces};
           return result;
         })
-        .catchException(null);
+        .catch(err => ({
+                 fatal: true,
+                 message: err.message,
+                 stack: err.stack,
+               }));
   }
 
   /**

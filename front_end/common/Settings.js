@@ -766,6 +766,14 @@ Common.VersionController = class {
     oldSetting.remove();
   }
 
+  _updateVersionFrom24To25() {
+    var defaultColumns = {status: true, type: true, initiator: true, size: true, time: true};
+    var networkLogColumnsSetting = Common.settings.createSetting('networkLogColumns', defaultColumns);
+    var columns = networkLogColumnsSetting.get();
+    delete columns.product;
+    networkLogColumnsSetting.set(columns);
+  }
+
   _migrateSettingsFromLocalStorage() {
     // This step migrates all the settings except for the ones below into the browser profile.
     var localSettings = new Set([
@@ -798,7 +806,7 @@ Common.VersionController = class {
 };
 
 Common.VersionController._currentVersionName = 'inspectorVersion';
-Common.VersionController.currentVersion = 24;
+Common.VersionController.currentVersion = 25;
 
 /**
  * @type {!Common.Settings}

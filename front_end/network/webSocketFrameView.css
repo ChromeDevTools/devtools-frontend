@@ -43,3 +43,7 @@
     background-color: rgb(255, 237, 237);
     color: rgb(182, 0, 0);
 }
+
+.websocket-frame-view .toolbar {
+    border-bottom: 1px solid #dadada;
+}

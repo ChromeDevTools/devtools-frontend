@@ -44,7 +44,7 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     ]);
 
     this._dataGrid = new DataGrid.SortableDataGrid(columns);
-    this._dataGrid.setRowContextMenuCallback(onRowContextMenu);
+    this._dataGrid.setRowContextMenuCallback(onRowContextMenu.bind(this));
     this._dataGrid.setStickToBottom(true);
     this._dataGrid.setCellClass('websocket-frame-view-td');
     this._timeComparator =
@@ -57,10 +57,34 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     this._dataGrid.setName('ResourceWebSocketFrameView');
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SelectedNode, this._onFrameSelected, this);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, this._onFrameDeselected, this);
-    this._splitWidget.setMainWidget(this._dataGrid.asWidget());
 
-    var view = new UI.EmptyWidget('Select frame to browse its content.');
-    this._splitWidget.setSidebarWidget(view);
+    this._mainToolbar = new UI.Toolbar('');
+
+    this._clearAllButton = new UI.ToolbarButton(Common.UIString('Clear All'), 'largeicon-clear');
+    this._clearAllButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearFrames, this);
+    this._mainToolbar.appendToolbarItem(this._clearAllButton);
+
+    this._filterTypeCombobox = new UI.ToolbarComboBox(this._updateFilterSetting.bind(this));
+    for (var filterItem of Network.ResourceWebSocketFrameView._filterTypes) {
+      var option = this._filterTypeCombobox.createOption(filterItem.label, filterItem.label, filterItem.name);
+      this._filterTypeCombobox.addOption(option);
+    }
+    this._mainToolbar.appendToolbarItem(this._filterTypeCombobox);
+    this._filterType = null;
+
+    var placeholder = 'Enter regex, for example: (web)?socket';
+    this._filterTextInput = new UI.ToolbarInput(Common.UIString(placeholder), 0.4, undefined, true);
+    this._filterTextInput.addEventListener(UI.ToolbarInput.Event.TextChanged, this._updateFilterSetting, this);
+    this._mainToolbar.appendToolbarItem(this._filterTextInput);
+    this._filterRegex = null;
+
+    var mainContainer = new UI.VBox();
+    mainContainer.element.appendChild(this._mainToolbar.element);
+    this._dataGrid.asWidget().show(mainContainer.element);
+    this._splitWidget.setMainWidget(mainContainer);
+
+    this._frameEmptyWidget = new UI.EmptyWidget(Common.UIString('Select frame to browse its content.'));
+    this._splitWidget.setSidebarWidget(this._frameEmptyWidget);
 
     /** @type {?Network.ResourceWebSocketFrameNode} */
     this._selectedNode = null;
@@ -68,11 +92,14 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     /**
      * @param {!UI.ContextMenu} contextMenu
      * @param {!DataGrid.DataGridNode} node
+     * @this {Network.ResourceWebSocketFrameView}
      */
     function onRowContextMenu(contextMenu, node) {
       contextMenu.appendItem(
           Common.UIString.capitalize('Copy ^message'),
           InspectorFrontendHost.copyText.bind(InspectorFrontendHost, node.data.data));
+      contextMenu.appendSeparator();
+      contextMenu.appendItem(Common.UIString.capitalize('Clear ^all'), this._clearFrames.bind(this));
     }
   }
 
@@ -107,11 +134,37 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
    */
   _frameAdded(event) {
     var frame = /** @type {!SDK.NetworkRequest.WebSocketFrame} */ (event.data);
+    if (!this._frameFilter(frame))
+      return;
     this._dataGrid.insertChild(new Network.ResourceWebSocketFrameNode(this._request.url(), frame));
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {!SDK.NetworkRequest.WebSocketFrame} frame
+   * @return {boolean}
+   */
+  _frameFilter(frame) {
+    if (this._filterType && frame.type !== this._filterType)
+      return false;
+    return !this._filterRegex || this._filterRegex.test(frame.text);
+  }
+
+  _clearFrames() {
+    // TODO(allada): actially remove frames from request.
+    this._request[Network.ResourceWebSocketFrameView._clearFrameOffsetSymbol] = this._request.frames().length;
+    this.refresh();
+  }
+
+  _updateFilterSetting() {
+    var text = this._filterTextInput.value();
+    var type = this._filterTypeCombobox.selectedOption().value;
+    this._filterRegex = text ? new RegExp(text, 'i') : null;
+    this._filterType = type === 'all' ? null : type;
+    this.refresh();
+  }
+
+  /**
+  * @param {!Common.Event} event
    */
   _onFrameSelected(event) {
     var selectedNode = /** @type {!Network.ResourceWebSocketFrameNode} */ (event.data);
@@ -148,13 +201,18 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
    */
   _onFrameDeselected(event) {
     this._currentSelectedNode = null;
+    this._splitWidget.setSidebarWidget(this._frameEmptyWidget);
   }
 
   refresh() {
     this._dataGrid.rootNode().removeChildren();
+
+    var url = this._request.url();
     var frames = this._request.frames();
-    for (var i = 0; i < frames.length; ++i)
-      this._dataGrid.insertChild(new Network.ResourceWebSocketFrameNode(this._request.url(), frames[i]));
+    var offset = this._request[Network.ResourceWebSocketFrameView._clearFrameOffsetSymbol] || 0;
+    frames = frames.slice(offset);
+    frames = frames.filter(this._frameFilter.bind(this));
+    frames.forEach(frame => this._dataGrid.insertChild(new Network.ResourceWebSocketFrameNode(url, frame)));
   }
 
   _sortItems() {
@@ -185,6 +243,12 @@ Network.ResourceWebSocketFrameView.opCodeDescriptions = (function() {
   return map;
 })();
 
+/** @type {!Array<!UI.NamedBitSetFilterUI.Item>} */
+Network.ResourceWebSocketFrameView._filterTypes = [
+  {name: 'all', label: Common.UIString('All')},
+  {name: 'send', label: Common.UIString('Send')},
+  {name: 'receive', label: Common.UIString('Receive')},
+];
 
 /**
  * @unrestricted
@@ -253,3 +317,5 @@ Network.ResourceWebSocketFrameNode = class extends DataGrid.SortableDataGridNode
 Network.ResourceWebSocketFrameNodeTimeComparator = function(a, b) {
   return a._frame.time - b._frame.time;
 };
+
+Network.ResourceWebSocketFrameView._clearFrameOffsetSymbol = Symbol('ClearFrameOffset');

@@ -40,6 +40,8 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
 
     this._panel = panel;
 
+    this._shouldRestoreSelection = true;
+
     this._sidebarTree = new UI.TreeOutlineInShadow();
     this._sidebarTree.element.classList.add('resources-sidebar');
     this._sidebarTree.registerRequiredCSS('resources/resourcesSidebar.css');
@@ -105,8 +107,6 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     /** @type {!Object.<string, boolean>} */
     this._domains = {};
 
-    this._shouldRestoreSelection = true;
-
     this._sidebarTree.contentElement.addEventListener('mousemove', this._onmousemove.bind(this), false);
     this._sidebarTree.contentElement.addEventListener('mouseleave', this._onmouseleave.bind(this), false);
 
@@ -115,6 +115,10 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
     SDK.targetManager.addModelListener(
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.WillReloadPage, this._willReloadPage, this);
+
+    var selection = this._panel.lastSelectedItemPath();
+    if (this._shouldRestoreSelection && !selection.length)
+      this._manifestTreeElement.select();
   }
 
   /**
@@ -244,14 +248,15 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
       return;
     var element = event.data;
     var index = selection.indexOf(element.itemURL);
-    if (index > 0)
-      element.expand();
-    if (index)
+    if (index < 0)
       return;
     for (var parent = element.parent; parent; parent = parent.parent)
       parent.expand();
+    if (index > 0)
+      element.expand();
     element.select();
-    this._shouldRestoreSelection = false;
+    if (index === 0)
+      this._shouldRestoreSelection = false;
   }
 
   _reset() {

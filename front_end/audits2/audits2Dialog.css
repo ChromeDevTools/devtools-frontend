@@ -59,11 +59,6 @@ header {
     content: "";
 }
 
-.audits2-report-error {
-    display: block;
-    margin-top: 5px;
-}
-
 button {
     margin: 15px 10px;
 }

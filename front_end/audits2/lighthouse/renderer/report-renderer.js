@@ -176,7 +176,6 @@ if (typeof module !== 'undefined' && module.exports) {
  *       rawValue: (number|undefined),
  *       description: string,
  *       informative: boolean,
- *       manual: boolean,
  *       debugString: string,
  *       displayValue: string,
  *       helpText: string,

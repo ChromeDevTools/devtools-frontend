@@ -51,6 +51,8 @@ Network.NetworkPanel = class extends UI.Panel {
     this._filterBar = new UI.FilterBar('networkPanel', true);
     this._filterBar.show(this.element);
 
+    this._filmStripPlaceholderElement = this.element.createChild('div');
+
     // Create top overview component.
     this._overviewPane = new PerfUI.TimelineOverviewPane('network');
     this._overviewPane.addEventListener(
@@ -58,6 +60,8 @@ Network.NetworkPanel = class extends UI.Panel {
     this._overviewPane.element.id = 'network-overview-panel';
     this._networkOverview = new Network.NetworkOverview();
     this._overviewPane.setOverviewControls([this._networkOverview]);
+    this._overviewPlaceholderElement = this.element.createChild('div');
+
     this._calculator = new Network.NetworkTransferTimeCalculator();
 
     this._splitWidget = new UI.SplitWidget(true, false, 'networkPanelSplitViewState');
@@ -296,7 +300,7 @@ Network.NetworkPanel = class extends UI.Panel {
   _toggleShowOverview() {
     var toggled = this._networkLogShowOverviewSetting.get();
     if (toggled)
-      this._overviewPane.show(this.element, this._splitWidget.element);
+      this._overviewPane.show(this._overviewPlaceholderElement);
     else
       this._overviewPane.detach();
     this.doResize();
@@ -310,7 +314,7 @@ Network.NetworkPanel = class extends UI.Panel {
       this._filmStripView.element.classList.add('network-film-strip');
       this._filmStripRecorder =
           new Network.NetworkPanel.FilmStripRecorder(this._networkLogView.timeCalculator(), this._filmStripView);
-      this._filmStripView.show(this.element, this._overviewPane.element);
+      this._filmStripView.show(this._filmStripPlaceholderElement);
       this._filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameSelected, this._onFilmFrameSelected, this);
       this._filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameEnter, this._onFilmFrameEnter, this);
       this._filmStripView.addEventListener(PerfUI.FilmStripView.Events.FrameExit, this._onFilmFrameExit, this);

@@ -667,7 +667,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     var recordKey =
         encloseWithTag('b', UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.toggle-recording')[0].name);
-    var reloadKey = encloseWithTag('b', UI.shortcutRegistry.shortcutDescriptorsForAction('main.reload')[0].name);
+    var reloadKey =
+        encloseWithTag('b', UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.record-reload')[0].name);
     var navigateNode = encloseWithTag('b', Common.UIString('WASD'));
 
     this._landingPage = new UI.VBox();
@@ -678,8 +679,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     var reloadButton = UI.createInlineButton(UI.Toolbar.createActionButtonForId('timeline.record-reload'));
 
     centered.createChild('p').appendChild(UI.formatLocalized(
-        'Click the record button %s or hit %s to capture a new recording.\n' +
-        'Click the reload button %s or hit %s to record and evaluate the page load.',
+        'Click the record button %s or hit %s to start a new recording.\n' +
+            'Click the reload button %s or hit %s to record the page load.',
         [recordButton, recordKey, reloadButton, reloadKey]));
 
     centered.createChild('p').appendChild(UI.formatLocalized(

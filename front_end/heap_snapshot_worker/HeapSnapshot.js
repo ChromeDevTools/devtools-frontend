@@ -2414,8 +2414,8 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
       detachedDOMTreeNode: 2,
       pageObject: 4  // The idea is to track separately the objects owned by the page and the objects owned by debugger.
     };
-    this.initialize();
     this._lazyStringCache = {};
+    this.initialize();
   }
 
   /**

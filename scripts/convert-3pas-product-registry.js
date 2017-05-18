@@ -32,10 +32,28 @@ const typeClassifications = new Map([
 var data = fs.readFileSync('3pas.csv', 'utf8');
 var headerLine = data.split('\n', 1)[0];
 data = data.substr(headerLine.length);
-var headerLineOrigLength = headerLine.length;
 
 var columnNames = Array.from(csvUnmarshaller(headerLine)).map(v => v[0]);
 var lineObjs = [];
+
+var blacklistData = fs.readFileSync('3pas-blacklist.csv', 'utf8');
+var blacklistHeaderLine = blacklistData.split('\n', 1)[0];
+blacklistData = blacklistData.substr(blacklistHeaderLine.length);
+var blacklistColumnNames = Array.from(csvUnmarshaller(blacklistHeaderLine)).map(v => v[0]);
+var blacklistDomainColumnIndex = blacklistColumnNames.findIndex(name => name === 'domain');
+console.assert(blacklistDomainColumnIndex !== undefined, '"domain" column not found in blacklist file.');
+
+var marshaller = csvUnmarshaller(blacklistData, 2);
+var blacklistDomains = new Set();
+var colIndex = 0;
+for (var [colData, isEnding] of marshaller) {
+  // extracts just the 'domain' column from blacklist file
+  if (colIndex === blacklistDomainColumnIndex)
+    blacklistDomains.add(colData);
+  colIndex++;
+  if (isEnding)
+    colIndex = 0;
+}
 
 var marshaller = csvUnmarshaller(data, 2);
 var lineObj = {};
@@ -50,6 +68,9 @@ for (var [colData, isEnding] of marshaller) {
     colIndex = 0;
   }
 }
+
+// Removes blacklist items.
+lineObjs = lineObjs.filter(lineObj => !blacklistDomains.has(lineObj.domain));
 
 var map = new Map();
 for (var lineObj of lineObjs) {
@@ -175,7 +196,7 @@ console.log(
     '// found in the LICENSE file.\n' +
     '// clang-format off\n' +
     '/* eslint-disable */\n' +
-    'ProductRegistry.register([');
+    'ProductRegistryImpl.register([');
 var data = JSON.stringify(outputProducts).replace(/","/g, '",\n  "');
 console.log('  ' + data.substring(1, data.length - 1));
 console.log('],');
@@ -235,7 +256,7 @@ function* csvUnmarshaller(data, lineOffset) {
       if (!match)
         throw 'Bad data at line ' + lineNo + ' col: ' + colLength + ' ' + data.substr(0, 15);
     } else {
-      match = data.match(/^([^,\n]*)(,|\n|$)/);
+      match = data.match(/^([^,\r\n]*)(?:,|\r?(\n)|\r?$)/);
       if (!match)
         throw 'Bad data at line ' + lineNo + ' col: ' + colLength + ' ' + data.substr(0, 15);
       match[1] = match[1] === 'NULL' ? null : match[1];

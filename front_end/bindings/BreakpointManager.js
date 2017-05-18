@@ -816,6 +816,8 @@ Bindings.BreakpointManager.ModelBreakpoint = class {
 
     var debuggerLocation = uiSourceCode &&
         Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
+    if (debuggerLocation && debuggerLocation.debuggerModel !== this._debuggerModel)
+      debuggerLocation = null;
     var newState;
     if (this._breakpoint._isRemoved || !this._breakpoint.enabled() || this._scriptDiverged()) {
       newState = null;

@@ -11,12 +11,10 @@ Console.ConsoleContextSelector = class {
     var shadowRoot =
         UI.createShadowRootWithCoreStyles(this._toolbarItem.element, 'console/consoleContextSelectorButton.css');
     this._titleElement = shadowRoot.createChild('span', 'title');
-    this._productRegistry = null;
 
-    ProductRegistry.instance().then(registry => {
-      this._productRegistry = registry;
-      this._list.refreshAllItems();
-    });
+    /** @type {!Map<!SDK.ExecutionContext, !ProductRegistry.BadgePool>} */
+    this._badgePoolForExecutionContext = new Map();
+
     this._toolbarItem.element.classList.add('toolbar-has-dropdown');
     this._toolbarItem.element.tabIndex = 0;
     this._glassPane = new UI.GlassPane();
@@ -27,7 +25,7 @@ Console.ConsoleContextSelector = class {
     this._list = new UI.ListControl(this, UI.ListMode.EqualHeightItems);
     this._list.element.classList.add('context-list');
     this._list.element.tabIndex = -1;
-    this._rowHeight = 34;
+    this._rowHeight = 36;
     UI.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'console/consoleContextSelector.css')
         .appendChild(this._list.element);
 
@@ -88,9 +86,11 @@ Console.ConsoleContextSelector = class {
     this._glassPane.setContentAnchorBox(this._toolbarItem.element.boxInWindow());
     this._glassPane.show(/** @type {!Document} **/ (this._toolbarItem.element.ownerDocument));
     this._updateGlasspaneSize();
-    var selectedItem = this._list.selectedItem();
-    if (selectedItem)
-      this._list.scrollItemIntoView(selectedItem, true);
+    var selectedContext = UI.context.flavor(SDK.ExecutionContext);
+    if (selectedContext) {
+      this._list.selectItem(selectedContext);
+      this._list.scrollItemIntoView(selectedContext, true);
+    }
     this._toolbarItem.element.focus();
     event.consume(true);
     setTimeout(() => this._listWasShowing200msAgo = true, 200);
@@ -109,9 +109,6 @@ Console.ConsoleContextSelector = class {
     setTimeout(() => this._listWasShowing200msAgo = false, 200);
     this._glassPane.hide();
     SDK.OverlayModel.hideDOMNodeHighlight();
-    var selectedContext = UI.context.flavor(SDK.ExecutionContext);
-    if (selectedContext)
-      this._list.selectItem(selectedContext);
     event.consume(true);
   }
 
@@ -266,6 +263,33 @@ Console.ConsoleContextSelector = class {
 
   /**
    * @param {!SDK.ExecutionContext} executionContext
+   * @return {?Element}
+   */
+  _badgeFor(executionContext) {
+    if (!executionContext.frameId || !executionContext.isDefault)
+      return null;
+    var resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
+    var frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
+    if (!frame)
+      return null;
+    var badgePool = new ProductRegistry.BadgePool();
+    this._badgePoolForExecutionContext.set(executionContext, badgePool);
+    return badgePool.badgeForFrame(frame);
+  }
+
+  /**
+   * @param {!SDK.ExecutionContext} executionContext
+   */
+  _disposeExecutionContextBadge(executionContext) {
+    var badgePool = this._badgePoolForExecutionContext.get(executionContext);
+    if (!badgePool)
+      return;
+    badgePool.reset();
+    this._badgePoolForExecutionContext.delete(executionContext);
+  }
+
+  /**
+   * @param {!SDK.ExecutionContext} executionContext
    */
   _executionContextCreated(executionContext) {
     // FIXME(413886): We never want to show execution context for the main thread of shadow page in service/shared worker frontend.
@@ -275,10 +299,8 @@ Console.ConsoleContextSelector = class {
 
     this._list.insertItemWithComparator(executionContext, executionContext.runtimeModel.executionContextComparator());
 
-    if (executionContext === UI.context.flavor(SDK.ExecutionContext)) {
-      this._list.selectItem(executionContext);
-      this._updateSelectedContext();
-    }
+    if (executionContext === UI.context.flavor(SDK.ExecutionContext))
+      this._updateSelectionTitle();
   }
 
   /**
@@ -287,7 +309,7 @@ Console.ConsoleContextSelector = class {
   _onExecutionContextCreated(event) {
     var executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
     this._executionContextCreated(executionContext);
-    this._updateSelectionWarning();
+    this._updateSelectionTitle();
     this._updateGlasspaneSize();
   }
 
@@ -300,7 +322,7 @@ Console.ConsoleContextSelector = class {
       return;
     this._executionContextDestroyed(executionContext);
     this._executionContextCreated(executionContext);
-    this._updateSelectionWarning();
+    this._updateSelectionTitle();
   }
 
   /**
@@ -309,6 +331,7 @@ Console.ConsoleContextSelector = class {
   _executionContextDestroyed(executionContext) {
     if (this._list.indexOfItem(executionContext) === -1)
       return;
+    this._disposeExecutionContextBadge(executionContext);
     this._list.removeItem(executionContext);
     this._updateGlasspaneSize();
   }
@@ -319,7 +342,7 @@ Console.ConsoleContextSelector = class {
   _onExecutionContextDestroyed(event) {
     var executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
     this._executionContextDestroyed(executionContext);
-    this._updateSelectionWarning();
+    this._updateSelectionTitle();
   }
 
   /**
@@ -333,8 +356,12 @@ Console.ConsoleContextSelector = class {
     this._updateSelectedContext();
   }
 
-  _updateSelectionWarning() {
+  _updateSelectionTitle() {
     var executionContext = UI.context.flavor(SDK.ExecutionContext);
+    if (executionContext)
+      this._titleElement.textContent = this._titleFor(executionContext);
+    else
+      this._titleElement.textContent = '';
     this._toolbarItem.element.classList.toggle(
         'warning', !this._isTopContext(executionContext) && this._hasTopContext());
   }
@@ -391,8 +418,16 @@ Console.ConsoleContextSelector = class {
   createElementForItem(item) {
     var element = createElementWithClass('div', 'context');
     element.style.paddingLeft = (8 + this._depthFor(item) * 15) + 'px';
-    element.createChild('div', 'title').textContent = this._titleFor(item).trimEnd(100);
-    element.createChild('div', 'subtitle').textContent = this._subtitleFor(item);
+    // var titleArea = element.createChild('div', 'title-area');
+    var title = element.createChild('div', 'title');
+    title.createTextChild(this._titleFor(item).trimEnd(100));
+    var subTitle = element.createChild('div', 'subtitle');
+    var badgeElement = this._badgeFor(item);
+    if (badgeElement) {
+      badgeElement.classList.add('badge');
+      subTitle.appendChild(badgeElement);
+    }
+    subTitle.createTextChild(this._subtitleFor(item));
     element.addEventListener('mousemove', e => {
       if ((e.movementX || e.movementY) && this.isItemSelectable(item))
         this._list.selectItem(item, false, /* Don't scroll */ true);
@@ -415,27 +450,15 @@ Console.ConsoleContextSelector = class {
       return Common.UIString('Extension');
     if (!frame || !frame.parentFrame || frame.parentFrame.securityOrigin !== executionContext.origin) {
       var url = executionContext.origin.asParsedURL();
-      if (url) {
-        if (this._productRegistry) {
-          var product = this._productRegistry.nameForUrl(url);
-          if (product)
-            return product;
-        }
+      if (url)
         return url.domain();
-      }
     }
 
     if (frame) {
       var callFrame = frame.findCreationCallFrame(callFrame => !!callFrame.url);
-      if (callFrame) {
-        var url = new Common.ParsedURL(callFrame.url);
-        if (this._productRegistry) {
-          var product = this._productRegistry.nameForUrl(url);
-          if (product)
-            return product;
-        }
-        return url.domain();
-      }
+      if (callFrame)
+        return new Common.ParsedURL(callFrame.url).domain();
+      return Common.UIString('IFrame');
     }
     return '';
   }
@@ -446,7 +469,7 @@ Console.ConsoleContextSelector = class {
    * @return {number}
    */
   heightForItem(item) {
-    return 0;
+    return this._rowHeight;
   }
 
   /**
@@ -482,12 +505,8 @@ Console.ConsoleContextSelector = class {
 
   _updateSelectedContext() {
     var context = this._list.selectedItem();
-    if (context)
-      this._titleElement.textContent = this._titleFor(context);
-    else
-      this._titleElement.textContent = '';
     UI.context.setFlavor(SDK.ExecutionContext, context);
-    this._updateSelectionWarning();
+    this._updateSelectionTitle();
   }
 
   _callFrameSelectedInUI() {
@@ -503,8 +522,10 @@ Console.ConsoleContextSelector = class {
   _callFrameSelectedInModel(event) {
     var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
     for (var i = 0; i < this._list.length(); i++) {
-      if (this._list.itemAtIndex(i).debuggerModel === debuggerModel)
+      if (this._list.itemAtIndex(i).debuggerModel === debuggerModel) {
+        this._disposeExecutionContextBadge(this._list.itemAtIndex(i));
         this._list.refreshItemsInRange(i, i + 1);
+      }
     }
   }
 
@@ -514,8 +535,10 @@ Console.ConsoleContextSelector = class {
   _frameNavigated(event) {
     var frameId = event.data.id;
     for (var i = 0; i < this._list.length(); i++) {
-      if (frameId === this._list.itemAtIndex(i).frameId)
+      if (frameId === this._list.itemAtIndex(i).frameId) {
+        this._disposeExecutionContextBadge(this._list.itemAtIndex(i));
         this._list.refreshItemsInRange(i, i + 1);
+      }
     }
   }
 };

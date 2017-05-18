@@ -35,9 +35,9 @@ ProductRegistry.BadgePool = class {
    * @return {!Element}
    */
   _badgeForFrameOrUrl(urlResolver) {
-    var element = createElement('span');
+    var element = createElementWithClass('span', 'hidden');
     var root = UI.createShadowRootWithCoreStyles(element, 'product_registry/badge.css');
-    var badgeElement = root.createChild('span', 'product-registry-badge monospace hidden');
+    var badgeElement = root.createChild('span', 'product-registry-badge monospace');
     badgeElement.setAttribute('data-initial', '  ');
     badgeElement.title = '';
     badgeElement.addEventListener('mousedown', event => event.consume());
@@ -98,14 +98,14 @@ ProductRegistry.BadgePool = class {
     badgeElement.setAttribute('data-initial', label.substring(0, 2).toUpperCase());
     badgeElement.title = entryName;
     badgeElement.style.backgroundColor = ProductRegistry.BadgePool.colorForEntryName(entryName);
-    badgeElement.classList.toggle('hidden', !this._setting.get());
+    badgeElement.parentNodeOrShadowHost().parentNodeOrShadowHost().classList.toggle('hidden', !this._setting.get());
   }
 
   _settingUpdated() {
     var enabled = this._setting.get();
     if (!enabled) {
       for (var badgeElement of this._badgeElements.keys())
-        badgeElement.classList.add('hidden');
+        badgeElement.parentNodeOrShadowHost().parentNodeOrShadowHost().classList.add('hidden');
       return;
     }
     for (var badgeElement of this._badgeElements.keys())

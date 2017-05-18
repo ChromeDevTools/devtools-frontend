@@ -8,7 +8,7 @@
     white-space: nowrap;
     display: flex;
     flex-direction: column;
-    height: 34px;
+    height: 36px;
     justify-content: center;
 }
 
@@ -20,6 +20,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     flex-grow: 0;
+}
+
+.badge {
+    pointer-events: none;
+    margin-right: 4px;
+    display: inline-block;
+    height: 15px;
 }
 
 .subtitle {

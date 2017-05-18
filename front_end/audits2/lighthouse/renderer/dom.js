@@ -101,7 +101,7 @@ class DOM {
    * @param {string} text
    * @return {!Element}
    */
-  createSpanFromMarkdown(text) {
+  convertMarkdownLinkSnippets(text) {
     const element = this.createElement('span');
 
     // Split on markdown links (e.g. [some link](https://...)).
@@ -120,6 +120,28 @@ class DOM {
         a.textContent = linkText;
         a.href = (new URL(linkHref)).href;
         element.appendChild(a);
+      }
+    }
+
+    return element;
+  }
+
+  /**
+   * @param {string} text
+   * @return {!Element}
+   */
+  convertMarkdownCodeSnippets(text) {
+    const element = this.createElement('span');
+
+    const parts = text.split(/`(.*?)`/g); // Split on markdown code slashes
+    while (parts.length) {
+      // Pop off the same number of elements as there are capture groups.
+      const [preambleText, codeText] = parts.splice(0, 2);
+      element.appendChild(this._document.createTextNode(preambleText));
+      if (codeText) {
+        const pre = /** @type {!HTMLPreElement} */ (this.createElement('code'));
+        pre.textContent = codeText;
+        element.appendChild(pre);
       }
     }
 

@@ -260,7 +260,8 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     console.error(err);
     this._statusElement.textContent = '';
     this._statusIcon.classList.add('error');
-    this._statusElement.createTextChild(Common.UIString('We ran into an error. '));
+    this._statusElement.createTextChild(Common.UIString('Ah, sorry! We ran into an error: '));
+    this._statusElement.createChild('em').createTextChild(err.message);
     this._createBugReportLink(err, this._statusElement);
   }
 
@@ -272,12 +273,15 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     var baseURI = 'https://github.com/GoogleChrome/lighthouse/issues/new?';
     var title = encodeURI('title=DevTools Error: ' + err.message.substring(0, 60));
 
-    var qsBody = '';
-    qsBody += '**Initial URL**: ' + this._inspectedURL + '\n';
-    qsBody += '**Chrome Version**: ' + navigator.userAgent.match(/Chrome\/(\S+)/)[1] + '\n';
-    qsBody += '**Error Message**: ' + err.message + '\n';
-    qsBody += '**Stack Trace**:\n ```' + err.stack + '```';
-    var body = '&body=' + encodeURI(qsBody);
+    var issueBody = `
+**Initial URL**: ${this._inspectedURL}
+**Chrome Version**: ${navigator.userAgent.match(/Chrome\/(\S+)/)[1]}
+**Error Message**: ${err.message}
+**Stack Trace**:
+\`\`\`
+${err.stack}
+\`\`\`
+    `;
 
     var reportErrorEl = parentElem.createChild('a', 'audits2-link audits2-report-error');
     reportErrorEl.href = baseURI + title + body;

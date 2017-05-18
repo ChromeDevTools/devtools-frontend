@@ -397,6 +397,11 @@ button.material-button.default {
     background-color: #4285f4 !important;
 }
 
+button.material-button.default:disabled {
+    background-color: #ffffff !important;
+    color: gray;
+}
+
 button.material-button.default:not(:disabled):hover {
     background-color: hsla(217, 89%, 58%, 1) !important;
     color: white !important;

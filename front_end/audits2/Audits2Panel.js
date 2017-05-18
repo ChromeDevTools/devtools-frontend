@@ -40,6 +40,8 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
         this.contentElement, [UI.DropTarget.Types.Files], Common.UIString('Drop audit file here'),
         this._handleDrop.bind(this));
 
+    for (var preset of Audits2.Audits2Panel.Presets)
+      preset.setting.addChangeListener(this._updateStartButtonEnabled.bind(this));
     this._showLandingPage();
   }
 
@@ -103,6 +105,7 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     var buttonsRow = uiElement.createChild('div', 'audits2-dialog-buttons hbox');
     this._startButton =
         UI.createTextButton(Common.UIString('Run audit'), this._start.bind(this), 'material-button default');
+    this._updateStartButtonEnabled();
     buttonsRow.appendChild(this._startButton);
     this._cancelButton = UI.createTextButton(Common.UIString('Cancel'), this._cancel.bind(this), 'material-button');
     buttonsRow.appendChild(this._cancelButton);
@@ -112,6 +115,18 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     this._dialog.show(this.mainElement());
     auditsViewElement.tabIndex = 0;
     auditsViewElement.focus();
+  }
+
+  _updateStartButtonEnabled() {
+    if (!this._startButton)
+      return;
+    for (var preset of Audits2.Audits2Panel.Presets) {
+      if (preset.setting.get()) {
+        this._startButton.disabled = false;
+        return;
+      }
+    }
+    this._startButton.disabled = true;
   }
 
   /**

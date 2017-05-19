@@ -1370,6 +1370,8 @@ SDK.DebuggerModel.Scope = class {
         return Common.UIString('With Block');
       case Protocol.Debugger.ScopeType.Global:
         return Common.UIString('Global');
+      case Protocol.Debugger.ScopeType.Module:
+        return Common.UIString('Module');
     }
     return '';
   }

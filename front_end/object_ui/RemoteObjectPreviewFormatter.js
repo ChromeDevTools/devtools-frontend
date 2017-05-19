@@ -26,7 +26,9 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
   appendObjectPreview(parentElement, preview, isEntry) {
     const previewExperimentEnabled = Runtime.experiments.isEnabled('objectPreviews');
     var description = preview.description;
-    if (preview.type !== 'object' || preview.subtype === 'null' || (previewExperimentEnabled && isEntry)) {
+    var subTypesWithoutValuePreview = new Set(['null', 'regexp', 'error', 'internal#entry']);
+    if (preview.type !== 'object' || subTypesWithoutValuePreview.has(preview.subtype) ||
+        (previewExperimentEnabled && isEntry)) {
       parentElement.appendChild(this.renderPropertyPreview(preview.type, preview.subtype, description));
       return;
     }
@@ -54,8 +56,10 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
       this._appendArrayPropertiesPreview(propertiesElement, preview);
     else
       this._appendObjectPropertiesPreview(propertiesElement, preview);
-    if (preview.overflow)
-      propertiesElement.createChild('span').textContent = '\u2026';
+    if (preview.overflow) {
+      var ellipsisText = propertiesElement.textContent.length > 1 ? ',\u00a0\u2026' : '\u2026';
+      propertiesElement.createChild('span').textContent = ellipsisText;
+    }
     propertiesElement.createTextChild(isArrayOrTypedArray ? ']' : '}');
   }
 

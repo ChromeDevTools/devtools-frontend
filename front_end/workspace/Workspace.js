@@ -122,6 +122,12 @@ Workspace.Project.prototype = {
   fullDisplayName(uiSourceCode) {},
 
   /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {string}
+   */
+  mimeType(uiSourceCode) {},
+
+  /**
    * @return {boolean}
    */
   canRename() {},

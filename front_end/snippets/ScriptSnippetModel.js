@@ -552,7 +552,7 @@ Snippets.SnippetsProject = class extends Bindings.ContentProviderBasedProject {
    * @return {!Workspace.UISourceCode}
    */
   addSnippet(name, contentProvider) {
-    return this.addContentProvider(name, contentProvider);
+    return this.addContentProvider(name, contentProvider, 'text/javascript');
   }
 
   /**

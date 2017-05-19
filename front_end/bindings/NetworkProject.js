@@ -223,21 +223,6 @@ Bindings.NetworkProject = class {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {string}
-   */
-  static uiSourceCodeMimeType(uiSourceCode) {
-    if (uiSourceCode[Bindings.NetworkProject._scriptSymbol] || uiSourceCode[Bindings.NetworkProject._styleSheetSymbol])
-      return uiSourceCode.contentType().canonicalMimeType();
-
-    var resource = uiSourceCode[Bindings.NetworkProject._resourceSymbol];
-    if (resource)
-      return resource.mimeType;
-    var mimeType = Common.ResourceType.mimeFromURL(uiSourceCode.url());
-    return mimeType || uiSourceCode.contentType().canonicalMimeType();
-  }
-
-  /**
    * @param {string} frameId
    * @param {boolean} isContentScripts
    * @return {!Bindings.ContentProviderBasedProject}
@@ -274,10 +259,11 @@ Bindings.NetworkProject = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {!Common.ContentProvider} contentProvider
    * @param {?Workspace.UISourceCodeMetadata} metadata
+   * @param {string} mimeType
    */
-  _addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata) {
+  _addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType) {
     /** @type {!Bindings.ContentProviderBasedProject} */ (uiSourceCode.project())
-        .addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata);
+        .addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType);
   }
 
   /**
@@ -308,9 +294,8 @@ Bindings.NetworkProject = class {
     var frameId = Bindings.frameIdForScript(script);
     script[Bindings.NetworkProject._frameIdSymbol] = frameId;
     var uiSourceCode = this._createFile(originalContentProvider, frameId, script.isContentScript());
-    uiSourceCode[Bindings.NetworkProject._scriptSymbol] = script;
     var metadata = this._fetchMetadata(frameId, uiSourceCode.url());
-    this._addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata);
+    this._addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata, 'text/javascript');
   }
 
   /**
@@ -365,7 +350,7 @@ Bindings.NetworkProject = class {
     var uiSourceCode = this._createFile(originalContentProvider, header.frameId, false);
     uiSourceCode[Bindings.NetworkProject._styleSheetSymbol] = header;
     var metadata = this._fetchMetadata(header.frameId, uiSourceCode.url());
-    this._addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata);
+    this._addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata, 'text/css');
   }
 
   /**
@@ -415,8 +400,7 @@ Bindings.NetworkProject = class {
       return;
 
     var uiSourceCode = this._createFile(resource, resource.frameId, false);
-    uiSourceCode[Bindings.NetworkProject._resourceSymbol] = resource;
-    this._addUISourceCodeWithProvider(uiSourceCode, resource, Bindings.resourceMetadata(resource));
+    this._addUISourceCodeWithProvider(uiSourceCode, resource, Bindings.resourceMetadata(resource), resource.mimeType);
   }
 
   /**
@@ -525,8 +509,6 @@ Bindings.NetworkProject = class {
 };
 
 Bindings.NetworkProject._networkProjectSymbol = Symbol('networkProject');
-Bindings.NetworkProject._resourceSymbol = Symbol('resource');
-Bindings.NetworkProject._scriptSymbol = Symbol('script');
 Bindings.NetworkProject._styleSheetSymbol = Symbol('styleSheet');
 Bindings.NetworkProject._targetSymbol = Symbol('target');
 Bindings.NetworkProject._frameIdSymbol = Symbol('frameid');

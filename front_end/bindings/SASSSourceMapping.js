@@ -73,13 +73,14 @@ Bindings.SASSSourceMapping = class {
       }
 
       var contentProvider = sourceMap.sourceContentProvider(sassURL, Common.resourceTypes.SourceMapStyleSheet);
+      var mimeType = Common.ResourceType.mimeFromURL(sassURL) || contentProvider.contentType().canonicalMimeType();
       var embeddedContent = sourceMap.embeddedContentByURL(sassURL);
       var metadata =
           typeof embeddedContent === 'string' ? new Workspace.UISourceCodeMetadata(null, embeddedContent.length) : null;
       uiSourceCode = this._project.createUISourceCode(sassURL, contentProvider.contentType());
       Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, header.frameId);
       uiSourceCode[Bindings.SASSSourceMapping._sourceMapSymbol] = sourceMap;
-      this._project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata);
+      this._project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType);
     }
     Bindings.cssWorkspaceBinding.updateLocations(header);
     this._sourceMapAttachedForTest(sourceMap);

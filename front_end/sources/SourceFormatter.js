@@ -89,12 +89,12 @@ Sources.SourceFormatter = class {
       return Sources.SourceFormatData._for(formattedUISourceCode);
 
     var content = await uiSourceCode.requestContent();
-    var highlighterType = Bindings.NetworkProject.uiSourceCodeMimeType(uiSourceCode);
     var fulfillFormatPromise;
     var resultPromise = new Promise(fulfill => {
       fulfillFormatPromise = fulfill;
     });
-    Sources.Formatter.format(uiSourceCode.contentType(), highlighterType, content || '', innerCallback.bind(this));
+    Sources.Formatter.format(
+        uiSourceCode.contentType(), uiSourceCode.mimeType(), content || '', innerCallback.bind(this));
     return resultPromise;
 
     /**
@@ -106,7 +106,8 @@ Sources.SourceFormatter = class {
       var formattedURL = uiSourceCode.url() + ':formatted';
       var contentProvider =
           Common.StaticContentProvider.fromString(formattedURL, uiSourceCode.contentType(), formattedContent);
-      var formattedUISourceCode = this._project.addContentProvider(formattedURL, contentProvider);
+      var formattedUISourceCode =
+          this._project.addContentProvider(formattedURL, contentProvider, uiSourceCode.mimeType());
       var formatData = new Sources.SourceFormatData(uiSourceCode, formattedUISourceCode, formatterMapping);
       formattedUISourceCode[Sources.SourceFormatData._formatDataSymbol] = formatData;
       this._scriptMapping._setSourceMappingEnabled(formatData, true);

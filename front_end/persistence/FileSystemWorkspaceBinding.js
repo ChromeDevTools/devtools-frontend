@@ -237,6 +237,15 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
   }
 
   /**
+   * @override
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {string}
+   */
+  mimeType(uiSourceCode) {
+    return Common.ResourceType.mimeFromURL(uiSourceCode.url()) || 'text/plain';
+  }
+
+  /**
    * @return {!Array<string>}
    */
   initialGitFolders() {

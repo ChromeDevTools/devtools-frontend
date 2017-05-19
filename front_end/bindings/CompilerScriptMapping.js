@@ -77,7 +77,8 @@ Bindings.CompilerScriptMapping = class {
         script.sourceURL + ':sourcemap',
         Common.StaticContentProvider.fromString(
             script.sourceURL, Common.resourceTypes.Script,
-            '\n\n\n\n\n// Please wait a bit.\n// Compiled script is not shown while source map is being loaded!'));
+            '\n\n\n\n\n// Please wait a bit.\n// Compiled script is not shown while source map is being loaded!'),
+        'text/javascript');
     this._stubUISourceCodes.set(script, stubUISourceCode);
   }
 
@@ -269,13 +270,14 @@ Bindings.CompilerScriptMapping = class {
       }
 
       var contentProvider = sourceMap.sourceContentProvider(sourceURL, Common.resourceTypes.SourceMapScript);
+      var mimeType = Common.ResourceType.mimeFromURL(sourceURL) || contentProvider.contentType().canonicalMimeType();
       var embeddedContent = sourceMap.embeddedContentByURL(sourceURL);
       var metadata =
           typeof embeddedContent === 'string' ? new Workspace.UISourceCodeMetadata(null, embeddedContent.length) : null;
       uiSourceCode = project.createUISourceCode(sourceURL, contentProvider.contentType());
       uiSourceCode[Bindings.CompilerScriptMapping._sourceMapSymbol] = sourceMap;
       Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, frameId);
-      project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata);
+      project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType);
       this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel, uiSourceCode, this);
     }
     this._debuggerWorkspaceBinding.updateLocations(script);

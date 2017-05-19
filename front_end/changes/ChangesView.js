@@ -178,8 +178,7 @@ Changes.ChangesView = class extends UI.VBox {
       this._editor.setHighlightMode({
         name: 'devtools-diff',
         diffRows: this._diffRows,
-        mimeType: Bindings.NetworkProject.uiSourceCodeMimeType(
-            /** @type {!Workspace.UISourceCode} */ (this._selectedUISourceCode)),
+        mimeType: /** @type {!Workspace.UISourceCode} */ (this._selectedUISourceCode).mimeType(),
         baselineLines: originalLines,
         currentLines: currentLines
       });

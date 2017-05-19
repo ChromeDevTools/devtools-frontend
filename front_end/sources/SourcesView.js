@@ -356,14 +356,14 @@ Sources.SourcesView = class extends UI.VBox {
     else if (contentType.isStyleSheet())
       sourceFrame = new Sources.CSSSourceFrame(uiSourceCode);
     else if (contentType === Common.resourceTypes.Image)
-      sourceView = new SourceFrame.ImageView(Bindings.NetworkProject.uiSourceCodeMimeType(uiSourceCode), uiSourceCode);
+      sourceView = new SourceFrame.ImageView(uiSourceCode.mimeType(), uiSourceCode);
     else if (contentType === Common.resourceTypes.Font)
-      sourceView = new SourceFrame.FontView(Bindings.NetworkProject.uiSourceCodeMimeType(uiSourceCode), uiSourceCode);
+      sourceView = new SourceFrame.FontView(uiSourceCode.mimeType(), uiSourceCode);
     else
       sourceFrame = new SourceFrame.UISourceCodeFrame(uiSourceCode);
 
     if (sourceFrame) {
-      sourceFrame.setHighlighterType(Bindings.NetworkProject.uiSourceCodeMimeType(uiSourceCode));
+      sourceFrame.setHighlighterType(uiSourceCode.mimeType());
       this._historyManager.trackSourceFrameCursorJumps(sourceFrame);
     }
     var widget = /** @type {!UI.Widget} */ (sourceFrame || sourceView);
@@ -402,7 +402,7 @@ Sources.SourcesView = class extends UI.VBox {
       return;
     var oldSourceFrame = /** @type {!SourceFrame.UISourceCodeFrame} */ (oldSourceView);
     if (this._sourceFrameMatchesUISourceCode(oldSourceFrame, uiSourceCode)) {
-      oldSourceFrame.setHighlighterType(Bindings.NetworkProject.uiSourceCodeMimeType(uiSourceCode));
+      oldSourceFrame.setHighlighterType(uiSourceCode.mimeType());
     } else {
       this._editorContainer.removeUISourceCode(uiSourceCode);
       this._removeSourceFrame(uiSourceCode);

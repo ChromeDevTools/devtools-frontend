@@ -109,6 +109,15 @@ Bindings.ContentProviderBasedProject = class extends Workspace.ProjectStore {
 
   /**
    * @override
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {string}
+   */
+  mimeType(uiSourceCode) {
+    return /** @type {string} */ (uiSourceCode[Bindings.ContentProviderBasedProject._mimeType]);
+  }
+
+  /**
+   * @override
    * @return {boolean}
    */
   canRename() {
@@ -281,8 +290,10 @@ Bindings.ContentProviderBasedProject = class extends Workspace.ProjectStore {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {!Common.ContentProvider} contentProvider
    * @param {?Workspace.UISourceCodeMetadata} metadata
+   * @param {string} mimeType
    */
-  addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata) {
+  addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType) {
+    uiSourceCode[Bindings.ContentProviderBasedProject._mimeType] = mimeType;
     this._contentProviders[uiSourceCode.url()] = contentProvider;
     uiSourceCode[Bindings.ContentProviderBasedProject._metadata] = metadata;
     this.addUISourceCode(uiSourceCode, true);
@@ -291,11 +302,12 @@ Bindings.ContentProviderBasedProject = class extends Workspace.ProjectStore {
   /**
    * @param {string} url
    * @param {!Common.ContentProvider} contentProvider
+   * @param {string} mimeType
    * @return {!Workspace.UISourceCode}
    */
-  addContentProvider(url, contentProvider) {
+  addContentProvider(url, contentProvider, mimeType) {
     var uiSourceCode = this.createUISourceCode(url, contentProvider.contentType());
-    this.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null);
+    this.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
     return uiSourceCode;
   }
 
@@ -320,3 +332,4 @@ Bindings.ContentProviderBasedProject = class extends Workspace.ProjectStore {
 };
 
 Bindings.ContentProviderBasedProject._metadata = Symbol('ContentProviderBasedProject.Metadata');
+Bindings.ContentProviderBasedProject._mimeType = Symbol('Bindings.ContentProviderBasedProject._mimeType');

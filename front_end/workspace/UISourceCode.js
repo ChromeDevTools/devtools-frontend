@@ -94,6 +94,13 @@ Workspace.UISourceCode = class extends Common.Object {
   /**
    * @return {string}
    */
+  mimeType() {
+    return this._project.mimeType(this);
+  }
+
+  /**
+   * @return {string}
+   */
   url() {
     return this._url;
   }

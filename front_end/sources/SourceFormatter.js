@@ -240,6 +240,7 @@ Sources.SourceFormatter.ScriptMapping = class {
 Sources.SourceFormatter.StyleMapping = class {
   constructor() {
     Bindings.cssWorkspaceBinding.addSourceMapping(this);
+    this._headersSymbol = Symbol('Sources.SourceFormatter.StyleMapping._headersSymbol');
   }
 
   /**
@@ -267,10 +268,8 @@ Sources.SourceFormatter.StyleMapping = class {
     if (!formatData)
       return [];
     var originalLocation = formatData.mapping.formattedToOriginal(uiLocation.lineNumber, uiLocation.columnNumber);
-    var header = Bindings.NetworkProject.styleHeaderForUISourceCode(formatData.originalSourceCode);
-    if (!header)
-      return [];
-    return [new SDK.CSSLocation(header, originalLocation[0], originalLocation[1])];
+    var headers = formatData.originalSourceCode[this._headersSymbol];
+    return headers.map(header => new SDK.CSSLocation(header, originalLocation[0], originalLocation[1]));
   }
 
   /**
@@ -279,14 +278,18 @@ Sources.SourceFormatter.StyleMapping = class {
    */
   _setSourceMappingEnabled(formatData, enable) {
     var original = formatData.originalSourceCode;
-    var styleHeader = Bindings.NetworkProject.styleHeaderForUISourceCode(original);
-    if (!styleHeader)
+    var rawLocations = Bindings.cssWorkspaceBinding.uiLocationToRawLocations(original.uiLocation(0, 0));
+    var headers = rawLocations.map(rawLocation => rawLocation.header()).filter(header => !!header);
+    if (!headers.length)
       return;
-    if (enable)
-      styleHeader[Sources.SourceFormatData._formatDataSymbol] = formatData;
-    else
-      delete styleHeader[Sources.SourceFormatData._formatDataSymbol];
-    Bindings.cssWorkspaceBinding.updateLocations(styleHeader);
+    if (enable) {
+      original[this._headersSymbol] = headers;
+      headers.forEach(header => header[Sources.SourceFormatData._formatDataSymbol] = formatData);
+    } else {
+      original[this._headersSymbol] = null;
+      headers.forEach(header => delete header[Sources.SourceFormatData._formatDataSymbol]);
+    }
+    headers.forEach(header => Bindings.cssWorkspaceBinding.updateLocations(header));
   }
 };
 

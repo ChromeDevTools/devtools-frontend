@@ -66,9 +66,6 @@ class CategoryRenderer {
     if (audit.result.informative) {
       scoreEl.classList.add('lh-score--informative');
     }
-    if (audit.result.manual) {
-      scoreEl.classList.add('lh-score--manual');
-    }
 
     return this._populateScore(tmpl, audit.score, scoringMode, title, description);
   }
@@ -88,10 +85,9 @@ class CategoryRenderer {
     valueEl.classList.add(`lh-score__value--${Util.calculateRating(score)}`,
         `lh-score__value--${scoringMode}`);
 
-    this._dom.find('.lh-score__title', element).appendChild(
-        this._dom.convertMarkdownCodeSnippets(title));
+    this._dom.find('.lh-score__title', element).textContent = title;
     this._dom.find('.lh-score__description', element)
-        .appendChild(this._dom.convertMarkdownLinkSnippets(description));
+        .appendChild(this._dom.createSpanFromMarkdown(description));
 
     return /** @type {!Element} **/ (element);
   }
@@ -118,41 +114,6 @@ class CategoryRenderer {
   _renderAudit(audit) {
     const element = this._dom.createElement('div', 'lh-audit');
     element.appendChild(this._renderAuditScore(audit));
-    return element;
-  }
-
-  /**
-   * @param {!ReportRenderer.AuditJSON} audit
-   * @param {number} scale
-   * @return {!Element}
-   */
-  _renderTimelineMetricAudit(audit, scale) {
-    const element = this._dom.createElement('div',
-        `lh-timeline-metric lh-timeline-metric--${Util.calculateRating(audit.score)}`);
-
-    const sparklineContainerEl = this._dom.createChildOf(element, 'div',
-        'lh-timeline-metric__sparkline');
-    const titleEl = this._dom.createChildOf(element, 'div', 'lh-timeline-metric__title');
-    const titleNameEl = this._dom.createChildOf(titleEl, 'span', 'lh-timeline-metric__name');
-    const titleValueEl = this._dom.createChildOf(titleEl, 'span', 'lh-timeline-metric__value');
-    titleNameEl.textContent = audit.result.description;
-    titleValueEl.textContent = audit.result.displayValue;
-
-    if (typeof audit.result.rawValue !== 'number') {
-      const debugStrEl = this._dom.createChildOf(element, 'div', 'lh-debug');
-      debugStrEl.textContent = audit.result.debugString || 'Report error: no metric information';
-      return element;
-    }
-
-    const sparklineEl = this._dom.createChildOf(sparklineContainerEl, 'div',
-        'lh-sparkline lh-sparkline--thin');
-    const sparklineBarEl = this._dom.createChildOf(sparklineEl, 'div', 'lh-sparkline__bar');
-    sparklineBarEl.style.width = `${audit.result.rawValue / scale * 100}%`;
-
-    const descriptionEl = this._dom.createChildOf(element, 'div',
-        'lh-timeline-metric__description');
-    descriptionEl.appendChild(this._dom.convertMarkdownLinkSnippets(audit.result.helpText));
-
     return element;
   }
 
@@ -201,7 +162,7 @@ class CategoryRenderer {
     }
 
     const descriptionEl = this._dom.createChildOf(element, 'div', 'lh-perf-hint__description');
-    descriptionEl.appendChild(this._dom.convertMarkdownLinkSnippets(audit.result.helpText));
+    descriptionEl.appendChild(this._dom.createSpanFromMarkdown(audit.result.helpText));
 
     if (audit.result.details) {
       element.appendChild(this._detailsRenderer.render(audit.result.details));
@@ -224,7 +185,7 @@ class CategoryRenderer {
     auditGroupHeader.textContent = group.title;
 
     const auditGroupDescription = this._dom.createElement('div', 'lh-audit-group__description');
-    auditGroupDescription.appendChild(this._dom.convertMarkdownLinkSnippets(group.description));
+    auditGroupDescription.textContent = group.description;
 
     const auditGroupSummary = this._dom.createElement('summary',
           'lh-audit-group__summary lh-expandable-details__summary');
@@ -250,33 +211,6 @@ class CategoryRenderer {
     passedSummary.textContent = `View ${elements.length} passed items`;
     elements.forEach(elem => passedElem.appendChild(elem));
     return passedElem;
-  }
-
-  /**
-   * @param {!Array<!ReportRenderer.AuditJSON>} manualAudits
-   * @param {!Object<string, !ReportRenderer.GroupJSON>} groupDefinitions
-   * @param {!Element} element Parent container to add the manual audits to.
-   */
-  _renderManualAudits(manualAudits, groupDefinitions, element) {
-    const auditsGroupedByGroup = /** @type {!Object<string,
-        !Array<!ReportRenderer.AuditJSON>>} */ ({});
-    manualAudits.forEach(audit => {
-      const group = auditsGroupedByGroup[audit.group] || [];
-      group.push(audit);
-      auditsGroupedByGroup[audit.group] = group;
-    });
-
-    Object.keys(auditsGroupedByGroup).forEach(groupId => {
-      const group = groupDefinitions[groupId];
-      const auditGroupElem = this._renderAuditGroup(group);
-      auditGroupElem.classList.add('lh-audit-group--manual');
-
-      auditsGroupedByGroup[groupId].forEach(audit => {
-        auditGroupElem.appendChild(this._renderAudit(audit));
-      });
-
-      element.appendChild(auditGroupElem);
-    });
   }
 
   /**
@@ -328,39 +262,34 @@ class CategoryRenderer {
       case 'accessibility':
         return this._renderAccessibilityCategory(category, groups);
       default:
-        return this._renderDefaultCategory(category, groups);
+        return this._renderDefaultCategory(category);
     }
   }
 
   /**
    * @param {!ReportRenderer.CategoryJSON} category
-   * @param {!Object<string, !ReportRenderer.GroupJSON>} groupDefinitions
    * @return {!Element}
    */
-  _renderDefaultCategory(category, groupDefinitions) {
+  _renderDefaultCategory(category) {
     const element = this._dom.createElement('div', 'lh-category');
     element.id = category.id;
     element.appendChild(this._renderCategoryScore(category));
 
-    const manualAudits = category.audits.filter(audit => audit.result.manual);
-    const nonManualAudits = category.audits.filter(audit => !manualAudits.includes(audit));
-    const passedAudits = nonManualAudits.filter(audit => audit.score === 100);
-    const nonPassedAudits = nonManualAudits.filter(audit => !passedAudits.includes(audit));
+    const passedAudits = category.audits.filter(audit => audit.score === 100);
+    const nonPassedAudits = category.audits.filter(audit => !passedAudits.includes(audit));
 
     for (const audit of nonPassedAudits) {
       element.appendChild(this._renderAudit(audit));
     }
 
-    // Create a passed section if there are passing audits.
-    if (passedAudits.length) {
-      const passedElements = passedAudits.map(audit => this._renderAudit(audit));
-      const passedElem = this._renderPassedAuditsSection(passedElements);
-      element.appendChild(passedElem);
+    // Don't create a passed section if there are no passed.
+    if (!passedAudits.length) {
+      return element;
     }
 
-    // Render manual audits after passing.
-    this._renderManualAudits(manualAudits, groupDefinitions, element);
-
+    const passedElements = passedAudits.map(audit => this._renderAudit(audit));
+    const passedElem = this._renderPassedAuditsSection(passedElements);
+    element.appendChild(passedElem);
     return element;
   }
 
@@ -376,35 +305,16 @@ class CategoryRenderer {
 
     const metricAudits = category.audits.filter(audit => audit.group === 'perf-metric');
     const metricAuditsEl = this._renderAuditGroup(groups['perf-metric']);
-    const timelineContainerEl = this._dom.createChildOf(metricAuditsEl, 'div',
-        'lh-timeline-container');
-    const timelineEl = this._dom.createChildOf(timelineContainerEl, 'div', 'lh-timeline');
-
-    let perfTimelineScale = 0;
-    metricAudits.forEach(audit => {
-      if (typeof audit.result.rawValue === 'number' && audit.result.rawValue) {
-        perfTimelineScale = Math.max(perfTimelineScale, audit.result.rawValue);
-      }
-    });
 
     const thumbnailAudit = category.audits.find(audit => audit.id === 'screenshot-thumbnails');
-    const thumbnailResult = thumbnailAudit && thumbnailAudit.result;
-    if (thumbnailResult && thumbnailResult.details) {
-      const thumbnailDetails = /** @type {!DetailsRenderer.FilmstripDetails} */
-          (thumbnailResult.details);
-      perfTimelineScale = Math.max(perfTimelineScale, thumbnailDetails.scale);
+    const thumbnailDetails = thumbnailAudit && thumbnailAudit.result &&
+        thumbnailAudit.result.details;
+    if (thumbnailDetails) {
       const filmstripEl = this._detailsRenderer.render(thumbnailDetails);
-      timelineEl.appendChild(filmstripEl);
+      metricAuditsEl.appendChild(filmstripEl);
     }
 
-    metricAudits.forEach(item => {
-      if (item.id === 'speed-index-metric' || item.id === 'estimated-input-latency') {
-        return metricAuditsEl.appendChild(this._renderAudit(item));
-      }
-
-      timelineEl.appendChild(this._renderTimelineMetricAudit(item, perfTimelineScale));
-    });
-
+    metricAudits.forEach(item => metricAuditsEl.appendChild(this._renderAudit(item)));
     metricAuditsEl.open = true;
     element.appendChild(metricAuditsEl);
 

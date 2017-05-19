@@ -31,15 +31,26 @@ Coverage.CoverageView = class extends UI.VBox {
     this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear.bind(this));
     toolbar.appendToolbarItem(this._clearButton);
 
+    /** @type {?RegExp} */
+    this._textFilterRegExp = null;
+
     toolbar.appendSeparator();
     this._filterInput = new UI.ToolbarInput(Common.UIString('URL filter'), 0.4, 1, true);
     this._filterInput.setEnabled(false);
-    this._filterInput.addEventListener(UI.ToolbarInput.Event.TextChanged, this._filterChanged, this);
+    this._filterInput.addEventListener(UI.ToolbarInput.Event.TextChanged, this._onFilterChanged, this);
     toolbar.appendToolbarItem(this._filterInput);
+
+    toolbar.appendSeparator();
+    this._showContentScriptsSetting = Common.settings.createSetting('showContentScripts', false);
+    this._showContentScriptsSetting.addChangeListener(this._onFilterChanged, this);
+    var contentScriptsCheckbox = new UI.ToolbarSettingCheckbox(
+        this._showContentScriptsSetting, Common.UIString('Include extension content scripts'),
+        Common.UIString('Content scripts'));
+    toolbar.appendToolbarItem(contentScriptsCheckbox);
 
     this._coverageResultsElement = this.contentElement.createChild('div', 'coverage-results');
     this._landingPage = this._buildLandingPage();
-    this._listView = new Coverage.CoverageListView();
+    this._listView = new Coverage.CoverageListView(this._isVisible.bind(this, false));
 
     this._statusToolbarElement = this.contentElement.createChild('div', 'coverage-toolbar-summary');
     this._statusMessageElement = this._statusToolbarElement.createChild('div', 'coverage-message');
@@ -144,19 +155,17 @@ Coverage.CoverageView = class extends UI.VBox {
    * @param {!Array<!Coverage.CoverageInfo>} updatedEntries
    */
   async _updateViews(updatedEntries) {
-    var urlEntries = this._model.entries();
-    this._updateStats(urlEntries);
-    this._listView.update(urlEntries);
+    this._updateStats();
+    this._listView.update(this._model.entries());
     this._decorationManager.update(updatedEntries);
   }
 
-  /**
-   * @param {!Array<!Coverage.URLCoverageInfo>} coverageInfo
-   */
-  _updateStats(coverageInfo) {
+  _updateStats() {
     var total = 0;
     var unused = 0;
-    for (var info of coverageInfo) {
+    for (var info of this._model.entries()) {
+      if (!this._isVisible(true, info))
+        continue;
       total += info.size();
       unused += info.unusedSize();
     }
@@ -167,13 +176,31 @@ Coverage.CoverageView = class extends UI.VBox {
         percentUnused);
   }
 
-  _filterChanged() {
+  _onFilterChanged() {
     if (!this._listView)
       return;
     var text = this._filterInput.value();
-    this._listView.setFilter(text ? createPlainTextSearchRegex(text, 'i') : null);
+    this._textFilterRegExp = text ? createPlainTextSearchRegex(text, 'i') : null;
+    this._listView.updateFilterAndHighlight(this._textFilterRegExp);
+    this._updateStats();
+  }
+
+  /**
+   * @param {boolean} ignoreTextFilter
+   * @param {!Coverage.URLCoverageInfo} coverageInfo
+   * @return {boolean}
+   */
+  _isVisible(ignoreTextFilter, coverageInfo) {
+    var url = coverageInfo.url();
+    if (url.startsWith(Coverage.CoverageView._extensionBindingsURLPrefix))
+      return false;
+    if (coverageInfo.isContentScript() && !this._showContentScriptsSetting.get())
+      return false;
+    return ignoreTextFilter || !this._textFilterRegExp || this._textFilterRegExp.test(url);
   }
 };
+
+Coverage.CoverageView._extensionBindingsURLPrefix = 'extensions::';
 
 /**
  * @implements {UI.ActionDelegate}

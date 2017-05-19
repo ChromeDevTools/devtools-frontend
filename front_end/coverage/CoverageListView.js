@@ -3,15 +3,19 @@
 // found in the LICENSE file.
 
 Coverage.CoverageListView = class extends UI.VBox {
-  constructor() {
+  /**
+   * @param {function(!Coverage.URLCoverageInfo):boolean} filterCallback
+   */
+  constructor(filterCallback) {
     super(true);
     /** @type {!Map<!Coverage.URLCoverageInfo, !Coverage.CoverageListView.GridNode>} */
     this._nodeForCoverageInfo = new Map();
+    this._filterCallback = filterCallback;
     /** @type {?RegExp} */
-    this._filterRegExp = null;
+    this._highlightRegExp = null;
     this.registerRequiredCSS('coverage/coverageListView.css');
     var columns = [
-      {id: 'url', title: Common.UIString('URL'), width: '300px', fixedWidth: false, sortable: true},
+      {id: 'url', title: Common.UIString('URL'), width: '250px', fixedWidth: false, sortable: true},
       {id: 'type', title: Common.UIString('Type'), width: '45px', fixedWidth: true, sortable: true}, {
         id: 'size',
         title: Common.UIString('Total Bytes'),
@@ -23,13 +27,13 @@ Coverage.CoverageListView = class extends UI.VBox {
       {
         id: 'unusedSize',
         title: Common.UIString('Unused Bytes'),
-        width: '60px',
+        width: '100px',
         fixedWidth: true,
         sortable: true,
         align: DataGrid.DataGrid.Align.Right,
         sort: DataGrid.DataGrid.Order.Descending
       },
-      {id: 'bars', title: '', width: '500px', fixedWidth: false, sortable: true}
+      {id: 'bars', title: '', width: '250px', fixedWidth: false, sortable: true}
     ];
     this._dataGrid = new DataGrid.SortableDataGrid(columns);
     this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
@@ -52,13 +56,13 @@ Coverage.CoverageListView = class extends UI.VBox {
     for (var entry of coverageInfo) {
       var node = this._nodeForCoverageInfo.get(entry);
       if (node) {
-        if (this._isVisible(node))
+        if (this._filterCallback(node._coverageInfo))
           hadUpdates = node._refreshIfNeeded(maxSize) || hadUpdates;
         continue;
       }
       node = new Coverage.CoverageListView.GridNode(entry, maxSize);
       this._nodeForCoverageInfo.set(entry, node);
-      if (this._isVisible(node)) {
+      if (this._filterCallback(node._coverageInfo)) {
         rootNode.appendChild(node);
         hadUpdates = true;
       }
@@ -73,16 +77,16 @@ Coverage.CoverageListView = class extends UI.VBox {
   }
 
   /**
-   * @param {?RegExp} regExp
+   * @param {?RegExp} highlightRegExp
    */
-  setFilter(regExp) {
-    this._filterRegExp = regExp;
+  updateFilterAndHighlight(highlightRegExp) {
+    this._highlightRegExp = highlightRegExp;
     var hadTreeUpdates = false;
     for (var node of this._nodeForCoverageInfo.values()) {
-      var shouldBeVisible = this._isVisible(node);
+      var shouldBeVisible = this._filterCallback(node._coverageInfo);
       var isVisible = !!node.parent;
       if (shouldBeVisible)
-        node._setHighlight(regExp);
+        node._setHighlight(this._highlightRegExp);
       if (shouldBeVisible === isVisible)
         continue;
       hadTreeUpdates = true;
@@ -101,14 +105,6 @@ Coverage.CoverageListView = class extends UI.VBox {
   _onOpenedNode(event) {
     var node = /** @type Coverage.CoverageListView.GridNode */ (event.data);
     this._revealSourceForNode(node);
-  }
-
-  /**
-   * @param {!Coverage.CoverageListView.GridNode} node
-   * @return {boolean}
-   */
-  _isVisible(node) {
-    return !this._filterRegExp || this._filterRegExp.test(node._url);
   }
 
   /**

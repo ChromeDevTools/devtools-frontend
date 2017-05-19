@@ -263,6 +263,7 @@ Coverage.URLCoverageInfo = class {
     this._usedSize = 0;
     /** @type {!Coverage.CoverageType} */
     this._type;
+    this._isContentScript = false;
   }
 
   /**
@@ -301,6 +302,13 @@ Coverage.URLCoverageInfo = class {
   }
 
   /**
+   * @return {boolean}
+   */
+  isContentScript() {
+    return this._isContentScript;
+  }
+
+  /**
    * @param {!Common.ContentProvider} contentProvider
    * @param {number} contentLength
    * @param {number} lineOffset
@@ -311,12 +319,17 @@ Coverage.URLCoverageInfo = class {
     var key = `${lineOffset}:${columnOffset}`;
     var entry = this._coverageInfoByLocation.get(key);
 
-    if (!entry) {
-      entry = new Coverage.CoverageInfo(contentProvider, contentLength);
-      this._coverageInfoByLocation.set(key, entry);
-      this._size += contentLength;
-      this._type |= entry.type();
-    }
+    if (entry)
+      return entry;
+
+    entry = new Coverage.CoverageInfo(contentProvider, contentLength);
+
+    if (entry.type() === Coverage.CoverageType.JavaScript && !this._coverageInfoByLocation.size)
+      this._isContentScript = /** @type {!SDK.Script} */ (contentProvider).isContentScript();
+
+    this._coverageInfoByLocation.set(key, entry);
+    this._size += contentLength;
+    this._type |= entry.type();
     return entry;
   }
 };

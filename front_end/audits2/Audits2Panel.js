@@ -77,6 +77,7 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     var newButton = UI.createTextButton(
         Common.UIString('Perform an audit\u2026'), this._showLauncherUI.bind(this), 'material-button default');
     landingCenter.appendChild(newButton);
+    this.setDefaultFocusedElement(newButton);
   }
 
   _showLauncherUI() {
@@ -241,15 +242,14 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
   /**
    * @return {!Promise<undefined>}
    */
-  _stopAndReattach() {
-    return this._protocolService.detach().then(_ => {
-      Emulation.InspectedPagePlaceholder.instance().update(true);
-      this._auditRunning = false;
-      this._updateButton();
-      var resourceTreeModel = SDK.targetManager.mainTarget().model(SDK.ResourceTreeModel);
-      // reload to reset the page state
-      resourceTreeModel.navigate(this._inspectedURL).then(() => this._hideDialog());
-    });
+  async _stopAndReattach() {
+    await this._protocolService.detach();
+    Emulation.InspectedPagePlaceholder.instance().update(true);
+    var resourceTreeModel = SDK.targetManager.mainTarget().model(SDK.ResourceTreeModel);
+    // reload to reset the page state
+    await resourceTreeModel.navigate(this._inspectedURL);
+    this._auditRunning = false;
+    this._updateButton();
   }
 
   /**

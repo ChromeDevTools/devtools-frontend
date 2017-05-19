@@ -940,6 +940,11 @@ SDK.DebuggerEventTypes = {
   NativeBreakpoint: 2
 };
 
+SDK.DebuggerModel.ContinueToLocationTargetCallFrames = {
+  Any: 'any',
+  Current: 'current'
+};
+
 /**
  * @implements {Protocol.DebuggerDispatcher}
  * @unrestricted
@@ -1076,7 +1081,8 @@ SDK.DebuggerModel.Location = class {
   continueToLocation(pausedCallback) {
     if (pausedCallback)
       this.debuggerModel._continueToLocationCallback = this._paused.bind(this, pausedCallback);
-    this.debuggerModel._agent.continueToLocation(this.payload());
+    this.debuggerModel._agent.continueToLocation(
+        this.payload(), SDK.DebuggerModel.ContinueToLocationTargetCallFrames.Current);
   }
 
   /**

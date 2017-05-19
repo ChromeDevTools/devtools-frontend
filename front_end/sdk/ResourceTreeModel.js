@@ -321,10 +321,6 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     var frame = new SDK.ResourceTreeFrame(this, parentFrame, framePayload.id, framePayload, null);
     this._addFrame(frame);
 
-    var frameResource = this._createResourceFromFramePayload(
-        framePayload, framePayload.url, Common.resourceTypes.Document, framePayload.mimeType, null, null);
-    frame.addResource(frameResource);
-
     for (var i = 0; frameTreePayload.childFrames && i < frameTreePayload.childFrames.length; ++i)
       this._addFramesRecursively(frame, frameTreePayload.childFrames[i]);
 
@@ -334,6 +330,12 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
           framePayload, subresource.url, Common.resourceTypes[subresource.type], subresource.mimeType,
           subresource.lastModified || null, subresource.contentSize || null);
       frame.addResource(resource);
+    }
+
+    if (!frame._resourcesMap[framePayload.url]) {
+      var frameResource = this._createResourceFromFramePayload(
+          framePayload, framePayload.url, Common.resourceTypes.Document, framePayload.mimeType, null, null);
+      frame.addResource(frameResource);
     }
   }
 

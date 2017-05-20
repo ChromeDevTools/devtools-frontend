@@ -498,10 +498,10 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
  * @enum {string}
  */
 Security.SecurityPanelSidebarTree.OriginGroupName = {
-  MainOrigin: Common.UIString('Main Origin'),
-  NonSecure: Common.UIString('Non-Secure Origins'),
-  Secure: Common.UIString('Secure Origins'),
-  Unknown: Common.UIString('Unknown / Canceled')
+  MainOrigin: Common.UIString('Main origin'),
+  NonSecure: Common.UIString('Non-secure origins'),
+  Secure: Common.UIString('Secure origins'),
+  Unknown: Common.UIString('Unknown / canceled')
 };
 
 /**
@@ -589,12 +589,12 @@ Security.SecurityMainView = class extends UI.VBox {
 
     // Fill the security summary section.
     this._summarySection.createChild('div', 'security-summary-section-title').textContent =
-        Common.UIString('Security Overview');
+        Common.UIString('Security overview');
 
     var lockSpectrum = this._summarySection.createChild('div', 'lock-spectrum');
     lockSpectrum.createChild('div', 'lock-icon lock-icon-secure').title = Common.UIString('Secure');
-    lockSpectrum.createChild('div', 'lock-icon lock-icon-neutral').title = Common.UIString('Not Secure');
-    lockSpectrum.createChild('div', 'lock-icon lock-icon-insecure').title = Common.UIString('Not Secure (Broken)');
+    lockSpectrum.createChild('div', 'lock-icon lock-icon-neutral').title = Common.UIString('Not secure');
+    lockSpectrum.createChild('div', 'lock-icon lock-icon-insecure').title = Common.UIString('Not secure (broken)');
 
     this._summarySection.createChild('div', 'triangle-pointer-container')
         .createChild('div', 'triangle-pointer-wrapper')
@@ -680,7 +680,7 @@ Security.SecurityMainView = class extends UI.VBox {
          !this._insecureContentStatus.ranContentWithCertErrors)) {
       this._addExplanation(this._securityExplanationsMain, /** @type {!Protocol.Security.SecurityStateExplanation} */ ({
                              'securityState': Protocol.Security.SecurityState.Secure,
-                             'summary': Common.UIString('Secure Resources'),
+                             'summary': Common.UIString('Secure resources'),
                              'description': Common.UIString('All resources on this page are served securely.')
                            }));
     }
@@ -696,7 +696,7 @@ Security.SecurityMainView = class extends UI.VBox {
       if (this._insecureContentStatus.ranMixedContent) {
         this._addMixedContentExplanation(
             this._securityExplanationsMain, this._insecureContentStatus.ranInsecureContentStyle,
-            Common.UIString('Active Mixed Content'),
+            Common.UIString('Active mixed content'),
             Common.UIString(
                 'You have recently allowed non-secure content (such as scripts or iframes) to run on this site.'),
             Network.NetworkLogView.MixedContentFilterValues.BlockOverridden,
@@ -706,13 +706,13 @@ Security.SecurityMainView = class extends UI.VBox {
         this._addMixedFormExplanation(
             // TODO(elawrence): Replace |displayedInsecureContentStyle| with |containedMixedFormStyle|. https://crbug.com/705003
             this._securityExplanationsMain, this._insecureContentStatus.displayedInsecureContentStyle,
-            Common.UIString('Non-secure Form'),
+            Common.UIString('Non-secure form'),
             Common.UIString('The page includes a form with a non-secure "action" attribute.'));
       }
       if (this._insecureContentStatus.displayedMixedContent) {
         this._addMixedContentExplanation(
             this._securityExplanationsMain, this._insecureContentStatus.displayedInsecureContentStyle,
-            Common.UIString('Mixed Content'), Common.UIString('The site includes HTTP resources.'),
+            Common.UIString('Mixed content'), Common.UIString('The site includes HTTP resources.'),
             Network.NetworkLogView.MixedContentFilterValues.Displayed, showDisplayedMixedContentInNetworkPanel);
       }
     }
@@ -877,13 +877,13 @@ Security.SecurityOriginView = class extends UI.VBox {
 
       var table = new Security.SecurityDetailsTable();
       connectionSection.appendChild(table.element());
-      table.addRow('Protocol', originState.securityDetails.protocol);
+      table.addRow(Common.UIString('Protocol'), originState.securityDetails.protocol);
       if (originState.securityDetails.keyExchange)
-        table.addRow('Key Exchange', originState.securityDetails.keyExchange);
+        table.addRow(Common.UIString('Key exchange'), originState.securityDetails.keyExchange);
       if (originState.securityDetails.keyExchangeGroup)
-        table.addRow('Key Exchange Group', originState.securityDetails.keyExchangeGroup);
+        table.addRow(Common.UIString('Key exchange group'), originState.securityDetails.keyExchangeGroup);
       table.addRow(
-          'Cipher', originState.securityDetails.cipher +
+          Common.UIString('Cipher'), originState.securityDetails.cipher +
               (originState.securityDetails.mac ? ' with ' + originState.securityDetails.mac : ''));
 
       // Create the certificate section outside the callback, so that it appears in the right place.
@@ -905,8 +905,8 @@ Security.SecurityOriginView = class extends UI.VBox {
       certificateSection.appendChild(table.element());
       table.addRow(Common.UIString('Subject'), originState.securityDetails.subjectName);
       table.addRow(Common.UIString('SAN'), sanDiv);
-      table.addRow(Common.UIString('Valid From'), validFromString);
-      table.addRow(Common.UIString('Valid Until'), validUntilString);
+      table.addRow(Common.UIString('Valid from'), validFromString);
+      table.addRow(Common.UIString('Valid until'), validUntilString);
       table.addRow(Common.UIString('Issuer'), originState.securityDetails.issuer);
       table.addRow(
           '', Security.SecurityPanel.createCertificateViewerButton2(
@@ -932,14 +932,14 @@ Security.SecurityOriginView = class extends UI.VBox {
         var sctTable = new Security.SecurityDetailsTable();
         sctTableWrapper.appendChild(sctTable.element());
         var sct = originState.securityDetails.signedCertificateTimestampList[i];
-        sctTable.addRow(Common.UIString('Log Name'), sct.logDescription);
+        sctTable.addRow(Common.UIString('Log name'), sct.logDescription);
         sctTable.addRow(Common.UIString('Log ID'), sct.logId.replace(/(.{2})/g, '$1 '));
-        sctTable.addRow(Common.UIString('Validation Status'), sct.status);
+        sctTable.addRow(Common.UIString('Validation status'), sct.status);
         sctTable.addRow(Common.UIString('Source'), sct.origin);
-        sctTable.addRow(Common.UIString('Issued At'), new Date(sct.timestamp).toUTCString());
-        sctTable.addRow(Common.UIString('Hash Algorithm'), sct.hashAlgorithm);
-        sctTable.addRow(Common.UIString('Signature Algorithm'), sct.signatureAlgorithm);
-        sctTable.addRow(Common.UIString('Signature Data'), sct.signatureData.replace(/(.{2})/g, '$1 '));
+        sctTable.addRow(Common.UIString('Issued at'), new Date(sct.timestamp).toUTCString());
+        sctTable.addRow(Common.UIString('Hash algorithm'), sct.hashAlgorithm);
+        sctTable.addRow(Common.UIString('Signature algorithm'), sct.signatureAlgorithm);
+        sctTable.addRow(Common.UIString('Signature data'), sct.signatureData.replace(/(.{2})/g, '$1 '));
       }
 
       // Add link to toggle between displaying of the summary of the SCT(s) and the detailed SCT(s).
@@ -963,13 +963,13 @@ Security.SecurityOriginView = class extends UI.VBox {
           Common.UIString('The security details above are from the first inspected response.');
     } else if (originState.securityState !== Protocol.Security.SecurityState.Unknown) {
       var notSecureSection = this.element.createChild('div', 'origin-view-section');
-      notSecureSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Not Secure');
+      notSecureSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Not secure');
       notSecureSection.createChild('div').textContent =
           Common.UIString('Your connection to this origin is not secure.');
     } else {
       var noInfoSection = this.element.createChild('div', 'origin-view-section');
       noInfoSection.createChild('div', 'origin-view-section-title').textContent =
-          Common.UIString('No Security Information');
+          Common.UIString('No security information');
       noInfoSection.createChild('div').textContent =
           Common.UIString('No security details are available for this origin.');
     }
@@ -982,7 +982,7 @@ Security.SecurityOriginView = class extends UI.VBox {
   _createSanDiv(sanList) {
     var sanDiv = createElement('div');
     if (sanList.length === 0) {
-      sanDiv.textContent = Common.UIString('(N/A)');
+      sanDiv.textContent = Common.UIString('(n/a)');
       sanDiv.classList.add('empty-san');
     } else {
       var truncatedNumToShow = 2;

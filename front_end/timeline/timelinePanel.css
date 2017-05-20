@@ -364,9 +364,10 @@
     content: " ";
 }
 
-.timeline-details-view-row-title {
+.timeline-details-view-row-title:not(:empty) {
     color: rgb(152, 152, 152);
     overflow: hidden;
+    padding-right: 10px;
 }
 
 .timeline-details-warning {
@@ -388,7 +389,6 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    padding-left: 10px;
 }
 
 .timeline-details-view-row-value .stack-preview-container {

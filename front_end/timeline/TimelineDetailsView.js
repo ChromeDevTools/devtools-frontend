@@ -15,6 +15,7 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
     this.element.classList.add('timeline-details');
 
     this._detailsLinkifier = new Components.Linkifier();
+    this._badgePool = new ProductRegistry.BadgePool();
 
     this._tabbedPane = new UI.TabbedPane();
     this._tabbedPane.show(this.element);
@@ -112,13 +113,14 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
    */
   setSelection(selection) {
     this._detailsLinkifier.reset();
+    this._badgePool.reset();
     this._selection = selection;
     switch (this._selection.type()) {
       case Timeline.TimelineSelection.Type.TraceEvent:
         var event = /** @type {!SDK.TracingModel.Event} */ (this._selection.object());
-        Timeline.TimelineUIUtils.buildTraceEventDetails(
-            event, this._model.timelineModel(), this._detailsLinkifier, true)
-                .then(fragment => this._appendDetailsTabsForTraceEventAndShowDetails(event, fragment));
+        Timeline.TimelineUIUtils
+            .buildTraceEventDetails(event, this._model.timelineModel(), this._detailsLinkifier, this._badgePool, true)
+            .then(fragment => this._appendDetailsTabsForTraceEventAndShowDetails(event, fragment));
         break;
       case Timeline.TimelineSelection.Type.Frame:
         var frame = /** @type {!TimelineModel.TimelineFrame} */ (this._selection.object());
@@ -134,7 +136,7 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
       case Timeline.TimelineSelection.Type.NetworkRequest:
         var request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._selection.object());
         Timeline.TimelineUIUtils
-            .buildNetworkRequestDetails(request, this._model.timelineModel(), this._detailsLinkifier)
+            .buildNetworkRequestDetails(request, this._model.timelineModel(), this._detailsLinkifier, this._badgePool)
             .then(this._setContent.bind(this));
         break;
       case Timeline.TimelineSelection.Type.Range:

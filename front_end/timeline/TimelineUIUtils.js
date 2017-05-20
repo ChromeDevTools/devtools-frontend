@@ -698,10 +698,11 @@ Timeline.TimelineUIUtils = class {
    * @param {!SDK.TracingModel.Event} event
    * @param {!TimelineModel.TimelineModel} model
    * @param {!Components.Linkifier} linkifier
+   * @param {!ProductRegistry.BadgePool} badgePool
    * @param {boolean} detailed
    * @return {!Promise<!DocumentFragment>}
    */
-  static async buildTraceEventDetails(event, model, linkifier, detailed) {
+  static async buildTraceEventDetails(event, model, linkifier, badgePool, detailed) {
     var maybeTarget = model.targetByEvent(event);
     /** @type {?Map<number, ?SDK.DOMNode>} */
     var relatedNodesMap = null;
@@ -909,7 +910,8 @@ Timeline.TimelineUIUtils = class {
         break;
     }
 
-    await Timeline.TimelineUIUtils._maybeAppendProductToDetails(contentHelper, url || eventData && eventData['url']);
+    Timeline.TimelineUIUtils._maybeAppendProductToDetails(
+        contentHelper, badgePool, url || eventData && eventData['url']);
 
     if (timelineData.timeWaitingForMainThread) {
       contentHelper.appendTextRow(
@@ -947,17 +949,13 @@ Timeline.TimelineUIUtils = class {
 
   /**
    * @param {!Timeline.TimelineDetailsContentHelper} contentHelper
+   * @param {!ProductRegistry.BadgePool} badgePool
    * @param {?string} url
-   * @return {!Promise}
    */
-  static async _maybeAppendProductToDetails(contentHelper, url) {
-    var parsedURL = url && url.asParsedURL();
-    if (!parsedURL)
-      return;
-    var registry = await ProductRegistry.instance();
-    var name = registry.nameForUrl(parsedURL);
-    if (name)
-      contentHelper.appendTextRow(Common.UIString('Product'), name);
+  static _maybeAppendProductToDetails(contentHelper, badgePool, url) {
+    var parsedURL = url ? url.asParsedURL() : null;
+    if (parsedURL)
+      contentHelper.appendElementRow('', badgePool.badgeForURL(parsedURL, true));
   }
 
   /**
@@ -1097,9 +1095,10 @@ Timeline.TimelineUIUtils = class {
    * @param {!TimelineModel.TimelineModel.NetworkRequest} request
    * @param {!TimelineModel.TimelineModel} model
    * @param {!Components.Linkifier} linkifier
+   * @param {!ProductRegistry.BadgePool} badgePool
    * @return {!Promise<!DocumentFragment>}
    */
-  static async buildNetworkRequestDetails(request, model, linkifier) {
+  static async buildNetworkRequestDetails(request, model, linkifier, badgePool) {
     const target = model.targetByEvent(request.children[0]);
     const contentHelper = new Timeline.TimelineDetailsContentHelper(target, linkifier);
     const category = Timeline.TimelineUIUtils.networkRequestCategory(request);
@@ -1109,7 +1108,7 @@ Timeline.TimelineUIUtils = class {
     const duration = request.endTime - (request.startTime || -Infinity);
     if (request.url)
       contentHelper.appendElementRow(Common.UIString('URL'), Components.Linkifier.linkifyURL(request.url));
-    await Timeline.TimelineUIUtils._maybeAppendProductToDetails(contentHelper, request.url);
+    Timeline.TimelineUIUtils._maybeAppendProductToDetails(contentHelper, badgePool, request.url);
     if (isFinite(duration))
       contentHelper.appendTextRow(Common.UIString('Duration'), Number.millisToString(duration, true));
     if (request.requestMethod)

@@ -17,6 +17,7 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
         Timeline.EventsTimelineTreeView.Filters.Events.FilterChanged, this._onFilterChanged, this);
     this.init(filters);
     this._delegate = delegate;
+    this._badgePool = new ProductRegistry.BadgePool();
     this._filters.push.apply(this._filters, this._filtersControl.filters());
     this._dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
     this._splitWidget.showBoth();
@@ -27,6 +28,7 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
    * @param {!Timeline.TimelineSelection} selection
    */
   updateContents(selection) {
+    this._badgePool.reset();
     super.updateContents(selection);
     if (selection.type() === Timeline.TimelineSelection.Type.TraceEvent) {
       var event = /** @type {!SDK.TracingModel.Event} */ (selection.object());
@@ -113,8 +115,9 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
     var traceEvent = node.event;
     if (!traceEvent)
       return false;
-    Timeline.TimelineUIUtils.buildTraceEventDetails(traceEvent, this.model().timelineModel(), this._linkifier, false)
-      .then(fragment => this._detailsView.element.appendChild(fragment));
+    Timeline.TimelineUIUtils
+        .buildTraceEventDetails(traceEvent, this.model().timelineModel(), this._linkifier, this._badgePool, false)
+        .then(fragment => this._detailsView.element.appendChild(fragment));
     return true;
   }
 

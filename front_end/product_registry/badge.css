@@ -16,3 +16,11 @@
   content: attr(data-initial);
   color: #222;
 }
+
+.hide-badge-title .product-registry-badge-title {
+  display: none;
+}
+
+.product-registry-badge-title {
+  padding-left: 4px;
+}

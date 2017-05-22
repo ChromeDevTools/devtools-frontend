@@ -43,6 +43,7 @@ UI.TabbedPane = class extends UI.VBox {
     this._tabSlider = createElementWithClass('div', 'tabbed-pane-tab-slider');
     this._tabsElement = this._headerContentsElement.createChild('div', 'tabbed-pane-header-tabs');
     this._tabsElement.setAttribute('role', 'tablist');
+    this._tabsElement.addEventListener('keydown', this._keyDown.bind(this), false);
     this._contentElement = this.contentElement.createChild('div', 'tabbed-pane-content');
     this._contentElement.setAttribute('role', 'tabpanel');
     this._contentElement.createChild('content');
@@ -217,6 +218,7 @@ UI.TabbedPane = class extends UI.VBox {
     this.closeTabs([id], userGesture);
   }
 
+
   /**
    * @param {!Array.<string>} ids
    * @param {boolean=} userGesture
@@ -306,6 +308,12 @@ UI.TabbedPane = class extends UI.VBox {
     });
   }
 
+  _viewHasFocus() {
+    if (this.visibleView)
+      return this.visibleView.hasFocus();
+    return this.contentElement === this.contentElement.getComponentRoot().activeElement;
+  }
+
   /**
    * @param {string} id
    * @param {boolean=} userGesture
@@ -314,7 +322,7 @@ UI.TabbedPane = class extends UI.VBox {
   selectTab(id, userGesture) {
     if (this._currentTabLocked)
       return false;
-    var focused = this.hasFocus();
+    var focused = this._viewHasFocus();
     var tab = this._tabsById.get(id);
     if (!tab)
       return false;
@@ -548,6 +556,7 @@ UI.TabbedPane = class extends UI.VBox {
     var dropDownContainer = createElementWithClass('div', 'tabbed-pane-header-tabs-drop-down-container');
     var chevronIcon = UI.Icon.create('largeicon-chevron', 'chevron-icon');
     dropDownContainer.appendChild(chevronIcon);
+    dropDownContainer.addEventListener('click', this._onDropDownMouseDown.bind(this));
     dropDownContainer.addEventListener('mousedown', this._onDropDownMouseDown.bind(this));
     return dropDownContainer;
   }
@@ -558,7 +567,8 @@ UI.TabbedPane = class extends UI.VBox {
   _onDropDownMouseDown(event) {
     if (event.which !== 1)
       return;
-    var menu = new UI.ContextMenu(event);
+    var rect = this._dropDownButton.getBoundingClientRect();
+    var menu = new UI.ContextMenu(event, false, rect.left, rect.bottom);
     for (var i = 0; i < this._tabs.length; ++i) {
       var tab = this._tabs[i];
       if (tab._shown)
@@ -761,6 +771,7 @@ UI.TabbedPane = class extends UI.VBox {
    * @param {!UI.TabbedPaneTab} tab
    */
   _showTab(tab) {
+    tab.tabElement.tabIndex = 0;
     tab.tabElement.classList.add('selected');
     UI.ARIAUtils.setSelected(tab.tabElement, true);
     tab.view.show(this.element);
@@ -786,6 +797,7 @@ UI.TabbedPane = class extends UI.VBox {
    * @param {!UI.TabbedPaneTab} tab
    */
   _hideTab(tab) {
+    tab.tabElement.removeAttribute('tabIndex');
     tab.tabElement.classList.remove('selected');
     tab.tabElement.setAttribute('aria-selected', 'false');
     tab.view.detach();
@@ -846,6 +858,42 @@ UI.TabbedPane = class extends UI.VBox {
   setAllowTabReorder(allow, automatic) {
     this._allowTabReorder = allow;
     this._automaticReorder = automatic;
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _keyDown(event) {
+    if (!this._currentTab)
+      return;
+    var nextTabElement = null;
+    switch (event.key) {
+      case 'ArrowUp':
+      case 'ArrowLeft':
+        nextTabElement = this._currentTab.tabElement.previousElementSibling;
+        if (!nextTabElement && !this._dropDownButton.parentElement)
+          nextTabElement = this._currentTab.tabElement.parentElement.lastElementChild;
+        break;
+      case 'ArrowDown':
+      case 'ArrowRight':
+        nextTabElement = this._currentTab.tabElement.nextElementSibling;
+        if (!nextTabElement && !this._dropDownButton.parentElement)
+          nextTabElement = this._currentTab.tabElement.parentElement.firstElementChild;
+        break;
+      case 'Enter':
+      case 'Space':
+        this._currentTab.view.focus();
+        return;
+      default:
+        return;
+    }
+    if (!nextTabElement) {
+      this._dropDownButton.click();
+      return;
+    }
+    var tab = this._tabs.find(tab => tab.tabElement === nextTabElement);
+    this.selectTab(tab.id, true);
+    nextTabElement.focus();
   }
 };
 
@@ -1031,7 +1079,6 @@ UI.TabbedPaneTab = class {
   _createTabElement(measuring) {
     var tabElement = createElementWithClass('div', 'tabbed-pane-header-tab');
     tabElement.id = 'tab-' + this._id;
-    tabElement.tabIndex = -1;
     UI.ARIAUtils.markAsTab(tabElement);
     UI.ARIAUtils.setSelected(tabElement, false);
     tabElement.selectTabForTest = this._tabbedPane.selectTab.bind(this._tabbedPane, this.id, true);

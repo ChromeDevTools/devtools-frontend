@@ -116,7 +116,8 @@
 }
 
 .tabbed-pane-header-tab:hover,
-.tabbed-pane-header-tab.selected:hover {
+.tabbed-pane-header-tab.selected:hover,
+.tabbed-pane-header-tab[data-keyboard-focus="true"]:focus {
     color: #333;
     background-color: #e5e5e5;
 }

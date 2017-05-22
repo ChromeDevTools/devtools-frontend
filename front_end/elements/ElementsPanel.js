@@ -323,7 +323,6 @@ Elements.ElementsPanel = class extends UI.Panel {
           treeOutline.domModel().requestDocument();
       }
     }
-    this.focus();
   }
 
   /**

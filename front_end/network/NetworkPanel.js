@@ -50,6 +50,7 @@ Network.NetworkPanel = class extends UI.Panel {
     this._panelToolbar = new UI.Toolbar('', this.element);
     this._filterBar = new UI.FilterBar('networkPanel', true);
     this._filterBar.show(this.element);
+    this.setDefaultFocusedChild(this._filterBar);
 
     this._filmStripPlaceholderElement = this.element.createChild('div');
 

@@ -165,7 +165,7 @@ Audits.AuditsPanel = class extends UI.PanelWithSidebar {
   wasShown() {
     super.wasShown();
     if (!this._visibleView)
-      this._auditsItemTreeElement.select();
+      this._auditsItemTreeElement.select(true);
   }
 
   /**

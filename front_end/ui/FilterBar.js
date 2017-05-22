@@ -106,13 +106,15 @@ UI.FilterBar = class extends UI.HBox {
       this._showingWidget = true;
       this.showWidget();
       this._showingWidget = false;
-      this._focusTextField();
     } else {
       this.hideWidget();
     }
   }
 
-  _focusTextField() {
+  /**
+   * @override
+   */
+  focus() {
     for (var i = 0; i < this._filters.length; ++i) {
       if (this._filters[i] instanceof UI.TextFilterUI) {
         var textFilterUI = /** @type {!UI.TextFilterUI} */ (this._filters[i]);

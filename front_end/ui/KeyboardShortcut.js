@@ -287,6 +287,3 @@ UI.KeyboardShortcut.KeyBindings = {};
 
 /** @typedef {!{key: number, name: string}} */
 UI.KeyboardShortcut.Descriptor;
-
-
-UI.KeyboardShortcut.SelectAll = UI.KeyboardShortcut.makeKey('a', UI.KeyboardShortcut.Modifiers.CtrlOrMeta);

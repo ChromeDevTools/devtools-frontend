@@ -137,12 +137,6 @@ UI.FilterBar = class extends UI.HBox {
   }
 };
 
-UI.FilterBar.FilterBarState = {
-  Inactive: 'inactive',
-  Active: 'active',
-  Shown: 'on'
-};
-
 /**
  * @interface
  * @extends {Common.EventTarget}
@@ -447,101 +441,6 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
 UI.NamedBitSetFilterUI.Item;
 
 UI.NamedBitSetFilterUI.ALL_TYPES = 'all';
-
-/**
- * @implements {UI.FilterUI}
- * @unrestricted
- */
-UI.ComboBoxFilterUI = class extends Common.Object {
-  /**
-   * @param {!Array.<!{value: string, label: string, title: string, default:(boolean|undefined)}>} options
-   * @param {string=} label
-   * @param {!Common.Setting=} setting
-   */
-  constructor(options, label, setting) {
-    super();
-    this._setting = setting;
-    this._toolbar = new UI.Toolbar('');
-    this._filterComboBox = new UI.ToolbarComboBox(this._filterChanged.bind(this));
-    this._toolbar.appendToolbarItem(this._filterComboBox);
-
-    this._options = options;
-    for (var i = 0; i < options.length; ++i) {
-      var filterOption = options[i];
-      var option = this._filterComboBox.createOption(filterOption.label, filterOption.title, filterOption.value);
-      this._filterComboBox.addOption(option);
-      if (setting && setting.get() === filterOption.value)
-        this._filterComboBox.setSelectedIndex(i);
-    }
-
-    if (setting)
-      setting.addChangeListener(this._settingChanged, this);
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isActive() {
-    var option = this._options[this._filterComboBox.selectedIndex()];
-    return !option || !option.default;
-  }
-
-  /**
-   * @override
-   * @return {!Element}
-   */
-  element() {
-    return this._toolbar.element;
-  }
-
-  /**
-   * @return {string}
-   */
-  value() {
-    return this._options[this._filterComboBox.selectedIndex()].value;
-  }
-
-  /**
-   * @param {number} index
-   */
-  setSelectedIndex(index) {
-    this._filterComboBox.setSelectedIndex(index);
-  }
-
-  /**
-   * @return {number}
-   */
-  selectedIndex(index) {
-    return this._filterComboBox.selectedIndex();
-  }
-
-  _settingChanged() {
-    if (this._muteSettingListener)
-      return;
-
-    var value = this._setting.get();
-    for (var i = 0; i < this._options.length; ++i) {
-      if (value === this._options[i].value) {
-        this._filterComboBox.setSelectedIndex(i);
-        break;
-      }
-    }
-  }
-
-  /**
-   * @param {!Event} event
-   */
-  _filterChanged(event) {
-    var option = this._options[this._filterComboBox.selectedIndex()];
-    if (this._setting) {
-      this._muteSettingListener = true;
-      this._setting.set(option.value);
-      this._muteSettingListener = false;
-    }
-    this.dispatchEventToListeners(UI.FilterUI.Events.FilterChanged, null);
-  }
-};
 
 /**
  * @implements {UI.FilterUI}

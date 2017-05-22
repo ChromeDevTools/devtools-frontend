@@ -106,9 +106,6 @@ UI.Panel = class extends UI.VBox {
   }
 };
 
-// Should by in sync with style declarations.
-UI.Panel.counterRightMargin = 25;
-
 /**
  * @unrestricted
  */

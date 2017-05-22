@@ -184,13 +184,13 @@ UI.GlassPane = class {
       height = Math.min(height, this._maxSize.height);
     }
 
-    var measuredWidth = 0;
-    var measuredHeight = 0;
     if (this._sizeBehavior === UI.GlassPane.SizeBehavior.MeasureContent) {
-      measuredWidth = this.contentElement.offsetWidth;
-      measuredHeight = this.contentElement.offsetHeight;
-      width = Math.min(width, measuredWidth);
-      height = Math.min(height, measuredHeight);
+      var measuredWidth = this.contentElement.offsetWidth;
+      var measuredHeight = this.contentElement.offsetHeight;
+      var widthOverflow = height < measuredHeight ? scrollbarSize : 0;
+      var heightOverflow = width < measuredWidth ? scrollbarSize : 0;
+      width = Math.min(width, measuredWidth + widthOverflow);
+      height = Math.min(height, measuredHeight + heightOverflow);
     }
 
     if (this._anchorBox) {
@@ -212,8 +212,6 @@ UI.GlassPane = class {
           positionY = Math.max(gutterSize, anchorBox.y - height - gutterSize);
           var spaceTop = anchorBox.y - positionY - gutterSize;
           if (this._sizeBehavior === UI.GlassPane.SizeBehavior.MeasureContent) {
-            if (height < measuredHeight)
-              width += scrollbarSize;
             if (height > spaceTop) {
               this._arrowElement.classList.add('arrow-none');
               enoughHeight = false;
@@ -228,8 +226,6 @@ UI.GlassPane = class {
           positionY = anchorBox.y + anchorBox.height + gutterSize;
           var spaceBottom = containerHeight - positionY - gutterSize;
           if (this._sizeBehavior === UI.GlassPane.SizeBehavior.MeasureContent) {
-            if (height < measuredHeight)
-              width += scrollbarSize;
             if (height > spaceBottom) {
               this._arrowElement.classList.add('arrow-none');
               positionY = containerHeight - gutterSize - height;
@@ -270,8 +266,6 @@ UI.GlassPane = class {
           positionX = Math.max(gutterSize, anchorBox.x - width - gutterSize);
           var spaceLeft = anchorBox.x - positionX - gutterSize;
           if (this._sizeBehavior === UI.GlassPane.SizeBehavior.MeasureContent) {
-            if (width < measuredWidth)
-              height += scrollbarSize;
             if (width > spaceLeft) {
               this._arrowElement.classList.add('arrow-none');
               enoughWidth = false;
@@ -286,8 +280,6 @@ UI.GlassPane = class {
           positionX = anchorBox.x + anchorBox.width + gutterSize;
           var spaceRight = containerWidth - positionX - gutterSize;
           if (this._sizeBehavior === UI.GlassPane.SizeBehavior.MeasureContent) {
-            if (width < measuredWidth)
-              height += scrollbarSize;
             if (width > spaceRight) {
               this._arrowElement.classList.add('arrow-none');
               positionX = containerWidth - gutterSize - width;

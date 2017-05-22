@@ -142,6 +142,29 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     return statusView;
   }
 
+  /**
+   * @return {!Promise<undefined>}
+   */
+  _updateInspectedURL() {
+    var mainTarget = SDK.targetManager.mainTarget();
+    var runtimeModel = mainTarget.model(SDK.RuntimeModel);
+    var executionContext = runtimeModel && runtimeModel.defaultExecutionContext();
+    this._inspectedURL = mainTarget.inspectedURL();
+    if (!executionContext)
+      return Promise.resolve();
+
+    return new Promise(resolve => {
+      executionContext.evaluate('window.location.href', 'audits', false, false, true, false, false, (object, err) => {
+        if (!err && object) {
+          this._inspectedURL = object.value;
+          object.release();
+        }
+
+        resolve();
+      });
+    });
+  }
+
   _start() {
     var emulationModel = self.singleton(Emulation.DeviceModeModel);
     this._emulationEnabledBefore = emulationModel.enabledSetting().get();
@@ -155,7 +178,6 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
         emulationModel.emulate(Emulation.DeviceModeModel.Type.Device, device, device.modes[0], 1);
     }
     this._dialog.setCloseOnEscape(false);
-    this._inspectedURL = SDK.targetManager.mainTarget().inspectedURL();
 
     var categoryIDs = [];
     for (var preset of Audits2.Audits2Panel.Presets) {
@@ -164,6 +186,7 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     }
 
     return Promise.resolve()
+        .then(_ => this._updateInspectedURL())
         .then(_ => this._protocolService.attach())
         .then(_ => {
           this._auditRunning = true;

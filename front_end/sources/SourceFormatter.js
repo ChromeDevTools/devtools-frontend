@@ -36,8 +36,8 @@ Sources.SourceFormatter = class {
         Workspace.workspace, this._projectId, Workspace.projectTypes.Formatter, 'formatter',
         true /* isServiceProject */);
 
-    /** @type {!Map<string, !Workspace.UISourceCode>} */
-    this._formattedPaths = new Map();
+    /** @type {!Map<!Workspace.UISourceCode, !{promise: !Promise<!Sources.SourceFormatData>, formatData: ?Sources.SourceFormatData}>} */
+    this._formattedSourceCodes = new Map();
     this._scriptMapping = new Sources.SourceFormatter.ScriptMapping();
     this._styleMapping = new Sources.SourceFormatter.StyleMapping();
     Workspace.workspace.addEventListener(
@@ -49,9 +49,10 @@ Sources.SourceFormatter = class {
    */
   _onUISourceCodeRemoved(event) {
     var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
-    var formattedUISourceCode = this._formattedPaths.get(uiSourceCode.project().id() + ':' + uiSourceCode.url());
-    if (formattedUISourceCode)
-      this.discardFormattedUISourceCode(formattedUISourceCode);
+    var cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
+    if (cacheEntry && cacheEntry.formatData)
+      this._discardFormatData(cacheEntry.formatData);
+    this._formattedSourceCodes.remove(uiSourceCode);
   }
 
   /**
@@ -62,13 +63,19 @@ Sources.SourceFormatter = class {
     var formatData = Sources.SourceFormatData._for(formattedUISourceCode);
     if (!formatData)
       return null;
+    this._discardFormatData(formatData);
+    this._formattedSourceCodes.remove(formatData.originalSourceCode);
+    return formatData.originalSourceCode;
+  }
 
-    delete formattedUISourceCode[Sources.SourceFormatData._formatDataSymbol];
+  /**
+   * @param {!Sources.SourceFormatData} formatData
+   */
+  _discardFormatData(formatData) {
+    delete formatData.formattedSourceCode[Sources.SourceFormatData._formatDataSymbol];
     this._scriptMapping._setSourceMappingEnabled(formatData, false);
     this._styleMapping._setSourceMappingEnabled(formatData, false);
-    this._project.removeFile(formattedUISourceCode.url());
-    this._formattedPaths.remove(formatData.originalPath());
-    return formatData.originalSourceCode;
+    this._project.removeFile(formatData.formattedSourceCode.url());
   }
 
   /**
@@ -76,7 +83,7 @@ Sources.SourceFormatter = class {
    * @return {boolean}
    */
   hasFormatted(uiSourceCode) {
-    return this._formattedPaths.has(uiSourceCode.project().id() + ':' + uiSourceCode.url());
+    return this._formattedSourceCodes.has(uiSourceCode);
   }
 
   /**
@@ -84,17 +91,18 @@ Sources.SourceFormatter = class {
    * @return {!Promise<!Sources.SourceFormatData>}
    */
   async format(uiSourceCode) {
-    var formattedUISourceCode = this._formattedPaths.get(uiSourceCode.project().id() + ':' + uiSourceCode.url());
-    if (formattedUISourceCode)
-      return Sources.SourceFormatData._for(formattedUISourceCode);
+    var cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
+    if (cacheEntry)
+      return cacheEntry.promise;
 
-    var content = await uiSourceCode.requestContent();
     var fulfillFormatPromise;
     var resultPromise = new Promise(fulfill => {
       fulfillFormatPromise = fulfill;
     });
-    Sources.Formatter.format(
-        uiSourceCode.contentType(), uiSourceCode.mimeType(), content || '', innerCallback.bind(this));
+    this._formattedSourceCodes.set(uiSourceCode, {promise: resultPromise, formatData: null});
+    var content = await uiSourceCode.requestContent();
+    // ------------ ASYNC ------------
+    Sources.Formatter.format(uiSourceCode.contentType(), uiSourceCode.mimeType(), content || '', formatDone.bind(this));
     return resultPromise;
 
     /**
@@ -102,8 +110,17 @@ Sources.SourceFormatter = class {
      * @param {string} formattedContent
      * @param {!Sources.FormatterSourceMapping} formatterMapping
      */
-    function innerCallback(formattedContent, formatterMapping) {
-      var formattedURL = uiSourceCode.url() + ':formatted';
+    function formatDone(formattedContent, formatterMapping) {
+      var cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
+      if (!cacheEntry || cacheEntry.promise !== resultPromise)
+        return;
+      var formattedURL;
+      var count = 0;
+      var suffix = '';
+      do {
+        formattedURL = `${uiSourceCode.url()}:formatted${suffix}`;
+        suffix = `:${count++}`;
+      } while (this._project.uiSourceCodeForURL(formattedURL));
       var contentProvider =
           Common.StaticContentProvider.fromString(formattedURL, uiSourceCode.contentType(), formattedContent);
       var formattedUISourceCode =
@@ -112,9 +129,7 @@ Sources.SourceFormatter = class {
       formattedUISourceCode[Sources.SourceFormatData._formatDataSymbol] = formatData;
       this._scriptMapping._setSourceMappingEnabled(formatData, true);
       this._styleMapping._setSourceMappingEnabled(formatData, true);
-
-      var path = formatData.originalPath();
-      this._formattedPaths.set(path, formattedUISourceCode);
+      cacheEntry.formatData = formatData;
 
       for (var decoration of uiSourceCode.allDecorations()) {
         var range = decoration.range();

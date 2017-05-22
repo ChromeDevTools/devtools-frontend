@@ -99,12 +99,8 @@ Coverage.CoverageListView = class extends UI.VBox {
       this._sortingChanged();
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _onOpenedNode(event) {
-    var node = /** @type Coverage.CoverageListView.GridNode */ (event.data);
-    this._revealSourceForNode(node);
+  _onOpenedNode() {
+    this._revealSourceForSelectedNode();
   }
 
   /**
@@ -114,13 +110,11 @@ Coverage.CoverageListView = class extends UI.VBox {
     if (!isEnterKey(event))
       return;
     event.consume(true);
-    this._revealSourceForNode(this._dataGrid.selectedNode);
+    this._revealSourceForSelectedNode();
   }
 
-  /**
-   * @param {?DataGrid.DataGridNode} node
-   */
-  async _revealSourceForNode(node) {
+  async _revealSourceForSelectedNode() {
+    var node = this._dataGrid.selectedNode;
     if (!node)
       return;
     var coverageInfo = /** @type {!Coverage.CoverageListView.GridNode} */ (node)._coverageInfo;
@@ -130,10 +124,12 @@ Coverage.CoverageListView = class extends UI.VBox {
     var content = await sourceCode.requestContent();
     if (TextUtils.isMinified(content)) {
       var formatData = await Sources.sourceFormatter.format(sourceCode);
-      Common.Revealer.reveal(formatData.formattedSourceCode);
-    } else {
-      Common.Revealer.reveal(sourceCode);
+      // ------------ ASYNC ------------
+      sourceCode = formatData.formattedSourceCode;
     }
+    if (this._dataGrid.selectedNode !== node)
+      return;
+    Common.Revealer.reveal(sourceCode);
   }
 
   _sortingChanged() {

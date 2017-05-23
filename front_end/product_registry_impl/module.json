@@ -7,8 +7,7 @@
     ],
     "dependencies": [
         "common",
-        "product_registry",
-        "sdk"
+        "product_registry"
     ],
     "scripts": [
         "ProductRegistryImpl.js",

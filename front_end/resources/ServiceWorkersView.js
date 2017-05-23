@@ -287,7 +287,7 @@ Resources.ServiceWorkersView.Section = class {
           this._updateClientInfo(
               clientLabelText, /** @type {!Protocol.Target.TargetInfo} */ (this._clientInfoCache.get(client)));
         }
-        this._manager.target().targetAgent().getTargetInfo(client, this._onClientInfo.bind(this, clientLabelText));
+        this._manager.target().targetAgent().getTargetInfo(client).then(this._onClientInfo.bind(this, clientLabelText));
       }
     }
 
@@ -382,11 +382,10 @@ Resources.ServiceWorkersView.Section = class {
 
   /**
    * @param {!Element} element
-   * @param {?Protocol.Error} error
    * @param {?Protocol.Target.TargetInfo} targetInfo
    */
-  _onClientInfo(element, error, targetInfo) {
-    if (error || !targetInfo)
+  _onClientInfo(element, targetInfo) {
+    if (!targetInfo)
       return;
     this._clientInfoCache.set(targetInfo.targetId, targetInfo);
     this._updateClientInfo(element, targetInfo);

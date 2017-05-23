@@ -60,7 +60,6 @@ NON_PROMISIFIED_DOMAINS = frozenset([
     "Network",
     "Page",
     "Runtime",
-    "Target",
 ])
 
 

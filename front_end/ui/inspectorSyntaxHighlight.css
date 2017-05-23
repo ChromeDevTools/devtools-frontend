@@ -34,9 +34,7 @@
 .cm-js-def {color: hsl(240, 73%, 38%);}
 .cm-js-operator {color: hsl(27, 100%, 30%);}
 .cm-js-meta {color: hsl(27, 100%, 30%);}
-.cm-js-variable {color: hsl(0, 0%, 0%);}
 .cm-js-variable-2 {color: hsl(240, 73%, 38%);}
-.cm-js-property {color: black;}
 
 .cm-css-keyword { color: rgb(7, 144, 154);}
 .cm-css-number {color: rgb(50, 0, 255);}

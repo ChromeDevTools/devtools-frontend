@@ -387,7 +387,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   navigate(url) {
-    return this._agent.navigate(url, undefined, (error, frameId) => undefined);
+    return this._agent.navigate(url, undefined, undefined, (error, frameId) => undefined);
   }
 
   /**

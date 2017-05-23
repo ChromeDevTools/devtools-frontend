@@ -436,6 +436,8 @@ Audits2.ProtocolService = class extends Common.Object {
   attach() {
     return SDK.targetManager.interceptMainConnection(this._dispatchProtocolMessage.bind(this)).then(rawConnection => {
       this._rawConnection = rawConnection;
+      this._rawConnection.sendMessage(
+          JSON.stringify({id: 0, method: 'Input.setIgnoreInputEvents', params: {ignore: true}}));
     });
   }
 

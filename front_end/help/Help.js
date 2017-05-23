@@ -40,19 +40,6 @@ Help._showReleaseNoteIfNeeded = function(lastSeenVersion, latestVersion) {
 };
 
 /**
- * @return {number}
- */
-Help.browserVersion = function() {
-  if (!Help._browserVersion) {
-    var chromeRegex = new RegExp('(?:^|\\W)Chrome/(\\d+)');
-    var chromeMatch = navigator.userAgent.match(chromeRegex);
-    /** @type {number} */
-    Help._browserVersion = Number(chromeMatch[1]);
-  }
-  return Help._browserVersion;
-};
-
-/**
  * @const
  * @type {string}
  */

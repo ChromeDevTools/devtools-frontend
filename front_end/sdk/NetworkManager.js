@@ -783,7 +783,6 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
 
   _updateUserAgentOverride() {
     var userAgent = this._currentUserAgent();
-    Host.ResourceLoader.targetUserAgent = userAgent;
     for (var agent of this._agents)
       agent.setUserAgentOverride(userAgent);
   }

@@ -403,7 +403,7 @@ Main.Main = class {
    * @param {!Event} event
    */
   _redispatchClipboardEvent(event) {
-    var eventCopy = new CustomEvent('clipboard-' + event.type);
+    var eventCopy = new CustomEvent('clipboard-' + event.type, {bubbles: true});
     eventCopy['original'] = event;
     var document = event.target && event.target.ownerDocument;
     var target = document ? document.deepActiveElement() : null;

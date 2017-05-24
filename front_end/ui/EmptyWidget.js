@@ -38,22 +38,23 @@ UI.EmptyWidget = class extends UI.VBox {
   constructor(text) {
     super();
     this.registerRequiredCSS('ui/emptyWidget.css');
-    this.element.classList.add('empty-view');
-    this.textElement = this.element.createChild('h2');
-    this.textElement.textContent = text;
+    this.element.classList.add('empty-view-scroller');
+    this._contentElement = this.element.createChild('div', 'empty-view');
+    this._textElement = this._contentElement.createChild('h2');
+    this._textElement.textContent = text;
   }
 
   /**
    * @return {!Element}
    */
   appendParagraph() {
-    return this.element.createChild('p');
+    return this._contentElement.createChild('p');
   }
 
   /**
    * @param {string} text
    */
   set text(text) {
-    this.textElement.textContent = text;
+    this._textElement.textContent = text;
   }
 };

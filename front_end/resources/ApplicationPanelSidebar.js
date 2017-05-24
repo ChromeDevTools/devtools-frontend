@@ -40,8 +40,6 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
 
     this._panel = panel;
 
-    this._shouldRestoreSelection = true;
-
     this._sidebarTree = new UI.TreeOutlineInShadow();
     this._sidebarTree.element.classList.add('resources-sidebar');
     this._sidebarTree.registerRequiredCSS('resources/resourcesSidebar.css');
@@ -113,11 +111,9 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     SDK.targetManager.observeTargets(this);
     SDK.targetManager.addModelListener(
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
-    SDK.targetManager.addModelListener(
-        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.WillReloadPage, this._willReloadPage, this);
 
     var selection = this._panel.lastSelectedItemPath();
-    if (this._shouldRestoreSelection && !selection.length)
+    if (!selection.length)
       this._manifestTreeElement.select();
   }
 
@@ -233,16 +229,10 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     this.applicationCacheListTreeElement.setExpandable(false);
   }
 
-  _willReloadPage() {
-    this._shouldRestoreSelection = true;
-  }
-
   /**
    * @param {!Common.Event} event
    */
   _treeElementAdded(event) {
-    if (!this._shouldRestoreSelection)
-      return;
     var selection = this._panel.lastSelectedItemPath();
     if (!selection.length)
       return;
@@ -255,8 +245,6 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     if (index > 0)
       element.expand();
     element.select();
-    if (index === 0)
-      this._shouldRestoreSelection = false;
   }
 
   _reset() {

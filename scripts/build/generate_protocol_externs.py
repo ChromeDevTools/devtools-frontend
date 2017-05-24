@@ -59,7 +59,6 @@ NON_PROMISIFIED_DOMAINS = frozenset([
     "LayerTree",
     "Network",
     "Page",
-    "Runtime",
 ])
 
 

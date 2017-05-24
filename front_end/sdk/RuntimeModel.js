@@ -247,22 +247,20 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {number} executionContextId
    * @param {function(!Protocol.Runtime.ScriptId=, ?Protocol.Runtime.ExceptionDetails=)=} callback
    */
-  compileScript(expression, sourceURL, persistScript, executionContextId, callback) {
-    this._agent.compileScript(expression, sourceURL, persistScript, executionContextId, innerCallback);
+  async compileScript(expression, sourceURL, persistScript, executionContextId, callback) {
+    var response = await this._agent.invoke_compileScript({
+      expression: expression,
+      sourceURL: sourceURL,
+      persistScript: persistScript,
+      executionContextId: executionContextId
+    });
 
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Protocol.Runtime.ScriptId=} scriptId
-     * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     */
-    function innerCallback(error, scriptId, exceptionDetails) {
-      if (error) {
-        console.error(error);
-        return;
-      }
-      if (callback)
-        callback(scriptId, exceptionDetails);
+    if (response[Protocol.Error]) {
+      console.error(response[Protocol.Error]);
+      return;
     }
+    if (callback)
+      callback(response.scriptId, response.exceptionDetails);
   }
 
   /**
@@ -276,7 +274,10 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {boolean=} awaitPromise
    * @param {function(?Protocol.Runtime.RemoteObject, ?Protocol.Runtime.ExceptionDetails=)=} callback
    */
-  runScript(
+  async runScript(
+      scriptId, executionContextId, objectGroup, silent, includeCommandLineAPI, returnByValue, generatePreview,
+      awaitPromise, callback) {
+    var response = await this._agent.invoke_runScript({
       scriptId,
       executionContextId,
       objectGroup,
@@ -284,25 +285,15 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
       includeCommandLineAPI,
       returnByValue,
       generatePreview,
-      awaitPromise,
-      callback) {
-    this._agent.runScript(
-        scriptId, executionContextId, objectGroup, silent, includeCommandLineAPI, returnByValue, generatePreview,
-        awaitPromise, innerCallback);
+      awaitPromise
+    });
 
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Protocol.Runtime.RemoteObject} result
-     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     */
-    function innerCallback(error, result, exceptionDetails) {
-      if (error) {
-        console.error(error);
-        return;
-      }
-      if (callback)
-        callback(result, exceptionDetails);
+    if (response[Protocol.Error]) {
+      console.error(response[Protocol.Error]);
+      return;
     }
+    if (callback)
+      callback(response.result, response.exceptionDetails);
   }
 
   /**
@@ -646,37 +637,32 @@ SDK.ExecutionContext = class {
    * @param {boolean} userGesture
    * @param {function(?SDK.RemoteObject, !Protocol.Runtime.ExceptionDetails=, string=)} callback
    */
-  _evaluateGlobal(
-      expression,
-      objectGroup,
-      includeCommandLineAPI,
-      silent,
-      returnByValue,
-      generatePreview,
-      userGesture,
-      callback) {
+  async _evaluateGlobal(
+      expression, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview, userGesture, callback) {
     if (!expression) {
       // There is no expression, so the completion should happen against global properties.
       expression = 'this';
     }
 
-    /**
-     * @this {SDK.ExecutionContext}
-     * @param {?Protocol.Error} error
-     * @param {!Protocol.Runtime.RemoteObject} result
-     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     */
-    function evalCallback(error, result, exceptionDetails) {
-      if (error) {
-        console.error(error);
-        callback(null, undefined, error);
-        return;
-      }
-      callback(this.runtimeModel.createRemoteObject(result), exceptionDetails);
+    var response = await this.runtimeModel._agent.invoke_evaluate({
+      expression: expression,
+      objectGroup: objectGroup,
+      includeCommandLineAPI: includeCommandLineAPI,
+      silent: silent,
+      contextId: this.id,
+      returnByValue: returnByValue,
+      generatePreview: generatePreview,
+      userGesture: userGesture,
+      awaitPromise: false
+    });
+
+    var error = response[Protocol.Error];
+    if (error) {
+      console.error(error);
+      callback(null, undefined, error);
+      return;
     }
-    this.runtimeModel._agent.evaluate(
-        expression, objectGroup, includeCommandLineAPI, silent, this.id, returnByValue, generatePreview, userGesture,
-        false, evalCallback.bind(this));
+    callback(this.runtimeModel.createRemoteObject(response.result), response.exceptionDetails);
   }
 
   /**

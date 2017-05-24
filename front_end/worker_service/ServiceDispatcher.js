@@ -46,7 +46,7 @@ var ServiceDispatcher = class {
       }
       this._dispatchMessage(message);
     } catch (e) {
-      this._sendErrorResponse(message['id'], e.toString());
+      this._sendErrorResponse(message['id'], e.toString() + ' ' + e.stack);
     }
   }
 

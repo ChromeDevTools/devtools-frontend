@@ -82,6 +82,11 @@ button {
     padding: 3px 0 0 22px;
 }
 
+.audits2-dialog-help-text {
+    color: red;
+    margin-top: 10px;
+}
+
 .audits2-dialog-buttons {
     justify-content: center;
 }

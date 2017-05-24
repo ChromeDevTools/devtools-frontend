@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 /**
+ * @implements {SDK.SDKModelObserver<!SDK.ServiceWorkerManager>}
  * @unrestricted
  */
 Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
@@ -43,6 +44,90 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     for (var preset of Audits2.Audits2Panel.Presets)
       preset.setting.addChangeListener(this._updateStartButtonEnabled.bind(this));
     this._showLandingPage();
+    SDK.targetManager.observeModels(SDK.ServiceWorkerManager, this);
+  }
+
+  /**
+   * @override
+   * @param {!SDK.ServiceWorkerManager} serviceWorkerManager
+   */
+  modelAdded(serviceWorkerManager) {
+    if (this._manager)
+      return;
+
+    this._manager = serviceWorkerManager;
+    this._serviceWorkerListeners = [
+      this._manager.addEventListener(
+          SDK.ServiceWorkerManager.Events.RegistrationUpdated, this._updateStartButtonEnabled, this),
+      this._manager.addEventListener(
+          SDK.ServiceWorkerManager.Events.RegistrationDeleted, this._updateStartButtonEnabled, this),
+    ];
+
+    this._updateStartButtonEnabled();
+  }
+
+  /**
+   * @override
+   * @param {!SDK.ServiceWorkerManager} serviceWorkerManager
+   */
+  modelRemoved(serviceWorkerManager) {
+    if (!this._manager || this._manager !== serviceWorkerManager)
+      return;
+
+    Common.EventTarget.removeEventListeners(this._serviceWorkerListeners);
+    this._manager = null;
+    this._serviceWorkerListeners = null;
+    this._updateStartButtonEnabled();
+  }
+
+  /**
+   * @return {boolean}
+   */
+  _hasActiveServiceWorker() {
+    if (!this._manager)
+      return false;
+
+    var inspectedURL = SDK.targetManager.mainTarget().inspectedURL().asParsedURL();
+    var inspectedOrigin = inspectedURL && inspectedURL.securityOrigin();
+    for (var registration of this._manager.registrations().values()) {
+      if (registration.securityOrigin !== inspectedOrigin)
+        continue;
+
+      for (var version of registration.versions.values()) {
+        if (version.controlledClients.length > 1)
+          return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  _hasAtLeastOneCategory() {
+    return Audits2.Audits2Panel.Presets.some(preset => preset.setting.get());
+  }
+
+  _updateStartButtonEnabled() {
+    var hasActiveServiceWorker = this._hasActiveServiceWorker();
+    var hasAtLeastOneCategory = this._hasAtLeastOneCategory();
+    var isDisabled = hasActiveServiceWorker || !hasAtLeastOneCategory;
+
+    if (this._dialogHelpText && hasActiveServiceWorker) {
+      this._dialogHelpText.textContent = Common.UIString(
+          'Multiple tabs are being controlled by the same service worker. ' +
+          'Close your other tabs on the same origin to audit this page.');
+    }
+
+    if (this._dialogHelpText && !hasAtLeastOneCategory)
+      this._dialogHelpText.textContent = Common.UIString('At least one category must be selected.');
+
+    if (this._dialogHelpText)
+      this._dialogHelpText.classList.toggle('hidden', !isDisabled);
+
+    if (this._startButton)
+      this._startButton.disabled = isDisabled;
   }
 
   _clearAll() {
@@ -102,6 +187,7 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     }
 
     this._statusView = this._createStatusView(uiElement);
+    this._dialogHelpText = uiElement.createChild('div', 'audits2-dialog-help-text');
 
     var buttonsRow = uiElement.createChild('div', 'audits2-dialog-buttons hbox');
     this._startButton =
@@ -116,18 +202,6 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
     this._dialog.show(this.mainElement());
     auditsViewElement.tabIndex = 0;
     auditsViewElement.focus();
-  }
-
-  _updateStartButtonEnabled() {
-    if (!this._startButton)
-      return;
-    for (var preset of Audits2.Audits2Panel.Presets) {
-      if (preset.setting.get()) {
-        this._startButton.disabled = false;
-        return;
-      }
-    }
-    this._startButton.disabled = true;
   }
 
   /**

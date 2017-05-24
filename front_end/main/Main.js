@@ -140,7 +140,7 @@ Main.Main = class {
 
     Runtime.experiments.setDefaultExperiments([
       'continueToLocationMarkers', 'autoAttachToCrossProcessSubframes', 'objectPreviews', 'audits2',
-      'networkGroupingRequests'
+      'networkGroupingRequests', 'timelineColorByProduct'
     ]);
   }
 

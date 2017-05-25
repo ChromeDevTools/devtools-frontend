@@ -574,11 +574,11 @@ Accessibility.AXNodeIgnoredReasonTreeElement = class extends Accessibility.AXNod
       case 'ancestorIsLeafNode':
         reasonElement = UI.formatLocalized('Ancestor\'s children are all presentational:\u00a0', []);
         break;
-      case 'ariaHidden':
+      case 'ariaHiddenElement':
         var ariaHiddenSpan = createElement('span', 'source-code').textContent = 'aria-hidden';
         reasonElement = UI.formatLocalized('Element is %s.', [ariaHiddenSpan]);
         break;
-      case 'ariaHiddenRoot':
+      case 'ariaHiddenSubTree':
         var ariaHiddenSpan = createElement('span', 'source-code').textContent = 'aria-hidden';
         var trueSpan = createElement('span', 'source-code').textContent = 'true';
         reasonElement = UI.formatLocalized('%s is %s on ancestor:\u00a0', [ariaHiddenSpan, trueSpan]);
@@ -589,8 +589,11 @@ Accessibility.AXNodeIgnoredReasonTreeElement = class extends Accessibility.AXNod
       case 'emptyText':
         reasonElement = UI.formatLocalized('No text content.', []);
         break;
-      case 'inert':
+      case 'inertElement':
         reasonElement = UI.formatLocalized('Element is inert.', []);
+        break;
+      case 'inertSubtree':
+        reasonElement = UI.formatLocalized('Element is in an inert subtree from\u00a0', []);
         break;
       case 'inheritsPresentation':
         reasonElement = UI.formatLocalized('Element inherits presentational role from\u00a0', []);

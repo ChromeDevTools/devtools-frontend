@@ -543,6 +543,7 @@
 .timeline-tree-view .data-grid .name-container {
     display: flex;
     align-items: center;
+    padding-left: 2px;
 }
 
 .timeline-tree-view .data-grid .name-container div {
@@ -550,10 +551,21 @@
 }
 
 .timeline-tree-view .data-grid .name-container .activity-icon {
-    width: 10px;
-    height: 10px;
-    margin: 0 4px 0 2px;
+    width: 12px;
+    height: 12px;
     border: 1px solid rgba(0, 0, 0, 0.05);
+    margin: 3px 0;
+}
+
+.timeline-tree-view .data-grid .name-container .activity-icon-container {
+    margin-right: 3px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    overflow: hidden;
 }
 
 .timeline-tree-view .data-grid .name-container .activity-warning::after {

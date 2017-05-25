@@ -513,24 +513,27 @@ Timeline.TimelineTreeView.GridNode = class extends DataGrid.SortableDataGridNode
    * @return {!Element}
    */
   _createNameCell(columnId) {
-    const cell = this.createTD(columnId);
-    const container = cell.createChild('div', 'name-container');
-    const icon = container.createChild('div', 'activity-icon');
-    const name = container.createChild('div', 'activity-name');
-    const event = this._profileNode.event;
+    var cell = this.createTD(columnId);
+    var container = cell.createChild('div', 'name-container');
+    var iconContainer = container.createChild('div', 'activity-icon-container');
+    var icon = iconContainer.createChild('div', 'activity-icon');
+    var name = container.createChild('div', 'activity-name');
+    var event = this._profileNode.event;
     if (this._profileNode.isGroupNode()) {
-      const treeView = /** @type {!Timeline.AggregatedTimelineTreeView} */ (this._treeView);
-      const info = treeView._displayInfoForGroupNode(this._profileNode);
+      var treeView = /** @type {!Timeline.AggregatedTimelineTreeView} */ (this._treeView);
+      var info = treeView._displayInfoForGroupNode(this._profileNode);
       name.textContent = info.name;
       icon.style.backgroundColor = info.color;
+      if (info.icon)
+        iconContainer.insertBefore(info.icon, icon);
     } else if (event) {
-      const data = event.args['data'];
-      const deoptReason = data && data['deoptReason'];
+      var data = event.args['data'];
+      var deoptReason = data && data['deoptReason'];
       if (deoptReason)
         container.createChild('div', 'activity-warning').title = Common.UIString('Not optimized: %s', deoptReason);
 
       name.textContent = Timeline.TimelineUIUtils.eventTitle(event);
-      const link = this._treeView._linkifyLocation(event);
+      var link = this._treeView._linkifyLocation(event);
       if (link)
         container.createChild('div', 'activity-link').appendChild(link);
       icon.style.backgroundColor = Timeline.TimelineUIUtils.eventColor(event);
@@ -636,12 +639,24 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
     this._stackView = new Timeline.TimelineStackView(this);
     this._stackView.addEventListener(
         Timeline.TimelineStackView.Events.SelectionChanged, this._onStackViewSelectionChanged, this);
+    this._badgePool = new ProductRegistry.BadgePool(true);
     /** @type {!Map<string, string>} */
     this._productByURLCache = new Map();
+    /** @type {!Map<string, string>} */
+    this._colorByURLCache = new Map();
     ProductRegistry.instance().then(registry => {
       this._productRegistry = registry;
       this.refreshTree();
     });
+  }
+
+  /**
+   * @override
+   * @param {?Timeline.PerformanceModel} model
+   */
+  setModel(model) {
+    this._badgePool.reset();
+    super.setModel(model);
   }
 
   /**
@@ -665,28 +680,30 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
   }
 
   /**
+   * @param {string} name
+   * @return {string}
+   * @this {Timeline.AggregatedTimelineTreeView}
+   */
+  _beautifyDomainName(name) {
+    if (Timeline.AggregatedTimelineTreeView._isExtensionInternalURL(name))
+      name = Common.UIString('[Chrome extensions overhead]');
+    else if (Timeline.AggregatedTimelineTreeView._isV8NativeURL(name))
+      name = Common.UIString('[V8 Runtime]');
+    else if (name.startsWith('chrome-extension'))
+      name = this._executionContextNamesByOrigin.get(name) || name;
+    return name;
+  }
+
+  /**
    * @param {!TimelineModel.TimelineProfileTree.Node} node
-   * @return {!{name: string, color: string}}
+   * @return {!{name: string, color: string, icon: (!Element|undefined)}}
    */
   _displayInfoForGroupNode(node) {
     var categories = Timeline.TimelineUIUtils.categories();
     var color = node.id ? Timeline.TimelineUIUtils.eventColor(/** @type {!SDK.TracingModel.Event} */ (node.event)) :
                           categories['other'].color;
     var unattributed = Common.UIString('[unattributed]');
-    /**
-     * @param {string} name
-     * @return {string}
-     * @this {Timeline.AggregatedTimelineTreeView}
-     */
-    function beautifyDomainName(name) {
-      if (Timeline.AggregatedTimelineTreeView._isExtensionInternalURL(name))
-        name = Common.UIString('[Chrome extensions overhead]');
-      else if (Timeline.AggregatedTimelineTreeView._isV8NativeURL(name))
-        name = Common.UIString('[V8 Runtime]');
-      else if (name.startsWith('chrome-extension'))
-        name = this._executionContextNamesByOrigin.get(name) || name;
-      return name;
-    }
+
     switch (this._groupBySetting.get()) {
       case Timeline.AggregatedTimelineTreeView.GroupBy.Category:
         var category = categories[node.id] || categories['other'];
@@ -694,7 +711,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
 
       case Timeline.AggregatedTimelineTreeView.GroupBy.Domain:
       case Timeline.AggregatedTimelineTreeView.GroupBy.Subdomain:
-        var domainName = beautifyDomainName.call(this, node.id);
+        var domainName = this._beautifyDomainName(node.id);
         if (domainName) {
           var productName = this._productByEvent(/** @type {!SDK.TracingModel.Event} */ (node.event));
           if (productName)
@@ -714,10 +731,12 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
         };
 
       case Timeline.AggregatedTimelineTreeView.GroupBy.Product:
-        var productName = this._productByEvent(/** @type {!SDK.TracingModel.Event} */ (node.event));
-        color = productName ? ProductRegistry.BadgePool.colorForEntryName(productName) : '#eee';
-        var name = productName || this._domainByEvent(true, /** @type {!SDK.TracingModel.Event} */ (node.event)) || '';
-        return {name: beautifyDomainName.call(this, name) || unattributed, color: color};
+        var event = /** @type {!SDK.TracingModel.Event} */ (node.event);
+        var info = this._productAndBadgeByEvent(event);
+        var name = info && info.name || unattributed;
+        color = Timeline.TimelineUIUtils.eventColorByProduct(
+            this._productRegistry, this._model.timelineModel(), this._colorByURLCache, event);
+        return {name: name, color: color, icon: info && info.badge || undefined};
 
       case Timeline.AggregatedTimelineTreeView.GroupBy.URL:
         break;
@@ -818,7 +837,7 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
       case GroupBy.Domain:
         return this._domainByEvent.bind(this, true);
       case GroupBy.Product:
-        return event => this._productByEvent(event) || this._domainByEvent(true, event);
+        return event => this._productByEvent(event) || this._domainByEvent(true, event) || '';
       case GroupBy.URL:
         return event => TimelineModel.TimelineProfileTree.eventURL(event) || '';
       case GroupBy.Frame:
@@ -835,7 +854,9 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
    * @return {string}
    */
   _domainByEvent(groupSubdomains, event) {
-    var url = TimelineModel.TimelineProfileTree.eventURL(event) || '';
+    var url = TimelineModel.TimelineProfileTree.eventURL(event);
+    if (!url)
+      return '';
     if (Timeline.AggregatedTimelineTreeView._isExtensionInternalURL(url))
       return Timeline.AggregatedTimelineTreeView._extensionInternalPrefix;
     if (Timeline.AggregatedTimelineTreeView._isV8NativeURL(url))
@@ -869,6 +890,22 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
     var name = parsedURL && this._productRegistry.nameForUrl(parsedURL) || '';
     this._productByURLCache.set(url, name);
     return name;
+  }
+
+  /**
+   * @param {!SDK.TracingModel.Event} event
+   * @return {?{name: string, badge: ?Element}}
+   */
+  _productAndBadgeByEvent(event) {
+    var url = TimelineModel.TimelineProfileTree.eventURL(event);
+    if (!url || !this._productRegistry)
+      return null;
+    var parsedURL = url.asParsedURL();
+    var name = parsedURL && this._productRegistry.nameForUrl(parsedURL) || this._domainByEvent(true, event);
+    if (!name)
+      return null;
+    var icon = parsedURL && this._badgePool.badgeForURL(parsedURL);
+    return {name: this._beautifyDomainName(name), badge: icon};
   }
 
   /**

@@ -17,7 +17,7 @@ Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
         Timeline.EventsTimelineTreeView.Filters.Events.FilterChanged, this._onFilterChanged, this);
     this.init(filters);
     this._delegate = delegate;
-    this._badgePool = new ProductRegistry.BadgePool();
+    this._badgePool = new ProductRegistry.BadgePool(true);
     this._filters.push.apply(this._filters, this._filtersControl.filters());
     this._dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
     this._splitWidget.showBoth();

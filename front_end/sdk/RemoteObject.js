@@ -314,18 +314,18 @@ SDK.RemoteObject = class {
 
   /**
    * @param {!Protocol.Runtime.CallArgument} name
-   * @param {function(string=)} callback
+   * @return {!Promise<string|undefined>}
    */
-  deleteProperty(name, callback) {
+  async deleteProperty(name) {
     throw 'Not implemented';
   }
 
   /**
    * @param {string|!Protocol.Runtime.CallArgument} name
    * @param {string} value
-   * @param {function(string=)} callback
+   * @return {!Promise<string|undefined>}
    */
-  setPropertyValue(name, value, callback) {
+  async setPropertyValue(name, value) {
     throw 'Not implemented';
   }
 
@@ -633,31 +633,28 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
    * @override
    * @param {string|!Protocol.Runtime.CallArgument} name
    * @param {string} value
-   * @param {function(string=)} callback
+   * @return {!Promise<string|undefined>}
    */
-  setPropertyValue(name, value, callback) {
-    if (!this._objectId) {
-      callback(`Can't set a property of non-object.`);
-      return;
+  async setPropertyValue(name, value) {
+    if (!this._objectId)
+      return `Can't set a property of non-object.`;
+
+    var response = await this._runtimeAgent.invoke_evaluate({expression: value, silent: true});
+    if (response[Protocol.Error] || response.exceptionDetails) {
+      return response[Protocol.Error] ||
+          (response.result.type !== 'string' ? response.result.description :
+                                               /** @type {string} */ (response.result.value));
     }
 
-    this._runtimeAgent.invoke_evaluate({expression: value, silent: true}).then(response => {
-      if (response[Protocol.Error] || response.exceptionDetails) {
-        callback(
-            response[Protocol.Error] ||
-            (response.result.type !== 'string' ? response.result.description :
-                                                 /** @type {string} */ (response.result.value)));
-        return;
-      }
+    if (typeof name === 'string')
+      name = SDK.RemoteObject.toCallArgument(name);
 
-      if (typeof name === 'string')
-        name = SDK.RemoteObject.toCallArgument(name);
+    var resultPromise = this.doSetObjectPropertyValue(response.result, name);
 
-      this.doSetObjectPropertyValue(response.result, name).then(callback);
+    if (response.result.objectId)
+      this._runtimeAgent.releaseObject(response.result.objectId);
 
-      if (response.result.objectId)
-        this._runtimeAgent.releaseObject(response.result.objectId);
-    });
+    return resultPromise;
   }
 
   /**
@@ -682,28 +679,21 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
   /**
    * @override
    * @param {!Protocol.Runtime.CallArgument} name
-   * @param {function(string=)} callback
+   * @return {!Promise<string|undefined>}
    */
-  deleteProperty(name, callback) {
-    if (!this._objectId) {
-      callback(`Can't delete a property of non-object.`);
-      return;
-    }
+  async deleteProperty(name) {
+    if (!this._objectId)
+      return `Can't delete a property of non-object.`;
 
     var deletePropertyFunction = 'function(a) { delete this[a]; return !(a in this); }';
-    this._runtimeAgent
-        .invoke_callFunctionOn(
-            {objectId: this._objectId, functionDeclaration: deletePropertyFunction, arguments: [name], silent: true})
-        .then(response => {
-          if (response[Protocol.Error] || response.exceptionDetails) {
-            callback(response[Protocol.Error] || response.result.description);
-            return;
-          }
-          if (!response.result.value)
-            callback('Failed to delete property.');
-          else
-            callback();
-        });
+    var response = await this._runtimeAgent.invoke_callFunctionOn(
+        {objectId: this._objectId, functionDeclaration: deletePropertyFunction, arguments: [name], silent: true});
+
+    if (response[Protocol.Error] || response.exceptionDetails)
+      return response[Protocol.Error] || response.result.description;
+
+    if (!response.result.value)
+      return 'Failed to delete property.';
   }
 
   /**
@@ -861,28 +851,15 @@ SDK.ScopeRemoteObject = class extends SDK.RemoteObjectImpl {
    */
   async doSetObjectPropertyValue(result, argumentName) {
     var name = /** @type {string} */ (argumentName.value);
-    this.debuggerModel().setVariableValue(
-        this._scopeRef.number, name, SDK.RemoteObject.toCallArgument(result), this._scopeRef.callFrameId,
-        setVariableValueCallback.bind(this));
-    var callback;
-    return new Promise(resolve => callback = resolve);
-
-    /**
-     * @param {string=} error
-     * @this {SDK.ScopeRemoteObject}
-     */
-    function setVariableValueCallback(error) {
-      if (error) {
-        callback(error);
-        return;
+    var error = await this.debuggerModel().setVariableValue(
+        this._scopeRef.number, name, SDK.RemoteObject.toCallArgument(result), this._scopeRef.callFrameId);
+    if (error)
+      return error;
+    if (this._savedScopeProperties) {
+      for (var property of this._savedScopeProperties) {
+        if (property.name === name)
+          property.value = this._runtimeModel.createRemoteObject(result);
       }
-      if (this._savedScopeProperties) {
-        for (var i = 0; i < this._savedScopeProperties.length; i++) {
-          if (this._savedScopeProperties[i].name === name)
-            this._savedScopeProperties[i].value = this._runtimeModel.createRemoteObject(result);
-        }
-      }
-      callback();
     }
   }
 };

@@ -889,33 +889,25 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
   /**
    * @param {string} expression
    */
-  _applyExpression(expression) {
+  async _applyExpression(expression) {
     var property = SDK.RemoteObject.toCallArgument(this.property.symbol || this.property.name);
     expression = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(expression.trim());
-    if (expression)
-      this.property.parentObject.setPropertyValue(property, expression, callback.bind(this));
-    else
-      this.property.parentObject.deleteProperty(property, callback.bind(this));
+    var errorPromise = expression ? this.property.parentObject.setPropertyValue(property, expression) :
+                                    this.property.parentObject.deleteProperty(property);
+    var error = await errorPromise;
+    if (error) {
+      this.update();
+      return;
+    }
 
-    /**
-     * @param {?Protocol.Error} error
-     * @this {ObjectUI.ObjectPropertyTreeElement}
-     */
-    function callback(error) {
-      if (error) {
-        this.update();
-        return;
-      }
-
-      if (!expression) {
-        // The property was deleted, so remove this tree element.
-        this.parent.removeChild(this);
-      } else {
-        // Call updateSiblings since their value might be based on the value that just changed.
-        var parent = this.parent;
-        parent.invalidateChildren();
-        parent.onpopulate();
-      }
+    if (!expression) {
+      // The property was deleted, so remove this tree element.
+      this.parent.removeChild(this);
+    } else {
+      // Call updateSiblings since their value might be based on the value that just changed.
+      var parent = this.parent;
+      parent.invalidateChildren();
+      parent.onpopulate();
     }
   }
 

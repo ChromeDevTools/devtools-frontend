@@ -847,7 +847,7 @@ Bindings.BreakpointManager.ModelBreakpoint = class {
 
     if (this._debuggerId) {
       this._resetLocations();
-      this._debuggerModel.removeBreakpoint(this._debuggerId, this._didRemoveFromDebugger.bind(this, callback));
+      this._debuggerModel.removeBreakpoint(this._debuggerId).then(this._didRemoveFromDebugger.bind(this, callback));
       this._scheduleUpdateInDebugger();
       this._currentState = null;
       return;

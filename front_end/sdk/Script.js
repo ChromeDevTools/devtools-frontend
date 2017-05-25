@@ -127,28 +127,16 @@ SDK.Script = class {
    * @override
    * @return {!Promise<?string>}
    */
-  requestContent() {
+  async requestContent() {
     if (this._source)
-      return Promise.resolve(this._source);
+      return this._source;
     if (!this.scriptId)
-      return Promise.resolve(/** @type {?string} */ (''));
-
-    var callback;
-    var promise = new Promise(fulfill => callback = fulfill);
-    this.debuggerModel.target().debuggerAgent().getScriptSource(this.scriptId, didGetScriptSource.bind(this));
-    return promise;
-
-    /**
-     * @this {SDK.Script}
-     * @param {?Protocol.Error} error
-     * @param {string} source
-     */
-    function didGetScriptSource(error, source) {
-      this._source = error ? '' : SDK.Script._trimSourceURLComment(source);
-      if (this._originalSource === null)
-        this._originalSource = this._source;
-      callback(this._source);
-    }
+      return '';
+    var source = await this.debuggerModel.target().debuggerAgent().getScriptSource(this.scriptId);
+    this._source = source ? SDK.Script._trimSourceURLComment(source) : '';
+    if (this._originalSource === null)
+      this._originalSource = this._source;
+    return this._source;
   }
 
   /**
@@ -171,32 +159,20 @@ SDK.Script = class {
    * @param {function(!Array.<!Protocol.Debugger.SearchMatch>)} callback
    */
   searchInContent(query, caseSensitive, isRegex, callback) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Array.<!Protocol.Debugger.SearchMatch>} searchMatches
-     */
-    function innerCallback(error, searchMatches) {
-      if (error) {
-        console.error(error);
-        callback([]);
-        return;
-      }
-      var result = [];
-      for (var i = 0; i < searchMatches.length; ++i) {
-        var searchMatch =
-            new Common.ContentProvider.SearchMatch(searchMatches[i].lineNumber, searchMatches[i].lineContent);
-        result.push(searchMatch);
-      }
-      callback(result || []);
+    if (!this.scriptId) {
+      callback([]);
+      return;
     }
 
-    if (this.scriptId) {
-      // Script failed to parse.
-      this.debuggerModel.target().debuggerAgent().searchInContent(
-          this.scriptId, query, caseSensitive, isRegex, innerCallback);
-    } else {
-      callback([]);
-    }
+    // Script failed to parse.
+    this.debuggerModel.target()
+        .debuggerAgent()
+        .searchInContent(this.scriptId, query, caseSensitive, isRegex)
+        .then(matches => {
+          var searchMatches =
+              (matches || []).map(match => new Common.ContentProvider.SearchMatch(match.lineNumber, match.lineContent));
+          callback(searchMatches);
+        });
   }
 
   /**
@@ -213,33 +189,27 @@ SDK.Script = class {
    * @param {string} newSource
    * @param {function(?Protocol.Error, !Protocol.Runtime.ExceptionDetails=, !Array.<!Protocol.Debugger.CallFrame>=, !Protocol.Runtime.StackTrace=, boolean=)} callback
    */
-  editSource(newSource, callback) {
-    /**
-     * @this {SDK.Script}
-     * @param {?Protocol.Error} error
-     * @param {!Array.<!Protocol.Debugger.CallFrame>=} callFrames
-     * @param {boolean=} stackChanged
-     * @param {!Protocol.Runtime.StackTrace=} asyncStackTrace
-     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     */
-    function didEditScriptSource(error, callFrames, stackChanged, asyncStackTrace, exceptionDetails) {
-      if (!error && !exceptionDetails)
-        this._source = newSource;
-      var needsStepIn = !!stackChanged;
-      callback(error, exceptionDetails, callFrames, asyncStackTrace, needsStepIn);
-    }
-
+  async editSource(newSource, callback) {
     newSource = SDK.Script._trimSourceURLComment(newSource);
     // We append correct sourceURL to script for consistency only. It's not actually needed for things to work correctly.
     newSource = this._appendSourceURLCommentIfNeeded(newSource);
 
-    if (this.scriptId) {
-      this.requestContent().then(
-          () => this.debuggerModel.target().debuggerAgent().setScriptSource(
-              this.scriptId, newSource, undefined, didEditScriptSource.bind(this)));
-    } else {
+    if (!this.scriptId) {
       callback('Script failed to parse');
+      return;
     }
+
+    await this.requestContent();
+    var response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource(
+        {scriptId: this.scriptId, scriptSource: newSource});
+
+    if (!response[Protocol.Error] && !response.exceptionDetails)
+      this._source = newSource;
+
+    var needsStepIn = !!response.stackChanged;
+    callback(
+        response[Protocol.Error], response.exceptionDetails, response.callFrames, response.asyncStackTrace,
+        needsStepIn);
   }
 
   /**
@@ -277,25 +247,13 @@ SDK.Script = class {
    * @param {!Array<!Protocol.Debugger.ScriptPosition>} positions
    * @return {!Promise<boolean>}
    */
-  setBlackboxedRanges(positions) {
-    return new Promise(setBlackboxedRanges.bind(this));
-
-    /**
-     * @param {function(?)} fulfill
-     * @param {function(*)} reject
-     * @this {SDK.Script}
-     */
-    function setBlackboxedRanges(fulfill, reject) {
-      this.debuggerModel.target().debuggerAgent().setBlackboxedRanges(this.scriptId, positions, callback);
-      /**
-       * @param {?Protocol.Error} error
-       */
-      function callback(error) {
-        if (error)
-          console.error(error);
-        fulfill(!error);
-      }
-    }
+  async setBlackboxedRanges(positions) {
+    var response = await this.debuggerModel.target().debuggerAgent().invoke_setBlackboxedRanges(
+        {scriptId: this.scriptId, positions});
+    var error = response[Protocol.Error];
+    if (error)
+      console.error(error);
+    return !error;
   }
 };
 

@@ -181,8 +181,8 @@ SDK.EmulationModel = class extends SDK.SDKModel {
       this._pageAgent.removeScriptToEvaluateOnLoad(this._touchConfiguration.scriptId);
     this._touchConfiguration = configuration;
     if (configuration.enabled) {
-      this._pageAgent.addScriptToEvaluateOnLoad('(' + injectedFunction.toString() + ')()', (error, scriptId) => {
-        this._touchConfiguration.scriptId = error ? '' : scriptId;
+      this._pageAgent.addScriptToEvaluateOnLoad('(' + injectedFunction.toString() + ')()').then(scriptId => {
+        this._touchConfiguration.scriptId = scriptId || '';
       });
     }
 

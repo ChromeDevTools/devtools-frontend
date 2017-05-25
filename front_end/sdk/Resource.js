@@ -212,23 +212,17 @@ SDK.Resource = class {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
+   * @param {function(!Array<!Common.ContentProvider.SearchMatch>)} callback
    */
   searchInContent(query, caseSensitive, isRegex, callback) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Array.<!Protocol.Debugger.SearchMatch>} searchMatches
-     */
-    function callbackWrapper(error, searchMatches) {
-      callback(searchMatches || []);
-    }
-
-    if (this.frameId) {
-      this._resourceTreeModel.target().pageAgent().searchInResource(
-          this.frameId, this.url, query, caseSensitive, isRegex, callbackWrapper);
-    } else {
+    if (!this.frameId) {
       callback([]);
+      return;
     }
+    this._resourceTreeModel.target()
+        .pageAgent()
+        .searchInResource(this.frameId, this.url, query, caseSensitive, isRegex)
+        .then(result => callback(result || []));
   }
 
   /**
@@ -255,65 +249,27 @@ SDK.Resource = class {
       this._innerRequestContent();
   }
 
-  _innerRequestContent() {
+  async _innerRequestContent() {
     if (this._contentRequested)
       return;
     this._contentRequested = true;
 
-    /**
-     * @param {?Protocol.Error} error
-     * @param {?string} content
-     * @param {boolean} contentEncoded
-     * @this {SDK.Resource}
-     */
-    function contentLoaded(error, content, contentEncoded) {
-      if (error || content === null) {
-        replyWithContent.call(this, null, false);
-        return;
-      }
-      replyWithContent.call(this, content, contentEncoded);
-    }
-
-    /**
-     * @param {?string} content
-     * @param {boolean} contentEncoded
-     * @this {SDK.Resource}
-     */
-    function replyWithContent(content, contentEncoded) {
-      this._content = content;
-      this._contentEncoded = contentEncoded;
-      var callbacks = this._pendingContentCallbacks.slice();
-      for (var i = 0; i < callbacks.length; ++i)
-        callbacks[i](this._content);
-      this._pendingContentCallbacks.length = 0;
-      delete this._contentRequested;
-    }
-
-    /**
-     * @param {?Protocol.Error} error
-     * @param {string} content
-     * @param {boolean} contentEncoded
-     * @this {SDK.Resource}
-     */
-    function resourceContentLoaded(error, content, contentEncoded) {
-      contentLoaded.call(this, error, content, contentEncoded);
-    }
-
     if (this.request) {
-      this.request.requestContent().then(requestContentLoaded.bind(this));
-      return;
+      this._content = await this.request.requestContent();
+      this._contentEncoded = this.request.contentEncoded;
+    } else {
+      var response = await this._resourceTreeModel.target().pageAgent().invoke_getResourceContent(
+          {frameId: this.frameId, url: this.url});
+      this._content = response[Protocol.Error] ? null : response.content;
+      this._contentEncoded = response.base64Encoded;
     }
 
-    /**
-     * @param {?string} content
-     * @this {SDK.Resource}
-     */
-    function requestContentLoaded(content) {
-      contentLoaded.call(this, null, content, this.request.contentEncoded);
-    }
+    if (this._content === null)
+      this._contentEncoded = false;
 
-    this._resourceTreeModel.target().pageAgent().getResourceContent(
-        this.frameId, this.url, resourceContentLoaded.bind(this));
+    for (var callback of this._pendingContentCallbacks.splice(0))
+      callback(this._content);
+    delete this._contentRequested;
   }
 
   /**

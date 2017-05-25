@@ -662,7 +662,9 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
    * @param {!UI.ContextMenu} contextMenu
    */
   _appendTabsToMenu(contextMenu) {
-    for (var view of this._views.values()) {
+    var views = Array.from(this._views.values());
+    views.sort((viewa, viewb) => viewa.title().localeCompare(viewb.title()));
+    for (var view of views) {
       var title = Common.UIString(view.title());
       contextMenu.appendItem(title, this.showView.bind(this, view, undefined, true));
     }

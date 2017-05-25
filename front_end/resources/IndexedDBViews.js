@@ -131,6 +131,7 @@ Resources.IDBDataView = class extends UI.SimpleView {
     columns.push({id: 'value', title: Common.UIString('Value'), sortable: false});
 
     var dataGrid = new DataGrid.DataGrid(columns);
+    dataGrid.setStriped(true);
     return dataGrid;
   }
 

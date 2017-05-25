@@ -66,8 +66,6 @@
     right: 0;
     bottom: 0;
     border-top: 0 none transparent;
-    background-image: linear-gradient(to bottom, transparent, transparent 50%, hsla(214, 100%, 40%, 0.05) 50%, hsla(214, 100%, 40%, 0.05));
-    background-size: 128px 40px;
     table-layout: fixed;
 }
 
@@ -81,6 +79,11 @@
 
 .data-grid table.data tr.revealed {
     display: table-row;
+}
+
+.striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd),
+.striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even) {
+    background-color: hsl(214, 70%, 97%);
 }
 
 .data-grid td,
@@ -203,12 +206,12 @@
     -webkit-mask-position: -16px 0;
 }
 
-.data-grid tr.selected {
+.data-grid table.data tr.revealed.selected {
     background-color: rgb(212, 212, 212);
     color: inherit;
 }
 
-.data-grid:focus tr.selected {
+.data-grid:focus table.data tr.selected {
     background-color: rgb(56, 121, 217);
     color: white;
 }

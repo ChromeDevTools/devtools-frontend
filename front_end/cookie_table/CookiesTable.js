@@ -91,6 +91,7 @@ CookieTable.CookiesTable = class extends UI.VBox {
     } else {
       this._dataGrid = new DataGrid.DataGrid(columns);
     }
+    this._dataGrid.setStriped(true);
 
     this._dataGrid.setName('cookiesTable');
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._rebuildTable, this);

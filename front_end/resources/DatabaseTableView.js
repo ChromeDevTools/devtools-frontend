@@ -77,6 +77,7 @@ Resources.DatabaseTableView = class extends UI.SimpleView {
     this.element.removeChildren();
 
     this._dataGrid = DataGrid.SortableDataGrid.create(columnNames, values);
+    this._dataGrid.setStriped(true);
     this._visibleColumnsInput.setVisible(!!this._dataGrid);
     if (!this._dataGrid) {
       this._emptyWidget = new UI.EmptyWidget(Common.UIString('The “%s”\ntable is empty.', this.tableName));

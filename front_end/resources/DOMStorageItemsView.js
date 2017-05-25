@@ -40,6 +40,7 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
       {id: 'value', title: Common.UIString('Value'), sortable: false, editable: true, weight: 50}
     ]);
     this._dataGrid = new DataGrid.DataGrid(columns, this._editingCallback.bind(this), this._deleteCallback.bind(this));
+    this._dataGrid.setStriped(true);
     this._dataGrid.setName('DOMStorageItemsView');
     this._dataGrid.asWidget().show(this.element);
     this._eventListeners = [];

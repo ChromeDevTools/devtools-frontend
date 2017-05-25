@@ -185,6 +185,7 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
       {id: 'size', title: Common.UIString('Size'), align: DataGrid.DataGrid.Align.Right, sortable: true}
     ]);
     this._dataGrid = new DataGrid.DataGrid(columns);
+    this._dataGrid.setStriped(true);
     this._dataGrid.asWidget().show(this.element);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._populateDataGrid, this);
   }

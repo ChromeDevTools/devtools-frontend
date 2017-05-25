@@ -38,8 +38,10 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
       {id: 'number', title: Common.UIString('#'), width: '50px'}, {id: 'request', title: Common.UIString('Request')},
       {id: 'response', title: Common.UIString('Response')}
     ]);
-    return new DataGrid.DataGrid(
+    var dataGrid = new DataGrid.DataGrid(
         columns, undefined, this._deleteButtonClicked.bind(this), this._updateData.bind(this, true));
+    dataGrid.setStriped(true);
+    return dataGrid;
   }
 
   _createEditorToolbar() {

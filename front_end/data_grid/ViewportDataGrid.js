@@ -27,8 +27,31 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
     this._updateIsFromUser = false;
     this._lastScrollTop = 0;
     this._firstVisibleIsStriped = false;
+    this._isStriped = false;
 
     this.setRootNode(new DataGrid.ViewportDataGridNode());
+  }
+
+  /**
+   * @param {boolean} striped
+   * @override
+   */
+  setStriped(striped) {
+    this._isStriped = striped;
+    var startsWithOdd = true;
+    if (this._visibleNodes.length) {
+      var allChildren = this.rootNode().flatChildren();
+      startsWithOdd = !!(allChildren.indexOf(this._visibleNodes[0]));
+    }
+    this._updateStripesClass(startsWithOdd);
+  }
+
+  /**
+   * @param {boolean} startsWithOdd
+   */
+  _updateStripesClass(startsWithOdd) {
+    this.element.classList.toggle('striped-data-grid', !startsWithOdd && this._isStriped);
+    this.element.classList.toggle('striped-data-grid-starts-with-odd', startsWithOdd && this._isStriped);
   }
 
   /**
@@ -182,6 +205,7 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
     if (visibleNodes.length) {
       var nodes = this.rootNode().flatChildren();
       var index = nodes.indexOf(visibleNodes[0]);
+      this._updateStripesClass(!!(index % 2));
       if (index !== -1 && !!(index % 2) !== this._firstVisibleIsStriped)
         offset += 1;
     }

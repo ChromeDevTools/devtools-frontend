@@ -19,18 +19,6 @@
     flex: auto;
 }
 
-.service-worker-cache-data-view .data-grid .data-container tr:nth-child(even) {
-    background-color: white;
-}
-
-.service-worker-cache-data-view .data-grid .data-container tr:nth-child(odd) {
-    background-color: #EAF3FF;
-}
-
-.service-worker-cache-data-view .data-grid .data-container tr:nth-last-child(1) {
-    background-color: white;
-}
-
 .service-worker-cache-data-view .data-grid .data-container tr:nth-last-child(1) td {
     border: 0;
 }

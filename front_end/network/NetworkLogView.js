@@ -96,7 +96,6 @@ Network.NetworkLogView = class extends UI.VBox {
     this.badgePool = new ProductRegistry.BadgePool();
 
     this._recording = false;
-    this._preserveLog = false;
 
     this._headerHeight = 0;
 
@@ -396,13 +395,6 @@ Network.NetworkLogView = class extends UI.VBox {
   setRecording(recording) {
     this._recording = recording;
     this._updateSummaryBar();
-  }
-
-  /**
-   * @param {boolean} preserveLog
-   */
-  setPreserveLog(preserveLog) {
-    this._preserveLog = preserveLog;
   }
 
   /**
@@ -1070,7 +1062,7 @@ Network.NetworkLogView = class extends UI.VBox {
         requestsToPick.push(request);
     }
 
-    if (!this._preserveLog) {
+    if (!Common.moduleSetting('network.preserve-log').get()) {
       this.reset();
       for (var i = 0; i < requestsToPick.length; ++i)
         this._appendRequest(requestsToPick[i]);

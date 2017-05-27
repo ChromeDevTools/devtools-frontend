@@ -6,14 +6,13 @@
  */
 Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
   constructor() {
-    super();
+    super(true);
     this.registerRequiredCSS('components/breakpointsList.css');
 
     this._categoriesTreeOutline = new UI.TreeOutlineInShadow();
     this._categoriesTreeOutline.element.tabIndex = 0;
-    this._categoriesTreeOutline.element.classList.add('event-listener-breakpoints');
     this._categoriesTreeOutline.registerRequiredCSS('sources/eventListenerBreakpoints.css');
-    this.element.appendChild(this._categoriesTreeOutline.element);
+    this.contentElement.appendChild(this._categoriesTreeOutline.element);
 
     /** @type {!Map<string, !Sources.EventListenerBreakpointsSidebarPane.Item>} */
     this._categories = new Map();

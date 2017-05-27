@@ -4,6 +4,12 @@
  * found in the LICENSE file.
  */
 
+:host {
+    margin: 0;
+    padding: 2px 4px;
+    min-height: 18px;
+}
+
 .tree-outline {
     padding: 0;
 }

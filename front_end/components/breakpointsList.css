@@ -123,12 +123,6 @@ li.breakpoint-hit .breakpoint-hit-marker {
     z-index: -1;
 }
 
-.event-listener-breakpoints {
-    margin: 0;
-    padding: 2px 4px;
-    min-height: 18px;
-}
-
 .dom-breakpoints-list > li {
     display: flex;
 }

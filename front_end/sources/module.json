@@ -664,6 +664,7 @@
         "navigatorTree.css",
         "navigatorView.css",
         "revisionHistory.css",
+        "scopeChainSidebarPane.css",
         "serviceWorkersSidebar.css",
         "sourcesPanel.css",
         "sourcesSearch.css",

@@ -169,43 +169,6 @@
     margin-top: 0px;
 }
 
-.scope-chain-sidebar-pane-section-header {
-    flex: auto;
-}
-
-.scope-chain-sidebar-pane-section-subtitle {
-    float: right;
-    margin-left: 5px;
-    max-width: 55%;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.scope-chain-sidebar-pane-section-title {
-    font-weight: normal;
-    word-wrap: break-word;
-    white-space: normal;
-}
-
-.scope-chain-sidebar-pane-section-subtitle {
-    float: right;
-    margin-left: 5px;
-    max-width: 55%;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.scope-chain-sidebar-pane-section-title {
-    font-weight: normal;
-    word-wrap: break-word;
-    white-space: normal;
-}
-
-.scope-chain-sidebar-pane-section {
-    padding: 2px 4px 2px 4px;
-    flex: none;
-}
-
 .event-listeners-sidebar-pane .toolbar {
     border-bottom: 1px solid #eee;
 }

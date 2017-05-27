@@ -29,7 +29,8 @@
  */
 Sources.ScopeChainSidebarPane = class extends UI.VBox {
   constructor() {
-    super();
+    super(true);
+    this.registerRequiredCSS('sources/scopeChainSidebarPane.css');
     this._expandController = new ObjectUI.ObjectPropertiesSectionExpandController();
     this._linkifier = new Components.Linkifier();
     this._update();
@@ -56,13 +57,13 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
    * @param {?SDK.RemoteObject} thisObject
    */
   _innerUpdate(details, callFrame, thisObject) {
-    this.element.removeChildren();
+    this.contentElement.removeChildren();
 
     if (!details || !callFrame) {
       var infoElement = createElement('div');
       infoElement.className = 'gray-info-message';
       infoElement.textContent = Common.UIString('Not Paused');
-      this.element.appendChild(infoElement);
+      this.contentElement.appendChild(infoElement);
       return;
     }
 
@@ -124,7 +125,7 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
         section.objectTreeElement().expand();
 
       section.element.classList.add('scope-chain-sidebar-pane-section');
-      this.element.appendChild(section.element);
+      this.contentElement.appendChild(section.element);
     }
     this._sidebarPaneUpdatedForTest();
   }

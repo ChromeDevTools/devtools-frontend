@@ -9,7 +9,6 @@
 Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
   constructor() {
     super('audits2');
-    this.setHideOnDetach();
     this.registerRequiredCSS('audits2/audits2Panel.css');
     this.registerRequiredCSS('audits2/lighthouse/report-styles.css');
 

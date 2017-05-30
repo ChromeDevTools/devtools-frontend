@@ -386,14 +386,17 @@
             "options": [
                 {
                     "value": "right",
+                    "text": "Right",
                     "title": "Dock to right"
                 },
                 {
                     "value": "bottom",
+                    "text": "Bottom",
                     "title": "Dock to bottom"
                 },
                 {
                     "value": "undocked",
+                    "text": "Undocked",
                     "title": "Undock into separate window"
                 }
             ]

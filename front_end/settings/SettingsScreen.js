@@ -132,29 +132,6 @@ Settings.SettingsTab = class extends UI.VBox {
       block.createChild('div', 'help-section-title').textContent = name;
     return block;
   }
-
-  _createSelectSetting(name, options, setting) {
-    var p = createElement('p');
-    p.createChild('label').textContent = name;
-
-    var select = p.createChild('select', 'chrome-select');
-    var settingValue = setting.get();
-
-    for (var i = 0; i < options.length; ++i) {
-      var option = options[i];
-      select.add(new Option(option[0], option[1]));
-      if (settingValue === option[1])
-        select.selectedIndex = i;
-    }
-
-    function changeListener(e) {
-      // Don't use e.target.value to avoid conversion of the value to string.
-      setting.set(options[select.selectedIndex][1]);
-    }
-
-    select.addEventListener('change', changeListener, false);
-    return p;
-  }
 };
 
 /**
@@ -218,22 +195,19 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
         settingControl = UI.SettingsUI.createSettingCheckbox(uiTitle, setting);
         break;
       case 'enum':
-        var descriptorOptions = descriptor['options'];
-        var options = new Array(descriptorOptions.length);
-        for (var i = 0; i < options.length; ++i) {
-          // The "raw" flag indicates text is non-i18n-izable.
-          var optionName = descriptorOptions[i]['raw'] ? descriptorOptions[i]['text'] :
-                                                         Common.UIString(descriptorOptions[i]['text']);
-          options[i] = [optionName, descriptorOptions[i]['value']];
-        }
-        settingControl = this._createSelectSetting(uiTitle, options, setting);
+        if (Array.isArray(descriptor['options']))
+          settingControl = UI.SettingsUI.createSettingSelect(uiTitle, descriptor['options'], setting);
+        else
+          console.error('Enum setting defined without options');
         break;
       default:
         console.error('Invalid setting type: ' + descriptor['settingType']);
         return;
     }
-    this._nameToSettingElement.set(settingName, settingControl);
-    sectionElement.appendChild(/** @type {!Element} */ (settingControl));
+    if (settingControl) {
+      this._nameToSettingElement.set(settingName, settingControl);
+      sectionElement.appendChild(settingControl);
+    }
   }
 
   /**

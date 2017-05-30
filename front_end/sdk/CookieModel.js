@@ -59,17 +59,11 @@ SDK.CookieModel = class extends SDK.SDKModel {
 
   /**
    * @param {!Array<string>} urls
-   * @param {function(!Array<!SDK.Cookie>)} callback
+   * @return {!Promise<!Array<!SDK.Cookie>>}
    */
-  getCookiesAsync(urls, callback) {
-    this.target().networkAgent().getCookies(urls, (err, cookies) => {
-      if (err) {
-        console.error(err);
-        return callback([]);
-      }
-
-      callback(cookies.map(cookie => SDK.CookieModel._parseProtocolCookie(cookie)));
-    });
+  getCookies(urls) {
+    return this.target().networkAgent().getCookies(urls).then(
+        cookies => (cookies || []).map(cookie => SDK.CookieModel._parseProtocolCookie(cookie)));
   }
 
   /**
@@ -85,30 +79,33 @@ SDK.CookieModel = class extends SDK.SDKModel {
    * @param {function()=} callback
    */
   clear(domain, callback) {
-    this.getCookiesForDomain(domain || null, cookies => this._deleteAll(cookies, callback));
+    this.getCookiesForDomain(domain || null).then(cookies => this._deleteAll(cookies, callback));
   }
 
   /**
    * @param {!SDK.Cookie} cookie
-   * @param {function(?Protocol.Error, boolean)} callback
+   * @return {!Promise<boolean>}
    */
-  saveCookie(cookie, callback) {
+  saveCookie(cookie) {
     var domain = cookie.domain();
     if (!domain.startsWith('.'))
       domain = '';
     var expires = undefined;
     if (cookie.expires())
       expires = Math.floor(Date.parse(cookie.expires()) / 1000);
-    this.target().networkAgent().setCookie(
-        cookie.url(), cookie.name(), cookie.value(), domain, cookie.path(), cookie.secure(), cookie.httpOnly(),
-        cookie.sameSite(), expires, callback);
+    return this.target()
+        .networkAgent()
+        .setCookie(
+            cookie.url(), cookie.name(), cookie.value(), domain, cookie.path(), cookie.secure(), cookie.httpOnly(),
+            cookie.sameSite(), expires)
+        .then(success => !!success);
   }
 
   /**
    * @param {?string} domain
-   * @param {function(!Array<!SDK.Cookie>)} callback
+   * @return {!Promise<!Array<!SDK.Cookie>>}
    */
-  getCookiesForDomain(domain, callback) {
+  getCookiesForDomain(domain) {
     var resourceURLs = [];
     /**
      * @param {!SDK.Resource} resource
@@ -121,7 +118,7 @@ SDK.CookieModel = class extends SDK.SDKModel {
     var resourceTreeModel = this.target().model(SDK.ResourceTreeModel);
     if (resourceTreeModel)
       resourceTreeModel.forAllResources(populateResourceURLs);
-    this.getCookiesAsync(resourceURLs, callback);
+    return this.getCookies(resourceURLs);
   }
 
   /**
@@ -130,10 +127,8 @@ SDK.CookieModel = class extends SDK.SDKModel {
    */
   _deleteAll(cookies, callback) {
     var networkAgent = this.target().networkAgent();
-    function deleteCookie(cookie) {
-      return new Promise(resolve => networkAgent.deleteCookie(cookie.name(), cookie.url(), resolve));
-    }
-    Promise.all(cookies.map(deleteCookie)).then(callback || function() {});
+    Promise.all(cookies.map(cookie => networkAgent.deleteCookie(cookie.name(), cookie.url())))
+        .then(callback || function() {});
   }
 };
 

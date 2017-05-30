@@ -66,16 +66,14 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
   /**
    * @param {!SDK.Cookie} newCookie
    * @param {?SDK.Cookie} oldCookie
-   * @param {function(?string)} callback
+   * @return {!Promise<boolean>}
    */
-  _saveCookie(newCookie, oldCookie, callback) {
-    if (!this._model) {
-      callback(Common.UIString('Unable to save the cookie'));
-      return;
-    }
+  _saveCookie(newCookie, oldCookie) {
+    if (!this._model)
+      return Promise.resolve(false);
     if (oldCookie && (newCookie.name() !== oldCookie.name() || newCookie.url() !== oldCookie.url()))
       this._model.deleteCookie(oldCookie);
-    this._model.saveCookie(newCookie, callback);
+    return this._model.saveCookie(newCookie);
   }
 
   /**
@@ -87,7 +85,7 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
   }
 
   /**
-   * @param {!Array.<!SDK.Cookie>} allCookies
+   * @param {!Array<!SDK.Cookie>} allCookies
    */
   _updateWithCookies(allCookies) {
     this._totalSize = allCookies.reduce((size, cookie) => size + cookie.size(), 0);
@@ -132,7 +130,7 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
    * @override
    */
   refreshItems() {
-    this._model.getCookiesForDomain(this._cookieDomain, cookies => this._updateWithCookies(cookies));
+    this._model.getCookiesForDomain(this._cookieDomain).then(this._updateWithCookies.bind(this));
   }
 
   _onResponseReceived() {

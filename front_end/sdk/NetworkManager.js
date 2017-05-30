@@ -883,19 +883,11 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
 
   /**
    * @param {string} origin
-   * @param {function(!Array<string>)} callback
+   * @return {!Promise<!Array<string>>}
    */
-  getCertificate(origin, callback) {
+  getCertificate(origin) {
     var target = SDK.targetManager.mainTarget();
-    target.networkAgent().getCertificate(origin, mycallback);
-
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Array<string>} certificate
-     */
-    function mycallback(error, certificate) {
-      callback(error ? [] : certificate);
-    }
+    return target.networkAgent().getCertificate(origin).then(certificate => certificate || []);
   }
 
   /**

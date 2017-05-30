@@ -33,7 +33,7 @@
  */
 CookieTable.CookiesTable = class extends UI.VBox {
   /**
-   * @param {function(!SDK.Cookie, ?SDK.Cookie, function(?string))=} saveCallback
+   * @param {function(!SDK.Cookie, ?SDK.Cookie): !Promise<boolean>=} saveCallback
    * @param {function()=} refreshCallback
    * @param {function()=} selectedCallback
    * @param {function(!SDK.Cookie, function())=} deleteCallback
@@ -414,8 +414,8 @@ CookieTable.CookiesTable = class extends UI.VBox {
     var oldCookie = node.cookie;
     var newCookie = this._createCookieFromData(node.data);
     node.cookie = newCookie;
-    this._saveCallback(newCookie, oldCookie, error => {
-      if (!error)
+    this._saveCallback(newCookie, oldCookie).then(success => {
+      if (success)
         this._refresh();
       else
         node.setDirty(true);

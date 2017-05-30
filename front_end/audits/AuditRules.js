@@ -1317,7 +1317,7 @@ Audits.AuditRules.CookieRuleBase = class extends Audits.AuditRule {
     const nonDataUrls = requests.map(r => r.url()).filter(url => url && url.asParsedURL());
     var cookieModel = target.model(SDK.CookieModel);
     if (cookieModel)
-      cookieModel.getCookiesAsync(nonDataUrls, resultCallback);
+      cookieModel.getCookies(nonDataUrls).then(resultCallback);
     else
       callback(result);
   }

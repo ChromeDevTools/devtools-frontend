@@ -63,12 +63,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
      * @param {!Event} e
      */
     function showCertificateViewer(e) {
-      function certificateCallback(names) {
-        InspectorFrontendHost.showCertificateViewer(names);
-      }
-
       e.consume();
-      SDK.multitargetNetworkManager.getCertificate(origin, certificateCallback);
+      SDK.multitargetNetworkManager.getCertificate(origin).then(
+          names => InspectorFrontendHost.showCertificateViewer(names));
     }
 
     return UI.createTextButton(text, showCertificateViewer, 'security-certificate-button');

@@ -670,6 +670,7 @@
         "sourcesSearch.css",
         "sourcesView.css",
         "threadsSidebarPane.css",
+        "watchExpressionsSidebarPane.css",
         "dialog.css"
     ]
 }

@@ -585,6 +585,7 @@ all_devtools_files = [
   "front_end/sources/TabbedEditorContainer.js",
   "front_end/sources/threadsSidebarPane.css",
   "front_end/sources/ThreadsSidebarPane.js",
+  "front_end/sources/watchExpressionsSidebarPane.css",
   "front_end/sources/WatchExpressionsSidebarPane.js",
   "front_end/sources/WorkspaceMappingTip.js",
   "front_end/sources/XHRBreakpointsSidebarPane.js",

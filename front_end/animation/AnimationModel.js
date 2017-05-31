@@ -120,26 +120,6 @@ Animation.AnimationModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise.<number>}
-   */
-  playbackRatePromise() {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {number} playbackRate
-     * @return {number}
-     * @this {!Animation.AnimationModel}
-     */
-    function callback(error, playbackRate) {
-      if (error)
-        return 1;
-      this._playbackRate = playbackRate;
-      return playbackRate;
-    }
-
-    return this._agent.getPlaybackRate(callback.bind(this)).catchException(1);
-  }
-
-  /**
    * @param {number} playbackRate
    */
   setPlaybackRate(playbackRate) {
@@ -353,20 +333,11 @@ Animation.AnimationModel.Animation = class {
   }
 
   /**
-   * @return {!Promise.<?SDK.RemoteObject>}
+   * @return {!Promise<?SDK.RemoteObject>}
    */
   remoteObjectPromise() {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Protocol.Runtime.RemoteObject} payload
-     * @return {?SDK.RemoteObject}
-     * @this {!Animation.AnimationModel.Animation}
-     */
-    function callback(error, payload) {
-      return !error ? this._animationModel._runtimeModel.createRemoteObject(payload) : null;
-    }
-
-    return this._animationModel._agent.resolveAnimation(this.id(), callback.bind(this));
+    return this._animationModel._agent.resolveAnimation(this.id()).then(
+        payload => payload && this._animationModel._runtimeModel.createRemoteObject(payload));
   }
 
   /**
@@ -665,24 +636,15 @@ Animation.AnimationModel.AnimationGroup = class {
   }
 
   /**
-   * @return {!Promise.<number>}
+   * @return {!Promise<number>}
    */
   currentTimePromise() {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {number} currentTime
-     * @return {number}
-     */
-    function callback(error, currentTime) {
-      return !error ? currentTime : 0;
-    }
-
     var longestAnim = null;
     for (var anim of this._animations) {
       if (!longestAnim || anim.endTime() > longestAnim.endTime())
         longestAnim = anim;
     }
-    return this._animationModel._agent.getCurrentTime(longestAnim.id(), callback).catchException(0);
+    return this._animationModel._agent.getCurrentTime(longestAnim.id()).then(currentTime => currentTime || 0);
   }
 
   /**

@@ -320,7 +320,7 @@ Elements.ElementsPanel = class extends UI.Panel {
         if (treeOutline.domModel().existingDocument())
           this._documentUpdated(treeOutline.domModel(), treeOutline.domModel().existingDocument());
         else
-          treeOutline.domModel().requestDocument();
+          treeOutline.domModel().requestDocumentPromise();
       }
     }
   }
@@ -412,7 +412,7 @@ Elements.ElementsPanel = class extends UI.Panel {
 
     if (!inspectedRootDocument) {
       if (this.isShowing())
-        domModel.requestDocument();
+        domModel.requestDocumentPromise();
       return;
     }
 
@@ -429,20 +429,11 @@ Elements.ElementsPanel = class extends UI.Panel {
      * @param {?SDK.DOMNode} staleNode
      * @this {Elements.ElementsPanel}
      */
-    function restoreNode(domModel, staleNode) {
+    async function restoreNode(domModel, staleNode) {
       var nodePath = staleNode ? staleNode.path() : null;
-      if (!nodePath) {
-        onNodeRestored.call(this, null);
-        return;
-      }
-      domModel.pushNodeByPathToFrontend(nodePath, onNodeRestored.bind(this));
-    }
 
-    /**
-     * @param {?Protocol.DOM.NodeId} restoredNodeId
-     * @this {Elements.ElementsPanel}
-     */
-    function onNodeRestored(restoredNodeId) {
+      var restoredNodeId = nodePath ? await domModel.pushNodeByPathToFrontend(nodePath) : null;
+
       if (savedSelectedNodeOnReset !== this._selectedNodeOnReset)
         return;
       var node = restoredNodeId ? domModel.nodeForId(restoredNodeId) : null;
@@ -634,18 +625,12 @@ Elements.ElementsPanel = class extends UI.Panel {
     if (searchResult.node === null)
       return;
 
-    /**
-     * @param {?SDK.DOMNode} node
-     * @this {Elements.ElementsPanel}
-     */
-    function searchCallback(node) {
-      searchResult.node = node;
-      this._highlightCurrentSearchResult();
-    }
-
     if (typeof searchResult.node === 'undefined') {
       // No data for slot, request it.
-      searchResult.domModel.searchResult(searchResult.index, searchCallback.bind(this));
+      searchResult.domModel.searchResult(searchResult.index).then(node => {
+        searchResult.node = node;
+        this._highlightCurrentSearchResult();
+      });
       return;
     }
 

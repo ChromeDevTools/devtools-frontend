@@ -77,26 +77,22 @@ Layers.LayerTreeModel = class extends SDK.SDKModel {
   /**
    * @param {?Array.<!Protocol.LayerTree.Layer>} layers
    */
-  _layerTreeChanged(layers) {
+  async _layerTreeChanged(layers) {
     if (!this._enabled)
       return;
     var layerTree = /** @type {!Layers.AgentLayerTree} */ (this._layerTree);
-    layerTree.setLayers(layers, onLayersSet.bind(this));
 
-    /**
-     * @this {Layers.LayerTreeModel}
-     */
-    function onLayersSet() {
-      for (var layerId in this._lastPaintRectByLayerId) {
-        var lastPaintRect = this._lastPaintRectByLayerId[layerId];
-        var layer = layerTree.layerById(layerId);
-        if (layer)
-          layer._lastPaintRect = lastPaintRect;
-      }
-      this._lastPaintRectByLayerId = {};
+    await layerTree.setLayers(layers);
 
-      this.dispatchEventToListeners(Layers.LayerTreeModel.Events.LayerTreeChanged);
+    for (var layerId in this._lastPaintRectByLayerId) {
+      var lastPaintRect = this._lastPaintRectByLayerId[layerId];
+      var layer = layerTree.layerById(layerId);
+      if (layer)
+        layer._lastPaintRect = lastPaintRect;
     }
+    this._lastPaintRectByLayerId = {};
+
+    this.dispatchEventToListeners(Layers.LayerTreeModel.Events.LayerTreeChanged);
   }
 
   /**
@@ -144,15 +140,14 @@ Layers.AgentLayerTree = class extends SDK.LayerTreeBase {
   }
 
   /**
-   * @param {?Array.<!Protocol.LayerTree.Layer>} payload
-   * @param {function()} callback
+   * @param {?Array<!Protocol.LayerTree.Layer>} payload
+   * @return {!Promise}
    */
-  setLayers(payload, callback) {
+  async setLayers(payload) {
     if (!payload) {
-      onBackendNodeIdsResolved.call(this);
+      this._innerSetLayers(payload);
       return;
     }
-
     var idsToResolve = new Set();
     for (var i = 0; i < payload.length; ++i) {
       var backendNodeId = payload[i].backendNodeId;
@@ -160,15 +155,8 @@ Layers.AgentLayerTree = class extends SDK.LayerTreeBase {
         continue;
       idsToResolve.add(backendNodeId);
     }
-    this.resolveBackendNodeIds(idsToResolve, onBackendNodeIdsResolved.bind(this));
-
-    /**
-     * @this {Layers.AgentLayerTree}
-     */
-    function onBackendNodeIdsResolved() {
-      this._innerSetLayers(payload);
-      callback();
-    }
+    await this.resolveBackendNodeIds(idsToResolve);
+    this._innerSetLayers(payload);
   }
 
   /**

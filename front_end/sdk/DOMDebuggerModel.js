@@ -56,7 +56,7 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
   }
 
   retrieveDOMBreakpoints() {
-    this._domModel.requestDocument();
+    this._domModel.requestDocumentPromise();
   }
 
   /**
@@ -185,7 +185,7 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
     var currentURL = this._currentURL();
     for (var breakpoint of this._domBreakpointsSetting.get()) {
       if (breakpoint.url === currentURL)
-        this._domModel.pushNodeByPathToFrontend(breakpoint.path, appendBreakpoint.bind(this, breakpoint));
+        this._domModel.pushNodeByPathToFrontend(breakpoint.path).then(appendBreakpoint.bind(this, breakpoint));
     }
 
     /**

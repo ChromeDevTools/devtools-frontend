@@ -363,20 +363,20 @@ TimelineModel.TracingFrameLayerTree = class {
   /**
    * @return {!Promise<?TimelineModel.TracingLayerTree>}
    */
-  layerTreePromise() {
-    return this._snapshot.objectPromise().then(result => {
-      if (!result)
-        return null;
-      var viewport = result['device_viewport_size'];
-      var tiles = result['active_tiles'];
-      var rootLayer = result['active_tree']['root_layer'];
-      var layers = result['active_tree']['layers'];
-      var layerTree = new TimelineModel.TracingLayerTree(this._target);
-      layerTree.setViewportSize(viewport);
-      layerTree.setTiles(tiles);
-      return new Promise(
-          resolve => layerTree.setLayers(rootLayer, layers, this._paints || [], () => resolve(layerTree)));
-    });
+  async layerTreePromise() {
+    var result = await this._snapshot.objectPromise();
+    if (!result)
+      return null;
+    var viewport = result['device_viewport_size'];
+    var tiles = result['active_tiles'];
+    var rootLayer = result['active_tree']['root_layer'];
+    var layers = result['active_tree']['layers'];
+    var layerTree = new TimelineModel.TracingLayerTree(this._target);
+    layerTree.setViewportSize(viewport);
+    layerTree.setTiles(tiles);
+
+    await layerTree.setLayers(rootLayer, layers, this._paints || []);
+    return layerTree;
   }
 
   /**

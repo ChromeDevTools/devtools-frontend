@@ -50,7 +50,6 @@ NON_PROMISIFIED_DOMAINS = frozenset([
     "ApplicationCache",
     "CacheStorage",
     "CSS",
-    "DOM",
     "DOMDebugger",
     "IndexedDB",
     "LayerTree",

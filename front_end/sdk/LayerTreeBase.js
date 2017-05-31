@@ -215,27 +215,18 @@ SDK.LayerTreeBase = class {
 
   /**
    * @param {!Set<number>} requestedNodeIds
-   * @param {function()} callback
+   * @return {!Promise}
    */
-  resolveBackendNodeIds(requestedNodeIds, callback) {
-    if (!requestedNodeIds.size || !this._domModel) {
-      callback();
+  async resolveBackendNodeIds(requestedNodeIds) {
+    if (!requestedNodeIds.size || !this._domModel)
       return;
-    }
-    if (this._domModel)
-      this._domModel.pushNodesByBackendIdsToFrontend(requestedNodeIds, populateBackendNodeMap.bind(this));
 
-    /**
-     * @this {SDK.LayerTreeBase}
-     * @param {?Map<number, ?SDK.DOMNode>} nodesMap
-     */
-    function populateBackendNodeMap(nodesMap) {
-      if (nodesMap) {
-        for (var nodeId of nodesMap.keysArray())
-          this._backendNodeIdToNode.set(nodeId, nodesMap.get(nodeId) || null);
-      }
-      callback();
-    }
+    var nodesMap = await this._domModel.pushNodesByBackendIdsToFrontend(requestedNodeIds);
+
+    if (!nodesMap)
+      return;
+    for (var nodeId of nodesMap.keysArray())
+      this._backendNodeIdToNode.set(nodeId, nodesMap.get(nodeId) || null);
   }
 
   /**

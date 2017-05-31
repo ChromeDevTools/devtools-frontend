@@ -360,7 +360,12 @@ SDK.DOMNode = class {
    * @param {function(?Protocol.Error, number)=} callback
    */
   setNodeName(name, callback) {
-    this._agent.setNodeName(this.id, name, this._domModel._markRevision(this, callback));
+    this._agent.invoke_setNodeName({nodeId: this.id, name}).then(response => {
+      if (!response[Protocol.Error])
+        this._domModel.markUndoableState();
+      if (callback)
+        callback(response[Protocol.Error] || null, response.nodeId);
+    });
   }
 
   /**
@@ -382,7 +387,12 @@ SDK.DOMNode = class {
    * @param {function(?Protocol.Error)=} callback
    */
   setNodeValue(value, callback) {
-    this._agent.setNodeValue(this.id, value, this._domModel._markRevision(this, callback));
+    this._agent.invoke_setNodeValue({nodeId: this.id, value}).then(response => {
+      if (!response[Protocol.Error])
+        this._domModel.markUndoableState();
+      if (callback)
+        callback(response[Protocol.Error] || null);
+    });
   }
 
   /**
@@ -400,7 +410,12 @@ SDK.DOMNode = class {
    * @param {function(?Protocol.Error)=} callback
    */
   setAttribute(name, text, callback) {
-    this._agent.setAttributesAsText(this.id, text, name, this._domModel._markRevision(this, callback));
+    this._agent.invoke_setAttributesAsText({nodeId: this.id, text, name}).then(response => {
+      if (!response[Protocol.Error])
+        this._domModel.markUndoableState();
+      if (callback)
+        callback(response[Protocol.Error] || null);
+    });
   }
 
   /**
@@ -409,7 +424,12 @@ SDK.DOMNode = class {
    * @param {function(?Protocol.Error)=} callback
    */
   setAttributeValue(name, value, callback) {
-    this._agent.setAttributeValue(this.id, name, value, this._domModel._markRevision(this, callback));
+    this._agent.invoke_setAttributeValue({nodeId: this.id, name, value}).then(response => {
+      if (!response[Protocol.Error])
+        this._domModel.markUndoableState();
+      if (callback)
+        callback(response[Protocol.Error] || null);
+    });
   }
 
   /**
@@ -430,73 +450,46 @@ SDK.DOMNode = class {
 
   /**
    * @param {string} name
-   * @param {function(?Protocol.Error)=} callback
+   * @return {!Promise}
    */
-  removeAttribute(name, callback) {
-    /**
-     * @param {?Protocol.Error} error
-     * @this {SDK.DOMNode}
-     */
-    function mycallback(error) {
-      if (!error) {
-        delete this._attributesMap[name];
-        for (var i = 0; i < this._attributes.length; ++i) {
-          if (this._attributes[i].name === name) {
-            this._attributes.splice(i, 1);
-            break;
-          }
-        }
-      }
-
-      this._domModel._markRevision(this, callback)(error);
-    }
-    this._agent.removeAttribute(this.id, name, mycallback.bind(this));
+  async removeAttribute(name) {
+    var response = await this._agent.invoke_removeAttribute({nodeId: this.id, name});
+    if (response[Protocol.Error])
+      return;
+    delete this._attributesMap[name];
+    var index = this._attributes.findIndex(attr => attr.name === name);
+    if (index !== -1)
+      this._attributes.splice(index, 1);
+    this._domModel.markUndoableState();
   }
 
   /**
-   * @param {function(?Array.<!SDK.DOMNode>)=} callback
+   * @param {function(?Array<!SDK.DOMNode>)} callback
    */
   getChildNodes(callback) {
     if (this._children) {
-      if (callback)
-        callback(this.children());
+      callback(this.children());
       return;
     }
-
-    /**
-     * @this {SDK.DOMNode}
-     * @param {?Protocol.Error} error
-     */
-    function mycallback(error) {
-      if (callback)
-        callback(error ? null : this.children());
-    }
-
-    this._agent.requestChildNodes(this.id, undefined, mycallback.bind(this));
+    this._agent.invoke_requestChildNodes({nodeId: this.id}).then(response => {
+      callback(response[Protocol.Error] ? null : this.children());
+    });
   }
 
   /**
    * @param {number} depth
-   * @param {function(?Array.<!SDK.DOMNode>)=} callback
+   * @return {!Promise<?Array<!SDK.DOMNode>>}
    */
-  getSubtree(depth, callback) {
-    /**
-     * @this {SDK.DOMNode}
-     * @param {?Protocol.Error} error
-     */
-    function mycallback(error) {
-      if (callback)
-        callback(error ? null : this._children);
-    }
-
-    this._agent.requestChildNodes(this.id, depth, mycallback.bind(this));
+  async getSubtree(depth) {
+    var response = await this._agent.invoke_requestChildNodes({id: this.id, depth});
+    return response[Protocol.Error] ? null : this._children;
   }
 
   /**
-   * @param {function(?Protocol.Error, string)=} callback
+   * @return {!Promise<?string>}
    */
-  getOuterHTML(callback) {
-    this._agent.getOuterHTML(this.id, callback);
+  getOuterHTML() {
+    return this._agent.getOuterHTML(this.id);
   }
 
   /**
@@ -504,27 +497,34 @@ SDK.DOMNode = class {
    * @param {function(?Protocol.Error)=} callback
    */
   setOuterHTML(html, callback) {
-    this._agent.setOuterHTML(this.id, html, this._domModel._markRevision(this, callback));
+    this._agent.invoke_setOuterHTML({nodeId: this.id, outerHTML: html}).then(response => {
+      if (!response[Protocol.Error])
+        this._domModel.markUndoableState();
+      if (callback)
+        callback(response[Protocol.Error] || null);
+    });
   }
 
   /**
    * @param {function(?Protocol.Error, !Protocol.DOM.NodeId=)=} callback
    */
   removeNode(callback) {
-    this._agent.removeNode(this.id, this._domModel._markRevision(this, callback));
+    this._agent.invoke_removeNode({nodeId: this.id}).then(response => {
+      if (!response[Protocol.Error])
+        this._domModel.markUndoableState();
+      if (callback)
+        callback(response[Protocol.Error] || null);
+    });
   }
 
   /**
-   * @param {function(?string)=} callback
+   * @return {!Promise<?string>}
    */
-  copyNode(callback) {
-    function copy(error, text) {
-      if (!error)
-        InspectorFrontendHost.copyText(text);
-      if (callback)
-        callback(error ? null : text);
-    }
-    this._agent.getOuterHTML(this.id, copy);
+  async copyNode() {
+    var text = await this._agent.getOuterHTML(this.id);
+    if (text !== null)
+      InspectorFrontendHost.copyText(text);
+    return text;
   }
 
   /**
@@ -745,8 +745,15 @@ SDK.DOMNode = class {
    * @param {function(?Protocol.Error, !Protocol.DOM.NodeId=)=} callback
    */
   copyTo(targetNode, anchorNode, callback) {
-    this._agent.copyTo(
-        this.id, targetNode.id, anchorNode ? anchorNode.id : undefined, this._domModel._markRevision(this, callback));
+    this._agent
+        .invoke_copyTo(
+            {nodeId: this.id, targetNodeId: targetNode.id, insertBeforeNodeId: anchorNode ? anchorNode.id : undefined})
+        .then(response => {
+          if (!response[Protocol.Error])
+            this._domModel.markUndoableState();
+          if (callback)
+            callback(response[Protocol.Error] || null, response.nodeId);
+        });
   }
 
   /**
@@ -755,8 +762,15 @@ SDK.DOMNode = class {
    * @param {function(?Protocol.Error, !Protocol.DOM.NodeId=)=} callback
    */
   moveTo(targetNode, anchorNode, callback) {
-    this._agent.moveTo(
-        this.id, targetNode.id, anchorNode ? anchorNode.id : undefined, this._domModel._markRevision(this, callback));
+    this._agent
+        .invoke_moveTo(
+            {nodeId: this.id, targetNodeId: targetNode.id, insertBeforeNodeId: anchorNode ? anchorNode.id : undefined})
+        .then(response => {
+          if (!response[Protocol.Error])
+            this._domModel.markUndoableState();
+          if (callback)
+            callback(response[Protocol.Error] || null, response.nodeId);
+        });
   }
 
   /**
@@ -852,51 +866,23 @@ SDK.DOMNode = class {
    * @param {function(?SDK.RemoteObject)=} callback
    */
   resolveToObject(objectGroup, callback) {
-    this._agent.resolveNode(this.id, objectGroup, mycallback.bind(this));
-
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Protocol.Runtime.RemoteObject} object
-     * @this {SDK.DOMNode}
-     */
-    function mycallback(error, object) {
-      if (!callback)
-        return;
-
-      if (error || !object)
-        callback(null);
-      else
-        callback(this._domModel._runtimeModel.createRemoteObject(object));
-    }
+    this.resolveToObjectPromise(objectGroup).then(object => callback && callback(object));
   }
 
   /**
    * @param {string=} objectGroup
-   * @return {!Promise<!SDK.RemoteObject>}
+   * @return {!Promise<?SDK.RemoteObject>}
    */
-  resolveToObjectPromise(objectGroup) {
-    return new Promise(resolveToObject.bind(this));
-    /**
-     * @param {function(?)} fulfill
-     * @param {function(*)} reject
-     * @this {SDK.DOMNode}
-     */
-    function resolveToObject(fulfill, reject) {
-      this.resolveToObject(objectGroup, mycallback);
-      function mycallback(object) {
-        if (object)
-          fulfill(object);
-        else
-          reject(null);
-      }
-    }
+  async resolveToObjectPromise(objectGroup) {
+    var object = await this._agent.resolveNode(this.id, objectGroup);
+    return object && this._domModel._runtimeModel.createRemoteObject(object);
   }
 
   /**
-   * @param {function(?Protocol.DOM.BoxModel)} callback
+   * @return {!Promise<?Protocol.DOM.BoxModel>}
    */
-  boxModel(callback) {
-    this._agent.getBoxModel(this.id, this._domModel._wrapClientCallback(callback));
+  boxModel() {
+    return this._agent.getBoxModel(this.id);
   }
 
   setAsInspectedNode() {
@@ -965,41 +951,17 @@ SDK.DeferredDOMNode = class {
    * @param {function(?SDK.DOMNode)} callback
    */
   resolve(callback) {
-    if (!this._domModel) {
-      callback(null);
-      return;
-    }
-
-    this._domModel.pushNodesByBackendIdsToFrontend(new Set([this._backendNodeId]), onGotNode.bind(this));
-
-    /**
-     * @param {?Map<number, ?SDK.DOMNode>} nodeIds
-     * @this {SDK.DeferredDOMNode}
-     */
-    function onGotNode(nodeIds) {
-      callback(nodeIds && (nodeIds.get(this._backendNodeId) || null));
-    }
+    this.resolvePromise().then(callback);
   }
 
   /**
-   * @return {!Promise.<!SDK.DOMNode>}
+   * @return {!Promise<?SDK.DOMNode>}
    */
-  resolvePromise() {
-    /**
-     * @param {function(?)} fulfill
-     * @param {function(*)} reject
-     * @this {SDK.DeferredDOMNode}
-     */
-    function resolveNode(fulfill, reject) {
-      /**
-       * @param {?SDK.DOMNode} node
-       */
-      function mycallback(node) {
-        fulfill(node);
-      }
-      this.resolve(mycallback);
-    }
-    return new Promise(resolveNode.bind(this));
+  async resolvePromise() {
+    if (!this._domModel)
+      return null;
+    var nodeIds = await this._domModel.pushNodesByBackendIdsToFrontend(new Set([this._backendNodeId]));
+    return nodeIds && nodeIds.get(this._backendNodeId) || null;
   }
 
   /**
@@ -1064,8 +1026,8 @@ SDK.DOMModel = class extends SDK.SDKModel {
     this._idToDOMNode = {};
     /** @type {?SDK.DOMDocument} */
     this._document = null;
-    /** @type {!Object.<number, boolean>} */
-    this._attributeLoadNodeIds = {};
+    /** @type {!Set<number>} */
+    this._attributeLoadNodeIds = new Set();
     target.registerDOMDispatcher(new SDK.DOMDispatcher(this));
 
     this._runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
@@ -1123,40 +1085,33 @@ SDK.DOMModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {function(!SDK.DOMDocument)=} callback
+   * @param {function(!SDK.DOMDocument)} callback
    */
   requestDocument(callback) {
-    if (this._document) {
-      if (callback)
-        callback(this._document);
-      return;
-    }
+    if (this._document)
+      callback(this._document);
+    else
+      this.requestDocumentPromise().then(callback);
+  }
 
-    if (this._pendingDocumentRequestCallbacks) {
-      this._pendingDocumentRequestCallbacks.push(callback);
-      return;
-    }
+  /**
+   * @return {!Promise<!SDK.DOMDocument>}
+   */
+  requestDocumentPromise() {
+    if (this._document)
+      return Promise.resolve(this._document);
+    if (this._pendingDocumentRequestPromise)
+      return this._pendingDocumentRequestPromise;
 
-    this._pendingDocumentRequestCallbacks = [callback];
-
-    /**
-     * @this {SDK.DOMModel}
-     * @param {?Protocol.Error} error
-     * @param {!Protocol.DOM.Node} root
-     */
-    function onDocumentAvailable(error, root) {
-      if (!error)
+    this._pendingDocumentRequestPromise = this._agent.getDocument().then(root => {
+      if (root)
         this._setDocument(root);
-
-      for (var i = 0; i < this._pendingDocumentRequestCallbacks.length; ++i) {
-        var callback = this._pendingDocumentRequestCallbacks[i];
-        if (callback)
-          callback(this._document);
-      }
-      delete this._pendingDocumentRequestCallbacks;
-    }
-
-    this._agent.getDocument(undefined, undefined, onDocumentAvailable.bind(this));
+      delete this._pendingDocumentRequestPromise;
+      if (!this._document)
+        console.error('No document');
+      return this._document;
+    });
+    return this._pendingDocumentRequestPromise;
   }
 
   /**
@@ -1168,52 +1123,39 @@ SDK.DOMModel = class extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.Runtime.RemoteObjectId} objectId
-   * @param {function(?SDK.DOMNode)=} callback
+   * @return {!Promise<?SDK.DOMNode>}
    */
-  pushNodeToFrontend(objectId, callback) {
-    /**
-     * @param {?Protocol.DOM.NodeId} nodeId
-     * @this {!SDK.DOMModel}
-     */
-    function mycallback(nodeId) {
-      callback(nodeId ? this.nodeForId(nodeId) : null);
-    }
-    this._dispatchWhenDocumentAvailable(this._agent.requestNode.bind(this._agent, objectId), mycallback.bind(this));
+  async pushNodeToFrontend(objectId) {
+    await this.requestDocumentPromise();
+    var nodeId = await this._agent.requestNode(objectId);
+    return nodeId ? this.nodeForId(nodeId) : null;
   }
 
   /**
    * @param {string} path
-   * @param {function(?number)} callback
+   * @return {!Promise<?Protocol.DOM.NodeId>}
    */
-  pushNodeByPathToFrontend(path, callback) {
-    this._dispatchWhenDocumentAvailable(this._agent.pushNodeByPathToFrontend.bind(this._agent, path), callback);
+  pushNodeByPathToFrontend(path) {
+    return this.requestDocumentPromise().then(() => this._agent.pushNodeByPathToFrontend(path));
   }
 
   /**
    * @param {!Set<number>} backendNodeIds
-   * @param {function(?Map<number, ?SDK.DOMNode>)} callback
+   * @return {!Promise<?Map<number, ?SDK.DOMNode>>}
    */
-  pushNodesByBackendIdsToFrontend(backendNodeIds, callback) {
+  async pushNodesByBackendIdsToFrontend(backendNodeIds) {
+    await this.requestDocumentPromise();
     var backendNodeIdsArray = backendNodeIds.valuesArray();
-    /**
-     * @param {?Array<!Protocol.DOM.NodeId>} nodeIds
-     * @this {!SDK.DOMModel}
-     */
-    function mycallback(nodeIds) {
-      if (!nodeIds) {
-        callback(null);
-        return;
-      }
-      /** @type {!Map<number, ?SDK.DOMNode>} */
-      var map = new Map();
-      for (var i = 0; i < nodeIds.length; ++i) {
-        if (nodeIds[i])
-          map.set(backendNodeIdsArray[i], this.nodeForId(nodeIds[i]));
-      }
-      callback(map);
+    var nodeIds = await this._agent.pushNodesByBackendIdsToFrontend(backendNodeIdsArray);
+    if (!nodeIds)
+      return null;
+    /** @type {!Map<number, ?SDK.DOMNode>} */
+    var map = new Map();
+    for (var i = 0; i < nodeIds.length; ++i) {
+      if (nodeIds[i])
+        map.set(backendNodeIdsArray[i], this.nodeForId(nodeIds[i]));
     }
-    this._dispatchWhenDocumentAvailable(
-        this._agent.pushNodesByBackendIdsToFrontend.bind(this._agent, backendNodeIdsArray), mycallback.bind(this));
+    return map;
   }
 
   /**
@@ -1232,28 +1174,6 @@ SDK.DOMModel = class extends SDK.SDKModel {
       callback(error ? null : result || null);
     }
     return wrapper;
-  }
-
-  /**
-   * @param {function(function(?Protocol.Error, !T))} func
-   * @param {function(?T)} callback
-   * @template T
-   */
-  _dispatchWhenDocumentAvailable(func, callback) {
-    var callbackWrapper = this._wrapClientCallback(callback);
-
-    /**
-     * @this {SDK.DOMModel}
-     */
-    function onDocumentAvailable() {
-      if (this._document) {
-        func(callbackWrapper);
-      } else {
-        if (callbackWrapper)
-          callbackWrapper('No document');
-      }
-    }
-    this.requestDocument(onDocumentAvailable.bind(this));
   }
 
   /**
@@ -1285,44 +1205,32 @@ SDK.DOMModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!Array.<!Protocol.DOM.NodeId>} nodeIds
+   * @param {!Array<!Protocol.DOM.NodeId>} nodeIds
    */
   _inlineStyleInvalidated(nodeIds) {
-    for (var i = 0; i < nodeIds.length; ++i)
-      this._attributeLoadNodeIds[nodeIds[i]] = true;
-    if ('_loadNodeAttributesTimeout' in this)
-      return;
-    this._loadNodeAttributesTimeout = setTimeout(this._loadNodeAttributes.bind(this), 20);
+    this._attributeLoadNodeIds.addAll(nodeIds);
+    if (!this._loadNodeAttributesTimeout)
+      this._loadNodeAttributesTimeout = setTimeout(this._loadNodeAttributes.bind(this), 20);
   }
 
   _loadNodeAttributes() {
-    /**
-     * @this {SDK.DOMModel}
-     * @param {!Protocol.DOM.NodeId} nodeId
-     * @param {?Protocol.Error} error
-     * @param {!Array.<string>} attributes
-     */
-    function callback(nodeId, error, attributes) {
-      if (error) {
-        // We are calling _loadNodeAttributes asynchronously, it is ok if node is not found.
-        return;
-      }
-      var node = this._idToDOMNode[nodeId];
-      if (node) {
+    delete this._loadNodeAttributesTimeout;
+    for (let nodeId of this._attributeLoadNodeIds) {
+      this._agent.getAttributes(nodeId).then(attributes => {
+        if (!attributes) {
+          // We are calling _loadNodeAttributes asynchronously, it is ok if node is not found.
+          return;
+        }
+        var node = this._idToDOMNode[nodeId];
+        if (!node)
+          return;
         if (node._setAttributesPayload(attributes)) {
           this.dispatchEventToListeners(SDK.DOMModel.Events.AttrModified, {node: node, name: 'style'});
           this._scheduleMutationEvent(node);
         }
-      }
+      });
     }
-
-    delete this._loadNodeAttributesTimeout;
-
-    for (var nodeId in this._attributeLoadNodeIds) {
-      var nodeIdAsNumber = parseInt(nodeId, 10);
-      this._agent.getAttributes(nodeIdAsNumber, callback.bind(this, nodeIdAsNumber));
-    }
-    this._attributeLoadNodeIds = {};
+    this._attributeLoadNodeIds.clear();
   }
 
   /**
@@ -1525,82 +1433,37 @@ SDK.DOMModel = class extends SDK.SDKModel {
    */
   performSearch(query, includeUserAgentShadowDOM, searchCallback) {
     SDK.DOMModel.cancelSearch();
-
-    /**
-     * @param {?Protocol.Error} error
-     * @param {string} searchId
-     * @param {number} resultsCount
-     * @this {SDK.DOMModel}
-     */
-    function callback(error, searchId, resultsCount) {
-      this._searchId = searchId;
-      searchCallback(resultsCount);
-    }
-    this._agent.performSearch(query, includeUserAgentShadowDOM, callback.bind(this));
+    this.performSearchPromise(query, includeUserAgentShadowDOM).then(searchCallback);
   }
 
   /**
    * @param {string} query
    * @param {boolean} includeUserAgentShadowDOM
-   * @return {!Promise.<number>}
+   * @return {!Promise<number>}
    */
-  performSearchPromise(query, includeUserAgentShadowDOM) {
-    return new Promise(performSearch.bind(this));
-
-    /**
-     * @param {function(number)} resolve
-     * @this {SDK.DOMModel}
-     */
-    function performSearch(resolve) {
-      this._agent.performSearch(query, includeUserAgentShadowDOM, callback.bind(this));
-
-      /**
-       * @param {?Protocol.Error} error
-       * @param {string} searchId
-       * @param {number} resultsCount
-       * @this {SDK.DOMModel}
-       */
-      function callback(error, searchId, resultsCount) {
-        if (!error)
-          this._searchId = searchId;
-        resolve(error ? 0 : resultsCount);
-      }
-    }
+  async performSearchPromise(query, includeUserAgentShadowDOM) {
+    var response = await this._agent.invoke_performSearch({query, includeUserAgentShadowDOM});
+    if (!response[Protocol.Error])
+      this._searchId = response.searchId;
+    return response[Protocol.Error] ? 0 : response.resultCount;
   }
 
   /**
    * @param {number} index
-   * @param {?function(?SDK.DOMNode)} callback
+   * @return {!Promise<?SDK.DOMNode>}
    */
-  searchResult(index, callback) {
-    if (this._searchId)
-      this._agent.getSearchResults(this._searchId, index, index + 1, searchResultsCallback.bind(this));
-    else
-      callback(null);
-
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Array.<number>} nodeIds
-     * @this {SDK.DOMModel}
-     */
-    function searchResultsCallback(error, nodeIds) {
-      if (error) {
-        console.error(error);
-        callback(null);
-        return;
-      }
-      if (nodeIds.length !== 1)
-        return;
-
-      callback(this.nodeForId(nodeIds[0]));
-    }
+  async searchResult(index) {
+    if (!this._searchId)
+      return null;
+    var nodeIds = await this._agent.getSearchResults(this._searchId, index, index + 1);
+    return nodeIds && nodeIds.length === 1 ? this.nodeForId(nodeIds[0]) : null;
   }
 
   _cancelSearch() {
-    if (this._searchId) {
-      this._agent.discardSearchResults(this._searchId);
-      delete this._searchId;
-    }
+    if (!this._searchId)
+      return;
+    this._agent.discardSearchResults(this._searchId);
+    delete this._searchId;
   }
 
   /**
@@ -1608,65 +1471,25 @@ SDK.DOMModel = class extends SDK.SDKModel {
    * @return {!Promise<!Array<string>>}
    */
   classNamesPromise(nodeId) {
-    return new Promise(promiseBody.bind(this));
-
-    /**
-     * @param {function(!Array<string>)} fulfill
-     * @this {SDK.DOMModel}
-     */
-    function promiseBody(fulfill) {
-      this._agent.collectClassNamesFromSubtree(nodeId, classNamesCallback);
-
-      /**
-       * @param {?string} error
-       * @param {?Array<string>} classNames
-       */
-      function classNamesCallback(error, classNames) {
-        if (!error && classNames)
-          fulfill(classNames);
-        else
-          fulfill([]);
-      }
-    }
+    return this._agent.collectClassNamesFromSubtree(nodeId).then(classNames => classNames || []);
   }
 
   /**
    * @param {!Protocol.DOM.NodeId} nodeId
    * @param {string} selectors
-   * @param {function(?Protocol.DOM.NodeId)} callback
+   * @return {!Promise<?Protocol.DOM.NodeId>}
    */
-  querySelector(nodeId, selectors, callback) {
-    this._agent.querySelector(nodeId, selectors, this._wrapClientCallback(callback));
+  querySelector(nodeId, selectors) {
+    return this._agent.querySelector(nodeId, selectors);
   }
 
   /**
    * @param {!Protocol.DOM.NodeId} nodeId
    * @param {string} selectors
-   * @param {function(?Array<!Protocol.DOM.NodeId>)} callback
+   * @return {!Promise<?Array<!Protocol.DOM.NodeId>>}
    */
-  querySelectorAll(nodeId, selectors, callback) {
-    this._agent.querySelectorAll(nodeId, selectors, this._wrapClientCallback(callback));
-  }
-
-  /**
-   * @param {!SDK.DOMNode} node
-   * @param {function(?Protocol.Error, ...)=} callback
-   * @return {function(...)}
-   * @template T
-   */
-  _markRevision(node, callback) {
-    /**
-     * @param {?Protocol.Error} error
-     * @this {SDK.DOMModel}
-     */
-    function wrapperFunction(error) {
-      if (!error)
-        this.markUndoableState();
-
-      if (callback)
-        callback.apply(this, arguments);
-    }
-    return wrapperFunction.bind(this);
+  querySelectorAll(nodeId, selectors) {
+    return this._agent.querySelectorAll(nodeId, selectors);
   }
 
   markUndoableState() {
@@ -1674,40 +1497,28 @@ SDK.DOMModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {function(?Protocol.Error)=} callback
+   * @return {!Promise}
    */
-  undo(callback) {
-    this._agent.undo(callback);
+  undo() {
+    return this._agent.undo();
   }
 
   /**
-   * @param {function(?Protocol.Error)=} callback
+   * @return {!Promise}
    */
-  redo(callback) {
-    this._agent.redo(callback);
+  redo() {
+    return this._agent.redo();
   }
 
   /**
    * @param {number} x
    * @param {number} y
    * @param {boolean} includeUserAgentShadowDOM
-   * @param {function(?SDK.DOMNode)} callback
+   * @return {!Promise<?SDK.DOMNode>}
    */
-  nodeForLocation(x, y, includeUserAgentShadowDOM, callback) {
-    this._agent.getNodeForLocation(x, y, includeUserAgentShadowDOM, mycallback.bind(this));
-
-    /**
-     * @param {?Protocol.Error} error
-     * @param {number} nodeId
-     * @this {SDK.DOMModel}
-     */
-    function mycallback(error, nodeId) {
-      if (error) {
-        callback(null);
-        return;
-      }
-      callback(this.nodeForId(nodeId));
-    }
+  nodeForLocation(x, y, includeUserAgentShadowDOM) {
+    return this._agent.getNodeForLocation(x, y, includeUserAgentShadowDOM)
+        .then(nodeId => nodeId ? this.nodeForId(nodeId) : null);
   }
 
   /**
@@ -1715,12 +1526,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
    * @return {!Promise<?SDK.DOMNode>}
    */
   pushObjectAsNodeToFrontend(object) {
-    return new Promise(fulfill => {
-      if (object.isNode())
-        this.pushNodeToFrontend(/** @type {string} */ (object.objectId), fulfill);
-      else
-        fulfill(null);
-    });
+    return object.isNode() ? this.pushNodeToFrontend(/** @type {string} */ (object.objectId)) : Promise.resolve(null);
   }
 
   /**
@@ -1728,23 +1534,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   suspendModel() {
-    return new Promise(promiseBody.bind(this));
-
-    /**
-     * @param {function()} fulfill
-     * @this {SDK.DOMModel}
-     */
-    function promiseBody(fulfill) {
-      this._agent.disable(callback.bind(this));
-
-      /**
-       * @this {SDK.DOMModel}
-       */
-      function callback() {
-        this._setDocument(null);
-        fulfill();
-      }
-    }
+    return this._agent.disable().then(() => this._setDocument(null));
   }
 
   /**
@@ -1752,15 +1542,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   resumeModel() {
-    return new Promise(promiseBody.bind(this));
-
-    /**
-     * @param {function()} fulfill
-     * @this {SDK.DOMModel}
-     */
-    function promiseBody(fulfill) {
-      this._agent.enable(fulfill);
-    }
+    return this._agent.enable();
   }
 };
 

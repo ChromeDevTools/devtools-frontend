@@ -121,13 +121,11 @@ SDK.OverlayModel = class extends SDK.SDKModel {
    * @param {!Protocol.Overlay.InspectMode} mode
    * @return {!Promise}
    */
-  setInspectMode(mode) {
-    var requestDocumentPromise = new Promise(fulfill => this._domModel.requestDocument(fulfill));
-    return requestDocumentPromise.then(() => {
-      this._inspectModeEnabled = mode !== Protocol.Overlay.InspectMode.None;
-      this.dispatchEventToListeners(SDK.OverlayModel.Events.InspectModeWillBeToggled, this);
-      return this._highlighter.setInspectMode(mode, this._buildHighlightConfig());
-    });
+  async setInspectMode(mode) {
+    await this._domModel.requestDocumentPromise();
+    this._inspectModeEnabled = mode !== Protocol.Overlay.InspectMode.None;
+    this.dispatchEventToListeners(SDK.OverlayModel.Events.InspectModeWillBeToggled, this);
+    this._highlighter.setInspectMode(mode, this._buildHighlightConfig());
   }
 
   /**

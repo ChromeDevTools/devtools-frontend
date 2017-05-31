@@ -737,7 +737,7 @@ Audits2.DetailsRenderer = class extends DetailsRenderer {
    * @param {!Element} origElement
    * @param {!DetailsRenderer.NodeDetailsJSON} detailsItem
    */
-  _replaceWithDeferredNodeBlock(origElement, detailsItem) {
+  async _replaceWithDeferredNodeBlock(origElement, detailsItem) {
     var mainTarget = SDK.targetManager.mainTarget();
     if (!this._onMainFrameNavigatedPromise) {
       var resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel);
@@ -746,23 +746,23 @@ Audits2.DetailsRenderer = class extends DetailsRenderer {
       });
     }
 
-    this._onMainFrameNavigatedPromise.then(_ => {
-      var domModel = mainTarget.model(SDK.DOMModel);
-      if (!detailsItem.path)
-        return;
+    await this._onMainFrameNavigatedPromise;
 
-      domModel.pushNodeByPathToFrontend(detailsItem.path, nodeId => {
-        if (!nodeId)
-          return;
-        var node = domModel.nodeForId(nodeId);
-        if (!node)
-          return;
+    var domModel = mainTarget.model(SDK.DOMModel);
+    if (!detailsItem.path)
+      return;
 
-        var element = Components.DOMPresentationUtils.linkifyNodeReference(node, undefined, detailsItem.snippet);
-        origElement.title = '';
-        origElement.textContent = '';
-        origElement.appendChild(element);
-      });
-    });
+    var nodeId = await domModel.pushNodeByPathToFrontend(detailsItem.path);
+
+    if (!nodeId)
+      return;
+    var node = domModel.nodeForId(nodeId);
+    if (!node)
+      return;
+
+    var element = Components.DOMPresentationUtils.linkifyNodeReference(node, undefined, detailsItem.snippet);
+    origElement.title = '';
+    origElement.textContent = '';
+    origElement.appendChild(element);
   }
 };

@@ -44,9 +44,9 @@ TimelineModel.TracingLayerTree = class extends SDK.LayerTreeBase {
    * @param {?TimelineModel.TracingLayerPayload} root
    * @param {?Array<!TimelineModel.TracingLayerPayload>} layers
    * @param {!Array<!TimelineModel.LayerPaintEvent>} paints
-   * @param {function()} callback
+   * @return {!Promise}
    */
-  setLayers(root, layers, paints, callback) {
+  async setLayers(root, layers, paints) {
     var idsToResolve = new Set();
     if (root) {
       // This is a legacy code path for compatibility, as cc is removing
@@ -56,30 +56,25 @@ TimelineModel.TracingLayerTree = class extends SDK.LayerTreeBase {
       for (var i = 0; i < layers.length; ++i)
         this._extractNodeIdsToResolve(idsToResolve, {}, layers[i]);
     }
-    this.resolveBackendNodeIds(idsToResolve, onBackendNodeIdsResolved.bind(this));
 
-    /**
-     * @this {TimelineModel.TracingLayerTree}
-     */
-    function onBackendNodeIdsResolved() {
-      var oldLayersById = this._layersById;
-      this._layersById = {};
-      this.setContentRoot(null);
-      if (root) {
-        var convertedLayers = this._innerSetLayers(oldLayersById, root);
-        this.setRoot(convertedLayers);
-      } else {
-        var processedLayers = layers.map(this._innerSetLayers.bind(this, oldLayersById));
-        var contentRoot = this.contentRoot();
-        this.setRoot(contentRoot);
-        for (var i = 0; i < processedLayers.length; ++i) {
-          if (processedLayers[i].id() !== contentRoot.id())
-            contentRoot.addChild(processedLayers[i]);
-        }
+    await this.resolveBackendNodeIds(idsToResolve);
+
+    var oldLayersById = this._layersById;
+    this._layersById = {};
+    this.setContentRoot(null);
+    if (root) {
+      var convertedLayers = this._innerSetLayers(oldLayersById, root);
+      this.setRoot(convertedLayers);
+    } else {
+      var processedLayers = layers.map(this._innerSetLayers.bind(this, oldLayersById));
+      var contentRoot = this.contentRoot();
+      this.setRoot(contentRoot);
+      for (var i = 0; i < processedLayers.length; ++i) {
+        if (processedLayers[i].id() !== contentRoot.id())
+          contentRoot.addChild(processedLayers[i]);
       }
-      this._setPaints(paints);
-      callback();
     }
+    this._setPaints(paints);
   }
 
   /**

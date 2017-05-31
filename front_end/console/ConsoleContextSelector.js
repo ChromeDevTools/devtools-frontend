@@ -24,7 +24,6 @@ Console.ConsoleContextSelector = class {
     this._glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.BlockedByGlassPane);
     this._list = new UI.ListControl(this, UI.ListMode.EqualHeightItems);
     this._list.element.classList.add('context-list');
-    this._list.element.tabIndex = -1;
     this._rowHeight = 36;
     UI.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'console/consoleContextSelector.css')
         .appendChild(this._list.element);

@@ -70,6 +70,7 @@ UI.ListControl = class {
     this._itemToElement = new Map();
     this._selectedIndex = -1;
 
+    this.element.tabIndex = -1;
     this.element.addEventListener('click', this._onClick.bind(this), false);
     this.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
 

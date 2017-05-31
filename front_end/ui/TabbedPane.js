@@ -816,7 +816,7 @@ UI.TabbedPane = class extends UI.VBox {
    * @param {number} index
    */
   _insertBefore(tab, index) {
-    this._tabsElement.insertBefore(tab._tabElement || null, this._tabsElement.childNodes[index]);
+    this._tabsElement.insertBefore(tab.tabElement, this._tabsElement.childNodes[index]);
     var oldIndex = this._tabs.indexOf(tab);
     this._tabs.splice(oldIndex, 1);
     if (oldIndex < index)
@@ -1081,7 +1081,6 @@ UI.TabbedPaneTab = class {
     tabElement.id = 'tab-' + this._id;
     UI.ARIAUtils.markAsTab(tabElement);
     UI.ARIAUtils.setSelected(tabElement, false);
-    tabElement.selectTabForTest = this._tabbedPane.selectTab.bind(this._tabbedPane, this.id, true);
 
     var titleElement = tabElement.createChild('span', 'tabbed-pane-header-tab-title');
     titleElement.textContent = this.title;

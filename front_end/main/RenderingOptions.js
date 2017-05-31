@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @implements {SDK.SDKModelObserver<!SDK.EmulationModel>}
- */
 Main.RenderingOptionsView = class extends UI.VBox {
   constructor() {
     super(true);
@@ -54,20 +51,14 @@ Main.RenderingOptionsView = class extends UI.VBox {
         Common.moduleSetting('showScrollBottleneckRects'));
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    var cssMediaSubtitle = Common.UIString('Forces media type for testing print and screen styles');
-    var checkboxLabel = UI.CheckboxLabel.create(Common.UIString('Emulate CSS Media'), false, cssMediaSubtitle);
-    this._mediaCheckbox = checkboxLabel.checkboxElement;
-    this._mediaCheckbox.addEventListener('click', this._mediaToggled.bind(this), false);
-    this.contentElement.appendChild(checkboxLabel);
-
-    var mediaRow = this.contentElement.createChild('div', 'media-row');
-    this._mediaSelect = mediaRow.createChild('select', 'chrome-select');
-    this._mediaSelect.appendChild(new Option(Common.UIString('print'), 'print'));
-    this._mediaSelect.appendChild(new Option(Common.UIString('screen'), 'screen'));
-    this._mediaSelect.addEventListener('change', this._mediaToggled.bind(this), false);
-    this._mediaSelect.disabled = true;
-
-    SDK.targetManager.observeModels(SDK.EmulationModel, this);
+    var mediaSetting = Common.moduleSetting('emulatedCSSMedia');
+    var mediaSelect = UI.SettingsUI.createControlForSetting(mediaSetting);
+    if (mediaSelect) {
+      var mediaRow = this.contentElement.createChild('span', 'media-row');
+      mediaRow.createChild('label').textContent = Common.UIString('Emulate CSS Media');
+      mediaRow.createChild('p').textContent = Common.UIString('Forces media type for testing print and screen styles');
+      mediaRow.appendChild(mediaSelect);
+    }
   }
 
   /**
@@ -79,28 +70,5 @@ Main.RenderingOptionsView = class extends UI.VBox {
     var checkboxLabel = UI.CheckboxLabel.create(label, false, subtitle);
     UI.SettingsUI.bindCheckbox(checkboxLabel.checkboxElement, setting);
     this.contentElement.appendChild(checkboxLabel);
-  }
-
-  /**
-   * @override
-   * @param {!SDK.EmulationModel} emulationModel
-   */
-  modelAdded(emulationModel) {
-    if (this._mediaCheckbox.checked)
-      emulationModel.emulateCSSMedia(this._mediaSelect.value);
-  }
-
-  _mediaToggled() {
-    this._mediaSelect.disabled = !this._mediaCheckbox.checked;
-    var media = this._mediaCheckbox.checked ? this._mediaSelect.value : null;
-    for (var emulationModel of SDK.targetManager.models(SDK.EmulationModel))
-      emulationModel.emulateCSSMedia(media);
-  }
-
-  /**
-   * @override
-   * @param {!SDK.EmulationModel} emulationModel
-   */
-  modelRemoved(emulationModel) {
   }
 };

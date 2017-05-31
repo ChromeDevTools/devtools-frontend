@@ -123,6 +123,29 @@ UI.SettingsUI.createCustomSetting = function(name, element) {
 };
 
 /**
+ * @param {!Common.Setting} setting
+ * @return {?Element}
+ */
+UI.SettingsUI.createControlForSetting = function(setting) {
+  if (!setting.extension())
+    return null;
+  var descriptor = setting.extension().descriptor();
+  var uiTitle = Common.UIString(setting.title() || '');
+  switch (descriptor['settingType']) {
+    case 'boolean':
+      return UI.SettingsUI.createSettingCheckbox(uiTitle, setting);
+    case 'enum':
+      if (Array.isArray(descriptor['options']))
+        return UI.SettingsUI.createSettingSelect(uiTitle, descriptor['options'], setting);
+      console.error('Enum setting defined without options');
+      return null;
+    default:
+      console.error('Invalid setting type: ' + descriptor['settingType']);
+      return null;
+  }
+};
+
+/**
  * @interface
  */
 UI.SettingUI = function() {};

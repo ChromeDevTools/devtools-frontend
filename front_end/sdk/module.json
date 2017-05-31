@@ -106,31 +106,101 @@
         },
         {
             "type": "setting",
+            "category": "Rendering",
             "settingName": "showPaintRects",
             "settingType": "boolean",
             "storageType": "session",
+            "options": [
+                {
+                    "value": true,
+                    "title": "Show paint flashing rectangles"
+                },
+                {
+                    "value": false,
+                    "title": "Hide paint flashing rectangles"
+                }
+            ],
             "defaultValue": false
         },
         {
             "type": "setting",
+            "category": "Rendering",
             "settingName": "showDebugBorders",
             "settingType": "boolean",
             "storageType": "session",
+            "options": [
+                {
+                    "value": true,
+                    "title": "Show layer borders"
+                },
+                {
+                    "value": false,
+                    "title": "Hide layer borders"
+                }
+            ],
             "defaultValue": false
         },
         {
             "type": "setting",
+            "category": "Rendering",
             "settingName": "showFPSCounter",
             "settingType": "boolean",
             "storageType": "session",
+            "options": [
+                {
+                    "value": true,
+                    "title": "Show frames per second (FPS) meter"
+                },
+                {
+                    "value": false,
+                    "title": "Hide frames per second (FPS) meter"
+                }
+            ],
             "defaultValue": false
         },
         {
             "type": "setting",
+            "category": "Rendering",
             "settingName": "showScrollBottleneckRects",
             "settingType": "boolean",
             "storageType": "session",
+            "options": [
+                {
+                    "value": true,
+                    "title": "Show scroll performance bottlenecks"
+                },
+                {
+                    "value": false,
+                    "title": "Hide scroll performance bottlenecks"
+                }
+            ],
             "defaultValue": false
+        },
+        {
+            "type": "setting",
+            "category": "Rendering",
+            "settingName": "emulatedCSSMedia",
+            "settingType": "enum",
+            "storageType": "session",
+            "defaultValue": "",
+            "options": [
+                {
+                    "title": "Do not emulate CSS media type",
+                    "text": "No emulation",
+                    "value": ""
+                },
+                {
+                    "title": "Emulate CSS print media type",
+                    "text": "print",
+                    "value": "print"
+                },
+                {
+                    "title": "Emulate CSS screen media type",
+                    "text": "screen",
+                    "value": "screen"
+                }
+            ],
+            "tags": "query"
         },
         {
             "type": "setting",

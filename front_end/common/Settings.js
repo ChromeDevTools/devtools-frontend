@@ -75,6 +75,7 @@ Common.Settings = class {
                             this.createSetting(settingName, defaultValue, storageType);
     if (descriptor['title'])
       setting.setTitle(descriptor['title']);
+    setting._extension = extension;
     this._moduleSettings.set(settingName, setting);
   }
 
@@ -263,6 +264,7 @@ Common.Setting = class {
     this._storage = storage;
     /** @type {string} */
     this._title = '';
+    this._extension = null;
   }
 
   /**
@@ -339,6 +341,13 @@ Common.Setting = class {
     this._settings._registry.delete(this._name);
     this._settings._moduleSettings.delete(this._name);
     this._storage.remove(this._name);
+  }
+
+  /**
+   * @return {?Runtime.Extension}
+   */
+  extension() {
+    return this._extension;
   }
 
   /**

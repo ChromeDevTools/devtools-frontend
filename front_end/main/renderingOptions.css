@@ -14,7 +14,13 @@ label {
 }
 
 .media-row {
-    margin-left: 25px;
+    margin-left: 22px;
+    flex: none;
+}
+
+.media-row p {
+    margin-top: 0;
+    color: gray;
 }
 
 .panel-section-separator {

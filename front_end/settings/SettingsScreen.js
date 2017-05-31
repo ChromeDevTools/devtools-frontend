@@ -146,8 +146,6 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
         ['', 'Appearance', 'Elements', 'Sources', 'Network', 'Profiler', 'Console', 'Extensions'];
     /** @type {!Map<string, !Element>} */
     this._nameToSection = new Map();
-    /** @type {!Map<string, !Element>} */
-    this._nameToSettingElement = new Map();
     for (var sectionName of explicitSectionOrder)
       this._sectionElement(sectionName);
     self.runtime.extensions('setting').forEach(this._addSetting.bind(this));
@@ -181,33 +179,11 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
   _addSetting(extension) {
     if (!Settings.GenericSettingsTab.isSettingVisible(extension))
       return;
-    var descriptor = extension.descriptor();
-    var sectionName = descriptor['category'];
-    var settingName = descriptor['settingName'];
-    var setting = Common.moduleSetting(settingName);
-    var uiTitle = Common.UIString(extension.title());
-
-    var sectionElement = this._sectionElement(sectionName);
-    var settingControl;
-
-    switch (descriptor['settingType']) {
-      case 'boolean':
-        settingControl = UI.SettingsUI.createSettingCheckbox(uiTitle, setting);
-        break;
-      case 'enum':
-        if (Array.isArray(descriptor['options']))
-          settingControl = UI.SettingsUI.createSettingSelect(uiTitle, descriptor['options'], setting);
-        else
-          console.error('Enum setting defined without options');
-        break;
-      default:
-        console.error('Invalid setting type: ' + descriptor['settingType']);
-        return;
-    }
-    if (settingControl) {
-      this._nameToSettingElement.set(settingName, settingControl);
+    var sectionElement = this._sectionElement(extension.descriptor()['category']);
+    var setting = Common.moduleSetting(extension.descriptor()['settingName']);
+    var settingControl = UI.SettingsUI.createControlForSetting(setting);
+    if (settingControl)
       sectionElement.appendChild(settingControl);
-    }
   }
 
   /**

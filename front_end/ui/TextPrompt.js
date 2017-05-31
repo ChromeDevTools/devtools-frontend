@@ -45,6 +45,7 @@ UI.TextPrompt = class extends Common.Object {
     this._currentSuggestion = '';
     this._completionRequestId = 0;
     this._ghostTextElement = createElementWithClass('span', 'auto-complete-text');
+    this._ghostTextElement.setAttribute('contenteditable', 'false');
   }
 
   /**

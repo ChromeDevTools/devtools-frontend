@@ -67,10 +67,6 @@
     max-width: 250px;
     border: 1px solid #bfbfbf;
     border-radius: 2px;
-    box-sizing: border-box;
-    color: #444;
-    font: inherit;
-    border-width: 1px;
     min-height: 2em;
     padding: 3px;
 }

@@ -67,12 +67,8 @@
 }
 
 .blocked-url-edit-value {
-    white-space: nowrap;
-    text-overflow: ellipsis;
     -webkit-user-select: none;
-    color: #222;
     flex: 1 1 0px;
-    overflow: hidden;
 }
 
 .blocked-url-edit-row input {

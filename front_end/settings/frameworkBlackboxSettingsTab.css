@@ -51,13 +51,16 @@
     flex: auto 1 1;
 }
 
-.blackbox-pattern {
+ .blackbox-list-item .blackbox-pattern {
     white-space: nowrap;
     text-overflow: ellipsis;
     -webkit-user-select: none;
     color: #222;
-    flex: auto;
     overflow: hidden;
+}
+
+.blackbox-pattern {
+    flex: auto;
 }
 
 .blackbox-list-item.blackbox-disabled .blackbox-pattern {

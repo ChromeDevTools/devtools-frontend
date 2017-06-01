@@ -28,11 +28,6 @@
 .sensors-view select {
     border: 1px solid #bfbfbf;
     border-radius: 2px;
-    box-sizing: border-box;
-    color: #444;
-    font: inherit;
-    border-width: 1px;
-    text-align: left;
 }
 
 .sensors-view input {

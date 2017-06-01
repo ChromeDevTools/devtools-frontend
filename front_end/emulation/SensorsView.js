@@ -77,6 +77,7 @@ Emulation.SensorsView = class extends UI.VBox {
     var longitudeGroup = this._fieldsetElement.createChild('div', 'latlong-group');
 
     this._latitudeInput = latitudeGroup.createChild('input');
+    this._latitudeInput.setAttribute('step', 'any');
     this._latitudeInput.setAttribute('type', 'number');
     this._latitudeInput.value = 0;
     this._latitudeSetter = UI.bindInput(
@@ -85,6 +86,7 @@ Emulation.SensorsView = class extends UI.VBox {
     this._latitudeSetter(String(geolocation.latitude));
 
     this._longitudeInput = longitudeGroup.createChild('input');
+    this._longitudeInput.setAttribute('step', 'any');
     this._longitudeInput.setAttribute('type', 'number');
     this._longitudeInput.value = 0;
     this._longitudeSetter = UI.bindInput(
@@ -311,14 +313,17 @@ Emulation.SensorsView = class extends UI.VBox {
     var cellElement = fieldsetElement.createChild('td', 'orientation-inputs-cell');
 
     this._alphaElement = createElement('input');
+    this._alphaElement.setAttribute('step', 'any');
     this._alphaSetter = this._createAxisInput(cellElement, this._alphaElement, Common.UIString('\u03B1 (alpha)'));
     this._alphaSetter(String(deviceOrientation.alpha));
 
     this._betaElement = createElement('input');
+    this._betaElement.setAttribute('step', 'any');
     this._betaSetter = this._createAxisInput(cellElement, this._betaElement, Common.UIString('\u03B2 (beta)'));
     this._betaSetter(String(deviceOrientation.beta));
 
     this._gammaElement = createElement('input');
+    this._gammaElement.setAttribute('step', 'any');
     this._gammaSetter = this._createAxisInput(cellElement, this._gammaElement, Common.UIString('\u03B3 (gamma)'));
     this._gammaSetter(String(deviceOrientation.gamma));
 

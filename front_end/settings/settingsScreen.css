@@ -164,7 +164,6 @@ fieldset {
 .settings-tab input[type="text"] {
     border: 1px solid rgb(213, 213, 213);
     border-radius: 2px;
-    color: #444444;
     padding: 3px;
 }
 

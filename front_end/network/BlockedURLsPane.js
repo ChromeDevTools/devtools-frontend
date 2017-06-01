@@ -153,7 +153,7 @@ Network.BlockedURLsPane = class extends UI.VBox {
     var editor = new UI.ListWidget.Editor();
     var content = editor.contentElement();
     var titles = content.createChild('div', 'blocked-url-edit-row');
-    titles.createChild('div', 'blocked-url-edit-value').textContent =
+    titles.createChild('div').textContent =
         Common.UIString('Text pattern to block matching requests; use * for wildcard');
     var fields = content.createChild('div', 'blocked-url-edit-row');
     var urlInput = editor.createInput(

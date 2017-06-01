@@ -179,8 +179,9 @@
         "perf_ui",
         "extensions",
         "data_grid",
-        "network_conditions",
-        "product_registry"
+        "product_registry",
+        "mobile_throttling",
+        "network_priorities"
     ],
     "scripts": [
         "CountersGraph.js",

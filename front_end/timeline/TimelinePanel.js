@@ -71,7 +71,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     /** @type {?Timeline.PerformanceModel} */
     this._pendingPerformanceModel = null;
 
-    this._cpuThrottlingManager = new Components.CPUThrottlingManager();
+    this._cpuThrottlingManager = new MobileThrottling.CPUThrottlingManager();
 
     this._viewModeSetting =
         Common.settings.createSetting('timelineViewMode', Timeline.TimelinePanel.ViewMode.FlameChart);
@@ -260,7 +260,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     SDK.multitargetNetworkManager.addEventListener(
         SDK.MultitargetNetworkManager.Events.ConditionsChanged, this._updateShowSettingsToolbarButton, this);
     this._cpuThrottlingManager.addEventListener(
-        Components.CPUThrottlingManager.Events.RateChanged, this._updateShowSettingsToolbarButton, this);
+        MobileThrottling.CPUThrottlingManager.Events.RateChanged, this._updateShowSettingsToolbarButton, this);
     this._disableCaptureJSProfileSetting.addChangeListener(this._updateShowSettingsToolbarButton, this);
     this._captureLayersAndPicturesSetting.addChangeListener(this._updateShowSettingsToolbarButton, this);
 
@@ -324,7 +324,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _createNetworkConditionsSelect() {
     var toolbarItem = new UI.ToolbarComboBox(null);
     toolbarItem.setMaxWidth(140);
-    NetworkConditions.NetworkConditionsSelector.decorateSelect(toolbarItem.selectElement());
+    MobileThrottling.NetworkConditionsSelector.decorateSelect(toolbarItem.selectElement());
     return toolbarItem;
   }
 

@@ -12,7 +12,8 @@
     "format": "git cl format --js .",
     "closure": "python scripts/compile_frontend.py",
     "setup-dtrun": "cd scripts/devtools_run && npm link",
-    "format-py": "yapf --exclude scripts/build/rjsmin.py -i --recursive scripts PRESUBMIT.py"
+    "format-py": "yapf --exclude scripts/build/rjsmin.py -i --recursive scripts PRESUBMIT.py",
+    "extract": "node scripts/extract_module/extract_module.js"
   },
   "repository": {
     "type": "git",

@@ -6,8 +6,8 @@
  * @param {!Protocol.Network.ResourcePriority} priority
  * @return {string}
  */
-NetworkConditions.uiLabelForPriority = function(priority) {
-  var map = NetworkConditions.priorityUiLabelMap();
+NetworkPriorities.uiLabelForPriority = function(priority) {
+  var map = NetworkPriorities.priorityUiLabelMap();
   return map.get(priority) || '';
 };
 
@@ -15,25 +15,25 @@ NetworkConditions.uiLabelForPriority = function(priority) {
  * @param {string} priorityLabel
  * @return {string}
  */
-NetworkConditions.uiLabelToPriority = function(priorityLabel) {
+NetworkPriorities.uiLabelToPriority = function(priorityLabel) {
   /** @type {!Map<string, !Protocol.Network.ResourcePriority>} */
-  var labelToPriorityMap = NetworkConditions.uiLabelToPriority._uiLabelToPriorityMap;
+  var labelToPriorityMap = NetworkPriorities.uiLabelToPriority._uiLabelToPriorityMap;
 
   if (labelToPriorityMap)
     return labelToPriorityMap.get(priorityLabel);
 
   labelToPriorityMap = new Map();
-  NetworkConditions.priorityUiLabelMap().forEach((value, key) => labelToPriorityMap.set(value, key));
-  NetworkConditions.uiLabelToPriority._uiLabelToPriorityMap = labelToPriorityMap;
+  NetworkPriorities.priorityUiLabelMap().forEach((value, key) => labelToPriorityMap.set(value, key));
+  NetworkPriorities.uiLabelToPriority._uiLabelToPriorityMap = labelToPriorityMap;
   return labelToPriorityMap.get(priorityLabel) || '';
 };
 
 /**
  * @return {!Map<!Protocol.Network.ResourcePriority, string>}
  */
-NetworkConditions.priorityUiLabelMap = function() {
+NetworkPriorities.priorityUiLabelMap = function() {
   /** @type {!Map<!Protocol.Network.ResourcePriority, string>} */
-  var map = NetworkConditions.priorityUiLabelMap._priorityUiLabelMap;
+  var map = NetworkPriorities.priorityUiLabelMap._priorityUiLabelMap;
 
   if (map)
     return map;
@@ -44,7 +44,7 @@ NetworkConditions.priorityUiLabelMap = function() {
   map.set(Protocol.Network.ResourcePriority.Medium, Common.UIString('Medium'));
   map.set(Protocol.Network.ResourcePriority.High, Common.UIString('High'));
   map.set(Protocol.Network.ResourcePriority.VeryHigh, Common.UIString('Highest'));
-  NetworkConditions.priorityUiLabelMap._priorityUiLabelMap = map;
+  NetworkPriorities.priorityUiLabelMap._priorityUiLabelMap = map;
 
   return map;
 };
@@ -52,9 +52,9 @@ NetworkConditions.priorityUiLabelMap = function() {
 /**
  * @return {!Map<!Protocol.Network.ResourcePriority, number>}
  */
-NetworkConditions.prioritySymbolToNumericMap = function() {
+NetworkPriorities.prioritySymbolToNumericMap = function() {
   /** @type {!Map<!Protocol.Network.ResourcePriority, number>} */
-  var priorityMap = NetworkConditions.prioritySymbolToNumericMap._symbolicToNumericPriorityMap;
+  var priorityMap = NetworkPriorities.prioritySymbolToNumericMap._symbolicToNumericPriorityMap;
 
   if (priorityMap)
     return priorityMap;
@@ -65,7 +65,7 @@ NetworkConditions.prioritySymbolToNumericMap = function() {
   priorityMap.set(Protocol.Network.ResourcePriority.Medium, 3);
   priorityMap.set(Protocol.Network.ResourcePriority.High, 4);
   priorityMap.set(Protocol.Network.ResourcePriority.VeryHigh, 5);
-  NetworkConditions.prioritySymbolToNumericMap._symbolicToNumericPriorityMap = priorityMap;
+  NetworkPriorities.prioritySymbolToNumericMap._symbolicToNumericPriorityMap = priorityMap;
 
   return priorityMap;
 };

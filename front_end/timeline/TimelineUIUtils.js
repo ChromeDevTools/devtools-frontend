@@ -825,7 +825,7 @@ Timeline.TimelineUIUtils = class {
         if (eventData['mimeType'])
           contentHelper.appendTextRow(Common.UIString('MIME Type'), eventData['mimeType']);
         if ('priority' in eventData) {
-          var priority = NetworkConditions.uiLabelForPriority(eventData['priority']);
+          var priority = NetworkPriorities.uiLabelForPriority(eventData['priority']);
           contentHelper.appendTextRow(Common.UIString('Priority'), priority);
         }
         if (eventData['encodedDataLength']) {
@@ -1142,7 +1142,7 @@ Timeline.TimelineUIUtils = class {
       contentHelper.appendTextRow(Common.UIString('Request Method'), request.requestMethod);
     if (typeof request.priority === 'string') {
       const priority =
-          NetworkConditions.uiLabelForPriority(/** @type {!Protocol.Network.ResourcePriority} */ (request.priority));
+          NetworkPriorities.uiLabelForPriority(/** @type {!Protocol.Network.ResourcePriority} */ (request.priority));
       contentHelper.appendTextRow(Common.UIString('Priority'), priority);
     }
     if (request.mimeType)

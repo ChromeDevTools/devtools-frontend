@@ -139,10 +139,11 @@
         "perf_ui",
         "cookie_table",
         "data_grid",
-        "network_conditions",
         "object_ui",
         "network_log",
-        "product_registry"
+        "product_registry",
+        "mobile_throttling",
+        "network_priorities"
     ],
     "scripts": [
         "BlockedURLsPane.js",

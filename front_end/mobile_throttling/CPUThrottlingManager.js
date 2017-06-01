@@ -5,7 +5,7 @@
 /**
  * @implements {SDK.SDKModelObserver<!SDK.EmulationModel>}
  */
-Components.CPUThrottlingManager = class extends Common.Object {
+MobileThrottling.CPUThrottlingManager = class extends Common.Object {
   constructor() {
     super();
     this._throttlingRate = 1;  // No throttling
@@ -31,7 +31,7 @@ Components.CPUThrottlingManager = class extends Common.Object {
     for (var control of this._controls)
       control.setSelectedIndex(index);
     UI.inspectorView.setPanelIcon('timeline', icon);
-    this.dispatchEventToListeners(Components.CPUThrottlingManager.Events.RateChanged);
+    this.dispatchEventToListeners(MobileThrottling.CPUThrottlingManager.Events.RateChanged);
   }
 
   /**
@@ -85,6 +85,6 @@ Components.CPUThrottlingManager = class extends Common.Object {
 };
 
 /** @enum {symbol} */
-Components.CPUThrottlingManager.Events = {
+MobileThrottling.CPUThrottlingManager.Events = {
   RateChanged: Symbol('RateChanged')
 };

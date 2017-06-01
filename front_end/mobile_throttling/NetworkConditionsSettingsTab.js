@@ -6,10 +6,10 @@
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-NetworkConditions.NetworkConditionsSettingsTab = class extends UI.VBox {
+MobileThrottling.NetworkConditionsSettingsTab = class extends UI.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('network_conditions/networkConditionsSettingsTab.css');
+    this.registerRequiredCSS('mobile_throttling/networkConditionsSettingsTab.css');
 
     this.contentElement.createChild('div', 'header').textContent = Common.UIString('Network Throttling Profiles');
 
@@ -19,7 +19,7 @@ NetworkConditions.NetworkConditionsSettingsTab = class extends UI.VBox {
 
     this._list = new UI.ListWidget(this);
     this._list.element.classList.add('conditions-list');
-    this._list.registerRequiredCSS('network_conditions/networkConditionsSettingsTab.css');
+    this._list.registerRequiredCSS('mobile_throttling/networkConditionsSettingsTab.css');
     this._list.show(this.contentElement);
 
     this._customSetting = Common.moduleSetting('customNetworkConditions');
@@ -66,10 +66,10 @@ NetworkConditions.NetworkConditionsSettingsTab = class extends UI.VBox {
     titleText.title = conditions.title;
     element.createChild('div', 'conditions-list-separator');
     element.createChild('div', 'conditions-list-text').textContent =
-        NetworkConditions.NetworkConditionsSelector.throughputText(conditions.download);
+        MobileThrottling.NetworkConditionsSelector.throughputText(conditions.download);
     element.createChild('div', 'conditions-list-separator');
     element.createChild('div', 'conditions-list-text').textContent =
-        NetworkConditions.NetworkConditionsSelector.throughputText(conditions.upload);
+        MobileThrottling.NetworkConditionsSelector.throughputText(conditions.upload);
     element.createChild('div', 'conditions-list-separator');
     element.createChild('div', 'conditions-list-text').textContent = Common.UIString('%dms', conditions.latency);
     return element;

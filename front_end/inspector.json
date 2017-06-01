@@ -52,7 +52,6 @@
         { "name": "color_picker" },
         { "name": "data_grid" },
         { "name": "heap_snapshot_model" },
-        { "name": "network_conditions", "type": "autostart"},
         { "name": "event_listeners" },
         { "name": "object_ui"},
         { "name": "help", "type": "autostart"},
@@ -60,7 +59,9 @@
         { "name": "console_model", "type": "autostart"},
         { "name": "network_log", "type": "autostart"},
         { "name": "text_utils", "type": "autostart"},
-        { "name": "changes"}
+        { "name": "changes"},
+        { "name": "mobile_throttling", "type": "autostart"},
+        { "name": "network_priorities"}
     ],
 
     "has_html": true

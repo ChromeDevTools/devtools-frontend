@@ -1007,7 +1007,7 @@ Network.NetworkLogView = class extends UI.VBox {
     var priority = request.initialPriority();
     if (priority) {
       this._suggestionBuilder.addItem(
-          Network.NetworkLogView.FilterType.Priority, NetworkConditions.uiLabelForPriority(priority));
+          Network.NetworkLogView.FilterType.Priority, NetworkPriorities.uiLabelForPriority(priority));
     }
 
     if (request.mixedContentType !== 'none') {
@@ -1543,7 +1543,7 @@ Network.NetworkLogView = class extends UI.VBox {
         return Network.NetworkLogView._requestSetCookieValueFilter.bind(null, value);
 
       case Network.NetworkLogView.FilterType.Priority:
-        return Network.NetworkLogView._requestPriorityFilter.bind(null, NetworkConditions.uiLabelToPriority(value));
+        return Network.NetworkLogView._requestPriorityFilter.bind(null, NetworkPriorities.uiLabelToPriority(value));
 
       case Network.NetworkLogView.FilterType.StatusCode:
         return Network.NetworkLogView._statusCodeFilter.bind(null, value);

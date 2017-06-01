@@ -697,19 +697,19 @@
 
     function step1() {
       testPreset(
-          NetworkConditions.NetworkConditionsSelector.presets[0],
+          MobileThrottling.NetworkConditionsSelector.presets[0],
           ['offline event: online = false', 'connection change event: type = none; downlinkMax = 0'], step2);
     }
 
     function step2() {
       testPreset(
-          NetworkConditions.NetworkConditionsSelector.presets[1],
+          MobileThrottling.NetworkConditionsSelector.presets[1],
           ['online event: online = true', 'connection change event: type = cellular; downlinkMax = 0.390625'], step3);
     }
 
     function step3() {
       testPreset(
-          NetworkConditions.NetworkConditionsSelector.presets[2],
+          MobileThrottling.NetworkConditionsSelector.presets[2],
           ['connection change event: type = cellular; downlinkMax = 1.4400000000000002'],
           test.releaseControl.bind(test));
     }

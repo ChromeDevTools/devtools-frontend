@@ -4,9 +4,9 @@
 /**
  * @unrestricted
  */
-NetworkConditions.NetworkConditionsSelector = class {
+MobileThrottling.NetworkConditionsSelector = class {
   /**
-   * @param {function(!Array<!NetworkConditions.NetworkConditionsGroup>):!Array<?SDK.NetworkManager.Conditions>} populateCallback
+   * @param {function(!Array<!MobileThrottling.NetworkConditionsGroup>):!Array<?SDK.NetworkManager.Conditions>} populateCallback
    * @param {function(number)} selectCallback
    */
   constructor(populateCallback, selectCallback) {
@@ -42,11 +42,11 @@ NetworkConditions.NetworkConditionsSelector = class {
    */
   static decorateSelect(selectElement) {
     var options = [];
-    var selector = new NetworkConditions.NetworkConditionsSelector(populate, select);
+    var selector = new MobileThrottling.NetworkConditionsSelector(populate, select);
     selectElement.addEventListener('change', optionSelected, false);
 
     /**
-     * @param {!Array.<!NetworkConditions.NetworkConditionsGroup>} groups
+     * @param {!Array.<!MobileThrottling.NetworkConditionsGroup>} groups
      * @return {!Array<?SDK.NetworkManager.Conditions>}
      */
     function populate(groups) {
@@ -97,7 +97,7 @@ NetworkConditions.NetworkConditionsSelector = class {
     /** @type {!Array<?SDK.NetworkManager.Conditions>} */
     var options = [];
     var selectedIndex = -1;
-    var selector = new NetworkConditions.NetworkConditionsSelector(populate, select);
+    var selector = new MobileThrottling.NetworkConditionsSelector(populate, select);
     return button;
 
     /**
@@ -118,7 +118,7 @@ NetworkConditions.NetworkConditionsSelector = class {
     }
 
     /**
-     * @param {!Array.<!NetworkConditions.NetworkConditionsGroup>} groups
+     * @param {!Array.<!MobileThrottling.NetworkConditionsGroup>} groups
      * @return {!Array<?SDK.NetworkManager.Conditions>}
      */
     function populate(groups) {
@@ -152,12 +152,12 @@ NetworkConditions.NetworkConditionsSelector = class {
 
     function forceOffline() {
       if (checkbox.checked()) {
-        NetworkConditions.NetworkConditionsSelector._lastNetworkConditions =
+        MobileThrottling.NetworkConditionsSelector._lastNetworkConditions =
             SDK.multitargetNetworkManager.networkConditions();
         SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
       } else {
         SDK.multitargetNetworkManager.setNetworkConditions(
-            NetworkConditions.NetworkConditionsSelector._lastNetworkConditions);
+            MobileThrottling.NetworkConditionsSelector._lastNetworkConditions);
       }
     }
 
@@ -170,7 +170,7 @@ NetworkConditions.NetworkConditionsSelector = class {
 
   _populateOptions() {
     var customGroup = {title: Common.UIString('Custom'), items: this._customSetting.get()};
-    var presetsGroup = {title: Common.UIString('Presets'), items: NetworkConditions.NetworkConditionsSelector.presets};
+    var presetsGroup = {title: Common.UIString('Presets'), items: MobileThrottling.NetworkConditionsSelector.presets};
     var disabledGroup = {title: Common.UIString('Disabled'), items: [SDK.NetworkManager.NoThrottlingConditions]};
     this._options = this._populateCallback([disabledGroup, presetsGroup, customGroup]);
     if (!this._conditionsChanged()) {
@@ -213,11 +213,11 @@ NetworkConditions.NetworkConditionsSelector = class {
 };
 
 /** @typedef {!{title: string, items: !Array<!SDK.NetworkManager.Conditions>}} */
-NetworkConditions.NetworkConditionsGroup;
+MobileThrottling.NetworkConditionsGroup;
 
 
 /** @type {!Array.<!SDK.NetworkManager.Conditions>} */
-NetworkConditions.NetworkConditionsSelector.presets = [
+MobileThrottling.NetworkConditionsSelector.presets = [
   SDK.NetworkManager.OfflineConditions,
   {title: 'Slow 3G', download: 500 * 1024 / 8 * .8, upload: 500 * 1024 / 8 * .8, latency: 400 * 5},
   {title: 'Fast 3G', download: 1.6 * 1024 * 1024 / 8 * .9, upload: 750 * 1024 / 8 * .9, latency: 150 * 3.75}
@@ -227,7 +227,7 @@ NetworkConditions.NetworkConditionsSelector.presets = [
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-NetworkConditions.NetworkConditionsActionDelegate = class {
+MobileThrottling.NetworkConditionsActionDelegate = class {
   /**
    * @override
    * @param {!UI.Context} context

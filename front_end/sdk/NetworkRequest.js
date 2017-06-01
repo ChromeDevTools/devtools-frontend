@@ -1100,10 +1100,6 @@ SDK.NetworkRequest = class extends Common.Object {
     this.dispatchEventToListeners(SDK.NetworkRequest.Events.EventSourceMessageAdded, message);
   }
 
-  replayXHR() {
-    this._networkManager.target().networkAgent().replayXHR(this._requestId);
-  }
-
   /**
    * @return {!SDK.NetworkManager}
    */

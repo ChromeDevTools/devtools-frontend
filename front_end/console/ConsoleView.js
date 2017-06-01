@@ -575,9 +575,9 @@ Console.ConsoleView = class extends UI.VBox {
     contextMenu.appendItem(Common.UIString('Save as...'), this._saveConsole.bind(this));
 
     var request = consoleMessage ? consoleMessage.request : null;
-    if (request && request.resourceType() === Common.resourceTypes.XHR) {
+    if (request && SDK.NetworkManager.canReplayRequest(request)) {
       contextMenu.appendSeparator();
-      contextMenu.appendItem(Common.UIString('Replay XHR'), request.replayXHR.bind(request));
+      contextMenu.appendItem(Common.UIString('Replay XHR'), SDK.NetworkManager.replayRequest.bind(null, request));
     }
 
     contextMenu.show();

@@ -1161,6 +1161,12 @@ Network.NetworkLogView = class extends UI.VBox {
             Common.UIString.capitalize('Unblock ' + croppedDomain), removeBlockedURL.bind(null, domain));
       }
 
+      if (SDK.NetworkManager.canReplayRequest(request)) {
+        contextMenu.appendSeparator();
+        contextMenu.appendItem(Common.UIString('Replay XHR'), SDK.NetworkManager.replayRequest.bind(null, request));
+        contextMenu.appendSeparator();
+      }
+
       /**
        * @param {string} url
        */
@@ -1179,12 +1185,6 @@ Network.NetworkLogView = class extends UI.VBox {
         manager.setBlockedPatterns(patterns);
         UI.viewManager.showView('network.blocked-urls');
       }
-    }
-
-    if (request && request.resourceType() === Common.resourceTypes.XHR) {
-      contextMenu.appendSeparator();
-      contextMenu.appendItem(Common.UIString('Replay XHR'), request.replayXHR.bind(request));
-      contextMenu.appendSeparator();
     }
   }
 

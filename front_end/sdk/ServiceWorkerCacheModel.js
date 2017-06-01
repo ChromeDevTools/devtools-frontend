@@ -57,39 +57,28 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
   /**
    * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    */
-  deleteCache(cache) {
-    /**
-     * @this {SDK.ServiceWorkerCacheModel}
-     */
-    function callback(error) {
-      if (error) {
-        console.error('ServiceWorkerCacheAgent error deleting cache ', cache.toString(), ': ', error);
-        return;
-      }
-      this._caches.delete(cache.cacheId);
-      this._cacheRemoved(cache);
+  async deleteCache(cache) {
+    var response = await this._agent.invoke_deleteCache({cacheId: cache.cacheId});
+    if (response[Protocol.Error]) {
+      console.error(`ServiceWorkerCacheAgent error deleting cache ${cache.toString()}: ${response[Protocol.Error]}`);
+      return;
     }
-    this._agent.deleteCache(cache.cacheId, callback.bind(this));
+    this._caches.delete(cache.cacheId);
+    this._cacheRemoved(cache);
   }
 
   /**
    * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    * @param {string} request
-   * @param {function()} callback
+   * @return {!Promise}
    */
-  deleteCacheEntry(cache, request, callback) {
-    /**
-     * @param {?Protocol.Error} error
-     */
-    function myCallback(error) {
-      if (error) {
-        Common.console.error(Common.UIString(
-            'ServiceWorkerCacheAgent error deleting cache entry %s in cache: %s', cache.toString(), error));
-        return;
-      }
-      callback();
-    }
-    this._agent.deleteEntry(cache.cacheId, request, myCallback);
+  async deleteCacheEntry(cache, request) {
+    var response = await this._agent.invoke_deleteEntry({cacheId: cache.cacheId, request});
+    if (!response[Protocol.Error])
+      return;
+    Common.console.error(Common.UIString(
+        'ServiceWorkerCacheAgent error deleting cache entry %s in cache: %s', cache.toString(),
+        response[Protocol.Error]));
   }
 
   /**
@@ -147,20 +136,11 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
   /**
    * @param {string} securityOrigin
    */
-  _loadCacheNames(securityOrigin) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Array.<!SDK.ServiceWorkerCacheModel.Cache>} caches
-     * @this {SDK.ServiceWorkerCacheModel}
-     */
-    function callback(error, caches) {
-      if (error) {
-        console.error('ServiceWorkerCacheAgent error while loading caches: ', error);
-        return;
-      }
-      this._updateCacheNames(securityOrigin, caches);
-    }
-    this._agent.requestCacheNames(securityOrigin, callback.bind(this));
+  async _loadCacheNames(securityOrigin) {
+    var caches = await this._agent.requestCacheNames(securityOrigin);
+    if (!caches)
+      return;
+    this._updateCacheNames(securityOrigin, caches);
   }
 
   /**
@@ -234,26 +214,17 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    * @param {number} skipCount
    * @param {number} pageSize
-   * @param {function(!Array.<!SDK.ServiceWorkerCacheModel.Entry>, boolean)} callback
+   * @param {function(!Array<!SDK.ServiceWorkerCacheModel.Entry>, boolean)} callback
    */
-  _requestEntries(cache, skipCount, pageSize, callback) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Array.<!SDK.ServiceWorkerCacheModel.Entry>} dataEntries
-     * @param {boolean} hasMore
-     */
-    function innerCallback(error, dataEntries, hasMore) {
-      if (error) {
-        console.error('ServiceWorkerCacheAgent error while requesting entries: ', error);
-        return;
-      }
-      var entries = [];
-      for (var i = 0; i < dataEntries.length; ++i)
-        entries.push(new SDK.ServiceWorkerCacheModel.Entry(dataEntries[i].request, dataEntries[i].response));
-
-      callback(entries, hasMore);
+  async _requestEntries(cache, skipCount, pageSize, callback) {
+    var response = await this._agent.invoke_requestEntries({cacheId: cache.cacheId, skipCount, pageSize});
+    if (response[Protocol.Error]) {
+      console.error('ServiceWorkerCacheAgent error while requesting entries: ', response[Protocol.Error]);
+      return;
     }
-    this._agent.requestEntries(cache.cacheId, skipCount, pageSize, innerCallback);
+    var entries = response.cacheDataEntries.map(
+        dataEntry => new SDK.ServiceWorkerCacheModel.Entry(dataEntry.request, dataEntry.response));
+    callback(entries, response.hasMore);
   }
 };
 

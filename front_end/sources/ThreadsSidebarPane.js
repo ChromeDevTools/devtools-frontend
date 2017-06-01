@@ -10,8 +10,10 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('sources/threadsSidebarPane.css');
 
+    /** @type {!UI.ListModel<!SDK.DebuggerModel>} */
+    this._items = new UI.ListModel();
     /** @type {!UI.ListControl<!SDK.DebuggerModel>} */
-    this._list = new UI.ListControl(this, UI.ListMode.NonViewport);
+    this._list = new UI.ListControl(this._items, this, UI.ListMode.NonViewport);
     this.contentElement.appendChild(this._list.element);
 
     UI.context.addFlavorChangeListener(SDK.Target, this._targetFlavorChanged, this);
@@ -106,7 +108,7 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
    * @param {!SDK.DebuggerModel} debuggerModel
    */
   modelAdded(debuggerModel) {
-    this._list.pushItem(debuggerModel);
+    this._items.pushItem(debuggerModel);
     var currentTarget = UI.context.flavor(SDK.Target);
     if (currentTarget === debuggerModel.target())
       this._list.selectItem(debuggerModel);
@@ -117,7 +119,7 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
    * @param {!SDK.DebuggerModel} debuggerModel
    */
   modelRemoved(debuggerModel) {
-    this._list.removeItem(debuggerModel);
+    this._items.removeItem(debuggerModel);
   }
 
   /**

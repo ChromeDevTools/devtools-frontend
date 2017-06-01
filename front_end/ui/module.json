@@ -28,6 +28,7 @@
         "TextEditor.js",
         "KeyboardShortcut.js",
         "ListControl.js",
+        "ListModel.js",
         "ListWidget.js",
         "Panel.js",
         "Popover.js",

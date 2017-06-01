@@ -66,8 +66,10 @@ UI.SuggestBox = class {
     /** @type {?string} */
     this._onlyCompletion = null;
 
+    /** @type {!UI.ListModel<!UI.SuggestBox.Suggestion>} */
+    this._items = new UI.ListModel();
     /** @type {!UI.ListControl<!UI.SuggestBox.Suggestion>} */
-    this._list = new UI.ListControl(this, UI.ListMode.EqualHeightItems);
+    this._list = new UI.ListControl(this._items, this, UI.ListMode.EqualHeightItems);
     this._element = this._list.element;
     this._element.classList.add('suggest-box');
     this._element.addEventListener('mousedown', event => event.preventDefault(), true);
@@ -316,7 +318,7 @@ UI.SuggestBox = class {
       this._updateMaxSize(completions);
       this._glassPane.setContentAnchorBox(anchorBox);
       this._list.invalidateItemHeight();
-      this._list.replaceAllItems(completions);
+      this._items.replaceAllItems(completions);
 
       if (selectHighestPriority) {
         var highestPriorityItem = completions[0];

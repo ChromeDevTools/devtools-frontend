@@ -50,10 +50,11 @@ UI.ListMode = {
  */
 UI.ListControl = class {
   /**
+   * @param {!UI.ListModel<T>} model
    * @param {!UI.ListDelegate<T>} delegate
    * @param {!UI.ListMode=} mode
    */
-  constructor(delegate, mode) {
+  constructor(model, delegate, mode) {
     this.element = createElement('div');
     this.element.style.overflowY = 'auto';
     this._topElement = this.element.createChild('div');
@@ -64,11 +65,13 @@ UI.ListControl = class {
     this._topHeight = 0;
     this._bottomHeight = 0;
 
-    /** @type {!Array<T>} */
-    this._items = [];
+    this._model = model;
+    this._model.addEventListener(UI.ListModel.Events.ItemsReplaced, this._replacedItemsInRange, this);
     /** @type {!Map<T, !Element>} */
     this._itemToElement = new Map();
     this._selectedIndex = -1;
+    /** @type {?T} */
+    this._selectedItem = null;
 
     this.element.tabIndex = -1;
     this.element.addEventListener('click', this._onClick.bind(this), false);
@@ -88,106 +91,36 @@ UI.ListControl = class {
   }
 
   /**
-   * @return {number}
+   * @param {!UI.ListModel<T>} model
    */
-  length() {
-    return this._items.length;
+  setModel(model) {
+    this._itemToElement.clear();
+    var length = this._model.length();
+    this._model.removeEventListener(UI.ListModel.Events.ItemsReplaced, this._replacedItemsInRange, this);
+    this._model = model;
+    this._model.addEventListener(UI.ListModel.Events.ItemsReplaced, this._replacedItemsInRange, this);
+    this.invalidateRange(0, length);
   }
 
   /**
-   * @param {number} index
-   * @return {T}
+   * @param {!Common.Event} event
    */
-  itemAtIndex(index) {
-    return this._items[index];
-  }
+  _replacedItemsInRange(event) {
+    var data = /** @type {{index: number, removed: !Array<T>, inserted: number}} */ (event.data);
+    var from = data.index;
+    var to = from + data.removed.length;
 
-  /**
-   * @param {T} item
-   */
-  pushItem(item) {
-    this.replaceItemsInRange(this._items.length, this._items.length, [item]);
-  }
-
-  /**
-   * @return {T}
-   */
-  popItem() {
-    return this.removeItemAtIndex(this._items.length - 1);
-  }
-
-  /**
-   * @param {number} index
-   * @param {T} item
-   */
-  insertItemAtIndex(index, item) {
-    this.replaceItemsInRange(index, index, [item]);
-  }
-
-  /**
-   * @param {T} item
-   * @param {function(T, T):number} comparator
-   */
-  insertItemWithComparator(item, comparator) {
-    var index = this._items.lowerBound(item, comparator);
-    this.insertItemAtIndex(index, item);
-  }
-
-  /**
-   * @param {T} item
-   * @return {number}
-   */
-  indexOfItem(item) {
-    return this._items.indexOf(item);
-  }
-
-  /**
-   * @param {number} index
-   * @return {T}
-   */
-  removeItemAtIndex(index) {
-    var result = this._items[index];
-    this.replaceItemsInRange(index, index + 1, []);
-    return result;
-  }
-
-  /**
-   * @param {T} item
-   */
-  removeItem(item) {
-    var index = this._items.indexOf(item);
-    if (index === -1) {
-      console.error('Attempt to remove non-existing item');
-      return;
-    }
-    this.removeItemAtIndex(index);
-  }
-
-  /**
-   * @param {number} from
-   * @param {number} to
-   * @param {!Array<T>} items
-   */
-  replaceItemsInRange(from, to, items) {
-    var oldSelectedItem = this._selectedIndex !== -1 ? this._items[this._selectedIndex] : null;
+    var oldSelectedItem = this._selectedItem;
     var oldSelectedElement = oldSelectedItem ? (this._itemToElement.get(oldSelectedItem) || null) : null;
-
-    for (var i = from; i < to; i++)
-      this._itemToElement.delete(this._items[i]);
-    if (items.length < 10000) {
-      this._items.splice.bind(this._items, from, to - from).apply(null, items);
-    } else {
-      // Splice may fail with too many arguments.
-      var before = this._items.slice(0, from);
-      var after = this._items.slice(to);
-      this._items = [].concat(before, items, after);
-    }
-    this._invalidate(from, to, items.length);
+    for (var i = 0; i < data.removed.length; i++)
+      this._itemToElement.delete(data.removed[i]);
+    this._invalidate(from, to, data.inserted);
 
     if (this._selectedIndex >= to) {
-      this._selectedIndex += items.length - (to - from);
+      this._selectedIndex += data.inserted - (to - from);
+      this._selectedItem = this._model.itemAtIndex(this._selectedIndex);
     } else if (this._selectedIndex >= from) {
-      var index = this._findFirstSelectable(from + items.length, +1, false);
+      var index = this._findFirstSelectable(from + data.inserted, +1, false);
       if (index === -1)
         index = this._findFirstSelectable(from - 1, -1, false);
       this._select(index, oldSelectedItem, oldSelectedElement);
@@ -195,24 +128,16 @@ UI.ListControl = class {
   }
 
   /**
-   * @param {!Array<T>} items
+   * @param {T} item
    */
-  replaceAllItems(items) {
-    this.replaceItemsInRange(0, this._items.length, items);
-  }
-
-  refreshAllItems() {
-    this.refreshItemsInRange(0, this._items.length);
-  }
-
-  /**
-   * @param {number} from
-   * @param {number} to
-   */
-  refreshItemsInRange(from, to) {
-    for (var i = from; i < to; i++)
-      this._itemToElement.delete(this._items[i]);
-    this.invalidateRange(from, to);
+  refreshItem(item) {
+    var index = this._model.indexOfItem(item);
+    if (index === -1) {
+      console.error('Item to refresh is not present');
+      return;
+    }
+    this._itemToElement.delete(item);
+    this.invalidateRange(index, index + 1);
     if (this._selectedIndex !== -1)
       this._select(this._selectedIndex, null, null);
   }
@@ -241,9 +166,9 @@ UI.ListControl = class {
       return;
     }
     this._fixedHeight = 0;
-    if (this._items.length) {
+    if (this._model.length()) {
       this._itemToElement.clear();
-      this._invalidate(0, this._items.length, this._items.length);
+      this._invalidate(0, this._model.length(), this._model.length());
     }
   }
 
@@ -257,8 +182,8 @@ UI.ListControl = class {
     if (!node)
       return null;
     var element = /** @type {!Element} */ (node);
-    var index = this._items.findIndex(item => this._itemToElement.get(item) === element);
-    return index !== -1 ? this._items[index] : null;
+    var index = this._model.findIndex(item => this._itemToElement.get(item) === element);
+    return index !== -1 ? this._model.itemAtIndex(index) : null;
   }
 
   /**
@@ -266,7 +191,7 @@ UI.ListControl = class {
    * @param {boolean=} center
    */
   scrollItemIntoView(item, center) {
-    var index = this._items.indexOf(item);
+    var index = this._model.indexOfItem(item);
     if (index === -1) {
       console.error('Attempt to scroll onto missing item');
       return;
@@ -278,7 +203,7 @@ UI.ListControl = class {
    * @return {?T}
    */
   selectedItem() {
-    return this._selectedIndex === -1 ? null : this._items[this._selectedIndex];
+    return this._selectedItem;
   }
 
   /**
@@ -296,7 +221,7 @@ UI.ListControl = class {
   selectItem(item, center, dontScroll) {
     var index = -1;
     if (item !== null) {
-      index = this._items.indexOf(item);
+      index = this._model.indexOfItem(item);
       if (index === -1) {
         console.error('Attempt to select missing item');
         return;
@@ -320,7 +245,7 @@ UI.ListControl = class {
   selectPreviousItem(canWrap, center) {
     if (this._selectedIndex === -1 && !canWrap)
       return false;
-    var index = this._selectedIndex === -1 ? this._items.length - 1 : this._selectedIndex - 1;
+    var index = this._selectedIndex === -1 ? this._model.length() - 1 : this._selectedIndex - 1;
     index = this._findFirstSelectable(index, -1, !!canWrap);
     if (index !== -1) {
       this._scrollIntoView(index, center);
@@ -355,7 +280,7 @@ UI.ListControl = class {
   selectItemPreviousPage(center) {
     if (this._mode === UI.ListMode.NonViewport)
       return false;
-    var index = this._selectedIndex === -1 ? this._items.length - 1 : this._selectedIndex;
+    var index = this._selectedIndex === -1 ? this._model.length() - 1 : this._selectedIndex;
     index = this._findPageSelectable(index, -1);
     if (index !== -1) {
       this._scrollIntoView(index, center);
@@ -444,7 +369,7 @@ UI.ListControl = class {
    * @return {number}
    */
   _totalHeight() {
-    return this._offsetAtIndex(this._items.length);
+    return this._offsetAtIndex(this._model.length());
   }
 
   /**
@@ -454,15 +379,15 @@ UI.ListControl = class {
   _indexAtOffset(offset) {
     if (this._mode === UI.ListMode.NonViewport)
       throw 'There should be no offset conversions in non-viewport mode';
-    if (!this._items.length || offset < 0)
+    if (!this._model.length() || offset < 0)
       return 0;
     if (this._mode === UI.ListMode.VariousHeightItems) {
       return Math.min(
-          this._items.length - 1, this._variableOffsets.lowerBound(offset, undefined, 0, this._items.length));
+          this._model.length() - 1, this._variableOffsets.lowerBound(offset, undefined, 0, this._model.length()));
     }
     if (!this._fixedHeight)
       this._measureHeight();
-    return Math.min(this._items.length - 1, Math.floor(offset / this._fixedHeight));
+    return Math.min(this._model.length() - 1, Math.floor(offset / this._fixedHeight));
   }
 
   /**
@@ -470,7 +395,7 @@ UI.ListControl = class {
    * @return {!Element}
    */
   _elementAtIndex(index) {
-    var item = this._items[index];
+    var item = this._model.itemAtIndex(index);
     var element = this._itemToElement.get(item);
     if (!element) {
       element = this._delegate.createElementForItem(item);
@@ -486,7 +411,7 @@ UI.ListControl = class {
   _offsetAtIndex(index) {
     if (this._mode === UI.ListMode.NonViewport)
       throw 'There should be no offset conversions in non-viewport mode';
-    if (!this._items.length)
+    if (!this._model.length())
       return 0;
     if (this._mode === UI.ListMode.VariousHeightItems)
       return this._variableOffsets[index];
@@ -496,7 +421,7 @@ UI.ListControl = class {
   }
 
   _measureHeight() {
-    this._fixedHeight = this._delegate.heightForItem(this._items[0]);
+    this._fixedHeight = this._delegate.heightForItem(this._model.itemAtIndex(0));
     if (!this._fixedHeight)
       this._fixedHeight = UI.measurePreferredSize(this._elementAtIndex(0), this.element).height;
   }
@@ -508,11 +433,12 @@ UI.ListControl = class {
    */
   _select(index, oldItem, oldElement) {
     if (oldItem === undefined)
-      oldItem = this._selectedIndex !== -1 ? this._items[this._selectedIndex] : null;
+      oldItem = this._selectedItem;
     if (oldElement === undefined)
       oldElement = this._itemToElement.get(oldItem) || null;
     this._selectedIndex = index;
-    var newItem = this._selectedIndex !== -1 ? this._items[this._selectedIndex] : null;
+    this._selectedItem = index === -1 ? null : this._model.itemAtIndex(index);
+    var newItem = this._selectedItem;
     var newElement = this._selectedIndex !== -1 ? this._elementAtIndex(index) : null;
     this._delegate.selectedItemChanged(oldItem, newItem, /** @type {?Element} */ (oldElement), newElement);
   }
@@ -524,7 +450,7 @@ UI.ListControl = class {
    * @return {number}
    */
   _findFirstSelectable(index, direction, canWrap) {
-    var length = this._items.length;
+    var length = this._model.length();
     if (!length)
       return -1;
     for (var step = 0; step <= length; step++) {
@@ -533,7 +459,7 @@ UI.ListControl = class {
           return -1;
         index = (index + length) % length;
       }
-      if (this._delegate.isItemSelectable(this._items[index]))
+      if (this._delegate.isItemSelectable(this._model.itemAtIndex(index)))
         return index;
       index += direction;
     }
@@ -550,8 +476,8 @@ UI.ListControl = class {
     var startOffset = this._offsetAtIndex(index);
     // Compensate for zoom rounding errors with -1.
     var viewportHeight = this.element.offsetHeight - 1;
-    while (index >= 0 && index < this._items.length) {
-      if (this._delegate.isItemSelectable(this._items[index])) {
+    while (index >= 0 && index < this._model.length()) {
+      if (this._delegate.isItemSelectable(this._model.itemAtIndex(index))) {
         if (Math.abs(this._offsetAtIndex(index) - startOffset) >= viewportHeight)
           return index;
         lastSelectable = index;
@@ -589,9 +515,11 @@ UI.ListControl = class {
     }
 
     if (this._mode === UI.ListMode.VariousHeightItems) {
-      this._reallocateVariableOffsets(this._items.length + 1, from + 1);
-      for (var i = from + 1; i <= this._items.length; i++)
-        this._variableOffsets[i] = this._variableOffsets[i - 1] + this._delegate.heightForItem(this._items[i - 1]);
+      this._reallocateVariableOffsets(this._model.length() + 1, from + 1);
+      for (var i = from + 1; i <= this._model.length(); i++) {
+        this._variableOffsets[i] =
+            this._variableOffsets[i - 1] + this._delegate.heightForItem(this._model.itemAtIndex(i - 1));
+      }
     }
 
     var viewportHeight = this.element.offsetHeight;

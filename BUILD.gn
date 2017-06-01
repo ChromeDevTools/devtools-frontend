@@ -680,6 +680,7 @@ all_devtools_files = [
   "front_end/ui/inspectorViewTabbedPane.css",
   "front_end/ui/KeyboardShortcut.js",
   "front_end/ui/ListControl.js",
+  "front_end/ui/ListModel.js",
   "front_end/ui/listWidget.css",
   "front_end/ui/ListWidget.js",
   "front_end/ui/module.json",

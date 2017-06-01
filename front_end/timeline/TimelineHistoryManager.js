@@ -253,9 +253,10 @@ Timeline.TimelineHistoryManager.DropDown = class {
         UI.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'timeline/timelineHistoryManager.css');
     var contentElement = shadowRoot.createChild('div', 'drop-down');
 
-    this._listControl = new UI.ListControl(this, UI.ListMode.NonViewport);
+    var listModel = new UI.ListModel();
+    this._listControl = new UI.ListControl(listModel, this, UI.ListMode.NonViewport);
     this._listControl.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
-    this._listControl.replaceAllItems(models);
+    listModel.replaceAllItems(models);
 
     contentElement.appendChild(this._listControl.element);
     contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);

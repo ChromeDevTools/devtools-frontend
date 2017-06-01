@@ -39,8 +39,10 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     this._notPausedMessageElement = this.contentElement.createChild('div', 'gray-info-message');
     this._notPausedMessageElement.textContent = Common.UIString('Not Paused');
 
+    /** @type {!UI.ListModel<!Sources.CallStackSidebarPane.Item>} */
+    this._items = new UI.ListModel();
     /** @type {!UI.ListControl<!Sources.CallStackSidebarPane.Item>} */
-    this._list = new UI.ListControl(this, UI.ListMode.NonViewport);
+    this._list = new UI.ListControl(this._items, this, UI.ListMode.NonViewport);
     this.contentElement.appendChild(this._list.element);
     this._list.element.addEventListener('contextmenu', this._onContextMenu.bind(this), false);
     this._list.element.addEventListener('click', this._onClick.bind(this), false);
@@ -68,7 +70,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     if (!details) {
       this._notPausedMessageElement.classList.remove('hidden');
       this._blackboxedMessageElement.classList.add('hidden');
-      this._list.replaceAllItems([]);
+      this._items.replaceAllItems([]);
       this._debuggerModel = null;
       UI.context.setFlavor(SDK.DebuggerModel.CallFrame, null);
       return;
@@ -139,7 +141,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       this._blackboxedMessageElement.classList.remove('hidden');
     }
 
-    this._list.replaceAllItems(items);
+    this._items.replaceAllItems(items);
     this._list.selectNextItem(true /* canWrap */, false /* center */);
   }
 
@@ -357,8 +359,8 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
 
   _copyStackTrace() {
     var text = [];
-    for (var i = 0; i < this._list.length(); i++) {
-      var item = this._list.itemAtIndex(i);
+    for (var i = 0; i < this._items.length(); i++) {
+      var item = this._items.itemAtIndex(i);
       if (item.promiseCreationFrame)
         continue;
       var itemText = this._itemTitle(item);

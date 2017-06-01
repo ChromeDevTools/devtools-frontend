@@ -1413,7 +1413,7 @@ Timeline.TimelineUIUtils = class {
     var snapshotWithRect = await new TimelineModel.LayerPaintEvent(event, target).snapshotPromise();
     if (!snapshotWithRect)
       return null;
-    var imageURLPromise = snapshotWithRect.snapshot.replay(null, null, 1);
+    var imageURLPromise = snapshotWithRect.snapshot.replay();
     snapshotWithRect.snapshot.release();
     var imageURL = await imageURLPromise;
     if (!imageURL)

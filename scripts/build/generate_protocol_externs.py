@@ -52,7 +52,6 @@ NON_PROMISIFIED_DOMAINS = frozenset([
     "CSS",
     "DOMDebugger",
     "IndexedDB",
-    "LayerTree",
 ])
 
 

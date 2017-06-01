@@ -157,7 +157,7 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
    * @param {!Array.<!SDK.PaintProfilerLogItem>} log
    * @param {?Protocol.DOM.Rect} clipRect
    */
-  setSnapshotAndLog(snapshot, log, clipRect) {
+  async setSnapshotAndLog(snapshot, log, clipRect) {
     this._reset();
     this._snapshot = snapshot;
     if (this._snapshot)
@@ -174,17 +174,13 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
     this._selectionWindow.setEnabled(true);
     this._progressBanner.classList.remove('hidden');
     this._updateImage();
-    snapshot.profile(clipRect, onProfileDone.bind(this));
-    /**
-     * @param {!Array.<!Protocol.LayerTree.PaintProfile>=} profiles
-     * @this {LayerViewer.PaintProfilerView}
-     */
-    function onProfileDone(profiles) {
-      this._progressBanner.classList.add('hidden');
-      this._profiles = profiles;
-      this._update();
-      this._updatePieChart();
-    }
+
+    var profiles = await snapshot.profile(clipRect);
+
+    this._progressBanner.classList.add('hidden');
+    this._profiles = profiles;
+    this._update();
+    this._updatePieChart();
   }
 
   /**
@@ -323,15 +319,15 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
 
   _updateImage() {
     delete this._updateImageTimer;
-    var left = null;
-    var right = null;
+    var left;
+    var right;
     var window = this.selectionWindow();
     if (this._profiles && this._profiles.length && window) {
       left = this._log[window.left].commandIndex;
       right = this._log[window.right - 1].commandIndex;
     }
     var scale = this._pendingScale;
-    this._snapshot.replay(left, right, scale).then(image => {
+    this._snapshot.replay(scale, left, right).then(image => {
       if (!image)
         return;
       this._scale = scale;

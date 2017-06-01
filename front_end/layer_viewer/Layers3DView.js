@@ -1174,11 +1174,11 @@ LayerViewer.LayerTextureManager.Tile = class {
    * @param {number} scale
    * @return {!Promise}
    */
-  update(glContext, scale) {
+  async update(glContext, scale) {
     this._gl = glContext;
     this.scale = scale;
-    return this.snapshot.replay(null, null, scale).then(imageURL => imageURL && UI.loadImage(imageURL)).then(image => {
-      this.texture = image && LayerViewer.LayerTextureManager._createTextureForImage(glContext, image);
-    });
+    var imageURL = await this.snapshot.replay(scale);
+    var image = imageURL && await UI.loadImage(imageURL);
+    this.texture = image && LayerViewer.LayerTextureManager._createTextureForImage(glContext, image);
   }
 };

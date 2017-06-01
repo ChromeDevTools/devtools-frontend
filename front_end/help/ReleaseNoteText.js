@@ -6,10 +6,51 @@
 // be shown in Canary (e.g. make sure the release notes are accurate).
 // https://github.com/ChromeDevTools/devtools-frontend/wiki/Release-Notes
 
+var continueToHereShortcut = Host.isMac() ? 'Command' : 'Control';
 var commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Shift + P';
 
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
+  {
+    version: 3,
+    header: 'Highlights from the Chrome 60 update',
+    highlights: [
+      {
+        title: 'New Audits panel, powered by Lighthouse',
+        subtitle:
+            'Find out whether your site qualifies as a Progressive Web App, measure the accessibility and performance of a page, and discover best practices.',
+        link: 'https://developers.google.com/web/updates/2017/05/devtools-release-notes#lighthouse',
+      },
+      {
+        title: 'Third-party badges',
+        subtitle:
+            'See what third-party entities are logging to the Console, making network requests, and causing work during performance recordings.',
+        link: 'https://developers.google.com/web/updates/2017/05/devtools-release-notes#badges',
+      },
+      {
+        title: 'New "Continue to Here" gesture',
+        subtitle: 'While paused on a line of code, hold ' + continueToHereShortcut +
+            ' and then click to continue to another line of code.',
+        link: 'https://developers.google.com/web/updates/2017/05/devtools-release-notes#continue',
+      },
+      {
+        title: 'Step into async',
+        subtitle: 'Predictably step into a promise resolution or other asynchronous code with a single gesture.',
+        link: 'https://developers.google.com/web/updates/2017/05/devtools-release-notes#step-into-async',
+      },
+      {
+        title: 'More informative object previews',
+        subtitle: 'Get a better idea of the contents of objects when logging them to the Console.',
+        link: 'https://developers.google.com/web/updates/2017/05/devtools-release-notes#object-previews',
+      },
+      {
+        title: 'Real-time Coverage tab updates',
+        subtitle: 'See what code is being used in real-time.',
+        link: 'https://developers.google.com/web/updates/2017/05/devtools-release-notes#coverage',
+      }
+    ],
+    link: 'https://developers.google.com/web/updates/2017/05/devtools-release-notes',
+  },
   {
     version: 2,
     header: 'Highlights from Chrome 59 update',

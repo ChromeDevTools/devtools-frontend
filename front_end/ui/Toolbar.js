@@ -194,6 +194,13 @@ UI.Toolbar = class {
   }
 
   /**
+   * @return {!Element}
+   */
+  gripElementForResize() {
+    return this._contentElement;
+  }
+
+  /**
    * @param {boolean=} reverse
    * @param {boolean=} growVertically
    */

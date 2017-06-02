@@ -1056,7 +1056,7 @@ Sources.SourcesPanel = class extends UI.Panel {
       this._sidebarPaneStack.showView(jsBreakpoints);
       this._extensionSidebarPanesContainer = this._sidebarPaneStack;
       this.sidebarPaneView = vbox;
-      this._splitWidget.uninstallResizer(this._debugToolbar.element);
+      this._splitWidget.uninstallResizer(this._debugToolbar.gripElementForResize());
     } else {
       var splitWidget = new UI.SplitWidget(true, true, 'sourcesPanelDebuggerSidebarSplitViewState', 0.5);
       splitWidget.setMainWidget(vbox);
@@ -1068,7 +1068,7 @@ Sources.SourcesPanel = class extends UI.Panel {
       splitWidget.setSidebarWidget(tabbedLocation.tabbedPane());
       this._tabbedLocationHeader = tabbedLocation.tabbedPane().headerElement();
       this._splitWidget.installResizer(this._tabbedLocationHeader);
-      this._splitWidget.installResizer(this._debugToolbar.element);
+      this._splitWidget.installResizer(this._debugToolbar.gripElementForResize());
       tabbedLocation.appendView(scopeChainView);
       tabbedLocation.appendView(this._watchSidebarPane);
       this._extensionSidebarPanesContainer = tabbedLocation;

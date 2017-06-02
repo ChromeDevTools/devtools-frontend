@@ -6,11 +6,11 @@ Timeline.TimelineHistoryManager = class {
   constructor() {
     /** @type {!Array<!Timeline.PerformanceModel>} */
     this._recordings = [];
-    this._action = UI.actionRegistry.action('timeline.show-history');
-    this._action.setEnabled(false);
+    this._action = /** @type {!UI.Action} */ (UI.actionRegistry.action('timeline.show-history'));
     /** @type {!Map<string, number>} */
     this._nextNumberByDomain = new Map();
     this._button = new Timeline.TimelineHistoryManager.ToolbarButton(this._action);
+    this.clear();
 
     this._allOverviews = [
       {constructor: Timeline.TimelineEventOverviewResponsiveness, height: 3},
@@ -65,6 +65,7 @@ Timeline.TimelineHistoryManager = class {
     this._recordings = [];
     this._lastActiveModel = null;
     this._updateState();
+    this._button.setText(Common.UIString('(no recordings)'));
     this._nextNumberByDomain.clear();
   }
 
@@ -214,7 +215,7 @@ Timeline.TimelineHistoryManager = class {
       var sourceContext = timelineOverview.context();
       var imageData = sourceContext.getImageData(0, 0, sourceContext.canvas.width, sourceContext.canvas.height);
       ctx.putImageData(imageData, 0, yOffset);
-      yOffset += overview.height;
+      yOffset += overview.height * window.devicePixelRatio;
     }
     return container;
   }
@@ -410,7 +411,7 @@ Timeline.TimelineHistoryManager.ToolbarButton = class extends UI.ToolbarItem {
     shadowRoot.appendChild(dropdownArrowIcon);
     this.element.addEventListener('click', () => void action.execute(), false);
     this.setEnabled(action.enabled());
-    action.addEventListener(UI.Action.Events.Enabled, data => this.setEnabled(/** @type {boolean} */ (data)));
+    action.addEventListener(UI.Action.Events.Enabled, event => this.setEnabled(/** @type {boolean} */ (event.data)));
   }
 
   /**

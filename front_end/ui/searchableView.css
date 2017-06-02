@@ -77,7 +77,7 @@
     border-radius: 8px;
     margin: 1px 3px 0 3px;
     background-image: linear-gradient(rgb(241, 241, 241), rgb(220, 220, 220));
-    width: 75px;
+    width: 82px;
     height: 20px;
     white-space: nowrap;
 }
@@ -93,7 +93,7 @@
 }
 
 .toolbar-search-buttons {
-    flex-basis: 165px;
+    flex-basis: 179px;
 }
 
 .toolbar-replace-control,

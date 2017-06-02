@@ -75,6 +75,7 @@
     text-transform: uppercase;
     color: #757575;
     font-size: 13px;
+    box-shadow: none;
 }
 
 .release-note-action-container > button:hover {

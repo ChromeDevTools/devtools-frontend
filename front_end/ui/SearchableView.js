@@ -103,43 +103,40 @@ UI.SearchableView = class extends UI.VBox {
     // Build the buttons (Find, Previous, Replace, Replace All).
     this._buttonsContainer = this._footerElement.createChild('div', 'toolbar-search-buttons hidden');
 
-    var findButtonElement = this._buttonsContainer.createChild('button', 'search-action-button');
-    findButtonElement.textContent = Common.UIString('Find');
+    var findButtonElement =
+        UI.createTextButton(Common.UIString('Find'), this._onFindClick.bind(this), 'search-action-button');
     findButtonElement.tabIndex = -1;
-    findButtonElement.addEventListener('click', this._onFindClick.bind(this), false);
+    this._buttonsContainer.appendChild(findButtonElement);
 
-    var prevButtonElement = this._buttonsContainer.createChild('button', 'search-action-button');
-    prevButtonElement.textContent = Common.UIString('Previous');
+    var prevButtonElement =
+        UI.createTextButton(Common.UIString('Previous'), this._onPreviousClick.bind(this), 'search-action-button');
     prevButtonElement.tabIndex = -1;
-    prevButtonElement.addEventListener('click', this._onPreviousClick.bind(this), false);
+    this._buttonsContainer.appendChild(prevButtonElement);
 
-    this._replaceButtonElement = this._buttonsContainer.createChild('button', 'search-action-button');
-    this._replaceButtonElement.textContent = Common.UIString('Replace');
+    this._replaceButtonElement =
+        UI.createTextButton(Common.UIString('Replace'), this._replace.bind(this), 'search-action-button');
     this._replaceButtonElement.disabled = true;
     this._replaceButtonElement.tabIndex = -1;
-    this._replaceButtonElement.addEventListener('click', this._replace.bind(this), false);
+    this._buttonsContainer.appendChild(this._replaceButtonElement);
 
-    var replaceAllButtonElement = this._buttonsContainer.createChild('button', 'search-action-button');
-    replaceAllButtonElement.textContent = Common.UIString('Replace All');
-    replaceAllButtonElement.addEventListener('click', this._replaceAll.bind(this), false);
+    var replaceAllButtonElement =
+        UI.createTextButton(Common.UIString('Replace All'), this._replaceAll.bind(this), 'search-action-button');
+    this._buttonsContainer.appendChild(replaceAllButtonElement);
 
     // Build the replace checkbox and cancel button.
     this._replaceElement = this._footerElement.createChild('div').createChild('span', 'toolbar-replace-checkbox');
 
     var replaceLabelElement = UI.CheckboxLabel.create(Common.UIString('Replace'));
     this._replaceCheckboxElement = replaceLabelElement.checkboxElement;
-    var uniqueId = ++UI.SearchableView._lastUniqueId;
-    var replaceCheckboxId = 'search-replace-trigger' + uniqueId;
-    this._replaceCheckboxElement.id = replaceCheckboxId;
     this._replaceCheckboxElement.addEventListener('change', this._updateSecondRowVisibility.bind(this), false);
 
     this._replaceElement.appendChild(replaceLabelElement);
 
-    var cancelButtonElement = this._footerElement.createChild('div').createChild('button', 'search-action-button');
-    cancelButtonElement.textContent = Common.UIString('Cancel');
+    var cancelButtonElement =
+        UI.createTextButton(Common.UIString('Cancel'), this.closeSearch.bind(this), 'search-action-button');
     cancelButtonElement.tabIndex = -1;
-    cancelButtonElement.addEventListener('click', this.closeSearch.bind(this), false);
     this._minimalSearchQuerySize = 3;
+    this._footerElement.createChild('div').appendChild(cancelButtonElement);
 
     this._loadSetting();
   }
@@ -510,7 +507,6 @@ UI.SearchableView = class extends UI.VBox {
   }
 };
 
-UI.SearchableView._lastUniqueId = 0;
 
 UI.SearchableView._symbol = Symbol('searchableView');
 

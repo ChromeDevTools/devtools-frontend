@@ -791,8 +791,7 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
 
     var titleRow = element.createChild('div', 'device-page-title-row');
     var title = titleRow.createChild('div', 'device-page-title');
-    var inspect =
-        UI.createTextButton(Common.UIString('Inspect'), doAction.bind(null, 'inspect'), 'device-inspect-button');
+    var inspect = UI.createTextButton(Common.UIString('Inspect'), doAction.bind(null, 'inspect'));
     titleRow.appendChild(inspect);
 
     var toolbar = new UI.Toolbar('');

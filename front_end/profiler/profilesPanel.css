@@ -200,11 +200,11 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
     width: 150px;
 }
 
-button.load-profile {
+.profile-launcher-button {
     margin-top: 10px;
+    margin-right: 8px;
     min-width: 110px;
 }
-
 
 .cpu-profile-flame-chart-overview-container {
     overflow: hidden;

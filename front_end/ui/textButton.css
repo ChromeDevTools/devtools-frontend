@@ -13,7 +13,7 @@
     font-size: 12px;
     margin: 0 1px 0 0;
     text-shadow: 0 1px 0 hsl(0, 0%, 94%);
-    min-height: 2em !important;
+    height: 24px;
     padding-left: 10px;
     padding-right: 10px;
     -webkit-user-select: none;

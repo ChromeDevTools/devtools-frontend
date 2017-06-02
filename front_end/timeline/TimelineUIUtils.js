@@ -1425,13 +1425,10 @@ Timeline.TimelineUIUtils = class {
     img.src = imageURL;
     var paintProfilerButton = container.createChild('a');
     paintProfilerButton.textContent = Common.UIString('Paint Profiler');
-    container.addEventListener('click', showPaintProfiler, false);
+    container.addEventListener(
+        'click', () => Timeline.TimelinePanel.instance().select(Timeline.TimelineSelection.fromTraceEvent(event)),
+        false);
     return container;
-
-    function showPaintProfiler() {
-      Timeline.TimelinePanel.instance().select(
-          Timeline.TimelineSelection.fromTraceEvent(event), Timeline.TimelineDetailsView.Tab.PaintProfiler);
-    }
   }
 
   /**

@@ -278,14 +278,14 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
 
   /**
    * @override
-   * @param {?Timeline.TimelineSelection} selection
+   * @param {!Timeline.TimelineSelection} selection
    */
   setSelection(selection) {
     var index = this._mainDataProvider.entryIndexForSelection(selection);
     this._mainFlameChart.setSelectedEntry(index);
     index = this._networkDataProvider.entryIndexForSelection(selection);
     this._networkFlameChart.setSelectedEntry(index);
-    if (selection && this._detailsView)
+    if (this._detailsView)
       this._detailsView.setSelection(selection);
   }
 

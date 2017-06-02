@@ -90,10 +90,11 @@ Bindings.ResourceScriptMapping = class {
     console.assert(scripts.length);
     var script = scripts[scripts.length - 1];
     if (script.isInlineScriptWithSourceURL()) {
-      return this._debuggerModel.createRawLocation(
-          script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset);
+      return this._debuggerModel.createRawLocationByURL(
+          script.sourceURL, lineNumber + script.lineOffset,
+          lineNumber ? columnNumber : columnNumber + script.columnOffset);
     }
-    return this._debuggerModel.createRawLocation(script, lineNumber, columnNumber);
+    return this._debuggerModel.createRawLocationByURL(script.sourceURL, lineNumber, columnNumber);
   }
 
   /**

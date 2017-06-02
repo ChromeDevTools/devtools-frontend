@@ -168,14 +168,11 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
   /**
    * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
    */
-  deleteDatabase(databaseId) {
+  async deleteDatabase(databaseId) {
     if (!this._enabled)
       return;
-    this._agent.deleteDatabase(databaseId.securityOrigin, databaseId.name, error => {
-      if (error)
-        console.error('Unable to delete ' + databaseId.name, error);
-      this._loadDatabaseNames(databaseId.securityOrigin);
-    });
+    await this._agent.deleteDatabase(databaseId.securityOrigin, databaseId.name);
+    this._loadDatabaseNames(databaseId.securityOrigin);
   }
 
   refreshDatabaseNames() {
@@ -193,10 +190,10 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
   /**
    * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
    * @param {string} objectStoreName
-   * @param {function()} callback
+   * @return {!Promise}
    */
-  clearObjectStore(databaseId, objectStoreName, callback) {
-    this._agent.clearObjectStore(databaseId.securityOrigin, databaseId.name, objectStoreName, callback);
+  clearObjectStore(databaseId, objectStoreName) {
+    return this._agent.clearObjectStore(databaseId.securityOrigin, databaseId.name, objectStoreName);
   }
 
   /**
@@ -289,65 +286,44 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
   /**
    * @param {string} securityOrigin
    */
-  _loadDatabaseNames(securityOrigin) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Array.<string>} databaseNames
-     * @this {Resources.IndexedDBModel}
-     */
-    function callback(error, databaseNames) {
-      if (error) {
-        console.error('IndexedDBAgent error: ' + error);
-        return;
-      }
-
-      if (!this._databaseNamesBySecurityOrigin[securityOrigin])
-        return;
-      this._updateOriginDatabaseNames(securityOrigin, databaseNames);
-    }
-
-    this._agent.requestDatabaseNames(securityOrigin, callback.bind(this));
+  async _loadDatabaseNames(securityOrigin) {
+    var databaseNames = await this._agent.requestDatabaseNames(securityOrigin);
+    if (!databaseNames)
+      return;
+    if (!this._databaseNamesBySecurityOrigin[securityOrigin])
+      return;
+    this._updateOriginDatabaseNames(securityOrigin, databaseNames);
   }
 
   /**
    * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
    */
-  _loadDatabase(databaseId) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Protocol.IndexedDB.DatabaseWithObjectStores} databaseWithObjectStores
-     * @this {Resources.IndexedDBModel}
-     */
-    function callback(error, databaseWithObjectStores) {
-      if (error) {
-        console.error('IndexedDBAgent error: ' + error);
-        return;
-      }
+  async _loadDatabase(databaseId) {
+    var databaseWithObjectStores = await this._agent.requestDatabase(databaseId.securityOrigin, databaseId.name);
 
-      if (!this._databaseNamesBySecurityOrigin[databaseId.securityOrigin])
-        return;
-      var databaseModel = new Resources.IndexedDBModel.Database(databaseId, databaseWithObjectStores.version);
-      this._databases.set(databaseId, databaseModel);
-      for (var i = 0; i < databaseWithObjectStores.objectStores.length; ++i) {
-        var objectStore = databaseWithObjectStores.objectStores[i];
-        var objectStoreIDBKeyPath = Resources.IndexedDBModel.idbKeyPathFromKeyPath(objectStore.keyPath);
-        var objectStoreModel = new Resources.IndexedDBModel.ObjectStore(
-            objectStore.name, objectStoreIDBKeyPath, objectStore.autoIncrement);
-        for (var j = 0; j < objectStore.indexes.length; ++j) {
-          var index = objectStore.indexes[j];
-          var indexIDBKeyPath = Resources.IndexedDBModel.idbKeyPathFromKeyPath(index.keyPath);
-          var indexModel =
-              new Resources.IndexedDBModel.Index(index.name, indexIDBKeyPath, index.unique, index.multiEntry);
-          objectStoreModel.indexes[indexModel.name] = indexModel;
-        }
-        databaseModel.objectStores[objectStoreModel.name] = objectStoreModel;
-      }
+    if (!databaseWithObjectStores)
+      return;
+    if (!this._databaseNamesBySecurityOrigin[databaseId.securityOrigin])
+      return;
 
-      this.dispatchEventToListeners(
-          Resources.IndexedDBModel.Events.DatabaseLoaded, {model: this, database: databaseModel});
+    var databaseModel = new Resources.IndexedDBModel.Database(databaseId, databaseWithObjectStores.version);
+    this._databases.set(databaseId, databaseModel);
+    for (var objectStore of databaseWithObjectStores.objectStores) {
+      var objectStoreIDBKeyPath = Resources.IndexedDBModel.idbKeyPathFromKeyPath(objectStore.keyPath);
+      var objectStoreModel =
+          new Resources.IndexedDBModel.ObjectStore(objectStore.name, objectStoreIDBKeyPath, objectStore.autoIncrement);
+      for (var j = 0; j < objectStore.indexes.length; ++j) {
+        var index = objectStore.indexes[j];
+        var indexIDBKeyPath = Resources.IndexedDBModel.idbKeyPathFromKeyPath(index.keyPath);
+        var indexModel =
+            new Resources.IndexedDBModel.Index(index.name, indexIDBKeyPath, index.unique, index.multiEntry);
+        objectStoreModel.indexes[indexModel.name] = indexModel;
+      }
+      databaseModel.objectStores[objectStoreModel.name] = objectStoreModel;
     }
 
-    this._agent.requestDatabase(databaseId.securityOrigin, databaseId.name, callback.bind(this));
+    this.dispatchEventToListeners(
+        Resources.IndexedDBModel.Events.DatabaseLoaded, {model: this, database: databaseModel});
   }
 
   /**
@@ -386,36 +362,36 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    * @param {number} pageSize
    * @param {function(!Array.<!Resources.IndexedDBModel.Entry>, boolean)} callback
    */
-  _requestData(databaseId, databaseName, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Array.<!Protocol.IndexedDB.DataEntry>} dataEntries
-     * @param {boolean} hasMore
-     * @this {Resources.IndexedDBModel}
-     */
-    function innerCallback(error, dataEntries, hasMore) {
-      if (error) {
-        console.error('IndexedDBAgent error: ' + error);
-        return;
-      }
+  async _requestData(databaseId, databaseName, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback) {
+    var keyRange = Resources.IndexedDBModel.keyRangeFromIDBKeyRange(idbKeyRange) || undefined;
 
-      var runtimeModel = this.target().model(SDK.RuntimeModel);
-      if (!runtimeModel || !this._databaseNamesBySecurityOrigin[databaseId.securityOrigin])
-        return;
-      var entries = [];
-      for (var i = 0; i < dataEntries.length; ++i) {
-        var key = runtimeModel.createRemoteObject(dataEntries[i].key);
-        var primaryKey = runtimeModel.createRemoteObject(dataEntries[i].primaryKey);
-        var value = runtimeModel.createRemoteObject(dataEntries[i].value);
-        entries.push(new Resources.IndexedDBModel.Entry(key, primaryKey, value));
-      }
-      callback(entries, hasMore);
+    var response = await this._agent.invoke_requestData({
+      securityOrigin: databaseId.securityOrigin,
+      databaseName,
+      objectStoreName,
+      indexName,
+      skipCount,
+      pageSize,
+      keyRange
+    });
+
+    if (response[Protocol.Error]) {
+      console.error('IndexedDBAgent error: ' + response[Protocol.Error]);
+      return;
     }
 
-    var keyRange = Resources.IndexedDBModel.keyRangeFromIDBKeyRange(idbKeyRange);
-    this._agent.requestData(
-        databaseId.securityOrigin, databaseName, objectStoreName, indexName, skipCount, pageSize,
-        keyRange ? keyRange : undefined, innerCallback.bind(this));
+    var runtimeModel = this.target().model(SDK.RuntimeModel);
+    if (!runtimeModel || !this._databaseNamesBySecurityOrigin[databaseId.securityOrigin])
+      return;
+    var dataEntries = response.objectStoreDataEntries;
+    var entries = [];
+    for (var dataEntry of dataEntries) {
+      var key = runtimeModel.createRemoteObject(dataEntry.key);
+      var primaryKey = runtimeModel.createRemoteObject(dataEntry.primaryKey);
+      var value = runtimeModel.createRemoteObject(dataEntry.value);
+      entries.push(new Resources.IndexedDBModel.Entry(key, primaryKey, value));
+    }
+    callback(entries, response.hasMore);
   }
 };
 
@@ -433,7 +409,6 @@ Resources.IndexedDBModel.KeyPathTypes = {
   StringType: 'string',
   ArrayType: 'array'
 };
-
 
 /** @enum {symbol} */
 Resources.IndexedDBModel.Events = {

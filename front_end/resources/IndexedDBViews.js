@@ -331,16 +331,11 @@ Resources.IDBDataView = class extends UI.SimpleView {
   /**
    * @param {!Common.Event} event
    */
-  _clearButtonClicked(event) {
-    /**
-     * @this {Resources.IDBDataView}
-     */
-    function cleared() {
-      this._clearButton.setEnabled(true);
-      this._updateData(true);
-    }
+  async _clearButtonClicked(event) {
     this._clearButton.setEnabled(false);
-    this._model.clearObjectStore(this._databaseId, this._objectStore.name, cleared.bind(this));
+    await this._model.clearObjectStore(this._databaseId, this._objectStore.name);
+    this._clearButton.setEnabled(true);
+    this._updateData(true);
   }
 
   /**

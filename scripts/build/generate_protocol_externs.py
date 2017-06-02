@@ -49,7 +49,6 @@ ref_types = {}
 NON_PROMISIFIED_DOMAINS = frozenset([
     "CSS",
     "DOMDebugger",
-    "IndexedDB",
 ])
 
 

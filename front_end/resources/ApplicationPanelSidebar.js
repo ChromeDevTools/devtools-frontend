@@ -1299,14 +1299,9 @@ Resources.IDBObjectStoreTreeElement = class extends Resources.BaseStorageTreeEle
     contextMenu.show();
   }
 
-  _clearObjectStore() {
-    /**
-     * @this {Resources.IDBObjectStoreTreeElement}
-     */
-    function callback() {
-      this.update(this._objectStore);
-    }
-    this._model.clearObjectStore(this._databaseId, this._objectStore.name, callback.bind(this));
+  async _clearObjectStore() {
+    await this._model.clearObjectStore(this._databaseId, this._objectStore.name);
+    this.update(this._objectStore);
   }
 
   /**

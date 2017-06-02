@@ -47,7 +47,6 @@
         "network_log"
     ],
     "scripts": [
-        "BreakpointsSidebarPaneBase.js",
         "DataSaverInfobar.js",
         "DOMBreakpointsSidebarPane.js",
         "DOMPresentationUtils.js",
@@ -56,7 +55,7 @@
         "Reload.js"
     ],
     "resources": [
-        "breakpointsList.css",
+        "domBreakpointsSidebarPane.css",
         "domUtils.css",
         "imagePreview.css"
     ]

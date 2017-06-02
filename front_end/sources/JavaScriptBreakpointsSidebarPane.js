@@ -8,7 +8,7 @@
 Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
   constructor() {
     super(true);
-    this.registerRequiredCSS('components/breakpointsList.css');
+    this.registerRequiredCSS('sources/javaScriptBreakpointsSidebarPane.css');
 
     this._breakpointManager = Bindings.breakpointManager;
     this._breakpointManager.addEventListener(Bindings.BreakpointManager.Events.BreakpointAdded, this.update, this);

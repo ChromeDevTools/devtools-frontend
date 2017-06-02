@@ -31,11 +31,14 @@
 /**
  * @implements {UI.ContextFlavorListener}
  */
-Components.DOMBreakpointsSidebarPane = class extends Components.BreakpointsSidebarPaneBase {
+Components.DOMBreakpointsSidebarPane = class extends UI.VBox {
   constructor() {
-    super();
-    this.registerRequiredCSS('components/breakpointsList.css');
-    this.listElement.classList.add('dom-breakpoints-list');
+    super(true);
+    this.registerRequiredCSS('components/domBreakpointsSidebarPane.css');
+
+    this._listElement = this.contentElement.createChild('div', 'breakpoint-list hidden');
+    this._emptyElement = this.contentElement.createChild('div', 'gray-info-message');
+    this._emptyElement.textContent = Common.UIString('No Breakpoints');
 
     /** @type {!Map<!SDK.DOMDebuggerModel.DOMBreakpoint, !Components.DOMBreakpointsSidebarPane.Item>} */
     this._items = new Map();
@@ -117,8 +120,12 @@ Components.DOMBreakpointsSidebarPane = class extends Components.BreakpointsSideb
       var item = this._items.get(breakpoint);
       if (item) {
         this._items.delete(breakpoint);
-        this.removeListElement(item.element);
+        this._listElement.removeChild(item.element);
       }
+    }
+    if (!this._listElement.firstChild) {
+      this._emptyElement.classList.remove('hidden');
+      this._listElement.classList.add('hidden');
     }
   }
 
@@ -126,7 +133,7 @@ Components.DOMBreakpointsSidebarPane = class extends Components.BreakpointsSideb
    * @param {!SDK.DOMDebuggerModel.DOMBreakpoint} breakpoint
    */
   _addBreakpoint(breakpoint) {
-    var element = createElement('li');
+    var element = createElementWithClass('div', 'breakpoint-entry');
     element.addEventListener('contextmenu', this._contextMenu.bind(this, breakpoint), true);
 
     var checkboxLabel = UI.CheckboxLabel.create('', breakpoint.enabled);
@@ -150,13 +157,15 @@ Components.DOMBreakpointsSidebarPane = class extends Components.BreakpointsSideb
     element._item = item;
     this._items.set(breakpoint, item);
 
-    var currentElement = this.listElement.firstChild;
+    var currentElement = this._listElement.firstChild;
     while (currentElement) {
       if (currentElement._item && currentElement._item.breakpoint.type < breakpoint.type)
         break;
       currentElement = currentElement.nextSibling;
     }
-    this.addListElement(element, currentElement);
+    this._listElement.insertBefore(element, currentElement);
+    this._emptyElement.classList.add('hidden');
+    this._listElement.classList.remove('hidden');
   }
 
   /**

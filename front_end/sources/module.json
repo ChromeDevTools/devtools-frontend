@@ -661,6 +661,7 @@
         "debuggerPausedMessage.css",
         "eventListenerBreakpoints.css",
         "fileBasedSearchResultsPane.css",
+        "javaScriptBreakpointsSidebarPane.css",
         "navigatorTree.css",
         "navigatorView.css",
         "revisionHistory.css",
@@ -671,6 +672,7 @@
         "sourcesView.css",
         "threadsSidebarPane.css",
         "watchExpressionsSidebarPane.css",
+        "xhrBreakpointsSidebarPane.css",
         "dialog.css"
     ]
 }

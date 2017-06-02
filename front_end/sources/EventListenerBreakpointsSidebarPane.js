@@ -7,8 +7,6 @@
 Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('components/breakpointsList.css');
-
     this._categoriesTreeOutline = new UI.TreeOutlineInShadow();
     this._categoriesTreeOutline.element.tabIndex = 0;
     this._categoriesTreeOutline.registerRequiredCSS('sources/eventListenerBreakpoints.css');

@@ -25,7 +25,7 @@ EventListeners.EventListenersView = class {
     this._treeOutline.element.classList.add('monospace');
     this._element.appendChild(this._treeOutline.element);
     this._emptyHolder = createElementWithClass('div', 'gray-info-message');
-    this._emptyHolder.textContent = Common.UIString('No Event Listeners');
+    this._emptyHolder.textContent = Common.UIString('No event listeners');
     this._linkifier = new Components.Linkifier();
     /** @type {!Map<string, !EventListeners.EventListenersTreeElement>} */
     this._treeItemMap = new Map();

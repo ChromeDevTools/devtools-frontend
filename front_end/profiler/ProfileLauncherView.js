@@ -74,7 +74,7 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
     this._controlButton.title = this._recordButtonEnabled ? '' : UI.anotherProfilerActiveLabel();
     if (this._isInstantProfile) {
       this._controlButton.classList.remove('running');
-      this._controlButton.textContent = Common.UIString('Take Snapshot');
+      this._controlButton.textContent = Common.UIString('Take snapshot');
     } else if (this._isProfiling) {
       this._controlButton.classList.add('running');
       this._controlButton.textContent = Common.UIString('Stop');

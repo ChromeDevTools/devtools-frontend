@@ -37,7 +37,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     this.contentElement.appendChild(this._blackboxedMessageElement);
 
     this._notPausedMessageElement = this.contentElement.createChild('div', 'gray-info-message');
-    this._notPausedMessageElement.textContent = Common.UIString('Not Paused');
+    this._notPausedMessageElement.textContent = Common.UIString('Not paused');
 
     /** @type {!UI.ListModel<!Sources.CallStackSidebarPane.Item>} */
     this._items = new UI.ListModel();

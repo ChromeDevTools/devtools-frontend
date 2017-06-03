@@ -62,7 +62,7 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
     if (!details || !callFrame) {
       var infoElement = createElement('div');
       infoElement.className = 'gray-info-message';
-      infoElement.textContent = Common.UIString('Not Paused');
+      infoElement.textContent = Common.UIString('Not paused');
       this.contentElement.appendChild(infoElement);
       return;
     }
@@ -78,21 +78,21 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
       switch (scope.type()) {
         case Protocol.Debugger.ScopeType.Local:
           foundLocalScope = true;
-          emptyPlaceholder = Common.UIString('No Variables');
+          emptyPlaceholder = Common.UIString('No variables');
           if (thisObject)
             extraProperties.push(new SDK.RemoteObjectProperty('this', thisObject));
           if (i === 0) {
             var exception = details.exception();
             if (exception) {
               extraProperties.push(new SDK.RemoteObjectProperty(
-                  Common.UIString.capitalize('Exception'), exception, undefined, undefined, undefined, undefined,
-                  undefined, true));
+                  Common.UIString('Exception'), exception, undefined, undefined, undefined, undefined, undefined,
+                  true));
             }
             var returnValue = callFrame.returnValue();
             if (returnValue) {
               extraProperties.push(new SDK.RemoteObjectProperty(
-                  Common.UIString.capitalize('Return ^value'), returnValue, undefined, undefined, undefined, undefined,
-                  undefined, true));
+                  Common.UIString('Return value'), returnValue, undefined, undefined, undefined, undefined, undefined,
+                  true));
             }
           }
           break;
@@ -102,7 +102,7 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
             title = Common.UIString('Closure (%s)', UI.beautifyFunctionName(scopeName));
           else
             title = Common.UIString('Closure');
-          emptyPlaceholder = Common.UIString('No Variables');
+          emptyPlaceholder = Common.UIString('No variables');
           break;
       }
 

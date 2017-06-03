@@ -85,12 +85,12 @@ UI.SearchableView = class extends UI.VBox {
     this._searchNavigationPrevElement =
         searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-prev');
     this._searchNavigationPrevElement.addEventListener('click', this._onPrevButtonSearch.bind(this), false);
-    this._searchNavigationPrevElement.title = Common.UIString('Search Previous');
+    this._searchNavigationPrevElement.title = Common.UIString('Search previous');
 
     this._searchNavigationNextElement =
         searchNavigationElement.createChild('div', 'toolbar-search-navigation toolbar-search-navigation-next');
     this._searchNavigationNextElement.addEventListener('click', this._onNextButtonSearch.bind(this), false);
-    this._searchNavigationNextElement.title = Common.UIString('Search Next');
+    this._searchNavigationNextElement.title = Common.UIString('Search next');
 
     this._searchInputElement.addEventListener('keydown', this._onSearchKeyDown.bind(this), true);
     this._searchInputElement.addEventListener('input', this._onInput.bind(this), false);
@@ -120,7 +120,7 @@ UI.SearchableView = class extends UI.VBox {
     this._buttonsContainer.appendChild(this._replaceButtonElement);
 
     var replaceAllButtonElement =
-        UI.createTextButton(Common.UIString('Replace All'), this._replaceAll.bind(this), 'search-action-button');
+        UI.createTextButton(Common.UIString('Replace all'), this._replaceAll.bind(this), 'search-action-button');
     this._buttonsContainer.appendChild(replaceAllButtonElement);
 
     // Build the replace checkbox and cancel button.

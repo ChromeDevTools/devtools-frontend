@@ -75,7 +75,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
         Common.settings.createSetting('timelineViewMode', Timeline.TimelinePanel.ViewMode.FlameChart);
 
     this._disableCaptureJSProfileSetting = Common.settings.createSetting('timelineDisableJSSampling', false);
-    this._disableCaptureJSProfileSetting.setTitle(Common.UIString('Disable JavaScript Samples'));
+    this._disableCaptureJSProfileSetting.setTitle(Common.UIString('Disable JavaScript samples'));
     this._captureLayersAndPicturesSetting = Common.settings.createSetting('timelineCaptureLayersAndPictures', false);
     this._captureLayersAndPicturesSetting.setTitle(Common.UIString('Enable advanced paint instrumentation (slow)'));
 

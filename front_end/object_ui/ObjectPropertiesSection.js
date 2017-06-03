@@ -598,7 +598,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
     if (treeNode.childCount())
       return;
     var title = createElementWithClass('div', 'gray-info-message');
-    title.textContent = emptyPlaceholder || Common.UIString('No Properties');
+    title.textContent = emptyPlaceholder || Common.UIString('No properties');
     var infoElement = new UI.TreeElement(title);
     treeNode.appendChild(infoElement);
   }

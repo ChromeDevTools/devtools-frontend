@@ -13,7 +13,7 @@ Sources.XHRBreakpointsSidebarPane = class extends UI.VBox {
 
     this._listElement = this.contentElement.createChild('div', 'breakpoint-list hidden');
     this._emptyElement = this.contentElement.createChild('div', 'gray-info-message');
-    this._emptyElement.textContent = Common.UIString('No Breakpoints');
+    this._emptyElement.textContent = Common.UIString('No breakpoints');
 
     /** @type {!Map.<string, !Element>} */
     this._breakpointElements = new Map();

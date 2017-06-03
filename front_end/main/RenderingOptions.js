@@ -34,18 +34,18 @@ Main.RenderingOptionsView = class extends UI.VBox {
     this.registerRequiredCSS('main/renderingOptions.css');
 
     this._appendCheckbox(
-        Common.UIString('Paint Flashing'),
+        Common.UIString('Paint flashing'),
         Common.UIString('Highlights areas of the page (green) that need to be repainted'),
         Common.moduleSetting('showPaintRects'));
     this._appendCheckbox(
-        Common.UIString('Layer Borders'), Common.UIString('Shows layer borders (orange/olive) and tiles (cyan)'),
+        Common.UIString('Layer borders'), Common.UIString('Shows layer borders (orange/olive) and tiles (cyan)'),
         Common.moduleSetting('showDebugBorders'));
     this._appendCheckbox(
-        Common.UIString('FPS Meter'),
+        Common.UIString('FPS meter'),
         Common.UIString('Plots frames per second, frame rate distribution, and GPU memory'),
         Common.moduleSetting('showFPSCounter'));
     this._appendCheckbox(
-        Common.UIString('Scrolling Performance Issues'),
+        Common.UIString('Scrolling performance issues'),
         Common.UIString(
             'Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations.'),
         Common.moduleSetting('showScrollBottleneckRects'));
@@ -55,7 +55,7 @@ Main.RenderingOptionsView = class extends UI.VBox {
     var mediaSelect = UI.SettingsUI.createControlForSetting(mediaSetting);
     if (mediaSelect) {
       var mediaRow = this.contentElement.createChild('span', 'media-row');
-      mediaRow.createChild('label').textContent = Common.UIString('Emulate CSS Media');
+      mediaRow.createChild('label').textContent = Common.UIString('Emulate CSS media');
       mediaRow.createChild('p').textContent = Common.UIString('Forces media type for testing print and screen styles');
       mediaRow.appendChild(mediaSelect);
     }

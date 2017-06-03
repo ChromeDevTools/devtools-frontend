@@ -49,7 +49,7 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
  */
 Profiler.SamplingHeapProfileType = class extends Profiler.ProfileType {
   constructor() {
-    super(Profiler.SamplingHeapProfileType.TypeId, Common.UIString('Record Allocation Profile'));
+    super(Profiler.SamplingHeapProfileType.TypeId, Common.UIString('Record allocation profile'));
     this._recording = false;
     Profiler.SamplingHeapProfileType.instance = this;
   }

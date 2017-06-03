@@ -38,7 +38,7 @@ Components.DOMBreakpointsSidebarPane = class extends UI.VBox {
 
     this._listElement = this.contentElement.createChild('div', 'breakpoint-list hidden');
     this._emptyElement = this.contentElement.createChild('div', 'gray-info-message');
-    this._emptyElement.textContent = Common.UIString('No Breakpoints');
+    this._emptyElement.textContent = Common.UIString('No breakpoints');
 
     /** @type {!Map<!SDK.DOMDebuggerModel.DOMBreakpoint, !Components.DOMBreakpointsSidebarPane.Item>} */
     this._items = new Map();
@@ -234,9 +234,9 @@ Components.DOMBreakpointsSidebarPane = class extends UI.VBox {
 Components.DOMBreakpointsSidebarPane.Item;
 
 Components.DOMBreakpointsSidebarPane.BreakpointTypeLabels = new Map([
-  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.SubtreeModified, Common.UIString('Subtree Modified')],
-  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.AttributeModified, Common.UIString('Attribute Modified')],
-  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.NodeRemoved, Common.UIString('Node Removed')],
+  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.SubtreeModified, Common.UIString('Subtree modified')],
+  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.AttributeModified, Common.UIString('Attribute modified')],
+  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.NodeRemoved, Common.UIString('Node removed')],
 ]);
 
 Components.DOMBreakpointsSidebarPane.BreakpointTypeNouns = new Map([

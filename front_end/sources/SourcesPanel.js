@@ -692,7 +692,7 @@ Sources.SourcesPanel = class extends UI.Panel {
   _createDebugToolbarDrawer() {
     var debugToolbarDrawer = createElementWithClass('div', 'scripts-debug-toolbar-drawer');
 
-    var label = Common.UIString('Pause On Caught Exceptions');
+    var label = Common.UIString('Pause on caught exceptions');
     var setting = Common.moduleSetting('pauseOnCaughtException');
     debugToolbarDrawer.appendChild(UI.SettingsUI.createSettingCheckbox(label, setting, true));
 

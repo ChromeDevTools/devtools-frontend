@@ -195,7 +195,7 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
   constructor() {
     super();
     var toolbar = new UI.Toolbar('navigator-toolbar');
-    var newButton = new UI.ToolbarButton('', 'largeicon-add', Common.UIString('New Snippet'));
+    var newButton = new UI.ToolbarButton('', 'largeicon-add', Common.UIString('New snippet'));
     newButton.addEventListener(UI.ToolbarButton.Events.Click, this._handleCreateSnippet.bind(this));
     toolbar.appendToolbarItem(newButton);
     this.element.insertBefore(toolbar.element, this.element.firstChild);

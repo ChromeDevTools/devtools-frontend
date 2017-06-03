@@ -31,7 +31,7 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
       this._listElement = null;
       this.contentElement.removeChildren();
       var emptyElement = this.contentElement.createChild('div', 'gray-info-message');
-      emptyElement.textContent = Common.UIString('No Breakpoints');
+      emptyElement.textContent = Common.UIString('No breakpoints');
       this.contentElement.appendChild(emptyElement);
       this._didUpdateForTest();
       return Promise.resolve();

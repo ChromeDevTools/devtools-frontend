@@ -97,7 +97,7 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
     this.contentElement.removeChildren();
     this._watchExpressions = [];
     this._emptyElement = this.contentElement.createChild('div', 'gray-info-message');
-    this._emptyElement.textContent = Common.UIString('No Watch Expressions');
+    this._emptyElement.textContent = Common.UIString('No watch expressions');
     var watchExpressionStrings = this._watchExpressionsSetting.get();
     for (var i = 0; i < watchExpressionStrings.length; ++i) {
       var expression = watchExpressionStrings[i];

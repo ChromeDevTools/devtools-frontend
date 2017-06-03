@@ -130,19 +130,24 @@ Console.ConsoleViewMessage = class {
     if (!table || !table.preview)
       return formattedMessage;
 
+    var rawValueColumnSymbol = Symbol('rawValueColumn');
     var columnNames = [];
     var preview = table.preview;
     var rows = [];
     for (var i = 0; i < preview.properties.length; ++i) {
       var rowProperty = preview.properties[i];
-      var rowPreview = rowProperty.valuePreview;
-      if (!rowPreview)
+      var rowSubProperties;
+      if (rowProperty.valuePreview)
+        rowSubProperties = rowProperty.valuePreview.properties;
+      else if (rowProperty.value)
+        rowSubProperties = [{name: rawValueColumnSymbol, type: rowProperty.type, value: rowProperty.value}];
+      else
         continue;
 
       var rowValue = {};
       const maxColumnsToRender = 20;
-      for (var j = 0; j < rowPreview.properties.length; ++j) {
-        var cellProperty = rowPreview.properties[j];
+      for (var j = 0; j < rowSubProperties.length; ++j) {
+        var cellProperty = rowSubProperties[j];
         var columnRendered = columnNames.indexOf(cellProperty.name) !== -1;
         if (!columnRendered) {
           if (columnNames.length === maxColumnsToRender)
@@ -169,9 +174,10 @@ Console.ConsoleViewMessage = class {
         flatValues.push(rowValue[columnNames[j]]);
     }
     columnNames.unshift(Common.UIString('(index)'));
+    var columnDisplayNames = columnNames.map(name => name === rawValueColumnSymbol ? Common.UIString('Value') : name);
 
     if (flatValues.length) {
-      this._dataGrid = DataGrid.SortableDataGrid.create(columnNames, flatValues);
+      this._dataGrid = DataGrid.SortableDataGrid.create(columnDisplayNames, flatValues);
       this._dataGrid.setStriped(true);
 
       var formattedResult = createElementWithClass('span', 'console-message-text');

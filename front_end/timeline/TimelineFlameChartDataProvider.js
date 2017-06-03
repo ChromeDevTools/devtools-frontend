@@ -272,6 +272,34 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
   }
 
   /**
+   * @param {number} startTime
+   * @param {number} endTime
+   * @param {!TimelineModel.TimelineModelFilter} filter
+   * @return {!Array<number>}
+   */
+  search(startTime, endTime, filter) {
+    var result = [];
+    var entryTypes = Timeline.TimelineFlameChartDataProvider.EntryType;
+    this.timelineData();
+    for (var i = 0; i < this._entryData.length; ++i) {
+      if (this._entryType(i) !== entryTypes.Event)
+        continue;
+      var event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[i]);
+      if (event.startTime > endTime)
+        continue;
+      if ((event.endTime || event.startTime) < startTime)
+        continue;
+      if (filter.accept(event))
+        result.push(i);
+    }
+    result.sort(
+        (a, b) => SDK.TracingModel.Event.compareStartTime(
+            /** @type {!SDK.TracingModel.Event} */ (this._entryData[a]),
+            /** @type {!SDK.TracingModel.Event} */ (this._entryData[b])));
+    return result;
+  }
+
+  /**
    * @param {number} level
    * @param {!TimelineModel.TimelineModel.PageFrame} frame
    */
@@ -921,15 +949,6 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     if (index !== -1)
       this._lastSelection = new Timeline.TimelineFlameChartView.Selection(selection, index);
     return index;
-  }
-
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {?Timeline.TimelineSelection} selection
-   */
-  selectionForEvent(event) {
-    var entryIndex = this._entryData.indexOf(event);
-    return this.createSelection(entryIndex);
   }
 
   /**

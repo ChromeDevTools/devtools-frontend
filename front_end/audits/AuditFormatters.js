@@ -127,7 +127,7 @@ Audits.AuditFormatters.Registry = {
    * @return {!Element}
    */
   resourceLink: function(url, line) {
-    return Components.Linkifier.linkifyURL(url, undefined, 'resource-url', line);
+    return Components.Linkifier.linkifyURL(url, {className: 'resource-url', lineNumber: line});
   }
 };
 

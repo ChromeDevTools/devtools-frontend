@@ -115,8 +115,8 @@ Resources.AppManifestView = class extends UI.VBox {
     this._startURLField.removeChildren();
     var startURL = stringProperty('start_url');
     if (startURL) {
-      this._startURLField.appendChild(Components.Linkifier.linkifyURL(
-          /** @type {string} */ (Common.ParsedURL.completeURL(url, startURL)), startURL));
+      var completeURL = /** @type {string} */ (Common.ParsedURL.completeURL(url, startURL));
+      this._startURLField.appendChild(Components.Linkifier.linkifyURL(completeURL, {text: startURL}));
     }
 
     this._themeColorSwatch.classList.toggle('hidden', !stringProperty('theme_color'));

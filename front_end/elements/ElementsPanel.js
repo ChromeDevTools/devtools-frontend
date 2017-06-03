@@ -261,7 +261,7 @@ Elements.ElementsPanel = class extends UI.Panel {
       return;
     header.removeChildren();
     header.createChild('div', 'elements-tree-header-frame').textContent = Common.UIString('Frame');
-    header.appendChild(Components.Linkifier.linkifyURL(target.inspectedURL(), target.name()));
+    header.appendChild(Components.Linkifier.linkifyURL(target.inspectedURL(), {text: target.name()}));
   }
 
   _updateTreeOutlineVisibleWidth() {

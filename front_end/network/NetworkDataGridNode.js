@@ -929,9 +929,11 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
       case SDK.NetworkRequest.InitiatorType.Parser:
         cell.title = initiator.url + ':' + (initiator.lineNumber + 1);
         var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(initiator.url);
-        cell.appendChild(Components.Linkifier.linkifyURL(
-            initiator.url, uiSourceCode ? uiSourceCode.displayName() : undefined, '', initiator.lineNumber,
-            initiator.columnNumber));
+        cell.appendChild(Components.Linkifier.linkifyURL(initiator.url, {
+          text: uiSourceCode ? uiSourceCode.displayName() : undefined,
+          lineNumber: initiator.lineNumber,
+          columnNumber: initiator.columnNumber
+        }));
         this._appendSubtitle(cell, Common.UIString('Parser'));
         break;
 

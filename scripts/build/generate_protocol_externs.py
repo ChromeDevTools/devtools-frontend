@@ -46,10 +46,6 @@ type_traits = {
 
 ref_types = {}
 
-NON_PROMISIFIED_DOMAINS = frozenset([
-    "DOMDebugger",
-])
-
 
 def full_qualified_type_id(domain_name, type_id):
     if type_id.find(".") == -1:
@@ -121,7 +117,6 @@ def generate_protocol_externs(output_path, file1, file2):
 
     for domain in domains:
         domain_name = domain["domain"]
-        is_promisified = domain_name not in NON_PROMISIFIED_DOMAINS
 
         output_file.write("Protocol.%s = {};\n" % domain_name)
         output_file.write("\n\n/**\n * @constructor\n*/\n")
@@ -158,20 +153,14 @@ def generate_protocol_externs(output_path, file1, file2):
                         else:
                             returns.append("%s" % out_param_type)
 
-                if is_promisified:
-                    if has_return_value and len(command["returns"]) > 0:
-                        out_param_type = param_type(domain_name, command["returns"][0])
-                        if re.match(r"^[!?]", out_param_type[:1]):
-                            out_param_type = out_param_type[1:]
-                        out_param_type = "?%s" % out_param_type
-                    else:
-                        out_param_type = "undefined"
-                    output_file.write(" * @return {!Promise<%s>}\n" % out_param_type)
+                if has_return_value and len(command["returns"]) > 0:
+                    out_param_type = param_type(domain_name, command["returns"][0])
+                    if re.match(r"^[!?]", out_param_type[:1]):
+                        out_param_type = out_param_type[1:]
+                    out_param_type = "?%s" % out_param_type
                 else:
-                    output_file.write(" * @param {function(%s):T=} opt_callback\n" % ", ".join(returns))
-                    output_file.write(" * @return {!Promise<T>}\n")
-                    output_file.write(" * @template T\n")
-                    params.append("opt_callback")
+                    out_param_type = "undefined"
+                output_file.write(" * @return {!Promise<%s>}\n" % out_param_type)
 
                 output_file.write(" */\n")
                 output_file.write("Protocol.%sAgent.prototype.%s = function(%s) {};\n" %

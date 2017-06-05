@@ -37,11 +37,9 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
     if (!remoteObject.objectId)
       return [];
 
-    var payloads = await this._agent.getEventListeners(
-        /** @type {string} */ (remoteObject.objectId), undefined, undefined,
-        (error, payloads) => error ? [] : payloads);
+    var payloads = await this._agent.getEventListeners(/** @type {string} */ (remoteObject.objectId));
     var eventListeners = [];
-    for (var payload of payloads) {
+    for (var payload of payloads || []) {
       var location = this._runtimeModel.debuggerModel().createRawLocationByScriptId(
           payload.scriptId, payload.lineNumber, payload.columnNumber);
       if (!location)

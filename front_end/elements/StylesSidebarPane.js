@@ -408,22 +408,17 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     return blocks;
   }
 
-  _createNewRuleInViaInspectorStyleSheet() {
+  async _createNewRuleInViaInspectorStyleSheet() {
     var cssModel = this.cssModel();
     var node = this.node();
     if (!cssModel || !node)
       return;
     this._userOperation = true;
-    cssModel.requestViaInspectorStylesheet(node, onViaInspectorStyleSheet.bind(this));
 
-    /**
-     * @param {?SDK.CSSStyleSheetHeader} styleSheetHeader
-     * @this {Elements.StylesSidebarPane}
-     */
-    function onViaInspectorStyleSheet(styleSheetHeader) {
-      this._userOperation = false;
-      this._createNewRuleInStyleSheet(styleSheetHeader);
-    }
+    var styleSheetHeader = await cssModel.requestViaInspectorStylesheet(/** @type {!SDK.DOMNode} */ (node));
+
+    this._userOperation = false;
+    this._createNewRuleInStyleSheet(styleSheetHeader);
   }
 
   /**

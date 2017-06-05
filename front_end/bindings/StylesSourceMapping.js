@@ -218,28 +218,17 @@ Bindings.StylesSourceMapping = class {
    * @param {boolean} majorChange
    * @return {!Promise<?string>}
    */
-  _setStyleContent(uiSourceCode, content, majorChange) {
+  async _setStyleContent(uiSourceCode, content, majorChange) {
     var styleSheetIds = this._cssModel.styleSheetIdsForURL(uiSourceCode.url());
     if (!styleSheetIds.length)
-      return Promise.resolve(/** @type {?string} */ ('No stylesheet found: ' + uiSourceCode.url()));
-
+      return 'No stylesheet found: ' + uiSourceCode.url();
     this._isSettingContent = true;
+    var promises = styleSheetIds.map(id => this._cssModel.setStyleSheetText(id, content, majorChange));
 
-    /**
-     * @param {?string} error
-     * @this {Bindings.StylesSourceMapping}
-     * @return {?string}
-     */
-    function callback(error) {
-      delete this._isSettingContent;
-      return error || null;
-    }
+    var results = await Promise.all(promises);
 
-    var promises = [];
-    for (var i = 0; i < styleSheetIds.length; ++i)
-      promises.push(this._cssModel.setStyleSheetText(styleSheetIds[i], content, majorChange));
-
-    return Promise.all(promises).spread(callback.bind(this));
+    delete this._isSettingContent;
+    return results.find(error => !!error);
   }
 
   /**

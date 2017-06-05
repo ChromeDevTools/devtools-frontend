@@ -48,7 +48,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._resetStyleSheets, this);
     }
     target.registerCSSDispatcher(new SDK.CSSDispatcher(this));
-    this._agent.enable().then(this._wasEnabled.bind(this));
+    this._enable();
     /** @type {!Map.<string, !SDK.CSSStyleSheetHeader>} */
     this._styleSheetIdToHeader = new Map();
     /** @type {!Map.<string, !Object.<!Protocol.Page.FrameId, !Array.<!Protocol.CSS.StyleSheetId>>>} */
@@ -205,26 +205,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @param {boolean} majorChange
    * @return {!Promise<boolean>}
    */
-  _innerSetStyleTexts(styleSheetIds, ranges, texts, majorChange) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {?Array<!Protocol.CSS.CSSStyle>} stylePayloads
-     * @return {boolean}
-     * @this {SDK.CSSModel}
-     */
-    function parsePayload(error, stylePayloads) {
-      if (error || !stylePayloads || stylePayloads.length !== ranges.length)
-        return false;
-
-      if (majorChange)
-        this._domModel.markUndoableState();
-      for (var i = 0; i < ranges.length; ++i) {
-        var edit = new SDK.CSSModel.Edit(styleSheetIds[i], ranges[i], texts[i], stylePayloads[i]);
-        this._fireStyleSheetChanged(styleSheetIds[i], edit);
-      }
-      return true;
-    }
-
+  async _innerSetStyleTexts(styleSheetIds, ranges, texts, majorChange) {
     console.assert(
         styleSheetIds.length === ranges.length && ranges.length === texts.length, 'Array lengths must be equal');
     var edits = [];
@@ -234,9 +215,23 @@ SDK.CSSModel = class extends SDK.SDKModel {
       ensureContentPromises.push(this._ensureOriginalStyleSheetText(styleSheetIds[i]));
     }
 
-    return Promise.all(ensureContentPromises)
-        .then(() => this._agent.setStyleTexts(edits, parsePayload.bind(this)))
-        .catchException(false);
+    try {
+      await Promise.all(ensureContentPromises);
+      var stylePayloads = await this._agent.setStyleTexts(edits);
+
+      if (!stylePayloads || stylePayloads.length !== ranges.length)
+        return false;
+
+      if (majorChange)
+        this._domModel.markUndoableState();
+      for (var i = 0; i < ranges.length; ++i) {
+        var edit = new SDK.CSSModel.Edit(styleSheetIds[i], ranges[i], texts[i], stylePayloads[i]);
+        this._fireStyleSheetChanged(styleSheetIds[i], edit);
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /**
@@ -245,26 +240,22 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @param {string} text
    * @return {!Promise<boolean>}
    */
-  setSelectorText(styleSheetId, range, text) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {?Protocol.CSS.SelectorList} selectorPayload
-     * @return {boolean}
-     * @this {SDK.CSSModel}
-     */
-    function callback(error, selectorPayload) {
-      if (error || !selectorPayload)
+  async setSelectorText(styleSheetId, range, text) {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
+
+    try {
+      await this._ensureOriginalStyleSheetText(styleSheetId);
+      var selectorPayload = await this._agent.setRuleSelector(styleSheetId, range, text);
+
+      if (!selectorPayload)
         return false;
       this._domModel.markUndoableState();
       var edit = new SDK.CSSModel.Edit(styleSheetId, range, text, selectorPayload);
       this._fireStyleSheetChanged(styleSheetId, edit);
       return true;
+    } catch (e) {
+      return false;
     }
-
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
-    return this._ensureOriginalStyleSheetText(styleSheetId)
-        .then(() => this._agent.setRuleSelector(styleSheetId, range, text, callback.bind(this)))
-        .catchException(false);
   }
 
   /**
@@ -273,26 +264,22 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @param {string} text
    * @return {!Promise<boolean>}
    */
-  setKeyframeKey(styleSheetId, range, text) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Protocol.CSS.Value} payload
-     * @return {boolean}
-     * @this {SDK.CSSModel}
-     */
-    function callback(error, payload) {
-      if (error || !payload)
+  async setKeyframeKey(styleSheetId, range, text) {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
+
+    try {
+      await this._ensureOriginalStyleSheetText(styleSheetId);
+      var payload = await this._agent.setKeyframeKey(styleSheetId, range, text);
+
+      if (!payload)
         return false;
       this._domModel.markUndoableState();
       var edit = new SDK.CSSModel.Edit(styleSheetId, range, text, payload);
       this._fireStyleSheetChanged(styleSheetId, edit);
       return true;
+    } catch (e) {
+      return false;
     }
-
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
-    return this._ensureOriginalStyleSheetText(styleSheetId)
-        .then(() => this._agent.setKeyframeKey(styleSheetId, range, text, callback.bind(this)))
-        .catchException(false);
   }
 
   startCoverage() {
@@ -303,7 +290,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @return {!Promise<!Array<!Protocol.CSS.RuleUsage>>}
    */
   takeCoverageDelta() {
-    return this._agent.takeCoverageDelta((error, ruleUsage) => error || !ruleUsage ? [] : ruleUsage);
+    return this._agent.takeCoverageDelta().then(ruleUsage => ruleUsage || []);
   }
 
   /**
@@ -314,20 +301,11 @@ SDK.CSSModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {!Promise.<!Array.<!SDK.CSSMedia>>}
+   * @return {!Promise<!Array<!SDK.CSSMedia>>}
    */
-  mediaQueriesPromise() {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {?Array.<!Protocol.CSS.CSSMedia>} payload
-     * @return {!Array.<!SDK.CSSMedia>}
-     * @this {!SDK.CSSModel}
-     */
-    function parsePayload(error, payload) {
-      return !error && payload ? SDK.CSSMedia.parseMediaArrayPayload(this, payload) : [];
-    }
-
-    return this._agent.getMediaQueries(parsePayload.bind(this));
+  async mediaQueriesPromise() {
+    var payload = await this._agent.getMediaQueries();
+    return payload ? SDK.CSSMedia.parseMediaArrayPayload(this, payload) : [];
   }
 
   /**
@@ -338,48 +316,32 @@ SDK.CSSModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {?Protocol.Error} error
+   * @return {!Promise}
    */
-  _wasEnabled(error) {
-    if (error) {
-      console.error('Failed to enabled CSS agent: ' + error);
-      return;
-    }
+  async _enable() {
+    await this._agent.enable();
     this._isEnabled = true;
     this.dispatchEventToListeners(SDK.CSSModel.Events.ModelWasEnabled);
   }
 
   /**
    * @param {!Protocol.DOM.NodeId} nodeId
-   * @return {!Promise.<?SDK.CSSMatchedStyles>}
+   * @return {!Promise<?SDK.CSSMatchedStyles>}
    */
-  matchedStylesPromise(nodeId) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {?Protocol.CSS.CSSStyle=} inlinePayload
-     * @param {?Protocol.CSS.CSSStyle=} attributesPayload
-     * @param {!Array.<!Protocol.CSS.RuleMatch>=} matchedPayload
-     * @param {!Array.<!Protocol.CSS.PseudoElementMatches>=} pseudoPayload
-     * @param {!Array.<!Protocol.CSS.InheritedStyleEntry>=} inheritedPayload
-     * @param {!Array.<!Protocol.CSS.CSSKeyframesRule>=} animationsPayload
-     * @return {?SDK.CSSMatchedStyles}
-     * @this {SDK.CSSModel}
-     */
-    function callback(
-        error, inlinePayload, attributesPayload, matchedPayload, pseudoPayload, inheritedPayload, animationsPayload) {
-      if (error)
-        return null;
+  async matchedStylesPromise(nodeId) {
+    var response = await this._agent.invoke_getMatchedStylesForNode({nodeId});
 
-      var node = this._domModel.nodeForId(nodeId);
-      if (!node)
-        return null;
+    if (response[Protocol.Error])
+      return null;
 
-      return new SDK.CSSMatchedStyles(
-          this, node, inlinePayload || null, attributesPayload || null, matchedPayload || [], pseudoPayload || [],
-          inheritedPayload || [], animationsPayload || []);
-    }
+    var node = this._domModel.nodeForId(nodeId);
+    if (!node)
+      return null;
 
-    return this._agent.getMatchedStylesForNode(nodeId, callback.bind(this));
+    return new SDK.CSSMatchedStyles(
+        this, /** @type {!SDK.DOMNode} */ (node), response.inlineStyle || null, response.attributesStyle || null,
+        response.matchedCSSRules || [], response.pseudoElements || [], response.inherited || [],
+        response.cssKeyframesRules || []);
   }
 
   /**
@@ -387,20 +349,12 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @return {!Promise<!Array<string>>}
    */
   classNamesPromise(styleSheetId) {
-    /**
-     * @param {?string} error
-     * @param {?Array<string>} classNames
-     * @return {!Array<string>}
-     */
-    function classNamesCallback(error, classNames) {
-      return !error && classNames ? classNames : [];
-    }
-    return this._agent.collectClassNames(styleSheetId, classNamesCallback);
+    return this._agent.collectClassNames(styleSheetId).then(classNames => classNames || []);
   }
 
   /**
    * @param {!Protocol.DOM.NodeId} nodeId
-   * @return {!Promise.<?Map.<string, string>>}
+   * @return {!Promise<?Map<string, string>>}
    */
   computedStylePromise(nodeId) {
     return this._styleLoader.computedStylePromise(nodeId);
@@ -411,32 +365,15 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @return {!Promise<?Array<string>>}
    */
   backgroundColorsPromise(nodeId) {
-    /**
-     * @param {?string} error
-     * @param {!Array<string>=} backgroundColors
-     * @return {?Array<string>}
-     */
-    function backgroundColorsCallback(error, backgroundColors) {
-      return !error && backgroundColors ? backgroundColors : null;
-    }
-    return this._agent.getBackgroundColors(nodeId, backgroundColorsCallback);
+    return this._agent.getBackgroundColors(nodeId);
   }
 
   /**
    * @param {number} nodeId
-   * @return {!Promise.<?Array.<!Protocol.CSS.PlatformFontUsage>>}
+   * @return {!Promise<?Array<!Protocol.CSS.PlatformFontUsage>>}
    */
   platformFontsPromise(nodeId) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {?Array.<!Protocol.CSS.PlatformFontUsage>} fonts
-     * @return {?Array.<!Protocol.CSS.PlatformFontUsage>}
-     */
-    function platformFontsCallback(error, fonts) {
-      return !error && fonts ? fonts : null;
-    }
-
-    return this._agent.getPlatformFontsForNode(nodeId, platformFontsCallback);
+    return this._agent.getPlatformFontsForNode(nodeId);
   }
 
   /**
@@ -463,29 +400,19 @@ SDK.CSSModel = class extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.DOM.NodeId} nodeId
-   * @return {!Promise.<?SDK.CSSModel.InlineStyleResult>}
+   * @return {!Promise<?SDK.CSSModel.InlineStyleResult>}
    */
-  inlineStylesPromise(nodeId) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {?Protocol.CSS.CSSStyle=} inlinePayload
-     * @param {?Protocol.CSS.CSSStyle=} attributesStylePayload
-     * @return {?SDK.CSSModel.InlineStyleResult}
-     * @this {SDK.CSSModel}
-     */
-    function callback(error, inlinePayload, attributesStylePayload) {
-      if (error || !inlinePayload)
-        return null;
-      var inlineStyle = inlinePayload ?
-          new SDK.CSSStyleDeclaration(this, null, inlinePayload, SDK.CSSStyleDeclaration.Type.Inline) :
-          null;
-      var attributesStyle = attributesStylePayload ?
-          new SDK.CSSStyleDeclaration(this, null, attributesStylePayload, SDK.CSSStyleDeclaration.Type.Attributes) :
-          null;
-      return new SDK.CSSModel.InlineStyleResult(inlineStyle, attributesStyle);
-    }
+  async inlineStylesPromise(nodeId) {
+    var response = await this._agent.invoke_getInlineStylesForNode({nodeId});
 
-    return this._agent.getInlineStylesForNode(nodeId, callback.bind(this));
+    if (response[Protocol.Error] || !response.inlineStyle)
+      return null;
+    var inlineStyle =
+        new SDK.CSSStyleDeclaration(this, null, response.inlineStyle, SDK.CSSStyleDeclaration.Type.Inline);
+    var attributesStyle = response.attributesStyle ?
+        new SDK.CSSStyleDeclaration(this, null, response.attributesStyle, SDK.CSSStyleDeclaration.Type.Attributes) :
+        null;
+    return new SDK.CSSModel.InlineStyleResult(inlineStyle, attributesStyle);
   }
 
   /**
@@ -531,26 +458,22 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @param {string} newMediaText
    * @return {!Promise<boolean>}
    */
-  setMediaText(styleSheetId, range, newMediaText) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {!Protocol.CSS.CSSMedia} mediaPayload
-     * @return {boolean}
-     * @this {SDK.CSSModel}
-     */
-    function parsePayload(error, mediaPayload) {
+  async setMediaText(styleSheetId, range, newMediaText) {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
+
+    try {
+      await this._ensureOriginalStyleSheetText(styleSheetId);
+      var mediaPayload = await this._agent.setMediaText(styleSheetId, range, newMediaText);
+
       if (!mediaPayload)
         return false;
       this._domModel.markUndoableState();
       var edit = new SDK.CSSModel.Edit(styleSheetId, range, newMediaText, mediaPayload);
       this._fireStyleSheetChanged(styleSheetId, edit);
       return true;
+    } catch (e) {
+      return false;
     }
-
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
-    return this._ensureOriginalStyleSheetText(styleSheetId)
-        .then(() => this._agent.setMediaText(styleSheetId, range, newMediaText, parsePayload.bind(this)))
-        .catchException(false);
   }
 
   /**
@@ -559,53 +482,39 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @param {!TextUtils.TextRange} ruleLocation
    * @return {!Promise<?SDK.CSSStyleRule>}
    */
-  addRule(styleSheetId, ruleText, ruleLocation) {
-    return this._ensureOriginalStyleSheetText(styleSheetId)
-        .then(() => this._agent.addRule(styleSheetId, ruleText, ruleLocation, parsePayload.bind(this)))
-        .catchException(/** @type {?SDK.CSSStyleRule} */ (null));
+  async addRule(styleSheetId, ruleText, ruleLocation) {
+    try {
+      await this._ensureOriginalStyleSheetText(styleSheetId);
+      var rulePayload = await this._agent.addRule(styleSheetId, ruleText, ruleLocation);
 
-    /**
-     * @param {?Protocol.Error} error
-     * @param {?Protocol.CSS.CSSRule} rulePayload
-     * @return {?SDK.CSSStyleRule}
-     * @this {SDK.CSSModel}
-     */
-    function parsePayload(error, rulePayload) {
-      if (error || !rulePayload)
+      if (!rulePayload)
         return null;
       this._domModel.markUndoableState();
       var edit = new SDK.CSSModel.Edit(styleSheetId, ruleLocation, ruleText, rulePayload);
       this._fireStyleSheetChanged(styleSheetId, edit);
       return new SDK.CSSStyleRule(this, rulePayload);
+    } catch (e) {
+      return null;
     }
   }
 
   /**
    * @param {!SDK.DOMNode} node
-   * @param {function(?SDK.CSSStyleSheetHeader)} userCallback
+   * @return {!Promise<?SDK.CSSStyleSheetHeader>}
    */
-  requestViaInspectorStylesheet(node, userCallback) {
+  async requestViaInspectorStylesheet(node) {
     var frameId = node.frameId() || (this._resourceTreeModel ? this._resourceTreeModel.mainFrame.id : '');
     var headers = this._styleSheetIdToHeader.valuesArray();
-    for (var i = 0; i < headers.length; ++i) {
-      var styleSheetHeader = headers[i];
-      if (styleSheetHeader.frameId === frameId && styleSheetHeader.isViaInspector()) {
-        userCallback(styleSheetHeader);
-        return;
-      }
-    }
+    var styleSheetHeader = headers.find(header => header.frameId === frameId && header.isViaInspector());
+    if (styleSheetHeader)
+      return styleSheetHeader;
 
-    /**
-     * @param {?Protocol.Error} error
-     * @param {?Protocol.CSS.StyleSheetId} styleSheetId
-     * @return {?SDK.CSSStyleSheetHeader}
-     * @this {SDK.CSSModel}
-     */
-    function innerCallback(error, styleSheetId) {
-      return !error && styleSheetId ? this._styleSheetIdToHeader.get(styleSheetId) || null : null;
+    try {
+      var styleSheetId = await this._agent.createStyleSheet(frameId);
+      return styleSheetId && this._styleSheetIdToHeader.get(styleSheetId) || null;
+    } catch (e) {
+      return null;
     }
-
-    this._agent.createStyleSheet(frameId, innerCallback.bind(this)).catchException(null).then(userCallback);
   }
 
   mediaQueryResultChanged() {
@@ -734,55 +643,41 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @param {string} newText
    * @param {boolean} majorChange
-   * @return {!Promise.<?Protocol.Error>}
+   * @return {!Promise<?string>}
    */
-  setStyleSheetText(styleSheetId, newText, majorChange) {
+  async setStyleSheetText(styleSheetId, newText, majorChange) {
     var header = /** @type {!SDK.CSSStyleSheetHeader} */ (this._styleSheetIdToHeader.get(styleSheetId));
     console.assert(header);
     newText = SDK.CSSModel.trimSourceURL(newText);
     if (header.hasSourceURL)
       newText += '\n/*# sourceURL=' + header.sourceURL + ' */';
-    return this._ensureOriginalStyleSheetText(styleSheetId)
-        .then(() => this._agent.setStyleSheetText(header.id, newText, callback.bind(this)));
 
-    /**
-     * @param {?Protocol.Error} error
-     * @param {string=} sourceMapURL
-     * @return {?Protocol.Error}
-     * @this {SDK.CSSModel}
-     */
-    function callback(error, sourceMapURL) {
-      this._sourceMapManager.detachSourceMap(header);
-      header.setSourceMapURL(sourceMapURL);
-      this._sourceMapManager.attachSourceMap(header, header.sourceURL, header.sourceMapURL);
-      if (error)
-        return error;
-      if (majorChange)
-        this._domModel.markUndoableState();
-      this._fireStyleSheetChanged(styleSheetId);
-      return null;
-    }
+    await this._ensureOriginalStyleSheetText(styleSheetId);
+    var response = await this._agent.invoke_setStyleSheetText({styleSheetId: header.id, text: newText});
+    var sourceMapURL = response.sourceMapURL;
+
+    this._sourceMapManager.detachSourceMap(header);
+    header.setSourceMapURL(sourceMapURL);
+    this._sourceMapManager.attachSourceMap(header, header.sourceURL, header.sourceMapURL);
+    if (sourceMapURL === null)
+      return 'Error in CSS.setStyleSheetText';
+    if (majorChange)
+      this._domModel.markUndoableState();
+    this._fireStyleSheetChanged(styleSheetId);
+    return null;
   }
 
   /**
    * @param {!Protocol.CSS.StyleSheetId} styleSheetId
    * @return {!Promise<?string>}
    */
-  getStyleSheetText(styleSheetId) {
-    /**
-     * @param {?Protocol.Error} error
-     * @param {?string} text
-     * @return {?string}
-     */
-    function textCallback(error, text) {
-      if (error || text === null) {
-        console.error('Failed to get text for stylesheet ' + styleSheetId + ': ' + error);
-        return null;
-      }
-      return SDK.CSSModel.trimSourceURL(text);
+  async getStyleSheetText(styleSheetId) {
+    try {
+      var text = await this._agent.getStyleSheetText(styleSheetId);
+      return text && SDK.CSSModel.trimSourceURL(text);
+    } catch (e) {
+      return null;
     }
-
-    return this._agent.getStyleSheetText(styleSheetId, textCallback).catchException(/** @type {?string} */ (null));
   }
 
   _resetStyleSheets() {
@@ -808,8 +703,8 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @override
    * @return {!Promise}
    */
-  resumeModel() {
-    return this._agent.enable().then(this._wasEnabled.bind(this));
+  async resumeModel() {
+    return this._enable();
   }
 
   /**
@@ -985,39 +880,29 @@ SDK.CSSModel.ComputedStyleLoader = class {
    * @return {!Promise<?Map<string, string>>}
    */
   computedStylePromise(nodeId) {
-    if (!this._nodeIdToPromise.has(nodeId)) {
-      this._nodeIdToPromise.set(
-          nodeId, this._cssModel._agent.getComputedStyleForNode(nodeId, parsePayload).then(cleanUp.bind(this)));
-    }
-
-    return /** @type {!Promise.<?Map.<string, string>>} */ (this._nodeIdToPromise.get(nodeId));
+    var promise = this._nodeIdToPromise.get(nodeId);
+    if (promise)
+      return promise;
+    promise = this._cssModel._agent.getComputedStyleForNode(nodeId).then(parsePayload.bind(this));
+    this._nodeIdToPromise.set(nodeId, promise);
+    return promise;
 
     /**
-     * @param {?Protocol.Error} error
-     * @param {!Array.<!Protocol.CSS.CSSComputedStyleProperty>} computedPayload
-     * @return {?Map.<string, string>}
+     * @param {?Array<!Protocol.CSS.CSSComputedStyleProperty>} computedPayload
+     * @return {?Map<string, string>}
+     * @this {SDK.CSSModel.ComputedStyleLoader}
      */
-    function parsePayload(error, computedPayload) {
-      if (error || !computedPayload || !computedPayload.length)
+    function parsePayload(computedPayload) {
+      this._nodeIdToPromise.delete(nodeId);
+      if (!computedPayload || !computedPayload.length)
         return null;
       var result = new Map();
       for (var property of computedPayload)
         result.set(property.name, property.value);
       return result;
     }
-
-    /**
-     * @param {?Map.<string, string>} computedStyle
-     * @return {?Map.<string, string>}
-     * @this {SDK.CSSModel.ComputedStyleLoader}
-     */
-    function cleanUp(computedStyle) {
-      this._nodeIdToPromise.delete(nodeId);
-      return computedStyle;
-    }
   }
 };
-
 
 /**
  * @unrestricted

@@ -13,7 +13,8 @@ Sources.AddSourceMapURLDialog = class extends UI.HBox {
     this.registerRequiredCSS('sources/dialog.css');
     this.contentElement.createChild('label').textContent = Common.UIString('Source map URL: ');
 
-    this._input = this.contentElement.createChild('input');
+    this._input = UI.createInput();
+    this.contentElement.appendChild(this._input);
     this._input.setAttribute('type', 'text');
     this._input.addEventListener('keydown', this._onKeyDown.bind(this), false);
 

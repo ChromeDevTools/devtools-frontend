@@ -160,13 +160,6 @@ fieldset {
     padding: 0;
 }
 
-.settings-tab input:not([type]),
-.settings-tab input[type="text"] {
-    border: 1px solid rgb(213, 213, 213);
-    border-radius: 2px;
-    padding: 3px;
-}
-
 .settings-tab input.numeric {
     text-align: right;
 }

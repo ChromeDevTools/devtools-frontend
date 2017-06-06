@@ -71,10 +71,6 @@
 .devices-edit-fields input {
     flex: auto;
     margin: 8px 5px 0 5px;
-    height: 22px;
-    border: 1px solid rgb(213, 213, 213);
-    border-radius: 2px;
-    padding: 3px;
 }
 
 .devices-edit-fields .device-edit-fixed {

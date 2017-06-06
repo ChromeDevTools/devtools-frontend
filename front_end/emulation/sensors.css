@@ -14,25 +14,6 @@
 }
 
 .sensors-view input {
-    text-align: right;
-    width: 80px;
-}
-
-.sensors-view input:not(.error-input):enabled:focus,
-.sensors-view select:enabled:focus {
-    border-color: rgb(77, 144, 254);
-    outline: none;
-}
-
-.sensors-view input,
-.sensors-view select {
-    border: 1px solid #bfbfbf;
-    border-radius: 2px;
-}
-
-.sensors-view input {
-    min-height: 2em;
-    padding: 3px;
     width: 100%;
     max-width: 100px;
     margin: -5px 10px 0px 0px;

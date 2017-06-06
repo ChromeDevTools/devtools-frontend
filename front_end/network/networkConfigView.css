@@ -65,10 +65,6 @@
     display: block;
     width: calc(100% - 20px);
     max-width: 250px;
-    border: 1px solid #bfbfbf;
-    border-radius: 2px;
-    min-height: 2em;
-    padding: 3px;
 }
 
 .network-config-ua input[readonly] {
@@ -77,11 +73,6 @@
 
 .network-config-ua input[type=text], .network-config-ua .chrome-select {
     margin-top: 8px;
-}
-
-.network-config-ua input[type="text"]:invalid {
-    outline: auto 2px red;
-    outline-offset: -2px;
 }
 
 .network-config-ua .chrome-select {

@@ -683,8 +683,8 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
 
     var newTabRow = element.createChild('div', 'device-browser-new-tab');
     newTabRow.createChild('div', '').textContent = Common.UIString('New tab:');
-    var newTabInput = newTabRow.createChild('input', '');
-    newTabInput.type = 'text';
+    var newTabInput = UI.createInput('', 'text');
+    newTabRow.appendChild(newTabInput);
     newTabInput.placeholder = Common.UIString('Enter URL');
     newTabInput.addEventListener('keydown', newTabKeyDown, false);
     var newTabButton = UI.createTextButton(Common.UIString('Open'), openNewTab);

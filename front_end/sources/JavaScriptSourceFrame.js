@@ -625,9 +625,9 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     labelElement.createTextChild(
         Common.UIString('The breakpoint on line %d will stop only if this expression is true:', lineNumber + 1));
 
-    var editorElement = conditionElement.createChild('input', 'monospace');
+    var editorElement = UI.createInput('monospace', 'text');
+    conditionElement.appendChild(editorElement);
     editorElement.id = 'source-frame-breakpoint-condition';
-    editorElement.type = 'text';
     this._conditionEditorElement = editorElement;
 
     return conditionElement;

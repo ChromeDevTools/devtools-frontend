@@ -121,7 +121,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
    * @return {!Element}
    */
   static createPropertyFilterElement(placeholder, container, filterCallback) {
-    var input = createElement('input');
+    var input = createElementWithClass('input');
     input.placeholder = placeholder;
 
     function searchHandler() {

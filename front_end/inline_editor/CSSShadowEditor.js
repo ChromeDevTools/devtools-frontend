@@ -52,8 +52,8 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
     var label = field.createChild('label', 'shadow-editor-label');
     label.textContent = propertyName;
     label.setAttribute('for', propertyName);
-    var textInput = field.createChild('input', 'shadow-editor-text-input');
-    textInput.type = 'text';
+    var textInput = UI.createInput('shadow-editor-text-input', 'text');
+    field.appendChild(textInput);
     textInput.id = propertyName;
     textInput.addEventListener('keydown', this._handleValueModification.bind(this), false);
     textInput.addEventListener('mousewheel', this._handleValueModification.bind(this), false);

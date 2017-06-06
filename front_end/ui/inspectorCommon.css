@@ -170,9 +170,20 @@ input {
     -webkit-filter: invert(80%);
 }
 
-input[type="search"]:focus,
-input[type="text"]:focus {
-    outline: auto rgb(56, 121, 217);
+.harmony-input:not([type]),
+.harmony-input[type=number],
+.harmony-input[type=text] {
+    padding: 3px 6px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    height: 24px;
+}
+
+.harmony-input:not([type]):not(.error-input):not(:invalid):focus,
+.harmony-input[type=number]:not(.error-input):not(:invalid):focus,
+.harmony-input[type=text]:not(.error-input):not(:invalid):focus {
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.4);
+    border-color: transparent;
 }
 
 .highlighted-search-result.current-search-result {
@@ -207,9 +218,23 @@ input[type="text"]:focus {
     text-decoration: none !important;
 }
 
-.error-input {
-    outline: auto 2px red !important;
-    outline-offset: -2px !important;
+.harmony-input:not([type]).error-input,
+.harmony-input[type=number].error-input,
+.harmony-input[type=text].error-input,
+.harmony-input:not([type]):invalid,
+.harmony-input[type=number]:invalid,
+.harmony-input[type=text]:invalid {
+    border-color: #C53929;
+}
+
+.harmony-input:not([type]).error-input:focus,
+.harmony-input[type=number].error-input:focus,
+.harmony-input[type=text].error-input:focus,
+.harmony-input:not([type]):invalid:focus,
+.harmony-input[type=number]:invalid:focus,
+.harmony-input[type=text]:invalid:focus {
+    border-color: transparent;
+    box-shadow: 0 0 0 2px rgba(197, 57, 41, 0.4);
 }
 
 .chrome-select {

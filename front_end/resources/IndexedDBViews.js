@@ -202,7 +202,8 @@ Resources.IDBDataView = class extends UI.SimpleView {
     this._pageForwardButton.addEventListener(UI.ToolbarButton.Events.Click, this._pageForwardButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageForwardButton);
 
-    this._keyInputElement = editorToolbar.element.createChild('input', 'key-input');
+    this._keyInputElement = UI.createInput('key-input');
+    editorToolbar.element.appendChild(this._keyInputElement);
     this._keyInputElement.placeholder = Common.UIString('Start from key');
     this._keyInputElement.addEventListener('paste', this._keyInputChanged.bind(this), false);
     this._keyInputElement.addEventListener('cut', this._keyInputChanged.bind(this), false);

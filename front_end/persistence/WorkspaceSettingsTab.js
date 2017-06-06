@@ -57,8 +57,8 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
     var p = createElement('p');
     var labelElement = p.createChild('label');
     labelElement.textContent = Common.UIString('Folder exclude pattern');
-    var inputElement = p.createChild('input');
-    inputElement.type = 'text';
+    var inputElement = UI.createInput('', 'text');
+    p.appendChild(inputElement);
     inputElement.style.width = '270px';
     var folderExcludeSetting = Persistence.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
     var setValue =

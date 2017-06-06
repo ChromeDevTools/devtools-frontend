@@ -228,6 +228,7 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
     margin: 1px 3px;
     background-color: white;
     border: solid 1px #d8d8d8;
+    border-radius: 2px;
     min-width: 35px;
 }
 

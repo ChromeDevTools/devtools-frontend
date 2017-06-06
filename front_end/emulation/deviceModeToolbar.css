@@ -5,16 +5,10 @@
  */
 
 .device-mode-size-input {
-    background: hsl(0, 0%, 100%);
-    border: none;
-    padding: 2px 0;
-    width: 34px !important;
+    width: 41px;
+    max-height: 18px;
     margin: 0 2px;
     text-align: center;
-    box-shadow: 0px 0px 1px 0px hsla(0, 0%, 0%, 0.13);
-    border-radius: 1px;
-    height: 18px;
-    color: hsl(210, 16%, 22%);
 }
 
 .device-mode-size-input:focus::-webkit-input-placeholder {
@@ -23,7 +17,6 @@
 
 .device-mode-size-input:disabled {
     background: transparent;
-    box-shadow: none;
     -webkit-user-select: none;
     opacity: 0.6;
 }

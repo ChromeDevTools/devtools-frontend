@@ -603,7 +603,8 @@ Screencast.ScreencastView = class extends UI.VBox {
     this._navigationForward = this._navigationBar.createChild('button', 'forward');
     this._navigationForward.disabled = true;
     this._navigationReload = this._navigationBar.createChild('button', 'reload');
-    this._navigationUrl = this._navigationBar.createChild('input');
+    this._navigationUrl = UI.createInput();
+    this._navigationBar.appendChild(this._navigationUrl);
     this._navigationUrl.type = 'text';
     this._navigationProgressBar = new Screencast.ScreencastView.ProgressTracker(
         this._resourceTreeModel, this._networkManager, this._navigationBar.createChild('div', 'progress'));

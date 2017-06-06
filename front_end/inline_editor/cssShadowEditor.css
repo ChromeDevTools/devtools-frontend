@@ -76,24 +76,7 @@
 }
 
 .shadow-editor-text-input {
-    -webkit-appearance: none;
-    box-sizing: border-box;
     width: 52px;
-    height: 24px;
     margin-right: 8px;
-    padding: 3px 7px;
-    line-height: 16px;
-    border: 1px solid rgba(0, 0, 0, 0.14);
-    border-radius: 2px;
-    background-color: #ffffff;
-    color: #333;
     text-align: right;
-}
-
-.shadow-editor-text-input:focus, -theme-preserve {
-    border-color: #4285F4;
-}
-
-.shadow-editor-text-input.invalid:not(:focus) {
-    border-color: #E67C73;
 }

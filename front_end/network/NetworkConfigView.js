@@ -43,8 +43,7 @@ Network.NetworkConfigView = class extends UI.VBox {
 
     userAgentSelectElement.selectedIndex = 0;
 
-    var otherUserAgentElement = createElement('input');
-    otherUserAgentElement.type = 'text';
+    var otherUserAgentElement = UI.createInput('', 'text');
     otherUserAgentElement.value = userAgentSetting.get();
     otherUserAgentElement.title = userAgentSetting.get();
     otherUserAgentElement.placeholder = Common.UIString('Enter a custom user agent');

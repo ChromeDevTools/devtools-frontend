@@ -315,8 +315,7 @@ UI.ListWidget.Editor = class {
    * @return {!HTMLInputElement}
    */
   createInput(name, type, title, validator) {
-    var input = /** @type {!HTMLInputElement} */ (createElement('input'));
-    input.type = type;
+    var input = /** @type {!HTMLInputElement} */ (UI.createInput('', type));
     input.placeholder = title;
     input.addEventListener('input', this._validateControls.bind(this, false), false);
     input.addEventListener('blur', this._validateControls.bind(this, false), false);

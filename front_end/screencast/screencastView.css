@@ -84,15 +84,8 @@
 
 .screencast-navigation input {
     -webkit-flex: 1;
-    border: 1px solid #aaa;
-    border-radius: 2px;
-    margin: 1px;
-    padding-left: 5px;
-}
-
-.screencast-navigation input:focus {
-    border: 1px solid #aaa;
-    outline: none !important;
+    margin: 2px;
+    max-height: 19px;
 }
 
 .screencast-navigation .progress {

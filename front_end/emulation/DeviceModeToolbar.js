@@ -93,9 +93,8 @@ Emulation.DeviceModeToolbar = class {
    * @param {!UI.Toolbar} toolbar
    */
   _fillMainToolbar(toolbar) {
-    var widthInput = createElementWithClass('input', 'device-mode-size-input');
+    var widthInput = UI.createInput('device-mode-size-input', 'text');
     widthInput.maxLength = 4;
-    widthInput.type = 'text';
     widthInput.title = Common.UIString('Width');
     this._updateWidthInput =
         UI.bindInput(widthInput, this._applyWidth.bind(this), Emulation.DeviceModeModel.deviceSizeValidator, true);
@@ -108,9 +107,8 @@ Emulation.DeviceModeToolbar = class {
     this._xItem = this._wrapToolbarItem(xElement);
     toolbar.appendToolbarItem(this._xItem);
 
-    var heightInput = createElementWithClass('input', 'device-mode-size-input');
+    var heightInput = UI.createInput('device-mode-size-input', 'text');
     heightInput.maxLength = 4;
-    heightInput.type = 'text';
     heightInput.title = Common.UIString('Height (leave empty for full)');
     this._updateHeightInput = UI.bindInput(heightInput, this._applyHeight.bind(this), validateHeight, true);
     this._heightInput = heightInput;

@@ -1184,6 +1184,19 @@ UI.createTextButton = function(text, clickHandler, className, primary) {
 };
 
 /**
+ * @param {string=} className
+ * @param {string=} type
+ * @return {!Element}
+ */
+UI.createInput = function(className, type) {
+  var element = createElementWithClass('input', className || '');
+  element.classList.add('harmony-input');
+  if (type)
+    element.type = type;
+  return element;
+};
+
+/**
  * @param {string} name
  * @param {string} title
  * @param {boolean=} checked

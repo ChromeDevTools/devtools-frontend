@@ -85,7 +85,8 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._displayContainer = this.contentElement.createChild('div', 'spectrum-text source-code');
     this._textValues = [];
     for (var i = 0; i < 4; ++i) {
-      var inputValue = this._displayContainer.createChild('input', 'spectrum-text-value');
+      var inputValue = UI.createInput('spectrum-text-value');
+      this._displayContainer.appendChild(inputValue);
       inputValue.maxLength = 4;
       this._textValues.push(inputValue);
       inputValue.addEventListener('keydown', this._inputChanged.bind(this), false);
@@ -97,7 +98,8 @@ ColorPicker.Spectrum = class extends UI.VBox {
 
     // HEX display.
     this._hexContainer = this.contentElement.createChild('div', 'spectrum-text spectrum-text-hex source-code');
-    this._hexValue = this._hexContainer.createChild('input', 'spectrum-text-value');
+    this._hexValue = UI.createInput('spectrum-text-value');
+    this._hexContainer.appendChild(this._hexValue);
     this._hexValue.maxLength = 7;
     this._hexValue.addEventListener('keydown', this._inputChanged.bind(this), false);
     this._hexValue.addEventListener('input', this._inputChanged.bind(this), false);

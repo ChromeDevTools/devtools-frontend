@@ -1170,11 +1170,14 @@ UI.registerCustomElement = function(localName, typeExtension, prototype) {
  * @param {string} text
  * @param {function(!Event)=} clickHandler
  * @param {string=} className
+ * @param {boolean=} primary
  * @return {!Element}
  */
-UI.createTextButton = function(text, clickHandler, className) {
+UI.createTextButton = function(text, clickHandler, className, primary) {
   var element = createElementWithClass('button', className || '', 'text-button');
   element.textContent = text;
+  if (primary)
+    element.classList.add('primary-button');
   if (clickHandler)
     element.addEventListener('click', clickHandler, false);
   return element;

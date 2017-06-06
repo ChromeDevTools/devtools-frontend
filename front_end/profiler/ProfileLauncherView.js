@@ -47,7 +47,8 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
     targetDiv.createChild('div').textContent = Common.UIString('Target:');
     var targetsSelect = targetDiv.createChild('select', 'chrome-select');
     new Profiler.TargetsComboBoxController(targetsSelect, targetDiv);
-    this._controlButton = UI.createTextButton('', this._controlButtonClicked.bind(this), 'profile-launcher-button');
+    this._controlButton =
+        UI.createTextButton('', this._controlButtonClicked.bind(this), 'profile-launcher-button', true /* primary */);
     this._contentElement.appendChild(this._controlButton);
     this._recordButtonEnabled = true;
     this._loadButton =
@@ -74,12 +75,15 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
     this._controlButton.title = this._recordButtonEnabled ? '' : UI.anotherProfilerActiveLabel();
     if (this._isInstantProfile) {
       this._controlButton.classList.remove('running');
+      this._controlButton.classList.add('primary-button');
       this._controlButton.textContent = Common.UIString('Take snapshot');
     } else if (this._isProfiling) {
       this._controlButton.classList.add('running');
+      this._controlButton.classList.remove('primary-button');
       this._controlButton.textContent = Common.UIString('Stop');
     } else {
       this._controlButton.classList.remove('running');
+      this._controlButton.classList.add('primary-button');
       this._controlButton.textContent = Common.UIString('Start');
     }
     for (var item of this._typeIdToOptionElement.values())

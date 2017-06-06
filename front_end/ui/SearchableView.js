@@ -49,7 +49,7 @@ UI.SearchableView = class extends UI.VBox {
     this._footerElementContainer = this.contentElement.createChild('div', 'search-bar hidden');
     this._footerElementContainer.style.order = 100;
 
-    var toolbar = new UI.Toolbar('search-toolbar', this._footerElementContainer);
+    var toolbar = new UI.Toolbar('', this._footerElementContainer);
 
     if (this._searchProvider.supportsCaseSensitiveSearch()) {
       this._caseSensitiveButton = new UI.ToolbarToggle(Common.UIString('Case sensitive'), '');

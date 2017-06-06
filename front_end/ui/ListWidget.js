@@ -264,7 +264,7 @@ UI.ListWidget.Editor = class {
     this._contentElement = this.element.createChild('div', 'editor-content');
 
     var buttonsRow = this.element.createChild('div', 'editor-buttons');
-    this._commitButton = UI.createTextButton('', this._commitClicked.bind(this));
+    this._commitButton = UI.createTextButton('', this._commitClicked.bind(this), '', true /* primary */);
     buttonsRow.appendChild(this._commitButton);
     this._cancelButton = UI.createTextButton(Common.UIString('Cancel'), this._cancelClicked.bind(this));
     this._cancelButton.addEventListener(
@@ -305,16 +305,6 @@ UI.ListWidget.Editor = class {
    */
   contentElement() {
     return this._contentElement;
-  }
-
-  /**
-   * @param {boolean} material
-   */
-  setMaterial(material) {
-    this._commitButton.classList.toggle('material-button', material);
-    this._commitButton.classList.toggle('default', material);
-    this._cancelButton.classList.toggle('material-button', material);
-    this.element.classList.toggle('material', material);
   }
 
   /**

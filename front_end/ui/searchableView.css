@@ -5,7 +5,7 @@
  */
 
 .search-bar {
-    flex: 0 0 23px;
+    flex: 0 0 29px;
     background-color: #eee;
     border-top: 1px solid #ccc;
     display: flex;
@@ -14,11 +14,7 @@
 }
 
 .search-bar.replaceable {
-    flex: 0 0 44px;
-}
-
-.search-toolbar {
-    margin-top: -2px;
+    flex: 0 0 55px;
 }
 
 .search-replace {
@@ -34,7 +30,8 @@
 }
 
 .toolbar-replace-checkbox {
-    margin-top: 2px;
+    margin-top: 4px;
+    margin-right: 2px;
     display: block;
 }
 
@@ -55,13 +52,12 @@
 
 .toolbar-search-navigation-controls {
     align-self: stretch;
-    background-image: linear-gradient(rgb(228, 228, 228), rgb(206, 206, 206));
 }
 
 .toolbar-search-navigation {
     display: inline-block;
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     background-repeat: no-repeat;
     background-position: 4px 7px;
     border-left: 1px solid rgb(170, 170, 170);
@@ -73,17 +69,9 @@
 }
 
 .toolbar-search button.search-action-button {
-    border: 1px solid rgb(163, 163, 163);
-    border-radius: 8px;
-    margin: 1px 3px 0 3px;
-    background-image: linear-gradient(rgb(241, 241, 241), rgb(220, 220, 220));
-    width: 82px;
-    height: 20px;
-    white-space: nowrap;
-}
-
-.toolbar-search button.search-action-button:active {
-    background-image: linear-gradient(rgb(185, 185, 185), rgb(156, 156, 156));
+    font-weight: 400;
+    height: 22px;
+    width: 87px;
 }
 
 .toolbar-search-control {
@@ -93,7 +81,7 @@
 }
 
 .toolbar-search-buttons {
-    flex-basis: 179px;
+    flex-basis: 182px;
 }
 
 .toolbar-replace-control,
@@ -104,10 +92,11 @@
 
 .toolbar-search-control, .toolbar-replace-control {
     border: 1px solid rgb(163, 163, 163);
-    height: 20px;
+    height: 22px;
     border-radius: 2px;
     width: 100%;
-    margin-top: 1px;
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
 
 .toolbar-search-navigation.enabled:active {
@@ -124,7 +113,7 @@
 }
 
 .toolbar-search-navigation.toolbar-search-navigation-prev.enabled:active {
-    background-image: url(Images/searchPrev.png), linear-gradient(rgb(168, 168, 168), rgb(116, 116, 116));
+    background-image: url(Images/searchPrev.png), #f2f2f2;
 }
 
 .toolbar-search-navigation.toolbar-search-navigation-next {
@@ -133,7 +122,7 @@
 }
 
 .toolbar-search-navigation.toolbar-search-navigation-next.enabled:active {
-    background-image: url(Images/searchNext.png), linear-gradient(rgb(168, 168, 168), rgb(116, 116, 116));
+    background-image: url(Images/searchNext.png), #f2f2f2;
 }
 
 .search-results-matches {

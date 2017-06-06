@@ -159,7 +159,7 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
         'click', () => InspectorFrontendHost.openInNewTab('https://developers.google.com/web/tools/lighthouse/'));
 
     var newButton = UI.createTextButton(
-        Common.UIString('Perform an audit\u2026'), this._showLauncherUI.bind(this), 'material-button default');
+        Common.UIString('Perform an audit\u2026'), this._showLauncherUI.bind(this), '', true /* primary */);
     landingCenter.appendChild(newButton);
     this.setDefaultFocusedElement(newButton);
   }
@@ -190,10 +190,10 @@ Audits2.Audits2Panel = class extends UI.PanelWithSidebar {
 
     var buttonsRow = uiElement.createChild('div', 'audits2-dialog-buttons hbox');
     this._startButton =
-        UI.createTextButton(Common.UIString('Run audit'), this._start.bind(this), 'material-button default');
+        UI.createTextButton(Common.UIString('Run audit'), this._start.bind(this), '', true /* primary */);
     this._updateStartButtonEnabled();
     buttonsRow.appendChild(this._startButton);
-    this._cancelButton = UI.createTextButton(Common.UIString('Cancel'), this._cancel.bind(this), 'material-button');
+    this._cancelButton = UI.createTextButton(Common.UIString('Cancel'), this._cancel.bind(this));
     buttonsRow.appendChild(this._cancelButton);
 
     this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);

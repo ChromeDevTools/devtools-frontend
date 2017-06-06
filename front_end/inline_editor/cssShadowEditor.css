@@ -46,6 +46,7 @@
     border: 1px solid rgba(0, 0, 0, 0.14);
     background-color: #ffffff;
     text-align: center;
+    font-weight: 500;
 }
 
 .shadow-editor-button-left {

@@ -18,7 +18,7 @@
 
 .add-conditions-button {
     flex: none;
-    margin: 10px 0;
+    margin: 10px 2px;
     min-width: 140px;
     align-self: flex-start;
 }

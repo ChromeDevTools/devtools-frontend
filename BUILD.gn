@@ -890,6 +890,7 @@ generated_resources = [
   "$resources_out_dir/layer_viewer/layer_viewer_module.js",
   "$resources_out_dir/layers/layers_module.js",
   "$resources_out_dir/network/network_module.js",
+  "$resources_out_dir/network_priorities/network_priorities_module.js",
   "$resources_out_dir/object_ui/object_ui_module.js",
   "$resources_out_dir/perf_ui/perf_ui_module.js",
   "$resources_out_dir/profiler/profiler_module.js",

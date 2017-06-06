@@ -10,6 +10,12 @@
     align-items: center;
 }
 
+.audits2-view .dialog-close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
 header {
     color: #666;
     font-weight: bold;

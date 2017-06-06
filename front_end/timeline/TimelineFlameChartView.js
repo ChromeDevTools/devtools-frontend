@@ -157,7 +157,6 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._nextExtensionIndex = 0;
     this._appendExtensionData();
 
-    this._updateSearchResults(false, false);
     this._refresh();
   }
 
@@ -172,6 +171,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     }
     this._mainFlameChart.reset();
     this._networkFlameChart.reset();
+    this._updateSearchResults(false, false);
   }
 
   _appendExtensionData() {

@@ -146,7 +146,8 @@ UI.ShortcutsScreen = class {
         UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.toggle-recording'),
         Common.UIString('Start/stop recording'));
     section.addAlternateKeys(
-        UI.shortcutRegistry.shortcutDescriptorsForAction('main.reload'), Common.UIString('Record page reload'));
+        UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.record-reload'),
+        Common.UIString('Record page reload'));
     section.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.save-to-file'), Common.UIString('Save profile'));
     section.addAlternateKeys(
@@ -155,6 +156,15 @@ UI.ShortcutsScreen = class {
         UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.jump-to-previous-frame')
             .concat(UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.jump-to-next-frame')),
         Common.UIString('Jump to previous/next frame'));
+    if (Runtime.experiments.isEnabled('timelineKeepHistory')) {
+      section.addRelatedKeys(
+          UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.show-history'),
+          Common.UIString('Pick a recording from history'));
+      section.addRelatedKeys(
+          UI.ShortcutsScreen.PerformancePanelShortcuts.PreviousRecording.concat(
+              UI.ShortcutsScreen.PerformancePanelShortcuts.NextRecording),
+          Common.UIString('Show previous/next recording'));
+    }
 
     // Memory panel
     section = UI.shortcutsScreen.section(Common.UIString('Memory Panel'));
@@ -471,4 +481,13 @@ UI.ShortcutsScreen.LayersPanelShortcuts = {
   Left: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Left), UI.KeyboardShortcut.makeDescriptor('a')],
 
   Right: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Right), UI.KeyboardShortcut.makeDescriptor('d')]
+};
+
+UI.ShortcutsScreen.PerformancePanelShortcuts = {
+  PreviousRecording: [UI.KeyboardShortcut.makeDescriptor(
+      UI.KeyboardShortcut.Keys.Left,
+      Host.isMac() ? UI.KeyboardShortcut.Modifiers.Meta : UI.KeyboardShortcut.Modifiers.Alt)],
+  NextRecording: [UI.KeyboardShortcut.makeDescriptor(
+      UI.KeyboardShortcut.Keys.Right,
+      Host.isMac() ? UI.KeyboardShortcut.Modifiers.Meta : UI.KeyboardShortcut.Modifiers.Alt)],
 };

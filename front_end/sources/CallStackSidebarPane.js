@@ -70,7 +70,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     if (!details) {
       this._notPausedMessageElement.classList.remove('hidden');
       this._blackboxedMessageElement.classList.add('hidden');
-      this._items.replaceAllItems([]);
+      this._items.replaceAll([]);
       this._debuggerModel = null;
       UI.context.setFlavor(SDK.DebuggerModel.CallFrame, null);
       return;
@@ -141,7 +141,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       this._blackboxedMessageElement.classList.remove('hidden');
     }
 
-    this._items.replaceAllItems(items);
+    this._items.replaceAll(items);
     this._list.selectNextItem(true /* canWrap */, false /* center */);
   }
 
@@ -359,8 +359,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
 
   _copyStackTrace() {
     var text = [];
-    for (var i = 0; i < this._items.length(); i++) {
-      var item = this._items.itemAtIndex(i);
+    for (var item of this._items) {
       if (item.promiseCreationFrame)
         continue;
       var itemText = this._itemTitle(item);

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 /**
+ * @implements {Iterable<T>}
  * @template T
  */
 UI.ListModel = class extends Common.Object {
@@ -15,9 +16,16 @@ UI.ListModel = class extends Common.Object {
   }
 
   /**
+   * @return {!Iterator<T>}
+   */
+  [Symbol.iterator]() {
+    return this._items[Symbol.iterator]();
+  }
+
+  /**
    * @return {number}
    */
-  length() {
+  get length() {
     return this._items.length;
   }
 
@@ -25,84 +33,32 @@ UI.ListModel = class extends Common.Object {
    * @param {number} index
    * @return {T}
    */
-  itemAtIndex(index) {
+  at(index) {
     return this._items[index];
   }
 
   /**
-   * @param {T} item
+   * @param {function(T):boolean} callback
+   * @return {boolean}
    */
-  pushItem(item) {
-    this.replaceItemsInRange(this._items.length, this._items.length, [item]);
+  every(callback) {
+    return this._items.every(callback);
   }
 
   /**
-   * @return {T}
+   * @param {function(T):boolean} callback
+   * @return {!Array<T>}
    */
-  popItem() {
-    return this.removeItemAtIndex(this._items.length - 1);
+  filter(callback) {
+    return this._items.filter(callback);
   }
 
   /**
-   * @param {number} index
-   * @param {T} item
+   * @param {function(T):boolean} callback
+   * @return {T|undefined}
    */
-  insertItemAtIndex(index, item) {
-    this.replaceItemsInRange(index, index, [item]);
-  }
-
-  /**
-   * @param {T} item
-   * @param {function(T, T):number} comparator
-   */
-  insertItemWithComparator(item, comparator) {
-    var index = this._items.lowerBound(item, comparator);
-    this.insertItemAtIndex(index, item);
-  }
-
-  /**
-   * @param {T} item
-   * @return {number}
-   */
-  indexOfItem(item) {
-    return this._items.indexOf(item);
-  }
-
-  /**
-   * @param {number} index
-   * @return {T}
-   */
-  removeItemAtIndex(index) {
-    var result = this._items[index];
-    this.replaceItemsInRange(index, index + 1, []);
-    return result;
-  }
-
-  /**
-   * @param {T} item
-   */
-  removeItem(item) {
-    var index = this._items.indexOf(item);
-    if (index === -1) {
-      console.error('Attempt to remove non-existing item');
-      return;
-    }
-    this.removeItemAtIndex(index);
-  }
-
-  /**
-   * @param {!Array<T>} items
-   */
-  replaceAllItems(items) {
-    this.replaceItemsInRange(0, this._items.length, items);
-  }
-
-  /**
-   * @param {number} index
-   * @param {T} item
-   */
-  replaceItemAtIndex(index, item) {
-    this.replaceItemsInRange(index, index + 1, [item]);
+  find(callback) {
+    return this._items.find(callback);
   }
 
   /**
@@ -114,11 +70,69 @@ UI.ListModel = class extends Common.Object {
   }
 
   /**
+   * @param {T} value
+   * @param {number=} fromIndex
+   * @return {number}
+   */
+  indexOf(value, fromIndex) {
+    return this._items.indexOf(value, fromIndex);
+  }
+
+  /**
+   * @param {number} index
+   * @param {T} value
+   */
+  insert(index, value) {
+    this._items.splice(index, 0, value);
+    this._replaced(index, [], 1);
+  }
+
+  /**
+   * @param {T} value
+   * @param {function(T, T):number} comparator
+   */
+  insertWithComparator(value, comparator) {
+    this.insert(this._items.lowerBound(value, comparator), value);
+  }
+
+  /**
+   * @param {string=} separator
+   * @return {string}
+   */
+  join(separator) {
+    return this._items.join(separator);
+  }
+
+  /**
+   * @param {number} index
+   * @return {T}
+   */
+  remove(index) {
+    var result = this._items[index];
+    this._items.splice(index, 1);
+    this._replaced(index, [result], 0);
+    return result;
+  }
+
+  /**
+   * @param {number} index
+   * @param {T} value
+   * @return {T}
+   */
+  replace(index, value) {
+    var oldValue = this._items[index];
+    this._items[index] = value;
+    this._replaced(index, [oldValue], 1);
+    return oldValue;
+  }
+
+  /**
    * @param {number} from
    * @param {number} to
    * @param {!Array<T>} items
+   * @return {!Array<T>} removed
    */
-  replaceItemsInRange(from, to, items) {
+  replaceRange(from, to, items) {
     var removed;
     if (items.length < 10000) {
       removed = this._items.splice(from, to - from, ...items);
@@ -129,8 +143,46 @@ UI.ListModel = class extends Common.Object {
       var after = this._items.slice(to);
       this._items = [].concat(before, items, after);
     }
+    this._replaced(from, removed, items.length);
+    return removed;
+  }
+
+  /**
+   * @param {!Array<T>} items
+   * @return {!Array<T>}
+   */
+  replaceAll(items) {
+    var oldItems = this._items.slice();
+    this._items = items;
+    this._replaced(0, oldItems, items.length);
+    return oldItems;
+  }
+
+  /**
+   * @param {number=} from
+   * @param {number=} to
+   * @return {!Array<T>}
+   */
+  slice(from, to) {
+    return this._items.slice(from, to);
+  }
+
+  /**
+   * @param {function(T):boolean} callback
+   * @return {boolean}
+   */
+  some(callback) {
+    return this._items.some(callback);
+  }
+
+  /**
+   * @param {number} index
+   * @param {!Array<T>} removed
+   * @param {number} inserted
+   */
+  _replaced(index, removed, inserted) {
     this.dispatchEventToListeners(
-        UI.ListModel.Events.ItemsReplaced, {index: from, removed: removed, inserted: items.length});
+        UI.ListModel.Events.ItemsReplaced, {index: index, removed: removed, inserted: inserted});
   }
 };
 

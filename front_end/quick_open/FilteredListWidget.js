@@ -152,7 +152,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
   }
 
   _attachProvider() {
-    this._items.replaceAllItems([]);
+    this._items.replaceAll([]);
     this._list.invalidateItemHeight();
     if (this._provider) {
       this._provider.setRefreshCallback(this._itemsLoaded.bind(this, this._provider));
@@ -435,7 +435,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     filteredItems = [].concat(bestItems, overflowItems, filteredItems);
     this._updateNotFoundMessage(!!filteredItems.length);
     var oldHeight = this._list.element.offsetHeight;
-    this._items.replaceAllItems(filteredItems);
+    this._items.replaceAll(filteredItems);
     if (filteredItems.length)
       this._list.selectItem(filteredItems[0]);
     if (this._list.element.offsetHeight !== oldHeight)

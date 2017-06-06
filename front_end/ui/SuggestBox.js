@@ -318,7 +318,7 @@ UI.SuggestBox = class {
       this._updateMaxSize(completions);
       this._glassPane.setContentAnchorBox(anchorBox);
       this._list.invalidateItemHeight();
-      this._items.replaceAllItems(completions);
+      this._items.replaceAll(completions);
 
       if (selectHighestPriority) {
         var highestPriorityItem = completions[0];

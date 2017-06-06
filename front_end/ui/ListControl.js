@@ -95,7 +95,7 @@ UI.ListControl = class {
    */
   setModel(model) {
     this._itemToElement.clear();
-    var length = this._model.length();
+    var length = this._model.length;
     this._model.removeEventListener(UI.ListModel.Events.ItemsReplaced, this._replacedItemsInRange, this);
     this._model = model;
     this._model.addEventListener(UI.ListModel.Events.ItemsReplaced, this._replacedItemsInRange, this);
@@ -118,7 +118,7 @@ UI.ListControl = class {
 
     if (this._selectedIndex >= to) {
       this._selectedIndex += data.inserted - (to - from);
-      this._selectedItem = this._model.itemAtIndex(this._selectedIndex);
+      this._selectedItem = this._model.at(this._selectedIndex);
     } else if (this._selectedIndex >= from) {
       var index = this._findFirstSelectable(from + data.inserted, +1, false);
       if (index === -1)
@@ -131,7 +131,7 @@ UI.ListControl = class {
    * @param {T} item
    */
   refreshItem(item) {
-    var index = this._model.indexOfItem(item);
+    var index = this._model.indexOf(item);
     if (index === -1) {
       console.error('Item to refresh is not present');
       return;
@@ -166,9 +166,9 @@ UI.ListControl = class {
       return;
     }
     this._fixedHeight = 0;
-    if (this._model.length()) {
+    if (this._model.length) {
       this._itemToElement.clear();
-      this._invalidate(0, this._model.length(), this._model.length());
+      this._invalidate(0, this._model.length, this._model.length);
     }
   }
 
@@ -183,7 +183,7 @@ UI.ListControl = class {
       return null;
     var element = /** @type {!Element} */ (node);
     var index = this._model.findIndex(item => this._itemToElement.get(item) === element);
-    return index !== -1 ? this._model.itemAtIndex(index) : null;
+    return index !== -1 ? this._model.at(index) : null;
   }
 
   /**
@@ -191,7 +191,7 @@ UI.ListControl = class {
    * @param {boolean=} center
    */
   scrollItemIntoView(item, center) {
-    var index = this._model.indexOfItem(item);
+    var index = this._model.indexOf(item);
     if (index === -1) {
       console.error('Attempt to scroll onto missing item');
       return;
@@ -221,7 +221,7 @@ UI.ListControl = class {
   selectItem(item, center, dontScroll) {
     var index = -1;
     if (item !== null) {
-      index = this._model.indexOfItem(item);
+      index = this._model.indexOf(item);
       if (index === -1) {
         console.error('Attempt to select missing item');
         return;
@@ -245,7 +245,7 @@ UI.ListControl = class {
   selectPreviousItem(canWrap, center) {
     if (this._selectedIndex === -1 && !canWrap)
       return false;
-    var index = this._selectedIndex === -1 ? this._model.length() - 1 : this._selectedIndex - 1;
+    var index = this._selectedIndex === -1 ? this._model.length - 1 : this._selectedIndex - 1;
     index = this._findFirstSelectable(index, -1, !!canWrap);
     if (index !== -1) {
       this._scrollIntoView(index, center);
@@ -280,7 +280,7 @@ UI.ListControl = class {
   selectItemPreviousPage(center) {
     if (this._mode === UI.ListMode.NonViewport)
       return false;
-    var index = this._selectedIndex === -1 ? this._model.length() - 1 : this._selectedIndex;
+    var index = this._selectedIndex === -1 ? this._model.length - 1 : this._selectedIndex;
     index = this._findPageSelectable(index, -1);
     if (index !== -1) {
       this._scrollIntoView(index, center);
@@ -369,7 +369,7 @@ UI.ListControl = class {
    * @return {number}
    */
   _totalHeight() {
-    return this._offsetAtIndex(this._model.length());
+    return this._offsetAtIndex(this._model.length);
   }
 
   /**
@@ -379,15 +379,15 @@ UI.ListControl = class {
   _indexAtOffset(offset) {
     if (this._mode === UI.ListMode.NonViewport)
       throw 'There should be no offset conversions in non-viewport mode';
-    if (!this._model.length() || offset < 0)
+    if (!this._model.length || offset < 0)
       return 0;
     if (this._mode === UI.ListMode.VariousHeightItems) {
       return Math.min(
-          this._model.length() - 1, this._variableOffsets.lowerBound(offset, undefined, 0, this._model.length()));
+          this._model.length - 1, this._variableOffsets.lowerBound(offset, undefined, 0, this._model.length));
     }
     if (!this._fixedHeight)
       this._measureHeight();
-    return Math.min(this._model.length() - 1, Math.floor(offset / this._fixedHeight));
+    return Math.min(this._model.length - 1, Math.floor(offset / this._fixedHeight));
   }
 
   /**
@@ -395,7 +395,7 @@ UI.ListControl = class {
    * @return {!Element}
    */
   _elementAtIndex(index) {
-    var item = this._model.itemAtIndex(index);
+    var item = this._model.at(index);
     var element = this._itemToElement.get(item);
     if (!element) {
       element = this._delegate.createElementForItem(item);
@@ -411,7 +411,7 @@ UI.ListControl = class {
   _offsetAtIndex(index) {
     if (this._mode === UI.ListMode.NonViewport)
       throw 'There should be no offset conversions in non-viewport mode';
-    if (!this._model.length())
+    if (!this._model.length)
       return 0;
     if (this._mode === UI.ListMode.VariousHeightItems)
       return this._variableOffsets[index];
@@ -421,7 +421,7 @@ UI.ListControl = class {
   }
 
   _measureHeight() {
-    this._fixedHeight = this._delegate.heightForItem(this._model.itemAtIndex(0));
+    this._fixedHeight = this._delegate.heightForItem(this._model.at(0));
     if (!this._fixedHeight)
       this._fixedHeight = UI.measurePreferredSize(this._elementAtIndex(0), this.element).height;
   }
@@ -437,7 +437,7 @@ UI.ListControl = class {
     if (oldElement === undefined)
       oldElement = this._itemToElement.get(oldItem) || null;
     this._selectedIndex = index;
-    this._selectedItem = index === -1 ? null : this._model.itemAtIndex(index);
+    this._selectedItem = index === -1 ? null : this._model.at(index);
     var newItem = this._selectedItem;
     var newElement = this._selectedIndex !== -1 ? this._elementAtIndex(index) : null;
     this._delegate.selectedItemChanged(oldItem, newItem, /** @type {?Element} */ (oldElement), newElement);
@@ -450,7 +450,7 @@ UI.ListControl = class {
    * @return {number}
    */
   _findFirstSelectable(index, direction, canWrap) {
-    var length = this._model.length();
+    var length = this._model.length;
     if (!length)
       return -1;
     for (var step = 0; step <= length; step++) {
@@ -459,7 +459,7 @@ UI.ListControl = class {
           return -1;
         index = (index + length) % length;
       }
-      if (this._delegate.isItemSelectable(this._model.itemAtIndex(index)))
+      if (this._delegate.isItemSelectable(this._model.at(index)))
         return index;
       index += direction;
     }
@@ -476,8 +476,8 @@ UI.ListControl = class {
     var startOffset = this._offsetAtIndex(index);
     // Compensate for zoom rounding errors with -1.
     var viewportHeight = this.element.offsetHeight - 1;
-    while (index >= 0 && index < this._model.length()) {
-      if (this._delegate.isItemSelectable(this._model.itemAtIndex(index))) {
+    while (index >= 0 && index < this._model.length) {
+      if (this._delegate.isItemSelectable(this._model.at(index))) {
         if (Math.abs(this._offsetAtIndex(index) - startOffset) >= viewportHeight)
           return index;
         lastSelectable = index;
@@ -515,11 +515,9 @@ UI.ListControl = class {
     }
 
     if (this._mode === UI.ListMode.VariousHeightItems) {
-      this._reallocateVariableOffsets(this._model.length() + 1, from + 1);
-      for (var i = from + 1; i <= this._model.length(); i++) {
-        this._variableOffsets[i] =
-            this._variableOffsets[i - 1] + this._delegate.heightForItem(this._model.itemAtIndex(i - 1));
-      }
+      this._reallocateVariableOffsets(this._model.length + 1, from + 1);
+      for (var i = from + 1; i <= this._model.length; i++)
+        this._variableOffsets[i] = this._variableOffsets[i - 1] + this._delegate.heightForItem(this._model.at(i - 1));
     }
 
     var viewportHeight = this.element.offsetHeight;

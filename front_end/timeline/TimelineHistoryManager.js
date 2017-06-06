@@ -280,7 +280,7 @@ Timeline.TimelineHistoryManager.DropDown = class {
     var listModel = new UI.ListModel();
     this._listControl = new UI.ListControl(listModel, this, UI.ListMode.NonViewport);
     this._listControl.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
-    listModel.replaceAllItems(models);
+    listModel.replaceAll(models);
 
     contentElement.appendChild(this._listControl.element);
     contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);

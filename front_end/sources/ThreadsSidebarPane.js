@@ -108,7 +108,7 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
    * @param {!SDK.DebuggerModel} debuggerModel
    */
   modelAdded(debuggerModel) {
-    this._items.pushItem(debuggerModel);
+    this._items.insert(this._items.length, debuggerModel);
     var currentTarget = UI.context.flavor(SDK.Target);
     if (currentTarget === debuggerModel.target())
       this._list.selectItem(debuggerModel);
@@ -119,7 +119,7 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
    * @param {!SDK.DebuggerModel} debuggerModel
    */
   modelRemoved(debuggerModel) {
-    this._items.removeItem(debuggerModel);
+    this._items.remove(this._items.indexOf(debuggerModel));
   }
 
   /**

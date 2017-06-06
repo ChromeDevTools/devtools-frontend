@@ -649,20 +649,6 @@ ConsoleModel.ConsoleMessage.MessageLevel = {
   Error: 'error'
 };
 
-/**
- * @param {!ConsoleModel.ConsoleMessage.MessageLevel} level
- * @return {number}
- */
-ConsoleModel.ConsoleMessage.MessageLevel.ordinal = function(level) {
-  if (level === ConsoleModel.ConsoleMessage.MessageLevel.Verbose)
-    return 0;
-  if (level === ConsoleModel.ConsoleMessage.MessageLevel.Info)
-    return 1;
-  if (level === ConsoleModel.ConsoleMessage.MessageLevel.Warning)
-    return 2;
-  return 3;
-};
-
 ConsoleModel.ConsoleModel._events = Symbol('ConsoleModel.ConsoleModel.events');
 
 /**

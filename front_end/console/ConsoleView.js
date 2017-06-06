@@ -71,7 +71,8 @@ Console.ConsoleView = class extends UI.VBox {
     toolbar.appendToolbarItem(this._consoleContextSelector.toolbarItem());
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._filter._textFilterUI);
-    toolbar.appendToolbarItem(this._filter._levelComboBox);
+    toolbar.appendToolbarItem(this._filter._levelMenuButton);
+    toolbar.appendToolbarItem(this._filter._levelMenuButtonArrow);
     toolbar.appendToolbarItem(this._progressToolbarItem);
     toolbar.appendSpacer();
     toolbar.appendToolbarItem(this._filterStatusText);
@@ -1007,8 +1008,8 @@ Console.ConsoleViewFilter = class {
     this._filterChanged = filterChangedCallback;
 
     this._messageURLFiltersSetting = Common.settings.createSetting('messageURLFilters', {});
-    this._messageLevelFiltersSetting =
-        Common.settings.createSetting('messageLevelFilters2', ConsoleModel.ConsoleMessage.MessageLevel.Info);
+    this._messageLevelFiltersSetting = Console.ConsoleViewFilter.levelFilterSetting();
+
     this._hideNetworkMessagesSetting = Common.moduleSetting('hideNetworkMessages');
     this._filterByExecutionContextSetting = Common.moduleSetting('selectedContextFilterEnabled');
     this._filterByConsoleAPISetting = Common.moduleSetting('consoleAPIFilterEnabled');
@@ -1022,15 +1023,92 @@ Console.ConsoleViewFilter = class {
     this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'), 0.2, 1, true);
     this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, this._textFilterChanged, this);
 
-    var levels = [
-      {value: ConsoleModel.ConsoleMessage.MessageLevel.Verbose, label: Common.UIString('Verbose')},
-      {value: ConsoleModel.ConsoleMessage.MessageLevel.Info, label: Common.UIString('Info'), default: true},
-      {value: ConsoleModel.ConsoleMessage.MessageLevel.Warning, label: Common.UIString('Warnings')},
-      {value: ConsoleModel.ConsoleMessage.MessageLevel.Error, label: Common.UIString('Errors')}
-    ];
+    this._levelLabels = {};
+    this._levelLabels[ConsoleModel.ConsoleMessage.MessageLevel.Verbose] = Common.UIString('Verbose');
+    this._levelLabels[ConsoleModel.ConsoleMessage.MessageLevel.Info] = Common.UIString('Info');
+    this._levelLabels[ConsoleModel.ConsoleMessage.MessageLevel.Warning] = Common.UIString('Warnings');
+    this._levelLabels[ConsoleModel.ConsoleMessage.MessageLevel.Error] = Common.UIString('Errors');
 
-    this._levelComboBox =
-        new UI.ToolbarSettingComboBox(levels, this._messageLevelFiltersSetting, Common.UIString('Level'));
+    this._levelMenuButton = new UI.ToolbarText('');
+    this._levelMenuButtonArrow = new UI.ToolbarItem(UI.Icon.create('smallicon-triangle-down'));
+    this._levelMenuButton.element.addEventListener('click', this._showLevelContextMenu.bind(this));
+    this._levelMenuButtonArrow.element.addEventListener('click', this._showLevelContextMenu.bind(this));
+
+    this._updateLevelMenuButtonText();
+    this._messageLevelFiltersSetting.addChangeListener(this._updateLevelMenuButtonText.bind(this));
+  }
+
+  /**
+   * @return {!Common.Setting}
+   */
+  static levelFilterSetting() {
+    return Common.settings.createSetting('messageLevelFilters', Console.ConsoleViewFilter.defaultLevelsFilterValue());
+  }
+
+  /**
+   * @return {!Object<string, boolean>}
+   */
+  static allLevelsFilterValue() {
+    var result = {};
+    for (var name of Object.values(ConsoleModel.ConsoleMessage.MessageLevel))
+      result[name] = true;
+    return result;
+  }
+
+  /**
+   * @return {!Object<string, boolean>}
+   */
+  static defaultLevelsFilterValue() {
+    var result = Console.ConsoleViewFilter.allLevelsFilterValue();
+    result[ConsoleModel.ConsoleMessage.MessageLevel.Verbose] = false;
+    return result;
+  }
+
+  _updateLevelMenuButtonText() {
+    var isAll = true;
+    var isDefault = true;
+    var allValue = Console.ConsoleViewFilter.allLevelsFilterValue();
+    var defaultValue = Console.ConsoleViewFilter.defaultLevelsFilterValue();
+
+    var text = null;
+    var levels = this._messageLevelFiltersSetting.get();
+    for (var name of Object.values(ConsoleModel.ConsoleMessage.MessageLevel)) {
+      isAll = isAll && levels[name] === allValue[name];
+      isDefault = isDefault && levels[name] === defaultValue[name];
+      if (levels[name])
+        text = text ? Common.UIString('Custom levels') : Common.UIString('%s only', this._levelLabels[name]);
+    }
+    if (isAll)
+      text = Common.UIString('All levels');
+    else if (isDefault)
+      text = Common.UIString('Default levels');
+    else
+      text = text || Common.UIString('Hide all');
+    this._levelMenuButton.setText(text);
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _showLevelContextMenu(event) {
+    var setting = this._messageLevelFiltersSetting;
+    var levels = setting.get();
+
+    var contextMenu = new UI.ContextMenu(event, true);
+    contextMenu.appendItem(
+        Common.UIString('Default'), () => setting.set(Console.ConsoleViewFilter.defaultLevelsFilterValue()));
+    contextMenu.appendSeparator();
+    for (var level in this._levelLabels)
+      contextMenu.appendCheckboxItem(this._levelLabels[level], toggleShowLevel.bind(null, level), levels[level]);
+    contextMenu.show();
+
+    /**
+     * @param {string} level
+     */
+    function toggleShowLevel(level) {
+      levels[level] = !levels[level];
+      setting.set(levels);
+    }
   }
 
   _textFilterChanged() {
@@ -1104,9 +1182,8 @@ Console.ConsoleViewFilter = class {
     if (message.url && this._messageURLFiltersSetting.get()[message.url])
       return false;
 
-    var filterOrdinal = ConsoleModel.ConsoleMessage.MessageLevel.ordinal(
-        /** @type {!ConsoleModel.ConsoleMessage.MessageLevel} */ (this._messageLevelFiltersSetting.get()));
-    if (message.level && ConsoleModel.ConsoleMessage.MessageLevel.ordinal(message.level) < filterOrdinal)
+    var levels = this._messageLevelFiltersSetting.get();
+    if (!levels[message.level])
       return false;
 
     if (this._filterRegex) {
@@ -1126,7 +1203,7 @@ Console.ConsoleViewFilter = class {
 
   reset() {
     this._messageURLFiltersSetting.set({});
-    this._messageLevelFiltersSetting.set(ConsoleModel.ConsoleMessage.MessageLevel.Info);
+    this._messageLevelFiltersSetting.set(Console.ConsoleViewFilter.defaultLevelsFilterValue());
     this._filterByExecutionContextSetting.set(false);
     this._filterByConsoleAPISetting.set(false);
     this._hideNetworkMessagesSetting.set(false);

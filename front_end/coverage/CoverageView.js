@@ -119,6 +119,7 @@ Coverage.CoverageView = class extends UI.VBox {
       return;
     if (!this._model)
       this._model = new Coverage.CoverageModel(mainTarget);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.CoverageStarted);
     if (!this._model.start())
       return;
     this._decorationManager = new Coverage.CoverageDecorationManager(this._model);

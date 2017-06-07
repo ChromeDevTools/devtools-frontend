@@ -35,6 +35,15 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     Common.moduleSetting('colorFormat').addChangeListener(this.update.bind(this));
     Common.moduleSetting('textEditorIndent').addChangeListener(this.update.bind(this));
 
+    /** @type {?UI.Widget} */
+    this._currentToolbarPane = null;
+    /** @type {?UI.Widget} */
+    this._animatedToolbarPane = null;
+    /** @type {?UI.Widget} */
+    this._pendingWidget = null;
+    /** @type {?UI.ToolbarToggle} */
+    this._pendingWidgetToggle = null;
+    this._toolbarPaneElement = this._createStylesSidebarToolbar();
     this._sectionsContainer = this.element.createChild('div');
     this._swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper();
     this._linkifier = new Components.Linkifier(Elements.StylesSidebarPane._maxLinkLength, /* useLinkDecorator */ true);
@@ -222,7 +231,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
   /**
    * @param {?RegExp} regex
    */
-  onFilterChanged(regex) {
+  _onFilterChanged(regex) {
     this._filterRegex = regex;
     this._updateFilter();
   }
@@ -512,6 +521,94 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
    */
   _clipboardCopy(event) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleCopied);
+  }
+
+  /**
+   * @return {!Element}
+   */
+  _createStylesSidebarToolbar() {
+    var container = this.element.createChild('div', 'styles-sidebar-pane-toolbar-container');
+    var hbox = container.createChild('div', 'hbox styles-sidebar-pane-toolbar');
+    var filterContainerElement = hbox.createChild('div', 'styles-sidebar-pane-filter-box');
+    var filterInput = Elements.StylesSidebarPane.createPropertyFilterElement(
+        Common.UIString('Filter'), hbox, this._onFilterChanged.bind(this));
+    UI.ARIAUtils.setAccessibleName(filterInput, Common.UIString('Filter Styles'));
+    filterContainerElement.appendChild(filterInput);
+    var toolbar = new UI.Toolbar('styles-pane-toolbar', hbox);
+    toolbar.makeToggledGray();
+    toolbar.appendLocationItems('styles-sidebarpane-toolbar');
+    var toolbarPaneContainer = container.createChild('div', 'styles-sidebar-toolbar-pane-container');
+    var toolbarPaneContent = toolbarPaneContainer.createChild('div', 'styles-sidebar-toolbar-pane');
+
+    return toolbarPaneContent;
+  }
+
+  /**
+   * @param {?UI.Widget} widget
+   * @param {?UI.ToolbarToggle} toggle
+   */
+  showToolbarPane(widget, toggle) {
+    if (this._pendingWidgetToggle)
+      this._pendingWidgetToggle.setToggled(false);
+    this._pendingWidgetToggle = toggle;
+
+    if (this._animatedToolbarPane)
+      this._pendingWidget = widget;
+    else
+      this._startToolbarPaneAnimation(widget);
+
+    if (widget && toggle)
+      toggle.setToggled(true);
+  }
+
+  /**
+   * @param {?UI.Widget} widget
+   */
+  _startToolbarPaneAnimation(widget) {
+    if (widget === this._currentToolbarPane)
+      return;
+
+    if (widget && this._currentToolbarPane) {
+      this._currentToolbarPane.detach();
+      widget.show(this._toolbarPaneElement);
+      this._currentToolbarPane = widget;
+      this._currentToolbarPane.focus();
+      return;
+    }
+
+    this._animatedToolbarPane = widget;
+
+    if (this._currentToolbarPane)
+      this._toolbarPaneElement.style.animationName = 'styles-element-state-pane-slideout';
+    else if (widget)
+      this._toolbarPaneElement.style.animationName = 'styles-element-state-pane-slidein';
+
+    if (widget)
+      widget.show(this._toolbarPaneElement);
+
+    var listener = onAnimationEnd.bind(this);
+    this._toolbarPaneElement.addEventListener('animationend', listener, false);
+
+    /**
+     * @this {!Elements.StylesSidebarPane}
+     */
+    function onAnimationEnd() {
+      this._toolbarPaneElement.style.removeProperty('animation-name');
+      this._toolbarPaneElement.removeEventListener('animationend', listener, false);
+
+      if (this._currentToolbarPane)
+        this._currentToolbarPane.detach();
+
+      this._currentToolbarPane = this._animatedToolbarPane;
+      if (this._currentToolbarPane)
+        this._currentToolbarPane.focus();
+      this._animatedToolbarPane = null;
+
+      if (this._pendingWidget) {
+        this._startToolbarPaneAnimation(this._pendingWidget);
+        this._pendingWidget = null;
+      }
+    }
   }
 };
 

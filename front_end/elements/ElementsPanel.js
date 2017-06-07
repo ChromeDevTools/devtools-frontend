@@ -68,20 +68,9 @@ Elements.ElementsPanel = class extends UI.Panel {
     this._breadcrumbs.show(crumbsContainer);
     this._breadcrumbs.addEventListener(Elements.ElementsBreadcrumbs.Events.NodeSelected, this._crumbNodeSelected, this);
 
-    /** @type {?UI.Widget} */
-    this._currentToolbarPane = null;
-    /** @type {?UI.Widget} */
-    this._animatedToolbarPane = null;
-    /** @type {?UI.Widget} */
-    this._pendingWidget = null;
-    /** @type {?UI.ToolbarToggle} */
-    this._pendingWidgetToggle = null;
-
     this._stylesWidget = new Elements.StylesSidebarPane();
     this._computedStyleWidget = new Elements.ComputedStyleWidget();
     this._metricsWidget = new Elements.MetricsSidebarPane();
-
-    this._stylesSidebarToolbar = this._createStylesSidebarToolbar();
 
     Common.moduleSetting('sidebarPosition').addChangeListener(this._updateSidebarPosition.bind(this));
     this._updateSidebarPosition();
@@ -118,26 +107,6 @@ Elements.ElementsPanel = class extends UI.Panel {
   }
 
   /**
-   * @return {!Element}
-   */
-  _createStylesSidebarToolbar() {
-    var container = createElementWithClass('div', 'styles-sidebar-pane-toolbar-container');
-    var hbox = container.createChild('div', 'hbox styles-sidebar-pane-toolbar');
-    var filterContainerElement = hbox.createChild('div', 'styles-sidebar-pane-filter-box');
-    var filterInput = Elements.StylesSidebarPane.createPropertyFilterElement(
-        Common.UIString('Filter'), hbox, this._stylesWidget.onFilterChanged.bind(this._stylesWidget));
-    UI.ARIAUtils.setAccessibleName(filterInput, Common.UIString('Filter Styles'));
-    filterContainerElement.appendChild(filterInput);
-    var toolbar = new UI.Toolbar('styles-pane-toolbar', hbox);
-    toolbar.makeToggledGray();
-    toolbar.appendLocationItems('styles-sidebarpane-toolbar');
-    var toolbarPaneContainer = container.createChild('div', 'styles-sidebar-toolbar-pane-container');
-    this._toolbarPaneElement = createElementWithClass('div', 'styles-sidebar-toolbar-pane');
-    toolbarPaneContainer.appendChild(this._toolbarPaneElement);
-    return container;
-  }
-
-  /**
    * @override
    * @param {string} locationName
    * @return {?UI.ViewLocation}
@@ -151,67 +120,8 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {?UI.ToolbarToggle} toggle
    */
   showToolbarPane(widget, toggle) {
-    if (this._pendingWidgetToggle)
-      this._pendingWidgetToggle.setToggled(false);
-    this._pendingWidgetToggle = toggle;
-
-    if (this._animatedToolbarPane)
-      this._pendingWidget = widget;
-    else
-      this._startToolbarPaneAnimation(widget);
-
-    if (widget && toggle)
-      toggle.setToggled(true);
-  }
-
-  /**
-   * @param {?UI.Widget} widget
-   */
-  _startToolbarPaneAnimation(widget) {
-    if (widget === this._currentToolbarPane)
-      return;
-
-    if (widget && this._currentToolbarPane) {
-      this._currentToolbarPane.detach();
-      widget.show(this._toolbarPaneElement);
-      this._currentToolbarPane = widget;
-      this._currentToolbarPane.focus();
-      return;
-    }
-
-    this._animatedToolbarPane = widget;
-
-    if (this._currentToolbarPane)
-      this._toolbarPaneElement.style.animationName = 'styles-element-state-pane-slideout';
-    else if (widget)
-      this._toolbarPaneElement.style.animationName = 'styles-element-state-pane-slidein';
-
-    if (widget)
-      widget.show(this._toolbarPaneElement);
-
-    var listener = onAnimationEnd.bind(this);
-    this._toolbarPaneElement.addEventListener('animationend', listener, false);
-
-    /**
-     * @this {Elements.ElementsPanel}
-     */
-    function onAnimationEnd() {
-      this._toolbarPaneElement.style.removeProperty('animation-name');
-      this._toolbarPaneElement.removeEventListener('animationend', listener, false);
-
-      if (this._currentToolbarPane)
-        this._currentToolbarPane.detach();
-
-      this._currentToolbarPane = this._animatedToolbarPane;
-      if (this._currentToolbarPane)
-        this._currentToolbarPane.focus();
-      this._animatedToolbarPane = null;
-
-      if (this._pendingWidget) {
-        this._startToolbarPaneAnimation(this._pendingWidget);
-        this._pendingWidget = null;
-      }
-    }
+    // TODO(luoe): remove this function once its providers have an alternative way to reveal their views.
+    this._stylesWidget.showToolbarPane(widget, toggle);
   }
 
   /**
@@ -840,11 +750,8 @@ Elements.ElementsPanel = class extends UI.Panel {
     this._splitWidget.setVertical(this._splitMode === Elements.ElementsPanel._splitMode.Vertical);
     this.showToolbarPane(null /* widget */, null /* toggle */);
 
-    var matchedStylesContainer = new UI.VBox();
-    matchedStylesContainer.element.appendChild(this._stylesSidebarToolbar);
     var matchedStylePanesWrapper = new UI.VBox();
     matchedStylePanesWrapper.element.classList.add('style-panes-wrapper');
-    matchedStylePanesWrapper.show(matchedStylesContainer.element);
     this._stylesWidget.show(matchedStylePanesWrapper.element);
 
     var computedStylePanesWrapper = new UI.VBox();
@@ -893,12 +800,12 @@ Elements.ElementsPanel = class extends UI.Panel {
 
       var splitWidget = new UI.SplitWidget(true, true, 'stylesPaneSplitViewState', 215);
       splitWidget.show(stylesView.element);
-      splitWidget.setMainWidget(matchedStylesContainer);
+      splitWidget.setMainWidget(matchedStylePanesWrapper);
       splitWidget.setSidebarWidget(computedStylePanesWrapper);
     } else {
       // Styles and computed are in separate tabs.
       stylesView.element.classList.add('flex-auto', 'metrics-and-styles');
-      matchedStylesContainer.show(stylesView.element);
+      matchedStylePanesWrapper.show(stylesView.element);
 
       var computedView = new UI.SimpleView(Common.UIString('Computed'));
       computedView.element.classList.add('composite', 'fill', 'metrics-and-computed');

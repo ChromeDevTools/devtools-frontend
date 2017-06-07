@@ -68,10 +68,10 @@ Resources.DOMStorage = class extends Common.Object {
   }
 
   /**
-   * @param {function(?Protocol.Error, !Array.<!Protocol.DOMStorage.Item>):void=} callback
+   * @return {!Promise<?Array<!Protocol.DOMStorage.Item>>}
    */
-  getItems(callback) {
-    this._model._agent.getDOMStorageItems(this.id, callback);
+  getItems() {
+    return this._model._agent.getDOMStorageItems(this.id);
   }
 
   /**

@@ -123,7 +123,7 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     this._paintCountCell.parentElement.classList.toggle('hidden', !layer.paintCount());
     this._paintCountCell.textContent = layer.paintCount();
     this._memoryEstimateCell.textContent = Number.bytesToString(layer.gpuMemoryUsage());
-    layer.requestCompositingReasons(this._updateCompositingReasons.bind(this));
+    layer.requestCompositingReasons().then(this._updateCompositingReasons.bind(this));
     this._scrollRectsCell.removeChildren();
     layer.scrollRects().forEach(this._createScrollRectElement.bind(this));
     var snapshot = this._selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot ?

@@ -457,10 +457,10 @@ TimelineModel.TracingLayer = class {
 
   /**
    * @override
-   * @param {function(!Array.<string>)} callback
+   * @return {!Promise<!Array<string>>}
    */
-  requestCompositingReasons(callback) {
-    callback(this._compositingReasons);
+  requestCompositingReasons() {
+    return Promise.resolve(this._compositingReasons);
   }
 
   /**

@@ -150,12 +150,9 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
   }
 
   /**
-   * @param {?string} error
    * @param {!Array<!Array<string>>} items
    */
-  _showDOMStorageItems(error, items) {
-    if (error)
-      return;
+  _showDOMStorageItems(items) {
     var rootNode = this._dataGrid.rootNode();
     var selectedKey = null;
     for (var node of rootNode.children) {
@@ -196,7 +193,7 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
    * @override
    */
   refreshItems() {
-    this._domStorage.getItems((error, items) => this._showDOMStorageItems(error, items));
+    this._domStorage.getItems().then(items => items && this._showDOMStorageItems(items));
   }
 
   /**

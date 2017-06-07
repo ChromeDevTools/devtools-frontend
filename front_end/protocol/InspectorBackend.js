@@ -532,23 +532,22 @@ Protocol.InspectorBackend._AgentPrototype = class {
    * @param {string} method
    * @param {!Array.<!Object>} signature
    * @param {!Array.<*>} args
-   * @param {boolean} allowExtraUndefinedArg
    * @param {function(string)} errorCallback
    * @return {?Object}
    */
-  _prepareParameters(method, signature, args, allowExtraUndefinedArg, errorCallback) {
+  _prepareParameters(method, signature, args, errorCallback) {
     var params = {};
     var hasParams = false;
-    for (var i = 0; i < signature.length; ++i) {
-      var param = signature[i];
+
+    for (var param of signature) {
       var paramName = param['name'];
       var typeName = param['type'];
       var optionalFlag = param['optional'];
 
       if (!args.length && !optionalFlag) {
         errorCallback(
-            'Protocol Error: Invalid number of arguments for method \'' + method +
-            '\' call. It must have the following arguments \'' + JSON.stringify(signature) + '\'.');
+            `Protocol Error: Invalid number of arguments for method '${method}' call. ` +
+            `It must have the following arguments ${JSON.stringify(signature)}'.`);
         return null;
       }
 
@@ -558,8 +557,8 @@ Protocol.InspectorBackend._AgentPrototype = class {
 
       if (typeof value !== typeName) {
         errorCallback(
-            'Protocol Error: Invalid type of argument \'' + paramName + '\' for method \'' + method +
-            '\' call. It must be \'' + typeName + '\' but it is \'' + typeof value + '\'.');
+            `Protocol Error: Invalid type of argument '${paramName}' for method '${method}' call. ` +
+            `It must be '${typeName}' but it is '${typeof value}'.`);
         return null;
       }
 
@@ -567,15 +566,8 @@ Protocol.InspectorBackend._AgentPrototype = class {
       hasParams = true;
     }
 
-    if (args.length === 1 && (!allowExtraUndefinedArg || (typeof args[0] !== 'undefined'))) {
-      errorCallback(
-          'Protocol Error: Optional callback argument for method \'' + method +
-          '\' call must be a function but its type is \'' + typeof args[0] + '\'.');
-      return null;
-    }
-
-    if (args.length > 1) {
-      errorCallback('Protocol Error: Extra ' + args.length + ' arguments in a call to method \'' + method + '\'.');
+    if (args.length) {
+      errorCallback(`Protocol Error: Extra ${args.length} arguments in a call to method '${method}'.`);
       return null;
     }
 
@@ -586,7 +578,7 @@ Protocol.InspectorBackend._AgentPrototype = class {
    * @param {string} method
    * @param {!Array<!Object>} signature
    * @param {!Array<*>} args
-   * @return {!Promise<*>}
+   * @return {!Promise<?>}
    */
   _sendMessageToBackendPromise(method, signature, args) {
     var errorMessage;
@@ -597,42 +589,20 @@ Protocol.InspectorBackend._AgentPrototype = class {
       console.error(message);
       errorMessage = message;
     }
-    var userCallback = (args.length && typeof args.peekLast() === 'function') ? args.pop() : null;
-    var params = this._prepareParameters(method, signature, args, !userCallback, onError);
+    var params = this._prepareParameters(method, signature, args, onError);
     if (errorMessage)
-      return Promise.resolve([errorMessage]).then(runUserCallback);
-    return new Promise(promiseAction.bind(this)).then(runUserCallback);
+      return Promise.resolve(null);
 
-    /**
-     * @param {function(!Array<*>)} resolve
-     * @this {Protocol.InspectorBackend._AgentPrototype}
-     */
-    function promiseAction(resolve) {
-      /**
-       * @param {?Protocol.Error} error
-       * @param {?Object} result
-       * @this {Protocol.InspectorBackend._AgentPrototype}
-       */
-      function prepareArgsAndResolve(error, result) {
-        var argumentsArray = [error ? error.message : null];
-        if (this._hasErrorData[method])
-          argumentsArray.push(error ? error.data : null);
-        if (result) {
-          for (var paramName of this._replyArgs[method] || [])
-            argumentsArray.push(result[paramName]);
+    return new Promise(resolve => {
+      this._target._wrapCallbackAndSendMessageObject(this._domain, method, params, (error, result) => {
+        if (error) {
+          resolve(null);
+          return;
         }
-        resolve(argumentsArray);
-      }
-      this._target._wrapCallbackAndSendMessageObject(this._domain, method, params, prepareArgsAndResolve.bind(this));
-    }
-
-    /**
-     * @param {!Array<*>} args
-     * @return {?}
-     */
-    function runUserCallback(args) {
-      return userCallback ? userCallback.apply(null, args) : !args[0] && args[1] || null;
-    }
+        var args = this._replyArgs[method];
+        resolve(result && args.length && result[args[0]] || null);
+      });
+    });
   }
 
   /**

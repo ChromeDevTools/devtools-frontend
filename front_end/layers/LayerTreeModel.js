@@ -389,12 +389,11 @@ Layers.AgentLayer = class {
 
   /**
    * @override
-   * @param {function(!Array.<string>)} callback
+   * @return {!Promise<!Array<string>>}
    */
-  requestCompositingReasons(callback) {
-    var wrappedCallback = Protocol.inspectorBackend.wrapClientCallback(
-        callback, 'Protocol.LayerTree.reasonsForCompositingLayer(): ', undefined, []);
-    this._layerTreeModel._layerTreeAgent.compositingReasons(this.id(), wrappedCallback);
+  async requestCompositingReasons() {
+    var reasons = await this._layerTreeModel._layerTreeAgent.compositingReasons(this.id());
+    return reasons || [];
   }
 
   /**

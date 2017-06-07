@@ -115,9 +115,9 @@ SDK.Layer.prototype = {
   gpuMemoryUsage() {},
 
   /**
-   * @param {function(!Array.<string>)} callback
+   * @return {!Promise<!Array<string>>}
    */
-  requestCompositingReasons(callback) {},
+  requestCompositingReasons() {},
 
   /**
    * @return {boolean}

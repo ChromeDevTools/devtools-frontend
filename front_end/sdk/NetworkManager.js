@@ -604,11 +604,12 @@ SDK.NetworkDispatcher = class {
    * @override
    * @param {!Protocol.Network.RequestId} requestId
    * @param {!Protocol.Network.Request} request
+   * @param {string} resourceType
    * @param {!Protocol.Network.Headers=} redirectHeaders
    * @param {number=} redirectStatusCode
    * @param {string=} redirectUrl
    */
-  requestIntercepted(requestId, request, redirectHeaders, redirectStatusCode, redirectUrl) {
+  requestIntercepted(requestId, request, resourceType, redirectHeaders, redirectStatusCode, redirectUrl) {
     // Stub implementation.  Event not currently used by the frontend.
   }
 

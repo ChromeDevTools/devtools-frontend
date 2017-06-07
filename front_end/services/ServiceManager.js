@@ -244,7 +244,7 @@ Services.ServiceManager.RemoteServicePort = class {
       try {
         socket = new WebSocket(/** @type {string} */ (this._url));
         socket.onmessage = onMessage.bind(this);
-        socket.onclose = this._closeHandler;
+        socket.onclose = onClose.bind(this);
         socket.onopen = onConnect.bind(this);
       } catch (e) {
         fulfill(false);
@@ -264,6 +264,15 @@ Services.ServiceManager.RemoteServicePort = class {
        */
       function onMessage(event) {
         this._messageHandler(event.data);
+      }
+
+      /**
+       * @this {Services.ServiceManager.RemoteServicePort}
+       */
+      function onClose() {
+        if (!this._socket)
+          fulfill(false);
+        this._socketClosed(!!this._socket);
       }
     }
   }
@@ -291,11 +300,20 @@ Services.ServiceManager.RemoteServicePort = class {
     return this._open().then(() => {
       if (this._socket) {
         this._socket.close();
-        this._socket = null;
-        delete this._connectionPromise;
+        this._socketClosed(true);
       }
       return true;
     });
+  }
+
+  /**
+   * @param {boolean=} notifyClient
+   */
+  _socketClosed(notifyClient) {
+    this._socket = null;
+    delete this._connectionPromise;
+    if (notifyClient)
+      this._closeHandler();
   }
 };
 

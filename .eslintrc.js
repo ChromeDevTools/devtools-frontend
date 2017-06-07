@@ -38,7 +38,6 @@ module.exports = {
             "markers": ["*"]
         }],
         "eqeqeq": [2],
-        "arrow-body-style": [2, "as-needed"],
         "accessor-pairs": [2, {
             "getWithoutSet": false,
             "setWithoutGet": false

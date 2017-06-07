@@ -12,10 +12,6 @@
     white-space: nowrap;
 }
 
-.terminal:focus .terminal-cursor {
-    background-color: #fafafa;
-}
-
 .terminal-error-message {
     display: flex;
     align-items: center;
@@ -30,11 +26,12 @@
     padding-right: 10px;
 }
 
-.devtools-link {
+.terminal-link {
     color: inherit;
     text-decoration: inherit;
 }
 
-.devtools-link:hover {
+.terminal-link:hover {
     text-decoration: underline;
+    cursor: pointer;
 }

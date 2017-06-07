@@ -241,7 +241,7 @@ Console.ConsoleViewMessage = class {
             messageElement.createTextChildren(' ', String(request.statusCode), ' (', request.statusText, ')');
 
         } else {
-          var fragment = Components.linkifyStringAsFragmentWithCustomLinkifier(
+          var fragment = Console.ConsoleViewMessage._linkifyWithCustomLinkifier(
               messageText,
               title => Components.Linkifier.linkifyRevealable(
                   /** @type {!SDK.NetworkRequest} */ (request), title, request.url()));
@@ -481,7 +481,7 @@ Console.ConsoleViewMessage = class {
     for (var i = 0; i < parameters.length; ++i) {
       // Inline strings when formatting.
       if (shouldFormatMessage && parameters[i].type === 'string')
-        formattedResult.appendChild(Components.linkifyStringAsFragment(parameters[i].description));
+        formattedResult.appendChild(Console.ConsoleViewMessage._linkifyStringAsFragment(parameters[i].description));
       else
         formattedResult.appendChild(this._formatParameter(parameters[i], false, true));
       if (i < parameters.length - 1)
@@ -669,7 +669,7 @@ Console.ConsoleViewMessage = class {
    */
   _formatParameterAsString(output) {
     var span = createElement('span');
-    span.appendChild(Components.linkifyStringAsFragment(output.description || ''));
+    span.appendChild(Console.ConsoleViewMessage._linkifyStringAsFragment(output.description || ''));
 
     var result = createElement('span');
     result.createChild('span', 'object-value-string-quote').textContent = '"';
@@ -685,7 +685,8 @@ Console.ConsoleViewMessage = class {
   _formatParameterAsError(output) {
     var result = createElement('span');
     var errorSpan = this._tryFormatAsError(output.description || '');
-    result.appendChild(errorSpan ? errorSpan : Components.linkifyStringAsFragment(output.description || ''));
+    result.appendChild(
+        errorSpan ? errorSpan : Console.ConsoleViewMessage._linkifyStringAsFragment(output.description || ''));
     return result;
   }
 
@@ -823,7 +824,7 @@ Console.ConsoleViewMessage = class {
       if (b instanceof Node) {
         a.appendChild(b);
       } else if (typeof b !== 'undefined') {
-        var toAppend = Components.linkifyStringAsFragment(String(b));
+        var toAppend = Console.ConsoleViewMessage._linkifyStringAsFragment(String(b));
         if (currentStyle) {
           var wrapper = createElement('span');
           wrapper.appendChild(toAppend);
@@ -1223,16 +1224,67 @@ Console.ConsoleViewMessage = class {
     var formattedResult = createElement('span');
     var start = 0;
     for (var i = 0; i < links.length; ++i) {
-      formattedResult.appendChild(Components.linkifyStringAsFragment(string.substring(start, links[i].positionLeft)));
+      formattedResult.appendChild(
+          Console.ConsoleViewMessage._linkifyStringAsFragment(string.substring(start, links[i].positionLeft)));
       formattedResult.appendChild(this._linkifier.linkifyScriptLocation(
           debuggerModel.target(), null, links[i].url, links[i].lineNumber, links[i].columnNumber));
       start = links[i].positionRight;
     }
 
     if (start !== string.length)
-      formattedResult.appendChild(Components.linkifyStringAsFragment(string.substring(start)));
+      formattedResult.appendChild(Console.ConsoleViewMessage._linkifyStringAsFragment(string.substring(start)));
 
     return formattedResult;
+  }
+
+  /**
+   * @param {string} string
+   * @param {function(string,string,number=,number=):!Node} linkifier
+   * @return {!DocumentFragment}
+   */
+  static _linkifyWithCustomLinkifier(string, linkifier) {
+    var container = createDocumentFragment();
+    var linkStringRegEx =
+        /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/|data:|www\.)[\w$\-_+*'=\|\/\\(){}[\]^%@&#~,:;.!?]{2,}[\w$\-_+*=\|\/\\({^%@&#~]/;
+    var pathLineRegex = /(?:\/[\w\.-]*)+\:[\d]+/;
+
+    while (string && string.length < Components.Linkifier.MaxLengthToIgnoreLinkifier) {
+      var linkString = linkStringRegEx.exec(string) || pathLineRegex.exec(string);
+      if (!linkString)
+        break;
+
+      linkString = linkString[0];
+      var linkIndex = string.indexOf(linkString);
+      var nonLink = string.substring(0, linkIndex);
+      container.appendChild(createTextNode(nonLink));
+
+      var title = linkString;
+      var realURL = (linkString.startsWith('www.') ? 'http://' + linkString : linkString);
+      var splitResult = Common.ParsedURL.splitLineAndColumn(realURL);
+      var linkNode;
+      if (splitResult)
+        linkNode = linkifier(title, splitResult.url, splitResult.lineNumber, splitResult.columnNumber);
+      else
+        linkNode = linkifier(title, realURL);
+
+      container.appendChild(linkNode);
+      string = string.substring(linkIndex + linkString.length, string.length);
+    }
+
+    if (string)
+      container.appendChild(createTextNode(string));
+
+    return container;
+  }
+
+  /**
+   * @param {string} string
+   * @return {!DocumentFragment}
+   */
+  static _linkifyStringAsFragment(string) {
+    return Console.ConsoleViewMessage._linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
+      return Components.Linkifier.linkifyURL(url, {text, lineNumber, columnNumber});
+    });
   }
 };
 

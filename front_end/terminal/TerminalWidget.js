@@ -6,18 +6,18 @@
  */
 Terminal.TerminalWidget = class extends UI.VBox {
   constructor() {
-    super(false);
+    super(true);
     this.registerRequiredCSS('terminal/xterm.js/build/xterm.css');
     this.registerRequiredCSS('terminal/terminal.css');
     this.element.classList.add('terminal-root');
-    this.element.addEventListener('mousemove', this._mouseMove.bind(this), false);
     this._init();
     this._linkifier = new Components.Linkifier();
-    this._linkifyFunction = this._linkifyURL.bind(this);
+    this._config = {attributes: true, childList: true, characterData: true, subtree: true};
   }
 
-  _init() {
-    Services.serviceManager.createRemoteService('Terminal').then(this._initialized.bind(this));
+  async _init() {
+    var backend = await Services.serviceManager.createRemoteService('Terminal');
+    this._initialized(backend);
   }
 
   /**
@@ -26,11 +26,10 @@ Terminal.TerminalWidget = class extends UI.VBox {
   _initialized(backend) {
     if (!backend) {
       if (!this._unavailableLabel) {
-        this._unavailableLabel = this.element.createChild('div', 'terminal-error-message fill');
+        this._unavailableLabel = this.contentElement.createChild('div', 'terminal-error-message fill');
         this._unavailableLabel.createChild('div').textContent = Common.UIString('Terminal service is not available');
       }
-      if (this.isShowing())
-        setTimeout(this._init.bind(this), 2000);
+      setTimeout(this._init.bind(this), 2000);
       return;
     }
 
@@ -44,6 +43,8 @@ Terminal.TerminalWidget = class extends UI.VBox {
     if (!this._term) {
       this._term = new Terminal({cursorBlink: true});
       this._term.open(this.contentElement);
+      this._mutationObserver = new MutationObserver(this._linkify.bind(this));
+      this._mutationObserver.observe(this.contentElement, this._config);
       this._term.on('data', data => {
         this._backend.send('write', {data: data});
       });
@@ -56,17 +57,8 @@ Terminal.TerminalWidget = class extends UI.VBox {
     this._backend.send('init', {cols: this._term.cols, rows: this._term.rows});
     this._backend.on('data', result => {
       this._term.write(result.data);
-      this._linkifyUpToDate = false;
     });
     this._backend.on('disposed', this._disposed.bind(this));
-  }
-
-  _mouseMove() {
-    if (this._linkifyUpToDate)
-      return;
-    if (this._term)
-      this._linkify();
-    this._linkifyUpToDate = true;
   }
 
   /**
@@ -84,18 +76,57 @@ Terminal.TerminalWidget = class extends UI.VBox {
   /**
    * @override
    */
-  wasDetachedFromHierarchy() {
+  ownerViewDisposed() {
     if (this._backend)
       this._backend.dispose();
   }
 
   _linkify() {
-    if (!this._term)
-      return;
+    this._mutationObserver.takeRecords();
+    this._mutationObserver.disconnect();
     this._linkifier.reset();
-    var rows = this._term.rowContainer.children;
+    var rows = this._term['rowContainer'].children;
     for (var i = 0; i < rows.length; i++)
       this._linkifyTerminalLine(rows[i]);
+    this._mutationObserver.observe(this.contentElement, this._config);
+  }
+
+  /**
+   * @param {string} string
+   */
+  _linkifyText(string) {
+    var regex1 = /([/\w\.-]*)+\:([\d]+)(?:\:([\d]+))?/;
+    var regex2 = /([/\w\.-]*)+\(([\d]+),([\d]+)\)/;
+    var container = createDocumentFragment();
+
+    while (string) {
+      var linkString = regex1.exec(string) || regex2.exec(string);
+      if (!linkString)
+        break;
+
+      var text = linkString[0];
+      var path = linkString[1];
+      var lineNumber = parseInt(linkString[2], 10) - 1 || 0;
+      var columnNumber = parseInt(linkString[3], 10) - 1 || 0;
+
+      var uiSourceCode = Workspace.workspace.uiSourceCodes().find(uisc => uisc.url().endsWith(path));
+      var linkIndex = string.indexOf(text);
+      var nonLink = string.substring(0, linkIndex);
+      container.appendChild(createTextNode(nonLink));
+
+      if (uiSourceCode) {
+        container.appendChild(Components.Linkifier.linkifyURL(
+            uiSourceCode.url(),
+            {text, lineNumber, columnNumber, maxLengh: Number.MAX_VALUE, className: 'terminal-link'}));
+      } else {
+        container.appendChild(createTextNode(text));
+      }
+      string = string.substring(linkIndex + text.length);
+    }
+
+    if (string)
+      container.appendChild(createTextNode(string));
+    return container;
   }
 
   /**
@@ -110,19 +141,9 @@ Terminal.TerminalWidget = class extends UI.VBox {
       }
       var nextNode = node.nextSibling;
       node.remove();
-      var linkified = Components.linkifyStringAsFragmentWithCustomLinkifier(node.textContent, this._linkifyFunction);
+      var linkified = this._linkifyText(node.textContent);
       line.insertBefore(linkified, nextNode);
       node = nextNode;
     }
-  }
-
-  /**
-   * @param {string} title
-   * @param {string} url
-   * @param {number=} lineNumber
-   * @param {number=} columnNumber
-   */
-  _linkifyURL(title, url, lineNumber, columnNumber) {
-    return this._linkifier.linkifyScriptLocation(null, null, url, lineNumber || 0, columnNumber || 0);
   }
 };

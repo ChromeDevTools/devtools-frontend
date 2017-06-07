@@ -35,7 +35,9 @@ UI.View.prototype = {
   /**
    * @return {!Promise<!UI.Widget>}
    */
-  widget() {}
+  widget() {},
+
+  disposeView() {}
 };
 
 UI.View._symbol = Symbol('view');
@@ -126,6 +128,12 @@ UI.SimpleView = class extends UI.VBox {
   revealView() {
     return UI.viewManager.revealView(this);
   }
+
+  /**
+   * @override
+   */
+  disposeView() {
+  }
 };
 
 /**
@@ -192,13 +200,23 @@ UI.ProvidedView = class {
    * @override
    * @return {!Promise<!UI.Widget>}
    */
-  widget() {
-    return this._extension.instance().then(widget => {
-      if (!(widget instanceof UI.Widget))
-        throw new Error('view className should point to a UI.Widget');
-      widget[UI.View._symbol] = this;
-      return /** @type {!UI.Widget} */ (widget);
-    });
+  async widget() {
+    this._widgetRequested = true;
+    var widget = await this._extension.instance();
+    if (!(widget instanceof UI.Widget))
+      throw new Error('view className should point to a UI.Widget');
+    widget[UI.View._symbol] = this;
+    return /** @type {!UI.Widget} */ (widget);
+  }
+
+  /**
+   * @override
+   */
+  async disposeView() {
+    if (!this._widgetRequested)
+      return;
+    var widget = await this.widget();
+    widget.ownerViewDisposed();
   }
 };
 
@@ -772,6 +790,7 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
       delete tabs[id];
       this._closeableTabSetting.set(tabs);
     }
+    this._views.get(id).disposeView();
   }
 
   _persistTabOrder() {

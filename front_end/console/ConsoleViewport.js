@@ -466,9 +466,9 @@ Console.ConsoleViewport = class {
         continue;
       chars += Components.Linkifier.untruncatedNodeText(node).length;
     }
-    // If the selection offset is at the end of a link's ellipsis, use the untruncated length as offset.
+    // If the selected node text was truncated, treat any non-zero offset as the full length.
     var untruncatedContainerLength = Components.Linkifier.untruncatedNodeText(selectionNode).length;
-    if (offset === 1 && untruncatedContainerLength > offset)
+    if (offset > 0 && untruncatedContainerLength !== selectionNode.textContent.length)
       offset = untruncatedContainerLength;
     return chars + offset;
   }

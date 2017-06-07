@@ -66,7 +66,7 @@ Timeline.TimelineLoader = class {
   cancel() {
     this._tracingModel = null;
     this._backingStorage.reset();
-    this._client.loadingComplete(null, null);
+    this._client.loadingComplete(null);
     this._client = null;
     if (this._canceledCallback)
       this._canceledCallback();
@@ -195,7 +195,7 @@ Timeline.TimelineLoader = class {
       this._buffer = '';
     }
     this._tracingModel.tracingComplete();
-    this._client.loadingComplete(this._tracingModel, this._backingStorage);
+    this._client.loadingComplete(this._tracingModel);
   }
 
   /**
@@ -274,9 +274,8 @@ Timeline.TimelineLoader.Client.prototype = {
 
   /**
    * @param {?SDK.TracingModel} tracingModel
-   * @param {?Bindings.TempFileBackingStorage} backingStorage
    */
-  loadingComplete(tracingModel, backingStorage) {},
+  loadingComplete(tracingModel) {},
 };
 
 /**

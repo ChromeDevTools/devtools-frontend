@@ -18,8 +18,8 @@ Timeline.TimelineController = class {
     this._performanceModel = performanceModel;
     this._client = client;
 
-    this._tracingModelBackingStorage = new Bindings.TempFileBackingStorage('tracing');
-    this._tracingModel = new SDK.TracingModel(this._tracingModelBackingStorage);
+    var backingStorage = new Bindings.TempFileBackingStorage('tracing');
+    this._tracingModel = new SDK.TracingModel(backingStorage);
 
     this._performanceModel.setMainTarget(tracingManager.target());
 
@@ -200,7 +200,7 @@ Timeline.TimelineController = class {
   _finalizeTrace() {
     this._injectCpuProfileEvents();
     this._tracingModel.tracingComplete();
-    this._client.loadingComplete(this._tracingModel, this._tracingModelBackingStorage);
+    this._client.loadingComplete(this._tracingModel);
   }
 
   /**

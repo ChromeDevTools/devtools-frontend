@@ -4,9 +4,6 @@
  * found in the LICENSE file.
  */
 
-/**
- * @unrestricted
- */
 SDK.TracingModel = class {
   /**
    * @param {!SDK.BackingStorage} backingStorage
@@ -15,7 +12,22 @@ SDK.TracingModel = class {
     this._backingStorage = backingStorage;
     // Avoid extra reset of the storage as it's expensive.
     this._firstWritePending = true;
-    this.reset();
+    /** @type {!Map<(number|string), !SDK.TracingModel.Process>} */
+    this._processById = new Map();
+    this._processByName = new Map();
+    this._minimumRecordTime = 0;
+    this._maximumRecordTime = 0;
+    this._devToolsMetadataEvents = [];
+    /** @type {!Array<!SDK.TracingModel.Event>} */
+    this._asyncEvents = [];
+    /** @type {!Map<string, !SDK.TracingModel.AsyncEvent>} */
+    this._openAsyncEvents = new Map();
+    /** @type {!Map<string, !Array<!SDK.TracingModel.AsyncEvent>>} */
+    this._openNestableAsyncEvents = new Map();
+    /** @type {!Map<string, !SDK.TracingModel.ProfileEventsGroup>} */
+    this._profileGroups = new Map();
+    /** @type {!Map<string, !Set<string>>} */
+    this._parsedCategories = new Map();
   }
 
   /**
@@ -120,15 +132,6 @@ SDK.TracingModel = class {
   /**
    * @param {!Array.<!SDK.TracingManager.EventPayload>} events
    */
-  setEventsForTest(events) {
-    this.reset();
-    this.addEvents(events);
-    this.tracingComplete();
-  }
-
-  /**
-   * @param {!Array.<!SDK.TracingManager.EventPayload>} events
-   */
   addEvents(events) {
     for (var i = 0; i < events.length; ++i)
       this._addEvent(events[i]);
@@ -145,27 +148,9 @@ SDK.TracingModel = class {
     }
   }
 
-  reset() {
-    /** @type {!Map<(number|string), !SDK.TracingModel.Process>} */
-    this._processById = new Map();
-    this._processByName = new Map();
-    this._minimumRecordTime = 0;
-    this._maximumRecordTime = 0;
-    this._devToolsMetadataEvents = [];
+  dispose() {
     if (!this._firstWritePending)
       this._backingStorage.reset();
-
-    this._firstWritePending = true;
-    /** @type {!Array<!SDK.TracingModel.Event>} */
-    this._asyncEvents = [];
-    /** @type {!Map<string, !SDK.TracingModel.AsyncEvent>} */
-    this._openAsyncEvents = new Map();
-    /** @type {!Map<string, !Array<!SDK.TracingModel.AsyncEvent>>} */
-    this._openNestableAsyncEvents = new Map();
-    /** @type {!Map<string, !SDK.TracingModel.ProfileEventsGroup>} */
-    this._profileGroups = new Map();
-    /** @type {!Map<string, !Set<string>>} */
-    this._parsedCategories = new Map();
   }
 
   /**
@@ -421,6 +406,13 @@ SDK.TracingModel = class {
       return;
     }
     console.assert(false, 'Invalid async event phase');
+  }
+
+  /**
+   * @return {!SDK.BackingStorage}
+   */
+  backingStorage() {
+    return this._backingStorage;
   }
 
   /**

@@ -136,9 +136,9 @@ Timeline.PerformanceModel = class extends Common.Object {
 
   dispose() {
     if (this._tracingModel)
-      this._tracingModel.reset();
+      this._tracingModel.dispose();
     for (var extensionEntry of this._extensionTracingModels)
-      extensionEntry.model.reset();
+      extensionEntry.model.dispose();
   }
 
   /**
@@ -150,6 +150,15 @@ Timeline.PerformanceModel = class extends Common.Object {
     var screenshotTime = frame.idle ? frame.startTime : frame.endTime;
     var filmStripFrame = this._filmStripModel.frameByTimestamp(screenshotTime);
     return filmStripFrame && filmStripFrame.timestamp - frame.endTime < 10 ? filmStripFrame : null;
+  }
+
+  /**
+   * @param {!Common.OutputStream} stream
+   * @param {!Bindings.OutputStreamDelegate} delegate
+   */
+  save(stream, delegate) {
+    var backingStorage = /** @type {!Bindings.TempFileBackingStorage} */ (this._tracingModel.backingStorage());
+    backingStorage.writeToStream(stream, delegate);
   }
 };
 

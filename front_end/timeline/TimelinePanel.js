@@ -348,31 +348,26 @@ Timeline.TimelinePanel = class extends UI.Panel {
     contextMenu.show();
   }
 
-  /**
-   * @return {boolean}
-   */
   _saveToFile() {
     if (this._state !== Timeline.TimelinePanel.State.Idle)
-      return true;
-    if (!this._performanceModel)
-      return true;
+      return;
+    var performanceModel = this._performanceModel;
+    if (!performanceModel)
+      return;
 
     var now = new Date();
     var fileName = 'Profile-' + now.toISO8601Compact() + '.json';
     var stream = new Bindings.FileOutputStream();
+    stream.open(fileName, callback);
 
     /**
      * @param {boolean} accepted
-     * @this {Timeline.TimelinePanel}
      */
     function callback(accepted) {
       if (!accepted)
         return;
-      var saver = new Timeline.TracingTimelineSaver();
-      this._backingStorage.writeToStream(stream, saver);
+      performanceModel.save(stream, new Timeline.TracingTimelineSaver());
     }
-    stream.open(fileName, callback.bind(this));
-    return true;
   }
 
   async _showHistory() {
@@ -792,14 +787,12 @@ Timeline.TimelinePanel = class extends UI.Panel {
   /**
    * @override
    * @param {?SDK.TracingModel} tracingModel
-   * @param {?Bindings.TempFileBackingStorage} backingStorage
    */
-  loadingComplete(tracingModel, backingStorage) {
+  loadingComplete(tracingModel) {
     delete this._loader;
     this._setState(Timeline.TimelinePanel.State.Idle);
     var performanceModel = this._pendingPerformanceModel;
     this._pendingPerformanceModel = null;
-    this._backingStorage = backingStorage;
 
     if (this._statusPane)
       this._statusPane.hide();
@@ -812,7 +805,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     }
 
     performanceModel.setTracingModel(tracingModel);
-    this._backingStorage = backingStorage;
     this._setModel(performanceModel);
     if (this._historyManager)
       this._historyManager.addRecording(performanceModel);

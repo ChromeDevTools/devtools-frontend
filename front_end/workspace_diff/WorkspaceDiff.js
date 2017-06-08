@@ -89,8 +89,7 @@ WorkspaceDiff.WorkspaceDiff = class extends Common.Object {
    */
   _uiSourceCodeRemoved(event) {
     var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
-    this._loadingUISourceCodes.delete(uiSourceCode);
-    this._markAsUnmodified(uiSourceCode);
+    this._removeUISourceCode(uiSourceCode);
   }
 
   /**
@@ -98,10 +97,19 @@ WorkspaceDiff.WorkspaceDiff = class extends Common.Object {
    */
   _projectRemoved(event) {
     var project = /** @type {!Workspace.Project} */ (event.data);
-    for (var uiSourceCode of project.uiSourceCodes()) {
-      this._loadingUISourceCodes.delete(uiSourceCode);
-      this._markAsUnmodified(uiSourceCode);
-    }
+    for (var uiSourceCode of project.uiSourceCodes())
+      this._removeUISourceCode(uiSourceCode);
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   */
+  _removeUISourceCode(uiSourceCode) {
+    this._loadingUISourceCodes.delete(uiSourceCode);
+    var uiSourceCodeDiff = this._uiSourceCodeDiffs.get(uiSourceCode);
+    if (uiSourceCodeDiff)
+      uiSourceCodeDiff._dispose = true;
+    this._markAsUnmodified(uiSourceCode);
   }
 
   /**
@@ -171,6 +179,7 @@ WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff = class extends Common.Object {
     uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this._uiSourceCodeChanged, this);
     this._requestDiffPromise = null;
     this._pendingChanges = null;
+    this._dispose = false;
   }
 
   _uiSourceCodeChanged() {
@@ -188,6 +197,8 @@ WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff = class extends Common.Object {
      * @this {WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff}
      */
     function emitDiffChanged() {
+      if (this._dispose)
+        return;
       this.dispatchEventToListeners(WorkspaceDiff.Events.DiffChanged);
       this._pendingChanges = null;
     }
@@ -206,10 +217,21 @@ WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff = class extends Common.Object {
    * @return {!Promise<?Diff.Diff.DiffArray>}
    */
   async _innerRequestDiff() {
+    if (this._dispose)
+      return null;
+
     var current = this._uiSourceCode.workingCopy();
     if (!current && !this._uiSourceCode.contentLoaded())
       current = await this._uiSourceCode.requestContent();
+    // ------------ ASYNC ------------
+    if (this._dispose)
+      return null;
+
     var baseline = await this._uiSourceCode.requestOriginalContent();
+    // ------------ ASYNC ------------
+    if (this._dispose)
+      return null;
+
     if (current === null || baseline === null)
       return null;
     return Diff.Diff.lineDiff(baseline.split('\n'), current.split('\n'));

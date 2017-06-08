@@ -630,14 +630,14 @@ UI.formatLocalized = function(format, substitutions) {
  * @return {string}
  */
 UI.openLinkExternallyLabel = function() {
-  return Common.UIString.capitalize('Open in ^new ^tab');
+  return Common.UIString('Open in new tab');
 };
 
 /**
  * @return {string}
  */
 UI.copyLinkAddressLabel = function() {
-  return Common.UIString.capitalize('Copy ^link ^address');
+  return Common.UIString('Copy link address');
 };
 
 /**

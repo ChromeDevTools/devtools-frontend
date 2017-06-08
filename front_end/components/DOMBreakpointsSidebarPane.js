@@ -174,10 +174,10 @@ Components.DOMBreakpointsSidebarPane = class extends UI.VBox {
    */
   _contextMenu(breakpoint, event) {
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString.capitalize('Remove ^breakpoint'), () => {
+    contextMenu.appendItem(Common.UIString('Remove breakpoint'), () => {
       breakpoint.domDebuggerModel.removeDOMBreakpoint(breakpoint.node, breakpoint.type);
     });
-    contextMenu.appendItem(Common.UIString.capitalize('Remove ^all DOM breakpoints'), () => {
+    contextMenu.appendItem(Common.UIString('Remove all DOM breakpoints'), () => {
       breakpoint.domDebuggerModel.removeAllDOMBreakpoints();
     });
     contextMenu.show();

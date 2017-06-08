@@ -526,7 +526,6 @@ window.InspectorFrontendHost = InspectorFrontendHost;
   // so the host instance should not initialized there.
   initializeInspectorFrontendHost();
   window.InspectorFrontendAPI = new Host.InspectorFrontendAPIImpl();
-  Common.setLocalizationPlatform(InspectorFrontendHost.platform());
 })();
 
 /**

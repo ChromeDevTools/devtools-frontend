@@ -1011,7 +1011,7 @@ DataGrid.DataGrid = class extends Common.Object {
     if (gridNode && gridNode.selectable && !gridNode.isEventWithinDisclosureTriangle(event)) {
       if (this._editCallback) {
         if (gridNode === this.creationNode) {
-          contextMenu.appendItem(Common.UIString.capitalize('Add ^new'), this._startEditing.bind(this, target));
+          contextMenu.appendItem(Common.UIString('Add new'), this._startEditing.bind(this, target));
         } else {
           var columnId = this.columnIdFromNode(target);
           if (columnId && this._columns[columnId].editable) {
@@ -1021,7 +1021,7 @@ DataGrid.DataGrid = class extends Common.Object {
         }
       }
       if (this._deleteCallback && gridNode !== this.creationNode)
-        contextMenu.appendItem(Common.UIString.capitalize('Delete'), this._deleteCallback.bind(this, gridNode));
+        contextMenu.appendItem(Common.UIString('Delete'), this._deleteCallback.bind(this, gridNode));
       if (this._rowContextMenuCallback)
         this._rowContextMenuCallback(contextMenu, gridNode);
     }

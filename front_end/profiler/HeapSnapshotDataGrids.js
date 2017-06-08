@@ -134,7 +134,7 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
     }
 
     if (node instanceof Profiler.HeapSnapshotRetainingObjectNode)
-      contextMenu.appendItem(Common.UIString.capitalize('Reveal in Summary ^view'), revealInSummaryView.bind(this));
+      contextMenu.appendItem(Common.UIString('Reveal in Summary view'), revealInSummaryView.bind(this));
   }
 
   resetSortingCache() {

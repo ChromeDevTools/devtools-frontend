@@ -293,7 +293,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
           !Bindings.blackboxManager.isBlackboxedUISourceCode(this._debuggerSourceCode)) {
         if (this._scriptFileForDebuggerModel.size) {
           var scriptFile = this._scriptFileForDebuggerModel.valuesArray()[0];
-          var addSourceMapURLLabel = Common.UIString.capitalize('Add ^source ^map\u2026');
+          var addSourceMapURLLabel = Common.UIString('Add source map\u2026');
           contextMenu.appendItem(addSourceMapURLLabel, addSourceMapURL.bind(null, scriptFile));
           contextMenu.appendSeparator();
         }

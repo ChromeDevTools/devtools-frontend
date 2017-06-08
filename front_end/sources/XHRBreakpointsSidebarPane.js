@@ -36,7 +36,7 @@ Sources.XHRBreakpointsSidebarPane = class extends UI.VBox {
 
   _emptyElementContextMenu(event) {
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString.capitalize('Add ^breakpoint'), this._addButtonClicked.bind(this));
+    contextMenu.appendItem(Common.UIString('Add breakpoint'), this._addButtonClicked.bind(this));
     contextMenu.show();
   }
 
@@ -153,10 +153,10 @@ Sources.XHRBreakpointsSidebarPane = class extends UI.VBox {
         this._removeBreakpoint(url);
       }
     }
-    var removeAllTitle = Common.UIString.capitalize('Remove ^all ^breakpoints');
+    var removeAllTitle = Common.UIString('Remove all breakpoints');
 
-    contextMenu.appendItem(Common.UIString.capitalize('Add ^breakpoint'), this._addButtonClicked.bind(this));
-    contextMenu.appendItem(Common.UIString.capitalize('Remove ^breakpoint'), removeBreakpoint.bind(this));
+    contextMenu.appendItem(Common.UIString('Add breakpoint'), this._addButtonClicked.bind(this));
+    contextMenu.appendItem(Common.UIString('Remove breakpoint'), removeBreakpoint.bind(this));
     contextMenu.appendItem(removeAllTitle, removeAllBreakpoints.bind(this));
     contextMenu.show();
   }

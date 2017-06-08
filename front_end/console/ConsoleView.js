@@ -548,14 +548,13 @@ Console.ConsoleView = class extends UI.VBox {
     var filterSubMenu = contextMenu.appendSubMenuItem(Common.UIString('Filter'));
 
     if (consoleMessage && consoleMessage.url) {
-      var menuTitle =
-          Common.UIString.capitalize('Hide ^messages from %s', new Common.ParsedURL(consoleMessage.url).displayName);
+      var menuTitle = Common.UIString('Hide messages from %s', new Common.ParsedURL(consoleMessage.url).displayName);
       filterSubMenu.appendItem(menuTitle, this._filter.addMessageURLFilter.bind(this._filter, consoleMessage.url));
     }
 
     filterSubMenu.appendSeparator();
-    var unhideAll = filterSubMenu.appendItem(
-        Common.UIString.capitalize('Unhide ^all'), this._filter.removeMessageURLFilter.bind(this._filter));
+    var unhideAll =
+        filterSubMenu.appendItem(Common.UIString('Unhide all'), this._filter.removeMessageURLFilter.bind(this._filter));
     filterSubMenu.appendSeparator();
 
     var hasFilters = false;

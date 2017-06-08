@@ -271,8 +271,8 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       return;
     var contextMenu = new UI.ContextMenu(event);
     if (item.debuggerCallFrame)
-      contextMenu.appendItem(Common.UIString.capitalize('Restart ^frame'), () => item.debuggerCallFrame.restart());
-    contextMenu.appendItem(Common.UIString.capitalize('Copy ^stack ^trace'), this._copyStackTrace.bind(this));
+      contextMenu.appendItem(Common.UIString('Restart frame'), () => item.debuggerCallFrame.restart());
+    contextMenu.appendItem(Common.UIString('Copy stack trace'), this._copyStackTrace.bind(this));
     var location = this._itemLocation(item);
     if (location) {
       var uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location);
@@ -323,22 +323,19 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     if (canBlackbox) {
       if (isBlackboxed) {
         contextMenu.appendItem(
-            Common.UIString.capitalize('Stop ^blackboxing'),
-            manager.unblackboxUISourceCode.bind(manager, uiSourceCode));
+            Common.UIString('Stop blackboxing'), manager.unblackboxUISourceCode.bind(manager, uiSourceCode));
       } else {
         contextMenu.appendItem(
-            Common.UIString.capitalize('Blackbox ^script'), manager.blackboxUISourceCode.bind(manager, uiSourceCode));
+            Common.UIString('Blackbox script'), manager.blackboxUISourceCode.bind(manager, uiSourceCode));
       }
     }
     if (isContentScript) {
       if (isBlackboxed) {
         contextMenu.appendItem(
-            Common.UIString.capitalize('Stop blackboxing ^all ^content ^scripts'),
-            manager.blackboxContentScripts.bind(manager));
+            Common.UIString('Stop blackboxing all content scripts'), manager.blackboxContentScripts.bind(manager));
       } else {
         contextMenu.appendItem(
-            Common.UIString.capitalize('Blackbox ^all ^content ^scripts'),
-            manager.unblackboxContentScripts.bind(manager));
+            Common.UIString('Blackbox all content scripts'), manager.unblackboxContentScripts.bind(manager));
       }
     }
   }

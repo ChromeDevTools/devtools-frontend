@@ -1103,16 +1103,14 @@ Network.NetworkLogView = class extends UI.VBox {
           UI.copyLinkAddressLabel(), InspectorFrontendHost.copyText.bind(InspectorFrontendHost, request.contentURL()));
       copyMenu.appendSeparator();
 
-      if (request.requestHeadersText()) {
-        copyMenu.appendItem(
-            Common.UIString.capitalize('Copy ^request ^headers'), this._copyRequestHeaders.bind(this, request));
-      }
-      if (request.responseHeadersText) {
-        copyMenu.appendItem(
-            Common.UIString.capitalize('Copy ^response ^headers'), this._copyResponseHeaders.bind(this, request));
-      }
+      if (request.requestHeadersText())
+        copyMenu.appendItem(Common.UIString('Copy request headers'), this._copyRequestHeaders.bind(this, request));
+
+      if (request.responseHeadersText)
+        copyMenu.appendItem(Common.UIString('Copy response headers'), this._copyResponseHeaders.bind(this, request));
+
       if (request.finished)
-        copyMenu.appendItem(Common.UIString.capitalize('Copy ^response'), this._copyResponse.bind(this, request));
+        copyMenu.appendItem(Common.UIString('Copy response'), this._copyResponse.bind(this, request));
 
       if (Host.isWin()) {
         copyMenu.appendItem(Common.UIString('Copy as cURL (cmd)'), this._copyCurlCommand.bind(this, request, 'win'));
@@ -1126,14 +1124,14 @@ Network.NetworkLogView = class extends UI.VBox {
     } else {
       copyMenu = contextMenu.appendSubMenuItem(Common.UIString('Copy'));
     }
-    copyMenu.appendItem(Common.UIString.capitalize('Copy ^all as HAR'), this._copyAll.bind(this));
+    copyMenu.appendItem(Common.UIString('Copy all as HAR'), this._copyAll.bind(this));
 
     contextMenu.appendSeparator();
-    contextMenu.appendItem(Common.UIString.capitalize('Save as HAR with ^content'), this._exportAll.bind(this));
+    contextMenu.appendItem(Common.UIString('Save as HAR with content'), this._exportAll.bind(this));
 
     contextMenu.appendSeparator();
-    contextMenu.appendItem(Common.UIString.capitalize('Clear ^browser ^cache'), this._clearBrowserCache.bind(this));
-    contextMenu.appendItem(Common.UIString.capitalize('Clear ^browser ^cookies'), this._clearBrowserCookies.bind(this));
+    contextMenu.appendItem(Common.UIString('Clear browser cache'), this._clearBrowserCache.bind(this));
+    contextMenu.appendItem(Common.UIString('Clear browser cookies'), this._clearBrowserCookies.bind(this));
 
     if (request) {
       contextMenu.appendSeparator();
@@ -1144,21 +1142,19 @@ Network.NetworkLogView = class extends UI.VBox {
 
       var urlWithoutScheme = request.parsedURL.urlWithoutScheme();
       if (urlWithoutScheme && !patterns.find(pattern => pattern.url === urlWithoutScheme)) {
-        contextMenu.appendItem(
-            Common.UIString.capitalize('Block ^request URL'), addBlockedURL.bind(null, urlWithoutScheme));
+        contextMenu.appendItem(Common.UIString('Block request URL'), addBlockedURL.bind(null, urlWithoutScheme));
       } else if (urlWithoutScheme) {
         const croppedURL = urlWithoutScheme.trimMiddle(maxBlockedURLLength);
         contextMenu.appendItem(
-            Common.UIString.capitalize('Unblock ' + croppedURL), removeBlockedURL.bind(null, urlWithoutScheme));
+            Common.UIString('Unblock %s', croppedURL), removeBlockedURL.bind(null, urlWithoutScheme));
       }
 
       var domain = request.parsedURL.domain();
       if (domain && !patterns.find(pattern => pattern.url === domain)) {
-        contextMenu.appendItem(Common.UIString.capitalize('Block ^request ^domain'), addBlockedURL.bind(null, domain));
+        contextMenu.appendItem(Common.UIString('Block request domain'), addBlockedURL.bind(null, domain));
       } else if (domain) {
         const croppedDomain = domain.trimMiddle(maxBlockedURLLength);
-        contextMenu.appendItem(
-            Common.UIString.capitalize('Unblock ' + croppedDomain), removeBlockedURL.bind(null, domain));
+        contextMenu.appendItem(Common.UIString('Unblock %s', croppedDomain), removeBlockedURL.bind(null, domain));
       }
 
       if (SDK.NetworkManager.canReplayRequest(request)) {

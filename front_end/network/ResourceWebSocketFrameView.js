@@ -96,10 +96,9 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
      */
     function onRowContextMenu(contextMenu, node) {
       contextMenu.appendItem(
-          Common.UIString.capitalize('Copy ^message'),
-          InspectorFrontendHost.copyText.bind(InspectorFrontendHost, node.data.data));
+          Common.UIString('Copy message'), InspectorFrontendHost.copyText.bind(InspectorFrontendHost, node.data.data));
       contextMenu.appendSeparator();
-      contextMenu.appendItem(Common.UIString.capitalize('Clear ^all'), this._clearFrames.bind(this));
+      contextMenu.appendItem(Common.UIString('Clear all'), this._clearFrames.bind(this));
     }
   }
 

@@ -1185,10 +1185,10 @@ UI.TabbedPaneTab = class {
 
     var contextMenu = new UI.ContextMenu(event);
     if (this._closeable) {
-      contextMenu.appendItem(Common.UIString.capitalize('Close'), close.bind(this));
-      contextMenu.appendItem(Common.UIString.capitalize('Close ^others'), closeOthers.bind(this));
-      contextMenu.appendItem(Common.UIString.capitalize('Close ^tabs to the ^right'), closeToTheRight.bind(this));
-      contextMenu.appendItem(Common.UIString.capitalize('Close ^all'), closeAll.bind(this));
+      contextMenu.appendItem(Common.UIString('Close'), close.bind(this));
+      contextMenu.appendItem(Common.UIString('Close others'), closeOthers.bind(this));
+      contextMenu.appendItem(Common.UIString('Close tabs to the right'), closeToTheRight.bind(this));
+      contextMenu.appendItem(Common.UIString('Close all'), closeAll.bind(this));
     }
     if (this._delegate)
       this._delegate.onContextMenu(this.id, contextMenu);

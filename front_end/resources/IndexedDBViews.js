@@ -34,14 +34,15 @@
 Resources.IDBDatabaseView = class extends UI.VBox {
   /**
    * @param {!Resources.IndexedDBModel} model
-   * @param {!Resources.IndexedDBModel.Database} database
+   * @param {?Resources.IndexedDBModel.Database} database
    */
   constructor(model, database) {
     super();
 
     this._model = model;
+    var databaseName = database ? database.databaseId.name : Common.UIString('Loading\u2026');
 
-    this._reportView = new UI.ReportView(database.databaseId.name);
+    this._reportView = new UI.ReportView(databaseName);
     this._reportView.show(this.contentElement);
 
     var bodySection = this._reportView.appendSection('');
@@ -58,7 +59,8 @@ Resources.IDBDatabaseView = class extends UI.VBox {
         Common.UIString('Refresh database'));
     footer.appendChild(this._refreshButton);
 
-    this.update(database);
+    if (database)
+      this.update(database);
   }
 
   _refreshDatabase() {
@@ -75,6 +77,7 @@ Resources.IDBDatabaseView = class extends UI.VBox {
    */
   update(database) {
     this._database = database;
+    this._reportView.setTitle(this._database.databaseId.name);
     this._refreshDatabase();
     this._updatedForTests();
   }

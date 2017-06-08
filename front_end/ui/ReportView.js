@@ -14,9 +14,19 @@ UI.ReportView = class extends UI.VBox {
 
     var contentBox = this.contentElement.createChild('div', 'report-content-box');
     this._headerElement = contentBox.createChild('div', 'report-header vbox');
-    this._headerElement.createChild('div', 'report-title').textContent = title;
+    this._titleElement = this._headerElement.createChild('div', 'report-title');
+    this._titleElement.textContent = title;
 
     this._sectionList = contentBox.createChild('div', 'vbox');
+  }
+
+  /**
+   * @param {string} title
+   */
+  setTitle(title) {
+    if (this._titleElement && this._titleElement.textContent === title)
+      return;
+    this._titleElement.textContent = title;
   }
 
   /**

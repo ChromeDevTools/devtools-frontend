@@ -175,9 +175,10 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
     this._loadDatabaseNames(databaseId.securityOrigin);
   }
 
-  refreshDatabaseNames() {
+  async refreshDatabaseNames() {
     for (var securityOrigin in this._databaseNamesBySecurityOrigin)
-      this._loadDatabaseNames(securityOrigin);
+      await this._loadDatabaseNames(securityOrigin);
+    this.dispatchEventToListeners(Resources.IndexedDBModel.Events.DatabaseNamesRefreshed);
   }
 
   /**
@@ -414,7 +415,8 @@ Resources.IndexedDBModel.KeyPathTypes = {
 Resources.IndexedDBModel.Events = {
   DatabaseAdded: Symbol('DatabaseAdded'),
   DatabaseRemoved: Symbol('DatabaseRemoved'),
-  DatabaseLoaded: Symbol('DatabaseLoaded')
+  DatabaseLoaded: Symbol('DatabaseLoaded'),
+  DatabaseNamesRefreshed: Symbol('DatabaseNamesRefreshed')
 };
 
 /**

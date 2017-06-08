@@ -44,6 +44,26 @@ def _CheckNodeAndNPMModules(input_api, output_api):
     return [output_api.PresubmitNotifyResult(out)]
 
 
+def _CheckBuildGN(input_api, output_api):
+    original_sys_path = sys.path
+    try:
+        sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts")]
+        import install_node_deps
+    finally:
+        sys.path = original_sys_path
+
+    node_path, _ = install_node_deps.resolve_node_paths()
+
+    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "check_gn.js")
+    process = input_api.subprocess.Popen(
+        [node_path, script_path], stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)
+    out, _ = process.communicate()
+
+    if process.returncode != 0:
+        return [output_api.PresubmitError(out)]
+    return [output_api.PresubmitNotifyResult(out)]
+
+
 def _CheckFormat(input_api, output_api):
 
     def popen(args):
@@ -185,6 +205,7 @@ def _CheckCSSViolations(input_api, output_api):
 def CheckChangeOnUpload(input_api, output_api):
     results = []
     results.extend(_CheckNodeAndNPMModules(input_api, output_api))
+    results.extend(_CheckBuildGN(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
     results.extend(_CompileDevtoolsFrontend(input_api, output_api))

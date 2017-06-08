@@ -862,7 +862,7 @@ generated_scripts = [
   "$resources_out_dir/SupportedCSSProperties.js",
 ]
 
-generated_resources = [
+generated_applications = [
   "$resources_out_dir/inspector.html",
   "$resources_out_dir/inspector.js",
   "$resources_out_dir/toolbox.html",
@@ -871,8 +871,9 @@ generated_resources = [
   "$resources_out_dir/formatter_worker.js",
   "$resources_out_dir/heap_snapshot_worker.js",
   "$resources_out_dir/utility_shared_worker.js",
+]
 
-  # this contains non-autostart non-remote modules only.
+generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/animation/animation_module.js",
   "$resources_out_dir/audits/audits_module.js",
   "$resources_out_dir/audits2/audits2_module.js",
@@ -905,12 +906,14 @@ generated_resources = [
   "$resources_out_dir/snippets/snippets_module.js",
   "$resources_out_dir/source_frame/source_frame_module.js",
   "$resources_out_dir/sources/sources_module.js",
-  "$resources_out_dir/terminal/terminal_module.js",
   "$resources_out_dir/text_editor/text_editor_module.js",
   "$resources_out_dir/timeline_model/timeline_model_module.js",
   "$resources_out_dir/timeline/timeline_module.js",
   "$resources_out_dir/workspace_diff/workspace_diff_module.js",
 ]
+
+generated_resources =
+    generated_applications + generated_non_autostart_non_remote_modules
 
 generated_remote_modules = [
   "$resources_out_dir/accessibility/accessibility_module.js",

@@ -552,6 +552,7 @@ Elements.ElementsPanel = class extends UI.Panel {
     }
 
     var treeElement = this._treeElementForNode(searchResult.node);
+    searchResult.node.scrollIntoView();
     if (treeElement) {
       treeElement.highlightSearchResults(this._searchConfig.query);
       treeElement.reveal();

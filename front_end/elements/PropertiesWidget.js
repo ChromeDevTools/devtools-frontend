@@ -71,7 +71,7 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
     }
 
     this._lastRequestedNode = this._node;
-    return this._node.resolveToObjectPromise(Elements.PropertiesWidget._objectGroupName).then(nodeResolved.bind(this));
+    return this._node.resolveToObject(Elements.PropertiesWidget._objectGroupName).then(nodeResolved.bind(this));
 
     /**
      * @param {?SDK.RemoteObject} object

@@ -550,38 +550,32 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
    * @param {!SDK.DOMNode} node
    * @return {!Promise<!Object|undefined>}
    */
-  _loadDimensionsForNode(node) {
+  async _loadDimensionsForNode(node) {
     if (!node.nodeName() || node.nodeName().toLowerCase() !== 'img')
-      return Promise.resolve();
+      return;
 
-    var fulfill;
-    var promise = new Promise(x => fulfill = x);
-    node.resolveToObject('', resolvedNode);
+    var object = await node.resolveToObject('');
+
+    if (!object)
+      return;
+
+    var promise = object.callFunctionJSONPromise(features, undefined);
+    object.release();
     return promise;
 
-    function resolvedNode(object) {
-      if (!object) {
-        fulfill();
-        return;
-      }
-
-      object.callFunctionJSON(features, undefined, fulfill);
-      object.release();
-
-      /**
-       * @return {!{offsetWidth: number, offsetHeight: number, naturalWidth: number, naturalHeight: number, currentSrc: (string|undefined)}}
-       * @suppressReceiverCheck
-       * @this {!Element}
-       */
-      function features() {
-        return {
-          offsetWidth: this.offsetWidth,
-          offsetHeight: this.offsetHeight,
-          naturalWidth: this.naturalWidth,
-          naturalHeight: this.naturalHeight,
-          currentSrc: this.currentSrc
-        };
-      }
+    /**
+     * @return {!{offsetWidth: number, offsetHeight: number, naturalWidth: number, naturalHeight: number, currentSrc: (string|undefined)}}
+     * @suppressReceiverCheck
+     * @this {!Element}
+     */
+    function features() {
+      return {
+        offsetWidth: this.offsetWidth,
+        offsetHeight: this.offsetHeight,
+        naturalWidth: this.naturalWidth,
+        naturalHeight: this.naturalHeight,
+        currentSrc: this.currentSrc
+      };
     }
   }
 
@@ -896,66 +890,63 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
    * ancestors.
    *
    * @param {!SDK.DOMNode} node
-   * @param {function(?SDK.RemoteObject, boolean=)=} userCallback
    */
-  toggleHideElement(node, userCallback) {
+  async toggleHideElement(node) {
     var pseudoType = node.pseudoType();
     var effectiveNode = pseudoType ? node.parentNode : node;
     if (!effectiveNode)
       return;
 
     var hidden = node.marker('hidden-marker');
+    var object = await effectiveNode.resolveToObject('');
 
-    function resolvedNode(object) {
-      if (!object)
+    if (!object)
+      return;
+
+    var result = object.callFunction(toggleClassAndInjectStyleRule, [{value: pseudoType}, {value: !hidden}]);
+    object.release();
+    node.setMarker('hidden-marker', hidden ? null : true);
+    return result;
+
+    /**
+     * @param {?string} pseudoType
+     * @param {boolean} hidden
+     * @suppressGlobalPropertiesCheck
+     * @suppressReceiverCheck
+     * @this {!Element}
+     */
+    function toggleClassAndInjectStyleRule(pseudoType, hidden) {
+      const classNamePrefix = '__web-inspector-hide';
+      const classNameSuffix = '-shortcut__';
+      const styleTagId = '__web-inspector-hide-shortcut-style__';
+      var selectors = [];
+      selectors.push('.__web-inspector-hide-shortcut__');
+      selectors.push('.__web-inspector-hide-shortcut__ *');
+      selectors.push('.__web-inspector-hidebefore-shortcut__::before');
+      selectors.push('.__web-inspector-hideafter-shortcut__::after');
+      var selector = selectors.join(', ');
+      var ruleBody = '    visibility: hidden !important;';
+      var rule = '\n' + selector + '\n{\n' + ruleBody + '\n}\n';
+      var className = classNamePrefix + (pseudoType || '') + classNameSuffix;
+      this.classList.toggle(className, hidden);
+
+      var localRoot = this;
+      while (localRoot.parentNode)
+        localRoot = localRoot.parentNode;
+      if (localRoot.nodeType === Node.DOCUMENT_NODE)
+        localRoot = document.head;
+
+      var style = localRoot.querySelector('style#' + styleTagId);
+      if (style)
         return;
 
-      /**
-       * @param {?string} pseudoType
-       * @param {boolean} hidden
-       * @suppressGlobalPropertiesCheck
-       * @suppressReceiverCheck
-       * @this {!Element}
-       */
-      function toggleClassAndInjectStyleRule(pseudoType, hidden) {
-        const classNamePrefix = '__web-inspector-hide';
-        const classNameSuffix = '-shortcut__';
-        const styleTagId = '__web-inspector-hide-shortcut-style__';
-        var selectors = [];
-        selectors.push('.__web-inspector-hide-shortcut__');
-        selectors.push('.__web-inspector-hide-shortcut__ *');
-        selectors.push('.__web-inspector-hidebefore-shortcut__::before');
-        selectors.push('.__web-inspector-hideafter-shortcut__::after');
-        var selector = selectors.join(', ');
-        var ruleBody = '    visibility: hidden !important;';
-        var rule = '\n' + selector + '\n{\n' + ruleBody + '\n}\n';
-        var className = classNamePrefix + (pseudoType || '') + classNameSuffix;
-        this.classList.toggle(className, hidden);
+      style = document.createElement('style');
+      style.id = styleTagId;
+      style.type = 'text/css';
+      style.textContent = rule;
 
-        var localRoot = this;
-        while (localRoot.parentNode)
-          localRoot = localRoot.parentNode;
-        if (localRoot.nodeType === Node.DOCUMENT_NODE)
-          localRoot = document.head;
-
-        var style = localRoot.querySelector('style#' + styleTagId);
-        if (style)
-          return;
-
-        style = document.createElement('style');
-        style.id = styleTagId;
-        style.type = 'text/css';
-        style.textContent = rule;
-
-        localRoot.appendChild(style);
-      }
-
-      object.callFunction(toggleClassAndInjectStyleRule, [{value: pseudoType}, {value: !hidden}], userCallback);
-      object.release();
-      node.setMarker('hidden-marker', hidden ? null : true);
+      localRoot.appendChild(style);
     }
-
-    effectiveNode.resolveToObject('', resolvedNode);
   }
 
   /**

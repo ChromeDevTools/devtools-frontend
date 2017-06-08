@@ -101,11 +101,11 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
     this._lastRequestedNode = node;
     var selectedNodeOnly = !this._showForAncestorsSetting.get();
     var promises = [];
-    promises.push(node.resolveToObjectPromise(Elements.EventListenersWidget._objectGroupName));
+    promises.push(node.resolveToObject(Elements.EventListenersWidget._objectGroupName));
     if (!selectedNodeOnly) {
       var currentNode = node.parentNode;
       while (currentNode) {
-        promises.push(currentNode.resolveToObjectPromise(Elements.EventListenersWidget._objectGroupName));
+        promises.push(currentNode.resolveToObject(Elements.EventListenersWidget._objectGroupName));
         currentNode = currentNode.parentNode;
       }
       promises.push(this._windowObjectInNodeContext(node));

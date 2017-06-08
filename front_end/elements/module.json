@@ -276,6 +276,7 @@
         "elementsPanel.css",
         "elementStatePaneWidget.css",
         "elementsTreeOutline.css",
+        "metricsSidebarPane.css",
         "platformFontsWidget.css",
         "stylesSectionTree.css"
     ]

@@ -188,6 +188,7 @@ all_devtools_files = [
   "front_end/elements/ElementsTreeOutline.js",
   "front_end/elements/EventListenersWidget.js",
   "front_end/elements/InspectElementModeController.js",
+  "front_end/elements/metricsSidebarPane.css",
   "front_end/elements/MetricsSidebarPane.js",
   "front_end/elements/module.json",
   "front_end/elements/platformFontsWidget.css",

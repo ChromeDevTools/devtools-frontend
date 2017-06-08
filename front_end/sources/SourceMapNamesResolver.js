@@ -52,7 +52,8 @@ Sources.SourceMapNamesResolver._scopeIdentifiers = function(scope) {
     var scopeText = text.extract(scopeRange);
     var scopeStart = text.toSourceRange(scopeRange).offset;
     var prefix = 'function fui';
-    return Common.formatterWorkerPool.javaScriptIdentifiers(prefix + scopeText)
+    return Formatter.formatterWorkerPool()
+        .javaScriptIdentifiers(prefix + scopeText)
         .then(onIdentifiers.bind(null, text, scopeStart, prefix));
   }
 
@@ -279,7 +280,7 @@ Sources.SourceMapNamesResolver._resolveExpression = function(
     var originalText = text.extract(textRange);
     if (!originalText)
       return Promise.resolve('');
-    return Common.formatterWorkerPool.evaluatableJavaScriptSubstring(originalText);
+    return Formatter.formatterWorkerPool().evaluatableJavaScriptSubstring(originalText);
   }
 };
 

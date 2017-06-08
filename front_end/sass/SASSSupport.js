@@ -12,10 +12,10 @@ Sass.SASSSupport.parseSCSS = function(url, content) {
   var text = new TextUtils.Text(content);
   var document = new Sass.SASSSupport.ASTDocument(url, text);
 
-  return Common.formatterWorkerPool.parseSCSS(content).then(onParsed);
+  return Formatter.formatterWorkerPool().parseSCSS(content).then(onParsed);
 
   /**
-   * @param {!Array<!Common.FormatterWorkerPool.SCSSRule>} rulePayloads
+   * @param {!Array<!Formatter.FormatterWorkerPool.SCSSRule>} rulePayloads
    * @return {!Sass.SASSSupport.AST}
    */
   function onParsed(rulePayloads) {

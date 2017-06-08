@@ -76,7 +76,7 @@ Network.JSONView = class extends UI.VBox {
       returnObj = Network.JSONView._extractJSON(/** @type {string} */ (text));
     if (!returnObj)
       return Promise.resolve(/** @type {?Network.ParsedJSON} */ (null));
-    return Common.formatterWorkerPool.parseJSONRelaxed(returnObj.data).then(handleReturnedJSON);
+    return Formatter.formatterWorkerPool().parseJSONRelaxed(returnObj.data).then(handleReturnedJSON);
 
     /**
      * @param {*} data

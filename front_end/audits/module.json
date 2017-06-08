@@ -24,7 +24,8 @@
         "components",
         "extensions",
         "network_log",
-        "object_ui"
+        "object_ui",
+        "formatter"
     ],
     "scripts": [
         "AuditsPanel.js",

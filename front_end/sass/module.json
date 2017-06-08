@@ -1,5 +1,11 @@
 {
-    "dependencies": ["platform", "common", "diff", "sdk"],
+    "dependencies": [
+        "platform",
+        "common",
+        "diff",
+        "sdk",
+        "formatter"
+    ],
     "scripts": [
         "SASSSupport.js",
         "ASTService.js",

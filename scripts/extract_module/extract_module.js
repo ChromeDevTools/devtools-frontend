@@ -39,9 +39,8 @@ const MODULES_TO_REMOVE = [];
  * If moving to an existing module:
  * {file: 'ui/SomeFile.js', existing: 'common'}
  */
-const JS_FILES_MAPPING = [
-  {file: 'mobile_throttling/NetworkPriorities.js', new: 'network_priorities'},
-];
+const JS_FILES_MAPPING =
+    [{file: 'common/FormatterWorkerPool.js', new: 'formatter'}, {file: 'sources/ScriptFormatter.js', new: 'formatter'}];
 
 /**
  * List all new modules here:
@@ -53,9 +52,9 @@ const JS_FILES_MAPPING = [
  * }
  */
 const MODULE_MAPPING = {
-  network_priorities: {
-    dependencies: ['protocol', 'common'],
-    dependents: ['network', 'timeline'],
+  formatter: {
+    dependencies: ['common'],
+    dependents: ['sources', 'audits', 'network', 'sass'],
     applications: ['inspector.json'],
     autostart: false,
   },

@@ -83,13 +83,13 @@ Sources.InplaceFormatterEditorAction = class {
      */
     function contentLoaded(content) {
       var highlighterType = uiSourceCode.mimeType();
-      Sources.Formatter.format(uiSourceCode.contentType(), highlighterType, content || '', innerCallback.bind(this));
+      Formatter.Formatter.format(uiSourceCode.contentType(), highlighterType, content || '', innerCallback.bind(this));
     }
 
     /**
      * @this {Sources.InplaceFormatterEditorAction}
      * @param {string} formattedContent
-     * @param {!Sources.FormatterSourceMapping} formatterMapping
+     * @param {!Formatter.FormatterSourceMapping} formatterMapping
      */
     function innerCallback(formattedContent, formatterMapping) {
       if (uiSourceCode.workingCopy() === formattedContent)

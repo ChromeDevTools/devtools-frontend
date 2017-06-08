@@ -484,7 +484,7 @@ Audits.AuditRules.UnusedCssRule = class extends Audits.AuditRule {
 };
 
 /**
- * @typedef {!{sourceURL: string, rules: !Array.<!Common.FormatterWorkerPool.CSSStyleRule>}}
+ * @typedef {!{sourceURL: string, rules: !Array.<!Formatter.FormatterWorkerPool.CSSStyleRule>}}
  */
 Audits.AuditRules.ParsedStyleSheet;
 
@@ -517,11 +517,11 @@ Audits.AuditRules.StyleSheetProcessor = class {
 
     var allRules = [];
     this._currentStyleSheetHeader.requestContent().then(
-        content => Common.formatterWorkerPool.parseCSS(content || '', onRulesParsed.bind(this)));
+        content => Formatter.formatterWorkerPool().parseCSS(content || '', onRulesParsed.bind(this)));
 
     /**
      * @param {boolean} isLastChunk
-     * @param {!Array<!Common.FormatterWorkerPool.CSSRule>} rules
+     * @param {!Array<!Formatter.FormatterWorkerPool.CSSRule>} rules
      * @this {Audits.AuditRules.StyleSheetProcessor}
      */
     function onRulesParsed(isLastChunk, rules) {
@@ -532,7 +532,7 @@ Audits.AuditRules.StyleSheetProcessor = class {
   }
 
   /**
-   * @param {!Array.<!Common.FormatterWorkerPool.CSSRule>} rules
+   * @param {!Array.<!Formatter.FormatterWorkerPool.CSSRule>} rules
    */
   _onStyleSheetParsed(rules) {
     if (this._progress.isCanceled()) {
@@ -1205,7 +1205,7 @@ Audits.AuditRules.CSSRuleBase = class extends Audits.AuditRule {
 
   /**
    * @param {!Audits.AuditRules.ParsedStyleSheet} styleSheet
-   * @param {!Common.FormatterWorkerPool.CSSStyleRule} rule
+   * @param {!Formatter.FormatterWorkerPool.CSSStyleRule} rule
    * @param {!Audits.AuditRuleResult} result
    */
   _visitRule(styleSheet, rule, result) {
@@ -1234,7 +1234,7 @@ Audits.AuditRules.CSSRuleBase = class extends Audits.AuditRule {
 
   /**
    * @param {!Audits.AuditRules.ParsedStyleSheet} styleSheet
-   * @param {!Common.FormatterWorkerPool.CSSStyleRule} rule
+   * @param {!Formatter.FormatterWorkerPool.CSSStyleRule} rule
    * @param {!Audits.AuditRuleResult} result
    */
   visitRule(styleSheet, rule, result) {
@@ -1243,7 +1243,7 @@ Audits.AuditRules.CSSRuleBase = class extends Audits.AuditRule {
 
   /**
    * @param {!Audits.AuditRules.ParsedStyleSheet} styleSheet
-   * @param {!Common.FormatterWorkerPool.CSSStyleRule} rule
+   * @param {!Formatter.FormatterWorkerPool.CSSStyleRule} rule
    * @param {!Audits.AuditRuleResult} result
    */
   didVisitRule(styleSheet, rule, result) {
@@ -1252,8 +1252,8 @@ Audits.AuditRules.CSSRuleBase = class extends Audits.AuditRule {
 
   /**
    * @param {!Audits.AuditRules.ParsedStyleSheet} styleSheet
-   * @param {!Common.FormatterWorkerPool.CSSStyleRule} rule
-   * @param {!Common.FormatterWorkerPool.CSSProperty} property
+   * @param {!Formatter.FormatterWorkerPool.CSSStyleRule} rule
+   * @param {!Formatter.FormatterWorkerPool.CSSProperty} property
    * @param {!Audits.AuditRuleResult} result
    */
   visitProperty(styleSheet, rule, property, result) {

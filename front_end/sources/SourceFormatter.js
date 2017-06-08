@@ -6,7 +6,7 @@ Sources.SourceFormatData = class {
   /**
    * @param {!Workspace.UISourceCode} originalSourceCode
    * @param {!Workspace.UISourceCode} formattedSourceCode
-   * @param {!Sources.FormatterSourceMapping} mapping
+   * @param {!Formatter.FormatterSourceMapping} mapping
    */
   constructor(originalSourceCode, formattedSourceCode, mapping) {
     this.originalSourceCode = originalSourceCode;
@@ -102,13 +102,14 @@ Sources.SourceFormatter = class {
     this._formattedSourceCodes.set(uiSourceCode, {promise: resultPromise, formatData: null});
     var content = await uiSourceCode.requestContent();
     // ------------ ASYNC ------------
-    Sources.Formatter.format(uiSourceCode.contentType(), uiSourceCode.mimeType(), content || '', formatDone.bind(this));
+    Formatter.Formatter.format(
+        uiSourceCode.contentType(), uiSourceCode.mimeType(), content || '', formatDone.bind(this));
     return resultPromise;
 
     /**
      * @this Sources.SourceFormatter
      * @param {string} formattedContent
-     * @param {!Sources.FormatterSourceMapping} formatterMapping
+     * @param {!Formatter.FormatterSourceMapping} formatterMapping
      */
     function formatDone(formattedContent, formatterMapping) {
       var cacheEntry = this._formattedSourceCodes.get(uiSourceCode);

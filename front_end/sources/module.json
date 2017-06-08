@@ -617,7 +617,8 @@
         "inline_editor",
         "color_picker",
         "event_listeners",
-        "object_ui"
+        "object_ui",
+        "formatter"
     ],
     "scripts": [
         "AddSourceMapURLDialog.js",
@@ -643,7 +644,6 @@
         "ThreadsSidebarPane.js",
         "ScriptFormatterEditorAction.js",
         "InplaceFormatterEditorAction.js",
-        "ScriptFormatter.js",
         "SourceFormatter.js",
         "OpenFileQuickOpen.js",
         "SourcesView.js",

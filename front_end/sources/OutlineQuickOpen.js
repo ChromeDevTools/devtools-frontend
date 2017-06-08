@@ -21,7 +21,7 @@ Sources.OutlineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
 
     var uiSourceCode = this._currentUISourceCode();
     if (uiSourceCode) {
-      this._active = Common.formatterWorkerPool.outlineForMimetype(
+      this._active = Formatter.formatterWorkerPool().outlineForMimetype(
           uiSourceCode.workingCopy(), uiSourceCode.contentType().canonicalMimeType(),
           this._didBuildOutlineChunk.bind(this));
     }
@@ -29,7 +29,7 @@ Sources.OutlineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
 
   /**
    * @param {boolean} isLastChunk
-   * @param {!Array<!Common.FormatterWorkerPool.OutlineItem>} items
+   * @param {!Array<!Formatter.FormatterWorkerPool.OutlineItem>} items
    */
   _didBuildOutlineChunk(isLastChunk, items) {
     this._items.push(...items);

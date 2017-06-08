@@ -187,7 +187,6 @@ Main.Main = class {
 
     Workspace.fileManager = new Workspace.FileManager();
     Workspace.workspace = new Workspace.Workspace();
-    Common.formatterWorkerPool = new Common.FormatterWorkerPool();
     Persistence.fileSystemMapping = new Persistence.FileSystemMapping(Persistence.isolatedFileSystemManager);
 
     Bindings.networkProjectManager = new Bindings.NetworkProjectManager(SDK.targetManager, Workspace.workspace);

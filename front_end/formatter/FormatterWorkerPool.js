@@ -4,10 +4,10 @@
 /**
  * @unrestricted
  */
-Common.FormatterWorkerPool = class {
+Formatter.FormatterWorkerPool = class {
   constructor() {
     this._taskQueue = [];
-    /** @type {!Map<!Common.Worker, ?Common.FormatterWorkerPool.Task>} */
+    /** @type {!Map<!Common.Worker, ?Formatter.FormatterWorkerPool.Task>} */
     this._workerTasks = new Map();
   }
 
@@ -26,7 +26,7 @@ Common.FormatterWorkerPool = class {
       return;
 
     var freeWorker = this._workerTasks.keysArray().find(worker => !this._workerTasks.get(worker));
-    if (!freeWorker && this._workerTasks.size < Common.FormatterWorkerPool.MaxWorkers)
+    if (!freeWorker && this._workerTasks.size < Formatter.FormatterWorkerPool.MaxWorkers)
       freeWorker = this._createWorker();
     if (!freeWorker)
       return;
@@ -74,7 +74,7 @@ Common.FormatterWorkerPool = class {
    * @param {function(boolean, *)} callback
    */
   _runChunkedTask(methodName, params, callback) {
-    var task = new Common.FormatterWorkerPool.Task(methodName, params, onData, true);
+    var task = new Formatter.FormatterWorkerPool.Task(methodName, params, onData, true);
     this._taskQueue.push(task);
     this._processNextTask();
 
@@ -100,7 +100,7 @@ Common.FormatterWorkerPool = class {
   _runTask(methodName, params) {
     var callback;
     var promise = new Promise(fulfill => callback = fulfill);
-    var task = new Common.FormatterWorkerPool.Task(methodName, params, callback, false);
+    var task = new Formatter.FormatterWorkerPool.Task(methodName, params, callback, false);
     this._taskQueue.push(task);
     this._processNextTask();
     return promise;
@@ -116,7 +116,7 @@ Common.FormatterWorkerPool = class {
 
   /**
    * @param {string} content
-   * @return {!Promise<!Array<!Common.FormatterWorkerPool.SCSSRule>>}
+   * @return {!Promise<!Array<!Formatter.FormatterWorkerPool.SCSSRule>>}
    */
   parseSCSS(content) {
     return this._runTask('parseSCSS', {content: content}).then(rules => rules || []);
@@ -126,11 +126,11 @@ Common.FormatterWorkerPool = class {
    * @param {string} mimeType
    * @param {string} content
    * @param {string} indentString
-   * @return {!Promise<!Common.FormatterWorkerPool.FormatResult>}
+   * @return {!Promise<!Formatter.FormatterWorkerPool.FormatResult>}
    */
   format(mimeType, content, indentString) {
     var parameters = {mimeType: mimeType, content: content, indentString: indentString};
-    return /** @type {!Promise<!Common.FormatterWorkerPool.FormatResult>} */ (this._runTask('format', parameters));
+    return /** @type {!Promise<!Formatter.FormatterWorkerPool.FormatResult>} */ (this._runTask('format', parameters));
   }
 
   /**
@@ -151,7 +151,7 @@ Common.FormatterWorkerPool = class {
 
   /**
    * @param {string} content
-   * @param {function(boolean, !Array<!Common.FormatterWorkerPool.CSSRule>)} callback
+   * @param {function(boolean, !Array<!Formatter.FormatterWorkerPool.CSSRule>)} callback
    */
   parseCSS(content, callback) {
     this._runChunkedTask('parseCSS', {content: content}, onDataChunk);
@@ -161,14 +161,14 @@ Common.FormatterWorkerPool = class {
      * @param {*} data
      */
     function onDataChunk(isLastChunk, data) {
-      var rules = /** @type {!Array<!Common.FormatterWorkerPool.CSSRule>} */ (data || []);
+      var rules = /** @type {!Array<!Formatter.FormatterWorkerPool.CSSRule>} */ (data || []);
       callback(isLastChunk, rules);
     }
   }
 
   /**
    * @param {string} content
-   * @param {function(boolean, !Array<!Common.FormatterWorkerPool.JSOutlineItem>)} callback
+   * @param {function(boolean, !Array<!Formatter.FormatterWorkerPool.JSOutlineItem>)} callback
    */
   javaScriptOutline(content, callback) {
     this._runChunkedTask('javaScriptOutline', {content: content}, onDataChunk);
@@ -178,7 +178,7 @@ Common.FormatterWorkerPool = class {
      * @param {*} data
      */
     function onDataChunk(isLastChunk, data) {
-      var items = /** @type {!Array.<!Common.FormatterWorkerPool.JSOutlineItem>} */ (data || []);
+      var items = /** @type {!Array.<!Formatter.FormatterWorkerPool.JSOutlineItem>} */ (data || []);
       callback(isLastChunk, items);
     }
   }
@@ -186,7 +186,7 @@ Common.FormatterWorkerPool = class {
   /**
    * @param {string} content
    * @param {string} mimeType
-   * @param {function(boolean, !Array<!Common.FormatterWorkerPool.OutlineItem>)} callback
+   * @param {function(boolean, !Array<!Formatter.FormatterWorkerPool.OutlineItem>)} callback
    * @return {boolean}
    */
   outlineForMimetype(content, mimeType, callback) {
@@ -203,7 +203,7 @@ Common.FormatterWorkerPool = class {
 
     /**
      * @param {boolean} isLastChunk
-     * @param {!Array<!Common.FormatterWorkerPool.JSOutlineItem>} items
+     * @param {!Array<!Formatter.FormatterWorkerPool.JSOutlineItem>} items
      */
     function javaScriptCallback(isLastChunk, items) {
       callback(
@@ -213,7 +213,7 @@ Common.FormatterWorkerPool = class {
 
     /**
      * @param {boolean} isLastChunk
-     * @param {!Array<!Common.FormatterWorkerPool.CSSRule>} rules
+     * @param {!Array<!Formatter.FormatterWorkerPool.CSSRule>} rules
      */
     function cssCallback(isLastChunk, rules) {
       callback(
@@ -224,12 +224,12 @@ Common.FormatterWorkerPool = class {
   }
 };
 
-Common.FormatterWorkerPool.MaxWorkers = 2;
+Formatter.FormatterWorkerPool.MaxWorkers = 2;
 
 /**
  * @unrestricted
  */
-Common.FormatterWorkerPool.Task = class {
+Formatter.FormatterWorkerPool.Task = class {
   /**
    * @param {string} method
    * @param {!Object<string, string>} params
@@ -244,22 +244,22 @@ Common.FormatterWorkerPool.Task = class {
   }
 };
 
-Common.FormatterWorkerPool.FormatResult = class {
+Formatter.FormatterWorkerPool.FormatResult = class {
   constructor() {
     /** @type {string} */
     this.content;
-    /** @type {!Common.FormatterWorkerPool.FormatMapping} */
+    /** @type {!Formatter.FormatterWorkerPool.FormatMapping} */
     this.mapping;
   }
 };
 
 /** @typedef {{original: !Array<number>, formatted: !Array<number>}} */
-Common.FormatterWorkerPool.FormatMapping;
+Formatter.FormatterWorkerPool.FormatMapping;
 
 /** @typedef {{line: number, column: number, title: string, subtitle: (string|undefined) }} */
-Common.FormatterWorkerPool.OutlineItem;
+Formatter.FormatterWorkerPool.OutlineItem;
 
-Common.FormatterWorkerPool.JSOutlineItem = class {
+Formatter.FormatterWorkerPool.JSOutlineItem = class {
   constructor() {
     /** @type {string} */
     this.name;
@@ -275,36 +275,36 @@ Common.FormatterWorkerPool.JSOutlineItem = class {
 /**
  * @typedef {{startLine: number, startColumn: number, endLine: number, endColumn: number}}
  */
-Common.FormatterWorkerPool.TextRange;
+Formatter.FormatterWorkerPool.TextRange;
 
-Common.FormatterWorkerPool.CSSProperty = class {
+Formatter.FormatterWorkerPool.CSSProperty = class {
   constructor() {
     /** @type {string} */
     this.name;
-    /** @type {!Common.FormatterWorkerPool.TextRange} */
+    /** @type {!Formatter.FormatterWorkerPool.TextRange} */
     this.nameRange;
     /** @type {string} */
     this.value;
-    /** @type {!Common.FormatterWorkerPool.TextRange} */
+    /** @type {!Formatter.FormatterWorkerPool.TextRange} */
     this.valueRange;
-    /** @type {!Common.FormatterWorkerPool.TextRange} */
+    /** @type {!Formatter.FormatterWorkerPool.TextRange} */
     this.range;
     /** @type {(boolean|undefined)} */
     this.disabled;
   }
 };
 
-Common.FormatterWorkerPool.CSSStyleRule = class {
+Formatter.FormatterWorkerPool.CSSStyleRule = class {
   constructor() {
     /** @type {string} */
     this.selectorText;
-    /** @type {!Common.FormatterWorkerPool.TextRange} */
+    /** @type {!Formatter.FormatterWorkerPool.TextRange} */
     this.styleRange;
     /** @type {number} */
     this.lineNumber;
     /** @type {number} */
     this.columnNumber;
-    /** @type {!Array.<!Common.FormatterWorkerPool.CSSProperty>} */
+    /** @type {!Array.<!Formatter.FormatterWorkerPool.CSSProperty>} */
     this.properties;
   }
 };
@@ -312,36 +312,42 @@ Common.FormatterWorkerPool.CSSStyleRule = class {
 /**
  * @typedef {{atRule: string, lineNumber: number, columnNumber: number}}
  */
-Common.FormatterWorkerPool.CSSAtRule;
+Formatter.FormatterWorkerPool.CSSAtRule;
 
 /**
- * @typedef {(Common.FormatterWorkerPool.CSSStyleRule|Common.FormatterWorkerPool.CSSAtRule)}
+ * @typedef {(Formatter.FormatterWorkerPool.CSSStyleRule|Formatter.FormatterWorkerPool.CSSAtRule)}
  */
-Common.FormatterWorkerPool.CSSRule;
+Formatter.FormatterWorkerPool.CSSRule;
 
-Common.FormatterWorkerPool.SCSSProperty = class {
+Formatter.FormatterWorkerPool.SCSSProperty = class {
   constructor() {
-    /** @type {!Common.FormatterWorkerPool.TextRange} */
+    /** @type {!Formatter.FormatterWorkerPool.TextRange} */
     this.range;
-    /** @type {!Common.FormatterWorkerPool.TextRange} */
+    /** @type {!Formatter.FormatterWorkerPool.TextRange} */
     this.name;
-    /** @type {!Common.FormatterWorkerPool.TextRange} */
+    /** @type {!Formatter.FormatterWorkerPool.TextRange} */
     this.value;
     /** @type {boolean} */
     this.disabled;
   }
 };
 
-Common.FormatterWorkerPool.SCSSRule = class {
+Formatter.FormatterWorkerPool.SCSSRule = class {
   constructor() {
-    /** @type {!Array<!Common.FormatterWorkerPool.TextRange>} */
+    /** @type {!Array<!Formatter.FormatterWorkerPool.TextRange>} */
     this.selectors;
-    /** @type {!Array<!Common.FormatterWorkerPool.SCSSProperty>} */
+    /** @type {!Array<!Formatter.FormatterWorkerPool.SCSSProperty>} */
     this.properties;
-    /** @type {!Common.FormatterWorkerPool.TextRange} */
+    /** @type {!Formatter.FormatterWorkerPool.TextRange} */
     this.styleRange;
   }
 };
 
-/** @type {!Common.FormatterWorkerPool} */
-Common.formatterWorkerPool;
+/**
+ * @return {!Formatter.FormatterWorkerPool}
+ */
+Formatter.formatterWorkerPool = function() {
+  if (!Formatter._formatterWorkerPool)
+    Formatter._formatterWorkerPool = new Formatter.FormatterWorkerPool();
+  return Formatter._formatterWorkerPool;
+};

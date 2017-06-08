@@ -30,19 +30,19 @@
 /**
  * @interface
  */
-Sources.Formatter = function() {};
+Formatter.Formatter = function() {};
 
 /**
  * @param {!Common.ResourceType} contentType
  * @param {string} mimeType
  * @param {string} content
- * @param {function(string, !Sources.FormatterSourceMapping)} callback
+ * @param {function(string, !Formatter.FormatterSourceMapping)} callback
  */
-Sources.Formatter.format = function(contentType, mimeType, content, callback) {
+Formatter.Formatter.format = function(contentType, mimeType, content, callback) {
   if (contentType.isDocumentOrScriptOrStyleSheet())
-    new Sources.ScriptFormatter(mimeType, content, callback);
+    new Formatter.ScriptFormatter(mimeType, content, callback);
   else
-    new Sources.ScriptIdentityFormatter(mimeType, content, callback);
+    new Formatter.ScriptIdentityFormatter(mimeType, content, callback);
 };
 
 /**
@@ -51,7 +51,7 @@ Sources.Formatter.format = function(contentType, mimeType, content, callback) {
  * @param {number} columnNumber
  * @return {number}
  */
-Sources.Formatter.locationToPosition = function(lineEndings, lineNumber, columnNumber) {
+Formatter.Formatter.locationToPosition = function(lineEndings, lineNumber, columnNumber) {
   var position = lineNumber ? lineEndings[lineNumber - 1] + 1 : 0;
   return position + columnNumber;
 };
@@ -61,7 +61,7 @@ Sources.Formatter.locationToPosition = function(lineEndings, lineNumber, columnN
  * @param {number} position
  * @return {!Array<number>}
  */
-Sources.Formatter.positionToLocation = function(lineEndings, position) {
+Formatter.Formatter.positionToLocation = function(lineEndings, position) {
   var lineNumber = lineEndings.upperBound(position - 1);
   if (!lineNumber)
     var columnNumber = position;
@@ -71,55 +71,56 @@ Sources.Formatter.positionToLocation = function(lineEndings, position) {
 };
 
 /**
- * @implements {Sources.Formatter}
+ * @implements {Formatter.Formatter}
  * @unrestricted
  */
-Sources.ScriptFormatter = class {
+Formatter.ScriptFormatter = class {
   /**
    * @param {string} mimeType
    * @param {string} content
-   * @param {function(string, !Sources.FormatterSourceMapping)} callback
+   * @param {function(string, !Formatter.FormatterSourceMapping)} callback
    */
   constructor(mimeType, content, callback) {
     content = content.replace(/\r\n?|[\n\u2028\u2029]/g, '\n').replace(/^\uFEFF/, '');
     this._callback = callback;
     this._originalContent = content;
 
-    Common.formatterWorkerPool.format(mimeType, content, Common.moduleSetting('textEditorIndent').get())
+    Formatter.formatterWorkerPool()
+        .format(mimeType, content, Common.moduleSetting('textEditorIndent').get())
         .then(this._didFormatContent.bind(this));
   }
 
   /**
-   * @param {!Common.FormatterWorkerPool.FormatResult} formatResult
+   * @param {!Formatter.FormatterWorkerPool.FormatResult} formatResult
    */
   _didFormatContent(formatResult) {
-    var sourceMapping = new Sources.FormatterSourceMappingImpl(
+    var sourceMapping = new Formatter.FormatterSourceMappingImpl(
         this._originalContent.computeLineEndings(), formatResult.content.computeLineEndings(), formatResult.mapping);
     this._callback(formatResult.content, sourceMapping);
   }
 };
 
 /**
- * @implements {Sources.Formatter}
+ * @implements {Formatter.Formatter}
  * @unrestricted
  */
-Sources.ScriptIdentityFormatter = class {
+Formatter.ScriptIdentityFormatter = class {
   /**
    * @param {string} mimeType
    * @param {string} content
-   * @param {function(string, !Sources.FormatterSourceMapping)} callback
+   * @param {function(string, !Formatter.FormatterSourceMapping)} callback
    */
   constructor(mimeType, content, callback) {
-    callback(content, new Sources.IdentityFormatterSourceMapping());
+    callback(content, new Formatter.IdentityFormatterSourceMapping());
   }
 };
 
 /**
  * @interface
  */
-Sources.FormatterSourceMapping = function() {};
+Formatter.FormatterSourceMapping = function() {};
 
-Sources.FormatterSourceMapping.prototype = {
+Formatter.FormatterSourceMapping.prototype = {
   /**
    * @param {number} lineNumber
    * @param {number=} columnNumber
@@ -136,10 +137,10 @@ Sources.FormatterSourceMapping.prototype = {
 };
 
 /**
- * @implements {Sources.FormatterSourceMapping}
+ * @implements {Formatter.FormatterSourceMapping}
  * @unrestricted
  */
-Sources.IdentityFormatterSourceMapping = class {
+Formatter.IdentityFormatterSourceMapping = class {
   /**
    * @override
    * @param {number} lineNumber
@@ -162,14 +163,14 @@ Sources.IdentityFormatterSourceMapping = class {
 };
 
 /**
- * @implements {Sources.FormatterSourceMapping}
+ * @implements {Formatter.FormatterSourceMapping}
  * @unrestricted
  */
-Sources.FormatterSourceMappingImpl = class {
+Formatter.FormatterSourceMappingImpl = class {
   /**
    * @param {!Array.<number>} originalLineEndings
    * @param {!Array.<number>} formattedLineEndings
-   * @param {!Common.FormatterWorkerPool.FormatMapping} mapping
+   * @param {!Formatter.FormatterWorkerPool.FormatMapping} mapping
    */
   constructor(originalLineEndings, formattedLineEndings, mapping) {
     this._originalLineEndings = originalLineEndings;
@@ -185,10 +186,10 @@ Sources.FormatterSourceMappingImpl = class {
    */
   originalToFormatted(lineNumber, columnNumber) {
     var originalPosition =
-        Sources.Formatter.locationToPosition(this._originalLineEndings, lineNumber, columnNumber || 0);
+        Formatter.Formatter.locationToPosition(this._originalLineEndings, lineNumber, columnNumber || 0);
     var formattedPosition =
         this._convertPosition(this._mapping.original, this._mapping.formatted, originalPosition || 0);
-    return Sources.Formatter.positionToLocation(this._formattedLineEndings, formattedPosition);
+    return Formatter.Formatter.positionToLocation(this._formattedLineEndings, formattedPosition);
   }
 
   /**
@@ -199,9 +200,9 @@ Sources.FormatterSourceMappingImpl = class {
    */
   formattedToOriginal(lineNumber, columnNumber) {
     var formattedPosition =
-        Sources.Formatter.locationToPosition(this._formattedLineEndings, lineNumber, columnNumber || 0);
+        Formatter.Formatter.locationToPosition(this._formattedLineEndings, lineNumber, columnNumber || 0);
     var originalPosition = this._convertPosition(this._mapping.formatted, this._mapping.original, formattedPosition);
-    return Sources.Formatter.positionToLocation(this._originalLineEndings, originalPosition || 0);
+    return Formatter.Formatter.positionToLocation(this._originalLineEndings, originalPosition || 0);
   }
 
   /**

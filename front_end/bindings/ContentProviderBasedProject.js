@@ -197,84 +197,44 @@ Bindings.ContentProviderBasedProject = class extends Workspace.ProjectStore {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
-  searchInFileContent(uiSourceCode, query, caseSensitive, isRegex, callback) {
+  searchInFileContent(uiSourceCode, query, caseSensitive, isRegex) {
     var contentProvider = this._contentProviders[uiSourceCode.url()];
-    contentProvider.searchInContent(query, caseSensitive, isRegex, callback);
+    return contentProvider.searchInContent(query, caseSensitive, isRegex);
   }
 
   /**
    * @override
    * @param {!Workspace.ProjectSearchConfig} searchConfig
-   * @param {!Array.<string>} filesMathingFileQuery
+   * @param {!Array<string>} filesMathingFileQuery
    * @param {!Common.Progress} progress
-   * @param {function(!Array.<string>)} callback
+   * @return {!Promise<!Array<string>>}
    */
-  findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress, callback) {
+  async findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress) {
     var result = [];
-    var paths = filesMathingFileQuery;
-    var totalCount = paths.length;
-    if (totalCount === 0) {
-      // searchInContent should call back later.
-      setTimeout(doneCallback, 0);
-      return;
-    }
-
-    var barrier = new CallbackBarrier();
-    progress.setTotalWork(paths.length);
-    for (var i = 0; i < paths.length; ++i)
-      searchInContent.call(this, paths[i], barrier.createCallback(searchInContentCallback.bind(null, paths[i])));
-    barrier.callWhenDone(doneCallback);
+    progress.setTotalWork(filesMathingFileQuery.length);
+    await Promise.all(filesMathingFileQuery.map(searchInContent.bind(this)));
+    progress.done();
+    return result;
 
     /**
      * @param {string} path
-     * @param {function(boolean)} callback
      * @this {Bindings.ContentProviderBasedProject}
      */
-    function searchInContent(path, callback) {
-      var queriesToRun = searchConfig.queries().slice();
-      searchNextQuery.call(this);
-
-      /**
-       * @this {Bindings.ContentProviderBasedProject}
-       */
-      function searchNextQuery() {
-        if (!queriesToRun.length) {
-          callback(true);
-          return;
-        }
-        var query = queriesToRun.shift();
-        this._contentProviders[path].searchInContent(
-            query, !searchConfig.ignoreCase(), searchConfig.isRegex(), contentCallback.bind(this));
-      }
-
-      /**
-       * @param {!Array.<!Common.ContentProvider.SearchMatch>} searchMatches
-       * @this {Bindings.ContentProviderBasedProject}
-       */
-      function contentCallback(searchMatches) {
+    async function searchInContent(path) {
+      var provider = this._contentProviders[path];
+      var allMatchesFound = true;
+      for (var query of searchConfig.queries().slice()) {
+        var searchMatches = await provider.searchInContent(query, !searchConfig.ignoreCase(), searchConfig.isRegex());
         if (!searchMatches.length) {
-          callback(false);
-          return;
+          allMatchesFound = false;
+          break;
         }
-        searchNextQuery.call(this);
       }
-    }
-
-    /**
-     * @param {string} path
-     * @param {boolean} matches
-     */
-    function searchInContentCallback(path, matches) {
-      if (matches)
+      if (allMatchesFound)
         result.push(path);
       progress.worked(1);
-    }
-
-    function doneCallback() {
-      callback(result);
-      progress.done();
     }
   }
 

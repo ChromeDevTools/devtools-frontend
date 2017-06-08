@@ -156,23 +156,15 @@ SDK.Script = class {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!Protocol.Debugger.SearchMatch>)} callback
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
-  searchInContent(query, caseSensitive, isRegex, callback) {
-    if (!this.scriptId) {
-      callback([]);
-      return;
-    }
+  async searchInContent(query, caseSensitive, isRegex) {
+    if (!this.scriptId)
+      return [];
 
-    // Script failed to parse.
-    this.debuggerModel.target()
-        .debuggerAgent()
-        .searchInContent(this.scriptId, query, caseSensitive, isRegex)
-        .then(matches => {
-          var searchMatches =
-              (matches || []).map(match => new Common.ContentProvider.SearchMatch(match.lineNumber, match.lineContent));
-          callback(searchMatches);
-        });
+    var matches =
+        await this.debuggerModel.target().debuggerAgent().searchInContent(this.scriptId, query, caseSensitive, isRegex);
+    return (matches || []).map(match => new Common.ContentProvider.SearchMatch(match.lineNumber, match.lineContent));
   }
 
   /**

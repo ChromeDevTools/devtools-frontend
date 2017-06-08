@@ -132,9 +132,9 @@ Network.RequestResponseView.ContentProvider = class {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
-  searchInContent(query, caseSensitive, isRegex, callback) {
-    this._request.searchInContent(query, caseSensitive, isRegex, callback);
+  searchInContent(query, caseSensitive, isRegex) {
+    return this._request.searchInContent(query, caseSensitive, isRegex);
   }
 };

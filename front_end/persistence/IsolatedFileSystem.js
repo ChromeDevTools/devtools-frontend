@@ -546,20 +546,21 @@ Persistence.IsolatedFileSystem = class {
   /**
    * @param {string} query
    * @param {!Common.Progress} progress
-   * @param {function(!Array.<string>)} callback
+   * @return {!Promise<!Array<string>>}
    */
-  searchInPath(query, progress, callback) {
-    var requestId = this._manager.registerCallback(innerCallback);
-    InspectorFrontendHost.searchInPath(requestId, this._embedderPath, query);
+  searchInPath(query, progress) {
+    return new Promise(resolve => {
+      var requestId = this._manager.registerCallback(innerCallback);
+      InspectorFrontendHost.searchInPath(requestId, this._embedderPath, query);
 
-    /**
-     * @param {!Array.<string>} files
-     */
-    function innerCallback(files) {
-      files = files.map(embedderPath => Common.ParsedURL.platformPathToURL(embedderPath));
-      progress.worked(1);
-      callback(files);
-    }
+      /**
+       * @param {!Array<string>} files
+       */
+      function innerCallback(files) {
+        resolve(files.map(path => Common.ParsedURL.platformPathToURL(path)));
+        progress.worked(1);
+      }
+    });
   }
 
   /**

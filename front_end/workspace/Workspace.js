@@ -164,17 +164,17 @@ Workspace.Project.prototype = {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
-  searchInFileContent(uiSourceCode, query, caseSensitive, isRegex, callback) {},
+  searchInFileContent(uiSourceCode, query, caseSensitive, isRegex) {},
 
   /**
    * @param {!Workspace.ProjectSearchConfig} searchConfig
    * @param {!Array.<string>} filesMathingFileQuery
    * @param {!Common.Progress} progress
-   * @param {function(!Array.<string>)} callback
+   * @return {!Promise<!Array<string>>}
    */
-  findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress, callback) {},
+  findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress) {},
 
   /**
    * @param {!Common.Progress} progress

@@ -1438,19 +1438,9 @@ SDK.DOMModel = class extends SDK.SDKModel {
   /**
    * @param {string} query
    * @param {boolean} includeUserAgentShadowDOM
-   * @param {function(number)} searchCallback
-   */
-  performSearch(query, includeUserAgentShadowDOM, searchCallback) {
-    SDK.DOMModel.cancelSearch();
-    this.performSearchPromise(query, includeUserAgentShadowDOM).then(searchCallback);
-  }
-
-  /**
-   * @param {string} query
-   * @param {boolean} includeUserAgentShadowDOM
    * @return {!Promise<number>}
    */
-  async performSearchPromise(query, includeUserAgentShadowDOM) {
+  async performSearch(query, includeUserAgentShadowDOM) {
     var response = await this._agent.invoke_performSearch({query, includeUserAgentShadowDOM});
     if (!response[Protocol.Error])
       this._searchId = response.searchId;

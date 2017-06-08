@@ -499,24 +499,13 @@ Workspace.UISourceCode = class extends Common.Object {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
-  searchInContent(query, caseSensitive, isRegex, callback) {
+  searchInContent(query, caseSensitive, isRegex) {
     var content = this.content();
-    if (!content) {
-      this._project.searchInFileContent(this, query, caseSensitive, isRegex, callback);
-      return;
-    }
-
-    // searchInContent should call back later.
-    setTimeout(doSearch.bind(null, content), 0);
-
-    /**
-     * @param {string} content
-     */
-    function doSearch(content) {
-      callback(Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
-    }
+    if (!content)
+      return this._project.searchInFileContent(this, query, caseSensitive, isRegex);
+    return Promise.resolve(Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
   }
 
   /**
@@ -803,10 +792,10 @@ Workspace.Revision = class {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
-  searchInContent(query, caseSensitive, isRegex, callback) {
-    callback([]);
+  searchInContent(query, caseSensitive, isRegex) {
+    return Promise.resolve([]);
   }
 };
 

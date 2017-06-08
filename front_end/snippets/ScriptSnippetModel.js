@@ -526,18 +526,10 @@ Snippets.SnippetContentProvider = class {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
-  searchInContent(query, caseSensitive, isRegex, callback) {
-    /**
-     * @this {Snippets.SnippetContentProvider}
-     */
-    function performSearch() {
-      callback(Common.ContentProvider.performSearchInContent(this._snippet.content, query, caseSensitive, isRegex));
-    }
-
-    // searchInContent should call back later.
-    window.setTimeout(performSearch.bind(this), 0);
+  async searchInContent(query, caseSensitive, isRegex) {
+    return Common.ContentProvider.performSearchInContent(this._snippet.content, query, caseSensitive, isRegex);
   }
 };
 

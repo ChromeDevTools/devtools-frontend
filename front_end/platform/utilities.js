@@ -1292,64 +1292,6 @@ function loadXHR(url) {
 }
 
 /**
- * @unrestricted
- */
-var CallbackBarrier = class {
-  constructor() {
-    this._pendingIncomingCallbacksCount = 0;
-  }
-
-  /**
-   * @param {function(...)=} userCallback
-   * @return {function(...)}
-   */
-  createCallback(userCallback) {
-    console.assert(
-        !this._outgoingCallback, 'CallbackBarrier.createCallback() is called after CallbackBarrier.callWhenDone()');
-    ++this._pendingIncomingCallbacksCount;
-    return this._incomingCallback.bind(this, userCallback);
-  }
-
-  /**
-   * @param {function()} callback
-   */
-  callWhenDone(callback) {
-    console.assert(!this._outgoingCallback, 'CallbackBarrier.callWhenDone() is called multiple times');
-    this._outgoingCallback = callback;
-    if (!this._pendingIncomingCallbacksCount)
-      this._outgoingCallback();
-  }
-
-  /**
-   * @return {!Promise.<undefined>}
-   */
-  donePromise() {
-    return new Promise(promiseConstructor.bind(this));
-
-    /**
-     * @param {function()} success
-     * @this {CallbackBarrier}
-     */
-    function promiseConstructor(success) {
-      this.callWhenDone(success);
-    }
-  }
-
-  /**
-   * @param {function(...)=} userCallback
-   */
-  _incomingCallback(userCallback) {
-    console.assert(this._pendingIncomingCallbacksCount > 0);
-    if (userCallback) {
-      var args = Array.prototype.slice.call(arguments, 1);
-      userCallback.apply(null, args);
-    }
-    if (!--this._pendingIncomingCallbacksCount && this._outgoingCallback)
-      this._outgoingCallback();
-  }
-};
-
-/**
  * @param {*} value
  */
 function suppressUnused(value) {

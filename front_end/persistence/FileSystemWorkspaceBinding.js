@@ -399,21 +399,20 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
-  searchInFileContent(uiSourceCode, query, caseSensitive, isRegex, callback) {
-    var filePath = this._filePathForUISourceCode(uiSourceCode);
-    this._fileSystem.requestFileContent(filePath, contentCallback);
+  searchInFileContent(uiSourceCode, query, caseSensitive, isRegex) {
+    return new Promise(resolve => {
+      var filePath = this._filePathForUISourceCode(uiSourceCode);
+      this._fileSystem.requestFileContent(filePath, contentCallback);
 
-    /**
-     * @param {?string} content
-     */
-    function contentCallback(content) {
-      var result = [];
-      if (content !== null)
-        result = Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
-      callback(result);
-    }
+      /**
+       * @param {?string} content
+       */
+      function contentCallback(content) {
+        resolve(content ? Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex) : []);
+      }
+    });
   }
 
   /**
@@ -421,39 +420,23 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @param {!Workspace.ProjectSearchConfig} searchConfig
    * @param {!Array.<string>} filesMathingFileQuery
    * @param {!Common.Progress} progress
-   * @param {function(!Array.<string>)} callback
+   * @return {!Promise<!Array<string>>}
    */
-  findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress, callback) {
+  async findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress) {
     var result = filesMathingFileQuery;
     var queriesToRun = searchConfig.queries().slice();
     if (!queriesToRun.length)
       queriesToRun.push('');
     progress.setTotalWork(queriesToRun.length);
-    searchNextQuery.call(this);
 
-    /**
-     * @this {Persistence.FileSystemWorkspaceBinding.FileSystem}
-     */
-    function searchNextQuery() {
-      if (!queriesToRun.length) {
-        progress.done();
-        callback(result);
-        return;
-      }
-      var query = queriesToRun.shift();
-      this._fileSystem.searchInPath(searchConfig.isRegex() ? '' : query, progress, innerCallback.bind(this));
-    }
-
-    /**
-     * @param {!Array.<string>} files
-     * @this {Persistence.FileSystemWorkspaceBinding.FileSystem}
-     */
-    function innerCallback(files) {
-      files = files.sort();
+    for (var query of queriesToRun) {
+      var files = await this._fileSystem.searchInPath(searchConfig.isRegex() ? '' : query, progress);
+      result = result.intersectOrdered(files.sort(), String.naturalOrderComparator);
       progress.worked(1);
-      result = result.intersectOrdered(files, String.naturalOrderComparator);
-      searchNextQuery.call(this);
     }
+
+    progress.done();
+    return result;
   }
 
   /**

@@ -212,17 +212,14 @@ SDK.Resource = class {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array<!Common.ContentProvider.SearchMatch>)} callback
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
-  searchInContent(query, caseSensitive, isRegex, callback) {
-    if (!this.frameId) {
-      callback([]);
-      return;
-    }
-    this._resourceTreeModel.target()
-        .pageAgent()
-        .searchInResource(this.frameId, this.url, query, caseSensitive, isRegex)
-        .then(result => callback(result || []));
+  async searchInContent(query, caseSensitive, isRegex) {
+    if (!this.frameId)
+      return [];
+    var result = await this._resourceTreeModel.target().pageAgent().searchInResource(
+        this.frameId, this.url, query, caseSensitive, isRegex);
+    return result || [];
   }
 
   /**

@@ -27,6 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @implements {UI.Searchable}
  * @implements {SDK.SDKModelObserver<!SDK.DOMModel>}
@@ -415,12 +416,9 @@ Elements.ElementsPanel = class extends UI.Panel {
 
     this._searchConfig = searchConfig;
 
-    var promises = [];
+    var showUAShadowDOM = Common.moduleSetting('showUAShadowDOM').get();
     var domModels = SDK.targetManager.models(SDK.DOMModel);
-    for (var domModel of domModels) {
-      promises.push(
-          domModel.performSearchPromise(whitespaceTrimmedQuery, Common.moduleSetting('showUAShadowDOM').get()));
-    }
+    var promises = domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
     Promise.all(promises).then(resultCountCallback.bind(this));
 
     /**

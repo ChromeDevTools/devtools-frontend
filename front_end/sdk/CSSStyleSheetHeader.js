@@ -128,15 +128,11 @@ SDK.CSSStyleSheetHeader = class {
    * @param {string} query
    * @param {boolean} caseSensitive
    * @param {boolean} isRegex
-   * @param {function(!Array.<!Common.ContentProvider.SearchMatch>)} callback
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
-  searchInContent(query, caseSensitive, isRegex, callback) {
-    function performSearch(content) {
-      callback(Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
-    }
-
-    // searchInContent should call back later.
-    this.requestContent().then(performSearch);
+  async searchInContent(query, caseSensitive, isRegex) {
+    var content = await this.requestContent();
+    return Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
   }
 
   /**

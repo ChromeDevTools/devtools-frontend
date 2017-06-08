@@ -101,23 +101,22 @@ Sources.SourcesSearchScope = class {
     this._searchFinishedCallback = searchFinishedCallback;
     this._searchConfig = searchConfig;
 
-    var projects = this._projects();
-    var barrier = new CallbackBarrier();
+    var promises = [];
     var compositeProgress = new Common.CompositeProgress(progress);
     var searchContentProgress = compositeProgress.createSubProgress();
     var findMatchingFilesProgress = new Common.CompositeProgress(compositeProgress.createSubProgress());
-    for (var i = 0; i < projects.length; ++i) {
-      var project = projects[i];
+    for (var project of this._projects()) {
       var weight = project.uiSourceCodes().length;
       var findMatchingFilesInProjectProgress = findMatchingFilesProgress.createSubProgress(weight);
-      var barrierCallback = barrier.createCallback();
       var filesMathingFileQuery = this._projectFilesMatchingFileQuery(project, searchConfig);
-      var callback = this._processMatchingFilesForProject.bind(
-          this, this._searchId, project, filesMathingFileQuery, barrierCallback);
-      project.findFilesMatchingSearchRequest(
-          searchConfig, filesMathingFileQuery, findMatchingFilesInProjectProgress, callback);
+      var promise =
+          project
+              .findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, findMatchingFilesInProjectProgress)
+              .then(this._processMatchingFilesForProject.bind(this, this._searchId, project, filesMathingFileQuery));
+      promises.push(promise);
     }
-    barrier.callWhenDone(this._processMatchingFiles.bind(
+
+    Promise.all(promises).then(this._processMatchingFiles.bind(
         this, this._searchId, searchContentProgress, this._searchFinishedCallback.bind(this, true)));
   }
 
@@ -149,11 +148,10 @@ Sources.SourcesSearchScope = class {
   /**
    * @param {number} searchId
    * @param {!Workspace.Project} project
-   * @param {!Array.<string>} filesMathingFileQuery
-   * @param {function()} callback
-   * @param {!Array.<string>} files
+   * @param {!Array<string>} filesMathingFileQuery
+   * @param {!Array<string>} files
    */
-  _processMatchingFilesForProject(searchId, project, filesMathingFileQuery, callback, files) {
+  _processMatchingFilesForProject(searchId, project, filesMathingFileQuery, files) {
     if (searchId !== this._searchId) {
       this._searchFinishedCallback(false);
       return;
@@ -165,19 +163,18 @@ Sources.SourcesSearchScope = class {
     files = files.mergeOrdered(dirtyFiles, String.naturalOrderComparator);
 
     var uiSourceCodes = [];
-    for (var i = 0; i < files.length; ++i) {
-      var uiSourceCode = project.uiSourceCodeForURL(files[i]);
-      if (uiSourceCode) {
-        var script = Bindings.DefaultScriptMapping.scriptForUISourceCode(uiSourceCode);
-        if (script && !script.isAnonymousScript())
-          continue;
-        uiSourceCodes.push(uiSourceCode);
-      }
+    for (var file of files) {
+      var uiSourceCode = project.uiSourceCodeForURL(file);
+      if (!uiSourceCode)
+        continue;
+      var script = Bindings.DefaultScriptMapping.scriptForUISourceCode(uiSourceCode);
+      if (script && !script.isAnonymousScript())
+        continue;
+      uiSourceCodes.push(uiSourceCode);
     }
     uiSourceCodes.sort(Sources.SourcesSearchScope._filesComparator);
     this._searchResultCandidates =
         this._searchResultCandidates.mergeOrdered(uiSourceCodes, Sources.SourcesSearchScope._filesComparator);
-    callback();
   }
 
   /**

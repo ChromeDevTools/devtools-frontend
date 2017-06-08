@@ -46,7 +46,8 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
     this._showFrameworkListenersSetting = Common.settings.createSetting('showFrameowkrListeners', true);
     this._showFrameworkListenersSetting.setTitle(Common.UIString('Framework listeners'));
     this._showFrameworkListenersSetting.addChangeListener(this._showFrameworkListenersChanged.bind(this));
-    this._eventListenersView = new EventListeners.EventListenersView(this.element, this.update.bind(this));
+    this._eventListenersView = new EventListeners.EventListenersView(this.update.bind(this));
+    this._eventListenersView.show(this.element);
 
     var refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this.update.bind(this));

@@ -8,13 +8,12 @@
 Sources.ObjectEventListenersSidebarPane = class extends UI.VBox {
   constructor() {
     super();
-    this.element.classList.add('event-listeners-sidebar-pane');
-
     this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     this._refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._refreshClick, this);
     this._refreshButton.setEnabled(false);
 
-    this._eventListenersView = new EventListeners.EventListenersView(this.element, this.update.bind(this));
+    this._eventListenersView = new EventListeners.EventListenersView(this.update.bind(this));
+    this._eventListenersView.show(this.element);
   }
 
   /**

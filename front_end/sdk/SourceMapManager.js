@@ -171,7 +171,7 @@ SDK.SourceMapManager = class extends Common.Object {
     function onSourceMap(sourceMapURL, sourceMap) {
       this._sourceMapLoadedForTest();
       var clients = this._sourceMapURLToLoadingClients.get(sourceMapURL);
-      this._sourceMapURLToLoadingClients.removeAll(sourceMapURL);
+      this._sourceMapURLToLoadingClients.deleteAll(sourceMapURL);
       if (!clients.size)
         return;
       if (!sourceMap) {
@@ -225,11 +225,11 @@ SDK.SourceMapManager = class extends Common.Object {
     if (!sourceMapURL)
       return;
     if (!this._sourceMapURLToClients.hasValue(sourceMapURL, client)) {
-      if (this._sourceMapURLToLoadingClients.remove(sourceMapURL, client))
+      if (this._sourceMapURLToLoadingClients.delete(sourceMapURL, client))
         this.dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapFailedToAttach, client);
       return;
     }
-    this._sourceMapURLToClients.remove(sourceMapURL, client);
+    this._sourceMapURLToClients.delete(sourceMapURL, client);
     var sourceMap = this._sourceMapByURL.get(sourceMapURL);
     if (!this._sourceMapURLToClients.has(sourceMapURL))
       this._sourceMapByURL.delete(sourceMapURL);

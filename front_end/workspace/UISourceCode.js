@@ -616,7 +616,7 @@ Workspace.UISourceCode = class extends Common.Object {
     if (!this._decorations)
       return;
     var markers = this._decorations.get(type);
-    this._decorations.removeAll(type);
+    this._decorations.deleteAll(type);
     markers.forEach(marker => {
       this.dispatchEventToListeners(Workspace.UISourceCode.Events.LineDecorationRemoved, marker);
     });

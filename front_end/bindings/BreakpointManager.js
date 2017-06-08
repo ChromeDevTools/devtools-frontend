@@ -152,7 +152,7 @@ Bindings.BreakpointManager = class extends Common.Object {
             breakpointItem.enabled);
       }
     }
-    this._provisionalBreakpoints.removeAll(url);
+    this._provisionalBreakpoints.deleteAll(url);
     this._storage.unmute();
   }
 
@@ -412,7 +412,7 @@ Bindings.BreakpointManager = class extends Common.Object {
     breakpoints.remove(breakpoint);
     if (removeFromStorage)
       this._storage._removeBreakpoint(breakpoint);
-    this._provisionalBreakpoints.remove(breakpoint._url, breakpoint);
+    this._provisionalBreakpoints.delete(breakpoint._url, breakpoint);
   }
 
   /**

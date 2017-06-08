@@ -573,7 +573,7 @@ Sources.NavigatorView = class extends UI.VBox {
    */
   _removeUISourceCodeNode(node) {
     var uiSourceCode = node.uiSourceCode();
-    this._uiSourceCodeNodes.remove(uiSourceCode, node);
+    this._uiSourceCodeNodes.delete(uiSourceCode, node);
     var project = uiSourceCode.project();
     var target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
     var frame = node.frame();

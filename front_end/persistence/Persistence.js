@@ -296,7 +296,7 @@ Persistence.Persistence = class extends Common.Object {
    * @param {function()} listener
    */
   unsubscribeFromBindingEvent(uiSourceCode, listener) {
-    this._subscribedBindingEventListeners.remove(uiSourceCode, listener);
+    this._subscribedBindingEventListeners.delete(uiSourceCode, listener);
   }
 
   /**

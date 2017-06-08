@@ -1225,7 +1225,7 @@ Multimap.prototype = {
    * @param {V} value
    * @return {boolean}
    */
-  remove: function(key, value) {
+  delete: function(key, value) {
     var values = this.get(key);
     var result = values.delete(value);
     if (!values.size)
@@ -1236,7 +1236,7 @@ Multimap.prototype = {
   /**
    * @param {K} key
    */
-  removeAll: function(key) {
+  deleteAll: function(key) {
     this._map.delete(key);
   },
 

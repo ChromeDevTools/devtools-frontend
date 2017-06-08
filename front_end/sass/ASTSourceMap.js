@@ -152,7 +152,7 @@ Sass.ASTSourceMap = class {
    */
   removeMapping(compiled, source) {
     this._compiledToSource.delete(compiled);
-    this._sourceToCompiled.remove(source, compiled);
+    this._sourceToCompiled.delete(source, compiled);
   }
 
   /**

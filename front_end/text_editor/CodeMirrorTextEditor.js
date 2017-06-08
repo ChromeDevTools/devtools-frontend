@@ -904,7 +904,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       if (decoration.element !== element)
         return;
       this._codeMirror.removeLineWidget(decoration.widget);
-      this._decorations.remove(lineNumber, decoration);
+      this._decorations.delete(lineNumber, decoration);
     }
   }
 

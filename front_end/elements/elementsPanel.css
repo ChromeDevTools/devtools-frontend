@@ -259,13 +259,6 @@
     padding-left: 0;
 }
 
-.styles-element-state-pane {
-    overflow: hidden;
-    height: 66px;
-    padding-left: 2px;
-    border-bottom: 1px solid rgb(189, 189, 189);
-}
-
 @keyframes styles-element-state-pane-slidein {
     from {
         margin-top: -60px;
@@ -294,57 +287,6 @@
     position: relative;
     overflow: hidden;
     flex-shrink: 0;
-}
-
-.styles-element-state-pane {
-    background-color: #f3f3f3;
-    border-bottom: 1px solid rgb(189, 189, 189);
-    margin-top: 0;
-}
-
-.styles-element-classes-pane {
-    background-color: #f3f3f3;
-    border-bottom: 1px solid rgb(189, 189, 189);
-    padding: 6px 2px 2px;
-}
-
-.styles-element-classes-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-}
-
-.styles-element-classes-pane label {
-    margin-right: 15px;
-}
-
-.styles-element-classes-pane .title-container {
-    padding-bottom: 2px;
-}
-
-.styles-element-classes-pane .new-class-input {
-    padding-left: 3px;
-    padding-right: 3px;
-    overflow: hidden;
-    border: 1px solid #ddd;
-    line-height: 15px;
-    margin-left: 3px;
-    width: calc(100% - 7px);
-    background-color: #fff;
-    cursor: text;
-}
-
-.styles-element-state-pane > div {
-    margin: 8px 4px 6px;
-}
-
-.styles-element-state-pane > table {
-    width: 100%;
-    border-spacing: 0;
-}
-
-.styles-element-state-pane td {
-    padding: 0;
 }
 
 .styles-animations-controls-pane > * {

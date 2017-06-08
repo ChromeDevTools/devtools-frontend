@@ -6,12 +6,13 @@
  */
 Elements.ClassesPaneWidget = class extends UI.Widget {
   constructor() {
-    super();
-    this.element.className = 'styles-element-classes-pane';
-    var container = this.element.createChild('div', 'title-container');
+    super(true);
+    this.registerRequiredCSS('elements/classesPaneWidget.css');
+    this.contentElement.className = 'styles-element-classes-pane';
+    var container = this.contentElement.createChild('div', 'title-container');
     this._input = container.createChild('div', 'new-class-input monospace');
     this.setDefaultFocusedElement(this._input);
-    this._classesContainer = this.element.createChild('div', 'source-code');
+    this._classesContainer = this.contentElement.createChild('div', 'source-code');
     this._classesContainer.classList.add('styles-element-classes-container');
     this._prompt = new Elements.ClassesPaneWidget.ClassNamePrompt();
     this._prompt.setAutocompletionTimeout(0);

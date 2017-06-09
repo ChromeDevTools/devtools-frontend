@@ -1669,7 +1669,7 @@ Elements.StylePropertiesSection = class {
    * @return {!Promise}
    */
   _manuallySetHeight() {
-    this.element.style.height = this._innerElement.clientHeight + 'px';
+    this.element.style.height = (this._innerElement.clientHeight + 1) + 'px';
     this.element.style.contain = 'strict';
     return Promise.resolve();
   }

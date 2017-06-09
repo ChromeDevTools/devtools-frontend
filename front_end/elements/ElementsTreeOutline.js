@@ -192,7 +192,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     var originalEvent = event['original'];
 
     // Don't prevent the normal copy if the user has a selection.
-    if (!originalEvent.target.isComponentSelectionCollapsed())
+    if (originalEvent.target.hasSelection())
       return;
 
     // Do not interfere with text editing.
@@ -631,7 +631,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
   }
 
   _ondragstart(event) {
-    if (!event.target.isComponentSelectionCollapsed())
+    if (event.target.hasSelection())
       return false;
     if (event.target.nodeName === 'A')
       return false;

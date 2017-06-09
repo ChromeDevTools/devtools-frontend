@@ -669,10 +669,8 @@ Console.ConsoleView = class extends UI.VBox {
    * @param {!Event} event
    */
   _messagesClicked(event) {
-    var targetElement = event.deepElementFromPoint();
-
     // Do not focus prompt if messages have selection.
-    if (!targetElement || targetElement.isComponentSelectionCollapsed()) {
+    if (!this._messagesElement.hasSelection()) {
       var clickedOutsideMessageList = event.target === this._messagesElement;
       if (clickedOutsideMessageList)
         this._prompt.moveCaretToEndOfPrompt();

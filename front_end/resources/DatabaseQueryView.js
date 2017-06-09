@@ -49,7 +49,7 @@ Resources.DatabaseQueryView = class extends UI.VBox {
   }
 
   _messagesClicked() {
-    if (!this._prompt.isCaretInsidePrompt() && this.element.isComponentSelectionCollapsed())
+    if (!this._prompt.isCaretInsidePrompt() && !this.element.hasSelection())
       this._prompt.moveCaretToEndOfPrompt();
   }
 
@@ -104,7 +104,7 @@ Resources.DatabaseQueryView = class extends UI.VBox {
      */
     function moveBackIfOutside() {
       delete this._selectionTimeout;
-      if (!this._prompt.isCaretInsidePrompt() && this.element.isComponentSelectionCollapsed())
+      if (!this._prompt.isCaretInsidePrompt() && !this.element.hasSelection())
         this._prompt.moveCaretToEndOfPrompt();
       this._prompt.autoCompleteSoon();
     }

@@ -1358,21 +1358,7 @@ Elements.StylePropertiesSection = class {
    * @param {!Event} event
    */
   _handleEmptySpaceClick(event) {
-    if (!this.editable)
-      return;
-
-    var targetElement = event.deepElementFromPoint();
-    if (targetElement && !targetElement.isComponentSelectionCollapsed())
-      return;
-
-    if (!event.target.isComponentSelectionCollapsed())
-      return;
-
-    if (this.propertiesTreeOutline.element.shadowRoot.firstChild &&
-        !this.propertiesTreeOutline.element.shadowRoot.firstChild.isComponentSelectionCollapsed())
-      return;
-
-    if (this._checkWillCancelEditing())
+    if (!this.editable || this.element.hasSelection() || this._checkWillCancelEditing())
       return;
 
     if (event.target.classList.contains('header') || this.element.classList.contains('read-only') ||
@@ -2338,7 +2324,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    * @param {!Event} event
    */
   _mouseClick(event) {
-    if (!event.target.isComponentSelectionCollapsed())
+    if (event.target.hasSelection())
       return;
 
     event.consume(true);

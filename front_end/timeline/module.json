@@ -10,7 +10,7 @@
         },
         {
             "type": "setting",
-            "category": "Profiler",
+            "category": "Performance",
             "title": "Hide chrome frame in Layers view",
             "settingName": "frameViewerHideChromeWindow",
             "settingType": "boolean",

@@ -4,6 +4,26 @@
             "type": "@SourceFrame.UISourceCodeFrame.LineDecorator",
             "className": "PerfUI.LineLevelProfile.LineDecorator",
             "decoratorType": "performance"
+        },
+        {
+            "type": "setting",
+            "category": "Performance",
+            "title": "Flamechart mouse wheel action:",
+            "settingName": "flamechartMouseWheelAction",
+            "settingType": "enum",
+            "defaultValue": "zoom",
+            "options": [
+                {
+                    "title": "Scroll",
+                    "text": "Scroll",
+                    "value": "scroll"
+                },
+                {
+                    "title": "Zoom",
+                    "text": "Zoom",
+                    "value": "zoom"
+                }
+            ]
         }
     ],
     "dependencies": [

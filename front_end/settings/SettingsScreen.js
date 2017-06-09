@@ -143,7 +143,7 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
 
     /** @const */
     var explicitSectionOrder =
-        ['', 'Appearance', 'Elements', 'Sources', 'Network', 'Profiler', 'Console', 'Extensions'];
+        ['', 'Appearance', 'Sources', 'Elements', 'Network', 'Performance', 'Console', 'Extensions'];
     /** @type {!Map<string, !Element>} */
     this._nameToSection = new Map();
     for (var sectionName of explicitSectionOrder)

@@ -142,9 +142,9 @@ PerfUI.ChartViewport = class extends UI.VBox {
   _onMouseWheel(e) {
     if (!this._enabled())
       return;
-    // Pan vertically when shift down only.
-    var panVertically = e.shiftKey && (e.wheelDeltaY || Math.abs(e.wheelDeltaX) === 120);
-    var panHorizontally = Math.abs(e.wheelDeltaX) > Math.abs(e.wheelDeltaY) && !e.shiftKey;
+    var doZoomInstead = e.shiftKey ^ (Common.moduleSetting('flamechartMouseWheelAction').get() === 'zoom');
+    var panVertically = !doZoomInstead && (e.wheelDeltaY || Math.abs(e.wheelDeltaX) === 120);
+    var panHorizontally = doZoomInstead && Math.abs(e.wheelDeltaX) > Math.abs(e.wheelDeltaY);
     if (panVertically) {
       this._vScrollElement.scrollTop -= (e.wheelDeltaY || e.wheelDeltaX) / 120 * this._offsetHeight / 8;
     } else if (panHorizontally) {

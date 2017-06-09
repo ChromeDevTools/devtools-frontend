@@ -88,6 +88,8 @@ Bindings.DefaultScriptMapping = class {
    */
   uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
     var script = uiSourceCode[Bindings.DefaultScriptMapping._scriptSymbol];
+    if (!script)
+      return null;
     if (script.isInlineScriptWithSourceURL()) {
       return this._debuggerModel.createRawLocation(
           script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset);
@@ -106,9 +108,7 @@ Bindings.DefaultScriptMapping = class {
     uiSourceCode[Bindings.DefaultScriptMapping._scriptSymbol] = script;
     script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol] = uiSourceCode;
     this._project.addUISourceCodeWithProvider(uiSourceCode, script, null, 'text/javascript');
-
-    this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel, uiSourceCode, this);
-    this._debuggerWorkspaceBinding.pushSourceMapping(script, this);
+    this._debuggerWorkspaceBinding.updateLocations(script);
   }
 
   /**
@@ -121,24 +121,6 @@ Bindings.DefaultScriptMapping = class {
     delete script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol];
     delete uiSourceCode[Bindings.DefaultScriptMapping._scriptSymbol];
     this._project.removeUISourceCode(uiSourceCode.url());
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isIdentity() {
-    return true;
-  }
-
-  /**
-   * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {number} lineNumber
-   * @return {boolean}
-   */
-  uiLineHasMapping(uiSourceCode, lineNumber) {
-    return true;
   }
 
   _debuggerReset() {

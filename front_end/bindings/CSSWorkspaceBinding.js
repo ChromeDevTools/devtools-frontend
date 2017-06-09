@@ -243,7 +243,6 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
     return this._stylesSourceMapping.uiLocationToRawLocations(uiLocation);
   }
 
-
   _dispose() {
     Common.EventTarget.removeEventListeners(this._eventListeners);
     this._stylesSourceMapping.dispose();

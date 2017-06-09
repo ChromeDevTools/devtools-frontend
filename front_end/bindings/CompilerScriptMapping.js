@@ -181,7 +181,7 @@ Bindings.CompilerScriptMapping = class {
     var script = /** @type {!SDK.Script} */ (event.data);
     // Create stub UISourceCode for the time source mapping is being loaded.
     this._addStubUISourceCode(script);
-    this._debuggerWorkspaceBinding.pushSourceMapping(script, this);
+    this._debuggerWorkspaceBinding.updateLocations(script);
   }
 
   /**
@@ -220,12 +220,10 @@ Bindings.CompilerScriptMapping = class {
     var project = script.isContentScript() ? this._contentScriptsProject : this._regularProject;
     for (var sourceURL of sourceMap.sourceURLs()) {
       var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (project.uiSourceCodeForURL(sourceURL));
-      if (hasOtherScripts) {
+      if (hasOtherScripts)
         Bindings.NetworkProject.removeFrameAttribution(uiSourceCode, frameId);
-      } else {
-        this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel, uiSourceCode, null);
+      else
         project.removeFile(sourceURL);
-      }
     }
     this._debuggerWorkspaceBinding.updateLocations(script);
   }
@@ -278,17 +276,8 @@ Bindings.CompilerScriptMapping = class {
       uiSourceCode[Bindings.CompilerScriptMapping._sourceMapSymbol] = sourceMap;
       Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, frameId);
       project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType);
-      this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel, uiSourceCode, this);
     }
     this._debuggerWorkspaceBinding.updateLocations(script);
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isIdentity() {
-    return false;
   }
 
   /**
@@ -297,7 +286,7 @@ Bindings.CompilerScriptMapping = class {
    * @param {number} lineNumber
    * @return {boolean}
    */
-  uiLineHasMapping(uiSourceCode, lineNumber) {
+  static uiLineHasMapping(uiSourceCode, lineNumber) {
     var sourceMap = uiSourceCode[Bindings.CompilerScriptMapping._sourceMapSymbol];
     if (!sourceMap)
       return true;

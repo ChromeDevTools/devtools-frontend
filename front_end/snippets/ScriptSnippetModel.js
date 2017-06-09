@@ -30,6 +30,7 @@
 /**
  * @unrestricted
  * @implements {SDK.SDKModelObserver<!SDK.DebuggerModel>}
+ * @implements {Bindings.DebuggerSourceMapping}
  */
 Snippets.ScriptSnippetModel = class extends Common.Object {
   /**
@@ -50,6 +51,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
     this._project = new Snippets.SnippetsProject(workspace, this);
     this._loadSnippets();
     SDK.targetManager.observeModels(SDK.DebuggerModel, this);
+    Bindings.debuggerWorkspaceBinding.addSourceMapping(this);
   }
 
   /**
@@ -66,6 +68,34 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    */
   modelRemoved(debuggerModel) {
     this._mappingForDebuggerModel.remove(debuggerModel);
+  }
+
+  /**
+   * @override
+   * @param {!SDK.DebuggerModel.Location} rawLocation
+   * @return {?Workspace.UILocation}
+   */
+  rawLocationToUILocation(rawLocation) {
+    var mapping = this._mappingForDebuggerModel.get(rawLocation.debuggerModel);
+    if (!mapping)
+      return null;
+    return mapping.rawLocationToUILocation(rawLocation);
+  }
+
+  /**
+   * @override
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @return {?SDK.DebuggerModel.Location}
+   */
+  uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
+    for (var mapping of this._mappingForDebuggerModel.values()) {
+      var rawLocation = mapping.uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
+      if (rawLocation)
+        return rawLocation;
+    }
+    return null;
   }
 
   /**
@@ -337,7 +367,6 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
 Snippets.ScriptSnippetModel.snippetSourceURLPrefix = 'snippets:///';
 
 /**
- * @implements {Bindings.DebuggerSourceMapping}
  * @unrestricted
  */
 Snippets.SnippetScriptMapping = class {
@@ -403,7 +432,6 @@ Snippets.SnippetScriptMapping = class {
   }
 
   /**
-   * @override
    * @param {!SDK.DebuggerModel.Location} rawLocation
    * @return {?Workspace.UILocation}
    */
@@ -417,7 +445,6 @@ Snippets.SnippetScriptMapping = class {
   }
 
   /**
-   * @override
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
@@ -437,10 +464,9 @@ Snippets.SnippetScriptMapping = class {
    */
   _addScript(script, uiSourceCode) {
     console.assert(!this._scriptForUISourceCode.get(uiSourceCode));
-    Bindings.debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel, uiSourceCode, this);
     this._uiSourceCodeForScriptId[script.scriptId] = uiSourceCode;
     this._scriptForUISourceCode.set(uiSourceCode, script);
-    Bindings.debuggerWorkspaceBinding.pushSourceMapping(script, this);
+    Bindings.debuggerWorkspaceBinding.updateLocations(script);
   }
 
   /**
@@ -456,24 +482,6 @@ Snippets.SnippetScriptMapping = class {
     var scriptUISourceCode = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation).uiSourceCode;
     if (scriptUISourceCode)
       this._scriptSnippetModel._restoreBreakpoints(scriptUISourceCode, breakpointLocations);
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isIdentity() {
-    return false;
-  }
-
-  /**
-   * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {number} lineNumber
-   * @return {boolean}
-   */
-  uiLineHasMapping(uiSourceCode, lineNumber) {
-    return true;
   }
 };
 

@@ -87,7 +87,8 @@ Bindings.ResourceScriptMapping = class {
    */
   uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
     var scripts = this._scriptsForUISourceCode(uiSourceCode);
-    console.assert(scripts.length);
+    if (!scripts.length)
+      return null;
     var script = scripts[scripts.length - 1];
     if (script.isInlineScriptWithSourceURL()) {
       return this._debuggerModel.createRawLocationByURL(
@@ -103,31 +104,12 @@ Bindings.ResourceScriptMapping = class {
   addScript(script) {
     if (script.isAnonymousScript())
       return;
-    this._debuggerWorkspaceBinding.pushSourceMapping(script, this);
 
     var uiSourceCode = this._workspaceUISourceCodeForScript(script);
     if (!uiSourceCode)
       return;
 
     this._bindUISourceCodeToScripts(uiSourceCode, [script]);
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isIdentity() {
-    return true;
-  }
-
-  /**
-   * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {number} lineNumber
-   * @return {boolean}
-   */
-  uiLineHasMapping(uiSourceCode, lineNumber) {
-    return true;
   }
 
   /**
@@ -222,7 +204,6 @@ Bindings.ResourceScriptMapping = class {
     this._setScriptFile(uiSourceCode, scriptFile);
     for (var i = 0; i < scripts.length; ++i)
       this._debuggerWorkspaceBinding.updateLocations(scripts[i]);
-    this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel, uiSourceCode, this);
     this._boundUISourceCodes.add(uiSourceCode);
   }
 
@@ -235,8 +216,9 @@ Bindings.ResourceScriptMapping = class {
       scriptFile.dispose();
       this._setScriptFile(uiSourceCode, null);
     }
-    this._debuggerWorkspaceBinding.setSourceMapping(this._debuggerModel, uiSourceCode, null);
     this._boundUISourceCodes.delete(uiSourceCode);
+    if (scriptFile._script)
+      this._debuggerWorkspaceBinding.updateLocations(scriptFile._script);
   }
 
   _debuggerReset() {

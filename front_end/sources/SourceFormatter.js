@@ -151,6 +151,10 @@ Sources.SourceFormatter = class {
  * @implements {Bindings.DebuggerSourceMapping}
  */
 Sources.SourceFormatter.ScriptMapping = class {
+  constructor() {
+    Bindings.debuggerWorkspaceBinding.addSourceMapping(this);
+  }
+
   /**
    * @override
    * @param {!SDK.DebuggerModel.Location} rawLocation
@@ -186,24 +190,6 @@ Sources.SourceFormatter.ScriptMapping = class {
   }
 
   /**
-   * @override
-   * @return {boolean}
-   */
-  isIdentity() {
-    return false;
-  }
-
-  /**
-   * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {number} lineNumber
-   * @return {boolean}
-   */
-  uiLineHasMapping(uiSourceCode, lineNumber) {
-    return true;
-  }
-
-  /**
    * @param {!Sources.SourceFormatData} formatData
    * @param {boolean} enabled
    */
@@ -212,19 +198,14 @@ Sources.SourceFormatter.ScriptMapping = class {
     if (!scripts.length)
       return;
     if (enabled) {
-      for (var script of scripts) {
+      for (var script of scripts)
         script[Sources.SourceFormatData._formatDataSymbol] = formatData;
-        Bindings.debuggerWorkspaceBinding.pushSourceMapping(script, this);
-      }
     } else {
-      for (var script of scripts) {
+      for (var script of scripts)
         delete script[Sources.SourceFormatData._formatDataSymbol];
-        Bindings.debuggerWorkspaceBinding.popSourceMapping(script);
-      }
     }
-
-    Bindings.debuggerWorkspaceBinding.setSourceMapping(
-        scripts[0].debuggerModel, formatData.formattedSourceCode, enabled ? this : null);
+    for (var script of scripts)
+      Bindings.debuggerWorkspaceBinding.updateLocations(script);
   }
 
   /**

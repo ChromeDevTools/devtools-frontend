@@ -32,9 +32,7 @@
  */
 Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
   constructor() {
-    super();
-    this.element.classList.add('computed-style-sidebar-pane');
-
+    super(true);
     this.registerRequiredCSS('elements/computedStyleSidebarPane.css');
     this._alwaysShowComputedProperties = {'display': true, 'height': true, 'width': true};
 
@@ -47,10 +45,10 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
     this._showInheritedComputedStylePropertiesSetting.addChangeListener(
         this._showInheritedComputedStyleChanged.bind(this));
 
-    var hbox = this.element.createChild('div', 'hbox styles-sidebar-pane-toolbar');
+    var hbox = this.contentElement.createChild('div', 'hbox styles-sidebar-pane-toolbar');
     var filterContainerElement = hbox.createChild('div', 'styles-sidebar-pane-filter-box');
     var filterInput = Elements.StylesSidebarPane.createPropertyFilterElement(
-        Common.UIString('Filter'), hbox, filterCallback.bind(this));
+        Common.UIString('Filter'), hbox, filterCallback.bind(this), 'styles-filter-engaged');
     UI.ARIAUtils.setAccessibleName(filterInput, Common.UIString('Filter Computed Styles'));
     filterContainerElement.appendChild(filterInput);
 
@@ -60,9 +58,9 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
 
     this._propertiesOutline = new UI.TreeOutlineInShadow();
     this._propertiesOutline.hideOverflow();
-    this._propertiesOutline.registerRequiredCSS('elements/computedStyleSidebarPane.css');
+    this._propertiesOutline.registerRequiredCSS('elements/computedStyleWidgetTree.css');
     this._propertiesOutline.element.classList.add('monospace', 'computed-properties');
-    this.element.appendChild(this._propertiesOutline.element);
+    this.contentElement.appendChild(this._propertiesOutline.element);
 
     this._linkifier = new Components.Linkifier(Elements.ComputedStyleWidget._maxLinkLength);
 
@@ -76,7 +74,7 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
     }
 
     var fontsWidget = new Elements.PlatformFontsWidget(this._computedStyleModel);
-    fontsWidget.show(this.element);
+    fontsWidget.show(this.contentElement);
   }
 
   _showInheritedComputedStyleChanged() {

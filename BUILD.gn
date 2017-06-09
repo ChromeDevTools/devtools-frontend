@@ -175,6 +175,7 @@ all_devtools_files = [
   "front_end/elements/ColorSwatchPopoverIcon.js",
   "front_end/elements/ComputedStyleModel.js",
   "front_end/elements/computedStyleSidebarPane.css",
+  "front_end/elements/computedStyleWidgetTree.css",
   "front_end/elements/ComputedStyleWidget.js",
   "front_end/elements/ElementsBreadcrumbs.js",
   "front_end/elements/elementsPanel.css",

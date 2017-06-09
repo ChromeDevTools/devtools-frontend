@@ -7,13 +7,12 @@
 .timeline-status-dialog {
     display: flex;
     flex-direction: column;
-    padding: 12px 16px;
+    padding: 16px 16px 12px 16px;
     align-self: center;
     background-color: white;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2),
                 0 2px 4px rgba(0, 0, 0, 0.2),
                 0 2px 6px rgba(0, 0, 0, 0.1);
-    margin-top: -1px;
 }
 
 .status-dialog-line {
@@ -51,4 +50,8 @@
     margin-top: 8px;
     height: 100%;
     align-self: center;
+}
+
+.timeline-status-dialog .stop-button button {
+    min-width: 80px;
 }

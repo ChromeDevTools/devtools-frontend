@@ -583,6 +583,9 @@ UI.TextPrompt = class extends Common.Object {
     if (!node.isSelfOrDescendant(this._element))
       return false;
 
+    if (this._ghostTextElement.isAncestor(node))
+      return true;
+
     if (node.nodeType === Node.TEXT_NODE && selectionRange.startOffset < node.nodeValue.length)
       return false;
 

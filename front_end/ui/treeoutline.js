@@ -1008,13 +1008,15 @@ UI.TreeElement = class {
   select(omitFocus, selectedByUser) {
     if (!this.treeOutline || !this.selectable || this.selected)
       return false;
-
-    if (this.treeOutline.selectedTreeElement)
-      this.treeOutline.selectedTreeElement.deselect();
+    // Wait to deselect this element so that focus only changes once
+    var lastSelected = this.treeOutline.selectedTreeElement;
     this.treeOutline.selectedTreeElement = null;
 
-    if (this.treeOutline._rootElement === this)
+    if (this.treeOutline._rootElement === this) {
+      if (lastSelected)
+        lastSelected.deselect();
       return false;
+    }
 
     this.selected = true;
 
@@ -1026,6 +1028,8 @@ UI.TreeElement = class {
 
     this._listItemNode.classList.add('selected');
     this.treeOutline.dispatchEventToListeners(UI.TreeOutline.Events.ElementSelected, this);
+    if (lastSelected)
+      lastSelected.deselect();
     return this.onselect(selectedByUser);
   }
 

@@ -522,7 +522,6 @@ SDK.ChildTargetManager = class {
     var target = this._targetManager.createTarget(
         targetInfo.targetId, targetName, this._capabilitiesForType(targetInfo.type),
         this._createChildConnection.bind(this, this._targetAgent, targetInfo.targetId), this._parentTarget);
-    target[SDK.TargetManager._isWorkerSymbol] = targetInfo.type === 'worker';
 
     // Only pause the new worker if debugging SW - we are going through the pause on start checkbox.
     if (!this._parentTarget.parentTarget() && Runtime.queryParam('isSharedWorker') && waitingForDebugger) {
@@ -609,8 +608,6 @@ SDK.TargetManager.Events = {
   SuspendStateChanged: Symbol('SuspendStateChanged'),
   AvailableNodeTargetsChanged: Symbol('AvailableNodeTargetsChanged')
 };
-
-SDK.TargetManager._isWorkerSymbol = Symbol('SDK.TargetManager.IsWorker');
 
 /**
  * @interface

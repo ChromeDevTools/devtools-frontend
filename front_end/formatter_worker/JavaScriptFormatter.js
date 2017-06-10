@@ -161,6 +161,11 @@ FormatterWorker.JavaScriptFormatter = class {
     } else if (node.type === 'VariableDeclarator') {
       if (AT.punctuator(token, '='))
         return 'sts';
+    } else if (node.type === 'ObjectPattern') {
+      if (node.parent && node.parent.type === 'VariableDeclarator' && AT.punctuator(token, '{'))
+        return 'st';
+      if (AT.punctuator(token, ','))
+        return 'ts';
     } else if (node.type === 'FunctionDeclaration') {
       if (AT.punctuator(token, ',)'))
         return 'ts';

@@ -5,11 +5,8 @@
  * @unrestricted
  */
 Elements.ElementsSidebarPane = class extends UI.VBox {
-  /**
-   * @param {boolean=} isWebComponent
-   */
-  constructor(isWebComponent) {
-    super(isWebComponent);
+  constructor() {
+    super(true);
     this.element.classList.add('flex-none');
     this._computedStyleModel = new Elements.ComputedStyleModel();
     this._computedStyleModel.addEventListener(

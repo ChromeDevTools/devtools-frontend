@@ -31,6 +31,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
   constructor() {
     super();
     this.setMinimumSize(96, 26);
+    this.registerRequiredCSS('elements/stylesSidebarPane.css');
 
     Common.moduleSetting('colorFormat').addChangeListener(this.update.bind(this));
     Common.moduleSetting('textEditorIndent').addChangeListener(this.update.bind(this));
@@ -44,7 +45,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     /** @type {?UI.ToolbarToggle} */
     this._pendingWidgetToggle = null;
     this._toolbarPaneElement = this._createStylesSidebarToolbar();
-    this._sectionsContainer = this.element.createChild('div');
+    this._sectionsContainer = this.contentElement.createChild('div');
     this._swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper();
     this._linkifier = new Components.Linkifier(Elements.StylesSidebarPane._maxLinkLength, /* useLinkDecorator */ true);
     /** @type {?Elements.StylePropertyHighlighter} */
@@ -59,13 +60,13 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     this._mouseDownTreeElementIsName = false;
     this._mouseDownTreeElementIsValue = false;
 
-    this.element.classList.add('styles-pane');
+    this.contentElement.classList.add('styles-pane');
 
     /** @type {!Array<!Elements.SectionBlock>} */
     this._sectionBlocks = [];
     Elements.StylesSidebarPane._instance = this;
     UI.context.addFlavorChangeListener(SDK.DOMNode, this.forceUpdate, this);
-    this.element.addEventListener('copy', this._clipboardCopy.bind(this));
+    this.contentElement.addEventListener('copy', this._clipboardCopy.bind(this));
     this._resizeThrottler = new Common.Throttler(100);
   }
 
@@ -276,7 +277,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
    * @return {!Promise}
    */
   _innerResize() {
-    var width = this.element.getBoundingClientRect().width + 'px';
+    var width = this.contentElement.getBoundingClientRect().width + 'px';
     this.allSections().forEach(section => section.propertiesTreeOutline.element.style.width = width);
     return Promise.resolve();
   }
@@ -312,7 +313,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
   setEditingStyle(editing) {
     if (this._isEditingStyle === editing)
       return;
-    this.element.classList.toggle('is-editing-style', editing);
+    this.contentElement.classList.toggle('is-editing-style', editing);
     this._isEditingStyle = editing;
   }
 
@@ -528,7 +529,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
    * @return {!Element}
    */
   _createStylesSidebarToolbar() {
-    var container = this.element.createChild('div', 'styles-sidebar-pane-toolbar-container');
+    var container = this.contentElement.createChild('div', 'styles-sidebar-pane-toolbar-container');
     var hbox = container.createChild('div', 'hbox styles-sidebar-pane-toolbar');
     var filterContainerElement = hbox.createChild('div', 'styles-sidebar-pane-filter-box');
     var filterInput = Elements.StylesSidebarPane.createPropertyFilterElement(

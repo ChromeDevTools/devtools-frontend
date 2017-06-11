@@ -197,6 +197,7 @@ all_devtools_files = [
   "front_end/elements/PropertiesWidget.js",
   "front_end/elements/StylePropertyHighlighter.js",
   "front_end/elements/stylesSectionTree.css",
+  "front_end/elements/stylesSidebarPane.css",
   "front_end/elements/StylesSidebarPane.js",
   "front_end/emulated_devices/module.json",
   "front_end/emulation/AdvancedApp.js",

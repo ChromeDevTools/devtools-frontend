@@ -31,7 +31,7 @@
  */
 Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
   constructor() {
-    super(true);
+    super();
     this.registerRequiredCSS('elements/metricsSidebarPane.css');
 
     /** @type {?SDK.CSSStyleDeclaration} */

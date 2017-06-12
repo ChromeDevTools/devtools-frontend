@@ -31,13 +31,13 @@
  */
 Sources.NavigatorView = class extends UI.VBox {
   constructor() {
-    super();
+    super(true);
     this.registerRequiredCSS('sources/navigatorView.css');
 
     this._scriptsTree = new UI.TreeOutlineInShadow();
     this._scriptsTree.registerRequiredCSS('sources/navigatorTree.css');
     this._scriptsTree.setComparator(Sources.NavigatorView._treeElementsCompare);
-    this.element.appendChild(this._scriptsTree.element);
+    this.contentElement.appendChild(this._scriptsTree.element);
     this.setDefaultFocusedElement(this._scriptsTree.element);
 
     /** @type {!Multimap<!Workspace.UISourceCode, !Sources.NavigatorUISourceCodeTreeNode>} */
@@ -51,7 +51,7 @@ Sources.NavigatorView = class extends UI.VBox {
     /** @type {!Map.<!SDK.ResourceTreeFrame, !Sources.NavigatorGroupTreeNode>} */
     this._frameNodes = new Map();
 
-    this.element.addEventListener('contextmenu', this.handleContextMenu.bind(this), false);
+    this.contentElement.addEventListener('contextmenu', this.handleContextMenu.bind(this), false);
 
     this._navigatorGroupByFolderSetting = Common.moduleSetting('navigatorGroupByFolder');
     this._navigatorGroupByFolderSetting.addChangeListener(this._groupingChanged.bind(this));

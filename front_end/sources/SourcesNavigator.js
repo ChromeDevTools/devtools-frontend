@@ -147,7 +147,7 @@ Sources.FilesNavigatorView = class extends Sources.NavigatorView {
     addButton.addEventListener(
         UI.ToolbarButton.Events.Click, () => Persistence.isolatedFileSystemManager.addFileSystem());
     toolbar.appendToolbarItem(addButton);
-    this.element.insertBefore(toolbar.element, this.element.firstChild);
+    this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
   }
 
   /**
@@ -198,7 +198,7 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
     var newButton = new UI.ToolbarButton('', 'largeicon-add', Common.UIString('New snippet'));
     newButton.addEventListener(UI.ToolbarButton.Events.Click, this._handleCreateSnippet.bind(this));
     toolbar.appendToolbarItem(newButton);
-    this.element.insertBefore(toolbar.element, this.element.firstChild);
+    this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
   }
 
   /**

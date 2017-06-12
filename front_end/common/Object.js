@@ -56,21 +56,15 @@ Common.Object = class {
   /**
    * @override
    * @param {symbol} eventType
-   * @param {function(!Common.Event)} listener
-   * @param {!Object=} thisObject
-   * @return {!Common.EventTarget.EventDescriptor}
+   * @return {!Promise<*>}
    */
-  once(eventType, listener, thisObject) {
-    /**
-     * @this {Common.Object}
-     * @param {!Common.Event} event
-     */
-    function onEvent(event) {
-      listener.call(thisObject, event);
-      this.removeEventListener(eventType, onEventBound, thisObject);
-    }
-    var onEventBound = onEvent.bind(this);
-    return this.addEventListener(eventType, onEventBound, thisObject);
+  once(eventType) {
+    return new Promise(resolve => {
+      var descriptor = this.addEventListener(eventType, event => {
+        this.removeEventListener(eventType, descriptor.listener);
+        resolve(event.data);
+      });
+    });
   }
 
   /**
@@ -162,11 +156,9 @@ Common.EventTarget.prototype = {
 
   /**
    * @param {symbol} eventType
-   * @param {function(!Common.Event)} listener
-   * @param {!Object=} thisObject
-   * @return {!Common.EventTarget.EventDescriptor}
+   * @return {!Promise<*>}
    */
-  once(eventType, listener, thisObject) {},
+  once(eventType) {},
 
   /**
    * @param {symbol} eventType

@@ -750,9 +750,7 @@ Audits2.DetailsRenderer = class extends DetailsRenderer {
     var mainTarget = SDK.targetManager.mainTarget();
     if (!this._onMainFrameNavigatedPromise) {
       var resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel);
-      this._onMainFrameNavigatedPromise = new Promise(resolve => {
-        resourceTreeModel.once(SDK.ResourceTreeModel.Events.MainFrameNavigated, resolve);
-      });
+      this._onMainFrameNavigatedPromise = resourceTreeModel.once(SDK.ResourceTreeModel.Events.MainFrameNavigated);
     }
 
     await this._onMainFrameNavigatedPromise;

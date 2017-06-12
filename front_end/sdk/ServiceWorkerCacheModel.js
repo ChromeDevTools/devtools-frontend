@@ -223,7 +223,8 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
       return;
     }
     var entries = response.cacheDataEntries.map(
-        dataEntry => new SDK.ServiceWorkerCacheModel.Entry(dataEntry.request, dataEntry.response));
+        dataEntry => new SDK.ServiceWorkerCacheModel.Entry(
+            dataEntry.request, dataEntry.response, new Date(dataEntry.responseTime * 1000).toLocaleString()));
     callback(entries, response.hasMore);
   }
 };
@@ -243,10 +244,12 @@ SDK.ServiceWorkerCacheModel.Entry = class {
   /**
    * @param {string} request
    * @param {string} response
+   * @param {string} responseTime
    */
-  constructor(request, response) {
+  constructor(request, response, responseTime) {
     this.request = request;
     this.response = response;
+    this.responseTime = responseTime;
   }
 };
 

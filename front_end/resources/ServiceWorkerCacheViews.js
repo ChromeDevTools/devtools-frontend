@@ -36,7 +36,8 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
   _createDataGrid() {
     var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'number', title: Common.UIString('#'), width: '50px'}, {id: 'request', title: Common.UIString('Request')},
-      {id: 'response', title: Common.UIString('Response')}
+      {id: 'response', title: Common.UIString('Response')},
+      {id: 'responseTime', title: Common.UIString('Time Cached')}
     ]);
     var dataGrid = new DataGrid.DataGrid(
         columns, undefined, this._deleteButtonClicked.bind(this), this._updateData.bind(this, true));
@@ -110,6 +111,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
       data['number'] = i + skipCount;
       data['request'] = entries[i].request;
       data['response'] = entries[i].response;
+      data['responseTime'] = entries[i].responseTime;
       var node = new DataGrid.DataGridNode(data);
       node.selectable = true;
       this._dataGrid.rootNode().appendChild(node);

@@ -606,7 +606,7 @@ Timeline.TimelineUIUtils = class {
       if (!rawLocation)
         return null;
       var uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
-      return uiLocation.linkText();
+      return uiLocation ? uiLocation.linkText() : null;
     }
 
     /**

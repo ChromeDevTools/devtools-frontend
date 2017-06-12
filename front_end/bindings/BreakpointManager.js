@@ -923,6 +923,8 @@ Bindings.BreakpointManager.ModelBreakpoint = class {
    */
   _addResolvedLocation(location) {
     var uiLocation = this._debuggerWorkspaceBinding.rawLocationToUILocation(location);
+    if (!uiLocation)
+      return false;
     var breakpoint = this._breakpoint._breakpointManager.findBreakpoint(
         uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
     if (breakpoint && breakpoint !== this._breakpoint) {

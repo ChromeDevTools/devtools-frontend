@@ -1159,8 +1159,10 @@ Sources.SourcesPanel.DebuggerLocationRevealer = class {
   reveal(rawLocation, omitFocus) {
     if (!(rawLocation instanceof SDK.DebuggerModel.Location))
       return Promise.reject(new Error('Internal error: not a debugger location'));
-    Sources.SourcesPanel.instance().showUILocation(
-        Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation), omitFocus);
+    var uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+    if (!uiLocation)
+      return Promise.resolve();
+    Sources.SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
     return Promise.resolve();
   }
 };

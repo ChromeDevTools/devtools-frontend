@@ -274,10 +274,9 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       contextMenu.appendItem(Common.UIString('Restart frame'), () => item.debuggerCallFrame.restart());
     contextMenu.appendItem(Common.UIString('Copy stack trace'), this._copyStackTrace.bind(this));
     var location = this._itemLocation(item);
-    if (location) {
-      var uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location);
+    var uiLocation = location ? Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location) : null;
+    if (uiLocation)
       this.appendBlackboxURLContextMenuItems(contextMenu, uiLocation.uiSourceCode);
-    }
     contextMenu.show();
   }
 
@@ -361,10 +360,9 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
         continue;
       var itemText = this._itemTitle(item);
       var location = this._itemLocation(item);
-      if (location) {
-        var uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location);
+      var uiLocation = location ? Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location) : null;
+      if (uiLocation)
         itemText += ' (' + uiLocation.linkText(true /* skipTrim */) + ')';
-      }
       text.push(itemText);
     }
     InspectorFrontendHost.copyText(text.join('\n'));

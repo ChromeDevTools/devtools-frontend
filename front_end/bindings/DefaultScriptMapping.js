@@ -66,14 +66,15 @@ Bindings.DefaultScriptMapping = class {
   /**
    * @override
    * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @return {!Workspace.UILocation}
+   * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var debuggerModelLocation = /** @type {!SDK.DebuggerModel.Location} */ (rawLocation);
-    var script = debuggerModelLocation.script();
+    var script = rawLocation.script();
+    if (!script)
+      return null;
     var uiSourceCode = script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol];
-    var lineNumber = debuggerModelLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
-    var columnNumber = debuggerModelLocation.columnNumber || 0;
+    var lineNumber = rawLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
+    var columnNumber = rawLocation.columnNumber || 0;
     if (script.isInlineScriptWithSourceURL() && !lineNumber && columnNumber)
       columnNumber -= script.columnOffset;
     return uiSourceCode.uiLocation(lineNumber, columnNumber);

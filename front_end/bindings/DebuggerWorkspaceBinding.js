@@ -108,7 +108,7 @@ Bindings.DebuggerWorkspaceBinding = class {
 
   /**
    * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @return {!Workspace.UILocation}
+   * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
     for (var i = 0; i < this._sourceMappings.length; ++i) {
@@ -161,7 +161,7 @@ Bindings.DebuggerWorkspaceBinding = class {
     var rawLocation =
         this.uiLocationToRawLocation(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
     if (rawLocation)
-      return this.rawLocationToUILocation(rawLocation);
+      return this.rawLocationToUILocation(rawLocation) || uiLocation;
     return uiLocation;
   }
 
@@ -298,15 +298,13 @@ Bindings.DebuggerWorkspaceBinding.ModelData = class {
 
   /**
    * @param {!SDK.DebuggerModel.Location} rawLocation
-   * @return {!Workspace.UILocation}
+   * @return {?Workspace.UILocation}
    */
   _rawLocationToUILocation(rawLocation) {
     var uiLocation = null;
     uiLocation = uiLocation || this._compilerMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._resourceMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._defaultMapping.rawLocationToUILocation(rawLocation);
-    // DefaultMapping ensures uiLocation for every rawLocation.
-    console.assert(uiLocation);
     return /** @type {!Workspace.UILocation} */ (uiLocation);
   }
 
@@ -419,7 +417,7 @@ Bindings.DebuggerWorkspaceBinding.Location = class extends Bindings.LiveLocation
 
   /**
    * @override
-   * @return {!Workspace.UILocation}
+   * @return {?Workspace.UILocation}
    */
   uiLocation() {
     var debuggerModelLocation = this._rawLocation;
@@ -466,7 +464,7 @@ Bindings.DebuggerWorkspaceBinding.StackTraceTopFrameLocation = class extends Bin
 
   /**
    * @override
-   * @return {!Workspace.UILocation}
+   * @return {?Workspace.UILocation}
    */
   uiLocation() {
     return this._current.uiLocation();

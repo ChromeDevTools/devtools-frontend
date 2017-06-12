@@ -479,9 +479,9 @@ Snippets.SnippetScriptMapping = class {
       return;
     var rawLocation =
         /** @type {!SDK.DebuggerModel.Location} */ (this._debuggerModel.createRawLocation(script, 0, 0));
-    var scriptUISourceCode = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation).uiSourceCode;
-    if (scriptUISourceCode)
-      this._scriptSnippetModel._restoreBreakpoints(scriptUISourceCode, breakpointLocations);
+    var uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+    if (uiLocation)
+      this._scriptSnippetModel._restoreBreakpoints(uiLocation.uiSourceCode, breakpointLocations);
   }
 };
 

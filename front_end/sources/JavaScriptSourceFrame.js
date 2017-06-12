@@ -862,7 +862,7 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     var functionUILocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(
         /** @type {!SDK.DebuggerModel.Location} */ (callFrame.functionLocation()));
     var executionUILocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(callFrame.location());
-    if (functionUILocation.uiSourceCode !== this._debuggerSourceCode ||
+    if (!functionUILocation || !executionUILocation || functionUILocation.uiSourceCode !== this._debuggerSourceCode ||
         executionUILocation.uiSourceCode !== this._debuggerSourceCode) {
       this._clearValueWidgets();
       return;

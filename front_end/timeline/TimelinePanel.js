@@ -551,7 +551,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     this._pendingPerformanceModel = new Timeline.PerformanceModel();
     this._controller = new Timeline.TimelineController(tracingManagers[0], this._pendingPerformanceModel, this);
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.TimelineStarted);
     this._setUIControlsEnabled(false);
     this._hideLandingPage();
     return this._controller.startRecording(recordingOptions, enabledTraceProviders)
@@ -590,6 +589,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     if (this._state === Timeline.TimelinePanel.State.Idle) {
       this._recordingPageReload = false;
       this._startRecording();
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.TimelineStarted);
     } else if (this._state === Timeline.TimelinePanel.State.Recording) {
       this._stopRecording();
     }
@@ -600,6 +600,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
       return;
     this._recordingPageReload = true;
     this._startRecording();
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.TimelinePageReloadStarted);
   }
 
   _onClearButton() {

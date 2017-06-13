@@ -240,33 +240,14 @@ Profiler.HeapSnapshotProxyObject = class {
   }
 
   /**
-   * @param {function(T)|undefined} callback
-   * @param {string} methodName
-   * @param {...*} var_args
-   * @return {*}
-   * @template T
-   */
-  callMethod(callback, methodName, var_args) {
-    return this._callWorker('callMethod', Array.prototype.slice.call(arguments, 0));
-  }
-
-  /**
    * @param {string} methodName
    * @param {...*} var_args
    * @return {!Promise.<?T>}
    * @template T
    */
   _callMethodPromise(methodName, var_args) {
-    /**
-     * @param {!Array.<*>} args
-     * @param {function(?T)} fulfill
-     * @this {Profiler.HeapSnapshotProxyObject}
-     * @template T
-     */
-    function action(args, fulfill) {
-      this._callWorker('callMethod', [fulfill].concat(args));
-    }
-    return new Promise(action.bind(this, Array.prototype.slice.call(arguments)));
+    var args = Array.prototype.slice.call(arguments);
+    return new Promise(resolve => this._callWorker('callMethod', [resolve, ...args]));
   }
 };
 
@@ -293,7 +274,7 @@ Profiler.HeapSnapshotLoaderProxy = class extends Profiler.HeapSnapshotProxyObjec
    * @param {function(!Common.OutputStream)=} callback
    */
   write(chunk, callback) {
-    this.callMethod(callback, 'write', chunk);
+    this._callMethodPromise('write', chunk).then(callback);
   }
 
   /**
@@ -301,26 +282,19 @@ Profiler.HeapSnapshotLoaderProxy = class extends Profiler.HeapSnapshotProxyObjec
    * @param {function()=} callback
    */
   close(callback) {
-    /**
-     * @this {Profiler.HeapSnapshotLoaderProxy}
-     */
-    function buildSnapshot() {
-      if (callback)
-        callback();
-      this.callFactoryMethod(updateStaticData.bind(this), 'buildSnapshot', Profiler.HeapSnapshotProxy);
-    }
+    this._callMethodPromise('close').then(callback).then(buildSnapshot.bind(this));
 
     /**
-     * @param {!Profiler.HeapSnapshotProxy} snapshotProxy
      * @this {Profiler.HeapSnapshotLoaderProxy}
      */
-    function updateStaticData(snapshotProxy) {
+    async function buildSnapshot() {
+      var snapshotProxy =
+          await new Promise(resolve => this.callFactoryMethod(resolve, 'buildSnapshot', Profiler.HeapSnapshotProxy));
       this.dispose();
       snapshotProxy.setProfileUid(this._profileUid);
-      snapshotProxy.updateStaticData(this._snapshotReceivedCallback.bind(this));
+      await snapshotProxy.updateStaticData();
+      this._snapshotReceivedCallback(snapshotProxy);
     }
-
-    this.callMethod(buildSnapshot.bind(this), 'close');
   }
 };
 
@@ -349,18 +323,26 @@ Profiler.HeapSnapshotProxy = class extends Profiler.HeapSnapshotProxyObject {
 
   /**
    * @param {!HeapSnapshotModel.NodeFilter} filter
-   * @param {function(!Object.<string, !HeapSnapshotModel.Aggregate>)} callback
+   * @return {!Promise<!Object<string, !HeapSnapshotModel.Aggregate>>}
    */
-  aggregatesWithFilter(filter, callback) {
-    this.callMethod(callback, 'aggregatesWithFilter', filter);
+  aggregatesWithFilter(filter) {
+    return this._callMethodPromise('aggregatesWithFilter', filter);
   }
 
-  aggregatesForDiff(callback) {
-    this.callMethod(callback, 'aggregatesForDiff');
+  /**
+   * @return {!Promise<!Object.<string, !HeapSnapshotModel.AggregateForDiff>>}
+   */
+  aggregatesForDiff() {
+    return this._callMethodPromise('aggregatesForDiff');
   }
 
-  calculateSnapshotDiff(baseSnapshotId, baseSnapshotAggregates, callback) {
-    this.callMethod(callback, 'calculateSnapshotDiff', baseSnapshotId, baseSnapshotAggregates);
+  /**
+   * @param {string} baseSnapshotId
+   * @param {!Object<string, !HeapSnapshotModel.AggregateForDiff>} baseSnapshotAggregates
+   * @return {!Promise<!Object<string, !HeapSnapshotModel.Diff>>}
+   */
+  calculateSnapshotDiff(baseSnapshotId, baseSnapshotAggregates) {
+    return this._callMethodPromise('calculateSnapshotDiff', baseSnapshotId, baseSnapshotAggregates);
   }
 
   /**
@@ -423,16 +405,19 @@ Profiler.HeapSnapshotProxy = class extends Profiler.HeapSnapshotProxyObject {
         null, 'createNodesProviderForClass', Profiler.HeapSnapshotProviderProxy, className, nodeFilter);
   }
 
-  allocationTracesTops(callback) {
-    this.callMethod(callback, 'allocationTracesTops');
+  /**
+   * @return {!Promise<!Array<!HeapSnapshotModel.SerializedAllocationNode>>}
+   */
+  allocationTracesTops() {
+    return this._callMethodPromise('allocationTracesTops');
   }
 
   /**
    * @param {number} nodeId
-   * @param {function(!HeapSnapshotModel.AllocationNodeCallers)} callback
+   * @return {!Promise<!HeapSnapshotModel.AllocationNodeCallers>}
    */
-  allocationNodeCallers(nodeId, callback) {
-    this.callMethod(callback, 'allocationNodeCallers', nodeId);
+  allocationNodeCallers(nodeId) {
+    return this._callMethodPromise('allocationNodeCallers', nodeId);
   }
 
   /**
@@ -440,7 +425,7 @@ Profiler.HeapSnapshotProxy = class extends Profiler.HeapSnapshotProxyObject {
    * @return {!Promise<?Array<!HeapSnapshotModel.AllocationStackFrame>>}
    */
   allocationStack(nodeIndex) {
-    return new Promise(resolve => this.callMethod(resolve, 'allocationStack', nodeIndex));
+    return this._callMethodPromise('allocationStack', nodeIndex);
   }
 
   /**
@@ -458,16 +443,11 @@ Profiler.HeapSnapshotProxy = class extends Profiler.HeapSnapshotProxyObject {
     return this._staticData.rootNodeIndex;
   }
 
-  updateStaticData(callback) {
-    /**
-     * @param {!HeapSnapshotModel.StaticData} staticData
-     * @this {Profiler.HeapSnapshotProxy}
-     */
-    function dataReceived(staticData) {
-      this._staticData = staticData;
-      callback(this);
-    }
-    this.callMethod(dataReceived.bind(this), 'updateStaticData');
+  /**
+   * @return {!Promise}
+   */
+  async updateStaticData() {
+    this._staticData = await this._callMethodPromise('updateStaticData');
   }
 
   /**
@@ -528,26 +508,26 @@ Profiler.HeapSnapshotProviderProxy = class extends Profiler.HeapSnapshotProxyObj
 
   /**
    * @override
-   * @param {function(boolean)} callback
+   * @return {!Promise<boolean>}
    */
-  isEmpty(callback) {
-    this.callMethod(callback, 'isEmpty');
+  isEmpty() {
+    return this._callMethodPromise('isEmpty');
   }
 
   /**
    * @override
    * @param {number} startPosition
    * @param {number} endPosition
-   * @param {function(!HeapSnapshotModel.ItemsRange)} callback
+   * @return {!Promise<!HeapSnapshotModel.ItemsRange>}
    */
-  serializeItemsRange(startPosition, endPosition, callback) {
-    this.callMethod(callback, 'serializeItemsRange', startPosition, endPosition);
+  serializeItemsRange(startPosition, endPosition) {
+    return this._callMethodPromise('serializeItemsRange', startPosition, endPosition);
   }
 
   /**
    * @override
    * @param {!HeapSnapshotModel.ComparatorConfig} comparator
-   * @return {!Promise<?>}
+   * @return {!Promise}
    */
   sortAndRewind(comparator) {
     return this._callMethodPromise('sortAndRewind', comparator);

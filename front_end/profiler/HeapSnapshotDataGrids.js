@@ -761,13 +761,13 @@ Profiler.HeapSnapshotConstructorsDataGrid = class extends Profiler.HeapSnapshotV
 
   /**
    * @param {!HeapSnapshotModel.NodeFilter} nodeFilter
-   * @param {!Object.<string, !HeapSnapshotModel.Aggregate>} aggregates
+   * @param {!Object<string, !HeapSnapshotModel.Aggregate>} aggregates
    */
   _aggregatesReceived(nodeFilter, aggregates) {
     this._filterInProgress = null;
     if (this._nextRequestedFilter) {
-      this.snapshot.aggregatesWithFilter(
-          this._nextRequestedFilter, this._aggregatesReceived.bind(this, this._nextRequestedFilter));
+      this.snapshot.aggregatesWithFilter(this._nextRequestedFilter)
+          .then(this._aggregatesReceived.bind(this, this._nextRequestedFilter));
       this._filterInProgress = this._nextRequestedFilter;
       this._nextRequestedFilter = null;
     }
@@ -783,10 +783,10 @@ Profiler.HeapSnapshotConstructorsDataGrid = class extends Profiler.HeapSnapshotV
   }
 
   /**
-   * @param {!HeapSnapshotModel.NodeFilter=} nodeFilter
+   * @param {!HeapSnapshotModel.NodeFilter=} maybeNodeFilter
    */
-  _populateChildren(nodeFilter) {
-    nodeFilter = nodeFilter || new HeapSnapshotModel.NodeFilter();
+  async _populateChildren(maybeNodeFilter) {
+    var nodeFilter = maybeNodeFilter || new HeapSnapshotModel.NodeFilter();
 
     if (this._filterInProgress) {
       this._nextRequestedFilter = this._filterInProgress.equals(nodeFilter) ? null : nodeFilter;
@@ -795,7 +795,10 @@ Profiler.HeapSnapshotConstructorsDataGrid = class extends Profiler.HeapSnapshotV
     if (this._lastFilter && this._lastFilter.equals(nodeFilter))
       return;
     this._filterInProgress = nodeFilter;
-    this.snapshot.aggregatesWithFilter(nodeFilter, this._aggregatesReceived.bind(this, nodeFilter));
+
+    var aggregates = await this.snapshot.aggregatesWithFilter(nodeFilter);
+
+    this._aggregatesReceived(nodeFilter, aggregates);
   }
 
   filterSelectIndexChanged(profiles, profileIndex) {
@@ -875,29 +878,18 @@ Profiler.HeapSnapshotDiffDataGrid = class extends Profiler.HeapSnapshotViewportD
     this._populateChildren();
   }
 
-  _populateChildren() {
-    /**
-     * @this {Profiler.HeapSnapshotDiffDataGrid}
-     */
-    function aggregatesForDiffReceived(aggregatesForDiff) {
-      this.snapshot.calculateSnapshotDiff(
-          this.baseSnapshot.uid, aggregatesForDiff, didCalculateSnapshotDiff.bind(this));
-
-      /**
-       * @this {Profiler.HeapSnapshotDiffDataGrid}
-       */
-      function didCalculateSnapshotDiff(diffByClassName) {
-        for (var className in diffByClassName) {
-          var diff = diffByClassName[className];
-          this.appendNode(this.rootNode(), new Profiler.HeapSnapshotDiffNode(this, className, diff));
-        }
-        this.sortingChanged();
-      }
-    }
+  async _populateChildren() {
     // Two snapshots live in different workers isolated from each other. That is why
     // we first need to collect information about the nodes in the first snapshot and
     // then pass it to the second snapshot to calclulate the diff.
-    this.baseSnapshot.aggregatesForDiff(aggregatesForDiffReceived.bind(this));
+    var aggregatesForDiff = await this.baseSnapshot.aggregatesForDiff();
+    var diffByClassName = await this.snapshot.calculateSnapshotDiff(this.baseSnapshot.uid, aggregatesForDiff);
+
+    for (var className in diffByClassName) {
+      var diff = diffByClassName[className];
+      this.appendNode(this.rootNode(), new Profiler.HeapSnapshotDiffNode(this, className, diff));
+    }
+    this.sortingChanged();
   }
 };
 
@@ -940,26 +932,21 @@ Profiler.AllocationDataGrid = class extends Profiler.HeapSnapshotViewportDataGri
     this._linkifier.reset();
   }
 
-  setDataSource(snapshot) {
+  /**
+   * @param {!Profiler.HeapSnapshotProxy} snapshot
+   */
+  async setDataSource(snapshot) {
     this.snapshot = snapshot;
-    this.snapshot.allocationTracesTops(didReceiveAllocationTracesTops.bind(this));
-
-    /**
-     * @param {!Array.<!HeapSnapshotModel.SerializedAllocationNode>} tops
-     * @this {Profiler.AllocationDataGrid}
-     */
-    function didReceiveAllocationTracesTops(tops) {
-      this._topNodes = tops;
-      this._populateChildren();
-    }
+    this._topNodes = await this.snapshot.allocationTracesTops();
+    this._populateChildren();
   }
 
   _populateChildren() {
     this.removeTopLevelNodes();
     var root = this.rootNode();
     var tops = this._topNodes;
-    for (var i = 0; i < tops.length; i++)
-      this.appendNode(root, new Profiler.AllocationGridNode(this, tops[i]));
+    for (var top of tops)
+      this.appendNode(root, new Profiler.AllocationGridNode(this, top));
     this.updateVisibleNodes(true);
   }
 

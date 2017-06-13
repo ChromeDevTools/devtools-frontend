@@ -917,9 +917,6 @@ ColorPicker.Spectrum._itemsPerPaletteRow = 8;
 ColorPicker.Spectrum.Palette;
 ColorPicker.Spectrum.GeneratedPaletteTitle = 'Page colors';
 
-/**
- * @unrestricted
- */
 ColorPicker.Spectrum.PaletteGenerator = class {
   /**
    * @param {function(!ColorPicker.Spectrum.Palette)} callback
@@ -931,7 +928,7 @@ ColorPicker.Spectrum.PaletteGenerator = class {
     var stylesheetPromises = [];
     for (var cssModel of SDK.targetManager.models(SDK.CSSModel)) {
       for (var stylesheet of cssModel.allStyleSheets())
-        stylesheetPromises.push(new Promise(this._processStylesheet.bind(this, stylesheet)));
+        stylesheetPromises.push(this._processStylesheet(stylesheet));
     }
     Promise.all(stylesheetPromises).catchException(null).then(this._finish.bind(this));
   }
@@ -992,25 +989,16 @@ ColorPicker.Spectrum.PaletteGenerator = class {
 
   /**
    * @param {!SDK.CSSStyleSheetHeader} stylesheet
-   * @param {function(?)} resolve
-   * @this {ColorPicker.Spectrum.PaletteGenerator}
+   * @return {!Promise}
    */
-  _processStylesheet(stylesheet, resolve) {
-    /**
-     * @param {?string} text
-     * @this {ColorPicker.Spectrum.PaletteGenerator}
-     */
-    function parseContent(text) {
-      text = text.toLowerCase();
-      var regexResult = text.match(/((?:rgb|hsl)a?\([^)]+\)|#[0-9a-f]{6}|#[0-9a-f]{3})/g) || [];
-      for (var c of regexResult) {
-        var frequency = this._frequencyMap.get(c) || 0;
-        this._frequencyMap.set(c, ++frequency);
-      }
-      resolve(null);
+  async _processStylesheet(stylesheet) {
+    var text = await stylesheet.requestContent() || '';
+    text = text.toLowerCase();
+    var regexResult = text.match(/((?:rgb|hsl)a?\([^)]+\)|#[0-9a-f]{6}|#[0-9a-f]{3})/g) || [];
+    for (var c of regexResult) {
+      var frequency = this._frequencyMap.get(c) || 0;
+      this._frequencyMap.set(c, ++frequency);
     }
-
-    stylesheet.requestContent().then(parseContent.bind(this));
   }
 };
 

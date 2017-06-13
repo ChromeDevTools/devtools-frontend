@@ -229,6 +229,7 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
     var uiLocation = null;
     uiLocation = uiLocation || this._sassSourceMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._stylesSourceMapping.rawLocationToUILocation(rawLocation);
+    uiLocation = uiLocation || Bindings.resourceMapping.cssLocationToUILocation(rawLocation);
     return uiLocation;
   }
 

@@ -304,6 +304,7 @@ Bindings.DebuggerWorkspaceBinding.ModelData = class {
     var uiLocation = null;
     uiLocation = uiLocation || this._compilerMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._resourceMapping.rawLocationToUILocation(rawLocation);
+    uiLocation = uiLocation || Bindings.resourceMapping.jsLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._defaultMapping.rawLocationToUILocation(rawLocation);
     return /** @type {!Workspace.UILocation} */ (uiLocation);
   }
@@ -318,6 +319,8 @@ Bindings.DebuggerWorkspaceBinding.ModelData = class {
     var rawLocation = null;
     rawLocation = rawLocation || this._compilerMapping.uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
     rawLocation = rawLocation || this._resourceMapping.uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
+    rawLocation =
+        rawLocation || Bindings.resourceMapping.uiLocationToJSLocation(uiSourceCode, lineNumber, columnNumber);
     rawLocation = rawLocation || this._defaultMapping.uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
     return rawLocation;
   }

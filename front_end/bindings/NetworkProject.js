@@ -83,14 +83,6 @@ Bindings.NetworkProject = class {
 
     this._eventListeners = [];
 
-    if (resourceTreeModel) {
-      this._eventListeners.push(
-          resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ResourceAdded, this._resourceAdded, this),
-          resourceTreeModel.addEventListener(
-              SDK.ResourceTreeModel.Events.FrameWillNavigate, this._frameWillNavigate, this),
-          resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this));
-    }
-
     this._debuggerModel = target.model(SDK.DebuggerModel);
     /** @type {!Set<!SDK.Script>} */
     this._acceptedScripts = new Set();
@@ -364,76 +356,6 @@ Bindings.NetworkProject = class {
   }
 
   /**
-   * @param {!Common.Event} event
-   */
-  _resourceAdded(event) {
-    var resource = /** @type {!SDK.Resource} */ (event.data);
-    this._addResource(resource);
-  }
-
-  /**
-   * @param {!SDK.Resource} resource
-   */
-  _acceptsResource(resource) {
-    var resourceType = resource.resourceType();
-    // Only load selected resource types from resources.
-    if (resourceType !== Common.resourceTypes.Image && resourceType !== Common.resourceTypes.Font &&
-        resourceType !== Common.resourceTypes.Document && resourceType !== Common.resourceTypes.Manifest)
-      return false;
-
-    // Ignore non-images and non-fonts.
-    if (resourceType === Common.resourceTypes.Image && resource.mimeType && !resource.mimeType.startsWith('image'))
-      return false;
-    if (resourceType === Common.resourceTypes.Font && resource.mimeType && !resource.mimeType.includes('font'))
-      return false;
-    if ((resourceType === Common.resourceTypes.Image || resourceType === Common.resourceTypes.Font) &&
-        resource.contentURL().startsWith('data:'))
-      return false;
-    return true;
-  }
-
-  /**
-   * @param {!SDK.Resource} resource
-   */
-  _addResource(resource) {
-    if (!this._acceptsResource(resource))
-      return;
-
-    var uiSourceCode = this._createFile(resource, resource.frameId, false);
-    this._addUISourceCodeWithProvider(uiSourceCode, resource, Bindings.resourceMetadata(resource), resource.mimeType);
-  }
-
-  /**
-   * @param {!SDK.ResourceTreeFrame} frame
-   */
-  _removeFrameResources(frame) {
-    var regularProject = this._workspaceProject(frame.id, false);
-    var contentScriptsProject = this._workspaceProject(frame.id, true);
-    for (var resource of frame.resources()) {
-      if (!this._acceptsResource(resource))
-        continue;
-      regularProject.removeFile(resource.url);
-      contentScriptsProject.removeFile(resource.url);
-    }
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _frameWillNavigate(event) {
-    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
-    this._removeFrameResources(frame);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _frameDetached(event) {
-    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
-    this._removeFrameResources(frame);
-  }
-
-  /**
    * @param {!Common.ContentProvider} contentProvider
    * @param {string} frameId
    * @param {boolean} isContentScript
@@ -463,12 +385,14 @@ Bindings.NetworkProject = class {
   }
 
   _dispose() {
-    this._reset();
+    for (var project of this._workspaceProjects.values())
+      project.removeProject();
     Common.EventTarget.removeEventListeners(this._eventListeners);
     delete this._target[Bindings.NetworkProject._networkProjectSymbol];
+    this._workspaceProjects.clear();
   }
 
-  _reset() {
+  _resetForTest() {
     for (var project of this._workspaceProjects.values())
       project.removeProject();
     this._workspaceProjects.clear();

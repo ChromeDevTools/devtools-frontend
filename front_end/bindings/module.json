@@ -8,6 +8,7 @@
     ],
     "scripts": [
         "LiveLocation.js",
+        "ResourceMapping.js",
         "CompilerScriptMapping.js",
         "ResourceScriptMapping.js",
         "SASSSourceMapping.js",

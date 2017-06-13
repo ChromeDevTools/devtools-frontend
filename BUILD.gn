@@ -65,6 +65,7 @@ all_devtools_files = [
   "front_end/bindings/module.json",
   "front_end/bindings/NetworkProject.js",
   "front_end/bindings/PresentationConsoleMessageHelper.js",
+  "front_end/bindings/ResourceMapping.js",
   "front_end/bindings/ResourceScriptMapping.js",
   "front_end/bindings/ResourceUtils.js",
   "front_end/bindings/SASSSourceMapping.js",

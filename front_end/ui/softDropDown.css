@@ -1,0 +1,24 @@
+/*
+ * Copyright 2017 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.item.disabled {
+    opacity: 0.5;
+}
+
+.item-list {
+    background-color: white;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05),
+                0 2px 4px rgba(0, 0, 0, 0.2),
+                0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.item.highlighted {
+    color: white;
+    background-color: rgb(56, 121, 217);
+}

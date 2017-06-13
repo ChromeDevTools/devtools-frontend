@@ -177,7 +177,6 @@
     ],
     "resources": [
         "consoleContextSelector.css",
-        "consoleContextSelectorButton.css",
         "consoleView.css"
     ]
 }

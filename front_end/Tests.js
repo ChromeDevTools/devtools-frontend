@@ -850,7 +850,7 @@
       var selector = consoleView._consoleContextSelector;
       var values = [];
       for (var item of selector._items)
-        values.push(selector._titleFor(item));
+        values.push(selector.titleFor(item));
       test.assertEquals('top', values[0]);
       test.assertEquals('Simple content script', values[1]);
       test.releaseControl();

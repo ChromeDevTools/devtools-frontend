@@ -6,6 +6,9 @@
 :host {
     height: 26px;
     text-align: left;
+    position: relative;
+    border: none;
+    background: none;
 }
 
 :host([disabled]) {

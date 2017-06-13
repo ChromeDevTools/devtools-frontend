@@ -426,8 +426,8 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
   }
 
   /**
-   * @param {!Array.<!Profiler.HeapSnapshotGridNode>} pathToReveal
-   * @return {!Promise.<!Profiler.HeapSnapshotGridNode>}
+   * @param {!Array<!Profiler.HeapSnapshotGridNode>} pathToReveal
+   * @return {!Promise<!Profiler.HeapSnapshotGridNode>}
    */
   revealTreeNode(pathToReveal) {
     var height = this._calculateOffset(pathToReveal);
@@ -439,16 +439,10 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
 
     var scrollGap = 40;
     this.scrollContainer.scrollTop = Math.max(0, height - scrollGap);
-    return new Promise(this._scrollTo.bind(this, node));
-  }
-
-  /**
-   * @param {!Profiler.HeapSnapshotGridNode} node
-   * @param {function(!Profiler.HeapSnapshotGridNode)} fulfill
-   */
-  _scrollTo(node, fulfill) {
-    console.assert(!this._scrollToResolveCallback);
-    this._scrollToResolveCallback = fulfill.bind(null, node);
+    return new Promise(resolve => {
+      console.assert(!this._scrollToResolveCallback);
+      this._scrollToResolveCallback = resolve.bind(null, node);
+    });
   }
 
   /**
@@ -541,6 +535,9 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
     this.updateVisibleNodes(false);
   }
 
+  /**
+   * @param {!Event} event
+   */
   _onScroll(event) {
     this.updateVisibleNodes(false);
 
@@ -706,39 +703,22 @@ Profiler.HeapSnapshotConstructorsDataGrid = class extends Profiler.HeapSnapshotV
    * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} id
    * @return {!Promise<?Profiler.HeapSnapshotGridNode>}
    */
-  revealObjectByHeapSnapshotId(id) {
+  async revealObjectByHeapSnapshotId(id) {
     if (!this.snapshot) {
       this._objectIdToSelect = id;
-      return Promise.resolve(/** @type {?Profiler.HeapSnapshotGridNode} */ (null));
-    }
-
-    /**
-     * @param {!Array<!Profiler.HeapSnapshotGridNode>} nodes
-     * @return {?Promise<!Profiler.HeapSnapshotGridNode>}
-     * @this {Profiler.HeapSnapshotConstructorsDataGrid}
-     */
-    function didPopulateNode(nodes) {
-      return nodes.length ? this.revealTreeNode(nodes) : null;
-    }
-
-    /**
-     * @param {?string} className
-     * @return {?Promise<?Profiler.HeapSnapshotGridNode>}
-     * @this {Profiler.HeapSnapshotConstructorsDataGrid}
-     */
-    function didGetClassName(className) {
-      if (!className)
-        return null;
-      var constructorNodes = this.topLevelNodes();
-      for (var i = 0; i < constructorNodes.length; i++) {
-        var parent = constructorNodes[i];
-        if (parent._name === className)
-          return parent.populateNodeBySnapshotObjectId(parseInt(id, 10)).then(didPopulateNode.bind(this));
-      }
-      // There are no visible top level nodes with such className.
       return null;
     }
-    return this.snapshot.nodeClassName(parseInt(id, 10)).then(didGetClassName.bind(this));
+
+    var className = await this.snapshot.nodeClassName(parseInt(id, 10));
+    if (!className)
+      return null;
+
+    var parent = this.topLevelNodes().find(classNode => classNode._name === className);
+    if (!parent)
+      return null;
+
+    var nodes = await parent.populateNodeBySnapshotObjectId(parseInt(id, 10));
+    return nodes.length ? this.revealTreeNode(nodes) : null;
   }
 
   clear() {

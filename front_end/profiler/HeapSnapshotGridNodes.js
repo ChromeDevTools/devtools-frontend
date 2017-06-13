@@ -1009,47 +1009,20 @@ Profiler.HeapSnapshotConstructorNode = class extends Profiler.HeapSnapshotGridNo
    * @param {number} snapshotObjectId
    * @return {!Promise<!Array<!Profiler.HeapSnapshotGridNode>>}
    */
-  populateNodeBySnapshotObjectId(snapshotObjectId) {
-    /**
-     * @this {Profiler.HeapSnapshotConstructorNode}
-     */
-    function didExpand() {
-      return this._provider().nodePosition(snapshotObjectId).then(didGetNodePosition.bind(this));
-    }
-
-    /**
-     * @this {Profiler.HeapSnapshotConstructorNode}
-     * @param {number} nodePosition
-     * @return {!Promise<!Array<!Profiler.HeapSnapshotGridNode>>}
-     */
-    function didGetNodePosition(nodePosition) {
-      if (nodePosition === -1) {
-        this.collapse();
-        return Promise.resolve([]);
-      } else {
-        /**
-         * @param {function(!Array<!Profiler.HeapSnapshotGridNode>)} fulfill
-         * @this {Profiler.HeapSnapshotConstructorNode}
-         */
-        function action(fulfill) {
-          this._populateChildren(nodePosition, null, didPopulateChildren.bind(this, nodePosition, fulfill));
-        }
-        return new Promise(action.bind(this));
-      }
-    }
-
-    /**
-     * @this {Profiler.HeapSnapshotConstructorNode}
-     * @param {number} nodePosition
-     * @param {function(!Array<!Profiler.HeapSnapshotGridNode>)} callback
-     */
-    function didPopulateChildren(nodePosition, callback) {
-      var node = /** @type {?Profiler.HeapSnapshotGridNode} */ (this.childForPosition(nodePosition));
-      callback(node ? [this, node] : []);
-    }
-
+  async populateNodeBySnapshotObjectId(snapshotObjectId) {
     this._dataGrid.resetNameFilter();
-    return this.expandWithoutPopulate().then(didExpand.bind(this));
+    await this.expandWithoutPopulate();
+
+    var nodePosition = await this._provider().nodePosition(snapshotObjectId);
+    if (nodePosition === -1) {
+      this.collapse();
+      return [];
+    }
+
+    await new Promise(resolve => this._populateChildren(nodePosition, null, resolve));
+
+    var node = /** @type {?Profiler.HeapSnapshotGridNode} */ (this.childForPosition(nodePosition));
+    return node ? [this, node] : [];
   }
 
   /**

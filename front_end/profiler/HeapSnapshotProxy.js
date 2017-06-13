@@ -437,10 +437,10 @@ Profiler.HeapSnapshotProxy = class extends Profiler.HeapSnapshotProxyObject {
 
   /**
    * @param {number} nodeIndex
-   * @param {function(?Array.<!HeapSnapshotModel.AllocationStackFrame>)} callback
+   * @return {!Promise<?Array<!HeapSnapshotModel.AllocationStackFrame>>}
    */
-  allocationStack(nodeIndex, callback) {
-    this.callMethod(callback, 'allocationStack', nodeIndex);
+  allocationStack(nodeIndex) {
+    return new Promise(resolve => this.callMethod(resolve, 'allocationStack', nodeIndex));
   }
 
   /**
@@ -471,7 +471,7 @@ Profiler.HeapSnapshotProxy = class extends Profiler.HeapSnapshotProxyObject {
   }
 
   /**
-   * @return {!Promise.<!HeapSnapshotModel.Statistics>}
+   * @return {!Promise<!HeapSnapshotModel.Statistics>}
    */
   getStatistics() {
     return this._callMethodPromise('getStatistics');

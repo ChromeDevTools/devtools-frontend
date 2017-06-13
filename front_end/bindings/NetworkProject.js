@@ -47,7 +47,7 @@ Bindings.NetworkProjectManager = class extends Common.Object {
    * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    new Bindings.NetworkProject(target, this._workspace, target.model(SDK.ResourceTreeModel));
+    new Bindings.NetworkProject(target, this._workspace);
   }
 
   /**
@@ -71,14 +71,12 @@ Bindings.NetworkProject = class {
   /**
    * @param {!SDK.Target} target
    * @param {!Workspace.Workspace} workspace
-   * @param {?SDK.ResourceTreeModel} resourceTreeModel
    */
-  constructor(target, workspace, resourceTreeModel) {
+  constructor(target, workspace) {
     this._target = target;
     this._workspace = workspace;
     /** @type {!Map<string, !Bindings.ContentProviderBasedProject>} */
     this._workspaceProjects = new Map();
-    this._resourceTreeModel = resourceTreeModel;
     target[Bindings.NetworkProject._networkProjectSymbol] = this;
 
     this._eventListeners = [];
@@ -97,12 +95,6 @@ Bindings.NetworkProject = class {
               SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
           this._debuggerModel.addEventListener(
               SDK.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this));
-    }
-    var cssModel = target.model(SDK.CSSModel);
-    if (cssModel) {
-      this._eventListeners.push(
-          cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this),
-          cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this));
     }
   }
 
@@ -286,7 +278,7 @@ Bindings.NetworkProject = class {
     var frameId = Bindings.frameIdForScript(script);
     script[Bindings.NetworkProject._frameIdSymbol] = frameId;
     var uiSourceCode = this._createFile(originalContentProvider, frameId, script.isContentScript());
-    var metadata = this._fetchMetadata(frameId, uiSourceCode.url());
+    var metadata = Bindings.metadataForURL(this._target, frameId, uiSourceCode.url());
     this._addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata, 'text/javascript');
   }
 
@@ -320,42 +312,6 @@ Bindings.NetworkProject = class {
   }
 
   /**
-   * @param {!SDK.CSSStyleSheetHeader} header
-   */
-  _acceptsHeader(header) {
-    if (header.isInline && !header.hasSourceURL && header.origin !== 'inspector')
-      return false;
-    if (!header.resourceURL())
-      return false;
-    return true;
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _styleSheetAdded(event) {
-    var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
-    if (!this._acceptsHeader(header))
-      return;
-
-    var originalContentProvider = header.originalContentProvider();
-    var uiSourceCode = this._createFile(originalContentProvider, header.frameId, false);
-    uiSourceCode[Bindings.NetworkProject._styleSheetSymbol] = header;
-    var metadata = this._fetchMetadata(header.frameId, uiSourceCode.url());
-    this._addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata, 'text/css');
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _styleSheetRemoved(event) {
-    var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
-    if (!this._acceptsHeader(header))
-      return;
-    this._removeFileForURL(header.resourceURL(), header.frameId, false);
-  }
-
-  /**
    * @param {!Common.ContentProvider} contentProvider
    * @param {string} frameId
    * @param {boolean} isContentScript
@@ -368,20 +324,6 @@ Bindings.NetworkProject = class {
     if (frameId)
       Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, frameId);
     return uiSourceCode;
-  }
-
-  /**
-   * @param {string} frameId
-   * @param {string} url
-   * @return {?Workspace.UISourceCodeMetadata}
-   */
-  _fetchMetadata(frameId, url) {
-    if (!this._resourceTreeModel)
-      return null;
-    var frame = this._resourceTreeModel.frameForId(frameId);
-    if (!frame)
-      return null;
-    return Bindings.resourceMetadata(frame.resourceForURL(url));
   }
 
   _dispose() {
@@ -411,29 +353,9 @@ Bindings.NetworkProject = class {
     return workspace.uiSourceCode(Bindings.NetworkProject.projectId(target, frameId, false), url) ||
         workspace.uiSourceCode(Bindings.NetworkProject.projectId(target, frameId, true), url);
   }
-
-  /**
-   * @param {!Workspace.Workspace} workspace
-   * @param {string} url
-   * @param {!SDK.CSSStyleSheetHeader} header
-   * @return {?Workspace.UISourceCode}
-   */
-  static uiSourceCodeForStyleURL(workspace, url, header) {
-    return workspace.uiSourceCode(
-        Bindings.NetworkProject.projectId(header.cssModel().target(), header.frameId, false), url);
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {?SDK.CSSStyleSheetHeader}
-   */
-  static styleHeaderForUISourceCode(uiSourceCode) {
-    return uiSourceCode[Bindings.NetworkProject._styleSheetSymbol];
-  }
 };
 
 Bindings.NetworkProject._networkProjectSymbol = Symbol('networkProject');
-Bindings.NetworkProject._styleSheetSymbol = Symbol('styleSheet');
 Bindings.NetworkProject._targetSymbol = Symbol('target');
 Bindings.NetworkProject._frameIdSymbol = Symbol('frameid');
 

@@ -39,24 +39,17 @@ Bindings.StylesSourceMapping = class {
    */
   constructor(cssModel, workspace) {
     this._cssModel = cssModel;
-    this._workspace = workspace;
+    var target = this._cssModel.target();
+    this._project = new Bindings.ContentProviderBasedProject(
+        workspace, 'css:' + target.id(), Workspace.projectTypes.Network, '', false /* isServiceProject */);
+    Bindings.NetworkProject.setTargetForProject(this._project, target);
 
-    /** @type {!Map<string, !Map<string, !Map<string, !SDK.CSSStyleSheetHeader>>>} */
-    this._urlToHeadersByFrameId = new Map();
-    /** @type {!Map.<!Workspace.UISourceCode, !Bindings.StyleFile>} */
+    /** @type {!Map.<string, !Bindings.StyleFile>} */
     this._styleFiles = new Map();
-
     this._eventListeners = [
-      this._workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved, this),
-      this._workspace.addEventListener(
-          Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAddedToWorkspace, this),
-      this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this),
       this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._styleSheetAdded, this),
       this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this._styleSheetRemoved, this),
       this._cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetChanged, this._styleSheetChanged, this),
-      cssModel.target()
-          .model(SDK.ResourceTreeModel)
-          .addEventListener(SDK.ResourceTreeModel.Events.MainFrameNavigated, this._unbindAllUISourceCodes, this)
     ];
   }
 
@@ -67,10 +60,10 @@ Bindings.StylesSourceMapping = class {
    */
   rawLocationToUILocation(rawLocation) {
     var header = rawLocation.header();
-    if (!header)
+    if (!header || !this._acceptsHeader(header))
       return null;
-    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForStyleURL(this._workspace, rawLocation.url, header);
-    if (!uiSourceCode)
+    var styleFile = this._styleFiles.get(header.resourceURL());
+    if (!styleFile)
       return null;
     var lineNumber = rawLocation.lineNumber;
     var columnNumber = rawLocation.columnNumber;
@@ -78,7 +71,7 @@ Bindings.StylesSourceMapping = class {
       lineNumber -= header.lineNumberInSource(0);
       columnNumber -= header.columnNumberInSource(lineNumber, 0);
     }
-    return uiSourceCode.uiLocation(lineNumber, columnNumber);
+    return styleFile._uiSourceCode.uiLocation(lineNumber, columnNumber);
   }
 
   /**
@@ -87,17 +80,31 @@ Bindings.StylesSourceMapping = class {
    * @return {!Array<!SDK.CSSLocation>}
    */
   uiLocationToRawLocations(uiLocation) {
-    // TODO(caseq,lushnikov): return multiple raw locations.
-    var header = Bindings.NetworkProject.styleHeaderForUISourceCode(uiLocation.uiSourceCode);
-    if (!header)
+    var styleFile = uiLocation.uiSourceCode[Bindings.StyleFile._symbol];
+    if (!styleFile)
       return [];
-    var lineNumber = uiLocation.lineNumber;
-    var columnNumber = uiLocation.columnNumber;
-    if (header.isInline && header.hasSourceURL) {
-      columnNumber = header.columnNumberInSource(lineNumber, columnNumber);
-      lineNumber = header.lineNumberInSource(lineNumber);
+    var rawLocations = [];
+    for (var header of styleFile._headers) {
+      var lineNumber = uiLocation.lineNumber;
+      var columnNumber = uiLocation.columnNumber;
+      if (header.isInline && header.hasSourceURL) {
+        columnNumber = header.columnNumberInSource(lineNumber, columnNumber);
+        lineNumber = header.lineNumberInSource(lineNumber);
+      }
+      rawLocations.push(new SDK.CSSLocation(header, lineNumber, columnNumber));
     }
-    return [new SDK.CSSLocation(header, lineNumber, columnNumber)];
+    return rawLocations;
+  }
+
+  /**
+   * @param {!SDK.CSSStyleSheetHeader} header
+   */
+  _acceptsHeader(header) {
+    if (header.isInline && !header.hasSourceURL && header.origin !== 'inspector')
+      return false;
+    if (!header.resourceURL())
+      return false;
+    return true;
   }
 
   /**
@@ -105,24 +112,17 @@ Bindings.StylesSourceMapping = class {
    */
   _styleSheetAdded(event) {
     var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
-    var url = header.resourceURL();
-    if (!url)
+    if (!this._acceptsHeader(header))
       return;
 
-    var map = this._urlToHeadersByFrameId.get(url);
-    if (!map) {
-      map = /** @type {!Map.<string, !Map.<string, !SDK.CSSStyleSheetHeader>>} */ (new Map());
-      this._urlToHeadersByFrameId.set(url, map);
+    var url = header.resourceURL();
+    var styleFile = this._styleFiles.get(url);
+    if (!styleFile) {
+      styleFile = new Bindings.StyleFile(this._cssModel, this._project, header);
+      this._styleFiles.set(url, styleFile);
+    } else {
+      styleFile.addHeader(header);
     }
-    var headersById = map.get(header.frameId);
-    if (!headersById) {
-      headersById = /** @type {!Map.<string, !SDK.CSSStyleSheetHeader>} */ (new Map());
-      map.set(header.frameId, headersById);
-    }
-    headersById.set(header.id, header);
-    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForStyleURL(this._workspace, url, header);
-    if (uiSourceCode)
-      this._bindUISourceCode(uiSourceCode, header);
   }
 
   /**
@@ -130,190 +130,99 @@ Bindings.StylesSourceMapping = class {
    */
   _styleSheetRemoved(event) {
     var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
+    if (!this._acceptsHeader(header))
+      return;
     var url = header.resourceURL();
-    if (!url)
-      return;
-
-    var map = this._urlToHeadersByFrameId.get(url);
-    console.assert(map);
-    var headersById = map.get(header.frameId);
-    console.assert(headersById);
-    headersById.delete(header.id);
-
-    if (!headersById.size) {
-      map.delete(header.frameId);
-      if (!map.size) {
-        this._urlToHeadersByFrameId.delete(url);
-        var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForStyleURL(this._workspace, url, header);
-        if (uiSourceCode)
-          this._unbindUISourceCode(uiSourceCode);
-      }
-    }
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   */
-  _unbindUISourceCode(uiSourceCode) {
-    var styleFile = this._styleFiles.get(uiSourceCode);
-    if (!styleFile)
-      return;
-    styleFile.dispose();
-    this._styleFiles.delete(uiSourceCode);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _unbindAllUISourceCodes(event) {
-    for (var styleFile of this._styleFiles.values())
+    var styleFile = this._styleFiles.get(url);
+    if (styleFile._headers.size === 1) {
       styleFile.dispose();
-    this._styleFiles.clear();
-    this._urlToHeadersByFrameId = new Map();
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _uiSourceCodeAddedToWorkspace(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
-    if (!this._urlToHeadersByFrameId.has(uiSourceCode.url()))
-      return;
-    this._bindUISourceCode(
-        uiSourceCode, this._urlToHeadersByFrameId.get(uiSourceCode.url()).valuesArray()[0].valuesArray()[0]);
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {!SDK.CSSStyleSheetHeader} header
-   */
-  _bindUISourceCode(uiSourceCode, header) {
-    if (this._styleFiles.get(uiSourceCode) || (header.isInline && !header.hasSourceURL))
-      return;
-    this._styleFiles.set(uiSourceCode, new Bindings.StyleFile(uiSourceCode, this));
-    Bindings.cssWorkspaceBinding.updateLocations(header);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _projectRemoved(event) {
-    var project = /** @type {!Workspace.Project} */ (event.data);
-    var uiSourceCodes = project.uiSourceCodes();
-    for (var i = 0; i < uiSourceCodes.length; ++i)
-      this._unbindUISourceCode(uiSourceCodes[i]);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _uiSourceCodeRemoved(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
-    this._unbindUISourceCode(uiSourceCode);
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {string} content
-   * @param {boolean} majorChange
-   * @return {!Promise<?string>}
-   */
-  async _setStyleContent(uiSourceCode, content, majorChange) {
-    var styleSheetIds = this._cssModel.styleSheetIdsForURL(uiSourceCode.url());
-    if (!styleSheetIds.length)
-      return 'No stylesheet found: ' + uiSourceCode.url();
-    this._isSettingContent = true;
-    var promises = styleSheetIds.map(id => this._cssModel.setStyleSheetText(id, content, majorChange));
-
-    var results = await Promise.all(promises);
-
-    delete this._isSettingContent;
-    return results.find(error => !!error);
+      this._styleFiles.delete(url);
+    } else {
+      styleFile.removeHeader(header);
+    }
   }
 
   /**
    * @param {!Common.Event} event
    */
   _styleSheetChanged(event) {
-    if (this._isSettingContent)
+    var header = this._cssModel.styleSheetHeaderForId(event.data.styleSheetId);
+    if (!header || !this._acceptsHeader(header))
       return;
-
-    this._updateStyleSheetTextSoon(event.data.styleSheetId);
-  }
-
-  /**
-   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
-   */
-  _updateStyleSheetTextSoon(styleSheetId) {
-    if (this._updateStyleSheetTextTimer)
-      clearTimeout(this._updateStyleSheetTextTimer);
-
-    this._updateStyleSheetTextTimer = setTimeout(
-        this._updateStyleSheetText.bind(this, styleSheetId), Bindings.StylesSourceMapping.ChangeUpdateTimeoutMs);
-  }
-
-  /**
-   * @param {!Protocol.CSS.StyleSheetId} styleSheetId
-   */
-  _updateStyleSheetText(styleSheetId) {
-    if (this._updateStyleSheetTextTimer) {
-      clearTimeout(this._updateStyleSheetTextTimer);
-      delete this._updateStyleSheetTextTimer;
-    }
-
-    var header = this._cssModel.styleSheetHeaderForId(styleSheetId);
-    if (!header)
-      return;
-    var styleSheetURL = header.resourceURL();
-    if (!styleSheetURL)
-      return;
-    var uiSourceCode = Bindings.NetworkProject.uiSourceCodeForStyleURL(this._workspace, styleSheetURL, header);
-    if (!uiSourceCode)
-      return;
-    header.requestContent().then(callback.bind(this, uiSourceCode));
-
-    /**
-     * @param {!Workspace.UISourceCode} uiSourceCode
-     * @param {?string} content
-     * @this {Bindings.StylesSourceMapping}
-     */
-    function callback(uiSourceCode, content) {
-      var styleFile = this._styleFiles.get(uiSourceCode);
-      if (typeof content === 'string' && styleFile)
-        styleFile.addRevision(content);
-      this._styleFileSyncedForTest();
-    }
-  }
-
-  _styleFileSyncedForTest() {
+    var styleFile = this._styleFiles.get(header.resourceURL());
+    styleFile._styleSheetChanged(header);
   }
 
   dispose() {
+    for (var styleFile of this._styleFiles.values())
+      styleFile.dispose();
+    this._styleFiles.clear();
     Common.EventTarget.removeEventListeners(this._eventListeners);
+    this._project.removeProject();
   }
 };
 
-Bindings.StylesSourceMapping.ChangeUpdateTimeoutMs = 200;
-
 /**
+ * @implements {Common.ContentProvider}
  * @unrestricted
  */
 Bindings.StyleFile = class {
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {!Bindings.StylesSourceMapping} mapping
+   * @param {!SDK.CSSModel} cssModel
+   * @param {!Bindings.ContentProviderBasedProject} project
+   * @param {!SDK.CSSStyleSheetHeader} header
    */
-  constructor(uiSourceCode, mapping) {
-    this._uiSourceCode = uiSourceCode;
-    this._mapping = mapping;
+  constructor(cssModel, project, header) {
+    this._cssModel = cssModel;
+    this._project = project;
+    /** @type {!Set<!SDK.CSSStyleSheetHeader>} */
+    this._headers = new Set([header]);
+
+    var target = cssModel.target();
+
+    var url = header.resourceURL();
+    var metadata = Bindings.metadataForURL(target, header.frameId, url);
+
+    this._uiSourceCode = this._project.createUISourceCode(url, header.contentType());
+    this._uiSourceCode[Bindings.StyleFile._symbol] = this;
+    Bindings.NetworkProject.setInitialFrameAttribution(this._uiSourceCode, header.frameId);
+    this._project.addUISourceCodeWithProvider(this._uiSourceCode, this, metadata, 'text/css');
+
     this._eventListeners = [
       this._uiSourceCode.addEventListener(
           Workspace.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this),
       this._uiSourceCode.addEventListener(
           Workspace.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this)
     ];
-    this._commitThrottler = new Common.Throttler(Bindings.StyleFile.updateTimeout);
+    this._throttler = new Common.Throttler(Bindings.StyleFile.updateTimeout);
     this._terminated = false;
+  }
+
+  /**
+   * @param {!SDK.CSSStyleSheetHeader} header
+   */
+  addHeader(header) {
+    this._headers.add(header);
+    Bindings.NetworkProject.addFrameAttribution(this._uiSourceCode, header.frameId);
+  }
+
+  /**
+   * @param {!SDK.CSSStyleSheetHeader} header
+   */
+  removeHeader(header) {
+    this._headers.delete(header);
+    Bindings.NetworkProject.removeFrameAttribution(this._uiSourceCode, header.frameId);
+  }
+
+  /**
+   * @param {!SDK.CSSStyleSheetHeader} header
+   */
+  _styleSheetChanged(header) {
+    console.assert(this._headers.has(header));
+    if (this._isUpdatingHeaders || !this._headers.has(header))
+      return;
+    var mirrorContentBound = this._mirrorContent.bind(this, header, true /* majorChange */);
+    this._throttler.schedule(mirrorContentBound, false /* asSoonAsPossible */);
   }
 
   /**
@@ -322,9 +231,8 @@ Bindings.StyleFile = class {
   _workingCopyCommitted(event) {
     if (this._isAddingRevision)
       return;
-
-    this._isMajorChangePending = true;
-    this._commitThrottler.schedule(this._commitIncrementalEdit.bind(this), true);
+    var mirrorContentBound = this._mirrorContent.bind(this, this._uiSourceCode, true /* majorChange */);
+    this._throttler.schedule(mirrorContentBound, true /* asSoonAsPossible */);
   }
 
   /**
@@ -333,43 +241,100 @@ Bindings.StyleFile = class {
   _workingCopyChanged(event) {
     if (this._isAddingRevision)
       return;
-
-    this._commitThrottler.schedule(this._commitIncrementalEdit.bind(this), false);
+    var mirrorContentBound = this._mirrorContent.bind(this, this._uiSourceCode, false /* majorChange */);
+    this._throttler.schedule(mirrorContentBound, false /* asSoonAsPossible */);
   }
 
-  _commitIncrementalEdit() {
-    if (this._terminated)
+  /**
+   * @param {!Common.ContentProvider} fromProvider
+   * @param {boolean} majorChange
+   * @return {!Promise}
+   */
+  async _mirrorContent(fromProvider, majorChange) {
+    if (this._terminated) {
+      this._styleFileSyncedForTest();
       return;
-    var promise =
-        this._mapping._setStyleContent(this._uiSourceCode, this._uiSourceCode.workingCopy(), this._isMajorChangePending)
-            .then(this._styleContentSet.bind(this));
-    this._isMajorChangePending = false;
-    return promise;
+    }
+
+    var newContent = null;
+    if (fromProvider === this._uiSourceCode) {
+      newContent = this._uiSourceCode.workingCopy();
+    } else {
+      // ------ ASYNC ------
+      newContent = await fromProvider.requestContent();
+    }
+
+    if (newContent === null || this._terminated) {
+      this._styleFileSyncedForTest();
+      return;
+    }
+
+    if (fromProvider !== this._uiSourceCode) {
+      this._isAddingRevision = true;
+      this._uiSourceCode.addRevision(newContent);
+      this._isAddingRevision = false;
+    }
+
+    this._isUpdatingHeaders = true;
+    var promises = [];
+    for (var header of this._headers) {
+      if (header === fromProvider)
+        continue;
+      promises.push(this._cssModel.setStyleSheetText(header.id, newContent, majorChange));
+    }
+    // ------ ASYNC ------
+    await Promise.all(promises);
+    this._isUpdatingHeaders = false;
+    this._styleFileSyncedForTest();
   }
 
-  /**
-   * @param {?string} error
-   */
-  _styleContentSet(error) {
-    if (error)
-      console.error(error);
-  }
-
-  /**
-   * @param {string} content
-   */
-  addRevision(content) {
-    this._isAddingRevision = true;
-    this._uiSourceCode.addRevision(content);
-    delete this._isAddingRevision;
+  _styleFileSyncedForTest() {
   }
 
   dispose() {
     if (this._terminated)
       return;
     this._terminated = true;
+    this._project.removeFile(this._uiSourceCode.url());
     Common.EventTarget.removeEventListeners(this._eventListeners);
   }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  contentURL() {
+    return this._headers.firstValue().originalContentProvider().contentURL();
+  }
+
+  /**
+   * @override
+   * @return {!Common.ResourceType}
+   */
+  contentType() {
+    return this._headers.firstValue().originalContentProvider().contentType();
+  }
+
+  /**
+   * @override
+   * @return {!Promise<?string>}
+   */
+  requestContent() {
+    return this._headers.firstValue().originalContentProvider().requestContent();
+  }
+
+  /**
+   * @override
+   * @param {string} query
+   * @param {boolean} caseSensitive
+   * @param {boolean} isRegex
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
+   */
+  searchInContent(query, caseSensitive, isRegex) {
+    return this._headers.firstValue().originalContentProvider().searchInContent(query, caseSensitive, isRegex);
+  }
 };
+
+Bindings.StyleFile._symbol = Symbol('Bindings.StyleFile._symbol');
 
 Bindings.StyleFile.updateTimeout = 200;

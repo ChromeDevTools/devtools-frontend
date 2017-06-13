@@ -86,6 +86,22 @@ Bindings.displayNameForURL = function(url) {
 };
 
 /**
+ * @param {!SDK.Target} target
+ * @param {string} frameId
+ * @param {string} url
+ * @return {?Workspace.UISourceCodeMetadata}
+ */
+Bindings.metadataForURL = function(target, frameId, url) {
+  var resourceTreeModel = target.model(SDK.ResourceTreeModel);
+  if (!resourceTreeModel)
+    return null;
+  var frame = resourceTreeModel.frameForId(frameId);
+  if (!frame)
+    return null;
+  return Bindings.resourceMetadata(frame.resourceForURL(url));
+};
+
+/**
  * @param {?SDK.Resource} resource
  * @return {?Workspace.UISourceCodeMetadata}
  */

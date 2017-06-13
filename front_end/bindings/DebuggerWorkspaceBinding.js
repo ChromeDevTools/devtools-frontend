@@ -54,9 +54,9 @@ Bindings.DebuggerWorkspaceBinding = class {
    * @param {!SDK.Script} script
    */
   updateLocations(script) {
-    var info = this._infoForScript(script);
-    if (info)
-      info._updateLocations();
+    var modelData = this._debuggerModelToData.get(script.debuggerModel);
+    if (modelData)
+      modelData._updateLocations(script);
   }
 
   /**
@@ -66,13 +66,8 @@ Bindings.DebuggerWorkspaceBinding = class {
    * @return {!Bindings.DebuggerWorkspaceBinding.Location}
    */
   createLiveLocation(rawLocation, updateDelegate, locationPool) {
-    var script = /** @type {!SDK.Script} */ (rawLocation.script());
-    console.assert(script);
-    var info = this._ensureInfoForScript(script);
-    var location =
-        new Bindings.DebuggerWorkspaceBinding.Location(info._script, rawLocation, this, updateDelegate, locationPool);
-    info._addLocation(location);
-    return location;
+    var modelData = this._debuggerModelToData.get(rawLocation.script().debuggerModel);
+    return modelData._createLiveLocation(rawLocation, updateDelegate, locationPool);
   }
 
   /**
@@ -100,7 +95,6 @@ Bindings.DebuggerWorkspaceBinding = class {
     if (!script)
       return null;
     var debuggerModel = location.debuggerModel;
-    this._ensureInfoForScript(script);
     var liveLocation = this.createLiveLocation(location, updateDelegate, locationPool);
     this._registerCallFrameLiveLocation(debuggerModel, liveLocation);
     return liveLocation;
@@ -214,29 +208,6 @@ Bindings.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!SDK.Script} script
-   * @return {!Bindings.DebuggerWorkspaceBinding.ScriptInfo}
-   */
-  _ensureInfoForScript(script) {
-    var info = script[Bindings.DebuggerWorkspaceBinding._scriptInfoSymbol];
-    if (!info) {
-      info = new Bindings.DebuggerWorkspaceBinding.ScriptInfo(script);
-      script[Bindings.DebuggerWorkspaceBinding._scriptInfoSymbol] = info;
-    }
-    return info;
-  }
-
-  /**
-   * @param {?SDK.Script} script
-   * @return {?Bindings.DebuggerWorkspaceBinding.ScriptInfo}
-   */
-  _infoForScript(script) {
-    if (!script)
-      return null;
-    return script[Bindings.DebuggerWorkspaceBinding._scriptInfoSymbol] || null;
-  }
-
-  /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Bindings.DebuggerWorkspaceBinding.Location} location
    */
@@ -249,9 +220,9 @@ Bindings.DebuggerWorkspaceBinding = class {
    * @param {!Bindings.DebuggerWorkspaceBinding.Location} location
    */
   _removeLiveLocation(location) {
-    var info = this._infoForScript(location._script);
-    if (info)
-      info._removeLocation(location);
+    var modelData = this._debuggerModelToData.get(location._script.debuggerModel);
+    if (modelData)
+      modelData._disposeLocation(location);
   }
 
   /**
@@ -262,8 +233,6 @@ Bindings.DebuggerWorkspaceBinding = class {
     this._reset(debuggerModel);
   }
 };
-
-Bindings.DebuggerWorkspaceBinding._scriptInfoSymbol = Symbol('scriptDataMap');
 
 /**
  * @unrestricted
@@ -286,6 +255,9 @@ Bindings.DebuggerWorkspaceBinding.ModelData = class {
     this._resourceMapping = new Bindings.ResourceScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
     this._compilerMapping = new Bindings.CompilerScriptMapping(debuggerModel, workspace, debuggerWorkspaceBinding);
 
+    /** @type {!Multimap<!SDK.Script, !Bindings.DebuggerWorkspaceBinding.Location>} */
+    this._locations = new Multimap();
+
     debuggerModel.setBeforePausedCallback(this._beforePaused.bind(this));
     this._eventListeners = [
       debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
@@ -294,6 +266,37 @@ Bindings.DebuggerWorkspaceBinding.ModelData = class {
       debuggerModel.addEventListener(
           SDK.DebuggerModel.Events.DiscardedAnonymousScriptSource, this._discardedScriptSource, this)
     ];
+  }
+
+  /**
+   * @param {!SDK.DebuggerModel.Location} rawLocation
+   * @param {function(!Bindings.LiveLocation)} updateDelegate
+   * @param {!Bindings.LiveLocationPool} locationPool
+   * @return {!Bindings.DebuggerWorkspaceBinding.Location}
+   */
+  _createLiveLocation(rawLocation, updateDelegate, locationPool) {
+    var script = /** @type {!SDK.Script} */ (rawLocation.script());
+    console.assert(script);
+    var location = new Bindings.DebuggerWorkspaceBinding.Location(
+        script, rawLocation, this._debuggerWorkspaceBinding, updateDelegate, locationPool);
+    this._locations.set(script, location);
+    location.update();
+    return location;
+  }
+
+  /**
+   * @param {!Bindings.DebuggerWorkspaceBinding.Location} location
+   */
+  _disposeLocation(location) {
+    this._locations.delete(location._script, location);
+  }
+
+  /**
+   * @param {!SDK.Script} script
+   */
+  _updateLocations(script) {
+    for (var location of this._locations.get(script))
+      location.update();
   }
 
   /**
@@ -356,47 +359,6 @@ Bindings.DebuggerWorkspaceBinding.ModelData = class {
     this._compilerMapping.dispose();
     this._resourceMapping.dispose();
     this._defaultMapping.dispose();
-  }
-};
-
-/**
- * @unrestricted
- */
-Bindings.DebuggerWorkspaceBinding.ScriptInfo = class {
-  /**
-   * @param {!SDK.Script} script
-   */
-  constructor(script) {
-    this._script = script;
-    // We create a lot of these, do not add arrays/collections/expensive data structures.
-  }
-
-  /**
-   * @param {!Bindings.LiveLocation} location
-   */
-  _addLocation(location) {
-    if (!this._locations) {
-      /** @type {!Set<!Bindings.LiveLocation>} */
-      this._locations = new Set();
-    }
-    this._locations.add(location);
-    location.update();
-  }
-
-  /**
-   * @param {!Bindings.LiveLocation} location
-   */
-  _removeLocation(location) {
-    if (!this._locations)
-      return;
-    this._locations.delete(location);
-  }
-
-  _updateLocations() {
-    if (!this._locations)
-      return;
-    for (var location of this._locations)
-      location.update();
   }
 };
 

@@ -1274,6 +1274,7 @@ Timeline.TimelinePanel.StatusPane = class extends UI.VBox {
   showPane(parent) {
     this.show(parent);
     parent.classList.add('tinted');
+    this._stopButton.focus();
   }
 
   /**

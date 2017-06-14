@@ -89,7 +89,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     this._showScreenshotsSetting = Common.settings.createSetting('timelineShowScreenshots', true);
     this._showScreenshotsSetting.setTitle(Common.UIString('Screenshots'));
-    this._showScreenshotsSetting.addChangeListener(this._onModeChanged, this);
+    this._showScreenshotsSetting.addChangeListener(this._updateOverviewControls, this);
+
     this._showMemorySetting = Common.settings.createSetting('timelineShowMemory', false);
     this._showMemorySetting.setTitle(Common.UIString('Memory'));
     this._showMemorySetting.addChangeListener(this._onModeChanged, this);
@@ -418,8 +419,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._loader = Timeline.TimelineLoader.loadFromURL(url, this);
   }
 
-  _onModeChanged() {
-    // Set up overview controls.
+  _updateOverviewControls() {
     this._overviewControls = [];
     this._overviewControls.push(new Timeline.TimelineEventOverviewResponsiveness());
     if (Runtime.experiments.isEnabled('inputEventsOnTimelineOverview'))
@@ -434,6 +434,10 @@ Timeline.TimelinePanel = class extends UI.Panel {
     for (var control of this._overviewControls)
       control.setModel(this._performanceModel);
     this._overviewPane.setOverviewControls(this._overviewControls);
+  }
+
+  _onModeChanged() {
+    this._updateOverviewControls();
 
     // Set up main view.
     if (this._currentView)

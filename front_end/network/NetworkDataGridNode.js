@@ -99,6 +99,8 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
    */
   backgroundColor() {
     var bgColors = Network.NetworkNode._themedBackgroundColors();
+    if (this.selected)
+      return /** @type {string} */ (bgColors.Selected.asString(Common.Color.Format.HEX));
     var color = this.isStriped() ? bgColors.Stripe : bgColors.Default;
     if (this.isNavigationRequest())
       color = color.blendWith(bgColors.Navigation);
@@ -108,8 +110,6 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
       color = color.blendWith(bgColors.InitiatorPath);
     if (this.isOnInitiatedPath())
       color = color.blendWith(bgColors.InitiatedPath);
-    if (this.selected)
-      color = color.blendWith(bgColors.Selected);
 
     return /** @type {string} */ (color.asString(Common.Color.Format.HEX));
   }

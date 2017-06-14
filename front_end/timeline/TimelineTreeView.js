@@ -84,7 +84,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     this._splitWidget.setSidebarWidget(this._detailsView);
     this._splitWidget.hideSidebar();
     this._splitWidget.show(this.element);
-    this._splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, this._updateDetailsForSelection, this);
+    this._splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, this._onShowModeChanged, this);
 
     /** @type {?TimelineModel.TimelineProfileTree.Node|undefined} */
     this._lastSelectedNode;
@@ -352,6 +352,13 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     }
   }
 
+  _onShowModeChanged() {
+    if (this._splitWidget.showMode() === UI.SplitWidget.ShowMode.OnlyMain)
+      return;
+    this._lastSelectedNode = undefined;
+    this._updateDetailsForSelection();
+  }
+
   _updateDetailsForSelection() {
     var selectedNode = this._dataGrid.selectedNode ?
         /** @type {!Timeline.TimelineTreeView.TreeGridNode} */ (this._dataGrid.selectedNode)._profileNode :
@@ -363,10 +370,10 @@ Timeline.TimelineTreeView = class extends UI.VBox {
       return;
     this._detailsView.detachChildWidgets();
     this._detailsView.element.removeChildren();
-    if (!selectedNode || !this._showDetailsForNode(selectedNode)) {
-      var banner = this._detailsView.element.createChild('div', 'full-widget-dimmed-banner');
-      banner.createTextChild(Common.UIString('Select item for details.'));
-    }
+    if (selectedNode && this._showDetailsForNode(selectedNode))
+      return;
+    var banner = this._detailsView.element.createChild('div', 'full-widget-dimmed-banner');
+    banner.createTextChild(Common.UIString('Select item for details.'));
   }
 
   /**

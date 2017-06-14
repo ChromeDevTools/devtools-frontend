@@ -623,11 +623,12 @@
 }
 
 .timeline-stack-view-header {
-    height: 26px;
+    height: 27px;
     background-color: white;
     padding: 6px 10px;
     color: #5a5a5a;
     white-space: nowrap;
+    border-bottom: 1px solid #dadada;
 }
 
 .timeline-landing-page {

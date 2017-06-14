@@ -84,8 +84,6 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
     var resourceTreeModel = target.model(SDK.ResourceTreeModel);
     if (resourceTreeModel) {
       eventListeners.push(resourceTreeModel.addEventListener(
-          SDK.ResourceTreeModel.Events.MainFrameStartedLoading, this._mainFrameStartedLoading, this));
-      eventListeners.push(resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this));
     }
 
@@ -97,6 +95,8 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
           SDK.RuntimeModel.Events.ExceptionRevoked, this._exceptionRevoked.bind(this, runtimeModel)));
       eventListeners.push(runtimeModel.addEventListener(
           SDK.RuntimeModel.Events.ConsoleAPICalled, this._consoleAPICalled.bind(this, runtimeModel)));
+      eventListeners.push(runtimeModel.debuggerModel().addEventListener(
+          SDK.DebuggerModel.Events.GlobalObjectCleared, this._clearIfNecessary, this));
     }
 
     var networkManager = target.model(SDK.NetworkManager);
@@ -253,7 +253,7 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
   /**
    * @param {!Common.Event} event
    */
-  _mainFrameStartedLoading(event) {
+  _clearIfNecessary(event) {
     if (!Common.moduleSetting('preserveConsoleLog').get())
       this._clear();
   }

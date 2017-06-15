@@ -451,7 +451,7 @@
      * @param {string} script
      */
     setInjectedScriptForOrigin(origin, script) {
-      DevToolsHost.setInjectedScriptForOrigin(origin, script);
+      DevToolsAPI.sendMessageToEmbedder('registerExtensionsAPI', [origin, script], null);
     }
 
     /**

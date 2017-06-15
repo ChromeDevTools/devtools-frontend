@@ -225,12 +225,6 @@ DevToolsHost.ContextMenuDescriptor;
 DevToolsHost.zoomFactor = function() {};
 
 /**
- * @param {string} origin
- * @param {string} script
- */
-DevToolsHost.setInjectedScriptForOrigin = function(origin, script) {};
-
-/**
  * @param {string} text
  */
 DevToolsHost.copyText = function(text) {};

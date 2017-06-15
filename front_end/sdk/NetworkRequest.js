@@ -73,6 +73,7 @@ SDK.NetworkRequest = class extends Common.Object {
 
     /** @type {!Common.ResourceType} */
     this._resourceType = Common.resourceTypes.Other;
+    // TODO(allada) Migrate everything away from this and remove it.
     this._contentEncoded = false;
     this._pendingContentCallbacks = [];
     /** @type {!Array.<!SDK.NetworkRequest.WebSocketFrame>} */
@@ -365,11 +366,8 @@ SDK.NetworkRequest = class extends Common.Object {
 
     this._finished = x;
 
-    if (x) {
+    if (x)
       this.dispatchEventToListeners(SDK.NetworkRequest.Events.FinishedLoading, this);
-      if (this._pendingContentCallbacks.length)
-        this._innerRequestContent();
-    }
   }
 
   /**
@@ -865,6 +863,7 @@ SDK.NetworkRequest = class extends Common.Object {
     return values.join(', ');
   }
 
+  // TODO(allada) Migrate everything away from using this function and use .contentData() instead.
   /**
    * @return {?string|undefined}
    */
@@ -872,6 +871,7 @@ SDK.NetworkRequest = class extends Common.Object {
     return this._content;
   }
 
+  // TODO(allada) Migrate everything away from using this function and use .contentData() instead.
   /**
    * @return {?Protocol.Error|undefined}
    */
@@ -879,11 +879,22 @@ SDK.NetworkRequest = class extends Common.Object {
     return this._contentError;
   }
 
+  // TODO(allada) Migrate everything away from using this function and use .contentData() instead.
   /**
    * @return {boolean}
    */
   get contentEncoded() {
     return this._contentEncoded;
+  }
+
+  /**
+   * @return {!Promise<!SDK.NetworkRequest.ContentData>}
+   */
+  contentData() {
+    if (this._contentData)
+      return this._contentData;
+    this._contentData = SDK.NetworkManager.requestContentData(this);
+    return this._contentData;
   }
 
   /**
@@ -906,20 +917,13 @@ SDK.NetworkRequest = class extends Common.Object {
    * @override
    * @return {!Promise<?string>}
    */
-  requestContent() {
-    // We do not support content retrieval for WebSockets at the moment.
-    // Since WebSockets are potentially long-living, fail requests immediately
-    // to prevent caller blocking until resource is marked as finished.
-    if (this._resourceType === Common.resourceTypes.WebSocket)
-      return Promise.resolve(/** @type {?string} */ (null));
-    if (typeof this._content !== 'undefined')
-      return Promise.resolve(/** @type {?string} */ (this.content || null));
-    var callback;
-    var promise = new Promise(fulfill => callback = fulfill);
-    this._pendingContentCallbacks.push(callback);
-    if (this.finished)
-      this._innerRequestContent();
-    return promise;
+  async requestContent() {
+    var contentData = await this.contentData();
+    // TODO(allada) Migrate away from anyone using .content, .contentError and .contentEncoded.
+    this._content = contentData.content;
+    this._contentError = contentData.error;
+    this._contentEncoded = contentData.encoded;
+    return contentData.content;
   }
 
   /**
@@ -1000,6 +1004,7 @@ SDK.NetworkRequest = class extends Common.Object {
     this.requestContent().then(onResourceContent.bind(this));
   }
 
+  // TODO(allada) Migrate this function to use .contentData() instead.
   /**
    * @return {?string}
    */
@@ -1011,22 +1016,6 @@ SDK.NetworkRequest = class extends Common.Object {
       charset = 'utf-8';
     }
     return Common.ContentProvider.contentAsDataURL(content, this.mimeType, true, charset);
-  }
-
-  async _innerRequestContent() {
-    if (this._contentRequested)
-      return;
-    this._contentRequested = true;
-
-    var response =
-        await this._networkManager.target().networkAgent().invoke_getResponseBody({requestId: this._requestId});
-
-    this._content = response[Protocol.Error] ? null : response.body;
-    this._contentError = response[Protocol.Error];
-    this._contentEncoded = response.base64Encoded;
-    for (var callback of this._pendingContentCallbacks.splice(0))
-      callback(this._content);
-    delete this._contentRequested;
   }
 
   /**
@@ -1143,3 +1132,6 @@ SDK.NetworkRequest.WebSocketFrame;
 
 /** @typedef {!{time: number, eventName: string, eventId: string, data: string}} */
 SDK.NetworkRequest.EventSourceMessage;
+
+/** @typedef {!{error: ?string, content: ?string, encoded: boolean}} */
+SDK.NetworkRequest.ContentData;

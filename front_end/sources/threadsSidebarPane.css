@@ -4,20 +4,6 @@
  * found in the LICENSE file.
  */
 
-.available-node-targets {
-    height: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding-left: 20px;
-    border-top: 1px solid #eee;
-    font-style: italic;
-}
-
-.available-node-targets > span {
-    margin-left: 5px;
-}
-
 .thread-item {
     padding: 3px 8px 3px 20px;
     position: relative;

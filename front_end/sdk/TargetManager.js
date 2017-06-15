@@ -328,9 +328,9 @@ SDK.TargetManager = class extends Common.Object {
   _connectAndCreateMainTarget() {
     if (Runtime.queryParam('nodeFrontend')) {
       var target = new SDK.Target(
-          this, 'main', Common.UIString('Node'), SDK.Target.Capability.Target, this._createMainConnection.bind(this),
+          this, 'main', Common.UIString('Node.js'), SDK.Target.Capability.Target, this._createMainConnection.bind(this),
           null);
-      target.setInspectedURL('Node');
+      target.setInspectedURL('Node.js');
       this._childTargetManagers.set(target, new SDK.ChildTargetManager(this, target));
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
       return;
@@ -410,13 +410,15 @@ SDK.ChildTargetManager = class {
     if (Runtime.experiments.isEnabled('autoAttachToCrossProcessSubframes'))
       this._targetAgent.setAttachToFrames(true);
 
-    if (!parentTarget.parentTarget())
+    if (!parentTarget.parentTarget()) {
       this._targetAgent.setDiscoverTargets(true);
-
-    if (Runtime.queryParam('nodeFrontend') && !this._parentTarget.parentTarget()) {
-      InspectorFrontendHost.setDevicesUpdatesEnabled(true);
-      InspectorFrontendHost.events.addEventListener(
-          InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
+      if (Runtime.queryParam('nodeFrontend')) {
+        InspectorFrontendHost.setDevicesUpdatesEnabled(true);
+        InspectorFrontendHost.events.addEventListener(
+            InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
+      } else {
+        this._targetAgent.setRemoteLocations([{host: 'localhost', port: 9229}]);
+      }
     }
   }
 
@@ -429,7 +431,8 @@ SDK.ChildTargetManager = class {
     for (var address of config.networkDiscoveryConfig) {
       var parts = address.split(':');
       var port = parseInt(parts[1], 10);
-      locations.push({host: parts[0] || 'localhost', port: port || 9229});
+      if (parts[0] && port)
+        locations.push({host: parts[0], port: port});
     }
     this._targetAgent.setRemoteLocations(locations);
   }
@@ -513,7 +516,7 @@ SDK.ChildTargetManager = class {
   attachedToTarget(targetInfo, waitingForDebugger) {
     var targetName = '';
     if (targetInfo.type === 'node') {
-      targetName = Common.UIString('Node: %s', targetInfo.url);
+      targetName = Common.UIString('Node.js: %s', targetInfo.url);
     } else if (targetInfo.type !== 'iframe') {
       var parsedURL = targetInfo.url.asParsedURL();
       targetName =

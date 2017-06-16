@@ -1248,25 +1248,20 @@ Network.NetworkLogView = class extends UI.VBox {
       InspectorFrontendHost.copyText(commands.join(' ;\n'));
   }
 
-  _exportAll() {
+  async _exportAll() {
     var url = SDK.targetManager.mainTarget().inspectedURL();
     var parsedURL = url.asParsedURL();
     var filename = parsedURL ? parsedURL.host : 'network-log';
     var stream = new Bindings.FileOutputStream();
-    stream.open(filename + '.har', openCallback.bind(this));
+    var accepted = await new Promise(resolve => stream.open(filename + '.har', resolve));
+    if (!accepted)
+      return;
 
-    /**
-     * @param {boolean} accepted
-     * @this {Network.NetworkLogView}
-     */
-    function openCallback(accepted) {
-      if (!accepted)
-        return;
-      var progressIndicator = new UI.ProgressIndicator();
-      this._progressBarContainer.appendChild(progressIndicator.element);
-      var harWriter = new Network.HARWriter();
-      harWriter.write(stream, this._harRequests(), progressIndicator);
-    }
+    var progressIndicator = new UI.ProgressIndicator();
+    this._progressBarContainer.appendChild(progressIndicator.element);
+    await Network.HARWriter.write(stream, this._harRequests(), progressIndicator);
+    progressIndicator.done();
+    stream.close();
   }
 
   _clearBrowserCache() {

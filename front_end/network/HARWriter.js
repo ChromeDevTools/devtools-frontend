@@ -28,89 +28,95 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @unrestricted
- */
 Network.HARWriter = class {
   /**
    * @param {!Common.OutputStream} stream
    * @param {!Array.<!SDK.NetworkRequest>} requests
    * @param {!Common.Progress} progress
+   * @return {!Promise}
    */
-  write(stream, requests, progress) {
-    this._stream = stream;
-    this._harLog = (new NetworkLog.HARLog(requests)).build();
-    this._pendingRequests = 1;  // Guard against completing resource transfer before all requests are made.
-    var entries = this._harLog.entries;
-    for (var i = 0; i < entries.length; ++i) {
-      var content = requests[i].content;
-      if (typeof content === 'undefined' && requests[i].finished) {
-        ++this._pendingRequests;
-        requests[i].requestContent().then(this._onContentAvailable.bind(this, entries[i], requests[i]));
-      } else if (content !== null) {
-        this._setEntryContent(entries[i], requests[i]);
-      }
-    }
+  static async write(stream, requests, progress) {
     var compositeProgress = new Common.CompositeProgress(progress);
-    this._writeProgress = compositeProgress.createSubProgress();
-    if (--this._pendingRequests) {
-      this._requestsProgress = compositeProgress.createSubProgress();
-      this._requestsProgress.setTitle(Common.UIString('Collecting content…'));
-      this._requestsProgress.setTotalWork(this._pendingRequests);
-    } else {
-      this._beginWrite();
-    }
+
+    var content = await Network.HARWriter._harStringForRequests(requests, compositeProgress);
+    if (progress.isCanceled())
+      return Promise.resolve();
+    return Network.HARWriter._writeToStream(stream, compositeProgress, content);
   }
 
   /**
-   * @param {!Object} entry
-   * @param {!SDK.NetworkRequest} request
+   * @param {!Array<!SDK.NetworkRequest>} requests
+   * @param {!Common.CompositeProgress} compositeProgress
+   * @return {!Promise<string>}
    */
-  _setEntryContent(entry, request) {
-    if (request.content !== null)
-      entry.response.content.text = request.content;
-    if (request.contentEncoded)
-      entry.response.content.encoding = 'base64';
-  }
+  static async _harStringForRequests(requests, compositeProgress) {
+    var progress = compositeProgress.createSubProgress();
+    progress.setTitle(Common.UIString('Collecting content\u2026'));
+    progress.setTotalWork(requests.length);
 
-  /**
-   * @param {!Object} entry
-   * @param {!SDK.NetworkRequest} request
-   * @param {?string} content
-   */
-  _onContentAvailable(entry, request, content) {
-    this._setEntryContent(entry, request);
-    if (this._requestsProgress)
-      this._requestsProgress.worked();
-    if (!--this._pendingRequests) {
-      this._requestsProgress.done();
-      this._beginWrite();
+    var harLog = (new NetworkLog.HARLog(requests)).build();
+
+    var promises = [];
+    for (var i = 0; i < requests.length; i++) {
+      var promise = requests[i].contentData();
+      promises.push(promise.then(contentLoaded.bind(null, harLog.entries[i])));
     }
-  }
 
-  _beginWrite() {
-    const jsonIndent = 2;
-    this._text = JSON.stringify({log: this._harLog}, null, jsonIndent);
-    this._writeProgress.setTitle(Common.UIString('Writing file…'));
-    this._writeProgress.setTotalWork(this._text.length);
-    this._bytesWritten = 0;
-    this._writeNextChunk(this._stream);
+    await Promise.all(promises);
+    progress.done();
+
+    if (progress.isCanceled())
+      return '';
+    return JSON.stringify({log: harLog}, null, Network.HARWriter._jsonIndent);
+
+    /**
+     * @param {!Object} entry
+     * @param {!SDK.NetworkRequest.ContentData} contentData
+     */
+    function contentLoaded(entry, contentData) {
+      progress.worked();
+      if (contentData.content !== null)
+        entry.response.content.text = contentData.content;
+      if (contentData.encoded)
+        entry.response.content.encoding = 'base64';
+    }
   }
 
   /**
    * @param {!Common.OutputStream} stream
-   * @param {string=} error
+   * @param {!Common.CompositeProgress} compositeProgress
+   * @param {string} fileContent
+   * @return {!Promise}
    */
-  _writeNextChunk(stream, error) {
-    if (this._bytesWritten >= this._text.length || error) {
-      stream.close();
-      this._writeProgress.done();
-      return;
+  static _writeToStream(stream, compositeProgress, fileContent) {
+    var progress = compositeProgress.createSubProgress();
+    progress.setTitle(Common.UIString('Writing file\u2026'));
+    progress.setTotalWork(fileContent.length);
+
+    var chunks = fileContent.split('', Network.HARWriter._chunkSize);
+    var chain = chunks.reduce((promise, chunk) => promise.then(writeChunk.bind(null, chunk)), Promise.resolve(0));
+    return chain.then(() => progress.done());
+
+    /**
+     * @param {string} chunk
+     * @param {number} bytesWritten
+     * @return {!Promise<number>}
+     */
+    function writeChunk(chunk, bytesWritten) {
+      if (progress.isCanceled())
+        return Promise.resolve(bytesWritten);
+      return new Promise(resolve => {
+        stream.write(chunk, () => {
+          progress.setWorked(bytesWritten + chunk.length);
+          resolve(bytesWritten + chunk.length);
+        });
+      });
     }
-    const chunkSize = 100000;
-    var text = this._text.substring(this._bytesWritten, this._bytesWritten + chunkSize);
-    this._bytesWritten += text.length;
-    stream.write(text, this._writeNextChunk.bind(this));
-    this._writeProgress.setWorked(this._bytesWritten);
   }
 };
+
+/** @const */
+Network.HARWriter._jsonIndent = 2;
+
+/** @const */
+Network.HARWriter._chunkSize = 100000;

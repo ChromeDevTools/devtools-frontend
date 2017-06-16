@@ -20,7 +20,7 @@
         "ARIAAttributesView.js",
         "ARIAMetadata.js",
         "ARIAConfig.js",
-        "AXTreePane.js"
+        "AXBreadcrumbsPane.js"
     ],
     "skip_compilation": [
         "ARIAConfig.js"

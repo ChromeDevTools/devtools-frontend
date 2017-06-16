@@ -15,7 +15,7 @@ all_devtools_files = [
   "front_end/accessibility/ARIAAttributesView.js",
   "front_end/accessibility/ARIAConfig.js",
   "front_end/accessibility/ARIAMetadata.js",
-  "front_end/accessibility/AXTreePane.js",
+  "front_end/accessibility/AXBreadcrumbsPane.js",
   "front_end/accessibility/module.json",
   "front_end/animation/AnimationGroupPreviewUI.js",
   "front_end/animation/AnimationModel.js",

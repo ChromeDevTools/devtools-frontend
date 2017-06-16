@@ -8,6 +8,10 @@
     background-color: rgba(0, 0, 0, 0.03);
 }
 
+.widget.ax-subpane {
+    overflow-x: hidden;
+}
+
 .ax-computed-text {
     background-image: url(Images/speech.png);
     background-repeat: no-repeat;
@@ -45,10 +49,6 @@ div.ax-text-alternatives {
     font-style: italic;
 }
 
-span.ax-role {
-    font-weight: bold;
-}
-
 span.ax-internal-role {
     font-style: italic;
 }
@@ -61,9 +61,13 @@ span.ax-internal-role {
     flex: none;
 }
 
-.ax-tree-ignored-node {
-    font-style: italic;
-    opacity: 0.7;
+.invalid {
+    text-decoration: line-through;
+}
+
+.tree-outline label[is=dt-icon-label] {
+    position: relative;
+    left: -11px;
 }
 
 .tree-outline li {
@@ -80,34 +84,67 @@ span.ax-internal-role {
     left: -2px;
 }
 
-.tree-outline.ax-tree li::before {
+.ax-breadcrumbs-ignored-node {
+    font-style: italic;
+    opacity: 0.7;
+}
+
+.ax-breadcrumbs {
+    padding-top: 1px;
+    margin: 0;
+    position: relative;
+}
+
+.ax-breadcrumbs .ax-node {
+    white-space: nowrap;
+    position: relative;
+    min-height: 16px;
+    align-items: baseline;
+    padding-left: 4px;
+    padding-right: 4px;
+    overflow-x: hidden;
+}
+
+.ax-breadcrumbs .ax-node::before {
     -webkit-mask-image: url(Images/chevrons.png);
+    -webkit-mask-position: 0 0;
     -webkit-mask-size: 30px 10px;
     -webkit-mask-repeat: no-repeat;
+    background-color: rgb(48, 57, 66);
+    content: "&nbsp;";
+    color: transparent;
+    text-shadow: none;
+    margin-right: -2px;
+    height: 12px;
+    width: 14px;
+    position: absolute;
 }
 
-.tree-outline.ax-tree li.parent::before {
+@media (-webkit-min-device-pixel-ratio: 1.1) {
+    .ax-breadcrumbs .ax-node::before {
+        -webkit-mask-image: url(Images/chevrons_2x.png);
+    }
+} /* media */
+
+.ax-breadcrumbs .ax-node:not(.parent):not(.children-unloaded)::before {
+    background-color: transparent;
+}
+
+.ax-breadcrumbs .ax-node.parent::before {
     -webkit-mask-position: -20px 1px;
 }
-.tree-outline.ax-tree li.children-unloaded::before {
+
+.ax-breadcrumbs .ax-node.children-unloaded::before {
     -webkit-mask-position: 0px 1px;
+    width: 13px;
 }
 
-.tree-outline.ax-tree li.no-dom-node {
+.ax-breadcrumbs .ax-node.no-dom-node {
     opacity: 0.5;
 }
 
-.tree-outline.ax-tree li.children-unloaded::before {
-    opacity: 0.2;
-}
-
-.invalid {
-    text-decoration: line-through;
-}
-
-.tree-outline label[is=dt-icon-label] {
-    position: relative;
-    left: -11px;
+.ax-breadcrumbs .ax-node.children-unloaded::before {
+    opacity: 0.4;
 }
 
 span.ax-value-undefined {
@@ -147,14 +184,62 @@ li.siblings-expanded button.expand-siblings {
     display: none;
 }
 
-.tree-outline li.preselected:not(.selected) .selection (
+.ax-breadcrumbs .ax-node {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: relative;
+    align-items: center;
+    min-height: 16px;
+    margin-top: 1px;
+    padding-top: 1px;
+}
+
+.ax-breadcrumbs .ax-node.preselected:not(.inspected) .selection,
+.ax-breadcrumbs .ax-node.hovered:not(.inspected) .selection {
     display: block;
-    left: 3px;
-    right: 3px;
+    left: 2px;
+    right: 2px;
     background-color: rgba(56, 121, 217, 0.1);
     border-radius: 5px;
 }
 
-.tree-outline li.inspected .selection {
+.ax-breadcrumbs .ax-node.preselected:not(.inspected):focus .selection {
+    border: 1px solid rgba(56, 121, 217, 0.4);
+}
+
+.ax-breadcrumbs .ax-node .selection {
+    display: none;
+    z-index: -1;
+}
+
+.ax-breadcrumbs .ax-node.inspected .selection {
+    display: block;
+    background-color: #ddd;
+}
+
+.ax-breadcrumbs .ax-node.inspected:focus .selection {
     background-color: rgb(56, 121, 217);
+}
+
+.ax-breadcrumbs .ax-node.parent.inspected:focus::before {
+    background-color: white;
+}
+
+.ax-breadcrumbs .ax-node.inspected:focus {
+    color: white;
+}
+
+.ax-breadcrumbs .ax-node.inspected:focus * {
+    color: inherit;
+}
+
+.ax-breadcrumbs .ax-node span {
+    flex-shrink: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ax-breadcrumbs .ax-node .wrapper {
+    padding-left: 12px;
+    overflow-x: hidden;
 }

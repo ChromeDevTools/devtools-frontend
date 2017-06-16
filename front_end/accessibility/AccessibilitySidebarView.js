@@ -10,8 +10,8 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
     this._node = null;
     this._axNode = null;
     this._sidebarPaneStack = UI.viewManager.createStackLocation();
-    this._treeSubPane = new Accessibility.AXTreePane(this);
-    this._sidebarPaneStack.showView(this._treeSubPane);
+    this._breadcrumbsSubPane = new Accessibility.AXBreadcrumbsPane(this);
+    this._sidebarPaneStack.showView(this._breadcrumbsSubPane);
     this._ariaSubPane = new Accessibility.ARIAAttributesPane();
     this._sidebarPaneStack.showView(this._ariaSubPane);
     this._axNodeSubPane = new Accessibility.AXNodeSubPane();
@@ -26,6 +26,13 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
    */
   node() {
     return this._node;
+  }
+
+  /**
+   * @return {?Accessibility.AccessibilityNode}
+   */
+  axNode() {
+    return this._axNode;
   }
 
   /**
@@ -52,8 +59,8 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
 
     if (this._axNodeSubPane)
       this._axNodeSubPane.setAXNode(axNode);
-    if (this._treeSubPane)
-      this._treeSubPane.setAXNode(axNode);
+    if (this._breadcrumbsSubPane)
+      this._breadcrumbsSubPane.setAXNode(axNode);
   }
 
   /**
@@ -63,7 +70,6 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
    */
   doUpdate() {
     var node = this.node();
-    this._treeSubPane.setNode(node);
     this._axNodeSubPane.setNode(node);
     this._ariaSubPane.setNode(node);
     if (!node)
@@ -81,8 +87,10 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
   wasShown() {
     super.wasShown();
 
-    this._treeSubPane.setNode(this.node());
+    this._breadcrumbsSubPane.setNode(this.node());
+    this._breadcrumbsSubPane.setAXNode(this.axNode());
     this._axNodeSubPane.setNode(this.node());
+    this._axNodeSubPane.setAXNode(this.axNode());
     this._ariaSubPane.setNode(this.node());
 
     SDK.targetManager.addModelListener(SDK.DOMModel, SDK.DOMModel.Events.AttrModified, this._onAttrChange, this);

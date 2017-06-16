@@ -49,8 +49,8 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
 
     this.contentElement.appendChild(this._sidebarTree.element);
     this._applicationTreeElement = this._addSidebarSection(Common.UIString('Application'));
-    this._manifestTreeElement = new Resources.AppManifestTreeElement(panel);
-    this._applicationTreeElement.appendChild(this._manifestTreeElement);
+    var manifestTreeElement = new Resources.AppManifestTreeElement(panel);
+    this._applicationTreeElement.appendChild(manifestTreeElement);
     this.serviceWorkersTreeElement = new Resources.ServiceWorkersTreeElement(panel);
     this._applicationTreeElement.appendChild(this.serviceWorkersTreeElement);
     var clearStorageTreeElement = new Resources.ClearStorageTreeElement(panel);
@@ -116,7 +116,7 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
 
     var selection = this._panel.lastSelectedItemPath();
     if (!selection.length)
-      this._manifestTreeElement.select();
+      manifestTreeElement.select();
   }
 
   /**

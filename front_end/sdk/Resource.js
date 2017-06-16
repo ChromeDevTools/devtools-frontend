@@ -252,8 +252,9 @@ SDK.Resource = class {
     this._contentRequested = true;
 
     if (this.request) {
-      this._content = await this.request.requestContent();
-      this._contentEncoded = this.request.contentEncoded;
+      var contentData = await this.request.contentData();
+      this._content = contentData.content;
+      this._contentEncoded = contentData.encoded;
     } else {
       var response = await this._resourceTreeModel.target().pageAgent().invoke_getResourceContent(
           {frameId: this.frameId, url: this.url});

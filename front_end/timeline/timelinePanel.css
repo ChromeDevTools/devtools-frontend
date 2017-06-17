@@ -431,7 +431,7 @@
 }
 
 .timeline-flamechart-resizer {
-    height: 8px;
+    flex: 8px 0 0;
     background-color: #f3f3f3;
     border: 1px #a3a3a3;
     border-style: solid none;

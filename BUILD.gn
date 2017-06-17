@@ -371,6 +371,7 @@ all_devtools_files = [
   "front_end/object_ui/ObjectPropertiesSection.js",
   "front_end/object_ui/objectValue.css",
   "front_end/object_ui/RemoteObjectPreviewFormatter.js",
+  "front_end/perf_ui/chartViewport.css",
   "front_end/perf_ui/ChartViewport.js",
   "front_end/perf_ui/filmStripDialog.css",
   "front_end/perf_ui/filmStripView.css",

@@ -36,7 +36,7 @@ UI.highlightedCurrentSearchResultClassName = 'current-search-result';
  * @param {?function(!MouseEvent): boolean} elementDragStart
  * @param {function(!MouseEvent)} elementDrag
  * @param {?function(!MouseEvent)} elementDragEnd
- * @param {string} cursor
+ * @param {?string} cursor
  * @param {?string=} hoverCursor
  * @param {number=} startDelay
  */
@@ -66,7 +66,7 @@ UI.installDragHandle = function(
   if (startDelay)
     element.addEventListener('mouseup', onMouseUp, false);
   if (hoverCursor !== null)
-    element.style.cursor = hoverCursor || cursor;
+    element.style.cursor = hoverCursor || cursor || '';
 };
 
 /**
@@ -74,7 +74,7 @@ UI.installDragHandle = function(
  * @param {?function(!MouseEvent):boolean} elementDragStart
  * @param {function(!MouseEvent)} elementDrag
  * @param {?function(!MouseEvent)} elementDragEnd
- * @param {string} cursor
+ * @param {?string} cursor
  * @param {!Event} event
  */
 UI.elementDragStart = function(targetElement, elementDragStart, elementDrag, elementDragEnd, cursor, event) {
@@ -117,7 +117,7 @@ UI.DragHandler = class {
    * @param {?function(!MouseEvent):boolean} elementDragStart
    * @param {function(!MouseEvent)} elementDrag
    * @param {?function(!MouseEvent)} elementDragEnd
-   * @param {string} cursor
+   * @param {?string} cursor
    * @param {!Event} event
    */
   elementDragStart(targetElement, elementDragStart, elementDrag, elementDragEnd, cursor, event) {

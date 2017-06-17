@@ -1152,6 +1152,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     var groupStack = [{nestingLevel: -1, visible: true}];
     var lastGroupLevel = Math.max(levelCount, groups.length ? groups.peekLast().startLevel + 1 : 0);
     for (var level = 0; level < lastGroupLevel; ++level) {
+      var parentGroupIsVisible = true;
       while (groupIndex < groups.length - 1 && level === groups[groupIndex + 1].startLevel) {
         ++groupIndex;
         var style = groups[groupIndex].style;
@@ -1162,7 +1163,7 @@ PerfUI.FlameChart = class extends UI.VBox {
         }
         var thisGroupIsVisible =
             groupIndex >= 0 && this._isGroupCollapsible(groupIndex) ? groups[groupIndex].expanded : true;
-        var parentGroupIsVisible = groupStack.peekLast().visible;
+        parentGroupIsVisible = groupStack.peekLast().visible;
         visible = thisGroupIsVisible && parentGroupIsVisible;
         groupStack.push({nestingLevel: style.nestingLevel, visible: visible});
         if (parentGroupIsVisible)

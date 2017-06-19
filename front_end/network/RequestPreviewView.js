@@ -28,65 +28,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @unrestricted
- */
-Network.RequestPreviewView = class extends Network.RequestContentView {
+Network.RequestPreviewView = class extends Network.RequestView {
   /**
    * @param {!SDK.NetworkRequest} request
-   * @param {!UI.Widget} responseView
    */
-  constructor(request, responseView) {
+  constructor(request) {
     super(request);
-    this._responseView = responseView;
-    /** @type {?UI.Widget} */
-    this._previewView = null;
-  }
-
-  /**
-   * @override
-   */
-  contentLoaded() {
-    if (!this.request.content && !this.request.contentError()) {
-      if (!this._emptyWidget) {
-        this._emptyWidget = this._createEmptyWidget();
-        this._emptyWidget.show(this.element);
-        this._previewView = this._emptyWidget;
-        this._previewViewHandledForTest(this._previewView);
-      }
-      return;
-    }
-    if (this._emptyWidget) {
-      this._emptyWidget.detach();
-      delete this._emptyWidget;
-      this._previewView = null;
-    }
-
-    if (!this._previewView)
-      this._createPreviewView(handlePreviewView.bind(this));
-    else
-      this._previewView.show(this.element);
-
-    /**
-     * @param {!UI.Widget} view
-     * @this {Network.RequestPreviewView}
-     */
-    function handlePreviewView(view) {
-      this._previewView = view;
-      view.show(this.element);
-      if (view instanceof UI.SimpleView) {
-        var toolbar = new UI.Toolbar('network-item-preview-toolbar', this.element);
-        for (var item of /** @type {!UI.SimpleView} */ (this._previewView).syncToolbarItems())
-          toolbar.appendToolbarItem(item);
-      }
-      this._previewViewHandledForTest(view);
-    }
-  }
-
-  /**
-   * @param {!UI.Widget} view
-   */
-  _previewViewHandledForTest(view) {
+    /** @type {?Promise<!UI.Widget>} */
+    this._previewViewPromise = null;
   }
 
   /**
@@ -105,40 +54,66 @@ Network.RequestPreviewView = class extends Network.RequestContentView {
   }
 
   /**
-   * @return {string}
+   * @param {string} content
+   * @param {string} mimeType
+   * @return {?UI.SearchableView}
    */
-  _requestContent() {
-    var content = this.request.content;
-    return this.request.contentEncoded ? window.atob(content || '') : (content || '');
+  _xmlView(content, mimeType) {
+    var parsedXML = Network.XMLView.parseXML(content, mimeType);
+    return parsedXML ? Network.XMLView.createSearchableView(parsedXML) : null;
   }
 
   /**
-   * @param {?Network.ParsedJSON} parsedJSON
-   * @return {?UI.SearchableView}
+   * @param {string} content
+   * @return {!Promise<?UI.SearchableView>}
    */
-  _jsonView(parsedJSON) {
+  async _jsonView(content) {
+    // We support non-strict JSON parsing by parsing an AST tree which is why we offload it to a worker.
+    var parsedJSON = await Network.JSONView.parseJSON(content);
     if (!parsedJSON || typeof parsedJSON.data !== 'object')
       return null;
     return Network.JSONView.createSearchableView(/** @type {!Network.ParsedJSON} */ (parsedJSON));
   }
 
   /**
-   * @return {?UI.SearchableView}
+   * @override
    */
-  _xmlView() {
-    var parsedXML = Network.XMLView.parseXML(this._requestContent(), this.request.mimeType);
-    return parsedXML ? Network.XMLView.createSearchableView(parsedXML) : null;
+  wasShown() {
+    this._showPreviewView();
+  }
+
+  async _showPreviewView() {
+    if (!this._previewViewPromise)
+      this._previewViewPromise = this._createPreviewView();
+    var previewView = await this._previewViewPromise;
+    if (this.element.contains(previewView.element))
+      return;
+
+    previewView.show(this.element);
+
+    if (previewView instanceof UI.SimpleView) {
+      var toolbar = new UI.Toolbar('network-item-preview-toolbar', this.element);
+      for (var item of previewView.syncToolbarItems())
+        toolbar.appendToolbarItem(item);
+    }
   }
 
   /**
+   * @param {!SDK.NetworkRequest.ContentData} contentData
    * @return {?Network.RequestHTMLView}
    */
-  _htmlErrorPreview() {
-    var whitelist = ['text/html', 'text/plain', 'application/xhtml+xml'];
-    if (whitelist.indexOf(this.request.mimeType) === -1)
+  _htmlErrorPreview(contentData) {
+    // We can assume the status code has been set already because fetching contentData should wait for request to be
+    // finished.
+    if (!this.request.hasErrorStatusCode() && this.request.resourceType() !== Common.resourceTypes.XHR)
       return null;
 
-    var dataURL = this.request.asDataURL();
+    var whitelist = new Set(['text/html', 'text/plain', 'application/xhtml+xml']);
+    if (!whitelist.has(this.request.mimeType))
+      return null;
+
+    var dataURL = Common.ContentProvider.contentAsDataURL(
+        contentData.content, this.request.mimeType, contentData.encoded, contentData.encoded ? 'utf-8' : null);
     if (dataURL === null)
       return null;
 
@@ -146,47 +121,38 @@ Network.RequestPreviewView = class extends Network.RequestContentView {
   }
 
   /**
-   * @param {function(!UI.Widget)} callback
+   * @return {!Promise<!UI.Widget>}
    */
-  _createPreviewView(callback) {
-    if (this.request.contentError()) {
-      callback(this._createMessageView(Common.UIString('Failed to load response data')));
-      return;
-    }
+  async _createPreviewView() {
+    var contentData = await this.request.contentData();
+    if (contentData.error)
+      return this._createMessageView(Common.UIString('Failed to load response data'));
 
-    var xmlView = this._xmlView();
-    if (xmlView) {
-      callback(xmlView);
-      return;
-    }
+    var content = contentData.content || '';
+    if (contentData.encoded)
+      content = window.atob(content);
+    if (!content)
+      return this._createEmptyWidget();
 
-    Network.JSONView.parseJSON(this._requestContent()).then(chooseView.bind(this)).then(callback);
+    var xmlView = this._xmlView(content, this.request.mimeType);
+    if (xmlView)
+      return xmlView;
 
-    /**
-     * @this {Network.RequestPreviewView}
-     * @param {?Network.ParsedJSON} jsonData
-     * @return {!UI.Widget}
-     */
-    function chooseView(jsonData) {
-      if (jsonData) {
-        var jsonView = this._jsonView(jsonData);
-        if (jsonView)
-          return jsonView;
-      }
+    var jsonView = await this._jsonView(content);
+    if (jsonView)
+      return jsonView;
 
-      if (this.request.hasErrorStatusCode() || this.request.resourceType() === Common.resourceTypes.XHR) {
-        var htmlErrorPreview = this._htmlErrorPreview();
-        if (htmlErrorPreview)
-          return htmlErrorPreview;
-      }
+    var htmlErrorPreview = this._htmlErrorPreview(contentData);
+    if (htmlErrorPreview)
+      return htmlErrorPreview;
 
-      if (this._responseView.sourceView)
-        return this._responseView.sourceView;
+    var sourceView = await Network.RequestResponseView.sourceViewForRequest(this.request);
+    if (sourceView)
+      return sourceView;
 
-      if (this.request.resourceType() === Common.resourceTypes.Other)
-        return this._createEmptyWidget();
+    if (this.request.resourceType() === Common.resourceTypes.Other)
+      return this._createEmptyWidget();
 
-      return Network.RequestView.nonSourceViewForRequest(this.request);
-    }
+    return Network.RequestView.nonSourceViewForRequest(this.request);
   }
 };

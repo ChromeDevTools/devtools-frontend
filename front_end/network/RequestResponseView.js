@@ -28,25 +28,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @unrestricted
- */
-Network.RequestResponseView = class extends Network.RequestContentView {
+Network.RequestResponseView = class extends Network.RequestView {
   /**
    * @param {!SDK.NetworkRequest} request
    */
   constructor(request) {
     super(request);
+    /** @type {?Promise<!UI.Widget>} */
+    this._responseView = null;
   }
 
-  get sourceView() {
-    if (this._sourceView || !Network.RequestView.hasTextContent(this.request))
-      return this._sourceView;
+  /**
+   * @param {!SDK.NetworkRequest} request
+   * @return {!Promise<?UI.SearchableView>}
+   */
+  static async sourceViewForRequest(request) {
+    var sourceView = request[Network.RequestResponseView._sourceViewSymbol];
+    if (sourceView !== undefined)
+      return sourceView;
 
-    var contentProvider = new Network.RequestResponseView.ContentProvider(this.request);
-    var highlighterType = this.request.resourceType().canonicalMimeType() || this.request.mimeType;
-    this._sourceView = SourceFrame.ResourceSourceFrame.createSearchableView(contentProvider, highlighterType);
-    return this._sourceView;
+    var contentData = await request.contentData();
+    if (!Network.RequestView.hasTextContent(request, contentData)) {
+      request[Network.RequestResponseView._sourceViewSymbol] = null;
+      return null;
+    }
+
+    var contentProvider = new Network.RequestResponseView.ContentProvider(request);
+    var highlighterType = request.resourceType().canonicalMimeType() || request.mimeType;
+    sourceView = SourceFrame.ResourceSourceFrame.createSearchableView(contentProvider, highlighterType);
+    request[Network.RequestResponseView._sourceViewSymbol] = sourceView;
+    return sourceView;
   }
 
   /**
@@ -60,32 +71,35 @@ Network.RequestResponseView = class extends Network.RequestContentView {
   /**
    * @override
    */
-  contentLoaded() {
-    if ((!this.request.content || !this.sourceView) && !this.request.contentError()) {
-      if (!this._emptyWidget) {
-        this._emptyWidget = this._createMessageView(Common.UIString('This request has no response data available.'));
-        this._emptyWidget.show(this.element);
-      }
-    } else {
-      if (this._emptyWidget) {
-        this._emptyWidget.detach();
-        delete this._emptyWidget;
-      }
+  wasShown() {
+    this._showResponseView();
+  }
 
-      if (this.request.content && this.sourceView) {
-        this.sourceView.show(this.element);
-      } else {
-        if (!this._errorView)
-          this._errorView = this._createMessageView(Common.UIString('Failed to load response data'));
-        this._errorView.show(this.element);
-      }
-    }
+  async _showResponseView() {
+    if (!this._responseView)
+      this._responseView = this._createResponseView();
+    var responseView = await this._responseView;
+    if (this.element.contains(responseView.element))
+      return;
+
+    responseView.show(this.element);
+  }
+
+  async _createResponseView() {
+    var contentData = await this.request.contentData();
+    var sourceView = await Network.RequestResponseView.sourceViewForRequest(this.request);
+    if ((!contentData.content || !sourceView) && !contentData.error)
+      return this._createMessageView(Common.UIString('This request has no response data available.'));
+    if (contentData.content && sourceView)
+      return sourceView;
+    return this._createMessageView(Common.UIString('Failed to load response data'));
   }
 };
 
+Network.RequestResponseView._sourceViewSymbol = Symbol('RequestResponseSourceView');
+
 /**
  * @implements {Common.ContentProvider}
- * @unrestricted
  */
 Network.RequestResponseView.ContentProvider = class {
   /**
@@ -115,16 +129,9 @@ Network.RequestResponseView.ContentProvider = class {
    * @override
    * @return {!Promise<?string>}
    */
-  requestContent() {
-    /**
-     * @param {?string} content
-     * @this {Network.RequestResponseView.ContentProvider}
-     */
-    function decodeContent(content) {
-      return this._request.contentEncoded ? window.atob(content || '') : content;
-    }
-
-    return this._request.requestContent().then(decodeContent.bind(this));
+  async requestContent() {
+    var contentData = await this._request.contentData();
+    return contentData.encoded ? window.atob(contentData.content || '') : contentData.content;
   }
 
   /**

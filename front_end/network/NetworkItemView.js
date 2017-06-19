@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @unrestricted
- */
 Network.NetworkItemView = class extends UI.TabbedPane {
   /**
    * @param {!SDK.NetworkRequest} request
@@ -55,7 +52,7 @@ Network.NetworkItemView = class extends UI.TabbedPane {
       this.appendTab('eventSource', Common.UIString('EventStream'), new Network.EventSourceMessagesView(request));
     } else {
       var responseView = new Network.RequestResponseView(request);
-      var previewView = new Network.RequestPreviewView(request, responseView);
+      var previewView = new Network.RequestPreviewView(request);
       this.appendTab('preview', Common.UIString('Preview'), previewView);
       this.appendTab('response', Common.UIString('Response'), responseView);
     }
@@ -101,45 +98,5 @@ Network.NetworkItemView = class extends UI.TabbedPane {
    */
   request() {
     return this._request;
-  }
-};
-
-/**
- * @unrestricted
- */
-Network.RequestContentView = class extends Network.RequestView {
-  /**
-   * @param {!SDK.NetworkRequest} request
-   */
-  constructor(request) {
-    super(request);
-  }
-
-  /**
-   * @override
-   */
-  wasShown() {
-    this._ensureInnerViewShown();
-  }
-
-  _ensureInnerViewShown() {
-    if (this._innerViewShowRequested)
-      return;
-    this._innerViewShowRequested = true;
-
-    /**
-     * @param {?string} content
-     * @this {Network.RequestContentView}
-     */
-    function callback(content) {
-      this._innerViewShowRequested = false;
-      this.contentLoaded();
-    }
-
-    this.request.requestContent().then(callback.bind(this));
-  }
-
-  contentLoaded() {
-    // Should be implemented by subclasses.
   }
 };

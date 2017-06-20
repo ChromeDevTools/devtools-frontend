@@ -52,6 +52,8 @@ SDK.NetworkRequest = class extends Common.Object {
     this._loaderId = loaderId;
     /** @type {?Protocol.Network.Initiator} */
     this._initiator = initiator;
+    /** @type {?SDK.NetworkRequest} */
+    this._redirectSource = null;
     this._issueTime = -1;
     this._startTime = -1;
     this._endTime = -1;
@@ -589,17 +591,15 @@ SDK.NetworkRequest = class extends Common.Object {
   /**
    * @return {?SDK.NetworkRequest}
    */
-  get redirectSource() {
-    if (this.redirects && this.redirects.length > 0)
-      return this.redirects[this.redirects.length - 1];
+  redirectSource() {
     return this._redirectSource;
   }
 
   /**
-   * @param {?SDK.NetworkRequest} x
+   * @param {?SDK.NetworkRequest} originatingRequest
    */
-  set redirectSource(x) {
-    this._redirectSource = x;
+  setRedirectSource(originatingRequest) {
+    this._redirectSource = originatingRequest;
   }
 
   /**

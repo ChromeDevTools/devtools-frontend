@@ -934,8 +934,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
 
       case SDK.NetworkRequest.InitiatorType.Redirect:
         cell.title = initiator.url;
-        console.assert(request.redirectSource);
-        var redirectSource = /** @type {!SDK.NetworkRequest} */ (request.redirectSource);
+        var redirectSource = /** @type {!SDK.NetworkRequest} */ (request.redirectSource());
+        console.assert(redirectSource);
         if (this.parentView().nodeForRequest(redirectSource)) {
           cell.appendChild(
               Components.Linkifier.linkifyRevealable(redirectSource, Bindings.displayNameForURL(redirectSource.url())));

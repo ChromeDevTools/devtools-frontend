@@ -177,9 +177,10 @@ NetworkLog.NetworkLog = class extends Common.Object {
     var scriptId = null;
     var initiator = request.initiator();
 
-    if (request.redirectSource) {
+    var redirectSource = request.redirectSource();
+    if (redirectSource) {
       type = SDK.NetworkRequest.InitiatorType.Redirect;
-      url = request.redirectSource.url();
+      url = redirectSource.url();
     } else if (initiator) {
       if (initiator.type === Protocol.Network.InitiatorType.Parser) {
         type = SDK.NetworkRequest.InitiatorType.Parser;
@@ -300,8 +301,11 @@ NetworkLog.NetworkLog = class extends Common.Object {
         continue;
       if (!currentPageLoad) {
         currentPageLoad = new NetworkLog.PageLoad(request);
-        if (request.redirects)
-          requestsToAdd.pushAll(request.redirects);
+        var redirectSource = request.redirectSource();
+        while (redirectSource) {
+          requestsToAdd.push(redirectSource);
+          redirectSource = redirectSource.redirectSource();
+        }
       }
       requestsToAdd.push(request);
     }

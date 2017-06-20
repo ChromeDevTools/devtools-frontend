@@ -963,8 +963,8 @@ Network.NetworkLogView = class extends UI.VBox {
     node[Network.NetworkLogView._isFilteredOutSymbol] = true;
     node[Network.NetworkLogView._isMatchingSearchQuerySymbol] = false;
 
-    if (request.redirects)
-      request.redirects.forEach(this._refreshRequest.bind(this));
+    for (var redirect = request.redirectSource(); redirect; redirect = redirect.redirectSource())
+      this._refreshRequest(redirect);
     return node;
   }
 

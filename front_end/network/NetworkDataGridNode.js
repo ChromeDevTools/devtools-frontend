@@ -681,13 +681,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    * @return {boolean}
    */
   isNavigationRequest() {
-    return this._isNavigationRequest;
-  }
-
-  markAsNavigationRequest() {
-    this._isNavigationRequest = true;
-    this.refresh();
-    this._updateBackgroundColor();
+    var pageLoad = NetworkLog.networkLog.pageLoadForRequest(this._request);
+    return pageLoad ? pageLoad.mainRequest === this._request : false;
   }
 
   /**

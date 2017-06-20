@@ -109,7 +109,9 @@ Network.NetworkPanel = class extends UI.Panel {
         Network.NetworkLogView.Events.SearchCountUpdated, this._onSearchCountUpdated, this);
     this._networkLogView.addEventListener(
         Network.NetworkLogView.Events.SearchIndexUpdated, this._onSearchIndexUpdated, this);
-    this._networkLogView.addEventListener(Network.NetworkLogView.Events.UpdateRequest, this._onUpdateRequest, this);
+    NetworkLog.networkLog.addEventListener(NetworkLog.NetworkLog.Events.RequestAdded, this._onUpdateRequest, this);
+    NetworkLog.networkLog.addEventListener(NetworkLog.NetworkLog.Events.RequestUpdated, this._onUpdateRequest, this);
+    NetworkLog.networkLog.addEventListener(NetworkLog.NetworkLog.Events.Reset, this._onNetworkLogReset, this);
 
     Components.DataSaverInfobar.maybeShowInPanel(this);
   }
@@ -146,7 +148,7 @@ Network.NetworkPanel = class extends UI.Panel {
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
 
     this._clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
-    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._onClearButtonClicked, this);
+    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => NetworkLog.networkLog.reset(), this);
     this._panelToolbar.appendToolbarItem(this._clearButton);
     this._panelToolbar.appendSeparator();
     var recordFilmStripButton = new UI.ToolbarSettingToggle(
@@ -174,7 +176,7 @@ Network.NetworkPanel = class extends UI.Panel {
     }
 
     this._panelToolbar.appendSeparator();
-    this._preserveLogSetting = Common.moduleSetting('network.preserve-log');
+    this._preserveLogSetting = Common.moduleSetting('network_log.preserve-log');
     this._panelToolbar.appendToolbarItem(new UI.ToolbarSettingCheckbox(
         this._preserveLogSetting, Common.UIString('Do not clear log on page reload / navigation'),
         Common.UIString('Preserve log')));
@@ -203,7 +205,7 @@ Network.NetworkPanel = class extends UI.Panel {
 
   _toggleRecording() {
     if (!this._preserveLogSetting.get() && !this._toggleRecordAction.toggled())
-      this._reset();
+      NetworkLog.networkLog.reset();
     this._toggleRecord(!this._toggleRecordAction.toggled());
   }
 
@@ -215,6 +217,9 @@ Network.NetworkPanel = class extends UI.Panel {
     this._networkLogView.setRecording(toggled);
     if (!toggled && this._filmStripRecorder)
       this._filmStripRecorder.stopRecording(this._filmStripAvailable.bind(this));
+    // TODO(einbinder) This should be moved to a setting/action that NetworkLog owns but NetworkPanel controls, but
+    // always be present in the command menu.
+    NetworkLog.networkLog.setIsRecording(toggled);
   }
 
   /**
@@ -239,18 +244,12 @@ Network.NetworkPanel = class extends UI.Panel {
     this._networkLogView.addFilmStripFrames(timestamps);
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _onClearButtonClicked(event) {
-    this._reset();
-  }
-
-  _reset() {
-    this._calculator.reset();
-    this._overviewPane.reset();
-    this._networkLogView.reset();
+  _onNetworkLogReset() {
     Network.BlockedURLsPane.reset();
+    if (!this._preserveLogSetting.get()) {
+      this._calculator.reset();
+      this._overviewPane.reset();
+    }
     if (this._filmStripView)
       this._resetFilmStripView();
   }
@@ -259,8 +258,6 @@ Network.NetworkPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _willReloadPage(event) {
-    if (!this._preserveLogSetting.get())
-      this._reset();
     this._toggleRecord(true);
     if (this._pendingStopTimer) {
       clearTimeout(this._pendingStopTimer);

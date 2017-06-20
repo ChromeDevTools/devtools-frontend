@@ -63,26 +63,6 @@
             ]
         },
         {
-            "type": "setting",
-            "category": "Network",
-            "storageType": "session",
-            "title": "Preserve log",
-            "settingName": "network.preserve-log",
-            "settingType": "boolean",
-            "defaultValue": false,
-            "tags": "preserve, clear, reset",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Do not preserve log on page reload / navigation"
-                },
-                {
-                    "value": false,
-                    "title": "Preserve log on page reload / navigation"
-                }
-            ]
-        },
-        {
             "type": "@UI.ActionDelegate",
             "actionId": "network.toggle-recording",
             "iconClass": "largeicon-start-recording",

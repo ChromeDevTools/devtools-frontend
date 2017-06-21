@@ -427,8 +427,8 @@ ConsoleModel.ConsoleMessage = class {
     this.scriptId = scriptId || null;
     this.workerId = workerId || null;
 
-    var networkManager = (runtimeModel && requestId) ? runtimeModel.target().model(SDK.NetworkManager) : null;
-    this.request = (networkManager && requestId) ? NetworkLog.networkLog.requestForId(networkManager, requestId) : null;
+    var manager = runtimeModel ? runtimeModel.target().model(SDK.NetworkManager) : null;
+    this.request = (manager && requestId) ? NetworkLog.networkLog.requestByManagerAndId(manager, requestId) : null;
 
     if (this.request) {
       var initiator = this.request.initiator();

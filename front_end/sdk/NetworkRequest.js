@@ -33,7 +33,6 @@
  */
 SDK.NetworkRequest = class extends Common.Object {
   /**
-   * @param {!SDK.NetworkManager} networkManager
    * @param {!Protocol.Network.RequestId} requestId
    * @param {string} url
    * @param {string} documentURL
@@ -41,10 +40,9 @@ SDK.NetworkRequest = class extends Common.Object {
    * @param {!Protocol.Network.LoaderId} loaderId
    * @param {?Protocol.Network.Initiator} initiator
    */
-  constructor(networkManager, requestId, url, documentURL, frameId, loaderId, initiator) {
+  constructor(requestId, url, documentURL, frameId, loaderId, initiator) {
     super();
 
-    this._networkManager = networkManager;
     this._requestId = requestId;
     this.setUrl(url);
     this._documentURL = documentURL;
@@ -531,7 +529,8 @@ SDK.NetworkRequest = class extends Common.Object {
     } else {
       this._path = this._parsedURL.host + this._parsedURL.folderPathComponents;
 
-      var inspectedURL = this._networkManager.target().inspectedURL().asParsedURL();
+      var networkManager = SDK.NetworkManager.forRequest(this);
+      var inspectedURL = networkManager ? networkManager.target().inspectedURL().asParsedURL() : null;
       this._path = this._path.trimURL(inspectedURL ? inspectedURL.host : '');
       if (this._parsedURL.lastPathComponent || this._parsedURL.queryParams) {
         this._name =
@@ -1087,13 +1086,6 @@ SDK.NetworkRequest = class extends Common.Object {
     var message = {time: this.pseudoWallTime(time), eventName: eventName, eventId: eventId, data: data};
     this._eventSourceMessages.push(message);
     this.dispatchEventToListeners(SDK.NetworkRequest.Events.EventSourceMessageAdded, message);
-  }
-
-  /**
-   * @return {!SDK.NetworkManager}
-   */
-  networkManager() {
-    return this._networkManager;
   }
 };
 

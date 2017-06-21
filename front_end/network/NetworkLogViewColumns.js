@@ -542,8 +542,9 @@ Network.NetworkLogViewColumns = class {
     return {
       box: anchor.boxInWindow(),
       show: popover => {
+        var manager = anchor.request ? SDK.NetworkManager.forRequest(anchor.request) : null;
         var content = Components.DOMPresentationUtils.buildStackTracePreviewContents(
-            anchor.request.networkManager().target(), this._popupLinkifier, initiator.stack);
+            manager ? manager.target() : null, this._popupLinkifier, initiator.stack);
         popover.contentElement.appendChild(content);
         return Promise.resolve(true);
       },

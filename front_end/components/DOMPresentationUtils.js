@@ -213,7 +213,7 @@ Components.DOMPresentationUtils.buildImagePreviewContents = function(
 };
 
 /**
- * @param {!SDK.Target} target
+ * @param {?SDK.Target} target
  * @param {!Components.Linkifier} linkifier
  * @param {!Protocol.Runtime.StackTrace=} stackTrace
  * @return {!Element}

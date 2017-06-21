@@ -611,7 +611,10 @@ Network.NetworkLogView = class extends UI.VBox {
         selectedNodeNumber++;
         selectedTransferSize += requestTransferSize;
       }
-      if (request.url() === request.networkManager().target().inspectedURL() &&
+      var networkManager = SDK.NetworkManager.forRequest(request);
+      // TODO(allada) inspectedURL should be stored in PageLoad used instead of target so HAR requests can have an
+      // inspected url.
+      if (networkManager && request.url() === networkManager.target().inspectedURL() &&
           request.resourceType() === Common.resourceTypes.Document)
         baseTime = request.startTime;
       if (request.endTime > maxTime)

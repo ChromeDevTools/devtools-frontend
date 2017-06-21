@@ -164,7 +164,7 @@ Bindings.TempFile = class {
 
   remove() {
     if (this._fileEntry)
-      this._fileEntry.remove(function() {});
+      this._fileEntry.remove(() => {});
   }
 };
 
@@ -174,17 +174,18 @@ Bindings.DeferredTempFile = class {
    * @param {string} name
    */
   constructor(dirPath, name) {
-    /** @type {!Array<!{strings: !Array<string>, callback: function(number)}>} */
-    this._chunks = [];
+    /** @type {?Bindings.TempFile} */
     this._tempFile = null;
-    this._isWriting = false;
-    this._finishCallback = null;
-    this._finishedWriting = false;
-    this._callsPendingOpen = [];
-    /** @type {!Array<function()>} */
-    this._pendingReads = [];
-    Bindings.TempFile.create(dirPath, name)
-        .then(this._didCreateTempFile.bind(this), this._failedToCreateTempFile.bind(this));
+    this._writeFinished = false;
+    /** @type {function(?Bindings.TempFile)} */
+    this._writeFinishedResolve;
+    this._writeFinishedPromise = new Promise(resolve => this._writeFinishedResolve = resolve);
+
+    this._lastActionPromise =
+        Bindings.TempFile.create(dirPath, name)
+            .then(
+                tempFile => this._tempFile = tempFile,
+                error => Common.console.error(`Failed to create temp file ${error.code} : ${error.message}`));
   }
 
   /**
@@ -192,81 +193,31 @@ Bindings.DeferredTempFile = class {
    * @return {!Promise<number>}
    */
   write(strings) {
-    return new Promise(resolve => {
-      if (this._finishCallback)
-        throw new Error('No writes are allowed after close.');
-      this._chunks.push({strings: strings, callback: resolve});
-      if (this._tempFile && !this._isWriting)
-        this._writeNextChunk();
+    if (this._writeFinished)
+      throw new Error('No writes are allowed after close.');
+
+    this._lastActionPromise = this._lastActionPromise.then(async () => {
+      if (!this._tempFile)
+        return -1;
+      var size = await this._tempFile.write(strings);
+      if (size === -1) {
+        this._tempFile.remove();
+        this._tempFile = null;
+      }
+      return size;
     });
+
+    return this._lastActionPromise;
   }
 
   /**
    * @return {!Promise<?Bindings.TempFile>}
    */
-  finishWriting() {
-    return new Promise(resolve => {
-      this._finishCallback = resolve;
-      if (this._finishedWriting)
-        resolve(this._tempFile);
-      else if (!this._isWriting && !this._chunks.length)
-        this._notifyFinished();
-    });
-  }
-
-  /**
-   * @param {*} e
-   */
-  _failedToCreateTempFile(e) {
-    Common.console.error('Failed to create temp file ' + e.code + ' : ' + e.message);
-    this._notifyFinished();
-  }
-
-  /**
-   * @param {!Bindings.TempFile} tempFile
-   */
-  _didCreateTempFile(tempFile) {
-    this._tempFile = tempFile;
-    var callsPendingOpen = this._callsPendingOpen;
-    this._callsPendingOpen = null;
-    for (var i = 0; i < callsPendingOpen.length; ++i)
-      callsPendingOpen[i]();
-    if (this._chunks.length)
-      this._writeNextChunk();
-  }
-
-  async _writeNextChunk() {
-    // File was deleted while create or write was in-flight.
-    if (!this._tempFile)
-      return;
-    var chunk = this._chunks.shift();
-    this._isWriting = true;
-
-    var size = await this._tempFile.write(/** @type {!Array<string>} */ (chunk.strings));
-
-    this._isWriting = false;
-    if (size === -1) {
-      this._tempFile = null;
-      this._notifyFinished();
-      return;
-    }
-    chunk.callback(size);
-    if (this._chunks.length)
-      this._writeNextChunk();
-    else if (this._finishCallback)
-      this._notifyFinished();
-  }
-
-  _notifyFinished() {
-    this._finishedWriting = true;
-    if (this._tempFile)
-      this._tempFile.finishWriting();
-    for (var chunk of this._chunks.splice(0))
-      chunk.callback(-1);
-    if (this._finishCallback)
-      this._finishCallback(this._tempFile);
-    for (var pendingRead of this._pendingReads.splice(0))
-      pendingRead();
+  async finishWriting() {
+    this._writeFinished = true;
+    await this._lastActionPromise;
+    this._writeFinishedResolve(this._tempFile);
+    return this._writeFinishedPromise;
   }
 
   /**
@@ -274,41 +225,28 @@ Bindings.DeferredTempFile = class {
    * @param {number|undefined} endOffset
    * @return {!Promise<?string>}
    */
-  readRange(startOffset, endOffset) {
-    if (!this._finishedWriting) {
-      return new Promise(resolve => {
-        this._pendingReads.push(() => this.readRange(startOffset, endOffset).then(resolve));
-      });
-    }
-    if (!this._tempFile)
-      return /** @type {!Promise<?string>} */ (Promise.resolve(null));
-    return this._tempFile.readRange(startOffset, endOffset);
+  async readRange(startOffset, endOffset) {
+    await this._writeFinishedPromise;
+    return this._tempFile ? this._tempFile.readRange(startOffset, endOffset) : null;
   }
 
   /**
    * @param {!Common.OutputStream} outputStream
    * @param {!Bindings.OutputStreamDelegate} delegate
    */
-  copyToOutputStream(outputStream, delegate) {
-    if (!this._finishedWriting) {
-      this._pendingReads.push(this.copyToOutputStream.bind(this, outputStream, delegate));
-      return;
-    }
+  async copyToOutputStream(outputStream, delegate) {
+    await this._writeFinishedPromise;
     if (this._tempFile)
       this._tempFile.copyToOutputStream(outputStream, delegate);
   }
 
-  remove() {
-    if (this._callsPendingOpen) {
-      this._callsPendingOpen.push(this.remove.bind(this));
-      return;
-    }
+  async remove() {
+    await this._lastActionPromise;
     if (this._tempFile)
       this._tempFile.remove();
     this._tempFile = null;
   }
 };
-
 
 /**
  * @implements {SDK.BackingStorage}
@@ -418,9 +356,7 @@ Bindings.TempFileBackingStorage = class {
     if (this._file)
       this._file.remove();
     this._file = null;
-    /**
-     * @type {!Array.<string>}
-     */
+    /** @type {!Array<string>} */
     this._strings = [];
     this._stringsLength = 0;
     this._fileSize = 0;

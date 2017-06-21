@@ -526,7 +526,7 @@
             "id": "sources.xhrBreakpoints",
             "title": "XHR Breakpoints",
             "order": 5,
-            "hasToolbar": "true",
+            "hasToolbar": true,
             "persistence": "permanent",
             "className": "Sources.XHRBreakpointsSidebarPane"
         },
@@ -536,7 +536,7 @@
             "id": "sources.globalListeners",
             "title": "Global Listeners",
             "order": 8,
-            "hasToolbar": "true",
+            "hasToolbar": true,
             "persistence": "permanent",
             "className": "Sources.ObjectEventListenersSidebarPane"
         },

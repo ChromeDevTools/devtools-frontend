@@ -11,4 +11,4 @@ front_end/formatter_worker/acorn/*
 front_end/gonzales/gonzales-scss.js
 front_end/terminal/xterm.js/**
 front_end/protocol_externs.js
-scripts/jsdoc_validator/tests/*
+scripts/*

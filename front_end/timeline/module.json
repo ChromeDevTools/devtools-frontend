@@ -110,7 +110,7 @@
             "contextTypes": [
                 "Timeline.TimelinePanel"
             ],
-            "order": "10",
+            "order": 10,
             "className": "Timeline.TimelinePanel.ActionDelegate",
             "title": "Load profile\u2026",
             "bindings": [

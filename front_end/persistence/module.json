@@ -10,7 +10,7 @@
             "location": "settings-view",
             "id": "workspace",
             "title": "Workspace",
-            "order": "1",
+            "order": 1,
             "className": "Persistence.WorkspaceSettingsTab"
         }
     ],

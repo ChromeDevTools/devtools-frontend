@@ -27,7 +27,7 @@
             "location": "settings-view",
             "id": "network-conditions",
             "title": "Throttling",
-            "order": "35",
+            "order": 35,
             "className": "MobileThrottling.NetworkConditionsSettingsTab",
             "settings": [
                 "customNetworkConditions"

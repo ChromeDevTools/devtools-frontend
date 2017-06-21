@@ -14,7 +14,8 @@
     "setup-dtrun": "cd scripts/devtools_run && npm link",
     "format-py": "yapf --exclude scripts/build/rjsmin.py -i --recursive scripts PRESUBMIT.py",
     "extract": "node scripts/extract_module/extract_module.js",
-    "check-gn": "node scripts/check_gn.js"
+    "check-gn": "node scripts/check_gn.js",
+    "check-json": "node scripts/json_validator/validate_module_json.js"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
   },
   "homepage": "https://devtools.chrome.com",
   "devDependencies": {
+    "ajv": "^5.1.5",
     "eslint": "3.10.0"
   }
 }

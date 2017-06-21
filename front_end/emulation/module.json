@@ -119,7 +119,7 @@
             "location": "settings-view",
             "id": "devices",
             "title": "Devices",
-            "order": "30",
+            "order": 30,
             "className": "Emulation.DevicesSettingsTab",
             "settings": [
                 "standardEmulatedDeviceList",

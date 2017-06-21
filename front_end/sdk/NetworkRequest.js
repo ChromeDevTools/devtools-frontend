@@ -1003,20 +1003,6 @@ SDK.NetworkRequest = class extends Common.Object {
     this.requestContent().then(onResourceContent.bind(this));
   }
 
-  // TODO(allada) Migrate this function to use .contentData() instead.
-  /**
-   * @return {?string}
-   */
-  asDataURL() {
-    var content = this._content;
-    var charset = null;
-    if (!this._contentEncoded) {
-      content = content.toBase64();
-      charset = 'utf-8';
-    }
-    return Common.ContentProvider.contentAsDataURL(content, this.mimeType, true, charset);
-  }
-
   /**
    * @return {?Protocol.Network.Initiator}
    */

@@ -184,23 +184,15 @@ Bindings.FileOutputStream = class {
    * @param {string} fileName
    * @return {!Promise<boolean>}
    */
-  open(fileName) {
+  async open(fileName) {
     this._closed = false;
     /** @type {!Array<function()>} */
     this._writeCallbacks = [];
     this._fileName = fileName;
-    return new Promise(resolve => {
-      /**
-       * @param {boolean} accepted
-       * @this {Bindings.FileOutputStream}
-       */
-      function callbackWrapper(accepted) {
-        if (accepted)
-          Workspace.fileManager.addEventListener(Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
-        resolve(accepted);
-      }
-      Workspace.fileManager.save(this._fileName, '', true, callbackWrapper.bind(this));
-    });
+    var success = await Workspace.fileManager.save(this._fileName, '', true);
+    if (success)
+      Workspace.fileManager.addEventListener(Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
+    return success;
   }
 
   /**

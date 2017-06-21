@@ -307,7 +307,7 @@ Workspace.UISourceCode = class extends Common.Object {
     if (this._project.canSetFileContent()) {
       this._project.setFileContent(this, content, function() {});
     } else if (this._url && Workspace.fileManager.isURLSaved(this._url)) {
-      Workspace.fileManager.save(this._url, content, false, function() {});
+      Workspace.fileManager.save(this._url, content, false);
       Workspace.fileManager.close(this._url);
     }
     this._contentCommitted(content, true);
@@ -345,17 +345,11 @@ Workspace.UISourceCode = class extends Common.Object {
   }
 
   saveAs() {
-    Workspace.fileManager.save(this._url, this.workingCopy(), true, callback.bind(this));
-    Workspace.fileManager.close(this._url);
-
-    /**
-     * @param {boolean} accepted
-     * @this {Workspace.UISourceCode}
-     */
-    function callback(accepted) {
+    Workspace.fileManager.save(this._url, this.workingCopy(), true).then(accepted => {
       if (accepted)
         this._contentCommitted(this.workingCopy(), true);
-    }
+    });
+    Workspace.fileManager.close(this._url);
   }
 
   /**

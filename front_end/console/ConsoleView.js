@@ -583,7 +583,7 @@ Console.ConsoleView = class extends UI.VBox {
     contextMenu.show();
   }
 
-  _saveConsole() {
+  async _saveConsole() {
     var url = SDK.targetManager.mainTarget().inspectedURL();
     var parsedURL = url.asParsedURL();
     var filename = String.sprintf('%s-%d.log', parsedURL ? parsedURL.host : 'console', Date.now());
@@ -595,41 +595,25 @@ Console.ConsoleView = class extends UI.VBox {
 
     /** @const */
     var chunkSize = 350;
+
+    if (!await stream.open(filename))
+      return;
+    this._progressToolbarItem.element.appendChild(progressIndicator.element);
+
     var messageIndex = 0;
-
-    stream.open(filename, openCallback.bind(this));
-
-    /**
-     * @param {boolean} accepted
-     * @this {Console.ConsoleView}
-     */
-    function openCallback(accepted) {
-      if (!accepted)
-        return;
-      this._progressToolbarItem.element.appendChild(progressIndicator.element);
-      writeNextChunk.call(this, stream);
-    }
-
-    /**
-     * @param {!Common.OutputStream} stream
-     * @param {string=} error
-     * @this {Console.ConsoleView}
-     */
-    function writeNextChunk(stream, error) {
-      if (messageIndex >= this.itemCount() || error) {
-        stream.close();
-        progressIndicator.done();
-        return;
-      }
+    while (messageIndex < this.itemCount() && !progressIndicator.isCanceled()) {
       var messageContents = [];
       for (var i = 0; i < chunkSize && i + messageIndex < this.itemCount(); ++i) {
         var message = this.itemElement(messageIndex + i);
         messageContents.push(message.toExportString());
       }
       messageIndex += i;
-      stream.write(messageContents.join('\n') + '\n', writeNextChunk.bind(this));
+      await stream.write(messageContents.join('\n') + '\n');
       progressIndicator.setWorked(messageIndex);
     }
+
+    stream.close();
+    progressIndicator.done();
   }
 
   /**

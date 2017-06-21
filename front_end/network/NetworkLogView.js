@@ -1203,8 +1203,8 @@ Network.NetworkLogView = class extends UI.VBox {
     var parsedURL = url.asParsedURL();
     var filename = parsedURL ? parsedURL.host : 'network-log';
     var stream = new Bindings.FileOutputStream();
-    var accepted = await new Promise(resolve => stream.open(filename + '.har', resolve));
-    if (!accepted)
+
+    if (!await stream.open(filename + '.har'))
       return;
 
     var progressIndicator = new UI.ProgressIndicator();

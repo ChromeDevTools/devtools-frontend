@@ -1349,13 +1349,14 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
     this.updateStatus(Common.UIString('Loading\u2026'), true);
   }
 
-  _finishLoad() {
+  async _finishLoad() {
     if (!this._wasDisposed)
       this._receiver.close();
-    if (this._bufferedWriter) {
-      this._bufferedWriter.finishWriting(this._didWriteToTempFile.bind(this));
-      this._bufferedWriter = null;
-    }
+    if (!this._bufferedWriter)
+      return;
+    var file = await this._bufferedWriter.finishWriting();
+    this._bufferedWriter = null;
+    this._didWriteToTempFile(file);
   }
 
   _didWriteToTempFile(tempFile) {
@@ -1462,6 +1463,8 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
    */
   saveToFile() {
     var fileOutputStream = new Bindings.FileOutputStream();
+    this._fileName = this._fileName || 'Heap-' + new Date().toISO8601Compact() + this.profileType().fileExtension();
+    fileOutputStream.open(this._fileName).then(onOpen.bind(this));
 
     /**
      * @param {boolean} accepted
@@ -1470,6 +1473,7 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
     function onOpen(accepted) {
       if (!accepted)
         return;
+
       if (this._failedToCreateTempFile) {
         Common.console.error('Failed to open temp file with heap snapshot');
         fileOutputStream.close();
@@ -1481,8 +1485,6 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
         this._updateSaveProgress(0, 1);
       }
     }
-    this._fileName = this._fileName || 'Heap-' + new Date().toISO8601Compact() + this.profileType().fileExtension();
-    fileOutputStream.open(this._fileName, onOpen.bind(this));
   }
 
   _updateSaveProgress(value, total) {

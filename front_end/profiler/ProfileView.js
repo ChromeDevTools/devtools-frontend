@@ -452,8 +452,9 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
   /**
    * @override
    * @param {string} text
+   * @return {!Promise}
    */
-  write(text) {
+  async write(text) {
     this._jsonifiedProfile += text;
   }
 
@@ -492,32 +493,29 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
    */
   saveToFile() {
     var fileOutputStream = new Bindings.FileOutputStream();
+    this._fileName = this._fileName ||
+        `${this.profileType().typeName()}-${new Date().toISO8601Compact()}${this.profileType().fileExtension()}`;
+    fileOutputStream.open(this._fileName).then(onOpenForSave.bind(this));
 
     /**
      * @param {boolean} accepted
      * @this {Profiler.WritableProfileHeader}
      */
-    function onOpenForSave(accepted) {
+    async function onOpenForSave(accepted) {
       if (!accepted)
         return;
-      function didRead(data) {
-        if (data)
-          fileOutputStream.write(data, fileOutputStream.close.bind(fileOutputStream));
-        else
-          fileOutputStream.close();
-      }
       if (this._failedToCreateTempFile) {
         Common.console.error('Failed to open temp file with heap snapshot');
         fileOutputStream.close();
       } else if (this._tempFile) {
-        this._tempFile.read(didRead);
+        var data = await this._tempFile.read();
+        if (data)
+          await fileOutputStream.write(data);
+        fileOutputStream.close();
       } else {
         this._onTempFileReady = onOpenForSave.bind(this, accepted);
       }
     }
-    this._fileName = this._fileName ||
-        `${this.profileType().typeName()}-${new Date().toISO8601Compact()}${this.profileType().fileExtension()}`;
-    fileOutputStream.open(this._fileName, onOpenForSave.bind(this));
   }
 
   /**
@@ -559,24 +557,20 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
    * @param {?Bindings.TempFile} tempFile
    * @param {string} serializedData
    */
-  _writeToTempFile(tempFile, serializedData) {
+  async _writeToTempFile(tempFile, serializedData) {
     this._tempFile = tempFile;
     if (!tempFile) {
       this._failedToCreateTempFile = true;
       this._notifyTempFileReady();
       return;
     }
-    /**
-     * @param {number} fileSize
-     * @this {Profiler.WritableProfileHeader}
-     */
-    function didWriteToTempFile(fileSize) {
-      if (!fileSize)
-        this._failedToCreateTempFile = true;
-      tempFile.finishWriting();
-      this._notifyTempFileReady();
-    }
-    tempFile.write([serializedData], didWriteToTempFile.bind(this));
+
+    var fileSize = await tempFile.write([serializedData]);
+
+    if (!fileSize)
+      this._failedToCreateTempFile = true;
+    tempFile.finishWriting();
+    this._notifyTempFileReady();
   }
 
   _notifyTempFileReady() {

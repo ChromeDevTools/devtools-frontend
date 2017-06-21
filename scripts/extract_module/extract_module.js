@@ -20,6 +20,7 @@ const SPECIAL_CASE_NAMESPACES_PATH = path.resolve(__dirname, '..', 'special_case
 const APPLICATION_DESCRIPTORS = [
   'inspector.json',
   'toolbox.json',
+  'integration_test_runner.json',
   'unit_test_runner.json',
   'formatter_worker.json',
   'heap_snapshot_worker.json',

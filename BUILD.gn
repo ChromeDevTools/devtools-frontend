@@ -146,6 +146,8 @@ all_devtools_files = [
   "front_end/console/module.json",
   "front_end/console_model/ConsoleModel.js",
   "front_end/console_model/module.json",
+  "front_end/console_test_runner/ConsoleTestRunner.js",
+  "front_end/console_test_runner/module.json",
   "front_end/cookie_table/CookiesTable.js",
   "front_end/cookie_table/module.json",
   "front_end/coverage/coverageListView.css",
@@ -286,6 +288,10 @@ all_devtools_files = [
   "front_end/inline_editor/SwatchPopoverHelper.js",
   "front_end/inspector.js",
   "front_end/inspector.json",
+  "front_end/integration_test_runner.js",
+  "front_end/integration_test_runner.json",
+  "front_end/integration_test_runner/IntegrationTestRunner.js",
+  "front_end/integration_test_runner/module.json",
   "front_end/layer_viewer/layerDetailsView.css",
   "front_end/layer_viewer/LayerDetailsView.js",
   "front_end/layer_viewer/layers3DView.css",
@@ -936,6 +942,7 @@ generated_remote_modules = [
 devtools_applications = [
   "inspector",
   "toolbox",
+  "integration_test_runner",
   "unit_test_runner",
   "formatter_worker",
   "audits2_worker",
@@ -1088,6 +1095,7 @@ action("build_release_devtools") {
   inputs = helper_scripts + all_devtools_files + generated_scripts + [
              "front_end/inspector.html",
              "front_end/toolbox.html",
+             "front_end/integration_test_runner.html",
              "front_end/unit_test_runner.html",
            ]
 
@@ -1114,12 +1122,14 @@ if (debug_devtools) {
     inputs = all_devtools_files + [
                "front_end/inspector.html",
                "front_end/toolbox.html",
+               "front_end/integration_test_runner.html",
                "front_end/unit_test_runner.html",
              ]
 
     outputs = [
       "$resources_out_debug_dir/inspector.html",
       "$resources_out_debug_dir/toolbox.html",
+      "$resources_out_debug_dir/integration_test_runner.html",
       "$resources_out_debug_dir/unit_test_runner.html",
     ]
 

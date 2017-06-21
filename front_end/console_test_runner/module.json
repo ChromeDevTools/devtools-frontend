@@ -1,0 +1,11 @@
+{
+  "dependencies": [
+    "test_runner",
+    "integration_test_runner",
+    "console",
+    "console_model"
+  ],
+  "scripts": [
+    "ConsoleTestRunner.js"
+  ]
+}

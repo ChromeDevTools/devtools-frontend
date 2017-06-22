@@ -23,6 +23,7 @@
         "data_grid",
         "components",
         "object_ui",
+        "perf_ui",
         "mobile_throttling"
     ],
     "scripts": [

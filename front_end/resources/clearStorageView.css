@@ -22,3 +22,23 @@
 .report-row:hover .link {
     display: inline;
 }
+
+.usage-breakdown-legend-title {
+    display: inline-block;
+}
+
+.usage-breakdown-legend-value {
+    display: inline-block;
+    width: 70px;
+    text-align: right;
+}
+
+.usage-breakdown-legend-swatch {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    margin: 0 6px;
+    position: relative;
+    top: 1px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}

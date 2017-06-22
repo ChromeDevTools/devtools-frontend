@@ -159,14 +159,6 @@ TestRunner.loadModule = function(module) {
 };
 
 /**
- * @param {!Array<string>} lazyModules
- * @return {!Promise<!Array<undefined>>}
- */
-TestRunner.loadLazyModules = function(lazyModules) {
-  return Promise.all(lazyModules.map(lazyModule => self.runtime.loadModulePromise(lazyModule)));
-};
-
-/**
  * @param {string} panel
  * @return {!Promise<!UI.Panel>}
  */

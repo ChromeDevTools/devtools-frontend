@@ -455,7 +455,7 @@ Sources.SourcesView = class extends UI.VBox {
     if (!(sourceView instanceof SourceFrame.UISourceCodeFrame))
       return;
     Persistence.persistence.subscribeForBindingEvent(uiLocation.uiSourceCode, this._bindingChangeBound);
-    var sourceFrame = /** @type {!SourceFrame.UISourceCodeFrame} */ (sourceView);
+    var sourceFrame = /** @type {!Sources.JavaScriptSourceFrame} */ (sourceView);
     sourceFrame.setExecutionLocation(
         new Workspace.UILocation(uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber));
     this._executionSourceFrame = sourceFrame;

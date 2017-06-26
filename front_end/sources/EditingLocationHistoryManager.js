@@ -34,7 +34,7 @@
 Sources.EditingLocationHistoryManager = class {
   /**
    * @param {!Sources.SourcesView} sourcesView
-   * @param {function():?SourceFrame.SourceFrame} currentSourceFrameCallback
+   * @param {function():?SourceFrame.UISourceCodeFrame} currentSourceFrameCallback
    */
   constructor(sourcesView, currentSourceFrameCallback) {
     this._sourcesView = sourcesView;
@@ -129,7 +129,7 @@ Sources.EditingLocationHistoryEntry = class {
   /**
    * @param {!Sources.SourcesView} sourcesView
    * @param {!Sources.EditingLocationHistoryManager} editingLocationManager
-   * @param {!SourceFrame.SourceFrame} sourceFrame
+   * @param {!SourceFrame.UISourceCodeFrame} sourceFrame
    * @param {!TextUtils.TextRange} selection
    */
   constructor(sourcesView, editingLocationManager, sourceFrame, selection) {

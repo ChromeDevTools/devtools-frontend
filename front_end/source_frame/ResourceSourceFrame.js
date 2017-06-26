@@ -35,7 +35,7 @@ SourceFrame.ResourceSourceFrame = class extends SourceFrame.SourceFrame {
    * @param {!Common.ContentProvider} resource
    */
   constructor(resource) {
-    super(resource.contentURL(), resource.requestContent.bind(resource));
+    super(resource.requestContent.bind(resource));
     this._resource = resource;
   }
 

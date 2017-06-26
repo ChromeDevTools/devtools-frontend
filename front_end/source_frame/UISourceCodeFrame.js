@@ -34,13 +34,15 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   constructor(uiSourceCode) {
-    super(uiSourceCode.contentURL(), workingCopy);
+    super(workingCopy);
     this._uiSourceCode = uiSourceCode;
     this.setEditable(this._canEditSource());
 
     if (Runtime.experiments.isEnabled('sourceDiff'))
       this._diff = new SourceFrame.SourceCodeDiff(WorkspaceDiff.workspaceDiff(), this.textEditor);
 
+    this._muteSourceCodeEvents = false;
+    this._isSettingContent = false;
 
     /** @type {?UI.AutocompleteConfig} */
     this._autocompleteConfig = {isWordChar: TextUtils.TextUtils.isWordChar};
@@ -161,7 +163,7 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
 
     this._muteSourceCodeEvents = true;
     this._uiSourceCode.commitWorkingCopy();
-    delete this._muteSourceCodeEvents;
+    this._muteSourceCodeEvents = false;
   }
 
   /**
@@ -201,7 +203,7 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
       this._uiSourceCode.resetWorkingCopy();
     else
       this._uiSourceCode.setWorkingCopyGetter(this.textEditor.text.bind(this.textEditor));
-    delete this._muteSourceCodeEvents;
+    this._muteSourceCodeEvents = false;
   }
 
   /**
@@ -298,7 +300,7 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     } else {
       this.setContent(content);
     }
-    delete this._isSettingContent;
+    this._isSettingContent = false;
   }
 
   /**
@@ -662,7 +664,7 @@ SourceFrame.UISourceCodeFrame.RowMessageBucket = class {
   }
 
   _updateDecoration() {
-    if (!this._sourceFrame.isEditorShowing())
+    if (!this._sourceFrame.isShowing())
       return;
     if (!this._messages.length)
       return;

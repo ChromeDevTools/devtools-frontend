@@ -78,6 +78,7 @@ UI.Icon = class extends HTMLSpanElement {
     this.classList.toggle('spritesheet-' + this._descriptor.spritesheet, value);
     this.classList.toggle(this._iconType, value);
     this.classList.toggle('icon-mask', value && !!this._descriptor.isMask);
+    this.classList.toggle('icon-invert', value && !!this._descriptor.invert);
   }
 
   /**
@@ -149,8 +150,8 @@ UI.Icon.Descriptors = {
   'mediumicon-service-worker': {position: 'a3', spritesheet: 'mediumicons', isMask: true},
   'mediumicon-table': {position: 'b3', spritesheet: 'mediumicons', isMask: true},
   'mediumicon-arrow-in-circle': {position: 'c3', spritesheet: 'mediumicons', isMask: true},
-  'mediumicon-file-sync': {position: 'd3', spritesheet: 'mediumicons'},
-  'mediumicon-file': {position: 'a2', spritesheet: 'mediumicons'},
+  'mediumicon-file-sync': {position: 'd3', spritesheet: 'mediumicons', invert: true},
+  'mediumicon-file': {position: 'a2', spritesheet: 'mediumicons', invert: true},
   'mediumicon-gray-cross-active': {position: 'b2', spritesheet: 'mediumicons'},
   'mediumicon-gray-cross-hover': {position: 'c2', spritesheet: 'mediumicons'},
   'mediumicon-red-cross-active': {position: 'd2', spritesheet: 'mediumicons'},

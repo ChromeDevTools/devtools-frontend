@@ -339,6 +339,11 @@ label[is=dt-icon-label] {
     flex-shrink: 0;
 }
 
+.-theme-with-dark-background [is=ui-icon].icon-invert,
+:host-context(.-theme-with-dark-background) [is=ui-icon].icon-invert {
+    filter: invert(80%) hue-rotate(180deg);
+}
+
 [is=ui-icon].icon-mask {
     background-color: rgb(110, 110, 110);
     -webkit-mask-position: var(--spritesheet-position);

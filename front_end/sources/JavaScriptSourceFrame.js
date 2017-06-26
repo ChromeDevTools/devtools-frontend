@@ -457,7 +457,8 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
           return false;
         var evaluationText = this.textEditor.line(lineNumber).substring(startHighlight, endHighlight + 1);
         var resolvedText = await Sources.SourceMapNamesResolver.resolveExpression(
-            selectedCallFrame, evaluationText, this._debuggerSourceCode, lineNumber, startHighlight, endHighlight);
+            /** @type {!SDK.DebuggerModel.CallFrame} */ (selectedCallFrame), evaluationText, this._debuggerSourceCode,
+            lineNumber, startHighlight, endHighlight);
         var remoteObject = await selectedCallFrame.evaluatePromise(
             resolvedText || evaluationText, 'popover', false, true, false, false);
         if (!remoteObject)
@@ -693,6 +694,10 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     }
     var start = localScope.startLocation();
     var end = localScope.endLocation();
+    if (!start || !end) {
+      this._clearContinueToLocationsNoRestore();
+      return;
+    }
     var debuggerModel = callFrame.debuggerModel;
     debuggerModel.getPossibleBreakpoints(start, end, true)
         .then(locations => this.textEditor.operation(renderLocations.bind(this, locations)));

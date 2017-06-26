@@ -220,7 +220,7 @@ EventListeners.frameworkEventListeners = function(object) {
    * @param {!SDK.RemoteObject} errorString
    */
   function printErrorString(errorString) {
-    Common.console.error(errorString.value);
+    Common.console.error(String(errorString.value));
   }
 
   /**

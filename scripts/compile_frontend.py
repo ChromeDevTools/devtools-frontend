@@ -315,7 +315,7 @@ def generate_namespace_externs(modules_by_name):
     namespace_externs_file = tempfile.NamedTemporaryFile(mode='wt', delete=False)
     try:
         for namespace in namespaces:
-            namespace_externs_file.write('/** @type {!Object} */\n')
+            namespace_externs_file.write('/** @const */\n')
             namespace_externs_file.write('var %s = {};\n' % namespace)
     finally:
         namespace_externs_file.close()

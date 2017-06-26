@@ -40,14 +40,14 @@ Help._showReleaseNoteIfNeeded = function(lastSeenVersion, latestVersion) {
   if (lastSeenVersion >= latestVersion)
     return;
   Help.releaseNoteVersionSetting().set(latestVersion);
-  UI.viewManager.showView(Help._releaseNoteViewId, true);
+  UI.viewManager.showView(Help.releaseNoteViewId, true);
 };
 
 /**
  * @const
  * @type {string}
  */
-Help._releaseNoteViewId = 'release-note';
+Help.releaseNoteViewId = 'release-note';
 
 /** @typedef {!{title: string, subtitle: string, link: string}} */
 Help.ReleaseNoteHighlight;

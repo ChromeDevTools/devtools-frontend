@@ -37,7 +37,7 @@ Help.ReleaseNoteView = class extends UI.VBox {
     }));
     actionContainer.appendChild(UI.createTextButton(Common.UIString('Close'), event => {
       event.consume(true);
-      UI.inspectorView.closeDrawerTab(Help._releaseNoteViewId, true);
+      UI.inspectorView.closeDrawerTab(Help.releaseNoteViewId, true);
     }, 'close-release-note'));
 
     var imageLink = UI.createExternalLink(releaseNote.link, ' ');

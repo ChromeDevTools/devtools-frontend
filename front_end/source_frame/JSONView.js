@@ -31,9 +31,9 @@
  * @implements {UI.Searchable}
  * @unrestricted
  */
-Network.JSONView = class extends UI.VBox {
+SourceFrame.JSONView = class extends UI.VBox {
   /**
-   * @param {!Network.ParsedJSON} parsedJSON
+   * @param {!SourceFrame.ParsedJSON} parsedJSON
    */
   constructor(parsedJSON) {
     super();
@@ -53,11 +53,11 @@ Network.JSONView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Network.ParsedJSON} parsedJSON
+   * @param {!SourceFrame.ParsedJSON} parsedJSON
    * @return {!UI.SearchableView}
    */
   static createSearchableView(parsedJSON) {
-    var jsonView = new Network.JSONView(parsedJSON);
+    var jsonView = new SourceFrame.JSONView(parsedJSON);
     var searchableView = new UI.SearchableView(jsonView);
     searchableView.setPlaceholder(Common.UIString('Find'));
     jsonView._searchableView = searchableView;
@@ -68,19 +68,19 @@ Network.JSONView = class extends UI.VBox {
 
   /**
    * @param {?string} text
-   * @return {!Promise<?Network.ParsedJSON>}
+   * @return {!Promise<?SourceFrame.ParsedJSON>}
    */
   static parseJSON(text) {
     var returnObj = null;
     if (text)
-      returnObj = Network.JSONView._extractJSON(/** @type {string} */ (text));
+      returnObj = SourceFrame.JSONView._extractJSON(/** @type {string} */ (text));
     if (!returnObj)
-      return Promise.resolve(/** @type {?Network.ParsedJSON} */ (null));
+      return Promise.resolve(/** @type {?SourceFrame.ParsedJSON} */ (null));
     return Formatter.formatterWorkerPool().parseJSONRelaxed(returnObj.data).then(handleReturnedJSON);
 
     /**
      * @param {*} data
-     * @return {?Network.ParsedJSON}
+     * @return {?SourceFrame.ParsedJSON}
      */
     function handleReturnedJSON(data) {
       if (!data)
@@ -92,14 +92,14 @@ Network.JSONView = class extends UI.VBox {
 
   /**
    * @param {string} text
-   * @return {?Network.ParsedJSON}
+   * @return {?SourceFrame.ParsedJSON}
    */
   static _extractJSON(text) {
     // Do not treat HTML as JSON.
     if (text.startsWith('<'))
       return null;
-    var inner = Network.JSONView._findBrackets(text, '{', '}');
-    var inner2 = Network.JSONView._findBrackets(text, '[', ']');
+    var inner = SourceFrame.JSONView._findBrackets(text, '{', '}');
+    var inner2 = SourceFrame.JSONView._findBrackets(text, '[', ']');
     inner = inner2.length > inner.length ? inner2 : inner;
 
     // Return on blank payloads or on payloads significantly smaller than original text.
@@ -114,7 +114,7 @@ Network.JSONView = class extends UI.VBox {
     if (suffix.trim().length && !(suffix.trim().startsWith(')') && prefix.trim().endsWith('(')))
       return null;
 
-    return new Network.ParsedJSON(text, prefix, suffix);
+    return new SourceFrame.ParsedJSON(text, prefix, suffix);
   }
 
   /**
@@ -285,7 +285,7 @@ Network.JSONView = class extends UI.VBox {
 /**
  * @unrestricted
  */
-Network.ParsedJSON = class {
+SourceFrame.ParsedJSON = class {
   /**
    * @param {*} data
    * @param {string} prefix

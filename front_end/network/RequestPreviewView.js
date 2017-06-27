@@ -59,8 +59,8 @@ Network.RequestPreviewView = class extends Network.RequestView {
    * @return {?UI.SearchableView}
    */
   _xmlView(content, mimeType) {
-    var parsedXML = Network.XMLView.parseXML(content, mimeType);
-    return parsedXML ? Network.XMLView.createSearchableView(parsedXML) : null;
+    var parsedXML = SourceFrame.XMLView.parseXML(content, mimeType);
+    return parsedXML ? SourceFrame.XMLView.createSearchableView(parsedXML) : null;
   }
 
   /**
@@ -69,10 +69,10 @@ Network.RequestPreviewView = class extends Network.RequestView {
    */
   async _jsonView(content) {
     // We support non-strict JSON parsing by parsing an AST tree which is why we offload it to a worker.
-    var parsedJSON = await Network.JSONView.parseJSON(content);
+    var parsedJSON = await SourceFrame.JSONView.parseJSON(content);
     if (!parsedJSON || typeof parsedJSON.data !== 'object')
       return null;
-    return Network.JSONView.createSearchableView(/** @type {!Network.ParsedJSON} */ (parsedJSON));
+    return SourceFrame.JSONView.createSearchableView(/** @type {!SourceFrame.ParsedJSON} */ (parsedJSON));
   }
 
   /**

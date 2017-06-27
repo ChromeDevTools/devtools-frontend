@@ -5,16 +5,16 @@
  * @implements {UI.Searchable}
  * @unrestricted
  */
-Network.XMLView = class extends UI.Widget {
+SourceFrame.XMLView = class extends UI.Widget {
   /**
    * @param {!Document} parsedXML
    */
   constructor(parsedXML) {
     super(true);
-    this.registerRequiredCSS('network/xmlView.css');
+    this.registerRequiredCSS('source_frame/xmlView.css');
     this.contentElement.classList.add('shadow-xml-view', 'source-code');
     this._treeOutline = new UI.TreeOutlineInShadow();
-    this._treeOutline.registerRequiredCSS('network/xmlTree.css');
+    this._treeOutline.registerRequiredCSS('source_frame/xmlTree.css');
     this.contentElement.appendChild(this._treeOutline.element);
 
     /** @type {?UI.SearchableView} */
@@ -26,7 +26,7 @@ Network.XMLView = class extends UI.Widget {
     /** @type {?UI.SearchableView.SearchConfig} */
     this._searchConfig;
 
-    Network.XMLView.Node.populate(this._treeOutline, parsedXML, this);
+    SourceFrame.XMLView.Node.populate(this._treeOutline, parsedXML, this);
   }
 
   /**
@@ -34,7 +34,7 @@ Network.XMLView = class extends UI.Widget {
    * @return {!UI.SearchableView}
    */
   static createSearchableView(parsedXML) {
-    var xmlView = new Network.XMLView(parsedXML);
+    var xmlView = new SourceFrame.XMLView(parsedXML);
     var searchableView = new UI.SearchableView(xmlView);
     searchableView.setPlaceholder(Common.UIString('Find'));
     xmlView._searchableView = searchableView;
@@ -116,7 +116,7 @@ Network.XMLView = class extends UI.Widget {
     var regex = this._searchConfig.toSearchRegex(true);
 
     for (var element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof Network.XMLView.Node))
+      if (!(element instanceof SourceFrame.XMLView.Node))
         continue;
       var hasMatch = element.setSearchRegex(regex);
       if (hasMatch)
@@ -142,7 +142,7 @@ Network.XMLView = class extends UI.Widget {
 
   _innerSearchCanceled() {
     for (var element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof Network.XMLView.Node))
+      if (!(element instanceof SourceFrame.XMLView.Node))
         continue;
       element.revertHighlightChanges();
     }
@@ -213,11 +213,11 @@ Network.XMLView = class extends UI.Widget {
 /**
  * @unrestricted
  */
-Network.XMLView.Node = class extends UI.TreeElement {
+SourceFrame.XMLView.Node = class extends UI.TreeElement {
   /**
    * @param {!Node} node
    * @param {boolean} closeTag
-   * @param {!Network.XMLView} xmlView
+   * @param {!SourceFrame.XMLView} xmlView
    */
   constructor(node, closeTag, xmlView) {
     super('', !closeTag && !!node.childElementCount);
@@ -233,7 +233,7 @@ Network.XMLView.Node = class extends UI.TreeElement {
   /**
    * @param {!UI.TreeOutline|!UI.TreeElement} root
    * @param {!Node} xmlNode
-   * @param {!Network.XMLView} xmlView
+   * @param {!SourceFrame.XMLView} xmlView
    */
   static populate(root, xmlNode, xmlView) {
     var node = xmlNode.firstChild;
@@ -247,7 +247,7 @@ Network.XMLView.Node = class extends UI.TreeElement {
       // ignore ATTRIBUTE, ENTITY_REFERENCE, ENTITY, DOCUMENT, DOCUMENT_TYPE, DOCUMENT_FRAGMENT, NOTATION
       if ((nodeType !== 1) && (nodeType !== 3) && (nodeType !== 4) && (nodeType !== 7) && (nodeType !== 8))
         continue;
-      root.appendChild(new Network.XMLView.Node(currentNode, false, xmlView));
+      root.appendChild(new SourceFrame.XMLView.Node(currentNode, false, xmlView));
     }
   }
 
@@ -369,7 +369,7 @@ Network.XMLView.Node = class extends UI.TreeElement {
    * @override
    */
   onpopulate() {
-    Network.XMLView.Node.populate(this, this._node, this._xmlView);
-    this.appendChild(new Network.XMLView.Node(this._node, true, this._xmlView));
+    SourceFrame.XMLView.Node.populate(this, this._node, this._xmlView);
+    this.appendChild(new SourceFrame.XMLView.Node(this._node, true, this._xmlView));
   }
 };

@@ -165,34 +165,18 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
   /**
   * @param {!Common.Event} event
    */
-  _onFrameSelected(event) {
+  async _onFrameSelected(event) {
     var selectedNode = /** @type {!Network.ResourceWebSocketFrameNode} */ (event.data);
     this._currentSelectedNode = selectedNode;
     var contentProvider = selectedNode.contentProvider();
-    contentProvider.requestContent().then(contentHandler.bind(this));
-
-    /**
-     * @param {(string|null)} content
-     * @this {Network.ResourceWebSocketFrameView}
-     */
-    function contentHandler(content) {
-      if (this._currentSelectedNode !== selectedNode)
-        return;
-      Network.JSONView.parseJSON(content).then(handleJSONData.bind(this));
-    }
-
-    /**
-     * @param {?Network.ParsedJSON} parsedJSON
-     * @this {Network.ResourceWebSocketFrameView}
-     */
-    function handleJSONData(parsedJSON) {
-      if (this._currentSelectedNode !== selectedNode)
-        return;
-      if (parsedJSON)
-        this._splitWidget.setSidebarWidget(Network.JSONView.createSearchableView(parsedJSON));
-      else
-        this._splitWidget.setSidebarWidget(new SourceFrame.ResourceSourceFrame(contentProvider));
-    }
+    var content = await contentProvider.requestContent();
+    var parsedJSON = await SourceFrame.JSONView.parseJSON(content);
+    if (this._currentSelectedNode !== selectedNode)
+      return;
+    if (parsedJSON)
+      this._splitWidget.setSidebarWidget(SourceFrame.JSONView.createSearchableView(parsedJSON));
+    else
+      this._splitWidget.setSidebarWidget(new SourceFrame.ResourceSourceFrame(contentProvider));
   }
 
   /**

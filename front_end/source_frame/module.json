@@ -36,6 +36,8 @@
         "ui",
         "platform",
         "persistence",
+        "formatter",
+        "object_ui",
         "workspace_diff"
     ],
     "scripts": [
@@ -45,11 +47,15 @@
         "SourceFrame.js",
         "ResourceSourceFrame.js",
         "UISourceCodeFrame.js",
+        "JSONView.js",
+        "XMLView.js",
         "SourceCodeDiff.js"
     ],
     "resources": [
         "fontView.css",
         "imageView.css",
-        "messagesPopover.css"
+        "messagesPopover.css",
+        "xmlTree.css",
+        "xmlView.css"
     ]
 }

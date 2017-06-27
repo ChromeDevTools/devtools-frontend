@@ -92,10 +92,8 @@ Network.HARWriter = class {
     var progress = compositeProgress.createSubProgress();
     progress.setTitle(Common.UIString('Writing file\u2026'));
     progress.setTotalWork(fileContent.length);
-    var chunks = fileContent.split('', Network.HARWriter._chunkSize);
-    for (var chunk of chunks) {
-      if (progress.isCanceled())
-        break;
+    for (var i = 0; i < fileContent.length && !progress.isCanceled(); i += Network.HARWriter._chunkSize) {
+      var chunk = fileContent.substr(i, Network.HARWriter._chunkSize);
       await stream.write(chunk);
       progress.worked(chunk.length);
     }

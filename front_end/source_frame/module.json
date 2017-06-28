@@ -49,6 +49,7 @@
         "UISourceCodeFrame.js",
         "JSONView.js",
         "XMLView.js",
+        "PreviewFactory.js",
         "SourceCodeDiff.js"
     ],
     "resources": [

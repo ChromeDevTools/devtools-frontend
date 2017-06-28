@@ -129,7 +129,6 @@
         "EventSourceMessagesView.js",
         "FilterSuggestionBuilder.js",
         "HARWriter.js",
-        "RequestView.js",
         "NetworkConfigView.js",
         "NetworkDataGridNode.js",
         "NetworkItemView.js",
@@ -143,8 +142,8 @@
         "RequestCookiesView.js",
         "RequestHeadersView.js",
         "RequestHTMLView.js",
-        "RequestPreviewView.js",
         "RequestResponseView.js",
+        "RequestPreviewView.js",
         "RequestTimingView.js",
         "ResourceWebSocketFrameView.js",
         "NetworkPanel.js"

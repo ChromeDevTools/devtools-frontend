@@ -31,15 +31,15 @@
 /**
  * @unrestricted
  */
-Network.RequestHTMLView = class extends Network.RequestView {
+Network.RequestHTMLView = class extends UI.VBox {
   /**
-   * @param {!SDK.NetworkRequest} request
    * @param {string} dataURL
    */
-  constructor(request, dataURL) {
-    super(request);
+  constructor(dataURL) {
+    super();
+
     this._dataURL = dataURL;
-    this.element.classList.add('html');
+    this.element.classList.add('html', 'request-view');
   }
 
   /**

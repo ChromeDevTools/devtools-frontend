@@ -28,17 +28,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-Network.RequestResponseView = class extends Network.RequestView {
+Network.RequestResponseView = class extends UI.VBox {
   /**
    * @param {!SDK.NetworkRequest} request
    */
   constructor(request) {
-    super(request);
+    super();
+    this.element.classList.add('request-view');
+    /** @protected */
+    this.request = request;
     /** @type {?Promise<!UI.Widget>} */
-    this._responseView = null;
+    this._contentViewPromise = null;
   }
 
   /**
+   * @param {!SDK.NetworkRequest} request
+   * @param {!SDK.NetworkRequest.ContentData} contentData
+   * @return {boolean}
+   */
+  static _hasTextContent(request, contentData) {
+    if (request.resourceType().isTextType())
+      return true;
+    if (contentData.error)
+      return false;
+    if (request.resourceType() === Common.resourceTypes.Other)
+      return !!contentData.content && !contentData.encoded;
+    return false;
+  }
+
+  /**
+   * @protected
    * @param {!SDK.NetworkRequest} request
    * @return {!Promise<?UI.SearchableView>}
    */
@@ -48,12 +67,12 @@ Network.RequestResponseView = class extends Network.RequestView {
       return sourceView;
 
     var contentData = await request.contentData();
-    if (!Network.RequestView.hasTextContent(request, contentData)) {
+    if (!Network.RequestResponseView._hasTextContent(request, contentData)) {
       request[Network.RequestResponseView._sourceViewSymbol] = null;
       return null;
     }
 
-    var contentProvider = new Network.RequestResponseView.ContentProvider(request);
+    var contentProvider = new Network.DecodingContentProvider(request);
     var highlighterType = request.resourceType().canonicalMimeType() || request.mimeType;
     sourceView = SourceFrame.ResourceSourceFrame.createSearchableView(contentProvider, highlighterType);
     request[Network.RequestResponseView._sourceViewSymbol] = sourceView;
@@ -61,38 +80,39 @@ Network.RequestResponseView = class extends Network.RequestView {
   }
 
   /**
-   * @param {string} message
-   * @return {!UI.EmptyWidget}
+   * @override
+   * @final
    */
-  _createMessageView(message) {
-    return new UI.EmptyWidget(message);
+  wasShown() {
+    this.showPreview();
   }
 
   /**
-   * @override
+   * @protected
+   * @return {!Promise<?UI.Widget>}
    */
-  wasShown() {
-    this._showResponseView();
-  }
-
-  async _showResponseView() {
-    if (!this._responseView)
-      this._responseView = this._createResponseView();
-    var responseView = await this._responseView;
+  async showPreview() {
+    if (!this._contentViewPromise)
+      this._contentViewPromise = this.createPreview();
+    var responseView = await this._contentViewPromise;
     if (this.element.contains(responseView.element))
-      return;
+      return null;
 
     responseView.show(this.element);
+    return responseView;
   }
 
-  async _createResponseView() {
+  /**
+   * @return {!Promise<!UI.Widget>}
+   */
+  async createPreview() {
     var contentData = await this.request.contentData();
     var sourceView = await Network.RequestResponseView.sourceViewForRequest(this.request);
     if ((!contentData.content || !sourceView) && !contentData.error)
-      return this._createMessageView(Common.UIString('This request has no response data available.'));
+      return new UI.EmptyWidget(Common.UIString('This request has no response data available.'));
     if (contentData.content && sourceView)
       return sourceView;
-    return this._createMessageView(Common.UIString('Failed to load response data'));
+    return new UI.EmptyWidget(Common.UIString('Failed to load response data'));
   }
 };
 
@@ -101,7 +121,7 @@ Network.RequestResponseView._sourceViewSymbol = Symbol('RequestResponseSourceVie
 /**
  * @implements {Common.ContentProvider}
  */
-Network.RequestResponseView.ContentProvider = class {
+Network.DecodingContentProvider = class {
   /**
    * @param {!SDK.NetworkRequest} request
    */

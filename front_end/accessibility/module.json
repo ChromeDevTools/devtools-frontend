@@ -26,6 +26,8 @@
         "ARIAConfig.js"
     ],
     "resources": [
-        "accessibilityNode.css"
+        "accessibilityNode.css",
+        "accessibilityProperties.css",
+        "axBreadcrumbs.css"
     ]
 }

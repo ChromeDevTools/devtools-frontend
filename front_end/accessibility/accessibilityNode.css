@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 The Chromium Authors. All rights reserved.
+ * Copyright 2017 The Chromium Authors. All rights reserved.
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
@@ -12,45 +12,9 @@
     overflow-x: hidden;
 }
 
-.ax-computed-text {
-    background-image: url(Images/speech.png);
-    background-repeat: no-repeat;
-    background-position: 0px center;
-    background-size: 12px;
-    padding-left: 17px;
-}
-
-.ax-computed-text div {
-    display: inline-block;
-    padding: 2px;
-    width: 100%;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 100%;
-}
-
 div.ax-text-alternatives {
     margin-bottom: 3px;
     border-bottom: 1px solid #BFBFBF;
-}
-
-.ax-name {
-    color: rgb(153, 69, 0);
-    flex-shrink: 0;
-}
-
-.ax-readable-name {
-    flex-shrink: 0;
-    padding-left: 2px;
-}
-
-.ax-readable-string {
-    font-style: italic;
-}
-
-span.ax-internal-role {
-    font-style: italic;
 }
 
 .ax-ignored-info {
@@ -65,12 +29,31 @@ span.ax-internal-role {
     text-decoration: line-through;
 }
 
+span.ax-value-undefined {
+    font-style: italic;
+}
+
+.ax-value-source-unused {
+    opacity: 0.7;
+}
+
+.ax-value-source-superseded,
+.ax-value-source-invalid {
+    text-decoration: line-through;
+}
+
+.sidebar-pane-stack .sidebar-pane {
+    padding-left: 4px;
+}
+
 .tree-outline label[is=dt-icon-label] {
     position: relative;
     left: -11px;
 }
 
 .tree-outline li {
+    display: block;
+    overflow-x: hidden;
     padding-left: 1px;
     align-items: baseline;
 }
@@ -84,162 +67,12 @@ span.ax-internal-role {
     left: -2px;
 }
 
-.ax-breadcrumbs-ignored-node {
-    font-style: italic;
-    opacity: 0.7;
-}
-
-.ax-breadcrumbs {
-    padding-top: 1px;
-    margin: 0;
-    position: relative;
-}
-
-.ax-breadcrumbs .ax-node {
-    white-space: nowrap;
-    position: relative;
-    min-height: 16px;
-    align-items: baseline;
-    padding-left: 4px;
-    padding-right: 4px;
-    overflow-x: hidden;
-}
-
-.ax-breadcrumbs .ax-node::before {
-    -webkit-mask-image: url(Images/chevrons.png);
-    -webkit-mask-position: 0 0;
-    -webkit-mask-size: 30px 10px;
-    -webkit-mask-repeat: no-repeat;
-    background-color: rgb(48, 57, 66);
-    content: "&nbsp;";
-    color: transparent;
-    text-shadow: none;
-    margin-right: -2px;
-    height: 12px;
-    width: 14px;
-    position: absolute;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-    .ax-breadcrumbs .ax-node::before {
-        -webkit-mask-image: url(Images/chevrons_2x.png);
-    }
-} /* media */
-
-.ax-breadcrumbs .ax-node:not(.parent):not(.children-unloaded)::before {
-    background-color: transparent;
-}
-
-.ax-breadcrumbs .ax-node.parent::before {
-    -webkit-mask-position: -20px 1px;
-}
-
-.ax-breadcrumbs .ax-node.children-unloaded::before {
-    -webkit-mask-position: 0px 1px;
-    width: 13px;
-}
-
-.ax-breadcrumbs .ax-node.no-dom-node {
-    opacity: 0.5;
-}
-
-.ax-breadcrumbs .ax-node.children-unloaded::before {
-    opacity: 0.4;
-}
-
-span.ax-value-undefined {
-    font-style: italic;
-}
-
-.ax-value-source-unused {
-    opacity: 0.5;
-}
-
-.ax-value-source-superseded,
-.ax-value-source-invalid {
-    text-decoration: line-through;
-}
-
 .tree-outline label[is=dt-icon-label] + .ax-name {
     margin-left: -11px;
 }
 
-.ax-value-string {
-    color: rgb(200, 0, 0);
-}
-
-.sidebar-pane-stack .sidebar-pane {
-    padding-left: 4px;
-}
-
-button.expand-siblings {
-    border-radius: 1px;
-    background-color: #f3f3f3;
-    border: 1px solid #ddd;
-    margin-left: 5px;
-    margin-bottom: 1px;
-}
-
-li.siblings-expanded button.expand-siblings {
-    display: none;
-}
-
-.ax-breadcrumbs .ax-node {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    position: relative;
-    align-items: center;
-    min-height: 16px;
-    margin-top: 1px;
-    padding-top: 1px;
-}
-
-.ax-breadcrumbs .ax-node.preselected:not(.inspected) .selection,
-.ax-breadcrumbs .ax-node.hovered:not(.inspected) .selection {
-    display: block;
-    left: 2px;
-    right: 2px;
-    background-color: rgba(56, 121, 217, 0.1);
-    border-radius: 5px;
-}
-
-.ax-breadcrumbs .ax-node.preselected:not(.inspected):focus .selection {
-    border: 1px solid rgba(56, 121, 217, 0.4);
-}
-
-.ax-breadcrumbs .ax-node .selection {
-    display: none;
-    z-index: -1;
-}
-
-.ax-breadcrumbs .ax-node.inspected .selection {
-    display: block;
-    background-color: #ddd;
-}
-
-.ax-breadcrumbs .ax-node.inspected:focus .selection {
-    background-color: rgb(56, 121, 217);
-}
-
-.ax-breadcrumbs .ax-node.parent.inspected:focus::before {
-    background-color: white;
-}
-
-.ax-breadcrumbs .ax-node.inspected:focus {
-    color: white;
-}
-
-.ax-breadcrumbs .ax-node.inspected:focus * {
-    color: inherit;
-}
-
-.ax-breadcrumbs .ax-node span {
+.tree-outline li span {
     flex-shrink: 0;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.ax-breadcrumbs .ax-node .wrapper {
-    padding-left: 12px;
-    overflow-x: hidden;
 }

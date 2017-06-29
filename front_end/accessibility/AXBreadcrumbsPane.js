@@ -25,6 +25,8 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
     this._rootElement.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     this._rootElement.addEventListener('mouseleave', this._onMouseLeave.bind(this), false);
     this._rootElement.addEventListener('click', this._onClick.bind(this), false);
+
+    this.registerRequiredCSS('accessibility/axBreadcrumbs.css');
   }
 
   /**

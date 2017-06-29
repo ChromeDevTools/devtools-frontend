@@ -17,6 +17,7 @@ Accessibility.AXNodeSubPane = class extends Accessibility.AccessibilitySubPane {
     this._ignoredReasonsTree = this.createTreeOutline();
 
     this.element.classList.add('accessibility-computed');
+    this.registerRequiredCSS('accessibility/accessibilityNode.css');
   }
 
   /**

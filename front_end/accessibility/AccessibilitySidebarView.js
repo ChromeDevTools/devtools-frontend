@@ -52,10 +52,10 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
 
     this._axNode = axNode;
 
-    if (axNode.ignored())
-      this._sidebarPaneStack.removeView(this._ariaSubPane);
-    else
+    if (axNode.isDOMNode())
       this._sidebarPaneStack.showView(this._ariaSubPane, this._axNodeSubPane);
+    else
+      this._sidebarPaneStack.removeView(this._ariaSubPane);
 
     if (this._axNodeSubPane)
       this._axNodeSubPane.setAXNode(axNode);

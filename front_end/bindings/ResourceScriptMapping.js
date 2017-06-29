@@ -49,6 +49,9 @@ Bindings.ResourceScriptMapping = class {
 
     this._eventListeners = [
       debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this),
+      debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
+      debuggerModel.addEventListener(
+          SDK.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this),
       workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this),
       workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this)
     ];
@@ -99,9 +102,10 @@ Bindings.ResourceScriptMapping = class {
   }
 
   /**
-   * @param {!SDK.Script} script
+   * @param {!Common.Event} event
    */
-  addScript(script) {
+  _parsedScriptSource(event) {
+    var script = /** @type {!SDK.Script} */ (event.data);
     if (script.isAnonymousScript())
       return;
 

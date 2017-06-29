@@ -40,11 +40,17 @@ Bindings.DefaultScriptMapping = class {
   constructor(debuggerModel, workspace, debuggerWorkspaceBinding) {
     this._debuggerModel = debuggerModel;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-    var projectId = Bindings.DefaultScriptMapping.projectIdForTarget(debuggerModel.target());
     this._project = new Bindings.ContentProviderBasedProject(
-        workspace, projectId, Workspace.projectTypes.Debugger, '', true /* isServiceProject */);
-    this._eventListeners =
-        [debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this)];
+        workspace, 'debugger:' + debuggerModel.target().id(), Workspace.projectTypes.Debugger, '',
+        true /* isServiceProject */);
+    this._eventListeners = [
+      debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this),
+      debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
+      debuggerModel.addEventListener(
+          SDK.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this),
+      debuggerModel.addEventListener(
+          SDK.DebuggerModel.Events.DiscardedAnonymousScriptSource, this._discardedScriptSource, this)
+    ];
   }
 
   /**
@@ -53,14 +59,6 @@ Bindings.DefaultScriptMapping = class {
    */
   static scriptForUISourceCode(uiSourceCode) {
     return uiSourceCode[Bindings.DefaultScriptMapping._scriptSymbol] || null;
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @return {string}
-   */
-  static projectIdForTarget(target) {
-    return 'debugger:' + target.id();
   }
 
   /**
@@ -99,9 +97,10 @@ Bindings.DefaultScriptMapping = class {
   }
 
   /**
-   * @param {!SDK.Script} script
+   * @param {!Common.Event} event
    */
-  addScript(script) {
+  _parsedScriptSource(event) {
+    var script = /** @type {!SDK.Script} */ (event.data);
     var name = Common.ParsedURL.extractName(script.sourceURL);
     var url = 'debugger:///VM' + script.scriptId + (name ? ' ' + name : '');
 
@@ -113,9 +112,10 @@ Bindings.DefaultScriptMapping = class {
   }
 
   /**
-   * @param {!SDK.Script} script
+   * @param {!Common.Event} event
    */
-  removeScript(script) {
+  _discardedScriptSource(event) {
+    var script = /** @type {!SDK.Script} */ (event.data);
     var uiSourceCode = script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol];
     if (!uiSourceCode)
       return;

@@ -259,13 +259,6 @@ Bindings.DebuggerWorkspaceBinding.ModelData = class {
     this._locations = new Multimap();
 
     debuggerModel.setBeforePausedCallback(this._beforePaused.bind(this));
-    this._eventListeners = [
-      debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
-      debuggerModel.addEventListener(
-          SDK.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this),
-      debuggerModel.addEventListener(
-          SDK.DebuggerModel.Events.DiscardedAnonymousScriptSource, this._discardedScriptSource, this)
-    ];
   }
 
   /**
@@ -336,26 +329,8 @@ Bindings.DebuggerWorkspaceBinding.ModelData = class {
     return !!this._compilerMapping.mapsToSourceCode(debuggerPausedDetails.callFrames[0].location());
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _parsedScriptSource(event) {
-    var script = /** @type {!SDK.Script} */ (event.data);
-    this._defaultMapping.addScript(script);
-    this._resourceMapping.addScript(script);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _discardedScriptSource(event) {
-    var script = /** @type {!SDK.Script} */ (event.data);
-    this._defaultMapping.removeScript(script);
-  }
-
   _dispose() {
     this._debuggerModel.setBeforePausedCallback(null);
-    Common.EventTarget.removeEventListeners(this._eventListeners);
     this._compilerMapping.dispose();
     this._resourceMapping.dispose();
     this._defaultMapping.dispose();

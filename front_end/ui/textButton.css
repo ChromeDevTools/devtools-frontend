@@ -15,6 +15,7 @@
     color: #333;
     background-color: #fff;
     flex: none;
+    white-space: nowrap;
 }
 
 :host(:not(:disabled):focus),

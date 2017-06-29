@@ -41,7 +41,7 @@
 
 .spectrum-hue, .spectrum-alpha {
     position: absolute;
-    right: 16px;
+    left: 86px;
     width: 130px;
     height: 11px;
     border-radius: 2px;

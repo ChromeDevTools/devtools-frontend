@@ -490,9 +490,29 @@ SDK.ChildTargetManager = class {
     if (targetInfo.type !== 'node')
       return;
     if (Runtime.queryParam('nodeFrontend')) {
-      this._targetAgent.attachToTarget(targetInfo.targetId);
-    } else {
-      this._targetManager._nodeTargetIds.add(targetInfo.targetId);
+      if (!targetInfo.attached)
+        this._targetAgent.attachToTarget(targetInfo.targetId);
+      return;
+    }
+    if (targetInfo.attached)
+      return;
+    this._targetManager._nodeTargetIds.add(targetInfo.targetId);
+    this._targetManager.dispatchEventToListeners(SDK.TargetManager.Events.AvailableNodeTargetsChanged);
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.Target.TargetInfo} targetInfo
+   */
+  targetInfoChanged(targetInfo) {
+    if (targetInfo.type !== 'node' || Runtime.queryParam('nodeFrontend'))
+      return;
+    var availableIds = this._targetManager._nodeTargetIds;
+    if (!availableIds.has(targetInfo.targetId) && !targetInfo.attached) {
+      availableIds.add(targetInfo.targetId);
+      this._targetManager.dispatchEventToListeners(SDK.TargetManager.Events.AvailableNodeTargetsChanged);
+    } else if (availableIds.has(targetInfo.targetId) && targetInfo.attached) {
+      availableIds.delete(targetInfo.targetId);
       this._targetManager.dispatchEventToListeners(SDK.TargetManager.Events.AvailableNodeTargetsChanged);
     }
   }

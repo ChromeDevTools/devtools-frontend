@@ -12,6 +12,9 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     /** @type {?UI.Widget} */
     this.visibleView = null;
 
+    /** @type {?Promise<!UI.Widget>} */
+    this._pendingViewPromise = null;
+
     /** @type {?Resources.StorageCategoryView} */
     this._categoryView = null;
 
@@ -82,6 +85,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
    * @param {?UI.Widget} view
    */
   showView(view) {
+    this._pendingViewPromise = null;
     if (this.visibleView === view)
       return;
 
@@ -97,6 +101,19 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     for (var i = 0; i < toolbarItems.length; ++i)
       this._storageViewToolbar.appendToolbarItem(toolbarItems[i]);
     this._storageViewToolbar.element.classList.toggle('hidden', !toolbarItems.length);
+  }
+
+  /**
+   * @param {!Promise<!UI.Widget>} viewPromise
+   * @return {!Promise<?UI.Widget>}
+   */
+  async scheduleShowView(viewPromise) {
+    this._pendingViewPromise = viewPromise;
+    var view = await viewPromise;
+    if (this._pendingViewPromise !== viewPromise)
+      return null;
+    this.showView(view);
+    return view;
   }
 
   /**
@@ -173,10 +190,11 @@ Resources.ResourcesPanel.ResourceRevealer = class {
    * @param {!Object} resource
    * @return {!Promise}
    */
-  reveal(resource) {
+  async reveal(resource) {
     if (!(resource instanceof SDK.Resource))
       return Promise.reject(new Error('Internal error: not a resource'));
-    var panel = Resources.ResourcesPanel._instance()._sidebar;
-    return UI.viewManager.showView('resources').then(panel.showResource.bind(panel, resource));
+    var sidebar = Resources.ResourcesPanel._instance()._sidebar;
+    await UI.viewManager.showView('resources');
+    await sidebar.showResource(resource);
   }
 };
